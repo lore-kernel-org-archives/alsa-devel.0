@@ -1,105 +1,42 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dwc: Fix PIO mode initialization" to the asoc tree
-Date: Wed, 14 Dec 2016 18:03:23 +0000
-Message-ID: <E1cHDtj-00075Y-UT@debutante>
-References: <1ded72e27be422c2591fb252ea30b87cdbb7e7b1.1481626830.git.joabreu@synopsys.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1ded72e27be422c2591fb252ea30b87cdbb7e7b1.1481626830.git.joabreu@synopsys.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jose Abreu <Jose.Abreu@synopsys.com>
-Cc: Jose Abreu <joabreu@synopsys.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>, Carlos Palminha <CARLOS.PALMINHA@synopsys.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: 1.1.3 release?
+Date: Wed, 14 Dec 2016 16:36:21 +0100
+Message-ID: <7d78346b-79e7-18fe-04db-99388ae027ed@perex.cz>
+References: <s5hoa0ed07p.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F150266FDE
+ for <alsa-devel@alsa-project.org>; Wed, 14 Dec 2016 16:36:25 +0100 (CET)
+In-Reply-To: <s5hoa0ed07p.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Dne 14.12.2016 v 16:00 Takashi Iwai napsal(a):
+> Hi Jaroslav,
+> 
+> shall we release v1.1.3 now?
+> We've gathered quite a lot of changes since the last release.
 
-   ASoC: dwc: Fix PIO mode initialization
+Hi,
 
-has been applied to the asoc tree at
+  a good idea. I will release packages in next few days.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+			Thanks,
+				Jaroslav
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 6fce983f9b3ef51d47e647b2cff15049ef803781 Mon Sep 17 00:00:00 2001
-From: Jose Abreu <Jose.Abreu@synopsys.com>
-Date: Tue, 13 Dec 2016 11:03:49 +0000
-Subject: [PATCH] ASoC: dwc: Fix PIO mode initialization
-
-We can no longer rely on the return value of
-devm_snd_dmaengine_pcm_register(...) to check if the DMA
-handle is declared in the DT.
-
-Previously this check activated PIO mode but currently
-dma_request_chan returns either a valid channel or -EPROBE_DEFER.
-
-In order to activate PIO mode check instead if the interrupt
-line is declared. This reflects better what is documented in
-the DT bindings (see Documentation/devicetree/bindings/sound/
-designware-i2s.txt).
-
-Also, initialize use_pio variable which was never being set
-causing PIO mode to never work.
-
-Signed-off-by: Jose Abreu <joabreu@synopsys.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/dwc/designware_i2s.c | 25 +++++++++++--------------
- 1 file changed, 11 insertions(+), 14 deletions(-)
-
-diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
-index 2998954a1c74..bdf8398cbc81 100644
---- a/sound/soc/dwc/designware_i2s.c
-+++ b/sound/soc/dwc/designware_i2s.c
-@@ -681,22 +681,19 @@ static int dw_i2s_probe(struct platform_device *pdev)
- 	}
- 
- 	if (!pdata) {
--		ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
--		if (ret == -EPROBE_DEFER) {
--			dev_err(&pdev->dev,
--				"failed to register PCM, deferring probe\n");
--			return ret;
--		} else if (ret) {
--			dev_err(&pdev->dev,
--				"Could not register DMA PCM: %d\n"
--				"falling back to PIO mode\n", ret);
-+		if (irq >= 0) {
- 			ret = dw_pcm_register(pdev);
--			if (ret) {
--				dev_err(&pdev->dev,
--					"Could not register PIO PCM: %d\n",
-+			dev->use_pio = true;
-+		} else {
-+			ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL,
-+					0);
-+			dev->use_pio = false;
-+		}
-+
-+		if (ret) {
-+			dev_err(&pdev->dev, "could not register pcm: %d\n",
- 					ret);
--				goto err_clk_disable;
--			}
-+			goto err_clk_disable;
- 		}
- 	}
- 
 -- 
-2.11.0
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
