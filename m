@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: kfree kcontrol->private_value before freeing kcontrol" to the asoc tree
-Date: Thu, 15 Dec 2016 12:21:14 +0000
-Message-ID: <E1cHV2A-0000kr-68@debutante>
-References: <20161209141747.4776-1-colin.king@canonical.com>
+Subject: Applied "ASoC: samsung: include gpio consumer.h" to the asoc tree
+Date: Thu, 15 Dec 2016 12:21:08 +0000
+Message-ID: <E1cHV24-0000iq-7Q@debutante>
+References: <1481096342-19104-1-git-send-email-fabf@skynet.be>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20161209141747.4776-1-colin.king@canonical.com>
+In-Reply-To: <1481096342-19104-1-git-send-email-fabf@skynet.be>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, fabf@skynet.be, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: kfree kcontrol->private_value before freeing kcontrol
+   ASoC: samsung: include gpio consumer.h
 
 has been applied to the asoc tree at
 
@@ -37,43 +36,36 @@ to this mail.
 Thanks,
 Mark
 
->From c2b36129ce53a22b89dd2b88db33e7ffdefe0f41 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Fri, 9 Dec 2016 14:17:47 +0000
-Subject: [PATCH] ASoC: topology: kfree kcontrol->private_value before freeing
- kcontrol
+>From 5d079fdc12ffe1f939890035f5172374b5c0f2be Mon Sep 17 00:00:00 2001
+From: Fabian Frederick <fabf@skynet.be>
+Date: Fri, 9 Dec 2016 19:12:50 +0100
+Subject: [PATCH] ASoC: samsung: include gpio consumer.h
 
-kcontrol->private_value is being kfree'd after kcontrol has been freed
-(in previous call to snd_ctl_remove).  Instead, fix this by kfreeing
-the private_value before kcontrol.
+Fix the following build errors on X86_32 !GPIOLIB
 
-CoverityScan CID#1388311 "Read from pointer after free"
+sound/soc/samsung/tm2_wm5110.c:220:3: error: implicit declaration
+of function 'gpiod_set_value_cansleep' [-Werror=implicit-function-declaration]
+sound/soc/samsung/tm2_wm5110.c:438:24: error: implicit declaration
+of function 'devm_gpiod_get' [-Werror=implicit-function-declaration]
 
-Fixes: eea3dd4f1247a ("ASoC: topology: Only free TLV for volume mixers of a widget")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Fabian Frederick <fabf@skynet.be>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-topology.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/samsung/tm2_wm5110.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 65670b2b408c..fbfb1fab88d5 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -514,13 +514,12 @@ static void remove_widget(struct snd_soc_component *comp,
- 			    == SND_SOC_TPLG_TYPE_MIXER)
- 				kfree(kcontrol->tlv.p);
+diff --git a/sound/soc/samsung/tm2_wm5110.c b/sound/soc/samsung/tm2_wm5110.c
+index 5cdf7d19b87f..24cc9d63ce87 100644
+--- a/sound/soc/samsung/tm2_wm5110.c
++++ b/sound/soc/samsung/tm2_wm5110.c
+@@ -12,6 +12,7 @@
  
--			snd_ctl_remove(card, kcontrol);
--
- 			/* Private value is used as struct soc_mixer_control
- 			 * for volume mixers or soc_bytes_ext for bytes
- 			 * controls.
- 			 */
- 			kfree((void *)kcontrol->private_value);
-+			snd_ctl_remove(card, kcontrol);
- 		}
- 		kfree(w->kcontrol_news);
- 	}
+ #include <linux/clk.h>
+ #include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <sound/pcm_params.h>
 -- 
 2.11.0
