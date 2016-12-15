@@ -1,230 +1,150 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Configure DMA in
-	PRE_PMD handler of Mixer" to the asoc tree
-Date: Thu, 15 Dec 2016 12:20:47 +0000
-Message-ID: <E1cHV1j-0000XP-CC@debutante>
-References: <1480700509-23380-3-git-send-email-jeeja.kp@intel.com>
+From: =?utf-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>
+Subject: Re: [PATCH 7/7] dell-led: move driver to
+ drivers/platform/x86/dell-wmi-led.c
+Date: Thu, 15 Dec 2016 15:54:22 +0100
+Message-ID: <20161215145422.GD22695@kmp-mobile.hq.kempniu.pl>
+References: <20161208123618.28603-1-kernel@kempniu.pl>
+ <20161208123618.28603-8-kernel@kempniu.pl>
+ <CAHp75VeH2YqSSSwYdvd44Q6nOQ4AJEOP8tYggA3hD2KTukZ0HQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A22D266A53
- for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2016 13:20:53 +0100 (CET)
-In-Reply-To: <1480700509-23380-3-git-send-email-jeeja.kp@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>
-Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAHp75VeH2YqSSSwYdvd44Q6nOQ4AJEOP8tYggA3hD2KTukZ0HQ@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Richard Purdie <rpurdie@rpsys.net>, Jacek Anaszewski <j.anaszewski@samsung.com>, Matthew Garrett <mjg59@srcf.ucam.org>, Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Bob Rodgers <Robert_Rodgers@dell.com>, Louis Davis <Louis_Davis@dell.com>, Jim Dailey <Jim_Dailey@dell.com>, Alex Hung <alex.hung@canonical.com>, Hui Wang <hui.wang@canonical.com>, linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+> On Thu, Dec 8, 2016 at 2:36 PM, Michał Kępień <kernel@kempniu.pl> wrote:
+> > The dell-led driver handles a specific WMI GUID present on some Dell
+> > laptops and as such it belongs in the x86 platform driver subsystem.
+> > Source code is moved along with the relevant Kconfig and Makefile
+> > entries with some minor modifications:
+> >
+> >   - Kconfig option is renamed from COFIG_LEDS_DELL_NETBOOKS to
+> 
+> Typo here, CONFIG_...
 
-   ASoC: Intel: Skylake: Configure DMA in PRE_PMD handler of Mixer
+Indeed, thanks.
 
-has been applied to the asoc tree at
+> >     CONFIG_DELL_WMI_LED,
+> 
+> Do we care about current configuration or we just suggest users to
+> follow this by themselves?
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+I searched the git log for a bit, looking for ideas.  Every commit I
+found that renames a Kconfig option settles for doing just that, without
+any further provisions to make some kind of automatic transition happen.
+That being said, if there is anything I can do to make it easier for the
+user to notice this change, I would be happy to hear about it.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+> >
+> >   - the X86 Kconfig dependency is removed as the whole
+> >     drivers/platform/x86 menu depends on it, so there is no need to
+> >     duplicate it,
+> >
+> >   - one comment line is updated to reflect the change in the name of the
+> >     module's source file.
+> >
+> 
+> While here, please follow our pattern for subject lines, i.e.
+> "platform/x86: driver: Description".
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Ah, sure, thanks.  It seems this pattern has changed since the last time
+I submitted a patch for drivers/platform/x86.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> > Signed-off-by: Michał Kępień <kernel@kempniu.pl>
+> > ---
+> >  drivers/leds/Kconfig                                     | 8 --------
+> >  drivers/leds/Makefile                                    | 1 -
+> >  drivers/platform/x86/Kconfig                             | 8 ++++++++
+> >  drivers/platform/x86/Makefile                            | 1 +
+> >  drivers/{leds/dell-led.c => platform/x86/dell-wmi-led.c} | 2 +-
+> >  5 files changed, 10 insertions(+), 10 deletions(-)
+> >  rename drivers/{leds/dell-led.c => platform/x86/dell-wmi-led.c} (99%)
+> >
+> > diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+> > index f29b869..5af3fb2 100644
+> > --- a/drivers/leds/Kconfig
+> > +++ b/drivers/leds/Kconfig
+> > @@ -454,14 +454,6 @@ config LEDS_ADP5520
+> >           To compile this driver as a module, choose M here: the module will
+> >           be called leds-adp5520.
+> >
+> > -config LEDS_DELL_NETBOOKS
+> > -       tristate "External LED on Dell Business Netbooks"
+> > -       depends on LEDS_CLASS
+> > -       depends on X86 && ACPI_WMI
+> > -       help
+> > -         This adds support for the Latitude 2100 and similar
+> > -         notebooks that have an external LED.
+> > -
+> >  config LEDS_MC13783
+> >         tristate "LED Support for MC13XXX PMIC"
+> >         depends on LEDS_CLASS
+> > diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+> > index 6b82737..558d246 100644
+> > --- a/drivers/leds/Makefile
+> > +++ b/drivers/leds/Makefile
+> > @@ -52,7 +52,6 @@ obj-$(CONFIG_LEDS_REGULATOR)          += leds-regulator.o
+> >  obj-$(CONFIG_LEDS_INTEL_SS4200)                += leds-ss4200.o
+> >  obj-$(CONFIG_LEDS_LT3593)              += leds-lt3593.o
+> >  obj-$(CONFIG_LEDS_ADP5520)             += leds-adp5520.o
+> > -obj-$(CONFIG_LEDS_DELL_NETBOOKS)       += dell-led.o
+> >  obj-$(CONFIG_LEDS_MC13783)             += leds-mc13783.o
+> >  obj-$(CONFIG_LEDS_NS2)                 += leds-ns2.o
+> >  obj-$(CONFIG_LEDS_NETXBIG)             += leds-netxbig.o
+> > diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+> > index 81b8dcc..f9018e8 100644
+> > --- a/drivers/platform/x86/Kconfig
+> > +++ b/drivers/platform/x86/Kconfig
+> > @@ -143,6 +143,14 @@ config DELL_WMI_AIO
+> >           To compile this driver as a module, choose M here: the module will
+> >           be called dell-wmi-aio.
+> >
+> > +config DELL_WMI_LED
+> > +       tristate "External LED on Dell Business Netbooks"
+> > +       depends on LEDS_CLASS
+> > +       depends on ACPI_WMI
+> > +       help
+> > +         This adds support for the Latitude 2100 and similar
+> > +         notebooks that have an external LED.
+> > +
+> >  config DELL_SMO8800
+> >         tristate "Dell Latitude freefall driver (ACPI SMO88XX)"
+> >         depends on ACPI
+> > diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+> > index 2efa86d..b061817 100644
+> > --- a/drivers/platform/x86/Makefile
+> > +++ b/drivers/platform/x86/Makefile
+> > @@ -15,6 +15,7 @@ obj-$(CONFIG_DELL_SMBIOS)     += dell-smbios.o
+> >  obj-$(CONFIG_DELL_LAPTOP)      += dell-laptop.o
+> >  obj-$(CONFIG_DELL_WMI)         += dell-wmi.o
+> >  obj-$(CONFIG_DELL_WMI_AIO)     += dell-wmi-aio.o
+> > +obj-$(CONFIG_DELL_WMI_LED)     += dell-wmi-led.o
+> >  obj-$(CONFIG_DELL_SMO8800)     += dell-smo8800.o
+> >  obj-$(CONFIG_DELL_RBTN)                += dell-rbtn.o
+> >  obj-$(CONFIG_ACER_WMI)         += acer-wmi.o
+> > diff --git a/drivers/leds/dell-led.c b/drivers/platform/x86/dell-wmi-led.c
+> > similarity index 99%
+> > rename from drivers/leds/dell-led.c
+> > rename to drivers/platform/x86/dell-wmi-led.c
+> > index e5c5738..7486c01 100644
+> > --- a/drivers/leds/dell-led.c
+> > +++ b/drivers/platform/x86/dell-wmi-led.c
+> > @@ -1,5 +1,5 @@
+> >  /*
+> 
+> > - * dell_led.c - Dell LED Driver
+> > + * dell-wmi-led.c - Dell WMI LED Driver
+> 
+> That's exactly the point why better to take a chance to remove file
+> name from the file.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+I will be glad to rip it out in v2, thanks.
 
-Thanks,
-Mark
-
->From bb704a737cecc1c4c9f1b0251aa79d8276308ccc Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Thu, 8 Dec 2016 13:41:14 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Configure DMA in PRE_PMD handler of
- Mixer
-
-If system is suspended when PCM was paused/stopped, restart doesn't
-configure DMA as it is we are in Pause state and results in IO error
-eventually.
-
-Configure host/link DMA before initializing DSP Gateway copier module
-instead of DAI prepare(). So moved DMA configuration to mixer PRE_PMD
-widget handler instead of DAI prepare.
-
-This uses previously added new API to do the configuration and removes
-old DAI prepare code.
-
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/skylake/skl-pcm.c      | 50 +---------------------------------
- sound/soc/intel/skylake/skl-topology.c | 19 +++++++++++++
- 2 files changed, 20 insertions(+), 49 deletions(-)
-
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 105aab7593c8..aebae234152c 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -231,37 +231,19 @@ static int skl_be_prepare(struct snd_pcm_substream *substream,
- static int skl_pcm_prepare(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
--	struct hdac_ext_stream *stream = get_hdac_ext_stream(substream);
- 	struct skl *skl = get_skl_ctx(dai->dev);
--	unsigned int format_val;
--	int err;
- 	struct skl_module_cfg *mconfig;
- 
- 	dev_dbg(dai->dev, "%s: %s\n", __func__, dai->name);
- 
- 	mconfig = skl_tplg_fe_get_cpr_module(dai, substream->stream);
- 
--	format_val = skl_get_format(substream, dai);
--	dev_dbg(dai->dev, "stream_tag=%d formatvalue=%d\n",
--				hdac_stream(stream)->stream_tag, format_val);
--	snd_hdac_stream_reset(hdac_stream(stream));
--
- 	/* In case of XRUN recovery, reset the FW pipe to clean state */
- 	if (mconfig && (substream->runtime->status->state ==
- 					SNDRV_PCM_STATE_XRUN))
- 		skl_reset_pipe(skl->skl_sst, mconfig->pipe);
- 
--	err = snd_hdac_stream_set_params(hdac_stream(stream), format_val);
--	if (err < 0)
--		return err;
--
--	err = snd_hdac_stream_setup(hdac_stream(stream));
--	if (err < 0)
--		return err;
--
--	hdac_stream(stream)->prepared = 1;
--
--	return err;
-+	return 0;
- }
- 
- static int skl_pcm_hw_params(struct snd_pcm_substream *substream,
-@@ -436,7 +418,6 @@ static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 		if (!w->ignore_suspend) {
--			skl_pcm_prepare(substream, dai);
- 			/*
- 			 * enable DMA Resume enable bit for the stream, set the
- 			 * dpib & lpib position to resume before starting the
-@@ -457,7 +438,6 @@ static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
- 		 * pipeline is started but there is a delay in starting the
- 		 * DMA channel on the host.
- 		 */
--		snd_hdac_ext_stream_decouple(ebus, stream, true);
- 		ret = skl_decoupled_trigger(substream, cmd);
- 		if (ret < 0)
- 			return ret;
-@@ -539,41 +519,15 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
- static int skl_link_pcm_prepare(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
--	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
--	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
--	struct hdac_ext_stream *link_dev =
--			snd_soc_dai_get_dma_data(dai, substream);
--	unsigned int format_val = 0;
--	struct skl_dma_params *dma_params;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct hdac_ext_link *link;
- 	struct skl *skl = get_skl_ctx(dai->dev);
- 	struct skl_module_cfg *mconfig = NULL;
- 
--	dma_params  = (struct skl_dma_params *)
--			snd_soc_dai_get_dma_data(codec_dai, substream);
--	if (dma_params)
--		format_val = dma_params->format;
--	dev_dbg(dai->dev, "stream_tag=%d formatvalue=%d codec_dai_name=%s\n",
--			hdac_stream(link_dev)->stream_tag, format_val, codec_dai->name);
--
--	link = snd_hdac_ext_bus_get_link(ebus, rtd->codec->component.name);
--	if (!link)
--		return -EINVAL;
--
--	snd_hdac_ext_link_stream_reset(link_dev);
--
- 	/* In case of XRUN recovery, reset the FW pipe to clean state */
- 	mconfig = skl_tplg_be_get_cpr_module(dai, substream->stream);
- 	if (mconfig && (substream->runtime->status->state ==
- 					SNDRV_PCM_STATE_XRUN))
- 		skl_reset_pipe(skl->skl_sst, mconfig->pipe);
- 
--	snd_hdac_ext_link_stream_setup(link_dev, format_val);
--
--	snd_hdac_ext_link_set_stream_id(link, hdac_stream(link_dev)->stream_tag);
--	link_dev->link_prepared = 1;
--
- 	return 0;
- }
- 
-@@ -588,10 +542,8 @@ static int skl_link_pcm_trigger(struct snd_pcm_substream *substream,
- 	dev_dbg(dai->dev, "In %s cmd=%d\n", __func__, cmd);
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_RESUME:
--		skl_link_pcm_prepare(substream, dai);
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		snd_hdac_ext_stream_decouple(ebus, stream, true);
- 		snd_hdac_ext_link_stream_start(link_dev);
- 		break;
- 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 8f608c45e445..422a9dee9270 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -496,6 +496,20 @@ static int skl_tplg_set_module_init_data(struct snd_soc_dapm_widget *w)
- 	return 0;
- }
- 
-+static int skl_tplg_module_prepare(struct skl_sst *ctx, struct skl_pipe *pipe,
-+		struct snd_soc_dapm_widget *w, struct skl_module_cfg *mcfg)
-+{
-+	switch (mcfg->dev_type) {
-+	case SKL_DEVICE_HDAHOST:
-+		return skl_pcm_host_dma_prepare(ctx->dev, pipe->p_params);
-+
-+	case SKL_DEVICE_HDALINK:
-+		return skl_pcm_link_dma_prepare(ctx->dev, pipe->p_params);
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * Inside a pipe instance, we can have various modules. These modules need
-  * to instantiated in DSP by invoking INIT_MODULE IPC, which is achieved by
-@@ -535,6 +549,11 @@ skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
- 			mconfig->m_state = SKL_MODULE_LOADED;
- 		}
- 
-+		/* prepare the DMA if the module is gateway cpr */
-+		ret = skl_tplg_module_prepare(ctx, pipe, w, mconfig);
-+		if (ret < 0)
-+			return ret;
-+
- 		/* update blob if blob is null for be with default value */
- 		skl_tplg_update_be_blob(w, ctx);
- 
 -- 
-2.11.0
+Best regards,
+Michał Kępień
