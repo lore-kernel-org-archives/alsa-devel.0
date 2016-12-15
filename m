@@ -1,86 +1,110 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 2/7] drm/i915: Add support for audio driver
- notifications
-Date: Thu, 15 Dec 2016 13:32:00 -0600
-Message-ID: <2df007b9-b1e1-1af6-9f6b-ac44a34021b8@linux.intel.com>
-References: <20161212181043.12512-1-jerome.anand@intel.com>
- <20161212181043.12512-3-jerome.anand@intel.com>
- <20161214125552.e3gqprayngwuacy3@phenom.ffwll.local>
- <s5hlgviejrj.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: sst: remove unused 'ops'" to the
+	asoc tree
+Date: Thu, 15 Dec 2016 12:21:54 +0000
+Message-ID: <E1cHV2o-0000wV-AA@debutante>
+References: <1481218297-17568-4-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <s5hlgviejrj.wl-tiwai@suse.de>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>, Daniel Vetter <daniel@ffwll.ch>
-Cc: intel-gfx@lists.freedesktop.org, broonie@kernel.org, rakesh.a.ughreja@intel.com, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============7221266333250892014=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B13ED266A53
+ for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2016 13:22:00 +0100 (CET)
+In-Reply-To: <1481218297-17568-4-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMTIvMTQvMTYgNzoxMyBBTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9uIFdlZCwgMTQgRGVj
-IDIwMTYgMTM6NTU6NTIgKzAxMDAsCj4gRGFuaWVsIFZldHRlciB3cm90ZToKPj4KPj4gT25seSBu
-b3RpY2VkIGl0IGhlcmUsIGJ1dCB3aHkgYWdhaW4gZG8gd2UgbmVlZCB0byByZS1yb2xsIG91ciBp
-bnRlbC1vbmx5Cj4+IGhkbWkvZWxkIG5vdGlmaWNhdGlvbj8gVGhlIG9uZSB3ZSBoYXZlIGZvciBo
-ZGEgaXMgc29tZXdoYXQganVzdGlmaWVkIHNpbmNlCj4+IGl0IHdlbnQgaW4gYXQgcm91Z2hseSB0
-aGUgc2FtZSB0aW1lIGFzIHRoZSBuZXcgc2hhcmVkIG9uZSBhY3Jvc3MgYSBidW5jaAo+PiBvZiBz
-b2MuIEJ1dCB0aGlzIG9uZSBoZXJlIGlzIGp1c3QgYSByZWludmVudGVkIHdoZWVsLgo+Pgo+PiBB
-bmQgeWVzIHRoaXMgY29kZSBoYXMgYmVlbiBoYW5naW5nIGFyb3VuZCBpbnRlcm5hbGx5IGZvciB5
-ZWFycywgYnV0IHRoYXQncwo+PiBraW5kYSBub3QgYSBnb29kIGV4Y3VzZS4KPj4KPj4gT2J2aW91
-c2x5IHRoaXMgY29tbWVudCBhcHBsaWVzIHRvIHBhdGNoIDEgdG9vLgo+Cj4gWWVhaCwgYSB1bmlm
-aWVkIGNvbW1vbiBpbnRlcmZhY2Ugd291bGQgYmUgYmV0dGVyLCByZWFsbHkuICBJJ20KPiBiYXNp
-Y2FsbHkgT0sgd2l0aCB0aGUgY3VycmVudCBpbXBsZW1lbnRhdGlvbiwgdGhvdWdoLCBhcyBsb25n
-IGFzIGl0Cj4gd29ya3MuICBCdXQgaWYgd2UgY2FuIHNvcnQgaXQgb3V0IHF1aWNrbHksIGl0J3Mg
-YmV0dGVyLgo+Cj4gVGhhdCBzYWlkLCB3ZSBtYXkgcmV1c2UgaTkxNV9hdWRpb19jb21wb25lbnQg
-c3R1ZmYgLS0gb3IgYXQgbGVhc3QsCj4gcmV1c2UgdGhlIG9iamVjdCB1c2VkIHRoZXJlIHdpdGhv
-dXQgYWN0dWFsIGNvbXBvbmVudCBiaW5kaW5nICh0aGUgbHBlCj4gZHJpdmVyIGRvZXNuJ3QgbmVl
-ZCB0aGUgY29tcG9uZW50IGJlY2F1c2UgaXQncyBhIHN0cm9uZyBkZXBlbmRlbmN5Cj4gdW5saWtl
-IEhELWF1ZGlvIGNhc2UpLCBhbmQganVzdCBhZGQgYSBmZXcgbW9yZSBmaWVsZHMgdGhlcmUuCj4g
-SW5zdGVhZCBvZiBleHBvc2luZyB0aGUgcmVzb3VyY2UsIHdlIGNhbiBwcm92aWRlIHRoZSByZWdp
-c3RlciBhY2Nlc3Nvcgo+IHRoZXJlLCB0b28uCj4KPiBJdCdzIGp1c3QgYW4gaWRlYSwgc28gbm90
-IG5lY2Vzc2FyaWx5IHNlcmlvdXMgdGFrZW4uICBCdXQgd2UgY2FuIHRoaW5rCj4gb2YgdW5pZmlj
-YXRpb24gbW9yZSBlYXNpbHkgbm93IHRoYW4gbGF0ZXIuCj4KPgo+IEJUVywgbm93IG9uZSB0aGlu
-ZyBjYW1lIHRvIG15IG1pbmQ6IGRvbid0IHdlIG5lZWQgdGhlIHBvd2VyIGNvbnRyb2wKPiAocG0g
-YW5kIHBvd2VyIHdlbGwgZG9tYWluKSB3aGVuIGFjY2Vzc2luZyBmcm9tIHRoZSBzb3VuZCBkcml2
-ZXIgc2lkZT8KPiBUaGUgSEQtYXVkaW8gY29tcG9uZW50IG9iamVjdCBoYXMgdGhlIGdmeCBzaWRl
-IGNhbGxiYWNrIHBvaW50cyBmb3IKPiBzdWNoLgoKVGhlIGNvZGUgaGFzbid0IGFjdHVhbGx5IGJl
-ZW4gYXJvdW5kIGZvciB5ZWFycy4gV2UgdGhyZXcgYXdheSB0aGUgbGVnYWN5IApkcml2ZXIgYW5k
-IHJlc3RhcnRlZCB0aGUgaTkxNSBpbnRlZ3JhdGlvbiBwcmV0dHkgbXVjaCBmcm9tIHNjcmF0Y2gg
-dXNpbmcgCnRoZSBmZWVkYmFjayBvbiB0aGUgaW50ZWwtZ2Z4IG1haWxpbmcgbGlzdCwgc3BlY2lm
-aWNhbGx5IEplc3NlIEJhcm5lcyAKYW5kIFZpbGxlIFN5cmphbGEsIHdpdGggb25seSBiYXNpYyBw
-cm9ncmFtbWluZyBzZXF1ZW5jZXMgYW5kIHJlZ2lzdGVyIApkZWZpbml0aW9ucyBrZXB0IG9uIHRo
-ZSBhdWRpbyBzaWRlLiBUaGUgdm9sdW1lIG9mIGNvZGUgcmVxdWlyZWQgb24gdGhlIAppOTE1IHNp
-ZGUgd2FzIHJlZHVjZWQgYnkgcHJvYmFibHkgNTAlLCB3aXRoIHVzZWxlc3Mgc3R1ZmYgdGFrZW4g
-b3V0IGxlZnQgCmFuZCByaWdodC4gV2UncmUgZG93biB0byB+NTAwIGxpbmVzIGNoYW5nZWQgb24g
-dGhlIGk5MTUgc2lkZSB3aXRoIGFib3V0IAo0MDAganVzdCBmb3IgdGhlIGludGVyZmFjZSBpbiB0
-aGUgbmV3IGludGVsX2xwZV9hdWRpby5jIGZpbGUuCgpUaGUgaW5pdGlhbCBpZGVhIGZvciB0aGUg
-cmV3b3JrIHdhcyB0byB1c2UgdGhlIGNvbXBvbmVudCBmcmFtZXdvcmsuIFRoZW4gCmR1cmluZyB0
-aGUgaW5pdGlhbCByZXZpZXcgaXQgd2FzIHN1Z2dlc3RlZCB0aGF0IGNvbXBvbmVudCBmcmFtZXdv
-cmsgCndhc24ndCB0aGF0IGdyZWF0IGFuZCB0aGF0IHRoZSBkZXNpZ24gc2hvdWxkIGZvbGxvdyB0
-aGUgZXhhbXBsZSBvZiB0aGUgClZFRCBpbnRlZ3JhdGlvbiB3aXRoIGEgc3ViZGV2aWNlIGNyZWF0
-ZWQgYW5kIHBkYXRhIHVzZWQgdG8gY29tbXVuaWNhdGUgCmJldHdlZW4gdGhlIGk5MTUgYW5kIGF1
-ZGlvIHNpZGVzLiBJIHRocmV3IHRoZSBpbml0aWFsIGNvbXBvbmVudCAKZnJhbWV3b3JrIHBhdGNo
-ZXMgYXdheSBhbmQgd2Ugc3RhcnRlZCBpbiB0aGlzIGRpcmVjdGlvbi4KClRoZXJlIGlzIG5vIHBv
-d2VyIGRvbWFpbiBoZXJlIGFuZCBpbiBnZW5lcmFsIG5vIGlzc3VlIHdpdGggcHJvYmUgCmhhcHBl
-bmluZyBpbmRlcGVuZGVudGx5IGF0IGRpZmZlcmVudCB0aW1lcywgdGhlIHN1YmRldmljZS9wZGF0
-YSBpcyAKc2ltcGxlIGVub3VnaCB0byBtb2RlbCB0aGUgaGFyZHdhcmUuIElmIHRoZXJlIGlzIGFu
-IGFncmVlbWVudCB0byBwdXNoIApmb3IgYSB1bmlmaWVkIGludGVyZmFjZSwgdGhhdCdzIGZpbmUg
-YW5kIEkgd2lsbCBjb21taXQgdG8gcG9ydCB0aGUgY29kZSAKYXMgbmVlZGVkLiBXZSBjYW4gbW9k
-aWZ5IHRoZSBpbnRlcmZhY2UsIGFsbCB0aGF0J3MgbmVlZGVkIGlzIHRvIHByb3ZpZGUgCnRoZSBF
-TEQgYW5kIGxldCB0aGUgYXVkaW8gc2lkZSBwcm9ncmFtIGEgd2luZG93IG9mIHJlZ2lzdGVyIHNw
-YWNlIG9uIHRoZSAKaTkxNSBzaWRlLiBCdXQgcXVpdGUgZnJhbmtseSBJJ2QgcmF0aGVyIHNlZSB0
-aGUgY29kZSBiZWluZyBtZXJnZWQgZmlyc3QgCnRvIGV4cGFuZCB0aGUgdXNlcmJhc2UsIHRvZGF5
-IEhETUkgY2FuIG9ubHkgYmUgZW5hYmxlZCB3aXRoIG91dC1vZi10cmVlIApwYXRjaGVzIHB1bGxl
-ZCBmcm9tIG15IGdpdGh1YiBwb3J0ZWQgb24gdGhlIGxhc3QgNiBrZXJuZWwgdmVyc2lvbnMuIEkg
-CmFsc28gcGxhbiB0byB3b3JrIGFuIHVwZGF0ZSBvbiBEaXNwbGF5UG9ydCBzdXBwb3J0IHNpbmNl
-IHRoZXJlIGFyZSBDSFQgCmRldmljZXMgb24gdGhlIG1hcmtldCBub3cuCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QK
-SW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9w
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+--===============7221266333250892014==
+Content-Type: text/plain
+
+The patch
+
+   ASoC: Intel: sst: remove unused 'ops'
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From cf90c8245bb0d528a8046b4bfa4f223320c9dbb0 Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Thu, 8 Dec 2016 23:01:26 +0530
+Subject: [PATCH] ASoC: Intel: sst: remove unused 'ops'
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+In sst_free_stream(), a variable 'ops' is initialized but
+not used. So remove it.
+
+sound/soc/intel/atom/sst/sst_stream.c: In function ‘sst_free_stream’:
+sound/soc/intel/atom/sst/sst_stream.c:397:24: warning: variable ‘ops’ set but not used [-Wunused-but-set-variable]
+  struct intel_sst_ops *ops;
+
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/atom/sst/sst_stream.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/sound/soc/intel/atom/sst/sst_stream.c b/sound/soc/intel/atom/sst/sst_stream.c
+index 51bdeeecb7c8..83d8dda15233 100644
+--- a/sound/soc/intel/atom/sst/sst_stream.c
++++ b/sound/soc/intel/atom/sst/sst_stream.c
+@@ -394,7 +394,6 @@ int sst_free_stream(struct intel_sst_drv *sst_drv_ctx, int str_id)
+ {
+ 	int retval = 0;
+ 	struct stream_info *str_info;
+-	struct intel_sst_ops *ops;
+ 
+ 	dev_dbg(sst_drv_ctx->dev, "SST DBG:sst_free_stream for %d\n", str_id);
+ 
+@@ -407,7 +406,6 @@ int sst_free_stream(struct intel_sst_drv *sst_drv_ctx, int str_id)
+ 	str_info = get_stream_info(sst_drv_ctx, str_id);
+ 	if (!str_info)
+ 		return -EINVAL;
+-	ops = sst_drv_ctx->ops;
+ 
+ 	mutex_lock(&str_info->lock);
+ 	if (str_info->status != STREAM_UN_INIT) {
+-- 
+2.11.0
+
+
+--===============7221266333250892014==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7221266333250892014==--
