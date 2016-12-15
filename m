@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98090: remove superflous check for
-	'micbias'" to the asoc tree
-Date: Thu, 15 Dec 2016 12:21:40 +0000
-Message-ID: <E1cHV2a-0000tL-S6@debutante>
-References: <1481218297-17568-7-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: hdac_hdmi: remove unused 'dai_map'" to
+	the asoc tree
+Date: Thu, 15 Dec 2016 12:21:43 +0000
+Message-ID: <E1cHV2d-0000u8-R1@debutante>
+References: <1481218297-17568-6-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6831233017848342199=="
+Content-Type: multipart/mixed; boundary="===============2052086260511479892=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 435EE266A53
- for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2016 13:21:47 +0100 (CET)
-In-Reply-To: <1481218297-17568-7-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 310EB266A53
+ for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2016 13:21:49 +0100 (CET)
+In-Reply-To: <1481218297-17568-6-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,12 +25,12 @@ To: Vinod Koul <vinod.koul@intel.com>
 Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
---===============6831233017848342199==
+--===============2052086260511479892==
 Content-Type: text/plain
 
 The patch
 
-   ASoC: max98090: remove superflous check for 'micbias'
+   ASoC: hdac_hdmi: remove unused 'dai_map'
 
 has been applied to the asoc tree at
 
@@ -55,50 +55,54 @@ to this mail.
 Thanks,
 Mark
 
->From 1c445a42c48754bb5f821478517ef1b9f861217a Mon Sep 17 00:00:00 2001
+>From d56923da8f92dee0b557d3a8d6a3639deec35637 Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Thu, 8 Dec 2016 23:01:29 +0530
-Subject: [PATCH] ASoC: max98090: remove superflous check for 'micbias'
+Date: Thu, 8 Dec 2016 23:01:28 +0530
+Subject: [PATCH] ASoC: hdac_hdmi: remove unused 'dai_map'
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-In max98090_probe(), code checks for micbias being out of range. The
-'micbias' variable in unsigned and checked against M98090_MBVSEL_2V2 which
-is zero, so remove this check.
+In hdac_hdmi_playback_cleanup(), a variable 'dai_map' is initialized but not
+used. Also while removing this two mare variables 'edev' and 'hdmi' become
+unused, so remove all these as well.
 
-sound/soc/codecs/max98090.c: In function ‘max98090_probe’:
-sound/soc/codecs/max98090.c:2459:2: warning: comparison of unsigned expression < 0 is always false [-Wtype-limits]
-  } else if (micbias < M98090_MBVSEL_2V2 || micbias > M98090_MBVSEL_2V8) {
+sound/soc/codecs/hdac_hdmi.c: In function ‘hdac_hdmi_playback_cleanup’:
+sound/soc/codecs/hdac_hdmi.c:470:32: warning: variable ‘dai_map’ set but not used [-Wunused-but-set-variable]
+  struct hdac_hdmi_dai_pin_map *dai_map;
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98090.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/hdac_hdmi.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
-index 584aab83e478..66828480d484 100644
---- a/sound/soc/codecs/max98090.c
-+++ b/sound/soc/codecs/max98090.c
-@@ -2456,7 +2456,7 @@ static int max98090_probe(struct snd_soc_codec *codec)
- 	if (err) {
- 		micbias = M98090_MBVSEL_2V8;
- 		dev_info(codec->dev, "use default 2.8v micbias\n");
--	} else if (micbias < M98090_MBVSEL_2V2 || micbias > M98090_MBVSEL_2V8) {
-+	} else if (micbias > M98090_MBVSEL_2V8) {
- 		dev_err(codec->dev, "micbias out of range 0x%x\n", micbias);
- 		micbias = M98090_MBVSEL_2V8;
- 	}
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index c602c4960924..793bc853ddef 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -464,12 +464,7 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
+ static int hdac_hdmi_playback_cleanup(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
+-	struct hdac_ext_device *edev = snd_soc_dai_get_drvdata(dai);
+ 	struct hdac_ext_dma_params *dd;
+-	struct hdac_hdmi_priv *hdmi = edev->private_data;
+-	struct hdac_hdmi_dai_pin_map *dai_map;
+-
+-	dai_map = &hdmi->dai_map[dai->id];
+ 
+ 	dd = (struct hdac_ext_dma_params *)snd_soc_dai_get_dma_data(dai, substream);
+ 
 -- 
 2.11.0
 
 
---===============6831233017848342199==
+--===============2052086260511479892==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6831233017848342199==--
+--===============2052086260511479892==--
