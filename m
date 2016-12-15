@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re:
- =?utf-8?q?=5BPATCH_14/14=5D_ASoC=3A_zx296702-i2s=3A_?=
- =?utf-8?b?cmVtb3ZlIHVudXNlZCDigJhmb3JtYXTigJk=?=
-Date: Thu, 15 Dec 2016 11:36:09 +0000
-Message-ID: <20161215113609.bgtpifxecr2uyxup@sirena.org.uk>
-References: <1481218297-17568-1-git-send-email-vinod.koul@intel.com>
- <1481218297-17568-15-git-send-email-vinod.koul@intel.com>
- <CABymUCP0UxSxviYGjKgacUYMmvJrWjJqyLjCw1-=U0sg5wQbCQ@mail.gmail.com>
+Subject: Applied "ASoC: Intel: Skylake: Removed unused
+	skl_get_format()" to the asoc tree
+Date: Thu, 15 Dec 2016 12:20:41 +0000
+Message-ID: <E1cHV1d-0000Uz-Ei@debutante>
+References: <1480700509-23380-4-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7365993098613309893=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E162266A71
- for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2016 12:36:18 +0100 (CET)
-In-Reply-To: <CABymUCP0UxSxviYGjKgacUYMmvJrWjJqyLjCw1-=U0sg5wQbCQ@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 30E72266A53
+ for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2016 13:20:50 +0100 (CET)
+In-Reply-To: <1480700509-23380-4-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,58 +22,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jun Nie <jun.nie@linaro.org>
-Cc: Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org
+To: Jeeja KP <jeeja.kp@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7365993098613309893==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="r62x23gazsdumple"
-Content-Disposition: inline
+   ASoC: Intel: Skylake: Removed unused skl_get_format()
 
+has been applied to the asoc tree at
 
---r62x23gazsdumple
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Fri, Dec 09, 2016 at 10:47:07AM +0800, Jun Nie wrote:
-> 2016-12-09 1:31 GMT+08:00 Vinod Koul <vinod.koul@intel.com>:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > --
-> > 1.9.1
-> >
->=20
-> Reviewed-by: Jun Nie <jun.nie@linaro.org>
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Please delete unneeded context from mails when replying.  Doing this
-makes it much easier to find your reply in the message, helping ensure
-it won't be missed by people scrolling through the irrelevant quoted
-material.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---r62x23gazsdumple
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlhSgCgACgkQJNaLcl1U
-h9DimAf/bfRDc3GvdM4kZqPesDaHHvQ+H4z8WUmS2/c7n0v/cRyEUO1k+LRLYHZ8
-ICPCc75D460cwjkjgjR1rT68kV+wAlQtELMM7BHqYnczVTzp3/RqsgCqTDuD7wg1
-FCMQ8ycRqjpcSnnTzqPBewwf2Eu5+fvAWhXp07KrFzea+gmEsqi3tatxy42KcpuO
-au9MaNAydk5XS2EPyaHdDnq1jDYbs/3UFt/JNYPDx68HkdFuKHSumEz+3iJVFega
-e/F7Ee9Ew/d8C0eAX6QsiZPDORClZMAHLZ/+9ygZgfiUHPEhZkVD2KIQyA+pCrN9
-okBgVvHl8g1DILjC+fJRJu0pwp9Y9Q==
-=74ce
------END PGP SIGNATURE-----
+>From f4e4e9893964684397dec517debe77cb7e405a6c Mon Sep 17 00:00:00 2001
+From: Jeeja KP <jeeja.kp@intel.com>
+Date: Thu, 8 Dec 2016 13:41:15 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Removed unused skl_get_format()
 
---r62x23gazsdumple--
+Removed the unused function skl_get_format as the format is calculated
+directly using the HDA core API.
 
---===============7365993098613309893==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/skylake/skl-pcm.c | 26 --------------------------
+ 1 file changed, 26 deletions(-)
 
-
---===============7365993098613309893==--
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 1abff8e1a298..10fa10df4e57 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -259,32 +259,6 @@ static int skl_pcm_open(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static int skl_get_format(struct snd_pcm_substream *substream,
+-		struct snd_soc_dai *dai)
+-{
+-	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
+-	struct skl_dma_params *dma_params;
+-	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
+-	int format_val = 0;
+-
+-	if ((ebus_to_hbus(ebus))->ppcap) {
+-		struct snd_pcm_runtime *runtime = substream->runtime;
+-
+-		format_val = snd_hdac_calc_stream_format(runtime->rate,
+-						runtime->channels,
+-						runtime->format,
+-						32, 0);
+-	} else {
+-		struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-
+-		dma_params = snd_soc_dai_get_dma_data(codec_dai, substream);
+-		if (dma_params)
+-			format_val = dma_params->format;
+-	}
+-
+-	return format_val;
+-}
+-
+ static int skl_be_prepare(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
+-- 
+2.11.0
