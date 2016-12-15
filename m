@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5665: Make SND_SOC_RT5665 entry sort
-	in Kconfig and Makefile" to the asoc tree
-Date: Thu, 15 Dec 2016 12:21:11 +0000
-Message-ID: <E1cHV27-0000jp-6U@debutante>
-References: <20161209085624.9315-1-axel.lin@ingics.com>
+Subject: Applied "ASoC: max98090: remove superflous check for
+	'micbias'" to the asoc tree
+Date: Thu, 15 Dec 2016 12:21:40 +0000
+Message-ID: <E1cHV2a-0000tL-S6@debutante>
+References: <1481218297-17568-7-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6831233017848342199=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7534C266A53
- for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2016 13:21:22 +0100 (CET)
-In-Reply-To: <20161209085624.9315-1-axel.lin@ingics.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 435EE266A53
+ for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2016 13:21:47 +0100 (CET)
+In-Reply-To: <1481218297-17568-7-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
+
+--===============6831233017848342199==
+Content-Type: text/plain
 
 The patch
 
-   ASoC: rt5665: Make SND_SOC_RT5665 entry sort in Kconfig and Makefile
+   ASoC: max98090: remove superflous check for 'micbias'
 
 has been applied to the asoc tree at
 
@@ -53,89 +55,50 @@ to this mail.
 Thanks,
 Mark
 
->From c7f87f96e384b7ecc41a6c0c8c397e095284ede0 Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Fri, 9 Dec 2016 16:56:24 +0800
-Subject: [PATCH] ASoC: rt5665: Make SND_SOC_RT5665 entry sort in Kconfig and
- Makefile
+>From 1c445a42c48754bb5f821478517ef1b9f861217a Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Thu, 8 Dec 2016 23:01:29 +0530
+Subject: [PATCH] ASoC: max98090: remove superflous check for 'micbias'
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
+In max98090_probe(), code checks for micbias being out of range. The
+'micbias' variable in unsigned and checked against M98090_MBVSEL_2V2 which
+is zero, so remove this check.
+
+sound/soc/codecs/max98090.c: In function ‘max98090_probe’:
+sound/soc/codecs/max98090.c:2459:2: warning: comparison of unsigned expression < 0 is always false [-Wtype-limits]
+  } else if (micbias < M98090_MBVSEL_2V2 || micbias > M98090_MBVSEL_2V8) {
+
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/Kconfig  | 10 +++++-----
- sound/soc/codecs/Makefile |  4 ++--
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/codecs/max98090.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 9e1718a8cb1c..cfc108e5e5ec 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -117,8 +117,8 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_RT5651 if I2C
- 	select SND_SOC_RT5659 if I2C
- 	select SND_SOC_RT5660 if I2C
--	select SND_SOC_RT5665 if I2C
- 	select SND_SOC_RT5663 if I2C
-+	select SND_SOC_RT5665 if I2C
- 	select SND_SOC_RT5670 if I2C
- 	select SND_SOC_RT5677 if I2C && SPI_MASTER
- 	select SND_SOC_SGTL5000 if I2C
-@@ -668,8 +668,8 @@ config SND_SOC_RL6231
- 	default y if SND_SOC_RT5651=y
- 	default y if SND_SOC_RT5659=y
- 	default y if SND_SOC_RT5660=y
--	default y if SND_SOC_RT5665=y
- 	default y if SND_SOC_RT5663=y
-+	default y if SND_SOC_RT5665=y
- 	default y if SND_SOC_RT5670=y
- 	default y if SND_SOC_RT5677=y
- 	default m if SND_SOC_RT5514=m
-@@ -679,8 +679,8 @@ config SND_SOC_RL6231
- 	default m if SND_SOC_RT5651=m
- 	default m if SND_SOC_RT5659=m
- 	default m if SND_SOC_RT5660=m
--	default m if SND_SOC_RT5665=m
- 	default m if SND_SOC_RT5663=m
-+	default m if SND_SOC_RT5665=m
- 	default m if SND_SOC_RT5670=m
- 	default m if SND_SOC_RT5677=m
- 
-@@ -728,10 +728,10 @@ config SND_SOC_RT5659
- config SND_SOC_RT5660
- 	tristate
- 
--config SND_SOC_RT5665
-+config SND_SOC_RT5663
- 	tristate
- 
--config SND_SOC_RT5663
-+config SND_SOC_RT5665
- 	tristate
- 
- config SND_SOC_RT5670
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 7e1dad79610b..2624c7324d4a 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -118,8 +118,8 @@ snd-soc-rt5645-objs := rt5645.o
- snd-soc-rt5651-objs := rt5651.o
- snd-soc-rt5659-objs := rt5659.o
- snd-soc-rt5660-objs := rt5660.o
--snd-soc-rt5665-objs := rt5665.o
- snd-soc-rt5663-objs := rt5663.o
-+snd-soc-rt5665-objs := rt5665.o
- snd-soc-rt5670-objs := rt5670.o
- snd-soc-rt5677-objs := rt5677.o
- snd-soc-rt5677-spi-objs := rt5677-spi.o
-@@ -346,8 +346,8 @@ obj-$(CONFIG_SND_SOC_RT5645)	+= snd-soc-rt5645.o
- obj-$(CONFIG_SND_SOC_RT5651)	+= snd-soc-rt5651.o
- obj-$(CONFIG_SND_SOC_RT5659)	+= snd-soc-rt5659.o
- obj-$(CONFIG_SND_SOC_RT5660)	+= snd-soc-rt5660.o
--obj-$(CONFIG_SND_SOC_RT5665)	+= snd-soc-rt5665.o
- obj-$(CONFIG_SND_SOC_RT5663)	+= snd-soc-rt5663.o
-+obj-$(CONFIG_SND_SOC_RT5665)	+= snd-soc-rt5665.o
- obj-$(CONFIG_SND_SOC_RT5670)	+= snd-soc-rt5670.o
- obj-$(CONFIG_SND_SOC_RT5677)	+= snd-soc-rt5677.o
- obj-$(CONFIG_SND_SOC_RT5677_SPI)	+= snd-soc-rt5677-spi.o
+diff --git a/sound/soc/codecs/max98090.c b/sound/soc/codecs/max98090.c
+index 584aab83e478..66828480d484 100644
+--- a/sound/soc/codecs/max98090.c
++++ b/sound/soc/codecs/max98090.c
+@@ -2456,7 +2456,7 @@ static int max98090_probe(struct snd_soc_codec *codec)
+ 	if (err) {
+ 		micbias = M98090_MBVSEL_2V8;
+ 		dev_info(codec->dev, "use default 2.8v micbias\n");
+-	} else if (micbias < M98090_MBVSEL_2V2 || micbias > M98090_MBVSEL_2V8) {
++	} else if (micbias > M98090_MBVSEL_2V8) {
+ 		dev_err(codec->dev, "micbias out of range 0x%x\n", micbias);
+ 		micbias = M98090_MBVSEL_2V8;
+ 	}
 -- 
 2.11.0
+
+
+--===============6831233017848342199==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6831233017848342199==--
