@@ -1,47 +1,79 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/3] clkdev: add devm_get_clk_from_child()
-Date: Thu, 15 Dec 2016 12:21:15 +0000
-Message-ID: <20161215122115.zpxawc2xdc45rczf@sirena.org.uk>
-References: <874m2jvtmw.wl%kuninori.morimoto.gx@renesas.com>
- <20161208220824.GM5423@codeaurora.org>
- <8737hyymo9.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="eoumllemmyfv2hgm"
+Subject: Applied "ASoC: topology: kfree kcontrol->private_value before freeing kcontrol" to the asoc tree
+Date: Thu, 15 Dec 2016 12:21:14 +0000
+Message-ID: <E1cHV2A-0000kr-68@debutante>
+References: <20161209141747.4776-1-colin.king@canonical.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <8737hyymo9.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <20161209141747.4776-1-colin.king@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Stephen Boyd <sboyd@codeaurora.org>, Russell King - ARM Linux <linux@armlinux.org.uk>, Rob Herring <robh@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Linux-DT <devicetree@vger.kernel.org>, Michael Turquette <mturquette@baylibre.com>, Linux-Kernel <linux-kernel@vger.kernel.org>, linux-clk@vger.kernel.org, Linux-ARM <linux-arm-kernel@lists.infradead.org>
+To: Colin Ian King <colin.king@canonical.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---eoumllemmyfv2hgm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: topology: kfree kcontrol->private_value before freeing kcontrol
 
-On Fri, Dec 09, 2016 at 12:25:48AM +0000, Kuninori Morimoto wrote:
+has been applied to the asoc tree at
 
-> Mark, I think I should re-post 2nd patch (3rd will be dropped) after
-> merge window ? There will be no branch dependency
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Should be fine without but obviously if it looks like it's gone AWOL
-then reposting would be good.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
---eoumllemmyfv2hgm
-Content-Type: application/pgp-signature; name="signature.asc"
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlhSirsACgkQJNaLcl1U
-h9DJ2Qf+PnRfUeFgE7kn755ufmOqtC1Hwq+qO1h+5mCNU57wBZJhx7Way15NSKn2
-p9pUUuDf7CK2GeOLicbHEDHW7Wxow96+gfD+CjSPFutpiU9KB1re6HwXB6a6l1YZ
-dYity7pJc1G3AtWOJSD9LqIuu9TsxbqXW81323lO0Kk8opXEzthTQIVeYK9Wl0r+
-1RbnW/N5iVqxnByjmE678pk7jxO7W5Guaz3ytpyDInvoksjL3Xf0GN3kWrKCr6Zs
-qoU/2dErHcSo4yjrZ2clCcU7rkIZXPf8OV2JTxGK7XQDvDd06Ik5esiLQnElkM3M
-lDSeZYl7KJPccMUia+3jGxZLPf/4Bg==
-=LWmD
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---eoumllemmyfv2hgm--
+Thanks,
+Mark
+
+>From c2b36129ce53a22b89dd2b88db33e7ffdefe0f41 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Fri, 9 Dec 2016 14:17:47 +0000
+Subject: [PATCH] ASoC: topology: kfree kcontrol->private_value before freeing
+ kcontrol
+
+kcontrol->private_value is being kfree'd after kcontrol has been freed
+(in previous call to snd_ctl_remove).  Instead, fix this by kfreeing
+the private_value before kcontrol.
+
+CoverityScan CID#1388311 "Read from pointer after free"
+
+Fixes: eea3dd4f1247a ("ASoC: topology: Only free TLV for volume mixers of a widget")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-topology.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 65670b2b408c..fbfb1fab88d5 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -514,13 +514,12 @@ static void remove_widget(struct snd_soc_component *comp,
+ 			    == SND_SOC_TPLG_TYPE_MIXER)
+ 				kfree(kcontrol->tlv.p);
+ 
+-			snd_ctl_remove(card, kcontrol);
+-
+ 			/* Private value is used as struct soc_mixer_control
+ 			 * for volume mixers or soc_bytes_ext for bytes
+ 			 * controls.
+ 			 */
+ 			kfree((void *)kcontrol->private_value);
++			snd_ctl_remove(card, kcontrol);
+ 		}
+ 		kfree(w->kcontrol_news);
+ 	}
+-- 
+2.11.0
