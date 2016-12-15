@@ -1,114 +1,71 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: remove unused 'ret'" to
-	the asoc tree
-Date: Thu, 15 Dec 2016 12:21:57 +0000
-Message-ID: <E1cHV2r-0000xJ-7y@debutante>
-References: <1481218297-17568-2-git-send-email-vinod.koul@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH 3/7] ALSA: add shell for Intel
+ HDMI LPE audio driver
+Date: Thu, 15 Dec 2016 14:37:03 -0600
+Message-ID: <abcf56f1-4a6b-b9ca-22fa-4691ddc72e9f@linux.intel.com>
+References: <20161212181043.12512-1-jerome.anand@intel.com>
+ <20161212181043.12512-4-jerome.anand@intel.com>
+ <s5htwa6el1w.wl-tiwai@suse.de>
+ <F6867404AABACB4D8EC371BF802A4B7C14934689@fmsmsx101.amr.corp.intel.com>
+ <s5htwa5bg15.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7742759760654627656=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 82231266A53
- for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2016 13:22:03 +0100 (CET)
-In-Reply-To: <1481218297-17568-2-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5htwa5bg15.wl-tiwai@suse.de>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>, "Anand, Jerome" <jerome.anand@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Ughreja,
+ Rakesh A" <rakesh.a.ughreja@intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============7742759760654627656==
-Content-Type: text/plain
-
-The patch
-
-   ASoC: Intel: Skylake: remove unused 'ret'
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 547cafa3efc3f12101cafd454e651c9a5a8feae4 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Thu, 8 Dec 2016 23:01:24 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: remove unused 'ret'
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-In skl_tplg_mixer_dapm_post_pmd_event(), a variable 'ret' is initialized but
-not used.
-
-We don't check return of skl_delete_pipe, so remove the assignment as
-well, so remove this variable.
-
-sound/soc/intel/skylake/skl-topology.c: In function ‘skl_tplg_mixer_dapm_post_pmd_event’:
-sound/soc/intel/skylake/skl-topology.c:976:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
-  int ret = 0;
-      ^
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/skylake/skl-topology.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index bd313c907b20..eb440cd9a2a4 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -974,7 +974,6 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
- 	struct skl_module_cfg *src_module = NULL, *dst_module;
- 	struct skl_sst *ctx = skl->skl_sst;
- 	struct skl_pipe *s_pipe = mconfig->pipe;
--	int ret = 0;
- 
- 	if (s_pipe->state == SKL_PIPE_INVALID)
- 		return -EINVAL;
-@@ -996,7 +995,7 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
- 		src_module = dst_module;
- 	}
- 
--	ret = skl_delete_pipe(ctx, mconfig->pipe);
-+	skl_delete_pipe(ctx, mconfig->pipe);
- 
- 	return skl_tplg_unload_pipe_modules(ctx, s_pipe);
- }
--- 
-2.11.0
-
-
---===============7742759760654627656==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7742759760654627656==--
+Cj4+PiBTdWJqZWN0OiBSZTogW1BBVENIIDMvN10gQUxTQTogYWRkIHNoZWxsIGZvciBJbnRlbCBI
+RE1JIExQRSBhdWRpbyBkcml2ZXIKCj4+PiBXaHkgZG8gd2UgbmVlZCBhICJzaGVsbCIgYW5kIGlu
+ZGlyZWN0IGNhbGxzPwo+Pj4gVGhpcyBpcyBhIHNtYWxsIGRyaXZlciBzZXQsIHNvIGl0J3Mgbm90
+IHV0dGVybHkgdW5hY2NlcHRhYmxlLCBidXQgaXQgc3RpbGwgbWFrZXMKPj4+IHRoaW5ncyBhIGJp
+dCBtb3JlIGNvbXBsaWNhdGVkIHRoYW4gbmVjZXNzYXJ5LCBzbyBJJ2QgbGlrZSB0byB1bmRlcnN0
+YW5kIHRoZQo+Pj4gaWRlYSBiZWhpbmQgaXQuCgpUaGUgJ3NoZWxsJyBjb21lcyBmcm9tIGFuIGVh
+cmx5IHByb3RvdHlwZSB3aGljaCBkaWRuJ3QgZG8gbXVjaCBleGNlcHQgCmNyZWF0ZSB0aGUgZGV2
+aWNlLiBUaGUgdGl0bGUgb2YgdGhlIGNvbW1pdCBzaG91bGQgYmUgY2hhbmdlZCBpZiBpdCB0aHJl
+dyAKeW91IG9mZi4KCj4+IFRoaXMgc29sdXRpb24gZG9lcyBub3QgdXNlIGNvbXBvbmVudCBpbnRl
+cmZhY2UgdG8gdGFsayBiZXR3ZWVuCj4+IEF1ZGlvIGFuZCBpOTE1IGRyaXZlci4gVGhlIHJlYXNv
+biBmb3IgdGhhdCBpcyB0aGUgSERNSSBhdWRpbyBkZXZpY2UgaXMgY3JlYXRlZAo+PiBieSBpOTE1
+IGRyaXZlciB3aXRoIG9ubHkgb25lIGNhbGxiYWNrIHBvaW50ZXIgcGFzc2VkIGFzIHBkYXRhLiBV
+bmxpa2UgSERBLCB0aGUgSERNSSBhdWRpbwo+PiBkcml2ZXIgZG9lcyBub3QgZ2V0IGxvYWRlZCBp
+ZiB0aGUgaTkxNSBkb2VzIG5vdCBjcmVhdGUgY2hpbGQgZGV2aWNlLgo+PiBTaW5jZSB0aGVyZSBp
+cyBvbmx5IG9uZSBjYWxsYmFjayBuZWVkZWQgd2UgYXJlIG5vdCB1c2luZyB0aGUgY29tcG9uZW50
+Cj4+IGludGVyZmFjZSB0byBtYWtlIHRoaW5ncyBzaW1wbGVyLgo+PiBUaGlzIGRlc2lnbiB3YXMg
+Y28td29ya2VkIHdpdGggaTkxNSBmb2xrcyB0byBtYWtlcyBpbnRlcmFjdGlvbiBzaW1wbGVyLgo+
+Cj4gVGhlIGludGVyYWN0aW9uIGJldHdlZW4gaTkxNSBhbmQgYXVkaW8gaXMgc2ltcGxlLCB5ZXMs
+IGl0IGp1c3QgZXhwb3Nlcwo+IGEgZmV3IHRoaW5ncywgbW1pbyBwdHIsIGlycSwgZXRjLiAgQnV0
+IHN0aWxsIEkgZG9uJ3QgdW5kZXJzdGFuZCB3aHkKPiBtdWx0aXBsZSBsYXllcnMgb2YgaW5kaXJl
+Y3QgYWNjZXNzZXMgYXJlIG5lZWRlZCAqaW5zaWRlKiBscGUgYXVkaW8KPiBkcml2ZXIgaXRzZWxm
+LiAgRm9yIGV4YW1wbGUsIHN1c3BlbmQvcmVzdW1lIGFjdGlvbiBpcyBjYXNjYWRlZCB0byB5ZXQK
+PiBhbm90aGVyIG9wcy4KPgo+IEkgd291bGQgdW5kZXJzdGFuZCBpZiB0aGlzICJzaGVsbCIgcHJv
+dmlkZXMgYSBmZXcgdGhpbiBhY2Nlc3NvcnMgdG8KPiB0aGUgcmF3IGk5MTUgcmVnaXN0ZXJzLiAg
+QnV0IGFub3RoZXIgbGF5ZXJpbmcgb3ZlciBhIHNpbmdsZSBkcml2ZXIKPiBpbXBsZW1lbnRhdGlv
+biBtYWtlcyBsaXR0bGUgc2Vuc2UgaW4gcmVnYXJkIG9mIGFic3RyYWN0aW9uLiAgKElmIHRoZXJl
+Cj4gd2VyZSBtdWx0aXBsZSBjbGFzcyBpbmhlcml0cywgaXQncyBhIGRpZmZlcmVudCBzdG9yeSwg
+b2YgY291cnNlLikKCk5vIGRpc2FncmVlbWVudCBoZXJlIFRha2FzaGkuCkkgd2FzIHBsYW5uaW5n
+IHRvIHJlbW92ZSB0aGlzIGFic3RyYWN0aW9uIGluIGEgc2Vjb25kIGluY3JlbWVudGFsIHBhc3Mg
+CnRoYXQgd291bGQgb25seSBiZSBvbiB0aGUgYXVkaW8gc2lkZSwgZm9yIG5vdyBrZWVwaW5nIHRo
+aXMgbGF5ZXIgd291bGQgCmFsbG93IG1lIHRvIGFkZCB0aGUgRGlzcGxheVBvcnQgY2hhbmdlcyBm
+YXN0ZXIuIElmIHdlIHNpbXBsaWZ5IHRoaXMgbm93IAp0aGVuIEkgd2lsbCBoYXZlIHNvIG1hbnkg
+ZGlmZmVyZW5jZXMgd2l0aCB0aGUgbGVnYWN5IGNvZGUgaXQnbGwgYmUgYSAKbmlnaHRtYXJlLiBJ
+IGhhdmUgbm8gZW1vdGlvbmFsIGF0dGFjaG1lbnQgdG8gdGhlIGxlZ2FjeSBidXQgaXQncyBqdXN0
+IApwcmFnbWF0aWMgdG8gYXZvaWQgY2hhbmdpbmcgZXZlcnl0aGluZyBhdCBvbmNlLgoKQXMgeW91
+IGFsc28gbWVudGlvbmVkIGl0LCB0aGlzIHNlY29uZCBwYXNzIGNvdWxkIGFsc28gcmV1c2UgYWxs
+IHRoZSBFTEQgCnBhcnNpbmcgdGhhdCBpcyBzdGlsbCBkdXBsaWNhdGVkLiBUaGVzZSBIRE1JIHBh
+dGNoZXMgYXJlIG5vdCBhIApzaW5nbGUtc2hvdCBjb250cmlidXRpb24sIHlvdSdsbCBoYXZlIHVw
+ZGF0ZXMgY29taW5nIHlvdXIgd2F5LgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZy
+ZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2ludGVsLWdmeAo=
