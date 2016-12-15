@@ -1,55 +1,114 @@
-From: =?utf-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>
-Subject: Re: [PATCH 3/7] ALSA: hda - use dell_micmute_led_set() instead of
- dell_app_wmi_led_set()
-Date: Thu, 15 Dec 2016 20:22:53 +0100
-Message-ID: <20161215192253.GA4776@kmp-mobile.hq.kempniu.pl>
-References: <20161208123618.28603-1-kernel@kempniu.pl>
- <20161208123618.28603-4-kernel@kempniu.pl>
- <201612111140.38170@pali>
- <20161215144628.GB22695@kmp-mobile.hq.kempniu.pl>
- <1481816580.2090.5.camel@Pali-Nokia-N900>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: Skylake: remove unused 'ret'" to
+	the asoc tree
+Date: Thu, 15 Dec 2016 12:21:57 +0000
+Message-ID: <E1cHV2r-0000xJ-7y@debutante>
+References: <1481218297-17568-2-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <platform-driver-x86-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1481816580.2090.5.camel@Pali-Nokia-N900>
-Sender: platform-driver-x86-owner@vger.kernel.org
-Cc: Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, Jacek Anaszewski <j.anaszewski@samsung.com>, Matthew Garrett <mjg59@srcf.ucam.org>, Darren Hart <dvhart@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Bob Rodgers <Robert_Rodgers@dell.com>, Louis Davis <Louis_Davis@dell.com>, Jim Dailey <Jim_Dailey@dell.com>, Alex Hung <alex.hung@canonical.com>, Hui Wang <hui.wang@canonical.com>, Anthony Wong <anthony.wong@canonical.com>, linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============7742759760654627656=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 82231266A53
+ for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2016 13:22:03 +0100 (CET)
+In-Reply-To: <1481218297-17568-2-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-> On Thu Dec 15 15:46:28 2016 Michał Kępień <kernel@kempniu.pl> wrote:
-> > > On Thursday 08 December 2016 13:36:14 Michał Kępień wrote:
-> > > > --- a/sound/pci/hda/dell_wmi_helper.c
-> > > > +++ b/sound/pci/hda/dell_wmi_helper.c
-> > > > @@ -6,7 +6,7 @@
-> > > > #include <linux/dell-led.h>
-> > > > 
-> > > > static int dell_led_value;
-> > > > -static int (*dell_led_set_func)(int, int);
-> > > > +static int (*dell_led_set_func)(int);
-> > > 
-> > > Suggestion: what about changing name to dell_micmute_led_set_func to 
-> > > match real function name which is used after this patch?
-> > 
-> > While I like the idea itself, implementing it will double the number of
-> > lines that this patch changes (6 vs. 12), arguably making its intention
-> 
-> If some patch makes final result of code better then metric number of lines is not priority.
-> 
-> > less clear.   Please let me know if you would really like this to happen
-> > (perhaps as a separate patch?), otherwise I will skip this idea in v2.
-> > 
-> > -- 
-> > Best regards,
-> > Michał Kępień
-> 
-> If it will be in this or another following patch... I dot care. But this is sound subsystem, so sound maintainers need to decide what they prefer.
+--===============7742759760654627656==
+Content-Type: text/plain
 
-Good point.  Jaroslav, Takashi, I will patiently wait for your opinion
-on this patch and Pali's suggestion quoted above before I post v2 of
-this series.
+The patch
 
+   ASoC: Intel: Skylake: remove unused 'ret'
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 547cafa3efc3f12101cafd454e651c9a5a8feae4 Mon Sep 17 00:00:00 2001
+From: Vinod Koul <vinod.koul@intel.com>
+Date: Thu, 8 Dec 2016 23:01:24 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: remove unused 'ret'
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+In skl_tplg_mixer_dapm_post_pmd_event(), a variable 'ret' is initialized but
+not used.
+
+We don't check return of skl_delete_pipe, so remove the assignment as
+well, so remove this variable.
+
+sound/soc/intel/skylake/skl-topology.c: In function ‘skl_tplg_mixer_dapm_post_pmd_event’:
+sound/soc/intel/skylake/skl-topology.c:976:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
+  int ret = 0;
+      ^
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/skylake/skl-topology.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index bd313c907b20..eb440cd9a2a4 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -974,7 +974,6 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
+ 	struct skl_module_cfg *src_module = NULL, *dst_module;
+ 	struct skl_sst *ctx = skl->skl_sst;
+ 	struct skl_pipe *s_pipe = mconfig->pipe;
+-	int ret = 0;
+ 
+ 	if (s_pipe->state == SKL_PIPE_INVALID)
+ 		return -EINVAL;
+@@ -996,7 +995,7 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
+ 		src_module = dst_module;
+ 	}
+ 
+-	ret = skl_delete_pipe(ctx, mconfig->pipe);
++	skl_delete_pipe(ctx, mconfig->pipe);
+ 
+ 	return skl_tplg_unload_pipe_modules(ctx, s_pipe);
+ }
 -- 
-Best regards,
-Michał Kępień
+2.11.0
+
+
+--===============7742759760654627656==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7742759760654627656==--
