@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdac_hdmi: remove unused 'dai_map'" to
-	the asoc tree
-Date: Thu, 15 Dec 2016 12:21:43 +0000
-Message-ID: <E1cHV2d-0000u8-R1@debutante>
-References: <1481218297-17568-6-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: topology: remove unused 'err'" to the
+	asoc tree
+Date: Thu, 15 Dec 2016 12:21:47 +0000
+Message-ID: <E1cHV2h-0000uv-Ag@debutante>
+References: <1481218297-17568-5-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2052086260511479892=="
+Content-Type: multipart/mixed; boundary="===============3751101548966539681=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 310EB266A53
- for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2016 13:21:49 +0100 (CET)
-In-Reply-To: <1481218297-17568-6-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 653E7266A53
+ for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2016 13:21:53 +0100 (CET)
+In-Reply-To: <1481218297-17568-5-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,12 +25,12 @@ To: Vinod Koul <vinod.koul@intel.com>
 Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
---===============2052086260511479892==
+--===============3751101548966539681==
 Content-Type: text/plain
 
 The patch
 
-   ASoC: hdac_hdmi: remove unused 'dai_map'
+   ASoC: topology: remove unused 'err'
 
 has been applied to the asoc tree at
 
@@ -55,54 +55,61 @@ to this mail.
 Thanks,
 Mark
 
->From d56923da8f92dee0b557d3a8d6a3639deec35637 Mon Sep 17 00:00:00 2001
+>From fd34045567991dc77a50163c5d0e465b423df962 Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Thu, 8 Dec 2016 23:01:28 +0530
-Subject: [PATCH] ASoC: hdac_hdmi: remove unused 'dai_map'
+Date: Thu, 8 Dec 2016 23:01:27 +0530
+Subject: [PATCH] ASoC: topology: remove unused 'err'
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-In hdac_hdmi_playback_cleanup(), a variable 'dai_map' is initialized but not
-used. Also while removing this two mare variables 'edev' and 'hdmi' become
-unused, so remove all these as well.
+In soc_tplg_pcm_elems_load, a variable 'err' is initialized but not
+used.
 
-sound/soc/codecs/hdac_hdmi.c: In function ‘hdac_hdmi_playback_cleanup’:
-sound/soc/codecs/hdac_hdmi.c:470:32: warning: variable ‘dai_map’ set but not used [-Wunused-but-set-variable]
-  struct hdac_hdmi_dai_pin_map *dai_map;
+It is assigned return values for pcm_new_ver() but never checked, so
+remove it.
+
+sound/soc/soc-topology.c: In function ‘soc_tplg_pcm_elems_load’:
+sound/soc/soc-topology.c:1865:9: warning: variable ‘err’ set but not used [-Wunused-but-set-variable]
+  int i, err;
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/hdac_hdmi.c | 5 -----
- 1 file changed, 5 deletions(-)
+ sound/soc/soc-topology.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index c602c4960924..793bc853ddef 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -464,12 +464,7 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
- static int hdac_hdmi_playback_cleanup(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 65670b2b408c..585b88b45f7b 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1863,7 +1863,7 @@ static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
  {
--	struct hdac_ext_device *edev = snd_soc_dai_get_drvdata(dai);
- 	struct hdac_ext_dma_params *dd;
--	struct hdac_hdmi_priv *hdmi = edev->private_data;
--	struct hdac_hdmi_dai_pin_map *dai_map;
--
--	dai_map = &hdmi->dai_map[dai->id];
+ 	struct snd_soc_tplg_pcm *pcm, *_pcm;
+ 	int count = hdr->count;
+-	int i, err;
++	int i;
+ 	bool abi_match;
  
- 	dd = (struct hdac_ext_dma_params *)snd_soc_dai_get_dma_data(dai, substream);
+ 	if (tplg->pass != SOC_TPLG_PASS_PCM_DAI)
+@@ -1897,7 +1897,7 @@ static int soc_tplg_pcm_elems_load(struct soc_tplg *tplg,
+ 			_pcm = pcm;
+ 		} else {
+ 			abi_match = false;
+-			err = pcm_new_ver(tplg, pcm, &_pcm);
++			pcm_new_ver(tplg, pcm, &_pcm);
+ 		}
  
+ 		/* create the FE DAIs and DAI links */
 -- 
 2.11.0
 
 
---===============2052086260511479892==
+--===============3751101548966539681==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2052086260511479892==--
+--===============3751101548966539681==--
