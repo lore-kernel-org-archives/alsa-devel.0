@@ -1,91 +1,51 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8753: Add control to allow swapping
-	HiFi DAC channels" to the asoc tree
-Date: Thu, 15 Dec 2016 12:20:59 +0000
-Message-ID: <E1cHV1v-0000dI-84@debutante>
-References: <1481626579-23642-1-git-send-email-shc_work@mail.ru>
+From: Pali =?ISO-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>
+Subject: Re: [PATCH 3/7] ALSA: hda - use dell_micmute_led_set() instead of
+        dell_app_wmi_led_set()
+Date: Thu, 15 Dec 2016 16:43:00 +0100
+Message-ID: <1481816580.2090.5.camel@Pali-Nokia-N900>
+References: <20161208123618.28603-1-kernel@kempniu.pl>
+         <20161208123618.28603-4-kernel@kempniu.pl> <201612111140.38170@pali>
+          <20161215144628.GB22695@kmp-mobile.hq.kempniu.pl>
+Reply-To: Pali =?ISO-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 55DF92671EE
- for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2016 13:21:06 +0100 (CET)
-In-Reply-To: <1481626579-23642-1-git-send-email-shc_work@mail.ru>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alexander Shiyan <shc_work@mail.ru>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, patches@opensource.wolfsonmicro.com, Takashi Iwai <tiwai@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <platform-driver-x86-owner@vger.kernel.org>
+In-Reply-To: <20161215144628.GB22695@kmp-mobile.hq.kempniu.pl>
+Content-ID: <1481816580.2090.4.camel@Pali-Nokia-N900>
+Sender: platform-driver-x86-owner@vger.kernel.org
+To: =?UTF-8?Q?Micha=C5=82_K=C4=99pie=C5=84?= <kernel@kempniu.pl>
+Cc: Richard Purdie <rpurdie@rpsys.net>, Jacek Anaszewski <j.anaszewski@samsung.com>, Matthew Garrett <mjg59@srcf.ucam.org>, Darren Hart <dvhart@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Bob Rodgers <Robert_Rodgers@dell.com>, Louis Davis <Louis_Davis@dell.com>, Jim Dailey <Jim_Dailey@dell.com>, Alex Hung <alex.hung@canonical.com>, Hui Wang <hui.wang@canonical.com>, linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Thu Dec 15 15:46:28 2016 Michał Kępień <kernel@kempniu.pl> wrote:
+> > On Thursday 08 December 2016 13:36:14 Michał Kępień wrote:
+> > > --- a/sound/pci/hda/dell_wmi_helper.c
+> > > +++ b/sound/pci/hda/dell_wmi_helper.c
+> > > @@ -6,7 +6,7 @@
+> > > #include <linux/dell-led.h>
+> > > 
+> > > static int dell_led_value;
+> > > -static int (*dell_led_set_func)(int, int);
+> > > +static int (*dell_led_set_func)(int);
+> > 
+> > Suggestion: what about changing name to dell_micmute_led_set_func to 
+> > match real function name which is used after this patch?
+> 
+> While I like the idea itself, implementing it will double the number of
+> lines that this patch changes (6 vs. 12), arguably making its intention
 
-   ASoC: wm8753: Add control to allow swapping HiFi DAC channels
+If some patch makes final result of code better then metric number of lines is not priority.
 
-has been applied to the asoc tree at
+> less clear.   Please let me know if you would really like this to happen
+> (perhaps as a separate patch?), otherwise I will skip this idea in v2.
+> 
+> -- 
+> Best regards,
+> Michał Kępień
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+If it will be in this or another following patch... I dot care. But this is sound subsystem, so sound maintainers need to decide what they prefer.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From af4b654f9fa87cf66a06f4841074b6738ed58606 Mon Sep 17 00:00:00 2001
-From: Alexander Shiyan <shc_work@mail.ru>
-Date: Tue, 13 Dec 2016 13:56:19 +0300
-Subject: [PATCH] ASoC: wm8753: Add control to allow swapping HiFi DAC channels
-
-This patch adds a control to allow swapping HiFi DAC Left/Right channels.
-
-Signed-off-by: Alexander Shiyan <shc_work@mail.ru>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/wm8753.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/wm8753.c b/sound/soc/codecs/wm8753.c
-index 9bdf5447f6f6..d05d76e79c70 100644
---- a/sound/soc/codecs/wm8753.c
-+++ b/sound/soc/codecs/wm8753.c
-@@ -280,6 +280,7 @@ static const DECLARE_TLV_DB_SCALE(voice_mix_tlv, -1200, 300, 0);
- static const DECLARE_TLV_DB_SCALE(pga_tlv, -1725, 75, 0);
- 
- static const struct snd_kcontrol_new wm8753_snd_controls[] = {
-+SOC_SINGLE("Hi-Fi DAC Left/Right channel Swap", WM8753_HIFI, 5, 1, 0),
- SOC_DOUBLE_R_TLV("PCM Volume", WM8753_LDAC, WM8753_RDAC, 0, 255, 0, dac_tlv),
- 
- SOC_DOUBLE_R_TLV("ADC Capture Volume", WM8753_LADC, WM8753_RADC, 0, 255, 0,
-@@ -1087,7 +1088,7 @@ static int wm8753_i2s_set_dai_fmt(struct snd_soc_codec *codec,
- {
- 	u16 ioctl, hifi;
- 
--	hifi = snd_soc_read(codec, WM8753_HIFI) & 0x011f;
-+	hifi = snd_soc_read(codec, WM8753_HIFI) & 0x013f;
- 	ioctl = snd_soc_read(codec, WM8753_IOCTL) & 0x00ae;
- 
- 	/* set master/slave audio interface */
 -- 
-2.11.0
+Pali Rohár
+pali.rohar@gmail.com
