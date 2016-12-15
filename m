@@ -1,108 +1,58 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Removed unused
-	skl_get_format()" to the asoc tree
-Date: Thu, 15 Dec 2016 12:20:41 +0000
-Message-ID: <E1cHV1d-0000Uz-Ei@debutante>
-References: <1480700509-23380-4-git-send-email-jeeja.kp@intel.com>
+From: =?utf-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>
+Subject: Re: [PATCH 1/7] dell-led: remove GUID check from
+ dell_micmute_led_set()
+Date: Thu, 15 Dec 2016 15:34:43 +0100
+Message-ID: <20161215143443.GA22695@kmp-mobile.hq.kempniu.pl>
+References: <20161208123618.28603-1-kernel@kempniu.pl>
+ <20161208123618.28603-2-kernel@kempniu.pl>
+ <20161209092025.GC9959@pali>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 30E72266A53
- for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2016 13:20:50 +0100 (CET)
-In-Reply-To: <1480700509-23380-4-git-send-email-jeeja.kp@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>
-Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <platform-driver-x86-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20161209092025.GC9959@pali>
+Sender: platform-driver-x86-owner@vger.kernel.org
+To: Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>
+Cc: Richard Purdie <rpurdie@rpsys.net>, Jacek Anaszewski <j.anaszewski@samsung.com>, Matthew Garrett <mjg59@srcf.ucam.org>, Darren Hart <dvhart@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Bob Rodgers <Robert_Rodgers@dell.com>, Louis Davis <Louis_Davis@dell.com>, Jim Dailey <Jim_Dailey@dell.com>, Alex Hung <alex.hung@canonical.com>, Hui Wang <hui.wang@canonical.com>, linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+> On Thursday 08 December 2016 13:36:12 Michał Kępień wrote:
+> > As dell_micmute_led_set() no longer uses the dell_wmi_perform_query()
+> > method, which was removed in 0c41a08 ("dell-led: use
+> > dell_smbios_send_request() for performing SMBIOS calls"), the
+> > DELL_APP_GUID check is redundant and thus can be safely removed.
+> > 
+> > Signed-off-by: Michał Kępień <kernel@kempniu.pl>
+> > ---
+> >  drivers/leds/dell-led.c | 3 ---
+> >  1 file changed, 3 deletions(-)
+> > 
+> > diff --git a/drivers/leds/dell-led.c b/drivers/leds/dell-led.c
+> > index b3d6e9c..e8e8f67 100644
+> > --- a/drivers/leds/dell-led.c
+> > +++ b/drivers/leds/dell-led.c
+> > @@ -51,9 +51,6 @@ static int dell_micmute_led_set(int state)
+> >  	struct calling_interface_buffer *buffer;
+> >  	struct calling_interface_token *token;
+> >  
+> > -	if (!wmi_has_guid(DELL_APP_GUID))
+> > -		return -ENODEV;
+> > -
+> >  	if (state == 0)
+> >  		token = dell_smbios_find_token(GLOBAL_MIC_MUTE_DISABLE);
+> >  	else if (state == 1)
+> 
+> Reviewed-by: Pali Rohár <pali.rohar@gmail.com>
 
-   ASoC: Intel: Skylake: Removed unused skl_get_format()
+Thanks for reviewing.
 
-has been applied to the asoc tree at
+> Anyway, you can remove DELL_APP_GUID from other places too...
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+I did that in patch 6.  I singled out this one occurrence because it is
+part of the code that is moved to drivers/platform/x86.  Please let me
+know if you would like me to arrange this differently.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From f4e4e9893964684397dec517debe77cb7e405a6c Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Thu, 8 Dec 2016 13:41:15 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Removed unused skl_get_format()
-
-Removed the unused function skl_get_format as the format is calculated
-directly using the HDA core API.
-
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/skylake/skl-pcm.c | 26 --------------------------
- 1 file changed, 26 deletions(-)
-
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 1abff8e1a298..10fa10df4e57 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -259,32 +259,6 @@ static int skl_pcm_open(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
--static int skl_get_format(struct snd_pcm_substream *substream,
--		struct snd_soc_dai *dai)
--{
--	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
--	struct skl_dma_params *dma_params;
--	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
--	int format_val = 0;
--
--	if ((ebus_to_hbus(ebus))->ppcap) {
--		struct snd_pcm_runtime *runtime = substream->runtime;
--
--		format_val = snd_hdac_calc_stream_format(runtime->rate,
--						runtime->channels,
--						runtime->format,
--						32, 0);
--	} else {
--		struct snd_soc_dai *codec_dai = rtd->codec_dai;
--
--		dma_params = snd_soc_dai_get_dma_data(codec_dai, substream);
--		if (dma_params)
--			format_val = dma_params->format;
--	}
--
--	return format_val;
--}
--
- static int skl_be_prepare(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
 -- 
-2.11.0
+Best regards,
+Michał Kępień
