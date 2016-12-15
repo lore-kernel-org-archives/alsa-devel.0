@@ -1,32 +1,32 @@
 From: Corentin Labbe <clabbe.montjoie@gmail.com>
-Subject: [PATCH] ASoC: wm0010: Remove unneeded linux/miscdevice.h include
-Date: Thu, 15 Dec 2016 16:19:43 +0100
-Message-ID: <20161215151943.5076-1-clabbe.montjoie@gmail.com>
+Subject: [PATCH 1/2] ASoC: rt5514-spi: Remove unneeded linux/miscdevice.h include
+Date: Thu, 15 Dec 2016 16:23:01 +0100
+Message-ID: <20161215152302.7939-1-clabbe.montjoie@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org
+To: bardliao@realtek.com, oder_chiou@realtek.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org
 Cc: linux-kernel@vger.kernel.org, Corentin Labbe <clabbe.montjoie@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-sound/soc/codecs/wm0010.c does not use any miscdevice so this patch
+sound/soc/codecs/rt5514-spi.c does not use any miscdevice so this patch
 remove this unnecessary inclusion.
 
 Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
 ---
- sound/soc/codecs/wm0010.c | 1 -
+ sound/soc/codecs/rt5514-spi.c | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm0010.c b/sound/soc/codecs/wm0010.c
-index 0eb5dcf..4f5f571 100644
---- a/sound/soc/codecs/wm0010.c
-+++ b/sound/soc/codecs/wm0010.c
+diff --git a/sound/soc/codecs/rt5514-spi.c b/sound/soc/codecs/rt5514-spi.c
+index 0901e25..7ed62e8 100644
+--- a/sound/soc/codecs/rt5514-spi.c
++++ b/sound/soc/codecs/rt5514-spi.c
 @@ -21,7 +21,6 @@
- #include <linux/firmware.h>
- #include <linux/delay.h>
- #include <linux/fs.h>
--#include <linux/miscdevice.h>
  #include <linux/gpio.h>
+ #include <linux/sched.h>
+ #include <linux/uaccess.h>
+-#include <linux/miscdevice.h>
  #include <linux/regulator/consumer.h>
- #include <linux/mutex.h>
+ #include <linux/pm_qos.h>
+ #include <linux/sysfs.h>
 -- 
 2.10.2
