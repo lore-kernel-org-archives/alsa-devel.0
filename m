@@ -1,20 +1,19 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: 1.1.3 release?
-Date: Fri, 16 Dec 2016 16:17:02 +0000
-Message-ID: <1481905022.14684.244.camel@loki>
-References: <s5hoa0ed07p.wl-tiwai@suse.de>
- <7d78346b-79e7-18fe-04db-99388ae027ed@perex.cz>
- <20161216074711.GO25795@localhost>
- <dd221f9e-202a-8894-2926-3ab592e36841@perex.cz>
- <20161216081850.GP25795@localhost>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: snd_hda_intel/snd_hda_codec_hdmi module
+	load/unload race
+Date: Fri, 16 Dec 2016 08:40:54 -0800
+Message-ID: <20161216164054.GA11727@kroah.com>
+References: <1481749250.8172.5.camel@intel.com> <s5hr359bf7r.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 7D12B26690B
- for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2016 17:17:08 +0100 (CET)
-In-Reply-To: <20161216081850.GP25795@localhost>
+Received: from mail.linuxfoundation.org (mail.linuxfoundation.org
+ [140.211.169.12])
+ by alsa0.perex.cz (Postfix) with ESMTP id BC3A32675B3
+ for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2016 17:40:48 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hr359bf7r.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,41 +23,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: imre.deak@intel.com, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2016-12-16 at 13:48 +0530, Vinod Koul wrote:
-> On Fri, Dec 16, 2016 at 09:02:59AM +0100, Jaroslav Kysela wrote:
-> > Dne 16.12.2016 v 08:47 Vinod Koul napsal(a):
-> > > On Wed, Dec 14, 2016 at 04:36:21PM +0100, Jaroslav Kysela wrote:
-> > >> Dne 14.12.2016 v 16:00 Takashi Iwai napsal(a):
-> > >>> Hi Jaroslav,
-> > >>>
-> > >>> shall we release v1.1.3 now?
-> > >>> We've gathered quite a lot of changes since the last release.
-> > >>
-> > >> Hi,
-> > >>
-> > >>   a good idea. I will release packages in next few days.
-> > > 
-> > > Hi Jaroslav,
-> > > 
-> > > I have updated tuncompress with couple of patches. In case you have already
-> > > prepared the package would it be too much hassle to update the tinycompress
-> > > ones again?
+On Thu, Dec 15, 2016 at 12:32:08PM +0100, Takashi Iwai wrote:
+> On Wed, 14 Dec 2016 22:00:50 +0100,
+> Imre Deak wrote:
 > > 
-> > I have not added the tags to the repos yet, so if you commit your
-> > changes now, it is fine.
+> > Hi,
+> > 
+> > I got the trace below while trying to unload (unbind) snd_hda_intel, while
+> > its still loading the HDMI codec driver. IIUC what happens is:
+> > 
+> > Task1                                    Task2                                    Task3
+> > modprobe snd_hda_intel
+> >   schedule(azx_probe_work)
+> > unbind snd_hda_intel via sysfs
+> >   device_release_driver()
+> >     device_lock(snd_hda_intel)
+> >     azx_remove()
+> >       cancel_work_sync(azx_probe_work)
+> >                                          azx_probe_work()
+> >                                            request_module(snd-hda-codec-hdmi)
+> >                                                                                   hdmi_driver_init()
+> >                                                                                     __driver_attach()
+> >                                                                                       device_lock(snd_hda_intel)
+> > 
+> > Deadlock, since azx_probe_work() will never finish and the snd_hda_intel device
+> > lock will never get released.
 > 
-> Great, I have pushed.
+> This is indeed nasty.  The deadlock happens when the driver core takes
+> the parent's device lock.
 > 
-> One more question, will the 1.1.3 release also contain open-firmware?
+> static int __driver_attach(struct device *dev, void *data)
+> {
+> ....
+> 	if (dev->parent)	/* Needed for USB */
+> 		device_lock(dev->parent);
+> 	device_lock(dev);
+> 	if (!dev->driver)
+> 		driver_probe_device(drv, dev);
 > 
+> I vaguely remember of some other issue due to the device_lock of the
+> parent device.  And, I guess a similar deadlock may happen not only
+> with HD-audio driver but also in general with every driver using async
+> probe.
+> 
+> Greg, any good way to avoid such a deadlock?  Can we make the parent
+> device lock conditional somehow?
 
-Do you mean sound-open-firmware ? If so, SOF is on a separate schedule,
-and I'll be tagging a new release before the holidays.
+Ick, messy.  I don't want to make the parent lock conditional, as it's
+needed.  Shouldn't the cancel_work_sync() prevent the request_module()
+from running?  Seems like you need to serialize your probe_work
+somehow...
 
-Thanks
+I don't see a way to handle this in the driver core, and no:
 
-Liam
+> --- a/sound/hda/hdac_device.c
+> +++ b/sound/hda/hdac_device.c
+> @@ -44,7 +44,7 @@ int snd_hdac_device_init(struct hdac_device *codec, struct hdac_bus *bus,
+>  
+>  	dev = &codec->dev;
+>  	device_initialize(dev);
+> -	dev->parent = bus->dev;
+> +	// dev->parent = bus->dev;
+>  	dev->bus = &snd_hda_bus_type;
+>  	dev->release = default_release;
+>  	dev->groups = hdac_dev_attr_groups;
+> 
+> ... but it's obviously ugly :)
+
+That's not a good solution either :)
+
+thanks,
+
+greg k-h
