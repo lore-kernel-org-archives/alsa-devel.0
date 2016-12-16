@@ -1,14 +1,14 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH] tinycompress: rename crec.c
-Date: Fri, 16 Dec 2016 13:04:17 +0530
-Message-ID: <1481873657-3092-1-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH] tinycompress: rename crec usages
+Date: Fri, 16 Dec 2016 13:09:08 +0530
+Message-ID: <1481873948-3720-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D761265AF3
- for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2016 08:34:47 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F81D265AF3
+ for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2016 08:39:39 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,33 +22,55 @@ To: alsa-devel@alsa-project.org
 Cc: liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Since the compress recorder utility is called crecord, it makes it apt to
-have src file named crecord.c.
+The creord utility help listed crec as the utility name, change that to
+crecord and also update the program explanation text.
 
-Reported-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- src/utils/Makefile.am           | 2 +-
- src/utils/{crec.c => crecord.c} | 0
- 2 files changed, 1 insertion(+), 1 deletion(-)
- rename src/utils/{crec.c => crecord.c} (100%)
+ src/utils/crecord.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/src/utils/Makefile.am b/src/utils/Makefile.am
-index 5f685e3b2ffe..1b996d430f21 100644
---- a/src/utils/Makefile.am
-+++ b/src/utils/Makefile.am
+diff --git a/src/utils/crecord.c b/src/utils/crecord.c
+index 8d5b7b0b2c30..1ba54d70e89c 100644
+--- a/src/utils/crecord.c
++++ b/src/utils/crecord.c
 @@ -1,7 +1,7 @@
- bin_PROGRAMS = cplay crecord
+ /*
+  * BSD LICENSE
+  *
+- * crec command line recorder for compress audio record in alsa
++ * crecord command line recorder for compress audio record in alsa
+  * Copyright (c) 2011-2012, Intel Corporation
+  * Copyright (c) 2013-2014, Wolfson Microelectronic Ltd.
+  * All rights reserved.
+@@ -35,7 +35,7 @@
+  *
+  * LGPL LICENSE
+  *
+- * crec command line recorder for compress audio record in alsa
++ * crecord command line recorder for compress audio record in alsa
+  * Copyright (c) 2011-2012, Intel Corporation
+  * Copyright (c) 2013-2014, Wolfson Microelectronic Ltd.
+  *
+@@ -153,7 +153,7 @@ static void size_wave_header(struct wave_header *header, uint32_t size)
  
- cplay_SOURCES = cplay.c
--crecord_SOURCES = crec.c
-+crecord_SOURCES = crecord.c
+ static void usage(void)
+ {
+-	fprintf(stderr, "usage: crec [OPTIONS] [filename]\n"
++	fprintf(stderr, "usage: crecord [OPTIONS] [filename]\n"
+ 		"-c\tcard number\n"
+ 		"-d\tdevice node\n"
+ 		"-b\tbuffer size\n"
+@@ -167,8 +167,8 @@ static void usage(void)
+ 		"If filename is not given the output is\n"
+ 		"written to stdout\n\n"
+ 		"Example:\n"
+-		"\tcrec -c 1 -d 2 test.wav\n"
+-		"\tcrec -f 5 test.wav\n",
++		"\tcrecord -c 1 -d 2 test.wav\n"
++		"\tcrecord -f 5 test.wav\n",
+ 		DEFAULT_CHANNELS, DEFAULT_RATE);
  
- cplay_CFLAGS = -I$(top_srcdir)/include
- crecord_CFLAGS = -I$(top_srcdir)/include
-diff --git a/src/utils/crec.c b/src/utils/crecord.c
-similarity index 100%
-rename from src/utils/crec.c
-rename to src/utils/crecord.c
+ 	exit(EXIT_FAILURE);
 -- 
 1.9.1
