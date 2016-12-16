@@ -1,64 +1,77 @@
-From: Ben Zhang <benzh@chromium.org>
-Subject: Re: [PATCH] ASoC: nau8825: Add Class G function options
-Date: Thu, 15 Dec 2016 21:05:52 -0800
-Message-ID: <CAOV7By+iQSW7FRprXXmEAwY30K+vssweAcSJBgncNKphE1Djsg@mail.gmail.com>
-References: <1481609526-21933-1-git-send-email-benzh@chromium.org>
- <20161214145712.uhsdfy6xr7ybja7f@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v6 1/3] clk: x86: Add Atom PMC platform
+ clocks
+Date: Thu, 15 Dec 2016 23:15:37 -0600
+Message-ID: <32235fb3-0d54-211d-28f4-4655e4bc7812@linux.intel.com>
+References: <1481306510-7471-1-git-send-email-irina.tirdea@intel.com>
+ <1481306510-7471-2-git-send-email-irina.tirdea@intel.com>
+ <CAHp75Vdaw4yvTPP2JZc+ti-AVNsisRQ+WG=JxPQ1jv-r7DADQA@mail.gmail.com>
+ <20161213232524.GQ5423@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ua0-f179.google.com (mail-ua0-f179.google.com
- [209.85.217.179])
- by alsa0.perex.cz (Postfix) with ESMTP id CB55F26749F
- for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2016 06:05:54 +0100 (CET)
-Received: by mail-ua0-f179.google.com with SMTP id 51so28259932uai.1
- for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2016 21:05:54 -0800 (PST)
-In-Reply-To: <20161214145712.uhsdfy6xr7ybja7f@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, John Hsu <KCHSU0@nuvoton.com>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, YHCHuang@nuvoton.com, Anatol Pomozov <anatol@google.com>, CTLIN0@nuvoton.com, Dylan Reid <dgreid@chromium.org>, mhkuo@nuvoton.com, "Zhi,
- Yong" <yong.zhi@intel.com>
+Return-path: <linux-acpi-owner@vger.kernel.org>
+In-Reply-To: <20161213232524.GQ5423@codeaurora.org>
+Sender: linux-acpi-owner@vger.kernel.org
+To: Stephen Boyd <sboyd@codeaurora.org>, Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Irina Tirdea <irina.tirdea@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Michael Turquette <mturquette@baylibre.com>, "x86@kernel.org" <x86@kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Takashi Iwai <tiwai@suse.com>, platform-driver-x86@vger.kernel.org, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>, Mark Brown <broonie@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Darren Hart <dvhart@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Len Brown <lenb@kernel.org>, linux-clk@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Dec 14, 2016 at 6:57 AM, Mark Brown <broonie@kernel.org> wrote:
-> On Mon, Dec 12, 2016 at 10:12:06PM -0800, Ben Zhang wrote:
->> Add a DAPM_MUX for userspace to control the Class G function:
->> "Switching": Use +-1.8V or +-0.9V supply, based on signal amplitude.
->> "1.8V": Always use +-1.8V.
+Hi Stephen,
+
+can you elaborate on the last comment?
+
+thanks,
+
+-Pierre
+
+
+On 12/13/2016 05:25 PM, Stephen Boyd wrote:
 >
-> This doesn't affect audio routing so why is it being done with a DAPM
-> mux?
+>>> +                                       void __iomem *base,
+>>> +                                       const char **parent_names,
+>>> +                                       int num_parents)
+>>> +{
+>>> +       struct clk_plt *pclk;
+>>> +       struct clk_init_data init;
+>>> +       int ret;
+>>> +
+>>> +       pclk = devm_kzalloc(&pdev->dev, sizeof(*pclk), GFP_KERNEL);
+>>> +       if (!pclk)
+>>> +               return ERR_PTR(-ENOMEM);
+>>> +
+>>> +       init.name =  kasprintf(GFP_KERNEL, "%s%d", PLT_CLK_NAME_BASE, id);
+>> devm_kasprintf()
+> Please no.
+>
+>>> +       init.ops = &plt_clk_ops;
+>>> +       init.flags = 0;
+>>> +       init.parent_names = parent_names;
+>>> +       init.num_parents = num_parents;
+>>> +
+>>> +       pclk->hw.init = &init;
+>>> +       pclk->reg = base + id * PMC_CLK_CTL_SIZE;
+>>> +       spin_lock_init(&pclk->lock);
+>>> +
+>>> +       ret = devm_clk_hw_register(&pdev->dev, &pclk->hw);
+>>> +       if (ret)
+>>> +               goto err_free_init;
+>>> +
+>>> +       pclk->lookup = clkdev_hw_create(&pclk->hw, init.name, NULL);
+>>> +       if (!pclk->lookup) {
+>>> +               ret = -ENOMEM;
+>>> +               goto err_free_init;
+>>> +       }
+>>> +
+>>> +       kfree(init.name);
+>> devm_kfree();
+> It's all local to this function, devm isn't helping anything.
+> Having one kfree() would be good though. And using init.name for
+> the clkdev lookup is probably wrong and should be replaced with
+> something more generic along with an associated device name.
+I am not sure I understand this last comment.
+init.name is not a constant, it's made of the "pmc_plt_clk_" string 
+concatenated with an id which directly maps to which hardware clock is 
+registered. Clients use devm_clk_get() with a "pmc_plt_clk_<n>" argument.
+>
 
-When user wants the switching voltages, the Class G register bit needs
-to be toggled at a specific time in the widget power up/down sequences
-on the playback route. It helps reduce pop and is consistent with
-existing behavior. DAPM_MUX achieves this by taking DAPM_PGA_S in and
-out of the playback route based on user selection. If the register bit
-is directly controlled by a separate kcontrol in
-snd_soc_codec_driver.controls unrelated to widgets, the bit will be
-set immediately by user even when there is no active playback. Then
-when playback starts, Class G is already on before the DACs/charge
-pumps/output drivers/pulldowns are enabled. The existing/desired
-behavior is to turn on Class G last and turn it off first.
-
-John has sent me a patch which uses a separate SOC_ENUM_EXT kcontrol
-in snd_soc_codec_driver.controls to set a flag, then has DAPM_PGA_S PM
-event callbacks selectively setting the register bit based on the
-flag. But it feels cleaner to implement this with a DAPM_MUX: The
-DAPM_PGA_S widget power status correctly reflects the actual register
-bit. User can experiment with the setting during playback.
-
-John, to make SND_SOC_NOPM work with DAPM_MUX on older kernels, commit
-236aaa686358 ("ASoC: dapm: Consolidate MUXs and virtual MUXs") can be
-backported, which landed in v3.15. chromeos-3.14 has backported it
-already. Another solution is to backport my patch by using
-SND_SOC_DAPM_VIRT_MUX on older kernels.
