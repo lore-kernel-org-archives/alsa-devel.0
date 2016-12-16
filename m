@@ -1,37 +1,76 @@
 From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v6 2/3] arch/x86/platform/atom: Move pmc_atom to drivers/platform/x86
-Date: Fri, 16 Dec 2016 20:39:01 +0200
-Message-ID: <CAHp75Vc9qkaHkpvcH+24ivF=5HsuKwSbRggo7ZC_3=ckJLMzcQ@mail.gmail.com>
+Subject: Re: [PATCH v6 1/3] clk: x86: Add Atom PMC platform clocks
+Date: Fri, 16 Dec 2016 20:49:13 +0200
+Message-ID: <CAHp75Ve-3WXr05uvPQDfFDzxLc09+1ZSYpsuw02ab+x0enJtQg@mail.gmail.com>
 References: <1481306510-7471-1-git-send-email-irina.tirdea@intel.com>
- <1481306510-7471-3-git-send-email-irina.tirdea@intel.com> <CAHp75VfCgTgWnNmgcY9mp9n-1e_mSci=3dGyrtDquMtTT3OoYw@mail.gmail.com>
- <20161216182045.GA44199@f23x64.localdomain>
+ <1481306510-7471-2-git-send-email-irina.tirdea@intel.com> <CAHp75Vdaw4yvTPP2JZc+ti-AVNsisRQ+WG=JxPQ1jv-r7DADQA@mail.gmail.com>
+ <1a98dcda-a662-958e-307f-5fe3f281ed9f@linux.intel.com> <CAHp75VccDyiLhWxZYg+d0usrwhfa_hiZAJCKPXXVRod=tB803g@mail.gmail.com>
+ <20161216183607.GB44199@f23x64.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <20161216182045.GA44199@f23x64.localdomain>
-Sender: linux-acpi-owner@vger.kernel.org
+Return-path: <linux-clk-owner@vger.kernel.org>
+In-Reply-To: <20161216183607.GB44199@f23x64.localdomain>
+Sender: linux-clk-owner@vger.kernel.org
 To: Darren Hart <dvhart@infradead.org>
-Cc: Irina Tirdea <irina.tirdea@intel.com>, linux-clk@vger.kernel.org, "x86@kernel.org" <x86@kernel.org>, platform-driver-x86@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>, Thomas Gleixner <tglx@linutronix.de>, Michael Turquette <mturquette@baylibre.com>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Irina Tirdea <irina.tirdea@intel.com>, linux-clk@vger.kernel.org, "x86@kernel.org" <x86@kernel.org>, platform-driver-x86@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>, Thomas Gleixner <tglx@linutronix.de>, Michael Turquette <mturquette@baylibre.com>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Dec 16, 2016 at 8:20 PM, Darren Hart <dvhart@infradead.org> wrote:
-> On Tue, Dec 13, 2016 at 01:43:31AM +0200, Andy Shevchenko wrote:
->> I have been told I have to send my comments here instead of our
->> internal ML. I didn't fast enough to comment that during v5. So do it
->> right now.
+On Fri, Dec 16, 2016 at 8:36 PM, Darren Hart <dvhart@infradead.org> wrote:
+> On Tue, Dec 13, 2016 at 02:26:21AM +0200, Andy Shevchenko wrote:
+>> On Tue, Dec 13, 2016 at 2:15 AM, Pierre-Louis Bossart
+>> <pierre-louis.bossart@linux.intel.com> wrote:
 
->> >  {arch/x86/include/asm => include/linux/platform_data/x86}/pmc_atom.h | 0
+>> For clock I would suggest include/linux/clk/ with x86_ prefix.
+>> For the rest I have no strong opinion except trying to avoid
+>> platform_data wording in the path as much as possible.
 >>
->> No, it's not a *platform data*.
+>> As an example I could recall DMA engine subsystem where we have
 >>
->> Other that that looks good to me.
+>> include/linux/platform_data/dma-*.h
+>>
+>> and
+>>
+>> include/linux/dma/*.h
+>>
+>> So, this sounds more to me as
+>>
+>> include/linux/x86/pmc_atom.h
 >
-> Where would you recommend instead? It needs a place to serve both acpi_lpss.c
-> and pmc_atom.c. The include/linux/platform_data/x86 location doesn't seem too
-> strange as it supports a "platform" driver in the sense that pmc_atom is a
-> platform driver.
+> There should really be some Documentation about how to choose an include
+> directory :-)
 
-include/linux/x86 ?
+So true!
+
+> My understanding is include/linux should be more generic, rather than platform
+> specific headers. So while platform_data may refer specifically to the platform
+> bus drivers, it's the closest thing we have to include/platform, which would be
+> ideal. I would prefer to stick with include/platform_data because:
+>
+> 1) Semantically, it's the closest thing there is
+> 2) include/linux should be for more generic headers related to the OS or
+>    subsystems
+> 3) It doesn't make sense to create a separate include/platform directory for a
+>    single header.
+> 4) We don't want to rename platform_data to platform now and change all the
+>    drivers, but it could be changed later.
+
+My understanding that part like P-Unit, PMIC, PMC, SCU, whatever we
+have inside SoC is platform from hardware prospective, but from
+software (driver) it doesn't use platform data since it's quite SoC
+specific (like CPU model to differentiate). That's why something in
+the middle between arch/x86/include/asm and
+include/linux/platform_data.
+
+I assume I would be not good in naming schemes, though platform_data
+for file which doesn't contain platform data for platform device
+sounds a bit confusing to me. Like someone already noticed
+include/platform_data is already messy. This might just add another
+level of it.
+
+So, what is exactly confuses me is mixing data for *platform devices*
+(as represented via *platform driver* -- struct platform_driver)  and
+for SoC devices (no struct platform_driver per se).
+Maybe I misunderstood something...
 
 -- 
 With Best Regards,
