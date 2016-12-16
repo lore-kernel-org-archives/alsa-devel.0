@@ -1,73 +1,133 @@
-From: Darren Hart <dvhart@infradead.org>
-Subject: Re: [PATCH v6 1/3] clk: x86: Add Atom PMC platform clocks
-Date: Fri, 16 Dec 2016 14:58:19 -0800
-Message-ID: <20161216225819.GA62123@f23x64.localdomain>
-References: <1481306510-7471-1-git-send-email-irina.tirdea@intel.com>
- <1481306510-7471-2-git-send-email-irina.tirdea@intel.com>
- <CAHp75Vdaw4yvTPP2JZc+ti-AVNsisRQ+WG=JxPQ1jv-r7DADQA@mail.gmail.com>
- <1a98dcda-a662-958e-307f-5fe3f281ed9f@linux.intel.com>
- <CAHp75VccDyiLhWxZYg+d0usrwhfa_hiZAJCKPXXVRod=tB803g@mail.gmail.com>
- <20161216183607.GB44199@f23x64.localdomain>
- <CAHp75Ve-3WXr05uvPQDfFDzxLc09+1ZSYpsuw02ab+x0enJtQg@mail.gmail.com>
- <20161216191951.GC44199@f23x64.localdomain>
- <CAHp75Vc8q_WuFURhG_z5zj9VztS-d8_RiSHQYgh-HFTjzP0MEQ@mail.gmail.com>
+From: =?UTF-8?Q?Marc_Streckfu=C3=9F?= <marc.streckfuss@gmail.com>
+Subject: USB Driver Development Sinn 7 Status 24|96
+	(0x200c:0x1006)
+Date: Sat, 17 Dec 2016 00:53:56 +0100
+Message-ID: <CAGCoSN5dkVWzmpOUOi34aTHYBPeKq804kqC+jnGVjaZSiPt4yA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vc8q_WuFURhG_z5zj9VztS-d8_RiSHQYgh-HFTjzP0MEQ@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Irina Tirdea <irina.tirdea@intel.com>, linux-clk@vger.kernel.org, "x86@kernel.org" <x86@kernel.org>, platform-driver-x86@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>, Thomas Gleixner <tglx@linutronix.de>, Michael Turquette <mturquette@baylibre.com>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qt0-f178.google.com (mail-qt0-f178.google.com
+ [209.85.216.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id D104726683E
+ for <alsa-devel@alsa-project.org>; Sat, 17 Dec 2016 00:53:58 +0100 (CET)
+Received: by mail-qt0-f178.google.com with SMTP id w33so101126925qtc.3
+ for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2016 15:53:58 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Dec 17, 2016 at 12:29:41AM +0200, Andy Shevchenko wrote:
-> On Fri, Dec 16, 2016 at 9:19 PM, Darren Hart <dvhart@infradead.org> wrote:
-> > On Fri, Dec 16, 2016 at 08:49:13PM +0200, Andy Shevchenko wrote:
-> >> On Fri, Dec 16, 2016 at 8:36 PM, Darren Hart <dvhart@infradead.org> wrote:
-> >> > On Tue, Dec 13, 2016 at 02:26:21AM +0200, Andy Shevchenko wrote:
-> >> >> On Tue, Dec 13, 2016 at 2:15 AM, Pierre-Louis Bossart
-> 
-> >> > There should really be some Documentation about how to choose an include
-> >> > directory :-)
-> >>
-> >> So true!
-> 
-> (1)
-> 
-> > The options are:
-> >
-> > a) include/linux/x86
-> > b) include/linux/platform_data/x86
-> 
-> Correct.
-> 
-> > In my opinion, a) looks like architecture and would be difficult to distinguish
-> > from arch/x86/include. b) on the other hand clearly notes that it is for
-> > platform specific information. If it was platform instead of platform_data, that
-> > would be even better, but that could be a later change. But I think the
-> > confusion over x86 arch in a) is worse than the more subtle (in my opinion)
-> > distinction between "platform" and "platform_data".
-> >
-> > I would want x86 maintainer approval before adding a), while b) I'm happy to add
-> > ourselves - and we already have agreement from tglx on that.
-> >
-> > To move forward, let's go with b).
-> 
-> Let me say I'm not fully satisfied, though for sake of moving forward
-> I agree with these arguments.
-> 
-> > The new x86 directory clearly separates out
-> > content which will make it trivial to move later if the need arises.
-> 
-> See (1). I would really appreciate if some agreement and documentation
-> will be developed.
-> In that case one of us would really have one serious argument to one
-> of the sides.
-
-Agreed. I always prefer to make decisions based on Documented precedent whenever
-possible.
-
--- 
-Darren Hart
-Intel Open Source Technology Center
+SGVsbG8gR3V5cywKSSBhcG9sb2dpemUgaW4gYWR2YW5jZSBpZiB0aGlzIGlzIHRoZSB3cm9uZyBt
+YWlsaW5nIGxpc3QgKEluIGdlbmVyYWwgSSBhbQpuZXcgdG8gTWFpbGluZyBMaXN0cyksIGJ1dCBJ
+IHRob3VnaHQgc2luY2UgSSBwbGFuIHRvIGRldmVsb3AgYSBkcml2ZXIgdGhpcwptaWdodCBmaXQs
+IEknbSBqdXN0IG5vdCBjb21wbGV0ZWx5IGRvbmUuCgoKPT0gRGV2aWNlIEluZm9ybWF0aW9uClRo
+ZSBEZXZpY2UgaW4gUXVlc3Rpb24gaXMgZnJvbSB0aGUgQnJhbmQgIlNpbm4gNyIgd2l0aCB0aGUg
+bmFtZSAiU3RhdHVzCjI0fDk2IiwgaXQncyBhIHJlbGF0aXZlbHkgdW5rbm93biByZWNvcmRpbmcg
+aW50ZXJmYWNlIGRlc2lnbiB0byBiZSB1c2VkIGluCkRBV3Mgb24gV2luZG93cyB1c2luZyBTdGVp
+bmJlcmcncyBQcm9wcmlldGFyeSBBU0lPIEludGVyZmFjZS4gVGhpcyBpcyB0bwpwcm92aWRlIGEg
+bG93LWxhdGVuY3kgaW50ZXJmYWNlIG9uIFdpbmRvd3MgYnV0IGl0IHNlZW1zIHRvIGJlIHN1cHBv
+cnQgYQpyZWd1bGFyIGludGVyZmFjZSBhcyB3ZWxsIChhdCBsZWFzdCB5b3UgY2FuIHVzZSBpdCBh
+cyByZWd1bGFyIHdpbmRvd3MKc3BlYWtlciBhbmQgaGF2ZSBkaWZmZXJlbnQgb3B0aW9ucyB0aGVy
+ZSkuCgpJdCBzZWVtcyB0byBiZSBtYW51ZmFjdHVyZWQgYnkgUmVsb29wLCBzaW5jZSB0aGF0J3Mg
+dGhlIHZlbmRvcklkIDB4MjAwYy4gSQp0cmllZCB0aGUgc25kLXVzYi1hdWRpbyBxdWlyayBmb3Ig
+dGhlIFJlbG9vcCBQbGF5IGFscmVhZHksIGJ1dCBpdCBkaWRuJ3QKd29yayAoQXBwbHlpbmcgdGhl
+IFF1aXJrIHNlZW1lZCB0byBmYWlsLCBkdWUgdG8gZW5kcG9pbnQgbWlzbWF0Y2gsIGV0YykuCgpG
+cm9tIHJldmVyc2UgZW5naW5lZXJpbmcgdGhlIHdpbmRvd3MgZHJpdmVyIGEgYml0IEkgZm91bmQg
+dGhlIG5hbWUgIgp1c2ItYXVkaW8uZGUiLiBJdCdzIGEgd2Vic2l0ZSBvZiB0aGUgUHlsb3RlYyBH
+bWJIIHdoaWNoIHNlZW1zIHRvIHByb3ZpZGUKdGhlIGJhc2UgYm9hcmRzIGZvciBVU0IgQXVkaW8g
+SGFyZHdhcmUgdXNlZCBpbiBtYW55IEludGVyZmFjZXMgKFRoZXkgaGF2ZSBhCnBhZ2Ugd2hlcmUg
+dGhleSBtZW50aW9uIHdoYXQgaXMgdXNpbmcgdGhlaXIgdXNiIGF1ZGlvIGRyaXZlcikKClRoZSBp
+bnRlcmVzdGluZyBsc3VzYiBvdXRwdXQgaXMgdGhpcyAoSSBvbWl0dGVkIHRoZSAiZW1wdHkiIGFs
+dHNldHRpbmcgMApmb3IgYm90aCBpbnRlcmZhY2VzLCBhbGwgY2xhc3NlcyBhcmUgMHhGRiA9PSBW
+ZW5kb3IgU3BlY2lmaWMpOgogICAgSW50ZXJmYWNlIERlc2NyaXB0b3I6CiAgICAgIGJMZW5ndGgg
+ICAgICAgICAgICAgICAgIDkKICAgICAgYkRlc2NyaXB0b3JUeXBlICAgICAgICAgNAogICAgICBi
+SW50ZXJmYWNlTnVtYmVyICAgICAgICAwCiAgICAgIGJBbHRlcm5hdGVTZXR0aW5nICAgICAgIDEK
+ICAgICAgYk51bUVuZHBvaW50cyAgICAgICAgICAgMwogICAgICBiSW50ZXJmYWNlQ2xhc3MgICAg
+ICAgMjU1IFZlbmRvciBTcGVjaWZpYyBDbGFzcwogICAgICBiSW50ZXJmYWNlU3ViQ2xhc3MgICAg
+ICAwCiAgICAgIGJJbnRlcmZhY2VQcm90b2NvbCAgICAgIDAKICAgICAgaUludGVyZmFjZSAgICAg
+ICAgICAgICAgMAogICAgICBFbmRwb2ludCBEZXNjcmlwdG9yOgogICAgICAgIGJMZW5ndGggICAg
+ICAgICAgICAgICAgIDcKICAgICAgICBiRGVzY3JpcHRvclR5cGUgICAgICAgICA1CiAgICAgICAg
+YkVuZHBvaW50QWRkcmVzcyAgICAgMHgwMiAgRVAgMiBPVVQKICAgICAgICBibUF0dHJpYnV0ZXMg
+ICAgICAgICAgICA1CiAgICAgICAgICBUcmFuc2ZlciBUeXBlICAgICAgICAgICAgSXNvY2hyb25v
+dXMKICAgICAgICAgIFN5bmNoIFR5cGUgICAgICAgICAgICAgICBBc3luY2hyb25vdXMKICAgICAg
+ICAgIFVzYWdlIFR5cGUgICAgICAgICAgICAgICBEYXRhCiAgICAgICAgd01heFBhY2tldFNpemUg
+ICAgIDB4MDAwNCAgMXggNCBieXRlcwogICAgICAgIGJJbnRlcnZhbCAgICAgICAgICAgICAgIDEK
+ICAgICAgRW5kcG9pbnQgRGVzY3JpcHRvcjoKICAgICAgICBiTGVuZ3RoICAgICAgICAgICAgICAg
+ICA3CiAgICAgICAgYkRlc2NyaXB0b3JUeXBlICAgICAgICAgNQogICAgICAgIGJFbmRwb2ludEFk
+ZHJlc3MgICAgIDB4ODMgIEVQIDMgSU4KICAgICAgICBibUF0dHJpYnV0ZXMgICAgICAgICAgICAy
+CiAgICAgICAgICBUcmFuc2ZlciBUeXBlICAgICAgICAgICAgQnVsawogICAgICAgICAgU3luY2gg
+VHlwZSAgICAgICAgICAgICAgIE5vbmUKICAgICAgICAgIFVzYWdlIFR5cGUgICAgICAgICAgICAg
+ICBEYXRhCiAgICAgICAgd01heFBhY2tldFNpemUgICAgIDB4MDIwMCAgMXggNTEyIGJ5dGVzCiAg
+ICAgICAgYkludGVydmFsICAgICAgICAgICAgICAgMQogICAgICBFbmRwb2ludCBEZXNjcmlwdG9y
+OgogICAgICAgIGJMZW5ndGggICAgICAgICAgICAgICAgIDcKICAgICAgICBiRGVzY3JpcHRvclR5
+cGUgICAgICAgICA1CiAgICAgICAgYkVuZHBvaW50QWRkcmVzcyAgICAgMHgwNSAgRVAgNSBPVVQK
+ICAgICAgICBibUF0dHJpYnV0ZXMgICAgICAgICAgICAyCiAgICAgICAgICBUcmFuc2ZlciBUeXBl
+ICAgICAgICAgICAgQnVsawogICAgICAgICAgU3luY2ggVHlwZSAgICAgICAgICAgICAgIE5vbmUK
+ICAgICAgICAgIFVzYWdlIFR5cGUgICAgICAgICAgICAgICBEYXRhCiAgICAgICAgd01heFBhY2tl
+dFNpemUgICAgIDB4MDIwMCAgMXggNTEyIGJ5dGVzCiAgICAgICAgYkludGVydmFsICAgICAgICAg
+ICAgICAgMQogICAgSW50ZXJmYWNlIERlc2NyaXB0b3I6CiAgICAgIGJMZW5ndGggICAgICAgICAg
+ICAgICAgIDkKICAgICAgYkRlc2NyaXB0b3JUeXBlICAgICAgICAgNAogICAgICBiSW50ZXJmYWNl
+TnVtYmVyICAgICAgICAxCiAgICAgIGJBbHRlcm5hdGVTZXR0aW5nICAgICAgIDEKICAgICAgYk51
+bUVuZHBvaW50cyAgICAgICAgICAgMQogICAgICBiSW50ZXJmYWNlQ2xhc3MgICAgICAgMjU1IFZl
+bmRvciBTcGVjaWZpYyBDbGFzcwogICAgICBiSW50ZXJmYWNlU3ViQ2xhc3MgICAgICAwCiAgICAg
+IGJJbnRlcmZhY2VQcm90b2NvbCAgICAgIDAKICAgICAgaUludGVyZmFjZSAgICAgICAgICAgICAg
+MAogICAgICBFbmRwb2ludCBEZXNjcmlwdG9yOgogICAgICAgIGJMZW5ndGggICAgICAgICAgICAg
+ICAgIDcKICAgICAgICBiRGVzY3JpcHRvclR5cGUgICAgICAgICA1CiAgICAgICAgYkVuZHBvaW50
+QWRkcmVzcyAgICAgMHg4NiAgRVAgNiBJTgogICAgICAgIGJtQXR0cmlidXRlcyAgICAgICAgICAg
+IDIKICAgICAgICAgIFRyYW5zZmVyIFR5cGUgICAgICAgICAgICBCdWxrCiAgICAgICAgICBTeW5j
+aCBUeXBlICAgICAgICAgICAgICAgTm9uZQogICAgICAgICAgVXNhZ2UgVHlwZSAgICAgICAgICAg
+ICAgIERhdGEKICAgICAgICB3TWF4UGFja2V0U2l6ZSAgICAgMHgwMjAwICAxeCA1MTIgYnl0ZXMK
+ICAgICAgICBiSW50ZXJ2YWwgICAgICAgICAgICAgICAxCgoKPT0gTXkgRmluZGluZ3MKU28gYWZ0
+ZXIgZGF5cyBvZiB0cnlpbmcgb3V0IGRpZmZlcmVudCBxdWlya3MsIGJ1aWxkaW5nIG15IG93biB2
+ZXJzaW9uIG9mCnRoZSBzbmQtdXNiLWF1ZGlvIGFuZCBlbmRsZXNzIHJlc2VhcmNoIEkgZm91bmQg
+b3V0IHNvbWUgc3R1ZmYuCkEpIEkgaGF2ZSBjYXB0dXJlZCB0aGUgaW5pdCBzZXF1ZW5jZSBhbmQg
+SSBhbSBhYmxlIHRvIHJlZG8gaXQgdXNpbmcgbGlidXNiCkIpIEl0IHR1cm5zIG91dCB0aGF0IHRo
+ZXJlIGFyZSAzIHBlcm1hbmVudCBjb21tdW5pY2F0aW9uIHR5cGVzLCBldmVuIHdoZW4gSQpkaXNh
+YmxlIHRoZSBkZXZpY2UgaW4gV2luZG93czoKICAgIFRoZXJlIGFyZSB3cml0ZXMgdG8gdGhlIElz
+b2Nocm9ub3VzIEVuZHBvaW50IDB4MiBjb250YWluaW5nIDMyClN1Yi1QYWNrZXRzLCBzbyB0aGF0
+IGlzIDEyOCBCeXRlcyBvZiAweDAuIE9kZGx5IGVub3VnaCB0aGF0IGlzbid0IHRoZSBBdWRpbwpk
+YXRhISEKICAgIFRoZXJlIGFyZSB3cml0ZXMgdG8gdGhlIEJ1bGsgRW5kcG9pbnQgMHg1IGNvbnRh
+aW5pbmcgYSB2YXJpYWJsZSBzaXplCnJhbmdpbmcgcm91Z2hseSBmcm9tIH4xNmtCIHRvIDIwa0Iu
+IFRoZXNlIGFyZSBmaWxsZWQgbW9zdGx5IHdpdGggMHgwLCBidXQKcGVyaW9kaWNhbGx5IChldmVy
+eSAyMDBoIEJ5dGVzPykgSSBoYWQgYSAweEZEIDB4RkYgU2VxdWVuY2UuIFRob3NlIGFjdHVhbGx5
+CmNvbnRhaW4gdGhlIEF1ZGlvIERhdGEuIEkgd2FzIGFibGUgdG8gcHJvZHVjZSBzb21lIGtub2Nr
+aW5nIHNvdW5kIHdoZW4Kc2VuZGluZyByYW5kb20gdmFsdWVzIChlaXRoZXIgMHgwIG9yIDB4MSEp
+IGhlcmUuIFtJIHdhcyBleHBlY3RpbmcgYSB3aGl0ZQpub2lzZSwgdGhvdWdoXQogICAgICAgICAg
+PT4gVGhpcyBpcyB3aGVyZSBJIGFtIHN0dWNrLiBJIHVuZGVyc3RhbmQgdGhlIGlkZWEgb2YgUENN
+IGluCkdlbmVyYWwsIGJ1dCBJIHdvdWxkIGV4cGVjdCBpdCB0byBzZW5kIFswLCAweEZGXSB2YWx1
+ZXMgYW5kIG5vdCBqdXN0IDB4MCBvcgoweDEsIHNpbmNlIHRoYXQgaXMgYSBiYW5kd2lkdGggd2Fz
+dGUuIFRoaXMgYW5kIEkgd291bGQgYWxzbyBleHBlY3QgYQpjb25zdGFudCBwYWNrZXQgc2l6ZS4g
+SWYgaXQgaXMgdmFyaWFibGUsIGRvZXMgdGhhdCBtZWFuIHRoYXQgdGhlIFNhbXBsZQpSYXRlIGNo
+YW5nZXM/IChOb3RlOiBJIGNvbmZpcm1lZCB0aGUgMHgwLi4weDEgYW5kIHRoZSB2YXJpYWJsZSBw
+YWNrZXQgc2l6ZQpib3RoOiBCeSB1c2luZyBsaWJ1c2IvcHlVU0IgYW5kIGJ5IHNuaWZmaW5nIHRo
+ZSB0cmFmZmljIG9mIGEgdmlydHVhbAp3aW5kb3dzIGJveCB3aXRoIFdpcmVzaGFyaykKICAgIFRo
+ZXJlIGFyZSByZWFkcyBmcm9tIHRoZSBCdWxrIEVuZHBvaW50IDB4ODYgKE5vdGU6IERpZmZlcmVu
+dApJbnRlcmZhY2VOdW1iZXIsIGJ1dCBpdCBzZWVtcyB0byB3b3JrIHdpdGhvdXQgY2hhbmdpbmcg
+dGhlIGludGVyZmFjZT8/KQp3aGljaCByZXN1bHQgaW4gYW4gYXJyYXkgb2YgdmFsdWVzIHJhbmdp
+bmcgZnJvbSAweDAgdG8gMHgzLiAoTWF5YmUgdGhhdAp3b3VsZCBhcHBseSB0byB0aGUgb3V0cHV0
+IGFzIHdlbGwgYW5kIGR1cmluZyBzbmlmZmluZyBJIGp1c3QgaGFkIHRoZSB0ZXN0CnNvdW5kIHRv
+byBsb3cgZ2FpbmVkPykuIE1vc3Qgb2YgdGhlIHRpbWUgdGhlaXIgc2l6ZSBzZWVtcyB0byBiZSBp
+biBsaW5lCndpdGggdGhlIG91dHB1dCBidWxrIHBhY2tldHMuCgpTb21lIG9mIHRoZSBzZW50IHNp
+emVzIChkYXRhIGZpZWxkcyBvbmx5KSBhcmU6IDE5Jzk4NkJ5dGVzLCAxNiczODQgQnl0ZXMsCjEy
+JzgwMCBCeXRlcyBob3dldmVyIG1vc3Qgb2YgdGhlIHRpbWUgaXQncyAxNmssIHdoZXJlYXMgdGhl
+IG91dHB1dCB0ZW5kcyB0bwpnbyB0byAxOWsgYW5kIHRoZSBpbnB1dCB0byAxMmsgKEkgaGF2ZSBu
+b3RoaW5nIGF0dGFjaGVkIHRvIHRoZSBpbnB1dApjb25uZWN0b3JzKS4KCk5vdyB3aGF0IEkgYWN0
+dWFsbHkgd2FudCB0byBrbm93OiBEb2VzIHRoYXQgcHJvdG9jb2wgc291bmQgZmFtaWxpYXIgdG8g
+eW91PwpEbyB5b3UgaGF2ZSBhIGNsdWUgb24gaG93IHRvIHBhdGNoIGl0IGluIGFzIGEgc2ltcGxl
+IHF1aXJrPwpJIHdhcyB0aGlua2luZyBtYXliZSBJIGNhbiB1c2UgYSBzZXR1cCBxdWlyayBhbmQg
+dGhlbiBsZXQgdGhlCkZJWEVEX0VORFBPSU5UIGRvIHRoZSByZXN0PyBIb3dldmVyIEkgYW0gc3R1
+Y2sgd2l0aCB0aGUgRm9ybWF0LCBJIGRvbid0Cmtub3cgd2hldGhlciB0aGF0IHJlYWxseSBpcyBh
+IGtub3duIGZvcm1hdCBvciBpZiBJIG5lZWQgc29tZSBjb252ZXJzaW9uIGFuZApob3cgaXQgaXMg
+d2l0aCBzb21lIHN5bmNocm9uaXphdGlvbiBjbG9jayBhbmQgc3VjaC4KCkJhc2ljYWxseSBJIG5l
+ZWQgaW5mb3JtYXRpb24gb24gaG93IHRvIHByb2NlZWQuCgotIE1hcmMgU3RyZWNrZnXDnwpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
