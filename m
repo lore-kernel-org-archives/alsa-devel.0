@@ -1,90 +1,76 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdmi-codec: use unsigned type to structure members
- with bit-field" to the asoc tree
-Date: Fri, 16 Dec 2016 12:31:43 +0000
-Message-ID: <E1cHrfr-0006Gr-QY@debutante>
-References: <20161216092654.7773-1-o-takashi@sakamocchi.jp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20161216092654.7773-1-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org, Jie Qiu <jie.qiu@mediatek.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, dri-devel@lists.freedesktop.org, perex@perex.cz, broonie@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Jyri Sarha <jsarha@ti.com>, stable@vger.kernel.org
+Subject: Applied "ASoC: da7218: Set DAI output pin high impedance when not in use" to the asoc tree
+Date: Fri, 16 Dec 2016 12:31:40 +0000
+Message-ID: <E1cHrfo-0006Fo-Rm@debutante>
+References: <20161216110502.849053FA9F@swsrvapps-01.diasemi.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20161216110502.849053FA9F@swsrvapps-01.diasemi.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIHBhdGNoCgogICBBU29DOiBoZG1pLWNvZGVjOiB1c2UgdW5zaWduZWQgdHlwZSB0byBzdHJ1
-Y3R1cmUgbWVtYmVycyB3aXRoIGJpdC1maWVsZAoKaGFzIGJlZW4gYXBwbGllZCB0byB0aGUgYXNv
-YyB0cmVlIGF0CgogICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9n
-aXQvYnJvb25pZS9zb3VuZC5naXQgCgpBbGwgYmVpbmcgd2VsbCB0aGlzIG1lYW5zIHRoYXQgaXQg
-d2lsbCBiZSBpbnRlZ3JhdGVkIGludG8gdGhlIGxpbnV4LW5leHQKdHJlZSAodXN1YWxseSBzb21l
-dGltZSBpbiB0aGUgbmV4dCAyNCBob3VycykgYW5kIHNlbnQgdG8gTGludXMgZHVyaW5nCnRoZSBu
-ZXh0IG1lcmdlIHdpbmRvdyAob3Igc29vbmVyIGlmIGl0IGlzIGEgYnVnIGZpeCksIGhvd2V2ZXIg
-aWYKcHJvYmxlbXMgYXJlIGRpc2NvdmVyZWQgdGhlbiB0aGUgcGF0Y2ggbWF5IGJlIGRyb3BwZWQg
-b3IgcmV2ZXJ0ZWQuICAKCllvdSBtYXkgZ2V0IGZ1cnRoZXIgZS1tYWlscyByZXN1bHRpbmcgZnJv
-bSBhdXRvbWF0ZWQgb3IgbWFudWFsIHRlc3RpbmcKYW5kIHJldmlldyBvZiB0aGUgdHJlZSwgcGxl
-YXNlIGVuZ2FnZSB3aXRoIHBlb3BsZSByZXBvcnRpbmcgcHJvYmxlbXMgYW5kCnNlbmQgZm9sbG93
-dXAgcGF0Y2hlcyBhZGRyZXNzaW5nIGFueSBpc3N1ZXMgdGhhdCBhcmUgcmVwb3J0ZWQgaWYgbmVl
-ZGVkLgoKSWYgYW55IHVwZGF0ZXMgYXJlIHJlcXVpcmVkIG9yIHlvdSBhcmUgc3VibWl0dGluZyBm
-dXJ0aGVyIGNoYW5nZXMgdGhleQpzaG91bGQgYmUgc2VudCBhcyBpbmNyZW1lbnRhbCB1cGRhdGVz
-IGFnYWluc3QgY3VycmVudCBnaXQsIGV4aXN0aW5nCnBhdGNoZXMgd2lsbCBub3QgYmUgcmVwbGFj
-ZWQuCgpQbGVhc2UgYWRkIGFueSByZWxldmFudCBsaXN0cyBhbmQgbWFpbnRhaW5lcnMgdG8gdGhl
-IENDcyB3aGVuIHJlcGx5aW5nCnRvIHRoaXMgbWFpbC4KClRoYW5rcywKTWFyawoKRnJvbSA5ZTRk
-NTlhZGE0ZDYwMmU3OGVlZTlmYjVmODk4Y2U2MWZkZGRiNDQ2IE1vbiBTZXAgMTcgMDA6MDA6MDAg
-MjAwMQpGcm9tOiBUYWthc2hpIFNha2Ftb3RvIDxvLXRha2FzaGlAc2FrYW1vY2NoaS5qcD4KRGF0
-ZTogRnJpLCAxNiBEZWMgMjAxNiAxODoyNjo1NCArMDkwMApTdWJqZWN0OiBbUEFUQ0hdIEFTb0M6
-IGhkbWktY29kZWM6IHVzZSB1bnNpZ25lZCB0eXBlIHRvIHN0cnVjdHVyZSBtZW1iZXJzIHdpdGgK
-IGJpdC1maWVsZAoKVGhpcyBpcyBhIGZpeCBmb3IgTGludXggNC4xMC1yYzEuCgpJbiBDIGxhbmd1
-YWdlIHNwZWNpZmljYXRpb24sIGEgYml0LWZpZWxkIGlzIGludGVycHJldGVkIGFzIGEgc2lnbmVk
-IG9yCnVuc2lnbmVkIGludGVnZXIgdHlwZSBjb25zaXN0aW5nIG9mIHRoZSBzcGVjaWZpZWQgbnVt
-YmVyIG9mIGJpdHMuCgpJbiBHQ0MgbWFudWFsLCB0aGUgcmFuZ2Ugb2YgYSBzaWduZWQgYml0IGZp
-ZWxkIG9mIE4gYml0cyBpcyBmcm9tCi0oMl5OKSAvIDIgdG8gKCgyXk4pIC8gMikgLSAxCmh0dHBz
-Oi8vd3d3LmdudS5vcmcvc29mdHdhcmUvZ251LWMtbWFudWFsL2dudS1jLW1hbnVhbC5odG1sI0Jp
-dC1GaWVsZHMKClRoZXJlZm9yZSwgd2hlbiBkZWZpbmVkIGFzIDEgYml0LWZpZWxkIHdpdGggc2ln
-bmVkIHR5cGUsIHZhcmlhYmxlcyBjYW4KcmVwcmVzZW50cyAtMSBhbmQgMC4KClRoZSBzbmQtc29j
-LWhkbWktY29kZWMgbW9kdWxlIGluY2x1ZGVzIGEgc3RydWN0dXJlIHdoaWNoIGhhcyBzaWduZWQg
-dHlwZQptZW1iZXJzIHdpdGggYml0LWZpZWxkcy4gQ29kZXMgb2YgdGhpcyBtb2R1bGUgYXNzaWdu
-IDAgYW5kIDEgdG8gdGhlCm1lbWJlcnMuIFRoaXMgc2VlbXMgdG8gcmVzdWx0IGluIGltcGxlbWVu
-dGF0aW9uLWRlcGVuZGVudCBiZWhhdmlvdXJzLgoKQXMgb2YgdjQuMTAtcmMxIG1lcmdlIHdpbmRv
-dywgb3V0c2lkZSBvZiBzb3VuZCBzdWJzeXN0ZW0sIHRoaXMgc3RydWN0dXJlCmlzIHJlZmVycmVk
-IGJ5IGJlbG93IEdQVSBtb2R1bGVzLgogLSB0ZGE5OTh4CiAtIHN0aS1kcm0KIC0gbWVkaWF0ZWst
-ZHJtLWhkbWkKIC0gbXNtCgpBcyBsb25nIGFzIEkgcmV2aWV3IHRoZWlyIGNvZGVzIHJlbGV2YW50
-IHRvIHRoZSBzdHJ1Y3R1cmUsIHRoZSBzdHJ1Y3R1cmUKbWVtYmVycyBhcmUgdXNlZCBqdXN0IGZv
-ciBjb25kaXRpb24gc3RhdGVtZW50cyBhbmQgcHJpbnRrIGZvcm1hdHMuCk15IHByb3Bvc2FsIG9m
-IGNoYW5nZSBpcyBhIGJpdCBpbnRydXNpdmUgdG8gdGhlIHByaW50ayBmb3JtYXRzIGJ1dCB0aGlz
-Cm1heSBiZSBhY2NlcHRhYmxlLgoKVG90YWxseSwgaXQncyByZWFzb25hYmxlIHRvIHVzZSB1bnNp
-Z25lZCB0eXBlIGZvciB0aGUgc3RydWN0dXJlIG1lbWJlcnMuClRoaXMgYnVnIGlzIGRldGVjdGVk
-IGJ5IFNwYXJzZSwgc3RhdGljIGNvZGUgYW5hbHl6ZXIgd2l0aCBiZWxvdyB3YXJuaW5ncy4KCi4v
-aW5jbHVkZS9zb3VuZC9oZG1pLWNvZGVjLmg6Mzk6MjY6IGVycm9yOiBkdWJpb3VzIG9uZS1iaXQg
-c2lnbmVkIGJpdGZpZWxkCi4vaW5jbHVkZS9zb3VuZC9oZG1pLWNvZGVjLmg6NDA6Mjg6IGVycm9y
-OiBkdWJpb3VzIG9uZS1iaXQgc2lnbmVkIGJpdGZpZWxkCi4vaW5jbHVkZS9zb3VuZC9oZG1pLWNv
-ZGVjLmg6NDE6Mjk6IGVycm9yOiBkdWJpb3VzIG9uZS1iaXQgc2lnbmVkIGJpdGZpZWxkCi4vaW5j
-bHVkZS9zb3VuZC9oZG1pLWNvZGVjLmg6NDI6MzE6IGVycm9yOiBkdWJpb3VzIG9uZS1iaXQgc2ln
-bmVkIGJpdGZpZWxkCgpGaXhlczogMDkxODQxMThhOGFiICgiQVNvQzogaGRtaS1jb2RlYzogQWRk
-IGhkbWktY29kZWMgZm9yIGV4dGVybmFsIEhETUktZW5jb2RlcnMiKQpTaWduZWQtb2ZmLWJ5OiBU
-YWthc2hpIFNha2Ftb3RvIDxvLXRha2FzaGlAc2FrYW1vY2NoaS5qcD4KQWNrZWQtYnk6IEFybmF1
-ZCBQb3VsaXF1ZW4gPGFybmF1ZC5wb3VsaXF1ZW5Ac3QuY29tPgpTaWduZWQtb2ZmLWJ5OiBNYXJr
-IEJyb3duIDxicm9vbmllQGtlcm5lbC5vcmc+CkNDOiBzdGFibGVAdmdlci5rZXJuZWwub3JnCi0t
-LQogaW5jbHVkZS9zb3VuZC9oZG1pLWNvZGVjLmggfCA4ICsrKystLS0tCiAxIGZpbGUgY2hhbmdl
-ZCwgNCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2luY2x1ZGUv
-c291bmQvaGRtaS1jb2RlYy5oIGIvaW5jbHVkZS9zb3VuZC9oZG1pLWNvZGVjLmgKaW5kZXggNTMw
-YzU3YmRlZmEwLi45MTVjNDM1Nzk0NWMgMTAwNjQ0Ci0tLSBhL2luY2x1ZGUvc291bmQvaGRtaS1j
-b2RlYy5oCisrKyBiL2luY2x1ZGUvc291bmQvaGRtaS1jb2RlYy5oCkBAIC0zNiwxMCArMzYsMTAg
-QEAgc3RydWN0IGhkbWlfY29kZWNfZGFpZm10IHsKIAkJSERNSV9BQzk3LAogCQlIRE1JX1NQRElG
-LAogCX0gZm10OwotCWludCBiaXRfY2xrX2ludjoxOwotCWludCBmcmFtZV9jbGtfaW52OjE7Ci0J
-aW50IGJpdF9jbGtfbWFzdGVyOjE7Ci0JaW50IGZyYW1lX2Nsa19tYXN0ZXI6MTsKKwl1bnNpZ25l
-ZCBpbnQgYml0X2Nsa19pbnY6MTsKKwl1bnNpZ25lZCBpbnQgZnJhbWVfY2xrX2ludjoxOworCXVu
-c2lnbmVkIGludCBiaXRfY2xrX21hc3RlcjoxOworCXVuc2lnbmVkIGludCBmcmFtZV9jbGtfbWFz
-dGVyOjE7CiB9OwogCiAvKgotLSAKMi4xMS4wCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0
-cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9kcmktZGV2ZWwK
+The patch
+
+   ASoC: da7218: Set DAI output pin high impedance when not in use
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From ac29a8f41740186aee601de99c729530e37ca77c Mon Sep 17 00:00:00 2001
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Date: Fri, 16 Dec 2016 11:05:02 +0000
+Subject: [PATCH] ASoC: da7218: Set DAI output pin high impedance when not in
+ use
+
+For TDM mode, the I2S data out line can be shared between mutliple
+codecs. In this scenario, only the active codec should be using
+the line, and all others should be high impedance. However,
+currently in the driver this configuration isn't set when capture
+is inactive, and the line remains driven.
+
+This patch updates the AIF_OUT widget to set the DAI output pin of
+the device as high impedance when not in use.
+
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/da7218.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/da7218.c b/sound/soc/codecs/da7218.c
+index c69e97654fc6..d256ebf9e309 100644
+--- a/sound/soc/codecs/da7218.c
++++ b/sound/soc/codecs/da7218.c
+@@ -1634,7 +1634,8 @@ static const struct snd_soc_dapm_widget da7218_dapm_widgets[] = {
+ 			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
+ 
+ 	/* DAI */
+-	SND_SOC_DAPM_AIF_OUT("DAIOUT", "Capture", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("DAIOUT", "Capture", 0, DA7218_DAI_TDM_CTRL,
++			     DA7218_DAI_OE_SHIFT, DA7218_NO_INVERT),
+ 	SND_SOC_DAPM_AIF_IN("DAIIN", "Playback", 0, SND_SOC_NOPM, 0, 0),
+ 
+ 	/* Output Mixers */
+-- 
+2.11.0
