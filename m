@@ -1,17 +1,20 @@
-From: mengdong.lin@linux.intel.com
-Subject: [RFC PATCH 2/2] ASoC: Intel: Use DMI name for sound
-	card long name in Broadwell machine driver
-Date: Fri, 16 Dec 2016 10:51:12 +0800
-Message-ID: <92fa36740f6bafbbdcbaf56c2edd56bcd182df21.1481856472.git.mengdong.lin@linux.intel.com>
-References: <cover.1481856472.git.mengdong.lin@linux.intel.com>
+From: Ben Zhang <benzh@chromium.org>
+Subject: Re: [PATCH] ASoC: nau8825: Add Class G function options
+Date: Thu, 15 Dec 2016 21:05:52 -0800
+Message-ID: <CAOV7By+iQSW7FRprXXmEAwY30K+vssweAcSJBgncNKphE1Djsg@mail.gmail.com>
+References: <1481609526-21933-1-git-send-email-benzh@chromium.org>
+ <20161214145712.uhsdfy6xr7ybja7f@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 00E21266726
- for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2016 03:48:42 +0100 (CET)
-In-Reply-To: <cover.1481856472.git.mengdong.lin@linux.intel.com>
+Received: from mail-ua0-f179.google.com (mail-ua0-f179.google.com
+ [209.85.217.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id CB55F26749F
+ for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2016 06:05:54 +0100 (CET)
+Received: by mail-ua0-f179.google.com with SMTP id 51so28259932uai.1
+ for <alsa-devel@alsa-project.org>; Thu, 15 Dec 2016 21:05:54 -0800 (PST)
+In-Reply-To: <20161214145712.uhsdfy6xr7ybja7f@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,37 +24,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, Mengdong Lin <mengdong.lin@linux.intel.com>, mengdong.lin@intel.com
+To: Mark Brown <broonie@kernel.org>, John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, YHCHuang@nuvoton.com, Anatol Pomozov <anatol@google.com>, CTLIN0@nuvoton.com, Dylan Reid <dgreid@chromium.org>, mhkuo@nuvoton.com, "Zhi,
+ Yong" <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+On Wed, Dec 14, 2016 at 6:57 AM, Mark Brown <broonie@kernel.org> wrote:
+> On Mon, Dec 12, 2016 at 10:12:06PM -0800, Ben Zhang wrote:
+>> Add a DAPM_MUX for userspace to control the Class G function:
+>> "Switching": Use +-1.8V or +-0.9V supply, based on signal amplitude.
+>> "1.8V": Always use +-1.8V.
+>
+> This doesn't affect audio routing so why is it being done with a DAPM
+> mux?
 
-Intel Broadwell machine driver will call API snd_soc_set_dmi_name() to use
-DMI info to make the sound card long name.
+When user wants the switching voltages, the Class G register bit needs
+to be toggled at a specific time in the widget power up/down sequences
+on the playback route. It helps reduce pop and is consistent with
+existing behavior. DAPM_MUX achieves this by taking DAPM_PGA_S in and
+out of the playback route based on user selection. If the register bit
+is directly controlled by a separate kcontrol in
+snd_soc_codec_driver.controls unrelated to widgets, the bit will be
+set immediately by user even when there is no active playback. Then
+when playback starts, Class G is already on before the DACs/charge
+pumps/output drivers/pulldowns are enabled. The existing/desired
+behavior is to turn on Class G last and turn it off first.
 
-Here are the changed long name for two Broadwell-based machines:
-             short name & driver name   long name
-WilsonBeach:       broadwell-rt286      broadwell-rt286-Intel-Wilson-Beach
-Dell XPS-13(2015): broadwell-rt286      broadwell-rt286-Dell-XPS
+John has sent me a patch which uses a separate SOC_ENUM_EXT kcontrol
+in snd_soc_codec_driver.controls to set a flag, then has DAPM_PGA_S PM
+event callbacks selectively setting the register bit based on the
+flag. But it feels cleaner to implement this with a DAPM_MUX: The
+DAPM_PGA_S widget power status correctly reflects the actual register
+bit. User can experiment with the setting during playback.
 
-The card short name has no change, and ASoC will use the card name as the
-card driver name.
-
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
-
-diff --git a/sound/soc/intel/boards/broadwell.c b/sound/soc/intel/boards/broadwell.c
-index 5bb64d1..cda73bb 100644
---- a/sound/soc/intel/boards/broadwell.c
-+++ b/sound/soc/intel/boards/broadwell.c
-@@ -266,6 +266,8 @@ static int broadwell_audio_probe(struct platform_device *pdev)
- {
- 	broadwell_rt286.dev = &pdev->dev;
- 
-+	snd_soc_set_dmi_name(&broadwell_rt286, NULL);
-+
- 	return devm_snd_soc_register_card(&pdev->dev, &broadwell_rt286);
- }
- 
--- 
-2.5.0
+John, to make SND_SOC_NOPM work with DAPM_MUX on older kernels, commit
+236aaa686358 ("ASoC: dapm: Consolidate MUXs and virtual MUXs") can be
+backported, which landed in v3.15. chromeos-3.14 has backported it
+already. Another solution is to backport my patch by using
+SND_SOC_DAPM_VIRT_MUX on older kernels.
