@@ -1,76 +1,75 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7218: Set DAI output pin high impedance when not in use" to the asoc tree
-Date: Fri, 16 Dec 2016 12:31:40 +0000
-Message-ID: <E1cHrfo-0006Fo-Rm@debutante>
-References: <20161216110502.849053FA9F@swsrvapps-01.diasemi.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20161216110502.849053FA9F@swsrvapps-01.diasemi.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 05/13] ALSA: hda: check stream decoupled
+	register state
+Date: Fri, 16 Dec 2016 13:02:49 +0000
+Message-ID: <20161216130249.b5iwaia6nfysmawp@sirena.org.uk>
+References: <1481184684-9620-1-git-send-email-jeeja.kp@intel.com>
+ <1481184684-9620-6-git-send-email-jeeja.kp@intel.com>
+ <20161216083449.GA11902@kpjeeja-desk>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============3591570413432379262=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 642E026688A
+ for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2016 14:03:00 +0100 (CET)
+In-Reply-To: <20161216083449.GA11902@kpjeeja-desk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jeeja KP <jeeja.kp@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: da7218: Set DAI output pin high impedance when not in use
+--===============3591570413432379262==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="hkfgegjrcaufcn6z"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--hkfgegjrcaufcn6z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Fri, Dec 16, 2016 at 02:04:51PM +0530, Jeeja KP wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> I have fixed the comments on the V2 patch.
+> Can you please ACK this patch of this series if there no concern, as this=
+ on
+> on sound/hda/. I think Mark is waiting on that..=20
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+I am, but I think Takashi might be on his Christmas vacation by now.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--hkfgegjrcaufcn6z
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
 
->From ac29a8f41740186aee601de99c729530e37ca77c Mon Sep 17 00:00:00 2001
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date: Fri, 16 Dec 2016 11:05:02 +0000
-Subject: [PATCH] ASoC: da7218: Set DAI output pin high impedance when not in
- use
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlhT5fkACgkQJNaLcl1U
+h9B/mgf8DB/aFeqHQ+ZUUqOswMDbN4+H2zEIYaYHJEDqkAq7AMlLddZSNjZa+6/l
+6mTRk4Llm3lDBFLmdWy+tPoyYhJA3MK3JWsJZAF8Sg/dJUaF/J/hQQb7herHU1tK
+VMNpe8RW78Qc6pLoFIVPboXN2Dt/QfFu4OZc96QL7bEmlueWrl0vdgaOMjHPw/ui
+dloajwd3RaQApTnXZ3eVlTT1czq758oiaLMoLk8Gmk0oW3HsELQfjt/2wyA1j3Lv
+1IS8OynIf8p0gDmGEBntT7+tWpd2k9WphcB77nh2iOH0FS45JfIjt8iiQdY0swG4
+r1bWzPyVPXQ+YIzcdeEa3nZPDbPmNg==
+=DVSF
+-----END PGP SIGNATURE-----
 
-For TDM mode, the I2S data out line can be shared between mutliple
-codecs. In this scenario, only the active codec should be using
-the line, and all others should be high impedance. However,
-currently in the driver this configuration isn't set when capture
-is inactive, and the line remains driven.
+--hkfgegjrcaufcn6z--
 
-This patch updates the AIF_OUT widget to set the DAI output pin of
-the device as high impedance when not in use.
+--===============3591570413432379262==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/da7218.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/da7218.c b/sound/soc/codecs/da7218.c
-index c69e97654fc6..d256ebf9e309 100644
---- a/sound/soc/codecs/da7218.c
-+++ b/sound/soc/codecs/da7218.c
-@@ -1634,7 +1634,8 @@ static const struct snd_soc_dapm_widget da7218_dapm_widgets[] = {
- 			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_POST_PMD),
- 
- 	/* DAI */
--	SND_SOC_DAPM_AIF_OUT("DAIOUT", "Capture", 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("DAIOUT", "Capture", 0, DA7218_DAI_TDM_CTRL,
-+			     DA7218_DAI_OE_SHIFT, DA7218_NO_INVERT),
- 	SND_SOC_DAPM_AIF_IN("DAIIN", "Playback", 0, SND_SOC_NOPM, 0, 0),
- 
- 	/* Output Mixers */
--- 
-2.11.0
+--===============3591570413432379262==--
