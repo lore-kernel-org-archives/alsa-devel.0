@@ -1,47 +1,61 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [alsa-devel] [PATCH v6 1/3] clk: x86: Add Atom PMC platform clocks
-Date: Sat, 17 Dec 2016 15:57:27 +0200
-Message-ID: <CAHp75Vdn_8_fCQzkG7CPrnDZzhC7WUpGM1cyvfNRz0u_sc7RKA@mail.gmail.com>
-References: <1481306510-7471-1-git-send-email-irina.tirdea@intel.com>
- <1481306510-7471-2-git-send-email-irina.tirdea@intel.com> <CAHp75Vdaw4yvTPP2JZc+ti-AVNsisRQ+WG=JxPQ1jv-r7DADQA@mail.gmail.com>
- <20161213232524.GQ5423@codeaurora.org> <32235fb3-0d54-211d-28f4-4655e4bc7812@linux.intel.com>
- <20161217013337.GW5423@codeaurora.org>
+From: Jussi Laako <jussi@sonarnerd.net>
+Subject: [PATCH] Support both DSD LE/BE Amanero firmware
+	versions
+Date: Sat, 17 Dec 2016 23:51:41 +0200
+Message-ID: <1482011501-6723-1-git-send-email-jussi@sonarnerd.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <20161217013337.GW5423@codeaurora.org>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Stephen Boyd <sboyd@codeaurora.org>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Irina Tirdea <irina.tirdea@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Michael Turquette <mturquette@baylibre.com>, "x86@kernel.org" <x86@kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Takashi Iwai <tiwai@suse.com>, platform-driver-x86@vger.kernel.org, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>, Mark Brown <broonie@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Darren Hart <dvhart@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Len Brown <lenb@kernel.org>, linux-clk@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.sonarnerd.net (rankki.sonarnerd.net [83.145.240.118])
+ by alsa0.perex.cz (Postfix) with ESMTP id C318126683C
+ for <alsa-devel@alsa-project.org>; Sat, 17 Dec 2016 22:52:39 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Jussi Laako <jussi@sonarnerd.net>, gtmkramer@xs4all.nl
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Dec 17, 2016 at 3:33 AM, Stephen Boyd <sboyd@codeaurora.org> wrote:
-> On 12/15, Pierre-Louis Bossart wrote:
+Add DSD support for both little endian (DSD_U32_LE) and big endian
+(DSD_U32_BE) version of the Amanero firmware.
 
->>Clients use devm_clk_get() with a "pmc_plt_clk_<n>"
->> argument.
->
-> This is the problem. Clients should be calling clk_get() like:
->
->         clk_get(dev, "signal name in datasheet")
->
-> where the first argument is the device and the second argument is
-> some string that is meaningful to the device, not the system as a
-> whole. The way clkdev is intended is so that the dev argument's
-> dev_name() is combined with the con_id that matches some signale
-> name in the datasheet. This way when the same IP is put into some
-> other chip, the globally unique name doesn't need to change, just
-> the device name that's registered with the lookup. Obviously this
-> breaks down quite badly when dev_name() isn't stable. Is that
-> happening here?
+Signed-off-by: Jussi Laako <jussi@sonarnerd.net>
+---
+ sound/usb/quirks.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-PMC Atom is a PCI device and thus each platform would have different
-dev_name(). Do you want to list all in each consumer if consumer wants
-to work on all of them or I missed something?
-
-So, the question is how clock getting will look like to work on
-currently both CherryTrail and BayTrail.
-
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index b3fd238..f5c68ea 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1359,6 +1359,21 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
+ 		if (fp->altsetting == 3)
+ 			return SNDRV_PCM_FMTBIT_DSD_U32_BE;
+ 		break;
++
++	/* Amanero Combo384 USB interface with native DSD support */
++	case USB_ID(0x16d0, 0x071a):
++		if (fp->altsetting == 2) {
++			switch (chip->dev->descriptor.bcdDevice) {
++			case 0x199:
++				return SNDRV_PCM_FMTBIT_DSD_U32_LE;
++			case 0x19b:
++				return SNDRV_PCM_FMTBIT_DSD_U32_BE;
++			default:
++				break;
++			}
++		}
++		break;
++
+ 	default:
+ 		break;
+ 	}
 -- 
-With Best Regards,
-Andy Shevchenko
+2.7.4
