@@ -1,68 +1,55 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH][alsa-lib] topology: fix sign-compare
- warning introduced to set_link_hw_config() and tplg_add_link_object()
-Date: Sat, 17 Dec 2016 09:40:57 +0900
-Message-ID: <378f4729-f0a2-c912-e2b4-39609fa2740f@sakamocchi.jp>
-References: <20161129154114.8044-1-o-takashi@sakamocchi.jp>
+From: Kees Cook <keescook@chromium.org>
+Subject: [PATCH] ALSA: use designated initializers
+Date: Fri, 16 Dec 2016 16:59:44 -0800
+Message-ID: <20161217005944.GA140281@beast>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id F12C1267634
- for <alsa-devel@alsa-project.org>; Sat, 17 Dec 2016 01:41:00 +0100 (CET)
-In-Reply-To: <20161129154114.8044-1-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org, mengdong.lin@linux.intel.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-UGluZyB0byBNZW5nZG9uZyBMaW4uIEkgd2lzaCB0aGlzIHBhdGNoIHdvdWxkIGJlIGluY2x1ZGVk
-IHRvIG5leHQKcmVsZWFzZSBvZiB0aGlzIGxpYnJhcnkuCgpPbiAyMDE25bm0MTHmnIgzMOaXpSAw
-MDo0MSwgVGFrYXNoaSBTYWthbW90byB3cm90ZToKPiBTb21lIGZ1bmN0aW9ucyByZWNlbnRseSBp
-bnRyb2R1Y2VkIHRvIHRoaXMgbGlicmFyeSBpbmNsdWRlIGNvbXBhcmlzb24KPiBiZXR3ZWVuIHZh
-cmlhYmxlcyB3aXRoIGRpZmZlcmVudCB0eXBlcywgdGhlbiBjb21waWxlciBnZW5lcmF0ZXMKPiBi
-ZWxvdyB3YXJuaW5ncy4KPiAKPiBwY20uYzogSW4gZnVuY3Rpb24g4oCYc2V0X2xpbmtfaHdfY29u
-Zmln4oCZOgo+IHBjbS5jOjExNzk6MTY6IHdhcm5pbmc6IGNvbXBhcmlzb24gYmV0d2VlbiBzaWdu
-ZWQgYW5kIHVuc2lnbmVkIGludGVnZXIgZXhwcmVzc2lvbnMgWy1Xc2lnbi1jb21wYXJlXQo+ICAg
-Zm9yIChpID0gMDsgaSA8IGNmZy0+dHhfY2hhbm5lbHM7IGkrKykKPiAgICAgICAgICAgICAgICAg
-Xgo+IHBjbS5jOjExODM6MTY6IHdhcm5pbmc6IGNvbXBhcmlzb24gYmV0d2VlbiBzaWduZWQgYW5k
-IHVuc2lnbmVkIGludGVnZXIgZXhwcmVzc2lvbnMgWy1Xc2lnbi1jb21wYXJlXQo+ICAgZm9yIChp
-ID0gMDsgaSA8IGNmZy0+cnhfY2hhbm5lbHM7IGkrKykKPiAgICAgICAgICAgICAgICAgXgo+IHBj
-bS5jOiBJbiBmdW5jdGlvbiDigJh0cGxnX2FkZF9saW5rX29iamVjdOKAmToKPiBwY20uYzoxMjIz
-OjE2OiB3YXJuaW5nOiBjb21wYXJpc29uIGJldHdlZW4gc2lnbmVkIGFuZCB1bnNpZ25lZCBpbnRl
-Z2VyIGV4cHJlc3Npb25zIFstV3NpZ24tY29tcGFyZV0KPiAgIGZvciAoaSA9IDA7IGkgPCBsaW5r
-LT5udW1fc3RyZWFtczsgaSsrKQo+ICAgICAgICAgICAgICAgICBeCj4gcGNtLmM6MTIzMToxNjog
-d2FybmluZzogY29tcGFyaXNvbiBiZXR3ZWVuIHNpZ25lZCBhbmQgdW5zaWduZWQgaW50ZWdlciBl
-eHByZXNzaW9ucyBbLVdzaWduLWNvbXBhcmVdCj4gICBmb3IgKGkgPSAwOyBpIDwgbGluay0+bnVt
-X2h3X2NvbmZpZ3M7IGkrKykKPiAKPiBUaGlzIGNvbW1pdCBzdXBwcmVzc2VzIHRoZW0uCj4gCj4g
-Rml4ZXM6IDZiNGQ3NzViOTc1MiAoInRvcG9sb2d5OiBQYXJzZSBIVyBjb25maWd1cmF0aW9ucyBv
-ZiBwaHlzaWNhbCBEQUkgbGlua3MgZGVmaW5lZCBieSBDIEFQSSIpCj4gU2lnbmVkLW9mZi1ieTog
-VGFrYXNoaSBTYWthbW90byA8by10YWthc2hpQHNha2Ftb2NjaGkuanA+Cj4gLS0tCj4gIHNyYy90
-b3BvbG9neS9wY20uYyB8IDQgKystLQo+ICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCsp
-LCAyIGRlbGV0aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9zcmMvdG9wb2xvZ3kvcGNtLmMgYi9z
-cmMvdG9wb2xvZ3kvcGNtLmMKPiBpbmRleCA4ZjhhNzAzLi4xZGU4NjU1IDEwMDY0NAo+IC0tLSBh
-L3NyYy90b3BvbG9neS9wY20uYwo+ICsrKyBiL3NyYy90b3BvbG9neS9wY20uYwo+IEBAIC0xMTQ3
-LDcgKzExNDcsNyBAQCBpbnQgdHBsZ19hZGRfcGNtX29iamVjdChzbmRfdHBsZ190ICp0cGxnLCBz
-bmRfdHBsZ19vYmpfdGVtcGxhdGVfdCAqdCkKPiAgc3RhdGljIGludCBzZXRfbGlua19od19jb25m
-aWcoc3RydWN0IHNuZF9zb2NfdHBsZ19od19jb25maWcgKmNmZywKPiAgCQkJc3RydWN0IHNuZF90
-cGxnX2h3X2NvbmZpZ190ZW1wbGF0ZSAqdHBsKQo+ICB7Cj4gLQlpbnQgaTsKPiArCXVuc2lnbmVk
-IGludCBpOwo+ICAKPiAgCWNmZy0+c2l6ZSA9IHNpemVvZigqY2ZnKTsKPiAgCWNmZy0+aWQgPSB0
-cGwtPmlkOwo+IEBAIC0xMTkwLDcgKzExOTAsNyBAQCBpbnQgdHBsZ19hZGRfbGlua19vYmplY3Qo
-c25kX3RwbGdfdCAqdHBsZywgc25kX3RwbGdfb2JqX3RlbXBsYXRlX3QgKnQpCj4gIAlzdHJ1Y3Qg
-c25kX3RwbGdfbGlua190ZW1wbGF0ZSAqbGlua190cGwgPSB0LT5saW5rOwo+ICAJc3RydWN0IHNu
-ZF9zb2NfdHBsZ19saW5rX2NvbmZpZyAqbGluaywgKl9saW5rOwo+ICAJc3RydWN0IHRwbGdfZWxl
-bSAqZWxlbTsKPiAtCWludCBpOwo+ICsJdW5zaWduZWQgaW50IGk7Cj4gIAo+ICAJaWYgKHQtPnR5
-cGUgIT0gU05EX1RQTEdfVFlQRV9MSU5LICYmIHQtPnR5cGUgIT0gU05EX1RQTEdfVFlQRV9CRQo+
-ICAJICAgICYmIHQtPnR5cGUgIT0gU05EX1RQTEdfVFlQRV9DQykKPiAKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Prepare to mark sensitive kernel structures for randomization by making
+sure they're using designated initializers. These were identified during
+allyesconfig builds of x86, arm, and arm64, with most initializer fixes
+extracted from grsecurity.
+
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ sound/synth/emux/emux_seq.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/sound/synth/emux/emux_seq.c b/sound/synth/emux/emux_seq.c
+index a0209204ae48..55579f6b8cb2 100644
+--- a/sound/synth/emux/emux_seq.c
++++ b/sound/synth/emux/emux_seq.c
+@@ -33,13 +33,13 @@ static int snd_emux_unuse(void *private_data, struct snd_seq_port_subscribe *inf
+  * MIDI emulation operators
+  */
+ static struct snd_midi_op emux_ops = {
+-	snd_emux_note_on,
+-	snd_emux_note_off,
+-	snd_emux_key_press,
+-	snd_emux_terminate_note,
+-	snd_emux_control,
+-	snd_emux_nrpn,
+-	snd_emux_sysex,
++	.note_on = snd_emux_note_on,
++	.note_off = snd_emux_note_off,
++	.key_press = snd_emux_key_press,
++	.note_terminate = snd_emux_terminate_note,
++	.control = snd_emux_control,
++	.nrpn = snd_emux_nrpn,
++	.sysex = snd_emux_sysex,
+ };
+ 
+ 
+-- 
+2.7.4
+
+
+-- 
+Kees Cook
+Nexus Security
