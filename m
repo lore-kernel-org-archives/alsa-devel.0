@@ -1,49 +1,72 @@
-From: Stephen Boyd <sboyd@codeaurora.org>
-Subject: Re: [alsa-devel] [PATCH v6 1/3] clk: x86: Add Atom PMC platform
- clocks
-Date: Fri, 16 Dec 2016 17:33:37 -0800
-Message-ID: <20161217013337.GW5423@codeaurora.org>
-References: <1481306510-7471-1-git-send-email-irina.tirdea@intel.com>
- <1481306510-7471-2-git-send-email-irina.tirdea@intel.com>
- <CAHp75Vdaw4yvTPP2JZc+ti-AVNsisRQ+WG=JxPQ1jv-r7DADQA@mail.gmail.com>
- <20161213232524.GQ5423@codeaurora.org>
- <32235fb3-0d54-211d-28f4-4655e4bc7812@linux.intel.com>
+From: simon.ho.cnxt@gmail.com
+Subject: [PATCH 0/2] ASoC: Add driver for CX2072X CODEC
+Date: Sat, 17 Dec 2016 15:52:31 +0800
+Message-ID: <cover.1481903061.git.simon.ho@conexant.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-acpi-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <32235fb3-0d54-211d-28f4-4655e4bc7812@linux.intel.com>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Irina Tirdea <irina.tirdea@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Michael Turquette <mturquette@baylibre.com>, "x86@kernel.org" <x86@kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Takashi Iwai <tiwai@suse.com>, platform-driver-x86@vger.kernel.org, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>, Mark Brown <broonie@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Darren Hart <dvhart@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, Len Brown <lenb@kernel.org>, linux-clk@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pf0-f194.google.com (mail-pf0-f194.google.com
+ [209.85.192.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 185C7266569
+ for <alsa-devel@alsa-project.org>; Sat, 17 Dec 2016 08:52:40 +0100 (CET)
+Received: by mail-pf0-f194.google.com with SMTP id c4so5423225pfb.3
+ for <alsa-devel@alsa-project.org>; Fri, 16 Dec 2016 23:52:40 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org, Simon Ho <simon.ho@conexant.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/15, Pierre-Louis Bossart wrote:
-> I am not sure I understand this last comment.
-> init.name is not a constant, it's made of the "pmc_plt_clk_" string
-> concatenated with an id which directly maps to which hardware clock
-> is registered.
+From: Simon Ho <simon.ho@conexant.com>
 
-That's all fine. We need globally unique strings for clk names in
-the framework so things work.
+Re-send the patch because my previous email was sent by a non-member
+email account and are being held. So please disregard my previous email
+if you saw it. Sorry if I caused any trouble. 
 
->Clients use devm_clk_get() with a "pmc_plt_clk_<n>"
-> argument.
+This patch adds support for Conexant CX2072X codec driver.
 
-This is the problem. Clients should be calling clk_get() like:
+The CX2072X is a ultra low power stereo audio codec supports I2S/TDM
+host interface with EQ, DRC features in playback mode.
 
-	clk_get(dev, "signal name in datasheet")
+Featues of CX2072X codec:
 
-where the first argument is the device and the second argument is
-some string that is meaningful to the device, not the system as a
-whole. The way clkdev is intended is so that the dev argument's
-dev_name() is combined with the con_id that matches some signale
-name in the datasheet. This way when the same IP is put into some
-other chip, the globally unique name doesn't need to change, just
-the device name that's registered with the lookup. Obviously this
-breaks down quite badly when dev_name() isn't stable. Is that
-happening here?
+ * Two 24 bits DACs and DACs.
+ * Stereo Headphone AMP.
+ * 2.8W per channel class-D output.
+ * Integrated seven bands per channel EQ and DRC.
+ * Fully integrated headset support with detect/switch.
+ * Stereo digital microphone for array applications.
+ * S/PDIF output.
+ * Bi-directional GPIOs.
+ * Support analog and digital PC Beeep.
+ * One headset button support.
+ * Supports a wide variety of host interfaces.
+   -wide variety of I2S and similar bit-stream formats
+    with word lengths of up to 24 bits.
+   -TDM stream supports up to 4 channels.
+ * AEC loopback support.
+
+Simon Ho (2):
+  ASoC: cx2072x: Add DT bingings documentation for CX2072X CODEC
+  ASoC: cx2072x Add driver for CX2072X CODEC
+
+ .../devicetree/bindings/sound/cx2072x.txt          |   36 +
+ sound/soc/codecs/Kconfig                           |    5 +
+ sound/soc/codecs/Makefile                          |    2 +
+ sound/soc/codecs/cx2072x.c                         | 2080 ++++++++++++++++++++
+ sound/soc/codecs/cx2072x.h                         |  322 +++
+ 5 files changed, 2445 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cx2072x.txt
+ create mode 100644 sound/soc/codecs/cx2072x.c
+ create mode 100644 sound/soc/codecs/cx2072x.h
 
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.7.4
