@@ -1,14 +1,15 @@
 From: Jiada Wang <jiada_wang@mentor.com>
-Subject: [PATCH 2/2 v2] rate: dynamic update avail_min on slave
-Date: Mon, 19 Dec 2016 12:37:51 +0900
-Message-ID: <20161219033751.30848-3-jiada_wang@mentor.com>
+Subject: [PATCH 1/2 v2] plugin: dynamically update avail_min on
+	slave
+Date: Mon, 19 Dec 2016 12:37:50 +0900
+Message-ID: <20161219033751.30848-2-jiada_wang@mentor.com>
 References: <20161219033751.30848-1-jiada_wang@mentor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 8876A2665B6
+ by alsa0.perex.cz (Postfix) with ESMTP id 85EF52654AD
  for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2016 04:37:47 +0100 (CET)
 In-Reply-To: <20161219033751.30848-1-jiada_wang@mentor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,62 +27,102 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Andreas Pape <apape@de.adit-jv.com>
 
+mmapped capture access on some plugins can fetch data from
+slave in the 'background'. A subsequent snd_pcm_wait waits
+for too long time to reach avail_min threshold again.
+Waiting too long leads to xruns on other devices waiting for
+the capture data.
+As a fix the avail_min on slave is recalculated dynamically.
+
+V2: updated patch to fix within 80 characters per line
+
 Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
 Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
 ---
- src/pcm/pcm_plugin.c | 4 ++--
- src/pcm/pcm_plugin.h | 3 +++
- src/pcm/pcm_rate.c   | 2 +-
- 3 files changed, 6 insertions(+), 3 deletions(-)
+ src/pcm/pcm_plugin.c | 64 +++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 63 insertions(+), 1 deletion(-)
 
 diff --git a/src/pcm/pcm_plugin.c b/src/pcm/pcm_plugin.c
-index 5b65ac3..ad4a102 100644
+index e53c5bb..5b65ac3 100644
 --- a/src/pcm/pcm_plugin.c
 +++ b/src/pcm/pcm_plugin.c
-@@ -535,8 +535,8 @@ static int snd_pcm_plugin_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
+@@ -535,6 +535,68 @@ static int snd_pcm_plugin_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
  	return 0;
  }
  
--static int snd_pcm_plugin_may_wait_for_avail_min(snd_pcm_t *pcm,
--						 snd_pcm_uframes_t avail)
-+int snd_pcm_plugin_may_wait_for_avail_min(snd_pcm_t *pcm,
-+					  snd_pcm_uframes_t avail)
- {
- 	if (pcm->stream == SND_PCM_STREAM_CAPTURE &&
- 	    pcm->access != SND_PCM_ACCESS_RW_INTERLEAVED &&
-diff --git a/src/pcm/pcm_plugin.h b/src/pcm/pcm_plugin.h
-index 217f075..95aacb3 100644
---- a/src/pcm/pcm_plugin.h
-+++ b/src/pcm/pcm_plugin.h
-@@ -50,6 +50,8 @@ typedef struct {
- /* make local functions really local */
- #define snd_pcm_plugin_init \
- 	snd1_pcm_plugin_init
-+#define snd_pcm_plugin_may_wait_for_avail_min \
-+	snd1_pcm_plugin_may_wait_for_avail_min
- #define snd_pcm_plugin_fast_ops \
- 	snd1_pcm_plugin_fast_ops
- #define snd_pcm_plugin_undo_read_generic \
-@@ -64,6 +66,7 @@ typedef struct {
- void snd_pcm_plugin_init(snd_pcm_plugin_t *plugin);
- snd_pcm_sframes_t snd_pcm_plugin_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t frames);
- snd_pcm_sframes_t snd_pcm_plugin_forward(snd_pcm_t *pcm, snd_pcm_uframes_t frames);
-+int snd_pcm_plugin_may_wait_for_avail_min(snd_pcm_t *pcm, snd_pcm_uframes_t avail);
- 
- extern const snd_pcm_fast_ops_t snd_pcm_plugin_fast_ops;
- 
-diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
-index 6184def..b0a1a48 100644
---- a/src/pcm/pcm_rate.c
-+++ b/src/pcm/pcm_rate.c
-@@ -1156,7 +1156,7 @@ static const snd_pcm_fast_ops_t snd_pcm_rate_fast_ops = {
++static int snd_pcm_plugin_may_wait_for_avail_min(snd_pcm_t *pcm,
++						 snd_pcm_uframes_t avail)
++{
++	if (pcm->stream == SND_PCM_STREAM_CAPTURE &&
++	    pcm->access != SND_PCM_ACCESS_RW_INTERLEAVED &&
++	    pcm->access != SND_PCM_ACCESS_RW_NONINTERLEAVED) {
++		/* mmap access on capture device already consumes data from
++		 * slave in avail_update operation. Entering snd_pcm_wait after
++		 * having already consumed some fragments leads to waiting for
++		 * too long time, as slave will unnecessarily wait for avail_min
++		 * condition reached again. To avoid unnecessary wait times we
++		 * adapt the avail_min threshold on slave dynamically. Just
++		 * modifying slave->avail_min as a shortcut and lightweight
++		 * solution does not work for all slave plugin types and in
++		 * addition it will not propagate the change through all
++		 * downstream plugins, so we have to use the sw_params API.
++		 * note: reading fragmental parts from slave will only happen
++		 * in case
++		 * a) the slave can provide contineous hw_ptr between periods
++		 * b) avail_min does not match one slave_period
++		 */
++		snd_pcm_plugin_t *plugin = pcm->private_data;
++		snd_pcm_t *slave = plugin->gen.slave;
++		snd_pcm_uframes_t needed_slave_avail_min;
++		snd_pcm_sframes_t available;
++
++		/* update, as it might have changed. This will also call
++		 * avail_update on slave and also can return error
++		 */
++		available = snd_pcm_avail_update(pcm);
++		if (available < 0)
++			return 0;
++
++		if (available >= pcm->avail_min)
++			/* don't wait at all. As we can't configure avail_min
++			 * of slave to 0 return here
++			 */
++			return 0;
++
++		needed_slave_avail_min = pcm->avail_min - available;
++		if (slave->avail_min != needed_slave_avail_min) {
++			snd_pcm_sw_params_t *swparams;
++			snd_pcm_sw_params_alloca(&swparams);
++			/* pray that changing sw_params while running is
++			 * properly implemented in all downstream plugins...
++			 * it's legal but not commonly used.
++			 */
++			snd_pcm_sw_params_current(slave, swparams);
++			/* snd_pcm_sw_params_set_avail_min() restricts setting
++			 * to >= period size. This conflicts at least with our
++			 * dshare patch which allows combining multiple periods
++			 * or with slaves which return hw postions between
++			 * periods -> set directly in sw_param structure
++			 */
++			swparams->avail_min = needed_slave_avail_min;
++			snd_pcm_sw_params(slave, swparams);
++		}
++		avail = available;
++	}
++	return snd_pcm_generic_may_wait_for_avail_min(pcm, avail);
++}
++
+ const snd_pcm_fast_ops_t snd_pcm_plugin_fast_ops = {
+ 	.status = snd_pcm_plugin_status,
+ 	.state = snd_pcm_generic_state,
+@@ -564,7 +626,7 @@ const snd_pcm_fast_ops_t snd_pcm_plugin_fast_ops = {
  	.poll_descriptors_count = snd_pcm_generic_poll_descriptors_count,
  	.poll_descriptors = snd_pcm_generic_poll_descriptors,
- 	.poll_revents = snd_pcm_rate_poll_revents,
+ 	.poll_revents = snd_pcm_generic_poll_revents,
 -	.may_wait_for_avail_min = snd_pcm_generic_may_wait_for_avail_min,
 +	.may_wait_for_avail_min = snd_pcm_plugin_may_wait_for_avail_min,
  };
  
- static const snd_pcm_ops_t snd_pcm_rate_ops = {
+ #endif
 -- 
 2.9.3
