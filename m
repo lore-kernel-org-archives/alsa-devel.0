@@ -1,54 +1,59 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6 1/3] clk: x86: Add Atom PMC platform clocks
-Date: Mon, 19 Dec 2016 11:04:04 +0000
-Message-ID: <20161219110404.cnk43zqenn2m7ib2@sirena.org.uk>
-References: <1481306510-7471-1-git-send-email-irina.tirdea@intel.com>
- <1481306510-7471-2-git-send-email-irina.tirdea@intel.com>
- <CAHp75Vdaw4yvTPP2JZc+ti-AVNsisRQ+WG=JxPQ1jv-r7DADQA@mail.gmail.com>
- <1a98dcda-a662-958e-307f-5fe3f281ed9f@linux.intel.com>
- <CAHp75VccDyiLhWxZYg+d0usrwhfa_hiZAJCKPXXVRod=tB803g@mail.gmail.com>
- <20161216183607.GB44199@f23x64.localdomain>
+From: Dennis Wassenberg <dennis.wassenberg@secunet.com>
+Subject: Re: [PATCH 4/4] hda: thinkpad_helper: Add support for hid-lenovo LED
+ control
+Date: Mon, 19 Dec 2016 12:05:27 +0100
+Message-ID: <8ae41990-73e2-39cf-8d8b-f8b83f0dd996@secunet.com>
+References: <def3f975-9579-c2fe-9411-fb7522dd46a9@secunet.com>
+ <alpine.LSU.2.20.1612191054270.19203@cbobk.fhfr.pm>
+ <43171dc4-95e4-4a2b-eebc-0795988eb6f2@secunet.com>
+ <alpine.LSU.2.20.1612191152320.19203@cbobk.fhfr.pm>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="exmomhpvdqifvrc4"
-Return-path: <linux-acpi-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20161216183607.GB44199@f23x64.localdomain>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Darren Hart <dvhart@infradead.org>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Irina Tirdea <irina.tirdea@intel.com>, linux-clk@vger.kernel.org, "x86@kernel.org" <x86@kernel.org>, platform-driver-x86@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>, Thomas Gleixner <tglx@linutronix.de>, Michael Turquette <mturquette@baylibre.com>, Ingo Molnar <mingo@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Len Brown <lenb@kernel.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <alpine.LSU.2.20.1612191152320.19203@cbobk.fhfr.pm>
+Sender: linux-input-owner@vger.kernel.org
+To: Jiri Kosina <jikos@kernel.org>
+Cc: linux-input@vger.kernel.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, lukas@wunner.de, Benjamin Tissoires <benjamin.tissoires@redhat.com>, Andrew Duggan <aduggan@synaptics.com>, perex@perex.cz, vinod.koul@intel.com, hui.wang@canonical.com, rafael.j.wysocki@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+Hi Jiri,
 
---exmomhpvdqifvrc4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 19.12.2016 11:53, Jiri Kosina wrote:
+> On Mon, 19 Dec 2016, Dennis Wassenberg wrote:
+> 
+>> "led_set_func_hid_lenovo" is set to "hid_lenovo_led_set"
+>>
+>> +#if IS_ENABLED(CONFIG_HID_LENOVO)
+>> +static int hda_fixup_thinkpad_hid_prepare(struct hda_codec *codec)
+>> +{
+>> +	struct hda_gen_spec *spec = codec->spec;
+>> +	int ret = 0;
+>> +
+>> +	if (!is_thinkpad(codec))
+>> +		return -ENODEV;
+>> +	if (!led_set_func_hid_lenovo)
+>> +		led_set_func_hid_lenovo = symbol_request(hid_lenovo_led_set);
+>>
+>> "hid_lenovo_led_set" is introduced in "[PATCH v2 2/2] hda: 
+>> thinkpad_helper: Add support for hid-lenovo LED control". This means 
+>> that "[PATCH 4/4] hda: thinkpad_helper: Add support for hid-lenovo LED 
+>> control" can only work with applied "[PATCH 1/4] hid-lenovo: Add support 
+>> for X1 Tablet cover special keys" and "[PATCH v2 2/2] hda: 
+>> thinkpad_helper: Add support for hid-lenovo LED control".
+> 
+> Ah, okay, I wasn't aware of the other patchset. These two probably should 
+> be merged together. Is the other 2-patch set merged in any tree already? 
+> Where has it been submitted to?
+> 
+No 1/4, 2/4 and 3/4 are currently not merged to any tree. I reworked 1/4, 2/4 and 3/4 because of some comments from Benjamin Tissoires (mail from 14th September 2016).
 
-On Fri, Dec 16, 2016 at 10:36:07AM -0800, Darren Hart wrote:
+The patches are submitted to all recipients at the To, CC-Line (e.g. linux-input mailing list).
 
-> My understanding is include/linux should be more generic, rather than platform
-> specific headers. So while platform_data may refer specifically to the platform
-> bus drivers, it's the closest thing we have to include/platform, which would be
-> ideal. I would prefer to stick with include/platform_data because:
+Maybe I can merge 2/4 and 4/4 together. This is all for LED control. 1/4 is for key/input handling and 3/4 is a special FNLock handling where I should use a separate patch.
 
-It's not specific to the platform bus, it's for use with the platform_data
-pointer embedded in struct device that all buses can have - it's
-extensively used for things like I2C and SPI for example.  But really it
-doesn't matter *that* much.
+Currently I have no feedback regarding the reworked linux-input specific code. I hope I will get it soon :)
 
---exmomhpvdqifvrc4
-Content-Type: application/pgp-signature; name="signature.asc"
+Best regards,
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlhXvqAACgkQJNaLcl1U
-h9BxzQf/c8nqU+66S2miVJyYdJbh8d9Ed+afKoeeTozs1u6KcCMaigFS1hyUKSk1
-ZKyGQy32B5iSGauGTYwbRJnz39qUg2d4Jay9XK8IEZoZLw/IiZ90CaXFkvtX2YVn
-61P9OcYJE3eq57I6i8dhLD7bR9uI9CxIXS8fRbf7RaZd1wRb/z4s6z7YMFVJYvIS
-zkzw0KrmIb+4AQfvWFuXw51xujERcnfBHnjHq1JX/yxqihmSJYg4/wi3pgNdKjEl
-4AQc+r37wMLWO1LU7XP6H7TRKagVzriXtyap9zi/YtHoewnyrKkzVjcJMduOaEmf
-OVSJefChGjkkQUUcAgaG/SVwRJH+RA==
-=CT+F
------END PGP SIGNATURE-----
-
---exmomhpvdqifvrc4--
+Dennis
