@@ -1,65 +1,60 @@
-From: Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH v2 1/4] DRM: add help to get ELD speaker allocation
-Date: Mon, 19 Dec 2016 10:42:28 +0100
-Message-ID: <20161219094228.tkj4tr5mekdowelu@phenom.ffwll.local>
-References: <1481728605-22781-1-git-send-email-arnaud.pouliquen@st.com>
- <1481728605-22781-2-git-send-email-arnaud.pouliquen@st.com>
- <87bmw8nv30.fsf@intel.com>
+From: Jiri Kosina <jikos@kernel.org>
+Subject: Re: [PATCH 2/4] hid-lenovo: Add support for X1 Tablet cover LED
+ control
+Date: Mon, 19 Dec 2016 10:54:05 +0100 (CET)
+Message-ID: <alpine.LSU.2.20.1612191052020.19203@cbobk.fhfr.pm>
+References: <ef83e1ec-48d5-a011-c95e-8dba060bc8c3@secunet.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <87bmw8nv30.fsf@intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Jani Nikula <jani.nikula@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, kernel@stlinux.com, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, Jyri Sarha <jsarha@ti.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, broonie@kernel.org, dri-devel@lists.freedesktop.org, Daniel Vetter <daniel.vetter@intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <ef83e1ec-48d5-a011-c95e-8dba060bc8c3@secunet.com>
+Sender: linux-input-owner@vger.kernel.org
+To: Dennis Wassenberg <dennis.wassenberg@secunet.com>
+Cc: linux-input@vger.kernel.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, lukas@wunner.de, Benjamin Tissoires <benjamin.tissoires@redhat.com>, Andrew Duggan <aduggan@synaptics.com>, perex@perex.cz, vinod.koul@intel.com, hui.wang@canonical.com, rafael.j.wysocki@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBEZWMgMTksIDIwMTYgYXQgMTE6MDk6NTVBTSArMDIwMCwgSmFuaSBOaWt1bGEgd3Jv
-dGU6Cj4gT24gV2VkLCAxNCBEZWMgMjAxNiwgQXJuYXVkIFBvdWxpcXVlbiA8YXJuYXVkLnBvdWxp
-cXVlbkBzdC5jb20+IHdyb3RlOgo+ID4gQWRkIGhlbHBlciB0byBhbGxvdyB1c2VycyB0byByZXRy
-aWV2ZSB0aGUgc3BlYWtlciBhbGxvY2F0aW9ucyB3aXRob3V0Cj4gPiBrbm93bGVkZ2Ugb2YgdGhl
-IEVMRCBzdHJ1Y3R1cmUuCj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogQXJuYXVkIFBvdWxpcXVlbiA8
-YXJuYXVkLnBvdWxpcXVlbkBzdC5jb20+Cj4gCj4gRm9yIHRoaXMgb25lIHBhdGNoLAo+IAo+IFJl
-dmlld2VkLWJ5OiBKYW5pIE5pa3VsYSA8amFuaS5uaWt1bGFAaW50ZWwuY29tPgoKVGFrYXNoaSwg
-ZG8geW91IHdhbnQgYSB0b3BpYyBicmFuY2ggcHVsbCByZXF1ZXN0IGZvciB0aGlzIG9uZSBoZXJl
-IGZvcgptZXJnaW5nIHRocm91Z2ggdGhlIHNvdW5kIHRyZWU/Ci1EYW5pZWwKCj4gCj4gPiAtLS0K
-PiA+ICBpbmNsdWRlL2RybS9kcm1fZWRpZC5oIHwgMTMgKysrKysrKysrKysrKwo+ID4gIDEgZmls
-ZSBjaGFuZ2VkLCAxMyBpbnNlcnRpb25zKCspCj4gPgo+ID4gZGlmZiAtLWdpdCBhL2luY2x1ZGUv
-ZHJtL2RybV9lZGlkLmggYi9pbmNsdWRlL2RybS9kcm1fZWRpZC5oCj4gPiBpbmRleCA5MTk5MzNk
-Li4wNzA2Y2M2IDEwMDY0NAo+ID4gLS0tIGEvaW5jbHVkZS9kcm0vZHJtX2VkaWQuaAo+ID4gKysr
-IGIvaW5jbHVkZS9kcm0vZHJtX2VkaWQuaAo+ID4gQEAgLTI0NSw2ICsyNDUsNyBAQCBzdHJ1Y3Qg
-ZGV0YWlsZWRfdGltaW5nIHsKPiA+ICAjIGRlZmluZSBEUk1fRUxEX0FVRF9TWU5DSF9ERUxBWV9N
-QVgJMHhmYQkvKiA1MDAgbXMgKi8KPiA+ICAKPiA+ICAjZGVmaW5lIERSTV9FTERfU1BFQUtFUgkJ
-CTcKPiA+ICsjIGRlZmluZSBEUk1fRUxEX1NQRUFLRVJfTUFTSwkJMHg3Zgo+ID4gICMgZGVmaW5l
-IERSTV9FTERfU1BFQUtFUl9STFJDCQkoMSA8PCA2KQo+ID4gICMgZGVmaW5lIERSTV9FTERfU1BF
-QUtFUl9GTFJDCQkoMSA8PCA1KQo+ID4gICMgZGVmaW5lIERSTV9FTERfU1BFQUtFUl9SQwkJKDEg
-PDwgNCkKPiA+IEBAIC00MTIsNiArNDEzLDE4IEBAIHN0YXRpYyBpbmxpbmUgaW50IGRybV9lbGRf
-c2l6ZShjb25zdCB1aW50OF90ICplbGQpCj4gPiAgfQo+ID4gIAo+ID4gIC8qKgo+ID4gKyAqIGRy
-bV9lbGRfZ2V0X3Nwa19hbGxvYyAtIEdldCBzcGVha2VyIGFsbG9jYXRpb24KPiA+ICsgKiBAZWxk
-OiBwb2ludGVyIHRvIGFuIEVMRCBtZW1vcnkgc3RydWN0dXJlCj4gPiArICoKPiA+ICsgKiBUaGUg
-cmV0dXJuZWQgdmFsdWUgaXMgdGhlIHNwZWFrZXJzIG1hc2suIFVzZXIgaGFzIHRvIHVzZSAlRFJN
-X0VMRF9TUEVBS0VSCj4gPiArICogZmllbGQgZGVmaW5pdGlvbnMgdG8gaWRlbnRpZnkgc3BlYWtl
-cnMuCj4gPiArICovCj4gPiArc3RhdGljIGlubGluZSB1OCBkcm1fZWxkX2dldF9zcGtfYWxsb2Mo
-Y29uc3QgdWludDhfdCAqZWxkKQo+ID4gK3sKPiA+ICsJcmV0dXJuIGVsZFtEUk1fRUxEX1NQRUFL
-RVJdICYgRFJNX0VMRF9TUEVBS0VSX01BU0s7Cj4gPiArfQo+ID4gKwo+ID4gKy8qKgo+ID4gICAq
-IGRybV9lbGRfZ2V0X2Nvbm5fdHlwZSAtIEdldCBkZXZpY2UgdHlwZSBoZG1pL2RwIGNvbm5lY3Rl
-ZAo+ID4gICAqIEBlbGQ6IHBvaW50ZXIgdG8gYW4gRUxEIG1lbW9yeSBzdHJ1Y3R1cmUKPiA+ICAg
-Kgo+IAo+IC0tIAo+IEphbmkgTmlrdWxhLCBJbnRlbCBPcGVuIFNvdXJjZSBUZWNobm9sb2d5IENl
-bnRlcgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4g
-ZHJpLWRldmVsIG1haWxpbmcgbGlzdAo+IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcK
-PiBodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZl
-bAoKLS0gCkRhbmllbCBWZXR0ZXIKU29mdHdhcmUgRW5naW5lZXIsIEludGVsIENvcnBvcmF0aW9u
-Cmh0dHA6Ly9ibG9nLmZmd2xsLmNoCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVk
-ZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2RyaS1kZXZlbAo=
+Hi Dennis,
+
+thanks a lot for the patch.
+
+On Fri, 9 Dec 2016, Dennis Wassenberg wrote:
+
+> +int hid_lenovo_led_set(enum hid_lenovo_led_type led, bool on)
+> +{
+> +	struct led_classdev *dev = NULL;
+> +	struct lenovo_led_list_entry *entry;
+> +
+> +	if (led >= HID_LENOVO_LED_MAX)
+> +		return -EINVAL;
+> +
+> +	hid_lenovo_initial_leds[led] = on ? LED_FULL : LED_OFF;
+> +
+> +	list_for_each_entry(entry, &hid_lenovo_leds, list) {
+> +		if (entry->type == led) {
+> +			dev = entry->dev;
+> +			break;
+> +		}
+> +	}
+
+How exactly is this synchronized against lenovo_remove_tpx1cover()?
+
+> +
+> +	if (!dev)
+> +		return -ENODEV;
+> +
+> +	if (!dev->brightness_set)
+> +		return -ENODEV;
+> +
+> +	dev->brightness_set(dev, on ? LED_FULL : LED_OFF);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(hid_lenovo_led_set);
+
+Does this really need to be exported to the whole universe? (I guess this 
+will be further discussed in 4/4).
+
+-- 
+Jiri Kosina
+SUSE Labs
+
