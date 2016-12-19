@@ -1,15 +1,15 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v3 2/4] ALSA pcm: allow non constant
-	snd_pcm_chmap_elem
-Date: Mon, 19 Dec 2016 12:08:44 +0100
-Message-ID: <1482145726-16782-3-git-send-email-arnaud.pouliquen@st.com>
+Subject: [PATCH v3 3/4] ASoC: core: add optional pcm_new
+	callback for DAI driver
+Date: Mon, 19 Dec 2016 12:08:45 +0100
+Message-ID: <1482145726-16782-4-git-send-email-arnaud.pouliquen@st.com>
 References: <1482145726-16782-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 5D848265A82
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id C09B1266BC9
  for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2016 12:09:14 +0100 (CET)
 In-Reply-To: <1482145726-16782-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,68 +25,77 @@ To: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org
 Cc: Takashi Iwai <tiwai@suse.de>, lgirdwood@gmail.com, Jyri Sarha <jsarha@ti.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, David Airlie <airlied@linux.ie>, broonie@kernel.org, Daniel Vetter <daniel.vetter@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-For HDMI, channel mapping can be retrieved from ELD. In this case mapping
-can change during runtime (plug/unplug).
-This patch removes the 'const' property of the struct chmap.
+During probe, DAIs can need to perform some actions that request
+the knowledge of the pcm runtime handle.
+The callback is called during DAIs linking, after PCM device creation.
+For instance this can be used to add relationship between a DAI pcm
+control and the pcm device.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- include/sound/pcm.h  | 4 ++--
- sound/core/pcm_lib.c | 6 +++---
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ include/sound/soc-dai.h |  3 +++
+ sound/soc/soc-core.c    | 28 ++++++++++++++++++++++++++++
+ 2 files changed, 31 insertions(+)
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index af1fb37..3b459a3 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -1355,7 +1355,7 @@ struct snd_pcm_chmap {
- 	struct snd_pcm *pcm;	/* assigned PCM instance */
- 	int stream;		/* PLAYBACK or CAPTURE */
- 	struct snd_kcontrol *kctl;
--	const struct snd_pcm_chmap_elem *chmap;
-+	struct snd_pcm_chmap_elem *chmap;
- 	unsigned int max_channels;
- 	unsigned int channel_mask;	/* optional: active channels bitmask */
- 	void *private_data;	/* optional: private data pointer */
-@@ -1387,7 +1387,7 @@ struct snd_pcm_chmap {
- #define SND_PCM_CHMAP_MASK_2468	(SND_PCM_CHMAP_MASK_246 | (1U << 8))
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 964b7de..1c8b579 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -231,6 +231,9 @@ struct snd_soc_dai_driver {
+ 	int (*resume)(struct snd_soc_dai *dai);
+ 	/* compress dai */
+ 	int (*compress_new)(struct snd_soc_pcm_runtime *rtd, int num);
++	/* Optional Callback used at pcm creation*/
++	int (*pcm_new)(struct snd_soc_pcm_runtime *rtd,
++		       struct snd_soc_dai *dai);
+ 	/* DAI is also used for the control bus */
+ 	bool bus_control;
  
- int snd_pcm_add_chmap_ctls(struct snd_pcm *pcm, int stream,
--			   const struct snd_pcm_chmap_elem *chmap,
-+			   struct snd_pcm_chmap_elem *chmap,
- 			   int max_channels,
- 			   unsigned long private_value,
- 			   struct snd_pcm_chmap **info_ret);
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index bb12615..252a498 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -2489,7 +2489,7 @@ static int pcm_chmap_ctl_get(struct snd_kcontrol *kcontrol,
- 	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
- 	unsigned int idx = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id);
- 	struct snd_pcm_substream *substream;
--	const struct snd_pcm_chmap_elem *map;
-+	struct snd_pcm_chmap_elem *map;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index c0bbcd9..b8c5813 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1552,6 +1552,27 @@ static int soc_probe_dai(struct snd_soc_dai *dai, int order)
+ 	return 0;
+ }
  
- 	if (snd_BUG_ON(!info->chmap))
- 		return -EINVAL;
-@@ -2519,7 +2519,7 @@ static int pcm_chmap_ctl_tlv(struct snd_kcontrol *kcontrol, int op_flag,
- 			     unsigned int size, unsigned int __user *tlv)
- {
- 	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
--	const struct snd_pcm_chmap_elem *map;
-+	struct snd_pcm_chmap_elem *map;
- 	unsigned int __user *dst;
- 	int c, count = 0;
- 
-@@ -2578,7 +2578,7 @@ static void pcm_chmap_ctl_private_free(struct snd_kcontrol *kcontrol)
-  * Return: Zero if successful, or a negative error value.
-  */
- int snd_pcm_add_chmap_ctls(struct snd_pcm *pcm, int stream,
--			   const struct snd_pcm_chmap_elem *chmap,
-+			   struct snd_pcm_chmap_elem *chmap,
- 			   int max_channels,
- 			   unsigned long private_value,
- 			   struct snd_pcm_chmap **info_ret)
++static int soc_link_dai_pcm_new(struct snd_soc_dai **dais, int num_dais,
++				struct snd_soc_pcm_runtime *rtd)
++{
++	int i, ret = 0;
++
++	for (i = 0; i < num_dais; ++i) {
++		struct snd_soc_dai_driver *drv = dais[i]->driver;
++
++		if (!rtd->dai_link->no_pcm && drv->pcm_new)
++			ret = drv->pcm_new(rtd, dais[i]);
++		if (ret < 0) {
++			dev_err(dais[i]->dev,
++				"ASoC: Failed to bind %s with pcm device\n",
++				dais[i]->name);
++			return ret;
++		}
++	}
++
++	return 0;
++}
++
+ static int soc_link_dai_widgets(struct snd_soc_card *card,
+ 				struct snd_soc_dai_link *dai_link,
+ 				struct snd_soc_pcm_runtime *rtd)
+@@ -1663,6 +1684,13 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
+ 				       dai_link->stream_name, ret);
+ 				return ret;
+ 			}
++			ret = soc_link_dai_pcm_new(&cpu_dai, 1, rtd);
++			if (ret < 0)
++				return ret;
++			ret = soc_link_dai_pcm_new(rtd->codec_dais,
++						   rtd->num_codecs, rtd);
++			if (ret < 0)
++				return ret;
+ 		} else {
+ 			INIT_DELAYED_WORK(&rtd->delayed_work,
+ 						codec2codec_close_delayed_work);
 -- 
 1.9.1
