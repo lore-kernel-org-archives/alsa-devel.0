@@ -1,18 +1,15 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [STLinux Kernel] [PATCH v2 4/4] ASoC: hdmi-codec:
- add channel mapping control
-Date: Mon, 19 Dec 2016 12:07:03 +0100
-Message-ID: <3221c668-0ced-a2d8-9422-5bf063d06c42@st.com>
-References: <1481728605-22781-1-git-send-email-arnaud.pouliquen@st.com>
- <1481728605-22781-5-git-send-email-arnaud.pouliquen@st.com>
+Subject: [PATCH v3 0/4] Generic HDMI codec: Add channel mapping
+	control
+Date: Mon, 19 Dec 2016 12:08:42 +0100
+Message-ID: <1482145726-16782-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 3B590265A82
- for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2016 12:07:09 +0100 (CET)
-In-Reply-To: <1481728605-22781-5-git-send-email-arnaud.pouliquen@st.com>
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id E8457265A82
+ for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2016 12:09:10 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,160 +20,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org
-Cc: kernel@stlinux.com, Takashi Iwai <tiwai@suse.de>, lgirdwood@gmail.com, Jyri Sarha <jsarha@ti.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, David Airlie <airlied@linux.ie>, broonie@kernel.org, Daniel Vetter <daniel.vetter@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, lgirdwood@gmail.com, Jyri Sarha <jsarha@ti.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, David Airlie <airlied@linux.ie>, broonie@kernel.org, Daniel Vetter <daniel.vetter@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+Aim of this patch is to add  'Playback Channel Map' control to export 
+audio capabilities in term of HDMI sink speakers allocation.
 
-I detected 2 issues in this version, details below.
+V3:
+ - "ASoC: hdmi-codec: add channel mapping control":
+     => Minor fixes:
+         - select stereo speaker config by default if HDMI cable unplugged
+         - fix compilation warning. 
+ - "DRM: add help to get ELD speaker allocation"
+     => No delta vs V2.
+ - "ALSA pcm: allow non constant snd_pcm_chmap_elem"
+     => No delta vs V2.
+ - "ASoC: core: add optional pcm_new callback for DAI driver"
+     => No delta vs V2.
 
-V3 is following.
-Sorry for the inconvenience...
+V2:
+In this version I use chmap helper functions from pcm_lib.c. 
+It is quite tricky to use it from ASoC due to the relation chip of the controls
+with the pcm runtime.
+After several tries, my conclusion is that it must be handled in ASoC DAI driver.
+Main reason is that the DAI driver can not provide snd_pcm_chmap struct
+through kcontrol structure. But this induces that soc-core provides pcm runtime
+structure to DAI driver during probe.
 
-Regards
-Arnaud
+Base on this conclusion. I reworked my patches by adding 2 
+new patches in patch-set
+1)  ALSA pcm: allow non constant snd_pcm_chmap_elem
+   This patch allows to handle non constant channel mapping. As ELD
+   information can change during runtime it is mandatory to properly 
+   handle the feature.
+   In term of compatibility with legacy it should be straightforward,
+   as update just consists in suppressing the 'const' constraint.
 
-On 12/14/2016 04:16 PM, Arnaud Pouliquen wrote:
-> +static unsigned long hdmi_codec_spk_mask_from_alloc(int spk_alloc)
-> +{
-> +	int i;
-> +	const unsigned long hdmi_codec_eld_spk_alloc_bits[] = {
-> +		[0] = FL | FR, [1] = LFE, [2] = FC, [3] = RL | RR,
-> +		[4] = RC, [5] = FLC | FRC, [6] = RLC | RRC,
-> +	};
-> +	unsigned long spk_mask;
-Missing initialization that generates warning during compilation
-> +
-> +	for (i = 0; i < ARRAY_SIZE(hdmi_codec_eld_spk_alloc_bits); i++) {
-> +		if (spk_alloc & (1 << i))
-> +			spk_mask |= hdmi_codec_eld_spk_alloc_bits[i];
-> +	}
-> +
-> +	return spk_mask;
-> +}
-> +
-> +/* From speaker bit mask to ALSA API channel position */
-> +static int snd_hdac_spk_to_chmap(int spk)
-> +{
-> +	const struct hdmi_codec_channel_map_table *t = hdmi_codec_map_table;
-> +
-> +	for (; t->map; t++) {
-> +		if (t->spk_mask == spk)
-> +			return t->map;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/**
-> + * hdmi_codec_cea_init_channel_alloc:
-> + * Compute derived values in hdmi_codec_channel_alloc[].
-> + * spk_na_mask is used to store unused channels in mid of the channel
-> + * allocations. These particular channels are then considered as active channels
-> + * For instance:
-> + *    CA_ID 0x02: CA =  (FL, FR, 0, FC) => spk_na_mask = 0x04, channels = 4
-> + *    CA_ID 0x04: CA =  (FL, FR, 0, 0, RC) => spk_na_mask = 0x03C, channels = 5
-> + */
-> +static void hdmi_codec_cea_init_channel_alloc(void)
-> +{
-> +	int i, j, k, last;
-> +	struct hdmi_codec_cea_spk_alloc *p;
-> +
-> +	/* Test if not already done by another instance */
-> +	if (hdmi_codec_channel_alloc[0].channels)
-> +		return;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(hdmi_codec_channel_alloc); i++) {
-> +		p = hdmi_codec_channel_alloc + i;
-> +		p->spks_mask = 0;
-> +		p->spk_na_mask = 0;
-> +		last = HDMI_MAX_SPEAKERS;
-> +		for (j = 0, k = 7; j < HDMI_MAX_SPEAKERS; j++, k--) {
-> +			if (p->speakers[j]) {
-> +				p->spks_mask |= p->speakers[j];
-> +				if (last == HDMI_MAX_SPEAKERS)
-> +					last = j;
-> +			} else if (last != HDMI_MAX_SPEAKERS) {
-> +				p->spk_na_mask |= 1 << k;
-> +			}
-> +		}
-> +		p->channels = 8 - last;
-> +	}
-> +}
-> +
-> +static int hdmi_codec_get_ch_alloc_table_idx(struct hdmi_codec_priv *hcp,
-> +					     unsigned char channels)
-> +{
-> +	int i;
-> +	u8 spk_alloc;
-> +	unsigned long spk_mask;
-> +	struct hdmi_codec_cea_spk_alloc *cap = hdmi_codec_channel_alloc;
-> +
-> +	spk_alloc = drm_eld_get_spk_alloc(hcp->eld);
-> +	spk_mask = hdmi_codec_spk_mask_from_alloc(spk_alloc);
-> +
-> +	for (i = 0; i < ARRAY_SIZE(hdmi_codec_channel_alloc); i++, cap++) {
-> +		if (cap->channels != channels)
-> +			continue;
-> +		if (!(cap->spks_mask == (spk_mask & cap->spks_mask)))
-> +			continue;
-> +		return i;
-> +	}
-> +
-If HDMI cable not plugged, ELD is empty. In this case this function
-returns an error. For backward compatible, it should not return an error
-but a default allocation that should be stereo.
+2)  ASoC: core: add optional pcm_new callback for DAI driver
+    This is the only way i found to be able to use 
+    snd_pcm_add_chmap_ctls and associated controls helper functions.
+    From my point of view, this is the more simple way to add relationship
+    between DAI and associated pcm devices.
+   Notice that this patch, if accepted, makes the following one obsolete,
+   as it also answer to the associated topic:
+  [PATCH v5 0/2] ALSA controls management using index/device/sub-devices fields
+  (http://www.spinics.net/lists/alsa-devel/msg57639.html).
 
-> +	return -EINVAL;
-> +}
-> +
-> +static void hdmi_cea_alloc_to_tlv_spks(struct hdmi_codec_cea_spk_alloc *cap,
-> +				       unsigned char *chmap)
-> +{
-> +	int count = 0;
-> +	int c, spk;
-> +
-> +	/* Detect unused channels in cea caps, tag them as N/A channel in TLV */
-> +	for (c = 0; c < HDMI_MAX_SPEAKERS; c++) {
-> +		spk = cap->speakers[7 - c];
-> +		if (cap->spk_na_mask & BIT(c))
-> +			chmap[count++] = SNDRV_CHMAP_NA;
-> +		else
-> +			chmap[count++] = snd_hdac_spk_to_chmap(spk);
-> +	}
-> +}
-> +
-> +static void hdmi_cea_alloc_to_tlv_chmap(struct hdmi_codec_priv *hcp,
-> +					struct hdmi_codec_cea_spk_alloc *cap)
-> +{
-> +	unsigned int chs, count = 0;
-> +	struct snd_pcm_chmap *info = hcp->chmap_info;
-> +	struct snd_pcm_chmap_elem *chmap = info->chmap;
-> +	unsigned long max_chs = info->max_channels;
-> +	int num_ca = ARRAY_SIZE(hdmi_codec_channel_alloc);
-> +	int spk_alloc, spk_mask;
-> +
-> +	spk_alloc = drm_eld_get_spk_alloc(hcp->eld);
-> +	spk_mask = hdmi_codec_spk_mask_from_alloc(spk_alloc);
-> +
-> +	for (chs = 2; chs <= max_chs; chs++) {
-> +		int i;
-> +		struct hdmi_codec_cea_spk_alloc *cap;
-> +
-> +		cap = hdmi_codec_channel_alloc;
-> +		for (i = 0; i < num_ca; i++, cap++) {
-> +			if (cap->channels != chs)
-> +				continue;
-> +
-> +			if (!(cap->spks_mask == (spk_mask & cap->spks_mask)))
-> +				continue;
-> +
-> +			chmap[count].channels = cap->channels;
-> +			hdmi_cea_alloc_to_tlv_spks(cap, chmap[count].map);
-> +			count++;
-> +		}
-> +	}
-> +
-> +	/* Force last one to 0 to indicate end of available allocations */
-> +	chmap[count].channels = 0;
-> +}
-> +
+If you estimate that this it not reasonable i will come back to my first version.
+
+V1:
+This patch follows discussion initiate here: 
+[RFC] ASOC: HDMI audio info frame speaker allocation
+http://www.spinics.net/lists/alsa-devel/msg57363.html
+
+The code is fully inspired from HDA driver.
+On hw_param, HDMI sink speaker capabilities are exported via TLV ops
+and  a CEA allocation is choson, based on ELD information and the number of
+channels requested by user.
+
+Mains differences with HDA implementation are:
+ - Control is read only
+ - Channel swap is not supported. Consequence is that unused channel in
+   the mid of CEA audio infoframe channel mapping are considered as
+   active.
+   example for channel allocation 0x02: FL, FR, 0, FC)
+	This configuration is only available for a 4 channels stream.
+  - Channel allocation table has been reordered and HDMI 2.0 is not
+    supported.
+
+Arnaud Pouliquen (4):
+  DRM: add help to get ELD speaker allocation
+  ALSA pcm: allow non constant snd_pcm_chmap_elem
+  ASoC: core: add optional pcm_new callback for DAI driver
+  ASoC: hdmi-codec: add channel mapping control
+
+ include/drm/drm_edid.h        |  13 ++
+ include/sound/pcm.h           |   4 +-
+ include/sound/soc-dai.h       |   3 +
+ sound/core/pcm_lib.c          |   6 +-
+ sound/soc/codecs/hdmi-codec.c | 313 +++++++++++++++++++++++++++++++++++++++++-
+ sound/soc/soc-core.c          |  28 ++++
+ 6 files changed, 361 insertions(+), 6 deletions(-)
+
+-- 
+1.9.1
