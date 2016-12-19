@@ -1,114 +1,84 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5640: fallback mechanism
-	if MCLK is not enabled" to the asoc tree
-Date: Mon, 19 Dec 2016 13:31:13 +0000
-Message-ID: <E1cIy25-00052T-H5@debutante>
-References: <1481907349-16529-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm_adsp: Don't overrun firmware file buffer when reading region data
+Date: Mon, 19 Dec 2016 15:18:08 +0000
+Message-ID: <1482160688-31365-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 04FD2265A82
- for <alsa-devel@alsa-project.org>; Mon, 19 Dec 2016 14:31:21 +0100 (CET)
-In-Reply-To: <1481907349-16529-1-git-send-email-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Protect against corrupt firmware files by ensuring that the length we
+get for the data in a region actually lies within the available firmware
+file data buffer.
 
-   ASoC: Intel: bytcr_rt5640: fallback mechanism if MCLK is not enabled
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 4a8b3a682be9addff7dbd16371fa8c34103b5c31 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 16 Dec 2016 10:55:49 -0600
-Subject: [PATCH] ASoC: Intel: bytcr_rt5640: fallback mechanism if MCLK is not
- enabled
-
-Commit df1a2776a795 ("ASoC: Intel: bytcr_rt5640: add MCLK support")
-was merged but the corresponding clock framework patches have not,
-after being bumped from audio to clock to x86 domains. The missing
-clock-related patches result in a regression starting with 4.9 with
-the audio card not being created.
-
-Rather than reverting this commit and all following updates already
-queued up for 4.10, handle run-time dependency on MCLK and fall back
-to the previous bit-clock mode. This provides the same functionality
-as in 4.8 for Baytrail devices. On Baytrail-CR most devices remain
-silent with this fallback but additional patches are needed anyway.
-As suggested by Mark Brown, the fallback is only allowed with -ENOENT,
-all other run-time errors, including -EPROBE_DEFER, will stop the probe
-with no sound card registered.
-
-This patch should be applied to -stable as well as ASoC 4.10 fixes
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 507a86a5eafe..e33e4777a65c 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -825,10 +825,20 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	if ((byt_rt5640_quirk & BYT_RT5640_MCLK_EN) && (is_valleyview())) {
- 		priv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
- 		if (IS_ERR(priv->mclk)) {
-+			ret_val = PTR_ERR(priv->mclk);
-+
- 			dev_err(&pdev->dev,
--				"Failed to get MCLK from pmc_plt_clk_3: %ld\n",
--				PTR_ERR(priv->mclk));
--			return PTR_ERR(priv->mclk);
-+				"Failed to get MCLK from pmc_plt_clk_3: %d\n",
-+				ret_val);
-+
-+			/*
-+			 * Fall back to bit clock usage for -ENOENT (clock not
-+			 * available likely due to missing dependencies), bail
-+			 * for all other errors, including -EPROBE_DEFER
-+			 */
-+			if (ret_val != -ENOENT)
-+				return ret_val;
-+			byt_rt5640_quirk &= ~BYT_RT5640_MCLK_EN;
- 		}
- 	}
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 593b7d1..91ccf62 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -1551,7 +1551,7 @@ static int wm_adsp_load(struct wm_adsp *dsp)
+ 	const struct wmfw_region *region;
+ 	const struct wm_adsp_region *mem;
+ 	const char *region_name;
+-	char *file, *text;
++	char *file, *text = NULL;
+ 	struct wm_adsp_buf *buf;
+ 	unsigned int reg;
+ 	int regions = 0;
+@@ -1700,10 +1700,21 @@ static int wm_adsp_load(struct wm_adsp *dsp)
+ 			 regions, le32_to_cpu(region->len), offset,
+ 			 region_name);
  
++		if ((pos + le32_to_cpu(region->len) + sizeof(*region)) >
++		    firmware->size) {
++			adsp_err(dsp,
++				 "%s.%d: %s region len %d bytes exceeds file length %d\n",
++				 file, regions, region_name,
++				 le32_to_cpu(region->len), firmware->size);
++			ret = -EINVAL;
++			goto out_fw;
++		}
++
+ 		if (text) {
+ 			memcpy(text, region->data, le32_to_cpu(region->len));
+ 			adsp_info(dsp, "%s: %s\n", file, text);
+ 			kfree(text);
++			text = NULL;
+ 		}
+ 
+ 		if (reg) {
+@@ -1748,6 +1759,7 @@ static int wm_adsp_load(struct wm_adsp *dsp)
+ 	regmap_async_complete(regmap);
+ 	wm_adsp_buf_free(&buf_list);
+ 	release_firmware(firmware);
++	kfree(text);
+ out:
+ 	kfree(file);
+ 
+@@ -2233,6 +2245,17 @@ static int wm_adsp_load_coeff(struct wm_adsp *dsp)
+ 		}
+ 
+ 		if (reg) {
++			if ((pos + le32_to_cpu(blk->len) + sizeof(*blk)) >
++			    firmware->size) {
++				adsp_err(dsp,
++					 "%s.%d: %s region len %d bytes exceeds file length %d\n",
++					 file, blocks, region_name,
++					 le32_to_cpu(blk->len),
++					 firmware->size);
++				ret = -EINVAL;
++				goto out_fw;
++			}
++
+ 			buf = wm_adsp_buf_alloc(blk->data,
+ 						le32_to_cpu(blk->len),
+ 						&buf_list);
 -- 
-2.11.0
+1.9.1
