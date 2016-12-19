@@ -1,58 +1,32 @@
 From: Jiri Kosina <jikos@kernel.org>
-Subject: Re: [PATCH 2/4] hid-lenovo: Add support for X1 Tablet cover LED
- control
-Date: Mon, 19 Dec 2016 10:54:05 +0100 (CET)
-Message-ID: <alpine.LSU.2.20.1612191052020.19203@cbobk.fhfr.pm>
-References: <ef83e1ec-48d5-a011-c95e-8dba060bc8c3@secunet.com>
+Subject: Re: [PATCH 4/4] hda: thinkpad_helper: Add support for hid-lenovo
+ LED control
+Date: Mon, 19 Dec 2016 11:09:59 +0100 (CET)
+Message-ID: <alpine.LSU.2.20.1612191054270.19203@cbobk.fhfr.pm>
+References: <def3f975-9579-c2fe-9411-fb7522dd46a9@secunet.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-Return-path: <linux-input-owner@vger.kernel.org>
-In-Reply-To: <ef83e1ec-48d5-a011-c95e-8dba060bc8c3@secunet.com>
-Sender: linux-input-owner@vger.kernel.org
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <def3f975-9579-c2fe-9411-fb7522dd46a9@secunet.com>
+Sender: linux-sound-owner@vger.kernel.org
 To: Dennis Wassenberg <dennis.wassenberg@secunet.com>
 Cc: linux-input@vger.kernel.org, linux-sound@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, lukas@wunner.de, Benjamin Tissoires <benjamin.tissoires@redhat.com>, Andrew Duggan <aduggan@synaptics.com>, perex@perex.cz, vinod.koul@intel.com, hui.wang@canonical.com, rafael.j.wysocki@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Dennis,
-
-thanks a lot for the patch.
-
 On Fri, 9 Dec 2016, Dennis Wassenberg wrote:
 
-> +int hid_lenovo_led_set(enum hid_lenovo_led_type led, bool on)
-> +{
-> +	struct led_classdev *dev = NULL;
-> +	struct lenovo_led_list_entry *entry;
-> +
-> +	if (led >= HID_LENOVO_LED_MAX)
-> +		return -EINVAL;
-> +
-> +	hid_lenovo_initial_leds[led] = on ? LED_FULL : LED_OFF;
-> +
-> +	list_for_each_entry(entry, &hid_lenovo_leds, list) {
-> +		if (entry->type == led) {
-> +			dev = entry->dev;
-> +			break;
-> +		}
-> +	}
+> +#if IS_ENABLED(CONFIG_THINKPAD_ACPI)
+> +	if (led_set_func_tpacpi)
+> +		led_set_func_tpacpi(TPACPI_LED_MUTE, !enabled);
+> +#endif
+> +#if IS_ENABLED(CONFIG_HID_LENOVO)
+> +	if (led_set_func_hid_lenovo)
+> +		led_set_func_hid_lenovo(HID_LENOVO_LED_MUTE, !enabled);
 
-How exactly is this synchronized against lenovo_remove_tpx1cover()?
+Where does led_set_func_hid_lenovo() come from? I don't see it in Linus' 
+tree as of today. Is that something else than tpacpi_led_set()?
 
-> +
-> +	if (!dev)
-> +		return -ENODEV;
-> +
-> +	if (!dev->brightness_set)
-> +		return -ENODEV;
-> +
-> +	dev->brightness_set(dev, on ? LED_FULL : LED_OFF);
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(hid_lenovo_led_set);
-
-Does this really need to be exported to the whole universe? (I guess this 
-will be further discussed in 4/4).
+Thanks,
 
 -- 
 Jiri Kosina
