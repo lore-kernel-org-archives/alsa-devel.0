@@ -1,55 +1,41 @@
-From: Jani Nikula <jani.nikula@linux.intel.com>
-Subject: Re: [PATCH v3 1/4] DRM: add help to get ELD speaker allocation
-Date: Tue, 20 Dec 2016 16:07:51 +0200
-Message-ID: <8760meofrc.fsf@intel.com>
-References: <1482145726-16782-1-git-send-email-arnaud.pouliquen@st.com>
- <1482145726-16782-2-git-send-email-arnaud.pouliquen@st.com>
+From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Subject: [PATCH 0/2] ASoC: sun4i-spdif: Changes in preparation
+ of supporting new SoCs
+Date: Tue, 20 Dec 2016 15:49:12 +0100
+Message-ID: <20161220144914.30945-1-codekipper@gmail.com>
+Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <1482145726-16782-2-git-send-email-arnaud.pouliquen@st.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org
-Cc: Daniel Vetter <daniel.vetter@intel.com>, broonie@kernel.org, lgirdwood@gmail.com, Jyri Sarha <jsarha@ti.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBB3EJ4XBAKGQEBG267VI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org, Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCAxOSBEZWMgMjAxNiwgQXJuYXVkIFBvdWxpcXVlbiA8YXJuYXVkLnBvdWxpcXVlbkBz
-dC5jb20+IHdyb3RlOgo+IEFkZCBoZWxwZXIgdG8gYWxsb3cgdXNlcnMgdG8gcmV0cmlldmUgdGhl
-IHNwZWFrZXIgYWxsb2NhdGlvbnMgd2l0aG91dAo+IGtub3dsZWRnZSBvZiB0aGUgRUxEIHN0cnVj
-dHVyZS4KPgo+IFNpZ25lZC1vZmYtYnk6IEFybmF1ZCBQb3VsaXF1ZW4gPGFybmF1ZC5wb3VsaXF1
-ZW5Ac3QuY29tPgoKSSd2ZSBhbHJlYWR5IHJlcGxpZWQgd2l0aCBteSBSZXZpZXdlZC1ieSwgcGxl
-YXNlIHRha2UgY2FyZSB0byBpbmNsdWRlCnRoZW0uCgpSZXZpZXdlZC1ieTogSmFuaSBOaWt1bGEg
-PGphbmkubmlrdWxhQGludGVsLmNvbT4KCgo+IC0tLQo+ICBpbmNsdWRlL2RybS9kcm1fZWRpZC5o
-IHwgMTMgKysrKysrKysrKysrKwo+ICAxIGZpbGUgY2hhbmdlZCwgMTMgaW5zZXJ0aW9ucygrKQo+
-Cj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvZHJtL2RybV9lZGlkLmggYi9pbmNsdWRlL2RybS9kcm1f
-ZWRpZC5oCj4gaW5kZXggYzNhN2Q0NC4uZGU5MzU0MyAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL2Ry
-bS9kcm1fZWRpZC5oCj4gKysrIGIvaW5jbHVkZS9kcm0vZHJtX2VkaWQuaAo+IEBAIC0yNDgsNiAr
-MjQ4LDcgQEAgc3RydWN0IGRldGFpbGVkX3RpbWluZyB7Cj4gICMgZGVmaW5lIERSTV9FTERfQVVE
-X1NZTkNIX0RFTEFZX01BWAkweGZhCS8qIDUwMCBtcyAqLwo+ICAKPiAgI2RlZmluZSBEUk1fRUxE
-X1NQRUFLRVIJCQk3Cj4gKyMgZGVmaW5lIERSTV9FTERfU1BFQUtFUl9NQVNLCQkweDdmCj4gICMg
-ZGVmaW5lIERSTV9FTERfU1BFQUtFUl9STFJDCQkoMSA8PCA2KQo+ICAjIGRlZmluZSBEUk1fRUxE
-X1NQRUFLRVJfRkxSQwkJKDEgPDwgNSkKPiAgIyBkZWZpbmUgRFJNX0VMRF9TUEVBS0VSX1JDCQko
-MSA8PCA0KQo+IEBAIC00MTUsNiArNDE2LDE4IEBAIHN0YXRpYyBpbmxpbmUgaW50IGRybV9lbGRf
-c2l6ZShjb25zdCB1aW50OF90ICplbGQpCj4gIH0KPiAgCj4gIC8qKgo+ICsgKiBkcm1fZWxkX2dl
-dF9zcGtfYWxsb2MgLSBHZXQgc3BlYWtlciBhbGxvY2F0aW9uCj4gKyAqIEBlbGQ6IHBvaW50ZXIg
-dG8gYW4gRUxEIG1lbW9yeSBzdHJ1Y3R1cmUKPiArICoKPiArICogVGhlIHJldHVybmVkIHZhbHVl
-IGlzIHRoZSBzcGVha2VycyBtYXNrLiBVc2VyIGhhcyB0byB1c2UgJURSTV9FTERfU1BFQUtFUgo+
-ICsgKiBmaWVsZCBkZWZpbml0aW9ucyB0byBpZGVudGlmeSBzcGVha2Vycy4KPiArICovCj4gK3N0
-YXRpYyBpbmxpbmUgdTggZHJtX2VsZF9nZXRfc3BrX2FsbG9jKGNvbnN0IHVpbnQ4X3QgKmVsZCkK
-PiArewo+ICsJcmV0dXJuIGVsZFtEUk1fRUxEX1NQRUFLRVJdICYgRFJNX0VMRF9TUEVBS0VSX01B
-U0s7Cj4gK30KPiArCj4gKy8qKgo+ICAgKiBkcm1fZWxkX2dldF9jb25uX3R5cGUgLSBHZXQgZGV2
-aWNlIHR5cGUgaGRtaS9kcCBjb25uZWN0ZWQKPiAgICogQGVsZDogcG9pbnRlciB0byBhbiBFTEQg
-bWVtb3J5IHN0cnVjdHVyZQo+ICAgKgoKLS0gCkphbmkgTmlrdWxhLCBJbnRlbCBPcGVuIFNvdXJj
-ZSBUZWNobm9sb2d5IENlbnRlcgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVz
-a3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9k
-cmktZGV2ZWwK
+From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+
+Hi All,
+please find attached two patches. First being a cleanup of something that
+shouldn't be in the code and the second adds the mechanism for supporting
+newer Allwiner SoCs. There was a third patch in the series and that was
+bringing in support of SPDIF on the Allwinner H3 but I've not been able to
+test it so that I hear audio. As soon as I get some hardware with a SPDIF
+connection I will confirm and push.
+BR,
+CK 
+
+Marcus Cooper (2):
+  ASoC: sun4i-spdif: remove legacy dapm components
+  ASoC: sun4i-spdif: Add quirks to the spdif driver
+
+ sound/soc/sunxi/sun4i-spdif.c | 36 +++++++++++++++++++++++++++---------
+ 1 file changed, 27 insertions(+), 9 deletions(-)
+
+-- 
+2.11.0
