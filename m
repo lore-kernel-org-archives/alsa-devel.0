@@ -1,26 +1,60 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH v2] ASoC: wm_adsp: Don't overrun firmware file buffer when reading region data
-Date: Tue, 20 Dec 2016 10:29:12 +0000
-Message-ID: <1482229752-9108-1-git-send-email-rf@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: wm_adsp: Don't overrun firmware file buffer when reading region data" to the asoc tree
+Date: Tue, 20 Dec 2016 11:39:18 +0000
+Message-ID: <E1cJIlK-00006G-Ab@debutante>
+References: <1482229752-9108-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1482229752-9108-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
+
+The patch
+
+   ASoC: wm_adsp: Don't overrun firmware file buffer when reading region data
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 1cab2a84f470e15ecc8e5143bfe9398c6e888032 Mon Sep 17 00:00:00 2001
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Date: Tue, 20 Dec 2016 10:29:12 +0000
+Subject: [PATCH] ASoC: wm_adsp: Don't overrun firmware file buffer when
+ reading region data
 
 Protect against corrupt firmware files by ensuring that the length we
 get for the data in a region actually lies within the available firmware
 file data buffer.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
  sound/soc/codecs/wm_adsp.c | 25 ++++++++++++++++++++++++-
  1 file changed, 24 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 593b7d1..d72ccef 100644
+index 593b7d1aed46..d72ccef9e238 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
 @@ -1551,7 +1551,7 @@ static int wm_adsp_load(struct wm_adsp *dsp)
@@ -81,4 +115,4 @@ index 593b7d1..d72ccef 100644
  						le32_to_cpu(blk->len),
  						&buf_list);
 -- 
-1.9.1
+2.11.0
