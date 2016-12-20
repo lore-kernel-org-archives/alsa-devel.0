@@ -1,17 +1,22 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: [PATCH 2/2] ASoC: nau8825: provide clock divide for
-	codec mater mode
-Date: Tue, 20 Dec 2016 16:47:07 +0800
-Message-ID: <1482223627-23547-2-git-send-email-KCHSU0@nuvoton.com>
-References: <1482223627-23547-1-git-send-email-KCHSU0@nuvoton.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 5/6] ASoC: add Component level struct
+ snd_compr_ops
+Date: Tue, 20 Dec 2016 10:02:50 +0000
+Message-ID: <20161220100250.GP1867@localhost.localdomain>
+References: <87a8bs74t5.wl%kuninori.morimoto.gx@renesas.com>
+ <8737hk74l7.wl%kuninori.morimoto.gx@renesas.com>
+ <20161219111235.GO1867@localhost.localdomain>
+ <87inqffjkn.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id EB892266B78
- for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2016 09:48:24 +0100 (CET)
-In-Reply-To: <1482223627-23547-1-git-send-email-KCHSU0@nuvoton.com>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id EFBDF266EC1
+ for <alsa-devel@alsa-project.org>; Tue, 20 Dec 2016 11:01:59 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <87inqffjkn.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,75 +26,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, WTLI@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Lars-Peter <lars@metafoo.de>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-Provide the LRC and BCLK divide. The clock divide needs configuration
-properly when codec in master mode.
+On Tue, Dec 20, 2016 at 01:59:43AM +0000, Kuninori Morimoto wrote:
+> > > +	for_each_component(component, rtd->card) {
+> > > +		const struct snd_compr_ops *compr_ops = component->compr_ops;
+> > > +
+> > > +		if (compr_ops && compr_ops->open) {
+> > > +			int _ret = compr_ops->open(cstream);
+> > > +
+> > > +			if (_ret < 0) {
+> > > +				pr_err("compress asoc: can't open component %s\n",
+> > > +				       component->name);
+> > > +				ret |= _ret;
+> > > +			}
+> > 
+> > Apologies if I am missing something but this really doesn't look
+> > like equivalent code? The old code calls the ops for the platform
+> > associated with the stream, the new code looks like it will call
+> > the ops for every single component in the system that has
+> > compressed ops, which would definitely cause issue. Am I missing
+> > something here?
+> 
+> Basically in *current* existing code, platform only has compr_ops.
+> So, converting existing code to new code should be OK.
+> 
+> Current ALSA SoC clearly separating CPU/Codec/Platform, but in these days,
+> new sound device has many features. Thus, it becaming difficult to
+> say "it is XXX" today. For example, some Codec has CPU feature,
+> some CPU has Platform feature etc.
+> So, our (= Me/Lars) plan is that remove current CPU/Codec/Platform separation,
+> and all will be Component connection.
+> 
+> Above code will call every component's compr_ops,
+> currently, it should be platform now.
+> But in the future device, Codec and/or CPU can have compr_ops.
+> 
+> If you want, currently, it can call 1st found compr_ops (= should be platform)
+> only with FIXME comment at this point.
+> 
+> Does this clear answer for you ?
+> 
+> 	for_each_component(component, rtd->card) {
+> 		const struct snd_compr_ops *compr_ops = component->compr_ops;
+> 
+> 		/* FIXME: 1st compr_ops only at this point */
+> 		if (compr_ops && compr_ops->open) {
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
----
- sound/soc/codecs/nau8825.c | 26 ++++++++++++++++++++++++++
- sound/soc/codecs/nau8825.h |  6 ++++++
- 2 files changed, 32 insertions(+)
+But how do you know this is the correct compressed open here? The
+system could have multiple platforms providing compressed ops and
+you have just picked the first one in the card list. I think you
+are making the assumption that there is only one platform
+providing compressed ops and that seems like a very dangerous
+assumption to me. Our CODECs provide some compressed features as
+do many applications processors, which would easily give you at
+two platforms. But I could even imagine APs registering multiple
+compressed platforms for different DSPs or some such.
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 9c98d35..3c7a801 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -1421,9 +1421,35 @@ static int nau8825_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
- 	return 0;
- }
- 
-+static int nau8825_set_clkdiv(struct snd_soc_dai *codec_dai,
-+	int div_id, int div)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
-+
-+	switch (div_id) {
-+	case NAU8825_BCLKDIV:
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_I2S_PCM_CTRL2,
-+			NAU8825_I2S_BLK_DIV_MASK, div);
-+		break;
-+
-+	case NAU8825_FSDIV:
-+		regmap_update_bits(nau8825->regmap, NAU8825_REG_I2S_PCM_CTRL2,
-+			NAU8825_I2S_LRC_DIV_MASK,
-+			div << NAU8825_I2S_LRC_DIV_SFT);
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_dai_ops nau8825_dai_ops = {
- 	.hw_params	= nau8825_hw_params,
- 	.set_fmt	= nau8825_set_dai_fmt,
-+	.set_clkdiv	= nau8825_set_clkdiv,
- };
- 
- #define NAU8825_RATES	SNDRV_PCM_RATE_8000_192000
-diff --git a/sound/soc/codecs/nau8825.h b/sound/soc/codecs/nau8825.h
-index 4b390c4..58b8554 100644
---- a/sound/soc/codecs/nau8825.h
-+++ b/sound/soc/codecs/nau8825.h
-@@ -425,6 +425,12 @@
- #define NAU8825_CHANRGE_PUMP_EN	(1 << 5)
- 
- 
-+/* Programmable divide */
-+enum {
-+	NAU8825_BCLKDIV,
-+	NAU8825_FSDIV,
-+};
-+
- /* System Clock Source */
- enum {
- 	NAU8825_CLK_DIS = 0,
--- 
-2.6.4
+Thanks,
+Charles
+
+> 			ret = compr_ops->open(cstream);
+> 			if (ret < 0) {
+> 				pr_err("compress asoc: can't open component %s\n",
+> 				       component->name);
+> 			}
+> 			break;
+> 		}
+> 	}
