@@ -1,16 +1,16 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [PATCH 1/2] ucm: Automatically load the best
  config file based on the card long name
-Date: Wed, 21 Dec 2016 14:38:58 +0000
-Message-ID: <1482331138.2554.101.camel@loki>
+Date: Wed, 21 Dec 2016 08:46:45 -0600
+Message-ID: <399bde54-dc72-4ce1-a2d2-5c6e4b958f5c@linux.intel.com>
 References: <1482325768-20084-1-git-send-email-mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F2482668D1
- for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2016 15:39:05 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D1562668F0
+ for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2016 15:46:47 +0100 (CET)
 In-Reply-To: <1482325768-20084-1-git-send-email-mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,51 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@linux.intel.com
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, mengdong.lin@intel.com, vinod.koul@intel.com, broonie@kernel.org, pierre-louis.bossart@intel.com
+To: mengdong.lin@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: tiwai@suse.de, mengdong.lin@intel.com, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2016-12-21 at 21:09 +0800, mengdong.lin@linux.intel.com wrote:
+On 12/21/16 7:09 AM, mengdong.lin@linux.intel.com wrote:
 > From: Mengdong Lin <mengdong.lin@linux.intel.com>
-> 
+>
 > Intel DSP platform drivers are used by many different devices. For user
 > space to differentiate them, ASoC machine driver may include the DMI info
 > (vendor, product and board) in card long name. Possible card long names
 > are:
 > broadwell-rt286-Dell Inc.-XPS 13 9343-0310JH
-
-See my previous comments on the kernel patch, but the longname should be
-like :-
-
-"Dell Inc.-XPS 13"
-
-
 > broadwell-rt286-Intel Corp.-Broadwell Client platform-Wilson Beach SDS
 > bytcr-rt5640-ASUSTeK COMPUTER INC.-T100TA-T100TA
 > bytcr-rt5651-Circuitco-Minnowboard Max D0 PLATFORM-MinnowBoard MAX
 > ...
-> 
+>
 > And user space can define configuration files including fields separated
 > by '.' as below:
 > broadwell-rt286
 > broadwell-rt286.Dell.XPS
-
-Dont need to use a . as the names should be unique.
-
 > bytcr-rt5640
 > bytcr-rt5640.ASUS.T100
 > bytcr-rt5651.MinnowboardMax
 > ...
-> 
+
+It's weird to use a different naming convention in driver and userspace. 
+Now the '.' is a separator?
+
 > When being asked to load configuration file of a card, UCM will try to
 > find the card long name from the local machine, and then scan all
 > available configuration file names, search every field of config file
 > name in the card long name. The more characters match, the higher score
 > the file has. Finally, the file with the highest score will be loaded to
 > configure the sound card.
-> 
+
+There are cases where we absolutely don't want to let users use a 
+shorter name. T100 is terrible for example, it would work for T100TA, 
+T100TAF, T00HA which are completely different platforms.
+
+While the partial matching is elegant, I would err on the side of 
+simplicity and keep the filename as reported by the driver. that way 
+people just copy/paste the longname name and there are fewer 
+opportunities for screwups. Yes the file names would be a tad long but 
+we are not using DOS, are we?
+
+
+>
 > Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
-> 
+>
 > diff --git a/src/ucm/parser.c b/src/ucm/parser.c
 > index c98373a..ff75da7 100644
 > --- a/src/ucm/parser.c
@@ -73,7 +78,7 @@ Dont need to use a . as the names should be unique.
 > @@ -55,6 +55,9 @@ static const char * const component_dir[] = {
 >  	NULL,		/* terminator */
 >  };
->  
+>
 > +static int filename_filter(const struct dirent *dirent);
 > +static int is_component_directory(const char *dir);
 > +
@@ -83,7 +88,7 @@ Dont need to use a . as the names should be unique.
 > @@ -1328,6 +1331,210 @@ static int parse_master_file(snd_use_case_mgr_t *uc_mgr, snd_config_t *cfg)
 >  	return 0;
 >  }
->  
+>
 > +/* trim SPACE (0x20) from the string */
 > +static void trim_space(char *str)
 > +{
@@ -170,14 +175,6 @@ Dont need to use a . as the names should be unique.
 > + * file name in the card long name. The more characters match, the higher
 > + * score the file has. Finally, the file with the highest score will be loaded.
 > + */
-
-Id' expect this function to try and open card longname and then card
-name if longname is not found. So providing we use the exact same names
-as the DMI name we wont need any string formatting or scoring (i.e. file
-open("longname/longname.conf") will either succeed or fail)
-
-Liam 
-
 > +static void find_best_config_file(snd_use_case_mgr_t *mgr)
 > +{
 > +	const char *card_name = mgr->card_name;
@@ -302,7 +299,7 @@ Liam
 > @@ -1355,7 +1562,9 @@ int uc_mgr_import_master_config(snd_use_case_mgr_t *uc_mgr)
 >  	snd_config_t *cfg;
 >  	int err;
->  
+>
 > -	err = load_master_config(uc_mgr->card_name, &cfg);
 > +	find_best_config_file(uc_mgr);
 > +
@@ -316,11 +313,11 @@ Liam
 > +++ b/src/ucm/ucm_local.h
 > @@ -41,6 +41,7 @@
 >  #include "use-case.h"
->  
+>
 >  #define MAX_FILE		256
 > +#define MAX_CARD_LONG_NAME	80
 >  #define ALSA_USE_CASE_DIR	ALSA_CONFIG_DIR "/ucm"
->  
+>
 >  #define SEQUENCE_ELEMENT_TYPE_CDEV	1
 > @@ -190,6 +191,8 @@ struct use_case_verb {
 >   */
@@ -329,5 +326,6 @@ Liam
 > +	char card_long_name[MAX_CARD_LONG_NAME];
 > +	char conf_file_name[MAX_CARD_LONG_NAME];
 >  	char *comment;
->  
+>
 >  	/* use case verb, devices and modifier configs parsed from files */
+>
