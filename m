@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH 1/2] ASoC: core: Add API to use DMI name in
-	sound card long name
-Date: Wed, 21 Dec 2016 21:04:18 +0800
-Message-ID: <748589b74f8f4a6fefe7e545c21a6db5e71a74e1.1482324245.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH 2/2] ASoC: Intel: Use DMI name for sound card
+	long name in Broadwell machine driver
+Date: Wed, 21 Dec 2016 21:04:27 +0800
+Message-ID: <30c7d2ce1baa8565a7be043d9919d60ea96995e7.1482324245.git.mengdong.lin@linux.intel.com>
 References: <cover.1482324245.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 7755726058A
- for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2016 14:01:40 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id DC5DB26058A
+ for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2016 14:01:49 +0100 (CET)
 In-Reply-To: <cover.1482324245.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,147 +25,33 @@ To: alsa-devel@alsa-project.org, broonie@kernel.org
 Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Intel DSP platform drivers are used by many different devices but are
-difficult for userspace to differentiate. This patch adds an API to allow
-the DMI name to be used in the sound card long name, thereby helping
-userspace load the correct UCM configuration. Usually machine drivers
-uses their own name as the sound card name (short name), and leave the
-long name and driver name blank. This API will append the DMI info
-like vendor, product and board info, to the card name to make up the card
-long name. If the machine driver has already explicitly set the long name,
-this API will do nothing.
+Intel Broadwell machine driver will call API snd_soc_set_dmi_name() to
+use DMI info to make the sound card long name.
 
-This patch also allows for further differentiation as many devices that
-share the same DMI name i.e. Minnowboards, UP boards may be configured
-with different codecs or firmwares. The API supports flavoring the DMI
-name into the card longname to provide the extra differentiation required
-for these devices.
+Here are the changed long name for two Broadwell-based machines:
+Dell XPS-13(2015): broadwell-rt286-Dell Inc.-XPS 13 9343-0310JH
 
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Intel WilsonBeach:
+broadwell-rt286-Intel Corp.-Broadwell Client platform-Wilson Beach SDS
+
+They still share the same card name "broadwell-rt286".
+
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 795e6c4..e4f1844 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -497,6 +497,8 @@ void snd_soc_runtime_deactivate(struct snd_soc_pcm_runtime *rtd, int stream);
- int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
- 	unsigned int dai_fmt);
- 
-+int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour);
-+
- /* Utility functions to get clock rates from various things */
- int snd_soc_calc_frame_size(int sample_size, int channels, int tdm_slots);
- int snd_soc_params_to_frame_size(struct snd_pcm_hw_params *params);
-@@ -1094,6 +1096,8 @@ struct snd_soc_card {
- 	const char *name;
- 	const char *long_name;
- 	const char *driver_name;
-+	char dmi_longname[80];
-+
- 	struct device *dev;
- 	struct snd_card *snd_card;
- 	struct module *owner;
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index aaab26a..8bcf241 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -34,6 +34,7 @@
- #include <linux/ctype.h>
- #include <linux/slab.h>
- #include <linux/of.h>
-+#include <linux/dmi.h>
- #include <sound/core.h>
- #include <sound/jack.h>
- #include <sound/pcm.h>
-@@ -1886,6 +1887,86 @@ int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
- }
- EXPORT_SYMBOL_GPL(snd_soc_runtime_set_dai_fmt);
- 
-+/**
-+ * snd_soc_set_dmi_name() - Register DMI names to card
-+ * @card: The card to register DMI names
-+ * @flavour: The flavour "differentiator" for the card amongst its peers.
-+ *
-+ * Intel DSP platform drivers are used by many different devices but are
-+ * difficult for userspace to differentiate, since machine drivers ususally
-+ * use their own name as the card name (short name) and leave the card long
-+ * name blank. This function will allow DMI info to be used in the sound
-+ * card long name, thereby helping userspace load the correct UCM (Use Case
-+ * Manager) configuration.
-+ * Possible card long names may be:
-+ * broadwell-rt286-Dell Inc.-XPS 13 9343-0310JH
-+ * broadwell-rt286-Intel Corp.-Broadwell Client platform-Wilson Beach SDS
-+ * bytcr-rt5640-ASUSTeK COMPUTER INC.-T100TA-T100TA
-+ * bytcr-rt5651-Circuitco-Minnowboard Max D0 PLATFORM-MinnowBoard MAX
-+ *
-+ * This function also supports flavoring the card longname to provide
-+ * the extra differentiation.
-+ *
-+ * Returns 0 on success, otherwise a negative error code.
-+ */
-+int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
-+{
-+	const char *vendor, *product, *board;
-+
-+	if (card->long_name)
-+		return 0; /* long name already set by driver or from DMI */
-+
-+	vendor = dmi_get_system_info(DMI_BOARD_VENDOR);
-+	if (!vendor) {
-+		dev_warn(card->dev, "ASoC: no DMI vendor name!\n");
-+		return 0;
-+	}
-+
-+	product = dmi_get_system_info(DMI_PRODUCT_NAME);
-+	board = dmi_get_system_info(DMI_BOARD_NAME);
-+	if (!board && !product) {
-+		/* fall back to using legacy name */
-+		dev_warn(card->dev, "ASoC: no DMI board/product name!\n");
-+		return 0;
-+	}
-+
-+	/* make up dmi long name as:
-+	 * card name (usually machine driver name) -vendor -product -board
-+	 */
-+	snprintf(card->dmi_longname, sizeof(card->snd_card->longname),
-+			"%s-%s", card->name, vendor);
-+
-+	if (product) {
-+		strncat(card->dmi_longname, "-",
-+			sizeof(card->snd_card->longname));
-+		strncat(card->dmi_longname, product,
-+			sizeof(card->snd_card->longname));
-+	}
-+
-+	if (board) {
-+		strncat(card->dmi_longname, "-",
-+			sizeof(card->snd_card->longname));
-+		strncat(card->dmi_longname, board,
-+			sizeof(card->snd_card->longname));
-+	}
-+
-+
-+	/* Add flavour to dmi long name */
-+	if (flavour) {
-+		strncat(card->dmi_longname, "-",
-+			sizeof(card->snd_card->longname));
-+		strncat(card->dmi_longname, flavour,
-+			sizeof(card->snd_card->longname));
-+	}
-+
-+	/* set long name */
-+	card->long_name = card->dmi_longname;
-+
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_set_dmi_name);
-+
- static int snd_soc_instantiate_card(struct snd_soc_card *card)
+diff --git a/sound/soc/intel/boards/broadwell.c b/sound/soc/intel/boards/broadwell.c
+index 5bb64d1..cda73bb 100644
+--- a/sound/soc/intel/boards/broadwell.c
++++ b/sound/soc/intel/boards/broadwell.c
+@@ -266,6 +266,8 @@ static int broadwell_audio_probe(struct platform_device *pdev)
  {
- 	struct snd_soc_codec *codec;
+ 	broadwell_rt286.dev = &pdev->dev;
+ 
++	snd_soc_set_dmi_name(&broadwell_rt286, NULL);
++
+ 	return devm_snd_soc_register_card(&pdev->dev, &broadwell_rt286);
+ }
+ 
 -- 
 2.5.0
