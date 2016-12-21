@@ -1,349 +1,636 @@
-From: Ioan-Adrian Ratiu <adi@adirat.com>
-Subject: Re: [PATCH] ALSA: snd-usb: fix IRQ triggered NULL pointer dereference
-Date: Wed, 21 Dec 2016 12:38:54 +0200
-Message-ID: <87d1glmurl.fsf@ni.com>
-References: <20161218010800.2173-1-adi@adirat.com> <20161220012514.9348-1-o-takashi@sakamocchi.jp> <87r352n7pe.fsf@adi-pc-linux.i-did-not-set--mail-host-address--so-tickle-me> <84e2a40b-902c-acfa-771c-d0a675e3228e@sakamocchi.jp> <s5hh95xwpqf.wl-tiwai@suse.de>
+From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v3 1/2] ASoC: cs35l35: Add support for
+ Cirrus CS35L35 Amplifier
+Date: Wed, 21 Dec 2016 10:53:50 +0000
+Message-ID: <20161221105350.GR1867@localhost.localdomain>
+References: <7566bac5-e4c4-49ff-91b3-bcd578cef21b@EX3.ad.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hh95xwpqf.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: clemens@ladisch.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <7566bac5-e4c4-49ff-91b3-bcd578cef21b-XU/xxMRwCJnfk+Ne4bZl5AC/G2K4zDHf@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+On Tue, Dec 13, 2016 at 10:59:03AM -0600, Li Xu wrote:
+> Add driver support for Cirrus Logic CS35L35 boosted
+> speaker amplifier
+> 
+> Signed-off-by: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+> ---
 
-On Wed, 21 Dec 2016, Takashi Iwai <tiwai@suse.de> wrote:
-> On Tue, 20 Dec 2016 14:04:56 +0100,
-> Takashi Sakamoto wrote:
->> 
->> Hi,
->> 
->> On Dec 20 2016 20:47, Ioan-Adrian Ratiu wrote:
->> > On Tue, 20 Dec 2016, Takashi Sakamoto <o-takashi@sakamocchi.jp> wrote:
->> >> ---
->> >>
->> >> Hi,
->> >>
->> >>> Commit 16200948d835 ("ALSA: usb-audio: Fix race at stopping the stream")
->> >>> fixes a race-codition but it also introduces another really nasty data race
->> >>> regression which makes my usb sound card [1] completely useless, throwing
->> >>> the kernel into a panic if anything from userspace tries to start playback.
->> >>>
->> >>> The problem is this: ep->data_subs is now set to NULL every time inside
->> >>> wait_clear_urbs(). ep->data_subs is initalized only in one place in
->> >>> start_endpoints(), then it is immediately wiped by the pre-existing call to
->> >>> wait_clear_urbs() inside snd_usb_endpoint_start().
->> >>>
->> >>> To ilustrate, this is what happens in the non-irq part of the code:
->> >>>
->> >>> Step 1 (inside start_endpoints): ep->data_subs = subs;
->> >>> Step 2 (inside start_endpoints): snd_usb_endpoint_start(ep, can_sleep);
->> >>> Step 3 (inside snd_usb_endpoint_start): wait_clear_urbs(ep);
->> >>> Step 4 (inside wait_clear_urbs): ep->data_subs = NULL;
->> >>>
->> >>> Here's a simplified call stack for the IRQ part (full one at the end):
->> >>>
->> >>> (NULL dereference, param "subs" is passed NULL value of ep->data_subs)
->> >>> retire_playback_urb
->> >>> retire_outbound_urb
->> >>> snd_complete_urb
->> >>> (...)
->> >>> xhci_irq
->> >>>
->> >>> Looking at the git log there seems to be quite a lot of history in this
->> >>> part of the codebase, dating back to 2012 or earlier. My fix is based on
->> >>> 015618b90 ("ALSA: snd-usb: Fix URB cancellation at stream start") and
->> >>> e9ba389c5 ("ALSA: usb-audio: Fix scheduling-while-atomic bug in PCM capture
->> >>> stream") with a few modifications of my own. My idea is to do the
->> >>> ep->data_subs wiping before endpoint initialization in a manner similar
->> >>> to these older commits by using stop_endpoints() in snd_usb_pcm_prepare()
->> >>> and at the same time keep the ep->data_subs = NULL in wait_clear_urbs() to
->> >>> not trigger the recently fixed stream stopping race again.
->> >>>
->> >>> Full call stack:
->> >>>
->> >>> [  131.093240] BUG: unable to handle kernel NULL pointer dereference at 0000000000000010
->> >>> [  131.094313] IP: retire_playback_urb+0x1b/0x160 [snd_usb_audio]
->> >>> [  131.095046] PGD 0
->> >>> [  131.095047]
->> >>> [  131.096509] Oops: 0000 [#1] PREEMPT SMP
->> >>> [  131.097255] Modules linked in: fuse snd_usb_audio snd_usbmidi_lib snd_rawmidi snd_seq_device ctr ccm arc4 ath9k intel_rapl ath9k_common x86_pkg_temp_thermal ath9k_hw intel_powerclamp coretemp joydev mousedev ath kvm_intel mac80211 kvm
->> >>>  input_leds hid_generic psmouse irqbypass usbhid hid crct10dif_pclmul crc32_pclmul serio_raw crc32c_intel atkbd ghash_clmulni_intel snd_hda_codec_hdmi snd_hda_codec_realtek snd_hda_codec_generic snd_hda_intel pcbc aesni_intel libps2 cfg8
->> >>> 0211 aes_x86_64 crypto_simd dell_laptop glue_helper r8169 dell_smbios snd_hda_codec sr_mod cryptd led_class mii rfkill snd_hwdep cdrom snd_hda_core ac dcdbas i8042 xhci_pci serio xhci_hcd snd_pcm tpm_tis battery tpm_tis_core lpc_ich tpm
->> >>> snd_timer evdev shpchp i2c_i801 sch_fq_codel
->> >>> [  131.105551] CPU: 2 PID: 165 Comm: irq/29-xhci_hcd Not tainted 4.9.0-gd824cdc58ba0 #10
->> >>> [  131.107516] Hardware name: Dell Inc. Inspiron 3521/018DYG, BIOS A14 07/31/2015
->> >>> [  131.109592] task: ffff880154a70000 task.stack: ffffc90000f48000
->> >>> [  131.111746] RIP: 0010:retire_playback_urb+0x1b/0x160 [snd_usb_audio]
->> >>> [  131.113899] RSP: 0018:ffffc90000f4bc10 EFLAGS: 00010082
->> >>> [  131.116080] RAX: ffffffffa04cabe0 RBX: 0000000000000000 RCX: 0000000000000000
->> >>> [  131.118284] RDX: 0000000000000000 RSI: ffff8801435a4c00 RDI: 0000000000000000
->> >>> [  131.120505] RBP: ffffc90000f4bc40 R08: 0000000000000001 R09: 0000000000000001
->> >>> [  131.122807] R10: 0000000000000001 R11: ffffffff82f60d6d R12: ffff8801432a0238
->> >>> [  131.125265] R13: ffff8801435a4c00 R14: 0000000000000000 R15: ffff8801535c83b8
->> >>> [  131.127723] FS:  0000000000000000(0000) GS:ffff88015a000000(0000) knlGS:0000000000000000
->> >>> [  131.130217] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> >>> [  131.132568] CR2: 0000000000000010 CR3: 0000000001e0b000 CR4: 00000000001406e0
->> >>> [  131.135007] Call Trace:
->> >>> [  131.137329]  snd_complete_urb+0x190/0x2b0 [snd_usb_audio]
->> >>> [  131.139526]  __usb_hcd_giveback_urb+0x8e/0x160
->> >>> [  131.141948]  usb_hcd_giveback_urb+0x43/0x110
->> >>> [  131.144104]  xhci_giveback_urb_in_irq.isra.22+0x7d/0xb0 [xhci_hcd]
->> >>> [  131.146521]  finish_td.constprop.38+0x1de/0x2f0 [xhci_hcd]
->> >>> [  131.148736]  xhci_irq+0x13a2/0x1ca0 [xhci_hcd]
->> >>> [  131.150972]  ? trace_hardirqs_on+0xd/0x10
->> >>> [  131.153209]  ? _raw_spin_unlock_irq+0x2c/0x50
->> >>> [  131.155390]  ? irq_thread+0xb5/0x1d0
->> >>> [  131.157771]  xhci_msi_irq+0x11/0x20 [xhci_hcd]
->> >>> [  131.159938]  irq_forced_thread_fn+0x2f/0x70
->> >>> [  131.162072]  ? irq_thread+0xb5/0x1d0
->> >>> [  131.164141]  irq_thread+0x149/0x1d0
->> >>> [  131.166132]  ? irq_finalize_oneshot.part.2+0xe0/0xe0
->> >>> [  131.168142]  ? wake_threads_waitq+0x30/0x30
->> >>> [  131.170149]  kthread+0x10f/0x150
->> >>> [  131.172144]  ? irq_thread_dtor+0xc0/0xc0
->> >>> [  131.174139]  ? kthread_create_on_node+0x40/0x40
->> >>> [  131.176116]  ret_from_fork+0x2a/0x40
->> >>> [  131.178074] Code: 8b 77 64 4c 89 e7 e8 e5 fe ff ff eb c3 0f 1f 00 0f 1f 44 00 00 55 31 d2 48 89 e5 41 57 41 56 41 55 41 54 53 48 89 fb 48 83 ec 08 <48> 8b 47 10 48 8b 4f 70 48 c7 c7 88 7b 4d a0 4c 8b a0 78 01 00
->> >>> [  131.182382] RIP: retire_playback_urb+0x1b/0x160 [snd_usb_audio] RSP: ffffc90000f4bc10
->> >>> [  131.184562] CR2: 0000000000000010
->> >>>
->> >>> [1] 041e:3232 Creative Technology SoundBlaster X-FI HD
->> >>> [2] http://mailman.alsa-project.org/pipermail/alsa-devel/2016-December/115425.html
->> >>
->> >> I can regenerate this bug with my EMU 0404 USB. My understanding of this bug is
->> >> quite similar to your perspective. This bug is quite critical. In my
->> >> understanding, we encounter this bug in all of cases in which snd-usb-audio is
->> >> applied for PCM playback substream.
->> >>
->> >> Below workaround can also suppress this bug.
->> >>
->> >> diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
->> >> index a2cdf33..9b34f76 100644
->> >> --- a/sound/usb/endpoint.c
->> >> +++ b/sound/usb/endpoint.c
->> >> @@ -537,11 +537,14 @@ static int wait_clear_urbs(struct snd_usb_endpoint *ep)
->> >>                         alive, ep->ep_num);
->> >>         clear_bit(EP_FLAG_STOPPING, &ep->flags);
->> >>
->> >> -       ep->data_subs = NULL;
->> >>         ep->sync_slave = NULL;
->> >>         ep->retire_data_urb = NULL;
->> >>         ep->prepare_data_urb = NULL;
->> >>
->> >> +       msleep(200);
->> >> +
->> >> +       ep->data_subs = NULL;
->> >> +
->> >>         return 0;
->> >>  }
->> >>
->> >> If initialization of 'struct snd_usb_endpoint.data_subs' can be done after all
->> >> of queued URBs are processed and corresponding complete interrupts are cought,
->> >> we can solve this critical bug.
->> >>
->> >>> Signed-off-by: Ioan-Adrian Ratiu <adi@adirat.com>
->> >>> ---
->> >>>  sound/usb/endpoint.c | 11 ++---------
->> >>>  sound/usb/endpoint.h |  2 +-
->> >>>  sound/usb/pcm.c      | 13 ++++++-------
->> >>>  3 files changed, 9 insertions(+), 17 deletions(-)
->> >>>
->> >>> diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
->> >>> index a2cdf3370afe..4465f324c2c2 100644
->> >>> --- a/sound/usb/endpoint.c
->> >>> +++ b/sound/usb/endpoint.c
->> >>> @@ -920,9 +920,7 @@ int snd_usb_endpoint_set_params(struct snd_usb_endpoint *ep,
->> >>>  /**
->> >>>   * snd_usb_endpoint_start: start an snd_usb_endpoint
->> >>>   *
->> >>> - * @ep:		the endpoint to start
->> >>> - * @can_sleep:	flag indicating whether the operation is executed in
->> >>> - * 		non-atomic context
->> >>> + * @ep: the endpoint to start
->> >>>   *
->> >>>   * A call to this function will increment the use count of the endpoint.
->> >>>   * In case it is not already running, the URBs for this endpoint will be
->> >>> @@ -932,7 +930,7 @@ int snd_usb_endpoint_set_params(struct snd_usb_endpoint *ep,
->> >>>   *
->> >>>   * Returns an error if the URB submission failed, 0 in all other cases.
->> >>>   */
->> >>> -int snd_usb_endpoint_start(struct snd_usb_endpoint *ep, bool can_sleep)
->> >>> +int snd_usb_endpoint_start(struct snd_usb_endpoint *ep)
->> >>>  {
->> >>>  	int err;
->> >>>  	unsigned int i;
->> >>> @@ -944,11 +942,6 @@ int snd_usb_endpoint_start(struct snd_usb_endpoint *ep, bool can_sleep)
->> >>>  	if (++ep->use_count != 1)
->> >>>  		return 0;
->> >>>
->> >>> -	/* just to be sure */
->> >>> -	deactivate_urbs(ep, false);
->> >>> -	if (can_sleep)
->> >>> -		wait_clear_urbs(ep);
->> >>> -
->> >>>  	ep->active_mask = 0;
->> >>>  	ep->unlink_mask = 0;
->> >>>  	ep->phase = 0;
->> >>> diff --git a/sound/usb/endpoint.h b/sound/usb/endpoint.h
->> >>> index 6428392d8f62..584f295d7c77 100644
->> >>> --- a/sound/usb/endpoint.h
->> >>> +++ b/sound/usb/endpoint.h
->> >>> @@ -18,7 +18,7 @@ int snd_usb_endpoint_set_params(struct snd_usb_endpoint *ep,
->> >>>  				struct audioformat *fmt,
->> >>>  				struct snd_usb_endpoint *sync_ep);
->> >>>
->> >>> -int  snd_usb_endpoint_start(struct snd_usb_endpoint *ep, bool can_sleep);
->> >>> +int  snd_usb_endpoint_start(struct snd_usb_endpoint *ep);
->> >>>  void snd_usb_endpoint_stop(struct snd_usb_endpoint *ep);
->> >>>  void snd_usb_endpoint_sync_pending_stop(struct snd_usb_endpoint *ep);
->> >>>  int  snd_usb_endpoint_activate(struct snd_usb_endpoint *ep);
->> >>> diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
->> >>> index 34c6d4f2c0b6..db26f767f851 100644
->> >>> --- a/sound/usb/pcm.c
->> >>> +++ b/sound/usb/pcm.c
->> >>> @@ -218,7 +218,7 @@ int snd_usb_init_pitch(struct snd_usb_audio *chip, int iface,
->> >>>  	}
->> >>>  }
->> >>>
->> >>> -static int start_endpoints(struct snd_usb_substream *subs, bool can_sleep)
->> >>> +static int start_endpoints(struct snd_usb_substream *subs)
->> >>>  {
->> >>>  	int err;
->> >>>
->> >>> @@ -231,7 +231,7 @@ static int start_endpoints(struct snd_usb_substream *subs, bool can_sleep)
->> >>>  		dev_dbg(&subs->dev->dev, "Starting data EP @%p\n", ep);
->> >>>
->> >>>  		ep->data_subs = subs;
->> >>> -		err = snd_usb_endpoint_start(ep, can_sleep);
->> >>> +		err = snd_usb_endpoint_start(ep);
->> >>>  		if (err < 0) {
->> >>>  			clear_bit(SUBSTREAM_FLAG_DATA_EP_STARTED, &subs->flags);
->> >>>  			return err;
->> >>> @@ -260,7 +260,7 @@ static int start_endpoints(struct snd_usb_substream *subs, bool can_sleep)
->> >>>  		dev_dbg(&subs->dev->dev, "Starting sync EP @%p\n", ep);
->> >>>
->> >>>  		ep->sync_slave = subs->data_endpoint;
->> >>> -		err = snd_usb_endpoint_start(ep, can_sleep);
->> >>> +		err = snd_usb_endpoint_start(ep);
->> >>>  		if (err < 0) {
->> >>>  			clear_bit(SUBSTREAM_FLAG_SYNC_EP_STARTED, &subs->flags);
->> >>>  			return err;
->> >>> @@ -809,8 +809,7 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
->> >>>  		goto unlock;
->> >>>  	}
->> >>>
->> >>> -	snd_usb_endpoint_sync_pending_stop(subs->sync_endpoint);
->> >>> -	snd_usb_endpoint_sync_pending_stop(subs->data_endpoint);
->> >>> +	stop_endpoints(subs, true);
->> >>>
->> >>>  	ret = set_format(subs, subs->cur_audiofmt);
->> >>>  	if (ret < 0)
->> >>> @@ -850,7 +849,7 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
->> >>>  	/* for playback, submit the URBs now; otherwise, the first hwptr_done
->> >>>  	 * updates for all URBs would happen at the same time when starting */
->> >>>  	if (subs->direction == SNDRV_PCM_STREAM_PLAYBACK)
->> >>> -		ret = start_endpoints(subs, true);
->> >>> +		return start_endpoints(subs);
->> >>>
->> >>>   unlock:
->> >>>  	snd_usb_unlock_shutdown(subs->stream->chip);
->> >>> @@ -1666,7 +1665,7 @@ static int snd_usb_substream_capture_trigger(struct snd_pcm_substream *substream
->> >>>
->> >>>  	switch (cmd) {
->> >>>  	case SNDRV_PCM_TRIGGER_START:
->> >>> -		err = start_endpoints(subs, false);
->> >>> +		err = start_endpoints(subs);
->> >>>  		if (err < 0)
->> >>>  			return err;
->> >>
->> >> This patch works better, but not the best. It's a bit intrusive.
->> >
->> > I disagree. Being intrusive is not a good reason to reject a patch,
->> > especially if the alternative is to insert random magic number delays
->> > in hopes of synchronizing process and irq contexts to avoid critical
->> > errors.
->> 
->> I apologize if you got some negative opinions in my previous message.
->> 
->> My intention to show the ugly workaround is not to merge it instead of
->> yours, but clear what causes this bug.
->> 
->> For example, we can also apply below patch for this bug, to solve it
->> roughly.
->> 
->> diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
->> index a2cdf33..6ec4eb1 100644
->> --- a/sound/usb/endpoint.c
->> +++ b/sound/usb/endpoint.c
->> @@ -162,7 +162,7 @@ int snd_usb_endpoint_next_packet_size(struct
->> snd_usb_endpoint *ep)
->>  static void retire_outbound_urb(struct snd_usb_endpoint *ep,
->>                                 struct snd_urb_ctx *urb_ctx)
->>  {
->> -       if (ep->retire_data_urb)
->> +       if (ep->retire_data_urb && ep->data_subs)
->>                 ep->retire_data_urb(ep->data_subs, urb_ctx->urb);
->>  }
->> 
->> But this is just a workaround and can't fix it thoroughly. The main
->> issue is synchronization between interrupt/process contexts.
->> 
->> > Please take the time to fully analyze my patch and let's have a
->> > discussion based on it, not reject it outright and replace it with
->> > a quick and dirty delay hack.
->> 
->> OK. I'll deliberately check it again so that I have no overlooks. I
->> with this thread also catch the other developers enough helpful to
->> you. (I just eventually caught your patch in LKML and not developer
->> for this category of devices.)
->
-> Sorry for the late reply, as I've been (still) off and had bad net
-> connections.
->
-> About your fix: Sakamoto-san is right, it's no good way to fix this
-> kind or problem.  The easiest option right now is just to revert my
-> previous fix, as it obviously introduces another regression.  The
-> correct fix will be taken after that.
->
-> I'm going to prepare a revert patch and ask Linus to take it before
-> rc1.
+Mostly just some minor comments.
 
-I agree with reverting the initial commit decision because my problem
-disappears with it.
+> +struct classh_cfg {
+> +	/*
+> +	 * Class H Algorithm Control Variables
+> +	 * You can either have it done
+> +	 * automatically or you can adjust
+> +	 * these variables for tuning
+> +	 *
+> +	 * if you do not enable the internal algorithm
+> +	 * you will get a set of mixer controls for
+> +	 * Class H tuning
+> +	 *
+> +	 * Section 4.3 of the datasheet
+> +	 */
+> +	/* Internal ClassH Algorithm  */
 
-But can you please state a reason for why my patch is "no good way to
-fix"? Being too intrusive is not a good reason.
+Feels redundant to have this extra comment after the large comment
+before it.
 
-Ionel
+> +
+> +#include <linux/module.h>
+> +#include <linux/moduleparam.h>
+> +#include <linux/version.h>
+> +#include <linux/kernel.h>
+> +#include <linux/init.h>
+> +#include <linux/delay.h>
+> +#include <linux/i2c.h>
+> +#include <linux/slab.h>
+> +#include <linux/workqueue.h>
 
->
->
-> thanks,
->
-> Takashi
->
->
->
->> 
->> > Ionel
->> >
->> >>
->> >> What we need to synchronize process contexts to interrupt context till all of
->> >> queued URBs are handled. This seems to be a main purpose of wait_clear_bits,
->> >> while current implementation of snd_complete_urb()/wait_clear_bits() is not
->> >> enough.
->> >>
->> >> Thanks for your reporting.
->> >>
->> >> Takashi Sakamoto
->> >> --
->> >> 2.9.3
->> 
->> 
->> Thanks
->> 
->> Takashi Sakamoto
->> 
+Do we need the workqueue header we don't seem to use any
+workqueues?
+
+> +static int cs35l35_sdin_event(struct snd_soc_dapm_widget *w,
+> +		struct snd_kcontrol *kcontrol, int event)
+> +{
+> +	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+> +	struct cs35l35_private *cs35l35 = snd_soc_codec_get_drvdata(codec);
+> +	int ret = 0;
+> +
+> +	switch (event) {
+> +	case SND_SOC_DAPM_PRE_PMU:
+> +		regmap_update_bits(cs35l35->regmap, CS35L35_CLK_CTL1,
+> +			CS35L35_MCLK_DIS_MASK, 0 << CS35L35_MCLK_DIS_SHIFT);
+> +		regmap_update_bits(cs35l35->regmap, CS35L35_PWRCTL1,
+> +			CS35L35_DISCHG_FILT_MASK, 0 << CS35L35_DISCHG_FILT_SHIFT);
+> +		regmap_update_bits(cs35l35->regmap, CS35L35_PWRCTL1,
+> +			CS35L35_PDN_ALL_MASK, 0);
+> +	break;
+
+Break should be indented for kernel coding style.
+
+> +	case SND_SOC_DAPM_POST_PMD:
+> +		regmap_update_bits(cs35l35->regmap, CS35L35_PWRCTL1,
+> +			CS35L35_PDN_ALL_MASK, 1);
+> +		regmap_update_bits(cs35l35->regmap, CS35L35_PWRCTL1,
+> +			CS35L35_DISCHG_FILT_MASK, 1 << CS35L35_DISCHG_FILT_SHIFT);
+> +
+> +		ret = wait_for_completion_timeout(&cs35l35->pdn_done,
+> +							msecs_to_jiffies(100));
+> +		if (ret == 0) {
+> +			dev_err(codec->dev, "TIMEOUT PDN_DONE did not complete in 100ms\n");
+> +			ret = -ETIMEDOUT;
+> +		}
+> +
+> +		regmap_update_bits(cs35l35->regmap, CS35L35_CLK_CTL1,
+> +			CS35L35_MCLK_DIS_MASK, 1 << CS35L35_MCLK_DIS_SHIFT);
+> +	break;
+
+Ditto.
+
+> +	default:
+> +		dev_err(codec->dev, "Invalid event = 0x%x\n", event);
+> +		ret = -EINVAL;
+> +	}
+> +	return ret;
+> +}
+> +
+> +static int cs35l35_main_amp_event(struct snd_soc_dapm_widget *w,
+> +		struct snd_kcontrol *kcontrol, int event)
+> +{
+> +	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+> +	struct cs35l35_private *cs35l35 = snd_soc_codec_get_drvdata(codec);
+> +	unsigned int reg[4];
+> +	int i;
+> +
+> +	switch (event) {
+> +	case SND_SOC_DAPM_PRE_PMU:
+> +		if (cs35l35->pdata.bst_pdn_fet_on)
+> +			regmap_update_bits(cs35l35->regmap, CS35L35_PWRCTL2,
+> +				CS35L35_PDN_BST_MASK, 0 << CS35L35_PDN_BST_FETON_SHIFT);
+> +		else
+> +			regmap_update_bits(cs35l35->regmap, CS35L35_PWRCTL2,
+> +				CS35L35_PDN_BST_MASK, 0 << CS35L35_PDN_BST_FETOFF_SHIFT);
+> +			regmap_update_bits(cs35l35->regmap, CS35L35_PROTECT_CTL,
+> +				CS35L35_AMP_MUTE_MASK, 0 << CS35L35_AMP_MUTE_SHIFT);
+> +		break;
+> +	case SND_SOC_DAPM_POST_PMU:
+> +		usleep_range(5000, 5100);
+> +		/* If PDM mode we must use VP
+> +		 * for Voltage control
+> +		 */
+
+Does this comment need to split across multiple lines?
+
+> +static int cs35l35_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+> +{
+> +	struct snd_soc_codec *codec = codec_dai->codec;
+> +	struct cs35l35_private *cs35l35 = snd_soc_codec_get_drvdata(codec);
+> +
+> +	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+> +	case SND_SOC_DAIFMT_CBM_CFM:
+> +		regmap_update_bits(cs35l35->regmap, CS35L35_CLK_CTL1,
+> +				    CS35L35_MS_MASK, 1 << CS35L35_MS_SHIFT);
+> +		cs35l35->slave_mode = false;
+> +		break;
+> +	case SND_SOC_DAIFMT_CBS_CFS:
+> +		regmap_update_bits(cs35l35->regmap, CS35L35_CLK_CTL1,
+> +				    CS35L35_MS_MASK, 0 << CS35L35_MS_SHIFT);
+> +		cs35l35->slave_mode = true;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+> +	case SND_SOC_DAIFMT_I2S:
+> +		cs35l35->i2s_mode = true;
+> +		cs35l35->pdm_mode = false;
+> +		break;
+> +	case SND_SOC_DAIFMT_PDM:
+> +		cs35l35->pdm_mode = true;
+> +		cs35l35->i2s_mode = false;
+
+Feels a bit redundant to have both of these if they are only ever
+a logical inversion of each other.
+
+> +static int cs35l35_get_clk_config(int sysclk, int srate)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(cs35l35_clk_ctl); i++) {
+> +		if (cs35l35_clk_ctl[i].sysclk == sysclk &&
+> +			cs35l35_clk_ctl[i].srate == srate)
+> +			return cs35l35_clk_ctl[i].clk_cfg;
+> +	}
+> +	return -EINVAL;
+> +}
+> +
+> +static int cs35l35_pcm_hw_params(struct snd_pcm_substream *substream,
+> +				 struct snd_pcm_hw_params *params,
+> +				 struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_codec *codec = dai->codec;
+> +	struct cs35l35_private *cs35l35 = snd_soc_codec_get_drvdata(codec);
+> +	struct classh_cfg *classh = &cs35l35->pdata.classh_algo;
+> +	int srate = params_rate(params);
+> +	int ret = 0;
+> +	u8 sp_sclks;
+> +	int audin_format;
+> +	int errata_chk;
+> +
+> +	int clk_ctl = cs35l35_get_clk_config(cs35l35->sysclk, srate);
+> +
+> +	if (clk_ctl < 0) {
+> +		dev_err(codec->dev, "Invalid CLK:Rate %d:%d\n",
+> +			cs35l35->sysclk, srate);
+> +		return -EINVAL;
+> +	}
+
+It would normally be slightly better to set constraints in
+startup based on the SYSCLK rather than returning an error in
+hw_params. This allows user-space to negotiate a rate that is
+actually supported and do any sample rate conversion required.
+
+> +
+> +	ret = regmap_update_bits(cs35l35->regmap, CS35L35_CLK_CTL2,
+> +			  CS35L35_CLK_CTL2_MASK, clk_ctl);
+> +	if (ret != 0) {
+> +		dev_err(codec->dev, "Failed to set port config %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	/* Rev A0 Errata
+> +	 *
+> +	 * When configured for the weak-drive detection path (CH_WKFET_DIS = 0)
+> +	 * the Class H algorithm does not enable weak-drive operation for
+> +	 * nonzero values of CH_WKFET_DELAY if SP_RATE = 01 or 10
+> +	 *
+> +	 */
+> +	errata_chk = clk_ctl & CS35L35_SP_RATE_MASK;
+> +
+> +	if (classh->classh_wk_fet_disable == 0x00 &&
+> +		(errata_chk == 0x01 || errata_chk == 0x03)) {
+> +		ret = regmap_update_bits(cs35l35->regmap,
+> +			CS35L35_CLASS_H_FET_DRIVE_CTL, CS35L35_CH_WKFET_DEL_MASK,
+> +			0 << CS35L35_CH_WKFET_DEL_SHIFT);
+> +		if (ret != 0) {
+> +			dev_err(codec->dev, "Failed to set fet config %d\n",
+> +				ret);
+> +			return ret;
+> +		}
+> +	}
+> +
+> +/*
+> + * You can pull more Monitor data from the SDOUT pin than going to SDIN
+> + * Just make sure your SCLK is fast enough to fill the frame
+> + */
+> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> +		switch (params_width(params)) {
+> +		case 8:
+> +			audin_format = CS35L35_SDIN_DEPTH_8;
+> +			break;
+> +		case 16:
+> +			audin_format = CS35L35_SDIN_DEPTH_16;
+> +			break;
+> +		case 24:
+> +			audin_format = CS35L35_SDIN_DEPTH_24;
+> +			break;
+> +		default:
+> +			dev_err(codec->dev, "Unsupported Width %d\n",
+> +				params_width(params));
+> +		}
+> +		regmap_update_bits(cs35l35->regmap,
+> +			CS35L35_AUDIN_DEPTH_CTL, CS35L35_AUDIN_DEPTH_MASK,
+> +			audin_format << CS35L35_AUDIN_DEPTH_SHIFT);
+> +		if (cs35l35->pdata.stereo) {
+> +			regmap_update_bits(cs35l35->regmap,
+> +				CS35L35_AUDIN_DEPTH_CTL, CS35L35_ADVIN_DEPTH_MASK,
+> +				audin_format << CS35L35_ADVIN_DEPTH_SHIFT);
+> +		}
+> +	}
+> +/* We have to take the SCLK to derive num sclks
+> + * to configure the CLOCK_CTL3 register correctly
+> + */
+> +	if ((cs35l35->sclk / srate) % 4) {
+> +		dev_err(codec->dev, "Unsupported sclk/fs ratio %d:%d\n",
+> +					cs35l35->sclk, srate);
+> +		return -EINVAL;
+> +	}
+
+Again here it might be slightly better to constraints in startup.
+
+> +	sp_sclks = ((cs35l35->sclk / srate) / 4) - 1;
+> +
+> +	if (cs35l35->i2s_mode) {
+> +		/* Only certain ratios are supported in I2S Slave Mode */
+> +		if (cs35l35->slave_mode) {
+> +			switch (sp_sclks) {
+> +			case CS35L35_SP_SCLKS_32FS:
+> +			case CS35L35_SP_SCLKS_48FS:
+> +			case CS35L35_SP_SCLKS_64FS:
+> +			break;
+> +			default:
+> +				dev_err(codec->dev, "ratio not supported\n");
+> +				return -EINVAL;
+> +			};
+> +		} else {
+> +			/* Only certain ratios supported in I2S MASTER Mode */
+> +			switch (sp_sclks) {
+> +			case CS35L35_SP_SCLKS_32FS:
+> +			case CS35L35_SP_SCLKS_64FS:
+> +			break;
+> +			default:
+> +				dev_err(codec->dev, "ratio not supported\n");
+> +				return -EINVAL;
+> +			};
+> +		}
+> +		ret = regmap_update_bits(cs35l35->regmap,
+> +			CS35L35_CLK_CTL3, CS35L35_SP_SCLKS_MASK,
+> +			sp_sclks << CS35L35_SP_SCLKS_SHIFT);
+> +		if (ret != 0) {
+> +			dev_err(codec->dev, "Failed to set fsclk %d\n", ret);
+> +			return ret;
+> +		}
+> +	}
+> +	if (cs35l35->pdm_mode) {
+> +		regmap_update_bits(cs35l35->regmap, CS35L35_AMP_INP_DRV_CTL,
+> +			CS35L35_PDM_MODE_MASK, 1 << CS35L35_PDM_MODE_SHIFT);
+> +	} else {
+> +		regmap_update_bits(cs35l35->regmap, CS35L35_AMP_INP_DRV_CTL,
+> +			CS35L35_PDM_MODE_MASK, 0 << CS35L35_PDM_MODE_SHIFT);
+> +	}
+
+This if could be combined with the one above since pdm_mode ==
+!i2s_mode.
+
+> +	return ret;
+> +}
+> +
+> +
+> +static const struct snd_soc_dai_ops cs35l35_ops = {
+> +	.startup = cs35l35_pcm_startup,
+> +	.set_fmt = cs35l35_set_dai_fmt,
+> +	.hw_params = cs35l35_pcm_hw_params,
+> +	.set_sysclk = cs35l35_dai_set_sysclk,
+> +};
+> +
+> +static const struct snd_soc_dai_ops cs35l35_pdm_ops = {
+> +	.startup = cs35l35_pdm_startup,
+> +	.set_fmt = cs35l35_set_dai_fmt,
+> +	.hw_params = cs35l35_pcm_hw_params,
+
+I would be tempted to rename the function to just
+cs35l35_hw_params if it is shared between both PCM and PDM.
+
+> +	.set_sysclk = cs35l35_dai_set_sysclk,
+> +};
+> +
+> +
+> +static int cs35l35_codec_probe(struct snd_soc_codec *codec)
+> +{
+> +	struct cs35l35_private *cs35l35 = snd_soc_codec_get_drvdata(codec);
+> +	struct classh_cfg *classh = &cs35l35->pdata.classh_algo;
+> +	struct monitor_cfg *monitor_config = &cs35l35->pdata.mon_cfg;
+> +	int ret;
+> +
+> +	cs35l35->codec = codec;
+> +
+> +	/* Set Platform Data */
+> +	if (cs35l35->pdata.bst_vctl)
+> +		regmap_update_bits(cs35l35->regmap, CS35L35_BST_CVTR_V_CTL,
+> +			CS35L35_BST_CTL_MASK, cs35l35->pdata.bst_vctl);
+> +
+> +	if (cs35l35->pdata.bst_ipk)
+> +		regmap_update_bits(cs35l35->regmap, CS35L35_BST_PEAK_I,
+> +			CS35L35_BST_IPK_MASK,
+> +			cs35l35->pdata.bst_ipk << CS35L35_BST_IPK_SHIFT);
+
+I believe zero is a valid value for this field, but not the
+default. Are we happy that the user can never set this value?
+
+> +
+> +	if (cs35l35->pdata.gain_zc)
+> +		regmap_update_bits(cs35l35->regmap, CS35L35_PROTECT_CTL,
+> +			CS35L35_AMP_GAIN_ZC_MASK,
+> +			cs35l35->pdata.gain_zc << CS35L35_AMP_GAIN_ZC_SHIFT);
+> +
+> +	if (cs35l35->pdata.aud_channel)
+> +		regmap_update_bits(cs35l35->regmap,
+> +			CS35L35_AUDIN_RXLOC_CTL,
+> +			CS35L35_AUD_IN_LR_MASK,
+> +			cs35l35->pdata.aud_channel << CS35L35_AUD_IN_LR_SHIFT);
+> +
+> +	if (cs35l35->pdata.stereo) {
+> +		regmap_update_bits(cs35l35->regmap,
+> +			CS35L35_ADVIN_RXLOC_CTL, CS35L35_ADV_IN_LR_MASK,
+> +			cs35l35->pdata.adv_channel << CS35L35_ADV_IN_LR_SHIFT);
+> +		if (cs35l35->pdata.shared_bst)
+> +			regmap_update_bits(cs35l35->regmap, CS35L35_CLASS_H_CTL,
+> +				CS35L35_CH_STEREO_MASK, 1 << CS35L35_CH_STEREO_SHIFT);
+> +		ret = snd_soc_add_codec_controls(codec, cs35l35_adv_controls,
+> +					ARRAY_SIZE(cs35l35_adv_controls));
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	if (cs35l35->pdata.sp_drv_str)
+> +		regmap_update_bits(cs35l35->regmap, CS35L35_CLK_CTL1,
+> +			CS35L35_SP_DRV_MASK,
+> +			cs35l35->pdata.sp_drv_str << CS35L35_SP_DRV_SHIFT);
+> +
+> +	if (classh->classh_algo_enable) {
+> +		if (classh->classh_bst_override)
+> +			regmap_update_bits(cs35l35->regmap,
+> +				CS35L35_CLASS_H_CTL, CS35L35_CH_BST_OVR_MASK,
+> +				classh->classh_bst_override << CS35L35_CH_BST_OVR_SHIFT);
+> +		if (classh->classh_bst_max_limit)
+> +			regmap_update_bits(cs35l35->regmap,
+> +				CS35L35_CLASS_H_CTL, CS35L35_CH_BST_LIM_MASK,
+> +				classh->classh_bst_max_limit << CS35L35_CH_BST_LIM_SHIFT);
+
+This is a single bit, but the default bit is 1, so this code can
+never change the value of the field.
+
+> +		if (classh->classh_mem_depth)
+> +			regmap_update_bits(cs35l35->regmap,
+> +				CS35L35_CLASS_H_CTL, CS35L35_CH_MEM_DEPTH_MASK,
+> +				classh->classh_mem_depth << CS35L35_CH_MEM_DEPTH_SHIFT);
+
+Again zero is a valid value, and not the default.
+
+> +		if (classh->classh_headroom)
+> +			regmap_update_bits(cs35l35->regmap,
+> +				CS35L35_CLASS_H_HEADRM_CTL, CS35L35_CH_HDRM_CTL_MASK,
+> +				classh->classh_headroom << CS35L35_CH_HDRM_CTL_SHIFT);
+> +		if (classh->classh_release_rate)
+> +			regmap_update_bits(cs35l35->regmap,
+> +				CS35L35_CLASS_H_RELEASE_RATE, CS35L35_CH_REL_RATE_MASK,
+> +				classh->classh_release_rate << CS35L35_CH_REL_RATE_SHIFT);
+> +		if (classh->classh_wk_fet_disable)
+> +			regmap_update_bits(cs35l35->regmap,
+> +				CS35L35_CLASS_H_FET_DRIVE_CTL, CS35L35_CH_WKFET_DIS_MASK,
+> +				classh->classh_wk_fet_disable << CS35L35_CH_WKFET_DIS_SHIFT);
+> +		if (classh->classh_wk_fet_delay)
+> +			regmap_update_bits(cs35l35->regmap,
+> +				CS35L35_CLASS_H_FET_DRIVE_CTL, CS35L35_CH_WKFET_DEL_MASK,
+> +				classh->classh_wk_fet_delay << CS35L35_CH_WKFET_DEL_SHIFT);
+
+Again zero is a valid value, and not the default.
+
+> +		if (classh->classh_wk_fet_thld)
+> +			regmap_update_bits(cs35l35->regmap,
+> +				CS35L35_CLASS_H_FET_DRIVE_CTL, CS35L35_CH_WKFET_THLD_MASK,
+> +				classh->classh_wk_fet_thld << CS35L35_CH_WKFET_THLD_SHIFT);
+> +		if (classh->classh_vpch_auto)
+> +			regmap_update_bits(cs35l35->regmap,
+> +				CS35L35_CLASS_H_VP_CTL, CS35L35_CH_VP_AUTO_MASK,
+> +				classh->classh_vpch_auto << CS35L35_CH_VP_AUTO_SHIFT);
+
+Again single bit with a default of 1.
+
+> +		if (classh->classh_vpch_rate)
+> +			regmap_update_bits(cs35l35->regmap,
+> +				CS35L35_CLASS_H_VP_CTL, CS35L35_CH_VP_RATE_MASK,
+> +				classh->classh_vpch_rate << CS35L35_CH_VP_RATE_SHIFT);
+
+Again zero is a valid value, and not the default.
+
+> +		if (classh->classh_vpch_man)
+> +			regmap_update_bits(cs35l35->regmap,
+> +				CS35L35_CLASS_H_VP_CTL, CS35L35_CH_VP_MAN_MASK,
+> +				classh->classh_vpch_man << CS35L35_CH_VP_MAN_SHIFT);
+> +	}
+> +
+<snip>
+> +static int cs35l35_i2c_probe(struct i2c_client *i2c_client,
+> +			      const struct i2c_device_id *id)
+> +{
+> +	struct cs35l35_private *cs35l35;
+> +	struct cs35l35_platform_data *pdata =
+> +		dev_get_platdata(&i2c_client->dev);
+> +	int i;
+> +	int ret;
+> +	unsigned int devid = 0;
+> +	unsigned int reg;
+> +
+> +	cs35l35 = devm_kzalloc(&i2c_client->dev,
+> +			       sizeof(struct cs35l35_private),
+> +			       GFP_KERNEL);
+> +	if (!cs35l35) {
+> +		dev_err(&i2c_client->dev, "could not allocate codec\n");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	i2c_set_clientdata(i2c_client, cs35l35);
+> +	cs35l35->regmap = devm_regmap_init_i2c(i2c_client, &cs35l35_regmap);
+> +	if (IS_ERR(cs35l35->regmap)) {
+> +		ret = PTR_ERR(cs35l35->regmap);
+> +		dev_err(&i2c_client->dev, "regmap_init() failed: %d\n", ret);
+> +		goto err;
+> +	}
+> +
+> +	for (i = 0; i < ARRAY_SIZE(cs35l35_supplies); i++)
+> +		cs35l35->supplies[i].supply = cs35l35_supplies[i];
+> +		cs35l35->num_supplies = ARRAY_SIZE(cs35l35_supplies);
+> +
+> +	ret = devm_regulator_bulk_get(&i2c_client->dev,
+> +			cs35l35->num_supplies,
+> +			cs35l35->supplies);
+> +	if (ret != 0) {
+> +		dev_err(&i2c_client->dev,
+> +			"Failed to request core supplies: %d\n",
+> +			ret);
+> +		return ret;
+> +	}
+> +
+> +	if (pdata) {
+> +		cs35l35->pdata = *pdata;
+> +	} else {
+> +		pdata = devm_kzalloc(&i2c_client->dev,
+> +				     sizeof(struct cs35l35_platform_data),
+> +				GFP_KERNEL);
+> +		if (!pdata) {
+> +			dev_err(&i2c_client->dev,
+> +				"could not allocate pdata\n");
+> +			return -ENOMEM;
+> +		}
+> +		if (i2c_client->dev.of_node) {
+> +			ret = cs35l35_handle_of_data(i2c_client, pdata);
+> +			if (ret != 0)
+> +				return ret;
+> +
+> +		}
+> +		cs35l35->pdata = *pdata;
+> +	}
+> +
+> +	ret = regulator_bulk_enable(cs35l35->num_supplies,
+> +					cs35l35->supplies);
+> +	if (ret != 0) {
+> +		dev_err(&i2c_client->dev,
+> +			"Failed to enable core supplies: %d\n",
+> +			ret);
+> +		return ret;
+> +	}
+> +
+> +	/* returning NULL can be an option if in stereo mode */
+> +	cs35l35->reset_gpio = devm_gpiod_get_optional(&i2c_client->dev,
+> +		"reset", GPIOD_OUT_LOW);
+> +	if (IS_ERR(cs35l35->reset_gpio))
+> +		return PTR_ERR(cs35l35->reset_gpio);
+
+This should be a goto err;
+
+> +
+> +	if (cs35l35->reset_gpio)
+> +		gpiod_set_value_cansleep(cs35l35->reset_gpio, 1);
+
+gpiod_set_value_can_sleep does an internal NULL check on the GPIO
+desc I would be tempted to just rely on that one.
+
+> +
+> +	init_completion(&cs35l35->pdn_done);
+> +
+> +	ret = regmap_register_patch(cs35l35->regmap, cs35l35_errata_patch,
+> +				    ARRAY_SIZE(cs35l35_errata_patch));
+> +	if (ret < 0) {
+> +		dev_err(&i2c_client->dev, "Failed to apply errata patch\n");
+> +		return ret;
+
+This should be a goto err;
+
+> +	}
+> +
+> +	ret = devm_request_threaded_irq(&i2c_client->dev, i2c_client->irq, NULL,
+> +			cs35l35_irq, IRQF_ONESHOT | IRQF_TRIGGER_LOW,
+> +			"cs35l35", cs35l35);
+> +	if (ret != 0) {
+> +		dev_err(&i2c_client->dev, "Failed to request IRQ: %d\n", ret);
+> +		goto err;
+> +	}
+> +	/* initialize codec */
+> +	ret = regmap_read(cs35l35->regmap, CS35L35_DEVID_AB, &reg);
+> +
+> +	devid = (reg & 0xFF) << 12;
+> +	ret = regmap_read(cs35l35->regmap, CS35L35_DEVID_CD, &reg);
+> +	devid |= (reg & 0xFF) << 4;
+> +	ret = regmap_read(cs35l35->regmap, CS35L35_DEVID_E, &reg);
+> +	devid |= (reg & 0xF0) >> 4;
+> +
+> +	if (devid != CS35L35_CHIP_ID) {
+> +		dev_err(&i2c_client->dev,
+> +			"CS35L35 Device ID (%X). Expected ID %X\n",
+> +			devid, CS35L35_CHIP_ID);
+> +		ret = -ENODEV;
+> +		goto err;
+> +	}
+> +
+> +	ret = regmap_read(cs35l35->regmap, CS35L35_REV_ID, &reg);
+> +	if (ret < 0) {
+> +		dev_err(&i2c_client->dev, "Get Revision ID failed\n");
+> +		goto err;
+> +	}
+> +
+> +	dev_info(&i2c_client->dev,
+> +		 "Cirrus Logic CS35L35 (%x), Revision: %02X\n", devid,
+> +		ret & 0xFF);
+> +
+> +	/* Set the INT Masks for critical errors */
+> +	regmap_write(cs35l35->regmap, CS35L35_INT_MASK_1, CS35L35_INT1_CRIT_MASK);
+> +	regmap_write(cs35l35->regmap, CS35L35_INT_MASK_2, CS35L35_INT2_CRIT_MASK);
+> +	regmap_write(cs35l35->regmap, CS35L35_INT_MASK_3, CS35L35_INT3_CRIT_MASK);
+> +	regmap_write(cs35l35->regmap, CS35L35_INT_MASK_4, CS35L35_INT4_CRIT_MASK);
+> +
+> +	regmap_update_bits(cs35l35->regmap, CS35L35_PWRCTL2,
+> +		CS35L35_PWR2_PDN_MASK, CS35L35_PWR2_PDN_MASK);
+> +
+> +	if (cs35l35->pdata.bst_pdn_fet_on)
+> +		regmap_update_bits(cs35l35->regmap, CS35L35_PWRCTL2,
+> +			CS35L35_PDN_BST_MASK, 1 << CS35L35_PDN_BST_FETON_SHIFT);
+> +	else
+> +		regmap_update_bits(cs35l35->regmap, CS35L35_PWRCTL2,
+> +			CS35L35_PDN_BST_MASK, 1 << CS35L35_PDN_BST_FETOFF_SHIFT);
+> +
+> +	regmap_update_bits(cs35l35->regmap, CS35L35_PWRCTL3,
+> +		CS35L35_PWR3_PDN_MASK, CS35L35_PWR3_PDN_MASK);
+> +
+> +	regmap_update_bits(cs35l35->regmap, CS35L35_PROTECT_CTL,
+> +		CS35L35_AMP_MUTE_MASK, 1 << CS35L35_AMP_MUTE_SHIFT);
+> +
+> +	ret =  snd_soc_register_codec(&i2c_client->dev,
+> +			&soc_codec_dev_cs35l35, cs35l35_dai,
+> +			ARRAY_SIZE(cs35l35_dai));
+> +	if (ret < 0) {
+> +		dev_err(&i2c_client->dev,
+> +			"%s: Register codec failed\n", __func__);
+> +		goto err;
+> +	}
+> +
+> +err:
+> +	regulator_bulk_disable(cs35l35->num_supplies,
+> +			       cs35l35->supplies);
+> +	return ret;
+> +}
+> +
+> +static int cs35l35_i2c_remove(struct i2c_client *client)
+> +{
+> +	snd_soc_unregister_codec(&client->dev);
+> +	kfree(i2c_get_clientdata(client));
+
+clientdata was allocated with devm this kfree will cause a double
+free.
+
+> +	return 0;
+> +}
+
+Thanks,
+Charles
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
