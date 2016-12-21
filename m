@@ -1,17 +1,17 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [PATCH 1/2] ASoC: core: Add API to use DMI name in
  sound card long name
-Date: Wed, 21 Dec 2016 14:27:11 +0000
-Message-ID: <1482330431.2554.94.camel@loki>
+Date: Wed, 21 Dec 2016 08:37:28 -0600
+Message-ID: <9511f55d-8a49-7e32-7faf-9d3fa26820ca@linux.intel.com>
 References: <cover.1482324245.git.mengdong.lin@linux.intel.com>
  <748589b74f8f4a6fefe7e545c21a6db5e71a74e1.1482324245.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 6071B2668A2
- for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2016 15:27:17 +0100 (CET)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 73D3F2668D1
+ for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2016 15:37:31 +0100 (CET)
 In-Reply-To: <748589b74f8f4a6fefe7e545c21a6db5e71a74e1.1482324245.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,42 +22,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@linux.intel.com
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, mengdong.lin@intel.com, vinod.koul@intel.com, broonie@kernel.org, pierre-louis.bossart@intel.com
+To: mengdong.lin@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: tiwai@suse.de, mengdong.lin@intel.com, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2016-12-21 at 21:04 +0800, mengdong.lin@linux.intel.com wrote:
-> From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> 
-> Intel DSP platform drivers are used by many different devices but are
-> difficult for userspace to differentiate. This patch adds an API to allow
-> the DMI name to be used in the sound card long name, thereby helping
-> userspace load the correct UCM configuration. Usually machine drivers
-> uses their own name as the sound card name (short name), and leave the
-> long name and driver name blank. This API will append the DMI info
-> like vendor, product and board info, to the card name to make up the card
-> long name. If the machine driver has already explicitly set the long name,
-> this API will do nothing.
-> 
-> This patch also allows for further differentiation as many devices that
-> share the same DMI name i.e. Minnowboards, UP boards may be configured
-> with different codecs or firmwares. The API supports flavoring the DMI
-> name into the card longname to provide the extra differentiation required
-> for these devices.
-> 
-> Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
-> 
-> diff --git a/include/sound/soc.h b/include/sound/soc.h
-> index 795e6c4..e4f1844 100644
-> --- a/include/sound/soc.h
-> +++ b/include/sound/soc.h
-> @@ -497,6 +497,8 @@ void snd_soc_runtime_deactivate(struct snd_soc_pcm_runtime *rtd, int stream);
->  int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
->  	unsigned int dai_fmt);
->  
-> +int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour);
-> +
+
 >  /* Utility functions to get clock rates from various things */
 >  int snd_soc_calc_frame_size(int sample_size, int channels, int tdm_slots);
 >  int snd_soc_params_to_frame_size(struct snd_pcm_hw_params *params);
@@ -66,26 +35,10 @@ On Wed, 2016-12-21 at 21:04 +0800, mengdong.lin@linux.intel.com wrote:
 >  	const char *long_name;
 >  	const char *driver_name;
 > +	char dmi_longname[80];
-> +
->  	struct device *dev;
->  	struct snd_card *snd_card;
->  	struct module *owner;
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index aaab26a..8bcf241 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -34,6 +34,7 @@
->  #include <linux/ctype.h>
->  #include <linux/slab.h>
->  #include <linux/of.h>
-> +#include <linux/dmi.h>
->  #include <sound/core.h>
->  #include <sound/jack.h>
->  #include <sound/pcm.h>
-> @@ -1886,6 +1887,86 @@ int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
->  }
->  EXPORT_SYMBOL_GPL(snd_soc_runtime_set_dai_fmt);
->  
+
+why 80? is this linked to DMI restrictions on board/product names?
+
+>
 > +/**
 > + * snd_soc_set_dmi_name() - Register DMI names to card
 > + * @card: The card to register DMI names
@@ -102,20 +55,11 @@ On Wed, 2016-12-21 at 21:04 +0800, mengdong.lin@linux.intel.com wrote:
 > + * broadwell-rt286-Intel Corp.-Broadwell Client platform-Wilson Beach SDS
 > + * bytcr-rt5640-ASUSTeK COMPUTER INC.-T100TA-T100TA
 > + * bytcr-rt5651-Circuitco-Minnowboard Max D0 PLATFORM-MinnowBoard MAX
+
+You may want to add a comment that the '.' is not a separator but part 
+of the DMI name. I was trying to figure out why there were cases with .-
+
 > + *
-
-
-Lets keep it simpler, we dont need to prepend the driver name to the
-longname as it's already available in driver_name. 
-
-The purpose of the patch is to uniquely identify the machine, so we dont
-need to provide or duplicate other information in the name.
-
-So longname should be "dmi-flavour" where dmi is product OR board (if
-product is not available).
-
-Liam
-
 > + * This function also supports flavoring the card longname to provide
 > + * the extra differentiation.
 > + *
@@ -170,6 +114,11 @@ Liam
 > +		strncat(card->dmi_longname, flavour,
 > +			sizeof(card->snd_card->longname));
 > +	}
+
+how is the 'flavour' defined? This doesn't seem to come from the DMI 
+decode information? Is this for example intended to be used with quirks?
+
+
 > +
 > +	/* set long name */
 > +	card->long_name = card->dmi_longname;
@@ -182,3 +131,4 @@ Liam
 >  static int snd_soc_instantiate_card(struct snd_soc_card *card)
 >  {
 >  	struct snd_soc_codec *codec;
+>
