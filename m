@@ -1,19 +1,19 @@
 From: "Lin, Mengdong" <mengdong.lin@intel.com>
 Subject: Re: [PATCH 1/2] ASoC: core: Add API to use DMI name in
  sound card long name
-Date: Wed, 21 Dec 2016 15:46:07 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F881A04E15@shsmsx102.ccr.corp.intel.com>
+Date: Wed, 21 Dec 2016 16:01:43 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F881A04E2E@shsmsx102.ccr.corp.intel.com>
 References: <cover.1482324245.git.mengdong.lin@linux.intel.com>
  <748589b74f8f4a6fefe7e545c21a6db5e71a74e1.1482324245.git.mengdong.lin@linux.intel.com>
- <1482330431.2554.94.camel@loki>
+ <9511f55d-8a49-7e32-7faf-9d3fa26820ca@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 711AA266E24
- for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2016 16:46:12 +0100 (CET)
-In-Reply-To: <1482330431.2554.94.camel@loki>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 87B982668DC
+ for <alsa-devel@alsa-project.org>; Wed, 21 Dec 2016 17:01:47 +0100 (CET)
+In-Reply-To: <9511f55d-8a49-7e32-7faf-9d3fa26820ca@linux.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,55 +24,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Bossart,
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Koul,
+ Vinod" <vinod.koul@intel.com>, "Bossart,
  Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 > -----Original Message-----
-> From: Liam Girdwood [mailto:liam.r.girdwood@linux.intel.com]
-> Sent: Wednesday, December 21, 2016 10:27 PM
-> To: mengdong.lin@linux.intel.com
-> Cc: alsa-devel@alsa-project.org; broonie@kernel.org; tiwai@suse.de; Bossart,
-> Pierre-louis <pierre-louis.bossart@intel.com>; Koul, Vinod
-> <vinod.koul@intel.com>; Lin, Mengdong <mengdong.lin@intel.com>
-> Subject: Re: [PATCH 1/2] ASoC: core: Add API to use DMI name in sound card
-> long name
+> From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com]
+> Sent: Wednesday, December 21, 2016 10:37 PM
+> To: mengdong.lin@linux.intel.com; alsa-devel@alsa-project.org;
+> broonie@kernel.org
+> Cc: tiwai@suse.de; Lin, Mengdong <mengdong.lin@intel.com>;
+> liam.r.girdwood@linux.intel.com; Koul, Vinod <vinod.koul@intel.com>;
+> Bossart, Pierre-louis <pierre-louis.bossart@intel.com>
+> Subject: Re: [alsa-devel] [PATCH 1/2] ASoC: core: Add API to use DMI name in
+> sound card long name
 > 
-> On Wed, 2016-12-21 at 21:04 +0800, mengdong.lin@linux.intel.com wrote:
-> > From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> >
-> > Intel DSP platform drivers are used by many different devices but are
-> > difficult for userspace to differentiate. This patch adds an API to
-> > allow the DMI name to be used in the sound card long name, thereby
-> > helping userspace load the correct UCM configuration. Usually machine
-> > drivers uses their own name as the sound card name (short name), and
-> > leave the long name and driver name blank. This API will append the
-> > DMI info like vendor, product and board info, to the card name to make
-> > up the card long name. If the machine driver has already explicitly
-> > set the long name, this API will do nothing.
-> >
-> > This patch also allows for further differentiation as many devices
-> > that share the same DMI name i.e. Minnowboards, UP boards may be
-> > configured with different codecs or firmwares. The API supports
-> > flavoring the DMI name into the card longname to provide the extra
-> > differentiation required for these devices.
-> >
-> > Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> > Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
-> >
-> > diff --git a/include/sound/soc.h b/include/sound/soc.h index
-> > 795e6c4..e4f1844 100644
-> > --- a/include/sound/soc.h
-> > +++ b/include/sound/soc.h
-> > @@ -497,6 +497,8 @@ void snd_soc_runtime_deactivate(struct
-> > snd_soc_pcm_runtime *rtd, int stream);  int
-> snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
-> >  	unsigned int dai_fmt);
-> >
-> > +int snd_soc_set_dmi_name(struct snd_soc_card *card, const char
-> > +*flavour);
-> > +
+> 
 > >  /* Utility functions to get clock rates from various things */  int
 > > snd_soc_calc_frame_size(int sample_size, int channels, int tdm_slots);
 > > int snd_soc_params_to_frame_size(struct snd_pcm_hw_params *params);
@@ -82,25 +51,11 @@ List-Id: alsa-devel@alsa-project.org
 > >  	const char *long_name;
 > >  	const char *driver_name;
 > > +	char dmi_longname[80];
-> > +
-> >  	struct device *dev;
-> >  	struct snd_card *snd_card;
-> >  	struct module *owner;
-> > diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c index
-> > aaab26a..8bcf241 100644
-> > --- a/sound/soc/soc-core.c
-> > +++ b/sound/soc/soc-core.c
-> > @@ -34,6 +34,7 @@
-> >  #include <linux/ctype.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/of.h>
-> > +#include <linux/dmi.h>
-> >  #include <sound/core.h>
-> >  #include <sound/jack.h>
-> >  #include <sound/pcm.h>
-> > @@ -1886,6 +1887,86 @@ int snd_soc_runtime_set_dai_fmt(struct
-> > snd_soc_pcm_runtime *rtd,  }
-> > EXPORT_SYMBOL_GPL(snd_soc_runtime_set_dai_fmt);
+> 
+> why 80? is this linked to DMI restrictions on board/product names?
+
+Because kernel uses a 80-character array to give the card long name to user space, in struct snd_ctl_card_info in include/uapi/sound/asound.h
+ 
 > >
 > > +/**
 > > + * snd_soc_set_dmi_name() - Register DMI names to card
@@ -125,26 +80,11 @@ List-Id: alsa-devel@alsa-project.org
 > > + * bytcr-rt5640-ASUSTeK COMPUTER INC.-T100TA-T100TA
 > > + * bytcr-rt5651-Circuitco-Minnowboard Max D0 PLATFORM-MinnowBoard
 > MAX
-> > + *
 > 
-> 
-> Lets keep it simpler, we dont need to prepend the driver name to the
-> longname as it's already available in driver_name.
-> 
-> The purpose of the patch is to uniquely identify the machine, so we dont
-> need to provide or duplicate other information in the name.
-> 
-> So longname should be "dmi-flavour" where dmi is product OR board (if
-> product is not available).
-> 
-> Liam
+> You may want to add a comment that the '.' is not a separator but part of
+> the DMI name. I was trying to figure out why there were cases with .-
 
-Hi Liam,
-
-Yes, there is some duplication. But may we keep this?
-
-It's because that if the card long name itself has all the information, the user space UCM code can just compare the configuration file names against the card long name, no need to involve the card name (driver name).
-In addition, I want to make the naming same as HD-Audio, their card long name is the card short name with some suffixes. Although HD-Audio does not use UCM now, but maybe in the future? So we can process ASoC and HD-Audio cards in the same way.
-
+Okay, I'll add the comment. Actually the '-' is not necessary for the user space UCM code to do the matching. It's just give a hint to the developer to identify DMI fields in the card long name. I choose '-'  since both '.' and SPACE can be part of the DMI vendor or product names. I'll to add a UCM command to show both the card long name and its best matched configuration file, for developers to revise the name for a new configuration file.
+ 
 Thanks
 Mengdong
