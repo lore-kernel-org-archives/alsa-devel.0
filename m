@@ -1,81 +1,172 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v6 1/3] clk: x86: Add Atom PMC platform
- clocks
-Date: Wed, 21 Dec 2016 19:07:00 -0600
-Message-ID: <cd6044f5-6c79-b2d6-902d-52e27c217e78@linux.intel.com>
-References: <1481306510-7471-1-git-send-email-irina.tirdea@intel.com>
- <1481306510-7471-2-git-send-email-irina.tirdea@intel.com>
- <CAHp75Vdaw4yvTPP2JZc+ti-AVNsisRQ+WG=JxPQ1jv-r7DADQA@mail.gmail.com>
- <20161213232524.GQ5423@codeaurora.org>
- <32235fb3-0d54-211d-28f4-4655e4bc7812@linux.intel.com>
- <20161217013337.GW5423@codeaurora.org>
- <CAHp75Vdn_8_fCQzkG7CPrnDZzhC7WUpGM1cyvfNRz0u_sc7RKA@mail.gmail.com>
- <7f3d03dc-24fe-ec3f-4a3b-926c28f0ac86@linux.intel.com>
- <20161221230557.GK5423@codeaurora.org>
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Subject: Re: [PATCH 1/2] ucm: Automatically load the best
+ config file based on the card long name
+Date: Thu, 22 Dec 2016 11:00:15 +0800
+Message-ID: <585B41BF.2040309@linux.intel.com>
+References: <1482325768-20084-1-git-send-email-mengdong.lin@linux.intel.com>
+ <1482331138.2554.101.camel@loki>
+ <F46914AEC2663F4A9BB62374E5EEF8F881A04E53@shsmsx102.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <20161221230557.GK5423@codeaurora.org>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Stephen Boyd <sboyd@codeaurora.org>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, linux-clk@vger.kernel.org, Irina Tirdea <irina.tirdea@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>, Michael Turquette <mturquette@baylibre.com>, "x86@kernel.org" <x86@kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>, Mark Brown <broonie@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Darren Hart <dvhart@infradead.org>, Takashi Iwai <tiwai@suse.com>, platform-driver-x86@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Len Brown <lenb@kernel.org>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CF5326705E
+ for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2016 03:57:36 +0100 (CET)
+In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F881A04E53@shsmsx102.ccr.corp.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Lin, Mengdong" <mengdong.lin@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Bossart,
+ Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 12/21/16 5:05 PM, Stephen Boyd wrote:
-> On 12/19, Pierre-Louis Bossart wrote:
->> On 12/17/16 7:57 AM, Andy Shevchenko wrote:
->>> On Sat, Dec 17, 2016 at 3:33 AM, Stephen Boyd <sboyd@codeaurora.org> wrote:
->>>> On 12/15, Pierre-Louis Bossart wrote:
->>>
->>>>> Clients use devm_clk_get() with a "pmc_plt_clk_<n>"
->>>>> argument.
->>>>
->>>> This is the problem. Clients should be calling clk_get() like:
->>>>
->>>>        clk_get(dev, "signal name in datasheet")
->>>>
->>>> where the first argument is the device and the second argument is
->>>> some string that is meaningful to the device, not the system as a
->>>> whole. The way clkdev is intended is so that the dev argument's
->>>> dev_name() is combined with the con_id that matches some signale
->>>> name in the datasheet. This way when the same IP is put into some
->>>> other chip, the globally unique name doesn't need to change, just
->>>> the device name that's registered with the lookup. Obviously this
->>>> breaks down quite badly when dev_name() isn't stable. Is that
->>>> happening here?
->>>
->>> PMC Atom is a PCI device and thus each platform would have different
->>> dev_name(). Do you want to list all in each consumer if consumer wants
->>> to work on all of them or I missed something?
->>>
->>> So, the question is how clock getting will look like to work on
->>> currently both CherryTrail and BayTrail.
->>
->> The name pmc_plt_clk_<n> follows the data sheet specification, where
->> this convention is suggested:
->>   PLT_CLK[2:0] - Camera
->>   PLT_CLK[3] - Audio Codec
->>   PLT_CLK[4] -
->>   PLT_CLK[5] - COMMs
->>
->> These clocks are not internal but are made available to external
->> components through dedicated physical pins on the package, this
->> external visibility limits the scope for confusions, variations. I
->> have not seen any skews where these clocks and pins were changed at
->> all.
->
-> Ok, by clkdev design if a device is passed but there isn't a
-> match in the lookup table it allows it to match based solely on
-> the connection id. Given that the connection id is globally
-> unique this will work.
->
-> Hopefully we don't have two of these devices with pmc_plt_clk_<n>
-> signals in a single system though. Then having the device name
-> would help differentiate between the two. And then it may make
-> sense to have some sort of ACPI lookup system, similar to how we
-> have lookups for clks in DT.
-
-So in short we keep the existing solution for now and will only use the 
-device name if and when the pmc_plt_clk_<n> identifier is no longer 
-unique due to hardware changes. Did I get this right?
+CgpPbiAxMi8yMi8yMDE2IDEyOjEyIEFNLCBMaW4sIE1lbmdkb25nIHdyb3RlOgo+PiAtLS0tLU9y
+aWdpbmFsIE1lc3NhZ2UtLS0tLQo+PiBGcm9tOiBMaWFtIEdpcmR3b29kIFttYWlsdG86bGlhbS5y
+LmdpcmR3b29kQGxpbnV4LmludGVsLmNvbV0KPj4gU2VudDogV2VkbmVzZGF5LCBEZWNlbWJlciAy
+MSwgMjAxNiAxMDozOSBQTQo+Pgo+PiBPbiBXZWQsIDIwMTYtMTItMjEgYXQgMjE6MDkgKzA4MDAs
+IG1lbmdkb25nLmxpbkBsaW51eC5pbnRlbC5jb20gd3JvdGU6Cj4+PiBGcm9tOiBNZW5nZG9uZyBM
+aW4gPG1lbmdkb25nLmxpbkBsaW51eC5pbnRlbC5jb20+Cj4+Pgo+Pj4gSW50ZWwgRFNQIHBsYXRm
+b3JtIGRyaXZlcnMgYXJlIHVzZWQgYnkgbWFueSBkaWZmZXJlbnQgZGV2aWNlcy4gRm9yCj4+PiB1
+c2VyIHNwYWNlIHRvIGRpZmZlcmVudGlhdGUgdGhlbSwgQVNvQyBtYWNoaW5lIGRyaXZlciBtYXkg
+aW5jbHVkZSB0aGUKPj4+IERNSSBpbmZvICh2ZW5kb3IsIHByb2R1Y3QgYW5kIGJvYXJkKSBpbiBj
+YXJkIGxvbmcgbmFtZS4gUG9zc2libGUgY2FyZAo+Pj4gbG9uZyBuYW1lcwo+Pj4gYXJlOgo+Pj4g
+YnJvYWR3ZWxsLXJ0Mjg2LURlbGwgSW5jLi1YUFMgMTMgOTM0My0wMzEwSkgKPj4KPj4gU2VlIG15
+IHByZXZpb3VzIGNvbW1lbnRzIG9uIHRoZSBrZXJuZWwgcGF0Y2gsIGJ1dCB0aGUgbG9uZ25hbWUg
+c2hvdWxkIGJlCj4+IGxpa2UgOi0KPj4KPj4gIkRlbGwgSW5jLi1YUFMgMTMiCj4KPiBNYXkgd2Ug
+a2VlcCBpdD8gSXQgY2FuIG1ha2UgdGhlIG1hdGNoaW5nIGNvZGUgc2ltcGxlci4KCkknbGwgcmVt
+b3ZlIHRoZSBjYXJkIG5hbWUgZmllbGQgZnJvbSB0aGUgY2FyZCBsb25nIG5hbWUsIHRvIHJlbW92
+ZSB0aGUgCmR1cGxpY2F0ZWQgaW5mbyBhbmQgc28gc2F2ZSB0aGUgc2l6ZSBvZiBsb25nIG5hbWUu
+IFJlbW92aW5nIHRoZSBjYXJkIApuYW1lICBmaWVsZCBjb3VsZCBzYXZlIG1vcmUgcm9vbSBmb3Ig
+dGhlIHBvc3NpYmxlICJmbGF2b3IiIGZpZWxkLgoKSWYgd2UgaW5jbHVkZSB0aGUgY2FyZCBuYW1l
+IGluIHRoZSBsb25nIG5hbWUsIHRoZSBtYXhpbXVtIGxlbmd0aCBvZiBsb25nIApuYW1lIEkgb2Jz
+ZXJ2ZWQgaXMgNzAgY2hhcmFjdGVycywgdGhhdCBtZWFucyB3ZSBkb24ndCBoYXZlIG11Y2ggcm9v
+bSAKbGVmdCB0byBhZGQgdGhlICJmbGF2b3IiIGZpZWxkIGlmIG5lZWQuCgpJbiB1c2VyIHNwYWNl
+LCB0aGUgVUNNIGNvbmZpZ3VyZSBmaWxlIG5hbWVzIHdpbGwgc3RpbGwgaGF2ZSB0aGUgImNhcmQg
+Cm5hbWUiIGFzIHRoZSBmaXJzdCBmaWVsZCwgYW5kIFVDTSB3aWxsIGNoZWNrIHRoaXMgZmllbGQg
+d2l0aCBjYXJkIG5hbWUgCmFuZCBvdGhlciBmaWVsZHMgd2l0aCB0aGUgY2FyZCBsb25nIG5hbWUg
+KERNSS1mbGF2b3IpLgoKPj4KPj4+IGJyb2Fkd2VsbC1ydDI4Ni1JbnRlbCBDb3JwLi1Ccm9hZHdl
+bGwgQ2xpZW50IHBsYXRmb3JtLVdpbHNvbiBCZWFjaCBTRFMKPj4+IGJ5dGNyLXJ0NTY0MC1BU1VT
+VGVLIENPTVBVVEVSIElOQy4tVDEwMFRBLVQxMDBUQQo+Pj4gYnl0Y3ItcnQ1NjUxLUNpcmN1aXRj
+by1NaW5ub3dib2FyZCBNYXggRDAgUExBVEZPUk0tTWlubm93Qm9hcmQKPj4gTUFYIC4uLgo+Pj4K
+Pj4+IEFuZCB1c2VyIHNwYWNlIGNhbiBkZWZpbmUgY29uZmlndXJhdGlvbiBmaWxlcyBpbmNsdWRp
+bmcgZmllbGRzCj4+PiBzZXBhcmF0ZWQgYnkgJy4nIGFzIGJlbG93Ogo+Pj4gYnJvYWR3ZWxsLXJ0
+Mjg2Cj4+PiBicm9hZHdlbGwtcnQyODYuRGVsbC5YUFMKPj4KPj4gRG9udCBuZWVkIHRvIHVzZSBh
+IC4gYXMgdGhlIG5hbWVzIHNob3VsZCBiZSB1bmlxdWUuCgpVc2VycyBjYW4gZGVmaW5lIGNvbmZp
+Z3VyYXRpb24gZmlsZSBuYW1lIGxpa2UgCiJjYXJkbmFtZS5sb25nbmFtZS9jYXJkbmFtZS5sb25n
+bmFtZSIsIGFuZCB0aGUgbG9uZ25hbWUgY2FuIGJlIHZlcmJhdGltIApjb3B5IG9mIHRoZSBjYXJk
+IGxvbmcgbmFtZS4gSXQgd2lsbCBoYXZlIHRoZSBoaWdoZXN0IG1hdGNoIHNjb3JlLgoKVG8gYXZv
+aWQgdW5uZWNlc3Nhcnkgc2NhbiBhbmQgc3RyaW5nIG1hdGNoaW5nLCBJJ2xsIHJldmlzZSB0aGUg
+ZnVuY3Rpb246IAppdCB3aWxsIHRyeSB0byBkaXJlY3RseSBvcGVuIHRoZSBjYXJkIGZpbGUgImNh
+cmRuYW1lLmxvbmduYW1lIi4gQW5kIG9ubHkgCmlmIHRoaXMgZmlsZSBkb2VzIG5vdCBleGlzdCwg
+ZmFsbCBiYWNrIHRvIGRvIHRoZSBzY2FuIGFuZCBzY29yZSB0aGUgCmF2YWlsYWJsZSBjYXJkIGZp
+bGVzIHRvIGZpbmQgdGhlIGJlc3QgbWF0Y2guCgpUYWtlIEFTVVMgVDEwMFRBIGFzIGV4YW1wbGU6
+IGl0cyBjYXJkIG5hbWUgaXMgJ2J5dGNyLXJ0NTY0MCcsIGxvbmcgbmFtZSAKaXMgJ0FTVVNUZUsg
+Q09NUFVURVIgSU5DLi1UMTAwVEEtVDEwMFRBJy4gVUNNIHdpbGwgdHJ5IHRvIG9wZW4gY2FyZCBm
+aWxlIAoiYnl0Y3ItcnQ1NjQwLkFTVVNUZUsgQ09NUFVURVIgSU5DLi1UMTAwVEEtVDEwMFRBIi4g
+SWYgdGhlIGZpbGUgaXMgbm90IApmb3VuZCwgImJ5dGNyLXJ0NTY0MC5BU1VTLlQxMDBUQSIgbWF5
+IG1hdGNoLCAuLi4gYW5kIHRoZSBsYXN0IGZhbGxiYWNrIAppcyAiYnl0Y3ItcnQ1NjQwIi4KCkZv
+ciBEZWxsIEJyb2Fkd2VsbC1iYXNlZCBYUFMgZmFtaWx5OiBpdHMgY2FyZCBuYW1lIGlzICJicm9h
+ZHdlbGwtcnQyODYiLCAKbG9uZyBuYW1lIGlzICJEZWxsIEluYy4tWFBTIHh4IHh4eHgteHh4eHh4
+Ii4gVUNNIHdpbGwgdHJ5IGZpbGUgCiJicm9hZHdlbGwtcnQyODYuRGVsbCBJbmMuLVhQUyB4eCB4
+eHh4LXh4eHh4eCIgYXQgZmlyc3QsIGFuZCBtYXkgZmFsbCAKYmFjayB0byAiYnJvYWR3ZWxsLXJ0
+Mjg2LkRlbGwuWFBTIiBvciAiYnJvYWR3ZWxsLXJ0Mjg2IiBhdCBsYXN0LgoKVGhhbmtzCk1lbmdk
+b25nCgoKPj4KPj4+IGJ5dGNyLXJ0NTY0MAo+Pj4gYnl0Y3ItcnQ1NjQwLkFTVVMuVDEwMAo+Pj4g
+Ynl0Y3ItcnQ1NjUxLk1pbm5vd2JvYXJkTWF4Cj4+PiAuLi4KPj4+Cj4+PiBXaGVuIGJlaW5nIGFz
+a2VkIHRvIGxvYWQgY29uZmlndXJhdGlvbiBmaWxlIG9mIGEgY2FyZCwgVUNNIHdpbGwgdHJ5IHRv
+Cj4+PiBmaW5kIHRoZSBjYXJkIGxvbmcgbmFtZSBmcm9tIHRoZSBsb2NhbCBtYWNoaW5lLCBhbmQg
+dGhlbiBzY2FuIGFsbAo+Pj4gYXZhaWxhYmxlIGNvbmZpZ3VyYXRpb24gZmlsZSBuYW1lcywgc2Vh
+cmNoIGV2ZXJ5IGZpZWxkIG9mIGNvbmZpZyBmaWxlCj4+PiBuYW1lIGluIHRoZSBjYXJkIGxvbmcg
+bmFtZS4gVGhlIG1vcmUgY2hhcmFjdGVycyBtYXRjaCwgdGhlIGhpZ2hlcgo+Pj4gc2NvcmUgdGhl
+IGZpbGUgaGFzLiBGaW5hbGx5LCB0aGUgZmlsZSB3aXRoIHRoZSBoaWdoZXN0IHNjb3JlIHdpbGwg
+YmUKPj4+IGxvYWRlZCB0byBjb25maWd1cmUgdGhlIHNvdW5kIGNhcmQuCj4+Pgo+Pj4gU2lnbmVk
+LW9mZi1ieTogTWVuZ2RvbmcgTGluIDxtZW5nZG9uZy5saW5AbGludXguaW50ZWwuY29tPgo+Pj4K
+Pj4+IGRpZmYgLS1naXQgYS9zcmMvdWNtL3BhcnNlci5jIGIvc3JjL3VjbS9wYXJzZXIuYyBpbmRl
+eAo+Pj4gYzk4MzczYS4uZmY3NWRhNyAxMDA2NDQKPj4+IC0tLSBhL3NyYy91Y20vcGFyc2VyLmMK
+Pj4+ICsrKyBiL3NyYy91Y20vcGFyc2VyLmMKPj4+IEBAIC01NSw2ICs1NSw5IEBAIHN0YXRpYyBj
+b25zdCBjaGFyICogY29uc3QgY29tcG9uZW50X2RpcltdID0gewo+Pj4gICAJTlVMTCwJCS8qIHRl
+cm1pbmF0b3IgKi8KPj4+ICAgfTsKPj4+Cj4+PiArc3RhdGljIGludCBmaWxlbmFtZV9maWx0ZXIo
+Y29uc3Qgc3RydWN0IGRpcmVudCAqZGlyZW50KTsgc3RhdGljIGludAo+Pj4gK2lzX2NvbXBvbmVu
+dF9kaXJlY3RvcnkoY29uc3QgY2hhciAqZGlyKTsKPj4+ICsKPj4+ICAgc3RhdGljIGludCBwYXJz
+ZV9zZXF1ZW5jZShzbmRfdXNlX2Nhc2VfbWdyX3QgKnVjX21nciwKPj4+ICAgCQkJICBzdHJ1Y3Qg
+bGlzdF9oZWFkICpiYXNlLAo+Pj4gICAJCQkgIHNuZF9jb25maWdfdCAqY2ZnKTsKPj4+IEBAIC0x
+MzI4LDYgKzEzMzEsMjEwIEBAIHN0YXRpYyBpbnQKPj4gcGFyc2VfbWFzdGVyX2ZpbGUoc25kX3Vz
+ZV9jYXNlX21ncl90ICp1Y19tZ3IsIHNuZF9jb25maWdfdCAqY2ZnKQo+Pj4gICAJcmV0dXJuIDA7
+Cj4+PiAgIH0KPj4+Cj4+PiArLyogdHJpbSBTUEFDRSAoMHgyMCkgZnJvbSB0aGUgc3RyaW5nICov
+IHN0YXRpYyB2b2lkIHRyaW1fc3BhY2UoY2hhcgo+Pj4gKypzdHIpIHsKPj4+ICsJaW50IGksIGog
+PSAwOwo+Pj4gKwo+Pj4gKwlmb3IgKGkgPSAwOyBzdHJbaV0gJiYgaSA8IE1BWF9GSUxFOyBpKysp
+IHsKPj4+ICsJCWlmIChzdHJbaV0gIT0gMHgyMCkKPj4+ICsJCQlzdHJbaisrXSA9IHN0cltpXTsK
+Pj4+ICsJfQo+Pj4gKwo+Pj4gKwlzdHJbal0gPSAnXDAnOwo+Pj4gK30KPj4+ICsKPj4+ICsvKiBm
+aW5kIGFuZCBzdG9yZSB0aGUgY2FyZCBsb25nIG5hbWUgaWYgdGhlIGNhcmQgaXMgaW4gdGhpcyBt
+YWNoaW5lCj4+PiArKi8gc3RhdGljIGludCBnZXRfY2FyZF9sb25nX25hbWUoc25kX3VzZV9jYXNl
+X21ncl90ICptZ3IpIHsKPj4+ICsJY29uc3QgY2hhciAqY2FyZF9uYW1lID0gbWdyLT5jYXJkX25h
+bWU7Cj4+PiArCXNuZF9jdGxfdCAqaGFuZGxlOwo+Pj4gKwlpbnQgY2FyZCwgZXJyLCBkZXYsIGlk
+eDsKPj4+ICsJc25kX2N0bF9jYXJkX2luZm9fdCAqaW5mbzsKPj4+ICsJY29uc3QgY2hhciAqX25h
+bWUsICpfbG9uZ19uYW1lOwo+Pj4gKwo+Pj4gKwlzbmRfY3RsX2NhcmRfaW5mb19hbGxvY2EoJmlu
+Zm8pOwo+Pj4gKwo+Pj4gKwljYXJkID0gLTE7Cj4+PiArCWlmIChzbmRfY2FyZF9uZXh0KCZjYXJk
+KSA8IDAgfHwgY2FyZCA8IDApIHsKPj4+ICsJCXVjX2Vycm9yKCJubyBzb3VuZGNhcmRzIGZvdW5k
+Li4uIik7Cj4+PiArCQlyZXR1cm4gLTE7Cj4+PiArCX0KPj4+ICsKPj4+ICsJd2hpbGUgKGNhcmQg
+Pj0gMCkgewo+Pj4gKwkJY2hhciBuYW1lWzMyXTsKPj4+ICsKPj4+ICsJCXNwcmludGYobmFtZSwg
+Imh3OiVkIiwgY2FyZCk7Cj4+PiArCQllcnIgPSBzbmRfY3RsX29wZW4oJmhhbmRsZSwgbmFtZSwg
+MCk7Cj4+PiArCQlpZiAoZXJyIDwgMCkgewo+Pj4gKwkJCXVjX2Vycm9yKCJjb250cm9sIG9wZW4g
+KCVpKTogJXMiLCBjYXJkLAo+Pj4gKwkJCQkgc25kX3N0cmVycm9yKGVycikpOwo+Pj4gKwkJCWdv
+dG8gbmV4dF9jYXJkOwo+Pj4gKwkJfQo+Pj4gKwo+Pj4gKwkJZXJyID0gc25kX2N0bF9jYXJkX2lu
+Zm8oaGFuZGxlLCBpbmZvKTsKPj4+ICsJCWlmIChlcnIgPCAwKSB7Cj4+PiArCQkJdWNfZXJyb3Io
+ImNvbnRyb2wgaGFyZHdhcmUgaW5mbyAoJWkpOiAlcyIsIGNhcmQsCj4+PiArCQkJCSBzbmRfc3Ry
+ZXJyb3IoZXJyKSk7Cj4+PiArCQkJc25kX2N0bF9jbG9zZShoYW5kbGUpOwo+Pj4gKwkJCWdvdG8g
+bmV4dF9jYXJkOwo+Pj4gKwkJfQo+Pj4gKwo+Pj4gKwkJX25hbWUgPSBzbmRfY3RsX2NhcmRfaW5m
+b19nZXRfbmFtZShpbmZvKTsKPj4+ICsJCWlmICghc3RybmNtcChjYXJkX25hbWUsIF9uYW1lLCAz
+MikpIHsKPj4+ICsJCQlfbG9uZ19uYW1lID0gc25kX2N0bF9jYXJkX2luZm9fZ2V0X2xvbmduYW1l
+KGluZm8pOwo+Pj4gKwkJCXN0cm5jcHkobWdyLT5jYXJkX2xvbmdfbmFtZSwgX2xvbmdfbmFtZSwK
+Pj4+ICsJCQkJTUFYX0NBUkRfTE9OR19OQU1FKTsKPj4+ICsJCQlzbmRfY3RsX2Nsb3NlKGhhbmRs
+ZSk7Cj4+PiArCQkJcmV0dXJuIDA7Cj4+PiArCQl9Cj4+PiArCj4+PiArCQlzbmRfY3RsX2Nsb3Nl
+KGhhbmRsZSk7Cj4+PiArbmV4dF9jYXJkOgo+Pj4gKwkJaWYgKHNuZF9jYXJkX25leHQoJmNhcmQp
+IDwgMCkgewo+Pj4gKwkJCXVjX2Vycm9yKCJzbmRfY2FyZF9uZXh0Iik7Cj4+PiArCQkJYnJlYWs7
+Cj4+PiArCQl9Cj4+PiArCX0KPj4+ICsKPj4+ICsJcmV0dXJuIC0xOwo+Pj4gK30KPj4+ICsKPj4+
+ICsvKiBUaGlzIGZ1bmN0aW9uIHdpbGwgZmluZCB0aGUgYmVzdCBkZXZpY2Utc3BlY2lmaWMgY29u
+ZmlndXJhdGlvbgo+Pj4gK2ZpbGUgYmFzZWQKPj4+ICsgKiBvbiB0aGUgc291bmQgY2FyZCBsb25n
+IG5hbWUuCj4+PiArICogRGlmZmVyZW50IGRldmljZXMgbWF5IHNoYXJlIHRoZSBzYW1lIHNvdW5k
+IGRyaXZlciBhbmQgdGh1cyB0aGUKPj4+ICtzYW1lIHNvdW5kCj4+PiArICogY2FyZCBuYW1lIChz
+aG9ydCBuYW1lKSwgYnV0IHRoZXkgbWF5IHN0aWxsIG5lZWQgZGlmZmVyZW50Cj4+PiArZGV2aWNl
+LXNwZWNpZmljCj4+PiArICogY29uZmlndXJhdGlvbnMuIEZvciB1c2VyIHNwYWNlIHRvIGRpZmZl
+cmVudGlhdGUgdGhlbSwga2VybmVsCj4+PiArZHJpdmVycyBtYXkKPj4+ICsgKiBpbmNsdWRlIHRo
+ZSBETUkgaW5mbyAodmVuZG9yLCBwcm9kdWN0IGFuZCBib2FyZCkgaW4gdGhlIGNhcmQgbG9uZwo+
+PiBuYW1lLgo+Pj4gKyAqIEFuZCB1c2VyIHNwYWNlIGNhbiBkZWZpbmUgY29uZmlndXJhdGlvbiBm
+aWxlIG5hbWVzIGFwcGVuZGluZyBETUkKPj4+ICtrZXl3b3Jkcwo+Pj4gKyAqIHRvIHRoZSBjYXJk
+IG5hbWUsIGxpa2U6Cj4+PiArICogYnl0Y3ItcnQ1NjQwLkFTVVMuVDEwMAo+Pj4gKyAqIGJ5dGNy
+LXJ0NTY1MS5NaW5ub3dCb2FyZAo+Pj4gKyAqCj4+PiArICogV2hlbiBiZWluZyBhc2tlZCB0byBs
+b2FkIHRoZSBjb25maWd1cmF0aW9uIGZpbGUgZm9yIGEgY2FyZCwgdGhpcwo+Pj4gK2Z1bmN0aW9u
+Cj4+PiArICogd2lsbCB0cnkgdG8gZmluZCB0aGUgY2FyZCBsb25nIG5hbWUgZnJvbSB0aGUgbG9j
+YWwgbWFjaGluZSwgYW5kCj4+PiArdGhlbiBzY2FuCj4+PiArICogYWxsIGF2YWlsYWJsZSBjb25m
+aWd1cmF0aW9uIGZpbGUgbmFtZXMsIHNlYXJjaCBldmVyeSBmaWVsZCBvZiB0aGUKPj4+ICtjb25m
+aWcKPj4+ICsgKiBmaWxlIG5hbWUgaW4gdGhlIGNhcmQgbG9uZyBuYW1lLiBUaGUgbW9yZSBjaGFy
+YWN0ZXJzIG1hdGNoLCB0aGUKPj4+ICtoaWdoZXIKPj4+ICsgKiBzY29yZSB0aGUgZmlsZSBoYXMu
+IEZpbmFsbHksIHRoZSBmaWxlIHdpdGggdGhlIGhpZ2hlc3Qgc2NvcmUgd2lsbCBiZSBsb2FkZWQu
+Cj4+PiArICovCj4+Cj4+IElkJyBleHBlY3QgdGhpcyBmdW5jdGlvbiB0byB0cnkgYW5kIG9wZW4g
+Y2FyZCBsb25nbmFtZSBhbmQgdGhlbiBjYXJkIG5hbWUgaWYKPj4gbG9uZ25hbWUgaXMgbm90IGZv
+dW5kLiBTbyBwcm92aWRpbmcgd2UgdXNlIHRoZSBleGFjdCBzYW1lIG5hbWVzIGFzIHRoZQo+PiBE
+TUkgbmFtZSB3ZSB3b250IG5lZWQgYW55IHN0cmluZyBmb3JtYXR0aW5nIG9yIHNjb3JpbmcgKGku
+ZS4gZmlsZQo+PiBvcGVuKCJsb25nbmFtZS9sb25nbmFtZS5jb25mIikgd2lsbCBlaXRoZXIgc3Vj
+Y2VlZCBvciBmYWlsKQo+Pgo+PiBMaWFtCj4KPiBJIGZlZWwgd2UgY2Fubm90IHVzZSB0aGUgZXhh
+Y3Qgc2FtZSBuYW1lcyBmb3IgdGhlIGNvbmZpZ3VyYXRpb24gZmlsZSBhbmQgY2FyZCBsb25nIG5h
+bWUuIFRoZSBETUkgaW5mbyBpbiB0aGUgY2FyZCBsb25nIG5hbWUgY2FuIGJlIGxlbmd0aHksIGlu
+Y2x1ZGluZyAnLicgLCBTUEFDRSwgbWVhbmluZ2xlc3MgaW5mbyBsaWtlICJDb3JwLiIgYW5kIHNv
+bWV0aW1lIGR1cGxpY2F0ZWQgaW5mbyBmb3Igc29tZSBPRU1z77yOSSBob3BlIGRldmVsb3BlcnMg
+Y2FuIGp1c3QgZXh0cmFjdCBrZXkgd29yZHMgZnJvbSB0aGUgbWVzc3kgRE1JIGluZm8gdG8gbWFr
+ZSBhIHNpbXBsZSBjb25maWd1cmF0aW9uIGZpbGUgbmFtZSwgYW5kIFVDTSBhdXRvbWF0aWNhbGx5
+IGRvIHRoZSBtYXRjaGluZyBhbmQgZ2l2ZSBlYWNoIGNvbmZpZ3VyYXRpb24gZmlsZSBhIHNjb3Jl
+LiBUaGVuIHRoZSBmaWxlIHdpdGggaGlnaGVzdCBzY29yZSB3aWxsIGJlIHVzZWQgZm9yIHRoZSBj
+YXJkLgo+Cj4gVGhhbmtzCj4gTWVuZ2RvbmcKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwK
