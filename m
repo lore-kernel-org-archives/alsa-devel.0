@@ -1,19 +1,20 @@
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
-Subject: Re: [PATCH 1/2] ucm: Automatically load the best
- config file based on the card long name
-Date: Thu, 22 Dec 2016 11:00:15 +0800
-Message-ID: <585B41BF.2040309@linux.intel.com>
-References: <1482325768-20084-1-git-send-email-mengdong.lin@linux.intel.com>
- <1482331138.2554.101.camel@loki>
- <F46914AEC2663F4A9BB62374E5EEF8F881A04E53@shsmsx102.ccr.corp.intel.com>
+Subject: Re: [PATCH 1/2] ASoC: core: Add API to use DMI name in
+ sound card long name
+Date: Thu, 22 Dec 2016 11:07:45 +0800
+Message-ID: <585B4381.20407@linux.intel.com>
+References: <cover.1482324245.git.mengdong.lin@linux.intel.com>
+ <748589b74f8f4a6fefe7e545c21a6db5e71a74e1.1482324245.git.mengdong.lin@linux.intel.com>
+ <1482330431.2554.94.camel@loki>
+ <F46914AEC2663F4A9BB62374E5EEF8F881A04E15@shsmsx102.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 9CF5326705E
- for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2016 03:57:36 +0100 (CET)
-In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F881A04E53@shsmsx102.ccr.corp.intel.com>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4BD9D26705E
+ for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2016 04:05:04 +0100 (CET)
+In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F881A04E15@shsmsx102.ccr.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,145 +29,137 @@ Cc: "tiwai@suse.de" <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, "alsa
  Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAxMi8yMi8yMDE2IDEyOjEyIEFNLCBMaW4sIE1lbmdkb25nIHdyb3RlOgo+PiAtLS0tLU9y
-aWdpbmFsIE1lc3NhZ2UtLS0tLQo+PiBGcm9tOiBMaWFtIEdpcmR3b29kIFttYWlsdG86bGlhbS5y
-LmdpcmR3b29kQGxpbnV4LmludGVsLmNvbV0KPj4gU2VudDogV2VkbmVzZGF5LCBEZWNlbWJlciAy
-MSwgMjAxNiAxMDozOSBQTQo+Pgo+PiBPbiBXZWQsIDIwMTYtMTItMjEgYXQgMjE6MDkgKzA4MDAs
-IG1lbmdkb25nLmxpbkBsaW51eC5pbnRlbC5jb20gd3JvdGU6Cj4+PiBGcm9tOiBNZW5nZG9uZyBM
-aW4gPG1lbmdkb25nLmxpbkBsaW51eC5pbnRlbC5jb20+Cj4+Pgo+Pj4gSW50ZWwgRFNQIHBsYXRm
-b3JtIGRyaXZlcnMgYXJlIHVzZWQgYnkgbWFueSBkaWZmZXJlbnQgZGV2aWNlcy4gRm9yCj4+PiB1
-c2VyIHNwYWNlIHRvIGRpZmZlcmVudGlhdGUgdGhlbSwgQVNvQyBtYWNoaW5lIGRyaXZlciBtYXkg
-aW5jbHVkZSB0aGUKPj4+IERNSSBpbmZvICh2ZW5kb3IsIHByb2R1Y3QgYW5kIGJvYXJkKSBpbiBj
-YXJkIGxvbmcgbmFtZS4gUG9zc2libGUgY2FyZAo+Pj4gbG9uZyBuYW1lcwo+Pj4gYXJlOgo+Pj4g
-YnJvYWR3ZWxsLXJ0Mjg2LURlbGwgSW5jLi1YUFMgMTMgOTM0My0wMzEwSkgKPj4KPj4gU2VlIG15
-IHByZXZpb3VzIGNvbW1lbnRzIG9uIHRoZSBrZXJuZWwgcGF0Y2gsIGJ1dCB0aGUgbG9uZ25hbWUg
-c2hvdWxkIGJlCj4+IGxpa2UgOi0KPj4KPj4gIkRlbGwgSW5jLi1YUFMgMTMiCj4KPiBNYXkgd2Ug
-a2VlcCBpdD8gSXQgY2FuIG1ha2UgdGhlIG1hdGNoaW5nIGNvZGUgc2ltcGxlci4KCkknbGwgcmVt
-b3ZlIHRoZSBjYXJkIG5hbWUgZmllbGQgZnJvbSB0aGUgY2FyZCBsb25nIG5hbWUsIHRvIHJlbW92
-ZSB0aGUgCmR1cGxpY2F0ZWQgaW5mbyBhbmQgc28gc2F2ZSB0aGUgc2l6ZSBvZiBsb25nIG5hbWUu
-IFJlbW92aW5nIHRoZSBjYXJkIApuYW1lICBmaWVsZCBjb3VsZCBzYXZlIG1vcmUgcm9vbSBmb3Ig
-dGhlIHBvc3NpYmxlICJmbGF2b3IiIGZpZWxkLgoKSWYgd2UgaW5jbHVkZSB0aGUgY2FyZCBuYW1l
-IGluIHRoZSBsb25nIG5hbWUsIHRoZSBtYXhpbXVtIGxlbmd0aCBvZiBsb25nIApuYW1lIEkgb2Jz
-ZXJ2ZWQgaXMgNzAgY2hhcmFjdGVycywgdGhhdCBtZWFucyB3ZSBkb24ndCBoYXZlIG11Y2ggcm9v
-bSAKbGVmdCB0byBhZGQgdGhlICJmbGF2b3IiIGZpZWxkIGlmIG5lZWQuCgpJbiB1c2VyIHNwYWNl
-LCB0aGUgVUNNIGNvbmZpZ3VyZSBmaWxlIG5hbWVzIHdpbGwgc3RpbGwgaGF2ZSB0aGUgImNhcmQg
-Cm5hbWUiIGFzIHRoZSBmaXJzdCBmaWVsZCwgYW5kIFVDTSB3aWxsIGNoZWNrIHRoaXMgZmllbGQg
-d2l0aCBjYXJkIG5hbWUgCmFuZCBvdGhlciBmaWVsZHMgd2l0aCB0aGUgY2FyZCBsb25nIG5hbWUg
-KERNSS1mbGF2b3IpLgoKPj4KPj4+IGJyb2Fkd2VsbC1ydDI4Ni1JbnRlbCBDb3JwLi1Ccm9hZHdl
-bGwgQ2xpZW50IHBsYXRmb3JtLVdpbHNvbiBCZWFjaCBTRFMKPj4+IGJ5dGNyLXJ0NTY0MC1BU1VT
-VGVLIENPTVBVVEVSIElOQy4tVDEwMFRBLVQxMDBUQQo+Pj4gYnl0Y3ItcnQ1NjUxLUNpcmN1aXRj
-by1NaW5ub3dib2FyZCBNYXggRDAgUExBVEZPUk0tTWlubm93Qm9hcmQKPj4gTUFYIC4uLgo+Pj4K
-Pj4+IEFuZCB1c2VyIHNwYWNlIGNhbiBkZWZpbmUgY29uZmlndXJhdGlvbiBmaWxlcyBpbmNsdWRp
-bmcgZmllbGRzCj4+PiBzZXBhcmF0ZWQgYnkgJy4nIGFzIGJlbG93Ogo+Pj4gYnJvYWR3ZWxsLXJ0
-Mjg2Cj4+PiBicm9hZHdlbGwtcnQyODYuRGVsbC5YUFMKPj4KPj4gRG9udCBuZWVkIHRvIHVzZSBh
-IC4gYXMgdGhlIG5hbWVzIHNob3VsZCBiZSB1bmlxdWUuCgpVc2VycyBjYW4gZGVmaW5lIGNvbmZp
-Z3VyYXRpb24gZmlsZSBuYW1lIGxpa2UgCiJjYXJkbmFtZS5sb25nbmFtZS9jYXJkbmFtZS5sb25n
-bmFtZSIsIGFuZCB0aGUgbG9uZ25hbWUgY2FuIGJlIHZlcmJhdGltIApjb3B5IG9mIHRoZSBjYXJk
-IGxvbmcgbmFtZS4gSXQgd2lsbCBoYXZlIHRoZSBoaWdoZXN0IG1hdGNoIHNjb3JlLgoKVG8gYXZv
-aWQgdW5uZWNlc3Nhcnkgc2NhbiBhbmQgc3RyaW5nIG1hdGNoaW5nLCBJJ2xsIHJldmlzZSB0aGUg
-ZnVuY3Rpb246IAppdCB3aWxsIHRyeSB0byBkaXJlY3RseSBvcGVuIHRoZSBjYXJkIGZpbGUgImNh
-cmRuYW1lLmxvbmduYW1lIi4gQW5kIG9ubHkgCmlmIHRoaXMgZmlsZSBkb2VzIG5vdCBleGlzdCwg
-ZmFsbCBiYWNrIHRvIGRvIHRoZSBzY2FuIGFuZCBzY29yZSB0aGUgCmF2YWlsYWJsZSBjYXJkIGZp
-bGVzIHRvIGZpbmQgdGhlIGJlc3QgbWF0Y2guCgpUYWtlIEFTVVMgVDEwMFRBIGFzIGV4YW1wbGU6
-IGl0cyBjYXJkIG5hbWUgaXMgJ2J5dGNyLXJ0NTY0MCcsIGxvbmcgbmFtZSAKaXMgJ0FTVVNUZUsg
-Q09NUFVURVIgSU5DLi1UMTAwVEEtVDEwMFRBJy4gVUNNIHdpbGwgdHJ5IHRvIG9wZW4gY2FyZCBm
-aWxlIAoiYnl0Y3ItcnQ1NjQwLkFTVVNUZUsgQ09NUFVURVIgSU5DLi1UMTAwVEEtVDEwMFRBIi4g
-SWYgdGhlIGZpbGUgaXMgbm90IApmb3VuZCwgImJ5dGNyLXJ0NTY0MC5BU1VTLlQxMDBUQSIgbWF5
-IG1hdGNoLCAuLi4gYW5kIHRoZSBsYXN0IGZhbGxiYWNrIAppcyAiYnl0Y3ItcnQ1NjQwIi4KCkZv
-ciBEZWxsIEJyb2Fkd2VsbC1iYXNlZCBYUFMgZmFtaWx5OiBpdHMgY2FyZCBuYW1lIGlzICJicm9h
-ZHdlbGwtcnQyODYiLCAKbG9uZyBuYW1lIGlzICJEZWxsIEluYy4tWFBTIHh4IHh4eHgteHh4eHh4
-Ii4gVUNNIHdpbGwgdHJ5IGZpbGUgCiJicm9hZHdlbGwtcnQyODYuRGVsbCBJbmMuLVhQUyB4eCB4
-eHh4LXh4eHh4eCIgYXQgZmlyc3QsIGFuZCBtYXkgZmFsbCAKYmFjayB0byAiYnJvYWR3ZWxsLXJ0
-Mjg2LkRlbGwuWFBTIiBvciAiYnJvYWR3ZWxsLXJ0Mjg2IiBhdCBsYXN0LgoKVGhhbmtzCk1lbmdk
-b25nCgoKPj4KPj4+IGJ5dGNyLXJ0NTY0MAo+Pj4gYnl0Y3ItcnQ1NjQwLkFTVVMuVDEwMAo+Pj4g
-Ynl0Y3ItcnQ1NjUxLk1pbm5vd2JvYXJkTWF4Cj4+PiAuLi4KPj4+Cj4+PiBXaGVuIGJlaW5nIGFz
-a2VkIHRvIGxvYWQgY29uZmlndXJhdGlvbiBmaWxlIG9mIGEgY2FyZCwgVUNNIHdpbGwgdHJ5IHRv
-Cj4+PiBmaW5kIHRoZSBjYXJkIGxvbmcgbmFtZSBmcm9tIHRoZSBsb2NhbCBtYWNoaW5lLCBhbmQg
-dGhlbiBzY2FuIGFsbAo+Pj4gYXZhaWxhYmxlIGNvbmZpZ3VyYXRpb24gZmlsZSBuYW1lcywgc2Vh
-cmNoIGV2ZXJ5IGZpZWxkIG9mIGNvbmZpZyBmaWxlCj4+PiBuYW1lIGluIHRoZSBjYXJkIGxvbmcg
-bmFtZS4gVGhlIG1vcmUgY2hhcmFjdGVycyBtYXRjaCwgdGhlIGhpZ2hlcgo+Pj4gc2NvcmUgdGhl
-IGZpbGUgaGFzLiBGaW5hbGx5LCB0aGUgZmlsZSB3aXRoIHRoZSBoaWdoZXN0IHNjb3JlIHdpbGwg
-YmUKPj4+IGxvYWRlZCB0byBjb25maWd1cmUgdGhlIHNvdW5kIGNhcmQuCj4+Pgo+Pj4gU2lnbmVk
-LW9mZi1ieTogTWVuZ2RvbmcgTGluIDxtZW5nZG9uZy5saW5AbGludXguaW50ZWwuY29tPgo+Pj4K
-Pj4+IGRpZmYgLS1naXQgYS9zcmMvdWNtL3BhcnNlci5jIGIvc3JjL3VjbS9wYXJzZXIuYyBpbmRl
-eAo+Pj4gYzk4MzczYS4uZmY3NWRhNyAxMDA2NDQKPj4+IC0tLSBhL3NyYy91Y20vcGFyc2VyLmMK
-Pj4+ICsrKyBiL3NyYy91Y20vcGFyc2VyLmMKPj4+IEBAIC01NSw2ICs1NSw5IEBAIHN0YXRpYyBj
-b25zdCBjaGFyICogY29uc3QgY29tcG9uZW50X2RpcltdID0gewo+Pj4gICAJTlVMTCwJCS8qIHRl
-cm1pbmF0b3IgKi8KPj4+ICAgfTsKPj4+Cj4+PiArc3RhdGljIGludCBmaWxlbmFtZV9maWx0ZXIo
-Y29uc3Qgc3RydWN0IGRpcmVudCAqZGlyZW50KTsgc3RhdGljIGludAo+Pj4gK2lzX2NvbXBvbmVu
-dF9kaXJlY3RvcnkoY29uc3QgY2hhciAqZGlyKTsKPj4+ICsKPj4+ICAgc3RhdGljIGludCBwYXJz
-ZV9zZXF1ZW5jZShzbmRfdXNlX2Nhc2VfbWdyX3QgKnVjX21nciwKPj4+ICAgCQkJICBzdHJ1Y3Qg
-bGlzdF9oZWFkICpiYXNlLAo+Pj4gICAJCQkgIHNuZF9jb25maWdfdCAqY2ZnKTsKPj4+IEBAIC0x
-MzI4LDYgKzEzMzEsMjEwIEBAIHN0YXRpYyBpbnQKPj4gcGFyc2VfbWFzdGVyX2ZpbGUoc25kX3Vz
-ZV9jYXNlX21ncl90ICp1Y19tZ3IsIHNuZF9jb25maWdfdCAqY2ZnKQo+Pj4gICAJcmV0dXJuIDA7
-Cj4+PiAgIH0KPj4+Cj4+PiArLyogdHJpbSBTUEFDRSAoMHgyMCkgZnJvbSB0aGUgc3RyaW5nICov
-IHN0YXRpYyB2b2lkIHRyaW1fc3BhY2UoY2hhcgo+Pj4gKypzdHIpIHsKPj4+ICsJaW50IGksIGog
-PSAwOwo+Pj4gKwo+Pj4gKwlmb3IgKGkgPSAwOyBzdHJbaV0gJiYgaSA8IE1BWF9GSUxFOyBpKysp
-IHsKPj4+ICsJCWlmIChzdHJbaV0gIT0gMHgyMCkKPj4+ICsJCQlzdHJbaisrXSA9IHN0cltpXTsK
-Pj4+ICsJfQo+Pj4gKwo+Pj4gKwlzdHJbal0gPSAnXDAnOwo+Pj4gK30KPj4+ICsKPj4+ICsvKiBm
-aW5kIGFuZCBzdG9yZSB0aGUgY2FyZCBsb25nIG5hbWUgaWYgdGhlIGNhcmQgaXMgaW4gdGhpcyBt
-YWNoaW5lCj4+PiArKi8gc3RhdGljIGludCBnZXRfY2FyZF9sb25nX25hbWUoc25kX3VzZV9jYXNl
-X21ncl90ICptZ3IpIHsKPj4+ICsJY29uc3QgY2hhciAqY2FyZF9uYW1lID0gbWdyLT5jYXJkX25h
-bWU7Cj4+PiArCXNuZF9jdGxfdCAqaGFuZGxlOwo+Pj4gKwlpbnQgY2FyZCwgZXJyLCBkZXYsIGlk
-eDsKPj4+ICsJc25kX2N0bF9jYXJkX2luZm9fdCAqaW5mbzsKPj4+ICsJY29uc3QgY2hhciAqX25h
-bWUsICpfbG9uZ19uYW1lOwo+Pj4gKwo+Pj4gKwlzbmRfY3RsX2NhcmRfaW5mb19hbGxvY2EoJmlu
-Zm8pOwo+Pj4gKwo+Pj4gKwljYXJkID0gLTE7Cj4+PiArCWlmIChzbmRfY2FyZF9uZXh0KCZjYXJk
-KSA8IDAgfHwgY2FyZCA8IDApIHsKPj4+ICsJCXVjX2Vycm9yKCJubyBzb3VuZGNhcmRzIGZvdW5k
-Li4uIik7Cj4+PiArCQlyZXR1cm4gLTE7Cj4+PiArCX0KPj4+ICsKPj4+ICsJd2hpbGUgKGNhcmQg
-Pj0gMCkgewo+Pj4gKwkJY2hhciBuYW1lWzMyXTsKPj4+ICsKPj4+ICsJCXNwcmludGYobmFtZSwg
-Imh3OiVkIiwgY2FyZCk7Cj4+PiArCQllcnIgPSBzbmRfY3RsX29wZW4oJmhhbmRsZSwgbmFtZSwg
-MCk7Cj4+PiArCQlpZiAoZXJyIDwgMCkgewo+Pj4gKwkJCXVjX2Vycm9yKCJjb250cm9sIG9wZW4g
-KCVpKTogJXMiLCBjYXJkLAo+Pj4gKwkJCQkgc25kX3N0cmVycm9yKGVycikpOwo+Pj4gKwkJCWdv
-dG8gbmV4dF9jYXJkOwo+Pj4gKwkJfQo+Pj4gKwo+Pj4gKwkJZXJyID0gc25kX2N0bF9jYXJkX2lu
-Zm8oaGFuZGxlLCBpbmZvKTsKPj4+ICsJCWlmIChlcnIgPCAwKSB7Cj4+PiArCQkJdWNfZXJyb3Io
-ImNvbnRyb2wgaGFyZHdhcmUgaW5mbyAoJWkpOiAlcyIsIGNhcmQsCj4+PiArCQkJCSBzbmRfc3Ry
-ZXJyb3IoZXJyKSk7Cj4+PiArCQkJc25kX2N0bF9jbG9zZShoYW5kbGUpOwo+Pj4gKwkJCWdvdG8g
-bmV4dF9jYXJkOwo+Pj4gKwkJfQo+Pj4gKwo+Pj4gKwkJX25hbWUgPSBzbmRfY3RsX2NhcmRfaW5m
-b19nZXRfbmFtZShpbmZvKTsKPj4+ICsJCWlmICghc3RybmNtcChjYXJkX25hbWUsIF9uYW1lLCAz
-MikpIHsKPj4+ICsJCQlfbG9uZ19uYW1lID0gc25kX2N0bF9jYXJkX2luZm9fZ2V0X2xvbmduYW1l
-KGluZm8pOwo+Pj4gKwkJCXN0cm5jcHkobWdyLT5jYXJkX2xvbmdfbmFtZSwgX2xvbmdfbmFtZSwK
-Pj4+ICsJCQkJTUFYX0NBUkRfTE9OR19OQU1FKTsKPj4+ICsJCQlzbmRfY3RsX2Nsb3NlKGhhbmRs
-ZSk7Cj4+PiArCQkJcmV0dXJuIDA7Cj4+PiArCQl9Cj4+PiArCj4+PiArCQlzbmRfY3RsX2Nsb3Nl
-KGhhbmRsZSk7Cj4+PiArbmV4dF9jYXJkOgo+Pj4gKwkJaWYgKHNuZF9jYXJkX25leHQoJmNhcmQp
-IDwgMCkgewo+Pj4gKwkJCXVjX2Vycm9yKCJzbmRfY2FyZF9uZXh0Iik7Cj4+PiArCQkJYnJlYWs7
-Cj4+PiArCQl9Cj4+PiArCX0KPj4+ICsKPj4+ICsJcmV0dXJuIC0xOwo+Pj4gK30KPj4+ICsKPj4+
-ICsvKiBUaGlzIGZ1bmN0aW9uIHdpbGwgZmluZCB0aGUgYmVzdCBkZXZpY2Utc3BlY2lmaWMgY29u
-ZmlndXJhdGlvbgo+Pj4gK2ZpbGUgYmFzZWQKPj4+ICsgKiBvbiB0aGUgc291bmQgY2FyZCBsb25n
-IG5hbWUuCj4+PiArICogRGlmZmVyZW50IGRldmljZXMgbWF5IHNoYXJlIHRoZSBzYW1lIHNvdW5k
-IGRyaXZlciBhbmQgdGh1cyB0aGUKPj4+ICtzYW1lIHNvdW5kCj4+PiArICogY2FyZCBuYW1lIChz
-aG9ydCBuYW1lKSwgYnV0IHRoZXkgbWF5IHN0aWxsIG5lZWQgZGlmZmVyZW50Cj4+PiArZGV2aWNl
-LXNwZWNpZmljCj4+PiArICogY29uZmlndXJhdGlvbnMuIEZvciB1c2VyIHNwYWNlIHRvIGRpZmZl
-cmVudGlhdGUgdGhlbSwga2VybmVsCj4+PiArZHJpdmVycyBtYXkKPj4+ICsgKiBpbmNsdWRlIHRo
-ZSBETUkgaW5mbyAodmVuZG9yLCBwcm9kdWN0IGFuZCBib2FyZCkgaW4gdGhlIGNhcmQgbG9uZwo+
-PiBuYW1lLgo+Pj4gKyAqIEFuZCB1c2VyIHNwYWNlIGNhbiBkZWZpbmUgY29uZmlndXJhdGlvbiBm
-aWxlIG5hbWVzIGFwcGVuZGluZyBETUkKPj4+ICtrZXl3b3Jkcwo+Pj4gKyAqIHRvIHRoZSBjYXJk
-IG5hbWUsIGxpa2U6Cj4+PiArICogYnl0Y3ItcnQ1NjQwLkFTVVMuVDEwMAo+Pj4gKyAqIGJ5dGNy
-LXJ0NTY1MS5NaW5ub3dCb2FyZAo+Pj4gKyAqCj4+PiArICogV2hlbiBiZWluZyBhc2tlZCB0byBs
-b2FkIHRoZSBjb25maWd1cmF0aW9uIGZpbGUgZm9yIGEgY2FyZCwgdGhpcwo+Pj4gK2Z1bmN0aW9u
-Cj4+PiArICogd2lsbCB0cnkgdG8gZmluZCB0aGUgY2FyZCBsb25nIG5hbWUgZnJvbSB0aGUgbG9j
-YWwgbWFjaGluZSwgYW5kCj4+PiArdGhlbiBzY2FuCj4+PiArICogYWxsIGF2YWlsYWJsZSBjb25m
-aWd1cmF0aW9uIGZpbGUgbmFtZXMsIHNlYXJjaCBldmVyeSBmaWVsZCBvZiB0aGUKPj4+ICtjb25m
-aWcKPj4+ICsgKiBmaWxlIG5hbWUgaW4gdGhlIGNhcmQgbG9uZyBuYW1lLiBUaGUgbW9yZSBjaGFy
-YWN0ZXJzIG1hdGNoLCB0aGUKPj4+ICtoaWdoZXIKPj4+ICsgKiBzY29yZSB0aGUgZmlsZSBoYXMu
-IEZpbmFsbHksIHRoZSBmaWxlIHdpdGggdGhlIGhpZ2hlc3Qgc2NvcmUgd2lsbCBiZSBsb2FkZWQu
-Cj4+PiArICovCj4+Cj4+IElkJyBleHBlY3QgdGhpcyBmdW5jdGlvbiB0byB0cnkgYW5kIG9wZW4g
-Y2FyZCBsb25nbmFtZSBhbmQgdGhlbiBjYXJkIG5hbWUgaWYKPj4gbG9uZ25hbWUgaXMgbm90IGZv
-dW5kLiBTbyBwcm92aWRpbmcgd2UgdXNlIHRoZSBleGFjdCBzYW1lIG5hbWVzIGFzIHRoZQo+PiBE
-TUkgbmFtZSB3ZSB3b250IG5lZWQgYW55IHN0cmluZyBmb3JtYXR0aW5nIG9yIHNjb3JpbmcgKGku
-ZS4gZmlsZQo+PiBvcGVuKCJsb25nbmFtZS9sb25nbmFtZS5jb25mIikgd2lsbCBlaXRoZXIgc3Vj
-Y2VlZCBvciBmYWlsKQo+Pgo+PiBMaWFtCj4KPiBJIGZlZWwgd2UgY2Fubm90IHVzZSB0aGUgZXhh
-Y3Qgc2FtZSBuYW1lcyBmb3IgdGhlIGNvbmZpZ3VyYXRpb24gZmlsZSBhbmQgY2FyZCBsb25nIG5h
-bWUuIFRoZSBETUkgaW5mbyBpbiB0aGUgY2FyZCBsb25nIG5hbWUgY2FuIGJlIGxlbmd0aHksIGlu
-Y2x1ZGluZyAnLicgLCBTUEFDRSwgbWVhbmluZ2xlc3MgaW5mbyBsaWtlICJDb3JwLiIgYW5kIHNv
-bWV0aW1lIGR1cGxpY2F0ZWQgaW5mbyBmb3Igc29tZSBPRU1z77yOSSBob3BlIGRldmVsb3BlcnMg
-Y2FuIGp1c3QgZXh0cmFjdCBrZXkgd29yZHMgZnJvbSB0aGUgbWVzc3kgRE1JIGluZm8gdG8gbWFr
-ZSBhIHNpbXBsZSBjb25maWd1cmF0aW9uIGZpbGUgbmFtZSwgYW5kIFVDTSBhdXRvbWF0aWNhbGx5
-IGRvIHRoZSBtYXRjaGluZyBhbmQgZ2l2ZSBlYWNoIGNvbmZpZ3VyYXRpb24gZmlsZSBhIHNjb3Jl
-LiBUaGVuIHRoZSBmaWxlIHdpdGggaGlnaGVzdCBzY29yZSB3aWxsIGJlIHVzZWQgZm9yIHRoZSBj
-YXJkLgo+Cj4gVGhhbmtzCj4gTWVuZ2RvbmcKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+
+
+On 12/21/2016 11:46 PM, Lin, Mengdong wrote:
+>> -----Original Message-----
+>> From: Liam Girdwood [mailto:liam.r.girdwood@linux.intel.com]
+>> Sent: Wednesday, December 21, 2016 10:27 PM
+>> To: mengdong.lin@linux.intel.com
+>> Cc: alsa-devel@alsa-project.org; broonie@kernel.org; tiwai@suse.de; Bossart,
+>> Pierre-louis <pierre-louis.bossart@intel.com>; Koul, Vinod
+>> <vinod.koul@intel.com>; Lin, Mengdong <mengdong.lin@intel.com>
+>> Subject: Re: [PATCH 1/2] ASoC: core: Add API to use DMI name in sound card
+>> long name
+>>
+>> On Wed, 2016-12-21 at 21:04 +0800, mengdong.lin@linux.intel.com wrote:
+>>> From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+>>>
+>>> Intel DSP platform drivers are used by many different devices but are
+>>> difficult for userspace to differentiate. This patch adds an API to
+>>> allow the DMI name to be used in the sound card long name, thereby
+>>> helping userspace load the correct UCM configuration. Usually machine
+>>> drivers uses their own name as the sound card name (short name), and
+>>> leave the long name and driver name blank. This API will append the
+>>> DMI info like vendor, product and board info, to the card name to make
+>>> up the card long name. If the machine driver has already explicitly
+>>> set the long name, this API will do nothing.
+>>>
+>>> This patch also allows for further differentiation as many devices
+>>> that share the same DMI name i.e. Minnowboards, UP boards may be
+>>> configured with different codecs or firmwares. The API supports
+>>> flavoring the DMI name into the card longname to provide the extra
+>>> differentiation required for these devices.
+>>>
+>>> Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+>>> Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+>>>
+>>> diff --git a/include/sound/soc.h b/include/sound/soc.h index
+>>> 795e6c4..e4f1844 100644
+>>> --- a/include/sound/soc.h
+>>> +++ b/include/sound/soc.h
+>>> @@ -497,6 +497,8 @@ void snd_soc_runtime_deactivate(struct
+>>> snd_soc_pcm_runtime *rtd, int stream);  int
+>> snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
+>>>   	unsigned int dai_fmt);
+>>>
+>>> +int snd_soc_set_dmi_name(struct snd_soc_card *card, const char
+>>> +*flavour);
+>>> +
+>>>   /* Utility functions to get clock rates from various things */  int
+>>> snd_soc_calc_frame_size(int sample_size, int channels, int tdm_slots);
+>>> int snd_soc_params_to_frame_size(struct snd_pcm_hw_params *params);
+>> @@
+>>> -1094,6 +1096,8 @@ struct snd_soc_card {
+>>>   	const char *name;
+>>>   	const char *long_name;
+>>>   	const char *driver_name;
+>>> +	char dmi_longname[80];
+>>> +
+>>>   	struct device *dev;
+>>>   	struct snd_card *snd_card;
+>>>   	struct module *owner;
+>>> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c index
+>>> aaab26a..8bcf241 100644
+>>> --- a/sound/soc/soc-core.c
+>>> +++ b/sound/soc/soc-core.c
+>>> @@ -34,6 +34,7 @@
+>>>   #include <linux/ctype.h>
+>>>   #include <linux/slab.h>
+>>>   #include <linux/of.h>
+>>> +#include <linux/dmi.h>
+>>>   #include <sound/core.h>
+>>>   #include <sound/jack.h>
+>>>   #include <sound/pcm.h>
+>>> @@ -1886,6 +1887,86 @@ int snd_soc_runtime_set_dai_fmt(struct
+>>> snd_soc_pcm_runtime *rtd,  }
+>>> EXPORT_SYMBOL_GPL(snd_soc_runtime_set_dai_fmt);
+>>>
+>>> +/**
+>>> + * snd_soc_set_dmi_name() - Register DMI names to card
+>>> + * @card: The card to register DMI names
+>>> + * @flavour: The flavour "differentiator" for the card amongst its peers.
+>>> + *
+>>> + * Intel DSP platform drivers are used by many different devices but
+>>> +are
+>>> + * difficult for userspace to differentiate, since machine drivers
+>>> +ususally
+>>> + * use their own name as the card name (short name) and leave the
+>>> +card long
+>>> + * name blank. This function will allow DMI info to be used in the
+>>> +sound
+>>> + * card long name, thereby helping userspace load the correct UCM
+>>> +(Use Case
+>>> + * Manager) configuration.
+>>> + * Possible card long names may be:
+>>> + * broadwell-rt286-Dell Inc.-XPS 13 9343-0310JH
+>>> + * broadwell-rt286-Intel Corp.-Broadwell Client platform-Wilson Beach
+>>> +SDS
+>>> + * bytcr-rt5640-ASUSTeK COMPUTER INC.-T100TA-T100TA
+>>> + * bytcr-rt5651-Circuitco-Minnowboard Max D0 PLATFORM-MinnowBoard
+>> MAX
+>>> + *
+>>
+>>
+>> Lets keep it simpler, we dont need to prepend the driver name to the
+>> longname as it's already available in driver_name.
+>>
+>> The purpose of the patch is to uniquely identify the machine, so we dont
+>> need to provide or duplicate other information in the name.
+>>
+>> So longname should be "dmi-flavour" where dmi is product OR board (if
+>> product is not available).
+>>
+>> Liam
+>
+> Hi Liam,
+>
+> Yes, there is some duplication. But may we keep this?
+>
+> It's because that if the card long name itself has all the information, the user space UCM code can just compare the configuration file names against the card long name, no need to involve the card name (driver name).
+> In addition, I want to make the naming same as HD-Audio, their card long name is the card short name with some suffixes. Although HD-Audio does not use UCM now, but maybe in the future? So we can process ASoC and HD-Audio cards in the same way.
+>
+> Thanks
+> Mengdong
+
+Hi Liam,
+
+I'll remove the driver name from the long name and keep the long name as 
+"dmi-flavor" as you suggested. I found dmi info could be quite long and 
+if we keep the duplicated info, we may not have enough room for the 
+"flavor" field. user space can accept 80 characters at most.
+
+I'll modify the UCM code.
+
+Thanks
+Mengdong
