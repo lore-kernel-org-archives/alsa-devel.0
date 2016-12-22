@@ -1,21 +1,14 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH 1/2] ucm: Automatically load the best
- config file based on the card long name
-Date: Thu, 22 Dec 2016 15:35:10 +0000
-Message-ID: <1482420910.24233.41.camel@loki>
-References: <1482325768-20084-1-git-send-email-mengdong.lin@linux.intel.com>
- <1482331138.2554.101.camel@loki>
- <F46914AEC2663F4A9BB62374E5EEF8F881A04E53@shsmsx102.ccr.corp.intel.com>
- <1482408879.24233.32.camel@loki>
- <F46914AEC2663F4A9BB62374E5EEF8F881A08440@shsmsx102.ccr.corp.intel.com>
+From: Mans Rullgard <mans@mansr.com>
+Subject: [PATCH v2] ASoC: mxs-saif: add mclk enable/disable ops
+Date: Thu, 22 Dec 2016 16:49:26 +0000
+Message-ID: <20161222164926.19621-1-mans@mansr.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id CF9D426663B
- for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2016 16:35:21 +0100 (CET)
-In-Reply-To: <F46914AEC2663F4A9BB62374E5EEF8F881A08440@shsmsx102.ccr.corp.intel.com>
+Received: from unicorn.mansr.com (unicorn.mansr.com [81.2.72.234])
+ by alsa0.perex.cz (Postfix) with ESMTP id DBB2C265598
+ for <alsa-devel@alsa-project.org>; Thu, 22 Dec 2016 17:50:02 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,172 +18,242 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Lin, Mengdong" <mengdong.lin@intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "Bossart,
- Pierre-louis" <pierre-louis.bossart@intel.com>
+To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCAyMDE2LTEyLTIyIGF0IDE0OjM1ICswMDAwLCBMaW4sIE1lbmdkb25nIHdyb3RlOgo+
-ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0KPiA+IEZyb206IExpYW0gR2lyZHdvb2QgW21h
-aWx0bzpsaWFtLnIuZ2lyZHdvb2RAbGludXguaW50ZWwuY29tXQo+ID4gU2VudDogVGh1cnNkYXks
-IERlY2VtYmVyIDIyLCAyMDE2IDg6MTUgUE0KPiA+IFRvOiBMaW4sIE1lbmdkb25nIDxtZW5nZG9u
-Zy5saW5AaW50ZWwuY29tPgo+ID4gQ2M6IG1lbmdkb25nLmxpbkBsaW51eC5pbnRlbC5jb207IGFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsKPiA+IGJyb29uaWVAa2VybmVsLm9yZzsgdGl3YWlA
-c3VzZS5kZTsgS291bCwgVmlub2QgPHZpbm9kLmtvdWxAaW50ZWwuY29tPjsKPiA+IEJvc3NhcnQs
-IFBpZXJyZS1sb3VpcyA8cGllcnJlLWxvdWlzLmJvc3NhcnRAaW50ZWwuY29tPgo+ID4gU3ViamVj
-dDogUmU6IFthbHNhLWRldmVsXSBbUEFUQ0ggMS8yXSB1Y206IEF1dG9tYXRpY2FsbHkgbG9hZCB0
-aGUgYmVzdCBjb25maWcKPiA+IGZpbGUgYmFzZWQgb24gdGhlIGNhcmQgbG9uZyBuYW1lCj4gPiAK
-PiA+IE9uIFdlZCwgMjAxNi0xMi0yMSBhdCAxNjoxMiArMDAwMCwgTGluLCBNZW5nZG9uZyB3cm90
-ZToKPiA+ID4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+ID4gPiA+IEZyb206IExpYW0g
-R2lyZHdvb2QgW21haWx0bzpsaWFtLnIuZ2lyZHdvb2RAbGludXguaW50ZWwuY29tXQo+ID4gPiA+
-IFNlbnQ6IFdlZG5lc2RheSwgRGVjZW1iZXIgMjEsIDIwMTYgMTA6MzkgUE0KPiA+ID4gPgo+ID4g
-PiA+IE9uIFdlZCwgMjAxNi0xMi0yMSBhdCAyMTowOSArMDgwMCwgbWVuZ2RvbmcubGluQGxpbnV4
-LmludGVsLmNvbQo+ID4gd3JvdGU6Cj4gPiA+ID4gPiBGcm9tOiBNZW5nZG9uZyBMaW4gPG1lbmdk
-b25nLmxpbkBsaW51eC5pbnRlbC5jb20+Cj4gPiA+ID4gPgo+ID4gPiA+ID4gSW50ZWwgRFNQIHBs
-YXRmb3JtIGRyaXZlcnMgYXJlIHVzZWQgYnkgbWFueSBkaWZmZXJlbnQgZGV2aWNlcy4gRm9yCj4g
-PiA+ID4gPiB1c2VyIHNwYWNlIHRvIGRpZmZlcmVudGlhdGUgdGhlbSwgQVNvQyBtYWNoaW5lIGRy
-aXZlciBtYXkgaW5jbHVkZQo+ID4gPiA+ID4gdGhlIERNSSBpbmZvICh2ZW5kb3IsIHByb2R1Y3Qg
-YW5kIGJvYXJkKSBpbiBjYXJkIGxvbmcgbmFtZS4KPiA+ID4gPiA+IFBvc3NpYmxlIGNhcmQgbG9u
-ZyBuYW1lcwo+ID4gPiA+ID4gYXJlOgo+ID4gPiA+ID4gYnJvYWR3ZWxsLXJ0Mjg2LURlbGwgSW5j
-Li1YUFMgMTMgOTM0My0wMzEwSkgKPiA+ID4gPgo+ID4gPiA+IFNlZSBteSBwcmV2aW91cyBjb21t
-ZW50cyBvbiB0aGUga2VybmVsIHBhdGNoLCBidXQgdGhlIGxvbmduYW1lCj4gPiA+ID4gc2hvdWxk
-IGJlIGxpa2UgOi0KPiA+ID4gPgo+ID4gPiA+ICJEZWxsIEluYy4tWFBTIDEzIgo+ID4gPgo+ID4g
-PiBNYXkgd2Uga2VlcCBpdD8gSXQgY2FuIG1ha2UgdGhlIG1hdGNoaW5nIGNvZGUgc2ltcGxlci4K
-PiA+IAo+ID4gU29ycnksIGRvbnQgZm9sbG93Lgo+IAo+IEknbGwgcmVtb3ZlIHRoZSBjYXJkIG5h
-bWUgKGRyaXZlciBuYW1lKSBmcm9tIHRoZSBsb25nIG5hbWUgYXMgeW91IHN1Z2dlc3RlZCwgcGxl
-YXNlIHNlZSBteSBwcmV2aW91cyBtYWlsOgo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvcGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAxNi1EZWNlbWJlci8xMTU5ODkuaHRtbAo+IAo+ID4g
-Cj4gPiA+ID4KPiA+ID4gPiA+IGJyb2Fkd2VsbC1ydDI4Ni1JbnRlbCBDb3JwLi1Ccm9hZHdlbGwg
-Q2xpZW50IHBsYXRmb3JtLVdpbHNvbiBCZWFjaAo+ID4gPiA+ID4gU0RTIGJ5dGNyLXJ0NTY0MC1B
-U1VTVGVLIENPTVBVVEVSIElOQy4tVDEwMFRBLVQxMDBUQQo+ID4gPiA+ID4gYnl0Y3ItcnQ1NjUx
-LUNpcmN1aXRjby1NaW5ub3dib2FyZCBNYXggRDAgUExBVEZPUk0tTWlubm93Qm9hcmQKPiA+ID4g
-PiBNQVggLi4uCj4gPiA+ID4gPgo+ID4gPiA+ID4gQW5kIHVzZXIgc3BhY2UgY2FuIGRlZmluZSBj
-b25maWd1cmF0aW9uIGZpbGVzIGluY2x1ZGluZyBmaWVsZHMKPiA+ID4gPiA+IHNlcGFyYXRlZCBi
-eSAnLicgYXMgYmVsb3c6Cj4gPiA+ID4gPiBicm9hZHdlbGwtcnQyODYKPiA+ID4gPiA+IGJyb2Fk
-d2VsbC1ydDI4Ni5EZWxsLlhQUwo+ID4gPiA+Cj4gPiA+ID4gRG9udCBuZWVkIHRvIHVzZSBhIC4g
-YXMgdGhlIG5hbWVzIHNob3VsZCBiZSB1bmlxdWUuCj4gPiA+ID4KPiA+ID4gPiA+IGJ5dGNyLXJ0
-NTY0MAo+ID4gPiA+ID4gYnl0Y3ItcnQ1NjQwLkFTVVMuVDEwMAo+ID4gPiA+ID4gYnl0Y3ItcnQ1
-NjUxLk1pbm5vd2JvYXJkTWF4Cj4gPiA+ID4gPiAuLi4KPiA+ID4gPiA+Cj4gPiA+ID4gPiBXaGVu
-IGJlaW5nIGFza2VkIHRvIGxvYWQgY29uZmlndXJhdGlvbiBmaWxlIG9mIGEgY2FyZCwgVUNNIHdp
-bGwKPiA+ID4gPiA+IHRyeSB0byBmaW5kIHRoZSBjYXJkIGxvbmcgbmFtZSBmcm9tIHRoZSBsb2Nh
-bCBtYWNoaW5lLCBhbmQgdGhlbgo+ID4gPiA+ID4gc2NhbiBhbGwgYXZhaWxhYmxlIGNvbmZpZ3Vy
-YXRpb24gZmlsZSBuYW1lcywgc2VhcmNoIGV2ZXJ5IGZpZWxkIG9mCj4gPiA+ID4gPiBjb25maWcg
-ZmlsZSBuYW1lIGluIHRoZSBjYXJkIGxvbmcgbmFtZS4gVGhlIG1vcmUgY2hhcmFjdGVycyBtYXRj
-aCwKPiA+ID4gPiA+IHRoZSBoaWdoZXIgc2NvcmUgdGhlIGZpbGUgaGFzLiBGaW5hbGx5LCB0aGUg
-ZmlsZSB3aXRoIHRoZSBoaWdoZXN0Cj4gPiA+ID4gPiBzY29yZSB3aWxsIGJlIGxvYWRlZCB0byBj
-b25maWd1cmUgdGhlIHNvdW5kIGNhcmQuCj4gPiA+ID4gPgo+ID4gPiA+ID4gU2lnbmVkLW9mZi1i
-eTogTWVuZ2RvbmcgTGluIDxtZW5nZG9uZy5saW5AbGludXguaW50ZWwuY29tPgo+ID4gPiA+ID4K
-PiA+ID4gPiA+IGRpZmYgLS1naXQgYS9zcmMvdWNtL3BhcnNlci5jIGIvc3JjL3VjbS9wYXJzZXIu
-YyBpbmRleAo+ID4gPiA+ID4gYzk4MzczYS4uZmY3NWRhNyAxMDA2NDQKPiA+ID4gPiA+IC0tLSBh
-L3NyYy91Y20vcGFyc2VyLmMKPiA+ID4gPiA+ICsrKyBiL3NyYy91Y20vcGFyc2VyLmMKPiA+ID4g
-PiA+IEBAIC01NSw2ICs1NSw5IEBAIHN0YXRpYyBjb25zdCBjaGFyICogY29uc3QgY29tcG9uZW50
-X2RpcltdID0gewo+ID4gPiA+ID4gIAlOVUxMLAkJLyogdGVybWluYXRvciAqLwo+ID4gPiA+ID4g
-IH07Cj4gPiA+ID4gPgo+ID4gPiA+ID4gK3N0YXRpYyBpbnQgZmlsZW5hbWVfZmlsdGVyKGNvbnN0
-IHN0cnVjdCBkaXJlbnQgKmRpcmVudCk7IHN0YXRpYwo+ID4gPiA+ID4gK2ludCBpc19jb21wb25l
-bnRfZGlyZWN0b3J5KGNvbnN0IGNoYXIgKmRpcik7Cj4gPiA+ID4gPiArCj4gPiA+ID4gPiAgc3Rh
-dGljIGludCBwYXJzZV9zZXF1ZW5jZShzbmRfdXNlX2Nhc2VfbWdyX3QgKnVjX21nciwKPiA+ID4g
-PiA+ICAJCQkgIHN0cnVjdCBsaXN0X2hlYWQgKmJhc2UsCj4gPiA+ID4gPiAgCQkJICBzbmRfY29u
-ZmlnX3QgKmNmZyk7Cj4gPiA+ID4gPiBAQCAtMTMyOCw2ICsxMzMxLDIxMCBAQCBzdGF0aWMgaW50
-Cj4gPiA+ID4gcGFyc2VfbWFzdGVyX2ZpbGUoc25kX3VzZV9jYXNlX21ncl90ICp1Y19tZ3IsIHNu
-ZF9jb25maWdfdCAqY2ZnKQo+ID4gPiA+ID4gIAlyZXR1cm4gMDsKPiA+ID4gPiA+ICB9Cj4gPiA+
-ID4gPgo+ID4gPiA+ID4gKy8qIHRyaW0gU1BBQ0UgKDB4MjApIGZyb20gdGhlIHN0cmluZyAqLyBz
-dGF0aWMgdm9pZAo+ID4gPiA+ID4gK3RyaW1fc3BhY2UoY2hhcgo+ID4gPiA+ID4gKypzdHIpIHsK
-PiA+ID4gPiA+ICsJaW50IGksIGogPSAwOwo+ID4gPiA+ID4gKwo+ID4gPiA+ID4gKwlmb3IgKGkg
-PSAwOyBzdHJbaV0gJiYgaSA8IE1BWF9GSUxFOyBpKyspIHsKPiA+ID4gPiA+ICsJCWlmIChzdHJb
-aV0gIT0gMHgyMCkKPiA+ID4gPiA+ICsJCQlzdHJbaisrXSA9IHN0cltpXTsKPiA+ID4gPiA+ICsJ
-fQo+ID4gPiA+ID4gKwo+ID4gPiA+ID4gKwlzdHJbal0gPSAnXDAnOwo+ID4gPiA+ID4gK30KPiA+
-ID4gPiA+ICsKPiA+ID4gPiA+ICsvKiBmaW5kIGFuZCBzdG9yZSB0aGUgY2FyZCBsb25nIG5hbWUg
-aWYgdGhlIGNhcmQgaXMgaW4gdGhpcwo+ID4gPiA+ID4gK21hY2hpbmUgKi8gc3RhdGljIGludCBn
-ZXRfY2FyZF9sb25nX25hbWUoc25kX3VzZV9jYXNlX21ncl90ICptZ3IpCj4gPiB7Cj4gPiA+ID4g
-PiArCWNvbnN0IGNoYXIgKmNhcmRfbmFtZSA9IG1nci0+Y2FyZF9uYW1lOwo+ID4gPiA+ID4gKwlz
-bmRfY3RsX3QgKmhhbmRsZTsKPiA+ID4gPiA+ICsJaW50IGNhcmQsIGVyciwgZGV2LCBpZHg7Cj4g
-PiA+ID4gPiArCXNuZF9jdGxfY2FyZF9pbmZvX3QgKmluZm87Cj4gPiA+ID4gPiArCWNvbnN0IGNo
-YXIgKl9uYW1lLCAqX2xvbmdfbmFtZTsKPiA+ID4gPiA+ICsKPiA+ID4gPiA+ICsJc25kX2N0bF9j
-YXJkX2luZm9fYWxsb2NhKCZpbmZvKTsKPiA+ID4gPiA+ICsKPiA+ID4gPiA+ICsJY2FyZCA9IC0x
-Owo+ID4gPiA+ID4gKwlpZiAoc25kX2NhcmRfbmV4dCgmY2FyZCkgPCAwIHx8IGNhcmQgPCAwKSB7
-Cj4gPiA+ID4gPiArCQl1Y19lcnJvcigibm8gc291bmRjYXJkcyBmb3VuZC4uLiIpOwo+ID4gPiA+
-ID4gKwkJcmV0dXJuIC0xOwo+ID4gPiA+ID4gKwl9Cj4gPiA+ID4gPiArCj4gPiA+ID4gPiArCXdo
-aWxlIChjYXJkID49IDApIHsKPiA+ID4gPiA+ICsJCWNoYXIgbmFtZVszMl07Cj4gPiA+ID4gPiAr
-Cj4gPiA+ID4gPiArCQlzcHJpbnRmKG5hbWUsICJodzolZCIsIGNhcmQpOwo+ID4gPiA+ID4gKwkJ
-ZXJyID0gc25kX2N0bF9vcGVuKCZoYW5kbGUsIG5hbWUsIDApOwo+ID4gPiA+ID4gKwkJaWYgKGVy
-ciA8IDApIHsKPiA+ID4gPiA+ICsJCQl1Y19lcnJvcigiY29udHJvbCBvcGVuICglaSk6ICVzIiwg
-Y2FyZCwKPiA+ID4gPiA+ICsJCQkJIHNuZF9zdHJlcnJvcihlcnIpKTsKPiA+ID4gPiA+ICsJCQln
-b3RvIG5leHRfY2FyZDsKPiA+ID4gPiA+ICsJCX0KPiA+ID4gPiA+ICsKPiA+ID4gPiA+ICsJCWVy
-ciA9IHNuZF9jdGxfY2FyZF9pbmZvKGhhbmRsZSwgaW5mbyk7Cj4gPiA+ID4gPiArCQlpZiAoZXJy
-IDwgMCkgewo+ID4gPiA+ID4gKwkJCXVjX2Vycm9yKCJjb250cm9sIGhhcmR3YXJlIGluZm8gKCVp
-KTogJXMiLCBjYXJkLAo+ID4gPiA+ID4gKwkJCQkgc25kX3N0cmVycm9yKGVycikpOwo+ID4gPiA+
-ID4gKwkJCXNuZF9jdGxfY2xvc2UoaGFuZGxlKTsKPiA+ID4gPiA+ICsJCQlnb3RvIG5leHRfY2Fy
-ZDsKPiA+ID4gPiA+ICsJCX0KPiA+ID4gPiA+ICsKPiA+ID4gPiA+ICsJCV9uYW1lID0gc25kX2N0
-bF9jYXJkX2luZm9fZ2V0X25hbWUoaW5mbyk7Cj4gPiA+ID4gPiArCQlpZiAoIXN0cm5jbXAoY2Fy
-ZF9uYW1lLCBfbmFtZSwgMzIpKSB7Cj4gPiA+ID4gPiArCQkJX2xvbmdfbmFtZSA9IHNuZF9jdGxf
-Y2FyZF9pbmZvX2dldF9sb25nbmFtZShpbmZvKTsKPiA+ID4gPiA+ICsJCQlzdHJuY3B5KG1nci0+
-Y2FyZF9sb25nX25hbWUsIF9sb25nX25hbWUsCj4gPiA+ID4gPiArCQkJCU1BWF9DQVJEX0xPTkdf
-TkFNRSk7Cj4gPiA+ID4gPiArCQkJc25kX2N0bF9jbG9zZShoYW5kbGUpOwo+ID4gPiA+ID4gKwkJ
-CXJldHVybiAwOwo+ID4gPiA+ID4gKwkJfQo+ID4gPiA+ID4gKwo+ID4gPiA+ID4gKwkJc25kX2N0
-bF9jbG9zZShoYW5kbGUpOwo+ID4gPiA+ID4gK25leHRfY2FyZDoKPiA+ID4gPiA+ICsJCWlmIChz
-bmRfY2FyZF9uZXh0KCZjYXJkKSA8IDApIHsKPiA+ID4gPiA+ICsJCQl1Y19lcnJvcigic25kX2Nh
-cmRfbmV4dCIpOwo+ID4gPiA+ID4gKwkJCWJyZWFrOwo+ID4gPiA+ID4gKwkJfQo+ID4gPiA+ID4g
-Kwl9Cj4gPiA+ID4gPiArCj4gPiA+ID4gPiArCXJldHVybiAtMTsKPiA+ID4gPiA+ICt9Cj4gPiA+
-ID4gPiArCj4gPiA+ID4gPiArLyogVGhpcyBmdW5jdGlvbiB3aWxsIGZpbmQgdGhlIGJlc3QgZGV2
-aWNlLXNwZWNpZmljIGNvbmZpZ3VyYXRpb24KPiA+ID4gPiA+ICtmaWxlIGJhc2VkCj4gPiA+ID4g
-PiArICogb24gdGhlIHNvdW5kIGNhcmQgbG9uZyBuYW1lLgo+ID4gPiA+ID4gKyAqIERpZmZlcmVu
-dCBkZXZpY2VzIG1heSBzaGFyZSB0aGUgc2FtZSBzb3VuZCBkcml2ZXIgYW5kIHRodXMgdGhlCj4g
-PiA+ID4gPiArc2FtZSBzb3VuZAo+ID4gPiA+ID4gKyAqIGNhcmQgbmFtZSAoc2hvcnQgbmFtZSks
-IGJ1dCB0aGV5IG1heSBzdGlsbCBuZWVkIGRpZmZlcmVudAo+ID4gPiA+ID4gK2RldmljZS1zcGVj
-aWZpYwo+ID4gPiA+ID4gKyAqIGNvbmZpZ3VyYXRpb25zLiBGb3IgdXNlciBzcGFjZSB0byBkaWZm
-ZXJlbnRpYXRlIHRoZW0sIGtlcm5lbAo+ID4gPiA+ID4gK2RyaXZlcnMgbWF5Cj4gPiA+ID4gPiAr
-ICogaW5jbHVkZSB0aGUgRE1JIGluZm8gKHZlbmRvciwgcHJvZHVjdCBhbmQgYm9hcmQpIGluIHRo
-ZSBjYXJkCj4gPiA+ID4gPiArbG9uZwo+ID4gPiA+IG5hbWUuCj4gPiA+ID4gPiArICogQW5kIHVz
-ZXIgc3BhY2UgY2FuIGRlZmluZSBjb25maWd1cmF0aW9uIGZpbGUgbmFtZXMgYXBwZW5kaW5nCj4g
-PiA+ID4gPiArRE1JIGtleXdvcmRzCj4gPiA+ID4gPiArICogdG8gdGhlIGNhcmQgbmFtZSwgbGlr
-ZToKPiA+ID4gPiA+ICsgKiBieXRjci1ydDU2NDAuQVNVUy5UMTAwCj4gPiA+ID4gPiArICogYnl0
-Y3ItcnQ1NjUxLk1pbm5vd0JvYXJkCj4gPiA+ID4gPiArICoKPiA+ID4gPiA+ICsgKiBXaGVuIGJl
-aW5nIGFza2VkIHRvIGxvYWQgdGhlIGNvbmZpZ3VyYXRpb24gZmlsZSBmb3IgYSBjYXJkLAo+ID4g
-PiA+ID4gK3RoaXMgZnVuY3Rpb24KPiA+ID4gPiA+ICsgKiB3aWxsIHRyeSB0byBmaW5kIHRoZSBj
-YXJkIGxvbmcgbmFtZSBmcm9tIHRoZSBsb2NhbCBtYWNoaW5lLAo+ID4gPiA+ID4gK2FuZCB0aGVu
-IHNjYW4KPiA+ID4gPiA+ICsgKiBhbGwgYXZhaWxhYmxlIGNvbmZpZ3VyYXRpb24gZmlsZSBuYW1l
-cywgc2VhcmNoIGV2ZXJ5IGZpZWxkIG9mCj4gPiA+ID4gPiArdGhlIGNvbmZpZwo+ID4gPiA+ID4g
-KyAqIGZpbGUgbmFtZSBpbiB0aGUgY2FyZCBsb25nIG5hbWUuIFRoZSBtb3JlIGNoYXJhY3RlcnMg
-bWF0Y2gsCj4gPiA+ID4gPiArdGhlIGhpZ2hlcgo+ID4gPiA+ID4gKyAqIHNjb3JlIHRoZSBmaWxl
-IGhhcy4gRmluYWxseSwgdGhlIGZpbGUgd2l0aCB0aGUgaGlnaGVzdCBzY29yZSB3aWxsIGJlCj4g
-PiBsb2FkZWQuCj4gPiA+ID4gPiArICovCj4gPiA+ID4KPiA+ID4gPiBJZCcgZXhwZWN0IHRoaXMg
-ZnVuY3Rpb24gdG8gdHJ5IGFuZCBvcGVuIGNhcmQgbG9uZ25hbWUgYW5kIHRoZW4gY2FyZAo+ID4g
-PiA+IG5hbWUgaWYgbG9uZ25hbWUgaXMgbm90IGZvdW5kLiBTbyBwcm92aWRpbmcgd2UgdXNlIHRo
-ZSBleGFjdCBzYW1lCj4gPiA+ID4gbmFtZXMgYXMgdGhlIERNSSBuYW1lIHdlIHdvbnQgbmVlZCBh
-bnkgc3RyaW5nIGZvcm1hdHRpbmcgb3Igc2NvcmluZwo+ID4gPiA+IChpLmUuIGZpbGUKPiA+ID4g
-PiBvcGVuKCJsb25nbmFtZS9sb25nbmFtZS5jb25mIikgd2lsbCBlaXRoZXIgc3VjY2VlZCBvciBm
-YWlsKQo+ID4gPiA+Cj4gPiA+ID4gTGlhbQo+ID4gPgo+ID4gPiBJIGZlZWwgd2UgY2Fubm90IHVz
-ZSB0aGUgZXhhY3Qgc2FtZSBuYW1lcyBmb3IgdGhlIGNvbmZpZ3VyYXRpb24gZmlsZQo+ID4gPiBh
-bmQgY2FyZCBsb25nIG5hbWUuIFRoZSBETUkgaW5mbyBpbiB0aGUgY2FyZCBsb25nIG5hbWUgY2Fu
-IGJlIGxlbmd0aHksCj4gPiA+IGluY2x1ZGluZyAnLicgLCBTUEFDRSwgbWVhbmluZ2xlc3MgaW5m
-byBsaWtlICJDb3JwLiIgYW5kIHNvbWV0aW1lCj4gPiA+IGR1cGxpY2F0ZWQgaW5mbyBmb3Igc29t
-ZSBPRU1z77yOSSBob3BlIGRldmVsb3BlcnMgY2FuIGp1c3QgZXh0cmFjdCBrZXkKPiA+ID4gd29y
-ZHMgZnJvbSB0aGUgbWVzc3kgRE1JIGluZm8gdG8gbWFrZSBhIHNpbXBsZSBjb25maWd1cmF0aW9u
-IGZpbGUKPiA+ID4gbmFtZSwgYW5kIFVDTSBhdXRvbWF0aWNhbGx5IGRvIHRoZSBtYXRjaGluZyBh
-bmQgZ2l2ZSBlYWNoCj4gPiA+IGNvbmZpZ3VyYXRpb24gZmlsZSBhIHNjb3JlLiBUaGVuIHRoZSBm
-aWxlIHdpdGggaGlnaGVzdCBzY29yZSB3aWxsIGJlCj4gPiA+IHVzZWQgZm9yIHRoZSBjYXJkLgo+
-ID4gCj4gPiBQcm92aWRpbmcgdGhlIERNSSBuYW1lIGRvZXMgbm90IHVzZSBpbnZhbGlkIGZpbGVu
-YW1lIGNoYXJhY3RlcnMgd2UgYXJlIG9rLgo+ID4gRXh0cmFjdGluZyBrZXkgd29yZHMgYW5kIG1h
-dGNoaW5nIGlzIHByb25lIHRvIG1hbnkgcHJvYmxlbXMgYW5kIHBhaW5mdWwgdG8KPiA+IGRlYnVn
-Li4uLgo+IAo+IE1heSBJIHJldmlzZSB0aGUgVUNNIGNvZGUgbGlrZSB0aGlzPyBJdCB3aWxsIHRy
-eSB0byBvcGVuIHRoZSBmaWxlIHdpdGgKPiBETUkgbmFtZSBhdCBmaXJzdC4gQW5kIG9ubHkgaWYg
-dGhhdCBmaWxlIGlzIG5vdCBhdmFpbGFibGUsIGZhbGwgYmFjawo+IHRvIGtleSB3b3JkcyBtYXRj
-aGluZy4gCj4gCj4gSSBob3BlIHRvIGtlZXAgdGhlIHBvc3NpYmlsaXR5IHRoYXQgdXNlciBjYW4g
-dXNlIGEgc2ltcGxlCj4gY29uZmlndXJhdGlvbiBmaWxlIGZvciBhIHByb2R1Y3QgZmFtaWx5LCB3
-aXRob3V0IGdlbmVyYXRpbmcgdG9vIG1hbnkKPiBjYXJkIGRpcmVjdG9yaWVzIGFuZCBmaWxlcy4K
-PiAKCklmIHRoZSBETUkgbmFtZXMgYXJlIHRvbyBjb21wbGV4IGZvciBkaXJlY3RvcnkgbmFtZXMs
-IHRoZW4geW91IGNvdWxkIGFkZAphbiBhbGlhcyBmaWxlIGF0IHRoZSB0b3AgbGV2ZWwgdGhhdCB3
-b3VsZCBsaXN0IHRoZSBETUkgbmFtZSBhbmQgdGhlCnNob3J0ZW5lZCBuYW1lIGkuZS4KCiMgRE1J
-IG5hbWUgICAgICAgICAgICAgICAgICAgICAjIFVDTSBkaXJlY3RvcnkgbmFtZQoiRGVsbCBibGFo
-IENvcnAuIFhQUywgMTMgYmxhaCIgIkRlbGwgWFBTMTMgQkRXIgoKU28gdGhlIGFsaWFzIGZpbGUg
-Y291bGQgYmUgc2VhcmNoZWQgZm9yIHRoZSBETUkgbmFtZSwgYmVmb3JlIHRoZSBsZWdhY3kKbmFt
-ZSB3YXMgdHJpZWQuCgpUaGUgYWxpYXMgbWV0aG9kIGFib3ZlIGFsc28gYWxsb3dzIGZvciByZXVz
-ZSBvZiBjb25maWdzIG9uIG1hY2hpbmVzIHRoYXQKYXJlIHNpbWlsYXIsIGJ1dCB3aXRoIGRpZmZl
-cmVudCBETUkgbmFtZXMuIFNvIHRoaXMgd291bGQgYWxzbyBrZWVwIHRoZQpudW1iZXIgb2YgY29u
-ZmlncyBsb3cuCgpMaWFtCgoKPiBUaGFua3MKPiBNZW5nZG9uZwo+IAo+ID4gCj4gPiBUaGUgYWx0
-ZXJuYXRpdmUgaXMgdG8gaW5jbHVkZSB0aGUgZXhhY3QgRE1JIG5hbWUgaW4gYSB0b3AgbGV2ZWwg
-Y29uZmlnIGZpbGUKPiA+IHRoYXQgcG9pbnRzIHRvIHRoZSBVQ00gY29uZmlnLgo+IAo+IAo+IAo+
-IFRoYW5rcwo+IE1lbmdkb25nCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-bHNhLWRldmVsCg==
+This makes normal clk_enable/disable() calls on mxs_saif_mclk work as
+expected, i.e. actually turn the mclk output on or (when safe) off.
+The existing mxs_saif_get/put_mclk() functions are rewritten to use
+common clk operations on mxs_saif_mclk rather than accessing registers
+directly.
+
+With these changes mxs-saif can be used together with the simple-card
+driver.
+
+Signed-off-by: Mans Rullgard <mans@mansr.com>
+---
+v2: add #include <linux/clk-provider.h> needed by some configs
+---
+ sound/soc/mxs/mxs-saif.c | 144 +++++++++++++++++++++++++++++++----------------
+ sound/soc/mxs/mxs-saif.h |   3 +
+ 2 files changed, 99 insertions(+), 48 deletions(-)
+
+diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+index a002ab892772..7c620399f96b 100644
+--- a/sound/soc/mxs/mxs-saif.c
++++ b/sound/soc/mxs/mxs-saif.c
+@@ -204,27 +204,15 @@ static int mxs_saif_set_clk(struct mxs_saif *saif,
+  */
+ int mxs_saif_put_mclk(unsigned int saif_id)
+ {
+-	struct mxs_saif *saif = mxs_saif[saif_id];
+-	u32 stat;
++	struct clk *clk;
+ 
+-	if (!saif)
+-		return -EINVAL;
++	clk = clk_get(NULL, "mxs_saif_mclk");
++	if (IS_ERR(clk))
++		return PTR_ERR(clk);
+ 
+-	stat = __raw_readl(saif->base + SAIF_STAT);
+-	if (stat & BM_SAIF_STAT_BUSY) {
+-		dev_err(saif->dev, "error: busy\n");
+-		return -EBUSY;
+-	}
++	clk_disable_unprepare(clk);
++	clk_put(clk);
+ 
+-	clk_disable_unprepare(saif->clk);
+-
+-	/* disable MCLK output */
+-	__raw_writel(BM_SAIF_CTRL_CLKGATE,
+-		saif->base + SAIF_CTRL + MXS_SET_ADDR);
+-	__raw_writel(BM_SAIF_CTRL_RUN,
+-		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
+-
+-	saif->mclk_in_use = 0;
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(mxs_saif_put_mclk);
+@@ -239,47 +227,33 @@ int mxs_saif_get_mclk(unsigned int saif_id, unsigned int mclk,
+ 					unsigned int rate)
+ {
+ 	struct mxs_saif *saif = mxs_saif[saif_id];
+-	u32 stat;
+ 	int ret;
+ 	struct mxs_saif *master_saif;
++	struct clk *clk;
+ 
+ 	if (!saif)
+ 		return -EINVAL;
+ 
+-	/* Clear Reset */
+-	__raw_writel(BM_SAIF_CTRL_SFTRST,
+-		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
+-
+-	/* FIXME: need clear clk gate for register r/w */
+-	__raw_writel(BM_SAIF_CTRL_CLKGATE,
+-		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
+-
+ 	master_saif = mxs_saif_get_master(saif);
+ 	if (saif != master_saif) {
+ 		dev_err(saif->dev, "can not get mclk from a non-master saif\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	stat = __raw_readl(saif->base + SAIF_STAT);
+-	if (stat & BM_SAIF_STAT_BUSY) {
+-		dev_err(saif->dev, "error: busy\n");
+-		return -EBUSY;
+-	}
++	clk = clk_get(NULL, "mxs_saif_mclk");
++	if (IS_ERR(clk))
++		return PTR_ERR(clk);
++
++	ret = clk_prepare_enable(clk);
++	if (ret)
++		goto out;
+ 
+-	saif->mclk_in_use = 1;
+ 	ret = mxs_saif_set_clk(saif, mclk, rate);
+-	if (ret)
+-		return ret;
+ 
+-	ret = clk_prepare_enable(saif->clk);
+-	if (ret)
+-		return ret;
++out:
++	clk_put(clk);
+ 
+-	/* enable MCLK output */
+-	__raw_writel(BM_SAIF_CTRL_RUN,
+-		saif->base + SAIF_CTRL + MXS_SET_ADDR);
+-
+-	return 0;
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(mxs_saif_get_mclk);
+ 
+@@ -687,18 +661,92 @@ static irqreturn_t mxs_saif_irq(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
++#define to_mxs_saif(c) container_of(c, struct mxs_saif, div_clk.hw)
++
++static int mxs_saif_mclk_enable(struct clk_hw *hw)
++{
++	struct mxs_saif *saif = to_mxs_saif(hw);
++
++	/* Clear Reset */
++	__raw_writel(BM_SAIF_CTRL_SFTRST,
++		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
++
++	/* Clear clk gate */
++	__raw_writel(BM_SAIF_CTRL_CLKGATE,
++		saif->base + SAIF_CTRL + MXS_CLR_ADDR);
++
++	/* enable MCLK output */
++	__raw_writel(BM_SAIF_CTRL_RUN,
++		saif->base + SAIF_CTRL + MXS_SET_ADDR);
++
++	saif->mclk_in_use = 1;
++
++	return 0;
++}
++
++static void mxs_saif_mclk_disable(struct clk_hw *hw)
++{
++	struct mxs_saif *saif = to_mxs_saif(hw);
++
++	if (!saif->ongoing)
++		__raw_writel(BM_SAIF_CTRL_RUN,
++			     saif->base + SAIF_CTRL + MXS_CLR_ADDR);
++
++	saif->mclk_in_use = 0;
++}
++
++static unsigned long mxs_saif_mclk_recalc_rate(struct clk_hw *hw,
++					       unsigned long parent_rate)
++{
++	return clk_divider_ops.recalc_rate(hw, parent_rate);
++}
++
++static long mxs_saif_mclk_round_rate(struct clk_hw *hw, unsigned long rate,
++				     unsigned long *parent_rate)
++{
++	return clk_divider_ops.round_rate(hw, rate, parent_rate);
++}
++
++static int mxs_saif_mclk_set_rate(struct clk_hw *hw, unsigned long rate,
++				  unsigned long parent_rate)
++{
++	return clk_divider_ops.set_rate(hw, rate, parent_rate);
++}
++
++static const struct clk_ops mxs_saif_mclk_ops = {
++	.enable		= mxs_saif_mclk_enable,
++	.disable	= mxs_saif_mclk_disable,
++	.recalc_rate	= mxs_saif_mclk_recalc_rate,
++	.round_rate	= mxs_saif_mclk_round_rate,
++	.set_rate	= mxs_saif_mclk_set_rate,
++};
++
+ static int mxs_saif_mclk_init(struct platform_device *pdev)
+ {
+ 	struct mxs_saif *saif = platform_get_drvdata(pdev);
+ 	struct device_node *np = pdev->dev.of_node;
++	struct clk_init_data init;
++	struct clk_divider *div;
+ 	struct clk *clk;
++	const char *parent_name;
+ 	int ret;
+ 
+-	clk = clk_register_divider(&pdev->dev, "mxs_saif_mclk",
+-				   __clk_get_name(saif->clk), 0,
+-				   saif->base + SAIF_CTRL,
+-				   BP_SAIF_CTRL_BITCLK_MULT_RATE, 3,
+-				   0, NULL);
++	parent_name = __clk_get_name(saif->clk);
++
++	init.name = "mxs_saif_mclk";
++	init.ops = &mxs_saif_mclk_ops;
++	init.flags = CLK_GET_RATE_NOCACHE | CLK_IS_BASIC;
++	init.parent_names = &parent_name;
++	init.num_parents = 1;
++
++	div = &saif->div_clk;
++	div->reg = saif->base + SAIF_CTRL;
++	div->shift = BP_SAIF_CTRL_BITCLK_MULT_RATE;
++	div->width = 3;
++	div->flags = CLK_DIVIDER_POWER_OF_TWO;
++	div->hw.init = &init;
++
++	clk = clk_register(&pdev->dev, &div->hw);
+ 	if (IS_ERR(clk)) {
+ 		ret = PTR_ERR(clk);
+ 		if (ret == -EEXIST)
+diff --git a/sound/soc/mxs/mxs-saif.h b/sound/soc/mxs/mxs-saif.h
+index 9a4c0b291b9e..e1bb5cb00ec0 100644
+--- a/sound/soc/mxs/mxs-saif.h
++++ b/sound/soc/mxs/mxs-saif.h
+@@ -108,6 +108,7 @@
+ 
+ #define MXS_SAIF_MCLK		0
+ 
++#include <linux/clk-provider.h>
+ #include "mxs-pcm.h"
+ 
+ struct mxs_saif {
+@@ -128,6 +129,8 @@ struct mxs_saif {
+ 		MXS_SAIF_STATE_STOPPED,
+ 		MXS_SAIF_STATE_RUNNING,
+ 	} state;
++
++	struct clk_divider div_clk;
+ };
+ 
+ extern int mxs_saif_put_mclk(unsigned int saif_id);
+-- 
+2.11.0
