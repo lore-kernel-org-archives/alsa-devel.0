@@ -1,24 +1,17 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH 1/2] ucm: Automatically load the best
- config file based on the card long name
-Date: Fri, 23 Dec 2016 12:56:01 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F881A09C05@shsmsx102.ccr.corp.intel.com>
-References: <1482325768-20084-1-git-send-email-mengdong.lin@linux.intel.com>
- <1482331138.2554.101.camel@loki>
- <F46914AEC2663F4A9BB62374E5EEF8F881A04E53@shsmsx102.ccr.corp.intel.com>
- <1482408879.24233.32.camel@loki>
- <F46914AEC2663F4A9BB62374E5EEF8F881A08440@shsmsx102.ccr.corp.intel.com>
- <1482420910.24233.41.camel@loki> <585CDB6D.7000401@linux.intel.com>
- <1482484060.24233.58.camel@loki>
+From: Jan Deinhard <jan.deinhard@gmail.com>
+Subject: How to keep track of the amount of queued samples?
+Date: Fri, 23 Dec 2016 15:16:04 +0100
+Message-ID: <CAG=22kdFAAoxn3HkOwuiayT36SRv21z6Mtz0WNGK8YDKwVdmXA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 396672670BE
- for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2016 13:56:06 +0100 (CET)
-In-Reply-To: <1482484060.24233.58.camel@loki>
-Content-Language: en-US
+Received: from mail-qk0-f171.google.com (mail-qk0-f171.google.com
+ [209.85.220.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1E4BD266998
+ for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2016 15:16:06 +0100 (CET)
+Received: by mail-qk0-f171.google.com with SMTP id u25so133945771qki.2
+ for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2016 06:16:06 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,99 +21,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mengdong Lin <mengdong.lin@linux.intel.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Bossart,
- Pierre-louis" <pierre-louis.bossart@intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBMaWFtIEdpcmR3b29kIFttYWls
-dG86bGlhbS5yLmdpcmR3b29kQGxpbnV4LmludGVsLmNvbV0NCj4gU2VudDogRnJpZGF5LCBEZWNl
-bWJlciAyMywgMjAxNiA1OjA4IFBNDQo+IFRvOiBNZW5nZG9uZyBMaW4gPG1lbmdkb25nLmxpbkBs
-aW51eC5pbnRlbC5jb20+DQo+IENjOiBMaW4sIE1lbmdkb25nIDxtZW5nZG9uZy5saW5AaW50ZWwu
-Y29tPjsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOw0KPiB0aXdhaUBzdXNlLmRlOyBLb3Vs
-LCBWaW5vZCA8dmlub2Qua291bEBpbnRlbC5jb20+OyBicm9vbmllQGtlcm5lbC5vcmc7DQo+IEJv
-c3NhcnQsIFBpZXJyZS1sb3VpcyA8cGllcnJlLWxvdWlzLmJvc3NhcnRAaW50ZWwuY29tPg0KPiBT
-dWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxdIFtQQVRDSCAxLzJdIHVjbTogQXV0b21hdGljYWxseSBs
-b2FkIHRoZSBiZXN0IGNvbmZpZw0KPiBmaWxlIGJhc2VkIG9uIHRoZSBjYXJkIGxvbmcgbmFtZQ0K
-PiANCj4gT24gRnJpLCAyMDE2LTEyLTIzIGF0IDE2OjA4ICswODAwLCBNZW5nZG9uZyBMaW4gd3Jv
-dGU6DQo+ID4gT24gMTIvMjIvMjAxNiAxMTozNSBQTSwgTGlhbSBHaXJkd29vZCB3cm90ZToNCj4g
-Pg0KPiA+ID4+Pj4+PiArLyogVGhpcyBmdW5jdGlvbiB3aWxsIGZpbmQgdGhlIGJlc3QgZGV2aWNl
-LXNwZWNpZmljDQo+ID4gPj4+Pj4+ICtjb25maWd1cmF0aW9uIGZpbGUgYmFzZWQNCj4gPiA+Pj4+
-Pj4gKyAqIG9uIHRoZSBzb3VuZCBjYXJkIGxvbmcgbmFtZS4NCj4gPiA+Pj4+Pj4gKyAqIERpZmZl
-cmVudCBkZXZpY2VzIG1heSBzaGFyZSB0aGUgc2FtZSBzb3VuZCBkcml2ZXIgYW5kIHRodXMNCj4g
-PiA+Pj4+Pj4gK3RoZSBzYW1lIHNvdW5kDQo+ID4gPj4+Pj4+ICsgKiBjYXJkIG5hbWUgKHNob3J0
-IG5hbWUpLCBidXQgdGhleSBtYXkgc3RpbGwgbmVlZCBkaWZmZXJlbnQNCj4gPiA+Pj4+Pj4gK2Rl
-dmljZS1zcGVjaWZpYw0KPiA+ID4+Pj4+PiArICogY29uZmlndXJhdGlvbnMuIEZvciB1c2VyIHNw
-YWNlIHRvIGRpZmZlcmVudGlhdGUgdGhlbSwNCj4gPiA+Pj4+Pj4gK2tlcm5lbCBkcml2ZXJzIG1h
-eQ0KPiA+ID4+Pj4+PiArICogaW5jbHVkZSB0aGUgRE1JIGluZm8gKHZlbmRvciwgcHJvZHVjdCBh
-bmQgYm9hcmQpIGluIHRoZQ0KPiA+ID4+Pj4+PiArY2FyZCBsb25nDQo+ID4gPj4+Pj4gbmFtZS4N
-Cj4gPiA+Pj4+Pj4gKyAqIEFuZCB1c2VyIHNwYWNlIGNhbiBkZWZpbmUgY29uZmlndXJhdGlvbiBm
-aWxlIG5hbWVzDQo+ID4gPj4+Pj4+ICthcHBlbmRpbmcgRE1JIGtleXdvcmRzDQo+ID4gPj4+Pj4+
-ICsgKiB0byB0aGUgY2FyZCBuYW1lLCBsaWtlOg0KPiA+ID4+Pj4+PiArICogYnl0Y3ItcnQ1NjQw
-LkFTVVMuVDEwMA0KPiA+ID4+Pj4+PiArICogYnl0Y3ItcnQ1NjUxLk1pbm5vd0JvYXJkDQo+ID4g
-Pj4+Pj4+ICsgKg0KPiA+ID4+Pj4+PiArICogV2hlbiBiZWluZyBhc2tlZCB0byBsb2FkIHRoZSBj
-b25maWd1cmF0aW9uIGZpbGUgZm9yIGEgY2FyZCwNCj4gPiA+Pj4+Pj4gK3RoaXMgZnVuY3Rpb24N
-Cj4gPiA+Pj4+Pj4gKyAqIHdpbGwgdHJ5IHRvIGZpbmQgdGhlIGNhcmQgbG9uZyBuYW1lIGZyb20g
-dGhlIGxvY2FsIG1hY2hpbmUsDQo+ID4gPj4+Pj4+ICthbmQgdGhlbiBzY2FuDQo+ID4gPj4+Pj4+
-ICsgKiBhbGwgYXZhaWxhYmxlIGNvbmZpZ3VyYXRpb24gZmlsZSBuYW1lcywgc2VhcmNoIGV2ZXJ5
-IGZpZWxkDQo+ID4gPj4+Pj4+ICtvZiB0aGUgY29uZmlnDQo+ID4gPj4+Pj4+ICsgKiBmaWxlIG5h
-bWUgaW4gdGhlIGNhcmQgbG9uZyBuYW1lLiBUaGUgbW9yZSBjaGFyYWN0ZXJzIG1hdGNoLA0KPiA+
-ID4+Pj4+PiArdGhlIGhpZ2hlcg0KPiA+ID4+Pj4+PiArICogc2NvcmUgdGhlIGZpbGUgaGFzLiBG
-aW5hbGx5LCB0aGUgZmlsZSB3aXRoIHRoZSBoaWdoZXN0DQo+ID4gPj4+Pj4+ICtzY29yZSB3aWxs
-IGJlDQo+ID4gPj4+IGxvYWRlZC4NCj4gPiA+Pj4+Pj4gKyAqLw0KPiA+ID4+Pj4+DQo+ID4gPj4+
-Pj4gSWQnIGV4cGVjdCB0aGlzIGZ1bmN0aW9uIHRvIHRyeSBhbmQgb3BlbiBjYXJkIGxvbmduYW1l
-IGFuZCB0aGVuDQo+ID4gPj4+Pj4gY2FyZCBuYW1lIGlmIGxvbmduYW1lIGlzIG5vdCBmb3VuZC4g
-U28gcHJvdmlkaW5nIHdlIHVzZSB0aGUNCj4gPiA+Pj4+PiBleGFjdCBzYW1lIG5hbWVzIGFzIHRo
-ZSBETUkgbmFtZSB3ZSB3b250IG5lZWQgYW55IHN0cmluZw0KPiA+ID4+Pj4+IGZvcm1hdHRpbmcg
-b3Igc2NvcmluZyAoaS5lLiBmaWxlDQo+ID4gPj4+Pj4gb3BlbigibG9uZ25hbWUvbG9uZ25hbWUu
-Y29uZiIpIHdpbGwgZWl0aGVyIHN1Y2NlZWQgb3IgZmFpbCkNCj4gPiA+Pj4+Pg0KPiA+ID4+Pj4+
-IExpYW0NCj4gPiA+Pj4+DQo+ID4gPj4+PiBJIGZlZWwgd2UgY2Fubm90IHVzZSB0aGUgZXhhY3Qg
-c2FtZSBuYW1lcyBmb3IgdGhlIGNvbmZpZ3VyYXRpb24NCj4gPiA+Pj4+IGZpbGUgYW5kIGNhcmQg
-bG9uZyBuYW1lLiBUaGUgRE1JIGluZm8gaW4gdGhlIGNhcmQgbG9uZyBuYW1lIGNhbg0KPiA+ID4+
-Pj4gYmUgbGVuZ3RoeSwgaW5jbHVkaW5nICcuJyAsIFNQQUNFLCBtZWFuaW5nbGVzcyBpbmZvIGxp
-a2UgIkNvcnAuIg0KPiA+ID4+Pj4gYW5kIHNvbWV0aW1lIGR1cGxpY2F0ZWQgaW5mbyBmb3Igc29t
-ZSBPRU1z77yOSSBob3BlIGRldmVsb3BlcnMNCj4gY2FuDQo+ID4gPj4+PiBqdXN0IGV4dHJhY3Qg
-a2V5IHdvcmRzIGZyb20gdGhlIG1lc3N5IERNSSBpbmZvIHRvIG1ha2UgYSBzaW1wbGUNCj4gPiA+
-Pj4+IGNvbmZpZ3VyYXRpb24gZmlsZSBuYW1lLCBhbmQgVUNNIGF1dG9tYXRpY2FsbHkgZG8gdGhl
-IG1hdGNoaW5nDQo+ID4gPj4+PiBhbmQgZ2l2ZSBlYWNoIGNvbmZpZ3VyYXRpb24gZmlsZSBhIHNj
-b3JlLiBUaGVuIHRoZSBmaWxlIHdpdGgNCj4gPiA+Pj4+IGhpZ2hlc3Qgc2NvcmUgd2lsbCBiZSB1
-c2VkIGZvciB0aGUgY2FyZC4NCj4gPiA+Pj4NCj4gPiA+Pj4gUHJvdmlkaW5nIHRoZSBETUkgbmFt
-ZSBkb2VzIG5vdCB1c2UgaW52YWxpZCBmaWxlbmFtZSBjaGFyYWN0ZXJzIHdlDQo+IGFyZSBvay4N
-Cj4gPiA+Pj4gRXh0cmFjdGluZyBrZXkgd29yZHMgYW5kIG1hdGNoaW5nIGlzIHByb25lIHRvIG1h
-bnkgcHJvYmxlbXMgYW5kDQo+ID4gPj4+IHBhaW5mdWwgdG8gZGVidWcuLi4uDQo+ID4gPj4NCj4g
-PiA+PiBNYXkgSSByZXZpc2UgdGhlIFVDTSBjb2RlIGxpa2UgdGhpcz8gSXQgd2lsbCB0cnkgdG8g
-b3BlbiB0aGUgZmlsZQ0KPiA+ID4+IHdpdGggRE1JIG5hbWUgYXQgZmlyc3QuIEFuZCBvbmx5IGlm
-IHRoYXQgZmlsZSBpcyBub3QgYXZhaWxhYmxlLA0KPiA+ID4+IGZhbGwgYmFjayB0byBrZXkgd29y
-ZHMgbWF0Y2hpbmcuDQo+ID4gPj4NCj4gPiA+PiBJIGhvcGUgdG8ga2VlcCB0aGUgcG9zc2liaWxp
-dHkgdGhhdCB1c2VyIGNhbiB1c2UgYSBzaW1wbGUNCj4gPiA+PiBjb25maWd1cmF0aW9uIGZpbGUg
-Zm9yIGEgcHJvZHVjdCBmYW1pbHksIHdpdGhvdXQgZ2VuZXJhdGluZyB0b28NCj4gPiA+PiBtYW55
-IGNhcmQgZGlyZWN0b3JpZXMgYW5kIGZpbGVzLg0KPiA+ID4+DQo+ID4gPg0KPiA+ID4gSWYgdGhl
-IERNSSBuYW1lcyBhcmUgdG9vIGNvbXBsZXggZm9yIGRpcmVjdG9yeSBuYW1lcywgdGhlbiB5b3Ug
-Y291bGQNCj4gPiA+IGFkZCBhbiBhbGlhcyBmaWxlIGF0IHRoZSB0b3AgbGV2ZWwgdGhhdCB3b3Vs
-ZCBsaXN0IHRoZSBETUkgbmFtZSBhbmQNCj4gPiA+IHRoZSBzaG9ydGVuZWQgbmFtZSBpLmUuDQo+
-ID4gPg0KPiA+ID4gIyBETUkgbmFtZSAgICAgICAgICAgICAgICAgICAgICMgVUNNIGRpcmVjdG9y
-eSBuYW1lDQo+ID4gPiAiRGVsbCBibGFoIENvcnAuIFhQUywgMTMgYmxhaCIgIkRlbGwgWFBTMTMg
-QkRXIg0KPiA+ID4NCj4gPiA+IFNvIHRoZSBhbGlhcyBmaWxlIGNvdWxkIGJlIHNlYXJjaGVkIGZv
-ciB0aGUgRE1JIG5hbWUsIGJlZm9yZSB0aGUNCj4gPiA+IGxlZ2FjeSBuYW1lIHdhcyB0cmllZC4N
-Cj4gPiA+DQo+ID4gPiBUaGUgYWxpYXMgbWV0aG9kIGFib3ZlIGFsc28gYWxsb3dzIGZvciByZXVz
-ZSBvZiBjb25maWdzIG9uIG1hY2hpbmVzDQo+ID4gPiB0aGF0IGFyZSBzaW1pbGFyLCBidXQgd2l0
-aCBkaWZmZXJlbnQgRE1JIG5hbWVzLiBTbyB0aGlzIHdvdWxkIGFsc28NCj4gPiA+IGtlZXAgdGhl
-IG51bWJlciBvZiBjb25maWdzIGxvdy4NCj4gPiA+DQo+ID4gPiBMaWFtDQo+ID4NCj4gPiBJJ2xs
-IHRyeSB0byB1c2UgdGhlIGFsaWFzIGZpbGUuIEJ1dCBpdCBzZWVtcyB3ZSBuZWVkIHRvIG1haW50
-YWluIGEgbG90DQo+ID4gb2YgZW50cmllcyBpbiB0aGUgZmlsZSA6LSgNCj4gPg0KPiA+IEluIGFk
-ZGl0aW9uLCBJIGZvdW5kIHdlIGNhbm5vdCB1c2UgcGF0aHMgd2l0aCBTUEFDRSBhcyB0aGUgVUNN
-DQo+ID4gZGlyZWN0b3J5IG5hbWUuIEF1dG9jb25mIGNhbm5vdCBzdXBwb3J0IHRoaXMuIEl0IGNv
-bXBsYWlucyBhbHRob3VnaCBJIHRyaWVkDQo+IFwgb3IgIg0KPiA+IHRvIGVzY2FwZS4gV2UgbmVl
-ZCBzb21ldGhpbmcgbGlrZSAiRGVsbC5YUFMxMy5CRFciIGFzIHRoZSBVQ00NCj4gPiBkaXJlY3Rv
-cnkgbmFtZXMuDQo+ID4NCj4gDQo+IEdhaCwgaXQgbG9va3MgbGlrZSBhdXRvY29uZiBtYXkgaGF2
-ZSBkZWZlYXRlZCB0aGlzICEgQXV0b2NvbmYgaGFzDQo+IHNwZWNpYWwgdXNlcyBmb3Igc29tZSBj
-aGFycyBpbiBuYW1lcy4NCj4gDQo+IFNvIHlvdSBtYXkgd2FudCB0byAiZml4IiB0aGUgRE1JIG5h
-bWUgdG8gZXhjbHVkZSBhbnkgc3BlY2lhbCBjaGFycyB3aGVuDQo+IGNyZWF0aW5nIHlvdXIgbG9u
-Z25hbWUgKG1heWJlIGFsc28gc2V0IGEgc2hvcnRlciBsZW5ndGggdG9vKS4gSSBzdGlsbA0KPiBk
-b250IHdhbnQgYW55IHNjb3JpbmcsIHdlIGp1c3Qgd2FudCB0byBvcGVuIHRoZSAibG9uZ25hbWUu
-Y29uZiIgdGhlbg0KPiAiZHJpdmVybmFtZS5jb25mIg0KPiANCj4gTGlhbQ0KPiANCg0KT2theS4g
-SSdsbCByZW1vdmUgdGhlIHNwZWNpYWwgY2hhcnMgZnJvbSB0aGUgY2FyZCBsb25nIG5hbWUgYW5k
-IG1ha2UgVUNNIGNvZGUgc2ltcGxlciBhcyB5b3Ugc3VnZ2VzdGVkIDotKQ0KDQpUaGFua3MNCk1l
-bmdkb25nDQoNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
-Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hi,
+
+I would like to understand the following quote which I copied from
+https://www.kernel.org/doc/Documentation/sound/alsa/timestamping.txt
+
+"The ALSA API provides two basic pieces of information, avail and delay,
+which combined with the trigger and current system timestamps allow for
+applications to keep track of the 'fullness' of the ring buffer and the
+amount of queued samples."
+
+Querying avail and delay is straight forward. But I have no idea how to use
+these values in combination with trigger_htstamp and the current system
+timestamp to calculate the fullness of the ring buffer.
+
+Can someone provide some insight?
+
+What exactly is meant by "current system timestamp"? Is it provied by ALSA
+(htstamp?) or should I use clock_gettime(CLOCK_MONOTONIC, &system_time); to
+get that timestamp?
+
+Thanks,
+Jan
