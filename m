@@ -1,36 +1,104 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [alsa-devel] [PATCH v6 1/3] clk: x86: Add Atom PMC platform clocks
-Date: Thu, 22 Dec 2016 20:42:37 +0200
-Message-ID: <CAHp75VfJU3613euahjW-s92_XEz8hK70ZgRi53Lpo+2TWqPscA@mail.gmail.com>
-References: <1481306510-7471-1-git-send-email-irina.tirdea@intel.com>
- <1481306510-7471-2-git-send-email-irina.tirdea@intel.com> <CAHp75Vdaw4yvTPP2JZc+ti-AVNsisRQ+WG=JxPQ1jv-r7DADQA@mail.gmail.com>
- <20161213232524.GQ5423@codeaurora.org> <32235fb3-0d54-211d-28f4-4655e4bc7812@linux.intel.com>
- <20161217013337.GW5423@codeaurora.org> <CAHp75Vdn_8_fCQzkG7CPrnDZzhC7WUpGM1cyvfNRz0u_sc7RKA@mail.gmail.com>
- <7f3d03dc-24fe-ec3f-4a3b-926c28f0ac86@linux.intel.com> <20161221230557.GK5423@codeaurora.org>
- <cd6044f5-6c79-b2d6-902d-52e27c217e78@linux.intel.com>
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Subject: Re: [PATCH 1/2] ucm: Automatically load the best
+ config file based on the card long name
+Date: Fri, 23 Dec 2016 16:08:13 +0800
+Message-ID: <585CDB6D.7000401@linux.intel.com>
+References: <1482325768-20084-1-git-send-email-mengdong.lin@linux.intel.com>
+ <1482331138.2554.101.camel@loki>
+ <F46914AEC2663F4A9BB62374E5EEF8F881A04E53@shsmsx102.ccr.corp.intel.com>
+ <1482408879.24233.32.camel@loki>
+ <F46914AEC2663F4A9BB62374E5EEF8F881A08440@shsmsx102.ccr.corp.intel.com>
+ <1482420910.24233.41.camel@loki>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <cd6044f5-6c79-b2d6-902d-52e27c217e78@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Stephen Boyd <sboyd@codeaurora.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, linux-clk@vger.kernel.org, Irina Tirdea <irina.tirdea@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>, Michael Turquette <mturquette@baylibre.com>, "x86@kernel.org" <x86@kernel.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>, Mark Brown <broonie@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Darren Hart <dvhart@infradead.org>, Takashi Iwai <tiwai@suse.com>, platform-driver-x86@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>, Len Brown <lenb@kernel.org>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2DAD7266218
+ for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2016 09:05:31 +0100 (CET)
+In-Reply-To: <1482420910.24233.41.camel@loki>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "Bossart,
+ Pierre-louis" <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Dec 22, 2016 at 3:07 AM, Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
-> On 12/21/16 5:05 PM, Stephen Boyd wrote:
-
->>> The name pmc_plt_clk_<n> follows the data sheet specification, where
->>> this convention is suggested:
->>>   PLT_CLK[2:0] - Camera
->>>   PLT_CLK[3] - Audio Codec
->>>   PLT_CLK[4] -
->>>   PLT_CLK[5] - COMMs
-
-By the way, would I suggest to use same prefix as provider, i.e.
-pmc_atom_plt_clk_%d ?
-
--- 
-With Best Regards,
-Andy Shevchenko
+Ck9uIDEyLzIyLzIwMTYgMTE6MzUgUE0sIExpYW0gR2lyZHdvb2Qgd3JvdGU6Cgo+Pj4+Pj4gKy8q
+IFRoaXMgZnVuY3Rpb24gd2lsbCBmaW5kIHRoZSBiZXN0IGRldmljZS1zcGVjaWZpYyBjb25maWd1
+cmF0aW9uCj4+Pj4+PiArZmlsZSBiYXNlZAo+Pj4+Pj4gKyAqIG9uIHRoZSBzb3VuZCBjYXJkIGxv
+bmcgbmFtZS4KPj4+Pj4+ICsgKiBEaWZmZXJlbnQgZGV2aWNlcyBtYXkgc2hhcmUgdGhlIHNhbWUg
+c291bmQgZHJpdmVyIGFuZCB0aHVzIHRoZQo+Pj4+Pj4gK3NhbWUgc291bmQKPj4+Pj4+ICsgKiBj
+YXJkIG5hbWUgKHNob3J0IG5hbWUpLCBidXQgdGhleSBtYXkgc3RpbGwgbmVlZCBkaWZmZXJlbnQK
+Pj4+Pj4+ICtkZXZpY2Utc3BlY2lmaWMKPj4+Pj4+ICsgKiBjb25maWd1cmF0aW9ucy4gRm9yIHVz
+ZXIgc3BhY2UgdG8gZGlmZmVyZW50aWF0ZSB0aGVtLCBrZXJuZWwKPj4+Pj4+ICtkcml2ZXJzIG1h
+eQo+Pj4+Pj4gKyAqIGluY2x1ZGUgdGhlIERNSSBpbmZvICh2ZW5kb3IsIHByb2R1Y3QgYW5kIGJv
+YXJkKSBpbiB0aGUgY2FyZAo+Pj4+Pj4gK2xvbmcKPj4+Pj4gbmFtZS4KPj4+Pj4+ICsgKiBBbmQg
+dXNlciBzcGFjZSBjYW4gZGVmaW5lIGNvbmZpZ3VyYXRpb24gZmlsZSBuYW1lcyBhcHBlbmRpbmcK
+Pj4+Pj4+ICtETUkga2V5d29yZHMKPj4+Pj4+ICsgKiB0byB0aGUgY2FyZCBuYW1lLCBsaWtlOgo+
+Pj4+Pj4gKyAqIGJ5dGNyLXJ0NTY0MC5BU1VTLlQxMDAKPj4+Pj4+ICsgKiBieXRjci1ydDU2NTEu
+TWlubm93Qm9hcmQKPj4+Pj4+ICsgKgo+Pj4+Pj4gKyAqIFdoZW4gYmVpbmcgYXNrZWQgdG8gbG9h
+ZCB0aGUgY29uZmlndXJhdGlvbiBmaWxlIGZvciBhIGNhcmQsCj4+Pj4+PiArdGhpcyBmdW5jdGlv
+bgo+Pj4+Pj4gKyAqIHdpbGwgdHJ5IHRvIGZpbmQgdGhlIGNhcmQgbG9uZyBuYW1lIGZyb20gdGhl
+IGxvY2FsIG1hY2hpbmUsCj4+Pj4+PiArYW5kIHRoZW4gc2Nhbgo+Pj4+Pj4gKyAqIGFsbCBhdmFp
+bGFibGUgY29uZmlndXJhdGlvbiBmaWxlIG5hbWVzLCBzZWFyY2ggZXZlcnkgZmllbGQgb2YKPj4+
+Pj4+ICt0aGUgY29uZmlnCj4+Pj4+PiArICogZmlsZSBuYW1lIGluIHRoZSBjYXJkIGxvbmcgbmFt
+ZS4gVGhlIG1vcmUgY2hhcmFjdGVycyBtYXRjaCwKPj4+Pj4+ICt0aGUgaGlnaGVyCj4+Pj4+PiAr
+ICogc2NvcmUgdGhlIGZpbGUgaGFzLiBGaW5hbGx5LCB0aGUgZmlsZSB3aXRoIHRoZSBoaWdoZXN0
+IHNjb3JlIHdpbGwgYmUKPj4+IGxvYWRlZC4KPj4+Pj4+ICsgKi8KPj4+Pj4KPj4+Pj4gSWQnIGV4
+cGVjdCB0aGlzIGZ1bmN0aW9uIHRvIHRyeSBhbmQgb3BlbiBjYXJkIGxvbmduYW1lIGFuZCB0aGVu
+IGNhcmQKPj4+Pj4gbmFtZSBpZiBsb25nbmFtZSBpcyBub3QgZm91bmQuIFNvIHByb3ZpZGluZyB3
+ZSB1c2UgdGhlIGV4YWN0IHNhbWUKPj4+Pj4gbmFtZXMgYXMgdGhlIERNSSBuYW1lIHdlIHdvbnQg
+bmVlZCBhbnkgc3RyaW5nIGZvcm1hdHRpbmcgb3Igc2NvcmluZwo+Pj4+PiAoaS5lLiBmaWxlCj4+
+Pj4+IG9wZW4oImxvbmduYW1lL2xvbmduYW1lLmNvbmYiKSB3aWxsIGVpdGhlciBzdWNjZWVkIG9y
+IGZhaWwpCj4+Pj4+Cj4+Pj4+IExpYW0KPj4+Pgo+Pj4+IEkgZmVlbCB3ZSBjYW5ub3QgdXNlIHRo
+ZSBleGFjdCBzYW1lIG5hbWVzIGZvciB0aGUgY29uZmlndXJhdGlvbiBmaWxlCj4+Pj4gYW5kIGNh
+cmQgbG9uZyBuYW1lLiBUaGUgRE1JIGluZm8gaW4gdGhlIGNhcmQgbG9uZyBuYW1lIGNhbiBiZSBs
+ZW5ndGh5LAo+Pj4+IGluY2x1ZGluZyAnLicgLCBTUEFDRSwgbWVhbmluZ2xlc3MgaW5mbyBsaWtl
+ICJDb3JwLiIgYW5kIHNvbWV0aW1lCj4+Pj4gZHVwbGljYXRlZCBpbmZvIGZvciBzb21lIE9FTXPv
+vI5JIGhvcGUgZGV2ZWxvcGVycyBjYW4ganVzdCBleHRyYWN0IGtleQo+Pj4+IHdvcmRzIGZyb20g
+dGhlIG1lc3N5IERNSSBpbmZvIHRvIG1ha2UgYSBzaW1wbGUgY29uZmlndXJhdGlvbiBmaWxlCj4+
+Pj4gbmFtZSwgYW5kIFVDTSBhdXRvbWF0aWNhbGx5IGRvIHRoZSBtYXRjaGluZyBhbmQgZ2l2ZSBl
+YWNoCj4+Pj4gY29uZmlndXJhdGlvbiBmaWxlIGEgc2NvcmUuIFRoZW4gdGhlIGZpbGUgd2l0aCBo
+aWdoZXN0IHNjb3JlIHdpbGwgYmUKPj4+PiB1c2VkIGZvciB0aGUgY2FyZC4KPj4+Cj4+PiBQcm92
+aWRpbmcgdGhlIERNSSBuYW1lIGRvZXMgbm90IHVzZSBpbnZhbGlkIGZpbGVuYW1lIGNoYXJhY3Rl
+cnMgd2UgYXJlIG9rLgo+Pj4gRXh0cmFjdGluZyBrZXkgd29yZHMgYW5kIG1hdGNoaW5nIGlzIHBy
+b25lIHRvIG1hbnkgcHJvYmxlbXMgYW5kIHBhaW5mdWwgdG8KPj4+IGRlYnVnLi4uLgo+Pgo+PiBN
+YXkgSSByZXZpc2UgdGhlIFVDTSBjb2RlIGxpa2UgdGhpcz8gSXQgd2lsbCB0cnkgdG8gb3BlbiB0
+aGUgZmlsZSB3aXRoCj4+IERNSSBuYW1lIGF0IGZpcnN0LiBBbmQgb25seSBpZiB0aGF0IGZpbGUg
+aXMgbm90IGF2YWlsYWJsZSwgZmFsbCBiYWNrCj4+IHRvIGtleSB3b3JkcyBtYXRjaGluZy4KPj4K
+Pj4gSSBob3BlIHRvIGtlZXAgdGhlIHBvc3NpYmlsaXR5IHRoYXQgdXNlciBjYW4gdXNlIGEgc2lt
+cGxlCj4+IGNvbmZpZ3VyYXRpb24gZmlsZSBmb3IgYSBwcm9kdWN0IGZhbWlseSwgd2l0aG91dCBn
+ZW5lcmF0aW5nIHRvbyBtYW55Cj4+IGNhcmQgZGlyZWN0b3JpZXMgYW5kIGZpbGVzLgo+Pgo+Cj4g
+SWYgdGhlIERNSSBuYW1lcyBhcmUgdG9vIGNvbXBsZXggZm9yIGRpcmVjdG9yeSBuYW1lcywgdGhl
+biB5b3UgY291bGQgYWRkCj4gYW4gYWxpYXMgZmlsZSBhdCB0aGUgdG9wIGxldmVsIHRoYXQgd291
+bGQgbGlzdCB0aGUgRE1JIG5hbWUgYW5kIHRoZQo+IHNob3J0ZW5lZCBuYW1lIGkuZS4KPgo+ICMg
+RE1JIG5hbWUgICAgICAgICAgICAgICAgICAgICAjIFVDTSBkaXJlY3RvcnkgbmFtZQo+ICJEZWxs
+IGJsYWggQ29ycC4gWFBTLCAxMyBibGFoIiAiRGVsbCBYUFMxMyBCRFciCj4KPiBTbyB0aGUgYWxp
+YXMgZmlsZSBjb3VsZCBiZSBzZWFyY2hlZCBmb3IgdGhlIERNSSBuYW1lLCBiZWZvcmUgdGhlIGxl
+Z2FjeQo+IG5hbWUgd2FzIHRyaWVkLgo+Cj4gVGhlIGFsaWFzIG1ldGhvZCBhYm92ZSBhbHNvIGFs
+bG93cyBmb3IgcmV1c2Ugb2YgY29uZmlncyBvbiBtYWNoaW5lcyB0aGF0Cj4gYXJlIHNpbWlsYXIs
+IGJ1dCB3aXRoIGRpZmZlcmVudCBETUkgbmFtZXMuIFNvIHRoaXMgd291bGQgYWxzbyBrZWVwIHRo
+ZQo+IG51bWJlciBvZiBjb25maWdzIGxvdy4KPgo+IExpYW0KCkknbGwgdHJ5IHRvIHVzZSB0aGUg
+YWxpYXMgZmlsZS4gQnV0IGl0IHNlZW1zIHdlIG5lZWQgdG8gbWFpbnRhaW4gYSBsb3QgCm9mIGVu
+dHJpZXMgaW4gdGhlIGZpbGUgOi0oCgpJbiBhZGRpdGlvbiwgSSBmb3VuZCB3ZSBjYW5ub3QgdXNl
+IHBhdGhzIHdpdGggU1BBQ0UgYXMgdGhlIFVDTSBkaXJlY3RvcnkgCm5hbWUuIEF1dG9jb25mIGNh
+bm5vdCBzdXBwb3J0IHRoaXMuIEl0IGNvbXBsYWlucyBhbHRob3VnaCBJIHRyaWVkIFwgb3IgIiAK
+dG8gZXNjYXBlLiBXZSBuZWVkIHNvbWV0aGluZyBsaWtlICJEZWxsLlhQUzEzLkJEVyIgYXMgdGhl
+IFVDTSBkaXJlY3RvcnkgCm5hbWVzLgoKVGhhbmtzCm1lbmdkb25nCgoKPgo+PiBUaGFua3MKPj4g
+TWVuZ2RvbmcKPj4KPj4+Cj4+PiBUaGUgYWx0ZXJuYXRpdmUgaXMgdG8gaW5jbHVkZSB0aGUgZXhh
+Y3QgRE1JIG5hbWUgaW4gYSB0b3AgbGV2ZWwgY29uZmlnIGZpbGUKPj4+IHRoYXQgcG9pbnRzIHRv
+IHRoZSBVQ00gY29uZmlnLgo+Pgo+Pgo+Pgo+PiBUaGFua3MKPj4gTWVuZ2RvbmcKPgo+Cj4gX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVs
+IG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4KX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
