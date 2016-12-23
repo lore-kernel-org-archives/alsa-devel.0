@@ -1,22 +1,14 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH 1/2] ucm: Automatically load the best
- config file based on the card long name
-Date: Fri, 23 Dec 2016 09:07:40 +0000
-Message-ID: <1482484060.24233.58.camel@loki>
-References: <1482325768-20084-1-git-send-email-mengdong.lin@linux.intel.com>
- <1482331138.2554.101.camel@loki>
- <F46914AEC2663F4A9BB62374E5EEF8F881A04E53@shsmsx102.ccr.corp.intel.com>
- <1482408879.24233.32.camel@loki>
- <F46914AEC2663F4A9BB62374E5EEF8F881A08440@shsmsx102.ccr.corp.intel.com>
- <1482420910.24233.41.camel@loki> <585CDB6D.7000401@linux.intel.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH 0/3] ASoC: tlv320aic3x: Pop noise reductions
+Date: Fri, 23 Dec 2016 11:21:09 +0200
+Message-ID: <20161223092112.7992-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 12E272606F7
- for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2016 10:07:49 +0100 (CET)
-In-Reply-To: <585CDB6D.7000401@linux.intel.com>
+Received: from fllnx209.ext.ti.com (fllnx209.ext.ti.com [198.47.19.16])
+ by alsa0.perex.cz (Postfix) with ESMTP id BCF50266949
+ for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2016 10:21:05 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,83 +18,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mengdong Lin <mengdong.lin@linux.intel.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>, "Koul,
- Vinod" <vinod.koul@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "Bossart, Pierre-louis" <pierre-louis.bossart@intel.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, jarkko.nikula@bitmer.com, jsarha@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCAyMDE2LTEyLTIzIGF0IDE2OjA4ICswODAwLCBNZW5nZG9uZyBMaW4gd3JvdGU6Cj4g
-T24gMTIvMjIvMjAxNiAxMTozNSBQTSwgTGlhbSBHaXJkd29vZCB3cm90ZToKPiAKPiA+Pj4+Pj4g
-Ky8qIFRoaXMgZnVuY3Rpb24gd2lsbCBmaW5kIHRoZSBiZXN0IGRldmljZS1zcGVjaWZpYyBjb25m
-aWd1cmF0aW9uCj4gPj4+Pj4+ICtmaWxlIGJhc2VkCj4gPj4+Pj4+ICsgKiBvbiB0aGUgc291bmQg
-Y2FyZCBsb25nIG5hbWUuCj4gPj4+Pj4+ICsgKiBEaWZmZXJlbnQgZGV2aWNlcyBtYXkgc2hhcmUg
-dGhlIHNhbWUgc291bmQgZHJpdmVyIGFuZCB0aHVzIHRoZQo+ID4+Pj4+PiArc2FtZSBzb3VuZAo+
-ID4+Pj4+PiArICogY2FyZCBuYW1lIChzaG9ydCBuYW1lKSwgYnV0IHRoZXkgbWF5IHN0aWxsIG5l
-ZWQgZGlmZmVyZW50Cj4gPj4+Pj4+ICtkZXZpY2Utc3BlY2lmaWMKPiA+Pj4+Pj4gKyAqIGNvbmZp
-Z3VyYXRpb25zLiBGb3IgdXNlciBzcGFjZSB0byBkaWZmZXJlbnRpYXRlIHRoZW0sIGtlcm5lbAo+
-ID4+Pj4+PiArZHJpdmVycyBtYXkKPiA+Pj4+Pj4gKyAqIGluY2x1ZGUgdGhlIERNSSBpbmZvICh2
-ZW5kb3IsIHByb2R1Y3QgYW5kIGJvYXJkKSBpbiB0aGUgY2FyZAo+ID4+Pj4+PiArbG9uZwo+ID4+
-Pj4+IG5hbWUuCj4gPj4+Pj4+ICsgKiBBbmQgdXNlciBzcGFjZSBjYW4gZGVmaW5lIGNvbmZpZ3Vy
-YXRpb24gZmlsZSBuYW1lcyBhcHBlbmRpbmcKPiA+Pj4+Pj4gK0RNSSBrZXl3b3Jkcwo+ID4+Pj4+
-PiArICogdG8gdGhlIGNhcmQgbmFtZSwgbGlrZToKPiA+Pj4+Pj4gKyAqIGJ5dGNyLXJ0NTY0MC5B
-U1VTLlQxMDAKPiA+Pj4+Pj4gKyAqIGJ5dGNyLXJ0NTY1MS5NaW5ub3dCb2FyZAo+ID4+Pj4+PiAr
-ICoKPiA+Pj4+Pj4gKyAqIFdoZW4gYmVpbmcgYXNrZWQgdG8gbG9hZCB0aGUgY29uZmlndXJhdGlv
-biBmaWxlIGZvciBhIGNhcmQsCj4gPj4+Pj4+ICt0aGlzIGZ1bmN0aW9uCj4gPj4+Pj4+ICsgKiB3
-aWxsIHRyeSB0byBmaW5kIHRoZSBjYXJkIGxvbmcgbmFtZSBmcm9tIHRoZSBsb2NhbCBtYWNoaW5l
-LAo+ID4+Pj4+PiArYW5kIHRoZW4gc2Nhbgo+ID4+Pj4+PiArICogYWxsIGF2YWlsYWJsZSBjb25m
-aWd1cmF0aW9uIGZpbGUgbmFtZXMsIHNlYXJjaCBldmVyeSBmaWVsZCBvZgo+ID4+Pj4+PiArdGhl
-IGNvbmZpZwo+ID4+Pj4+PiArICogZmlsZSBuYW1lIGluIHRoZSBjYXJkIGxvbmcgbmFtZS4gVGhl
-IG1vcmUgY2hhcmFjdGVycyBtYXRjaCwKPiA+Pj4+Pj4gK3RoZSBoaWdoZXIKPiA+Pj4+Pj4gKyAq
-IHNjb3JlIHRoZSBmaWxlIGhhcy4gRmluYWxseSwgdGhlIGZpbGUgd2l0aCB0aGUgaGlnaGVzdCBz
-Y29yZSB3aWxsIGJlCj4gPj4+IGxvYWRlZC4KPiA+Pj4+Pj4gKyAqLwo+ID4+Pj4+Cj4gPj4+Pj4g
-SWQnIGV4cGVjdCB0aGlzIGZ1bmN0aW9uIHRvIHRyeSBhbmQgb3BlbiBjYXJkIGxvbmduYW1lIGFu
-ZCB0aGVuIGNhcmQKPiA+Pj4+PiBuYW1lIGlmIGxvbmduYW1lIGlzIG5vdCBmb3VuZC4gU28gcHJv
-dmlkaW5nIHdlIHVzZSB0aGUgZXhhY3Qgc2FtZQo+ID4+Pj4+IG5hbWVzIGFzIHRoZSBETUkgbmFt
-ZSB3ZSB3b250IG5lZWQgYW55IHN0cmluZyBmb3JtYXR0aW5nIG9yIHNjb3JpbmcKPiA+Pj4+PiAo
-aS5lLiBmaWxlCj4gPj4+Pj4gb3BlbigibG9uZ25hbWUvbG9uZ25hbWUuY29uZiIpIHdpbGwgZWl0
-aGVyIHN1Y2NlZWQgb3IgZmFpbCkKPiA+Pj4+Pgo+ID4+Pj4+IExpYW0KPiA+Pj4+Cj4gPj4+PiBJ
-IGZlZWwgd2UgY2Fubm90IHVzZSB0aGUgZXhhY3Qgc2FtZSBuYW1lcyBmb3IgdGhlIGNvbmZpZ3Vy
-YXRpb24gZmlsZQo+ID4+Pj4gYW5kIGNhcmQgbG9uZyBuYW1lLiBUaGUgRE1JIGluZm8gaW4gdGhl
-IGNhcmQgbG9uZyBuYW1lIGNhbiBiZSBsZW5ndGh5LAo+ID4+Pj4gaW5jbHVkaW5nICcuJyAsIFNQ
-QUNFLCBtZWFuaW5nbGVzcyBpbmZvIGxpa2UgIkNvcnAuIiBhbmQgc29tZXRpbWUKPiA+Pj4+IGR1
-cGxpY2F0ZWQgaW5mbyBmb3Igc29tZSBPRU1z77yOSSBob3BlIGRldmVsb3BlcnMgY2FuIGp1c3Qg
-ZXh0cmFjdCBrZXkKPiA+Pj4+IHdvcmRzIGZyb20gdGhlIG1lc3N5IERNSSBpbmZvIHRvIG1ha2Ug
-YSBzaW1wbGUgY29uZmlndXJhdGlvbiBmaWxlCj4gPj4+PiBuYW1lLCBhbmQgVUNNIGF1dG9tYXRp
-Y2FsbHkgZG8gdGhlIG1hdGNoaW5nIGFuZCBnaXZlIGVhY2gKPiA+Pj4+IGNvbmZpZ3VyYXRpb24g
-ZmlsZSBhIHNjb3JlLiBUaGVuIHRoZSBmaWxlIHdpdGggaGlnaGVzdCBzY29yZSB3aWxsIGJlCj4g
-Pj4+PiB1c2VkIGZvciB0aGUgY2FyZC4KPiA+Pj4KPiA+Pj4gUHJvdmlkaW5nIHRoZSBETUkgbmFt
-ZSBkb2VzIG5vdCB1c2UgaW52YWxpZCBmaWxlbmFtZSBjaGFyYWN0ZXJzIHdlIGFyZSBvay4KPiA+
-Pj4gRXh0cmFjdGluZyBrZXkgd29yZHMgYW5kIG1hdGNoaW5nIGlzIHByb25lIHRvIG1hbnkgcHJv
-YmxlbXMgYW5kIHBhaW5mdWwgdG8KPiA+Pj4gZGVidWcuLi4uCj4gPj4KPiA+PiBNYXkgSSByZXZp
-c2UgdGhlIFVDTSBjb2RlIGxpa2UgdGhpcz8gSXQgd2lsbCB0cnkgdG8gb3BlbiB0aGUgZmlsZSB3
-aXRoCj4gPj4gRE1JIG5hbWUgYXQgZmlyc3QuIEFuZCBvbmx5IGlmIHRoYXQgZmlsZSBpcyBub3Qg
-YXZhaWxhYmxlLCBmYWxsIGJhY2sKPiA+PiB0byBrZXkgd29yZHMgbWF0Y2hpbmcuCj4gPj4KPiA+
-PiBJIGhvcGUgdG8ga2VlcCB0aGUgcG9zc2liaWxpdHkgdGhhdCB1c2VyIGNhbiB1c2UgYSBzaW1w
-bGUKPiA+PiBjb25maWd1cmF0aW9uIGZpbGUgZm9yIGEgcHJvZHVjdCBmYW1pbHksIHdpdGhvdXQg
-Z2VuZXJhdGluZyB0b28gbWFueQo+ID4+IGNhcmQgZGlyZWN0b3JpZXMgYW5kIGZpbGVzLgo+ID4+
-Cj4gPgo+ID4gSWYgdGhlIERNSSBuYW1lcyBhcmUgdG9vIGNvbXBsZXggZm9yIGRpcmVjdG9yeSBu
-YW1lcywgdGhlbiB5b3UgY291bGQgYWRkCj4gPiBhbiBhbGlhcyBmaWxlIGF0IHRoZSB0b3AgbGV2
-ZWwgdGhhdCB3b3VsZCBsaXN0IHRoZSBETUkgbmFtZSBhbmQgdGhlCj4gPiBzaG9ydGVuZWQgbmFt
-ZSBpLmUuCj4gPgo+ID4gIyBETUkgbmFtZSAgICAgICAgICAgICAgICAgICAgICMgVUNNIGRpcmVj
-dG9yeSBuYW1lCj4gPiAiRGVsbCBibGFoIENvcnAuIFhQUywgMTMgYmxhaCIgIkRlbGwgWFBTMTMg
-QkRXIgo+ID4KPiA+IFNvIHRoZSBhbGlhcyBmaWxlIGNvdWxkIGJlIHNlYXJjaGVkIGZvciB0aGUg
-RE1JIG5hbWUsIGJlZm9yZSB0aGUgbGVnYWN5Cj4gPiBuYW1lIHdhcyB0cmllZC4KPiA+Cj4gPiBU
-aGUgYWxpYXMgbWV0aG9kIGFib3ZlIGFsc28gYWxsb3dzIGZvciByZXVzZSBvZiBjb25maWdzIG9u
-IG1hY2hpbmVzIHRoYXQKPiA+IGFyZSBzaW1pbGFyLCBidXQgd2l0aCBkaWZmZXJlbnQgRE1JIG5h
-bWVzLiBTbyB0aGlzIHdvdWxkIGFsc28ga2VlcCB0aGUKPiA+IG51bWJlciBvZiBjb25maWdzIGxv
-dy4KPiA+Cj4gPiBMaWFtCj4gCj4gSSdsbCB0cnkgdG8gdXNlIHRoZSBhbGlhcyBmaWxlLiBCdXQg
-aXQgc2VlbXMgd2UgbmVlZCB0byBtYWludGFpbiBhIGxvdCAKPiBvZiBlbnRyaWVzIGluIHRoZSBm
-aWxlIDotKAo+IAo+IEluIGFkZGl0aW9uLCBJIGZvdW5kIHdlIGNhbm5vdCB1c2UgcGF0aHMgd2l0
-aCBTUEFDRSBhcyB0aGUgVUNNIGRpcmVjdG9yeSAKPiBuYW1lLiBBdXRvY29uZiBjYW5ub3Qgc3Vw
-cG9ydCB0aGlzLiBJdCBjb21wbGFpbnMgYWx0aG91Z2ggSSB0cmllZCBcIG9yICIgCj4gdG8gZXNj
-YXBlLiBXZSBuZWVkIHNvbWV0aGluZyBsaWtlICJEZWxsLlhQUzEzLkJEVyIgYXMgdGhlIFVDTSBk
-aXJlY3RvcnkgCj4gbmFtZXMuCj4gCgpHYWgsIGl0IGxvb2tzIGxpa2UgYXV0b2NvbmYgbWF5IGhh
-dmUgZGVmZWF0ZWQgdGhpcyAhIEF1dG9jb25mIGhhcwpzcGVjaWFsIHVzZXMgZm9yIHNvbWUgY2hh
-cnMgaW4gbmFtZXMuCgpTbyB5b3UgbWF5IHdhbnQgdG8gImZpeCIgdGhlIERNSSBuYW1lIHRvIGV4
-Y2x1ZGUgYW55IHNwZWNpYWwgY2hhcnMgd2hlbgpjcmVhdGluZyB5b3VyIGxvbmduYW1lIChtYXli
-ZSBhbHNvIHNldCBhIHNob3J0ZXIgbGVuZ3RoIHRvbykuIEkgc3RpbGwKZG9udCB3YW50IGFueSBz
-Y29yaW5nLCB3ZSBqdXN0IHdhbnQgdG8gb3BlbiB0aGUgImxvbmduYW1lLmNvbmYiIHRoZW4KImRy
-aXZlcm5hbWUuY29uZiIKCkxpYW0KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+Hi,
+
+When we don't have any active component between the output of the codec and the
+speaker/jack the codec emmits pop noise due to several factors:
+- RESET register is toggled by regcache_sync (patch 1)
+- After regcache_sync we need to wait a bit to allow the codec to settle down:
+  the codec will be soft reseted when it is powered down, so when we power it on
+  and run regcache_sync, we need to wait for the flushed settings to be valid.
+  (patch 2)
+- The HP ouptut power-down mode can be changed to be driven weakly to VCM, this
+  can reduce the pop noise as well, with slight increase in powere consumption.
+
+These factors were not taken care as in n810 and n900 we have external active
+amplifiers and they will remove any artifacts coming from the codec, but on
+boards w/o active external components they can reach the output.
+
+Regards,
+Peter
+---
+Peter Ujfalusi (3):
+  ASoC: tlv320aic3x: Mark the RESET register as volatile
+  ASoC: tlv320aic3x: Add delay after power on and register sync
+  ASoC: tlv320aic3x: Add controls for selecting HP power down modes
+
+ sound/soc/codecs/tlv320aic3x.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+
+-- 
+2.11.0
