@@ -1,17 +1,20 @@
-From: Jan Deinhard <jan.deinhard@gmail.com>
-Subject: How to keep track of the amount of queued samples?
-Date: Fri, 23 Dec 2016 15:16:04 +0100
-Message-ID: <CAG=22kdFAAoxn3HkOwuiayT36SRv21z6Mtz0WNGK8YDKwVdmXA@mail.gmail.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH][alsa-lib] topology:
+	fix	unused-const-variable warning
+Date: Fri, 23 Dec 2016 14:48:52 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F881A09C9B@shsmsx102.ccr.corp.intel.com>
+References: <20161129154432.8299-1-o-takashi@sakamocchi.jp>
+ <09494b18-b653-12c5-1213-e6681c6b4d09@sakamocchi.jp>
+ <1482482964.24233.51.camel@loki>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f171.google.com (mail-qk0-f171.google.com
- [209.85.220.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E4BD266998
- for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2016 15:16:06 +0100 (CET)
-Received: by mail-qk0-f171.google.com with SMTP id u25so133945771qki.2
- for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2016 06:16:06 -0800 (PST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3893E26712B
+ for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2016 15:48:58 +0100 (CET)
+In-Reply-To: <1482482964.24233.51.camel@loki>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,28 +24,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, "mengdong.lin" <mengdong.lin@linux.intel.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-I would like to understand the following quote which I copied from
-https://www.kernel.org/doc/Documentation/sound/alsa/timestamping.txt
-
-"The ALSA API provides two basic pieces of information, avail and delay,
-which combined with the trigger and current system timestamps allow for
-applications to keep track of the 'fullness' of the ring buffer and the
-amount of queued samples."
-
-Querying avail and delay is straight forward. But I have no idea how to use
-these values in combination with trigger_htstamp and the current system
-timestamp to calculate the fullness of the ring buffer.
-
-Can someone provide some insight?
-
-What exactly is meant by "current system timestamp"? Is it provied by ALSA
-(htstamp?) or should I use clock_gettime(CLOCK_MONOTONIC, &system_time); to
-get that timestamp?
-
-Thanks,
-Jan
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBhbHNhLWRldmVsLWJvdW5jZXNA
+YWxzYS1wcm9qZWN0Lm9yZyBbbWFpbHRvOmFsc2EtZGV2ZWwtDQo+IGJvdW5jZXNAYWxzYS1wcm9q
+ZWN0Lm9yZ10gT24gQmVoYWxmIE9mIExpYW0gR2lyZHdvb2QNCj4gU2VudDogRnJpZGF5LCBEZWNl
+bWJlciAyMywgMjAxNiA0OjQ5IFBNDQo+IA0KPiBUaGlzIGxvb2tzIGZpbmUgYnkgbWUsIE1lbmdk
+b25nIGlzIHRoaXMgc3RpbGwgdW51c2VkIG9yIGlzIGl0IG5lZWRlZCBieSBhDQo+IGZ1dHVyZSBw
+YXRjaCA/DQoNCkhpIExpYW0sDQoNClRoaXMgIndpZGdldF9jb250cm9sX21hcCIgaXMgc3RpbGwg
+dW51c2VkIG5vdy4NCg0KQ291bGQgeW91IHJlbWVtYmVyIHdoeSB3ZSBkZWZpbmUgdGhpcyBtYXAg
+aW4gdGhlIGVhcmx5IHBoYXNlPw0KSSBndWVzcyBwcmV2aW91c2x5IHdlIHdhbnQgdG8gZGlzdGlu
+Z3Vpc2ggc3RhbmQtYWxvbmUgY29udHJvbHMgZnJvbSBjb250cm9scyBlbWJlZGRlZCBpbiB3aWRn
+ZXRzLiBCdXQgbm93IHdlIHByb2Nlc3MgdGhlbSBpbiB0aGUgc2FtZSB3YXksIGJvdGggaW4gdXNl
+ciBzcGFjZSBhbmQga2VybmVsLiANCg0KU28gSSBmZWVsIHdlIGNhbiByZW1vdmUgdGhpcyBzdHJ1
+Y3R1cmUuIA0KDQpUaGFua3MNCk1lbmdkb25nDQoNCj4gDQo+IE9uIFNhdCwgMjAxNi0xMi0xNyBh
+dCAwOTozOSArMDkwMCwgVGFrYXNoaSBTYWthbW90byB3cm90ZToNCj4gPiBQaW5nIHRvIExpYW0u
+IEkgd2lzaCB0aGlzIHBhdGNoIHdvdWxkIGJlIGluY2x1ZGVkIHRvIG5leHQgcmVsZWFzZSBvZg0K
+PiA+IHRoaXMgbGlicmFyeS4NCj4gPg0KPiA+IE9uIDIwMTblubQxMeaciDMw5pelIDAwOjQ0LCBU
+YWthc2hpIFNha2Ftb3RvIHdyb3RlOg0KPiA+ID4gTGFzdCB5ZWFyLCB1bnVzZWQgc3RhdGljIGNv
+bnN0IHZhcmlhYmxlIHdhcyBhZGRlZCwgdGhlbiBjb21waWxlcg0KPiA+ID4gZ2VuZXJhdGVzIGEg
+YmVsb3cgd2FybmluZy4NCj4gPiA+DQo+ID4gPiBkYXBtLmM6NDM6MzA6IHdhcm5pbmc6IOKAmHdp
+ZGdldF9jb250cm9sX21hcOKAmSBkZWZpbmVkIGJ1dCBub3QgdXNlZA0KPiA+ID4gWy1XdW51c2Vk
+LWNvbnN0LXZhcmlhYmxlPV0gIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbWFwX2VsZW0NCj4gd2lkZ2V0
+X2NvbnRyb2xfbWFwW10gPSB7DQo+ID4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBe
+fn5+fn5+fn5+fn5+fn5+fn4NCj4gPiA+DQo+ID4gPiBUaGlzIGNvbW1pdCByZW1vdmVzIGl0Lg0K
+PiA+ID4NCj4gPiA+IEZpeGVzOiAwMWEwZTFhMWMyMTkgKCJ0b3BvbG9neTogQWRkIERBUE0gb2Jq
+ZWN0IHBhcnNlciIpDQo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBUYWthc2hpIFNha2Ftb3RvIDxvLXRh
+a2FzaGlAc2FrYW1vY2NoaS5qcD4NCj4gPiA+IC0tLQ0KPiA+ID4gIHNyYy90b3BvbG9neS9kYXBt
+LmMgfCA4IC0tLS0tLS0tDQo+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDggZGVsZXRpb25zKC0pDQo+
+ID4gPg0KPiA+ID4gZGlmZiAtLWdpdCBhL3NyYy90b3BvbG9neS9kYXBtLmMgYi9zcmMvdG9wb2xv
+Z3kvZGFwbS5jIGluZGV4DQo+ID4gPiBlODMwNzUxLi44YzU4NWE3IDEwMDY0NA0KPiA+ID4gLS0t
+IGEvc3JjL3RvcG9sb2d5L2RhcG0uYw0KPiA+ID4gKysrIGIvc3JjL3RvcG9sb2d5L2RhcG0uYw0K
+PiA+ID4gQEAgLTM5LDE0ICszOSw2IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbWFwX2VsZW0gd2lk
+Z2V0X21hcFtdID0gew0KPiA+ID4gIAl7ImRhaV9saW5rIiwgU05EX1NPQ19UUExHX0RBUE1fREFJ
+X0xJTkt9LCAgfTsNCj4gPiA+DQo+ID4gPiAtLyogbWFwcGluZyBvZiB3aWRnZXQga2NvbnRyb2wg
+dGV4dCBuYW1lcyB0byB0eXBlcyAqLyAtc3RhdGljIGNvbnN0DQo+ID4gPiBzdHJ1Y3QgbWFwX2Vs
+ZW0gd2lkZ2V0X2NvbnRyb2xfbWFwW10gPSB7DQo+ID4gPiAtCXsidm9sc3ciLCBTTkRfU09DX1RQ
+TEdfREFQTV9DVExfVk9MU1d9LA0KPiA+ID4gLQl7ImVudW1fZG91YmxlIiwgU05EX1NPQ19UUExH
+X0RBUE1fQ1RMX0VOVU1fRE9VQkxFfSwNCj4gPiA+IC0JeyJlbnVtX3ZpcnQiLCBTTkRfU09DX1RQ
+TEdfREFQTV9DVExfRU5VTV9WSVJUfSwNCj4gPiA+IC0JeyJlbnVtX3ZhbHVlIiwgU05EX1NPQ19U
+UExHX0RBUE1fQ1RMX0VOVU1fVkFMVUV9LA0KPiA+ID4gLX07DQo+ID4gPiAtDQo+ID4gPiAgc3Rh
+dGljIGludCBsb29rdXBfd2lkZ2V0KGNvbnN0IGNoYXIgKncpICB7DQo+ID4gPiAgCXVuc2lnbmVk
+IGludCBpOw0KPiA+ID4NCj4gDQo+IA0KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXw0KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdA0KPiBBbHNhLWRldmVs
+QGFsc2EtcHJvamVjdC5vcmcNCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYWxzYS1kZXZlbAo=
