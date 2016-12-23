@@ -1,18 +1,18 @@
 From: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: Re: [PATCH 1/3] ASoC: tlv320aic3x: Mark the RESET
- register as volatile
-Date: Fri, 23 Dec 2016 20:27:09 +0200
-Message-ID: <001a281f-6ae1-37ed-30a0-48cc07fa68ca@bitmer.com>
+Subject: Re: [PATCH 3/3] ASoC: tlv320aic3x: Add controls for
+ selecting HP power down modes
+Date: Fri, 23 Dec 2016 20:47:07 +0200
+Message-ID: <084901eb-25be-4941-0cbc-0e88cc4010d6@bitmer.com>
 References: <20161223092112.7992-1-peter.ujfalusi@ti.com>
- <20161223092112.7992-2-peter.ujfalusi@ti.com>
+ <20161223092112.7992-4-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from bitmer.com (bitmer.com [213.157.87.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 604CB26719A
- for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2016 19:27:17 +0100 (CET)
-In-Reply-To: <20161223092112.7992-2-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 728FF26719A
+ for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2016 19:47:09 +0100 (CET)
+In-Reply-To: <20161223092112.7992-4-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,46 +26,30 @@ To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Lia
 Cc: alsa-devel@alsa-project.org, jsarha@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi
-
 On 12/23/2016 11:21 AM, Peter Ujfalusi wrote:
-> The RESET register only have one self clearing bit and it should not be
-> cached. If it is cached, when we sync the registers back to the chip we
-> will initiate a software reset as well, which is not desirable.
+> When the HP drivers are powered down, their output can be placed in
+> high-impedance state or it can be weakly driven to the VCM level.
+> High-impedance mode provides better power saving in the expense of pop
+> noise when powering up the HP.
+> When the output is driven to VCM level the artifacts can be minimized, but
+> the power down power consumption will be slightly higher.
+> 
+> The patch adds way to select the HPL/R power-down mode.
 > 
 > Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 > ---
->  sound/soc/codecs/tlv320aic3x.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
+>  sound/soc/codecs/tlv320aic3x.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 > 
-> diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-> index 216f74084c6a..7b6924e19021 100644
-> --- a/sound/soc/codecs/tlv320aic3x.c
-> +++ b/sound/soc/codecs/tlv320aic3x.c
-> @@ -126,6 +126,16 @@ static const struct reg_default aic3x_reg[] = {
->  	{ 108, 0x00 }, { 109, 0x00 },
->  };
->  
-> +static bool aic3x_volatile_reg(struct device *dev, unsigned int reg)
-> +{
-> +	switch (reg) {
-> +	case AIC3X_RESET:
-> +		return true;
-> +	default:
-> +		return false;
-> +	}
-> +}
-> +
+This certainly gives more possibilities to control this depending on
+use-case and device idleness. However I think does it find use or will
+it end up being a random choice?
 
-You mentioned offline you tracked this into my commit 9fb352b18b11
-("ASoC: tlv320aic3x: Do soft reset to codec when going to bias off
-state") but was it by bisecting or by debugging? I think I tried to
-cover it in a commit before 508b76864c18 ("ASoC: tlv320aic3x: Don't sync
-first two registers from register cache").
+Alternative could be some high-impedance widget that defines the output
+mode and what a machine driver wanting lower power consumption can
+connect instead of HP outputs. Another idea that comes to my mind do you
+hear the pop if output is let to be in high-impedance but is driven to
+VCM with some delay before powering up?
 
-If you found it by debugging can it be that pop noise came because of
-2a6fedec195b ("ASoC: tlv320aic3x: Convert to direct regmap API usage")?
-
-Just thinking if there's a need to have this into stable.
-
-Reviewed-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+-- 
+Jarkko
