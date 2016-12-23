@@ -1,16 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 1/3] ASoC: tlv320aic3x: Mark the RESET register
-	as volatile
-Date: Fri, 23 Dec 2016 11:21:10 +0200
-Message-ID: <20161223092112.7992-2-peter.ujfalusi@ti.com>
+Subject: [PATCH 2/3] ASoC: tlv320aic3x: Add delay after power
+	on and register sync
+Date: Fri, 23 Dec 2016 11:21:11 +0200
+Message-ID: <20161223092112.7992-3-peter.ujfalusi@ti.com>
 References: <20161223092112.7992-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from fllnx209.ext.ti.com (fllnx209.ext.ti.com [198.47.19.16])
- by alsa0.perex.cz (Postfix) with ESMTP id E52E2266949
- for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2016 10:21:06 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 18220266949
+ for <alsa-devel@alsa-project.org>; Fri, 23 Dec 2016 10:21:08 +0100 (CET)
 In-Reply-To: <20161223092112.7992-1-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,45 +25,33 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 Cc: alsa-devel@alsa-project.org, jarkko.nikula@bitmer.com, jsarha@ti.com
 List-Id: alsa-devel@alsa-project.org
 
-The RESET register only have one self clearing bit and it should not be
-cached. If it is cached, when we sync the registers back to the chip we
-will initiate a software reset as well, which is not desirable.
+When the codec is powered on, it's registers are in reset state as the
+power off will do a soft reset of the codec.
+
+After the register sync we need to add delay to remove the pop-noise on
+stream start.
 
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/codecs/tlv320aic3x.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ sound/soc/codecs/tlv320aic3x.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 216f74084c6a..7b6924e19021 100644
+index 7b6924e19021..bc220f83dd1f 100644
 --- a/sound/soc/codecs/tlv320aic3x.c
 +++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -126,6 +126,16 @@ static const struct reg_default aic3x_reg[] = {
- 	{ 108, 0x00 }, { 109, 0x00 },
- };
- 
-+static bool aic3x_volatile_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case AIC3X_RESET:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
+@@ -1393,6 +1393,12 @@ static int aic3x_set_power(struct snd_soc_codec *codec, int power)
+ 			snd_soc_write(codec, AIC3X_PLL_PROGC_REG, pll_c);
+ 			snd_soc_write(codec, AIC3X_PLL_PROGD_REG, pll_d);
+ 		}
 +
- static const struct regmap_config aic3x_regmap = {
- 	.reg_bits = 8,
- 	.val_bits = 8,
-@@ -133,6 +143,9 @@ static const struct regmap_config aic3x_regmap = {
- 	.max_register = DAC_ICC_ADJ,
- 	.reg_defaults = aic3x_reg,
- 	.num_reg_defaults = ARRAY_SIZE(aic3x_reg),
-+
-+	.volatile_reg = aic3x_volatile_reg,
-+
- 	.cache_type = REGCACHE_RBTREE,
- };
- 
++		/*
++		 * Delay is needed to reduce pop-noise after syncing back the
++		 * registers
++		 */
++		mdelay(50);
+ 	} else {
+ 		/*
+ 		 * Do soft reset to this codec instance in order to clear
 -- 
 2.11.0
