@@ -1,32 +1,35 @@
-From: Geliang Tang <geliangtang@gmail.com>
-Subject: [PATCH] ALSA: mixart: fix a comment typo
-Date: Sat, 24 Dec 2016 23:28:34 +0800
-Message-ID: <33bee1ec2bea0a063ad6f6cf003e91ccfa6daab1.1482300478.git.geliangtang@gmail.com>
+From: Gabriele Mazzotta <gabriele.mzt@gmail.com>
+Subject: [PATCH 1/2] ALSA: hda - Apply ALC269_FIXUP_NO_SHUTUP on HDA_FIXUP_ACT_PROBE
+Date: Sat, 24 Dec 2016 19:50:00 +0100
+Message-ID: <20161224185001.26824-1-gabriele.mzt@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jiri Kosina <trivial@kernel.org>
-Cc: Geliang Tang <geliangtang@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Gabriele Mazzotta <gabriele.mzt@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Fix a comment typo in mixart.h.
+Setting shutup when the action is HDA_FIXUP_ACT_PRE_PROBE might
+not have the desired effect since it could be overridden by
+another more generic shutup function. Prevent this by setting
+the more specific shutup function on HDA_FIXUP_ACT_PROBE.
 
-Signed-off-by: Geliang Tang <geliangtang@gmail.com>
+Signed-off-by: Gabriele Mazzotta <gabriele.mzt@gmail.com>
 ---
- sound/pci/mixart/mixart.h | 2 +-
+ sound/pci/hda/patch_realtek.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/mixart/mixart.h b/sound/pci/mixart/mixart.h
-index 0cc17e0..4267438 100644
---- a/sound/pci/mixart/mixart.h
-+++ b/sound/pci/mixart/mixart.h
-@@ -86,7 +86,7 @@ struct mixart_mgr {
- 	u32 msg_fifo[MSG_FIFO_SIZE];
- 	int msg_fifo_readptr;
- 	int msg_fifo_writeptr;
--	atomic_t msg_processed;       /* number of messages to be processed in takslet */
-+	atomic_t msg_processed;       /* number of messages to be processed in tasklet */
- 
- 	struct mutex lock;              /* interrupt lock */
- 	struct mutex msg_lock;		/* mailbox lock */
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index ea81c08ddc7a..d30cc49512e4 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4400,7 +4400,7 @@ static void alc_no_shutup(struct hda_codec *codec)
+ static void alc_fixup_no_shutup(struct hda_codec *codec,
+ 				const struct hda_fixup *fix, int action)
+ {
+-	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
++	if (action == HDA_FIXUP_ACT_PROBE) {
+ 		struct alc_spec *spec = codec->spec;
+ 		spec->shutup = alc_no_shutup;
+ 	}
 -- 
-2.9.3
+2.11.0
