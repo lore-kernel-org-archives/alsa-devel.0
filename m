@@ -1,20 +1,14 @@
-From: =?UTF-8?Q?Giedrius_Trainavi=C4=8Dius?= <giedrius.trainavicius@gmail.com>
-Subject: Re: Stream format conversion in SoC driver
-Date: Tue, 27 Dec 2016 23:23:37 +0200
-Message-ID: <CABpuRUMfB+VvwpqMz7mc_q1RCYR5RS-FjQ8czVXUYeW70y_V7A@mail.gmail.com>
-References: <CABpuRUPg8LC_+eFL3UBS-jWkQicpKmorvzhqjZW6p8xQ9P0ppw@mail.gmail.com>
- <089A4555-3272-4E65-8AD6-412B41017ACA@ladisch.de>
+From: Paul Menzel <paulepanter@users.sourceforge.net>
+Subject: [PATCH] alsactl: Remove standard output definition in
+	systemd unit
+Date: Tue, 27 Dec 2016 23:47:32 +0100
+Message-ID: <1482878852.3735.21.camel@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============3038754216491345693=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ua0-f193.google.com (mail-ua0-f193.google.com
- [209.85.217.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 78AE326665B
- for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2016 22:23:38 +0100 (CET)
-Received: by mail-ua0-f193.google.com with SMTP id d5so10803146uag.0
- for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2016 13:23:38 -0800 (PST)
-In-Reply-To: <089A4555-3272-4E65-8AD6-412B41017ACA@ladisch.de>
+Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
+ by alsa0.perex.cz (Postfix) with ESMTP id B91A3266B22
+ for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2016 23:47:41 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,26 +18,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Jordi Mallach <jordi@debian.org>
 List-Id: alsa-devel@alsa-project.org
 
-VW5mb3J0dW5hdGVseSB0aGUgJ3ZvbHVtZWFsc2EnIHdpZGdldCB1c2VkIGJ5IFJhc3BiaWFuIGRv
-ZXMgbm90IHN1cHBvcnQKJ3BsdWcnIGluIC5hc291bmRyYy4uLiAoCmh0dHBzOi8vZ2l0aHViLmNv
-bS9yYXNwYmVycnlwaS9seHBhbmVsL2Jsb2IvbWFzdGVyL3BsdWdpbnMvdm9sdW1lYWxzYS92b2x1
-bWVhbHNhLmMpCkl0IGhhcmRjb2RlcyBkZWZhdWx0IGRldmljZSB0byB0eXBlICdodycuCgpJIGhv
-cGVkIEkgY291bGQgZ2V0IHRyYW5zY29kaW5nIGdldHRpbmcgZG9uZSB3aXRoaW4gdGhlIGtlcm5l
-bCBzcGFjZSwgdGhlbgpubyBjaGFuZ2VzIHRvIFJhc3BiaWFuJ3MgJ3ZvbHVtZWFsc2EnIHdvdWxk
-IGJlIG5lZWRlZC4uLgoKSXMgdGhlcmUgYW55IG90aGVyIHdheSBwb3NzaWJsZT8KClRoYW5rIHlv
-dSwKR2llZHJpdXMuCgpPbiBUdWUsIERlYyAyNywgMjAxNiBhdCAxMDo1MSBQTSwgQ2xlbWVucyBM
-YWRpc2NoIDxjbGVtZW5zQGxhZGlzY2guZGU+Cndyb3RlOgoKPiBHaWVkcml1cyBUcmFpbmF2acSN
-aXVzIiB3cm90ZToKPiA+SXMgaXQgcG9zc2libGUgdG8gaGF2ZSBBTFNBIGRvIHRoZSBuZWNlc3Nh
-cnkgZm9ybWF0IGNvbnZlcnNpb25zIGZvciB0aGUKPiBQQ00KPiA+c3RyZWFtcyBpbiBuYXRpdmVs
-eSB1bnN1cHBvcnRlZCBmb3JtYXRzIHRvIHRoZSBjbG9zZXN0IG5hdGl2ZWx5IHN1cHBvcnRlZAo+
-ID5mb3JtYXQ/Cj4KPiBZZXMgKGluIHVzZXJzcGFjZSkuCj4KPiA+V2hhdCB3b3VsZCBiZSByZXF1
-aXJlZCB0byBlbmFibGUgaXQ/Cj4KPiBOb3RoaW5nOyB0aGUgInBsdWciIHBsdWdpbiBpcyBhdXRv
-bWF0aWNhbGx5IHVzZWQgYnkgdGhlCj4gZGVmYXVsdCBkZXZpY2UuCj4KPgo+IFJlZ2FyZHMsCj4g
-Q2xlbWVucwo+Cj4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+
+--===============3038754216491345693==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
+	boundary="=-r7SXZtAN3IdIZdsdAy5/"
+
+
+--=-r7SXZtAN3IdIZdsdAy5/
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Date: Tue, 8 Jul 2014 07:23:06 +0000
+
+`/lib/systemd/system/alsa-restore.service` specifies
+`StandardOutput=3Dsyslog`. This overrides the `DefaultStandardOutput`
+setting from `/etc/systemd/system.conf`, which the system administrator
+can use to specify how output gets logged. In particular, the sysadmin
+may want output to go to the journal, or to syslog, or nowhere at all [1].
+
+This patch removes the definition entirely, so the units can use the
+system default.
+
+Upstream the patch from the Debian package [2].
+
+[1] https://bugs.debian.org/741123
+=C2=A0   "systemd services should not use StandardOutput=3Dsyslog; should r=
+ely
+     on DefaultStandardOutput"
+[2] https://sources.debian.net/src/alsa-utils/1.1.2-1/debian/patches/system=
+d_standardoutput.patch/
+
+Signed-off-by: Paul Menzel <paulepanter@users.sourceforge.net>
+CC: Jordi Mallach <jordi@debian.org>
+---
+ alsactl/alsa-restore.service.in | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/alsactl/alsa-restore.service.in b/alsactl/alsa-restore.service=
+.in
+index f3cd86b..c092c2f 100644
+--- a/alsactl/alsa-restore.service.in
++++ b/alsactl/alsa-restore.service.in
+@@ -15,4 +15,3 @@ Type=3Doneshot
+ RemainAfterExit=3Dtrue
+ ExecStart=3D-@sbindir@/alsactl restore
+ ExecStop=3D-@sbindir@/alsactl store
+-StandardOutput=3Dsyslog
+--=20
+2.11.0
+--=-r7SXZtAN3IdIZdsdAy5/
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQQ8+w9d414FAVARIpk9fVorbA4dWAUCWGLvhQAKCRA9fVorbA4d
+WK9XAJ9lBPeuRAgOHvuqPveDBhQoDnTdcwCfbWC5GlTP1ORee5jXXD722w9+i6M=
+=P/jh
+-----END PGP SIGNATURE-----
+
+--=-r7SXZtAN3IdIZdsdAy5/--
+
+
+--===============3038754216491345693==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3038754216491345693==--
