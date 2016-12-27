@@ -1,73 +1,57 @@
 From: Shrirang Bagul <shrirang.bagul@canonical.com>
-Subject: Re: [alsa-devel] [PATCH 2/2] ASoC: Intel: boards: Add Baytrail
- RT5660 machine driver
-Date: Tue, 27 Dec 2016 11:29:46 +0800
-Message-ID: <1482809386.3862.5.camel@canonical.com>
+Subject: Re: [PATCH 1/2] ASoC: rt5660: Add ACPI support
+Date: Tue, 27 Dec 2016 11:31:08 +0800
+Message-ID: <1482809468.3862.6.camel@canonical.com>
 References: <20161219135147.24208-1-shrirang.bagul@canonical.com>
-         <20161219135147.24208-3-shrirang.bagul@canonical.com>
-         <20161219155509.qs7o5tdnz5z6ksuw@sirena.org.uk>
-         <a712abe0-4fc0-8b7f-b819-2903564b88c6@linux.intel.com>
-         <20161219164402.g4knszgpgowfxelb@sirena.org.uk>
+         <20161219135147.24208-2-shrirang.bagul@canonical.com>
+         <20161219154428.qedy4fxmtsvownvh@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-dHkWy03rRZUvakHdOSxu"
+        protocol="application/pgp-signature"; boundary="=-bpIMdyIRQAB00TiOtVi6"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20161219164402.g4knszgpgowfxelb@sirena.org.uk>
+In-Reply-To: <20161219154428.qedy4fxmtsvownvh@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Jorge Fernandez Monteagudo <jorgefm@cirsa.com>, Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Ramesh Babu <ramesh.babu@intel.com>, Ben Zhang <benzh@chromium.org>, John Keeping <john@metanate.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Colin Ian King <colin.king@canonical.com>, Jeeja KP <jeeja.kp@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---=-dHkWy03rRZUvakHdOSxu
+--=-bpIMdyIRQAB00TiOtVi6
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2016-12-19 at 16:44 +0000, Mark Brown wrote:
-> On Mon, Dec 19, 2016 at 10:30:09AM -0600, Pierre-Louis Bossart wrote:
+On Mon, 2016-12-19 at 15:44 +0000, Mark Brown wrote:
+> On Mon, Dec 19, 2016 at 09:51:46PM +0800, Shrirang Bagul wrote:
 >=20
-> > All this code seems to be largely a copy-paste of the bytcr_rt5640 mach=
-ine
-> > driver and the same comments would apply there. This patch did miss the=
- last
+> > +static const struct acpi_gpio_params audio_wake_intr_gpio =3D { 0, 0, =
+false
+> > };
+> > +static const struct acpi_gpio_params lineout_mute_gpio =3D { 1, 0, tru=
+e };
 >=20
-> Yes, there's a lot of room for cleanups in the existing code too (and of
-> course if there's such a large amount of cut'n'paste that implies that
-> there should be some code reuse going on).
-Thank you for the review and valuable comments. Following the discussion so=
- far,
-I feel the proper way would be to adapt bytcr_rt5660  machine driver to man=
-age
-RT5660 codec.
->=20
-> > correction merged by Mark to deal with errors "ASoC: Intel: bytcr_rt564=
-0:
-> > fallback mechanism if MCLK is not enabled" and the same error handling =
-would
-> > be needed.
->=20
-> There was a cut back version of it I thought?
-Will try and include the MCLK fallback patch in ver. 2 of the patch.
---=-dHkWy03rRZUvakHdOSxu
+> Can we please write these in a fashion more idiomatic for the kernel and
+> useful for human readers with named struct fields?
+Okay, will update in ver. 2 of the patch. Thanks.
+--=-bpIMdyIRQAB00TiOtVi6
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQI6BAABCAAkBQJYYeAqHRxzaHJpcmFuZy5iYWd1bEBjYW5vbmljYWwuY29tAAoJ
-ELlj3b/+u+hkF9QQAIJjUZEZwxAwSiI1dqeIMuQ8lHDtU/jHA91D2dJbCxaGNE41
-LPnbRoSnf2cnOqAU4bH+/tBzXRXL8e6NDFQPPJK0BBSdyNm9FSS6+R/1sh5ow9g+
-SXqrPVS3aNTcPndFcS+NK/bc4elMiBfL0fhSwNVPTpVyVW52rbKEKJR3UN/p0P/j
-3FhJkTpWkJU5W5MqrALolcSg2mHlbpbw3kxuW143Vbcq5434PqXNDMYy/ReVwauY
-wh18LEDiQ/BD61MEYLyFKHIH1yCWySpmLcMdQbaUoLd9HH670/9xt0m1qOuhAN0j
-LR42gtYWsXIJafWa2KWMvVznSmwyqFQ7pjqnFJklYw8YR4nH+r/B3M0+KLSA3S7j
-xuP7mSgRfxypkqwph5B1Bd/uT/g4WG9VwVVmH8q/rou8Q/Z4Q8R/25eSo27X7cf9
-dAxLdjVFbeZRYvZUx+XJP39aeDim0NbU6stlOY7nq9mRPFmglbSO6n3RQVeur+bR
-vnl6DVEduHWRVu80ppoXGAhg33l86UszniXIs/7fAVDD3WErvxto0jgqW2Id4uRY
-ESR3FoIlFD9dzGPJqKNGwioTArt+lnfrsQokXrXkzItGHsBM4qor5+JDuh7Ph8dF
-ukgWjjrRw4GJM62u2JfRWMKPZiftXs3BcX5nCSUY/clXDOIakvXgR6/3vbNA
-=KsFp
+iQI6BAABCAAkBQJYYeB8HRxzaHJpcmFuZy5iYWd1bEBjYW5vbmljYWwuY29tAAoJ
+ELlj3b/+u+hkeHMP/Razg3jYOTiblXJ0/9qE0WQvESZze6pknqBm+OgFibUZeNwn
+gXcM2RbEYllAeeQJf+1oZNbuRtZ5+1uXJ8+fTXwmmUnZR32scKe2nnIp1JUvKDV5
+pR3iXhyPaLnmQUuYjkDFvIVVW10LlSiFmvdmwAGlxaXA/r83AD9/5PtsLPQQVyBv
+oiqN+BFAc9THP/NT8QawsVYrsqbS2G7e3B+dcOKD+U+S5vqNzCZuEzDHqQYTmXDD
+Da6OjDZkyXZEfk8UkbJHh6Y2Ij7O0/ZPY7UUpgma43LvKi+X8gmcXo+Zbwvfv+JL
++fUdc8iqbTX4muMxsS3yzi83xG0zptIHT/Pph41Lme4y5ExuQBsW0m+CWKJgC8by
+60gHqp3AQ6uD+KrpKwPSo/zF/oGH2Bht/PahcKI+orI2/rQ/iQ9myGV6k85VQ1h5
+DAVLUoUgZEwNH3+uIGCnql1o55Fv2vLsWYmUY1eYvMQQaBEbV7c2Ku7lbg6Kc+Bj
+4cqRjIz7gmTbKaC500sfd7wf8V40dldlKruifxd8xT3WkYKGBjo+oEok7yOt9wBo
+e9oEuN9NXg9qGuaOWG3lEMKEB3kVL60NDqX1jbqiDNPm1SxT6k6mh+KrTWNYRwA7
+rAvnpNCdgU2c8gtuauwOBnD6jgKA0LCrYDZj8bLhnSozTR3zy+9BWh3xFWsY
+=rCm2
 -----END PGP SIGNATURE-----
 
---=-dHkWy03rRZUvakHdOSxu--
+--=-bpIMdyIRQAB00TiOtVi6--
