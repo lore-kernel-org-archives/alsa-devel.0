@@ -1,18 +1,17 @@
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
-Subject: Re: [PATCH][alsa-lib] topology: fix sign-compare
- warning introduced to set_link_hw_config() and tplg_add_link_object()
-Date: Tue, 27 Dec 2016 18:39:17 +0800
-Message-ID: <586244D5.5010306@linux.intel.com>
-References: <20161129154114.8044-1-o-takashi@sakamocchi.jp>
- <378f4729-f0a2-c912-e2b4-39609fa2740f@sakamocchi.jp>
+From: =?UTF-8?Q?Giedrius_Trainavi=C4=8Dius?= <giedrius.trainavicius@gmail.com>
+Subject: Stream format conversion in SoC driver
+Date: Tue, 27 Dec 2016 15:44:20 +0200
+Message-ID: <CABpuRUPg8LC_+eFL3UBS-jWkQicpKmorvzhqjZW6p8xQ9P0ppw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id CA49F26699C
- for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2016 11:36:27 +0100 (CET)
-In-Reply-To: <378f4729-f0a2-c912-e2b4-39609fa2740f@sakamocchi.jp>
+Received: from mail-ua0-f180.google.com (mail-ua0-f180.google.com
+ [209.85.217.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0AA79265DB7
+ for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2016 14:44:22 +0100 (CET)
+Received: by mail-ua0-f180.google.com with SMTP id v2so8246478uac.2
+ for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2016 05:44:22 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +21,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAxMi8xNy8yMDE2IDA4OjQwIEFNLCBUYWthc2hpIFNha2Ftb3RvIHdyb3RlOgo+IFBpbmcg
-dG8gTWVuZ2RvbmcgTGluLiBJIHdpc2ggdGhpcyBwYXRjaCB3b3VsZCBiZSBpbmNsdWRlZCB0byBu
-ZXh0Cj4gcmVsZWFzZSBvZiB0aGlzIGxpYnJhcnkuCgpTb3JyeSBmb3IgdGhlIGxhdGUgcmVwbHkg
-YW5kIHRoYW5rcyBmb3IgdGhlIGZpeC4gVGhlIHBhdGNoZXMgbG9va3MgZ29vZCAKdG8gbWUuCgpU
-aGFua3MKTWVuZ2RvbmcKCj4KPiBPbiAyMDE25bm0MTHmnIgzMOaXpSAwMDo0MSwgVGFrYXNoaSBT
-YWthbW90byB3cm90ZToKPj4gU29tZSBmdW5jdGlvbnMgcmVjZW50bHkgaW50cm9kdWNlZCB0byB0
-aGlzIGxpYnJhcnkgaW5jbHVkZSBjb21wYXJpc29uCj4+IGJldHdlZW4gdmFyaWFibGVzIHdpdGgg
-ZGlmZmVyZW50IHR5cGVzLCB0aGVuIGNvbXBpbGVyIGdlbmVyYXRlcwo+PiBiZWxvdyB3YXJuaW5n
-cy4KPj4KPj4gcGNtLmM6IEluIGZ1bmN0aW9uIOKAmHNldF9saW5rX2h3X2NvbmZpZ+KAmToKPj4g
-cGNtLmM6MTE3OToxNjogd2FybmluZzogY29tcGFyaXNvbiBiZXR3ZWVuIHNpZ25lZCBhbmQgdW5z
-aWduZWQgaW50ZWdlciBleHByZXNzaW9ucyBbLVdzaWduLWNvbXBhcmVdCj4+ICAgIGZvciAoaSA9
-IDA7IGkgPCBjZmctPnR4X2NoYW5uZWxzOyBpKyspCj4+ICAgICAgICAgICAgICAgICAgXgo+PiBw
-Y20uYzoxMTgzOjE2OiB3YXJuaW5nOiBjb21wYXJpc29uIGJldHdlZW4gc2lnbmVkIGFuZCB1bnNp
-Z25lZCBpbnRlZ2VyIGV4cHJlc3Npb25zIFstV3NpZ24tY29tcGFyZV0KPj4gICAgZm9yIChpID0g
-MDsgaSA8IGNmZy0+cnhfY2hhbm5lbHM7IGkrKykKPj4gICAgICAgICAgICAgICAgICBeCj4+IHBj
-bS5jOiBJbiBmdW5jdGlvbiDigJh0cGxnX2FkZF9saW5rX29iamVjdOKAmToKPj4gcGNtLmM6MTIy
-MzoxNjogd2FybmluZzogY29tcGFyaXNvbiBiZXR3ZWVuIHNpZ25lZCBhbmQgdW5zaWduZWQgaW50
-ZWdlciBleHByZXNzaW9ucyBbLVdzaWduLWNvbXBhcmVdCj4+ICAgIGZvciAoaSA9IDA7IGkgPCBs
-aW5rLT5udW1fc3RyZWFtczsgaSsrKQo+PiAgICAgICAgICAgICAgICAgIF4KPj4gcGNtLmM6MTIz
-MToxNjogd2FybmluZzogY29tcGFyaXNvbiBiZXR3ZWVuIHNpZ25lZCBhbmQgdW5zaWduZWQgaW50
-ZWdlciBleHByZXNzaW9ucyBbLVdzaWduLWNvbXBhcmVdCj4+ICAgIGZvciAoaSA9IDA7IGkgPCBs
-aW5rLT5udW1faHdfY29uZmlnczsgaSsrKQo+Pgo+PiBUaGlzIGNvbW1pdCBzdXBwcmVzc2VzIHRo
-ZW0uCj4+Cj4+IEZpeGVzOiA2YjRkNzc1Yjk3NTIgKCJ0b3BvbG9neTogUGFyc2UgSFcgY29uZmln
-dXJhdGlvbnMgb2YgcGh5c2ljYWwgREFJIGxpbmtzIGRlZmluZWQgYnkgQyBBUEkiKQo+PiBTaWdu
-ZWQtb2ZmLWJ5OiBUYWthc2hpIFNha2Ftb3RvIDxvLXRha2FzaGlAc2FrYW1vY2NoaS5qcD4KPj4g
-LS0tCj4+ICAgc3JjL3RvcG9sb2d5L3BjbS5jIHwgNCArKy0tCj4+ICAgMSBmaWxlIGNoYW5nZWQs
-IDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL3NyYy90
-b3BvbG9neS9wY20uYyBiL3NyYy90b3BvbG9neS9wY20uYwo+PiBpbmRleCA4ZjhhNzAzLi4xZGU4
-NjU1IDEwMDY0NAo+PiAtLS0gYS9zcmMvdG9wb2xvZ3kvcGNtLmMKPj4gKysrIGIvc3JjL3RvcG9s
-b2d5L3BjbS5jCj4+IEBAIC0xMTQ3LDcgKzExNDcsNyBAQCBpbnQgdHBsZ19hZGRfcGNtX29iamVj
-dChzbmRfdHBsZ190ICp0cGxnLCBzbmRfdHBsZ19vYmpfdGVtcGxhdGVfdCAqdCkKPj4gICBzdGF0
-aWMgaW50IHNldF9saW5rX2h3X2NvbmZpZyhzdHJ1Y3Qgc25kX3NvY190cGxnX2h3X2NvbmZpZyAq
-Y2ZnLAo+PiAgIAkJCXN0cnVjdCBzbmRfdHBsZ19od19jb25maWdfdGVtcGxhdGUgKnRwbCkKPj4g
-ICB7Cj4+IC0JaW50IGk7Cj4+ICsJdW5zaWduZWQgaW50IGk7Cj4+Cj4+ICAgCWNmZy0+c2l6ZSA9
-IHNpemVvZigqY2ZnKTsKPj4gICAJY2ZnLT5pZCA9IHRwbC0+aWQ7Cj4+IEBAIC0xMTkwLDcgKzEx
-OTAsNyBAQCBpbnQgdHBsZ19hZGRfbGlua19vYmplY3Qoc25kX3RwbGdfdCAqdHBsZywgc25kX3Rw
-bGdfb2JqX3RlbXBsYXRlX3QgKnQpCj4+ICAgCXN0cnVjdCBzbmRfdHBsZ19saW5rX3RlbXBsYXRl
-ICpsaW5rX3RwbCA9IHQtPmxpbms7Cj4+ICAgCXN0cnVjdCBzbmRfc29jX3RwbGdfbGlua19jb25m
-aWcgKmxpbmssICpfbGluazsKPj4gICAJc3RydWN0IHRwbGdfZWxlbSAqZWxlbTsKPj4gLQlpbnQg
-aTsKPj4gKwl1bnNpZ25lZCBpbnQgaTsKPj4KPj4gICAJaWYgKHQtPnR5cGUgIT0gU05EX1RQTEdf
-VFlQRV9MSU5LICYmIHQtPnR5cGUgIT0gU05EX1RQTEdfVFlQRV9CRQo+PiAgIAkgICAgJiYgdC0+
-dHlwZSAhPSBTTkRfVFBMR19UWVBFX0NDKQo+Pgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxz
-YS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlz
-dGluZm8vYWxzYS1kZXZlbAo=
+Hi,
+
+We are developing a soundcard for Raspberry Pi, you may find the current
+driver source code here:
+https://github.com/raspberrypi/linux/blob/rpi-4.4.y/sound/soc/bcm/pisound.c
+
+The card natively supports 24 and 32 bit PCM streams at 48kHz, 96kHz and
+192kHz, symmetric capture and playback.
+
+Is it possible to have ALSA do the necessary format conversions for the PCM
+streams in natively unsupported formats to the closest natively supported
+format?
+
+What would be required to enable it?
+
+Thank you,
+Giedrius.
