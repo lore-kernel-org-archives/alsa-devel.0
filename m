@@ -1,57 +1,82 @@
 From: Shrirang Bagul <shrirang.bagul@canonical.com>
-Subject: Re: [PATCH 1/2] ASoC: rt5660: Add ACPI support
-Date: Tue, 27 Dec 2016 11:31:08 +0800
-Message-ID: <1482809468.3862.6.camel@canonical.com>
+Subject: Re: [alsa-devel] [PATCH 2/2] ASoC: Intel: boards: Add Baytrail
+ RT5660 machine driver
+Date: Tue, 27 Dec 2016 11:32:35 +0800
+Message-ID: <1482809555.3862.8.camel@canonical.com>
 References: <20161219135147.24208-1-shrirang.bagul@canonical.com>
-         <20161219135147.24208-2-shrirang.bagul@canonical.com>
-         <20161219154428.qedy4fxmtsvownvh@sirena.org.uk>
+         <20161219135147.24208-3-shrirang.bagul@canonical.com>
+         <20161219155509.qs7o5tdnz5z6ksuw@sirena.org.uk>
+         <a712abe0-4fc0-8b7f-b819-2903564b88c6@linux.intel.com>
+         <20161219164402.g4knszgpgowfxelb@sirena.org.uk>
+         <1482809386.3862.5.camel@canonical.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-bpIMdyIRQAB00TiOtVi6"
+        protocol="application/pgp-signature"; boundary="=-PLsFVuXny3WXrwASMbbV"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20161219154428.qedy4fxmtsvownvh@sirena.org.uk>
+In-Reply-To: <1482809386.3862.5.camel@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+To: Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Jorge Fernandez Monteagudo <jorgefm@cirsa.com>, Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Ramesh Babu <ramesh.babu@intel.com>, Ben Zhang <benzh@chromium.org>, John Keeping <john@metanate.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Colin Ian King <colin.king@canonical.com>, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---=-bpIMdyIRQAB00TiOtVi6
+--=-PLsFVuXny3WXrwASMbbV
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, 2016-12-19 at 15:44 +0000, Mark Brown wrote:
-> On Mon, Dec 19, 2016 at 09:51:46PM +0800, Shrirang Bagul wrote:
+On Tue, 2016-12-27 at 11:29 +0800, Shrirang Bagul wrote:
+> On Mon, 2016-12-19 at 16:44 +0000, Mark Brown wrote:
+> > On Mon, Dec 19, 2016 at 10:30:09AM -0600, Pierre-Louis Bossart wrote:
+> >=20
+> > > All this code seems to be largely a copy-paste of the bytcr_rt5640 ma=
+chine
+> > > driver and the same comments would apply there. This patch did miss t=
+he
+> > > last
+> >=20
+> > Yes, there's a lot of room for cleanups in the existing code too (and o=
+f
+> > course if there's such a large amount of cut'n'paste that implies that
+> > there should be some code reuse going on).
 >=20
-> > +static const struct acpi_gpio_params audio_wake_intr_gpio =3D { 0, 0, =
-false
-> > };
-> > +static const struct acpi_gpio_params lineout_mute_gpio =3D { 1, 0, tru=
-e };
+> Thank you for the review and valuable comments. Following the discussion =
+so
+> far,
+> I feel the proper way would be to adapt bytcr_rt5660=C2=A0=C2=A0machine d=
+river to manage
+> RT5660 codec.
+typo, should be bytcr_rt5640
+> >=20
+> > > correction merged by Mark to deal with errors "ASoC: Intel: bytcr_rt5=
+640:
+> > > fallback mechanism if MCLK is not enabled" and the same error handlin=
+g
+> > > would
+> > > be needed.
+> >=20
+> > There was a cut back version of it I thought?
 >=20
-> Can we please write these in a fashion more idiomatic for the kernel and
-> useful for human readers with named struct fields?
-Okay, will update in ver. 2 of the patch. Thanks.
---=-bpIMdyIRQAB00TiOtVi6
+> Will try and include the MCLK fallback patch in ver. 2 of the patch.
+--=-PLsFVuXny3WXrwASMbbV
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQI6BAABCAAkBQJYYeB8HRxzaHJpcmFuZy5iYWd1bEBjYW5vbmljYWwuY29tAAoJ
-ELlj3b/+u+hkeHMP/Razg3jYOTiblXJ0/9qE0WQvESZze6pknqBm+OgFibUZeNwn
-gXcM2RbEYllAeeQJf+1oZNbuRtZ5+1uXJ8+fTXwmmUnZR32scKe2nnIp1JUvKDV5
-pR3iXhyPaLnmQUuYjkDFvIVVW10LlSiFmvdmwAGlxaXA/r83AD9/5PtsLPQQVyBv
-oiqN+BFAc9THP/NT8QawsVYrsqbS2G7e3B+dcOKD+U+S5vqNzCZuEzDHqQYTmXDD
-Da6OjDZkyXZEfk8UkbJHh6Y2Ij7O0/ZPY7UUpgma43LvKi+X8gmcXo+Zbwvfv+JL
-+fUdc8iqbTX4muMxsS3yzi83xG0zptIHT/Pph41Lme4y5ExuQBsW0m+CWKJgC8by
-60gHqp3AQ6uD+KrpKwPSo/zF/oGH2Bht/PahcKI+orI2/rQ/iQ9myGV6k85VQ1h5
-DAVLUoUgZEwNH3+uIGCnql1o55Fv2vLsWYmUY1eYvMQQaBEbV7c2Ku7lbg6Kc+Bj
-4cqRjIz7gmTbKaC500sfd7wf8V40dldlKruifxd8xT3WkYKGBjo+oEok7yOt9wBo
-e9oEuN9NXg9qGuaOWG3lEMKEB3kVL60NDqX1jbqiDNPm1SxT6k6mh+KrTWNYRwA7
-rAvnpNCdgU2c8gtuauwOBnD6jgKA0LCrYDZj8bLhnSozTR3zy+9BWh3xFWsY
-=rCm2
+iQI6BAABCAAkBQJYYeDTHRxzaHJpcmFuZy5iYWd1bEBjYW5vbmljYWwuY29tAAoJ
+ELlj3b/+u+hk1fkP+gJFPIOM653HnaI0G2JebIwAvN7sA/FjtElLCtRW/7JxEITd
+i3lmv5LsV+e98ybsXnJF/Hkg0koH245oTBsFQq2erFWqdYFLejpe7vwzehoNcCAl
+Z9p2NDOgAYz3p+0PHjNKPKzlWflaMl4JZ07Sizml6LlmIRft4+bgTmCCXDH7czVT
+y6uQ114tlyXMADmX23XtR3zw+3kaAQauBCzSSRnqDUQmYnSdIZoWnqfLj22XzoN6
+kQTdSaIoxarUrzzTCWHNNJHnPSttvCr8LyWFcbMkSyEtpJ+CPpDbeka1UvY+t/oU
+qtOOb5b/LfQn75jgGzyGJ4BEjGwC/BpHju1y18EDRY7uTbakzHqjXGC1l7eNTTiz
+lJHwHFgVxlmYTGl5opJF1IiSKRbbmro8GyUCFKBAYTd/JovNvTgFhlT9fGtznp++
+Aa3Qj2lA4OO36fQrLx3N3hMgMffDUOZ0qeYCH3qzdCIZOdz3PpdUvVcvu3QlRa/3
+tjdt/HhyrGcwjROEaXNBibjIjpRK2GlJUBPil9nquPgA8zWoEdU1mrCjOHZ+u6Ub
+Ams6SKyDqTrognFyHUPcvNRGonMmZEBTOiafesjc5KoVoxH9mvmTIMUklr/aeRMe
+JIU4xjti1DgELAFFE99S+/wNFCzN3DYhI1LRZF3Ch6uWCnLia6iBT5px9fs4
+=6gJo
 -----END PGP SIGNATURE-----
 
---=-bpIMdyIRQAB00TiOtVi6--
+--=-PLsFVuXny3WXrwASMbbV--
