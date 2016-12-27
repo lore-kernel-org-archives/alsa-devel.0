@@ -1,82 +1,55 @@
-From: Shrirang Bagul <shrirang.bagul@canonical.com>
-Subject: Re: [alsa-devel] [PATCH 2/2] ASoC: Intel: boards: Add Baytrail
- RT5660 machine driver
-Date: Tue, 27 Dec 2016 11:32:35 +0800
-Message-ID: <1482809555.3862.8.camel@canonical.com>
-References: <20161219135147.24208-1-shrirang.bagul@canonical.com>
-         <20161219135147.24208-3-shrirang.bagul@canonical.com>
-         <20161219155509.qs7o5tdnz5z6ksuw@sirena.org.uk>
-         <a712abe0-4fc0-8b7f-b819-2903564b88c6@linux.intel.com>
-         <20161219164402.g4knszgpgowfxelb@sirena.org.uk>
-         <1482809386.3862.5.camel@canonical.com>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH 1/2] ASoC: rt5645: set sel_i2s_pre_div1 to 2
+Date: Tue, 27 Dec 2016 12:05:05 +0800
+Message-ID: <1482811506-6447-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-PLsFVuXny3WXrwASMbbV"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1482809386.3862.5.camel@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Jorge Fernandez Monteagudo <jorgefm@cirsa.com>, Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Ramesh Babu <ramesh.babu@intel.com>, Ben Zhang <benzh@chromium.org>, John Keeping <john@metanate.com>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Colin Ian King <colin.king@canonical.com>, Jeeja KP <jeeja.kp@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F2DE266713
+ for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2016 05:05:21 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, pierre-louis.bossart@linux.intel.com, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+The i2s clock pre-divider 1 is used for both i2s1 and sysclk.
+The i2s1 is usually used for the main i2s and the pre-divider
+will be set in hw_params function.
 
---=-PLsFVuXny3WXrwASMbbV
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+However, if i2s2 is used, the pre-divider is not set in the hw_params
+function and the default value of i2s clock pre-divider 1 is too high
+for sysclk and DMIC usage. Fix by overriding default divider value to 2.
 
-On Tue, 2016-12-27 at 11:29 +0800, Shrirang Bagul wrote:
-> On Mon, 2016-12-19 at 16:44 +0000, Mark Brown wrote:
-> > On Mon, Dec 19, 2016 at 10:30:09AM -0600, Pierre-Louis Bossart wrote:
-> >=20
-> > > All this code seems to be largely a copy-paste of the bytcr_rt5640 ma=
-chine
-> > > driver and the same comments would apply there. This patch did miss t=
-he
-> > > last
-> >=20
-> > Yes, there's a lot of room for cleanups in the existing code too (and o=
-f
-> > course if there's such a large amount of cut'n'paste that implies that
-> > there should be some code reuse going on).
->=20
-> Thank you for the review and valuable comments. Following the discussion =
-so
-> far,
-> I feel the proper way would be to adapt bytcr_rt5660=C2=A0=C2=A0machine d=
-river to manage
-> RT5660 codec.
-typo, should be bytcr_rt5640
-> >=20
-> > > correction merged by Mark to deal with errors "ASoC: Intel: bytcr_rt5=
-640:
-> > > fallback mechanism if MCLK is not enabled" and the same error handlin=
-g
-> > > would
-> > > be needed.
-> >=20
-> > There was a cut back version of it I thought?
->=20
-> Will try and include the MCLK fallback patch in ver. 2 of the patch.
---=-PLsFVuXny3WXrwASMbbV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=95681
+Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt5645.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
------BEGIN PGP SIGNATURE-----
-
-iQI6BAABCAAkBQJYYeDTHRxzaHJpcmFuZy5iYWd1bEBjYW5vbmljYWwuY29tAAoJ
-ELlj3b/+u+hk1fkP+gJFPIOM653HnaI0G2JebIwAvN7sA/FjtElLCtRW/7JxEITd
-i3lmv5LsV+e98ybsXnJF/Hkg0koH245oTBsFQq2erFWqdYFLejpe7vwzehoNcCAl
-Z9p2NDOgAYz3p+0PHjNKPKzlWflaMl4JZ07Sizml6LlmIRft4+bgTmCCXDH7czVT
-y6uQ114tlyXMADmX23XtR3zw+3kaAQauBCzSSRnqDUQmYnSdIZoWnqfLj22XzoN6
-kQTdSaIoxarUrzzTCWHNNJHnPSttvCr8LyWFcbMkSyEtpJ+CPpDbeka1UvY+t/oU
-qtOOb5b/LfQn75jgGzyGJ4BEjGwC/BpHju1y18EDRY7uTbakzHqjXGC1l7eNTTiz
-lJHwHFgVxlmYTGl5opJF1IiSKRbbmro8GyUCFKBAYTd/JovNvTgFhlT9fGtznp++
-Aa3Qj2lA4OO36fQrLx3N3hMgMffDUOZ0qeYCH3qzdCIZOdz3PpdUvVcvu3QlRa/3
-tjdt/HhyrGcwjROEaXNBibjIjpRK2GlJUBPil9nquPgA8zWoEdU1mrCjOHZ+u6Ub
-Ams6SKyDqTrognFyHUPcvNRGonMmZEBTOiafesjc5KoVoxH9mvmTIMUklr/aeRMe
-JIU4xjti1DgELAFFE99S+/wNFCzN3DYhI1LRZF3Ch6uWCnLia6iBT5px9fs4
-=6gJo
------END PGP SIGNATURE-----
-
---=-PLsFVuXny3WXrwASMbbV--
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 10c2a56..1ac96ef 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3833,6 +3833,9 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 		}
+ 	}
+ 
++	regmap_update_bits(rt5645->regmap, RT5645_ADDA_CLK1,
++		RT5645_I2S_PD1_MASK, RT5645_I2S_PD1_2);
++
+ 	if (rt5645->pdata.jd_invert) {
+ 		regmap_update_bits(rt5645->regmap, RT5645_IRQ_CTRL2,
+ 			RT5645_JD_1_1_MASK, RT5645_JD_1_1_INV);
+-- 
+1.8.1.1.439.g50a6b54
