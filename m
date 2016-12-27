@@ -1,13 +1,13 @@
 From: Paul Menzel <paulepanter@users.sourceforge.net>
-Subject: [PATCH] alsactl: Fix spelling mistakes
-Date: Tue, 27 Dec 2016 17:04:43 +0100
-Message-ID: <1482854683.3916.202.camel@users.sourceforge.net>
+Subject: [PATCH] alsactl: Make homedir configurable
+Date: Tue, 27 Dec 2016 17:15:27 +0100
+Message-ID: <1482855327.3916.204.camel@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4151739282127284316=="
+Content-Type: multipart/mixed; boundary="===============1474395061614260137=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
- by alsa0.perex.cz (Postfix) with ESMTP id 866A3266653
- for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2016 17:04:55 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id E4AE526665B
+ for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2016 17:15:36 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,197 +18,141 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Elimar Riesebieter <riesebie@lxtec.de>
+Cc: Jordi Mallach <jordi@debian.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4151739282127284316==
+--===============1474395061614260137==
 Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
-	boundary="=-wLBzCilchlcBuhvuRt0H"
+	boundary="=-BZvUlNgLJKzSPG/m3j+i"
 
 
---=-wLBzCilchlcBuhvuRt0H
+--=-BZvUlNgLJKzSPG/m3j+i
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Date: Sun, 8 May 2016 16:50:23 +0000
+Date: Sat, 19 Oct 2013 10:12:19 +0000
 
-Upstream the patch from the Debian package [1].
+Add new configure switch to set alsactl's homedir. This is used to avoid
+that a directory `.pulse` is created by the init script, when PulseAudio
+is installed [1].
 
-[1] https://sources.debian.net/src/alsa-utils/1.1.2-1/debian/patches/spellf=
-ixes.patch/
+[1] https://bugs.debian.org/712980
+    "alsa-utils startup script creates /.pulse files ("Failed to create
+     secure directory") when pulseaudio is installed"
 
-CC: Elimar Riesebieter <riesebie@lxtec.de>
+CC: Jordi Mallach <jordi@debian.org>
 Signed-off-by: Paul Menzel <paulepanter@users.sourceforge.net>
 ---
-The renaming from `ressize` to `resize` might not be correct, if it=E2=80=
-=99s
-the size of the variable *res*. Please tell me, if I should remove
-that.
+Please apply with `git am saved-messages.mbox`.
 
-=C2=A0alsactl/alsactl.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0|=C2=
-=A0=C2=A02 +-
-=C2=A0alsactl/init_parse.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0| 10 +++++-----
-=C2=A0alsactl/init_utils_run.c | 14 +++++++-------
-=C2=A0alsactl/state.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0|=C2=A0=C2=A02 +-
-=C2=A04 files changed, 14 insertions(+), 14 deletions(-)
+ alsactl/90-alsa-restore.rules.in | 4 ++--
+ alsactl/Makefile.am              | 1 +
+ alsactl/alsa-restore.service.in  | 4 ++--
+ alsactl/alsa-state.service.in    | 4 ++--
+ configure.ac                     | 6 ++++++
+ 5 files changed, 13 insertions(+), 6 deletions(-)
 
-diff --git a/alsactl/alsactl.c b/alsactl/alsactl.c
-index bcbc187..f0060e9 100644
---- a/alsactl/alsactl.c
-+++ b/alsactl/alsactl.c
-@@ -90,7 +90,7 @@ static struct arg args[] =3D {
-=C2=A0{ FILEARG | 'e', "pid-file", "pathname for the process id (daemon mod=
-e)" },
-=C2=A0{ HEADER, NULL, "Available init options:" },
-=C2=A0{ ENVARG | 'E', "env", "set environment variable for init phase (NAME=
-=3DVALUE)" },
--{ FILEARG | 'i', "initfile", "main configuation file for init phase" },
-+{ FILEARG | 'i', "initfile", "main configuration file for init phase" },
-=C2=A0{ 0, NULL, "=C2=A0=C2=A0(default " DATADIR "/init/00main)" },
-=C2=A0{ 'b', "background", "run daemon in background" },
-=C2=A0{ 's', "syslog", "use syslog for messages" },
-diff --git a/alsactl/init_parse.c b/alsactl/init_parse.c
-index e81174f..f2a598c 100644
---- a/alsactl/init_parse.c
-+++ b/alsactl/init_parse.c
-@@ -939,7 +939,7 @@ static int get_key(char **line, char **key, enum key_op=
- *op, char **value)
-=C2=A0}
-=C2=A0
-=C2=A0/* extract possible KEY{attr} */
--static char *get_key_attribute(struct space *space, char *str, char *res, =
-size_t ressize)
-+static char *get_key_attribute(struct space *space, char *str, char *res, =
-size_t resize)
-=C2=A0{
-=C2=A0	char *pos;
-=C2=A0	char *attr;
-@@ -953,7 +953,7 @@ static char *get_key_attribute(struct space *space, cha=
-r *str, char *res, size_t
-=C2=A0			return NULL;
-=C2=A0		}
-=C2=A0		pos[0] =3D '\0';
--		strlcpy(res, attr, ressize);
-+		strlcpy(res, attr, resize);
-=C2=A0		pos[0] =3D '}';
-=C2=A0		dbg("attribute=3D'%s'", res);
-=C2=A0		return res;
-@@ -1209,7 +1209,7 @@ found:
-=C2=A0		/* possibly truncate to format-char specified length */
-=C2=A0		if (len !=3D -1) {
-=C2=A0			head[len] =3D '\0';
--			dbg("truncate to %i chars, subtitution string becomes '%s'", len, head)=
-;
-+			dbg("truncate to %i chars, substitution string becomes '%s'", len, head=
-);
-=C2=A0		}
-=C2=A0		strlcat(string, temp, maxsize);
-=C2=A0	}
-@@ -1242,7 +1242,7 @@ found:
-=C2=A0static
-=C2=A0int run_program1(struct space *space,
-=C2=A0		=C2=A0const char *command0, char *result,
--		=C2=A0size_t ressize, size_t *reslen, int log)
-+		=C2=A0size_t resize, size_t *reslen, int log)
-=C2=A0{
-=C2=A0	if (strncmp(command0, "__ctl_search", 12) =3D=3D 0) {
-=C2=A0		const char *res =3D elemid_get(space, "do_search");
-@@ -1254,7 +1254,7 @@ int run_program1(struct space *space,
-=C2=A0		const char *res =3D elemid_get(space, "do_count");
-=C2=A0		if (res =3D=3D NULL || strcmp(res, "0") =3D=3D 0)
-=C2=A0			return EXIT_FAILURE;
--		strlcpy(result, res, ressize);
-+		strlcpy(result, res, resize);
-=C2=A0		return EXIT_SUCCESS;
-=C2=A0	}
-=C2=A0	Perror(space, "unknown buildin command '%s'", command0);
-diff --git a/alsactl/init_utils_run.c b/alsactl/init_utils_run.c
-index dde490b..ffa0e23 100644
---- a/alsactl/init_utils_run.c
-+++ b/alsactl/init_utils_run.c
-@@ -24,12 +24,12 @@
-=C2=A0static
-=C2=A0int run_program1(struct space *space,
-=C2=A0	=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0const char *co=
-mmand0, char *result,
--		=C2=A0size_t ressize, size_t *reslen, int log);
-+		=C2=A0size_t resize, size_t *reslen, int log);
-=C2=A0
-=C2=A0static
-=C2=A0int run_program0(struct space *space,
-=C2=A0	=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0const char *co=
-mmand0, char *result,
--		=C2=A0size_t ressize, size_t *reslen, int log)
-+		=C2=A0size_t resize, size_t *reslen, int log)
-=C2=A0{
-=C2=A0	int retval =3D 0;
-=C2=A0	int status;
-@@ -175,11 +175,11 @@ int run_program0(struct space *space,
-=C2=A0
-=C2=A0					/* store result for rule processing */
-=C2=A0					if (result) {
--						if (respos + count < ressize) {
-+						if (respos + count < resize) {
-=C2=A0							memcpy(&result[respos], inbuf, count);
-=C2=A0							respos +=3D count;
-=C2=A0						} else {
--							Perror(space, "ressize %ld too short", (long)ressize);
-+							Perror(space, "resize %ld too short", (long)resize);
-=C2=A0							retval =3D -1;
-=C2=A0						}
-=C2=A0					}
-@@ -239,9 +239,9 @@ int run_program0(struct space *space,
-=C2=A0
-=C2=A0static
-=C2=A0int run_program(struct space *space, const char *command0, char *resu=
-lt,
--		size_t ressize, size_t *reslen, int log)
-+		size_t resize, size_t *reslen, int log)
-=C2=A0{
-=C2=A0	if (command0[0] =3D=3D '_' && command0[1] =3D=3D '_')
--		return run_program1(space, command0, result, ressize, reslen, log);
--	return run_program0(space, command0, result, ressize, reslen, log);
-+		return run_program1(space, command0, result, resize, reslen, log);
-+	return run_program0(space, command0, result, resize, reslen, log);
-=C2=A0}
-diff --git a/alsactl/state.c b/alsactl/state.c
-index 3908ec4..d2d6dac 100644
---- a/alsactl/state.c
-+++ b/alsactl/state.c
-@@ -1160,7 +1160,7 @@ static int restore_config_value(snd_ctl_t *handle, sn=
-d_ctl_elem_info_t *info,
-=C2=A0	case SND_CTL_ELEM_TYPE_IEC958:
-=C2=A0		break;
-=C2=A0	default:
--		cerror(doit, "Unknow control type: %d", type);
-+		cerror(doit, "Unknown control type: %d", type);
-=C2=A0		return -EINVAL;
-=C2=A0	}
-=C2=A0	return 0;
---=C2=A0
+diff --git a/alsactl/90-alsa-restore.rules.in b/alsactl/90-alsa-restore.rul=
+es.in
+index c0c1b23..95b26c4 100644
+--- a/alsactl/90-alsa-restore.rules.in
++++ b/alsactl/90-alsa-restore.rules.in
+@@ -2,7 +2,7 @@ ACTION=3D=3D"add", SUBSYSTEM=3D=3D"sound", KERNEL=3D=3D"con=
+trolC*", KERNELS!=3D"card*", TEST=3D=3D
+ GOTO=3D"alsa_restore_end"
+=20
+ LABEL=3D"alsa_restore_go"
+-TEST!=3D"@daemonswitch@", RUN+=3D"@sbindir@/alsactl restore $attr{device/n=
+umber}"
+-TEST=3D=3D"@daemonswitch@", RUN+=3D"@sbindir@/alsactl nrestore $attr{devic=
+e/number}"
++TEST!=3D"@daemonswitch@", RUN+=3D"@sbindir@/alsactl -E HOME=3D@alsactlhome=
+@ restore $attr{device/number}"
++TEST=3D=3D"@daemonswitch@", RUN+=3D"@sbindir@/alsactl -E HOME=3D@alsactlho=
+me@ nrestore $attr{device/number}"
+=20
+ LABEL=3D"alsa_restore_end"
+diff --git a/alsactl/Makefile.am b/alsactl/Makefile.am
+index cac8094..d03137b 100644
+--- a/alsactl/Makefile.am
++++ b/alsactl/Makefile.am
+@@ -40,6 +40,7 @@ endif
+ edit =3D \
+ 	$(SED) -r -e 's,@sbindir\@,$(sbindir),g' \
+ 		  -e 's,@mydatadir\@,$(mydatadir),g' \
++		  -e 's,@alsactlhome\@,$(ALSACTL_HOME_DIR),g' \
+ 		  -e 's,@daemonswitch\@,$(ALSACTL_DAEMONSWITCH),g' \
+ 							< $< > $@ || rm $@
+=20
+diff --git a/alsactl/alsa-restore.service.in b/alsactl/alsa-restore.service=
+.in
+index 2884098..23dece8 100644
+--- a/alsactl/alsa-restore.service.in
++++ b/alsactl/alsa-restore.service.in
+@@ -12,6 +12,6 @@ After=3Dalsa-state.service
+ [Service]
+ Type=3Doneshot
+ RemainAfterExit=3Dtrue
+-ExecStart=3D-@sbindir@/alsactl restore
+-ExecStop=3D-@sbindir@/alsactl store
++ExecStart=3D-@sbindir@/alsactl -E HOME=3D@alsactlhome@ restore
++ExecStop=3D-@sbindir@/alsactl -E HOME=3D@alsactlhome@ store
+ StandardOutput=3Dsyslog
+diff --git a/alsactl/alsa-state.service.in b/alsactl/alsa-state.service.in
+index f1321d6..28e3043 100644
+--- a/alsactl/alsa-state.service.in
++++ b/alsactl/alsa-state.service.in
+@@ -10,5 +10,5 @@ After=3Dsysinit.target
+=20
+ [Service]
+ Type=3Dsimple
+-ExecStart=3D-@sbindir@/alsactl -s -n 19 -c rdaemon
+-ExecStop=3D-@sbindir@/alsactl -s kill save_and_quit
++ExecStart=3D-@sbindir@/alsactl -E HOME=3D@alsactlhome@ -s -n 19 -c rdaemon
++ExecStop=3D-@sbindir@/alsactl -E HOME=3D@alsactlhome@ -s kill save_and_qui=
+t
+diff --git a/configure.ac b/configure.ac
+index 69ff2ab..8cbf798 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -409,6 +409,12 @@ AC_ARG_WITH([alsactl-pidfile-dir],
+         [ALSACTL_PIDFILE_DIR=3D"/var/run"])
+ AC_SUBST(ALSACTL_PIDFILE_DIR)
+=20
++AC_ARG_WITH([alsactl-home-dir],
++        AS_HELP_STRING([--with-alsactl-home-dir=3DDIR], [Directory to use =
+as homedir for alsactl]),
++        [ALSACTL_HOME_DIR=3D"$withval"],
++        [ALSACTL_HOME_DIR=3D"/var/run/alsa"])
++AC_SUBST(ALSACTL_HOME_DIR)
++
+ AC_ARG_WITH([alsactl-daemonswitch],
+         AS_HELP_STRING([--with-alsactl-daemonswitch=3DFILE], [File to test=
+ for the daemon mode]),
+         [ALSACTL_DAEMONSWITCH=3D"$withval"],
+--=20
 2.11.0
---=-wLBzCilchlcBuhvuRt0H
+--=-BZvUlNgLJKzSPG/m3j+i
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQQ8+w9d414FAVARIpk9fVorbA4dWAUCWGKRHAAKCRA9fVorbA4d
-WPW4AJ0Q1rHrdM7jZymfT543DziXa3JnsgCgiJdpWQkJqLSEe0Hz9uILvYaK5Vs=
-=MnHi
+iF0EABECAB0WIQQ8+w9d414FAVARIpk9fVorbA4dWAUCWGKToAAKCRA9fVorbA4d
+WKB9AJ0XSwaRU9q/7rhEOXICXuLt3q9DKQCcDLHO2sgC49CNK0EY//TAz3beT34=
+=yhSu
 -----END PGP SIGNATURE-----
 
---=-wLBzCilchlcBuhvuRt0H--
+--=-BZvUlNgLJKzSPG/m3j+i--
 
 
---===============4151739282127284316==
+--===============1474395061614260137==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4151739282127284316==--
+--===============1474395061614260137==--
