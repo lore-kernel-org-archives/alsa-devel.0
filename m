@@ -1,21 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Stream format conversion in SoC driver
-Date: Wed, 28 Dec 2016 19:17:19 +0100
-Message-ID: <C1F64983-FEE0-4CA8-A623-9315B4D155EF@ladisch.de>
-References: <CABpuRUPg8LC_+eFL3UBS-jWkQicpKmorvzhqjZW6p8xQ9P0ppw@mail.gmail.com>
- <089A4555-3272-4E65-8AD6-412B41017ACA@ladisch.de>
- <CABpuRUMfB+VvwpqMz7mc_q1RCYR5RS-FjQ8czVXUYeW70y_V7A@mail.gmail.com>
- <88898566-E09E-49FF-99D7-5EC03120FB87@ladisch.de>
- <CABpuRUM-n9b0NTivk-2zBsuvL5O-f9PXLeQoc6wW=YhrxndABQ@mail.gmail.com>
+From: Paul Menzel <paulepanter@users.sourceforge.net>
+Subject: [PATCH] alsactl: Check existence of `alsactl` in udev
+	rule
+Date: Wed, 28 Dec 2016 23:31:15 +0100
+Message-ID: <1482964275.11185.34.camel@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============4573355570416263805=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id DDFE0266CC1
- for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2016 19:17:18 +0100 (CET)
-In-Reply-To: <CABpuRUM-n9b0NTivk-2zBsuvL5O-f9PXLeQoc6wW=YhrxndABQ@mail.gmail.com>
+Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F8B1266DDD
+ for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2016 23:31:23 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,22 +18,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?Q?Giedrius_Trainavi=C4=8Dius?= <giedrius.trainavicius@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Jordi Mallach <jordi@debian.org>
 List-Id: alsa-devel@alsa-project.org
 
-R2llZHJpdXMgVHJhaW5hdmnEjWl1cyB3cm90ZToKPldoYXQgd2Ugd2FudCB0byBhY2hpZXZlIGlz
-IGZvciB1c2VyIHRvIGJlIGFibGUgdG8gc2VsZWN0IG91ciBzb3VuZCBjYXJkIGluCj50aGUgJ3Zv
-bHVtZWFsc2EnIHdpZGdldCBhbmQgYWxsIHRoZSBzb2Z0d2FyZSwgc3VjaCBhcyBpbnRlcm5ldCBi
-cm93c2VycywKPm1wbGF5ZXIsIGV0Yy4uLiB3b3VsZCBieSBkZWZhdWx0LCB3aXRob3V0IGFueSBm
-dXJ0aGVyIGNvbmZpZ3VyYXRpb24sIGJlCj5hYmxlIHRvIG91dHB1dCBzb3VuZCBhcyB1c3VhbC4K
-CkkndmUgbG9va2VkIGF0IHRoYXQgd2lkZ2V0J3Mgc291cmNlLCBhbmQgaXQgaW5kZWVkIGhhcmRj
-b2RlcyAiaHciIHdoZW4Kc3dpdGNoaW5nIGNhcmRzLgoKKEl0J3MgcG9zc2libGUgdGhhdCBzYW1w
-bGUgcmF0ZSBjb252ZXJzaW9uIGlzIHNlZW4gYXMgdXNpbmcgdG9vCm11Y2ggQ1BVLikKClRoZSBj
-b3JyZWN0IHdheSB0byBzZXQgdGhlIGRlZmF1bHQgY2FyZCB3b3VsZCBiZSBkZWZhdWx0cy5wY20u
-Y2FyZCwKYnV0IHRoaXMgbWlnaHQgbm90IHdvcmsgd2l0aCBjdXN0b21pemVkIGNvbmYgZmlsZXMu
-CgpXaGF0IGhhcmR3YXJlIGJ1cyBkb2VzIHlvdXIgZGV2aWNlIHVzZT8KRG9lc24ndCB0aGUgSTJT
-L0RNQSBjb250cm9sbGVyIHN1cHBvcnQgMTYtYml0IHNhbXBsZXM/CgoKUmVnYXJkcywKQ2xlbWVu
-cwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+--===============4573355570416263805==
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
+	boundary="=-i3E9qEXpamHO7wQcWR3w"
+
+
+--=-i3E9qEXpamHO7wQcWR3w
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+From: Jordi Mallach <jordi@debian.org>
+Date: Thu, 10 Jan 2013 00:17:58 +0000
+
+Include the line `TEST=3D=3D"/usr/sbin/alsactl"` in the udev rule, to
+properly fix the state restoring for users with split `/usr`
+filesystems
+[1].
+
+Upstream the patch from the Debian package [2].
+
+[1] https://bugs.debian.org/670490
+=C2=A0=C2=A0=C2=A0=C2=A0"Debian Bug report logs - #670490 alsa-utils: Resto=
+re sound volume
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0in udev"
+[2] https://sources.debian.net/src/alsa-utils/1.1.2-1/debian/patches/udev_t=
+est_alsactl.patch/
+
+Signed-off-by: Paul Menzel <paulepanter@users.sourceforge.net>
+CC: Jordi Mallach <jordi@debian.org>
+---
+Please apply with `git am saved-messages.mbox`.
+
+=C2=A0alsactl/90-alsa-restore.rules.in | 4 ++--
+=C2=A01 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/alsactl/90-alsa-restore.rules.in b/alsactl/90-alsa-restore.rul=
+es.in
+index c0c1b23..f190b85 100644
+--- a/alsactl/90-alsa-restore.rules.in
++++ b/alsactl/90-alsa-restore.rules.in
+@@ -2,7 +2,7 @@ ACTION=3D=3D"add", SUBSYSTEM=3D=3D"sound", KERNEL=3D=3D"con=
+trolC*", KERNELS!=3D"card*", TEST=3D=3D
+=C2=A0GOTO=3D"alsa_restore_end"
+=C2=A0
+=C2=A0LABEL=3D"alsa_restore_go"
+-TEST!=3D"@daemonswitch@", RUN+=3D"@sbindir@/alsactl restore $attr{device/n=
+umber}"
+-TEST=3D=3D"@daemonswitch@", RUN+=3D"@sbindir@/alsactl nrestore $attr{devic=
+e/number}"
++TEST!=3D"@daemonswitch@", TEST=3D=3D"@sbindir@/alsactl", RUN+=3D"@sbindir@=
+/alsactl restore $attr{device/number}"
++TEST=3D=3D"@daemonswitch@", TEST=3D=3D"@sbindir@/alsactl", RUN+=3D"@sbindi=
+r@/alsactl nrestore $attr{device/number}"
+=C2=A0
+=C2=A0LABEL=3D"alsa_restore_end"
+--=C2=A0
+2.11.0
+--=-i3E9qEXpamHO7wQcWR3w
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQQ8+w9d414FAVARIpk9fVorbA4dWAUCWGQ9MwAKCRA9fVorbA4d
+WJchAJwIrKRybIGV8u+A+2jnndJIo5Y7YQCePx6zPR+sc+rI7s42+MIzew5LSSY=
+=xp6x
+-----END PGP SIGNATURE-----
+
+--=-i3E9qEXpamHO7wQcWR3w--
+
+
+--===============4573355570416263805==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4573355570416263805==--
