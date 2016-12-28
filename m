@@ -1,14 +1,17 @@
-From: Paul Menzel <paulepanter@users.sourceforge.net>
-Subject: [PATCH] alsactl: Remove standard output definition in
-	systemd unit
-Date: Tue, 27 Dec 2016 23:47:32 +0100
-Message-ID: <1482878852.3735.21.camel@users.sourceforge.net>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 1/2] ucm: Enable all warnings for automake
+	C preprocessor
+Date: Wed, 28 Dec 2016 21:22:12 +0900
+Message-ID: <2eb6c9c3-a32a-40ee-544a-50eb03257e5b@sakamocchi.jp>
+References: <1482833331-2261-1-git-send-email-mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3038754216491345693=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
- by alsa0.perex.cz (Postfix) with ESMTP id B91A3266B22
- for <alsa-devel@alsa-project.org>; Tue, 27 Dec 2016 23:47:41 +0100 (CET)
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 060AC26693C
+ for <alsa-devel@alsa-project.org>; Wed, 28 Dec 2016 13:22:19 +0100 (CET)
+In-Reply-To: <1482833331-2261-1-git-send-email-mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,78 +21,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Jordi Mallach <jordi@debian.org>
+To: mengdong.lin@linux.intel.com, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============3038754216491345693==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
-	boundary="=-r7SXZtAN3IdIZdsdAy5/"
+On Dec 27 2016 19:08, mengdong.lin@linux.intel.com wrote:
+> From: Mengdong Lin <mengdong.lin@linux.intel.com>
+>
+> To display warnings for us to fix them, add '-Wall' to AM_CPPFLAGS.
+>
+> Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+>
+> diff --git a/src/ucm/Makefile.am b/src/ucm/Makefile.am
+> index 9d66b24..79e57d2 100644
+> --- a/src/ucm/Makefile.am
+> +++ b/src/ucm/Makefile.am
+> @@ -7,4 +7,4 @@ noinst_HEADERS = ucm_local.h
+>  all: libucm.la
+>
+>
+> -AM_CPPFLAGS=-I$(top_srcdir)/include
+> +AM_CPPFLAGS=-I$(top_srcdir)/include -Wall
 
+As long as I know, the '-Wall' option is for C/C++ compiler. Therefore, 
+it's not necessarily correct to add the option to 'AM_CPPFLAGS' as 
+options for preprocessor. In a manual of GNU Automake, there're some 
+samples for this option; '-I' and '-D'[0]. Usage of 'AM_CFLAGS' might be 
+better in this case.
 
---=-r7SXZtAN3IdIZdsdAy5/
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+...But this indication is a bit nitpicking and I'm not so strongly 
+oppose this patch. I'll manage to describe the reason.
 
-Date: Tue, 8 Jul 2014 07:23:06 +0000
+In a manual of GNU compiler collection, there're samples of implicit 
+rules for C/C++ compilers:
+  * $(CC) $(CPPFLAGS) $(CFLAGS) -c
+  * $(CXX) $(CPPFLAGS) $(CXXFLAGS) -c
 
-`/lib/systemd/system/alsa-restore.service` specifies
-`StandardOutput=3Dsyslog`. This overrides the `DefaultStandardOutput`
-setting from `/etc/systemd/system.conf`, which the system administrator
-can use to specify how output gets logged. In particular, the sysadmin
-may want output to go to the journal, or to syslog, or nowhere at all [1].
+If the place of 'CPPFLAGS' is replaced with options in AM_CPPFLAGS, your 
+patch has an effect for both of C code and C++ code. This is somehow 
+expected for some developers, while it's also be obtrusive because of 
+sub-effect to C++ code in our case.
 
-This patch removes the definition entirely, so the units can use the
-system default.
+Currently, alsa-lib includes no C++ codes, while this patch could bring 
+the obtrusiveness for future when some C++ codes were added (i.e. by 
+code refactoring). But the result were preferable by itself, I believe.
 
-Upstream the patch from the Debian package [2].
+Well, if Makefile.am includes 'mumble_CFLAGS' lines, options in 
+'AM_CFLAGS' is ignored to generate the 'mumble'. For example, a command 
+to generate 'user_ctl_element_set' object in 'test' directory is this 
+case (I wrote it[2]).
 
-[1] https://bugs.debian.org/741123
-=C2=A0   "systemd services should not use StandardOutput=3Dsyslog; should r=
-ely
-     on DefaultStandardOutput"
-[2] https://sources.debian.net/src/alsa-utils/1.1.2-1/debian/patches/system=
-d_standardoutput.patch/
+Currently I cannot judge which way is better... I'm sorry but could I 
+request your opinion for this patch with the view of these specifications?
 
-Signed-off-by: Paul Menzel <paulepanter@users.sourceforge.net>
-CC: Jordi Mallach <jordi@debian.org>
----
- alsactl/alsa-restore.service.in | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/alsactl/alsa-restore.service.in b/alsactl/alsa-restore.service=
-.in
-index f3cd86b..c092c2f 100644
---- a/alsactl/alsa-restore.service.in
-+++ b/alsactl/alsa-restore.service.in
-@@ -15,4 +15,3 @@ Type=3Doneshot
- RemainAfterExit=3Dtrue
- ExecStart=3D-@sbindir@/alsactl restore
- ExecStop=3D-@sbindir@/alsactl store
--StandardOutput=3Dsyslog
---=20
-2.11.0
---=-r7SXZtAN3IdIZdsdAy5/
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQQ8+w9d414FAVARIpk9fVorbA4dWAUCWGLvhQAKCRA9fVorbA4d
-WK9XAJ9lBPeuRAgOHvuqPveDBhQoDnTdcwCfbWC5GlTP1ORee5jXXD722w9+i6M=
-=P/jh
------END PGP SIGNATURE-----
-
---=-r7SXZtAN3IdIZdsdAy5/--
+[0]: 
+https://www.gnu.org/software/automake/manual/html_node/Program-Variables.html
+[1]: 
+https://www.gnu.org/software/make/manual/html_node/Catalogue-of-Rules.html#Catalogue-of-Rules
+[2]: 
+http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=test/Makefile.am;h=5f35159af2d64c12e5d394cff884765808d38e5b;hb=HEAD#l29
 
 
---===============3038754216491345693==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Regards
 
-
---===============3038754216491345693==--
+Takashi Sakamoto
