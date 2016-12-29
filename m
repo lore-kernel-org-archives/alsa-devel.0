@@ -1,23 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Stream format conversion in SoC driver
-Date: Thu, 29 Dec 2016 06:53:19 +0100
-Message-ID: <16CD146D-B2B1-420B-8680-3A6FCD0B4BA6@ladisch.de>
-References: <CABpuRUPg8LC_+eFL3UBS-jWkQicpKmorvzhqjZW6p8xQ9P0ppw@mail.gmail.com>
- <089A4555-3272-4E65-8AD6-412B41017ACA@ladisch.de>
- <CABpuRUMfB+VvwpqMz7mc_q1RCYR5RS-FjQ8czVXUYeW70y_V7A@mail.gmail.com>
- <88898566-E09E-49FF-99D7-5EC03120FB87@ladisch.de>
- <CABpuRUM-n9b0NTivk-2zBsuvL5O-f9PXLeQoc6wW=YhrxndABQ@mail.gmail.com>
- <C1F64983-FEE0-4CA8-A623-9315B4D155EF@ladisch.de>
- <CABpuRUM-SHzVrGuoyWKicQdhmDgOFEa0NH6CiAiXFum16BtN2A@mail.gmail.com>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt5670: add HS ground control
+Date: Thu, 29 Dec 2016 16:23:47 +0800
+Message-ID: <1482999827-14705-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 00BDB26669C
- for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2016 06:53:17 +0100 (CET)
-In-Reply-To: <CABpuRUM-SHzVrGuoyWKicQdhmDgOFEa0NH6CiAiXFum16BtN2A@mail.gmail.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id CA181266539
+ for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2016 09:24:01 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,21 +18,191 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?Q?Giedrius_Trainavi=C4=8Dius?= <giedrius.trainavicius@gmail.com>, alsa-devel@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-R2llZHJpdXMgVHJhaW5hdmnEjWl1cyB3cm90ZToKPkl0IHVzZXMgSTJTIGZvciBzZW5kaW5nIC8g
-cmVjZWl2aW5nIGF1ZGlvLiBIb3dldmVyLCB0aGUgbWFzdGVyIGNsb2NrIG9uIG91cgo+c291bmQg
-Y2FyZCBpcyBnZW5lcmF0ZWQgYnkgdGhlIEFEQywgd2hpY2ggc3VwcG9ydHMgb25seSAyNCBiaXQg
-ZGF0YSwgc28KPmdldHRpbmcgb3RoZXIgc2FtcGxlIGZvcm1hdHMgaXMgbm90IHBvc3NpYmxlLgoK
-VGhlIEkyUyBzYW1wbGUgZm9ybWF0IG5lZWQgbm90IGJlIHRoZSBzYW1lIGFzIHdoYXQgdGhlIERN
-QQpjb250cm9sbGVyIHJlYWRzL3dyaXRlcyBmcm9tL3RvIG1lbW9yeS4KCj5BIHF1ZXN0aW9uIG9u
-ICdwbHVnJyAtIGl0IGFjY2VwdHMgJ25lYXJlc3QnIGFzIHRoZSBhcmd1bWVudCBmb3IgZm9ybWF0
-LAo+cmF0ZSwgd2hhdCBoYXBwZW5zIGluIGNhc2UgdGhlIHNsYXZlIHBjbSBzdHJlYW0gc3VwcG9y
-dHMgdGhlIGV4YWN0IHNhbWUKPmZvcm1hdCBhcyByZXF1ZXN0ZWQgYnkgdXNlciBzb2Z0d2FyZT8K
-ClRoZSBwbHVnIHBsdWdpbiBpbnN0YW50aWF0ZXMgdGhlIGFjdHVhbCBjb252ZXJzaW9uIHBsdWdp
-bnMgb25seQphcyBuZWVkZWQ7IHdpdGggbm8gY29udmVyc2lvbiwgaXQgdmFuaXNoZXMgZW50aXJl
-bHkuCgoKUmVnYXJkcywKQ2xlbWVucwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
-b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hbHNhLWRldmVsCg==
+Some project use external circuit to prevent the headset ground noise.
+It will need to use GPIO to control it. Dell Wyse 3040 is the only project
+that has the external circuit so far and it uses GPIO2 for that. This patch
+provide the support fot it.
+
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ include/sound/rt5670.h    |  7 +++++
+ sound/soc/codecs/rt5670.c | 74 ++++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 80 insertions(+), 1 deletion(-)
+
+diff --git a/include/sound/rt5670.h b/include/sound/rt5670.h
+index b7d6051..0b445b0 100644
+--- a/include/sound/rt5670.h
++++ b/include/sound/rt5670.h
+@@ -11,12 +11,19 @@
+ #ifndef __LINUX_SND_RT5670_H
+ #define __LINUX_SND_RT5670_H
+ 
++enum rt5670_gpios {
++	RT5670_GPIO_NONE = 0,
++	RT5670_GPIO2,
++};
++
++
+ struct rt5670_platform_data {
+ 	int jd_mode;
+ 	bool in2_diff;
+ 	bool dev_gpio;
+ 
+ 	bool dmic_en;
++	enum rt5670_gpios hs_ground_control_gpio;
+ 	unsigned int dmic1_data_pin;
+ 	/* 0 = GPIO6; 1 = IN2P; 3 = GPIO7*/
+ 	unsigned int dmic2_data_pin;
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index 97bafac..1d94cec 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -420,13 +420,15 @@ static int rt5670_headset_detect(struct snd_soc_codec *codec, int jack_insert)
+ 	struct rt5670_priv *rt5670 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	if (jack_insert) {
++		if (rt5670->pdata.hs_ground_control_gpio)
++			snd_soc_dapm_force_enable_pin(dapm, "HS GND Control");
++
+ 		snd_soc_dapm_force_enable_pin(dapm, "Mic Det Power");
+ 		snd_soc_dapm_sync(dapm);
+ 		snd_soc_update_bits(codec, RT5670_GEN_CTRL3, 0x4, 0x0);
+ 		snd_soc_update_bits(codec, RT5670_CJ_CTRL2,
+ 			RT5670_CBJ_DET_MODE | RT5670_CBJ_MN_JD,
+ 			RT5670_CBJ_MN_JD);
+-		snd_soc_write(codec, RT5670_GPIO_CTRL2, 0x0004);
+ 		snd_soc_update_bits(codec, RT5670_GPIO_CTRL1,
+ 			RT5670_GP1_PIN_MASK, RT5670_GP1_PIN_IRQ);
+ 		snd_soc_update_bits(codec, RT5670_CJ_CTRL1,
+@@ -450,6 +452,10 @@ static int rt5670_headset_detect(struct snd_soc_codec *codec, int jack_insert)
+ 			snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
+ 			snd_soc_dapm_sync(dapm);
+ 		}
++		if (rt5670->pdata.hs_ground_control_gpio) {
++			snd_soc_dapm_disable_pin(dapm, "HS GND Control");
++			snd_soc_dapm_sync(dapm);
++		}
+ 	} else {
+ 		snd_soc_update_bits(codec, RT5670_INT_IRQ_ST, 0x8, 0x0);
+ 		snd_soc_update_bits(codec, RT5670_GEN_CTRL3, 0x4, 0x4);
+@@ -1542,6 +1548,29 @@ static int rt5670_bst2_event(struct snd_soc_dapm_widget *w,
+ 	return 0;
+ }
+ 
++static int rt5670_hs_ground_control_event(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_update_bits(codec, RT5670_GPIO_CTRL2,
++				RT5670_GP2_OUT_MASK, RT5670_GP2_OUT_HI);
++		break;
++
++	case SND_SOC_DAPM_POST_PMD:
++		snd_soc_update_bits(codec, RT5670_GPIO_CTRL2,
++				RT5670_GP2_OUT_MASK, RT5670_GP2_OUT_LO);
++		break;
++
++	default:
++		return 0;
++	}
++
++	return 0;
++}
++
+ static const struct snd_soc_dapm_widget rt5670_dapm_widgets[] = {
+ 	SND_SOC_DAPM_SUPPLY("PLL1", RT5670_PWR_ANLG2,
+ 			    RT5670_PWR_PLL_BIT, 0, NULL, 0),
+@@ -1917,6 +1946,12 @@ static int rt5670_bst2_event(struct snd_soc_dapm_widget *w,
+ 	SND_SOC_DAPM_OUTPUT("SPORN"),
+ };
+ 
++static const struct snd_soc_dapm_widget hs_gnd_cnotrol_widgets[] = {
++	SND_SOC_DAPM_SUPPLY("HS GND Control", SND_SOC_NOPM, 0, 0,
++			rt5670_hs_ground_control_event,
++			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++};
++
+ static const struct snd_soc_dapm_route rt5670_dapm_routes[] = {
+ 	{ "ADC Stereo1 Filter", NULL, "ADC STO1 ASRC", is_using_asrc },
+ 	{ "ADC Stereo2 Filter", NULL, "ADC STO2 ASRC", is_using_asrc },
+@@ -2314,6 +2349,11 @@ static int rt5670_bst2_event(struct snd_soc_dapm_widget *w,
+ 	{ "SPORN", NULL, "SPO Amp" },
+ };
+ 
++static const struct snd_soc_dapm_route hs_gnd_cnotrol_routes[] = {
++	{ "BST1", NULL, "HS GND Control" },
++	{ "HP Amp", NULL, "HS GND Control" },
++};
++
+ static int rt5670_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+ {
+@@ -2679,6 +2719,13 @@ static int rt5670_probe(struct snd_soc_codec *codec)
+ 			"The driver is for RT5670 RT5671 or RT5672 only\n");
+ 		return -ENODEV;
+ 	}
++	if (rt5670->pdata.hs_ground_control_gpio) {
++		snd_soc_dapm_new_controls(dapm, hs_gnd_cnotrol_widgets,
++			ARRAY_SIZE(hs_gnd_cnotrol_widgets));
++		snd_soc_dapm_add_routes(dapm, hs_gnd_cnotrol_routes,
++			ARRAY_SIZE(hs_gnd_cnotrol_routes));
++	}
++
+ 	rt5670->codec = codec;
+ 
+ 	return 0;
+@@ -2827,6 +2874,10 @@ static int rt5670_resume(struct snd_soc_codec *codec)
+ 			DMI_MATCH(DMI_BOARD_NAME, "Braswell CRB"),
+ 		},
+ 	},
++	{}
++};
++
++static const struct dmi_system_id dmi_platform_dell_wyse[] = {
+ 	{
+ 		.ident = "Dell Wyse 3040",
+ 		.matches = {
+@@ -2861,6 +2912,12 @@ static int rt5670_i2c_probe(struct i2c_client *i2c,
+ 		rt5670->pdata.dmic1_data_pin = RT5670_DMIC_DATA_IN2P;
+ 		rt5670->pdata.dev_gpio = true;
+ 		rt5670->pdata.jd_mode = 1;
++		rt5670->pdata.hs_ground_control_gpio = RT5670_GPIO_NONE;
++	} else if (dmi_check_system(dmi_platform_dell_wyse)) {
++		rt5670->pdata.dmic_en = false;
++		rt5670->pdata.dev_gpio = true;
++		rt5670->pdata.jd_mode = 1;
++		rt5670->pdata.hs_ground_control_gpio = RT5670_GPIO2;
+ 	}
+ 
+ 	rt5670->regmap = devm_regmap_init_i2c(i2c, &rt5670_regmap);
+@@ -2886,6 +2943,21 @@ static int rt5670_i2c_probe(struct i2c_client *i2c,
+ 
+ 	regmap_write(rt5670->regmap, RT5670_RESET, 0);
+ 
++	switch (rt5670->pdata.hs_ground_control_gpio) {
++	case RT5670_GPIO_NONE:
++		break;
++	case RT5670_GPIO2:
++		regmap_update_bits(rt5670->regmap, RT5670_GPIO_CTRL2,
++			RT5670_GP2_PF_MASK | RT5670_GP2_OUT_MASK,
++			RT5670_GP2_PF_OUT | RT5670_GP2_OUT_LO);
++		break;
++	default:
++		rt5670->pdata.hs_ground_control_gpio =
++			RT5670_GPIO_NONE;
++		dev_warn(&i2c->dev, "Only Support GPIO2 currently\n");
++			break;
++	}
++
+ 	regmap_read(rt5670->regmap, RT5670_VENDOR_ID, &val);
+ 	if (val >= 4)
+ 		regmap_write(rt5670->regmap, RT5670_GPIO_CTRL3, 0x0980);
+-- 
+1.8.1.1.439.g50a6b54
