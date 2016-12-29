@@ -1,7 +1,7 @@
 From: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
 Subject: [PATCH] Revert "ASoC: core: replace aux_comp_list to component_dev_list"
-Date: Thu, 29 Dec 2016 17:46:54 +0300
-Message-ID: <1483022814-28741-1-git-send-email-nikita.yoush@cogentembedded.com>
+Date: Thu, 29 Dec 2016 17:49:47 +0300
+Message-ID: <1483022987-28843-1-git-send-email-nikita.yoush@cogentembedded.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
@@ -15,7 +15,8 @@ That commit tries to remove card->aux_comp_list, using flagged entries
 in card->component_dev_list instead.
 
 However, components are added to card->component_dev_list in
-soc_probe_component(). Before that commit, it traversed
+soc_probe_component(), which is called for aux devices by
+soc_probe_aux_devices(). Before that commit, it traversed
 card->aux_comp_list and found aux devices added by soc_bind_aux_dev().
 After that commit, it traverses card->component_dev_list and finds no
 aux devices, because soc_probe_component() was not yet called for them.
@@ -25,6 +26,7 @@ works.
 
 Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
 ---
+Fixed lost line in commit message ;)
  include/sound/soc.h  |  4 +++-
  sound/soc/soc-core.c | 17 +++++------------
  2 files changed, 8 insertions(+), 13 deletions(-)
