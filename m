@@ -1,111 +1,49 @@
-From: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
-Subject: [PATCH] Revert "ASoC: core: replace aux_comp_list to component_dev_list"
-Date: Thu, 29 Dec 2016 17:49:47 +0300
-Message-ID: <1483022987-28843-1-git-send-email-nikita.yoush@cogentembedded.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc: Chris Healy <cphealy@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+From: =?ISO-8859-1?Q?J=F6rg?= Krause <joerg.krause@embedded.rocks>
+Subject: Re: [PATCH] ASoC: pcm5102a: Provide a menu selection
+	text
+Date: Thu, 29 Dec 2016 16:59:43 +0100
+Message-ID: <1483027183.2076.1.camel@embedded.rocks>
+References: <20161220162659.30087-1-joerg.krause@embedded.rocks>
+ <s5htw9oum3u.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.142])
+ by alsa0.perex.cz (Postfix) with ESMTP id CA8E8266F6E
+ for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2016 16:59:52 +0100 (CET)
+In-Reply-To: <s5htw9oum3u.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This reverts commit 1a653aa44725668590b36bbe2d7fe4736a69f055 ("ASoC:
-core: replace aux_comp_list to component_dev_list").
-
-That commit tries to remove card->aux_comp_list, using flagged entries
-in card->component_dev_list instead.
-
-However, components are added to card->component_dev_list in
-soc_probe_component(), which is called for aux devices by
-soc_probe_aux_devices(). Before that commit, it traversed
-card->aux_comp_list and found aux devices added by soc_bind_aux_dev().
-After that commit, it traverses card->component_dev_list and finds no
-aux devices, because soc_probe_component() was not yet called for them.
-
-Thus all aux devices are lost and any setup that needs them no longer
-works.
-
-Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
----
-Fixed lost line in commit message ;)
- include/sound/soc.h  |  4 +++-
- sound/soc/soc-core.c | 17 +++++------------
- 2 files changed, 8 insertions(+), 13 deletions(-)
-
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 2b502f6cc6d0..8172a512632a 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -809,10 +809,10 @@ struct snd_soc_component {
- 
- 	unsigned int ignore_pmdown_time:1; /* pmdown_time is ignored at stop */
- 	unsigned int registered_as_component:1;
--	unsigned int auxiliary:1; /* for auxiliary component of the card */
- 	unsigned int suspended:1; /* is in suspend PM state */
- 
- 	struct list_head list;
-+	struct list_head list_aux; /* for auxiliary component of the card */
- 	struct list_head card_list;
- 
- 	struct snd_soc_dai_driver *dai_drv;
-@@ -1152,6 +1152,7 @@ struct snd_soc_card {
- 	 */
- 	struct snd_soc_aux_dev *aux_dev;
- 	int num_aux_devs;
-+	struct list_head aux_comp_list;
- 
- 	const struct snd_kcontrol_new *controls;
- 	int num_controls;
-@@ -1547,6 +1548,7 @@ static inline void snd_soc_initialize_card_lists(struct snd_soc_card *card)
- 	INIT_LIST_HEAD(&card->widgets);
- 	INIT_LIST_HEAD(&card->paths);
- 	INIT_LIST_HEAD(&card->dapm_list);
-+	INIT_LIST_HEAD(&card->aux_comp_list);
- 	INIT_LIST_HEAD(&card->component_dev_list);
- }
- 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index f1901bb1466e..15657a65e4ca 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1747,8 +1747,7 @@ static int soc_bind_aux_dev(struct snd_soc_card *card, int num)
- 	}
- 
- 	component->init = aux_dev->init;
--	component->auxiliary = 1;
--
-+	list_add(&component->list_aux, &card->aux_comp_list);
- 	return 0;
- 
- err_defer:
-@@ -1764,10 +1763,7 @@ static int soc_probe_aux_devices(struct snd_soc_card *card)
- 
- 	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
- 		order++) {
--		list_for_each_entry(comp, &card->component_dev_list, card_list) {
--			if (!comp->auxiliary)
--				continue;
--
-+		list_for_each_entry(comp, &card->aux_comp_list, list_aux) {
- 			if (comp->driver->probe_order == order) {
- 				ret = soc_probe_component(card,	comp);
- 				if (ret < 0) {
-@@ -1791,14 +1787,11 @@ static void soc_remove_aux_devices(struct snd_soc_card *card)
- 	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
- 		order++) {
- 		list_for_each_entry_safe(comp, _comp,
--			&card->component_dev_list, card_list) {
--
--			if (!comp->auxiliary)
--				continue;
--
-+			&card->aux_comp_list, list_aux) {
- 			if (comp->driver->remove_order == order) {
- 				soc_remove_component(comp);
--				comp->auxiliary = 0;
-+				/* remove it from the card's aux_comp_list */
-+				list_del(&comp->list_aux);
- 			}
- 		}
- 	}
--- 
-2.1.4
+T24gV2VkLCAyMDE2LTEyLTI4IGF0IDE2OjA5ICswMTAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
+T24gVHVlLCAyMCBEZWMgMjAxNiAxNzoyNjo1OSArMDEwMCwKPiBKw7ZyZyBLcmF1c2Ugd3JvdGU6
+Cj4gPiAKPiA+IFByb3ZpZGUgYSBtZW51IHNlbGVjdGlvbiB0ZXh0IHNvIHRoYXQgdXNlcnMgY2Fu
+IGVuYWJsZSwgZGlzYWJsZSBvcgo+ID4gbWFyayBpdCBhcyBtb2R1bGUgaW4gbWVudWNvbmZpZy4K
+PiAKPiBXaGF0J3MgdGhlIHJlYXNvbiB0byBlbmFibGUgaXQgYXQgYWxsP8KgwqBUaGUgY29kZWMg
+ZW50cmllcyBhcmUgdXN1YWxseQo+IG5vdCB1c2VyLXNlbGVjdGFibGUgYnV0IGVuYWJsZWQgYnkg
+dGhlIG1hY2hpbmUgZHJpdmVyLgoKVG8gYWxsb3cgdXNpbmcgaXQgd2l0aCB0aGUgc2ltcGxlLWNh
+cmQgZHJpdmVyLgoKPiAKPiA+IAo+ID4gU2lnbmVkLW9mZi1ieTogSsO2cmcgS3JhdXNlIDxqb2Vy
+Zy5rcmF1c2VAZW1iZWRkZWQucm9ja3M+Cj4gPiAtLS0KPiA+IMKgc291bmQvc29jL2NvZGVjcy9L
+Y29uZmlnIHwgMiArLQo+ID4gwqAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVs
+ZXRpb24oLSkKPiA+IAo+ID4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvS2NvbmZpZyBi
+L3NvdW5kL3NvYy9jb2RlY3MvS2NvbmZpZwo+ID4gaW5kZXggMDg0YzJhYS4uOWVlOTU5MSAxMDA2
+NDQKPiA+IC0tLSBhL3NvdW5kL3NvYy9jb2RlY3MvS2NvbmZpZwo+ID4gKysrIGIvc291bmQvc29j
+L2NvZGVjcy9LY29uZmlnCj4gPiBAQCAtNjI0LDcgKzYyNCw3IEBAIGNvbmZpZyBTTkRfU09DX1BD
+TTMxNjhBX1NQSQo+ID4gwqAJc2VsZWN0IFJFR01BUF9TUEkKPiA+IMKgCj4gPiDCoGNvbmZpZyBT
+TkRfU09DX1BDTTUxMDJBCj4gPiAtCXRyaXN0YXRlCj4gPiArCXRyaXN0YXRlICJUZXhhcyBJbnN0
+cnVtZW50cyBQQ001MTAyQSBDT0RFQyIKPiA+IMKgCj4gPiDCoGNvbmZpZyBTTkRfU09DX1BDTTUx
+MngKPiA+IMKgCXRyaXN0YXRlCj4gPiAtLcKgCj4gPiAyLjEwLjIKPiA+IApfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
+dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
+Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
