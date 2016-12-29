@@ -1,208 +1,91 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rt5670: add HS ground control
-Date: Thu, 29 Dec 2016 16:23:47 +0800
-Message-ID: <1482999827-14705-1-git-send-email-bardliao@realtek.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id CA181266539
- for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2016 09:24:01 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, tiwai@suse.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: [PATCH 3/5] ASoC: samsung: i2s: Move saving and restoring regs to
+ runtime pm operations
+Date: Thu, 29 Dec 2016 12:34:05 +0100
+Message-ID: <1483011247-21613-4-git-send-email-m.szyprowski@samsung.com>
+References: <1483011247-21613-1-git-send-email-m.szyprowski@samsung.com>
+ <CGME20161229113427eucas1p166db5239bd7b17ebaba8b248f06cffe8@eucas1p1.samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-reply-to: <1483011247-21613-1-git-send-email-m.szyprowski@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>, Mark Brown <broonie@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Krzysztof Kozlowski <krzk@kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Inki Dae <inki.dae@samsung.com>, Javier Martinez Canillas <javier@osg.samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Some project use external circuit to prevent the headset ground noise.
-It will need to use GPIO to control it. Dell Wyse 3040 is the only project
-that has the external circuit so far and it uses GPIO2 for that. This patch
-provide the support fot it.
+This patch moves saving and restoring I2S registers to runtime PM
+operations, what prepares the driver to operate with audio power domain.
+When support for audio power domain is enabled and the domain is being
+turned off, the I2S module will loose its context (registers), so runtime
+callbacks have to handle it. System sleep suspend/resume operation are
+implemented on top of runtime PM operations with generic
+pm_runtime_force_suspend/resume helpers.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
 ---
- include/sound/rt5670.h    |  7 +++++
- sound/soc/codecs/rt5670.c | 74 ++++++++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 80 insertions(+), 1 deletion(-)
+ sound/soc/samsung/i2s.c | 26 ++++++++++++--------------
+ 1 file changed, 12 insertions(+), 14 deletions(-)
 
-diff --git a/include/sound/rt5670.h b/include/sound/rt5670.h
-index b7d6051..0b445b0 100644
---- a/include/sound/rt5670.h
-+++ b/include/sound/rt5670.h
-@@ -11,12 +11,19 @@
- #ifndef __LINUX_SND_RT5670_H
- #define __LINUX_SND_RT5670_H
- 
-+enum rt5670_gpios {
-+	RT5670_GPIO_NONE = 0,
-+	RT5670_GPIO2,
-+};
-+
-+
- struct rt5670_platform_data {
- 	int jd_mode;
- 	bool in2_diff;
- 	bool dev_gpio;
- 
- 	bool dmic_en;
-+	enum rt5670_gpios hs_ground_control_gpio;
- 	unsigned int dmic1_data_pin;
- 	/* 0 = GPIO6; 1 = IN2P; 3 = GPIO7*/
- 	unsigned int dmic2_data_pin;
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index 97bafac..1d94cec 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -420,13 +420,15 @@ static int rt5670_headset_detect(struct snd_soc_codec *codec, int jack_insert)
- 	struct rt5670_priv *rt5670 = snd_soc_codec_get_drvdata(codec);
- 
- 	if (jack_insert) {
-+		if (rt5670->pdata.hs_ground_control_gpio)
-+			snd_soc_dapm_force_enable_pin(dapm, "HS GND Control");
-+
- 		snd_soc_dapm_force_enable_pin(dapm, "Mic Det Power");
- 		snd_soc_dapm_sync(dapm);
- 		snd_soc_update_bits(codec, RT5670_GEN_CTRL3, 0x4, 0x0);
- 		snd_soc_update_bits(codec, RT5670_CJ_CTRL2,
- 			RT5670_CBJ_DET_MODE | RT5670_CBJ_MN_JD,
- 			RT5670_CBJ_MN_JD);
--		snd_soc_write(codec, RT5670_GPIO_CTRL2, 0x0004);
- 		snd_soc_update_bits(codec, RT5670_GPIO_CTRL1,
- 			RT5670_GP1_PIN_MASK, RT5670_GP1_PIN_IRQ);
- 		snd_soc_update_bits(codec, RT5670_CJ_CTRL1,
-@@ -450,6 +452,10 @@ static int rt5670_headset_detect(struct snd_soc_codec *codec, int jack_insert)
- 			snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
- 			snd_soc_dapm_sync(dapm);
- 		}
-+		if (rt5670->pdata.hs_ground_control_gpio) {
-+			snd_soc_dapm_disable_pin(dapm, "HS GND Control");
-+			snd_soc_dapm_sync(dapm);
-+		}
- 	} else {
- 		snd_soc_update_bits(codec, RT5670_INT_IRQ_ST, 0x8, 0x0);
- 		snd_soc_update_bits(codec, RT5670_GEN_CTRL3, 0x4, 0x4);
-@@ -1542,6 +1548,29 @@ static int rt5670_bst2_event(struct snd_soc_dapm_widget *w,
- 	return 0;
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 2aa800b99938..47a5650aaa66 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -983,24 +983,12 @@ static int i2s_set_clkdiv(struct snd_soc_dai *dai,
+ #ifdef CONFIG_PM
+ static int i2s_suspend(struct snd_soc_dai *dai)
+ {
+-	struct i2s_dai *i2s = to_info(dai);
+-
+-	i2s->suspend_i2smod = readl(i2s->addr + I2SMOD);
+-	i2s->suspend_i2scon = readl(i2s->addr + I2SCON);
+-	i2s->suspend_i2spsr = readl(i2s->addr + I2SPSR);
+-
+-	return 0;
++	return pm_runtime_force_suspend(dai->dev);
  }
  
-+static int rt5670_hs_ground_control_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		snd_soc_update_bits(codec, RT5670_GPIO_CTRL2,
-+				RT5670_GP2_OUT_MASK, RT5670_GP2_OUT_HI);
-+		break;
-+
-+	case SND_SOC_DAPM_POST_PMD:
-+		snd_soc_update_bits(codec, RT5670_GPIO_CTRL2,
-+				RT5670_GP2_OUT_MASK, RT5670_GP2_OUT_LO);
-+		break;
-+
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_dapm_widget rt5670_dapm_widgets[] = {
- 	SND_SOC_DAPM_SUPPLY("PLL1", RT5670_PWR_ANLG2,
- 			    RT5670_PWR_PLL_BIT, 0, NULL, 0),
-@@ -1917,6 +1946,12 @@ static int rt5670_bst2_event(struct snd_soc_dapm_widget *w,
- 	SND_SOC_DAPM_OUTPUT("SPORN"),
- };
- 
-+static const struct snd_soc_dapm_widget hs_gnd_cnotrol_widgets[] = {
-+	SND_SOC_DAPM_SUPPLY("HS GND Control", SND_SOC_NOPM, 0, 0,
-+			rt5670_hs_ground_control_event,
-+			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
-+};
-+
- static const struct snd_soc_dapm_route rt5670_dapm_routes[] = {
- 	{ "ADC Stereo1 Filter", NULL, "ADC STO1 ASRC", is_using_asrc },
- 	{ "ADC Stereo2 Filter", NULL, "ADC STO2 ASRC", is_using_asrc },
-@@ -2314,6 +2349,11 @@ static int rt5670_bst2_event(struct snd_soc_dapm_widget *w,
- 	{ "SPORN", NULL, "SPO Amp" },
- };
- 
-+static const struct snd_soc_dapm_route hs_gnd_cnotrol_routes[] = {
-+	{ "BST1", NULL, "HS GND Control" },
-+	{ "HP Amp", NULL, "HS GND Control" },
-+};
-+
- static int rt5670_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
+ static int i2s_resume(struct snd_soc_dai *dai)
  {
-@@ -2679,6 +2719,13 @@ static int rt5670_probe(struct snd_soc_codec *codec)
- 			"The driver is for RT5670 RT5671 or RT5672 only\n");
- 		return -ENODEV;
- 	}
-+	if (rt5670->pdata.hs_ground_control_gpio) {
-+		snd_soc_dapm_new_controls(dapm, hs_gnd_cnotrol_widgets,
-+			ARRAY_SIZE(hs_gnd_cnotrol_widgets));
-+		snd_soc_dapm_add_routes(dapm, hs_gnd_cnotrol_routes,
-+			ARRAY_SIZE(hs_gnd_cnotrol_routes));
-+	}
+-	struct i2s_dai *i2s = to_info(dai);
+-
+-	writel(i2s->suspend_i2scon, i2s->addr + I2SCON);
+-	writel(i2s->suspend_i2smod, i2s->addr + I2SMOD);
+-	writel(i2s->suspend_i2spsr, i2s->addr + I2SPSR);
+-
+-	return 0;
++	return pm_runtime_force_resume(dai->dev);
+ }
+ #else
+ #define i2s_suspend NULL
+@@ -1129,6 +1117,10 @@ static int i2s_runtime_suspend(struct device *dev)
+ {
+ 	struct i2s_dai *i2s = dev_get_drvdata(dev);
+ 
++	i2s->suspend_i2smod = readl(i2s->addr + I2SMOD);
++	i2s->suspend_i2scon = readl(i2s->addr + I2SCON);
++	i2s->suspend_i2spsr = readl(i2s->addr + I2SPSR);
 +
- 	rt5670->codec = codec;
+ 	clk_disable_unprepare(i2s->clk);
  
  	return 0;
-@@ -2827,6 +2874,10 @@ static int rt5670_resume(struct snd_soc_codec *codec)
- 			DMI_MATCH(DMI_BOARD_NAME, "Braswell CRB"),
- 		},
- 	},
-+	{}
-+};
+@@ -1140,6 +1132,10 @@ static int i2s_runtime_resume(struct device *dev)
+ 
+ 	clk_prepare_enable(i2s->clk);
+ 
++	writel(i2s->suspend_i2scon, i2s->addr + I2SCON);
++	writel(i2s->suspend_i2smod, i2s->addr + I2SMOD);
++	writel(i2s->suspend_i2spsr, i2s->addr + I2SPSR);
 +
-+static const struct dmi_system_id dmi_platform_dell_wyse[] = {
- 	{
- 		.ident = "Dell Wyse 3040",
- 		.matches = {
-@@ -2861,6 +2912,12 @@ static int rt5670_i2c_probe(struct i2c_client *i2c,
- 		rt5670->pdata.dmic1_data_pin = RT5670_DMIC_DATA_IN2P;
- 		rt5670->pdata.dev_gpio = true;
- 		rt5670->pdata.jd_mode = 1;
-+		rt5670->pdata.hs_ground_control_gpio = RT5670_GPIO_NONE;
-+	} else if (dmi_check_system(dmi_platform_dell_wyse)) {
-+		rt5670->pdata.dmic_en = false;
-+		rt5670->pdata.dev_gpio = true;
-+		rt5670->pdata.jd_mode = 1;
-+		rt5670->pdata.hs_ground_control_gpio = RT5670_GPIO2;
- 	}
+ 	return 0;
+ }
+ #endif /* CONFIG_PM */
+@@ -1516,6 +1512,8 @@ static int samsung_i2s_remove(struct platform_device *pdev)
+ static const struct dev_pm_ops samsung_i2s_pm = {
+ 	SET_RUNTIME_PM_OPS(i2s_runtime_suspend,
+ 				i2s_runtime_resume, NULL)
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++				     pm_runtime_force_resume)
+ };
  
- 	rt5670->regmap = devm_regmap_init_i2c(i2c, &rt5670_regmap);
-@@ -2886,6 +2943,21 @@ static int rt5670_i2c_probe(struct i2c_client *i2c,
- 
- 	regmap_write(rt5670->regmap, RT5670_RESET, 0);
- 
-+	switch (rt5670->pdata.hs_ground_control_gpio) {
-+	case RT5670_GPIO_NONE:
-+		break;
-+	case RT5670_GPIO2:
-+		regmap_update_bits(rt5670->regmap, RT5670_GPIO_CTRL2,
-+			RT5670_GP2_PF_MASK | RT5670_GP2_OUT_MASK,
-+			RT5670_GP2_PF_OUT | RT5670_GP2_OUT_LO);
-+		break;
-+	default:
-+		rt5670->pdata.hs_ground_control_gpio =
-+			RT5670_GPIO_NONE;
-+		dev_warn(&i2c->dev, "Only Support GPIO2 currently\n");
-+			break;
-+	}
-+
- 	regmap_read(rt5670->regmap, RT5670_VENDOR_ID, &val);
- 	if (val >= 4)
- 		regmap_write(rt5670->regmap, RT5670_GPIO_CTRL3, 0x0980);
+ static struct platform_driver samsung_i2s_driver = {
 -- 
-1.8.1.1.439.g50a6b54
+1.9.1
