@@ -1,65 +1,109 @@
-From: =?UTF-8?Q?Giedrius_Trainavi=C4=8Dius?= <giedrius.trainavicius@gmail.com>
-Subject: Re: Stream format conversion in SoC driver
-Date: Thu, 29 Dec 2016 16:32:26 +0200
-Message-ID: <CABpuRUOppLmT+KFSPJOaxo6EtaoTeM9UnHBOVwkn=DbwN0MPDg@mail.gmail.com>
-References: <CABpuRUPg8LC_+eFL3UBS-jWkQicpKmorvzhqjZW6p8xQ9P0ppw@mail.gmail.com>
- <089A4555-3272-4E65-8AD6-412B41017ACA@ladisch.de>
- <CABpuRUMfB+VvwpqMz7mc_q1RCYR5RS-FjQ8czVXUYeW70y_V7A@mail.gmail.com>
- <88898566-E09E-49FF-99D7-5EC03120FB87@ladisch.de>
- <CABpuRUM-n9b0NTivk-2zBsuvL5O-f9PXLeQoc6wW=YhrxndABQ@mail.gmail.com>
- <C1F64983-FEE0-4CA8-A623-9315B4D155EF@ladisch.de>
- <CABpuRUM-SHzVrGuoyWKicQdhmDgOFEa0NH6CiAiXFum16BtN2A@mail.gmail.com>
- <16CD146D-B2B1-420B-8680-3A6FCD0B4BA6@ladisch.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ua0-f193.google.com (mail-ua0-f193.google.com
- [209.85.217.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 85064266539
- for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2016 15:32:28 +0100 (CET)
-Received: by mail-ua0-f193.google.com with SMTP id v2so6309920uac.3
- for <alsa-devel@alsa-project.org>; Thu, 29 Dec 2016 06:32:28 -0800 (PST)
-In-Reply-To: <16CD146D-B2B1-420B-8680-3A6FCD0B4BA6@ladisch.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+From: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+Subject: [PATCH] Revert "ASoC: core: replace aux_comp_list to component_dev_list"
+Date: Thu, 29 Dec 2016 17:46:54 +0300
+Message-ID: <1483022814-28741-1-git-send-email-nikita.yoush@cogentembedded.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: Chris Healy <cphealy@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Nikita Yushchenko <nikita.yoush@cogentembedded.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIEkyUyBhbmQgRE1BIGZvcm1hdCBhc3ltbWV0cnkgc291bmRzIGxpa2Ugd2hhdCBJJ2QgYmUg
-YWZ0ZXIuIERvIHlvdSBoYXZlCmFueSBwb2ludGVycyBmb3IgQVBJcyAvIGtleXdvcmRzIHRvIGxv
-b2sgYXJvdW5kIGZvciBpbiB0aGUgY29kZSB0byBzZWUgaG93CnRoaXMgc2hvdWxkIGJlIHNldCB1
-cD8gSXMgc3VjaCBmb3JtYXQgY29udmVyc2lvbiBzdXBwb3NlZCB0byBiZSBoYXBwZW5pbmcKaW4g
-aGFyZHdhcmUgaXRzZWxmLCBvciB0aGUgQ1BVIHdoZW4gYWNjZXNzaW5nIHRoZSBETUEgYnVmZmVy
-IGhhcyB0aGUgY2hhbmNlCnRvIGRvIHRoZSBjb252ZXJzaW9uPwoKVGhlIHJlbGV2YW50IGRvY3Vt
-ZW50YXRpb24gYW5kIGNvZGUgSSBmb3VuZCBzbyBmYXIgd291bGQgYmU6CgpodHRwczovL3d3dy5y
-YXNwYmVycnlwaS5vcmcvZG9jdW1lbnRhdGlvbi9oYXJkd2FyZS8KcmFzcGJlcnJ5cGkvYmNtMjgz
-NS9CQ00yODM1LUFSTS1QZXJpcGhlcmFscy5wZGYKaHR0cHM6Ly9naXRodWIuY29tL3Jhc3BiZXJy
-eXBpL2xpbnV4L2Jsb2IvcnBpLTQuCjQueS9zb3VuZC9zb2MvYmNtL2JjbTI4MzUtaTJzLmMKCkkg
-Y2FuJ3QgbG9jYXRlIGFueSByZWxldmFudCBiaXRzIG9mIGNvZGUgb3IgaW5mb3JtYXRpb24gdGhh
-dCdkIGluZGljYXRlCmNhcGFiaWxpdGllcyBvZiBzYW1wbGUgZm9ybWF0IGNvbnZlcnNpb24uLi4K
-ClRoYW5rIHlvdSwKR2llZHJpdXMuCgpPbiBUaHUsIERlYyAyOSwgMjAxNiBhdCA3OjUzIEFNLCBD
-bGVtZW5zIExhZGlzY2ggPGNsZW1lbnNAbGFkaXNjaC5kZT4gd3JvdGU6Cgo+IEdpZWRyaXVzIFRy
-YWluYXZpxI1pdXMgd3JvdGU6Cj4gPkl0IHVzZXMgSTJTIGZvciBzZW5kaW5nIC8gcmVjZWl2aW5n
-IGF1ZGlvLiBIb3dldmVyLCB0aGUgbWFzdGVyIGNsb2NrIG9uCj4gb3VyCj4gPnNvdW5kIGNhcmQg
-aXMgZ2VuZXJhdGVkIGJ5IHRoZSBBREMsIHdoaWNoIHN1cHBvcnRzIG9ubHkgMjQgYml0IGRhdGEs
-IHNvCj4gPmdldHRpbmcgb3RoZXIgc2FtcGxlIGZvcm1hdHMgaXMgbm90IHBvc3NpYmxlLgo+Cj4g
-VGhlIEkyUyBzYW1wbGUgZm9ybWF0IG5lZWQgbm90IGJlIHRoZSBzYW1lIGFzIHdoYXQgdGhlIERN
-QQo+IGNvbnRyb2xsZXIgcmVhZHMvd3JpdGVzIGZyb20vdG8gbWVtb3J5Lgo+Cj4gPkEgcXVlc3Rp
-b24gb24gJ3BsdWcnIC0gaXQgYWNjZXB0cyAnbmVhcmVzdCcgYXMgdGhlIGFyZ3VtZW50IGZvciBm
-b3JtYXQsCj4gPnJhdGUsIHdoYXQgaGFwcGVucyBpbiBjYXNlIHRoZSBzbGF2ZSBwY20gc3RyZWFt
-IHN1cHBvcnRzIHRoZSBleGFjdCBzYW1lCj4gPmZvcm1hdCBhcyByZXF1ZXN0ZWQgYnkgdXNlciBz
-b2Z0d2FyZT8KPgo+IFRoZSBwbHVnIHBsdWdpbiBpbnN0YW50aWF0ZXMgdGhlIGFjdHVhbCBjb252
-ZXJzaW9uIHBsdWdpbnMgb25seQo+IGFzIG5lZWRlZDsgd2l0aCBubyBjb252ZXJzaW9uLCBpdCB2
-YW5pc2hlcyBlbnRpcmVseS4KPgo+Cj4gUmVnYXJkcywKPiBDbGVtZW5zCj4KPgpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+This reverts commit 1a653aa44725668590b36bbe2d7fe4736a69f055 ("ASoC:
+core: replace aux_comp_list to component_dev_list").
+
+That commit tries to remove card->aux_comp_list, using flagged entries
+in card->component_dev_list instead.
+
+However, components are added to card->component_dev_list in
+soc_probe_component(). Before that commit, it traversed
+card->aux_comp_list and found aux devices added by soc_bind_aux_dev().
+After that commit, it traverses card->component_dev_list and finds no
+aux devices, because soc_probe_component() was not yet called for them.
+
+Thus all aux devices are lost and any setup that needs them no longer
+works.
+
+Signed-off-by: Nikita Yushchenko <nikita.yoush@cogentembedded.com>
+---
+ include/sound/soc.h  |  4 +++-
+ sound/soc/soc-core.c | 17 +++++------------
+ 2 files changed, 8 insertions(+), 13 deletions(-)
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 2b502f6cc6d0..8172a512632a 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -809,10 +809,10 @@ struct snd_soc_component {
+ 
+ 	unsigned int ignore_pmdown_time:1; /* pmdown_time is ignored at stop */
+ 	unsigned int registered_as_component:1;
+-	unsigned int auxiliary:1; /* for auxiliary component of the card */
+ 	unsigned int suspended:1; /* is in suspend PM state */
+ 
+ 	struct list_head list;
++	struct list_head list_aux; /* for auxiliary component of the card */
+ 	struct list_head card_list;
+ 
+ 	struct snd_soc_dai_driver *dai_drv;
+@@ -1152,6 +1152,7 @@ struct snd_soc_card {
+ 	 */
+ 	struct snd_soc_aux_dev *aux_dev;
+ 	int num_aux_devs;
++	struct list_head aux_comp_list;
+ 
+ 	const struct snd_kcontrol_new *controls;
+ 	int num_controls;
+@@ -1547,6 +1548,7 @@ static inline void snd_soc_initialize_card_lists(struct snd_soc_card *card)
+ 	INIT_LIST_HEAD(&card->widgets);
+ 	INIT_LIST_HEAD(&card->paths);
+ 	INIT_LIST_HEAD(&card->dapm_list);
++	INIT_LIST_HEAD(&card->aux_comp_list);
+ 	INIT_LIST_HEAD(&card->component_dev_list);
+ }
+ 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index f1901bb1466e..15657a65e4ca 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1747,8 +1747,7 @@ static int soc_bind_aux_dev(struct snd_soc_card *card, int num)
+ 	}
+ 
+ 	component->init = aux_dev->init;
+-	component->auxiliary = 1;
+-
++	list_add(&component->list_aux, &card->aux_comp_list);
+ 	return 0;
+ 
+ err_defer:
+@@ -1764,10 +1763,7 @@ static int soc_probe_aux_devices(struct snd_soc_card *card)
+ 
+ 	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
+ 		order++) {
+-		list_for_each_entry(comp, &card->component_dev_list, card_list) {
+-			if (!comp->auxiliary)
+-				continue;
+-
++		list_for_each_entry(comp, &card->aux_comp_list, list_aux) {
+ 			if (comp->driver->probe_order == order) {
+ 				ret = soc_probe_component(card,	comp);
+ 				if (ret < 0) {
+@@ -1791,14 +1787,11 @@ static void soc_remove_aux_devices(struct snd_soc_card *card)
+ 	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
+ 		order++) {
+ 		list_for_each_entry_safe(comp, _comp,
+-			&card->component_dev_list, card_list) {
+-
+-			if (!comp->auxiliary)
+-				continue;
+-
++			&card->aux_comp_list, list_aux) {
+ 			if (comp->driver->remove_order == order) {
+ 				soc_remove_component(comp);
+-				comp->auxiliary = 0;
++				/* remove it from the card's aux_comp_list */
++				list_del(&comp->list_aux);
+ 			}
+ 		}
+ 	}
+-- 
+2.1.4
