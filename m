@@ -1,7 +1,8 @@
 From: sutar.mounesh@gmail.com
-Subject: [PATCH 3/6] alsa-lib: pcm:dshare enable silence
-Date: Fri, 30 Dec 2016 11:59:11 +0530
-Message-ID: <1483079351-28905-1-git-send-email-sutar.mounesh@gmail.com>
+Subject: [PATCH 4/6] alsa-lib:pcm: fix the hw_ptr update until
+	the boundary available.
+Date: Fri, 30 Dec 2016 11:59:27 +0530
+Message-ID: <1483079367-28931-1-git-send-email-sutar.mounesh@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -16,34 +17,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Alexander Jahn <ajahn@de.adit-jv.com>, Andreas Pape <apape@de.adit-jv.com>, mounesh_sutar@mentor.com
+Cc: alsa-devel@alsa-project.org, "mahendran.k" <mahendran.kuppusamy@in.bosch.com>, mounesh_sutar@mentor.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Alexander Jahn <ajahn@de.adit-jv.com>
+From: mahendran.k <mahendran.kuppusamy@in.bosch.com>
 
-This issue depends on system load - if the process using dshare is scheduled
-fast enough, then there is no noise. A delay of e.g >~2ms produces hearable noise.
+For long time test case, the slave_hw_ptr will exceed the boundary
+and wraparound the slave_hw_ptr. This slave boundary wraparound will
+cause the rate->hw_ptr to wraparound irrespective of the rate->boundary
+availability and due to that the available size goes wrong.
 
-Reproduction with instrumented aplay(sleep every 100th period for a given time):
-During the sleep time of 2000000us (2s) the hardware plays old samples in a
-loop before xrun is detected and recovered after the sleep.
-This is resolved by placing it in silence, in case of dshare plugin.
+Hence, To get the correct available size,
+- Its necessary to increment the rate->hw_ptr upto the rate->boundary
+and then wraparound the rate->hw_ptr.
+- While handling fraction part of slave period, rounded value will be
+introduced by input_frames(). To eliminate rounding issue on rate->hw_ptr,
+subtract last rounded value from rate->hw_ptr and add new rounded value
+of present slave_hw_ptr fraction part to rate->hw_ptr.
 
-Signed-off-by: Alexander Jahn <ajahn@de.adit-jv.com>
-Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
+Signed-off-by: mahendran.k <mahendran.kuppusamy@in.bosch.com>
+Signed-off-by: Mounesh Sutar <mounesh_sutar@mentor.com>
 
-diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
-index 4234d66..779845c 100644
---- a/src/pcm/pcm_direct.c
-+++ b/src/pcm/pcm_direct.c
-@@ -1240,7 +1240,7 @@ int snd_pcm_direct_initialize_slave(snd_pcm_direct_t *dmix, snd_pcm_t *spcm, str
- 		return ret;
- 	}
+diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
+index 1f830dd..5bee77c 100644
+--- a/src/pcm/pcm_rate.c
++++ b/src/pcm/pcm_rate.c
+@@ -50,7 +50,7 @@ typedef struct _snd_pcm_rate snd_pcm_rate_t;
  
--	if (dmix->type != SND_PCM_TYPE_DMIX)
-+	if ((dmix->type != SND_PCM_TYPE_DMIX)&&(dmix->type != SND_PCM_TYPE_DSHARE))
- 		goto __skip_silencing;
+ struct _snd_pcm_rate {
+ 	snd_pcm_generic_t gen;
+-	snd_pcm_uframes_t appl_ptr, hw_ptr;
++	snd_pcm_uframes_t appl_ptr, hw_ptr, last_slave_hw_ptr;
+ 	snd_pcm_uframes_t last_commit_ptr;
+ 	snd_pcm_uframes_t orig_avail_min;
+ 	snd_pcm_sw_params_t sw_params;
+@@ -563,14 +563,28 @@ static inline void snd_pcm_rate_sync_hwptr0(snd_pcm_t *pcm, snd_pcm_uframes_t sl
+ {
+ 	snd_pcm_rate_t *rate = pcm->private_data;
  
- 	ret = snd_pcm_sw_params_set_silence_threshold(spcm, &sw_params, 0);
++	snd_pcm_sframes_t slave_hw_ptr_diff = slave_hw_ptr - rate->last_slave_hw_ptr;
++	snd_pcm_sframes_t last_slave_hw_ptr_frac;
++
+ 	if (pcm->stream != SND_PCM_STREAM_PLAYBACK)
+ 		return;
+-	/* FIXME: boundary overlap of slave hw_ptr isn't evaluated here!
+-	 *        e.g. if slave rate is small... 
+-	 */
+-	rate->hw_ptr =
+-		(slave_hw_ptr / rate->gen.slave->period_size) * pcm->period_size +
+-		rate->ops.input_frames(rate->obj, slave_hw_ptr % rate->gen.slave->period_size);
++
++	if (slave_hw_ptr_diff < 0)
++		slave_hw_ptr_diff += rate->gen.slave->boundary; /* slave boundary wraparound */
++	else if (slave_hw_ptr_diff == 0)
++		return;
++	last_slave_hw_ptr_frac = rate->last_slave_hw_ptr % rate->gen.slave->period_size;
++	/* While handling fraction part fo slave period, rounded value will be introduced by input_frames().
++	 * To eliminate rounding issue on rate->hw_ptr, subtract last rounded value from rate->hw_ptr and
++	 * add new rounded value of present slave_hw_ptr fraction part to rate->hw_ptr. Hence,
++	 * rate->hw_ptr += [ (no. of updated slave periods * pcm rate period size) -
++	 * 				fractional part of last_slave_hw_ptr rounded value +
++	 * 				fractional part of updated slave hw ptr's rounded value ] */
++	rate->hw_ptr += (
++			(((last_slave_hw_ptr_frac + slave_hw_ptr_diff) / rate->gen.slave->period_size) * pcm->period_size) -
++			rate->ops.input_frames(rate->obj, last_slave_hw_ptr_frac) +
++			rate->ops.input_frames(rate->obj, (last_slave_hw_ptr_frac + slave_hw_ptr_diff) % rate->gen.slave->period_size));
++	rate->last_slave_hw_ptr = slave_hw_ptr;
+ 
+ 	rate->hw_ptr %= pcm->boundary;
+ }
+@@ -635,6 +649,7 @@ static int snd_pcm_rate_prepare(snd_pcm_t *pcm)
+ 		return err;
+ 	*pcm->hw.ptr = 0;
+ 	*pcm->appl.ptr = 0;
++	rate->last_slave_hw_ptr = 0;
+ 	err = snd_pcm_rate_init(pcm);
+ 	if (err < 0)
+ 		return err;
+@@ -650,6 +665,7 @@ static int snd_pcm_rate_reset(snd_pcm_t *pcm)
+ 		return err;
+ 	*pcm->hw.ptr = 0;
+ 	*pcm->appl.ptr = 0;
++	rate->last_slave_hw_ptr = 0;
+ 	err = snd_pcm_rate_init(pcm);
+ 	if (err < 0)
+ 		return err;
 -- 
 1.7.9.5
