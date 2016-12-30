@@ -1,8 +1,8 @@
 From: sutar.mounesh@gmail.com
-Subject: [PATCH 4/6] alsa-lib:pcm: fix the hw_ptr update until
-	the boundary available.
-Date: Fri, 30 Dec 2016 11:59:27 +0530
-Message-ID: <1483079367-28931-1-git-send-email-sutar.mounesh@gmail.com>
+Subject: [PATCH 5/6] alsa-lib:pcm: check state before enter
+	poll on timer.
+Date: Fri, 30 Dec 2016 11:59:41 +0530
+Message-ID: <1483079381-28957-1-git-send-email-sutar.mounesh@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -17,90 +17,186 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, "mahendran.k" <mahendran.kuppusamy@in.bosch.com>, mounesh_sutar@mentor.com
+Cc: alsa-devel@alsa-project.org, Andreas Pape <apape@de.adit-jv.com>, mounesh_sutar@mentor.com
 List-Id: alsa-devel@alsa-project.org
 
-From: mahendran.k <mahendran.kuppusamy@in.bosch.com>
+From: Andreas Pape <apape@de.adit-jv.com>
 
-For long time test case, the slave_hw_ptr will exceed the boundary
-and wraparound the slave_hw_ptr. This slave boundary wraparound will
-cause the rate->hw_ptr to wraparound irrespective of the rate->boundary
-availability and due to that the available size goes wrong.
+To avoid the chances of timeout, we need to check the enter poll
+in state xrun.
 
-Hence, To get the correct available size,
-- Its necessary to increment the rate->hw_ptr upto the rate->boundary
-and then wraparound the rate->hw_ptr.
-- While handling fraction part of slave period, rounded value will be
-introduced by input_frames(). To eliminate rounding issue on rate->hw_ptr,
-subtract last rounded value from rate->hw_ptr and add new rounded value
-of present slave_hw_ptr fraction part to rate->hw_ptr.
+Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
 
-Signed-off-by: mahendran.k <mahendran.kuppusamy@in.bosch.com>
-Signed-off-by: Mounesh Sutar <mounesh_sutar@mentor.com>
-
-diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
-index 1f830dd..5bee77c 100644
---- a/src/pcm/pcm_rate.c
-+++ b/src/pcm/pcm_rate.c
-@@ -50,7 +50,7 @@ typedef struct _snd_pcm_rate snd_pcm_rate_t;
- 
- struct _snd_pcm_rate {
- 	snd_pcm_generic_t gen;
--	snd_pcm_uframes_t appl_ptr, hw_ptr;
-+	snd_pcm_uframes_t appl_ptr, hw_ptr, last_slave_hw_ptr;
- 	snd_pcm_uframes_t last_commit_ptr;
- 	snd_pcm_uframes_t orig_avail_min;
- 	snd_pcm_sw_params_t sw_params;
-@@ -563,14 +563,28 @@ static inline void snd_pcm_rate_sync_hwptr0(snd_pcm_t *pcm, snd_pcm_uframes_t sl
- {
- 	snd_pcm_rate_t *rate = pcm->private_data;
- 
-+	snd_pcm_sframes_t slave_hw_ptr_diff = slave_hw_ptr - rate->last_slave_hw_ptr;
-+	snd_pcm_sframes_t last_slave_hw_ptr_frac;
-+
- 	if (pcm->stream != SND_PCM_STREAM_PLAYBACK)
- 		return;
--	/* FIXME: boundary overlap of slave hw_ptr isn't evaluated here!
--	 *        e.g. if slave rate is small... 
--	 */
--	rate->hw_ptr =
--		(slave_hw_ptr / rate->gen.slave->period_size) * pcm->period_size +
--		rate->ops.input_frames(rate->obj, slave_hw_ptr % rate->gen.slave->period_size);
-+
-+	if (slave_hw_ptr_diff < 0)
-+		slave_hw_ptr_diff += rate->gen.slave->boundary; /* slave boundary wraparound */
-+	else if (slave_hw_ptr_diff == 0)
-+		return;
-+	last_slave_hw_ptr_frac = rate->last_slave_hw_ptr % rate->gen.slave->period_size;
-+	/* While handling fraction part fo slave period, rounded value will be introduced by input_frames().
-+	 * To eliminate rounding issue on rate->hw_ptr, subtract last rounded value from rate->hw_ptr and
-+	 * add new rounded value of present slave_hw_ptr fraction part to rate->hw_ptr. Hence,
-+	 * rate->hw_ptr += [ (no. of updated slave periods * pcm rate period size) -
-+	 * 				fractional part of last_slave_hw_ptr rounded value +
-+	 * 				fractional part of updated slave hw ptr's rounded value ] */
-+	rate->hw_ptr += (
-+			(((last_slave_hw_ptr_frac + slave_hw_ptr_diff) / rate->gen.slave->period_size) * pcm->period_size) -
-+			rate->ops.input_frames(rate->obj, last_slave_hw_ptr_frac) +
-+			rate->ops.input_frames(rate->obj, (last_slave_hw_ptr_frac + slave_hw_ptr_diff) % rate->gen.slave->period_size));
-+	rate->last_slave_hw_ptr = slave_hw_ptr;
- 
- 	rate->hw_ptr %= pcm->boundary;
+diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
+index 779845c..2928512 100644
+--- a/src/pcm/pcm_direct.c
++++ b/src/pcm/pcm_direct.c
+@@ -549,6 +549,42 @@ int snd_pcm_direct_timer_stop(snd_pcm_direct_t *dmix)
+ 	snd_timer_stop(dmix->timer);
+ 	return 0;
  }
-@@ -635,6 +649,7 @@ static int snd_pcm_rate_prepare(snd_pcm_t *pcm)
- 		return err;
- 	*pcm->hw.ptr = 0;
- 	*pcm->appl.ptr = 0;
-+	rate->last_slave_hw_ptr = 0;
- 	err = snd_pcm_rate_init(pcm);
- 	if (err < 0)
- 		return err;
-@@ -650,6 +665,7 @@ static int snd_pcm_rate_reset(snd_pcm_t *pcm)
- 		return err;
- 	*pcm->hw.ptr = 0;
- 	*pcm->appl.ptr = 0;
-+	rate->last_slave_hw_ptr = 0;
- 	err = snd_pcm_rate_init(pcm);
- 	if (err < 0)
- 		return err;
++/*
++ * This is the only operation guaranteed to be called before entering poll().
++ * Direct plugins use fd of snd_timer to poll on, these timers do NOT check state of substream in kernel by intention.
++ * Only the enter to xrun might be notified once (SND_TIMER_EVENT_MSTOP).
++ * If xrun event was not correctly handled or was ignored it will never be evaluated again afterwards.
++ * This will result in snd_pcm_wait() always returning timeout.
++ * In contrast poll() on pcm hardware checks ALSA state and will immediately return POLLERR on XRUN.
++ *
++ * To prevent timeout and applications endlessly spinning without xrun detected we add a state check
++ * here which may trigger the xrun sequence.
++ *
++ * return count of filled descriptors or negative error code
++ */
++int snd_pcm_direct_poll_descriptors(snd_pcm_t *pcm, struct pollfd *pfds, unsigned int space)
++{
++	if (pcm->poll_fd < 0) {
++		SNDMSG("poll_fd < 0");
++		return -EIO;
++	}
++	if (space >= 1 && pfds) {
++		pfds->fd = pcm->poll_fd;
++		pfds->events = pcm->poll_events | POLLERR | POLLNVAL;
++	} else {
++		return 0;
++	}
++
++	/*this will also evaluate slave state and enter xrun if necessary*/
++	switch (snd_pcm_state(pcm)) {
++	case SND_PCM_STATE_XRUN:
++		return -EPIPE;
++	default:
++		break;
++	}
++	return 1;
++}
++
+ 
+ int snd_pcm_direct_poll_revents(snd_pcm_t *pcm, struct pollfd *pfds, unsigned int nfds, unsigned short *revents)
+ {
+diff --git a/src/pcm/pcm_direct.h b/src/pcm/pcm_direct.h
+index 569d2be..3a1c1c0 100644
+--- a/src/pcm/pcm_direct.h
++++ b/src/pcm/pcm_direct.h
+@@ -301,6 +301,7 @@ int snd_pcm_direct_parse_bindings(snd_pcm_direct_t *dmix,
+ 				  snd_config_t *cfg);
+ int snd_pcm_direct_nonblock(snd_pcm_t *pcm, int nonblock);
+ int snd_pcm_direct_async(snd_pcm_t *pcm, int sig, pid_t pid);
++int snd_pcm_direct_poll_descriptors(snd_pcm_t *pcm, struct pollfd *pfds, unsigned int space);
+ int snd_pcm_direct_poll_revents(snd_pcm_t *pcm, struct pollfd *pfds, unsigned int nfds, unsigned short *revents);
+ int snd_pcm_direct_info(snd_pcm_t *pcm, snd_pcm_info_t * info);
+ int snd_pcm_direct_hw_refine(snd_pcm_t *pcm, snd_pcm_hw_params_t *params);
+diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
+index 5c3eb2d..320c948 100644
+--- a/src/pcm/pcm_dmix.c
++++ b/src/pcm/pcm_dmix.c
+@@ -463,17 +463,23 @@ static int snd_pcm_dmix_sync_ptr(snd_pcm_t *pcm)
+ static snd_pcm_state_t snd_pcm_dmix_state(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_direct_t *dmix = pcm->private_data;
++	int err;
+ 	snd_pcm_state_t state;
+ 	state = snd_pcm_state(dmix->spcm);
+ 	switch (state) {
+-	case SND_PCM_STATE_XRUN:
+ 	case SND_PCM_STATE_SUSPENDED:
+ 	case SND_PCM_STATE_DISCONNECTED:
+ 		dmix->state = state;
+ 		return state;
++	case SND_PCM_STATE_XRUN:
++		if ((err = snd_pcm_direct_slave_recover(dmix)) < 0)
++			return err;
++		break;
+ 	default:
+ 		break;
+ 	}
++	snd_pcm_direct_client_chk_xrun(dmix, pcm);
++
+ 	if (dmix->state == STATE_RUN_PENDING)
+ 		return SNDRV_PCM_STATE_RUNNING;
+ 	return dmix->state;
+@@ -969,7 +975,7 @@ static const snd_pcm_fast_ops_t snd_pcm_dmix_fast_ops = {
+ 	.avail_update = snd_pcm_dmix_avail_update,
+ 	.mmap_commit = snd_pcm_dmix_mmap_commit,
+ 	.htimestamp = snd_pcm_dmix_htimestamp,
+-	.poll_descriptors = NULL,
++	.poll_descriptors = snd_pcm_direct_poll_descriptors,
+ 	.poll_descriptors_count = NULL,
+ 	.poll_revents = snd_pcm_dmix_poll_revents,
+ };
+diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
+index 707e2c2..f4fa32b 100644
+--- a/src/pcm/pcm_dshare.c
++++ b/src/pcm/pcm_dshare.c
+@@ -255,17 +255,22 @@ static int snd_pcm_dshare_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
+ static snd_pcm_state_t snd_pcm_dshare_state(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_direct_t *dshare = pcm->private_data;
++	int err;
+ 	snd_pcm_state_t state;
+ 	state = snd_pcm_state(dshare->spcm);
+ 	switch (state) {
+-	case SND_PCM_STATE_XRUN:
+ 	case SND_PCM_STATE_SUSPENDED:
+ 	case SND_PCM_STATE_DISCONNECTED:
+ 		dshare->state = state;
+ 		return state;
++	case SND_PCM_STATE_XRUN:
++		if ((err = snd_pcm_direct_slave_recover(dshare)) < 0)
++			return err;
++		break;
+ 	default:
+ 		break;
+ 	}
++	snd_pcm_direct_client_chk_xrun(dshare, pcm);
+ 	if (dshare->state == STATE_RUN_PENDING)
+ 		return SNDRV_PCM_STATE_RUNNING;
+ 	return dshare->state;
+@@ -646,7 +651,7 @@ static const snd_pcm_fast_ops_t snd_pcm_dshare_fast_ops = {
+ 	.avail_update = snd_pcm_dshare_avail_update,
+ 	.mmap_commit = snd_pcm_dshare_mmap_commit,
+ 	.htimestamp = snd_pcm_dshare_htimestamp,
+-	.poll_descriptors = NULL,
++	.poll_descriptors = snd_pcm_direct_poll_descriptors,
+ 	.poll_descriptors_count = NULL,
+ 	.poll_revents = snd_pcm_direct_poll_revents,
+ };
+diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
+index 512e957..0729a5a 100644
+--- a/src/pcm/pcm_dsnoop.c
++++ b/src/pcm/pcm_dsnoop.c
+@@ -208,17 +208,22 @@ static int snd_pcm_dsnoop_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
+ static snd_pcm_state_t snd_pcm_dsnoop_state(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_direct_t *dsnoop = pcm->private_data;
++	int err;
+ 	snd_pcm_state_t state;
+ 	state = snd_pcm_state(dsnoop->spcm);
+ 	switch (state) {
+-	case SND_PCM_STATE_XRUN:
+ 	case SND_PCM_STATE_SUSPENDED:
+ 	case SND_PCM_STATE_DISCONNECTED:
+ 		dsnoop->state = state;
+ 		return state;
++	case SND_PCM_STATE_XRUN:
++		if ((err = snd_pcm_direct_slave_recover(dsnoop)) < 0)
++			return err;
++		break;
+ 	default:
+ 		break;
+ 	}
++	snd_pcm_direct_client_chk_xrun(dsnoop, pcm);
+ 	return dsnoop->state;
+ }
+ 
+@@ -531,7 +536,7 @@ static const snd_pcm_fast_ops_t snd_pcm_dsnoop_fast_ops = {
+ 	.avail_update = snd_pcm_dsnoop_avail_update,
+ 	.mmap_commit = snd_pcm_dsnoop_mmap_commit,
+ 	.htimestamp = snd_pcm_dsnoop_htimestamp,
+-	.poll_descriptors = NULL,
++	.poll_descriptors = snd_pcm_direct_poll_descriptors,
+ 	.poll_descriptors_count = NULL,
+ 	.poll_revents = snd_pcm_direct_poll_revents,
+ };
 -- 
 1.7.9.5
