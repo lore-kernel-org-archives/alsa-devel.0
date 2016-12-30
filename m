@@ -1,8 +1,8 @@
 From: sutar.mounesh@gmail.com
-Subject: [PATCH 1/6] alsa-lib:pcm: allow users to configure
-	different period sizes.
-Date: Fri, 30 Dec 2016 11:56:15 +0530
-Message-ID: <1483079175-28827-1-git-send-email-sutar.mounesh@gmail.com>
+Subject: [PATCH 2/6] alsa-lib: Fix for sync issue on xrun
+	recover
+Date: Fri, 30 Dec 2016 11:58:48 +0530
+Message-ID: <1483079328-28879-1-git-send-email-sutar.mounesh@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -17,239 +17,353 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Alexander Jahn <ajahn@de.adit-jv.com>, Andreas Pape <apape@de.adit-jv.com>, mounesh_sutar@mentor.com
+Cc: alsa-devel@alsa-project.org, Joshua Frkuska <joshua_frkuska@mentor.com>, Andreas Pape <apape@de.adit-jv.com>, mounesh_sutar@mentor.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Joshua Frkuska joshua_frkuska@mentor.com
+From: Andreas Pape <apape@de.adit-jv.com>
 
-This patch allows the effective period size to be a multiple of the slave-pcm period size.
-Allowing only exact multiple of original period size is achieved by borrowing code from the
-kernel hwrules implemention.
+If using very short periods, DSHARE/DSNOOP/DMIX may report underruns while in
+status 'prepared'. This prohibits correct recovery. Now slave xrun conditions
+for DSHARE/DSNOOP/DMIX are being handled properly.
 
-This patch is intended to save cpu workload when for example, the slave operates with very
-small periods but a user does not need that small periods.
-
-This feature is enabled by default and can be disabled by adding config option 'var_periodsize 0'.
-
-Signed-off-by: Alexander Jahn <ajahn@de.adit-jv.com>
 Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
+Signed-off-by: Joshua Frkuska <joshua_frkuska@mentor.com>
 
 diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
-index 6434983..8f42b19 100644
+index 8f42b19..4234d66 100644
 --- a/src/pcm/pcm_direct.c
 +++ b/src/pcm/pcm_direct.c
-@@ -660,6 +660,28 @@ static int hw_param_interval_refine_minmax(snd_pcm_hw_params_t *params,
- 	return hw_param_interval_refine_one(params, var, &t);
- }
+@@ -572,6 +572,9 @@ int snd_pcm_direct_poll_revents(snd_pcm_t *pcm, struct pollfd *pfds, unsigned in
+ 	}
+ 	switch (snd_pcm_state(dmix->spcm)) {
+ 	case SND_PCM_STATE_XRUN:
++		/*recover slave and update client state to xrun before returning POLLERR*/
++		snd_pcm_direct_slave_recover(dmix);
++		snd_pcm_direct_client_chk_xrun(dmix, pcm);
+ 	case SND_PCM_STATE_SUSPENDED:
+ 	case SND_PCM_STATE_SETUP:
+ 		events |= POLLERR;
+@@ -965,6 +968,83 @@ static void save_slave_setting(snd_pcm_direct_t *dmix, snd_pcm_t *spcm)
  
-+/* this code is used 'as-is' from the alsa kernel code */
-+static int snd_interval_step(struct snd_interval *i, unsigned int min, unsigned int step)
-+{
-+	unsigned int n;
-+	int changed = 0;
-+	n = (i->min - min) % step;
-+	if (n != 0 || i->openmin) {
-+		i->min += step - n;
-+		changed = 1;
-+	}
-+	n = (i->max - min) % step;
-+	if (n != 0 || i->openmax) {
-+		i->max -= n;
-+		changed = 1;
-+	}
-+	if (snd_interval_checkempty(i)) {
-+		i->empty = 1;
-+		return -EINVAL;
-+	}
-+	return changed;
+ #undef COPY_SLAVE
+ 
++#define direct_sem_down_chk_ret(d, id) {\
++	int semerr = snd_pcm_direct_semaphore_down(d, DIRECT_IPC_SEM_CLIENT); \
++	if (semerr) {\
++		SNDERR("SEMDOWN FAILED with err %d", semerr);\
++		return semerr;\
++	}\
 +}
 +
- #undef REFINE_DEBUG
++#define direct_sem_up_chk_ret(d, id) {\
++	int semerr = snd_pcm_direct_semaphore_up(d, DIRECT_IPC_SEM_CLIENT); \
++	if (semerr) {\
++		SNDERR("SEMUP FAILED with err %d", semerr);\
++		return semerr;\
++	}\
++}
++
++/*
++ * Recover slave on XRUN.
++ * Even if direct plugins disable xrun detection, there might be an xrun raised directly by some drivers.
++ * The first client recovers slave pcm.
++ * Each client needs to execute sw xrun handling afterwards
++ */
++int snd_pcm_direct_slave_recover(snd_pcm_direct_t *direct)
++{
++	int ret = 0;
++
++	direct_sem_down_chk_ret(direct, DIRECT_IPC_SEM_CLIENT);
++	if (snd_pcm_state(direct->spcm) != SND_PCM_STATE_XRUN) {
++		/*ignore... someone else already did recovery*/
++		direct_sem_up_chk_ret(direct, DIRECT_IPC_SEM_CLIENT);
++		return ret;
++	}
++
++	ret = snd_pcm_prepare(direct->spcm);
++	if (ret < 0) {
++		SNDERR("recover: unable to prepare slave");
++		direct_sem_up_chk_ret(direct, DIRECT_IPC_SEM_CLIENT);
++		return ret;
++	}
++
++	if (direct->type == SND_PCM_TYPE_DSHARE) {
++		const snd_pcm_channel_area_t *dst_areas;
++		dst_areas = snd_pcm_mmap_areas(direct->spcm);
++		snd_pcm_areas_silence(dst_areas, 0, direct->spcm->channels, direct->spcm->buffer_size, direct->spcm->format);
++	}
++
++	ret = snd_pcm_start(direct->spcm);
++	if (ret < 0) {
++		SNDERR("recover: unable to start slave");
++		direct_sem_up_chk_ret(direct, DIRECT_IPC_SEM_CLIENT);
++		return ret;
++	}
++	direct->shmptr->recoveries++;
++	direct_sem_up_chk_ret(direct, DIRECT_IPC_SEM_CLIENT);
++	return 0;
++}
++
++/*
++ * enter xrun state, if slave xrun occured
++ * @return: 0 - no xrun >0: xrun happened
++ */
++int snd_pcm_direct_client_chk_xrun(snd_pcm_direct_t *direct, snd_pcm_t *pcm)
++{
++	if (direct->shmptr->recoveries != direct->recoveries) {
++		/* no matter how many xruns we missed - so don't increment but just update to actual counter*/
++		direct->recoveries = direct->shmptr->recoveries;
++		pcm->fast_ops->drop(pcm);
++		/*trigger_tstamp update is missing in drop callbacks*/
++		gettimestamp(&direct->trigger_tstamp, pcm->tstamp_type);
++		/*no timer clear: if slave already entered xrun again the event is lost...*/
++		/*snd_pcm_direct_clear_timer_queue(direct);*/
++		direct->state = SND_PCM_STATE_XRUN;
++		return 1;
++	}
++	return 0;
++}
++
+ /*
+  * this function initializes hardware and starts playback operation with
+  * no stop threshold (it operates all time without xrun checking)
+@@ -1380,6 +1460,7 @@ int snd_pcm_direct_open_secondary_client(snd_pcm_t **spcmp, snd_pcm_direct_t *dm
+ 	dmix->slave_buffer_size = spcm->buffer_size;
+ 	dmix->slave_period_size = dmix->shmptr->s.period_size;
+ 	dmix->slave_boundary = spcm->boundary;
++	dmix->recoveries = dmix->shmptr->recoveries;
  
- int snd_pcm_direct_hw_refine(snd_pcm_t *pcm, snd_pcm_hw_params_t *params)
-@@ -710,15 +732,16 @@ int snd_pcm_direct_hw_refine(snd_pcm_t *pcm, snd_pcm_hw_params_t *params)
- 					   &dshare->shmptr->hw.rate);
- 	if (err < 0)
- 		return err;
--	err = hw_param_interval_refine_one(params, SND_PCM_HW_PARAM_PERIOD_SIZE,
--					   &dshare->shmptr->hw.period_size);
--	if (err < 0)
--		return err;
--	err = hw_param_interval_refine_one(params, SND_PCM_HW_PARAM_PERIOD_TIME,
--					   &dshare->shmptr->hw.period_time);
--	if (err < 0)
--		return err;
-+
- 	if (dshare->max_periods < 0) {
-+		err = hw_param_interval_refine_one(params, SND_PCM_HW_PARAM_PERIOD_SIZE,
-+						   &dshare->shmptr->hw.period_size);
-+		if (err < 0)
-+			return err;
-+		err = hw_param_interval_refine_one(params, SND_PCM_HW_PARAM_PERIOD_TIME,
-+						   &dshare->shmptr->hw.period_time);
-+		if (err < 0)
-+			return err;
- 		err = hw_param_interval_refine_one(params, SND_PCM_HW_PARAM_BUFFER_SIZE,
- 						   &dshare->shmptr->hw.buffer_size);
- 		if (err < 0)
-@@ -730,11 +753,38 @@ int snd_pcm_direct_hw_refine(snd_pcm_t *pcm, snd_pcm_hw_params_t *params)
- 	} else if (params->rmask & ((1<<SND_PCM_HW_PARAM_PERIODS)|
- 				    (1<<SND_PCM_HW_PARAM_BUFFER_BYTES)|
- 				    (1<<SND_PCM_HW_PARAM_BUFFER_SIZE)|
--				    (1<<SND_PCM_HW_PARAM_BUFFER_TIME))) {
-+				    (1<<SND_PCM_HW_PARAM_BUFFER_TIME)|
-+				    (1<<SND_PCM_HW_PARAM_PERIOD_TIME)|
-+				    (1<<SND_PCM_HW_PARAM_PERIOD_SIZE)|
-+				    (1<<SND_PCM_HW_PARAM_PERIOD_BYTES))) {
-+		snd_interval_t period_size = dshare->shmptr->hw.period_size;
-+		snd_interval_t period_time = dshare->shmptr->hw.period_time;
- 		int changed;
- 		unsigned int max_periods = dshare->max_periods;
- 		if (max_periods < 2)
- 			max_periods = dshare->slave_buffer_size / dshare->slave_period_size;
-+
-+		/*make sure buffer size does not exceed slave buffer size*/
-+		err = hw_param_interval_refine_minmax(params, SND_PCM_HW_PARAM_BUFFER_SIZE,
-+					2 * dshare->slave_period_size, dshare->slave_buffer_size);
-+		if (err < 0)
-+			return err;
-+		if (dshare->var_periodsize) {
-+			/*more tolerant settings...*/
-+			if((dshare->shmptr->hw.buffer_size.max / 2) > period_size.max)
-+				period_size.max = dshare->shmptr->hw.buffer_size.max / 2;
-+			if((dshare->shmptr->hw.buffer_time.max / 2) > period_time.max)
-+				period_time.max = dshare->shmptr->hw.buffer_time.max / 2;
-+		}
-+
-+		err = hw_param_interval_refine_one(params, SND_PCM_HW_PARAM_PERIOD_SIZE,
-+						   &period_size);
-+		if (err < 0)
-+			return err;
-+		err = hw_param_interval_refine_one(params, SND_PCM_HW_PARAM_PERIOD_TIME,
-+						   &period_time);
-+		if (err < 0)
-+			return err;
- 		do {
- 			changed = 0;
- 			err = hw_param_interval_refine_minmax(params, SND_PCM_HW_PARAM_PERIODS,
-@@ -746,8 +796,16 @@ int snd_pcm_direct_hw_refine(snd_pcm_t *pcm, snd_pcm_hw_params_t *params)
- 			if (err < 0)
- 				return err;
- 			changed |= err;
-+			err = snd_interval_step(hw_param_interval(params, SND_PCM_HW_PARAM_PERIOD_SIZE),
-+								0, dshare->slave_period_size);
-+			if (err < 0)
-+				return err;
-+			changed |= err;
-+			if (err)
-+				params->rmask |= (1<<SND_PCM_HW_PARAM_PERIOD_SIZE);
- 		} while (changed);
- 	}
-+	dshare->timer_ticks = hw_param_interval(params, SND_PCM_HW_PARAM_PERIOD_SIZE)->max/dshare->slave_period_size;
- 	params->info = dshare->shmptr->s.info;
- #ifdef REFINE_DEBUG
- 	snd_output_puts(log, "DMIX REFINE (end):\n");
-@@ -1183,6 +1241,7 @@ int snd_pcm_direct_initialize_poll_fd(snd_pcm_direct_t *dmix)
- 
- 	dmix->tread = 1;
- 	dmix->timer_need_poll = 0;
-+	dmix->timer_ticks = 1;
- 	ret = snd_pcm_info(dmix->spcm, &info);
+ 	ret = snd_pcm_mmap(spcm);
  	if (ret < 0) {
- 		SNDERR("unable to info for slave pcm");
-@@ -1366,7 +1425,7 @@ int snd_pcm_direct_set_timer_params(snd_pcm_direct_t *dmix)
- 	snd_timer_params_set_auto_start(&params, 1);
- 	if (dmix->type != SND_PCM_TYPE_DSNOOP)
- 		snd_timer_params_set_early_event(&params, 1);
--	snd_timer_params_set_ticks(&params, 1);
-+	snd_timer_params_set_ticks(&params, dmix->timer_ticks);
- 	if (dmix->tread) {
- 		filter = (1<<SND_TIMER_EVENT_TICK) |
- 			 dmix->timer_events;
-@@ -1656,6 +1715,7 @@ int snd_pcm_direct_parse_open_conf(snd_config_t *root, snd_config_t *conf,
- 	rec->ipc_gid = -1;
- 	rec->slowptr = 1;
- 	rec->max_periods = 0;
-+	rec->var_periodsize = 1;
- 
- 	/* read defaults */
- 	if (snd_config_search(root, "defaults.pcm.dmix_max_periods", &n) >= 0) {
-@@ -1762,6 +1822,13 @@ int snd_pcm_direct_parse_open_conf(snd_config_t *root, snd_config_t *conf,
- 			rec->max_periods = val;
- 			continue;
- 		}
-+		if (strcmp(id, "var_periodsize") == 0) {
-+			err = snd_config_get_bool(n);
-+			if (err < 0)
-+				return err;
-+			rec->var_periodsize = err;
-+			continue;
-+		}
- 		SNDERR("Unknown field %s", id);
- 		return -EINVAL;
- 	}
 diff --git a/src/pcm/pcm_direct.h b/src/pcm/pcm_direct.h
-index 611ad29..91e816c 100644
+index 91e816c..569d2be 100644
 --- a/src/pcm/pcm_direct.h
 +++ b/src/pcm/pcm_direct.h
-@@ -147,12 +147,14 @@ struct snd_pcm_direct {
- 	int tread: 1;
- 	int timer_need_poll: 1;
- 	unsigned int timer_events;
-+	unsigned int timer_ticks;
- 	int server_fd;
- 	pid_t server_pid;
- 	snd_timer_t *timer; 		/* timer used as poll_fd */
- 	int interleaved;	 	/* we have interleaved buffer */
- 	int slowptr;			/* use slow but more precise ptr updates */
- 	int max_periods;		/* max periods (-1 = fixed periods, 0 = max buffer size) */
-+	int var_periodsize;		/* allow variable period size if max_periods is != -1*/
+@@ -66,6 +66,7 @@ typedef struct {
+ 	char socket_name[256];			/* name of communication socket */
+ 	snd_pcm_type_t type;			/* PCM type (currently only hw) */
+ 	int use_server;
++	unsigned int recoveries;		/* no of executed recoveries on slave*/
+ 	struct {
+ 		unsigned int format;
+ 		snd_interval_t rate;
+@@ -157,6 +158,7 @@ struct snd_pcm_direct {
+ 	int var_periodsize;		/* allow variable period size if max_periods is != -1*/
  	unsigned int channels;		/* client's channels */
  	unsigned int *bindings;
++	unsigned int recoveries;	/* mirror of executed recoveries on slave */
  	union {
-@@ -326,6 +328,7 @@ struct snd_pcm_direct_open_conf {
- 	int ipc_gid;
- 	int slowptr;
- 	int max_periods;
-+	int var_periodsize;
- 	snd_config_t *slave;
- 	snd_config_t *bindings;
- };
+ 		struct {
+ 			int shmid_sum;			/* IPC global sum ring buffer memory identification */
+@@ -318,7 +320,8 @@ int snd_pcm_direct_open_secondary_client(snd_pcm_t **spcmp, snd_pcm_direct_t *dm
+ snd_pcm_chmap_query_t **snd_pcm_direct_query_chmaps(snd_pcm_t *pcm);
+ snd_pcm_chmap_t *snd_pcm_direct_get_chmap(snd_pcm_t *pcm);
+ int snd_pcm_direct_set_chmap(snd_pcm_t *pcm, const snd_pcm_chmap_t *map);
+-
++int snd_pcm_direct_slave_recover(snd_pcm_direct_t *direct);
++int snd_pcm_direct_client_chk_xrun(snd_pcm_direct_t *direct, snd_pcm_t *pcm);
+ int snd_timer_async(snd_timer_t *timer, int sig, pid_t pid);
+ struct timespec snd_pcm_hw_fast_tstamp(snd_pcm_t *pcm);
+ 
 diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
-index 825677f..0ab7323 100644
+index 0ab7323..5c3eb2d 100644
 --- a/src/pcm/pcm_dmix.c
 +++ b/src/pcm/pcm_dmix.c
-@@ -1040,6 +1040,7 @@ int snd_pcm_dmix_open(snd_pcm_t **pcmp, const char *name,
- 	dmix->state = SND_PCM_STATE_OPEN;
- 	dmix->slowptr = opts->slowptr;
- 	dmix->max_periods = opts->max_periods;
-+	dmix->var_periodsize = opts->var_periodsize;
- 	dmix->sync_ptr = snd_pcm_dmix_sync_ptr;
+@@ -396,6 +396,7 @@ static int snd_pcm_dmix_sync_ptr0(snd_pcm_t *pcm, snd_pcm_uframes_t slave_hw_ptr
+ 	snd_pcm_direct_t *dmix = pcm->private_data;
+ 	snd_pcm_uframes_t old_slave_hw_ptr, avail;
+ 	snd_pcm_sframes_t diff;
++	int err;
+ 	
+ 	old_slave_hw_ptr = dmix->slave_hw_ptr;
+ 	dmix->slave_hw_ptr = *dmix->spcm->hw.ptr;
+@@ -434,15 +435,21 @@ static int snd_pcm_dmix_sync_ptr0(snd_pcm_t *pcm, snd_pcm_uframes_t slave_hw_ptr
+ static int snd_pcm_dmix_sync_ptr(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_direct_t *dmix = pcm->private_data;
++	int err;
  
-  retry:
+ 	switch (snd_pcm_state(dmix->spcm)) {
+ 	case SND_PCM_STATE_DISCONNECTED:
+ 		dmix->state = SND_PCM_STATE_DISCONNECTED;
+ 		return -ENODEV;
++	case SND_PCM_STATE_XRUN:
++		if ((err = snd_pcm_direct_slave_recover(dmix)) <0)
++			return err;
++		break;
+ 	default:
+ 		break;
+ 	}
+-
++	if (snd_pcm_direct_client_chk_xrun(dmix, pcm))
++		return -EPIPE;
+ 	if (dmix->slowptr)
+ 		snd_pcm_hwsync(dmix->spcm);
+ 
+@@ -828,12 +835,16 @@ static snd_pcm_sframes_t snd_pcm_dmix_mmap_commit(snd_pcm_t *pcm,
+ 
+ 	switch (snd_pcm_state(dmix->spcm)) {
+ 	case SND_PCM_STATE_XRUN:
+-		return -EPIPE;
++		if ((err = snd_pcm_direct_slave_recover(dmix)) < 0)
++			return err;
++		break;
+ 	case SND_PCM_STATE_SUSPENDED:
+ 		return -ESTRPIPE;
+ 	default:
+ 		break;
+ 	}
++	if (snd_pcm_direct_client_chk_xrun(dmix, pcm))
++		return -EPIPE;
+ 	if (! size)
+ 		return 0;
+ 	snd_pcm_mmap_appl_forward(pcm, size);
+@@ -841,8 +852,10 @@ static snd_pcm_sframes_t snd_pcm_dmix_mmap_commit(snd_pcm_t *pcm,
+ 		if ((err = snd_pcm_dmix_start_timer(pcm, dmix)) < 0)
+ 			return err;
+ 	} else if (dmix->state == SND_PCM_STATE_RUNNING ||
+-		   dmix->state == SND_PCM_STATE_DRAINING)
+-		snd_pcm_dmix_sync_ptr(pcm);
++		   dmix->state == SND_PCM_STATE_DRAINING) {
++		if (( err = snd_pcm_dmix_sync_ptr(pcm)) < 0)
++			return err;
++	}
+ 	if (dmix->state == SND_PCM_STATE_RUNNING ||
+ 	    dmix->state == SND_PCM_STATE_DRAINING) {
+ 		/* ok, we commit the changes after the validation of area */
+@@ -858,10 +871,13 @@ static snd_pcm_sframes_t snd_pcm_dmix_mmap_commit(snd_pcm_t *pcm,
+ static snd_pcm_sframes_t snd_pcm_dmix_avail_update(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_direct_t *dmix = pcm->private_data;
++	int err;
+ 	
+ 	if (dmix->state == SND_PCM_STATE_RUNNING ||
+-	    dmix->state == SND_PCM_STATE_DRAINING)
+-		snd_pcm_dmix_sync_ptr(pcm);
++	    dmix->state == SND_PCM_STATE_DRAINING) {
++		if (( err = snd_pcm_dmix_sync_ptr(pcm)) < 0)
++			return err;
++	}
+ 	return snd_pcm_mmap_playback_avail(pcm);
+ }
+ 
 diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
-index 29cd6c6..a1fed5d 100644
+index a1fed5d..707e2c2 100644
 --- a/src/pcm/pcm_dshare.c
 +++ b/src/pcm/pcm_dshare.c
-@@ -725,6 +725,7 @@ int snd_pcm_dshare_open(snd_pcm_t **pcmp, const char *name,
- 	dshare->state = SND_PCM_STATE_OPEN;
- 	dshare->slowptr = opts->slowptr;
- 	dshare->max_periods = opts->max_periods;
-+	dshare->var_periodsize = opts->var_periodsize;
- 	dshare->sync_ptr = snd_pcm_dshare_sync_ptr;
+@@ -202,15 +202,21 @@ static int snd_pcm_dshare_sync_ptr0(snd_pcm_t *pcm, snd_pcm_uframes_t slave_hw_p
+ static int snd_pcm_dshare_sync_ptr(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_direct_t *dshare = pcm->private_data;
++	int err;
  
-  retry:
+ 	switch (snd_pcm_state(dshare->spcm)) {
+ 	case SND_PCM_STATE_DISCONNECTED:
+ 		dshare->state = SNDRV_PCM_STATE_DISCONNECTED;
+ 		return -ENODEV;
++	case SND_PCM_STATE_XRUN:
++		if ((err = snd_pcm_direct_slave_recover(dshare)) <0)
++			return err;
++		break;
+ 	default:
+ 		break;
+ 	}
+-
++	if (snd_pcm_direct_client_chk_xrun(dshare, pcm))
++		return -EPIPE;
+ 	if (dshare->slowptr)
+ 		snd_pcm_hwsync(dshare->spcm);
+ 
+@@ -516,12 +522,16 @@ static snd_pcm_sframes_t snd_pcm_dshare_mmap_commit(snd_pcm_t *pcm,
+ 
+ 	switch (snd_pcm_state(dshare->spcm)) {
+ 	case SND_PCM_STATE_XRUN:
+-		return -EPIPE;
++		if ((err = snd_pcm_direct_slave_recover(dshare)) < 0)
++			return err;
++		break;
+ 	case SND_PCM_STATE_SUSPENDED:
+ 		return -ESTRPIPE;
+ 	default:
+ 		break;
+ 	}
++	if (snd_pcm_direct_client_chk_xrun(dshare, pcm))
++		return -EPIPE;
+ 	if (! size)
+ 		return 0;
+ 	snd_pcm_mmap_appl_forward(pcm, size);
+@@ -529,8 +539,10 @@ static snd_pcm_sframes_t snd_pcm_dshare_mmap_commit(snd_pcm_t *pcm,
+ 		if ((err = snd_pcm_dshare_start_timer(dshare)) < 0)
+ 			return err;
+ 	} else if (dshare->state == SND_PCM_STATE_RUNNING ||
+-		   dshare->state == SND_PCM_STATE_DRAINING)
+-		snd_pcm_dshare_sync_ptr(pcm);
++		   dshare->state == SND_PCM_STATE_DRAINING) {
++		if ((err = snd_pcm_dshare_sync_ptr(pcm)) < 0)
++			return err;
++	}
+ 	if (dshare->state == SND_PCM_STATE_RUNNING ||
+ 	    dshare->state == SND_PCM_STATE_DRAINING) {
+ 		/* ok, we commit the changes after the validation of area */
+@@ -546,10 +558,13 @@ static snd_pcm_sframes_t snd_pcm_dshare_mmap_commit(snd_pcm_t *pcm,
+ static snd_pcm_sframes_t snd_pcm_dshare_avail_update(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_direct_t *dshare = pcm->private_data;
++	int err;
+ 	
+ 	if (dshare->state == SND_PCM_STATE_RUNNING ||
+-	    dshare->state == SND_PCM_STATE_DRAINING)
+-		snd_pcm_dshare_sync_ptr(pcm);
++	    dshare->state == SND_PCM_STATE_DRAINING) {
++		if ((err = snd_pcm_dshare_sync_ptr(pcm)) < 0)
++			return err;
++	}
+ 	return snd_pcm_mmap_playback_avail(pcm);
+ }
+ 
 diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
-index 1aedf3c..85f0ff4 100644
+index 85f0ff4..512e957 100644
 --- a/src/pcm/pcm_dsnoop.c
 +++ b/src/pcm/pcm_dsnoop.c
-@@ -606,6 +606,7 @@ int snd_pcm_dsnoop_open(snd_pcm_t **pcmp, const char *name,
- 	dsnoop->state = SND_PCM_STATE_OPEN;
- 	dsnoop->slowptr = opts->slowptr;
- 	dsnoop->max_periods = opts->max_periods;
-+	dsnoop->var_periodsize = opts->var_periodsize;
- 	dsnoop->sync_ptr = snd_pcm_dsnoop_sync_ptr;
+@@ -132,14 +132,21 @@ static int snd_pcm_dsnoop_sync_ptr(snd_pcm_t *pcm)
+ 	snd_pcm_direct_t *dsnoop = pcm->private_data;
+ 	snd_pcm_uframes_t slave_hw_ptr, old_slave_hw_ptr, avail;
+ 	snd_pcm_sframes_t diff;
++	int err;
+ 	
+ 	switch (snd_pcm_state(dsnoop->spcm)) {
+ 	case SND_PCM_STATE_DISCONNECTED:
+ 		dsnoop->state = SNDRV_PCM_STATE_DISCONNECTED;
+ 		return -ENODEV;
++	case SND_PCM_STATE_XRUN:
++		if ((err = snd_pcm_direct_slave_recover(dsnoop)) <0)
++			return err;
++		break;
+ 	default:
+ 		break;
+ 	}
++	if (snd_pcm_direct_client_chk_xrun(dsnoop, pcm))
++		return -EPIPE;
+ 	if (dsnoop->slowptr)
+ 		snd_pcm_hwsync(dsnoop->spcm);
+ 	old_slave_hw_ptr = dsnoop->slave_hw_ptr;
+@@ -410,12 +417,16 @@ static snd_pcm_sframes_t snd_pcm_dsnoop_mmap_commit(snd_pcm_t *pcm,
  
-  retry:
+ 	switch (snd_pcm_state(dsnoop->spcm)) {
+ 	case SND_PCM_STATE_XRUN:
+-		return -EPIPE;
++		if ((err = snd_pcm_direct_slave_recover(dsnoop)) <0)
++			return err;
++		break;
+ 	case SND_PCM_STATE_SUSPENDED:
+ 		return -ESTRPIPE;
+ 	default:
+ 		break;
+ 	}
++	if (snd_pcm_direct_client_chk_xrun(dsnoop, pcm))
++		return -EPIPE;
+ 	if (dsnoop->state == SND_PCM_STATE_RUNNING) {
+ 		err = snd_pcm_dsnoop_sync_ptr(pcm);
+ 		if (err < 0)
 -- 
 1.7.9.5
