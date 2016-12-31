@@ -1,28 +1,18 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: sun4i-spdif: remove legacy dapm
- components" to the asoc tree
-Date: Sat, 31 Dec 2016 19:19:07 +0000
-Message-ID: <E1cNPBL-0003tB-IO@debutante>
-References: <20161220144914.30945-2-codekipper@gmail.com>
-Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBDQ2L75W5QGBBOMJUDBQKGQETDGUWEI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20161220144914.30945-2-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.orgbroonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: samsung: i2s: Provide I2S device for registered clocks" to the asoc tree
+Date: Sat, 31 Dec 2016 19:19:16 +0000
+Message-ID: <E1cNPBU-0003vr-Gg@debutante>
+References: <1483011247-21613-6-git-send-email-m.szyprowski@samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+In-Reply-To: <1483011247-21613-6-git-send-email-m.szyprowski@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Krzysztof Kozlowski <krzk@kernel.org>, Inki Dae <inki.dae@samsung.com>, Javier Martinez Canillas <javier@osg.samsung.com>Mark Brown <broonie@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun4i-spdif: remove legacy dapm components
+   ASoC: samsung: i2s: Provide I2S device for registered clocks
 
 has been applied to the asoc tree at
 
@@ -47,39 +37,50 @@ to this mail.
 Thanks,
 Mark
 
->From 96e53c41e1f81c9e9d1ce38d3f28b95668b71dcf Mon Sep 17 00:00:00 2001
-From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Date: Tue, 20 Dec 2016 15:49:13 +0100
-Subject: [PATCH] ASoC: sun4i-spdif: remove legacy dapm components
+>From 9b41da80e09128574f09bed8dc5a5fc6f72a8239 Mon Sep 17 00:00:00 2001
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+Date: Thu, 29 Dec 2016 12:34:07 +0100
+Subject: [PATCH] ASoC: samsung: i2s: Provide I2S device for registered clocks
 
-The dapm components are now handled by the ALSA SoC SPDIF DIT driver
-so can be removed.
+This patch adds pointer to I2S device to clk_register_* functions.
+This in the future allow clock framework to ensure proper runtime state
+of the I2S device during all operations on the clocks provided by I2S
+module.
 
-Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-spdif.c | 8 --------
- 1 file changed, 8 deletions(-)
+ sound/soc/samsung/i2s.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-spdif.c b/sound/soc/sunxi/sun4i-spdif.c
-index 88fbb3a1e660..048de15d6937 100644
---- a/sound/soc/sunxi/sun4i-spdif.c
-+++ b/sound/soc/sunxi/sun4i-spdif.c
-@@ -403,14 +403,6 @@ static struct snd_soc_dai_driver sun4i_spdif_dai = {
- 	.name = "spdif",
- };
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index b2b9ee4a177a..2a5b92c672fb 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1191,13 +1191,13 @@ static int i2s_register_clock_provider(struct platform_device *pdev)
+ 		u32 val = readl(i2s->addr + I2SPSR);
+ 		writel(val | PSR_PSREN, i2s->addr + I2SPSR);
  
--static const struct snd_soc_dapm_widget dit_widgets[] = {
--	SND_SOC_DAPM_OUTPUT("spdif-out"),
--};
--
--static const struct snd_soc_dapm_route dit_routes[] = {
--	{ "spdif-out", NULL, "Playback" },
--};
--
- static const struct of_device_id sun4i_spdif_of_match[] = {
- 	{ .compatible = "allwinner,sun4i-a10-spdif", },
- 	{ .compatible = "allwinner,sun6i-a31-spdif", },
+-		i2s->clk_table[CLK_I2S_RCLK_SRC] = clk_register_mux(NULL,
++		i2s->clk_table[CLK_I2S_RCLK_SRC] = clk_register_mux(dev,
+ 				"i2s_rclksrc", p_names, ARRAY_SIZE(p_names),
+ 				CLK_SET_RATE_NO_REPARENT | CLK_SET_RATE_PARENT,
+ 				i2s->addr + I2SMOD, reg_info->rclksrc_off,
+ 				1, 0, i2s->lock);
+ 
+-		i2s->clk_table[CLK_I2S_RCLK_PSR] = clk_register_divider(NULL,
++		i2s->clk_table[CLK_I2S_RCLK_PSR] = clk_register_divider(dev,
+ 				"i2s_presc", "i2s_rclksrc",
+ 				CLK_SET_RATE_PARENT,
+ 				i2s->addr + I2SPSR, 8, 6, 0, i2s->lock);
+@@ -1208,7 +1208,7 @@ static int i2s_register_clock_provider(struct platform_device *pdev)
+ 	of_property_read_string_index(dev->of_node,
+ 				"clock-output-names", 0, &clk_name[0]);
+ 
+-	i2s->clk_table[CLK_I2S_CDCLK] = clk_register_gate(NULL, clk_name[0],
++	i2s->clk_table[CLK_I2S_CDCLK] = clk_register_gate(dev, clk_name[0],
+ 				p_names[0], CLK_SET_RATE_PARENT,
+ 				i2s->addr + I2SMOD, reg_info->cdclkcon_off,
+ 				CLK_GATE_SET_TO_DISABLE, i2s->lock);
 -- 
 2.11.0
