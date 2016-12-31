@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nau8825: correct the function name of
-	register" to the asoc tree
-Date: Sat, 31 Dec 2016 19:18:58 +0000
-Message-ID: <E1cNPBC-0003qC-LW@debutante>
-References: <1482223627-23547-1-git-send-email-KCHSU0@nuvoton.com>
+Subject: Applied "ASoC: Intel: Skylake: Fix to fail safely if
+	module not available in path" to the asoc tree
+Date: Sat, 31 Dec 2016 19:19:01 +0000
+Message-ID: <E1cNPBF-0003r9-L8@debutante>
+References: <1482218205-1067-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D2C852670BE
- for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2016 20:19:04 +0100 (CET)
-In-Reply-To: <1482223627-23547-1-git-send-email-KCHSU0@nuvoton.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D7F62670BE
+ for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2016 20:19:08 +0100 (CET)
+In-Reply-To: <1482218205-1067-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, benzh@chromium.org, WTLI@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com, yong.zhi@intel.com, mhkuo@nuvoton.com
+To: G Kranthi <gudishax.kranthikumar@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, vinod.koul@intel.com, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: nau8825: correct the function name of register
+   ASoC: Intel: Skylake: Fix to fail safely if module not available in path
 
 has been applied to the asoc tree at
 
@@ -53,59 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From a33b56a6a824fa5cd89c74f85cbeb9af1dcef87e Mon Sep 17 00:00:00 2001
-From: John Hsu <KCHSU0@nuvoton.com>
-Date: Tue, 20 Dec 2016 16:47:06 +0800
-Subject: [PATCH] ASoC: nau8825: correct the function name of register
+>From 91ce54978ccece323aa6df930249ff84a7d233c7 Mon Sep 17 00:00:00 2001
+From: G Kranthi <gudishax.kranthikumar@intel.com>
+Date: Tue, 20 Dec 2016 12:46:45 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix to fail safely if module not
+ available in path
 
-Change to correct name of the register function.
+If a module is not available in a pipeline, fail safely rather than
+causing oops.
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+Signed-off-by: G Kranthi <gudishax.kranthikumar@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/nau8825.c | 6 +++---
- sound/soc/codecs/nau8825.h | 4 ++--
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index efe3a44658d5..abf77dd422f4 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -561,9 +561,9 @@ static void nau8825_xtalk_prepare(struct nau8825 *nau8825)
- 	nau8825_xtalk_backup(nau8825);
- 	/* Config IIS as master to output signal by codec */
- 	regmap_update_bits(nau8825->regmap, NAU8825_REG_I2S_PCM_CTRL2,
--		NAU8825_I2S_MS_MASK | NAU8825_I2S_DRV_MASK |
-+		NAU8825_I2S_MS_MASK | NAU8825_I2S_LRC_DIV_MASK |
- 		NAU8825_I2S_BLK_DIV_MASK, NAU8825_I2S_MS_MASTER |
--		(0x2 << NAU8825_I2S_DRV_SFT) | 0x1);
-+		(0x2 << NAU8825_I2S_LRC_DIV_SFT) | 0x1);
- 	/* Ramp up headphone volume to 0dB to get better performance and
- 	 * avoid pop noise in headphone.
- 	 */
-@@ -657,7 +657,7 @@ static void nau8825_xtalk_clean(struct nau8825 *nau8825)
- 		NAU8825_IRQ_RMS_EN, NAU8825_IRQ_RMS_EN);
- 	/* Recover default value for IIS */
- 	regmap_update_bits(nau8825->regmap, NAU8825_REG_I2S_PCM_CTRL2,
--		NAU8825_I2S_MS_MASK | NAU8825_I2S_DRV_MASK |
-+		NAU8825_I2S_MS_MASK | NAU8825_I2S_LRC_DIV_MASK |
- 		NAU8825_I2S_BLK_DIV_MASK, NAU8825_I2S_MS_SLAVE);
- 	/* Restore value of specific register for cross talk */
- 	nau8825_xtalk_restore(nau8825);
-diff --git a/sound/soc/codecs/nau8825.h b/sound/soc/codecs/nau8825.h
-index 5d1704e73241..b6b21b312854 100644
---- a/sound/soc/codecs/nau8825.h
-+++ b/sound/soc/codecs/nau8825.h
-@@ -247,8 +247,8 @@
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 84b5101e6ca6..6c6b63a6b338 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -180,6 +180,9 @@ static int skl_pcm_open(struct snd_pcm_substream *substream,
+ 	snd_pcm_set_sync(substream);
  
- /* I2S_PCM_CTRL2 (0x1d) */
- #define NAU8825_I2S_TRISTATE	(1 << 15) /* 0 - normal mode, 1 - Hi-Z output */
--#define NAU8825_I2S_DRV_SFT	12
--#define NAU8825_I2S_DRV_MASK	(0x3 << NAU8825_I2S_DRV_SFT)
-+#define NAU8825_I2S_LRC_DIV_SFT	12
-+#define NAU8825_I2S_LRC_DIV_MASK	(0x3 << NAU8825_I2S_LRC_DIV_SFT)
- #define NAU8825_I2S_MS_SFT	3
- #define NAU8825_I2S_MS_MASK	(1 << NAU8825_I2S_MS_SFT)
- #define NAU8825_I2S_MS_MASTER	(1 << NAU8825_I2S_MS_SFT)
+ 	mconfig = skl_tplg_fe_get_cpr_module(dai, substream->stream);
++	if (!mconfig)
++		return -EINVAL;
++
+ 	skl_tplg_d0i3_get(skl, mconfig->d0i3_caps);
+ 
+ 	return 0;
 -- 
 2.11.0
