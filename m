@@ -1,87 +1,50 @@
-From: Ioan-Adrian Ratiu <adi@adirat.com>
-Subject: Re: [PATCH] ALSA: snd-usb: fix IRQ triggered NULL pointer dereference
-Date: Fri, 30 Dec 2016 23:00:30 +0200
-Message-ID: <87inq1i13l.fsf@adiPC.i-did-not-set--mail-host-address--so-tickle-me>
-References: <20161218010800.2173-1-adi@adirat.com> <20161220012514.9348-1-o-takashi@sakamocchi.jp> <87r352n7pe.fsf@adi-pc-linux.i-did-not-set--mail-host-address--so-tickle-me> <84e2a40b-902c-acfa-771c-d0a675e3228e@sakamocchi.jp> <s5hh95xwpqf.wl-tiwai@suse.de> <87d1glmurl.fsf@ni.com> <s5hd1g9zdjv.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/5] ASoC: samsung: i2s: Remove virtual device for
+ secondary DAI
+Date: Sat, 31 Dec 2016 18:31:07 +0000
+Message-ID: <20161231183107.vvywtmaqegubpkyx@sirena.org.uk>
+References: <1483011247-21613-1-git-send-email-m.szyprowski@samsung.com>
+ <CGME20161229113425eucas1p2600ba7e4337e90f65c0bc60bb4a9c2ec@eucas1p2.samsung.com>
+ <1483011247-21613-2-git-send-email-m.szyprowski@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hd1g9zdjv.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>, clemens@ladisch.de, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ckzaa56r5v7ipqqr"
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1483011247-21613-2-git-send-email-m.szyprowski@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Krzysztof Kozlowski <krzk@kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Inki Dae <inki.dae@samsung.com>, Javier Martinez Canillas <javier@osg.samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 30 Dec 2016, Takashi Iwai <tiwai@suse.de> wrote:
-> On Wed, 21 Dec 2016 11:38:54 +0100,
-> Ioan-Adrian Ratiu wrote:
->> 
->> >> > Please take the time to fully analyze my patch and let's have a
->> >> > discussion based on it, not reject it outright and replace it with
->> >> > a quick and dirty delay hack.
->> >> 
->> >> OK. I'll deliberately check it again so that I have no overlooks. I
->> >> with this thread also catch the other developers enough helpful to
->> >> you. (I just eventually caught your patch in LKML and not developer
->> >> for this category of devices.)
->> >
->> > Sorry for the late reply, as I've been (still) off and had bad net
->> > connections.
->> >
->> > About your fix: Sakamoto-san is right, it's no good way to fix this
->> > kind or problem.  The easiest option right now is just to revert my
->> > previous fix, as it obviously introduces another regression.  The
->> > correct fix will be taken after that.
->> >
->> > I'm going to prepare a revert patch and ask Linus to take it before
->> > rc1.
->> 
->> I agree with reverting the initial commit decision because my problem
->> disappears with it.
->> 
->> But can you please state a reason for why my patch is "no good way to
->> fix"? Being too intrusive is not a good reason.
->
-> "Being too intrusive" is the exact reason why it's not good as a
-> "regression fix" like this case.  The logic you've implemented in the
-> patch itself looks good (although the code introduces a bug, the
-> unbalance of snd_usb_*lock_shutdown()).  The only point I couldn't
-> take it is that it's rather a fundamental change, not a quick fix for
-> a regression.
->
-> What's the worst case scenario in a regression fix?  It's when a fix
-> introduces yet another regression.  It'd be much worse if the new
-> regression is deeper.  The complicated logical change has a potential
-> risk of such.  Thus an intrusive change is not always good as a
-> "regression fix".
->
-> In general, if the change were trivial, it's obviously OK to take as a
-> regression fix -- where the logic is also trivial in most cases, too.
-> But when the fix becomes complex, we need to rethink.  Especially when
-> the original buggy commit is small, reverting it is often better as a
-> clear cut.
->
-> Think in that way: you're addressing a deeper problem that was
-> revealed accidentally by my previous bad fix.  Writing the change as
-> if it were merely a regression fix gives the wrong understanding to
-> readers :)
 
-Yes, this makes sense. Thank you.
+--ckzaa56r5v7ipqqr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->
-> That said, I'd appreciate if you respin the fix again with a
-> combination of my previous fix and brush up the code a bit as a whole,
-> and document it not as a regression fix but as a complete fix of the
-> existing races.  I can write it in my side quickly, but it'd be almost
-> in the same form as you posted, I suppose.
+On Thu, Dec 29, 2016 at 12:34:03PM +0100, Marek Szyprowski wrote:
+> For some unknown (maybe historical?) reasons support for secondary I2S DAI
+> was implemented by adding additional virtual platform device, which was
+> then probed again with the main I2S driver. This pattern is really hard
+> to follow and provides no benefits, so lets remove this hack and register
+> both DAIs during linear probe of Exynos I2S controller driver.
 
-I'll find some time to do a rebase either tomorrow (31 Dec) or until
-2 Jan at the latest.
+It's historical, there used to be limitations that made it impossible to
+register multiple devices to one DAI IIRC.
 
-Ionel
+--ckzaa56r5v7ipqqr
+Content-Type: application/pgp-signature; name="signature.asc"
 
->
->
-> thanks,
->
-> Takashi
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlhn+WoACgkQJNaLcl1U
+h9Cu8wf9EWYWbtjefWHP66ifd9YgDuSdY8D7lgrJF1xKru4U1QPX/MeuJwX/8UZB
+BTcCEVOvMUU47fE0ei38TsoOgruxE1YB+zCsBaNRkHWtkWd8sXTMLTgyQjKJMkP2
+qbTWppCVfq/wYDTOoAoex1Tkq++dv1gRqKTGpOPe6+lc80f86zOmRudV6JdUMTsg
+5zNsgcal0oOwXEYPU5uhQZznS6Skh4MVhJNgeico+TBPqOxs51Cugwftzk8xlggO
+fr/O9sadmAybWAmb/B01J0KJNPJLhh7xcZOJb1DXOgQbY0lBQbUUtWuU3qlEQKKK
+Jwb3j9EKgSS0AlbVK+y+CZO1z5C3pQ==
+=BeRR
+-----END PGP SIGNATURE-----
+
+--ckzaa56r5v7ipqqr--
