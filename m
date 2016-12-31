@@ -1,50 +1,84 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/5] ASoC: samsung: i2s: Remove virtual device for
- secondary DAI
-Date: Sat, 31 Dec 2016 18:31:07 +0000
-Message-ID: <20161231183107.vvywtmaqegubpkyx@sirena.org.uk>
-References: <1483011247-21613-1-git-send-email-m.szyprowski@samsung.com>
- <CGME20161229113425eucas1p2600ba7e4337e90f65c0bc60bb4a9c2ec@eucas1p2.samsung.com>
- <1483011247-21613-2-git-send-email-m.szyprowski@samsung.com>
+Subject: Re: [PATCH 3/3] ASoC: tlv320aic3x: Add controls for
+ selecting HP power down modes
+Date: Sat, 31 Dec 2016 18:49:15 +0000
+Message-ID: <20161231184915.kcnidpdwpw42xdxi@sirena.org.uk>
+References: <20161223092112.7992-1-peter.ujfalusi@ti.com>
+ <20161223092112.7992-4-peter.ujfalusi@ti.com>
+ <084901eb-25be-4941-0cbc-0e88cc4010d6@bitmer.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ckzaa56r5v7ipqqr"
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1483011247-21613-2-git-send-email-m.szyprowski@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>, Sangbeom Kim <sbkim73@samsung.com>, Krzysztof Kozlowski <krzk@kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Inki Dae <inki.dae@samsung.com>, Javier Martinez Canillas <javier@osg.samsung.com>
+Content-Type: multipart/mixed; boundary="===============0976307427663424878=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CAEA2670B3
+ for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2016 19:49:26 +0100 (CET)
+In-Reply-To: <084901eb-25be-4941-0cbc-0e88cc4010d6@bitmer.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, jsarha@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 
---ckzaa56r5v7ipqqr
+--===============0976307427663424878==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="gkkdn36e3xlpkxbe"
+Content-Disposition: inline
+
+
+--gkkdn36e3xlpkxbe
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Dec 29, 2016 at 12:34:03PM +0100, Marek Szyprowski wrote:
-> For some unknown (maybe historical?) reasons support for secondary I2S DAI
-> was implemented by adding additional virtual platform device, which was
-> then probed again with the main I2S driver. This pattern is really hard
-> to follow and provides no benefits, so lets remove this hack and register
-> both DAIs during linear probe of Exynos I2S controller driver.
+On Fri, Dec 23, 2016 at 08:47:07PM +0200, Jarkko Nikula wrote:
 
-It's historical, there used to be limitations that made it impossible to
-register multiple devices to one DAI IIRC.
+> This certainly gives more possibilities to control this depending on
+> use-case and device idleness. However I think does it find use or will
+> it end up being a random choice?
 
---ckzaa56r5v7ipqqr
+I suspect most people won't understand it but OTOH I can see some
+people wanting to use it so...
+
+> Alternative could be some high-impedance widget that defines the output
+> mode and what a machine driver wanting lower power consumption can
+> connect instead of HP outputs. Another idea that comes to my mind do you
+> hear the pop if output is let to be in high-impedance but is driven to
+> VCM with some delay before powering up?
+
+I can also see a system tying it to jack detection so you get the pop
+reduction if the headphones are physically connected and low power if
+they're not there and nothing is going to care anyway.
+
+--gkkdn36e3xlpkxbe
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlhn+WoACgkQJNaLcl1U
-h9Cu8wf9EWYWbtjefWHP66ifd9YgDuSdY8D7lgrJF1xKru4U1QPX/MeuJwX/8UZB
-BTcCEVOvMUU47fE0ei38TsoOgruxE1YB+zCsBaNRkHWtkWd8sXTMLTgyQjKJMkP2
-qbTWppCVfq/wYDTOoAoex1Tkq++dv1gRqKTGpOPe6+lc80f86zOmRudV6JdUMTsg
-5zNsgcal0oOwXEYPU5uhQZznS6Skh4MVhJNgeico+TBPqOxs51Cugwftzk8xlggO
-fr/O9sadmAybWAmb/B01J0KJNPJLhh7xcZOJb1DXOgQbY0lBQbUUtWuU3qlEQKKK
-Jwb3j9EKgSS0AlbVK+y+CZO1z5C3pQ==
-=BeRR
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlhn/aoACgkQJNaLcl1U
+h9D8CQf+KOjlOECSn71Kq2Evb2wWVoBKWbT98DQmQkIGFSyDRBS7BtvSlRpq8oMT
+IhVB7KARpV+gTe9K5k8EktosFjBkXoLEfdmKsklQNZWpsxIe+6EarvBXsuDaeyRf
+QABZ0IUx9UIf+9dEZ/T7HhRuoduUngM0nm3VdfjVvnN+90q7UN9oRgKcEJUOmWo1
+HaPnguSbbtdjO2kzu6IM1choyIgSFolIUHfQrMYDox6pV1sMtxVSQbx2klZK2IWd
+FvXIEgNh0MHE/uqr7P0lJOkxcdmZx8szVUyON/lToDLzLsaOEs+JsQ/Ys7S3cpmA
+oRAxYP5DxWi8nYMTK5Jlce55nXLymg==
+=6hQH
 -----END PGP SIGNATURE-----
 
---ckzaa56r5v7ipqqr--
+--gkkdn36e3xlpkxbe--
+
+--===============0976307427663424878==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0976307427663424878==--
