@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320aic3x: Mark the RESET register as
-	volatile" to the asoc tree
-Date: Sat, 31 Dec 2016 19:19:13 +0000
-Message-ID: <E1cNPBR-0003ut-Fq@debutante>
-References: <20161223092112.7992-2-peter.ujfalusi@ti.com>
+From: Patrick Lai <plai@codeaurora.org>
+Subject: [PATCH] ASoC: dpcm: Avoid putting stream state to STOP
+	when FE stream is paused
+Date: Sat, 31 Dec 2016 22:44:39 -0800
+Message-ID: <1483253079-7978-1-git-send-email-plai@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 115032670BE
- for <alsa-devel@alsa-project.org>; Sat, 31 Dec 2016 20:19:21 +0100 (CET)
-In-Reply-To: <20161223092112.7992-2-peter.ujfalusi@ti.com>
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B1D7266639
+ for <alsa-devel@alsa-project.org>; Sun,  1 Jan 2017 07:44:51 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,83 +19,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, jsarha@ti.com, Liam Girdwood <lgirdwood@gmail.com>, jarkko.nikula@bitmer.com
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org, Patrick Lai <plai@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+When multiple front-ends are using the same back-end, putting state of a
+front-end to STOP state upon receiving pause command will result in backend
+stream getting released by DPCM framework unintentionally. In order to
+avoid backend to be released when another active front-end stream is
+present, put the stream state to PAUSED state instead of STOP state.
 
-   ASoC: tlv320aic3x: Mark the RESET register as volatile
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 63c3194b82530bd71fd49db84eb7ab656b8d404a Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Fri, 23 Dec 2016 11:21:10 +0200
-Subject: [PATCH] ASoC: tlv320aic3x: Mark the RESET register as volatile
-
-The RESET register only have one self clearing bit and it should not be
-cached. If it is cached, when we sync the registers back to the chip we
-will initiate a software reset as well, which is not desirable.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Reviewed-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Patrick Lai <plai@codeaurora.org>
 ---
- sound/soc/codecs/tlv320aic3x.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ sound/soc/soc-pcm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/tlv320aic3x.c b/sound/soc/codecs/tlv320aic3x.c
-index 8877b74b0510..bb94d50052d7 100644
---- a/sound/soc/codecs/tlv320aic3x.c
-+++ b/sound/soc/codecs/tlv320aic3x.c
-@@ -126,6 +126,16 @@ static const struct reg_default aic3x_reg[] = {
- 	{ 108, 0x00 }, { 109, 0x00 },
- };
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index e7a1eaa..6aba140 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2184,9 +2184,11 @@ static int dpcm_fe_dai_do_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+-	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 		fe->dpcm[stream].state = SND_SOC_DPCM_STATE_STOP;
+ 		break;
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		fe->dpcm[stream].state = SND_SOC_DPCM_STATE_PAUSED;
++		break;
+ 	}
  
-+static bool aic3x_volatile_reg(struct device *dev, unsigned int reg)
-+{
-+	switch (reg) {
-+	case AIC3X_RESET:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
- static const struct regmap_config aic3x_regmap = {
- 	.reg_bits = 8,
- 	.val_bits = 8,
-@@ -133,6 +143,9 @@ static const struct regmap_config aic3x_regmap = {
- 	.max_register = DAC_ICC_ADJ,
- 	.reg_defaults = aic3x_reg,
- 	.num_reg_defaults = ARRAY_SIZE(aic3x_reg),
-+
-+	.volatile_reg = aic3x_volatile_reg,
-+
- 	.cache_type = REGCACHE_RBTREE,
- };
- 
+ out:
 -- 
-2.11.0
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
