@@ -1,16 +1,16 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH v4 7/9] ASoC: Intel: Skylake: Don't reset
-	pass-through pipe in BE prepare
-Date: Mon,  2 Jan 2017 12:44:34 +0530
-Message-ID: <1483341277-14475-8-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH v4 8/9] ASoC: Intel: Skylake: set the resume
+	point to LPIB
+Date: Mon,  2 Jan 2017 12:44:35 +0530
+Message-ID: <1483341277-14475-9-git-send-email-jeeja.kp@intel.com>
 References: <1483341277-14475-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id BF4652668BF
- for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2017 08:04:11 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 837472668BF
+ for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2017 08:04:15 +0100 (CET)
 In-Reply-To: <1483341277-14475-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,29 +27,36 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-When pipe is pass-through, BE and FE modules are defined inside
-a pipe, reset of pipe will be done in FE DAI prepare. So don't
-reset in the BE prepare.
+In system suspend, the firmware pipelines will be deleted and there
+is no need to save the pipeline context. Driver will save the DPIB and
+LPIB pointers in suspend.
+
+In system resume, the firmware pipelines will be created again and the
+RD/RW pointers in the Firmware buffer points to the base address. So
+need to fetch the non-played data again to firmware buffer. LPIB
+indicates the HW rendered position.
+
+Instead of setting DPIB as resume point, set it to LPIB to restore from
+the HW render position so that DMA would fetch the non-played data one
+more time.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 688d6f7..800fdad 100644
+index 800fdad..508144b 100644
 --- a/sound/soc/intel/skylake/skl-pcm.c
 +++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -582,8 +582,8 @@ static int skl_link_pcm_prepare(struct snd_pcm_substream *substream,
+@@ -484,7 +484,7 @@ static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			snd_hdac_ext_stream_drsm_enable(ebus, true,
+ 						hdac_stream(stream)->index);
+ 			snd_hdac_ext_stream_set_dpibr(ebus, stream,
+-							stream->dpib);
++							stream->lpib);
+ 			snd_hdac_ext_stream_set_lpib(stream, stream->lpib);
+ 		}
  
- 	/* In case of XRUN recovery, reset the FW pipe to clean state */
- 	mconfig = skl_tplg_be_get_cpr_module(dai, substream->stream);
--	if (mconfig && (substream->runtime->status->state ==
--					SNDRV_PCM_STATE_XRUN))
-+	if (mconfig && !mconfig->pipe->passthru &&
-+		(substream->runtime->status->state == SNDRV_PCM_STATE_XRUN))
- 		skl_reset_pipe(skl->skl_sst, mconfig->pipe);
- 
- 	return 0;
 -- 
 2.5.0
