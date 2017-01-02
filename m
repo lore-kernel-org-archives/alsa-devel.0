@@ -1,14 +1,17 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH v4 0/9] ASoC: Intel: Skylake: Driver updates
-Date: Mon,  2 Jan 2017 12:44:27 +0530
-Message-ID: <1483341277-14475-1-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH v4 1/9] ALSA: hda: check stream decoupled
+	register state
+Date: Mon,  2 Jan 2017 12:44:28 +0530
+Message-ID: <1483341277-14475-2-git-send-email-jeeja.kp@intel.com>
+References: <1483341277-14475-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id C02FB2667D3
- for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2017 08:03:51 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id D3C092668BF
+ for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2017 08:03:52 +0100 (CET)
+In-Reply-To: <1483341277-14475-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,55 +27,42 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-This patch series includes driver updates for the handling scenarios 
-during System S0/S3 transitions when audio stream is stopped during
-system.
-o move DMA configuration in DSP Gateway Module widget event handler to
-ensure DMA is configured after resume. 
-o Enable SSP MLCK using Supply widget. This will ensure the MCLK is
-enabled when the widget is power on.
-o Check DMA decouple register state before coupling/decoupling the DMA.
-o In case of HDMI pass-through pipe, reset only the FE Pipe when stream
-in in XRUN state.
-o Resume the stream from HW renderer position.
-o HDMI Codec pin and converter state need to be restored when stream
-is resumed.
+Check stream decoupled register value with requested value
+before decoupling/coupling the stream.
 
-Changes in v2:
- - Addressed Mark's comment on patch 1, split this into 2 as this had
-additional changes other than configuring the DMA.
- - Addressed Takashi's comment on the usage of snd_hdac_updatel() 
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Acked-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/hda/ext/hdac_ext_stream.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-Changes in v3:
- - Addressed Takashi's comment on superfluous shift used in reading the
-value of PPCTL register and also cleaned the condition for updating
-the reg value.
-
-Changes in v4:
- - Acked by Takashi for patch "ALSA: hda: check stream decoupled register
-   state".
- - Removed compilation warning in patch "ASoC: hdac_hdmi: Enable pin and
-   converter in prepare".
- - Remove 4 patches which are already applied.
-
-Jeeja KP (9):
-  ALSA: hda: check stream decoupled register state
-  ASoC: Intel: Skylake: Add set_tristate DAI ops to enable SSP MCLK
-  ASoC: Intel: Skylake: Remove unused SSP BE prepare DAI ops
-  ASoC: Intel: Skylake: Add supply widget as non DSP widget
-  ASoC: Intel: Skylake: Add supply widget in skl_nau_max machine
-  ASoC: Intel: Skylake: Add supply widget in bxt_da_max machine
-  ASoC: Intel: Skylake: Don't reset pass-through pipe in BE prepare
-  ASoC: Intel: Skylake: set the resume point to LPIB
-  ASoC: hdac_hdmi: Enable pin and converter in prepare
-
- sound/hda/ext/hdac_ext_stream.c                 | 15 ++++---
- sound/soc/codecs/hdac_hdmi.c                    | 37 ++++++++----------
- sound/soc/intel/boards/bxt_da7219_max98357a.c   | 34 ++++++++++++++++
- sound/soc/intel/boards/skl_nau88l25_max98357a.c | 34 ++++++++++++++++
- sound/soc/intel/skylake/skl-pcm.c               | 52 +++++++++++++++----------
- sound/soc/intel/skylake/skl-topology.c          |  6 ++-
- 6 files changed, 130 insertions(+), 48 deletions(-)
-
+diff --git a/sound/hda/ext/hdac_ext_stream.c b/sound/hda/ext/hdac_ext_stream.c
+index 3be051ab5..c96d7a7 100644
+--- a/sound/hda/ext/hdac_ext_stream.c
++++ b/sound/hda/ext/hdac_ext_stream.c
+@@ -128,14 +128,17 @@ void snd_hdac_ext_stream_decouple(struct hdac_ext_bus *ebus,
+ {
+ 	struct hdac_stream *hstream = &stream->hstream;
+ 	struct hdac_bus *bus = &ebus->bus;
++	u32 val;
++	int mask = AZX_PPCTL_PROCEN(hstream->index);
+ 
+ 	spin_lock_irq(&bus->reg_lock);
+-	if (decouple)
+-		snd_hdac_updatel(bus->ppcap, AZX_REG_PP_PPCTL, 0,
+-				AZX_PPCTL_PROCEN(hstream->index));
+-	else
+-		snd_hdac_updatel(bus->ppcap, AZX_REG_PP_PPCTL,
+-					AZX_PPCTL_PROCEN(hstream->index), 0);
++	val = readw(bus->ppcap + AZX_REG_PP_PPCTL) & mask;
++
++	if (decouple && !val)
++		snd_hdac_updatel(bus->ppcap, AZX_REG_PP_PPCTL, mask, mask);
++	else if (!decouple && val)
++		snd_hdac_updatel(bus->ppcap, AZX_REG_PP_PPCTL, mask, 0);
++
+ 	stream->decoupled = decouple;
+ 	spin_unlock_irq(&bus->reg_lock);
+ }
 -- 
 2.5.0
