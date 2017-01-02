@@ -1,16 +1,16 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH v4 4/9] ASoC: Intel: Skylake: Add supply widget
-	as non DSP widget
-Date: Mon,  2 Jan 2017 12:44:31 +0530
-Message-ID: <1483341277-14475-5-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH v4 5/9] ASoC: Intel: Skylake: Add supply widget
+	in skl_nau_max machine
+Date: Mon,  2 Jan 2017 12:44:32 +0530
+Message-ID: <1483341277-14475-6-git-send-email-jeeja.kp@intel.com>
 References: <1483341277-14475-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 3D0BB2667D3
- for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2017 08:04:02 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 541F52668BF
+ for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2017 08:04:05 +0100 (CET)
 In-Reply-To: <1483341277-14475-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,50 +27,73 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-Supply widgets to model clock supplies for SSP and add this widget type
-dapm supply widget as non DSP widget to bypass while parsing the source
-and sink dapm widget list.
+Maxim codec needs clock to be configured before the SSP startup, so we
+need to model the MLCK from SSP0 and turn it on before SSP port is
+enabled, so model this in DSP widget parsing.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/intel/skylake/skl-topology.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/skl_nau88l25_max98357a.c | 34 +++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 9cf8c51..edd0c60 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -87,6 +87,7 @@ static int is_skl_dsp_widget_type(struct snd_soc_dapm_widget *w)
- 	case snd_soc_dapm_aif_out:
- 	case snd_soc_dapm_dai_out:
- 	case snd_soc_dapm_switch:
-+	case snd_soc_dapm_supply:
- 		return false;
- 	default:
- 		return true;
-@@ -1484,12 +1485,13 @@ static int skl_tplg_be_set_src_pipe_params(struct snd_soc_dai *dai,
- 	snd_soc_dapm_widget_for_each_source_path(w, p) {
- 		if (p->connect && is_skl_dsp_widget_type(p->source) &&
- 						p->source->priv) {
--
- 			ret = skl_tplg_be_fill_pipe_params(dai,
- 						p->source->priv, params);
- 			if (ret < 0)
- 				return ret;
- 		} else {
-+			if (p->source->id == snd_soc_dapm_supply)
-+				continue;
- 			ret = skl_tplg_be_set_src_pipe_params(dai,
- 						p->source, params);
- 			if (ret < 0)
-@@ -1515,6 +1517,8 @@ static int skl_tplg_be_set_sink_pipe_params(struct snd_soc_dai *dai,
- 			if (ret < 0)
- 				return ret;
- 		} else {
-+			if (p->sink->id == snd_soc_dapm_supply)
-+				continue;
- 			ret = skl_tplg_be_set_sink_pipe_params(
- 						dai, p->sink, params);
- 			if (ret < 0)
+diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+index 25db5be..06abdf1 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
++++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+@@ -100,6 +100,36 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 	return ret;
+ }
+ 
++static struct snd_soc_dai *skl_get_dai_widget(struct snd_soc_dapm_widget *w)
++{
++	struct snd_soc_dapm_path *p = NULL;
++
++	snd_soc_dapm_widget_for_each_sink_path(w, p) {
++		if (p->sink->id == snd_soc_dapm_dai_in)
++			return p->sink->priv;
++
++		return skl_get_dai_widget(p->sink);
++	}
++
++	return NULL;
++}
++
++static int ssp_set_clk(struct snd_soc_dapm_widget *w,
++		struct snd_kcontrol *k, int  event)
++{
++	struct snd_soc_dai *cpu_dai = NULL;
++
++	cpu_dai = skl_get_dai_widget(w);
++	if (!cpu_dai)
++		return -EIO;
++
++	/* Enable/Disable the SSP clk */
++	if (SND_SOC_DAPM_EVENT_ON(event))
++		return snd_soc_dai_set_tristate(cpu_dai, 0);
++	else
++		return snd_soc_dai_set_tristate(cpu_dai, 1);
++}
++
+ static const struct snd_kcontrol_new skylake_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
+ 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+@@ -113,6 +143,9 @@ static const struct snd_soc_dapm_widget skylake_widgets[] = {
+ 	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
+ 	SND_SOC_DAPM_SPK("DP", NULL),
+ 	SND_SOC_DAPM_SPK("HDMI", NULL),
++	SND_SOC_DAPM_SUPPLY("ssp0 mclk", SND_SOC_NOPM, 0, 0,
++			ssp_set_clk, SND_SOC_DAPM_PRE_PMU |
++			SND_SOC_DAPM_POST_PMD),
+ 	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
+ 			platform_clock_control, SND_SOC_DAPM_PRE_PMU |
+ 			SND_SOC_DAPM_POST_PMD),
+@@ -136,6 +169,7 @@ static const struct snd_soc_dapm_route skylake_map[] = {
+ 	/* CODEC BE connections */
+ 	{ "HiFi Playback", NULL, "ssp0 Tx" },
+ 	{ "ssp0 Tx", NULL, "codec0_out" },
++	{ "codec0_out", NULL, "ssp0 mclk"},
+ 
+ 	{ "Playback", NULL, "ssp1 Tx" },
+ 	{ "ssp1 Tx", NULL, "codec1_out" },
 -- 
 2.5.0
