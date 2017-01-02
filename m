@@ -1,18 +1,27 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v3 4/4] ASoC: Intel: rename
- SND_SST_MFLD_PLATFORM to SND_SST_MID_PLATFORM
-Date: Mon, 2 Jan 2017 10:05:40 -0600
-Message-ID: <c5228e73-d5cf-e4cd-b78b-24334e1fb5f3@linux.intel.com>
-References: <20170102152017.13938-1-andriy.shevchenko@linux.intel.com>
- <20170102152017.13938-5-andriy.shevchenko@linux.intel.com>
+From: =?UTF-8?Q?Giedrius_Trainavi=C4=8Dius?= <giedrius.trainavicius@gmail.com>
+Subject: Re: Stream format conversion in SoC driver
+Date: Mon, 2 Jan 2017 21:59:19 +0200
+Message-ID: <CABpuRUOVAr6nxLvdEM9oKjsW1a8Kyhdqdq_OdS-7cHR8NLtQaw@mail.gmail.com>
+References: <CABpuRUPg8LC_+eFL3UBS-jWkQicpKmorvzhqjZW6p8xQ9P0ppw@mail.gmail.com>
+ <089A4555-3272-4E65-8AD6-412B41017ACA@ladisch.de>
+ <CABpuRUMfB+VvwpqMz7mc_q1RCYR5RS-FjQ8czVXUYeW70y_V7A@mail.gmail.com>
+ <88898566-E09E-49FF-99D7-5EC03120FB87@ladisch.de>
+ <CABpuRUM-n9b0NTivk-2zBsuvL5O-f9PXLeQoc6wW=YhrxndABQ@mail.gmail.com>
+ <C1F64983-FEE0-4CA8-A623-9315B4D155EF@ladisch.de>
+ <CABpuRUM-SHzVrGuoyWKicQdhmDgOFEa0NH6CiAiXFum16BtN2A@mail.gmail.com>
+ <16CD146D-B2B1-420B-8680-3A6FCD0B4BA6@ladisch.de>
+ <CABpuRUOppLmT+KFSPJOaxo6EtaoTeM9UnHBOVwkn=DbwN0MPDg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D2552667F9
- for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2017 17:05:42 +0100 (CET)
-In-Reply-To: <20170102152017.13938-5-andriy.shevchenko@linux.intel.com>
+Received: from mail-vk0-f66.google.com (mail-vk0-f66.google.com
+ [209.85.213.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6518F26058A
+ for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2017 20:59:21 +0100 (CET)
+Received: by mail-vk0-f66.google.com with SMTP id 19so14082288vko.3
+ for <alsa-devel@alsa-project.org>; Mon, 02 Jan 2017 11:59:21 -0800 (PST)
+In-Reply-To: <CABpuRUOppLmT+KFSPJOaxo6EtaoTeM9UnHBOVwkn=DbwN0MPDg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,122 +31,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, dmaengine <dmaengine@vger.kernel.org>, Jie Yang <yang.jie@linux.intel.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 01/02/2017 09:20 AM, Andy Shevchenko wrote:
-> Rename SND_SST_MFLD_PLATFORM to SND_SST_MID_PLATFORM to make it clear that is
-> not only about Medfield platform.
-Does this change make sense? Medfield was a completely different 
-platform and lumping everything under the same Kconfig option doesn't 
-seem right to me... Plus we've stopped using 'mid' for years, no one 
-would know what it stands for. The only clear architecture feature is 
-the presence of the switch matrix that uniquely identifies all platforms 
-based on Baytrail, Cherrytrail, Merrifield and Anniedale. 
-Medfield/Clovertrail did not expose a switch matrix.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->   sound/soc/intel/Kconfig       | 14 +++++++-------
->   sound/soc/intel/Makefile      |  2 +-
->   sound/soc/intel/atom/Makefile |  7 ++++---
->   3 files changed, 12 insertions(+), 11 deletions(-)
->
-> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-> index 7da8b9ceb728..c44da83c71a8 100644
-> --- a/sound/soc/intel/Kconfig
-> +++ b/sound/soc/intel/Kconfig
-> @@ -2,7 +2,7 @@ config SND_MFLD_MACHINE
->   	tristate "SOC Machine Audio driver for Intel Medfield MID platform"
->   	depends on INTEL_SCU_IPC
->   	select SND_SOC_SN95031
-> -	select SND_SST_MFLD_PLATFORM
-> +	select SND_SST_MID_PLATFORM
->   	select SND_SST_IPC_PCI
->   	help
->             This adds support for ASoC machine driver for Intel(R) MID Medfield platform
-> @@ -10,7 +10,7 @@ config SND_MFLD_MACHINE
->             Say Y if you have such a device.
->             If unsure select "N".
->   
-> -config SND_SST_MFLD_PLATFORM
-> +config SND_SST_MID_PLATFORM
->   	tristate
->   	select SND_SOC_COMPRESS
->   
-> @@ -137,7 +137,7 @@ config SND_SOC_INTEL_BYTCR_RT5640_MACH
->           tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5640 codec"
->   	depends on X86 && I2C && ACPI
->   	select SND_SOC_RT5640
-> -	select SND_SST_MFLD_PLATFORM
-> +	select SND_SST_MID_PLATFORM
->   	select SND_SST_IPC_ACPI
->   	select SND_SOC_INTEL_SST_MATCH if ACPI
->   	help
-> @@ -150,7 +150,7 @@ config SND_SOC_INTEL_BYTCR_RT5651_MACH
->           tristate "ASoC Audio driver for Intel Baytrail and Baytrail-CR with RT5651 codec"
->   	depends on X86 && I2C && ACPI
->   	select SND_SOC_RT5651
-> -	select SND_SST_MFLD_PLATFORM
-> +	select SND_SST_MID_PLATFORM
->   	select SND_SST_IPC_ACPI
->   	select SND_SOC_INTEL_SST_MATCH if ACPI
->   	help
-> @@ -163,7 +163,7 @@ config SND_SOC_INTEL_CHT_BSW_RT5672_MACH
->           tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5672 codec"
->           depends on X86_INTEL_LPSS && I2C && ACPI
->           select SND_SOC_RT5670
-> -        select SND_SST_MFLD_PLATFORM
-> +        select SND_SST_MID_PLATFORM
->           select SND_SST_IPC_ACPI
->   	select SND_SOC_INTEL_SST_MATCH if ACPI
->           help
-> @@ -176,7 +176,7 @@ config SND_SOC_INTEL_CHT_BSW_RT5645_MACH
->   	tristate "ASoC Audio driver for Intel Cherrytrail & Braswell with RT5645/5650 codec"
->   	depends on X86_INTEL_LPSS && I2C && ACPI
->   	select SND_SOC_RT5645
-> -	select SND_SST_MFLD_PLATFORM
-> +	select SND_SST_MID_PLATFORM
->   	select SND_SST_IPC_ACPI
->   	select SND_SOC_INTEL_SST_MATCH if ACPI
->   	help
-> @@ -189,7 +189,7 @@ config SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
->   	depends on X86_INTEL_LPSS && I2C && ACPI
->   	select SND_SOC_MAX98090
->   	select SND_SOC_TS3A227E
-> -	select SND_SST_MFLD_PLATFORM
-> +	select SND_SST_MID_PLATFORM
->   	select SND_SST_IPC_ACPI
->   	select SND_SOC_INTEL_SST_MATCH if ACPI
->   	help
-> diff --git a/sound/soc/intel/Makefile b/sound/soc/intel/Makefile
-> index 2b45435e6245..58578f8a3b45 100644
-> --- a/sound/soc/intel/Makefile
-> +++ b/sound/soc/intel/Makefile
-> @@ -4,7 +4,7 @@ obj-$(CONFIG_SND_SOC_INTEL_SST) += common/
->   # Platform Support
->   obj-$(CONFIG_SND_SOC_INTEL_HASWELL) += haswell/
->   obj-$(CONFIG_SND_SOC_INTEL_BAYTRAIL) += baytrail/
-> -obj-$(CONFIG_SND_SST_MFLD_PLATFORM) += atom/
-> +obj-$(CONFIG_SND_SST_MID_PLATFORM) += atom/
->   obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += skylake/
->   
->   # Machine support
-> diff --git a/sound/soc/intel/atom/Makefile b/sound/soc/intel/atom/Makefile
-> index ce8074fa6d66..a1f2f1ba158d 100644
-> --- a/sound/soc/intel/atom/Makefile
-> +++ b/sound/soc/intel/atom/Makefile
-> @@ -1,7 +1,8 @@
-> -snd-soc-sst-mfld-platform-objs := sst-mfld-platform-pcm.o \
-> -	        sst-mfld-platform-compress.o sst-atom-controls.o
-> +snd-soc-sst-mid-platform-objs := sst-mfld-platform-pcm.o \
-> +				 sst-mfld-platform-compress.o \
-> +				 sst-atom-controls.o
->   
-> -obj-$(CONFIG_SND_SST_MFLD_PLATFORM) += snd-soc-sst-mfld-platform.o
-> +obj-$(CONFIG_SND_SST_MID_PLATFORM) += snd-soc-sst-mid-platform.o
->   
->   # DSP driver
->   obj-$(CONFIG_SND_SST_IPC) += sst/
+SGV5LAoKQW55IHRob3VnaHRzIG9yIHBvaW50ZXJzIG9uIHdoYXQgdG8gbG9vayBmb3IgaW4gb3Jk
+ZXIgdG8gdXNlIGRpZmZlcmVudApzYW1wbGUgZm9ybWF0IGJldHdlZW4gYWN0dWFsIEkyUyBhbmQg
+RE1BPwoKVGhhbmsgeW91LApHaWVkcml1cy4KCk9uIFRodSwgRGVjIDI5LCAyMDE2IGF0IDQ6MzIg
+UE0sIEdpZWRyaXVzIFRyYWluYXZpxI1pdXMgPApnaWVkcml1cy50cmFpbmF2aWNpdXNAZ21haWwu
+Y29tPiB3cm90ZToKCj4gVGhlIEkyUyBhbmQgRE1BIGZvcm1hdCBhc3ltbWV0cnkgc291bmRzIGxp
+a2Ugd2hhdCBJJ2QgYmUgYWZ0ZXIuIERvIHlvdQo+IGhhdmUgYW55IHBvaW50ZXJzIGZvciBBUElz
+IC8ga2V5d29yZHMgdG8gbG9vayBhcm91bmQgZm9yIGluIHRoZSBjb2RlIHRvIHNlZQo+IGhvdyB0
+aGlzIHNob3VsZCBiZSBzZXQgdXA/IElzIHN1Y2ggZm9ybWF0IGNvbnZlcnNpb24gc3VwcG9zZWQg
+dG8gYmUKPiBoYXBwZW5pbmcgaW4gaGFyZHdhcmUgaXRzZWxmLCBvciB0aGUgQ1BVIHdoZW4gYWNj
+ZXNzaW5nIHRoZSBETUEgYnVmZmVyIGhhcwo+IHRoZSBjaGFuY2UgdG8gZG8gdGhlIGNvbnZlcnNp
+b24/Cj4KPiBUaGUgcmVsZXZhbnQgZG9jdW1lbnRhdGlvbiBhbmQgY29kZSBJIGZvdW5kIHNvIGZh
+ciB3b3VsZCBiZToKPgo+IGh0dHBzOi8vd3d3LnJhc3BiZXJyeXBpLm9yZy9kb2N1bWVudGF0aW9u
+L2hhcmR3YXJlL3Jhc3BiZXJyeQo+IHBpL2JjbTI4MzUvQkNNMjgzNS1BUk0tUGVyaXBoZXJhbHMu
+cGRmCj4gaHR0cHM6Ly9naXRodWIuY29tL3Jhc3BiZXJyeXBpL2xpbnV4L2Jsb2IvcnBpLTQuNC55
+L3NvdW5kLwo+IHNvYy9iY20vYmNtMjgzNS1pMnMuYwo+Cj4gSSBjYW4ndCBsb2NhdGUgYW55IHJl
+bGV2YW50IGJpdHMgb2YgY29kZSBvciBpbmZvcm1hdGlvbiB0aGF0J2QgaW5kaWNhdGUKPiBjYXBh
+YmlsaXRpZXMgb2Ygc2FtcGxlIGZvcm1hdCBjb252ZXJzaW9uLi4uCj4KPiBUaGFuayB5b3UsCj4g
+R2llZHJpdXMuCj4KPiBPbiBUaHUsIERlYyAyOSwgMjAxNiBhdCA3OjUzIEFNLCBDbGVtZW5zIExh
+ZGlzY2ggPGNsZW1lbnNAbGFkaXNjaC5kZT4KPiB3cm90ZToKPgo+PiBHaWVkcml1cyBUcmFpbmF2
+acSNaXVzIHdyb3RlOgo+PiA+SXQgdXNlcyBJMlMgZm9yIHNlbmRpbmcgLyByZWNlaXZpbmcgYXVk
+aW8uIEhvd2V2ZXIsIHRoZSBtYXN0ZXIgY2xvY2sgb24KPj4gb3VyCj4+ID5zb3VuZCBjYXJkIGlz
+IGdlbmVyYXRlZCBieSB0aGUgQURDLCB3aGljaCBzdXBwb3J0cyBvbmx5IDI0IGJpdCBkYXRhLCBz
+bwo+PiA+Z2V0dGluZyBvdGhlciBzYW1wbGUgZm9ybWF0cyBpcyBub3QgcG9zc2libGUuCj4+Cj4+
+IFRoZSBJMlMgc2FtcGxlIGZvcm1hdCBuZWVkIG5vdCBiZSB0aGUgc2FtZSBhcyB3aGF0IHRoZSBE
+TUEKPj4gY29udHJvbGxlciByZWFkcy93cml0ZXMgZnJvbS90byBtZW1vcnkuCj4+Cj4+ID5BIHF1
+ZXN0aW9uIG9uICdwbHVnJyAtIGl0IGFjY2VwdHMgJ25lYXJlc3QnIGFzIHRoZSBhcmd1bWVudCBm
+b3IgZm9ybWF0LAo+PiA+cmF0ZSwgd2hhdCBoYXBwZW5zIGluIGNhc2UgdGhlIHNsYXZlIHBjbSBz
+dHJlYW0gc3VwcG9ydHMgdGhlIGV4YWN0IHNhbWUKPj4gPmZvcm1hdCBhcyByZXF1ZXN0ZWQgYnkg
+dXNlciBzb2Z0d2FyZT8KPj4KPj4gVGhlIHBsdWcgcGx1Z2luIGluc3RhbnRpYXRlcyB0aGUgYWN0
+dWFsIGNvbnZlcnNpb24gcGx1Z2lucyBvbmx5Cj4+IGFzIG5lZWRlZDsgd2l0aCBubyBjb252ZXJz
+aW9uLCBpdCB2YW5pc2hlcyBlbnRpcmVseS4KPj4KPj4KPj4gUmVnYXJkcywKPj4gQ2xlbWVucwo+
+Pgo+Pgo+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
+c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
