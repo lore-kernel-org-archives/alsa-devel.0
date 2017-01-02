@@ -1,33 +1,38 @@
 From: Ioan-Adrian Ratiu <adi@adirat.com>
-Subject: [PATCH v2 0/2] ALSA: Fix usb-audio races
-Date: Mon,  2 Jan 2017 17:50:29 +0200
-Message-ID: <20170102155031.3638-1-adi@adirat.com>
+Subject: [PATCH v2 2/2] ALSA: usb-audio: test EP_FLAG_RUNNING at urb completion
+Date: Mon,  2 Jan 2017 17:50:31 +0200
+Message-ID: <20170102155031.3638-3-adi@adirat.com>
+References: <20170102155031.3638-1-adi@adirat.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170102155031.3638-1-adi@adirat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: tiwai@suse.com, perex@perex.cz, o-takashi@sakamocchi.jp
 Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Many thanks to Takashi Iwai & Sakamoto for their awesome feedback.
+Testing EP_FLAG_RUNNING in snd_complete_urb() before running the completion
+logic allows us to save a few cpu cycles by returning early, skipping the
+pending urb in case the stream was stopped; the stop logic handles the urb
+and sets the completion callbacks to NULL.
 
-Changes since v1:
-    * Rebased my fix on top of tiwai's revert and integrated the changes
-    from the original fix into this.
-    * Dropped the stop_endpoints() call inside snd_usb_pcm_prepare() and
-    kept the previously existing snd_usb_endpoint_sync_pending_stop() call.
-    * Retained the deactivate_urbs() call in snd_usb_pcm_prepare(), I only
-    removed the can_sleep logic.
-    * Split the EP_FLAG_RUNNING check in a separate commit to keep the log
-    clean since this is not part of the race fix.
+Signed-off-by: Ioan-Adrian Ratiu <adi@adirat.com>
+---
+ sound/usb/endpoint.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Ioan-Adrian Ratiu (2):
-  ALSA: usb-audio: Fix irq/process data synchronization
-  ALSA: usb-audio: test EP_FLAG_RUNNING at urb completion
-
- sound/usb/endpoint.c | 20 ++++++++++----------
- sound/usb/endpoint.h |  2 +-
- sound/usb/pcm.c      | 10 +++++-----
- 3 files changed, 16 insertions(+), 16 deletions(-)
-
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index 2f0ea70a998c..c90607ebe155 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -384,6 +384,9 @@ static void snd_complete_urb(struct urb *urb)
+ 	if (unlikely(atomic_read(&ep->chip->shutdown)))
+ 		goto exit_clear;
+ 
++	if (unlikely(!test_bit(EP_FLAG_RUNNING, &ep->flags)))
++		goto exit_clear;
++
+ 	if (usb_pipeout(ep->pipe)) {
+ 		retire_outbound_urb(ep, ctx);
+ 		/* can be stopped during retire callback */
 -- 
 2.11.0
