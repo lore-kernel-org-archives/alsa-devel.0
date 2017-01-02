@@ -1,17 +1,18 @@
-From: jeeja.kp@intel.com
-Subject: [PATCH v4 9/9] ASoC: hdac_hdmi: Enable pin and
-	converter in prepare
-Date: Mon,  2 Jan 2017 12:44:36 +0530
-Message-ID: <1483341277-14475-10-git-send-email-jeeja.kp@intel.com>
-References: <1483341277-14475-1-git-send-email-jeeja.kp@intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 0/6] ASoC: Intel: Skylake: Driver updates
+	on DSP firmware
+Date: Mon, 2 Jan 2017 14:38:16 +0530
+Message-ID: <20170102090816.GU3573@localhost>
+References: <1483330807-9518-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id EDBF22668BF
- for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2017 08:04:18 +0100 (CET)
-In-Reply-To: <1483341277-14475-1-git-send-email-jeeja.kp@intel.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BCDE2666AD
+ for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2017 10:08:25 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1483330807-9518-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,102 +22,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Sachin Mokashi <sachinx.mokashi@intel.com>, Jeeja KP <jeeja.kp@intel.com>
+To: jeeja.kp@intel.com
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+On Mon, Jan 02, 2017 at 09:50:01AM +0530, jeeja.kp@intel.com wrote:
+> From: Jeeja KP <jeeja.kp@intel.com>
+> 
+> This patch series provides update on DSP firmware download by optimizing
+> o updating the dsp register poll method to use accurate timeout.
+> o optimizing ROM init retries.
+> o saving the firmware/library context at boot and use this ctx for
+> downloading the firmware to DSP memory.
+> o cleanup to store the library manifest data
+> o release the firmware in cleanup routine.
 
-Instead of enabling pin and cvt in pcm_open(), need to restore pin and
-cvt state after system resume to restart the playback which is
-paused/stopped before system suspend.
-So enable pin and cvt in playback_prepare and call prepare when trigger
-cmd is paused/started and resume to reconfigure pin and cvt.
 
-Signed-off-by: Sachin Mokashi <sachinx.mokashi@intel.com>
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
----
- sound/soc/codecs/hdac_hdmi.c | 37 +++++++++++++++++--------------------
- 1 file changed, 17 insertions(+), 20 deletions(-)
+>  8 files changed, 137 insertions(+), 135 deletions(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index c602c49..1da4405 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -114,6 +114,12 @@ struct hdac_hdmi_priv {
- 	struct hdac_chmap chmap;
- };
- 
-+static void hdac_hdmi_enable_cvt(struct hdac_ext_device *edev,
-+			struct hdac_hdmi_dai_pin_map *dai_map);
-+
-+static int hdac_hdmi_enable_pin(struct hdac_ext_device *hdac,
-+			struct hdac_hdmi_dai_pin_map *dai_map);
-+
- static struct hdac_hdmi_pcm *get_hdmi_pcm_from_id(struct hdac_hdmi_priv *hdmi,
- 						int pcm_idx)
- {
-@@ -411,6 +417,10 @@ static int hdac_hdmi_playback_prepare(struct snd_pcm_substream *substream,
- 	dev_dbg(&hdac->hdac.dev, "stream tag from cpu dai %d format in cvt 0x%x\n",
- 			dd->stream_tag,	dd->format);
- 
-+	hdac_hdmi_enable_cvt(hdac, dai_map);
-+	ret = hdac_hdmi_enable_pin(hdac, dai_map);
-+	if (ret < 0)
-+		return ret;
- 	mutex_lock(&pin->lock);
- 	pin->channels = substream->runtime->channels;
- 
-@@ -464,12 +474,7 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
- static int hdac_hdmi_playback_cleanup(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
--	struct hdac_ext_device *edev = snd_soc_dai_get_drvdata(dai);
- 	struct hdac_ext_dma_params *dd;
--	struct hdac_hdmi_priv *hdmi = edev->private_data;
--	struct hdac_hdmi_dai_pin_map *dai_map;
--
--	dai_map = &hdmi->dai_map[dai->id];
- 
- 	dd = (struct hdac_ext_dma_params *)snd_soc_dai_get_dma_data(dai, substream);
- 
-@@ -622,11 +627,6 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
- 
- 	dai_map->pin = pin;
- 
--	hdac_hdmi_enable_cvt(hdac, dai_map);
--	ret = hdac_hdmi_enable_pin(hdac, dai_map);
--	if (ret < 0)
--		return ret;
--
- 	ret = hdac_hdmi_eld_limit_formats(substream->runtime,
- 				pin->eld.eld_buffer);
- 	if (ret < 0)
-@@ -639,18 +639,15 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
- static int hdac_hdmi_trigger(struct snd_pcm_substream *substream, int cmd,
- 		struct snd_soc_dai *dai)
- {
--	struct hdac_hdmi_dai_pin_map *dai_map;
--	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
--	struct hdac_hdmi_priv *hdmi = hdac->private_data;
--	int ret;
--
--	dai_map = &hdmi->dai_map[dai->id];
--	if (cmd == SNDRV_PCM_TRIGGER_RESUME) {
--		ret = hdac_hdmi_enable_pin(hdac, dai_map);
--		if (ret < 0)
--			return ret;
- 
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		return hdac_hdmi_playback_prepare(substream, dai);
-+
-+	default:
-+		return 0;
- 	}
- 
- 	return 0;
+Thanks for the nice cleanup and fixes. As evident from diffstat, only two
+lines added.
+
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+
 -- 
-2.5.0
+~Vinod
