@@ -1,17 +1,14 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH 6/6] ASoC: Intel: bxtn: optimize ROM init
-	retries
-Date: Mon,  2 Jan 2017 09:50:07 +0530
-Message-ID: <1483330807-9518-7-git-send-email-jeeja.kp@intel.com>
-References: <1483330807-9518-1-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH v4 0/9] ASoC: Intel: Skylake: Driver updates
+Date: Mon,  2 Jan 2017 12:44:27 +0530
+Message-ID: <1483341277-14475-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B8012666EC
- for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2017 05:09:39 +0100 (CET)
-In-Reply-To: <1483330807-9518-1-git-send-email-jeeja.kp@intel.com>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id C02FB2667D3
+ for <alsa-devel@alsa-project.org>; Mon,  2 Jan 2017 08:03:51 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,88 +24,55 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-During S3->S0 transition, sometime ROM init fails because of
-authentication engine loads later than the OS. In this case driver
-waits for a longer period and then retries the FW download causing
-huge delay in resume time of audio device.
+This patch series includes driver updates for the handling scenarios 
+during System S0/S3 transitions when audio stream is stopped during
+system.
+o move DMA configuration in DSP Gateway Module widget event handler to
+ensure DMA is configured after resume. 
+o Enable SSP MLCK using Supply widget. This will ensure the MCLK is
+enabled when the widget is power on.
+o Check DMA decouple register state before coupling/decoupling the DMA.
+o In case of HDMI pass-through pipe, reset only the FE Pipe when stream
+in in XRUN state.
+o Resume the stream from HW renderer position.
+o HDMI Codec pin and converter state need to be restored when stream
+is resumed.
 
-To avoid this, ROM INIT wait time is set to a optimal value and
-increased the retries for firmware download.
+Changes in v2:
+ - Addressed Mark's comment on patch 1, split this into 2 as this had
+additional changes other than configuring the DMA.
+ - Addressed Takashi's comment on the usage of snd_hdac_updatel() 
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
----
- sound/soc/intel/skylake/bxt-sst.c | 27 ++++++++++++++++-----------
- 1 file changed, 16 insertions(+), 11 deletions(-)
+Changes in v3:
+ - Addressed Takashi's comment on superfluous shift used in reading the
+value of PPCTL register and also cleaned the condition for updating
+the reg value.
 
-diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-index 7762d5a..d3be1be 100644
---- a/sound/soc/intel/skylake/bxt-sst.c
-+++ b/sound/soc/intel/skylake/bxt-sst.c
-@@ -25,7 +25,8 @@
- #include "skl-sst-ipc.h"
- 
- #define BXT_BASEFW_TIMEOUT	3000
--#define BXT_INIT_TIMEOUT	500
-+#define BXT_INIT_TIMEOUT	300
-+#define BXT_ROM_INIT_TIMEOUT	70
- #define BXT_IPC_PURGE_FW	0x01004000
- 
- #define BXT_ROM_INIT		0x5
-@@ -45,6 +46,8 @@
- /* Delay before scheduling D0i3 entry */
- #define BXT_D0I3_DELAY 5000
- 
-+#define BXT_FW_ROM_INIT_RETRY 3
-+
- static unsigned int bxt_get_errorcode(struct sst_dsp *ctx)
- {
- 	 return sst_dsp_shim_read(ctx, BXT_ADSP_ERROR_CODE);
-@@ -185,7 +188,7 @@ static int sst_bxt_prepare_fw(struct sst_dsp *ctx,
- 
- 	/* Step 7: Wait for ROM init */
- 	ret = sst_dsp_register_poll(ctx, BXT_ADSP_FW_STATUS, SKL_FW_STS_MASK,
--			SKL_FW_INIT, BXT_INIT_TIMEOUT, "ROM Load");
-+			SKL_FW_INIT, BXT_ROM_INIT_TIMEOUT, "ROM Load");
- 	if (ret < 0) {
- 		dev_err(ctx->dev, "Timeout for ROM init, ret:%d\n", ret);
- 		goto base_fw_load_failed;
-@@ -218,7 +221,7 @@ static int bxt_load_base_firmware(struct sst_dsp *ctx)
- {
- 	struct firmware stripped_fw;
- 	struct skl_sst *skl = ctx->thread_context;
--	int ret;
-+	int ret, i;
- 
- 	if (ctx->fw == NULL) {
- 		ret = request_firmware(&ctx->fw, ctx->fw_name, ctx->dev);
-@@ -239,18 +242,20 @@ static int bxt_load_base_firmware(struct sst_dsp *ctx)
- 	stripped_fw.size = ctx->fw->size;
- 	skl_dsp_strip_extended_manifest(&stripped_fw);
- 
--	ret = sst_bxt_prepare_fw(ctx, stripped_fw.data, stripped_fw.size);
--	/* Retry Enabling core and ROM load. Retry seemed to help */
--	if (ret < 0) {
-+
-+	for (i = 0; i < BXT_FW_ROM_INIT_RETRY; i++) {
- 		ret = sst_bxt_prepare_fw(ctx, stripped_fw.data, stripped_fw.size);
--		if (ret < 0) {
--			dev_err(ctx->dev, "Error code=0x%x: FW status=0x%x\n",
-+		if (ret == 0)
-+			break;
-+	}
-+
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "Error code=0x%x: FW status=0x%x\n",
- 			sst_dsp_shim_read(ctx, BXT_ADSP_ERROR_CODE),
- 			sst_dsp_shim_read(ctx, BXT_ADSP_FW_STATUS));
- 
--			dev_err(ctx->dev, "Core En/ROM load fail:%d\n", ret);
--			goto sst_load_base_firmware_failed;
--		}
-+		dev_err(ctx->dev, "Core En/ROM load fail:%d\n", ret);
-+		goto sst_load_base_firmware_failed;
- 	}
- 
- 	ret = sst_transfer_fw_host_dma(ctx);
+Changes in v4:
+ - Acked by Takashi for patch "ALSA: hda: check stream decoupled register
+   state".
+ - Removed compilation warning in patch "ASoC: hdac_hdmi: Enable pin and
+   converter in prepare".
+ - Remove 4 patches which are already applied.
+
+Jeeja KP (9):
+  ALSA: hda: check stream decoupled register state
+  ASoC: Intel: Skylake: Add set_tristate DAI ops to enable SSP MCLK
+  ASoC: Intel: Skylake: Remove unused SSP BE prepare DAI ops
+  ASoC: Intel: Skylake: Add supply widget as non DSP widget
+  ASoC: Intel: Skylake: Add supply widget in skl_nau_max machine
+  ASoC: Intel: Skylake: Add supply widget in bxt_da_max machine
+  ASoC: Intel: Skylake: Don't reset pass-through pipe in BE prepare
+  ASoC: Intel: Skylake: set the resume point to LPIB
+  ASoC: hdac_hdmi: Enable pin and converter in prepare
+
+ sound/hda/ext/hdac_ext_stream.c                 | 15 ++++---
+ sound/soc/codecs/hdac_hdmi.c                    | 37 ++++++++----------
+ sound/soc/intel/boards/bxt_da7219_max98357a.c   | 34 ++++++++++++++++
+ sound/soc/intel/boards/skl_nau88l25_max98357a.c | 34 ++++++++++++++++
+ sound/soc/intel/skylake/skl-pcm.c               | 52 +++++++++++++++----------
+ sound/soc/intel/skylake/skl-topology.c          |  6 ++-
+ 6 files changed, 130 insertions(+), 48 deletions(-)
+
 -- 
 2.5.0
