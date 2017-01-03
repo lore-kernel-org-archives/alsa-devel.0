@@ -1,52 +1,36 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v3 4/4] ASoC: Intel: rename
- SND_SST_MFLD_PLATFORM to SND_SST_MID_PLATFORM
-Date: Tue, 3 Jan 2017 08:18:43 -0600
-Message-ID: <b5c5956c-3bd8-4a28-a456-babc5fd06846@linux.intel.com>
-References: <20170102152017.13938-1-andriy.shevchenko@linux.intel.com>
- <20170102152017.13938-5-andriy.shevchenko@linux.intel.com>
- <c5228e73-d5cf-e4cd-b78b-24334e1fb5f3@linux.intel.com>
- <20170103033815.GA3573@localhost>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH] uapi: use wildcards to list files
+Date: Tue, 03 Jan 2017 10:56:42 -0500 (EST)
+Message-ID: <20170103.105642.1067305724615533420.davem@davemloft.net>
+References: <20161203.192346.1198940437155108508.davem@davemloft.net>
+ <1483454144-10519-1-git-send-email-nicolas.dichtel@6wind.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 004CC266E4A
- for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2017 15:18:45 +0100 (CET)
-In-Reply-To: <20170103033815.GA3573@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: dmaengine <dmaengine@vger.kernel.org>, alsa-devel@alsa-project.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <xen-devel-bounces@lists.xen.org>
+In-Reply-To: <1483454144-10519-1-git-send-email-nicolas.dichtel@6wind.com>
+List-Unsubscribe: <https://lists.xen.org/cgi-bin/mailman/options/xen-devel>,
+ <mailto:xen-devel-request@lists.xen.org?subject=unsubscribe>
+List-Post: <mailto:xen-devel@lists.xen.org>
+List-Help: <mailto:xen-devel-request@lists.xen.org?subject=help>
+List-Subscribe: <https://lists.xen.org/cgi-bin/mailman/listinfo/xen-devel>,
+ <mailto:xen-devel-request@lists.xen.org?subject=subscribe>
+Errors-To: xen-devel-bounces@lists.xen.org
+Sender: "Xen-devel" <xen-devel-bounces@lists.xen.org>
+To: nicolas.dichtel@6wind.com
+Cc: linux-arch@vger.kernel.org, linux-nfs@vger.kernel.org, arnd@arndb.de, alsa-devel@alsa-project.org, linux-rdma@vger.kernel.org, netdev@vger.kernel.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-spi@vger.kernel.org, linux-raid@vger.kernel.org, airlied@linux.ie, netfilter-devel@vger.kernel.org, linux-fbdev@vger.kernel.org, xen-devel@lists.xenproject.org, fcoe-devel@open-fcoe.org, linux-mtd@lists.infradead.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-
->> On 01/02/2017 09:20 AM, Andy Shevchenko wrote:
->>> Rename SND_SST_MFLD_PLATFORM to SND_SST_MID_PLATFORM to make it clear that is
->>> not only about Medfield platform.
->> Does this change make sense? Medfield was a completely different
->> platform and lumping everything under the same Kconfig option
->> doesn't seem right to me... Plus we've stopped using 'mid' for
->> years, no one would know what it stands for. The only clear
->> architecture feature is the presence of the switch matrix that
->> uniquely identifies all platforms based on Baytrail, Cherrytrail,
->> Merrifield and Anniedale. Medfield/Clovertrail did not expose a
->> switch matrix.
-> Mea culpa..
->
-> So we started this with medfield and the driver construction is pretty much
-> the same untill skylake. So clubbing under mfld bucket made sense to me.
->
-> MID is not flavour of the season now.
->
-> If anyone comes with a better name, am for that :)
-
-SND_SST_HIFI2_MOBILE_PLATFORM ?
+RnJvbTogTmljb2xhcyBEaWNodGVsIDxuaWNvbGFzLmRpY2h0ZWxANndpbmQuY29tPgpEYXRlOiBU
+dWUsICAzIEphbiAyMDE3IDE1OjM1OjQ0ICswMTAwCgo+IFJlZ3VsYXJseSwgd2hlbiBhIG5ldyBo
+ZWFkZXIgaXMgY3JlYXRlZCBpbiBpbmNsdWRlL3VhcGkvLCB0aGUgZGV2ZWxvcGVyCj4gZm9yZ2V0
+cyB0byBhZGQgaXQgaW4gdGhlIGNvcnJlc3BvbmRpbmcgS2J1aWxkIGZpbGUuIFRoaXMgZXJyb3Ig
+aXMgdXN1YWxseQo+IGRldGVjdGVkIGFmdGVyIHRoZSByZWxlYXNlIGlzIG91dC4KPiAKPiBJbiBm
+YWN0LCBhbGwgaGVhZGVycyB1bmRlciBpbmNsdWRlL3VhcGkvIHNob3VsZCBiZSBleHBvcnRlZCwg
+c28gbGV0J3MKPiB1c2Ugd2lsZGNhcmRzLgo+IAo+IEFmdGVyIHRoaXMgcGF0Y2gsIHRoZSBmb2xs
+b3dpbmcgZmlsZXMsIHdoaWNoIHdlcmUgbm90IGV4cG9ydGVkLCBhcmUgbm93Cj4gZXhwb3J0ZWQ6
+CiAuLi4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBOaWNvbGFzIERpY2h0ZWwgPG5pY29sYXMuZGljaHRl
+bEA2d2luZC5jb20+CgpBY2tlZC1ieTogRGF2aWQgUy4gTWlsbGVyIDxkYXZlbUBkYXZlbWxvZnQu
+bmV0PgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KWGVu
+LWRldmVsIG1haWxpbmcgbGlzdApYZW4tZGV2ZWxAbGlzdHMueGVuLm9yZwpodHRwczovL2xpc3Rz
+Lnhlbi5vcmcveGVuLWRldmVsCg==
