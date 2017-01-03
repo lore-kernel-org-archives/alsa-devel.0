@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/6] ALSA: fireworks: simplify symbol space for
+Subject: [PATCH 1/6] ALSA: bebob: simplify symbol space for
 	local linkage
-Date: Tue,  3 Jan 2017 21:41:17 +0900
-Message-ID: <20170103124121.17143-3-o-takashi@sakamocchi.jp>
+Date: Tue,  3 Jan 2017 21:41:16 +0900
+Message-ID: <20170103124121.17143-2-o-takashi@sakamocchi.jp>
 References: <20170103124121.17143-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id BF5BD2666FE
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id C1B32266E38
  for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2017 13:41:30 +0100 (CET)
 In-Reply-To: <20170103124121.17143-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -35,33 +35,31 @@ This commit moves such symbols to function local.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireworks/fireworks_hwdep.c | 19 ++++++-----
- sound/firewire/fireworks/fireworks_midi.c  | 26 +++++++--------
- sound/firewire/fireworks/fireworks_pcm.c   | 52 ++++++++++++++----------------
- 3 files changed, 46 insertions(+), 51 deletions(-)
+ sound/firewire/bebob/bebob_hwdep.c | 17 ++++++-------
+ sound/firewire/bebob/bebob_midi.c  | 26 +++++++++----------
+ sound/firewire/bebob/bebob_pcm.c   | 51 +++++++++++++++++++-------------------
+ 3 files changed, 45 insertions(+), 49 deletions(-)
 
-diff --git a/sound/firewire/fireworks/fireworks_hwdep.c b/sound/firewire/fireworks/fireworks_hwdep.c
-index 2e1d9a2..a3a3a16 100644
---- a/sound/firewire/fireworks/fireworks_hwdep.c
-+++ b/sound/firewire/fireworks/fireworks_hwdep.c
-@@ -303,17 +303,16 @@ hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
+diff --git a/sound/firewire/bebob/bebob_hwdep.c b/sound/firewire/bebob/bebob_hwdep.c
+index ce731f4..2b367c2 100644
+--- a/sound/firewire/bebob/bebob_hwdep.c
++++ b/sound/firewire/bebob/bebob_hwdep.c
+@@ -172,16 +172,15 @@ hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
  #define hwdep_compat_ioctl NULL
  #endif
  
 -static const struct snd_hwdep_ops hwdep_ops = {
 -	.read		= hwdep_read,
--	.write		= hwdep_write,
 -	.release	= hwdep_release,
 -	.poll		= hwdep_poll,
 -	.ioctl		= hwdep_ioctl,
 -	.ioctl_compat	= hwdep_compat_ioctl,
 -};
 -
- int snd_efw_create_hwdep_device(struct snd_efw *efw)
+ int snd_bebob_create_hwdep_device(struct snd_bebob *bebob)
  {
 +	static const struct snd_hwdep_ops ops = {
 +		.read		= hwdep_read,
-+		.write		= hwdep_write,
 +		.release	= hwdep_release,
 +		.poll		= hwdep_poll,
 +		.ioctl		= hwdep_ioctl,
@@ -70,21 +68,21 @@ index 2e1d9a2..a3a3a16 100644
  	struct snd_hwdep *hwdep;
  	int err;
  
-@@ -322,7 +321,7 @@ int snd_efw_create_hwdep_device(struct snd_efw *efw)
+@@ -190,7 +189,7 @@ int snd_bebob_create_hwdep_device(struct snd_bebob *bebob)
  		goto end;
- 	strcpy(hwdep->name, "Fireworks");
- 	hwdep->iface = SNDRV_HWDEP_IFACE_FW_FIREWORKS;
+ 	strcpy(hwdep->name, "BeBoB");
+ 	hwdep->iface = SNDRV_HWDEP_IFACE_FW_BEBOB;
 -	hwdep->ops = hwdep_ops;
 +	hwdep->ops = ops;
- 	hwdep->private_data = efw;
+ 	hwdep->private_data = bebob;
  	hwdep->exclusive = true;
  end:
-diff --git a/sound/firewire/fireworks/fireworks_midi.c b/sound/firewire/fireworks/fireworks_midi.c
-index 3e8c4cf..2873eca 100644
---- a/sound/firewire/fireworks/fireworks_midi.c
-+++ b/sound/firewire/fireworks/fireworks_midi.c
-@@ -107,18 +107,6 @@ static void midi_playback_trigger(struct snd_rawmidi_substream *substrm, int up)
- 	spin_unlock_irqrestore(&efw->lock, flags);
+diff --git a/sound/firewire/bebob/bebob_midi.c b/sound/firewire/bebob/bebob_midi.c
+index 868eb0d..7e5fb4b 100644
+--- a/sound/firewire/bebob/bebob_midi.c
++++ b/sound/firewire/bebob/bebob_midi.c
+@@ -106,18 +106,6 @@ static void midi_playback_trigger(struct snd_rawmidi_substream *substrm, int up)
+ 	spin_unlock_irqrestore(&bebob->lock, flags);
  }
  
 -static struct snd_rawmidi_ops midi_capture_ops = {
@@ -99,12 +97,12 @@ index 3e8c4cf..2873eca 100644
 -	.trigger	= midi_playback_trigger,
 -};
 -
- static void set_midi_substream_names(struct snd_efw *efw,
+ static void set_midi_substream_names(struct snd_bebob *bebob,
  				     struct snd_rawmidi_str *str)
  {
-@@ -132,6 +120,16 @@ static void set_midi_substream_names(struct snd_efw *efw,
+@@ -132,6 +120,16 @@ static void set_midi_substream_names(struct snd_bebob *bebob,
  
- int snd_efw_create_midi_devices(struct snd_efw *efw)
+ int snd_bebob_create_midi_devices(struct snd_bebob *bebob)
  {
 +	static struct snd_rawmidi_ops capture_ops = {
 +		.open		= midi_capture_open,
@@ -119,7 +117,7 @@ index 3e8c4cf..2873eca 100644
  	struct snd_rawmidi *rmidi;
  	struct snd_rawmidi_str *str;
  	int err;
-@@ -151,7 +149,7 @@ int snd_efw_create_midi_devices(struct snd_efw *efw)
+@@ -151,7 +149,7 @@ int snd_bebob_create_midi_devices(struct snd_bebob *bebob)
  		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
  
  		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
@@ -128,7 +126,7 @@ index 3e8c4cf..2873eca 100644
  
  		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
  
-@@ -162,7 +160,7 @@ int snd_efw_create_midi_devices(struct snd_efw *efw)
+@@ -162,7 +160,7 @@ int snd_bebob_create_midi_devices(struct snd_bebob *bebob)
  		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
  
  		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
@@ -137,12 +135,12 @@ index 3e8c4cf..2873eca 100644
  
  		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
  
-diff --git a/sound/firewire/fireworks/fireworks_pcm.c b/sound/firewire/fireworks/fireworks_pcm.c
-index f4fbf75..9171702 100644
---- a/sound/firewire/fireworks/fireworks_pcm.c
-+++ b/sound/firewire/fireworks/fireworks_pcm.c
-@@ -383,33 +383,31 @@ static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
- 	return amdtp_stream_pcm_pointer(&efw->rx_stream);
+diff --git a/sound/firewire/bebob/bebob_pcm.c b/sound/firewire/bebob/bebob_pcm.c
+index 5d7b934..9e27eb8 100644
+--- a/sound/firewire/bebob/bebob_pcm.c
++++ b/sound/firewire/bebob/bebob_pcm.c
+@@ -359,32 +359,31 @@ pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
+ 	return amdtp_stream_pcm_pointer(&bebob->rx_stream);
  }
  
 -static const struct snd_pcm_ops pcm_capture_ops = {
@@ -156,7 +154,6 @@ index f4fbf75..9171702 100644
 -	.pointer	= pcm_capture_pointer,
 -	.page		= snd_pcm_lib_get_vmalloc_page,
 -};
--
 -static const struct snd_pcm_ops pcm_playback_ops = {
 -	.open		= pcm_open,
 -	.close		= pcm_close,
@@ -170,7 +167,7 @@ index f4fbf75..9171702 100644
 -	.mmap		= snd_pcm_lib_mmap_vmalloc,
 -};
 -
- int snd_efw_create_pcm_devices(struct snd_efw *efw)
+ int snd_bebob_create_pcm_devices(struct snd_bebob *bebob)
  {
 +	static const struct snd_pcm_ops capture_ops = {
 +		.open		= pcm_open,
@@ -198,10 +195,10 @@ index f4fbf75..9171702 100644
  	struct snd_pcm *pcm;
  	int err;
  
-@@ -419,8 +417,8 @@ int snd_efw_create_pcm_devices(struct snd_efw *efw)
- 
- 	pcm->private_data = efw;
- 	snprintf(pcm->name, sizeof(pcm->name), "%s PCM", efw->card->shortname);
+@@ -395,8 +394,8 @@ int snd_bebob_create_pcm_devices(struct snd_bebob *bebob)
+ 	pcm->private_data = bebob;
+ 	snprintf(pcm->name, sizeof(pcm->name),
+ 		 "%s PCM", bebob->card->shortname);
 -	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_playback_ops);
 -	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pcm_capture_ops);
 +	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &playback_ops);
