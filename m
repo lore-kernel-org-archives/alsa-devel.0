@@ -1,97 +1,210 @@
-From: Ioan-Adrian Ratiu <adi@adirat.com>
-Subject: Re: [PATCH v2 0/2] ALSA: Fix usb-audio races
-Date: Tue, 03 Jan 2017 09:30:03 +0200
-Message-ID: <871swkwqh0.fsf@adiPC.i-did-not-set--mail-host-address--so-tickle-me>
-References: <20170102155031.3638-1-adi@adirat.com>
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH v3 1/2] ucm: Load device-specific configuration
+	file based on the card long name
+Date: Tue,  3 Jan 2017 13:41:22 +0800
+Message-ID: <df33870583d520bcd5ce5a6581e36360725dff9c.1483421175.git.mengdong.lin@linux.intel.com>
+References: <cover.1483421175.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170102155031.3638-1-adi@adirat.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: tiwai@suse.com, perex@perex.cz, o-takashi@sakamocchi.jp
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 43714266C94
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2017 06:38:22 +0100 (CET)
+In-Reply-To: <cover.1483421175.git.mengdong.lin@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 02 Jan 2017, Ioan-Adrian Ratiu <adi@adirat.com> wrote:
-> Many thanks to Takashi Iwai & Sakamoto for their awesome feedback.
->
-> Changes since v1:
->     * Rebased my fix on top of tiwai's revert and integrated the changes
->     from the original fix into this.
->     * Dropped the stop_endpoints() call inside snd_usb_pcm_prepare() and
->     kept the previously existing snd_usb_endpoint_sync_pending_stop() call.
->     * Retained the deactivate_urbs() call in snd_usb_pcm_prepare(), I only
->     removed the can_sleep logic.
->     * Split the EP_FLAG_RUNNING check in a separate commit to keep the log
->     clean since this is not part of the race fix.
->
-> Ioan-Adrian Ratiu (2):
->   ALSA: usb-audio: Fix irq/process data synchronization
->   ALSA: usb-audio: test EP_FLAG_RUNNING at urb completion
->
->  sound/usb/endpoint.c | 20 ++++++++++----------
->  sound/usb/endpoint.h |  2 +-
->  sound/usb/pcm.c      | 10 +++++-----
->  3 files changed, 16 insertions(+), 16 deletions(-)
->
-> -- 
-> 2.11.0
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-@tiwai
+Intel DSP platform drivers are used by many different devices. For user
+space to differentiate them, ASoC machine drivers may use the DMI info
+(vendor.product.board) as card long name. Possible card long names
+are:
+DellInc..XPS139343.0310JH
+IntelCorp..BroadwellClientplatform.WilsonBeachSDS
+ASUSTeKCOMPUTERINC..T100TA.T100TA
+Circuitco.MinnowboardMaxD0PLATFORM.MinnowBoardMAX
+...
 
-You mentioned in a previous email to the first version I introduced a bug
-by unballancing snd_usb_*lock_shutdown(), I think I managed to reproduce it
-with v2. Is this trace a symptom of the bug you were refering to or is
-this something newly introduced in v2?
+And user space can define configuration files like longname\longname.conf
+for a specific device.
 
-I can't for the life of me figure out for sure how snd_usb_*lock_shutdown()
-ballancing is affected by my patch. Any pointers how to fix this are
-greatly appreciated.
+When being asked to load configuration file of a card, UCM will try to
+find the card in the local machine and get its long name. If the card
+long name is available, try to load the file longname\longname.conf to
+get the best device-specific configuration; if this file is not available,
+fall back to load the default configuration file name\name.conf as
+before.
 
-[  492.558350] INFO: task kworker/2:3:133 blocked for more than 120 seconds.
-[  492.558355]       Not tainted 4.10.0-rc2-g0c771e68bbc8 #25
-[  492.558356] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[  492.558359] kworker/2:3     D    0   133      2 0x00000000
-[  492.558368] Workqueue: usb_hub_wq hub_event
-[  492.558370] Call Trace:
-[  492.558377]  ? __schedule+0x1dd/0x7f0
-[  492.558380]  ? trace_hardirqs_on+0xd/0x10
-[  492.558384]  schedule+0x3b/0x90
-[  492.558392]  usb_audio_disconnect+0x1bf/0x220 [snd_usb_audio]
-[  492.558394]  ? wake_atomic_t_function+0x50/0x50
-[  492.558397]  usb_unbind_interface+0x7a/0x260
-[  492.558399]  device_release_driver_internal+0x158/0x210
-[  492.558400]  device_release_driver+0xd/0x10
-[  492.558401]  bus_remove_device+0x10f/0x190
-[  492.558411]  device_del+0x208/0x330
-[  492.558413]  ? usb_remove_ep_devs+0x1a/0x30
-[  492.558414]  usb_disable_device+0x99/0x270
-[  492.558416]  usb_disconnect+0x87/0x2a0
-[  492.558417]  hub_event+0x962/0x1530
-[  492.558419]  process_one_work+0x221/0x4b0
-[  492.558420]  ? process_one_work+0x1bb/0x4b0
-[  492.558421]  worker_thread+0x46/0x4f0
-[  492.558423]  kthread+0x102/0x140
-[  492.558424]  ? process_one_work+0x4b0/0x4b0
-[  492.558425]  ? kthread_create_on_node+0x40/0x40
-[  492.558427]  ret_from_fork+0x27/0x40
-[  492.558428] 
-               Showing all locks held in the system:
-[  492.558433] 2 locks held by khungtaskd/34:
-[  492.558434]  #0:  (rcu_read_lock){......}, at: [<ffffffff810da44f>] watchdog+0x9f/0x4a0
-[  492.558438]  #1:  (tasklist_lock){.+.+..}, at: [<ffffffff81094ffd>] debug_show_all_locks+0x3d/0x1a0
-[  492.558449] 6 locks held by kworker/2:3/133:
-[  492.558449]  #0:  ("usb_hub_wq"){.+.+.+}, at: [<ffffffff8106705b>] process_one_work+0x1bb/0x4b0
-[  492.558452]  #1:  ((&hub->events)){+.+.+.}, at: [<ffffffff8106705b>] process_one_work+0x1bb/0x4b0
-[  492.558455]  #2:  (&dev->mutex){......}, at: [<ffffffff814a4e3c>] hub_event+0x5c/0x1530
-[  492.558459]  #3:  (&dev->mutex){......}, at: [<ffffffff814a1abe>] usb_disconnect+0x4e/0x2a0
-[  492.558461]  #4:  (&dev->mutex){......}, at: [<ffffffff8142dd84>] device_release_driver_internal+0x34/0x210
-[  492.558464]  #5:  (register_mutex#3){+.+.+.}, at: [<ffffffffa07de27e>] usb_audio_disconnect+0x2e/0x220 [snd_usb_audio]
-[  492.558485] 2 locks held by idn/975:
-[  492.558485]  #0:  (&tty->ldisc_sem){++++++}, at: [<ffffffff815fd25d>] ldsem_down_read+0x2d/0x40
-[  492.558489]  #1:  (&ldata->atomic_read_lock){+.+.+.}, at: [<ffffffff81312160>] n_tty_read+0xb0/0x890
-[  492.558494] 2 locks held by idn/1311:
-[  492.558494]  #0:  (&tty->ldisc_sem){++++++}, at: [<ffffffff815fd25d>] ldsem_down_read+0x2d/0x40
-[  492.558497]  #1:  (&ldata->atomic_read_lock){+.+.+.}, at: [<ffffffff81312160>] n_tty_read+0xb0/0x890
+This update is backward compatible, because if ASoC machine drivers don't
+explicity use DMI or other means to set the card long name, ASoC core
+will use the card name as the long name. So UCM will load the config
+file that matches both the card name and the long name.
 
-[  492.558500] =============================================
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+
+diff --git a/src/ucm/parser.c b/src/ucm/parser.c
+index c98373a..14ee33f 100644
+--- a/src/ucm/parser.c
++++ b/src/ucm/parser.c
+@@ -55,6 +55,9 @@ static const char * const component_dir[] = {
+ 	NULL,		/* terminator */
+ };
+ 
++static int filename_filter(const struct dirent *dirent);
++static int is_component_directory(const char *dir);
++
+ static int parse_sequence(snd_use_case_mgr_t *uc_mgr,
+ 			  struct list_head *base,
+ 			  snd_config_t *cfg);
+@@ -1328,6 +1331,66 @@ static int parse_master_file(snd_use_case_mgr_t *uc_mgr, snd_config_t *cfg)
+ 	return 0;
+ }
+ 
++/* find the card in the local machine and store the card long name */
++static int get_card_long_name(snd_use_case_mgr_t *mgr)
++{
++	const char *card_name = mgr->card_name;
++	snd_ctl_t *handle;
++	int card, err;
++	snd_ctl_card_info_t *info;
++	const char *_name, *_long_name;
++
++	snd_ctl_card_info_alloca(&info);
++
++	card = -1;
++	if (snd_card_next(&card) < 0 || card < 0) {
++		uc_error("no soundcards found...");
++		return -1;
++	}
++
++	while (card >= 0) {
++		char name[32];
++
++		sprintf(name, "hw:%d", card);
++		err = snd_ctl_open(&handle, name, 0);
++		if (err < 0) {
++			uc_error("control open (%i): %s", card,
++				 snd_strerror(err));
++			goto next_card;
++		}
++
++		err = snd_ctl_card_info(handle, info);
++		if (err < 0) {
++			uc_error("control hardware info (%i): %s", card,
++				 snd_strerror(err));
++			snd_ctl_close(handle);
++			goto next_card;
++		}
++
++		/* Find the local card by comparing the given name with the
++		 * card name and long name. User may open a card by its long
++		 * name, so the given card name may be a long name.
++		 */
++		_name = snd_ctl_card_info_get_name(info);
++		_long_name = snd_ctl_card_info_get_longname(info);
++		if (!strncmp(card_name, _name, MAX_CARD_LONG_NAME)
++		    || !strncmp(card_name, _long_name, MAX_CARD_LONG_NAME)) {
++			strncpy(mgr->card_long_name, _long_name,
++				MAX_CARD_LONG_NAME - 1);
++			snd_ctl_close(handle);
++			return 0;
++		}
++
++		snd_ctl_close(handle);
++next_card:
++		if (snd_card_next(&card) < 0) {
++			uc_error("snd_card_next");
++			break;
++		}
++	}
++
++	return -1;
++}
+ static int load_master_config(const char *card_name, snd_config_t **cfg)
+ {
+ 	char filename[MAX_FILE];
+@@ -1349,15 +1412,45 @@ static int load_master_config(const char *card_name, snd_config_t **cfg)
+ 	return 0;
+ }
+ 
+-/* load master use case file for sound card */
++/* load master use case file for sound card
++ *
++ * The same ASoC machine driver can be shared by many different devices.
++ * For user space to differentiate them and get the best device-specific
++ * configuration, ASoC machine drivers may use the DMI info
++ * (vendor.product.board) as the card long name. And user space can define
++ * configuration files like longname\longname.conf for a specific device.
++ *
++ * This function will try to find the card in the local machine and get its
++ * long name, then load the file longname\longname.conf to get the best
++ * device-specific configuration. If the card is not found in the local
++ * machine or the device-specific file is not available, fall back to load
++ * the default configuration file name\name.conf.
++ */
+ int uc_mgr_import_master_config(snd_use_case_mgr_t *uc_mgr)
+ {
+ 	snd_config_t *cfg;
+ 	int err;
+ 
+-	err = load_master_config(uc_mgr->card_name, &cfg);
+-	if (err < 0)
+-		return err;
++	err = get_card_long_name(uc_mgr);
++	if (err == 0)	/* load file that maches the card long name */
++		err = load_master_config(uc_mgr->card_long_name, &cfg);
++
++	if (err == 0) {
++		/* got device-specific file that matches the card long name */
++		strncpy(uc_mgr->conf_file_name, uc_mgr->card_long_name,
++			MAX_CARD_LONG_NAME - 1);
++	} else {
++		/* Fall back to the file that maches the given card name,
++		 * either short name or long name (users may open a card by
++		 * its name or long name).
++		 */
++		err = load_master_config(uc_mgr->card_name, &cfg);
++		if (err < 0)
++			return err;
++		strncpy(uc_mgr->conf_file_name, uc_mgr->card_name,
++			MAX_CARD_LONG_NAME - 1);
++	}
++
+ 	err = parse_master_file(uc_mgr, cfg);
+ 	snd_config_delete(cfg);
+ 	if (err < 0)
+diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
+index 6d3302f..299a5b9 100644
+--- a/src/ucm/ucm_local.h
++++ b/src/ucm/ucm_local.h
+@@ -41,6 +41,7 @@
+ #include "use-case.h"
+ 
+ #define MAX_FILE		256
++#define MAX_CARD_LONG_NAME	80
+ #define ALSA_USE_CASE_DIR	ALSA_CONFIG_DIR "/ucm"
+ 
+ #define SEQUENCE_ELEMENT_TYPE_CDEV	1
+@@ -190,6 +191,8 @@ struct use_case_verb {
+  */
+ struct snd_use_case_mgr {
+ 	char *card_name;
++	char card_long_name[MAX_CARD_LONG_NAME];
++	char conf_file_name[MAX_CARD_LONG_NAME];
+ 	char *comment;
+ 
+ 	/* use case verb, devices and modifier configs parsed from files */
+-- 
+2.7.4
