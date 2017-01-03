@@ -1,17 +1,19 @@
 From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [RFC PATCH] ucm: Add support for device positions
-Date: Tue, 3 Jan 2017 15:32:11 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F881A1303C@shsmsx102.ccr.corp.intel.com>
-References: <1483423758-8986-1-git-send-email-mengdong.lin@linux.intel.com>
- <1483455527.4555.12.camel@loki>
+Subject: Re: [PATCH v2 1/2] ASoC: core: Add API to use DMI name
+ in sound card long name
+Date: Tue, 3 Jan 2017 15:44:48 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F881A13073@shsmsx102.ccr.corp.intel.com>
+References: <cover.1483418875.git.mengdong.lin@linux.intel.com>
+ <0827a46b8200cc3e053f8fc6b3b428eac90a3618.1483418875.git.mengdong.lin@linux.intel.com>
+ <1483454417.4555.2.camel@loki>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id EE16A2666FE
- for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2017 16:32:18 +0100 (CET)
-In-Reply-To: <1483455527.4555.12.camel@loki>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7CD682666FE
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2017 16:44:52 +0100 (CET)
+In-Reply-To: <1483454417.4555.2.camel@loki>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,101 +31,210 @@ List-Id: alsa-devel@alsa-project.org
 
 > -----Original Message-----
 > From: Liam Girdwood [mailto:liam.r.girdwood@linux.intel.com]
-> Sent: Tuesday, January 3, 2017 10:59 PM
-
-> > Users can provide prosition info of audio devices as a device value.
-> > This will help the sound server to choose an audio devices from some
-> > candidates based on the their locations and the status of the machine.
-> >
-> > The value name is the "Postion",
+> Sent: Tuesday, January 3, 2017 10:40 PM
+> To: mengdong.lin@linux.intel.com
+> Cc: alsa-devel@alsa-project.org; broonie@kernel.org; tiwai@suse.de; Lin,
+> Mengdong <mengdong.lin@intel.com>; Koul, Vinod <vinod.koul@intel.com>;
+> Bossart, Pierre-louis <pierre-louis.bossart@intel.com>
+> Subject: Re: [alsa-devel] [PATCH v2 1/2] ASoC: core: Add API to use DMI name
+> in sound card long name
 > 
-> We should change this to "Location" and use "Position" for x,y,z coordinates
-> of the device to help for beam forming etc (separate patch series for
-> Position).
-
-Okay. "Location" seem better here.
-> 
-> >  and its value should be a composition of "Top", "Bottom", "Left",
-> > "Right", "Front" and "Back". For example, a speaker may have a
-> > position like "Front Top".
+> On Tue, 2017-01-03 at 12:58 +0800, mengdong.lin@linux.intel.com wrote:
+> > From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 > >
-> > The postion value can be got by either of the two APIs:
-> > - snd_use_case_get(), via identifier 'Postion/device', to get the original
-> >   position string defined by the user.
-> > - snd_use_case_geti(), via identifier '_devpos/device', to get the integer
-> >   value of the position. If the user has not define a position, 0 will be
-> >   returned that means an unknown position.
+> > Intel DSP platform drivers are used by many different devices but are
+> > difficult for userspace to differentiate. This patch adds an API to
+> > allow the DMI name to be used in the sound card long name, thereby
+> > helping userspace load the correct UCM configuration. Usually machine
+> > drivers uses their own name as the sound card name (short name), and
+> > leave the long name and driver name blank. This API will use the DMI
+> > info like vendor, product and board to make up the card long name. If
+> > the machine driver has already explicitly set the long name, this API will do
+> nothing.
 > >
+> > This patch also allows for further differentiation as many devices
+> > that share the same DMI name i.e. Minnowboards, UP boards may be
+> > configured with different codecs or firmwares. The API supports
+> > flavoring the DMI name into the card longname to provide the extra
+> > differentiation required for these devices.
+> >
+> > For Use Case Manager (UCM) in the user space, changing card long name
+> > by this API is backward compatible, since the card name does not
+> > change. For a given sound card, even if there is no device-specific
+> > UCM configuration file that uses the card long name, UCM will fall
+> > back to load the default configuration file that uses the card name.
+> >
+> > Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 > > Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 > >
-> > diff --git a/include/use-case.h b/include/use-case.h index
-> > 8911645..b3b451b 100644
-> > --- a/include/use-case.h
-> > +++ b/include/use-case.h
-> > @@ -165,6 +165,28 @@ extern "C" {
-> >  #define SND_USE_CASE_TQ_VOICE		"Voice"		/**< Voice
-> Tone Quality */
-> >  #define SND_USE_CASE_TQ_TONES		"Tones"		/**<
-> Tones Tone Quality */
+> > diff --git a/include/sound/soc.h b/include/sound/soc.h index
+> > 795e6c4..e4f1844 100644
+> > --- a/include/sound/soc.h
+> > +++ b/include/sound/soc.h
+> > @@ -497,6 +497,8 @@ void snd_soc_runtime_deactivate(struct
+> > snd_soc_pcm_runtime *rtd, int stream);  int
+> snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
+> >  	unsigned int dai_fmt);
+> >
+> > +int snd_soc_set_dmi_name(struct snd_soc_card *card, const char
+> > +*flavour);
+> > +
+> >  /* Utility functions to get clock rates from various things */  int
+> > snd_soc_calc_frame_size(int sample_size, int channels, int tdm_slots);
+> > int snd_soc_params_to_frame_size(struct snd_pcm_hw_params *params);
+> @@
+> > -1094,6 +1096,8 @@ struct snd_soc_card {
+> >  	const char *name;
+> >  	const char *long_name;
+> >  	const char *driver_name;
+> > +	char dmi_longname[80];
+> > +
+> >  	struct device *dev;
+> >  	struct snd_card *snd_card;
+> >  	struct module *owner;
+> > diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c index
+> > aaab26a..3dbb5aa 100644
+> > --- a/sound/soc/soc-core.c
+> > +++ b/sound/soc/soc-core.c
+> > @@ -34,6 +34,7 @@
+> >  #include <linux/ctype.h>
+> >  #include <linux/slab.h>
+> >  #include <linux/of.h>
+> > +#include <linux/dmi.h>
+> >  #include <sound/core.h>
+> >  #include <sound/jack.h>
+> >  #include <sound/pcm.h>
+> > @@ -1886,6 +1887,104 @@ int snd_soc_runtime_set_dai_fmt(struct
+> > snd_soc_pcm_runtime *rtd,  }
+> > EXPORT_SYMBOL_GPL(snd_soc_runtime_set_dai_fmt);
 > >
 > > +
-> > +/**
-> > + * Device Position bits
-> > + *
-> > + * 0 is reserved for unknown position in each dimesion. Users can get
-> > +the
-> > + * integer value of the device postion by API snd_use_case_geti() via
-> > + * identifier '_devpos/device', and the returned value is a
-> > +compostion of
-> > + * three dimesions.
-> > + *
-> > + * NOTE: Users can also get the position string like "Top Left" by
-> > +API
-> > + * snd_use_case_get() via identifier 'Position/device".
+> > +/* Only keep number and alphabet characters and a few separator
+> characters.
+> > + * DMI info often has SPACE and we must trim them, since Use Case
+> > +Manager in
+> > + * the user space expects the device-specific configuration
+> > +files/directories
+> > + * use the same name as the card long name but Autoconf cannot
+> > +support SPACE
+> > + * in file or directory name.
 > > + */
-> > +#define SND_USE_CASE_POS_LEFT           (1<<0)
-> > +#define SND_USE_CASE_POS_RIGHT          (2<<0)
-> > +#define SND_USE_CASE_POS_HORIZON_MASK   (0xffff<<0)
-> > +#define SND_USE_CASE_POS_TOP            (1<<4)
-> > +#define SND_USE_CASE_POS_BOTTOM         (2<<4)
-> > +#define SND_USE_CASE_POS_VERTICAL_MASK  (0xffff<<4)
-> > +#define SND_USE_CASE_POS_FRONT          (1<<8)
-> > +#define SND_USE_CASE_POS_BACK           (2<<8)
-> > +#define SND_USE_CASE_DEPTH_MASK         (0xffff<<8)
+> > +static void trim_special_characters(char *name) {
+> > +	int i, j = 0;
+> > +
+> > +	for (i = 0; name[i]; i++) {
+> > +		if (isalnum(name[i]) || (name[i] == '.')
+> > +		    || (name[i] == '-') || (name[i] == '_'))
+> > +			name[j++] = name[i];
+> > +	}
+> > +
+> > +	name[j] = '\0';
+> > +}
+> > +
+> > +/**
+> > + * snd_soc_set_dmi_name() - Register DMI names to card
+> > + * @card: The card to register DMI names
+> > + * @flavour: The flavour "differentiator" for the card amongst its peers.
+> > + *
+> > + * Intel DSP platform drivers are used by many different devices but
+> > +are
+> > + * difficult for userspace to differentiate, since machine drivers
+> > +ususally
+> > + * use their own name as the card name (short name) and leave the
+> > +card long
+> > + * name blank. This function will allow DMI info to be used as the
+> > +sound
+> > + * card long name, thereby helping userspace load the correct UCM
+> > +(Use Case
+> > + * Manager) configuration. Character '.' are used to separate
+> > +different DMI
+> > + * fields like "vendor.product.board".
+> > + *
+> > + * Possible card long names may be:
+> > + * DellInc..XPS139343.0310JH
+> > + * IntelCorp..BroadwellClientPlatform.WilsonBeachSDS
+> > + * ASUSTeKCOMPUTERINC..T100TA.T100TA
+> > + * Circuitco.MinnowboardMaxD0PLATFORM.MinnowBoardMAX
+> > + * (Please note DMI info can also include '.' after some abbreviation
+> > +like
+> > + * "Inc." so you may see double '.' sometimes)
+> > + *
+> > + * This function also supports flavoring the card longname to provide
+> > + * the extra differentiation, like "vendor.product.board.flavor".
 > 
-> These are a little restrictive. It would be best to copy the other examples and
-> use strings as users can easily append new locations by adding a string to a
-> value list (without having to update any UCM core code).
+> I dont think we need vendor (it just makes it too long). The product or board
+> name should be unique enough for us to load the correct files.
 > 
-> We would have a set of the common default locations so that sound servers
-> could use present this info to users in meaningful ways, bespoke locations
-> could also be presented to users (but only in string format).
-> 
-> SectionDevice."Mic".0 {
-> 
-> 	EnableSequence [
-> 	     ....
-> 	]
-> 
-> 	DisableSequence [
->              ....
-> 	]
-> 
-> 	Value {
-> 		Location "Left"
-> 		Position "19.5, 34.2, 3.1"
-> 	}
-> }
-> 
-> Using the above format means we just return the value of location to the
-> client. We dont have to do any parsing or validation. Same applies for
-> position.
-
 > Liam
 
-Okay. And If we only need to provide "Location" or "Position" in string format, current UCM code can already support it. We just need to specify these two variable names in the comments :-)
+Yes, from the sample machines I checked, product or board name are unique. But I feel there might be the risk that two vendors happen to use the same product or board name, e.g. "T100TA".
 
-Users can get the info by API snd_use_case_get() with the identifier 'Location/device" or "Position/device" , e.g. "Location/Speaker". 
+And if we want to add the vendor field later, we may need to rename existing UCM configuration files and directories, which may be not so easy if those machines are not around us.
 
 Thanks
 Mengdong
+
+> 
+> > + *
+> > + * We only keep number and alphabet characters and a few separator
+> > +characters
+> > + * in the card long name since UCM in the user space uses the card
+> > +long names
+> > + * as card configuration directory names and AudoConf cannot support
+> > +special
+> > + * charactors like SPACE.
+> > + *
+> > + * Returns 0 on success, otherwise a negative error code.
+> > + */
+> > +int snd_soc_set_dmi_name(struct snd_soc_card *card, const char
+> > +*flavour) {
+> > +	const char *vendor, *product, *board;
+> > +	char dmi_longname[80];
+> > +
+> > +	if (card->long_name)
+> > +		return 0; /* long name already set by driver or from DMI */
+> > +
+> > +	vendor = dmi_get_system_info(DMI_BOARD_VENDOR);
+> > +	if (!vendor) {
+> > +		dev_warn(card->dev, "ASoC: no DMI vendor name!\n");
+> > +		return 0;
+> > +	}
+> > +
+> > +	product = dmi_get_system_info(DMI_PRODUCT_NAME);
+> > +	board = dmi_get_system_info(DMI_BOARD_NAME);
+> > +	if (!board && !product) {
+> > +		/* fall back to using legacy name */
+> > +		dev_warn(card->dev, "ASoC: no DMI board/product
+> name!\n");
+> > +		return 0;
+> > +	}
+> > +
+> > +	/* make up dmi long name as: vendor.product.board */
+> > +	if (product && board)
+> > +		snprintf(dmi_longname, sizeof(card->snd_card->longname),
+> > +			 "%s.%s.%s", vendor, product, board);
+> > +	else
+> > +		snprintf(dmi_longname, sizeof(card->snd_card->longname),
+> > +			 "%s.%s", vendor, product ? product : board);
+> > +
+> > +	/* Add flavour to dmi long name */
+> > +	if (flavour)
+> > +		snprintf(card->dmi_longname, sizeof(card->snd_card-
+> >longname),
+> > +			 "%s.%s", dmi_longname, flavour);
+> > +	else
+> > +		strncpy(card->dmi_longname, dmi_longname,
+> > +			sizeof(card->snd_card->longname) - 1);
+> > +
+> > +	trim_special_characters(card->dmi_longname);
+> > +
+> > +	/* set long name */
+> > +	card->long_name = card->dmi_longname;
+> > +
+> > +	return 0;
+> > +}
+> > +EXPORT_SYMBOL_GPL(snd_soc_set_dmi_name);
+> > +
+> >  static int snd_soc_instantiate_card(struct snd_soc_card *card)  {
+> >  	struct snd_soc_codec *codec;
+> 
