@@ -1,35 +1,55 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [alsa-devel] [PATCH] fsl_ssi: set fifo watermark to more reliable value
-Date: Tue, 3 Jan 2017 19:08:53 -0200
-Message-ID: <CAOMZO5AS7TPu1PmdNUZuSEJQO2C7L+7Kn2wpetoxHCzwHiyokg@mail.gmail.com>
-References: <1483467777-8651-1-git-send-email-caleb@signalessence.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
+Subject: Re: [PATCH v2 1/2] ASoC: core: Add API to use DMI name
+ in sound card long name
+Date: Tue, 3 Jan 2017 14:09:28 -0600
+Message-ID: <984e6c66-c1c9-c37b-f6b6-d357cd967d48@intel.com>
+References: <cover.1483418875.git.mengdong.lin@linux.intel.com>
+ <0827a46b8200cc3e053f8fc6b3b428eac90a3618.1483418875.git.mengdong.lin@linux.intel.com>
+ <1483454417.4555.2.camel@loki>
+ <F46914AEC2663F4A9BB62374E5EEF8F881A13073@shsmsx102.ccr.corp.intel.com>
+ <1483471712.4063.17.camel@loki>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1483467777-8651-1-git-send-email-caleb@signalessence.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Caleb Crome <ccrome@gmail.com>
-Cc: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-kernel <linux-kernel@vger.kernel.org>, Arnaud Mouiche <arnaud.mouiche@invoxia.com>, Caleb Crome <caleb@crome.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 44D2E266F84
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2017 21:09:30 +0100 (CET)
+In-Reply-To: <1483471712.4063.17.camel@loki>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>, "broonie@kernel.org" <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 3, 2017 at 4:22 PM, Caleb Crome <ccrome@gmail.com> wrote:
-> From: Caleb Crome <caleb@crome.org>
->
-> The fsl_ssi fifo watermark is by default set to 2 free spaces (i.e.
-> activate DMA on FIFO when only 2 spaces are left.)  This means the
-> DMA must service the fifo within 2 audio samples, which is just not
-> enough time  for many use cases with high data rate.  In many
-> configurations the audio channel slips (causing l/r swap in stereo
-> configurations, or channel slipping in multi-channel configurations).
->
-> This patch gives more breathing room and allows the SSI to operate
-> reliably by changing the fifio refill watermark to 8.
->
-> There is no change in behavior for older chips (with an 8-deep fifo).
-> Only the newer chips with a 15-deep fifo get the new behavior. I
-> suspect a new fifo depth setting could be optimized on the older
-> chips too, but I have not tested.
->
-> Signed-off-by: Caleb Crome <caleb@crome.org>
 
-Reviewed-by: Fabio Estevam <fabio.estevam@nxp.com>
+>>> I dont think we need vendor (it just makes it too long). The product or board
+>>> name should be unique enough for us to load the correct files.
+>>>
+>>> Liam
+>> Yes, from the sample machines I checked, product or board name are
+>> unique. But I feel there might be the risk that two vendors happen to
+>> use the same product or board name, e.g. "T100TA".
+> I think this would be problematic from a legal/marketing position from
+> two different vendors so it would be unlikely.
+
+Please don't remove the manufacturer name for now...
+Some vendors use product names that are indeed unique and easy enough to 
+remember, but others like Lenovo use "1952W5R" or "20C3001VHH" (real 
+examples you can Google to see I am not making this up). The board name 
+can also be "SKG18 t". I really have no appetite for a UCM directory 
+called 20C3001VHH.SKG18t :-)
+I would also be ready to bet that smaller manufacturers in the Chinese 
+ecosystem use similar product names at the DMI level. removing the 
+vendor name would likely result in mistakes.
+You really want the manufacturer name to make the maintenance of these 
+files easier on the rest of us. Sometimes the DMI version field is 
+actually more self-explanatory, e.g. "ThinkPad 60" or "ThinkPad 10" for 
+the two Lenovo examples, maybe this is something we ought to look at.
