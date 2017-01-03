@@ -1,14 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: oxfw: add support for Mackie Onyx 1640i
-Date: Tue,  3 Jan 2017 11:36:08 +0900
-Message-ID: <20170103023608.13211-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH 3/3] ALSA: firewire-lib: change structure
+	member with proper type
+Date: Tue,  3 Jan 2017 11:58:34 +0900
+Message-ID: <20170103025834.17159-4-o-takashi@sakamocchi.jp>
+References: <20170103025834.17159-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id EA66C26058A
- for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2017 03:36:23 +0100 (CET)
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id C3945266CBD
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2017 03:58:40 +0100 (CET)
+In-Reply-To: <20170103025834.17159-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,113 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, saobannion@gmail.com, ffado-devel@lists.sf.net
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is for Linux 4.11 development.
+The 'amdtp_stream' structure is initialized by a call of
+'amdtp_stream_init()'. Although a parameter of this function is for bit
+flags of packet attributes, its type is enumerator.
 
-As of kernel 4.10,  ALSA OXFW driver has no entry for Onyx 1640i produced
-by Mackie (Loud Technologies). This commit supplement it.
+This commit changes the type so that it's proper for a bit flags.
 
-I note that there're two models produced by Mackie (Loud Technologies),
-which have the same name 'Onyx 1640i'. The former model based on OXFW970,
-the latter model based on Dice. This is probably due to low quality of
-communication of OXFW series.
-
-Additionally, the tester reports his or her experiences to get unexpected
-result at higher sampling transmission frequency as 88.2/96.0 kHz. We
-didn't have further investigation yet[0].
-
-$ ./linux-firewire-utils/src/crpp < config_rom
-               ROM header and bus information block
-               -----------------------------------------------------------------
-400  042525ce  bus_info_length 4, crc_length 37, crc 9678
-404  31333934  bus_name "1394"
-408  20ff5003  irmc 0, cmc 0, isc 1, bmc 0, cyc_clk_acc 255, max_rec 5 (64)
-40c  000ff205  company_id 000ff2     |
-410  00000fcf  device_id 0500000fcf  | EUI-64 000ff20500000fcf
-
-               root directory
-               -----------------------------------------------------------------
-414  0006c1b7  directory_length 6, crc 49591
-418  03000ff2  vendor
-41c  8100000a  --> descriptor leaf at 444
-420  17001640  model
-424  81000011  --> descriptor leaf at 468
-428  0c0083c0  node capabilities per IEEE 1394
-42c  d1000001  --> unit directory at 430
-
-               unit directory at 430
-               -----------------------------------------------------------------
-430  00040b97  directory_length 4, crc 2967
-434  1200a02d  specifier id: 1394 TA
-438  13010001  version: AV/C
-43c  17001640  model
-440  81000010  --> descriptor leaf at 480
-
-               descriptor leaf at 444
-               -----------------------------------------------------------------
-444  0008a886  leaf_length 8, crc 43142
-448  00000000  textual descriptor
-44c  00000000  minimal ASCII
-450  4c6f7564  "Loud"
-454  20546563  " Tec"
-458  686e6f6c  "hnol"
-45c  6f676965  "ogie"
-460  7320496e  "s In"
-464  632e0000  "c."
-
-               descriptor leaf at 468
-               -----------------------------------------------------------------
-468  00059fcf  leaf_length 5, crc 40911
-46c  00000000  textual descriptor
-470  00000000  minimal ASCII
-474  4f6e7978  "Onyx"
-478  20313634  " 164"
-47c  30690000  "0i"
-
-               descriptor leaf at 480
-               -----------------------------------------------------------------
-480  00059fcf  leaf_length 5, crc 40911
-484  00000000  textual descriptor
-488  00000000  minimal ASCII
-48c  4f6e7978  "Onyx"
-490  20313634  " 164"
-494  30690000  "0i"
-
-[0]: [FFADO-user] Mackie 1640i issues (finer details)
-https://sourceforge.net/p/ffado/mailman/message/35229260/
-
-Tested-by: Seth O'Bannion <saobannion@gmail.com>
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig     | 1 +
- sound/firewire/oxfw/oxfw.c | 1 +
- 2 files changed, 2 insertions(+)
+ sound/firewire/amdtp-stream.c | 2 +-
+ sound/firewire/amdtp-stream.h | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index ab894ed..9f00696 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -34,6 +34,7 @@ config SND_OXFW
- 	   * LaCie Firewire Speakers
- 	   * Behringer F-Control Audio 202
- 	   * Mackie(Loud) Onyx-i series (former models)
-+	   * Mackie(Loud) Onyx 1640i (former model)
- 	   * Mackie(Loud) Onyx Satellite
- 	   * Mackie(Loud) Tapco Link.Firewire
- 	   * Mackie(Loud) d.2 pro/d.4 pro
-diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index e629b88..74d7fb6 100644
---- a/sound/firewire/oxfw/oxfw.c
-+++ b/sound/firewire/oxfw/oxfw.c
-@@ -43,6 +43,7 @@ static bool detect_loud_models(struct fw_unit *unit)
- 	const char *const models[] = {
- 		"Onyxi",
- 		"Onyx-i",
-+		"Onyx 1640i",
- 		"d.Pro",
- 		"Mackie Onyx Satellite",
- 		"Tapco LINK.firewire 4x6",
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index 00060c4..8ce93cd 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -69,7 +69,7 @@ static void pcm_period_tasklet(unsigned long data);
+  * @protocol_size: the size to allocate newly for protocol
+  */
+ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
+-		      enum amdtp_stream_direction dir, enum cip_flags flags,
++		      enum amdtp_stream_direction dir, int flags,
+ 		      unsigned int fmt,
+ 		      amdtp_stream_process_data_blocks_t process_data_blocks,
+ 		      unsigned int protocol_size)
+diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
+index c1bc7fa..7be2142 100644
+--- a/sound/firewire/amdtp-stream.h
++++ b/sound/firewire/amdtp-stream.h
+@@ -93,7 +93,7 @@ typedef unsigned int (*amdtp_stream_process_data_blocks_t)(
+ 						unsigned int *syt);
+ struct amdtp_stream {
+ 	struct fw_unit *unit;
+-	enum cip_flags flags;
++	int flags;
+ 	enum amdtp_stream_direction direction;
+ 	struct mutex mutex;
+ 
+@@ -137,7 +137,7 @@ struct amdtp_stream {
+ };
+ 
+ int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
+-		      enum amdtp_stream_direction dir, enum cip_flags flags,
++		      enum amdtp_stream_direction dir, int flags,
+ 		      unsigned int fmt,
+ 		      amdtp_stream_process_data_blocks_t process_data_blocks,
+ 		      unsigned int protocol_size);
 -- 
 2.9.3
