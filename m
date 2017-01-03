@@ -1,200 +1,68 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH v2 1/2] ASoC: core: Add API to use DMI name
- in sound card long name
-Date: Tue, 03 Jan 2017 14:40:17 +0000
-Message-ID: <1483454417.4555.2.camel@loki>
-References: <cover.1483418875.git.mengdong.lin@linux.intel.com>
- <0827a46b8200cc3e053f8fc6b3b428eac90a3618.1483418875.git.mengdong.lin@linux.intel.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: [PATCH v4 2/3] ASoC: core: add optional pcm_new callback for DAI
+ driver
+Date: Tue, 3 Jan 2017 16:52:51 +0100
+Message-ID: <1483458772-13658-3-git-send-email-arnaud.pouliquen@st.com>
+References: <1483458772-13658-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 5EB19266ED4
- for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2017 15:40:21 +0100 (CET)
-In-Reply-To: <0827a46b8200cc3e053f8fc6b3b428eac90a3618.1483418875.git.mengdong.lin@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@linux.intel.com
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, mengdong.lin@intel.com, vinod.koul@intel.com, broonie@kernel.org, pierre-louis.bossart@intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <1483458772-13658-1-git-send-email-arnaud.pouliquen@st.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org
+Cc: Jani Nikula <jani.nikula@intel.com>, broonie@kernel.org, lgirdwood@gmail.com, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2017-01-03 at 12:58 +0800, mengdong.lin@linux.intel.com wrote:
-> From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> 
-> Intel DSP platform drivers are used by many different devices but are
-> difficult for userspace to differentiate. This patch adds an API to allow
-> the DMI name to be used in the sound card long name, thereby helping
-> userspace load the correct UCM configuration. Usually machine drivers
-> uses their own name as the sound card name (short name), and leave the
-> long name and driver name blank. This API will use the DMI info like
-> vendor, product and board to make up the card long name. If the machine
-> driver has already explicitly set the long name, this API will do nothing.
-> 
-> This patch also allows for further differentiation as many devices that
-> share the same DMI name i.e. Minnowboards, UP boards may be configured
-> with different codecs or firmwares. The API supports flavoring the DMI
-> name into the card longname to provide the extra differentiation required
-> for these devices.
-> 
-> For Use Case Manager (UCM) in the user space, changing card long name by
-> this API is backward compatible, since the card name does not change. For
-> a given sound card, even if there is no device-specific UCM configuration
-> file that uses the card long name, UCM will fall back to load the default
-> configuration file that uses the card name.
-> 
-> Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
-> 
-> diff --git a/include/sound/soc.h b/include/sound/soc.h
-> index 795e6c4..e4f1844 100644
-> --- a/include/sound/soc.h
-> +++ b/include/sound/soc.h
-> @@ -497,6 +497,8 @@ void snd_soc_runtime_deactivate(struct snd_soc_pcm_runtime *rtd, int stream);
->  int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
->  	unsigned int dai_fmt);
->  
-> +int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour);
-> +
->  /* Utility functions to get clock rates from various things */
->  int snd_soc_calc_frame_size(int sample_size, int channels, int tdm_slots);
->  int snd_soc_params_to_frame_size(struct snd_pcm_hw_params *params);
-> @@ -1094,6 +1096,8 @@ struct snd_soc_card {
->  	const char *name;
->  	const char *long_name;
->  	const char *driver_name;
-> +	char dmi_longname[80];
-> +
->  	struct device *dev;
->  	struct snd_card *snd_card;
->  	struct module *owner;
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index aaab26a..3dbb5aa 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -34,6 +34,7 @@
->  #include <linux/ctype.h>
->  #include <linux/slab.h>
->  #include <linux/of.h>
-> +#include <linux/dmi.h>
->  #include <sound/core.h>
->  #include <sound/jack.h>
->  #include <sound/pcm.h>
-> @@ -1886,6 +1887,104 @@ int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
->  }
->  EXPORT_SYMBOL_GPL(snd_soc_runtime_set_dai_fmt);
->  
-> +
-> +/* Only keep number and alphabet characters and a few separator characters.
-> + * DMI info often has SPACE and we must trim them, since Use Case Manager in
-> + * the user space expects the device-specific configuration files/directories
-> + * use the same name as the card long name but Autoconf cannot support SPACE
-> + * in file or directory name.
-> + */
-> +static void trim_special_characters(char *name)
-> +{
-> +	int i, j = 0;
-> +
-> +	for (i = 0; name[i]; i++) {
-> +		if (isalnum(name[i]) || (name[i] == '.')
-> +		    || (name[i] == '-') || (name[i] == '_'))
-> +			name[j++] = name[i];
-> +	}
-> +
-> +	name[j] = '\0';
-> +}
-> +
-> +/**
-> + * snd_soc_set_dmi_name() - Register DMI names to card
-> + * @card: The card to register DMI names
-> + * @flavour: The flavour "differentiator" for the card amongst its peers.
-> + *
-> + * Intel DSP platform drivers are used by many different devices but are
-> + * difficult for userspace to differentiate, since machine drivers ususally
-> + * use their own name as the card name (short name) and leave the card long
-> + * name blank. This function will allow DMI info to be used as the sound
-> + * card long name, thereby helping userspace load the correct UCM (Use Case
-> + * Manager) configuration. Character '.' are used to separate different DMI
-> + * fields like "vendor.product.board".
-> + *
-> + * Possible card long names may be:
-> + * DellInc..XPS139343.0310JH
-> + * IntelCorp..BroadwellClientPlatform.WilsonBeachSDS
-> + * ASUSTeKCOMPUTERINC..T100TA.T100TA
-> + * Circuitco.MinnowboardMaxD0PLATFORM.MinnowBoardMAX
-> + * (Please note DMI info can also include '.' after some abbreviation like
-> + * "Inc." so you may see double '.' sometimes)
-> + *
-> + * This function also supports flavoring the card longname to provide
-> + * the extra differentiation, like "vendor.product.board.flavor".
-
-I dont think we need vendor (it just makes it too long). The product or
-board name should be unique enough for us to load the correct files.
-
-Liam
-
-> + *
-> + * We only keep number and alphabet characters and a few separator characters
-> + * in the card long name since UCM in the user space uses the card long names
-> + * as card configuration directory names and AudoConf cannot support special
-> + * charactors like SPACE.
-> + *
-> + * Returns 0 on success, otherwise a negative error code.
-> + */
-> +int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
-> +{
-> +	const char *vendor, *product, *board;
-> +	char dmi_longname[80];
-> +
-> +	if (card->long_name)
-> +		return 0; /* long name already set by driver or from DMI */
-> +
-> +	vendor = dmi_get_system_info(DMI_BOARD_VENDOR);
-> +	if (!vendor) {
-> +		dev_warn(card->dev, "ASoC: no DMI vendor name!\n");
-> +		return 0;
-> +	}
-> +
-> +	product = dmi_get_system_info(DMI_PRODUCT_NAME);
-> +	board = dmi_get_system_info(DMI_BOARD_NAME);
-> +	if (!board && !product) {
-> +		/* fall back to using legacy name */
-> +		dev_warn(card->dev, "ASoC: no DMI board/product name!\n");
-> +		return 0;
-> +	}
-> +
-> +	/* make up dmi long name as: vendor.product.board */
-> +	if (product && board)
-> +		snprintf(dmi_longname, sizeof(card->snd_card->longname),
-> +			 "%s.%s.%s", vendor, product, board);
-> +	else
-> +		snprintf(dmi_longname, sizeof(card->snd_card->longname),
-> +			 "%s.%s", vendor, product ? product : board);
-> +
-> +	/* Add flavour to dmi long name */
-> +	if (flavour)
-> +		snprintf(card->dmi_longname, sizeof(card->snd_card->longname),
-> +			 "%s.%s", dmi_longname, flavour);
-> +	else
-> +		strncpy(card->dmi_longname, dmi_longname,
-> +			sizeof(card->snd_card->longname) - 1);
-> +
-> +	trim_special_characters(card->dmi_longname);
-> +
-> +	/* set long name */
-> +	card->long_name = card->dmi_longname;
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(snd_soc_set_dmi_name);
-> +
->  static int snd_soc_instantiate_card(struct snd_soc_card *card)
->  {
->  	struct snd_soc_codec *codec;
+RHVyaW5nIHByb2JlLCBEQUlzIGNhbiBuZWVkIHRvIHBlcmZvcm0gc29tZSBhY3Rpb25zIHRoYXQg
+cmVxdWVzdHMKdGhlIGtub3dsZWRnZSBvZiB0aGUgcGNtIHJ1bnRpbWUgaGFuZGxlLgpUaGUgY2Fs
+bGJhY2sgaXMgY2FsbGVkIGR1cmluZyBEQUlzIGxpbmtpbmcsIGFmdGVyIFBDTSBkZXZpY2UgY3Jl
+YXRpb24uCkZvciBpbnN0YW5jZSB0aGlzIGNhbiBiZSB1c2VkIHRvIGFkZCByZWxhdGlvbnNoaXAg
+YmV0d2VlbiBhIERBSSBwY20KY29udHJvbCBhbmQgdGhlIHBjbSBkZXZpY2UuCgpTaWduZWQtb2Zm
+LWJ5OiBBcm5hdWQgUG91bGlxdWVuIDxhcm5hdWQucG91bGlxdWVuQHN0LmNvbT4KLS0tCiBpbmNs
+dWRlL3NvdW5kL3NvYy1kYWkuaCB8ICAzICsrKwogc291bmQvc29jL3NvYy1jb3JlLmMgICAgfCAy
+OCArKysrKysrKysrKysrKysrKysrKysrKysrKysrCiAyIGZpbGVzIGNoYW5nZWQsIDMxIGluc2Vy
+dGlvbnMoKykKCmRpZmYgLS1naXQgYS9pbmNsdWRlL3NvdW5kL3NvYy1kYWkuaCBiL2luY2x1ZGUv
+c291bmQvc29jLWRhaS5oCmluZGV4IDk2NGI3ZGUuLjFjOGI1NzkgMTAwNjQ0Ci0tLSBhL2luY2x1
+ZGUvc291bmQvc29jLWRhaS5oCisrKyBiL2luY2x1ZGUvc291bmQvc29jLWRhaS5oCkBAIC0yMzEs
+NiArMjMxLDkgQEAgc3RydWN0IHNuZF9zb2NfZGFpX2RyaXZlciB7CiAJaW50ICgqcmVzdW1lKShz
+dHJ1Y3Qgc25kX3NvY19kYWkgKmRhaSk7CiAJLyogY29tcHJlc3MgZGFpICovCiAJaW50ICgqY29t
+cHJlc3NfbmV3KShzdHJ1Y3Qgc25kX3NvY19wY21fcnVudGltZSAqcnRkLCBpbnQgbnVtKTsKKwkv
+KiBPcHRpb25hbCBDYWxsYmFjayB1c2VkIGF0IHBjbSBjcmVhdGlvbiovCisJaW50ICgqcGNtX25l
+dykoc3RydWN0IHNuZF9zb2NfcGNtX3J1bnRpbWUgKnJ0ZCwKKwkJICAgICAgIHN0cnVjdCBzbmRf
+c29jX2RhaSAqZGFpKTsKIAkvKiBEQUkgaXMgYWxzbyB1c2VkIGZvciB0aGUgY29udHJvbCBidXMg
+Ki8KIAlib29sIGJ1c19jb250cm9sOwogCmRpZmYgLS1naXQgYS9zb3VuZC9zb2Mvc29jLWNvcmUu
+YyBiL3NvdW5kL3NvYy9zb2MtY29yZS5jCmluZGV4IGMwYmJjZDkuLmI4YzU4MTMgMTAwNjQ0Ci0t
+LSBhL3NvdW5kL3NvYy9zb2MtY29yZS5jCisrKyBiL3NvdW5kL3NvYy9zb2MtY29yZS5jCkBAIC0x
+NTUyLDYgKzE1NTIsMjcgQEAgc3RhdGljIGludCBzb2NfcHJvYmVfZGFpKHN0cnVjdCBzbmRfc29j
+X2RhaSAqZGFpLCBpbnQgb3JkZXIpCiAJcmV0dXJuIDA7CiB9CiAKK3N0YXRpYyBpbnQgc29jX2xp
+bmtfZGFpX3BjbV9uZXcoc3RydWN0IHNuZF9zb2NfZGFpICoqZGFpcywgaW50IG51bV9kYWlzLAor
+CQkJCXN0cnVjdCBzbmRfc29jX3BjbV9ydW50aW1lICpydGQpCit7CisJaW50IGksIHJldCA9IDA7
+CisKKwlmb3IgKGkgPSAwOyBpIDwgbnVtX2RhaXM7ICsraSkgeworCQlzdHJ1Y3Qgc25kX3NvY19k
+YWlfZHJpdmVyICpkcnYgPSBkYWlzW2ldLT5kcml2ZXI7CisKKwkJaWYgKCFydGQtPmRhaV9saW5r
+LT5ub19wY20gJiYgZHJ2LT5wY21fbmV3KQorCQkJcmV0ID0gZHJ2LT5wY21fbmV3KHJ0ZCwgZGFp
+c1tpXSk7CisJCWlmIChyZXQgPCAwKSB7CisJCQlkZXZfZXJyKGRhaXNbaV0tPmRldiwKKwkJCQki
+QVNvQzogRmFpbGVkIHRvIGJpbmQgJXMgd2l0aCBwY20gZGV2aWNlXG4iLAorCQkJCWRhaXNbaV0t
+Pm5hbWUpOworCQkJcmV0dXJuIHJldDsKKwkJfQorCX0KKworCXJldHVybiAwOworfQorCiBzdGF0
+aWMgaW50IHNvY19saW5rX2RhaV93aWRnZXRzKHN0cnVjdCBzbmRfc29jX2NhcmQgKmNhcmQsCiAJ
+CQkJc3RydWN0IHNuZF9zb2NfZGFpX2xpbmsgKmRhaV9saW5rLAogCQkJCXN0cnVjdCBzbmRfc29j
+X3BjbV9ydW50aW1lICpydGQpCkBAIC0xNjYzLDYgKzE2ODQsMTMgQEAgc3RhdGljIGludCBzb2Nf
+cHJvYmVfbGlua19kYWlzKHN0cnVjdCBzbmRfc29jX2NhcmQgKmNhcmQsCiAJCQkJICAgICAgIGRh
+aV9saW5rLT5zdHJlYW1fbmFtZSwgcmV0KTsKIAkJCQlyZXR1cm4gcmV0OwogCQkJfQorCQkJcmV0
+ID0gc29jX2xpbmtfZGFpX3BjbV9uZXcoJmNwdV9kYWksIDEsIHJ0ZCk7CisJCQlpZiAocmV0IDwg
+MCkKKwkJCQlyZXR1cm4gcmV0OworCQkJcmV0ID0gc29jX2xpbmtfZGFpX3BjbV9uZXcocnRkLT5j
+b2RlY19kYWlzLAorCQkJCQkJICAgcnRkLT5udW1fY29kZWNzLCBydGQpOworCQkJaWYgKHJldCA8
+IDApCisJCQkJcmV0dXJuIHJldDsKIAkJfSBlbHNlIHsKIAkJCUlOSVRfREVMQVlFRF9XT1JLKCZy
+dGQtPmRlbGF5ZWRfd29yaywKIAkJCQkJCWNvZGVjMmNvZGVjX2Nsb3NlX2RlbGF5ZWRfd29yayk7
+Ci0tIAoxLjkuMQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3Jn
+Cmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVs
+Cg==
