@@ -1,15 +1,15 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: dice: ensure transmission speed for
-	transmitted packets
-Date: Tue,  3 Jan 2017 12:44:43 +0900
-Message-ID: <20170103034443.25095-1-o-takashi@sakamocchi.jp>
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH v2 0/2] ASoC: Use DMI name in sound card long
+	name
+Date: Tue,  3 Jan 2017 12:58:05 +0800
+Message-ID: <cover.1483418875.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 7D9A4266C94
- for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2017 04:44:51 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id A5C0D266D2C
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2017 05:55:04 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,76 +19,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-As of kernel 4.10, ALSA dice driver is expected to be used in default
-speed. In most cases, it's S400. While, IEEE 1394 specification describes
-the other speed such as S800.
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-According to 'TCD30XX User Guide', its link layer controller supports
-several transmission speed up to S800[0]. In Dice software interface,
-transmission speed in output direction can be configured by asynchronous
-transaction to 'TX_SPEED' offset in its address space. S800 may be
-available.
+This series is based on Liam's idea to use DMI name as the sound card
+short name in the audio workshop. Now we add DMI info to the card long
+name:
+- Not change the card name (short name), keep it simple. So the card ID
+  won't change as well.
+- Use DMI name to make the card long name.
 
-This commit improves configuration of transmission unit before starting
-packet streaming for this purpose. The value of 'max_speed' in 'fw_device'
-data structure has available maximum speed decided in bus arbitration,
-thus it's within capacity of the unit.
+Machine drivers can use a new API to get this feature.
 
-[0] TCD3xx User Guide - TCAT 1394 LLC, Revision 0.9.0-41360 (TC Applied Technologies, May 6 2015)
-http://www.tctechnologies.tc/index.php/support/support-hardware/dice-iii-detailed-documentation
+In user space, when the sound server ask UCM to open a sound card, UCM
+will try to find the best machine-specific configuration file based on
+the card long name, and only if not avaiable, fallback to the default
+configuration file that matches the card name (short name). 
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/dice/dice-interface.h |  1 +
- sound/firewire/dice/dice-stream.c    | 12 +++++++++++-
- 2 files changed, 12 insertions(+), 1 deletion(-)
+Please see patch:
+ucm: Automatically load the best config file based on the card long name
 
-diff --git a/sound/firewire/dice/dice-interface.h b/sound/firewire/dice/dice-interface.h
-index 27b044f..47f2c0a 100644
---- a/sound/firewire/dice/dice-interface.h
-+++ b/sound/firewire/dice/dice-interface.h
-@@ -251,6 +251,7 @@
- 
- /*
-  * The speed at which the packets are sent, SCODE_100-_400; read/write.
-+ * SCODE_800 is only available in Dice III.
-  */
- #define TX_SPEED			0x014
- 
-diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
-index ec4db3a..8573289 100644
---- a/sound/firewire/dice/dice-stream.c
-+++ b/sound/firewire/dice/dice-stream.c
-@@ -195,6 +195,7 @@ static int start_streams(struct snd_dice *dice, enum amdtp_stream_direction dir,
- 	unsigned int i, pcm_chs, midi_ports;
- 	struct amdtp_stream *streams;
- 	struct fw_iso_resources *resources;
-+	struct fw_device *fw_dev = fw_parent_device(dice->unit);
- 	int err = 0;
- 
- 	if (dir == AMDTP_IN_STREAM) {
-@@ -237,8 +238,17 @@ static int start_streams(struct snd_dice *dice, enum amdtp_stream_direction dir,
- 		if (err < 0)
- 			return err;
- 
-+		if (dir == AMDTP_IN_STREAM) {
-+			reg[0] = cpu_to_be32(fw_dev->max_speed);
-+			err = snd_dice_transaction_write_tx(dice,
-+					params->size * i + TX_SPEED,
-+					reg, sizeof(reg[0]));
-+			if (err < 0)
-+				return err;
-+		}
-+
- 		err = amdtp_stream_start(&streams[i], resources[i].channel,
--				fw_parent_device(dice->unit)->max_speed);
-+					 fw_dev->max_speed);
- 		if (err < 0)
- 			return err;
- 	}
+History:
+  v1 from RFC: Give up using a table to map DMI info to a simple string,
+        since we cannot maintain such a table for each machine. Just do
+        verbatim copy of DMI info and let user space decide how to use the
+        DMI info in card long name to find the best UCM config file.
+
+        If device driver adds a flavor string, just append it after the
+        DMI info fields to the card long name.
+
+  v2:   Exclude card name and only keep DMI name in the long name, to
+        save the space since the long name cannot exceed 80 characters.
+	Trim special characters like SPACE in the long name, because UCM
+        configuration files & directories may use the same long name and
+        Autoconf cannot handle special characters.
+
+Liam Girdwood (1):
+  ASoC: core: Add API to use DMI name in sound card long name
+
+Mengdong Lin (1):
+  ASoC: Intel: Use DMI name for sound card long name in Broadwell
+    machine driver
+
+ include/sound/soc.h                |  4 ++
+ sound/soc/intel/boards/broadwell.c |  2 +
+ sound/soc/soc-core.c               | 99 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 105 insertions(+)
+
 -- 
-2.9.3
+2.5.0
