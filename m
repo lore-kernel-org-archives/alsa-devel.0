@@ -1,19 +1,20 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: Re: [PATCH 2/2] ASoC: nau8825: provide clock divide
- for codec mater mode
-Date: Tue, 3 Jan 2017 11:04:50 +0800
-Message-ID: <586B14D2.5080503@nuvoton.com>
-References: <1482223627-23547-1-git-send-email-KCHSU0@nuvoton.com>
- <1482223627-23547-2-git-send-email-KCHSU0@nuvoton.com>
- <20161231185701.4ebiu7zvmbldfdjd@sirena.org.uk>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v3 4/4] ASoC: Intel: rename
+ SND_SST_MFLD_PLATFORM to SND_SST_MID_PLATFORM
+Date: Tue, 3 Jan 2017 09:08:16 +0530
+Message-ID: <20170103033815.GA3573@localhost>
+References: <20170102152017.13938-1-andriy.shevchenko@linux.intel.com>
+ <20170102152017.13938-5-andriy.shevchenko@linux.intel.com>
+ <c5228e73-d5cf-e4cd-b78b-24334e1fb5f3@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 58082266CC5
- for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2017 04:04:55 +0100 (CET)
-In-Reply-To: <20161231185701.4ebiu7zvmbldfdjd@sirena.org.uk>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 786FD266C9A
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2017 04:38:24 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <c5228e73-d5cf-e4cd-b78b-24334e1fb5f3@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,32 +24,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, "anatol.pomozov@gmail.com" <anatol.pomozov@gmail.com>, AC30 YHChuang <YHCHuang@nuvoton.com>, AC30 WTLi <WTLI@nuvoton.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "benzh@chromium.org" <benzh@chromium.org>, AC30 CTLin0 <CTLIN0@nuvoton.com>, MS40 MHKuo <MHKuo@nuvoton.com>, "yong.zhi@intel.com" <yong.zhi@intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: dmaengine <dmaengine@vger.kernel.org>, alsa-devel@alsa-project.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 1/1/2017 2:57 AM, Mark Brown wrote:
-> On Tue, Dec 20, 2016 at 04:47:07PM +0800, John Hsu wrote:
->
->> Provide the LRC and BCLK divide. The clock divide needs configuration
->> properly when codec in master mode.
->>
->
-> Why is the driver not able to configure these automatically, most
-> devices manage to do that OK?  Typically systems are fine with the
-> obvious divisions down from the root clock, the driver should at least
-> offer that as a default rather than requiring all machine drivers to
-> duplicate the divisor selection code.
->
+On Mon, Jan 02, 2017 at 10:05:40AM -0600, Pierre-Louis Bossart wrote:
+> 
+> 
+> On 01/02/2017 09:20 AM, Andy Shevchenko wrote:
+> >Rename SND_SST_MFLD_PLATFORM to SND_SST_MID_PLATFORM to make it clear that is
+> >not only about Medfield platform.
+> Does this change make sense? Medfield was a completely different
+> platform and lumping everything under the same Kconfig option
+> doesn't seem right to me... Plus we've stopped using 'mid' for
+> years, no one would know what it stands for. The only clear
+> architecture feature is the presence of the switch matrix that
+> uniquely identifies all platforms based on Baytrail, Cherrytrail,
+> Merrifield and Anniedale. Medfield/Clovertrail did not expose a
+> switch matrix.
 
-The system clock of codec is always 256FS. Therefore, the driver can
-make it automatically. If the codec is as master, the driver needs to
-divide the system clock to output the BCLK and FS. But there are too
-many combinations between BCLK and FS. The BCLK maybe is 32FS, 64FS,
-128FS, etc. The driver needs machine information to do the division.
-Thus, I think the best way is to make decision by machine driver.
+Mea culpa..
 
+So we started this with medfield and the driver construction is pretty much
+the same untill skylake. So clubbing under mfld bucket made sense to me.
 
+MID is not flavour of the season now.
 
-===========================================================================================
-The privileged confidential information contained in this email is intended for use only by the addressees as indicated by the original sender of this email. If you are not the addressee indicated in this email or are not responsible for delivery of the email to such a person, please kindly reply to the sender indicating this fact and delete all copies of it from your computer and network server immediately. Your cooperation is highly appreciated. It is advised that any unauthorized use of confidential information of Nuvoton is strictly prohibited; and any information in this email irrelevant to the official business of Nuvoton shall be deemed as neither given nor endorsed by Nuvoton.
+If anyone comes with a better name, am for that :)
+
+-- 
+~Vinod
