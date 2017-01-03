@@ -1,18 +1,14 @@
-From: Keyon Jie <yang.jie@linux.intel.com>
-Subject: Re: [PATCH v3 1/4] ASoC: Intel: select DW_DMAC_CORE
- since it's mandatory
-Date: Tue, 3 Jan 2017 10:00:06 +0800
-Message-ID: <586B05A6.2000506@linux.intel.com>
-References: <20170102152017.13938-1-andriy.shevchenko@linux.intel.com>
- <20170102152017.13938-2-andriy.shevchenko@linux.intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: oxfw: add support for Mackie Onyx 1640i
+Date: Tue,  3 Jan 2017 11:36:08 +0900
+Message-ID: <20170103023608.13211-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E9D626058A
- for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2017 02:57:55 +0100 (CET)
-In-Reply-To: <20170102152017.13938-2-andriy.shevchenko@linux.intel.com>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id EA66C26058A
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2017 03:36:23 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,70 +18,114 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, dmaengine <dmaengine@vger.kernel.org>
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, saobannion@gmail.com, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIDIwMTflubQwMeaciDAy5pelIDIzOjIwLCBBbmR5IFNoZXZjaGVua28gd3JvdGU6Cj4gU2Vs
-ZWN0IERXX0RNQUNfQ09SRSBsaWtlIHRoZSByZXN0IG9mIGdsdWUgZHJpdmVycyBkbywgZS5nLgo+
-IGRyaXZlcnMvZG1hL2R3L0tjb25maWcuCj4KPiBXaGlsZSBoZXJlIGdyb3VwIHNlbGVjdG9ycyB1
-bmRlciBTTkRfU09DX0lOVEVMX0hBU1dFTEwgYW5kCj4gU05EX1NPQ19JTlRFTF9CQVlUUkFJTC4K
-Pgo+IFNpZ25lZC1vZmYtYnk6IEFuZHkgU2hldmNoZW5rbyA8YW5kcml5LnNoZXZjaGVua29AbGlu
-dXguaW50ZWwuY29tPgpBY2tlZC1ieTogS2V5b24gSmllIDx5YW5nLmppZUBsaW51eC5pbnRlbC5j
-b20+Cgp0aGFua3MsCn5LZXlvbgoKPiAtLS0KPiAgIHNvdW5kL3NvYy9pbnRlbC9LY29uZmlnIHwg
-MjYgKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0KPiAgIDEgZmlsZSBjaGFuZ2VkLCA4IGluc2Vy
-dGlvbnMoKyksIDE4IGRlbGV0aW9ucygtKQo+Cj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9pbnRl
-bC9LY29uZmlnIGIvc291bmQvc29jL2ludGVsL0tjb25maWcKPiBpbmRleCBmZDVkMWUwOTEwMzgu
-LjNkYTNiMjhiNzBlMSAxMDA2NDQKPiAtLS0gYS9zb3VuZC9zb2MvaW50ZWwvS2NvbmZpZwo+ICsr
-KyBiL3NvdW5kL3NvYy9pbnRlbC9LY29uZmlnCj4gQEAgLTMzLDExICszMyw5IEBAIGNvbmZpZyBT
-TkRfU09DX0lOVEVMX1NTVAo+ICAgCXNlbGVjdCBTTkRfU09DX0lOVEVMX1NTVF9NQVRDSCBpZiBB
-Q1BJCj4gICAJZGVwZW5kcyBvbiAoWDg2IHx8IENPTVBJTEVfVEVTVCkKPgo+IC0jIGZpcm13YXJl
-IHN0dWZmIGRlcGVuZHMgRFdfRE1BQ19DT1JFOyBzaW5jZSB0aGVyZSBpcyBubyBkZXBlbmRzLW9u
-IGZyb20KPiAtIyB0aGUgcmV2ZXJzZSBzZWxlY3Rpb24sIGVhY2ggbWFjaGluZSBkcml2ZXIgbmVl
-ZHMgdG8gc2VsZWN0Cj4gLSMgU05EX1NPQ19JTlRFTF9TU1RfRklSTVdBUkUgY2FyZWZ1bGx5IGRl
-cGVuZGluZyBvbiBEV19ETUFDX0NPUkUKPiAgIGNvbmZpZyBTTkRfU09DX0lOVEVMX1NTVF9GSVJN
-V0FSRQo+ICAgCXRyaXN0YXRlCj4gKwlzZWxlY3QgRFdfRE1BQ19DT1JFCj4KPiAgIGNvbmZpZyBT
-TkRfU09DX0lOVEVMX1NTVF9BQ1BJCj4gICAJdHJpc3RhdGUKPiBAQCAtNDcsMTYgKzQ1LDE3IEBA
-IGNvbmZpZyBTTkRfU09DX0lOVEVMX1NTVF9NQVRDSAo+Cj4gICBjb25maWcgU05EX1NPQ19JTlRF
-TF9IQVNXRUxMCj4gICAJdHJpc3RhdGUKPiArCXNlbGVjdCBTTkRfU09DX0lOVEVMX1NTVAo+ICAg
-CXNlbGVjdCBTTkRfU09DX0lOVEVMX1NTVF9GSVJNV0FSRQo+Cj4gICBjb25maWcgU05EX1NPQ19J
-TlRFTF9CQVlUUkFJTAo+ICAgCXRyaXN0YXRlCj4gKwlzZWxlY3QgU05EX1NPQ19JTlRFTF9TU1QK
-PiArCXNlbGVjdCBTTkRfU09DX0lOVEVMX1NTVF9GSVJNV0FSRQo+Cj4gICBjb25maWcgU05EX1NP
-Q19JTlRFTF9IQVNXRUxMX01BQ0gKPiAgIAl0cmlzdGF0ZSAiQVNvQyBBdWRpbyBEU1Agc3VwcG9y
-dCBmb3IgSW50ZWwgSGFzd2VsbCBMeW54cG9pbnQiCj4gICAJZGVwZW5kcyBvbiBYODZfSU5URUxf
-TFBTUyAmJiBJMkMgJiYgSTJDX0RFU0lHTldBUkVfUExBVEZPUk0KPiAtCWRlcGVuZHMgb24gRFdf
-RE1BQ19DT1JFCj4gLQlzZWxlY3QgU05EX1NPQ19JTlRFTF9TU1QKPiAgIAlzZWxlY3QgU05EX1NP
-Q19JTlRFTF9IQVNXRUxMCj4gICAJc2VsZWN0IFNORF9TT0NfUlQ1NjQwCj4gICAJaGVscAo+IEBA
-IC05OSw5ICs5OCw3IEBAIGNvbmZpZyBTTkRfU09DX0lOVEVMX0JYVF9SVDI5OF9NQUNICj4gICBj
-b25maWcgU05EX1NPQ19JTlRFTF9CWVRfUlQ1NjQwX01BQ0gKPiAgIAl0cmlzdGF0ZSAiQVNvQyBB
-dWRpbyBkcml2ZXIgZm9yIEludGVsIEJheXRyYWlsIHdpdGggUlQ1NjQwIGNvZGVjIgo+ICAgCWRl
-cGVuZHMgb24gWDg2X0lOVEVMX0xQU1MgJiYgSTJDCj4gLQlkZXBlbmRzIG9uIERXX0RNQUNfQ09S
-RSAmJiAoU05EX1NTVF9JUENfQUNQSSA9IG4pCj4gLQlzZWxlY3QgU05EX1NPQ19JTlRFTF9TU1QK
-PiAtCXNlbGVjdCBTTkRfU09DX0lOVEVMX1NTVF9GSVJNV0FSRQo+ICsJZGVwZW5kcyBvbiBTTkRf
-U1NUX0lQQ19BQ1BJID0gbgo+ICAgCXNlbGVjdCBTTkRfU09DX0lOVEVMX0JBWVRSQUlMCj4gICAJ
-c2VsZWN0IFNORF9TT0NfUlQ1NjQwCj4gICAJaGVscAo+IEBAIC0xMTIsOSArMTA5LDcgQEAgY29u
-ZmlnIFNORF9TT0NfSU5URUxfQllUX1JUNTY0MF9NQUNICj4gICBjb25maWcgU05EX1NPQ19JTlRF
-TF9CWVRfTUFYOTgwOTBfTUFDSAo+ICAgCXRyaXN0YXRlICJBU29DIEF1ZGlvIGRyaXZlciBmb3Ig
-SW50ZWwgQmF5dHJhaWwgd2l0aCBNQVg5ODA5MCBjb2RlYyIKPiAgIAlkZXBlbmRzIG9uIFg4Nl9J
-TlRFTF9MUFNTICYmIEkyQwo+IC0JZGVwZW5kcyBvbiBEV19ETUFDX0NPUkUgJiYgKFNORF9TU1Rf
-SVBDX0FDUEkgPSBuKQo+IC0Jc2VsZWN0IFNORF9TT0NfSU5URUxfU1NUCj4gLQlzZWxlY3QgU05E
-X1NPQ19JTlRFTF9TU1RfRklSTVdBUkUKPiArCWRlcGVuZHMgb24gU05EX1NTVF9JUENfQUNQSSA9
-IG4KPiAgIAlzZWxlY3QgU05EX1NPQ19JTlRFTF9CQVlUUkFJTAo+ICAgCXNlbGVjdCBTTkRfU09D
-X01BWDk4MDkwCj4gICAJaGVscAo+IEBAIC0xMjMsOSArMTE4LDcgQEAgY29uZmlnIFNORF9TT0Nf
-SU5URUxfQllUX01BWDk4MDkwX01BQ0gKPgo+ICAgY29uZmlnIFNORF9TT0NfSU5URUxfQkRXX1JU
-NTY3N19NQUNICj4gICAJdHJpc3RhdGUgIkFTb0MgQXVkaW8gZHJpdmVyIGZvciBJbnRlbCBCcm9h
-ZHdlbGwgd2l0aCBSVDU2NzcgY29kZWMiCj4gLQlkZXBlbmRzIG9uIFg4Nl9JTlRFTF9MUFNTICYm
-IEdQSU9MSUIgJiYgSTJDICYmIERXX0RNQUMKPiAtCWRlcGVuZHMgb24gRFdfRE1BQ19DT1JFPXkK
-PiAtCXNlbGVjdCBTTkRfU09DX0lOVEVMX1NTVAo+ICsJZGVwZW5kcyBvbiBYODZfSU5URUxfTFBT
-UyAmJiBHUElPTElCICYmIEkyQwo+ICAgCXNlbGVjdCBTTkRfU09DX0lOVEVMX0hBU1dFTEwKPiAg
-IAlzZWxlY3QgU05EX1NPQ19SVDU2NzcKPiAgIAloZWxwCj4gQEAgLTEzNCwxMCArMTI3LDcgQEAg
-Y29uZmlnIFNORF9TT0NfSU5URUxfQkRXX1JUNTY3N19NQUNICj4KPiAgIGNvbmZpZyBTTkRfU09D
-X0lOVEVMX0JST0FEV0VMTF9NQUNICj4gICAJdHJpc3RhdGUgIkFTb0MgQXVkaW8gRFNQIHN1cHBv
-cnQgZm9yIEludGVsIEJyb2Fkd2VsbCBXaWxkY2F0cG9pbnQiCj4gLQlkZXBlbmRzIG9uIFg4Nl9J
-TlRFTF9MUFNTICYmIEkyQyAmJiBEV19ETUFDICYmIFwKPiAtCQkgICBJMkNfREVTSUdOV0FSRV9Q
-TEFURk9STQo+IC0JZGVwZW5kcyBvbiBEV19ETUFDX0NPUkUKPiAtCXNlbGVjdCBTTkRfU09DX0lO
-VEVMX1NTVAo+ICsJZGVwZW5kcyBvbiBYODZfSU5URUxfTFBTUyAmJiBJMkMgJiYgSTJDX0RFU0lH
-TldBUkVfUExBVEZPUk0KPiAgIAlzZWxlY3QgU05EX1NPQ19JTlRFTF9IQVNXRUxMCj4gICAJc2Vs
-ZWN0IFNORF9TT0NfUlQyODYKPiAgIAloZWxwCj4KX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+This is for Linux 4.11 development.
+
+As of kernel 4.10,  ALSA OXFW driver has no entry for Onyx 1640i produced
+by Mackie (Loud Technologies). This commit supplement it.
+
+I note that there're two models produced by Mackie (Loud Technologies),
+which have the same name 'Onyx 1640i'. The former model based on OXFW970,
+the latter model based on Dice. This is probably due to low quality of
+communication of OXFW series.
+
+Additionally, the tester reports his or her experiences to get unexpected
+result at higher sampling transmission frequency as 88.2/96.0 kHz. We
+didn't have further investigation yet[0].
+
+$ ./linux-firewire-utils/src/crpp < config_rom
+               ROM header and bus information block
+               -----------------------------------------------------------------
+400  042525ce  bus_info_length 4, crc_length 37, crc 9678
+404  31333934  bus_name "1394"
+408  20ff5003  irmc 0, cmc 0, isc 1, bmc 0, cyc_clk_acc 255, max_rec 5 (64)
+40c  000ff205  company_id 000ff2     |
+410  00000fcf  device_id 0500000fcf  | EUI-64 000ff20500000fcf
+
+               root directory
+               -----------------------------------------------------------------
+414  0006c1b7  directory_length 6, crc 49591
+418  03000ff2  vendor
+41c  8100000a  --> descriptor leaf at 444
+420  17001640  model
+424  81000011  --> descriptor leaf at 468
+428  0c0083c0  node capabilities per IEEE 1394
+42c  d1000001  --> unit directory at 430
+
+               unit directory at 430
+               -----------------------------------------------------------------
+430  00040b97  directory_length 4, crc 2967
+434  1200a02d  specifier id: 1394 TA
+438  13010001  version: AV/C
+43c  17001640  model
+440  81000010  --> descriptor leaf at 480
+
+               descriptor leaf at 444
+               -----------------------------------------------------------------
+444  0008a886  leaf_length 8, crc 43142
+448  00000000  textual descriptor
+44c  00000000  minimal ASCII
+450  4c6f7564  "Loud"
+454  20546563  " Tec"
+458  686e6f6c  "hnol"
+45c  6f676965  "ogie"
+460  7320496e  "s In"
+464  632e0000  "c."
+
+               descriptor leaf at 468
+               -----------------------------------------------------------------
+468  00059fcf  leaf_length 5, crc 40911
+46c  00000000  textual descriptor
+470  00000000  minimal ASCII
+474  4f6e7978  "Onyx"
+478  20313634  " 164"
+47c  30690000  "0i"
+
+               descriptor leaf at 480
+               -----------------------------------------------------------------
+480  00059fcf  leaf_length 5, crc 40911
+484  00000000  textual descriptor
+488  00000000  minimal ASCII
+48c  4f6e7978  "Onyx"
+490  20313634  " 164"
+494  30690000  "0i"
+
+[0]: [FFADO-user] Mackie 1640i issues (finer details)
+https://sourceforge.net/p/ffado/mailman/message/35229260/
+
+Tested-by: Seth O'Bannion <saobannion@gmail.com>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/Kconfig     | 1 +
+ sound/firewire/oxfw/oxfw.c | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index ab894ed..9f00696 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -34,6 +34,7 @@ config SND_OXFW
+ 	   * LaCie Firewire Speakers
+ 	   * Behringer F-Control Audio 202
+ 	   * Mackie(Loud) Onyx-i series (former models)
++	   * Mackie(Loud) Onyx 1640i (former model)
+ 	   * Mackie(Loud) Onyx Satellite
+ 	   * Mackie(Loud) Tapco Link.Firewire
+ 	   * Mackie(Loud) d.2 pro/d.4 pro
+diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
+index e629b88..74d7fb6 100644
+--- a/sound/firewire/oxfw/oxfw.c
++++ b/sound/firewire/oxfw/oxfw.c
+@@ -43,6 +43,7 @@ static bool detect_loud_models(struct fw_unit *unit)
+ 	const char *const models[] = {
+ 		"Onyxi",
+ 		"Onyx-i",
++		"Onyx 1640i",
+ 		"d.Pro",
+ 		"Mackie Onyx Satellite",
+ 		"Tapco LINK.firewire 4x6",
+-- 
+2.9.3
