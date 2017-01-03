@@ -1,49 +1,99 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v4 1/3] DRM: add help to get ELD speaker allocation
-Date: Tue, 3 Jan 2017 16:52:50 +0100
-Message-ID: <1483458772-13658-2-git-send-email-arnaud.pouliquen@st.com>
-References: <1483458772-13658-1-git-send-email-arnaud.pouliquen@st.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [RFC PATCH] ucm: Add support for device positions
+Date: Tue, 3 Jan 2017 08:50:54 -0600
+Message-ID: <1e49ebdc-38c3-0e51-6674-0fa1aebbb30a@linux.intel.com>
+References: <1483423758-8986-1-git-send-email-mengdong.lin@linux.intel.com>
+ <20170103082143.GF3573@localhost> <586B7856.6090005@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <1483458772-13658-1-git-send-email-arnaud.pouliquen@st.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org
-Cc: Jani Nikula <jani.nikula@intel.com>, broonie@kernel.org, lgirdwood@gmail.com, Jyri Sarha <jsarha@ti.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id CFD6F266F05
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2017 15:51:06 +0100 (CET)
+In-Reply-To: <586B7856.6090005@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mengdong Lin <mengdong.lin@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-QWRkIGhlbHBlciB0byBhbGxvdyB1c2VycyB0byByZXRyaWV2ZSB0aGUgc3BlYWtlciBhbGxvY2F0
-aW9ucyB3aXRob3V0Cmtub3dsZWRnZSBvZiB0aGUgRUxEIHN0cnVjdHVyZS4KClNpZ25lZC1vZmYt
-Ynk6IEFybmF1ZCBQb3VsaXF1ZW4gPGFybmF1ZC5wb3VsaXF1ZW5Ac3QuY29tPgpSZXZpZXdlZC1i
-eTogSmFuaSBOaWt1bGEgPGphbmkubmlrdWxhQGludGVsLmNvbT4KLS0tCiBpbmNsdWRlL2RybS9k
-cm1fZWRpZC5oIHwgMTMgKysrKysrKysrKysrKwogMSBmaWxlIGNoYW5nZWQsIDEzIGluc2VydGlv
-bnMoKykKCmRpZmYgLS1naXQgYS9pbmNsdWRlL2RybS9kcm1fZWRpZC5oIGIvaW5jbHVkZS9kcm0v
-ZHJtX2VkaWQuaAppbmRleCBjM2E3ZDQ0Li5kZTkzNTQzIDEwMDY0NAotLS0gYS9pbmNsdWRlL2Ry
-bS9kcm1fZWRpZC5oCisrKyBiL2luY2x1ZGUvZHJtL2RybV9lZGlkLmgKQEAgLTI0OCw2ICsyNDgs
-NyBAQCBzdHJ1Y3QgZGV0YWlsZWRfdGltaW5nIHsKICMgZGVmaW5lIERSTV9FTERfQVVEX1NZTkNI
-X0RFTEFZX01BWAkweGZhCS8qIDUwMCBtcyAqLwogCiAjZGVmaW5lIERSTV9FTERfU1BFQUtFUgkJ
-CTcKKyMgZGVmaW5lIERSTV9FTERfU1BFQUtFUl9NQVNLCQkweDdmCiAjIGRlZmluZSBEUk1fRUxE
-X1NQRUFLRVJfUkxSQwkJKDEgPDwgNikKICMgZGVmaW5lIERSTV9FTERfU1BFQUtFUl9GTFJDCQko
-MSA8PCA1KQogIyBkZWZpbmUgRFJNX0VMRF9TUEVBS0VSX1JDCQkoMSA8PCA0KQpAQCAtNDE1LDYg
-KzQxNiwxOCBAQCBzdGF0aWMgaW5saW5lIGludCBkcm1fZWxkX3NpemUoY29uc3QgdWludDhfdCAq
-ZWxkKQogfQogCiAvKioKKyAqIGRybV9lbGRfZ2V0X3Nwa19hbGxvYyAtIEdldCBzcGVha2VyIGFs
-bG9jYXRpb24KKyAqIEBlbGQ6IHBvaW50ZXIgdG8gYW4gRUxEIG1lbW9yeSBzdHJ1Y3R1cmUKKyAq
-CisgKiBUaGUgcmV0dXJuZWQgdmFsdWUgaXMgdGhlIHNwZWFrZXJzIG1hc2suIFVzZXIgaGFzIHRv
-IHVzZSAlRFJNX0VMRF9TUEVBS0VSCisgKiBmaWVsZCBkZWZpbml0aW9ucyB0byBpZGVudGlmeSBz
-cGVha2Vycy4KKyAqLworc3RhdGljIGlubGluZSB1OCBkcm1fZWxkX2dldF9zcGtfYWxsb2MoY29u
-c3QgdWludDhfdCAqZWxkKQoreworCXJldHVybiBlbGRbRFJNX0VMRF9TUEVBS0VSXSAmIERSTV9F
-TERfU1BFQUtFUl9NQVNLOworfQorCisvKioKICAqIGRybV9lbGRfZ2V0X2Nvbm5fdHlwZSAtIEdl
-dCBkZXZpY2UgdHlwZSBoZG1pL2RwIGNvbm5lY3RlZAogICogQGVsZDogcG9pbnRlciB0byBhbiBF
-TEQgbWVtb3J5IHN0cnVjdHVyZQogICoKLS0gCjEuOS4xCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZl
-bEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+
+
+On 01/03/2017 04:09 AM, Mengdong Lin wrote:
+>
+>
+> On 01/03/2017 04:21 PM, Vinod Koul wrote:
+>> On Tue, Jan 03, 2017 at 02:09:18PM +0800, 
+>> mengdong.lin@linux.intel.com wrote:
+>>> From: Mengdong Lin <mengdong.lin@linux.intel.com>
+>>>
+>>> Users can provide prosition info of audio devices as a device value. 
+>>> This
+>>> will help the sound server to choose an audio devices from some 
+>>> candidates
+>>> based on the their locations and the status of the machine.
+>>
+>> This is good thing to have but some bits are bit unclear to me atm. 
+>> When you
+>> say device, do you mean sound card?
+>
+> No, the device here does not mean a sound card, but mean an I/O device 
+> like speaker or dmic, defined by 'SectionDevice'.
+>
+>> For me, position makes sense for dmics and speakers. So can you help 
+>> me out
+>> by understanding how we can describe these...
+>>
+>
+> For example, if there are two DMICs, one is in the front and one on 
+> the back, we can define their positions as below:
+>
+> SectionDevice."MainMIC" {
+>
+>        ...
+>
+>         EnableSequence [
+>                ...
+>         ]
+>
+>         DisableSequence [
+>                 ...
+>         ]
+>
+>         Value {
+>                 Position "Front"
+>         }
+> }
+>
+> SectionDevice."SecondaryMIC" {
+>
+>     ...
+>
+>     EnableSequence [
+>     ...
+>     ]
+>
+>     DisableSequence [
+>     ...
+>     ]
+>
+>     Value {
+>         Position "Back"
+>     }
+> }
+
+What is the entity that will make use of the position information? For 
+what purpose? This type of information needs to be known at a lower 
+level (typically a DSP), I wonder what UCM would do with it?
+Also it can be tricky to define left and right for a tablet which works 
+in all possible orientations, you'd need sensor information to refine 
+the position. And last if you have a mic or speaker array you'd need to 
+provide geometrical information?
