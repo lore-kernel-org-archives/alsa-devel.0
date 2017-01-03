@@ -1,75 +1,110 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH v3 2/2] ucm: Add command 'get _file' to get the
-	config file name of the opened card
-Date: Tue,  3 Jan 2017 13:41:36 +0800
-Message-ID: <1e290cbecc498bae6b8522d046321578216b593e.1483421175.git.mengdong.lin@linux.intel.com>
-References: <cover.1483421175.git.mengdong.lin@linux.intel.com>
+From: Ioan-Adrian Ratiu <adi@adirat.com>
+Subject: Re: [PATCH v2 0/2] ALSA: Fix usb-audio races
+Date: Tue, 03 Jan 2017 10:47:06 +0200
+Message-ID: <87bmvojzsl.fsf@adiPC.i-did-not-set--mail-host-address--so-tickle-me>
+References: <20170102155031.3638-1-adi@adirat.com> <871swkwqh0.fsf@adiPC.i-did-not-set--mail-host-address--so-tickle-me>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 0361E266C94
- for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2017 06:38:36 +0100 (CET)
-In-Reply-To: <cover.1483421175.git.mengdong.lin@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, pierre-louis.bossart@intel.com
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <871swkwqh0.fsf@adiPC.i-did-not-set--mail-host-address--so-tickle-me>
+Sender: linux-kernel-owner@vger.kernel.org
+To: tiwai@suse.com, perex@perex.cz, o-takashi@sakamocchi.jp
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+On Tue, 03 Jan 2017, Ioan-Adrian Ratiu <adi@adirat.com> wrote:
+> On Mon, 02 Jan 2017, Ioan-Adrian Ratiu <adi@adirat.com> wrote:
+>> Many thanks to Takashi Iwai & Sakamoto for their awesome feedback.
+>>
+>> Changes since v1:
+>>     * Rebased my fix on top of tiwai's revert and integrated the changes
+>>     from the original fix into this.
+>>     * Dropped the stop_endpoints() call inside snd_usb_pcm_prepare() and
+>>     kept the previously existing snd_usb_endpoint_sync_pending_stop() call.
+>>     * Retained the deactivate_urbs() call in snd_usb_pcm_prepare(), I only
+>>     removed the can_sleep logic.
+>>     * Split the EP_FLAG_RUNNING check in a separate commit to keep the log
+>>     clean since this is not part of the race fix.
+>>
+>> Ioan-Adrian Ratiu (2):
+>>   ALSA: usb-audio: Fix irq/process data synchronization
+>>   ALSA: usb-audio: test EP_FLAG_RUNNING at urb completion
+>>
+>>  sound/usb/endpoint.c | 20 ++++++++++----------
+>>  sound/usb/endpoint.h |  2 +-
+>>  sound/usb/pcm.c      | 10 +++++-----
+>>  3 files changed, 16 insertions(+), 16 deletions(-)
+>>
+>> -- 
+>> 2.11.0
+>
+> @tiwai
+>
+> You mentioned in a previous email to the first version I introduced a bug
+> by unballancing snd_usb_*lock_shutdown(), I think I managed to reproduce it
+> with v2. Is this trace a symptom of the bug you were refering to or is
+> this something newly introduced in v2?
+>
+> I can't for the life of me figure out for sure how snd_usb_*lock_shutdown()
+> ballancing is affected by my patch. Any pointers how to fix this are
+> greatly appreciated.
 
-After opening a card, this command can show the name of the actually
-loaded configuration file, either matches the card name or card long name.
-So developers can check if there is a device-sepcific configuration file
-available for a given card.
+A bit more context on the trace: usb_audio_disconnect hangs while
+waiting for all pending tasks to finish while the implicit feedback
+endpoint sending errors at usb_submit_urb (err -19).
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+I could figure these out on my own but at the moment my time is very
+limited and I don't want to keep you guys waiting after me so maybe
+asking about it will be faster.
 
-diff --git a/include/use-case.h b/include/use-case.h
-index 8911645..ae22bde 100644
---- a/include/use-case.h
-+++ b/include/use-case.h
-@@ -230,6 +230,7 @@ int snd_use_case_get_list(snd_use_case_mgr_t *uc_mgr,
-  * Known identifiers:
-  *   - NULL 		- return current card
-  *   - _verb		- return current verb
-+ *   - _file		- return configuration file loaded for current card
-  *
-  *   - [=]{NAME}[/[{modifier}|{/device}][/{verb}]]
-  *                      - value identifier {NAME}
-diff --git a/src/ucm/main.c b/src/ucm/main.c
-index 38a5e81..2d33886 100644
---- a/src/ucm/main.c
-+++ b/src/ucm/main.c
-@@ -1528,6 +1528,20 @@ int snd_use_case_get(snd_use_case_mgr_t *uc_mgr,
-                         goto __end;
-                 }
- 	        err = 0;
-+	} else if (strcmp(identifier, "_file") == 0) {
-+		/* get the conf file name of the opened card */
-+		if ((uc_mgr->card_name == NULL)
-+		    || (uc_mgr->conf_file_name[0] == '\0')) {
-+			err = -ENOENT;
-+			goto __end;
-+		}
-+		*value = strndup(uc_mgr->conf_file_name, MAX_FILE);
-+		if (*value == NULL) {
-+			err = -ENOMEM;
-+			goto __end;
-+		}
-+		err = 0;
-+
- 	} else if (identifier[0] == '_') {
- 		err = -ENOENT;
- 		goto __end;
--- 
-2.7.4
+Thanks,
+Ionel
+
+>
+> [  492.558350] INFO: task kworker/2:3:133 blocked for more than 120 seconds.
+> [  492.558355]       Not tainted 4.10.0-rc2-g0c771e68bbc8 #25
+> [  492.558356] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> [  492.558359] kworker/2:3     D    0   133      2 0x00000000
+> [  492.558368] Workqueue: usb_hub_wq hub_event
+> [  492.558370] Call Trace:
+> [  492.558377]  ? __schedule+0x1dd/0x7f0
+> [  492.558380]  ? trace_hardirqs_on+0xd/0x10
+> [  492.558384]  schedule+0x3b/0x90
+> [  492.558392]  usb_audio_disconnect+0x1bf/0x220 [snd_usb_audio]
+> [  492.558394]  ? wake_atomic_t_function+0x50/0x50
+> [  492.558397]  usb_unbind_interface+0x7a/0x260
+> [  492.558399]  device_release_driver_internal+0x158/0x210
+> [  492.558400]  device_release_driver+0xd/0x10
+> [  492.558401]  bus_remove_device+0x10f/0x190
+> [  492.558411]  device_del+0x208/0x330
+> [  492.558413]  ? usb_remove_ep_devs+0x1a/0x30
+> [  492.558414]  usb_disable_device+0x99/0x270
+> [  492.558416]  usb_disconnect+0x87/0x2a0
+> [  492.558417]  hub_event+0x962/0x1530
+> [  492.558419]  process_one_work+0x221/0x4b0
+> [  492.558420]  ? process_one_work+0x1bb/0x4b0
+> [  492.558421]  worker_thread+0x46/0x4f0
+> [  492.558423]  kthread+0x102/0x140
+> [  492.558424]  ? process_one_work+0x4b0/0x4b0
+> [  492.558425]  ? kthread_create_on_node+0x40/0x40
+> [  492.558427]  ret_from_fork+0x27/0x40
+> [  492.558428] 
+>                Showing all locks held in the system:
+> [  492.558433] 2 locks held by khungtaskd/34:
+> [  492.558434]  #0:  (rcu_read_lock){......}, at: [<ffffffff810da44f>] watchdog+0x9f/0x4a0
+> [  492.558438]  #1:  (tasklist_lock){.+.+..}, at: [<ffffffff81094ffd>] debug_show_all_locks+0x3d/0x1a0
+> [  492.558449] 6 locks held by kworker/2:3/133:
+> [  492.558449]  #0:  ("usb_hub_wq"){.+.+.+}, at: [<ffffffff8106705b>] process_one_work+0x1bb/0x4b0
+> [  492.558452]  #1:  ((&hub->events)){+.+.+.}, at: [<ffffffff8106705b>] process_one_work+0x1bb/0x4b0
+> [  492.558455]  #2:  (&dev->mutex){......}, at: [<ffffffff814a4e3c>] hub_event+0x5c/0x1530
+> [  492.558459]  #3:  (&dev->mutex){......}, at: [<ffffffff814a1abe>] usb_disconnect+0x4e/0x2a0
+> [  492.558461]  #4:  (&dev->mutex){......}, at: [<ffffffff8142dd84>] device_release_driver_internal+0x34/0x210
+> [  492.558464]  #5:  (register_mutex#3){+.+.+.}, at: [<ffffffffa07de27e>] usb_audio_disconnect+0x2e/0x220 [snd_usb_audio]
+> [  492.558485] 2 locks held by idn/975:
+> [  492.558485]  #0:  (&tty->ldisc_sem){++++++}, at: [<ffffffff815fd25d>] ldsem_down_read+0x2d/0x40
+> [  492.558489]  #1:  (&ldata->atomic_read_lock){+.+.+.}, at: [<ffffffff81312160>] n_tty_read+0xb0/0x890
+> [  492.558494] 2 locks held by idn/1311:
+> [  492.558494]  #0:  (&tty->ldisc_sem){++++++}, at: [<ffffffff815fd25d>] ldsem_down_read+0x2d/0x40
+> [  492.558497]  #1:  (&ldata->atomic_read_lock){+.+.+.}, at: [<ffffffff81312160>] n_tty_read+0xb0/0x890
+>
+> [  492.558500] =============================================
