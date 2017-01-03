@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/6] ALSA: bebob: simplify symbol space for
-	local linkage
-Date: Tue,  3 Jan 2017 21:41:16 +0900
-Message-ID: <20170103124121.17143-2-o-takashi@sakamocchi.jp>
+Subject: [PATCH 5/6] ALSA: firewire-digi00x: simplify symbol
+	space for local linkage
+Date: Tue,  3 Jan 2017 21:41:20 +0900
+Message-ID: <20170103124121.17143-6-o-takashi@sakamocchi.jp>
 References: <20170103124121.17143-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id C1B32266E38
- for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2017 13:41:30 +0100 (CET)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 56022266E40
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jan 2017 13:41:34 +0100 (CET)
 In-Reply-To: <20170103124121.17143-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -35,16 +35,16 @@ This commit moves such symbols to function local.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/bebob/bebob_hwdep.c | 17 ++++++-------
- sound/firewire/bebob/bebob_midi.c  | 26 +++++++++----------
- sound/firewire/bebob/bebob_pcm.c   | 51 +++++++++++++++++++-------------------
- 3 files changed, 45 insertions(+), 49 deletions(-)
+ sound/firewire/digi00x/digi00x-hwdep.c | 17 ++++++-----
+ sound/firewire/digi00x/digi00x-midi.c  | 52 ++++++++++++++++------------------
+ sound/firewire/digi00x/digi00x-pcm.c   | 52 ++++++++++++++++------------------
+ 3 files changed, 57 insertions(+), 64 deletions(-)
 
-diff --git a/sound/firewire/bebob/bebob_hwdep.c b/sound/firewire/bebob/bebob_hwdep.c
-index ce731f4..2b367c2 100644
---- a/sound/firewire/bebob/bebob_hwdep.c
-+++ b/sound/firewire/bebob/bebob_hwdep.c
-@@ -172,16 +172,15 @@ hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
+diff --git a/sound/firewire/digi00x/digi00x-hwdep.c b/sound/firewire/digi00x/digi00x-hwdep.c
+index f188e47..463c6b8 100644
+--- a/sound/firewire/digi00x/digi00x-hwdep.c
++++ b/sound/firewire/digi00x/digi00x-hwdep.c
+@@ -173,16 +173,15 @@ static int hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
  #define hwdep_compat_ioctl NULL
  #endif
  
@@ -56,7 +56,7 @@ index ce731f4..2b367c2 100644
 -	.ioctl_compat	= hwdep_compat_ioctl,
 -};
 -
- int snd_bebob_create_hwdep_device(struct snd_bebob *bebob)
+ int snd_dg00x_create_hwdep_device(struct snd_dg00x *dg00x)
  {
 +	static const struct snd_hwdep_ops ops = {
 +		.read		= hwdep_read,
@@ -68,79 +68,114 @@ index ce731f4..2b367c2 100644
  	struct snd_hwdep *hwdep;
  	int err;
  
-@@ -190,7 +189,7 @@ int snd_bebob_create_hwdep_device(struct snd_bebob *bebob)
- 		goto end;
- 	strcpy(hwdep->name, "BeBoB");
- 	hwdep->iface = SNDRV_HWDEP_IFACE_FW_BEBOB;
+@@ -192,7 +191,7 @@ int snd_dg00x_create_hwdep_device(struct snd_dg00x *dg00x)
+ 
+ 	strcpy(hwdep->name, "Digi00x");
+ 	hwdep->iface = SNDRV_HWDEP_IFACE_FW_DIGI00X;
 -	hwdep->ops = hwdep_ops;
 +	hwdep->ops = ops;
- 	hwdep->private_data = bebob;
+ 	hwdep->private_data = dg00x;
  	hwdep->exclusive = true;
- end:
-diff --git a/sound/firewire/bebob/bebob_midi.c b/sound/firewire/bebob/bebob_midi.c
-index 868eb0d..7e5fb4b 100644
---- a/sound/firewire/bebob/bebob_midi.c
-+++ b/sound/firewire/bebob/bebob_midi.c
-@@ -106,18 +106,6 @@ static void midi_playback_trigger(struct snd_rawmidi_substream *substrm, int up)
- 	spin_unlock_irqrestore(&bebob->lock, flags);
+ 
+diff --git a/sound/firewire/digi00x/digi00x-midi.c b/sound/firewire/digi00x/digi00x-midi.c
+index 1a72a38..8689c3b 100644
+--- a/sound/firewire/digi00x/digi00x-midi.c
++++ b/sound/firewire/digi00x/digi00x-midi.c
+@@ -76,18 +76,6 @@ static void midi_phys_playback_trigger(struct snd_rawmidi_substream *substream,
+ 	spin_unlock_irqrestore(&dg00x->lock, flags);
  }
  
--static struct snd_rawmidi_ops midi_capture_ops = {
--	.open		= midi_capture_open,
--	.close		= midi_capture_close,
--	.trigger	= midi_capture_trigger,
+-static struct snd_rawmidi_ops midi_phys_capture_ops = {
+-	.open		= midi_phys_open,
+-	.close		= midi_phys_close,
+-	.trigger	= midi_phys_capture_trigger,
 -};
 -
--static struct snd_rawmidi_ops midi_playback_ops = {
--	.open		= midi_playback_open,
--	.close		= midi_playback_close,
--	.trigger	= midi_playback_trigger,
+-static struct snd_rawmidi_ops midi_phys_playback_ops = {
+-	.open		= midi_phys_open,
+-	.close		= midi_phys_close,
+-	.trigger	= midi_phys_playback_trigger,
 -};
 -
- static void set_midi_substream_names(struct snd_bebob *bebob,
- 				     struct snd_rawmidi_str *str)
+ static int midi_ctl_open(struct snd_rawmidi_substream *substream)
  {
-@@ -132,6 +120,16 @@ static void set_midi_substream_names(struct snd_bebob *bebob,
+ 	/* Do nothing. */
+@@ -139,18 +127,6 @@ static void midi_ctl_playback_trigger(struct snd_rawmidi_substream *substream,
+ 	spin_unlock_irqrestore(&dg00x->lock, flags);
+ }
  
- int snd_bebob_create_midi_devices(struct snd_bebob *bebob)
+-static struct snd_rawmidi_ops midi_ctl_capture_ops = {
+-	.open		= midi_ctl_open,
+-	.close		= midi_ctl_capture_close,
+-	.trigger	= midi_ctl_capture_trigger,
+-};
+-
+-static struct snd_rawmidi_ops midi_ctl_playback_ops = {
+-	.open		= midi_ctl_open,
+-	.close		= midi_ctl_playback_close,
+-	.trigger	= midi_ctl_playback_trigger,
+-};
+-
+ static void set_midi_substream_names(struct snd_dg00x *dg00x,
+ 				     struct snd_rawmidi_str *str,
+ 				     bool is_ctl)
+@@ -172,6 +148,26 @@ static void set_midi_substream_names(struct snd_dg00x *dg00x,
+ 
+ int snd_dg00x_create_midi_devices(struct snd_dg00x *dg00x)
  {
-+	static struct snd_rawmidi_ops capture_ops = {
-+		.open		= midi_capture_open,
-+		.close		= midi_capture_close,
-+		.trigger	= midi_capture_trigger,
++	static struct snd_rawmidi_ops phys_capture_ops = {
++		.open		= midi_phys_open,
++		.close		= midi_phys_close,
++		.trigger	= midi_phys_capture_trigger,
 +	};
-+	static struct snd_rawmidi_ops playback_ops = {
-+		.open		= midi_playback_open,
-+		.close		= midi_playback_close,
-+		.trigger	= midi_playback_trigger,
++	static struct snd_rawmidi_ops phys_playback_ops = {
++		.open		= midi_phys_open,
++		.close		= midi_phys_close,
++		.trigger	= midi_phys_playback_trigger,
 +	};
- 	struct snd_rawmidi *rmidi;
++	static struct snd_rawmidi_ops ctl_capture_ops = {
++		.open		= midi_ctl_open,
++		.close		= midi_ctl_capture_close,
++		.trigger	= midi_ctl_capture_trigger,
++	};
++	static struct snd_rawmidi_ops ctl_playback_ops = {
++		.open		= midi_ctl_open,
++		.close		= midi_ctl_playback_close,
++		.trigger	= midi_ctl_playback_trigger,
++	};
+ 	struct snd_rawmidi *rmidi[2];
  	struct snd_rawmidi_str *str;
- 	int err;
-@@ -151,7 +149,7 @@ int snd_bebob_create_midi_devices(struct snd_bebob *bebob)
- 		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
+ 	unsigned int i;
+@@ -187,9 +183,9 @@ int snd_dg00x_create_midi_devices(struct snd_dg00x *dg00x)
+ 		 "%s MIDI", dg00x->card->shortname);
  
- 		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
--				    &midi_capture_ops);
-+				    &capture_ops);
+ 	snd_rawmidi_set_ops(rmidi[0], SNDRV_RAWMIDI_STREAM_INPUT,
+-			    &midi_phys_capture_ops);
++			    &phys_capture_ops);
+ 	snd_rawmidi_set_ops(rmidi[0], SNDRV_RAWMIDI_STREAM_OUTPUT,
+-			    &midi_phys_playback_ops);
++			    &phys_playback_ops);
  
- 		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
+ 	/* Add a pair of control midi ports. */
+ 	err = snd_rawmidi_new(dg00x->card, dg00x->card->driver, 1,
+@@ -201,9 +197,9 @@ int snd_dg00x_create_midi_devices(struct snd_dg00x *dg00x)
+ 		 "%s control", dg00x->card->shortname);
  
-@@ -162,7 +160,7 @@ int snd_bebob_create_midi_devices(struct snd_bebob *bebob)
- 		rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
+ 	snd_rawmidi_set_ops(rmidi[1], SNDRV_RAWMIDI_STREAM_INPUT,
+-			    &midi_ctl_capture_ops);
++			    &ctl_capture_ops);
+ 	snd_rawmidi_set_ops(rmidi[1], SNDRV_RAWMIDI_STREAM_OUTPUT,
+-			    &midi_ctl_playback_ops);
++			    &ctl_playback_ops);
  
- 		snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
--				    &midi_playback_ops);
-+				    &playback_ops);
- 
- 		str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
- 
-diff --git a/sound/firewire/bebob/bebob_pcm.c b/sound/firewire/bebob/bebob_pcm.c
-index 5d7b934..9e27eb8 100644
---- a/sound/firewire/bebob/bebob_pcm.c
-+++ b/sound/firewire/bebob/bebob_pcm.c
-@@ -359,32 +359,31 @@ pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
- 	return amdtp_stream_pcm_pointer(&bebob->rx_stream);
+ 	for (i = 0; i < ARRAY_SIZE(rmidi); i++) {
+ 		rmidi[i]->private_data = dg00x;
+diff --git a/sound/firewire/digi00x/digi00x-pcm.c b/sound/firewire/digi00x/digi00x-pcm.c
+index 613f058..68d1c52 100644
+--- a/sound/firewire/digi00x/digi00x-pcm.c
++++ b/sound/firewire/digi00x/digi00x-pcm.c
+@@ -329,33 +329,31 @@ static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
+ 	return amdtp_stream_pcm_pointer(&dg00x->rx_stream);
  }
  
 -static const struct snd_pcm_ops pcm_capture_ops = {
@@ -154,6 +189,7 @@ index 5d7b934..9e27eb8 100644
 -	.pointer	= pcm_capture_pointer,
 -	.page		= snd_pcm_lib_get_vmalloc_page,
 -};
+-
 -static const struct snd_pcm_ops pcm_playback_ops = {
 -	.open		= pcm_open,
 -	.close		= pcm_close,
@@ -167,7 +203,7 @@ index 5d7b934..9e27eb8 100644
 -	.mmap		= snd_pcm_lib_mmap_vmalloc,
 -};
 -
- int snd_bebob_create_pcm_devices(struct snd_bebob *bebob)
+ int snd_dg00x_create_pcm_devices(struct snd_dg00x *dg00x)
  {
 +	static const struct snd_pcm_ops capture_ops = {
 +		.open		= pcm_open,
@@ -195,16 +231,16 @@ index 5d7b934..9e27eb8 100644
  	struct snd_pcm *pcm;
  	int err;
  
-@@ -395,8 +394,8 @@ int snd_bebob_create_pcm_devices(struct snd_bebob *bebob)
- 	pcm->private_data = bebob;
+@@ -366,8 +364,8 @@ int snd_dg00x_create_pcm_devices(struct snd_dg00x *dg00x)
+ 	pcm->private_data = dg00x;
  	snprintf(pcm->name, sizeof(pcm->name),
- 		 "%s PCM", bebob->card->shortname);
+ 		 "%s PCM", dg00x->card->shortname);
 -	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_playback_ops);
 -	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pcm_capture_ops);
 +	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &playback_ops);
 +	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &capture_ops);
- end:
- 	return err;
+ 
+ 	return 0;
  }
 -- 
 2.9.3
