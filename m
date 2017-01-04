@@ -1,21 +1,12 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v3 4/4] ASoC: Intel: rename
- SND_SST_MFLD_PLATFORM to SND_SST_MID_PLATFORM
-Date: Wed, 04 Jan 2017 12:44:20 +0200
-Message-ID: <1483526660.9552.221.camel@linux.intel.com>
-References: <20170102152017.13938-1-andriy.shevchenko@linux.intel.com>
- <20170102152017.13938-5-andriy.shevchenko@linux.intel.com>
- <c5228e73-d5cf-e4cd-b78b-24334e1fb5f3@linux.intel.com>
- <20170103033815.GA3573@localhost>
- <b5c5956c-3bd8-4a28-a456-babc5fd06846@linux.intel.com>
+From: <manohar.narkhede@imgtec.com>
+Subject: [PATCH - alsa-lib 1/1] conf/cards: add support for
+	pistachio-card.
+Date: Wed, 4 Jan 2017 16:13:37 +0530
+Message-ID: <1483526617-44902-1-git-send-email-manohar.narkhede@imgtec.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id EB963266950
- for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2017 11:44:24 +0100 (CET)
-In-Reply-To: <b5c5956c-3bd8-4a28-a456-babc5fd06846@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,51 +16,106 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>
-Cc: dmaengine <dmaengine@vger.kernel.org>, alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: patch@alsa-project.org
+Cc: Manohar Narkhede <Manohar.Narkhede@imgtec.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2017-01-03 at 08:18 -0600, Pierre-Louis Bossart wrote:
-> > > On 01/02/2017 09:20 AM, Andy Shevchenko wrote:
-> > > > Rename SND_SST_MFLD_PLATFORM to SND_SST_MID_PLATFORM to make it
-> > > > clear that is
-> > > > not only about Medfield platform.
-> > > 
-> > > Does this change make sense? Medfield was a completely different
-> > > platform and lumping everything under the same Kconfig option
-> > > doesn't seem right to me... Plus we've stopped using 'mid' for
-> > > years, no one would know what it stands for. The only clear
-> > > architecture feature is the presence of the switch matrix that
-> > > uniquely identifies all platforms based on Baytrail, Cherrytrail,
-> > > Merrifield and Anniedale. Medfield/Clovertrail did not expose a
-> > > switch matrix.
-> > 
-> > Mea culpa..
-> > 
-> > So we started this with medfield and the driver construction is
-> > pretty much
-> > the same untill skylake. So clubbing under mfld bucket made sense to
-> > me.
-> > 
-> > MID is not flavour of the season now.
+From: Manohar Narkhede <Manohar.Narkhede@imgtec.com>
 
-Would be, though it covers at least few out of them, MFLD just refers to
-one.
+The data sheet of the chip and technical reference manual can be found at https://docs.creatordev.io/ci40/guides/hardwaredocs/cXT200_datasheet2.pdf
+and https://docs.creatordev.io/ci40/guides/hardwaredocs/MIPS_Creator_cXT200_Technical_Reference_Manual_1.0.112.pdf.
 
-> > 
-> > If anyone comes with a better name, am for that :)
+The additional information about the cards can be found in src/conf/cards/pistachio-card.conf file.
 
-_ATOM ? Sounds too broad...
+Signed-off-by: Manohar Narkhede <Manohar.Narkhede@imgtec.com>
 
-> 
-> SND_SST_HIFI2_MOBILE_PLATFORM ?
-
-Where HIFI2 part came from? Any documentation (maybe internal) available
-to look at? (Because it's not obvious to me how all listed above has
-something in common)
-
-And I would get rid of _MOBILE part.
-
+diff --git a/src/conf/cards/Makefile.am b/src/conf/cards/Makefile.am
+index 008d399..60b5309 100644
+--- a/src/conf/cards/Makefile.am
++++ b/src/conf/cards/Makefile.am
+@@ -39,6 +39,7 @@ cfg_files = aliases.conf \
+ 	Maestro3.conf \
+ 	NFORCE.conf \
+ 	PC-Speaker.conf \
++	pistachio-card.conf \
+ 	PMac.conf \
+ 	PMacToonie.conf \
+ 	PS3.conf \
+diff --git a/src/conf/cards/aliases.conf b/src/conf/cards/aliases.conf
+index 4a92fb2..60f9d26 100644
+--- a/src/conf/cards/aliases.conf
++++ b/src/conf/cards/aliases.conf
+@@ -55,6 +55,7 @@ AV100 cards.CMI8788
+ AV200 cards.CMI8788
+ CMI8786 cards.CMI8788
+ CMI8787 cards.CMI8788
++pistachio cards.pistachio-card
+ 
+ <confdir:pcm/default.conf>
+ <confdir:pcm/dmix.conf>
+diff --git a/src/conf/cards/pistachio-card.conf b/src/conf/cards/pistachio-card.conf
+new file mode 100644
+index 0000000..80e8013
+--- /dev/null
++++ b/src/conf/cards/pistachio-card.conf
+@@ -0,0 +1,58 @@
++#
++# Configuration for the pistachio chip.
++#
++# The data sheet of the chip and technical reference manual can be found at https://docs.creatordev.io/ci40/guides/hardwaredocs/cXT200_datasheet2.pdf
++# and https://docs.creatordev.io/ci40/guides/hardwaredocs/MIPS_Creator_cXT200_Technical_Reference_Manual_1.0.112.pdf.
++#
++# The list of hardware devices is as per below:
++#
++#  root@OpenWrt:/# arecord -l
++# **** List of CAPTURE Hardware Devices **** card 0: pistachiocard [pistachio-card], device 1: pistachio-spdif-in snd-soc-dummy-dai-1 []
++#   Subdevices: 1/1
++#   Subdevice #0: subdevice #0
++# card 0: pistachiocard [pistachio-card], device 4: pistachio-i2s-in-0 snd-soc-dummy-dai-4 []
++#   Subdevices: 1/1
++#   Subdevice #0: subdevice #0
++#
++# root@OpenWrt:/# aplay -l
++# **** List of PLAYBACK Hardware Devices **** card 0: pistachiocard [pistachio-card], device 0: pistachio-spdif-out snd-soc-dummy-dai-0 []
++#   Subdevices: 1/1
++#   Subdevice #0: subdevice #0
++# card 0: pistachiocard [pistachio-card], device 2: pistachio-parallel-out pistachio_internal_dac-2 []
++#   Subdevices: 1/1
++#   Subdevice #0: subdevice #0
++# card 0: pistachiocard [pistachio-card], device 3: pistachio-i2s-out snd-soc-dummy-dai-3 []
++#   Subdevices: 1/1
++#   Subdevice #0: subdevice #0
++#
++
++pistachio-card.pcm.default{
++        @args [ CARD ]
++        @args.CARD {
++                type string
++                default "pistachio"
++        }
++        @args.DEVICE {
++                type integer
++                default 2
++        }
++
++        type asym
++        capture.pcm {
++                type multi
++                slaves.a.pcm "hw:0,4"
++                slaves.a.channels 12
++                bindings.0.slave a
++                bindings.0.channel 4
++                bindings.1.slave a
++                bindings.1.channel 5
++        }
++
++        playback.pcm {
++                type hw
++                card $CARD
++                device $DEVICE
++
++        }
++
++}
 -- 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
+2.6.2
