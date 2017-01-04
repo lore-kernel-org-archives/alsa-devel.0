@@ -1,25 +1,38 @@
 From: Ioan-Adrian Ratiu <adi@adirat.com>
-Subject: [PATCH v3 0/2] ALSA: Fix usb-audio races
-Date: Thu,  5 Jan 2017 00:37:45 +0200
-Message-ID: <20170104223747.2742-1-adi@adirat.com>
+Subject: [PATCH v3 2/2] ALSA: usb-audio: test EP_FLAG_RUNNING at urb completion
+Date: Thu,  5 Jan 2017 00:37:47 +0200
+Message-ID: <20170104223747.2742-3-adi@adirat.com>
+References: <20170104223747.2742-1-adi@adirat.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170104223747.2742-1-adi@adirat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: tiwai@suse.com
 Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
-Changes since v2:
-    * Fixed snd_usb_*lock_shutdown imbalance caused by an early return
-    in snd_usb_pcm_prepare()
+Testing EP_FLAG_RUNNING in snd_complete_urb() before running the completion
+logic allows us to save a few cpu cycles by returning early, skipping the
+pending urb in case the stream was stopped; the stop logic handles the urb
+and sets the completion callbacks to NULL.
 
-Ioan-Adrian Ratiu (2):
-  ALSA: usb-audio: Fix irq/process data synchronization
-  ALSA: usb-audio: test EP_FLAG_RUNNING at urb completion
+Signed-off-by: Ioan-Adrian Ratiu <adi@adirat.com>
+---
+ sound/usb/endpoint.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
- sound/usb/endpoint.c | 20 ++++++++++----------
- sound/usb/endpoint.h |  2 +-
- sound/usb/pcm.c      | 10 +++++-----
- 3 files changed, 16 insertions(+), 16 deletions(-)
-
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index 2f0ea70a998c..c90607ebe155 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -384,6 +384,9 @@ static void snd_complete_urb(struct urb *urb)
+ 	if (unlikely(atomic_read(&ep->chip->shutdown)))
+ 		goto exit_clear;
+ 
++	if (unlikely(!test_bit(EP_FLAG_RUNNING, &ep->flags)))
++		goto exit_clear;
++
+ 	if (usb_pipeout(ep->pipe)) {
+ 		retire_outbound_urb(ep, ctx);
+ 		/* can be stopped during retire callback */
 -- 
 2.11.0
