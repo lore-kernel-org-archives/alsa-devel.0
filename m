@@ -1,18 +1,15 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Apply asus-mode8 fixup to ASUS
-	X71SL
-Date: Wed,  4 Jan 2017 21:42:06 +0100
-Message-ID: <20170104204206.21154-1-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 1/2] ASoC: Intel: bytcr-rt5640: fix settings in
+	internal clock mode
+Date: Wed,  4 Jan 2017 15:44:52 -0600
+Message-ID: <1483566293-27911-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 4ACAF2675DC
- for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2017 21:42:10 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 5ABC5AD61
- for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2017 20:42:10 +0000 (UTC)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F4142675DC
+ for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2017 22:45:13 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,31 +19,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, broonie@kernel.org, tiwai@suse.de
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Although the old quirk table showed ASUS X71SL with ALC663 codec being
-compatible with asus-mode3 fixup, the bugzilla reporter explained that
-asus-model8 fits better for the dual headphone controls.  So be it.
+Frequency value of zero did not make sense, use same 24.576MHz
+setting and only change the clock source in idle mode
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=191781
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Suggested-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/intel/boards/bytcr_rt5640.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index d43f396450f2..7d660ee1d5e8 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6984,6 +6984,7 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1043, 0x15a7, "ASUS UX51VZH", ALC662_FIXUP_BASS_16),
- 	SND_PCI_QUIRK(0x1043, 0x177d, "ASUS N551", ALC668_FIXUP_ASUS_Nx51),
- 	SND_PCI_QUIRK(0x1043, 0x17bd, "ASUS N751", ALC668_FIXUP_ASUS_Nx51),
-+	SND_PCI_QUIRK(0x1043, 0x1963, "ASUS X71SL", ALC662_FIXUP_ASUS_MODE8),
- 	SND_PCI_QUIRK(0x1043, 0x1b73, "ASUS N55SF", ALC662_FIXUP_BASS_16),
- 	SND_PCI_QUIRK(0x1043, 0x1bf3, "ASUS N76VZ", ALC662_FIXUP_BASS_MODE4_CHMAP),
- 	SND_PCI_QUIRK(0x1043, 0x8469, "ASUS mobo", ALC662_FIXUP_NO_JACK_DETECT),
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index e33e477..8d2fb2d 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -142,7 +142,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 		 * for Jack detection and button press
+ 		 */
+ 		ret = snd_soc_dai_set_sysclk(codec_dai, RT5640_SCLK_S_RCCLK,
+-					     0,
++					     48000 * 512,
+ 					     SND_SOC_CLOCK_IN);
+ 		if (!ret) {
+ 			if ((byt_rt5640_quirk & BYT_RT5640_MCLK_EN) && priv->mclk)
 -- 
-2.11.0
+2.7.4
