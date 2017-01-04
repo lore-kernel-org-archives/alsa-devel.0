@@ -1,22 +1,17 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v3 4/4] ASoC: Intel: rename
- SND_SST_MFLD_PLATFORM to SND_SST_MID_PLATFORM
-Date: Wed, 4 Jan 2017 10:58:50 -0600
-Message-ID: <ea7d96dd-380d-9a73-73de-1d754af17240@linux.intel.com>
-References: <20170102152017.13938-1-andriy.shevchenko@linux.intel.com>
- <20170102152017.13938-5-andriy.shevchenko@linux.intel.com>
- <c5228e73-d5cf-e4cd-b78b-24334e1fb5f3@linux.intel.com>
- <20170103033815.GA3573@localhost>
- <b5c5956c-3bd8-4a28-a456-babc5fd06846@linux.intel.com>
- <1483526660.9552.221.camel@linux.intel.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Fix up GPIO for ASUS ROG Ranger
+Date: Wed,  4 Jan 2017 18:00:32 +0100
+Message-ID: <20170104170032.9766-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E8AE267098
- for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2017 17:58:52 +0100 (CET)
-In-Reply-To: <1483526660.9552.221.camel@linux.intel.com>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 35B69267099
+ for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2017 18:00:35 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 69204ACD3
+ for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2017 17:00:34 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,55 +21,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>
-Cc: dmaengine <dmaengine@vger.kernel.org>, alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 1/4/17 4:44 AM, Andy Shevchenko wrote:
-> On Tue, 2017-01-03 at 08:18 -0600, Pierre-Louis Bossart wrote:
->>>> On 01/02/2017 09:20 AM, Andy Shevchenko wrote:
->>>>> Rename SND_SST_MFLD_PLATFORM to SND_SST_MID_PLATFORM to make it
->>>>> clear that is
->>>>> not only about Medfield platform.
->>>>
->>>> Does this change make sense? Medfield was a completely different
->>>> platform and lumping everything under the same Kconfig option
->>>> doesn't seem right to me... Plus we've stopped using 'mid' for
->>>> years, no one would know what it stands for. The only clear
->>>> architecture feature is the presence of the switch matrix that
->>>> uniquely identifies all platforms based on Baytrail, Cherrytrail,
->>>> Merrifield and Anniedale. Medfield/Clovertrail did not expose a
->>>> switch matrix.
->>>
->>> Mea culpa..
->>>
->>> So we started this with medfield and the driver construction is
->>> pretty much
->>> the same untill skylake. So clubbing under mfld bucket made sense to
->>> me.
->>>
->>> MID is not flavour of the season now.
->
-> Would be, though it covers at least few out of them, MFLD just refers to
-> one.
->
->>>
->>> If anyone comes with a better name, am for that :)
->
-> _ATOM ? Sounds too broad...
->
->>
->> SND_SST_HIFI2_MOBILE_PLATFORM ?
->
-> Where HIFI2 part came from? Any documentation (maybe internal) available
-> to look at? (Because it's not obvious to me how all listed above has
-> something in common)
->
-> And I would get rid of _MOBILE part.
+ASUS ROG Ranger VIII with ALC1150 codec requires the extra GPIO pin to
+up for the front panel.  Just use the existing fixup for setting up
+the GPIO pins.
 
-SND_SST_ATOM_HIFI2_PLATFORM then
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=189411
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-HIFI2 is the DSP version, it's public information for those Field/Trail 
-parts, see https://www.alsa-project.org/main/index.php/Firmware
-If you combine HIFI2 with ATOM you have a unique non-ambiguous 
-description of the core+DSP hardware for Medfield through Cherrytrail.
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 9448daff9d8b..d43f396450f2 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -2230,6 +2230,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x1971, "Asus W2JC", ALC882_FIXUP_ASUS_W2JC),
+ 	SND_PCI_QUIRK(0x1043, 0x835f, "Asus Eee 1601", ALC888_FIXUP_EEE1601),
+ 	SND_PCI_QUIRK(0x1043, 0x84bc, "ASUS ET2700", ALC887_FIXUP_ASUS_BASS),
++	SND_PCI_QUIRK(0x1043, 0x8691, "ASUS ROG Ranger VIII", ALC882_FIXUP_GPIO3),
+ 	SND_PCI_QUIRK(0x104d, 0x9047, "Sony Vaio TT", ALC889_FIXUP_VAIO_TT),
+ 	SND_PCI_QUIRK(0x104d, 0x905a, "Sony Vaio Z", ALC882_FIXUP_NO_PRIMARY_HP),
+ 	SND_PCI_QUIRK(0x104d, 0x9043, "Sony Vaio VGC-LN51JGB", ALC882_FIXUP_NO_PRIMARY_HP),
+-- 
+2.11.0
