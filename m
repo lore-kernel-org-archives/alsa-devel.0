@@ -1,18 +1,18 @@
-From: Juho Jokelainen <juho_jokelainen@hotmail.com>
-Subject: Re: Better support for Focusrite saffire pro 6 usb 1
-Date: Wed, 4 Jan 2017 20:10:18 +0000
-Message-ID: <VI1PR1001MB102389B2FC5A3FF379296AB182610@VI1PR1001MB1023.EURPRD10.PROD.OUTLOOK.COM>
-References: <VI1PR1001MB10235B43C460301D5231175C82610@VI1PR1001MB1023.EURPRD10.PROD.OUTLOOK.COM>,
- <9eb4d48c-8d0f-57a6-6a96-bfc79df9ee25@ladisch.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Apply asus-mode8 fixup to ASUS
+	X71SL
+Date: Wed,  4 Jan 2017 21:42:06 +0100
+Message-ID: <20170104204206.21154-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from COL004-OMC3S12.hotmail.com (col004-omc3s12.hotmail.com
- [65.55.34.150]) by alsa0.perex.cz (Postfix) with ESMTP id 07BD626759E
- for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2017 21:10:22 +0100 (CET)
-In-Reply-To: <9eb4d48c-8d0f-57a6-6a96-bfc79df9ee25@ladisch.de>
-Content-Language: en-US
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4ACAF2675DC
+ for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2017 21:42:10 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 5ABC5AD61
+ for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2017 20:42:10 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,31 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Clemens Ladisch
->Juho Jokelainen wrote:
->> +               for (i = 0; i < alts->desc.bNumEndpoints; ++i) {
->> +                       if (alts->endpoint[i].desc.bEndpointAddress == fmt->endpoint)
->> +                               alts->endpoint[i].enabled = 1;
->> +                       else if (need_init)
->> +                               alts->endpoint[i].enabled = 0;
->
->This field is set by the USB framework; changing it from other code does
->not make sense.
->
->We need to track the state of the interface, not of the endpoint.
->
->
->Regards,
->Clemens
+Although the old quirk table showed ASUS X71SL with ALC663 codec being
+compatible with asus-mode3 fixup, the bugzilla reporter explained that
+asus-model8 fits better for the dual headphone controls.  So be it.
 
-Is there anyone willing to take this code and make it into a feasible patch?
-If not, would someone give me a rough estimate how much work I should
-assume this to be, and possibly some contact where I can ask stupid 
-questions about kernel and alsa.
-I know if I'm to refactor this code there will be plenty of those, and I don't
-think this mailing list is the right place for them.
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=191781
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-- Juho
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index d43f396450f2..7d660ee1d5e8 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6984,6 +6984,7 @@ static const struct snd_pci_quirk alc662_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x15a7, "ASUS UX51VZH", ALC662_FIXUP_BASS_16),
+ 	SND_PCI_QUIRK(0x1043, 0x177d, "ASUS N551", ALC668_FIXUP_ASUS_Nx51),
+ 	SND_PCI_QUIRK(0x1043, 0x17bd, "ASUS N751", ALC668_FIXUP_ASUS_Nx51),
++	SND_PCI_QUIRK(0x1043, 0x1963, "ASUS X71SL", ALC662_FIXUP_ASUS_MODE8),
+ 	SND_PCI_QUIRK(0x1043, 0x1b73, "ASUS N55SF", ALC662_FIXUP_BASS_16),
+ 	SND_PCI_QUIRK(0x1043, 0x1bf3, "ASUS N76VZ", ALC662_FIXUP_BASS_MODE4_CHMAP),
+ 	SND_PCI_QUIRK(0x1043, 0x8469, "ASUS mobo", ALC662_FIXUP_NO_JACK_DETECT),
+-- 
+2.11.0
