@@ -1,18 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASoC: intel: rt5640: add support for sound
- card found on HP Pavilion x2 10-p000
-Date: Wed, 4 Jan 2017 09:32:17 +0530
-Message-ID: <20170104040217.GG3573@localhost>
-References: <505f46a71aa53080da43f9c8abeb3b5d@nya.ai>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt5640: move DAC2 Power to
+	rt5640_dapm_widgets
+Date: Wed, 4 Jan 2017 13:14:12 +0800
+Message-ID: <1483506852-599-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id A4DF4266E4A
- for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2017 05:02:25 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <505f46a71aa53080da43f9c8abeb3b5d@nya.ai>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id B0EE3266E4A
+ for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2017 06:14:27 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,67 +19,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexandrov Stanislav <neko@nya.ai>
-Cc: Alsa Devel <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, pierre-louis.bossart@linux.intel.com, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 03, 2017 at 11:40:04PM +0300, Alexandrov Stanislav wrote:
-> Add support for rt5640 sound card found on HP Pavilion x2 10-p000
-> tablet.
-> 
-> Inside DSDT table there is record for this soundcard:
-> 
->             Device (RTKC)
->             {
->                 Name (_ADR, Zero)  // _ADR: Address
->                 Name (_HID, "10EC3276")  // _HID: Hardware ID
->                 Name (_CID, "10EC3276")  // _CID: Compatible ID
->                 Name (_DDN, "ALC3276")  // _DDN: DOS Device Name
->                 Name (_SUB, "103C827C")  // _SUB: Subsystem ID
->                 Name (_PR0, Package (0x01)  // _PR0: Power Resources
-> for D0
-> 
-> original bugreport: https://bugzilla.kernel.org/show_bug.cgi?id=187621
+"DAC L2 Power" and "DAC R2 Power" are used by both rt5639 and rt5640.
+But it was defined in rt5640_specific_dapm_widgets[]. Move them to
+rt5640_dapm_widgets will let both rt5639 and rt5640 can use it.
 
-Hi,
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt5640.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Thanks for the patch, changes look okay, but they need to be split per
-driver and you need to sign-off these changes.
-See Documentation/process/submitting-patches.rst esp Section 11.
-
-> 
-> ---
-> 
-> diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-> index e29a6de..c5234b9 100644
-> --- a/sound/soc/codecs/rt5640.c
-> +++ b/sound/soc/codecs/rt5640.c
-> @@ -2315,6 +2315,7 @@ static const struct acpi_device_id
-> rt5640_acpi_match[] = {
->         { "INT33CA", 0 },
->         { "10EC5640", 0 },
->         { "10EC5642", 0 },
-> +       { "10EC3276", 0 },
->         { "INTCCFFD", 0 },
->         { },
->  };
-> diff --git a/sound/soc/intel/atom/sst/sst_acpi.c
-> b/sound/soc/intel/atom/sst/sst_acpi.c
-> index f4d92bb..896ced2 100644
-> --- a/sound/soc/intel/atom/sst/sst_acpi.c
-> +++ b/sound/soc/intel/atom/sst/sst_acpi.c
-> @@ -463,6 +463,8 @@ static struct sst_acpi_mach sst_acpi_chv[] = {
->         /* some CHT-T platforms rely on RT5640, use Baytrail machine
-> driver */
->         {"10EC5640", "bytcr_rt5640", "intel/fw_sst_22a8.bin",
-> "bytcr_rt5640", cht_quirk,
->                                                 &chv_platform_data },
-> +       {"10EC3276", "bytcr_rt5640", "intel/fw_sst_22a8.bin",
-> "bytcr_rt5640", NULL,
-> +                                               &chv_platform_data },
-> 
->         {},
->  };
-
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index e29a6de..0f1b216 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -1227,6 +1227,10 @@ static int rt5640_hp_post_event(struct snd_soc_dapm_widget *w,
+ 		RT5640_PWR_DAC_L1_BIT, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("DAC R1 Power", RT5640_PWR_DIG1,
+ 		RT5640_PWR_DAC_R1_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("DAC L2 Power", RT5640_PWR_DIG1,
++		RT5640_PWR_DAC_L2_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("DAC R2 Power", RT5640_PWR_DIG1,
++		RT5640_PWR_DAC_R2_BIT, 0, NULL, 0),
+ 	/* SPK/OUT Mixer */
+ 	SND_SOC_DAPM_MIXER("SPK MIXL", RT5640_PWR_MIXER, RT5640_PWR_SM_L_BIT,
+ 		0, rt5640_spk_l_mix, ARRAY_SIZE(rt5640_spk_l_mix)),
+@@ -1322,10 +1326,6 @@ static int rt5640_hp_post_event(struct snd_soc_dapm_widget *w,
+ 		rt5640_mono_mix, ARRAY_SIZE(rt5640_mono_mix)),
+ 	SND_SOC_DAPM_SUPPLY("Improve MONO Amp Drv", RT5640_PWR_ANLG1,
+ 		RT5640_PWR_MA_BIT, 0, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("DAC L2 Power", RT5640_PWR_DIG1,
+-		RT5640_PWR_DAC_L2_BIT, 0, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("DAC R2 Power", RT5640_PWR_DIG1,
+-		RT5640_PWR_DAC_R2_BIT, 0, NULL, 0),
+ 
+ 	SND_SOC_DAPM_OUTPUT("MONOP"),
+ 	SND_SOC_DAPM_OUTPUT("MONON"),
 -- 
-~Vinod
+1.8.1.1.439.g50a6b54
