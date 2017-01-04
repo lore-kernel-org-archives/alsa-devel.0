@@ -1,48 +1,50 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: ALSA 1.1.3 release
-Date: Wed, 4 Jan 2017 18:03:17 +0100
-Message-ID: <76521408-86c3-07c4-a60f-7953bdaeb134@perex.cz>
-References: <5693070a-0aa7-2ad0-1983-d42422c070ac@perex.cz>
- <88a566be-ecc1-a773-eb3a-cc96a4cadc9c@perex.cz>
- <1483545328.2280.1.camel@iki.fi>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] fsl_ssi: set fifo watermark to more reliable value
+Date: Wed, 4 Jan 2017 18:27:12 +0000
+Message-ID: <20170104182712.d3vv47g4v5ylis5e@sirena.org.uk>
+References: <1483467777-8651-1-git-send-email-caleb@signalessence.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 6664826753A
- for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2017 18:03:20 +0100 (CET)
-In-Reply-To: <1483545328.2280.1.camel@iki.fi>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Tanu Kaskinen <tanuk@iki.fi>, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="qmg5drw7rxypz7xk"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1483467777-8651-1-git-send-email-caleb@signalessence.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Caleb Crome <ccrome@gmail.com>
+Cc: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, Arnaud Mouiche <arnaud.mouiche@invoxia.com>, Caleb Crome <caleb@crome.org>
 List-Id: alsa-devel@alsa-project.org
 
-Dne 4.1.2017 v 16:55 Tanu Kaskinen napsal(a):
-> On Wed, 2016-12-21 at 14:21 +0100, Jaroslav Kysela wrote:
->> Hello all,
->>
->>   the userspace packages alsa-lib, alsa-utils, alsa-tools, tinycompress
->> were released. You may download them from the ALSA website
->> http://www.alsa-project.org or directly from the FTP server
->> ftp://ftp.alsa-project.org/pub .
-> 
-> It seems that the download section of the alsa-project.org front page
-> was not updated entirely correctly: the advertised alsa-tools version
-> is still 1.1.0 and alsa-plugins version is 1.1.3 even though alsa-
-> plugins was not updated (and the link is broken).
 
-Oops. Thanks for this notice. I fixed this mistake now.
+--qmg5drw7rxypz7xk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-					Jaroslav
+On Tue, Jan 03, 2017 at 10:22:57AM -0800, Caleb Crome wrote:
+> From: Caleb Crome <caleb@crome.org>
+>=20
+> The fsl_ssi fifo watermark is by default set to 2 free spaces (i.e.
+> activate DMA on FIFO when only 2 spaces are left.)  This means the
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Please submit patches using subject lines reflecting the style for the
+subsystem.  This makes it easier for people to identify relevant
+patches.  Look at what existing commits in the area you're changing are
+doing and make sure your subject lines visually resemble what they're
+doing.
+
+--qmg5drw7rxypz7xk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlhtPoAACgkQJNaLcl1U
+h9D8NQf8DSqdNWpOibOzR2x7529SOZk1AOONahxt2J/jm3a4b7mopt7pl2UPrezu
+8WuluhCG1cwqt98+y3xMEvV/7Ljo3dcKAC9E9STrE3xJDNtoShrSDCfFJtIlU4HP
+Dn+3aY2VthNpzzvlSd2xdoqWEZJdDaJ6CQEUn5JTwZRMf1FNd8xkrH0dYpCaLrR3
+1KVJxay19mccelg/mnJdi1Kwfno/zVYtKX37xgu5DRcw0ijGwIga+GXq+gdOWpz0
+ZaGAgpvQCpGb2oX7ExOL/2NnEjF+DI0yxz0QWK4326Oj6eLrnU+DmZnIxTpXNxSl
+cPvhUb7VE+cWvcXB24xGR5aKfNyt/A==
+=byx+
+-----END PGP SIGNATURE-----
+
+--qmg5drw7rxypz7xk--
