@@ -1,47 +1,51 @@
-From: Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Subject: Re: [PATCH] uapi: use wildcards to list files
-Date: Wed, 4 Jan 2017 10:03:50 +0100
-Message-ID: <bf83da6b-01ef-bf44-b3e1-ca6fc5636818@6wind.com>
-References: <20161203.192346.1198940437155108508.davem@davemloft.net>
- <1483454144-10519-1-git-send-email-nicolas.dichtel@6wind.com>
- <2108827.WpE3IvfEdH@wuerfel>
-Reply-To: nicolas.dichtel@6wind.com
+From: Ioan-Adrian Ratiu <adi@adirat.com>
+Subject: Re: [PATCH v2 1/2] ALSA: usb-audio: Fix irq/process data synchronization
+Date: Wed, 04 Jan 2017 11:15:58 +0200
+Message-ID: <87y3yrdw35.fsf@adiPC.i-did-not-set--mail-host-address--so-tickle-me>
+References: <20170102155031.3638-1-adi@adirat.com> <20170102155031.3638-2-adi@adirat.com> <s5h7f6bmj8z.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <2108827.WpE3IvfEdH@wuerfel>
-Sender: netdev-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, netdev@vger.kernel.org, linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, netfilter-devel@vger.kernel.org, linux-nfs@vger.kernel.org, linux-raid@vger.kernel.org, linux-spi@vger.kernel.org, linux-mtd@lists.infradead.org, linux-rdma@vger.kernel.org, fcoe-devel@open-fcoe.org, alsa-devel@alsa-project.org, linux-fbdev@vger.kernel.org, xen-devel@lists.xenproject.org, davem@davemloft.net, airlied@linux.ie, David Howells <dhowells@redhat.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5h7f6bmj8z.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: perex@perex.cz, o-takashi@sakamocchi.jp, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Le 03/01/2017 à 22:37, Arnd Bergmann a écrit :
-> On Tuesday, January 3, 2017 3:35:44 PM CET Nicolas Dichtel wrote:
->> Regularly, when a new header is created in include/uapi/, the developer
->> forgets to add it in the corresponding Kbuild file. This error is usually
->> detected after the release is out.
->>
->> In fact, all headers under include/uapi/ should be exported, so let's
->> use wildcards.
-> 
-> I think the idea makes a lot of sense: if a header is in uapi, we should
-> really export it. However, using a wildcard expression seems a bit
-> backwards here, I think we should make this implicit and not have the
-> Kbuild file at all.
-> 
-> The "header-y" syntax was originally added back when the uapi headers
-> were mixed with the internal headers in the same directory. After
-> David Howells introduced the separate directory for uapi, it has
-> become a bit redundant.
-Ok, thank you for the explanation, I was wondering why those Kbuild files were
-needed.
+On Wed, 04 Jan 2017, Takashi Iwai <tiwai@suse.de> wrote:
+> On Mon, 02 Jan 2017 16:50:30 +0100,
+> Ioan-Adrian Ratiu wrote:
+>> 
+>> --- a/sound/usb/pcm.c
+>> +++ b/sound/usb/pcm.c
+> (snip)
+>> @@ -850,7 +850,7 @@ static int snd_usb_pcm_prepare(struct snd_pcm_substream *substream)
+>>  	/* for playback, submit the URBs now; otherwise, the first hwptr_done
+>>  	 * updates for all URBs would happen at the same time when starting */
+>>  	if (subs->direction == SNDRV_PCM_STREAM_PLAYBACK)
+>> -		ret = start_endpoints(subs, true);
+>> +		return start_endpoints(subs);
+>
+> Here you miss the unlock below.
+>
+>>  
+>>   unlock:
+>>  	snd_usb_unlock_shutdown(subs->stream->chip);
+>
+> ... and this must be the reason of the hang up at disconnection, where
+> the driver ways forever at wait_event() in usb_audio_disconnect().
+>
+> Could you fix this and resubmit v3?  Other than that, it looks OK.
 
-> 
-> Can you try to modify scripts/Makefile.headersinst instead so we
-> can simply remove the Kbuild files entirely?
-I will try something.
+Sure, I'll resubmit v3 by tonight hopefully.
 
+Thank you for taking a look at this, I didn't have a chance to look it
+again since I posted v2.
 
-Regards,
-Nicolas
+Ionel
+
+>
+>
+> thanks,
+>
+> Takashi
