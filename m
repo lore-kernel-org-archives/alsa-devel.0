@@ -1,22 +1,15 @@
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
-Subject: Re: [PATCH v2 1/2] ASoC: core: Add API to use DMI name
- in sound card long name
-Date: Wed, 4 Jan 2017 15:03:48 +0800
-Message-ID: <586C9E54.60201@linux.intel.com>
-References: <cover.1483418875.git.mengdong.lin@linux.intel.com>
- <0827a46b8200cc3e053f8fc6b3b428eac90a3618.1483418875.git.mengdong.lin@linux.intel.com>
- <1483454417.4555.2.camel@loki>
- <F46914AEC2663F4A9BB62374E5EEF8F881A13073@shsmsx102.ccr.corp.intel.com>
- <1483471712.4063.17.camel@loki>
- <984e6c66-c1c9-c37b-f6b6-d357cd967d48@intel.com>
+From: Kailang <kailang@realtek.com>
+Subject: Add ALC299 support
+Date: Wed, 4 Jan 2017 07:09:36 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A17A4A4A0@RTITMBSV09.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="_004_6FAB7C47BCF00940BB0999A99BE3547A17A4A4A0RTITMBSV09realt_"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 3890C266646
- for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2017 08:00:45 +0100 (CET)
-In-Reply-To: <984e6c66-c1c9-c37b-f6b6-d357cd967d48@intel.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0665E266664
+ for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2017 08:09:39 +0100 (CET)
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,75 +19,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, "Lin, Mengdong" <mengdong.lin@intel.com>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "Koul, Vinod" <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>
+To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>, "
+ (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+--_004_6FAB7C47BCF00940BB0999A99BE3547A17A4A4A0RTITMBSV09realt_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Takashi,
+
+We had new codec ALC299.
+It was similar as ALC225.
+Attach was the patch.
+
+BR,
+Kailang
+
+--_004_6FAB7C47BCF00940BB0999A99BE3547A17A4A4A0RTITMBSV09realt_
+Content-Type: application/octet-stream; name="0000-add-alc299-support.patch"
+Content-Description: 0000-add-alc299-support.patch
+Content-Disposition: attachment; filename="0000-add-alc299-support.patch";
+	size=3236; creation-date="Wed, 04 Jan 2017 06:57:21 GMT";
+	modification-date="Wed, 04 Jan 2017 06:54:18 GMT"
+Content-Transfer-Encoding: base64
+
+RnJvbSAyMjUzOTk4N2RkODU1NjI4N2M4ZGVmMmFhOWJmOWY1MTZiZmM0YTI5IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
+dGU6IFdlZCwgNCBKYW4gMjAxNyAxNDo0OTowNyArMDgwMApTdWJqZWN0OiBbUEFUQ0hdIEFMU0E6
+IGhkYS9yZWFsdGVrIC0gQWRkIG5ldyBjb2RlYyBJRCBBTEMyOTkKCkFMQzI5OSB3YXMgc2ltaWxh
+ciBhcyBBTEMyMjUuCkFkZCBoZWFkc2V0IHN1cHBvcnQgZm9yIEFMQzI5OS4KQUxDMzI3MSB3YXMg
+Zm9yIERlbGwgcmVuYW1lLgoKU2lnbmVkLW9mZi1ieTogS2FpbGFuZyBZYW5nIDxrYWlsYW5nQHJl
+YWx0ZWsuY29tPgoKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jIGIv
+c291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKaW5kZXggMWFlMjlmZC4uM2M2OTY0NyAxMDA2
+NDQKLS0tIGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKKysrIGIvc291bmQvcGNpL2hk
+YS9wYXRjaF9yZWFsdGVrLmMKQEAgLTMzNyw2ICszMzcsNyBAQCBzdGF0aWMgdm9pZCBhbGNfZmls
+bF9lYXBkX2NvZWYoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCiAJY2FzZSAweDEwZWMwMjg4Ogog
+CWNhc2UgMHgxMGVjMDI5NToKIAljYXNlIDB4MTBlYzAyOTg6CisJY2FzZSAweDEwZWMwMjk5Ogog
+CQlhbGNfdXBkYXRlX2NvZWZfaWR4KGNvZGVjLCAweDEwLCAxPDw5LCAwKTsKIAkJYnJlYWs7CiAJ
+Y2FzZSAweDEwZWMwMjg1OgpAQCAtOTEyLDYgKzkxMyw3IEBAIHN0cnVjdCBhbGNfY29kZWNfcmVu
+YW1lX3BjaV90YWJsZSB7CiAJeyAweDEwZWMwMjU2LCAweDEwMjgsIDAsICJBTEMzMjQ2IiB9LAog
+CXsgMHgxMGVjMDIyNSwgMHgxMDI4LCAwLCAiQUxDMzI1MyIgfSwKIAl7IDB4MTBlYzAyOTUsIDB4
+MTAyOCwgMCwgIkFMQzMyNTQiIH0sCisJeyAweDEwZWMwMjk5LCAweDEwMjgsIDAsICJBTEMzMjcx
+IiB9LAogCXsgMHgxMGVjMDY3MCwgMHgxMDI1LCAwLCAiQUxDNjY5WCIgfSwKIAl7IDB4MTBlYzA2
+NzYsIDB4MTAyNSwgMCwgIkFMQzY3OVgiIH0sCiAJeyAweDEwZWMwMjgyLCAweDEwNDMsIDAsICJB
+TEMzMjI5IiB9LApAQCAtMzcxNiw2ICszNzE4LDcgQEAgc3RhdGljIHZvaWQgYWxjX2hlYWRzZXRf
+bW9kZV91bnBsdWdnZWQoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCiAJCWJyZWFrOwogCWNhc2Ug
+MHgxMGVjMDIyNToKIAljYXNlIDB4MTBlYzAyOTU6CisJY2FzZSAweDEwZWMwMjk5OgogCQlhbGNf
+cHJvY2Vzc19jb2VmX2Z3KGNvZGVjLCBjb2VmMDIyNSk7CiAJCWJyZWFrOwogCWNhc2UgMHgxMGVj
+MDg2NzoKQEAgLTM4MjMsNiArMzgyNiw3IEBAIHN0YXRpYyB2b2lkIGFsY19oZWFkc2V0X21vZGVf
+bWljX2luKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLCBoZGFfbmlkX3QgaHBfcGluLAogCQlicmVh
+azsKIAljYXNlIDB4MTBlYzAyMjU6CiAJY2FzZSAweDEwZWMwMjk1OgorCWNhc2UgMHgxMGVjMDI5
+OToKIAkJYWxjX3VwZGF0ZV9jb2VmX2lkeChjb2RlYywgMHg0NSwgMHgzZjw8MTAsIDB4MzE8PDEw
+KTsKIAkJc25kX2hkYV9zZXRfcGluX2N0bF9jYWNoZShjb2RlYywgaHBfcGluLCAwKTsKIAkJYWxj
+X3Byb2Nlc3NfY29lZl9mdyhjb2RlYywgY29lZjAyMjUpOwpAQCAtMzg4MSw2ICszODg1LDcgQEAg
+c3RhdGljIHZvaWQgYWxjX2hlYWRzZXRfbW9kZV9kZWZhdWx0KHN0cnVjdCBoZGFfY29kZWMgKmNv
+ZGVjKQogCXN3aXRjaCAoY29kZWMtPmNvcmUudmVuZG9yX2lkKSB7CiAJY2FzZSAweDEwZWMwMjI1
+OgogCWNhc2UgMHgxMGVjMDI5NToKKwljYXNlIDB4MTBlYzAyOTk6CiAJCWFsY19wcm9jZXNzX2Nv
+ZWZfZncoY29kZWMsIGNvZWYwMjI1KTsKIAkJYnJlYWs7CiAJY2FzZSAweDEwZWMwMjU1OgpAQCAt
+Mzk5Niw2ICs0MDAxLDcgQEAgc3RhdGljIHZvaWQgYWxjX2hlYWRzZXRfbW9kZV9jdGlhKHN0cnVj
+dCBoZGFfY29kZWMgKmNvZGVjKQogCQlicmVhazsKIAljYXNlIDB4MTBlYzAyMjU6CiAJY2FzZSAw
+eDEwZWMwMjk1OgorCWNhc2UgMHgxMGVjMDI5OToKIAkJYWxjX3Byb2Nlc3NfY29lZl9mdyhjb2Rl
+YywgY29lZjAyMjUpOwogCQlicmVhazsKIAljYXNlIDB4MTBlYzA4Njc6CkBAIC00MDg5LDYgKzQw
+OTUsNyBAQCBzdGF0aWMgdm9pZCBhbGNfaGVhZHNldF9tb2RlX29tdHAoc3RydWN0IGhkYV9jb2Rl
+YyAqY29kZWMpCiAJCWJyZWFrOwogCWNhc2UgMHgxMGVjMDIyNToKIAljYXNlIDB4MTBlYzAyOTU6
+CisJY2FzZSAweDEwZWMwMjk5OgogCQlhbGNfcHJvY2Vzc19jb2VmX2Z3KGNvZGVjLCBjb2VmMDIy
+NSk7CiAJCWJyZWFrOwogCX0KQEAgLTQxNzMsNiArNDE4MCw3IEBAIHN0YXRpYyB2b2lkIGFsY19k
+ZXRlcm1pbmVfaGVhZHNldF90eXBlKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjKQogCQlicmVhazsK
+IAljYXNlIDB4MTBlYzAyMjU6CiAJY2FzZSAweDEwZWMwMjk1OgorCWNhc2UgMHgxMGVjMDI5OToK
+IAkJYWxjX3Byb2Nlc3NfY29lZl9mdyhjb2RlYywgY29lZjAyMjUpOwogCQltc2xlZXAoODAwKTsK
+IAkJdmFsID0gYWxjX3JlYWRfY29lZl9pZHgoY29kZWMsIDB4NDYpOwpAQCAtNjIxOSw2ICs2MjI3
+LDcgQEAgc3RhdGljIGludCBwYXRjaF9hbGMyNjkoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCiAJ
+CWJyZWFrOwogCWNhc2UgMHgxMGVjMDIyNToKIAljYXNlIDB4MTBlYzAyOTU6CisJY2FzZSAweDEw
+ZWMwMjk5OgogCQlzcGVjLT5jb2RlY192YXJpYW50ID0gQUxDMjY5X1RZUEVfQUxDMjI1OwogCQli
+cmVhazsKIAljYXNlIDB4MTBlYzAyMzQ6CkBAIC03MjU2LDYgKzcyNjUsNyBAQCBzdGF0aWMgaW50
+IHBhdGNoX2FsYzY4MChzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYykKIAlIREFfQ09ERUNfRU5UUlko
+MHgxMGVjMDI5NCwgIkFMQzI5NCIsIHBhdGNoX2FsYzI2OSksCiAJSERBX0NPREVDX0VOVFJZKDB4
+MTBlYzAyOTUsICJBTEMyOTUiLCBwYXRjaF9hbGMyNjkpLAogCUhEQV9DT0RFQ19FTlRSWSgweDEw
+ZWMwMjk4LCAiQUxDMjk4IiwgcGF0Y2hfYWxjMjY5KSwKKwlIREFfQ09ERUNfRU5UUlkoMHgxMGVj
+MDI5OSwgIkFMQzI5OSIsIHBhdGNoX2FsYzI2OSksCiAJSERBX0NPREVDX1JFVl9FTlRSWSgweDEw
+ZWMwODYxLCAweDEwMDM0MCwgIkFMQzY2MCIsIHBhdGNoX2FsYzg2MSksCiAJSERBX0NPREVDX0VO
+VFJZKDB4MTBlYzA2NjAsICJBTEM2NjAtVkQiLCBwYXRjaF9hbGM4NjF2ZCksCiAJSERBX0NPREVD
+X0VOVFJZKDB4MTBlYzA4NjEsICJBTEM4NjEiLCBwYXRjaF9hbGM4NjEpLAo=
+
+--_004_6FAB7C47BCF00940BB0999A99BE3547A17A4A4A0RTITMBSV09realt_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-On 01/04/2017 04:09 AM, Pierre-Louis Bossart wrote:
->
->>>> I dont think we need vendor (it just makes it too long). The product
->>>> or board
->>>> name should be unique enough for us to load the correct files.
->>>>
->>>> Liam
->>> Yes, from the sample machines I checked, product or board name are
->>> unique. But I feel there might be the risk that two vendors happen to
->>> use the same product or board name, e.g. "T100TA".
->> I think this would be problematic from a legal/marketing position from
->> two different vendors so it would be unlikely.
->
-> Please don't remove the manufacturer name for now...
-> Some vendors use product names that are indeed unique and easy enough to
-> remember, but others like Lenovo use "1952W5R" or "20C3001VHH" (real
-> examples you can Google to see I am not making this up). The board name
-> can also be "SKG18 t". I really have no appetite for a UCM directory
-> called 20C3001VHH.SKG18t :-)
-> I would also be ready to bet that smaller manufacturers in the Chinese
-> ecosystem use similar product names at the DMI level. removing the
-> vendor name would likely result in mistakes.
-> You really want the manufacturer name to make the maintenance of these
-> files easier on the rest of us. Sometimes the DMI version field is
-> actually more self-explanatory, e.g. "ThinkPad 60" or "ThinkPad 10" for
-> the two Lenovo examples, maybe this is something we ought to look at.
->
->
-
-So we'll keep the manufacturer name.
-
-And let's put the "Product version" as well if available, Liam?
-
-I also observed Lenovo puts the the user-friendly name in the product 
-version like "Thinkpad S5 Yoga 15", while it product name is 
-"20DQA00KCD", no self-explanatory.
-
-It seems different manufacturer tend to put self-explanatory name in 
-different fields:
-Lenovo thinkpad: product version
-Dell: product name
-ASUS: both product name and board name
-Intel: board name
-
-Do we want some table to specify the field we want for major vendors? So 
-we may just pick the most valuable DMI field for the card long name, for 
-those manufacturers to save the space. But it may not scale if the 
-manufacturer change their preference or use different way for different 
-product series, since I only checked a few machines by a few vendors.
-
-Also I wonder if we find the key word like "Dell, HP or ASUS", may we 
-not use verbatim copy on the vendor name but just use these key words? 
-This can also save some space.
-
-Thanks
-Mengdong
-
-
-
-
-
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+--_004_6FAB7C47BCF00940BB0999A99BE3547A17A4A4A0RTITMBSV09realt_--
