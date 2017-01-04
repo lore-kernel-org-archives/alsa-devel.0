@@ -1,28 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_ssi: set fifo watermark to more reliable value" to
- the asoc tree
-Date: Wed, 04 Jan 2017 18:37:01 +0000
-Message-ID: <E1cOqQn-0001uf-Va@debutante>
-References: <1483467777-8651-1-git-send-email-caleb@signalessence.com>
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <1483467777-8651-1-git-send-email-caleb@signalessence.com>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: Caleb Crome <caleb@crome.org>
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Arnaud Mouiche <arnaud.mouiche@invoxia.com>, Fabio Estevam <fabio.estevam@nxp.com>, Jaroslav Kysela <perex@perex.cz>, linuxppc-dev@lists.ozlabs.org
+Subject: Applied "ASoC: rt5640: move DAC2 Power to
+	rt5640_dapm_widgets" to the asoc tree
+Date: Wed, 04 Jan 2017 18:37:05 +0000
+Message-ID: <E1cOqQr-0001vr-11@debutante>
+References: <1483506852-599-1-git-send-email-bardliao@realtek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3841526753A
+ for <alsa-devel@alsa-project.org>; Wed,  4 Jan 2017 19:37:15 +0100 (CET)
+In-Reply-To: <1483506852-599-1-git-send-email-bardliao@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_ssi: set fifo watermark to more reliable value
+   ASoC: rt5640: move DAC2 Power to rt5640_dapm_widgets
 
 has been applied to the asoc tree at
 
@@ -47,145 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From 4ee437fbf626b5ad756889d8bc0fcead3d66dde7 Mon Sep 17 00:00:00 2001
-From: Caleb Crome <caleb@crome.org>
-Date: Tue, 3 Jan 2017 10:22:57 -0800
-Subject: [PATCH] ASoC: fsl_ssi: set fifo watermark to more reliable value
+>From 80317c2cb40085a3dcf80015bc39fbac40e2092a Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Wed, 4 Jan 2017 13:14:12 +0800
+Subject: [PATCH] ASoC: rt5640: move DAC2 Power to rt5640_dapm_widgets
 
-The fsl_ssi fifo watermark is by default set to 2 free spaces (i.e.
-activate DMA on FIFO when only 2 spaces are left.)  This means the
-DMA must service the fifo within 2 audio samples, which is just not
-enough time  for many use cases with high data rate.  In many
-configurations the audio channel slips (causing l/r swap in stereo
-configurations, or channel slipping in multi-channel configurations).
+"DAC L2 Power" and "DAC R2 Power" are used by both rt5639 and rt5640.
+But it was defined in rt5640_specific_dapm_widgets[]. Move them to
+rt5640_dapm_widgets will let both rt5639 and rt5640 can use it.
 
-This patch gives more breathing room and allows the SSI to operate
-reliably by changing the fifio refill watermark to 8.
-
-There is no change in behavior for older chips (with an 8-deep fifo).
-Only the newer chips with a 15-deep fifo get the new behavior. I
-suspect a new fifo depth setting could be optimized on the older
-chips too, but I have not tested.
-
-Signed-off-by: Caleb Crome <caleb@crome.org>
-Reviewed-by: Fabio Estevam <fabio.estevam@nxp.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 74 +++++++++++++++++++++++++++++++++++--------------
- 1 file changed, 53 insertions(+), 21 deletions(-)
+ sound/soc/codecs/rt5640.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 50349437d961..fde08660b63b 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -224,6 +224,12 @@ struct fsl_ssi_soc_data {
-  * @dbg_stats: Debugging statistics
-  *
-  * @soc: SoC specific data
-+ *
-+ * @fifo_watermark: the FIFO watermark setting.  Notifies DMA when
-+ *             there are @fifo_watermark or fewer words in TX fifo or
-+ *             @fifo_watermark or more empty words in RX fifo.
-+ * @dma_maxburst: max number of words to transfer in one go.  So far,
-+ *             this is always the same as fifo_watermark.
-  */
- struct fsl_ssi_private {
- 	struct regmap *regs;
-@@ -263,6 +269,9 @@ struct fsl_ssi_private {
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index e29a6defefa0..0f1b2165e01c 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -1227,6 +1227,10 @@ static const struct snd_soc_dapm_widget rt5640_dapm_widgets[] = {
+ 		RT5640_PWR_DAC_L1_BIT, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("DAC R1 Power", RT5640_PWR_DIG1,
+ 		RT5640_PWR_DAC_R1_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("DAC L2 Power", RT5640_PWR_DIG1,
++		RT5640_PWR_DAC_L2_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("DAC R2 Power", RT5640_PWR_DIG1,
++		RT5640_PWR_DAC_R2_BIT, 0, NULL, 0),
+ 	/* SPK/OUT Mixer */
+ 	SND_SOC_DAPM_MIXER("SPK MIXL", RT5640_PWR_MIXER, RT5640_PWR_SM_L_BIT,
+ 		0, rt5640_spk_l_mix, ARRAY_SIZE(rt5640_spk_l_mix)),
+@@ -1322,10 +1326,6 @@ static const struct snd_soc_dapm_widget rt5640_specific_dapm_widgets[] = {
+ 		rt5640_mono_mix, ARRAY_SIZE(rt5640_mono_mix)),
+ 	SND_SOC_DAPM_SUPPLY("Improve MONO Amp Drv", RT5640_PWR_ANLG1,
+ 		RT5640_PWR_MA_BIT, 0, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("DAC L2 Power", RT5640_PWR_DIG1,
+-		RT5640_PWR_DAC_L2_BIT, 0, NULL, 0),
+-	SND_SOC_DAPM_SUPPLY("DAC R2 Power", RT5640_PWR_DIG1,
+-		RT5640_PWR_DAC_R2_BIT, 0, NULL, 0),
  
- 	const struct fsl_ssi_soc_data *soc;
- 	struct device *dev;
-+
-+	u32 fifo_watermark;
-+	u32 dma_maxburst;
- };
- 
- /*
-@@ -1051,21 +1060,7 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
- 	regmap_write(regs, CCSR_SSI_SRCR, srcr);
- 	regmap_write(regs, CCSR_SSI_SCR, scr);
- 
--	/*
--	 * Set the watermark for transmit FIFI 0 and receive FIFO 0. We don't
--	 * use FIFO 1. We program the transmit water to signal a DMA transfer
--	 * if there are only two (or fewer) elements left in the FIFO. Two
--	 * elements equals one frame (left channel, right channel). This value,
--	 * however, depends on the depth of the transmit buffer.
--	 *
--	 * We set the watermark on the same level as the DMA burstsize.  For
--	 * fiq it is probably better to use the biggest possible watermark
--	 * size.
--	 */
--	if (ssi_private->use_dma)
--		wm = ssi_private->fifo_depth - 2;
--	else
--		wm = ssi_private->fifo_depth;
-+	wm = ssi_private->fifo_watermark;
- 
- 	regmap_write(regs, CCSR_SSI_SFCSR,
- 			CCSR_SSI_SFCSR_TFWM0(wm) | CCSR_SSI_SFCSR_RFWM0(wm) |
-@@ -1373,12 +1368,8 @@ static int fsl_ssi_imx_probe(struct platform_device *pdev,
- 		dev_dbg(&pdev->dev, "could not get baud clock: %ld\n",
- 			 PTR_ERR(ssi_private->baudclk));
- 
--	/*
--	 * We have burstsize be "fifo_depth - 2" to match the SSI
--	 * watermark setting in fsl_ssi_startup().
--	 */
--	ssi_private->dma_params_tx.maxburst = ssi_private->fifo_depth - 2;
--	ssi_private->dma_params_rx.maxburst = ssi_private->fifo_depth - 2;
-+	ssi_private->dma_params_tx.maxburst = ssi_private->dma_maxburst;
-+	ssi_private->dma_params_rx.maxburst = ssi_private->dma_maxburst;
- 	ssi_private->dma_params_tx.addr = ssi_private->ssi_phys + CCSR_SSI_STX0;
- 	ssi_private->dma_params_rx.addr = ssi_private->ssi_phys + CCSR_SSI_SRX0;
- 
-@@ -1543,6 +1534,47 @@ static int fsl_ssi_probe(struct platform_device *pdev)
-                 /* Older 8610 DTs didn't have the fifo-depth property */
- 		ssi_private->fifo_depth = 8;
- 
-+	/*
-+	 * Set the watermark for transmit FIFO 0 and receive FIFO 0. We don't
-+	 * use FIFO 1 but set the watermark appropriately nontheless.
-+	 * We program the transmit water to signal a DMA transfer
-+	 * if there are N elements left in the FIFO. For chips with 15-deep
-+	 * FIFOs, set watermark to 8.  This allows the SSI to operate at a
-+	 * high data rate without channel slipping. Behavior is unchanged
-+	 * for the older chips with a fifo depth of only 8.  A value of 4
-+	 * might be appropriate for the older chips, but is left at
-+	 * fifo_depth-2 until sombody has a chance to test.
-+	 *
-+	 * We set the watermark on the same level as the DMA burstsize.  For
-+	 * fiq it is probably better to use the biggest possible watermark
-+	 * size.
-+	 */
-+	switch (ssi_private->fifo_depth) {
-+	case 15:
-+		/*
-+		 * 2 samples is not enough when running at high data
-+		 * rates (like 48kHz @ 16 bits/channel, 16 channels)
-+		 * 8 seems to split things evenly and leave enough time
-+		 * for the DMA to fill the FIFO before it's over/under
-+		 * run.
-+		 */
-+		ssi_private->fifo_watermark = 8;
-+		ssi_private->dma_maxburst = 8;
-+		break;
-+	case 8:
-+	default:
-+		/*
-+		 * maintain old behavior for older chips.
-+		 * Keeping it the same because I don't have an older
-+		 * board to test with.
-+		 * I suspect this could be changed to be something to
-+		 * leave some more space in the fifo.
-+		 */
-+		ssi_private->fifo_watermark = ssi_private->fifo_depth - 2;
-+		ssi_private->dma_maxburst = ssi_private->fifo_depth - 2;
-+		break;
-+	}
-+
- 	dev_set_drvdata(&pdev->dev, ssi_private);
- 
- 	if (ssi_private->soc->imx) {
+ 	SND_SOC_DAPM_OUTPUT("MONOP"),
+ 	SND_SOC_DAPM_OUTPUT("MONON"),
 -- 
 2.11.0
