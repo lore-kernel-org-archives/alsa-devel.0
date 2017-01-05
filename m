@@ -1,19 +1,24 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2 2/2] ASoC: Intel: Atom: Add support for
- rt5640 sound card found on HP Pavilion x2 10-p000 tablet.
-Date: Thu, 5 Jan 2017 09:22:53 +0530
-Message-ID: <20170105035252.GK3573@localhost>
-References: <cover.1483531270.git.neko@nya.ai>
- <e129703fe81de8fdba680a4a6e27d1e414af2579.1483531270.git.neko@nya.ai>
+Subject: Re: [PATCH v3 4/4] ASoC: Intel: rename
+ SND_SST_MFLD_PLATFORM to SND_SST_MID_PLATFORM
+Date: Thu, 5 Jan 2017 09:23:47 +0530
+Message-ID: <20170105035347.GL3573@localhost>
+References: <20170102152017.13938-1-andriy.shevchenko@linux.intel.com>
+ <20170102152017.13938-5-andriy.shevchenko@linux.intel.com>
+ <c5228e73-d5cf-e4cd-b78b-24334e1fb5f3@linux.intel.com>
+ <20170103033815.GA3573@localhost>
+ <b5c5956c-3bd8-4a28-a456-babc5fd06846@linux.intel.com>
+ <1483526660.9552.221.camel@linux.intel.com>
+ <ea7d96dd-380d-9a73-73de-1d754af17240@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id F377D266DB0
- for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2017 04:52:58 +0100 (CET)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id BD291266DB0
+ for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2017 04:53:53 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <e129703fe81de8fdba680a4a6e27d1e414af2579.1483531270.git.neko@nya.ai>
+In-Reply-To: <ea7d96dd-380d-9a73-73de-1d754af17240@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,44 +28,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexandrov Stansilav <neko@nya.ai>
-Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: dmaengine <dmaengine@vger.kernel.org>, alsa-devel@alsa-project.org, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 04, 2017 at 03:22:13PM +0300, Alexandrov Stansilav wrote:
-> Signed-off-by: Alexandrov Stansilav <neko@nya.ai>
-
-Same comments here too, the title and log doesn't tell me the changes in the
-patch.
-
-So a better title could be:
-
-ASoC: Intel: Atom: Add HP Pavilion x2 10-p000 machine entry
-
-And log may contain:
-
-HP Pavilion x2 10-p000 sports a rt5640 codec, bit with ACPI ID 10EC5640, so
-add a new entry in machine table for this configuration.
-
-> ---
->  sound/soc/intel/atom/sst/sst_acpi.c | 2 ++
->  1 file changed, 2 insertions(+)
+On Wed, Jan 04, 2017 at 10:58:50AM -0600, Pierre-Louis Bossart wrote:
+> On 1/4/17 4:44 AM, Andy Shevchenko wrote:
+> >On Tue, 2017-01-03 at 08:18 -0600, Pierre-Louis Bossart wrote:
+> >>>>On 01/02/2017 09:20 AM, Andy Shevchenko wrote:
+> >>>>>Rename SND_SST_MFLD_PLATFORM to SND_SST_MID_PLATFORM to make it
+> >>>>>clear that is
+> >>>>>not only about Medfield platform.
+> >>>>
+> >>>>Does this change make sense? Medfield was a completely different
+> >>>>platform and lumping everything under the same Kconfig option
+> >>>>doesn't seem right to me... Plus we've stopped using 'mid' for
+> >>>>years, no one would know what it stands for. The only clear
+> >>>>architecture feature is the presence of the switch matrix that
+> >>>>uniquely identifies all platforms based on Baytrail, Cherrytrail,
+> >>>>Merrifield and Anniedale. Medfield/Clovertrail did not expose a
+> >>>>switch matrix.
+> >>>
+> >>>Mea culpa..
+> >>>
+> >>>So we started this with medfield and the driver construction is
+> >>>pretty much
+> >>>the same untill skylake. So clubbing under mfld bucket made sense to
+> >>>me.
+> >>>
+> >>>MID is not flavour of the season now.
+> >
+> >Would be, though it covers at least few out of them, MFLD just refers to
+> >one.
+> >
+> >>>
+> >>>If anyone comes with a better name, am for that :)
+> >
+> >_ATOM ? Sounds too broad...
+> >
+> >>
+> >>SND_SST_HIFI2_MOBILE_PLATFORM ?
+> >
+> >Where HIFI2 part came from? Any documentation (maybe internal) available
+> >to look at? (Because it's not obvious to me how all listed above has
+> >something in common)
+> >
+> >And I would get rid of _MOBILE part.
 > 
-> diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-> index f4d92bb..896ced2 100644
-> --- a/sound/soc/intel/atom/sst/sst_acpi.c
-> +++ b/sound/soc/intel/atom/sst/sst_acpi.c
-> @@ -463,6 +463,8 @@ static struct sst_acpi_mach sst_acpi_chv[] = {
->  	/* some CHT-T platforms rely on RT5640, use Baytrail machine driver */
->  	{"10EC5640", "bytcr_rt5640", "intel/fw_sst_22a8.bin", "bytcr_rt5640", cht_quirk,
->  						&chv_platform_data },
-> +	{"10EC3276", "bytcr_rt5640", "intel/fw_sst_22a8.bin", "bytcr_rt5640", NULL,
-> +						&chv_platform_data },
->  
->  	{},
->  };
-> -- 
-> 2.10.2
+> SND_SST_ATOM_HIFI2_PLATFORM then
+
+sounds okay to me..
+
+> 
+> HIFI2 is the DSP version, it's public information for those
+> Field/Trail parts, see
+> https://www.alsa-project.org/main/index.php/Firmware
+> If you combine HIFI2 with ATOM you have a unique non-ambiguous
+> description of the core+DSP hardware for Medfield through
+> Cherrytrail.
+> 
 > 
 
 -- 
