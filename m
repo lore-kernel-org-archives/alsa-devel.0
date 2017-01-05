@@ -1,40 +1,54 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v6 1/3] clk: x86: Add Atom PMC platform
- clocks
-Date: Wed, 4 Jan 2017 18:54:42 -0600
-Message-ID: <564d1f26-dd11-d237-7e63-87287a062c03@linux.intel.com>
-References: <1481306510-7471-1-git-send-email-irina.tirdea@intel.com>
- <1481306510-7471-2-git-send-email-irina.tirdea@intel.com>
- <CAHp75Vdaw4yvTPP2JZc+ti-AVNsisRQ+WG=JxPQ1jv-r7DADQA@mail.gmail.com>
- <20161213232524.GQ5423@codeaurora.org>
- <32235fb3-0d54-211d-28f4-4655e4bc7812@linux.intel.com>
- <20161217013337.GW5423@codeaurora.org>
- <CAHp75Vdn_8_fCQzkG7CPrnDZzhC7WUpGM1cyvfNRz0u_sc7RKA@mail.gmail.com>
- <7f3d03dc-24fe-ec3f-4a3b-926c28f0ac86@linux.intel.com>
- <20161221230557.GK5423@codeaurora.org>
- <cd6044f5-6c79-b2d6-902d-52e27c217e78@linux.intel.com>
- <CAHp75VfJU3613euahjW-s92_XEz8hK70ZgRi53Lpo+2TWqPscA@mail.gmail.com>
+From: =?UTF-8?Q?Giedrius_Trainavi=C4=8Dius?= <giedrius.trainavicius@gmail.com>
+Subject: Re: Stream format conversion in SoC driver
+Date: Thu, 5 Jan 2017 03:09:43 +0200
+Message-ID: <CABpuRUOc_9J8KbF7zpRBxdaD0oWLrvcS1guimO5ZE_gZtsxOJA@mail.gmail.com>
+References: <CABpuRUPg8LC_+eFL3UBS-jWkQicpKmorvzhqjZW6p8xQ9P0ppw@mail.gmail.com>
+ <089A4555-3272-4E65-8AD6-412B41017ACA@ladisch.de>
+ <CABpuRUMfB+VvwpqMz7mc_q1RCYR5RS-FjQ8czVXUYeW70y_V7A@mail.gmail.com>
+ <88898566-E09E-49FF-99D7-5EC03120FB87@ladisch.de>
+ <CABpuRUM-n9b0NTivk-2zBsuvL5O-f9PXLeQoc6wW=YhrxndABQ@mail.gmail.com>
+ <C1F64983-FEE0-4CA8-A623-9315B4D155EF@ladisch.de>
+ <CABpuRUM-SHzVrGuoyWKicQdhmDgOFEa0NH6CiAiXFum16BtN2A@mail.gmail.com>
+ <16CD146D-B2B1-420B-8680-3A6FCD0B4BA6@ladisch.de>
+ <CABpuRUOppLmT+KFSPJOaxo6EtaoTeM9UnHBOVwkn=DbwN0MPDg@mail.gmail.com>
+ <1b8cb74b-f678-39f8-b30d-6e1dd631897b@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <platform-driver-x86-owner@vger.kernel.org>
-In-Reply-To: <CAHp75VfJU3613euahjW-s92_XEz8hK70ZgRi53Lpo+2TWqPscA@mail.gmail.com>
-Sender: platform-driver-x86-owner@vger.kernel.org
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Len Brown <lenb@kernel.org>, Irina Tirdea <irina.tirdea@intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Michael Turquette <mturquette@baylibre.com>, "x86@kernel.org" <x86@kernel.org>, Stephen Boyd <sboyd@codeaurora.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>, Mark Brown <broonie@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Darren Hart <dvhart@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, platform-driver-x86@vger.kernel.org, linux-clk@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ua0-f169.google.com (mail-ua0-f169.google.com
+ [209.85.217.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D9B026761A
+ for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2017 02:09:45 +0100 (CET)
+Received: by mail-ua0-f169.google.com with SMTP id 34so326044699uac.1
+ for <alsa-devel@alsa-project.org>; Wed, 04 Jan 2017 17:09:45 -0800 (PST)
+In-Reply-To: <1b8cb74b-f678-39f8-b30d-6e1dd631897b@ladisch.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
->>>> this convention is suggested:
->>>>    PLT_CLK[2:0] - Camera
->>>>    PLT_CLK[3] - Audio Codec
->>>>    PLT_CLK[4] -
->>>>    PLT_CLK[5] - COMMs
-> By the way, would I suggest to use same prefix as provider, i.e.
-> pmc_atom_plt_clk_%d ?
-I tried this suggestion and it doesn't work unfortunately. It looks like 
-the struct clk_lookup_alloc is limited to 16 chars for the connector_id.
-"pmc_a_plt_clk_" works but that's not really helping.
-The suggestion would also require a patch on the audio side since the 
-use of pmc_plt_clk_3 was already merged.
--> no change.
+R3JlYXQhIEkgbWFuYWdlZCB0byBnZXQgMTYgYml0IG91dHB1dCB0byB3b3JrIGp1c3QgZmluZSEg
+VGhhbmsgeW91IQoKQWZ0ZXIgaW52ZXN0aWdhdGluZyByZWxhdGVkIGNvZGUgYW5kIHRoZSBQQ00g
+cmVnaXN0ZXJzIGRvY3VtZW50YXRpb24sCnR1cm5lZCBvdXQgYWxsIEkgaGFkIHRvIGRvIHdhcyB0
+byBjYWxsOgoKc25kX3NvY19kYWlfc2V0X2JjbGtfcmF0aW8oZGFpLCAzMioyKTsgLy8gMzIgYml0
+cyBmb3IgZWFjaCBvZiAyIGNoYW5uZWxzCgpJJ3ZlIHNlZW4gdGhpcyBtZXRob2QgYmVmb3JlLCBi
+dXQgaXRzIHVzZSAvIG1lYW5pbmcgd2Fzbid0IG9idmlvdXMgYXQKZmlyc3QuLi4KCkhvd2V2ZXIs
+IHJlY29yZGluZyB1c2luZyBBREMgZ2VuZXJhdGluZyA2NCBiaXQgZnJhbWVzLCAyNCBiaXQgc2Ft
+cGxlcywKZGlkbid0IHdvcmsgYXMgZXhwZWN0ZWQgd2hlbiB1c2luZyAxNmJpdHMuLi4gKGl0IHdh
+cyBwcm9kdWNpbmcgbm9pc2UgbW9zdGx5CmluIG9uZSBjaGFubmVsLCBhbmQgbGVzcyBub2lzZSBp
+biB0aGUgb3RoZXIpIEkgaGF2ZW4ndCB5ZXQgaW52ZXN0aWdhdGVkCndoeSwgYnV0IHdpbGwgZG8u
+CgpBbnkgd2F5IEkgY2FuIHByb3ZpZGUgZGlmZmVyZW50IHNhbXBsZSBmb3JtYXQgY29uc3RyYWlu
+dHMgZm9yIHBsYXliYWNrIGFuZApjYXB0dXJlPyAodW50aWwgMTYgYml0IHJlY29yZGluZyBpc3N1
+ZSBpcyByZXNvbHZlZCkKClRoYW5rIHlvdSwKR2llZHJpdXMuCuKAiwpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
+bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
