@@ -1,17 +1,12 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v2 5/6] ALSA: firewire-digi00x: enclose
-	identifiers referred by single function
-Date: Thu,  5 Jan 2017 21:48:11 +0900
-Message-ID: <20170105124812.11283-6-o-takashi@sakamocchi.jp>
-References: <20170105124812.11283-1-o-takashi@sakamocchi.jp>
+From: sutar.mounesh@gmail.com
+Subject: [PATCH 2/6 v2] alsa-lib: Fix for sync issue on xrun
+	recover
+Date: Thu,  5 Jan 2017 18:59:15 +0530
+Message-ID: <1483622955-1899-1-git-send-email-sutar.mounesh@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 53CE02676D8
- for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2017 13:48:20 +0100 (CET)
-In-Reply-To: <20170105124812.11283-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,225 +16,361 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Joshua Frkuska <joshua_frkuska@mentor.com>, Andreas Pape <apape@de.adit-jv.com>, mounesh_sutar@mentor.com
 List-Id: alsa-devel@alsa-project.org
 
-Some identifiers are referred just by one functions. In this case, they
-can be put into the function definition. This brings two merits; readers
-can easily follow codes related to the identifiers, developers are free
-from name conflict.
+From: Andreas Pape <apape@de.adit-jv.com>
 
-This commit moves such identifiers to each function definition.
+If using very short periods, DSHARE/DSNOOP/DMIX may report underruns while in
+status 'prepared'. This prohibits correct recovery. Now slave xrun conditions
+for DSHARE/DSNOOP/DMIX are being handled properly.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/digi00x/digi00x-hwdep.c | 17 ++++++-----
- sound/firewire/digi00x/digi00x-midi.c  | 52 ++++++++++++++++------------------
- sound/firewire/digi00x/digi00x-pcm.c   | 52 ++++++++++++++++------------------
- 3 files changed, 57 insertions(+), 64 deletions(-)
+Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
+Signed-off-by: Joshua Frkuska <joshua_frkuska@mentor.com>
+Signed-off-by: Mounesh Sutar <mounesh_sutar@mentor.com>
 
-diff --git a/sound/firewire/digi00x/digi00x-hwdep.c b/sound/firewire/digi00x/digi00x-hwdep.c
-index f188e47..463c6b8 100644
---- a/sound/firewire/digi00x/digi00x-hwdep.c
-+++ b/sound/firewire/digi00x/digi00x-hwdep.c
-@@ -173,16 +173,15 @@ static int hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
- #define hwdep_compat_ioctl NULL
- #endif
- 
--static const struct snd_hwdep_ops hwdep_ops = {
--	.read		= hwdep_read,
--	.release	= hwdep_release,
--	.poll		= hwdep_poll,
--	.ioctl		= hwdep_ioctl,
--	.ioctl_compat	= hwdep_compat_ioctl,
--};
--
- int snd_dg00x_create_hwdep_device(struct snd_dg00x *dg00x)
- {
-+	static const struct snd_hwdep_ops ops = {
-+		.read		= hwdep_read,
-+		.release	= hwdep_release,
-+		.poll		= hwdep_poll,
-+		.ioctl		= hwdep_ioctl,
-+		.ioctl_compat	= hwdep_compat_ioctl,
-+	};
- 	struct snd_hwdep *hwdep;
- 	int err;
- 
-@@ -192,7 +191,7 @@ int snd_dg00x_create_hwdep_device(struct snd_dg00x *dg00x)
- 
- 	strcpy(hwdep->name, "Digi00x");
- 	hwdep->iface = SNDRV_HWDEP_IFACE_FW_DIGI00X;
--	hwdep->ops = hwdep_ops;
-+	hwdep->ops = ops;
- 	hwdep->private_data = dg00x;
- 	hwdep->exclusive = true;
- 
-diff --git a/sound/firewire/digi00x/digi00x-midi.c b/sound/firewire/digi00x/digi00x-midi.c
-index 1a72a38..8689c3b 100644
---- a/sound/firewire/digi00x/digi00x-midi.c
-+++ b/sound/firewire/digi00x/digi00x-midi.c
-@@ -76,18 +76,6 @@ static void midi_phys_playback_trigger(struct snd_rawmidi_substream *substream,
- 	spin_unlock_irqrestore(&dg00x->lock, flags);
- }
- 
--static struct snd_rawmidi_ops midi_phys_capture_ops = {
--	.open		= midi_phys_open,
--	.close		= midi_phys_close,
--	.trigger	= midi_phys_capture_trigger,
--};
--
--static struct snd_rawmidi_ops midi_phys_playback_ops = {
--	.open		= midi_phys_open,
--	.close		= midi_phys_close,
--	.trigger	= midi_phys_playback_trigger,
--};
--
- static int midi_ctl_open(struct snd_rawmidi_substream *substream)
- {
- 	/* Do nothing. */
-@@ -139,18 +127,6 @@ static void midi_ctl_playback_trigger(struct snd_rawmidi_substream *substream,
- 	spin_unlock_irqrestore(&dg00x->lock, flags);
- }
- 
--static struct snd_rawmidi_ops midi_ctl_capture_ops = {
--	.open		= midi_ctl_open,
--	.close		= midi_ctl_capture_close,
--	.trigger	= midi_ctl_capture_trigger,
--};
--
--static struct snd_rawmidi_ops midi_ctl_playback_ops = {
--	.open		= midi_ctl_open,
--	.close		= midi_ctl_playback_close,
--	.trigger	= midi_ctl_playback_trigger,
--};
--
- static void set_midi_substream_names(struct snd_dg00x *dg00x,
- 				     struct snd_rawmidi_str *str,
- 				     bool is_ctl)
-@@ -172,6 +148,26 @@ static void set_midi_substream_names(struct snd_dg00x *dg00x,
- 
- int snd_dg00x_create_midi_devices(struct snd_dg00x *dg00x)
- {
-+	static struct snd_rawmidi_ops phys_capture_ops = {
-+		.open		= midi_phys_open,
-+		.close		= midi_phys_close,
-+		.trigger	= midi_phys_capture_trigger,
-+	};
-+	static struct snd_rawmidi_ops phys_playback_ops = {
-+		.open		= midi_phys_open,
-+		.close		= midi_phys_close,
-+		.trigger	= midi_phys_playback_trigger,
-+	};
-+	static struct snd_rawmidi_ops ctl_capture_ops = {
-+		.open		= midi_ctl_open,
-+		.close		= midi_ctl_capture_close,
-+		.trigger	= midi_ctl_capture_trigger,
-+	};
-+	static struct snd_rawmidi_ops ctl_playback_ops = {
-+		.open		= midi_ctl_open,
-+		.close		= midi_ctl_playback_close,
-+		.trigger	= midi_ctl_playback_trigger,
-+	};
- 	struct snd_rawmidi *rmidi[2];
- 	struct snd_rawmidi_str *str;
- 	unsigned int i;
-@@ -187,9 +183,9 @@ int snd_dg00x_create_midi_devices(struct snd_dg00x *dg00x)
- 		 "%s MIDI", dg00x->card->shortname);
- 
- 	snd_rawmidi_set_ops(rmidi[0], SNDRV_RAWMIDI_STREAM_INPUT,
--			    &midi_phys_capture_ops);
-+			    &phys_capture_ops);
- 	snd_rawmidi_set_ops(rmidi[0], SNDRV_RAWMIDI_STREAM_OUTPUT,
--			    &midi_phys_playback_ops);
-+			    &phys_playback_ops);
- 
- 	/* Add a pair of control midi ports. */
- 	err = snd_rawmidi_new(dg00x->card, dg00x->card->driver, 1,
-@@ -201,9 +197,9 @@ int snd_dg00x_create_midi_devices(struct snd_dg00x *dg00x)
- 		 "%s control", dg00x->card->shortname);
- 
- 	snd_rawmidi_set_ops(rmidi[1], SNDRV_RAWMIDI_STREAM_INPUT,
--			    &midi_ctl_capture_ops);
-+			    &ctl_capture_ops);
- 	snd_rawmidi_set_ops(rmidi[1], SNDRV_RAWMIDI_STREAM_OUTPUT,
--			    &midi_ctl_playback_ops);
-+			    &ctl_playback_ops);
- 
- 	for (i = 0; i < ARRAY_SIZE(rmidi); i++) {
- 		rmidi[i]->private_data = dg00x;
-diff --git a/sound/firewire/digi00x/digi00x-pcm.c b/sound/firewire/digi00x/digi00x-pcm.c
-index 613f058..68d1c52 100644
---- a/sound/firewire/digi00x/digi00x-pcm.c
-+++ b/sound/firewire/digi00x/digi00x-pcm.c
-@@ -329,33 +329,31 @@ static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
- 	return amdtp_stream_pcm_pointer(&dg00x->rx_stream);
- }
- 
--static const struct snd_pcm_ops pcm_capture_ops = {
--	.open		= pcm_open,
--	.close		= pcm_close,
--	.ioctl		= snd_pcm_lib_ioctl,
--	.hw_params	= pcm_capture_hw_params,
--	.hw_free	= pcm_capture_hw_free,
--	.prepare	= pcm_capture_prepare,
--	.trigger	= pcm_capture_trigger,
--	.pointer	= pcm_capture_pointer,
--	.page		= snd_pcm_lib_get_vmalloc_page,
--};
--
--static const struct snd_pcm_ops pcm_playback_ops = {
--	.open		= pcm_open,
--	.close		= pcm_close,
--	.ioctl		= snd_pcm_lib_ioctl,
--	.hw_params	= pcm_playback_hw_params,
--	.hw_free	= pcm_playback_hw_free,
--	.prepare	= pcm_playback_prepare,
--	.trigger	= pcm_playback_trigger,
--	.pointer	= pcm_playback_pointer,
--	.page		= snd_pcm_lib_get_vmalloc_page,
--	.mmap		= snd_pcm_lib_mmap_vmalloc,
--};
--
- int snd_dg00x_create_pcm_devices(struct snd_dg00x *dg00x)
- {
-+	static const struct snd_pcm_ops capture_ops = {
-+		.open		= pcm_open,
-+		.close		= pcm_close,
-+		.ioctl		= snd_pcm_lib_ioctl,
-+		.hw_params	= pcm_capture_hw_params,
-+		.hw_free	= pcm_capture_hw_free,
-+		.prepare	= pcm_capture_prepare,
-+		.trigger	= pcm_capture_trigger,
-+		.pointer	= pcm_capture_pointer,
-+		.page		= snd_pcm_lib_get_vmalloc_page,
-+	};
-+	static const struct snd_pcm_ops playback_ops = {
-+		.open		= pcm_open,
-+		.close		= pcm_close,
-+		.ioctl		= snd_pcm_lib_ioctl,
-+		.hw_params	= pcm_playback_hw_params,
-+		.hw_free	= pcm_playback_hw_free,
-+		.prepare	= pcm_playback_prepare,
-+		.trigger	= pcm_playback_trigger,
-+		.pointer	= pcm_playback_pointer,
-+		.page		= snd_pcm_lib_get_vmalloc_page,
-+		.mmap		= snd_pcm_lib_mmap_vmalloc,
-+	};
- 	struct snd_pcm *pcm;
- 	int err;
- 
-@@ -366,8 +364,8 @@ int snd_dg00x_create_pcm_devices(struct snd_dg00x *dg00x)
- 	pcm->private_data = dg00x;
- 	snprintf(pcm->name, sizeof(pcm->name),
- 		 "%s PCM", dg00x->card->shortname);
--	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_playback_ops);
--	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pcm_capture_ops);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &playback_ops);
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &capture_ops);
- 
+diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
+index 0770abc..1056308 100644
+--- a/src/pcm/pcm_direct.c
++++ b/src/pcm/pcm_direct.c
+@@ -550,6 +550,87 @@ int snd_pcm_direct_timer_stop(snd_pcm_direct_t *dmix)
  	return 0;
  }
+ 
++/*
++ * Recover slave on XRUN.
++ * Even if direct plugins disable xrun detection, there might be an xrun
++ * raised directly by some drivers.
++ * The first client recovers slave pcm.
++ * Each client needs to execute sw xrun handling afterwards
++ */
++int snd_pcm_direct_slave_recover(snd_pcm_direct_t *direct)
++{
++	int ret = 0;
++
++	if (ret=snd_pcm_direct_semaphore_down(direct, DIRECT_IPC_SEM_CLIENT)) {
++		SNDERR("SEMDOWN FAILED with err %d", ret);
++		return ret;
++	}
++
++	if (snd_pcm_state(direct->spcm) != SND_PCM_STATE_XRUN) {
++		/*ignore... someone else already did recovery*/
++		if (ret = snd_pcm_direct_semaphore_up(direct,
++						      DIRECT_IPC_SEM_CLIENT)) {
++			SNDERR("SEMUP FAILED with err %d", ret);
++		}
++		return ret;
++	}
++
++	ret = snd_pcm_prepare(direct->spcm);
++	if (ret < 0) {
++		SNDERR("recover: unable to prepare slave");
++		if (ret = snd_pcm_direct_semaphore_up(direct,
++						      DIRECT_IPC_SEM_CLIENT)) {
++			SNDERR("SEMUP FAILED with err %d", ret);
++		}
++		return ret;
++	}
++
++	if (direct->type == SND_PCM_TYPE_DSHARE) {
++		const snd_pcm_channel_area_t *dst_areas;
++		dst_areas = snd_pcm_mmap_areas(direct->spcm);
++		snd_pcm_areas_silence(dst_areas, 0, direct->spcm->channels,
++				      direct->spcm->buffer_size,
++				      direct->spcm->format);
++	}
++
++	ret = snd_pcm_start(direct->spcm);
++	if (ret < 0) {
++		SNDERR("recover: unable to start slave");
++		if (ret = snd_pcm_direct_semaphore_up(direct,
++						      DIRECT_IPC_SEM_CLIENT)) {
++			SNDERR("SEMUP FAILED with err %d", ret);
++		}
++		return ret;
++	}
++	direct->shmptr->recoveries++;
++	if (ret = snd_pcm_direct_semaphore_up(direct, DIRECT_IPC_SEM_CLIENT)) {
++		SNDERR("SEMUP FAILED with err %d", ret);
++	}
++	return ret;
++}
++
++/*
++ * enter xrun state, if slave xrun occured
++ * @return: 0 - no xrun >0: xrun happened
++ */
++int snd_pcm_direct_client_chk_xrun(snd_pcm_direct_t *direct, snd_pcm_t *pcm)
++{
++	if (direct->shmptr->recoveries != direct->recoveries) {
++		/* no matter how many xruns we missed -
++		so don't increment but just update to actual counter*/
++		direct->recoveries = direct->shmptr->recoveries;
++		pcm->fast_ops->drop(pcm);
++		/*trigger_tstamp update is missing in drop callbacks*/
++		gettimestamp(&direct->trigger_tstamp, pcm->tstamp_type);
++		/*no timer clear:
++		if slave already entered xrun again the event is lost...*/
++		/*snd_pcm_direct_clear_timer_queue(direct);*/
++		direct->state = SND_PCM_STATE_XRUN;
++		return 1;
++	}
++	return 0;
++}
++
+ int snd_pcm_direct_poll_revents(snd_pcm_t *pcm, struct pollfd *pfds, unsigned int nfds, unsigned short *revents)
+ {
+ 	snd_pcm_direct_t *dmix = pcm->private_data;
+@@ -572,6 +653,10 @@ int snd_pcm_direct_poll_revents(snd_pcm_t *pcm, struct pollfd *pfds, unsigned in
+ 	}
+ 	switch (snd_pcm_state(dmix->spcm)) {
+ 	case SND_PCM_STATE_XRUN:
++		/*recover slave and update client state to xrun
++		before returning POLLERR*/
++		snd_pcm_direct_slave_recover(dmix);
++		snd_pcm_direct_client_chk_xrun(dmix, pcm);
+ 	case SND_PCM_STATE_SUSPENDED:
+ 	case SND_PCM_STATE_SETUP:
+ 		events |= POLLERR;
+@@ -1382,6 +1467,7 @@ int snd_pcm_direct_open_secondary_client(snd_pcm_t **spcmp, snd_pcm_direct_t *dm
+ 	dmix->slave_buffer_size = spcm->buffer_size;
+ 	dmix->slave_period_size = dmix->shmptr->s.period_size;
+ 	dmix->slave_boundary = spcm->boundary;
++	dmix->recoveries = dmix->shmptr->recoveries;
+ 
+ 	ret = snd_pcm_mmap(spcm);
+ 	if (ret < 0) {
+diff --git a/src/pcm/pcm_direct.h b/src/pcm/pcm_direct.h
+index 91e816c..569d2be 100644
+--- a/src/pcm/pcm_direct.h
++++ b/src/pcm/pcm_direct.h
+@@ -66,6 +66,7 @@ typedef struct {
+ 	char socket_name[256];			/* name of communication socket */
+ 	snd_pcm_type_t type;			/* PCM type (currently only hw) */
+ 	int use_server;
++	unsigned int recoveries;		/* no of executed recoveries on slave*/
+ 	struct {
+ 		unsigned int format;
+ 		snd_interval_t rate;
+@@ -157,6 +158,7 @@ struct snd_pcm_direct {
+ 	int var_periodsize;		/* allow variable period size if max_periods is != -1*/
+ 	unsigned int channels;		/* client's channels */
+ 	unsigned int *bindings;
++	unsigned int recoveries;	/* mirror of executed recoveries on slave */
+ 	union {
+ 		struct {
+ 			int shmid_sum;			/* IPC global sum ring buffer memory identification */
+@@ -318,7 +320,8 @@ int snd_pcm_direct_open_secondary_client(snd_pcm_t **spcmp, snd_pcm_direct_t *dm
+ snd_pcm_chmap_query_t **snd_pcm_direct_query_chmaps(snd_pcm_t *pcm);
+ snd_pcm_chmap_t *snd_pcm_direct_get_chmap(snd_pcm_t *pcm);
+ int snd_pcm_direct_set_chmap(snd_pcm_t *pcm, const snd_pcm_chmap_t *map);
+-
++int snd_pcm_direct_slave_recover(snd_pcm_direct_t *direct);
++int snd_pcm_direct_client_chk_xrun(snd_pcm_direct_t *direct, snd_pcm_t *pcm);
+ int snd_timer_async(snd_timer_t *timer, int sig, pid_t pid);
+ struct timespec snd_pcm_hw_fast_tstamp(snd_pcm_t *pcm);
+ 
+diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
+index 0ab7323..b1c846b 100644
+--- a/src/pcm/pcm_dmix.c
++++ b/src/pcm/pcm_dmix.c
+@@ -434,15 +434,21 @@ static int snd_pcm_dmix_sync_ptr0(snd_pcm_t *pcm, snd_pcm_uframes_t slave_hw_ptr
+ static int snd_pcm_dmix_sync_ptr(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_direct_t *dmix = pcm->private_data;
++	int err;
+ 
+ 	switch (snd_pcm_state(dmix->spcm)) {
+ 	case SND_PCM_STATE_DISCONNECTED:
+ 		dmix->state = SND_PCM_STATE_DISCONNECTED;
+ 		return -ENODEV;
++	case SND_PCM_STATE_XRUN:
++		if ((err = snd_pcm_direct_slave_recover(dmix)) <0)
++			return err;
++		break;
+ 	default:
+ 		break;
+ 	}
+-
++	if (snd_pcm_direct_client_chk_xrun(dmix, pcm))
++		return -EPIPE;
+ 	if (dmix->slowptr)
+ 		snd_pcm_hwsync(dmix->spcm);
+ 
+@@ -828,12 +834,16 @@ static snd_pcm_sframes_t snd_pcm_dmix_mmap_commit(snd_pcm_t *pcm,
+ 
+ 	switch (snd_pcm_state(dmix->spcm)) {
+ 	case SND_PCM_STATE_XRUN:
+-		return -EPIPE;
++		if ((err = snd_pcm_direct_slave_recover(dmix)) < 0)
++			return err;
++		break;
+ 	case SND_PCM_STATE_SUSPENDED:
+ 		return -ESTRPIPE;
+ 	default:
+ 		break;
+ 	}
++	if (snd_pcm_direct_client_chk_xrun(dmix, pcm))
++		return -EPIPE;
+ 	if (! size)
+ 		return 0;
+ 	snd_pcm_mmap_appl_forward(pcm, size);
+@@ -841,8 +851,10 @@ static snd_pcm_sframes_t snd_pcm_dmix_mmap_commit(snd_pcm_t *pcm,
+ 		if ((err = snd_pcm_dmix_start_timer(pcm, dmix)) < 0)
+ 			return err;
+ 	} else if (dmix->state == SND_PCM_STATE_RUNNING ||
+-		   dmix->state == SND_PCM_STATE_DRAINING)
+-		snd_pcm_dmix_sync_ptr(pcm);
++		   dmix->state == SND_PCM_STATE_DRAINING) {
++		if (( err = snd_pcm_dmix_sync_ptr(pcm)) < 0)
++			return err;
++	}
+ 	if (dmix->state == SND_PCM_STATE_RUNNING ||
+ 	    dmix->state == SND_PCM_STATE_DRAINING) {
+ 		/* ok, we commit the changes after the validation of area */
+@@ -858,10 +870,13 @@ static snd_pcm_sframes_t snd_pcm_dmix_mmap_commit(snd_pcm_t *pcm,
+ static snd_pcm_sframes_t snd_pcm_dmix_avail_update(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_direct_t *dmix = pcm->private_data;
++	int err;
+ 	
+ 	if (dmix->state == SND_PCM_STATE_RUNNING ||
+-	    dmix->state == SND_PCM_STATE_DRAINING)
+-		snd_pcm_dmix_sync_ptr(pcm);
++	    dmix->state == SND_PCM_STATE_DRAINING) {
++		if (( err = snd_pcm_dmix_sync_ptr(pcm)) < 0)
++			return err;
++	}
+ 	return snd_pcm_mmap_playback_avail(pcm);
+ }
+ 
+diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
+index a1fed5d..ef1e6c1 100644
+--- a/src/pcm/pcm_dshare.c
++++ b/src/pcm/pcm_dshare.c
+@@ -162,7 +162,6 @@ static int snd_pcm_dshare_sync_ptr0(snd_pcm_t *pcm, snd_pcm_uframes_t slave_hw_p
+ 	snd_pcm_direct_t *dshare = pcm->private_data;
+ 	snd_pcm_uframes_t old_slave_hw_ptr, avail;
+ 	snd_pcm_sframes_t diff;
+-	
+ 	old_slave_hw_ptr = dshare->slave_hw_ptr;
+ 	dshare->slave_hw_ptr = slave_hw_ptr;
+ 	diff = slave_hw_ptr - old_slave_hw_ptr;
+@@ -202,15 +201,21 @@ static int snd_pcm_dshare_sync_ptr0(snd_pcm_t *pcm, snd_pcm_uframes_t slave_hw_p
+ static int snd_pcm_dshare_sync_ptr(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_direct_t *dshare = pcm->private_data;
++	int err;
+ 
+ 	switch (snd_pcm_state(dshare->spcm)) {
+ 	case SND_PCM_STATE_DISCONNECTED:
+ 		dshare->state = SNDRV_PCM_STATE_DISCONNECTED;
+ 		return -ENODEV;
++	case SND_PCM_STATE_XRUN:
++		if ((err = snd_pcm_direct_slave_recover(dshare)) <0)
++			return err;
++		break;
+ 	default:
+ 		break;
+ 	}
+-
++	if (snd_pcm_direct_client_chk_xrun(dshare, pcm))
++		return -EPIPE;
+ 	if (dshare->slowptr)
+ 		snd_pcm_hwsync(dshare->spcm);
+ 
+@@ -516,12 +521,16 @@ static snd_pcm_sframes_t snd_pcm_dshare_mmap_commit(snd_pcm_t *pcm,
+ 
+ 	switch (snd_pcm_state(dshare->spcm)) {
+ 	case SND_PCM_STATE_XRUN:
+-		return -EPIPE;
++		if ((err = snd_pcm_direct_slave_recover(dshare)) < 0)
++			return err;
++		break;
+ 	case SND_PCM_STATE_SUSPENDED:
+ 		return -ESTRPIPE;
+ 	default:
+ 		break;
+ 	}
++	if (snd_pcm_direct_client_chk_xrun(dshare, pcm))
++		return -EPIPE;
+ 	if (! size)
+ 		return 0;
+ 	snd_pcm_mmap_appl_forward(pcm, size);
+@@ -529,8 +538,10 @@ static snd_pcm_sframes_t snd_pcm_dshare_mmap_commit(snd_pcm_t *pcm,
+ 		if ((err = snd_pcm_dshare_start_timer(dshare)) < 0)
+ 			return err;
+ 	} else if (dshare->state == SND_PCM_STATE_RUNNING ||
+-		   dshare->state == SND_PCM_STATE_DRAINING)
+-		snd_pcm_dshare_sync_ptr(pcm);
++		   dshare->state == SND_PCM_STATE_DRAINING) {
++		if ((err = snd_pcm_dshare_sync_ptr(pcm)) < 0)
++			return err;
++	}
+ 	if (dshare->state == SND_PCM_STATE_RUNNING ||
+ 	    dshare->state == SND_PCM_STATE_DRAINING) {
+ 		/* ok, we commit the changes after the validation of area */
+@@ -546,10 +557,13 @@ static snd_pcm_sframes_t snd_pcm_dshare_mmap_commit(snd_pcm_t *pcm,
+ static snd_pcm_sframes_t snd_pcm_dshare_avail_update(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_direct_t *dshare = pcm->private_data;
++	int err;
+ 	
+ 	if (dshare->state == SND_PCM_STATE_RUNNING ||
+-	    dshare->state == SND_PCM_STATE_DRAINING)
+-		snd_pcm_dshare_sync_ptr(pcm);
++	    dshare->state == SND_PCM_STATE_DRAINING) {
++		if ((err = snd_pcm_dshare_sync_ptr(pcm)) < 0)
++			return err;
++	}
+ 	return snd_pcm_mmap_playback_avail(pcm);
+ }
+ 
+diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
+index 85f0ff4..6b721ec 100644
+--- a/src/pcm/pcm_dsnoop.c
++++ b/src/pcm/pcm_dsnoop.c
+@@ -132,14 +132,21 @@ static int snd_pcm_dsnoop_sync_ptr(snd_pcm_t *pcm)
+ 	snd_pcm_direct_t *dsnoop = pcm->private_data;
+ 	snd_pcm_uframes_t slave_hw_ptr, old_slave_hw_ptr, avail;
+ 	snd_pcm_sframes_t diff;
+-	
++	int err;
++
+ 	switch (snd_pcm_state(dsnoop->spcm)) {
+ 	case SND_PCM_STATE_DISCONNECTED:
+ 		dsnoop->state = SNDRV_PCM_STATE_DISCONNECTED;
+ 		return -ENODEV;
++	case SND_PCM_STATE_XRUN:
++		if ((err = snd_pcm_direct_slave_recover(dsnoop)) <0)
++			return err;
++		break;
+ 	default:
+ 		break;
+ 	}
++	if (snd_pcm_direct_client_chk_xrun(dsnoop, pcm))
++		return -EPIPE;
+ 	if (dsnoop->slowptr)
+ 		snd_pcm_hwsync(dsnoop->spcm);
+ 	old_slave_hw_ptr = dsnoop->slave_hw_ptr;
+@@ -410,12 +417,16 @@ static snd_pcm_sframes_t snd_pcm_dsnoop_mmap_commit(snd_pcm_t *pcm,
+ 
+ 	switch (snd_pcm_state(dsnoop->spcm)) {
+ 	case SND_PCM_STATE_XRUN:
+-		return -EPIPE;
++		if ((err = snd_pcm_direct_slave_recover(dsnoop)) <0)
++			return err;
++		break;
+ 	case SND_PCM_STATE_SUSPENDED:
+ 		return -ESTRPIPE;
+ 	default:
+ 		break;
+ 	}
++	if (snd_pcm_direct_client_chk_xrun(dsnoop, pcm))
++		return -EPIPE;
+ 	if (dsnoop->state == SND_PCM_STATE_RUNNING) {
+ 		err = snd_pcm_dsnoop_sync_ptr(pcm);
+ 		if (err < 0)
 -- 
-2.9.3
+2.7.4
