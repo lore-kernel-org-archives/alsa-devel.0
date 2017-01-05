@@ -1,92 +1,40 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] Revert "ALSA: firewire-lib: change structure
-	member with proper type"
-Date: Thu,  5 Jan 2017 09:41:31 +0900
-Message-ID: <20170105004131.19202-1-o-takashi@sakamocchi.jp>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v6 1/3] clk: x86: Add Atom PMC platform
+ clocks
+Date: Wed, 4 Jan 2017 18:54:42 -0600
+Message-ID: <564d1f26-dd11-d237-7e63-87287a062c03@linux.intel.com>
+References: <1481306510-7471-1-git-send-email-irina.tirdea@intel.com>
+ <1481306510-7471-2-git-send-email-irina.tirdea@intel.com>
+ <CAHp75Vdaw4yvTPP2JZc+ti-AVNsisRQ+WG=JxPQ1jv-r7DADQA@mail.gmail.com>
+ <20161213232524.GQ5423@codeaurora.org>
+ <32235fb3-0d54-211d-28f4-4655e4bc7812@linux.intel.com>
+ <20161217013337.GW5423@codeaurora.org>
+ <CAHp75Vdn_8_fCQzkG7CPrnDZzhC7WUpGM1cyvfNRz0u_sc7RKA@mail.gmail.com>
+ <7f3d03dc-24fe-ec3f-4a3b-926c28f0ac86@linux.intel.com>
+ <20161221230557.GK5423@codeaurora.org>
+ <cd6044f5-6c79-b2d6-902d-52e27c217e78@linux.intel.com>
+ <CAHp75VfJU3613euahjW-s92_XEz8hK70ZgRi53Lpo+2TWqPscA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 6658A2675E7
- for <alsa-devel@alsa-project.org>; Thu,  5 Jan 2017 01:41:36 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+Return-path: <platform-driver-x86-owner@vger.kernel.org>
+In-Reply-To: <CAHp75VfJU3613euahjW-s92_XEz8hK70ZgRi53Lpo+2TWqPscA@mail.gmail.com>
+Sender: platform-driver-x86-owner@vger.kernel.org
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Len Brown <lenb@kernel.org>, Irina Tirdea <irina.tirdea@intel.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Michael Turquette <mturquette@baylibre.com>, "x86@kernel.org" <x86@kernel.org>, Stephen Boyd <sboyd@codeaurora.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, Ingo Molnar <mingo@redhat.com>, Mark Brown <broonie@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>, Darren Hart <dvhart@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, platform-driver-x86@vger.kernel.org, linux-clk@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This reverts commit 6b7e95d1336b9eb0d4c6db190ce756480496bd13. This commit
-is based on a concern about value of the given parameter. It's expected
-to be ORed value with some enumeration-constants, thus often it can not be
-one of the enumeration-constants. I understood that this is out of
-specification and causes implementation-dependent issues.
 
-In C language specification, enumerated type can be interpreted as an
-integer type, in which all of enumeration-constants in corresponding
-enumerator-list can be stored. Implementations can select one of char,
-signed int and unsigned int as its type, and this selection is
-implementation-dependent.
-
-In GCC, a signed integer is selected when at least one of
-enumeration-constants has negative value, else an unsigned integer is
-selected. This behaviour can be switched by -fshort-enums to short type.
-Anyway, the type can be decided after scanning all of
-enumeration-constants.
-
-Totally, there's no rules to constrain the value of enumerated type to
-be one of enumeration-constants. In short, in enumerated type, decision
-of actual type for the type is the most important and
-enumeration-constants are just used for the decision, thus it's permitted
-to have an integer value in a range of enumeration-constants. In our case,
-actual type for the type is currently deterministic to be either char or
-unsigned int. Under GCC, it's unsigned int.
----
- sound/firewire/amdtp-stream.c | 2 +-
- sound/firewire/amdtp-stream.h | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 8ce93cd..00060c4 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -69,7 +69,7 @@ static void pcm_period_tasklet(unsigned long data);
-  * @protocol_size: the size to allocate newly for protocol
-  */
- int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
--		      enum amdtp_stream_direction dir, int flags,
-+		      enum amdtp_stream_direction dir, enum cip_flags flags,
- 		      unsigned int fmt,
- 		      amdtp_stream_process_data_blocks_t process_data_blocks,
- 		      unsigned int protocol_size)
-diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-index 7be2142..c1bc7fa 100644
---- a/sound/firewire/amdtp-stream.h
-+++ b/sound/firewire/amdtp-stream.h
-@@ -93,7 +93,7 @@ typedef unsigned int (*amdtp_stream_process_data_blocks_t)(
- 						unsigned int *syt);
- struct amdtp_stream {
- 	struct fw_unit *unit;
--	int flags;
-+	enum cip_flags flags;
- 	enum amdtp_stream_direction direction;
- 	struct mutex mutex;
- 
-@@ -137,7 +137,7 @@ struct amdtp_stream {
- };
- 
- int amdtp_stream_init(struct amdtp_stream *s, struct fw_unit *unit,
--		      enum amdtp_stream_direction dir, int flags,
-+		      enum amdtp_stream_direction dir, enum cip_flags flags,
- 		      unsigned int fmt,
- 		      amdtp_stream_process_data_blocks_t process_data_blocks,
- 		      unsigned int protocol_size);
--- 
-2.9.3
+>>>> this convention is suggested:
+>>>>    PLT_CLK[2:0] - Camera
+>>>>    PLT_CLK[3] - Audio Codec
+>>>>    PLT_CLK[4] -
+>>>>    PLT_CLK[5] - COMMs
+> By the way, would I suggest to use same prefix as provider, i.e.
+> pmc_atom_plt_clk_%d ?
+I tried this suggestion and it doesn't work unfortunately. It looks like 
+the struct clk_lookup_alloc is limited to 16 chars for the connector_id.
+"pmc_a_plt_clk_" works but that's not really helping.
+The suggestion would also require a patch on the audio side since the 
+use of pmc_plt_clk_3 was already merged.
+-> no change.
