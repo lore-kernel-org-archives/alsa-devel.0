@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 2/9] ASoC: Intel: Skylake: Add
- set_tristate DAI ops to enable SSP MCLK
-Date: Fri, 6 Jan 2017 18:32:33 +0000
-Message-ID: <20170106183233.n6vbqzyczkclnbtc@sirena.org.uk>
+Subject: Re: [PATCH v4 6/9] ASoC: Intel: Skylake: Add supply
+ widget in bxt_da_max machine
+Date: Fri, 6 Jan 2017 18:34:30 +0000
+Message-ID: <20170106183430.zmjmabovpuz6vuhw@sirena.org.uk>
 References: <1483341277-14475-1-git-send-email-jeeja.kp@intel.com>
- <1483341277-14475-3-git-send-email-jeeja.kp@intel.com>
+ <1483341277-14475-7-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8049391713067083999=="
+Content-Type: multipart/mixed; boundary="===============3456702735343666269=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1BA572677FD
- for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2017 19:32:42 +0100 (CET)
-In-Reply-To: <1483341277-14475-3-git-send-email-jeeja.kp@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BC115267812
+ for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2017 19:34:36 +0100 (CET)
+In-Reply-To: <1483341277-14475-7-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,64 +27,62 @@ Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, liam.r.
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8049391713067083999==
+--===============3456702735343666269==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="vknwauanvohsuqpa"
+	protocol="application/pgp-signature"; boundary="q4blhruyw4yee64h"
 Content-Disposition: inline
 
 
---vknwauanvohsuqpa
+--q4blhruyw4yee64h
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 02, 2017 at 12:44:29PM +0530, jeeja.kp@intel.com wrote:
-> From: Jeeja KP <jeeja.kp@intel.com>
->=20
-> Some machine requires MCLK to be enabled before SSP start up, so add
-> set_tristate() DAI ops to enable/disable SSP MCLK. This ops will be
-> called from machine which requires early MCLK and removes the usage of
-> enabling early MLCK in platform DAI prepare by default which is not
-> machine specific.
+On Mon, Jan 02, 2017 at 12:44:33PM +0530, jeeja.kp@intel.com wrote:
 
-This isn't an *obvious* use of the tristate operation...
+> +static int ssp_set_clk(struct snd_soc_dapm_widget *w,
+> +		struct snd_kcontrol *k, int  event)
+> +{
+> +	struct snd_soc_dai *cpu_dai = NULL;
+> +
+> +	cpu_dai = skl_get_dai_widget(w);
+> +	if (!cpu_dai)
+> +		return -EIO;
+> +
+> +	/* Enable/Disable the SSP clk */
+> +	if (SND_SOC_DAPM_EVENT_ON(event))
+> +		return snd_soc_dai_set_tristate(cpu_dai, 0);
+> +	else
+> +		return snd_soc_dai_set_tristate(cpu_dai, 1);
+> +}
 
-> +	/*
-> +	 * To enable ssp clk explicitly before gateway copier is configured,
-> +	 * need to use dma control IPC.
-> +	 * Disable will be done when DSP gateway copier modules are deleted.
-> +	 */
-> +	if (!tristate)
-> +		return skl_dsp_set_dma_control(ctx, mconfig);
+Erk, no - you definitely want to just move the whole thing to DAPM I
+think.  We shoudn't be manually fiddling with the tristating from driver
+code when the core will also try to manage tristating, at some point
+this widget and the core will inevitably end up fighting with each
+other.
 
-So we never clear this?  And to be frank I'd have no idea looking at
-this that it's doing anything to do with clocks though that's a bit of a
-separate thing.  It feels like DAPM might be a more natural place to do
-this, have a clock widget supplying the AIF widget for the interface.
-That'd be a bit more idiomatic.
-
---vknwauanvohsuqpa
+--q4blhruyw4yee64h
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlhv4sEACgkQJNaLcl1U
-h9Ca2Af/cSzPXgx7QzNJju/T1l3o8rnx4q0rYT/U3AjWw7i/UwuFq/kDRcKF0M/I
-ZdxXkKvzdeltdzDztKzRi+sIiJj2ohU7lrQKCN5PWoMkrddcbrqdxonb0tpxhrw/
-lvojRwJfWB03G7Fj8uXdz3ngdSlg4FlFULbO1fxQ3B3oob7msLGk0H0FRQPvwd8L
-qINSO8VQGASP30kSTDyyywSBGNv1TO3zX+zaEkrJnCzsQLnd9Q38hTBMqjONztbP
-vYl8hZhHQA8XkiE6RvxXM4ZOG22RJxDdphrNe6H7x5wReDiLWAdhp2C2lpOSfLDi
-tXsD7iSpawCRD7x6YuJjsOMLAt9Vlg==
-=dF6m
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlhv4zUACgkQJNaLcl1U
+h9Bu4Af9F5g46wtcdxaQNonKuXRyUiP2Duk6ANL/JqJIjzrBq7Z3KBSfoxraJQo6
+cT6eXfqToD2EStzsYYQlR0TlcEz+ERip+Ltp1Sk4fISs3XD67XfqfAUb5YtnPCc5
+/qRoBdJMWq0xDiuZVWnFX0n4QC+Tc8DiVaHJTuxiDjdEBDdxv7rlXKHab9tRFB8a
+esnj/dFtzS8RhOLCKJHWnoXUi60XcmWq7XsP4sp1Me+bBDk1voMsI/zPqljWcy/f
+remn7iZfvp95YyhjHRq+DQrBcGfnjs6YFbgJ5/kaQN54y/agf1CW1ZqHHdMj5523
+KpIrdJ5gs5JQPygdsEFgtZVfcPSqNw==
+=4imc
 -----END PGP SIGNATURE-----
 
---vknwauanvohsuqpa--
+--q4blhruyw4yee64h--
 
---===============8049391713067083999==
+--===============3456702735343666269==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8049391713067083999==--
+--===============3456702735343666269==--
