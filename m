@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ALSA: hda: check stream decoupled register
-	state" to the asoc tree
-Date: Fri, 06 Jan 2017 18:16:26 +0000
-Message-ID: <E1cPZ3y-00036u-Us@debutante>
-References: <1481184684-9620-6-git-send-email-jeeja.kp@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Release FW ctx in
+	cleanup" to the asoc tree
+Date: Fri, 06 Jan 2017 18:16:29 +0000
+Message-ID: <E1cPZ41-00037p-WD@debutante>
+References: <1483330807-9518-5-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4A3712677FE
+ by alsa0.perex.cz (Postfix) with ESMTP id 739FF267801
  for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2017 19:16:36 +0100 (CET)
-In-Reply-To: <1481184684-9620-6-git-send-email-jeeja.kp@intel.com>
+In-Reply-To: <1483330807-9518-5-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Jeeja KP <jeeja.kp@intel.com>
-Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com, tiwai@suse.de, broonie@kernel.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ALSA: hda: check stream decoupled register state
+   ASoC: Intel: Skylake: Release FW ctx in cleanup
 
 has been applied to the asoc tree at
 
@@ -53,48 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From 09a8bf812c662c833621f19955a1d3fa495801bc Mon Sep 17 00:00:00 2001
+>From bc65a326c579e93a5c2120a65ede72f11369ee5a Mon Sep 17 00:00:00 2001
 From: Jeeja KP <jeeja.kp@intel.com>
-Date: Mon, 2 Jan 2017 12:44:28 +0530
-Subject: [PATCH] ALSA: hda: check stream decoupled register state
+Date: Mon, 2 Jan 2017 09:50:05 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Release FW ctx in cleanup
 
-Check stream decoupled register value with requested value
-before decoupling/coupling the stream.
+Saved firmware ctx was not never released, so release Firmware
+ctx in cleanup routine.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Acked-by: Takashi Iwai <tiwai@suse.de>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/hda/ext/hdac_ext_stream.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ sound/soc/intel/skylake/skl-sst.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/hda/ext/hdac_ext_stream.c b/sound/hda/ext/hdac_ext_stream.c
-index 3be051ab5533..c96d7a7a36af 100644
---- a/sound/hda/ext/hdac_ext_stream.c
-+++ b/sound/hda/ext/hdac_ext_stream.c
-@@ -128,14 +128,17 @@ void snd_hdac_ext_stream_decouple(struct hdac_ext_bus *ebus,
- {
- 	struct hdac_stream *hstream = &stream->hstream;
- 	struct hdac_bus *bus = &ebus->bus;
-+	u32 val;
-+	int mask = AZX_PPCTL_PROCEN(hstream->index);
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index 8fc3178bc79c..b30bd384c8d3 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -515,6 +515,9 @@ EXPORT_SYMBOL_GPL(skl_sst_init_fw);
  
- 	spin_lock_irq(&bus->reg_lock);
--	if (decouple)
--		snd_hdac_updatel(bus->ppcap, AZX_REG_PP_PPCTL, 0,
--				AZX_PPCTL_PROCEN(hstream->index));
--	else
--		snd_hdac_updatel(bus->ppcap, AZX_REG_PP_PPCTL,
--					AZX_PPCTL_PROCEN(hstream->index), 0);
-+	val = readw(bus->ppcap + AZX_REG_PP_PPCTL) & mask;
+ void skl_sst_dsp_cleanup(struct device *dev, struct skl_sst *ctx)
+ {
 +
-+	if (decouple && !val)
-+		snd_hdac_updatel(bus->ppcap, AZX_REG_PP_PPCTL, mask, mask);
-+	else if (!decouple && val)
-+		snd_hdac_updatel(bus->ppcap, AZX_REG_PP_PPCTL, mask, 0);
-+
- 	stream->decoupled = decouple;
- 	spin_unlock_irq(&bus->reg_lock);
- }
++	if (ctx->dsp->fw)
++		release_firmware(ctx->dsp->fw);
+ 	skl_clear_module_table(ctx->dsp);
+ 	skl_freeup_uuid_list(ctx);
+ 	skl_ipc_free(&ctx->ipc);
 -- 
 2.11.0
