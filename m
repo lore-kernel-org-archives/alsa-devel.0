@@ -1,8 +1,8 @@
 From: sutar.mounesh@gmail.com
-Subject: [PATCH 2/6 v3] alsa-lib: Fix for sync issue on xrun
-	recover
-Date: Fri,  6 Jan 2017 14:10:07 +0530
-Message-ID: <1483692007-1384-1-git-send-email-sutar.mounesh@gmail.com>
+Subject: [PATCH 5/6 v3] alsa-lib:pcm: check state before enter
+	poll on timer.
+Date: Fri,  6 Jan 2017 14:10:23 +0530
+Message-ID: <1483692023-1425-1-git-send-email-sutar.mounesh@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -17,377 +17,191 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Joshua Frkuska <joshua_frkuska@mentor.com>, Andreas Pape <apape@de.adit-jv.com>, mounesh_sutar@mentor.com
+Cc: alsa-devel@alsa-project.org, Andreas Pape <apape@de.adit-jv.com>, mounesh_sutar@mentor.com
 List-Id: alsa-devel@alsa-project.org
 
 From: Andreas Pape <apape@de.adit-jv.com>
 
-If using very short periods, DSHARE/DSNOOP/DMIX may report underruns while in
-status 'prepared'. This prohibits correct recovery. Now slave xrun conditions
-for DSHARE/DSNOOP/DMIX are being handled properly.
+To avoid the chances of timeout, we need to check the enter poll
+in state xrun.
 
 Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
-Signed-off-by: Joshua Frkuska <joshua_frkuska@mentor.com>
 Signed-off-by: Mounesh Sutar <mounesh_sutar@mentor.com>
 
 diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
-index 0770abc..4e7fda8 100644
+index 4e7fda8..db0381f 100644
 --- a/src/pcm/pcm_direct.c
 +++ b/src/pcm/pcm_direct.c
-@@ -550,6 +550,101 @@ int snd_pcm_direct_timer_stop(snd_pcm_direct_t *dmix)
+@@ -645,6 +645,46 @@ int snd_pcm_direct_client_chk_xrun(snd_pcm_direct_t *direct, snd_pcm_t *pcm)
  	return 0;
  }
  
 +/*
-+ * Recover slave on XRUN.
-+ * Even if direct plugins disable xrun detection, there might be an xrun
-+ * raised directly by some drivers.
-+ * The first client recovers slave pcm.
-+ * Each client needs to execute sw xrun handling afterwards
++ * This is the only operation guaranteed to be called before entering poll().
++ * Direct plugins use fd of snd_timer to poll on, these timers do NOT check
++ * state of substream in kernel by intention.
++ * Only the enter to xrun might be notified once (SND_TIMER_EVENT_MSTOP).
++ * If xrun event was not correctly handled or was ignored it will never be
++ * evaluated again afterwards.
++ * This will result in snd_pcm_wait() always returning timeout.
++ * In contrast poll() on pcm hardware checks ALSA state and will immediately
++ * return POLLERR on XRUN.
++ *
++ * To prevent timeout and applications endlessly spinning without xrun
++ * detected we add a state check here which may trigger the xrun sequence.
++ *
++ * return count of filled descriptors or negative error code
 + */
-+int snd_pcm_direct_slave_recover(snd_pcm_direct_t *direct)
++int snd_pcm_direct_poll_descriptors(snd_pcm_t *pcm, struct pollfd *pfds,
++				    unsigned int space)
 +{
-+	int ret;
-+	int semerr;
-+
-+	semerr = snd_pcm_direct_semaphore_down(direct,
-+						   DIRECT_IPC_SEM_CLIENT);
-+	if (semerr > 0) {
-+		SNDERR("SEMDOWN FAILED with err %d", semerr);
-+		return semerr;
++	if (pcm->poll_fd < 0) {
++		SNDMSG("poll_fd < 0");
++		return -EIO;
++	}
++	if (space >= 1 && pfds) {
++		pfds->fd = pcm->poll_fd;
++		pfds->events = pcm->poll_events | POLLERR | POLLNVAL;
++	} else {
++		return 0;
 +	}
 +
-+	if (snd_pcm_state(direct->spcm) != SND_PCM_STATE_XRUN) {
-+		/* ignore... someone else already did recovery */
-+		semerr = snd_pcm_direct_semaphore_up(direct,
-+						        DIRECT_IPC_SEM_CLIENT);
-+		if (semerr > 0) {
-+			SNDERR("SEMUP FAILED with err %d", semerr);
-+			return semerr;
-+		}
-+		return ret;
++	/* this will also evaluate slave state and enter xrun if necessary */
++	switch (snd_pcm_state(pcm)) {
++	case SND_PCM_STATE_XRUN:
++		return -EPIPE;
++	default:
++		break;
 +	}
-+
-+	ret = snd_pcm_prepare(direct->spcm);
-+	if (ret < 0) {
-+		SNDERR("recover: unable to prepare slave");
-+		semerr = snd_pcm_direct_semaphore_up(direct,
-+						        DIRECT_IPC_SEM_CLIENT);
-+		if (semerr > 0) {
-+			SNDERR("SEMUP FAILED with err %d", semerr);
-+			return semerr;
-+		}
-+		return ret;
-+	}
-+
-+	if (direct->type == SND_PCM_TYPE_DSHARE) {
-+		const snd_pcm_channel_area_t *dst_areas;
-+		dst_areas = snd_pcm_mmap_areas(direct->spcm);
-+		snd_pcm_areas_silence(dst_areas, 0, direct->spcm->channels,
-+				      direct->spcm->buffer_size,
-+				      direct->spcm->format);
-+	}
-+
-+	ret = snd_pcm_start(direct->spcm);
-+	if (ret < 0) {
-+		SNDERR("recover: unable to start slave");
-+		semerr = snd_pcm_direct_semaphore_up(direct,
-+						        DIRECT_IPC_SEM_CLIENT);
-+		if (semerr > 0) {
-+			SNDERR("SEMUP FAILED with err %d", semerr);
-+			return semerr;
-+		}
-+		return ret;
-+	}
-+	direct->shmptr->recoveries++;
-+	semerr = snd_pcm_direct_semaphore_up(direct,
-+						 DIRECT_IPC_SEM_CLIENT);
-+	if (semerr > 0) {
-+		SNDERR("SEMUP FAILED with err %d", semerr);
-+		return semerr;
-+	}
-+	return 0;
-+}
-+
-+/*
-+ * enter xrun state, if slave xrun occured
-+ * @return: 0 - no xrun >0: xrun happened
-+ */
-+int snd_pcm_direct_client_chk_xrun(snd_pcm_direct_t *direct, snd_pcm_t *pcm)
-+{
-+	if (direct->shmptr->recoveries != direct->recoveries) {
-+		/* no matter how many xruns we missed -
-+		 * so don't increment but just update to actual counter
-+		 */
-+		direct->recoveries = direct->shmptr->recoveries;
-+		pcm->fast_ops->drop(pcm);
-+		/* trigger_tstamp update is missing in drop callbacks */
-+		gettimestamp(&direct->trigger_tstamp, pcm->tstamp_type);
-+		/* no timer clear:
-+		 * if slave already entered xrun again the event is lost.
-+		 * snd_pcm_direct_clear_timer_queue(direct);
-+		 */
-+		direct->state = SND_PCM_STATE_XRUN;
-+		return 1;
-+	}
-+	return 0;
++	return 1;
 +}
 +
  int snd_pcm_direct_poll_revents(snd_pcm_t *pcm, struct pollfd *pfds, unsigned int nfds, unsigned short *revents)
  {
  	snd_pcm_direct_t *dmix = pcm->private_data;
-@@ -572,6 +667,12 @@ int snd_pcm_direct_poll_revents(snd_pcm_t *pcm, struct pollfd *pfds, unsigned in
- 	}
- 	switch (snd_pcm_state(dmix->spcm)) {
- 	case SND_PCM_STATE_XRUN:
-+		/* recover slave and update client state to xrun
-+		 * before returning POLLERR
-+		 */
-+		snd_pcm_direct_slave_recover(dmix);
-+		snd_pcm_direct_client_chk_xrun(dmix, pcm);
-+		/* fallthrough */
- 	case SND_PCM_STATE_SUSPENDED:
- 	case SND_PCM_STATE_SETUP:
- 		events |= POLLERR;
-@@ -1382,6 +1483,7 @@ int snd_pcm_direct_open_secondary_client(snd_pcm_t **spcmp, snd_pcm_direct_t *dm
- 	dmix->slave_buffer_size = spcm->buffer_size;
- 	dmix->slave_period_size = dmix->shmptr->s.period_size;
- 	dmix->slave_boundary = spcm->boundary;
-+	dmix->recoveries = dmix->shmptr->recoveries;
- 
- 	ret = snd_pcm_mmap(spcm);
- 	if (ret < 0) {
 diff --git a/src/pcm/pcm_direct.h b/src/pcm/pcm_direct.h
-index 91e816c..569d2be 100644
+index 569d2be..deb0690 100644
 --- a/src/pcm/pcm_direct.h
 +++ b/src/pcm/pcm_direct.h
-@@ -66,6 +66,7 @@ typedef struct {
- 	char socket_name[256];			/* name of communication socket */
- 	snd_pcm_type_t type;			/* PCM type (currently only hw) */
- 	int use_server;
-+	unsigned int recoveries;		/* no of executed recoveries on slave*/
- 	struct {
- 		unsigned int format;
- 		snd_interval_t rate;
-@@ -157,6 +158,7 @@ struct snd_pcm_direct {
- 	int var_periodsize;		/* allow variable period size if max_periods is != -1*/
- 	unsigned int channels;		/* client's channels */
- 	unsigned int *bindings;
-+	unsigned int recoveries;	/* mirror of executed recoveries on slave */
- 	union {
- 		struct {
- 			int shmid_sum;			/* IPC global sum ring buffer memory identification */
-@@ -318,7 +320,8 @@ int snd_pcm_direct_open_secondary_client(snd_pcm_t **spcmp, snd_pcm_direct_t *dm
- snd_pcm_chmap_query_t **snd_pcm_direct_query_chmaps(snd_pcm_t *pcm);
- snd_pcm_chmap_t *snd_pcm_direct_get_chmap(snd_pcm_t *pcm);
- int snd_pcm_direct_set_chmap(snd_pcm_t *pcm, const snd_pcm_chmap_t *map);
--
-+int snd_pcm_direct_slave_recover(snd_pcm_direct_t *direct);
-+int snd_pcm_direct_client_chk_xrun(snd_pcm_direct_t *direct, snd_pcm_t *pcm);
- int snd_timer_async(snd_timer_t *timer, int sig, pid_t pid);
- struct timespec snd_pcm_hw_fast_tstamp(snd_pcm_t *pcm);
- 
+@@ -301,6 +301,8 @@ int snd_pcm_direct_parse_bindings(snd_pcm_direct_t *dmix,
+ 				  snd_config_t *cfg);
+ int snd_pcm_direct_nonblock(snd_pcm_t *pcm, int nonblock);
+ int snd_pcm_direct_async(snd_pcm_t *pcm, int sig, pid_t pid);
++int snd_pcm_direct_poll_descriptors(snd_pcm_t *pcm, struct pollfd *pfds,
++				    unsigned int space);
+ int snd_pcm_direct_poll_revents(snd_pcm_t *pcm, struct pollfd *pfds, unsigned int nfds, unsigned short *revents);
+ int snd_pcm_direct_info(snd_pcm_t *pcm, snd_pcm_info_t * info);
+ int snd_pcm_direct_hw_refine(snd_pcm_t *pcm, snd_pcm_hw_params_t *params);
 diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
-index 0ab7323..258d4de 100644
+index 258d4de..2e7d9d2 100644
 --- a/src/pcm/pcm_dmix.c
 +++ b/src/pcm/pcm_dmix.c
-@@ -434,15 +434,21 @@ static int snd_pcm_dmix_sync_ptr0(snd_pcm_t *pcm, snd_pcm_uframes_t slave_hw_ptr
- static int snd_pcm_dmix_sync_ptr(snd_pcm_t *pcm)
+@@ -462,17 +462,22 @@ static int snd_pcm_dmix_sync_ptr(snd_pcm_t *pcm)
+ static snd_pcm_state_t snd_pcm_dmix_state(snd_pcm_t *pcm)
  {
  	snd_pcm_direct_t *dmix = pcm->private_data;
 +	int err;
- 
- 	switch (snd_pcm_state(dmix->spcm)) {
+ 	snd_pcm_state_t state;
+ 	state = snd_pcm_state(dmix->spcm);
+ 	switch (state) {
+-	case SND_PCM_STATE_XRUN:
+ 	case SND_PCM_STATE_SUSPENDED:
  	case SND_PCM_STATE_DISCONNECTED:
- 		dmix->state = SND_PCM_STATE_DISCONNECTED;
- 		return -ENODEV;
+ 		dmix->state = state;
+ 		return state;
 +	case SND_PCM_STATE_XRUN:
-+		if ((err = snd_pcm_direct_slave_recover(dmix)) <0)
-+			return err;
-+		break;
- 	default:
- 		break;
- 	}
--
-+	if (snd_pcm_direct_client_chk_xrun(dmix, pcm))
-+		return -EPIPE;
- 	if (dmix->slowptr)
- 		snd_pcm_hwsync(dmix->spcm);
- 
-@@ -828,12 +834,16 @@ static snd_pcm_sframes_t snd_pcm_dmix_mmap_commit(snd_pcm_t *pcm,
- 
- 	switch (snd_pcm_state(dmix->spcm)) {
- 	case SND_PCM_STATE_XRUN:
--		return -EPIPE;
 +		if ((err = snd_pcm_direct_slave_recover(dmix)) < 0)
 +			return err;
 +		break;
- 	case SND_PCM_STATE_SUSPENDED:
- 		return -ESTRPIPE;
  	default:
  		break;
  	}
-+	if (snd_pcm_direct_client_chk_xrun(dmix, pcm))
-+		return -EPIPE;
- 	if (! size)
- 		return 0;
- 	snd_pcm_mmap_appl_forward(pcm, size);
-@@ -841,8 +851,10 @@ static snd_pcm_sframes_t snd_pcm_dmix_mmap_commit(snd_pcm_t *pcm,
- 		if ((err = snd_pcm_dmix_start_timer(pcm, dmix)) < 0)
- 			return err;
- 	} else if (dmix->state == SND_PCM_STATE_RUNNING ||
--		   dmix->state == SND_PCM_STATE_DRAINING)
--		snd_pcm_dmix_sync_ptr(pcm);
-+		   dmix->state == SND_PCM_STATE_DRAINING) {
-+		if ((err = snd_pcm_dmix_sync_ptr(pcm)) < 0)
-+			return err;
-+	}
- 	if (dmix->state == SND_PCM_STATE_RUNNING ||
- 	    dmix->state == SND_PCM_STATE_DRAINING) {
- 		/* ok, we commit the changes after the validation of area */
-@@ -858,10 +870,13 @@ static snd_pcm_sframes_t snd_pcm_dmix_mmap_commit(snd_pcm_t *pcm,
- static snd_pcm_sframes_t snd_pcm_dmix_avail_update(snd_pcm_t *pcm)
- {
- 	snd_pcm_direct_t *dmix = pcm->private_data;
-+	int err;
- 	
- 	if (dmix->state == SND_PCM_STATE_RUNNING ||
--	    dmix->state == SND_PCM_STATE_DRAINING)
--		snd_pcm_dmix_sync_ptr(pcm);
-+	    dmix->state == SND_PCM_STATE_DRAINING) {
-+		if ((err = snd_pcm_dmix_sync_ptr(pcm)) < 0)
-+			return err;
-+	}
- 	return snd_pcm_mmap_playback_avail(pcm);
- }
- 
++	snd_pcm_direct_client_chk_xrun(dmix, pcm);
+ 	if (dmix->state == STATE_RUN_PENDING)
+ 		return SNDRV_PCM_STATE_RUNNING;
+ 	return dmix->state;
+@@ -968,7 +973,7 @@ static const snd_pcm_fast_ops_t snd_pcm_dmix_fast_ops = {
+ 	.avail_update = snd_pcm_dmix_avail_update,
+ 	.mmap_commit = snd_pcm_dmix_mmap_commit,
+ 	.htimestamp = snd_pcm_dmix_htimestamp,
+-	.poll_descriptors = NULL,
++	.poll_descriptors = snd_pcm_direct_poll_descriptors,
+ 	.poll_descriptors_count = NULL,
+ 	.poll_revents = snd_pcm_dmix_poll_revents,
+ };
 diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
-index a1fed5d..570f180 100644
+index 570f180..09d165d 100644
 --- a/src/pcm/pcm_dshare.c
 +++ b/src/pcm/pcm_dshare.c
-@@ -162,7 +162,7 @@ static int snd_pcm_dshare_sync_ptr0(snd_pcm_t *pcm, snd_pcm_uframes_t slave_hw_p
- 	snd_pcm_direct_t *dshare = pcm->private_data;
- 	snd_pcm_uframes_t old_slave_hw_ptr, avail;
- 	snd_pcm_sframes_t diff;
--	
-+
- 	old_slave_hw_ptr = dshare->slave_hw_ptr;
- 	dshare->slave_hw_ptr = slave_hw_ptr;
- 	diff = slave_hw_ptr - old_slave_hw_ptr;
-@@ -202,15 +202,21 @@ static int snd_pcm_dshare_sync_ptr0(snd_pcm_t *pcm, snd_pcm_uframes_t slave_hw_p
- static int snd_pcm_dshare_sync_ptr(snd_pcm_t *pcm)
+@@ -255,17 +255,22 @@ static int snd_pcm_dshare_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
+ static snd_pcm_state_t snd_pcm_dshare_state(snd_pcm_t *pcm)
  {
  	snd_pcm_direct_t *dshare = pcm->private_data;
 +	int err;
- 
- 	switch (snd_pcm_state(dshare->spcm)) {
+ 	snd_pcm_state_t state;
+ 	state = snd_pcm_state(dshare->spcm);
+ 	switch (state) {
+-	case SND_PCM_STATE_XRUN:
+ 	case SND_PCM_STATE_SUSPENDED:
  	case SND_PCM_STATE_DISCONNECTED:
- 		dshare->state = SNDRV_PCM_STATE_DISCONNECTED;
- 		return -ENODEV;
+ 		dshare->state = state;
+ 		return state;
 +	case SND_PCM_STATE_XRUN:
-+		if ((err = snd_pcm_direct_slave_recover(dshare)) <0)
-+			return err;
-+		break;
- 	default:
- 		break;
- 	}
--
-+	if (snd_pcm_direct_client_chk_xrun(dshare, pcm))
-+		return -EPIPE;
- 	if (dshare->slowptr)
- 		snd_pcm_hwsync(dshare->spcm);
- 
-@@ -516,12 +522,16 @@ static snd_pcm_sframes_t snd_pcm_dshare_mmap_commit(snd_pcm_t *pcm,
- 
- 	switch (snd_pcm_state(dshare->spcm)) {
- 	case SND_PCM_STATE_XRUN:
--		return -EPIPE;
 +		if ((err = snd_pcm_direct_slave_recover(dshare)) < 0)
 +			return err;
 +		break;
- 	case SND_PCM_STATE_SUSPENDED:
- 		return -ESTRPIPE;
  	default:
  		break;
  	}
-+	if (snd_pcm_direct_client_chk_xrun(dshare, pcm))
-+		return -EPIPE;
- 	if (! size)
- 		return 0;
- 	snd_pcm_mmap_appl_forward(pcm, size);
-@@ -529,8 +539,10 @@ static snd_pcm_sframes_t snd_pcm_dshare_mmap_commit(snd_pcm_t *pcm,
- 		if ((err = snd_pcm_dshare_start_timer(dshare)) < 0)
- 			return err;
- 	} else if (dshare->state == SND_PCM_STATE_RUNNING ||
--		   dshare->state == SND_PCM_STATE_DRAINING)
--		snd_pcm_dshare_sync_ptr(pcm);
-+		   dshare->state == SND_PCM_STATE_DRAINING) {
-+		if ((err = snd_pcm_dshare_sync_ptr(pcm)) < 0)
-+			return err;
-+	}
- 	if (dshare->state == SND_PCM_STATE_RUNNING ||
- 	    dshare->state == SND_PCM_STATE_DRAINING) {
- 		/* ok, we commit the changes after the validation of area */
-@@ -546,10 +558,13 @@ static snd_pcm_sframes_t snd_pcm_dshare_mmap_commit(snd_pcm_t *pcm,
- static snd_pcm_sframes_t snd_pcm_dshare_avail_update(snd_pcm_t *pcm)
- {
- 	snd_pcm_direct_t *dshare = pcm->private_data;
-+	int err;
- 	
- 	if (dshare->state == SND_PCM_STATE_RUNNING ||
--	    dshare->state == SND_PCM_STATE_DRAINING)
--		snd_pcm_dshare_sync_ptr(pcm);
-+	    dshare->state == SND_PCM_STATE_DRAINING) {
-+		if ((err = snd_pcm_dshare_sync_ptr(pcm)) < 0)
-+			return err;
-+	}
- 	return snd_pcm_mmap_playback_avail(pcm);
- }
- 
++	snd_pcm_direct_client_chk_xrun(dshare, pcm);
+ 	if (dshare->state == STATE_RUN_PENDING)
+ 		return SNDRV_PCM_STATE_RUNNING;
+ 	return dshare->state;
+@@ -646,7 +651,7 @@ static const snd_pcm_fast_ops_t snd_pcm_dshare_fast_ops = {
+ 	.avail_update = snd_pcm_dshare_avail_update,
+ 	.mmap_commit = snd_pcm_dshare_mmap_commit,
+ 	.htimestamp = snd_pcm_dshare_htimestamp,
+-	.poll_descriptors = NULL,
++	.poll_descriptors = snd_pcm_direct_poll_descriptors,
+ 	.poll_descriptors_count = NULL,
+ 	.poll_revents = snd_pcm_direct_poll_revents,
+ };
 diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
-index 85f0ff4..6b721ec 100644
+index 6b721ec..2b0df89 100644
 --- a/src/pcm/pcm_dsnoop.c
 +++ b/src/pcm/pcm_dsnoop.c
-@@ -132,14 +132,21 @@ static int snd_pcm_dsnoop_sync_ptr(snd_pcm_t *pcm)
+@@ -208,17 +208,22 @@ static int snd_pcm_dsnoop_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
+ static snd_pcm_state_t snd_pcm_dsnoop_state(snd_pcm_t *pcm)
+ {
  	snd_pcm_direct_t *dsnoop = pcm->private_data;
- 	snd_pcm_uframes_t slave_hw_ptr, old_slave_hw_ptr, avail;
- 	snd_pcm_sframes_t diff;
--	
 +	int err;
-+
- 	switch (snd_pcm_state(dsnoop->spcm)) {
- 	case SND_PCM_STATE_DISCONNECTED:
- 		dsnoop->state = SNDRV_PCM_STATE_DISCONNECTED;
- 		return -ENODEV;
-+	case SND_PCM_STATE_XRUN:
-+		if ((err = snd_pcm_direct_slave_recover(dsnoop)) <0)
-+			return err;
-+		break;
- 	default:
- 		break;
- 	}
-+	if (snd_pcm_direct_client_chk_xrun(dsnoop, pcm))
-+		return -EPIPE;
- 	if (dsnoop->slowptr)
- 		snd_pcm_hwsync(dsnoop->spcm);
- 	old_slave_hw_ptr = dsnoop->slave_hw_ptr;
-@@ -410,12 +417,16 @@ static snd_pcm_sframes_t snd_pcm_dsnoop_mmap_commit(snd_pcm_t *pcm,
- 
- 	switch (snd_pcm_state(dsnoop->spcm)) {
- 	case SND_PCM_STATE_XRUN:
--		return -EPIPE;
-+		if ((err = snd_pcm_direct_slave_recover(dsnoop)) <0)
-+			return err;
-+		break;
+ 	snd_pcm_state_t state;
+ 	state = snd_pcm_state(dsnoop->spcm);
+ 	switch (state) {
+-	case SND_PCM_STATE_XRUN:
  	case SND_PCM_STATE_SUSPENDED:
- 		return -ESTRPIPE;
+ 	case SND_PCM_STATE_DISCONNECTED:
+ 		dsnoop->state = state;
+ 		return state;
++	case SND_PCM_STATE_XRUN:
++		if ((err = snd_pcm_direct_slave_recover(dsnoop)) < 0)
++			return err;
++		break;
  	default:
  		break;
  	}
-+	if (snd_pcm_direct_client_chk_xrun(dsnoop, pcm))
-+		return -EPIPE;
- 	if (dsnoop->state == SND_PCM_STATE_RUNNING) {
- 		err = snd_pcm_dsnoop_sync_ptr(pcm);
- 		if (err < 0)
++	snd_pcm_direct_client_chk_xrun(dsnoop, pcm);
+ 	return dsnoop->state;
+ }
+ 
+@@ -531,7 +536,7 @@ static const snd_pcm_fast_ops_t snd_pcm_dsnoop_fast_ops = {
+ 	.avail_update = snd_pcm_dsnoop_avail_update,
+ 	.mmap_commit = snd_pcm_dsnoop_mmap_commit,
+ 	.htimestamp = snd_pcm_dsnoop_htimestamp,
+-	.poll_descriptors = NULL,
++	.poll_descriptors = snd_pcm_direct_poll_descriptors,
+ 	.poll_descriptors_count = NULL,
+ 	.poll_revents = snd_pcm_direct_poll_revents,
+ };
 -- 
 2.7.4
