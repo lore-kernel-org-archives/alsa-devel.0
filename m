@@ -1,20 +1,18 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: what is exactly pcm.boundary?
-Date: Fri, 6 Jan 2017 12:27:38 -0600
-Message-ID: <26cd6dc6-8dc5-d333-5aba-570eae31fef3@linux.intel.com>
-References: <CAAu8Fse4GcOV5PkgnWQfBSQjM3SoiEurVuhvuNgQ3zD_8TeHbw@mail.gmail.com>
- <cf5b8891-5d8e-9df1-dbfa-b4471ef32f55@sakamocchi.jp>
- <CAAu8FscDY1R7EG2GsTmV9=JUWGh3K3HEw4RdF-g8NHjzFNYO8w@mail.gmail.com>
- <922adfc9-c436-905a-466e-7fbba239439e@ladisch.de>
- <CAAu8FseE8M-6bynuphCK5HxnpqKzh_Y_bmeHEf6meTTD4bU2eA@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 2/9] ASoC: Intel: Skylake: Add
+ set_tristate DAI ops to enable SSP MCLK
+Date: Fri, 6 Jan 2017 18:32:33 +0000
+Message-ID: <20170106183233.n6vbqzyczkclnbtc@sirena.org.uk>
+References: <1483341277-14475-1-git-send-email-jeeja.kp@intel.com>
+ <1483341277-14475-3-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8049391713067083999=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 2AA502677FE
- for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2017 19:27:41 +0100 (CET)
-In-Reply-To: <CAAu8FseE8M-6bynuphCK5HxnpqKzh_Y_bmeHEf6meTTD4bU2eA@mail.gmail.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1BA572677FD
+ for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2017 19:32:42 +0100 (CET)
+In-Reply-To: <1483341277-14475-3-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,35 +22,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ricardo Biehl <rbpoficial@gmail.com>, Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel <alsa-devel@alsa-project.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: jeeja.kp@intel.com
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 1/6/17 10:08 AM, Ricardo Biehl wrote:
-> 2017-01-06 6:09 GMT-02:00, Clemens Ladisch <clemens@ladisch.de>:
->>
->> Are you talking about code in your driver (where you are responsible for
->> asking the hardware), or user space code (where you must not directly
->> read hw_ptr)?  What is the actual problem you're trying to solve?
->>
->
-> Hello!
-> I'm developing a "live microphone system over local network" which are user
-> space programs (clients => server) transferring audio nearly real-time
-> (human imperceptible latency).
-> I need to elaborate a good solution of implementation to have everything working
-> as expected -- networking, scheduling, IO management etc -- However I need at
-> first make sure I can get control over audio.
->
-> I decided to use ioctl() level of communication with ALSA in kernel, and what I
-> need is synchronization :-)
-> I must know which sample the hardware is currently processing to prevent a lot
-> of losses or latency increasing.
 
-I would hate to sound pedantic but sample-accurate control (10us at 
-48kHz) is far from trivial. The hw_ptr points to the ring buffer, but 
-you may have additional samples queued up in DMA transfers, FIFOS, 
-codecs and last some analog delays. On a network-based solution the 
-different components typically don't use the same audio clock and you 
-will have to deal with drifts between source and sink.
-Best of luck.
+--===============8049391713067083999==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="vknwauanvohsuqpa"
+Content-Disposition: inline
+
+
+--vknwauanvohsuqpa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Jan 02, 2017 at 12:44:29PM +0530, jeeja.kp@intel.com wrote:
+> From: Jeeja KP <jeeja.kp@intel.com>
+>=20
+> Some machine requires MCLK to be enabled before SSP start up, so add
+> set_tristate() DAI ops to enable/disable SSP MCLK. This ops will be
+> called from machine which requires early MCLK and removes the usage of
+> enabling early MLCK in platform DAI prepare by default which is not
+> machine specific.
+
+This isn't an *obvious* use of the tristate operation...
+
+> +	/*
+> +	 * To enable ssp clk explicitly before gateway copier is configured,
+> +	 * need to use dma control IPC.
+> +	 * Disable will be done when DSP gateway copier modules are deleted.
+> +	 */
+> +	if (!tristate)
+> +		return skl_dsp_set_dma_control(ctx, mconfig);
+
+So we never clear this?  And to be frank I'd have no idea looking at
+this that it's doing anything to do with clocks though that's a bit of a
+separate thing.  It feels like DAPM might be a more natural place to do
+this, have a clock widget supplying the AIF widget for the interface.
+That'd be a bit more idiomatic.
+
+--vknwauanvohsuqpa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlhv4sEACgkQJNaLcl1U
+h9Ca2Af/cSzPXgx7QzNJju/T1l3o8rnx4q0rYT/U3AjWw7i/UwuFq/kDRcKF0M/I
+ZdxXkKvzdeltdzDztKzRi+sIiJj2ohU7lrQKCN5PWoMkrddcbrqdxonb0tpxhrw/
+lvojRwJfWB03G7Fj8uXdz3ngdSlg4FlFULbO1fxQ3B3oob7msLGk0H0FRQPvwd8L
+qINSO8VQGASP30kSTDyyywSBGNv1TO3zX+zaEkrJnCzsQLnd9Q38hTBMqjONztbP
+vYl8hZhHQA8XkiE6RvxXM4ZOG22RJxDdphrNe6H7x5wReDiLWAdhp2C2lpOSfLDi
+tXsD7iSpawCRD7x6YuJjsOMLAt9Vlg==
+=dF6m
+-----END PGP SIGNATURE-----
+
+--vknwauanvohsuqpa--
+
+--===============8049391713067083999==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8049391713067083999==--
