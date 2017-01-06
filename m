@@ -1,19 +1,23 @@
-From: Alexandrov Stanislav <neko@nya.ai>
-Subject: Re: [PATCH v2 1/2] ASoC: rt5640: Add support for
- rt5640 sound card found on HP Pavilion x2 10-p000 tablet.
-Date: Fri, 06 Jan 2017 03:27:27 +0300
-Message-ID: <ced44ec93cd9ccd7c086d5f80b8972e5@nya.ai>
-References: <cover.1483531270.git.neko@nya.ai>
- <9e2493401df1f2f0419fa175b4fc9a84eb971e28.1483531270.git.neko@nya.ai>
- <20170105034948.GJ3573@localhost>
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Subject: Re: [PATCH v2 1/2] ASoC: core: Add API to use DMI name
+ in sound card long name
+Date: Fri, 6 Jan 2017 14:07:19 +0800
+Message-ID: <586F3417.1010405@linux.intel.com>
+References: <cover.1483418875.git.mengdong.lin@linux.intel.com>
+ <0827a46b8200cc3e053f8fc6b3b428eac90a3618.1483418875.git.mengdong.lin@linux.intel.com>
+ <1483454417.4555.2.camel@loki>
+ <F46914AEC2663F4A9BB62374E5EEF8F881A13073@shsmsx102.ccr.corp.intel.com>
+ <1483471712.4063.17.camel@loki>
+ <984e6c66-c1c9-c37b-f6b6-d357cd967d48@intel.com>
+ <586C9E54.60201@linux.intel.com> <1483566423.2629.17.camel@loki>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from thorium.nya.ai (nya.ai [109.195.179.38])
- by alsa0.perex.cz (Postfix) with ESMTP id 9721E266DE1
- for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2017 01:27:29 +0100 (CET)
-In-Reply-To: <20170105034948.GJ3573@localhost>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D0BB2667A5
+ for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2017 07:04:19 +0100 (CET)
+In-Reply-To: <1483566423.2629.17.camel@loki>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,19 +27,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Alsa Devel <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>, "Lin, Mengdong" <mengdong.lin@intel.com>, "Koul, Vinod" <vinod.koul@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-PiBWaW5vZCBLb3VsINC/0LjRgdCw0LsgMjAxNy0wMS0wNSAwNjo0OToKPiAKPiBUaGlzIGxvb2tz
-IG9rYXksIGJ1dCB0aXRsZSBpcyBzYW1lIGZvciBib3RoIG9mIHRoZSBwYXRjaGVzLiBJdCB3b3Vs
-ZCBiZQo+IGJldHRlciB0byBkZXNjcmliZSB0aGUgY2hhbmdlIHlvdSBhcmUgZG9pbmcgYW5kIG5v
-dCB0aGUgb3V0Y29tZS4KPiAKPiBzbyBhIGJldHRlciB0aXRsZSBjb3VsZCBiZToKPiAKPiBBU29D
-OiBydDU2NDA6IEFkZCAiMTBFQzMyNzYiIEFDUEkgSUQKPiAKPiBhbmQgaW4gbG9nIHNheToKPiAK
-PiBIUCBQYXZpbGlvbiB4MiAxMC1wMDAwIGNvbWVzIHdpdGggcnQ1NjQwIHdpdGggQUNQSSBJRCAi
-MTBFQzMyNzYiIHNvIGFkZAo+IHRoYXQuCgpUaGFua3MgZm9yIGNvbW1lbnRzLiBBbmQgaSdtIHNv
-cnJ5IGZvciB0aGlzIGluY29udmVuaWVuY2UgLV8tIEkgd2lsbCAKc2VuZCBuZXcgcGF0Y2hzZXQg
-d2l0aCBjb3JyZWN0aW9ucy4KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+
+
+On 01/05/2017 05:47 AM, Liam Girdwood wrote:
+> On Wed, 2017-01-04 at 15:03 +0800, Mengdong Lin wrote:
+>>
+>> On 01/04/2017 04:09 AM, Pierre-Louis Bossart wrote:
+
+>> So we'll keep the manufacturer name.
+>>
+>> And let's put the "Product version" as well if available, Liam?
+>
+> Yes, lets keep the manufacturer name. I agree with Pierre in that we
+> dont want meaningless directories names.
+
+Okay. Thanks for your confirmation!
+
+> Creating a directory structures
+> like
+>
+> 1) manufacturer/product/board OR
+> 2) manufacturer/product OR
+> 3) manufacturer/board
+>
+> (2 or 3 if board or product is NULL)
+>
+> are fine by me and make finding the correct card simpler. You could even
+> replace the . with / in your longname to save the string conversion
+> later on.
+>
+> Liam
+
+May we keep the flat directory structure for UCM files?
+
+For the same manufacturer, its DMI vendor name could change, e.g. "Intel 
+Inc." or "Intel Corporation". In addition, there may be changes caused 
+by using upper case or low case characters. Since we don't want to 
+maintain a mapping table and just do verbatim copy of DMI info, it's 
+hard to group all the products/boards of one manufacturer into one UCM 
+directory. So I feel it may be better to keep the simple flat directory 
+structure.
+
+Thanks
+Mengdong
