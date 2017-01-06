@@ -1,71 +1,56 @@
-From: sutar.mounesh@gmail.com
-Subject: [PATCH 6/6 v3] alsa-lib:pcm: don't return bogus buffer
-	levels in xrun state
-Date: Fri,  6 Jan 2017 14:10:35 +0530
-Message-ID: <1483692035-1470-1-git-send-email-sutar.mounesh@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Andreas Pape <apape@de.adit-jv.com>, mounesh_sutar@mentor.com
+From: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Subject: [PATCH v2 0/7] uapi: export all headers under uapi directories
+Date: Fri,  6 Jan 2017 10:43:52 +0100
+Message-ID: <1483695839-18660-1-git-send-email-nicolas.dichtel@6wind.com>
+References: <bf83da6b-01ef-bf44-b3e1-ca6fc5636818@6wind.com>
+Return-path: <linux-mips-bounce@linux-mips.org>
+In-Reply-To: <bf83da6b-01ef-bf44-b3e1-ca6fc5636818@6wind.com>
+Sender: linux-mips-bounce@linux-mips.org
+Errors-to: linux-mips-bounce@linux-mips.org
+List-help: <mailto:ecartis@linux-mips.org?Subject=help>
+List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
+List-software: Ecartis version 1.0.0
+List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
+List-owner: <mailto:ralf@linux-mips.org>
+List-post: <mailto:linux-mips@linux-mips.org>
+List-archive: <http://www.linux-mips.org/archives/linux-mips/>
+To: arnd@arndb.de
+Cc: mmarek@suse.com, linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-arch@vger.kernel.
 List-Id: alsa-devel@alsa-project.org
 
-From: Andreas Pape <apape@de.adit-jv.com>
 
-Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
-Signed-off-by: Mounesh Sutar <mounesh_sutar@mentor.com>
+Here is the v2 of this series. The first 5 patches are just cleanup: some
+exported headers were still under a non-uapi directory.
+The patch 6 was spotted by code review: there is no in-tree user of this
+functionality.
+The last patch remove the use of header-y. Now all files under an uapi
+directory are exported.
 
-diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
-index 2e7d9d2..1948fa0 100644
---- a/src/pcm/pcm_dmix.c
-+++ b/src/pcm/pcm_dmix.c
-@@ -882,6 +882,9 @@ static snd_pcm_sframes_t snd_pcm_dmix_avail_update(snd_pcm_t *pcm)
- 		if ((err = snd_pcm_dmix_sync_ptr(pcm)) < 0)
- 			return err;
- 	}
-+	if (dmix->state == SND_PCM_STATE_XRUN)
-+		return -EPIPE;
-+
- 	return snd_pcm_mmap_playback_avail(pcm);
- }
- 
-diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
-index 09d165d..cdd1521 100644
---- a/src/pcm/pcm_dshare.c
-+++ b/src/pcm/pcm_dshare.c
-@@ -570,6 +570,9 @@ static snd_pcm_sframes_t snd_pcm_dshare_avail_update(snd_pcm_t *pcm)
- 		if ((err = snd_pcm_dshare_sync_ptr(pcm)) < 0)
- 			return err;
- 	}
-+	if (dshare->state == SND_PCM_STATE_XRUN)
-+		return -EPIPE;
-+
- 	return snd_pcm_mmap_playback_avail(pcm);
- }
- 
-diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
-index 2b0df89..60a5843 100644
---- a/src/pcm/pcm_dsnoop.c
-+++ b/src/pcm/pcm_dsnoop.c
-@@ -454,6 +454,9 @@ static snd_pcm_sframes_t snd_pcm_dsnoop_avail_update(snd_pcm_t *pcm)
- 		if (err < 0)
- 			return err;
- 	}
-+	if (dsnoop->state == SND_PCM_STATE_XRUN)
-+		return -EPIPE;
-+
- 	return snd_pcm_mmap_capture_avail(pcm);
- }
- 
--- 
-2.7.4
+asm is a bit special, most of architectures export asm/<arch>/include/uapi/asm
+only, but there is two exceptions:
+ - cris which exports arch/cris/include/uapi/arch-v[10|32];
+ - tile which exports arch/tile/include/uapi/arch.
+Because I don't know if the output of 'make headers_install_all' can be changed,
+I introduce subdir-y in Kbuild file. The headers_install_all target copies all
+asm/<arch>/include/uapi/asm to usr/include/asm-<arch> but
+arch/cris/include/uapi/arch-v[10|32] and arch/tile/include/uapi/arch are not
+prefixed (they are put asis in usr/include/). If it's acceptable to modify the
+output of 'make headers_install_all' to export asm headers in
+usr/include/asm-<arch>/asm, then I could remove this new subdir-y and exports
+everything under arch/<arch>/include/uapi/.
+
+Note also that exported files for asm are a mix of files listed by:
+ - include/uapi/asm-generic/Kbuild.asm;
+ - arch/x86/include/uapi/asm/Kbuild;
+ - arch/x86/include/asm/Kbuild.
+This complicates a lot the processing (arch/x86/include/asm/Kbuild is also
+used by scripts/Makefile.asm-generic).
+
+This series has been tested with a 'make headers_install' on x86 and a
+'make headers_install_all'. I've checked the result of both commands.
+
+This patch is built against linus tree. I don't know if it should be
+made against antoher tree.
+
+Comments are welcomed,
+Nicolas
