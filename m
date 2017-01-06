@@ -1,16 +1,19 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm_adsp: Add mechanism to preload
-	firmware on a core
-Date: Fri, 6 Jan 2017 14:24:41 +0000
-Message-ID: <1483712681-7494-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Mark Brand <mark.brand@nmmu.ac.za>
+Subject: gitcompile fail
+Date: Fri, 6 Jan 2017 17:49:09 +0200
+Message-ID: <bf26b6bb-6447-8ec9-bacf-9954a4b924e5@nmmu.ac.za>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 750F22670D7
- for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2017 15:23:47 +0100 (CET)
+Received: from securemail-pl-omx8.synaq.com (securemail-pl-omx8.synaq.com
+ [196.35.198.124])
+ by alsa0.perex.cz (Postfix) with ESMTP id 444C4267197
+ for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2017 16:49:28 +0100 (CET)
+Received: from [197.83.213.47] (helo=[192.168.1.99])
+ by securemail-pl-omx8.synaq.com with esmtpa (Exim 4.63)
+ (envelope-from <mark.brand@nmmu.ac.za>) id 1cPWlW-00030k-74
+ for alsa-devel@alsa-project.org; Fri, 06 Jan 2017 17:49:14 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,193 +23,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-As requirements to bring up audio paths are continuous getting tighter
-and the DSP download to most ADSP devices happens over an external bus
-it can become an important factor in the path bring up time. As such
-sometimes it is a reasonable trade off to download the firmware ahead of
-when it will be required and take a small hit on power consumption for
-keeping the core powered up.
-
-This "preloading" adds an additional control for each DSP core "DSPx
-Preload Switch" that when set to true will power up the DSP core and
-download the firmware currently selected in the "DSPx Firmware" control.
-Whilst the core is preloaded the current firmware can not be changed and
-the CODEC will be kept powered up and SYSCLK held on. Although future
-improvements may allow the SYSCLK to be powered down as well because
-the hardware only requires SYSCLK whilst the download is actually taking
-place, but this is not covered in this series.
-
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/arizona.h |  1 +
- sound/soc/codecs/cs47l24.c |  3 +++
- sound/soc/codecs/wm5102.c  |  2 ++
- sound/soc/codecs/wm5110.c  |  5 +++++
- sound/soc/codecs/wm_adsp.c | 45 ++++++++++++++++++++++++++++++++++++++++++++-
- sound/soc/codecs/wm_adsp.h | 11 +++++++++++
- 6 files changed, 66 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
-index 5670786..1822e3b 100644
---- a/sound/soc/codecs/arizona.h
-+++ b/sound/soc/codecs/arizona.h
-@@ -192,6 +192,7 @@ extern unsigned int arizona_mixer_values[ARIZONA_NUM_MIXER_INPUTS];
- #define ARIZONA_DSP_ROUTES(name) \
- 	{ name, NULL, name " Preloader"}, \
- 	{ name " Preloader", NULL, "SYSCLK" }, \
-+	{ name " Preload", NULL, name " Preloader"}, \
- 	{ name, NULL, name " Aux 1" }, \
- 	{ name, NULL, name " Aux 2" }, \
- 	{ name, NULL, name " Aux 3" }, \
-diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
-index 73559ae..0dd721e 100644
---- a/sound/soc/codecs/cs47l24.c
-+++ b/sound/soc/codecs/cs47l24.c
-@@ -173,6 +173,9 @@ SOC_ENUM("ISRC2 FSH", arizona_isrc_fsh[1]),
- SOC_ENUM("ISRC3 FSH", arizona_isrc_fsh[2]),
- SOC_ENUM("ASRC RATE 1", arizona_asrc_rate1),
- 
-+WM_ADSP2_PRELOAD_SWITCH("DSP2", 2),
-+WM_ADSP2_PRELOAD_SWITCH("DSP3", 3),
-+
- ARIZONA_MIXER_CONTROLS("DSP2L", ARIZONA_DSP2LMIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("DSP2R", ARIZONA_DSP2RMIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("DSP3L", ARIZONA_DSP3LMIX_INPUT_1_SOURCE),
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index e7ab37d..9edd239 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -855,6 +855,8 @@ ARIZONA_LHPF_CONTROL("LHPF2 Coefficients", ARIZONA_HPLPF2_2),
- ARIZONA_LHPF_CONTROL("LHPF3 Coefficients", ARIZONA_HPLPF3_2),
- ARIZONA_LHPF_CONTROL("LHPF4 Coefficients", ARIZONA_HPLPF4_2),
- 
-+WM_ADSP2_PRELOAD_SWITCH("DSP1", 1),
-+
- ARIZONA_MIXER_CONTROLS("DSP1L", ARIZONA_DSP1LMIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("DSP1R", ARIZONA_DSP1RMIX_INPUT_1_SOURCE),
- 
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 585fc70..01b5b6c 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -778,6 +778,11 @@ SOC_ENUM("ISRC2 FSH", arizona_isrc_fsh[1]),
- SOC_ENUM("ISRC3 FSH", arizona_isrc_fsh[2]),
- SOC_ENUM("ASRC RATE 1", arizona_asrc_rate1),
- 
-+WM_ADSP2_PRELOAD_SWITCH("DSP1", 1),
-+WM_ADSP2_PRELOAD_SWITCH("DSP2", 2),
-+WM_ADSP2_PRELOAD_SWITCH("DSP3", 3),
-+WM_ADSP2_PRELOAD_SWITCH("DSP4", 4),
-+
- ARIZONA_MIXER_CONTROLS("DSP1L", ARIZONA_DSP1LMIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("DSP1R", ARIZONA_DSP1RMIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("DSP2L", ARIZONA_DSP2LMIX_INPUT_1_SOURCE),
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index d72ccef..73dbe4c 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -2523,6 +2523,43 @@ static void wm_adsp2_set_dspclk(struct wm_adsp *dsp, unsigned int freq)
- 		adsp_err(dsp, "Failed to set clock rate: %d\n", ret);
- }
- 
-+int wm_adsp2_preloader_get(struct snd_kcontrol *kcontrol,
-+			   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct wm_adsp *dsp = snd_soc_codec_get_drvdata(codec);
-+
-+	ucontrol->value.integer.value[0] = dsp->preloaded;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(wm_adsp2_preloader_get);
-+
-+int wm_adsp2_preloader_put(struct snd_kcontrol *kcontrol,
-+			   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct wm_adsp *dsp = snd_soc_codec_get_drvdata(codec);
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	char preload[32];
-+
-+	snprintf(preload, ARRAY_SIZE(preload), "DSP%d Preload", mc->shift);
-+
-+	dsp->preloaded = ucontrol->value.integer.value[0];
-+
-+	if (ucontrol->value.integer.value[0])
-+		snd_soc_dapm_force_enable_pin(dapm, preload);
-+	else
-+		snd_soc_dapm_disable_pin(dapm, preload);
-+
-+	snd_soc_dapm_sync(dapm);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(wm_adsp2_preloader_put);
-+
- int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
- 			 struct snd_kcontrol *kcontrol, int event,
- 			 unsigned int freq)
-@@ -2654,10 +2691,16 @@ EXPORT_SYMBOL_GPL(wm_adsp2_event);
- 
- int wm_adsp2_codec_probe(struct wm_adsp *dsp, struct snd_soc_codec *codec)
- {
--	dsp->codec = codec;
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-+	char preload[32];
-+
-+	snprintf(preload, ARRAY_SIZE(preload), "DSP%d Preload", dsp->num);
-+	snd_soc_dapm_disable_pin(dapm, preload);
- 
- 	wm_adsp2_init_debugfs(dsp, codec);
- 
-+	dsp->codec = codec;
-+
- 	return snd_soc_add_codec_controls(codec,
- 					  &wm_adsp_fw_controls[dsp->num - 1],
- 					  1);
-diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index 411d062..3706b11 100644
---- a/sound/soc/codecs/wm_adsp.h
-+++ b/sound/soc/codecs/wm_adsp.h
-@@ -62,6 +62,7 @@ struct wm_adsp {
- 	int fw;
- 	int fw_ver;
- 
-+	bool preloaded;
- 	bool booted;
- 	bool running;
- 
-@@ -86,7 +87,12 @@ struct wm_adsp {
- 	SND_SOC_DAPM_PGA_E(wname, SND_SOC_NOPM, num, 0, NULL, 0, \
- 		wm_adsp1_event, SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD)
- 
-+#define WM_ADSP2_PRELOAD_SWITCH(wname, num) \
-+	SOC_SINGLE_EXT(wname " Preload Switch", SND_SOC_NOPM, num, 1, 0, \
-+		wm_adsp2_preloader_get, wm_adsp2_preloader_put)
-+
- #define WM_ADSP2(wname, num, event_fn) \
-+	SND_SOC_DAPM_SPK(wname " Preload", NULL), \
- {	.id = snd_soc_dapm_supply, .name = wname " Preloader", \
- 	.reg = SND_SOC_NOPM, .shift = num, .event = event_fn, \
- 	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD, \
-@@ -110,6 +116,11 @@ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
- int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 		   struct snd_kcontrol *kcontrol, int event);
- 
-+int wm_adsp2_preloader_get(struct snd_kcontrol *kcontrol,
-+			   struct snd_ctl_elem_value *ucontrol);
-+int wm_adsp2_preloader_put(struct snd_kcontrol *kcontrol,
-+			   struct snd_ctl_elem_value *ucontrol);
-+
- int wm_adsp_compr_open(struct wm_adsp *dsp, struct snd_compr_stream *stream);
- int wm_adsp_compr_free(struct snd_compr_stream *stream);
- int wm_adsp_compr_set_params(struct snd_compr_stream *stream,
--- 
-2.1.4
+SGkKCkkgYW0gdW5hYmxlIHRvIGNvbXBpbGUgQUxTQSBmcm9tIGZyZXNoIGdpdCBjbG9uZXMuICBQ
+bGVhc2Ugd291bGQgeW91IAphZHZpc2UgbWU/CgpNeSBwcm9jZWR1cmU6Cgpta2RpciAkSE9NRS9Q
+cm9qZWN0cy90aXdhaQpjZCAkSE9NRS9Qcm9qZWN0cy90aXdhaQpnaXQgY2xvbmUgZ2l0Oi8vZ2l0
+aHViLmNvbS90aXdhaS9hbHNhLWRyaXZlci1idWlsZC5naXQKZ2l0IGNsb25lIGdpdDovL2dpdGh1
+Yi5jb20vdGl3YWkvc291bmQuZ2l0CmNkIGFsc2EtZHJpdmVyLWJ1aWxkCmdpdCBjaGVja291dCBi
+dWlsZApjZCBhbHNhCi4vdXRpbHMvc2V0dXAtYWxzYS1rZXJuZWwgLWMgLi4vLi4vc291bmQKLi9n
+aXRjb21waWxlIC0td2l0aC1kZWJ1Zz1mdWxsIC0tZW5hYmxlLWR5bmFtaWMtbWlub3JzIC0td2l0
+aC1tb2RkaXI9dXBkYXRlcwoKUHJvYmxlbXMgc3RhcnQgd2l0aCBzZXR1cC1hbHNhLWtlcm5lbDoK
+Cm1hcmtAZXJ1ZGl0ZTp+L1Byb2plY3RzL3Rpd2FpL2Fsc2EtZHJpdmVyLWJ1aWxkL2Fsc2EkIAou
+L3V0aWxzL3NldHVwLWFsc2Eta2VybmVsIC1jIC4uLy4uL3NvdW5kCmNwOiBjYW5ub3Qgc3RhdCAn
+Li4vLi4vc291bmQvRG9jdW1lbnRhdGlvbi9zb3VuZC9hbHNhJzogTm8gc3VjaCBmaWxlIG9yIApk
+aXJlY3RvcnkKY3A6IGNhbm5vdCBzdGF0IAonLi4vLi4vc291bmQvRG9jdW1lbnRhdGlvbi9Eb2NC
+b29rL2Fsc2EtZHJpdmVyLWFwaS50bXBsJzogTm8gc3VjaCBmaWxlIApvciBkaXJlY3RvcnkKY3A6
+IGNhbm5vdCBzdGF0IAonLi4vLi4vc291bmQvRG9jdW1lbnRhdGlvbi9Eb2NCb29rL3dyaXRpbmct
+YW4tYWxzYS1kcml2ZXIudG1wbCc6IE5vIHN1Y2ggCmZpbGUgb3IgZGlyZWN0b3J5CmNwOiBjYW5u
+b3QgY3JlYXRlIGhhcmQgbGluayAnYWxzYS1rZXJuZWwvRG9jdW1lbnRhdGlvbi9Eb2NCb29rJyB0
+byAKJy4uLy4uL3NvdW5kL0RvY3VtZW50YXRpb24vRG9jQm9vay9zdHlsZXNoZWV0LnhzbCc6IE5v
+IHN1Y2ggZmlsZSBvciAKZGlyZWN0b3J5CgpTbyBJIHRyeSB0byBnaXRjb21waWxlIGFueXdheToK
+Cm1hcmtAZXJ1ZGl0ZTp+L1Byb2plY3RzL3Rpd2FpL2Fsc2EtZHJpdmVyLWJ1aWxkL2Fsc2EkIC4v
+Z2l0Y29tcGlsZSAKLS13aXRoLWRlYnVnPWZ1bGwgLS1lbmFibGUtZHluYW1pYy1taW5vcnMgLS13
+aXRoLW1vZGRpcj11cGRhdGVzCmdjYyB1dGlscy9tb2QtZGVwcy5jIC1vIHV0aWxzL21vZC1kZXBz
+CnV0aWxzL21vZC1kZXBzLmM6IEluIGZ1bmN0aW9uIOKAmG91dHB1dF9jYXJkX2xpc3TigJk6CnV0
+aWxzL21vZC1kZXBzLmM6MTA4Njo0OiB3YXJuaW5nOiBmb3JtYXQgbm90IGEgc3RyaW5nIGxpdGVy
+YWwgYW5kIG5vIApmb3JtYXQgYXJndW1lbnRzIFstV2Zvcm1hdC1zZWN1cml0eV0KICAgICBwcmlu
+dGYoY2FyZF9uYW1lKTsKICAgICBeCnV0aWxzL21vZC1kZXBzIC0tYmFzZWRpciAKL2hvbWUvbWFy
+ay9Qcm9qZWN0cy90aXdhaS9hbHNhLWRyaXZlci1idWlsZC9hbHNhL2Fsc2Eta2VybmVsIC0taGlk
+ZGVuZGlyIAovaG9tZS9tYXJrL1Byb2plY3RzL3Rpd2FpL2Fsc2EtZHJpdmVyLWJ1aWxkL2Fsc2Eg
+LS12ZXJzaW9uZGVwIAovaG9tZS9tYXJrL1Byb2plY3RzL3Rpd2FpL2Fsc2EtZHJpdmVyLWJ1aWxk
+L2Fsc2Eva2NvbmZpZy12ZXJzIC0tbWFrZWNvbmYgCiA+IHRvcGxldmVsLmNvbmZpZy5pbgpjYW4n
+dCBoYW5kbGUgJ2RlZmF1bHQgU05EX1NFUVVFTkNFUiAmJiBTTkRfUkFXTUlESScsIHRyYW5zbGF0
+aW5nIGFzIApkZXBlbmRzIG9uCmNhbid0IGhhbmRsZSAnZGVmYXVsdCBTTkRfU0VRVUVOQ0VSICYm
+IFNORF9PUEwzX0xJQicsIHRyYW5zbGF0aW5nIGFzIApkZXBlbmRzIG9uCmNhbid0IGhhbmRsZSAn
+ZGVmYXVsdCBTTkRfU0VRVUVOQ0VSICYmIFNORF9PUEw0X0xJQicsIHRyYW5zbGF0aW5nIGFzIApk
+ZXBlbmRzIG9uCmNhbid0IGhhbmRsZSAnZGVmYXVsdCBTTkRfU0VRVUVOQ0VSICYmIFNORF9TQkFX
+RScsIHRyYW5zbGF0aW5nIGFzIGRlcGVuZHMgb24KY2FuJ3QgaGFuZGxlICdkZWZhdWx0IFNORF9T
+RVFVRU5DRVIgJiYgU05EX0VNVTEwSzEnLCB0cmFuc2xhdGluZyBhcyAKZGVwZW5kcyBvbgpjYW4n
+dCBoYW5kbGUgd29yZCBJTlBVVD15IHByb3Blcmx5LCBzdXBwb3NpbmcgaXQncyBPSwpjYW4ndCBo
+YW5kbGUgd29yZCBJTlBVVD1TTkRfRVMxOTY4IHByb3Blcmx5LCBzdXBwb3NpbmcgaXQncyBPSwpj
+YW4ndCBoYW5kbGUgd29yZCBWSURFT19WNEwyPXkgcHJvcGVybHksIHN1cHBvc2luZyBpdCdzIE9L
+CmNhbid0IGhhbmRsZSB3b3JkIFZJREVPX1Y0TDI9U05EX0VTMTk2OCBwcm9wZXJseSwgc3VwcG9z
+aW5nIGl0J3MgT0sKY2FuJ3QgaGFuZGxlIHdvcmQgVklERU9fVjRMMj15IHByb3Blcmx5LCBzdXBw
+b3NpbmcgaXQncyBPSwpjYW4ndCBoYW5kbGUgd29yZCBWSURFT19WNEwyPVNORF9GTTgwMSBwcm9w
+ZXJseSwgc3VwcG9zaW5nIGl0J3MgT0sKY2FuJ3QgaGFuZGxlIHdvcmQgSU5QVVQ9eSBwcm9wZXJs
+eSwgc3VwcG9zaW5nIGl0J3MgT0sKY2FuJ3QgaGFuZGxlIHdvcmQgSU5QVVQ9U05EX01BRVNUUk8z
+IHByb3Blcmx5LCBzdXBwb3NpbmcgaXQncyBPSwpjYW4ndCBoYW5kbGUgd29yZCBJTlBVVD15IHBy
+b3Blcmx5LCBzdXBwb3NpbmcgaXQncyBPSwpjYW4ndCBoYW5kbGUgd29yZCBJTlBVVD1TTkRfSERB
+IHByb3Blcmx5LCBzdXBwb3NpbmcgaXQncyBPSwpjYW4ndCBoYW5kbGUgd29yZCBTTkRfSERBX0lO
+UFVUX0JFRVA9eSBwcm9wZXJseSwgc3VwcG9zaW5nIGl0J3MgT0sKY2FuJ3QgaGFuZGxlIHdvcmQg
+SU5QVVQ9eSBwcm9wZXJseSwgc3VwcG9zaW5nIGl0J3MgT0sKY2FuJ3QgaGFuZGxlIHdvcmQgSU5Q
+VVQ9U05EX1VTQl9DQUlBUSBwcm9wZXJseSwgc3VwcG9zaW5nIGl0J3MgT0sKV3JvbmcgY29uZGl0
+aW9uID0KTWFrZWZpbGU6MTUyOiByZWNpcGUgZm9yIHRhcmdldCAndG9wbGV2ZWwuY29uZmlnLmlu
+JyBmYWlsZWQKbWFrZTogKioqIFt0b3BsZXZlbC5jb25maWcuaW5dIEVycm9yIDEKbWFya0BlcnVk
+aXRlOn4vUHJvamVjdHMvdGl3YWkvYWxzYS1kcml2ZXItYnVpbGQvYWxzYSQKCkkgaGF2ZSBzdWNj
+ZXNzZnVsbHkgY29tcGlsZWQgQUxTQSBhdCB2YXJpb3VzIHRpbWVzIGluIHRoZSBwYXN0ICh5ZWFy
+cyAKYWdvKSwgYW5kIGhhdmUgaW50ZXJtaXR0ZW50bHkgd29ya2VkIG9uIGRldmVsb3BpbmcgYSBk
+cml2ZXIgZm9yIGFuIG9sZCAKZGV2aWNlLiAgSSdkIHZlcnkgbXVjaCBsaWtlIHRvIGZpbmlzaCB0
+aGF0IG9mZiBhbmQgc3VibWl0IGl0IG5vdywgYnV0IApJJ20gc3RydWdnbGluZyB0byBnZXQgb3V0
+IG9mIHRoZSBzdGFydGluZyBibG9ja3MhICBZb3Uga2luZCBhc3Npc3RhbmNlIAppcyBncmVhdGx5
+IGFwcHJlY2lhdGVkLgoKUmVnYXJkcwpNYXJrIEJyYW5kCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
+YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
