@@ -1,65 +1,212 @@
-From: Jerome Anand <jerome.anand@intel.com>
-Subject: [PATCH V2 7/7] ALSA: x86: hdmi: continue playback even
-	when display resolution changes
-Date: Sat,  7 Jan 2017 06:51:09 +0530
-Message-ID: <20170107012109.25744-8-jerome.anand@intel.com>
-References: <20170107012109.25744-1-jerome.anand@intel.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: wm_adsp: Add mechanism to preload
+	firmware on a core
+Date: Fri, 6 Jan 2017 14:24:41 +0000
+Message-ID: <1483712681-7494-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20170107012109.25744-1-jerome.anand@intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, rakesh.a.ughreja@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 750F22670D7
+ for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2017 15:23:47 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-V2hlbiB0aGUgZGlzcGxheSByZXNvbHV0aW9uIGNoYW5nZXMsIHRoZSBkcm0gZGlzYWJsZXMgdGhl
-CmRpc3BsYXkgcGlwZXMgZHVlIHRvIHdoaWNoIGF1ZGlvIHJlbmRlcmluZyBzdG9wcy4gQXQgdGhp
-cwp0aW1lLCB3ZSBuZWVkIHRvIGVuc3VyZSB0aGUgZXhpc3RpbmcgYXVkaW8gcG9pbnRlcnMgYW5k
-CmJ1ZmZlcnMgYXJlIGNsZWFyZWQgb3V0IHNvIHRoYXQgdGhlIHBsYXliYWNrIGNhbiByZXN0YXJ0
-ZWQKb25jZSB0aGUgZGlzcGxheSBwaXBlIGlzIGVuYWJsZWQgd2l0aCBhIGRpZmZlcmVudCBOL0NU
-UyB2YWx1ZXMKClNpZ25lZC1vZmYtYnk6IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IDxwaWVycmUtbG91
-aXMuYm9zc2FydEBsaW51eC5pbnRlbC5jb20+ClNpZ25lZC1vZmYtYnk6IEplcm9tZSBBbmFuZCA8
-amVyb21lLmFuYW5kQGludGVsLmNvbT4KLS0tCiBzb3VuZC94ODYvaW50ZWxfaGRtaV9hdWRpby5j
-IHwgMjEgKysrKysrKysrKysrKysrKysrLS0tCiAxIGZpbGUgY2hhbmdlZCwgMTggaW5zZXJ0aW9u
-cygrKSwgMyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC94ODYvaW50ZWxfaGRtaV9h
-dWRpby5jIGIvc291bmQveDg2L2ludGVsX2hkbWlfYXVkaW8uYwppbmRleCA5MWVmYmViLi5mNDA0
-MmY4IDEwMDY0NAotLS0gYS9zb3VuZC94ODYvaW50ZWxfaGRtaV9hdWRpby5jCisrKyBiL3NvdW5k
-L3g4Ni9pbnRlbF9oZG1pX2F1ZGlvLmMKQEAgLTQzLDYgKzQzLDcgQEAgc3RhdGljIERFRklORV9N
-VVRFWChoYWRfbXV0ZXgpOwogc3RhdGljIGludCBoZG1pX2NhcmRfaW5kZXggPSBTTkRSVl9ERUZB
-VUxUX0lEWDE7CiBzdGF0aWMgY2hhciAqaGRtaV9jYXJkX2lkID0gU05EUlZfREVGQVVMVF9TVFIx
-Owogc3RhdGljIHN0cnVjdCBzbmRfaW50ZWxoYWQgKmhhZF9kYXRhOworc3RhdGljIGludCB1bmRl
-cnJ1bl9jb3VudDsKIAogbW9kdWxlX3BhcmFtX25hbWVkKGluZGV4LCBoZG1pX2NhcmRfaW5kZXgs
-IGludCwgMDQ0NCk7CiBNT0RVTEVfUEFSTV9ERVNDKGluZGV4LApAQCAtMTExNCw2ICsxMTE1LDcg
-QEAgc3RhdGljIGludCBzbmRfaW50ZWxoYWRfb3BlbihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0g
-KnN1YnN0cmVhbSkKIAlpbnRlbGhhZGRhdGEgPSBzbmRfcGNtX3N1YnN0cmVhbV9jaGlwKHN1YnN0
-cmVhbSk7CiAJaGFkX3N0cmVhbSA9IGludGVsaGFkZGF0YS0+cHJpdmF0ZV9kYXRhOwogCXJ1bnRp
-bWUgPSBzdWJzdHJlYW0tPnJ1bnRpbWU7CisJdW5kZXJydW5fY291bnQgPSAwOwogCiAJcG1fcnVu
-dGltZV9nZXQoaW50ZWxoYWRkYXRhLT5kZXYpOwogCkBAIC0xNTAzLDEwICsxNTA1LDIzIEBAIHN0
-YXRpYyBzbmRfcGNtX3VmcmFtZXNfdCBzbmRfaW50ZWxoYWRfcGNtX3BvaW50ZXIoCiAKIAlidWZf
-aWQgPSBpbnRlbGhhZGRhdGEtPmN1cnJfYnVmICUgNDsKIAloYWRfcmVhZF9yZWdpc3RlcihBVURf
-QlVGX0FfTEVOR1RIICsgKGJ1Zl9pZCAqIEhBRF9SRUdfV0lEVEgpLCAmdCk7Ci0JaWYgKHQgPT0g
-MCkgewotCQlwcl9kZWJ1ZygiZGlzY292ZXJlZCBidWZmZXIgZG9uZSBmb3IgYnVmICVkXG4iLCBi
-dWZfaWQpOwotCQkvKiBoYWRfcHJvY2Vzc19idWZmZXJfZG9uZShpbnRlbGhhZGRhdGEpOyAqLwor
-CisJaWYgKCh0ID09IDApIHx8ICh0ID09ICgodTMyKS0xTCkpKSB7CisJCXVuZGVycnVuX2NvdW50
-Kys7CisJCXByX2RlYnVnKCJkaXNjb3ZlcmVkIGJ1ZmZlciBkb25lIGZvciBidWYgJWQsIGNvdW50
-ID0gJWRcbiIsCisJCQlidWZfaWQsIHVuZGVycnVuX2NvdW50KTsKKworCQlpZiAodW5kZXJydW5f
-Y291bnQgPiAoSEFEX01JTl9QRVJJT0RTLzIpKSB7CisJCQlwcl9kZWJ1ZygiYXNzdW1lIGF1ZGlv
-X2NvZGVjX3Jlc2V0LCB1bmRlcnJ1biA9ICVkIC0gZG8geHJ1blxuIiwKKwkJCQl1bmRlcnJ1bl9j
-b3VudCk7CisJCQl1bmRlcnJ1bl9jb3VudCA9IDA7CisJCQlyZXR1cm4gU05EUlZfUENNX1BPU19Y
-UlVOOworCQl9CisJfSBlbHNlIHsKKwkJLyogUmVzZXQgQ291bnRlciAqLworCQl1bmRlcnJ1bl9j
-b3VudCA9IDA7CiAJfQorCiAJdCA9IGludGVsaGFkZGF0YS0+YnVmX2luZm9bYnVmX2lkXS5idWZf
-c2l6ZSAtIHQ7CiAKIAlpZiAoaW50ZWxoYWRkYXRhLT5zdHJlYW1faW5mby5idWZmZXJfcmVuZGVy
-ZWQpCi0tIAoyLjkuMwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Au
-b3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwt
-Z2Z4Cg==
+As requirements to bring up audio paths are continuous getting tighter
+and the DSP download to most ADSP devices happens over an external bus
+it can become an important factor in the path bring up time. As such
+sometimes it is a reasonable trade off to download the firmware ahead of
+when it will be required and take a small hit on power consumption for
+keeping the core powered up.
+
+This "preloading" adds an additional control for each DSP core "DSPx
+Preload Switch" that when set to true will power up the DSP core and
+download the firmware currently selected in the "DSPx Firmware" control.
+Whilst the core is preloaded the current firmware can not be changed and
+the CODEC will be kept powered up and SYSCLK held on. Although future
+improvements may allow the SYSCLK to be powered down as well because
+the hardware only requires SYSCLK whilst the download is actually taking
+place, but this is not covered in this series.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/arizona.h |  1 +
+ sound/soc/codecs/cs47l24.c |  3 +++
+ sound/soc/codecs/wm5102.c  |  2 ++
+ sound/soc/codecs/wm5110.c  |  5 +++++
+ sound/soc/codecs/wm_adsp.c | 45 ++++++++++++++++++++++++++++++++++++++++++++-
+ sound/soc/codecs/wm_adsp.h | 11 +++++++++++
+ 6 files changed, 66 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index 5670786..1822e3b 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -192,6 +192,7 @@ extern unsigned int arizona_mixer_values[ARIZONA_NUM_MIXER_INPUTS];
+ #define ARIZONA_DSP_ROUTES(name) \
+ 	{ name, NULL, name " Preloader"}, \
+ 	{ name " Preloader", NULL, "SYSCLK" }, \
++	{ name " Preload", NULL, name " Preloader"}, \
+ 	{ name, NULL, name " Aux 1" }, \
+ 	{ name, NULL, name " Aux 2" }, \
+ 	{ name, NULL, name " Aux 3" }, \
+diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
+index 73559ae..0dd721e 100644
+--- a/sound/soc/codecs/cs47l24.c
++++ b/sound/soc/codecs/cs47l24.c
+@@ -173,6 +173,9 @@ SOC_ENUM("ISRC2 FSH", arizona_isrc_fsh[1]),
+ SOC_ENUM("ISRC3 FSH", arizona_isrc_fsh[2]),
+ SOC_ENUM("ASRC RATE 1", arizona_asrc_rate1),
+ 
++WM_ADSP2_PRELOAD_SWITCH("DSP2", 2),
++WM_ADSP2_PRELOAD_SWITCH("DSP3", 3),
++
+ ARIZONA_MIXER_CONTROLS("DSP2L", ARIZONA_DSP2LMIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("DSP2R", ARIZONA_DSP2RMIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("DSP3L", ARIZONA_DSP3LMIX_INPUT_1_SOURCE),
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index e7ab37d..9edd239 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -855,6 +855,8 @@ ARIZONA_LHPF_CONTROL("LHPF2 Coefficients", ARIZONA_HPLPF2_2),
+ ARIZONA_LHPF_CONTROL("LHPF3 Coefficients", ARIZONA_HPLPF3_2),
+ ARIZONA_LHPF_CONTROL("LHPF4 Coefficients", ARIZONA_HPLPF4_2),
+ 
++WM_ADSP2_PRELOAD_SWITCH("DSP1", 1),
++
+ ARIZONA_MIXER_CONTROLS("DSP1L", ARIZONA_DSP1LMIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("DSP1R", ARIZONA_DSP1RMIX_INPUT_1_SOURCE),
+ 
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index 585fc70..01b5b6c 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -778,6 +778,11 @@ SOC_ENUM("ISRC2 FSH", arizona_isrc_fsh[1]),
+ SOC_ENUM("ISRC3 FSH", arizona_isrc_fsh[2]),
+ SOC_ENUM("ASRC RATE 1", arizona_asrc_rate1),
+ 
++WM_ADSP2_PRELOAD_SWITCH("DSP1", 1),
++WM_ADSP2_PRELOAD_SWITCH("DSP2", 2),
++WM_ADSP2_PRELOAD_SWITCH("DSP3", 3),
++WM_ADSP2_PRELOAD_SWITCH("DSP4", 4),
++
+ ARIZONA_MIXER_CONTROLS("DSP1L", ARIZONA_DSP1LMIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("DSP1R", ARIZONA_DSP1RMIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("DSP2L", ARIZONA_DSP2LMIX_INPUT_1_SOURCE),
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index d72ccef..73dbe4c 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -2523,6 +2523,43 @@ static void wm_adsp2_set_dspclk(struct wm_adsp *dsp, unsigned int freq)
+ 		adsp_err(dsp, "Failed to set clock rate: %d\n", ret);
+ }
+ 
++int wm_adsp2_preloader_get(struct snd_kcontrol *kcontrol,
++			   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
++	struct wm_adsp *dsp = snd_soc_codec_get_drvdata(codec);
++
++	ucontrol->value.integer.value[0] = dsp->preloaded;
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(wm_adsp2_preloader_get);
++
++int wm_adsp2_preloader_put(struct snd_kcontrol *kcontrol,
++			   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
++	struct wm_adsp *dsp = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	char preload[32];
++
++	snprintf(preload, ARRAY_SIZE(preload), "DSP%d Preload", mc->shift);
++
++	dsp->preloaded = ucontrol->value.integer.value[0];
++
++	if (ucontrol->value.integer.value[0])
++		snd_soc_dapm_force_enable_pin(dapm, preload);
++	else
++		snd_soc_dapm_disable_pin(dapm, preload);
++
++	snd_soc_dapm_sync(dapm);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(wm_adsp2_preloader_put);
++
+ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *kcontrol, int event,
+ 			 unsigned int freq)
+@@ -2654,10 +2691,16 @@ EXPORT_SYMBOL_GPL(wm_adsp2_event);
+ 
+ int wm_adsp2_codec_probe(struct wm_adsp *dsp, struct snd_soc_codec *codec)
+ {
+-	dsp->codec = codec;
++	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
++	char preload[32];
++
++	snprintf(preload, ARRAY_SIZE(preload), "DSP%d Preload", dsp->num);
++	snd_soc_dapm_disable_pin(dapm, preload);
+ 
+ 	wm_adsp2_init_debugfs(dsp, codec);
+ 
++	dsp->codec = codec;
++
+ 	return snd_soc_add_codec_controls(codec,
+ 					  &wm_adsp_fw_controls[dsp->num - 1],
+ 					  1);
+diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
+index 411d062..3706b11 100644
+--- a/sound/soc/codecs/wm_adsp.h
++++ b/sound/soc/codecs/wm_adsp.h
+@@ -62,6 +62,7 @@ struct wm_adsp {
+ 	int fw;
+ 	int fw_ver;
+ 
++	bool preloaded;
+ 	bool booted;
+ 	bool running;
+ 
+@@ -86,7 +87,12 @@ struct wm_adsp {
+ 	SND_SOC_DAPM_PGA_E(wname, SND_SOC_NOPM, num, 0, NULL, 0, \
+ 		wm_adsp1_event, SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD)
+ 
++#define WM_ADSP2_PRELOAD_SWITCH(wname, num) \
++	SOC_SINGLE_EXT(wname " Preload Switch", SND_SOC_NOPM, num, 1, 0, \
++		wm_adsp2_preloader_get, wm_adsp2_preloader_put)
++
+ #define WM_ADSP2(wname, num, event_fn) \
++	SND_SOC_DAPM_SPK(wname " Preload", NULL), \
+ {	.id = snd_soc_dapm_supply, .name = wname " Preloader", \
+ 	.reg = SND_SOC_NOPM, .shift = num, .event = event_fn, \
+ 	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD, \
+@@ -110,6 +116,11 @@ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
+ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 		   struct snd_kcontrol *kcontrol, int event);
+ 
++int wm_adsp2_preloader_get(struct snd_kcontrol *kcontrol,
++			   struct snd_ctl_elem_value *ucontrol);
++int wm_adsp2_preloader_put(struct snd_kcontrol *kcontrol,
++			   struct snd_ctl_elem_value *ucontrol);
++
+ int wm_adsp_compr_open(struct wm_adsp *dsp, struct snd_compr_stream *stream);
+ int wm_adsp_compr_free(struct snd_compr_stream *stream);
+ int wm_adsp_compr_set_params(struct snd_compr_stream *stream,
+-- 
+2.1.4
