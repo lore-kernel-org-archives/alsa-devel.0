@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Clean up manifest info"
-	to the asoc tree
-Date: Fri, 06 Jan 2017 18:16:42 +0000
-Message-ID: <E1cPZ4E-0003Ah-7F@debutante>
-References: <1483330807-9518-4-git-send-email-jeeja.kp@intel.com>
+Subject: Applied "ASoC: wm_adsp: Add mechanism to preload
+	firmware on a core" to the asoc tree
+Date: Fri, 06 Jan 2017 18:16:45 +0000
+Message-ID: <E1cPZ4H-0003BV-PH@debutante>
+References: <1483712681-7494-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C15F02677FD
- for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2017 19:16:48 +0100 (CET)
-In-Reply-To: <1483330807-9518-4-git-send-email-jeeja.kp@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id AAF602677FD
+ for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2017 19:16:52 +0100 (CET)
+In-Reply-To: <1483712681-7494-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com, tiwai@suse.de, broonie@kernel.org, liam.r.girdwood@intel.com
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Clean up manifest info
+   ASoC: wm_adsp: Add mechanism to preload firmware on a core
 
 has been applied to the asoc tree at
 
@@ -53,345 +53,195 @@ to this mail.
 Thanks,
 Mark
 
->From eee0e16f8c3cf31fbbae4a88e51d25abebbaf147 Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Mon, 2 Jan 2017 09:50:04 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Clean up manifest info
+>From af813a6fd8740537bfa5801768e90cc95d9262a3 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Fri, 6 Jan 2017 14:24:41 +0000
+Subject: [PATCH] ASoC: wm_adsp: Add mechanism to preload firmware on a core
 
-Instead of passing the topology manifest info directly to IPC library,
-define the manifest info in topology and use this in IPC Library.
-This will remove the dependency on topology interface definition with
-IPC library.
+As requirements to bring up audio paths are continuous getting tighter
+and the DSP download to most ADSP devices happens over an external bus
+it can become an important factor in the path bring up time. As such
+sometimes it is a reasonable trade off to download the firmware ahead of
+when it will be required and take a small hit on power consumption for
+keeping the core powered up.
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+This "preloading" adds an additional control for each DSP core "DSPx
+Preload Switch" that when set to true will power up the DSP core and
+download the firmware currently selected in the "DSPx Firmware" control.
+Whilst the core is preloaded the current firmware can not be changed and
+the CODEC will be kept powered up and SYSCLK held on. Although future
+improvements may allow the SYSCLK to be powered down as well because
+the hardware only requires SYSCLK whilst the download is actually taking
+place, but this is not covered in this series.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/bxt-sst.c            | 25 ++++++++---------
- sound/soc/intel/skylake/skl-sst-dsp.h        |  4 +--
- sound/soc/intel/skylake/skl-sst-ipc.h        |  5 ++--
- sound/soc/intel/skylake/skl-topology.c       | 41 +++++++++++++---------------
- sound/soc/intel/skylake/skl-topology.h       | 13 +++++++++
- sound/soc/intel/skylake/skl-tplg-interface.h | 12 --------
- 6 files changed, 48 insertions(+), 52 deletions(-)
+ sound/soc/codecs/arizona.h |  1 +
+ sound/soc/codecs/cs47l24.c |  3 +++
+ sound/soc/codecs/wm5102.c  |  2 ++
+ sound/soc/codecs/wm5110.c  |  5 +++++
+ sound/soc/codecs/wm_adsp.c | 45 ++++++++++++++++++++++++++++++++++++++++++++-
+ sound/soc/codecs/wm_adsp.h | 11 +++++++++++
+ 6 files changed, 66 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-index 1f9f33d34000..e4a382870132 100644
---- a/sound/soc/intel/skylake/bxt-sst.c
-+++ b/sound/soc/intel/skylake/bxt-sst.c
-@@ -23,7 +23,6 @@
- #include "../common/sst-dsp.h"
- #include "../common/sst-dsp-priv.h"
- #include "skl-sst-ipc.h"
--#include "skl-tplg-interface.h"
+diff --git a/sound/soc/codecs/arizona.h b/sound/soc/codecs/arizona.h
+index 56707860657c..1822e3b3de80 100644
+--- a/sound/soc/codecs/arizona.h
++++ b/sound/soc/codecs/arizona.h
+@@ -192,6 +192,7 @@ extern unsigned int arizona_mixer_values[ARIZONA_NUM_MIXER_INPUTS];
+ #define ARIZONA_DSP_ROUTES(name) \
+ 	{ name, NULL, name " Preloader"}, \
+ 	{ name " Preloader", NULL, "SYSCLK" }, \
++	{ name " Preload", NULL, name " Preloader"}, \
+ 	{ name, NULL, name " Aux 1" }, \
+ 	{ name, NULL, name " Aux 2" }, \
+ 	{ name, NULL, name " Aux 3" }, \
+diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
+index 73559ae864b6..0dd721e3005d 100644
+--- a/sound/soc/codecs/cs47l24.c
++++ b/sound/soc/codecs/cs47l24.c
+@@ -173,6 +173,9 @@ SOC_ENUM("ISRC2 FSH", arizona_isrc_fsh[1]),
+ SOC_ENUM("ISRC3 FSH", arizona_isrc_fsh[2]),
+ SOC_ENUM("ASRC RATE 1", arizona_asrc_rate1),
  
- #define BXT_BASEFW_TIMEOUT	3000
- #define BXT_INIT_TIMEOUT	500
-@@ -52,7 +51,7 @@ static unsigned int bxt_get_errorcode(struct sst_dsp *ctx)
++WM_ADSP2_PRELOAD_SWITCH("DSP2", 2),
++WM_ADSP2_PRELOAD_SWITCH("DSP3", 3),
++
+ ARIZONA_MIXER_CONTROLS("DSP2L", ARIZONA_DSP2LMIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("DSP2R", ARIZONA_DSP2RMIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("DSP3L", ARIZONA_DSP3LMIX_INPUT_1_SOURCE),
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index e7ab37d0dd32..9edd239c3b06 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -855,6 +855,8 @@ ARIZONA_LHPF_CONTROL("LHPF2 Coefficients", ARIZONA_HPLPF2_2),
+ ARIZONA_LHPF_CONTROL("LHPF3 Coefficients", ARIZONA_HPLPF3_2),
+ ARIZONA_LHPF_CONTROL("LHPF4 Coefficients", ARIZONA_HPLPF4_2),
+ 
++WM_ADSP2_PRELOAD_SWITCH("DSP1", 1),
++
+ ARIZONA_MIXER_CONTROLS("DSP1L", ARIZONA_DSP1LMIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("DSP1R", ARIZONA_DSP1RMIX_INPUT_1_SOURCE),
+ 
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index 585fc706c1b0..01b5b6c66417 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -778,6 +778,11 @@ SOC_ENUM("ISRC2 FSH", arizona_isrc_fsh[1]),
+ SOC_ENUM("ISRC3 FSH", arizona_isrc_fsh[2]),
+ SOC_ENUM("ASRC RATE 1", arizona_asrc_rate1),
+ 
++WM_ADSP2_PRELOAD_SWITCH("DSP1", 1),
++WM_ADSP2_PRELOAD_SWITCH("DSP2", 2),
++WM_ADSP2_PRELOAD_SWITCH("DSP3", 3),
++WM_ADSP2_PRELOAD_SWITCH("DSP4", 4),
++
+ ARIZONA_MIXER_CONTROLS("DSP1L", ARIZONA_DSP1LMIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("DSP1R", ARIZONA_DSP1RMIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("DSP2L", ARIZONA_DSP2LMIX_INPUT_1_SOURCE),
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 593b7d1aed46..ed615ce8a496 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -2500,6 +2500,43 @@ static void wm_adsp2_set_dspclk(struct wm_adsp *dsp, unsigned int freq)
+ 		adsp_err(dsp, "Failed to set clock rate: %d\n", ret);
  }
  
- static int
--bxt_load_library(struct sst_dsp *ctx, struct skl_dfw_manifest *minfo)
-+bxt_load_library(struct sst_dsp *ctx, struct skl_lib_info *linfo, int lib_count)
- {
- 	struct snd_dma_buffer dmab;
- 	struct skl_sst *skl = ctx->thread_context;
-@@ -61,11 +60,11 @@ bxt_load_library(struct sst_dsp *ctx, struct skl_dfw_manifest *minfo)
- 	int ret = 0, i, dma_id, stream_tag;
- 
- 	/* library indices start from 1 to N. 0 represents base FW */
--	for (i = 1; i < minfo->lib_count; i++) {
--		ret = request_firmware(&fw, minfo->lib[i].name, ctx->dev);
-+	for (i = 1; i < lib_count; i++) {
-+		ret = request_firmware(&fw, linfo[i].name, ctx->dev);
- 		if (ret < 0) {
- 			dev_err(ctx->dev, "Request lib %s failed:%d\n",
--					minfo->lib[i].name, ret);
-+					linfo[i].name, ret);
- 			return ret;
- 		}
- 
-@@ -96,7 +95,7 @@ bxt_load_library(struct sst_dsp *ctx, struct skl_dfw_manifest *minfo)
- 		ret = skl_sst_ipc_load_library(&skl->ipc, dma_id, i);
- 		if (ret < 0)
- 			dev_err(ctx->dev, "IPC Load Lib for %s fail: %d\n",
--					minfo->lib[i].name, ret);
-+					linfo[i].name, ret);
- 
- 		ctx->dsp_ops.trigger(ctx->dev, false, stream_tag);
- 		ctx->dsp_ops.cleanup(ctx->dev, &dmab, stream_tag);
-@@ -119,8 +118,7 @@ bxt_load_library(struct sst_dsp *ctx, struct skl_dfw_manifest *minfo)
- static int sst_bxt_prepare_fw(struct sst_dsp *ctx,
- 			const void *fwdata, u32 fwsize)
- {
--	int stream_tag, ret, i;
--	u32 reg;
-+	int stream_tag, ret;
- 
- 	stream_tag = ctx->dsp_ops.prepare(ctx->dev, 0x40, fwsize, &ctx->dmab);
- 	if (stream_tag <= 0) {
-@@ -432,7 +430,6 @@ static int bxt_set_dsp_D0(struct sst_dsp *ctx, unsigned int core_id)
- 	int ret;
- 	struct skl_ipc_dxstate_info dx;
- 	unsigned int core_mask = SKL_DSP_CORE_MASK(core_id);
--	struct skl_dfw_manifest *minfo = &skl->manifest;
- 
- 	if (skl->fw_loaded == false) {
- 		skl->boot_complete = false;
-@@ -442,8 +439,9 @@ static int bxt_set_dsp_D0(struct sst_dsp *ctx, unsigned int core_id)
- 			return ret;
- 		}
- 
--		if (minfo->lib_count > 1) {
--			ret = bxt_load_library(ctx, minfo);
-+		if (skl->lib_count > 1) {
-+			ret = bxt_load_library(ctx, skl->lib_info,
-+						skl->lib_count);
- 			if (ret < 0) {
- 				dev_err(ctx->dev, "reload libs failed: %d\n", ret);
- 				return ret;
-@@ -640,8 +638,9 @@ int bxt_sst_init_fw(struct device *dev, struct skl_sst *ctx)
- 
- 	skl_dsp_init_core_state(sst);
- 
--	if (ctx->manifest.lib_count > 1) {
--		ret = sst->fw_ops.load_library(sst, &ctx->manifest);
-+	if (ctx->lib_count > 1) {
-+		ret = sst->fw_ops.load_library(sst, ctx->lib_info,
-+						ctx->lib_count);
- 		if (ret < 0) {
- 			dev_err(dev, "Load Library failed : %x\n", ret);
- 			return ret;
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
-index 7c272ba0f4b5..849410d0823e 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.h
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.h
-@@ -19,7 +19,6 @@
- #include <linux/interrupt.h>
- #include <sound/memalloc.h>
- #include "skl-sst-cldma.h"
--#include "skl-tplg-interface.h"
- #include "skl-topology.h"
- 
- struct sst_dsp;
-@@ -145,7 +144,7 @@ struct skl_dsp_fw_ops {
- 	int (*load_fw)(struct sst_dsp  *ctx);
- 	/* FW module parser/loader */
- 	int (*load_library)(struct sst_dsp *ctx,
--		struct skl_dfw_manifest *minfo);
-+		struct skl_lib_info *linfo, int count);
- 	int (*parse_fw)(struct sst_dsp *ctx);
- 	int (*set_state_D0)(struct sst_dsp *ctx, unsigned int core_id);
- 	int (*set_state_D3)(struct sst_dsp *ctx, unsigned int core_id);
-@@ -236,5 +235,4 @@ int skl_get_pvt_instance_id_map(struct skl_sst *ctx,
- void skl_freeup_uuid_list(struct skl_sst *ctx);
- 
- int skl_dsp_strip_extended_manifest(struct firmware *fw);
--
- #endif /*__SKL_SST_DSP_H__*/
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
-index cc40341233fa..9660ace379ab 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.h
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.h
-@@ -97,8 +97,9 @@ struct skl_sst {
- 	/* multi-core */
- 	struct skl_dsp_cores cores;
- 
--	/* tplg manifest */
--	struct skl_dfw_manifest manifest;
-+	/* library info */
-+	struct skl_lib_info  lib_info[SKL_MAX_LIB];
-+	int lib_count;
- 
- 	/* Callback to update D0i3C register */
- 	void (*update_d0i3c)(struct device *dev, bool enable);
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 422a9dee9270..e6e76237f46b 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -2300,20 +2300,21 @@ static int skl_tplg_control_load(struct snd_soc_component *cmpnt,
- 
- static int skl_tplg_fill_str_mfest_tkn(struct device *dev,
- 		struct snd_soc_tplg_vendor_string_elem *str_elem,
--		struct skl_dfw_manifest *minfo)
-+		struct skl *skl)
- {
- 	int tkn_count = 0;
- 	static int ref_count;
- 
- 	switch (str_elem->token) {
- 	case SKL_TKN_STR_LIB_NAME:
--		if (ref_count > minfo->lib_count - 1) {
-+		if (ref_count > skl->skl_sst->lib_count - 1) {
- 			ref_count = 0;
- 			return -EINVAL;
- 		}
- 
--		strncpy(minfo->lib[ref_count].name, str_elem->string,
--				ARRAY_SIZE(minfo->lib[ref_count].name));
-+		strncpy(skl->skl_sst->lib_info[ref_count].name,
-+			str_elem->string,
-+			ARRAY_SIZE(skl->skl_sst->lib_info[ref_count].name));
- 		ref_count++;
- 		tkn_count++;
- 		break;
-@@ -2328,14 +2329,14 @@ static int skl_tplg_fill_str_mfest_tkn(struct device *dev,
- 
- static int skl_tplg_get_str_tkn(struct device *dev,
- 		struct snd_soc_tplg_vendor_array *array,
--		struct skl_dfw_manifest *minfo)
-+		struct skl *skl)
- {
- 	int tkn_count = 0, ret;
- 	struct snd_soc_tplg_vendor_string_elem *str_elem;
- 
- 	str_elem = (struct snd_soc_tplg_vendor_string_elem *)array->value;
- 	while (tkn_count < array->num_elems) {
--		ret = skl_tplg_fill_str_mfest_tkn(dev, str_elem, minfo);
-+		ret = skl_tplg_fill_str_mfest_tkn(dev, str_elem, skl);
- 		str_elem++;
- 
- 		if (ret < 0)
-@@ -2349,13 +2350,13 @@ static int skl_tplg_get_str_tkn(struct device *dev,
- 
- static int skl_tplg_get_int_tkn(struct device *dev,
- 		struct snd_soc_tplg_vendor_value_elem *tkn_elem,
--		struct skl_dfw_manifest *minfo)
-+		struct skl *skl)
- {
- 	int tkn_count = 0;
- 
- 	switch (tkn_elem->token) {
- 	case SKL_TKN_U32_LIB_COUNT:
--		minfo->lib_count = tkn_elem->value;
-+		skl->skl_sst->lib_count = tkn_elem->value;
- 		tkn_count++;
- 		break;
- 
-@@ -2372,7 +2373,7 @@ static int skl_tplg_get_int_tkn(struct device *dev,
-  * type.
-  */
- static int skl_tplg_get_manifest_tkn(struct device *dev,
--		char *pvt_data, struct skl_dfw_manifest *minfo,
-+		char *pvt_data, struct skl *skl,
- 		int block_size)
- {
- 	int tkn_count = 0, ret;
-@@ -2388,7 +2389,7 @@ static int skl_tplg_get_manifest_tkn(struct device *dev,
- 		off += array->size;
- 		switch (array->type) {
- 		case SND_SOC_TPLG_TUPLE_TYPE_STRING:
--			ret = skl_tplg_get_str_tkn(dev, array, minfo);
-+			ret = skl_tplg_get_str_tkn(dev, array, skl);
- 
- 			if (ret < 0)
- 				return ret;
-@@ -2410,7 +2411,7 @@ static int skl_tplg_get_manifest_tkn(struct device *dev,
- 
- 		while (tkn_count <= array->num_elems - 1) {
- 			ret = skl_tplg_get_int_tkn(dev,
--					tkn_elem, minfo);
-+					tkn_elem, skl);
- 			if (ret < 0)
- 				return ret;
- 
-@@ -2431,7 +2432,7 @@ static int skl_tplg_get_manifest_tkn(struct device *dev,
-  * preceded by descriptors for type and size of data block.
-  */
- static int skl_tplg_get_manifest_data(struct snd_soc_tplg_manifest *manifest,
--			struct device *dev, struct skl_dfw_manifest *minfo)
-+			struct device *dev, struct skl *skl)
- {
- 	struct snd_soc_tplg_vendor_array *array;
- 	int num_blocks, block_size = 0, block_type, off = 0;
-@@ -2474,7 +2475,7 @@ static int skl_tplg_get_manifest_data(struct snd_soc_tplg_manifest *manifest,
- 		data = (manifest->priv.data + off);
- 
- 		if (block_type == SKL_TYPE_TUPLE) {
--			ret = skl_tplg_get_manifest_tkn(dev, data, minfo,
-+			ret = skl_tplg_get_manifest_tkn(dev, data, skl,
- 					block_size);
- 
- 			if (ret < 0)
-@@ -2492,27 +2493,23 @@ static int skl_tplg_get_manifest_data(struct snd_soc_tplg_manifest *manifest,
- static int skl_manifest_load(struct snd_soc_component *cmpnt,
- 				struct snd_soc_tplg_manifest *manifest)
- {
--	struct skl_dfw_manifest *minfo;
- 	struct hdac_ext_bus *ebus = snd_soc_component_get_drvdata(cmpnt);
- 	struct hdac_bus *bus = ebus_to_hbus(ebus);
- 	struct skl *skl = ebus_to_skl(ebus);
--	int ret = 0;
- 
- 	/* proceed only if we have private data defined */
- 	if (manifest->priv.size == 0)
- 		return 0;
- 
--	minfo = &skl->skl_sst->manifest;
--
--	skl_tplg_get_manifest_data(manifest, bus->dev, minfo);
-+	skl_tplg_get_manifest_data(manifest, bus->dev, skl);
- 
--	if (minfo->lib_count > HDA_MAX_LIB) {
-+	if (skl->skl_sst->lib_count > SKL_MAX_LIB) {
- 		dev_err(bus->dev, "Exceeding max Library count. Got:%d\n",
--					minfo->lib_count);
--		ret = -EINVAL;
-+					skl->skl_sst->lib_count);
-+		return  -EINVAL;
- 	}
- 
--	return ret;
++int wm_adsp2_preloader_get(struct snd_kcontrol *kcontrol,
++			   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
++	struct wm_adsp *dsp = snd_soc_codec_get_drvdata(codec);
++
++	ucontrol->value.integer.value[0] = dsp->preloaded;
++
 +	return 0;
- }
++}
++EXPORT_SYMBOL_GPL(wm_adsp2_preloader_get);
++
++int wm_adsp2_preloader_put(struct snd_kcontrol *kcontrol,
++			   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
++	struct wm_adsp *dsp = snd_soc_codec_get_drvdata(codec);
++	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	char preload[32];
++
++	snprintf(preload, ARRAY_SIZE(preload), "DSP%d Preload", mc->shift);
++
++	dsp->preloaded = ucontrol->value.integer.value[0];
++
++	if (ucontrol->value.integer.value[0])
++		snd_soc_dapm_force_enable_pin(dapm, preload);
++	else
++		snd_soc_dapm_disable_pin(dapm, preload);
++
++	snd_soc_dapm_sync(dapm);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(wm_adsp2_preloader_put);
++
+ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *kcontrol, int event,
+ 			 unsigned int freq)
+@@ -2631,10 +2668,16 @@ EXPORT_SYMBOL_GPL(wm_adsp2_event);
  
- static struct snd_soc_tplg_ops skl_tplg_ops  = {
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index a0d3158196f0..fefab0e99a3b 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -334,6 +334,19 @@ struct skl_pipeline {
- 	struct list_head node;
- };
- 
-+#define SKL_LIB_NAME_LENGTH 128
-+#define SKL_MAX_LIB 16
-+
-+struct skl_lib_info {
-+	char name[SKL_LIB_NAME_LENGTH];
-+	const struct firmware *fw;
-+};
-+
-+struct skl_manifest {
-+	u32 lib_count;
-+	struct skl_lib_info lib[SKL_MAX_LIB];
-+};
-+
- static inline struct skl *get_skl_ctx(struct device *dev)
+ int wm_adsp2_codec_probe(struct wm_adsp *dsp, struct snd_soc_codec *codec)
  {
- 	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
-diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
-index 2f6281e056d6..7a2febf99019 100644
---- a/sound/soc/intel/skylake/skl-tplg-interface.h
-+++ b/sound/soc/intel/skylake/skl-tplg-interface.h
-@@ -157,18 +157,6 @@ struct skl_dfw_algo_data {
- 	char params[0];
- } __packed;
+-	dsp->codec = codec;
++	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
++	char preload[32];
++
++	snprintf(preload, ARRAY_SIZE(preload), "DSP%d Preload", dsp->num);
++	snd_soc_dapm_disable_pin(dapm, preload);
  
--#define LIB_NAME_LENGTH	128
--#define HDA_MAX_LIB	16
--
--struct lib_info {
--	char name[LIB_NAME_LENGTH];
--} __packed;
--
--struct skl_dfw_manifest {
--	u32 lib_count;
--	struct lib_info lib[HDA_MAX_LIB];
--} __packed;
--
- enum skl_tkn_dir {
- 	SKL_DIR_IN,
- 	SKL_DIR_OUT
+ 	wm_adsp2_init_debugfs(dsp, codec);
+ 
++	dsp->codec = codec;
++
+ 	return snd_soc_add_codec_controls(codec,
+ 					  &wm_adsp_fw_controls[dsp->num - 1],
+ 					  1);
+diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
+index 411d062c13f2..3706b11053a3 100644
+--- a/sound/soc/codecs/wm_adsp.h
++++ b/sound/soc/codecs/wm_adsp.h
+@@ -62,6 +62,7 @@ struct wm_adsp {
+ 	int fw;
+ 	int fw_ver;
+ 
++	bool preloaded;
+ 	bool booted;
+ 	bool running;
+ 
+@@ -86,7 +87,12 @@ struct wm_adsp {
+ 	SND_SOC_DAPM_PGA_E(wname, SND_SOC_NOPM, num, 0, NULL, 0, \
+ 		wm_adsp1_event, SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD)
+ 
++#define WM_ADSP2_PRELOAD_SWITCH(wname, num) \
++	SOC_SINGLE_EXT(wname " Preload Switch", SND_SOC_NOPM, num, 1, 0, \
++		wm_adsp2_preloader_get, wm_adsp2_preloader_put)
++
+ #define WM_ADSP2(wname, num, event_fn) \
++	SND_SOC_DAPM_SPK(wname " Preload", NULL), \
+ {	.id = snd_soc_dapm_supply, .name = wname " Preloader", \
+ 	.reg = SND_SOC_NOPM, .shift = num, .event = event_fn, \
+ 	.event_flags = SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD, \
+@@ -110,6 +116,11 @@ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
+ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 		   struct snd_kcontrol *kcontrol, int event);
+ 
++int wm_adsp2_preloader_get(struct snd_kcontrol *kcontrol,
++			   struct snd_ctl_elem_value *ucontrol);
++int wm_adsp2_preloader_put(struct snd_kcontrol *kcontrol,
++			   struct snd_ctl_elem_value *ucontrol);
++
+ int wm_adsp_compr_open(struct wm_adsp *dsp, struct snd_compr_stream *stream);
+ int wm_adsp_compr_free(struct snd_compr_stream *stream);
+ int wm_adsp_compr_set_params(struct snd_compr_stream *stream,
 -- 
 2.11.0
