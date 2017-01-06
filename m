@@ -1,95 +1,92 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5640: quirks for Insyde
-	devices" to the asoc tree
-Date: Fri, 06 Jan 2017 18:16:48 +0000
-Message-ID: <E1cPZ4K-0003CM-U3@debutante>
-References: <1483566293-27911-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH V2 3/7] ALSA: add shell for
+ Intel HDMI LPE audio driver
+Date: Fri, 6 Jan 2017 14:33:16 -0600
+Message-ID: <83fac6e1-8dd8-375d-40b0-4e2a3939f0e7@linux.intel.com>
+References: <20170107012109.25744-1-jerome.anand@intel.com>
+ <20170107012109.25744-4-jerome.anand@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 379182677FD
- for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2017 19:16:55 +0100 (CET)
-In-Reply-To: <1483566293-27911-2-git-send-email-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: youling257 <youling257@gmail.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <20170107012109.25744-4-jerome.anand@intel.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Jerome Anand <jerome.anand@intel.com>, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org, rakesh.a.ughreja@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: Intel: bytcr_rt5640: quirks for Insyde devices
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 571800487837263e914ef68681e4ad6a57d49c7f Mon Sep 17 00:00:00 2001
-From: youling257 <youling257@gmail.com>
-Date: Wed, 4 Jan 2017 15:44:53 -0600
-Subject: [PATCH] ASoC: Intel: bytcr_rt5640: quirks for Insyde devices
-
-There are literally dozens of Insyde devices with a different
-name but with the same audio routing. Use a generic quirk to
-match on vendor name only to avoid recurring edits of the
-same thing.
-
-Signed-off-by: youling257 <youling257@gmail.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/boards/bytcr_rt5640.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 507a86a5eafe..613e5286555a 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -387,6 +387,16 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 						 BYT_RT5640_SSP0_AIF1),
- 
- 	},
-+	{
-+		.callback = byt_rt5640_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Insyde"),
-+		},
-+		.driver_data = (unsigned long *)(BYT_RT5640_IN3_MAP |
-+						 BYT_RT5640_MCLK_EN |
-+						 BYT_RT5640_SSP0_AIF1),
-+
-+	},
- 	{}
- };
- 
--- 
-2.11.0
+TWlub3IgbWlzc2VzIGhlcmUgYXMgd2VsbC4KCk9uIDEvNi8xNyA3OjIxIFBNLCBKZXJvbWUgQW5h
+bmQgd3JvdGU6Cj4gT24gQmF5dHJhaWwgYW5kIENoZXJyeXRyYWlsLCBIRGF1ZGlvIG1heSBiZSBm
+dXNlZCBvdXQgb3IgZGlzYWJsZWQKPiBieSB0aGUgQklPUy4gVGhpcyBkcml2ZXIgZW5hYmxlcyBh
+biBhbHRlcm5hdGUgcGF0aCB0byB0aGUgaTkxNQo+IGRpc3BsYXkgcmVnaXN0ZXJzIGFuZCBETUEu
+Cj4KPiBBbHRob3VnaCB0aGVyZSBpcyBubyBoYXJkd2FyZSBwYXRoIGJldHdlZW4gaTkxNSBkaXNw
+bGF5IGFuZCBMUEUvU1NUCj4gYXVkaW8gY2x1c3RlcnMsIHRoaXMgSERNSSBjYXBhYmlsaXR5IGlz
+IHJlZmVycmVkIHRvIGluIHRoZSBkb2N1bWVudGF0aW9uCj4gYXMgIkhETUkgTFBFIEF1ZGlvIiBz
+byB3ZSBrZWVwIHRoZSBuYW1lIGZvciBjb25zaXN0ZW5jeS4gVGhlcmUgaXMgbm8KPiBoYXJkd2Fy
+ZSBwYXRoIG9yIGNvbnRyb2wgZGVwZW5kZW5jaWVzIHdpdGggdGhlIExQRS9TU1QgRFNQIGZ1bmN0
+aW9uYWxpdHkuCj4KPiBUaGUgaGRtaS1scGUtYXVkaW8gZHJpdmVyIHdpbGwgYmUgcHJvYmVkIHdo
+ZW4gdGhlIGk5MTUgZHJpdmVyIGNyZWF0ZXMKPiBhIGNoaWxkIHBsYXRmb3JtIGRldmljZS4KPgo+
+IFNpbmNlIHRoaXMgZHJpdmVyIGlzIG5laXRoZXIgU29DIG5vciBQQ0ksIGEgbmV3IHg4NiBmb2xk
+ZXIgaXMgYWRkZWQKPgo+IFNpZ25lZC1vZmYtYnk6IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IDxwaWVy
+cmUtbG91aXMuYm9zc2FydEBsaW51eC5pbnRlbC5jb20+Cj4gU2lnbmVkLW9mZi1ieTogSmVyb21l
+IEFuYW5kIDxqZXJvbWUuYW5hbmRAaW50ZWwuY29tPgoKQ2hhbmdlIHRoZSBjb21taXQgdGl0bGUg
+dG8gcmVtb3ZlICdzaGVsbCcsIGUuZy4gJ2FkZCBCWVQvQ0hULVQgSERNSSBMUEUgCmF1ZGlvIGRy
+aXZlcicgYW5kIG1lbnRpb24gdGhhdCBpbmRpcmVjdCBjYWxscyB3aWxsIGJlIHJlbW92ZWQgbGF0
+ZXIgKHRvIApoZWxwIHdpdGggRFAgaW50ZWdyYXRpb24pCgoKPiBkaWZmIC0tZ2l0IGEvc291bmQv
+eDg2L0tjb25maWcgYi9zb3VuZC94ODYvS2NvbmZpZwo+IG5ldyBmaWxlIG1vZGUgMTAwNjQ0Cj4g
+aW5kZXggMDAwMDAwMC4uZTkyOTdkMAo+IC0tLSAvZGV2L251bGwKPiArKysgYi9zb3VuZC94ODYv
+S2NvbmZpZwo+IEBAIC0wLDAgKzEsMTYgQEAKPiArbWVudWNvbmZpZyBTTkRfWDg2Cj4gKwl0cmlz
+dGF0ZSAiWDg2IHNvdW5kIGRldmljZXMiCj4gKwktLS1oZWxwLS0tCj4gKwo+ICsJICBYODYgc291
+bmQgZGV2aWNlcyB0aGF0IGRvbid0IGZhbGwgdW5kZXIgU29DIG9yIFBDSSBjYXRlZ29yaWVzCj4g
+Kwo+ICtpZiBTTkRfWDg2Cj4gKwo+ICtjb25maWcgSERNSV9MUEVfQVVESU8KPiArCXRyaXN0YXRl
+ICJIRE1JIGF1ZGlvIHdpdGhvdXQgSERhdWRpbyBvbiBJbnRlbCBBdG9tIHBsYXRmb3JtcyIKPiAr
+CWRlcGVuZHMgb24gRFJNX0k5MTUKPiArCWRlZmF1bHQgbgo+ICsJaGVscAo+ICsJIENob29zZSB0
+aGlzIG9wdGlvbiB0byBzdXBwb3J0IEhETUkgTFBFIEF1ZGlvIG1vZGUKPiArCj4gK2VuZGlmCSMg
+U05EX1g4Ngo+IGRpZmYgLS1naXQgYS9zb3VuZC94ODYvTWFrZWZpbGUgYi9zb3VuZC94ODYvTWFr
+ZWZpbGUKPiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+IGluZGV4IDAwMDAwMDAuLmJhYTYzMzMKPiAt
+LS0gL2Rldi9udWxsCj4gKysrIGIvc291bmQveDg2L01ha2VmaWxlCj4gQEAgLTAsMCArMSw2IEBA
+Cj4gK2NjZmxhZ3MteSArPSAtSWRyaXZlcnMvZ3B1L2RybS9pOTE1Cgpmcm9tIFRha2FzaGk6IElz
+IGl0IGp1c3QgZm9yIGludGVsX2xwZV9hdWRpby5oPyAgVGhlbiByYXRoZXIgcHV0IAppbnRlbF9s
+cGVfYXVkaW8uaCB0byBpbmNsdWRlL2RybS4KSkE6IE9LCgo+ICsKPiArc25kLWhkbWktbHBlLWF1
+ZGlvLW9ianMgKz0gXAo+ICsJaW50ZWxfaGRtaV9scGVfYXVkaW8ubwo+ICsKPiArb2JqLSQoQ09O
+RklHX0hETUlfTFBFX0FVRElPKSArPSBzbmQtaGRtaS1scGUtYXVkaW8ubwo+IGRpZmYgLS1naXQg
+YS9zb3VuZC94ODYvaW50ZWxfaGRtaV9scGVfYXVkaW8uYyBiL3NvdW5kL3g4Ni9pbnRlbF9oZG1p
+X2xwZV9hdWRpby5jCj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQKPiBpbmRleCAwMDAwMDAwLi42MTM0
+N2FiCj4gLS0tIC9kZXYvbnVsbAo+ICsrKyBiL3NvdW5kL3g4Ni9pbnRlbF9oZG1pX2xwZV9hdWRp
+by5jCj4gQEAgLTAsMCArMSw2MjMgQEAKPiArLyoKPiArICogIGludGVsX2hkbWlfbHBlX2F1ZGlv
+LmMgLSBJbnRlbCBIRE1JIExQRSBhdWRpbyBkcml2ZXIgZm9yIEF0b20gcGxhdGZvcm1zCj4gKyAq
+Cj4gKyAqICBDb3B5cmlnaHQgKEMpIDIwMTYgSW50ZWwgQ29ycAo+ICsgKiAgQXV0aG9yczoKPiAr
+ICoJCUplcm9tZSBBbmFuZCA8amVyb21lLmFuYW5kQGludGVsLmNvbT4KPiArICoJCUFyYXZpbmQg
+U2lkZGFwcGFqaSA8YXJhdmluZHguc2lkZGFwcGFqaUBpbnRlbC5jb20+Cj4gKyAqICB+fn5+fn5+
+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
+fn5+fn5+fn5+fgo+ICsgKgo+ICsgKiAgVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7IHlv
+dSBjYW4gcmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKPiArICogIGl0IHVuZGVyIHRoZSB0
+ZXJtcyBvZiB0aGUgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgYXMgcHVibGlzaGVkIGJ5Cj4g
+KyAqICB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyB2ZXJzaW9uIDIgb2YgdGhlIExpY2Vu
+c2UuCj4gKyAqCj4gKyAqICBUaGlzIHByb2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUg
+dGhhdCBpdCB3aWxsIGJlIHVzZWZ1bCwgYnV0Cj4gKyAqICBXSVRIT1VUIEFOWSBXQVJSQU5UWTsg
+d2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mCj4gKyAqICBNRVJDSEFOVEFCSUxJ
+VFkgb3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0UuICBTZWUgdGhlIEdOVQo+ICsg
+KiAgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgo+ICsgKgo+ICsgKiB+
+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
+fn5+fn5+fn5+fn5+fn5+fgo+ICsgKi8KPiArCj4gKyNkZWZpbmUgcHJfZm10KGZtdCkJImhkbWlf
+bHBlX2F1ZGlvOiAiIGZtdAoKIEZyb20gVGFrYXNoaTogQmV0dGVyIHRvIHVzZSBkZXZfKigpIHZh
+cmlhbnQuCkpBOiBPSwoKPiArc3RhdGljIGlubGluZSBpbnQgaGRtaV9nZXRfZWxkKHZvaWQgKmVs
+ZCkKPiArewo+ICsJbWVtY3B5KGVsZCwgKHZvaWQgKikmaGxwZV9lbGQsIHNpemVvZihobHBlX2Vs
+ZCkpOwo+ICsKPiArCXsKPiArCQlpbnQgaTsKPiArCQl1aW50OF90ICplbGRfZGF0YSA9ICh1aW50
+OF90ICopJmhscGVfZWxkOwo+ICsKPiArCQlwcl9kZWJ1ZygiaGRtaV9nZXRfZWxkOlxue3siKTsK
+PiArCj4gKwkJZm9yIChpID0gMDsgaSA8IHNpemVvZihobHBlX2VsZCk7IGkrKykKPiArCQkJcHJf
+ZGVidWcoIjB4JXgsICIsIGVsZF9kYXRhW2ldKTsKPiArCj4gKwkJcHJfZGVidWcoIn19XG4iKTsK
+PiArCX0KPiArCXJldHVybiAwOwoKIEZyb20gVGFrYXNoaTogVGhlcmUgaXMgYSBoZXhkdW1wIGRl
+YnVnIHByaW50IGhlbHBlciwgdG9vLgpKQTogT0sKCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBs
+aXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9pbnRlbC1nZngK
