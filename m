@@ -1,61 +1,86 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH V2 5/7] ALSA: x86: hdmi:
- Improve position reporting
-Date: Fri, 6 Jan 2017 14:39:44 -0600
-Message-ID: <598fad66-32a3-f956-ab89-f1e5cfcb91e7@linux.intel.com>
-References: <20170107012109.25744-1-jerome.anand@intel.com>
- <20170107012109.25744-6-jerome.anand@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: bytcr-rt5640: fix settings in
+	internal clock mode" to the asoc tree
+Date: Fri, 06 Jan 2017 18:16:51 +0000
+Message-ID: <E1cPZ4N-0003DE-TL@debutante>
+References: <1483566293-27911-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20170107012109.25744-6-jerome.anand@intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Jerome Anand <jerome.anand@intel.com>, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, rakesh.a.ughreja@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E9BBD2677FD
+ for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2017 19:16:57 +0100 (CET)
+In-Reply-To: <1483566293-27911-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gMS82LzE3IDc6MjEgUE0sIEplcm9tZSBBbmFuZCB3cm90ZToKPiBVc2UgYSBodyByZWdpc3Rl
-ciB0byBjYWxjdWxhdGUgc3ViLXBlcmlvZCBwb3NpdGlvbiByZXBvcnRzLgo+IFRoaXMgbWFrZXMg
-UHVsc2VBdWRpbyBoYXBwaWVyLgoKIEZyb20gVGFrYXNoaTogVGhlcmUgaXMgbm8gYmlnIG1lcml0
-IHRvIGtlZXAgdGhpcyBhIHNlcGFyYXRlIHBhdGNoLgpQbGVhc2UgZm9sZCBpbnRvIHRoZSBtYWlu
-IHBhdGNoLiBZb3UgY2FuIHB1dCBzb21lIGNvbW1lbnQgaW4gdGhlIGNvZGUgCmZvciBleHBsYW5h
-dGlvbi4KCgoKPgo+IFNpZ25lZC1vZmYtYnk6IERhdmlkIEhlbm5pbmdzc29uIDxkYXZpZC5oZW5u
-aW5nc3NvbkBjYW5vbmljYWwuY29tPgo+IFNpZ25lZC1vZmYtYnk6IFBpZXJyZS1Mb3VpcyBCb3Nz
-YXJ0IDxwaWVycmUtbG91aXMuYm9zc2FydEBsaW51eC5pbnRlbC5jb20+Cj4gU2lnbmVkLW9mZi1i
-eTogSmVyb21lIEFuYW5kIDxqZXJvbWUuYW5hbmRAaW50ZWwuY29tPgo+IC0tLQo+ICBzb3VuZC94
-ODYvaW50ZWxfaGRtaV9hdWRpby5jIHwgMTIgKysrKysrKysrKystCj4gIDEgZmlsZSBjaGFuZ2Vk
-LCAxMSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4KPiBkaWZmIC0tZ2l0IGEvc291bmQv
-eDg2L2ludGVsX2hkbWlfYXVkaW8uYyBiL3NvdW5kL3g4Ni9pbnRlbF9oZG1pX2F1ZGlvLmMKPiBp
-bmRleCBkN2I1NzY1OC4uZDIwMzZiYyAxMDA2NDQKPiAtLS0gYS9zb3VuZC94ODYvaW50ZWxfaGRt
-aV9hdWRpby5jCj4gKysrIGIvc291bmQveDg2L2ludGVsX2hkbWlfYXVkaW8uYwo+IEBAIC0xNDg5
-LDYgKzE0ODksOCBAQCBzdGF0aWMgc25kX3BjbV91ZnJhbWVzX3Qgc25kX2ludGVsaGFkX3BjbV9w
-b2ludGVyKAo+ICB7Cj4gIAlzdHJ1Y3Qgc25kX2ludGVsaGFkICppbnRlbGhhZGRhdGE7Cj4gIAl1
-MzIgYnl0ZXNfcmVuZGVyZWQgPSAwOwo+ICsJdTMyIHQ7Cj4gKwlpbnQgYnVmX2lkOwo+Cj4gIAkv
-KiBwcl9kZWJ1Zygic25kX2ludGVsaGFkX3BjbV9wb2ludGVyIGNhbGxlZFxuIik7ICovCj4KPiBA
-QCAtMTQ5OSw2ICsxNTAxLDE0IEBAIHN0YXRpYyBzbmRfcGNtX3VmcmFtZXNfdCBzbmRfaW50ZWxo
-YWRfcGNtX3BvaW50ZXIoCj4gIAkJcmV0dXJuIFNORFJWX1BDTV9QT1NfWFJVTjsKPiAgCX0KPgo+
-ICsJYnVmX2lkID0gaW50ZWxoYWRkYXRhLT5jdXJyX2J1ZiAlIDQ7Cj4gKwloYWRfcmVhZF9yZWdp
-c3RlcihBVURfQlVGX0FfTEVOR1RIICsgKGJ1Zl9pZCAqIEhBRF9SRUdfV0lEVEgpLCAmdCk7Cj4g
-KwlpZiAodCA9PSAwKSB7Cj4gKwkJcHJfZGVidWcoImRpc2NvdmVyZWQgYnVmZmVyIGRvbmUgZm9y
-IGJ1ZiAlZFxuIiwgYnVmX2lkKTsKPiArCQkvKiBoYWRfcHJvY2Vzc19idWZmZXJfZG9uZShpbnRl
-bGhhZGRhdGEpOyAqLwo+ICsJfQo+ICsJdCA9IGludGVsaGFkZGF0YS0+YnVmX2luZm9bYnVmX2lk
-XS5idWZfc2l6ZSAtIHQ7Cj4gKwo+ICAJaWYgKGludGVsaGFkZGF0YS0+c3RyZWFtX2luZm8uYnVm
-ZmVyX3JlbmRlcmVkKQo+ICAJCWRpdl91NjRfcmVtKGludGVsaGFkZGF0YS0+c3RyZWFtX2luZm8u
-YnVmZmVyX3JlbmRlcmVkLAo+ICAJCQlpbnRlbGhhZGRhdGEtPnN0cmVhbV9pbmZvLnJpbmdfYnVm
-X3NpemUsCj4gQEAgLTE1MDYsNyArMTUxNiw3IEBAIHN0YXRpYyBzbmRfcGNtX3VmcmFtZXNfdCBz
-bmRfaW50ZWxoYWRfcGNtX3BvaW50ZXIoCj4KPiAgCWludGVsaGFkZGF0YS0+c3RyZWFtX2luZm8u
-YnVmZmVyX3B0ciA9IGJ5dGVzX3RvX2ZyYW1lcygKPiAgCQkJCQkJc3Vic3RyZWFtLT5ydW50aW1l
-LAo+IC0JCQkJCQlieXRlc19yZW5kZXJlZCk7Cj4gKwkJCQkJCWJ5dGVzX3JlbmRlcmVkICsgdCk7
-Cj4gIAlyZXR1cm4gaW50ZWxoYWRkYXRhLT5zdHJlYW1faW5mby5idWZmZXJfcHRyOwo+ICB9Cj4K
-PgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwt
-Z2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8v
-bGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+The patch
+
+   ASoC: Intel: bytcr-rt5640: fix settings in internal clock mode
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 60448b077ed93d227e6c117a9e87db76ff0c1911 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Wed, 4 Jan 2017 15:44:52 -0600
+Subject: [PATCH] ASoC: Intel: bytcr-rt5640: fix settings in internal clock
+ mode
+
+Frequency value of zero did not make sense, use same 24.576MHz
+setting and only change the clock source in idle mode
+
+Suggested-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/boards/bytcr_rt5640.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index e33e4777a65c..8d2fb2d6f532 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -142,7 +142,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 		 * for Jack detection and button press
+ 		 */
+ 		ret = snd_soc_dai_set_sysclk(codec_dai, RT5640_SCLK_S_RCCLK,
+-					     0,
++					     48000 * 512,
+ 					     SND_SOC_CLOCK_IN);
+ 		if (!ret) {
+ 			if ((byt_rt5640_quirk & BYT_RT5640_MCLK_EN) && priv->mclk)
+-- 
+2.11.0
