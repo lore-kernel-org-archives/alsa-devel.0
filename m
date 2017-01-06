@@ -1,127 +1,95 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH V2 2/7] drm/i915: Add support
- for audio driver notifications
-Date: Fri, 6 Jan 2017 14:20:06 -0600
-Message-ID: <4a3a114e-9b81-a834-9fc1-5c20d9355b6d@linux.intel.com>
-References: <20170107012109.25744-1-jerome.anand@intel.com>
- <20170107012109.25744-3-jerome.anand@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: bytcr_rt5640: quirks for Insyde
+	devices" to the asoc tree
+Date: Fri, 06 Jan 2017 18:16:48 +0000
+Message-ID: <E1cPZ4K-0003CM-U3@debutante>
+References: <1483566293-27911-2-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20170107012109.25744-3-jerome.anand@intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Jerome Anand <jerome.anand@intel.com>, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, rakesh.a.ughreja@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 379182677FD
+ for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2017 19:16:55 +0100 (CET)
+In-Reply-To: <1483566293-27911-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: youling257 <youling257@gmail.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-U2FtZSBoZXJlLCBtaXNzaW5nIGZpeGVzIG9uIGFncmVlZCBjb21tZW50cz8KCk9uIDEvNi8xNyA3
-OjIxIFBNLCBKZXJvbWUgQW5hbmQgd3JvdGU6Cj4gTm90aWZpYXRpb25zIGxpa2UgbW9kZSBjaGFu
-Z2UsIGhvdCBwbHVnIGFuZCBlZGlkIHRvCj4gdGhlIGF1ZGlvIGRyaXZlciBhcmUgYWRkZWQuIFRo
-aXMgaXMgaW50dXJuIHVzZWQgYnkgdGhlCj4gYXVkaW8gZHJpdmVyIGZvciBpdHMgZnVuY3Rpb25h
-bGl0eS4KPgo+IEEgbmV3IGludGVyZmFjZSBmaWxlIGNhcHR1cmluZyB0aGUgbm90aWZpY2F0aW9u
-cyBuZWVkZWQgYnkgdGhlCj4gYXVkaW8gZHJpdmVyIGlzIGFkZGVkCj4KPiBTaWduZWQtb2ZmLWJ5
-OiBQaWVycmUtTG91aXMgQm9zc2FydCA8cGllcnJlLWxvdWlzLmJvc3NhcnRAbGludXguaW50ZWwu
-Y29tPgo+IFNpZ25lZC1vZmYtYnk6IEplcm9tZSBBbmFuZCA8amVyb21lLmFuYW5kQGludGVsLmNv
-bT4KPiAtLS0KPiAgZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9kcnYuaCAgICAgICAgfCAgMyAr
-KysKPiAgZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYyAgICAgfCAgOCArKysrKysK
-PiAgZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfaGRtaS5jICAgICAgfCAgMSArCj4gIGRyaXZl
-cnMvZ3B1L2RybS9pOTE1L2ludGVsX2xwZV9hdWRpby5jIHwgNDYgKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKwo+ICBpbmNsdWRlL2RybS9pbnRlbF9scGVfYXVkaW8uaCAgICAgICAg
-ICB8ICAxICsKPiAgNSBmaWxlcyBjaGFuZ2VkLCA1OSBpbnNlcnRpb25zKCspCj4KPiBkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9kcnYuaCBiL2RyaXZlcnMvZ3B1L2RybS9p
-OTE1L2k5MTVfZHJ2LmgKPiBpbmRleCAyZjgxNjVlLi4yNjNiYzQ4IDEwMDY0NAo+IC0tLSBhL2Ry
-aXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmgKPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkx
-NS9pOTE1X2Rydi5oCj4gQEAgLTM2MzQsNiArMzYzNCw5IEBAIGludCAgaW50ZWxfbHBlX2F1ZGlv
-X3NldHVwKHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdik7Cj4gIHZvaWQgaW50ZWxf
-bHBlX2F1ZGlvX3RlYXJkb3duKHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdik7Cj4g
-IHZvaWQgaW50ZWxfbHBlX2F1ZGlvX2lycV9oYW5kbGVyKHN0cnVjdCBkcm1faTkxNV9wcml2YXRl
-ICpkZXZfcHJpdik7Cj4gIGJvb2wgaW50ZWxfbHBlX2F1ZGlvX2RldGVjdChzdHJ1Y3QgZHJtX2k5
-MTVfcHJpdmF0ZSAqZGV2X3ByaXYpOwo+ICt2b2lkIGludGVsX2xwZV9hdWRpb19ub3RpZnkoc3Ry
-dWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2LAo+ICsJCQl2b2lkICplbGQsIGludCBwb3J0
-LCBpbnQgdG1kc19jbGtfc3BlZWQsCj4gKwkJCWJvb2wgY29ubmVjdGVkKTsKPgo+ICAvKiBpbnRl
-bF9pMmMuYyAqLwo+ICBleHRlcm4gaW50IGludGVsX3NldHVwX2dtYnVzKHN0cnVjdCBkcm1faTkx
-NV9wcml2YXRlICpkZXZfcHJpdik7Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1
-L2ludGVsX2F1ZGlvLmMgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCj4gaW5k
-ZXggMTZjMjAyNy4uYWViMzdjMiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9p
-bnRlbF9hdWRpby5jCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVkaW8uYwo+
-IEBAIC0yNCw2ICsyNCw3IEBACj4gICNpbmNsdWRlIDxsaW51eC9rZXJuZWwuaD4KPiAgI2luY2x1
-ZGUgPGxpbnV4L2NvbXBvbmVudC5oPgo+ICAjaW5jbHVkZSA8ZHJtL2k5MTVfY29tcG9uZW50Lmg+
-Cj4gKyNpbmNsdWRlIDxkcm0vaW50ZWxfbHBlX2F1ZGlvLmg+Cj4gICNpbmNsdWRlICJpbnRlbF9k
-cnYuaCIKPgo+ICAjaW5jbHVkZSA8ZHJtL2RybVAuaD4KPiBAQCAtNjMwLDYgKzYzMSwxMCBAQCB2
-b2lkIGludGVsX2F1ZGlvX2NvZGVjX2VuYWJsZShzdHJ1Y3QgaW50ZWxfZW5jb2RlciAqaW50ZWxf
-ZW5jb2RlciwKPiAgCWlmIChhY29tcCAmJiBhY29tcC0+YXVkaW9fb3BzICYmIGFjb21wLT5hdWRp
-b19vcHMtPnBpbl9lbGRfbm90aWZ5KQo+ICAJCWFjb21wLT5hdWRpb19vcHMtPnBpbl9lbGRfbm90
-aWZ5KGFjb21wLT5hdWRpb19vcHMtPmF1ZGlvX3B0ciwKPiAgCQkJCQkJIChpbnQpIHBvcnQsIChp
-bnQpIHBpcGUpOwo+ICsKPiArCWlmIChIQVNfTFBFX0FVRElPKGRldl9wcml2KSkKPiArCQlpbnRl
-bF9scGVfYXVkaW9fbm90aWZ5KGRldl9wcml2LCBjb25uZWN0b3ItPmVsZCwgcG9ydCwKPiArCQkJ
-Y3J0Y19zdGF0ZS0+cG9ydF9jbG9jaywgdHJ1ZSk7Cj4gIH0KPgo+ICAvKioKPiBAQCAtNjYzLDYg
-KzY2OCw5IEBAIHZvaWQgaW50ZWxfYXVkaW9fY29kZWNfZGlzYWJsZShzdHJ1Y3QgaW50ZWxfZW5j
-b2RlciAqaW50ZWxfZW5jb2RlcikKPiAgCWlmIChhY29tcCAmJiBhY29tcC0+YXVkaW9fb3BzICYm
-IGFjb21wLT5hdWRpb19vcHMtPnBpbl9lbGRfbm90aWZ5KQo+ICAJCWFjb21wLT5hdWRpb19vcHMt
-PnBpbl9lbGRfbm90aWZ5KGFjb21wLT5hdWRpb19vcHMtPmF1ZGlvX3B0ciwKPiAgCQkJCQkJIChp
-bnQpIHBvcnQsIChpbnQpIHBpcGUpOwo+ICsKPiArCWlmIChIQVNfTFBFX0FVRElPKGRldl9wcml2
-KSkKPiArCQlpbnRlbF9scGVfYXVkaW9fbm90aWZ5KGRldl9wcml2LCBOVUxMLCBwb3J0LCAwLCBm
-YWxzZSk7Cj4gIH0KCgogRnJvbSBWaWxsZTogVGhlIGVudGlyZSAnY29ubmVjdGVkJyBwYXJhbWV0
-ZXIgc2VlbXMgc3VwZXJmbHVvdXMuIEFsc28gCndoeSBhcmVuJ3Qgd2UgcGFzc2luZyAncGlwZScg
-YWxvbmcgaGVyZT8gSG93IGlzIHRoZSBhdWRpbyBkcml2ZXIKc3VwcG9zZWQgdG8gZmluZCB0aGUg
-cmlnaHQgdGhpbmcgdG8gdXNlPwoKPgo+ICAvKioKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUv
-ZHJtL2k5MTUvaW50ZWxfaGRtaS5jIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfaGRtaS5j
-Cj4gaW5kZXggMGJjZmVhZC4uMzc3NTg0ZTEgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9ncHUvZHJt
-L2k5MTUvaW50ZWxfaGRtaS5jCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfaGRt
-aS5jCj4gQEAgLTM2LDYgKzM2LDcgQEAKPiAgI2luY2x1ZGUgPGRybS9kcm1fZWRpZC5oPgo+ICAj
-aW5jbHVkZSAiaW50ZWxfZHJ2LmgiCj4gICNpbmNsdWRlIDxkcm0vaTkxNV9kcm0uaD4KPiArI2lu
-Y2x1ZGUgPGRybS9pbnRlbF9scGVfYXVkaW8uaD4KPiAgI2luY2x1ZGUgImk5MTVfZHJ2LmgiCj4K
-PiAgc3RhdGljIHN0cnVjdCBkcm1fZGV2aWNlICppbnRlbF9oZG1pX3RvX2RldihzdHJ1Y3QgaW50
-ZWxfaGRtaSAqaW50ZWxfaGRtaSkKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUv
-aW50ZWxfbHBlX2F1ZGlvLmMgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9scGVfYXVkaW8u
-Ywo+IGluZGV4IDA1ZjVlNGUuLjJhM2MxZTggMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9ncHUvZHJt
-L2k5MTUvaW50ZWxfbHBlX2F1ZGlvLmMKPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRl
-bF9scGVfYXVkaW8uYwo+IEBAIC0zNTMsMyArMzUzLDQ5IEBAIHZvaWQgaW50ZWxfbHBlX2F1ZGlv
-X3RlYXJkb3duKHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdikKPgo+ICAJc3Bpbl91
-bmxvY2tfaXJxcmVzdG9yZSgmZGV2X3ByaXYtPmlycV9sb2NrLCBpcnFmbGFncyk7Cj4gIH0KPiAr
-Cj4gKwo+ICsvKioKPiArICogaW50ZWxfbHBlX2F1ZGlvX25vdGlmeSgpIC0gbm90aWZ5IGxwZSBh
-dWRpbyBldmVudAo+ICsgKiBhdWRpbyBkcml2ZXIgYW5kIGk5MTUKPiArICogQGRldl9wcml2OiB0
-aGUgaTkxNSBkcm0gZGV2aWNlIHByaXZhdGUgZGF0YQo+ICsgKiBAZWxkIDogRUxEIGRhdGEKPiAr
-ICogQHBvcnQ6IHBvcnQgaWQKPiArICogQHRtZHNfY2xrX3NwZWVkOiB0bWRzIGNsb2NrIGZyZXF1
-ZW5jeSBpbiBIego+ICsgKiBAY29ubmVjdGVkOiBoZG1pIGNvbm5lY3RlZC9kaXNjb25uZWN0ZWQK
-PiArICoKPiArICogTm90aWZ5IGxwZSBhdWRpbyBkcml2ZXIgb2YgZWxkIGNoYW5nZS4KPiArICov
-Cj4gK3ZvaWQgaW50ZWxfbHBlX2F1ZGlvX25vdGlmeShzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAq
-ZGV2X3ByaXYsCj4gKwkJCXZvaWQgKmVsZCwgaW50IHBvcnQsIGludCB0bWRzX2Nsa19zcGVlZCwK
-PiArCQkJYm9vbCBjb25uZWN0ZWQpCj4gK3sKPiArCXVuc2lnbmVkIGxvbmcgaXJxX2ZsYWdzOwo+
-ICsJc3RydWN0IGludGVsX2hkbWlfbHBlX2F1ZGlvX3BkYXRhICpwZGF0YSA9IE5VTEw7Cj4gKwo+
-ICsJaWYgKCFIQVNfTFBFX0FVRElPKGRldl9wcml2KSkKPiArCQlyZXR1cm47Cj4gKwo+ICsJcGRh
-dGEgPSBkZXZfZ2V0X3BsYXRkYXRhKAo+ICsJCSYoZGV2X3ByaXYtPmxwZV9hdWRpby5wbGF0ZGV2
-LT5kZXYpKTsKPiArCj4gKwlzcGluX2xvY2tfaXJxc2F2ZSgmcGRhdGEtPmxwZV9hdWRpb19zbG9j
-aywgaXJxX2ZsYWdzKTsKPiArCj4gKwlpZiAoZWxkICE9IE5VTEwpIHsKPiArCQltZW1jcHkocGRh
-dGEtPmVsZC5lbGRfZGF0YSwgZWxkLAo+ICsJCQlIRE1JX01BWF9FTERfQllURVMpOwo+ICsJCXBk
-YXRhLT5lbGQucG9ydF9pZCA9IHBvcnQ7Cj4gKwo+ICsJCWlmICh0bWRzX2Nsa19zcGVlZCkKPiAr
-CQkJcGRhdGEtPnRtZHNfY2xvY2tfc3BlZWQgPSB0bWRzX2Nsa19zcGVlZDsKPiArCX0KCiBGcm9t
-IFRha2FzaGk6IElmIGVsZD09TlVMTCBtZWFucyB0aGF0IG5vIEVMRCBpcyBmb3VuZCAob3IgCmRp
-c2Nvbm5lY3RlZCksIGl0J3MgYmV0dGVyIHRvIGNsZWFyIHBkYXRhIGVsZCBhcyB3ZWxsLCBzbyB0
-aGF0IHdlIGRvbid0IApsZWFrIHRoZSBwcmV2aW91cyBFTEQuCgpKQTogT0sKCj4gKwlwZGF0YS0+
-aGRtaV9jb25uZWN0ZWQgPSBjb25uZWN0ZWQ7Cj4gKwlpZiAocGRhdGEtPm5vdGlmeV9hdWRpb19s
-cGUpCj4gKwkJcGRhdGEtPm5vdGlmeV9hdWRpb19scGUoCj4gKwkJCShlbGQgIT0gTlVMTCkgPyAm
-cGRhdGEtPmVsZCA6IE5VTEwpOwo+ICsJZWxzZQo+ICsJCXBkYXRhLT5ub3RpZnlfcGVuZGluZyA9
-IHRydWU7Cj4gKwo+ICsJc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmcGRhdGEtPmxwZV9hdWRpb19z
-bG9jaywKPiArCQkJaXJxX2ZsYWdzKTsKPiArfQo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2RybS9p
-bnRlbF9scGVfYXVkaW8uaCBiL2luY2x1ZGUvZHJtL2ludGVsX2xwZV9hdWRpby5oCj4gaW5kZXgg
-YTY0YzQ0OS4uOTUyZGUwNSAxMDA2NDQKPiAtLS0gYS9pbmNsdWRlL2RybS9pbnRlbF9scGVfYXVk
-aW8uaAo+ICsrKyBiL2luY2x1ZGUvZHJtL2ludGVsX2xwZV9hdWRpby5oCj4gQEAgLTI1LDYgKzI1
-LDcgQEAKPiAgI2RlZmluZSBfSU5URUxfTFBFX0FVRElPX0hfCj4KPiAgI2luY2x1ZGUgPGxpbnV4
-L3R5cGVzLmg+Cj4gKyNpbmNsdWRlIDxsaW51eC9zcGlubG9ja190eXBlcy5oPgoKIEZyb20gVGFr
-YXNoaTogV2h5IGRvIHdlIG5lZWQgdG8gYWRkIGEgaGVhZGVyIGF0IHRoaXMgcG9pbnQgb3V0IG9m
-IHN1ZGRlbj8KCkpBOiBJdCB3YXMgZm9yIHNvbWUgd2FybmluZyByZW1vdmFsLiBJJ2xsIHRyeSB0
-byByZW1vdmUgdGhpcyBpZiBub3QgCmFwcGxpY2FibGUgbm93LgoKCj4KPiAgI2RlZmluZSBIRE1J
-X01BWF9FTERfQllURVMJMTI4Cj4KPgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJl
-ZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGlu
-Zm8vaW50ZWwtZ2Z4Cg==
+The patch
+
+   ASoC: Intel: bytcr_rt5640: quirks for Insyde devices
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 571800487837263e914ef68681e4ad6a57d49c7f Mon Sep 17 00:00:00 2001
+From: youling257 <youling257@gmail.com>
+Date: Wed, 4 Jan 2017 15:44:53 -0600
+Subject: [PATCH] ASoC: Intel: bytcr_rt5640: quirks for Insyde devices
+
+There are literally dozens of Insyde devices with a different
+name but with the same audio routing. Use a generic quirk to
+match on vendor name only to avoid recurring edits of the
+same thing.
+
+Signed-off-by: youling257 <youling257@gmail.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/boards/bytcr_rt5640.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 507a86a5eafe..613e5286555a 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -387,6 +387,16 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 						 BYT_RT5640_SSP0_AIF1),
+ 
+ 	},
++	{
++		.callback = byt_rt5640_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Insyde"),
++		},
++		.driver_data = (unsigned long *)(BYT_RT5640_IN3_MAP |
++						 BYT_RT5640_MCLK_EN |
++						 BYT_RT5640_SSP0_AIF1),
++
++	},
+ 	{}
+ };
+ 
+-- 
+2.11.0
