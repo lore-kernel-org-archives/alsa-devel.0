@@ -1,71 +1,27 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH V2 7/7] ALSA: x86: hdmi:
- continue playback even when display resolution changes
-Date: Fri, 6 Jan 2017 14:43:03 -0600
-Message-ID: <a6d4d4ed-17bd-6779-f886-849a23dfbbb6@linux.intel.com>
-References: <20170107012109.25744-1-jerome.anand@intel.com>
- <20170107012109.25744-8-jerome.anand@intel.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v2 4/7] x86: put msr-index.h in uapi
+Date: Fri, 6 Jan 2017 22:50:34 +0200
+Message-ID: <CAHp75VdDfopdSy-7oy87ZeosDB9+FN4zFBhErPWLQB7tH81zTw@mail.gmail.com>
+References: <bf83da6b-01ef-bf44-b3e1-ca6fc5636818@6wind.com>
+ <1483695839-18660-1-git-send-email-nicolas.dichtel@6wind.com> <1483695839-18660-5-git-send-email-nicolas.dichtel@6wind.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20170107012109.25744-8-jerome.anand@intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Jerome Anand <jerome.anand@intel.com>, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, rakesh.a.ughreja@intel.com
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-m68k-owner@vger.kernel.org>
+In-Reply-To: <1483695839-18660-5-git-send-email-nicolas.dichtel@6wind.com>
+Sender: linux-m68k-owner@vger.kernel.org
+To: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, mmarek@suse.com, linux-kbuild@vger.kernel.org, Linux Documentation List <linux-doc@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>, adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org, Cris <linux-cris-kernel@axis.com>, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, open list:LINUX FOR POWERPC PA SEMI PWRFICI
 List-Id: alsa-devel@alsa-project.org
 
-T24gMS82LzE3IDc6MjEgUE0sIEplcm9tZSBBbmFuZCB3cm90ZToKPiBXaGVuIHRoZSBkaXNwbGF5
-IHJlc29sdXRpb24gY2hhbmdlcywgdGhlIGRybSBkaXNhYmxlcyB0aGUKPiBkaXNwbGF5IHBpcGVz
-IGR1ZSB0byB3aGljaCBhdWRpbyByZW5kZXJpbmcgc3RvcHMuIEF0IHRoaXMKPiB0aW1lLCB3ZSBu
-ZWVkIHRvIGVuc3VyZSB0aGUgZXhpc3RpbmcgYXVkaW8gcG9pbnRlcnMgYW5kCj4gYnVmZmVycyBh
-cmUgY2xlYXJlZCBvdXQgc28gdGhhdCB0aGUgcGxheWJhY2sgY2FuIHJlc3RhcnRlZAo+IG9uY2Ug
-dGhlIGRpc3BsYXkgcGlwZSBpcyBlbmFibGVkIHdpdGggYSBkaWZmZXJlbnQgTi9DVFMgdmFsdWVz
-CgpBZGQgY29tbWVudCB0aGF0IHRoaXMgcGF0Y2ggc2VyaWVzIGhhcyBvbmx5IGJlZW4gdGVzdGVk
-IG9uIGhhcmR3YXJlIHdpdGggCmEgc2luZ2xlIEhETUkgY29ubmVjdG9yL3BpcGUgYW5kIGFkZGl0
-aW9uYWwgd29yayBtYXkgYmUgbmVlZGVkIGZvciBuZXdlciAKbWFjaGluZXMgd2l0aCAyIGNvbm5l
-Y3RvcnMuCgo+Cj4gU2lnbmVkLW9mZi1ieTogUGllcnJlLUxvdWlzIEJvc3NhcnQgPHBpZXJyZS1s
-b3Vpcy5ib3NzYXJ0QGxpbnV4LmludGVsLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBKZXJvbWUgQW5h
-bmQgPGplcm9tZS5hbmFuZEBpbnRlbC5jb20+Cj4gLS0tCj4gIHNvdW5kL3g4Ni9pbnRlbF9oZG1p
-X2F1ZGlvLmMgfCAyMSArKysrKysrKysrKysrKysrKystLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDE4
-IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pCj4KPiBkaWZmIC0tZ2l0IGEvc291bmQveDg2
-L2ludGVsX2hkbWlfYXVkaW8uYyBiL3NvdW5kL3g4Ni9pbnRlbF9oZG1pX2F1ZGlvLmMKPiBpbmRl
-eCA5MWVmYmViLi5mNDA0MmY4IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3g4Ni9pbnRlbF9oZG1pX2F1
-ZGlvLmMKPiArKysgYi9zb3VuZC94ODYvaW50ZWxfaGRtaV9hdWRpby5jCj4gQEAgLTQzLDYgKzQz
-LDcgQEAgc3RhdGljIERFRklORV9NVVRFWChoYWRfbXV0ZXgpOwo+ICBzdGF0aWMgaW50IGhkbWlf
-Y2FyZF9pbmRleCA9IFNORFJWX0RFRkFVTFRfSURYMTsKPiAgc3RhdGljIGNoYXIgKmhkbWlfY2Fy
-ZF9pZCA9IFNORFJWX0RFRkFVTFRfU1RSMTsKPiAgc3RhdGljIHN0cnVjdCBzbmRfaW50ZWxoYWQg
-KmhhZF9kYXRhOwo+ICtzdGF0aWMgaW50IHVuZGVycnVuX2NvdW50Owo+Cj4gIG1vZHVsZV9wYXJh
-bV9uYW1lZChpbmRleCwgaGRtaV9jYXJkX2luZGV4LCBpbnQsIDA0NDQpOwo+ICBNT0RVTEVfUEFS
-TV9ERVNDKGluZGV4LAo+IEBAIC0xMTE0LDYgKzExMTUsNyBAQCBzdGF0aWMgaW50IHNuZF9pbnRl
-bGhhZF9vcGVuKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtKQo+ICAJaW50ZWxo
-YWRkYXRhID0gc25kX3BjbV9zdWJzdHJlYW1fY2hpcChzdWJzdHJlYW0pOwo+ICAJaGFkX3N0cmVh
-bSA9IGludGVsaGFkZGF0YS0+cHJpdmF0ZV9kYXRhOwo+ICAJcnVudGltZSA9IHN1YnN0cmVhbS0+
-cnVudGltZTsKPiArCXVuZGVycnVuX2NvdW50ID0gMDsKPgo+ICAJcG1fcnVudGltZV9nZXQoaW50
-ZWxoYWRkYXRhLT5kZXYpOwo+Cj4gQEAgLTE1MDMsMTAgKzE1MDUsMjMgQEAgc3RhdGljIHNuZF9w
-Y21fdWZyYW1lc190IHNuZF9pbnRlbGhhZF9wY21fcG9pbnRlcigKPgo+ICAJYnVmX2lkID0gaW50
-ZWxoYWRkYXRhLT5jdXJyX2J1ZiAlIDQ7Cj4gIAloYWRfcmVhZF9yZWdpc3RlcihBVURfQlVGX0Ff
-TEVOR1RIICsgKGJ1Zl9pZCAqIEhBRF9SRUdfV0lEVEgpLCAmdCk7Cj4gLQlpZiAodCA9PSAwKSB7
-Cj4gLQkJcHJfZGVidWcoImRpc2NvdmVyZWQgYnVmZmVyIGRvbmUgZm9yIGJ1ZiAlZFxuIiwgYnVm
-X2lkKTsKPiAtCQkvKiBoYWRfcHJvY2Vzc19idWZmZXJfZG9uZShpbnRlbGhhZGRhdGEpOyAqLwo+
-ICsKPiArCWlmICgodCA9PSAwKSB8fCAodCA9PSAoKHUzMiktMUwpKSkgewo+ICsJCXVuZGVycnVu
-X2NvdW50Kys7Cj4gKwkJcHJfZGVidWcoImRpc2NvdmVyZWQgYnVmZmVyIGRvbmUgZm9yIGJ1ZiAl
-ZCwgY291bnQgPSAlZFxuIiwKPiArCQkJYnVmX2lkLCB1bmRlcnJ1bl9jb3VudCk7Cj4gKwo+ICsJ
-CWlmICh1bmRlcnJ1bl9jb3VudCA+IChIQURfTUlOX1BFUklPRFMvMikpIHsKPiArCQkJcHJfZGVi
-dWcoImFzc3VtZSBhdWRpb19jb2RlY19yZXNldCwgdW5kZXJydW4gPSAlZCAtIGRvIHhydW5cbiIs
-Cj4gKwkJCQl1bmRlcnJ1bl9jb3VudCk7Cj4gKwkJCXVuZGVycnVuX2NvdW50ID0gMDsKPiArCQkJ
-cmV0dXJuIFNORFJWX1BDTV9QT1NfWFJVTjsKPiArCQl9Cj4gKwl9IGVsc2Ugewo+ICsJCS8qIFJl
-c2V0IENvdW50ZXIgKi8KPiArCQl1bmRlcnJ1bl9jb3VudCA9IDA7Cj4gIAl9Cj4gKwo+ICAJdCA9
-IGludGVsaGFkZGF0YS0+YnVmX2luZm9bYnVmX2lkXS5idWZfc2l6ZSAtIHQ7Cj4KPiAgCWlmIChp
-bnRlbGhhZGRhdGEtPnN0cmVhbV9pbmZvLmJ1ZmZlcl9yZW5kZXJlZCkKPgoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlz
-dApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0
-b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+On Fri, Jan 6, 2017 at 11:43 AM, Nicolas Dichtel
+<nicolas.dichtel@6wind.com> wrote:
+> This header file is exported, thus move it to uapi.
+
+Just hint for the future:
+-M (move)
+-C (copy)
+-D (delete) [though this is NOT for applying]
+
+-- 
+With Best Regards,
+Andy Shevchenko
