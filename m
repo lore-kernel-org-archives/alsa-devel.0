@@ -1,15 +1,19 @@
 From: Alexandrov Stansilav <neko@nya.ai>
-Subject: [PATCH v3 0/2] ASoC: Add support for rt5640 sound card
-	found on HP Pavilion x2 10-p000 tablet.
-Date: Fri,  6 Jan 2017 03:09:45 +0300
-Message-ID: <cover.1483660468.git.neko@nya.ai>
+Subject: [PATCH v3 2/2] ASoC: Intel: Atom: Add HP Pavilion x2
+	10-p000 machine entry
+Date: Fri,  6 Jan 2017 03:09:47 +0300
+Message-ID: <c8079a54e4f98a4fdfec4b6a1f47a90189df36e4.1483660468.git.neko@nya.ai>
+References: <cover.1483660468.git.neko@nya.ai>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from thorium.nya.ai (thorium.nya.ai [109.195.179.38])
- by alsa0.perex.cz (Postfix) with ESMTP id B989B266AA3
+ by alsa0.perex.cz (Postfix) with ESMTP id BBFC12670D3
  for <alsa-devel@alsa-project.org>; Fri,  6 Jan 2017 01:09:54 +0100 (CET)
+In-Reply-To: <cover.1483660468.git.neko@nya.ai>
+In-Reply-To: <cover.1483660468.git.neko@nya.ai>
+References: <cover.1483660468.git.neko@nya.ai>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,30 +27,26 @@ To: alsa-devel@alsa-project.org
 Cc: vinod.koul@intel.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Inside DSDT table there is record for this soundcard:
+Add machine entry for HP X2 Pavilion 10-p100.
+This notebook contains rt5640 codec, but with ACPI ID "10EC3276".
 
-            Device (RTKC)
-            {
-                Name (_ADR, Zero)  // _ADR: Address
-                Name (_HID, "10EC3276")  // _HID: Hardware ID
-                Name (_CID, "10EC3276")  // _CID: Compatible ID
-                Name (_DDN, "ALC3276")  // _DDN: DOS Device Name
-                Name (_SUB, "103C827C")  // _SUB: Subsystem ID
-                Name (_PR0, Package (0x01)  // _PR0: Power Resources for D0
-
-original bugreport: https://bugzilla.kernel.org/show_bug.cgi?id=187621
-
-v3: Fixed patch descriptions
-v2: Splited patch to codec and sst parts
-
-
-Alexandrov Stansilav (2):
-  ASoc: rt5640: Add "10EC3276" ACPI ID
-  ASoC: Intel: Atom: Add HP Pavilion x2 10 10-p000 machine entry
-
- sound/soc/codecs/rt5640.c           | 1 +
+Signed-off-by: Alexandrov Stansilav <neko@nya.ai>
+---
  sound/soc/intel/atom/sst/sst_acpi.c | 2 ++
- 2 files changed, 3 insertions(+)
+ 1 file changed, 2 insertions(+)
 
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index f4d92bb..896ced2 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -463,6 +463,8 @@ static struct sst_acpi_mach sst_acpi_chv[] = {
+ 	/* some CHT-T platforms rely on RT5640, use Baytrail machine driver */
+ 	{"10EC5640", "bytcr_rt5640", "intel/fw_sst_22a8.bin", "bytcr_rt5640", cht_quirk,
+ 						&chv_platform_data },
++	{"10EC3276", "bytcr_rt5640", "intel/fw_sst_22a8.bin", "bytcr_rt5640", NULL,
++						&chv_platform_data },
+ 
+ 	{},
+ };
 -- 
 2.10.2
