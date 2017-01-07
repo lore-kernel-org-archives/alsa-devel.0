@@ -1,53 +1,79 @@
-From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Subject: [PATCH resend v3] ASoC: sun4i-codec: Add "Right Mixer"
- to "Line Out Mono Diff." route
-Date: Sun,  8 Jan 2017 02:57:06 +0800
-Message-ID: <20170107185706.20413-1-wens@csie.org>
-Reply-To: wens-jdAy2FN1RRM@public.gmane.org
+From: =?ISO-8859-1?Q?J=F6rg?= Krause <joerg.krause@embedded.rocks>
+Subject: ASoC: Using mxs-saif with simple-card
+Date: Sat, 07 Jan 2017 20:30:20 +0100
+Message-ID: <1483817420.2227.6.camel@embedded.rocks>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCMILY6JWQBBBC7UYTBQKGQEFNQIW2A-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.142])
+ by alsa0.perex.cz (Postfix) with ESMTP id 659E2261740
+ for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2017 20:30:32 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Linux-ALSA <alsa-devel@alsa-project.org>
+Cc: Mark Brown <broonie@kernel.org>, Mans Rullgard <mans@mansr.com>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-The mono differential output for "Line Out" downmixes the stereo audio
-from the mixer, instead of just taking the left channel.
-
-Add a route from the "Right Mixer" to "Line Out Source Playback Route"
-through the "Mono Differential" path, so DAPM doesn't shut down
-everything if the left channel is muted.
-
-Fixes: 0f909f98d7cb ("ASoC: sun4i-codec: Add support for A31 Line Out
-		      playback")
-Signed-off-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
----
-
-Last sent 2016/11/24. Resending with Maxime's ack.
-
----
- sound/soc/sunxi/sun4i-codec.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 848af01692a0..c3aab10fa085 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -1058,6 +1058,7 @@ static const struct snd_soc_dapm_route sun6i_codec_codec_dapm_routes[] = {
- 	{ "Line Out Source Playback Route", "Stereo", "Left Mixer" },
- 	{ "Line Out Source Playback Route", "Stereo", "Right Mixer" },
- 	{ "Line Out Source Playback Route", "Mono Differential", "Left Mixer" },
-+	{ "Line Out Source Playback Route", "Mono Differential", "Right Mixer" },
- 	{ "LINEOUT", NULL, "Line Out Source Playback Route" },
- 
- 	/* ADC Routes */
--- 
-2.11.0
+SGksCgpJIGFtIHRyeWluZyB0byB1c2UgdGhlIHNpbXBsZS1jYXJkIGZyYW1ld29yayBvbiBhIGN1
+c3RvbSBpLk1YMjggYm9hcmQuClRoZXJlIGFyZSB0d28gU0FJRiBtb2R1bGVzIChzYWlmMCBhbmQg
+c2FpZjEpIGluc3RhbnRpYXRlZCBvbiB0aGUgY3B1LiBBCnJlZmVyZW5jZSBmb3IgdGhlIHBsYXRm
+b3JtIGRyaXZlciBpcyBteHMtc2d0bDUwMDAuIFRoZSB0d28gY3B1IGRhaXMKc2FpZjAgYW5kIHNh
+aWYxIGFyZSBjb25uZWN0ZWQgdG8gdGhlIGF1ZGlvIGNvZGVjIHNndGw1MDAwLiBzYWlmMCBpcwp1
+c2VkIHRvIHBsYXliYWNrIGFuZCBzYWlmMSBpcyB1c2VkIHRvIGNhcHR1cmUuCgpVbmZvcnR1bmF0
+ZWx5LCBJIGRvIG5vdCBoYXZlIGEgc2d0bDUwMDAgY29kZWMsIGJ1dCBhIHBjbTUxMDJhLCBhIHdt
+ODUyNAphbmQgd204NzMxIHRvIHBsYXkgd2l0aC4KCkZvciBhbGwgdGhvc2UgY29kZWMgSSBjb3Bp
+ZWQgdGhlIG14cy1zZ3RsNTAwMCBkcml2ZXIsIGUuZy4gbXhzLQpwY201MTAyYSwgbXhzLXdtODUy
+NCwgbXhzLXdtODczMS4gSSB3aWxsIHJlZmVyIHRvIHRoZXNlIGRyaXZlcnMgYXMgbXhzLQo8Y29k
+ZWM+IGxhdGVyLiBUaGUgb25seSBkaWZmZXJlbmNlIHdhcyBpbiBzZXR0aW5nIHRoZSBtY2xrLiBU
+aGF0J3Mgd2h5CkknbSBpbnRlcmVzdGVkIGluIHVzaW5nIHRoZSBzaW1wbGUtY2FyZCBkcml2ZXIg
+Zm9yIHRoaXMgcGxhdGZvcm0uCgpXaXRoIHRoZSBoZWxwIG9mIE1hbnMgUnVsbGdhcmQgSSBjYW1l
+IHVwIHdpdGggdGhlc2UgcGFydHMgb2YgdGhlIGRldmljZQp0cmVlIG5vZGUgd2hlbiB1c2luZyB0
+aGUgd204NzMxIGNvZGVjOgoKc291bmQgewoJY29tcGF0aWJsZSA9ICJzaW1wbGUtYXVkaW8tY2Fy
+ZCI7CglzaW1wbGUtYXVkaW8tY2FyZCxuYW1lID0gImhibTEwLXdtODczMSI7CglzaW1wbGUtYXVk
+aW8tY2FyZCx3aWRnZXRzID0KCQkJCSJIZWFkcGhvbmUiLCAiSGVhZHBob25lIEphY2siLAoJCQkJ
+Ik1pY3JvcGhvbmUiLCAiTWljcm9waG9uZSBKYWNrIiwKCQkJCSJMaW5lIiwgIkxpbmUgSmFjayI7
+CglzaW1wbGUtYXVkaW8tY2FyZCxyb3V0aW5nID0KCQkJCSJIZWFkcGhvbmUgSmFjayIsICJSSFBP
+VVQiLAoJCQkJIkhlYWRwaG9uZSBKYWNrIiwgIkxIUE9VVCIsCgkJCQkiTExJTkVJTiIsICJMaW5l
+IEphY2siLAoJCQkJIk1JQ0lOIiwgIk1pYyBCaWFzIiwKCQkJCSJNaWMgQmlhcyIsICJNaWNyb3Bo
+b25lIEphY2siOwoKCXNpbXBsZS1hdWRpby1jYXJkLGRhaS1saW5rQDAgewoJCWZvcm1hdCA9ICJp
+MnMiOwoJCWJpdGNsb2NrLW1hc3RlciA9IDwmZGFpMF9tYXN0ZXI+OwoJCWZyYW1lLW1hc3RlciA9
+IDwmZGFpMF9tYXN0ZXI+OwoJCW1jbGstZnMgPSA8MjU2PjsKCgkJZGFpMF9tYXN0ZXI6IGNwdSB7
+CgkJCXNvdW5kLWRhaSA9IDwmc2FpZjA+OwoJCX07CgoJCWNvZGVjIHsKCQkJc291bmQtZGFpID0g
+PCZ3bTg3MzE+OwoJCQljbG9ja3MgPSA8JnNhaWYwPjsKCQl9OwoJfTsKCglzaW1wbGUtYXVkaW8t
+Y2FyZCxkYWktbGlua0AxIHsKCQlmb3JtYXQgPSAiaTJzIjsKCQliaXRjbG9jay1tYXN0ZXIgPSA8
+JmRhaTFfbWFzdGVyPjsKCQlmcmFtZS1tYXN0ZXIgPSA8JmRhaTFfbWFzdGVyPjsKCQltY2xrLWZz
+ID0gPDI1Nj47CgoJCWRhaTFfbWFzdGVyOiBjcHUgewoJCQlzb3VuZC1kYWkgPSA8JnNhaWYxPjsK
+CQl9OwoKCQljb2RlYyB7CgkJCXNvdW5kLWRhaSA9IDwmd204NzMxPjsKCQl9OwoJfTsKfTsKCiZz
+YWlmMCB7Cgkjc291bmQtZGFpLWNlbGxzID0gPDA+OwoJcGluY3RybC1uYW1lcyA9ICJkZWZhdWx0
+IjsKCXBpbmN0cmwtMCA9IDwmc2FpZjBfcGluc19hPjsKCWFzc2lnbmVkLWNsb2NrcyA9IDwmY2xr
+cyA1Mz47Cglhc3NpZ25lZC1jbG9jay1yYXRlcyA9IDwxMjI4ODAwMD47CglzdGF0dXMgPSAib2th
+eSI7Cn07Cgomc2FpZjEgewoJI3NvdW5kLWRhaS1jZWxscyA9IDwwPjsKCXBpbmN0cmwtbmFtZXMg
+PSAiZGVmYXVsdCI7CglwaW5jdHJsLTAgPSA8JnNhaWYxX3BpbnNfYT47Cglmc2wsc2FpZi1tYXN0
+ZXIgPSA8JnNhaWYwPjsKCXN0YXR1cyA9ICJva2F5IjsKfTsKCiZpMmMwIHsKCXBpbmN0cmwtbmFt
+ZXMgPSAiZGVmYXVsdCI7CglwaW5jdHJsLTAgPSA8JmkyYzBfcGluc19hPjsKCXN0YXR1cyA9ICJv
+a2F5IjsKCgl3bTg3MzE6IHdtODczMUAxYSB7CgkJI3NvdW5kLWRhaS1jZWxscyA9IDwwPjsKCQlj
+b21wYXRpYmxlID0gIndsZix3bTg3MzEiOwoJCXJlZyA9IDwweDFhPjsKCX07Cn07CgpGcm9tIG15
+IHVuZGVyc3RhbmRpbmcgb2YgdGhlIHNpbXBsZS1jYXJkIGZyYW1ld29yayB0aGlzIHNob3VsZCBj
+b25uZWN0CnNhaWYwIChjcHUgZGFpKSA8LT4gd204NzMxIChjb2RlYykgYW5kIHNhaWYxIChjcHUg
+ZGFpKSA8LT4gd204NzMxCihjb2RlYykgYXMgaXQgaXMgZG9uZSBpbiB0aGUgcHJvYmUgZnVuY3Rp
+b24gb2YgdGhlIG14cy08Y29kZWM+IGRyaXZlciwKcmlnaHQ/CgpIb3dldmVyLCB0aGlzIGdpdmVz
+IG1lIGEgd2FybmluZyB3aGlsZSBicmluZ2luZyB1cCB0aGUgYm9hcmQ6CgpzeXNmczogY2Fubm90
+IGNyZWF0ZSBkdXBsaWNhdGUgZmlsZW5hbWUgJy9kZXZpY2VzL3NvYzAvc291bmQvbXhzLXNhaWYt
+CndtODczMS1oaWZpJy4KCk5vdGUsIHRoYXQgdGhlIHNpbXBsZS1jYXJkIGZyYW1ld29yayB3b3Jr
+cyBmaW5lIGZvciBteHMtc2FpZiBpZiB1c2luZwpvbmx5IHRoZSBkYWkwIGxpbmsgKHBsYXliYWNr
+KSBhbmQgbGVhdmluZyB0aGUgZGFpMSBsaW5rIChjYXB0dXJlKS4KCkFtIEkgZG9pbmcgc29tZXRo
+aW5nIHdyb25nIGhlcmU/CgpJcyBpdCBwb3NzaWJsZSB0byBtYXAgdGhlIHR3byBkYWkgbGlua3Mg
+dXNpbmcgdGhlIGN1cnJlbnQgc2ltcGxlLWNhcmQKZnJhbWV3b3JrPwoKSXMgYW55b25lIHVzaW5n
+IHRoZSBzaW1wbGUtY2FyZCBmcmFtZXdvcmsgb24gbXhzLXNhaWYgdXNpbmcgYm90aApwbGF5YmFj
+ayBhbmQgY2FwdHVyZT8KCkJlc3QgcmVnYXJkcywKSsO2cmcgS3JhdXNlCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
