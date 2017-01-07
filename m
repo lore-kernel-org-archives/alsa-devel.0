@@ -1,38 +1,61 @@
-From: Borislav Petkov <bp@alien8.de>
-Subject: Re: [PATCH v2 4/7] x86: put msr-index.h in uapi
-Date: Fri, 6 Jan 2017 13:14:46 +0100
-Message-ID: <20170106121446.aizmoxons5gpecnc@pd.tnic>
-References: <bf83da6b-01ef-bf44-b3e1-ca6fc5636818@6wind.com>
- <1483695839-18660-1-git-send-email-nicolas.dichtel@6wind.com>
- <1483695839-18660-5-git-send-email-nicolas.dichtel@6wind.com>
+From: Jerome Anand <jerome.anand@intel.com>
+Subject: [PATCH V2 0/7] Add support for Legacy HDMI audio drivers
+Date: Sat,  7 Jan 2017 06:51:02 +0530
+Message-ID: <20170107012109.25744-1-jerome.anand@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Return-path: <linux-mips-bounce@linux-mips.org>
-Content-Disposition: inline
-In-Reply-To: <1483695839-18660-5-git-send-email-nicolas.dichtel@6wind.com>
-Sender: linux-mips-bounce@linux-mips.org
-Errors-to: linux-mips-bounce@linux-mips.org
-List-help: <mailto:ecartis@linux-mips.org?Subject=help>
-List-unsubscribe: <mailto:ecartis@linux-mips.org?subject=unsubscribe%20linux-mips>
-List-software: Ecartis version 1.0.0
-List-subscribe: <mailto:ecartis@linux-mips.org?subject=subscribe%20linux-mips>
-List-owner: <mailto:ralf@linux-mips.org>
-List-post: <mailto:linux-mips@linux-mips.org>
-List-archive: <http://www.linux-mips.org/archives/linux-mips/>
-To: Nicolas Dichtel <nicolas.dichtel@6wind.com>
-Cc: arnd@arndb.de, mmarek@suse.com, linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.orglinux-ar
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org, rakesh.a.ughreja@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 06, 2017 at 10:43:56AM +0100, Nicolas Dichtel wrote:
-> This header file is exported, thus move it to uapi.
-
-It should rather not be exported - please remove it from
-arch/x86/include/uapi/asm/Kbuild instead.
-
-Thanks.
-
--- 
-Regards/Gruss,
-    Boris.
-
-Good mailing practices for 400: avoid top-posting and trim the reply.
+TGVnYWN5IChDaGVycnlUcmFpbC8gQmF5dHJhaWwpIEhETUkgYXVkaW8gZHJpdmVycyBhZGRlZAoK
+TGVnYWN5IGhkbWkgYXVkaW8tR2Z4IGludGVyYWN0aW9uLyBpbnRlcmZhY2luZyBpcyB1cGRhdGVk
+IHRvIHVzZQppcnEgY2hpcCBmcmFtZXdvcmsKCkplcm9tZSBBbmFuZCAoNyk6CiAgZHJtL2k5MTU6
+IHNldHVwIGJyaWRnZSBmb3IgSERNSSBMUEUgYXVkaW8gZHJpdmVyCiAgZHJtL2k5MTU6IEFkZCBz
+dXBwb3J0IGZvciBhdWRpbyBkcml2ZXIgbm90aWZpY2F0aW9ucwogIEFMU0E6IGFkZCBzaGVsbCBm
+b3IgSW50ZWwgSERNSSBMUEUgYXVkaW8gZHJpdmVyCiAgQUxTQTogeDg2OiBoZG1pOiBBZGQgYXVk
+aW8gc3VwcG9ydCBmb3IgQllUIGFuZCBDSFQKICBBTFNBOiB4ODY6IGhkbWk6IEltcHJvdmUgcG9z
+aXRpb24gcmVwb3J0aW5nCiAgQUxTQTogeDg2OiBoZG1pOiBGaXh1cCBzb21lIG1vbml0b3IKICBB
+TFNBOiB4ODY6IGhkbWk6IGNvbnRpbnVlIHBsYXliYWNrIGV2ZW4gd2hlbiBkaXNwbGF5ICByZXNv
+bHV0aW9uCiAgICBjaGFuZ2VzCgogRG9jdW1lbnRhdGlvbi9ncHUvaTkxNS5yc3QgICAgICAgICAg
+ICAgfCAgICA5ICsKIGRyaXZlcnMvZ3B1L2RybS9pOTE1L01ha2VmaWxlICAgICAgICAgIHwgICAg
+MyArCiBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5jICAgICAgICB8ICAgIDggKy0KIGRy
+aXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmggICAgICAgIHwgICAxOCArCiBkcml2ZXJzL2dw
+dS9kcm0vaTkxNS9pOTE1X2lycS5jICAgICAgICB8ICAgMTYgKwogZHJpdmVycy9ncHUvZHJtL2k5
+MTUvaTkxNV9yZWcuaCAgICAgICAgfCAgICAzICsKIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVs
+X2F1ZGlvLmMgICAgIHwgICAgOCArCiBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9oZG1pLmMg
+ICAgICB8ICAgIDEgKwogZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBlX2F1ZGlvLmMgfCAg
+NDAxICsrKysrKysKIGluY2x1ZGUvZHJtL2ludGVsX2xwZV9hdWRpby5oICAgICAgICAgIHwgICA0
+NiArCiBzb3VuZC9LY29uZmlnICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgIDIgKwogc291
+bmQvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAyICstCiBzb3VuZC94ODYv
+S2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICB8ICAgMTYgKwogc291bmQveDg2L01ha2VmaWxl
+ICAgICAgICAgICAgICAgICAgICAgfCAgICA4ICsKIHNvdW5kL3g4Ni9pbnRlbF9oZG1pX2F1ZGlv
+LmMgICAgICAgICAgIHwgMTkyOCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwogc291
+bmQveDg2L2ludGVsX2hkbWlfYXVkaW8uaCAgICAgICAgICAgfCAgMjAxICsrKysKIHNvdW5kL3g4
+Ni9pbnRlbF9oZG1pX2F1ZGlvX2lmLmMgICAgICAgIHwgIDU1MSArKysrKysrKysKIHNvdW5kL3g4
+Ni9pbnRlbF9oZG1pX2xwZV9hdWRpby5jICAgICAgIHwgIDYyNyArKysrKysrKysrKwogc291bmQv
+eDg2L2ludGVsX2hkbWlfbHBlX2F1ZGlvLmggICAgICAgfCAgNjg1ICsrKysrKysrKysrKwogMTkg
+ZmlsZXMgY2hhbmdlZCwgNDUzMCBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQogY3JlYXRl
+IG1vZGUgMTAwNjQ0IGRyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2xwZV9hdWRpby5jCiBjcmVh
+dGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9kcm0vaW50ZWxfbHBlX2F1ZGlvLmgKIGNyZWF0ZSBtb2Rl
+IDEwMDY0NCBzb3VuZC94ODYvS2NvbmZpZwogY3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3g4Ni9N
+YWtlZmlsZQogY3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3g4Ni9pbnRlbF9oZG1pX2F1ZGlvLmMK
+IGNyZWF0ZSBtb2RlIDEwMDY0NCBzb3VuZC94ODYvaW50ZWxfaGRtaV9hdWRpby5oCiBjcmVhdGUg
+bW9kZSAxMDA2NDQgc291bmQveDg2L2ludGVsX2hkbWlfYXVkaW9faWYuYwogY3JlYXRlIG1vZGUg
+MTAwNjQ0IHNvdW5kL3g4Ni9pbnRlbF9oZG1pX2xwZV9hdWRpby5jCiBjcmVhdGUgbW9kZSAxMDA2
+NDQgc291bmQveDg2L2ludGVsX2hkbWlfbHBlX2F1ZGlvLmgKCi0tIAoyLjkuMwoKYmFzZS1jb21t
+aXQ6IDM2MmU1ZWJlZmU0MGYxZjAwYTcwNzVhZDJlNDcyZWY0NGEzNmE3ZGEKX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlz
+dApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0
+b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
