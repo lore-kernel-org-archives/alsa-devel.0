@@ -1,84 +1,48 @@
-From: "Anand, Jerome" <jerome.anand@intel.com>
-Subject: Re: [alsa-devel] [PATCH V2 7/7] ALSA: x86: hdmi:
- continue playback even when display resolution changes
-Date: Sat, 7 Jan 2017 04:58:52 +0000
-Message-ID: <F6867404AABACB4D8EC371BF802A4B7C149529C0@fmsmsx101.amr.corp.intel.com>
-References: <20170107012109.25744-1-jerome.anand@intel.com>
- <20170107012109.25744-8-jerome.anand@intel.com>
- <a6d4d4ed-17bd-6779-f886-849a23dfbbb6@linux.intel.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: what is exactly pcm.boundary?
+Date: Sat, 7 Jan 2017 10:06:26 +0100
+Message-ID: <a4260e01-f6e4-118b-b91e-0012bd0219da@ladisch.de>
+References: <CAAu8Fse4GcOV5PkgnWQfBSQjM3SoiEurVuhvuNgQ3zD_8TeHbw@mail.gmail.com>
+ <cf5b8891-5d8e-9df1-dbfa-b4471ef32f55@sakamocchi.jp>
+ <CAAu8FscDY1R7EG2GsTmV9=JUWGh3K3HEw4RdF-g8NHjzFNYO8w@mail.gmail.com>
+ <922adfc9-c436-905a-466e-7fbba239439e@ladisch.de>
+ <CAAu8FseE8M-6bynuphCK5HxnpqKzh_Y_bmeHEf6meTTD4bU2eA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <a6d4d4ed-17bd-6779-f886-849a23dfbbb6@linux.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "broonie@kernel.org" <broonie@kernel.org>, "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from webclient5.webclient5.de (webclient5.webclient5.de
+ [136.243.32.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id AFF73266A51
+ for <alsa-devel@alsa-project.org>; Sat,  7 Jan 2017 10:06:52 +0100 (CET)
+In-Reply-To: <CAAu8FseE8M-6bynuphCK5HxnpqKzh_Y_bmeHEf6meTTD4bU2eA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ricardo Biehl <rbpoficial@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Cgo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gRnJvbTogUGllcnJlLUxvdWlzIEJvc3Nh
-cnQgW21haWx0bzpwaWVycmUtbG91aXMuYm9zc2FydEBsaW51eC5pbnRlbC5jb21dCj4gU2VudDog
-U2F0dXJkYXksIEphbnVhcnkgNywgMjAxNyAyOjEzIEFNCj4gVG86IEFuYW5kLCBKZXJvbWUgPGpl
-cm9tZS5hbmFuZEBpbnRlbC5jb20+OyBpbnRlbC0KPiBnZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3Jn
-OyBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBDYzogdGl3YWlAc3VzZS5kZTsgYnJvb25p
-ZUBrZXJuZWwub3JnOyBVZ2hyZWphLCBSYWtlc2ggQQo+IDxyYWtlc2guYS51Z2hyZWphQGludGVs
-LmNvbT47IHZpbGxlLnN5cmphbGFAbGludXguaW50ZWwuY29tCj4gU3ViamVjdDogUmU6IFthbHNh
-LWRldmVsXSBbUEFUQ0ggVjIgNy83XSBBTFNBOiB4ODY6IGhkbWk6IGNvbnRpbnVlIHBsYXliYWNr
-Cj4gZXZlbiB3aGVuIGRpc3BsYXkgcmVzb2x1dGlvbiBjaGFuZ2VzCj4gCj4gT24gMS82LzE3IDc6
-MjEgUE0sIEplcm9tZSBBbmFuZCB3cm90ZToKPiA+IFdoZW4gdGhlIGRpc3BsYXkgcmVzb2x1dGlv
-biBjaGFuZ2VzLCB0aGUgZHJtIGRpc2FibGVzIHRoZSBkaXNwbGF5Cj4gPiBwaXBlcyBkdWUgdG8g
-d2hpY2ggYXVkaW8gcmVuZGVyaW5nIHN0b3BzLiBBdCB0aGlzIHRpbWUsIHdlIG5lZWQgdG8KPiA+
-IGVuc3VyZSB0aGUgZXhpc3RpbmcgYXVkaW8gcG9pbnRlcnMgYW5kIGJ1ZmZlcnMgYXJlIGNsZWFy
-ZWQgb3V0IHNvIHRoYXQKPiA+IHRoZSBwbGF5YmFjayBjYW4gcmVzdGFydGVkIG9uY2UgdGhlIGRp
-c3BsYXkgcGlwZSBpcyBlbmFibGVkIHdpdGggYQo+ID4gZGlmZmVyZW50IE4vQ1RTIHZhbHVlcwo+
-IAo+IEFkZCBjb21tZW50IHRoYXQgdGhpcyBwYXRjaCBzZXJpZXMgaGFzIG9ubHkgYmVlbiB0ZXN0
-ZWQgb24gaGFyZHdhcmUgd2l0aCBhCj4gc2luZ2xlIEhETUkgY29ubmVjdG9yL3BpcGUgYW5kIGFk
-ZGl0aW9uYWwgd29yayBtYXkgYmUgbmVlZGVkIGZvciBuZXdlcgo+IG1hY2hpbmVzIHdpdGggMiBj
-b25uZWN0b3JzLgo+IAoKT0sKCj4gPgo+ID4gU2lnbmVkLW9mZi1ieTogUGllcnJlLUxvdWlzIEJv
-c3NhcnQgPHBpZXJyZS1sb3Vpcy5ib3NzYXJ0QGxpbnV4LmludGVsLmNvbT4KPiA+IFNpZ25lZC1v
-ZmYtYnk6IEplcm9tZSBBbmFuZCA8amVyb21lLmFuYW5kQGludGVsLmNvbT4KPiA+IC0tLQo+ID4g
-IHNvdW5kL3g4Ni9pbnRlbF9oZG1pX2F1ZGlvLmMgfCAyMSArKysrKysrKysrKysrKysrKystLS0K
-PiA+ICAxIGZpbGUgY2hhbmdlZCwgMTggaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKPiA+
-Cj4gPiBkaWZmIC0tZ2l0IGEvc291bmQveDg2L2ludGVsX2hkbWlfYXVkaW8uYwo+IGIvc291bmQv
-eDg2L2ludGVsX2hkbWlfYXVkaW8uYwo+ID4gaW5kZXggOTFlZmJlYi4uZjQwNDJmOCAxMDA2NDQK
-PiA+IC0tLSBhL3NvdW5kL3g4Ni9pbnRlbF9oZG1pX2F1ZGlvLmMKPiA+ICsrKyBiL3NvdW5kL3g4
-Ni9pbnRlbF9oZG1pX2F1ZGlvLmMKPiA+IEBAIC00Myw2ICs0Myw3IEBAIHN0YXRpYyBERUZJTkVf
-TVVURVgoaGFkX211dGV4KTsKPiA+ICBzdGF0aWMgaW50IGhkbWlfY2FyZF9pbmRleCA9IFNORFJW
-X0RFRkFVTFRfSURYMTsKPiA+ICBzdGF0aWMgY2hhciAqaGRtaV9jYXJkX2lkID0gU05EUlZfREVG
-QVVMVF9TVFIxOwo+ID4gIHN0YXRpYyBzdHJ1Y3Qgc25kX2ludGVsaGFkICpoYWRfZGF0YTsKPiA+
-ICtzdGF0aWMgaW50IHVuZGVycnVuX2NvdW50Owo+ID4KPiA+ICBtb2R1bGVfcGFyYW1fbmFtZWQo
-aW5kZXgsIGhkbWlfY2FyZF9pbmRleCwgaW50LCAwNDQ0KTsKPiA+ICBNT0RVTEVfUEFSTV9ERVND
-KGluZGV4LAo+ID4gQEAgLTExMTQsNiArMTExNSw3IEBAIHN0YXRpYyBpbnQgc25kX2ludGVsaGFk
-X29wZW4oc3RydWN0Cj4gc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkKPiA+ICAJaW50ZWxo
-YWRkYXRhID0gc25kX3BjbV9zdWJzdHJlYW1fY2hpcChzdWJzdHJlYW0pOwo+ID4gIAloYWRfc3Ry
-ZWFtID0gaW50ZWxoYWRkYXRhLT5wcml2YXRlX2RhdGE7Cj4gPiAgCXJ1bnRpbWUgPSBzdWJzdHJl
-YW0tPnJ1bnRpbWU7Cj4gPiArCXVuZGVycnVuX2NvdW50ID0gMDsKPiA+Cj4gPiAgCXBtX3J1bnRp
-bWVfZ2V0KGludGVsaGFkZGF0YS0+ZGV2KTsKPiA+Cj4gPiBAQCAtMTUwMywxMCArMTUwNSwyMyBA
-QCBzdGF0aWMgc25kX3BjbV91ZnJhbWVzX3QKPiBzbmRfaW50ZWxoYWRfcGNtX3BvaW50ZXIoCj4g
-Pgo+ID4gIAlidWZfaWQgPSBpbnRlbGhhZGRhdGEtPmN1cnJfYnVmICUgNDsKPiA+ICAJaGFkX3Jl
-YWRfcmVnaXN0ZXIoQVVEX0JVRl9BX0xFTkdUSCArIChidWZfaWQgKgo+IEhBRF9SRUdfV0lEVEgp
-LCAmdCk7Cj4gPiAtCWlmICh0ID09IDApIHsKPiA+IC0JCXByX2RlYnVnKCJkaXNjb3ZlcmVkIGJ1
-ZmZlciBkb25lIGZvciBidWYgJWRcbiIsIGJ1Zl9pZCk7Cj4gPiAtCQkvKiBoYWRfcHJvY2Vzc19i
-dWZmZXJfZG9uZShpbnRlbGhhZGRhdGEpOyAqLwo+ID4gKwo+ID4gKwlpZiAoKHQgPT0gMCkgfHwg
-KHQgPT0gKCh1MzIpLTFMKSkpIHsKPiA+ICsJCXVuZGVycnVuX2NvdW50Kys7Cj4gPiArCQlwcl9k
-ZWJ1ZygiZGlzY292ZXJlZCBidWZmZXIgZG9uZSBmb3IgYnVmICVkLCBjb3VudCA9Cj4gJWRcbiIs
-Cj4gPiArCQkJYnVmX2lkLCB1bmRlcnJ1bl9jb3VudCk7Cj4gPiArCj4gPiArCQlpZiAodW5kZXJy
-dW5fY291bnQgPiAoSEFEX01JTl9QRVJJT0RTLzIpKSB7Cj4gPiArCQkJcHJfZGVidWcoImFzc3Vt
-ZSBhdWRpb19jb2RlY19yZXNldCwgdW5kZXJydW4gPQo+ICVkIC0gZG8geHJ1blxuIiwKPiA+ICsJ
-CQkJdW5kZXJydW5fY291bnQpOwo+ID4gKwkJCXVuZGVycnVuX2NvdW50ID0gMDsKPiA+ICsJCQly
-ZXR1cm4gU05EUlZfUENNX1BPU19YUlVOOwo+ID4gKwkJfQo+ID4gKwl9IGVsc2Ugewo+ID4gKwkJ
-LyogUmVzZXQgQ291bnRlciAqLwo+ID4gKwkJdW5kZXJydW5fY291bnQgPSAwOwo+ID4gIAl9Cj4g
-PiArCj4gPiAgCXQgPSBpbnRlbGhhZGRhdGEtPmJ1Zl9pbmZvW2J1Zl9pZF0uYnVmX3NpemUgLSB0
-Owo+ID4KPiA+ICAJaWYgKGludGVsaGFkZGF0YS0+c3RyZWFtX2luZm8uYnVmZmVyX3JlbmRlcmVk
-KQo+ID4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCklu
-dGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRw
-czovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+Ricardo Biehl wrote:
+> I'm developing a "live microphone system over local network" which are user
+> space programs (clients => server) transferring audio nearly real-time
+> (human imperceptible latency).
+> I need to elaborate a good solution of implementation to have everything working
+> as expected -- networking, scheduling, IO management etc -- However I need at
+> first make sure I can get control over audio.
+>
+> I decided to use ioctl() level of communication with ALSA in kernel
+
+Neither using ioctls directly nor using mmap will reduce latency.
+
+First get it correct with the normal ALSA API.
+
+
+Regards,
+Clemens
