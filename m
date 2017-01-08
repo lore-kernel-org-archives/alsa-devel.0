@@ -1,18 +1,15 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: gitcompile fail
-Date: Mon, 9 Jan 2017 03:42:16 +0900
-Message-ID: <ec812499-d205-2a92-5a18-b73f06f971b8@sakamocchi.jp>
-References: <bf26b6bb-6447-8ec9-bacf-9954a4b924e5@nmmu.ac.za>
- <a5d5a532-c63c-f9a2-5bd5-e9cefbb3d056@nmmu.ac.za>
- <12c78c97-64ee-60ab-d4f3-3523b4d33e31@nmmu.ac.za>
+From: =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>
+Subject: [PATCH] ASoC: wm8731: Adjust clk definitions so that
+	simple card can work
+Date: Sun,  8 Jan 2017 20:40:48 +0100
+Message-ID: <20170108194048.2900-1-joerg.krause@embedded.rocks>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 155B326669C
- for <alsa-devel@alsa-project.org>; Sun,  8 Jan 2017 19:42:22 +0100 (CET)
-In-Reply-To: <12c78c97-64ee-60ab-d4f3-3523b4d33e31@nmmu.ac.za>
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.142])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A44026669C
+ for <alsa-devel@alsa-project.org>; Sun,  8 Jan 2017 20:41:00 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,40 +19,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brand <mark.brand@nmmu.ac.za>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Jan 9 2017 00:19, Mark Brand wrote:
-> I now enable my new module for compilation by make menuconfig in the
-> source tree root.  This adds the line CONFIG_SND_MQ8PORTSE=m to .config
-> in that folder.
-
-When working with out-of-tree sources, no need to care of .config and 
-Kconfig on the tree, because built-tree already includes relevant 
-information about it. In your case, 
-'/usr/src/linux-headers-4.4.0-57-lowlatency/' is the built-tree, 
-including enough stuffs for module building.
-
-So what you need is to give CONFIG_SND_MQ8PORTSE=m to Make environment 
-of the built-tree. Let's try:
-
-$ CONFIG_SND_MQ8PORTSE=m make -C /lib/modules/$(uname -r)/build M=$(pwd) 
-snd-mq8portse.ko
-
-Kernel build system, called Kbuild, is enough complicated to me. So I 
-cannot explain about the overall. Documentation in 
-'Documentation/kbuild/kbuild.txt'[0] and 
-'Documentation/kbuild/modules.txt'[1] will help you for more detail and 
-good entry points into kernel world.
-
-[0] 
-http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/kbuild/kbuild.txt
-[1] 
-http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/Documentation/kbuild/modules.txt
-
-
-Regards
-
-Takashi Sakamoto
+V2hlbiB0cnlpbmcgdG8gdXNlIHNpbXBsZSBjYXJkIHdpdGggd204OTYyIHRoZSBmb2xsb3dpbmcg
+cHJvYmUKZXJyb3IgaGFwcGVuczoKCiAgd204NzMxIDAtMDAxYTogc2ltcGxlLWNhcmQ6IHNldF9z
+eXNjbGsgZXJyb3IKCkluIHNpbXBsZS1jYXJkLmMgdGhlIHNuZF9zb2NfZGFpX3NldF9zeXNjbGso
+KSBmdW5jdGlvbiBpcyBjYWxsZWQgd2l0aApjbGtfaWQgYXMgMCwgd2hpY2ggaXMgYW4gaW52YWxp
+ZCBjbG9jayBmb3Igd204NzMxLgoKQWRqdXN0IHRoZSBjbG9ja3Mgc291cmNlIGRlZmluaXRpb25z
+IGluIHdtODczMS5oIHNvIHRoYXQgdGhlIHNpbXBsZQpjYXJkIGRyaXZlciBjYW4gd29yayBzdWNj
+ZXNzZnVsbHkKClNpZ25lZC1vZmYtYnk6IErDtnJnIEtyYXVzZSA8am9lcmcua3JhdXNlQGVtYmVk
+ZGVkLnJvY2tzPgotLS0KIHNvdW5kL3NvYy9jb2RlY3Mvd204NzMxLmggfCAyICstCiAxIGZpbGUg
+Y2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1naXQgYS9zb3Vu
+ZC9zb2MvY29kZWNzL3dtODczMS5oIGIvc291bmQvc29jL2NvZGVjcy93bTg3MzEuaAppbmRleCBl
+OWMwYzc2YWI3M2IuLmM3YzZmMTViMGU0MiAxMDA2NDQKLS0tIGEvc291bmQvc29jL2NvZGVjcy93
+bTg3MzEuaAorKysgYi9zb3VuZC9zb2MvY29kZWNzL3dtODczMS5oCkBAIC0zMSw4ICszMSw4IEBA
+CiAKICNkZWZpbmUgV004NzMxX0NBQ0hFUkVHTlVNIAkxMAogCisjZGVmaW5lIFdNODczMV9TWVND
+TEtfTUNMSyAwCiAjZGVmaW5lIFdNODczMV9TWVNDTEtfWFRBTCAxCi0jZGVmaW5lIFdNODczMV9T
+WVNDTEtfTUNMSyAyCiAKICNkZWZpbmUgV004NzMxX0RBSQkJMAogCi0tIAoyLjExLjAKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
