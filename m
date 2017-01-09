@@ -1,152 +1,86 @@
-From: Paul Menzel <paulepanter@users.sourceforge.net>
-Subject: How to build alsa-utils from git?
-Date: Mon, 09 Jan 2017 00:14:44 +0100
-Message-ID: <1483917284.2743.14.camel@users.sourceforge.net>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [alsa-devel] [PATCH v4 0/3] support DP MST audio
+Date: Mon, 9 Jan 2017 06:22:55 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D1952458272@SHSMSX103.ccr.corp.intel.com>
+References: <1480992519-108079-1-git-send-email-libin.yang@intel.com>
+ <96A12704CE18D347B625EE2D4A099D194FA69699@SHSMSX103.ccr.corp.intel.com>
+ <s5hzik94j74.wl-tiwai@suse.de>
+ <CAKMK7uFim4fmrVSTVJa+STURbiVbtvyydtbj+eVRCPGGUfOk8Q@mail.gmail.com>
+ <s5htwah4gur.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9208448712509237965=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.gw90.de (mail.gw90.de [188.40.100.199])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E98C2664FB
- for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2017 00:14:52 +0100 (CET)
-Received: from ipservice-092-214-167-048.092.214.pools.vodafone-ip.de
- ([92.214.167.48] helo=mattotaupa)
- by mail.gw90.de with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
- (Exim 4.84_2) (envelope-from <paulepanter@users.sourceforge.net>)
- id 1cQMfr-0006yg-HJ
- for alsa-devel@alsa-project.org; Sun, 08 Jan 2017 23:14:51 +0000
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5htwah4gur.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>, Daniel Vetter <daniel@ffwll.ch>
+Cc: intel-gfx <intel-gfx@lists.freedesktop.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============9208448712509237965==
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
-	boundary="=-tzfL8Fd1j9D7OmU71vBg"
-
-
---=-tzfL8Fd1j9D7OmU71vBg
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Dear ALSA folks,
-
-
-Could you please help me building alsa-utils from git.
-
-```
-$ git describe --tag origin/master
-v1.1.3-2-ge9a6d42
-$ aclocal --version
-aclocal (GNU automake) 1.15
-Copyright (C) 2014 Free Software Foundation, Inc.
-License GPLv2+: GNU GPL version 2 or later <http://gnu.org/licenses/gpl-2.0=
-.html>
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.
-
-Written by Tom Tromey <tromey@redhat.com>
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0and Alexandre Duret-Lutz <adl@gnu=
-.org>.
-$ aclocal
-$ gettextize=20
-Copying file ABOUT-NLS
-Copying file config.rpath
-Not copying intl/ directory.
-Copying file po/Makefile.in.in
-Copying file po/boldquot.sed
-Copying file po/en@boldquot.header
-Copying file po/en@quot.header
-Copying file po/insert-header.sin
-Copying file po/Makevars.template
-Copying file po/quot.sed
-Copying file po/remove-potcdate.sin
-Copying file po/Rules-quot
-Creating po/ChangeLog
-Copying file m4/gettext.m4
-Copying file m4/iconv.m4
-Copying file m4/lib-ld.m4
-Copying file m4/lib-link.m4
-Copying file m4/lib-prefix.m4
-Copying file m4/nls.m4
-Copying file m4/po.m4
-Copying file m4/progtest.m4
-Updating EXTRA_DIST in m4/Makefile.am (backup is in m4/Makefile.am~)
-Updating Makefile.am (backup is in Makefile.am~)
-Updating configure.ac (backup is in configure.ac~)
-Adding an entry to ChangeLog (backup is in ChangeLog~)
-
-Please run 'aclocal -I m4' to regenerate the aclocal.m4 file.
-You need aclocal from GNU automake 1.9 (or newer) to do this.
-Then run 'autoconf' to regenerate the configure file.
-
-You will also need config.guess and config.sub, which you can get from the =
-CVS
-of the 'config' project at http://savannah.gnu.org/. The commands to fetch =
-them
-are
-$ wget 'http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/config/config/co=
-nfig.guess'
-$ wget 'http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/config/config/co=
-nfig.sub'
-
-You might also want to copy the convenience header file gettext.h
-from the /usr/share/gettext directory into your package.
-It is a wrapper around <libintl.h> that implements the configure --disable-=
-nls
-option.
-
-Press Return to acknowledge the previous three paragraphs.
-$ gettextize --version
-/usr/bin/gettextize (GNU gettext-tools) 0.19.8.1
-Copyright (C) 1995-1998, 2000-2013 Free Software Foundation, Inc.
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.htm=
-l>
-This is free software: you are free to change and redistribute it.
-There is NO WARRANTY, to the extent permitted by law.
-Written by Ulrich Drepper
-$ autoheader=20
-configure.ac:418: error: `po/Makefile.in' is already registered with AC_CON=
-FIG_FILES.
-../../lib/autoconf/status.m4:288: AC_CONFIG_FILES is expanded from...
-configure.ac:418: the top level
-autom4te: /usr/bin/m4 failed with exit status: 1
-autoheader: '/usr/bin/autom4te' failed with exit status: 1
-```
-
-Could you please share the correct commands?
-
-
-Thanks,
-
-Paul
---=-tzfL8Fd1j9D7OmU71vBg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQQ8+w9d414FAVARIpk9fVorbA4dWAUCWHLH5AAKCRA9fVorbA4d
-WJRdAJ0RQ0WaVHKFVWP1Eru7bmp3G717nACfY4nFBeST9gs2EGBQKlGHaYJkg5o=
-=hsOa
------END PGP SIGNATURE-----
-
---=-tzfL8Fd1j9D7OmU71vBg--
-
-
---===============9208448712509237965==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9208448712509237965==--
+SGkgVGFrYXNoaSwKCkl0IHNlZW1zIHRoZSBwYXRjaGVzIGZvciBEUCBNU1QgaW4gZ2Z4IGlzIG5v
+dCBtZXJnZWQgaW50byBMaW51cyBicmFuY2guCgpEbyB3ZSBoYXZlIHBsYW4gdG8gbWVyZ2UgZ2Z4
+IGJyYW5jaCBtYW51YWxseSBhbmQgcmV2aWV3IHRoZSBwYXRjaGVzIGZvciBhdWRpbz8gT3Igd2Ug
+d2lsbCB3YWl0IHRoZSBEUCBNU1QgcGF0Y2hlcyBmb3IgaTkxNSBtZXJnZWQgaW50byBMaW51cyBi
+cmFuY2g/CgpSZWdhcmRzLApMaWJpbgoKCj4tLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+RnJv
+bTogVGFrYXNoaSBJd2FpIFttYWlsdG86dGl3YWlAc3VzZS5kZV0KPlNlbnQ6IFR1ZXNkYXksIERl
+Y2VtYmVyIDYsIDIwMTYgNDoxMSBQTQo+VG86IERhbmllbCBWZXR0ZXIgPGRhbmllbEBmZndsbC5j
+aD4KPkNjOiBpbnRlbC1nZnggPGludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmc+OyBOaWt1
+bGEsIEphbmkKPjxqYW5pLm5pa3VsYUBsaW51eC5pbnRlbC5jb20+OyBZYW5nLCBMaWJpbiA8bGli
+aW4ueWFuZ0BpbnRlbC5jb20+OyBhbHNhLQo+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgTGluLCBN
+ZW5nZG9uZyA8bWVuZ2RvbmcubGluQGludGVsLmNvbT4KPlN1YmplY3Q6IFJlOiBbYWxzYS1kZXZl
+bF0gW1BBVENIIHY0IDAvM10gc3VwcG9ydCBEUCBNU1QgYXVkaW8KPgo+T24gVHVlLCAwNiBEZWMg
+MjAxNiAwODo1MTo0MyArMDEwMCwKPkRhbmllbCBWZXR0ZXIgd3JvdGU6Cj4+Cj4+IE9uIFR1ZSwg
+RGVjIDYsIDIwMTYgYXQgODoyMCBBTSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90
+ZToKPj4gPiBPbiBUdWUsIDA2IERlYyAyMDE2IDAzOjU4OjIxICswMTAwLAo+PiA+IFlhbmcsIExp
+YmluIHdyb3RlOgo+PiA+Pgo+PiA+PiBUaGUgcGF0Y2hzZXQgaXMgYmFzZWQgb24gZHJtLXRpcCBi
+cmFuY2ggaW4KPj4gPj4gZ2l0Oi8vYW5vbmdpdC5mcmVlZGVza3RvcC5vcmcvZHJtLXRpcAo+PiA+
+Cj4+ID4gSSdsbCByZXZpZXcgYW5kIG1lcmdlIGlmIGl0J3MgT0suCj4+ID4KPj4gPiBEYW5pZWws
+IGRvIHlvdSBndXlzIGhhdmUgdGhlIHN0YWJsZSBicmFuY2ggdGhhdCBJIGNhbiBwdWxsIGludG8K
+Pj4gPiBzb3VuZCB0cmVlIGZvciBEUC1NU1QgYXVkaW8gc3R1ZmYgZm9yIDQuMTA/Cj4+Cj4+IERQ
+IG1zdCBhdWRpbyBzdXBwb3J0IG1pc3NlZCA0LjEwIG92ZXIgaGVyZSBvbiB0aGUgZHJtIHNpZGUu
+IEFuZCBJCj4+IHdhc24ndCBhd2FyZSB0aGF0IHdlIG5lZWQgYSB0b3BpYyBicmFuY2ggZm9yIGl0
+LCBzbyBJIGp1c3Qgc21hc2hlZCBpdAo+PiBpbnRvIG91ciBkcm0taW50ZWwtbmV4dCBxdWV1ZSAu
+Li4gSSBjYW4gc2VuZCB5b3UgdGhlIG1vc3QgcmVjZW50Cj4+IHN0YWJsZSB0YWcgZm9yIHRoYXQs
+IGJ1dCB0aGF0J3MgaGVhZGluZyBpbiBvbmx5IGZvciA0LjExLgo+Cj5JdCdzIGZpbmUsIHdlIGNh
+biBwb3N0cG9uZSB0byA0LjExIGFzIHdlbGwuICBJIGp1c3QgdGhvdWdodCBpdCB3ZXJlIGFscmVh
+ZHkKPnF1ZXVlZCBmb3IgNC4xMC4KPgo+SWYgc28sIEknbSBnb2luZyB0byBxdWV1ZSB0aGVzZSBw
+YXRjaGVzIG9uY2UgYWZ0ZXIgNC4xMC1yYzEgaXMgcmVsZWFzZWQuCj4KPgo+dGhhbmtzLAo+Cj5U
+YWthc2hpCj4KPgo+PiAtRGFuaWVsCj4+Cj4+ID4KPj4gPgo+PiA+IHRoYW5rcywKPj4gPgo+PiA+
+IFRha2FzaGkKPj4gPgo+PiA+Cj4+ID4+IFJlZ2FyZHMsCj4+ID4+IExpYmluCj4+ID4+Cj4+ID4+
+Cj4+ID4+ID4tLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+PiA+PiA+RnJvbTogWWFuZywgTGli
+aW4KPj4gPj4gPlNlbnQ6IFR1ZXNkYXksIERlY2VtYmVyIDYsIDIwMTYgMTA6NDkgQU0KPj4gPj4g
+PlRvOiBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc7IHRpd2FpQHN1c2UuZGUKPj4gPj4gPkNj
+OiBMaW4sIE1lbmdkb25nIDxtZW5nZG9uZy5saW5AaW50ZWwuY29tPjsgWWFuZywgTGliaW4KPj4g
+Pj4gPjxsaWJpbi55YW5nQGludGVsLmNvbT4KPj4gPj4gPlN1YmplY3Q6IFthbHNhLWRldmVsXSBb
+UEFUQ0ggdjQgMC8zXSBzdXBwb3J0IERQIE1TVCBhdWRpbwo+PiA+PiA+Cj4+ID4+ID5Gcm9tOiBM
+aWJpbiBZYW5nIDxsaWJpbi55YW5nQGludGVsLmNvbT4KPj4gPj4gPgo+PiA+PiA+VGhpcyBwYXRj
+aHNldCBzdGFydHMgdG8gc3VwcG9ydCBEUCBNU1QgYXVkaW8uCj4+ID4+ID4KPj4gPj4gPlRoaXMg
+cGF0Y2hzZXQgaXMgYmFzZWQgb24gZHJtLXRpcCBvbgo+PiA+PiA+Z2l0Oi8vYW5vbmdpdC5mcmVl
+ZGVza3RvcC5vcmcvZHJtLXRpcAo+PiA+PiA+Cj4+ID4+ID5jaGFuZ2UgbG9nOgo+PiA+PiA+djQ6
+IHJlZmluZSBzb21lIGNvbW1lbnRzIGluIDAwMDEgYW5kIDAwMDIgcGF0Y2hlcy4KPj4gPj4gPiAg
+ICByZWZpbmUgdGhlIDAwMDMgcGF0Y2ggZm9yIHRoZSBuZXcgQUxTQS1Db25maWd1cmF0aW9uIGRv
+Y3VtZW50Cj4+ID4+ID4KPj4gPj4gPkxpYmluIFlhbmcgKDMpOgo+PiA+PiA+ICBBTFNBOiBoZGEg
+LSBhZGQgRFAgbXN0IHZlcmIgc3VwcG9ydAo+PiA+PiA+ICBBTFNBOiBoZGEgLSBhZGQgRFAgTVNU
+IGF1ZGlvIHN1cHBvcnQKPj4gPj4gPiAgQUxTQTogRG9jdW1lbnRhdGlvbiBhYm91dCBIREEgRFAg
+TVNUIHBpbiBpbml0IGFuZCBjb25uZWN0aW9uCj4+ID4+ID4KPj4gPj4gPiBEb2N1bWVudGF0aW9u
+L3NvdW5kL2hkLWF1ZGlvL2RwLW1zdC5yc3QgfCAgMTcgKysrCj4+ID4+ID4gc291bmQvcGNpL2hk
+YS9oZGFfY29kZWMuYyAgICAgICAgICAgICAgIHwgIDc2ICsrKysrKysrKy0KPj4gPj4gPiBzb3Vu
+ZC9wY2kvaGRhL2hkYV9jb2RlYy5oICAgICAgICAgICAgICAgfCAgIDMgKwo+PiA+PiA+IHNvdW5k
+L3BjaS9oZGEvcGF0Y2hfaGRtaS5jICAgICAgICAgICAgICB8IDI0NQo+KysrKysrKysrKysrKysr
+KysrKysrKysrKy0tLS0tLQo+PiA+PiA+LQo+PiA+PiA+IDQgZmlsZXMgY2hhbmdlZCwgMjg1IGlu
+c2VydGlvbnMoKyksIDU2IGRlbGV0aW9ucygtKQo+PiA+PiA+Cj4+ID4+ID4tLQo+PiA+PiA+Mi43
+LjQKPj4gPj4KPj4KPj4KPj4KPj4gLS0KPj4gRGFuaWVsIFZldHRlcgo+PiBTb2Z0d2FyZSBFbmdp
+bmVlciwgSW50ZWwgQ29ycG9yYXRpb24KPj4gKzQxICgwKSA3OSAzNjUgNTcgNDggLSBodHRwOi8v
+YmxvZy5mZndsbC5jaAo+PgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3Rv
+cC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRl
+bC1nZngK
