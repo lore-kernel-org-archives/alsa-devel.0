@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: remove .bespoke_trigger from
+Subject: Applied "ASoC: remove .delay from
 	snd_soc_platform_driver" to the asoc tree
-Date: Mon, 09 Jan 2017 20:01:27 +0000
-Message-ID: <E1cQg8F-0006sT-S1@debutante>
-References: <877f6w74mu.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 09 Jan 2017 20:01:30 +0000
+Message-ID: <E1cQg8I-0006tH-RJ@debutante>
+References: <878trc74nc.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EFCB1266EE9
- for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2017 21:01:35 +0100 (CET)
-In-Reply-To: <877f6w74mu.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id F0D86266F0A
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2017 21:01:38 +0100 (CET)
+In-Reply-To: <878trc74nc.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: remove .bespoke_trigger from snd_soc_platform_driver
+   ASoC: remove .delay from snd_soc_platform_driver
 
 has been applied to the asoc tree at
 
@@ -53,58 +53,56 @@ to this mail.
 Thanks,
 Mark
 
->From 10611e1b0b7ab2a82dd7838e5e928fa1501d353c Mon Sep 17 00:00:00 2001
+>From fcff45f8e092c17d324028fb6f632fde98983f17 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 19 Dec 2016 07:37:18 +0000
-Subject: [PATCH] ASoC: remove .bespoke_trigger from snd_soc_platform_driver
+Date: Mon, 19 Dec 2016 07:36:58 +0000
+Subject: [PATCH] ASoC: remove .delay from snd_soc_platform_driver
 
-No existing platform is using .bespoke_trigger.
+No existing platform is using .delay.
 Let's remove it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h | 2 --
+ include/sound/soc.h | 7 -------
  sound/soc/soc-pcm.c | 7 -------
- 2 files changed, 9 deletions(-)
+ 2 files changed, 14 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 06515e5ca018..1a4311da6126 100644
+index e580a675ea77..06515e5ca018 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -951,8 +951,6 @@ struct snd_soc_platform_driver {
+@@ -946,13 +946,6 @@ struct snd_soc_platform_driver {
+ 	int (*pcm_new)(struct snd_soc_pcm_runtime *);
+ 	void (*pcm_free)(struct snd_pcm *);
  
- 	/* platform stream compress ops */
- 	const struct snd_compr_ops *compr_ops;
+-	/*
+-	 * For platform caused delay reporting.
+-	 * Optional.
+-	 */
+-	snd_pcm_sframes_t (*delay)(struct snd_pcm_substream *,
+-		struct snd_soc_dai *);
 -
--	int (*bespoke_trigger)(struct snd_pcm_substream *, int);
- };
+ 	/* platform stream pcm ops */
+ 	const struct snd_pcm_ops *ops;
  
- struct snd_soc_dai_link_component {
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index a4c93a90b8e9..1739573dcd6a 100644
+index a9ef8ae20e44..a4c93a90b8e9 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -1055,7 +1055,6 @@ static int soc_pcm_bespoke_trigger(struct snd_pcm_substream *substream,
- 				   int cmd)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_platform *platform = rtd->platform;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct snd_soc_dai *codec_dai;
- 	int i, ret;
-@@ -1071,12 +1070,6 @@ static int soc_pcm_bespoke_trigger(struct snd_pcm_substream *substream,
- 		}
+@@ -1116,13 +1116,6 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
  	}
+ 	delay += codec_delay;
  
--	if (platform->driver->bespoke_trigger) {
--		ret = platform->driver->bespoke_trigger(substream, cmd);
--		if (ret < 0)
--			return ret;
--	}
+-	/*
+-	 * None of the existing platform drivers implement delay(), so
+-	 * for now the codec_dai of first multicodec entry is used
+-	 */
+-	if (platform->driver->delay)
+-		delay += platform->driver->delay(substream, rtd->codec_dais[0]);
 -
- 	if (cpu_dai->driver->ops && cpu_dai->driver->ops->bespoke_trigger) {
- 		ret = cpu_dai->driver->ops->bespoke_trigger(substream, cmd, cpu_dai);
- 		if (ret < 0)
+ 	runtime->delay = delay;
+ 
+ 	return offset;
 -- 
 2.11.0
