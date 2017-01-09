@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: nau8540: new codec driver
-Date: Mon, 9 Jan 2017 20:00:52 +0000
-Message-ID: <20170109200052.szyldvyxnki2jggj@sirena.org.uk>
-References: <1483597244-9761-1-git-send-email-KCHSU0@nuvoton.com>
+Subject: Applied "ASoC: add for_each_component{_safe}" to the
+	asoc tree
+Date: Mon, 09 Jan 2017 20:01:24 +0000
+Message-ID: <E1cQg8C-0006rd-Rw@debutante>
+References: <874m2074ls.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3120758306895995667=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 43109266AF5
- for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2017 21:01:00 +0100 (CET)
-In-Reply-To: <1483597244-9761-1-git-send-email-KCHSU0@nuvoton.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 662F9266EE9
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2017 21:01:33 +0100 (CET)
+In-Reply-To: <874m2074ls.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,126 +22,133 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: WTLI@nuvoton.com, YHCHuang@nuvoton.com, alsa-devel@alsa-project.org, CTLIN0@nuvoton.com, lgirdwood@gmail.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Lars-Peter <lars@metafoo.de>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============3120758306895995667==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="cpdmxec4nozoce4c"
-Content-Disposition: inline
+   ASoC: add for_each_component{_safe}
 
+has been applied to the asoc tree at
 
---cpdmxec4nozoce4c
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, Jan 05, 2017 at 02:20:44PM +0800, John Hsu wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-This looks good overall, a couple of small points though:
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> +static int nau8540_config_sysclk(struct nau8540 *nau8540,
-> +       int clk_id, unsigned int freq)
-> +{
-> +       struct regmap *regmap = nau8540->regmap;
-> +
-> +       switch (clk_id) {
-> +       case NAU8540_CLK_DIS:
-> +       case NAU8540_CLK_MCLK:
-> +               regmap_update_bits(regmap, NAU8540_REG_CLOCK_SRC,
-> +                       NAU8540_CLK_SRC_MASK, NAU8540_CLK_SRC_MCLK);
-> +               regmap_update_bits(regmap, NAU8540_REG_FLL6,
-> +                       NAU8540_DCO_EN, 0);
-> +               break;
-> +
-> +       case NAU8540_CLK_INTERNAL:
-> +               regmap_update_bits(regmap, NAU8540_REG_FLL6,
-> +                       NAU8540_DCO_EN, NAU8540_DCO_EN);
-> +               regmap_update_bits(regmap, NAU8540_REG_CLOCK_SRC,
-> +                       NAU8540_CLK_SRC_MASK, NAU8540_CLK_SRC_VCO);
-> +               break;
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-The above are fine but...
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> +
-> +       case NAU8540_CLK_FLL_MCLK:
-> +               regmap_update_bits(regmap, NAU8540_REG_FLL3,
-> +                       NAU8540_FLL_CLK_SRC_MASK, NAU8540_FLL_CLK_SRC_MCLK);
-> +               break;
-> +
-> +       case NAU8540_CLK_FLL_BLK:
-> +               regmap_update_bits(regmap, NAU8540_REG_FLL3,
-> +                       NAU8540_FLL_CLK_SRC_MASK, NAU8540_FLL_CLK_SRC_BLK);
-> +               break;
-> +
-> +       case NAU8540_CLK_FLL_FS:
-> +               regmap_update_bits(regmap, NAU8540_REG_FLL3,
-> +                       NAU8540_FLL_CLK_SRC_MASK, NAU8540_FLL_CLK_SRC_FS);
-> +               break;
+Thanks,
+Mark
 
-...these look like they're mixing in FLL configuration which I'd expect
-to be done with set_pll() via the source argument and I'm not seeing
-anything that sets the device to use the FLL here.  I'd expect the
-source selection to go into set_pll() and I'd expect this function to
-have a setting which tells the device to use the FLL.
+>From d75e460ad330518b56635cfccfba78c90ff0c9df Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 19 Dec 2016 07:37:57 +0000
+Subject: [PATCH] ASoC: add for_each_component{_safe}
 
-> +static int nau8540_set_sysclk(struct snd_soc_codec *codec,
-> +       int clk_id, int source, unsigned int freq, int dir)
-> +{
-> +       struct nau8540 *nau8540 = snd_soc_codec_get_drvdata(codec);
-> +
-> +       return nau8540_config_sysclk(nau8540, clk_id, freq);
-> +}
+To be more readable code, this patch adds new for_each_component
+macro.
 
-This wrapper isn't really adding anything.
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ include/sound/soc.h  |  5 +++++
+ sound/soc/soc-core.c | 10 ++++------
+ sound/soc/soc-pcm.c  |  5 ++---
+ 3 files changed, 11 insertions(+), 9 deletions(-)
 
-> +static void nau8540_init_regs(struct nau8540 *nau8540)
-> +{
-> +       struct regmap *regmap = nau8540->regmap;
-> +
-> +       /* Enable Bias/VMID/VMID Tieoff */
-> +       regmap_update_bits(regmap, NAU8540_REG_VMID_CTRL,
-> +               NAU8540_VMID_EN | NAU8540_VMID_SEL_MASK,
-> +               NAU8540_VMID_EN | (0x2 << NAU8540_VMID_SEL_SFT));
-> +       regmap_update_bits(regmap, NAU8540_REG_REFERENCE,
-> +               NAU8540_PRECHARGE_DIS | NAU8540_GLOBAL_BIAS_EN,
-> +               NAU8540_PRECHARGE_DIS | NAU8540_GLOBAL_BIAS_EN);
-> +       mdelay(2);
-> +       regmap_update_bits(regmap, NAU8540_REG_MIC_BIAS,
-> +               NAU8540_PU_PRE, NAU8540_PU_PRE);
-> +       regmap_update_bits(regmap, NAU8540_REG_CLOCK_CTRL,
-> +               NAU8540_CLK_ADC_EN | NAU8540_CLK_I2S_EN,
-> +               NAU8540_CLK_ADC_EN | NAU8540_CLK_I2S_EN);
-> +       /* ADC OSR selection, CLK_ADC = Fs * OSR */
-> +       regmap_update_bits(regmap, NAU8540_REG_ADC_SAMPLE_RATE,
-> +               NAU8540_ADC_OSR_MASK, NAU8540_ADC_OSR_64);
-> +}
-
-Does this sequence need to be done as part of resume as well?
-
---cpdmxec4nozoce4c
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlhz6/MACgkQJNaLcl1U
-h9CddAf/WSCUn+aJd2ewF1UQZMxB6UPMiYbLyvLBAZU8mfOBP33b7ugkzfevnR8/
-QEDwggD7G/dHQvFgyncIls3U+k/FfrXQV7q1sbqAheXfIvsj7jfySMqhSQRXyFIE
-arpTN30gdyCmntY0tgco89sA2lE6gd17HXQXATUB9a029ljduVVcoCcvxJyF0roq
-NGmSiwJtbBmGhe9xUrw7Tj3sVvKZSGH33urrJxMat91ShLIh5ETtgcnVSt0wdXYC
-of3NLRcOsd4SV5Vy7pUTjM3rP65ojSipKXXLMw0EFQrHegVlmkpUI0kjVW7ODRz5
-sCqVDPFahCpwNaXxTGOwEM5xw3nt/Q==
-=o8MY
------END PGP SIGNATURE-----
-
---cpdmxec4nozoce4c--
-
---===============3120758306895995667==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3120758306895995667==--
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 1a4311da6126..b37b21a3471f 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1193,6 +1193,11 @@ struct snd_soc_card {
+ 
+ 	void *drvdata;
+ };
++#define	for_each_component(component, card) \
++	list_for_each_entry(component, &(card)->component_dev_list, card_list)
++#define	for_each_component_safe(component, _component, card)	\
++	list_for_each_entry_safe(component, _component, \
++				 &(card)->component_dev_list, card_list)
+ 
+ /* SoC machine DAI configuration, glues a codec and cpu DAI together */
+ struct snd_soc_pcm_runtime {
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 981443e444d1..9f2b9e1a1cee 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -703,7 +703,7 @@ int snd_soc_suspend(struct device *dev)
+ 	snd_soc_dapm_sync(&card->dapm);
+ 
+ 	/* suspend all COMPONENTs */
+-	list_for_each_entry(component, &card->component_dev_list, card_list) {
++	for_each_component(component, card) {
+ 		struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
+ 
+ 		/* If there are paths active then the COMPONENT will be held with
+@@ -794,7 +794,7 @@ static void soc_resume_deferred(struct work_struct *work)
+ 			cpu_dai->driver->resume(cpu_dai);
+ 	}
+ 
+-	list_for_each_entry(component, &card->component_dev_list, card_list) {
++	for_each_component(component, card) {
+ 		if (component->suspended) {
+ 			if (component->resume)
+ 				component->resume(component);
+@@ -1764,7 +1764,7 @@ static int soc_probe_aux_devices(struct snd_soc_card *card)
+ 
+ 	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
+ 		order++) {
+-		list_for_each_entry(comp, &card->component_dev_list, card_list) {
++		for_each_component(comp, card) {
+ 			if (!comp->auxiliary)
+ 				continue;
+ 
+@@ -1790,9 +1790,7 @@ static void soc_remove_aux_devices(struct snd_soc_card *card)
+ 
+ 	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
+ 		order++) {
+-		list_for_each_entry_safe(comp, _comp,
+-			&card->component_dev_list, card_list) {
+-
++		for_each_component_safe(comp, _comp, card) {
+ 			if (!comp->auxiliary)
+ 				continue;
+ 
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 1739573dcd6a..51927dc93c41 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2631,8 +2631,7 @@ static void soc_pcm_free(struct snd_pcm *pcm)
+ 	struct snd_soc_pcm_runtime *rtd = pcm->private_data;
+ 	struct snd_soc_component *component;
+ 
+-	list_for_each_entry(component, &rtd->card->component_dev_list,
+-			    card_list) {
++	for_each_component(component, rtd->card) {
+ 		if (component->pcm_free)
+ 			component->pcm_free(pcm);
+ 	}
+@@ -2753,7 +2752,7 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 	if (capture)
+ 		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &rtd->ops);
+ 
+-	list_for_each_entry(component, &rtd->card->component_dev_list, card_list) {
++	for_each_component(component, rtd->card) {
+ 		if (component->pcm_new) {
+ 			ret = component->pcm_new(rtd);
+ 			if (ret < 0) {
+-- 
+2.11.0
