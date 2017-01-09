@@ -1,86 +1,76 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: [alsa-devel] [PATCH v4 0/3] support DP MST audio
-Date: Mon, 9 Jan 2017 06:22:55 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D1952458272@SHSMSX103.ccr.corp.intel.com>
-References: <1480992519-108079-1-git-send-email-libin.yang@intel.com>
- <96A12704CE18D347B625EE2D4A099D194FA69699@SHSMSX103.ccr.corp.intel.com>
- <s5hzik94j74.wl-tiwai@suse.de>
- <CAKMK7uFim4fmrVSTVJa+STURbiVbtvyydtbj+eVRCPGGUfOk8Q@mail.gmail.com>
- <s5htwah4gur.wl-tiwai@suse.de>
+From: Allan Klinbail <aklinbail@gmail.com>
+Subject: additional high input device for snd-dice (A&H Zed R16)
+Date: Mon, 09 Jan 2017 06:59:52 +0000
+Message-ID: <CA+aoAJfjN83TdDdQnA05KmQs29UiLSQNkdV7OvLsf7S7vQgi+w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <s5htwah4gur.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>, Daniel Vetter <daniel@ffwll.ch>
-Cc: intel-gfx <intel-gfx@lists.freedesktop.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f54.google.com (mail-wm0-f54.google.com [74.125.82.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 20B25266619
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2017 08:00:03 +0100 (CET)
+Received: by mail-wm0-f54.google.com with SMTP id a197so88512051wmd.0
+ for <alsa-devel@alsa-project.org>; Sun, 08 Jan 2017 23:00:03 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgVGFrYXNoaSwKCkl0IHNlZW1zIHRoZSBwYXRjaGVzIGZvciBEUCBNU1QgaW4gZ2Z4IGlzIG5v
-dCBtZXJnZWQgaW50byBMaW51cyBicmFuY2guCgpEbyB3ZSBoYXZlIHBsYW4gdG8gbWVyZ2UgZ2Z4
-IGJyYW5jaCBtYW51YWxseSBhbmQgcmV2aWV3IHRoZSBwYXRjaGVzIGZvciBhdWRpbz8gT3Igd2Ug
-d2lsbCB3YWl0IHRoZSBEUCBNU1QgcGF0Y2hlcyBmb3IgaTkxNSBtZXJnZWQgaW50byBMaW51cyBi
-cmFuY2g/CgpSZWdhcmRzLApMaWJpbgoKCj4tLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+RnJv
-bTogVGFrYXNoaSBJd2FpIFttYWlsdG86dGl3YWlAc3VzZS5kZV0KPlNlbnQ6IFR1ZXNkYXksIERl
-Y2VtYmVyIDYsIDIwMTYgNDoxMSBQTQo+VG86IERhbmllbCBWZXR0ZXIgPGRhbmllbEBmZndsbC5j
-aD4KPkNjOiBpbnRlbC1nZnggPGludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmc+OyBOaWt1
-bGEsIEphbmkKPjxqYW5pLm5pa3VsYUBsaW51eC5pbnRlbC5jb20+OyBZYW5nLCBMaWJpbiA8bGli
-aW4ueWFuZ0BpbnRlbC5jb20+OyBhbHNhLQo+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgTGluLCBN
-ZW5nZG9uZyA8bWVuZ2RvbmcubGluQGludGVsLmNvbT4KPlN1YmplY3Q6IFJlOiBbYWxzYS1kZXZl
-bF0gW1BBVENIIHY0IDAvM10gc3VwcG9ydCBEUCBNU1QgYXVkaW8KPgo+T24gVHVlLCAwNiBEZWMg
-MjAxNiAwODo1MTo0MyArMDEwMCwKPkRhbmllbCBWZXR0ZXIgd3JvdGU6Cj4+Cj4+IE9uIFR1ZSwg
-RGVjIDYsIDIwMTYgYXQgODoyMCBBTSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90
-ZToKPj4gPiBPbiBUdWUsIDA2IERlYyAyMDE2IDAzOjU4OjIxICswMTAwLAo+PiA+IFlhbmcsIExp
-YmluIHdyb3RlOgo+PiA+Pgo+PiA+PiBUaGUgcGF0Y2hzZXQgaXMgYmFzZWQgb24gZHJtLXRpcCBi
-cmFuY2ggaW4KPj4gPj4gZ2l0Oi8vYW5vbmdpdC5mcmVlZGVza3RvcC5vcmcvZHJtLXRpcAo+PiA+
-Cj4+ID4gSSdsbCByZXZpZXcgYW5kIG1lcmdlIGlmIGl0J3MgT0suCj4+ID4KPj4gPiBEYW5pZWws
-IGRvIHlvdSBndXlzIGhhdmUgdGhlIHN0YWJsZSBicmFuY2ggdGhhdCBJIGNhbiBwdWxsIGludG8K
-Pj4gPiBzb3VuZCB0cmVlIGZvciBEUC1NU1QgYXVkaW8gc3R1ZmYgZm9yIDQuMTA/Cj4+Cj4+IERQ
-IG1zdCBhdWRpbyBzdXBwb3J0IG1pc3NlZCA0LjEwIG92ZXIgaGVyZSBvbiB0aGUgZHJtIHNpZGUu
-IEFuZCBJCj4+IHdhc24ndCBhd2FyZSB0aGF0IHdlIG5lZWQgYSB0b3BpYyBicmFuY2ggZm9yIGl0
-LCBzbyBJIGp1c3Qgc21hc2hlZCBpdAo+PiBpbnRvIG91ciBkcm0taW50ZWwtbmV4dCBxdWV1ZSAu
-Li4gSSBjYW4gc2VuZCB5b3UgdGhlIG1vc3QgcmVjZW50Cj4+IHN0YWJsZSB0YWcgZm9yIHRoYXQs
-IGJ1dCB0aGF0J3MgaGVhZGluZyBpbiBvbmx5IGZvciA0LjExLgo+Cj5JdCdzIGZpbmUsIHdlIGNh
-biBwb3N0cG9uZSB0byA0LjExIGFzIHdlbGwuICBJIGp1c3QgdGhvdWdodCBpdCB3ZXJlIGFscmVh
-ZHkKPnF1ZXVlZCBmb3IgNC4xMC4KPgo+SWYgc28sIEknbSBnb2luZyB0byBxdWV1ZSB0aGVzZSBw
-YXRjaGVzIG9uY2UgYWZ0ZXIgNC4xMC1yYzEgaXMgcmVsZWFzZWQuCj4KPgo+dGhhbmtzLAo+Cj5U
-YWthc2hpCj4KPgo+PiAtRGFuaWVsCj4+Cj4+ID4KPj4gPgo+PiA+IHRoYW5rcywKPj4gPgo+PiA+
-IFRha2FzaGkKPj4gPgo+PiA+Cj4+ID4+IFJlZ2FyZHMsCj4+ID4+IExpYmluCj4+ID4+Cj4+ID4+
-Cj4+ID4+ID4tLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+PiA+PiA+RnJvbTogWWFuZywgTGli
-aW4KPj4gPj4gPlNlbnQ6IFR1ZXNkYXksIERlY2VtYmVyIDYsIDIwMTYgMTA6NDkgQU0KPj4gPj4g
-PlRvOiBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc7IHRpd2FpQHN1c2UuZGUKPj4gPj4gPkNj
-OiBMaW4sIE1lbmdkb25nIDxtZW5nZG9uZy5saW5AaW50ZWwuY29tPjsgWWFuZywgTGliaW4KPj4g
-Pj4gPjxsaWJpbi55YW5nQGludGVsLmNvbT4KPj4gPj4gPlN1YmplY3Q6IFthbHNhLWRldmVsXSBb
-UEFUQ0ggdjQgMC8zXSBzdXBwb3J0IERQIE1TVCBhdWRpbwo+PiA+PiA+Cj4+ID4+ID5Gcm9tOiBM
-aWJpbiBZYW5nIDxsaWJpbi55YW5nQGludGVsLmNvbT4KPj4gPj4gPgo+PiA+PiA+VGhpcyBwYXRj
-aHNldCBzdGFydHMgdG8gc3VwcG9ydCBEUCBNU1QgYXVkaW8uCj4+ID4+ID4KPj4gPj4gPlRoaXMg
-cGF0Y2hzZXQgaXMgYmFzZWQgb24gZHJtLXRpcCBvbgo+PiA+PiA+Z2l0Oi8vYW5vbmdpdC5mcmVl
-ZGVza3RvcC5vcmcvZHJtLXRpcAo+PiA+PiA+Cj4+ID4+ID5jaGFuZ2UgbG9nOgo+PiA+PiA+djQ6
-IHJlZmluZSBzb21lIGNvbW1lbnRzIGluIDAwMDEgYW5kIDAwMDIgcGF0Y2hlcy4KPj4gPj4gPiAg
-ICByZWZpbmUgdGhlIDAwMDMgcGF0Y2ggZm9yIHRoZSBuZXcgQUxTQS1Db25maWd1cmF0aW9uIGRv
-Y3VtZW50Cj4+ID4+ID4KPj4gPj4gPkxpYmluIFlhbmcgKDMpOgo+PiA+PiA+ICBBTFNBOiBoZGEg
-LSBhZGQgRFAgbXN0IHZlcmIgc3VwcG9ydAo+PiA+PiA+ICBBTFNBOiBoZGEgLSBhZGQgRFAgTVNU
-IGF1ZGlvIHN1cHBvcnQKPj4gPj4gPiAgQUxTQTogRG9jdW1lbnRhdGlvbiBhYm91dCBIREEgRFAg
-TVNUIHBpbiBpbml0IGFuZCBjb25uZWN0aW9uCj4+ID4+ID4KPj4gPj4gPiBEb2N1bWVudGF0aW9u
-L3NvdW5kL2hkLWF1ZGlvL2RwLW1zdC5yc3QgfCAgMTcgKysrCj4+ID4+ID4gc291bmQvcGNpL2hk
-YS9oZGFfY29kZWMuYyAgICAgICAgICAgICAgIHwgIDc2ICsrKysrKysrKy0KPj4gPj4gPiBzb3Vu
-ZC9wY2kvaGRhL2hkYV9jb2RlYy5oICAgICAgICAgICAgICAgfCAgIDMgKwo+PiA+PiA+IHNvdW5k
-L3BjaS9oZGEvcGF0Y2hfaGRtaS5jICAgICAgICAgICAgICB8IDI0NQo+KysrKysrKysrKysrKysr
-KysrKysrKysrKy0tLS0tLQo+PiA+PiA+LQo+PiA+PiA+IDQgZmlsZXMgY2hhbmdlZCwgMjg1IGlu
-c2VydGlvbnMoKyksIDU2IGRlbGV0aW9ucygtKQo+PiA+PiA+Cj4+ID4+ID4tLQo+PiA+PiA+Mi43
-LjQKPj4gPj4KPj4KPj4KPj4KPj4gLS0KPj4gRGFuaWVsIFZldHRlcgo+PiBTb2Z0d2FyZSBFbmdp
-bmVlciwgSW50ZWwgQ29ycG9yYXRpb24KPj4gKzQxICgwKSA3OSAzNjUgNTcgNDggLSBodHRwOi8v
-YmxvZy5mZndsbC5jaAo+PgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3Rv
-cC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRl
-bC1nZngK
+Hi,
+
+I noticed on the changelog that some devices are able to access all
+channels without doing any .asoundrc funkiness. Form 4.6 kernel onwards
+
+
+   - Add support for previously unavailable higher PCM channels on certain
+   devices with high channel count, notably Focusrite Saffire PRO 40,
+   Focusrite Liquid Saffire 56, and TC Electronic Studio Konnekt 48. These
+   devices spread the PCM and MIDI channels across 2 tx + 2 rx IEEE 1394
+   channels instead of just 1 tx + 1 rx IEEE 1394 channel, as most other
+   devices do.
+
+
+Pretty sure I've tested with 4.6 and wasn't able to achieve this with my
+device.  But can test again with 4.8 if I am wrong.
+
+My device is an Allen and Heath Zed R16..
+While latency performance in the way ALSA works is not satisfactory  for my
+usage others may wish to use this device with ALSA for simplicity. (remove
+the need for FFADO entirely as there is no software mixer for this device
+and remove the need for any MIDI bridge)
+
+Currently under ALSA in 44.1k or 48k the device has 16 inputs and 16
+outputs on the first firewire channel, and then and additional 10 ins and
+10 outs on the second.
+
+If this is any help, here is the vendor info, as used by FFADO
+
+
+{ # Allen and Heath Zed R16.  Information from Brendan Pike.
+    vendorid    = 0x000004C4;
+    modelid     = 0x00000000;
+    vendorname  = "Allen and Heath";
+    modelname   = "Zed R16";
+    driver      = "DICE";
+    mixer       = "Generic_Dice_EAP";
+}
+
+
+On that latency topic- just voicing my opinion and I don't expect change.
+
+When the paradigm of using periods/frames and buffers is common across all
+OS and driver platforms, I don't believe that the driver should force
+developers to implement a new method, even if there are better ways of
+doing things. That might be okay for small open source projects, but bigger
+commercial applications would not be likely to maintain separate
+configuration options for Linux, they are more likely to drop Linux
+altogether if forced to adopt
+ I also know that Takashi S, does not agree but as FFADO devs have agreed
+to keep the driver in FFADO I don't mind..
