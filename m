@@ -1,18 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dpcm: Avoid putting stream state to
-	STOP when FE stream is paused" to the asoc tree
-Date: Mon, 09 Jan 2017 20:01:46 +0000
-Message-ID: <E1cQg8Y-0006yA-S4@debutante>
-References: <1483253079-7978-1-git-send-email-plai@codeaurora.org>
+From: Matt Ranostay <matt@ranostay.consulting>
+Subject: Re: [PATCH v5] ASoC: omap-mcbsp: Add PM QoS support
+ for McBSP to prevent glitches
+Date: Mon, 9 Jan 2017 13:46:01 -0800
+Message-ID: <CAJ_EiSRiSSUxDoza0a5gHuP8mvOteZ=9Mi=G91r++QUbgaXpXA@mail.gmail.com>
+References: <20170105015918.21621-1-matt@ranostay.consulting>
+ <1372efd2-5319-e6c4-629e-6ed5f2e2fe29@ti.com>
+ <20170109192123.GN2630@atomide.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DDC27266EE9
- for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2017 21:01:52 +0100 (CET)
-In-Reply-To: <1483253079-7978-1-git-send-email-plai@codeaurora.org>
+Received: from mail-qk0-f181.google.com (mail-qk0-f181.google.com
+ [209.85.220.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8AF57266F0C
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2017 22:46:02 +0100 (CET)
+Received: by mail-qk0-f181.google.com with SMTP id u25so539616726qki.2
+ for <alsa-devel@alsa-project.org>; Mon, 09 Jan 2017 13:46:02 -0800 (PST)
+In-Reply-To: <20170109192123.GN2630@atomide.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,71 +26,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Patrick Lai <plai@codeaurora.org>
-Cc: bgoswami@codeaurora.org, alsa-devel@alsa-project.org, broonie@kernel.org
+To: Tony Lindgren <tony@atomide.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Linux OMAP List <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Mon, Jan 9, 2017 at 11:21 AM, Tony Lindgren <tony@atomide.com> wrote:
+> * Peter Ujfalusi <peter.ujfalusi@ti.com> [170109 05:13]:
+>> On 01/05/2017 03:59 AM, Matt Ranostay wrote:
+>> > We can get audio errors if hitting deeper idle states on omaps:
+>> >
+>> > [alsa.c:230] error: Fatal problem with alsa output, error -5.
+>> > [audio.c:614] error: Error in writing audio (Input/output error?)!
+>> >
+>> > This seems to happen with off mode idle enabled as power for the
+>> > whole SoC may get cut off between filling the McBSP fifo using DMA.
+>> > While active DMA blocks deeper idle states in hardware, McBSP
+>> > activity does not seem to do so.
+>> >
+>> > Basing the QoS latency calculation on the FIFO size, threshold,
+>> > sample rate, and channels.
+>>
+>> Looks good to me, thank you!
+>>
+>> Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+>
+> Noticed the following about 10 seconds into playing an mp3 file with
+> mpg123 though:
+>
 
-   ASoC: dpcm: Avoid putting stream state to STOP when FE stream is paused
+Didn't notice that happening for me. But haven't rebased for the last
+couple days.
+Does this happen 100% of the time?
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 9f169b9f52a4afccdab7a7d2311b0c53a78a1e6b Mon Sep 17 00:00:00 2001
-From: Patrick Lai <plai@codeaurora.org>
-Date: Sat, 31 Dec 2016 22:44:39 -0800
-Subject: [PATCH] ASoC: dpcm: Avoid putting stream state to STOP when FE stream
- is paused
-
-When multiple front-ends are using the same back-end, putting state of a
-front-end to STOP state upon receiving pause command will result in backend
-stream getting released by DPCM framework unintentionally. In order to
-avoid backend to be released when another active front-end stream is
-present, put the stream state to PAUSED state instead of STOP state.
-
-Signed-off-by: Patrick Lai <plai@codeaurora.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-pcm.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index e7a1eaa2772f..6aba14009c92 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2184,9 +2184,11 @@ static int dpcm_fe_dai_do_trigger(struct snd_pcm_substream *substream, int cmd)
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
--	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
- 		fe->dpcm[stream].state = SND_SOC_DPCM_STATE_STOP;
- 		break;
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		fe->dpcm[stream].state = SND_SOC_DPCM_STATE_PAUSED;
-+		break;
- 	}
- 
- out:
--- 
-2.11.0
+> BUG: sleeping function called from invalid context at kernel/locking/rwsem.c:21
+> in_atomic(): 1, irqs_disabled(): 128, pid: 351, name: mpg123
+> 2 locks held by mpg123/351:
+>  #0:  (snd_pcm_link_rwlock){......}, at: [<bf0667dc>] snd_pcm_stream_lock+0x20/0x50 [snd_pcm]
+>  #1:  (&(&substream->self_group.lock)->rlock){......}, at: [<bf06dd70>] snd_pcm_lib_write1+0x1ac/0x30c [snd_pc]
+> irq event stamp: 20082
+> hardirqs last  enabled at (20081): [<bf0668e8>] snd_pcm_stream_unlock_irq+0x20/0x28 [snd_pcm]
+> hardirqs last disabled at (20082): [<bf066834>] snd_pcm_stream_lock_irq+0x28/0x38 [snd_pcm]
+> softirqs last  enabled at (17808): [<c013f124>] __do_softirq+0x240/0x564
+> softirqs last disabled at (17767): [<c013f7e0>] irq_exit+0xe4/0x160
+> CPU: 0 PID: 351 Comm: mpg123 Not tainted 4.10.0-rc2-next-20170109+ #726
+> Hardware name: Generic OMAP36xx (Flattened Device Tree)
+> [<c0110238>] (unwind_backtrace) from [<c010c2a8>] (show_stack+0x10/0x14)
+> [<c010c2a8>] (show_stack) from [<c04be4a0>] (dump_stack+0xac/0xe0)
+> [<c04be4a0>] (dump_stack) from [<c0165d60>] (___might_sleep+0x17c/0x2a4)
+> [<c0165d60>] (___might_sleep) from [<c0879444>] (down_read+0x20/0x90)
+> [<c0879444>] (down_read) from [<c015f62c>] (__blocking_notifier_call_chain+0x2c/0x60)
+> [<c015f62c>] (__blocking_notifier_call_chain) from [<c015f678>] (blocking_notifier_call_chain+0x18/0x20)
+> [<c015f678>] (blocking_notifier_call_chain) from [<c01a1c98>] (pm_qos_update_target+0x120/0x34c)
+> [<c01a1c98>] (pm_qos_update_target) from [<bf247188>] (omap_mcbsp_start+0x2a8/0x334 [snd_soc_omap_mcbsp])
+> [<bf247188>] (omap_mcbsp_start [snd_soc_omap_mcbsp]) from [<bf24533c>] (omap_mcbsp_dai_trigger+0x5c/0x90 [snd_)
+> [<bf24533c>] (omap_mcbsp_dai_trigger [snd_soc_omap_mcbsp]) from [<bf09bfa0>] (soc_pcm_trigger+0xd0/0x11c [snd_)
+> [<bf09bfa0>] (soc_pcm_trigger [snd_soc_core]) from [<bf066368>] (snd_pcm_action_single+0x38/0x78 [snd_pcm])
+> [<bf066368>] (snd_pcm_action_single [snd_pcm]) from [<bf06de8c>] (snd_pcm_lib_write1+0x2c8/0x30c [snd_pcm])
+> [<bf06de8c>] (snd_pcm_lib_write1 [snd_pcm]) from [<bf06df30>] (snd_pcm_lib_write+0x60/0x74 [snd_pcm])
+> [<bf06df30>] (snd_pcm_lib_write [snd_pcm]) from [<bf0692bc>] (snd_pcm_playback_ioctl1+0x38c/0x6f0 [snd_pcm])
+> [<bf0692bc>] (snd_pcm_playback_ioctl1 [snd_pcm]) from [<c02cbab8>] (do_vfs_ioctl+0x90/0xa0c)
+> [<c02cbab8>] (do_vfs_ioctl) from [<c02cc4a0>] (SyS_ioctl+0x6c/0x7c)
+> [<c02cc4a0>] (SyS_ioctl) from [<c01079a8>] (__sys_trace_return+0x0/0x10)
+>
+> Any ideas?
+>
+> Tony
