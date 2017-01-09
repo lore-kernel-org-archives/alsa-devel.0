@@ -1,65 +1,84 @@
-From: Jerome Anand <jerome.anand@intel.com>
-Subject: [PATCH V3 5/5] ALSA: x86: hdmi: continue playback even
-	when display resolution changes
-Date: Tue, 10 Jan 2017 10:38:41 +0530
-Message-ID: <20170110050841.31900-6-jerome.anand@intel.com>
-References: <20170110050841.31900-1-jerome.anand@intel.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH v5] ASoC: omap-mcbsp: Add PM QoS support
+ for McBSP to prevent glitches
+Date: Mon, 9 Jan 2017 11:21:23 -0800
+Message-ID: <20170109192123.GN2630@atomide.com>
+References: <20170105015918.21621-1-matt@ranostay.consulting>
+ <1372efd2-5319-e6c4-629e-6ed5f2e2fe29@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20170110050841.31900-1-jerome.anand@intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, rakesh.a.ughreja@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from muru.com (muru.com [72.249.23.125])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A5512668AD
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2017 20:21:27 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1372efd2-5319-e6c4-629e-6ed5f2e2fe29@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Matt Ranostay <matt@ranostay.consulting>
 List-Id: alsa-devel@alsa-project.org
 
-V2hlbiB0aGUgZGlzcGxheSByZXNvbHV0aW9uIGNoYW5nZXMsIHRoZSBkcm0gZGlzYWJsZXMgdGhl
-CmRpc3BsYXkgcGlwZXMgZHVlIHRvIHdoaWNoIGF1ZGlvIHJlbmRlcmluZyBzdG9wcy4gQXQgdGhp
-cwp0aW1lLCB3ZSBuZWVkIHRvIGVuc3VyZSB0aGUgZXhpc3RpbmcgYXVkaW8gcG9pbnRlcnMgYW5k
-CmJ1ZmZlcnMgYXJlIGNsZWFyZWQgb3V0IHNvIHRoYXQgdGhlIHBsYXliYWNrIGNhbiByZXN0YXJ0
-ZWQKb25jZSB0aGUgZGlzcGxheSBwaXBlIGlzIGVuYWJsZWQgd2l0aCBhIGRpZmZlcmVudCBOL0NU
-UyB2YWx1ZXMKClNpZ25lZC1vZmYtYnk6IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IDxwaWVycmUtbG91
-aXMuYm9zc2FydEBsaW51eC5pbnRlbC5jb20+ClNpZ25lZC1vZmYtYnk6IEplcm9tZSBBbmFuZCA8
-amVyb21lLmFuYW5kQGludGVsLmNvbT4KLS0tCiBzb3VuZC94ODYvaW50ZWxfaGRtaV9hdWRpby5j
-IHwgMjEgKysrKysrKysrKysrKysrKysrLS0tCiAxIGZpbGUgY2hhbmdlZCwgMTggaW5zZXJ0aW9u
-cygrKSwgMyBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC94ODYvaW50ZWxfaGRtaV9h
-dWRpby5jIGIvc291bmQveDg2L2ludGVsX2hkbWlfYXVkaW8uYwppbmRleCA1MzA1YzVjLi5kMzNi
-ZTNjIDEwMDY0NAotLS0gYS9zb3VuZC94ODYvaW50ZWxfaGRtaV9hdWRpby5jCisrKyBiL3NvdW5k
-L3g4Ni9pbnRlbF9oZG1pX2F1ZGlvLmMKQEAgLTQzLDYgKzQzLDcgQEAgc3RhdGljIERFRklORV9N
-VVRFWChoYWRfbXV0ZXgpOwogc3RhdGljIGludCBoZG1pX2NhcmRfaW5kZXggPSBTTkRSVl9ERUZB
-VUxUX0lEWDE7CiBzdGF0aWMgY2hhciAqaGRtaV9jYXJkX2lkID0gU05EUlZfREVGQVVMVF9TVFIx
-Owogc3RhdGljIHN0cnVjdCBzbmRfaW50ZWxoYWQgKmhhZF9kYXRhOworc3RhdGljIGludCB1bmRl
-cnJ1bl9jb3VudDsKIAogbW9kdWxlX3BhcmFtX25hbWVkKGluZGV4LCBoZG1pX2NhcmRfaW5kZXgs
-IGludCwgMDQ0NCk7CiBNT0RVTEVfUEFSTV9ERVNDKGluZGV4LApAQCAtMTExNCw2ICsxMTE1LDcg
-QEAgc3RhdGljIGludCBzbmRfaW50ZWxoYWRfb3BlbihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0g
-KnN1YnN0cmVhbSkKIAlpbnRlbGhhZGRhdGEgPSBzbmRfcGNtX3N1YnN0cmVhbV9jaGlwKHN1YnN0
-cmVhbSk7CiAJaGFkX3N0cmVhbSA9IGludGVsaGFkZGF0YS0+cHJpdmF0ZV9kYXRhOwogCXJ1bnRp
-bWUgPSBzdWJzdHJlYW0tPnJ1bnRpbWU7CisJdW5kZXJydW5fY291bnQgPSAwOwogCiAJcG1fcnVu
-dGltZV9nZXQoaW50ZWxoYWRkYXRhLT5kZXYpOwogCkBAIC0xNTA3LDEwICsxNTA5LDIzIEBAIHN0
-YXRpYyBzbmRfcGNtX3VmcmFtZXNfdCBzbmRfaW50ZWxoYWRfcGNtX3BvaW50ZXIoCiAKIAlidWZf
-aWQgPSBpbnRlbGhhZGRhdGEtPmN1cnJfYnVmICUgNDsKIAloYWRfcmVhZF9yZWdpc3RlcihBVURf
-QlVGX0FfTEVOR1RIICsgKGJ1Zl9pZCAqIEhBRF9SRUdfV0lEVEgpLCAmdCk7Ci0JaWYgKHQgPT0g
-MCkgewotCQlwcl9kZWJ1ZygiZGlzY292ZXJlZCBidWZmZXIgZG9uZSBmb3IgYnVmICVkXG4iLCBi
-dWZfaWQpOwotCQkvKiBoYWRfcHJvY2Vzc19idWZmZXJfZG9uZShpbnRlbGhhZGRhdGEpOyAqLwor
-CisJaWYgKCh0ID09IDApIHx8ICh0ID09ICgodTMyKS0xTCkpKSB7CisJCXVuZGVycnVuX2NvdW50
-Kys7CisJCXByX2RlYnVnKCJkaXNjb3ZlcmVkIGJ1ZmZlciBkb25lIGZvciBidWYgJWQsIGNvdW50
-ID0gJWRcbiIsCisJCQlidWZfaWQsIHVuZGVycnVuX2NvdW50KTsKKworCQlpZiAodW5kZXJydW5f
-Y291bnQgPiAoSEFEX01JTl9QRVJJT0RTLzIpKSB7CisJCQlwcl9kZWJ1ZygiYXNzdW1lIGF1ZGlv
-X2NvZGVjX3Jlc2V0LCB1bmRlcnJ1biA9ICVkIC0gZG8geHJ1blxuIiwKKwkJCQl1bmRlcnJ1bl9j
-b3VudCk7CisJCQl1bmRlcnJ1bl9jb3VudCA9IDA7CisJCQlyZXR1cm4gU05EUlZfUENNX1BPU19Y
-UlVOOworCQl9CisJfSBlbHNlIHsKKwkJLyogUmVzZXQgQ291bnRlciAqLworCQl1bmRlcnJ1bl9j
-b3VudCA9IDA7CiAJfQorCiAJdCA9IGludGVsaGFkZGF0YS0+YnVmX2luZm9bYnVmX2lkXS5idWZf
-c2l6ZSAtIHQ7CiAKIAlpZiAoaW50ZWxoYWRkYXRhLT5zdHJlYW1faW5mby5idWZmZXJfcmVuZGVy
-ZWQpCi0tIAoyLjkuMwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Au
-b3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwt
-Z2Z4Cg==
+* Peter Ujfalusi <peter.ujfalusi@ti.com> [170109 05:13]:
+> On 01/05/2017 03:59 AM, Matt Ranostay wrote:
+> > We can get audio errors if hitting deeper idle states on omaps:
+> > 
+> > [alsa.c:230] error: Fatal problem with alsa output, error -5.
+> > [audio.c:614] error: Error in writing audio (Input/output error?)!
+> > 
+> > This seems to happen with off mode idle enabled as power for the
+> > whole SoC may get cut off between filling the McBSP fifo using DMA.
+> > While active DMA blocks deeper idle states in hardware, McBSP
+> > activity does not seem to do so.
+> > 
+> > Basing the QoS latency calculation on the FIFO size, threshold,
+> > sample rate, and channels.
+> 
+> Looks good to me, thank you!
+> 
+> Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+
+Noticed the following about 10 seconds into playing an mp3 file with
+mpg123 though:
+
+BUG: sleeping function called from invalid context at kernel/locking/rwsem.c:21
+in_atomic(): 1, irqs_disabled(): 128, pid: 351, name: mpg123
+2 locks held by mpg123/351:
+ #0:  (snd_pcm_link_rwlock){......}, at: [<bf0667dc>] snd_pcm_stream_lock+0x20/0x50 [snd_pcm]
+ #1:  (&(&substream->self_group.lock)->rlock){......}, at: [<bf06dd70>] snd_pcm_lib_write1+0x1ac/0x30c [snd_pc]
+irq event stamp: 20082
+hardirqs last  enabled at (20081): [<bf0668e8>] snd_pcm_stream_unlock_irq+0x20/0x28 [snd_pcm]
+hardirqs last disabled at (20082): [<bf066834>] snd_pcm_stream_lock_irq+0x28/0x38 [snd_pcm]
+softirqs last  enabled at (17808): [<c013f124>] __do_softirq+0x240/0x564
+softirqs last disabled at (17767): [<c013f7e0>] irq_exit+0xe4/0x160
+CPU: 0 PID: 351 Comm: mpg123 Not tainted 4.10.0-rc2-next-20170109+ #726
+Hardware name: Generic OMAP36xx (Flattened Device Tree)
+[<c0110238>] (unwind_backtrace) from [<c010c2a8>] (show_stack+0x10/0x14)
+[<c010c2a8>] (show_stack) from [<c04be4a0>] (dump_stack+0xac/0xe0)
+[<c04be4a0>] (dump_stack) from [<c0165d60>] (___might_sleep+0x17c/0x2a4)
+[<c0165d60>] (___might_sleep) from [<c0879444>] (down_read+0x20/0x90)
+[<c0879444>] (down_read) from [<c015f62c>] (__blocking_notifier_call_chain+0x2c/0x60)
+[<c015f62c>] (__blocking_notifier_call_chain) from [<c015f678>] (blocking_notifier_call_chain+0x18/0x20)
+[<c015f678>] (blocking_notifier_call_chain) from [<c01a1c98>] (pm_qos_update_target+0x120/0x34c)
+[<c01a1c98>] (pm_qos_update_target) from [<bf247188>] (omap_mcbsp_start+0x2a8/0x334 [snd_soc_omap_mcbsp])
+[<bf247188>] (omap_mcbsp_start [snd_soc_omap_mcbsp]) from [<bf24533c>] (omap_mcbsp_dai_trigger+0x5c/0x90 [snd_)
+[<bf24533c>] (omap_mcbsp_dai_trigger [snd_soc_omap_mcbsp]) from [<bf09bfa0>] (soc_pcm_trigger+0xd0/0x11c [snd_)
+[<bf09bfa0>] (soc_pcm_trigger [snd_soc_core]) from [<bf066368>] (snd_pcm_action_single+0x38/0x78 [snd_pcm])
+[<bf066368>] (snd_pcm_action_single [snd_pcm]) from [<bf06de8c>] (snd_pcm_lib_write1+0x2c8/0x30c [snd_pcm])
+[<bf06de8c>] (snd_pcm_lib_write1 [snd_pcm]) from [<bf06df30>] (snd_pcm_lib_write+0x60/0x74 [snd_pcm])
+[<bf06df30>] (snd_pcm_lib_write [snd_pcm]) from [<bf0692bc>] (snd_pcm_playback_ioctl1+0x38c/0x6f0 [snd_pcm])
+[<bf0692bc>] (snd_pcm_playback_ioctl1 [snd_pcm]) from [<c02cbab8>] (do_vfs_ioctl+0x90/0xa0c)
+[<c02cbab8>] (do_vfs_ioctl) from [<c02cc4a0>] (SyS_ioctl+0x6c/0x7c)
+[<c02cc4a0>] (SyS_ioctl) from [<c01079a8>] (__sys_trace_return+0x0/0x10)
+
+Any ideas?
+
+Tony
