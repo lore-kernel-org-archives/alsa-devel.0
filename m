@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: set sel_i2s_pre_div1 to 2" to
-	the asoc tree
-Date: Mon, 09 Jan 2017 20:01:43 +0000
-Message-ID: <E1cQg8V-0006xG-SP@debutante>
-References: <1482811506-6447-1-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: dpcm: Avoid putting stream state to
+	STOP when FE stream is paused" to the asoc tree
+Date: Mon, 09 Jan 2017 20:01:46 +0000
+Message-ID: <E1cQg8Y-0006yA-S4@debutante>
+References: <1483253079-7978-1-git-send-email-plai@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4FE2E266EE9
- for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2017 21:01:51 +0100 (CET)
-In-Reply-To: <1482811506-6447-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DDC27266EE9
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2017 21:01:52 +0100 (CET)
+In-Reply-To: <1483253079-7978-1-git-send-email-plai@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
+To: Patrick Lai <plai@codeaurora.org>
+Cc: bgoswami@codeaurora.org, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: set sel_i2s_pre_div1 to 2
+   ASoC: dpcm: Avoid putting stream state to STOP when FE stream is paused
 
 has been applied to the asoc tree at
 
@@ -53,40 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From 02c5c03283c52157d336abf5e44ffcda10579fbf Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Tue, 27 Dec 2016 12:05:05 +0800
-Subject: [PATCH] ASoC: rt5645: set sel_i2s_pre_div1 to 2
+>From 9f169b9f52a4afccdab7a7d2311b0c53a78a1e6b Mon Sep 17 00:00:00 2001
+From: Patrick Lai <plai@codeaurora.org>
+Date: Sat, 31 Dec 2016 22:44:39 -0800
+Subject: [PATCH] ASoC: dpcm: Avoid putting stream state to STOP when FE stream
+ is paused
 
-The i2s clock pre-divider 1 is used for both i2s1 and sysclk.
-The i2s1 is usually used for the main i2s and the pre-divider
-will be set in hw_params function.
+When multiple front-ends are using the same back-end, putting state of a
+front-end to STOP state upon receiving pause command will result in backend
+stream getting released by DPCM framework unintentionally. In order to
+avoid backend to be released when another active front-end stream is
+present, put the stream state to PAUSED state instead of STOP state.
 
-However, if i2s2 is used, the pre-divider is not set in the hw_params
-function and the default value of i2s clock pre-divider 1 is too high
-for sysclk and DMIC usage. Fix by overriding default divider value to 2.
-
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=95681
-Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Patrick Lai <plai@codeaurora.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/soc-pcm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 10c2a564a715..1ac96ef9ee20 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3833,6 +3833,9 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 		}
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index e7a1eaa2772f..6aba14009c92 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2184,9 +2184,11 @@ static int dpcm_fe_dai_do_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+-	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 		fe->dpcm[stream].state = SND_SOC_DPCM_STATE_STOP;
+ 		break;
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		fe->dpcm[stream].state = SND_SOC_DPCM_STATE_PAUSED;
++		break;
  	}
  
-+	regmap_update_bits(rt5645->regmap, RT5645_ADDA_CLK1,
-+		RT5645_I2S_PD1_MASK, RT5645_I2S_PD1_2);
-+
- 	if (rt5645->pdata.jd_invert) {
- 		regmap_update_bits(rt5645->regmap, RT5645_IRQ_CTRL2,
- 			RT5645_JD_1_1_MASK, RT5645_JD_1_1_INV);
+ out:
 -- 
 2.11.0
