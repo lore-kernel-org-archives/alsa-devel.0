@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: remove snd_soc_platform_trigger()" to
-	the asoc tree
-Date: Mon, 09 Jan 2017 20:01:21 +0000
-Message-ID: <E1cQg89-0006qh-TU@debutante>
-References: <8760mg74ma.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: remove .bespoke_trigger from
+	snd_soc_platform_driver" to the asoc tree
+Date: Mon, 09 Jan 2017 20:01:27 +0000
+Message-ID: <E1cQg8F-0006sT-S1@debutante>
+References: <877f6w74mu.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C016D266F0A
- for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2017 21:01:33 +0100 (CET)
-In-Reply-To: <8760mg74ma.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id EFCB1266EE9
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2017 21:01:35 +0100 (CET)
+In-Reply-To: <877f6w74mu.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: remove snd_soc_platform_trigger()
+   ASoC: remove .bespoke_trigger from snd_soc_platform_driver
 
 has been applied to the asoc tree at
 
@@ -53,54 +53,58 @@ to this mail.
 Thanks,
 Mark
 
->From 322962384da9739a5000f58e5f69c7832c448e0d Mon Sep 17 00:00:00 2001
+>From 10611e1b0b7ab2a82dd7838e5e928fa1501d353c Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 19 Dec 2016 07:37:37 +0000
-Subject: [PATCH] ASoC: remove snd_soc_platform_trigger()
+Date: Mon, 19 Dec 2016 07:37:18 +0000
+Subject: [PATCH] ASoC: remove .bespoke_trigger from snd_soc_platform_driver
 
-No one is using snd_soc_platform_trigger().
+No existing platform is using .bespoke_trigger.
 Let's remove it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h | 3 ---
- sound/soc/soc-pcm.c | 9 ---------
- 2 files changed, 12 deletions(-)
+ include/sound/soc.h | 2 --
+ sound/soc/soc-pcm.c | 7 -------
+ 2 files changed, 9 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index b37b21a3471f..5db4a90b1a02 100644
+index 06515e5ca018..1a4311da6126 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -507,9 +507,6 @@ int snd_soc_params_to_bclk(struct snd_pcm_hw_params *parms);
- int snd_soc_set_runtime_hwparams(struct snd_pcm_substream *substream,
- 	const struct snd_pcm_hardware *hw);
+@@ -951,8 +951,6 @@ struct snd_soc_platform_driver {
  
--int snd_soc_platform_trigger(struct snd_pcm_substream *substream,
--		int cmd, struct snd_soc_platform *platform);
+ 	/* platform stream compress ops */
+ 	const struct snd_compr_ops *compr_ops;
 -
- int soc_dai_hw_params(struct snd_pcm_substream *substream,
- 		      struct snd_pcm_hw_params *params,
- 		      struct snd_soc_dai *dai);
+-	int (*bespoke_trigger)(struct snd_pcm_substream *, int);
+ };
+ 
+ struct snd_soc_dai_link_component {
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 51927dc93c41..ff31bf5e646a 100644
+index a4c93a90b8e9..1739573dcd6a 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -2871,15 +2871,6 @@ int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
- }
- EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_params);
- 
--int snd_soc_platform_trigger(struct snd_pcm_substream *substream,
--		int cmd, struct snd_soc_platform *platform)
--{
--	if (platform->driver->ops && platform->driver->ops->trigger)
--		return platform->driver->ops->trigger(substream, cmd);
--	return 0;
--}
--EXPORT_SYMBOL_GPL(snd_soc_platform_trigger);
--
- #ifdef CONFIG_DEBUG_FS
- static const char *dpcm_state_string(enum snd_soc_dpcm_state state)
+@@ -1055,7 +1055,6 @@ static int soc_pcm_bespoke_trigger(struct snd_pcm_substream *substream,
+ 				   int cmd)
  {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	struct snd_soc_dai *codec_dai;
+ 	int i, ret;
+@@ -1071,12 +1070,6 @@ static int soc_pcm_bespoke_trigger(struct snd_pcm_substream *substream,
+ 		}
+ 	}
+ 
+-	if (platform->driver->bespoke_trigger) {
+-		ret = platform->driver->bespoke_trigger(substream, cmd);
+-		if (ret < 0)
+-			return ret;
+-	}
+-
+ 	if (cpu_dai->driver->ops && cpu_dai->driver->ops->bespoke_trigger) {
+ 		ret = cpu_dai->driver->ops->bespoke_trigger(substream, cmd, cpu_dai);
+ 		if (ret < 0)
 -- 
 2.11.0
