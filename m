@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: add for_each_component{_safe}" to the
-	asoc tree
-Date: Mon, 09 Jan 2017 20:01:24 +0000
-Message-ID: <E1cQg8C-0006rd-Rw@debutante>
-References: <874m2074ls.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: remove snd_soc_platform_trigger()" to
+	the asoc tree
+Date: Mon, 09 Jan 2017 20:01:21 +0000
+Message-ID: <E1cQg89-0006qh-TU@debutante>
+References: <8760mg74ma.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 662F9266EE9
+ by alsa0.perex.cz (Postfix) with ESMTP id C016D266F0A
  for <alsa-devel@alsa-project.org>; Mon,  9 Jan 2017 21:01:33 +0100 (CET)
-In-Reply-To: <874m2074ls.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <8760mg74ma.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: add for_each_component{_safe}
+   ASoC: remove snd_soc_platform_trigger()
 
 has been applied to the asoc tree at
 
@@ -53,102 +53,54 @@ to this mail.
 Thanks,
 Mark
 
->From d75e460ad330518b56635cfccfba78c90ff0c9df Mon Sep 17 00:00:00 2001
+>From 322962384da9739a5000f58e5f69c7832c448e0d Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 19 Dec 2016 07:37:57 +0000
-Subject: [PATCH] ASoC: add for_each_component{_safe}
+Date: Mon, 19 Dec 2016 07:37:37 +0000
+Subject: [PATCH] ASoC: remove snd_soc_platform_trigger()
 
-To be more readable code, this patch adds new for_each_component
-macro.
+No one is using snd_soc_platform_trigger().
+Let's remove it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h  |  5 +++++
- sound/soc/soc-core.c | 10 ++++------
- sound/soc/soc-pcm.c  |  5 ++---
- 3 files changed, 11 insertions(+), 9 deletions(-)
+ include/sound/soc.h | 3 ---
+ sound/soc/soc-pcm.c | 9 ---------
+ 2 files changed, 12 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 1a4311da6126..b37b21a3471f 100644
+index b37b21a3471f..5db4a90b1a02 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -1193,6 +1193,11 @@ struct snd_soc_card {
+@@ -507,9 +507,6 @@ int snd_soc_params_to_bclk(struct snd_pcm_hw_params *parms);
+ int snd_soc_set_runtime_hwparams(struct snd_pcm_substream *substream,
+ 	const struct snd_pcm_hardware *hw);
  
- 	void *drvdata;
- };
-+#define	for_each_component(component, card) \
-+	list_for_each_entry(component, &(card)->component_dev_list, card_list)
-+#define	for_each_component_safe(component, _component, card)	\
-+	list_for_each_entry_safe(component, _component, \
-+				 &(card)->component_dev_list, card_list)
- 
- /* SoC machine DAI configuration, glues a codec and cpu DAI together */
- struct snd_soc_pcm_runtime {
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 981443e444d1..9f2b9e1a1cee 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -703,7 +703,7 @@ int snd_soc_suspend(struct device *dev)
- 	snd_soc_dapm_sync(&card->dapm);
- 
- 	/* suspend all COMPONENTs */
--	list_for_each_entry(component, &card->component_dev_list, card_list) {
-+	for_each_component(component, card) {
- 		struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
- 
- 		/* If there are paths active then the COMPONENT will be held with
-@@ -794,7 +794,7 @@ static void soc_resume_deferred(struct work_struct *work)
- 			cpu_dai->driver->resume(cpu_dai);
- 	}
- 
--	list_for_each_entry(component, &card->component_dev_list, card_list) {
-+	for_each_component(component, card) {
- 		if (component->suspended) {
- 			if (component->resume)
- 				component->resume(component);
-@@ -1764,7 +1764,7 @@ static int soc_probe_aux_devices(struct snd_soc_card *card)
- 
- 	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
- 		order++) {
--		list_for_each_entry(comp, &card->component_dev_list, card_list) {
-+		for_each_component(comp, card) {
- 			if (!comp->auxiliary)
- 				continue;
- 
-@@ -1790,9 +1790,7 @@ static void soc_remove_aux_devices(struct snd_soc_card *card)
- 
- 	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
- 		order++) {
--		list_for_each_entry_safe(comp, _comp,
--			&card->component_dev_list, card_list) {
+-int snd_soc_platform_trigger(struct snd_pcm_substream *substream,
+-		int cmd, struct snd_soc_platform *platform);
 -
-+		for_each_component_safe(comp, _comp, card) {
- 			if (!comp->auxiliary)
- 				continue;
- 
+ int soc_dai_hw_params(struct snd_pcm_substream *substream,
+ 		      struct snd_pcm_hw_params *params,
+ 		      struct snd_soc_dai *dai);
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 1739573dcd6a..51927dc93c41 100644
+index 51927dc93c41..ff31bf5e646a 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -2631,8 +2631,7 @@ static void soc_pcm_free(struct snd_pcm *pcm)
- 	struct snd_soc_pcm_runtime *rtd = pcm->private_data;
- 	struct snd_soc_component *component;
+@@ -2871,15 +2871,6 @@ int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dpcm_can_be_params);
  
--	list_for_each_entry(component, &rtd->card->component_dev_list,
--			    card_list) {
-+	for_each_component(component, rtd->card) {
- 		if (component->pcm_free)
- 			component->pcm_free(pcm);
- 	}
-@@ -2753,7 +2752,7 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 	if (capture)
- 		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &rtd->ops);
- 
--	list_for_each_entry(component, &rtd->card->component_dev_list, card_list) {
-+	for_each_component(component, rtd->card) {
- 		if (component->pcm_new) {
- 			ret = component->pcm_new(rtd);
- 			if (ret < 0) {
+-int snd_soc_platform_trigger(struct snd_pcm_substream *substream,
+-		int cmd, struct snd_soc_platform *platform)
+-{
+-	if (platform->driver->ops && platform->driver->ops->trigger)
+-		return platform->driver->ops->trigger(substream, cmd);
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(snd_soc_platform_trigger);
+-
+ #ifdef CONFIG_DEBUG_FS
+ static const char *dpcm_state_string(enum snd_soc_dpcm_state state)
+ {
 -- 
 2.11.0
