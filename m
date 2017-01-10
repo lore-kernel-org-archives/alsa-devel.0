@@ -1,17 +1,26 @@
-From: jeeja.kp@intel.com
-Subject: [PATCH v5 3/3] ASoC: hdac_hdmi: Enable pin and
-	converter in prepare
-Date: Tue, 10 Jan 2017 17:57:48 +0530
-Message-ID: <1484051268-9526-4-git-send-email-jeeja.kp@intel.com>
-References: <1484051268-9526-1-git-send-email-jeeja.kp@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: ak4642: Replace mdelay function to
+	msleep
+Date: Tue, 10 Jan 2017 12:24:49 +0000
+Message-ID: <20170110122449.xhfdph5u6dkxdutz@sirena.org.uk>
+References: <HK2PR06MB123504946F7D9CBFA0445A74BE900@HK2PR06MB1235.apcprd06.prod.outlook.com>
+ <HK2PR06MB1092F11AFF71BCF6CFE41CE6C5900@HK2PR06MB1092.apcprd06.prod.outlook.com>
+ <HK2PR06MB1235B6435DA88D1DEEFF37FBBE900@HK2PR06MB1235.apcprd06.prod.outlook.com>
+ <874m1zay9v.wl%kuninori.morimoto.gx@renesas.com>
+ <HK2PR06MB1092376B43150072E37148DBC5900@HK2PR06MB1092.apcprd06.prod.outlook.com>
+ <HK2PR06MB10928AA734902EC15D19EE50C5900@HK2PR06MB1092.apcprd06.prod.outlook.com>
+ <87k2auxk40.wl%kuninori.morimoto.gx@renesas.com>
+ <HK2PR06MB109231252C5BD2F3CD6A7E93C5930@HK2PR06MB1092.apcprd06.prod.outlook.com>
+ <HK2PR06MB1235B7DA8F97119F90296F4ABE930@HK2PR06MB1235.apcprd06.prod.outlook.com>
+ <87ziizpsxr.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1606920229042860543=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A07126735B
- for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2017 13:17:06 +0100 (CET)
-In-Reply-To: <1484051268-9526-1-git-send-email-jeeja.kp@intel.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 073252673E4
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2017 13:24:56 +0100 (CET)
+In-Reply-To: <87ziizpsxr.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,102 +30,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Sachin Mokashi <sachinx.mokashi@intel.com>, Jeeja KP <jeeja.kp@intel.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, NAOYA SHIIBA <naoya.shiiba.nx@renesas.com>, Hisao Munakata <hisao.munakata.vt@renesas.com>, TOSHIAKI KOMATSU <toshiaki.komatsu.ud@renesas.com>, Yusuke Goda <yusuke.goda.sx@renesas.com>, Simon <horms@verge.net.au>, YOSHIYUKI ITO <yoshiyuki.ito.ub@renesas.com>, Tsuyoshi Tsumuraya <tsuyoshi.tsumuraya.zy@renesas.com>, HARUNOBU KUROKAWA <harunobu.kurokawa.dn@renesas.com>, RYO KODAMA <ryo.kodama.vz@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
 
-Instead of enabling pin and cvt in pcm_open(), need to restore pin and
-cvt state after system resume to restart the playback which is
-paused/stopped before system suspend.
-So enable pin and cvt in playback_prepare and call prepare when trigger
-cmd is paused/started and resume to reconfigure pin and cvt.
+--===============1606920229042860543==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="7ljc2bbfswgvye74"
+Content-Disposition: inline
 
-Signed-off-by: Sachin Mokashi <sachinx.mokashi@intel.com>
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
----
- sound/soc/codecs/hdac_hdmi.c | 37 +++++++++++++++++--------------------
- 1 file changed, 17 insertions(+), 20 deletions(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index c602c49..1da4405 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -114,6 +114,12 @@ struct hdac_hdmi_priv {
- 	struct hdac_chmap chmap;
- };
- 
-+static void hdac_hdmi_enable_cvt(struct hdac_ext_device *edev,
-+			struct hdac_hdmi_dai_pin_map *dai_map);
-+
-+static int hdac_hdmi_enable_pin(struct hdac_ext_device *hdac,
-+			struct hdac_hdmi_dai_pin_map *dai_map);
-+
- static struct hdac_hdmi_pcm *get_hdmi_pcm_from_id(struct hdac_hdmi_priv *hdmi,
- 						int pcm_idx)
- {
-@@ -411,6 +417,10 @@ static int hdac_hdmi_playback_prepare(struct snd_pcm_substream *substream,
- 	dev_dbg(&hdac->hdac.dev, "stream tag from cpu dai %d format in cvt 0x%x\n",
- 			dd->stream_tag,	dd->format);
- 
-+	hdac_hdmi_enable_cvt(hdac, dai_map);
-+	ret = hdac_hdmi_enable_pin(hdac, dai_map);
-+	if (ret < 0)
-+		return ret;
- 	mutex_lock(&pin->lock);
- 	pin->channels = substream->runtime->channels;
- 
-@@ -464,12 +474,7 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
- static int hdac_hdmi_playback_cleanup(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
--	struct hdac_ext_device *edev = snd_soc_dai_get_drvdata(dai);
- 	struct hdac_ext_dma_params *dd;
--	struct hdac_hdmi_priv *hdmi = edev->private_data;
--	struct hdac_hdmi_dai_pin_map *dai_map;
--
--	dai_map = &hdmi->dai_map[dai->id];
- 
- 	dd = (struct hdac_ext_dma_params *)snd_soc_dai_get_dma_data(dai, substream);
- 
-@@ -622,11 +627,6 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
- 
- 	dai_map->pin = pin;
- 
--	hdac_hdmi_enable_cvt(hdac, dai_map);
--	ret = hdac_hdmi_enable_pin(hdac, dai_map);
--	if (ret < 0)
--		return ret;
--
- 	ret = hdac_hdmi_eld_limit_formats(substream->runtime,
- 				pin->eld.eld_buffer);
- 	if (ret < 0)
-@@ -639,18 +639,15 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
- static int hdac_hdmi_trigger(struct snd_pcm_substream *substream, int cmd,
- 		struct snd_soc_dai *dai)
- {
--	struct hdac_hdmi_dai_pin_map *dai_map;
--	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
--	struct hdac_hdmi_priv *hdmi = hdac->private_data;
--	int ret;
--
--	dai_map = &hdmi->dai_map[dai->id];
--	if (cmd == SNDRV_PCM_TRIGGER_RESUME) {
--		ret = hdac_hdmi_enable_pin(hdac, dai_map);
--		if (ret < 0)
--			return ret;
- 
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_RESUME:
-+	case SNDRV_PCM_TRIGGER_START:
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 		return hdac_hdmi_playback_prepare(substream, dai);
-+
-+	default:
-+		return 0;
- 	}
- 
- 	return 0;
--- 
-2.5.0
+--7ljc2bbfswgvye74
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jan 10, 2017 at 02:13:04AM +0000, Kuninori Morimoto wrote:
+
+>  	case SND_SOC_DAPM_POST_PMU:	/* after widget power up */
+>  		/* Power save mode OFF */
+> -		mdelay(popup_wait);
+> +		msleep(popup_wait);
+>  		snd_soc_update_bits(codec, SG_SL2, LOPS, 0);
+>  		break;
+
+This doesn't apply against current code, the driver appears to have a
+fixed delay here not a variable one?
+
+--7ljc2bbfswgvye74
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlh00pAACgkQJNaLcl1U
+h9Ad+gf8Ct3tsCU6OHNJPr/U5I7bdDqrBdRITdixpEhrwmdjbloMUO6GxSZfOCtl
+svCpi0P/MLD7al8KWMB6tlsQhoMHm3suJv/VBU2vij+nhzyjoNR4wYBqZ4hzyaAm
+5UuwZ9rRTOrTvS7PhpUdYYoqJPaVqfbT1AWLAoySK+Zigg9W23ODAQgEnnVnboj+
+wBuZTji5sJ8+cONBNToRcJ5GhL7QqoqlcmkYmsDbg75S65uBraGKs6FJDP1bKJgm
+mNHmQ+PxL3ffwGQ48/x8qv/Ycn+txvQjfMUiBIwYLc85Oqz9ms2kd06xqvaYelld
+pCVKtHC55NFSgq7F0nDA7/d62cVJKA==
+=m+6o
+-----END PGP SIGNATURE-----
+
+--7ljc2bbfswgvye74--
+
+--===============1606920229042860543==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============1606920229042860543==--
