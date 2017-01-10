@@ -1,80 +1,56 @@
-From: =?utf-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>
-Subject: Re: [PATCH 3/7] ALSA: hda - use dell_micmute_led_set() instead of
- dell_app_wmi_led_set()
-Date: Tue, 10 Jan 2017 06:28:53 +0100
-Message-ID: <20170110052853.GA1291@kmp-mobile.hq.kempniu.pl>
-References: <20161208123618.28603-1-kernel@kempniu.pl>
- <20161208123618.28603-4-kernel@kempniu.pl>
- <201612111140.38170@pali>
- <20161215144628.GB22695@kmp-mobile.hq.kempniu.pl>
- <1481816580.2090.5.camel@Pali-Nokia-N900>
- <20161215192253.GA4776@kmp-mobile.hq.kempniu.pl>
- <20170109132631.GA14411@ozzy.nask.waw.pl>
- <s5h8tqk1e98.wl-tiwai@suse.de>
+From: sutar.mounesh@gmail.com
+Subject: [PATCH 1/4] alsa-lib:pcm: returning semop error code
+	for semaphore up/down failures.
+Date: Tue, 10 Jan 2017 12:03:17 +0530
+Message-ID: <1484029997-11107-1-git-send-email-sutar.mounesh@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <s5h8tqk1e98.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Alex Hung <alex.hung@canonical.com>, Anthony Wong <anthony.wong@canonical.com>, Hui Wang <hui.wang@canonical.com>, Jim Dailey <Jim_Dailey@dell.com>, Louis Davis <Louis_Davis@dell.com>, Bob Rodgers <Robert_Rodgers@dell.com>, pali.rohar@gmail.com, Darren Hart <dvhart@infradead.org>, Richard Purdie <rpurdie@rpsys.net>, Jacek Anaszewski <j.anaszewski@samsung.com>, Matthew Garrett <mjg59@srcf.ucam.org>, linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: patch@alsa-project.org
+Cc: Mounesh Sutar <sutar.mounesh@gmail.com>, alsa-devel@alsa-project.org, mounesh_sutar@mentor.com
 List-Id: alsa-devel@alsa-project.org
 
-> On Mon, 09 Jan 2017 14:26:31 +0100,
-> Michał Kępień wrote:
-> > 
-> > > > On Thu Dec 15 15:46:28 2016 Michał Kępień <kernel@kempniu.pl> wrote:
-> > > > > > On Thursday 08 December 2016 13:36:14 Michał Kępień wrote:
-> > > > > > > --- a/sound/pci/hda/dell_wmi_helper.c
-> > > > > > > +++ b/sound/pci/hda/dell_wmi_helper.c
-> > > > > > > @@ -6,7 +6,7 @@
-> > > > > > > #include <linux/dell-led.h>
-> > > > > > > 
-> > > > > > > static int dell_led_value;
-> > > > > > > -static int (*dell_led_set_func)(int, int);
-> > > > > > > +static int (*dell_led_set_func)(int);
-> > > > > > 
-> > > > > > Suggestion: what about changing name to dell_micmute_led_set_func to 
-> > > > > > match real function name which is used after this patch?
-> > > > > 
-> > > > > While I like the idea itself, implementing it will double the number of
-> > > > > lines that this patch changes (6 vs. 12), arguably making its intention
-> > > > 
-> > > > If some patch makes final result of code better then metric number of lines is not priority.
-> > > > 
-> > > > > less clear.   Please let me know if you would really like this to happen
-> > > > > (perhaps as a separate patch?), otherwise I will skip this idea in v2.
-> > > > > 
-> > > > > -- 
-> > > > > Best regards,
-> > > > > Michał Kępień
-> > > > 
-> > > > If it will be in this or another following patch... I dot care. But this is sound subsystem, so sound maintainers need to decide what they prefer.
-> > > 
-> > > Good point.  Jaroslav, Takashi, I will patiently wait for your opinion
-> > > on this patch and Pali's suggestion quoted above before I post v2 of
-> > > this series.
-> > 
-> > As it has already been a month since I posted this patch series, this is
-> > just a reminder that I am waiting for comments from the sound subsystem
-> > maintainers before I post v2.
-> > 
-> > Jaroslav, Takashi, I could really use your input.  Please let me know if
-> > something is unclear.  Thanks,
-> 
-> Sorry, the last post was overseen as I already went off to vacation.
+From: Mounesh Sutar <sutar.mounesh@gmail.com>
 
-No worries, thank you for getting back to me.
+Signed-off-by: Mounesh Sutar <sutar.mounesh@gmail.com>
 
-> The rename can be done in another patch.  Doing multiple things in a
-> single patch often leads to more confusion and error-prone.
-> 
-> Other than that, I'm fine with rename.
-
-Thank you for your comments, I will keep them in mind for v2.
-
+diff --git a/src/pcm/pcm_direct.h b/src/pcm/pcm_direct.h
+index 91e816c..aee38c5 100644
+--- a/src/pcm/pcm_direct.h
++++ b/src/pcm/pcm_direct.h
+@@ -263,7 +263,10 @@ static inline int snd_pcm_direct_semaphore_down(snd_pcm_direct_t *dmix, int sem_
+ {
+ 	struct sembuf op[2] = { { sem_num, 0, 0 }, { sem_num, 1, SEM_UNDO } };
+ 	int err = semop(dmix->semid, op, 2);
+-	if (err == 0) dmix->locked[sem_num]++;
++	if (err == 0)
++		dmix->locked[sem_num]++;
++	else if (err == -1)
++		err = -errno;
+ 	return err;
+ }
+ 
+@@ -271,7 +274,10 @@ static inline int snd_pcm_direct_semaphore_up(snd_pcm_direct_t *dmix, int sem_nu
+ {
+ 	struct sembuf op = { sem_num, -1, SEM_UNDO | IPC_NOWAIT };
+ 	int err = semop(dmix->semid, &op, 1);
+-	if (err == 0) dmix->locked[sem_num]--;
++	if (err == 0)
++		dmix->locked[sem_num]--;
++	else if (err == -1)
++		err = -errno;
+ 	return err;
+ }
+ 
 -- 
-Best regards,
-Michał Kępień
+2.7.4
