@@ -1,18 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Applied "ASoC: add for_each_component{_safe}" to
-	the asoc tree
-Date: Tue, 10 Jan 2017 12:13:42 +0000
-Message-ID: <20170110121342.wsfkdhqsec7f7reu@sirena.org.uk>
-References: <874m2074ls.wl%kuninori.morimoto.gx@renesas.com>
- <E1cQg8C-0006rd-Rw@debutante>
+From: jeeja.kp@intel.com
+Subject: [PATCH v5 0/3] ASoC: Intel: Skylake: Driver updates
+Date: Tue, 10 Jan 2017 17:57:45 +0530
+Message-ID: <1484051268-9526-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7071504297131472787=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E142C26735B
- for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2017 13:13:53 +0100 (CET)
-In-Reply-To: <E1cQg8C-0006rd-Rw@debutante>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF3AD2673D1
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2017 13:16:51 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +18,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter <lars@metafoo.de>, Simon <horms@verge.net.au>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Jeeja KP <jeeja.kp@intel.com>
 
---===============7071504297131472787==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="vhuzuko2jx5yvsu5"
-Content-Disposition: inline
+This patch series includes driver updates for the handling scenarios 
+during System S0/S3 transitions when audio stream is stopped during
+system.
+o move DMA configuration in DSP Gateway Module widget event handler to
+ensure DMA is configured after resume. 
+o Enable SSP MLCK using Supply widget. This will ensure the MCLK is
+enabled when the widget is power on.
+o Check DMA decouple register state before coupling/decoupling the DMA.
+o In case of HDMI pass-through pipe, reset only the FE Pipe when stream
+in in XRUN state.
+o Resume the stream from HW renderer position.
+o HDMI Codec pin and converter state need to be restored when stream
+is resumed.
 
+Changes in v2:
+ - Addressed Mark's comment on patch 1, split this into 2 as this had
+additional changes other than configuring the DMA.
+ - Addressed Takashi's comment on the usage of snd_hdac_updatel() 
 
---vhuzuko2jx5yvsu5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Changes in v3:
+ - Addressed Takashi's comment on superfluous shift used in reading the
+value of PPCTL register and also cleaned the condition for updating
+the reg value.
 
-On Mon, Jan 09, 2017 at 08:01:24PM +0000, Mark Brown wrote:
-> The patch
->=20
->    ASoC: add for_each_component{_safe}
->=20
-> has been applied to the asoc tree at
->=20
->    git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git=20
+Changes in v4:
+ - Acked by Takashi for patch "ALSA: hda: check stream decoupled register
+   state".
+ - Removed compilation warning in patch "ASoC: hdac_hdmi: Enable pin and
+   converter in prepare".
+ - Remove 4 patches which are already applied.
 
-Sorry, I dropped this one - it was conflicting nastily with the fix that
-went in for handling of aux_devs.
-
---vhuzuko2jx5yvsu5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlh0z/UACgkQJNaLcl1U
-h9DWhQf/ZEssWUn1ccDVLClG3vYY6DmVbXqmpsDHpJDxAJcUZprMCtdERHWouOMK
-S/4QCbam7vtIj5IcYUEBpH83oaa7nig3hoIcEQI1keyGbnfbeEc6n/r0OYLwNHH1
-HDBNvjra0CYVNb/5Ac+g6cAxYW2+2WTgypb2XeHI3Fp/K6GLwR9eNkBYzg1vj8lw
-YhrLLGIIDvK2V8xNtrkO43/1iTFVnsUssqRPkOSduh8sK7T0KXlvtMJkvHq7rXn9
-JfGSfgC8V7KvYkcVU9/05pvsTgD0KwoO0hQ469GVdIeImItq8jMyoRX757TAeG7n
-OQzWLP0rPnVKvKtO/GlXFytl04b25g==
-=CG9m
------END PGP SIGNATURE-----
-
---vhuzuko2jx5yvsu5--
-
---===============7071504297131472787==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Changes in v5:
+ - Removed the SSP MCLK patchs from this series, will rework and posted
+later based on Marks' comments.
 
 
---===============7071504297131472787==--
+Jeeja KP (3):
+  ASoC: Intel: Skylake: Don't reset pass-through pipe in BE prepare
+  ASoC: Intel: Skylake: set the resume point to LPIB
+  ASoC: hdac_hdmi: Enable pin and converter in prepare
+
+ sound/soc/codecs/hdac_hdmi.c      | 37 +++++++++++++++++--------------------
+ sound/soc/intel/skylake/skl-pcm.c |  6 +++---
+ 2 files changed, 20 insertions(+), 23 deletions(-)
+
+-- 
+2.5.0
