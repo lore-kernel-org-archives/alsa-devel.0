@@ -1,84 +1,80 @@
-From: Matt Ranostay <matt@ranostay.consulting>
-Subject: Re: [PATCH v5] ASoC: omap-mcbsp: Add PM QoS support
- for McBSP to prevent glitches
-Date: Mon, 9 Jan 2017 19:23:44 -0800
-Message-ID: <CAJ_EiSR3aZQztVKhQsnmVQUAgdDo0mtBZZ1=9LrHGOimGr-qaA@mail.gmail.com>
-References: <20170105015918.21621-1-matt@ranostay.consulting>
- <1372efd2-5319-e6c4-629e-6ed5f2e2fe29@ti.com>
- <20170109192123.GN2630@atomide.com>
- <CAJ_EiSRiSSUxDoza0a5gHuP8mvOteZ=9Mi=G91r++QUbgaXpXA@mail.gmail.com>
- <20170109215624.GQ2630@atomide.com>
- <CAJ_EiSRCBQWZfMOE-jpXVsSok3nSPwNN-+LzhBa1pcgu36UEfw@mail.gmail.com>
- <20170109235628.GR2630@atomide.com>
+From: =?utf-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>
+Subject: Re: [PATCH 3/7] ALSA: hda - use dell_micmute_led_set() instead of
+ dell_app_wmi_led_set()
+Date: Tue, 10 Jan 2017 06:28:53 +0100
+Message-ID: <20170110052853.GA1291@kmp-mobile.hq.kempniu.pl>
+References: <20161208123618.28603-1-kernel@kempniu.pl>
+ <20161208123618.28603-4-kernel@kempniu.pl>
+ <201612111140.38170@pali>
+ <20161215144628.GB22695@kmp-mobile.hq.kempniu.pl>
+ <1481816580.2090.5.camel@Pali-Nokia-N900>
+ <20161215192253.GA4776@kmp-mobile.hq.kempniu.pl>
+ <20170109132631.GA14411@ozzy.nask.waw.pl>
+ <s5h8tqk1e98.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f171.google.com (mail-qt0-f171.google.com
- [209.85.216.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 2397726708F
- for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2017 04:23:45 +0100 (CET)
-Received: by mail-qt0-f171.google.com with SMTP id v23so154527798qtb.0
- for <alsa-devel@alsa-project.org>; Mon, 09 Jan 2017 19:23:45 -0800 (PST)
-In-Reply-To: <20170109235628.GR2630@atomide.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Linux OMAP List <linux-omap@vger.kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5h8tqk1e98.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Alex Hung <alex.hung@canonical.com>, Anthony Wong <anthony.wong@canonical.com>, Hui Wang <hui.wang@canonical.com>, Jim Dailey <Jim_Dailey@dell.com>, Louis Davis <Louis_Davis@dell.com>, Bob Rodgers <Robert_Rodgers@dell.com>, pali.rohar@gmail.com, Darren Hart <dvhart@infradead.org>, Richard Purdie <rpurdie@rpsys.net>, Jacek Anaszewski <j.anaszewski@samsung.com>, Matthew Garrett <mjg59@srcf.ucam.org>, linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 9, 2017 at 3:56 PM, Tony Lindgren <tony@atomide.com> wrote:
-> * Matt Ranostay <matt@ranostay.consulting> [170109 14:11]:
->> On Mon, Jan 9, 2017 at 1:56 PM, Tony Lindgren <tony@atomide.com> wrote:
->> > * Matt Ranostay <matt@ranostay.consulting> [170109 13:46]:
->> >> On Mon, Jan 9, 2017 at 11:21 AM, Tony Lindgren <tony@atomide.com> wrote:
->> >> > * Peter Ujfalusi <peter.ujfalusi@ti.com> [170109 05:13]:
->> >> >> On 01/05/2017 03:59 AM, Matt Ranostay wrote:
->> >> >> > We can get audio errors if hitting deeper idle states on omaps:
->> >> >> >
->> >> >> > [alsa.c:230] error: Fatal problem with alsa output, error -5.
->> >> >> > [audio.c:614] error: Error in writing audio (Input/output error?)!
->> >> >> >
->> >> >> > This seems to happen with off mode idle enabled as power for the
->> >> >> > whole SoC may get cut off between filling the McBSP fifo using DMA.
->> >> >> > While active DMA blocks deeper idle states in hardware, McBSP
->> >> >> > activity does not seem to do so.
->> >> >> >
->> >> >> > Basing the QoS latency calculation on the FIFO size, threshold,
->> >> >> > sample rate, and channels.
->> >> >>
->> >> >> Looks good to me, thank you!
->> >> >>
->> >> >> Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
->> >> >
->> >> > Noticed the following about 10 seconds into playing an mp3 file with
->> >> > mpg123 though:
->> >> >
->> >>
->> >> Didn't notice that happening for me. But haven't rebased for the last
->> >> couple days.
->> >> Does this happen 100% of the time?
->> >
->> > Yeah seems to based on three attempts. This with 4.10.0-rc2-next-20170109.
->> >
->>
->> Ok I'll test this myself this evening and report back.
->
-> Oh and this is with omap2plus_defconfig with the following also enabled:
->
-> CONFIG_DEBUG_LOCKDEP=y
-> CONFIG_DEBUG_ATOMIC_SLEEP=y
->
+> On Mon, 09 Jan 2017 14:26:31 +0100,
+> Michał Kępień wrote:
+> > 
+> > > > On Thu Dec 15 15:46:28 2016 Michał Kępień <kernel@kempniu.pl> wrote:
+> > > > > > On Thursday 08 December 2016 13:36:14 Michał Kępień wrote:
+> > > > > > > --- a/sound/pci/hda/dell_wmi_helper.c
+> > > > > > > +++ b/sound/pci/hda/dell_wmi_helper.c
+> > > > > > > @@ -6,7 +6,7 @@
+> > > > > > > #include <linux/dell-led.h>
+> > > > > > > 
+> > > > > > > static int dell_led_value;
+> > > > > > > -static int (*dell_led_set_func)(int, int);
+> > > > > > > +static int (*dell_led_set_func)(int);
+> > > > > > 
+> > > > > > Suggestion: what about changing name to dell_micmute_led_set_func to 
+> > > > > > match real function name which is used after this patch?
+> > > > > 
+> > > > > While I like the idea itself, implementing it will double the number of
+> > > > > lines that this patch changes (6 vs. 12), arguably making its intention
+> > > > 
+> > > > If some patch makes final result of code better then metric number of lines is not priority.
+> > > > 
+> > > > > less clear.   Please let me know if you would really like this to happen
+> > > > > (perhaps as a separate patch?), otherwise I will skip this idea in v2.
+> > > > > 
+> > > > > -- 
+> > > > > Best regards,
+> > > > > Michał Kępień
+> > > > 
+> > > > If it will be in this or another following patch... I dot care. But this is sound subsystem, so sound maintainers need to decide what they prefer.
+> > > 
+> > > Good point.  Jaroslav, Takashi, I will patiently wait for your opinion
+> > > on this patch and Pali's suggestion quoted above before I post v2 of
+> > > this series.
+> > 
+> > As it has already been a month since I posted this patch series, this is
+> > just a reminder that I am waiting for comments from the sound subsystem
+> > maintainers before I post v2.
+> > 
+> > Jaroslav, Takashi, I could really use your input.  Please let me know if
+> > something is unclear.  Thanks,
+> 
+> Sorry, the last post was overseen as I already went off to vacation.
 
-Yeah I can reproduce the issue you are mentioning. Anyone have a
-suggestion how on to resolve? Guessing the QoS function calls need to
-be in an atomic context and the omap_mcbsp_* functions can sleep
+No worries, thank you for getting back to me.
 
-> Tony
+> The rename can be done in another patch.  Doing multiple things in a
+> single patch often leads to more confusion and error-prone.
+> 
+> Other than that, I'm fine with rename.
+
+Thank you for your comments, I will keep them in mind for v2.
+
+-- 
+Best regards,
+Michał Kępień
