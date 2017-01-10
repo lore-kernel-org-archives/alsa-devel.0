@@ -1,28 +1,15 @@
-From: Matt Ranostay <matt@ranostay.consulting>
-Subject: Re: [PATCH v5] ASoC: omap-mcbsp: Add PM QoS support
- for McBSP to prevent glitches
-Date: Tue, 10 Jan 2017 09:27:23 -0800
-Message-ID: <CAJ_EiSQT7wJStObghibssvm0ShsDjTX87PCjs4PT4px5H=cN7w@mail.gmail.com>
-References: <20170105015918.21621-1-matt@ranostay.consulting>
- <1372efd2-5319-e6c4-629e-6ed5f2e2fe29@ti.com>
- <20170109192123.GN2630@atomide.com>
- <CAJ_EiSRiSSUxDoza0a5gHuP8mvOteZ=9Mi=G91r++QUbgaXpXA@mail.gmail.com>
- <20170109215624.GQ2630@atomide.com>
- <CAJ_EiSRCBQWZfMOE-jpXVsSok3nSPwNN-+LzhBa1pcgu36UEfw@mail.gmail.com>
- <20170109235628.GR2630@atomide.com>
- <CAJ_EiSR3aZQztVKhQsnmVQUAgdDo0mtBZZ1=9LrHGOimGr-qaA@mail.gmail.com>
- <7ca677ec-e79d-2418-5435-3cbecb1da3e0@ti.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: [PATCH] ASoC: mpc5200_psc_ac97: Remove unused DAI ID
+	defines
+Date: Tue, 10 Jan 2017 19:41:39 +0100
+Message-ID: <1484073699-23989-1-git-send-email-lars@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f177.google.com (mail-qk0-f177.google.com
- [209.85.220.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 0ECFD26740A
- for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2017 18:27:24 +0100 (CET)
-Received: by mail-qk0-f177.google.com with SMTP id 11so83191877qkl.3
- for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2017 09:27:24 -0800 (PST)
-In-Reply-To: <7ca677ec-e79d-2418-5435-3cbecb1da3e0@ti.com>
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A6A626740A
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2017 19:41:46 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,26 +19,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, Linux OMAP List <linux-omap@vger.kernel.org>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBKYW4gOSwgMjAxNyBhdCAxMTozOCBQTSwgUGV0ZXIgVWpmYWx1c2kgPHBldGVyLnVq
-ZmFsdXNpQHRpLmNvbT4gd3JvdGU6Cj4gT24gMDEvMTAvMjAxNyAwNToyMyBBTSwgTWF0dCBSYW5v
-c3RheSB3cm90ZToKPj4gWWVhaCBJIGNhbiByZXByb2R1Y2UgdGhlIGlzc3VlIHlvdSBhcmUgbWVu
-dGlvbmluZy4gQW55b25lIGhhdmUgYQo+PiBzdWdnZXN0aW9uIGhvdyBvbiB0byByZXNvbHZlPyBH
-dWVzc2luZyB0aGUgUW9TIGZ1bmN0aW9uIGNhbGxzIG5lZWQgdG8KPj4gYmUgaW4gYW4gYXRvbWlj
-IGNvbnRleHQgYW5kIHRoZSBvbWFwX21jYnNwXyogZnVuY3Rpb25zIGNhbiBzbGVlcAo+Cj4gSSB0
-aGluayBpdCBpcyB0aGUgb3RoZXIgd2F5IGFyb3VuZDogd2UgY2FsbCBhIHNsZWVwaW5nIGZ1bmN0
-aW9uIGZyb20KPiBhdG9taWMgY29udGV4dC4gcGNtX3RyaWdnZXIgaXMgYXRvbWljLgo+Cj4gTW9z
-dCBwcm9iYWJseSB3ZSBzaG91bGQgYWRkIHRoZSAucHJlcGFyZSBjYWxsYmFjayB0byBtY2JzcF9k
-YWlfb3BzIGFuZAo+IGRvIHRoZSBRb1MgdXBkYXRlIHdoaWNoIGlzIGRvbmUgaW4gb21hcF9tY2Jz
-cF9zdGFydCgpIHRoZXJlLiBUaGUgdGhpbmdzCj4gd2UgZG8gaW4gb21hcF9tY2JzcF9zdG9wKCkg
-dGhlbiBjYW4gYmUgbW92ZWQgdG8gb21hcF9tY2JzcF9kYWlfc2h1dGRvd24oKS4KClNlZW1zIHJl
-YXNvbmFibGUuIFdpbGwgcmV3b3JrIHBhdGNoc2V0IGFuZCByZXRlc3QuCgpUaGFua3MsCgpNYXR0
-Cgo+Cj4gSSB0aGluayB0aGUgY29kZSB3b3VsZCBoYW5kbGUgY2FzZXMgd2hlbiB1c2VyIHNwYWNl
-IHN0b3BzIHRoZSBzdHJlYW0sCj4gcmUtY29uZmlndXJlcyBpdCBhbmQgc3RhcnRzIGl0IHdpdGgg
-ZGlmZmVyZW50IHBhcmFtZXRlcnMgdy9vIGNsb3NpbmcgaXQuCj4KPiAtLQo+IFDDqXRlcgpfX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
-aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
-YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+The DAI ID defines are back from the time when DAIs were referenced by a
+numerical ID. These days a string is used instead and the defines are
+unused. The last user of these defines was removed in commit f0fba2ad1b6b
+("ASoC: multi-component - ASoC Multi-Component Support"). So remove the
+defines as well.
+
+This also means the mpc5200_psc_ac97.h file no longer has any content and
+can be removed.
+
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+---
+ sound/soc/fsl/efika-audio-fabric.c |  1 -
+ sound/soc/fsl/mpc5200_psc_ac97.c   |  1 -
+ sound/soc/fsl/mpc5200_psc_ac97.h   | 13 -------------
+ 3 files changed, 15 deletions(-)
+ delete mode 100644 sound/soc/fsl/mpc5200_psc_ac97.h
+
+diff --git a/sound/soc/fsl/efika-audio-fabric.c b/sound/soc/fsl/efika-audio-fabric.c
+index f200d1c..667f421 100644
+--- a/sound/soc/fsl/efika-audio-fabric.c
++++ b/sound/soc/fsl/efika-audio-fabric.c
+@@ -26,7 +26,6 @@
+ #include <sound/soc.h>
+ 
+ #include "mpc5200_dma.h"
+-#include "mpc5200_psc_ac97.h"
+ 
+ #define DRV_NAME "efika-audio-fabric"
+ 
+diff --git a/sound/soc/fsl/mpc5200_psc_ac97.c b/sound/soc/fsl/mpc5200_psc_ac97.c
+index 243700c..07ee355 100644
+--- a/sound/soc/fsl/mpc5200_psc_ac97.c
++++ b/sound/soc/fsl/mpc5200_psc_ac97.c
+@@ -25,7 +25,6 @@
+ #include <asm/mpc52xx_psc.h>
+ 
+ #include "mpc5200_dma.h"
+-#include "mpc5200_psc_ac97.h"
+ 
+ #define DRV_NAME "mpc5200-psc-ac97"
+ 
+diff --git a/sound/soc/fsl/mpc5200_psc_ac97.h b/sound/soc/fsl/mpc5200_psc_ac97.h
+deleted file mode 100644
+index e881e78..0000000
+--- a/sound/soc/fsl/mpc5200_psc_ac97.h
++++ /dev/null
+@@ -1,13 +0,0 @@
+-/*
+- * Freescale MPC5200 PSC in AC97 mode
+- * ALSA SoC Digital Audio Interface (DAI) driver
+- *
+- */
+-
+-#ifndef __SOUND_SOC_FSL_MPC52xx_PSC_AC97_H__
+-#define __SOUND_SOC_FSL_MPC52xx_PSC_AC97_H__
+-
+-#define MPC5200_AC97_NORMAL 0
+-#define MPC5200_AC97_SPDIF 1
+-
+-#endif /* __SOUND_SOC_FSL_MPC52xx_PSC_AC97_H__ */
+-- 
+2.1.4
