@@ -1,12 +1,15 @@
-From: sutar.mounesh@gmail.com
-Subject: [PATCH 4/4] alsa-lib:pcm: don't return bogus buffer
-	levels in xrun state
-Date: Tue, 10 Jan 2017 12:04:09 +0530
-Message-ID: <1484030049-11232-1-git-send-email-sutar.mounesh@gmail.com>
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH v3 0/2] ASoC: Use DMI name in sound card long
+	name
+Date: Tue, 10 Jan 2017 14:42:43 +0800
+Message-ID: <cover.1484030246.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 14A3C2671B9
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2017 07:39:38 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -16,56 +19,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Andreas Pape <apape@de.adit-jv.com>, mounesh_sutar@mentor.com
+To: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Andreas Pape <apape@de.adit-jv.com>
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
-Signed-off-by: Mounesh Sutar <mounesh_sutar@mentor.com>
+This series is based on Liam's idea to use DMI name as the sound card
+short name in the audio workshop. Now we add DMI info to the card long
+name:
+- Not change the card name (short name), keep it simple. So the card ID
+  won't change as well.
+- Use DMI name to make the card long name.
 
-diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
-index 2e7d9d2..1948fa0 100644
---- a/src/pcm/pcm_dmix.c
-+++ b/src/pcm/pcm_dmix.c
-@@ -882,6 +882,9 @@ static snd_pcm_sframes_t snd_pcm_dmix_avail_update(snd_pcm_t *pcm)
- 		if ((err = snd_pcm_dmix_sync_ptr(pcm)) < 0)
- 			return err;
- 	}
-+	if (dmix->state == SND_PCM_STATE_XRUN)
-+		return -EPIPE;
-+
- 	return snd_pcm_mmap_playback_avail(pcm);
- }
+Machine drivers can use a new API to get this feature.
+
+In user space, when the sound server ask UCM to open a sound card, UCM
+will try to find the best machine-specific configuration file based on
+the card long name, and only if not avaiable, fallback to the default
+configuration file that matches the card name (short name).
+
+Please see patch:
+ucm: Automatically load the best config file based on the card long name
+
+History:
+  v1 from RFC: Give up using a table to map DMI info to a simple string,
+        since we cannot maintain such a table for each machine. Just do
+        verbatim copy of DMI info and let user space decide how to use the
+        DMI info in card long name to find the best UCM config file.
+
+        If device driver adds a flavor string, just append it after the
+        DMI info fields to the card long name.
+
+  v2:   Exclude card name and only keep DMI name in the long name, to
+        save the space since the long name cannot exceed 80 characters.
+        Trim special characters like SPACE in the long name, because UCM
+        configuration files & directories may use the same long name and
+        Autoconf cannot handle special characters.
  
-diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
-index 09d165d..cdd1521 100644
---- a/src/pcm/pcm_dshare.c
-+++ b/src/pcm/pcm_dshare.c
-@@ -570,6 +570,9 @@ static snd_pcm_sframes_t snd_pcm_dshare_avail_update(snd_pcm_t *pcm)
- 		if ((err = snd_pcm_dshare_sync_ptr(pcm)) < 0)
- 			return err;
- 	}
-+	if (dshare->state == SND_PCM_STATE_XRUN)
-+		return -EPIPE;
-+
- 	return snd_pcm_mmap_playback_avail(pcm);
- }
- 
-diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
-index 2b0df89..60a5843 100644
---- a/src/pcm/pcm_dsnoop.c
-+++ b/src/pcm/pcm_dsnoop.c
-@@ -454,6 +454,9 @@ static snd_pcm_sframes_t snd_pcm_dsnoop_avail_update(snd_pcm_t *pcm)
- 		if (err < 0)
- 			return err;
- 	}
-+	if (dsnoop->state == SND_PCM_STATE_XRUN)
-+		return -EPIPE;
-+
- 	return snd_pcm_mmap_capture_avail(pcm);
- }
- 
+  v3:   Also include DMI product version in the long name, since vendors
+        like Lenovo may only put self-explanatory name in this field.
+
+Liam Girdwood (1):
+  ASoC: core: Add API to use DMI name in sound card long name
+
+Mengdong Lin (1):
+  ASoC: Intel: Use DMI name for sound card long name in Broadwell
+    machine driver
+
+ include/sound/soc.h                |   4 ++
+ sound/soc/intel/boards/broadwell.c |   2 +
+ sound/soc/soc-core.c               | 122 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 128 insertions(+)
+
 -- 
-2.7.4
+2.5.0
