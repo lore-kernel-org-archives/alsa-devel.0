@@ -1,16 +1,16 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH v5 2/3] ASoC: Intel: Skylake: set the resume
-	point to LPIB
-Date: Tue, 10 Jan 2017 17:57:47 +0530
-Message-ID: <1484051268-9526-3-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH v5 3/3] ASoC: hdac_hdmi: Enable pin and
+	converter in prepare
+Date: Tue, 10 Jan 2017 17:57:48 +0530
+Message-ID: <1484051268-9526-4-git-send-email-jeeja.kp@intel.com>
 References: <1484051268-9526-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id ECD7426735B
- for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2017 13:16:57 +0100 (CET)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A07126735B
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2017 13:17:06 +0100 (CET)
 In-Reply-To: <1484051268-9526-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,41 +22,101 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Sachin Mokashi <sachinx.mokashi@intel.com>, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-In system suspend, the firmware pipelines will be deleted and there
-is no need to save the pipeline context. Driver will save the DPIB and
-LPIB pointers in suspend.
+Instead of enabling pin and cvt in pcm_open(), need to restore pin and
+cvt state after system resume to restart the playback which is
+paused/stopped before system suspend.
+So enable pin and cvt in playback_prepare and call prepare when trigger
+cmd is paused/started and resume to reconfigure pin and cvt.
 
-In system resume, the firmware pipelines will be created again and the
-RD/RW pointers in the Firmware buffer points to the base address. So
-need to fetch the non-played data again to firmware buffer. LPIB
-indicates the HW rendered position.
-
-Instead of setting DPIB as resume point, set it to LPIB to restore from
-the HW render position so that DMA would fetch the non-played data one
-more time.
-
+Signed-off-by: Sachin Mokashi <sachinx.mokashi@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/hdac_hdmi.c | 37 +++++++++++++++++--------------------
+ 1 file changed, 17 insertions(+), 20 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index aefcfca..ae7997a 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -474,7 +474,7 @@ static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
- 			snd_hdac_ext_stream_drsm_enable(ebus, true,
- 						hdac_stream(stream)->index);
- 			snd_hdac_ext_stream_set_dpibr(ebus, stream,
--							stream->dpib);
-+							stream->lpib);
- 			snd_hdac_ext_stream_set_lpib(stream, stream->lpib);
- 		}
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index c602c49..1da4405 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -114,6 +114,12 @@ struct hdac_hdmi_priv {
+ 	struct hdac_chmap chmap;
+ };
  
++static void hdac_hdmi_enable_cvt(struct hdac_ext_device *edev,
++			struct hdac_hdmi_dai_pin_map *dai_map);
++
++static int hdac_hdmi_enable_pin(struct hdac_ext_device *hdac,
++			struct hdac_hdmi_dai_pin_map *dai_map);
++
+ static struct hdac_hdmi_pcm *get_hdmi_pcm_from_id(struct hdac_hdmi_priv *hdmi,
+ 						int pcm_idx)
+ {
+@@ -411,6 +417,10 @@ static int hdac_hdmi_playback_prepare(struct snd_pcm_substream *substream,
+ 	dev_dbg(&hdac->hdac.dev, "stream tag from cpu dai %d format in cvt 0x%x\n",
+ 			dd->stream_tag,	dd->format);
+ 
++	hdac_hdmi_enable_cvt(hdac, dai_map);
++	ret = hdac_hdmi_enable_pin(hdac, dai_map);
++	if (ret < 0)
++		return ret;
+ 	mutex_lock(&pin->lock);
+ 	pin->channels = substream->runtime->channels;
+ 
+@@ -464,12 +474,7 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
+ static int hdac_hdmi_playback_cleanup(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
+-	struct hdac_ext_device *edev = snd_soc_dai_get_drvdata(dai);
+ 	struct hdac_ext_dma_params *dd;
+-	struct hdac_hdmi_priv *hdmi = edev->private_data;
+-	struct hdac_hdmi_dai_pin_map *dai_map;
+-
+-	dai_map = &hdmi->dai_map[dai->id];
+ 
+ 	dd = (struct hdac_ext_dma_params *)snd_soc_dai_get_dma_data(dai, substream);
+ 
+@@ -622,11 +627,6 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
+ 
+ 	dai_map->pin = pin;
+ 
+-	hdac_hdmi_enable_cvt(hdac, dai_map);
+-	ret = hdac_hdmi_enable_pin(hdac, dai_map);
+-	if (ret < 0)
+-		return ret;
+-
+ 	ret = hdac_hdmi_eld_limit_formats(substream->runtime,
+ 				pin->eld.eld_buffer);
+ 	if (ret < 0)
+@@ -639,18 +639,15 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
+ static int hdac_hdmi_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		struct snd_soc_dai *dai)
+ {
+-	struct hdac_hdmi_dai_pin_map *dai_map;
+-	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
+-	struct hdac_hdmi_priv *hdmi = hdac->private_data;
+-	int ret;
+-
+-	dai_map = &hdmi->dai_map[dai->id];
+-	if (cmd == SNDRV_PCM_TRIGGER_RESUME) {
+-		ret = hdac_hdmi_enable_pin(hdac, dai_map);
+-		if (ret < 0)
+-			return ret;
+ 
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		return hdac_hdmi_playback_prepare(substream, dai);
++
++	default:
++		return 0;
+ 	}
+ 
+ 	return 0;
 -- 
 2.5.0
