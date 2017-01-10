@@ -1,46 +1,57 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: tm2_wm5110: include gpio/consumer.h
-Date: Tue, 10 Jan 2017 16:59:43 +0000
-Message-ID: <20170110165943.ao6dhl4auqkwkzsf@sirena.org.uk>
-References: <20170110153104.3143248-1-arnd@arndb.de>
- <20170110164042.d6yb3j6ucdito7mq@sirena.org.uk>
- <CAK8P3a2MNkqWFePUh0_yM1xhNZgdmzKJnpHWM90EME5z_mjX5Q@mail.gmail.com>
+From: Matt Ranostay <matt@ranostay.consulting>
+Subject: Re: [PATCH v5] ASoC: omap-mcbsp: Add PM QoS support
+ for McBSP to prevent glitches
+Date: Tue, 10 Jan 2017 09:27:23 -0800
+Message-ID: <CAJ_EiSQT7wJStObghibssvm0ShsDjTX87PCjs4PT4px5H=cN7w@mail.gmail.com>
+References: <20170105015918.21621-1-matt@ranostay.consulting>
+ <1372efd2-5319-e6c4-629e-6ed5f2e2fe29@ti.com>
+ <20170109192123.GN2630@atomide.com>
+ <CAJ_EiSRiSSUxDoza0a5gHuP8mvOteZ=9Mi=G91r++QUbgaXpXA@mail.gmail.com>
+ <20170109215624.GQ2630@atomide.com>
+ <CAJ_EiSRCBQWZfMOE-jpXVsSok3nSPwNN-+LzhBa1pcgu36UEfw@mail.gmail.com>
+ <20170109235628.GR2630@atomide.com>
+ <CAJ_EiSR3aZQztVKhQsnmVQUAgdDo0mtBZZ1=9LrHGOimGr-qaA@mail.gmail.com>
+ <7ca677ec-e79d-2418-5435-3cbecb1da3e0@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="gpgjy43fjntpfn6s"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a2MNkqWFePUh0_yM1xhNZgdmzKJnpHWM90EME5z_mjX5Q@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Inha Song <ideal.song@samsung.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qk0-f177.google.com (mail-qk0-f177.google.com
+ [209.85.220.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0ECFD26740A
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2017 18:27:24 +0100 (CET)
+Received: by mail-qk0-f177.google.com with SMTP id 11so83191877qkl.3
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jan 2017 09:27:24 -0800 (PST)
+In-Reply-To: <7ca677ec-e79d-2418-5435-3cbecb1da3e0@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, Linux OMAP List <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---gpgjy43fjntpfn6s
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jan 10, 2017 at 05:48:06PM +0100, Arnd Bergmann wrote:
-
-> In case you have queued up that change for v4.11 but not also v4.10,
-> maybe move it into the fixes branch.
-
-There's a merge in there as well.
-
---gpgjy43fjntpfn6s
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlh1Ev8ACgkQJNaLcl1U
-h9BzfQf6AiWwy9jM4x2CHqHOW1jvLvy4agEZxIIM6kojUcut+ZHm6M1YRtbCeIiW
-gZ2Gzk/wYkedajdNlNITnbKCyoEeaL7rtB5BGn63zQyFTMyrMa+7UVfIzxCB/IGq
-jwXjSg03AsjQGgMhpmgQyJl2hLNy7gdrV73r+CaD6WdBOGCqk2VIxlFAO3F01C3n
-BYh1X5NHRf34PanFRH5+zok7mc4drY3qQNbzAyZ3hAGvVxGF3V5rdyh+eVBFdjDC
-ZFkhlMiDodkkpLjW1I5Gge7Y74dEXEMD+Y1m4YvDGUdBFueYWNWBcuxvCHtYDX1C
-MiiQuwZwZ2Y511EGVuxX2c6jiAZ12Q==
-=0p2h
------END PGP SIGNATURE-----
-
---gpgjy43fjntpfn6s--
+T24gTW9uLCBKYW4gOSwgMjAxNyBhdCAxMTozOCBQTSwgUGV0ZXIgVWpmYWx1c2kgPHBldGVyLnVq
+ZmFsdXNpQHRpLmNvbT4gd3JvdGU6Cj4gT24gMDEvMTAvMjAxNyAwNToyMyBBTSwgTWF0dCBSYW5v
+c3RheSB3cm90ZToKPj4gWWVhaCBJIGNhbiByZXByb2R1Y2UgdGhlIGlzc3VlIHlvdSBhcmUgbWVu
+dGlvbmluZy4gQW55b25lIGhhdmUgYQo+PiBzdWdnZXN0aW9uIGhvdyBvbiB0byByZXNvbHZlPyBH
+dWVzc2luZyB0aGUgUW9TIGZ1bmN0aW9uIGNhbGxzIG5lZWQgdG8KPj4gYmUgaW4gYW4gYXRvbWlj
+IGNvbnRleHQgYW5kIHRoZSBvbWFwX21jYnNwXyogZnVuY3Rpb25zIGNhbiBzbGVlcAo+Cj4gSSB0
+aGluayBpdCBpcyB0aGUgb3RoZXIgd2F5IGFyb3VuZDogd2UgY2FsbCBhIHNsZWVwaW5nIGZ1bmN0
+aW9uIGZyb20KPiBhdG9taWMgY29udGV4dC4gcGNtX3RyaWdnZXIgaXMgYXRvbWljLgo+Cj4gTW9z
+dCBwcm9iYWJseSB3ZSBzaG91bGQgYWRkIHRoZSAucHJlcGFyZSBjYWxsYmFjayB0byBtY2JzcF9k
+YWlfb3BzIGFuZAo+IGRvIHRoZSBRb1MgdXBkYXRlIHdoaWNoIGlzIGRvbmUgaW4gb21hcF9tY2Jz
+cF9zdGFydCgpIHRoZXJlLiBUaGUgdGhpbmdzCj4gd2UgZG8gaW4gb21hcF9tY2JzcF9zdG9wKCkg
+dGhlbiBjYW4gYmUgbW92ZWQgdG8gb21hcF9tY2JzcF9kYWlfc2h1dGRvd24oKS4KClNlZW1zIHJl
+YXNvbmFibGUuIFdpbGwgcmV3b3JrIHBhdGNoc2V0IGFuZCByZXRlc3QuCgpUaGFua3MsCgpNYXR0
+Cgo+Cj4gSSB0aGluayB0aGUgY29kZSB3b3VsZCBoYW5kbGUgY2FzZXMgd2hlbiB1c2VyIHNwYWNl
+IHN0b3BzIHRoZSBzdHJlYW0sCj4gcmUtY29uZmlndXJlcyBpdCBhbmQgc3RhcnRzIGl0IHdpdGgg
+ZGlmZmVyZW50IHBhcmFtZXRlcnMgdy9vIGNsb3NpbmcgaXQuCj4KPiAtLQo+IFDDqXRlcgpfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
