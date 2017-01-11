@@ -1,142 +1,75 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v6] ASoC: omap-mcbsp: Add PM QoS support
- for McBSP to prevent glitches
-Date: Wed, 11 Jan 2017 09:26:47 +0200
-Message-ID: <340575c8-e515-28a9-64db-6d9a93b5158c@ti.com>
-References: <20170111054600.12982-1-matt@ranostay.consulting>
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [alsa-devel] [PATCH v4 0/3] support DP MST audio
+Date: Wed, 11 Jan 2017 08:39:13 +0100
+Message-ID: <CAKMK7uGpunR40JVavih0nqW9FWHZ+53fOu0vcEzJLHyKXgHo8Q@mail.gmail.com>
+References: <1480992519-108079-1-git-send-email-libin.yang@intel.com>
+ <96A12704CE18D347B625EE2D4A099D194FA69699@SHSMSX103.ccr.corp.intel.com>
+ <s5hzik94j74.wl-tiwai@suse.de>
+ <CAKMK7uFim4fmrVSTVJa+STURbiVbtvyydtbj+eVRCPGGUfOk8Q@mail.gmail.com>
+ <s5htwah4gur.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D1952458272@SHSMSX103.ccr.corp.intel.com>
+ <s5h37grmio3.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19524588CE@SHSMSX103.ccr.corp.intel.com>
+ <s5hvatnl2od.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lelnx193.ext.ti.com (lelnx193.ext.ti.com [198.47.27.77])
- by alsa0.perex.cz (Postfix) with ESMTP id CE4B52669B2
- for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2017 08:26:26 +0100 (CET)
-In-Reply-To: <20170111054600.12982-1-matt@ranostay.consulting>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Ranostay <matt@ranostay.consulting>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
-Cc: Tony Lindgren <tony@atomide.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5hvatnl2od.wl-tiwai@suse.de>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: intel-gfx <intel-gfx@lists.freedesktop.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/11/2017 07:46 AM, Matt Ranostay wrote:
-> We can get audio errors if hitting deeper idle states on omaps:
-> =
-
-> [alsa.c:230] error: Fatal problem with alsa output, error -5.
-> [audio.c:614] error: Error in writing audio (Input/output error?)!
-> =
-
-> This seems to happen with off mode idle enabled as power for the
-> whole SoC may get cut off between filling the McBSP fifo using DMA.
-> While active DMA blocks deeper idle states in hardware, McBSP
-> activity does not seem to do so.
-> =
-
-> Basing the QoS latency calculation on the FIFO size, threshold,
-> sample rate, and channels.
-> =
-
-> Based on the original patch by Tony Lindgren
-> Link: https://patchwork.kernel.org/patch/9305867/
-> =
-
-> Cc: Tony Lindgren <tony@atomide.com>
-> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> Signed-off-by: Matt Ranostay <matt@ranostay.consulting>
-> ---
-> hanges from v1:
-> * add calculations for latency per number of FIFO locations
-> =
-
-> Changes from v2:
-> * add missing mcbsp.h header change
-> =
-
-> Changes from v3:
-> * base the latency calculations on threshold, buffer size, sample
->   rate, and channels
-> =
-
-> Changes from v4:
-> * using Peter Ujfalusi's suggestions for restoring a higher latency on
->   audio stream completion, or if not applicable remove the QoS request
-> =
-
-> Changes from v5:
-> * clean up latency checking logic
-> * move logic to .prepare and .shutdown to avoid functions that can sleep
-> =
-
->  sound/soc/omap/mcbsp.c      |  4 ++++
->  sound/soc/omap/mcbsp.h      |  3 +++
->  sound/soc/omap/omap-mcbsp.c | 44 +++++++++++++++++++++++++++++++++++++++=
-++++-
->  3 files changed, 50 insertions(+), 1 deletion(-)
-> =
-
-> diff --git a/sound/soc/omap/mcbsp.c b/sound/soc/omap/mcbsp.c
-> index 06fec5699cc8..e1c3d21dc5ed 100644
-> --- a/sound/soc/omap/mcbsp.c
-> +++ b/sound/soc/omap/mcbsp.c
-> @@ -25,6 +25,7 @@
->  #include <linux/io.h>
->  #include <linux/slab.h>
->  #include <linux/pm_runtime.h>
-> +#include <linux/pm_qos.h>
->  =
-
->  #include <linux/platform_data/asoc-ti-mcbsp.h>
->  =
-
-> @@ -1098,6 +1099,9 @@ int omap_mcbsp_init(struct platform_device *pdev)
->  =
-
->  void omap_mcbsp_cleanup(struct omap_mcbsp *mcbsp)
->  {
-> +	if (pm_qos_request_active(&mcbsp->pm_qos_req))
-> +		pm_qos_remove_request(&mcbsp->pm_qos_req);
-> +
-
-It might be better to do this in asoc_mcbsp_remove() in omap-mcbsp.c so
-the pm_qos stuff is handled within one file.
-
->  	if (mcbsp->pdata->buffer_size)
->  		sysfs_remove_group(&mcbsp->dev->kobj, &additional_attr_group);
->  =
-
-> diff --git a/sound/soc/omap/mcbsp.h b/sound/soc/omap/mcbsp.h
-> index 61e93b1c185d..46ae1269a698 100644
-> --- a/sound/soc/omap/mcbsp.h
-> +++ b/sound/soc/omap/mcbsp.h
-> @@ -323,8 +323,11 @@ struct omap_mcbsp {
->  =
-
->  	unsigned int fmt;
->  	unsigned int in_freq;
-> +	unsigned int latency[2];
->  	int clk_div;
->  	int wlen;
-> +
-> +	struct pm_qos_request pm_qos_req;
->  };
->  =
-
->  void omap_mcbsp_config(struct omap_mcbsp *mcbsp,
-> diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-> index d018e966e533..3814a234ef61 100644
-> --- a/sound/soc/omap/omap-mcbsp.c
-> +++ b/sound/soc/omap/omap-mcbsp.c
-
-#include <linux/pm_qos.h> ?
-
-
--- =
-
-P=E9ter
+T24gVHVlLCBKYW4gMTAsIDIwMTcgYXQgOTo0OSBBTSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNl
+LmRlPiB3cm90ZToKPiBPbiBUdWUsIDEwIEphbiAyMDE3IDA5OjQ1OjMxICswMTAwLAo+PiA+LS0t
+LS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0KPj4gPkZyb206IFRha2FzaGkgSXdhaSBbbWFpbHRvOnRp
+d2FpQHN1c2UuZGVdCj4+ID5TZW50OiBUdWVzZGF5LCBKYW51YXJ5IDEwLCAyMDE3IDQ6MTkgUE0K
+Pj4gPlRvOiBZYW5nLCBMaWJpbiA8bGliaW4ueWFuZ0BpbnRlbC5jb20+Cj4+ID5DYzogRGFuaWVs
+IFZldHRlciA8ZGFuaWVsQGZmd2xsLmNoPjsgaW50ZWwtZ2Z4IDxpbnRlbC1nZnhAbGlzdHMuZnJl
+ZWRlc2t0b3Aub3JnPjsKPj4gPk5pa3VsYSwgSmFuaSA8amFuaS5uaWt1bGFAbGludXguaW50ZWwu
+Y29tPjsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBMaW4sCj4+ID5NZW5nZG9uZyA8bWVu
+Z2RvbmcubGluQGludGVsLmNvbT4KPj4gPlN1YmplY3Q6IFJlOiBbYWxzYS1kZXZlbF0gW1BBVENI
+IHY0IDAvM10gc3VwcG9ydCBEUCBNU1QgYXVkaW8KPj4gPgo+PiA+T24gTW9uLCAwOSBKYW4gMjAx
+NyAwNzoyMjo1NSArMDEwMCwKPj4gPllhbmcsIExpYmluIHdyb3RlOgo+PiA+Pgo+PiA+PiBIaSBU
+YWthc2hpLAo+PiA+Pgo+PiA+PiBJdCBzZWVtcyB0aGUgcGF0Y2hlcyBmb3IgRFAgTVNUIGluIGdm
+eCBpcyBub3QgbWVyZ2VkIGludG8gTGludXMgYnJhbmNoLgo+PiA+Pgo+PiA+PiBEbyB3ZSBoYXZl
+IHBsYW4gdG8gbWVyZ2UgZ2Z4IGJyYW5jaCBtYW51YWxseSBhbmQgcmV2aWV3IHRoZSBwYXRjaGVz
+IGZvcgo+PiA+YXVkaW8/IE9yIHdlIHdpbGwgd2FpdCB0aGUgRFAgTVNUIHBhdGNoZXMgZm9yIGk5
+MTUgbWVyZ2VkIGludG8gTGludXMgYnJhbmNoPwo+PiA+Cj4+ID5Tb3JyeSwgdGhpcyB3YXMgZGVs
+YXllZCBkdWUgdG8gdGhlIHZhY2F0aW9uLgo+PiA+Tm93IEkgYXBwbGllZCB0aGVzZSB0aHJlZSBw
+YXRjaGVzIHRvIHRvcGljL2hkYS1kcC1tc3QgYnJhbmNoIGJhc2VkIG9uIDQuMTAtCj4+ID5yYzIs
+IGFuZCBpdCB3YXMgbWVyZ2VkIHRvIGZvci1uZXh0IGJyYW5jaC4KPj4gPgo+PiA+ICBnaXQ6Ly9n
+aXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291bmQuZ2l0IHRv
+cGljL2hkYS1kcC0KPj4gPm1zdAo+Pgo+PiBUaGFua3MuIFRoZXNlIGF1ZGlvIHBhdGNoZXMgYXJl
+IGJhc2VkIG9uIHRoZSBpOTE1IGRwIG1zdCBwYXRjaGVzLiBXaXRob3V0Cj4+IEk5MTUgZHJpdmVy
+IHBhdGNoZXMgc3VwcG9ydCwgaXQgd2lsbCBtYWtlIGVycm9ycy4KPgo+IEFoIHllYWgsIEkgZm9y
+Z290IGl0LiAgU28gSSByZW1vdmVkIGl0IGZyb20gZm9yLW5leHQgYnJhbmNoLCBidXQKPiB0b3Bp
+Yy9oZGEtZHAtbXN0IGJyYW5jaCBpcyBrZXB0IHNvIHRoYXQgaXQgY2FuIGJlIG1lcmdlZCB0byBp
+OTE1Cj4gdHJlZS4KPgo+IExldCBtZSBrbm93IGlmIHRoZXJlIGlzIGFueSBpOTE1IGJyYW5jaCBJ
+IGNhbiBwdWxsIGludG8gc291bmQgdHJlZS4KCkF3LCBJIGRpZG4ndCBrbm93IHRoYXQgdGhlIGRl
+cGVuY3kgZ29lcyB0aGlzIHdheSByb3VuZCwgdGhlIGRwIG1zdApwYXRjaGVzIChJJ20gbm90IGV2
+ZW4gc3VyZSB3aGljaCBvbmVzIHRoZXkgYXJlKSBvbiB0aGUgaTkxNSBhcmUganVzdApvbiB0aGUg
+Z2VuZXJhbCBwaWxlLiBTbyBub3QgYW55d2hlcmUgbmVhciBhIHBsYWNlIHdoZXJlIEkgY2FuIG1h
+a2UgYQp0b3BpYyBicmFuY2guCgpJIGd1ZXNzIHdoYXQgbmVlZHMgdG8gYmUgZG9uZSBub3cgaXMg
+YSBjaGVycnktcGlja2VkIGxpc3Qgb2YganVzdCB0aGUKcGF0Y2hlcyB3ZSBuZWVkLCBvbiB0b3Ag
+b2YgLXJjMywgdGhhdCBJIGNhbiB0aGVuIHB1bGwgaW50bwpkcm0taW50ZWwuZ2l0IHBsdXMgc2Vu
+ZCBhIHB1bGwgcmVxdWVzdCBmb3IgdGhhdCB0byBUYWthc2hpLiBUaGF0IG1lYW5zCnRoZSBwYXRj
+aGVzIGFyZSB0d2ljZSBpbiBkcm0taW50ZWwuZ2l0LCBidXQgaWYgd2UgY2hlcnJ5LXBpY2sKcmVm
+ZXJlbmNlIHRoZW0gY29ycmVjdGx5IHRoZW4gdGhhdCBzaG91bGQgYmUgYWxsIG9rIGFuZCBjYW4n
+dCByZWFsbHkKYmUgaGVscGVkLgoKT3Igd2UganVzdCBkZWxheSB0aGUgYXVkaW8gc2lkZSBmb3Ig
+NC4xMiwgZHAgbXN0IGF1ZGlvIHN1cHBvcnQgaXMgNAp5ZWFycyBsYXRlIGFueXdheSwgc28gb25l
+IG1vcmUgcmVsZWFzZSB3b24ndGh1cnQgdGhhdCBtdWNoIDstKQotRGFuaWVsCi0tIApEYW5pZWwg
+VmV0dGVyClNvZnR3YXJlIEVuZ2luZWVyLCBJbnRlbCBDb3Jwb3JhdGlvbgorNDEgKDApIDc5IDM2
+NSA1NyA0OCAtIGh0dHA6Ly9ibG9nLmZmd2xsLmNoCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxp
+c3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2ludGVsLWdmeAo=
