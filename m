@@ -1,49 +1,84 @@
-From: Nicholas Mc Guire <der.herr@hofr.at>
-Subject: Re: [PATCH] ASoC: rt5651: use msleep for large delays
-Date: Wed, 11 Jan 2017 18:59:52 +0000
-Message-ID: <20170111185952.GA17786@osadl.at>
-References: <1484135376-482-1-git-send-email-hofrat@osadl.org>
- <20170111145926.22jkebrb7ojemyhq@sirena.org.uk>
- <20170111150645.GB16045@osadl.at>
- <20170111180658.2yivagcwo4kgsp4e@sirena.org.uk>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 0/7] Constify snd_rawmidi_ops
+Date: Wed, 11 Jan 2017 20:02:35 +0100
+Message-ID: <20170111190242.12585-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20170111180658.2yivagcwo4kgsp4e@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Nicholas Mc Guire <hofrat@osadl.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 54EC0267523
+ for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2017 20:02:44 +0100 (CET)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id C131BAC0D
+ for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2017 19:02:43 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 11, 2017 at 06:06:58PM +0000, Mark Brown wrote:
-> On Wed, Jan 11, 2017 at 03:06:45PM +0000, Nicholas Mc Guire wrote:
-> > On Wed, Jan 11, 2017 at 02:59:26PM +0000, Mark Brown wrote:
-> 
-> > > If you're doing conversions like this I'd expect us to be picking the
-> > > lower number rather than the higher number - people are saying "wait for
-> > > at least X and at most Y" and msleep() is "wait for at least X" so we
-> > > should be picking X.
-> 
-> > useleep_range() sets the timer to max and only if there happens to be a
-> > timer between min and max uses that - so the mean of runs is generally
-> > a bit above max. E.g.
-> 
-> Yes, but as fairly recently discussed somewhere on the lists (and IIRC
-> actually fixed) approximately no users expect or want that behaviour -
-> it's a really confusing interface given that sleep functions almost
-> always have a "delay up until X" interface and interfaces that can wake
-> things up earlier than the expected delay generally flag that condition.
-> The applications for the "delay for X but it's OK to wake me up this
-> much earlier" are really quite limited.  If you look at the conversions
-> that were done to usleep_range() you'll notice that most of them follow
-> this pattern and had their delays extended in the process.
+Hi,
 
-True its an odd behavior - the point just was to change the actual behavior
-as little from current state as one might expect. Anywa - will fix it up 
-then and resend - in this particular case it really makes little 
-difference - assuming that both the minimum and maximum value were 
-suitable to ensure that the writes had compled or it was actually a failure.
+this is a small patchset to constify snd_rawmidi_ops references, as
+already done for many other ops.
 
-thx!
-hofrat
+
+Takashi
+
+==
+
+Takashi Iwai (7):
+  ALSA: rawmidi: Add const to snd_rawmidi_ops
+  ALSA: seq: Constify snd_rawmidi_ops
+  ALSA: drivers: Constify snd_rawmidi_ops
+  ALSA: isa: Constify snd_rawmidi_ops
+  ALSA: pci: Constify snd_rawmidi_ops
+  ALSA: firewire: Constify snd_rawmidi_ops
+  ALSA: usb: Constify snd_rawmidi_ops
+
+ include/sound/rawmidi.h                   | 4 ++--
+ include/sound/snd_wavefront.h             | 4 ++--
+ sound/core/rawmidi.c                      | 2 +-
+ sound/core/seq/seq_virmidi.c              | 4 ++--
+ sound/drivers/mpu401/mpu401_uart.c        | 4 ++--
+ sound/drivers/mtpav.c                     | 4 ++--
+ sound/drivers/mts64.c                     | 4 ++--
+ sound/drivers/portman2x4.c                | 4 ++--
+ sound/drivers/serial-u16550.c             | 4 ++--
+ sound/firewire/bebob/bebob_midi.c         | 4 ++--
+ sound/firewire/dice/dice-midi.c           | 4 ++--
+ sound/firewire/digi00x/digi00x-midi.c     | 8 ++++----
+ sound/firewire/fireworks/fireworks_midi.c | 4 ++--
+ sound/firewire/oxfw/oxfw-midi.c           | 4 ++--
+ sound/firewire/oxfw/oxfw-scs1x.c          | 4 ++--
+ sound/firewire/tascam/tascam-midi.c       | 4 ++--
+ sound/isa/gus/gus_uart.c                  | 4 ++--
+ sound/isa/msnd/msnd_midi.c                | 2 +-
+ sound/isa/sb/sb8_midi.c                   | 4 ++--
+ sound/isa/wavefront/wavefront_midi.c      | 4 ++--
+ sound/pci/ca0106/ca_midi.c                | 4 ++--
+ sound/pci/cs4281.c                        | 4 ++--
+ sound/pci/cs46xx/cs46xx_lib.c             | 4 ++--
+ sound/pci/echoaudio/midi.c                | 4 ++--
+ sound/pci/emu10k1/emu10k1x.c              | 4 ++--
+ sound/pci/emu10k1/emumpu401.c             | 4 ++--
+ sound/pci/ens1370.c                       | 4 ++--
+ sound/pci/ice1712/ice1724.c               | 4 ++--
+ sound/pci/rme9652/hdsp.c                  | 4 ++--
+ sound/pci/rme9652/hdspm.c                 | 4 ++--
+ sound/usb/6fire/midi.c                    | 4 ++--
+ sound/usb/bcd2000/bcd2000.c               | 4 ++--
+ sound/usb/caiaq/midi.c                    | 4 ++--
+ sound/usb/line6/midi.c                    | 4 ++--
+ sound/usb/midi.c                          | 4 ++--
+ 35 files changed, 70 insertions(+), 70 deletions(-)
+
+-- 
+2.11.0
