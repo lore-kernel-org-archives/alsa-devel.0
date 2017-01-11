@@ -1,41 +1,48 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ALSA: hda/ca0132 - fix possible NULL pointer use
-Date: Wed, 11 Jan 2017 14:39:44 +0100
-Message-ID: <20170111134013.3798733-1-arnd@arndb.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt5651: use msleep for large delays
+Date: Wed, 11 Jan 2017 14:59:26 +0000
+Message-ID: <20170111145926.22jkebrb7ojemyhq@sirena.org.uk>
+References: <1484135376-482-1-git-send-email-hofrat@osadl.org>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="msayzpygxwoaqlad"
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1484135376-482-1-git-send-email-hofrat@osadl.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Nicholas Mc Guire <hofrat@osadl.org>
+Cc: Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-gcc-7 caught what it considers a NULL pointer dereference:
 
-sound/pci/hda/patch_ca0132.c: In function 'dspio_scp.constprop':
-sound/pci/hda/patch_ca0132.c:1487:4: error: argument 1 null where non-null expected [-Werror=nonnull]
+--msayzpygxwoaqlad
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-This is plausible from looking at the function, as we compare 'reply'
-to NULL earlier in it. I have not tried to analyze if there are constraints
-that make it impossible to hit the bug, but adding another NULL check in
-the end kills the warning and makes the function more robust.
+On Wed, Jan 11, 2017 at 12:49:36PM +0100, Nicholas Mc Guire wrote:
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/pci/hda/patch_ca0132.c | 3 +++
- 1 file changed, 3 insertions(+)
+>  		if (!rt5651->hp_mute)
+> -			usleep_range(80000, 85000);
+> +			msleep(85);
 
-diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index bd7c29f8ab1e..07a9deb17477 100644
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -1482,6 +1482,9 @@ static int dspio_scp(struct hda_codec *codec,
- 		} else if (ret_size != reply_data_size) {
- 			codec_dbg(codec, "RetLen and HdrLen .NE.\n");
- 			return -EINVAL;
-+		} else if (!reply) {
-+			codec_dbg(codec, "NULL reply\n");
-+			return -EINVAL;
- 		} else {
- 			*reply_len = ret_size*sizeof(unsigned int);
- 			memcpy(reply, scp_reply.data, *reply_len);
--- 
-2.9.0
+If you're doing conversions like this I'd expect us to be picking the
+lower number rather than the higher number - people are saying "wait for
+at least X and at most Y" and msleep() is "wait for at least X" so we
+should be picking X.
+
+--msayzpygxwoaqlad
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlh2SEoACgkQJNaLcl1U
+h9CO5Af9F2fKHz/R6pYGCaZH3oMc/vb3BnCOtr9uSJwRSU+OGJGFnAGwQrW/ktA0
+59aVi71HpLaHK0ztgQYbznbIuhHqQWMcD70qSDJtNaGldcTzmYkaRIUERu1DjBWO
++h/hsIL5kjO900mBJnAzJd0FMUyfjuMq6/+7GwNjiap9IZy8ta93tEnXKYD1o1Fd
+5Dxx3ogLD84fDjY5jDGd/tE+l2lhGru+UDquWXkr7lH+XT0eaj2K2WfsqPNGOawy
+63h1cjCRDzINFEnaci/atpINujErFcpzc/uyiNhqrNHTHy2DdhTjE77fEz8UPSYu
+VbSiUkkPSG/j2nI4kjW5ly4SZzAfUQ==
+=SSmV
+-----END PGP SIGNATURE-----
+
+--msayzpygxwoaqlad--
