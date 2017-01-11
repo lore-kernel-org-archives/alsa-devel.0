@@ -1,56 +1,48 @@
-From: Nicholas Mc Guire <hofrat@osadl.org>
-Subject: [PATCH RFC] ASoC: rt5663: use msleep() for uncritical delay
-Date: Wed, 11 Jan 2017 16:03:51 +0100
-Message-ID: <1484147031-25525-1-git-send-email-hofrat@osadl.org>
+From: Nicholas Mc Guire <der.herr@hofr.at>
+Subject: Re: [PATCH] ASoC: rt5651: use msleep for large delays
+Date: Wed, 11 Jan 2017 15:06:45 +0000
+Message-ID: <20170111150645.GB16045@osadl.at>
+References: <1484135376-482-1-git-send-email-hofrat@osadl.org>
+ <20170111145926.22jkebrb7ojemyhq@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20170111145926.22jkebrb7ojemyhq@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Nicholas Mc Guire <hofrat@osadl.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: Nicholas Mc Guire <hofrat@osadl.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The delay here does not seem to be critical with respect to longer
-delays than 10ms as this delay is to ensure that the write took
-effect before the next soc_update_bits/write call only, thus a 
-high resolution timer makes little sense here - msleep() should do.
+On Wed, Jan 11, 2017 at 02:59:26PM +0000, Mark Brown wrote:
+> On Wed, Jan 11, 2017 at 12:49:36PM +0100, Nicholas Mc Guire wrote:
+> 
+> >  		if (!rt5651->hp_mute)
+> > -			usleep_range(80000, 85000);
+> > +			msleep(85);
+> 
+> If you're doing conversions like this I'd expect us to be picking the
+> lower number rather than the higher number - people are saying "wait for
+> at least X and at most Y" and msleep() is "wait for at least X" so we
+> should be picking X.
 
-Fixes: commit df7c52168ee1 ("ASoC: add rt5663 codec driver")
-Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
----
-Problem was found by cocinelle script.
+useleep_range() sets the timer to max and only if there happens to be a
+timer between min and max uses that - so the mean of runs is generally
+a bit above max. E.g.
 
-msleep() of 10ms can take up to 20ms on HZ=100 systems but even this
-does not seem critical here as this is not a very frequent operation
-(that is not called in a loop)
+usleep_range(*,200) 5000 samples - idle system
+ 100,200         190,200
+ Min.   :188481  Min.   :197793
+ 1st Qu.:207062  1st Qu.:207051
+ Median :207139  Median :207133
+ Mean   :207254  Mean   :207244
+ 3rd Qu.:207341  3rd Qu.:207610
+ Max.   :225340  Max.   :214885
 
-In any case the delta of only 5 us seems unnecessarily small given that
-jitter on almost all systems would be expected to be larger than 5us and
-the microsecond precision really is not needed here.
+So to keep the behavior as close to the current code as possible
+it seemed better to select the upper value.
 
-This does throw a checkpatch warning with:
-WARNING: msleep < 20ms can sleep for up to 20ms;"
-but that seems ok in this case, presumably there are very few systems 
-running audio subsystem that have HZ=100 set.
+Am I missing something ?
 
-Patch was compile tested with: x86_64_defconfig + CONFIG_COMPILE_TEST=y
-SND_SOC=m + SND_SOC_ALL_CODECS=m (implies SND_SOC_RT5663=m)
-
-Patch is aginast 4.10-rc3 (localversion-next is next-20170111)
-
- sound/soc/codecs/rt5663.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
-index ed94830..2ecc600 100644
---- a/sound/soc/codecs/rt5663.c
-+++ b/sound/soc/codecs/rt5663.c
-@@ -2764,7 +2764,7 @@ static int rt5663_set_bias_level(struct snd_soc_codec *codec,
- 			RT5663_PWR_FV1_MASK | RT5663_PWR_FV2_MASK |
- 			RT5663_PWR_MB_MASK, RT5663_PWR_VREF1 |
- 			RT5663_PWR_VREF2 | RT5663_PWR_MB);
--		usleep_range(10000, 10005);
-+		msleep(10);
- 		if (rt5663->codec_ver == CODEC_VER_1) {
- 			snd_soc_update_bits(codec, RT5663_SIG_CLK_DET,
- 				RT5663_EN_ANA_CLK_DET_MASK |
--- 
-2.1.4
+thx!
+hofrat
