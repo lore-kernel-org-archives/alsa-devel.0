@@ -1,94 +1,51 @@
-From: Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [alsa-devel] [PATCH v4 0/3] support DP MST audio
-Date: Wed, 11 Jan 2017 09:35:04 +0100
-Message-ID: <20170111083504.vm7gy7tvk2m622cr@phenom.ffwll.local>
-References: <96A12704CE18D347B625EE2D4A099D194FA69699@SHSMSX103.ccr.corp.intel.com>
- <s5hzik94j74.wl-tiwai@suse.de>
- <CAKMK7uFim4fmrVSTVJa+STURbiVbtvyydtbj+eVRCPGGUfOk8Q@mail.gmail.com>
- <s5htwah4gur.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D1952458272@SHSMSX103.ccr.corp.intel.com>
- <s5h37grmio3.wl-tiwai@suse.de>
- <96A12704CE18D347B625EE2D4A099D19524588CE@SHSMSX103.ccr.corp.intel.com>
- <s5hvatnl2od.wl-tiwai@suse.de>
- <CAKMK7uGpunR40JVavih0nqW9FWHZ+53fOu0vcEzJLHyKXgHo8Q@mail.gmail.com>
- <s5hinpmkov8.wl-tiwai@suse.de>
+From: Liam Girdwood <liam.r.girdwood@intel.com>
+Subject: Re: [PATCH v4 0/4] ASoC: Intel: clean up Kconfig
+Date: Wed, 11 Jan 2017 08:12:08 +0000
+Message-ID: <1484122328.2604.20.camel@loki>
+References: <20170107123250.52930-1-andriy.shevchenko@linux.intel.com>
+ <20170110090408.GD3573@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <s5hinpmkov8.wl-tiwai@suse.de>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, intel-gfx <intel-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 543C7266639
+ for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2017 09:12:13 +0100 (CET)
+In-Reply-To: <20170110090408.GD3573@localhost>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, dmaengine <dmaengine@vger.kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBKYW4gMTEsIDIwMTcgYXQgMDk6MDA6MjdBTSArMDEwMCwgVGFrYXNoaSBJd2FpIHdy
-b3RlOgo+IE9uIFdlZCwgMTEgSmFuIDIwMTcgMDg6Mzk6MTMgKzAxMDAsCj4gRGFuaWVsIFZldHRl
-ciB3cm90ZToKPiA+IAo+ID4gT24gVHVlLCBKYW4gMTAsIDIwMTcgYXQgOTo0OSBBTSwgVGFrYXNo
-aSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90ZToKPiA+ID4gT24gVHVlLCAxMCBKYW4gMjAxNyAw
-OTo0NTozMSArMDEwMCwKPiA+ID4+ID4tLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+ID4gPj4g
-PkZyb206IFRha2FzaGkgSXdhaSBbbWFpbHRvOnRpd2FpQHN1c2UuZGVdCj4gPiA+PiA+U2VudDog
-VHVlc2RheSwgSmFudWFyeSAxMCwgMjAxNyA0OjE5IFBNCj4gPiA+PiA+VG86IFlhbmcsIExpYmlu
-IDxsaWJpbi55YW5nQGludGVsLmNvbT4KPiA+ID4+ID5DYzogRGFuaWVsIFZldHRlciA8ZGFuaWVs
-QGZmd2xsLmNoPjsgaW50ZWwtZ2Z4IDxpbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnPjsK
-PiA+ID4+ID5OaWt1bGEsIEphbmkgPGphbmkubmlrdWxhQGxpbnV4LmludGVsLmNvbT47IGFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgTGluLAo+ID4gPj4gPk1lbmdkb25nIDxtZW5nZG9uZy5s
-aW5AaW50ZWwuY29tPgo+ID4gPj4gPlN1YmplY3Q6IFJlOiBbYWxzYS1kZXZlbF0gW1BBVENIIHY0
-IDAvM10gc3VwcG9ydCBEUCBNU1QgYXVkaW8KPiA+ID4+ID4KPiA+ID4+ID5PbiBNb24sIDA5IEph
-biAyMDE3IDA3OjIyOjU1ICswMTAwLAo+ID4gPj4gPllhbmcsIExpYmluIHdyb3RlOgo+ID4gPj4g
-Pj4KPiA+ID4+ID4+IEhpIFRha2FzaGksCj4gPiA+PiA+Pgo+ID4gPj4gPj4gSXQgc2VlbXMgdGhl
-IHBhdGNoZXMgZm9yIERQIE1TVCBpbiBnZnggaXMgbm90IG1lcmdlZCBpbnRvIExpbnVzIGJyYW5j
-aC4KPiA+ID4+ID4+Cj4gPiA+PiA+PiBEbyB3ZSBoYXZlIHBsYW4gdG8gbWVyZ2UgZ2Z4IGJyYW5j
-aCBtYW51YWxseSBhbmQgcmV2aWV3IHRoZSBwYXRjaGVzIGZvcgo+ID4gPj4gPmF1ZGlvPyBPciB3
-ZSB3aWxsIHdhaXQgdGhlIERQIE1TVCBwYXRjaGVzIGZvciBpOTE1IG1lcmdlZCBpbnRvIExpbnVz
-IGJyYW5jaD8KPiA+ID4+ID4KPiA+ID4+ID5Tb3JyeSwgdGhpcyB3YXMgZGVsYXllZCBkdWUgdG8g
-dGhlIHZhY2F0aW9uLgo+ID4gPj4gPk5vdyBJIGFwcGxpZWQgdGhlc2UgdGhyZWUgcGF0Y2hlcyB0
-byB0b3BpYy9oZGEtZHAtbXN0IGJyYW5jaCBiYXNlZCBvbiA0LjEwLQo+ID4gPj4gPnJjMiwgYW5k
-IGl0IHdhcyBtZXJnZWQgdG8gZm9yLW5leHQgYnJhbmNoLgo+ID4gPj4gPgo+ID4gPj4gPiAgZ2l0
-Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3Rpd2FpL3NvdW5kLmdp
-dCB0b3BpYy9oZGEtZHAtCj4gPiA+PiA+bXN0Cj4gPiA+Pgo+ID4gPj4gVGhhbmtzLiBUaGVzZSBh
-dWRpbyBwYXRjaGVzIGFyZSBiYXNlZCBvbiB0aGUgaTkxNSBkcCBtc3QgcGF0Y2hlcy4gV2l0aG91
-dAo+ID4gPj4gSTkxNSBkcml2ZXIgcGF0Y2hlcyBzdXBwb3J0LCBpdCB3aWxsIG1ha2UgZXJyb3Jz
-Lgo+ID4gPgo+ID4gPiBBaCB5ZWFoLCBJIGZvcmdvdCBpdC4gIFNvIEkgcmVtb3ZlZCBpdCBmcm9t
-IGZvci1uZXh0IGJyYW5jaCwgYnV0Cj4gPiA+IHRvcGljL2hkYS1kcC1tc3QgYnJhbmNoIGlzIGtl
-cHQgc28gdGhhdCBpdCBjYW4gYmUgbWVyZ2VkIHRvIGk5MTUKPiA+ID4gdHJlZS4KPiA+ID4KPiA+
-ID4gTGV0IG1lIGtub3cgaWYgdGhlcmUgaXMgYW55IGk5MTUgYnJhbmNoIEkgY2FuIHB1bGwgaW50
-byBzb3VuZCB0cmVlLgo+ID4gCj4gPiBBdywgSSBkaWRuJ3Qga25vdyB0aGF0IHRoZSBkZXBlbmN5
-IGdvZXMgdGhpcyB3YXkgcm91bmQsIHRoZSBkcCBtc3QKPiA+IHBhdGNoZXMgKEknbSBub3QgZXZl
-biBzdXJlIHdoaWNoIG9uZXMgdGhleSBhcmUpIG9uIHRoZSBpOTE1IGFyZSBqdXN0Cj4gPiBvbiB0
-aGUgZ2VuZXJhbCBwaWxlLiBTbyBub3QgYW55d2hlcmUgbmVhciBhIHBsYWNlIHdoZXJlIEkgY2Fu
-IG1ha2UgYQo+ID4gdG9waWMgYnJhbmNoLgo+ID4gCj4gPiBJIGd1ZXNzIHdoYXQgbmVlZHMgdG8g
-YmUgZG9uZSBub3cgaXMgYSBjaGVycnktcGlja2VkIGxpc3Qgb2YganVzdCB0aGUKPiA+IHBhdGNo
-ZXMgd2UgbmVlZCwgb24gdG9wIG9mIC1yYzMsIHRoYXQgSSBjYW4gdGhlbiBwdWxsIGludG8KPiA+
-IGRybS1pbnRlbC5naXQgcGx1cyBzZW5kIGEgcHVsbCByZXF1ZXN0IGZvciB0aGF0IHRvIFRha2Fz
-aGkuIFRoYXQgbWVhbnMKPiA+IHRoZSBwYXRjaGVzIGFyZSB0d2ljZSBpbiBkcm0taW50ZWwuZ2l0
-LCBidXQgaWYgd2UgY2hlcnJ5LXBpY2sKPiA+IHJlZmVyZW5jZSB0aGVtIGNvcnJlY3RseSB0aGVu
-IHRoYXQgc2hvdWxkIGJlIGFsbCBvayBhbmQgY2FuJ3QgcmVhbGx5Cj4gPiBiZSBoZWxwZWQuCj4g
-PiAKPiA+IE9yIHdlIGp1c3QgZGVsYXkgdGhlIGF1ZGlvIHNpZGUgZm9yIDQuMTIsIGRwIG1zdCBh
-dWRpbyBzdXBwb3J0IGlzIDQKPiA+IHllYXJzIGxhdGUgYW55d2F5LCBzbyBvbmUgbW9yZSByZWxl
-YXNlIHdvbid0aHVydCB0aGF0IG11Y2ggOy0pCj4gCj4gV2VsbCwgdGhpbmtpbmcgb2YgdGhlIGFt
-b3VudCBvZiBwYXRjaGVzLCBJIGd1ZXNzIHdlIGNhbiBkbyBvdGhlciB3YXkKPiByb3VuZDogYmFz
-aWNhbGx5IGl0J3MgZmluZSB0byBhcHBseSBMaWJpbidzIGxhdGVzdCBwYXRjaGVzIHRvIGRybSB0
-cmVlCj4gZm9yIDQuMTEsIGlmIGl0IG1ha2VzIHRoaW5ncyBlYXNpZXIuICBJIGRvbid0IHRoaW5r
-IHdlJ2xsIGhhdmUgYSBiaWcKPiBjb25mbGljdCB3aXRoIHRoZXNlIGNoYW5nZXMgZm9yIG90aGVy
-cyBkdXJpbmcgNC4xMSBkZXZlbG9wbWVudC4gIElmCj4gYW55LCBJIGNhbiBwdWxsIHNvbWUgb2Yg
-c3RhYmxlIHBvaW50IGZyb20gZHJtIHRyZWUuCj4gCj4gRG9lcyBpdCB3b3JrIGZvciB5b3U/ICBJ
-ZiB5ZXMsIGZlZWwgZnJlZSB0byBhcHBseSB0aGVzZSB0aHJlZSBzb3VuZAo+IHBhdGNoZXMgdG8g
-ZHJtIG9yIGk5MTUgdHJlZSB3aXRoIG15IGFjay4KPiAKPiBSZXZpZXdlZC1ieTogVGFrYXNoaSBJ
-d2FpIDx0aXdhaUBzdXNlLmRlPgoKV29ya3MgZm9yIG1lIHRvby4gTGliaW4sIGNhbiB5b3UgcGxz
-IHJlc2VuZCAoc29tZWhvdyB0aGlzIHRocmVhZApkaXNjb25uZWN0ZWQgZnJvbSB0aGUgcGF0Y2hl
-cyBmb3IgbWUpLCB3aXRoIFRha2FzaGkncyByLWIgKyBhY2sgZm9yCm1lcmdpbmcgdGhyb3VnaCBk
-cm0taW50ZWw/CgpUaGFua3MsIERhbmllbAotLSAKRGFuaWVsIFZldHRlcgpTb2Z0d2FyZSBFbmdp
-bmVlciwgSW50ZWwgQ29ycG9yYXRpb24KaHR0cDovL2Jsb2cuZmZ3bGwuY2gKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlz
-dApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0
-b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+On Tue, 2017-01-10 at 14:34 +0530, Vinod Koul wrote:
+> On Sat, Jan 07, 2017 at 02:32:46PM +0200, Andy Shevchenko wrote:
+> > Clean up Kconfig here:
+> > - select DW_DMAC_CORE because it's mandatory for some modules
+> > - remove redundant selects and dependencies
+> > - rename MFLD_PLATFORM to ATOM_HIFI2_PLATFORM to show that it covers more than *Field
+> 
+> Looks good to me,
+> 
+> Acked-by: Vinod Koul <vinod.koul@intel.com>
+> 
+Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+
+
+---------------------------------------------------------------------
+Intel Corporation (UK) Limited
+Registered No. 1134945 (England)
+Registered Office: Pipers Way, Swindon SN3 1RJ
+VAT No: 860 2173 47
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
