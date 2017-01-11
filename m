@@ -1,51 +1,120 @@
-From: Liam Girdwood <liam.r.girdwood@intel.com>
-Subject: Re: [PATCH v4 0/4] ASoC: Intel: clean up Kconfig
-Date: Wed, 11 Jan 2017 08:12:08 +0000
-Message-ID: <1484122328.2604.20.camel@loki>
-References: <20170107123250.52930-1-andriy.shevchenko@linux.intel.com>
- <20170110090408.GD3573@localhost>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [alsa-devel] [PATCH v4 0/3] support DP MST audio
+Date: Wed, 11 Jan 2017 08:44:27 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D1952458E6B@SHSMSX103.ccr.corp.intel.com>
+References: <96A12704CE18D347B625EE2D4A099D194FA69699@SHSMSX103.ccr.corp.intel.com>
+ <s5hzik94j74.wl-tiwai@suse.de>
+ <CAKMK7uFim4fmrVSTVJa+STURbiVbtvyydtbj+eVRCPGGUfOk8Q@mail.gmail.com>
+ <s5htwah4gur.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D1952458272@SHSMSX103.ccr.corp.intel.com>
+ <s5h37grmio3.wl-tiwai@suse.de>
+ <96A12704CE18D347B625EE2D4A099D19524588CE@SHSMSX103.ccr.corp.intel.com>
+ <s5hvatnl2od.wl-tiwai@suse.de>
+ <CAKMK7uGpunR40JVavih0nqW9FWHZ+53fOu0vcEzJLHyKXgHo8Q@mail.gmail.com>
+ <s5hinpmkov8.wl-tiwai@suse.de>
+ <20170111083504.vm7gy7tvk2m622cr@phenom.ffwll.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 543C7266639
- for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2017 09:12:13 +0100 (CET)
-In-Reply-To: <20170110090408.GD3573@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, dmaengine <dmaengine@vger.kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <20170111083504.vm7gy7tvk2m622cr@phenom.ffwll.local>
+Content-Language: en-US
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Daniel Vetter <daniel@ffwll.ch>, Takashi Iwai <tiwai@suse.de>
+Cc: intel-gfx <intel-gfx@lists.freedesktop.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Pandiyan,
+ Dhinakaran" <dhinakaran.pandiyan@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2017-01-10 at 14:34 +0530, Vinod Koul wrote:
-> On Sat, Jan 07, 2017 at 02:32:46PM +0200, Andy Shevchenko wrote:
-> > Clean up Kconfig here:
-> > - select DW_DMAC_CORE because it's mandatory for some modules
-> > - remove redundant selects and dependencies
-> > - rename MFLD_PLATFORM to ATOM_HIFI2_PLATFORM to show that it covers more than *Field
-> 
-> Looks good to me,
-> 
-> Acked-by: Vinod Koul <vinod.koul@intel.com>
-> 
-Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-
-
----------------------------------------------------------------------
-Intel Corporation (UK) Limited
-Registered No. 1134945 (England)
-Registered Office: Pipers Way, Swindon SN3 1RJ
-VAT No: 860 2173 47
-
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+SGkgRGFuaWVsLAoKT0ssIEkgd2lsbCByZXNlbmQgdGhlIHBhdGNoZXMgdG9tb3Jyb3cuIFRoYW5r
+cy4KCkhpIFRha2FzaGksCgpJbiBjYXNlIHlvdSBzdGlsbCBuZWVkIHRoZSBwYXRjaGVzIGZvciBp
+OTE1LCBpdCBpcyBvbgpnaXQ6Ly9hbm9uZ2l0LmZyZWVkZXNrdG9wLm9yZy9kcm0tdGlwOmRybS10
+aXAKCk15IHBhdGNoZXMgYXJlOgoKY29tbWl0IDlhMTQ4YTk2ZmMzYTY1NGRkY2YxNDJhN2FiN2Ri
+MzdiOTcyYmE1ZDgKZHJtL2k5MTUvZGVidWdmczogYWRkIGRwIG1zdCBpbmZvCgpjb21taXQgOTkz
+NWY3ZmEyODU0MzU1MjAzZTM5NzY3NjJlZWNmYjIxODA3OWFhYwpkcm0vaTkxNTogYWJzdHJhY3Qg
+ZGRpIGJlaW5nIGF1ZGlvIGVuYWJsZWQKCmNvbW1pdCA3ZjllNzc1NDViOTJiY2I4OTRiOGUyYmU1
+NjQ2NTM1ZThiYThkYTllCmRybS9pOTE1OiBlbmFibGUgZHAgbXN0IGF1ZGlvCgpjb21taXQgMzE2
+MTMyNjhjMGE2ZjdhYmRiMGMxOTQ4N2EwODQyNDliY2YyMDNiYQpkcm0vaTkxNS9hdWRpbzogZXh0
+ZW5kIGdldF9zYXZlZF9lbmMoKSB0byBzdXBwb3J0IG1vcmUgc2NlbmFyaW9zCgpjb21taXQgZjU1
+ZDIzYmUxMWVkMTVmNDkzOTU3MjQ2ZjNiODFmYzUzMGU3OWQ3MApkcm0vaTkxNS9hdWRpbzogZXh0
+ZW5kIGF1ZGlvIHN5bmMgcmF0ZSBzdXBwb3J0IGZvciBEUCBNU1QKCkFuZCB5b3UgbWF5IHN0aWxs
+IG5lZWQgdGhlIHBhdGNoZXMgaW4gZ2Z4IHRvIGZpeCB0aGUgZmxpY2tlciBpc3N1ZSwgd2hpY2gg
+RGhpbmFrYXJhbgpjYW4gaGVscC4KClJlZ2FyZHMsCkxpYmluCgoKPi0tLS0tT3JpZ2luYWwgTWVz
+c2FnZS0tLS0tCj5Gcm9tOiBEYW5pZWwgVmV0dGVyIFttYWlsdG86ZGFuaWVsLnZldHRlckBmZnds
+bC5jaF0gT24gQmVoYWxmIE9mIERhbmllbCBWZXR0ZXIKPlNlbnQ6IFdlZG5lc2RheSwgSmFudWFy
+eSAxMSwgMjAxNyA0OjM1IFBNCj5UbzogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgo+Q2M6
+IERhbmllbCBWZXR0ZXIgPGRhbmllbEBmZndsbC5jaD47IFlhbmcsIExpYmluIDxsaWJpbi55YW5n
+QGludGVsLmNvbT47IGludGVsLQo+Z2Z4IDxpbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3Jn
+PjsgTmlrdWxhLCBKYW5pCj48amFuaS5uaWt1bGFAbGludXguaW50ZWwuY29tPjsgYWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnOyBMaW4sIE1lbmdkb25nCj48bWVuZ2RvbmcubGluQGludGVsLmNv
+bT4KPlN1YmplY3Q6IFJlOiBbYWxzYS1kZXZlbF0gW1BBVENIIHY0IDAvM10gc3VwcG9ydCBEUCBN
+U1QgYXVkaW8KPgo+T24gV2VkLCBKYW4gMTEsIDIwMTcgYXQgMDk6MDA6MjdBTSArMDEwMCwgVGFr
+YXNoaSBJd2FpIHdyb3RlOgo+PiBPbiBXZWQsIDExIEphbiAyMDE3IDA4OjM5OjEzICswMTAwLAo+
+PiBEYW5pZWwgVmV0dGVyIHdyb3RlOgo+PiA+Cj4+ID4gT24gVHVlLCBKYW4gMTAsIDIwMTcgYXQg
+OTo0OSBBTSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90ZToKPj4gPiA+IE9uIFR1
+ZSwgMTAgSmFuIDIwMTcgMDk6NDU6MzEgKzAxMDAsCj4+ID4gPj4gPi0tLS0tT3JpZ2luYWwgTWVz
+c2FnZS0tLS0tCj4+ID4gPj4gPkZyb206IFRha2FzaGkgSXdhaSBbbWFpbHRvOnRpd2FpQHN1c2Uu
+ZGVdCj4+ID4gPj4gPlNlbnQ6IFR1ZXNkYXksIEphbnVhcnkgMTAsIDIwMTcgNDoxOSBQTQo+PiA+
+ID4+ID5UbzogWWFuZywgTGliaW4gPGxpYmluLnlhbmdAaW50ZWwuY29tPgo+PiA+ID4+ID5DYzog
+RGFuaWVsIFZldHRlciA8ZGFuaWVsQGZmd2xsLmNoPjsgaW50ZWwtZ2Z4Cj4+ID4gPj4gPjxpbnRl
+bC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnPjsKPj4gPiA+PiA+TmlrdWxhLCBKYW5pIDxqYW5p
+Lm5pa3VsYUBsaW51eC5pbnRlbC5jb20+Owo+PiA+ID4+ID5hbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmc7IExpbiwgTWVuZ2RvbmcKPj4gPiA+PiA+PG1lbmdkb25nLmxpbkBpbnRlbC5jb20+Cj4+
+ID4gPj4gPlN1YmplY3Q6IFJlOiBbYWxzYS1kZXZlbF0gW1BBVENIIHY0IDAvM10gc3VwcG9ydCBE
+UCBNU1QgYXVkaW8KPj4gPiA+PiA+Cj4+ID4gPj4gPk9uIE1vbiwgMDkgSmFuIDIwMTcgMDc6MjI6
+NTUgKzAxMDAsIFlhbmcsIExpYmluIHdyb3RlOgo+PiA+ID4+ID4+Cj4+ID4gPj4gPj4gSGkgVGFr
+YXNoaSwKPj4gPiA+PiA+Pgo+PiA+ID4+ID4+IEl0IHNlZW1zIHRoZSBwYXRjaGVzIGZvciBEUCBN
+U1QgaW4gZ2Z4IGlzIG5vdCBtZXJnZWQgaW50byBMaW51cwo+YnJhbmNoLgo+PiA+ID4+ID4+Cj4+
+ID4gPj4gPj4gRG8gd2UgaGF2ZSBwbGFuIHRvIG1lcmdlIGdmeCBicmFuY2ggbWFudWFsbHkgYW5k
+IHJldmlldyB0aGUKPj4gPiA+PiA+PiBwYXRjaGVzIGZvcgo+PiA+ID4+ID5hdWRpbz8gT3Igd2Ug
+d2lsbCB3YWl0IHRoZSBEUCBNU1QgcGF0Y2hlcyBmb3IgaTkxNSBtZXJnZWQgaW50byBMaW51cwo+
+YnJhbmNoPwo+PiA+ID4+ID4KPj4gPiA+PiA+U29ycnksIHRoaXMgd2FzIGRlbGF5ZWQgZHVlIHRv
+IHRoZSB2YWNhdGlvbi4KPj4gPiA+PiA+Tm93IEkgYXBwbGllZCB0aGVzZSB0aHJlZSBwYXRjaGVz
+IHRvIHRvcGljL2hkYS1kcC1tc3QgYnJhbmNoCj4+ID4gPj4gPmJhc2VkIG9uIDQuMTAtIHJjMiwg
+YW5kIGl0IHdhcyBtZXJnZWQgdG8gZm9yLW5leHQgYnJhbmNoLgo+PiA+ID4+ID4KPj4gPiA+PiA+
+ICBnaXQ6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291
+bmQuZ2l0Cj4+ID4gPj4gPnRvcGljL2hkYS1kcC0gbXN0Cj4+ID4gPj4KPj4gPiA+PiBUaGFua3Mu
+IFRoZXNlIGF1ZGlvIHBhdGNoZXMgYXJlIGJhc2VkIG9uIHRoZSBpOTE1IGRwIG1zdCBwYXRjaGVz
+Lgo+PiA+ID4+IFdpdGhvdXQKPj4gPiA+PiBJOTE1IGRyaXZlciBwYXRjaGVzIHN1cHBvcnQsIGl0
+IHdpbGwgbWFrZSBlcnJvcnMuCj4+ID4gPgo+PiA+ID4gQWggeWVhaCwgSSBmb3Jnb3QgaXQuICBT
+byBJIHJlbW92ZWQgaXQgZnJvbSBmb3ItbmV4dCBicmFuY2gsIGJ1dAo+PiA+ID4gdG9waWMvaGRh
+LWRwLW1zdCBicmFuY2ggaXMga2VwdCBzbyB0aGF0IGl0IGNhbiBiZSBtZXJnZWQgdG8gaTkxNQo+
+PiA+ID4gdHJlZS4KPj4gPiA+Cj4+ID4gPiBMZXQgbWUga25vdyBpZiB0aGVyZSBpcyBhbnkgaTkx
+NSBicmFuY2ggSSBjYW4gcHVsbCBpbnRvIHNvdW5kIHRyZWUuCj4+ID4KPj4gPiBBdywgSSBkaWRu
+J3Qga25vdyB0aGF0IHRoZSBkZXBlbmN5IGdvZXMgdGhpcyB3YXkgcm91bmQsIHRoZSBkcCBtc3QK
+Pj4gPiBwYXRjaGVzIChJJ20gbm90IGV2ZW4gc3VyZSB3aGljaCBvbmVzIHRoZXkgYXJlKSBvbiB0
+aGUgaTkxNSBhcmUganVzdAo+PiA+IG9uIHRoZSBnZW5lcmFsIHBpbGUuIFNvIG5vdCBhbnl3aGVy
+ZSBuZWFyIGEgcGxhY2Ugd2hlcmUgSSBjYW4gbWFrZSBhCj4+ID4gdG9waWMgYnJhbmNoLgo+PiA+
+Cj4+ID4gSSBndWVzcyB3aGF0IG5lZWRzIHRvIGJlIGRvbmUgbm93IGlzIGEgY2hlcnJ5LXBpY2tl
+ZCBsaXN0IG9mIGp1c3QKPj4gPiB0aGUgcGF0Y2hlcyB3ZSBuZWVkLCBvbiB0b3Agb2YgLXJjMywg
+dGhhdCBJIGNhbiB0aGVuIHB1bGwgaW50bwo+PiA+IGRybS1pbnRlbC5naXQgcGx1cyBzZW5kIGEg
+cHVsbCByZXF1ZXN0IGZvciB0aGF0IHRvIFRha2FzaGkuIFRoYXQKPj4gPiBtZWFucyB0aGUgcGF0
+Y2hlcyBhcmUgdHdpY2UgaW4gZHJtLWludGVsLmdpdCwgYnV0IGlmIHdlIGNoZXJyeS1waWNrCj4+
+ID4gcmVmZXJlbmNlIHRoZW0gY29ycmVjdGx5IHRoZW4gdGhhdCBzaG91bGQgYmUgYWxsIG9rIGFu
+ZCBjYW4ndCByZWFsbHkKPj4gPiBiZSBoZWxwZWQuCj4+ID4KPj4gPiBPciB3ZSBqdXN0IGRlbGF5
+IHRoZSBhdWRpbyBzaWRlIGZvciA0LjEyLCBkcCBtc3QgYXVkaW8gc3VwcG9ydCBpcyA0Cj4+ID4g
+eWVhcnMgbGF0ZSBhbnl3YXksIHNvIG9uZSBtb3JlIHJlbGVhc2Ugd29uJ3RodXJ0IHRoYXQgbXVj
+aCA7LSkKPj4KPj4gV2VsbCwgdGhpbmtpbmcgb2YgdGhlIGFtb3VudCBvZiBwYXRjaGVzLCBJIGd1
+ZXNzIHdlIGNhbiBkbyBvdGhlciB3YXkKPj4gcm91bmQ6IGJhc2ljYWxseSBpdCdzIGZpbmUgdG8g
+YXBwbHkgTGliaW4ncyBsYXRlc3QgcGF0Y2hlcyB0byBkcm0gdHJlZQo+PiBmb3IgNC4xMSwgaWYg
+aXQgbWFrZXMgdGhpbmdzIGVhc2llci4gIEkgZG9uJ3QgdGhpbmsgd2UnbGwgaGF2ZSBhIGJpZwo+
+PiBjb25mbGljdCB3aXRoIHRoZXNlIGNoYW5nZXMgZm9yIG90aGVycyBkdXJpbmcgNC4xMSBkZXZl
+bG9wbWVudC4gIElmCj4+IGFueSwgSSBjYW4gcHVsbCBzb21lIG9mIHN0YWJsZSBwb2ludCBmcm9t
+IGRybSB0cmVlLgo+Pgo+PiBEb2VzIGl0IHdvcmsgZm9yIHlvdT8gIElmIHllcywgZmVlbCBmcmVl
+IHRvIGFwcGx5IHRoZXNlIHRocmVlIHNvdW5kCj4+IHBhdGNoZXMgdG8gZHJtIG9yIGk5MTUgdHJl
+ZSB3aXRoIG15IGFjay4KPj4KPj4gUmV2aWV3ZWQtYnk6IFRha2FzaGkgSXdhaSA8dGl3YWlAc3Vz
+ZS5kZT4KPgo+V29ya3MgZm9yIG1lIHRvby4gTGliaW4sIGNhbiB5b3UgcGxzIHJlc2VuZCAoc29t
+ZWhvdyB0aGlzIHRocmVhZAo+ZGlzY29ubmVjdGVkIGZyb20gdGhlIHBhdGNoZXMgZm9yIG1lKSwg
+d2l0aCBUYWthc2hpJ3Mgci1iICsgYWNrIGZvciBtZXJnaW5nCj50aHJvdWdoIGRybS1pbnRlbD8K
+Pgo+VGhhbmtzLCBEYW5pZWwKPi0tCj5EYW5pZWwgVmV0dGVyCj5Tb2Z0d2FyZSBFbmdpbmVlciwg
+SW50ZWwgQ29ycG9yYXRpb24KPmh0dHA6Ly9ibG9nLmZmd2xsLmNoCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50
+ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9y
+Zy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
