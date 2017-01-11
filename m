@@ -1,20 +1,20 @@
-From: Matt Ranostay <matt@ranostay.consulting>
-Subject: Re: [PATCH v6] ASoC: omap-mcbsp: Add PM QoS support
-	for McBSP to prevent glitches
-Date: Wed, 11 Jan 2017 00:32:30 -0800
-Message-ID: <F30E56A9-992F-4E5B-9DAD-ACF30C29DD9B@ranostay.consulting>
-References: <20170111054600.12982-1-matt@ranostay.consulting>
- <340575c8-e515-28a9-64db-6d9a93b5158c@ti.com>
-Mime-Version: 1.0 (1.0)
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Subject: Re: [PATCH v3 1/2] ASoC: core: Add API to use DMI name
+ in sound card long name
+Date: Wed, 11 Jan 2017 18:27:03 +0800
+Message-ID: <58760877.8080104@linux.intel.com>
+References: <cover.1484030246.git.mengdong.lin@linux.intel.com>
+ <2c6136c012b7f94dd2fb35fd5def8195abdc0113.1484030246.git.mengdong.lin@linux.intel.com>
+ <s5h8tqjmlvc.wl-tiwai@suse.de> <5875D16B.8040002@linux.intel.com>
+ <s5hh956koqu.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f47.google.com (mail-pg0-f47.google.com [74.125.83.47])
- by alsa0.perex.cz (Postfix) with ESMTP id B7D04267121
- for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2017 09:32:33 +0100 (CET)
-Received: by mail-pg0-f47.google.com with SMTP id 14so34954194pgg.1
- for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2017 00:32:33 -0800 (PST)
-In-Reply-To: <340575c8-e515-28a9-64db-6d9a93b5158c@ti.com>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5890C2668B3
+ for <alsa-devel@alsa-project.org>; Wed, 11 Jan 2017 11:23:54 +0100 (CET)
+In-Reply-To: <s5hh956koqu.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,69 +24,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Cgo+IE9uIEphbiAxMCwgMjAxNywgYXQgMjM6MjYsIFBldGVyIFVqZmFsdXNpIDxwZXRlci51amZh
-bHVzaUB0aS5jb20+IHdyb3RlOgo+IAo+PiBPbiAwMS8xMS8yMDE3IDA3OjQ2IEFNLCBNYXR0IFJh
-bm9zdGF5IHdyb3RlOgo+PiBXZSBjYW4gZ2V0IGF1ZGlvIGVycm9ycyBpZiBoaXR0aW5nIGRlZXBl
-ciBpZGxlIHN0YXRlcyBvbiBvbWFwczoKPj4gCj4+IFthbHNhLmM6MjMwXSBlcnJvcjogRmF0YWwg
-cHJvYmxlbSB3aXRoIGFsc2Egb3V0cHV0LCBlcnJvciAtNS4KPj4gW2F1ZGlvLmM6NjE0XSBlcnJv
-cjogRXJyb3IgaW4gd3JpdGluZyBhdWRpbyAoSW5wdXQvb3V0cHV0IGVycm9yPykhCj4+IAo+PiBU
-aGlzIHNlZW1zIHRvIGhhcHBlbiB3aXRoIG9mZiBtb2RlIGlkbGUgZW5hYmxlZCBhcyBwb3dlciBm
-b3IgdGhlCj4+IHdob2xlIFNvQyBtYXkgZ2V0IGN1dCBvZmYgYmV0d2VlbiBmaWxsaW5nIHRoZSBN
-Y0JTUCBmaWZvIHVzaW5nIERNQS4KPj4gV2hpbGUgYWN0aXZlIERNQSBibG9ja3MgZGVlcGVyIGlk
-bGUgc3RhdGVzIGluIGhhcmR3YXJlLCBNY0JTUAo+PiBhY3Rpdml0eSBkb2VzIG5vdCBzZWVtIHRv
-IGRvIHNvLgo+PiAKPj4gQmFzaW5nIHRoZSBRb1MgbGF0ZW5jeSBjYWxjdWxhdGlvbiBvbiB0aGUg
-RklGTyBzaXplLCB0aHJlc2hvbGQsCj4+IHNhbXBsZSByYXRlLCBhbmQgY2hhbm5lbHMuCj4+IAo+
-PiBCYXNlZCBvbiB0aGUgb3JpZ2luYWwgcGF0Y2ggYnkgVG9ueSBMaW5kZ3Jlbgo+PiBMaW5rOiBo
-dHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3BhdGNoLzkzMDU4NjcvCj4+IAo+PiBDYzogVG9u
-eSBMaW5kZ3JlbiA8dG9ueUBhdG9taWRlLmNvbT4KPj4gQ2M6IFBldGVyIFVqZmFsdXNpIDxwZXRl
-ci51amZhbHVzaUB0aS5jb20+Cj4+IFNpZ25lZC1vZmYtYnk6IE1hdHQgUmFub3N0YXkgPG1hdHRA
-cmFub3N0YXkuY29uc3VsdGluZz4KPj4gLS0tCj4+IGhhbmdlcyBmcm9tIHYxOgo+PiAqIGFkZCBj
-YWxjdWxhdGlvbnMgZm9yIGxhdGVuY3kgcGVyIG51bWJlciBvZiBGSUZPIGxvY2F0aW9ucwo+PiAK
-Pj4gQ2hhbmdlcyBmcm9tIHYyOgo+PiAqIGFkZCBtaXNzaW5nIG1jYnNwLmggaGVhZGVyIGNoYW5n
-ZQo+PiAKPj4gQ2hhbmdlcyBmcm9tIHYzOgo+PiAqIGJhc2UgdGhlIGxhdGVuY3kgY2FsY3VsYXRp
-b25zIG9uIHRocmVzaG9sZCwgYnVmZmVyIHNpemUsIHNhbXBsZQo+PiAgcmF0ZSwgYW5kIGNoYW5u
-ZWxzCj4+IAo+PiBDaGFuZ2VzIGZyb20gdjQ6Cj4+ICogdXNpbmcgUGV0ZXIgVWpmYWx1c2kncyBz
-dWdnZXN0aW9ucyBmb3IgcmVzdG9yaW5nIGEgaGlnaGVyIGxhdGVuY3kgb24KPj4gIGF1ZGlvIHN0
-cmVhbSBjb21wbGV0aW9uLCBvciBpZiBub3QgYXBwbGljYWJsZSByZW1vdmUgdGhlIFFvUyByZXF1
-ZXN0Cj4+IAo+PiBDaGFuZ2VzIGZyb20gdjU6Cj4+ICogY2xlYW4gdXAgbGF0ZW5jeSBjaGVja2lu
-ZyBsb2dpYwo+PiAqIG1vdmUgbG9naWMgdG8gLnByZXBhcmUgYW5kIC5zaHV0ZG93biB0byBhdm9p
-ZCBmdW5jdGlvbnMgdGhhdCBjYW4gc2xlZXAKPj4gCj4+IHNvdW5kL3NvYy9vbWFwL21jYnNwLmMg
-ICAgICB8ICA0ICsrKysKPj4gc291bmQvc29jL29tYXAvbWNic3AuaCAgICAgIHwgIDMgKysrCj4+
-IHNvdW5kL3NvYy9vbWFwL29tYXAtbWNic3AuYyB8IDQ0ICsrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKystCj4+IDMgZmlsZXMgY2hhbmdlZCwgNTAgaW5zZXJ0aW9ucygr
-KSwgMSBkZWxldGlvbigtKQo+PiAKPj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9vbWFwL21jYnNw
-LmMgYi9zb3VuZC9zb2Mvb21hcC9tY2JzcC5jCj4+IGluZGV4IDA2ZmVjNTY5OWNjOC4uZTFjM2Qy
-MWRjNWVkIDEwMDY0NAo+PiAtLS0gYS9zb3VuZC9zb2Mvb21hcC9tY2JzcC5jCj4+ICsrKyBiL3Nv
-dW5kL3NvYy9vbWFwL21jYnNwLmMKPj4gQEAgLTI1LDYgKzI1LDcgQEAKPj4gI2luY2x1ZGUgPGxp
-bnV4L2lvLmg+Cj4+ICNpbmNsdWRlIDxsaW51eC9zbGFiLmg+Cj4+ICNpbmNsdWRlIDxsaW51eC9w
-bV9ydW50aW1lLmg+Cj4+ICsjaW5jbHVkZSA8bGludXgvcG1fcW9zLmg+Cj4+IAo+PiAjaW5jbHVk
-ZSA8bGludXgvcGxhdGZvcm1fZGF0YS9hc29jLXRpLW1jYnNwLmg+Cj4+IAo+PiBAQCAtMTA5OCw2
-ICsxMDk5LDkgQEAgaW50IG9tYXBfbWNic3BfaW5pdChzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpw
-ZGV2KQo+PiAKPj4gdm9pZCBvbWFwX21jYnNwX2NsZWFudXAoc3RydWN0IG9tYXBfbWNic3AgKm1j
-YnNwKQo+PiB7Cj4+ICsgICAgaWYgKHBtX3Fvc19yZXF1ZXN0X2FjdGl2ZSgmbWNic3AtPnBtX3Fv
-c19yZXEpKQo+PiArICAgICAgICBwbV9xb3NfcmVtb3ZlX3JlcXVlc3QoJm1jYnNwLT5wbV9xb3Nf
-cmVxKTsKPj4gKwo+IAo+IEl0IG1pZ2h0IGJlIGJldHRlciB0byBkbyB0aGlzIGluIGFzb2NfbWNi
-c3BfcmVtb3ZlKCkgaW4gb21hcC1tY2JzcC5jIHNvCj4gdGhlIHBtX3FvcyBzdHVmZiBpcyBoYW5k
-bGVkIHdpdGhpbiBvbmUgZmlsZS4KCkdvb2QgcG9pbnQgd2lsbCBJIHRlc3QgdG9tb3Jyb3cgZXNw
-IGlmIEkgaGF2ZSBhIGZvb3Qgb2Ygc25vdyBvdXRzaWRlLi4uCj4gCj4+ICAgIGlmIChtY2JzcC0+
-cGRhdGEtPmJ1ZmZlcl9zaXplKQo+PiAgICAgICAgc3lzZnNfcmVtb3ZlX2dyb3VwKCZtY2JzcC0+
-ZGV2LT5rb2JqLCAmYWRkaXRpb25hbF9hdHRyX2dyb3VwKTsKPj4gCj4+IGRpZmYgLS1naXQgYS9z
-b3VuZC9zb2Mvb21hcC9tY2JzcC5oIGIvc291bmQvc29jL29tYXAvbWNic3AuaAo+PiBpbmRleCA2
-MWU5M2IxYzE4NWQuLjQ2YWUxMjY5YTY5OCAxMDA2NDQKPj4gLS0tIGEvc291bmQvc29jL29tYXAv
-bWNic3AuaAo+PiArKysgYi9zb3VuZC9zb2Mvb21hcC9tY2JzcC5oCj4+IEBAIC0zMjMsOCArMzIz
-LDExIEBAIHN0cnVjdCBvbWFwX21jYnNwIHsKPj4gCj4+ICAgIHVuc2lnbmVkIGludCBmbXQ7Cj4+
-ICAgIHVuc2lnbmVkIGludCBpbl9mcmVxOwo+PiArICAgIHVuc2lnbmVkIGludCBsYXRlbmN5WzJd
-Owo+PiAgICBpbnQgY2xrX2RpdjsKPj4gICAgaW50IHdsZW47Cj4+ICsKPj4gKyAgICBzdHJ1Y3Qg
-cG1fcW9zX3JlcXVlc3QgcG1fcW9zX3JlcTsKPj4gfTsKPj4gCj4+IHZvaWQgb21hcF9tY2JzcF9j
-b25maWcoc3RydWN0IG9tYXBfbWNic3AgKm1jYnNwLAo+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29j
-L29tYXAvb21hcC1tY2JzcC5jIGIvc291bmQvc29jL29tYXAvb21hcC1tY2JzcC5jCj4+IGluZGV4
-IGQwMThlOTY2ZTUzMy4uMzgxNGEyMzRlZjYxIDEwMDY0NAo+PiAtLS0gYS9zb3VuZC9zb2Mvb21h
-cC9vbWFwLW1jYnNwLmMKPj4gKysrIGIvc291bmQvc29jL29tYXAvb21hcC1tY2JzcC5jCj4gCj4g
-I2luY2x1ZGUgPGxpbnV4L3BtX3Fvcy5oPiA/Cj4gCj4gCj4gLS0gCj4gUMOpdGVyCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+On 01/11/2017 04:03 PM, Takashi Iwai wrote:
+> On Wed, 11 Jan 2017 07:32:11 +0100,
+> Mengdong Lin wrote:
+>>
+>>
+>> On 01/10/2017 03:09 PM, Takashi Iwai wrote:
+>>> On Tue, 10 Jan 2017 07:42:49 +0100,
+>>> mengdong.lin@linux.intel.com wrote:
+>>>>
+>>>> +/**
+>>>> + * snd_soc_set_dmi_name() - Register DMI names to card
+>>>> + * @card: The card to register DMI names
+>>>> + * @flavour: The flavour "differentiator" for the card amongst its peers.
+>>>> + *
+>>>> + * An Intel machine driver may be used by many different devices but are
+>>>> + * difficult for userspace to differentiate, since machine drivers ususally
+>>>> + * use their own name as the card name (short name) and leave the card long
+>>>> + * name blank. To differentiate such devices and fix bugs due to lack of
+>>>> + * device-specific configurations, this function allows DMI info to be used
+>>>> + * as the sound card long name, in the format of
+>>>> + * "vendor.product.version.board"
+>>>> + * (Character '.' are used to separate different DMI fields here).
+>>>> + * This will help the userspace to load the correct UCM (Use Case Manager)
+>>>> + * configuration.
+>>>> + *
+>>>> + * Possible card long names may be:
+>>>> + * DellInc..XPS139343.01.0310JH
+>>>> + * ASUSTeKCOMPUTERINC..T100TA.1.0.T100TA
+>>>> + * Circuitco.MinnowboardMaxD0PLATFORM.D0.MinnowBoardMAX
+>>>> + * (Please note DMI can also include '.' like"Inc." so you may see double '.
+>>> '
+>>>> + * sometimes)
+>>>
+>>> Looking at the examples above, I wonder whether the dot is the best
+>>> choice as the separator.  Might other letters (e.g. ":" or "=") would
+>>> be clearer?  The colon might be bad if it were combined with the
+>>> alsa-lib plugin syntax, but I guess it won't happen?
+>>>
+>>
+>> Hi Takashi,
+>>
+>> I found we cannot use ":" as separator. It's because we want to use
+>> the card long name as the name of the directory to store UCM
+>> configuration files for this card, and Autoconf cannot support ":" in
+>> the directory name.
+>
+> OK, fair enough.
+>
+>> Both "=" and "-" can work, which would you suggest to use?
+>> I've not observed "-" or "=" in DMI fields till now, and I guess "="
+>> is less likely to be used by vendors.
+>
+> Yes, but OTOH, "=" would become tricky if you want to handle it in a
+> shell script.
+
+Okay. So we won't use "=".
+
+>
+> One alternative is to use "." or "-" for a separator while converting
+> the existing such letters to a different one like "_".
+>
+
+It looks nice. Thanks for the tips! I'll use "-" as the separator, and 
+convert the the existing "-" in DMI strings to "_".
+
+Thanks
+Mengdong
