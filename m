@@ -1,70 +1,52 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5651: use msleep for large delays
-Date: Thu, 12 Jan 2017 15:04:07 +0000
-Message-ID: <20170112150406.wl24hryz3352wwwj@sirena.org.uk>
-References: <1484135376-482-1-git-send-email-hofrat@osadl.org>
- <20170111145926.22jkebrb7ojemyhq@sirena.org.uk>
- <20170111150645.GB16045@osadl.at>
- <20170111180658.2yivagcwo4kgsp4e@sirena.org.uk>
- <20170111185952.GA17786@osadl.at>
+From: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Subject: Re: [PATCH v2 7/7] uapi: export all headers under uapi directories
+Date: Thu, 12 Jan 2017 16:52:57 +0100
+Message-ID: <464a1323-4450-e563-ff59-9e6d57b75959@6wind.com>
+References: <bf83da6b-01ef-bf44-b3e1-ca6fc5636818@6wind.com>
+ <1483695839-18660-1-git-send-email-nicolas.dichtel@6wind.com>
+ <1483695839-18660-8-git-send-email-nicolas.dichtel@6wind.com>
+ <20170109125638.GA15506@infradead.org>
+Reply-To: nicolas.dichtel@6wind.com
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="tdyalmhpcqbsg63f"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20170111185952.GA17786@osadl.at>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Nicholas Mc Guire <der.herr@hofr.at>
-Cc: Nicholas Mc Guire <hofrat@osadl.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-alpha-owner@vger.kernel.org>
+In-Reply-To: <20170109125638.GA15506@infradead.org>
+Sender: linux-alpha-owner@vger.kernel.org
+To: Christoph Hellwig <hch@infradead.org>
+Cc: arnd@arndb.de, mmarek@suse.com, linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net, linux-c6x-dev@linux-c6x.org, linux-cris-kernel@axis.com, uclinux-h8-devel@lists.sourceforge.jp, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-am33-list@redhat.com, nios2-dev@lists.rocketboards.org, openrisc@lists.librecores.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.orglinux-ar
 List-Id: alsa-devel@alsa-project.org
 
+Le 09/01/2017 à 13:56, Christoph Hellwig a écrit :
+> On Fri, Jan 06, 2017 at 10:43:59AM +0100, Nicolas Dichtel wrote:
+>> Regularly, when a new header is created in include/uapi/, the developer
+>> forgets to add it in the corresponding Kbuild file. This error is usually
+>> detected after the release is out.
+>>
+>> In fact, all headers under uapi directories should be exported, thus it's
+>> useless to have an exhaustive list.
+>>
+>> After this patch, the following files, which were not exported, are now
+>> exported (with make headers_install_all):
+> 
+> ... snip ...
+> 
+>> linux/genwqe/.install
+>> linux/genwqe/..install.cmd
+>> linux/cifs/.install
+>> linux/cifs/..install.cmd
+> 
+> I'm pretty sure these should not be exported!
+> 
+Those files are created in every directory:
+$ find usr/include/ -name '\.\.install.cmd' | wc -l
+71
+$ find usr/include/ -name '\.install' | wc -l
+71
 
---tdyalmhpcqbsg63f
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+See also
+http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/scripts/Makefile.headersinst#n32
 
-On Wed, Jan 11, 2017 at 06:59:52PM +0000, Nicholas Mc Guire wrote:
-> On Wed, Jan 11, 2017 at 06:06:58PM +0000, Mark Brown wrote:
 
-> > Yes, but as fairly recently discussed somewhere on the lists (and IIRC
-> > actually fixed) approximately no users expect or want that behaviour -
-
-> True its an odd behavior - the point just was to change the actual behavi=
-or
-> as little from current state as one might expect. Anywa - will fix it up=
-=20
-
-Unfortunately the current state will often reflect a change from the
-original or at least expected behaviour.
-
-> then and resend - in this particular case it really makes little=20
-
-Thanks.
-
-> difference - assuming that both the minimum and maximum value were=20
-> suitable to ensure that the writes had compled or it was actually a failu=
-re.
-
-It can create confusion where the delay comes from a datasheet or tech
-note and people are left wondering why a different value is used by the
-kernel, and in a lot of the paths with delays in them are pretty
-sensitive to the overall time to run so there's a strong desire to keep
-the delays as low as possible.
-
---tdyalmhpcqbsg63f
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlh3muMACgkQJNaLcl1U
-h9Cz+Qf+K9QXmRUGQoZPl7wFaYmXfLqBWSTYo4hwVunL/I0u9n21VimauLJhRpHj
-R6FSsxWWpAOoP1fYwuse8m3PUuZW9YAt8uskyKQ8pGzOnQzw0xSWewQYMgGeKwGI
-cnw3MbWzIlUZj9X0b/aVxF+o4sqGWBXlbt1lTQ3VjTbnIqfGeU7sTfBn8AjMmtGa
-isbvV3vMZXwXqS0i/X//O0M62hdAew1T6BLlkgcZxRzbGgScIunyUYiLWki4cDmp
-z+1+Tl7lid7U3917/ESkoSEBLIdVgRYA6pg8PD+LUNISXdJjvTcDqwPeH/5gmpBQ
-1BtYtCafJg6rvpWm3WYwf6lkuazO6g==
-=f8Vl
------END PGP SIGNATURE-----
-
---tdyalmhpcqbsg63f--
+Thank you,
+Nicolas
