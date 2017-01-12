@@ -1,13 +1,17 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: [GIT PULL] intel: audio firmware updates
-Date: Thu, 12 Jan 2017 15:19:23 +0530
-Message-ID: <20170112094923.GK3573@localhost>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [PATCH] conf/ucm: broxton: add broxton-rt298 conf
+	files
+Date: Thu, 12 Jan 2017 10:38:07 +0000
+Message-ID: <1484217487.2604.68.camel@loki>
+References: <1484212828-10041-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8502470752830859065=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D5B3266639
- for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2017 10:49:22 +0100 (CET)
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 270592666B3
+ for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2017 11:38:14 +0100 (CET)
+In-Reply-To: <1484212828-10041-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -17,88 +21,311 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-firmware@kernel.org
-Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: Nishit Sharma <nishitx.sharma@intel.com>, alsa-devel@alsa-project.org, tiwai@suse.de, G Kranthi <gudishax.kranthikumar@intel.com>, patches.audio@intel.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2017-01-12 at 14:50 +0530, Vinod Koul wrote:
+> This adds the UCM conf files for broxton enabling with rt298 codec on
+> I2S audio, HDMI and DMIC ports.
+> 
+> Signed-off-by: Nishit Sharma <nishitx.sharma@intel.com>
+> Signed-off-by: G Kranthi <gudishax.kranthikumar@intel.com>
+> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 
---===============8502470752830859065==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="NU0Ex4SbNnrxsi6C"
-Content-Disposition: inline
+Can you redo using the UCM include support. That way we can separate the
+codec stuff out from the DSP stuff and make it easier to use new codecs.
 
+Liam
 
---NU0Ex4SbNnrxsi6C
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-Please pull to receive the updated versions of skylake and broxton firmware
-binaries.
-
-The following changes since commit 4b9559fb0565f582a21a4070a81a3b6a7d77610b:
-
-  linux-firmware: update firmware file for atusb (2016-12-07 01:01:04 +0000)
-
-are available in the git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git skl
-
-for you to fetch changes up to 4529fb4b320ba8e71a213723d0ad029058b15912:
-
-  linux-firmware: intel: Update Broxton audio firmware (2017-01-12 14:58:44=
- +0530)
-
-----------------------------------------------------------------
-Jeeja KP (1):
-      linux-firmware: intel: Update Skylake audio firmware
-
-Subhransu S. Prusty (1):
-      linux-firmware: intel: Update Broxton audio firmware
-
- WHENCE                        |   8 ++++++--
- intel/dsp_fw_bxtn.bin         |   2 +-
- intel/dsp_fw_bxtn_v2010.bin   | Bin 0 -> 505608 bytes
- intel/dsp_fw_release.bin      |   2 +-
- intel/dsp_fw_release_v969.bin | Bin 0 -> 221184 bytes
- 5 files changed, 8 insertions(+), 4 deletions(-)
- create mode 100644 intel/dsp_fw_bxtn_v2010.bin
- create mode 100644 intel/dsp_fw_release_v969.bin
-
---=20
-~Vinod
-
---NU0Ex4SbNnrxsi6C
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBAgAGBQJYd1EjAAoJEHwUBw8lI4NHEukP/0mxPIoQX3UxqeeFifOsQjiq
-c/ARI2I5sl/hb46u6cIAqXMPxA46/q2+4xJKMU/TFlYhUsDXIFc5rLITZ6HaeBDz
-mjNAXCCbslaeswlAQWl7NZPR+Xbm++okXggjC5bSeYOH0E/AnhMG2O8qr93eXc7y
-oEnpYRK4fQEzdwlMUNzUSa7ehCXIJ/ERRM4eEMPYSwtgLnYO1xMADdbGNi2Heage
-ECpTLiix0Vf4jzQ4e7YHuiP+5IRQwOIx34qiR5amNEDKoMNCX3DL2K0OlcS+G1M/
-bbdxRRXGa552tMVqzm9Wau8jXgFrI8zPp8wml2sgQTnzccqL9fFN01CvrRSpKxgq
-hlojmOWYWHGUTejHuvQvoO1XPC3SDYem1qbZ6pf0tp9280x2vW62AaYn91qYGelQ
-A3IaF/x6UgXWPrbnwMHl/XQLZDcJWqBq+K8UjYMwpoAgmwxe3NpdnMLxXL+5V94O
-LH0E6l2vfbN8wtFXqvt3QMl6mt/B9OmkSOakSf8FZQn59qdn/nHSDUlyHQzUvNT6
-+UgrLrnmHixcmUOG1y3kPakLviB3MrEhCcQped2t8k9PHLBWk4pXFeBHVVM7JVo9
-nm4h8FYOLeF+KCQE+uEwuVp8c8FTtdQZbCueclFvRNSPOzNf3gXsSusROTsmOyNn
-eOmSbvwFZdQpqgMiXwNb
-=TT8o
------END PGP SIGNATURE-----
-
---NU0Ex4SbNnrxsi6C--
-
---===============8502470752830859065==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8502470752830859065==--
+> ---
+>  configure.ac                                  |   1 +
+>  src/conf/ucm/Makefile.am                      |   2 +-
+>  src/conf/ucm/broxton-rt298/Hdmi1              |  22 +++++
+>  src/conf/ucm/broxton-rt298/Hdmi2              |  14 +++
+>  src/conf/ucm/broxton-rt298/HiFi               | 129 ++++++++++++++++++++++++++
+>  src/conf/ucm/broxton-rt298/Makefile.am        |   4 +
+>  src/conf/ucm/broxton-rt298/broxton-rt298.conf |  58 ++++++++++++
+>  7 files changed, 229 insertions(+), 1 deletion(-)
+>  create mode 100644 src/conf/ucm/broxton-rt298/Hdmi1
+>  create mode 100644 src/conf/ucm/broxton-rt298/Hdmi2
+>  create mode 100644 src/conf/ucm/broxton-rt298/HiFi
+>  create mode 100644 src/conf/ucm/broxton-rt298/Makefile.am
+>  create mode 100644 src/conf/ucm/broxton-rt298/broxton-rt298.conf
+> 
+> diff --git a/configure.ac b/configure.ac
+> index 71bd85271009..d645ab6c3e4c 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -684,6 +684,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
+>  	  src/conf/topology/bxtrt298/Makefile \
+>  	  alsalisp/Makefile aserver/Makefile \
+>  	  test/Makefile test/lsb/Makefile \
+> +	  src/conf/ucm/broxton-rt298/Makefile \
+>  	  utils/Makefile utils/alsa-lib.spec utils/alsa.pc)
+>  
+>  dnl Create asoundlib.h dynamically according to configure options
+> diff --git a/src/conf/ucm/Makefile.am b/src/conf/ucm/Makefile.am
+> index a11d324e785b..ea9b3850e2dd 100644
+> --- a/src/conf/ucm/Makefile.am
+> +++ b/src/conf/ucm/Makefile.am
+> @@ -1 +1 @@
+> -SUBDIRS=DAISY-I2S PandaBoard PandaBoardES SDP4430 tegraalc5632 PAZ00 GoogleNyan broadwell-rt286 skylake-rt286 VEYRON-I2S chtrt5645 DB410c
+> +SUBDIRS=DAISY-I2S PandaBoard PandaBoardES SDP4430 tegraalc5632 PAZ00 GoogleNyan broadwell-rt286 skylake-rt286 VEYRON-I2S chtrt5645 DB410c broxton-rt298
+> diff --git a/src/conf/ucm/broxton-rt298/Hdmi1 b/src/conf/ucm/broxton-rt298/Hdmi1
+> new file mode 100644
+> index 000000000000..48514f47efaa
+> --- /dev/null
+> +++ b/src/conf/ucm/broxton-rt298/Hdmi1
+> @@ -0,0 +1,22 @@
+> +# Usecase for device HDMI1/Display Port stereo playback on Intel SKYLAKE/KABYLAKE platforms
+> +# For Audio in I2S mode
+> +
+> +SectionDevice."Hdmi1" {
+> +        Comment "HDMI/Display Port 1 Stereo"
+> +
+> +        EnableSequence [
+> +                exec "echo Hdmi1 EnableSequnece"
+> +        ]
+> +
+> +        DisableSequence [
+> +                exec "echo Hdmi1 DisableSequnece"
+> +        ]
+> +
+> +        Value {
+> +                PlaybackPCM "hw:broxtonrt298,4"
+> +                PlaybackChannels "2"
+> +                PlaybackPriority "3"
+> +                JackControl "HDMI/DP, pcm=4 Jack"
+> +        }
+> +}
+> +
+> diff --git a/src/conf/ucm/broxton-rt298/Hdmi2 b/src/conf/ucm/broxton-rt298/Hdmi2
+> new file mode 100644
+> index 000000000000..764f8b9995f8
+> --- /dev/null
+> +++ b/src/conf/ucm/broxton-rt298/Hdmi2
+> @@ -0,0 +1,14 @@
+> +# Usecase for device HDMI2/Display Port stereo playback on Intel Broxton platforms
+> +# For Audio in I2S mode
+> +
+> +SectionDevice."Hdmi2" {
+> +        Comment "HDMI/Display Port 2 Stereo"
+> +
+> +        Value {
+> +                PlaybackPCM "hw:broxtonrt298,5"
+> +                PlaybackChannels "2"
+> +                PlaybackPriority "4"
+> +                JackControl "HDMI/DP, pcm=5 Jack"
+> +        }
+> +}
+> +
+> diff --git a/src/conf/ucm/broxton-rt298/HiFi b/src/conf/ucm/broxton-rt298/HiFi
+> new file mode 100644
+> index 000000000000..2e2d6fec0cc6
+> --- /dev/null
+> +++ b/src/conf/ucm/broxton-rt298/HiFi
+> @@ -0,0 +1,129 @@
+> +# Usecase for stereo playback Speaker and Headset, Recording on DMIC and Headset MIC.
+> +# For Audio in I2S mode on Intel Broxton platforms
+> +
+> +SectionVerb {
+> +
+> +	EnableSequence [
+> +		cdev "hw:broxtonrt298"
+> +		cset "name='media0_out mo dmic01_hifi_in mi Switch' 1"
+> +	]
+> +
+> +	DisableSequence [
+> +		cdev "hw:broxtonrt298"
+> +	]
+> +
+> +	Value {
+> +		TQ "HiFi"
+> +		CapturePCM "hw:broxtonrt298,1"
+> +		PlaybackPCM "hw:broxtonrt298,0"
+> +	}
+> +}
+> +
+> +SectionDevice."dmiccap" {
+> +	Comment "DMIC Stereo"
+> +
+> +	ConflictingDevice [
+> +		"Headset"
+> +	]
+> +
+> +	EnableSequence [
+> +
+> +		cdev "hw:broxtonrt298"
+> +		exec "echo broxtonrt298 dmiccap called"
+> +		cset "name='media0_out mo dmic01_hifi_in mi Switch' 1"
+> +		cset "name='media0_out mo codec0_in mi Switch' 0"
+> +		cset "name='Mic Jack Switch' 0"
+> +
+> +	]
+> +
+> +	DisableSequence [
+> +		cdev "hw:broxtonrt298"
+> +		cset "name='media0_out mo codec0_in mi Switch' 1"
+> +		cset "name='media0_out mo dmic01_hifi_in mi Switch' 0"
+> +		cset "name='Mic Jack Switch' 1"
+> +		cset "name='ADC 0 Mux' 0"
+> +	]
+> +	Value {
+> +		CaptureChannels "2"
+> +		CapturePriority "2"
+> +	}
+> +}
+> +
+> +SectionDevice."Headphones" {
+> +	Comment "Headphones"
+> +
+> +	ConflictingDevice [
+> +		"Speaker"
+> +	]
+> +	EnableSequence [
+> +		cdev "hw:broxtonrt298"
+> +		exec "echo broxtonrt298 Headphone called"
+> +		cset "name='HPO L Switch' 1"
+> +		cset "name='HPO R Switch' 1"
+> +		cset "name='Headphone Jack Switch' 1"
+> +		cset "name='Speaker Playback Switch' 0,0"
+> +	]
+> +
+> +	DisableSequence [
+> +		cdev "hw:broxtonrt298"
+> +	]
+> +	Value {
+> +		PlaybackChannels "2"
+> +		PlaybackPriority "1"
+> +		JackControl "Headphone Jack"
+> +		JackHWMute "Speaker"
+> +	}
+> +}
+> +
+> +SectionDevice."Speaker" {
+> +	Comment "Speaker"
+> +
+> +	ConflictingDevice [
+> +		"Headphones"
+> +	]
+> +	EnableSequence [
+> +		cdev "hw:broxtonrt298"
+> +		exec "echo broxtonrt298 speaker called"
+> +		cset "name='SPO Switch' 1"
+> +		cset "name='Speaker Playback Switch' 1,1"
+> +		cset "name='Speaker Switch' 1"
+> +		cset "name='HPO L Switch' 0"
+> +		cset "name='HPO R Switch' 0"
+> +	]
+> +
+> +	DisableSequence [
+> +	]
+> +	Value {
+> +		PlaybackChannels "2"
+> +		PlaybackPriority "1"
+> +		JackHWMute "Headphones"
+> +	}
+> +}
+> +
+> +SectionDevice."Headset" {
+> +	Comment "Headset Mic"
+> +
+> +	ConflictingDevice [
+> +		"dmiccap"
+> +	]
+> +	EnableSequence [
+> +		cdev "hw:broxtonrt298"
+> +		exec "echo broxtonrt298 Headset called"
+> +		cset "name='media0_out mo codec0_in mi Switch' 1"
+> +		cset "name='ADC0 Capture Volume' 105,105"
+> +		cset "name='ADC 0 Mux' 0"
+> +		cset "name='Mic Jack Switch' 1"
+> +		cset "name='media0_out mo dmic01_hifi_in mi Switch' 0"
+> +	]
+> +
+> +	DisableSequence [
+> +		cdev "hw:broxtonrt298"
+> +		cset "name='media0_out mo dmic01_hifi_in mi Switch' 1"
+> +		cset "name='media0_out mo codec0_in mi Switch' 0"
+> +	]
+> +	Value {
+> +		CaptureChannels "2"
+> +		CapturePriority "2"
+> +		JackControl "Mic Jack"
+> +	}
+> +}
+> diff --git a/src/conf/ucm/broxton-rt298/Makefile.am b/src/conf/ucm/broxton-rt298/Makefile.am
+> new file mode 100644
+> index 000000000000..80f480ec4222
+> --- /dev/null
+> +++ b/src/conf/ucm/broxton-rt298/Makefile.am
+> @@ -0,0 +1,4 @@
+> +alsaconfigdir = @ALSA_CONFIG_DIR@
+> +ucmdir = $(alsaconfigdir)/ucm/broxton-rt298
+> +ucm_DATA = broxton-rt298.conf HiFi Hdmi1 Hdmi2
+> +EXTRA_DIST = $(ucm_DATA)
+> diff --git a/src/conf/ucm/broxton-rt298/broxton-rt298.conf b/src/conf/ucm/broxton-rt298/broxton-rt298.conf
+> new file mode 100644
+> index 000000000000..3f3d0be6fdf2
+> --- /dev/null
+> +++ b/src/conf/ucm/broxton-rt298/broxton-rt298.conf
+> @@ -0,0 +1,58 @@
+> +# UCM for Intel Broxton platforms
+> +# For Audio in I2S mode
+> +
+> +SectionUseCase."HiFi" {
+> +	File "HiFi"
+> +	Comment "Play and record HiFi quality Music"
+> +}
+> +
+> +SectionUseCase."Hdmi1" {
+> +        File "Hdmi1"
+> +        Comment "Play on Hdmi/DP 1"
+> +}
+> +
+> +SectionUseCase."Hdmi2" {
+> +        File "Hdmi2"
+> +        Comment "Play on Hdmi/DP 2"
+> +}
+> +
+> +ValueDefaults {
+> +	PlaybackCTL "hw:broxtonrt298"
+> +	CaptureCTL "hw:broxtonrt298"
+> +	CaptureChannels "2"
+> +	CapturePriority "2"
+> +}
+> +
+> +SectionDefaults [
+> +	cdev "hw:broxtonrt298"
+> +	exec "echo broxtonrt298 CONF Defaults"
+> +	cset "name='Headphone Jack Switch' 1"
+> +	cset "name='Speaker Switch' 1"
+> +	cset "name='Speaker Playback Switch' 0,0"
+> +	cset "name='Front DAC Switch' 1"
+> +	cset "name='Front RECMIX Switch' 0"
+> +	cset "name='Mic Jack Switch' 1"
+> +	cset "name='ADC 0 Mux' 2"
+> +	cset "name='ADC 1 Mux' 0"
+> +	cset "name='DAC0 Playback Volume' 100,100"
+> +	cset "name='HPO L Switch' 0"
+> +	cset "name='HPO Mux' 0"
+> +	cset "name='HPO R Switch' 0"
+> +	cset "name='Pin 5 Mux' 1"
+> +	cset "name='Pin 6 Mux' 2"
+> +	cset "name='Pin 7 Mux' 3"
+> +	cset "name='RECMIX Beep Switch' 0"
+> +	cset "name='RECMIX Line1 Switch' 0"
+> +	cset "name='RECMIX Mic1 Switch' 0"
+> +	cset "name='SPK Mux' 0"
+> +	cset "name='SPO Switch' 1"
+> +	cset "name='codec0_out mo codec0_in mi Switch' 0"
+> +	cset "name='codec0_out mo dmic01_hifi_in mi Switch' 0"
+> +	cset "name='codec0_out mo media0_in mi Switch' 1"
+> +	cset "name='codec1_out mo codec0_in mi Switch' 0"
+> +	cset "name='codec1_out mo dmic01_hifi_in mi Switch' 0"
+> +	cset "name='codec1_out mo media0_in mi Switch' 0"
+> +	cset "name='media0_out mo codec0_in mi Switch' 1"
+> +	cset "name='media0_out mo dmic01_hifi_in mi Switch' 1"
+> +	cset "name='media0_out mo media0_in mi Switch' 0"
+> +]
