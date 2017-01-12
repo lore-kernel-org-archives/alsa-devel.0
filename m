@@ -1,17 +1,27 @@
-From: kbuild test robot <fengguang.wu@intel.com>
-Subject: [asoc:topic/rt5659 25/26]
- sound/soc/codecs/rt5659.c:4236:3-8: No need to set .owner here. The core
- will do it.
-Date: Fri, 13 Jan 2017 02:04:06 +0800
-Message-ID: <201701130203.Mo7fnvyJ%fengguang.wu@intel.com>
+From: Enrico Mioso <mrkiko.rs@gmail.com>
+Subject: Re: Intel HDA audio on EEE PC 1101HGo
+Date: Thu, 12 Jan 2017 19:11:57 +0100 (CET)
+Message-ID: <alpine.LNX.2.20.1701121910470.2981@localhost.localdomain>
+References: <alpine.LNX.2.20.1504082130290.1715@localhost.localdomain>
+ <s5hegntl2cs.wl-tiwai@suse.de>
+ <alpine.LNX.2.20.1611230916070.5938@localhost.localdomain>
+ <s5hr35s0xh2.wl-tiwai@suse.de>
+ <alpine.LNX.2.20.1612011450060.7660@localhost.localdomain>
+ <s5h4m2n21ll.wl-tiwai@suse.de>
+ <alpine.LNX.2.20.1701031449090.1620@localhost.localdomain>
+ <s5hlgujyyop.wl-tiwai@suse.de>
+ <alpine.LNX.2.20.1701121708560.2607@localhost.localdomain>
+ <s5h1sw8w8pi.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 21158266569
- for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2017 19:04:33 +0100 (CET)
-Content-Disposition: inline
+Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8101B266B97
+ for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2017 19:34:04 +0100 (CET)
+Received: by mail-wm0-f65.google.com with SMTP id r126so5648050wmr.3
+ for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2017 10:34:04 -0800 (PST)
+In-Reply-To: <s5h1sw8w8pi.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,21 +31,131 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Nicholas Mc Guire <hofrat@osadl.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: hui.wang@canonical.com, alsa-devel@alsa-project.org, kailang@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/rt5659
-head:   eae39b5f4269260d5d8b35133ba0f4c5e2895b71
-commit: 0230f088adcf537a60df9d80dce5b71059946dfe [25/26] ASoC: rt5659: declare rt5659_i2c_driver static
+Thank you very very much.
+The description :D makes me smile, in a positive sense...
+Starting a kernel recompile.
+Thank you.
 
+On Thu, 12 Jan 2017, Takashi Iwai wrote:
 
-coccinelle warnings: (new ones prefixed by >>)
-
->> sound/soc/codecs/rt5659.c:4236:3-8: No need to set .owner here. The core will do it.
-
-Please review and possibly fold the followup patch.
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+> Date: Thu, 12 Jan 2017 17:20:57
+> From: Takashi Iwai <tiwai@suse.de>
+> To: Enrico Mioso <mrkiko.rs@gmail.com>
+> Cc: hui.wang@canonical.com, alsa-devel@alsa-project.org, kailang@realtek.com
+> Subject: Re: [alsa-devel] Intel HDA audio on EEE PC 1101HGo
+> 
+> On Thu, 12 Jan 2017 17:10:31 +0100,
+> Enrico Mioso wrote:
+>>
+>> Sometimes it's my impression the beep is not emitted. but I may be wrong. If I determine it, I'll report back.
+>> But the system is stable so far, and I can't find other messages in the dmesg.
+>
+> OK, thanks.  The hackish patch can't be kept / merged to the upstream
+> code, of course.  Instead, try the patch below and pass single_cmd=0
+> option.  This will disallow fallback like the hack patch.
+>
+>
+> Takashi
+>
+> -- 8< --
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: hda - Make single_cmd option to stop the fallback
+> mechanism
+>
+> HD-audio driver has a mechanism to fall back to the single cmd mode as
+> a last resort if the CORB/RIRB communication goes wrong even after
+> switching to the polling mode.  The switching has worked in the past
+> well, but Enrico Mioso reported that his system crashes when this
+> happens.
+>
+> Although the actual cause of the crash isn't still fully analyzed yet,
+> it'd be in anyway good to provide an option to turn off the fallback
+> mode.  Now this patch extends the behavior of the existing single_cmd
+> option for that.  Namely,
+>
+> - The option is changed from bool to bint.
+> - As default, it is the mode allowing the fallback to single cmd.
+> - Once when either true/false value is given to the option, the driver
+>  explicitly turns on/off the single cmd mode, but without the
+>  fallback.
+>
+> That is, if you want to disable the fallback, just pass single_cmd=0
+> option.  Passing single_cmd=1 will keep working like before.
+>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+> sound/pci/hda/hda_controller.c |  4 ++++
+> sound/pci/hda/hda_controller.h |  1 +
+> sound/pci/hda/hda_intel.c      | 10 +++++++---
+> 3 files changed, 12 insertions(+), 3 deletions(-)
+>
+> diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+> index 500878556578..3715a5725613 100644
+> --- a/sound/pci/hda/hda_controller.c
+> +++ b/sound/pci/hda/hda_controller.c
+> @@ -861,6 +861,10 @@ static int azx_rirb_get_response(struct hdac_bus *bus, unsigned int addr,
+> 		return -EIO;
+> 	}
+>
+> +	/* no fallback mechanism? */
+> +	if (!chip->fallback_to_single_cmd)
+> +		return -EIO;
+> +
+> 	/* a fatal communication error; need either to reset or to fallback
+> 	 * to the single_cmd mode
+> 	 */
+> diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
+> index a50e0532622a..35a9ab2cac46 100644
+> --- a/sound/pci/hda/hda_controller.h
+> +++ b/sound/pci/hda/hda_controller.h
+> @@ -150,6 +150,7 @@ struct azx {
+> 	int bdl_pos_adj;
+> 	int poll_count;
+> 	unsigned int running:1;
+> +	unsigned int fallback_to_single_cmd:1;
+> 	unsigned int single_cmd:1;
+> 	unsigned int polling_mode:1;
+> 	unsigned int msi:1;
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index 2587c197e353..faf99cc71277 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -128,7 +128,7 @@ static int bdl_pos_adj[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS-1)] = -1};
+> static int probe_mask[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS-1)] = -1};
+> static int probe_only[SNDRV_CARDS];
+> static int jackpoll_ms[SNDRV_CARDS];
+> -static bool single_cmd;
+> +static int single_cmd = -1;
+> static int enable_msi = -1;
+> #ifdef CONFIG_SND_HDA_PATCH_LOADER
+> static char *patch[SNDRV_CARDS];
+> @@ -157,7 +157,7 @@ module_param_array(probe_only, int, NULL, 0444);
+> MODULE_PARM_DESC(probe_only, "Only probing and no codec initialization.");
+> module_param_array(jackpoll_ms, int, NULL, 0444);
+> MODULE_PARM_DESC(jackpoll_ms, "Ms between polling for jack events (default = 0, using unsol events only)");
+> -module_param(single_cmd, bool, 0444);
+> +module_param(single_cmd, bint, 0444);
+> MODULE_PARM_DESC(single_cmd, "Use single command to communicate with codecs "
+> 		 "(for debugging only).");
+> module_param(enable_msi, bint, 0444);
+> @@ -1596,7 +1596,11 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
+>
+> 	check_probe_mask(chip, dev);
+>
+> -	chip->single_cmd = single_cmd;
+> +	if (single_cmd < 0) /* allow fallback to single_cmd at errors */
+> +		chip->fallback_to_single_cmd = 1;
+> +	else /* explicitly set to single_cmd or not */
+> +		chip->single_cmd = single_cmd;
+> +
+> 	azx_check_snoop_available(chip);
+>
+> 	if (bdl_pos_adj[dev] < 0)
+> -- 
+> 2.11.0
+>
+>
