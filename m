@@ -1,63 +1,53 @@
-From: Nicholas Mc Guire <hofrat@osadl.org>
-Subject: [PATCH] ASoC: rt5660: remove double const
-Date: Thu, 12 Jan 2017 11:48:11 +0100
-Message-ID: <1484218091-28684-1-git-send-email-hofrat@osadl.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Nicholas Mc Guire <hofrat@osadl.org>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: License for UCM config files - re plumbers audio conf
+	discussion.
+Date: Thu, 12 Jan 2017 11:01:29 +0000
+Message-ID: <1484218889.2604.85.camel@loki>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 895A3266860
+ for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2017 12:01:35 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "mengdong.lin" <mengdong.lin@linux.intel.com>, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "Koul,
+ Vinod" <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Drop the const qualifier as it is being added by SOC_ENUM_DOUBLE_DECL()
-already which is called by SOC_ENUM_SINGLE_DECL() here.
+During the plumbers audio conference we discussed changing the release
+cadence and packaging of the UCM config files. This was to separate them
+from the alsa-lib package and alsa-lib release cadence for easier and
+more timely distribution for Ubuntu, Fedora etc.
 
-Fixes: commit 2b26dd4c1fc5 ("ASoC: rt5660: add rt5660 codec driver")
-Signed-off-by: Nicholas Mc Guire <hofrat@osadl.org>
----
+One thing that we did not cover was the UCM config file licence, if
+indeed there is a license for the UCM config files ? It's clear to me
+that the alsa-lib source and headers are LGPL, but does the LGPL also
+apply to the runtime UCM config files ? LGPL is specifically designed
+for libraries so my understanding is that it's probably not applicable
+to the UCM runtime configuration files.  
 
-sparse throws the warning:
-sound/soc/codecs/rt5660.c:529:14: warning: duplicate const 
-sound/soc/codecs/rt5660.c:532:14: warning: duplicate const 
+Here the LGPL definition of source code from alsa-lib COPYING :-
 
-this is due to:
-static const SOC_ENUM_SINGLE_DECL(rt5660_if1_dac_enum,...
+  ""Source code" for a work means the preferred form of the work for
+making modifications to it.  For a library, complete source code means
+all the source code for all modules it contains, plus any associated
+interface definition files, plus the scripts used to control compilation
+and installation of the library."
 
-which via:
-#define SOC_ENUM_SINGLE_DECL(name, xreg, xshift, xtexts) \
-        SOC_ENUM_DOUBLE_DECL(name, xreg, xshift, xshift, xtexts)
+Having a licence free or BSD/MIT type license for the UCM config repo
+would mean the configurations (or derivatives of) could also be used
+with Android.
 
-expands to:
-#define SOC_ENUM_DOUBLE_DECL(name, xreg, xshift_l, xshift_r, xtexts) \
-        const struct soc_enum name = SOC_ENUM_DOUBLE(xreg, xshift_l, xshift_r, \
-                                                ARRAY_SIZE(xtexts), xtexts)
-and that already carries the const qualifier so that results in the
-"duplicate const" from sparse. The fix is simply to drop the first
-const.
+IANAL
 
-Patch was compile tested with: x86_64_defconfig + CONFIG_COMPILE_TEST=y
-SND_SOC=m + SND_SOC_ALL_CODECS=m (implies SND_SOC_RT5660=m)
-
-Patch is aginast 4.10-rc3 (localversion-next is next-20170112)
-
- sound/soc/codecs/rt5660.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/rt5660.c b/sound/soc/codecs/rt5660.c
-index 76cf76a..296b7b0 100644
---- a/sound/soc/codecs/rt5660.c
-+++ b/sound/soc/codecs/rt5660.c
-@@ -526,10 +526,10 @@ static const char * const rt5660_data_select[] = {
- 	"L/R", "R/L", "L/L", "R/R"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(rt5660_if1_dac_enum,
-+static SOC_ENUM_SINGLE_DECL(rt5660_if1_dac_enum,
- 	RT5660_DIG_INF1_DATA, RT5660_IF1_DAC_IN_SFT, rt5660_data_select);
- 
--static const SOC_ENUM_SINGLE_DECL(rt5660_if1_adc_enum,
-+static SOC_ENUM_SINGLE_DECL(rt5660_if1_adc_enum,
- 	RT5660_DIG_INF1_DATA, RT5660_IF1_ADC_IN_SFT, rt5660_data_select);
- 
- static const struct snd_kcontrol_new rt5660_if1_dac_swap_mux =
--- 
-2.1.4
+Liam
