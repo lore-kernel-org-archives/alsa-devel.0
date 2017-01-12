@@ -1,67 +1,94 @@
-From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Subject: [PATCH] ASoC: sun4i-spdif: Add support for the H3 SoC
-Date: Thu, 12 Jan 2017 17:45:16 +0100
-Message-ID: <20170112164516.15877-1-codekipper@gmail.com>
-Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: Enrico Mioso <mrkiko.rs@gmail.com>
+Subject: Re: Intel HDA audio on EEE PC 1101HGo
+Date: Thu, 12 Jan 2017 17:10:31 +0100 (CET)
+Message-ID: <alpine.LNX.2.20.1701121708560.2607@localhost.localdomain>
+References: <alpine.LNX.2.20.1504082130290.1715@localhost.localdomain>
+ <s5hegntl2cs.wl-tiwai@suse.de>
+ <alpine.LNX.2.20.1611230916070.5938@localhost.localdomain>
+ <s5hr35s0xh2.wl-tiwai@suse.de>
+ <alpine.LNX.2.20.1612011450060.7660@localhost.localdomain>
+ <s5h4m2n21ll.wl-tiwai@suse.de>
+ <alpine.LNX.2.20.1701031449090.1620@localhost.localdomain>
+ <s5hlgujyyop.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBHXF33BQKGQEGKYP5PY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
-Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org, Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id F0EBB267265
+ for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2017 17:10:36 +0100 (CET)
+Received: by mail-wm0-f68.google.com with SMTP id l2so4754283wml.2
+ for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2017 08:10:36 -0800 (PST)
+In-Reply-To: <s5hlgujyyop.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: hui.wang@canonical.com, alsa-devel@alsa-project.org, kailang@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Sometimes it's my impression the beep is not emitted. but I may be wrong. If I determine it, I'll report back.
+But the system is stable so far, and I can't find other messages in the dmesg.
 
-The H3 SoC uses the same SPDIF block as found in earlier SoCs, but its
-TXFIFO is mapped to another address.
 
-Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
----
- sound/soc/sunxi/sun4i-spdif.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Enrico
 
-diff --git a/sound/soc/sunxi/sun4i-spdif.c b/sound/soc/sunxi/sun4i-spdif.c
-index fec62ee1fc72..c03cd07a9b19 100644
---- a/sound/soc/sunxi/sun4i-spdif.c
-+++ b/sound/soc/sunxi/sun4i-spdif.c
-@@ -103,6 +103,8 @@
- 	#define SUN4I_SPDIF_ISTA_RXOSTA			BIT(1)
- 	#define SUN4I_SPDIF_ISTA_RXASTA			BIT(0)
- 
-+#define SUN8I_SPDIF_TXFIFO	(0x20)
-+
- #define SUN4I_SPDIF_TXCNT	(0x24)
- 
- #define SUN4I_SPDIF_RXCNT	(0x28)
-@@ -417,6 +419,11 @@ static const struct sun4i_spdif_quirks sun6i_a31_spdif_quirks = {
- 	.has_reset	= true,
- };
- 
-+static const struct sun4i_spdif_quirks sun8i_h3_spdif_quirks = {
-+	.reg_dac_txdata	= SUN8I_SPDIF_TXFIFO,
-+	.has_reset	= true,
-+};
-+
- static const struct of_device_id sun4i_spdif_of_match[] = {
- 	{
- 		.compatible = "allwinner,sun4i-a10-spdif",
-@@ -426,6 +433,10 @@ static const struct of_device_id sun4i_spdif_of_match[] = {
- 		.compatible = "allwinner,sun6i-a31-spdif",
- 		.data = &sun6i_a31_spdif_quirks,
- 	},
-+	{
-+		.compatible = "allwinner,sun8i-h3-spdif",
-+		.data = &sun8i_h3_spdif_quirks,
-+	},
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, sun4i_spdif_of_match);
--- 
-2.11.0
+On Tue, 10 Jan 2017, Takashi Iwai wrote:
+
+> Date: Tue, 10 Jan 2017 11:52:22
+> From: Takashi Iwai <tiwai@suse.de>
+> To: Enrico Mioso <mrkiko.rs@gmail.com>
+> Cc: hui.wang@canonical.com, alsa-devel@alsa-project.org, kailang@realtek.com
+> Subject: Re: [alsa-devel] Intel HDA audio on EEE PC 1101HGo
+> 
+> On Tue, 03 Jan 2017 14:49:40 +0100,
+> Enrico Mioso wrote:
+>>
+>> hello Tahaski,
+>> hello everyone reading this message.
+>>
+>> Thank you for the patience you had with me. Now I finally came to set up this system for crash analysis, compiling the kernel with debug informations and frame pointers and so on. I set up kdump also. Unfortunately, I can get no useful output.
+>> The last things the system wrote before dying have been reconstructed. I noted down decimal values with the help of my mum. She wrote them down on a piece of paper.
+>> I am hitting the following messages:
+>> azx_get_response timeout, switching to polling mode: last cmd=0x014ba000
+>> azx_get_response timeout, switching to single_cmd mode: last cmd=0x014ba000
+>
+> It's reading the output amp on NID 0x14, the speaker pin.  It's weird
+> that such a verb triggers the problem.  Usually the unexpected
+> behavior is triggered at the widget power up/down.
+>
+> If the switching to single cmd mode causes an issue, you can disable
+> by the patch like below.  This may lead to the continuous errors,
+> though.
+>
+>
+> Takashi
+>
+> ---
+> diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+> index 500878556578..43bf151d8712 100644
+> --- a/sound/pci/hda/hda_controller.c
+> +++ b/sound/pci/hda/hda_controller.c
+> @@ -861,6 +861,7 @@ static int azx_rirb_get_response(struct hdac_bus *bus, unsigned int addr,
+> 		return -EIO;
+> 	}
+>
+> +#if 0
+> 	/* a fatal communication error; need either to reset or to fallback
+> 	 * to the single_cmd mode
+> 	 */
+> @@ -875,6 +876,7 @@ static int azx_rirb_get_response(struct hdac_bus *bus, unsigned int addr,
+> 	chip->single_cmd = 1;
+> 	hbus->response_reset = 0;
+> 	snd_hdac_bus_stop_cmd_io(bus);
+> +#endif
+> 	return -EIO;
+> }
+>
+>
