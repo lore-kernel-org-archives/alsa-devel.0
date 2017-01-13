@@ -1,15 +1,18 @@
-From: =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>
-Subject: [PATCH 1/2] ASoC: mxs-saif: fix setting master base
-	rate
-Date: Fri, 13 Jan 2017 21:44:27 +0100
-Message-ID: <20170113204428.16703-1-joerg.krause@embedded.rocks>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v3 0/2] ASoC: Add support for rt5640 sound
+ card found on HP Pavilion x2 10-p000 tablet.
+Date: Fri, 13 Jan 2017 14:48:42 -0600
+Message-ID: <f3f42e1c-8dfe-4a7b-1ec8-58e28b792307@linux.intel.com>
+References: <cover.1483660468.git.neko@nya.ai>
+ <20170106070734.GP3573@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.142])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D4F62669B4
- for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2017 21:44:41 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7ADD62666FE
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2017 21:48:44 +0100 (CET)
+In-Reply-To: <20170106070734.GP3573@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,51 +22,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mans Rullgard <mans@mansr.com>, Victorien Vedrine <victorien.vedrine@ophrys.net>, =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>, Takashi Iwai <tiwai@suse.com>, =?UTF-8?q?J=C3=B6rg=20Krause?= <jk@lintech.de>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, Shawn Guo <shawn.guo@freescale.com>
+To: Vinod Koul <vinod.koul@intel.com>, Alexandrov Stansilav <neko@nya.ai>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogSsO2cmcgS3JhdXNlIDxqa0BsaW50ZWNoLmRlPgoKVGhlIFNBSUYgYmFzZSBvdmVyc2Ft
-cGxlIHJhdGVzIGFyZSBlaXRoZXIgNTEyKmZzIG9yIDM4NCpmcy4gQW4gYWRkaXRpb25hbApkaXZp
-ZGVyIGV4aXN0cyB3aXRoaW4gdGhlIFNBSUYgdG8gZ2VuZXJhdGUgc3ViLW11bHRpcGxlcyBvZiB0
-aGVzZSB0d28gYmFzZQpyYXRlcyBpZiBNQ0xLIGlzIHJlcXVpcmVkIGJ5IHRoZSBjb2RlYy4KCiAq
-IFRoZSBzdWItcmF0ZXMgZm9yIHRoZSA1MTJ4IGJhc2UgcmF0ZSBhcmU6IDI1NngsIDEyOHgsIDY0
-eCwgYW5kIDMyeC4KICogVGhlIHN1Yi1yYXRlcyBmb3IgdGhlIDM4NHggYmFzZSByYXRlIGFyZTog
-MTkyeCwgOTZ4LCBhbmQgNDh4LgoKU2V0dGluZyB0aGUgYmFzZSByYXRlIGRlcGVuZGluZyBvbiB0
-aGUgbW9kdWxvIG9wZXJhdGlvbiB3aXRoIDMyIGFuZCA0OApnaXZlIHdyb25nIHJlc3VsdHMgZm9y
-IHNvbWUgbWNsay4KCklmIG1jbGs9MTguNDMyTUh6IGJvdGggbW9kdWxvIG9wZXJhdGlvbnMgcmVz
-dWx0cyBpbiAwLiBBcyB0ZXN0aW5nIHRoZQpyZXN1bHQgd2l0aCAzMiBpcyBkb25lIGZpcnN0LCBh
-IHdyb25nIGJhc2UgcmF0ZSBvZiA1MTIqZnMgaXMgc2V0IGluc3RlYWQKb2YgdGhlIGNvcnJlY3Qg
-Mzg0KmZzLgoKRml4IHRoaXMgYnkgc2V0dGluZyB0aGUgYmFzZSByYXRlIGRlcGVuZGluZyBvbiB0
-aGUgY2FsY3VsYXRlZCBzdWItcmF0ZS4KClNpZ25lZC1vZmYtYnk6IErDtnJnIEtyYXVzZSA8am9l
-cmcua3JhdXNlQGVtYmVkZGVkLnJvY2tzPgotLS0KIHNvdW5kL3NvYy9teHMvbXhzLXNhaWYuYyB8
-IDI0ICsrKysrKysrKysrKysrKysrLS0tLS0tLQogMSBmaWxlIGNoYW5nZWQsIDE3IGluc2VydGlv
-bnMoKyksIDcgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvc29jL214cy9teHMtc2Fp
-Zi5jIGIvc291bmQvc29jL214cy9teHMtc2FpZi5jCmluZGV4IDEzNjMxMDAzY2I3Yy4uMWU3MjQ1
-MzNkYzZlIDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvbXhzL214cy1zYWlmLmMKKysrIGIvc291bmQv
-c29jL214cy9teHMtc2FpZi5jCkBAIC0xMTksMjMgKzExOSwzMyBAQCBzdGF0aWMgaW50IG14c19z
-YWlmX3NldF9jbGsoc3RydWN0IG14c19zYWlmICpzYWlmLAogCSAqIFNldCBTQUlGIGNsb2NrCiAJ
-ICoKIAkgKiBUaGUgU0FJRiBjbG9jayBzaG91bGQgYmUgZWl0aGVyIDM4NCpmcyBvciA1MTIqZnMu
-Ci0JICogSWYgTUNMSyBpcyB1c2VkLCB0aGUgU0FJRiBjbGsgcmF0aW8gbmVlZCB0byBtYXRjaCBt
-Y2xrIHJhdGlvLgotCSAqICBGb3IgMzJ4IG1jbGssIHNldCBzYWlmIGNsayBhcyA1MTIqZnMuCi0J
-ICogIEZvciA0OHggbWNsaywgc2V0IHNhaWYgY2xrIGFzIDM4NCpmcy4KKwkgKiBJZiBNQ0xLIGlz
-IHVzZWQsIHRoZSBTQUlGIGNsayByYXRpbyBuZWVkcyB0byBtYXRjaCBtY2xrIHJhdGlvLgorCSAq
-ICBGb3IgMjU2eCwgMTI4eCwgNjR4LCBhbmQgMzJ4IHN1Yi1yYXRlcywgc2V0IHNhaWYgY2xrIGFz
-IDUxMipmcy4KKwkgKiAgRm9yIDE5MngsIDk2eCwgYW5kIDQ4eCBzdWItcmF0ZXMsIHNldCBzYWlm
-IGNsayBhcyAzODQqZnMuCiAJICoKIAkgKiBJZiBNQ0xLIGlzIG5vdCB1c2VkLCB3ZSBqdXN0IHNl
-dCBzYWlmIGNsayB0byA1MTIqZnMuCiAJICovCiAJY2xrX3ByZXBhcmVfZW5hYmxlKG1hc3Rlcl9z
-YWlmLT5jbGspOwogCiAJaWYgKG1hc3Rlcl9zYWlmLT5tY2xrX2luX3VzZSkgewotCQlpZiAobWNs
-ayAlIDMyID09IDApIHsKKwkJc3dpdGNoIChtY2xrIC8gcmF0ZSkgeworCQljYXNlIDMyOgorCQlj
-YXNlIDY0OgorCQljYXNlIDEyODoKKwkJY2FzZSAyNTY6CisJCWNhc2UgNTEyOgogCQkJc2NyICY9
-IH5CTV9TQUlGX0NUUkxfQklUQ0xLX0JBU0VfUkFURTsKIAkJCXJldCA9IGNsa19zZXRfcmF0ZSht
-YXN0ZXJfc2FpZi0+Y2xrLCA1MTIgKiByYXRlKTsKLQkJfSBlbHNlIGlmIChtY2xrICUgNDggPT0g
-MCkgeworCQkJYnJlYWs7CisJCWNhc2UgNDg6CisJCWNhc2UgOTY6CisJCWNhc2UgMTkyOgorCQlj
-YXNlIDM4NDoKIAkJCXNjciB8PSBCTV9TQUlGX0NUUkxfQklUQ0xLX0JBU0VfUkFURTsKIAkJCXJl
-dCA9IGNsa19zZXRfcmF0ZShtYXN0ZXJfc2FpZi0+Y2xrLCAzODQgKiByYXRlKTsKLQkJfSBlbHNl
-IHsKLQkJCS8qIFNBSUYgTUNMSyBzaG91bGQgYmUgZWl0aGVyIDMyeCBvciA0OHggKi8KKwkJCWJy
-ZWFrOworCQlkZWZhdWx0OgorCQkJLyogU0FJRiBNQ0xLIHNob3VsZCBiZSBhIHN1Yi1yYXRlIG9m
-IDUxMnggb3IgMzg0eCAqLwogCQkJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKG1hc3Rlcl9zYWlmLT5j
-bGspOwogCQkJcmV0dXJuIC1FSU5WQUw7CiAJCX0KLS0gCjIuMTEuMAoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+
+On 01/06/2017 01:07 AM, Vinod Koul wrote:
+> On Fri, Jan 06, 2017 at 03:09:45AM +0300, Alexandrov Stansilav wrote:
+>> Inside DSDT table there is record for this soundcard:
+>>
+>>              Device (RTKC)
+>>              {
+>>                  Name (_ADR, Zero)  // _ADR: Address
+>>                  Name (_HID, "10EC3276")  // _HID: Hardware ID
+>>                  Name (_CID, "10EC3276")  // _CID: Compatible ID
+>>                  Name (_DDN, "ALC3276")  // _DDN: DOS Device Name
+>>                  Name (_SUB, "103C827C")  // _SUB: Subsystem ID
+>>                  Name (_PR0, Package (0x01)  // _PR0: Power Resources for D0
+>>
+>> original bugreport: https://bugzilla.kernel.org/show_bug.cgi?id=187621
+> Looks good to me, both:
+>
+> Acked-by: Vinod Koul <vinod.koul@intel.com>
+
+Mark was not CC:ed, not sure if he saw these two patches?
+I have another patch to fix Bugzilla 156191 and add cht+rt5651 in the 
+machine driver list, this will conflict if this set is not merged first.
+Thanks!
+
+>
+>> v3: Fixed patch descriptions
+>> v2: Splited patch to codec and sst parts
+>>
+>>
+>> Alexandrov Stansilav (2):
+>>    ASoc: rt5640: Add "10EC3276" ACPI ID
+>>    ASoC: Intel: Atom: Add HP Pavilion x2 10 10-p000 machine entry
+>>
+>>   sound/soc/codecs/rt5640.c           | 1 +
+>>   sound/soc/intel/atom/sst/sst_acpi.c | 2 ++
+>>   2 files changed, 3 insertions(+)
+>>
+>> -- 
+>> 2.10.2
+>>
