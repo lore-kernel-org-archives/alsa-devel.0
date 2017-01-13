@@ -1,45 +1,39 @@
-From: Enrico Mioso <mrkiko.rs@gmail.com>
-Subject: Re: Intel HDA audio on EEE PC 1101HGo
-Date: Thu, 12 Jan 2017 21:26:01 +0100 (CET)
-Message-ID: <alpine.LNX.2.20.1701122125050.17239@localhost.localdomain>
-References: <alpine.LNX.2.20.1504082130290.1715@localhost.localdomain>
- <s5hegntl2cs.wl-tiwai@suse.de>
- <alpine.LNX.2.20.1611230916070.5938@localhost.localdomain>
- <s5hr35s0xh2.wl-tiwai@suse.de>
- <alpine.LNX.2.20.1612011450060.7660@localhost.localdomain>
- <s5h4m2n21ll.wl-tiwai@suse.de>
- <alpine.LNX.2.20.1701031449090.1620@localhost.localdomain>
- <s5hlgujyyop.wl-tiwai@suse.de>
- <alpine.LNX.2.20.1701121708560.2607@localhost.localdomain>
- <s5h1sw8w8pi.wl-tiwai@suse.de>
+From: Jeff Epler <jepler@unpythonic.net>
+Subject: Re: [PATCH v2 7/7] uapi: export all headers under uapi directories
+Date: Thu, 12 Jan 2017 19:04:27 -0600
+Message-ID: <20170113010427.GA22650@unpythonic.net>
+References: <bf83da6b-01ef-bf44-b3e1-ca6fc5636818@6wind.com>
+ <1483695839-18660-1-git-send-email-nicolas.dichtel@6wind.com>
+ <1483695839-18660-8-git-send-email-nicolas.dichtel@6wind.com>
+ <20170109125638.GA15506@infradead.org>
+ <464a1323-4450-e563-ff59-9e6d57b75959@6wind.com>
+ <alpine.LSU.2.20.1701121727180.19188@erq.vanv.qr>
+ <9d68af8a-a609-d7b1-58a9-f1155313b077@6wind.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C3D8261740
- for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2017 21:26:20 +0100 (CET)
-Received: by mail-wm0-f67.google.com with SMTP id r144so6406927wme.0
- for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2017 12:26:20 -0800 (PST)
-In-Reply-To: <s5h1sw8w8pi.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: hui.wang@canonical.com, alsa-devel@alsa-project.org, kailang@realtek.com
+Return-path: <linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <9d68af8a-a609-d7b1-58a9-f1155313b077@6wind.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-snps-arc/>
+List-Post: <mailto:linux-snps-arc@lists.infradead.org>
+List-Help: <mailto:linux-snps-arc-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-snps-arc>,
+ <mailto:linux-snps-arc-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-snps-arc" <linux-snps-arc-bounces@lists.infradead.org>
+Errors-To: linux-snps-arc-bounces+gla-linux-snps-arc=m.gmane.org@lists.infradead.org
+To: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Cc: linux-mips@linux-mips.org, alsa-devel@alsa-project.org, linux-ia64@vger.kernel.org, linux-doc@vger.kernel.org, airlied@linux.ie, linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-mtd@lists.infradead.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, linux-am33-list@redhat.com, linux-c6x-dev@linux-c6x.org, linux-rdma@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-sh@vger.kernel.org, Christoph Hellwig <hch@infradead.org>, coreteam@netfilter.org, fcoe-devel@open-fcoe.org, xen-devel@lists.xenproject.org, linux-snps-arc@lists.infradead.org, linux-media@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-xtensa@linux-xtensa.org, arnd@arndb.de, linux-kbuild@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.net, linux-raid@vger.kernel.org, linux-m68k@lists.linux-m68k.org, mmarek@suse.com, linux-metag@v
 List-Id: alsa-devel@alsa-project.org
 
-As a side note: on some kernels ago, this system would switch to polling mode, and then to single one (don't remember if it happened immediately like it does now, or i some time passed in between). Still, even after being in single mode, I remember it worked.
-In my opinion, it didn't crash. I may be confused, but I think so.
-This panic started to appear only on relatively recent kernel versions: I am sorry, I don't remember more precise data.
-Anyway, I'll let you all know.
-Thank you very much,
-Enrico
+On Thu, Jan 12, 2017 at 05:32:09PM +0100, Nicolas Dichtel wrote:
+> What I was trying to say is that I export those directories like other are.
+> Removing those files is not related to that series.
 
-P.S.. sorry for the top-posting, my previous message was rejected from gmail; trying to reduce it's size. Yes, I find this improbable too, trying still...
+Perhaps the correct solution is to only copy files matching "*.h" to
+reduce the risk of copying files incidentally created by kbuild but
+which shouldn't be installed as uapi headers.
+
+jeff
