@@ -1,69 +1,43 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v5 0/4] SoC: Intel: clean up Kconfig
-Date: Fri, 13 Jan 2017 12:35:08 +0000
-Message-ID: <20170113123508.eyh65gijc7nq2hmh@sirena.org.uk>
-References: <20170113122051.77831-1-andriy.shevchenko@linux.intel.com>
+From: David Howells <dhowells@redhat.com>
+Subject: (unknown)
+Date: Fri, 13 Jan 2017 15:36:43 +0000
+Message-ID: <25063.1484321803@warthog.procyon.org.uk>
+References: <1484304406-10820-2-git-send-email-nicolas.dichtel@6wind.com> <3131144.4Ej3KFWRbz@wuerfel> <1484304406-10820-1-git-send-email-nicolas.dichtel@6wind.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1128334511187745883=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CC0A1266A4E
- for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2017 13:35:22 +0100 (CET)
-In-Reply-To: <20170113122051.77831-1-andriy.shevchenko@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, dmaengine <dmaengine@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Return-path: <linux-mmc-owner@vger.kernel.org>
+In-Reply-To: <1484304406-10820-2-git-send-email-nicolas.dichtel@6wind.com>
+Content-ID: <25062.1484321803.1@warthog.procyon.org.uk>
+Sender: linux-mmc-owner@vger.kernel.org
+To: Nicolas Dichtel <nicolas.dichtel@6wind.com>
+Cc: dhowells@redhat.com, arnd@arndb.de, linux-mips@linux-mips.org, linux-m68k@vger.kernel.org, linux-ia64@vger.kernel.org, linux-doc@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-mtd@lists.infradead.org, sparclinux@vger.kernel.org, linux-arch@vger.kernel.org, linux-s390@vger.kernel.org, linux-am33-list@redhat.com, linux-c6x-dev@linux-c6x.org, linux-rdma@vger.kernel.org, linux-hexagon@vger.kernel.org, linux-sh@vger.kernel.org, linux@armlinux.org.uk, coreteam@netfilter.org, fcoe-devel@open-fcoe.org, xen-devel@lists.xenproject.org, linux-snps-arc@lists.infradead.org, linux-media@vger.kernel.org, uclinux-h8-devel@lists.sourceforge.jp, linux-xtensa@linux-xtensa.org, linux-kbuild@vger.kernel.org, adi-buildroot-devel@lists.sourceforge.netlinux-
 List-Id: alsa-devel@alsa-project.org
 
+Nicolas Dichtel <nicolas.dichtel@6wind.com> wrote:
 
---===============1128334511187745883==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="h7fz6equf4ccyqct"
-Content-Disposition: inline
+> This header file is exported, thus move it to uapi.
 
+Exported how?
 
---h7fz6equf4ccyqct
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> +#ifdef __INT32_TYPE__
+> +#undef __INT32_TYPE__
+> +#define __INT32_TYPE__		int
+> +#endif
+> +
+> +#ifdef __UINT32_TYPE__
+> +#undef __UINT32_TYPE__
+> +#define __UINT32_TYPE__	unsigned int
+> +#endif
+> +
+> +#ifdef __UINTPTR_TYPE__
+> +#undef __UINTPTR_TYPE__
+> +#define __UINTPTR_TYPE__	unsigned long
+> +#endif
 
-On Fri, Jan 13, 2017 at 02:20:47PM +0200, Andy Shevchenko wrote:
+These weren't defined by the kernel before, so why do we need to define them
+now?
 
-> Since v4:
-> - append Vinod's and Liam's ACKs
+Will defining __UINTPTR_TYPE__ cause problems in compiling libboost by
+changing the signature on C++ functions that use uintptr_t?
 
-...and send to the maintainers for the first time!  :/
-
---h7fz6equf4ccyqct
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlh4yXwACgkQJNaLcl1U
-h9DWmgf/ZnJWYBoPVkyD988KD8p4tN5CqMEVJH9/Qwyt9XnqGGF1dBu/79MMZY0Q
-pIHSMCwc7fuZ1/4YnjPrrNEFyYpr0crI9lKdR/Hmo5zOjfn08av8XpxzGiwXcdUd
-dozdIwShEqM6o3hFSPAF6RmRC8LV1+zp6U4RcqMeLYuerVUZpN7Ae8fNge6f8jiR
-zu09WRWzEY1autqoJiAA0jq9kZFTYGjbH8dRZe7j4byBwed9FjzcOFU77+I7P9Ij
-O+khD4CtXl0YPpI3nYMgeOIBAVrJfDSYUUYBI9ESFqqlTsKeEeVaEKi0Q04l+PGb
-McVhnD99ctUfFWFJO+AK+jix4oGs/g==
-=nsGS
------END PGP SIGNATURE-----
-
---h7fz6equf4ccyqct--
-
---===============1128334511187745883==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1128334511187745883==--
+David
