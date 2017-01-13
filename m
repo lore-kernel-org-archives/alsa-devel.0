@@ -1,15 +1,14 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH v4 0/2] ASoC: Use DMI name in sound card long
-	name
-Date: Sat, 14 Jan 2017 16:12:55 +0800
-Message-ID: <cover.1484381178.git.mengdong.lin@linux.intel.com>
+From: Romain Perier <romain.perier@collabora.com>
+Subject: [PATCH 0/4] Add support for es8388 on the rock2
+Date: Fri, 13 Jan 2017 17:14:48 +0100
+Message-ID: <20170113161452.14313-1-romain.perier@collabora.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B747265A82
- for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2017 09:09:43 +0100 (CET)
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+ by alsa0.perex.cz (Postfix) with ESMTP id 434F726774A
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2017 17:15:10 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,61 +18,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, pierre-louis.bossart@intel.com
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-rockchip@lists.infradead.org, Sjoerd Simons <sjoerd.simons@collabora.co.uk>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Romain Perier <romain.perier@collabora.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+This set of patches adds a machine driver for rockchip boards that use
+ES8388 codecs. It also adds slave mode to the es8328 driver that
+currently only supported the master mode. Then, it adds the required DT
+definitions to link rockchip-i2s to the es8388 analog output.
 
-This series is based on Liam's idea to use DMI name as the sound card
-short name in the audio workshop. Now we add DMI info to the card long
-name:
-- Not change the card short name, keep it simple. So the card ID
-  won't change as well.
-- Use DMI name to make the card long name.
+This work is based on the initial work that was done by Sjoerd Simons
+<sjoerd.simons@collabora.co.uk> with some improvements, changes and more
+commits.
 
-Machine drivers can use a new API to get this feature.
+Romain Perier (4):
+  ASoC: es8328-i2c: Add compatible for ES8388
+  ASoC: es8328: Add support for slave mode
+  ASoC: rockchip: Add machine driver for ES8388 codecs
+  arm: dts: Add support for ES8388 to the Radxa Rock 2
 
-In user space, when the sound server ask UCM to open a sound card, UCM
-will try to find the best machine-specific configuration file based on
-the card long name, and only if not avaiable, fallback to the default
-configuration file that matches the card short name.
-
-Please see patch:
-ucm: Automatically load the best config file based on the card long name
-
-History:
-  v1 from RFC: Give up using a table to map DMI info to a simple string,
-        since we cannot maintain such a table for each machine. Just do
-        verbatim copy of DMI info and let user space decide how to use the
-        DMI info in card long name to find the best UCM config file.
-
-        If device driver adds a flavor string, just append it after the
-        DMI info fields to the card long name.
-
-  v2:   Exclude card name and only keep DMI name in the long name, to
-        save the space since the long name cannot exceed 80 characters.
-        Trim special characters like SPACE in the long name, because UCM
-        configuration files & directories may use the same long name and
-        Autoconf cannot handle special characters.
-
-  v3:   Also include DMI product version in the long name, since vendors
-        like Lenovo may only put self-explanatory name in this field.
- 
-  v4:   Use "-" as the separator between DMI names in the card long name,
-        and replace "-" in the original DMI names with "_".
-
-Liam Girdwood (1):
-  ASoC: core: Add API to use DMI name in sound card long name
-
-Mengdong Lin (1):
-  ASoC: Intel: Use DMI name for sound card long name in Broadwell
-    machine driver
-
- include/sound/soc.h                |   4 ++
- sound/soc/intel/boards/broadwell.c |   2 +
- sound/soc/soc-core.c               | 134 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 140 insertions(+)
+ Documentation/devicetree/bindings/sound/es8328.txt |   2 +-
+ .../devicetree/bindings/sound/rockchip-es8388.txt  |  28 +++
+ arch/arm/boot/dts/rk3288-rock2-square.dts          |  37 +++
+ sound/soc/codecs/es8328-i2c.c                      |   3 +-
+ sound/soc/codecs/es8328.c                          |  28 ++-
+ sound/soc/rockchip/Kconfig                         |   9 +
+ sound/soc/rockchip/Makefile                        |   2 +
+ sound/soc/rockchip/rockchip_es8388.c               | 270 +++++++++++++++++++++
+ 8 files changed, 371 insertions(+), 8 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/rockchip-es8388.txt
+ create mode 100644 sound/soc/rockchip/rockchip_es8388.c
 
 -- 
-2.5.0
+2.9.3
