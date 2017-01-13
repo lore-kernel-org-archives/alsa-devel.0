@@ -1,15 +1,15 @@
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v5 2/4] ASoC: Intel: remove redundant select
-	SND_SOC_INTEL_SST
-Date: Fri, 13 Jan 2017 14:20:49 +0200
-Message-ID: <20170113122051.77831-3-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v5 1/4] ASoC: Intel: select DW_DMAC_CORE since
+	it's mandatory
+Date: Fri, 13 Jan 2017 14:20:48 +0200
+Message-ID: <20170113122051.77831-2-andriy.shevchenko@linux.intel.com>
 References: <20170113122051.77831-1-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 7ABE82676CB
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 84EA42676CE
  for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2017 13:20:56 +0100 (CET)
 In-Reply-To: <20170113122051.77831-1-andriy.shevchenko@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,59 +25,101 @@ To: dmaengine <dmaengine@vger.kernel.org>, alsa-devel@alsa-project.org, Jie Yang
 Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-SND_SOC_INTEL_SKYLAKE selects SND_SOC_INTEL_SST already. Thus no need to
-duplicate. Remove duplications.
+Select DW_DMAC_CORE like the rest of glue drivers do, e.g.
+drivers/dma/dw/Kconfig.
 
+While here group selectors under SND_SOC_INTEL_HASWELL and
+SND_SOC_INTEL_BAYTRAIL.
+
+Acked-by: Keyon Jie <yang.jie@linux.intel.com>
 Acked-by: Vinod Koul <vinod.koul@intel.com>
 Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- sound/soc/intel/Kconfig | 5 -----
- 1 file changed, 5 deletions(-)
+ sound/soc/intel/Kconfig | 26 ++++++++------------------
+ 1 file changed, 8 insertions(+), 18 deletions(-)
 
 diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 3da3b28b70e1..7b60689a22d4 100644
+index fd5d1e091038..3da3b28b70e1 100644
 --- a/sound/soc/intel/Kconfig
 +++ b/sound/soc/intel/Kconfig
-@@ -67,7 +67,6 @@ config SND_SOC_INTEL_HASWELL_MACH
- config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
- 	tristate "ASoC Audio driver for Broxton with DA7219 and MAX98357A in I2S Mode"
- 	depends on X86 && ACPI && I2C
+@@ -33,11 +33,9 @@ config SND_SOC_INTEL_SST
+ 	select SND_SOC_INTEL_SST_MATCH if ACPI
+ 	depends on (X86 || COMPILE_TEST)
+ 
+-# firmware stuff depends DW_DMAC_CORE; since there is no depends-on from
+-# the reverse selection, each machine driver needs to select
+-# SND_SOC_INTEL_SST_FIRMWARE carefully depending on DW_DMAC_CORE
+ config SND_SOC_INTEL_SST_FIRMWARE
+ 	tristate
++	select DW_DMAC_CORE
+ 
+ config SND_SOC_INTEL_SST_ACPI
+ 	tristate
+@@ -47,16 +45,17 @@ config SND_SOC_INTEL_SST_MATCH
+ 
+ config SND_SOC_INTEL_HASWELL
+ 	tristate
++	select SND_SOC_INTEL_SST
+ 	select SND_SOC_INTEL_SST_FIRMWARE
+ 
+ config SND_SOC_INTEL_BAYTRAIL
+ 	tristate
++	select SND_SOC_INTEL_SST
++	select SND_SOC_INTEL_SST_FIRMWARE
+ 
+ config SND_SOC_INTEL_HASWELL_MACH
+ 	tristate "ASoC Audio DSP support for Intel Haswell Lynxpoint"
+ 	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM
+-	depends on DW_DMAC_CORE
 -	select SND_SOC_INTEL_SST
- 	select SND_SOC_INTEL_SKYLAKE
- 	select SND_SOC_DA7219
- 	select SND_SOC_MAX98357A
-@@ -83,7 +82,6 @@ config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
- config SND_SOC_INTEL_BXT_RT298_MACH
- 	tristate "ASoC Audio driver for Broxton with RT298 I2S mode"
- 	depends on X86 && ACPI && I2C
+ 	select SND_SOC_INTEL_HASWELL
+ 	select SND_SOC_RT5640
+ 	help
+@@ -99,9 +98,7 @@ config SND_SOC_INTEL_BXT_RT298_MACH
+ config SND_SOC_INTEL_BYT_RT5640_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail with RT5640 codec"
+ 	depends on X86_INTEL_LPSS && I2C
+-	depends on DW_DMAC_CORE && (SND_SST_IPC_ACPI = n)
 -	select SND_SOC_INTEL_SST
- 	select SND_SOC_INTEL_SKYLAKE
- 	select SND_SOC_RT298
- 	select SND_SOC_DMIC
-@@ -210,7 +208,6 @@ config SND_SOC_INTEL_SKYLAKE
- config SND_SOC_INTEL_SKL_RT286_MACH
- 	tristate "ASoC Audio driver for SKL with RT286 I2S mode"
- 	depends on X86 && ACPI && I2C
+-	select SND_SOC_INTEL_SST_FIRMWARE
++	depends on SND_SST_IPC_ACPI = n
+ 	select SND_SOC_INTEL_BAYTRAIL
+ 	select SND_SOC_RT5640
+ 	help
+@@ -112,9 +109,7 @@ config SND_SOC_INTEL_BYT_RT5640_MACH
+ config SND_SOC_INTEL_BYT_MAX98090_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail with MAX98090 codec"
+ 	depends on X86_INTEL_LPSS && I2C
+-	depends on DW_DMAC_CORE && (SND_SST_IPC_ACPI = n)
 -	select SND_SOC_INTEL_SST
- 	select SND_SOC_INTEL_SKYLAKE
+-	select SND_SOC_INTEL_SST_FIRMWARE
++	depends on SND_SST_IPC_ACPI = n
+ 	select SND_SOC_INTEL_BAYTRAIL
+ 	select SND_SOC_MAX98090
+ 	help
+@@ -123,9 +118,7 @@ config SND_SOC_INTEL_BYT_MAX98090_MACH
+ 
+ config SND_SOC_INTEL_BDW_RT5677_MACH
+ 	tristate "ASoC Audio driver for Intel Broadwell with RT5677 codec"
+-	depends on X86_INTEL_LPSS && GPIOLIB && I2C && DW_DMAC
+-	depends on DW_DMAC_CORE=y
+-	select SND_SOC_INTEL_SST
++	depends on X86_INTEL_LPSS && GPIOLIB && I2C
+ 	select SND_SOC_INTEL_HASWELL
+ 	select SND_SOC_RT5677
+ 	help
+@@ -134,10 +127,7 @@ config SND_SOC_INTEL_BDW_RT5677_MACH
+ 
+ config SND_SOC_INTEL_BROADWELL_MACH
+ 	tristate "ASoC Audio DSP support for Intel Broadwell Wildcatpoint"
+-	depends on X86_INTEL_LPSS && I2C && DW_DMAC && \
+-		   I2C_DESIGNWARE_PLATFORM
+-	depends on DW_DMAC_CORE
+-	select SND_SOC_INTEL_SST
++	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM
+ 	select SND_SOC_INTEL_HASWELL
  	select SND_SOC_RT286
- 	select SND_SOC_DMIC
-@@ -224,7 +221,6 @@ config SND_SOC_INTEL_SKL_RT286_MACH
- config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
- 	tristate "ASoC Audio driver for SKL with NAU88L25 and SSM4567 in I2S Mode"
- 	depends on X86_INTEL_LPSS && I2C
--	select SND_SOC_INTEL_SST
- 	select SND_SOC_INTEL_SKYLAKE
- 	select SND_SOC_NAU8825
- 	select SND_SOC_SSM4567
-@@ -239,7 +235,6 @@ config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
- config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
- 	tristate "ASoC Audio driver for SKL with NAU88L25 and MAX98357A in I2S Mode"
- 	depends on X86_INTEL_LPSS && I2C
--	select SND_SOC_INTEL_SST
- 	select SND_SOC_INTEL_SKYLAKE
- 	select SND_SOC_NAU8825
- 	select SND_SOC_MAX98357A
+ 	help
 -- 
 2.11.0
