@@ -1,18 +1,19 @@
-From: Matt Ranostay <matt@ranostay.consulting>
-Subject: [PATCH v7] ASoC: omap-mcbsp: Add PM QoS support for
-	McBSP to prevent glitches
-Date: Thu, 12 Jan 2017 19:54:32 -0800
-Message-ID: <20170113035432.6723-1-matt@ranostay.consulting>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] conf/ucm: broxton: add broxton-rt298 conf
+	files
+Date: Fri, 13 Jan 2017 10:22:44 +0530
+Message-ID: <20170113045244.GM3573@localhost>
+References: <1484212828-10041-1-git-send-email-vinod.koul@intel.com>
+ <1484217487.2604.68.camel@loki> <s5hr348wnh4.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f180.google.com (mail-pf0-f180.google.com
- [209.85.192.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B021266BE6
- for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2017 04:54:36 +0100 (CET)
-Received: by mail-pf0-f180.google.com with SMTP id f144so23826513pfa.2
- for <alsa-devel@alsa-project.org>; Thu, 12 Jan 2017 19:54:36 -0800 (PST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6F39F266C2A
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2017 05:52:43 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <s5hr348wnh4.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,172 +23,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, inux-omap@vger.kernel.org
-Cc: Tony Lindgren <tony@atomide.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Matt Ranostay <matt@ranostay.consulting>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Nishit Sharma <nishitx.sharma@intel.com>, G Kranthi <gudishax.kranthikumar@intel.com>, alsa-devel@alsa-project.org, patches.audio@intel.com, Liam Girdwood <liam.r.girdwood@linux.intel.com>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-We can get audio errors if hitting deeper idle states on omaps:
+On Thu, Jan 12, 2017 at 12:01:59PM +0100, Takashi Iwai wrote:
+> On Thu, 12 Jan 2017 11:38:07 +0100,
+> Liam Girdwood wrote:
+> > 
+> > On Thu, 2017-01-12 at 14:50 +0530, Vinod Koul wrote:
+> > > This adds the UCM conf files for broxton enabling with rt298 codec on
+> > > I2S audio, HDMI and DMIC ports.
+> > > 
+> > > Signed-off-by: Nishit Sharma <nishitx.sharma@intel.com>
+> > > Signed-off-by: G Kranthi <gudishax.kranthikumar@intel.com>
+> > > Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> > 
+> > Can you redo using the UCM include support. That way we can separate the
+> > codec stuff out from the DSP stuff and make it easier to use new codecs.
+> 
+> Oh, I already applied and pushed now before reading your comment.
+> Vinod, please give the incremental patch.
 
-[alsa.c:230] error: Fatal problem with alsa output, error -5.
-[audio.c:614] error: Error in writing audio (Input/output error?)!
+Sure, that waas on our list anyway for SKL UCM, will get that done for both
+SKL and APL..
 
-This seems to happen with off mode idle enabled as power for the
-whole SoC may get cut off between filling the McBSP fifo using DMA.
-While active DMA blocks deeper idle states in hardware, McBSP
-activity does not seem to do so.
-
-Basing the QoS latency calculation on the FIFO size, threshold,
-sample rate, and channels.
-
-Based on the original patch by Tony Lindgren
-Link: https://patchwork.kernel.org/patch/9305867/
-
-Cc: Tony Lindgren <tony@atomide.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Signed-off-by: Matt Ranostay <matt@ranostay.consulting>
----
-Changes from v1:
-* add calculations for latency per number of FIFO locations
-
-Changes from v2:
-* add missing mcbsp.h header change
-
-Changes from v3:
-* base the latency calculations on threshold, buffer size, sample
-  rate, and channels
-
-Changes from v4:
-* using Peter Ujfalusi's suggestions for restoring a higher latency on
-  audio stream completion, or if not applicable remove the QoS request
-
-Changes from v5:
-* clean up latency checking logic
-* move logic to .prepare and .shutdown to avoid functions that can sleep
-
-Changes from v6:
-* move QoS removal to asoc_mcbsp_remove from omap_mcbsp_cleanup
-* also remove header include that is unneeded
-
- sound/soc/omap/mcbsp.h      |  3 +++
- sound/soc/omap/omap-mcbsp.c | 47 ++++++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 49 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/omap/mcbsp.h b/sound/soc/omap/mcbsp.h
-index 61e93b1c185d..46ae1269a698 100644
---- a/sound/soc/omap/mcbsp.h
-+++ b/sound/soc/omap/mcbsp.h
-@@ -323,8 +323,11 @@ struct omap_mcbsp {
- 
- 	unsigned int fmt;
- 	unsigned int in_freq;
-+	unsigned int latency[2];
- 	int clk_div;
- 	int wlen;
-+
-+	struct pm_qos_request pm_qos_req;
- };
- 
- void omap_mcbsp_config(struct omap_mcbsp *mcbsp,
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index d018e966e533..3b8c9724d496 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -157,6 +157,16 @@ static void omap_mcbsp_dai_shutdown(struct snd_pcm_substream *substream,
- 				    struct snd_soc_dai *cpu_dai)
- {
- 	struct omap_mcbsp *mcbsp = snd_soc_dai_get_drvdata(cpu_dai);
-+	int tx = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
-+	int stream1 = tx ? SNDRV_PCM_STREAM_PLAYBACK : SNDRV_PCM_STREAM_CAPTURE;
-+	int stream2 = tx ? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
-+
-+	mcbsp->latency[stream1] = 0;
-+	if (mcbsp->latency[stream2])
-+		pm_qos_update_request(&mcbsp->pm_qos_req,
-+				      mcbsp->latency[stream2]);
-+	else
-+		pm_qos_remove_request(&mcbsp->pm_qos_req);
- 
- 	if (!cpu_dai->active) {
- 		omap_mcbsp_free(mcbsp);
-@@ -164,6 +174,28 @@ static void omap_mcbsp_dai_shutdown(struct snd_pcm_substream *substream,
- 	}
- }
- 
-+static int omap_mcbsp_dai_prepare(struct snd_pcm_substream *substream,
-+				  struct snd_soc_dai *cpu_dai)
-+{
-+	struct omap_mcbsp *mcbsp = snd_soc_dai_get_drvdata(cpu_dai);
-+	struct pm_qos_request *pm_qos_req = &mcbsp->pm_qos_req;
-+	int tx = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
-+	int stream1 = tx ? SNDRV_PCM_STREAM_PLAYBACK : SNDRV_PCM_STREAM_CAPTURE;
-+	int stream2 = tx ? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
-+	int latency = mcbsp->latency[stream2];
-+
-+	/* Prevent omap hardware from hitting off between FIFO fills */
-+	if (!latency || mcbsp->latency[stream1] < latency)
-+		latency = mcbsp->latency[stream1];
-+
-+	if (pm_qos_request_active(pm_qos_req))
-+		pm_qos_update_request(pm_qos_req, latency);
-+	else if (latency)
-+		pm_qos_add_request(pm_qos_req, PM_QOS_CPU_DMA_LATENCY, latency);
-+
-+	return 0;
-+}
-+
- static int omap_mcbsp_dai_trigger(struct snd_pcm_substream *substream, int cmd,
- 				  struct snd_soc_dai *cpu_dai)
- {
-@@ -226,6 +258,7 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 	int wlen, channels, wpf;
- 	int pkt_size = 0;
- 	unsigned int format, div, framesize, master;
-+	unsigned int buffer_size = mcbsp->pdata->buffer_size;
- 
- 	dma_data = snd_soc_dai_get_dma_data(cpu_dai, substream);
- 	channels = params_channels(params);
-@@ -240,7 +273,9 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 	default:
- 		return -EINVAL;
- 	}
--	if (mcbsp->pdata->buffer_size) {
-+	if (buffer_size) {
-+		int latency;
-+
- 		if (mcbsp->dma_op_mode == MCBSP_DMA_MODE_THRESHOLD) {
- 			int period_words, max_thrsh;
- 			int divider = 0;
-@@ -271,6 +306,12 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 			/* Use packet mode for non mono streams */
- 			pkt_size = channels;
- 		}
-+
-+		latency = ((((buffer_size - pkt_size) / channels) * 1000)
-+				 / (params->rate_num / params->rate_den));
-+
-+		mcbsp->latency[substream->stream] = latency;
-+
- 		omap_mcbsp_set_threshold(substream, pkt_size);
- 	}
- 
-@@ -554,6 +595,7 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- static const struct snd_soc_dai_ops mcbsp_dai_ops = {
- 	.startup	= omap_mcbsp_dai_startup,
- 	.shutdown	= omap_mcbsp_dai_shutdown,
-+	.prepare	= omap_mcbsp_dai_prepare,
- 	.trigger	= omap_mcbsp_dai_trigger,
- 	.delay		= omap_mcbsp_dai_delay,
- 	.hw_params	= omap_mcbsp_dai_hw_params,
-@@ -835,6 +877,9 @@ static int asoc_mcbsp_remove(struct platform_device *pdev)
- 	if (mcbsp->pdata->ops && mcbsp->pdata->ops->free)
- 		mcbsp->pdata->ops->free(mcbsp->id);
- 
-+	if (pm_qos_request_active(&mcbsp->pm_qos_req))
-+		pm_qos_remove_request(&mcbsp->pm_qos_req);
-+
- 	omap_mcbsp_cleanup(mcbsp);
- 
- 	clk_put(mcbsp->fclk);
 -- 
-2.10.2
+~Vinod
