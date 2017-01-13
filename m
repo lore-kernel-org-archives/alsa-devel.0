@@ -1,18 +1,16 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v5 0/4] SoC: Intel: clean up Kconfig
-Date: Fri, 13 Jan 2017 22:18:38 +0200
-Message-ID: <1484338718.2133.117.camel@linux.intel.com>
-References: <20170113122051.77831-1-andriy.shevchenko@linux.intel.com>
- <20170113123508.eyh65gijc7nq2hmh@sirena.org.uk>
- <20170113190827.GY3573@localhost>
+From: =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>
+Subject: [PATCH 2/2] ASoC: mxs-saif: fix setting SAIF1 register
+Date: Fri, 13 Jan 2017 21:44:28 +0100
+Message-ID: <20170113204428.16703-2-joerg.krause@embedded.rocks>
+References: <20170113204428.16703-1-joerg.krause@embedded.rocks>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A0242669B4
- for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2017 21:21:42 +0100 (CET)
-In-Reply-To: <20170113190827.GY3573@localhost>
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.142])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F95A266A13
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jan 2017 21:44:41 +0100 (CET)
+In-Reply-To: <20170113204428.16703-1-joerg.krause@embedded.rocks>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,19 +20,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>
-Cc: dmaengine <dmaengine@vger.kernel.org>, alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org
+Cc: Mans Rullgard <mans@mansr.com>, Victorien Vedrine <victorien.vedrine@ophrys.net>, =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, Shawn Guo <shawn.guo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCAyMDE3LTAxLTE0IGF0IDAwOjM4ICswNTMwLCBWaW5vZCBLb3VsIHdyb3RlOgo+IE9u
-IEZyaSwgSmFuIDEzLCAyMDE3IGF0IDEyOjM1OjA4UE0gKzAwMDAsIE1hcmsgQnJvd24gd3JvdGU6
-Cj4gPiBPbiBGcmksIEphbiAxMywgMjAxNyBhdCAwMjoyMDo0N1BNICswMjAwLCBBbmR5IFNoZXZj
-aGVua28gd3JvdGU6Cj4gPiAKPiA+ID4gU2luY2UgdjQ6Cj4gPiA+IC0gYXBwZW5kIFZpbm9kJ3Mg
-YW5kIExpYW0ncyBBQ0tzCj4gPiAKPiA+IC4uLmFuZCBzZW5kIHRvIHRoZSBtYWludGFpbmVycyBm
-b3IgdGhlIGZpcnN0IHRpbWUhwqDCoDovCj4gCj4gQWgsIHRvbyBiYWQgOiggU2hvdWxkIGhhdmUg
-bm90aWNlZCBlYXJsaWVyIQoKU29ycnkgZm9yIHRoYXQsIGluZGVlZC4KCk1hcmssIGlmIGFueXRo
-aW5nIHlvdSBoYXZlIGluIG1pbmQsIEkgd291bGQgZ2xhZCB0byBmaXguCgotLSAKQW5keSBTaGV2
-Y2hlbmtvIDxhbmRyaXkuc2hldmNoZW5rb0BsaW51eC5pbnRlbC5jb20+CkludGVsIEZpbmxhbmQg
-T3kKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+SWYgU0FJRjAgaXMgdXNlZCBpbiBtYXN0ZXIgYW5kIFNBSUYxIGluIHNsYXZlIG1vZGUgc2V0dGlu
+ZyB0aGUgU0FJRjEKcmVnaXN0ZXIgaW4gbXhzX3NhaWZfc2V0X2RhaV9mbXQoKSBkb2VzIG5vdCBo
+YXZlIGFueSBlZmZlY3Qgb24gdGhlCmludGVyZmFjZSBhcyB0aGUgY2xrIGdhdGUgbmVlZHMgdG8g
+YmUgY2xlYXJlZCBiZWZvcmUgdGhlIHJlZ2lzdGVyIGNhbiBiZQp3cml0dGVuLgoKU2lnbmVkLW9m
+Zi1ieTogSsO2cmcgS3JhdXNlIDxqb2VyZy5rcmF1c2VAZW1iZWRkZWQucm9ja3M+Ci0tLQogc291
+bmQvc29jL214cy9teHMtc2FpZi5jIHwgMTAgKysrKysrKysrKwogMSBmaWxlIGNoYW5nZWQsIDEw
+IGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvbXhzL214cy1zYWlmLmMgYi9z
+b3VuZC9zb2MvbXhzL214cy1zYWlmLmMKaW5kZXggMWU3MjQ1MzNkYzZlLi4yNmMyNDBhZjgwOTkg
+MTAwNjQ0Ci0tLSBhL3NvdW5kL3NvYy9teHMvbXhzLXNhaWYuYworKysgYi9zb3VuZC9zb2MvbXhz
+L214cy1zYWlmLmMKQEAgLTMwOSw2ICszMDksMTYgQEAgc3RhdGljIGludCBteHNfc2FpZl9zZXRf
+ZGFpX2ZtdChzdHJ1Y3Qgc25kX3NvY19kYWkgKmNwdV9kYWksIHVuc2lnbmVkIGludCBmbXQpCiAJ
+CXJldHVybiAtRUJVU1k7CiAJfQogCisJLyogSWYgU0FJRjEgaXMgY29uZmlndXJlZCBhcyBzbGF2
+ZSwgdGhlIGNsayBnYXRlIG5lZWRzIHRvIGJlIGNsZWFyZWQKKwkgKiBiZWZvcmUgdGhlIHJlZ2lz
+dGVyIGNhbiBiZSB3cml0dGVuLgorCSAqLworCWlmIChzYWlmLT5pZCAhPSBzYWlmLT5tYXN0ZXJf
+aWQpIHsKKwkJX19yYXdfd3JpdGVsKEJNX1NBSUZfQ1RSTF9TRlRSU1QsCisJCQlzYWlmLT5iYXNl
+ICsgU0FJRl9DVFJMICsgTVhTX0NMUl9BRERSKTsKKwkJX19yYXdfd3JpdGVsKEJNX1NBSUZfQ1RS
+TF9DTEtHQVRFLAorCQkJc2FpZi0+YmFzZSArIFNBSUZfQ1RSTCArIE1YU19DTFJfQUREUik7CisJ
+fQorCiAJc2NyMCA9IF9fcmF3X3JlYWRsKHNhaWYtPmJhc2UgKyBTQUlGX0NUUkwpOwogCXNjcjAg
+PSBzY3IwICYgfkJNX1NBSUZfQ1RSTF9CSVRDTEtfRURHRSAmIH5CTV9TQUlGX0NUUkxfTFJDTEtf
+UE9MQVJJVFkgXAogCQkmIH5CTV9TQUlGX0NUUkxfSlVTVElGWSAmIH5CTV9TQUlGX0NUUkxfREVM
+QVk7Ci0tIAoyLjExLjAKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
