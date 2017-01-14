@@ -1,15 +1,15 @@
 From: kbuild test robot <lkp@intel.com>
 Subject: Re: [PATCH v5 1/4] ASoC: Intel: select DW_DMAC_CORE
  since it's mandatory
-Date: Sun, 15 Jan 2017 04:59:00 +0800
-Message-ID: <201701150403.EUYKgmfg%fengguang.wu@intel.com>
+Date: Sun, 15 Jan 2017 05:02:02 +0800
+Message-ID: <201701150431.pzo4dVZh%fengguang.wu@intel.com>
 References: <20170113122051.77831-2-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="wac7ysb48OaltWcw"
+Content-Type: multipart/mixed; boundary="vtzGhvizbBRQ85DL"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id EAA6A2668AD
- for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2017 22:00:04 +0100 (CET)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 56F262668AD
+ for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2017 22:03:02 +0100 (CET)
 Content-Disposition: inline
 In-Reply-To: <20170113122051.77831-2-andriy.shevchenko@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,14 +25,14 @@ Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Jie Yang <ya
 List-Id: alsa-devel@alsa-project.org
 
 
---wac7ysb48OaltWcw
+--vtzGhvizbBRQ85DL
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
 Hi Andy,
 
-[auto build test WARNING on asoc/for-next]
-[also build test WARNING on v4.10-rc3 next-20170113]
+[auto build test ERROR on asoc/for-next]
+[also build test ERROR on v4.10-rc3 next-20170113]
 [if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
 
 url:    https://github.com/0day-ci/linux/commits/Andy-Shevchenko/SoC-Intel-clean-up-Kconfig/20170114-235704
@@ -43,20 +43,21 @@ reproduce:
         # save the attached .config to linux build tree
         make ARCH=i386 
 
-All warnings (new ones prefixed by >>):
+All errors (new ones prefixed by >>):
 
-warning: (SATA_DWC_OLD_DMA && SERIAL_8250_LPSS && SND_SOC_INTEL_SST_FIRMWARE) selects DW_DMAC_CORE which has unmet direct dependencies (DMADEVICES)
+>> ERROR: "dw_dma_probe" [sound/soc/intel/common/snd-soc-sst-firmware.ko] undefined!
+>> ERROR: "dw_dma_remove" [sound/soc/intel/common/snd-soc-sst-firmware.ko] undefined!
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
---wac7ysb48OaltWcw
+--vtzGhvizbBRQ85DL
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICMt/elgAAy5jb25maWcAhFxLc9u4st7Pr1Bl7uKcxUziRzyZuuUFBIISRgTBAKAe3qAc
+H4sICP2AelgAAy5jb25maWcAhFxLc9u4st7Pr1Bl7uKcxUziRzyZuuUFBIISRgTBAKAe3qAc
 W5lxHcfOteV5/PvbDZAiAII6WSRhd+NBoNH9dTeoH3/4cUbeDs/fbg8Pd7ePj//Mft8/7V9u
 D/v72deHx/3/zgo5q6WZsYKbn0G4enh6+/v9w8Wnq9nlz7/+/GG22r887R9n9Pnp68Pvb9Dy
 4fnphx9Bksq65At7dTnnZvbwOnt6Psxe94cfOvr205W9OL/+J3geHnitjWqp4bK2BaOyYGpg
@@ -540,11 +541,11 @@ PgT+GO9IADjQ7F5RmWfabFEyOANnEepOaIZOtq6lJYzL3I1ljvM9XFBkAaL9bj64JAlkzGyW
 oDBT6ndRZ05o9LwCNUE7muwkNRV9nkPyz75mXgmzr6ETgNjCGcg8I90DkHuusrOwGBneQuex
 rCRI8jot6Vfria3ynwvgX46uzPdCgwEA
 
---wac7ysb48OaltWcw
+--vtzGhvizbBRQ85DL
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---wac7ysb48OaltWcw--
+--vtzGhvizbBRQ85DL--
