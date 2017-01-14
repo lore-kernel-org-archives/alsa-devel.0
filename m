@@ -1,17 +1,15 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH v4 2/2] ASoC: Intel: Use DMI name for sound
-	card long name in Broadwell machine driver
-Date: Sat, 14 Jan 2017 16:13:09 +0800
-Message-ID: <7d5a432b03df6298e85b2af1f520e48821ada648.1484381178.git.mengdong.lin@linux.intel.com>
-References: <cover.1484381178.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH v4 0/2] ucm: Automatically load the best config
+	file based on the card long name
+Date: Sat, 14 Jan 2017 16:23:48 +0800
+Message-ID: <cover.1484381554.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C39E2666FB
- for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2017 09:09:58 +0100 (CET)
-In-Reply-To: <cover.1484381178.git.mengdong.lin@linux.intel.com>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id F2D272666FB
+ for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2017 09:20:35 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,36 +19,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, pierre-louis.bossart@intel.com
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, Mengdong Lin <mengdong.lin@linux.intel.com>, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Intel Broadwell machine driver will call API snd_soc_set_dmi_name() to
-use DMI info to make the sound card long name.
+Intel DSP platform drivers are used by many different devices. For user
+space to differentiate them, now ASoC provide API for machine drivers to
+include the DMI info (vendor, product and board) in card long name. This
+series will add UCM support for loading best device-specific configuration
+based on the card long name.
 
-For example, here are the changed long name for two Broadwell-based
-machines:
-Dell XPS-13(2015): DellInc.-XPS139343-01-0310JH
-Intel WilsonBeach: Intel Corp.-BroadwellClientplatform-0.1-WilsonBeachSDS
+Mengdong Lin (2):
+  ucm: Load device-specific configuration file based on the card long
+    name
+  ucm: Add command 'get _file' to get the config file name of the opened
+    card
 
-They still share the same card name "broadwell-rt286".
+History:
+v2: Request the device-specific file name to match the card long name,
+    no long use automatic key word matching and scoring to avoid error
+    and uncertainty. And add command to check the name of actually loaded
+    configuration file.
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+v3: Fix num in strncpy of the long name, which should be
+    MAX_CARD_LONG_NAME - 1, not MAX_CARD_LONG_NAME (80).
 
-diff --git a/sound/soc/intel/boards/broadwell.c b/sound/soc/intel/boards/broadwell.c
-index 5bb64d1..cda73bb 100644
---- a/sound/soc/intel/boards/broadwell.c
-+++ b/sound/soc/intel/boards/broadwell.c
-@@ -266,6 +266,8 @@ static int broadwell_audio_probe(struct platform_device *pdev)
- {
- 	broadwell_rt286.dev = &pdev->dev;
- 
-+	snd_soc_set_dmi_name(&broadwell_rt286, NULL);
-+
- 	return devm_snd_soc_register_card(&pdev->dev, &broadwell_rt286);
- }
- 
+
+v4: No code change. Just update on comments because the kernel v4 patches
+    add DMI product version to the card long name, and use "-" as
+    the separator between DMI fields.
+
+Mengdong Lin (2):
+  ucm: Load device-specific configuration file based on the card long
+    name
+  ucm: Add command 'get _file' to get the config file name of the opened
+    card
+
+ include/use-case.h  |   1 +
+ src/ucm/main.c      |  14 ++++++++
+ src/ucm/parser.c    | 101 +++++++++++++++++++++++++++++++++++++++++++++++++---
+ src/ucm/ucm_local.h |   3 ++
+ 4 files changed, 115 insertions(+), 4 deletions(-)
+
 -- 
-2.5.0
+2.7.4
