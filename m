@@ -1,87 +1,102 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: Re: Nokia N900: mixers changed between 4.9 and 4.10-rc3, no longer
- can use in-call speaker
-Date: Sat, 14 Jan 2017 23:56:15 +0100
-Message-ID: <20170114225614.GA25321@amd>
-References: <20170112181826.GA28290@amd>
- <201701121934.19810@pali>
+From: Enrico Mioso <mrkiko.rs@gmail.com>
+Subject: Re: Intel HDA audio on EEE PC 1101HGo
+Date: Sat, 14 Jan 2017 23:43:53 +0100 (CET)
+Message-ID: <alpine.LNX.2.20.1701142343340.3772@localhost.localdomain>
+References: <alpine.LNX.2.20.1504082130290.1715@localhost.localdomain>
+ <s5hegntl2cs.wl-tiwai@suse.de>
+ <alpine.LNX.2.20.1611230916070.5938@localhost.localdomain>
+ <s5hr35s0xh2.wl-tiwai@suse.de>
+ <alpine.LNX.2.20.1612011450060.7660@localhost.localdomain>
+ <s5h4m2n21ll.wl-tiwai@suse.de>
+ <alpine.LNX.2.20.1701031449090.1620@localhost.localdomain>
+ <s5hlgujyyop.wl-tiwai@suse.de>
+ <alpine.LNX.2.20.1701121708560.2607@localhost.localdomain>
+ <s5h1sw8w8pi.wl-tiwai@suse.de>
+ <alpine.LNX.2.20.1701131929420.17357@localhost.localdomain>
+ <s5htw92hvz7.wl-tiwai@suse.de>
+ <alpine.LNX.2.20.1701141015060.19717@localhost.localdomain>
+ <s5hr346ht46.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="7AUc2qLy4jB3hD7Z"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <201701121934.19810@pali>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>
-Cc: sre@kernel.org, kernel list <linux-kernel@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-omap@vger.kernel.org, tony@atomide.com, khilman@kernel.org, aaro.koskinen@iki.fi, ivo.g.dimitrov.75@gmail.com, patrikbachan@gmail.com, serge@hallyn.com, abcloriens@gmail.com, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, alsa-devel@alsa-project.org, helen.koike@collabora.co.uk, lars@metafoo.de, broonie@kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E815266AF5
+ for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2017 23:43:58 +0100 (CET)
+Received: by mail-wm0-f67.google.com with SMTP id r126so20992138wmr.3
+ for <alsa-devel@alsa-project.org>; Sat, 14 Jan 2017 14:43:58 -0800 (PST)
+In-Reply-To: <s5hr346ht46.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: hui.wang@canonical.com, alsa-devel@alsa-project.org, kailang@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+Thank you very much to all of you, Takashi.
 
---7AUc2qLy4jB3hD7Z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi!
+Enrico Mioso
+Mobile Phone Number: +393807096934 ( +Telegram :) )
+My Tox ID is: 7C593F402A3C8632D87AB4B948D492294C39A6A614464ECF843CA3429FB023284180472C7475
 
-> > In v4.10 (and probably v4.9, too) I can no longer use the in-call
-> > speaker. I can no longer use the wired headset, either.
-> >=20
-> > v4.4 (and probably v4.6) works ok.
-> >=20
-> > Any ideas? Does wired headset / in-call speaker work for you?
-> >=20
-> > "Mono" and "Mono DAC" options are still there.. but something else
-> > changed, as alsamixer now shows way many more options (meaning they
-> > are shorter?) and I get complains from alsactl:
-> >=20
-> > alsactl: set_control:1328: failed to obtain info for control #49 (No
-> > such file or directory)
-> > ...
-> > alsactl: set_control:1328: failed to obtain info for control #229 (No
-> > such file or directory)
->=20
-> Looks like there are not so much commits related to=20
-> sound/soc/omap/rx51.c Maybe it can be one of these twos?
->=20
-> cb7e62256e99d285e415cf75db67558f0f8bb107
-> 6d2de5ab4328718302c54b20222c6b1a574c3fce
+I like / recommend the usage of open messaging standards.
 
-Both are based on v4.7-rc1. v4.6 worked ok for me.
+On Sat, 14 Jan 2017, Takashi Iwai wrote:
 
-Lets test mini-v4.7: in-call speaker works ok there, and no alsactl
-warnings.
-
-mini-v4.7+cb7e62256e99d285e415cf75db67558f0f8bb107+6d2de5ab4328718302c54b20=
-222c6b1a574c3fce
-: something seems to be broken there already.
-
-alsactl: set_control:1464: Cannot write control '2:0:0:TPA6130A2
-Headphone Playback Volume:0' : Remote I/O error
-
-But in-call speakers and wired headset still seems to work.
-
-Lets test mini-v4.9... works ok. I don't even get the remote i/o
-error. Interesting.
-
-So regression seems to be between v4.9 and v4.10. Any ideas?
-
-								Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---7AUc2qLy4jB3hD7Z
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlh6rI4ACgkQMOfwapXb+vJ9OQCdG8C3fMoWzWYXXVDmXcI4HlLI
-e1gAoKpgyETNlh+LOGHxNsJqvNlWGv/I
-=2QF9
------END PGP SIGNATURE-----
-
---7AUc2qLy4jB3hD7Z--
+> Date: Sat, 14 Jan 2017 10:46:01
+> From: Takashi Iwai <tiwai@suse.de>
+> To: Enrico Mioso <mrkiko.rs@gmail.com>
+> Cc: hui.wang@canonical.com, alsa-devel@alsa-project.org, kailang@realtek.com
+> Subject: Re: [alsa-devel] Intel HDA audio on EEE PC 1101HGo
+> 
+> On Sat, 14 Jan 2017 10:20:16 +0100,
+> Enrico Mioso wrote:
+>>
+>> Hello Takashi,
+>> thank you very much again for your kindness and patience...
+>>
+>> I'll enable the tracepoint.
+>> Discrepancies in the single_cmd value are derived from the fact that I am still using the hackish version of the patch, since I didn't reboot... otherwise I should have started from scratch some very-long operations.
+>> But the value has remained to 0, and the fallback didn't happen, as expected.
+>>
+>> Ok, reading note.rst now.
+>> I was wondering, but I may well be wrong: in the past that fallback code brought my system to single cmd mode after polling... Now it crashes, and as I said before, the switching from polling to last_cmd is kind-of immediate most of the times these days (e.g.: on this kernel).
+>> May be something goes wrong in the fallback path? Or is this caused by an invalid verb ?
+>> Guessing verb = something like a command...
+>
+> Yes, maybe the fallback to single cmd got broken somehow.  I'd need to
+> check with a fault injection.
+>
+> In anyway, the verb is DIGI_CONVERT_2, and the only possible place is
+> the beep setup.
+>
+> Could you try the below to see whether it makes any difference?
+>
+>
+> Takashi
+>
+> ---
+> diff --git a/sound/pci/hda/hda_beep.c b/sound/pci/hda/hda_beep.c
+> index c397e7da0eac..07930e69812a 100644
+> --- a/sound/pci/hda/hda_beep.c
+> +++ b/sound/pci/hda/hda_beep.c
+> @@ -228,9 +228,11 @@ int snd_hda_attach_beep_device(struct hda_codec *codec, int nid)
+> 		return -ENOMEM;
+> 	snprintf(beep->phys, sizeof(beep->phys),
+> 		"card%d/codec#%d/beep0", codec->card->number, codec->addr);
+> +#if 0
+> 	/* enable linear scale */
+> 	snd_hda_codec_write_cache(codec, nid, 0,
+> 		AC_VERB_SET_DIGI_CONVERT_2, 0x01);
+> +#endif
+>
+> 	beep->nid = nid;
+> 	beep->codec = codec;
+>
