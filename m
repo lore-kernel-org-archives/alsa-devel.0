@@ -1,37 +1,39 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: SoundBlaterX G5
-Date: Sun, 15 Jan 2017 11:29:29 +0100
-Message-ID: <35808a43-245b-a075-a433-d892897b40b4@ladisch.de>
-References: <c7f0fe10-92b0-0866-f638-96e78b6175c5@ukf.sk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E37C266DFB
- for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2017 11:30:02 +0100 (CET)
-In-Reply-To: <c7f0fe10-92b0-0866-f638-96e78b6175c5@ukf.sk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Milan Oravec <moravec@ukf.sk>, alsa-devel@alsa-project.org
+From: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
+Subject: [PATCH 1/1] ASoC: fsl_asrc: use dma_transfer_direction enum when calling dmaengine_prep_dma_cyclic
+Date: Sun, 15 Jan 2017 13:43:31 +0100
+Message-ID: <20170115124331.3546-1-nicolas.iooss_linux@m4x.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
+Cc: linux-kernel@vger.kernel.org, Nicolas Iooss <nicolas.iooss_linux@m4x.org>
 List-Id: alsa-devel@alsa-project.org
 
-Milan Oravec wrote:
-> http://www.alsa-project.org/db/?f=74ca49f354e9a100ebf7ba9fe9f6eb82c019f3ef
->
-> The device is 192K/24 capable under OSX but only when is DSP clock
-> source set to direct stereo, this may be the problem in linux.
+When fsl_asrc_dma_prepare_and_submit() calls
+dmaengine_prep_dma_cyclic(), it uses either DMA_TO_DEVICE or
+DMA_FROM_DEVICE. These values are both items of dma_data_direction enum,
+not of dma_data_direction enum, which is the type expected by
+dmaengine_prep_dma_cyclic().
 
-There is a mixer control named "Speaker Clock Source".  Doesn't it work?
+Replace DMA_TO_DEVICE with DMA_MEM_TO_DEV and DMA_FROM_DEVICE with
+DMA_DEV_TO_MEM to fix this type mismatch issue.
 
+Signed-off-by: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
+---
+ sound/soc/fsl/fsl_asrc_dma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regards,
-Clemens
+diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
+index dc30d780f874..282d841840b1 100644
+--- a/sound/soc/fsl/fsl_asrc_dma.c
++++ b/sound/soc/fsl/fsl_asrc_dma.c
+@@ -76,7 +76,7 @@ static int fsl_asrc_dma_prepare_and_submit(struct snd_pcm_substream *substream)
+ 			pair->dma_chan[!dir], runtime->dma_addr,
+ 			snd_pcm_lib_buffer_bytes(substream),
+ 			snd_pcm_lib_period_bytes(substream),
+-			dir == OUT ? DMA_TO_DEVICE : DMA_FROM_DEVICE, flags);
++			dir == OUT ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM, flags);
+ 	if (!pair->desc[!dir]) {
+ 		dev_err(dev, "failed to prepare slave DMA for Front-End\n");
+ 		return -ENOMEM;
+-- 
+2.11.0
