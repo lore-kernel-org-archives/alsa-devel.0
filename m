@@ -1,115 +1,118 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: Re: Nokia N900: mixers changed between 4.9 and 4.10-rc3, no longer
- can use in-call speaker
-Date: Sun, 15 Jan 2017 11:05:33 +0100
-Message-ID: <20170115100533.GA15816@amd>
-References: <20170112181826.GA28290@amd>
- <201701121934.19810@pali>
- <20170114225614.GA25321@amd>
- <201701150100.54214@pali>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: [PATCH v4 1/2] ucm: Load device-specific
+ configuration file based on the card long name
+Date: Sun, 15 Jan 2017 10:01:15 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F881A19C50@shsmsx102.ccr.corp.intel.com>
+References: <cover.1484381554.git.mengdong.lin@linux.intel.com>
+ <d8b6cfb75c226c59f4ca6e15c419eb2955b582fa.1484381554.git.mengdong.lin@linux.intel.com>
+ <s5hinpgivbp.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="AhhlLboLdkugWU4S"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <201701150100.54214@pali>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>
-Cc: sre@kernel.org, kernel list <linux-kernel@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-omap@vger.kernel.org, tony@atomide.com, khilman@kernel.org, aaro.koskinen@iki.fi, ivo.g.dimitrov.75@gmail.com, patrikbachan@gmail.com, serge@hallyn.com, abcloriens@gmail.com, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, alsa-devel@alsa-project.org, helen.koike@collabora.co.uk, lars@metafoo.de, broonie@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id E66BE2654AD
+ for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2017 11:01:20 +0100 (CET)
+In-Reply-To: <s5hinpgivbp.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>
+Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Sunday, January 15, 2017 4:25 PM
+> 
+> On Sat, 14 Jan 2017 09:23:55 +0100,
+> mengdong.lin@linux.intel.com wrote:
+> >
+> > From: Mengdong Lin <mengdong.lin@linux.intel.com>
+> >
+> > Intel DSP platform drivers are used by many different devices. For
+> > user space to differentiate them, ASoC machine drivers may use the DMI
+> > info
+> > (vendor-product-version-board) as card long name. Possible card long
+> > names
+> > are:
+> > DellInc.-XPS139343-01-0310JH
+> > ASUSTeKCOMPUTERINC.-T100TA-1.0-T100TA
+> > Circuitco-MinnowboardMaxD0PLATFORM-D0-MinnowBoardMAX
+> > ...
+> >
+> > And user space can define configuration files like
+> > longname\longname.conf for a specific device.
+> 
+> Do you mean a file name containing a backslash?
+> I didn't find the relevant code in your patch...
 
---AhhlLboLdkugWU4S
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+No, the file name doesn't contain a backslash. It means we're using the card long name as both the directory name that contains the UCM config file and the name of the config file itself.
+E.g. for the laptop Dell XPS 13, UCM will try to find a directory "DellInc.-XPS139343-01-0310JH", and then find the file " DellInc.-XPS139343-01-0310JH.conf" under the directory. If it cannot find the this file, it will fall back to open file "broadwell-rt286.conf" under directory "broadwell-rt286".
 
-Hi!
+Sorry, I didn't give a clear explanation here. I'll revise the comments.
 
-> > Both are based on v4.7-rc1. v4.6 worked ok for me.
-> >=20
-> > Lets test mini-v4.7: in-call speaker works ok there, and no alsactl
-> > warnings.
-> >=20
-> > mini-v4.7+cb7e62256e99d285e415cf75db67558f0f8bb107+6d2de5ab4328718302
-> > c54b20222c6b1a574c3fce
-> >=20
-> > : something seems to be broken there already.
-> >=20
-> > alsactl: set_control:1464: Cannot write control '2:0:0:TPA6130A2
-> > Headphone Playback Volume:0' : Remote I/O error
-> >=20
-> > But in-call speakers and wired headset still seems to work.
-> >=20
-> > Lets test mini-v4.9... works ok. I don't even get the remote i/o
-> > error. Interesting.
-> >=20
-> > So regression seems to be between v4.9 and v4.10. Any ideas?
->=20
-> Interesting... seems there are no sound relevant changes after v4.9.
->=20
-> Looks like there are only three commits after v4.9 for sound/soc which=20
-> are built for Nokia N900:
->=20
-> e411b0b5eb9b65257a050eac333d181d6e00e2c6
-> e7aa450fe17890e59db7d3c2d8eff5b6b41fc531
-> 63c3194b82530bd71fd49db84eb7ab656b8d404a
->=20
-> Maybe something not related to sound/soc could broke it?
+[snip]
+ 
+> > +/* find the card in the local machine and store the card long name */
+> > +static int get_card_long_name(snd_use_case_mgr_t *mgr) {
+> > +	const char *card_name = mgr->card_name;
+> > +	snd_ctl_t *handle;
+> > +	int card, err;
+> > +	snd_ctl_card_info_t *info;
+> > +	const char *_name, *_long_name;
+> > +
+> > +	snd_ctl_card_info_alloca(&info);
+> > +
+> > +	card = -1;
+> > +	if (snd_card_next(&card) < 0 || card < 0) {
+> > +		uc_error("no soundcards found...");
+> > +		return -1;
+> > +	}
+> > +
+> > +	while (card >= 0) {
+> > +		char name[32];
+> > +
+> > +		sprintf(name, "hw:%d", card);
+> > +		err = snd_ctl_open(&handle, name, 0);
+> > +		if (err < 0) {
+> > +			uc_error("control open (%i): %s", card,
+> > +				 snd_strerror(err));
+> > +			goto next_card;
+> > +		}
+> > +
+> > +		err = snd_ctl_card_info(handle, info);
+> > +		if (err < 0) {
+> > +			uc_error("control hardware info (%i): %s", card,
+> > +				 snd_strerror(err));
+> > +			snd_ctl_close(handle);
+> > +			goto next_card;
+> > +		}
+> > +
+> > +		/* Find the local card by comparing the given name with the
+> > +		 * card name and long name. User may open a card by its
+> long
+> > +		 * name, so the given card name may be a long name.
+> > +		 */
+> > +		_name = snd_ctl_card_info_get_name(info);
+> > +		_long_name = snd_ctl_card_info_get_longname(info);
+> > +		if (!strncmp(card_name, _name, MAX_CARD_LONG_NAME)
+> > +		    || !strncmp(card_name, _long_name,
+> MAX_CARD_LONG_NAME)) {
+> > +			strncpy(mgr->card_long_name, _long_name,
+> > +				MAX_CARD_LONG_NAME - 1);
+> 
+> It's safer to assure the NUL-terminated string in mgr->card_name & co.  Then
+> the above strncmp() can be a simple strcmp().
 
-Lets see.
+Okay. I'll add check  and assure this when receiving the mgr->card_name from the application.
 
-a9042defa29a01cc538b742eab047848e9b5ae14 -- works ok.
-ce38207f161513ee3d2bd3860489f07ebe65bc78 --
-
-alsactl: set_control:1328: failed to obtain info for control #229 (No
-such file or directory)
-
-and broken in-call speaker. So this merge breaks stuff:
-
-commit ce38207f161513ee3d2bd3860489f07ebe65bc78
-Merge: a9042de 995c6a7
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed Dec 14 11:14:28 2016 -0800
-
-    Merge tag 'sound-4.10-rc1' of
-    git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound
-=2E..
-      Below are some highlights:
-
-      ASoC:
-             - support for stereo DAPM controls
-	            - some initial work on the of-graph sound card
-		           - regmap conversions of the remaining AC'97
-      drivers
-             - a new version of the topology ABI; this should be
-      backward
-               compatible
-	              - updates / cleanups of rsnd, sunxi, sti,
-      nau8825, samsung, arizona,
-               Intel skylake, atom-sst
-	              - new drivers for Cirrus Logic CS42L42, Qualcomm
-      MSM8916-WCD, and
-               Realtek RT5665
-=2E..
-
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---AhhlLboLdkugWU4S
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlh7SW0ACgkQMOfwapXb+vJnPACgw8db68Qo1jIxe+CWHDvnCD/p
-jp4AnRQSxusJ9bnwCwOigYC12vpLRUKW
-=Z89V
------END PGP SIGNATURE-----
-
---AhhlLboLdkugWU4S--
+Thanks
+Mengdong
