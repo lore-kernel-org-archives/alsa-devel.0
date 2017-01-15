@@ -1,170 +1,115 @@
-From: Ralf Jung <post@ralfj.de>
-Subject: Re: PROBLEM: Internal microphone (& combined headset
- jack, in default config) not working on Acer VN7-592G (Skylake)
-Date: Sun, 15 Jan 2017 10:52:12 +0100
-Message-ID: <fe7fce02-9f22-53e9-f7a3-fa74bfbf3e66@ralfj.de>
-References: <990a87bf-735b-d978-b6ba-74bb7a65a244@ralfj.de>
- <s5ha8avyywb.wl-tiwai@suse.de>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: Nokia N900: mixers changed between 4.9 and 4.10-rc3, no longer
+ can use in-call speaker
+Date: Sun, 15 Jan 2017 11:05:33 +0100
+Message-ID: <20170115100533.GA15816@amd>
+References: <20170112181826.GA28290@amd>
+ <201701121934.19810@pali>
+ <20170114225614.GA25321@amd>
+ <201701150100.54214@pali>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------6932041063FD79FF12760C0D"
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from eins.ralfj.de (eins.ralfj.de [85.214.220.216])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C4182654AD
- for <alsa-devel@alsa-project.org>; Sun, 15 Jan 2017 10:52:15 +0100 (CET)
-In-Reply-To: <s5ha8avyywb.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="AhhlLboLdkugWU4S"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <201701150100.54214@pali>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>
+Cc: sre@kernel.org, kernel list <linux-kernel@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-omap@vger.kernel.org, tony@atomide.com, khilman@kernel.org, aaro.koskinen@iki.fi, ivo.g.dimitrov.75@gmail.com, patrikbachan@gmail.com, serge@hallyn.com, abcloriens@gmail.com, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, alsa-devel@alsa-project.org, helen.koike@collabora.co.uk, lars@metafoo.de, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------6932041063FD79FF12760C0D
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
 
-Hi,
-
-Thanks for the quick reply!
-
->> I was able to improve the situation by adding this to modprobe.d:
->>   options snd-hda-intel model=dell-headset-multi
->> Now, mics and external speakers plugged in work fine (where for mics, I
->> need to manually configure them in pacuvontrol: "Speakers" and
->> "Microphone").  Combined headsets also work (with "Headphones" and
->> "Headset Microphone"), i.e. I get audio in and audio out, but the audio
->> in from the microphone is fairly noisy.  I am not sure whether this is
->> due to the headset or the laptop; I am using the same headset with my
->> phone and people I called did not complain about noise.
->>   Furthermore, there is a weird effect: I have a headset with *separate*
->> plugs for speaker and mic (which I used above to test the speaker vs.
->> mic functionality).  If I plug in the speaker part, but configure it as
->> a microhpone (out: "Speakers", in: "Microphone"), then I actually get a
->> (rather noisy) input signal. Not sure what is going on there, but I'm
->> reasonably sure it is getting that signal from the headset, not the
->> internal mic of the laptop.
-> 
-> It's a configuration with "headphone mic" for Dell, so it doesn't fit
-> with yours properly.
-> 
-> Look at the lspci -nv output, and check the PCI SSID of the
-> corresponding device.  Then try to add an entry applying some fixup,
-> e.g. ALC269_FIXUP_ASPIRE_HEADSET_MIC, in alc269_fixup_tbl[] defined in
-> sound/pci/hda/patch_realtek.c:
-> 
-> static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-> .....
->         SND_PCI_QUIRK(0x1025, XXXX, "Acer Your Model", ALC269_FIXUP_ASPIRE_HEADSET_MIC),
-> .....
-> 
-> There are other definitions for 1025:*, so put your own one there.
-> The list is sorted in the id number order.
-> 
-> There are quite lots of fixup models that can be applied, do figure
-> out by trial-and-error.
-
-I tried a bunch of fixup models (and even defined one myself), but none
-of them made the internal microhpone work.  Funny enough, the
-definitions involving "DELL" work best.
-
-Here's what I tried:
-
-ALC269_FIXUP_ASPIRE_HEADSET_MIC, ALC255_FIXUP_ASPIRE_HEADSET_MIC [*]:
-Combined headset plugged into the hack works. PLugging in a "pure" mic
-doesn't. pavuctl says "Headset Microphone (unplugged)".
-
-ALC255_FIXUP_HEADSET_MODE, ALC255_FIXUP_HEADSET_MODE_NO_HP_MIC:
-No mic works, pavuctl: "Analog Input"
-
-ALC255_FIXUP_DELL1_MIC_NO_PRESENCE, ALC269_FIXUP_DELL1_MIC_NO_PRESENCE:
-pavuctl: "Headset Microhpone" & "Microphone". Both kinds of microphone
-work (after sometimes manually selecting the right thing in pavuctl),
-but the "pure" mix has a 50 Hz noise on it that goes away when I unplug
-all cable. Notice that this is running the laptop in a different place
-and with a different mic than when I previously tried just passing an
-option to the vanilla module, so I don't know whether the 50 Hz hum also
-appears in the other conditions.  There's no 50 Hz hum with the
-"combined" headset.
-  There's a weird bug: When starting Audacity, playback breaks and I
-have to switch (in pavuctl) to "Microphone" and then back to "Headset
-Microphone" to make it work again.
-
-[*] See attached patch.  Notice that I don't know what I am doing here,
-I am just pattern-matching.
-
-I can't realistically try all the hundreds of fixups, so I tried those
-that sounded most realistic and those that mention ALC255 (which seems
-to be the chip I have).  However, as can be seen above, ALC269-fixups
-vs. ALC255-fixups doesn't seem to make any difference.
-
-Kind regards,
-Ralf
-
---------------6932041063FD79FF12760C0D
-Content-Type: text/x-diff;
- name="sound-fixup.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="sound-fixup.patch"
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.=
-c
-index 3f75d1b83bf2..fd2af7bfc5eb 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4825,6 +4825,7 @@ enum {
- 	ALC255_FIXUP_DELL2_MIC_NO_PRESENCE,
- 	ALC255_FIXUP_HEADSET_MODE,
- 	ALC255_FIXUP_HEADSET_MODE_NO_HP_MIC,
-+	ALC255_FIXUP_ASPIRE_HEADSET_MIC,
- 	ALC293_FIXUP_DELL1_MIC_NO_PRESENCE,
- 	ALC292_FIXUP_TPT440_DOCK,
- 	ALC292_FIXUP_TPT440,
-@@ -5302,6 +5303,15 @@ static const struct hda_fixup alc269_fixups[] =3D =
-{
- 		.type =3D HDA_FIXUP_FUNC,
- 		.v.func =3D alc_fixup_headset_mode_alc255_no_hp_mic,
- 	},
-+	[ALC255_FIXUP_ASPIRE_HEADSET_MIC] =3D {
-+		.type =3D HDA_FIXUP_PINS,
-+		.v.pins =3D (const struct hda_pintbl[]) {
-+			{ 0x19, 0x01a1913c }, /* headset mic w/o jack detect */
-+			{ }
-+		},
-+		.chained =3D true,
-+		.chain_id =3D ALC255_FIXUP_HEADSET_MODE,
-+	},
- 	[ALC293_FIXUP_DELL1_MIC_NO_PRESENCE] =3D {
- 		.type =3D HDA_FIXUP_PINS,
- 		.v.pins =3D (const struct hda_pintbl[]) {
-@@ -5543,6 +5553,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[=
-] =3D {
- 	SND_PCI_QUIRK(0x1025, 0x0775, "Acer Aspire E1-572", ALC271_FIXUP_HP_GAT=
-E_MIC_JACK_E1_572),
- 	SND_PCI_QUIRK(0x1025, 0x079b, "Acer Aspire V5-573G", ALC282_FIXUP_ASPIR=
-E_V5_PINS),
- 	SND_PCI_QUIRK(0x1025, 0x106d, "Acer Cloudbook 14", ALC283_FIXUP_CHROME_=
-BOOK),
-+	SND_PCI_QUIRK(0x1025, 0x1039, "Acer Aspire VN7-592G", ALC255_FIXUP_ASPI=
-RE_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x1028, 0x0470, "Dell M101z", ALC269_FIXUP_DELL_M101Z),
- 	SND_PCI_QUIRK(0x1028, 0x054b, "Dell XPS one 2710", ALC275_FIXUP_DELL_XP=
-S),
- 	SND_PCI_QUIRK(0x1028, 0x05bd, "Dell Latitude E6440", ALC292_FIXUP_DELL_=
-E7X),
-
---------------6932041063FD79FF12760C0D
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+--AhhlLboLdkugWU4S
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+Hi!
 
---------------6932041063FD79FF12760C0D--
+> > Both are based on v4.7-rc1. v4.6 worked ok for me.
+> >=20
+> > Lets test mini-v4.7: in-call speaker works ok there, and no alsactl
+> > warnings.
+> >=20
+> > mini-v4.7+cb7e62256e99d285e415cf75db67558f0f8bb107+6d2de5ab4328718302
+> > c54b20222c6b1a574c3fce
+> >=20
+> > : something seems to be broken there already.
+> >=20
+> > alsactl: set_control:1464: Cannot write control '2:0:0:TPA6130A2
+> > Headphone Playback Volume:0' : Remote I/O error
+> >=20
+> > But in-call speakers and wired headset still seems to work.
+> >=20
+> > Lets test mini-v4.9... works ok. I don't even get the remote i/o
+> > error. Interesting.
+> >=20
+> > So regression seems to be between v4.9 and v4.10. Any ideas?
+>=20
+> Interesting... seems there are no sound relevant changes after v4.9.
+>=20
+> Looks like there are only three commits after v4.9 for sound/soc which=20
+> are built for Nokia N900:
+>=20
+> e411b0b5eb9b65257a050eac333d181d6e00e2c6
+> e7aa450fe17890e59db7d3c2d8eff5b6b41fc531
+> 63c3194b82530bd71fd49db84eb7ab656b8d404a
+>=20
+> Maybe something not related to sound/soc could broke it?
+
+Lets see.
+
+a9042defa29a01cc538b742eab047848e9b5ae14 -- works ok.
+ce38207f161513ee3d2bd3860489f07ebe65bc78 --
+
+alsactl: set_control:1328: failed to obtain info for control #229 (No
+such file or directory)
+
+and broken in-call speaker. So this merge breaks stuff:
+
+commit ce38207f161513ee3d2bd3860489f07ebe65bc78
+Merge: a9042de 995c6a7
+Author: Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed Dec 14 11:14:28 2016 -0800
+
+    Merge tag 'sound-4.10-rc1' of
+    git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound
+=2E..
+      Below are some highlights:
+
+      ASoC:
+             - support for stereo DAPM controls
+	            - some initial work on the of-graph sound card
+		           - regmap conversions of the remaining AC'97
+      drivers
+             - a new version of the topology ABI; this should be
+      backward
+               compatible
+	              - updates / cleanups of rsnd, sunxi, sti,
+      nau8825, samsung, arizona,
+               Intel skylake, atom-sst
+	              - new drivers for Cirrus Logic CS42L42, Qualcomm
+      MSM8916-WCD, and
+               Realtek RT5665
+=2E..
+
+Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--AhhlLboLdkugWU4S
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlh7SW0ACgkQMOfwapXb+vJnPACgw8db68Qo1jIxe+CWHDvnCD/p
+jp4AnRQSxusJ9bnwCwOigYC12vpLRUKW
+=Z89V
+-----END PGP SIGNATURE-----
+
+--AhhlLboLdkugWU4S--
