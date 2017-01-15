@@ -1,29 +1,55 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [alsa-devel] [PATCH 1/1] ASoC: fsl_asrc: use dma_transfer_direction
- enum when calling dmaengine_prep_dma_cyclic
-Date: Sun, 15 Jan 2017 11:24:36 -0200
-Message-ID: <CAOMZO5DaR1r2E21njxtvg-4BZc1uR4rE25z0ncqavqZq76sm_Q@mail.gmail.com>
-References: <20170115124331.3546-1-nicolas.iooss_linux@m4x.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+From: Bhumika Goyal <bhumirks@gmail.com>
+Subject: [PATCH] ASoC: tegra: constify tegra30_ahub_soc_data structures
+Date: Sun, 15 Jan 2017 23:09:29 +0530
+Message-ID: <1484501969-7945-1-git-send-email-bhumirks@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170115124331.3546-1-nicolas.iooss_linux@m4x.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
-Cc: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, linux-kernel <linux-kernel@vger.kernel.org>
+To: julia.lawall@lip6.fr, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, linux-tegra@vger.kernel.org, thierry.reding@gmail.com, gnurou@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jan 15, 2017 at 10:43 AM, Nicolas Iooss
-<nicolas.iooss_linux@m4x.org> wrote:
-> When fsl_asrc_dma_prepare_and_submit() calls
-> dmaengine_prep_dma_cyclic(), it uses either DMA_TO_DEVICE or
-> DMA_FROM_DEVICE. These values are both items of dma_data_direction enum,
-> not of dma_data_direction enum, which is the type expected by
-> dmaengine_prep_dma_cyclic().
->
-> Replace DMA_TO_DEVICE with DMA_MEM_TO_DEV and DMA_FROM_DEVICE with
-> DMA_DEV_TO_MEM to fix this type mismatch issue.
->
-> Signed-off-by: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
+The tegra30_ahub_soc_data structures are only stored in the data field
+of of_device_id structures. This field is of type const, so
+tegra30_ahub_soc_data structures having the same property can be
+declared const too.
 
-Reviewed-by: Fabio Estevam <fabio.estevam@nxp.com>
+File size before: sound/soc/tegra/tegra30_ahub.o
+   text	   data	    bss	    dec	    hex	filename
+   7079	    240	      8	   7327	   1c9f	sound/soc/tegra/tegra30_ahub.o
+
+File size after: sound/soc/tegra/tegra30_ahub.o
+   text	   data	    bss	    dec	    hex	filename
+   7143	    192	      8	   7343	   1caf	sound/soc/tegra/tegra30_ahub.o
+
+Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+---
+ sound/soc/tegra/tegra30_ahub.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
+index fef3b9a..e63ef8d 100644
+--- a/sound/soc/tegra/tegra30_ahub.c
++++ b/sound/soc/tegra/tegra30_ahub.c
+@@ -493,17 +493,17 @@ static bool tegra30_ahub_ahub_wr_rd_reg(struct device *dev, unsigned int reg)
+ 	.cache_type = REGCACHE_FLAT,
+ };
+ 
+-static struct tegra30_ahub_soc_data soc_data_tegra30 = {
++static const struct tegra30_ahub_soc_data soc_data_tegra30 = {
+ 	.mod_list_mask = MOD_LIST_MASK_TEGRA30,
+ 	.set_audio_cif = tegra30_ahub_set_cif,
+ };
+ 
+-static struct tegra30_ahub_soc_data soc_data_tegra114 = {
++static const struct tegra30_ahub_soc_data soc_data_tegra114 = {
+ 	.mod_list_mask = MOD_LIST_MASK_TEGRA114,
+ 	.set_audio_cif = tegra30_ahub_set_cif,
+ };
+ 
+-static struct tegra30_ahub_soc_data soc_data_tegra124 = {
++static const struct tegra30_ahub_soc_data soc_data_tegra124 = {
+ 	.mod_list_mask = MOD_LIST_MASK_TEGRA124,
+ 	.set_audio_cif = tegra124_ahub_set_cif,
+ };
+-- 
+1.9.1
