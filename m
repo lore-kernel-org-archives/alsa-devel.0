@@ -1,16 +1,16 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH 18/30] ASoC: hdac_hdmi: Use ASoC jack instead
-	of snd_jack
-Date: Mon, 16 Jan 2017 23:27:45 +0530
-Message-ID: <1484589477-7630-19-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH 19/30] ASoC: Intel: Skylake: Create ASoC jack
+	for hdmi in rt286 machine
+Date: Mon, 16 Jan 2017 23:27:46 +0530
+Message-ID: <1484589477-7630-20-git-send-email-jeeja.kp@intel.com>
 References: <1484589477-7630-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 423C52668B3
- for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 18:48:07 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 221342668B3
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 18:48:11 +0100 (CET)
 In-Reply-To: <1484589477-7630-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,96 +27,58 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-Use snd_soc_jack instead of snd_jack and create the jack in machine
-driver and pass the jack pointer to hdac_hdmi driver for jack
-reporting.
+Creates ASoC jack for HDMI pcm and calls hdmi codec API to initialize
+jack in skl_rt268 machine
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 19 ++++++++-----------
- sound/soc/codecs/hdac_hdmi.h |  3 ++-
- 2 files changed, 10 insertions(+), 12 deletions(-)
+ sound/soc/intel/boards/skl_rt286.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 0c4531b..8c950f4 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -102,7 +102,7 @@ struct hdac_hdmi_pcm {
- 	int pcm_id;
- 	struct list_head port_list;
- 	struct hdac_hdmi_cvt *cvt;
--	struct snd_jack *jack;
-+	struct snd_soc_jack *jack;
- 	int stream_tag;
- 	int channels;
- 	int format;
-@@ -159,7 +159,8 @@ static void hdac_hdmi_jack_report(struct hdac_hdmi_pcm *pcm,
- 			dev_dbg(&edev->hdac.dev,
- 					"jack report for pcm=%d\n",
- 					pcm->pcm_id);
--			snd_jack_report(pcm->jack, SND_JACK_AVOUT);
-+			snd_soc_jack_report(pcm->jack, SND_JACK_AVOUT,
-+						SND_JACK_AVOUT);
- 		}
- 		pcm->jack_event++;
- 	} else {
-@@ -169,7 +170,7 @@ static void hdac_hdmi_jack_report(struct hdac_hdmi_pcm *pcm,
- 		 * to multiple ports.
- 		 */
- 		if (pcm->jack_event == 1)
--			snd_jack_report(pcm->jack, 0);
-+			snd_soc_jack_report(pcm->jack, 0, SND_JACK_AVOUT);
- 		if (pcm->jack_event > 0)
- 			pcm->jack_event--;
- 	}
-@@ -1555,13 +1556,11 @@ static struct snd_pcm *hdac_hdmi_get_pcm_from_id(struct snd_soc_card *card,
- 	return NULL;
- }
+diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
+index 5e56af3..11647b0 100644
+--- a/sound/soc/intel/boards/skl_rt286.c
++++ b/sound/soc/intel/boards/skl_rt286.c
+@@ -29,6 +29,7 @@
+ #include "../../codecs/hdac_hdmi.h"
  
--int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device)
-+int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device,
-+				struct snd_soc_jack *jack)
+ static struct snd_soc_jack skylake_headset;
++static struct snd_soc_jack skylake_hdmi[3];
+ 
+ struct skl_hdmi_pcm {
+ 	struct list_head head;
+@@ -458,16 +459,30 @@ static struct snd_soc_dai_link skylake_rt286_dais[] = {
+ 	},
+ };
+ 
++#define NAME_SIZE	32
+ static int skylake_card_late_probe(struct snd_soc_card *card)
  {
--	char jack_name[NAME_SIZE];
- 	struct snd_soc_codec *codec = dai->codec;
- 	struct hdac_ext_device *edev = snd_soc_codec_get_drvdata(codec);
--	struct snd_soc_dapm_context *dapm =
--		snd_soc_component_get_dapm(&codec->component);
- 	struct hdac_hdmi_priv *hdmi = edev->private_data;
- 	struct hdac_hdmi_pcm *pcm;
- 	struct snd_pcm *snd_pcm;
-@@ -1577,6 +1576,7 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device)
- 	pcm->pcm_id = device;
- 	pcm->cvt = hdmi->dai_map[dai->id].cvt;
- 	pcm->jack_event = 0;
-+	pcm->jack = jack;
- 	mutex_init(&pcm->lock);
- 	INIT_LIST_HEAD(&pcm->port_list);
- 	snd_pcm = hdac_hdmi_get_pcm_from_id(dai->component->card, device);
-@@ -1593,10 +1593,7 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device)
+ 	struct skl_rt286_private *ctx = snd_soc_card_get_drvdata(card);
+ 	struct skl_hdmi_pcm *pcm;
+-	int err;
++	int err, i = 0;
++	char jack_name[NAME_SIZE];
  
- 	list_add_tail(&pcm->head, &hdmi->pcm_list);
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
+-		err = hdac_hdmi_jack_init(pcm->codec_dai, pcm->device);
++		snprintf(jack_name, sizeof(jack_name),
++			"HDMI/DP, pcm=%d Jack", pcm->device);
++		err = snd_soc_card_jack_new(card, jack_name,
++					SND_JACK_AVOUT, &skylake_hdmi[i],
++					NULL, 0);
++
++		if (err)
++			return err;
++
++		err = hdac_hdmi_jack_init(pcm->codec_dai, pcm->device,
++						&skylake_hdmi[i]);
+ 		if (err < 0)
+ 			return err;
++
++		i++;
+ 	}
  
--	sprintf(jack_name, "HDMI/DP, pcm=%d Jack", device);
--
--	return snd_jack_new(dapm->card->snd_card, jack_name,
--		SND_JACK_AVOUT,	&pcm->jack, true, false);
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(hdac_hdmi_jack_init);
- 
-diff --git a/sound/soc/codecs/hdac_hdmi.h b/sound/soc/codecs/hdac_hdmi.h
-index 8dfd1e0..bf7edb3 100644
---- a/sound/soc/codecs/hdac_hdmi.h
-+++ b/sound/soc/codecs/hdac_hdmi.h
-@@ -1,6 +1,7 @@
- #ifndef __HDAC_HDMI_H__
- #define __HDAC_HDMI_H__
- 
--int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int pcm);
-+int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int pcm,
-+				struct snd_soc_jack *jack);
- 
- #endif /* __HDAC_HDMI_H__ */
+ 	return 0;
 -- 
 2.5.0
