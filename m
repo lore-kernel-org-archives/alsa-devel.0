@@ -1,79 +1,57 @@
-From: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Subject: Re: [PATCH 1/4] ASoC: es8328-i2c: Add compatible for ES8388
-Date: Mon, 16 Jan 2017 09:19:19 +0100
-Message-ID: <0b359554-66ab-cb3c-7cca-3a46c1e4ad05@collabora.com>
-References: <20170113161452.14313-1-romain.perier@collabora.com>
- <20170113161452.14313-2-romain.perier@collabora.com>
- <3724319.rPxRAuBZBQ@phil>
+From: Romain Perier <romain.perier@collabora.com>
+Subject: [PATCH v2 0/4] Add support for es8388 on the rock2
+Date: Mon, 16 Jan 2017 09:17:49 +0100
+Message-ID: <20170116081753.13666-1-romain.perier@collabora.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <3724319.rPxRAuBZBQ@phil>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
-Cc: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+ by alsa0.perex.cz (Postfix) with ESMTP id C4F22266539
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 09:18:11 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-rockchip@lists.infradead.org, Sjoerd Simons <sjoerd.simons@collabora.co.uk>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Romain Perier <romain.perier@collabora.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Heiko,
+This set of patches adds a machine driver for rockchip boards that use
+ES8388 codecs. It also adds slave mode to the es8328 driver that
+currently only supported the master mode. Then, it adds the required DT
+definitions to link rockchip-i2s to the es8388 analog output.
 
-Le 13/01/2017 à 17:43, Heiko Stuebner a écrit :
-> Hi Romain,
->
-> Am Freitag, 13. Januar 2017, 17:14:49 CET schrieb Romain Perier:
->> This commit adds a compatible string for everest,es8388. This is
->> an audio codec that is compatible with es8328.
->>
->> Signed-off-by: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
->> ---
->>   Documentation/devicetree/bindings/sound/es8328.txt | 2 +-
->>   sound/soc/codecs/es8328-i2c.c                      | 3 ++-
->>   2 files changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/sound/es8328.txt
->> b/Documentation/devicetree/bindings/sound/es8328.txt index 30ea8a3..33fbf05
->> 100644
->> --- a/Documentation/devicetree/bindings/sound/es8328.txt
->> +++ b/Documentation/devicetree/bindings/sound/es8328.txt
->> @@ -4,7 +4,7 @@ This device supports both I2C and SPI.
->>
->>   Required properties:
->>
->> -  - compatible : "everest,es8328"
->> +  - compatible  : Should be "everest,es8328" or "everest,es8388"
->>     - DVDD-supply : Regulator providing digital core supply voltage 1.8 -
->> 3.6V - AVDD-supply : Regulator providing analog supply voltage 3.3V
->>     - PVDD-supply : Regulator providing digital IO supply voltage 1.8 - 3.6V
->> diff --git a/sound/soc/codecs/es8328-i2c.c b/sound/soc/codecs/es8328-i2c.c
->> index 2d05b5d..09ae67f 100644
->> --- a/sound/soc/codecs/es8328-i2c.c
->> +++ b/sound/soc/codecs/es8328-i2c.c
->> @@ -19,13 +19,14 @@
->>   #include "es8328.h"
->>
->>   static const struct i2c_device_id es8328_id[] = {
->> -	{ "es8328", 0 },
->> +	{ "es8328", "es8388", 0 },
-> that looks strange or I'm just blind.
->
-> struct i2c_device_id {
->          char name[I2C_NAME_SIZE];
->          kernel_ulong_t driver_data;     /* Data private to the driver */
-> };
->
-> so shouldn't this be
->
->   static const struct i2c_device_id es8328_id[] = {
->   	{ "es8328", 0 },
-> +	{ "es8388", 0 },
->
-> instead?
+This work is based on the initial work that was done by Sjoerd Simons
+<sjoerd.simons@collabora.co.uk> with some improvements, changes and more
+commits.
 
-Good catch!
+Changes in v2:
+ - Fixed wrong use of the data structure i2c_device_id
+ - Fixed wrong dependencies for SND_SOC_ROCKCHIP_ES8388
 
-thanks,
-Romain
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Romain Perier (4):
+  ASoC: es8328-i2c: Add compatible for ES8388
+  ASoC: es8328: Add support for slave mode
+  ASoC: rockchip: Add machine driver for ES8388 codecs
+  arm: dts: Add support for ES8388 to the Radxa Rock 2
+
+ Documentation/devicetree/bindings/sound/es8328.txt |   2 +-
+ .../devicetree/bindings/sound/rockchip-es8388.txt  |  28 +++
+ arch/arm/boot/dts/rk3288-rock2-square.dts          |  37 +++
+ sound/soc/codecs/es8328-i2c.c                      |   2 +
+ sound/soc/codecs/es8328.c                          |  28 ++-
+ sound/soc/rockchip/Kconfig                         |   9 +
+ sound/soc/rockchip/Makefile                        |   2 +
+ sound/soc/rockchip/rockchip_es8388.c               | 270 +++++++++++++++++++++
+ 8 files changed, 371 insertions(+), 7 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/rockchip-es8388.txt
+ create mode 100644 sound/soc/rockchip/rockchip_es8388.c
+
+-- 
+2.9.3
