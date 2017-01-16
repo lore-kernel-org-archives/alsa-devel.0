@@ -1,75 +1,94 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH v5 3/3] ucm: Add command 'get _file' to get the
-	config file name of the opened card
-Date: Mon, 16 Jan 2017 18:44:23 +0800
-Message-ID: <99eb2a33b7eb68c295d39874e94742dd0f15f8b4.1484562658.git.mengdong.lin@linux.intel.com>
-References: <cover.1484562657.git.mengdong.lin@linux.intel.com>
+From: =?UTF-8?q?Micha=C5=82=20K=C4=99pie=C5=84?= <kernel@kempniu.pl>
+Subject: [PATCH v2 0/6] Move dell-led to drivers/platform/x86
+Date: Mon, 16 Jan 2017 14:21:58 +0100
+Message-ID: <20170116132204.6421-1-kernel@kempniu.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id D0F47266FCC
- for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 11:41:06 +0100 (CET)
-In-Reply-To: <cover.1484562657.git.mengdong.lin@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, Mengdong Lin <mengdong.lin@linux.intel.com>, mengdong.lin@intel.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-leds-owner@vger.kernel.org>
+Sender: linux-leds-owner@vger.kernel.org
+To: Richard Purdie <rpurdie@rpsys.net>, Jacek Anaszewski <jacek.anaszewski@gmail.com>, Pavel Machek <pavel@ucw.cz>, =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Anthony Wong <anthony.wong@canonical.com>, linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+This patch series moves the dell-led driver from the LED subsystem to
+the x86 platform driver subsystem.
 
-After opening a card, this command can show the name of the actually
-loaded configuration file, either matches the card name or card long name.
-So developers can check if there is a device-sepcific configuration file
-available for a given card.
+The original motivation behind this effort was to move all code using
+the dell-smbios module to the x86 platform driver subsystem.  While I
+was investigating the possibilities to do that, it quickly emerged that
+dell-led can and in fact should be moved to the x86 platform driver
+subsystem in its entirety.
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+dell-led consists of two major parts:
 
-diff --git a/include/use-case.h b/include/use-case.h
-index 8911645..ae22bde 100644
---- a/include/use-case.h
-+++ b/include/use-case.h
-@@ -230,6 +230,7 @@ int snd_use_case_get_list(snd_use_case_mgr_t *uc_mgr,
-  * Known identifiers:
-  *   - NULL 		- return current card
-  *   - _verb		- return current verb
-+ *   - _file		- return configuration file loaded for current card
-  *
-  *   - [=]{NAME}[/[{modifier}|{/device}][/{verb}]]
-  *                      - value identifier {NAME}
-diff --git a/src/ucm/main.c b/src/ucm/main.c
-index 38a5e81..2d33886 100644
---- a/src/ucm/main.c
-+++ b/src/ucm/main.c
-@@ -1528,6 +1528,20 @@ int snd_use_case_get(snd_use_case_mgr_t *uc_mgr,
-                         goto __end;
-                 }
- 	        err = 0;
-+	} else if (strcmp(identifier, "_file") == 0) {
-+		/* get the conf file name of the opened card */
-+		if ((uc_mgr->card_name == NULL)
-+		    || (uc_mgr->conf_file_name[0] == '\0')) {
-+			err = -ENOENT;
-+			goto __end;
-+		}
-+		*value = strndup(uc_mgr->conf_file_name, MAX_FILE);
-+		if (*value == NULL) {
-+			err = -ENOMEM;
-+			goto __end;
-+		}
-+		err = 0;
-+
- 	} else if (identifier[0] == '_') {
- 		err = -ENOENT;
- 		goto __end;
+  - the part exposing a microphone mute LED interface, introduced in
+    db6d8cc00773 ("dell-led: add mic mute led interface"); this
+    interface is used by sound/pci/hda/dell_wmi_helper.c; while the
+    original implementation used a WMI interface, it was changed to use
+    dell-smbios in cf0d7ea33596 ("dell-led: use dell_smbios_find_token()
+    for finding mic DMI tokens") and 0c41a08e131d ("dell-led: use
+    dell_smbios_send_request() for performing SMBIOS calls"),
+
+  - the part handling an activity LED present in Dell Latitude 2100
+    netbooks, introduced in 72dcd8d08aca ("leds: Add Dell Business Class
+    Netbook LED driver"); it binds to a specific WMI GUID and then
+    registers a LED device which is controlled using WMI (i.e. it is
+    essentially a WMI driver).
+
+Patches 1 and 2 clean up the microphone mute LED interface to minimize
+the amount of code moved around.
+
+Patch 3 updates a variable name in sound/pci/hda/dell_wmi_helper.c so
+that it better matches that variable's role.
+
+Patch 4 moves the microphone mute LED interface to
+drivers/platform/x86/dell-laptop.c, effectively causing
+sound/pci/hda/dell_wmi_helper.c to depend on CONFIG_DELL_LAPTOP instead
+of CONFIG_LEDS_DELL_NETBOOKS.
+
+Patch 5 reverts dell-led to the state it was in after its initial commit
+72dcd8d08aca ("leds: Add Dell Business Class Netbook LED driver") by
+removing all remnants of the microphone mute LED handling code.
+
+Patch 6 moves all that is left of dell-led (i.e. the activity LED part,
+as originally implemented), to a new module which is placed in
+drivers/platform/x86/dell-wmi-led.c.
+
+As all patches except patch 3 in this series affect the LED subsystem,
+the series is based on linux-leds/for-4.11.
+
+Anthony, I would be grateful if you could test this patch series on the
+Dell machines you have access to that were previously supported by
+dell-led as Jacek needs a Tested-by from someone to sign off on these
+changes.  Please note the Kconfig option rename done by the last patch.
+Thanks!
+
+Changes from v1:
+
+  - Squash patches 2-4 from v1 into a single patch (#2 in v2).
+
+  - Add patch 3.
+
+  - Fix subject pattern in patch 4.
+
+  - Slight commit message adjustments, including fixing a typo
+    ("COFIG_LEDS_DELL_NETBOOKS") in patch 6.
+
+  - Remove the name of the module's source file from the header comment
+    in drivers/platform/x86/dell-wmi-led.c to avoid the need to update
+    it in the future.
+
+ drivers/leds/Kconfig                               |  9 ---
+ drivers/leds/Makefile                              |  1 -
+ drivers/platform/x86/Kconfig                       |  8 +++
+ drivers/platform/x86/Makefile                      |  1 +
+ drivers/platform/x86/dell-laptop.c                 | 28 ++++++++
+ .../dell-led.c => platform/x86/dell-wmi-led.c}     | 75 ++--------------------
+ include/linux/dell-led.h                           |  6 +-
+ sound/pci/hda/dell_wmi_helper.c                    | 30 ++++-----
+ 8 files changed, 60 insertions(+), 98 deletions(-)
+ rename drivers/{leds/dell-led.c => platform/x86/dell-wmi-led.c} (73%)
+
 -- 
-2.7.4
+2.11.0
