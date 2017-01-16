@@ -1,23 +1,39 @@
-From: Matt Ranostay <matt@ranostay.consulting>
-Subject: Re: [PATCH v7] ASoC: omap-mcbsp: Add PM QoS support
- for McBSP to prevent glitches
-Date: Mon, 16 Jan 2017 11:30:52 -0800
-Message-ID: <CAJ_EiSTStr1TfGE2zVspFF0DkkXLOCDmiqD_jZkzue-GfsTm+Q@mail.gmail.com>
-References: <20170113035432.6723-1-matt@ranostay.consulting>
- <20170113152049.GD5696@atomide.com>
- <CAJ_EiSR-R=5qUKOfHWTTrjj+ZD6Q6BBf1yPj3atf84Q6K03NZg@mail.gmail.com>
- <20170116171743.GB7403@atomide.com>
+From: Milan Oravec <moravec@ukf.sk>
+Subject: Re: SoundBlaterX G5
+Date: Mon, 16 Jan 2017 22:29:14 +0100
+Message-ID: <8893efe5-8e73-3f75-b19c-b47891383342@ukf.sk>
+References: <c7f0fe10-92b0-0866-f638-96e78b6175c5@ukf.sk>
+ <35808a43-245b-a075-a433-d892897b40b4@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f178.google.com (mail-qt0-f178.google.com
- [209.85.216.178])
- by alsa0.perex.cz (Postfix) with ESMTP id B1CE626720A
- for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 20:30:53 +0100 (CET)
-Received: by mail-qt0-f178.google.com with SMTP id v23so117663163qtb.0
- for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 11:30:53 -0800 (PST)
-In-Reply-To: <20170116171743.GB7403@atomide.com>
+Received: from inmail2.ukf.sk (inmail2.ukf.sk [193.87.12.27])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6256926738D
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 22:29:23 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by inmail2.ukf.sk (Postfix) with ESMTP id 22A63108719
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 22:29:22 +0100 (CET)
+Received: from inmail2.ukf.sk ([127.0.0.1])
+ by localhost (inmail2.ukf.sk [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id gmqOmMzyECGV for <alsa-devel@alsa-project.org>;
+ Mon, 16 Jan 2017 22:29:18 +0100 (CET)
+Received: from posta.ukf.sk (posta.ukf.sk [193.87.12.33])
+ by inmail2.ukf.sk (Postfix) with ESMTPS id 4306C1189DE
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 22:29:18 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by posta.ukf.sk (Postfix) with ESMTP id C96151DF2B8
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 22:29:18 +0100 (CET)
+Received: from posta.ukf.sk ([127.0.0.1])
+ by localhost (posta.ukf.sk [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id iu5l2jxMa3zX for <alsa-devel@alsa-project.org>;
+ Mon, 16 Jan 2017 22:29:14 +0100 (CET)
+Received: from [192.168.15.252] (unknown [5.22.154.11])
+ (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+ (No client certificate requested)
+ by posta.ukf.sk (Postfix) with ESMTP id B3C5A1DF10F
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 22:29:14 +0100 (CET)
+In-Reply-To: <35808a43-245b-a075-a433-d892897b40b4@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,78 +43,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Linux OMAP List <linux-omap@vger.kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 16, 2017 at 9:17 AM, Tony Lindgren <tony@atomide.com> wrote:
-> * Matt Ranostay <matt@ranostay.consulting> [170113 21:16]:
->> On Fri, Jan 13, 2017 at 7:20 AM, Tony Lindgren <tony@atomide.com> wrote:
->> > * Matt Ranostay <matt@ranostay.consulting> [170112 19:55]:
->> >> We can get audio errors if hitting deeper idle states on omaps:
->> >>
->> >> [alsa.c:230] error: Fatal problem with alsa output, error -5.
->> >> [audio.c:614] error: Error in writing audio (Input/output error?)!
->> >>
->> >> This seems to happen with off mode idle enabled as power for the
->> >> whole SoC may get cut off between filling the McBSP fifo using DMA.
->> >> While active DMA blocks deeper idle states in hardware, McBSP
->> >> activity does not seem to do so.
->> >>
->> >> Basing the QoS latency calculation on the FIFO size, threshold,
->> >> sample rate, and channels.
->> >>
->> >> Based on the original patch by Tony Lindgren
->> >> Link: https://patchwork.kernel.org/patch/9305867/
->> >>
->> >> Cc: Tony Lindgren <tony@atomide.com>
->> >> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
->> >> Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
->> >> Signed-off-by: Matt Ranostay <matt@ranostay.consulting>
->> >> ---
->> >> Changes from v1:
->> >> * add calculations for latency per number of FIFO locations
->> >>
->> >> Changes from v2:
->> >> * add missing mcbsp.h header change
->> >>
->> >> Changes from v3:
->> >> * base the latency calculations on threshold, buffer size, sample
->> >>   rate, and channels
->> >>
->> >> Changes from v4:
->> >> * using Peter Ujfalusi's suggestions for restoring a higher latency on
->> >>   audio stream completion, or if not applicable remove the QoS request
->> >>
->> >> Changes from v5:
->> >> * clean up latency checking logic
->> >> * move logic to .prepare and .shutdown to avoid functions that can sleep
->> >>
->> >> Changes from v6:
->> >> * move QoS removal to asoc_mcbsp_remove from omap_mcbsp_cleanup
->> >> * also remove header include that is unneeded
->> >
->> > Hmm now I'm seeing these when starting or stopping playback:
+Hi Clemens,
+
+Sound card capabilities are enumerated when si device plugged in. I 
+think when I change "Speaker Clock Source" to direct audio sound card 
+capabilities need to be re-enumerated to update sampling rates.
+
+Is there any way to achieve this? I've tried to re-plug device after 
+changing "Speaker Clock Source" to direct audio, but DSP Clock is 
+default value.
+
+No additional drivers install is needed under OSX, there must be way to 
+do the same in Linux. Or am I optimist?
+
+Thank you, kind regards,
+
+Milan
+
+s pozdravom
+
+Milan Oravec
+
+CIKT UKF Nitra
+mobil: +421907670270
+email: moravec@ukf.sk
+
+--------------------------------------------------------------------
+
+Tuto spravu nepreveril ziadny antivirus - nebolo treba...
+
+On 15.01.2017 11:29, Clemens Ladisch wrote:
+> Milan Oravec wrote:
+>> http://www.alsa-project.org/db/?f=74ca49f354e9a100ebf7ba9fe9f6eb82c019f3ef
 >>
->> Ok I can't reproduce but I have an idea why it is happening. There is
->> likely a race condition between pm_qos_remove_request() and
->> omap_mcbsp_dai_shutdown()... Should we do a pm_qos_request_active
->> check in omap_mcbsp_dai_shutdown? That seems to be hacking around the
->> issue.
+>> The device is 192K/24 capable under OSX but only when is DSP clock
+>> source set to direct stereo, this may be the problem in linux.
 >
-> OK. Again this is with next using omap2plus_defconfig and:
+> There is a mixer control named "Speaker Clock Source".  Doesn't it work?
 >
-> CONFIG_DEBUG_LOCKDEP=y
-> CONFIG_DEBUG_ATOMIC_SLEEP=y
-
-Yep I was testing with that enabled. Not sure why I'm not getting it
-all... maybe different side effects like sample rate of the audio
-being played?
-
-Peter, is there chance that there is race condition is possible
-between pm_qos_remove_request and omap_mcbsp_dai_shutdown?
-
 >
 > Regards,
+> Clemens
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 >
-> Tony
