@@ -1,19 +1,23 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 0/2] ASoC: Add support for rt5640 sound
- card found on HP Pavilion x2 10-p000 tablet.
-Date: Mon, 16 Jan 2017 18:15:10 +0000
-Message-ID: <20170116181510.xe6cr7bpc2fzxumr@sirena.org.uk>
-References: <cover.1483660468.git.neko@nya.ai>
- <20170106070734.GP3573@localhost>
- <f3f42e1c-8dfe-4a7b-1ec8-58e28b792307@linux.intel.com>
+From: Matt Ranostay <matt@ranostay.consulting>
+Subject: Re: [PATCH v7] ASoC: omap-mcbsp: Add PM QoS support
+ for McBSP to prevent glitches
+Date: Mon, 16 Jan 2017 11:30:52 -0800
+Message-ID: <CAJ_EiSTStr1TfGE2zVspFF0DkkXLOCDmiqD_jZkzue-GfsTm+Q@mail.gmail.com>
+References: <20170113035432.6723-1-matt@ranostay.consulting>
+ <20170113152049.GD5696@atomide.com>
+ <CAJ_EiSR-R=5qUKOfHWTTrjj+ZD6Q6BBf1yPj3atf84Q6K03NZg@mail.gmail.com>
+ <20170116171743.GB7403@atomide.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7853605338610432132=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 45E5426720A
- for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 19:15:23 +0100 (CET)
-In-Reply-To: <f3f42e1c-8dfe-4a7b-1ec8-58e28b792307@linux.intel.com>
+Received: from mail-qt0-f178.google.com (mail-qt0-f178.google.com
+ [209.85.216.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id B1CE626720A
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 20:30:53 +0100 (CET)
+Received: by mail-qt0-f178.google.com with SMTP id v23so117663163qtb.0
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 11:30:53 -0800 (PST)
+In-Reply-To: <20170116171743.GB7403@atomide.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,49 +27,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, Alexandrov Stansilav <neko@nya.ai>, alsa-devel@alsa-project.org
+To: Tony Lindgren <tony@atomide.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Linux OMAP List <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Jan 16, 2017 at 9:17 AM, Tony Lindgren <tony@atomide.com> wrote:
+> * Matt Ranostay <matt@ranostay.consulting> [170113 21:16]:
+>> On Fri, Jan 13, 2017 at 7:20 AM, Tony Lindgren <tony@atomide.com> wrote:
+>> > * Matt Ranostay <matt@ranostay.consulting> [170112 19:55]:
+>> >> We can get audio errors if hitting deeper idle states on omaps:
+>> >>
+>> >> [alsa.c:230] error: Fatal problem with alsa output, error -5.
+>> >> [audio.c:614] error: Error in writing audio (Input/output error?)!
+>> >>
+>> >> This seems to happen with off mode idle enabled as power for the
+>> >> whole SoC may get cut off between filling the McBSP fifo using DMA.
+>> >> While active DMA blocks deeper idle states in hardware, McBSP
+>> >> activity does not seem to do so.
+>> >>
+>> >> Basing the QoS latency calculation on the FIFO size, threshold,
+>> >> sample rate, and channels.
+>> >>
+>> >> Based on the original patch by Tony Lindgren
+>> >> Link: https://patchwork.kernel.org/patch/9305867/
+>> >>
+>> >> Cc: Tony Lindgren <tony@atomide.com>
+>> >> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+>> >> Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+>> >> Signed-off-by: Matt Ranostay <matt@ranostay.consulting>
+>> >> ---
+>> >> Changes from v1:
+>> >> * add calculations for latency per number of FIFO locations
+>> >>
+>> >> Changes from v2:
+>> >> * add missing mcbsp.h header change
+>> >>
+>> >> Changes from v3:
+>> >> * base the latency calculations on threshold, buffer size, sample
+>> >>   rate, and channels
+>> >>
+>> >> Changes from v4:
+>> >> * using Peter Ujfalusi's suggestions for restoring a higher latency on
+>> >>   audio stream completion, or if not applicable remove the QoS request
+>> >>
+>> >> Changes from v5:
+>> >> * clean up latency checking logic
+>> >> * move logic to .prepare and .shutdown to avoid functions that can sleep
+>> >>
+>> >> Changes from v6:
+>> >> * move QoS removal to asoc_mcbsp_remove from omap_mcbsp_cleanup
+>> >> * also remove header include that is unneeded
+>> >
+>> > Hmm now I'm seeing these when starting or stopping playback:
+>>
+>> Ok I can't reproduce but I have an idea why it is happening. There is
+>> likely a race condition between pm_qos_remove_request() and
+>> omap_mcbsp_dai_shutdown()... Should we do a pm_qos_request_active
+>> check in omap_mcbsp_dai_shutdown? That seems to be hacking around the
+>> issue.
+>
+> OK. Again this is with next using omap2plus_defconfig and:
+>
+> CONFIG_DEBUG_LOCKDEP=y
+> CONFIG_DEBUG_ATOMIC_SLEEP=y
 
---===============7853605338610432132==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="gpvzrxt6q25hzkqy"
-Content-Disposition: inline
+Yep I was testing with that enabled. Not sure why I'm not getting it
+all... maybe different side effects like sample rate of the audio
+being played?
 
+Peter, is there chance that there is race condition is possible
+between pm_qos_remove_request and omap_mcbsp_dai_shutdown?
 
---gpvzrxt6q25hzkqy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, Jan 13, 2017 at 02:48:42PM -0600, Pierre-Louis Bossart wrote:
-
-> Mark was not CC:ed, not sure if he saw these two patches?
-
-Not if they weren't sent to me.
-
---gpvzrxt6q25hzkqy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlh9Da0ACgkQJNaLcl1U
-h9Cvnwf/ZbXYzQNEfVPfXdE7Oi8b2TgtKji8aLgh2ClGV0o1ajLWytkXrR5KGdxF
-uoQTQqHZ8bX7oUwbMD34hYXLrSaHzn+UKlU7Q1CZrHm3MxPh82yP3O6hjhQtVOo6
-NMG3Mu8o7bPTlJ7wLxkVQR59ytim5mCkV7HuUbuULR6BNzasObNV8YCQtz0KgghI
-YRKeUe0Av4pz+12RxvROTbe6abHU6eQfUGHhz20TVG0/9tGj6Kb9JYGqcq/z2ijp
-yON4PIgi60tNWyi/ahSt2+1Cde/HHyx9R/x3mPb7YKapcMpMk/Gc/Ms3BuMkS57I
-hB7OFgipllC/Chb1EFc1hHsLGAd8tw==
-=mWHR
------END PGP SIGNATURE-----
-
---gpvzrxt6q25hzkqy--
-
---===============7853605338610432132==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7853605338610432132==--
+>
+> Regards,
+>
+> Tony
