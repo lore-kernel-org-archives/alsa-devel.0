@@ -1,155 +1,525 @@
-From: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Subject: Re: [PATCH v2 6/6] dell-led: move driver to
- drivers/platform/x86/dell-wmi-led.c
-Date: Mon, 16 Jan 2017 21:49:54 +0100
-Message-ID: <b702265e-893e-e3b1-1262-f959d230d552@gmail.com>
-References: <20170116132204.6421-1-kernel@kempniu.pl>
- <20170116132204.6421-7-kernel@kempniu.pl>
+From: jeeja.kp@intel.com
+Subject: [PATCH 02/30] ASoC: hdac_hdmi: Register widget event
+	handlers
+Date: Mon, 16 Jan 2017 23:27:29 +0530
+Message-ID: <1484589477-7630-3-git-send-email-jeeja.kp@intel.com>
+References: <1484589477-7630-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <platform-driver-x86-owner@vger.kernel.org>
-In-Reply-To: <20170116132204.6421-7-kernel@kempniu.pl>
-Sender: platform-driver-x86-owner@vger.kernel.org
-To: =?UTF-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>, Richard Purdie <rpurdie@rpsys.net>, Pavel Machek <pavel@ucw.cz>, =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Anthony Wong <anthony.wong@canonical.com>, linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A6D12670FA
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 18:47:00 +0100 (CET)
+In-Reply-To: <1484589477-7630-1-git-send-email-jeeja.kp@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Michał,
+From: Jeeja KP <jeeja.kp@intel.com>
 
-Thanks for the patch set.
+In case of hdmi connect/disconnect or when stream need to be route to
+multiple monitors, corresponding port and audio infoframe needs to be
+reconfigured. Currently all the configuration are done in DAI ops which
+results in silence playback.
 
-Would you mind fixing also the following issues raised by
-checkpatch.pl?:
+So use dapm widget event handlers to program audio infoframe and enable
+/disable port configuration when widget is power on/off.
 
-WARNING: Missing a blank line after declarations
-#376: FILE: drivers/platform/x86/dell-wmi-led.c:64:
-+	struct bios_args args;
-+	args.length = length;
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+---
+ sound/soc/codecs/hdac_hdmi.c | 359 ++++++++++++++++++++++---------------------
+ 1 file changed, 183 insertions(+), 176 deletions(-)
 
-WARNING: Block comments use * on subsequent lines
-#460: FILE: drivers/platform/x86/dell-wmi-led.c:148:
-+	/* The Dell LED delay is based on 125ms intervals.
-+	   Need to round up to next interval. */
-
-WARNING: Block comments use a trailing */ on a separate line
-#460: FILE: drivers/platform/x86/dell-wmi-led.c:148:
-+	   Need to round up to next interval. */
-
-WARNING: Comparisons should place the constant on the right side of the test
-#463: FILE: drivers/platform/x86/dell-wmi-led.c:151:
-+	if (0 == on_eighths)
-
-WARNING: Comparisons should place the constant on the right side of the test
-#470: FILE: drivers/platform/x86/dell-wmi-led.c:158:
-+	if (0 == off_eighths)
-
-The fixes could be placed in an incremental patch after this one.
-
-Best regards,
-Jacek Anaszewski
-
-
-On 01/16/2017 02:22 PM, Michał Kępień wrote:
-> The dell-led driver handles a specific WMI GUID present on some Dell
-> laptops and as such it belongs in the x86 platform driver subsystem.
-> Source code is moved along with the relevant Kconfig and Makefile
-> entries, with some minor modifications:
-> 
->   - Kconfig option is renamed from CONFIG_LEDS_DELL_NETBOOKS to
->     CONFIG_DELL_WMI_LED,
-> 
->   - the X86 Kconfig dependency is removed as the whole
->     drivers/platform/x86 menu depends on it, so there is no need to
->     duplicate it,
-> 
->   - the name of the module's source file is removed from the header
->     comment to avoid the need to update it in the future.
-> 
-> Signed-off-by: Michał Kępień <kernel@kempniu.pl>
-> ---
->  drivers/leds/Kconfig                                     | 8 --------
->  drivers/leds/Makefile                                    | 1 -
->  drivers/platform/x86/Kconfig                             | 8 ++++++++
->  drivers/platform/x86/Makefile                            | 1 +
->  drivers/{leds/dell-led.c => platform/x86/dell-wmi-led.c} | 2 --
->  5 files changed, 9 insertions(+), 11 deletions(-)
->  rename drivers/{leds/dell-led.c => platform/x86/dell-wmi-led.c} (99%)
-> 
-> diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-> index f29b8698ca88..5af3fb2f52e4 100644
-> --- a/drivers/leds/Kconfig
-> +++ b/drivers/leds/Kconfig
-> @@ -454,14 +454,6 @@ config LEDS_ADP5520
->  	  To compile this driver as a module, choose M here: the module will
->  	  be called leds-adp5520.
->  
-> -config LEDS_DELL_NETBOOKS
-> -	tristate "External LED on Dell Business Netbooks"
-> -	depends on LEDS_CLASS
-> -	depends on X86 && ACPI_WMI
-> -	help
-> -	  This adds support for the Latitude 2100 and similar
-> -	  notebooks that have an external LED.
-> -
->  config LEDS_MC13783
->  	tristate "LED Support for MC13XXX PMIC"
->  	depends on LEDS_CLASS
-> diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
-> index 6b8273736478..558d24675454 100644
-> --- a/drivers/leds/Makefile
-> +++ b/drivers/leds/Makefile
-> @@ -52,7 +52,6 @@ obj-$(CONFIG_LEDS_REGULATOR)		+= leds-regulator.o
->  obj-$(CONFIG_LEDS_INTEL_SS4200)		+= leds-ss4200.o
->  obj-$(CONFIG_LEDS_LT3593)		+= leds-lt3593.o
->  obj-$(CONFIG_LEDS_ADP5520)		+= leds-adp5520.o
-> -obj-$(CONFIG_LEDS_DELL_NETBOOKS)	+= dell-led.o
->  obj-$(CONFIG_LEDS_MC13783)		+= leds-mc13783.o
->  obj-$(CONFIG_LEDS_NS2)			+= leds-ns2.o
->  obj-$(CONFIG_LEDS_NETXBIG)		+= leds-netxbig.o
-> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
-> index 81b8dcca8891..f9018e8c1e49 100644
-> --- a/drivers/platform/x86/Kconfig
-> +++ b/drivers/platform/x86/Kconfig
-> @@ -143,6 +143,14 @@ config DELL_WMI_AIO
->  	  To compile this driver as a module, choose M here: the module will
->  	  be called dell-wmi-aio.
->  
-> +config DELL_WMI_LED
-> +	tristate "External LED on Dell Business Netbooks"
-> +	depends on LEDS_CLASS
-> +	depends on ACPI_WMI
-> +	help
-> +	  This adds support for the Latitude 2100 and similar
-> +	  notebooks that have an external LED.
-> +
->  config DELL_SMO8800
->  	tristate "Dell Latitude freefall driver (ACPI SMO88XX)"
->  	depends on ACPI
-> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
-> index 2efa86d2a1a7..b061817ecaf1 100644
-> --- a/drivers/platform/x86/Makefile
-> +++ b/drivers/platform/x86/Makefile
-> @@ -15,6 +15,7 @@ obj-$(CONFIG_DELL_SMBIOS)	+= dell-smbios.o
->  obj-$(CONFIG_DELL_LAPTOP)	+= dell-laptop.o
->  obj-$(CONFIG_DELL_WMI)		+= dell-wmi.o
->  obj-$(CONFIG_DELL_WMI_AIO)	+= dell-wmi-aio.o
-> +obj-$(CONFIG_DELL_WMI_LED)	+= dell-wmi-led.o
->  obj-$(CONFIG_DELL_SMO8800)	+= dell-smo8800.o
->  obj-$(CONFIG_DELL_RBTN)		+= dell-rbtn.o
->  obj-$(CONFIG_ACER_WMI)		+= acer-wmi.o
-> diff --git a/drivers/leds/dell-led.c b/drivers/platform/x86/dell-wmi-led.c
-> similarity index 99%
-> rename from drivers/leds/dell-led.c
-> rename to drivers/platform/x86/dell-wmi-led.c
-> index e5c57389efd6..d0232c7f1909 100644
-> --- a/drivers/leds/dell-led.c
-> +++ b/drivers/platform/x86/dell-wmi-led.c
-> @@ -1,6 +1,4 @@
->  /*
-> - * dell_led.c - Dell LED Driver
-> - *
->   * Copyright (C) 2010 Dell Inc.
->   * Louis Davis <louis_davis@dell.com>
->   * Jim Dailey <jim_dailey@dell.com>
-> 
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 548474d..c0b49f4 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -97,6 +97,9 @@ struct hdac_hdmi_pcm {
+ 	struct hdac_hdmi_pin *pin;
+ 	struct hdac_hdmi_cvt *cvt;
+ 	struct snd_jack *jack;
++	int stream_tag;
++	int channels;
++	int format;
+ };
+ 
+ struct hdac_hdmi_dai_pin_map {
+@@ -116,11 +119,19 @@ struct hdac_hdmi_priv {
+ 	struct hdac_chmap chmap;
+ };
+ 
+-static void hdac_hdmi_enable_cvt(struct hdac_ext_device *edev,
+-			struct hdac_hdmi_dai_pin_map *dai_map);
++static struct hdac_hdmi_pcm *
++hdac_hdmi_get_pcm_from_cvt(struct hdac_hdmi_priv *hdmi,
++			   struct hdac_hdmi_cvt *cvt)
++{
++	struct hdac_hdmi_pcm *pcm = NULL;
+ 
+-static int hdac_hdmi_enable_pin(struct hdac_ext_device *hdac,
+-			struct hdac_hdmi_dai_pin_map *dai_map);
++	list_for_each_entry(pcm, &hdmi->pcm_list, head) {
++		if (pcm->cvt == cvt)
++			break;
++	}
++
++	return pcm;
++}
+ 
+ static struct hdac_hdmi_pcm *get_hdmi_pcm_from_id(struct hdac_hdmi_priv *hdmi,
+ 						int pcm_idx)
+@@ -181,25 +192,6 @@ static int hdac_hdmi_eld_limit_formats(struct snd_pcm_runtime *runtime,
+ 
+ }
+ 
+-static int hdac_hdmi_setup_stream(struct hdac_ext_device *hdac,
+-				hda_nid_t cvt_nid, hda_nid_t pin_nid,
+-				u32 stream_tag, int format)
+-{
+-	unsigned int val;
+-
+-	dev_dbg(&hdac->hdac.dev, "cvt nid %d pnid %d stream %d format 0x%x\n",
+-			cvt_nid, pin_nid, stream_tag, format);
+-
+-	val = (stream_tag << 4);
+-
+-	snd_hdac_codec_write(&hdac->hdac, cvt_nid, 0,
+-				AC_VERB_SET_CHANNEL_STREAMID, val);
+-	snd_hdac_codec_write(&hdac->hdac, cvt_nid, 0,
+-				AC_VERB_SET_STREAM_FORMAT, format);
+-
+-	return 0;
+-}
+-
+ static void
+ hdac_hdmi_set_dip_index(struct hdac_ext_device *hdac, hda_nid_t pin_nid,
+ 				int packet_index, int byte_index)
+@@ -312,54 +304,25 @@ static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
+ 	return 0;
+ }
+ 
+-static void hdac_hdmi_set_power_state(struct hdac_ext_device *edev,
+-		struct hdac_hdmi_dai_pin_map *dai_map, unsigned int pwr_state)
+-{
+-	/* Power up pin widget */
+-	if (!snd_hdac_check_power_state(&edev->hdac, dai_map->pin->nid,
+-						pwr_state))
+-		snd_hdac_codec_write(&edev->hdac, dai_map->pin->nid, 0,
+-			AC_VERB_SET_POWER_STATE, pwr_state);
+-
+-	/* Power up converter */
+-	if (!snd_hdac_check_power_state(&edev->hdac, dai_map->cvt->nid,
+-						pwr_state))
+-		snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
+-			AC_VERB_SET_POWER_STATE, pwr_state);
+-}
+-
+-static int hdac_hdmi_playback_prepare(struct snd_pcm_substream *substream,
+-				struct snd_soc_dai *dai)
++static int hdac_hdmi_set_tdm_slot(struct snd_soc_dai *dai,
++		unsigned int tx_mask, unsigned int rx_mask,
++		int slots, int slot_width)
+ {
+-	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
+-	struct hdac_hdmi_priv *hdmi = hdac->private_data;
++	struct hdac_ext_device *edev = snd_soc_dai_get_drvdata(dai);
++	struct hdac_hdmi_priv *hdmi = edev->private_data;
+ 	struct hdac_hdmi_dai_pin_map *dai_map;
+-	struct hdac_hdmi_pin *pin;
+-	struct hdac_ext_dma_params *dd;
+-	int ret;
++	struct hdac_hdmi_pcm *pcm;
+ 
+-	dai_map = &hdmi->dai_map[dai->id];
+-	pin = dai_map->pin;
++	dev_dbg(&edev->hdac.dev, "%s: strm_tag: %d\n", __func__, tx_mask);
+ 
+-	dd = (struct hdac_ext_dma_params *)snd_soc_dai_get_dma_data(dai, substream);
+-	dev_dbg(&hdac->hdac.dev, "stream tag from cpu dai %d format in cvt 0x%x\n",
+-			dd->stream_tag,	dd->format);
++	dai_map = &hdmi->dai_map[dai->id];
+ 
+-	hdac_hdmi_enable_cvt(hdac, dai_map);
+-	ret = hdac_hdmi_enable_pin(hdac, dai_map);
+-	if (ret < 0)
+-		return ret;
+-	mutex_lock(&pin->lock);
+-	pin->channels = substream->runtime->channels;
++	pcm = hdac_hdmi_get_pcm_from_cvt(hdmi, dai_map->cvt);
+ 
+-	ret = hdac_hdmi_setup_audio_infoframe(hdac, dai_map->cvt->nid,
+-						dai_map->pin->nid);
+-	mutex_unlock(&pin->lock);
+-	if (ret < 0)
+-		return ret;
++	if (pcm)
++		pcm->stream_tag = (tx_mask << 4);
+ 
+-	return hdac_hdmi_setup_stream(hdac, dai_map->cvt->nid,
+-			dai_map->pin->nid, dd->stream_tag, dd->format);
++	return 0;
+ }
+ 
+ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
+@@ -369,7 +332,8 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
+ 	struct hdac_hdmi_priv *hdmi = hdac->private_data;
+ 	struct hdac_hdmi_dai_pin_map *dai_map;
+ 	struct hdac_hdmi_pin *pin;
+-	struct hdac_ext_dma_params *dd;
++	struct hdac_hdmi_pcm *pcm;
++	int format;
+ 
+ 	dai_map = &hdmi->dai_map[dai->id];
+ 	pin = dai_map->pin;
+@@ -383,79 +347,16 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
+ 		return -ENODEV;
+ 	}
+ 
+-	dd = snd_soc_dai_get_dma_data(dai, substream);
+-	if (!dd) {
+-		dd = kzalloc(sizeof(*dd), GFP_KERNEL);
+-		if (!dd)
+-			return -ENOMEM;
+-	}
+-
+-	dd->format = snd_hdac_calc_stream_format(params_rate(hparams),
++	format = snd_hdac_calc_stream_format(params_rate(hparams),
+ 			params_channels(hparams), params_format(hparams),
+ 			24, 0);
+ 
+-	snd_soc_dai_set_dma_data(dai, substream, (void *)dd);
+-
+-	return 0;
+-}
+-
+-static int hdac_hdmi_playback_cleanup(struct snd_pcm_substream *substream,
+-		struct snd_soc_dai *dai)
+-{
+-	struct hdac_ext_device *edev = snd_soc_dai_get_drvdata(dai);
+-	struct hdac_ext_dma_params *dd;
+-	struct hdac_hdmi_priv *hdmi = edev->private_data;
+-	struct hdac_hdmi_dai_pin_map *dai_map;
+-
+-	dai_map = &hdmi->dai_map[dai->id];
+-
+-	dd = (struct hdac_ext_dma_params *)snd_soc_dai_get_dma_data(dai, substream);
+-
+-	if (dd) {
+-		snd_soc_dai_set_dma_data(dai, substream, NULL);
+-		kfree(dd);
+-	}
+-
+-	return 0;
+-}
+-
+-static void hdac_hdmi_enable_cvt(struct hdac_ext_device *edev,
+-		struct hdac_hdmi_dai_pin_map *dai_map)
+-{
+-	/* Enable transmission */
+-	snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
+-			AC_VERB_SET_DIGI_CONVERT_1, 1);
+-
+-	/* Category Code (CC) to zero */
+-	snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
+-			AC_VERB_SET_DIGI_CONVERT_2, 0);
+-}
+-
+-static int hdac_hdmi_enable_pin(struct hdac_ext_device *hdac,
+-		struct hdac_hdmi_dai_pin_map *dai_map)
+-{
+-	int mux_idx;
+-	struct hdac_hdmi_pin *pin = dai_map->pin;
+-
+-	for (mux_idx = 0; mux_idx < pin->num_mux_nids; mux_idx++) {
+-		if (pin->mux_nids[mux_idx] == dai_map->cvt->nid) {
+-			snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
+-					AC_VERB_SET_CONNECT_SEL, mux_idx);
+-			break;
+-		}
+-	}
+-
+-	if (mux_idx == pin->num_mux_nids)
++	pcm = hdac_hdmi_get_pcm_from_cvt(hdmi, dai_map->cvt);
++	if (!pcm)
+ 		return -EIO;
+ 
+-	/* Enable out path for this pin widget */
+-	snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
+-			AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT);
+-
+-	hdac_hdmi_set_power_state(hdac, dai_map, AC_PWRST_D0);
+-
+-	snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
+-			AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
++	pcm->format = format;
++	pcm->channels = params_channels(hparams);
+ 
+ 	return 0;
+ }
+@@ -569,27 +470,6 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
+ 				pin->eld.eld_buffer);
+ }
+ 
+-static int hdac_hdmi_trigger(struct snd_pcm_substream *substream, int cmd,
+-		struct snd_soc_dai *dai)
+-{
+-	struct hdac_hdmi_dai_pin_map *dai_map;
+-	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
+-	struct hdac_hdmi_priv *hdmi = hdac->private_data;
+-
+-	dai_map = &hdmi->dai_map[dai->id];
+-	switch (cmd) {
+-	case SNDRV_PCM_TRIGGER_RESUME:
+-	case SNDRV_PCM_TRIGGER_START:
+-	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+-		return hdac_hdmi_playback_prepare(substream, dai);
+-
+-	default:
+-		return 0;
+-	}
+-
+-	return 0;
+-}
+-
+ static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
+@@ -600,16 +480,6 @@ static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
+ 	dai_map = &hdmi->dai_map[dai->id];
+ 
+ 	if (dai_map->pin) {
+-		snd_hdac_codec_write(&hdac->hdac, dai_map->cvt->nid, 0,
+-				AC_VERB_SET_CHANNEL_STREAMID, 0);
+-		snd_hdac_codec_write(&hdac->hdac, dai_map->cvt->nid, 0,
+-				AC_VERB_SET_STREAM_FORMAT, 0);
+-
+-		hdac_hdmi_set_power_state(hdac, dai_map, AC_PWRST_D3);
+-
+-		snd_hdac_codec_write(&hdac->hdac, dai_map->pin->nid, 0,
+-			AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE);
+-
+ 		mutex_lock(&dai_map->pin->lock);
+ 		dai_map->pin->chmap_set = false;
+ 		memset(dai_map->pin->chmap, 0, sizeof(dai_map->pin->chmap));
+@@ -650,10 +520,11 @@ hdac_hdmi_query_cvt_params(struct hdac_device *hdac, struct hdac_hdmi_cvt *cvt)
+ }
+ 
+ static int hdac_hdmi_fill_widget_info(struct device *dev,
+-				struct snd_soc_dapm_widget *w,
+-				enum snd_soc_dapm_type id, void *priv,
+-				const char *wname, const char *stream,
+-				struct snd_kcontrol_new *wc, int numkc)
++		struct snd_soc_dapm_widget *w, enum snd_soc_dapm_type id,
++		void *priv, const char *wname, const char *stream,
++		struct snd_kcontrol_new *wc, int numkc,
++		int (*event)(struct snd_soc_dapm_widget *,
++		struct snd_kcontrol *, int), unsigned short event_flags)
+ {
+ 	w->id = id;
+ 	w->name = devm_kstrdup(dev, wname, GFP_KERNEL);
+@@ -666,6 +537,8 @@ static int hdac_hdmi_fill_widget_info(struct device *dev,
+ 	w->kcontrol_news = wc;
+ 	w->num_kcontrols = numkc;
+ 	w->priv = priv;
++	w->event = event;
++	w->event_flags = event_flags;
+ 
+ 	return 0;
+ }
+@@ -695,6 +568,136 @@ static struct hdac_hdmi_pcm *hdac_hdmi_get_pcm(struct hdac_ext_device *edev,
+ 	return NULL;
+ }
+ 
++static void hdac_hdmi_set_power_state(struct hdac_ext_device *edev,
++			     hda_nid_t nid, unsigned int pwr_state)
++{
++	if (get_wcaps(&edev->hdac, nid) & AC_WCAP_POWER) {
++		if (!snd_hdac_check_power_state(&edev->hdac, nid, pwr_state))
++			snd_hdac_codec_write(&edev->hdac, nid, 0,
++				AC_VERB_SET_POWER_STATE, pwr_state);
++	}
++}
++
++static void hdac_hdmi_set_amp(struct hdac_ext_device *edev,
++				   hda_nid_t nid, int val)
++{
++	if (get_wcaps(&edev->hdac, nid) & AC_WCAP_OUT_AMP)
++		snd_hdac_codec_write(&edev->hdac, nid, 0,
++					AC_VERB_SET_AMP_GAIN_MUTE, val);
++}
++
++
++static int hdac_hdmi_pin_output_widget_event(struct snd_soc_dapm_widget *w,
++					struct snd_kcontrol *kc, int event)
++{
++	struct hdac_hdmi_pin *pin = w->priv;
++	struct hdac_ext_device *edev = to_hda_ext_device(w->dapm->dev);
++	struct hdac_hdmi_pcm *pcm;
++
++	dev_dbg(&edev->hdac.dev, "%s: widget: %s event: %x\n",
++			__func__, w->name, event);
++
++	pcm = hdac_hdmi_get_pcm(edev, pin);
++	if (!pcm)
++		return -EIO;
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		hdac_hdmi_set_power_state(edev, pin->nid, AC_PWRST_D0);
++
++		/* Enable out path for this pin widget */
++		snd_hdac_codec_write(&edev->hdac, pin->nid, 0,
++				AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT);
++
++		hdac_hdmi_set_amp(edev, pin->nid, AMP_OUT_UNMUTE);
++
++		return hdac_hdmi_setup_audio_infoframe(edev, pcm->cvt->nid,
++								pin->nid);
++
++	case SND_SOC_DAPM_POST_PMD:
++		hdac_hdmi_set_amp(edev, pin->nid, AMP_OUT_MUTE);
++
++		/* Disable out path for this pin widget */
++		snd_hdac_codec_write(&edev->hdac, pin->nid, 0,
++				AC_VERB_SET_PIN_WIDGET_CONTROL, 0);
++
++		hdac_hdmi_set_power_state(edev, pin->nid, AC_PWRST_D3);
++		break;
++
++	}
++
++	return 0;
++}
++
++static int hdac_hdmi_cvt_output_widget_event(struct snd_soc_dapm_widget *w,
++					struct snd_kcontrol *kc, int event)
++{
++	struct hdac_hdmi_cvt *cvt = w->priv;
++	struct hdac_ext_device *edev = to_hda_ext_device(w->dapm->dev);
++	struct hdac_hdmi_priv *hdmi = edev->private_data;
++	struct hdac_hdmi_pcm *pcm;
++
++	dev_dbg(&edev->hdac.dev, "%s: widget: %s event: %x\n",
++			__func__, w->name, event);
++
++	pcm = hdac_hdmi_get_pcm_from_cvt(hdmi, cvt);
++	if (!pcm)
++		return -EIO;
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		hdac_hdmi_set_power_state(edev, cvt->nid, AC_PWRST_D0);
++
++		/* Enable transmission */
++		snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
++			AC_VERB_SET_DIGI_CONVERT_1, 1);
++
++		/* Category Code (CC) to zero */
++		snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
++			AC_VERB_SET_DIGI_CONVERT_2, 0);
++
++		snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
++				AC_VERB_SET_CHANNEL_STREAMID, pcm->stream_tag);
++		snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
++				AC_VERB_SET_STREAM_FORMAT, pcm->format);
++		break;
++
++	case SND_SOC_DAPM_POST_PMD:
++		snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
++				AC_VERB_SET_CHANNEL_STREAMID, 0);
++		snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
++				AC_VERB_SET_STREAM_FORMAT, 0);
++
++		hdac_hdmi_set_power_state(edev, cvt->nid, AC_PWRST_D3);
++		break;
++
++	}
++
++	return 0;
++}
++
++static int hdac_hdmi_pin_mux_widget_event(struct snd_soc_dapm_widget *w,
++					struct snd_kcontrol *kc, int event)
++{
++	struct hdac_hdmi_pin *pin = w->priv;
++	struct hdac_ext_device *edev = to_hda_ext_device(w->dapm->dev);
++	int mux_idx;
++
++	dev_dbg(&edev->hdac.dev, "%s: widget: %s event: %x\n",
++			__func__, w->name, event);
++
++	if (!kc)
++		kc  = w->kcontrols[0];
++
++	mux_idx = dapm_kcontrol_get_value(kc);
++	if (mux_idx > 0) {
++		snd_hdac_codec_write(&edev->hdac, pin->nid, 0,
++			AC_VERB_SET_CONNECT_SEL, (mux_idx - 1));
++	}
++
++	return 0;
++}
++
+ /*
+  * Based on user selection, map the PINs with the PCMs.
+  */
+@@ -812,7 +815,9 @@ static int hdac_hdmi_create_pin_muxs(struct hdac_ext_device *edev,
+ 		return -ENOMEM;
+ 
+ 	return hdac_hdmi_fill_widget_info(&edev->hdac.dev, widget,
+-			snd_soc_dapm_mux, pin, widget_name, NULL, kc, 1);
++			snd_soc_dapm_mux, pin, widget_name, NULL, kc, 1,
++			hdac_hdmi_pin_mux_widget_event,
++			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_REG);
+ }
+ 
+ /* Add cvt <- input <- mux route map */
+@@ -883,8 +888,10 @@ static int create_fill_widget_route_map(struct snd_soc_dapm_context *dapm)
+ 	list_for_each_entry(cvt, &hdmi->cvt_list, head) {
+ 		sprintf(widget_name, "Converter %d", cvt->nid);
+ 		ret = hdac_hdmi_fill_widget_info(dapm->dev, &widgets[i],
+-			snd_soc_dapm_aif_in, &cvt->nid,
+-			widget_name, dai_drv[i].playback.stream_name, NULL, 0);
++			snd_soc_dapm_aif_in, cvt,
++			widget_name, dai_drv[i].playback.stream_name, NULL, 0,
++			hdac_hdmi_cvt_output_widget_event,
++			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD);
+ 		if (ret < 0)
+ 			return ret;
+ 		i++;
+@@ -893,8 +900,10 @@ static int create_fill_widget_route_map(struct snd_soc_dapm_context *dapm)
+ 	list_for_each_entry(pin, &hdmi->pin_list, head) {
+ 		sprintf(widget_name, "hif%d Output", pin->nid);
+ 		ret = hdac_hdmi_fill_widget_info(dapm->dev, &widgets[i],
+-				snd_soc_dapm_output, &pin->nid,
+-				widget_name, NULL, NULL, 0);
++				snd_soc_dapm_output, pin,
++				widget_name, NULL, NULL, 0,
++			hdac_hdmi_pin_output_widget_event,
++			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD);
+ 		if (ret < 0)
+ 			return ret;
+ 		i++;
+@@ -1150,9 +1159,7 @@ static struct snd_soc_dai_ops hdmi_dai_ops = {
+ 	.startup = hdac_hdmi_pcm_open,
+ 	.shutdown = hdac_hdmi_pcm_close,
+ 	.hw_params = hdac_hdmi_set_hw_params,
+-	.prepare = hdac_hdmi_playback_prepare,
+-	.trigger = hdac_hdmi_trigger,
+-	.hw_free = hdac_hdmi_playback_cleanup,
++	.set_tdm_slot = hdac_hdmi_set_tdm_slot,
+ };
+ 
+ /*
+-- 
+2.5.0
