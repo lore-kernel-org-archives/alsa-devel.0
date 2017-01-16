@@ -1,108 +1,227 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: Re: Nokia N900: mixers changed between 4.9 and 4.10-rc3, no longer
- can use in-call speaker
-Date: Mon, 16 Jan 2017 22:15:40 +0100
-Message-ID: <20170116211540.GA19736@amd>
-References: <20170112181826.GA28290@amd> <201701121934.19810@pali>
- <20170114225614.GA25321@amd> <201701150100.54214@pali>
+From: jeeja.kp@intel.com
+Subject: [PATCH 04/30] ASoC: hdac_hdmi: Move channel info from
+	pin to PCM structure
+Date: Mon, 16 Jan 2017 23:27:31 +0530
+Message-ID: <1484589477-7630-5-git-send-email-jeeja.kp@intel.com>
+References: <1484589477-7630-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9120700038024804075=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <201701150100.54214@pali>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>
-Cc: alsa-devel@alsa-project.org, ivo.g.dimitrov.75@gmail.com, khilman@kernel.org, tony@atomide.com, broonie@kernel.org, aaro.koskinen@iki.fi, sre@kernel.org, kernel list <linux-kernel@vger.kernel.org>, lars@metafoo.de, abcloriens@gmail.com, jarkko.nikula@bitmer.com, helen.koike@collabora.co.uk, linux-omap@vger.kernel.org, patrikbachan@gmail.com, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, serge@hallyn.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7EAA42670FA
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 18:47:09 +0100 (CET)
+In-Reply-To: <1484589477-7630-1-git-send-email-jeeja.kp@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Jeeja KP <jeeja.kp@intel.com>
 
---===============9120700038024804075==
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="cNdxnHkX5QqsyA0e"
-Content-Disposition: inline
+Channel info is part of the pcm parameter and channel map control is
+created for each pcm. So move channel info to pcm instead of pin
+structure and the mutex lock to pcm.
 
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+---
+ sound/soc/codecs/hdac_hdmi.c | 76 ++++++++++++++++++++------------------------
+ 1 file changed, 34 insertions(+), 42 deletions(-)
 
---cNdxnHkX5QqsyA0e
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-> > So regression seems to be between v4.9 and v4.10. Any ideas?
->=20
-> Interesting... seems there are no sound relevant changes after v4.9.
->=20
-> Looks like there are only three commits after v4.9 for sound/soc which=20
-> are built for Nokia N900:
-
-I'm at ce38207f161513ee3d2bd3860489f07ebe65bc78, which is already
-broken, and first broken commit by Linus.
-
-> e411b0b5eb9b65257a050eac333d181d6e00e2c6
-
-Can't revert that easily.
-
-> e7aa450fe17890e59db7d3c2d8eff5b6b41fc531
-
-This can be reverted. Lets try. Did not help.
-
-> 63c3194b82530bd71fd49db84eb7ab656b8d404a
-
-Commit older than this one fails, IIRC.
-
-> Maybe something not related to sound/soc could broke it?
-
-Its definitely caused by something merged here:
-
-commit ce38207f161513ee3d2bd3860489f07ebe65bc78
-Merge: a9042de 995c6a7
-Author: Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed Dec 14 11:14:28 2016 -0800
-
-So it should be easy to find out..
-
-Best regards,
-								Pavel
-
-
-
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---cNdxnHkX5QqsyA0e
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAlh9N/wACgkQMOfwapXb+vJAUACfbq/nc6K36X+P02au3HEWCRlg
-KvEAoMMueNr3a3PBwkjmbAxlGUb9TZlZ
-=tfq4
------END PGP SIGNATURE-----
-
---cNdxnHkX5QqsyA0e--
-
-
---===============9120700038024804075==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============9120700038024804075==--
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index c0b49f4..2a370d6 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -85,10 +85,6 @@ struct hdac_hdmi_pin {
+ 	hda_nid_t mux_nids[HDA_MAX_CONNECTIONS];
+ 	struct hdac_hdmi_eld eld;
+ 	struct hdac_ext_device *edev;
+-	struct mutex lock;
+-	bool chmap_set;
+-	unsigned char chmap[8]; /* ALSA API channel-map */
+-	int channels; /* current number of channels */
+ };
+ 
+ struct hdac_hdmi_pcm {
+@@ -100,6 +96,9 @@ struct hdac_hdmi_pcm {
+ 	int stream_tag;
+ 	int channels;
+ 	int format;
++	bool chmap_set;
++	unsigned char chmap[8]; /* ALSA API channel-map */
++	struct mutex lock;
+ };
+ 
+ struct hdac_hdmi_dai_pin_map {
+@@ -217,13 +216,13 @@ struct dp_audio_infoframe {
+ };
+ 
+ static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
+-				hda_nid_t cvt_nid, hda_nid_t pin_nid)
++		   struct hdac_hdmi_pcm *pcm, struct hdac_hdmi_pin *pin)
+ {
+ 	uint8_t buffer[HDMI_INFOFRAME_HEADER_SIZE + HDMI_AUDIO_INFOFRAME_SIZE];
+ 	struct hdmi_audio_infoframe frame;
+ 	struct dp_audio_infoframe dp_ai;
+ 	struct hdac_hdmi_priv *hdmi = hdac->private_data;
+-	struct hdac_hdmi_pin *pin;
++	struct hdac_hdmi_cvt *cvt = pcm->cvt;
+ 	u8 *dip;
+ 	int ret;
+ 	int i;
+@@ -231,19 +230,14 @@ static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
+ 	u8 conn_type;
+ 	int channels, ca;
+ 
+-	list_for_each_entry(pin, &hdmi->pin_list, head) {
+-		if (pin->nid == pin_nid)
+-			break;
+-	}
+-
+ 	ca = snd_hdac_channel_allocation(&hdac->hdac, pin->eld.info.spk_alloc,
+-			pin->channels, pin->chmap_set, true, pin->chmap);
++			pcm->channels, pcm->chmap_set, true, pcm->chmap);
+ 
+ 	channels = snd_hdac_get_active_channels(ca);
+-	hdmi->chmap.ops.set_channel_count(&hdac->hdac, cvt_nid, channels);
++	hdmi->chmap.ops.set_channel_count(&hdac->hdac, cvt->nid, channels);
+ 
+ 	snd_hdac_setup_channel_mapping(&hdmi->chmap, pin->nid, false, ca,
+-				pin->channels, pin->chmap, pin->chmap_set);
++				pcm->channels, pcm->chmap, pcm->chmap_set);
+ 
+ 	eld_buf = pin->eld.eld_buffer;
+ 	conn_type = drm_eld_get_conn_type(eld_buf);
+@@ -279,26 +273,26 @@ static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
+ 	}
+ 
+ 	/* stop infoframe transmission */
+-	hdac_hdmi_set_dip_index(hdac, pin_nid, 0x0, 0x0);
+-	snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
++	hdac_hdmi_set_dip_index(hdac, pin->nid, 0x0, 0x0);
++	snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
+ 			AC_VERB_SET_HDMI_DIP_XMIT, AC_DIPXMIT_DISABLE);
+ 
+ 
+ 	/*  Fill infoframe. Index auto-incremented */
+-	hdac_hdmi_set_dip_index(hdac, pin_nid, 0x0, 0x0);
++	hdac_hdmi_set_dip_index(hdac, pin->nid, 0x0, 0x0);
+ 	if (conn_type == DRM_ELD_CONN_TYPE_HDMI) {
+ 		for (i = 0; i < sizeof(buffer); i++)
+-			snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
++			snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
+ 				AC_VERB_SET_HDMI_DIP_DATA, buffer[i]);
+ 	} else {
+ 		for (i = 0; i < sizeof(dp_ai); i++)
+-			snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
++			snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
+ 				AC_VERB_SET_HDMI_DIP_DATA, dip[i]);
+ 	}
+ 
+ 	/* Start infoframe */
+-	hdac_hdmi_set_dip_index(hdac, pin_nid, 0x0, 0x0);
+-	snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
++	hdac_hdmi_set_dip_index(hdac, pin->nid, 0x0, 0x0);
++	snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
+ 			AC_VERB_SET_HDMI_DIP_XMIT, AC_DIPXMIT_BEST);
+ 
+ 	return 0;
+@@ -476,18 +470,22 @@ static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
+ 	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
+ 	struct hdac_hdmi_priv *hdmi = hdac->private_data;
+ 	struct hdac_hdmi_dai_pin_map *dai_map;
++	struct hdac_hdmi_pcm *pcm;
+ 
+ 	dai_map = &hdmi->dai_map[dai->id];
+ 
+-	if (dai_map->pin) {
+-		mutex_lock(&dai_map->pin->lock);
+-		dai_map->pin->chmap_set = false;
+-		memset(dai_map->pin->chmap, 0, sizeof(dai_map->pin->chmap));
+-		dai_map->pin->channels = 0;
+-		mutex_unlock(&dai_map->pin->lock);
++	pcm = hdac_hdmi_get_pcm_from_cvt(hdmi, dai_map->cvt);
+ 
+-		dai_map->pin = NULL;
++	if (pcm) {
++		mutex_lock(&pcm->lock);
++		pcm->chmap_set = false;
++		memset(pcm->chmap, 0, sizeof(pcm->chmap));
++		pcm->channels = 0;
++		mutex_unlock(&pcm->lock);
+ 	}
++
++	if (dai_map->pin)
++		dai_map->pin = NULL;
+ }
+ 
+ static int
+@@ -611,8 +609,7 @@ static int hdac_hdmi_pin_output_widget_event(struct snd_soc_dapm_widget *w,
+ 
+ 		hdac_hdmi_set_amp(edev, pin->nid, AMP_OUT_UNMUTE);
+ 
+-		return hdac_hdmi_setup_audio_infoframe(edev, pcm->cvt->nid,
+-								pin->nid);
++		return hdac_hdmi_setup_audio_infoframe(edev, pcm, pin);
+ 
+ 	case SND_SOC_DAPM_POST_PMD:
+ 		hdac_hdmi_set_amp(edev, pin->nid, AMP_OUT_MUTE);
+@@ -1110,7 +1107,6 @@ static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
+ 	hdmi->num_pin++;
+ 
+ 	pin->edev = edev;
+-	mutex_init(&pin->lock);
+ 
+ 	return 0;
+ }
+@@ -1361,6 +1357,7 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device)
+ 		return -ENOMEM;
+ 	pcm->pcm_id = device;
+ 	pcm->cvt = hdmi->dai_map[dai->id].cvt;
++	mutex_init(&pcm->lock);
+ 
+ 	snd_pcm = hdac_hdmi_get_pcm_from_id(dai->component->card, device);
+ 	if (snd_pcm) {
+@@ -1506,13 +1503,8 @@ static void hdac_hdmi_get_chmap(struct hdac_device *hdac, int pcm_idx,
+ 	struct hdac_ext_device *edev = to_ehdac_device(hdac);
+ 	struct hdac_hdmi_priv *hdmi = edev->private_data;
+ 	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
+-	struct hdac_hdmi_pin *pin = pcm->pin;
+-
+-	/* chmap is already set to 0 in caller */
+-	if (!pin)
+-		return;
+ 
+-	memcpy(chmap, pin->chmap, ARRAY_SIZE(pin->chmap));
++	memcpy(chmap, pcm->chmap, ARRAY_SIZE(pcm->chmap));
+ }
+ 
+ static void hdac_hdmi_set_chmap(struct hdac_device *hdac, int pcm_idx,
+@@ -1523,12 +1515,12 @@ static void hdac_hdmi_set_chmap(struct hdac_device *hdac, int pcm_idx,
+ 	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
+ 	struct hdac_hdmi_pin *pin = pcm->pin;
+ 
+-	mutex_lock(&pin->lock);
+-	pin->chmap_set = true;
+-	memcpy(pin->chmap, chmap, ARRAY_SIZE(pin->chmap));
++	mutex_lock(&pcm->lock);
++	pcm->chmap_set = true;
++	memcpy(pcm->chmap, chmap, ARRAY_SIZE(pcm->chmap));
+ 	if (prepared)
+-		hdac_hdmi_setup_audio_infoframe(edev, pcm->cvt->nid, pin->nid);
+-	mutex_unlock(&pin->lock);
++		hdac_hdmi_setup_audio_infoframe(edev, pcm, pin);
++	mutex_unlock(&pcm->lock);
+ }
+ 
+ static bool is_hdac_hdmi_pcm_attached(struct hdac_device *hdac, int pcm_idx)
+-- 
+2.5.0
