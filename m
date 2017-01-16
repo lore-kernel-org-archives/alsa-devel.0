@@ -1,16 +1,16 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH 24/30] ASoC: hdac_hdmi: Add machine pin widget
-	for each port
-Date: Mon, 16 Jan 2017 23:27:51 +0530
-Message-ID: <1484589477-7630-25-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH 25/30] ASoC: Intel: Skylake: Add jack port
+	initialize in rt286 machine
+Date: Mon, 16 Jan 2017 23:27:52 +0530
+Message-ID: <1484589477-7630-26-git-send-email-jeeja.kp@intel.com>
 References: <1484589477-7630-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 720802668B3
- for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 18:48:42 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 258B22668B3
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 18:48:46 +0100 (CET)
 In-Reply-To: <1484589477-7630-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,198 +27,54 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-Represent each port as machine DAPM pin widget. This helps in
-enable/disable pin when monitor is connected/disconnected in case pcm
-is rendered to multiple ports.
-
-Create machine pin widgets  and pin switch kcontrol for each port and
-report based on the pin status
+After the pcm jack is created, create and initialize the pin switch
+widget for each port. Pin switch is to enable/disable the pin when
+monitor is connected/disconnected.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 130 +++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/hdac_hdmi.h |   2 +
- 2 files changed, 132 insertions(+)
+ sound/soc/intel/boards/skl_rt286.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 8c950f4..a6d28c6 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -95,6 +95,9 @@ struct hdac_hdmi_port {
- 	int num_mux_nids;
- 	hda_nid_t mux_nids[HDA_MAX_CONNECTIONS];
- 	struct hdac_hdmi_eld eld;
-+	const char *jack_pin;
-+	struct snd_soc_dapm_context *dapm;
-+	const char *output_pin;
- };
+diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
+index 11647b0..f5ab7b8 100644
+--- a/sound/soc/intel/boards/skl_rt286.c
++++ b/sound/soc/intel/boards/skl_rt286.c
+@@ -95,10 +95,6 @@ static const struct snd_soc_dapm_route skylake_rt286_map[] = {
+ 	{"DMIC1 Pin", NULL, "DMIC2"},
+ 	{"DMic", NULL, "SoC DMIC"},
  
- struct hdac_hdmi_pcm {
-@@ -149,6 +152,11 @@ static void hdac_hdmi_jack_report(struct hdac_hdmi_pcm *pcm,
+-	{"HDMI1", NULL, "hif5-0 Output"},
+-	{"HDMI2", NULL, "hif6-0 Output"},
+-	{"HDMI3", NULL, "hif7-0 Output"},
+-
+ 	/* CODEC BE connections */
+ 	{ "AIF1 Playback", NULL, "ssp0 Tx"},
+ 	{ "ssp0 Tx", NULL, "codec0_out"},
+@@ -464,10 +460,12 @@ static int skylake_card_late_probe(struct snd_soc_card *card)
  {
- 	struct hdac_ext_device *edev = port->pin->edev;
+ 	struct skl_rt286_private *ctx = snd_soc_card_get_drvdata(card);
+ 	struct skl_hdmi_pcm *pcm;
++	struct snd_soc_codec *codec = NULL;
+ 	int err, i = 0;
+ 	char jack_name[NAME_SIZE];
  
-+	if (is_connect)
-+		snd_soc_dapm_enable_pin(port->dapm, port->jack_pin);
-+	else
-+		snd_soc_dapm_disable_pin(port->dapm, port->jack_pin);
-+
- 	if (is_connect) {
- 		/*
- 		 * Report Jack connect event when a device is connected
-@@ -174,6 +182,8 @@ static void hdac_hdmi_jack_report(struct hdac_hdmi_pcm *pcm,
- 		if (pcm->jack_event > 0)
- 			pcm->jack_event--;
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
++		codec = pcm->codec_dai->codec;
+ 		snprintf(jack_name, sizeof(jack_name),
+ 			"HDMI/DP, pcm=%d Jack", pcm->device);
+ 		err = snd_soc_card_jack_new(card, jack_name,
+@@ -485,7 +483,10 @@ static int skylake_card_late_probe(struct snd_soc_card *card)
+ 		i++;
  	}
+ 
+-	return 0;
++	if (!codec)
++		return -EINVAL;
 +
-+	snd_soc_dapm_sync(port->dapm);
++	return hdac_hdmi_jack_port_init(codec, &card->dapm);
  }
  
- /* MST supported verbs */
-@@ -1059,6 +1069,7 @@ static int create_fill_widget_route_map(struct snd_soc_dapm_context *dapm)
- 					SND_SOC_DAPM_POST_PMD);
- 			if (ret < 0)
- 				return ret;
-+			pin->ports[j].output_pin = widgets[i].name;
- 			i++;
- 		}
- 	}
-@@ -1556,6 +1567,125 @@ static struct snd_pcm *hdac_hdmi_get_pcm_from_id(struct snd_soc_card *card,
- 	return NULL;
- }
- 
-+/* create jack pin kcontrols */
-+static int create_fill_jack_kcontrols(struct snd_soc_card *card,
-+				    struct hdac_ext_device *edev)
-+{
-+	struct hdac_hdmi_pin *pin;
-+	struct snd_kcontrol_new *kc;
-+	char kc_name[NAME_SIZE], xname[NAME_SIZE];
-+	char *name;
-+	int i = 0, j;
-+	struct snd_soc_codec *codec = edev->scodec;
-+	struct hdac_hdmi_priv *hdmi = edev->private_data;
-+
-+	kc = devm_kcalloc(codec->dev, hdmi->num_ports,
-+				sizeof(*kc), GFP_KERNEL);
-+
-+	if (!kc)
-+		return -ENOMEM;
-+
-+	list_for_each_entry(pin, &hdmi->pin_list, head) {
-+		for (j = 0; j < pin->num_ports; j++) {
-+			snprintf(xname, sizeof(xname), "hif%d-%d Jack",
-+						pin->nid, pin->ports[j].id);
-+			name = devm_kstrdup(codec->dev, xname, GFP_KERNEL);
-+			if (!name)
-+				return -ENOMEM;
-+			snprintf(kc_name, sizeof(kc_name), "%s Switch", xname);
-+			kc[i].name = devm_kstrdup(codec->dev, kc_name,
-+							GFP_KERNEL);
-+			if (!kc[i].name)
-+				return -ENOMEM;
-+
-+			kc[i].private_value = (unsigned long)name;
-+			kc[i].iface = SNDRV_CTL_ELEM_IFACE_MIXER;
-+			kc[i].access = 0;
-+			kc[i].info = snd_soc_dapm_info_pin_switch;
-+			kc[i].put = snd_soc_dapm_put_pin_switch;
-+			kc[i].get = snd_soc_dapm_get_pin_switch;
-+			i++;
-+		}
-+	}
-+
-+	return snd_soc_add_card_controls(card, kc, i);
-+}
-+
-+int hdac_hdmi_jack_port_init(struct snd_soc_codec *codec,
-+			struct snd_soc_dapm_context *dapm)
-+{
-+	struct hdac_ext_device *edev = snd_soc_codec_get_drvdata(codec);
-+	struct hdac_hdmi_priv *hdmi = edev->private_data;
-+	struct hdac_hdmi_pin *pin;
-+	struct snd_soc_dapm_widget *widgets;
-+	struct snd_soc_dapm_route *route;
-+	char w_name[NAME_SIZE];
-+	int i = 0, j, ret;
-+
-+	widgets = devm_kcalloc(dapm->dev, hdmi->num_ports,
-+				sizeof(*widgets), GFP_KERNEL);
-+
-+	if (!widgets)
-+		return -ENOMEM;
-+
-+	route = devm_kcalloc(dapm->dev, hdmi->num_ports,
-+				sizeof(*route), GFP_KERNEL);
-+	if (!route)
-+		return -ENOMEM;
-+
-+	/* create Jack DAPM widget */
-+	list_for_each_entry(pin, &hdmi->pin_list, head) {
-+		for (j = 0; j < pin->num_ports; j++) {
-+			snprintf(w_name, sizeof(w_name), "hif%d-%d Jack",
-+						pin->nid, pin->ports[j].id);
-+
-+			ret = hdac_hdmi_fill_widget_info(dapm->dev, &widgets[i],
-+					snd_soc_dapm_spk, NULL,
-+					w_name, NULL, NULL, 0, NULL, 0);
-+			if (ret < 0)
-+				return ret;
-+
-+			pin->ports[j].jack_pin = widgets[i].name;
-+			pin->ports[j].dapm = dapm;
-+
-+			/* add to route from Jack widget to output */
-+			hdac_hdmi_fill_route(&route[i], pin->ports[j].jack_pin,
-+					NULL, pin->ports[j].output_pin, NULL);
-+
-+			i++;
-+		}
-+	}
-+
-+	/* Add Route from Jack widget to the output widget */
-+	ret = snd_soc_dapm_new_controls(dapm, widgets, hdmi->num_ports);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_soc_dapm_add_routes(dapm, route, hdmi->num_ports);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_soc_dapm_new_widgets(dapm->card);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Add Jack Pin switch Kcontrol */
-+	ret = create_fill_jack_kcontrols(dapm->card, edev);
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	/* default set the Jack Pin switch to OFF */
-+	list_for_each_entry(pin, &hdmi->pin_list, head) {
-+		for (j = 0; j < pin->num_ports; j++)
-+			snd_soc_dapm_disable_pin(pin->ports[j].dapm,
-+						pin->ports[j].jack_pin);
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(hdac_hdmi_jack_port_init);
-+
- int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device,
- 				struct snd_soc_jack *jack)
- {
-diff --git a/sound/soc/codecs/hdac_hdmi.h b/sound/soc/codecs/hdac_hdmi.h
-index bf7edb3..dfc3a9c 100644
---- a/sound/soc/codecs/hdac_hdmi.h
-+++ b/sound/soc/codecs/hdac_hdmi.h
-@@ -4,4 +4,6 @@
- int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int pcm,
- 				struct snd_soc_jack *jack);
- 
-+int hdac_hdmi_jack_port_init(struct snd_soc_codec *codec,
-+			struct snd_soc_dapm_context *dapm);
- #endif /* __HDAC_HDMI_H__ */
+ /* skylake audio machine driver for SPT + RT286S */
 -- 
 2.5.0
