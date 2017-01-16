@@ -1,334 +1,155 @@
-From: jeeja.kp@intel.com
-Subject: [PATCH 01/30] ASoC: hdac_hdmi: use audio component
-	framework to read ELD
-Date: Mon, 16 Jan 2017 23:27:28 +0530
-Message-ID: <1484589477-7630-2-git-send-email-jeeja.kp@intel.com>
-References: <1484589477-7630-1-git-send-email-jeeja.kp@intel.com>
+From: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Subject: Re: [PATCH v2 6/6] dell-led: move driver to
+ drivers/platform/x86/dell-wmi-led.c
+Date: Mon, 16 Jan 2017 21:49:54 +0100
+Message-ID: <b702265e-893e-e3b1-1262-f959d230d552@gmail.com>
+References: <20170116132204.6421-1-kernel@kempniu.pl>
+ <20170116132204.6421-7-kernel@kempniu.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 466582671E8
- for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 18:46:57 +0100 (CET)
-In-Reply-To: <1484589477-7630-1-git-send-email-jeeja.kp@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>, Sandeep Tayal <sandeepx.tayal@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <platform-driver-x86-owner@vger.kernel.org>
+In-Reply-To: <20170116132204.6421-7-kernel@kempniu.pl>
+Sender: platform-driver-x86-owner@vger.kernel.org
+To: =?UTF-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>, Richard Purdie <rpurdie@rpsys.net>, Pavel Machek <pavel@ucw.cz>, =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Anthony Wong <anthony.wong@canonical.com>, linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Sandeep Tayal <sandeepx.tayal@intel.com>
+Hi Michał,
 
-With codec read sometimes the pin_sense shows invalid monitor present
-and eld_valid. Currently driver polls for few times to get the valid
-eld data.
+Thanks for the patch set.
 
-To avoid the latency, Instead of reading ELD from codec, read it
-directly from the display driver using audio component framework.
-and removed the unused direct codec helper functions.
+Would you mind fixing also the following issues raised by
+checkpatch.pl?:
 
-Signed-off-by: Sandeep Tayal <sandeepx.tayal@intel.com>
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
----
- sound/soc/codecs/hdac_hdmi.c | 201 ++++++++++++-------------------------------
- 1 file changed, 56 insertions(+), 145 deletions(-)
+WARNING: Missing a blank line after declarations
+#376: FILE: drivers/platform/x86/dell-wmi-led.c:64:
++	struct bios_args args;
++	args.length = length;
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 1c2a978..548474d 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -46,6 +46,10 @@
- #define ELD_MAX_SIZE    256
- #define ELD_FIXED_BYTES	20
- 
-+#define ELD_VER_CEA_861D 2
-+#define ELD_VER_PARTIAL 31
-+#define ELD_MAX_MNL     16
-+
- struct hdac_hdmi_cvt_params {
- 	unsigned int channels_min;
- 	unsigned int channels_max;
-@@ -81,8 +85,6 @@ struct hdac_hdmi_pin {
- 	hda_nid_t mux_nids[HDA_MAX_CONNECTIONS];
- 	struct hdac_hdmi_eld eld;
- 	struct hdac_ext_device *edev;
--	int repoll_count;
--	struct delayed_work work;
- 	struct mutex lock;
- 	bool chmap_set;
- 	unsigned char chmap[8]; /* ALSA API channel-map */
-@@ -179,80 +181,6 @@ static int hdac_hdmi_eld_limit_formats(struct snd_pcm_runtime *runtime,
- 
- }
- 
-- /* HDMI ELD routines */
--static unsigned int hdac_hdmi_get_eld_data(struct hdac_device *codec,
--				hda_nid_t nid, int byte_index)
--{
--	unsigned int val;
--
--	val = snd_hdac_codec_read(codec, nid, 0, AC_VERB_GET_HDMI_ELDD,
--							byte_index);
--
--	dev_dbg(&codec->dev, "HDMI: ELD data byte %d: 0x%x\n",
--					byte_index, val);
--
--	return val;
--}
--
--static int hdac_hdmi_get_eld_size(struct hdac_device *codec, hda_nid_t nid)
--{
--	return snd_hdac_codec_read(codec, nid, 0, AC_VERB_GET_HDMI_DIP_SIZE,
--						 AC_DIPSIZE_ELD_BUF);
--}
--
--/*
-- * This function queries the ELD size and ELD data and fills in the buffer
-- * passed by user
-- */
--static int hdac_hdmi_get_eld(struct hdac_device *codec, hda_nid_t nid,
--			     unsigned char *buf, int *eld_size)
--{
--	int i, size, ret = 0;
--
--	/*
--	 * ELD size is initialized to zero in caller function. If no errors and
--	 * ELD is valid, actual eld_size is assigned.
--	 */
--
--	size = hdac_hdmi_get_eld_size(codec, nid);
--	if (size < ELD_FIXED_BYTES || size > ELD_MAX_SIZE) {
--		dev_err(&codec->dev, "HDMI: invalid ELD buf size %d\n", size);
--		return -ERANGE;
--	}
--
--	/* set ELD buffer */
--	for (i = 0; i < size; i++) {
--		unsigned int val = hdac_hdmi_get_eld_data(codec, nid, i);
--		/*
--		 * Graphics driver might be writing to ELD buffer right now.
--		 * Just abort. The caller will repoll after a while.
--		 */
--		if (!(val & AC_ELDD_ELD_VALID)) {
--			dev_err(&codec->dev,
--				"HDMI: invalid ELD data byte %d\n", i);
--			ret = -EINVAL;
--			goto error;
--		}
--		val &= AC_ELDD_ELD_DATA;
--		/*
--		 * The first byte cannot be zero. This can happen on some DVI
--		 * connections. Some Intel chips may also need some 250ms delay
--		 * to return non-zero ELD data, even when the graphics driver
--		 * correctly writes ELD content before setting ELD_valid bit.
--		 */
--		if (!val && !i) {
--			dev_err(&codec->dev, "HDMI: 0 ELD data\n");
--			ret = -EINVAL;
--			goto error;
--		}
--		buf[i] = val;
--	}
--
--	*eld_size = size;
--error:
--	return ret;
--}
--
- static int hdac_hdmi_setup_stream(struct hdac_ext_device *hdac,
- 				hda_nid_t cvt_nid, hda_nid_t pin_nid,
- 				u32 stream_tag, int format)
-@@ -1065,32 +993,59 @@ static int hdac_hdmi_add_cvt(struct hdac_ext_device *edev, hda_nid_t nid)
- 	return hdac_hdmi_query_cvt_params(&edev->hdac, cvt);
- }
- 
--static void hdac_hdmi_parse_eld(struct hdac_ext_device *edev,
-+static int  hdac_hdmi_parse_eld(struct hdac_ext_device *edev,
- 			struct hdac_hdmi_pin *pin)
- {
-+	unsigned int ver, mnl;
-+
-+	ver = (pin->eld.eld_buffer[DRM_ELD_VER] & DRM_ELD_VER_MASK)
-+						>> DRM_ELD_VER_SHIFT;
-+
-+	if (ver != ELD_VER_CEA_861D && ver != ELD_VER_PARTIAL) {
-+		dev_err(&edev->hdac.dev, "HDMI: Unknown ELD version %d\n", ver);
-+		return -EINVAL;
-+	}
-+
-+	mnl = (pin->eld.eld_buffer[DRM_ELD_CEA_EDID_VER_MNL] &
-+		DRM_ELD_MNL_MASK) >> DRM_ELD_MNL_SHIFT;
-+
-+	if (mnl > ELD_MAX_MNL) {
-+		dev_err(&edev->hdac.dev, "HDMI: MNL Invalid %d\n", mnl);
-+		return -EINVAL;
-+	}
-+
- 	pin->eld.info.spk_alloc = pin->eld.eld_buffer[DRM_ELD_SPEAKER];
-+
-+	return 0;
- }
- 
--static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin, int repoll)
-+static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin)
- {
- 	struct hdac_ext_device *edev = pin->edev;
- 	struct hdac_hdmi_priv *hdmi = edev->private_data;
- 	struct hdac_hdmi_pcm *pcm;
--	int val;
--
--	pin->repoll_count = repoll;
-+	int size;
- 
--	pm_runtime_get_sync(&edev->hdac.dev);
--	val = snd_hdac_codec_read(&edev->hdac, pin->nid, 0,
--					AC_VERB_GET_PIN_SENSE, 0);
-+	mutex_lock(&hdmi->pin_mutex);
-+	pin->eld.monitor_present = false;
- 
--	dev_dbg(&edev->hdac.dev, "Pin sense val %x for pin: %d\n",
--						val, pin->nid);
-+	size = snd_hdac_acomp_get_eld(&edev->hdac, pin->nid, -1,
-+				&pin->eld.monitor_present, pin->eld.eld_buffer,
-+				ELD_MAX_SIZE);
- 
-+	if (size > 0) {
-+		size = min(size, ELD_MAX_SIZE);
-+		if (hdac_hdmi_parse_eld(edev, pin) < 0)
-+			size = -EINVAL;
-+	}
- 
--	mutex_lock(&hdmi->pin_mutex);
--	pin->eld.monitor_present = !!(val & AC_PINSENSE_PRESENCE);
--	pin->eld.eld_valid = !!(val & AC_PINSENSE_ELDV);
-+	if (size > 0) {
-+		pin->eld.eld_valid = true;
-+		pin->eld.eld_size = size;
-+	} else {
-+		pin->eld.eld_valid = false;
-+		pin->eld.eld_size = 0;
-+	}
- 
- 	pcm = hdac_hdmi_get_pcm(edev, pin);
- 
-@@ -1112,66 +1067,23 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin, int repoll)
- 		}
- 
- 		mutex_unlock(&hdmi->pin_mutex);
--		goto put_hdac_device;
-+		return;
- 	}
- 
- 	if (pin->eld.monitor_present && pin->eld.eld_valid) {
--		/* TODO: use i915 component for reading ELD later */
--		if (hdac_hdmi_get_eld(&edev->hdac, pin->nid,
--				pin->eld.eld_buffer,
--				&pin->eld.eld_size) == 0) {
--
--			if (pcm) {
--				dev_dbg(&edev->hdac.dev,
--					"jack report for pcm=%d\n",
--					pcm->pcm_id);
--
--				snd_jack_report(pcm->jack, SND_JACK_AVOUT);
--			}
--			hdac_hdmi_parse_eld(edev, pin);
--
--			print_hex_dump_debug("ELD: ",
--					DUMP_PREFIX_OFFSET, 16, 1,
--					pin->eld.eld_buffer, pin->eld.eld_size,
--					true);
--		} else {
--			pin->eld.monitor_present = false;
--			pin->eld.eld_valid = false;
--
--			if (pcm) {
--				dev_dbg(&edev->hdac.dev,
--					"jack report for pcm=%d\n",
--					pcm->pcm_id);
-+		if (pcm) {
-+			dev_dbg(&edev->hdac.dev,
-+				"jack report for pcm=%d\n",
-+				pcm->pcm_id);
- 
--				snd_jack_report(pcm->jack, 0);
--			}
-+			snd_jack_report(pcm->jack, SND_JACK_AVOUT);
- 		}
-+
-+		print_hex_dump_debug("ELD: ", DUMP_PREFIX_OFFSET, 16, 1,
-+			  pin->eld.eld_buffer, pin->eld.eld_size, false);
- 	}
- 
- 	mutex_unlock(&hdmi->pin_mutex);
--
--	/*
--	 * Sometimes the pin_sense may present invalid monitor
--	 * present and eld_valid. If ELD data is not valid, loop few
--	 * more times to get correct pin sense and valid ELD.
--	 */
--	if ((!pin->eld.monitor_present || !pin->eld.eld_valid) && repoll)
--		schedule_delayed_work(&pin->work, msecs_to_jiffies(300));
--
--put_hdac_device:
--	pm_runtime_put_sync(&edev->hdac.dev);
--}
--
--static void hdac_hdmi_repoll_eld(struct work_struct *work)
--{
--	struct hdac_hdmi_pin *pin =
--		container_of(to_delayed_work(work), struct hdac_hdmi_pin, work);
--
--	/* picked from legacy HDA driver */
--	if (pin->repoll_count++ > 6)
--		pin->repoll_count = 0;
--
--	hdac_hdmi_present_sense(pin, pin->repoll_count);
- }
- 
- static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
-@@ -1190,7 +1102,6 @@ static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
- 
- 	pin->edev = edev;
- 	mutex_init(&pin->lock);
--	INIT_DELAYED_WORK(&pin->work, hdac_hdmi_repoll_eld);
- 
- 	return 0;
- }
-@@ -1401,7 +1312,7 @@ static void hdac_hdmi_eld_notify_cb(void *aptr, int port, int pipe)
- 
- 	list_for_each_entry(pin, &hdmi->pin_list, head) {
- 		if (pin->nid == pin_nid)
--			hdac_hdmi_present_sense(pin, 1);
-+			hdac_hdmi_present_sense(pin);
- 	}
- }
- 
-@@ -1502,7 +1413,7 @@ static int hdmi_codec_probe(struct snd_soc_codec *codec)
- 	}
- 
- 	list_for_each_entry(pin, &hdmi->pin_list, head)
--		hdac_hdmi_present_sense(pin, 1);
-+		hdac_hdmi_present_sense(pin);
- 
- 	/* Imp: Store the card pointer in hda_codec */
- 	edev->card = dapm->card->snd_card;
-@@ -1567,7 +1478,7 @@ static void hdmi_codec_complete(struct device *dev)
- 	 * all pins here.
- 	 */
- 	list_for_each_entry(pin, &hdmi->pin_list, head)
--		hdac_hdmi_present_sense(pin, 1);
-+		hdac_hdmi_present_sense(pin);
- 
- 	pm_runtime_put_sync(&edev->hdac.dev);
- }
--- 
-2.5.0
+WARNING: Block comments use * on subsequent lines
+#460: FILE: drivers/platform/x86/dell-wmi-led.c:148:
++	/* The Dell LED delay is based on 125ms intervals.
++	   Need to round up to next interval. */
+
+WARNING: Block comments use a trailing */ on a separate line
+#460: FILE: drivers/platform/x86/dell-wmi-led.c:148:
++	   Need to round up to next interval. */
+
+WARNING: Comparisons should place the constant on the right side of the test
+#463: FILE: drivers/platform/x86/dell-wmi-led.c:151:
++	if (0 == on_eighths)
+
+WARNING: Comparisons should place the constant on the right side of the test
+#470: FILE: drivers/platform/x86/dell-wmi-led.c:158:
++	if (0 == off_eighths)
+
+The fixes could be placed in an incremental patch after this one.
+
+Best regards,
+Jacek Anaszewski
+
+
+On 01/16/2017 02:22 PM, Michał Kępień wrote:
+> The dell-led driver handles a specific WMI GUID present on some Dell
+> laptops and as such it belongs in the x86 platform driver subsystem.
+> Source code is moved along with the relevant Kconfig and Makefile
+> entries, with some minor modifications:
+> 
+>   - Kconfig option is renamed from CONFIG_LEDS_DELL_NETBOOKS to
+>     CONFIG_DELL_WMI_LED,
+> 
+>   - the X86 Kconfig dependency is removed as the whole
+>     drivers/platform/x86 menu depends on it, so there is no need to
+>     duplicate it,
+> 
+>   - the name of the module's source file is removed from the header
+>     comment to avoid the need to update it in the future.
+> 
+> Signed-off-by: Michał Kępień <kernel@kempniu.pl>
+> ---
+>  drivers/leds/Kconfig                                     | 8 --------
+>  drivers/leds/Makefile                                    | 1 -
+>  drivers/platform/x86/Kconfig                             | 8 ++++++++
+>  drivers/platform/x86/Makefile                            | 1 +
+>  drivers/{leds/dell-led.c => platform/x86/dell-wmi-led.c} | 2 --
+>  5 files changed, 9 insertions(+), 11 deletions(-)
+>  rename drivers/{leds/dell-led.c => platform/x86/dell-wmi-led.c} (99%)
+> 
+> diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+> index f29b8698ca88..5af3fb2f52e4 100644
+> --- a/drivers/leds/Kconfig
+> +++ b/drivers/leds/Kconfig
+> @@ -454,14 +454,6 @@ config LEDS_ADP5520
+>  	  To compile this driver as a module, choose M here: the module will
+>  	  be called leds-adp5520.
+>  
+> -config LEDS_DELL_NETBOOKS
+> -	tristate "External LED on Dell Business Netbooks"
+> -	depends on LEDS_CLASS
+> -	depends on X86 && ACPI_WMI
+> -	help
+> -	  This adds support for the Latitude 2100 and similar
+> -	  notebooks that have an external LED.
+> -
+>  config LEDS_MC13783
+>  	tristate "LED Support for MC13XXX PMIC"
+>  	depends on LEDS_CLASS
+> diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+> index 6b8273736478..558d24675454 100644
+> --- a/drivers/leds/Makefile
+> +++ b/drivers/leds/Makefile
+> @@ -52,7 +52,6 @@ obj-$(CONFIG_LEDS_REGULATOR)		+= leds-regulator.o
+>  obj-$(CONFIG_LEDS_INTEL_SS4200)		+= leds-ss4200.o
+>  obj-$(CONFIG_LEDS_LT3593)		+= leds-lt3593.o
+>  obj-$(CONFIG_LEDS_ADP5520)		+= leds-adp5520.o
+> -obj-$(CONFIG_LEDS_DELL_NETBOOKS)	+= dell-led.o
+>  obj-$(CONFIG_LEDS_MC13783)		+= leds-mc13783.o
+>  obj-$(CONFIG_LEDS_NS2)			+= leds-ns2.o
+>  obj-$(CONFIG_LEDS_NETXBIG)		+= leds-netxbig.o
+> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+> index 81b8dcca8891..f9018e8c1e49 100644
+> --- a/drivers/platform/x86/Kconfig
+> +++ b/drivers/platform/x86/Kconfig
+> @@ -143,6 +143,14 @@ config DELL_WMI_AIO
+>  	  To compile this driver as a module, choose M here: the module will
+>  	  be called dell-wmi-aio.
+>  
+> +config DELL_WMI_LED
+> +	tristate "External LED on Dell Business Netbooks"
+> +	depends on LEDS_CLASS
+> +	depends on ACPI_WMI
+> +	help
+> +	  This adds support for the Latitude 2100 and similar
+> +	  notebooks that have an external LED.
+> +
+>  config DELL_SMO8800
+>  	tristate "Dell Latitude freefall driver (ACPI SMO88XX)"
+>  	depends on ACPI
+> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+> index 2efa86d2a1a7..b061817ecaf1 100644
+> --- a/drivers/platform/x86/Makefile
+> +++ b/drivers/platform/x86/Makefile
+> @@ -15,6 +15,7 @@ obj-$(CONFIG_DELL_SMBIOS)	+= dell-smbios.o
+>  obj-$(CONFIG_DELL_LAPTOP)	+= dell-laptop.o
+>  obj-$(CONFIG_DELL_WMI)		+= dell-wmi.o
+>  obj-$(CONFIG_DELL_WMI_AIO)	+= dell-wmi-aio.o
+> +obj-$(CONFIG_DELL_WMI_LED)	+= dell-wmi-led.o
+>  obj-$(CONFIG_DELL_SMO8800)	+= dell-smo8800.o
+>  obj-$(CONFIG_DELL_RBTN)		+= dell-rbtn.o
+>  obj-$(CONFIG_ACER_WMI)		+= acer-wmi.o
+> diff --git a/drivers/leds/dell-led.c b/drivers/platform/x86/dell-wmi-led.c
+> similarity index 99%
+> rename from drivers/leds/dell-led.c
+> rename to drivers/platform/x86/dell-wmi-led.c
+> index e5c57389efd6..d0232c7f1909 100644
+> --- a/drivers/leds/dell-led.c
+> +++ b/drivers/platform/x86/dell-wmi-led.c
+> @@ -1,6 +1,4 @@
+>  /*
+> - * dell_led.c - Dell LED Driver
+> - *
+>   * Copyright (C) 2010 Dell Inc.
+>   * Louis Davis <louis_davis@dell.com>
+>   * Jim Dailey <jim_dailey@dell.com>
+> 
