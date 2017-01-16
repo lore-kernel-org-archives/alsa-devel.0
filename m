@@ -1,82 +1,108 @@
-From: jeeja.kp@intel.com
-Subject: [PATCH 03/30] ASoC: Intel: Skylake: Use set_tdm_slot
-	to set the dma channel
-Date: Mon, 16 Jan 2017 23:27:30 +0530
-Message-ID: <1484589477-7630-4-git-send-email-jeeja.kp@intel.com>
-References: <1484589477-7630-1-git-send-email-jeeja.kp@intel.com>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: Nokia N900: mixers changed between 4.9 and 4.10-rc3, no longer
+ can use in-call speaker
+Date: Mon, 16 Jan 2017 22:15:40 +0100
+Message-ID: <20170116211540.GA19736@amd>
+References: <20170112181826.GA28290@amd> <201701121934.19810@pali>
+ <20170114225614.GA25321@amd> <201701150100.54214@pali>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 171D62670FA
- for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 18:47:04 +0100 (CET)
-In-Reply-To: <1484589477-7630-1-git-send-email-jeeja.kp@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Content-Type: multipart/mixed; boundary="===============9120700038024804075=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <201701150100.54214@pali>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>
+Cc: alsa-devel@alsa-project.org, ivo.g.dimitrov.75@gmail.com, khilman@kernel.org, tony@atomide.com, broonie@kernel.org, aaro.koskinen@iki.fi, sre@kernel.org, kernel list <linux-kernel@vger.kernel.org>, lars@metafoo.de, abcloriens@gmail.com, jarkko.nikula@bitmer.com, helen.koike@collabora.co.uk, linux-omap@vger.kernel.org, patrikbachan@gmail.com, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, serge@hallyn.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
 
-DMA channel(stream tag) used by the HDA link need to programmed in
-codec so that codec receives packet from the link associated with the
-same channel.
+--===============9120700038024804075==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="cNdxnHkX5QqsyA0e"
+Content-Disposition: inline
 
-DMA channel is allocated in link BE dai hw_params, the same needs to be
-set for the BE codec dai. Instead of using get/set dma_data(), use
-dai_ops snd_soc_dai_set_tdm_slot() to set the stream tag.
 
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
----
- sound/soc/intel/skylake/skl-pcm.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+--cNdxnHkX5QqsyA0e
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 508144b..b0817a12 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -542,10 +542,10 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
- 	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
- 	struct hdac_ext_stream *link_dev;
- 	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
--	struct hdac_ext_dma_params *dma_params;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct skl_pipe_params p_params = {0};
- 	struct hdac_ext_link *link;
-+	int stream_tag;
- 
- 	link_dev = snd_hdac_ext_stream_assign(ebus, substream,
- 					HDAC_EXT_STREAM_TYPE_LINK);
-@@ -558,16 +558,16 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
- 	if (!link)
- 		return -EINVAL;
- 
-+	stream_tag = hdac_stream(link_dev)->stream_tag;
-+
- 	/* set the stream tag in the codec dai dma params  */
--	dma_params = snd_soc_dai_get_dma_data(codec_dai, substream);
--	if (dma_params)
--		dma_params->stream_tag =  hdac_stream(link_dev)->stream_tag;
-+	snd_soc_dai_set_tdm_slot(codec_dai, stream_tag, 0, 0, 0);
- 
- 	p_params.s_fmt = snd_pcm_format_width(params_format(params));
- 	p_params.ch = params_channels(params);
- 	p_params.s_freq = params_rate(params);
- 	p_params.stream = substream->stream;
--	p_params.link_dma_id = hdac_stream(link_dev)->stream_tag - 1;
-+	p_params.link_dma_id = stream_tag - 1;
- 	p_params.link_index = link->index;
- 	p_params.format = params_format(params);
- 
--- 
-2.5.0
+Hi!
+
+> > So regression seems to be between v4.9 and v4.10. Any ideas?
+>=20
+> Interesting... seems there are no sound relevant changes after v4.9.
+>=20
+> Looks like there are only three commits after v4.9 for sound/soc which=20
+> are built for Nokia N900:
+
+I'm at ce38207f161513ee3d2bd3860489f07ebe65bc78, which is already
+broken, and first broken commit by Linus.
+
+> e411b0b5eb9b65257a050eac333d181d6e00e2c6
+
+Can't revert that easily.
+
+> e7aa450fe17890e59db7d3c2d8eff5b6b41fc531
+
+This can be reverted. Lets try. Did not help.
+
+> 63c3194b82530bd71fd49db84eb7ab656b8d404a
+
+Commit older than this one fails, IIRC.
+
+> Maybe something not related to sound/soc could broke it?
+
+Its definitely caused by something merged here:
+
+commit ce38207f161513ee3d2bd3860489f07ebe65bc78
+Merge: a9042de 995c6a7
+Author: Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed Dec 14 11:14:28 2016 -0800
+
+So it should be easy to find out..
+
+Best regards,
+								Pavel
+
+
+
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--cNdxnHkX5QqsyA0e
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlh9N/wACgkQMOfwapXb+vJAUACfbq/nc6K36X+P02au3HEWCRlg
+KvEAoMMueNr3a3PBwkjmbAxlGUb9TZlZ
+=tfq4
+-----END PGP SIGNATURE-----
+
+--cNdxnHkX5QqsyA0e--
+
+
+--===============9120700038024804075==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============9120700038024804075==--
