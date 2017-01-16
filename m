@@ -1,14 +1,17 @@
 From: Romain Perier <romain.perier@collabora.com>
-Subject: [PATCH v2 0/4] Add support for es8388 on the rock2
-Date: Mon, 16 Jan 2017 09:17:49 +0100
-Message-ID: <20170116081753.13666-1-romain.perier@collabora.com>
+Subject: [PATCH v2 1/4] ASoC: es8328-i2c: Add compatible for
+	ES8388
+Date: Mon, 16 Jan 2017 09:17:50 +0100
+Message-ID: <20170116081753.13666-2-romain.perier@collabora.com>
+References: <20170116081753.13666-1-romain.perier@collabora.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
- by alsa0.perex.cz (Postfix) with ESMTP id C4F22266539
- for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 09:18:11 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D5BF266539
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 09:18:13 +0100 (CET)
+In-Reply-To: <20170116081753.13666-1-romain.perier@collabora.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,36 +25,50 @@ To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@
 Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-rockchip@lists.infradead.org, Sjoerd Simons <sjoerd.simons@collabora.co.uk>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Romain Perier <romain.perier@collabora.com>
 List-Id: alsa-devel@alsa-project.org
 
-This set of patches adds a machine driver for rockchip boards that use
-ES8388 codecs. It also adds slave mode to the es8328 driver that
-currently only supported the master mode. Then, it adds the required DT
-definitions to link rockchip-i2s to the es8388 analog output.
+This commit adds a compatible string for everest,es8388. This is
+an audio codec that is compatible with es8328.
 
-This work is based on the initial work that was done by Sjoerd Simons
-<sjoerd.simons@collabora.co.uk> with some improvements, changes and more
-commits.
+Signed-off-by: Romain Perier <romain.perier@collabora.com>
+---
 
 Changes in v2:
- - Fixed wrong use of the data structure i2c_device_id
- - Fixed wrong dependencies for SND_SOC_ROCKCHIP_ES8388
+- Fixed wrong use of the i2c_device_id data structure
 
-Romain Perier (4):
-  ASoC: es8328-i2c: Add compatible for ES8388
-  ASoC: es8328: Add support for slave mode
-  ASoC: rockchip: Add machine driver for ES8388 codecs
-  arm: dts: Add support for ES8388 to the Radxa Rock 2
+ Documentation/devicetree/bindings/sound/es8328.txt | 2 +-
+ sound/soc/codecs/es8328-i2c.c                      | 2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
- Documentation/devicetree/bindings/sound/es8328.txt |   2 +-
- .../devicetree/bindings/sound/rockchip-es8388.txt  |  28 +++
- arch/arm/boot/dts/rk3288-rock2-square.dts          |  37 +++
- sound/soc/codecs/es8328-i2c.c                      |   2 +
- sound/soc/codecs/es8328.c                          |  28 ++-
- sound/soc/rockchip/Kconfig                         |   9 +
- sound/soc/rockchip/Makefile                        |   2 +
- sound/soc/rockchip/rockchip_es8388.c               | 270 +++++++++++++++++++++
- 8 files changed, 371 insertions(+), 7 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/rockchip-es8388.txt
- create mode 100644 sound/soc/rockchip/rockchip_es8388.c
-
+diff --git a/Documentation/devicetree/bindings/sound/es8328.txt b/Documentation/devicetree/bindings/sound/es8328.txt
+index 30ea8a3..33fbf05 100644
+--- a/Documentation/devicetree/bindings/sound/es8328.txt
++++ b/Documentation/devicetree/bindings/sound/es8328.txt
+@@ -4,7 +4,7 @@ This device supports both I2C and SPI.
+ 
+ Required properties:
+ 
+-  - compatible : "everest,es8328"
++  - compatible  : Should be "everest,es8328" or "everest,es8388"
+   - DVDD-supply : Regulator providing digital core supply voltage 1.8 - 3.6V
+   - AVDD-supply : Regulator providing analog supply voltage 3.3V
+   - PVDD-supply : Regulator providing digital IO supply voltage 1.8 - 3.6V
+diff --git a/sound/soc/codecs/es8328-i2c.c b/sound/soc/codecs/es8328-i2c.c
+index 2d05b5d..318ab28 100644
+--- a/sound/soc/codecs/es8328-i2c.c
++++ b/sound/soc/codecs/es8328-i2c.c
+@@ -20,12 +20,14 @@
+ 
+ static const struct i2c_device_id es8328_id[] = {
+ 	{ "es8328", 0 },
++	{ "es8388", 0 },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(i2c, es8328_id);
+ 
+ static const struct of_device_id es8328_of_match[] = {
+ 	{ .compatible = "everest,es8328", },
++	{ .compatible = "everest,es8388", },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, es8328_of_match);
 -- 
 2.9.3
