@@ -1,20 +1,15 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v7] ASoC: omap-mcbsp: Add PM QoS support
- for McBSP to prevent glitches
-Date: Mon, 16 Jan 2017 09:17:44 -0800
-Message-ID: <20170116171743.GB7403@atomide.com>
-References: <20170113035432.6723-1-matt@ranostay.consulting>
- <20170113152049.GD5696@atomide.com>
- <CAJ_EiSR-R=5qUKOfHWTTrjj+ZD6Q6BBf1yPj3atf84Q6K03NZg@mail.gmail.com>
+From: jeeja.kp@intel.com
+Subject: [PATCH 00/30] ASoC: hdac_hdmi: Add support to enable
+	MST audio
+Date: Mon, 16 Jan 2017 23:27:27 +0530
+Message-ID: <1484589477-7630-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from muru.com (muru.com [72.249.23.125])
- by alsa0.perex.cz (Postfix) with ESMTP id 42B6A2671C7
- for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 18:17:49 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <CAJ_EiSR-R=5qUKOfHWTTrjj+ZD6Q6BBf1yPj3atf84Q6K03NZg@mail.gmail.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id F02E92670FA
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 18:46:53 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,69 +19,111 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Ranostay <matt@ranostay.consulting>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Linux OMAP List <linux-omap@vger.kernel.org>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-* Matt Ranostay <matt@ranostay.consulting> [170113 21:16]:
-> On Fri, Jan 13, 2017 at 7:20 AM, Tony Lindgren <tony@atomide.com> wrote:
-> > * Matt Ranostay <matt@ranostay.consulting> [170112 19:55]:
-> >> We can get audio errors if hitting deeper idle states on omaps:
-> >>
-> >> [alsa.c:230] error: Fatal problem with alsa output, error -5.
-> >> [audio.c:614] error: Error in writing audio (Input/output error?)!
-> >>
-> >> This seems to happen with off mode idle enabled as power for the
-> >> whole SoC may get cut off between filling the McBSP fifo using DMA.
-> >> While active DMA blocks deeper idle states in hardware, McBSP
-> >> activity does not seem to do so.
-> >>
-> >> Basing the QoS latency calculation on the FIFO size, threshold,
-> >> sample rate, and channels.
-> >>
-> >> Based on the original patch by Tony Lindgren
-> >> Link: https://patchwork.kernel.org/patch/9305867/
-> >>
-> >> Cc: Tony Lindgren <tony@atomide.com>
-> >> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> >> Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> >> Signed-off-by: Matt Ranostay <matt@ranostay.consulting>
-> >> ---
-> >> Changes from v1:
-> >> * add calculations for latency per number of FIFO locations
-> >>
-> >> Changes from v2:
-> >> * add missing mcbsp.h header change
-> >>
-> >> Changes from v3:
-> >> * base the latency calculations on threshold, buffer size, sample
-> >>   rate, and channels
-> >>
-> >> Changes from v4:
-> >> * using Peter Ujfalusi's suggestions for restoring a higher latency on
-> >>   audio stream completion, or if not applicable remove the QoS request
-> >>
-> >> Changes from v5:
-> >> * clean up latency checking logic
-> >> * move logic to .prepare and .shutdown to avoid functions that can sleep
-> >>
-> >> Changes from v6:
-> >> * move QoS removal to asoc_mcbsp_remove from omap_mcbsp_cleanup
-> >> * also remove header include that is unneeded
-> >
-> > Hmm now I'm seeing these when starting or stopping playback:
-> 
-> Ok I can't reproduce but I have an idea why it is happening. There is
-> likely a race condition between pm_qos_remove_request() and
-> omap_mcbsp_dai_shutdown()... Should we do a pm_qos_request_active
-> check in omap_mcbsp_dai_shutdown? That seems to be hacking around the
-> issue.
+From: Jeeja KP <jeeja.kp@intel.com>
 
-OK. Again this is with next using omap2plus_defconfig and:
+Display port 1.2 introduces new capability Multi-stream transport (MST)
+which will allow multiple stream to route to single display port where
+multiple monitors are connected. Multiple monitors will be connected by
+a MST Hub or a monitor capable of daisy-chaining.
 
-CONFIG_DEBUG_LOCKDEP=y
-CONFIG_DEBUG_ATOMIC_SLEEP=y
+With MST support, a pin can support multiple ports and on each port a
+monitor can be connected.
 
-Regards,
+This patch series enables DP MST Audio by extending the current design
+from pin to port.
+o With MST, pin mux for CVT selection will be used to select CVT for
+pin-port instead of pin. So create the pin mux accordingly.
 
-Tony
+o Pin is marked as MST capable when connect event reports pipe as valid.
+if pipe is -1, then pin is not MST capable and default to port 0.
+if pipe is valid, then pin is MST capable and port = pipe.
+
+o For MST capable pin, select the device entry before configuring the pin
+widget verbs controlling the sink device operations.
+
+o Add support to handle multiple Port mapped to same converter by creating
+as port list in pcm and report jack event based on the no of ports 
+connected/disconnected .
+
+o i915 acomp APIs are now used to read the ELD info and support is extended
+for MST port as well.
+
+o Configure port/pin/audio infoframe in widget event handlers for dynamic
+routing when monitor is connected/disconnected instead of DAI ops. 
+
+o Use set_tdm slot to set the stream tag instead of dai params and store it
+in pcm context and use this in configuring the converter in widget event
+handler.
+
+o Use pin widget to represent the output to enable/disable path when a device
+is connected/disconnected. Added API to create the pin widget and this will be
+called by the machine driver after jack creation.
+
+o Add channel map support for bxt machine.
+
+o Move from snd_jack to ASOC jack framework, create the jack in machine driver.
+
+o Create port pin widget to enable and disable the path dynamically when a jack
+is connected/disconnected.
+
+Note: This patch series has dependency on the series
+"ASoC: Intel: Skylake: Driver updates"  
+
+Jeeja KP (29):
+  ASoC: hdac_hdmi: Register widget event handlers
+  ASoC: Intel: Skylake: Use set_tdm_slot to set the dma channel
+  ASoC: hdac_hdmi: Move channel info from pin to PCM structure
+  ASoC: Intel: bxt: add channel map support in rt298 machine
+  ASoC: Intel: bxt: add channel map support in bxt_da7219_max98357a    
+    machine
+  ASoC: hdac_hdmi: Begin to add support for DP Multi-stream audio
+  ASoC: Intel: Skylake: Add route change to rt286 machine
+  ASoC: Intel: Skylake: Add route change to nau88l25_max98357a machine
+  ASoC: Intel: Skylake: Add route change to nau88l25_ssm4567 machine
+  ASoC: Intel: bxt: Add route change to rt298 machine
+  ASoC: Intel: bxt: Add route change to da7219_max98357a machine
+  ASoC: hdac_hdmi: Add support to handle MST capable pin
+  ASoC: hdac_hdmi: Add MST verb support
+  ASoC: hdac_hdmi: Handle MST pin jack detection at boot/resume
+  ASoc: hdac_hdmi: Configure pin verbs for MST
+  ASoC: hdac_hdmi: Add support for multiple ports to a PCM
+  ASoC: hdac_hdmi: Use ASoC jack instead of snd_jack
+  ASoC: Intel: Skylake: Create ASoC jack for hdmi in rt286 machine
+  ASoC: Intel: Skylake: Create ASoC jack for hdmi in    
+    skl_nau88l25_max98357a machine
+  ASoC: Intel: Skylake: Create ASoC jack for hdmi in
+    skl_nau88l25_ssm4567     machine
+  ASoC: Intel: bxt: Create ASoC jack for hdmi in bxt_rt298 machine
+  ASoC: Intel: bxt: Create ASoC jack for hdmi in bxt_da7219_max98357    
+    machine
+  ASoC: hdac_hdmi: Add machine pin widget for each port
+  ASoC: Intel: Skylake: Add jack port initialize in rt286 machine
+  ASoC: Intel: Skylake: Add jack port initialize in
+    skl_nau88l25_max98357a machine
+  ASoC: Intel: Skylake: Add jack port initialize in skl_nau88l25_ssm4567
+    machine
+  ASoC: Intel: Skylake: Add jack port initialize in bxt_rt298 machine
+  ASoC: Intel: Skylake: Add jack port initialize in bxt_da7219_max98357a
+        machine
+  ASoC: Intel: Skylake: Fix to delete DSP pipe after stopping pipe
+
+Sandeep Tayal (1):
+  ASoC: hdac_hdmi: use audio component framework to read ELD
+
+ sound/soc/codecs/hdac_hdmi.c                    | 1331 ++++++++++++++---------
+ sound/soc/codecs/hdac_hdmi.h                    |    5 +-
+ sound/soc/intel/boards/bxt_da7219_max98357a.c   |   75 +-
+ sound/soc/intel/boards/bxt_rt298.c              |   78 +-
+ sound/soc/intel/boards/skl_nau88l25_max98357a.c |   34 +-
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c   |   33 +-
+ sound/soc/intel/boards/skl_rt286.c              |   30 +-
+ sound/soc/intel/skylake/skl-messages.c          |    2 +-
+ sound/soc/intel/skylake/skl-pcm.c               |   10 +-
+ 9 files changed, 1045 insertions(+), 553 deletions(-)
+
+-- 
+2.5.0
