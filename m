@@ -1,16 +1,16 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH 08/30] ASoC: Intel: Skylake: Add route change
-	to rt286 machine
-Date: Mon, 16 Jan 2017 23:27:35 +0530
-Message-ID: <1484589477-7630-9-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH 09/30] ASoC: Intel: Skylake: Add route change
+	to nau88l25_max98357a machine
+Date: Mon, 16 Jan 2017 23:27:36 +0530
+Message-ID: <1484589477-7630-10-git-send-email-jeeja.kp@intel.com>
 References: <1484589477-7630-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 32D5B2670FA
- for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 18:47:23 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id A7F532670FA
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jan 2017 18:47:28 +0100 (CET)
 In-Reply-To: <1484589477-7630-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,29 +28,38 @@ List-Id: alsa-devel@alsa-project.org
 From: Jeeja KP <jeeja.kp@intel.com>
 
 To support MST moved pin to port, this changes the routes based on
-port. So change the route in skl_rt286 machine.
+port. So change the route in nau88l25_max98357a machine.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/intel/boards/skl_rt286.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/skl_nau88l25_max98357a.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
-index dc5c361..5e56af3 100644
---- a/sound/soc/intel/boards/skl_rt286.c
-+++ b/sound/soc/intel/boards/skl_rt286.c
-@@ -94,9 +94,9 @@ static const struct snd_soc_dapm_route skylake_rt286_map[] = {
- 	{"DMIC1 Pin", NULL, "DMIC2"},
- 	{"DMic", NULL, "SoC DMIC"},
+diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+index 436afb9..57acc58 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
++++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
+@@ -141,8 +141,8 @@ static const struct snd_soc_dapm_widget skylake_widgets[] = {
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+ 	SND_SOC_DAPM_SPK("Spk", NULL),
+ 	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
+-	SND_SOC_DAPM_SPK("DP", NULL),
+-	SND_SOC_DAPM_SPK("HDMI", NULL),
++	SND_SOC_DAPM_SPK("DP1", NULL),
++	SND_SOC_DAPM_SPK("DP2", NULL),
+ 	SND_SOC_DAPM_SUPPLY("ssp0 mclk", SND_SOC_NOPM, 0, 0,
+ 			ssp_set_clk, SND_SOC_DAPM_PRE_PMU |
+ 			SND_SOC_DAPM_POST_PMD),
+@@ -163,8 +163,8 @@ static const struct snd_soc_dapm_route skylake_map[] = {
+ 	{ "MIC", NULL, "Headset Mic" },
+ 	{ "DMic", NULL, "SoC DMIC" },
  
--	{"HDMI1", NULL, "hif5 Output"},
--	{"HDMI2", NULL, "hif6 Output"},
--	{"HDMI3", NULL, "hif7 Output"},
-+	{"HDMI1", NULL, "hif5-0 Output"},
-+	{"HDMI2", NULL, "hif6-0 Output"},
-+	{"HDMI3", NULL, "hif7-0 Output"},
+-	{"HDMI", NULL, "hif5 Output"},
+-	{"DP", NULL, "hif6 Output"},
++	{"DP1", NULL, "hif5-0 Output"},
++	{"DP2", NULL, "hif6-0 Output"},
  
  	/* CODEC BE connections */
- 	{ "AIF1 Playback", NULL, "ssp0 Tx"},
+ 	{ "HiFi Playback", NULL, "ssp0 Tx" },
 -- 
 2.5.0
