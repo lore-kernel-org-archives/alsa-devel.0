@@ -1,79 +1,133 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 00/30] ASoC: hdac_hdmi: Add support to
-	enable MST audio
-Date: Tue, 17 Jan 2017 17:54:42 +0000
-Message-ID: <20170117175442.knusnvczrh56o5d2@sirena.org.uk>
-References: <1484589477-7630-1-git-send-email-jeeja.kp@intel.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4455615597037549178=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B1EB226725F
- for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 18:54:53 +0100 (CET)
-In-Reply-To: <1484589477-7630-1-git-send-email-jeeja.kp@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: jeeja.kp@intel.com
-Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v7 3/5] arch/x86/platform/atom: Move pmc_atom to drivers/platform/x86
+Date: Tue, 17 Jan 2017 15:57:48 -0600
+Message-ID: <1484690270-28425-4-git-send-email-pierre-louis.bossart@linux.intel.com>
+References: <1484690270-28425-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+Return-path: <platform-driver-x86-owner@vger.kernel.org>
+In-Reply-To: <1484690270-28425-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+Sender: platform-driver-x86-owner@vger.kernel.org
+To: linux-clk@vger.kernel.org, x86@kernel.org, platform-driver-x86@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>, Darren Hart <dvhart@infradead.org>, Thomas Gleixner <tglx@linutronix.de>
+Cc: alsa-devel@alsa-project.org, Irina Tirdea <irina.tirdea@intel.com>, Michael Turquette <mturquette@baylibre.com>, "Rafael J . Wysocki" <rjw@rjwysocki.net>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, Ingo Molnar <mingo@redhat.com>, Mark Brown <broonie@kernel.org>, "H . Peter Anvin" <hpa@zytor.com>, Len Brown <lenb@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Irina Tirdea <irina.tirdea@intel.com>
 
---===============4455615597037549178==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="wr32l73hyerjfxl7"
-Content-Disposition: inline
+The pmc_atom driver does not contain any architecture specific
+code. It only enables the SoC Power Management Controller driver
+for BayTrail and CherryTrail platforms.
 
+Move the pmc_atom driver from arch/x86/platform/atom to
+drivers/platform/x86. Also clean-up and reorder include files by
+alphabetical order in pmc_atom.h
 
---wr32l73hyerjfxl7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Irina Tirdea <irina.tirdea@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ arch/x86/Kconfig                                                 | 4 ----
+ arch/x86/platform/atom/Makefile                                  | 1 -
+ drivers/acpi/acpi_lpss.c                                         | 2 +-
+ drivers/platform/x86/Kconfig                                     | 4 ++++
+ drivers/platform/x86/Makefile                                    | 1 +
+ {arch/x86/platform/atom => drivers/platform/x86}/pmc_atom.c      | 9 ++++-----
+ .../include/asm => include/linux/platform_data/x86}/pmc_atom.h   | 0
+ 7 files changed, 10 insertions(+), 11 deletions(-)
+ rename {arch/x86/platform/atom => drivers/platform/x86}/pmc_atom.c (99%)
+ rename {arch/x86/include/asm => include/linux/platform_data/x86}/pmc_atom.h (100%)
 
-On Mon, Jan 16, 2017 at 11:27:27PM +0530, jeeja.kp@intel.com wrote:
-> From: Jeeja KP <jeeja.kp@intel.com>
->=20
-> Display port 1.2 introduces new capability Multi-stream transport (MST)
-> which will allow multiple stream to route to single display port where
-> multiple monitors are connected. Multiple monitors will be connected by
-> a MST Hub or a monitor capable of daisy-chaining.
-
-This is a *really* big patch series.  As I've said before please try to
-keep patch serieses down to a manageable size, 20 patches is getting
-quite large and this is quite a bit bigger.  It's a lot easier for
-people to digest things in smaller chunks and it's a lot easier to push
-something enormous that's going to take time to get through to the back
-of the queue when you're short on time.
-
---wr32l73hyerjfxl7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlh+WmEACgkQJNaLcl1U
-h9Cvswf+MvM80sz5muhi/lRphEDakmwdfVlbgJtU3/3EZ7EHH5jJAzB1rtaL8oDx
-yOI+eZYw/0jVUUFhNkm6UOny43WrdP7GW3kTbGGYkeQFNRYWiFfXEw3im9rnewQ+
-LBAZh3hPbLLhI+lspFgWPVfbhUWpxiBPwc/YldPFFsAznNSDwmYEbmUgyLO0tKOC
-t1JGa94txp4cx+EDpZLv0Eub06oujEgz7inT6OVsoD5la1ZFTOV/AA5nxuxD+Y4k
-CtGRj2VmVnbNGRvWPXW4l0VTmywhErAVXOBIodSgpY+JxbDIAG1TNqhDwWq44msA
-JXuQQOKdqt+RCR/aaB22/999XPg4/Q==
-=bzII
------END PGP SIGNATURE-----
-
---wr32l73hyerjfxl7--
-
---===============4455615597037549178==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4455615597037549178==--
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index e487493..7b4f178 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -2789,10 +2789,6 @@ config X86_DMA_REMAP
+ 	bool
+ 	depends on STA2X11
+ 
+-config PMC_ATOM
+-	def_bool y
+-        depends on PCI
+-
+ source "net/Kconfig"
+ 
+ source "drivers/Kconfig"
+diff --git a/arch/x86/platform/atom/Makefile b/arch/x86/platform/atom/Makefile
+index 40983f5..57be88f 100644
+--- a/arch/x86/platform/atom/Makefile
++++ b/arch/x86/platform/atom/Makefile
+@@ -1,2 +1 @@
+-obj-$(CONFIG_PMC_ATOM)		+= pmc_atom.o
+ obj-$(CONFIG_PUNIT_ATOM_DEBUG)	+= punit_atom_debug.o
+diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/acpi_lpss.c
+index 8ea836c..90d112a 100644
+--- a/drivers/acpi/acpi_lpss.c
++++ b/drivers/acpi/acpi_lpss.c
+@@ -18,6 +18,7 @@
+ #include <linux/mutex.h>
+ #include <linux/platform_device.h>
+ #include <linux/platform_data/clk-lpss.h>
++#include <linux/platform_data/x86/pmc_atom.h>
+ #include <linux/pm_domain.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/delay.h>
+@@ -31,7 +32,6 @@ ACPI_MODULE_NAME("acpi_lpss");
+ #include <asm/cpu_device_id.h>
+ #include <asm/intel-family.h>
+ #include <asm/iosf_mbi.h>
+-#include <asm/pmc_atom.h>
+ 
+ #define LPSS_ADDR(desc) ((unsigned long)&desc)
+ 
+diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+index 59aa8e3..8b1988a 100644
+--- a/drivers/platform/x86/Kconfig
++++ b/drivers/platform/x86/Kconfig
+@@ -1077,3 +1077,7 @@ config MLX_CPLD_PLATFORM
+ 	  cables and fans on the wide range Mellanox IB and Ethernet systems.
+ 
+ endif # X86_PLATFORM_DEVICES
++
++config PMC_ATOM
++       def_bool y
++       depends on PCI
+diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefile
+index d4111f0..49ee7ef 100644
+--- a/drivers/platform/x86/Makefile
++++ b/drivers/platform/x86/Makefile
+@@ -74,5 +74,6 @@ obj-$(CONFIG_INTEL_TELEMETRY)	+= intel_telemetry_core.o \
+ 				   intel_telemetry_pltdrv.o \
+ 				   intel_telemetry_debugfs.o
+ obj-$(CONFIG_INTEL_PMC_CORE)    += intel_pmc_core.o
++obj-$(CONFIG_PMC_ATOM)		+= pmc_atom.o
+ obj-$(CONFIG_MLX_PLATFORM)	+= mlx-platform.o
+ obj-$(CONFIG_MLX_CPLD_PLATFORM)	+= mlxcpld-hotplug.o
+diff --git a/arch/x86/platform/atom/pmc_atom.c b/drivers/platform/x86/pmc_atom.c
+similarity index 99%
+rename from arch/x86/platform/atom/pmc_atom.c
+rename to drivers/platform/x86/pmc_atom.c
+index 964ff4f..e1dfb1b 100644
+--- a/arch/x86/platform/atom/pmc_atom.c
++++ b/drivers/platform/x86/pmc_atom.c
+@@ -15,14 +15,13 @@
+ 
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ 
++#include <linux/debugfs.h>
++#include <linux/device.h>
+ #include <linux/init.h>
++#include <linux/io.h>
++#include <linux/platform_data/x86/pmc_atom.h>
+ #include <linux/pci.h>
+-#include <linux/device.h>
+-#include <linux/debugfs.h>
+ #include <linux/seq_file.h>
+-#include <linux/io.h>
+-
+-#include <asm/pmc_atom.h>
+ 
+ struct pmc_bit_map {
+ 	const char *name;
+diff --git a/arch/x86/include/asm/pmc_atom.h b/include/linux/platform_data/x86/pmc_atom.h
+similarity index 100%
+rename from arch/x86/include/asm/pmc_atom.h
+rename to include/linux/platform_data/x86/pmc_atom.h
+-- 
+2.7.4
