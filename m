@@ -1,77 +1,71 @@
-From: Eric Anholt <eric@anholt.net>
-Subject: Re: [PATCH v4 1/3] DRM: add help to get ELD speaker allocation
-Date: Wed, 18 Jan 2017 07:38:53 +1100
-Message-ID: <87bmv5wheq.fsf@eliezer.anholt.net>
-References: <1483458772-13658-1-git-send-email-arnaud.pouliquen@st.com>
- <1483458772-13658-2-git-send-email-arnaud.pouliquen@st.com>
- <20170117191902.zugqcnb4osxmcgaj@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] RFC: ASoC: dapm: handle probe deferrals
+Date: Tue, 17 Jan 2017 17:59:49 +0000
+Message-ID: <20170117175949.qv5rxypbrgzmclsk@sirena.org.uk>
+References: <20170113092352.22474-1-linus.walleij@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1907636008=="
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20170117191902.zugqcnb4osxmcgaj@sirena.org.uk>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Mark Brown <broonie@kernel.org>, Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Cc: Jani Nikula <jani.nikula@intel.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, lgirdwood@gmail.com, Jyri Sarha <jsarha@ti.com>
+Content-Type: multipart/mixed; boundary="===============6238888161864820619=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 960CF26725F
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 18:59:57 +0100 (CET)
+In-Reply-To: <20170113092352.22474-1-linus.walleij@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============1907636008==
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+--===============6238888161864820619==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="f3bk72yidg6ng5vn"
+Content-Disposition: inline
 
-Mark Brown <broonie@kernel.org> writes:
 
-> [ Unknown signature status ]
-> On Tue, Jan 03, 2017 at 04:52:50PM +0100, Arnaud Pouliquen wrote:
->> Add helper to allow users to retrieve the speaker allocations without
->> knowledge of the ELD structure.
->
-> You don't appear to have sent this to any of the DRM maintainers - it
-> does need review from them.
+--f3bk72yidg6ng5vn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-It was sent to dri-devel.  That's us.  And the patch already has a r-b
-From=20DRM on it.
+On Fri, Jan 13, 2017 at 10:23:52AM +0100, Linus Walleij wrote:
 
---=-=-=
+> I want an indication from the maintainers whether I should just
+> go in and augment all these call sites, or if deferred probe
+> is frowned upon when it leads to this much overhead.
+
+We probably should handle errors properly like you're doing here but as
+you say it's a big undertaking.
+
+--f3bk72yidg6ng5vn
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCgAdFiEE/JuuFDWp9/ZkuCBXtdYpNtH8nugFAlh+gN0ACgkQtdYpNtH8
-nujrGQ//bnFAgc7y0qf7004kLM6EJRnVhC9wher87A0KhhgkhmRUg4xRa44QStiF
-FWrbl9VvpyK/LLh00KVrD1ZodnCRods8wj8xIt+CF9y1e3uHyRGmBd55CtutMYh4
-fY5pdt5ufsF6Tmbuk/YYDJR3+TVMSp+QS9hbsQyinv4X1LSsAAooYMtBHJAkHPes
-GXInLDi+PWCsQp04kW3OoGcmr5tsUWD5rU8eTrRByPf8Gkln+t1JPnco32xbFBmW
-TTm01mtFVo8J+77enYku1MA2at3mUSvVFsYkQvwgSR8up6yep4Zwe5wdJ+1roSyR
-yrbebfMOPq8Tc0c8mH3EQZ1cEwnOhPKBqVtK0i4xmPYdDr9blmC9jiutS32ORg9j
-sFWhw9rvIkzdCqjuJFBP7Ai7ADNv4P2Skq5Ckq+fJtY5Sht8mfXJTwDTmRElECVr
-izw74hWBoSMRtYgud/SE2IiuubCN0HONc/JaLbu87W8yQA3h5prmVwCllH8SLTH8
-u9Jh9XsTmTrJ3aA2Ifr1m6Lvt0ALIO0kydf1IBgL66QJDK+w/P8vrhNFSvf430n3
-4d3Y0zg61rEZdGyWu7s4XFg2EYlptXJBOsIqYCSjH1/3GmgisB4gUN6h1RvBQFdy
-O7et5xu7G8fb5RJdSiTO0tAltgrZJNItnDV6OzrAg0IAhtSRUcw=
-=+0Eg
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlh+W5QACgkQJNaLcl1U
+h9D2OAf/f7LDAxVaw8o/c0SZvXrqSu37Ju/SK7AkVsLyAirLFMMmMiEpDWz/hzxk
+TuhSbmcmGiRLpfuiTlxGHLLKB6bAUUm7hlWMyJ3cUDA8dmEVC4GXOTCJXzdYwcZU
+l8X3towVX6CRN8dl0Gph6j2e45a3dy5th8mfO4LoB4xXqD0jpQqyLQUFIlz1KnnH
+oHOUWTaIcDsFSbw+CDxp/jeyn/SHoAkCt30/RdWoefH5FFf/in2NuBid+H6/mIRO
+aEpbfjMTyb7GVYe5o1ck8vB6JIqZC9cQPEsUy2pFk61yxUsLD105m0aRLlkFp3+1
+ryXQx1ANevpp2UjIRWhoXxXpk7ORzA==
+=sP1E
 -----END PGP SIGNATURE-----
---=-=-=--
 
---===============1907636008==
-Content-Type: text/plain; charset="utf-8"
+--f3bk72yidg6ng5vn--
+
+--===============6238888161864820619==
+Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
 
---===============1907636008==--
+--===============6238888161864820619==--
