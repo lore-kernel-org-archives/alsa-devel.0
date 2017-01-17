@@ -1,112 +1,69 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun4i-i2s: Increase DMA max burst to 8" to the asoc
- tree
-Date: Tue, 17 Jan 2017 18:44:54 +0000
-Message-ID: <E1cTYkY-0008Ku-Kd@debutante>
-References: <20170117140230.23142-2-mylene.josserand@free-electrons.com>
+Subject: Re: [PATCH v4 1/3] DRM: add help to get ELD speaker allocation
+Date: Tue, 17 Jan 2017 19:19:02 +0000
+Message-ID: <20170117191902.zugqcnb4osxmcgaj@sirena.org.uk>
+References: <1483458772-13658-1-git-send-email-arnaud.pouliquen@st.com>
+ <1483458772-13658-2-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7943772179114720444=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20170117140230.23142-2-mylene.josserand@free-electrons.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-Cc: mark.rutland@arm.com, thomas.petazzoni@free-electrons.com, alsa-devel@alsa-project.org, mylene.josserand@free-electrons.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, mturquette@baylibre.com, linux-sunxi@googlegroups.com, sboyd@codeaurora.org, tiwai@suse.com, robh+dt@kernel.org, lgirdwood@gmail.com, wens@csie.org, broonie@kernel.org, alexandre.belloni@free-electrons.com, maxime.ripard@free-electrons.com, perex@perex.cz, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="===============1210722427=="
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <1483458772-13658-2-git-send-email-arnaud.pouliquen@st.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, Jyri Sarha <jsarha@ti.com>, Jani Nikula <jani.nikula@intel.com>, dri-devel@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
---===============7943772179114720444==
-Content-Type: text/plain
 
-The patch
-
-   ASoC: sun4i-i2s: Increase DMA max burst to 8
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From ebad64d19377957976963f99ce1fcf2f09796357 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?=
- <mylene.josserand@free-electrons.com>
-Date: Tue, 17 Jan 2017 15:02:21 +0100
-Subject: [PATCH] ASoC: sun4i-i2s: Increase DMA max burst to 8
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-As done previously for sun4i-codec, the DMA maxburst of 4
-is not supported by every SoCs so the DMA controller engine
-returns "unsupported value".
-
-As a maxburst of 8 is supported by all variants, this patch
-increases it to 8.
-
-For more details, see commit from Chen-Yu Tsai:
-commit 730e2dd0cbc7 ("ASoC: sun4i-codec: Increase DMA max burst to 8")
-
-Signed-off-by: Mylène Josserand <mylene.josserand@free-electrons.com>
-Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sunxi/sun4i-i2s.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index f24d19526603..4237323ef594 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -694,10 +694,10 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
- 	}
- 	
- 	i2s->playback_dma_data.addr = res->start + SUN4I_I2S_FIFO_TX_REG;
--	i2s->playback_dma_data.maxburst = 4;
-+	i2s->playback_dma_data.maxburst = 8;
- 
- 	i2s->capture_dma_data.addr = res->start + SUN4I_I2S_FIFO_RX_REG;
--	i2s->capture_dma_data.maxburst = 4;
-+	i2s->capture_dma_data.maxburst = 8;
- 
- 	pm_runtime_enable(&pdev->dev);
- 	if (!pm_runtime_enabled(&pdev->dev)) {
--- 
-2.11.0
-
-
-
---===============7943772179114720444==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+--===============1210722427==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="7bumbfcs752nywoi"
 Content-Disposition: inline
 
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============7943772179114720444==--
+--7bumbfcs752nywoi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jan 03, 2017 at 04:52:50PM +0100, Arnaud Pouliquen wrote:
+> Add helper to allow users to retrieve the speaker allocations without
+> knowledge of the ELD structure.
+
+You don't appear to have sent this to any of the DRM maintainers - it
+does need review from them.
+
+--7bumbfcs752nywoi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlh+biYACgkQJNaLcl1U
+h9B0gAf/dgASBWQ/zba3uAVk07GQgQ2bCmRikMmj8Cgwys8BWkMjUZepYESneMbN
+Ne36S3xw/UcqqDBY5KqRnWrmUgCp5qKW2lD7xy1xQLD8KB7a6nEVEZsB5JATWdXD
+POTP6OKaajzFp3Pe8QndyICsqEgSi4tGWsl5oeCy0BtP7Y/ypYchbD3vfkimMYn6
+LThcSiahkAMmnYxpOtPfRNckHu8Pm4EiHafb0yndb1/OU1YPV/5CCznFxmi6ratZ
+Aj542vaGSsfM8nIiTCynvrIo69EjeRFAaBYwZy+2wmqULIQ03PXJXTbuETSzqOOC
+U80MDdJuYRzvDuU59uOjLp7RFIE5DQ==
+=+odM
+-----END PGP SIGNATURE-----
+
+--7bumbfcs752nywoi--
+
+--===============1210722427==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
+IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+
+--===============1210722427==--
