@@ -1,18 +1,18 @@
 From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH v2 04/10] ASoC: sun4i-i2s: Add quirks to
- handle new compatible for reset
-Date: Tue, 17 Jan 2017 17:47:22 +0100
-Message-ID: <20170117164722.yohrxvlempkjldu3@lukather>
+Subject: Re: [PATCH v2 06/10] ASoC: sun8i-codec-analog: Add
+ amplifier event to fix first delay
+Date: Tue, 17 Jan 2017 17:49:04 +0100
+Message-ID: <20170117164904.c22f7tmtu67l23dd@lukather>
 References: <20170117140230.23142-1-mylene.josserand@free-electrons.com>
- <20170117140230.23142-5-mylene.josserand@free-electrons.com>
+ <20170117140230.23142-7-mylene.josserand@free-electrons.com>
 Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="bsjsst4jgd4saubz"
-Return-path: <linux-sunxi+bncBDSJBYGBRIMBBJEV7HBQKGQESWJAC3I-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="sh5nscmqg2dbm6ci"
+Return-path: <linux-sunxi+bncBDSJBYGBRIMBBC4W7HBQKGQECFOPDTI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Content-Disposition: inline
-In-Reply-To: <20170117140230.23142-5-mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+In-Reply-To: <20170117140230.23142-7-mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <https://groups.google.com/group/linux-sunxi
@@ -24,18 +24,22 @@ Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yR
 List-Id: alsa-devel@alsa-project.org
 
 
---bsjsst4jgd4saubz
+--sh5nscmqg2dbm6ci
 Content-Type: text/plain; charset=UTF-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 17, 2017 at 03:02:24PM +0100, Myl=C3=A8ne Josserand wrote:
-> Some SoCs have a reset line that must be asserted/deasserted.
-> This patch adds a quirk to handle the new compatible
-> "allwinner,sun6i-a31-i2s" which will deassert the reset
-> line on probe function and assert it on remove's one.
+On Tue, Jan 17, 2017 at 03:02:26PM +0100, Myl=C3=A8ne Josserand wrote:
+> When playing a sound for the first time, a short delay, where the audio
+> file is not played, can be noticed.
+> On a second play (right after), the sound is played correctly.
+> If we wait a short time (~5 sec which corresponds to the aplay
+> timeout), the delay is back.
 >=20
-> This new compatible is useful in case of A33 codec driver, for example.
+> This patch fixes it by using an event on headphone amplifier.
+> It allows to keep the amplifier enable while playing a sound.
+> A delay of 700ms allows to wait that the amplifier is powered-up
+> before playing the sound.
 >=20
 > Signed-off-by: Myl=C3=A8ne Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org=
 >
@@ -57,24 +61,24 @@ To unsubscribe from this group and stop receiving emails from it, send an e=
 mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
 For more options, visit https://groups.google.com/d/optout.
 
---bsjsst4jgd4saubz
+--sh5nscmqg2dbm6ci
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIcBAEBCAAGBQJYfkqZAAoJEBx+YmzsjxAgXG8P/2tSaQNI7pYK5hKBqBy+DXKF
-wgiyEJJfvFSNXL6+kHgY/iUzraZuzitMqiJsGat+VX0vvB5Kh6QsPGq9u/YuOoeA
-WQZG3kszPlaMnkLSsKoAyFClESAZrV0P/kwSc6p/aJYzXWiLlVH/tfmmlelmJf9i
-YxqOp05yG/ADeSubiIVDdMspn0huuz2aUiT5PPfWqy0kNABD0rKPOefqvPstHIHQ
-RBXQhVu+JpjqlmxcascAee4KJuQWTp3NbDDCtDUi7HBXTF2zPEcg8T45BHV07mat
-WIQrbsOp0SY5nHWHgxailcb74D7iLnp/U630qgVbz6EsGqn4pb0568xhDCN8Zc2I
-ErrMpEMHo/f02V47TeBeAqTMuRE9cjVxWa7wnnfu3LK8BcSn482xo7cRm6awzNtM
-p09JwPbzF3X1TePDQn/F+/28Hmek9DuiguvlHver7dc38JVV+aNzofu3h7HEGv5/
-hdd9WM9s5Jh/zAHfqD7ueKov9BeS1b37s4zkkVJk39R/VMtnQPkHCzMPqIizUwl8
-u44c+MGEUIMvXcq1XxEBDkWNbLit/x4XZgPSPNHcxjyEdyvdU3nWscCuXYcYo6Pv
-QXLFG2EtwAIX2z096JRbHGey5K/Hhm+dh8KXi9yHOgSjOhvKoqNaeCv9BMSRZ2Gf
-finOAdgqDqtqQDFQ0Bn3
-=/Zyc
+iQIcBAEBCAAGBQJYfksAAAoJEBx+YmzsjxAgmvcP/iyTTH7UECcmmXmjr8IurRLT
+wziep6YhieePCllWYnYj97xEfXsQ2h6ydb7Iiwfy82vCCZL9+KV/qmMIYEPZDMZu
+22cJa304UchxUFiYRyEBEvnU8UqC59m7T7KnSK3XWnFfil3zWcMbAhf43n+Yn2C2
+imd/fsl1hpEV5GMpGV4qh63OKNrBiQrgNPEBf/qFE8rXe58iAbkN46J73hA8NBaf
+eyp59QmRGD0ISKODuZX7StX6Pw/LL27OXV27LUxsYCMiFZVdY4M+AODabZZkwAB1
+4DT2l4Cnhrat5JsTAma02w6Q1qD1Q/I9nO6g2WiKtr6a8Ua7OxuYnFHpjIDLBqKV
++RPNRaGIF5e49y5r4RyZEwfsqQm3TfOdFBGmvtMOnJgaFUm9Z2QdTUMb4Y8HakEL
+yDd/2iyfG+6tyPBRWZ7t3/pCNxHKYzpIqlsD0twFO6y2l8OIeQKLSTYdYLlWwx50
+qJaAJ2dCFjSt+OVSn8dgWESp3RskuvDrdZVGHOLnTqA51ciIPPVDDv2df/aS+j2Q
+E49QuRk2BodC048+jrD/lbLjJaBtx2onbP2tnFXrcfUSqVcdaiY2BeW1naQLC77J
+JpDuhCa/uc3MtH90l62ABOduq6ustoQPJgBRJOdB/emJYgwh0D/Git9Wm8RItMP+
+egdkzqfxBHhsz2Uxa69V
+=nhSU
 -----END PGP SIGNATURE-----
 
---bsjsst4jgd4saubz--
+--sh5nscmqg2dbm6ci--
