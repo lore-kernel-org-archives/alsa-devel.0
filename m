@@ -1,92 +1,49 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: Nokia N900: mixers changed between 4.9 and 4.10-rc3, no longer
- can use in-call speaker
-Date: Tue, 17 Jan 2017 15:47:19 +0200
-Message-ID: <d2c78625-565a-86ec-a03e-f15ae071942a@ti.com>
-References: <20170112181826.GA28290@amd> <201701121934.19810@pali>
- <20170114225614.GA25321@amd> <201701150100.54214@pali>
- <20170115100533.GA15816@amd>
- <40dbce4e-d99d-d77d-e682-5b004c70ca40@bitmer.com>
+Subject: Re: [PATCH v7] ASoC: omap-mcbsp: Add PM QoS support
+ for McBSP to prevent glitches
+Date: Tue, 17 Jan 2017 14:34:36 +0200
+Message-ID: <d35dbc1b-da5b-a482-3688-f7b20278d5fb@ti.com>
+References: <20170113035432.6723-1-matt@ranostay.consulting>
+ <20170113152049.GD5696@atomide.com>
+ <CAJ_EiSR-R=5qUKOfHWTTrjj+ZD6Q6BBf1yPj3atf84Q6K03NZg@mail.gmail.com>
+ <20170116171743.GB7403@atomide.com>
+ <CAJ_EiSTStr1TfGE2zVspFF0DkkXLOCDmiqD_jZkzue-GfsTm+Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <40dbce4e-d99d-d77d-e682-5b004c70ca40@bitmer.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Jarkko Nikula <jarkko.nikula@bitmer.com>, Pavel Machek <pavel@ucw.cz>, =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali.rohar@gmail.com>
-Cc: alsa-devel@alsa-project.org, ivo.g.dimitrov.75@gmail.com, khilman@kernel.org, tony@atomide.com, broonie@kernel.org, aaro.koskinen@iki.fi, sre@kernel.org, kernel list <linux-kernel@vger.kernel.org>, lars@metafoo.de, abcloriens@gmail.com, helen.koike@collabora.co.uk, linux-omap@vger.kernel.org, patrikbachan@gmail.com, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, serge@hallyn.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from fllnx209.ext.ti.com (fllnx209.ext.ti.com [198.47.19.16])
+ by alsa0.perex.cz (Postfix) with ESMTP id 278C8266725
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 13:34:29 +0100 (CET)
+In-Reply-To: <CAJ_EiSTStr1TfGE2zVspFF0DkkXLOCDmiqD_jZkzue-GfsTm+Q@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Matt Ranostay <matt@ranostay.consulting>, Tony Lindgren <tony@atomide.com>
+Cc: alsa-devel@alsa-project.org, Linux OMAP List <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/15/2017 09:08 PM, Jarkko Nikula wrote:
-> On 01/15/2017 12:05 PM, Pavel Machek wrote:
->>>> So regression seems to be between v4.9 and v4.10. Any ideas?
->>>
->>> Interesting... seems there are no sound relevant changes after v4.9.
->>>
->>> Looks like there are only three commits after v4.9 for sound/soc which =
-
->>> are built for Nokia N900:
->>>
->>> e411b0b5eb9b65257a050eac333d181d6e00e2c6
->>> e7aa450fe17890e59db7d3c2d8eff5b6b41fc531
->>> 63c3194b82530bd71fd49db84eb7ab656b8d404a
->>>
->>> Maybe something not related to sound/soc could broke it?
->>
->> Lets see.
->>
->> a9042defa29a01cc538b742eab047848e9b5ae14 -- works ok.
->> ce38207f161513ee3d2bd3860489f07ebe65bc78 --
->>
->> alsactl: set_control:1328: failed to obtain info for control #229 (No
->> such file or directory)
->>
-> I'm unable to test older kernels at the moment since modules don't load
-> by some reason (bluetooth: Unknown symbol _GLOBAL_OFFSET_TABLE_ (err
-> 0)). Probably some recent regression in my debian/testing installation
-> since the same configs were working before.
-> =
-
-> However v4.9.4 works and with it I can see there is an issue with these
-> aic3x controls:
-> =
-
-> amixer: Unable to find simple control 'Left DAC_L1 Mixer Line',0
-> =
-
-> =
-
-> =
-
-> amixer: Unable to find simple control 'Right DAC_R1 Mixer Line',0
-
-These are certainly not the regression between 4.6 and 4.9, more like
-more like regression since 2.6:
-'Line Switch' -> 'LineL Switch':
-54f01916297bafc18bd7df4e2300a0544a84fce3
-
-'LineL Switch' -> 'DACL1 Switch':
-c3b79e05b4d9ab2e7c3ba281261ea87ab5b71a92
-
-> At quick look I don't see why above commits could cause it. Maybe
-> regression happened earlier between v4.6 and v4.9?
-
-It might be that there were some work to fix control names for different aic
-versions to match with the HW or support for new codec is added and some
-control gone missing for 3x?
-
-I would compare the 'amixer controls' for the working and regressed
-kernel to see what differs. From there git blame or smthing will for
-sure point to the correct commit.
-
--- =
-
-P=E9ter
+T24gMDEvMTYvMjAxNyAwOTozMCBQTSwgTWF0dCBSYW5vc3RheSB3cm90ZToKPiBZZXAgSSB3YXMg
+dGVzdGluZyB3aXRoIHRoYXQgZW5hYmxlZC4gTm90IHN1cmUgd2h5IEknbSBub3QgZ2V0dGluZyBp
+dAo+IGFsbC4uLiBtYXliZSBkaWZmZXJlbnQgc2lkZSBlZmZlY3RzIGxpa2Ugc2FtcGxlIHJhdGUg
+b2YgdGhlIGF1ZGlvCj4gYmVpbmcgcGxheWVkPwo+IAo+IFBldGVyLCBpcyB0aGVyZSBjaGFuY2Ug
+dGhhdCB0aGVyZSBpcyByYWNlIGNvbmRpdGlvbiBpcyBwb3NzaWJsZQo+IGJldHdlZW4gcG1fcW9z
+X3JlbW92ZV9yZXF1ZXN0IGFuZCBvbWFwX21jYnNwX2RhaV9zaHV0ZG93bj8KCk5vdCB3aXRoIG15
+IGtub3dsZWRnZS4KSG93ZXZlciBvbmUgdGhpbmcgbWlnaHQgaGFwcGVuIHdoaWNoIGlzIG5vdCBo
+YW5kbGVkOgphcHBsaWNhdGlvbiBvcGVucyB1cCB0aGUgYXVkaW8gY2FyZCwgZG9lcyBzb21lIGh3
+X3BhcmFtIHNldHVwLCB0aGVuIGl0CmRlY2lkZXMgdG8gY2xvc2UgdGhlIGNhcmQuIEluIHRoaXMg
+Y2FzZSB0aGUgcG1fcW9zIGlzIG5vdCBwbGFjZWQsIGJ1dCBpbgpkYWlfc2h1dGRvd24gd2UgdHJ5
+IHRvIHJlbW92ZSBpdCAtPiBXQVJOKCkuCgpJIHRoaW5rIHdlIG5lZWQgdG8gY2hlY2sgZWl0aGVy
+IGlmIHRoZSBwbV9xb3MgaXMgYWN0aXZlIGFuZCBvbmx5IHRoZW4KYm90aGVyIHdpdGggdGhlIHJl
+bW92YWwvdXBkYXRlZCBvciB3ZSBjYW4gY2hlY2sgaWYgdGhlCm1jYnNwLT5sYXRlbmN5W3N0cmVh
+bTFdIGlzIG5vdCAwLCB3aGljaCBzaG91bGQgYmUgdGhlIHNhbWUgYXMgY2hlY2tpbmcKZm9yIHRo
+ZSBwbV9xb3MgYWN0aXZlLgoKLS0gClDDqXRlcgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
+c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwK
