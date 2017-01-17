@@ -1,46 +1,41 @@
-From: Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>
-Subject: Re: [PATCH v2 6/6] dell-led: move driver to
- drivers/platform/x86/dell-wmi-led.c
-Date: Tue, 17 Jan 2017 12:28:17 +0100
-Message-ID: <20170117112817.GD32502@pali>
-References: <20170116132204.6421-1-kernel@kempniu.pl>
- <20170116132204.6421-7-kernel@kempniu.pl>
- <b702265e-893e-e3b1-1262-f959d230d552@gmail.com>
- <20170117110809.GC26116@xo-6d-61-c0.localdomain>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: SoundBlaterX G5
+Date: Tue, 17 Jan 2017 10:39:48 +0100
+Message-ID: <d961d16c-aa8e-18b7-226f-ede89945f5cc@ladisch.de>
+References: <c7f0fe10-92b0-0866-f638-96e78b6175c5@ukf.sk>
+ <35808a43-245b-a075-a433-d892897b40b4@ladisch.de>
+ <8893efe5-8e73-3f75-b19c-b47891383342@ukf.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <platform-driver-x86-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20170117110809.GC26116@xo-6d-61-c0.localdomain>
-Sender: platform-driver-x86-owner@vger.kernel.org
-To: Pavel Machek <pavel@ucw.cz>
-Cc: Jacek Anaszewski <jacek.anaszewski@gmail.com>, =?utf-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>, Richard Purdie <rpurdie@rpsys.net>, Darren Hart <dvhart@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Andy Shevchenko <andy.shevchenko@gmail.com>, Anthony Wong <anthony.wong@canonical.com>, linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from webclient5.webclient5.de (webclient5.webclient5.de
+ [136.243.32.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5566A2668F1
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 10:39:49 +0100 (CET)
+Received: from [10.1.2.4] (unknown [94.101.37.79])
+ by webclient5.webclient5.de (Postfix) with ESMTPSA id 140235582666
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 10:39:49 +0100 (CET)
+In-Reply-To: <8893efe5-8e73-3f75-b19c-b47891383342@ukf.sk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 17 January 2017 12:08:09 Pavel Machek wrote:
-> Hi!
-> 
-> > Thanks for the patch set.
-> > 
-> > Would you mind fixing also the following issues raised by
-> > checkpatch.pl?:
-> > 
-> > WARNING: Missing a blank line after declarations
-> > #376: FILE: drivers/platform/x86/dell-wmi-led.c:64:
-> > +	struct bios_args args;
-> ...
-> > The fixes could be placed in an incremental patch after this one.
-> 
-> Anyway, move itself is ok (and the checkpatch issues are not that serious anyway.)
-> 
-> Thanks,
-> 
-> Acked-by: Pavel Machek <pavel@ucw.cz>
+Milan Oravec wrote:
+> I think when I change "Speaker Clock Source" to direct audio sound card capabilities need to be re-enumerated to update sampling rates.
+>
+> Is there any way to achieve this?
 
-Yes, this patch does not change code, just move one file to other
-location. You can add my Reviewed-by.
+Try unloading and re-loading the driver module (snd-usb-audio).
 
--- 
-Pali Rohár
-pali.rohar@gmail.com
+
+Regards,
+Clemens
