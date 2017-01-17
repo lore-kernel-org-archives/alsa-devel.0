@@ -1,18 +1,18 @@
 From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH v2 01/10] ASoC: sun4i-i2s: Increase DMA max
- burst to 8
-Date: Tue, 17 Jan 2017 17:41:11 +0100
-Message-ID: <20170117164111.76mefaj32fy64f7o@lukather>
+Subject: Re: [PATCH v2 02/10] clk: ccu-sun8i-a33: Add
+ CLK_SET_RATE_PARENT to ac-dig
+Date: Tue, 17 Jan 2017 17:44:15 +0100
+Message-ID: <20170117164415.4qseqbqkdx3e6bvt@lukather>
 References: <20170117140230.23142-1-mylene.josserand@free-electrons.com>
- <20170117140230.23142-2-mylene.josserand@free-electrons.com>
+ <20170117140230.23142-3-mylene.josserand@free-electrons.com>
 Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="2gweboskz7ujobya"
-Return-path: <linux-sunxi+bncBDSJBYGBRIMBBMUS7HBQKGQEQYZMJWA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="pmqdesejeydvn5wu"
+Return-path: <linux-sunxi+bncBDSJBYGBRIMBB2UT7HBQKGQEE74QWGI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Content-Disposition: inline
-In-Reply-To: <20170117140230.23142-2-mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+In-Reply-To: <20170117140230.23142-3-mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <https://groups.google.com/group/linux-sunxi
@@ -24,26 +24,24 @@ Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yR
 List-Id: alsa-devel@alsa-project.org
 
 
---2gweboskz7ujobya
+--pmqdesejeydvn5wu
 Content-Type: text/plain; charset=UTF-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 17, 2017 at 03:02:21PM +0100, Myl=C3=A8ne Josserand wrote:
-> As done previously for sun4i-codec, the DMA maxburst of 4
-> is not supported by every SoCs so the DMA controller engine
-> returns "unsupported value".
->=20
-> As a maxburst of 8 is supported by all variants, this patch
-> increases it to 8.
->=20
-> For more details, see commit from Chen-Yu Tsai:
-> commit 730e2dd0cbc7 ("ASoC: sun4i-codec: Increase DMA max burst to 8")
+Hi,
 
-Those details could have been included directly in the commit log.
+On Tue, Jan 17, 2017 at 03:02:22PM +0100, Myl=C3=A8ne Josserand wrote:
+> The audio DAI needs to set the clock rates of the ac-dig clock.
+> To make it possible, the parent PLL audio clock rates should
+> also be changed. This is possible via "CLK_SET_RATE_PARENT" flag.
+>=20
+> Signed-off-by: Myl=C3=A8ne Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org=
+>
 
-Otherwise,
-Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Please make sure to look at the prefixes usually used in the commit
+titles of the area you're working on. In this case that would have
+been "clk: sunxi-ng:". I fixed it, and applied.
 
 Thanks!
 Maxime
@@ -60,24 +58,24 @@ To unsubscribe from this group and stop receiving emails from it, send an e=
 mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
 For more options, visit https://groups.google.com/d/optout.
 
---2gweboskz7ujobya
+--pmqdesejeydvn5wu
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIcBAEBCAAGBQJYfkknAAoJEBx+YmzsjxAgPaIQAIK/zBjeQja/p8TCOIYY/Q5P
-k6tBGE8os+KjiXv9tJq+MX8p+8423SGlQ0VsRhMb1dNwyr7Qs95HBdBwFv4GyAj2
-Zo7EXeR8s5VQiNTYWxYA+d5VCwgAvByhMDffchYa0/3IiEb1VnBpeuASOvWxmk5J
-9+eeT3ozYi7gRgvCdZ9ZQpX/itG7sIFaydmrc/NfEz9WfyWGXx0JHz/8a4f6+h/i
-NsXEJplTf8mtAFyDnPYZ9xoCzPBvvfeAP680zACN8lR+fvq9qlZcSYei84QnvGHn
-tLy5iZeaF5g6MhHS9B88ImfBEQC3lzkEFBio539yKlR2yCQNv1Ogh5qmnzWFpc5E
-YNOcIy5mtiwREY+Si+qG1exO8CXOsCNM6ny1CI+xcVBSBvW5Jk4gvMaOpwAZqRmQ
-2af8htLvl63gThRRy4nKcncDPQPXDoigTQdVfrhk2TECduEU5o7kUXzS5Qk0HGI0
-9HFtZ//U/S6sRlRuYXtl8ey9PNk4KfAnVMExj9nrfW1H38togDxpLQi8C5Pp4M72
-iQkkOOv7noWqlPcIKm0YeotLJ3iya75/cHst3+7jNmdAPqCnd3yWkqizzA8mxuZI
-4gm9JC3BfcRws218k2Icm8aBVUqolYnRzxZp/Tkv4U2pqpveFx1dHsNoFFIUNMIt
-iE7xdIM/mUO6jW83Qc8G
-=3lxr
+iQIcBAEBCAAGBQJYfknfAAoJEBx+YmzsjxAgod0P/iLJ4CE330NecTUFveMfjllK
+4vMqgy3dk0q4bHjEkwf08C5leqCmNCc0w34eXMp3NbCWn2xxvGlsRvBgvXK1Gykj
+Y9Fj4Mo1mWENQjgePb1HG8uNfxb77nsq5txtBHEukZXJTyCgoQ6KeroFX8bAkcMX
+lwQngZ4WDNOpB7MqINSyFQu8jU+PQU3pai0hxnI5mZeqkpSLhYS/tDBSzlr8qFwv
+xPDqX41KQKPhxpUBMF0D3d5auZS/fL2cg0ny5VXFdmMlbPzvsEduEkP5twBEQP4D
+PZlMYtoZ9ynk1Nv6SSw8GTCblHRGSDPaXhSCz3zw8RMoWrNZ/Jt5cUlPm6WjMz2x
+okrDyZxbydkXmQMTHRyJqzEIfUEtP3bOXabdqgWuai7KHAdDn6Bk9+GmKfKFqt+a
+VpHRyoD80homLb/T7EMO5Ce8CRlw2KDrB4q0AwrLoYtCVs3GaimK4LXJG7myXDMr
+bzqjZC98zY9vIFmUQ8vramSKzSvG/+EfLt2ATTehWwXzDCC5u6hMJrR3fJi69v7/
+UzTg9YtcZ6dV4PwpaRAQkoDjvnxCEL4/LW59vKmFg4R+lWdkHooRkFFb5fL9+qwM
+BSrWlgsYBw5itfEwrK6frU14yLwkuFL+gAn8aLSSjhIXx5zC3FWIGdPurd95VYeM
+Xi/mRrfsbCwHibR/bfWY
+=c6v5
 -----END PGP SIGNATURE-----
 
---2gweboskz7ujobya--
+--pmqdesejeydvn5wu--
