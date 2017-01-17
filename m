@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mxs-saif: fix setting master base rate"
-	to the asoc tree
-Date: Tue, 17 Jan 2017 18:44:57 +0000
-Message-ID: <E1cTYkb-0008MS-MY@debutante>
-References: <20170113204428.16703-1-joerg.krause@embedded.rocks>
+Subject: Applied "ASoC: Intel: remove ignored dependencies" to
+	the asoc tree
+Date: Tue, 17 Jan 2017 18:45:16 +0000
+Message-ID: <E1cTYku-0008UU-5i@debutante>
+References: <20170102152017.13938-4-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8103113795126066690=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B59F42665B0
- for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 19:45:24 +0100 (CET)
-In-Reply-To: <20170113204428.16703-1-joerg.krause@embedded.rocks>
+ by alsa0.perex.cz (Postfix) with ESMTP id B05432665B0
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 19:45:26 +0100 (CET)
+In-Reply-To: <20170102152017.13938-4-andriy.shevchenko@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,15 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Mans Rullgard <mans@mansr.com>, Victorien Vedrine <victorien.vedrine@ophrys.net>, =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>, Takashi Iwai <tiwai@suse.com>, =?UTF-8?q?J=C3=B6rg=20Krause?= <jk@lintech.de>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, Shawn Guo <shawn.guo@freescale.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, dmaengine <dmaengine@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
-
---===============8103113795126066690==
-Content-Type: text/plain
 
 The patch
 
-   ASoC: mxs-saif: fix setting master base rate
+   ASoC: Intel: remove ignored dependencies
 
 has been applied to the asoc tree at
 
@@ -54,90 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From bcb8c270829a639b8b838809d7c2b540e65f4e01 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?J=C3=B6rg=20Krause?= <jk@lintech.de>
-Date: Fri, 13 Jan 2017 21:44:27 +0100
-Subject: [PATCH] ASoC: mxs-saif: fix setting master base rate
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From 2914266975fcb09a688cefe98874625366e67c65 Mon Sep 17 00:00:00 2001
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Date: Mon, 16 Jan 2017 15:12:28 +0200
+Subject: [PATCH] ASoC: Intel: remove ignored dependencies
 
-The SAIF base oversample rates are either 512*fs or 384*fs. An additional
-divider exists within the SAIF to generate sub-multiples of these two base
-rates if MCLK is required by the codec.
+For selected only options the explicit dependencies do not make much sense
+becase Kbuild ignores them anyway. Remove them explicitly.
 
- * The sub-rates for the 512x base rate are: 256x, 128x, 64x, and 32x.
- * The sub-rates for the 384x base rate are: 192x, 96x, and 48x.
-
-Setting the base rate depending on the modulo operation with 32 and 48
-give wrong results for some mclk.
-
-If mclk=18.432MHz both modulo operations results in 0. As testing the
-result with 32 is done first, a wrong base rate of 512*fs is set instead
-of the correct 384*fs.
-
-Fix this by setting the base rate depending on the calculated sub-rate.
-
-Signed-off-by: Jörg Krause <joerg.krause@embedded.rocks>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mxs/mxs-saif.c | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
+ sound/soc/intel/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index 9012a2036131..b42f301c6b96 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -119,23 +119,33 @@ static int mxs_saif_set_clk(struct mxs_saif *saif,
- 	 * Set SAIF clock
- 	 *
- 	 * The SAIF clock should be either 384*fs or 512*fs.
--	 * If MCLK is used, the SAIF clk ratio need to match mclk ratio.
--	 *  For 32x mclk, set saif clk as 512*fs.
--	 *  For 48x mclk, set saif clk as 384*fs.
-+	 * If MCLK is used, the SAIF clk ratio needs to match mclk ratio.
-+	 *  For 256x, 128x, 64x, and 32x sub-rates, set saif clk as 512*fs.
-+	 *  For 192x, 96x, and 48x sub-rates, set saif clk as 384*fs.
- 	 *
- 	 * If MCLK is not used, we just set saif clk to 512*fs.
- 	 */
- 	clk_prepare_enable(master_saif->clk);
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index 93c41b7219f2..526855ad479e 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -31,7 +31,6 @@ config SND_SOC_INTEL_SST
+ 	tristate
+ 	select SND_SOC_INTEL_SST_ACPI if ACPI
+ 	select SND_SOC_INTEL_SST_MATCH if ACPI
+-	depends on (X86 || COMPILE_TEST)
  
- 	if (master_saif->mclk_in_use) {
--		if (mclk % 32 == 0) {
-+		switch (mclk / rate) {
-+		case 32:
-+		case 64:
-+		case 128:
-+		case 256:
-+		case 512:
- 			scr &= ~BM_SAIF_CTRL_BITCLK_BASE_RATE;
- 			ret = clk_set_rate(master_saif->clk, 512 * rate);
--		} else if (mclk % 48 == 0) {
-+			break;
-+		case 48:
-+		case 96:
-+		case 192:
-+		case 384:
- 			scr |= BM_SAIF_CTRL_BITCLK_BASE_RATE;
- 			ret = clk_set_rate(master_saif->clk, 384 * rate);
--		} else {
--			/* SAIF MCLK should be either 32x or 48x */
-+			break;
-+		default:
-+			/* SAIF MCLK should be a sub-rate of 512x or 384x */
- 			clk_disable_unprepare(master_saif->clk);
- 			return -EINVAL;
- 		}
+ config SND_SOC_INTEL_SST_FIRMWARE
+ 	tristate
 -- 
 2.11.0
-
-
---===============8103113795126066690==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8103113795126066690==--
