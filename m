@@ -1,71 +1,180 @@
-From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?= <mylene.josserand@free-electrons.com>
-Subject: [PATCH v2 08/10] ARM: dts: sun8i: Add audio codec,
- dai and card for A33
-Date: Tue, 17 Jan 2017 15:02:28 +0100
-Message-ID: <20170117140230.23142-9-mylene.josserand@free-electrons.com>
+From: Mylene Josserand <mylene.josserand@free-electrons.com>
+Subject: Re: [PATCH v2 05/10] ASoC: Add sun8i digital audio codec
+Date: Tue, 17 Jan 2017 17:20:29 +0100
+Message-ID: <c1800916-5373-50a8-1b36-0ba5bb69641a@free-electrons.com>
 References: <20170117140230.23142-1-mylene.josserand@free-electrons.com>
+ <20170117140230.23142-6-mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20170117140230.23142-1-mylene.josserand@free-electrons.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170117140230.23142-6-mylene.josserand@free-electrons.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, maxime.ripard@free-electrons.com, wens@csie.org, mturquette@baylibre.com, sboyd@codeaurora.org, mark.rutland@arm.com, robh+dt@kernel.org
-Cc: thomas.petazzoni@free-electrons.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com, alexandre.belloni@free-electrons.com, mylene.josserand@free-electrons.com, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-sunxi@googlegroups.com, thomas.petazzoni@free-electrons.com, alexandre.belloni@free-electrons.com
 List-Id: alsa-devel@alsa-project.org
 
-QWRkIHRoZSBhdWRpbyBjb2RlYywgZGFpIGFuZCBhIHNpbXBsZSBjYXJkIHRvIGJlIGFibGUgdG8g
-dXNlIHRoZQphdWRpbyBzdHJlYW0gb2YgdGhlIGJ1aWx0aW4gY29kZWMgb24gc3VuOGkgU29DLgoK
-VGhpcyBjb21taXQgYWRkcyBhbHNvIGFuIGF1ZGlvLXJvdXRpbmcgZm9yIHRoZSBzb3VuZCBjYXJk
-IG5vZGUgdG8gbGluawp0aGUgYW5hbG9nIERBUE0gd2lkZ2V0cyAoUmlnaHQvTGVmdCBEQUMpIGFu
-ZCB0aGUgZGlnaXRhbCBvbmUncyBhcyB0aGV5CmFyZSBjcmVhdGVkIGluIGRpZmZlcmVudCBkcml2
-ZXJzLgoKU2lnbmVkLW9mZi1ieTogTXlsw6huZSBKb3NzZXJhbmQgPG15bGVuZS5qb3NzZXJhbmRA
-ZnJlZS1lbGVjdHJvbnMuY29tPgotLS0KIGFyY2gvYXJtL2Jvb3QvZHRzL3N1bjhpLWEzMy5kdHNp
-IHwgNDcgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwogMSBmaWxlIGNo
-YW5nZWQsIDQ3IGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9hcmNoL2FybS9ib290L2R0cy9z
-dW44aS1hMzMuZHRzaSBiL2FyY2gvYXJtL2Jvb3QvZHRzL3N1bjhpLWEzMy5kdHNpCmluZGV4IDYz
-ZDUxODFmZmZmOC4uZmU4YTRmNDc2MGQyIDEwMDY0NAotLS0gYS9hcmNoL2FybS9ib290L2R0cy9z
-dW44aS1hMzMuZHRzaQorKysgYi9hcmNoL2FybS9ib290L2R0cy9zdW44aS1hMzMuZHRzaQpAQCAt
-NDMsNiArNDMsNyBAQAogICovCiAKICNpbmNsdWRlICJzdW44aS1hMjMtYTMzLmR0c2kiCisjaW5j
-bHVkZSA8ZHQtYmluZGluZ3MvZG1hL3N1bjRpLWExMC5oPgogCiAvIHsKIAljcHVzIHsKQEAgLTY5
-LDYgKzcwLDI3IEBACiAJCXJlZyA9IDwweDQwMDAwMDAwIDB4ODAwMDAwMDA+OwogCX07CiAKKwlz
-b3VuZCB7CisJCWNvbXBhdGlibGUgPSAic2ltcGxlLWF1ZGlvLWNhcmQiOworCQlzaW1wbGUtYXVk
-aW8tY2FyZCxuYW1lID0gIlN1bjhpIEF1ZGlvIENhcmQiOworCQlzaW1wbGUtYXVkaW8tY2FyZCxm
-b3JtYXQgPSAiaTJzIjsKKwkJc2ltcGxlLWF1ZGlvLWNhcmQsZnJhbWUtbWFzdGVyID0gPCZsaW5r
-X2NvZGVjPjsKKwkJc2ltcGxlLWF1ZGlvLWNhcmQsYml0Y2xvY2stbWFzdGVyID0gPCZsaW5rX2Nv
-ZGVjPjsKKwkJc2ltcGxlLWF1ZGlvLWNhcmQsbWNsay1mcyA9IDw1MTI+OworCQlzaW1wbGUtYXVk
-aW8tY2FyZCxhdXgtZGV2cyA9IDwmY29kZWNfYW5hbG9nPjsKKwkJc2ltcGxlLWF1ZGlvLWNhcmQs
-cm91dGluZyA9CisJCQkJIkxlZnQgREFDIiwgIkRpZ2l0YWwgTGVmdCBEQUMiLAorCQkJCSJSaWdo
-dCBEQUMiLCAiRGlnaXRhbCBSaWdodCBEQUMiOworCisJCXNpbXBsZS1hdWRpby1jYXJkLGNwdSB7
-CisJCQlzb3VuZC1kYWkgPSA8JmRhaT47CisJCX07CisKKwkJbGlua19jb2RlYzogc2ltcGxlLWF1
-ZGlvLWNhcmQsY29kZWMgeworCQkJc291bmQtZGFpID0gPCZjb2RlYz47CisJCX07CisJfTsKKwog
-CXNvY0AwMWMwMDAwMCB7CiAJCXRjb24wOiBsY2QtY29udHJvbGxlckAwMWMwYzAwMCB7CiAJCQlj
-b21wYXRpYmxlID0gImFsbHdpbm5lcixzdW44aS1hMzMtdGNvbiI7CkBAIC0xMTYsNiArMTM4LDMx
-IEBACiAJCQlyZXNldC1uYW1lcyA9ICJhaGIiOwogCQl9OwogCisJCWRhaTogZGFpQDAxYzIyYzAw
-IHsKKwkJCSNzb3VuZC1kYWktY2VsbHMgPSA8MD47CisJCQljb21wYXRpYmxlID0gImFsbHdpbm5l
-cixzdW42aS1hMzEtaTJzIjsKKwkJCXJlZyA9IDwweDAxYzIyYzAwIDB4MjAwPjsKKwkJCWludGVy
-cnVwdHMgPSA8R0lDX1NQSSAyOSBJUlFfVFlQRV9MRVZFTF9ISUdIPjsKKwkJCWNsb2NrcyA9IDwm
-Y2N1IENMS19CVVNfQ09ERUM+LCA8JmNjdSBDTEtfQUNfRElHPjsKKwkJCWNsb2NrLW5hbWVzID0g
-ImFwYiIsICJtb2QiOworCQkJcmVzZXRzID0gPCZjY3UgUlNUX0JVU19DT0RFQz47CisJCQlyZXNl
-dC1uYW1lcyA9ICJyc3QiOworCQkJZG1hcyA9IDwmZG1hIDE1PiwgLyogQVVESU9fQ09ERUMgcG9y
-dCAqLworCQkJCTwmZG1hIDE1PjsgLyogQVVESU9fQ09ERUMgcG9ydCAqLworCQkJZG1hLW5hbWVz
-ID0gInJ4IiwgInR4IjsKKwkJCXN0YXR1cyA9ICJkaXNhYmxlZCI7CisJCX07CisKKwkJY29kZWM6
-IGNvZGVjQDAxYzIyZTAwIHsKKwkJCSNzb3VuZC1kYWktY2VsbHMgPSA8MD47CisJCQljb21wYXRp
-YmxlID0gImFsbHdpbm5lcixzdW44aS1hMzMtY29kZWMiOworCQkJcmVnID0gPDB4MDFjMjJlMDAg
-MHg0MDA+OworCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDI5IElSUV9UWVBFX0xFVkVMX0hJR0g+
-OworCQkJY2xvY2tzID0gPCZjY3UgQ0xLX0JVU19DT0RFQz4sIDwmY2N1IENMS19BQ19ESUc+Owor
-CQkJY2xvY2stbmFtZXMgPSAiYnVzIiwgIm1vZCI7CisJCQlzdGF0dXMgPSAiZGlzYWJsZWQiOwor
-CQl9OworCiAJCWZlMDogZGlzcGxheS1mcm9udGVuZEAwMWUwMDAwMCB7CiAJCQljb21wYXRpYmxl
-ID0gImFsbHdpbm5lcixzdW44aS1hMzMtZGlzcGxheS1mcm9udGVuZCI7CiAJCQlyZWcgPSA8MHgw
-MWUwMDAwMCAweDIwMDAwPjsKLS0gCjIuMTEuMAoKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCmxpbnV4LWFybS1rZXJuZWwgbWFpbGluZyBsaXN0CmxpbnV4
-LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LWFybS1rZXJuZWwK
+Hello everyone,
+
+On 17/01/2017 15:02, Mylène Josserand wrote:
+> Add the sun8i audio codec which handles the digital register of
+> A33 codec.
+> The driver handles only the basic playback from the DAC to headphones.
+> All other features (microphone, capture, etc) will be added later.
+>
+> Signed-off-by: Mylène Josserand <mylene.josserand@free-electrons.com>
+
+[...]
+
+> +static int sun8i_codec_get_hw_rate(struct snd_pcm_hw_params *params)
+> +{
+> +	unsigned int rate = params_rate(params);
+> +
+> +	switch (rate) {
+> +	case 8000:
+> +	case 7350:
+> +		return 0x0;
+> +	case 11025:
+> +		return 0x1;
+> +	case 12000:
+> +		return 0x2;
+> +	case 16000:
+> +		return 0x3;
+> +	case 22050:
+> +		return 0x4;
+> +	case 24000:
+> +		return 0x5;
+> +	case 32000:
+> +		return 0x6;
+> +	case 44100:
+> +		return 0x7;
+> +	case 48000:
+> +		return 0x8;
+> +	case 96000:
+> +		return 0x9;
+> +	case 192000:
+> +		return 0xa;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static u32 sun8i_codec_get_mod_freq(struct snd_pcm_hw_params *params)
+> +{
+> +	unsigned int rate = params_rate(params);
+> +
+> +	switch (rate) {
+> +	case 176400:
+> +	case 88200:
+> +	case 44100:
+> +	case 22050:
+> +	case 11025:
+> +		return 22579200;
+> +
+> +	case 192000:
+> +	case 128000:
+> +	case 96000:
+> +	case 64000:
+> +	case 48000:
+> +	case 32000:
+> +	case 24000:
+> +	case 16000:
+> +	case 12000:
+> +	case 8000:
+> +		return 24576000;
+> +
+> +	default:
+> +		return 0;
+> +	}
+> +}
+
+This function is not used anymore, I will remove it in v3 (once I will 
+get some reviews).
+
+> +
+> +static int sun8i_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+> +{
+> +	struct sun8i_codec *scodec = snd_soc_codec_get_drvdata(dai->codec);
+> +	u32 value;
+> +
+> +	/* clock masters */
+> +	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+> +	case SND_SOC_DAIFMT_CBS_CFS: /* DAI Slave */
+> +		value = 0x0; /* Codec Master */
+> +		break;
+> +	case SND_SOC_DAIFMT_CBM_CFM: /* DAI Master */
+> +		value = 0x1; /* Codec Slave */
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+> +			   BIT(SUN8I_AIF1CLK_CTRL_AIF1_MSTR_MOD),
+> +			   value << SUN8I_AIF1CLK_CTRL_AIF1_MSTR_MOD);
+> +
+> +	/* clock inversion */
+> +	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+> +	case SND_SOC_DAIFMT_NB_NF: /* Normal */
+> +		value = 0x0;
+> +		break;
+> +	case SND_SOC_DAIFMT_IB_IF: /* Inversion */
+> +		value = 0x1;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+> +			   BIT(SUN8I_AIF1CLK_CTRL_AIF1_BCLK_INV),
+> +			   value << SUN8I_AIF1CLK_CTRL_AIF1_BCLK_INV);
+> +	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+> +			   BIT(SUN8I_AIF1CLK_CTRL_AIF1_LRCK_INV),
+> +			   value << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_INV);
+> +
+> +	/* DAI format */
+> +	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+> +	case SND_SOC_DAIFMT_I2S:
+> +		value = 0x0;
+> +		break;
+> +	case SND_SOC_DAIFMT_LEFT_J:
+> +		value = 0x1;
+> +		break;
+> +	case SND_SOC_DAIFMT_RIGHT_J:
+> +		value = 0x2;
+> +		break;
+> +	case SND_SOC_DAIFMT_DSP_A:
+> +	case SND_SOC_DAIFMT_DSP_B:
+> +		value = 0x3;
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+> +			   BIT(SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT),
+> +			   value << SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT);
+> +
+> +	return 0;
+> +}
+> +
+> +static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
+> +				 struct snd_pcm_hw_params *params,
+> +				 struct snd_soc_dai *dai)
+> +{
+> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+
+Same things for these variables.
+
+> +	struct sun8i_codec *scodec = snd_soc_codec_get_drvdata(dai->codec);
+> +	u32 clk_freq;
+> +	int sample_rate, err;
+
+ditto for "clk_freq" and "err" ones.
+
+Sorry about that.
+
+Best regards,
+
+-- 
+Mylène Josserand, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
