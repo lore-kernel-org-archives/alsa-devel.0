@@ -1,105 +1,92 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH 2/2] ASoC: Revert
- "samsung: Remove unneeded initialization of chan_name"
-Date: Tue, 17 Jan 2017 14:16:42 +0100
-Message-ID: <1484659002-20200-2-git-send-email-s.nawrocki@samsung.com>
-References: <1484659002-20200-1-git-send-email-s.nawrocki@samsung.com>
- <CGME20170117131720epcas1p46266c1038aec2af3e6db23b8314212e6@epcas1p4.samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <1484659002-20200-1-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: lgirdwood@gmail.com, lars@metafoo.de, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: Nokia N900: mixers changed between 4.9 and 4.10-rc3, no longer
+ can use in-call speaker
+Date: Tue, 17 Jan 2017 15:47:19 +0200
+Message-ID: <d2c78625-565a-86ec-a03e-f15ae071942a@ti.com>
+References: <20170112181826.GA28290@amd> <201701121934.19810@pali>
+ <20170114225614.GA25321@amd> <201701150100.54214@pali>
+ <20170115100533.GA15816@amd>
+ <40dbce4e-d99d-d77d-e682-5b004c70ca40@bitmer.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <40dbce4e-d99d-d77d-e682-5b004c70ca40@bitmer.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Jarkko Nikula <jarkko.nikula@bitmer.com>, Pavel Machek <pavel@ucw.cz>, =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali.rohar@gmail.com>
+Cc: alsa-devel@alsa-project.org, ivo.g.dimitrov.75@gmail.com, khilman@kernel.org, tony@atomide.com, broonie@kernel.org, aaro.koskinen@iki.fi, sre@kernel.org, kernel list <linux-kernel@vger.kernel.org>, lars@metafoo.de, abcloriens@gmail.com, helen.koike@collabora.co.uk, linux-omap@vger.kernel.org, patrikbachan@gmail.com, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, serge@hallyn.com
 List-Id: alsa-devel@alsa-project.org
 
-This reverts commit cdaf9af1eaeb539e32bfd6da6310b41ad6c3ba23
-which breaks I2S support on the non-DT Samsung SoC platforms,
-since the default "tx", "rx" DMA channel names for playback
-and capture streams or custom channel names in struct
-snd_dmaengine_pcm_config are supported in the ASoC dmaengine
-module only for devicetree booting case.
+On 01/15/2017 09:08 PM, Jarkko Nikula wrote:
+> On 01/15/2017 12:05 PM, Pavel Machek wrote:
+>>>> So regression seems to be between v4.9 and v4.10. Any ideas?
+>>>
+>>> Interesting... seems there are no sound relevant changes after v4.9.
+>>>
+>>> Looks like there are only three commits after v4.9 for sound/soc which =
 
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
----
- sound/soc/samsung/dmaengine.c   | 8 ++++++--
- sound/soc/samsung/i2s.c         | 3 +++
- sound/soc/samsung/s3c2412-i2s.c | 2 ++
- sound/soc/samsung/s3c24xx-i2s.c | 2 ++
- 4 files changed, 13 insertions(+), 2 deletions(-)
+>>> are built for Nokia N900:
+>>>
+>>> e411b0b5eb9b65257a050eac333d181d6e00e2c6
+>>> e7aa450fe17890e59db7d3c2d8eff5b6b41fc531
+>>> 63c3194b82530bd71fd49db84eb7ab656b8d404a
+>>>
+>>> Maybe something not related to sound/soc could broke it?
+>>
+>> Lets see.
+>>
+>> a9042defa29a01cc538b742eab047848e9b5ae14 -- works ok.
+>> ce38207f161513ee3d2bd3860489f07ebe65bc78 --
+>>
+>> alsactl: set_control:1328: failed to obtain info for control #229 (No
+>> such file or directory)
+>>
+> I'm unable to test older kernels at the moment since modules don't load
+> by some reason (bluetooth: Unknown symbol _GLOBAL_OFFSET_TABLE_ (err
+> 0)). Probably some recent regression in my debian/testing installation
+> since the same configs were working before.
+> =
 
-diff --git a/sound/soc/samsung/dmaengine.c b/sound/soc/samsung/dmaengine.c
-index cda656e..9104c98 100644
---- a/sound/soc/samsung/dmaengine.c
-+++ b/sound/soc/samsung/dmaengine.c
-@@ -37,8 +37,12 @@ int samsung_asoc_dma_platform_register(struct device *dev, dma_filter_fn filter,
- 	pcm_conf->prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config;
- 	pcm_conf->compat_filter_fn = filter;
+> However v4.9.4 works and with it I can see there is an issue with these
+> aic3x controls:
+> =
 
--	pcm_conf->chan_names[SNDRV_PCM_STREAM_PLAYBACK] = tx;
--	pcm_conf->chan_names[SNDRV_PCM_STREAM_CAPTURE] = rx;
-+	if (dev->of_node) {
-+		pcm_conf->chan_names[SNDRV_PCM_STREAM_PLAYBACK] = tx;
-+		pcm_conf->chan_names[SNDRV_PCM_STREAM_CAPTURE] = rx;
-+	} else {
-+		flags |= SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME;
-+	}
+> amixer: Unable to find simple control 'Left DAC_L1 Mixer Line',0
+> =
 
- 	return devm_snd_dmaengine_pcm_register(dev, pcm_conf, flags);
- }
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index e00974b..85324e6 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -1305,6 +1305,8 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- 	}
- 	pri_dai->dma_playback.addr = regs_base + I2STXD;
- 	pri_dai->dma_capture.addr = regs_base + I2SRXD;
-+	pri_dai->dma_playback.chan_name = "tx";
-+	pri_dai->dma_capture.chan_name = "rx";
- 	pri_dai->dma_playback.addr_width = 4;
- 	pri_dai->dma_capture.addr_width = 4;
- 	pri_dai->quirks = quirks;
-@@ -1329,6 +1331,7 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- 		sec_dai->lock = &pri_dai->spinlock;
- 		sec_dai->variant_regs = pri_dai->variant_regs;
- 		sec_dai->dma_playback.addr = regs_base + I2STXDS;
-+		sec_dai->dma_playback.chan_name = "tx-sec";
+> =
 
- 		if (!np) {
- 			sec_dai->dma_playback.filter_data = i2s_pdata->dma_play_sec;
-diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
-index 6d0b889..0a47182 100644
---- a/sound/soc/samsung/s3c2412-i2s.c
-+++ b/sound/soc/samsung/s3c2412-i2s.c
-@@ -35,10 +35,12 @@
- #include <linux/platform_data/asoc-s3c.h>
+> =
 
- static struct snd_dmaengine_dai_dma_data s3c2412_i2s_pcm_stereo_out = {
-+	.chan_name	= "tx",
- 	.addr_width	= 4,
- };
+> amixer: Unable to find simple control 'Right DAC_R1 Mixer Line',0
 
- static struct snd_dmaengine_dai_dma_data s3c2412_i2s_pcm_stereo_in = {
-+	.chan_name	= "rx",
- 	.addr_width	= 4,
- };
+These are certainly not the regression between 4.6 and 4.9, more like
+more like regression since 2.6:
+'Line Switch' -> 'LineL Switch':
+54f01916297bafc18bd7df4e2300a0544a84fce3
 
-diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
-index 07f5091..91e6871 100644
---- a/sound/soc/samsung/s3c24xx-i2s.c
-+++ b/sound/soc/samsung/s3c24xx-i2s.c
-@@ -31,10 +31,12 @@
- #include "s3c24xx-i2s.h"
+'LineL Switch' -> 'DACL1 Switch':
+c3b79e05b4d9ab2e7c3ba281261ea87ab5b71a92
 
- static struct snd_dmaengine_dai_dma_data s3c24xx_i2s_pcm_stereo_out = {
-+	.chan_name	= "tx",
- 	.addr_width	= 2,
- };
+> At quick look I don't see why above commits could cause it. Maybe
+> regression happened earlier between v4.6 and v4.9?
 
- static struct snd_dmaengine_dai_dma_data s3c24xx_i2s_pcm_stereo_in = {
-+	.chan_name	= "rx",
- 	.addr_width	= 2,
- };
+It might be that there were some work to fix control names for different aic
+versions to match with the HW or support for new codec is added and some
+control gone missing for 3x?
 
---
-1.9.1
+I would compare the 'amixer controls' for the working and regressed
+kernel to see what differs. From there git blame or smthing will for
+sure point to the correct commit.
+
+-- =
+
+P=E9ter
