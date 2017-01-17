@@ -1,100 +1,54 @@
-From: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Subject: Re: [PATCH v2 3/6] ALSA: hda - rename dell_led_set_func to
- dell_micmute_led_set_func
-Date: Tue, 17 Jan 2017 22:20:14 +0100
-Message-ID: <ceb198ea-5864-349d-f0c8-6ecf337139cc@gmail.com>
-References: <20170116132204.6421-1-kernel@kempniu.pl>
- <20170116132204.6421-4-kernel@kempniu.pl>
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+Subject: Re: [PATCH v2 03/10] dt-bindings: sound: Add new reset compatible
+ for sun4i-i2s
+Date: Wed, 18 Jan 2017 08:20:34 +1100
+Message-ID: <20170118082034.62a6be25@free-electrons.com>
+References: <20170117201016.A5fiHT0P@smtp2p.mail.yandex.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <platform-driver-x86-owner@vger.kernel.org>
-In-Reply-To: <20170116132204.6421-4-kernel@kempniu.pl>
-Sender: platform-driver-x86-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: =?UTF-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>, Richard Purdie <rpurdie@rpsys.net>, Pavel Machek <pavel@ucw.cz>, =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy.shevchenko@gmail.com>, Anthony Wong <anthony.wong@canonical.com>, linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20170117201016.A5fiHT0P@smtp2p.mail.yandex.net>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Icenowy Zheng <icenowy@aosc.xyz>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, wens@csie.org, linux-kernel@vger.kernel.org, mturquette@baylibre.com, tiwai@suse.com, sboyd@codeaurora.org, lgirdwood@gmail.com, robh+dt@kernel.org, perex@perex.cz, linux-sunxi@googlegroups.com, broonie@kernel.org, alexandre.belloni@free-electrons.com, maxime.ripard@free-electrons.com, =?UTF-8?B?TXlsw6huZQ==?= Josserand <mylene.josserand@free-electrons.com>, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jaroslav, Takashi,
+Hello,
 
-I need an ack from sound sybsystem maintainer.
-Are you OK with this patch going through LED tree?
+On Wed, 18 Jan 2017 01:10:00 +0800, Icenowy Zheng wrote:
 
-Best regards,
-Jacek Anaszewski
+> > Add a new compatible for sun4i-i2s driver to handle some
+> > SoCs that have a reset line that must be asserted/deasserted.
+> >
+> > This new compatible, "allwinner,sun6i-a31-i2s", requires two
+> > properties:
+> > - resets: phandle to the reset line
+> > - reset-names: the name of the reset line ("rst").
+> > Except these differences, the compatible is identical to previous one
+> > which will not handle a reset line.  
+> 
+> But I think the IP block is identical, right?
+> 
+> Should a new compatible be added only for reset-line?
 
-On 01/16/2017 02:22 PM, Michał Kępień wrote:
-> With dell_app_wmi_led_set() replaced by dell_micmute_led_set(), rename
-> the function pointer to the latter for consistency.
-> 
-> Signed-off-by: Michał Kępień <kernel@kempniu.pl>
-> ---
->  sound/pci/hda/dell_wmi_helper.c | 20 ++++++++++----------
->  1 file changed, 10 insertions(+), 10 deletions(-)
-> 
-> diff --git a/sound/pci/hda/dell_wmi_helper.c b/sound/pci/hda/dell_wmi_helper.c
-> index e128c8096772..516237ad6ef5 100644
-> --- a/sound/pci/hda/dell_wmi_helper.c
-> +++ b/sound/pci/hda/dell_wmi_helper.c
-> @@ -6,7 +6,7 @@
->  #include <linux/dell-led.h>
->  
->  static int dell_led_value;
-> -static int (*dell_led_set_func)(int);
-> +static int (*dell_micmute_led_set_func)(int);
->  static void (*dell_old_cap_hook)(struct hda_codec *,
->  			         struct snd_kcontrol *,
->  				 struct snd_ctl_elem_value *);
-> @@ -18,7 +18,7 @@ static void update_dell_wmi_micmute_led(struct hda_codec *codec,
->  	if (dell_old_cap_hook)
->  		dell_old_cap_hook(codec, kcontrol, ucontrol);
->  
-> -	if (!ucontrol || !dell_led_set_func)
-> +	if (!ucontrol || !dell_micmute_led_set_func)
->  		return;
->  	if (strcmp("Capture Switch", ucontrol->id.name) == 0 && ucontrol->id.index == 0) {
->  		/* TODO: How do I verify if it's a mono or stereo here? */
-> @@ -26,8 +26,8 @@ static void update_dell_wmi_micmute_led(struct hda_codec *codec,
->  		if (val == dell_led_value)
->  			return;
->  		dell_led_value = val;
-> -		if (dell_led_set_func)
-> -			dell_led_set_func(dell_led_value);
-> +		if (dell_micmute_led_set_func)
-> +			dell_micmute_led_set_func(dell_led_value);
->  	}
->  }
->  
-> @@ -39,15 +39,15 @@ static void alc_fixup_dell_wmi(struct hda_codec *codec,
->  	bool removefunc = false;
->  
->  	if (action == HDA_FIXUP_ACT_PROBE) {
-> -		if (!dell_led_set_func)
-> -			dell_led_set_func = symbol_request(dell_micmute_led_set);
-> -		if (!dell_led_set_func) {
-> +		if (!dell_micmute_led_set_func)
-> +			dell_micmute_led_set_func = symbol_request(dell_micmute_led_set);
-> +		if (!dell_micmute_led_set_func) {
->  			codec_warn(codec, "Failed to find dell wmi symbol dell_micmute_led_set\n");
->  			return;
->  		}
->  
->  		removefunc = true;
-> -		if (dell_led_set_func(false) >= 0) {
-> +		if (dell_micmute_led_set_func(false) >= 0) {
->  			dell_led_value = 0;
->  			if (spec->gen.num_adc_nids > 1 && !spec->gen.dyn_adc_switch)
->  				codec_dbg(codec, "Skipping micmute LED control due to several ADCs");
-> @@ -60,9 +60,9 @@ static void alc_fixup_dell_wmi(struct hda_codec *codec,
->  
->  	}
->  
-> -	if (dell_led_set_func && (action == HDA_FIXUP_ACT_FREE || removefunc)) {
-> +	if (dell_micmute_led_set_func && (action == HDA_FIXUP_ACT_FREE || removefunc)) {
->  		symbol_put(dell_micmute_led_set);
-> -		dell_led_set_func = NULL;
-> +		dell_micmute_led_set_func = NULL;
->  		dell_old_cap_hook = NULL;
->  	}
->  }
-> 
+Having a different compatible in this case allows to make some stricter
+error checking: the driver can make sure that if the compatible string
+is sun6i-a31-i2s there *IS* a reset line specified in the DT. Without a
+separate compatible value, such a check is not possible, and the reset
+line is just optional. This can lead to people being confused if they
+forget to specify the reset line.
+
+Thomas
+-- 
+Thomas Petazzoni, CTO, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
