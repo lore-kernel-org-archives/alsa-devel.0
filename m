@@ -1,79 +1,44 @@
-From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?=
-        <mylene.josserand@free-electrons.com>
-Subject: [PATCH v2 03/10] dt-bindings: sound: Add new reset compatible for sun4i-i2s
-Date: Tue, 17 Jan 2017 15:02:23 +0100
-Message-ID: <20170117140230.23142-4-mylene.josserand@free-electrons.com>
+From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?= <mylene.josserand@free-electrons.com>
+Subject: [PATCH v2 02/10] clk: ccu-sun8i-a33: Add CLK_SET_RATE_PARENT to ac-dig
+Date: Tue, 17 Jan 2017 15:02:22 +0100
+Message-ID: <20170117140230.23142-3-mylene.josserand@free-electrons.com>
 References: <20170117140230.23142-1-mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 In-Reply-To: <20170117140230.23142-1-mylene.josserand@free-electrons.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, maxime.ripard@free-electrons.com, wens@csie.org, mturquette@baylibre.com, sboyd@codeaurora.org, mark.rutland@arm.com, robh+dt@kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-sunxi@googlegroups.com, thomas.petazzoni@free-electrons.com, mylene.josserand@free-electrons.com, alexandre.belloni@free-electrons.com
+Cc: thomas.petazzoni@free-electrons.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com, alexandre.belloni@free-electrons.com, mylene.josserand@free-electrons.com, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Add a new compatible for sun4i-i2s driver to handle some
-SoCs that have a reset line that must be asserted/deasserted.
-
-This new compatible, "allwinner,sun6i-a31-i2s", requires two
-properties:
-	- resets: phandle to the reset line
-	- reset-names: the name of the reset line ("rst").
-Except these differences, the compatible is identical to previous one
-which will not handle a reset line.
-
-Signed-off-by: Mylène Josserand <mylene.josserand@free-electrons.com>
----
- .../devicetree/bindings/sound/sun4i-i2s.txt        | 23 ++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-index 7a2c0945fd22..f673206e309b 100644
---- a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-@@ -7,6 +7,7 @@ Required properties:
- 
- - compatible: should be one of the following:
-    - "allwinner,sun4i-a10-i2s"
-+   - "allwinner,sun6i-a31-i2s" for controller with reset lines
- - reg: physical base address of the controller and length of memory mapped
-   region.
- - interrupts: should contain the I2S interrupt.
-@@ -19,7 +20,13 @@ Required properties:
-    - "mod" : module clock for the I2S controller
- - #sound-dai-cells : Must be equal to 0
- 
-+Required properties for the following compatibles:
-+		- "allwinner,sun6i-a31-i2s"
-+- resets: phandle to the reset line for this codec
-+- reset-names: Contains the reset signal name "rst"
-+
- Example:
-+For "allwinner,sun4i-a10-i2s":
- 
- i2s0: i2s@01c22400 {
- 	#sound-dai-cells = <0>;
-@@ -32,3 +39,19 @@ i2s0: i2s@01c22400 {
- 	       <&dma SUN4I_DMA_NORMAL 3>;
- 	dma-names = "rx", "tx";
- };
-+
-+For "allwinner,sun6i-a31-i2s":
-+
-+dai: dai@01c22c00 {
-+	#sound-dai-cells = <0>;
-+	compatible = "allwinner,sun6i-a31-i2s";
-+	reg = <0x01c22c00 0x200>;
-+	interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
-+	clocks = <&ccu CLK_BUS_CODEC>, <&ccu CLK_AC_DIG>;
-+	clock-names = "apb", "mod";
-+	resets = <&ccu RST_BUS_CODEC>;
-+	reset-names = "rst";
-+	dmas = <&dma 15>, /* AUDIO_CODEC port */
-+		<&dma 15>; /* AUDIO_CODEC port */
-+	dma-names = "rx", "tx";
-+};
--- 
-2.11.0
+VGhlIGF1ZGlvIERBSSBuZWVkcyB0byBzZXQgdGhlIGNsb2NrIHJhdGVzIG9mIHRoZSBhYy1kaWcg
+Y2xvY2suClRvIG1ha2UgaXQgcG9zc2libGUsIHRoZSBwYXJlbnQgUExMIGF1ZGlvIGNsb2NrIHJh
+dGVzIHNob3VsZAphbHNvIGJlIGNoYW5nZWQuIFRoaXMgaXMgcG9zc2libGUgdmlhICJDTEtfU0VU
+X1JBVEVfUEFSRU5UIiBmbGFnLgoKU2lnbmVkLW9mZi1ieTogTXlsw6huZSBKb3NzZXJhbmQgPG15
+bGVuZS5qb3NzZXJhbmRAZnJlZS1lbGVjdHJvbnMuY29tPgotLS0KIGRyaXZlcnMvY2xrL3N1bnhp
+LW5nL2NjdS1zdW44aS1hMzMuYyB8IDIgKy0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigr
+KSwgMSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvY2xrL3N1bnhpLW5nL2NjdS1z
+dW44aS1hMzMuYyBiL2RyaXZlcnMvY2xrL3N1bnhpLW5nL2NjdS1zdW44aS1hMzMuYwppbmRleCA5
+YmQxZjc4YTA1NDcuLjNjZDQxOTBjY2Q1OSAxMDA2NDQKLS0tIGEvZHJpdmVycy9jbGsvc3VueGkt
+bmcvY2N1LXN1bjhpLWEzMy5jCisrKyBiL2RyaXZlcnMvY2xrL3N1bnhpLW5nL2NjdS1zdW44aS1h
+MzMuYwpAQCAtNDQwLDcgKzQ0MCw3IEBAIHN0YXRpYyBTVU5YSV9DQ1VfTV9XSVRIX0dBVEUodmVf
+Y2xrLCAidmUiLCAicGxsLXZlIiwKIAkJCSAgICAgMHgxM2MsIDE2LCAzLCBCSVQoMzEpLCBDTEtf
+U0VUX1JBVEVfUEFSRU5UKTsKIAogc3RhdGljIFNVTlhJX0NDVV9HQVRFKGFjX2RpZ19jbGssCSJh
+Yy1kaWciLAkicGxsLWF1ZGlvIiwKLQkJICAgICAgMHgxNDAsIEJJVCgzMSksIDApOworCQkgICAg
+ICAweDE0MCwgQklUKDMxKSwgQ0xLX1NFVF9SQVRFX1BBUkVOVCk7CiBzdGF0aWMgU1VOWElfQ0NV
+X0dBVEUoYWNfZGlnXzR4X2NsaywJImFjLWRpZy00eCIsCSJwbGwtYXVkaW8tNHgiLAogCQkgICAg
+ICAweDE0MCwgQklUKDMwKSwgMCk7CiBzdGF0aWMgU1VOWElfQ0NVX0dBVEUoYXZzX2NsaywJCSJh
+dnMiLAkJIm9zYzI0TSIsCi0tIAoyLjExLjAKCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpsaW51eC1hcm0ta2VybmVsIG1haWxpbmcgbGlzdApsaW51eC1h
+cm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9saW51eC1hcm0ta2VybmVsCg==
