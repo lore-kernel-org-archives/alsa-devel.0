@@ -1,84 +1,100 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 0/3] Generic HDMI codec: Add channel mapping control
-Date: Tue, 17 Jan 2017 19:39:03 +0000
-Message-ID: <20170117193903.rgbkcwrzoxjwfdop@sirena.org.uk>
-References: <1483458772-13658-1-git-send-email-arnaud.pouliquen@st.com>
- <CA+M3ks4rM9Fyt9ysjtruqzJeJj=cBgKddE+n0UFHpP1RMy6OgA@mail.gmail.com>
- <968a714d-c802-f3de-00de-4e4889c82c63@st.com>
+From: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Subject: Re: [PATCH v2 3/6] ALSA: hda - rename dell_led_set_func to
+ dell_micmute_led_set_func
+Date: Tue, 17 Jan 2017 22:20:14 +0100
+Message-ID: <ceb198ea-5864-349d-f0c8-6ecf337139cc@gmail.com>
+References: <20170116132204.6421-1-kernel@kempniu.pl>
+ <20170116132204.6421-4-kernel@kempniu.pl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1199590349=="
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <968a714d-c802-f3de-00de-4e4889c82c63@st.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, Jyri Sarha <jsarha@ti.com>, Jani Nikula <jani.nikula@intel.com>, dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <platform-driver-x86-owner@vger.kernel.org>
+In-Reply-To: <20170116132204.6421-4-kernel@kempniu.pl>
+Sender: platform-driver-x86-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: =?UTF-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>, Richard Purdie <rpurdie@rpsys.net>, Pavel Machek <pavel@ucw.cz>, =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy.shevchenko@gmail.com>, Anthony Wong <anthony.wong@canonical.com>, linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Jaroslav, Takashi,
 
---===============1199590349==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="rtcoikflgdgr5wzf"
-Content-Disposition: inline
+I need an ack from sound sybsystem maintainer.
+Are you OK with this patch going through LED tree?
 
+Best regards,
+Jacek Anaszewski
 
---rtcoikflgdgr5wzf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Jan 16, 2017 at 09:54:31AM +0100, Arnaud Pouliquen wrote:
-> Hello,
->=20
-> Any comments on this patch-set?
-> what about the introduction of pcm new callback in DAI ops to use chmap
-> helpers?
-> Is it something reasonable, or should i come back on V1?
-
-Please don't send content free pings and please allow a reasonable time
-for review.  People get busy, go on holiday, attend conferences and so=20
-on so unless there is some reason for urgency (like critical bug fixes)
-please allow at least a couple of weeks for review.  If there have been
-review comments then people may be waiting for those to be addressed.
-
-Sending content free pings adds to the mail volume (if they are seen at
-all) which is often the problem and since they can't be reviewed
-directly if something has gone wrong you'll have to resend the patches
-anyway, though there are some other maintainers who like them - if in
-doubt look at how patches for the subsystem are normally handled.
-
---rtcoikflgdgr5wzf
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlh+ctYACgkQJNaLcl1U
-h9CQhAf/UDkOXdJlkX730TFuj+Y9iSZA6JVsnyB2lnNnw5sskZ3YOsAjuZ6pv5Ra
-hx3DPzaov8EbJZBMqAogeaVstmOsVXM82k4Ru5fjaJ424TXo2uEFjx20AI3vHraz
-TsF8fcnzaZ8M4QsxWchGjh/cpSZB34Fy07DdrBYujNuj4yrn/61ZTpOw+D0N+RrO
-q26Abn4ix0X2ZVnZqor+85s5wL/NuVPy2GS5s7lTVxasti7z3dTaBw2Ot61FYnYr
-Bv0A3s/lKMEd8ntk85OYYiR0E1oJ5GvBTIo7Qy9lfMBlKMMpT1YcTosQu4ocyBbL
-9Kpk51bb9fiFqjpZ5B4cDwWsrqnPcA==
-=50q3
------END PGP SIGNATURE-----
-
---rtcoikflgdgr5wzf--
-
---===============1199590349==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
-
---===============1199590349==--
+On 01/16/2017 02:22 PM, Michał Kępień wrote:
+> With dell_app_wmi_led_set() replaced by dell_micmute_led_set(), rename
+> the function pointer to the latter for consistency.
+> 
+> Signed-off-by: Michał Kępień <kernel@kempniu.pl>
+> ---
+>  sound/pci/hda/dell_wmi_helper.c | 20 ++++++++++----------
+>  1 file changed, 10 insertions(+), 10 deletions(-)
+> 
+> diff --git a/sound/pci/hda/dell_wmi_helper.c b/sound/pci/hda/dell_wmi_helper.c
+> index e128c8096772..516237ad6ef5 100644
+> --- a/sound/pci/hda/dell_wmi_helper.c
+> +++ b/sound/pci/hda/dell_wmi_helper.c
+> @@ -6,7 +6,7 @@
+>  #include <linux/dell-led.h>
+>  
+>  static int dell_led_value;
+> -static int (*dell_led_set_func)(int);
+> +static int (*dell_micmute_led_set_func)(int);
+>  static void (*dell_old_cap_hook)(struct hda_codec *,
+>  			         struct snd_kcontrol *,
+>  				 struct snd_ctl_elem_value *);
+> @@ -18,7 +18,7 @@ static void update_dell_wmi_micmute_led(struct hda_codec *codec,
+>  	if (dell_old_cap_hook)
+>  		dell_old_cap_hook(codec, kcontrol, ucontrol);
+>  
+> -	if (!ucontrol || !dell_led_set_func)
+> +	if (!ucontrol || !dell_micmute_led_set_func)
+>  		return;
+>  	if (strcmp("Capture Switch", ucontrol->id.name) == 0 && ucontrol->id.index == 0) {
+>  		/* TODO: How do I verify if it's a mono or stereo here? */
+> @@ -26,8 +26,8 @@ static void update_dell_wmi_micmute_led(struct hda_codec *codec,
+>  		if (val == dell_led_value)
+>  			return;
+>  		dell_led_value = val;
+> -		if (dell_led_set_func)
+> -			dell_led_set_func(dell_led_value);
+> +		if (dell_micmute_led_set_func)
+> +			dell_micmute_led_set_func(dell_led_value);
+>  	}
+>  }
+>  
+> @@ -39,15 +39,15 @@ static void alc_fixup_dell_wmi(struct hda_codec *codec,
+>  	bool removefunc = false;
+>  
+>  	if (action == HDA_FIXUP_ACT_PROBE) {
+> -		if (!dell_led_set_func)
+> -			dell_led_set_func = symbol_request(dell_micmute_led_set);
+> -		if (!dell_led_set_func) {
+> +		if (!dell_micmute_led_set_func)
+> +			dell_micmute_led_set_func = symbol_request(dell_micmute_led_set);
+> +		if (!dell_micmute_led_set_func) {
+>  			codec_warn(codec, "Failed to find dell wmi symbol dell_micmute_led_set\n");
+>  			return;
+>  		}
+>  
+>  		removefunc = true;
+> -		if (dell_led_set_func(false) >= 0) {
+> +		if (dell_micmute_led_set_func(false) >= 0) {
+>  			dell_led_value = 0;
+>  			if (spec->gen.num_adc_nids > 1 && !spec->gen.dyn_adc_switch)
+>  				codec_dbg(codec, "Skipping micmute LED control due to several ADCs");
+> @@ -60,9 +60,9 @@ static void alc_fixup_dell_wmi(struct hda_codec *codec,
+>  
+>  	}
+>  
+> -	if (dell_led_set_func && (action == HDA_FIXUP_ACT_FREE || removefunc)) {
+> +	if (dell_micmute_led_set_func && (action == HDA_FIXUP_ACT_FREE || removefunc)) {
+>  		symbol_put(dell_micmute_led_set);
+> -		dell_led_set_func = NULL;
+> +		dell_micmute_led_set_func = NULL;
+>  		dell_old_cap_hook = NULL;
+>  	}
+>  }
+> 
