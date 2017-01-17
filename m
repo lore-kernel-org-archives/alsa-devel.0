@@ -1,41 +1,99 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: SoundBlaterX G5
-Date: Tue, 17 Jan 2017 10:39:48 +0100
-Message-ID: <d961d16c-aa8e-18b7-226f-ede89945f5cc@ladisch.de>
-References: <c7f0fe10-92b0-0866-f638-96e78b6175c5@ukf.sk>
- <35808a43-245b-a075-a433-d892897b40b4@ladisch.de>
- <8893efe5-8e73-3f75-b19c-b47891383342@ukf.sk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 5566A2668F1
- for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 10:39:49 +0100 (CET)
-Received: from [10.1.2.4] (unknown [94.101.37.79])
- by webclient5.webclient5.de (Postfix) with ESMTPSA id 140235582666
- for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 10:39:49 +0100 (CET)
-In-Reply-To: <8893efe5-8e73-3f75-b19c-b47891383342@ukf.sk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: [PATCH 1/2] ASoC: Revert
+ "Drop SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME flag"
+Date: Tue, 17 Jan 2017 14:16:41 +0100
+Message-ID: <1484659002-20200-1-git-send-email-s.nawrocki@samsung.com>
+References: <CGME20170117131713epcas5p1a4892e3cf5ebb230d72e59a2b80b7691@epcas5p1.samsung.com>
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: broonie@kernel.org
+Cc: lgirdwood@gmail.com, lars@metafoo.de, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-Milan Oravec wrote:
-> I think when I change "Speaker Clock Source" to direct audio sound card capabilities need to be re-enumerated to update sampling rates.
->
-> Is there any way to achieve this?
+This reverts commit c6644119a3f80ea644bde10009d5e1013b5aff29 and
+restores the ability to specify DMA channel names per DAI dma_data.
+Unfortunately the functionality removed in the patch being reverted
+cannot be entirely replaced by specifying DMA channel names in struct
+snd_dmaengine_pcm_config as that does not cover devices with more than
+2 DMA channels.
 
-Try unloading and re-loading the driver module (snd-usb-audio).
+Together with patch "ASoC: Revert "samsung: Remove unneeded
+initialization of chan_name"" this fixes broken sound on the s3c24xx
+SoC platforms.
 
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+---
+ include/sound/dmaengine_pcm.h         |  6 ++++++
+ sound/soc/soc-generic-dmaengine-pcm.c | 12 +++++++++++-
+ 2 files changed, 17 insertions(+), 1 deletion(-)
 
-Regards,
-Clemens
+diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
+index 1c8f9e1..67be244 100644
+--- a/include/sound/dmaengine_pcm.h
++++ b/include/sound/dmaengine_pcm.h
+@@ -71,6 +71,7 @@ struct dma_chan *snd_dmaengine_pcm_request_channel(dma_filter_fn filter_fn,
+  * @slave_id: Slave requester id for the DMA channel.
+  * @filter_data: Custom DMA channel filter data, this will usually be used when
+  * requesting the DMA channel.
++ * @chan_name: Custom channel name to use when requesting DMA channel.
+  * @fifo_size: FIFO size of the DAI controller in bytes
+  * @flags: PCM_DAI flags, only SND_DMAENGINE_PCM_DAI_FLAG_PACK for now
+  */
+@@ -80,6 +81,7 @@ struct snd_dmaengine_dai_dma_data {
+ 	u32 maxburst;
+ 	unsigned int slave_id;
+ 	void *filter_data;
++	const char *chan_name;
+ 	unsigned int fifo_size;
+ 	unsigned int flags;
+ };
+@@ -105,6 +107,10 @@ void snd_dmaengine_pcm_set_config_from_dai_data(
+  * playback.
+  */
+ #define SND_DMAENGINE_PCM_FLAG_HALF_DUPLEX BIT(3)
++/*
++ * The PCM streams have custom channel names specified.
++ */
++#define SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME BIT(4)
+
+ /**
+  * struct snd_dmaengine_pcm_config - Configuration data for dmaengine based PCM
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+index 17eb149..d537864 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -263,6 +263,7 @@ static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 	struct dmaengine_pcm *pcm = soc_platform_to_pcm(rtd->platform);
+ 	const struct snd_dmaengine_pcm_config *config = pcm->config;
+ 	struct device *dev = rtd->platform->dev;
++	struct snd_dmaengine_dai_dma_data *dma_data;
+ 	struct snd_pcm_substream *substream;
+ 	size_t prealloc_buffer_size;
+ 	size_t max_buffer_size;
+@@ -282,6 +283,13 @@ static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 		if (!substream)
+ 			continue;
+
++		dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
++
++		if (!pcm->chan[i] &&
++		    (pcm->flags & SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME))
++			pcm->chan[i] = dma_request_slave_channel(dev,
++				dma_data->chan_name);
++
+ 		if (!pcm->chan[i] && (pcm->flags & SND_DMAENGINE_PCM_FLAG_COMPAT)) {
+ 			pcm->chan[i] = dmaengine_pcm_compat_request_channel(rtd,
+ 				substream);
+@@ -350,7 +358,9 @@ static int dmaengine_pcm_request_chan_of(struct dmaengine_pcm *pcm,
+ 	const char *name;
+ 	struct dma_chan *chan;
+
+-	if ((pcm->flags & SND_DMAENGINE_PCM_FLAG_NO_DT) || !dev->of_node)
++	if ((pcm->flags & (SND_DMAENGINE_PCM_FLAG_NO_DT |
++			   SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME)) ||
++	    !dev->of_node)
+ 		return 0;
+
+ 	if (config && config->dma_dev) {
+--
+1.9.1
