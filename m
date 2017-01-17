@@ -1,18 +1,18 @@
 From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH v2 02/10] clk: ccu-sun8i-a33: Add
- CLK_SET_RATE_PARENT to ac-dig
-Date: Tue, 17 Jan 2017 17:44:15 +0100
-Message-ID: <20170117164415.4qseqbqkdx3e6bvt@lukather>
+Subject: Re: [PATCH v2 03/10] dt-bindings: sound: Add new reset
+ compatible for sun4i-i2s
+Date: Tue, 17 Jan 2017 17:46:36 +0100
+Message-ID: <20170117164636.qhkxvqcs7l732wxk@lukather>
 References: <20170117140230.23142-1-mylene.josserand@free-electrons.com>
- <20170117140230.23142-3-mylene.josserand@free-electrons.com>
+ <20170117140230.23142-4-mylene.josserand@free-electrons.com>
 Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="pmqdesejeydvn5wu"
-Return-path: <linux-sunxi+bncBDSJBYGBRIMBB2UT7HBQKGQEE74QWGI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="cfzbmitlkifb4uic"
+Return-path: <linux-sunxi+bncBDSJBYGBRIMBB54U7HBQKGQEMZKTXWI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Content-Disposition: inline
-In-Reply-To: <20170117140230.23142-3-mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+In-Reply-To: <20170117140230.23142-4-mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <https://groups.google.com/group/linux-sunxi
@@ -24,24 +24,88 @@ Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yR
 List-Id: alsa-devel@alsa-project.org
 
 
---pmqdesejeydvn5wu
+--cfzbmitlkifb4uic
 Content-Type: text/plain; charset=UTF-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-On Tue, Jan 17, 2017 at 03:02:22PM +0100, Myl=C3=A8ne Josserand wrote:
-> The audio DAI needs to set the clock rates of the ac-dig clock.
-> To make it possible, the parent PLL audio clock rates should
-> also be changed. This is possible via "CLK_SET_RATE_PARENT" flag.
+On Tue, Jan 17, 2017 at 03:02:23PM +0100, Myl=C3=A8ne Josserand wrote:
+> Add a new compatible for sun4i-i2s driver to handle some
+> SoCs that have a reset line that must be asserted/deasserted.
+>=20
+> This new compatible, "allwinner,sun6i-a31-i2s", requires two
+> properties:
+> 	- resets: phandle to the reset line
+> 	- reset-names: the name of the reset line ("rst").
+> Except these differences, the compatible is identical to previous one
+> which will not handle a reset line.
 >=20
 > Signed-off-by: Myl=C3=A8ne Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org=
 >
+> ---
+>  .../devicetree/bindings/sound/sun4i-i2s.txt        | 23 ++++++++++++++++=
+++++++
+>  1 file changed, 23 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Docu=
+mentation/devicetree/bindings/sound/sun4i-i2s.txt
+> index 7a2c0945fd22..f673206e309b 100644
+> --- a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+> +++ b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+> @@ -7,6 +7,7 @@ Required properties:
+> =20
+>  - compatible: should be one of the following:
+>     - "allwinner,sun4i-a10-i2s"
+> +   - "allwinner,sun6i-a31-i2s" for controller with reset lines
 
-Please make sure to look at the prefixes usually used in the commit
-titles of the area you're working on. In this case that would have
-been "clk: sunxi-ng:". I fixed it, and applied.
+That's not only for controllers with reset lines, but for the
+controllers found in the A31 (and later). I'd simply drop the last
+part of that line.
+
+>  - reg: physical base address of the controller and length of memory mapp=
+ed
+>    region.
+>  - interrupts: should contain the I2S interrupt.
+> @@ -19,7 +20,13 @@ Required properties:
+>     - "mod" : module clock for the I2S controller
+>  - #sound-dai-cells : Must be equal to 0
+> =20
+> +Required properties for the following compatibles:
+> +		- "allwinner,sun6i-a31-i2s"
+> +- resets: phandle to the reset line for this codec
+> +- reset-names: Contains the reset signal name "rst"
+
+You don't need reset-names if there's a single reset line.
+
+> +
+>  Example:
+> +For "allwinner,sun4i-a10-i2s":
+> =20
+>  i2s0: i2s@01c22400 {
+>  	#sound-dai-cells =3D <0>;
+> @@ -32,3 +39,19 @@ i2s0: i2s@01c22400 {
+>  	       <&dma SUN4I_DMA_NORMAL 3>;
+>  	dma-names =3D "rx", "tx";
+>  };
+> +
+> +For "allwinner,sun6i-a31-i2s":
+> +
+> +dai: dai@01c22c00 {
+> +	#sound-dai-cells =3D <0>;
+> +	compatible =3D "allwinner,sun6i-a31-i2s";
+> +	reg =3D <0x01c22c00 0x200>;
+> +	interrupts =3D <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
+> +	clocks =3D <&ccu CLK_BUS_CODEC>, <&ccu CLK_AC_DIG>;
+> +	clock-names =3D "apb", "mod";
+> +	resets =3D <&ccu RST_BUS_CODEC>;
+> +	reset-names =3D "rst";
+> +	dmas =3D <&dma 15>, /* AUDIO_CODEC port */
+> +		<&dma 15>; /* AUDIO_CODEC port */
+> +	dma-names =3D "rx", "tx";
+> +};
+
+And we already have an example, so there's no need to add a new one
+either.
 
 Thanks!
 Maxime
@@ -58,24 +122,24 @@ To unsubscribe from this group and stop receiving emails from it, send an e=
 mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
 For more options, visit https://groups.google.com/d/optout.
 
---pmqdesejeydvn5wu
+--cfzbmitlkifb4uic
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIcBAEBCAAGBQJYfknfAAoJEBx+YmzsjxAgod0P/iLJ4CE330NecTUFveMfjllK
-4vMqgy3dk0q4bHjEkwf08C5leqCmNCc0w34eXMp3NbCWn2xxvGlsRvBgvXK1Gykj
-Y9Fj4Mo1mWENQjgePb1HG8uNfxb77nsq5txtBHEukZXJTyCgoQ6KeroFX8bAkcMX
-lwQngZ4WDNOpB7MqINSyFQu8jU+PQU3pai0hxnI5mZeqkpSLhYS/tDBSzlr8qFwv
-xPDqX41KQKPhxpUBMF0D3d5auZS/fL2cg0ny5VXFdmMlbPzvsEduEkP5twBEQP4D
-PZlMYtoZ9ynk1Nv6SSw8GTCblHRGSDPaXhSCz3zw8RMoWrNZ/Jt5cUlPm6WjMz2x
-okrDyZxbydkXmQMTHRyJqzEIfUEtP3bOXabdqgWuai7KHAdDn6Bk9+GmKfKFqt+a
-VpHRyoD80homLb/T7EMO5Ce8CRlw2KDrB4q0AwrLoYtCVs3GaimK4LXJG7myXDMr
-bzqjZC98zY9vIFmUQ8vramSKzSvG/+EfLt2ATTehWwXzDCC5u6hMJrR3fJi69v7/
-UzTg9YtcZ6dV4PwpaRAQkoDjvnxCEL4/LW59vKmFg4R+lWdkHooRkFFb5fL9+qwM
-BSrWlgsYBw5itfEwrK6frU14yLwkuFL+gAn8aLSSjhIXx5zC3FWIGdPurd95VYeM
-Xi/mRrfsbCwHibR/bfWY
-=c6v5
+iQIcBAEBCAAGBQJYfkpsAAoJEBx+YmzsjxAg3i4QAIeSP1QjdxbRrXzNFADo00Nz
+vT1DqDV/M+JelnUIlz4Tbd5iszDnAbn61gp0qoXyq4VsB65dq3O+q+GIfdEd9G9g
+mgQd6KgzMYTVxtCEAhrditQEKLiHHirRS+0HHaiMAKODAD6cMNYXQpt3HZf2/95d
+0CBt+rgzt1XMfc/QhQpnwmI44LfcTUSQpg0y/Tuz6HcRsYJu94gnVLP2Sbf2y7HH
+kgb18/H5tEtlsQZeo7maeEcOTJi5hAIF60uaG/xoTngfdPce2r3mKanuNQU5CQEN
+UkWcMx/uQXy/doFAhrzMDCsQIwL+Qo2aC+RUn+HRfEuKSDRv3Pe3jQxnRljlW5HP
+xTeeoZv+tIvU15bt310T3ODRQPaOA/2r5+mLEqBoWg+xx5oih+7WHDI4NwHOmDCS
+Ix6kMPJHwdzT3FVgpMr9CqklKSh6Yz4QmEmyCeADIGrPnrX2PKCsNL5qQ2207vdc
+augKIQvDpJmxFJTHQaPVxm3xQEcGu+DUhqTlQNrpa3iewosc7HeJuKMpqtwVRLmk
+WKhEzpMbChKaQrsHyBiu8fDMC88nxbt41OnFtmkrCdd7SuWs1IT6R3m3ioJ7KzMn
+6L4oz/xZ2ko4TKlAX+NSs4OgaVdgTYs003oxbAl6PZtsiB6yZ4DBKywnc9GcgYTI
+ZNRD7K2x43UlMDkjZ+LR
+=lqJ0
 -----END PGP SIGNATURE-----
 
---pmqdesejeydvn5wu--
+--cfzbmitlkifb4uic--
