@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: remove ignored dependencies" to
-	the asoc tree
-Date: Tue, 17 Jan 2017 18:45:16 +0000
-Message-ID: <E1cTYku-0008UU-5i@debutante>
-References: <20170102152017.13938-4-andriy.shevchenko@linux.intel.com>
+Subject: Applied "ASoC: Intel: select DW_DMAC_CORE since it's
+	mandatory" to the asoc tree
+Date: Tue, 17 Jan 2017 18:45:20 +0000
+Message-ID: <E1cTYky-0008WB-Bj@debutante>
+References: <20170116131229.102820-2-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B05432665B0
- for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 19:45:26 +0100 (CET)
-In-Reply-To: <20170102152017.13938-4-andriy.shevchenko@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DF0202665B0
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 19:45:32 +0100 (CET)
+In-Reply-To: <20170116131229.102820-2-andriy.shevchenko@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: remove ignored dependencies
+   ASoC: Intel: select DW_DMAC_CORE since it's mandatory
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,113 @@ to this mail.
 Thanks,
 Mark
 
->From 2914266975fcb09a688cefe98874625366e67c65 Mon Sep 17 00:00:00 2001
+>From ebf79091bf85d9b2270ab29191de9cd3aaf888c5 Mon Sep 17 00:00:00 2001
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Date: Mon, 16 Jan 2017 15:12:28 +0200
-Subject: [PATCH] ASoC: Intel: remove ignored dependencies
+Date: Mon, 16 Jan 2017 15:12:26 +0200
+Subject: [PATCH] ASoC: Intel: select DW_DMAC_CORE since it's mandatory
 
-For selected only options the explicit dependencies do not make much sense
-becase Kbuild ignores them anyway. Remove them explicitly.
+Select DW_DMAC_CORE like the rest of glue drivers do, e.g.
+drivers/dma/dw/Kconfig.
 
-Acked-by: Vinod Koul <vinod.koul@intel.com>
-Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+While here group selectors under SND_SOC_INTEL_HASWELL and
+SND_SOC_INTEL_BAYTRAIL.
+
+Make platforms, which are using a common SST firmware driver, to be
+dependent on DMADEVICES.
+
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/intel/Kconfig | 31 +++++++++++++------------------
+ 1 file changed, 13 insertions(+), 18 deletions(-)
 
 diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index 93c41b7219f2..526855ad479e 100644
+index 9e3b25069de3..93c41b7219f2 100644
 --- a/sound/soc/intel/Kconfig
 +++ b/sound/soc/intel/Kconfig
-@@ -31,7 +31,6 @@ config SND_SOC_INTEL_SST
- 	tristate
- 	select SND_SOC_INTEL_SST_ACPI if ACPI
+@@ -33,11 +33,9 @@ config SND_SOC_INTEL_SST
  	select SND_SOC_INTEL_SST_MATCH if ACPI
--	depends on (X86 || COMPILE_TEST)
+ 	depends on (X86 || COMPILE_TEST)
  
+-# firmware stuff depends DW_DMAC_CORE; since there is no depends-on from
+-# the reverse selection, each machine driver needs to select
+-# SND_SOC_INTEL_SST_FIRMWARE carefully depending on DW_DMAC_CORE
  config SND_SOC_INTEL_SST_FIRMWARE
  	tristate
++	select DW_DMAC_CORE
+ 
+ config SND_SOC_INTEL_SST_ACPI
+ 	tristate
+@@ -47,16 +45,18 @@ config SND_SOC_INTEL_SST_MATCH
+ 
+ config SND_SOC_INTEL_HASWELL
+ 	tristate
++	select SND_SOC_INTEL_SST
+ 	select SND_SOC_INTEL_SST_FIRMWARE
+ 
+ config SND_SOC_INTEL_BAYTRAIL
+ 	tristate
++	select SND_SOC_INTEL_SST
++	select SND_SOC_INTEL_SST_FIRMWARE
+ 
+ config SND_SOC_INTEL_HASWELL_MACH
+ 	tristate "ASoC Audio DSP support for Intel Haswell Lynxpoint"
+ 	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM
+-	depends on DW_DMAC_CORE
+-	select SND_SOC_INTEL_SST
++	depends on DMADEVICES
+ 	select SND_SOC_INTEL_HASWELL
+ 	select SND_SOC_RT5640
+ 	help
+@@ -97,9 +97,8 @@ config SND_SOC_INTEL_BXT_RT298_MACH
+ config SND_SOC_INTEL_BYT_RT5640_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail with RT5640 codec"
+ 	depends on X86_INTEL_LPSS && I2C
+-	depends on DW_DMAC_CORE && (SND_SST_IPC_ACPI = n)
+-	select SND_SOC_INTEL_SST
+-	select SND_SOC_INTEL_SST_FIRMWARE
++	depends on DMADEVICES
++	depends on SND_SST_IPC_ACPI = n
+ 	select SND_SOC_INTEL_BAYTRAIL
+ 	select SND_SOC_RT5640
+ 	help
+@@ -110,9 +109,8 @@ config SND_SOC_INTEL_BYT_RT5640_MACH
+ config SND_SOC_INTEL_BYT_MAX98090_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail with MAX98090 codec"
+ 	depends on X86_INTEL_LPSS && I2C
+-	depends on DW_DMAC_CORE && (SND_SST_IPC_ACPI = n)
+-	select SND_SOC_INTEL_SST
+-	select SND_SOC_INTEL_SST_FIRMWARE
++	depends on DMADEVICES
++	depends on SND_SST_IPC_ACPI = n
+ 	select SND_SOC_INTEL_BAYTRAIL
+ 	select SND_SOC_MAX98090
+ 	help
+@@ -121,9 +119,8 @@ config SND_SOC_INTEL_BYT_MAX98090_MACH
+ 
+ config SND_SOC_INTEL_BDW_RT5677_MACH
+ 	tristate "ASoC Audio driver for Intel Broadwell with RT5677 codec"
+-	depends on X86_INTEL_LPSS && GPIOLIB && I2C && DW_DMAC
+-	depends on DW_DMAC_CORE=y
+-	select SND_SOC_INTEL_SST
++	depends on X86_INTEL_LPSS && GPIOLIB && I2C
++	depends on DMADEVICES
+ 	select SND_SOC_INTEL_HASWELL
+ 	select SND_SOC_RT5677
+ 	help
+@@ -132,10 +129,8 @@ config SND_SOC_INTEL_BDW_RT5677_MACH
+ 
+ config SND_SOC_INTEL_BROADWELL_MACH
+ 	tristate "ASoC Audio DSP support for Intel Broadwell Wildcatpoint"
+-	depends on X86_INTEL_LPSS && I2C && DW_DMAC && \
+-		   I2C_DESIGNWARE_PLATFORM
+-	depends on DW_DMAC_CORE
+-	select SND_SOC_INTEL_SST
++	depends on X86_INTEL_LPSS && I2C && I2C_DESIGNWARE_PLATFORM
++	depends on DMADEVICES
+ 	select SND_SOC_INTEL_HASWELL
+ 	select SND_SOC_RT286
+ 	help
 -- 
 2.11.0
