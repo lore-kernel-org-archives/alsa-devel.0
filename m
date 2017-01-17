@@ -1,60 +1,108 @@
-From: Romain Perier <romain.perier@collabora.com>
-Subject: [PATCH v3 0/4] Add support for es8388 on the rock2
-Date: Tue, 17 Jan 2017 09:17:01 +0100
-Message-ID: <20170117081705.14107-1-romain.perier@collabora.com>
+From: Joe Perches <joe@perches.com>
+Subject: Re: [PATCH v2 6+/6] platform/x86: dell-wmi-led: fix coding style
+ issues
+Date: Tue, 17 Jan 2017 00:21:23 -0800
+Message-ID: <1484641283.9538.5.camel@perches.com>
+References: <20170116132204.6421-1-kernel@kempniu.pl>
+         <20170117071714.21594-1-kernel@kempniu.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
- by alsa0.perex.cz (Postfix) with ESMTP id D8FA7266802
- for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 09:17:16 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-rockchip@lists.infradead.org, Sjoerd Simons <sjoerd.simons@collabora.co.uk>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Romain Perier <romain.perier@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170117071714.21594-1-kernel@kempniu.pl>
+Sender: linux-kernel-owner@vger.kernel.org
+To: =?UTF-8?Q?Micha=C5=82_K=C4=99pie=C5=84?= <kernel@kempniu.pl>, Richard Purdie <rpurdie@rpsys.net>, Jacek Anaszewski <jacek.anaszewski@gmail.com>, Pavel Machek <pavel@ucw.cz>, Pali =?ISO-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Anthony Wong <anthony.wong@canonical.com>, linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This set of patches adds a machine driver for rockchip boards that use
-ES8388 codecs. It also adds slave mode to the es8328 driver that
-currently only supported the master mode. Then, it adds the required DT
-definitions to link rockchip-i2s to the es8388 analog output.
+On Tue, 2017-01-17 at 08:17 +0100, Michał Kępień wrote:
+> Fix coding style issues in dell-wmi-led which checkpatch complains about
+> to make sure the module gets a clean start in the x86 platform driver
+> subsystem.
 
-This work is based on the initial work that was done by Sjoerd Simons
-<sjoerd.simons@collabora.co.uk> with some improvements, changes and more
-commits.
+trivia:
 
-Changes in v3:
- - Cosmetic changes in rockchip_es8388.c
- - Added missing email to MODULE_AUTHOR in rockchip_es8388.c
-Changes in v2:
- - Fixed wrong use of the data structure i2c_device_id
- - Fixed wrong dependencies for SND_SOC_ROCKCHIP_ES8388
+> Signed-off-by: Michał Kępień <kernel@kempniu.pl>
+> ---
+> This is an extra patch that Jacek asked for [1].
+> 
+> [1] https://lkml.org/lkml/2017/1/16/631
+> 
+>  drivers/platform/x86/dell-wmi-led.c | 41 +++++++++++++++----------------------
+>  1 file changed, 16 insertions(+), 25 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/dell-wmi-led.c b/drivers/platform/x86/dell-wmi-led.c
+[]
+> @@ -46,21 +46,16 @@ struct bios_args {
+>  	unsigned char off_time;
+>  };
+>  
+> -static int dell_led_perform_fn(u8 length,
+> -		u8 result_code,
+> -		u8 device_id,
+> -		u8 command,
+> -		u8 on_time,
+> -		u8 off_time)
+> +static int dell_led_perform_fn(u8 length, u8 result_code, u8 device_id,
+> +			       u8 command, u8 on_time, u8 off_time)
+>  {
+> -	struct bios_args *bios_return;
+> -	u8 return_code;
+> -	union acpi_object *obj;
+>  	struct acpi_buffer output = { ACPI_ALLOCATE_BUFFER, NULL };
+> +	struct bios_args *bios_return, args;
+>  	struct acpi_buffer input;
+> +	union acpi_object *obj;
+>  	acpi_status status;
+> +	u8 return_code;
+>  
+> -	struct bios_args args;
+>  	args.length = length;
+>  	args.result_code = result_code;
+>  	args.device_id = device_id;
 
-Romain Perier (4):
-  ASoC: es8328-i2c: Add compatible for ES8388
-  ASoC: es8328: Add support for slave mode
-  ASoC: rockchip: Add machine driver for ES8388 codecs
-  arm: dts: Add support for ES8388 to the Radxa Rock 2
+This declaration might be nicer using
 
- Documentation/devicetree/bindings/sound/es8328.txt |   2 +-
- .../devicetree/bindings/sound/rockchip-es8388.txt  |  28 +++
- arch/arm/boot/dts/rk3288-rock2-square.dts          |  37 +++
- sound/soc/codecs/es8328-i2c.c                      |   2 +
- sound/soc/codecs/es8328.c                          |  28 ++-
- sound/soc/rockchip/Kconfig                         |   9 +
- sound/soc/rockchip/Makefile                        |   2 +
- sound/soc/rockchip/rockchip_es8388.c               | 269 +++++++++++++++++++++
- 8 files changed, 370 insertions(+), 7 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/rockchip-es8388.txt
- create mode 100644 sound/soc/rockchip/rockchip_es8388.c
+	struct bios_args args = {
+		.length = length,
+		.result_code = result_code,
+		.device_id = device_id,
+		[...]
+	};
 
--- 
-2.9.3
+[]
+
+> @@ -138,24 +128,25 @@ static void dell_led_set(struct led_classdev *led_cdev,
+>  }
+>  
+>  static int dell_led_blink(struct led_classdev *led_cdev,
+> -		unsigned long *delay_on,
+> -		unsigned long *delay_off)
+> +			  unsigned long *delay_on, unsigned long *delay_off)
+>  {
+>  	unsigned long on_eighths;
+>  	unsigned long off_eighths;
+>  
+> -	/* The Dell LED delay is based on 125ms intervals.
+> -	   Need to round up to next interval. */
+> +	/*
+> +	 * The Dell LED delay is based on 125ms intervals.
+> +	 * Need to round up to next interval.
+> +	 */
+>  
+>  	on_eighths = (*delay_on + 124) / 125;
+> -	if (0 == on_eighths)
+> +	if (on_eighths == 0)
+>  		on_eighths = 1;
+>  	if (on_eighths > 255)
+>  		on_eighths = 255;
+>  	*delay_on = on_eighths * 125;
+>  
+>  	off_eighths = (*delay_off + 124) / 125;
+> -	if (0 == off_eighths)
+> +	if (off_eighths == 0)
+>  		off_eighths = 1;
+>  	if (off_eighths > 255)
+>  		off_eighths = 255;
+
+These could use DIV_ROUND_UP and clamp()
