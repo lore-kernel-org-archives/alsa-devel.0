@@ -1,18 +1,29 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: remove redundant select
-	SND_SOC_INTEL_SST" to the asoc tree
-Date: Tue, 17 Jan 2017 18:45:26 +0000
-Message-ID: <E1cTYl4-00007N-GI@debutante>
-References: <20170102152017.13938-3-andriy.shevchenko@linux.intel.com>
+From: Milan Oravec <moravec@ukf.sk>
+Subject: Re: SoundBlaterX G5
+Date: Tue, 17 Jan 2017 22:16:28 +0100
+Message-ID: <fd6095b8-c8c1-8b8b-d6b5-bc22a236e499@ukf.sk>
+References: <c7f0fe10-92b0-0866-f638-96e78b6175c5@ukf.sk>
+ <35808a43-245b-a075-a433-d892897b40b4@ladisch.de>
+ <8893efe5-8e73-3f75-b19c-b47891383342@ukf.sk>
+ <d961d16c-aa8e-18b7-226f-ede89945f5cc@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F72B2665B0
- for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 19:45:37 +0100 (CET)
-In-Reply-To: <20170102152017.13938-3-andriy.shevchenko@linux.intel.com>
+Received: from inmail2.ukf.sk (inmail2.ukf.sk [193.87.12.27])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB79E265142
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 22:16:45 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+ by inmail2.ukf.sk (Postfix) with ESMTP id 7FA661007DA
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 22:16:37 +0100 (CET)
+Received: from inmail2.ukf.sk ([127.0.0.1])
+ by localhost (inmail2.ukf.sk [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id DMOcpnE1KO83 for <alsa-devel@alsa-project.org>;
+ Tue, 17 Jan 2017 22:16:32 +0100 (CET)
+Received: from posta.ukf.sk (posta.ukf.sk [193.87.12.33])
+ by inmail2.ukf.sk (Postfix) with ESMTPS id 73A8A1007D7
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 22:16:32 +0100 (CET)
+In-Reply-To: <d961d16c-aa8e-18b7-226f-ede89945f5cc@ladisch.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,96 +33,158 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, dmaengine <dmaengine@vger.kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi Clemens,
 
-   ASoC: Intel: remove redundant select SND_SOC_INTEL_SST
+I'm unable to unload snd_usb_audio module because I can't find module 
+locking it.
 
-has been applied to the asoc tree at
+root@migo_lenovo:/home/migo# rmmod snd_usb_audio
+rmmod: ERROR: Module snd_usb_audio is in use
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Module                  Size  Used by
+snd_usb_audio         155648  1
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Is there any other way to re-probe sound-card capabilities?
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+I've changed clock source to direct stereo and stored configuration 
+(alsactl store) for device. Now, when plugging device in and checking 
+clock source property is set to direct stereo, but still no 192k.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+migo@migo_lenovo:~$ cat /proc/asound/card0/stream0
+Creative Technology Ltd Sound BlasterX G5 at usb-0000:00:1d.7-1.1, high 
+speed : USB Audio
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Playback:
+   Status: Stop
+   Interface 1
+     Altset 1
+     Format: S24_3LE
+     Channels: 2
+     Endpoint: 1 OUT (ASYNC)
+     Rates: 44100, 48000, 88200, 96000
+     Data packet interval: 500 us
 
-Thanks,
-Mark
+Capture:
+   Status: Stop
+   Interface 2
+     Altset 1
+     Format: S24_3LE
+     Channels: 2
+     Endpoint: 2 IN (ASYNC)
+     Rates: 44100, 48000, 88200, 96000
+     Data packet interval: 500 us
 
->From dd8275771f7a65dd552137e1839d39e15b313ed2 Mon Sep 17 00:00:00 2001
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Date: Mon, 16 Jan 2017 15:12:27 +0200
-Subject: [PATCH] ASoC: Intel: remove redundant select SND_SOC_INTEL_SST
 
-SND_SOC_INTEL_SKYLAKE selects SND_SOC_INTEL_SST already. Thus no need to
-duplicate. Remove duplications.
+Then I unloaded module with force option and modprobed it again and succes!
 
-Acked-by: Vinod Koul <vinod.koul@intel.com>
-Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/Kconfig | 5 -----
- 1 file changed, 5 deletions(-)
+migo@migo_lenovo:~$ cat /proc/asound/card0/stream0
+Creative Technology Ltd Sound BlasterX G5 at usb-0000:00:1d.7-1.1, high 
+speed : USB Audio
 
-diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
-index fd5d1e091038..86766d7c18b0 100644
---- a/sound/soc/intel/Kconfig
-+++ b/sound/soc/intel/Kconfig
-@@ -68,7 +68,6 @@ config SND_SOC_INTEL_HASWELL_MACH
- config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
- 	tristate "ASoC Audio driver for Broxton with DA7219 and MAX98357A in I2S Mode"
- 	depends on X86 && ACPI && I2C
--	select SND_SOC_INTEL_SST
- 	select SND_SOC_INTEL_SKYLAKE
- 	select SND_SOC_DA7219
- 	select SND_SOC_MAX98357A
-@@ -84,7 +83,6 @@ config SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH
- config SND_SOC_INTEL_BXT_RT298_MACH
- 	tristate "ASoC Audio driver for Broxton with RT298 I2S mode"
- 	depends on X86 && ACPI && I2C
--	select SND_SOC_INTEL_SST
- 	select SND_SOC_INTEL_SKYLAKE
- 	select SND_SOC_RT298
- 	select SND_SOC_DMIC
-@@ -220,7 +218,6 @@ config SND_SOC_INTEL_SKYLAKE
- config SND_SOC_INTEL_SKL_RT286_MACH
- 	tristate "ASoC Audio driver for SKL with RT286 I2S mode"
- 	depends on X86 && ACPI && I2C
--	select SND_SOC_INTEL_SST
- 	select SND_SOC_INTEL_SKYLAKE
- 	select SND_SOC_RT286
- 	select SND_SOC_DMIC
-@@ -234,7 +231,6 @@ config SND_SOC_INTEL_SKL_RT286_MACH
- config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
- 	tristate "ASoC Audio driver for SKL with NAU88L25 and SSM4567 in I2S Mode"
- 	depends on X86_INTEL_LPSS && I2C
--	select SND_SOC_INTEL_SST
- 	select SND_SOC_INTEL_SKYLAKE
- 	select SND_SOC_NAU8825
- 	select SND_SOC_SSM4567
-@@ -249,7 +245,6 @@ config SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH
- config SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH
- 	tristate "ASoC Audio driver for SKL with NAU88L25 and MAX98357A in I2S Mode"
- 	depends on X86_INTEL_LPSS && I2C
--	select SND_SOC_INTEL_SST
- 	select SND_SOC_INTEL_SKYLAKE
- 	select SND_SOC_NAU8825
- 	select SND_SOC_MAX98357A
--- 
-2.11.0
+Playback:
+   Status: Stop
+   Interface 1
+     Altset 1
+     Format: S24_3LE
+     Channels: 2
+     Endpoint: 1 OUT (ASYNC)
+     Rates: 44100, 48000, 88200, 96000, 176400, 192000
+     Data packet interval: 500 us
+
+Capture:
+   Status: Stop
+   Interface 2
+     Altset 1
+     Format: S24_3LE
+     Channels: 2
+     Endpoint: 2 IN (ASYNC)
+     Rates: 44100, 48000, 88200, 96000, 176400, 192000
+     Data packet interval: 500 us
+
+Now, when we have proof of concept is it possible to implement this in 
+driver without this module mess please?
+
+How can I help?
+
+I can provide you with remote access to my computer with sound-card 
+inserted when needed.
+
+Playback tested and works. ;)
+
+migo@migo_lenovo:~$ pactl list sink-inputs
+Sink Input #2
+	Driver: protocol-native.c
+	Owner Module: 8
+	Client: 11
+	Sink: 1
+	Sample Specification: float32le 2ch 192000Hz
+	Channel Map: front-left,front-right
+	Format: pcm, format.sample_format = "\"float32le\""  format.rate = 
+"192000"  format.channels = "2"  format.channel_map = 
+"\"front-left,front-right\""
+	Corked: no
+	Mute: no
+	Volume: front-left: 61840 /  94% / -1,51 dB,   front-right: 61840 / 
+94% / -1,51 dB
+	        balance 0,00
+	Buffer Latency: 398307 usec
+	Sink Latency: 41474 usec
+	Resample method: copy
+	Properties:
+		media.role = "video"
+		media.name = "audio stream"
+		application.name = "VLC media player (LibVLC 2.2.4)"
+		native-protocol.peer = "UNIX socket client"
+		native-protocol.version = "31"
+		application.id = "org.VideoLAN.VLC"
+		application.version = "2.2.4"
+		application.icon_name = "vlc"
+		application.language = "en_US.UTF-8"
+		application.process.id = "2872"
+		application.process.user = "migo"
+		application.process.host = "migo_lenovo"
+		application.process.binary = "vlc"
+		window.x11.display = ":0"
+		application.process.machine_id = "d3a60e6dc8754c9f80f7bb1e19b2d988"
+		application.process.session_id = "c5"
+		module-stream-restore.id = "sink-input-by-media-role:video"
+
+Thank you for your interest and your time.
+
+Kind regards,
+
+Milan
+
+
+s pozdravom
+
+Milan Oravec
+
+CIKT UKF Nitra
+mobil: +421907670270
+email: moravec@ukf.sk
+
+--------------------------------------------------------------------
+
+Tuto spravu nepreveril ziadny antivirus - nebolo treba...
+
+On 17.01.2017 10:39, Clemens Ladisch wrote:
+> Milan Oravec wrote:
+>> I think when I change "Speaker Clock Source" to direct audio sound card capabilities need to be re-enumerated to update sampling rates.
+>>
+>> Is there any way to achieve this?
+>
+> Try unloading and re-loading the driver module (snd-usb-audio).
+>
+>
+> Regards,
+> Clemens
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
