@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: core: Add API to use DMI name in sound
-	card long name" to the asoc tree
-Date: Tue, 17 Jan 2017 18:45:13 +0000
-Message-ID: <E1cTYkr-0008TC-3C@debutante>
-References: <a2c968808a0dff3f5c611b469d04770e0f0d9e48.1484381178.git.mengdong.lin@linux.intel.com>
+Subject: Applied "ASoC: mxs-saif: fix setting master base rate"
+	to the asoc tree
+Date: Tue, 17 Jan 2017 18:44:57 +0000
+Message-ID: <E1cTYkb-0008MS-MY@debutante>
+References: <20170113204428.16703-1-joerg.krause@embedded.rocks>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8103113795126066690=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E06D22666DB
- for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 19:45:22 +0100 (CET)
-In-Reply-To: <a2c968808a0dff3f5c611b469d04770e0f0d9e48.1484381178.git.mengdong.lin@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B59F42665B0
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 19:45:24 +0100 (CET)
+In-Reply-To: <20170113204428.16703-1-joerg.krause@embedded.rocks>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +21,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Mengdong Lin <mengdong.lin@linux.intel.com>, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, pierre-louis.bossart@intel.com
+Cc: alsa-devel@alsa-project.org, Mans Rullgard <mans@mansr.com>, Victorien Vedrine <victorien.vedrine@ophrys.net>, =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>, Takashi Iwai <tiwai@suse.com>, =?UTF-8?q?J=C3=B6rg=20Krause?= <jk@lintech.de>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, Shawn Guo <shawn.guo@freescale.com>
 List-Id: alsa-devel@alsa-project.org
+
+--===============8103113795126066690==
+Content-Type: text/plain
 
 The patch
 
-   ASoC: core: Add API to use DMI name in sound card long name
+   ASoC: mxs-saif: fix setting master base rate
 
 has been applied to the asoc tree at
 
@@ -52,213 +54,90 @@ to this mail.
 Thanks,
 Mark
 
->From 345233d7c6be80d4124140f2a0993880c7ae2453 Mon Sep 17 00:00:00 2001
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Date: Sat, 14 Jan 2017 16:13:02 +0800
-Subject: [PATCH] ASoC: core: Add API to use DMI name in sound card long name
+>From bcb8c270829a639b8b838809d7c2b540e65f4e01 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=B6rg=20Krause?= <jk@lintech.de>
+Date: Fri, 13 Jan 2017 21:44:27 +0100
+Subject: [PATCH] ASoC: mxs-saif: fix setting master base rate
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Intel DSP platform drivers are used by many different devices but are
-difficult for userspace to differentiate. This patch adds an API to allow
-the DMI name to be used in the sound card long name, thereby helping
-userspace load the correct UCM configuration. Usually machine drivers
-uses their own name as the sound card name (short name), and leave the
-long name and driver name blank. This API will use the DMI info like
-vendor, product and board to make up the card long name. If the machine
-driver has already explicitly set the long name, this API will do nothing.
+The SAIF base oversample rates are either 512*fs or 384*fs. An additional
+divider exists within the SAIF to generate sub-multiples of these two base
+rates if MCLK is required by the codec.
 
-This patch also allows for further differentiation as many devices that
-share the same DMI name i.e. Minnowboards, UP boards may be configured
-with different codecs or firmwares. The API supports flavoring the DMI
-name into the card longname to provide the extra differentiation required
-for these devices.
+ * The sub-rates for the 512x base rate are: 256x, 128x, 64x, and 32x.
+ * The sub-rates for the 384x base rate are: 192x, 96x, and 48x.
 
-For Use Case Manager (UCM) in the user space, changing card long name by
-this API is backward compatible, since the card name does not change. For
-a given sound card, even if there is no device-specific UCM configuration
-file that uses the card long name, UCM will fall back to load the default
-configuration file that uses the card name.
+Setting the base rate depending on the modulo operation with 32 and 48
+give wrong results for some mclk.
 
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+If mclk=18.432MHz both modulo operations results in 0. As testing the
+result with 32 is done first, a wrong base rate of 512*fs is set instead
+of the correct 384*fs.
+
+Fix this by setting the base rate depending on the calculated sub-rate.
+
+Signed-off-by: Jörg Krause <joerg.krause@embedded.rocks>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h  |   4 ++
- sound/soc/soc-core.c | 134 +++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 138 insertions(+)
+ sound/soc/mxs/mxs-saif.c | 24 +++++++++++++++++-------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 2b502f6cc6d0..8cad99dfb78c 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -497,6 +497,8 @@ void snd_soc_runtime_deactivate(struct snd_soc_pcm_runtime *rtd, int stream);
- int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
- 	unsigned int dai_fmt);
+diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+index 9012a2036131..b42f301c6b96 100644
+--- a/sound/soc/mxs/mxs-saif.c
++++ b/sound/soc/mxs/mxs-saif.c
+@@ -119,23 +119,33 @@ static int mxs_saif_set_clk(struct mxs_saif *saif,
+ 	 * Set SAIF clock
+ 	 *
+ 	 * The SAIF clock should be either 384*fs or 512*fs.
+-	 * If MCLK is used, the SAIF clk ratio need to match mclk ratio.
+-	 *  For 32x mclk, set saif clk as 512*fs.
+-	 *  For 48x mclk, set saif clk as 384*fs.
++	 * If MCLK is used, the SAIF clk ratio needs to match mclk ratio.
++	 *  For 256x, 128x, 64x, and 32x sub-rates, set saif clk as 512*fs.
++	 *  For 192x, 96x, and 48x sub-rates, set saif clk as 384*fs.
+ 	 *
+ 	 * If MCLK is not used, we just set saif clk to 512*fs.
+ 	 */
+ 	clk_prepare_enable(master_saif->clk);
  
-+int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour);
-+
- /* Utility functions to get clock rates from various things */
- int snd_soc_calc_frame_size(int sample_size, int channels, int tdm_slots);
- int snd_soc_params_to_frame_size(struct snd_pcm_hw_params *params);
-@@ -1098,6 +1100,8 @@ struct snd_soc_card {
- 	const char *name;
- 	const char *long_name;
- 	const char *driver_name;
-+	char dmi_longname[80];
-+
- 	struct device *dev;
- 	struct snd_card *snd_card;
- 	struct module *owner;
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index f1901bb1466e..530a4dba0709 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -34,6 +34,7 @@
- #include <linux/ctype.h>
- #include <linux/slab.h>
- #include <linux/of.h>
-+#include <linux/dmi.h>
- #include <sound/core.h>
- #include <sound/jack.h>
- #include <sound/pcm.h>
-@@ -1888,6 +1889,139 @@ int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
- }
- EXPORT_SYMBOL_GPL(snd_soc_runtime_set_dai_fmt);
- 
-+
-+/* Trim special characters, and replace '-' with '_' since '-' is used to
-+ * separate different DMI fields in the card long name. Only number and
-+ * alphabet characters and a few separator characters are kept.
-+ */
-+static void cleanup_dmi_name(char *name)
-+{
-+	int i, j = 0;
-+
-+	for (i = 0; name[i]; i++) {
-+		if (isalnum(name[i]) || (name[i] == '.')
-+		    || (name[i] == '_'))
-+			name[j++] = name[i];
-+		else if (name[i] == '-')
-+			name[j++] = '_';
-+	}
-+
-+	name[j] = '\0';
-+}
-+
-+/**
-+ * snd_soc_set_dmi_name() - Register DMI names to card
-+ * @card: The card to register DMI names
-+ * @flavour: The flavour "differentiator" for the card amongst its peers.
-+ *
-+ * An Intel machine driver may be used by many different devices but are
-+ * difficult for userspace to differentiate, since machine drivers ususally
-+ * use their own name as the card short name and leave the card long name
-+ * blank. To differentiate such devices and fix bugs due to lack of
-+ * device-specific configurations, this function allows DMI info to be used
-+ * as the sound card long name, in the format of
-+ * "vendor-product-version-board"
-+ * (Character '-' is used to separate different DMI fields here).
-+ * This will help the user space to load the device-specific Use Case Manager
-+ * (UCM) configurations for the card.
-+ *
-+ * Possible card long names may be:
-+ * DellInc.-XPS139343-01-0310JH
-+ * ASUSTeKCOMPUTERINC.-T100TA-1.0-T100TA
-+ * Circuitco-MinnowboardMaxD0PLATFORM-D0-MinnowBoardMAX
-+ *
-+ * This function also supports flavoring the card longname to provide
-+ * the extra differentiation, like "vendor-product-version-board-flavor".
-+ *
-+ * We only keep number and alphabet characters and a few separator characters
-+ * in the card long name since UCM in the user space uses the card long names
-+ * as card configuration directory names and AudoConf cannot support special
-+ * charactors like SPACE.
-+ *
-+ * Returns 0 on success, otherwise a negative error code.
-+ */
-+int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
-+{
-+	const char *vendor, *product, *product_version, *board;
-+	size_t longname_buf_size = sizeof(card->snd_card->longname);
-+	size_t len;
-+
-+	if (card->long_name)
-+		return 0; /* long name already set by driver or from DMI */
-+
-+	/* make up dmi long name as: vendor.product.version.board */
-+	vendor = dmi_get_system_info(DMI_BOARD_VENDOR);
-+	if (!vendor) {
-+		dev_warn(card->dev, "ASoC: no DMI vendor name!\n");
-+		return 0;
-+	}
-+
-+	snprintf(card->dmi_longname, sizeof(card->snd_card->longname),
-+			 "%s", vendor);
-+	cleanup_dmi_name(card->dmi_longname);
-+
-+	product = dmi_get_system_info(DMI_PRODUCT_NAME);
-+	if (product) {
-+		len = strlen(card->dmi_longname);
-+		snprintf(card->dmi_longname + len,
-+			 longname_buf_size - len,
-+			 "-%s", product);
-+
-+		len++;	/* skip the separator "-" */
-+		if (len < longname_buf_size)
-+			cleanup_dmi_name(card->dmi_longname + len);
-+
-+		/* some vendors like Lenovo may only put a self-explanatory
-+		 * name in the product version field
-+		 */
-+		product_version = dmi_get_system_info(DMI_PRODUCT_VERSION);
-+		if (product_version) {
-+			len = strlen(card->dmi_longname);
-+			snprintf(card->dmi_longname + len,
-+				 longname_buf_size - len,
-+				 "-%s", product_version);
-+
-+			len++;
-+			if (len < longname_buf_size)
-+				cleanup_dmi_name(card->dmi_longname + len);
-+		}
-+	}
-+
-+	board = dmi_get_system_info(DMI_BOARD_NAME);
-+	if (board) {
-+		len = strlen(card->dmi_longname);
-+		snprintf(card->dmi_longname + len,
-+			 longname_buf_size - len,
-+			 "-%s", board);
-+
-+		len++;
-+		if (len < longname_buf_size)
-+			cleanup_dmi_name(card->dmi_longname + len);
-+	} else if (!product) {
-+		/* fall back to using legacy name */
-+		dev_warn(card->dev, "ASoC: no DMI board/product name!\n");
-+		return 0;
-+	}
-+
-+	/* Add flavour to dmi long name */
-+	if (flavour) {
-+		len = strlen(card->dmi_longname);
-+		snprintf(card->dmi_longname + len,
-+			 longname_buf_size - len,
-+			 "-%s", flavour);
-+
-+		len++;
-+		if (len < longname_buf_size)
-+			cleanup_dmi_name(card->dmi_longname + len);
-+	}
-+
-+	/* set the card long name */
-+	card->long_name = card->dmi_longname;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_set_dmi_name);
-+
- static int snd_soc_instantiate_card(struct snd_soc_card *card)
- {
- 	struct snd_soc_codec *codec;
+ 	if (master_saif->mclk_in_use) {
+-		if (mclk % 32 == 0) {
++		switch (mclk / rate) {
++		case 32:
++		case 64:
++		case 128:
++		case 256:
++		case 512:
+ 			scr &= ~BM_SAIF_CTRL_BITCLK_BASE_RATE;
+ 			ret = clk_set_rate(master_saif->clk, 512 * rate);
+-		} else if (mclk % 48 == 0) {
++			break;
++		case 48:
++		case 96:
++		case 192:
++		case 384:
+ 			scr |= BM_SAIF_CTRL_BITCLK_BASE_RATE;
+ 			ret = clk_set_rate(master_saif->clk, 384 * rate);
+-		} else {
+-			/* SAIF MCLK should be either 32x or 48x */
++			break;
++		default:
++			/* SAIF MCLK should be a sub-rate of 512x or 384x */
+ 			clk_disable_unprepare(master_saif->clk);
+ 			return -EINVAL;
+ 		}
 -- 
 2.11.0
+
+
+--===============8103113795126066690==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8103113795126066690==--
