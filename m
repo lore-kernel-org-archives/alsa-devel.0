@@ -1,41 +1,25 @@
-From: Milan Oravec <moravec@ukf.sk>
-Subject: Re: SoundBlaterX G5
-Date: Tue, 17 Jan 2017 22:20:33 +0100
-Message-ID: <53f1f3cc-f9ac-7cd2-a9c3-25288ede34f3@ukf.sk>
-References: <c7f0fe10-92b0-0866-f638-96e78b6175c5@ukf.sk>
- <35808a43-245b-a075-a433-d892897b40b4@ladisch.de>
- <8893efe5-8e73-3f75-b19c-b47891383342@ukf.sk>
- <d961d16c-aa8e-18b7-226f-ede89945f5cc@ladisch.de>
+From: Matt Ranostay <matt@ranostay.consulting>
+Subject: Re: [PATCH v7] ASoC: omap-mcbsp: Add PM QoS support
+ for McBSP to prevent glitches
+Date: Tue, 17 Jan 2017 15:04:22 -0800
+Message-ID: <CAJ_EiSTCo7ZYTfwFomXfyauEP65REp3Vd7jCCGf-OsT8N0rU7A@mail.gmail.com>
+References: <20170113035432.6723-1-matt@ranostay.consulting>
+ <20170113152049.GD5696@atomide.com>
+ <CAJ_EiSR-R=5qUKOfHWTTrjj+ZD6Q6BBf1yPj3atf84Q6K03NZg@mail.gmail.com>
+ <20170116171743.GB7403@atomide.com>
+ <CAJ_EiSTStr1TfGE2zVspFF0DkkXLOCDmiqD_jZkzue-GfsTm+Q@mail.gmail.com>
+ <d35dbc1b-da5b-a482-3688-f7b20278d5fb@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from inmail2.ukf.sk (inmail2.ukf.sk [193.87.12.27])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B02C26693C
- for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 22:20:41 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
- by inmail2.ukf.sk (Postfix) with ESMTP id 0C4831007D9
- for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 22:20:41 +0100 (CET)
-Received: from inmail2.ukf.sk ([127.0.0.1])
- by localhost (inmail2.ukf.sk [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id AvNGb8eR0Qfk for <alsa-devel@alsa-project.org>;
- Tue, 17 Jan 2017 22:20:37 +0100 (CET)
-Received: from posta.ukf.sk (posta.ukf.sk [193.87.12.33])
- by inmail2.ukf.sk (Postfix) with ESMTPS id 4CDB21007D8
- for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 22:20:37 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
- by posta.ukf.sk (Postfix) with ESMTP id C71051DF2B7
- for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 22:20:37 +0100 (CET)
-Received: from posta.ukf.sk ([127.0.0.1])
- by localhost (posta.ukf.sk [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id ly+q4rzPy0XR for <alsa-devel@alsa-project.org>;
- Tue, 17 Jan 2017 22:20:33 +0100 (CET)
-Received: from [192.168.15.252] (unknown [5.22.154.11])
- (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
- (No client certificate requested)
- by posta.ukf.sk (Postfix) with ESMTP id A21E91DF121
- for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 22:20:33 +0100 (CET)
-In-Reply-To: <d961d16c-aa8e-18b7-226f-ede89945f5cc@ladisch.de>
+Received: from mail-qt0-f176.google.com (mail-qt0-f176.google.com
+ [209.85.216.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4032A26780D
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 00:04:23 +0100 (CET)
+Received: by mail-qt0-f176.google.com with SMTP id x49so183950453qtc.2
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 15:04:23 -0800 (PST)
+In-Reply-To: <d35dbc1b-da5b-a482-3688-f7b20278d5fb@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -45,45 +29,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, Linux OMAP List <linux-omap@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-I've forgot to list alsa-info output after successfull change:
-
-http://www.alsa-project.org/db/?f=fb3f42ec787fafc0ca646d0da1a3a907909f90a8
-
-
-Regards,
-
-Milan
-
-
-s pozdravom
-
-Milan Oravec
-
-CIKT UKF Nitra
-mobil: +421907670270
-email: moravec@ukf.sk
-
---------------------------------------------------------------------
-
-Tuto spravu nepreveril ziadny antivirus - nebolo treba...
-
-On 17.01.2017 10:39, Clemens Ladisch wrote:
-> Milan Oravec wrote:
->> I think when I change "Speaker Clock Source" to direct audio sound card capabilities need to be re-enumerated to update sampling rates.
->>
->> Is there any way to achieve this?
->
-> Try unloading and re-loading the driver module (snd-usb-audio).
->
->
-> Regards,
-> Clemens
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+T24gVHVlLCBKYW4gMTcsIDIwMTcgYXQgNDozNCBBTSwgUGV0ZXIgVWpmYWx1c2kgPHBldGVyLnVq
+ZmFsdXNpQHRpLmNvbT4gd3JvdGU6Cj4gT24gMDEvMTYvMjAxNyAwOTozMCBQTSwgTWF0dCBSYW5v
+c3RheSB3cm90ZToKPj4gWWVwIEkgd2FzIHRlc3Rpbmcgd2l0aCB0aGF0IGVuYWJsZWQuIE5vdCBz
+dXJlIHdoeSBJJ20gbm90IGdldHRpbmcgaXQKPj4gYWxsLi4uIG1heWJlIGRpZmZlcmVudCBzaWRl
+IGVmZmVjdHMgbGlrZSBzYW1wbGUgcmF0ZSBvZiB0aGUgYXVkaW8KPj4gYmVpbmcgcGxheWVkPwo+
+Pgo+PiBQZXRlciwgaXMgdGhlcmUgY2hhbmNlIHRoYXQgdGhlcmUgaXMgcmFjZSBjb25kaXRpb24g
+aXMgcG9zc2libGUKPj4gYmV0d2VlbiBwbV9xb3NfcmVtb3ZlX3JlcXVlc3QgYW5kIG9tYXBfbWNi
+c3BfZGFpX3NodXRkb3duPwo+Cj4gTm90IHdpdGggbXkga25vd2xlZGdlLgo+IEhvd2V2ZXIgb25l
+IHRoaW5nIG1pZ2h0IGhhcHBlbiB3aGljaCBpcyBub3QgaGFuZGxlZDoKPiBhcHBsaWNhdGlvbiBv
+cGVucyB1cCB0aGUgYXVkaW8gY2FyZCwgZG9lcyBzb21lIGh3X3BhcmFtIHNldHVwLCB0aGVuIGl0
+Cj4gZGVjaWRlcyB0byBjbG9zZSB0aGUgY2FyZC4gSW4gdGhpcyBjYXNlIHRoZSBwbV9xb3MgaXMg
+bm90IHBsYWNlZCwgYnV0IGluCj4gZGFpX3NodXRkb3duIHdlIHRyeSB0byByZW1vdmUgaXQgLT4g
+V0FSTigpLgo+Cj4gSSB0aGluayB3ZSBuZWVkIHRvIGNoZWNrIGVpdGhlciBpZiB0aGUgcG1fcW9z
+IGlzIGFjdGl2ZSBhbmQgb25seSB0aGVuCj4gYm90aGVyIHdpdGggdGhlIHJlbW92YWwvdXBkYXRl
+ZCBvciB3ZSBjYW4gY2hlY2sgaWYgdGhlCj4gbWNic3AtPmxhdGVuY3lbc3RyZWFtMV0gaXMgbm90
+IDAsIHdoaWNoIHNob3VsZCBiZSB0aGUgc2FtZSBhcyBjaGVja2luZwo+IGZvciB0aGUgcG1fcW9z
+IGFjdGl2ZQoKT2sgbWFrZXMgc2Vuc2UuIFdlaXJkIEknbSBub3Qgc2VlaW5nIGl0IGJ1dCBJIHdh
+bnRlZCB0byBiZSBzdXJlIGFkZGluZwpjaGVja3Mgd2Fzbid0IGp1c3QgaGlkaW5nIGEgaXNzdWUu
+CldpbGwgc3VibWl0IHY4Li4uICBhbmQgaG9wZWZ1bGx5IHRoYXQgaXMgdGhlIGZpbmFsIG9uZSEg
+KmZpbmdlcnMgY3Jvc3NlZCoKCj4KPiAtLQo+IFDDqXRlcgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
