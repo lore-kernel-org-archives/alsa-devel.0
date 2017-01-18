@@ -1,116 +1,96 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v7 0/5] Add platform clock for BayTrail platforms
-Date: Wed, 18 Jan 2017 12:50:30 +0200
-Message-ID: <1484736630.2133.184.camel@linux.intel.com>
-References: <1484690270-28425-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+From: Kailang <kailang@realtek.com>
+Subject: Add headphone mic support for ALC221 for HP platform
+Date: Wed, 18 Jan 2017 09:29:37 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A17A4BD18@RTITMBSV09.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1484690270-28425-1-git-send-email-pierre-louis.bossart@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, linux-clk@vger.kernel.org, x86@kernel.org, platform-driver-x86@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>, Darren Hart <dvhart@infradead.org>, Thomas Gleixner <tglx@linutronix.de>
-Cc: alsa-devel@alsa-project.org, Irina Tirdea <irina.tirdea@intel.com>, Michael Turquette <mturquette@baylibre.com>, "Rafael J . Wysocki" <rjw@rjwysocki.net>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, Ingo Molnar <mingo@redhat.com>, Mark Brown <broonie@kernel.org>, "H . Peter Anvin" <hpa@zytor.com>, Len Brown <lenb@kernel.org>, Vinod Koul <vinod.koul@intel.com>
+Content-Type: multipart/mixed;
+ boundary="_004_6FAB7C47BCF00940BB0999A99BE3547A17A4BD18RTITMBSV09realt_"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 23B3A267AF4
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 10:29:41 +0100 (CET)
+Content-Language: zh-TW
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
+Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2017-01-17 at 15:57 -0600, Pierre-Louis Bossart wrote:
-> These patches specifically enable the audio MCLK required by Baytrail
-> CR devices. It is the remaining part of a bigger set of patches
-> (already merged in Mark Brown's tree) that enable sound for Baytrail
-> CR
-> devices (especially Asus T100TAF) [1]. They include the clock driver
-> and clock enabling in the pmc_atom code (along with moving of the
-> non-architectural pmc_atom driver code into drivers/platform/x86 as
-> suggested by Thomas Gleixner [2]). This move includes a new header in
-> include/linux/platform_data/x86/. While there is an agreement that the
-> definitions for PMC clocks are not really platform data this location
-> is seen as a good-enough compromise with an agreement between Darren
-> Hart and Andy Shevchenko [3]
-> 
-> [1] http://mailman.alsa-project.org/pipermail/alsa-devel/2016-August/1
-> 11704.html
-> [2] http://mailman.alsa-project.org/pipermail/alsa-devel/2016-October/
-> 113936.html
-> [3] http://mailman.alsa-project.org/pipermail/alsa-devel/2016-December
-> /115892.html
-> 
+--_004_6FAB7C47BCF00940BB0999A99BE3547A17A4BD18RTITMBSV09realt_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Stephen, I see no issues with the patches. If you want to push them
-through your tree, take a tag from PDx86 subsystem point of view:
+Hi Takashi,
 
-Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Attach patch is support headphone Mic for ALC221.
+
+Many thanks,
+Kailang
 
 
-> Changes from v6:
->  - Addressed comments from Stephen Boyd, Andy Shevchenko and Vinod
-> Koul
->  - Renamed clk-byt-plt to clk-pmc-atom
->  - Rebase to 4.10-rc3 (broonie/for-next)
->  - Added helper functions to make error handling more compact
->  - Removed module-related code since it's not possible/supported
->  - Removed useless tests on remove
->  - PMC_CLK_OFFSET move to clk-pcm-atom (more logical)
->  - Split typo correction and makefile fix in separate patches
->  - small fixes (spaces, defaults in switches, alphabetical order, use
-> of
-> clk_writel/readl and no test on write, simpler error handling, use of
-> while(i--), unsigned loop variables, kernel doc fields, format-patch
-> -M
->  -C -D, use of PLATFORM_DEVID_NONE)
-> 
-> Changes from v5:
->  - fix build error reported by kbuild test robot
->  - split the clk driver code from x86 platform changes
-> 
-> Changes from v4:
->  - move the pmc_atom driver from arch/x86/platform/atom to
-> drivers/platform/x86
-> 
-> Changes from v3:
->  - replace devm_kzalloc with devm_kcalloc
->  - add x86 architecture maintainers
-> 
-> Changes from v2:
->  - move clk platform data structures to a separate include file
->  - store clk_hw pointer for the fixed rate clocks
-> 
-> Changes from v1:
->  - register the clk device as child of pmc device
->  - pass iomem pointer from pmc driver to clk driver to avoid using
-> pmc_atom_read()/write() and use readl/writel API instead
->  - use devm_clk_hw_register/clkdev_hw_create instead of
-> clk_register/clkdev_create
-> 
-> Irina Tirdea (3):
->   clk: x86: Add Atom PMC platform clocks
->   arch/x86/platform/atom: Move pmc_atom to drivers/platform/x86
->   platform/x86: Enable Atom PMC platform clocks
-> 
-> Pierre-Louis Bossart (2):
->   clk: Make x86/ conditional on CONFIG_COMMON_CLK
->   platform/x86: fix typo in comment
-> 
->  arch/x86/Kconfig                                   |   4 -
->  arch/x86/platform/atom/Makefile                    |   1 -
->  drivers/acpi/acpi_lpss.c                           |   2 +-
->  drivers/clk/Makefile                               |   2 +
->  drivers/clk/x86/Makefile                           |   1 +
->  drivers/clk/x86/clk-pmc-atom.c                     | 373
-> +++++++++++++++++++++
->  drivers/platform/x86/Kconfig                       |   5 +
->  drivers/platform/x86/Makefile                      |   1 +
->  .../atom => drivers/platform/x86}/pmc_atom.c       |  88 ++++-
->  include/linux/platform_data/x86/clk-pmc-atom.h     |  44 +++
->  .../linux/platform_data/x86}/pmc_atom.h            |   2 +-
->  11 files changed, 508 insertions(+), 15 deletions(-)
->  create mode 100644 drivers/clk/x86/clk-pmc-atom.c
->  rename {arch/x86/platform/atom => drivers/platform/x86}/pmc_atom.c
-> (87%)
->  create mode 100644 include/linux/platform_data/x86/clk-pmc-atom.h
->  rename {arch/x86/include/asm =>
-> include/linux/platform_data/x86}/pmc_atom.h (98%)
-> 
+--_004_6FAB7C47BCF00940BB0999A99BE3547A17A4BD18RTITMBSV09realt_
+Content-Type: application/octet-stream;
+	name="0000-add-support-headphone-mic-for-ALC221-hp.patch"
+Content-Description: 0000-add-support-headphone-mic-for-ALC221-hp.patch
+Content-Disposition: attachment;
+	filename="0000-add-support-headphone-mic-for-ALC221-hp.patch"; size=2263;
+	creation-date="Tue, 17 Jan 2017 07:47:59 GMT";
+	modification-date="Tue, 17 Jan 2017 07:43:53 GMT"
+Content-Transfer-Encoding: base64
 
--- 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
+RnJvbSA0ZmE3NDVjZjQ3YzFiMTAzYzJhMWIwOGY0ZGVkODkzMzM3NGM2OWE3IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
+dGU6IFR1ZSwgMTcgSmFuIDIwMTcgMTU6NDA6MjUgKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
+OiBoZGEvcmVhbHRlayAtIEFkZCBzdXBwb3J0IGhlYWRwaG9uZSBNaWMgZm9yIEFMQzIyMSBvZgog
+SFAgcGxhdGZvcm0KCkFMQzIyMSBIUCBwbGF0Zm9ybSBuZWVkIHRvIHN1cHBvcnQgSGVhZHBob25l
+IE1pYy4KVGhpcyBwYXRjaCB3aWxsIHR1cm4gb24gaGVhZHBob25lIE1pYyBzdXBwb3J0ZWQuCgpT
+aWduZWQtb2ZmLWJ5OiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CgpkaWZmIC0t
+Z2l0IGEvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgYi9zb3VuZC9wY2kvaGRhL3BhdGNo
+X3JlYWx0ZWsuYwppbmRleCA3YzM1ZGY3Li44ZWMxZmZhIDEwMDY0NAotLS0gYS9zb3VuZC9wY2kv
+aGRhL3BhdGNoX3JlYWx0ZWsuYworKysgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYwpA
+QCAtMzgxNSw2ICszODE1LDcgQEAgc3RhdGljIHZvaWQgYWxjX2hlYWRzZXRfbW9kZV9taWNfaW4o
+c3RydWN0IGhkYV9jb2RlYyAqY29kZWMsIGhkYV9uaWRfdCBocF9waW4sCiAJY2FzZSAweDEwZWMw
+ODY3OgogCQlhbGNfdXBkYXRlX2NvZWZleF9pZHgoY29kZWMsIDB4NTcsIDB4NSwgMCwgMTw8MTQp
+OwogCQkvKiBmYWxsdGhydSAqLworCWNhc2UgMHgxMGVjMDIyMToKIAljYXNlIDB4MTBlYzA2NjI6
+CiAJCXNuZF9oZGFfc2V0X3Bpbl9jdGxfY2FjaGUoY29kZWMsIGhwX3BpbiwgMCk7CiAJCXNuZF9o
+ZGFfc2V0X3Bpbl9jdGxfY2FjaGUoY29kZWMsIG1pY19waW4sIFBJTl9WUkVGNTApOwpAQCAtNDg2
+Niw2ICs0ODY3LDcgQEAgZW51bSB7CiAJQUxDMjk4X0ZJWFVQX1NQS19WT0xVTUUsCiAJQUxDMjU2
+X0ZJWFVQX0RFTExfSU5TUElST05fNzU1OV9TVUJXT09GRVIsCiAJQUxDMjY5X0ZJWFVQX0FUSVZf
+Qk9PS184LAorCUFMQzIyMV9GSVhVUF9IUF9NSUNfTk9fUFJFU0VOQ0UsCiB9OwogCiBzdGF0aWMg
+Y29uc3Qgc3RydWN0IGhkYV9maXh1cCBhbGMyNjlfZml4dXBzW10gPSB7CkBAIC01NTQ0LDYgKzU1
+NDYsMTYgQEAgZW51bSB7CiAJCS5jaGFpbmVkID0gdHJ1ZSwKIAkJLmNoYWluX2lkID0gQUxDMjY5
+X0ZJWFVQX05PX1NIVVRVUAogCX0sCisJW0FMQzIyMV9GSVhVUF9IUF9NSUNfTk9fUFJFU0VOQ0Vd
+ID0geworCQkudHlwZSA9IEhEQV9GSVhVUF9QSU5TLAorCQkudi5waW5zID0gKGNvbnN0IHN0cnVj
+dCBoZGFfcGludGJsW10pIHsKKwkJCXsgMHgxOCwgMHgwMWExOTEzYyB9LCAvKiB1c2UgYXMgaGVh
+ZHNldCBtaWMsIHdpdGhvdXQgaXRzIG93biBqYWNrIGRldGVjdCAqLworCQkJeyAweDFhLCAweDAx
+YTE5MTNkIH0sIC8qIHVzZSBhcyBoZWFkcGhvbmUgbWljLCB3aXRob3V0IGl0cyBvd24gamFjayBk
+ZXRlY3QgKi8KKwkJCXsgfQorCQl9LAorCQkuY2hhaW5lZCA9IHRydWUsCisJCS5jaGFpbl9pZCA9
+IEFMQzI2OV9GSVhVUF9IRUFEU0VUX01PREUKKwl9LAogfTsKIAogc3RhdGljIGNvbnN0IHN0cnVj
+dCBzbmRfcGNpX3F1aXJrIGFsYzI2OV9maXh1cF90YmxbXSA9IHsKQEAgLTU2NTQsNiArNTY2Niw4
+IEBAIGVudW0gewogCVNORF9QQ0lfUVVJUksoMHgxMDNjLCAweDIzMzcsICJIUCIsIEFMQzI2OV9G
+SVhVUF9IUF9NVVRFX0xFRF9NSUMxKSwKIAlTTkRfUENJX1FVSVJLKDB4MTAzYywgMHgyMjFjLCAi
+SFAgRWxpdGVCb29rIDc1NSBHMiIsIEFMQzI4MF9GSVhVUF9IUF9IRUFEU0VUX01JQyksCiAJU05E
+X1BDSV9RVUlSSygweDEwM2MsIDB4ODI1NiwgIkhQIiwgQUxDMjIxX0ZJWFVQX0hQX0ZST05UX01J
+QyksCisJU05EX1BDSV9RVUlSSygweDEwM2MsIDB4ODJiZiwgIkhQIiwgQUxDMjIxX0ZJWFVQX0hQ
+X01JQ19OT19QUkVTRU5DRSksCisJU05EX1BDSV9RVUlSSygweDEwM2MsIDB4ODJjMCwgIkhQIiwg
+QUxDMjIxX0ZJWFVQX0hQX01JQ19OT19QUkVTRU5DRSksCiAJU05EX1BDSV9RVUlSSygweDEwNDMs
+IDB4MTAzZiwgIkFTVVMgVFgzMDAiLCBBTEMyODJfRklYVVBfQVNVU19UWDMwMCksCiAJU05EX1BD
+SV9RVUlSSygweDEwNDMsIDB4MTA2ZCwgIkFzdXMgSzUzQkUiLCBBTEMyNjlfRklYVVBfTElNSVRf
+SU5UX01JQ19CT09TVCksCiAJU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MTE1ZCwgIkFzdXMgMTAx
+NUUiLCBBTEMyNjlfRklYVVBfTElNSVRfSU5UX01JQ19CT09TVCksCg==
+
+--_004_6FAB7C47BCF00940BB0999A99BE3547A17A4BD18RTITMBSV09realt_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--_004_6FAB7C47BCF00940BB0999A99BE3547A17A4BD18RTITMBSV09realt_--
