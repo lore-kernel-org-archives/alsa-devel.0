@@ -1,16 +1,16 @@
 From: mengdong.lin@linux.intel.com
-Subject: [PATCH v6 2/3] ucm: Load device-specific configuration
-	file based on the card long name
-Date: Wed, 18 Jan 2017 11:53:35 +0800
-Message-ID: <0901283dcf9b09233e32ef40f880bca92fa9aadf.1484710888.git.mengdong.lin@linux.intel.com>
+Subject: [PATCH v6 3/3] ucm: Add command 'get _file' to get the
+	config file name of the opened card
+Date: Wed, 18 Jan 2017 11:53:42 +0800
+Message-ID: <b85680e93cefd68042207c6e13bdc1ee97a340ed.1484710888.git.mengdong.lin@linux.intel.com>
 References: <cover.1484710888.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 553BE266BF5
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 04:50:16 +0100 (CET)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2695F266BF5
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 04:50:23 +0100 (CET)
 In-Reply-To: <cover.1484710888.git.mengdong.lin@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,175 +27,49 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Intel DSP platform drivers are used by many different devices. For user
-space to differentiate them, ASoC machine drivers may use the DMI info
-(vendor-product-version-board) as card long name. Possible card long names
-are:
-DellInc.-XPS139343-01-0310JH
-ASUSTeKCOMPUTERINC.-T100TA-1.0-T100TA
-Circuitco-MinnowboardMaxD0PLATFORM-D0-MinnowBoardMAX
-...
-
-If we want to define a device-specific UCM config file for a card, we
-need to use the card long name as the name of both the directory that
-contains the UCM config file and the UCM config file itself, like
-longname/longname.conf
-
-When being asked to load configuration file of a card, UCM will try to
-find the card in the local machine and get its long name. If the card
-long name is available, try to load the file longname/longname.conf to
-get the best device-specific configuration; if this file is not available,
-fall back to load the default configuration file shortname/shortname.conf
-as before.
-
-This update is backward compatible, because if ASoC machine drivers don't
-explicity use DMI or other means to set the card long name, ASoC core
-will use the card short name as the long name. And so UCM will load the
-config file that matches both the card short name and the long name.
+After opening a card, this command can show the name of the actually
+loaded configuration file, either matches the card name or card long name.
+So developers can check if there is a device-sepcific configuration file
+available for a given card.
 
 Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/src/ucm/parser.c b/src/ucm/parser.c
-index 3b42e31..ab412d5 100644
---- a/src/ucm/parser.c
-+++ b/src/ucm/parser.c
-@@ -55,6 +55,9 @@ static const char * const component_dir[] = {
- 	NULL,		/* terminator */
- };
- 
-+static int filename_filter(const struct dirent *dirent);
-+static int is_component_directory(const char *dir);
-+
- static int parse_sequence(snd_use_case_mgr_t *uc_mgr,
- 			  struct list_head *base,
- 			  snd_config_t *cfg);
-@@ -1328,6 +1331,66 @@ static int parse_master_file(snd_use_case_mgr_t *uc_mgr, snd_config_t *cfg)
- 	return 0;
- }
- 
-+/* find the card in the local machine and store the card long name */
-+static int get_card_long_name(snd_use_case_mgr_t *mgr)
-+{
-+	const char *card_name = mgr->card_name;
-+	snd_ctl_t *handle;
-+	int card, err;
-+	snd_ctl_card_info_t *info;
-+	const char *_name, *_long_name;
-+
-+	snd_ctl_card_info_alloca(&info);
-+
-+	card = -1;
-+	if (snd_card_next(&card) < 0 || card < 0) {
-+		uc_error("no soundcards found...");
-+		return -1;
-+	}
-+
-+	while (card >= 0) {
-+		char name[32];
-+
-+		sprintf(name, "hw:%d", card);
-+		err = snd_ctl_open(&handle, name, 0);
-+		if (err < 0) {
-+			uc_error("control open (%i): %s", card,
-+				 snd_strerror(err));
-+			goto next_card;
+diff --git a/include/use-case.h b/include/use-case.h
+index 8911645..ae22bde 100644
+--- a/include/use-case.h
++++ b/include/use-case.h
+@@ -230,6 +230,7 @@ int snd_use_case_get_list(snd_use_case_mgr_t *uc_mgr,
+  * Known identifiers:
+  *   - NULL 		- return current card
+  *   - _verb		- return current verb
++ *   - _file		- return configuration file loaded for current card
+  *
+  *   - [=]{NAME}[/[{modifier}|{/device}][/{verb}]]
+  *                      - value identifier {NAME}
+diff --git a/src/ucm/main.c b/src/ucm/main.c
+index 38a5e81..2d33886 100644
+--- a/src/ucm/main.c
++++ b/src/ucm/main.c
+@@ -1528,6 +1528,20 @@ int snd_use_case_get(snd_use_case_mgr_t *uc_mgr,
+                         goto __end;
+                 }
+ 	        err = 0;
++	} else if (strcmp(identifier, "_file") == 0) {
++		/* get the conf file name of the opened card */
++		if ((uc_mgr->card_name == NULL)
++		    || (uc_mgr->conf_file_name[0] == '\0')) {
++			err = -ENOENT;
++			goto __end;
 +		}
-+
-+		err = snd_ctl_card_info(handle, info);
-+		if (err < 0) {
-+			uc_error("control hardware info (%i): %s", card,
-+				 snd_strerror(err));
-+			snd_ctl_close(handle);
-+			goto next_card;
++		*value = strndup(uc_mgr->conf_file_name, MAX_FILE);
++		if (*value == NULL) {
++			err = -ENOMEM;
++			goto __end;
 +		}
++		err = 0;
 +
-+		/* Find the local card by comparing the given name with the
-+		 * card short name and long name. The given card name may be
-+		 * either a short name or long name, because users may open
-+		 * the card by either of the two names.
-+		 */
-+		_name = snd_ctl_card_info_get_name(info);
-+		_long_name = snd_ctl_card_info_get_longname(info);
-+		if (!strcmp(card_name, _name)
-+		    || !strcmp(card_name, _long_name)) {
-+			strcpy(mgr->card_long_name, _long_name);
-+			snd_ctl_close(handle);
-+			return 0;
-+		}
-+
-+		snd_ctl_close(handle);
-+next_card:
-+		if (snd_card_next(&card) < 0) {
-+			uc_error("snd_card_next");
-+			break;
-+		}
-+	}
-+
-+	return -1;
-+}
- static int load_master_config(const char *card_name, snd_config_t **cfg)
- {
- 	char filename[MAX_FILE];
-@@ -1355,15 +1418,43 @@ static int load_master_config(const char *card_name, snd_config_t **cfg)
- 	return 0;
- }
- 
--/* load master use case file for sound card */
-+/* load master use case file for sound card
-+ *
-+ * The same ASoC machine driver can be shared by many different devices.
-+ * For user space to differentiate them and get the best device-specific
-+ * configuration, ASoC machine drivers may use the DMI info
-+ * (vendor-product-version-board) as the card long name. And user space can
-+ * define configuration files like longnamei/longname.conf for a specific device.
-+ *
-+ * This function will try to find the card in the local machine and get its
-+ * long name, then load the file longname/longname.conf to get the best
-+ * device-specific configuration. If the card is not found in the local
-+ * machine or the device-specific file is not available, fall back to load
-+ * the default configuration file name/name.conf.
-+ */
- int uc_mgr_import_master_config(snd_use_case_mgr_t *uc_mgr)
- {
- 	snd_config_t *cfg;
- 	int err;
- 
--	err = load_master_config(uc_mgr->card_name, &cfg);
--	if (err < 0)
--		return err;
-+	err = get_card_long_name(uc_mgr);
-+	if (err == 0)	/* load file that maches the card long name */
-+		err = load_master_config(uc_mgr->card_long_name, &cfg);
-+
-+	if (err == 0) {
-+		/* got device-specific file that matches the card long name */
-+		strcpy(uc_mgr->conf_file_name, uc_mgr->card_long_name);
-+	} else {
-+		/* Fall back to the file that maches the given card name,
-+		 * either short name or long name (users may open a card by
-+		 * its name or long name).
-+		 */
-+		err = load_master_config(uc_mgr->card_name, &cfg);
-+		if (err < 0)
-+			return err;
-+		strcpy(uc_mgr->conf_file_name, uc_mgr->card_name);
-+	}
-+
- 	err = parse_master_file(uc_mgr, cfg);
- 	snd_config_delete(cfg);
- 	if (err < 0)
-diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
-index e41aafa..299a5b9 100644
---- a/src/ucm/ucm_local.h
-+++ b/src/ucm/ucm_local.h
-@@ -191,6 +191,8 @@ struct use_case_verb {
-  */
- struct snd_use_case_mgr {
- 	char *card_name;
-+	char card_long_name[MAX_CARD_LONG_NAME];
-+	char conf_file_name[MAX_CARD_LONG_NAME];
- 	char *comment;
- 
- 	/* use case verb, devices and modifier configs parsed from files */
+ 	} else if (identifier[0] == '_') {
+ 		err = -ENOENT;
+ 		goto __end;
 -- 
 2.7.4
