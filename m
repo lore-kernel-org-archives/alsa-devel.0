@@ -1,18 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 1/2] crecord: Fix some minor coding style
-	problems
-Date: Wed, 18 Jan 2017 22:22:32 +0530
-Message-ID: <20170118165232.GG3573@localhost>
-References: <1484756994-19679-1-git-send-email-rf@opensource.wolfsonmicro.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Problem with alsa-compile.sh script on Linux Mint
+ 18.1
+Date: Wed, 18 Jan 2017 18:10:11 +0100
+Message-ID: <21841786-a8c4-bf40-71bb-2d539419fdf2@ladisch.de>
+References: <CAFdEiKRNhyFEiKCxm4AktOY+zCFr1uQ8gYfSm=WEmBiv+9bQmg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 05B45266889
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 17:52:23 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1484756994-19679-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Received: from webclient5.webclient5.de (webclient5.webclient5.de
+ [136.243.32.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id EA1992676F2
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 18:10:51 +0100 (CET)
+In-Reply-To: <CAFdEiKRNhyFEiKCxm4AktOY+zCFr1uQ8gYfSm=WEmBiv+9bQmg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,17 +22,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Nali Waterfall <nwfalls@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 18, 2017 at 04:29:53PM +0000, Richard Fitzgerald wrote:
-> - Incorrect indenting of arguments to capture_samples()
-> - Wrap long line in capture_samples()
-> - Added a blank line in main() for readability
-> - Deleted extra trailing blank line at end of file
+Nali Waterfall wrote:
+> trying to run alsa-compile.sh script.
 
-Applied both, thanks
+The alsa-driver package is outdated.
 
--- 
-~Vinod
+The ALSA drivers are part of the kernel.  If you need a newer version,
+update the kernel package, or recompile the kernel.
+
+
+Regards,
+Clemens
