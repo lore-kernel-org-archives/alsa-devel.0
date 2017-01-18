@@ -1,76 +1,48 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH v6 0/3] ucm: Automatically load the best config
-	file based on the card long name
-Date: Wed, 18 Jan 2017 11:52:26 +0800
-Message-ID: <cover.1484710888.git.mengdong.lin@linux.intel.com>
+From: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: Re: [PATCH] ASoC: sunxi: Add bindings for sun8i to SPDIF
+Date: Wed, 18 Jan 2017 08:09:00 +0100
+Message-ID: <CAEKpxBmkbYJzMdn-BFTa0485XSDPcMd6yQHgaqKQZoirG_DnUA@mail.gmail.com>
+References: <20170112173343.9953-1-codekipper@gmail.com> <20170117181531.fdwc5vglpvxpx7su@sirena.org.uk>
+Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id AFFB4266BF5
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 04:49:06 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, Mengdong Lin <mengdong.lin@linux.intel.com>, mengdong.lin@intel.com
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBDFJ7TBQKGQEDIZY65A-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20170117181531.fdwc5vglpvxpx7su-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
-
-Intel DSP platform drivers are used by many different devices. For user
-space to differentiate them, now ASoC provide API for machine drivers to
-include the DMI info (vendor, product and board) in card long name. This
-series will add UCM support for loading best device-specific configuration
-based on the card long name.
-
-Mengdong Lin (2):
-  ucm: Load device-specific configuration file based on the card long
-    name
-  ucm: Add command 'get _file' to get the config file name of the opened
-    card
-
-History:
-v2: Request the device-specific file name to match the card long name,
-    no long use automatic key word matching and scoring to avoid error
-    and uncertainty. And add command to check the name of actually loaded
-    configuration file.
-
-v3: Fix num in strncpy of the long name, which should be
-    MAX_CARD_LONG_NAME - 1, not MAX_CARD_LONG_NAME (80).
-
-
-v4: No code change. Just update on comments because the kernel v4 patches
-    add DMI product version to the card long name, and use "-" as
-    the separator between DMI fields.
-
-v5: Revise the comments. Add patch to assure the input card name not to
-    exceed the maximum card long name supported by kernel to avoid use
-    strncpy and strncmp later.
-
-v6: No code change. Fix error in comments: use slash to replace backslash
-    in file path.
-
-Mengdong Lin (3):
-  ucm: Assure the user input card name not to exceed max size of card
-    long name
-  ucm: Load device-specific configuration file based on the card long
-    name
-  ucm: Add command 'get _file' to get the config file name of the opened
-    card
-
- include/use-case.h  |   1 +
- src/ucm/main.c      |  14 +++++++
- src/ucm/parser.c    | 105 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- src/ucm/ucm_local.h |   3 ++
- 4 files changed, 119 insertions(+), 4 deletions(-)
-
--- 
-2.7.4
+On 17 January 2017 at 19:15, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+> On Thu, Jan 12, 2017 at 06:33:43PM +0100, codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org wrote:
+>> From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+>>
+>> The H3 SoC uses the same SPDIF block as found in earlier SoCs, but the
+>> transmit fifo is at a different address.
+>>
+>> Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+>> ---
+>>  Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt | 1 +
+>>  1 file changed, 1 insertion(+)
+>
+> This is fine but it doesn't actually add the compatible string to the
+> driver which I'd expect.
+Hi Mark,
+I missed the binding documentation on the patch for the driver so I
+pushed it separately instead of pushing a new patch version.
+You can find it under the subject heading 'ASoC: sun4i-spdif: Add
+support for the H3 SoC' and Maxime has ACK it (on the condition that I
+add the binding doc).
+BR,
+CK
+>
+> --
+> You received this message because you are subscribed to the Google Groups "linux-sunxi" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+> For more options, visit https://groups.google.com/d/optout.
