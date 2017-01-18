@@ -1,16 +1,16 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH v2 02/13] ASoC: hdac_hdmi: Register widget
-	event handlers
-Date: Wed, 18 Jan 2017 21:34:42 +0530
-Message-ID: <1484755493-30595-3-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH v2 03/13] ASoC: Intel: Skylake: Use
+	set_tdm_slot to set the dma channel
+Date: Wed, 18 Jan 2017 21:34:43 +0530
+Message-ID: <1484755493-30595-4-git-send-email-jeeja.kp@intel.com>
 References: <1484755493-30595-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 88AD7266664
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 16:53:57 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1AE30266664
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 16:53:59 +0100 (CET)
 In-Reply-To: <1484755493-30595-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,504 +22,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-In case of hdmi connect/disconnect or when stream need to be route to
-multiple monitors, corresponding port and audio infoframe needs to be
-reconfigured. Currently all the configuration are done in DAI ops which
-results in silence playback.
+DMA channel(stream tag) used by the HDA link need to programmed in
+codec so that codec receives packet from the link associated with the
+same channel.
 
-So use dapm widget event handlers to program audio infoframe and enable
-/disable port configuration when widget is power on/off.
+DMA channel is allocated in link BE dai hw_params, the same needs to be
+set for the BE codec dai. Instead of using get/set dma_data(), use
+dai_ops snd_soc_dai_set_tdm_slot() to set the stream tag.
 
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 359 ++++++++++++++++++++++---------------------
- 1 file changed, 183 insertions(+), 176 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 548474d..c0b49f4 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -97,6 +97,9 @@ struct hdac_hdmi_pcm {
- 	struct hdac_hdmi_pin *pin;
- 	struct hdac_hdmi_cvt *cvt;
- 	struct snd_jack *jack;
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 508144b..b0817a12 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -542,10 +542,10 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
+ 	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
+ 	struct hdac_ext_stream *link_dev;
+ 	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
+-	struct hdac_ext_dma_params *dma_params;
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct skl_pipe_params p_params = {0};
+ 	struct hdac_ext_link *link;
 +	int stream_tag;
-+	int channels;
-+	int format;
- };
  
- struct hdac_hdmi_dai_pin_map {
-@@ -116,11 +119,19 @@ struct hdac_hdmi_priv {
- 	struct hdac_chmap chmap;
- };
+ 	link_dev = snd_hdac_ext_stream_assign(ebus, substream,
+ 					HDAC_EXT_STREAM_TYPE_LINK);
+@@ -558,16 +558,16 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
+ 	if (!link)
+ 		return -EINVAL;
  
--static void hdac_hdmi_enable_cvt(struct hdac_ext_device *edev,
--			struct hdac_hdmi_dai_pin_map *dai_map);
-+static struct hdac_hdmi_pcm *
-+hdac_hdmi_get_pcm_from_cvt(struct hdac_hdmi_priv *hdmi,
-+			   struct hdac_hdmi_cvt *cvt)
-+{
-+	struct hdac_hdmi_pcm *pcm = NULL;
++	stream_tag = hdac_stream(link_dev)->stream_tag;
++
+ 	/* set the stream tag in the codec dai dma params  */
+-	dma_params = snd_soc_dai_get_dma_data(codec_dai, substream);
+-	if (dma_params)
+-		dma_params->stream_tag =  hdac_stream(link_dev)->stream_tag;
++	snd_soc_dai_set_tdm_slot(codec_dai, stream_tag, 0, 0, 0);
  
--static int hdac_hdmi_enable_pin(struct hdac_ext_device *hdac,
--			struct hdac_hdmi_dai_pin_map *dai_map);
-+	list_for_each_entry(pcm, &hdmi->pcm_list, head) {
-+		if (pcm->cvt == cvt)
-+			break;
-+	}
-+
-+	return pcm;
-+}
+ 	p_params.s_fmt = snd_pcm_format_width(params_format(params));
+ 	p_params.ch = params_channels(params);
+ 	p_params.s_freq = params_rate(params);
+ 	p_params.stream = substream->stream;
+-	p_params.link_dma_id = hdac_stream(link_dev)->stream_tag - 1;
++	p_params.link_dma_id = stream_tag - 1;
+ 	p_params.link_index = link->index;
+ 	p_params.format = params_format(params);
  
- static struct hdac_hdmi_pcm *get_hdmi_pcm_from_id(struct hdac_hdmi_priv *hdmi,
- 						int pcm_idx)
-@@ -181,25 +192,6 @@ static int hdac_hdmi_eld_limit_formats(struct snd_pcm_runtime *runtime,
- 
- }
- 
--static int hdac_hdmi_setup_stream(struct hdac_ext_device *hdac,
--				hda_nid_t cvt_nid, hda_nid_t pin_nid,
--				u32 stream_tag, int format)
--{
--	unsigned int val;
--
--	dev_dbg(&hdac->hdac.dev, "cvt nid %d pnid %d stream %d format 0x%x\n",
--			cvt_nid, pin_nid, stream_tag, format);
--
--	val = (stream_tag << 4);
--
--	snd_hdac_codec_write(&hdac->hdac, cvt_nid, 0,
--				AC_VERB_SET_CHANNEL_STREAMID, val);
--	snd_hdac_codec_write(&hdac->hdac, cvt_nid, 0,
--				AC_VERB_SET_STREAM_FORMAT, format);
--
--	return 0;
--}
--
- static void
- hdac_hdmi_set_dip_index(struct hdac_ext_device *hdac, hda_nid_t pin_nid,
- 				int packet_index, int byte_index)
-@@ -312,54 +304,25 @@ static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
- 	return 0;
- }
- 
--static void hdac_hdmi_set_power_state(struct hdac_ext_device *edev,
--		struct hdac_hdmi_dai_pin_map *dai_map, unsigned int pwr_state)
--{
--	/* Power up pin widget */
--	if (!snd_hdac_check_power_state(&edev->hdac, dai_map->pin->nid,
--						pwr_state))
--		snd_hdac_codec_write(&edev->hdac, dai_map->pin->nid, 0,
--			AC_VERB_SET_POWER_STATE, pwr_state);
--
--	/* Power up converter */
--	if (!snd_hdac_check_power_state(&edev->hdac, dai_map->cvt->nid,
--						pwr_state))
--		snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
--			AC_VERB_SET_POWER_STATE, pwr_state);
--}
--
--static int hdac_hdmi_playback_prepare(struct snd_pcm_substream *substream,
--				struct snd_soc_dai *dai)
-+static int hdac_hdmi_set_tdm_slot(struct snd_soc_dai *dai,
-+		unsigned int tx_mask, unsigned int rx_mask,
-+		int slots, int slot_width)
- {
--	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
--	struct hdac_hdmi_priv *hdmi = hdac->private_data;
-+	struct hdac_ext_device *edev = snd_soc_dai_get_drvdata(dai);
-+	struct hdac_hdmi_priv *hdmi = edev->private_data;
- 	struct hdac_hdmi_dai_pin_map *dai_map;
--	struct hdac_hdmi_pin *pin;
--	struct hdac_ext_dma_params *dd;
--	int ret;
-+	struct hdac_hdmi_pcm *pcm;
- 
--	dai_map = &hdmi->dai_map[dai->id];
--	pin = dai_map->pin;
-+	dev_dbg(&edev->hdac.dev, "%s: strm_tag: %d\n", __func__, tx_mask);
- 
--	dd = (struct hdac_ext_dma_params *)snd_soc_dai_get_dma_data(dai, substream);
--	dev_dbg(&hdac->hdac.dev, "stream tag from cpu dai %d format in cvt 0x%x\n",
--			dd->stream_tag,	dd->format);
-+	dai_map = &hdmi->dai_map[dai->id];
- 
--	hdac_hdmi_enable_cvt(hdac, dai_map);
--	ret = hdac_hdmi_enable_pin(hdac, dai_map);
--	if (ret < 0)
--		return ret;
--	mutex_lock(&pin->lock);
--	pin->channels = substream->runtime->channels;
-+	pcm = hdac_hdmi_get_pcm_from_cvt(hdmi, dai_map->cvt);
- 
--	ret = hdac_hdmi_setup_audio_infoframe(hdac, dai_map->cvt->nid,
--						dai_map->pin->nid);
--	mutex_unlock(&pin->lock);
--	if (ret < 0)
--		return ret;
-+	if (pcm)
-+		pcm->stream_tag = (tx_mask << 4);
- 
--	return hdac_hdmi_setup_stream(hdac, dai_map->cvt->nid,
--			dai_map->pin->nid, dd->stream_tag, dd->format);
-+	return 0;
- }
- 
- static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
-@@ -369,7 +332,8 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
- 	struct hdac_hdmi_priv *hdmi = hdac->private_data;
- 	struct hdac_hdmi_dai_pin_map *dai_map;
- 	struct hdac_hdmi_pin *pin;
--	struct hdac_ext_dma_params *dd;
-+	struct hdac_hdmi_pcm *pcm;
-+	int format;
- 
- 	dai_map = &hdmi->dai_map[dai->id];
- 	pin = dai_map->pin;
-@@ -383,79 +347,16 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
- 		return -ENODEV;
- 	}
- 
--	dd = snd_soc_dai_get_dma_data(dai, substream);
--	if (!dd) {
--		dd = kzalloc(sizeof(*dd), GFP_KERNEL);
--		if (!dd)
--			return -ENOMEM;
--	}
--
--	dd->format = snd_hdac_calc_stream_format(params_rate(hparams),
-+	format = snd_hdac_calc_stream_format(params_rate(hparams),
- 			params_channels(hparams), params_format(hparams),
- 			24, 0);
- 
--	snd_soc_dai_set_dma_data(dai, substream, (void *)dd);
--
--	return 0;
--}
--
--static int hdac_hdmi_playback_cleanup(struct snd_pcm_substream *substream,
--		struct snd_soc_dai *dai)
--{
--	struct hdac_ext_device *edev = snd_soc_dai_get_drvdata(dai);
--	struct hdac_ext_dma_params *dd;
--	struct hdac_hdmi_priv *hdmi = edev->private_data;
--	struct hdac_hdmi_dai_pin_map *dai_map;
--
--	dai_map = &hdmi->dai_map[dai->id];
--
--	dd = (struct hdac_ext_dma_params *)snd_soc_dai_get_dma_data(dai, substream);
--
--	if (dd) {
--		snd_soc_dai_set_dma_data(dai, substream, NULL);
--		kfree(dd);
--	}
--
--	return 0;
--}
--
--static void hdac_hdmi_enable_cvt(struct hdac_ext_device *edev,
--		struct hdac_hdmi_dai_pin_map *dai_map)
--{
--	/* Enable transmission */
--	snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
--			AC_VERB_SET_DIGI_CONVERT_1, 1);
--
--	/* Category Code (CC) to zero */
--	snd_hdac_codec_write(&edev->hdac, dai_map->cvt->nid, 0,
--			AC_VERB_SET_DIGI_CONVERT_2, 0);
--}
--
--static int hdac_hdmi_enable_pin(struct hdac_ext_device *hdac,
--		struct hdac_hdmi_dai_pin_map *dai_map)
--{
--	int mux_idx;
--	struct hdac_hdmi_pin *pin = dai_map->pin;
--
--	for (mux_idx = 0; mux_idx < pin->num_mux_nids; mux_idx++) {
--		if (pin->mux_nids[mux_idx] == dai_map->cvt->nid) {
--			snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
--					AC_VERB_SET_CONNECT_SEL, mux_idx);
--			break;
--		}
--	}
--
--	if (mux_idx == pin->num_mux_nids)
-+	pcm = hdac_hdmi_get_pcm_from_cvt(hdmi, dai_map->cvt);
-+	if (!pcm)
- 		return -EIO;
- 
--	/* Enable out path for this pin widget */
--	snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
--			AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT);
--
--	hdac_hdmi_set_power_state(hdac, dai_map, AC_PWRST_D0);
--
--	snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
--			AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_UNMUTE);
-+	pcm->format = format;
-+	pcm->channels = params_channels(hparams);
- 
- 	return 0;
- }
-@@ -569,27 +470,6 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
- 				pin->eld.eld_buffer);
- }
- 
--static int hdac_hdmi_trigger(struct snd_pcm_substream *substream, int cmd,
--		struct snd_soc_dai *dai)
--{
--	struct hdac_hdmi_dai_pin_map *dai_map;
--	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
--	struct hdac_hdmi_priv *hdmi = hdac->private_data;
--
--	dai_map = &hdmi->dai_map[dai->id];
--	switch (cmd) {
--	case SNDRV_PCM_TRIGGER_RESUME:
--	case SNDRV_PCM_TRIGGER_START:
--	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
--		return hdac_hdmi_playback_prepare(substream, dai);
--
--	default:
--		return 0;
--	}
--
--	return 0;
--}
--
- static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
-@@ -600,16 +480,6 @@ static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
- 	dai_map = &hdmi->dai_map[dai->id];
- 
- 	if (dai_map->pin) {
--		snd_hdac_codec_write(&hdac->hdac, dai_map->cvt->nid, 0,
--				AC_VERB_SET_CHANNEL_STREAMID, 0);
--		snd_hdac_codec_write(&hdac->hdac, dai_map->cvt->nid, 0,
--				AC_VERB_SET_STREAM_FORMAT, 0);
--
--		hdac_hdmi_set_power_state(hdac, dai_map, AC_PWRST_D3);
--
--		snd_hdac_codec_write(&hdac->hdac, dai_map->pin->nid, 0,
--			AC_VERB_SET_AMP_GAIN_MUTE, AMP_OUT_MUTE);
--
- 		mutex_lock(&dai_map->pin->lock);
- 		dai_map->pin->chmap_set = false;
- 		memset(dai_map->pin->chmap, 0, sizeof(dai_map->pin->chmap));
-@@ -650,10 +520,11 @@ hdac_hdmi_query_cvt_params(struct hdac_device *hdac, struct hdac_hdmi_cvt *cvt)
- }
- 
- static int hdac_hdmi_fill_widget_info(struct device *dev,
--				struct snd_soc_dapm_widget *w,
--				enum snd_soc_dapm_type id, void *priv,
--				const char *wname, const char *stream,
--				struct snd_kcontrol_new *wc, int numkc)
-+		struct snd_soc_dapm_widget *w, enum snd_soc_dapm_type id,
-+		void *priv, const char *wname, const char *stream,
-+		struct snd_kcontrol_new *wc, int numkc,
-+		int (*event)(struct snd_soc_dapm_widget *,
-+		struct snd_kcontrol *, int), unsigned short event_flags)
- {
- 	w->id = id;
- 	w->name = devm_kstrdup(dev, wname, GFP_KERNEL);
-@@ -666,6 +537,8 @@ static int hdac_hdmi_fill_widget_info(struct device *dev,
- 	w->kcontrol_news = wc;
- 	w->num_kcontrols = numkc;
- 	w->priv = priv;
-+	w->event = event;
-+	w->event_flags = event_flags;
- 
- 	return 0;
- }
-@@ -695,6 +568,136 @@ static struct hdac_hdmi_pcm *hdac_hdmi_get_pcm(struct hdac_ext_device *edev,
- 	return NULL;
- }
- 
-+static void hdac_hdmi_set_power_state(struct hdac_ext_device *edev,
-+			     hda_nid_t nid, unsigned int pwr_state)
-+{
-+	if (get_wcaps(&edev->hdac, nid) & AC_WCAP_POWER) {
-+		if (!snd_hdac_check_power_state(&edev->hdac, nid, pwr_state))
-+			snd_hdac_codec_write(&edev->hdac, nid, 0,
-+				AC_VERB_SET_POWER_STATE, pwr_state);
-+	}
-+}
-+
-+static void hdac_hdmi_set_amp(struct hdac_ext_device *edev,
-+				   hda_nid_t nid, int val)
-+{
-+	if (get_wcaps(&edev->hdac, nid) & AC_WCAP_OUT_AMP)
-+		snd_hdac_codec_write(&edev->hdac, nid, 0,
-+					AC_VERB_SET_AMP_GAIN_MUTE, val);
-+}
-+
-+
-+static int hdac_hdmi_pin_output_widget_event(struct snd_soc_dapm_widget *w,
-+					struct snd_kcontrol *kc, int event)
-+{
-+	struct hdac_hdmi_pin *pin = w->priv;
-+	struct hdac_ext_device *edev = to_hda_ext_device(w->dapm->dev);
-+	struct hdac_hdmi_pcm *pcm;
-+
-+	dev_dbg(&edev->hdac.dev, "%s: widget: %s event: %x\n",
-+			__func__, w->name, event);
-+
-+	pcm = hdac_hdmi_get_pcm(edev, pin);
-+	if (!pcm)
-+		return -EIO;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		hdac_hdmi_set_power_state(edev, pin->nid, AC_PWRST_D0);
-+
-+		/* Enable out path for this pin widget */
-+		snd_hdac_codec_write(&edev->hdac, pin->nid, 0,
-+				AC_VERB_SET_PIN_WIDGET_CONTROL, PIN_OUT);
-+
-+		hdac_hdmi_set_amp(edev, pin->nid, AMP_OUT_UNMUTE);
-+
-+		return hdac_hdmi_setup_audio_infoframe(edev, pcm->cvt->nid,
-+								pin->nid);
-+
-+	case SND_SOC_DAPM_POST_PMD:
-+		hdac_hdmi_set_amp(edev, pin->nid, AMP_OUT_MUTE);
-+
-+		/* Disable out path for this pin widget */
-+		snd_hdac_codec_write(&edev->hdac, pin->nid, 0,
-+				AC_VERB_SET_PIN_WIDGET_CONTROL, 0);
-+
-+		hdac_hdmi_set_power_state(edev, pin->nid, AC_PWRST_D3);
-+		break;
-+
-+	}
-+
-+	return 0;
-+}
-+
-+static int hdac_hdmi_cvt_output_widget_event(struct snd_soc_dapm_widget *w,
-+					struct snd_kcontrol *kc, int event)
-+{
-+	struct hdac_hdmi_cvt *cvt = w->priv;
-+	struct hdac_ext_device *edev = to_hda_ext_device(w->dapm->dev);
-+	struct hdac_hdmi_priv *hdmi = edev->private_data;
-+	struct hdac_hdmi_pcm *pcm;
-+
-+	dev_dbg(&edev->hdac.dev, "%s: widget: %s event: %x\n",
-+			__func__, w->name, event);
-+
-+	pcm = hdac_hdmi_get_pcm_from_cvt(hdmi, cvt);
-+	if (!pcm)
-+		return -EIO;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		hdac_hdmi_set_power_state(edev, cvt->nid, AC_PWRST_D0);
-+
-+		/* Enable transmission */
-+		snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
-+			AC_VERB_SET_DIGI_CONVERT_1, 1);
-+
-+		/* Category Code (CC) to zero */
-+		snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
-+			AC_VERB_SET_DIGI_CONVERT_2, 0);
-+
-+		snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
-+				AC_VERB_SET_CHANNEL_STREAMID, pcm->stream_tag);
-+		snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
-+				AC_VERB_SET_STREAM_FORMAT, pcm->format);
-+		break;
-+
-+	case SND_SOC_DAPM_POST_PMD:
-+		snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
-+				AC_VERB_SET_CHANNEL_STREAMID, 0);
-+		snd_hdac_codec_write(&edev->hdac, cvt->nid, 0,
-+				AC_VERB_SET_STREAM_FORMAT, 0);
-+
-+		hdac_hdmi_set_power_state(edev, cvt->nid, AC_PWRST_D3);
-+		break;
-+
-+	}
-+
-+	return 0;
-+}
-+
-+static int hdac_hdmi_pin_mux_widget_event(struct snd_soc_dapm_widget *w,
-+					struct snd_kcontrol *kc, int event)
-+{
-+	struct hdac_hdmi_pin *pin = w->priv;
-+	struct hdac_ext_device *edev = to_hda_ext_device(w->dapm->dev);
-+	int mux_idx;
-+
-+	dev_dbg(&edev->hdac.dev, "%s: widget: %s event: %x\n",
-+			__func__, w->name, event);
-+
-+	if (!kc)
-+		kc  = w->kcontrols[0];
-+
-+	mux_idx = dapm_kcontrol_get_value(kc);
-+	if (mux_idx > 0) {
-+		snd_hdac_codec_write(&edev->hdac, pin->nid, 0,
-+			AC_VERB_SET_CONNECT_SEL, (mux_idx - 1));
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * Based on user selection, map the PINs with the PCMs.
-  */
-@@ -812,7 +815,9 @@ static int hdac_hdmi_create_pin_muxs(struct hdac_ext_device *edev,
- 		return -ENOMEM;
- 
- 	return hdac_hdmi_fill_widget_info(&edev->hdac.dev, widget,
--			snd_soc_dapm_mux, pin, widget_name, NULL, kc, 1);
-+			snd_soc_dapm_mux, pin, widget_name, NULL, kc, 1,
-+			hdac_hdmi_pin_mux_widget_event,
-+			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_REG);
- }
- 
- /* Add cvt <- input <- mux route map */
-@@ -883,8 +888,10 @@ static int create_fill_widget_route_map(struct snd_soc_dapm_context *dapm)
- 	list_for_each_entry(cvt, &hdmi->cvt_list, head) {
- 		sprintf(widget_name, "Converter %d", cvt->nid);
- 		ret = hdac_hdmi_fill_widget_info(dapm->dev, &widgets[i],
--			snd_soc_dapm_aif_in, &cvt->nid,
--			widget_name, dai_drv[i].playback.stream_name, NULL, 0);
-+			snd_soc_dapm_aif_in, cvt,
-+			widget_name, dai_drv[i].playback.stream_name, NULL, 0,
-+			hdac_hdmi_cvt_output_widget_event,
-+			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD);
- 		if (ret < 0)
- 			return ret;
- 		i++;
-@@ -893,8 +900,10 @@ static int create_fill_widget_route_map(struct snd_soc_dapm_context *dapm)
- 	list_for_each_entry(pin, &hdmi->pin_list, head) {
- 		sprintf(widget_name, "hif%d Output", pin->nid);
- 		ret = hdac_hdmi_fill_widget_info(dapm->dev, &widgets[i],
--				snd_soc_dapm_output, &pin->nid,
--				widget_name, NULL, NULL, 0);
-+				snd_soc_dapm_output, pin,
-+				widget_name, NULL, NULL, 0,
-+			hdac_hdmi_pin_output_widget_event,
-+			SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD);
- 		if (ret < 0)
- 			return ret;
- 		i++;
-@@ -1150,9 +1159,7 @@ static struct snd_soc_dai_ops hdmi_dai_ops = {
- 	.startup = hdac_hdmi_pcm_open,
- 	.shutdown = hdac_hdmi_pcm_close,
- 	.hw_params = hdac_hdmi_set_hw_params,
--	.prepare = hdac_hdmi_playback_prepare,
--	.trigger = hdac_hdmi_trigger,
--	.hw_free = hdac_hdmi_playback_cleanup,
-+	.set_tdm_slot = hdac_hdmi_set_tdm_slot,
- };
- 
- /*
 -- 
 2.5.0
