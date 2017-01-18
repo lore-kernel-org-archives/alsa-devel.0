@@ -1,87 +1,109 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH v4 1/2] ucm: Load device-specific
- configuration file based on the card long name
-Date: Wed, 18 Jan 2017 03:52:03 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F881A1C6C6@shsmsx102.ccr.corp.intel.com>
-References: <cover.1484381554.git.mengdong.lin@linux.intel.com>
- <d8b6cfb75c226c59f4ca6e15c419eb2955b582fa.1484381554.git.mengdong.lin@linux.intel.com>
- <s5hinpgivbp.wl-tiwai@suse.de>
- <F46914AEC2663F4A9BB62374E5EEF8F881A19C50@shsmsx102.ccr.corp.intel.com>
- <s5hk29vxp64.wl-tiwai@suse.de>
+From: Mylene Josserand <mylene.josserand@free-electrons.com>
+Subject: Re: [PATCH v2 03/10] dt-bindings: sound: Add new reset compatible for
+ sun4i-i2s
+Date: Wed, 18 Jan 2017 09:23:10 +0100
+Message-ID: <1f318cd1-6a50-5b33-01aa-e11e7e925e88@free-electrons.com>
+References: <20170117140230.23142-1-mylene.josserand@free-electrons.com>
+ <20170117140230.23142-4-mylene.josserand@free-electrons.com>
+ <20170117164636.qhkxvqcs7l732wxk@lukather>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 04773266BEB
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 04:52:08 +0100 (CET)
-In-Reply-To: <s5hk29vxp64.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-clk-owner@vger.kernel.org>
+In-Reply-To: <20170117164636.qhkxvqcs7l732wxk@lukather>
+Sender: linux-clk-owner@vger.kernel.org
+To: Maxime Ripard <maxime.ripard@free-electrons.com>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, wens@csie.org, mturquette@baylibre.com, sboyd@codeaurora.org, mark.rutland@arm.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-sunxi@googlegroups.com, thomas.petazzoni@free-electrons.com, alexandre.belloni@free-electrons.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Monday, January 16, 2017 6:41 PM
-> To: Lin, Mengdong <mengdong.lin@intel.com>
-> Cc: mengdong.lin@linux.intel.com; alsa-devel@alsa-project.org;
-> liam.r.girdwood@linux.intel.com
-> Subject: Re: [PATCH v4 1/2] ucm: Load device-specific configuration file based
-> on the card long name
-> 
-> On Sun, 15 Jan 2017 11:01:15 +0100,
-> Lin, Mengdong wrote:
-> >
-> > > -----Original Message-----
-> > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > Sent: Sunday, January 15, 2017 4:25 PM
-> > >
-> > > On Sat, 14 Jan 2017 09:23:55 +0100,
-> > > mengdong.lin@linux.intel.com wrote:
-> > > >
-> > > > From: Mengdong Lin <mengdong.lin@linux.intel.com>
-> > > >
-> > > > Intel DSP platform drivers are used by many different devices. For
-> > > > user space to differentiate them, ASoC machine drivers may use the
-> > > > DMI info
-> > > > (vendor-product-version-board) as card long name. Possible card
-> > > > long names
-> > > > are:
-> > > > DellInc.-XPS139343-01-0310JH
-> > > > ASUSTeKCOMPUTERINC.-T100TA-1.0-T100TA
-> > > > Circuitco-MinnowboardMaxD0PLATFORM-D0-MinnowBoardMAX
-> > > > ...
-> > > >
-> > > > And user space can define configuration files like
-> > > > longname\longname.conf for a specific device.
-> > >
-> > > Do you mean a file name containing a backslash?
-> > > I didn't find the relevant code in your patch...
-> >
-> > No, the file name doesn't contain a backslash. It means we're using the
-> card long name as both the directory name that contains the UCM config file
-> and the name of the config file itself.
-> > E.g. for the laptop Dell XPS 13, UCM will try to find a directory "DellInc.-
-> XPS139343-01-0310JH", and then find the file " DellInc.-XPS139343-01-
-> 0310JH.conf" under the directory. If it cannot find the this file, it will fall back
-> to open file "broadwell-rt286.conf" under directory "broadwell-rt286".
-> 
-> Ah, a backslash as on DOS.  Use a slash for Linux instead :)
-> 
-> 
-> Takashi
+Hi,
 
-Sorry, I fixed this in v6. Now the kernel side patches have been applied to ASoC so there is no dependency now.
+On 17/01/2017 17:46, Maxime Ripard wrote:
+> On Tue, Jan 17, 2017 at 03:02:23PM +0100, Mylène Josserand wrote:
+>> Add a new compatible for sun4i-i2s driver to handle some
+>> SoCs that have a reset line that must be asserted/deasserted.
+>>
+>> This new compatible, "allwinner,sun6i-a31-i2s", requires two
+>> properties:
+>> 	- resets: phandle to the reset line
+>> 	- reset-names: the name of the reset line ("rst").
+>> Except these differences, the compatible is identical to previous one
+>> which will not handle a reset line.
+>>
+>> Signed-off-by: Mylène Josserand <mylene.josserand@free-electrons.com>
+>> ---
+>>  .../devicetree/bindings/sound/sun4i-i2s.txt        | 23 ++++++++++++++++++++++
+>>  1 file changed, 23 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+>> index 7a2c0945fd22..f673206e309b 100644
+>> --- a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+>> +++ b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
+>> @@ -7,6 +7,7 @@ Required properties:
+>>
+>>  - compatible: should be one of the following:
+>>     - "allwinner,sun4i-a10-i2s"
+>> +   - "allwinner,sun6i-a31-i2s" for controller with reset lines
+>
+> That's not only for controllers with reset lines, but for the
+> controllers found in the A31 (and later). I'd simply drop the last
+> part of that line.
 
-Thanks
-Mengdong
+ACK
+
+>
+>>  - reg: physical base address of the controller and length of memory mapped
+>>    region.
+>>  - interrupts: should contain the I2S interrupt.
+>> @@ -19,7 +20,13 @@ Required properties:
+>>     - "mod" : module clock for the I2S controller
+>>  - #sound-dai-cells : Must be equal to 0
+>>
+>> +Required properties for the following compatibles:
+>> +		- "allwinner,sun6i-a31-i2s"
+>> +- resets: phandle to the reset line for this codec
+>> +- reset-names: Contains the reset signal name "rst"
+>
+> You don't need reset-names if there's a single reset line.
+>
+
+ACK
+
+>> +
+>>  Example:
+>> +For "allwinner,sun4i-a10-i2s":
+>>
+>>  i2s0: i2s@01c22400 {
+>>  	#sound-dai-cells = <0>;
+>> @@ -32,3 +39,19 @@ i2s0: i2s@01c22400 {
+>>  	       <&dma SUN4I_DMA_NORMAL 3>;
+>>  	dma-names = "rx", "tx";
+>>  };
+>> +
+>> +For "allwinner,sun6i-a31-i2s":
+>> +
+>> +dai: dai@01c22c00 {
+>> +	#sound-dai-cells = <0>;
+>> +	compatible = "allwinner,sun6i-a31-i2s";
+>> +	reg = <0x01c22c00 0x200>;
+>> +	interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
+>> +	clocks = <&ccu CLK_BUS_CODEC>, <&ccu CLK_AC_DIG>;
+>> +	clock-names = "apb", "mod";
+>> +	resets = <&ccu RST_BUS_CODEC>;
+>> +	reset-names = "rst";
+>> +	dmas = <&dma 15>, /* AUDIO_CODEC port */
+>> +		<&dma 15>; /* AUDIO_CODEC port */
+>> +	dma-names = "rx", "tx";
+>> +};
+>
+> And we already have an example, so there's no need to add a new one
+> either.
+
+I will remove it on a V3.
+
+Thank you the review!
+
+-- 
+Mylène Josserand, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
