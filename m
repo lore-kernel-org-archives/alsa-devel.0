@@ -1,16 +1,16 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH v2 04/13] ASoC: hdac_hdmi: Move channel info
-	from pin to PCM structure
-Date: Wed, 18 Jan 2017 21:34:44 +0530
-Message-ID: <1484755493-30595-5-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH v2 06/13] ASoC: Intel: bxt: add channel map
+	support in bxt_da7219_max98357a machine
+Date: Wed, 18 Jan 2017 21:34:46 +0530
+Message-ID: <1484755493-30595-7-git-send-email-jeeja.kp@intel.com>
 References: <1484755493-30595-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 24ECA266664
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 16:54:02 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id AC0D6266664
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 16:54:09 +0100 (CET)
 In-Reply-To: <1484755493-30595-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,201 +27,105 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-Channel info is part of the pcm parameter and channel map control is
-created for each pcm. So move channel info to pcm instead of pin
-structure and the mutex lock to pcm.
+HDMI registers channel map controls per PCM. As PCMs are not
+registered during dai_link init callback, store the pcm ids and
+codec DAIs during this init callback.
+
+Register for late probe and call the jack_init API which also
+registers channel map in the late probe callback handler.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 76 ++++++++++++++++++++------------------------
- 1 file changed, 34 insertions(+), 42 deletions(-)
+ sound/soc/intel/boards/bxt_da7219_max98357a.c | 49 ++++++++++++++++++++++++++-
+ 1 file changed, 48 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index c0b49f4..2a370d6 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -85,10 +85,6 @@ struct hdac_hdmi_pin {
- 	hda_nid_t mux_nids[HDA_MAX_CONNECTIONS];
- 	struct hdac_hdmi_eld eld;
- 	struct hdac_ext_device *edev;
--	struct mutex lock;
--	bool chmap_set;
--	unsigned char chmap[8]; /* ALSA API channel-map */
--	int channels; /* current number of channels */
- };
+diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+index f46da61..8dfe5e8 100644
+--- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
++++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+@@ -34,6 +34,16 @@
  
- struct hdac_hdmi_pcm {
-@@ -100,6 +96,9 @@ struct hdac_hdmi_pcm {
- 	int stream_tag;
- 	int channels;
- 	int format;
-+	bool chmap_set;
-+	unsigned char chmap[8]; /* ALSA API channel-map */
-+	struct mutex lock;
- };
+ static struct snd_soc_jack broxton_headset;
  
- struct hdac_hdmi_dai_pin_map {
-@@ -217,13 +216,13 @@ struct dp_audio_infoframe {
- };
- 
- static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
--				hda_nid_t cvt_nid, hda_nid_t pin_nid)
-+		   struct hdac_hdmi_pcm *pcm, struct hdac_hdmi_pin *pin)
- {
- 	uint8_t buffer[HDMI_INFOFRAME_HEADER_SIZE + HDMI_AUDIO_INFOFRAME_SIZE];
- 	struct hdmi_audio_infoframe frame;
- 	struct dp_audio_infoframe dp_ai;
- 	struct hdac_hdmi_priv *hdmi = hdac->private_data;
--	struct hdac_hdmi_pin *pin;
-+	struct hdac_hdmi_cvt *cvt = pcm->cvt;
- 	u8 *dip;
- 	int ret;
- 	int i;
-@@ -231,19 +230,14 @@ static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
- 	u8 conn_type;
- 	int channels, ca;
- 
--	list_for_each_entry(pin, &hdmi->pin_list, head) {
--		if (pin->nid == pin_nid)
--			break;
--	}
--
- 	ca = snd_hdac_channel_allocation(&hdac->hdac, pin->eld.info.spk_alloc,
--			pin->channels, pin->chmap_set, true, pin->chmap);
-+			pcm->channels, pcm->chmap_set, true, pcm->chmap);
- 
- 	channels = snd_hdac_get_active_channels(ca);
--	hdmi->chmap.ops.set_channel_count(&hdac->hdac, cvt_nid, channels);
-+	hdmi->chmap.ops.set_channel_count(&hdac->hdac, cvt->nid, channels);
- 
- 	snd_hdac_setup_channel_mapping(&hdmi->chmap, pin->nid, false, ca,
--				pin->channels, pin->chmap, pin->chmap_set);
-+				pcm->channels, pcm->chmap, pcm->chmap_set);
- 
- 	eld_buf = pin->eld.eld_buffer;
- 	conn_type = drm_eld_get_conn_type(eld_buf);
-@@ -279,26 +273,26 @@ static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
- 	}
- 
- 	/* stop infoframe transmission */
--	hdac_hdmi_set_dip_index(hdac, pin_nid, 0x0, 0x0);
--	snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
-+	hdac_hdmi_set_dip_index(hdac, pin->nid, 0x0, 0x0);
-+	snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
- 			AC_VERB_SET_HDMI_DIP_XMIT, AC_DIPXMIT_DISABLE);
- 
- 
- 	/*  Fill infoframe. Index auto-incremented */
--	hdac_hdmi_set_dip_index(hdac, pin_nid, 0x0, 0x0);
-+	hdac_hdmi_set_dip_index(hdac, pin->nid, 0x0, 0x0);
- 	if (conn_type == DRM_ELD_CONN_TYPE_HDMI) {
- 		for (i = 0; i < sizeof(buffer); i++)
--			snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
-+			snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
- 				AC_VERB_SET_HDMI_DIP_DATA, buffer[i]);
- 	} else {
- 		for (i = 0; i < sizeof(dp_ai); i++)
--			snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
-+			snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
- 				AC_VERB_SET_HDMI_DIP_DATA, dip[i]);
- 	}
- 
- 	/* Start infoframe */
--	hdac_hdmi_set_dip_index(hdac, pin_nid, 0x0, 0x0);
--	snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
-+	hdac_hdmi_set_dip_index(hdac, pin->nid, 0x0, 0x0);
-+	snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
- 			AC_VERB_SET_HDMI_DIP_XMIT, AC_DIPXMIT_BEST);
- 
- 	return 0;
-@@ -476,18 +470,22 @@ static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
- 	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
- 	struct hdac_hdmi_priv *hdmi = hdac->private_data;
- 	struct hdac_hdmi_dai_pin_map *dai_map;
-+	struct hdac_hdmi_pcm *pcm;
- 
- 	dai_map = &hdmi->dai_map[dai->id];
- 
--	if (dai_map->pin) {
--		mutex_lock(&dai_map->pin->lock);
--		dai_map->pin->chmap_set = false;
--		memset(dai_map->pin->chmap, 0, sizeof(dai_map->pin->chmap));
--		dai_map->pin->channels = 0;
--		mutex_unlock(&dai_map->pin->lock);
-+	pcm = hdac_hdmi_get_pcm_from_cvt(hdmi, dai_map->cvt);
- 
--		dai_map->pin = NULL;
-+	if (pcm) {
-+		mutex_lock(&pcm->lock);
-+		pcm->chmap_set = false;
-+		memset(pcm->chmap, 0, sizeof(pcm->chmap));
-+		pcm->channels = 0;
-+		mutex_unlock(&pcm->lock);
- 	}
++struct bxt_hdmi_pcm {
++	struct list_head head;
++	struct snd_soc_dai *codec_dai;
++	int device;
++};
 +
-+	if (dai_map->pin)
-+		dai_map->pin = NULL;
++struct bxt_card_private {
++	struct list_head hdmi_pcm_list;
++};
++
+ enum {
+ 	BXT_DPCM_AUDIO_PB = 0,
+ 	BXT_DPCM_AUDIO_CP,
+@@ -181,9 +191,20 @@ static int broxton_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
+ 
+ static int broxton_hdmi_init(struct snd_soc_pcm_runtime *rtd)
+ {
++	struct bxt_card_private *ctx = snd_soc_card_get_drvdata(rtd->card);
+ 	struct snd_soc_dai *dai = rtd->codec_dai;
++	struct bxt_hdmi_pcm *pcm;
++
++	pcm = devm_kzalloc(rtd->card->dev, sizeof(*pcm), GFP_KERNEL);
++	if (!pcm)
++		return -ENOMEM;
+ 
+-	return hdac_hdmi_jack_init(dai, BXT_DPCM_AUDIO_HDMI1_PB + dai->id);
++	pcm->device = BXT_DPCM_AUDIO_HDMI1_PB + dai->id;
++	pcm->codec_dai = dai;
++
++	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
++
++	return 0;
  }
  
- static int
-@@ -611,8 +609,7 @@ static int hdac_hdmi_pin_output_widget_event(struct snd_soc_dapm_widget *w,
+ static int broxton_da7219_fe_init(struct snd_soc_pcm_runtime *rtd)
+@@ -531,6 +552,21 @@ static struct snd_soc_dai_link broxton_dais[] = {
+ 	},
+ };
  
- 		hdac_hdmi_set_amp(edev, pin->nid, AMP_OUT_UNMUTE);
++static int bxt_card_late_probe(struct snd_soc_card *card)
++{
++	struct bxt_card_private *ctx = snd_soc_card_get_drvdata(card);
++	struct bxt_hdmi_pcm *pcm;
++	int err;
++
++	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
++		err = hdac_hdmi_jack_init(pcm->codec_dai, pcm->device);
++		if (err < 0)
++			return err;
++	}
++
++	return 0;
++}
++
+ /* broxton audio machine driver for SPT + da7219 */
+ static struct snd_soc_card broxton_audio_card = {
+ 	.name = "bxtda7219max",
+@@ -544,11 +580,22 @@ static struct snd_soc_card broxton_audio_card = {
+ 	.dapm_routes = broxton_map,
+ 	.num_dapm_routes = ARRAY_SIZE(broxton_map),
+ 	.fully_routed = true,
++	.late_probe = bxt_card_late_probe,
+ };
  
--		return hdac_hdmi_setup_audio_infoframe(edev, pcm->cvt->nid,
--								pin->nid);
-+		return hdac_hdmi_setup_audio_infoframe(edev, pcm, pin);
- 
- 	case SND_SOC_DAPM_POST_PMD:
- 		hdac_hdmi_set_amp(edev, pin->nid, AMP_OUT_MUTE);
-@@ -1110,7 +1107,6 @@ static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
- 	hdmi->num_pin++;
- 
- 	pin->edev = edev;
--	mutex_init(&pin->lock);
- 
- 	return 0;
- }
-@@ -1361,6 +1357,7 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device)
- 		return -ENOMEM;
- 	pcm->pcm_id = device;
- 	pcm->cvt = hdmi->dai_map[dai->id].cvt;
-+	mutex_init(&pcm->lock);
- 
- 	snd_pcm = hdac_hdmi_get_pcm_from_id(dai->component->card, device);
- 	if (snd_pcm) {
-@@ -1506,13 +1503,8 @@ static void hdac_hdmi_get_chmap(struct hdac_device *hdac, int pcm_idx,
- 	struct hdac_ext_device *edev = to_ehdac_device(hdac);
- 	struct hdac_hdmi_priv *hdmi = edev->private_data;
- 	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
--	struct hdac_hdmi_pin *pin = pcm->pin;
--
--	/* chmap is already set to 0 in caller */
--	if (!pin)
--		return;
- 
--	memcpy(chmap, pin->chmap, ARRAY_SIZE(pin->chmap));
-+	memcpy(chmap, pcm->chmap, ARRAY_SIZE(pcm->chmap));
- }
- 
- static void hdac_hdmi_set_chmap(struct hdac_device *hdac, int pcm_idx,
-@@ -1523,12 +1515,12 @@ static void hdac_hdmi_set_chmap(struct hdac_device *hdac, int pcm_idx,
- 	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
- 	struct hdac_hdmi_pin *pin = pcm->pin;
- 
--	mutex_lock(&pin->lock);
--	pin->chmap_set = true;
--	memcpy(pin->chmap, chmap, ARRAY_SIZE(pin->chmap));
-+	mutex_lock(&pcm->lock);
-+	pcm->chmap_set = true;
-+	memcpy(pcm->chmap, chmap, ARRAY_SIZE(pcm->chmap));
- 	if (prepared)
--		hdac_hdmi_setup_audio_infoframe(edev, pcm->cvt->nid, pin->nid);
--	mutex_unlock(&pin->lock);
-+		hdac_hdmi_setup_audio_infoframe(edev, pcm, pin);
-+	mutex_unlock(&pcm->lock);
+ static int broxton_audio_probe(struct platform_device *pdev)
+ {
++	struct bxt_card_private *ctx;
++
++	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
++	if (!ctx)
++		return -ENOMEM;
++
++	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
++
+ 	broxton_audio_card.dev = &pdev->dev;
++	snd_soc_card_set_drvdata(&broxton_audio_card, ctx);
++
+ 	return devm_snd_soc_register_card(&pdev->dev, &broxton_audio_card);
  }
  
- static bool is_hdac_hdmi_pcm_attached(struct hdac_device *hdac, int pcm_idx)
 -- 
 2.5.0
