@@ -1,46 +1,56 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v2 4/6] platform/x86: dell-laptop: import
- dell_micmute_led_set() from drivers/leds/dell-led.c
-Date: Wed, 18 Jan 2017 21:12:10 +0200
-Message-ID: <CAHp75Vcp8vriBqR0ZUbPCZ2Q+Dio3=hkjSLBG2PH2ys71rfBug@mail.gmail.com>
-References: <20170116132204.6421-1-kernel@kempniu.pl> <20170116132204.6421-5-kernel@kempniu.pl>
+From: jeeja.kp@intel.com
+Subject: [PATCH v2 11/13] ASoC: Intel: bxt: Add route change to
+	rt298 machine
+Date: Wed, 18 Jan 2017 21:34:51 +0530
+Message-ID: <1484755493-30595-12-git-send-email-jeeja.kp@intel.com>
+References: <1484755493-30595-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-leds-owner@vger.kernel.org>
-In-Reply-To: <20170116132204.6421-5-kernel@kempniu.pl>
-Sender: linux-leds-owner@vger.kernel.org
-To: =?UTF-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>
-Cc: Richard Purdie <rpurdie@rpsys.net>, Jacek Anaszewski <jacek.anaszewski@gmail.com>, Pavel Machek <pavel@ucw.cz>, =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Anthony Wong <anthony.wong@canonical.com>, linux-leds@vger.kernel.org, Platform Driver <platform-driver-x86@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 28FE5266664
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 16:54:29 +0100 (CET)
+In-Reply-To: <1484755493-30595-1-git-send-email-jeeja.kp@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 16, 2017 at 3:22 PM, Micha=C5=82 K=C4=99pie=C5=84 <kernel@kempn=
-iu.pl> wrote:
-> To ensure all users of dell-smbios are in drivers/platform/x86, move the
-> dell_micmute_led_set() method from drivers/leds/dell-led.c to
-> drivers/platform/x86/dell-laptop.c.
->
+From: Jeeja KP <jeeja.kp@intel.com>
 
-Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+To support MST moved pin to port, this changes the routes based on
+port. So change the route in bxt_rt298 machine.
 
-Couple of nitpicks below.
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+---
+ sound/soc/intel/boards/bxt_rt298.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-> --- a/drivers/platform/x86/dell-laptop.c
-> +++ b/drivers/platform/x86/dell-laptop.c
-> @@ -30,6 +30,7 @@
->  #include <linux/i8042.h>
->  #include <linux/debugfs.h>
-
->  #include <linux/seq_file.h>
-> +#include <linux/dell-led.h>
-
-Perhaps move this one line above
-
-> +#define GLOBAL_MIC_MUTE_ENABLE 0x364
-> +#define GLOBAL_MIC_MUTE_DISABLE 0x365
-
-Same as Pali told.
-
---=20
-With Best Regards,
-Andy Shevchenko
+diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
+index bc9ee09..09be868 100644
+--- a/sound/soc/intel/boards/bxt_rt298.c
++++ b/sound/soc/intel/boards/bxt_rt298.c
+@@ -92,9 +92,9 @@ static const struct snd_soc_dapm_route broxton_rt298_map[] = {
+ 	{"DMIC1 Pin", NULL, "DMIC2"},
+ 	{"DMic", NULL, "SoC DMIC"},
+ 
+-	{"HDMI1", NULL, "hif5 Output"},
+-	{"HDMI2", NULL, "hif6 Output"},
+-	{"HDMI3", NULL, "hif7 Output"},
++	{"HDMI1", NULL, "hif5-0 Output"},
++	{"HDMI2", NULL, "hif6-0 Output"},
++	{"HDMI2", NULL, "hif7-0 Output"},
+ 
+ 	/* CODEC BE connections */
+ 	{ "AIF1 Playback", NULL, "ssp5 Tx"},
+-- 
+2.5.0
