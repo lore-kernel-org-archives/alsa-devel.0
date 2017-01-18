@@ -1,18 +1,18 @@
-From: Tony Lindgren <tony@atomide.com>
-Subject: Re: [PATCH v8] ASoC: omap-mcbsp: Add PM QoS support
- for McBSP to prevent glitches
-Date: Wed, 18 Jan 2017 09:35:45 -0800
-Message-ID: <20170118173545.GF7403@atomide.com>
-References: <20170118072600.15239-1-matt@ranostay.consulting>
+From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Subject: Re: ASoC: fsl_sai: Has anybody attempted to run the
+ i.MX6UL in TDM mode with channels > 2?
+Date: Wed, 18 Jan 2017 19:43:26 +0100
+Message-ID: <20170118184326.cokht5tfy24hpf7d@piout.net>
+References: <CAG5mAdy8BbeKdh+yM8vqNEU1RpzfqD20+SxQj-2iLihXxF7Mww@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from muru.com (muru.com [72.249.23.125])
- by alsa0.perex.cz (Postfix) with ESMTP id B7CAF2676F2
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 18:35:49 +0100 (CET)
+Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 214D22667FE
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 19:44:19 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20170118072600.15239-1-matt@ranostay.consulting>
+In-Reply-To: <CAG5mAdy8BbeKdh+yM8vqNEU1RpzfqD20+SxQj-2iLihXxF7Mww@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,17 +22,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Ranostay <matt@ranostay.consulting>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+To: Caleb Crome <caleb@crome.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Arnaud Mouiche <arnaud.mouiche@invoxia.com>, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-* Matt Ranostay <matt@ranostay.consulting> [170117 23:27]:
-> Changes from v7:
-> * fix issue reported by Tony Lindgreen that a player application could close the
->   card after hw_params, and cause an invalid pm_qos_remove_request()
+Hi Caleb,
 
-OK this version works for me nicely :)
+Fabio pointed to that thread because I'm trying to use the i.mx7d SAI in
+TDM mode with 8 channels (but I'm using only 4).
 
-Thanks for taking care of the issue in general:
+On 02/05/2016 at 10:52:39 -0700, Caleb Crome wrote :
+> Hi all,
+>    Now that the MX6 fsl_ssi seems to be getting stable for TDM with
+> channels > 2 (thanks all!), the MX6 UL and MX7 have only the SAI port.
+> 
+> Does anybody have experience with running the SAI with more than 2 channels?
+> 
 
-Tested-by: Tony Lindgren <tony@atomide.com>
+I have a really small patch to make the SAI driver configure CR4 and CR5
+properly for more than 2 channels.
+Data on the TDM bus seems fine.
+
+However, I have an issue with the sample ordering. Discussing that with
+Lars, it seems the SDMA is getting confused when switching periods. To
+test, I'm playing a 441Hz sine that is fading out. I can definitively
+see block of 1024 samples (it is period_size) that are ok but not
+properly ordered. You can have a look at:
+http://free-electrons.com/~alexandre/playback.png
+
+Did you have the same issue?
+
+-- 
+Alexandre Belloni, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
