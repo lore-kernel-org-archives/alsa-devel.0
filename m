@@ -1,107 +1,42 @@
 From: Mylene Josserand <mylene.josserand@free-electrons.com>
-Subject: Re: [PATCH v2 03/10] dt-bindings: sound: Add new reset compatible for
- sun4i-i2s
-Date: Wed, 18 Jan 2017 09:23:10 +0100
-Message-ID: <1f318cd1-6a50-5b33-01aa-e11e7e925e88@free-electrons.com>
+Subject: Re: [PATCH v2 07/10] dt-bindings: sound: Add sun8i audio
+ documentation
+Date: Wed, 18 Jan 2017 09:25:47 +0100
+Message-ID: <bc022ae2-d766-891f-9626-189fb6834c03@free-electrons.com>
 References: <20170117140230.23142-1-mylene.josserand@free-electrons.com>
- <20170117140230.23142-4-mylene.josserand@free-electrons.com>
- <20170117164636.qhkxvqcs7l732wxk@lukather>
+ <20170117140230.23142-8-mylene.josserand@free-electrons.com>
+ <20170117165029.wu4m6flhdwxk5e3q@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-clk-owner@vger.kernel.org>
-In-Reply-To: <20170117164636.qhkxvqcs7l732wxk@lukather>
+In-Reply-To: <20170117165029.wu4m6flhdwxk5e3q@sirena.org.uk>
 Sender: linux-clk-owner@vger.kernel.org
-To: Maxime Ripard <maxime.ripard@free-electrons.com>
-Cc: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, wens@csie.org, mturquette@baylibre.com, sboyd@codeaurora.org, mark.rutland@arm.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-sunxi@googlegroups.com, thomas.petazzoni@free-electrons.com, alexandre.belloni@free-electrons.com
+To: Mark Brown <broonie@kernel.org>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, maxime.ripard@free-electrons.com, wens@csie.org, mturquette@baylibre.com, sboyd@codeaurora.org, mark.rutland@arm.com, robh+dt@kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-sunxi@googlegroups.com, thomas.petazzoni@free-electrons.com, alexandre.belloni@free-electrons.com
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-On 17/01/2017 17:46, Maxime Ripard wrote:
-> On Tue, Jan 17, 2017 at 03:02:23PM +0100, Mylène Josserand wrote:
->> Add a new compatible for sun4i-i2s driver to handle some
->> SoCs that have a reset line that must be asserted/deasserted.
->>
->> This new compatible, "allwinner,sun6i-a31-i2s", requires two
->> properties:
->> 	- resets: phandle to the reset line
->> 	- reset-names: the name of the reset line ("rst").
->> Except these differences, the compatible is identical to previous one
->> which will not handle a reset line.
->>
->> Signed-off-by: Mylène Josserand <mylene.josserand@free-electrons.com>
->> ---
->>  .../devicetree/bindings/sound/sun4i-i2s.txt        | 23 ++++++++++++++++++++++
->>  1 file changed, 23 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
->> index 7a2c0945fd22..f673206e309b 100644
->> --- a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
->> +++ b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
->> @@ -7,6 +7,7 @@ Required properties:
->>
->>  - compatible: should be one of the following:
->>     - "allwinner,sun4i-a10-i2s"
->> +   - "allwinner,sun6i-a31-i2s" for controller with reset lines
+On 17/01/2017 17:50, Mark Brown wrote:
+> On Tue, Jan 17, 2017 at 03:02:27PM +0100, Mylène Josserand wrote:
+>> Add the documentation for dt-binding of the digital audio codec driver
+>> and the audio card driver for Sun8i SoCs.
 >
-> That's not only for controllers with reset lines, but for the
-> controllers found in the A31 (and later). I'd simply drop the last
-> part of that line.
-
-ACK
-
 >
->>  - reg: physical base address of the controller and length of memory mapped
->>    region.
->>  - interrupts: should contain the I2S interrupt.
->> @@ -19,7 +20,13 @@ Required properties:
->>     - "mod" : module clock for the I2S controller
->>  - #sound-dai-cells : Must be equal to 0
->>
->> +Required properties for the following compatibles:
->> +		- "allwinner,sun6i-a31-i2s"
->> +- resets: phandle to the reset line for this codec
->> +- reset-names: Contains the reset signal name "rst"
->
-> You don't need reset-names if there's a single reset line.
+> Please submit patches using subject lines reflecting the style for the
+> subsystem.  This makes it easier for people to identify relevant
+> patches.  Look at what existing commits in the area you're changing are
+> doing and make sure your subject lines visually resemble what they're
+> doing.
 >
 
-ACK
+Yeah, sorry about that. Maxime indicated it in another patch. I will 
+keep it in mind for next times.
 
->> +
->>  Example:
->> +For "allwinner,sun4i-a10-i2s":
->>
->>  i2s0: i2s@01c22400 {
->>  	#sound-dai-cells = <0>;
->> @@ -32,3 +39,19 @@ i2s0: i2s@01c22400 {
->>  	       <&dma SUN4I_DMA_NORMAL 3>;
->>  	dma-names = "rx", "tx";
->>  };
->> +
->> +For "allwinner,sun6i-a31-i2s":
->> +
->> +dai: dai@01c22c00 {
->> +	#sound-dai-cells = <0>;
->> +	compatible = "allwinner,sun6i-a31-i2s";
->> +	reg = <0x01c22c00 0x200>;
->> +	interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
->> +	clocks = <&ccu CLK_BUS_CODEC>, <&ccu CLK_AC_DIG>;
->> +	clock-names = "apb", "mod";
->> +	resets = <&ccu RST_BUS_CODEC>;
->> +	reset-names = "rst";
->> +	dmas = <&dma 15>, /* AUDIO_CODEC port */
->> +		<&dma 15>; /* AUDIO_CODEC port */
->> +	dma-names = "rx", "tx";
->> +};
->
-> And we already have an example, so there's no need to add a new one
-> either.
+Anyway, thank you for the review!
 
-I will remove it on a V3.
-
-Thank you the review!
+Best regards,
 
 -- 
 Mylène Josserand, Free Electrons
