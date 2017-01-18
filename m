@@ -1,18 +1,17 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: [PATCH v2 0/3] ucm: Add support for component
-	devices
-Date: Wed, 18 Jan 2017 04:00:02 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F881A1C714@shsmsx102.ccr.corp.intel.com>
-References: <cover.1479446217.git.mengdong.lin@linux.intel.com>
+From: Nali Waterfall <nwfalls@gmail.com>
+Subject: Problem with alsa-compile.sh script on Linux Mint 18.1
+Date: Wed, 18 Jan 2017 07:02:06 +0000
+Message-ID: <CAFdEiKRNhyFEiKCxm4AktOY+zCFr1uQ8gYfSm=WEmBiv+9bQmg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 74E0E266BEB
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 05:00:08 +0100 (CET)
-In-Reply-To: <cover.1479446217.git.mengdong.lin@linux.intel.com>
-Content-Language: en-US
+Received: from mail-yb0-f180.google.com (mail-yb0-f180.google.com
+ [209.85.213.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8843E267A77
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 08:02:18 +0100 (CET)
+Received: by mail-yb0-f180.google.com with SMTP id l23so1322978ybj.2
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 23:02:18 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,55 +21,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "mengdong.lin@linux.intel.com" <mengdong.lin@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "Koul,
- Vinod" <vinod.koul@intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Please kindly leave me a message if there is any open issues. I'll reply after the Chinese New Year.
+Hello! I have a "Cannot install patch for unsupported distribution Linux"
+error while trying to run alsa-compile.sh script. The script supports
+Ubuntu which Mint is base on. What can I do to make it support Mint?
 
-Thanks and Happy New Year!
-Mengdong
+nwfall@desktop ~/alsa $ ./alsa-compile.sh
+File environment.base is cached.
+> cd /tmp/alsa-compile-script
+Program git found.
+Program autoconf found.
+Program aclocal found.
+Program gcc found.
+Cannot install patch for unsupported distribution Linux.
 
-> -----Original Message-----
-> From: mengdong.lin@linux.intel.com [mailto:mengdong.lin@linux.intel.com]
-> Sent: Friday, November 18, 2016 1:28 PM
-> To: alsa-devel@alsa-project.org
-> Cc: tiwai@suse.de; broonie@kernel.org; perex@perex.cz;
-> liam.r.girdwood@linux.intel.com; Koul, Vinod <vinod.koul@intel.com>; Lin,
-> Mengdong <mengdong.lin@intel.com>; Mengdong Lin
-> <mengdong.lin@linux.intel.com>
-> Subject: [PATCH v2 0/3] ucm: Add support for component devices
-> 
-> From: Mengdong Lin <mengdong.lin@linux.intel.com>
-> 
-> Sound cards are defined by machines. And off-soc codecs and DSPs
-> embedded in DSP can be taken as the components and resued by different
-> machines/ sound cards. This series allows codec and SOC vendors to install
-> UCM configuration files for a specific codec or DSP, and sound card verb files
-> can include these conf files of components.
-> 
-> Component devices will not be exposed to applications for backward
-> compatibility. So audio servers like PulseAudio and CRAS still only see the
-> machine devices.
-> 
-> History:
-> v2: Use an array to define component directories. Document syntax to
->     enable/disable a component device. Hide cdev defined by the parent
->     device in ucm manager for executing a component sequence.
-> 
-> Mengdong Lin (3):
->   ucm: Skip component directories when scanning sound card configuration
->     files
->   ucm: Parse sequence of component devices
->   ucm: Execute sequence of component devices
-> 
->  src/ucm/main.c      |  88 +++++++++++++++++++++++++++++-
->  src/ucm/parser.c    | 154
-> +++++++++++++++++++++++++++++++++++++++++++++++++++-
->  src/ucm/ucm_local.h |  19 +++++++
->  src/ucm/utils.c     |   1 +
->  4 files changed, 259 insertions(+), 3 deletions(-)
-> 
-> --
-> 2.7.4
+nwfall@desktop ~/alsa $ ./alsa-compile.sh --help
+Usage: ./alsa-compile.sh [OPTION]...
+
+This is a script version 0.2.9 doing ALSA code compilation and installation.
+Report any problems to <alsa-devel@alsa-project.org> mailing list.
+...
+
+nwfall@desktop /tmp/alsa-compile-script $ cat environment.base
+protocol=http
+distrib="Linux"
+distribver="18.1"
+url="http://www.alsa-project.org/snapshot/?package=alsa-driver"
+package="alsa-driver"
+depmodbin="/sbin/depmod"
+modinfobin="/sbin/modinfo"
+
+nwfall@desktop ~ $ lsb_release -ds
+Linux Mint 18.1 Serena
