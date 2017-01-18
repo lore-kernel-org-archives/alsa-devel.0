@@ -1,17 +1,20 @@
-From: jeeja.kp@intel.com
-Subject: [PATCH v2 05/13] ASoC: Intel: bxt: add channel map
-	support in rt298 machine
-Date: Wed, 18 Jan 2017 21:34:45 +0530
-Message-ID: <1484755493-30595-6-git-send-email-jeeja.kp@intel.com>
-References: <1484755493-30595-1-git-send-email-jeeja.kp@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v4 2/2] ASoC: Intel: Use DMI name for sound
+ card long name in Broadwell machine driver
+Date: Wed, 18 Jan 2017 11:23:38 -0600
+Message-ID: <7038c7bd-af14-c22f-5f52-136d4f31b9d0@linux.intel.com>
+References: <cover.1484381178.git.mengdong.lin@linux.intel.com>
+ <7d5a432b03df6298e85b2af1f520e48821ada648.1484381178.git.mengdong.lin@linux.intel.com>
+ <20170117175636.laoybapp7jqtpzno@sirena.org.uk>
+ <20170118164459.GF3573@localhost> <s5ho9z4s45v.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 7D856266664
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 16:54:06 +0100 (CET)
-In-Reply-To: <1484755493-30595-1-git-send-email-jeeja.kp@intel.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 92FB62676E9
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 18:23:54 +0100 (CET)
+In-Reply-To: <s5ho9z4s45v.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,115 +24,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
+To: Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>
+Cc: mengdong.lin@linux.intel.com, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+On 1/18/17 10:50 AM, Takashi Iwai wrote:
+> On Wed, 18 Jan 2017 17:44:59 +0100,
+> Vinod Koul wrote:
+>> On Tue, Jan 17, 2017 at 05:56:36PM +0000, Mark Brown wrote:
+>>> On Sat, Jan 14, 2017 at 04:13:09PM +0800, mengdong.lin@linux.intel.com wrote:
+>>>> From: Mengdong Lin <mengdong.lin@linux.intel.com>
+>>>>
+>>>> Intel Broadwell machine driver will call API snd_soc_set_dmi_name() to
+>>>> use DMI info to make the sound card long name.
+>>> I guess we'll see further patches for other machine drivers?
+>> Yes that's the idea. At least we will convert the Skylake and Broxton ones,
+>> after the current submitted patches and DP-MST ones are merged.
+> I had an impression that rather BYT and CHT machines require urgently
+> this extension because there are quite lots of devices with the same
+> component but different configurations...
 
-HDMI registers channel map controls per pcm. As PCMs are not
-registered during dai_link init callback, store the pcm ids and
-codec DAIs during this init callback.
-
-Register for late probe and call the jack_init API which registers
-channel map in the late probe callback handler.
-
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
----
- sound/soc/intel/boards/bxt_rt298.c | 52 ++++++++++++++++++++++++++++++++++++--
- 1 file changed, 50 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
-index 1309405..bc9ee09 100644
---- a/sound/soc/intel/boards/bxt_rt298.c
-+++ b/sound/soc/intel/boards/bxt_rt298.c
-@@ -26,8 +26,18 @@
- #include "../../codecs/hdac_hdmi.h"
- #include "../../codecs/rt298.h"
- 
--static struct snd_soc_jack broxton_headset;
- /* Headset jack detection DAPM pins */
-+static struct snd_soc_jack broxton_headset;
-+
-+struct bxt_hdmi_pcm {
-+	struct list_head head;
-+	struct snd_soc_dai *codec_dai;
-+	int device;
-+};
-+
-+struct bxt_rt286_private {
-+	struct list_head hdmi_pcm_list;
-+};
- 
- enum {
- 	BXT_DPCM_AUDIO_PB = 0,
-@@ -139,9 +149,20 @@ static int broxton_rt298_codec_init(struct snd_soc_pcm_runtime *rtd)
- 
- static int broxton_hdmi_init(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct bxt_rt286_private *ctx = snd_soc_card_get_drvdata(rtd->card);
- 	struct snd_soc_dai *dai = rtd->codec_dai;
-+	struct bxt_hdmi_pcm *pcm;
- 
--	return hdac_hdmi_jack_init(dai, BXT_DPCM_AUDIO_HDMI1_PB + dai->id);
-+	pcm = devm_kzalloc(rtd->card->dev, sizeof(*pcm), GFP_KERNEL);
-+	if (!pcm)
-+		return -ENOMEM;
-+
-+	pcm->device = BXT_DPCM_AUDIO_HDMI1_PB + dai->id;
-+	pcm->codec_dai = dai;
-+
-+	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
-+
-+	return 0;
- }
- 
- static int broxton_ssp5_fixup(struct snd_soc_pcm_runtime *rtd,
-@@ -432,6 +453,22 @@ static struct snd_soc_dai_link broxton_rt298_dais[] = {
- 	},
- };
- 
-+static int bxt_card_late_probe(struct snd_soc_card *card)
-+{
-+	struct bxt_rt286_private *ctx = snd_soc_card_get_drvdata(card);
-+	struct bxt_hdmi_pcm *pcm;
-+	int err;
-+
-+	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
-+		err = hdac_hdmi_jack_init(pcm->codec_dai, pcm->device);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
-+
- /* broxton audio machine driver for SPT + RT298S */
- static struct snd_soc_card broxton_rt298 = {
- 	.name = "broxton-rt298",
-@@ -445,11 +482,22 @@ static struct snd_soc_card broxton_rt298 = {
- 	.dapm_routes = broxton_rt298_map,
- 	.num_dapm_routes = ARRAY_SIZE(broxton_rt298_map),
- 	.fully_routed = true,
-+	.late_probe = bxt_card_late_probe,
-+
- };
- 
- static int broxton_audio_probe(struct platform_device *pdev)
- {
-+	struct bxt_rt286_private *ctx;
-+
-+	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
-+	if (!ctx)
-+		return -ENOMEM;
-+
-+	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
-+
- 	broxton_rt298.dev = &pdev->dev;
-+	snd_soc_card_set_drvdata(&broxton_rt298, ctx);
- 
- 	return devm_snd_soc_register_card(&pdev->dev, &broxton_rt298);
- }
--- 
-2.5.0
+My first priority is to close on the set of known quirks and contribute 
+them once the reworked MCLK patches are merged. We can add the DMI name 
+at the same time for BYT/CHT.
+Note that adding the name in the machine driver is only the first part 
+required to be able to manage quirks. it'll take a bit of time to 
+convert the existing UCM files, make use of the include mechanism and 
+contribute them to a repository with a faster update rate than alsa-lib.
