@@ -1,16 +1,16 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH v2 12/13] ASoC: Intel: bxt: Add route change to
-	da7219_max98357a machine
-Date: Wed, 18 Jan 2017 21:34:52 +0530
-Message-ID: <1484755493-30595-13-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH v2 13/13] ASoC: hdac_hdmi: Add support to
+	handle MST capable pin
+Date: Wed, 18 Jan 2017 21:34:53 +0530
+Message-ID: <1484755493-30595-14-git-send-email-jeeja.kp@intel.com>
 References: <1484755493-30595-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id ACCC6266664
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 16:54:33 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8C411266664
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 16:54:37 +0100 (CET)
 In-Reply-To: <1484755493-30595-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,30 +27,94 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-To support MST moved pin to port, this changes the routes based on
-port. So change the route in bxt_da7219_max98357a machine.
+To handle jack event and configuration of the pin widget for MST
+capable pin, this patch adds:
+o Flag to identify the pin is MST capable.
+o In notify callback(), based on the pipe and port information marks if
+the port is mst_capable. In case of non MST, port is defaulted to zero.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/intel/boards/bxt_da7219_max98357a.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 27 ++++++++++++++++++++++++---
+ 1 file changed, 24 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-index 8dfe5e8..36c3589 100644
---- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-@@ -128,9 +128,9 @@ static const struct snd_soc_dapm_route broxton_map[] = {
- 	{"codec0_in", NULL, "ssp1 Rx"},
- 	{"ssp1 Rx", NULL, "Capture"},
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index f0e2857..3152b61 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -82,6 +82,7 @@ struct hdac_hdmi_eld {
+ struct hdac_hdmi_pin {
+ 	struct list_head head;
+ 	hda_nid_t nid;
++	bool mst_capable;
+ 	struct hdac_hdmi_port *ports;
+ 	int num_ports;
+ 	struct hdac_ext_device *edev;
+@@ -1065,14 +1066,22 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin,
+ 	struct hdac_hdmi_priv *hdmi = edev->private_data;
+ 	struct hdac_hdmi_pcm *pcm;
+ 	int size = 0;
++	int port_id = -1;
  
--	{"HDMI1", NULL, "hif5 Output"},
--	{"HDMI2", NULL, "hif6 Output"},
--	{"HDMI3", NULL, "hif7 Output"},
-+	{"HDMI1", NULL, "hif5-0 Output"},
-+	{"HDMI2", NULL, "hif6-0 Output"},
-+	{"HDMI2", NULL, "hif7-0 Output"},
+ 	if (!hdmi)
+ 		return;
  
- 	{"hifi3", NULL, "iDisp3 Tx"},
- 	{"iDisp3 Tx", NULL, "iDisp3_out"},
++	/*
++	 * In case of non MST pin, get_eld info API expectes port
++	 * to be -1.
++	 */
+ 	mutex_lock(&hdmi->pin_mutex);
+ 	port->eld.monitor_present = false;
+ 
+-	size = snd_hdac_acomp_get_eld(&edev->hdac, pin->nid, -1,
++	if (pin->mst_capable)
++		port_id = port->id;
++
++	size = snd_hdac_acomp_get_eld(&edev->hdac, pin->nid, port_id,
+ 				&port->eld.monitor_present,
+ 				port->eld.eld_buffer,
+ 				ELD_MAX_SIZE);
+@@ -1167,6 +1176,7 @@ static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
+ 		return -ENOMEM;
+ 
+ 	pin->nid = nid;
++	pin->mst_capable = false;
+ 	pin->edev = edev;
+ 	ret = hdac_hdmi_add_ports(hdmi, pin);
+ 	if (ret < 0)
+@@ -1363,6 +1373,7 @@ static void hdac_hdmi_eld_notify_cb(void *aptr, int dport, int pipe)
+ 	struct hdac_hdmi_pin *pin = NULL;
+ 	struct hdac_hdmi_port *port = NULL;
+ 	struct snd_soc_codec *codec = edev->scodec;
++	int i;
+ 
+ 	/* Don't know how this mapping is derived */
+ 	hda_nid_t pin_nid = dport + 0x04;
+@@ -1388,13 +1399,23 @@ static void hdac_hdmi_eld_notify_cb(void *aptr, int dport, int pipe)
+ 			continue;
+ 
+ 		if (pipe == -1) {
++			pin->mst_capable = false;
+ 			/* if not MST, default is port[0] */
+ 			port = &pin->ports[0];
+-			break;
++			goto out;
++		} else {
++			for (i = 0; i < pin->num_ports; i++) {
++				pin->mst_capable = true;
++				if (pin->ports[i].id == pipe) {
++					port = &pin->ports[i];
++					goto out;
++				}
++			}
+ 		}
+ 	}
+ 
+-	if (port)
++out:
++	if (pin && port)
+ 		hdac_hdmi_present_sense(pin, port);
+ }
+ 
 -- 
 2.5.0
