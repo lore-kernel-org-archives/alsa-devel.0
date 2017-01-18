@@ -1,25 +1,15 @@
-From: Matt Ranostay <matt@ranostay.consulting>
-Subject: Re: [PATCH v7] ASoC: omap-mcbsp: Add PM QoS support
- for McBSP to prevent glitches
-Date: Tue, 17 Jan 2017 15:04:22 -0800
-Message-ID: <CAJ_EiSTCo7ZYTfwFomXfyauEP65REp3Vd7jCCGf-OsT8N0rU7A@mail.gmail.com>
-References: <20170113035432.6723-1-matt@ranostay.consulting>
- <20170113152049.GD5696@atomide.com>
- <CAJ_EiSR-R=5qUKOfHWTTrjj+ZD6Q6BBf1yPj3atf84Q6K03NZg@mail.gmail.com>
- <20170116171743.GB7403@atomide.com>
- <CAJ_EiSTStr1TfGE2zVspFF0DkkXLOCDmiqD_jZkzue-GfsTm+Q@mail.gmail.com>
- <d35dbc1b-da5b-a482-3688-f7b20278d5fb@ti.com>
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH v6 0/3] ucm: Automatically load the best config
+	file based on the card long name
+Date: Wed, 18 Jan 2017 11:52:26 +0800
+Message-ID: <cover.1484710888.git.mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f176.google.com (mail-qt0-f176.google.com
- [209.85.216.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 4032A26780D
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 00:04:23 +0100 (CET)
-Received: by mail-qt0-f176.google.com with SMTP id x49so183950453qtc.2
- for <alsa-devel@alsa-project.org>; Tue, 17 Jan 2017 15:04:23 -0800 (PST)
-In-Reply-To: <d35dbc1b-da5b-a482-3688-f7b20278d5fb@ti.com>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id AFFB4266BF5
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 04:49:06 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,30 +19,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Tony Lindgren <tony@atomide.com>, alsa-devel@alsa-project.org, Linux OMAP List <linux-omap@vger.kernel.org>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, Mengdong Lin <mengdong.lin@linux.intel.com>, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCBKYW4gMTcsIDIwMTcgYXQgNDozNCBBTSwgUGV0ZXIgVWpmYWx1c2kgPHBldGVyLnVq
-ZmFsdXNpQHRpLmNvbT4gd3JvdGU6Cj4gT24gMDEvMTYvMjAxNyAwOTozMCBQTSwgTWF0dCBSYW5v
-c3RheSB3cm90ZToKPj4gWWVwIEkgd2FzIHRlc3Rpbmcgd2l0aCB0aGF0IGVuYWJsZWQuIE5vdCBz
-dXJlIHdoeSBJJ20gbm90IGdldHRpbmcgaXQKPj4gYWxsLi4uIG1heWJlIGRpZmZlcmVudCBzaWRl
-IGVmZmVjdHMgbGlrZSBzYW1wbGUgcmF0ZSBvZiB0aGUgYXVkaW8KPj4gYmVpbmcgcGxheWVkPwo+
-Pgo+PiBQZXRlciwgaXMgdGhlcmUgY2hhbmNlIHRoYXQgdGhlcmUgaXMgcmFjZSBjb25kaXRpb24g
-aXMgcG9zc2libGUKPj4gYmV0d2VlbiBwbV9xb3NfcmVtb3ZlX3JlcXVlc3QgYW5kIG9tYXBfbWNi
-c3BfZGFpX3NodXRkb3duPwo+Cj4gTm90IHdpdGggbXkga25vd2xlZGdlLgo+IEhvd2V2ZXIgb25l
-IHRoaW5nIG1pZ2h0IGhhcHBlbiB3aGljaCBpcyBub3QgaGFuZGxlZDoKPiBhcHBsaWNhdGlvbiBv
-cGVucyB1cCB0aGUgYXVkaW8gY2FyZCwgZG9lcyBzb21lIGh3X3BhcmFtIHNldHVwLCB0aGVuIGl0
-Cj4gZGVjaWRlcyB0byBjbG9zZSB0aGUgY2FyZC4gSW4gdGhpcyBjYXNlIHRoZSBwbV9xb3MgaXMg
-bm90IHBsYWNlZCwgYnV0IGluCj4gZGFpX3NodXRkb3duIHdlIHRyeSB0byByZW1vdmUgaXQgLT4g
-V0FSTigpLgo+Cj4gSSB0aGluayB3ZSBuZWVkIHRvIGNoZWNrIGVpdGhlciBpZiB0aGUgcG1fcW9z
-IGlzIGFjdGl2ZSBhbmQgb25seSB0aGVuCj4gYm90aGVyIHdpdGggdGhlIHJlbW92YWwvdXBkYXRl
-ZCBvciB3ZSBjYW4gY2hlY2sgaWYgdGhlCj4gbWNic3AtPmxhdGVuY3lbc3RyZWFtMV0gaXMgbm90
-IDAsIHdoaWNoIHNob3VsZCBiZSB0aGUgc2FtZSBhcyBjaGVja2luZwo+IGZvciB0aGUgcG1fcW9z
-IGFjdGl2ZQoKT2sgbWFrZXMgc2Vuc2UuIFdlaXJkIEknbSBub3Qgc2VlaW5nIGl0IGJ1dCBJIHdh
-bnRlZCB0byBiZSBzdXJlIGFkZGluZwpjaGVja3Mgd2Fzbid0IGp1c3QgaGlkaW5nIGEgaXNzdWUu
-CldpbGwgc3VibWl0IHY4Li4uICBhbmQgaG9wZWZ1bGx5IHRoYXQgaXMgdGhlIGZpbmFsIG9uZSEg
-KmZpbmdlcnMgY3Jvc3NlZCoKCj4KPiAtLQo+IFDDqXRlcgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+
+Intel DSP platform drivers are used by many different devices. For user
+space to differentiate them, now ASoC provide API for machine drivers to
+include the DMI info (vendor, product and board) in card long name. This
+series will add UCM support for loading best device-specific configuration
+based on the card long name.
+
+Mengdong Lin (2):
+  ucm: Load device-specific configuration file based on the card long
+    name
+  ucm: Add command 'get _file' to get the config file name of the opened
+    card
+
+History:
+v2: Request the device-specific file name to match the card long name,
+    no long use automatic key word matching and scoring to avoid error
+    and uncertainty. And add command to check the name of actually loaded
+    configuration file.
+
+v3: Fix num in strncpy of the long name, which should be
+    MAX_CARD_LONG_NAME - 1, not MAX_CARD_LONG_NAME (80).
+
+
+v4: No code change. Just update on comments because the kernel v4 patches
+    add DMI product version to the card long name, and use "-" as
+    the separator between DMI fields.
+
+v5: Revise the comments. Add patch to assure the input card name not to
+    exceed the maximum card long name supported by kernel to avoid use
+    strncpy and strncmp later.
+
+v6: No code change. Fix error in comments: use slash to replace backslash
+    in file path.
+
+Mengdong Lin (3):
+  ucm: Assure the user input card name not to exceed max size of card
+    long name
+  ucm: Load device-specific configuration file based on the card long
+    name
+  ucm: Add command 'get _file' to get the config file name of the opened
+    card
+
+ include/use-case.h  |   1 +
+ src/ucm/main.c      |  14 +++++++
+ src/ucm/parser.c    | 105 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ src/ucm/ucm_local.h |   3 ++
+ 4 files changed, 119 insertions(+), 4 deletions(-)
+
+-- 
+2.7.4
