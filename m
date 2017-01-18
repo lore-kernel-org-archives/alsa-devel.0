@@ -1,17 +1,17 @@
-From: jeeja.kp@intel.com
-Subject: [PATCH v2 13/13] ASoC: hdac_hdmi: Add support to
-	handle MST capable pin
-Date: Wed, 18 Jan 2017 21:34:53 +0530
-Message-ID: <1484755493-30595-14-git-send-email-jeeja.kp@intel.com>
-References: <1484755493-30595-1-git-send-email-jeeja.kp@intel.com>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/2] crecord: Add option to specify codec ID
+Date: Wed, 18 Jan 2017 16:29:54 +0000
+Message-ID: <1484756994-19679-2-git-send-email-rf@opensource.wolfsonmicro.com>
+References: <1484756994-19679-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C411266664
- for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 16:54:37 +0100 (CET)
-In-Reply-To: <1484755493-30595-1-git-send-email-jeeja.kp@intel.com>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C9F92667E7
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jan 2017 17:30:00 +0100 (CET)
+In-Reply-To: <1484756994-19679-1-git-send-email-rf@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,100 +21,202 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
+To: vinod.koul@intel.com
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+This patch adds a -I command line option to set the codec ID,
+either from a defined set of string values or as a number.
 
-To handle jack event and configuration of the pin widget for MST
-capable pin, this patch adds:
-o Flag to identify the pin is MST capable.
-o In notify callback(), based on the pipe and port information marks if
-the port is mst_capable. In case of non MST, port is defaulted to zero.
+After discussion with Vinod it was agreed that we should only
+allow writing to a file if we support creating the correct container
+file format for that data. As we currently only have support for
+creating WAV files only PCM data can be written to a file. Other
+formats can be sent raw to stdout.
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 27 ++++++++++++++++++++++++---
- 1 file changed, 24 insertions(+), 3 deletions(-)
+ src/utils/crecord.c | 99 ++++++++++++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 87 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index f0e2857..3152b61 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -82,6 +82,7 @@ struct hdac_hdmi_eld {
- struct hdac_hdmi_pin {
- 	struct list_head head;
- 	hda_nid_t nid;
-+	bool mst_capable;
- 	struct hdac_hdmi_port *ports;
- 	int num_ports;
- 	struct hdac_ext_device *edev;
-@@ -1065,14 +1066,22 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin,
- 	struct hdac_hdmi_priv *hdmi = edev->private_data;
- 	struct hdac_hdmi_pcm *pcm;
- 	int size = 0;
-+	int port_id = -1;
- 
- 	if (!hdmi)
- 		return;
- 
-+	/*
-+	 * In case of non MST pin, get_eld info API expectes port
-+	 * to be -1.
-+	 */
- 	mutex_lock(&hdmi->pin_mutex);
- 	port->eld.monitor_present = false;
- 
--	size = snd_hdac_acomp_get_eld(&edev->hdac, pin->nid, -1,
-+	if (pin->mst_capable)
-+		port_id = port->id;
+diff --git a/src/utils/crecord.c b/src/utils/crecord.c
+index 390fe45..1fd3698 100644
+--- a/src/utils/crecord.c
++++ b/src/utils/crecord.c
+@@ -83,6 +83,31 @@ static bool streamed;
+ static const unsigned int DEFAULT_CHANNELS = 1;
+ static const unsigned int DEFAULT_RATE = 44100;
+ static const unsigned int DEFAULT_FORMAT = SNDRV_PCM_FORMAT_S16_LE;
++static const unsigned int DEFAULT_CODEC_ID = SND_AUDIOCODEC_PCM;
 +
-+	size = snd_hdac_acomp_get_eld(&edev->hdac, pin->nid, port_id,
- 				&port->eld.monitor_present,
- 				port->eld.eld_buffer,
- 				ELD_MAX_SIZE);
-@@ -1167,6 +1176,7 @@ static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
- 		return -ENOMEM;
++static const struct {
++	const char *name;
++	unsigned int id;
++} codec_ids[] = {
++	{ "PCM", SND_AUDIOCODEC_PCM },
++	{ "MP3", SND_AUDIOCODEC_MP3 },
++	{ "AMR", SND_AUDIOCODEC_AMR },
++	{ "AMRWB", SND_AUDIOCODEC_AMRWB },
++	{ "AMRWBPLUS", SND_AUDIOCODEC_AMRWBPLUS },
++	{ "AAC", SND_AUDIOCODEC_AAC },
++	{ "WMA", SND_AUDIOCODEC_WMA },
++	{ "REAL", SND_AUDIOCODEC_REAL },
++	{ "VORBIS", SND_AUDIOCODEC_VORBIS },
++	{ "FLAC", SND_AUDIOCODEC_FLAC },
++	{ "IEC61937", SND_AUDIOCODEC_IEC61937 },
++	{ "G723_1", SND_AUDIOCODEC_G723_1 },
++	{ "G729", SND_AUDIOCODEC_G729 },
++/* BESPOKE isn't defined on older kernels */
++#ifdef SND_AUDIOCODEC_BESPOKE
++	{ "BESPOKE", SND_AUDIOCODEC_BESPOKE },
++#endif
++};
++#define CREC_NUM_CODEC_IDS (sizeof(codec_ids) / sizeof(codec_ids[0]))
  
- 	pin->nid = nid;
-+	pin->mst_capable = false;
- 	pin->edev = edev;
- 	ret = hdac_hdmi_add_ports(hdmi, pin);
- 	if (ret < 0)
-@@ -1363,6 +1373,7 @@ static void hdac_hdmi_eld_notify_cb(void *aptr, int dport, int pipe)
- 	struct hdac_hdmi_pin *pin = NULL;
- 	struct hdac_hdmi_port *port = NULL;
- 	struct snd_soc_codec *codec = edev->scodec;
-+	int i;
- 
- 	/* Don't know how this mapping is derived */
- 	hda_nid_t pin_nid = dport + 0x04;
-@@ -1388,13 +1399,23 @@ static void hdac_hdmi_eld_notify_cb(void *aptr, int dport, int pipe)
- 			continue;
- 
- 		if (pipe == -1) {
-+			pin->mst_capable = false;
- 			/* if not MST, default is port[0] */
- 			port = &pin->ports[0];
--			break;
-+			goto out;
-+		} else {
-+			for (i = 0; i < pin->num_ports; i++) {
-+				pin->mst_capable = true;
-+				if (pin->ports[i].id == pipe) {
-+					port = &pin->ports[i];
-+					goto out;
-+				}
-+			}
- 		}
- 	}
- 
--	if (port)
-+out:
-+	if (pin && port)
- 		hdac_hdmi_present_sense(pin, port);
+ struct riff_chunk {
+ 	char desc[4];
+@@ -151,9 +176,25 @@ static void size_wave_header(struct wave_header *header, uint32_t size)
+ 	header->data.chunk.size = size;
  }
  
++static const char *codec_name_from_id(unsigned int id)
++{
++	static char hexname[12];
++	int i;
++
++	for (i = 0; i < CREC_NUM_CODEC_IDS; ++i) {
++		if (codec_ids[i].id == id)
++			return codec_ids[i].name;
++	}
++
++	snprintf(hexname, sizeof(hexname), "0x%x", id);
++	return hexname; /* a static is safe because we're single-threaded */
++}
++
+ static void usage(void)
+ {
+-	fprintf(stderr, "usage: crecord [OPTIONS] [filename]\n"
++	int i;
++
++	fprintf(stderr, "usage: crecord [OPTIONS] [filename.wav]\n"
+ 		"-c\tcard number\n"
+ 		"-d\tdevice node\n"
+ 		"-b\tbuffer size\n"
+@@ -163,13 +204,23 @@ static void usage(void)
+ 		"-h\tPrints this help list\n\n"
+ 		"-C\tSpecify the number of channels (default %u)\n"
+ 		"-R\tSpecify the sample rate (default %u)\n"
+-		"-F\tSpecify the format: S16_LE, S32_LE (default S16_LE)\n\n"
+-		"If filename is not given the output is\n"
+-		"written to stdout\n\n"
++		"-F\tSpecify the format: S16_LE, S32_LE (default S16_LE)\n"
++		"-I\tSpecify codec ID (default %s)\n\n"
++		"If filename.wav is not given the output is written to stdout\n"
++		"Only PCM data can be written to a WAV file.\n\n"
+ 		"Example:\n"
+ 		"\tcrecord -c 1 -d 2 test.wav\n"
+-		"\tcrecord -f 5 test.wav\n",
+-		DEFAULT_CHANNELS, DEFAULT_RATE);
++		"\tcrecord -f 5 test.wav\n"
++		"\tcrecord -I BESPOKE >raw.bin\n\n"
++		"Valid codec IDs:\n",
++		DEFAULT_CHANNELS, DEFAULT_RATE,
++		codec_name_from_id(DEFAULT_CODEC_ID));
++
++	for (i = 0; i < CREC_NUM_CODEC_IDS; ++i)
++		fprintf(stderr, "%s%c", codec_ids[i].name,
++		((i + 1) % 8) ? ' ' : '\n');
++
++	fprintf(stderr, "\nor the value in decimal or hex\n");
+ 
+ 	exit(EXIT_FAILURE);
+ }
+@@ -239,7 +290,8 @@ static int finish_record(void)
+ static void capture_samples(char *name, unsigned int card, unsigned int device,
+ 			    unsigned long buffer_size, unsigned int frag,
+ 			    unsigned int length, unsigned int rate,
+-			    unsigned int channels, unsigned int format)
++			    unsigned int channels, unsigned int format,
++			    unsigned int codec_id)
+ {
+ 	struct compr_config config;
+ 	struct snd_codec codec;
+@@ -289,7 +341,7 @@ static void capture_samples(char *name, unsigned int card, unsigned int device,
+ 
+ 	memset(&codec, 0, sizeof(codec));
+ 	memset(&config, 0, sizeof(config));
+-	codec.id = SND_AUDIOCODEC_PCM;
++	codec.id = codec_id;
+ 	codec.ch_in = channels;
+ 	codec.ch_out = channels;
+ 	codec.sample_rate = rate;
+@@ -409,10 +461,11 @@ int main(int argc, char **argv)
+ {
+ 	char *file;
+ 	unsigned long buffer_size = 0;
+-	int c;
++	int c, i;
+ 	unsigned int card = 0, device = 0, frag = 0, length = 0;
+ 	unsigned int rate = DEFAULT_RATE, channels = DEFAULT_CHANNELS;
+ 	unsigned int format = DEFAULT_FORMAT;
++	unsigned int codec_id = DEFAULT_CODEC_ID;
+ 
+ 	if (signal(SIGINT, sig_handler) == SIG_ERR) {
+ 		fprintf(stderr, "Error registering signal handler\n");
+@@ -423,7 +476,7 @@ int main(int argc, char **argv)
+ 		usage();
+ 
+ 	verbose = 0;
+-	while ((c = getopt(argc, argv, "hvl:R:C:F:b:f:c:d:")) != -1) {
++	while ((c = getopt(argc, argv, "hvl:R:C:F:I:b:f:c:d:")) != -1) {
+ 		switch (c) {
+ 		case 'h':
+ 			usage();
+@@ -463,6 +516,25 @@ int main(int argc, char **argv)
+ 				usage();
+ 			}
+ 			break;
++		case 'I':
++			if (optarg[0] == '0') {
++				codec_id = strtol(optarg, NULL, 0);
++			} else {
++				for (i = 0; i < CREC_NUM_CODEC_IDS; ++i) {
++					if (strcmp(optarg,
++						   codec_ids[i].name) == 0) {
++						codec_id = codec_ids[i].id;
++						break;
++					}
++				}
++
++				if (i == CREC_NUM_CODEC_IDS) {
++					fprintf(stderr, "Unrecognised ID: %s\n",
++						optarg);
++					usage();
++				}
++			}
++			break;
+ 		default:
+ 			exit(EXIT_FAILURE);
+ 		}
+@@ -472,14 +544,17 @@ int main(int argc, char **argv)
+ 		file = NULL;
+ 		finfo = fopen("/dev/null", "w");
+ 		streamed = true;
+-	} else {
++	} else if (codec_id == SND_AUDIOCODEC_PCM) {
+ 		file = argv[optind];
+ 		finfo = stdout;
+ 		streamed = false;
++	} else {
++		fprintf(stderr, "ERROR: Only PCM can be written to a WAV file\n");
++		exit(EXIT_FAILURE);
+ 	}
+ 
+ 	capture_samples(file, card, device, buffer_size, frag, length,
+-			rate, channels, format);
++			rate, channels, format, codec_id);
+ 
+ 	fprintf(finfo, "Finish capturing... Close Normally\n");
+ 
 -- 
-2.5.0
+1.9.1
