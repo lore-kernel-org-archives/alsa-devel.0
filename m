@@ -1,32 +1,45 @@
-From: codekipper@gmail.com
-Subject: [PATCH v2 0/2] ASoC: sun4i-spdif: Add support for the H3 SoC
-Date: Thu, 19 Jan 2017 20:52:56 +0100
-Message-ID: <20170119195258.29652-1-codekipper@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: maxime.ripard@free-electrons.com
-Cc: linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com, lgirdwood@gmail.com, broonie@kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, be17068@iperbole.bo.it, Marcus Cooper <codekipper@gmail.com>
+From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Subject: [PATCH v2 1/2] ASoC: sunxi: Add bindings for sun8i to SPDIF
+Date: Thu, 19 Jan 2017 20:52:57 +0100
+Message-ID: <20170119195258.29652-2-codekipper@gmail.com>
+References: <20170119195258.29652-1-codekipper@gmail.com>
+Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBCHNXO4F7MHBBHVSQTCAKGQE67S5J7Y-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20170119195258.29652-1-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org, Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Marcus Cooper <codekipper@gmail.com>
+From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
 The H3 SoC uses the same SPDIF block as found in earlier SoCs, but the
 transmit fifo is at a different address.
 
-This has been tested on the Beelink X2.
-BR,
-CK
+Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 ---
-Changes since v1:
- - Now a patch set with bindings and driver changes.
----
-Marcus Cooper (2):
-  ASoC: sunxi: Add bindings for sun8i to SPDIF
-  ASoC: sun4i-spdif: Add support for the H3 SoC
+ Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
- Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt |  1 +
- sound/soc/sunxi/sun4i-spdif.c                                 | 11 +++++++++++
- 2 files changed, 12 insertions(+)
-
+diff --git a/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt b/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
+index 0230c4d20506..fe0a65e6d629 100644
+--- a/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
++++ b/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
+@@ -10,6 +10,7 @@ Required properties:
+   - compatible		: should be one of the following:
+     - "allwinner,sun4i-a10-spdif": for the Allwinner A10 SoC
+     - "allwinner,sun6i-a31-spdif": for the Allwinner A31 SoC
++    - "allwinner,sun8i-h3-spdif": for the Allwinner H3 SoC
+ 
+   - reg			: Offset and length of the register set for the device.
+ 
 -- 
 2.11.0
