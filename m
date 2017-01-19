@@ -1,45 +1,107 @@
-From: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
-Subject: [PATCH v2 1/2] ASoC: sunxi: Add bindings for sun8i to SPDIF
-Date: Thu, 19 Jan 2017 20:52:57 +0100
-Message-ID: <20170119195258.29652-2-codekipper@gmail.com>
-References: <20170119195258.29652-1-codekipper@gmail.com>
-Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: ASoC: fsl_sai: Has anybody attempted to run the
+ i.MX6UL in TDM mode with channels > 2?
+Date: Thu, 19 Jan 2017 11:12:35 -0800
+Message-ID: <CAG5mAdypzORzV89rrTF9jFbdtNpY6NoExuXAAUih9HAdCQDypw@mail.gmail.com>
+References: <CAG5mAdy8BbeKdh+yM8vqNEU1RpzfqD20+SxQj-2iLihXxF7Mww@mail.gmail.com>
+ <20170118184326.cokht5tfy24hpf7d@piout.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBHVSQTCAKGQE67S5J7Y-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20170119195258.29652-1-codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
-Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org, Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f67.google.com (mail-oi0-f67.google.com
+ [209.85.218.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9ABCA267437
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2017 20:12:57 +0100 (CET)
+Received: by mail-oi0-f67.google.com with SMTP id j15so3949289oih.0
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2017 11:12:57 -0800 (PST)
+In-Reply-To: <20170118184326.cokht5tfy24hpf7d@piout.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Arnaud Mouiche <arnaud.mouiche@invoxia.com>, Fabio Estevam <festevam@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Oh boy,
+   I have never used the SAI.
 
-The H3 SoC uses the same SPDIF block as found in earlier SoCs, but the
-transmit fifo is at a different address.
+The best test that I've ever used for getting this all straight is to
+route the DOUT -> DIN in hardware, set the SSI for symmetric mode, and
+send a known signal out and watch the input.  We call this a 'ramp'
+test because it's basically sending a sequence 1, 2, 3, 4, 5, ...
+(i.e. a ramp) out and verifying that it comes back in in bit-perfect
+order. (originally got the idea from the Audio Anecdotes Books)
 
-Signed-off-by: Marcus Cooper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
----
- Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt | 1 +
- 1 file changed, 1 insertion(+)
+Arnoud codified that test in his program 'atest', that you can get
+here:  https://github.com/amouiche/atest, which works great.
 
-diff --git a/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt b/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
-index 0230c4d20506..fe0a65e6d629 100644
---- a/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
-+++ b/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
-@@ -10,6 +10,7 @@ Required properties:
-   - compatible		: should be one of the following:
-     - "allwinner,sun4i-a10-spdif": for the Allwinner A10 SoC
-     - "allwinner,sun6i-a31-spdif": for the Allwinner A31 SoC
-+    - "allwinner,sun8i-h3-spdif": for the Allwinner H3 SoC
- 
-   - reg			: Offset and length of the register set for the device.
- 
--- 
-2.11.0
+Another comment:  don't use a sine wave that's an exact multiple of
+the block size.  i.e. with 1ms blocks, a 441Hz at 44.1kHz sine wave is
+the worst possible test signal :-)   If blocks get swapped around,
+you'll have no idea.  Good thing that you have a time-changing sine
+wave :-)
+
+If you must use a sine wave test, use a non, multiple:  450 Hz would
+be fine.   Typical in telephony testing is a test tone of 1004 Hz, so
+that 10ms block problems are spotted.
+
+
+So, that'll help you with your testing, but as far as how DMA works --
+I'm pretty clueless.  Arnoud and I (actually mostly Arnoud)  tracked
+down several errors with the SSI port implementation.  It wouldn't
+surprise me if there were as many problems with the SAI
+implementation.
+
+One of the fundamental problems with the freescale SSI/DMA interaction
+is that the SSI port doesn't request one FRAME at a time from the DMA,
+rather it just requests some number of elements.  This causes a real
+implementation headache because if anything ever gets out of sync,
+it's forever and irretreivabley out of sync.  IIRC, the TI chips do
+DMA requests on a frame by frame basis, so if it goes wrong one frame,
+it'll get corrected the next.
+
+Sorry I can't be of more help, but I really don't know how the SAI/DMA
+stuff works.
+
+-Caleb
+
+
+On Wed, Jan 18, 2017 at 10:43 AM, Alexandre Belloni
+<alexandre.belloni@free-electrons.com> wrote:
+> Hi Caleb,
+>
+> Fabio pointed to that thread because I'm trying to use the i.mx7d SAI in
+> TDM mode with 8 channels (but I'm using only 4).
+>
+> On 02/05/2016 at 10:52:39 -0700, Caleb Crome wrote :
+>> Hi all,
+>>    Now that the MX6 fsl_ssi seems to be getting stable for TDM with
+>> channels > 2 (thanks all!), the MX6 UL and MX7 have only the SAI port.
+>>
+>> Does anybody have experience with running the SAI with more than 2 channels?
+>>
+>
+> I have a really small patch to make the SAI driver configure CR4 and CR5
+> properly for more than 2 channels.
+> Data on the TDM bus seems fine.
+>
+> However, I have an issue with the sample ordering. Discussing that with
+> Lars, it seems the SDMA is getting confused when switching periods. To
+> test, I'm playing a 441Hz sine that is fading out. I can definitively
+> see block of 1024 samples (it is period_size) that are ok but not
+> properly ordered. You can have a look at:
+> http://free-electrons.com/~alexandre/playback.png
+>
+> Did you have the same issue?
+>
+> --
+> Alexandre Belloni, Free Electrons
+> Embedded Linux and Kernel engineering
+> http://free-electrons.com
