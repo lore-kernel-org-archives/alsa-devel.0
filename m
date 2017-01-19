@@ -1,76 +1,80 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [bug report] ASoC: dapm: Implement and instantiate
- DAI widgets
-Date: Thu, 19 Jan 2017 14:50:46 +0530
-Message-ID: <20170119092046.GK3573@localhost>
-References: <20170119073826.GA28899@mwanda>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 1/3] DRM: add help to get ELD speaker allocation
+Date: Thu, 19 Jan 2017 10:29:01 +0000
+Message-ID: <20170119102901.h35ynrcztf5z7vb3@sirena.org.uk>
+References: <1483458772-13658-1-git-send-email-arnaud.pouliquen@st.com>
+ <1483458772-13658-2-git-send-email-arnaud.pouliquen@st.com>
+ <20170117191902.zugqcnb4osxmcgaj@sirena.org.uk>
+ <87bmv5wheq.fsf@eliezer.anholt.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 7B78E261740
- for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2017 10:20:37 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20170119073826.GA28899@mwanda>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com
+Content-Type: multipart/mixed; boundary="===============1721630155=="
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <87bmv5wheq.fsf@eliezer.anholt.net>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Eric Anholt <eric@anholt.net>
+Cc: alsa-devel@alsa-project.org, Jani Nikula <jani.nikula@intel.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 19, 2017 at 10:38:26AM +0300, Dan Carpenter wrote:
-> Hello Mark Brown,
 
-Dan you need to update Mark's email in your address book, its been a while
-since he moved away from wolfson..
+--===============1721630155==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="gt6bucglh7jnb4lz"
+Content-Disposition: inline
 
-> 
-> The patch 888df395ebc5: "ASoC: dapm: Implement and instantiate DAI
-> widgets" from Feb 16, 2012, leads to the following static checker
-> warning:
-> 
-> 	sound/soc/soc-dapm.c:3944 snd_soc_dapm_new_dai_widgets()
-> 	error: 'w' dereferencing possible ERR_PTR()
-> 
-> sound/soc/soc-dapm.c
->   3929          if (dai->driver->playback.stream_name) {
->   3930                  template.id = snd_soc_dapm_dai_in;
->   3931                  template.name = dai->driver->playback.stream_name;
->   3932                  template.sname = dai->driver->playback.stream_name;
->   3933  
->   3934                  dev_dbg(dai->dev, "ASoC: adding %s widget\n",
->   3935                          template.name);
->   3936  
->   3937                  w = snd_soc_dapm_new_control_unlocked(dapm, &template);
-> 
-> This can either return NULL or ERR_PTR(-EPROBE_DEFER).
-> 
->   3938                  if (!w) {
->   3939                          dev_err(dapm->dev, "ASoC: Failed to create %s widget\n",
->   3940                                  dai->driver->playback.stream_name);
->   3941                          return -ENOMEM;
->   3942                  }
->   3943  
->   3944                  w->priv = dai;
->                         ^^^^^^^^^^^^^
-> 
->   3945                  dai->playback_widget = w;
->   3946          }
-> 
-> regards,
-> dan carpenter
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 
--- 
-~Vinod
+--gt6bucglh7jnb4lz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Jan 18, 2017 at 07:38:53AM +1100, Eric Anholt wrote:
+> Mark Brown <broonie@kernel.org> writes:
+
+> > You don't appear to have sent this to any of the DRM maintainers - it
+> > does need review from them.
+
+> It was sent to dri-devel.  That's us.  And the patch already has a r-b
+> From DRM on it.
+
+I see.  For most subsystems you need to actually copy a human to make
+sure that things are seen - just the list isn't enough.  In terms of it
+being reviewed one of the problems with DRM not listing the reviwers in
+the MAINTAINERS file or anything is that it's very hard for anyone to
+tell if something is considered a good enough review or if it's just a
+review from someone who happens to contribute to DRM sometimes.
+
+--gt6bucglh7jnb4lz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliAlOgACgkQJNaLcl1U
+h9DPlAf/WWn/5yG8E2gFEiHY7s343gXlVLOc8CZ3/sIi1VwTTwALWWg5EDWtYC+O
+GDWmzD7da2iwXviEZ3pSc2kSduwqnYtRtyAVDJp+3FwYVzz9qa8HyWxLmesG0K8p
+WZV+iJRC0pMYdK9r/LAJAg4q7GGvjHqXitlvJxbAQa0AJ77EPLK6lCW4FVRTORWt
+HNPMb7qHc+hy6WiBRHpr4a6S8Q0MrYmldzl50jUSlmQP8JdVqBeJ/zVJTxk74X/E
+dMyKRpnbA92Q67COuoQyz3XsXbNV01tYO6qpJLOuvguXWNLwNHjjvMKD0Yz6f0r7
+loYXs+DC9tp/CT/0OFoiADqKAO2d1Q==
+=jJkG
+-----END PGP SIGNATURE-----
+
+--gt6bucglh7jnb4lz--
+
+--===============1721630155==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
+IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+
+--===============1721630155==--
