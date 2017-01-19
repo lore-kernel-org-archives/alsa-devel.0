@@ -1,46 +1,145 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [bug report] ASoC: dapm: Implement and instantiate
- DAI widgets
-Date: Thu, 19 Jan 2017 13:25:57 +0100
-Message-ID: <9a00a406-c3b1-39c1-5aea-7ea5b2735dbb@metafoo.de>
-References: <20170119073826.GA28899@mwanda> <20170119092046.GK3573@localhost>
- <20170119103017.GE4398@mwanda>
+From: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: Question about OF-graph ports
+Date: Thu, 19 Jan 2017 08:58:13 -0600
+Message-ID: <CAL_Jsq+pDkfijyKV0ALzZUrH-NVzmLaNj6ivAEFO98NUOXGojw@mail.gmail.com>
+References: <87r33z4maj.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 05E08266CC1
- for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2017 13:26:03 +0100 (CET)
-In-Reply-To: <20170119103017.GE4398@mwanda>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>, Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <87r33z4maj.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linux-DT <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 01/19/2017 11:30 AM, Dan Carpenter wrote:
-> On Thu, Jan 19, 2017 at 02:50:46PM +0530, Vinod Koul wrote:
->> On Thu, Jan 19, 2017 at 10:38:26AM +0300, Dan Carpenter wrote:
->>> Hello Mark Brown,
->>
->> Dan you need to update Mark's email in your address book, its been a while
->> since he moved away from wolfson..
->>
-> 
-> Oh crap!  This warning is from 2012...  I really need to update my
-> scripts so I stop sending really ancient warnings.
+On Thu, Jan 19, 2017 at 12:07 AM, Kuninori Morimoto
+<kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org> wrote:
+>
+> Hi Rob, Mark
+> and ALSA SoC ML
+>
+> I'm working for OF-graph base sound card support.
+> Now I want to know 1 things which can't solve by myself.
+> It is OF-graph ports
+>
+> ALSA SoC needs CPU, Codec, and Sound Card.
+> If CPU <-> Card <-> Codec case, OF-graph will be
+>
+>         card {
+>                 ports {
+>                         port@0 {
+>                                 card_in: endpoint {
+>                                         remote-endpoint = <&cpu_out>;
+>                                 };
+>                         };
+>                         port@1 {
+>                                 card_out: endpoint {
+>                                         remote-endpoint = <&codec_in>;
+>                                 };
+>                         };
+>                 };
+>         };
+>
+>         cpu {
+>                 port {
+>                         cpu_out: endpoint {
+>                                 remote-endpoint = <&card_in>;
+>                         };
+>                 };
+>         };
+>
+>         codec {
+>                 port {
+>                         codec_in: endpoint {
+>                                 remote-endpoint = <&card_out>;
+>                         };
+>                 };
+>         };
+>
+> This is OK.
+> If CPU has many ports, then ALSA SoC requests 1 Card which has many
+> DAIs (= Digital Audio Interface).
+> This case, cpu will have "ports" and many "port", this is OK.
+>
+>         SoC.0              Codec0
+>         SoC.1 <-> Card <-> Codec1
+>         SoC.2              Codec2
 
-The warning is correct. It's just the wrong commit. The issue was introduced
-with commit 37e1df8c95e2 ("ASoC: dapm: handle probe deferrals"). The commit
-introduces ERR_PTR() as a possible return value for the function, but does
-not update all callers.
+This looks wrong to me. The card is just a container node to group
+things. The card should not be the middle of the graph. There is no
+data flow thru the card as it's not a hardware thing. Start with the
+codec's port connected to the node controlling the audio port on the
+SOC (In the simple case, that's an SSI controller) and expand the
+graph from there.
 
-- Lars
+
+> In "card", CPU/Codec pair is indicated by "ports" now
+> (= port0 is CPU, port1 is Codec, etc)
+>
+> My question is in this case, how to know CPU/Codec pair on "card" ?
+
+The card should only have the entry (or exit) points of the graph.
+That may not even need to be graph nodes. It could just be a list of
+CPU DAI phandles (which then have graph nodes).
+
+Look at the display side use of OF graph. We have display subsystem
+nodes (like a card) with a poorly named ports property (nothing to do
+with OF graph) listing display channels. Each phandle there is the
+entry point to the graph and is typically the front end display
+controller (perhaps a CSC and scaling unit). The graph then goes to a
+backend controller (for display timing), then to interface PHY
+(DSI/HDMI), then possibly and external bridge chip, then to a
+connector or panel node. That's a complex example. In simple cases, we
+just have a display controller connected to a panel.
+
+> Can we have *multi ports*, like this ?
+>
+> card {
+>         ports {
+>                 ports@0 {
+>                         port@0 { /* SoC.0 */ };
+
+This is not the OF graph binding, so don't do this. OF graph is
+flexible enough already to describe any topology. If you feel you need
+to extend it, then something is wrong.
+
+>                         port@1 { /* Codec0*/ };
+>                 };
+>                 ports@1 {
+>                         port@0 { /* SoC.1 */ };
+>                         port@1 { /* Codec1*/ };
+>                 };
+>                 ports@2 {
+>                         port@0 { /* SoC.2 */ };
+>                         port@1 { /* Codec2*/ };
+>                 };
+>         };
+> };
+>
+> Or can I use grouping, like this ?
+>
+> card {
+>         group = <port@0 port@1>,
+>                 <port@2 port@3>,
+>                 <port@4 port@5>;
+
+If it's not clear by now, the graph is supposed to define the
+connections. You are defining connections here in your own custom way.
+
+>         ports {
+>                 port@0 { /* SoC.0 */ };
+>                 port@1 { /* SoC.1 */ };
+>                 port@2 { /* SoC.2 */ };
+>                 port@3 { /* Codec0*/ };
+>                 port@4 { /* Codec1*/ };
+>                 port@5 { /* Codec2*/ };
+>         };
+> };
+>
+> Best regards
+> ---
+> Kuninori Morimoto
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
