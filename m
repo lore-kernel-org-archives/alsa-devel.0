@@ -1,37 +1,154 @@
-From: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: Re: Re: [PATCH] ASoC: sunxi: Add bindings for sun8i to SPDIF
-Date: Thu, 19 Jan 2017 18:57:34 +0100
-Message-ID: <CAEKpxB=Hdv8CzqY9eiG-HU1Nd8bVi9u2bsQtcNL9dsSZn1_ayw@mail.gmail.com>
-References: <20170112173343.9953-1-codekipper@gmail.com> <20170117181531.fdwc5vglpvxpx7su@sirena.org.uk>
- <CAEKpxBmkbYJzMdn-BFTa0485XSDPcMd6yQHgaqKQZoirG_DnUA@mail.gmail.com> <20170119170343.bxkm3353yqt5vkhc@sirena.org.uk>
-Reply-To: codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: hdac_hdmi: Enable pin and converter in
+	prepare" to the asoc tree
+Date: Thu, 19 Jan 2017 18:03:47 +0000
+Message-ID: <E1cUH3r-0004w0-4R@debutante>
+References: <1483341277-14475-10-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCHNXO4F7MHBBD74QPCAKGQEMIKU7NA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20170119170343.bxkm3353yqt5vkhc-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, "Andrea Venturi (pers)" <be17068-p0aYb1w59bq9tCD/VL7h6Q@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 57C862678D4
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jan 2017 19:04:01 +0100 (CET)
+In-Reply-To: <1483341277-14475-10-git-send-email-jeeja.kp@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jeeja KP <jeeja.kp@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Sachin Mokashi <sachinx.mokashi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 19 January 2017 at 18:03, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
-> On Wed, Jan 18, 2017 at 08:09:00AM +0100, Code Kipper wrote:
->
->> I missed the binding documentation on the patch for the driver so I
->> pushed it separately instead of pushing a new patch version.
->> You can find it under the subject heading 'ASoC: sun4i-spdif: Add
->> support for the H3 SoC' and Maxime has ACK it (on the condition that I
->> add the binding doc).
->
-> I don't seem to have that patch.  If Maxime said it needed changes for
-> him to ack it there's every chance I just deleted it waiting for you to
-> resend, it's certainly confusing to see a patch like this without the
-> matching code.
-No worries...I'll squash this patch into it and send as a V2.
-CK
+The patch
+
+   ASoC: hdac_hdmi: Enable pin and converter in prepare
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 1de777fed54dfa93e166a3c934c5846920b86f0c Mon Sep 17 00:00:00 2001
+From: Jeeja KP <jeeja.kp@intel.com>
+Date: Tue, 10 Jan 2017 17:57:48 +0530
+Subject: [PATCH] ASoC: hdac_hdmi: Enable pin and converter in prepare
+
+Instead of enabling pin and cvt in pcm_open(), need to restore pin and
+cvt state after system resume to restart the playback which is
+paused/stopped before system suspend.
+So enable pin and cvt in playback_prepare and call prepare when trigger
+cmd is paused/started and resume to reconfigure pin and cvt.
+
+Signed-off-by: Sachin Mokashi <sachinx.mokashi@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/hdac_hdmi.c | 37 +++++++++++++++++--------------------
+ 1 file changed, 17 insertions(+), 20 deletions(-)
+
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index c602c4960924..1da4405ee435 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -114,6 +114,12 @@ struct hdac_hdmi_priv {
+ 	struct hdac_chmap chmap;
+ };
+ 
++static void hdac_hdmi_enable_cvt(struct hdac_ext_device *edev,
++			struct hdac_hdmi_dai_pin_map *dai_map);
++
++static int hdac_hdmi_enable_pin(struct hdac_ext_device *hdac,
++			struct hdac_hdmi_dai_pin_map *dai_map);
++
+ static struct hdac_hdmi_pcm *get_hdmi_pcm_from_id(struct hdac_hdmi_priv *hdmi,
+ 						int pcm_idx)
+ {
+@@ -411,6 +417,10 @@ static int hdac_hdmi_playback_prepare(struct snd_pcm_substream *substream,
+ 	dev_dbg(&hdac->hdac.dev, "stream tag from cpu dai %d format in cvt 0x%x\n",
+ 			dd->stream_tag,	dd->format);
+ 
++	hdac_hdmi_enable_cvt(hdac, dai_map);
++	ret = hdac_hdmi_enable_pin(hdac, dai_map);
++	if (ret < 0)
++		return ret;
+ 	mutex_lock(&pin->lock);
+ 	pin->channels = substream->runtime->channels;
+ 
+@@ -464,12 +474,7 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
+ static int hdac_hdmi_playback_cleanup(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
+-	struct hdac_ext_device *edev = snd_soc_dai_get_drvdata(dai);
+ 	struct hdac_ext_dma_params *dd;
+-	struct hdac_hdmi_priv *hdmi = edev->private_data;
+-	struct hdac_hdmi_dai_pin_map *dai_map;
+-
+-	dai_map = &hdmi->dai_map[dai->id];
+ 
+ 	dd = (struct hdac_ext_dma_params *)snd_soc_dai_get_dma_data(dai, substream);
+ 
+@@ -622,11 +627,6 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
+ 
+ 	dai_map->pin = pin;
+ 
+-	hdac_hdmi_enable_cvt(hdac, dai_map);
+-	ret = hdac_hdmi_enable_pin(hdac, dai_map);
+-	if (ret < 0)
+-		return ret;
+-
+ 	ret = hdac_hdmi_eld_limit_formats(substream->runtime,
+ 				pin->eld.eld_buffer);
+ 	if (ret < 0)
+@@ -639,18 +639,15 @@ static int hdac_hdmi_pcm_open(struct snd_pcm_substream *substream,
+ static int hdac_hdmi_trigger(struct snd_pcm_substream *substream, int cmd,
+ 		struct snd_soc_dai *dai)
+ {
+-	struct hdac_hdmi_dai_pin_map *dai_map;
+-	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
+-	struct hdac_hdmi_priv *hdmi = hdac->private_data;
+-	int ret;
+-
+-	dai_map = &hdmi->dai_map[dai->id];
+-	if (cmd == SNDRV_PCM_TRIGGER_RESUME) {
+-		ret = hdac_hdmi_enable_pin(hdac, dai_map);
+-		if (ret < 0)
+-			return ret;
+ 
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 		return hdac_hdmi_playback_prepare(substream, dai);
++
++	default:
++		return 0;
+ 	}
+ 
+ 	return 0;
+-- 
+2.11.0
