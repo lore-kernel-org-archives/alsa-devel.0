@@ -1,48 +1,79 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: Question about OF-graph ports
-Date: Thu, 19 Jan 2017 11:12:15 +0000
-Message-ID: <20170119111215.cv2fyvjafluih22p@sirena.org.uk>
-References: <87r33z4maj.wl%kuninori.morimoto.gx@renesas.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 1/3] DRM: add help to get ELD speaker allocation
+Date: Thu, 19 Jan 2017 11:18:27 +0000
+Message-ID: <20170119111827.3ot7osemm4exv5sr@sirena.org.uk>
+References: <1483458772-13658-1-git-send-email-arnaud.pouliquen@st.com>
+ <1483458772-13658-2-git-send-email-arnaud.pouliquen@st.com>
+ <20170117191902.zugqcnb4osxmcgaj@sirena.org.uk>
+ <87bmv5wheq.fsf@eliezer.anholt.net>
+ <20170119102901.h35ynrcztf5z7vb3@sirena.org.uk>
+ <12dd4fb5-978d-f479-208b-1c57ade16e38@st.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="2m5nqk4iqobbls3y"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <87r33z4maj.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linux-DT <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============1553734721=="
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <12dd4fb5-978d-f479-208b-1c57ade16e38@st.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jani Nikula <jani.nikula@intel.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---2m5nqk4iqobbls3y
+--===============1553734721==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="jttf3k542hu7ue25"
+Content-Disposition: inline
+
+
+--jttf3k542hu7ue25
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, Jan 19, 2017 at 06:07:43AM +0000, Kuninori Morimoto wrote:
+On Thu, Jan 19, 2017 at 11:49:56AM +0100, Arnaud Pouliquen wrote:
 
-> My question is in this case, how to know CPU/Codec pair on "card" ?
+> I limited diffusion to ASoC, as Daniel Vetter and Takashi Iwai
+> discussed the topic here:
+> http://www.spinics.net/lists/alsa-devel/msg58114.html
+> Seems that is was not a good strategy as it leads to discussions..
+> Sorry for this.
 
-This is more of a DT question but, I don't think I have that strong an
-opinion based on the snippets you posted, they both seem readable.
+If you're doing something like that and there's not been acks or other
+tags then you really should put some text after the --- or perhaps in
+the cover letter for the series explaining what's going on - people
+won't reliably remember old discussions without prompting.
 
---2m5nqk4iqobbls3y
+--jttf3k542hu7ue25
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliAnw4ACgkQJNaLcl1U
-h9DMLwf+PVK9kAq8D2ZgYRLG5yVkdG6XYp+qLfC66cYm0I2EzGNnpqQcpBS6SrlQ
-fawILf9H8TO9txSiBR4oQ2zpwvYxM7b/bqUNV0rb4WT4/nVDDKuKXTlScx7fQmeQ
-uOT2lA9jpSTQdYNfgQnNqxradF6IS9ZU/JHjl1HFy+x8v6t16Lj3aUbFvEMjZ7l5
-XhV6wDLwmhvCPX0YklrrFyF4oWAwYTaxEdqvwtjO0vQUWfQb2M6VFTb28J9GZPPQ
-/il95HQY/XVU6dPYwBIkSEsW4+uPtWm55b/XolqennHaBcb+SNjas9FKUzIxEGDD
-e5vnc1UvU7Fx6n0g6ACtZYBEeP1/rA==
-=XVRp
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliAoIIACgkQJNaLcl1U
+h9DpEQf/RbsbwFWOiWfdg9AdSZIUmMTDi/1stTDUk7mSon3J7AlQsUeovrdKP0qe
+ayQDTCNciZ02hRkMZLwOii0VOhj49Z2bxhuTrlY78on9X9xYEnKYBiq8BjU4AQ3U
+Gvg4MtAltbGAqsfmqYPjL9fpcMG95nUy6SRAFuSwyNuGwpq9AdR82EAAiPFndlfk
+/iFkPRSpVm79Jtljkk6i1T6f+jQ8s+nHdT7ebeZnBnlJM0+Qz4RmBiFgZU7WuCOW
+8efODPa4B1ky+fgAx9hiAHIqBCYgIHh2rpD8bSF3KzT4XXAKFv+TDRO2u6rwSJQU
+RCGu4zPiisQ2xQKzXLuHqZznbTjqKA==
+=TyjT
 -----END PGP SIGNATURE-----
 
---2m5nqk4iqobbls3y--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--jttf3k542hu7ue25--
+
+--===============1553734721==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
+IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+
+--===============1553734721==--
