@@ -1,105 +1,87 @@
-From: "Anand, Jerome" <jerome.anand@intel.com>
-Subject: Re: [alsa-devel] [PATCH V3 3/5] ALSA: add Intel HDMI
-	LPE audio	driver for BYT/CHT-T
-Date: Fri, 20 Jan 2017 05:46:05 +0000
-Message-ID: <F6867404AABACB4D8EC371BF802A4B7C1495DE07@fmsmsx101.amr.corp.intel.com>
-References: <20170110050841.31900-1-jerome.anand@intel.com>
- <20170110050841.31900-4-jerome.anand@intel.com>
- <s5hlgu8twtt.wl-tiwai@suse.de>
- <F6867404AABACB4D8EC371BF802A4B7C1495D64E@fmsmsx101.amr.corp.intel.com>
- <s5hh94vs4oq.wl-tiwai@suse.de>
+From: Matt Flax <flatmax@flatmax.org>
+Subject: Re: [PATCH] ASoC: bcm2835: Remove redundant channel
+ checking code in hw_params
+Date: Fri, 20 Jan 2017 16:58:45 +1100
+Message-ID: <30b14c21-8729-d5d9-2f11-2d462fac1852@flatmax.org>
+References: <1484443043-13623-1-git-send-email-flatmax@flatmax.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <s5hh94vs4oq.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "broonie@kernel.org" <broonie@kernel.org>, "Ughreja,
- Rakesh A" <rakesh.a.ughreja@intel.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from nskntmtas01p.mx.bigpond.com (nskntmtas01p.mx.bigpond.com
+ [61.9.168.137]) by alsa0.perex.cz (Postfix) with ESMTP id 4CD95266AF5
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2017 06:58:49 +0100 (CET)
+In-Reply-To: <1484443043-13623-1-git-send-email-flatmax@flatmax.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Stephen Warren <swarren@wwwdotorg.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@opensource.wolfsonmicro.com>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Cgo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gRnJvbTogVGFrYXNoaSBJd2FpIFttYWls
-dG86dGl3YWlAc3VzZS5kZV0KPiBTZW50OiBUaHVyc2RheSwgSmFudWFyeSAxOSwgMjAxNyA0OjIy
-IFBNCj4gVG86IEFuYW5kLCBKZXJvbWUgPGplcm9tZS5hbmFuZEBpbnRlbC5jb20+Cj4gQ2M6IGFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgaW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9y
-ZzsgcGllcnJlLQo+IGxvdWlzLmJvc3NhcnRAbGludXguaW50ZWwuY29tOyBicm9vbmllQGtlcm5l
-bC5vcmc7IFVnaHJlamEsIFJha2VzaCBBCj4gPHJha2VzaC5hLnVnaHJlamFAaW50ZWwuY29tPjsg
-dmlsbGUuc3lyamFsYUBsaW51eC5pbnRlbC5jb20KPiBTdWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxd
-IFtQQVRDSCBWMyAzLzVdIEFMU0E6IGFkZCBJbnRlbCBIRE1JIExQRSBhdWRpbwo+IGRyaXZlciBm
-b3IgQllUL0NIVC1UCj4gCj4gT24gVGh1LCAxOSBKYW4gMjAxNyAxMTozOToyOSArMDEwMCwKPiBB
-bmFuZCwgSmVyb21lIHdyb3RlOgo+ID4gPiA+ICt2b2lkIG1pZF9oZG1pX2F1ZGlvX3NpZ25hbF9l
-dmVudChlbnVtIGhhZF9ldmVudF90eXBlIGV2ZW50KSB7Cj4gPiA+ID4gKwlzdHJ1Y3QgaGRtaV9s
-cGVfYXVkaW9fY3R4ICpjdHg7Cj4gPiA+ID4gKwo+ID4gPiA+ICsJZGV2X2RiZygmaGxwZV9wZGV2
-LT5kZXYsICIlczogRW50ZXJcbiIsIF9fZnVuY19fKTsKPiA+ID4gPiArCj4gPiA+ID4gKwljdHgg
-PSBwbGF0Zm9ybV9nZXRfZHJ2ZGF0YShobHBlX3BkZXYpOwo+ID4gPiA+ICsKPiA+ID4gPiArCWlm
-IChjdHgtPmhhZF9ldmVudF9jYWxsYmFja3MpCj4gPiA+ID4gKwkJKCpjdHgtPmhhZF9ldmVudF9j
-YWxsYmFja3MpKGV2ZW50LAo+ID4gPiA+ICsJCQljdHgtPmhhZF9wdnRfZGF0YSk7Cj4gPiA+Cj4g
-PiA+IElzbid0IHRoaXMgcmFjeT8gIFRoaXMgZGlzcGF0Y2hlciBzZWVtcyBjYWxsZWQgZnJvbSBt
-dWx0aXBsZSBwbGFjZXMKPiA+ID4gaW5jbHVkaW5nIHRoZSBpbnRlcnJ1cHQgaGFuZGxlciBiZWxv
-dy4KPiA+ID4KPiA+Cj4gPiBObywgSXQncyB0YWtlbiBjYXJlIG9mIGluIHRoZSByZXNwZWN0aXZl
-IGNhbGxiYWNrcyBiYXNlZCBvbiB0aGUgZXZlbnQKPiAKPiBJZiB0aGUgcmFjZSBwcm90ZWN0aW9u
-IG11c3QgYmUgaGFuZGxlZCBpbnNpZGUgdGhlIGNhbGxiYWNrLCBwbGVhc2UgZGVzY3JpYmUgaXQu
-Cj4gCgpPaywgd2lsbCBhZGQgYSBjb21tZW50IGFsb25nIHdpdGggdGhpcyBjb2RlCgo+IAo+ID4g
-PiA+ICsvKioKPiA+ID4gPiArICogaGRtaV9hdWRpb19nZXRfY2FwczoKPiA+ID4gPiArICogdXNl
-ZCB0byByZXR1cm4gdGhlIEhETUkgYXVkaW8gY2FwYWJpbGl0aWVzLgo+ID4gPiA+ICsgKiBlLmcu
-IHJlc29sdXRpb24sIGZyYW1lIHJhdGUuCj4gPiA+ID4gKyAqLwo+ID4gPiA+ICtzdGF0aWMgaW50
-IGhkbWlfYXVkaW9fZ2V0X2NhcHMoZW51bSBoYWRfY2Fwc19saXN0IGdldF9lbGVtZW50LAo+ID4g
-PiA+ICsJCQl2b2lkICpjYXBhYmlsaXRpZXMpCj4gPiA+ID4gK3sKPiA+ID4gPiArCXN0cnVjdCBo
-ZG1pX2xwZV9hdWRpb19jdHggKmN0eDsKPiA+ID4gPiArCWludCByZXQgPSAwOwo+ID4gPiA+ICsK
-PiA+ID4gPiArCWN0eCA9IGdldF9oZG1pX2NvbnRleHQoKTsKPiA+ID4gPiArCj4gPiA+ID4gKwlk
-ZXZfZGJnKCZobHBlX3BkZXYtPmRldiwgIiVzOiBFbnRlclxuIiwgX19mdW5jX18pOwo+ID4gPiA+
-ICsKPiA+ID4gPiArCXN3aXRjaCAoZ2V0X2VsZW1lbnQpIHsKPiA+ID4gPiArCWNhc2UgSEFEX0dF
-VF9FTEQ6Cj4gPiA+ID4gKwkJcmV0ID0gaGRtaV9nZXRfZWxkKGNhcGFiaWxpdGllcyk7Cj4gPiA+
-ID4gKwkJYnJlYWs7Cj4gPiA+ID4gKwljYXNlIEhBRF9HRVRfRElTUExBWV9SQVRFOgo+ID4gPiA+
-ICsJCS8qIFRvRG86IFZlcmlmeSBpZiBzYW1wbGluZyBmcmVxIGxvZ2ljIGlzIGNvcnJlY3QgKi8K
-PiA+ID4gPiArCQltZW1jcHkoY2FwYWJpbGl0aWVzLCAmKGN0eC0+dG1kc19jbG9ja19zcGVlZCks
-Cj4gPiA+ID4gKwkJCXNpemVvZih1aW50MzJfdCkpOwo+ID4gPgo+ID4gPiBXaHkgbWVtY3B5PyAg
-Qm90aCBzb3VyY2UgYW5kIGRlc3RpbmF0aW9uIGFyZSAzMmJpdCBpbnQsIG5vPwo+ID4gPgo+ID4K
-PiA+IERvIHlvdSB0aGluayAqKGludCAqKWNhcGFiaWxpdGllcyA9ICBjdHgtPnRtZHNfY2xvY2tf
-c3BlZWQgaXMgYmV0dGVyICB0aGFuCj4gbWVtY3B5Pwo+IAo+IFdoeSBub3Qgc2ltcGx5IHN1YnN0
-aXR1dGlvbjoKPiAJY2FwYWJpbGl0aWVzID0gY3R4LT50bWRzX2Nsb2NrX3NwZWVkOwo+ID8KPiAK
-CkNhcGFiaWxpdGllcyBpcyBhIHZvaWQgKi4gCgo+IAo+ID4gPiA+ICsvKioKPiA+ID4gPiArICog
-aGRtaV9hdWRpb19nZXRfcmVnaXN0ZXJfYmFzZQo+ID4gPiA+ICsgKiB1c2VkIHRvIGdldCB0aGUg
-Y3VycmVudCBoZG1pIGJhc2UgYWRkcmVzcyAgKi8gaW50Cj4gPiA+ID4gK2hkbWlfYXVkaW9fZ2V0
-X3JlZ2lzdGVyX2Jhc2UodWludDMyX3QgKipyZWdfYmFzZSwKPiA+ID4gPiArCQl1aW50MzJfdCAq
-Y29uZmlnX29mZnNldCkKPiA+ID4gPiArewo+ID4gPiA+ICsJc3RydWN0IGhkbWlfbHBlX2F1ZGlv
-X2N0eCAqY3R4Owo+ID4gPiA+ICsKPiA+ID4gPiArCWN0eCA9IHBsYXRmb3JtX2dldF9kcnZkYXRh
-KGhscGVfcGRldik7Cj4gPiA+ID4gKwkqcmVnX2Jhc2UgPSAodWludDMyX3QgKikoY3R4LT5tbWlv
-X3N0YXJ0KTsKPiA+ID4gPiArCSpjb25maWdfb2Zmc2V0ID0gY3R4LT5oYWRfY29uZmlnX29mZnNl
-dDsKPiA+ID4gPiArCWRldl9kYmcoJmhscGVfcGRldi0+ZGV2LCAiJXM6IHJlZ19iYXNlID0gMHgl
-cCwgY2ZnX29mZiA9Cj4gPiA+IDB4JXhcbiIsIF9fZnVuY19fLAo+ID4gPiA+ICsJCQkqcmVnX2Jh
-c2UsICpjb25maWdfb2Zmc2V0KTsKPiA+ID4gPiArCXJldHVybiAwOwo+ID4gPgo+ID4gPiBXZWxs
-LCBJIHNlZSBubyByZWFzb24gd2h5IHRoaXMgZnVuY3Rpb24gLyBjYWxsYmFjayBpcyBuZWVkZWQu
-Cj4gPiA+IFRoZSBiYXNlIGFkZHJlc3MgaXMgbmV2ZXIgcmVmZXJyZWQgaW4gb3RoZXIgY29kZXMs
-IGFuZCB0aGUKPiA+ID4gY29uZmlnX29mZnNldCBpcyBhbHdheXMgcGFzc2VkIHRvIHJlYWQvd3Jp
-dGUgYWNjZXNzb3JzLCBzbyBpdCBjYW4gYmUKPiBjYWxjdWxhdGVkIHRoZXJlIGRpcmVjdGx5Lgo+
-ID4gPgo+ID4gPiBBbnkgb3RoZXIgbWlzc2luZyBjYXNlcz8KPiA+ID4KPiA+Cj4gPiBJIHdhbnRl
-ZCB0byBoYXZlIGEgY2xlYW5lciBzZXBhcmF0aW9uLCBoZW5jZSBhZGRlZCB0aGlzIGZ1bmN0aW9u
-IGluCj4gPiB0aGlzIGZpbGUgcmF0aGVyIFRoYW4gZGVyaXZpbmcgaXQuIFNvIHdvdWxkIHByZWZl
-ciB0byBrZWVwIGl0Lgo+IAo+IFBhc3NpbmcgdGhlIGJhc2UgcmVnaXN0ZXIgYWRkcmVzcyBhbmQg
-dGhlIG9mZnNldCBpcyBuZXZlciBhICJjbGVhbiIKPiBzZXBhcmF0aW9uIGZyb20gdGhlIGFic3Ry
-YWN0aW9uIFBPVi4gIEl0J3MganVzdCBhIHBhc3N0aHJvdWdoIG9mIHRoZSBsb3dsZXZlbAo+IGlu
-dGVyZmFjZS4gIElmIHlvdSB3YW50IGFuIGFic3RyYWN0aW9uIGxheWVyLCBzdWNoIGEgbG93bGV2
-ZWwgaW5mb3JtYXRpb24KPiBzaG91bGQgYmUgcHJvdGVjdGVkIGluc2lkZS4KPiAKPiBJT1csIHdo
-eSBkb2VzIHRoIHVwcGVyIGxheWVyIG5lZWQgdG8ga25vdyB0aGVzZSBhZGRyZXNzIGFuZCBvZmZz
-ZXQsIGlmIHRoZQo+IGxvd2xldmVsIHJlYWQvd3JpdGUgYWNjZXNzb3IgaXRzZWxmIGFscmVhZHkg
-a25vd3Mgb2YgdGhlbT8KPiAKCkFtIG1haW50YWluaW5nIHRoZSBkcml2ZXIgY29udGV4dCBhbG9u
-ZyB3aXRoIHRoZSByZWdpc3RlcnMgaW4gb25lIGFic3RyYWN0aW9uIGFuZCByZWFkL3dyaXRlIGFj
-Y2Vzc2VzIGluIGFub3RoZXI7IApIZW5jZSB0aGlzIGluZGlyZWN0aW9uICBpcyBuZWVkZWQuCgpB
-cyBhbHJlYWR5IHN0YXRlZCBwcmV2aW91c2x5LCBvbmNlIHdlIGRlbGl2ZXIgeW91IHRoZSBuZXh0
-IHBhdGNoIHNlcmllcyBhZnRlciBEUCBpbnRlZ3JhdGlvbiwgb25lIGxldmVsIG9mIGluZGlyZWN0
-aW9uCmNhbiBiZSByZW1vdmVkLiBBcyBvZiBub3csIEkgcHJvcG9zZSB0byBrZWVwIGl0IHRoaXMg
-d2F5LgoKPiAKPiB0aGFua3MsCj4gCj4gVGFrYXNoaQoKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhA
-bGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxt
-YW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+This hasn't had any airplay since posting 5 days ago.
+
+Can anyone advise on the correct person to contact regarding the review 
+of this patch ?
+
+thanks
+
+Matt
+
+On 15/01/17 12:17, Matt Flax wrote:
+> Due to channels_max and channels_min in the bcm2835_i2s_dai structure,
+> the channel guard code in bcm2835_i2s_hw_params is redundant.
+>
+> The bcm2835_i2s_hw_params function checks that the channel count is
+> 2 before continuing. This code never gets executed because core soc
+> checks prevent the execution (upon channel mismatch) of the
+> bcm2835_i2s_hw_params function.
+>
+> The redundancy has been tested and checked for the case when
+> the bcm2835_i2s_dai structure has channels_max = 2 and a request
+> for 8 channels has been made. The test has confirmed that the
+> removed code is redundant as it never gets executed when a
+> channel mismatch occurs.
+>
+> This redundant channel count check may seem like it will not cause
+> any problems however some sound cards (such as the 8 channel
+> AudioInjector Octo sound card) require the execution of the
+> bcm2835_i2s_hw_params function when channels_max in the
+> bcm2835_i2s_dai structure has been increased to 8.
+>
+> As the channel checking code in bcm2835_i2s_hw_params is redundant
+> and stops certain cards from working it has been removed.
+>
+> Signed-off-by: Matt Flax <flatmax@flatmax.org>
+> ---
+>   sound/soc/bcm/bcm2835-i2s.c | 12 +++---------
+>   1 file changed, 3 insertions(+), 9 deletions(-)
+>
+> diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
+> index 6ba2049..1773b83 100644
+> --- a/sound/soc/bcm/bcm2835-i2s.c
+> +++ b/sound/soc/bcm/bcm2835-i2s.c
+> @@ -310,15 +310,9 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
+>   	ch1pos = data_delay;
+>   	ch2pos = bclk_ratio / 2 + data_delay;
+>   
+> -	switch (params_channels(params)) {
+> -	case 2:
+> -		format = BCM2835_I2S_CH1(format) | BCM2835_I2S_CH2(format);
+> -		format |= BCM2835_I2S_CH1(BCM2835_I2S_CHPOS(ch1pos));
+> -		format |= BCM2835_I2S_CH2(BCM2835_I2S_CHPOS(ch2pos));
+> -		break;
+> -	default:
+> -		return -EINVAL;
+> -	}
+> +	format = BCM2835_I2S_CH1(format) | BCM2835_I2S_CH2(format);
+> +	format |= BCM2835_I2S_CH1(BCM2835_I2S_CHPOS(ch1pos));
+> +	format |= BCM2835_I2S_CH2(BCM2835_I2S_CHPOS(ch2pos));
+>   
+>   	/*
+>   	 * Set format for both streams.
