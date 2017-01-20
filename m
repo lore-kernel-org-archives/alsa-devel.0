@@ -1,84 +1,58 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH] ASoC: ux500: do not moan on deferrals
-Date: Fri, 20 Jan 2017 14:20:11 +0100
-Message-ID: <20170120132011.1147-1-linus.walleij@linaro.org>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Nokia N900: microphone mixers
+Date: Fri, 20 Jan 2017 14:31:59 +0100
+Message-ID: <20170120133159.GA5241@amd>
+References: <20170112181826.GA28290@amd>
+ <201701121934.19810@pali>
+ <20170114225614.GA25321@amd>
+ <201701150100.54214@pali>
+ <20170115100533.GA15816@amd>
+ <40dbce4e-d99d-d77d-e682-5b004c70ca40@bitmer.com>
+ <d2c78625-565a-86ec-a03e-f15ae071942a@ti.com>
+ <ecdc073b-d83f-ba7d-89bf-da8899414217@bitmer.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f53.google.com (mail-lf0-f53.google.com
- [209.85.215.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 7FB87265A82
- for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2017 14:20:15 +0100 (CET)
-Received: by mail-lf0-f53.google.com with SMTP id k86so57984914lfi.0
- for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2017 05:20:15 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="4Ckj6UjgE2iN1+kY"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <ecdc073b-d83f-ba7d-89bf-da8899414217@bitmer.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>, sre@kernel.org, kernel list <linux-kernel@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-omap@vger.kernel.org, tony@atomide.com, khilman@kernel.org, aaro.koskinen@iki.fi, ivo.g.dimitrov.75@gmail.com, patrikbachan@gmail.com, serge@hallyn.com, abcloriens@gmail.com, alsa-devel@alsa-project.org, helen.koike@collabora.co.uk, lars@metafoo.de, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This removes the "error" print on probe deferral, it's
-unnecessary and confusing. Also cut a few debug prints we do
-not need.
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- sound/soc/ux500/mop500.c | 16 +---------------
- 1 file changed, 1 insertion(+), 15 deletions(-)
+--4Ckj6UjgE2iN1+kY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/sound/soc/ux500/mop500.c b/sound/soc/ux500/mop500.c
-index ba9fc099cf67..c5a9e98ddd7f 100644
---- a/sound/soc/ux500/mop500.c
-+++ b/sound/soc/ux500/mop500.c
-@@ -103,8 +103,6 @@ static int mop500_probe(struct platform_device *pdev)
- 	struct device_node *np = pdev->dev.of_node;
- 	int ret;
- 
--	dev_dbg(&pdev->dev, "%s: Enter.\n", __func__);
--
- 	mop500_card.dev = &pdev->dev;
- 
- 	if (np) {
-@@ -113,22 +111,12 @@ static int mop500_probe(struct platform_device *pdev)
- 			return ret;
- 	}
- 
--	dev_dbg(&pdev->dev, "%s: Card %s: Set platform drvdata.\n",
--		__func__, mop500_card.name);
- 	platform_set_drvdata(pdev, &mop500_card);
- 
- 	snd_soc_card_set_drvdata(&mop500_card, NULL);
- 
--	dev_dbg(&pdev->dev, "%s: Card %s: num_links = %d\n",
--		__func__, mop500_card.name, mop500_card.num_links);
--	dev_dbg(&pdev->dev, "%s: Card %s: DAI-link 0: name = %s\n",
--		__func__, mop500_card.name, mop500_card.dai_link[0].name);
--	dev_dbg(&pdev->dev, "%s: Card %s: DAI-link 0: stream_name = %s\n",
--		__func__, mop500_card.name,
--		mop500_card.dai_link[0].stream_name);
--
- 	ret = snd_soc_register_card(&mop500_card);
--	if (ret)
-+	if (ret && ret != -EPROBE_DEFER)
- 		dev_err(&pdev->dev,
- 			"Error: snd_soc_register_card failed (%d)!\n", ret);
- 
-@@ -139,8 +127,6 @@ static int mop500_remove(struct platform_device *pdev)
- {
- 	struct snd_soc_card *mop500_card = platform_get_drvdata(pdev);
- 
--	pr_debug("%s: Enter.\n", __func__);
--
- 	snd_soc_unregister_card(mop500_card);
- 	mop500_ab8500_remove(mop500_card);
- 	mop500_of_node_put();
--- 
-2.9.3
+Hi!
+
+Do you have any idea how to control the microphone? I'd like the audio
+source to be microphone on headset (not the built in one). So I run
+alsamixer, set everything in "capture" section to zero... and I still
+get the audio from the internal microphone :-(.
+
+Tested with arecord | aplay.
+
+Any ideas?
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
+
+--4Ckj6UjgE2iN1+kY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAliCEU8ACgkQMOfwapXb+vLD2ACeOJKzB0J4siOEs7CEfDnlHSt9
+RKsAnRUM2YkLTqb7KUkMYUXHpLNf8KY4
+=FZYE
+-----END PGP SIGNATURE-----
+
+--4Ckj6UjgE2iN1+kY--
