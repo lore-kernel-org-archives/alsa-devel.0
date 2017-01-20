@@ -1,20 +1,31 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [bug report] ASoC: dapm: Implement and instantiate
- DAI widgets
-Date: Fri, 20 Jan 2017 12:28:02 +0000
-Message-ID: <20170120122802.qlptikqba2xxcusq@sirena.org.uk>
-References: <20170119073826.GA28899@mwanda> <20170119092046.GK3573@localhost>
- <20170119103017.GE4398@mwanda>
- <9a00a406-c3b1-39c1-5aea-7ea5b2735dbb@metafoo.de>
- <CACRpkdaYeHay2YFTNVEJo3y04dpA9XiSwZmMJ=go3TLt3O5qwQ@mail.gmail.com>
+From: Enrico Mioso <mrkiko.rs@gmail.com>
+Subject: Re: Intel HDA audio on EEE PC 1101HGo
+Date: Fri, 20 Jan 2017 14:00:56 +0100 (CET)
+Message-ID: <alpine.LNX.2.20.1701201358160.5645@localhost.localdomain>
+References: <alpine.LNX.2.20.1504082130290.1715@localhost.localdomain>
+ <s5hegntl2cs.wl-tiwai@suse.de>
+ <alpine.LNX.2.20.1611230916070.5938@localhost.localdomain>
+ <s5hr35s0xh2.wl-tiwai@suse.de>
+ <alpine.LNX.2.20.1612011450060.7660@localhost.localdomain>
+ <s5h4m2n21ll.wl-tiwai@suse.de>
+ <alpine.LNX.2.20.1701031449090.1620@localhost.localdomain>
+ <s5hlgujyyop.wl-tiwai@suse.de>
+ <alpine.LNX.2.20.1701121708560.2607@localhost.localdomain>
+ <s5h1sw8w8pi.wl-tiwai@suse.de>
+ <alpine.LNX.2.20.1701131929420.17357@localhost.localdomain>
+ <s5htw92hvz7.wl-tiwai@suse.de>
+ <alpine.LNX.2.20.1701141015060.19717@localhost.localdomain>
+ <s5hr346ht46.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8445778479976403934=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8103F265A82
- for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2017 13:28:22 +0100 (CET)
-In-Reply-To: <CACRpkdaYeHay2YFTNVEJo3y04dpA9XiSwZmMJ=go3TLt3O5qwQ@mail.gmail.com>
+Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A359265A82
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2017 14:01:02 +0100 (CET)
+Received: by mail-wm0-f65.google.com with SMTP id r126so6554338wmr.3
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2017 05:01:02 -0800 (PST)
+In-Reply-To: <s5hr346ht46.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,62 +35,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Vinod Koul <vinod.koul@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Dan Carpenter <dan.carpenter@oracle.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: hui.wang@canonical.com, alsa-devel@alsa-project.org, kailang@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+Hello all guys, hellokind Takashi.
 
---===============8445778479976403934==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="emzqzdiheqmub5vm"
-Content-Disposition: inline
+So, first of all I would like to thank you.
+At the end, at least unless some stuning revelation arrives, I think we can let go of this thing.
+But I still like the modification you did regarding the single_cmd fallback: and I would propose to still upstream it.
 
+Tested-By: Enrico Mioso <mrkiko.rs@gmail.com>
 
---emzqzdiheqmub5vm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I like it for two reasons:
+1 - I think that, no matter in this case, avoiding a crash is fine.
+2 - I apreciated your work and assistance + help.
 
-On Fri, Jan 20, 2017 at 10:52:31AM +0100, Linus Walleij wrote:
-> On Thu, Jan 19, 2017 at 1:25 PM, Lars-Peter Clausen <lars@metafoo.de> wrote:
+this patch might also be useful for others.
 
-> > The warning is correct. It's just the wrong commit. The issue was introduced
-> > with commit 37e1df8c95e2 ("ASoC: dapm: handle probe deferrals"). The commit
-> > introduces ERR_PTR() as a possible return value for the function, but does
-> > not update all callers.
-
-> Yeah so the DAPM code was violating the regulator and clock
-> APIs by ignoring potential error pointers (just doing NULL checks), so I
-> made it aware of this, but oops it created a downstream problem that everyone
-> using DAPM gets the cascaded error pointer.
-
-> I just have to bit the bullet and make a patch updating all DAPM
-> consumers, it's just work, I'll keep you in CC.
-
-Yeah, the error handling was already broken - all your patch did was
-make it easier for a static checker to spot that there were problems.
-
---emzqzdiheqmub5vm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliCAlEACgkQJNaLcl1U
-h9AfXAf/U2i4ESCfyPONIqllEKBCHxgqTs6VKNUNJX+29NaHTQBSjq+YARVrjeZ1
-N0fXGIwWsRZ0VChu5Jv2/gjzY0CQ92F5VsZB3fRG5Ez+JuqWIyeaEwSDWRDV7z0/
-ERBONbZfu5wRymIkDKrUhuwsIt0Ab5WVAIpMWPGNC6nS4zc5XqLgFNEjh1YfrYKp
-nzI8/qM6+RJ4NcQx1EBbywTNVkaWalh5tVf/zrljUF2NkcVTB5Fn6uM2ZZaYS1Pm
-YnkOk58w4YAw9Dv3RDbkAiHMkdINii4x+pKd99CF/Vgpxdt2J6wPoq02qs/e9bZh
-zr2RP4dqjFZhPKKwRjPKX7B4rSqEBg==
-=ltI1
------END PGP SIGNATURE-----
-
---emzqzdiheqmub5vm--
-
---===============8445778479976403934==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+thank you, really.
+Enrico
 
 
---===============8445778479976403934==--
+Enrico Mioso
+Mobile Phone Number: +393807096934 ( +Telegram :) )
+My Tox ID is: 7C593F402A3C8632D87AB4B948D492294C39A6A614464ECF843CA3429FB023284180472C7475
+
+I like / recommend the usage of open messaging standards.
+
+On Sat, 14 Jan 2017, Takashi Iwai wrote:
+
+> Date: Sat, 14 Jan 2017 10:46:01
+> From: Takashi Iwai <tiwai@suse.de>
+> To: Enrico Mioso <mrkiko.rs@gmail.com>
+> Cc: hui.wang@canonical.com, alsa-devel@alsa-project.org, kailang@realtek.com
+> Subject: Re: [alsa-devel] Intel HDA audio on EEE PC 1101HGo
+> 
+> On Sat, 14 Jan 2017 10:20:16 +0100,
+> Enrico Mioso wrote:
+>>
+>> Hello Takashi,
+>> thank you very much again for your kindness and patience...
+>>
+>> I'll enable the tracepoint.
+>> Discrepancies in the single_cmd value are derived from the fact that I am still using the hackish version of the patch, since I didn't reboot... otherwise I should have started from scratch some very-long operations.
+>> But the value has remained to 0, and the fallback didn't happen, as expected.
+>>
+>> Ok, reading note.rst now.
+>> I was wondering, but I may well be wrong: in the past that fallback code brought my system to single cmd mode after polling... Now it crashes, and as I said before, the switching from polling to last_cmd is kind-of immediate most of the times these days (e.g.: on this kernel).
+>> May be something goes wrong in the fallback path? Or is this caused by an invalid verb ?
+>> Guessing verb = something like a command...
+>
+> Yes, maybe the fallback to single cmd got broken somehow.  I'd need to
+> check with a fault injection.
+>
+> In anyway, the verb is DIGI_CONVERT_2, and the only possible place is
+> the beep setup.
+>
+> Could you try the below to see whether it makes any difference?
+>
+>
+> Takashi
+>
+> ---
+> diff --git a/sound/pci/hda/hda_beep.c b/sound/pci/hda/hda_beep.c
+> index c397e7da0eac..07930e69812a 100644
+> --- a/sound/pci/hda/hda_beep.c
+> +++ b/sound/pci/hda/hda_beep.c
+> @@ -228,9 +228,11 @@ int snd_hda_attach_beep_device(struct hda_codec *codec, int nid)
+> 		return -ENOMEM;
+> 	snprintf(beep->phys, sizeof(beep->phys),
+> 		"card%d/codec#%d/beep0", codec->card->number, codec->addr);
+> +#if 0
+> 	/* enable linear scale */
+> 	snd_hda_codec_write_cache(codec, nid, 0,
+> 		AC_VERB_SET_DIGI_CONVERT_2, 0x01);
+> +#endif
+>
+> 	beep->nid = nid;
+> 	beep->codec = codec;
+>
