@@ -1,75 +1,123 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 02/13] ASoC: hdac_hdmi: Register widget
-	event handlers
-Date: Fri, 20 Jan 2017 13:35:35 +0000
-Message-ID: <20170120133535.tun4a57dr3pkispw@sirena.org.uk>
-References: <1484755493-30595-1-git-send-email-jeeja.kp@intel.com>
- <1484755493-30595-3-git-send-email-jeeja.kp@intel.com>
+From: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: Question about OF-graph ports
+Date: Fri, 20 Jan 2017 08:22:00 -0600
+Message-ID: <CAL_JsqLOwQn_hz3B5gFL-zr-Pm_8PX+b-sAQhLwkioD7E-ODAw@mail.gmail.com>
+References: <87r33z4maj.wl%kuninori.morimoto.gx@renesas.com>
+ <CAL_Jsq+pDkfijyKV0ALzZUrH-NVzmLaNj6ivAEFO98NUOXGojw@mail.gmail.com> <871svymrnt.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2440572454986638965=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CC2A1266725
- for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2017 14:35:45 +0100 (CET)
-In-Reply-To: <1484755493-30595-3-git-send-email-jeeja.kp@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: jeeja.kp@intel.com
-Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+Content-Type: text/plain; charset=UTF-8
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <871svymrnt.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linux-DT <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Jan 19, 2017 at 7:46 PM, Kuninori Morimoto
+<kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org> wrote:
+>
+> Hi Rob
+>
+> Thank you for your feedback
+>
+>> >         SoC.0              Codec0
+>> >         SoC.1 <-> Card <-> Codec1
+>> >         SoC.2              Codec2
+> (snip)
+>> The card should only have the entry (or exit) points of the graph.
+>> That may not even need to be graph nodes. It could just be a list of
+>> CPU DAI phandles (which then have graph nodes).
+>>
+>> Look at the display side use of OF graph. We have display subsystem
+>> nodes (like a card) with a poorly named ports property (nothing to do
+>> with OF graph) listing display channels. Each phandle there is the
+>> entry point to the graph and is typically the front end display
+>> controller (perhaps a CSC and scaling unit). The graph then goes to a
+>> backend controller (for display timing), then to interface PHY
+>> (DSI/HDMI), then possibly and external bridge chip, then to a
+>> connector or panel node. That's a complex example. In simple cases, we
+>> just have a display controller connected to a panel.
+>
+> If my understanding here was correct, do you mean like this ?
 
---===============2440572454986638965==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="rqr2zdwo67y7p5ho"
-Content-Disposition: inline
+I need a drawing of what the hw looks like to really tell you.
 
+>
+>         sound_dai0 {
+>                 ports {
+>                         port { /* Card.0  */ }
+>                         port { /* SoC.0  */ }
+>                         port { /* Codec0 */ }
 
---rqr2zdwo67y7p5ho
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This tells me that the DAI0 h/w block has 2 inputs and 1 output or has
+1 input and 2 outputs. I assume that is not what you meant.
 
-On Wed, Jan 18, 2017 at 09:34:42PM +0530, jeeja.kp@intel.com wrote:
-> From: Jeeja KP <jeeja.kp@intel.com>
->=20
-> In case of hdmi connect/disconnect or when stream need to be route to
-> multiple monitors, corresponding port and audio infoframe needs to be
-> reconfigured. Currently all the configuration are done in DAI ops which
-> results in silence playback.
+>                 };
+>         };
+>
+>         sound_dai1 {
+>                 ports {
+>                         port { /* Card.1  */ }
+>                         port { /* SoC.1  */ }
+>                         port { /* Codec1 */ }
+>                 };
+>         };
+>
+>         sound_dai2 {
+>                 ports {
+>                         port { /* Card.2  */ }
+>                         port { /* SoC.2  */ }
+>                         port { /* Codec2 */ }
+>                 };
+>         };
+>
+>         card {
+>                 ports {
+>                         port { /* sound_dai0 */ }
+>                         port { /* sound_dai1 */ }
+>                         port { /* sound_dai2 */ }
+>                 };
+>         };
+>
+>
+> Or this ?
+>
+>         sound_dai0 {
+>                 ports {
+>                         port { /* SoC.0  */ }
+>                         port { /* Codec0 */ }
 
-This doesn't apply against current code, please check and resend.
+This is probably closer, but I don't know what SoC.0 is. The input
+should be some audio processor I guess.
 
---rqr2zdwo67y7p5ho
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliCEicACgkQJNaLcl1U
-h9Cy0wf+If6EPWR8xrK/dB6RyjQJtcNy0Q9BOqMVznRnzdahoKH7m7Z+3Jh1LTKk
-N/06haq7IKh7b7McprFLTFWPpOf/ztbGX3ZKW8Tb0b9y89caVT3RBHG0QYVc79w/
-wFAL88RPyfBDvUkY/T7uOKQrODLsLGhxB6lP+B/9wIieuwOipOsS+hkQroR+MAx6
-309MsctLNvzI5G9na1gxEe9BO9Tifft7XQnlPpA011dbCtOJWaJ2rrzISCRrHxq8
-vlRQTaD1SYEG/wK7dLDsc55DsStdoaPaOqOCi8wx+irE5vAhKjzX3TGZ4DjcXDfh
-qIi0rWv/RNfEsO03V6yxRxy0sevRTQ==
-=0XAC
------END PGP SIGNATURE-----
-
---rqr2zdwo67y7p5ho--
-
---===============2440572454986638965==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2440572454986638965==--
+>                 };
+>         };
+>
+>         sound_dai1 {
+>                 ports {
+>                         port { /* SoC.1  */ }
+>                         port { /* Codec1 */ }
+>                 };
+>         };
+>
+>         sound_dai2 {
+>                 ports {
+>                         port { /* SoC.2  */ }
+>                         port { /* Codec2 */ }
+>                 };
+>         };
+>
+>         card {
+>                 dais = <&sound_dai0
+>                         &sound_dai1
+>                         &sound_dai2>;
+>         };
+>
+>
+> Best regards
+> ---
+> Kuninori Morimoto
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
