@@ -1,31 +1,17 @@
-From: Enrico Mioso <mrkiko.rs@gmail.com>
-Subject: Re: Intel HDA audio on EEE PC 1101HGo
-Date: Fri, 20 Jan 2017 14:00:56 +0100 (CET)
-Message-ID: <alpine.LNX.2.20.1701201358160.5645@localhost.localdomain>
-References: <alpine.LNX.2.20.1504082130290.1715@localhost.localdomain>
- <s5hegntl2cs.wl-tiwai@suse.de>
- <alpine.LNX.2.20.1611230916070.5938@localhost.localdomain>
- <s5hr35s0xh2.wl-tiwai@suse.de>
- <alpine.LNX.2.20.1612011450060.7660@localhost.localdomain>
- <s5h4m2n21ll.wl-tiwai@suse.de>
- <alpine.LNX.2.20.1701031449090.1620@localhost.localdomain>
- <s5hlgujyyop.wl-tiwai@suse.de>
- <alpine.LNX.2.20.1701121708560.2607@localhost.localdomain>
- <s5h1sw8w8pi.wl-tiwai@suse.de>
- <alpine.LNX.2.20.1701131929420.17357@localhost.localdomain>
- <s5htw92hvz7.wl-tiwai@suse.de>
- <alpine.LNX.2.20.1701141015060.19717@localhost.localdomain>
- <s5hr346ht46.wl-tiwai@suse.de>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH] ASoC: dapm: fix some pointer error handling
+Date: Fri, 20 Jan 2017 14:07:52 +0100
+Message-ID: <20170120130752.29107-1-linus.walleij@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A359265A82
- for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2017 14:01:02 +0100 (CET)
-Received: by mail-wm0-f65.google.com with SMTP id r126so6554338wmr.3
- for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2017 05:01:02 -0800 (PST)
-In-Reply-To: <s5hr346ht46.wl-tiwai@suse.de>
+Received: from mail-lf0-f48.google.com (mail-lf0-f48.google.com
+ [209.85.215.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id D244E265A82
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2017 14:08:01 +0100 (CET)
+Received: by mail-lf0-f48.google.com with SMTP id z134so57854970lff.3
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2017 05:08:01 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,83 +21,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: hui.wang@canonical.com, alsa-devel@alsa-project.org, kailang@realtek.com
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Linus Walleij <linus.walleij@linaro.org>, Dan Carpenter <dan.carpenter@oracle.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello all guys, hellokind Takashi.
+commit 66feeec9322132689d42723df2537d60f96f8e44
+"RFC: ASoC: dapm: handle probe deferrals"
+forgot a to update some two sites where the call
+was used. The static codechecks quickly found them.
 
-So, first of all I would like to thank you.
-At the end, at least unless some stuning revelation arrives, I think we can let go of this thing.
-But I still like the modification you did regarding the single_cmd fallback: and I would propose to still upstream it.
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: 66feeec93221 ("RFC: ASoC: dapm: handle probe deferrals")
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ sound/soc/soc-dapm.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-Tested-By: Enrico Mioso <mrkiko.rs@gmail.com>
-
-I like it for two reasons:
-1 - I think that, no matter in this case, avoiding a crash is fine.
-2 - I apreciated your work and assistance + help.
-
-this patch might also be useful for others.
-
-thank you, really.
-Enrico
-
-
-Enrico Mioso
-Mobile Phone Number: +393807096934 ( +Telegram :) )
-My Tox ID is: 7C593F402A3C8632D87AB4B948D492294C39A6A614464ECF843CA3429FB023284180472C7475
-
-I like / recommend the usage of open messaging standards.
-
-On Sat, 14 Jan 2017, Takashi Iwai wrote:
-
-> Date: Sat, 14 Jan 2017 10:46:01
-> From: Takashi Iwai <tiwai@suse.de>
-> To: Enrico Mioso <mrkiko.rs@gmail.com>
-> Cc: hui.wang@canonical.com, alsa-devel@alsa-project.org, kailang@realtek.com
-> Subject: Re: [alsa-devel] Intel HDA audio on EEE PC 1101HGo
-> 
-> On Sat, 14 Jan 2017 10:20:16 +0100,
-> Enrico Mioso wrote:
->>
->> Hello Takashi,
->> thank you very much again for your kindness and patience...
->>
->> I'll enable the tracepoint.
->> Discrepancies in the single_cmd value are derived from the fact that I am still using the hackish version of the patch, since I didn't reboot... otherwise I should have started from scratch some very-long operations.
->> But the value has remained to 0, and the fallback didn't happen, as expected.
->>
->> Ok, reading note.rst now.
->> I was wondering, but I may well be wrong: in the past that fallback code brought my system to single cmd mode after polling... Now it crashes, and as I said before, the switching from polling to last_cmd is kind-of immediate most of the times these days (e.g.: on this kernel).
->> May be something goes wrong in the fallback path? Or is this caused by an invalid verb ?
->> Guessing verb = something like a command...
->
-> Yes, maybe the fallback to single cmd got broken somehow.  I'd need to
-> check with a fault injection.
->
-> In anyway, the verb is DIGI_CONVERT_2, and the only possible place is
-> the beep setup.
->
-> Could you try the below to see whether it makes any difference?
->
->
-> Takashi
->
-> ---
-> diff --git a/sound/pci/hda/hda_beep.c b/sound/pci/hda/hda_beep.c
-> index c397e7da0eac..07930e69812a 100644
-> --- a/sound/pci/hda/hda_beep.c
-> +++ b/sound/pci/hda/hda_beep.c
-> @@ -228,9 +228,11 @@ int snd_hda_attach_beep_device(struct hda_codec *codec, int nid)
-> 		return -ENOMEM;
-> 	snprintf(beep->phys, sizeof(beep->phys),
-> 		"card%d/codec#%d/beep0", codec->card->number, codec->addr);
-> +#if 0
-> 	/* enable linear scale */
-> 	snd_hda_codec_write_cache(codec, nid, 0,
-> 		AC_VERB_SET_DIGI_CONVERT_2, 0x01);
-> +#endif
->
-> 	beep->nid = nid;
-> 	beep->codec = codec;
->
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index b218cc7bd994..dcef67a9bd48 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3935,6 +3935,16 @@ int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
+ 			template.name);
+ 
+ 		w = snd_soc_dapm_new_control_unlocked(dapm, &template);
++		if (IS_ERR(w)) {
++			int ret = PTR_ERR(w);
++
++			/* Do not nag about probe deferrals */
++			if (ret != -EPROBE_DEFER)
++				dev_err(dapm->dev,
++				"ASoC: Failed to create %s widget (%d)\n",
++				dai->driver->playback.stream_name, ret);
++			return ret;
++		}
+ 		if (!w) {
+ 			dev_err(dapm->dev, "ASoC: Failed to create %s widget\n",
+ 				dai->driver->playback.stream_name);
+@@ -3954,6 +3964,16 @@ int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
+ 			template.name);
+ 
+ 		w = snd_soc_dapm_new_control_unlocked(dapm, &template);
++		if (IS_ERR(w)) {
++			int ret = PTR_ERR(w);
++
++			/* Do not nag about probe deferrals */
++			if (ret != -EPROBE_DEFER)
++				dev_err(dapm->dev,
++				"ASoC: Failed to create %s widget (%d)\n",
++				dai->driver->playback.stream_name, ret);
++			return ret;
++		}
+ 		if (!w) {
+ 			dev_err(dapm->dev, "ASoC: Failed to create %s widget\n",
+ 				dai->driver->capture.stream_name);
+-- 
+2.9.3
