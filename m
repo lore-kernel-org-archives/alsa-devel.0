@@ -1,48 +1,140 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v4 4/5] ALSA: x86: hdmi: Add
- audio support for BYT and CHT
-Date: Fri, 20 Jan 2017 10:45:53 -0600
-Message-ID: <bbe4ac32-db96-c554-f578-56b34fe6be9e@linux.intel.com>
-References: <20170120222232.27791-1-jerome.anand@intel.com>
- <20170120222232.27791-5-jerome.anand@intel.com>
- <s5ho9z2q8xf.wl-tiwai@suse.de>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [STLinux Kernel] [PATCH v5 0/2] ALSA controls
+ management using index/device/sub-devices fields
+Date: Fri, 20 Jan 2017 17:06:03 +0100
+Message-ID: <4fe9226a-fed7-63e1-54a2-483cb71b816e@st.com>
+References: <1481206526-28830-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <s5ho9z2q8xf.wl-tiwai@suse.de>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>, Jerome Anand <jerome.anand@intel.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, rakesh.a.ughreja@intel.com, intel-gfx@lists.freedesktop.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1D033266FA8
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2017 17:06:09 +0100 (CET)
+In-Reply-To: <1481206526-28830-1-git-send-email-arnaud.pouliquen@st.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: kernel@stlinux.com, Takashi Iwai <tiwai@suse.de>, lgirdwood@gmail.com, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMS8yMC8xNyA1OjE1IEFNLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gRnJpLCAyMCBKYW4g
-MjAxNyAyMzoyMjozMSArMDEwMCwKPiBKZXJvbWUgQW5hbmQgd3JvdGU6Cj4+Cj4+ICsJaGFkX29w
-c192MSA9IGhhZF9vcHNfdjE7CS8qIHVudXNlZCAqLwo+Cj4gVW50aWwgbm93IEkgZGlkbid0IHJl
-YWxpemUgdGhhdCB0aGUgd2hvbGUgdjEgc3R1ZmYgaXMgbmV2ZXIgdXNlZCBpbgo+IHRoZSBjdXJy
-ZW50IHBhdGNoc2V0LiAgV2lsbCBpdCBiZSBldmVyIHVzZWQgaW4gZnV0dXJlPyAgSWYgbm90LCBj
-YW4ndAo+IHdlIGNsZWFuIGl0IHVwPyAgSXQncyBhIGJ1bmNoIG9mIGNvZGVzLCBpbmNsdWRpbmcg
-dGhlIG1lc3N5IHVuaW9uCj4gZGVmaW5pdGlvbnMuICBJZiB0aGVyZSBpcyBubyB2MyBvciB3aGF0
-ZXZlciwgd2UgY2FuIGV2ZW4gZ2V0IHJpZCBvZgo+IHRoZSB3aG9sZSBpbmRpcmVjdCBjYWxscy4K
-Pgo+IEFuZCBpZiB2MSAoYW5kIHRoZSBpbmRpcmVjdCBvcHMgY2FsbHMpIHNob3VsZCBiZSBrZXB0
-LCBhY3R1YWxseSB3aGF0Cj4gaXMgdGhlIGRpZmZlcmVuY2UgYmV0d2VlbiB2MSBhbmQgdjIsIHdo
-eSBib3RoIGltcGxlbWVudGF0aW9ucyBkbwo+IGV4aXN0PyAgUGxlYXNlIGVsYWJvcmF0ZSBpbiBj
-b21tZW50cy4KCnYxIHJlZmVycyB0byBNZWRmaWVsZC9DbG92ZXJ0cmFpbCwgdjIgdG8gQmF5dHJh
-aWwvQ0hULiBUaGUgZGlmZmVyZW5jZXMgCmFyZSBtaW5vciBhbmQgY2VudGVyZWQgb24gZGlmZmVy
-ZW50IHJlZ2lzdGVyIGRlZmluaXRpb25zIG9yIGFkZGl0aW9uYWwgCmZlYXR1cmVzL2J1ZyBjb3Jy
-ZWN0aW9ucy4gV2UgbGVmdCB0aGUgdjEgY29kZSBpbiBzbyBmYXIgYnV0IHdlIGNvdWxkIApwcm9i
-YWJseSByZW1vdmUgaXQgc2luY2UgaXQncyBub3QgdGVzdGVkIGFueXdheS4gVGhlIHF1ZXN0aW9u
-IGlzIGlmIHdlIApyZW1vdmUgdGhpcyB2MSBjb2RlIGFuZCBpbmRpcmVjdCBjYWxscyBub3cgb3Ig
-bGF0ZXIsIEkgd2FzIHBsYW5uaW5nIHRvIAphZGQgRFAgYXVkaW8gc3VwcG9ydCBhbmQgbWFraW5n
-IG1vcmUgY2hhbmdlcyB3b3VsZCBtYWtlIHRoZSBpbnRlZ3JhdGlvbiAKbW9yZSBkaWZmaWN1bHQu
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdm
-eCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xp
-c3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+Hello,
+
+Please notice that this patch-set in deprecated, and must not be applied.
+
+Rational is that patch "[PATCH v5 1/2] ASoC: core: allow DAI PCM
+controls bound to PCM device" is no more needed.
+Binding between PCM and DAI can be done using pcm_new provided
+in this patch:
+http://www.spinics.net/lists/alsa-devel/msg58255.html
+
+Regards
+Arnaud
+
+On 12/08/2016 03:15 PM, Arnaud Pouliquen wrote:
+> Previous discussions summary:
+>  - Topic of  the patchset: 
+>  	Patch concerns ASoc DAI drivers.
+>         Aim is to be able to instantiate PCM control using device field according 
+>         to the associated PCM char device.  For this, a relationship between DAIs PCM 
+>         control and PCM char device needs to be establish.
+>         => Proposal is to add field in DAI driver struct to declare PCM controls that
+> 	need to be linked to PCM character device on DAI link probing.
+> 
+>   - Limitation of the patchset:
+>   	This patchset seems only a first step as 2 concerns are been highlighted:
+>          - Patch is limited to "static" DAI-link. This not responds to backend (no_pcm dai links) and 
+>          some none-DAI codecs, that could register PCm controls. 
+>          In theses cases it is not possible to establish relationship during probe.
+>          	=> No solution proposed for time beeing.
+> 
+>          - This patchset does not fix conflict of 2 "identical" PCM controls declared by 2 drivers. 
+>           For instance, a conflict can exist between a  PCM control created in DAI driver 
+>           and the same control declared in a codec driver. As index field is forced to 0, prefix
+>           should be used in codec.
+>         	=> To discuss solution in a separate thread as issue already present without this patchset 
+>                 	several approaches seem possible like using index field ( control auto indexation in
+>                         ASoC) or prefix in Naming.
+> 
+> V5:
+>  - [PATCH v5 1/2] ASoC: core: allow DAI PCM controls bound to PCM device
+>  	Minor fixes in comment and error message. 
+>  - [PATCH v5 2/2] ASoC: sti: bind pcm controls to pcm device. 
+>  	No change since V2.
+> 
+> V4:
+>  - [PATCH v4 1/2] ASoC: core: allow DAI PCM controls bound to PCM device
+>  	Fix and rework error management in soc_link_dai_pcm_controls function.
+>  - [PATCH v4 2/2] ASoC: sti: bind pcm controls to pcm device. 
+>  	No change since V2.
+> 
+> V3:
+>  - [PATCH v3 1/2] ASoC: core: allow DAI PCM controls bound to PCM device
+>  	Code optimization based on Takashi Sakamoto suggestion
+>  - [RFC V2 3/3]   ASoC: hdmi-codec: Example of PCM control bound to PCM device for multi
+> 	patch suppressed as it was send as example in previous version. Patch is valid but
+>         can have impact on existing drivers as control device field value is updated 
+>   - [PATCH v3 2/2] ASoC: sti: bind pcm controls to pcm device. 
+>  	No change vs V2
+> 
+> V2:
+> http://www.spinics.net/lists/alsa-devel/msg57045.html
+> 
+> Aim of this version is to continue discussion on DAI PCM control focused on ASoC drivers.
+> In this V2  implementation in Soc-core is simplified to limit impact on existing code.
+> 
+>  Update of the RFC V1 based on discussions:
+>  - [RFC 4/4] iecset: allow to select control with device and sub-device numbers
+>  	no more part of the RFC V2, will be discussed in a separate thread
+>  - [RFC 2/4] ALSA: control: increment index field for duplicated control.
+>  	no more part of the RFC V2, no more need as RFC subject is PCM controls
+> 
+> - [RFC V2 1/3] ASoC: core: allow DAI PCM controls bound to PCM device
+> 	Patch reworked from V1 to simplify implementation
+>         - Binding is not done for Dai links tagged with no_pcm (DPCM).
+>         - no more possibility to add the controls after the DAI link probing.
+> 
+> - [RFC V2 2/3]   ASoC: sti: bind PCM controls to PCM device.
+> - [RFC V2 3/3]   ASoC: hdmi-codec: Example of PCM control bound to PCM device for multi
+>         Example of implementation in STI DAI driver and HDMI-codec drivers
+>      
+> V1: 
+>  http://www.spinics.net/lists/alsa-devel/msg56479.html
+> 
+>  1) Alsa-utils patch
+> 
+> - iecset: allow to select control with device and sub-device numbers
+>   This patch allows to access to 2 iec controls differentiated by
+>   device/sub-devices numbers
+> => For me, this patch is mandatory to be able to address the ASoC IEC
+>    controls, in case of no fix is implemented to allows index field
+>    update in ASoC.
+> 
+> 2) Alsa driver patches
+>   - ASoC: core: allow PCM control binding to PCM device
+>   	Add relationship between DAIs PCM controls and PCM device.
+> 
+>   - ALSA: control: increment index field for duplicated control.
+>    	Generic implementation of the patch proposed in HDA driver
+>         (http://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/?id=ea9b43add)
+> 
+>   - ASoC: sti: use bind_pcm_ctl
+>   	implementation of bind_pcm_ctl for sti driver.
+> 
+> Arnaud Pouliquen (2):
+>   ASoC: core: allow DAI PCM controls bound to PCM device
+>   ASoC: sti: bind pcm controls to pcm device.
+> 
+>  include/sound/soc-dai.h      |  8 ++++++++
+>  sound/soc/soc-core.c         | 35 +++++++++++++++++++++++++++++++++++
+>  sound/soc/sti/sti_uniperif.c | 33 ++++-----------------------------
+>  3 files changed, 47 insertions(+), 29 deletions(-)
+> 
