@@ -1,113 +1,67 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: fix some pointer error handling"
-	to the asoc tree
-Date: Fri, 20 Jan 2017 13:37:03 +0000
-Message-ID: <E1cUZNH-0000ep-Re@debutante>
-References: <20170120130752.29107-1-linus.walleij@linaro.org>
+From: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Subject: Re: [PATCH v3 0/4] Add support for es8388 on the rock2
+Date: Fri, 20 Jan 2017 15:54:54 +0100
+Message-ID: <ce2dca37-a9e2-4f1f-4990-ca38da3a6485@collabora.com>
+References: <20170117081705.14107-1-romain.perier@collabora.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DAB162654AD
- for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2017 14:37:18 +0100 (CET)
-In-Reply-To: <20170120130752.29107-1-linus.walleij@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Dan Carpenter <dan.carpenter@oracle.com>, Lars-Peter Clausen <lars@metafoo.de>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <20170117081705.14107-1-romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
+ <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
+List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
+ <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
+Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hello,
 
-   ASoC: dapm: fix some pointer error handling
+Le 17/01/2017 =E0 09:17, Romain Perier a =E9crit :
+> This set of patches adds a machine driver for rockchip boards that use
+> ES8388 codecs. It also adds slave mode to the es8328 driver that
+> currently only supported the master mode. Then, it adds the required DT
+> definitions to link rockchip-i2s to the es8388 analog output.
+>
+> This work is based on the initial work that was done by Sjoerd Simons
+> <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org> with some improvements, changes and more
+> commits.
+>
+> Changes in v3:
+>  - Cosmetic changes in rockchip_es8388.c
+>  - Added missing email to MODULE_AUTHOR in rockchip_es8388.c
+> Changes in v2:
+>  - Fixed wrong use of the data structure i2c_device_id
+>  - Fixed wrong dependencies for SND_SOC_ROCKCHIP_ES8388
+>
+> Romain Perier (4):
+>   ASoC: es8328-i2c: Add compatible for ES8388
+>   ASoC: es8328: Add support for slave mode
+>   ASoC: rockchip: Add machine driver for ES8388 codecs
+>   arm: dts: Add support for ES8388 to the Radxa Rock 2
+>
+>  Documentation/devicetree/bindings/sound/es8328.txt |   2 +-
+>  .../devicetree/bindings/sound/rockchip-es8388.txt  |  28 +++
+>  arch/arm/boot/dts/rk3288-rock2-square.dts          |  37 +++
+>  sound/soc/codecs/es8328-i2c.c                      |   2 +
+>  sound/soc/codecs/es8328.c                          |  28 ++-
+>  sound/soc/rockchip/Kconfig                         |   9 +
+>  sound/soc/rockchip/Makefile                        |   2 +
+>  sound/soc/rockchip/rockchip_es8388.c               | 269 +++++++++++++++=
+++++++
+>  8 files changed, 370 insertions(+), 7 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/sound/rockchip-es83=
+88.txt
+>  create mode 100644 sound/soc/rockchip/rockchip_es8388.c
 
-has been applied to the asoc tree at
+Please ignore this v3, I will re-submit it with some improvements.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Regards,
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 639467c8f26d834c934215e8b59129ce442475fe Mon Sep 17 00:00:00 2001
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Fri, 20 Jan 2017 14:07:52 +0100
-Subject: [PATCH] ASoC: dapm: fix some pointer error handling
-
-commit 66feeec9322132689d42723df2537d60f96f8e44
-"RFC: ASoC: dapm: handle probe deferrals"
-forgot a to update some two sites where the call
-was used. The static codechecks quickly found them.
-
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Fixes: 66feeec93221 ("RFC: ASoC: dapm: handle probe deferrals")
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-dapm.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index b218cc7bd994..dcef67a9bd48 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3935,6 +3935,16 @@ int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
- 			template.name);
- 
- 		w = snd_soc_dapm_new_control_unlocked(dapm, &template);
-+		if (IS_ERR(w)) {
-+			int ret = PTR_ERR(w);
-+
-+			/* Do not nag about probe deferrals */
-+			if (ret != -EPROBE_DEFER)
-+				dev_err(dapm->dev,
-+				"ASoC: Failed to create %s widget (%d)\n",
-+				dai->driver->playback.stream_name, ret);
-+			return ret;
-+		}
- 		if (!w) {
- 			dev_err(dapm->dev, "ASoC: Failed to create %s widget\n",
- 				dai->driver->playback.stream_name);
-@@ -3954,6 +3964,16 @@ int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
- 			template.name);
- 
- 		w = snd_soc_dapm_new_control_unlocked(dapm, &template);
-+		if (IS_ERR(w)) {
-+			int ret = PTR_ERR(w);
-+
-+			/* Do not nag about probe deferrals */
-+			if (ret != -EPROBE_DEFER)
-+				dev_err(dapm->dev,
-+				"ASoC: Failed to create %s widget (%d)\n",
-+				dai->driver->playback.stream_name, ret);
-+			return ret;
-+		}
- 		if (!w) {
- 			dev_err(dapm->dev, "ASoC: Failed to create %s widget\n",
- 				dai->driver->capture.stream_name);
--- 
-2.11.0
+Romain
