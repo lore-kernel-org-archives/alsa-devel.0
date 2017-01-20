@@ -1,53 +1,75 @@
-From: Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>
-Subject: Re: Nokia N900: microphone mixers
-Date: Fri, 20 Jan 2017 15:04:04 +0100
-Message-ID: <20170120140404.GG32502@pali>
-References: <201701121934.19810@pali> <20170114225614.GA25321@amd>
- <201701150100.54214@pali> <20170115100533.GA15816@amd>
- <40dbce4e-d99d-d77d-e682-5b004c70ca40@bitmer.com>
- <d2c78625-565a-86ec-a03e-f15ae071942a@ti.com>
- <ecdc073b-d83f-ba7d-89bf-da8899414217@bitmer.com>
- <20170120133159.GA5241@amd> <20170120133830.GF32502@pali>
- <20170120140047.GB5241@amd>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 02/13] ASoC: hdac_hdmi: Register widget
+	event handlers
+Date: Fri, 20 Jan 2017 13:35:35 +0000
+Message-ID: <20170120133535.tun4a57dr3pkispw@sirena.org.uk>
+References: <1484755493-30595-1-git-send-email-jeeja.kp@intel.com>
+ <1484755493-30595-3-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <20170120140047.GB5241@amd>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Pavel Machek <pavel@ucw.cz>
-Cc: alsa-devel@alsa-project.org, ivo.g.dimitrov.75@gmail.com, khilman@kernel.org, tony@atomide.com, broonie@kernel.org, aaro.koskinen@iki.fi, sre@kernel.org, kernel list <linux-kernel@vger.kernel.org>, lars@metafoo.de, abcloriens@gmail.com, Jarkko Nikula <jarkko.nikula@bitmer.com>, helen.koike@collabora.co.uk, linux-omap@vger.kernel.org, patrikbachan@gmail.com, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, serge@hallyn.com
+Content-Type: multipart/mixed; boundary="===============2440572454986638965=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id CC2A1266725
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2017 14:35:45 +0100 (CET)
+In-Reply-To: <1484755493-30595-3-git-send-email-jeeja.kp@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: jeeja.kp@intel.com
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpZGF5IDIwIEphbnVhcnkgMjAxNyAxNTowMDo0NyBQYXZlbCBNYWNoZWsgd3JvdGU6Cj4g
-T24gRnJpIDIwMTctMDEtMjAgMTQ6Mzg6MzAsIFBhbGkgUm9ow6FyIHdyb3RlOgo+ID4gT24gRnJp
-ZGF5IDIwIEphbnVhcnkgMjAxNyAxNDozMTo1OSBQYXZlbCBNYWNoZWsgd3JvdGU6Cj4gPiA+IEhp
-IQo+ID4gPiAKPiA+ID4gRG8geW91IGhhdmUgYW55IGlkZWEgaG93IHRvIGNvbnRyb2wgdGhlIG1p
-Y3JvcGhvbmU/IEknZCBsaWtlIHRoZSBhdWRpbwo+ID4gPiBzb3VyY2UgdG8gYmUgbWljcm9waG9u
-ZSBvbiBoZWFkc2V0IChub3QgdGhlIGJ1aWx0IGluIG9uZSkuIFNvIEkgcnVuCj4gPiA+IGFsc2Ft
-aXhlciwgc2V0IGV2ZXJ5dGhpbmcgaW4gImNhcHR1cmUiIHNlY3Rpb24gdG8gemVyby4uLiBhbmQg
-SSBzdGlsbAo+ID4gPiBnZXQgdGhlIGF1ZGlvIGZyb20gdGhlIGludGVybmFsIG1pY3JvcGhvbmUg
-Oi0oLgo+ID4gPiAKPiA+ID4gVGVzdGVkIHdpdGggYXJlY29yZCB8IGFwbGF5Lgo+ID4gPiAKPiA+
-ID4gQW55IGlkZWFzPwo+ID4gCj4gPiBIaSEgVHJ5IHRvIHNldCBKYWNrIEZ1bmN0aW9uIHRvIEhl
-YWRzZXQgb3IgZW5hYmxlIGIgSFMgTWljLgo+IAo+IEkgY2FuJ3QgZmluZCAiYiBIUyBNaWMiIGZ1
-bmN0aW9uLiBJIGNhbiBzZXQgIklucHV0IFNlbGVjdCIgdG8gIkFEQyIsCj4gYW5kIHRlbiBpbnRl
-cm5hbCBtaWNyb3Bob25lIGlzIG9mZiwgYnV0IEkgY2FuJ3QgZ2V0IGFueSBhdWRpbyBvbgo+IGlu
-cHV0LiBJIHRyaWVkIHdpdGggIkphY2sgZnVuY3Rpb24iIGJvdGggImhlYWRzZXQiIGFuZCAiaGVh
-ZHBob25lIi4KPiAKPiBEbyBJIG5lZWQgdG8gZW5hYmxlIG1pY3JvcGhvbmUgYmlhcyB2b2x0YWdl
-IHNvbWV3aGVyZT8KCldoZW4geW91IHNldCBKYWNrIGZ1bmN0aW9uIHRvIGhlYWRzZXQgaXQgYXV0
-b21hdGljYWxseSBlbmFibGUgSFMgTWljCmNvbnRyb2wgd2hpY2ggY29udHJvbHMgbWljIGJpYXMu
-CgpJZiBKYWNrIGZ1bmN0aW9uIGluIGhlYWRzZXQgbW9kZSBkb2VzIG5vdCB3b3JrLCB0aGVuIHRo
-ZXJlIGlzIGJ1Zy4gVHJ5Cm9sZGVyIHZlcnNpb25zIG9mIGtlcm5lbC4uLgoKLS0gClBhbGkgUm9o
-w6FyCnBhbGkucm9oYXJAZ21haWwuY29tCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpsaW51eC1hcm0ta2VybmVsIG1haWxpbmcgbGlzdApsaW51eC1hcm0t
-a2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmcKaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9saW51eC1hcm0ta2VybmVsCg==
+
+--===============2440572454986638965==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="rqr2zdwo67y7p5ho"
+Content-Disposition: inline
+
+
+--rqr2zdwo67y7p5ho
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Jan 18, 2017 at 09:34:42PM +0530, jeeja.kp@intel.com wrote:
+> From: Jeeja KP <jeeja.kp@intel.com>
+>=20
+> In case of hdmi connect/disconnect or when stream need to be route to
+> multiple monitors, corresponding port and audio infoframe needs to be
+> reconfigured. Currently all the configuration are done in DAI ops which
+> results in silence playback.
+
+This doesn't apply against current code, please check and resend.
+
+--rqr2zdwo67y7p5ho
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliCEicACgkQJNaLcl1U
+h9Cy0wf+If6EPWR8xrK/dB6RyjQJtcNy0Q9BOqMVznRnzdahoKH7m7Z+3Jh1LTKk
+N/06haq7IKh7b7McprFLTFWPpOf/ztbGX3ZKW8Tb0b9y89caVT3RBHG0QYVc79w/
+wFAL88RPyfBDvUkY/T7uOKQrODLsLGhxB6lP+B/9wIieuwOipOsS+hkQroR+MAx6
+309MsctLNvzI5G9na1gxEe9BO9Tifft7XQnlPpA011dbCtOJWaJ2rrzISCRrHxq8
+vlRQTaD1SYEG/wK7dLDsc55DsStdoaPaOqOCi8wx+irE5vAhKjzX3TGZ4DjcXDfh
+qIi0rWv/RNfEsO03V6yxRxy0sevRTQ==
+=0XAC
+-----END PGP SIGNATURE-----
+
+--rqr2zdwo67y7p5ho--
+
+--===============2440572454986638965==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2440572454986638965==--
