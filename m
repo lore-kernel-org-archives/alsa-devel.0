@@ -1,83 +1,121 @@
-From: Pavel Machek <pavel@ucw.cz>
-Subject: Re: Nokia N900: microphone mixers
-Date: Fri, 20 Jan 2017 20:32:24 +0100
-Message-ID: <20170120193224.GA14527@amd>
-References: <20170114225614.GA25321@amd>
- <201701150100.54214@pali>
- <20170115100533.GA15816@amd>
- <40dbce4e-d99d-d77d-e682-5b004c70ca40@bitmer.com>
- <d2c78625-565a-86ec-a03e-f15ae071942a@ti.com>
- <ecdc073b-d83f-ba7d-89bf-da8899414217@bitmer.com>
- <20170120133159.GA5241@amd>
- <20170120133830.GF32502@pali>
- <20170120140047.GB5241@amd>
- <20170120140404.GG32502@pali>
+From: Stephen Boyd <sboyd@codeaurora.org>
+Subject: Re: [PATCH v7 2/5] clk: x86: Add Atom PMC platform clocks
+Date: Fri, 20 Jan 2017 15:58:56 -0800
+Message-ID: <20170120235856.GF20800@codeaurora.org>
+References: <1484690270-28425-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <1484690270-28425-3-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="17pEHd4RhPHOinZp"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <platform-driver-x86-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20170120140404.GG32502@pali>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>
-Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, sre@kernel.org, kernel list <linux-kernel@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-omap@vger.kernel.org, tony@atomide.com, khilman@kernel.org, aaro.koskinen@iki.fi, ivo.g.dimitrov.75@gmail.com, patrikbachan@gmail.com, serge@hallyn.com, abcloriens@gmail.com, alsa-devel@alsa-project.org, helen.koike@collabora.co.uk, lars@metafoo.de, broonie@kernel.org
+In-Reply-To: <1484690270-28425-3-git-send-email-pierre-louis.bossart@linux.intel.com>
+Sender: platform-driver-x86-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: linux-clk@vger.kernel.org, x86@kernel.org, platform-driver-x86@vger.kernel.org, Darren Hart <dvhart@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, alsa-devel@alsa-project.org, Irina Tirdea <irina.tirdea@intel.com>, Michael Turquette <mturquette@baylibre.com>, "Rafael J . Wysocki" <rjw@rjwysocki.net>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, Ingo Molnar <mingo@redhat.com>, Mark Brown <broonie@kernel.org>, "H . Peter Anvin" <hpa@zytor.com>, Len Brown <lenb@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 01/17, Pierre-Louis Bossart wrote:
+> diff --git a/drivers/clk/x86/clk-pmc-atom.c b/drivers/clk/x86/clk-pmc-atom.c
+> new file mode 100644
+> index 0000000..312d4e9
+> --- /dev/null
+> +++ b/drivers/clk/x86/clk-pmc-atom.c
+[...]
+> +
+> +static void plt_clk_reg_update(struct clk_plt *clk, u32 mask, u32 val)
+> +{
+> +	u32 tmp;
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&clk->lock, flags);
+> +
+> +	tmp = clk_readl(clk->reg);
 
---17pEHd4RhPHOinZp
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Do you need to use clk_readl? I'd prefer we deleted that
+function/macro because it's just confusing. Please don't use it
+unless you need it for some reason.
 
-On Fri 2017-01-20 15:04:04, Pali Roh=E1r wrote:
-> On Friday 20 January 2017 15:00:47 Pavel Machek wrote:
-> > On Fri 2017-01-20 14:38:30, Pali Roh=E1r wrote:
-> > > On Friday 20 January 2017 14:31:59 Pavel Machek wrote:
-> > > > Hi!
-> > > >=20
-> > > > Do you have any idea how to control the microphone? I'd like the au=
-dio
-> > > > source to be microphone on headset (not the built in one). So I run
-> > > > alsamixer, set everything in "capture" section to zero... and I sti=
-ll
-> > > > get the audio from the internal microphone :-(.
-> > > >=20
-> > > > Tested with arecord | aplay.
-> > > >=20
-> > > > Any ideas?
-> > >=20
-> > > Hi! Try to set Jack Function to Headset or enable b HS Mic.
-> >=20
-> > I can't find "b HS Mic" function. I can set "Input Select" to "ADC",
-> > and ten internal microphone is off, but I can't get any audio on
-> > input. I tried with "Jack function" both "headset" and "headphone".
-> >=20
-> > Do I need to enable microphone bias voltage somewhere?
->=20
-> When you set Jack function to headset it automatically enable HS Mic
-> control which controls mic bias.
->=20
-> If Jack function in headset mode does not work, then there is bug. Try
-> older versions of kernel...
+> +	tmp = (tmp & ~mask) | (val & mask);
+> +	clk_writel(tmp, clk->reg);
+> +
+> +	spin_unlock_irqrestore(&clk->lock, flags);
+> +}
+> +
+[..]
+> +
+> +static void plt_clk_unregister_parents(struct clk_plt_data *data)
+> +{
+> +	plt_clk_unregister_fixed_rate_loop(data, data->nparents);
+> +}
+> +
+> +
 
-Would you know which mainline kernel version is "known good"?
+Nitpick: Single newline please
 
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
+> +static int plt_clk_probe(struct platform_device *pdev)
+> +{
+> +	const struct pmc_clk_data *pmc_data;
+> +	const char **parent_names;
+> +	struct clk_plt_data *data;
+> +	unsigned int i;
+> +	int err;
+> +
+> +	pmc_data = dev_get_platdata(&pdev->dev);
+> +	if (!pmc_data || !pmc_data->clks)
+> +		return -EINVAL;
+> +
+> +	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
+> +	if (!data)
+> +		return -ENOMEM;
+> +
+> +	parent_names = plt_clk_register_parents(pdev, data, pmc_data->clks);
+> +	if (IS_ERR(parent_names))
+> +		return PTR_ERR(parent_names);
+> +
+> +	for (i = 0; i < PMC_CLK_NUM; i++) {
+> +		data->clks[i] = plt_clk_register(pdev, i, pmc_data->base,
+> +						 parent_names, data->nparents);
+> +		if (IS_ERR(data->clks[i])) {
+> +			err = PTR_ERR(data->clks[i]);
+> +			goto err_unreg_clk_plt;
+> +		}
+> +	}
+> +
+> +	plt_clk_free_parent_names_loop(parent_names, data->nparents);
+> +
+> +	platform_set_drvdata(pdev, data);
+> +	return 0;
+> +
+> +err_unreg_clk_plt:
+> +	plt_clk_unregister_loop(data, i);
+> +	plt_clk_unregister_parents(data);
+> +	plt_clk_free_parent_names_loop(parent_names, data->nparents);
+> +	return err;
+> +}
+> +
+> +static int plt_clk_remove(struct platform_device *pdev)
+> +{
+> +	struct clk_plt_data *data;
+> +
+> +	data = platform_get_drvdata(pdev);
+> +
+> +	plt_clk_unregister_loop(data, PMC_CLK_NUM);
+> +	plt_clk_unregister_parents(data);
+> +	return 0;
+> +}
+> +
+> +static struct platform_driver plt_clk_driver = {
+> +	.driver = {
+> +		.name = PLT_CLK_DRIVER_NAME,
 
---17pEHd4RhPHOinZp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Nitpick: Just put the string here
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+> +	},
+> +	.probe = plt_clk_probe,
+> +	.remove = plt_clk_remove,
+> +};
+> +builtin_platform_driver(plt_clk_driver);
 
-iEYEARECAAYFAliCZcgACgkQMOfwapXb+vK9tQCfbe4Y/NYXn+xk1HDM8Z8vtv9C
-MdMAn3EqC83qKTdOewm9NkudZHrKN4BC
-=nyxW
------END PGP SIGNATURE-----
-
---17pEHd4RhPHOinZp--
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
