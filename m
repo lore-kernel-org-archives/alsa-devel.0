@@ -1,81 +1,68 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH] ASoC: dapm: fix some pointer error handling
-Date: Fri, 20 Jan 2017 14:07:52 +0100
-Message-ID: <20170120130752.29107-1-linus.walleij@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f48.google.com (mail-lf0-f48.google.com
- [209.85.215.48])
- by alsa0.perex.cz (Postfix) with ESMTP id D244E265A82
- for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2017 14:08:01 +0100 (CET)
-Received: by mail-lf0-f48.google.com with SMTP id z134so57854970lff.3
- for <alsa-devel@alsa-project.org>; Fri, 20 Jan 2017 05:08:01 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Linus Walleij <linus.walleij@linaro.org>, Dan Carpenter <dan.carpenter@oracle.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: sunxi: Add bindings for sun8i to SPDIF" to the asoc tree
+Date: Fri, 20 Jan 2017 13:37:09 +0000
+Message-ID: <E1cUZNN-0000hQ-U0@debutante>
+References: <20170112173343.9953-1-codekipper@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170112173343.9953-1-codekipper@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marcus Cooper <codekipper@gmail.com>
+Cc: Maxime Ripard <maxime.ripard@free-electrons.com>, Mark Brown <broonie@kernel.org>maxime.ripard@free-electrons.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, be17068@iperbole.bo.it, linux-sunxi@googlegroups.combroonie@kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-commit 66feeec9322132689d42723df2537d60f96f8e44
-"RFC: ASoC: dapm: handle probe deferrals"
-forgot a to update some two sites where the call
-was used. The static codechecks quickly found them.
+The patch
 
-Cc: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Fixes: 66feeec93221 ("RFC: ASoC: dapm: handle probe deferrals")
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+   ASoC: sunxi: Add bindings for sun8i to SPDIF
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From cb5c978f9a56c459d5f13901efcfe44b97c4182d Mon Sep 17 00:00:00 2001
+From: Marcus Cooper <codekipper@gmail.com>
+Date: Thu, 19 Jan 2017 20:52:57 +0100
+Subject: [PATCH] ASoC: sunxi: Add bindings for sun8i to SPDIF
+
+The H3 SoC uses the same SPDIF block as found in earlier SoCs, but the
+transmit fifo is at a different address.
+
+Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index b218cc7bd994..dcef67a9bd48 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3935,6 +3935,16 @@ int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
- 			template.name);
+diff --git a/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt b/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
+index 0230c4d20506..fe0a65e6d629 100644
+--- a/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
++++ b/Documentation/devicetree/bindings/sound/sunxi,sun4i-spdif.txt
+@@ -10,6 +10,7 @@ Required properties:
+   - compatible		: should be one of the following:
+     - "allwinner,sun4i-a10-spdif": for the Allwinner A10 SoC
+     - "allwinner,sun6i-a31-spdif": for the Allwinner A31 SoC
++    - "allwinner,sun8i-h3-spdif": for the Allwinner H3 SoC
  
- 		w = snd_soc_dapm_new_control_unlocked(dapm, &template);
-+		if (IS_ERR(w)) {
-+			int ret = PTR_ERR(w);
-+
-+			/* Do not nag about probe deferrals */
-+			if (ret != -EPROBE_DEFER)
-+				dev_err(dapm->dev,
-+				"ASoC: Failed to create %s widget (%d)\n",
-+				dai->driver->playback.stream_name, ret);
-+			return ret;
-+		}
- 		if (!w) {
- 			dev_err(dapm->dev, "ASoC: Failed to create %s widget\n",
- 				dai->driver->playback.stream_name);
-@@ -3954,6 +3964,16 @@ int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
- 			template.name);
+   - reg			: Offset and length of the register set for the device.
  
- 		w = snd_soc_dapm_new_control_unlocked(dapm, &template);
-+		if (IS_ERR(w)) {
-+			int ret = PTR_ERR(w);
-+
-+			/* Do not nag about probe deferrals */
-+			if (ret != -EPROBE_DEFER)
-+				dev_err(dapm->dev,
-+				"ASoC: Failed to create %s widget (%d)\n",
-+				dai->driver->playback.stream_name, ret);
-+			return ret;
-+		}
- 		if (!w) {
- 			dev_err(dapm->dev, "ASoC: Failed to create %s widget\n",
- 				dai->driver->capture.stream_name);
 -- 
-2.9.3
+2.11.0
