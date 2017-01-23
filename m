@@ -1,104 +1,110 @@
-From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [alsa-devel] [PATCH v3 1/2] ASoC: cs35l35: Add support for
- Cirrus CS35L35 Amplifier
-Date: Mon, 23 Jan 2017 14:38:46 +0000
-Message-ID: <20170123143846.GA1754@localhost.localdomain>
-References: <7566bac5-e4c4-49ff-91b3-bcd578cef21b@EX3.ad.cirrus.com>
- <20161221105350.GR1867@localhost.localdomain>
- <alpine.DEB.2.10.1701230754300.32562@heelroid>
+From: Romain Perier <romain.perier@collabora.com>
+Subject: [PATCH v2 3/3] arm: dts: Add support for ES8323 to the
+	Firefly-RK3288
+Date: Mon, 23 Jan 2017 14:47:47 +0100
+Message-ID: <20170123134747.1385-4-romain.perier@collabora.com>
+References: <20170123134747.1385-1-romain.perier@collabora.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.10.1701230754300.32562@heelroid>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Cc: Li Xu <li.xu-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, "Handrigan, Paul" <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+ by alsa0.perex.cz (Postfix) with ESMTP id D812E26686A
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2017 14:47:59 +0100 (CET)
+In-Reply-To: <20170123134747.1385-1-romain.perier@collabora.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Pawel Moll <pawel.moll@arm.com>, Mark Rutland <mark.rutland@arm.com>, Kumar Gala <galak@codeaurora.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: Romain Perier <romain.perier@collabora.com>, linux-rockchip@lists.infradead.org, Sjoerd Simons <sjoerd.simons@collabora.co.uk>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 23, 2017 at 08:02:34AM -0600, Brian Austin wrote:
-> On Wed, 21 Dec 2016, Charles Keepax wrote:
-> > > +		break;
-> > > +	case SND_SOC_DAIFMT_PDM:
-> > > +		cs35l35->pdm_mode = true;
-> > > +		cs35l35->i2s_mode = false;
-> > 
-> > Feels a bit redundant to have both of these if they are only ever
-> > a logical inversion of each other.
-> Certain features are only available in these modes and once TDM is added 
-> will make it easier to adjust settings based on mode
-<snip>
-> > > +			};
-> > > +		} else {
-> > > +			/* Only certain ratios supported in I2S MASTER Mode */
-> > > +			switch (sp_sclks) {
-> > > +			case CS35L35_SP_SCLKS_32FS:
-> > > +			case CS35L35_SP_SCLKS_64FS:
-> > > +			break;
-> > > +			default:
-> > > +				dev_err(codec->dev, "ratio not supported\n");
-> > > +				return -EINVAL;
-> > > +			};
-> > > +		}
-> > > +		ret = regmap_update_bits(cs35l35->regmap,
-> > > +			CS35L35_CLK_CTL3, CS35L35_SP_SCLKS_MASK,
-> > > +			sp_sclks << CS35L35_SP_SCLKS_SHIFT);
-> > > +		if (ret != 0) {
-> > > +			dev_err(codec->dev, "Failed to set fsclk %d\n", ret);
-> > > +			return ret;
-> > > +		}
-> > > +	}
-> > > +	if (cs35l35->pdm_mode) {
-> > > +		regmap_update_bits(cs35l35->regmap, CS35L35_AMP_INP_DRV_CTL,
-> > > +			CS35L35_PDM_MODE_MASK, 1 << CS35L35_PDM_MODE_SHIFT);
-> > > +	} else {
-> > > +		regmap_update_bits(cs35l35->regmap, CS35L35_AMP_INP_DRV_CTL,
-> > > +			CS35L35_PDM_MODE_MASK, 0 << CS35L35_PDM_MODE_SHIFT);
-> > > +	}
-> > 
-> > This if could be combined with the one above since pdm_mode ==
-> > !i2s_mode.
-> 
-> Got it thanks
+This commit adds the DT definition of the es8323 i2c device found at
+address 0x10. It also adds the definition for connecting the Rockchip
+I2S to the es8323 analog output.
 
-Probably best to ignore that comment given you mention the
-addition of more flags and the potential for these to no longer
-just be an inversion of each other in the future.
+Signed-off-by: Romain Perier <romain.perier@collabora.com>
+---
 
-> > > +
-> > > +	if (cs35l35->pdata.bst_ipk)
-> > > +		regmap_update_bits(cs35l35->regmap, CS35L35_BST_PEAK_I,
-> > > +			CS35L35_BST_IPK_MASK,
-> > > +			cs35l35->pdata.bst_ipk << CS35L35_BST_IPK_SHIFT);
-> > 
-> > I believe zero is a valid value for this field, but not the
-> > default. Are we happy that the user can never set this value?
-> > 
-> So here I can just AND in a set high bit that way the check will show true 
-> even if 0. Isn't that what we thought would be the easiest?
+Changes in v2:
+- Add the pinctrl headphone, that was previously in conflict with otp pins
+- Renamed sound_es8323 to sound_i2s
+- Added the property rockchip,routing
 
-Yeah seems easiest to me.
+ arch/arm/boot/dts/rk3288-firefly.dtsi | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-> > > +	if (classh->classh_algo_enable) {
-> > > +		if (classh->classh_bst_override)
-> > > +			regmap_update_bits(cs35l35->regmap,
-> > > +				CS35L35_CLASS_H_CTL, CS35L35_CH_BST_OVR_MASK,
-> > > +				classh->classh_bst_override << CS35L35_CH_BST_OVR_SHIFT);
-> > > +		if (classh->classh_bst_max_limit)
-> > > +			regmap_update_bits(cs35l35->regmap,
-> > > +				CS35L35_CLASS_H_CTL, CS35L35_CH_BST_LIM_MASK,
-> > > +				classh->classh_bst_max_limit << CS35L35_CH_BST_LIM_SHIFT);
-> > 
-> > This is a single bit, but the default bit is 1, so this code can
-> > never change the value of the field.
-> This one and the rest apply to previous statement correct?
-> 
-
-Yeah would cover this one too.
-
-Thanks,
-Charles
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/arch/arm/boot/dts/rk3288-firefly.dtsi b/arch/arm/boot/dts/rk3288-firefly.dtsi
+index 44935af..ddb0beb 100644
+--- a/arch/arm/boot/dts/rk3288-firefly.dtsi
++++ b/arch/arm/boot/dts/rk3288-firefly.dtsi
+@@ -103,6 +103,19 @@
+ 		};
+ 	};
+ 
++	sound_i2s {
++		compatible = "rockchip,rk3288-hdmi-analog";
++		rockchip,model = "I2S";
++		rockchip,i2s-controller = <&i2s>;
++		rockchip,audio-codec = <&es8323>;
++		rockchip,routing = "Analog", "LOUT2",
++				   "Analog", "ROUT2";
++		rockchip,hp-en-gpios = <&gpio0 RK_PB2 GPIO_ACTIVE_HIGH>;
++		rockchip,hp-det-gpios = <&gpio7 RK_PB7 GPIO_ACTIVE_HIGH>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&headphone>;
++	};
++
+ 	vbat_wl: vcc_sys: vsys-regulator {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "vcc_sys";
+@@ -371,6 +384,17 @@
+ 
+ &i2c2 {
+ 	status = "okay";
++
++	es8323: es8323@10 {
++		compatible = "everest,es8323", "everest,es8328";
++		reg = <0x10>;
++		AVDD-supply = <&vcca_33>;
++		DVDD-supply = <&vcca_33>;
++		HPVDD-supply = <&vcca_33>;
++		PVDD-supply = <&vcca_33>;
++		clocks = <&cru SCLK_I2S0_OUT>;
++		clock-names = "i2s_clk_out";
++	};
+ };
+ 
+ &i2c4 {
+@@ -381,6 +405,10 @@
+ 	status = "okay";
+ };
+ 
++&i2s {
++	status = "okay";
++};
++
+ &io_domains {
+ 	status = "okay";
+ 
+@@ -483,6 +511,12 @@
+ 		};
+ 	};
+ 
++	sound {
++		headphone: headphone {
++			rockchip,pins = <0 10 RK_FUNC_GPIO &pcfg_pull_up>;
++		};
++	};
++
+ 	usb_host {
+ 		host_vbus_drv: host-vbus-drv {
+ 			rockchip,pins = <0 14 RK_FUNC_GPIO &pcfg_pull_none>;
+-- 
+2.9.3
