@@ -1,117 +1,72 @@
-From: Jani Nikula <jani.nikula@linux.intel.com>
-Subject: Re: [PATCH v4 2/5] drm/i915: Add support for audio
-	driver	notifications
-Date: Mon, 23 Jan 2017 12:57:46 +0200
-Message-ID: <871svu82mt.fsf@intel.com>
-References: <20170120222232.27791-1-jerome.anand@intel.com>
- <20170120222232.27791-3-jerome.anand@intel.com>
+From: Romain Perier <romain.perier@collabora.com>
+Subject: [PATCH v4 0/4] Add support for es8388 and hdmi audio
+	on the rock2
+Date: Mon, 23 Jan 2017 11:41:45 +0100
+Message-ID: <20170123104149.2508-1-romain.perier@collabora.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20170120222232.27791-3-jerome.anand@intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Jerome Anand <jerome.anand@intel.com>, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, rakesh.a.ughreja@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9339266838
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2017 11:42:11 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-rockchip@lists.infradead.org, Sjoerd Simons <sjoerd.simons@collabora.co.uk>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Romain Perier <romain.perier@collabora.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCAyMSBKYW4gMjAxNywgSmVyb21lIEFuYW5kIDxqZXJvbWUuYW5hbmRAaW50ZWwuY29t
-PiB3cm90ZToKPiBOb3RpZmlhdGlvbnMgbGlrZSBtb2RlIGNoYW5nZSwgaG90IHBsdWcgYW5kIGVk
-aWQgdG8KPiB0aGUgYXVkaW8gZHJpdmVyIGFyZSBhZGRlZC4gVGhpcyBpcyBpbnR1cm4gdXNlZCBi
-eSB0aGUKPiBhdWRpbyBkcml2ZXIgZm9yIGl0cyBmdW5jdGlvbmFsaXR5Lgo+Cj4gQSBuZXcgaW50
-ZXJmYWNlIGZpbGUgY2FwdHVyaW5nIHRoZSBub3RpZmljYXRpb25zIG5lZWRlZCBieSB0aGUKPiBh
-dWRpbyBkcml2ZXIgaXMgYWRkZWQKPgo+IFNpZ25lZC1vZmYtYnk6IFBpZXJyZS1Mb3VpcyBCb3Nz
-YXJ0IDxwaWVycmUtbG91aXMuYm9zc2FydEBsaW51eC5pbnRlbC5jb20+Cj4gU2lnbmVkLW9mZi1i
-eTogSmVyb21lIEFuYW5kIDxqZXJvbWUuYW5hbmRAaW50ZWwuY29tPgoKTm90IGEgZGV0YWlsZWQg
-dGVjaG5pY2FsIHJldmlldywgYnV0CgpBY2tlZC1ieTogSmFuaSBOaWt1bGEgPGphbmkubmlrdWxh
-QGludGVsLmNvbT4KCk9uZSBuaXRwaWNrIGJlbG93LCB1cCB0byB5b3UgaWYgeW91IGNhcmUgdG8g
-Y2hhbmdlLgoKPiAtLS0KPiAgZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9kcnYuaCAgICAgICAg
-fCAgMiArKwo+ICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jICAgICB8ICA4ICsr
-KysrKwo+ICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9oZG1pLmMgICAgICB8ICAxICsKPiAg
-ZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBlX2F1ZGlvLmMgfCA0OSArKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrCj4gIDQgZmlsZXMgY2hhbmdlZCwgNjAgaW5zZXJ0aW9ucygr
-KQo+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmggYi9kcml2
-ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5oCj4gaW5kZXggY2M3MDMzYS4uNjAxYzhhZCAxMDA2
-NDQKPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5oCj4gKysrIGIvZHJpdmVy
-cy9ncHUvZHJtL2k5MTUvaTkxNV9kcnYuaAo+IEBAIC0zNjIzLDYgKzM2MjMsOCBAQCBpbnQgIGlu
-dGVsX2xwZV9hdWRpb19zZXR1cChzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYpOwo+
-ICB2b2lkIGludGVsX2xwZV9hdWRpb190ZWFyZG93bihzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAq
-ZGV2X3ByaXYpOwo+ICB2b2lkIGludGVsX2xwZV9hdWRpb19pcnFfaGFuZGxlcihzdHJ1Y3QgZHJt
-X2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYpOwo+ICBib29sIGludGVsX2xwZV9hdWRpb19kZXRlY3Qo
-c3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2KTsKPiArdm9pZCBpbnRlbF9scGVfYXVk
-aW9fbm90aWZ5KHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdiwKPiArCQkJdm9pZCAq
-ZWxkLCBpbnQgcG9ydCwgaW50IHRtZHNfY2xrX3NwZWVkKTsKPiAgCj4gIC8qIGludGVsX2kyYy5j
-ICovCj4gIGV4dGVybiBpbnQgaW50ZWxfc2V0dXBfZ21idXMoc3RydWN0IGRybV9pOTE1X3ByaXZh
-dGUgKmRldl9wcml2KTsKPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxf
-YXVkaW8uYyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMKPiBpbmRleCAxNmMy
-MDI3Li4wMGE0ODVlIDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1
-ZGlvLmMKPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCj4gQEAgLTI0
-LDYgKzI0LDcgQEAKPiAgI2luY2x1ZGUgPGxpbnV4L2tlcm5lbC5oPgo+ICAjaW5jbHVkZSA8bGlu
-dXgvY29tcG9uZW50Lmg+Cj4gICNpbmNsdWRlIDxkcm0vaTkxNV9jb21wb25lbnQuaD4KPiArI2lu
-Y2x1ZGUgPGRybS9pbnRlbF9scGVfYXVkaW8uaD4KPiAgI2luY2x1ZGUgImludGVsX2Rydi5oIgo+
-ICAKPiAgI2luY2x1ZGUgPGRybS9kcm1QLmg+Cj4gQEAgLTYzMCw2ICs2MzEsMTAgQEAgdm9pZCBp
-bnRlbF9hdWRpb19jb2RlY19lbmFibGUoc3RydWN0IGludGVsX2VuY29kZXIgKmludGVsX2VuY29k
-ZXIsCj4gIAlpZiAoYWNvbXAgJiYgYWNvbXAtPmF1ZGlvX29wcyAmJiBhY29tcC0+YXVkaW9fb3Bz
-LT5waW5fZWxkX25vdGlmeSkKPiAgCQlhY29tcC0+YXVkaW9fb3BzLT5waW5fZWxkX25vdGlmeShh
-Y29tcC0+YXVkaW9fb3BzLT5hdWRpb19wdHIsCj4gIAkJCQkJCSAoaW50KSBwb3J0LCAoaW50KSBw
-aXBlKTsKPiArCj4gKwlpZiAoSEFTX0xQRV9BVURJTyhkZXZfcHJpdikpCj4gKwkJaW50ZWxfbHBl
-X2F1ZGlvX25vdGlmeShkZXZfcHJpdiwgY29ubmVjdG9yLT5lbGQsIHBvcnQsCj4gKwkJCWNydGNf
-c3RhdGUtPnBvcnRfY2xvY2spOwoKU2VlbXMgdW5uZWNlc3NhcnkgdG8gY2hlY2sgZm9yIEhBU19M
-UEVfQVVESU8gKHdoaWNoIHlvdSdsbCBjaGFuZ2UgdG8KZGV2X3ByaXYtPmxwZV9hdWRpby5wbGF0
-ZGV2LCByaWdodCA7KSBib3RoIGluIHRoZSBjYWxsZXIgYW5kCmNhbGxlZS4gUGljayBvbmUuCgo+
-ICB9Cj4gIAo+ICAvKioKPiBAQCAtNjYzLDYgKzY2OCw5IEBAIHZvaWQgaW50ZWxfYXVkaW9fY29k
-ZWNfZGlzYWJsZShzdHJ1Y3QgaW50ZWxfZW5jb2RlciAqaW50ZWxfZW5jb2RlcikKPiAgCWlmIChh
-Y29tcCAmJiBhY29tcC0+YXVkaW9fb3BzICYmIGFjb21wLT5hdWRpb19vcHMtPnBpbl9lbGRfbm90
-aWZ5KQo+ICAJCWFjb21wLT5hdWRpb19vcHMtPnBpbl9lbGRfbm90aWZ5KGFjb21wLT5hdWRpb19v
-cHMtPmF1ZGlvX3B0ciwKPiAgCQkJCQkJIChpbnQpIHBvcnQsIChpbnQpIHBpcGUpOwo+ICsKPiAr
-CWlmIChIQVNfTFBFX0FVRElPKGRldl9wcml2KSkKPiArCQlpbnRlbF9scGVfYXVkaW9fbm90aWZ5
-KGRldl9wcml2LCBOVUxMLCBwb3J0LCAwKTsKPiAgfQo+ICAKPiAgLyoqCj4gZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2hkbWkuYyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1
-L2ludGVsX2hkbWkuYwo+IGluZGV4IDBiY2ZlYWQuLjM3NzU4NGUxIDEwMDY0NAo+IC0tLSBhL2Ry
-aXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2hkbWkuYwo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9p
-OTE1L2ludGVsX2hkbWkuYwo+IEBAIC0zNiw2ICszNiw3IEBACj4gICNpbmNsdWRlIDxkcm0vZHJt
-X2VkaWQuaD4KPiAgI2luY2x1ZGUgImludGVsX2Rydi5oIgo+ICAjaW5jbHVkZSA8ZHJtL2k5MTVf
-ZHJtLmg+Cj4gKyNpbmNsdWRlIDxkcm0vaW50ZWxfbHBlX2F1ZGlvLmg+Cj4gICNpbmNsdWRlICJp
-OTE1X2Rydi5oIgo+ICAKPiAgc3RhdGljIHN0cnVjdCBkcm1fZGV2aWNlICppbnRlbF9oZG1pX3Rv
-X2RldihzdHJ1Y3QgaW50ZWxfaGRtaSAqaW50ZWxfaGRtaSkKPiBkaWZmIC0tZ2l0IGEvZHJpdmVy
-cy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBlX2F1ZGlvLmMgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9p
-bnRlbF9scGVfYXVkaW8uYwo+IGluZGV4IDA5OTczMmMuLjI5MzA4NGQgMTAwNjQ0Cj4gLS0tIGEv
-ZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBlX2F1ZGlvLmMKPiArKysgYi9kcml2ZXJzL2dw
-dS9kcm0vaTkxNS9pbnRlbF9scGVfYXVkaW8uYwo+IEBAIC0zMzcsMyArMzM3LDUyIEBAIHZvaWQg
-aW50ZWxfbHBlX2F1ZGlvX3RlYXJkb3duKHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJp
-dikKPiAgCj4gIAlpcnFfZnJlZV9kZXNjKGRldl9wcml2LT5scGVfYXVkaW8uaXJxKTsKPiAgfQo+
-ICsKPiArCj4gKy8qKgo+ICsgKiBpbnRlbF9scGVfYXVkaW9fbm90aWZ5KCkgLSBub3RpZnkgbHBl
-IGF1ZGlvIGV2ZW50Cj4gKyAqIGF1ZGlvIGRyaXZlciBhbmQgaTkxNQo+ICsgKiBAZGV2X3ByaXY6
-IHRoZSBpOTE1IGRybSBkZXZpY2UgcHJpdmF0ZSBkYXRhCj4gKyAqIEBlbGQgOiBFTEQgZGF0YQo+
-ICsgKiBAcG9ydDogcG9ydCBpZAo+ICsgKiBAdG1kc19jbGtfc3BlZWQ6IHRtZHMgY2xvY2sgZnJl
-cXVlbmN5IGluIEh6Cj4gKyAqCj4gKyAqIE5vdGlmeSBscGUgYXVkaW8gZHJpdmVyIG9mIGVsZCBj
-aGFuZ2UuCj4gKyAqLwo+ICt2b2lkIGludGVsX2xwZV9hdWRpb19ub3RpZnkoc3RydWN0IGRybV9p
-OTE1X3ByaXZhdGUgKmRldl9wcml2LAo+ICsJCQl2b2lkICplbGQsIGludCBwb3J0LCBpbnQgdG1k
-c19jbGtfc3BlZWQpCj4gK3sKPiArCXVuc2lnbmVkIGxvbmcgaXJxX2ZsYWdzOwo+ICsJc3RydWN0
-IGludGVsX2hkbWlfbHBlX2F1ZGlvX3BkYXRhICpwZGF0YSA9IE5VTEw7Cj4gKwo+ICsJaWYgKCFI
-QVNfTFBFX0FVRElPKGRldl9wcml2KSkKPiArCQlyZXR1cm47Cj4gKwo+ICsJcGRhdGEgPSBkZXZf
-Z2V0X3BsYXRkYXRhKAo+ICsJCSYoZGV2X3ByaXYtPmxwZV9hdWRpby5wbGF0ZGV2LT5kZXYpKTsK
-PiArCj4gKwlzcGluX2xvY2tfaXJxc2F2ZSgmcGRhdGEtPmxwZV9hdWRpb19zbG9jaywgaXJxX2Zs
-YWdzKTsKPiArCj4gKwlpZiAoZWxkICE9IE5VTEwpIHsKPiArCQltZW1jcHkocGRhdGEtPmVsZC5l
-bGRfZGF0YSwgZWxkLAo+ICsJCQlIRE1JX01BWF9FTERfQllURVMpOwo+ICsJCXBkYXRhLT5lbGQu
-cG9ydF9pZCA9IHBvcnQ7Cj4gKwkJcGRhdGEtPmhkbWlfY29ubmVjdGVkID0gdHJ1ZTsKPiArCj4g
-KwkJaWYgKHRtZHNfY2xrX3NwZWVkKQo+ICsJCQlwZGF0YS0+dG1kc19jbG9ja19zcGVlZCA9IHRt
-ZHNfY2xrX3NwZWVkOwo+ICsJfSBlbHNlIHsKPiArCQltZW1zZXQocGRhdGEtPmVsZC5lbGRfZGF0
-YSwgMCwKPiArCQkJSERNSV9NQVhfRUxEX0JZVEVTKTsKPiArCQlwZGF0YS0+aGRtaV9jb25uZWN0
-ZWQgPSBmYWxzZTsKPiArCX0KPiArCj4gKwlpZiAocGRhdGEtPm5vdGlmeV9hdWRpb19scGUpCj4g
-KwkJcGRhdGEtPm5vdGlmeV9hdWRpb19scGUoCj4gKwkJCShlbGQgIT0gTlVMTCkgPyAmcGRhdGEt
-PmVsZCA6IE5VTEwpOwo+ICsJZWxzZQo+ICsJCXBkYXRhLT5ub3RpZnlfcGVuZGluZyA9IHRydWU7
-Cj4gKwo+ICsJc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmcGRhdGEtPmxwZV9hdWRpb19zbG9jaywK
-PiArCQkJaXJxX2ZsYWdzKTsKPiArfQoKLS0gCkphbmkgTmlrdWxhLCBJbnRlbCBPcGVuIFNvdXJj
-ZSBUZWNobm9sb2d5IENlbnRlcgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVz
-a3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9p
-bnRlbC1nZngK
+This set of patches adds a machine driver for rk3288-based boards that have
+the built-in HDMI audio and a generic analog output. It also adds slave mode
+to the es8328 driver that currently only supported the master mode. Then, it
+adds the required DT definitions to link rockchip-i2s to the es8388 analog
+output and to hdmi audio.
+
+This work is based on the initial work that was done by Sjoerd Simons
+<sjoerd.simons@collabora.co.uk> with some improvements, changes and more
+commits.
+
+Changes in v4:
+ - Add support for multi codecs in the asoc machine driver, so the driver
+   matches the hw architecture (analog and hdmi audio are connected on
+   the same i2s line)
+ - Renamed the driver to rk3288-hdmi-analog.c and changed its
+   documentation
+ - Add built-in support for hdmi audio in this driver
+ - Add support for the property 'rockchip,routing'
+
+Changes in v3:
+ - Cosmetic changes in rockchip_es8388.c
+ - Added missing email to MODULE_AUTHOR in rockchip_es8388.c
+Changes in v2:
+ - Fixed wrong use of the data structure i2c_device_id
+ - Fixed wrong dependencies for SND_SOC_ROCKCHIP_ES8388
+
+Romain Perier (4):
+  ASoC: es8328-i2c: Add compatible for ES8388
+  ASoC: es8328: Add support for slave mode
+  ASoC: rockchip: Add machine driver for RK3288 boards that use
+    analog/HDMI
+  arm: dts: Add support for ES8388 to the Radxa Rock 2
+
+ Documentation/devicetree/bindings/sound/es8328.txt |   2 +-
+ .../bindings/sound/rockchip,rk3288-hdmi-analog.txt |  36 +++
+ arch/arm/boot/dts/rk3288-rock2-square.dts          |  39 +++
+ sound/soc/codecs/es8328-i2c.c                      |   2 +
+ sound/soc/codecs/es8328.c                          |  28 +-
+ sound/soc/rockchip/Kconfig                         |  10 +
+ sound/soc/rockchip/Makefile                        |   2 +
+ sound/soc/rockchip/rk3288_hdmi_analog.c            | 299 +++++++++++++++++++++
+ 8 files changed, 411 insertions(+), 7 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/rockchip,rk3288-hdmi-analog.txt
+ create mode 100644 sound/soc/rockchip/rk3288_hdmi_analog.c
+
+-- 
+2.9.3
