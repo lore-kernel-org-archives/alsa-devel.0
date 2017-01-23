@@ -1,81 +1,97 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v4 2/4] ASoC: es8328: Add support for slave mode
-Date: Mon, 23 Jan 2017 17:59:17 +0000
-Message-ID: <20170123175917.3fpceelozd57emz3@sirena.org.uk>
-References: <20170123104149.2508-1-romain.perier@collabora.com>
- <20170123104149.2508-3-romain.perier@collabora.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="etwh2oo4py7wpyd5"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20170123104149.2508-3-romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v8 0/5] Add platform clock for BayTrail platforms
+Date: Mon, 23 Jan 2017 12:07:40 -0600
+Message-ID: <1485194865-10400-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+Return-path: <linux-acpi-owner@vger.kernel.org>
+Sender: linux-acpi-owner@vger.kernel.org
+To: linux-clk@vger.kernel.org, x86@kernel.org, platform-driver-x86@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>, Darren Hart <dvhart@infradead.org>, Thomas Gleixner <tglx@linutronix.de>
+Cc: alsa-devel@alsa-project.org, Irina Tirdea <irina.tirdea@intel.com>, Michael Turquette <mturquette@baylibre.com>, "Rafael J . Wysocki" <rjw@rjwysocki.net>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, Ingo Molnar <mingo@redhat.com>, Mark Brown <broonie@kernel.org>, "H . Peter Anvin" <hpa@zytor.com>, Len Brown <lenb@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+These patches specifically enable the audio MCLK required by Baytrail
+CR devices. It is the remaining part of a bigger set of patches
+(already merged in Mark Brown's tree) that enable sound for Baytrail CR
+devices (especially Asus T100TAF) [1]. They include the clock driver
+and clock enabling in the pmc_atom code (along with moving of the
+non-architectural pmc_atom driver code into drivers/platform/x86 as
+suggested by Thomas Gleixner [2]). This move includes a new header in
+include/linux/platform_data/x86/. While there is an agreement that the
+definitions for PMC clocks are not really platform data this location
+is seen as a good-enough compromise with an agreement between Darren
+Hart and Andy Shevchenko [3]
 
---etwh2oo4py7wpyd5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2016-August/111704.html
+[2] http://mailman.alsa-project.org/pipermail/alsa-devel/2016-October/113936.html
+[3] http://mailman.alsa-project.org/pipermail/alsa-devel/2016-December/115892.html
 
-On Mon, Jan 23, 2017 at 11:41:47AM +0100, Romain Perier wrote:
+Changes from v7:
+ - Replaced clk-readl/writel by regular readl/writel
+ - Fixed two nitpick comments (newline and driver name string)
+ - Fixed [5:0] to [0..5] in comment (missed in v6)
 
-> +	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-> +		case SND_SOC_DAIFMT_CBM_CFM:
-> +			master = true;
-> +			break;
-> +		case SND_SOC_DAIFMT_CBS_CFS:
-> +			master = false;
-> +			break;
-> +		default:
-> +			return -EINVAL;
-> +	}
+Changes from v6:
+ - Addressed comments from Stephen Boyd, Andy Shevchenko and Vinod Koul
+ - Renamed clk-byt-plt to clk-pmc-atom
+ - Rebase to 4.10-rc3 (broonie/for-next)
+ - Added helper functions to make error handling more compact
+ - Removed module-related code since it's not possible/supported
+ - Removed useless tests on remove
+ - PMC_CLK_OFFSET move to clk-pcm-atom (more logical)
+ - Split typo correction and makefile fix in separate patches
+ - small fixes (spaces, defaults in switches, alphabetical order, use of
+clk_writel/readl and no test on write, simpler error handling, use of
+while(i--), unsigned loop variables, kernel doc fields, format-patch -M
+ -C -D, use of PLATFORM_DEVID_NONE)
 
-Please use the normal kernel coding style.  People read in part by
-pattern matching so this is important to ease review and coding style
-problems are a big warning sign that the code also has problems with
-other, more substantial, understanding of how the kernel is expected to
-work.
+Changes from v5:
+ - fix build error reported by kbuild test robot
+ - split the clk driver code from x86 platform changes
 
-> -	/* Master serial port mode, with BCLK generated automatically */
-> -	snd_soc_update_bits(codec, ES8328_MASTERMODE,
-> -			ES8328_MASTERMODE_MSC, ES8328_MASTERMODE_MSC);
-> +	if (master) {
-> +		/* Master serial port mode, with BCLK generated automatically */
-> +		snd_soc_update_bits(codec, ES8328_MASTERMODE,
-> +				    ES8328_MASTERMODE_MSC,
-> +				    ES8328_MASTERMODE_MSC);
-> +	} else {
-> +		/* Slave serial port mode */
-> +		snd_soc_update_bits(codec, ES8328_MASTERMODE,
-> +				    ES8328_MASTERMODE_MSC,
-> +				    0);
-> +	}
+Changes from v4:
+ - move the pmc_atom driver from arch/x86/platform/atom to
+drivers/platform/x86
 
-Why not just directly do this in the switch statement?  This appears to
-be the only place where we change behaviour so setting a variable at the
-top of the function then using it at the bottom doesn't seem to add
-anything.
+Changes from v3:
+ - replace devm_kzalloc with devm_kcalloc
+ - add x86 architecture maintainers
 
---etwh2oo4py7wpyd5
-Content-Type: application/pgp-signature; name="signature.asc"
+Changes from v2:
+ - move clk platform data structures to a separate include file
+ - store clk_hw pointer for the fixed rate clocks
 
------BEGIN PGP SIGNATURE-----
+Changes from v1:
+ - register the clk device as child of pmc device
+ - pass iomem pointer from pmc driver to clk driver to avoid using
+pmc_atom_read()/write() and use readl/writel API instead
+ - use devm_clk_hw_register/clkdev_hw_create instead of
+clk_register/clkdev_create
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliGRHQACgkQJNaLcl1U
-h9DFhwf/eFY7jOX8H6f2i5mlcdoDuL9SibVCS48ft35fs+IBjbVanncDBhL8WHpW
-/5mIcZbiXASRewcT8QAfLtokV3ttLznBG3Yb1TuHwcVWRh5TKhiNUENKr55MBql7
-b7VKj6s4vDpBpB5pnSit1CFzdeCa4422I+XdB0gdIF8t/o7U8lh9H0m1awryd4ea
-8xTGNY5r5vGjpOB5YKKE2nU/0PB0SnbFLWb9qaoUHyvFnsTxow7dfeRkohETWVUH
-kLvpFLK6hua4ELc4qNeNvhowjNtQdpy9jMXoRiI5h0TR0naOuuAcQCo6T4+rwthm
-jpPU0HMk4JctW+IvxVRjyTn42R1JbQ==
-=Fcfm
------END PGP SIGNATURE-----
+Irina Tirdea (3):
+  clk: x86: Add Atom PMC platform clocks
+  arch/x86/platform/atom: Move pmc_atom to drivers/platform/x86
+  platform/x86: Enable Atom PMC platform clocks
 
---etwh2oo4py7wpyd5--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Pierre-Louis Bossart (2):
+  clk: Make x86/ conditional on CONFIG_COMMON_CLK
+  platform/x86: fix typo in comment
+
+ arch/x86/Kconfig                                   |   4 -
+ arch/x86/platform/atom/Makefile                    |   1 -
+ drivers/acpi/acpi_lpss.c                           |   2 +-
+ drivers/clk/Makefile                               |   2 +
+ drivers/clk/x86/Makefile                           |   1 +
+ drivers/clk/x86/clk-pmc-atom.c                     | 371 +++++++++++++++++++++
+ drivers/platform/x86/Kconfig                       |   5 +
+ drivers/platform/x86/Makefile                      |   1 +
+ .../atom => drivers/platform/x86}/pmc_atom.c       |  88 ++++-
+ include/linux/platform_data/x86/clk-pmc-atom.h     |  44 +++
+ .../linux/platform_data/x86}/pmc_atom.h            |   2 +-
+ 11 files changed, 506 insertions(+), 15 deletions(-)
+ create mode 100644 drivers/clk/x86/clk-pmc-atom.c
+ rename {arch/x86/platform/atom => drivers/platform/x86}/pmc_atom.c (87%)
+ create mode 100644 include/linux/platform_data/x86/clk-pmc-atom.h
+ rename {arch/x86/include/asm => include/linux/platform_data/x86}/pmc_atom.h (98%)
+
+-- 
+2.7.4
+
