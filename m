@@ -1,72 +1,86 @@
-From: Romain Perier <romain.perier@collabora.com>
-Subject: [PATCH v4 0/4] Add support for es8388 and hdmi audio
-	on the rock2
-Date: Mon, 23 Jan 2017 11:41:45 +0100
-Message-ID: <20170123104149.2508-1-romain.perier@collabora.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v4 1/3] DRM: add help to get ELD speaker allocation
+Date: Mon, 23 Jan 2017 11:41:28 +0000
+Message-ID: <20170123114128.hafyzv2sfa5tueu2@sirena.org.uk>
+References: <1483458772-13658-1-git-send-email-arnaud.pouliquen@st.com>
+ <1483458772-13658-2-git-send-email-arnaud.pouliquen@st.com>
+ <20170117191902.zugqcnb4osxmcgaj@sirena.org.uk>
+ <87bmv5wheq.fsf@eliezer.anholt.net>
+ <20170119102901.h35ynrcztf5z7vb3@sirena.org.uk>
+ <20170123074911.aofyd3mdy6bwyu4m@phenom.ffwll.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
- by alsa0.perex.cz (Postfix) with ESMTP id D9339266838
- for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2017 11:42:11 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-rockchip@lists.infradead.org, Sjoerd Simons <sjoerd.simons@collabora.co.uk>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Romain Perier <romain.perier@collabora.com>
+Content-Type: multipart/mixed; boundary="===============1917989558=="
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20170123074911.aofyd3mdy6bwyu4m@phenom.ffwll.local>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Daniel Vetter <daniel@ffwll.ch>
+Cc: alsa-devel@alsa-project.org, Jani Nikula <jani.nikula@intel.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, lgirdwood@gmail.com, dri-devel@lists.freedesktop.org, Jyri Sarha <jsarha@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-This set of patches adds a machine driver for rk3288-based boards that have
-the built-in HDMI audio and a generic analog output. It also adds slave mode
-to the es8328 driver that currently only supported the master mode. Then, it
-adds the required DT definitions to link rockchip-i2s to the es8388 analog
-output and to hdmi audio.
 
-This work is based on the initial work that was done by Sjoerd Simons
-<sjoerd.simons@collabora.co.uk> with some improvements, changes and more
-commits.
+--===============1917989558==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="c5t765rebzop3syn"
+Content-Disposition: inline
 
-Changes in v4:
- - Add support for multi codecs in the asoc machine driver, so the driver
-   matches the hw architecture (analog and hdmi audio are connected on
-   the same i2s line)
- - Renamed the driver to rk3288-hdmi-analog.c and changed its
-   documentation
- - Add built-in support for hdmi audio in this driver
- - Add support for the property 'rockchip,routing'
 
-Changes in v3:
- - Cosmetic changes in rockchip_es8388.c
- - Added missing email to MODULE_AUTHOR in rockchip_es8388.c
-Changes in v2:
- - Fixed wrong use of the data structure i2c_device_id
- - Fixed wrong dependencies for SND_SOC_ROCKCHIP_ES8388
+--c5t765rebzop3syn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Romain Perier (4):
-  ASoC: es8328-i2c: Add compatible for ES8388
-  ASoC: es8328: Add support for slave mode
-  ASoC: rockchip: Add machine driver for RK3288 boards that use
-    analog/HDMI
-  arm: dts: Add support for ES8388 to the Radxa Rock 2
+On Mon, Jan 23, 2017 at 08:49:11AM +0100, Daniel Vetter wrote:
+> On Thu, Jan 19, 2017 at 10:29:01AM +0000, Mark Brown wrote:
 
- Documentation/devicetree/bindings/sound/es8328.txt |   2 +-
- .../bindings/sound/rockchip,rk3288-hdmi-analog.txt |  36 +++
- arch/arm/boot/dts/rk3288-rock2-square.dts          |  39 +++
- sound/soc/codecs/es8328-i2c.c                      |   2 +
- sound/soc/codecs/es8328.c                          |  28 +-
- sound/soc/rockchip/Kconfig                         |  10 +
- sound/soc/rockchip/Makefile                        |   2 +
- sound/soc/rockchip/rk3288_hdmi_analog.c            | 299 +++++++++++++++++++++
- 8 files changed, 411 insertions(+), 7 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/rockchip,rk3288-hdmi-analog.txt
- create mode 100644 sound/soc/rockchip/rk3288_hdmi_analog.c
+> > I see.  For most subsystems you need to actually copy a human to make
+> > sure that things are seen - just the list isn't enough.  In terms of it
+> > being reviewed one of the problems with DRM not listing the reviwers in
+> > the MAINTAINERS file or anything is that it's very hard for anyone to
+> > tell if something is considered a good enough review or if it's just a
+> > review from someone who happens to contribute to DRM sometimes.
 
--- 
-2.9.3
+> Jani is now officially listed as drm-misc maintainer in MAINTAINERS. We
+> also have official entries for other major areas (like bridge drivers or
+> similar). Where do you see a gap?
+
+> Note that before KS this was indeed not there, because of the committer
+> model hanging in the air a bit ...
+
+This bit also wasn't there when the series started grinding on IIRC.  It
+does look clear enough now though, thanks.
+
+--c5t765rebzop3syn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliF6+cACgkQJNaLcl1U
+h9Cm0Qf9EHqVguYnL6SojVGOw2nEdDAFDpbx0j0nTM4HL7XMXW3qanV61F3phqMs
+7He4D6OyDRVjFYB+CkFpFNyJiSN5lR8PU7u/dd16er3NOJOyBwgKUc9RqaX0oGXF
+yjevtLyKcx1OuhSXcf1V6M4J1u5vig5+g2+zuZkN88mEH2fg7H/9z0QvxSK6hxpp
+HvpCs36GZWo4ZPaEgJB110C9pQqTDwABY3/wKVLS3TDnaFAlvX7x9/P1LRpeBVX3
+2BFpJmJaJRXQefyojeuaUZd6o+HT6KdjzjFSmtCbwYCXsv8nwb3OEgN7f/Q2E86j
+1vGKCxFVL5XuOTE8sPcMUiHCBalawA==
+=zAxn
+-----END PGP SIGNATURE-----
+
+--c5t765rebzop3syn--
+
+--===============1917989558==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
+IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+
+--===============1917989558==--
