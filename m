@@ -1,97 +1,474 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v8 0/5] Add platform clock for BayTrail platforms
-Date: Mon, 23 Jan 2017 12:07:40 -0600
-Message-ID: <1485194865-10400-1-git-send-email-pierre-louis.bossart@linux.intel.com>
-Return-path: <linux-acpi-owner@vger.kernel.org>
-Sender: linux-acpi-owner@vger.kernel.org
+Subject: [PATCH v8 2/5] clk: x86: Add Atom PMC platform clocks
+Date: Mon, 23 Jan 2017 12:07:42 -0600
+Message-ID: <1485194865-10400-3-git-send-email-pierre-louis.bossart@linux.intel.com>
+References: <1485194865-10400-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+Return-path: <linux-clk-owner@vger.kernel.org>
+In-Reply-To: <1485194865-10400-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+Sender: linux-clk-owner@vger.kernel.org
 To: linux-clk@vger.kernel.org, x86@kernel.org, platform-driver-x86@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>, Darren Hart <dvhart@infradead.org>, Thomas Gleixner <tglx@linutronix.de>
 Cc: alsa-devel@alsa-project.org, Irina Tirdea <irina.tirdea@intel.com>, Michael Turquette <mturquette@baylibre.com>, "Rafael J . Wysocki" <rjw@rjwysocki.net>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org, Ingo Molnar <mingo@redhat.com>, Mark Brown <broonie@kernel.org>, "H . Peter Anvin" <hpa@zytor.com>, Len Brown <lenb@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-These patches specifically enable the audio MCLK required by Baytrail
-CR devices. It is the remaining part of a bigger set of patches
-(already merged in Mark Brown's tree) that enable sound for Baytrail CR
-devices (especially Asus T100TAF) [1]. They include the clock driver
-and clock enabling in the pmc_atom code (along with moving of the
-non-architectural pmc_atom driver code into drivers/platform/x86 as
-suggested by Thomas Gleixner [2]). This move includes a new header in
-include/linux/platform_data/x86/. While there is an agreement that the
-definitions for PMC clocks are not really platform data this location
-is seen as a good-enough compromise with an agreement between Darren
-Hart and Andy Shevchenko [3]
+From: Irina Tirdea <irina.tirdea@intel.com>
 
-[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2016-August/111704.html
-[2] http://mailman.alsa-project.org/pipermail/alsa-devel/2016-October/113936.html
-[3] http://mailman.alsa-project.org/pipermail/alsa-devel/2016-December/115892.html
+The BayTrail and CherryTrail platforms provide platform clocks
+through their Power Management Controller (PMC).
 
-Changes from v7:
- - Replaced clk-readl/writel by regular readl/writel
- - Fixed two nitpick comments (newline and driver name string)
- - Fixed [5:0] to [0..5] in comment (missed in v6)
+The SoC supports up to 6 clocks (PMC_PLT_CLK[0..5]) with a
+frequency of either 19.2 MHz (PLL) or 25 MHz (XTAL) for BayTrail
+and a frequency of 19.2 MHz (XTAL) for CherryTrail. These clocks
+are available for general system use, where appropriate, and each
+have Control & Frequency register fields associated with them.
 
-Changes from v6:
- - Addressed comments from Stephen Boyd, Andy Shevchenko and Vinod Koul
- - Renamed clk-byt-plt to clk-pmc-atom
- - Rebase to 4.10-rc3 (broonie/for-next)
- - Added helper functions to make error handling more compact
- - Removed module-related code since it's not possible/supported
- - Removed useless tests on remove
- - PMC_CLK_OFFSET move to clk-pcm-atom (more logical)
- - Split typo correction and makefile fix in separate patches
- - small fixes (spaces, defaults in switches, alphabetical order, use of
-clk_writel/readl and no test on write, simpler error handling, use of
-while(i--), unsigned loop variables, kernel doc fields, format-patch -M
- -C -D, use of PLATFORM_DEVID_NONE)
+Port from legacy by Pierre Bossart, integration in clock framework
+by Irina Tirdea
 
-Changes from v5:
- - fix build error reported by kbuild test robot
- - split the clk driver code from x86 platform changes
-
-Changes from v4:
- - move the pmc_atom driver from arch/x86/platform/atom to
-drivers/platform/x86
-
-Changes from v3:
- - replace devm_kzalloc with devm_kcalloc
- - add x86 architecture maintainers
-
-Changes from v2:
- - move clk platform data structures to a separate include file
- - store clk_hw pointer for the fixed rate clocks
-
-Changes from v1:
- - register the clk device as child of pmc device
- - pass iomem pointer from pmc driver to clk driver to avoid using
-pmc_atom_read()/write() and use readl/writel API instead
- - use devm_clk_hw_register/clkdev_hw_create instead of
-clk_register/clkdev_create
-
-Irina Tirdea (3):
-  clk: x86: Add Atom PMC platform clocks
-  arch/x86/platform/atom: Move pmc_atom to drivers/platform/x86
-  platform/x86: Enable Atom PMC platform clocks
-
-Pierre-Louis Bossart (2):
-  clk: Make x86/ conditional on CONFIG_COMMON_CLK
-  platform/x86: fix typo in comment
-
- arch/x86/Kconfig                                   |   4 -
- arch/x86/platform/atom/Makefile                    |   1 -
- drivers/acpi/acpi_lpss.c                           |   2 +-
- drivers/clk/Makefile                               |   2 +
- drivers/clk/x86/Makefile                           |   1 +
- drivers/clk/x86/clk-pmc-atom.c                     | 371 +++++++++++++++++++++
- drivers/platform/x86/Kconfig                       |   5 +
- drivers/platform/x86/Makefile                      |   1 +
- .../atom => drivers/platform/x86}/pmc_atom.c       |  88 ++++-
- include/linux/platform_data/x86/clk-pmc-atom.h     |  44 +++
- .../linux/platform_data/x86}/pmc_atom.h            |   2 +-
- 11 files changed, 506 insertions(+), 15 deletions(-)
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Irina Tirdea <irina.tirdea@intel.com>
+---
+ drivers/clk/x86/Makefile                       |   1 +
+ drivers/clk/x86/clk-pmc-atom.c                 | 371 +++++++++++++++++++++++++
+ include/linux/platform_data/x86/clk-pmc-atom.h |  44 +++
+ 3 files changed, 416 insertions(+)
  create mode 100644 drivers/clk/x86/clk-pmc-atom.c
- rename {arch/x86/platform/atom => drivers/platform/x86}/pmc_atom.c (87%)
  create mode 100644 include/linux/platform_data/x86/clk-pmc-atom.h
- rename {arch/x86/include/asm => include/linux/platform_data/x86}/pmc_atom.h (98%)
 
+diff --git a/drivers/clk/x86/Makefile b/drivers/clk/x86/Makefile
+index 0478138..1367afb 100644
+--- a/drivers/clk/x86/Makefile
++++ b/drivers/clk/x86/Makefile
+@@ -1,2 +1,3 @@
+ clk-x86-lpss-objs		:= clk-lpt.o
+ obj-$(CONFIG_X86_INTEL_LPSS)	+= clk-x86-lpss.o
++obj-$(CONFIG_PMC_ATOM)		+= clk-pmc-atom.o
+diff --git a/drivers/clk/x86/clk-pmc-atom.c b/drivers/clk/x86/clk-pmc-atom.c
+new file mode 100644
+index 0000000..2b60577
+--- /dev/null
++++ b/drivers/clk/x86/clk-pmc-atom.c
+@@ -0,0 +1,371 @@
++/*
++ * Intel Atom platform clocks driver for BayTrail and CherryTrail SoCs
++ *
++ * Copyright (C) 2016, Intel Corporation
++ * Author: Irina Tirdea <irina.tirdea@intel.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms and conditions of the GNU General Public License,
++ * version 2, as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ */
++
++#include <linux/clk-provider.h>
++#include <linux/clkdev.h>
++#include <linux/err.h>
++#include <linux/platform_data/x86/clk-pmc-atom.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++
++#define PLT_CLK_NAME_BASE	"pmc_plt_clk"
++
++#define PMC_CLK_CTL_OFFSET		0x60
++#define PMC_CLK_CTL_SIZE		4
++#define PMC_CLK_NUM			6
++#define PMC_CLK_CTL_GATED_ON_D3		0x0
++#define PMC_CLK_CTL_FORCE_ON		0x1
++#define PMC_CLK_CTL_FORCE_OFF		0x2
++#define PMC_CLK_CTL_RESERVED		0x3
++#define PMC_MASK_CLK_CTL		GENMASK(1, 0)
++#define PMC_MASK_CLK_FREQ		BIT(2)
++#define PMC_CLK_FREQ_XTAL		(0 << 2)	/* 25 MHz */
++#define PMC_CLK_FREQ_PLL		(1 << 2)	/* 19.2 MHz */
++
++struct clk_plt_fixed {
++	struct clk_hw *clk;
++	struct clk_lookup *lookup;
++};
++
++struct clk_plt {
++	struct clk_hw hw;
++	void __iomem *reg;
++	struct clk_lookup *lookup;
++	/* protect access to PMC registers */
++	spinlock_t lock;
++};
++
++#define to_clk_plt(_hw) container_of(_hw, struct clk_plt, hw)
++
++struct clk_plt_data {
++	struct clk_plt_fixed **parents;
++	u8 nparents;
++	struct clk_plt *clks[PMC_CLK_NUM];
++};
++
++/* Return an index in parent table */
++static inline int plt_reg_to_parent(int reg)
++{
++	switch (reg & PMC_MASK_CLK_FREQ) {
++	default:
++	case PMC_CLK_FREQ_XTAL:
++		return 0;
++	case PMC_CLK_FREQ_PLL:
++		return 1;
++	}
++}
++
++/* Return clk index of parent */
++static inline int plt_parent_to_reg(int index)
++{
++	switch (index) {
++	default:
++	case 0:
++		return PMC_CLK_FREQ_XTAL;
++	case 1:
++		return PMC_CLK_FREQ_PLL;
++	}
++}
++
++/* Abstract status in simpler enabled/disabled value */
++static inline int plt_reg_to_enabled(int reg)
++{
++	switch (reg & PMC_MASK_CLK_CTL) {
++	case PMC_CLK_CTL_GATED_ON_D3:
++	case PMC_CLK_CTL_FORCE_ON:
++		return 1;	/* enabled */
++	case PMC_CLK_CTL_FORCE_OFF:
++	case PMC_CLK_CTL_RESERVED:
++	default:
++		return 0;	/* disabled */
++	}
++}
++
++static void plt_clk_reg_update(struct clk_plt *clk, u32 mask, u32 val)
++{
++	u32 tmp;
++	unsigned long flags;
++
++	spin_lock_irqsave(&clk->lock, flags);
++
++	tmp = readl(clk->reg);
++	tmp = (tmp & ~mask) | (val & mask);
++	writel(tmp, clk->reg);
++
++	spin_unlock_irqrestore(&clk->lock, flags);
++}
++
++static int plt_clk_set_parent(struct clk_hw *hw, u8 index)
++{
++	struct clk_plt *clk = to_clk_plt(hw);
++
++	plt_clk_reg_update(clk, PMC_MASK_CLK_FREQ, plt_parent_to_reg(index));
++
++	return 0;
++}
++
++static u8 plt_clk_get_parent(struct clk_hw *hw)
++{
++	struct clk_plt *clk = to_clk_plt(hw);
++	u32 value;
++
++	value = readl(clk->reg);
++
++	return plt_reg_to_parent(value);
++}
++
++static int plt_clk_enable(struct clk_hw *hw)
++{
++	struct clk_plt *clk = to_clk_plt(hw);
++
++	plt_clk_reg_update(clk, PMC_MASK_CLK_CTL, PMC_CLK_CTL_FORCE_ON);
++
++	return 0;
++}
++
++static void plt_clk_disable(struct clk_hw *hw)
++{
++	struct clk_plt *clk = to_clk_plt(hw);
++
++	plt_clk_reg_update(clk, PMC_MASK_CLK_CTL, PMC_CLK_CTL_FORCE_OFF);
++}
++
++static int plt_clk_is_enabled(struct clk_hw *hw)
++{
++	struct clk_plt *clk = to_clk_plt(hw);
++	u32 value;
++
++	value = readl(clk->reg);
++
++	return plt_reg_to_enabled(value);
++}
++
++static const struct clk_ops plt_clk_ops = {
++	.enable = plt_clk_enable,
++	.disable = plt_clk_disable,
++	.is_enabled = plt_clk_is_enabled,
++	.get_parent = plt_clk_get_parent,
++	.set_parent = plt_clk_set_parent,
++	.determine_rate = __clk_mux_determine_rate,
++};
++
++static struct clk_plt *plt_clk_register(struct platform_device *pdev, int id,
++					void __iomem *base,
++					const char **parent_names,
++					int num_parents)
++{
++	struct clk_plt *pclk;
++	struct clk_init_data init;
++	int ret;
++
++	pclk = devm_kzalloc(&pdev->dev, sizeof(*pclk), GFP_KERNEL);
++	if (!pclk)
++		return ERR_PTR(-ENOMEM);
++
++	init.name =  kasprintf(GFP_KERNEL, "%s_%d", PLT_CLK_NAME_BASE, id);
++	init.ops = &plt_clk_ops;
++	init.flags = 0;
++	init.parent_names = parent_names;
++	init.num_parents = num_parents;
++
++	pclk->hw.init = &init;
++	pclk->reg = base + PMC_CLK_CTL_OFFSET + id * PMC_CLK_CTL_SIZE;
++	spin_lock_init(&pclk->lock);
++
++	ret = devm_clk_hw_register(&pdev->dev, &pclk->hw);
++	if (ret) {
++		pclk = ERR_PTR(ret);
++		goto err_free_init;
++	}
++
++	pclk->lookup = clkdev_hw_create(&pclk->hw, init.name, NULL);
++	if (!pclk->lookup) {
++		pclk = ERR_PTR(-ENOMEM);
++		goto err_free_init;
++	}
++
++err_free_init:
++	kfree(init.name);
++	return pclk;
++}
++
++static void plt_clk_unregister(struct clk_plt *pclk)
++{
++	clkdev_drop(pclk->lookup);
++}
++
++static struct clk_plt_fixed *plt_clk_register_fixed_rate(struct platform_device *pdev,
++						 const char *name,
++						 const char *parent_name,
++						 unsigned long fixed_rate)
++{
++	struct clk_plt_fixed *pclk;
++
++	pclk = devm_kzalloc(&pdev->dev, sizeof(*pclk), GFP_KERNEL);
++	if (!pclk)
++		return ERR_PTR(-ENOMEM);
++
++	pclk->clk = clk_hw_register_fixed_rate(&pdev->dev, name, parent_name,
++					       0, fixed_rate);
++	if (IS_ERR(pclk->clk))
++		return ERR_CAST(pclk->clk);
++
++	pclk->lookup = clkdev_hw_create(pclk->clk, name, NULL);
++	if (!pclk->lookup) {
++		clk_hw_unregister_fixed_rate(pclk->clk);
++		return ERR_PTR(-ENOMEM);
++	}
++
++	return pclk;
++}
++
++static void plt_clk_unregister_fixed_rate(struct clk_plt_fixed *pclk)
++{
++	clkdev_drop(pclk->lookup);
++	clk_hw_unregister_fixed_rate(pclk->clk);
++}
++
++static void plt_clk_unregister_fixed_rate_loop(struct clk_plt_data *data,
++					       unsigned int i)
++{
++	while (i--)
++		plt_clk_unregister_fixed_rate(data->parents[i]);
++}
++
++static void plt_clk_free_parent_names_loop(const char **parent_names,
++					   unsigned int i)
++{
++	while (i--)
++		kfree_const(parent_names[i]);
++	kfree(parent_names);
++}
++
++static void plt_clk_unregister_loop(struct clk_plt_data *data,
++				    unsigned int i)
++{
++	while (i--)
++		plt_clk_unregister(data->clks[i]);
++}
++
++static const char **plt_clk_register_parents(struct platform_device *pdev,
++					     struct clk_plt_data *data,
++					     const struct pmc_clk *clks)
++{
++	const char **parent_names;
++	unsigned int i;
++	int err;
++	int nparents = 0;
++
++	data->nparents = 0;
++	while (clks[nparents].name)
++		nparents++;
++
++	data->parents = devm_kcalloc(&pdev->dev, nparents,
++				     sizeof(*data->parents), GFP_KERNEL);
++	if (!data->parents)
++		return ERR_PTR(-ENOMEM);
++
++	parent_names = kcalloc(nparents, sizeof(*parent_names),
++			       GFP_KERNEL);
++	if (!parent_names)
++		return ERR_PTR(-ENOMEM);
++
++	for (i = 0; i < nparents; i++) {
++		data->parents[i] =
++			plt_clk_register_fixed_rate(pdev, clks[i].name,
++						    clks[i].parent_name,
++						    clks[i].freq);
++		if (IS_ERR(data->parents[i])) {
++			err = PTR_ERR(data->parents[i]);
++			goto err_unreg;
++		}
++		parent_names[i] = kstrdup_const(clks[i].name, GFP_KERNEL);
++	}
++
++	data->nparents = nparents;
++	return parent_names;
++
++err_unreg:
++	plt_clk_unregister_fixed_rate_loop(data, i);
++	plt_clk_free_parent_names_loop(parent_names, i);
++	return ERR_PTR(err);
++}
++
++static void plt_clk_unregister_parents(struct clk_plt_data *data)
++{
++	plt_clk_unregister_fixed_rate_loop(data, data->nparents);
++}
++
++static int plt_clk_probe(struct platform_device *pdev)
++{
++	const struct pmc_clk_data *pmc_data;
++	const char **parent_names;
++	struct clk_plt_data *data;
++	unsigned int i;
++	int err;
++
++	pmc_data = dev_get_platdata(&pdev->dev);
++	if (!pmc_data || !pmc_data->clks)
++		return -EINVAL;
++
++	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
++	if (!data)
++		return -ENOMEM;
++
++	parent_names = plt_clk_register_parents(pdev, data, pmc_data->clks);
++	if (IS_ERR(parent_names))
++		return PTR_ERR(parent_names);
++
++	for (i = 0; i < PMC_CLK_NUM; i++) {
++		data->clks[i] = plt_clk_register(pdev, i, pmc_data->base,
++						 parent_names, data->nparents);
++		if (IS_ERR(data->clks[i])) {
++			err = PTR_ERR(data->clks[i]);
++			goto err_unreg_clk_plt;
++		}
++	}
++
++	plt_clk_free_parent_names_loop(parent_names, data->nparents);
++
++	platform_set_drvdata(pdev, data);
++	return 0;
++
++err_unreg_clk_plt:
++	plt_clk_unregister_loop(data, i);
++	plt_clk_unregister_parents(data);
++	plt_clk_free_parent_names_loop(parent_names, data->nparents);
++	return err;
++}
++
++static int plt_clk_remove(struct platform_device *pdev)
++{
++	struct clk_plt_data *data;
++
++	data = platform_get_drvdata(pdev);
++
++	plt_clk_unregister_loop(data, PMC_CLK_NUM);
++	plt_clk_unregister_parents(data);
++	return 0;
++}
++
++static struct platform_driver plt_clk_driver = {
++	.driver = {
++		.name = "clk-pmc-atom",
++	},
++	.probe = plt_clk_probe,
++	.remove = plt_clk_remove,
++};
++builtin_platform_driver(plt_clk_driver);
+diff --git a/include/linux/platform_data/x86/clk-pmc-atom.h b/include/linux/platform_data/x86/clk-pmc-atom.h
+new file mode 100644
+index 0000000..3ab8922
+--- /dev/null
++++ b/include/linux/platform_data/x86/clk-pmc-atom.h
+@@ -0,0 +1,44 @@
++/*
++ * Intel Atom platform clocks for BayTrail and CherryTrail SoC.
++ *
++ * Copyright (C) 2016, Intel Corporation
++ * Author: Irina Tirdea <irina.tirdea@intel.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms and conditions of the GNU General Public License,
++ * version 2, as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ */
++
++#ifndef __PLATFORM_DATA_X86_CLK_PMC_ATOM_H
++#define __PLATFORM_DATA_X86_CLK_PMC_ATOM_H
++
++/**
++ * struct pmc_clk - PMC platform clock configuration
++ *
++ * @name:	identified, typically pmc_plt_clk_<x>, x=[0..5]
++ * @freq:	in Hz, 19.2MHz  and 25MHz (Baytrail only) supported
++ * @parent_name: one of 'xtal' or 'osc'
++ */
++struct pmc_clk {
++	const char *name;
++	unsigned long freq;
++	const char *parent_name;
++};
++
++/**
++ * struct pmc_clk_data - common PMC clock configuration
++ *
++ * @base:	PMC clock register base offset
++ * @clks:	pointer to set of registered clocks, typically 0..5
++ */
++struct pmc_clk_data {
++	void __iomem *base;
++	const struct pmc_clk *clks;
++};
++
++#endif /* __PLATFORM_DATA_X86_CLK_PMC_ATOM_H */
 -- 
 2.7.4
 
