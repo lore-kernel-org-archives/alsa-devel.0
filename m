@@ -1,145 +1,79 @@
-From: Kevin Hilman <khilman@kernel.org>
-Subject: Re: [PATCH 6/9] power_supply: wm97xx_battery: use power_supply_get_drvdata
-Date: Mon, 23 Jan 2017 10:38:15 -0800
-Message-ID: <CAOi56cVk17w6C6msnT88c0Zh1OgLM=FbZAw32MzLRatjFraYhg@mail.gmail.com>
-References: <1477510907-23495-1-git-send-email-robert.jarzmik@free.fr> <1477510907-23495-7-git-send-email-robert.jarzmik@free.fr>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: mxs-saif: add mclk enable/disable ops
+Date: Mon, 23 Jan 2017 19:07:01 +0000
+Message-ID: <20170123190701.hva43ac4ceo6xxla@sirena.org.uk>
+References: <20161222164926.19621-1-mans@mansr.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-pm-owner@vger.kernel.org>
-In-Reply-To: <1477510907-23495-7-git-send-email-robert.jarzmik@free.fr>
-Sender: linux-pm-owner@vger.kernel.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Lee Jones <lee.jones@linaro.org>, Sebastian Reichel <sre@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, lkml <linux-kernel@vger.kernel.org>, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, linux-pm <linux-pm@vger.kernel.org>, alsa-devel@alsa-project.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Stefan Agner <stefan@agner.ch>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="qhyg5xsg6yr6ozrr"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20161222164926.19621-1-mans@mansr.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mans Rullgard <mans@mansr.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, =?iso-8859-1?Q?J=F6rg?= Krause <joerg.krause@embedded.rocks>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-On Wed, Oct 26, 2016 at 12:41 PM, Robert Jarzmik <robert.jarzmik@free.fr> wrote:
-> As the power supply framework provides a way to store and retrieve
-> private supply data, use it.
->
-> In the process, change the platform data for wm97xx_battery from a
-> container of a single struct wm97xx_batt_pdata to the direct point to wm97xx_batt_pdata.
->
-> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+--qhyg5xsg6yr6ozrr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-kernelci.org has been reporting that the tegra20-iris board has been
-failing in -next since next-20161123[1], and also in mainline
-v4.10-rc.  I finally took the time to bisect, and it pointed to this
-patch.  I verified that reverting $SUBJECT patch[2] on top of
-v4.10-rc5 fixes the problem.
+On Thu, Dec 22, 2016 at 04:49:26PM +0000, Mans Rullgard wrote:
 
-Kevin
+>  int mxs_saif_put_mclk(unsigned int saif_id)
+>  {
+> -	struct mxs_saif *saif =3D mxs_saif[saif_id];
+> -	u32 stat;
+> +	struct clk *clk;
+> =20
+> -	if (!saif)
+> -		return -EINVAL;
+> +	clk =3D clk_get(NULL, "mxs_saif_mclk");
+> +	if (IS_ERR(clk))
+> +		return PTR_ERR(clk);
 
-[1] https://kernelci.org/boot/id/5879a3fe59b5141534f6c3ac/
-[2] in mainline as commit: 6480af4915d6 power_supply: wm97xx_battery:
-use power_supply_get_drvdata
+So, this *is* an in place refactoring but it's only half done in that
+we don't have any followup patches that move the clk_get() to device
+probe where it should be.
 
-> ---
->  drivers/input/touchscreen/wm97xx-core.c |  2 +-
->  drivers/power/supply/wm97xx_battery.c   | 25 ++++++++++---------------
->  2 files changed, 11 insertions(+), 16 deletions(-)
->
-> diff --git a/drivers/input/touchscreen/wm97xx-core.c b/drivers/input/touchscreen/wm97xx-core.c
-> index 90d6be3c26cc..83cf11312fd9 100644
-> --- a/drivers/input/touchscreen/wm97xx-core.c
-> +++ b/drivers/input/touchscreen/wm97xx-core.c
-> @@ -682,7 +682,7 @@ static int wm97xx_probe(struct device *dev)
->         }
->         platform_set_drvdata(wm->battery_dev, wm);
->         wm->battery_dev->dev.parent = dev;
-> -       wm->battery_dev->dev.platform_data = pdata;
-> +       wm->battery_dev->dev.platform_data = pdata->batt_pdata;
->         ret = platform_device_add(wm->battery_dev);
->         if (ret < 0)
->                 goto batt_reg_err;
-> diff --git a/drivers/power/supply/wm97xx_battery.c b/drivers/power/supply/wm97xx_battery.c
-> index 6285626d142a..e3edb31ac880 100644
-> --- a/drivers/power/supply/wm97xx_battery.c
-> +++ b/drivers/power/supply/wm97xx_battery.c
-> @@ -30,8 +30,7 @@ static enum power_supply_property *prop;
->
->  static unsigned long wm97xx_read_bat(struct power_supply *bat_ps)
->  {
-> -       struct wm97xx_pdata *wmdata = bat_ps->dev.parent->platform_data;
-> -       struct wm97xx_batt_pdata *pdata = wmdata->batt_pdata;
-> +       struct wm97xx_batt_pdata *pdata = power_supply_get_drvdata(bat_ps);
->
->         return wm97xx_read_aux_adc(dev_get_drvdata(bat_ps->dev.parent),
->                                         pdata->batt_aux) * pdata->batt_mult /
-> @@ -40,8 +39,7 @@ static unsigned long wm97xx_read_bat(struct power_supply *bat_ps)
->
->  static unsigned long wm97xx_read_temp(struct power_supply *bat_ps)
->  {
-> -       struct wm97xx_pdata *wmdata = bat_ps->dev.parent->platform_data;
-> -       struct wm97xx_batt_pdata *pdata = wmdata->batt_pdata;
-> +       struct wm97xx_batt_pdata *pdata = power_supply_get_drvdata(bat_ps);
->
->         return wm97xx_read_aux_adc(dev_get_drvdata(bat_ps->dev.parent),
->                                         pdata->temp_aux) * pdata->temp_mult /
-> @@ -52,8 +50,7 @@ static int wm97xx_bat_get_property(struct power_supply *bat_ps,
->                             enum power_supply_property psp,
->                             union power_supply_propval *val)
->  {
-> -       struct wm97xx_pdata *wmdata = bat_ps->dev.parent->platform_data;
-> -       struct wm97xx_batt_pdata *pdata = wmdata->batt_pdata;
-> +       struct wm97xx_batt_pdata *pdata = power_supply_get_drvdata(bat_ps);
->
->         switch (psp) {
->         case POWER_SUPPLY_PROP_STATUS:
-> @@ -103,8 +100,7 @@ static void wm97xx_bat_external_power_changed(struct power_supply *bat_ps)
->  static void wm97xx_bat_update(struct power_supply *bat_ps)
->  {
->         int old_status = bat_status;
-> -       struct wm97xx_pdata *wmdata = bat_ps->dev.parent->platform_data;
-> -       struct wm97xx_batt_pdata *pdata = wmdata->batt_pdata;
-> +       struct wm97xx_batt_pdata *pdata = power_supply_get_drvdata(bat_ps);
->
->         mutex_lock(&work_lock);
->
-> @@ -166,15 +162,15 @@ static int wm97xx_bat_probe(struct platform_device *dev)
->         int ret = 0;
->         int props = 1;  /* POWER_SUPPLY_PROP_PRESENT */
->         int i = 0;
-> -       struct wm97xx_pdata *wmdata = dev->dev.platform_data;
-> -       struct wm97xx_batt_pdata *pdata;
-> +       struct wm97xx_batt_pdata *pdata = dev->dev.platform_data;
-> +       struct power_supply_config cfg = {};
->
-> -       if (!wmdata) {
-> +       if (!pdata) {
->                 dev_err(&dev->dev, "No platform data supplied\n");
->                 return -EINVAL;
->         }
->
-> -       pdata = wmdata->batt_pdata;
-> +       cfg.drv_data = pdata;
->
->         if (dev->id != -1)
->                 return -EINVAL;
-> @@ -243,7 +239,7 @@ static int wm97xx_bat_probe(struct platform_device *dev)
->         bat_psy_desc.properties = prop;
->         bat_psy_desc.num_properties = props;
->
-> -       bat_psy = power_supply_register(&dev->dev, &bat_psy_desc, NULL);
-> +       bat_psy = power_supply_register(&dev->dev, &bat_psy_desc, &cfg);
->         if (!IS_ERR(bat_psy)) {
->                 schedule_work(&bat_work);
->         } else {
-> @@ -266,8 +262,7 @@ static int wm97xx_bat_probe(struct platform_device *dev)
->
->  static int wm97xx_bat_remove(struct platform_device *dev)
->  {
-> -       struct wm97xx_pdata *wmdata = dev->dev.platform_data;
-> -       struct wm97xx_batt_pdata *pdata = wmdata->batt_pdata;
-> +       struct wm97xx_batt_pdata *pdata = dev->dev.platform_data;
->
->         if (pdata && gpio_is_valid(pdata->charge_gpio)) {
->                 free_irq(gpio_to_irq(pdata->charge_gpio), dev);
-> --
-> 2.1.4
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-pm" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> +static void mxs_saif_mclk_disable(struct clk_hw *hw)
+> +{
+> +	struct mxs_saif *saif =3D to_mxs_saif(hw);
+> +
+> +	if (!saif->ongoing)
+> +		__raw_writel(BM_SAIF_CTRL_RUN,
+> +			     saif->base + SAIF_CTRL + MXS_CLR_ADDR);
+> +
+> +	saif->mclk_in_use =3D 0;
+> +}
+
+We silently ignore disables if the clock is in use?  That seems error
+prone.  I'd expect us to at least warn in that case.
+
+> +static unsigned long mxs_saif_mclk_recalc_rate(struct clk_hw *hw,
+> +					       unsigned long parent_rate)
+> +{
+> +	return clk_divider_ops.recalc_rate(hw, parent_rate);
+> +}
+
+Can't we just assign these ops directly?  Having to write wrapper
+functions like this looks like we're doing something wrong here.
+
+--qhyg5xsg6yr6ozrr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliGVFQACgkQJNaLcl1U
+h9ABbwf/cyxSrrbAksx1jRM2tm3RuxmaOiFVoxkvGQvPlciCpkiy0bv8ShgPPNJP
+KOJSB0uuTGtr/yvzVY/h1VBqCFDDXISHxoUfR7xtilj7MZRWV/Nl2QkLhoWL7WyT
+SwSj6eYIT8enqiEtMGibXfoQdowhM7/qmufqS/1xVufT+w7N6G9qoPUrjV6agWLf
+SgMj9Oz9tl0xjjxUjcumLfmBFZaKjoeGnv1Tb5k78TuGPPR0bC6WvowkBy7GO+WX
+7v20yfZEIoxhhbgIze50n+ELoLVWA0bNR7qSn04TOg5oGWVuvEunigQnODHNbz+N
+xoYeMAnMuedP/8IEuNkSa0ah0gO/pg==
+=EfBm
+-----END PGP SIGNATURE-----
+
+--qhyg5xsg6yr6ozrr--
