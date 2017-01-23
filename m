@@ -1,53 +1,104 @@
-From: Jeeja KP <jeeja.kp@intel.com>
-Subject: Re: [PATCH v2 02/13] ASoC: hdac_hdmi: Register widget
-	event handlers
-Date: Mon, 23 Jan 2017 15:35:03 +0530
-Message-ID: <20170123100502.GA32369@kpjeeja-desk>
-References: <1484755493-30595-1-git-send-email-jeeja.kp@intel.com>
- <1484755493-30595-3-git-send-email-jeeja.kp@intel.com>
- <20170120133535.tun4a57dr3pkispw@sirena.org.uk>
+From: Jani Nikula <jani.nikula@linux.intel.com>
+Subject: Re: [PATCH v4 1/5] drm/i915: setup bridge for HDMI
+	LPE	audio driver
+Date: Mon, 23 Jan 2017 12:54:16 +0200
+Message-ID: <874m0q82sn.fsf@intel.com>
+References: <20170120222232.27791-1-jerome.anand@intel.com>
+ <20170120222232.27791-2-jerome.anand@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id D1A2826680F
- for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2017 10:53:49 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20170120133535.tun4a57dr3pkispw@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <20170120222232.27791-2-jerome.anand@intel.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Jerome Anand <jerome.anand@intel.com>, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org, rakesh.a.ughreja@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jan 20, 2017 at 01:35:35PM +0000, Mark Brown wrote:
-> On Wed, Jan 18, 2017 at 09:34:42PM +0530, jeeja.kp@intel.com wrote:
-> > From: Jeeja KP <jeeja.kp@intel.com>
-> > 
-> > In case of hdmi connect/disconnect or when stream need to be route to
-> > multiple monitors, corresponding port and audio infoframe needs to be
-> > reconfigured. Currently all the configuration are done in DAI ops which
-> > results in silence playback.
-> 
-> This doesn't apply against current code, please check and resend.
-
-Hi Mark,
-
-This series has dependency on DRM changes. I looked at the topic/intel
-branch, and it doesn't have the DRM changes which are already merged in
-4.10-rc1. Please let me know how should I resend the patches.
-
-Regards,
-Jeeja
-
-
-
--- 
+T24gU2F0LCAyMSBKYW4gMjAxNywgSmVyb21lIEFuYW5kIDxqZXJvbWUuYW5hbmRAaW50ZWwuY29t
+PiB3cm90ZToKPiBFbmFibGUgc3VwcG9ydCBmb3IgSERNSSBMUEUgYXVkaW8gbW9kZSBvbiBCYXl0
+cmFpbCBhbmQKPiBDaGVycnl0cmFpbCB3aGVuIEhEYXVkaW8gY29udHJvbGxlciBpcyBub3QgZGV0
+ZWN0ZWQKPgo+IFNldHVwIG1pbmltdW0gcmVxdWlyZWQgcmVzb3VyY2VzIGR1cmluZyBpOTE1X2Ry
+aXZlcl9sb2FkOgo+IDEuIENyZWF0ZSBhIHBsYXRmb3JtIGRldmljZSB0byBzaGFyZSBNTUlPL0lS
+USByZXNvdXJjZXMKPiAyLiBNYWtlIHRoZSBwbGF0Zm9ybSBkZXZpY2UgY2hpbGQgb2YgaTkxNSBk
+ZXZpY2UgZm9yIHJ1bnRpbWUgUE0uCj4gMy4gQ3JlYXRlIElSUSBjaGlwIHRvIGZvcndhcmQgSERN
+SSBMUEUgYXVkaW8gaXJxcy4KPgo+IEhETUkgTFBFIGF1ZGlvIGRyaXZlciAoYSBzdGFuZGFsb25l
+IHNvdW5kIGRyaXZlcikgcHJvYmVzIHRoZQo+IExQRSBhdWRpbyBkZXZpY2UgYW5kIGNyZWF0ZXMg
+YSBuZXcgc291bmQgY2FyZC4KPgo+IFNpZ25lZC1vZmYtYnk6IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0
+IDxwaWVycmUtbG91aXMuYm9zc2FydEBsaW51eC5pbnRlbC5jb20+Cj4gU2lnbmVkLW9mZi1ieTog
+SmVyb21lIEFuYW5kIDxqZXJvbWUuYW5hbmRAaW50ZWwuY29tPgoKU29tZSBjb21tZW50cyBpbmxp
+bmUuIFRoaXMgaXMgbm90IGEgZGV0YWlsZWQgdGVjaG5pY2FsIHJldmlldywgbW9yZSBhCmhpZ2gg
+bGV2ZWwgZ2xhbmNlIGF0IGludGVyZmFjaW5nIHdpdGggdGhlIHJlc3Qgb2YgaTkxNS4KCj4gZGlm
+ZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmMgYi9kcml2ZXJzL2dwdS9k
+cm0vaTkxNS9pOTE1X2Rydi5jCj4gaW5kZXggNGQyMmI0Yi4uNzBkNzI4YiAxMDA2NDQKPiAtLS0g
+YS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5jCj4gKysrIGIvZHJpdmVycy9ncHUvZHJt
+L2k5MTUvaTkxNV9kcnYuYwo+IEBAIC0xMTMxLDcgKzExMzEsOCBAQCBzdGF0aWMgdm9pZCBpOTE1
+X2RyaXZlcl9yZWdpc3RlcihzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYpCj4gIAlp
+ZiAoSVNfR0VONShkZXZfcHJpdikpCj4gIAkJaW50ZWxfZ3B1X2lwc19pbml0KGRldl9wcml2KTsK
+PiAgCj4gLQlpOTE1X2F1ZGlvX2NvbXBvbmVudF9pbml0KGRldl9wcml2KTsKPiArCWlmIChpbnRl
+bF9scGVfYXVkaW9faW5pdChkZXZfcHJpdikgPCAwKQo+ICsJCWk5MTVfYXVkaW9fY29tcG9uZW50
+X2luaXQoZGV2X3ByaXYpOwoKSSdkIGxpa2UgdGhpcyBhYnN0cmFjdGVkIGJlaGluZCBhIHNpbmds
+ZSBpbnRlbF9hdWRpb19pbml0KCkgaW4KaW50ZWxfYXVkaW8uYywgd2hpY2ggd291bGQgZG8gdGhl
+IHJpZ2h0IHRoaW5nLgoKPiAgCj4gIAkvKgo+ICAJICogU29tZSBwb3J0cyByZXF1aXJlIGNvcnJl
+Y3RseSBzZXQtdXAgaHBkIHJlZ2lzdGVycyBmb3IgZGV0ZWN0aW9uIHRvCj4gQEAgLTExNDksNyAr
+MTE1MCwxMCBAQCBzdGF0aWMgdm9pZCBpOTE1X2RyaXZlcl9yZWdpc3RlcihzdHJ1Y3QgZHJtX2k5
+MTVfcHJpdmF0ZSAqZGV2X3ByaXYpCj4gICAqLwo+ICBzdGF0aWMgdm9pZCBpOTE1X2RyaXZlcl91
+bnJlZ2lzdGVyKHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdikKPiAgewo+IC0JaTkx
+NV9hdWRpb19jb21wb25lbnRfY2xlYW51cChkZXZfcHJpdik7Cj4gKwlpZiAoSEFTX0xQRV9BVURJ
+TyhkZXZfcHJpdikpCj4gKwkJaW50ZWxfbHBlX2F1ZGlvX3RlYXJkb3duKGRldl9wcml2KTsKPiAr
+CWVsc2UKPiArCQlpOTE1X2F1ZGlvX2NvbXBvbmVudF9jbGVhbnVwKGRldl9wcml2KTsKClNhbWUg
+aGVyZSBmb3IgY2xlYW51cC4KCj4gIAo+ICAJaW50ZWxfZ3B1X2lwc190ZWFyZG93bigpOwo+ICAJ
+YWNwaV92aWRlb191bnJlZ2lzdGVyKCk7Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9p
+OTE1L2k5MTVfZHJ2LmggYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5oCj4gaW5kZXgg
+ZjY2ZWVlZGUuLmNjNzAzM2EgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkx
+NV9kcnYuaAo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmgKPiBAQCAtMjQ0
+OSw2ICsyNDQ5LDEyIEBAIHN0cnVjdCBkcm1faTkxNV9wcml2YXRlIHsKPiAgCS8qIFVzZWQgdG8g
+c2F2ZSB0aGUgcGlwZS10by1lbmNvZGVyIG1hcHBpbmcgZm9yIGF1ZGlvICovCj4gIAlzdHJ1Y3Qg
+aW50ZWxfZW5jb2RlciAqYXZfZW5jX21hcFtJOTE1X01BWF9QSVBFU107Cj4gIAo+ICsJLyogbmVj
+ZXNzYXJ5IHJlc291cmNlIHNoYXJpbmcgd2l0aCBIRE1JIExQRSBhdWRpbyBkcml2ZXIuICovCj4g
+KwlzdHJ1Y3Qgewo+ICsJCXN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBsYXRkZXY7Cj4gKwkJaW50
+CWlycTsKPiArCX0gbHBlX2F1ZGlvOwo+ICsKCkkgdGhpbmsgdGhlIGF2X2VuY19tYXAgYXJyYXkg
+aXMgbWlzcGxhY2VkIHdpdGhpbiBkZXZfcHJpdiwgYW5kIHRoZXNlCnNob3VsZCByZWFsbHkgYmUg
+Y2xvc2VyIHRvIHRoZSBhdWRpb19jb21wb25lbnQgZXRjLiBtZW1iZXJzLiBCdXQgY291bGQKYmUg
+Y2xlYW5lZCB1cCBsYXRlciB0b28uCgo+ICAJLyoKPiAgCSAqIE5PVEU6IFRoaXMgaXMgdGhlIGRy
+aTEvdW1zIGR1bmdlb24sIGRvbid0IGFkZCBzdHVmZiBoZXJlLiBZb3VyIHBhdGNoCj4gIAkgKiB3
+aWxsIGJlIHJlamVjdGVkLiBJbnN0ZWFkIGxvb2sgZm9yIGEgYmV0dGVyIHBsYWNlLgo+IEBAIC0y
+ODQ4LDYgKzI4NTQsOCBAQCBpbnRlbF9pbmZvKGNvbnN0IHN0cnVjdCBkcm1faTkxNV9wcml2YXRl
+ICpkZXZfcHJpdikKPiAgCj4gICNkZWZpbmUgSEFTX1BPT0xFRF9FVShkZXZfcHJpdikJKChkZXZf
+cHJpdiktPmluZm8uaGFzX3Bvb2xlZF9ldSkKPiAgCj4gKyNkZWZpbmUgSEFTX0xQRV9BVURJTyhk
+ZXZfcHJpdikgKChkZXZfcHJpdiktPmxwZV9hdWRpby5wbGF0ZGV2ICE9IE5VTEwpCgpQbGVhc2Ug
+bm90ZSB0aGF0ICphbGwqIG9mIG91ciBIQVNfIG1hY3JvcyBjaGVjayBmb3Igc3RhdGljIGZlYXR1
+cmVzIG9mCnRoZSBoYXJkd2FyZSwgbm90IGR5bmFtaWMgc3RhdGUgb2YgdGhlIGRyaXZlci4gTGV0
+J3Mga2VlcCBpdCB0aGF0IHdheS4KCklmIHlvdSBhYnN0cmFjdCB0aGUgaW5pdC9jbGVhbnVwIGlu
+IGludGVsX2F1ZGlvLmMgbGlrZSBJIHN1Z2dlc3RlZCwgSQp0aGluayB5b3UgY2FuIGp1c3QgY2hl
+Y2sgZm9yIGRldl9wcml2LT5scGVfYXVkaW8ucGxhdGRldiBkaXJlY3RseSwgYW5kCmdldCByaWQg
+b2YgSEFTX0xQRV9BVURJTygpIGFsdG9nZXRoZXIuIFRoZW4gaXQnbGwgYWxsIGJlIHdpdGhpbgpp
+bnRlbF9hdWRpby5jIG9yIGludGVsX2xwZV9hdWRpby5jLCBhbmQgaXQncyBwcmV0dHkgb2J2aW91
+cyB3aGF0IGl0Cm1lYW5zLgoKPiArLyoqCj4gKyAqIGludGVsX2xwZV9hdWRpb19kZXRlY3QoKSAt
+IGNoZWNrICYgc2V0dXAgbHBlIGF1ZGlvIGlmIHByZXNlbnQKPiArICogQGRldl9wcml2OiB0aGUg
+aTkxNSBkcm0gZGV2aWNlIHByaXZhdGUgZGF0YQo+ICsgKgo+ICsgKiBEZXRlY3QgaWYgbHBlIGF1
+ZGlvIGlzIHByZXNlbnQKPiArICoKPiArICogUmV0dXJuOiB0cnVlIGlmIGxwZSBhdWRpbyBwcmVz
+ZW50IGVsc2UgUmV0dXJuID0gZmFsc2UKPiArICovCj4gK2Jvb2wgaW50ZWxfbHBlX2F1ZGlvX2Rl
+dGVjdChzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYpCgpDb3VsZCB0aGlzIG5vdCBi
+ZSBzdGF0aWM/Cgo+ICsvKioKPiArICogaW50ZWxfbHBlX2F1ZGlvX3NldHVwKCkgLSBzZXR1cCB0
+aGUgYnJpZGdlIGJldHdlZW4gSERNSSBMUEUgQXVkaW8KPiArICogZHJpdmVyIGFuZCBpOTE1Cj4g
+KyAqIEBkZXZfcHJpdjogdGhlIGk5MTUgZHJtIGRldmljZSBwcml2YXRlIGRhdGEKPiArICoKPiAr
+ICogc2V0IHVwIHRoZSBtaW5pbXVtIHJlcXVpcmVkIHJlc291cmNlcyBmb3IgdGhlIGJyaWRnZTog
+aXJxIGNoaXAsCj4gKyAqIHBsYXRmb3JtIHJlc291cmNlIGFuZCBwbGF0Zm9ybSBkZXZpY2UuIGk5
+MTUgZGV2aWNlIGlzIHNldCBhcyBwYXJlbnQKPiArICogb2YgdGhlIG5ldyBwbGF0Zm9ybSBkZXZp
+Y2UuCj4gKyAqCj4gKyAqIFJldHVybjogMCBpZiBzdWNjZXNzZnVsLiBub24temVybyBpZiBhbGxv
+Y2F0aW9uL2luaXRpYWxpemF0aW9uIGZhaWxzCj4gKyAqLwo+ICtpbnQgaW50ZWxfbHBlX2F1ZGlv
+X3NldHVwKHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdikKCkNvdWxkIHRoaXMgbm90
+IGJlIHN0YXRpYz8KCkJSLApKYW5pLgoKCi0tIApKYW5pIE5pa3VsYSwgSW50ZWwgT3BlbiBTb3Vy
+Y2UgVGVjaG5vbG9neSBDZW50ZXIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRl
+c2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8v
+aW50ZWwtZ2Z4Cg==
