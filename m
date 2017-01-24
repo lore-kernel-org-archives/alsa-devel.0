@@ -1,8 +1,8 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/3] ASoC: wm_adsp: Fixup wm_adsp2_boot_work
-	error paths
-Date: Tue, 24 Jan 2017 11:44:01 +0000
-Message-ID: <1485258241-10575-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/3] ASoC: wm_adsp: Set booted/running flags at
+	the end of bring up
+Date: Tue, 24 Jan 2017 11:44:00 +0000
+Message-ID: <1485258241-10575-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1485258241-10575-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 623F0266C6A
+ by alsa0.perex.cz (Postfix) with ESMTP id 62A73266CB8
  for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2017 12:43:03 +0100 (CET)
 In-Reply-To: <1485258241-10575-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,38 +26,55 @@ To: broonie@kernel.org
 Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Currently we are not disabling MEM_ENA on the error path, we should
-really do this to unwind the state back to how it was. This patch adds a
-clear of MEM_ENA on the error path, again there is no major issues
-caused by this minor fix.
+The booted and running flags should really only be set once all the
+steps at that power level have been complete. Currently operations can
+fail after the flags have been set, which would leave us in an
+inconsistent state where the flags are set but the things expected to
+reach that level have not happened. Whilst there isn't really any major
+impact from this it is best to clean it up.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm_adsp.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/codecs/wm_adsp.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 822dfef..d151224 100644
+index 08a4a61..822dfef 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -2473,7 +2473,7 @@ static void wm_adsp2_boot_work(struct work_struct *work)
- 
- 	ret = wm_adsp2_ena(dsp);
+@@ -2492,14 +2492,14 @@ static void wm_adsp2_boot_work(struct work_struct *work)
  	if (ret != 0)
--		goto err_mutex;
-+		goto err_mem;
+ 		goto err_ena;
  
- 	ret = wm_adsp_load(dsp);
+-	dsp->booted = true;
+-
+ 	/* Turn DSP back off until we are ready to run */
+ 	ret = regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
+ 				 ADSP2_SYS_ENA, 0);
  	if (ret != 0)
-@@ -2507,6 +2507,9 @@ static void wm_adsp2_boot_work(struct work_struct *work)
- err_ena:
- 	regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
- 			   ADSP2_SYS_ENA | ADSP2_CORE_ENA | ADSP2_START, 0);
-+err_mem:
-+	regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
-+			   ADSP2_MEM_ENA, 0);
- err_mutex:
+ 		goto err_ena;
+ 
++	dsp->booted = true;
++
  	mutex_unlock(&dsp->pwr_lock);
- }
+ 
+ 	return;
+@@ -2639,14 +2639,14 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 		if (ret != 0)
+ 			goto err;
+ 
+-		dsp->running = true;
+-
+ 		if (wm_adsp_fw[dsp->fw].num_caps != 0) {
+ 			ret = wm_adsp_buffer_init(dsp);
+ 			if (ret < 0)
+ 				goto err;
+ 		}
+ 
++		dsp->running = true;
++
+ 		mutex_unlock(&dsp->pwr_lock);
+ 
+ 		break;
 -- 
 2.1.4
