@@ -1,111 +1,117 @@
-From: Jani Nikula <jani.nikula@linux.intel.com>
-Subject: Re: [PATCH v5 2/5] drm/i915: Add support for audio
-	driver	notifications
-Date: Tue, 24 Jan 2017 15:25:36 +0200
-Message-ID: <877f5k7fov.fsf@intel.com>
-References: <20170124225753.9045-1-jerome.anand@intel.com>
- <20170124225753.9045-3-jerome.anand@intel.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH 2/7] MFD: add STM32 DFSDM support
+Date: Tue, 24 Jan 2017 14:32:13 +0100
+Message-ID: <a1aaaa20-ac00-b182-f1c1-63152be41135@st.com>
+References: <1485189145-29576-1-git-send-email-arnaud.pouliquen@st.com>
+ <1485189145-29576-3-git-send-email-arnaud.pouliquen@st.com>
+ <20170124082249.GR16020@dell> <283c0e48-55e2-6516-369d-91dc72d12f73@st.com>
+ <20170124113658.GW16020@dell>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20170124225753.9045-3-jerome.anand@intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Jerome Anand <jerome.anand@intel.com>, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, rakesh.a.ughreja@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20170124113658.GW16020@dell>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>, Jonathan Cameron <jic23@kernel.org>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Hartmut Knaack <knaack.h@gmx.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Alexandre TORGUE <alexandre.torgue@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAyNSBKYW4gMjAxNywgSmVyb21lIEFuYW5kIDxqZXJvbWUuYW5hbmRAaW50ZWwuY29t
-PiB3cm90ZToKPiBOb3RpZmlhdGlvbnMgbGlrZSBtb2RlIGNoYW5nZSwgaG90IHBsdWcgYW5kIGVk
-aWQgdG8KPiB0aGUgYXVkaW8gZHJpdmVyIGFyZSBhZGRlZC4gVGhpcyBpcyBpbnR1cm4gdXNlZCBi
-eSB0aGUKPiBhdWRpbyBkcml2ZXIgZm9yIGl0cyBmdW5jdGlvbmFsaXR5Lgo+Cj4gQSBuZXcgaW50
-ZXJmYWNlIGZpbGUgY2FwdHVyaW5nIHRoZSBub3RpZmljYXRpb25zIG5lZWRlZCBieSB0aGUKPiBh
-dWRpbyBkcml2ZXIgaXMgYWRkZWQKPgo+IFNpZ25lZC1vZmYtYnk6IFBpZXJyZS1Mb3VpcyBCb3Nz
-YXJ0IDxwaWVycmUtbG91aXMuYm9zc2FydEBsaW51eC5pbnRlbC5jb20+Cj4gU2lnbmVkLW9mZi1i
-eTogSmVyb21lIEFuYW5kIDxqZXJvbWUuYW5hbmRAaW50ZWwuY29tPgoKQWNrZWQtYnk6IEphbmkg
-TmlrdWxhIDxqYW5pLm5pa3VsYUBpbnRlbC5jb20+Cgo+IC0tLQo+ICBkcml2ZXJzL2dwdS9kcm0v
-aTkxNS9pOTE1X2Rydi5oICAgICAgICB8ICAyICsrCj4gIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2lu
-dGVsX2F1ZGlvLmMgICAgIHwgIDYgKysrKysKPiAgZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxf
-aGRtaS5jICAgICAgfCAgMSArCj4gIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2xwZV9hdWRp
-by5jIHwgNDkgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwo+ICA0IGZpbGVzIGNo
-YW5nZWQsIDU4IGluc2VydGlvbnMoKykKPgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0v
-aTkxNS9pOTE1X2Rydi5oIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9kcnYuaAo+IGluZGV4
-IDhiNjhmOTAwLi44YTU3NzQ0IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5
-MTVfZHJ2LmgKPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2Rydi5oCj4gQEAgLTM2
-MDIsNiArMzYwMiw4IEBAIHZvaWQgaTkxNV90ZWFyZG93bl9zeXNmcyhzdHJ1Y3QgZHJtX2k5MTVf
-cHJpdmF0ZSAqZGV2X3ByaXYpOwo+ICBpbnQgIGludGVsX2xwZV9hdWRpb19pbml0KHN0cnVjdCBk
-cm1faTkxNV9wcml2YXRlICpkZXZfcHJpdik7Cj4gIHZvaWQgaW50ZWxfbHBlX2F1ZGlvX3RlYXJk
-b3duKHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdik7Cj4gIHZvaWQgaW50ZWxfbHBl
-X2F1ZGlvX2lycV9oYW5kbGVyKHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdik7Cj4g
-K3ZvaWQgaW50ZWxfbHBlX2F1ZGlvX25vdGlmeShzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2
-X3ByaXYsCj4gKwkJCXZvaWQgKmVsZCwgaW50IHBvcnQsIGludCB0bWRzX2Nsa19zcGVlZCk7Cj4g
-IAo+ICAvKiBpbnRlbF9pMmMuYyAqLwo+ICBleHRlcm4gaW50IGludGVsX3NldHVwX2dtYnVzKHN0
-cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdik7Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-Z3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9h
-dWRpby5jCj4gaW5kZXggMTAzMTU5ZC4uNDVhNTQwNiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL2dw
-dS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50
-ZWxfYXVkaW8uYwo+IEBAIC0yNCw2ICsyNCw3IEBACj4gICNpbmNsdWRlIDxsaW51eC9rZXJuZWwu
-aD4KPiAgI2luY2x1ZGUgPGxpbnV4L2NvbXBvbmVudC5oPgo+ICAjaW5jbHVkZSA8ZHJtL2k5MTVf
-Y29tcG9uZW50Lmg+Cj4gKyNpbmNsdWRlIDxkcm0vaW50ZWxfbHBlX2F1ZGlvLmg+Cj4gICNpbmNs
-dWRlICJpbnRlbF9kcnYuaCIKPiAgCj4gICNpbmNsdWRlIDxkcm0vZHJtUC5oPgo+IEBAIC02MzAs
-NiArNjMxLDkgQEAgdm9pZCBpbnRlbF9hdWRpb19jb2RlY19lbmFibGUoc3RydWN0IGludGVsX2Vu
-Y29kZXIgKmludGVsX2VuY29kZXIsCj4gIAlpZiAoYWNvbXAgJiYgYWNvbXAtPmF1ZGlvX29wcyAm
-JiBhY29tcC0+YXVkaW9fb3BzLT5waW5fZWxkX25vdGlmeSkKPiAgCQlhY29tcC0+YXVkaW9fb3Bz
-LT5waW5fZWxkX25vdGlmeShhY29tcC0+YXVkaW9fb3BzLT5hdWRpb19wdHIsCj4gIAkJCQkJCSAo
-aW50KSBwb3J0LCAoaW50KSBwaXBlKTsKPiArCj4gKwlpbnRlbF9scGVfYXVkaW9fbm90aWZ5KGRl
-dl9wcml2LCBjb25uZWN0b3ItPmVsZCwgcG9ydCwKPiArCQkJY3J0Y19zdGF0ZS0+cG9ydF9jbG9j
-ayk7Cj4gIH0KPiAgCj4gIC8qKgo+IEBAIC02NjMsNiArNjY3LDggQEAgdm9pZCBpbnRlbF9hdWRp
-b19jb2RlY19kaXNhYmxlKHN0cnVjdCBpbnRlbF9lbmNvZGVyICppbnRlbF9lbmNvZGVyKQo+ICAJ
-aWYgKGFjb21wICYmIGFjb21wLT5hdWRpb19vcHMgJiYgYWNvbXAtPmF1ZGlvX29wcy0+cGluX2Vs
-ZF9ub3RpZnkpCj4gIAkJYWNvbXAtPmF1ZGlvX29wcy0+cGluX2VsZF9ub3RpZnkoYWNvbXAtPmF1
-ZGlvX29wcy0+YXVkaW9fcHRyLAo+ICAJCQkJCQkgKGludCkgcG9ydCwgKGludCkgcGlwZSk7Cj4g
-Kwo+ICsJaW50ZWxfbHBlX2F1ZGlvX25vdGlmeShkZXZfcHJpdiwgTlVMTCwgcG9ydCwgMCk7Cj4g
-IH0KPiAgCj4gIC8qKgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9o
-ZG1pLmMgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9oZG1pLmMKPiBpbmRleCAwYmNmZWFk
-Li4zNzc1ODRlMSAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9oZG1p
-LmMKPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9oZG1pLmMKPiBAQCAtMzYsNiAr
-MzYsNyBAQAo+ICAjaW5jbHVkZSA8ZHJtL2RybV9lZGlkLmg+Cj4gICNpbmNsdWRlICJpbnRlbF9k
-cnYuaCIKPiAgI2luY2x1ZGUgPGRybS9pOTE1X2RybS5oPgo+ICsjaW5jbHVkZSA8ZHJtL2ludGVs
-X2xwZV9hdWRpby5oPgo+ICAjaW5jbHVkZSAiaTkxNV9kcnYuaCIKPiAgCj4gIHN0YXRpYyBzdHJ1
-Y3QgZHJtX2RldmljZSAqaW50ZWxfaGRtaV90b19kZXYoc3RydWN0IGludGVsX2hkbWkgKmludGVs
-X2hkbWkpCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2xwZV9hdWRp
-by5jIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBlX2F1ZGlvLmMKPiBpbmRleCA3Y2Ux
-YjViLi4yN2Q5NDI1IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2xw
-ZV9hdWRpby5jCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBlX2F1ZGlvLmMK
-PiBAQCAtMzE5LDMgKzMxOSw1MiBAQCB2b2lkIGludGVsX2xwZV9hdWRpb190ZWFyZG93bihzdHJ1
-Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYpCj4gIAo+ICAJaXJxX2ZyZWVfZGVzYyhkZXZf
-cHJpdi0+bHBlX2F1ZGlvLmlycSk7Cj4gIH0KPiArCj4gKwo+ICsvKioKPiArICogaW50ZWxfbHBl
-X2F1ZGlvX25vdGlmeSgpIC0gbm90aWZ5IGxwZSBhdWRpbyBldmVudAo+ICsgKiBhdWRpbyBkcml2
-ZXIgYW5kIGk5MTUKPiArICogQGRldl9wcml2OiB0aGUgaTkxNSBkcm0gZGV2aWNlIHByaXZhdGUg
-ZGF0YQo+ICsgKiBAZWxkIDogRUxEIGRhdGEKPiArICogQHBvcnQ6IHBvcnQgaWQKPiArICogQHRt
-ZHNfY2xrX3NwZWVkOiB0bWRzIGNsb2NrIGZyZXF1ZW5jeSBpbiBIego+ICsgKgo+ICsgKiBOb3Rp
-ZnkgbHBlIGF1ZGlvIGRyaXZlciBvZiBlbGQgY2hhbmdlLgo+ICsgKi8KPiArdm9pZCBpbnRlbF9s
-cGVfYXVkaW9fbm90aWZ5KHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdiwKPiArCQkJ
-dm9pZCAqZWxkLCBpbnQgcG9ydCwgaW50IHRtZHNfY2xrX3NwZWVkKQo+ICt7Cj4gKwl1bnNpZ25l
-ZCBsb25nIGlycV9mbGFnczsKPiArCXN0cnVjdCBpbnRlbF9oZG1pX2xwZV9hdWRpb19wZGF0YSAq
-cGRhdGEgPSBOVUxMOwo+ICsKPiArCWlmICghSEFTX0xQRV9BVURJTyhkZXZfcHJpdikpCj4gKwkJ
-cmV0dXJuOwo+ICsKPiArCXBkYXRhID0gZGV2X2dldF9wbGF0ZGF0YSgKPiArCQkmKGRldl9wcml2
-LT5scGVfYXVkaW8ucGxhdGRldi0+ZGV2KSk7Cj4gKwo+ICsJc3Bpbl9sb2NrX2lycXNhdmUoJnBk
-YXRhLT5scGVfYXVkaW9fc2xvY2ssIGlycV9mbGFncyk7Cj4gKwo+ICsJaWYgKGVsZCAhPSBOVUxM
-KSB7Cj4gKwkJbWVtY3B5KHBkYXRhLT5lbGQuZWxkX2RhdGEsIGVsZCwKPiArCQkJSERNSV9NQVhf
-RUxEX0JZVEVTKTsKPiArCQlwZGF0YS0+ZWxkLnBvcnRfaWQgPSBwb3J0Owo+ICsJCXBkYXRhLT5o
-ZG1pX2Nvbm5lY3RlZCA9IHRydWU7Cj4gKwo+ICsJCWlmICh0bWRzX2Nsa19zcGVlZCkKPiArCQkJ
-cGRhdGEtPnRtZHNfY2xvY2tfc3BlZWQgPSB0bWRzX2Nsa19zcGVlZDsKPiArCX0gZWxzZSB7Cj4g
-KwkJbWVtc2V0KHBkYXRhLT5lbGQuZWxkX2RhdGEsIDAsCj4gKwkJCUhETUlfTUFYX0VMRF9CWVRF
-Uyk7Cj4gKwkJcGRhdGEtPmhkbWlfY29ubmVjdGVkID0gZmFsc2U7Cj4gKwl9Cj4gKwo+ICsJaWYg
-KHBkYXRhLT5ub3RpZnlfYXVkaW9fbHBlKQo+ICsJCXBkYXRhLT5ub3RpZnlfYXVkaW9fbHBlKAo+
-ICsJCQkoZWxkICE9IE5VTEwpID8gJnBkYXRhLT5lbGQgOiBOVUxMKTsKPiArCWVsc2UKPiArCQlw
-ZGF0YS0+bm90aWZ5X3BlbmRpbmcgPSB0cnVlOwo+ICsKPiArCXNwaW5fdW5sb2NrX2lycXJlc3Rv
-cmUoJnBkYXRhLT5scGVfYXVkaW9fc2xvY2ssCj4gKwkJCWlycV9mbGFncyk7Cj4gK30KCi0tIApK
-YW5pIE5pa3VsYSwgSW50ZWwgT3BlbiBTb3VyY2UgVGVjaG5vbG9neSBDZW50ZXIKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcg
-bGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRl
-c2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+
+
+On 01/24/2017 12:36 PM, Lee Jones wrote:
+> On Tue, 24 Jan 2017, Arnaud Pouliquen wrote:
+>> On 01/24/2017 09:22 AM, Lee Jones wrote:
+>>> On Mon, 23 Jan 2017, Arnaud Pouliquen wrote:
+>>>
+>>>> DFSDM hardware IP can be used at the same time for ADC sigma delta
+>>>
+>>> Same time as what?
+>> DFSDM is used for ADC acquisition (through IIO) but also PDM microphone
+>> capture (through ASOC).
+>>>
+>>>> conversion and audio PDM microphone.
+>>>> MFD driver is in charge of configuring IP registers and managing IP clocks.
+>>>> For this it exports an API to handles filters and channels resources.
+>>>
+>>> This looks like an ADC driver?  What is it that makes it an MFD?
+>> Yes it a kind of ADC but that supports 2 features audio and iio.
+>> So it has to support 2 features based on 2 separate Frameworks.
+> 
+> I'm still unsure why it needs to live in MFD.
+> 
+> By the looks of it, this driver needs to move into IIO and you need to
+> call into it from ASoC.
+> 
+
+I think i introduce confusion by speaking about ADC for audio...
+
+1) IIO handles sigma delta ADCs that can be used as example for motor
+controls. the aim is to get value based on an application request or
+using some triggers.
+example: http://www.ti.com/lit/ds/symlink/ads1202.pdf
+
+2) For audio part, we speak about Digital mems microphones that generate
+PDM format stream. PDM is a continuous real time stream dedicated to
+audio record and must be handled in ASOC ( codec Dmic part driver is
+/sound/soc/codec/dmic.c).
+DMIC example:
+http://www.st.com/content/ccc/resource/technical/document/datasheet/47/bd/d2/13/8d/fd/48/26/DM00121815.pdf/files/DM00121815.pdf/jcr:content/translations/en.DM00121815.pdf
+
+Form my point of view it very strange to handle DMICs in IIO, as it is
+not designed to support audio streams.it is two separate features that
+are not compatible.
+
+Now, from software point of view
+That would means that IIO declares ADCs that it can not expose, because
+DMIC is not IIO standard. But IIO inkern API needs that device is
+declared... So i should define a specific API in IIO for ASOC driver.
+
+
+>>>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+>>>> ---
+>>>>  drivers/mfd/Kconfig             |   11 +
+>>>>  drivers/mfd/Makefile            |    2 +
+>>>>  drivers/mfd/stm32-dfsdm-reg.h   |  220 +++++++++
+>>>>  drivers/mfd/stm32-dfsdm.c       | 1044 +++++++++++++++++++++++++++++++++++++++
+>>>>  include/linux/mfd/stm32-dfsdm.h |  324 ++++++++++++
+>>>>  5 files changed, 1601 insertions(+)
+>>>>  create mode 100644 drivers/mfd/stm32-dfsdm-reg.h
+>>>>  create mode 100644 drivers/mfd/stm32-dfsdm.c
+>>>>  create mode 100644 include/linux/mfd/stm32-dfsdm.h
+>>>>
+>>>> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+>>>> index c6df644..4bb660b 100644
+>>>> --- a/drivers/mfd/Kconfig
+>>>> +++ b/drivers/mfd/Kconfig
+>>>> @@ -1607,6 +1607,17 @@ config MFD_STW481X
+>>>>  	  in various ST Microelectronics and ST-Ericsson embedded
+>>>>  	  Nomadik series.
+>>>>  
+>>>> +config MFD_STM32_DFSDM
+>>>> +	tristate "ST Microelectronics STM32 DFSDM"
+>>>> +	depends on (ARCH_STM32 && OF) || COMPILE_TEST
+>>>> +	select MFD_CORE
+>>>> +	select REGMAP
+>>>> +	select REGMAP_MMIO
+>>>> +	help
+>>>> +	  Select this option to enable the STM32 Digital Filter
+>>>> +	  for Sigma Delta Modulators (DFSDM) driver used
+>>>> +	  in various STM32 series.
+>>>> +
+>>>>  menu "Multimedia Capabilities Port drivers"
+>>>>  	depends on ARCH_SA1100
+>>>
+>>> [...]
+>>>
+>>
+>> Regards
+>> Arnaud
+> 
