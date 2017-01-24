@@ -1,18 +1,18 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: es8328-i2c: Add compatible for ES8388" to the asoc tree
-Date: Tue, 24 Jan 2017 18:39:21 +0000
-Message-ID: <E1cW601-0006aO-73@debutante>
-References: <20170116081753.13666-2-romain.perier@collabora.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20170116081753.13666-2-romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: simple-card: use devm_get_clk_from_child()" to the asoc tree
+Date: Tue, 24 Jan 2017 18:39:24 +0000
+Message-ID: <E1cW604-0006bZ-7m@debutante>
+References: <871sxnvtkp.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <871sxnvtkp.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>, Russell King - ARM Linux <linux@armlinux.org.uk>, Stephen Boyd <sboyd@codeaurora.org>, Rob Herring <robh@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Linux-DT <devicetree@vger.kernel.org>, Michael Turquette <mturquette@baylibre.com>, Linux-Kernel <linux-kernel@vger.kernel.org>Mark Brown <broonie@kernel.org>, linux-clk@vger.kernel.org, Linux-ARM <linux-arm-kernel@lists.infradead.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: es8328-i2c: Add compatible for ES8388
+   ASoC: simple-card: use devm_get_clk_from_child()
 
 has been applied to the asoc tree at
 
@@ -37,57 +37,116 @@ to this mail.
 Thanks,
 Mark
 
->From 5f166156dbd4c0cf85632799ee7330d24deeec4e Mon Sep 17 00:00:00 2001
-From: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Date: Mon, 23 Jan 2017 11:41:46 +0100
-Subject: [PATCH] ASoC: es8328-i2c: Add compatible for ES8388
+>From e984fd61e860ce3c45e79d69cf214b8cc6cae7d9 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 23 Jan 2017 07:29:42 +0000
+Subject: [PATCH] ASoC: simple-card: use devm_get_clk_from_child()
 
-This commit adds a compatible string for everest,es8388. This is
-an audio codec that is compatible with es8328.
+Current simple-card-utils is getting clk by of_clk_get(), but didn't call
+clk_free(). Now we can use devm_get_clk_from_child() for this purpose.
+Let's use it.
 
-Signed-off-by: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/es8328.txt | 2 +-
- sound/soc/codecs/es8328-i2c.c                      | 2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ include/sound/simple_card_utils.h     | 11 ++++++-----
+ sound/soc/generic/simple-card-utils.c |  8 ++++----
+ sound/soc/generic/simple-card.c       |  4 ++--
+ sound/soc/generic/simple-scu-card.c   |  4 ++--
+ 4 files changed, 14 insertions(+), 13 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/es8328.txt b/Documentation/devicetree/bindings/sound/es8328.txt
-index 30ea8a318ae9..33fbf058c997 100644
---- a/Documentation/devicetree/bindings/sound/es8328.txt
-+++ b/Documentation/devicetree/bindings/sound/es8328.txt
-@@ -4,7 +4,7 @@ This device supports both I2C and SPI.
+diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
+index 64e90ca9ad32..af58d2362975 100644
+--- a/include/sound/simple_card_utils.h
++++ b/include/sound/simple_card_utils.h
+@@ -34,11 +34,12 @@ int asoc_simple_card_set_dailink_name(struct device *dev,
+ int asoc_simple_card_parse_card_name(struct snd_soc_card *card,
+ 				     char *prefix);
  
- Required properties:
+-#define asoc_simple_card_parse_clk_cpu(node, dai_link, simple_dai)		\
+-	asoc_simple_card_parse_clk(node, dai_link->cpu_of_node, simple_dai)
+-#define asoc_simple_card_parse_clk_codec(node, dai_link, simple_dai)		\
+-	asoc_simple_card_parse_clk(node, dai_link->codec_of_node, simple_dai)
+-int asoc_simple_card_parse_clk(struct device_node *node,
++#define asoc_simple_card_parse_clk_cpu(dev, node, dai_link, simple_dai)		\
++	asoc_simple_card_parse_clk(dev, node, dai_link->cpu_of_node, simple_dai)
++#define asoc_simple_card_parse_clk_codec(dev, node, dai_link, simple_dai)	\
++	asoc_simple_card_parse_clk(dev, node, dai_link->codec_of_node, simple_dai)
++int asoc_simple_card_parse_clk(struct device *dev,
++			       struct device_node *node,
+ 			       struct device_node *dai_of_node,
+ 			       struct asoc_simple_dai *simple_dai);
  
--  - compatible : "everest,es8328"
-+  - compatible  : Should be "everest,es8328" or "everest,es8388"
-   - DVDD-supply : Regulator providing digital core supply voltage 1.8 - 3.6V
-   - AVDD-supply : Regulator providing analog supply voltage 3.3V
-   - PVDD-supply : Regulator providing digital IO supply voltage 1.8 - 3.6V
-diff --git a/sound/soc/codecs/es8328-i2c.c b/sound/soc/codecs/es8328-i2c.c
-index 2d05b5d3a6ce..318ab28c5351 100644
---- a/sound/soc/codecs/es8328-i2c.c
-+++ b/sound/soc/codecs/es8328-i2c.c
-@@ -20,12 +20,14 @@
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index cf026252cd4a..4924575d2e95 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -98,7 +98,8 @@ int asoc_simple_card_parse_card_name(struct snd_soc_card *card,
+ }
+ EXPORT_SYMBOL_GPL(asoc_simple_card_parse_card_name);
  
- static const struct i2c_device_id es8328_id[] = {
- 	{ "es8328", 0 },
-+	{ "es8388", 0 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, es8328_id);
+-int asoc_simple_card_parse_clk(struct device_node *node,
++int asoc_simple_card_parse_clk(struct device *dev,
++			       struct device_node *node,
+ 			       struct device_node *dai_of_node,
+ 			       struct asoc_simple_dai *simple_dai)
+ {
+@@ -111,14 +112,13 @@ int asoc_simple_card_parse_clk(struct device_node *node,
+ 	 *  or "system-clock-frequency = <xxx>"
+ 	 *  or device's module clock.
+ 	 */
+-	clk = of_clk_get(node, 0);
++	clk = devm_get_clk_from_child(dev, node, NULL);
+ 	if (!IS_ERR(clk)) {
+ 		simple_dai->sysclk = clk_get_rate(clk);
+-		simple_dai->clk = clk;
+ 	} else if (!of_property_read_u32(node, "system-clock-frequency", &val)) {
+ 		simple_dai->sysclk = val;
+ 	} else {
+-		clk = of_clk_get(dai_of_node, 0);
++		clk = devm_get_clk_from_child(dev, dai_of_node, NULL);
+ 		if (!IS_ERR(clk))
+ 			simple_dai->sysclk = clk_get_rate(clk);
+ 	}
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index a385ff6bfa4b..85b4f1806514 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -278,11 +278,11 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
  
- static const struct of_device_id es8328_of_match[] = {
- 	{ .compatible = "everest,es8328", },
-+	{ .compatible = "everest,es8388", },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, es8328_of_match);
+-	ret = asoc_simple_card_parse_clk_cpu(cpu, dai_link, cpu_dai);
++	ret = asoc_simple_card_parse_clk_cpu(dev, cpu, dai_link, cpu_dai);
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
+ 
+-	ret = asoc_simple_card_parse_clk_codec(codec, dai_link, codec_dai);
++	ret = asoc_simple_card_parse_clk_codec(dev, codec, dai_link, codec_dai);
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
+ 
+diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
+index bb86ee042490..308ff4c11a8d 100644
+--- a/sound/soc/generic/simple-scu-card.c
++++ b/sound/soc/generic/simple-scu-card.c
+@@ -128,7 +128,7 @@ static int asoc_simple_card_dai_link_of(struct device_node *np,
+ 		if (ret)
+ 			return ret;
+ 
+-		ret = asoc_simple_card_parse_clk_cpu(np, dai_link, dai_props);
++		ret = asoc_simple_card_parse_clk_cpu(dev, np, dai_link, dai_props);
+ 		if (ret < 0)
+ 			return ret;
+ 
+@@ -153,7 +153,7 @@ static int asoc_simple_card_dai_link_of(struct device_node *np,
+ 		if (ret < 0)
+ 			return ret;
+ 
+-		ret = asoc_simple_card_parse_clk_codec(np, dai_link, dai_props);
++		ret = asoc_simple_card_parse_clk_codec(dev, np, dai_link, dai_props);
+ 		if (ret < 0)
+ 			return ret;
+ 
 -- 
 2.11.0
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
