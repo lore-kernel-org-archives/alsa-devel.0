@@ -1,17 +1,16 @@
 From: Romain Perier <romain.perier@collabora.com>
-Subject: [PATCH v4 1/4] ASoC: es8328-i2c: Add compatible for
-	ES8388
-Date: Mon, 23 Jan 2017 11:41:46 +0100
-Message-ID: <20170123104149.2508-2-romain.perier@collabora.com>
-References: <20170123104149.2508-1-romain.perier@collabora.com>
+Subject: [PATCH v5 2/4] ASoC: es8328: Add support for slave mode
+Date: Tue, 24 Jan 2017 11:08:33 +0100
+Message-ID: <20170124100835.9540-3-romain.perier@collabora.com>
+References: <20170124100835.9540-1-romain.perier@collabora.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
- by alsa0.perex.cz (Postfix) with ESMTP id D783F266B4B
- for <alsa-devel@alsa-project.org>; Mon, 23 Jan 2017 11:42:13 +0100 (CET)
-In-Reply-To: <20170123104149.2508-1-romain.perier@collabora.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DCF2C266991
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2017 11:09:04 +0100 (CET)
+In-Reply-To: <20170124100835.9540-1-romain.perier@collabora.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,52 +24,63 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jarosl
 Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-rockchip@lists.infradead.org, Sjoerd Simons <sjoerd.simons@collabora.co.uk>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Romain Perier <romain.perier@collabora.com>
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a compatible string for everest,es8388. This is
-an audio codec that is compatible with es8328.
+Currently, the function that changes the DAI format only supports master
+mode. Trying to use a slave mode exits the function with -EINVAL and
+leave the codec misconfigured. This commits adds support for enabling
+the slave mode.
 
 Signed-off-by: Romain Perier <romain.perier@collabora.com>
 ---
 
+Changes in v5:
+ - Fixed coding style issue for the switch case
+ - Moved the code for master mode and slave mode to the switch case
+
 Changes in v4: None
 Changes in v3: None
-Changes in v2:
-- Fixed wrong use of the i2c_device_id data structure
+Changes in v2: None
 
- Documentation/devicetree/bindings/sound/es8328.txt | 2 +-
- sound/soc/codecs/es8328-i2c.c                      | 2 ++
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/codecs/es8328.c | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/es8328.txt b/Documentation/devicetree/bindings/sound/es8328.txt
-index 30ea8a3..33fbf05 100644
---- a/Documentation/devicetree/bindings/sound/es8328.txt
-+++ b/Documentation/devicetree/bindings/sound/es8328.txt
-@@ -4,7 +4,7 @@ This device supports both I2C and SPI.
+diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
+index 37722194..3f84fbd 100644
+--- a/sound/soc/codecs/es8328.c
++++ b/sound/soc/codecs/es8328.c
+@@ -589,9 +589,21 @@ static int es8328_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	u8 dac_mode = 0;
+ 	u8 adc_mode = 0;
  
- Required properties:
+-	/* set master/slave audio interface */
+-	if ((fmt & SND_SOC_DAIFMT_MASTER_MASK) != SND_SOC_DAIFMT_CBM_CFM)
++	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBM_CFM:
++		/* Master serial port mode, with BCLK generated automatically */
++		snd_soc_update_bits(codec, ES8328_MASTERMODE,
++				    ES8328_MASTERMODE_MSC,
++				    ES8328_MASTERMODE_MSC);
++		break;
++	case SND_SOC_DAIFMT_CBS_CFS:
++		/* Slave serial port mode */
++		snd_soc_update_bits(codec, ES8328_MASTERMODE,
++				    ES8328_MASTERMODE_MSC, 0);
++		break;
++	default:
+ 		return -EINVAL;
++	}
  
--  - compatible : "everest,es8328"
-+  - compatible  : Should be "everest,es8328" or "everest,es8388"
-   - DVDD-supply : Regulator providing digital core supply voltage 1.8 - 3.6V
-   - AVDD-supply : Regulator providing analog supply voltage 3.3V
-   - PVDD-supply : Regulator providing digital IO supply voltage 1.8 - 3.6V
-diff --git a/sound/soc/codecs/es8328-i2c.c b/sound/soc/codecs/es8328-i2c.c
-index 2d05b5d..318ab28 100644
---- a/sound/soc/codecs/es8328-i2c.c
-+++ b/sound/soc/codecs/es8328-i2c.c
-@@ -20,12 +20,14 @@
+ 	/* interface format */
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+@@ -620,10 +632,6 @@ static int es8328_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	snd_soc_update_bits(codec, ES8328_ADCCONTROL4,
+ 			ES8328_ADCCONTROL4_ADCFORMAT_MASK, adc_mode);
  
- static const struct i2c_device_id es8328_id[] = {
- 	{ "es8328", 0 },
-+	{ "es8388", 0 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, es8328_id);
+-	/* Master serial port mode, with BCLK generated automatically */
+-	snd_soc_update_bits(codec, ES8328_MASTERMODE,
+-			ES8328_MASTERMODE_MSC, ES8328_MASTERMODE_MSC);
+-
+ 	return 0;
+ }
  
- static const struct of_device_id es8328_of_match[] = {
- 	{ .compatible = "everest,es8328", },
-+	{ .compatible = "everest,es8388", },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, es8328_of_match);
 -- 
 2.9.3
