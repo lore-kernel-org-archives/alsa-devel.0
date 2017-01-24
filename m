@@ -1,96 +1,77 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 7/7] dmasound_core: Adjust six function calls together with a
- variable assignment
-Date: Tue, 24 Jan 2017 11:27:19 +0100
-Message-ID: <43a0c4d3-d054-4be2-eab7-7ee37b62fca6@users.sourceforge.net>
-References: <f2404d64-27c8-4afa-b893-fc72601c0136@users.sourceforge.net>
+From: Romain Perier <romain.perier@collabora.com>
+Subject: [PATCH v5 1/4] ASoC: es8328-i2c: Add compatible for
+	ES8388
+Date: Tue, 24 Jan 2017 11:08:32 +0100
+Message-ID: <20170124100835.9540-2-romain.perier@collabora.com>
+References: <20170124100835.9540-1-romain.perier@collabora.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <f2404d64-27c8-4afa-b893-fc72601c0136@users.sourceforge.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Martin Koegler <martin.koegler@chello.at>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A4472668C0
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2017 11:09:01 +0100 (CET)
+In-Reply-To: <20170124100835.9540-1-romain.perier@collabora.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-rockchip@lists.infradead.org, Sjoerd Simons <sjoerd.simons@collabora.co.uk>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Romain Perier <romain.perier@collabora.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Tue, 24 Jan 2017 10:34:47 +0100
+This commit adds a compatible string for everest,es8388. This is
+an audio codec that is compatible with es8328.
 
-The script "checkpatch.pl" pointed information out like the following.
-
-ERROR: do not use assignment in if condition
-
-Thus fix affected source code places.
-
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+Signed-off-by: Romain Perier <romain.perier@collabora.com>
 ---
- sound/oss/dmasound/dmasound_core.c | 23 +++++++++++++++--------
- 1 file changed, 15 insertions(+), 8 deletions(-)
 
-diff --git a/sound/oss/dmasound/dmasound_core.c b/sound/oss/dmasound/dmasound_core.c
-index 2bdd1d619a7f..a20bf3b94329 100644
---- a/sound/oss/dmasound/dmasound_core.c
-+++ b/sound/oss/dmasound/dmasound_core.c
-@@ -576,7 +576,9 @@ static ssize_t sq_write(struct file *file, const char __user *src, size_t uLeft,
- 	*/
+Changes in v5: None
+Changes in v4: None
+Changes in v3: None
+Changes in v2:
+- Fixed wrong use of the i2c_device_id data structure
+
+ Documentation/devicetree/bindings/sound/es8328.txt | 2 +-
+ sound/soc/codecs/es8328-i2c.c                      | 2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/sound/es8328.txt b/Documentation/devicetree/bindings/sound/es8328.txt
+index 30ea8a3..33fbf05 100644
+--- a/Documentation/devicetree/bindings/sound/es8328.txt
++++ b/Documentation/devicetree/bindings/sound/es8328.txt
+@@ -4,7 +4,7 @@ This device supports both I2C and SPI.
  
- 	if (write_sq.locked == 0) {
--		if ((uWritten = sq_setup(&write_sq)) < 0) return uWritten ;
-+		uWritten = sq_setup(&write_sq);
-+		if (uWritten < 0)
-+			return uWritten;
- 		uWritten = 0 ;
- 	}
+ Required properties:
  
-@@ -675,7 +677,8 @@ static unsigned int sq_poll(struct file *file, struct poll_table_struct *wait)
- 	int retVal;
- 	
- 	if (write_sq.locked == 0) {
--		if ((retVal = sq_setup(&write_sq)) < 0)
-+		retVal = sq_setup(&write_sq);
-+		if (retVal < 0)
- 			return retVal;
- 		return 0;
- 	}
-@@ -736,7 +739,8 @@ static int sq_open2(struct sound_queue *sq, struct file *file, fmode_t mode,
- 		   can't be changed at the moment - but _could_ be perhaps
- 		   in the setfragments ioctl.
- 		*/
--		if (( rc = sq_allocate_buffers(sq, numbufs, bufsize))) {
-+		rc = sq_allocate_buffers(sq, numbufs, bufsize);
-+		if (rc) {
- #if 0 /* blocking open() */
- 			sq_wake_up(sq, file, mode);
- #else
-@@ -1407,12 +1411,14 @@ int dmasound_init(void)
- 	/* Set up sound queue, /dev/audio and /dev/dsp. */
+-  - compatible : "everest,es8328"
++  - compatible  : Should be "everest,es8328" or "everest,es8388"
+   - DVDD-supply : Regulator providing digital core supply voltage 1.8 - 3.6V
+   - AVDD-supply : Regulator providing analog supply voltage 3.3V
+   - PVDD-supply : Regulator providing digital IO supply voltage 1.8 - 3.6V
+diff --git a/sound/soc/codecs/es8328-i2c.c b/sound/soc/codecs/es8328-i2c.c
+index 2d05b5d..318ab28 100644
+--- a/sound/soc/codecs/es8328-i2c.c
++++ b/sound/soc/codecs/es8328-i2c.c
+@@ -20,12 +20,14 @@
  
- 	/* Set default settings. */
--	if ((res = sq_init()) < 0)
--		return res ;
-+	res = sq_init();
-+	if (res < 0)
-+		return res;
+ static const struct i2c_device_id es8328_id[] = {
+ 	{ "es8328", 0 },
++	{ "es8388", 0 },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(i2c, es8328_id);
  
- 	/* Set up /dev/sndstat. */
--	if ((res = state_init()) < 0)
--		return res ;
-+	res = state_init();
-+	if (res < 0)
-+		return res;
- 
- 	/* Set up /dev/mixer. */
- 	mixer_init();
-@@ -1485,7 +1491,8 @@ static int dmasound_setup(char *str)
- 			numWriteBufs = ints[1];
- 		/* fall through */
- 	case 1:
--		if ((size = ints[2]) < 256) /* check for small buffer specs */
-+		size = ints[2];
-+		if (size < 256) /* check for small buffer specs */
- 			size <<= 10 ;
-                 if (size < MIN_BUFSIZE || size > MAX_BUFSIZE)
-                         printk("dmasound_setup: invalid write buffer size, using default = %d\n", writeBufSize);
+ static const struct of_device_id es8328_of_match[] = {
+ 	{ .compatible = "everest,es8328", },
++	{ .compatible = "everest,es8388", },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, es8328_of_match);
 -- 
-2.11.0
+2.9.3
