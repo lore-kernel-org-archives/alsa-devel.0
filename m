@@ -1,8 +1,8 @@
 From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 3/7] ALSA: seq: Delete unnecessary checks in
- snd_seq_ioctl_unsubscribe_port()
-Date: Tue, 24 Jan 2017 11:23:06 +0100
-Message-ID: <b9e98207-2e88-8226-98ff-1fc8c4ec09de@users.sourceforge.net>
+Subject: [PATCH 4/7] ALSA: seq: Delete unnecessary checks in
+ snd_seq_ioctl_subscribe_port()
+Date: Tue, 24 Jan 2017 11:24:08 +0100
+Message-ID: <eeeeb8a9-70a2-8d44-674c-9a5aa6de78b2@users.sourceforge.net>
 References: <f2404d64-27c8-4afa-b893-fc72601c0136@users.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
@@ -15,9 +15,9 @@ Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Tue, 24 Jan 2017 09:01:17 +0100
+Date: Tue, 24 Jan 2017 09:06:38 +0100
 
-Four checks were repeated by the snd_seq_ioctl_unsubscribe_port() function
+Four checks were repeated by the snd_seq_ioctl_subscribe_port() function
 despite of pointer determinations for the used variables at the beginning.
 
 * Adjust jump targets according to the Linux coding style convention.
@@ -31,13 +31,13 @@ Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
  1 file changed, 16 insertions(+), 16 deletions(-)
 
 diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 8e804ff784ed..ba26d622cb71 100644
+index ba26d622cb71..b9518e7cb623 100644
 --- a/sound/core/seq/seq_clientmgr.c
 +++ b/sound/core/seq/seq_clientmgr.c
-@@ -1465,35 +1465,35 @@ static int snd_seq_ioctl_unsubscribe_port(struct snd_seq_client *client,
+@@ -1423,36 +1423,36 @@ static int snd_seq_ioctl_subscribe_port(struct snd_seq_client *client,
  {
  	struct snd_seq_port_subscribe *subs = arg;
- 	int result = -ENXIO;
+ 	int result = -EINVAL;
 -	struct snd_seq_client *receiver = NULL, *sender = NULL;
 -	struct snd_seq_client_port *sport = NULL, *dport = NULL;
 +	struct snd_seq_client *receiver, *sender;
@@ -61,10 +61,11 @@ index 8e804ff784ed..ba26d622cb71 100644
 -		goto __end;
 +		goto unlock_dport;
  
- 	result = snd_seq_port_disconnect(client, sender, sport, receiver, dport, subs);
+ 	/* connect them */
+ 	result = snd_seq_port_connect(client, sender, sport, receiver, dport, subs);
  	if (! result) /* broadcast announce */
  		snd_seq_client_notify_subscription(SNDRV_SEQ_ADDRESS_SUBSCRIBERS, 0,
- 						   subs, SNDRV_SEQ_EVENT_PORT_UNSUBSCRIBED);
+ 						   subs, SNDRV_SEQ_EVENT_PORT_SUBSCRIBED);
 -      __end:
 -      	if (sport)
 -		snd_seq_port_unlock(sport);
