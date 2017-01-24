@@ -1,47 +1,54 @@
-From: Jani Nikula <jani.nikula@linux.intel.com>
-Subject: Re: [PATCH v4 2/5] drm/i915: Add support for audio
-	driver notifications
-Date: Tue, 24 Jan 2017 09:00:42 +0200
-Message-ID: <87bmuxdjs5.fsf@intel.com>
-References: <20170120222232.27791-1-jerome.anand@intel.com>
- <20170120222232.27791-3-jerome.anand@intel.com> <871svu82mt.fsf@intel.com>
- <942a0a36-5d1b-030d-770b-f8bcb3122a4f@linux.intel.com>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH 6/9] power_supply: wm97xx_battery: use power_supply_get_drvdata
+Date: Tue, 24 Jan 2017 08:31:59 +0100
+Message-ID: <87h94odic0.fsf@belgarion.home>
+References: <1477510907-23495-1-git-send-email-robert.jarzmik@free.fr>
+        <1477510907-23495-7-git-send-email-robert.jarzmik@free.fr>
+        <CAOi56cVk17w6C6msnT88c0Zh1OgLM=FbZAw32MzLRatjFraYhg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <942a0a36-5d1b-030d-770b-f8bcb3122a4f@linux.intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jerome Anand <jerome.anand@intel.com>, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, rakesh.a.ughreja@intel.com
+Content-Type: text/plain
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <CAOi56cVk17w6C6msnT88c0Zh1OgLM=FbZAw32MzLRatjFraYhg@mail.gmail.com>
+        (Kevin Hilman's message of "Mon, 23 Jan 2017 10:38:15 -0800")
+Sender: linux-input-owner@vger.kernel.org
+To: Kevin Hilman <khilman@kernel.org>
+Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Lee Jones <lee.jones@linaro.org>, Sebastian Reichel <sre@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, lkml <linux-kernel@vger.kernel.org>, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, linux-pm <linux-pm@vger.kernel.org>, alsa-devel@alsa-project.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Stefan Agner <stefan@agner.ch>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCAyMyBKYW4gMjAxNywgUGllcnJlLUxvdWlzIEJvc3NhcnQgPHBpZXJyZS1sb3Vpcy5i
-b3NzYXJ0QGxpbnV4LmludGVsLmNvbT4gd3JvdGU6Cj4+PiAgI2luY2x1ZGUgPGRybS9kcm1QLmg+
-Cj4+PiBAQCAtNjMwLDYgKzYzMSwxMCBAQCB2b2lkIGludGVsX2F1ZGlvX2NvZGVjX2VuYWJsZShz
-dHJ1Y3QgaW50ZWxfZW5jb2RlciAqaW50ZWxfZW5jb2RlciwKPj4+ICAJaWYgKGFjb21wICYmIGFj
-b21wLT5hdWRpb19vcHMgJiYgYWNvbXAtPmF1ZGlvX29wcy0+cGluX2VsZF9ub3RpZnkpCj4+PiAg
-CQlhY29tcC0+YXVkaW9fb3BzLT5waW5fZWxkX25vdGlmeShhY29tcC0+YXVkaW9fb3BzLT5hdWRp
-b19wdHIsCj4+PiAgCQkJCQkJIChpbnQpIHBvcnQsIChpbnQpIHBpcGUpOwo+Pj4gKwo+Pj4gKwlp
-ZiAoSEFTX0xQRV9BVURJTyhkZXZfcHJpdikpCj4+PiArCQlpbnRlbF9scGVfYXVkaW9fbm90aWZ5
-KGRldl9wcml2LCBjb25uZWN0b3ItPmVsZCwgcG9ydCwKPj4+ICsJCQljcnRjX3N0YXRlLT5wb3J0
-X2Nsb2NrKTsKPj4KPj4gU2VlbXMgdW5uZWNlc3NhcnkgdG8gY2hlY2sgZm9yIEhBU19MUEVfQVVE
-SU8gKHdoaWNoIHlvdSdsbCBjaGFuZ2UgdG8KPj4gZGV2X3ByaXYtPmxwZV9hdWRpby5wbGF0ZGV2
-LCByaWdodCA7KSBib3RoIGluIHRoZSBjYWxsZXIgYW5kCj4+IGNhbGxlZS4gUGljayBvbmUuCj4K
-PiBJZiB3ZSB0ZXN0IGluc2lkZSBvZiB0aGUgZnVuY3Rpb24sIGl0J2QgbWVhbiBhbiB1bmNvbmRp
-dGlvbmFsIGp1bXAgdG8gCj4gdGVzdCBhIGZlYXR1cmUgdGhhdCBleGlzdHMgb24gb25seSB0d28g
-cGxhdGZvcm1zIG91dCBvZiB0aGUgZG96ZW4gb3Igc28gCj4gdGhhdCB0aGlzIGk5MTUgZHJpdmVy
-IGhhbmRsZXMuIE5vIG9iamVjdGlvbiB0byBkbyB0aGUgY2hhbmdlIGJ1dCBpcyB0aGlzIAo+IHJl
-YWxseSBkZXNpcmVkPwoKKnNocnVnKiBubyBiaWcgZGVhbCB0byBjaGVjayBpbiBib3RoLgoKQlIs
-CkphbmkuCgo+Cj4KCi0tIApKYW5pIE5pa3VsYSwgSW50ZWwgT3BlbiBTb3VyY2UgVGVjaG5vbG9n
-eSBDZW50ZXIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
-SW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0
-dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+Kevin Hilman <khilman@kernel.org> writes:
+
+> Hello,
+>
+> On Wed, Oct 26, 2016 at 12:41 PM, Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+>> As the power supply framework provides a way to store and retrieve
+>> private supply data, use it.
+>>
+>> In the process, change the platform data for wm97xx_battery from a
+>> container of a single struct wm97xx_batt_pdata to the direct point to wm97xx_batt_pdata.
+>>
+>> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+>
+> kernelci.org has been reporting that the tegra20-iris board has been
+> failing in -next since next-20161123[1], and also in mainline
+> v4.10-rc.  I finally took the time to bisect, and it pointed to this
+> patch.  I verified that reverting $SUBJECT patch[2] on top of
+> v4.10-rc5 fixes the problem.
+>
+> Kevin
+>
+> [1] https://kernelci.org/boot/id/5879a3fe59b5141534f6c3ac/
+> [2] in mainline as commit: 6480af4915d6 power_supply: wm97xx_battery:
+> use power_supply_get_drvdata
+
+Hi Kevin,
+
+There is a fix posted in here :
+https://patchwork.kernel.org/patch/9499231/
+
+I don't know if it's related, as I have no Oops signature nor any data to be
+able to help further.
+
+Cheers.
+
+--
+Robert
