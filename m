@@ -1,40 +1,73 @@
-From: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Subject: Re: [PATCH v4 0/4] Add support for es8388 and hdmi audio on the rock2
-Date: Tue, 24 Jan 2017 09:09:02 +0100
-Message-ID: <3f39ed38-309f-2e79-bd00-21ff367c83b5@collabora.com>
-References: <20170123104149.2508-1-romain.perier@collabora.com>
- <20170123175451.hwvuum4ismutrbsf@sirena.org.uk>
+From: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 2/7] MFD: add STM32 DFSDM support
+Date: Tue, 24 Jan 2017 08:22:49 +0000
+Message-ID: <20170124082249.GR16020@dell>
+References: <1485189145-29576-1-git-send-email-arnaud.pouliquen@st.com>
+ <1485189145-29576-3-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20170123175451.hwvuum4ismutrbsf-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1485189145-29576-3-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
+To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Cc: devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Torgue <alexandre.torgue-qxv4g6HH51o@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Mon, 23 Jan 2017, Arnaud Pouliquen wrote:
 
-Le 23/01/2017 à 18:54, Mark Brown a écrit :
-> On Mon, Jan 23, 2017 at 11:41:45AM +0100, Romain Perier wrote:
->
->> Changes in v4:
->>  - Add support for multi codecs in the asoc machine driver, so the driver
->>    matches the hw architecture (analog and hdmi audio are connected on
->>    the same i2s line)
->>  - Renamed the driver to rk3288-hdmi-analog.c and changed its
->>    documentation
->>  - Add built-in support for hdmi audio in this driver
->>  - Add support for the property 'rockchip,routing'
-> This is the first version that has been sumbitted upstream.
-No this is the 4th, I have just re-worded the title :
--
-http://mailman.alsa-project.org/pipermail/alsa-devel/2017-January/116702.html
+> DFSDM hardware IP can be used at the same time for ADC sigma delta
 
-Not sure that you was in Cc: for the previous ones (whoops?)
+Same time as what?
 
-Romain
+> conversion and audio PDM microphone.
+> MFD driver is in charge of configuring IP registers and managing IP clocks.
+> For this it exports an API to handles filters and channels resources.
+
+This looks like an ADC driver?  What is it that makes it an MFD?
+
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+> ---
+>  drivers/mfd/Kconfig             |   11 +
+>  drivers/mfd/Makefile            |    2 +
+>  drivers/mfd/stm32-dfsdm-reg.h   |  220 +++++++++
+>  drivers/mfd/stm32-dfsdm.c       | 1044 +++++++++++++++++++++++++++++++++++++++
+>  include/linux/mfd/stm32-dfsdm.h |  324 ++++++++++++
+>  5 files changed, 1601 insertions(+)
+>  create mode 100644 drivers/mfd/stm32-dfsdm-reg.h
+>  create mode 100644 drivers/mfd/stm32-dfsdm.c
+>  create mode 100644 include/linux/mfd/stm32-dfsdm.h
+> 
+> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> index c6df644..4bb660b 100644
+> --- a/drivers/mfd/Kconfig
+> +++ b/drivers/mfd/Kconfig
+> @@ -1607,6 +1607,17 @@ config MFD_STW481X
+>  	  in various ST Microelectronics and ST-Ericsson embedded
+>  	  Nomadik series.
+>  
+> +config MFD_STM32_DFSDM
+> +	tristate "ST Microelectronics STM32 DFSDM"
+> +	depends on (ARCH_STM32 && OF) || COMPILE_TEST
+> +	select MFD_CORE
+> +	select REGMAP
+> +	select REGMAP_MMIO
+> +	help
+> +	  Select this option to enable the STM32 Digital Filter
+> +	  for Sigma Delta Modulators (DFSDM) driver used
+> +	  in various STM32 series.
+> +
+>  menu "Multimedia Capabilities Port drivers"
+>  	depends on ARCH_SA1100
+
+[...]
+
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org â”‚ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
