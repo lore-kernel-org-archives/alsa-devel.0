@@ -1,118 +1,87 @@
-From: Romain Perier <romain.perier@collabora.com>
-Subject: [PATCH v5 4/4] arm: dts: Add support for ES8388 to the
-	Radxa Rock 2
-Date: Tue, 24 Jan 2017 11:08:35 +0100
-Message-ID: <20170124100835.9540-5-romain.perier@collabora.com>
-References: <20170124100835.9540-1-romain.perier@collabora.com>
+From: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 2/7] MFD: add STM32 DFSDM support
+Date: Tue, 24 Jan 2017 11:36:58 +0000
+Message-ID: <20170124113658.GW16020@dell>
+References: <1485189145-29576-1-git-send-email-arnaud.pouliquen@st.com>
+ <1485189145-29576-3-git-send-email-arnaud.pouliquen@st.com>
+ <20170124082249.GR16020@dell>
+ <283c0e48-55e2-6516-369d-91dc72d12f73@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
- by alsa0.perex.cz (Postfix) with ESMTP id D5EF7266991
- for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2017 11:09:10 +0100 (CET)
-In-Reply-To: <20170124100835.9540-1-romain.perier@collabora.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-rockchip@lists.infradead.org, Sjoerd Simons <sjoerd.simons@collabora.co.uk>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Romain Perier <romain.perier@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <283c0e48-55e2-6516-369d-91dc72d12f73-qxv4g6HH51o@public.gmane.org>
+Sender: linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Cc: "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre TORGUE <alexandre.torgue-qxv4g6HH51o@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds the DT definition of the es8388 i2c device
-found at address 0x10. It also adds the definition for connecting
-the Rockchip I2S to the es8388 analog output.
+On Tue, 24 Jan 2017, Arnaud Pouliquen wrote:
+> On 01/24/2017 09:22 AM, Lee Jones wrote:
+> > On Mon, 23 Jan 2017, Arnaud Pouliquen wrote:
+> > 
+> >> DFSDM hardware IP can be used at the same time for ADC sigma delta
+> > 
+> > Same time as what?
+> DFSDM is used for ADC acquisition (through IIO) but also PDM microphone
+> capture (through ASOC).
+> > 
+> >> conversion and audio PDM microphone.
+> >> MFD driver is in charge of configuring IP registers and managing IP clocks.
+> >> For this it exports an API to handles filters and channels resources.
+> > 
+> > This looks like an ADC driver?  What is it that makes it an MFD?
+> Yes it a kind of ADC but that supports 2 features audio and iio.
+> So it has to support 2 features based on 2 separate Frameworks.
 
-This commit is based on the initial work that was done by Sjoerd Simons
-<sjoerd.simons@collabora.com> with some improvements.
+I'm still unsure why it needs to live in MFD.
 
-Signed-off-by: Romain Perier <romain.perier@collabora.com>
----
+By the looks of it, this driver needs to move into IIO and you need to
+call into it from ASoC.
 
-Changes in v5: None
-Changes in v4:
- - Updated to the new DT binding
- - Added the property 'rockchip,routing'
- - Renamed the node sound_es8388 to sound_i2s
-Changes in v3: None
-Changes in v2: None
+> >> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+> >> ---
+> >>  drivers/mfd/Kconfig             |   11 +
+> >>  drivers/mfd/Makefile            |    2 +
+> >>  drivers/mfd/stm32-dfsdm-reg.h   |  220 +++++++++
+> >>  drivers/mfd/stm32-dfsdm.c       | 1044 +++++++++++++++++++++++++++++++++++++++
+> >>  include/linux/mfd/stm32-dfsdm.h |  324 ++++++++++++
+> >>  5 files changed, 1601 insertions(+)
+> >>  create mode 100644 drivers/mfd/stm32-dfsdm-reg.h
+> >>  create mode 100644 drivers/mfd/stm32-dfsdm.c
+> >>  create mode 100644 include/linux/mfd/stm32-dfsdm.h
+> >>
+> >> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> >> index c6df644..4bb660b 100644
+> >> --- a/drivers/mfd/Kconfig
+> >> +++ b/drivers/mfd/Kconfig
+> >> @@ -1607,6 +1607,17 @@ config MFD_STW481X
+> >>  	  in various ST Microelectronics and ST-Ericsson embedded
+> >>  	  Nomadik series.
+> >>  
+> >> +config MFD_STM32_DFSDM
+> >> +	tristate "ST Microelectronics STM32 DFSDM"
+> >> +	depends on (ARCH_STM32 && OF) || COMPILE_TEST
+> >> +	select MFD_CORE
+> >> +	select REGMAP
+> >> +	select REGMAP_MMIO
+> >> +	help
+> >> +	  Select this option to enable the STM32 Digital Filter
+> >> +	  for Sigma Delta Modulators (DFSDM) driver used
+> >> +	  in various STM32 series.
+> >> +
+> >>  menu "Multimedia Capabilities Port drivers"
+> >>  	depends on ARCH_SA1100
+> > 
+> > [...]
+> > 
+> 
+> Regards
+> Arnaud
 
- arch/arm/boot/dts/rk3288-rock2-square.dts | 39 +++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
-
-diff --git a/arch/arm/boot/dts/rk3288-rock2-square.dts b/arch/arm/boot/dts/rk3288-rock2-square.dts
-index dd3ad2e..6b176b8 100644
---- a/arch/arm/boot/dts/rk3288-rock2-square.dts
-+++ b/arch/arm/boot/dts/rk3288-rock2-square.dts
-@@ -86,6 +86,19 @@
- 		#sound-dai-cells = <0>;
- 	};
- 
-+	sound_i2s {
-+		compatible = "rockchip,rk3288-hdmi-analog";
-+		rockchip,model = "I2S";
-+		rockchip,i2s-controller = <&i2s>;
-+		rockchip,audio-codec = <&es8388>;
-+		rockchip,routing = "Analog", "LOUT2",
-+				   "Analog", "ROUT2";
-+		rockchip,hp-en-gpios = <&gpio8 0 GPIO_ACTIVE_HIGH>;
-+		rockchip,hp-det-gpios = <&gpio7 7 GPIO_ACTIVE_HIGH>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&headphone>;
-+	};
-+
- 	sdio_pwrseq: sdio-pwrseq {
- 		compatible = "mmc-pwrseq-simple";
- 		clocks = <&hym8563>;
-@@ -173,10 +186,29 @@
- 	};
- };
- 
-+&i2c2 {
-+	status = "okay";
-+
-+	es8388: es8388@10 {
-+		compatible = "everest,es8388", "everest,es8328";
-+		reg = <0x10>;
-+		AVDD-supply = <&vcca_codec>;
-+		DVDD-supply = <&vcca_codec>;
-+		HPVDD-supply = <&vcca_codec>;
-+		PVDD-supply = <&vcca_codec>;
-+		clocks = <&cru SCLK_I2S0_OUT>;
-+		clock-names = "i2s_clk_out";
-+	};
-+};
-+
- &i2c5 {
- 	status = "okay";
- };
- 
-+&i2s {
-+	status = "okay";
-+};
-+
- &pinctrl {
- 	ir {
- 		ir_int: ir-int {
-@@ -190,6 +222,13 @@
- 		};
- 	};
- 
-+	sound {
-+		headphone: headphone {
-+			rockchip,pins = <8 0 RK_FUNC_GPIO &pcfg_pull_up>,
-+					<7 7 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+
- 	usb {
- 		host_vbus_drv: host-vbus-drv {
- 			rockchip,pins = <0 14 RK_FUNC_GPIO &pcfg_pull_none>;
 -- 
-2.9.3
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
