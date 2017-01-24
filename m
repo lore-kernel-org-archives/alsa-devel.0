@@ -1,57 +1,52 @@
 From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v4 0/4] Add support for es8388 and hdmi audio on the rock2
-Date: Tue, 24 Jan 2017 12:08:59 +0000
-Message-ID: <20170124120859.p3n6suezf6t2iip2@sirena.org.uk>
-References: <20170123104149.2508-1-romain.perier@collabora.com>
- <20170123175451.hwvuum4ismutrbsf@sirena.org.uk>
- <3f39ed38-309f-2e79-bd00-21ff367c83b5@collabora.com>
+Subject: Re: [PATCH v5 1/4] ASoC: es8328-i2c: Add compatible for ES8388
+Date: Tue, 24 Jan 2017 12:12:22 +0000
+Message-ID: <20170124121222.twygwy2fph3ticfa@sirena.org.uk>
+References: <20170124100835.9540-1-romain.perier@collabora.com>
+ <20170124100835.9540-2-romain.perier@collabora.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="w7mfcncwg7e6w25s"
+        protocol="application/pgp-signature"; boundary="fa33xd4kgdi4xzsv"
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <3f39ed38-309f-2e79-bd00-21ff367c83b5-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+In-Reply-To: <20170124100835.9540-2-romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
 Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---w7mfcncwg7e6w25s
-Content-Type: text/plain; charset=iso-8859-1
+--fa33xd4kgdi4xzsv
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 24, 2017 at 09:09:02AM +0100, Romain Perier wrote:
-> Le 23/01/2017 =E0 18:54, Mark Brown a =E9crit :
+On Tue, Jan 24, 2017 at 11:08:32AM +0100, Romain Perier wrote:
+> This commit adds a compatible string for everest,es8388. This is
+> an audio codec that is compatible with es8328.
 
-> > This is the first version that has been sumbitted upstream.
+Please don't resubmit patches that have already been applied, you should
+submit patches against current code in the tree you're expecting things
+to be applied to.  If any updates are needed to a patch that's already
+been applied you should submit incremental patches which make those
+updates.  This avoids having to change published git commits which could
+cause problems for people working against git.
 
-> No this is the 4th, I have just re-worded the title :
-
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2017-January/116702.=
-html
-
-> Not sure that you was in Cc: for the previous ones (whoops?)
-
-I wasn't, that's my point.
-
---w7mfcncwg7e6w25s
+--fa33xd4kgdi4xzsv
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliHQ9sACgkQJNaLcl1U
-h9B0Ogf/UZZdo1aN5bI5Tz4oLI3A+gIDqJmYCc0uPPY9NRbnrZIlZ5eToN8oHhZi
-EYBKKDwWo7/rFqQCQOI/UQif+w/HwEtPB2rasPEH64Y+CcBtE8NvwS1AR9oRUexr
-44b5vvDdXeFNGLtOe2uXrLJhxMINB9pk54pURT9yJibfZ6RC4wkNbiqrJuutxmVp
-Lh1JJKInb9eOqugUZ/ENV1AKXB0rI9V1u9JL5p0PYJRGlwd3dT7inWxnxuD7PNrE
-Km9MkkujwDq+zEofqp38Rd8HTqMh37/3tglkc/EiPUYgRAeJwCdwgjrsb9FWHIJg
-c2SZ/dTuMKpRW37+fzKBMvylWi/gXg==
-=fs05
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliHRKUACgkQJNaLcl1U
+h9BIbwf/ayPr6O5Sp3xnZVKkCx3c2EI/PF/FoM81u3aN0NHm/nhSPbrSWb7WBc7n
+J5A4txKgwEJRU1lcYPfoXjn5LUfUePugEsDJSMrBJhpaYwC9hof0AfubhnptMc5X
+LN9SL2uQaU0qjA1Wi1LhdMEmw/LJzUWrP2FBmAWXWW/y4lgZRHu3O38pJEZaEPBr
+Q1EFcRzy04N+OxsdybuUasC8jQBtKYRLxS/ucuI2NhrzoGkiYGm+QQ8QEmqUd1UL
+87S9HljLOiuMeqwUSqBHrCuK5gGFfx8XeDcxr4KyZ5JVJl3MhRuwbJTF1rNIOzYF
+Z1OPOpm3+WhbOXIX5XUI8FnMjGvWvQ==
+=rXjW
 -----END PGP SIGNATURE-----
 
---w7mfcncwg7e6w25s--
+--fa33xd4kgdi4xzsv--
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
 the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
