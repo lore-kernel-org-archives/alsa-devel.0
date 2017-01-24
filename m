@@ -1,87 +1,58 @@
-From: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 2/7] MFD: add STM32 DFSDM support
-Date: Tue, 24 Jan 2017 11:36:58 +0000
-Message-ID: <20170124113658.GW16020@dell>
-References: <1485189145-29576-1-git-send-email-arnaud.pouliquen@st.com>
- <1485189145-29576-3-git-send-email-arnaud.pouliquen@st.com>
- <20170124082249.GR16020@dell>
- <283c0e48-55e2-6516-369d-91dc72d12f73@st.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v4 0/4] Add support for es8388 and hdmi audio on the rock2
+Date: Tue, 24 Jan 2017 12:08:59 +0000
+Message-ID: <20170124120859.p3n6suezf6t2iip2@sirena.org.uk>
+References: <20170123104149.2508-1-romain.perier@collabora.com>
+ <20170123175451.hwvuum4ismutrbsf@sirena.org.uk>
+ <3f39ed38-309f-2e79-bd00-21ff367c83b5@collabora.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="w7mfcncwg7e6w25s"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <283c0e48-55e2-6516-369d-91dc72d12f73-qxv4g6HH51o@public.gmane.org>
-Sender: linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Cc: "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre TORGUE <alexandre.torgue-qxv4g6HH51o@public.gmane.org>
+In-Reply-To: <3f39ed38-309f-2e79-bd00-21ff367c83b5-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 24 Jan 2017, Arnaud Pouliquen wrote:
-> On 01/24/2017 09:22 AM, Lee Jones wrote:
-> > On Mon, 23 Jan 2017, Arnaud Pouliquen wrote:
-> > 
-> >> DFSDM hardware IP can be used at the same time for ADC sigma delta
-> > 
-> > Same time as what?
-> DFSDM is used for ADC acquisition (through IIO) but also PDM microphone
-> capture (through ASOC).
-> > 
-> >> conversion and audio PDM microphone.
-> >> MFD driver is in charge of configuring IP registers and managing IP clocks.
-> >> For this it exports an API to handles filters and channels resources.
-> > 
-> > This looks like an ADC driver?  What is it that makes it an MFD?
-> Yes it a kind of ADC but that supports 2 features audio and iio.
-> So it has to support 2 features based on 2 separate Frameworks.
 
-I'm still unsure why it needs to live in MFD.
+--w7mfcncwg7e6w25s
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-By the looks of it, this driver needs to move into IIO and you need to
-call into it from ASoC.
+On Tue, Jan 24, 2017 at 09:09:02AM +0100, Romain Perier wrote:
+> Le 23/01/2017 =E0 18:54, Mark Brown a =E9crit :
 
-> >> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-> >> ---
-> >>  drivers/mfd/Kconfig             |   11 +
-> >>  drivers/mfd/Makefile            |    2 +
-> >>  drivers/mfd/stm32-dfsdm-reg.h   |  220 +++++++++
-> >>  drivers/mfd/stm32-dfsdm.c       | 1044 +++++++++++++++++++++++++++++++++++++++
-> >>  include/linux/mfd/stm32-dfsdm.h |  324 ++++++++++++
-> >>  5 files changed, 1601 insertions(+)
-> >>  create mode 100644 drivers/mfd/stm32-dfsdm-reg.h
-> >>  create mode 100644 drivers/mfd/stm32-dfsdm.c
-> >>  create mode 100644 include/linux/mfd/stm32-dfsdm.h
-> >>
-> >> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-> >> index c6df644..4bb660b 100644
-> >> --- a/drivers/mfd/Kconfig
-> >> +++ b/drivers/mfd/Kconfig
-> >> @@ -1607,6 +1607,17 @@ config MFD_STW481X
-> >>  	  in various ST Microelectronics and ST-Ericsson embedded
-> >>  	  Nomadik series.
-> >>  
-> >> +config MFD_STM32_DFSDM
-> >> +	tristate "ST Microelectronics STM32 DFSDM"
-> >> +	depends on (ARCH_STM32 && OF) || COMPILE_TEST
-> >> +	select MFD_CORE
-> >> +	select REGMAP
-> >> +	select REGMAP_MMIO
-> >> +	help
-> >> +	  Select this option to enable the STM32 Digital Filter
-> >> +	  for Sigma Delta Modulators (DFSDM) driver used
-> >> +	  in various STM32 series.
-> >> +
-> >>  menu "Multimedia Capabilities Port drivers"
-> >>  	depends on ARCH_SA1100
-> > 
-> > [...]
-> > 
-> 
-> Regards
-> Arnaud
+> > This is the first version that has been sumbitted upstream.
 
--- 
-Lee Jones
-Linaro STMicroelectronics Landing Team Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> No this is the 4th, I have just re-worded the title :
+
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2017-January/116702.=
+html
+
+> Not sure that you was in Cc: for the previous ones (whoops?)
+
+I wasn't, that's my point.
+
+--w7mfcncwg7e6w25s
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliHQ9sACgkQJNaLcl1U
+h9B0Ogf/UZZdo1aN5bI5Tz4oLI3A+gIDqJmYCc0uPPY9NRbnrZIlZ5eToN8oHhZi
+EYBKKDwWo7/rFqQCQOI/UQif+w/HwEtPB2rasPEH64Y+CcBtE8NvwS1AR9oRUexr
+44b5vvDdXeFNGLtOe2uXrLJhxMINB9pk54pURT9yJibfZ6RC4wkNbiqrJuutxmVp
+Lh1JJKInb9eOqugUZ/ENV1AKXB0rI9V1u9JL5p0PYJRGlwd3dT7inWxnxuD7PNrE
+Km9MkkujwDq+zEofqp38Rd8HTqMh37/3tglkc/EiPUYgRAeJwCdwgjrsb9FWHIJg
+c2SZ/dTuMKpRW37+fzKBMvylWi/gXg==
+=fs05
+-----END PGP SIGNATURE-----
+
+--w7mfcncwg7e6w25s--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
