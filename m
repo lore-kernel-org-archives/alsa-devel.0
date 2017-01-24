@@ -1,16 +1,16 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH v3 10/12] ASoC: Intel: bxt: Add route change to
-	rt298 machine
-Date: Tue, 24 Jan 2017 21:49:12 +0530
-Message-ID: <1485274754-5723-11-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH v3 11/12] ASoC: Intel: bxt: Add route change to
+	da7219_max98357a machine
+Date: Tue, 24 Jan 2017 21:49:13 +0530
+Message-ID: <1485274754-5723-12-git-send-email-jeeja.kp@intel.com>
 References: <1485274754-5723-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id C0AED266D09
- for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2017 17:08:32 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id DEB0D266D09
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2017 17:08:35 +0100 (CET)
 In-Reply-To: <1485274754-5723-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,20 +28,20 @@ List-Id: alsa-devel@alsa-project.org
 From: Jeeja KP <jeeja.kp@intel.com>
 
 To support MST moved pin to port, this changes the routes based on
-port. So change the route in bxt_rt298 machine.
+port. So change the route in bxt_da7219_max98357a machine.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/intel/boards/bxt_rt298.c | 6 +++---
+ sound/soc/intel/boards/bxt_da7219_max98357a.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
-index bc9ee09..09be868 100644
---- a/sound/soc/intel/boards/bxt_rt298.c
-+++ b/sound/soc/intel/boards/bxt_rt298.c
-@@ -92,9 +92,9 @@ static const struct snd_soc_dapm_route broxton_rt298_map[] = {
- 	{"DMIC1 Pin", NULL, "DMIC2"},
- 	{"DMic", NULL, "SoC DMIC"},
+diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+index 1592170..a9647a2 100644
+--- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
++++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+@@ -94,9 +94,9 @@ static const struct snd_soc_dapm_route broxton_map[] = {
+ 	{"codec0_in", NULL, "ssp1 Rx"},
+ 	{"ssp1 Rx", NULL, "Capture"},
  
 -	{"HDMI1", NULL, "hif5 Output"},
 -	{"HDMI2", NULL, "hif6 Output"},
@@ -50,7 +50,7 @@ index bc9ee09..09be868 100644
 +	{"HDMI2", NULL, "hif6-0 Output"},
 +	{"HDMI2", NULL, "hif7-0 Output"},
  
- 	/* CODEC BE connections */
- 	{ "AIF1 Playback", NULL, "ssp5 Tx"},
+ 	{"hifi3", NULL, "iDisp3 Tx"},
+ 	{"iDisp3 Tx", NULL, "iDisp3_out"},
 -- 
 2.5.0
