@@ -1,16 +1,16 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH v3 02/12] ASoC: Intel: Skylake: Use
-	set_tdm_slot to set the dma channel
-Date: Tue, 24 Jan 2017 21:49:04 +0530
-Message-ID: <1485274754-5723-3-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH v3 03/12] ASoC: hdac_hdmi: Move channel info
+	from pin to PCM structure
+Date: Tue, 24 Jan 2017 21:49:05 +0530
+Message-ID: <1485274754-5723-4-git-send-email-jeeja.kp@intel.com>
 References: <1485274754-5723-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 3CF6D266D09
- for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2017 17:08:05 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id E6802266D09
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2017 17:08:09 +0100 (CET)
 In-Reply-To: <1485274754-5723-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,61 +22,206 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-DMA channel(stream tag) used by the HDA link need to programmed in
-codec so that codec receives packet from the link associated with the
-same channel.
+Channel info is part of the pcm parameter and channel map control is
+created for each pcm. So move channel info to pcm instead of pin
+structure and the mutex lock to pcm.
 
-DMA channel is allocated in link BE dai hw_params, the same needs to be
-set for the BE codec dai. Instead of using get/set dma_data(), use
-dai_ops snd_soc_dai_set_tdm_slot() to set the stream tag.
-
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 76 ++++++++++++++++++++------------------------
+ 1 file changed, 34 insertions(+), 42 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index ae7997a..55dc9f2 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -532,10 +532,10 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
- 	struct hdac_ext_bus *ebus = dev_get_drvdata(dai->dev);
- 	struct hdac_ext_stream *link_dev;
- 	struct snd_soc_pcm_runtime *rtd = snd_pcm_substream_chip(substream);
--	struct hdac_ext_dma_params *dma_params;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct skl_pipe_params p_params = {0};
- 	struct hdac_ext_link *link;
-+	int stream_tag;
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 33b43a4..dbda47a 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -85,10 +85,6 @@ struct hdac_hdmi_pin {
+ 	hda_nid_t mux_nids[HDA_MAX_CONNECTIONS];
+ 	struct hdac_hdmi_eld eld;
+ 	struct hdac_ext_device *edev;
+-	struct mutex lock;
+-	bool chmap_set;
+-	unsigned char chmap[8]; /* ALSA API channel-map */
+-	int channels; /* current number of channels */
+ };
  
- 	link_dev = snd_hdac_ext_stream_assign(ebus, substream,
- 					HDAC_EXT_STREAM_TYPE_LINK);
-@@ -548,16 +548,16 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
- 	if (!link)
- 		return -EINVAL;
+ struct hdac_hdmi_pcm {
+@@ -100,6 +96,9 @@ struct hdac_hdmi_pcm {
+ 	int stream_tag;
+ 	int channels;
+ 	int format;
++	bool chmap_set;
++	unsigned char chmap[8]; /* ALSA API channel-map */
++	struct mutex lock;
+ };
  
-+	stream_tag = hdac_stream(link_dev)->stream_tag;
+ struct hdac_hdmi_dai_pin_map {
+@@ -217,13 +216,13 @@ struct dp_audio_infoframe {
+ };
+ 
+ static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
+-				hda_nid_t cvt_nid, hda_nid_t pin_nid)
++		   struct hdac_hdmi_pcm *pcm, struct hdac_hdmi_pin *pin)
+ {
+ 	uint8_t buffer[HDMI_INFOFRAME_HEADER_SIZE + HDMI_AUDIO_INFOFRAME_SIZE];
+ 	struct hdmi_audio_infoframe frame;
+ 	struct dp_audio_infoframe dp_ai;
+ 	struct hdac_hdmi_priv *hdmi = hdac->private_data;
+-	struct hdac_hdmi_pin *pin;
++	struct hdac_hdmi_cvt *cvt = pcm->cvt;
+ 	u8 *dip;
+ 	int ret;
+ 	int i;
+@@ -231,19 +230,14 @@ static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
+ 	u8 conn_type;
+ 	int channels, ca;
+ 
+-	list_for_each_entry(pin, &hdmi->pin_list, head) {
+-		if (pin->nid == pin_nid)
+-			break;
+-	}
+-
+ 	ca = snd_hdac_channel_allocation(&hdac->hdac, pin->eld.info.spk_alloc,
+-			pin->channels, pin->chmap_set, true, pin->chmap);
++			pcm->channels, pcm->chmap_set, true, pcm->chmap);
+ 
+ 	channels = snd_hdac_get_active_channels(ca);
+-	hdmi->chmap.ops.set_channel_count(&hdac->hdac, cvt_nid, channels);
++	hdmi->chmap.ops.set_channel_count(&hdac->hdac, cvt->nid, channels);
+ 
+ 	snd_hdac_setup_channel_mapping(&hdmi->chmap, pin->nid, false, ca,
+-				pin->channels, pin->chmap, pin->chmap_set);
++				pcm->channels, pcm->chmap, pcm->chmap_set);
+ 
+ 	eld_buf = pin->eld.eld_buffer;
+ 	conn_type = drm_eld_get_conn_type(eld_buf);
+@@ -279,26 +273,26 @@ static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
+ 	}
+ 
+ 	/* stop infoframe transmission */
+-	hdac_hdmi_set_dip_index(hdac, pin_nid, 0x0, 0x0);
+-	snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
++	hdac_hdmi_set_dip_index(hdac, pin->nid, 0x0, 0x0);
++	snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
+ 			AC_VERB_SET_HDMI_DIP_XMIT, AC_DIPXMIT_DISABLE);
+ 
+ 
+ 	/*  Fill infoframe. Index auto-incremented */
+-	hdac_hdmi_set_dip_index(hdac, pin_nid, 0x0, 0x0);
++	hdac_hdmi_set_dip_index(hdac, pin->nid, 0x0, 0x0);
+ 	if (conn_type == DRM_ELD_CONN_TYPE_HDMI) {
+ 		for (i = 0; i < sizeof(buffer); i++)
+-			snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
++			snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
+ 				AC_VERB_SET_HDMI_DIP_DATA, buffer[i]);
+ 	} else {
+ 		for (i = 0; i < sizeof(dp_ai); i++)
+-			snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
++			snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
+ 				AC_VERB_SET_HDMI_DIP_DATA, dip[i]);
+ 	}
+ 
+ 	/* Start infoframe */
+-	hdac_hdmi_set_dip_index(hdac, pin_nid, 0x0, 0x0);
+-	snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
++	hdac_hdmi_set_dip_index(hdac, pin->nid, 0x0, 0x0);
++	snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
+ 			AC_VERB_SET_HDMI_DIP_XMIT, AC_DIPXMIT_BEST);
+ 
+ 	return 0;
+@@ -476,18 +470,22 @@ static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
+ 	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
+ 	struct hdac_hdmi_priv *hdmi = hdac->private_data;
+ 	struct hdac_hdmi_dai_pin_map *dai_map;
++	struct hdac_hdmi_pcm *pcm;
+ 
+ 	dai_map = &hdmi->dai_map[dai->id];
+ 
+-	if (dai_map->pin) {
+-		mutex_lock(&dai_map->pin->lock);
+-		dai_map->pin->chmap_set = false;
+-		memset(dai_map->pin->chmap, 0, sizeof(dai_map->pin->chmap));
+-		dai_map->pin->channels = 0;
+-		mutex_unlock(&dai_map->pin->lock);
++	pcm = hdac_hdmi_get_pcm_from_cvt(hdmi, dai_map->cvt);
+ 
+-		dai_map->pin = NULL;
++	if (pcm) {
++		mutex_lock(&pcm->lock);
++		pcm->chmap_set = false;
++		memset(pcm->chmap, 0, sizeof(pcm->chmap));
++		pcm->channels = 0;
++		mutex_unlock(&pcm->lock);
+ 	}
 +
- 	/* set the stream tag in the codec dai dma params  */
--	dma_params = snd_soc_dai_get_dma_data(codec_dai, substream);
--	if (dma_params)
--		dma_params->stream_tag =  hdac_stream(link_dev)->stream_tag;
-+	snd_soc_dai_set_tdm_slot(codec_dai, stream_tag, 0, 0, 0);
++	if (dai_map->pin)
++		dai_map->pin = NULL;
+ }
  
- 	p_params.s_fmt = snd_pcm_format_width(params_format(params));
- 	p_params.ch = params_channels(params);
- 	p_params.s_freq = params_rate(params);
- 	p_params.stream = substream->stream;
--	p_params.link_dma_id = hdac_stream(link_dev)->stream_tag - 1;
-+	p_params.link_dma_id = stream_tag - 1;
- 	p_params.link_index = link->index;
- 	p_params.format = params_format(params);
+ static int
+@@ -611,8 +609,7 @@ static int hdac_hdmi_pin_output_widget_event(struct snd_soc_dapm_widget *w,
  
+ 		hdac_hdmi_set_amp(edev, pin->nid, AMP_OUT_UNMUTE);
+ 
+-		return hdac_hdmi_setup_audio_infoframe(edev, pcm->cvt->nid,
+-								pin->nid);
++		return hdac_hdmi_setup_audio_infoframe(edev, pcm, pin);
+ 
+ 	case SND_SOC_DAPM_POST_PMD:
+ 		hdac_hdmi_set_amp(edev, pin->nid, AMP_OUT_MUTE);
+@@ -1110,7 +1107,6 @@ static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
+ 	hdmi->num_pin++;
+ 
+ 	pin->edev = edev;
+-	mutex_init(&pin->lock);
+ 
+ 	return 0;
+ }
+@@ -1361,6 +1357,7 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device)
+ 		return -ENOMEM;
+ 	pcm->pcm_id = device;
+ 	pcm->cvt = hdmi->dai_map[dai->id].cvt;
++	mutex_init(&pcm->lock);
+ 
+ 	snd_pcm = hdac_hdmi_get_pcm_from_id(dai->component->card, device);
+ 	if (snd_pcm) {
+@@ -1506,13 +1503,8 @@ static void hdac_hdmi_get_chmap(struct hdac_device *hdac, int pcm_idx,
+ 	struct hdac_ext_device *edev = to_ehdac_device(hdac);
+ 	struct hdac_hdmi_priv *hdmi = edev->private_data;
+ 	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
+-	struct hdac_hdmi_pin *pin = pcm->pin;
+-
+-	/* chmap is already set to 0 in caller */
+-	if (!pin)
+-		return;
+ 
+-	memcpy(chmap, pin->chmap, ARRAY_SIZE(pin->chmap));
++	memcpy(chmap, pcm->chmap, ARRAY_SIZE(pcm->chmap));
+ }
+ 
+ static void hdac_hdmi_set_chmap(struct hdac_device *hdac, int pcm_idx,
+@@ -1523,12 +1515,12 @@ static void hdac_hdmi_set_chmap(struct hdac_device *hdac, int pcm_idx,
+ 	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
+ 	struct hdac_hdmi_pin *pin = pcm->pin;
+ 
+-	mutex_lock(&pin->lock);
+-	pin->chmap_set = true;
+-	memcpy(pin->chmap, chmap, ARRAY_SIZE(pin->chmap));
++	mutex_lock(&pcm->lock);
++	pcm->chmap_set = true;
++	memcpy(pcm->chmap, chmap, ARRAY_SIZE(pcm->chmap));
+ 	if (prepared)
+-		hdac_hdmi_setup_audio_infoframe(edev, pcm->cvt->nid, pin->nid);
+-	mutex_unlock(&pin->lock);
++		hdac_hdmi_setup_audio_infoframe(edev, pcm, pin);
++	mutex_unlock(&pcm->lock);
+ }
+ 
+ static bool is_hdac_hdmi_pcm_attached(struct hdac_device *hdac, int pcm_idx)
 -- 
 2.5.0
