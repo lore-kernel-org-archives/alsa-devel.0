@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Revert "Drop SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME flag"" to the asoc tree
-Date: Tue, 24 Jan 2017 18:39:16 +0000
-Message-ID: <E1cW5zw-0006YJ-6g@debutante>
-References: <1477670708-471-1-git-send-email-s.nawrocki@samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-Reply-To: <1477670708-471-1-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, arnd@arndb.de, b.zolnierkie@samsung.com, lgirdwood@gmail.comalsa-devel@alsa-project.org
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: es8328-i2c: Add compatible for ES8388" to the asoc tree
+Date: Tue, 24 Jan 2017 18:39:21 +0000
+Message-ID: <E1cW601-0006aO-73@debutante>
+References: <20170116081753.13666-2-romain.perier@collabora.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20170116081753.13666-2-romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Revert "Drop SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME flag"
+   ASoC: es8328-i2c: Add compatible for ES8388
 
 has been applied to the asoc tree at
 
@@ -37,97 +37,57 @@ to this mail.
 Thanks,
 Mark
 
->From 9bfa24e90956cc79362572391657b84cf54a559a Mon Sep 17 00:00:00 2001
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Date: Tue, 17 Jan 2017 14:16:41 +0100
-Subject: [PATCH] ASoC: Revert "Drop SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME
- flag"
+>From 5f166156dbd4c0cf85632799ee7330d24deeec4e Mon Sep 17 00:00:00 2001
+From: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Date: Mon, 23 Jan 2017 11:41:46 +0100
+Subject: [PATCH] ASoC: es8328-i2c: Add compatible for ES8388
 
-This reverts commit c6644119a3f80ea644bde10009d5e1013b5aff29 and
-restores the ability to specify DMA channel names per DAI dma_data.
-Unfortunately the functionality removed in the patch being reverted
-cannot be entirely replaced by specifying DMA channel names in struct
-snd_dmaengine_pcm_config as that does not cover devices with more than
-2 DMA channels.
+This commit adds a compatible string for everest,es8388. This is
+an audio codec that is compatible with es8328.
 
-Together with patch "ASoC: Revert "samsung: Remove unneeded
-initialization of chan_name"" this fixes broken sound on the s3c24xx
-SoC platforms.
-
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- include/sound/dmaengine_pcm.h         |  6 ++++++
- sound/soc/soc-generic-dmaengine-pcm.c | 12 +++++++++++-
- 2 files changed, 17 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/es8328.txt | 2 +-
+ sound/soc/codecs/es8328-i2c.c                      | 2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
-index 1c8f9e1ef2a5..67be2445941a 100644
---- a/include/sound/dmaengine_pcm.h
-+++ b/include/sound/dmaengine_pcm.h
-@@ -71,6 +71,7 @@ struct dma_chan *snd_dmaengine_pcm_get_chan(struct snd_pcm_substream *substream)
-  * @slave_id: Slave requester id for the DMA channel.
-  * @filter_data: Custom DMA channel filter data, this will usually be used when
-  * requesting the DMA channel.
-+ * @chan_name: Custom channel name to use when requesting DMA channel.
-  * @fifo_size: FIFO size of the DAI controller in bytes
-  * @flags: PCM_DAI flags, only SND_DMAENGINE_PCM_DAI_FLAG_PACK for now
-  */
-@@ -80,6 +81,7 @@ struct snd_dmaengine_dai_dma_data {
- 	u32 maxburst;
- 	unsigned int slave_id;
- 	void *filter_data;
-+	const char *chan_name;
- 	unsigned int fifo_size;
- 	unsigned int flags;
+diff --git a/Documentation/devicetree/bindings/sound/es8328.txt b/Documentation/devicetree/bindings/sound/es8328.txt
+index 30ea8a318ae9..33fbf058c997 100644
+--- a/Documentation/devicetree/bindings/sound/es8328.txt
++++ b/Documentation/devicetree/bindings/sound/es8328.txt
+@@ -4,7 +4,7 @@ This device supports both I2C and SPI.
+ 
+ Required properties:
+ 
+-  - compatible : "everest,es8328"
++  - compatible  : Should be "everest,es8328" or "everest,es8388"
+   - DVDD-supply : Regulator providing digital core supply voltage 1.8 - 3.6V
+   - AVDD-supply : Regulator providing analog supply voltage 3.3V
+   - PVDD-supply : Regulator providing digital IO supply voltage 1.8 - 3.6V
+diff --git a/sound/soc/codecs/es8328-i2c.c b/sound/soc/codecs/es8328-i2c.c
+index 2d05b5d3a6ce..318ab28c5351 100644
+--- a/sound/soc/codecs/es8328-i2c.c
++++ b/sound/soc/codecs/es8328-i2c.c
+@@ -20,12 +20,14 @@
+ 
+ static const struct i2c_device_id es8328_id[] = {
+ 	{ "es8328", 0 },
++	{ "es8388", 0 },
+ 	{ }
  };
-@@ -105,6 +107,10 @@ void snd_dmaengine_pcm_set_config_from_dai_data(
-  * playback.
-  */
- #define SND_DMAENGINE_PCM_FLAG_HALF_DUPLEX BIT(3)
-+/*
-+ * The PCM streams have custom channel names specified.
-+ */
-+#define SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME BIT(4)
+ MODULE_DEVICE_TABLE(i2c, es8328_id);
  
- /**
-  * struct snd_dmaengine_pcm_config - Configuration data for dmaengine based PCM
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index 17eb14935577..d53786498b61 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -263,6 +263,7 @@ static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 	struct dmaengine_pcm *pcm = soc_platform_to_pcm(rtd->platform);
- 	const struct snd_dmaengine_pcm_config *config = pcm->config;
- 	struct device *dev = rtd->platform->dev;
-+	struct snd_dmaengine_dai_dma_data *dma_data;
- 	struct snd_pcm_substream *substream;
- 	size_t prealloc_buffer_size;
- 	size_t max_buffer_size;
-@@ -282,6 +283,13 @@ static int dmaengine_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 		if (!substream)
- 			continue;
- 
-+		dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
-+
-+		if (!pcm->chan[i] &&
-+		    (pcm->flags & SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME))
-+			pcm->chan[i] = dma_request_slave_channel(dev,
-+				dma_data->chan_name);
-+
- 		if (!pcm->chan[i] && (pcm->flags & SND_DMAENGINE_PCM_FLAG_COMPAT)) {
- 			pcm->chan[i] = dmaengine_pcm_compat_request_channel(rtd,
- 				substream);
-@@ -350,7 +358,9 @@ static int dmaengine_pcm_request_chan_of(struct dmaengine_pcm *pcm,
- 	const char *name;
- 	struct dma_chan *chan;
- 
--	if ((pcm->flags & SND_DMAENGINE_PCM_FLAG_NO_DT) || !dev->of_node)
-+	if ((pcm->flags & (SND_DMAENGINE_PCM_FLAG_NO_DT |
-+			   SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME)) ||
-+	    !dev->of_node)
- 		return 0;
- 
- 	if (config && config->dma_dev) {
+ static const struct of_device_id es8328_of_match[] = {
+ 	{ .compatible = "everest,es8328", },
++	{ .compatible = "everest,es8388", },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, es8328_of_match);
 -- 
 2.11.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
