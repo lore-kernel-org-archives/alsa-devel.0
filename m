@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Correct some missing locking"
-	to the asoc tree
-Date: Tue, 24 Jan 2017 18:39:13 +0000
-Message-ID: <E1cW5zt-0006XF-6m@debutante>
-References: <1485258241-10575-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: wm_adsp: Fixup wm_adsp2_boot_work error
+	paths" to the asoc tree
+Date: Tue, 24 Jan 2017 18:39:07 +0000
+Message-ID: <E1cW5zn-0006V6-B4@debutante>
+References: <1485258241-10575-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C5A7B267474
+ by alsa0.perex.cz (Postfix) with ESMTP id C4337266CC1
  for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2017 19:39:22 +0100 (CET)
-In-Reply-To: <1485258241-10575-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+In-Reply-To: <1485258241-10575-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Correct some missing locking
+   ASoC: wm_adsp: Fixup wm_adsp2_boot_work error paths
 
 has been applied to the asoc tree at
 
@@ -53,81 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From bb24ee411ae949eaffe24c6be2b3d87f271507b5 Mon Sep 17 00:00:00 2001
+>From d589d8b83503c1f153965f4c2747349ccca6995e Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Tue, 24 Jan 2017 11:43:59 +0000
-Subject: [PATCH] ASoC: wm_adsp: Correct some missing locking
+Date: Tue, 24 Jan 2017 11:44:01 +0000
+Subject: [PATCH] ASoC: wm_adsp: Fixup wm_adsp2_boot_work error paths
 
-The recent refactoring overlooked some places which should be covered by
-the pwr_lock, all code that affects or depends on the power status of
-the DSP should be covered, this patch adds the missing coverage.
+Currently we are not disabling MEM_ENA on the error path, we should
+really do this to unwind the state back to how it was. This patch adds a
+clear of MEM_ENA on the error path, again there is no major issues
+caused by this minor fix.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index ed615ce8a496..09e50e5e7870 100644
+index 746a5e23cb8b..651857b529f9 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -2552,6 +2552,8 @@ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
- 		queue_work(system_unbound_wq, &dsp->boot_work);
- 		break;
- 	case SND_SOC_DAPM_PRE_PMD:
-+		mutex_lock(&dsp->pwr_lock);
-+
- 		wm_adsp_debugfs_clear(dsp);
+@@ -2450,7 +2450,7 @@ static void wm_adsp2_boot_work(struct work_struct *work)
  
- 		dsp->fw_id = 0;
-@@ -2567,6 +2569,8 @@ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
+ 	ret = wm_adsp2_ena(dsp);
+ 	if (ret != 0)
+-		goto err_mutex;
++		goto err_mem;
  
- 		wm_adsp_free_alg_regions(dsp);
- 
-+		mutex_unlock(&dsp->pwr_lock);
-+
- 		adsp_dbg(dsp, "Shutdown complete\n");
- 		break;
- 	default:
-@@ -2589,8 +2593,12 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 	case SND_SOC_DAPM_POST_PMU:
- 		flush_work(&dsp->boot_work);
- 
--		if (!dsp->booted)
--			return -EIO;
-+		mutex_lock(&dsp->pwr_lock);
-+
-+		if (!dsp->booted) {
-+			ret = -EIO;
-+			goto err;
-+		}
- 
- 		ret = wm_adsp2_ena(dsp);
- 		if (ret != 0)
-@@ -2610,14 +2618,10 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- 
- 		dsp->running = true;
- 
--		mutex_lock(&dsp->pwr_lock);
--
- 		if (wm_adsp_fw[dsp->fw].num_caps != 0) {
- 			ret = wm_adsp_buffer_init(dsp);
--			if (ret < 0) {
--				mutex_unlock(&dsp->pwr_lock);
-+			if (ret < 0)
- 				goto err;
--			}
- 		}
- 
- 		mutex_unlock(&dsp->pwr_lock);
-@@ -2662,6 +2666,7 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
- err:
+ 	ret = wm_adsp_load(dsp);
+ 	if (ret != 0)
+@@ -2484,6 +2484,9 @@ static void wm_adsp2_boot_work(struct work_struct *work)
+ err_ena:
  	regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
  			   ADSP2_SYS_ENA | ADSP2_CORE_ENA | ADSP2_START, 0);
-+	mutex_unlock(&dsp->pwr_lock);
- 	return ret;
++err_mem:
++	regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
++			   ADSP2_MEM_ENA, 0);
+ err_mutex:
+ 	mutex_unlock(&dsp->pwr_lock);
  }
- EXPORT_SYMBOL_GPL(wm_adsp2_event);
 -- 
 2.11.0
