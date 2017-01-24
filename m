@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Fixup wm_adsp2_boot_work error
-	paths" to the asoc tree
-Date: Tue, 24 Jan 2017 18:39:07 +0000
-Message-ID: <E1cW5zn-0006V6-B4@debutante>
-References: <1485258241-10575-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: Revert "samsung: Remove unneeded
+	initialization of chan_name"" to the asoc tree
+Date: Tue, 24 Jan 2017 18:39:18 +0000
+Message-ID: <E1cW5zy-0006ZG-Py@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C4337266CC1
- for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2017 19:39:22 +0100 (CET)
-In-Reply-To: <1485258241-10575-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CAD6B266CC1
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2017 19:39:25 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Fixup wm_adsp2_boot_work error paths
+   ASoC: Revert "samsung: Remove unneeded initialization of chan_name"
 
 has been applied to the asoc tree at
 
@@ -53,44 +52,101 @@ to this mail.
 Thanks,
 Mark
 
->From d589d8b83503c1f153965f4c2747349ccca6995e Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Tue, 24 Jan 2017 11:44:01 +0000
-Subject: [PATCH] ASoC: wm_adsp: Fixup wm_adsp2_boot_work error paths
+>From b8ab0ccc0b6e517ff595f1b06fb9f578c8b4001f Mon Sep 17 00:00:00 2001
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Date: Tue, 17 Jan 2017 14:16:42 +0100
+Subject: [PATCH] ASoC: Revert "samsung: Remove unneeded initialization of
+ chan_name"
 
-Currently we are not disabling MEM_ENA on the error path, we should
-really do this to unwind the state back to how it was. This patch adds a
-clear of MEM_ENA on the error path, again there is no major issues
-caused by this minor fix.
+This reverts commit cdaf9af1eaeb539e32bfd6da6310b41ad6c3ba23
+which breaks I2S support on the non-DT Samsung SoC platforms,
+since the default "tx", "rx" DMA channel names for playback
+and capture streams or custom channel names in struct
+snd_dmaengine_pcm_config are supported in the ASoC dmaengine
+module only for devicetree booting case.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/samsung/dmaengine.c   | 8 ++++++--
+ sound/soc/samsung/i2s.c         | 3 +++
+ sound/soc/samsung/s3c2412-i2s.c | 2 ++
+ sound/soc/samsung/s3c24xx-i2s.c | 2 ++
+ 4 files changed, 13 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 746a5e23cb8b..651857b529f9 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -2450,7 +2450,7 @@ static void wm_adsp2_boot_work(struct work_struct *work)
+diff --git a/sound/soc/samsung/dmaengine.c b/sound/soc/samsung/dmaengine.c
+index cda656e4afc6..9104c98deeb7 100644
+--- a/sound/soc/samsung/dmaengine.c
++++ b/sound/soc/samsung/dmaengine.c
+@@ -37,8 +37,12 @@ int samsung_asoc_dma_platform_register(struct device *dev, dma_filter_fn filter,
+ 	pcm_conf->prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config;
+ 	pcm_conf->compat_filter_fn = filter;
  
- 	ret = wm_adsp2_ena(dsp);
- 	if (ret != 0)
--		goto err_mutex;
-+		goto err_mem;
+-	pcm_conf->chan_names[SNDRV_PCM_STREAM_PLAYBACK] = tx;
+-	pcm_conf->chan_names[SNDRV_PCM_STREAM_CAPTURE] = rx;
++	if (dev->of_node) {
++		pcm_conf->chan_names[SNDRV_PCM_STREAM_PLAYBACK] = tx;
++		pcm_conf->chan_names[SNDRV_PCM_STREAM_CAPTURE] = rx;
++	} else {
++		flags |= SND_DMAENGINE_PCM_FLAG_CUSTOM_CHANNEL_NAME;
++	}
  
- 	ret = wm_adsp_load(dsp);
- 	if (ret != 0)
-@@ -2484,6 +2484,9 @@ static void wm_adsp2_boot_work(struct work_struct *work)
- err_ena:
- 	regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
- 			   ADSP2_SYS_ENA | ADSP2_CORE_ENA | ADSP2_START, 0);
-+err_mem:
-+	regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
-+			   ADSP2_MEM_ENA, 0);
- err_mutex:
- 	mutex_unlock(&dsp->pwr_lock);
+ 	return devm_snd_dmaengine_pcm_register(dev, pcm_conf, flags);
  }
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index e00974bc5616..85324e61cbd5 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1305,6 +1305,8 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 	}
+ 	pri_dai->dma_playback.addr = regs_base + I2STXD;
+ 	pri_dai->dma_capture.addr = regs_base + I2SRXD;
++	pri_dai->dma_playback.chan_name = "tx";
++	pri_dai->dma_capture.chan_name = "rx";
+ 	pri_dai->dma_playback.addr_width = 4;
+ 	pri_dai->dma_capture.addr_width = 4;
+ 	pri_dai->quirks = quirks;
+@@ -1329,6 +1331,7 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 		sec_dai->lock = &pri_dai->spinlock;
+ 		sec_dai->variant_regs = pri_dai->variant_regs;
+ 		sec_dai->dma_playback.addr = regs_base + I2STXDS;
++		sec_dai->dma_playback.chan_name = "tx-sec";
+ 
+ 		if (!np) {
+ 			sec_dai->dma_playback.filter_data = i2s_pdata->dma_play_sec;
+diff --git a/sound/soc/samsung/s3c2412-i2s.c b/sound/soc/samsung/s3c2412-i2s.c
+index 6d0b8897fa6c..0a4718207e6e 100644
+--- a/sound/soc/samsung/s3c2412-i2s.c
++++ b/sound/soc/samsung/s3c2412-i2s.c
+@@ -35,10 +35,12 @@
+ #include <linux/platform_data/asoc-s3c.h>
+ 
+ static struct snd_dmaengine_dai_dma_data s3c2412_i2s_pcm_stereo_out = {
++	.chan_name	= "tx",
+ 	.addr_width	= 4,
+ };
+ 
+ static struct snd_dmaengine_dai_dma_data s3c2412_i2s_pcm_stereo_in = {
++	.chan_name	= "rx",
+ 	.addr_width	= 4,
+ };
+ 
+diff --git a/sound/soc/samsung/s3c24xx-i2s.c b/sound/soc/samsung/s3c24xx-i2s.c
+index 07f5091b33e8..91e6871e5413 100644
+--- a/sound/soc/samsung/s3c24xx-i2s.c
++++ b/sound/soc/samsung/s3c24xx-i2s.c
+@@ -31,10 +31,12 @@
+ #include "s3c24xx-i2s.h"
+ 
+ static struct snd_dmaengine_dai_dma_data s3c24xx_i2s_pcm_stereo_out = {
++	.chan_name	= "tx",
+ 	.addr_width	= 2,
+ };
+ 
+ static struct snd_dmaengine_dai_dma_data s3c24xx_i2s_pcm_stereo_in = {
++	.chan_name	= "rx",
+ 	.addr_width	= 2,
+ };
+ 
 -- 
 2.11.0
