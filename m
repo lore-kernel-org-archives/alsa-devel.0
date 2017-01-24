@@ -1,131 +1,67 @@
-From: jeeja.kp@intel.com
-Subject: [PATCH v3 05/12] ASoC: Intel: bxt: add channel map
-	support in bxt_da7219_max98357a machine
-Date: Tue, 24 Jan 2017 21:49:07 +0530
-Message-ID: <1485274754-5723-6-git-send-email-jeeja.kp@intel.com>
-References: <1485274754-5723-1-git-send-email-jeeja.kp@intel.com>
+From: Kevin Hilman <khilman@baylibre.com>
+Subject: Re: [PATCH 6/9] power_supply: wm97xx_battery: use power_supply_get_drvdata
+Date: Tue, 24 Jan 2017 15:39:27 -0800
+Message-ID: <m27f5k1100.fsf@baylibre.com>
+References: <1477510907-23495-1-git-send-email-robert.jarzmik@free.fr>
+        <1477510907-23495-7-git-send-email-robert.jarzmik@free.fr>
+        <CAOi56cVk17w6C6msnT88c0Zh1OgLM=FbZAw32MzLRatjFraYhg@mail.gmail.com>
+        <87h94odic0.fsf@belgarion.home> <20170124204011.GH27969@dtor-ws>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 80DC4266D09
- for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2017 17:08:16 +0100 (CET)
-In-Reply-To: <1485274754-5723-1-git-send-email-jeeja.kp@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
+Content-Type: text/plain
+Return-path: <linux-input-owner@vger.kernel.org>
+In-Reply-To: <20170124204011.GH27969@dtor-ws> (Dmitry Torokhov's message of
+        "Tue, 24 Jan 2017 12:40:11 -0800")
+Sender: linux-input-owner@vger.kernel.org
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Robert Jarzmik <robert.jarzmik@free.fr>, Lee Jones <lee.jones@linaro.org>, Sebastian Reichel <sre@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, lkml <linux-kernel@vger.kernel.org>, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, linux-pm <linux-pm@vger.kernel.org>, alsa-devel@alsa-project.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Stefan Agner <stefan@agner.ch>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+Dmitry Torokhov <dmitry.torokhov@gmail.com> writes:
 
-HDMI registers channel map controls per PCM. As PCMs are not
-registered during dai_link init callback, store the pcm ids and
-codec DAIs during this init callback.
+> On Tue, Jan 24, 2017 at 08:31:59AM +0100, Robert Jarzmik wrote:
+>> Kevin Hilman <khilman@kernel.org> writes:
+>> 
+>> > Hello,
+>> >
+>> > On Wed, Oct 26, 2016 at 12:41 PM, Robert Jarzmik <robert.jarzmik@free.fr> wrote:
+>> >> As the power supply framework provides a way to store and retrieve
+>> >> private supply data, use it.
+>> >>
+>> >> In the process, change the platform data for wm97xx_battery from a
+>> >> container of a single struct wm97xx_batt_pdata to the direct point to wm97xx_batt_pdata.
+>> >>
+>> >> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+>> >
+>> > kernelci.org has been reporting that the tegra20-iris board has been
+>> > failing in -next since next-20161123[1], and also in mainline
+>> > v4.10-rc.  I finally took the time to bisect, and it pointed to this
+>> > patch.  I verified that reverting $SUBJECT patch[2] on top of
+>> > v4.10-rc5 fixes the problem.
+>> >
+>> > Kevin
+>> >
+>> > [1] https://kernelci.org/boot/id/5879a3fe59b5141534f6c3ac/
+>> > [2] in mainline as commit: 6480af4915d6 power_supply: wm97xx_battery:
+>> > use power_supply_get_drvdata
+>> 
+>> Hi Kevin,
+>> 
+>> There is a fix posted in here :
+>> https://patchwork.kernel.org/patch/9499231/
+>> 
+>> I don't know if it's related, as I have no Oops signature nor any data to be
+>> able to help further.
 
-Register for late probe and call the jack_init API which also
-registers channel map in the late probe callback handler.
+FWIW, that kernelci.org link above has full boot log available:
+https://storage.kernelci.org/next/next-20170113/arm-tegra_defconfig/lab-baylibre-seattle/boot-tegra20-iris-512.html
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
----
- sound/soc/intel/boards/bxt_da7219_max98357a.c | 49 ++++++++++++++++++++++++++-
- 1 file changed, 48 insertions(+), 1 deletion(-)
+> I picked up the patch from patchwork and will send it on to Linus in the
+> next day or so.
 
-diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-index 02439ac..1592170 100644
---- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-@@ -34,6 +34,16 @@
- 
- static struct snd_soc_jack broxton_headset;
- 
-+struct bxt_hdmi_pcm {
-+	struct list_head head;
-+	struct snd_soc_dai *codec_dai;
-+	int device;
-+};
-+
-+struct bxt_card_private {
-+	struct list_head hdmi_pcm_list;
-+};
-+
- enum {
- 	BXT_DPCM_AUDIO_PB = 0,
- 	BXT_DPCM_AUDIO_CP,
-@@ -147,9 +157,20 @@ static int broxton_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
- 
- static int broxton_hdmi_init(struct snd_soc_pcm_runtime *rtd)
- {
-+	struct bxt_card_private *ctx = snd_soc_card_get_drvdata(rtd->card);
- 	struct snd_soc_dai *dai = rtd->codec_dai;
-+	struct bxt_hdmi_pcm *pcm;
-+
-+	pcm = devm_kzalloc(rtd->card->dev, sizeof(*pcm), GFP_KERNEL);
-+	if (!pcm)
-+		return -ENOMEM;
- 
--	return hdac_hdmi_jack_init(dai, BXT_DPCM_AUDIO_HDMI1_PB + dai->id);
-+	pcm->device = BXT_DPCM_AUDIO_HDMI1_PB + dai->id;
-+	pcm->codec_dai = dai;
-+
-+	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
-+
-+	return 0;
- }
- 
- static int broxton_da7219_fe_init(struct snd_soc_pcm_runtime *rtd)
-@@ -496,6 +517,21 @@ static struct snd_soc_dai_link broxton_dais[] = {
- 	},
- };
- 
-+static int bxt_card_late_probe(struct snd_soc_card *card)
-+{
-+	struct bxt_card_private *ctx = snd_soc_card_get_drvdata(card);
-+	struct bxt_hdmi_pcm *pcm;
-+	int err;
-+
-+	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
-+		err = hdac_hdmi_jack_init(pcm->codec_dai, pcm->device);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
- /* broxton audio machine driver for SPT + da7219 */
- static struct snd_soc_card broxton_audio_card = {
- 	.name = "bxtda7219max",
-@@ -509,11 +545,22 @@ static struct snd_soc_card broxton_audio_card = {
- 	.dapm_routes = broxton_map,
- 	.num_dapm_routes = ARRAY_SIZE(broxton_map),
- 	.fully_routed = true,
-+	.late_probe = bxt_card_late_probe,
- };
- 
- static int broxton_audio_probe(struct platform_device *pdev)
- {
-+	struct bxt_card_private *ctx;
-+
-+	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
-+	if (!ctx)
-+		return -ENOMEM;
-+
-+	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
-+
- 	broxton_audio_card.dev = &pdev->dev;
-+	snd_soc_card_set_drvdata(&broxton_audio_card, ctx);
-+
- 	return devm_snd_soc_register_card(&pdev->dev, &broxton_audio_card);
- }
- 
--- 
-2.5.0
+I tested this on top of linus/master and the boot failure goes away.
+
+Feel free to add,
+
+Tested-by: Kevin Hilman <khilman@baylibre.com>
+
+Kevin
