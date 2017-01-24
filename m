@@ -1,7 +1,7 @@
 From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
 Subject: Re: [alsa-devel] [RFC][PATCH] ASoC: add simple-graph-card document
-Date: Tue, 24 Jan 2017 23:55:25 +0000
-Message-ID: <87r33s9fsb.wl%kuninori.morimoto.gx@renesas.com>
+Date: Tue, 24 Jan 2017 23:55:42 +0000
+Message-ID: <87pojc9fro.wl%kuninori.morimoto.gx@renesas.com>
 References: <87r33z4maj.wl%kuninori.morimoto.gx@renesas.com>
         <CAL_Jsq+pDkfijyKV0ALzZUrH-NVzmLaNj6ivAEFO98NUOXGojw@mail.gmail.com>
         <871svymrnt.wl%kuninori.morimoto.gx@renesas.com>
