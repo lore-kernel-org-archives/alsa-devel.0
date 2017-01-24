@@ -1,54 +1,41 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH 6/9] power_supply: wm97xx_battery: use power_supply_get_drvdata
-Date: Tue, 24 Jan 2017 08:31:59 +0100
-Message-ID: <87h94odic0.fsf@belgarion.home>
-References: <1477510907-23495-1-git-send-email-robert.jarzmik@free.fr>
-        <1477510907-23495-7-git-send-email-robert.jarzmik@free.fr>
-        <CAOi56cVk17w6C6msnT88c0Zh1OgLM=FbZAw32MzLRatjFraYhg@mail.gmail.com>
+From: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Subject: Re: [PATCH v4 0/4] Add support for es8388 and hdmi audio on the rock2
+Date: Tue, 24 Jan 2017 09:09:02 +0100
+Message-ID: <3f39ed38-309f-2e79-bd00-21ff367c83b5@collabora.com>
+References: <20170123104149.2508-1-romain.perier@collabora.com>
+ <20170123175451.hwvuum4ismutrbsf@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-input-owner@vger.kernel.org>
-In-Reply-To: <CAOi56cVk17w6C6msnT88c0Zh1OgLM=FbZAw32MzLRatjFraYhg@mail.gmail.com>
-        (Kevin Hilman's message of "Mon, 23 Jan 2017 10:38:15 -0800")
-Sender: linux-input-owner@vger.kernel.org
-To: Kevin Hilman <khilman@kernel.org>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Lee Jones <lee.jones@linaro.org>, Sebastian Reichel <sre@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, lkml <linux-kernel@vger.kernel.org>, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, linux-pm <linux-pm@vger.kernel.org>, alsa-devel@alsa-project.org, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Stefan Agner <stefan@agner.ch>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20170123175451.hwvuum4ismutrbsf-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Kevin Hilman <khilman@kernel.org> writes:
+Hi,
 
-> Hello,
+Le 23/01/2017 à 18:54, Mark Brown a écrit :
+> On Mon, Jan 23, 2017 at 11:41:45AM +0100, Romain Perier wrote:
 >
-> On Wed, Oct 26, 2016 at 12:41 PM, Robert Jarzmik <robert.jarzmik@free.fr> wrote:
->> As the power supply framework provides a way to store and retrieve
->> private supply data, use it.
->>
->> In the process, change the platform data for wm97xx_battery from a
->> container of a single struct wm97xx_batt_pdata to the direct point to wm97xx_batt_pdata.
->>
->> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
->
-> kernelci.org has been reporting that the tegra20-iris board has been
-> failing in -next since next-20161123[1], and also in mainline
-> v4.10-rc.  I finally took the time to bisect, and it pointed to this
-> patch.  I verified that reverting $SUBJECT patch[2] on top of
-> v4.10-rc5 fixes the problem.
->
-> Kevin
->
-> [1] https://kernelci.org/boot/id/5879a3fe59b5141534f6c3ac/
-> [2] in mainline as commit: 6480af4915d6 power_supply: wm97xx_battery:
-> use power_supply_get_drvdata
+>> Changes in v4:
+>>  - Add support for multi codecs in the asoc machine driver, so the driver
+>>    matches the hw architecture (analog and hdmi audio are connected on
+>>    the same i2s line)
+>>  - Renamed the driver to rk3288-hdmi-analog.c and changed its
+>>    documentation
+>>  - Add built-in support for hdmi audio in this driver
+>>  - Add support for the property 'rockchip,routing'
+> This is the first version that has been sumbitted upstream.
+No this is the 4th, I have just re-worded the title :
+-
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-January/116702.html
 
-Hi Kevin,
+Not sure that you was in Cc: for the previous ones (whoops?)
 
-There is a fix posted in here :
-https://patchwork.kernel.org/patch/9499231/
-
-I don't know if it's related, as I have no Oops signature nor any data to be
-able to help further.
-
-Cheers.
-
+Romain
 --
-Robert
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
