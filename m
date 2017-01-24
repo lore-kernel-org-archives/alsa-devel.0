@@ -1,85 +1,63 @@
-From: Julia Lawall <julia.lawall@lip6.fr>
-Subject: [PATCH] ALSA: x86: hdmi: fix returnvar.cocci warnings
-Date: Tue, 24 Jan 2017 17:07:48 +0100 (CET)
-Message-ID: <alpine.DEB.2.20.1701241702100.4729@hadrien>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 3/3] ASoC: wm_adsp: Fixup wm_adsp2_boot_work
+	error paths
+Date: Tue, 24 Jan 2017 11:44:01 +0000
+Message-ID: <1485258241-10575-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1485258241-10575-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Jerome Anand <jerome.anand@intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, intel-gfx@lists.freedesktop.org, broonie@kernel.org, rakesh.a.ughreja@intel.com, kbuild-all@01.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 623F0266C6A
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2017 12:43:03 +0100 (CET)
+In-Reply-To: <1485258241-10575-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-UmVtb3ZlIHVubmVlZGVkIHZhcmlhYmxlIHVzZWQgdG8gc3RvcmUgcmV0dXJuIHZhbHVlLgoKR2Vu
-ZXJhdGVkIGJ5OiBzY3JpcHRzL2NvY2NpbmVsbGUvbWlzYy9yZXR1cm52YXIuY29jY2kKCkNDOiBK
-ZXJvbWUgQW5hbmQgPGplcm9tZS5hbmFuZEBpbnRlbC5jb20+ClNpZ25lZC1vZmYtYnk6IEp1bGlh
-IExhd2FsbCA8anVsaWEubGF3YWxsQGxpcDYuZnI+ClNpZ25lZC1vZmYtYnk6IEZlbmdndWFuZyBX
-dSA8ZmVuZ2d1YW5nLnd1QGludGVsLmNvbT4KLS0tCgpJbi1SZXBseS1UbzogPDIwMTcwMTI0MjI1
-NzUzLjkwNDUtNS1qZXJvbWUuYW5hbmRAaW50ZWwuY29tPgp1cmw6Cmh0dHBzOi8vZ2l0aHViLmNv
-bS8wZGF5LWNpL2xpbnV4L2NvbW1pdHMvSmVyb21lLUFuYW5kL0FkZC1zdXBwb3J0LWZvci1MZWdh
-Y3kKLUhETUktYXVkaW8tZHJpdmVycy8yMDE3MDEyNC0yMTM1NDcKClRoaXMgaXMgcHJvYmFibHkg
-bm90IHRoZSByaWdodCBwYXRjaC4gIEl0IHNpIGp1c3Qgd2hhdCB0aGUgcnVsZSBnZW5lcmF0ZXMu
-Ckluc3RlYWQsIEkgZ3Vlc3MgdGhhdCByZXR2YWwgc2hvdWxkIGJlIHVwZGF0ZWQgaW4gc29tZSB3
-YXk/CgogaW50ZWxfaGRtaV9hdWRpb19pZi5jIHwgICAyMSArKysrKysrKystLS0tLS0tLS0tLS0K
-IDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDEyIGRlbGV0aW9ucygtKQoKLS0tIGEv
-c291bmQveDg2L2ludGVsX2hkbWlfYXVkaW9faWYuYworKysgYi9zb3VuZC94ODYvaW50ZWxfaGRt
-aV9hdWRpb19pZi5jCkBAIC0yMzksNyArMjM5LDYgQEAgc3RhdGljIGlubGluZSBpbnQgaGFkX2No
-a19pbnRybWlzcyhzdHJ1YwoKIGludCBoYWRfcHJvY2Vzc19idWZmZXJfZG9uZShzdHJ1Y3Qgc25k
-X2ludGVsaGFkICppbnRlbGhhZGRhdGEpCiB7Ci0JaW50IHJldHZhbCA9IDA7CiAJdTMyIGxlbiA9
-IDE7CiAJZW51bSBpbnRlbF9oYWRfYXVkX2J1Zl90eXBlIGJ1Zl9pZDsKIAllbnVtIGludGVsX2hh
-ZF9hdWRfYnVmX3R5cGUgYnVmZl9kb25lOwpAQCAtMjU4LDcgKzI1Nyw3IEBAIGludCBoYWRfcHJv
-Y2Vzc19idWZmZXJfZG9uZShzdHJ1Y3Qgc25kX2kKIAlpZiAoaW50ZWxoYWRkYXRhLT5kcnZfc3Rh
-dHVzID09IEhBRF9EUlZfRElTQ09OTkVDVEVEKSB7CiAJCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUo
-JmludGVsaGFkZGF0YS0+aGFkX3NwaW5sb2NrLCBmbGFnX2lycXMpOwogCQlwcl9lcnIoIiVzOkRl
-dmljZSBhbHJlYWR5IGRpc2Nvbm5lY3RlZFxuIiwgX19mdW5jX18pOwotCQlyZXR1cm4gcmV0dmFs
-OworCQlyZXR1cm4gMDsKIAl9CiAJYnVmX2lkID0gaW50ZWxoYWRkYXRhLT5jdXJyX2J1ZjsKIAlp
-bnRlbGhhZGRhdGEtPmJ1ZmZfZG9uZSA9IGJ1Zl9pZDsKQEAgLTI4MCw3ICsyNzksNyBAQCBpbnQg
-aGFkX3Byb2Nlc3NfYnVmZmVyX2RvbmUoc3RydWN0IHNuZF9pCiAJCWlmICghaW50cl9jb3VudCB8
-fCAoaW50cl9jb3VudCA+IDMpKSB7CiAJCQlwcl9lcnIoIkhBRCBTVyBzdGF0ZSBpbiBub24tcmVj
-b3ZlcmFibGUhISEgbW9kZVxuIik7CiAJCQlwcl9lcnIoIkFscmVhZHkgcGxheWVkIHN0YWxlIGRh
-dGFcbiIpOwotCQkJcmV0dXJuIHJldHZhbDsKKwkJCXJldHVybiAwOwogCQl9CiAJCWJ1Zl9pZCAr
-PSAoaW50cl9jb3VudCAtIDEpOwogCQlidWZfaWQgPSBidWZfaWQgJSA0OwpAQCAtMjk4LDcgKzI5
-Nyw3IEBAIGludCBoYWRfcHJvY2Vzc19idWZmZXJfZG9uZShzdHJ1Y3Qgc25kX2kKCiAJaWYgKGhh
-ZF9nZXRfaHdzdGF0ZShpbnRlbGhhZGRhdGEpKSB7CiAJCXByX2VycigiSERNSSBjYWJsZSBwbHVn
-Z2VkLW91dFxuIik7Ci0JCXJldHVybiByZXR2YWw7CisJCXJldHVybiAwOwogCX0KCiAJLypSZXBy
-b2dyYW0gdGhlIHJlZ2lzdGVycyB3aXRoIGFkZHIgYW5kIGxlbmd0aCovCkBAIC0zMjIsMTIgKzMy
-MSwxMSBAQCBpbnQgaGFkX3Byb2Nlc3NfYnVmZmVyX2RvbmUoc3RydWN0IHNuZF9pCiAJCXN0cmVh
-bS0+cGVyaW9kX2VsYXBzZWQoc3RyZWFtLT5oYWRfc3Vic3RyZWFtKTsKIAl9CgotCXJldHVybiBy
-ZXR2YWw7CisJcmV0dXJuIDA7CiB9CgogaW50IGhhZF9wcm9jZXNzX2J1ZmZlcl91bmRlcnJ1bihz
-dHJ1Y3Qgc25kX2ludGVsaGFkICppbnRlbGhhZGRhdGEpCiB7Ci0JaW50IHJldHZhbCA9IDA7CiAJ
-ZW51bSBpbnRlbF9oYWRfYXVkX2J1Zl90eXBlIGJ1Zl9pZDsKIAlzdHJ1Y3QgcGNtX3N0cmVhbV9p
-bmZvICpzdHJlYW07CiAJc3RydWN0IGhhZF9wdnRfZGF0YSAqaGFkX3N0cmVhbTsKQEAgLTM1NSw3
-ICszNTMsNyBAQCBpbnQgaGFkX3Byb2Nlc3NfYnVmZmVyX3VuZGVycnVuKHN0cnVjdCBzCgogCWlm
-IChkcnZfc3RhdHVzID09IEhBRF9EUlZfRElTQ09OTkVDVEVEKSB7CiAJCXByX2VycigiJXM6RGV2
-aWNlIGFscmVhZHkgZGlzY29ubmVjdGVkXG4iLCBfX2Z1bmNfXyk7Ci0JCXJldHVybiByZXR2YWw7
-CisJCXJldHVybiAwOwogCX0KCiAJaWYgKHN0cmVhbV90eXBlID09IEhBRF9SVU5OSU5HX1NUUkVB
-TSkgewpAQCAtMzY0LDEyICszNjIsMTEgQEAgaW50IGhhZF9wcm9jZXNzX2J1ZmZlcl91bmRlcnJ1
-bihzdHJ1Y3QgcwogCQlzdHJlYW0tPnBlcmlvZF9lbGFwc2VkKHN0cmVhbS0+aGFkX3N1YnN0cmVh
-bSk7CiAJfQoKLQlyZXR1cm4gcmV0dmFsOworCXJldHVybiAwOwogfQoKIGludCBoYWRfcHJvY2Vz
-c19ob3RfcGx1ZyhzdHJ1Y3Qgc25kX2ludGVsaGFkICppbnRlbGhhZGRhdGEpCiB7Ci0JaW50IHJl
-dHZhbCA9IDA7CiAJZW51bSBpbnRlbF9oYWRfYXVkX2J1Zl90eXBlIGJ1Zl9pZDsKIAlzdHJ1Y3Qg
-c25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbTsKIAlzdHJ1Y3QgaGFkX3B2dF9kYXRhICpoYWRf
-c3RyZWFtOwpAQCAtMzg0LDcgKzM4MSw3IEBAIGludCBoYWRfcHJvY2Vzc19ob3RfcGx1ZyhzdHJ1
-Y3Qgc25kX2ludGUKIAlpZiAoaW50ZWxoYWRkYXRhLT5kcnZfc3RhdHVzID09IEhBRF9EUlZfQ09O
-TkVDVEVEKSB7CiAJCXByX2RlYnVnKCJEZXZpY2UgYWxyZWFkeSBjb25uZWN0ZWRcbiIpOwogCQlz
-cGluX3VubG9ja19pcnFyZXN0b3JlKCZpbnRlbGhhZGRhdGEtPmhhZF9zcGlubG9jaywgZmxhZ19p
-cnFzKTsKLQkJcmV0dXJuIHJldHZhbDsKKwkJcmV0dXJuIDA7CiAJfQogCWJ1Zl9pZCA9IGludGVs
-aGFkZGF0YS0+Y3Vycl9idWY7CiAJaW50ZWxoYWRkYXRhLT5idWZmX2RvbmUgPSBidWZfaWQ7CkBA
-IC00MjIsMTIgKzQxOSwxMiBAQCBpbnQgaGFkX3Byb2Nlc3NfaG90X3BsdWcoc3RydWN0IHNuZF9p
-bnRlCgogCWhhZF9idWlsZF9jaGFubmVsX2FsbG9jYXRpb25fbWFwKGludGVsaGFkZGF0YSk7Cgot
-CXJldHVybiByZXR2YWw7CisJcmV0dXJuIDA7CgogZXJyOgogCXBtX3J1bnRpbWVfZGlzYWJsZShp
-bnRlbGhhZGRhdGEtPmRldik7CiAJaW50ZWxoYWRkYXRhLT5kZXYgPSBOVUxMOwotCXJldHVybiBy
-ZXR2YWw7CisJcmV0dXJuIDA7CiB9CgogaW50IGhhZF9wcm9jZXNzX2hvdF91bnBsdWcoc3RydWN0
-IHNuZF9pbnRlbGhhZCAqaW50ZWxoYWRkYXRhKQpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0
-cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9pbnRlbC1nZngK
+Currently we are not disabling MEM_ENA on the error path, we should
+really do this to unwind the state back to how it was. This patch adds a
+clear of MEM_ENA on the error path, again there is no major issues
+caused by this minor fix.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/wm_adsp.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 822dfef..d151224 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -2473,7 +2473,7 @@ static void wm_adsp2_boot_work(struct work_struct *work)
+ 
+ 	ret = wm_adsp2_ena(dsp);
+ 	if (ret != 0)
+-		goto err_mutex;
++		goto err_mem;
+ 
+ 	ret = wm_adsp_load(dsp);
+ 	if (ret != 0)
+@@ -2507,6 +2507,9 @@ static void wm_adsp2_boot_work(struct work_struct *work)
+ err_ena:
+ 	regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
+ 			   ADSP2_SYS_ENA | ADSP2_CORE_ENA | ADSP2_START, 0);
++err_mem:
++	regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
++			   ADSP2_MEM_ENA, 0);
+ err_mutex:
+ 	mutex_unlock(&dsp->pwr_lock);
+ }
+-- 
+2.1.4
