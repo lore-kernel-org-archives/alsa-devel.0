@@ -1,84 +1,62 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [PATCH 2/7] MFD: add STM32 DFSDM support
-Date: Tue, 24 Jan 2017 09:30:27 +0100
-Message-ID: <283c0e48-55e2-6516-369d-91dc72d12f73@st.com>
-References: <1485189145-29576-1-git-send-email-arnaud.pouliquen@st.com>
- <1485189145-29576-3-git-send-email-arnaud.pouliquen@st.com>
- <20170124082249.GR16020@dell>
+From: "Anand, Jerome" <jerome.anand@intel.com>
+Subject: Re: [PATCH v4 2/5] drm/i915: Add support for audio
+ driver notifications
+Date: Tue, 24 Jan 2017 08:42:20 +0000
+Message-ID: <F6867404AABACB4D8EC371BF802A4B7C149608D9@fmsmsx101.amr.corp.intel.com>
+References: <20170120222232.27791-1-jerome.anand@intel.com>
+ <20170120222232.27791-3-jerome.anand@intel.com> <871svu82mt.fsf@intel.com>
+ <942a0a36-5d1b-030d-770b-f8bcb3122a4f@linux.intel.com>
+ <87bmuxdjs5.fsf@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20170124082249.GR16020@dell>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Rob Herring <robh+dt@kernel.org>, Jonathan Cameron <jic23@kernel.org>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Hartmut Knaack <knaack.h@gmx.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Alexandre TORGUE <alexandre.torgue@st.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <87bmuxdjs5.fsf@intel.com>
+Content-Language: en-US
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Jani Nikula <jani.nikula@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "broonie@kernel.org" <broonie@kernel.org>, "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Lee,
-
-On 01/24/2017 09:22 AM, Lee Jones wrote:
-> On Mon, 23 Jan 2017, Arnaud Pouliquen wrote:
-> 
->> DFSDM hardware IP can be used at the same time for ADC sigma delta
-> 
-> Same time as what?
-DFSDM is used for ADC acquisition (through IIO) but also PDM microphone
-capture (through ASOC).
-> 
->> conversion and audio PDM microphone.
->> MFD driver is in charge of configuring IP registers and managing IP clocks.
->> For this it exports an API to handles filters and channels resources.
-> 
-> This looks like an ADC driver?  What is it that makes it an MFD?
-Yes it a kind of ADC but that supports 2 features audio and iio.
-So it has to support 2 features based on 2 separate Frameworks.
-
-> 
->> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
->> ---
->>  drivers/mfd/Kconfig             |   11 +
->>  drivers/mfd/Makefile            |    2 +
->>  drivers/mfd/stm32-dfsdm-reg.h   |  220 +++++++++
->>  drivers/mfd/stm32-dfsdm.c       | 1044 +++++++++++++++++++++++++++++++++++++++
->>  include/linux/mfd/stm32-dfsdm.h |  324 ++++++++++++
->>  5 files changed, 1601 insertions(+)
->>  create mode 100644 drivers/mfd/stm32-dfsdm-reg.h
->>  create mode 100644 drivers/mfd/stm32-dfsdm.c
->>  create mode 100644 include/linux/mfd/stm32-dfsdm.h
->>
->> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
->> index c6df644..4bb660b 100644
->> --- a/drivers/mfd/Kconfig
->> +++ b/drivers/mfd/Kconfig
->> @@ -1607,6 +1607,17 @@ config MFD_STW481X
->>  	  in various ST Microelectronics and ST-Ericsson embedded
->>  	  Nomadik series.
->>  
->> +config MFD_STM32_DFSDM
->> +	tristate "ST Microelectronics STM32 DFSDM"
->> +	depends on (ARCH_STM32 && OF) || COMPILE_TEST
->> +	select MFD_CORE
->> +	select REGMAP
->> +	select REGMAP_MMIO
->> +	help
->> +	  Select this option to enable the STM32 Digital Filter
->> +	  for Sigma Delta Modulators (DFSDM) driver used
->> +	  in various STM32 series.
->> +
->>  menu "Multimedia Capabilities Port drivers"
->>  	depends on ARCH_SA1100
-> 
-> [...]
-> 
-
-Regards
-Arnaud
+Cgo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tCj4gRnJvbTogSmFuaSBOaWt1bGEgW21haWx0
+bzpqYW5pLm5pa3VsYUBsaW51eC5pbnRlbC5jb21dCj4gU2VudDogVHVlc2RheSwgSmFudWFyeSAy
+NCwgMjAxNyAxMjozMSBQTQo+IFRvOiBQaWVycmUtTG91aXMgQm9zc2FydCA8cGllcnJlLWxvdWlz
+LmJvc3NhcnRAbGludXguaW50ZWwuY29tPjsgQW5hbmQsCj4gSmVyb21lIDxqZXJvbWUuYW5hbmRA
+aW50ZWwuY29tPjsgaW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsgYWxzYS0KPiBkZXZl
+bEBhbHNhLXByb2plY3Qub3JnCj4gQ2M6IHRpd2FpQHN1c2UuZGU7IGJyb29uaWVAa2VybmVsLm9y
+ZzsgVWdocmVqYSwgUmFrZXNoIEEKPiA8cmFrZXNoLmEudWdocmVqYUBpbnRlbC5jb20+Cj4gU3Vi
+amVjdDogUmU6IFtJbnRlbC1nZnhdIFtQQVRDSCB2NCAyLzVdIGRybS9pOTE1OiBBZGQgc3VwcG9y
+dCBmb3IgYXVkaW8gZHJpdmVyCj4gbm90aWZpY2F0aW9ucwo+IAo+IE9uIE1vbiwgMjMgSmFuIDIw
+MTcsIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IDxwaWVycmUtCj4gbG91aXMuYm9zc2FydEBsaW51eC5p
+bnRlbC5jb20+IHdyb3RlOgo+ID4+PiAgI2luY2x1ZGUgPGRybS9kcm1QLmg+Cj4gPj4+IEBAIC02
+MzAsNiArNjMxLDEwIEBAIHZvaWQgaW50ZWxfYXVkaW9fY29kZWNfZW5hYmxlKHN0cnVjdAo+IGlu
+dGVsX2VuY29kZXIgKmludGVsX2VuY29kZXIsCj4gPj4+ICAJaWYgKGFjb21wICYmIGFjb21wLT5h
+dWRpb19vcHMgJiYgYWNvbXAtPmF1ZGlvX29wcy0KPiA+cGluX2VsZF9ub3RpZnkpCj4gPj4+ICAJ
+CWFjb21wLT5hdWRpb19vcHMtPnBpbl9lbGRfbm90aWZ5KGFjb21wLT5hdWRpb19vcHMtCj4gPmF1
+ZGlvX3B0ciwKPiA+Pj4gIAkJCQkJCSAoaW50KSBwb3J0LCAoaW50KSBwaXBlKTsKPiA+Pj4gKwo+
+ID4+PiArCWlmIChIQVNfTFBFX0FVRElPKGRldl9wcml2KSkKPiA+Pj4gKwkJaW50ZWxfbHBlX2F1
+ZGlvX25vdGlmeShkZXZfcHJpdiwgY29ubmVjdG9yLT5lbGQsIHBvcnQsCj4gPj4+ICsJCQljcnRj
+X3N0YXRlLT5wb3J0X2Nsb2NrKTsKPiA+Pgo+ID4+IFNlZW1zIHVubmVjZXNzYXJ5IHRvIGNoZWNr
+IGZvciBIQVNfTFBFX0FVRElPICh3aGljaCB5b3UnbGwgY2hhbmdlIHRvCj4gPj4gZGV2X3ByaXYt
+PmxwZV9hdWRpby5wbGF0ZGV2LCByaWdodCA7KSBib3RoIGluIHRoZSBjYWxsZXIgYW5kIGNhbGxl
+ZS4KPiA+PiBQaWNrIG9uZS4KPiA+Cj4gPiBJZiB3ZSB0ZXN0IGluc2lkZSBvZiB0aGUgZnVuY3Rp
+b24sIGl0J2QgbWVhbiBhbiB1bmNvbmRpdGlvbmFsIGp1bXAgdG8KPiA+IHRlc3QgYSBmZWF0dXJl
+IHRoYXQgZXhpc3RzIG9uIG9ubHkgdHdvIHBsYXRmb3JtcyBvdXQgb2YgdGhlIGRvemVuIG9yCj4g
+PiBzbyB0aGF0IHRoaXMgaTkxNSBkcml2ZXIgaGFuZGxlcy4gTm8gb2JqZWN0aW9uIHRvIGRvIHRo
+ZSBjaGFuZ2UgYnV0IGlzCj4gPiB0aGlzIHJlYWxseSBkZXNpcmVkPwo+IAo+ICpzaHJ1Zyogbm8g
+YmlnIGRlYWwgdG8gY2hlY2sgaW4gYm90aC4KPiAKClRoYW5rcyBmb3IgdGhlIGFjayBKYW5pLgpJ
+dCB3YXMgYWRkZWQgYmFzZWQgb24gb25lIHJldmlldyBjb21tZW50LiBJJ2xsIHJlbW92ZSBpdCBo
+ZXJlIGFuZCBoYXZlIHRoZSBjaGVjayBvbmx5IGluc2lkZSB0aGUgQVBJCgo+IEJSLAo+IEphbmku
+Cj4gCj4gPgo+ID4KPiAKPiAtLQo+IEphbmkgTmlrdWxhLCBJbnRlbCBPcGVuIFNvdXJjZSBUZWNo
+bm9sb2d5IENlbnRlcgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5v
+cmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1n
+ZngK
