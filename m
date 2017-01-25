@@ -1,207 +1,90 @@
-From: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Subject: [PATCH v4 2/2] ASoc: Add devictree bindings for CS35L35 CODEC
-Date: Wed, 25 Jan 2017 10:13:18 -0600
-Message-ID: <c3224f63-e5d1-4874-8317-c5df53d0207d@EX3.ad.cirrus.com>
-References: <1485360798-15523-1-git-send-email-brian.austin@cirrus.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: workqueue lockup due to process_unsol_events stuck in
+ azx_rirb_get_response
+Date: Wed, 25 Jan 2017 18:03:38 +0100
+Message-ID: <798b5572-f02b-e58d-9996-f3ecb4f15e1a@suse.cz>
+References: <855fe8a9-4167-e193-d3d1-45e9d39630b1@suse.cz>
+ <s5ha8afmbpu.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1485360798-15523-1-git-send-email-brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5ha8afmbpu.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add devicetree bindings documentatin for
-Cirrus Logic CS35L35 Boosted Amplifier
+On 01/25/2017 03:54 PM, Takashi Iwai wrote:
+> On Wed, 25 Jan 2017 13:28:11 +0100,
+> Vlastimil Babka wrote:
+>>
+>> Hi,
+>>
+>> my desktop randomly experiences workqueue lockups on boot with
+>> openSUSE Tumbleweed kernels 4.9.x, installed around
+>> Christmas. Previously I had a (badly maintained) Gentoo installation
+>> with 4.4 IIRC, so I can't say if the kernel has regressed, or the
+>> major userspace changes exposed different timing of stuff.
+>
+> If the lockup can be reproduced easily, could you check whether the
+> old kernel shows the issue?  I don't remember of any big changes in
+> ca0132 driver in 4.x kernels.  It'd be helpful even just checking
+> an openSUSE Leap 42.1 or 42.2 kernel.
+>
+>> This is how the workqueue lockup looks like:
+> (snip)
+>> kernel:  [<ffffffffc0c20501>] dspio_read+0x51/0x70 [snd_hda_codec_ca0132]
+>> kernel:  [<ffffffffc0c20566>] ca0132_process_dsp_response+0x46/0x160
+>> [snd_hda_codec_ca0132]
+>> kernel:  [<ffffffffc0c02fe5>] call_jack_callback.isra.1+0x25/0xa0 [snd_hda_codec]
+>> kernel:  [<ffffffffc0c033c6>] snd_hda_jack_unsol_event+0x66/0x80 [snd_hda_codec]
+>> kernel:  [<ffffffffc0bfd077>] hda_codec_unsol_event+0x17/0x20 [snd_hda_codec]
+>> kernel:  [<ffffffffc0b86193>] process_unsol_events+0x63/0x70 [snd_hda_core]
+>
+> This is the code path that runs when the codec chip (CA0132) receives
+> an unsolicited event with a specific tag (0x16).  It means the DSP
+> communication going.
 
-Signed-off-by: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
----
- .../devicetree/bindings/sound/cs35l35.txt          | 171 +++++++++++++++++++++
- 1 file changed, 171 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/cs35l35.txt
+Oh, so it is actually the unused Creative card after all. Wonder what "jack" 
+event it processes, since no jack is plugged in...
 
-diff --git a/Documentation/devicetree/bindings/sound/cs35l35.txt b/Documentation/devicetree/bindings/sound/cs35l35.txt
-new file mode 100644
-index 0000000..8a93b1b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/cs35l35.txt
-@@ -0,0 +1,171 @@
-+CS35L35 Speaker Amplifier
-+
-+Required properties:
-+
-+  - compatible : "cirrus,cs35l35"
-+
-+  - reg : the I2C address of the device for I2C
-+
-+  - VA-supply, VP-supply : power supplies for the device,
-+    as covered in
-+    Documentation/devicetree/bindings/regulator/regulator.txt.
-+
-+  - interrupt-parent : Specifies the phandle of the interrupt controller to
-+    which the IRQs from CS35L35 are delivered to.
-+  - interrupts : IRQ line info CS35L35.
-+    (See Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
-+    for further information relating to interrupt properties)
-+
-+Optional properties:
-+  - reset-gpios : gpio used to reset the amplifier
-+
-+  - cirrus,stereo-config : Boolean to determine if there are 2 AMPs for a
-+  Stereo configuration
-+
-+  - cirrus,audio-channel : Set Location of Audio Signal on Serial Port
-+  0 = Data Packet received on Left I2S Channel
-+  1 = Data Packet received on Right I2S Channel
-+
-+  - cirrus,advisory-channel : Set Location of Advisory Signal on Serial Port
-+  0 = Data Packet received on Left I2S Channel
-+  1 = Data Packet received on Right I2S Channel
-+
-+  - cirrus,shared-boost : Boolean to enable ClassH tracking of Advisory Signal
-+  if 2 Devices share Boost BST_CTL
-+
-+  - cirrus,sp-drv-strength : Value for setting the Serial Port drive strength
-+  Table 3-10 of the datasheet lists drive-strength specifications
-+  0 = 1x (Default)
-+  1 = .5x
-+
-+  - cirrus,bst-pdn-fet-on : Boolean to determine if the Boost PDN control
-+  powers down with a rectification FET On or Off. If VSPK is supplied
-+  externally then FET is off.
-+
-+  - cirrus,boost-ctl : Boost Converter control word.
-+  Step Size: 100
-+  0x00 = (Default) VP
-+  Range is 0x01...0x41
-+
-+  - cirrus,boost-ipk : Boost-converter peak current limit.
-+  Configures the peak current by monitoring the current through the boost FET.
-+  Step size: 112
-+  0x07 = (Default) 2.46 Amps
-+  Range is 0x00...0x19
-+
-+  - cirrus,amp-gain-zc : Boolean to determine if to use Amplifier gain-change
-+  zero-cross
-+
-+Optional H/G Algorithm sub-node:
-+
-+  The cs35l35 node can have a single "cirrus,classh-internal-algo" sub-node
-+  that will disable automatic control of the internal H/G Algorithm.
-+
-+  It is strongly recommended that the Datasheet be referenced when adjusting
-+  or using these Class H Algorithm controls over the internal Algorithm.
-+  Serious damage can occur to the Device and surrounding components.
-+
-+  - cirrus,classh-internal-algo : Sub-node for the Internal Class H Algorithm
-+  See Section 4.3 Internal Class H Algorithm in the Datasheet.
-+  If not used, the device manages the ClassH Algorithm internally.
-+
-+Optional properties for the "cirrus,classh-internal-algo" Sub-node
-+
-+  Section 7.29 Class H Control
-+  - cirrus,classh-bst-overide : Boolean
-+  - cirrus,classh-bst-max-limit
-+  - cirrus,classh-mem-depth
-+
-+  Section 7.30 Class H Headroom Control
-+  - cirrus,classh-headroom
-+
-+  Section 7.31 Class H Release Rate
-+  - cirrus,classh-release-rate
-+
-+  Section 7.32 Class H Weak FET Drive Control
-+  - cirrus,classh-wk-fet-disable
-+  - cirrus,classh-wk-fet-delay
-+  - cirrus,classh-wk-fet-thld
-+
-+  Section 7.34 Class H VP Control
-+  - cirrus,classh-vpch-auto
-+  - cirrus,classh-vpch-rate
-+  - cirrus,classh-vpch-man
-+
-+Optional Monitor Signal Format sub-node:
-+
-+  The cs35l35 node can have a single "cirrus,monitor-signal-format" sub-node
-+  for adjusting the Depth, Location and Frame of the Monitoring Signals
-+  for Algorithms.
-+
-+  See Sections 4.8.2 through 4.8.4 Serial-Port Control in the Datasheet
-+
-+  -cirrus,monitor-signal-format : Sub-node for the Monitor Signaling Formating
-+  on the I2S Port. Each of the 3 8 bit values in the array contain the settings
-+  for depth, location, and frame.
-+
-+  If not used, the defaults for the 6 monitor signals is used.
-+
-+  Sections 7.44 - 7.53 lists values for the depth, location, and frame
-+  for each monitoring signal.
-+
-+  - cirrus,imon : 3 8 bit values to set the depth, location, and frame
-+  of the IMON monitor signal.
-+
-+  - cirrus,vmon : 3 8 bit values to set the depth, location, and frame
-+  of the VMON monitor signal.
-+
-+  - cirrus,vpmon : 3 8 bit values to set the depth, location, and frame
-+  of the VPMON monitor signal.
-+
-+  - cirrus,vbstmon : 3 8 bit values to set the depth, location, and frame
-+  of the VBSTMON monitor signal
-+
-+  - cirrus,vpbrstat : 3 8 bit values to set the depth, location, and frame
-+  of the VPBRSTAT monitor signal
-+
-+  - cirrus,zerofill : 3 8 bit values to set the depth, location, and frame\
-+  of the ZEROFILL packet in the monitor signal
-+
-+Example:
-+
-+cs35l35: cs35l35@20 {
-+	compatible = "cirrus,cs35l35";
-+	reg = <0x20>;
-+	VA-supply = <&dummy_vreg>;
-+	VP-supply = <&dummy_vreg>;
-+	reset-gpios = <&axi_gpio 54 0>;
-+	interrupt-parent = <&gpio8>;
-+	interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
-+	cirrus,boost-ctl = <0x41>;
-+
-+	cirrus,stereo-config;
-+	cirrus,audio-channel = <0x00>;
-+	cirrus,advisory-channel = <0x01>;
-+	cirrus,shared-boost;
-+
-+	cirrus,classh-internal-algo {
-+		cirrus,classh-bst-overide;
-+		cirrus,classh-bst-max-limit = <0x01>;
-+		cirrus,classh-mem-depth = <0x01>;
-+		cirrus,classh-release-rate = <0x08>;
-+		cirrus,classh-headroom-millivolt = <0x0B>;
-+		cirrus,classh-wk-fet-disable = <0x01>;
-+		cirrus,classh-wk-fet-delay = <0x04>;
-+		cirrus,classh-wk-fet-thld = <0x01>;
-+		cirrus,classh-vpch-auto = <0x01>;
-+		cirrus,classh-vpch-rate = <0x02>;
-+		cirrus,classh-vpch-man = <0x05>;
-+	};
-+
-+	/* Depth, Location, Frame */
-+	cirrus,monitor-signal-format {
-+		cirrus,imon = /bits/ 8 <0x03 0x00 0x01>;
-+		cirrus,vmon = /bits/ 8 <0x03 0x00 0x00>;
-+		cirrus,vpmon = /bits/ 8 <0x03 0x04 0x00>;
-+		cirrus,vbstmon = /bits/ 8 <0x03 0x04 0x01>;
-+		cirrus,vpbrstat = /bits/ 8 <0x00 0x04 0x00>;
-+		cirrus,zerofill = /bits/ 8 <0x00 0x00 0x00>;
-+	};
-+
-+};
--- 
-1.9.1
+> Possibly the bug is due to the recursive runtime PM handling.  Could
+> you check the patch below?
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Hmm, so the issue didn't happen when rebooting with this patch on top of current 
+kernel-source stable branch (i.e. 4.9.5). But then I did a full poweroff by 
+mistake, and now I can't reproduce it even with the original kernel. Before the 
+poweroff it persisted over each reboot today, so perhaps the card was in some 
+specific state and now it's not... Might be also related to dual boot with Win10 
+and whatever its driver does to it and it persists over reboot? I'll keep using 
+the nonpatched kernel until I hit the problem again and then try to test the 
+patched kernel more times. Thanks so far!
+
+Vlastimil
+
+>
+> thanks,
+>
+> Takashi
+>
+> ---
+> diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+> --- a/sound/pci/hda/patch_ca0132.c
+> +++ b/sound/pci/hda/patch_ca0132.c
+> @@ -4417,12 +4417,14 @@ static void ca0132_process_dsp_response(struct hda_codec *codec,
+>  	struct ca0132_spec *spec = codec->spec;
+>
+>  	codec_dbg(codec, "ca0132_process_dsp_response\n");
+> +	snd_hda_power_up_pm(codec);
+>  	if (spec->wait_scp) {
+>  		if (dspio_get_response_data(codec) >= 0)
+>  			spec->wait_scp = 0;
+>  	}
+>
+>  	dspio_clear_response_queue(codec);
+> +	snd_hda_power_down_pm(codec);
+>  }
+>
+>  static void hp_callback(struct hda_codec *codec, struct hda_jack_callback *cb)
+>
