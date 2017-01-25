@@ -1,814 +1,167 @@
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: [PATCH v7 2/4] dmaengine: Forward slave device pointer to of_xlate
- callback
-Date: Wed, 25 Jan 2017 11:28:06 +0100
-Message-ID: <1485340088-25481-3-git-send-email-m.szyprowski@samsung.com>
-References: <1485340088-25481-1-git-send-email-m.szyprowski@samsung.com>
- <CGME20170125102824eucas1p1cf027184286131ff628eb7113c3f9e60@eucas1p1.samsung.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+Subject: workqueue lockup due to process_unsol_events stuck in
+ azx_rirb_get_response
+Date: Wed, 25 Jan 2017 13:28:11 +0100
+Message-ID: <855fe8a9-4167-e193-d3d1-45e9d39630b1@suse.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-reply-to: <1485340088-25481-1-git-send-email-m.szyprowski@samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-samsung-soc@vger.kernel.org, dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>, Krzysztof Kozlowski <krzk@kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Vinod Koul <vinod.koul@intel.com>, Ulf Hansson <ulf.hansson@linaro.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, Inki Dae <inki.dae@samsung.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add pointer to slave device to of_dma_xlate to let DMA engine driver
-to know which slave device is using given DMA channel. This will be
-later used to implement non-irq-safe runtime PM for DMA engine driver.
+Hi,
 
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/dma/amba-pl08x.c        |  2 +-
- drivers/dma/at_hdmac.c          |  4 ++--
- drivers/dma/at_xdmac.c          |  2 +-
- drivers/dma/bcm2835-dma.c       |  2 +-
- drivers/dma/coh901318.c         |  2 +-
- drivers/dma/cppi41.c            |  2 +-
- drivers/dma/dma-jz4780.c        |  2 +-
- drivers/dma/dmaengine.c         |  2 +-
- drivers/dma/dw/platform.c       |  2 +-
- drivers/dma/edma.c              |  4 ++--
- drivers/dma/fsl-edma.c          |  2 +-
- drivers/dma/img-mdc-dma.c       |  2 +-
- drivers/dma/imx-dma.c           |  2 +-
- drivers/dma/imx-sdma.c          |  2 +-
- drivers/dma/k3dma.c             |  2 +-
- drivers/dma/lpc18xx-dmamux.c    |  2 +-
- drivers/dma/mmp_pdma.c          |  2 +-
- drivers/dma/mmp_tdma.c          |  2 +-
- drivers/dma/moxart-dma.c        |  2 +-
- drivers/dma/mxs-dma.c           |  2 +-
- drivers/dma/nbpfaxi.c           |  2 +-
- drivers/dma/of-dma.c            | 19 ++++++++++++-------
- drivers/dma/pl330.c             |  3 ++-
- drivers/dma/pxa_dma.c           |  2 +-
- drivers/dma/qcom/bam_dma.c      |  2 +-
- drivers/dma/sh/rcar-dmac.c      |  2 +-
- drivers/dma/sh/shdma-of.c       |  2 +-
- drivers/dma/sh/usb-dmac.c       |  2 +-
- drivers/dma/sirf-dma.c          |  2 +-
- drivers/dma/st_fdma.c           |  2 +-
- drivers/dma/ste_dma40.c         |  2 +-
- drivers/dma/stm32-dma.c         |  2 +-
- drivers/dma/sun4i-dma.c         |  2 +-
- drivers/dma/sun6i-dma.c         |  2 +-
- drivers/dma/tegra20-apb-dma.c   |  2 +-
- drivers/dma/tegra210-adma.c     |  2 +-
- drivers/dma/xilinx/xilinx_dma.c |  2 +-
- drivers/dma/xilinx/zynqmp_dma.c |  2 +-
- drivers/dma/zx_dma.c            |  2 +-
- include/linux/of_dma.h          | 19 +++++++++++--------
- sound/soc/sh/rcar/dma.c         |  5 +++--
- sound/soc/sh/rcar/dvc.c         |  3 ++-
- sound/soc/sh/rcar/rsnd.h        |  3 ++-
- sound/soc/sh/rcar/src.c         |  3 ++-
- sound/soc/sh/rcar/ssi.c         |  3 ++-
- 45 files changed, 75 insertions(+), 61 deletions(-)
+my desktop randomly experiences workqueue lockups on boot with openSUSE 
+Tumbleweed kernels 4.9.x, installed around Christmas. Previously I had a (badly 
+maintained) Gentoo installation with 4.4 IIRC, so I can't say if the kernel has 
+regressed, or the major userspace changes exposed different timing of stuff.
 
-diff --git a/drivers/dma/amba-pl08x.c b/drivers/dma/amba-pl08x.c
-index 0b7c6ce629a6..194089c98755 100644
---- a/drivers/dma/amba-pl08x.c
-+++ b/drivers/dma/amba-pl08x.c
-@@ -2059,7 +2059,7 @@ static struct dma_chan *pl08x_find_chan_id(struct pl08x_driver_data *pl08x,
- }
- 
- static struct dma_chan *pl08x_of_xlate(struct of_phandle_args *dma_spec,
--				       struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct pl08x_driver_data *pl08x = ofdma->of_dma_data;
- 	struct dma_chan *dma_chan;
-diff --git a/drivers/dma/at_hdmac.c b/drivers/dma/at_hdmac.c
-index 1baf3404a365..b228b263ac0c 100644
---- a/drivers/dma/at_hdmac.c
-+++ b/drivers/dma/at_hdmac.c
-@@ -1788,7 +1788,7 @@ static bool at_dma_filter(struct dma_chan *chan, void *slave)
- }
- 
- static struct dma_chan *at_dma_xlate(struct of_phandle_args *dma_spec,
--				     struct of_dma *of_dma)
-+				    struct of_dma *of_dma, struct device *slave)
- {
- 	struct dma_chan *chan;
- 	struct at_dma_chan *atchan;
-@@ -1847,7 +1847,7 @@ static struct dma_chan *at_dma_xlate(struct of_phandle_args *dma_spec,
- }
- #else
- static struct dma_chan *at_dma_xlate(struct of_phandle_args *dma_spec,
--				     struct of_dma *of_dma)
-+				    struct of_dma *of_dma, struct device *slave)
- {
- 	return NULL;
- }
-diff --git a/drivers/dma/at_xdmac.c b/drivers/dma/at_xdmac.c
-index 7d4e0bcda9af..9ddd868c9b59 100644
---- a/drivers/dma/at_xdmac.c
-+++ b/drivers/dma/at_xdmac.c
-@@ -508,7 +508,7 @@ static inline void at_xdmac_increment_block_count(struct dma_chan *chan,
- }
- 
- static struct dma_chan *at_xdmac_xlate(struct of_phandle_args *dma_spec,
--				       struct of_dma *of_dma)
-+				    struct of_dma *of_dma, struct device *slave)
- {
- 	struct at_xdmac		*atxdmac = of_dma->of_dma_data;
- 	struct at_xdmac_chan	*atchan;
-diff --git a/drivers/dma/bcm2835-dma.c b/drivers/dma/bcm2835-dma.c
-index e18dc596cf24..e9c417ad2141 100644
---- a/drivers/dma/bcm2835-dma.c
-+++ b/drivers/dma/bcm2835-dma.c
-@@ -877,7 +877,7 @@ static void bcm2835_dma_free(struct bcm2835_dmadev *od)
- MODULE_DEVICE_TABLE(of, bcm2835_dma_of_match);
- 
- static struct dma_chan *bcm2835_dma_xlate(struct of_phandle_args *spec,
--					   struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct bcm2835_dmadev *d = ofdma->of_dma_data;
- 	struct dma_chan *chan;
-diff --git a/drivers/dma/coh901318.c b/drivers/dma/coh901318.c
-index 74794c9859f6..dbc4fb44f326 100644
---- a/drivers/dma/coh901318.c
-+++ b/drivers/dma/coh901318.c
-@@ -1779,7 +1779,7 @@ static bool coh901318_filter_base_and_id(struct dma_chan *chan, void *data)
- }
- 
- static struct dma_chan *coh901318_xlate(struct of_phandle_args *dma_spec,
--					struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct coh901318_filter_args args = {
- 		.base = ofdma->of_dma_data,
-diff --git a/drivers/dma/cppi41.c b/drivers/dma/cppi41.c
-index d5ba43a87a68..389a2278b6a0 100644
---- a/drivers/dma/cppi41.c
-+++ b/drivers/dma/cppi41.c
-@@ -932,7 +932,7 @@ static bool cpp41_dma_filter_fn(struct dma_chan *chan, void *param)
- };
- 
- static struct dma_chan *cppi41_dma_xlate(struct of_phandle_args *dma_spec,
--		struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	int count = dma_spec->args_count;
- 	struct of_dma_filter_info *info = ofdma->of_dma_data;
-diff --git a/drivers/dma/dma-jz4780.c b/drivers/dma/dma-jz4780.c
-index 7373b7a555ec..f65f71649898 100644
---- a/drivers/dma/dma-jz4780.c
-+++ b/drivers/dma/dma-jz4780.c
-@@ -707,7 +707,7 @@ static bool jz4780_dma_filter_fn(struct dma_chan *chan, void *param)
- }
- 
- static struct dma_chan *jz4780_of_dma_xlate(struct of_phandle_args *dma_spec,
--	struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct jz4780_dma_dev *jzdma = ofdma->of_dma_data;
- 	dma_cap_mask_t mask = jzdma->dma_device.cap_mask;
-diff --git a/drivers/dma/dmaengine.c b/drivers/dma/dmaengine.c
-index 24e0221fd66d..422444bd7ee1 100644
---- a/drivers/dma/dmaengine.c
-+++ b/drivers/dma/dmaengine.c
-@@ -708,7 +708,7 @@ struct dma_chan *dma_request_chan(struct device *dev, const char *name)
- 
- 	/* If device-tree is present get slave info from here */
- 	if (dev->of_node)
--		chan = of_dma_request_slave_channel(dev->of_node, name);
-+		chan = of_dma_request_slave_channel(dev, dev->of_node, name);
- 
- 	/* If device was enumerated by ACPI get slave info from here */
- 	if (has_acpi_companion(dev) && !chan)
-diff --git a/drivers/dma/dw/platform.c b/drivers/dma/dw/platform.c
-index b1655e40cfa2..1eb8a31b6775 100644
---- a/drivers/dma/dw/platform.c
-+++ b/drivers/dma/dw/platform.c
-@@ -29,7 +29,7 @@
- #define DRV_NAME	"dw_dmac"
- 
- static struct dma_chan *dw_dma_of_xlate(struct of_phandle_args *dma_spec,
--					struct of_dma *ofdma)
-+				 struct of_dma *ofdma, struct device *slave_dev)
- {
- 	struct dw_dma *dw = ofdma->of_dma_data;
- 	struct dw_dma_slave slave = {
-diff --git a/drivers/dma/edma.c b/drivers/dma/edma.c
-index 3879f80a4815..d2e7d893d984 100644
---- a/drivers/dma/edma.c
-+++ b/drivers/dma/edma.c
-@@ -2117,7 +2117,7 @@ static struct edma_soc_info *edma_setup_info_from_dt(struct device *dev,
- }
- 
- static struct dma_chan *of_edma_xlate(struct of_phandle_args *dma_spec,
--				      struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct edma_cc *ecc = ofdma->of_dma_data;
- 	struct dma_chan *chan = NULL;
-@@ -2161,7 +2161,7 @@ static struct edma_soc_info *edma_setup_info_from_dt(struct device *dev,
- }
- 
- static struct dma_chan *of_edma_xlate(struct of_phandle_args *dma_spec,
--				      struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	return NULL;
- }
-diff --git a/drivers/dma/fsl-edma.c b/drivers/dma/fsl-edma.c
-index 6775f2c74e25..915aa8182204 100644
---- a/drivers/dma/fsl-edma.c
-+++ b/drivers/dma/fsl-edma.c
-@@ -750,7 +750,7 @@ static void fsl_edma_issue_pending(struct dma_chan *chan)
- }
- 
- static struct dma_chan *fsl_edma_xlate(struct of_phandle_args *dma_spec,
--		struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct fsl_edma_engine *fsl_edma = ofdma->of_dma_data;
- 	struct dma_chan *chan, *_chan;
-diff --git a/drivers/dma/img-mdc-dma.c b/drivers/dma/img-mdc-dma.c
-index 54db1411ce73..9a969cbdd384 100644
---- a/drivers/dma/img-mdc-dma.c
-+++ b/drivers/dma/img-mdc-dma.c
-@@ -793,7 +793,7 @@ static irqreturn_t mdc_chan_irq(int irq, void *dev_id)
- }
- 
- static struct dma_chan *mdc_of_xlate(struct of_phandle_args *dma_spec,
--				     struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct mdc_dma *mdma = ofdma->of_dma_data;
- 	struct dma_chan *chan;
-diff --git a/drivers/dma/imx-dma.c b/drivers/dma/imx-dma.c
-index ab0fb804fb1e..b145babe366b 100644
---- a/drivers/dma/imx-dma.c
-+++ b/drivers/dma/imx-dma.c
-@@ -1032,7 +1032,7 @@ static bool imxdma_filter_fn(struct dma_chan *chan, void *param)
- }
- 
- static struct dma_chan *imxdma_xlate(struct of_phandle_args *dma_spec,
--						struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	int count = dma_spec->args_count;
- 	struct imxdma_engine *imxdma = ofdma->of_dma_data;
-diff --git a/drivers/dma/imx-sdma.c b/drivers/dma/imx-sdma.c
-index d1651a50c349..7c3cdb378f98 100644
---- a/drivers/dma/imx-sdma.c
-+++ b/drivers/dma/imx-sdma.c
-@@ -1659,7 +1659,7 @@ static bool sdma_filter_fn(struct dma_chan *chan, void *fn_param)
- }
- 
- static struct dma_chan *sdma_xlate(struct of_phandle_args *dma_spec,
--				   struct of_dma *ofdma)
-+				   struct of_dma *ofdma, struct device *slave)
- {
- 	struct sdma_engine *sdma = ofdma->of_dma_data;
- 	dma_cap_mask_t mask = sdma->dma_device.cap_mask;
-diff --git a/drivers/dma/k3dma.c b/drivers/dma/k3dma.c
-index 01e25c68dd5a..dd0e7fe9e54a 100644
---- a/drivers/dma/k3dma.c
-+++ b/drivers/dma/k3dma.c
-@@ -786,7 +786,7 @@ static int k3_dma_transfer_resume(struct dma_chan *chan)
- MODULE_DEVICE_TABLE(of, k3_pdma_dt_ids);
- 
- static struct dma_chan *k3_of_dma_simple_xlate(struct of_phandle_args *dma_spec,
--						struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct k3_dma_dev *d = ofdma->of_dma_data;
- 	unsigned int request = dma_spec->args[0];
-diff --git a/drivers/dma/lpc18xx-dmamux.c b/drivers/dma/lpc18xx-dmamux.c
-index 761f32687055..e730bcc8d92e 100644
---- a/drivers/dma/lpc18xx-dmamux.c
-+++ b/drivers/dma/lpc18xx-dmamux.c
-@@ -53,7 +53,7 @@ static void lpc18xx_dmamux_free(struct device *dev, void *route_data)
- }
- 
- static void *lpc18xx_dmamux_reserve(struct of_phandle_args *dma_spec,
--				    struct of_dma *ofdma)
-+				    struct of_dma *ofdma, struct device *slave)
- {
- 	struct platform_device *pdev = of_find_device_by_node(ofdma->of_node);
- 	struct lpc18xx_dmamux_data *dmamux = platform_get_drvdata(pdev);
-diff --git a/drivers/dma/mmp_pdma.c b/drivers/dma/mmp_pdma.c
-index eb3a1f42ab06..569ec8f1ccee 100644
---- a/drivers/dma/mmp_pdma.c
-+++ b/drivers/dma/mmp_pdma.c
-@@ -993,7 +993,7 @@ static int mmp_pdma_chan_init(struct mmp_pdma_device *pdev, int idx, int irq)
- MODULE_DEVICE_TABLE(of, mmp_pdma_dt_ids);
- 
- static struct dma_chan *mmp_pdma_dma_xlate(struct of_phandle_args *dma_spec,
--					   struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct mmp_pdma_device *d = ofdma->of_dma_data;
- 	struct dma_chan *chan;
-diff --git a/drivers/dma/mmp_tdma.c b/drivers/dma/mmp_tdma.c
-index 13c68b6434ce..ca56e73797c9 100644
---- a/drivers/dma/mmp_tdma.c
-+++ b/drivers/dma/mmp_tdma.c
-@@ -591,7 +591,7 @@ static bool mmp_tdma_filter_fn(struct dma_chan *chan, void *fn_param)
- }
- 
- static struct dma_chan *mmp_tdma_xlate(struct of_phandle_args *dma_spec,
--			       struct of_dma *ofdma)
-+			       struct of_dma *ofdma, struct device *slave)
- {
- 	struct mmp_tdma_device *tdev = ofdma->of_dma_data;
- 	dma_cap_mask_t mask = tdev->device.cap_mask;
-diff --git a/drivers/dma/moxart-dma.c b/drivers/dma/moxart-dma.c
-index e1a5c2242f6f..d7c32a3c1bac 100644
---- a/drivers/dma/moxart-dma.c
-+++ b/drivers/dma/moxart-dma.c
-@@ -330,7 +330,7 @@ static struct dma_async_tx_descriptor *moxart_prep_slave_sg(
- }
- 
- static struct dma_chan *moxart_of_xlate(struct of_phandle_args *dma_spec,
--					struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct moxart_dmadev *mdc = ofdma->of_dma_data;
- 	struct dma_chan *chan;
-diff --git a/drivers/dma/mxs-dma.c b/drivers/dma/mxs-dma.c
-index e217268c7098..3cc0e6b99f13 100644
---- a/drivers/dma/mxs-dma.c
-+++ b/drivers/dma/mxs-dma.c
-@@ -747,7 +747,7 @@ static bool mxs_dma_filter_fn(struct dma_chan *chan, void *fn_param)
- }
- 
- static struct dma_chan *mxs_dma_xlate(struct of_phandle_args *dma_spec,
--			       struct of_dma *ofdma)
-+			       struct of_dma *ofdma, struct device *slave)
- {
- 	struct mxs_dma_engine *mxs_dma = ofdma->of_dma_data;
- 	dma_cap_mask_t mask = mxs_dma->dma_device.cap_mask;
-diff --git a/drivers/dma/nbpfaxi.c b/drivers/dma/nbpfaxi.c
-index 3f45b9bdf201..cb6a981beacd 100644
---- a/drivers/dma/nbpfaxi.c
-+++ b/drivers/dma/nbpfaxi.c
-@@ -1096,7 +1096,7 @@ static void nbpf_free_chan_resources(struct dma_chan *dchan)
- }
- 
- static struct dma_chan *nbpf_of_xlate(struct of_phandle_args *dma_spec,
--				      struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct nbpf_device *nbpf = ofdma->of_dma_data;
- 	struct dma_chan *dchan;
-diff --git a/drivers/dma/of-dma.c b/drivers/dma/of-dma.c
-index faae0bfe1109..febcb339c672 100644
---- a/drivers/dma/of-dma.c
-+++ b/drivers/dma/of-dma.c
-@@ -54,7 +54,8 @@ static struct of_dma *of_dma_find_controller(struct of_phandle_args *dma_spec)
-  * to request channel from the real DMA controller.
-  */
- static struct dma_chan *of_dma_router_xlate(struct of_phandle_args *dma_spec,
--					    struct of_dma *ofdma)
-+					    struct of_dma *ofdma,
-+					    struct device *slave)
- {
- 	struct dma_chan		*chan;
- 	struct of_dma		*ofdma_target;
-@@ -71,7 +72,8 @@ static struct dma_chan *of_dma_router_xlate(struct of_phandle_args *dma_spec,
- 	if (!ofdma_target)
- 		return NULL;
- 
--	chan = ofdma_target->of_dma_xlate(&dma_spec_target, ofdma_target);
-+	chan = ofdma_target->of_dma_xlate(&dma_spec_target, ofdma_target,
-+					  slave);
- 	if (chan) {
- 		chan->router = ofdma->dma_router;
- 		chan->route_data = route_data;
-@@ -103,7 +105,8 @@ static struct dma_chan *of_dma_router_xlate(struct of_phandle_args *dma_spec,
-  */
- int of_dma_controller_register(struct device_node *np,
- 				struct dma_chan *(*of_dma_xlate)
--				(struct of_phandle_args *, struct of_dma *),
-+				(struct of_phandle_args *, struct of_dma *,
-+				 struct device *),
- 				void *data)
- {
- 	struct of_dma	*ofdma;
-@@ -229,12 +232,14 @@ static int of_dma_match_channel(struct device_node *np, const char *name,
- 
- /**
-  * of_dma_request_slave_channel - Get the DMA slave channel
-+ * @slave:	device to get DMA request from
-  * @np:		device node to get DMA request from
-  * @name:	name of desired channel
-  *
-  * Returns pointer to appropriate DMA channel on success or an error pointer.
-  */
--struct dma_chan *of_dma_request_slave_channel(struct device_node *np,
-+struct dma_chan *of_dma_request_slave_channel(struct device *slave,
-+					      struct device_node *np,
- 					      const char *name)
- {
- 	struct of_phandle_args	dma_spec;
-@@ -275,7 +280,7 @@ struct dma_chan *of_dma_request_slave_channel(struct device_node *np,
- 		ofdma = of_dma_find_controller(&dma_spec);
- 
- 		if (ofdma) {
--			chan = ofdma->of_dma_xlate(&dma_spec, ofdma);
-+			chan = ofdma->of_dma_xlate(&dma_spec, ofdma, slave);
- 		} else {
- 			ret_no_channel = -EPROBE_DEFER;
- 			chan = NULL;
-@@ -305,7 +310,7 @@ struct dma_chan *of_dma_request_slave_channel(struct device_node *np,
-  * pointer to appropriate dma channel on success or NULL on error.
-  */
- struct dma_chan *of_dma_simple_xlate(struct of_phandle_args *dma_spec,
--						struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	int count = dma_spec->args_count;
- 	struct of_dma_filter_info *info = ofdma->of_dma_data;
-@@ -335,7 +340,7 @@ struct dma_chan *of_dma_simple_xlate(struct of_phandle_args *dma_spec,
-  * Returns pointer to appropriate dma channel on success or NULL on error.
-  */
- struct dma_chan *of_dma_xlate_by_chan_id(struct of_phandle_args *dma_spec,
--					 struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct dma_device *dev = ofdma->of_dma_data;
- 	struct dma_chan *chan, *candidate = NULL;
-diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c
-index 78be12b45a45..b6b2cc912380 100644
---- a/drivers/dma/pl330.c
-+++ b/drivers/dma/pl330.c
-@@ -2076,7 +2076,8 @@ static void pl330_tasklet(unsigned long data)
- }
- 
- static struct dma_chan *of_dma_pl330_xlate(struct of_phandle_args *dma_spec,
--						struct of_dma *ofdma)
-+					   struct of_dma *ofdma,
-+					   struct device *slave)
- {
- 	int count = dma_spec->args_count;
- 	struct pl330_dmac *pl330 = ofdma->of_dma_data;
-diff --git a/drivers/dma/pxa_dma.c b/drivers/dma/pxa_dma.c
-index b53fb618bbf6..434764b43d68 100644
---- a/drivers/dma/pxa_dma.c
-+++ b/drivers/dma/pxa_dma.c
-@@ -1336,7 +1336,7 @@ static int pxad_init_phys(struct platform_device *op,
- MODULE_DEVICE_TABLE(of, pxad_dt_ids);
- 
- static struct dma_chan *pxad_dma_xlate(struct of_phandle_args *dma_spec,
--					   struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct pxad_device *d = ofdma->of_dma_data;
- 	struct dma_chan *chan;
-diff --git a/drivers/dma/qcom/bam_dma.c b/drivers/dma/qcom/bam_dma.c
-index 03c4eb3fd314..7ff3075c0702 100644
---- a/drivers/dma/qcom/bam_dma.c
-+++ b/drivers/dma/qcom/bam_dma.c
-@@ -1049,7 +1049,7 @@ static void bam_dma_free_desc(struct virt_dma_desc *vd)
- }
- 
- static struct dma_chan *bam_dma_xlate(struct of_phandle_args *dma_spec,
--		struct of_dma *of)
-+				      struct of_dma *of, struct device *slave)
- {
- 	struct bam_device *bdev = container_of(of->of_dma_data,
- 					struct bam_device, common);
-diff --git a/drivers/dma/sh/rcar-dmac.c b/drivers/dma/sh/rcar-dmac.c
-index 4c357d475465..c450235ff51c 100644
---- a/drivers/dma/sh/rcar-dmac.c
-+++ b/drivers/dma/sh/rcar-dmac.c
-@@ -1560,7 +1560,7 @@ static bool rcar_dmac_chan_filter(struct dma_chan *chan, void *arg)
- }
- 
- static struct dma_chan *rcar_dmac_of_xlate(struct of_phandle_args *dma_spec,
--					   struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct rcar_dmac_chan *rchan;
- 	struct dma_chan *chan;
-diff --git a/drivers/dma/sh/shdma-of.c b/drivers/dma/sh/shdma-of.c
-index f999f9b0d314..9953be99627b 100644
---- a/drivers/dma/sh/shdma-of.c
-+++ b/drivers/dma/sh/shdma-of.c
-@@ -20,7 +20,7 @@
- #define to_shdma_chan(c) container_of(c, struct shdma_chan, dma_chan)
- 
- static struct dma_chan *shdma_of_xlate(struct of_phandle_args *dma_spec,
--				       struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	u32 id = dma_spec->args[0];
- 	dma_cap_mask_t mask;
-diff --git a/drivers/dma/sh/usb-dmac.c b/drivers/dma/sh/usb-dmac.c
-index 72c649713ace..0f06a9468df9 100644
---- a/drivers/dma/sh/usb-dmac.c
-+++ b/drivers/dma/sh/usb-dmac.c
-@@ -650,7 +650,7 @@ static bool usb_dmac_chan_filter(struct dma_chan *chan, void *arg)
- }
- 
- static struct dma_chan *usb_dmac_of_xlate(struct of_phandle_args *dma_spec,
--					  struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct dma_chan *chan;
- 	dma_cap_mask_t mask;
-diff --git a/drivers/dma/sirf-dma.c b/drivers/dma/sirf-dma.c
-index a0733ac3edb1..ed6f07b0d758 100644
---- a/drivers/dma/sirf-dma.c
-+++ b/drivers/dma/sirf-dma.c
-@@ -826,7 +826,7 @@ bool sirfsoc_dma_filter_id(struct dma_chan *chan, void *chan_id)
- 	BIT(DMA_SLAVE_BUSWIDTH_8_BYTES))
- 
- static struct dma_chan *of_dma_sirfsoc_xlate(struct of_phandle_args *dma_spec,
--	struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct sirfsoc_dma *sdma = ofdma->of_dma_data;
- 	unsigned int request = dma_spec->args[0];
-diff --git a/drivers/dma/st_fdma.c b/drivers/dma/st_fdma.c
-index bfb79bd0c6de..6a92a6505419 100644
---- a/drivers/dma/st_fdma.c
-+++ b/drivers/dma/st_fdma.c
-@@ -167,7 +167,7 @@ static irqreturn_t st_fdma_irq_handler(int irq, void *dev_id)
- }
- 
- static struct dma_chan *st_fdma_of_xlate(struct of_phandle_args *dma_spec,
--					 struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct st_fdma_dev *fdev = ofdma->of_dma_data;
- 	struct dma_chan *chan;
-diff --git a/drivers/dma/ste_dma40.c b/drivers/dma/ste_dma40.c
-index a6620b671d1d..9fade9209d93 100644
---- a/drivers/dma/ste_dma40.c
-+++ b/drivers/dma/ste_dma40.c
-@@ -2334,7 +2334,7 @@ static void d40_set_prio_realtime(struct d40_chan *d40c)
- #define D40_DT_FLAGS_HIGH_PRIO(flags)  ((flags >> 4) & 0x1)
- 
- static struct dma_chan *d40_xlate(struct of_phandle_args *dma_spec,
--				  struct of_dma *ofdma)
-+				  struct of_dma *ofdma, struct device *slave)
- {
- 	struct stedma40_chan_cfg cfg;
- 	dma_cap_mask_t cap;
-diff --git a/drivers/dma/stm32-dma.c b/drivers/dma/stm32-dma.c
-index 49f86cabcfec..495a4f5c5c26 100644
---- a/drivers/dma/stm32-dma.c
-+++ b/drivers/dma/stm32-dma.c
-@@ -980,7 +980,7 @@ static void stm32_dma_set_config(struct stm32_dma_chan *chan,
- }
- 
- static struct dma_chan *stm32_dma_of_xlate(struct of_phandle_args *dma_spec,
--					   struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct stm32_dma_device *dmadev = ofdma->of_dma_data;
- 	struct device *dev = dmadev->ddev.dev;
-diff --git a/drivers/dma/sun4i-dma.c b/drivers/dma/sun4i-dma.c
-index 57aa227bfadb..c1a076334abf 100644
---- a/drivers/dma/sun4i-dma.c
-+++ b/drivers/dma/sun4i-dma.c
-@@ -909,7 +909,7 @@ static int sun4i_dma_config(struct dma_chan *chan,
- }
- 
- static struct dma_chan *sun4i_dma_of_xlate(struct of_phandle_args *dma_spec,
--					   struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct sun4i_dma_dev *priv = ofdma->of_dma_data;
- 	struct sun4i_dma_vchan *vchan;
-diff --git a/drivers/dma/sun6i-dma.c b/drivers/dma/sun6i-dma.c
-index a2358780ab2c..240e4a95913a 100644
---- a/drivers/dma/sun6i-dma.c
-+++ b/drivers/dma/sun6i-dma.c
-@@ -930,7 +930,7 @@ static void sun6i_dma_free_chan_resources(struct dma_chan *chan)
- }
- 
- static struct dma_chan *sun6i_dma_of_xlate(struct of_phandle_args *dma_spec,
--					   struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct sun6i_dma_dev *sdev = ofdma->of_dma_data;
- 	struct sun6i_vchan *vchan;
-diff --git a/drivers/dma/tegra20-apb-dma.c b/drivers/dma/tegra20-apb-dma.c
-index 3722b9d8d9fe..e0eb5813fcf5 100644
---- a/drivers/dma/tegra20-apb-dma.c
-+++ b/drivers/dma/tegra20-apb-dma.c
-@@ -1239,7 +1239,7 @@ static void tegra_dma_free_chan_resources(struct dma_chan *dc)
- }
- 
- static struct dma_chan *tegra_dma_of_xlate(struct of_phandle_args *dma_spec,
--					   struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct tegra_dma *tdma = ofdma->of_dma_data;
- 	struct dma_chan *chan;
-diff --git a/drivers/dma/tegra210-adma.c b/drivers/dma/tegra210-adma.c
-index b10cbaa82ff5..525af32132ac 100644
---- a/drivers/dma/tegra210-adma.c
-+++ b/drivers/dma/tegra210-adma.c
-@@ -605,7 +605,7 @@ static void tegra_adma_free_chan_resources(struct dma_chan *dc)
- }
- 
- static struct dma_chan *tegra_dma_of_xlate(struct of_phandle_args *dma_spec,
--					   struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct tegra_adma *tdma = ofdma->of_dma_data;
- 	struct tegra_adma_chan *tdc;
-diff --git a/drivers/dma/xilinx/xilinx_dma.c b/drivers/dma/xilinx/xilinx_dma.c
-index 8288fe4d17c3..69cdfc39edb2 100644
---- a/drivers/dma/xilinx/xilinx_dma.c
-+++ b/drivers/dma/xilinx/xilinx_dma.c
-@@ -2461,7 +2461,7 @@ static int xilinx_dma_child_probe(struct xilinx_dma_device *xdev,
-  * Return: DMA channel pointer on success and NULL on error
-  */
- static struct dma_chan *of_dma_xilinx_xlate(struct of_phandle_args *dma_spec,
--						struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct xilinx_dma_device *xdev = ofdma->of_dma_data;
- 	int chan_id = dma_spec->args[0];
-diff --git a/drivers/dma/xilinx/zynqmp_dma.c b/drivers/dma/xilinx/zynqmp_dma.c
-index 6d221e5c72ee..6aa133c514f1 100644
---- a/drivers/dma/xilinx/zynqmp_dma.c
-+++ b/drivers/dma/xilinx/zynqmp_dma.c
-@@ -1040,7 +1040,7 @@ static int zynqmp_dma_chan_probe(struct zynqmp_dma_device *zdev,
-  * Return: DMA channel pointer on success and NULL on error
-  */
- static struct dma_chan *of_zynqmp_dma_xlate(struct of_phandle_args *dma_spec,
--					    struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct zynqmp_dma_device *zdev = ofdma->of_dma_data;
- 
-diff --git a/drivers/dma/zx_dma.c b/drivers/dma/zx_dma.c
-index 42ff3e66c1e1..6e050dbe5f26 100644
---- a/drivers/dma/zx_dma.c
-+++ b/drivers/dma/zx_dma.c
-@@ -732,7 +732,7 @@ static void zx_dma_free_desc(struct virt_dma_desc *vd)
- MODULE_DEVICE_TABLE(of, zx6702_dma_dt_ids);
- 
- static struct dma_chan *zx_of_dma_simple_xlate(struct of_phandle_args *dma_spec,
--					       struct of_dma *ofdma)
-+				     struct of_dma *ofdma, struct device *slave)
- {
- 	struct zx_dma_dev *d = ofdma->of_dma_data;
- 	unsigned int request = dma_spec->args[0];
-diff --git a/include/linux/of_dma.h b/include/linux/of_dma.h
-index b90d8ec57c1f..233558f91f93 100644
---- a/include/linux/of_dma.h
-+++ b/include/linux/of_dma.h
-@@ -22,7 +22,8 @@ struct of_dma {
- 	struct list_head	of_dma_controllers;
- 	struct device_node	*of_node;
- 	struct dma_chan		*(*of_dma_xlate)
--				(struct of_phandle_args *, struct of_dma *);
-+				(struct of_phandle_args *, struct of_dma *,
-+				 struct device *);
- 	void			*(*of_dma_route_allocate)
- 				(struct of_phandle_args *, struct of_dma *);
- 	struct dma_router	*dma_router;
-@@ -37,7 +38,7 @@ struct of_dma_filter_info {
- #ifdef CONFIG_DMA_OF
- extern int of_dma_controller_register(struct device_node *np,
- 		struct dma_chan *(*of_dma_xlate)
--		(struct of_phandle_args *, struct of_dma *),
-+		(struct of_phandle_args *, struct of_dma *, struct device *),
- 		void *data);
- extern void of_dma_controller_free(struct device_node *np);
- 
-@@ -47,17 +48,18 @@ extern int of_dma_router_register(struct device_node *np,
- 		struct dma_router *dma_router);
- #define of_dma_router_free of_dma_controller_free
- 
--extern struct dma_chan *of_dma_request_slave_channel(struct device_node *np,
-+extern struct dma_chan *of_dma_request_slave_channel(struct device *slave,
-+						     struct device_node *np,
- 						     const char *name);
- extern struct dma_chan *of_dma_simple_xlate(struct of_phandle_args *dma_spec,
--		struct of_dma *ofdma);
-+		struct of_dma *ofdma, struct device *slave);
- extern struct dma_chan *of_dma_xlate_by_chan_id(struct of_phandle_args *dma_spec,
--		struct of_dma *ofdma);
-+		struct of_dma *ofdma, struct device *slave);
- 
- #else
- static inline int of_dma_controller_register(struct device_node *np,
- 		struct dma_chan *(*of_dma_xlate)
--		(struct of_phandle_args *, struct of_dma *),
-+		(struct of_phandle_args *, struct of_dma *, struct device *),
- 		void *data)
- {
- 	return -ENODEV;
-@@ -77,14 +79,15 @@ static inline int of_dma_router_register(struct device_node *np,
- 
- #define of_dma_router_free of_dma_controller_free
- 
--static inline struct dma_chan *of_dma_request_slave_channel(struct device_node *np,
-+static inline struct dma_chan *of_dma_request_slave_channel(struct device *slave,
-+						     struct device_node *np,
- 						     const char *name)
- {
- 	return ERR_PTR(-ENODEV);
- }
- 
- static inline struct dma_chan *of_dma_simple_xlate(struct of_phandle_args *dma_spec,
--		struct of_dma *ofdma)
-+		struct of_dma *ofdma, struct device *slave)
- {
- 	return NULL;
- }
-diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index 1f405c833867..a59855ddc160 100644
---- a/sound/soc/sh/rcar/dma.c
-+++ b/sound/soc/sh/rcar/dma.c
-@@ -302,7 +302,8 @@ static int rsnd_dmaen_start(struct rsnd_mod *mod,
- 	return 0;
- }
- 
--struct dma_chan *rsnd_dma_request_channel(struct device_node *of_node,
-+struct dma_chan *rsnd_dma_request_channel(struct device *slave,
-+					  struct device_node *of_node,
- 					  struct rsnd_mod *mod, char *name)
- {
- 	struct dma_chan *chan = NULL;
-@@ -311,7 +312,7 @@ struct dma_chan *rsnd_dma_request_channel(struct device_node *of_node,
- 
- 	for_each_child_of_node(of_node, np) {
- 		if (i == rsnd_mod_id(mod) && (!chan))
--			chan = of_dma_request_slave_channel(np, name);
-+			chan = of_dma_request_slave_channel(slave, np, name);
- 		i++;
- 	}
- 
-diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
-index cf8f59cdd8d7..817f73071622 100644
---- a/sound/soc/sh/rcar/dvc.c
-+++ b/sound/soc/sh/rcar/dvc.c
-@@ -323,8 +323,9 @@ static struct dma_chan *rsnd_dvc_dma_req(struct rsnd_dai_stream *io,
- 					 struct rsnd_mod *mod)
- {
- 	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
-+	struct device *dev = rsnd_priv_to_dev(priv);
- 
--	return rsnd_dma_request_channel(rsnd_dvc_of_node(priv),
-+	return rsnd_dma_request_channel(dev, rsnd_dvc_of_node(priv),
- 					mod, "tx");
- }
- 
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 7410ec0174db..b108b0e41906 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -211,7 +211,8 @@ void rsnd_bset(struct rsnd_priv *priv, struct rsnd_mod *mod, enum rsnd_reg reg,
- int rsnd_dma_attach(struct rsnd_dai_stream *io,
- 		    struct rsnd_mod *mod, struct rsnd_mod **dma_mod);
- int rsnd_dma_probe(struct rsnd_priv *priv);
--struct dma_chan *rsnd_dma_request_channel(struct device_node *of_node,
-+struct dma_chan *rsnd_dma_request_channel(struct device *slave,
-+					  struct device_node *of_node,
- 					  struct rsnd_mod *mod, char *name);
- 
- /*
-diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index 3a8f65bd1bf9..4f446afb1c4a 100644
---- a/sound/soc/sh/rcar/src.c
-+++ b/sound/soc/sh/rcar/src.c
-@@ -85,9 +85,10 @@ static struct dma_chan *rsnd_src_dma_req(struct rsnd_dai_stream *io,
- 					 struct rsnd_mod *mod)
- {
- 	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
-+	struct device *dev = rsnd_priv_to_dev(priv);
- 	int is_play = rsnd_io_is_play(io);
- 
--	return rsnd_dma_request_channel(rsnd_src_of_node(priv),
-+	return rsnd_dma_request_channel(dev, rsnd_src_of_node(priv),
- 					mod,
- 					is_play ? "rx" : "tx");
- }
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 411bda2387ad..d12d87119b7f 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -732,6 +732,7 @@ static struct dma_chan *rsnd_ssi_dma_req(struct rsnd_dai_stream *io,
- 					 struct rsnd_mod *mod)
- {
- 	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
-+	struct device *dev = rsnd_priv_to_dev(priv);
- 	int is_play = rsnd_io_is_play(io);
- 	char *name;
- 
-@@ -740,7 +741,7 @@ static struct dma_chan *rsnd_ssi_dma_req(struct rsnd_dai_stream *io,
- 	else
- 		name = is_play ? "rx" : "tx";
- 
--	return rsnd_dma_request_channel(rsnd_ssi_of_node(priv),
-+	return rsnd_dma_request_channel(dev, rsnd_ssi_of_node(priv),
- 					mod, name);
- }
- 
--- 
-1.9.1
+This is how the workqueue lockup looks like:
+
+kernel: BUG: workqueue lockup - pool cpus=3 node=0 flags=0x0 nice=0 stuck for 173s!
+kernel: Showing busy workqueues and worker pools:
+kernel: workqueue events: flags=0x0
+kernel:   pwq 6: cpus=3 node=0 flags=0x0 nice=0 active=9/256
+kernel:     in-flight: 60:process_unsol_events [snd_hda_core] 
+process_unsol_events [snd_hda_core]
+kernel:     pending: dbs_work_handler, push_to_pool, vmstat_shepherd, 
+cache_reap, console_callback, sysrq_reinject_alt_sysrq, check_corrup
+kernel: workqueue events_power_efficient: flags=0x80
+kernel:   pwq 6: cpus=3 node=0 flags=0x0 nice=0 active=1/256
+kernel:     pending: neigh_periodic_work
+kernel: workqueue lru-add-drain: flags=0x8
+kernel:   pwq 6: cpus=3 node=0 flags=0x0 nice=0 active=1/256
+kernel:     pending: lru_add_drain_per_cpu BAR(1161)
+kernel: workqueue vmstat: flags=0xc
+kernel:   pwq 6: cpus=3 node=0 flags=0x0 nice=0 active=1/256
+kernel:     pending: vmstat_update
+kernel: workqueue ipv6_addrconf: flags=0x40008
+kernel:   pwq 6: cpus=3 node=0 flags=0x0 nice=0 active=1/1
+kernel:     pending: addrconf_verify_work
+kernel: pool 6: cpus=3 node=0 flags=0x0 nice=0 hung=173s workers=4 idle: 134 373 30
+
+This prevented me from getting a login prompt, as systemd is waiting for wicked. 
+I have used sysrq to list the stuck tasks:
+
+kernel: sysrq: SysRq : Show Blocked State
+kernel:   task                        PC stack   pid father
+kernel: wickedd-nanny   D    0  1161      1 0x00000000
+kernel:  ffff9f88e3ebc000 0000000000000000 ffff9f88e3506040 ffff9f88efd59780
+kernel:  ffff9f883ee90100 ffffb2dc81117d28 ffffffffa9715ff6 ffff9f88efd59780
+kernel:  00ffb2dc81117d20 ffff9f88efd59780 ffff9f88def44000 ffff9f88e3506040
+kernel: Call Trace:
+kernel:  [<ffffffffa9715ff6>] ? __schedule+0x236/0x700
+kernel:  [<ffffffffa97164fd>] schedule+0x3d/0x90
+kernel:  [<ffffffffa971984e>] schedule_timeout+0x22e/0x410
+kernel:  [<ffffffffa90ab6e8>] ? finish_task_switch+0x78/0x1f0
+kernel:  [<ffffffffa90af94a>] ? try_to_wake_up+0x4a/0x3d0
+kernel:  [<ffffffffa9717837>] wait_for_completion+0x97/0x100
+kernel:  [<ffffffffa90afd70>] ? wake_up_q+0x80/0x80
+kernel:  [<ffffffffa909d747>] flush_work+0xf7/0x190
+kernel:  [<ffffffffa909b370>] ? flush_workqueue_prep_pwqs+0x1a0/0x1a0
+kernel:  [<ffffffffa91b4191>] lru_add_drain_all+0x121/0x160
+kernel:  [<ffffffffa91ddc15>] do_mlock+0x45/0x230
+kernel:  [<ffffffffa91ddf33>] SyS_mlock+0x13/0x20
+kernel:  [<ffffffffa971b47b>] entry_SYSCALL_64_fastpath+0x1e/0xad
+
+Yep, stuck waiting for work item completion, but workqueue processing on cpu 3 
+is stuck (and contains such item).
+
+Then I listed backtraces of all active CPU's:
+
+kernel: sysrq: SysRq : Show backtrace of all active CPUs
+kernel: NMI backtrace for cpu 3
+kernel: CPU: 3 PID: 60 Comm: kworker/3:1 Not tainted 4.9.3-1-default #1
+kernel: Hardware name: Gigabyte Technology Co., Ltd. GA-870A-UD3/GA-870A-UD3, 
+BIOS F5 08/01/2011
+kernel: Workqueue: events process_unsol_events [snd_hda_core]
+kernel:  ffff9f88efcc3a90 ffffffffa93c4f70 0000000000000000 0000000000000003
+kernel:  ffff9f88efcc3ac0 ffffffffa93c8e44 ffffffffa9055c80 0000000000000003
+kernel:  0000000000000001 ffffffffa9cc43c0 ffff9f88efcc3ae0 ffffffffa93c8f66
+kernel: Call Trace:
+kernel:  <IRQ>
+kernel:  [<ffffffffa93c4f70>] dump_stack+0x63/0x83
+kernel:  [<ffffffffa93c8e44>] nmi_cpu_backtrace+0x94/0xa0
+kernel:  [<ffffffffa9055c80>] ? irq_force_complete_move+0x150/0x150
+kernel:  [<ffffffffa93c8f66>] nmi_trigger_cpumask_backtrace+0x116/0x150
+kernel:  [<ffffffffa9055cf9>] arch_trigger_cpumask_backtrace+0x19/0x20
+kernel:  [<ffffffffa94ce877>] sysrq_handle_showallcpus+0x17/0x20
+kernel:  [<ffffffffa94cef1b>] __handle_sysrq+0xfb/0x150
+[ snip keyboard event processing ]
+kernel:  [<ffffffffa903128d>] handle_irq+0x1d/0x30
+kernel:  [<ffffffffa971ddab>] do_IRQ+0x4b/0xd0
+kernel:  [<ffffffffa971be02>] common_interrupt+0x82/0x82
+kernel:  <EOI>
+kernel:  [<ffffffffa93d1ef3>] ? delay_tsc+0x43/0x90
+kernel:  [<ffffffffa93d1e2d>] __const_udelay+0x2d/0x30
+kernel:  [<ffffffffc0c08403>] azx_rirb_get_response+0xb3/0x280 [snd_hda_codec]
+kernel:  [<ffffffffc0c08b43>] azx_get_response+0x33/0x40 [snd_hda_codec]
+kernel:  [<ffffffffc0b86303>] snd_hdac_bus_exec_verb_unlocked+0x83/0x170 
+[snd_hda_core]
+kernel:  [<ffffffffa952e85c>] ? __pm_runtime_resume+0x4c/0x60
+kernel:  [<ffffffffc0bfe4fa>] codec_exec_verb+0x8a/0x110 [snd_hda_codec]
+kernel:  [<ffffffffc0b86f97>] snd_hdac_exec_verb+0x17/0x40 [snd_hda_core]
+kernel:  [<ffffffffc0b87944>] snd_hdac_codec_read+0x34/0x50 [snd_hda_core]
+kernel:  [<ffffffffc0c20501>] dspio_read+0x51/0x70 [snd_hda_codec_ca0132]
+kernel:  [<ffffffffc0c20566>] ca0132_process_dsp_response+0x46/0x160 
+[snd_hda_codec_ca0132]
+kernel:  [<ffffffffc0c02fe5>] call_jack_callback.isra.1+0x25/0xa0 [snd_hda_codec]
+kernel:  [<ffffffffc0c033c6>] snd_hda_jack_unsol_event+0x66/0x80 [snd_hda_codec]
+kernel:  [<ffffffffc0bfd077>] hda_codec_unsol_event+0x17/0x20 [snd_hda_codec]
+kernel:  [<ffffffffc0b86193>] process_unsol_events+0x63/0x70 [snd_hda_core]
+kernel:  [<ffffffffa909e4d3>] process_one_work+0x1f3/0x4d0
+kernel:  [<ffffffffa909e7f8>] worker_thread+0x48/0x4e0
+kernel:  [<ffffffffa909e7b0>] ? process_one_work+0x4d0/0x4d0
+kernel:  [<ffffffffa909e7b0>] ? process_one_work+0x4d0/0x4d0
+kernel:  [<ffffffffa90a46da>] kthread+0xca/0xe0
+kernel:  [<ffffffffa90a4610>] ? kthread_park+0x60/0x60
+kernel:  [<ffffffffa971b6f5>] ret_from_fork+0x25/0x30
+
+This backtrace looks stable on multiple retries. I've rebooted and added 
+module_blacklist=snd_hda_core on the command line to work around this for now. 
+Here's the relevant lspci. The card I use right now is an onboard audio with 3 
+output jacks for 5.1. The Creative Audigy is currently unused, as should be the 
+HDMI stuff.
+
+00:14.2 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] SBx00 Azalia (Intel 
+HDA) (rev 40)
+         Subsystem: Gigabyte Technology Co., Ltd Device a102
+         Flags: bus master, slow devsel, latency 32, IRQ 7, NUMA node 0
+         Memory at fe024000 (64-bit, non-prefetchable) [size=16K]
+         Capabilities: [50] Power Management version 2
+         Kernel modules: snd_hda_intel
+
+01:00.1 Audio device: Advanced Micro Devices, Inc. [AMD/ATI] Cape Verde/Pitcairn 
+HDMI Audio [Radeon HD 7700/7800 Series]
+         Subsystem: PC Partner Limited / Sapphire Technology Device aab0
+         Flags: bus master, fast devsel, latency 0, IRQ 10, NUMA node 0
+         Memory at fd4fc000 (64-bit, non-prefetchable) [size=16K]
+         Capabilities: [48] Vendor Specific Information: Len=08 <?>
+         Capabilities: [50] Power Management version 3
+         Capabilities: [58] Express Legacy Endpoint, MSI 00
+         Capabilities: [a0] MSI: Enable- Count=1/1 Maskable- 64bit+
+         Capabilities: [100] Vendor Specific Information: ID=0001 Rev=1 Len=010 <?>
+         Capabilities: [150] Advanced Error Reporting
+         Kernel modules: snd_hda_intel
+
+02:00.0 Audio device: Creative Labs Sound Core3D [Sound Blaster Recon3D / 
+Z-Series] (rev 01)
+         Subsystem: Creative Labs SB1570 SB Audigy Fx
+         Flags: bus master, fast devsel, latency 0, IRQ 10, NUMA node 0
+         Memory at fd3fc000 (64-bit, non-prefetchable) [size=16K]
+         Memory at fd3f8000 (64-bit, non-prefetchable) [size=16K]
+         Capabilities: [40] Power Management version 3
+         Capabilities: [50] MSI: Enable- Count=1/1 Maskable+ 64bit+
+         Capabilities: [70] Express Endpoint, MSI 00
+         Capabilities: [100] Advanced Error Reporting
+         Capabilities: [140] Virtual Channel
+         Capabilities: [170] Device Serial Number 00-00-00-00-00-00-00-00
+         Capabilities: [180] Power Budgeting <?>
+         Kernel modules: snd_hda_intel
+
+Let me know what else to dump or try.
+Thanks,
+Vlastimil
