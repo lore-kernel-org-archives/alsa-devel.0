@@ -1,81 +1,145 @@
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH v7 2/4] dmaengine: Forward slave device pointer to of_xlate
- callback
-Date: Thu, 26 Jan 2017 15:43:05 +0100
-Message-ID: <49c9c23d-ff0a-268a-5edd-931e04eb98b5@samsung.com>
-References: <1485340088-25481-1-git-send-email-m.szyprowski@samsung.com>
- <CGME20170125102824eucas1p1cf027184286131ff628eb7113c3f9e60@eucas1p1.samsung.com>
- <1485340088-25481-3-git-send-email-m.szyprowski@samsung.com>
- <26397455-1237-2a66-acf8-215aacc7c9ce@metafoo.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-In-reply-to: <26397455-1237-2a66-acf8-215aacc7c9ce@metafoo.de>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Lars-Peter Clausen <lars@metafoo.de>, linux-samsung-soc@vger.kernel.org, dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzk@kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Vinod Koul <vinod.koul@intel.com>, Ulf Hansson <ulf.hansson@linaro.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, Inki Dae <inki.dae@samsung.com>
+From: Bhumika Goyal <bhumirks@gmail.com>
+Subject: [PATCH] sound: pci: cs46xx: constify snd_pcm_ops structures
+Date: Thu, 26 Jan 2017 20:23:29 +0530
+Message-ID: <1485442409-2962-1-git-send-email-bhumirks@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: julia.lawall@lip6.fr, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Lars,
+Declare snd_pcm_ops structures as const as they are either stored in the
+ops field of a snd_pcm_substream structure or passed as an argument to the
+function snd_pcm_set_ops. The function argument and the ops field 
+are of type const, so snd_pcm_ops structures having this property 
+can be made const too.
 
-On 2017-01-25 14:12, Lars-Peter Clausen wrote:
-> On 01/25/2017 11:28 AM, Marek Szyprowski wrote:
->> Add pointer to slave device to of_dma_xlate to let DMA engine driver
->> to know which slave device is using given DMA channel. This will be
->> later used to implement non-irq-safe runtime PM for DMA engine driver.
-> of_dma_xlate() is used to translate from a OF phandle and a specifier to a
-> DMA channel. On one hand this does not necessarily mean that the channel is
-> actually going to be used by the slave that called the xlate function.
-> Modifying the driver state when a lookup of the channel is done is a
-> layering violation. And this approach is also missing a way to disassociate
-> a slave from a DMA channel, e.g. when it is no longer used.
->
-> On the other hand there are other mechanisms to translate between some kind
-> of firmware handle to a DMA channel which are completely ignored here.
->
-> So this approach does not work. This is something that needs to be done at
-> the dmaengine level, not a the firmware resource translation level. And it
-> needs a matching method that is called when the channel is disassociated
-> from a device, when the device no longer uses the DMA channel.
+File size before: sound/pci/cs46xx/cs46xx_lib.o
+   text	   data	    bss	    dec	    hex	filename
+  13669	   1712	      0	  15381	   3c15	sound/pci/cs46xx/cs46xx_lib.o
 
-Frankly I agree that of_dma_xlate() should only return the requested channel
-to the dmaengine core and do not do any modification in the the driver 
-state.
+File size after: sound/pci/cs46xx/cs46xx_lib.o
+   text	   data	    bss	    dec	    hex	filename
+  14181	   1216	      0	  15397	   3c25	sound/pci/cs46xx/cs46xx_lib.o
 
-However the current dma engine design and implementation breaks this rule.
-Please check the drivers - how do they implement of_xlate callback. They
-usually call dma_get_any_slave_channel, dma_get_slave_channel or
-__dma_request_channel there, which in turn calls dma_chan_get, which then
-calls back to device_alloc_chan_resources callback. Some of the drivers also
-do a hardware configuration or other resource allocation in of_xlate.
-This is a bit messy design and leave no place in the core to set slave 
-device
-before device_alloc_chan_resources callback, where one would expect to have
-it already set.
+Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+---
+ sound/pci/cs46xx/cs46xx_lib.c | 38 +++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
-The best place to add new calls to the dmaengine drivers to set slave device
-would be just before device_alloc_chan_resources(), what in turn means that
-the current dmaengine core should do in dma_chan_get(). This would 
-require to
-forward the slave device pointer via even more layers including the of_xlate
-callback too. IMHO this is not worth the effort.
-
-DMA engine core and API definitely needs some cleanup. During such cleanup
-the slave device pointer might be moved out of xlate into separate callback
-when the core gets ready for such operation.
-
-I ignored other paths for other firmware handle to a DMA channel translation
-mechanism because for the current pl330 driver they are simply not used. I
-assume that if one needs to implement similar things for drivers relying on
-them, he will update the respective DMA engine core parts.
-
-Slave device assignments can be cleared in device_chan_release_resources if
-this is needed and that what existing DMA engine drivers do with the 
-resources
-allocated in the of_xlate callback...
-
-Best regards
+diff --git a/sound/pci/cs46xx/cs46xx_lib.c b/sound/pci/cs46xx/cs46xx_lib.c
+index fde3cd4..5d012f5 100644
+--- a/sound/pci/cs46xx/cs46xx_lib.c
++++ b/sound/pci/cs46xx/cs46xx_lib.c
+@@ -72,18 +72,18 @@
+ static void amp_voyetra(struct snd_cs46xx *chip, int change);
+ 
+ #ifdef CONFIG_SND_CS46XX_NEW_DSP
+-static struct snd_pcm_ops snd_cs46xx_playback_rear_ops;
+-static struct snd_pcm_ops snd_cs46xx_playback_indirect_rear_ops;
+-static struct snd_pcm_ops snd_cs46xx_playback_clfe_ops;
+-static struct snd_pcm_ops snd_cs46xx_playback_indirect_clfe_ops;
+-static struct snd_pcm_ops snd_cs46xx_playback_iec958_ops;
+-static struct snd_pcm_ops snd_cs46xx_playback_indirect_iec958_ops;
++static const struct snd_pcm_ops snd_cs46xx_playback_rear_ops;
++static const struct snd_pcm_ops snd_cs46xx_playback_indirect_rear_ops;
++static const struct snd_pcm_ops snd_cs46xx_playback_clfe_ops;
++static const struct snd_pcm_ops snd_cs46xx_playback_indirect_clfe_ops;
++static const struct snd_pcm_ops snd_cs46xx_playback_iec958_ops;
++static const struct snd_pcm_ops snd_cs46xx_playback_indirect_iec958_ops;
+ #endif
+ 
+-static struct snd_pcm_ops snd_cs46xx_playback_ops;
+-static struct snd_pcm_ops snd_cs46xx_playback_indirect_ops;
+-static struct snd_pcm_ops snd_cs46xx_capture_ops;
+-static struct snd_pcm_ops snd_cs46xx_capture_indirect_ops;
++static const struct snd_pcm_ops snd_cs46xx_playback_ops;
++static const struct snd_pcm_ops snd_cs46xx_playback_indirect_ops;
++static const struct snd_pcm_ops snd_cs46xx_capture_ops;
++static const struct snd_pcm_ops snd_cs46xx_capture_indirect_ops;
+ 
+ static unsigned short snd_cs46xx_codec_read(struct snd_cs46xx *chip,
+ 					    unsigned short reg,
+@@ -1665,7 +1665,7 @@ static struct snd_pcm_ops snd_cs46xx_playback_rear_ops = {
+ 	.pointer =		snd_cs46xx_playback_direct_pointer,
+ };
+ 
+-static struct snd_pcm_ops snd_cs46xx_playback_indirect_rear_ops = {
++static const struct snd_pcm_ops snd_cs46xx_playback_indirect_rear_ops = {
+ 	.open =			snd_cs46xx_playback_open_rear,
+ 	.close =		snd_cs46xx_playback_close,
+ 	.ioctl =		snd_pcm_lib_ioctl,
+@@ -1677,7 +1677,7 @@ static struct snd_pcm_ops snd_cs46xx_playback_indirect_rear_ops = {
+ 	.ack =			snd_cs46xx_playback_transfer,
+ };
+ 
+-static struct snd_pcm_ops snd_cs46xx_playback_clfe_ops = {
++static const struct snd_pcm_ops snd_cs46xx_playback_clfe_ops = {
+ 	.open =			snd_cs46xx_playback_open_clfe,
+ 	.close =		snd_cs46xx_playback_close,
+ 	.ioctl =		snd_pcm_lib_ioctl,
+@@ -1688,7 +1688,7 @@ static struct snd_pcm_ops snd_cs46xx_playback_clfe_ops = {
+ 	.pointer =		snd_cs46xx_playback_direct_pointer,
+ };
+ 
+-static struct snd_pcm_ops snd_cs46xx_playback_indirect_clfe_ops = {
++static const struct snd_pcm_ops snd_cs46xx_playback_indirect_clfe_ops = {
+ 	.open =			snd_cs46xx_playback_open_clfe,
+ 	.close =		snd_cs46xx_playback_close,
+ 	.ioctl =		snd_pcm_lib_ioctl,
+@@ -1700,7 +1700,7 @@ static struct snd_pcm_ops snd_cs46xx_playback_indirect_clfe_ops = {
+ 	.ack =			snd_cs46xx_playback_transfer,
+ };
+ 
+-static struct snd_pcm_ops snd_cs46xx_playback_iec958_ops = {
++static const struct snd_pcm_ops snd_cs46xx_playback_iec958_ops = {
+ 	.open =			snd_cs46xx_playback_open_iec958,
+ 	.close =		snd_cs46xx_playback_close_iec958,
+ 	.ioctl =		snd_pcm_lib_ioctl,
+@@ -1711,7 +1711,7 @@ static struct snd_pcm_ops snd_cs46xx_playback_iec958_ops = {
+ 	.pointer =		snd_cs46xx_playback_direct_pointer,
+ };
+ 
+-static struct snd_pcm_ops snd_cs46xx_playback_indirect_iec958_ops = {
++static const struct snd_pcm_ops snd_cs46xx_playback_indirect_iec958_ops = {
+ 	.open =			snd_cs46xx_playback_open_iec958,
+ 	.close =		snd_cs46xx_playback_close_iec958,
+ 	.ioctl =		snd_pcm_lib_ioctl,
+@@ -1725,7 +1725,7 @@ static struct snd_pcm_ops snd_cs46xx_playback_indirect_iec958_ops = {
+ 
+ #endif
+ 
+-static struct snd_pcm_ops snd_cs46xx_playback_ops = {
++static const struct snd_pcm_ops snd_cs46xx_playback_ops = {
+ 	.open =			snd_cs46xx_playback_open,
+ 	.close =		snd_cs46xx_playback_close,
+ 	.ioctl =		snd_pcm_lib_ioctl,
+@@ -1736,7 +1736,7 @@ static struct snd_pcm_ops snd_cs46xx_playback_ops = {
+ 	.pointer =		snd_cs46xx_playback_direct_pointer,
+ };
+ 
+-static struct snd_pcm_ops snd_cs46xx_playback_indirect_ops = {
++static const struct snd_pcm_ops snd_cs46xx_playback_indirect_ops = {
+ 	.open =			snd_cs46xx_playback_open,
+ 	.close =		snd_cs46xx_playback_close,
+ 	.ioctl =		snd_pcm_lib_ioctl,
+@@ -1748,7 +1748,7 @@ static struct snd_pcm_ops snd_cs46xx_playback_indirect_ops = {
+ 	.ack =			snd_cs46xx_playback_transfer,
+ };
+ 
+-static struct snd_pcm_ops snd_cs46xx_capture_ops = {
++static const struct snd_pcm_ops snd_cs46xx_capture_ops = {
+ 	.open =			snd_cs46xx_capture_open,
+ 	.close =		snd_cs46xx_capture_close,
+ 	.ioctl =		snd_pcm_lib_ioctl,
+@@ -1759,7 +1759,7 @@ static struct snd_pcm_ops snd_cs46xx_capture_ops = {
+ 	.pointer =		snd_cs46xx_capture_direct_pointer,
+ };
+ 
+-static struct snd_pcm_ops snd_cs46xx_capture_indirect_ops = {
++static const struct snd_pcm_ops snd_cs46xx_capture_indirect_ops = {
+ 	.open =			snd_cs46xx_capture_open,
+ 	.close =		snd_cs46xx_capture_close,
+ 	.ioctl =		snd_pcm_lib_ioctl,
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+2.7.4
