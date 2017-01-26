@@ -1,13 +1,13 @@
 From: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
-Subject: [PATCH v2 7/9] dmaengine: sun6i: allow build on ARM64
- platforms (sun50i)
-Date: Thu, 26 Jan 2017 23:48:57 +0800
-Message-ID: <20170126154859.55855-8-icenowy@aosc.xyz>
+Subject: [PATCH v2 8/9] ASoC: sunxi: allow the analog codec
+ driver to be built on ARM64
+Date: Thu, 26 Jan 2017 23:48:58 +0800
+Message-ID: <20170126154859.55855-9-icenowy@aosc.xyz>
 References: <20170126154859.55855-1-icenowy@aosc.xyz>
 Reply-To: icenowy-ymACFijhrKM@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCZLPFN5Q4OBBZNWVDCAKGQE7K5U2EA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCZLPFN5Q4OBB65WVDCAKGQE7YQQEUQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 In-Reply-To: <20170126154859.55855-1-icenowy-ymACFijhrKM@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
@@ -20,28 +20,29 @@ To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.o
 Cc: linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-As 64-bot Allwinner H5 SoC has the same DMA engine with H3, the DMA
-driver should be allowed to be built for ARM64, in order to make it work on H5.
+As the 64-bit Allwinner H5 SoC has the same analog codec part (also the
+same digital part) as H3, enable the driver to be built on ARM64
+Allwinner platform, so that it can be used on H5.
 
 Signed-off-by: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
 ---
-New patch in v2, as H3 codec support is added between v1 and v2.
+New patch in v2.
 
- drivers/dma/Kconfig | 2 +-
+ sound/soc/sunxi/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-index 0d6a96ee9fc7..d01d59812cf3 100644
---- a/drivers/dma/Kconfig
-+++ b/drivers/dma/Kconfig
-@@ -157,7 +157,7 @@ config DMA_SUN4I
+diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
+index 6c344e16aca4..49b71719c9b9 100644
+--- a/sound/soc/sunxi/Kconfig
++++ b/sound/soc/sunxi/Kconfig
+@@ -11,7 +11,7 @@ config SND_SUN4I_CODEC
  
- config DMA_SUN6I
- 	tristate "Allwinner A31 SoCs DMA support"
--	depends on MACH_SUN6I || MACH_SUN8I || COMPILE_TEST
-+	depends on MACH_SUN6I || MACH_SUN8I || (ARM64 && ARCH_SUNXI) || COMPILE_TEST
- 	depends on RESET_CONTROLLER
- 	select DMA_ENGINE
- 	select DMA_VIRTUAL_CHANNELS
+ config SND_SUN8I_CODEC_ANALOG
+ 	tristate "Allwinner sun8i Codec Analog Controls Support"
+-	depends on MACH_SUN8I || COMPILE_TEST
++	depends on MACH_SUN8I || (ARM64 && ARCH_SUNXI) || COMPILE_TEST
+ 	select REGMAP
+ 	help
+ 	  Say Y or M if you want to add support for the analog controls for
 -- 
 2.11.0
