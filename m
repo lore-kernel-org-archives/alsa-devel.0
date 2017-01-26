@@ -1,145 +1,54 @@
-From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH] sound: pci: cs46xx: constify snd_pcm_ops structures
-Date: Thu, 26 Jan 2017 20:23:29 +0530
-Message-ID: <1485442409-2962-1-git-send-email-bhumirks@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: julia.lawall@lip6.fr, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Bhumika Goyal <bhumirks@gmail.com>
+From: =?UTF-8?B?SsO2cmcgTcO8bGxlcg==?= <joerg.mueller7744@gmail.com>
+Subject: [Alsa-Devel] Cannot combine audio devices with more
+	than 64 channels
+Date: Thu, 26 Jan 2017 15:14:41 +0100
+Message-ID: <CAKw=HF0hbhxJ1YGjukjFr72xtEh2FjtH6k0Bh+rFcMwejgwcUg@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f66.google.com (mail-oi0-f66.google.com
+ [209.85.218.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id D6F162676C6
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2017 15:14:42 +0100 (CET)
+Received: by mail-oi0-f66.google.com with SMTP id w144so18383704oiw.1
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2017 06:14:42 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Declare snd_pcm_ops structures as const as they are either stored in the
-ops field of a snd_pcm_substream structure or passed as an argument to the
-function snd_pcm_set_ops. The function argument and the ops field 
-are of type const, so snd_pcm_ops structures having this property 
-can be made const too.
+I need to combine two HDSPe MADI FX cards to one virtual device. I
+have a working driver, which is alsa-compatible. I can select each
+single card in any alsa-compatible application and all channels work
+flawless.
+For combining the MADI FX cards to one virtual device, I created an
+.asoundrc with 194 inputs for each card. When I start that virtual
+device via
+jackd -R -d alsa -C madifx_record_all -P madifx_playback_all
 
-File size before: sound/pci/cs46xx/cs46xx_lib.o
-   text	   data	    bss	    dec	    hex	filename
-  13669	   1712	      0	  15381	   3c15	sound/pci/cs46xx/cs46xx_lib.o
+I get this error:
+> creating alsa driver ...
+> madifx_playback_all|madifx_record_all|1024|2|48000|0|0|nomon|swmeter|-|32bit
+> jackd: pcm_multi.c:1060: snd_pcm_multi_open: Assertion `!slave_map[sidxs[i]][schannels[i]]' failed.
 
-File size after: sound/pci/cs46xx/cs46xx_lib.o
-   text	   data	    bss	    dec	    hex	filename
-  14181	   1216	      0	  15397	   3c25	sound/pci/cs46xx/cs46xx_lib.o
+However, it works when I reduce the amount from 194 to 64 channels per
+card. I tried to use 128 channels per card, but that fails the same
+way. See my alsa-info here http://pastebin.com/4hq1B3wZ , which also
+includes the .asoundrc content.
 
-Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
----
- sound/pci/cs46xx/cs46xx_lib.c | 38 +++++++++++++++++++-------------------
- 1 file changed, 19 insertions(+), 19 deletions(-)
+I also found this, which might be related:
+https://ccrma.stanford.edu/mirrors/lalists/lad/2005/06/0202.html
 
-diff --git a/sound/pci/cs46xx/cs46xx_lib.c b/sound/pci/cs46xx/cs46xx_lib.c
-index fde3cd4..5d012f5 100644
---- a/sound/pci/cs46xx/cs46xx_lib.c
-+++ b/sound/pci/cs46xx/cs46xx_lib.c
-@@ -72,18 +72,18 @@
- static void amp_voyetra(struct snd_cs46xx *chip, int change);
- 
- #ifdef CONFIG_SND_CS46XX_NEW_DSP
--static struct snd_pcm_ops snd_cs46xx_playback_rear_ops;
--static struct snd_pcm_ops snd_cs46xx_playback_indirect_rear_ops;
--static struct snd_pcm_ops snd_cs46xx_playback_clfe_ops;
--static struct snd_pcm_ops snd_cs46xx_playback_indirect_clfe_ops;
--static struct snd_pcm_ops snd_cs46xx_playback_iec958_ops;
--static struct snd_pcm_ops snd_cs46xx_playback_indirect_iec958_ops;
-+static const struct snd_pcm_ops snd_cs46xx_playback_rear_ops;
-+static const struct snd_pcm_ops snd_cs46xx_playback_indirect_rear_ops;
-+static const struct snd_pcm_ops snd_cs46xx_playback_clfe_ops;
-+static const struct snd_pcm_ops snd_cs46xx_playback_indirect_clfe_ops;
-+static const struct snd_pcm_ops snd_cs46xx_playback_iec958_ops;
-+static const struct snd_pcm_ops snd_cs46xx_playback_indirect_iec958_ops;
- #endif
- 
--static struct snd_pcm_ops snd_cs46xx_playback_ops;
--static struct snd_pcm_ops snd_cs46xx_playback_indirect_ops;
--static struct snd_pcm_ops snd_cs46xx_capture_ops;
--static struct snd_pcm_ops snd_cs46xx_capture_indirect_ops;
-+static const struct snd_pcm_ops snd_cs46xx_playback_ops;
-+static const struct snd_pcm_ops snd_cs46xx_playback_indirect_ops;
-+static const struct snd_pcm_ops snd_cs46xx_capture_ops;
-+static const struct snd_pcm_ops snd_cs46xx_capture_indirect_ops;
- 
- static unsigned short snd_cs46xx_codec_read(struct snd_cs46xx *chip,
- 					    unsigned short reg,
-@@ -1665,7 +1665,7 @@ static struct snd_pcm_ops snd_cs46xx_playback_rear_ops = {
- 	.pointer =		snd_cs46xx_playback_direct_pointer,
- };
- 
--static struct snd_pcm_ops snd_cs46xx_playback_indirect_rear_ops = {
-+static const struct snd_pcm_ops snd_cs46xx_playback_indirect_rear_ops = {
- 	.open =			snd_cs46xx_playback_open_rear,
- 	.close =		snd_cs46xx_playback_close,
- 	.ioctl =		snd_pcm_lib_ioctl,
-@@ -1677,7 +1677,7 @@ static struct snd_pcm_ops snd_cs46xx_playback_indirect_rear_ops = {
- 	.ack =			snd_cs46xx_playback_transfer,
- };
- 
--static struct snd_pcm_ops snd_cs46xx_playback_clfe_ops = {
-+static const struct snd_pcm_ops snd_cs46xx_playback_clfe_ops = {
- 	.open =			snd_cs46xx_playback_open_clfe,
- 	.close =		snd_cs46xx_playback_close,
- 	.ioctl =		snd_pcm_lib_ioctl,
-@@ -1688,7 +1688,7 @@ static struct snd_pcm_ops snd_cs46xx_playback_clfe_ops = {
- 	.pointer =		snd_cs46xx_playback_direct_pointer,
- };
- 
--static struct snd_pcm_ops snd_cs46xx_playback_indirect_clfe_ops = {
-+static const struct snd_pcm_ops snd_cs46xx_playback_indirect_clfe_ops = {
- 	.open =			snd_cs46xx_playback_open_clfe,
- 	.close =		snd_cs46xx_playback_close,
- 	.ioctl =		snd_pcm_lib_ioctl,
-@@ -1700,7 +1700,7 @@ static struct snd_pcm_ops snd_cs46xx_playback_indirect_clfe_ops = {
- 	.ack =			snd_cs46xx_playback_transfer,
- };
- 
--static struct snd_pcm_ops snd_cs46xx_playback_iec958_ops = {
-+static const struct snd_pcm_ops snd_cs46xx_playback_iec958_ops = {
- 	.open =			snd_cs46xx_playback_open_iec958,
- 	.close =		snd_cs46xx_playback_close_iec958,
- 	.ioctl =		snd_pcm_lib_ioctl,
-@@ -1711,7 +1711,7 @@ static struct snd_pcm_ops snd_cs46xx_playback_iec958_ops = {
- 	.pointer =		snd_cs46xx_playback_direct_pointer,
- };
- 
--static struct snd_pcm_ops snd_cs46xx_playback_indirect_iec958_ops = {
-+static const struct snd_pcm_ops snd_cs46xx_playback_indirect_iec958_ops = {
- 	.open =			snd_cs46xx_playback_open_iec958,
- 	.close =		snd_cs46xx_playback_close_iec958,
- 	.ioctl =		snd_pcm_lib_ioctl,
-@@ -1725,7 +1725,7 @@ static struct snd_pcm_ops snd_cs46xx_playback_indirect_iec958_ops = {
- 
- #endif
- 
--static struct snd_pcm_ops snd_cs46xx_playback_ops = {
-+static const struct snd_pcm_ops snd_cs46xx_playback_ops = {
- 	.open =			snd_cs46xx_playback_open,
- 	.close =		snd_cs46xx_playback_close,
- 	.ioctl =		snd_pcm_lib_ioctl,
-@@ -1736,7 +1736,7 @@ static struct snd_pcm_ops snd_cs46xx_playback_ops = {
- 	.pointer =		snd_cs46xx_playback_direct_pointer,
- };
- 
--static struct snd_pcm_ops snd_cs46xx_playback_indirect_ops = {
-+static const struct snd_pcm_ops snd_cs46xx_playback_indirect_ops = {
- 	.open =			snd_cs46xx_playback_open,
- 	.close =		snd_cs46xx_playback_close,
- 	.ioctl =		snd_pcm_lib_ioctl,
-@@ -1748,7 +1748,7 @@ static struct snd_pcm_ops snd_cs46xx_playback_indirect_ops = {
- 	.ack =			snd_cs46xx_playback_transfer,
- };
- 
--static struct snd_pcm_ops snd_cs46xx_capture_ops = {
-+static const struct snd_pcm_ops snd_cs46xx_capture_ops = {
- 	.open =			snd_cs46xx_capture_open,
- 	.close =		snd_cs46xx_capture_close,
- 	.ioctl =		snd_pcm_lib_ioctl,
-@@ -1759,7 +1759,7 @@ static struct snd_pcm_ops snd_cs46xx_capture_ops = {
- 	.pointer =		snd_cs46xx_capture_direct_pointer,
- };
- 
--static struct snd_pcm_ops snd_cs46xx_capture_indirect_ops = {
-+static const struct snd_pcm_ops snd_cs46xx_capture_indirect_ops = {
- 	.open =			snd_cs46xx_capture_open,
- 	.close =		snd_cs46xx_capture_close,
- 	.ioctl =		snd_pcm_lib_ioctl,
--- 
-2.7.4
+To me, this looks like a bug. What do you think?
+
+For reference, I posted the same question on
+http://lists.jackaudio.org/private.cgi/jack-devel-jackaudio.org/2017-January/000741.html,
+however, they recommended to ask here for help.
