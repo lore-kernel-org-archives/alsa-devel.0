@@ -1,18 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Cannot combine audio devices with more than 64
- channels
-Date: Thu, 26 Jan 2017 17:13:50 +0100
-Message-ID: <1cdef19b-a458-7441-2ede-2ba8984ec7cd@ladisch.de>
-References: <CAKw=HF0hbhxJ1YGjukjFr72xtEh2FjtH6k0Bh+rFcMwejgwcUg@mail.gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 00/17] Baytrail/Cherrytrail audio fixes
+Date: Thu, 26 Jan 2017 14:09:28 -0600
+Message-ID: <1485461385-14544-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id 1AB142669E4
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2017 17:14:37 +0100 (CET)
-In-Reply-To: <CAKw=HF0hbhxJ1YGjukjFr72xtEh2FjtH6k0Bh+rFcMwejgwcUg@mail.gmail.com>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2CCC267774
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2017 21:10:19 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,47 +18,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?SsO2cmcgTcO8bGxlcg==?= <joerg.mueller7744@gmail.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-SsO2cmcgTcO8bGxlciB3cm90ZToKPiBJIGNyZWF0ZWQgYW4gLmFzb3VuZHJjIHdpdGggMTk0IGlu
-cHV0cyBmb3IgZWFjaCBjYXJkLgo+Cj4gcGNtX211bHRpLmM6MTA2MDogc25kX3BjbV9tdWx0aV9v
-cGVuOiBBc3NlcnRpb24gYCFzbGF2ZV9tYXBbc2lkeHNbaV1dW3NjaGFubmVsc1tpXV0nIGZhaWxl
-ZC4KPgo+IFRvIG1lLCB0aGlzIGxvb2tzIGxpa2UgYSBidWcuCgotLTg8LS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLT44LS0KcGNt
-OiBtdWx0aTogYWxsb2NhdGUgc2xhdmVfbWFwIGR5bmFtaWNhbGx5CgpVc2luZyBhIGZpeGVkLXNp
-emUgYnVmZmVyIGZvciBhbiBhcmJpdHJhcmlseS1zaXplZCBsaXN0IGlzIG5vdCBhIGdvb2QgaWRl
-YS4KClNpZ25lZC1vZmYtYnk6IENsZW1lbnMgTGFkaXNjaCA8Y2xlbWVuc0BsYWRpc2NoLmRlPgot
-LS0KIHNyYy9wY20vcGNtX211bHRpLmMgfCAgIDIwICsrKysrKysrKysrKysrKysrKystCiAxIGZp
-bGUgY2hhbmdlZCwgMTkgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQoKdW50ZXN0ZWQKCmRp
-ZmYgLS1naXQgYS9zcmMvcGNtL3BjbV9tdWx0aS5jIGIvc3JjL3BjbS9wY21fbXVsdGkuYwppbmRl
-eCBjNGIxZmJhMy4uZjhlZmNhOTcgMTAwNjQ0Ci0tLSBhL3NyYy9wY20vcGNtX211bHRpLmMKKysr
-IGIvc3JjL3BjbS9wY21fbXVsdGkuYwpAQCAtMTAxNSw3ICsxMDE1LDcgQEAgaW50IHNuZF9wY21f
-bXVsdGlfb3BlbihzbmRfcGNtX3QgKipwY21wLCBjb25zdCBjaGFyICpuYW1lLAogCXNuZF9wY21f
-bXVsdGlfdCAqbXVsdGk7CiAJdW5zaWduZWQgaW50IGk7CiAJc25kX3BjbV9zdHJlYW1fdCBzdHJl
-YW07Ci0JY2hhciBzbGF2ZV9tYXBbNjRdWzY0XSA9IHsgeyAwIH0gfTsKKwljaGFyICoqc2xhdmVf
-bWFwOwogCWludCBlcnI7CgogCWFzc2VydChwY21wKTsKQEAgLTEwNDQsMTIgKzEwNDQsMjcgQEAg
-aW50IHNuZF9wY21fbXVsdGlfb3BlbihzbmRfcGNtX3QgKipwY21wLCBjb25zdCBjaGFyICpuYW1l
-LAogCQlmcmVlKG11bHRpKTsKIAkJcmV0dXJuIC1FTk9NRU07CiAJfQorCXNsYXZlX21hcCA9IGNh
-bGxvYyhzbGF2ZXNfY291bnQsIHNpemVvZigqc2xhdmVfbWFwKSk7CisJaWYgKCFzbGF2ZV9tYXAp
-IHsKKwkJZnJlZShtdWx0aS0+c2xhdmVzKTsKKwkJZnJlZShtdWx0aSk7CisJCXJldHVybiAtRU5P
-TUVNOworCX0KIAlmb3IgKGkgPSAwOyBpIDwgc2xhdmVzX2NvdW50OyArK2kpIHsKIAkJc25kX3Bj
-bV9tdWx0aV9zbGF2ZV90ICpzbGF2ZSA9ICZtdWx0aS0+c2xhdmVzW2ldOwogCQlhc3NlcnQoc2xh
-dmVzX3BjbVtpXS0+c3RyZWFtID09IHN0cmVhbSk7CiAJCXNsYXZlLT5wY20gPSBzbGF2ZXNfcGNt
-W2ldOwogCQlzbGF2ZS0+Y2hhbm5lbHNfY291bnQgPSBzY2hhbm5lbHNfY291bnRbaV07CiAJCXNs
-YXZlLT5jbG9zZV9zbGF2ZSA9IGNsb3NlX3NsYXZlczsKKwkJc2xhdmVfbWFwW2ldID0gY2FsbG9j
-KHNjaGFubmVsc19jb3VudFtpXSwgc2l6ZW9mKCpzbGF2ZV9tYXBbaV0pKTsKKwkJaWYgKCFzbGF2
-ZV9tYXBbaV0pIHsKKwkJCXdoaWxlIChpLS0pCisJCQkJZnJlZShzbGF2ZV9tYXBbaV0pOworCQkJ
-ZnJlZShzbGF2ZV9tYXApOworCQkJZnJlZShtdWx0aS0+c2xhdmVzKTsKKwkJCWZyZWUobXVsdGkp
-OworCQkJcmV0dXJuIC1FTk9NRU07CisJCX0KIAl9CiAJZm9yIChpID0gMDsgaSA8IGNoYW5uZWxz
-X2NvdW50OyArK2kpIHsKIAkJc25kX3BjbV9tdWx0aV9jaGFubmVsX3QgKmJpbmQgPSAmbXVsdGkt
-PmNoYW5uZWxzW2ldOwpAQCAtMTA2Miw2ICsxMDc3LDkgQEAgaW50IHNuZF9wY21fbXVsdGlfb3Bl
-bihzbmRfcGNtX3QgKipwY21wLCBjb25zdCBjaGFyICpuYW1lLAogCQlhc3NlcnQoIXNsYXZlX21h
-cFtzaWR4c1tpXV1bc2NoYW5uZWxzW2ldXSk7CiAJCXNsYXZlX21hcFtzaWR4c1tpXV1bc2NoYW5u
-ZWxzW2ldXSA9IDE7CiAJfQorCWZvciAoaSA9IDA7IGkgPCBzbGF2ZXNfY291bnQ7ICsraSkKKwkJ
-ZnJlZShzbGF2ZV9tYXBbaV0pOworCWZyZWUoc2xhdmVfbWFwKTsKIAltdWx0aS0+Y2hhbm5lbHNf
-Y291bnQgPSBjaGFubmVsc19jb3VudDsKCiAJZXJyID0gc25kX3BjbV9uZXcoJnBjbSwgU05EX1BD
-TV9UWVBFX01VTFRJLCBuYW1lLCBzdHJlYW0sCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+Set of patches to correct issues with machine drivers (suspend, DAI
+configuration), add missing HID reported in Bugzilla and add playback
+support for Asus T100HA and Asus X205TA based on RT5645 (capture and
+jack detection still work-in-progress)
+
+Alexandrov Stansilav (2):
+  ASoC: rt5640: Add "10EC3276" ACPI ID
+  ASoC: Intel: Atom: Add HP Pavilion x2 10-p000 machine entry
+
+Pierre-Louis Bossart (15):
+  ASoC: Intel: atom: fix frame polarity
+  ASoC: Intel: boards: remove .pm_ops in all Atom/DPCM machine drivers
+  ASoC: Intel: add support for Realtek 5651 on Cherrytrail
+  ASoC: codecs: rt5670: add quirk for Lenovo Thinkpad 10
+  ASoC: Intel: Baytrail: add quirk for Lenovo Thinkpad 10
+  ASoC: rt5645: add support for RT5648
+  ASoc: rt5645: add ACPI ID 10EC3270
+  ASoC: Intel: cht_bsw_rt5645: add Baytrail MCLK support
+  ASoC: Intel: Atom: add machine driver for baytrail-rt5645 hardware
+  ASoC: Intel: add support for ALC3270 codec
+  ASoC: Intel: cht_bsw_rt5645: harden ACPI device detection
+  ASoC: rt5645: fix error handling for gpio detection
+  ASoC: Intel: cht-bsw-rt5645: add quirks for SSP0/AIF1/AIF2 routing
+  ASoC: Intel: cht-bsw-rt5645: select ASRC source based on routing quirk
+  ASoC: Intel: cht-bsw-rt5645: fix DAI formats
+
+ sound/soc/codecs/rt5640.c                |   1 +
+ sound/soc/codecs/rt5645.c                |   5 +-
+ sound/soc/codecs/rt5670.c                |   1 +
+ sound/soc/intel/atom/sst-atom-controls.c |   6 +-
+ sound/soc/intel/atom/sst/sst_acpi.c      |  52 +++-
+ sound/soc/intel/boards/bytcr_rt5640.c    |   5 +-
+ sound/soc/intel/boards/bytcr_rt5651.c    |   3 +-
+ sound/soc/intel/boards/cht_bsw_rt5645.c  | 396 +++++++++++++++++++++++++++----
+ 8 files changed, 409 insertions(+), 60 deletions(-)
+
+-- 
+2.7.4
