@@ -1,19 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Alsa-lib Dmix issue
-Date: Thu, 26 Jan 2017 13:03:15 +0100
-Message-ID: <946f3a49-e014-8119-acd7-d17750779465@ladisch.de>
-References: <CACmL+LCqwU8A8uq+Z=wFSazTCSMsKoRm0U+w7airoza240aHVQ@mail.gmail.com>
- <1aeb13c4-e84e-dc51-d596-51898a16a5d1@ladisch.de>
- <CACmL+LDz+j=id=aJh+G6aSHCBqEsVf8gmEsBKmWLmRSgoUfCew@mail.gmail.com>
+From: Sebastien Guiriec <sebastien.guiriec@intel.com>
+Subject: [PATCH] ASoC: Intel: Atom: Configure media_loop1 and
+	sprot_loop in stereo
+Date: Thu, 26 Jan 2017 13:07:04 +0100
+Message-ID: <20170126120704.5269-1-sebastien.guiriec@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id BFA142666F2
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2017 13:04:03 +0100 (CET)
-In-Reply-To: <CACmL+LDz+j=id=aJh+G6aSHCBqEsVf8gmEsBKmWLmRSgoUfCew@mail.gmail.com>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7363A26683B
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2017 13:11:03 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,19 +19,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Anoop Rajan <anoopmannil@gmail.com>
-Cc: alsa-devel@alsa-project.org, ajith karnik <ajithskarnik@gmail.com>
+To: vinod.koul@intel.com, pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, Sebastien Guiriec <sebastien.guiriec@intel.com>, broonie@kernel.org, rakesh.a.ughreja@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Anoop Rajan wrote:
-> I assume the issue is in Dmix, it is not incrementing the appl pointer.
+Most of the devices are using stereo speakers so media_loop1 and
+sprot_loop default mode should be stereo.
 
-When there are multiple clients, there are multiple appl pointers.
-So the dmix plugin does not bother to tell the hardware about any
-of them.
+As per default all the routing UCM configuration doesn't enable Post
+processing loops it is not impacting curent configurations.
 
-Are you using a driver that lokos at appl_ptr?
+Signed-off-by: Sebastien Guiriec <sebastien.guiriec@intel.com>
+---
+ sound/soc/intel/atom/sst-atom-controls.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
+index c7b3cbf..0ce1d18 100644
+--- a/sound/soc/intel/atom/sst-atom-controls.c
++++ b/sound/soc/intel/atom/sst-atom-controls.c
+@@ -1087,8 +1087,8 @@ static const struct snd_soc_dapm_widget sst_dapm_widgets[] = {
+ 	SST_PATH_INPUT("sprot_loop_in", SST_TASK_SBA, SST_SWM_IN_SPROT_LOOP, NULL),
+ 	SST_PATH_INPUT("media_loop1_in", SST_TASK_SBA, SST_SWM_IN_MEDIA_LOOP1, NULL),
+ 	SST_PATH_INPUT("media_loop2_in", SST_TASK_SBA, SST_SWM_IN_MEDIA_LOOP2, NULL),
+-	SST_PATH_MEDIA_LOOP_OUTPUT("sprot_loop_out", SST_TASK_SBA, SST_SWM_OUT_SPROT_LOOP, SST_FMT_MONO, sst_set_media_loop),
+-	SST_PATH_MEDIA_LOOP_OUTPUT("media_loop1_out", SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP1, SST_FMT_MONO, sst_set_media_loop),
++	SST_PATH_MEDIA_LOOP_OUTPUT("sprot_loop_out", SST_TASK_SBA, SST_SWM_OUT_SPROT_LOOP, SST_FMT_STEREO, sst_set_media_loop),
++	SST_PATH_MEDIA_LOOP_OUTPUT("media_loop1_out", SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP1, SST_FMT_STEREO, sst_set_media_loop),
+ 	SST_PATH_MEDIA_LOOP_OUTPUT("media_loop2_out", SST_TASK_SBA, SST_SWM_OUT_MEDIA_LOOP2, SST_FMT_STEREO, sst_set_media_loop),
+ 
+ 	/* Media Mixers */
+-- 
+2.9.3
 
-Regards,
-Clemens
+---------------------------------------------------------------------
+Intel Corporation SAS (French simplified joint stock company)
+Registered headquarters: "Les Montalets"- 2, rue de Paris, 
+92196 Meudon Cedex, France
+Registration Number:  302 456 199 R.C.S. NANTERRE
+Capital: 4,572,000 Euros
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
