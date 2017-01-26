@@ -1,1780 +1,431 @@
-From: Detlef Urban <onkel@paraair.de>
-Subject: [PATCH 1/1] ALSA: Tascam US-16x08 DSP mixer quirk
-Date: Thu, 26 Jan 2017 09:37:23 +0100
-Message-ID: <c16a71d1-d3fe-fcc2-d74d-28f8eca6b932@paraair.de>
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH v5 1/5] drm/i915: setup bridge for HDMI LPE
+ audio driver
+Date: Thu, 26 Jan 2017 10:21:47 +0100
+Message-ID: <20170126092147.pfxhj6l3hxceskuv@phenom.ffwll.local>
+References: <20170124225753.9045-1-jerome.anand@intel.com>
+ <20170124225753.9045-2-jerome.anand@intel.com>
+ <87a8ag7fph.fsf@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.134])
- by alsa0.perex.cz (Postfix) with ESMTP id 414A8265A82
- for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2017 09:37:27 +0100 (CET)
-Received: from [192.168.178.38] ([77.8.201.49]) by mrelayeu.kundenserver.de
- (mreue003 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 0MAyoK-1cgWva2zcC-009ucu for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2017
- 09:37:27 +0100
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <87a8ag7fph.fsf@intel.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Jani Nikula <jani.nikula@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, intel-gfx@lists.freedesktop.org, broonie@kernel.org, rakesh.a.ughreja@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Add mixer quirk for Tascam US-16x08 usb interface.
-Even that this an usb compliant device,
-the input channels and DSP functions (EQ/Compressor)
-arn't accessible by default.
-
-Signed-off by: Detlef Urban <onkel@paraair.de>
----
-diff --git a/sound/usb/Makefile b/sound/usb/Makefile
-index 2d2d122..5394264 100644
---- a/sound/usb/Makefile
-+++ b/sound/usb/Makefile
-@@ -10,6 +10,9 @@ snd-usb-audio-objs :=     card.o \
-              mixer.o \
-              mixer_quirks.o \
-              mixer_scarlett.o \
-+            mixer_us16x08.o \
-+            mixer_us16x08_eq.o \
-+            mixer_us16x08_comp.o \
-              pcm.o \
-              proc.o \
-              quirks.o \
-@@ -25,4 +28,3 @@ obj-$(CONFIG_SND_USB_USX2Y) += snd-usbmidi-lib.o
-  obj-$(CONFIG_SND_USB_US122L) += snd-usbmidi-lib.o
-
-  obj-$(CONFIG_SND) += misc/ usx2y/ caiaq/ 6fire/ hiface/ bcd2000/
--obj-$(CONFIG_SND_USB_LINE6)    += line6/
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index 04991b0..4fa0053 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -43,6 +43,7 @@
-  #include "mixer.h"
-  #include "mixer_quirks.h"
-  #include "mixer_scarlett.h"
-+#include "mixer_us16x08.h"
-  #include "helper.h"
-
-  extern struct snd_kcontrol_new *snd_usb_feature_unit_ctl;
-@@ -1729,6 +1730,10 @@ int snd_usb_mixer_apply_create_quirk(struct 
-usb_mixer_interface *mixer)
-          return err;
-
-      switch (mixer->chip->usb_id) {
-+    /* Tascam US-16x08 */
-+    case USB_ID(0x0644, 0x8047):
-+        err = snd_us16x08_controls_create(mixer);
-+        break;
-      case USB_ID(0x041e, 0x3020):
-      case USB_ID(0x041e, 0x3040):
-      case USB_ID(0x041e, 0x3042):
-diff --git a/sound/usb/mixer_us16x08.c b/sound/usb/mixer_us16x08.c
-new file mode 100644
-index 0000000..177ec5f
---- /dev/null
-+++ b/sound/usb/mixer_us16x08.c
-@@ -0,0 +1,815 @@
-+/*
-+ *   Tascam US-16x08 ALSA driver
-+ *
-+ *   Copyright (c) 2016 by Detlef Urban (onkel@paraair.de)
-+ *
-+ *   This program is free software; you can redistribute it and/or modify
-+ *   it under the terms of the GNU General Public License as published by
-+ *   the Free Software Foundation; either version 2 of the License, or
-+ *   (at your option) any later version.
-+ *
-+ *   This program is distributed in the hope that it will be useful,
-+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *   GNU General Public License for more details.
-+ *
-+ */
-+
-+#include <linux/slab.h>
-+#include <linux/usb.h>
-+#include <linux/usb/audio-v2.h>
-+#include "linux/kthread.h"
-+
-+#include <sound/core.h>
-+#include <sound/control.h>
-+
-+#include "usbaudio.h"
-+#include "mixer.h"
-+#include "helper.h"
-+
-+#include "mixer_us16x08.h"
-+
-+#define FADER_INFOPUTGET_NOLOG
-+
-+static char route_msg[] = {
-+    0x61,
-+    0x02,
-+    0x03, /* input from master (0x02) or input from computer bus (0x03) */
-+    0x62,
-+    0x02,
-+    0x01, /* input index (0x01/0x02 eq. left/right) or bus (0x01-0x08) */
-+    0x41,
-+    0x01,
-+    0x61,
-+    0x02,
-+    0x01,
-+    0x62,
-+    0x02,
-+    0x01, /* output index (0x01-0x08) */
-+    0x42,
-+    0x01,
-+    0x43,
-+    0x01,
-+    0x00,
-+    0x00
-+};
-+
-+static char mix_init_msg1[] = {
-+    0x71, 0x01, 0x00, 0x00
-+};
-+static char mix_init_msg2[] = {
-+    0x62, 0x02, 0x00, 0x61, 0x02, 0x04, 0xb1, 0x01, 0x00, 0x00
-+};
-+
-+static int comp_channel = 1;
-+
-+static char mix_msg_in[] = {
-+    CTLMSGHEAD_IN, /*           the default message head */
-+    0x81, /*                    0x06: Controller ID */
-+    0x02, /*                    0x07:  */
-+    0x00, /*                    0x08: Value of common mixer */
-+    0x00,
-+    0x00
-+};
-+static char mix_msg_out[] = {
-+    CTLMSGHEAD_OUT, /*          the default message head */
-+    0x81, /*                    0x06: Controller ID */
-+    0x02, /*                    0x07:  */
-+    0x00, /*                    0x08: Value of common mixer */
-+    0x00,
-+    0x00
-+};
-+
-+static char bypass_msg_out[] = {
-+    0x45,
-+    0x02,
-+    0x01, // on/off flag
-+    0x00,
-+    0x00
-+};
-+
-+static char bus_msg_out[] = {
-+    0x44,
-+    0x02,
-+    0x01, // on/off flag
-+    0x00,
-+    0x00
-+};
-+
-+int snd_us16x08_recv_urb(struct snd_usb_audio *chip,
-+    unsigned char *buf, int size)
-+{
-+
-+    mutex_lock(&chip->mutex);
-+    snd_usb_ctl_msg(chip->dev,
-+        usb_rcvctrlpipe(chip->dev, 0),
-+        SND_US16X08_URB_METER_REQUEST,
-+        SND_US16X08_URB_METER_REQUESTTYPE, 0, 0, buf, size);
-+    mutex_unlock(&chip->mutex);
-+    return 0;
-+}
-+
-+int snd_us16x08_recv_urb_0xa1(struct snd_usb_audio *chip,
-+    char *buffer, int size)
-+{
-+
-+    unsigned char buf[64] = {0,};
-+    int err = snd_usb_ctl_msg(chip->dev,
-+        usb_rcvctrlpipe(chip->dev, 0),
-+        2,
-+        0xa1, 0x0100, 0x100, buf, 14);
-+    dev_err(&chip->dev->dev,
-+        "us16x08: snd_us16x08_recv_urb: error: %d\n", err);
-+
-+    return 0;
-+}
-+
-+/* wrapper function to send prepared URB buffer to usb device. Return -1
-+ * if something went wrong (FIXME: have to have more helpful error 
-numbers) */
-+int snd_us16x08_send_urb(struct snd_usb_audio *chip, char *buf, int size)
-+{
-+    int count = -1;
-+
-+    if (chip) {
-+        count = snd_usb_ctl_msg(chip->dev,
-+            usb_sndctrlpipe(chip->dev, 0),
-+            SND_US16X08_URB_REQUEST,
-+            SND_US16X08_URB_REQUESTTYPE,
-+            0, 0, buf, size);
-+    }
-+
-+    return(count == size) ? 0 : -1;
-+}
-+
-+struct meter_resp {
-+    uint8_t a0;
-+    uint8_t a1;
-+    uint8_t a2;
-+    uint8_t b0;
-+    uint8_t b1;
-+    uint8_t b2;
-+    uint8_t c0;
-+    uint8_t c1;
-+    uint8_t c2;
-+    uint8_t c3;
-+};
-+struct meter_resp *resp = NULL;
-+unsigned char meter_urb_buf[64] = {0,};
-+
-+int snd_us16x08_route_info(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_info *uinfo)
-+{
-+    uinfo->count = 1;
-+    uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+    uinfo->value.integer.max = SND_US16X08_KCMAX(kcontrol);
-+    uinfo->value.integer.min = SND_US16X08_KCMIN(kcontrol);
-+    uinfo->value.integer.step = SND_US16X08_KCSTEP(kcontrol);
-+    return 0;
-+}
-+
-+static int snd_us16x08_route_get(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_value *ucontrol)
-+{
-+    struct usb_mixer_elem_info *elem = kcontrol->private_data;
-+    struct snd_us16x08_fader *store =
-+        (struct snd_us16x08_fader *) elem->private_data;
-+    int index = ucontrol->id.index;
-+
-+    /* we have only eight output channels, so ignore all others */
-+    ucontrol->value.integer.value[0] = store->value[index];
-+
-+    return 0;
-+}
-+
-+static int snd_us16x08_route_put(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_value *ucontrol)
-+{
-+    struct usb_mixer_elem_info *elem = kcontrol->private_data;
-+    struct snd_usb_audio *chip = elem->head.mixer->chip;
-+    struct snd_us16x08_fader *store =
-+        (struct snd_us16x08_fader *) elem->private_data;
-+    int index = ucontrol->id.index;
-+    char buf[sizeof(route_msg)];
-+    int val, val_org, err = 0;
-+
-+    /* prepare the message buffer from static one */
-+    memcpy(buf, route_msg, sizeof(route_msg));
-+
-+    /*  get the new value */
-+    val = ucontrol->value.integer.value[0];
-+    if (val < 2) { /* input comes from a master channel */
-+        val_org = val;
-+        buf[2] = 0x02;
-+    } else { /* input comes from a computer channel */
-+        buf[2] = 0x03;
-+        val_org = val - 2;
-+    }
-+
-+    buf[5] = (unsigned char) (val_org & 0x0f) + 1;
-+    buf[13] = index + 1;
-+
-+    err = snd_us16x08_send_urb(chip, buf, sizeof(route_msg));
-+
-+    if (err == 0)
-+        store->value[index] = val;
-+
-+    return err == 0 ? 1 : 0;
-+}
-+
-+static int snd_us16x08_master_get(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_value *ucontrol)
-+{
-+    struct usb_mixer_elem_info *elem = kcontrol->private_data;
-+    struct snd_us16x08_fader *store =
-+        (struct snd_us16x08_fader *) elem->private_data;
-+    int index = ucontrol->id.index;
-+
-+    ucontrol->value.integer.value[0] = store->value[index];
-+
-+    return 0;
-+}
-+
-+int snd_us16x08_master_info(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_info *uinfo)
-+{
-+    uinfo->count = 1;
-+    uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+    uinfo->value.integer.max = SND_US16X08_KCMAX(kcontrol);
-+    uinfo->value.integer.min = SND_US16X08_KCMIN(kcontrol);
-+    uinfo->value.integer.step = SND_US16X08_KCSTEP(kcontrol);
-+    return 0;
-+}
-+
-+static int snd_us16x08_master_put(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_value *ucontrol)
-+{
-+    struct usb_mixer_elem_info *elem = kcontrol->private_data;
-+    struct snd_usb_audio *chip = elem->head.mixer->chip;
-+    struct snd_us16x08_fader *store =
-+        (struct snd_us16x08_fader *) elem->private_data;
-+    char buf[sizeof(mix_msg_out)];
-+    int val, err = 0;
-+    int index = ucontrol->id.index;
-+
-+
-+    /* prepare the message buffer from static one */
-+    memcpy(buf, mix_msg_out, sizeof(mix_msg_out));
-+
-+    val = ucontrol->value.integer.value[0];
-+    dev_dbg(&chip->dev->dev,
-+        "snd_us16x08_master_put index:%d, val, %d", index, val);
-+
-+    buf[8] = val - SND_US16X08_KCBIAS(kcontrol);
-+    buf[6] = elem->head.id;
-+
-+    buf[5] = index + 1;
-+    err = snd_us16x08_send_urb(chip, buf, sizeof(mix_msg_out));
-+
-+    if (err == 0)
-+        store->value[index] = val;
-+
-+    return err == 0 ? 1 : 0;
-+}
-+
-+static int snd_us16x08_bypass_get(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_value *ucontrol)
-+{
-+    struct usb_mixer_elem_info *elem = kcontrol->private_data;
-+    struct snd_us16x08_bypass_store *store =
-+        (struct snd_us16x08_bypass_store *) elem->private_data;
-+
-+    ucontrol->value.integer.value[0] = store->value;
-+
-+    return 0;
-+}
-+
-+static int snd_us16x08_bypass_put(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_value *ucontrol)
-+{
-+    struct usb_mixer_elem_info *elem = kcontrol->private_data;
-+    struct snd_usb_audio *chip = elem->head.mixer->chip;
-+    struct snd_us16x08_bypass_store *store =
-+        (struct snd_us16x08_bypass_store *) elem->private_data;
-+
-+    // prepare message buffer
-+    char buf[sizeof(bypass_msg_out)];
-+    int val, err = 0;
-+
-+    /* prepare the message buffer from static one */
-+    memcpy(buf, bypass_msg_out, sizeof(bypass_msg_out));
-+
-+    val = ucontrol->value.integer.value[0];
-+    dev_dbg(&chip->dev->dev, "snd_us16x08_bypass_put val: %d", val);
-+
-+    buf[2] = val;
-+    err = snd_us16x08_send_urb(chip, buf, sizeof(bypass_msg_out));
-+
-+    if (err == 0)
-+        store->value = val;
-+
-+    return err == 0 ? 1 : 0;
-+}
-+
-+static int snd_us16x08_bussout_put(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_value *ucontrol)
-+{
-+    struct usb_mixer_elem_info *elem = kcontrol->private_data;
-+    struct snd_usb_audio *chip = elem->head.mixer->chip;
-+    struct snd_us16x08_bypass_store *store =
-+        (struct snd_us16x08_bypass_store *) elem->private_data;
-+
-+    // prepare message buffer
-+    char buf[sizeof(bus_msg_out)];
-+    int val, err = 0;
-+
-+    /* prepare the message buffer from static one */
-+    memcpy(buf, bus_msg_out, sizeof(bus_msg_out));
-+
-+    val = ucontrol->value.integer.value[0];
-+    dev_dbg(&chip->dev->dev, "snd_us16x08_bus_out_put val: %d", val);
-+
-+    buf[2] = val;
-+    err = snd_us16x08_send_urb(chip, buf, sizeof(bus_msg_out));
-+
-+    if (err == 0)
-+        store->value = val;
-+
-+    return err == 0 ? 1 : 0;
-+}
-+
-+/*
-+gets a current mixer value from common store
-+ */
-+static int snd_us16x08_mix_get(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_value *ucontrol)
-+{
-+    struct usb_mixer_elem_info *elem = kcontrol->private_data;
-+    struct snd_us16x08_fader *store =
-+        (struct snd_us16x08_fader *) elem->private_data;
-+    struct snd_usb_audio *chip = elem->head.mixer->chip;
-+    int index = ucontrol->id.index;
-+
-+    ucontrol->value.integer.value[0] = store->value[index];
-+    dev_dbg(&chip->dev->dev,
-+        "snd_us16x08_mix_get: index:%d, val:%d\n",
-+        index, store->value[index]);
-+
-+    return 0;
-+}
-+
-+static int snd_us16x08_mix_put(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_value *ucontrol)
-+{
-+    struct usb_mixer_elem_info *elem = kcontrol->private_data;
-+    struct snd_usb_audio *chip = elem->head.mixer->chip;
-+    struct snd_us16x08_fader *store =
-+        (struct snd_us16x08_fader *) elem->private_data;
-+    char buf[sizeof(mix_msg_in)];
-+    int val, err;
-+    int index = ucontrol->id.index;
-+
-+
-+    memcpy(buf, mix_msg_in, sizeof(mix_msg_in));
-+
-+    val = ucontrol->value.integer.value[0];
-+
-+    buf[8] = val - SND_US16X08_KCBIAS(kcontrol);
-+    buf[6] = elem->head.id;
-+    buf[5] = index + 1;
-+
-+    err = snd_us16x08_send_urb(chip, buf, sizeof(mix_msg_in));
-+
-+    if (err == 0)
-+        store->value[index] = val;
-+
-+    return err == 0 ? 1 : 0;
-+}
-+
-+int snd_us16x08_mix_info(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_info *uinfo)
-+{
-+    uinfo->count = 1;
-+    uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+    uinfo->value.integer.max = SND_US16X08_KCMAX(kcontrol);
-+    uinfo->value.integer.min = SND_US16X08_KCMIN(kcontrol);
-+    uinfo->value.integer.step = SND_US16X08_KCSTEP(kcontrol);
-+    return 0;
-+}
-+
-+static int snd_us16x08_switch_info(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_info *uinfo)
-+{
-+
-+    uinfo->count = 1;
-+    uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
-+    uinfo->value.integer.max = 1;
-+    uinfo->value.integer.min = 0;
-+    uinfo->value.integer.step = 1;
-+    return 0;
-+}
-+
-+
-+static struct snd_kcontrol_new snd_us16x08_mix_ctl = {
-+    .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+    .access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+    .count = 16,
-+    .info = snd_us16x08_mix_info,
-+    .get = snd_us16x08_mix_get,
-+    .put = snd_us16x08_mix_put,
-+    .private_value = SND_US16X08_KCSET(SND_US16X08_FADER_BIAS, 1, 0, 133),
-+};
-+static struct snd_kcontrol_new snd_us16x08_pan_ctl = {
-+    .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+    .access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+    .count = 16,
-+    .info = snd_us16x08_mix_info,
-+    .get = snd_us16x08_mix_get,
-+    .put = snd_us16x08_mix_put,
-+    .private_value = SND_US16X08_KCSET(SND_US16X08_FADER_BIAS, 1, 0, 254),
-+};
-+static struct snd_kcontrol_new snd_us16x08_mute_ctl = {
-+    .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+    .access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+    .count = 16,
-+    .info = snd_us16x08_switch_info,
-+    .get = snd_us16x08_mix_get,
-+    .put = snd_us16x08_mix_put,
-+    .private_value = SND_US16X08_KCSET(SND_US16X08_NO_BIAS, 1, 0, 1),
-+};
-+static struct snd_kcontrol_new snd_us16x08_phase_ctl = {
-+    .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+    .access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+    .count = 16,
-+    .info = snd_us16x08_switch_info,
-+    .get = snd_us16x08_mix_get,
-+    .put = snd_us16x08_mix_put,
-+    .private_value = SND_US16X08_KCSET(SND_US16X08_NO_BIAS, 1, 0, 1),
-+};
-+static struct snd_kcontrol_new snd_us16x08_master_ctl = {
-+    .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+    .access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+    .count = 2,
-+    .info = snd_us16x08_master_info,
-+    .get = snd_us16x08_master_get,
-+    .put = snd_us16x08_master_put,
-+    .private_value = SND_US16X08_KCSET(SND_US16X08_FADER_BIAS, 1, 0, 133),
-+};
-+static struct snd_kcontrol_new snd_us16x08_route_ctl = {
-+    .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+    .access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+    .count = 8,
-+    .info = snd_us16x08_route_info,
-+    .get = snd_us16x08_route_get,
-+    .put = snd_us16x08_route_put,
-+    .private_value = SND_US16X08_KCSET(SND_US16X08_NO_BIAS, 1, 0, 9),
-+};
-+static struct snd_kcontrol_new snd_us16x08_bypass_ctl = {
-+    .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+    .access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+    .count = 1,
-+    .info = snd_us16x08_switch_info,
-+    .get = snd_us16x08_bypass_get,
-+    .put = snd_us16x08_bypass_put,
-+    .private_value = SND_US16X08_KCSET(SND_US16X08_NO_BIAS, 1, 0, 1),
-+};
-+static struct snd_kcontrol_new snd_us16x08_bussout_ctl = {
-+    .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+    .access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+    .count = 1,
-+    .info = snd_us16x08_switch_info,
-+    .get = snd_us16x08_bypass_get,
-+    .put = snd_us16x08_bussout_put,
-+    .private_value = SND_US16X08_KCSET(SND_US16X08_NO_BIAS, 1, 0, 1),
-+};
-+
-+static struct snd_kcontrol_new snd_us16x08_master_mute_ctl = {
-+    .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+    .access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+    .count = 1,
-+    .info = snd_us16x08_switch_info,
-+    .get = snd_us16x08_master_get,
-+    .put = snd_us16x08_master_put,
-+    .private_value = SND_US16X08_KCSET(SND_US16X08_NO_BIAS, 1, 0, 1),
-+};
-+
-+struct snd_us16x08_fader *snd_us16x08_create_mix_store(int default_val)
-+{
-+    int i;
-+    struct snd_us16x08_fader *tmp =
-+        kmalloc(sizeof(struct snd_us16x08_fader), GFP_KERNEL);
-+
-+    for (i = 0; i < SND_US16X08_MAX_CHANNELS; i++)
-+        tmp->value[i] = default_val;
-+    return tmp;
-+}
-+
-+struct snd_us16x08_bypass_store *snd_us16x08_create_single_store(
-+    int default_val)
-+{
-+    struct snd_us16x08_bypass_store *tmp =
-+        kmalloc(sizeof(struct snd_us16x08_bypass_store), GFP_KERNEL);
-+
-+    tmp->value = default_val;
-+    return tmp;
-+}
-+
-+void snd_us16x08_free_mix_store(struct snd_kcontrol *kctl)
-+{
-+    snd_usb_mixer_elem_free(kctl);
-+}
-+
-+/*
-+meter level transports
-+ */
-+static int snd_us16x08_meter_info(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_info *uinfo)
-+{
-+    uinfo->count = 1;
-+    uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+    uinfo->value.integer.max = 0x7FFF;
-+    uinfo->value.integer.min = 0;
-+
-+    return 0;
-+}
-+
-+static int snd_us16x08_meter_put(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_value *ucontrol)
-+{
-+    return 1;
-+}
-+
-+static int snd_us16x08_meter_get(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_value *ucontrol)
-+{
-+    int i, set;
-+    int val;
-+    struct usb_mixer_elem_info *elem = kcontrol->private_data;
-+    struct snd_usb_audio *chip = elem->head.mixer->chip;
-+    struct snd_us16x08_meter_store *store = elem->private_data;
-+    struct snd_us16x08_comp_store* comp_store;
-+
-+    if (elem) {
-+        store = (struct snd_us16x08_meter_store *) elem->private_data;
-+        chip = elem->head.mixer->chip;
-+    }
-+
-+    switch (kcontrol->private_value) {
-+    case 0:
-+        snd_us16x08_send_urb(chip, mix_init_msg1, 4);
-+        snd_us16x08_recv_urb(chip, meter_urb_buf,
-+            sizeof(meter_urb_buf));
-+        kcontrol->private_value++;
-+        break;
-+    case 1:
-+        snd_us16x08_recv_urb(chip, meter_urb_buf,
-+            sizeof(meter_urb_buf));
-+        kcontrol->private_value++;
-+        break;
-+    case 2:
-+        snd_us16x08_recv_urb(chip, meter_urb_buf,
-+            sizeof(meter_urb_buf));
-+        kcontrol->private_value++;
-+        break;
-+    case 3:
-+        mix_init_msg2[2] = comp_channel++;
-+        snd_us16x08_send_urb(chip, mix_init_msg2, 10);
-+        snd_us16x08_recv_urb(chip, meter_urb_buf,
-+            sizeof(meter_urb_buf));
-+        kcontrol->private_value = 0;
-+
-+        comp_store = get_comp_store();
-+        if (comp_channel == 17)
-+            comp_channel = 1;
-+        while (!comp_store->valSwitch[comp_channel - 1] &&
-+            comp_channel < 17)
-+            comp_channel++;
-+        if (comp_channel == 17)
-+            comp_channel = 1;
-+        break;
-+
-+    }
-+
-+    for (set = 0; set < 6; set++) {
-+        resp = (struct meter_resp *) &(meter_urb_buf[4 + set * 10]);
-+        val = resp->c2 + (resp->c3 << 8);
-+        if (resp->a0 == 0x61 && resp->a1 == 0x02 &&
-+            resp->a2 == 0x04 && resp->b0 == 0x62) {
-+            if (resp->c0 == 0x72)
-+                if (store)
-+                    store->meter_level[resp->b2 - 1] = val;
-+            if (resp->c0 == 0xb2) {
-+                if (store)
-+                    store->comp_level[resp->b2 - 1] = val;
-+            }
-+        }
-+        if (resp->a0 == 0x61 && resp->a1 == 0x02 &&
-+            resp->a2 == 0x02 && resp->b0 == 0x62) {
-+            if (store)
-+                store->master_level[resp->b2 - 1] = val;
-+        }
-+    }
-+
-+    for (i = 0; i < SND_US16X08_MAX_CHANNELS; i++) {
-+        ucontrol->value.integer.value[i] =
-+            store ? store->meter_level[i] : 0;
-+    }
-+
-+    ucontrol->value.integer.value[i++] = store ? store->master_level[0] 
-: 0;
-+    ucontrol->value.integer.value[i++] = store ? store->master_level[1] 
-: 0;
-+
-+    for (i = 2; i < SND_US16X08_MAX_CHANNELS + 2; i++)
-+        ucontrol->value.integer.value[i + SND_US16X08_MAX_CHANNELS] =
-+        store ? store->comp_level[i] : 0;
-+
-+    return 1;
-+}
-+static struct snd_kcontrol_new snd_us16x08_meter_ctl = {
-+    .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+    .access = SNDRV_CTL_ELEM_ACCESS_READ,
-+    .info = snd_us16x08_meter_info,
-+    .get = snd_us16x08_meter_get,
-+    .put = snd_us16x08_meter_put,
-+};
-+
-+struct snd_us16x08_meter_store *snd_us16x08_create_meter_store(void)
-+{
-+    struct snd_us16x08_meter_store *tmp =
-+        kzalloc(sizeof(struct snd_us16x08_meter_store), GFP_KERNEL);
-+
-+    if (!tmp)
-+        return NULL;
-+    return tmp;
-+
-+}
-+
-+void snd_us16x08_free_meter_store(struct snd_kcontrol *kctl)
-+{
-+    kfree(kctl->private_data);
-+}
-+
-+int add_new_ctl(struct usb_mixer_interface *mixer,
-+    const struct snd_kcontrol_new *ncontrol,
-+    int index, int offset, int num, int val_type,
-+    int channels, const char *name, const struct snd_us16x08_fader *opt,
-+    opt_free freeer, struct usb_mixer_elem_info **elem_ret)
-+{
-+    struct snd_kcontrol *kctl;
-+    struct usb_mixer_elem_info *elem;
-+    int err;
-+
-+    usb_audio_dbg(mixer->chip, "us16x08 add mixer %s\n", name);
-+
-+    elem = kzalloc(sizeof(*elem), GFP_KERNEL);
-+    if (!elem)
-+        return -ENOMEM;
-+
-+    elem->head.mixer = mixer;
-+    elem->control = offset;
-+    elem->idx_off = num;
-+    elem->head.id = index;
-+    elem->val_type = val_type;
-+    elem->channels = channels;
-+    elem->private_data = (void *) opt;
-+
-+    kctl = snd_ctl_new1(ncontrol, elem);
-+    if (!kctl) {
-+        kfree(elem);
-+        return -ENOMEM;
-+    }
-+
-+    kctl->private_free = freeer;
-+
-+    strlcpy(kctl->id.name, name, sizeof(kctl->id.name));
-+
-+    err = snd_usb_mixer_add_control(&elem->head, kctl);
-+    if (err < 0)
-+        return err;
-+
-+    if (elem_ret)
-+        *elem_ret = elem;
-+
-+    return 0;
-+}
-+
-+int snd_us16x08_controls_create(struct usb_mixer_interface *mixer)
-+{
-+
-+    int err;
-+    char name[64];
-+    struct usb_mixer_elem_info *elem;
-+
-+
-+    if (mixer->chip->num_interfaces > 0) {
-+        struct snd_us16x08_fader *route_store =
-+            snd_us16x08_create_mix_store(0);
-+
-+        route_store->value[0] = 0;
-+        route_store->value[1] = 1;
-+        route_store->value[2] = 4;
-+        route_store->value[3] = 5;
-+        route_store->value[4] = 6;
-+        route_store->value[5] = 7;
-+        route_store->value[6] = 8;
-+        route_store->value[7] = 9;
-+        snprintf(name, sizeof(name), "Route");
-+        err = add_new_ctl(mixer, &snd_us16x08_route_ctl,
-+            0x00, 0x00, 0,
-+            USB_MIXER_U8, 1, name, (void *) route_store,
-+            snd_us16x08_free_mix_store, &elem);
-+        if (err < 0)
-+            return err;
-+
-+
-+        snprintf(name, sizeof(name), "Master");
-+        err = add_new_ctl(mixer, &snd_us16x08_master_ctl,
-+            SND_US16X08_ID_FADER, 0x00, 0, USB_MIXER_U8, 1, name,
-+            (void *) snd_us16x08_create_mix_store(0),
-+            snd_us16x08_free_mix_store, &elem);
-+        if (err < 0)
-+            return err;
-+
-+        snprintf(name, sizeof(name), "Bypass");
-+        err = add_new_ctl(mixer, &snd_us16x08_bypass_ctl,
-+            SND_US16X08_ID_BYPASS, 0x00, 0, USB_MIXER_U8, 1, name,
-+            (void *) snd_us16x08_create_single_store(0),
-+            snd_us16x08_free_mix_store, &elem);
-+        if (err < 0)
-+            return err;
-+
-+        snprintf(name, sizeof(name), "Buss out");
-+        err = add_new_ctl(mixer, &snd_us16x08_bussout_ctl,
-+            SND_US16X08_ID_BUSS_OUT, 0x00, 0, USB_MIXER_U8, 1, name,
-+            (void *) snd_us16x08_create_single_store(0),
-+            snd_us16x08_free_mix_store, &elem);
-+        if (err < 0)
-+            return err;
-+
-+        snprintf(name, sizeof(name), "Master Mute");
-+        err = add_new_ctl(mixer, &snd_us16x08_master_mute_ctl,
-+            SND_US16X08_ID_MUTE, 0x00, 0, USB_MIXER_U8, 1, name,
-+            (void *) snd_us16x08_create_single_store(0),
-+            snd_us16x08_free_mix_store, &elem);
-+        if (err < 0)
-+            return err;
-+
-+
-+        snprintf(name, sizeof(name), "Phase");
-+        err = add_new_ctl(mixer, &snd_us16x08_phase_ctl,
-+            SND_US16X08_ID_PHASE, 0x00, 0, USB_MIXER_U8, 1, name,
-+            (void *) snd_us16x08_create_mix_store(0),
-+            snd_us16x08_free_mix_store, &elem);
-+        if (err < 0)
-+            return err;
-+
-+        snprintf(name, sizeof(name), "Fader");
-+        err = add_new_ctl(mixer, &snd_us16x08_mix_ctl,
-+            SND_US16X08_ID_FADER, 0x00, 0, USB_MIXER_S16, 1, name,
-+            (void *) snd_us16x08_create_mix_store(127),
-+            snd_us16x08_free_mix_store, &elem);
-+        if (err < 0)
-+            return err;
-+
-+        snprintf(name, sizeof(name), "3 Mute");
-+        err = add_new_ctl(mixer, &snd_us16x08_mute_ctl,
-+            SND_US16X08_ID_MUTE, 0x00, 0, USB_MIXER_BOOLEAN, 1,
-+            name, (void *) snd_us16x08_create_mix_store(0),
-+            snd_us16x08_free_mix_store, &elem);
-+        if (err < 0)
-+            return err;
-+
-+        snprintf(name, sizeof(name), "4 Pan");
-+        err = add_new_ctl(mixer, &snd_us16x08_pan_ctl,
-+            SND_US16X08_ID_PAN, 0x00, 0, USB_MIXER_U16, 1, name,
-+            (void *) snd_us16x08_create_mix_store(127),
-+            snd_us16x08_free_mix_store, &elem);
-+        if (err < 0)
-+            return err;
-+
-+        resp = kmalloc(sizeof(struct meter_resp), GFP_KERNEL);
-+        if (!resp)
-+            return -ENOMEM;
-+
-+        snprintf(name, sizeof(name), "Z Meter");
-+        err = add_new_ctl(mixer, &snd_us16x08_meter_ctl,
-+            SND_US16X08_ID_METER, 0x00, 0, USB_MIXER_U16, 1, name,
-+            (void *) snd_us16x08_create_meter_store(),
-+            snd_us16x08_free_meter_store, &elem);
-+        if (err < 0)
-+            return err;
-+
-+        err = snd_us16x08_controls_create_eq(mixer);
-+        if (err < 0)
-+            return err;
-+
-+        err = snd_us16x08_controls_create_comp(mixer);
-+        if (err < 0)
-+            return err;
-+
-+
-+    } else {
-+        usb_audio_dbg(mixer->chip,
-+            "mixer->chip->num_interfaces == 0\n");
-+    }
-+
-+    return 0;
-+}
-diff --git a/sound/usb/mixer_us16x08.h b/sound/usb/mixer_us16x08.h
-new file mode 100644
-index 0000000..6423547
---- /dev/null
-+++ b/sound/usb/mixer_us16x08.h
-@@ -0,0 +1,136 @@
-+#ifndef __USB_MIXER_US16X08_H
-+#define __USB_MIXER_US16X08_H
-+
-+
-+#define SND_US16X08_MIN_CHANNELS 0
-+#define SND_US16X08_MAX_CHANNELS 16
-+
-+/* define some bias, cause some alsa-mixers wont work with
-+ * negative ranges or if mixer-min != 0 */
-+#define SND_US16X08_NO_BIAS 0
-+#define SND_US16X08_FADER_BIAS 127
-+#define SND_US16X08_EQ_HIGHFREQ_BIAS 0x20
-+#define SND_US16X08_COMP_THRESHOLD_BIAS 0x20
-+#define SND_US16X08_COMP_ATTACK_BIAS 2
-+#define SND_US16X08_COMP_RELEASE_BIAS 1
-+
-+/* get macro for components of kcontrol private_value */
-+#define SND_US16X08_KCBIAS(x) ((x->private_value >> 24) & 0xff)
-+#define SND_US16X08_KCSTEP(x) ((x->private_value >> 16) & 0xff)
-+#define SND_US16X08_KCMIN(x) ((x->private_value >> 8) & 0xff)
-+#define SND_US16X08_KCMAX(x) ((x->private_value >> 0) & 0xff)
-+/* set macro for kcontrol private_value */
-+#define SND_US16X08_KCSET(bias, step, min, max)  \
-+        ((bias << 24) | (step << 16) | (min << 8) | max)
-+
-+/* the URB request/type to control Tascam mixers */
-+#define SND_US16X08_URB_REQUEST 0x1D
-+#define SND_US16X08_URB_REQUESTTYPE 0x40
-+
-+/* the URB params to retrieve meter ranges */
-+#define SND_US16X08_URB_METER_REQUEST       0x1e
-+#define SND_US16X08_URB_METER_REQUESTTYPE   0xc0
-+
-+/* Common Channel control IDs */
-+#define SND_US16X08_ID_BYPASS 0x45
-+#define SND_US16X08_ID_BUSS_OUT 0x44
-+#define SND_US16X08_ID_PHASE 0x85
-+#define SND_US16X08_ID_MUTE 0x83
-+#define SND_US16X08_ID_FADER 0x81
-+#define SND_US16X08_ID_PAN 0x82
-+#define SND_US16X08_ID_METER 0xB1
-+
-+/* EQ level IDs */
-+#define SND_US16X08_ID_EQLOWLEVEL 0x01
-+#define SND_US16X08_ID_EQLOWMIDLEVEL 0x02
-+#define SND_US16X08_ID_EQHIGHMIDLEVEL 0x03
-+#define SND_US16X08_ID_EQHIGHLEVEL 0x04
-+
-+/* EQ frequence IDs */
-+#define SND_US16X08_ID_EQLOWFREQ 0x11
-+#define SND_US16X08_ID_EQLOWMIDFREQ 0x12
-+#define SND_US16X08_ID_EQHIGHMIDFREQ 0x13
-+#define SND_US16X08_ID_EQHIGHFREQ 0x14
-+
-+/* EQ width IDs */
-+#define SND_US16X08_ID_EQLOWMIDWIDTH 0x22
-+#define SND_US16X08_ID_EQHIGHMIDWIDTH 0x23
-+
-+#define SND_US16X08_ID_EQENABLE 0x31
-+
-+/* Compressor Ids */
-+#define SND_US16X08_ID_COMP_THRESHOLD 0x01
-+#define SND_US16X08_ID_COMP_RATIO 0x02
-+#define SND_US16X08_ID_COMP_ATTACK 0x03
-+#define SND_US16X08_ID_COMP_RELEASE 0x04
-+#define SND_US16X08_ID_COMP_GAIN 0x05
-+#define SND_US16X08_ID_COMP_SWITCH 0x06
-+
-+struct snd_us16x08_fader {
-+    uint8_t value[SND_US16X08_MAX_CHANNELS];
-+};
-+
-+struct snd_us16x08_eq_store {
-+    uint8_t valdB[SND_US16X08_MAX_CHANNELS];
-+    uint8_t valFreq[SND_US16X08_MAX_CHANNELS];
-+    uint8_t valWidth[SND_US16X08_MAX_CHANNELS];
-+    uint8_t valSwitch[SND_US16X08_MAX_CHANNELS];
-+};
-+
-+struct snd_us16x08_eq_all_store {
-+    struct snd_us16x08_eq_store *low_store;
-+    struct snd_us16x08_eq_store *midlow_store;
-+    struct snd_us16x08_eq_store *midhigh_store;
-+    struct snd_us16x08_eq_store *high_store;
-+};
-+
-+struct snd_us16x08_comp_store {
-+    int8_t valThreshold[SND_US16X08_MAX_CHANNELS];
-+    uint8_t valAttack[SND_US16X08_MAX_CHANNELS];
-+    uint8_t valRelease[SND_US16X08_MAX_CHANNELS];
-+    uint8_t valRatio[SND_US16X08_MAX_CHANNELS];
-+    uint8_t valGain[SND_US16X08_MAX_CHANNELS];
-+    uint8_t valSwitch[SND_US16X08_MAX_CHANNELS];
-+};
-+
-+struct snd_us16x08_meter_store {
-+    long meter_level[SND_US16X08_MAX_CHANNELS];
-+    long master_level[2]; /* level of meter for master output */
-+    long comp_level[16]; /* compressor reduction level of current 
-channel */
-+};
-+
-+struct snd_us16x08_bypass_store {
-+    int value;
-+};
-+
-+typedef void(*opt_free)(struct snd_kcontrol *kctl);
-+
-+
-+/*                                               |- Channel index (5)   */
-+/* |                      */
-+/* v                      */
-+#define CTLMSGHEAD_IN  0x61, 0x02, 0x04, 0x62, 0x02, 0x01
-+#define CTLMSGHEAD_OUT 0x61, 0x02, 0x02, 0x62, 0x02, 0x01
-+
-+int snd_us16x08_mix_info(struct snd_kcontrol *kcontrol,
-+        struct snd_ctl_elem_info *uinfo);
-+
-+int snd_us16x08_controls_create(struct usb_mixer_interface *mixer);
-+
-+int snd_us16x08_send_urb(struct snd_usb_audio *chip, char *buf, int size);
-+
-+int snd_us16x08_cur_channel(void);
-+
-+int add_new_ctl(struct usb_mixer_interface *mixer,
-+        const struct snd_kcontrol_new *ncontrol,
-+        int index, int offset, int num, int val_type, int channels,
-+        const char *name, const struct snd_us16x08_fader *opt,
-+        opt_free freeer, struct usb_mixer_elem_info **elem_ret);
-+
-+int snd_us16x08_controls_create_eq(struct usb_mixer_interface *mixer);
-+int snd_us16x08_controls_create_comp(struct usb_mixer_interface *mixer);
-+
-+struct snd_us16x08_comp_store *get_comp_store(void);
-+
-+#endif /* __USB_MIXER_US16X08_H */
-+
-diff --git a/sound/usb/mixer_us16x08_comp.c b/sound/usb/mixer_us16x08_comp.c
-new file mode 100644
-index 0000000..2bc0146
---- /dev/null
-+++ b/sound/usb/mixer_us16x08_comp.c
-@@ -0,0 +1,316 @@
-+#include <linux/slab.h>
-+#include <linux/usb.h>
-+#include <linux/usb/audio-v2.h>
-+
-+#include <sound/core.h>
-+#include <sound/control.h>
-+#include <sound/tlv.h>
-+
-+#include "usbaudio.h"
-+#include "mixer.h"
-+#include "helper.h"
-+#include "power.h"
-+
-+#include "mixer_us16x08.h"
-+
-+#define COMP_INFOPUTGET_NOLOG
-+
-+static char comp_msg[] = {
-+    CTLMSGHEAD_IN, /* default message head, equal to all mixers */
-+    0x91,
-+    0x02,
-+    0xf0, /* 0x08: Threshold db (8) (e0 ... 00) (+-0dB -- -32dB) x-32 */
-+    0x92,
-+    0x02,
-+    0x0a, /* 0x0b: Ratio (0a,0b,0d,0f,11,14,19,1e,23,28,32,3c,50,a0,ff)  */
-+    0x93,
-+    0x02,
-+    0x02, /* 0x0e: Attack (0x02 ... 0xc0) (2ms ... 200ms) */
-+    0x94,
-+    0x02,
-+    0x01, /* 0x11: Release (0x01 ... 0x64) (10ms ... 1000ms) x*10 */
-+    0x95,
-+    0x02,
-+    0x03, /* 0x14: gain (0 ... 20) (0dB .. 20dB) */
-+    0x96,
-+    0x02,
-+    0x01,
-+    0x97,
-+    0x02,
-+    0x01, /* 0x1a: main Comp switch (0 ... 1) (off ... on)) */
-+    0x00,
-+    0x00
-+};
-+
-+static char ratio_map[] = {
-+    0x0a, 0x0b, 0x0d, 0x0f, 0x11, 0x14, 0x19, 0x1e,
-+    0x23, 0x28, 0x32, 0x3c, 0x50, 0xa0, 0xff
-+};
-+
-+struct snd_us16x08_comp_store *comp_store;
-+
-+int snd_us16x08_compswitch_info(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_info *uinfo)
-+{
-+    uinfo->count = 1;
-+    uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
-+    uinfo->value.integer.max = 1;
-+    uinfo->value.integer.min = 0;
-+    return 0;
-+}
-+
-+static int snd_us16x08_comp_get(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_value *ucontrol)
-+{
-+    int val = 0;
-+    int bias = (kcontrol->private_value >> 24) & 0xff;
-+    struct usb_mixer_elem_info *elem = kcontrol->private_data;
-+    struct snd_usb_audio *chip = elem->head.mixer->chip;
-+    struct snd_us16x08_comp_store *store =
-+        ((struct snd_us16x08_comp_store *) elem->private_data);
-+    int index = ucontrol->id.index;
-+
-+
-+    switch (elem->head.id) {
-+    case SND_US16X08_ID_COMP_THRESHOLD:
-+        val = store->valThreshold[index];
-+        dev_info(&chip->dev->dev,
-+            "snd_us16x08_comp_get name:Threshold index: %d val:%d",
-+            index, val);
-+        break;
-+    case SND_US16X08_ID_COMP_RATIO:
-+        val = store->valRatio[index];
-+        dev_info(&chip->dev->dev,
-+            "snd_us16x08_comp_get name:Ratio index: %d val:%d",
-+            index, val);
-+        break;
-+    case SND_US16X08_ID_COMP_ATTACK:
-+        val = store->valAttack[index] - bias;
-+        dev_info(&chip->dev->dev,
-+            "snd_us16x08_comp_get name:Attack index: %d val:%d",
-+            index, val);
-+        break;
-+    case SND_US16X08_ID_COMP_RELEASE:
-+        val = store->valRelease[index] - bias;
-+        dev_info(&chip->dev->dev,
-+            "snd_us16x08_comp_get name:Release index: %d val:%d",
-+            index, val);
-+        break;
-+    case SND_US16X08_ID_COMP_GAIN:
-+        val = store->valGain[index];
-+        dev_info(&chip->dev->dev,
-+            "snd_us16x08_comp_get name:Gain index: %d val:%d",
-+            index, val);
-+        break;
-+    case SND_US16X08_ID_COMP_SWITCH:
-+        val = store->valSwitch[index];
-+        dev_info(&chip->dev->dev,
-+            "snd_us16x08_comp_get name:Switch index: %d val:%d",
-+            index, val);
-+        break;
-+    }
-+    ucontrol->value.integer.value[0] = val;
-+
-+    return 0;
-+}
-+
-+static int snd_us16x08_comp_put(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_value *ucontrol)
-+{
-+    struct usb_mixer_elem_info *elem = kcontrol->private_data;
-+    struct snd_usb_audio *chip = elem->head.mixer->chip;
-+    struct snd_us16x08_comp_store *store =
-+        ((struct snd_us16x08_comp_store *) elem->private_data);
-+    int index = ucontrol->id.index;
-+
-+    char buf[sizeof(comp_msg)];
-+    int val, err = 0;
-+    int bias = SND_US16X08_KCBIAS(kcontrol);
-+
-+    memcpy(buf, comp_msg, sizeof(comp_msg));
-+
-+    val = ucontrol->value.integer.value[0];
-+
-+    switch (elem->head.id) {
-+    case SND_US16X08_ID_COMP_THRESHOLD:
-+        store->valThreshold[index] = val;
-+        break;
-+    case SND_US16X08_ID_COMP_RATIO:
-+        store->valRatio[index] = val;
-+        break;
-+    case SND_US16X08_ID_COMP_ATTACK:
-+        store->valAttack[index] = val + bias;
-+        break;
-+    case SND_US16X08_ID_COMP_RELEASE:
-+        store->valRelease[index] = val + bias;
-+        break;
-+    case SND_US16X08_ID_COMP_GAIN:
-+        store->valGain[index] = val;
-+        break;
-+    case SND_US16X08_ID_COMP_SWITCH:
-+        store->valSwitch[index] = val;
-+        break;
-+    }
-+
-+    buf[8] = store->valThreshold[index] - SND_US16X08_COMP_THRESHOLD_BIAS;
-+    buf[11] = ratio_map[store->valRatio[index]];
-+    buf[14] = store->valAttack[index];
-+    buf[17] = store->valRelease[index];
-+    buf[20] = store->valGain[index];
-+    buf[26] = store->valSwitch[index];
-+
-+    buf[5] = index + 1;
-+
-+    err = snd_us16x08_send_urb(chip, buf, sizeof(comp_msg));
-+
-+    return 1;
-+}
-+
-+static struct snd_kcontrol_new snd_us16x08_compswitch_ctl = {
-+    .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+    .access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+    .name = "",
-+    .count = 16,
-+    .info = snd_us16x08_compswitch_info,
-+    .get = snd_us16x08_comp_get,
-+    .put = snd_us16x08_comp_put,
-+    .private_value = ((SND_US16X08_NO_BIAS << 24) | /*bias*/
-+    (1 << 16) | /*step*/
-+    (0 << 8) | /*min*/
-+    (1)), /*max*/
-+};
-+
-+static struct snd_kcontrol_new snd_us16x08_comp_threshold_ctl = {
-+    .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+    .access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+    .name = "",
-+    .count = 16,
-+    .info = snd_us16x08_mix_info,
-+    .get = snd_us16x08_comp_get,
-+    .put = snd_us16x08_comp_put,
-+    .private_value = ((SND_US16X08_COMP_THRESHOLD_BIAS << 24) | /*bias*/
-+    (1 << 16) | /*step*/
-+    (0 << 8) | /*min*/
-+    (0x20)), /*max*/
-+};
-+static struct snd_kcontrol_new snd_us16x08_comp_ratio_ctl = {
-+    .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+    .access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+    .name = "",
-+    .count = 16,
-+    .info = snd_us16x08_mix_info,
-+    .get = snd_us16x08_comp_get,
-+    .put = snd_us16x08_comp_put,
-+    .private_value = ((SND_US16X08_NO_BIAS << 24) | /*bias*/
-+    (1 << 16) | /*step*/
-+    (0 << 8) | /*min*/
-+    (sizeof(ratio_map) - 1)), /*max*/
-+};
-+static struct snd_kcontrol_new snd_us16x08_comp_gain_ctl = {
-+    .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+    .access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+    .name = "",
-+    .count = 16,
-+    .info = snd_us16x08_mix_info,
-+    .get = snd_us16x08_comp_get,
-+    .put = snd_us16x08_comp_put,
-+    .private_value = SND_US16X08_KCSET(SND_US16X08_NO_BIAS, 1, 0, 0x14),
-+};
-+static struct snd_kcontrol_new snd_us16x08_comp_attack_ctl = {
-+    .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+    .access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+    .name = "",
-+    .count = 16,
-+    .info = snd_us16x08_mix_info,
-+    .get = snd_us16x08_comp_get,
-+    .put = snd_us16x08_comp_put,
-+    .private_value =
-+    SND_US16X08_KCSET(SND_US16X08_COMP_ATTACK_BIAS, 1, 0, 0xc6),
-+};
-+static struct snd_kcontrol_new snd_us16x08_comp_release_ctl = {
-+    .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+    .access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+    .name = "",
-+    .count = 16,
-+    .info = snd_us16x08_mix_info,
-+    .get = snd_us16x08_comp_get,
-+    .put = snd_us16x08_comp_put,
-+    .private_value =
-+    SND_US16X08_KCSET(SND_US16X08_COMP_RELEASE_BIAS, 1, 0, 0x63),
-+};
-+
-+struct snd_us16x08_comp_store *snd_us16x08_create_comp_store(void)
-+{
-+    int i = 0;
-+    struct snd_us16x08_comp_store *tmp =
-+        kmalloc(sizeof(struct snd_us16x08_comp_store), GFP_KERNEL);
-+
-+    for (i = 0; i < SND_US16X08_MAX_CHANNELS; i++) {
-+        tmp->valThreshold[i] = 0x20; /*     0dB */
-+        tmp->valRatio[i] = 0x00; /*         1:1 */
-+        tmp->valGain[i] = 0x00; /*          0dB */
-+        tmp->valSwitch[i] = 0x00; /*        on */
-+        tmp->valAttack[i] = 0x02; /*        2ms */
-+        tmp->valRelease[i] = 0x01; /*       10ms */
-+    }
-+    return tmp;
-+}
-+
-+int snd_us16x08_controls_create_comp(struct usb_mixer_interface *mixer)
-+{
-+
-+    int err;
-+    char name[64];
-+    struct usb_mixer_elem_info *elem;
-+
-+    comp_store = snd_us16x08_create_comp_store();
-+
-+    snprintf(name, sizeof(name), "A Comp");
-+    err = add_new_ctl(mixer, &snd_us16x08_compswitch_ctl,
-+        SND_US16X08_ID_COMP_SWITCH, 0x00, 0, USB_MIXER_U8, 1,
-+        name, (void *) comp_store, NULL, &elem);
-+    if (err < 0)
-+        return err;
-+
-+    snprintf(name, sizeof(name), "B Thresh");
-+    err = add_new_ctl(mixer, &snd_us16x08_comp_threshold_ctl,
-+        SND_US16X08_ID_COMP_THRESHOLD, 0x00, 0, USB_MIXER_U8, 1, name,
-+        (void *) comp_store, NULL, &elem);
-+    if (err < 0)
-+        return err;
-+
-+    snprintf(name, sizeof(name), "C Ratio");
-+    err = add_new_ctl(mixer, &snd_us16x08_comp_ratio_ctl,
-+        SND_US16X08_ID_COMP_RATIO, 0x00, 0, USB_MIXER_U8, 1, name,
-+        (void *) comp_store, NULL, &elem);
-+    if (err < 0)
-+        return err;
-+
-+    snprintf(name, sizeof(name), "D Attack");
-+    err = add_new_ctl(mixer, &snd_us16x08_comp_attack_ctl,
-+        SND_US16X08_ID_COMP_ATTACK, 0x00, 0, USB_MIXER_U8, 1, name,
-+        (void *) comp_store, NULL, &elem);
-+    if (err < 0)
-+        return err;
-+
-+    snprintf(name, sizeof(name), "E Release");
-+    err = add_new_ctl(mixer, &snd_us16x08_comp_release_ctl,
-+        SND_US16X08_ID_COMP_RELEASE, 0x00, 0, USB_MIXER_U8, 1, name,
-+        (void *) comp_store, NULL, &elem);
-+    if (err < 0)
-+        return err;
-+
-+    snprintf(name, sizeof(name), "F Gain");
-+    err = add_new_ctl(mixer, &snd_us16x08_comp_gain_ctl,
-+        SND_US16X08_ID_COMP_GAIN, 0x00, 0, USB_MIXER_U8, 1, name,
-+        (void *) comp_store, NULL, &elem);
-+    if (err < 0)
-+        return err;
-+
-+    return err;
-+}
-+
-+struct snd_us16x08_comp_store* get_comp_store(void)
-+{
-+    return comp_store;
-+}
-\ No newline at end of file
-diff --git a/sound/usb/mixer_us16x08_eq.c b/sound/usb/mixer_us16x08_eq.c
-new file mode 100644
-index 0000000..dea2dfb
---- /dev/null
-+++ b/sound/usb/mixer_us16x08_eq.c
-@@ -0,0 +1,407 @@
-+#include <linux/slab.h>
-+#include <linux/usb.h>
-+#include <linux/usb/audio-v2.h>
-+
-+#include <sound/core.h>
-+#include <sound/control.h>
-+#include <sound/tlv.h>
-+
-+
-+#include "usbaudio.h"
-+#include "mixer.h"
-+
-+#include "mixer_us16x08.h"
-+
-+
-+#define EQ_INFOPUTGET_NOLOG
-+
-+static char eqs_msq[] = {
-+    CTLMSGHEAD_IN, /*          default message head, equal to all mixers */
-+    0x51, /*                0x06: Controller ID  */
-+    0x02,
-+    0x04, /* 0x08: EQ set num (0x01..0x04) (LOW, LOWMID, HIGHMID, HIGH)) */
-+    0x52,
-+    0x02,
-+    0x0c, /* 0x0b: value dB (0 ... 12) (-12db .. +12db)  x-6 */
-+    0x53,
-+    0x02,
-+    0x0f, /* 0x0e: value freq (32-47) (1.7kHz..18kHz) */
-+    0x54,
-+    0x02,
-+    0x02, /* 0x11: band width (0-6) (Q16-Q0.25)  2^x/4 (EQ xxMID only) */
-+    0x55,
-+    0x02,
-+    0x01, /* 0x14: main EQ switch (0 ... 1) (off ... on)) */
-+    0x00,
-+    0x00
-+};
-+
-+int snd_us16x08_eqswitch_info(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_info *uinfo)
-+{
-+    uinfo->count = 1;
-+    uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
-+    uinfo->value.integer.max = 1;
-+    uinfo->value.integer.min = 0;
-+    return 0;
-+}
-+
-+static int snd_us16x08_eqswitch_get(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_value *ucontrol)
-+{
-+    int val = 0;
-+    struct usb_mixer_elem_info *elem = kcontrol->private_data;
-+    struct snd_us16x08_eq_all_store *store =
-+        ((struct snd_us16x08_eq_all_store *) elem->private_data);
-+    int index = ucontrol->id.index;
-+
-+    val = store->low_store->valSwitch[index];
-+    ucontrol->value.integer.value[0] = val;
-+
-+    return 0;
-+}
-+
-+static int snd_us16x08_eqswitch_put(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_value *ucontrol)
-+{
-+    struct usb_mixer_elem_info *elem = kcontrol->private_data;
-+    struct snd_usb_audio *chip = elem->head.mixer->chip;
-+    struct snd_us16x08_eq_all_store *store =
-+        ((struct snd_us16x08_eq_all_store *) elem->private_data);
-+    int index = ucontrol->id.index;
-+
-+    char buf[sizeof(eqs_msq)];
-+    int val, err = 0;
-+
-+    val = ucontrol->value.integer.value[0];
-+
-+    memcpy(buf, eqs_msq, sizeof(eqs_msq));
-+
-+    store->low_store->valSwitch[index] = val;
-+    store->midlow_store->valSwitch[index] = val;
-+    store->midhigh_store->valSwitch[index] = val;
-+    store->high_store->valSwitch[index] = val;
-+
-+    buf[5] = index + 1;
-+
-+    buf[20] = store->low_store->valSwitch[index];
-+    buf[17] = store->low_store->valWidth[index];
-+    buf[14] = store->low_store->valFreq[index];
-+    buf[11] = store->low_store->valdB[index];
-+    buf[8] = 0x01;
-+    err = snd_us16x08_send_urb(chip, buf, sizeof(eqs_msq));
-+
-+    udelay(15000);
-+    buf[20] = store->midlow_store->valSwitch[index];
-+    buf[17] = store->midlow_store->valWidth[index];
-+    buf[14] = store->midlow_store->valFreq[index];
-+    buf[11] = store->midlow_store->valdB[index];
-+    buf[8] = 0x02;
-+    err = snd_us16x08_send_urb(chip, buf, sizeof(eqs_msq));
-+
-+    udelay(15000);
-+    buf[20] = store->midhigh_store->valSwitch[index];
-+    buf[17] = store->midhigh_store->valWidth[index];
-+    buf[14] = store->midhigh_store->valFreq[index];
-+    buf[11] = store->midhigh_store->valdB[index];
-+    buf[8] = 0x03;
-+    err = snd_us16x08_send_urb(chip, buf, sizeof(eqs_msq));
-+
-+    udelay(15000);
-+    buf[20] = store->high_store->valSwitch[index];
-+    buf[17] = store->high_store->valWidth[index];
-+    buf[14] = store->high_store->valFreq[index];
-+    buf[11] = store->high_store->valdB[index];
-+    buf[8] = 0x04;
-+    err = snd_us16x08_send_urb(chip, buf, sizeof(eqs_msq));
-+
-+    return 1;
-+}
-+
-+static int snd_us16x08_eq_get(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_value *ucontrol)
-+{
-+    int val = 0;
-+    struct usb_mixer_elem_info *elem = kcontrol->private_data;
-+    struct snd_us16x08_eq_store *store =
-+        ((struct snd_us16x08_eq_store *) elem->private_data);
-+    int index = ucontrol->id.index;
-+
-+
-+    switch (elem->head.id & 0xf0) {
-+    case 0x00:
-+        val = store->valdB[index];
-+        break;
-+    case 0x10:
-+        val = store->valFreq[index] -
-+            ((kcontrol->private_value >> 24) & 0xff);
-+        break;
-+    case 0x20:
-+        val = store->valWidth[index];
-+        break;
-+    }
-+    ucontrol->value.integer.value[0] = val;
-+
-+    return 0;
-+}
-+
-+static int snd_us16x08_eq_put(struct snd_kcontrol *kcontrol,
-+    struct snd_ctl_elem_value *ucontrol)
-+{
-+    struct usb_mixer_elem_info *elem = kcontrol->private_data;
-+    struct snd_usb_audio *chip = elem->head.mixer->chip;
-+    struct snd_us16x08_eq_store *store =
-+        ((struct snd_us16x08_eq_store *) elem->private_data);
-+    int index = ucontrol->id.index;
-+
-+    char buf[sizeof(eqs_msq)];
-+    int val, err = 0;
-+
-+    memcpy(buf, eqs_msq, sizeof(eqs_msq));
-+
-+    val = ucontrol->value.integer.value[0] +
-+        ((kcontrol->private_value >> 24) & 0xff);
-+
-+    switch (elem->head.id & 0xf0) {
-+    case 0x00: /* level dB */
-+        store->valdB[index] = val;
-+        break;
-+    case 0x10:
-+        store->valFreq[index] = val;
-+        break;
-+    case 0x20:
-+        store->valWidth[index] = val;
-+        break;
-+    }
-+
-+    buf[20] = store->valSwitch[index];
-+    buf[17] = store->valWidth[index];
-+    buf[14] = store->valFreq[index];
-+    buf[11] = store->valdB[index];
-+
-+    buf[5] = index + 1;
-+
-+    buf[8] = (elem->head.id & 0x0F);
-+    err = snd_us16x08_send_urb(chip, buf, sizeof(eqs_msq));
-+
-+    return 1;
-+}
-+
-+static struct snd_kcontrol_new snd_us16x08_eqlevel_ctl = {
-+    .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+    .access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+    .name = "",
-+    .count = 16,
-+    .info = snd_us16x08_mix_info,
-+    .get = snd_us16x08_eq_get,
-+    .put = snd_us16x08_eq_put,
-+    .private_value = SND_US16X08_KCSET(SND_US16X08_NO_BIAS, 1, 0, 24),
-+};
-+
-+static struct snd_kcontrol_new snd_us16x08_eqLowFreq_ctl = {
-+    .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+    .access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+    .name = "",
-+    .count = 16,
-+    .info = snd_us16x08_mix_info,
-+    .get = snd_us16x08_eq_get,
-+    .put = snd_us16x08_eq_put,
-+    .private_value = SND_US16X08_KCSET(SND_US16X08_NO_BIAS, 1, 0, 0x1F),
-+};
-+
-+static struct snd_kcontrol_new snd_us16x08_eqMidFreq_ctl = {
-+    .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+    .access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+    .name = "",
-+    .count = 16,
-+    .info = snd_us16x08_mix_info,
-+    .get = snd_us16x08_eq_get,
-+    .put = snd_us16x08_eq_put,
-+    .private_value = SND_US16X08_KCSET(SND_US16X08_NO_BIAS, 1, 0, 0x3F),
-+};
-+
-+static struct snd_kcontrol_new snd_us16x08_eqMidWidth_ctl = {
-+    .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+    .access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+    .name = "",
-+    .count = 16,
-+    .info = snd_us16x08_mix_info,
-+    .get = snd_us16x08_eq_get,
-+    .put = snd_us16x08_eq_put,
-+    .private_value = SND_US16X08_KCSET(SND_US16X08_NO_BIAS, 1, 0, 0x06),
-+};
-+
-+static struct snd_kcontrol_new snd_us16x08_eqHighFreq_ctl = {
-+    .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+    .access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+    .name = "",
-+    .count = 16,
-+    .info = snd_us16x08_mix_info,
-+    .get = snd_us16x08_eq_get,
-+    .put = snd_us16x08_eq_put,
-+    .private_value =
-+    SND_US16X08_KCSET(SND_US16X08_EQ_HIGHFREQ_BIAS, 1, 0, 0x1F),
-+};
-+
-+static struct snd_kcontrol_new snd_us16x08_eqswitch_ctl = {
-+    .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+    .access = SNDRV_CTL_ELEM_ACCESS_READWRITE,
-+    .name = "",
-+    .count = 16,
-+    .info = snd_us16x08_eqswitch_info,
-+    .get = snd_us16x08_eqswitch_get,
-+    .put = snd_us16x08_eqswitch_put,
-+    .private_value = SND_US16X08_KCSET(SND_US16X08_NO_BIAS, 1, 0, 1),
-+};
-+
-+struct snd_us16x08_eq_store *snd_us16x08_create_eq_store(int index)
-+{
-+    int i = 0;
-+    struct snd_us16x08_eq_store *tmp =
-+        kmalloc(sizeof(struct snd_us16x08_eq_store), GFP_KERNEL);
-+
-+    for (i = 0; i < SND_US16X08_MAX_CHANNELS; i++) {
-+        switch (index) {
-+        case 0x01: /* EQ Low */
-+            tmp->valdB[i] = 0x0c;
-+            tmp->valFreq[i] = 0x05;
-+            tmp->valWidth[i] = 0xff;
-+            tmp->valSwitch[i] = 0x01; /* on */
-+            break;
-+        case 0x02: /* EQ Mid low */
-+            tmp->valdB[i] = 0x0c;
-+            tmp->valFreq[i] = 0x0e;
-+            tmp->valWidth[i] = 0x02;
-+            tmp->valSwitch[i] = 0x01; /* on */
-+            break;
-+        case 0x03: /* EQ Mid High */
-+            tmp->valdB[i] = 0x0c;
-+            tmp->valFreq[i] = 0x1b;
-+            tmp->valWidth[i] = 0x02;
-+            tmp->valSwitch[i] = 0x01; /* on */
-+            break;
-+        case 0x04: /* EQ Mid Low */
-+            tmp->valdB[i] = 0x0c;
-+            tmp->valFreq[i] = 0x2f;
-+            tmp->valWidth[i] = 0xff;
-+            tmp->valSwitch[i] = 0x01; /* on */
-+            break;
-+        }
-+    }
-+    return tmp;
-+}
-+
-+void snd_us16x08_free_eq_store(struct snd_kcontrol *kctl)
-+{
-+    snd_usb_mixer_elem_free(kctl);
-+}
-+
-+int snd_us16x08_controls_create_eq(struct usb_mixer_interface *mixer)
-+{
-+
-+    int err;
-+    char name[64];
-+    struct usb_mixer_elem_info *elem;
-+
-+    struct snd_us16x08_eq_store *eq_low_store =
-+        snd_us16x08_create_eq_store(0x01);
-+    struct snd_us16x08_eq_store *eq_midlow_store =
-+        snd_us16x08_create_eq_store(0x02);
-+    struct snd_us16x08_eq_store *eq_midhigh_store =
-+        snd_us16x08_create_eq_store(0x03);
-+    struct snd_us16x08_eq_store *eq_high_store =
-+        snd_us16x08_create_eq_store(0x04);
-+    struct snd_us16x08_eq_all_store *eq_all_store =
-+        kmalloc(sizeof(struct snd_us16x08_eq_all_store), GFP_KERNEL);
-+
-+    eq_all_store->low_store = eq_low_store;
-+    eq_all_store->midlow_store = eq_midlow_store;
-+    eq_all_store->midhigh_store = eq_midhigh_store;
-+    eq_all_store->high_store = eq_high_store;
-+
-+
-+    snprintf(name, sizeof(name), "5 Low");
-+    err = add_new_ctl(mixer, &snd_us16x08_eqlevel_ctl,
-+        SND_US16X08_ID_EQLOWLEVEL, 0x00, 0, USB_MIXER_U8, 1, name,
-+        (void *) eq_low_store, snd_us16x08_free_eq_store, &elem);
-+    if (err < 0)
-+        return err;
-+
-+    snprintf(name, sizeof(name), "51 LowFreq");
-+    err = add_new_ctl(mixer, &snd_us16x08_eqLowFreq_ctl,
-+        SND_US16X08_ID_EQLOWFREQ, 0x00, 0,
-+        USB_MIXER_U8, 1, name, (void *) eq_low_store, NULL, &elem);
-+    if (err < 0)
-+        return err;
-+
-+
-+
-+    snprintf(name, sizeof(name), "6 MLow");
-+    err = add_new_ctl(mixer, &snd_us16x08_eqlevel_ctl,
-+        SND_US16X08_ID_EQLOWMIDLEVEL, 0x00, 0, USB_MIXER_U8, 1, name,
-+        (void *) eq_midlow_store, snd_us16x08_free_eq_store, &elem);
-+    if (err < 0)
-+        return err;
-+
-+    snprintf(name, sizeof(name), "61 MLowFreq");
-+    err = add_new_ctl(mixer, &snd_us16x08_eqMidFreq_ctl,
-+        SND_US16X08_ID_EQLOWMIDFREQ, 0x00, 0, USB_MIXER_U8, 1, name,
-+        (void *) eq_midlow_store, NULL, &elem);
-+    if (err < 0)
-+        return err;
-+
-+    snprintf(name, sizeof(name), "62 MLowWidth");
-+    err = add_new_ctl(mixer, &snd_us16x08_eqMidWidth_ctl,
-+        SND_US16X08_ID_EQLOWMIDWIDTH, 0x00, 0, USB_MIXER_U8, 1, name,
-+        (void *) eq_midlow_store, NULL, &elem);
-+    if (err < 0)
-+        return err;
-+
-+    snprintf(name, sizeof(name), "7 MHigh");
-+    err = add_new_ctl(mixer, &snd_us16x08_eqlevel_ctl,
-+        SND_US16X08_ID_EQHIGHMIDLEVEL, 0x00, 0, USB_MIXER_U8, 1, name,
-+        (void *) eq_midhigh_store, NULL, &elem);
-+    if (err < 0)
-+        return err;
-+
-+    snprintf(name, sizeof(name), "71 MHiFreq");
-+    err = add_new_ctl(mixer, &snd_us16x08_eqMidFreq_ctl,
-+        SND_US16X08_ID_EQHIGHMIDFREQ, 0x00, 0,
-+        USB_MIXER_U8, 1, name, (void *) eq_midhigh_store, NULL,
-+        &elem);
-+    if (err < 0)
-+        return err;
-+
-+    snprintf(name, sizeof(name), "72 MHiWidth");
-+    err = add_new_ctl(mixer, &snd_us16x08_eqMidWidth_ctl,
-+        SND_US16X08_ID_EQHIGHMIDWIDTH, 0x00, 0,
-+        USB_MIXER_U8, 1, name, (void *) eq_midhigh_store, NULL,
-+        &elem);
-+    if (err < 0)
-+        return err;
-+
-+    snprintf(name, sizeof(name), "8 High");
-+    err = add_new_ctl(mixer, &snd_us16x08_eqlevel_ctl,
-+        SND_US16X08_ID_EQHIGHLEVEL, 0x00, 0, USB_MIXER_U8, 1, name,
-+        (void *) eq_high_store, snd_us16x08_free_eq_store, &elem);
-+    if (err < 0)
-+        return err;
-+
-+    snprintf(name, sizeof(name), "81 HighFreq");
-+    err = add_new_ctl(mixer, &snd_us16x08_eqHighFreq_ctl,
-+        SND_US16X08_ID_EQHIGHFREQ, 0x00, 0, USB_MIXER_U8, 1, name,
-+        (void *) eq_high_store, NULL, &elem);
-+    if (err < 0)
-+        return err;
-+
-+    snprintf(name, sizeof(name), "9 EQ");
-+    err = add_new_ctl(mixer, &snd_us16x08_eqswitch_ctl,
-+        SND_US16X08_ID_EQENABLE, 0x00, 0, USB_MIXER_BOOLEAN, 1, name,
-+        (void *) eq_all_store, NULL,
-+        &elem);
-+    if (err < 0)
-+        return err;
-+
-+
-+    return 0;
-+}
+T24gVHVlLCBKYW4gMjQsIDIwMTcgYXQgMDM6MjU6MTRQTSArMDIwMCwgSmFuaSBOaWt1bGEgd3Jv
+dGU6Cj4gT24gV2VkLCAyNSBKYW4gMjAxNywgSmVyb21lIEFuYW5kIDxqZXJvbWUuYW5hbmRAaW50
+ZWwuY29tPiB3cm90ZToKPiA+IEVuYWJsZSBzdXBwb3J0IGZvciBIRE1JIExQRSBhdWRpbyBtb2Rl
+IG9uIEJheXRyYWlsIGFuZAo+ID4gQ2hlcnJ5dHJhaWwgd2hlbiBIRGF1ZGlvIGNvbnRyb2xsZXIg
+aXMgbm90IGRldGVjdGVkCj4gPgo+ID4gU2V0dXAgbWluaW11bSByZXF1aXJlZCByZXNvdXJjZXMg
+ZHVyaW5nIGk5MTVfZHJpdmVyX2xvYWQ6Cj4gPiAxLiBDcmVhdGUgYSBwbGF0Zm9ybSBkZXZpY2Ug
+dG8gc2hhcmUgTU1JTy9JUlEgcmVzb3VyY2VzCj4gPiAyLiBNYWtlIHRoZSBwbGF0Zm9ybSBkZXZp
+Y2UgY2hpbGQgb2YgaTkxNSBkZXZpY2UgZm9yIHJ1bnRpbWUgUE0uCj4gPiAzLiBDcmVhdGUgSVJR
+IGNoaXAgdG8gZm9yd2FyZCBIRE1JIExQRSBhdWRpbyBpcnFzLgo+ID4KPiA+IEhETUkgTFBFIGF1
+ZGlvIGRyaXZlciAoYSBzdGFuZGFsb25lIHNvdW5kIGRyaXZlcikgcHJvYmVzIHRoZQo+ID4gTFBF
+IGF1ZGlvIGRldmljZSBhbmQgY3JlYXRlcyBhIG5ldyBzb3VuZCBjYXJkLgo+ID4KPiA+IFNpZ25l
+ZC1vZmYtYnk6IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IDxwaWVycmUtbG91aXMuYm9zc2FydEBsaW51
+eC5pbnRlbC5jb20+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBKZXJvbWUgQW5hbmQgPGplcm9tZS5hbmFu
+ZEBpbnRlbC5jb20+Cj4gCj4gQWNrZWQtYnk6IEphbmkgTmlrdWxhIDxqYW5pLm5pa3VsYUBpbnRl
+bC5jb20+Cj4gCj4gPiAtLS0KPiA+ICBEb2N1bWVudGF0aW9uL2dwdS9pOTE1LnJzdCAgICAgICAg
+ICAgICB8ICAgOSArCj4gPiAgZHJpdmVycy9ncHUvZHJtL2k5MTUvTWFrZWZpbGUgICAgICAgICAg
+fCAgIDMgKwo+ID4gIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmMgICAgICAgIHwgICA0
+ICstCj4gPiAgZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9kcnYuaCAgICAgICAgfCAgMTEgKysK
+PiA+ICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2lycS5jICAgICAgICB8ICAxNiArKwo+ID4g
+IGRyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfcmVnLmggICAgICAgIHwgICAzICsKPiA+ICBkcml2
+ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jICAgICB8ICAyNSArKysKPiA+ICBkcml2ZXJz
+L2dwdS9kcm0vaTkxNS9pbnRlbF9kcnYuaCAgICAgICB8ICAgMiArCj4gPiAgZHJpdmVycy9ncHUv
+ZHJtL2k5MTUvaW50ZWxfbHBlX2F1ZGlvLmMgfCAzMjEgKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrCj4gPiAgaW5jbHVkZS9kcm0vaW50ZWxfbHBlX2F1ZGlvLmggICAgICAgICAgfCAg
+NDYgKysrKysKPiA+ICAxMCBmaWxlcyBjaGFuZ2VkLCA0MzggaW5zZXJ0aW9ucygrKSwgMiBkZWxl
+dGlvbnMoLSkKPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50
+ZWxfbHBlX2F1ZGlvLmMKPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9kcm0vaW50ZWxf
+bHBlX2F1ZGlvLmgKPiA+Cj4gPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9ncHUvaTkxNS5y
+c3QgYi9Eb2N1bWVudGF0aW9uL2dwdS9pOTE1LnJzdAo+ID4gaW5kZXggMTA0Mjk2ZC4uYmQ5Yjc2
+NyAxMDA2NDQKPiA+IC0tLSBhL0RvY3VtZW50YXRpb24vZ3B1L2k5MTUucnN0Cj4gPiArKysgYi9E
+b2N1bWVudGF0aW9uL2dwdS9pOTE1LnJzdAo+ID4gQEAgLTIyNSw2ICsyMjUsMTUgQEAgRGlzcGxh
+eSBQTExzCj4gPiAgLi4ga2VybmVsLWRvYzo6IGRyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2Rw
+bGxfbWdyLmgKPiA+ICAgICA6aW50ZXJuYWw6Cj4gPiAgCj4gPiAraW50ZWwgaGRtaSBscGUgYXVk
+aW8gc3VwcG9ydAo+ID4gKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPiA+ICsKPiA+ICsu
+LiBrZXJuZWwtZG9jOjogZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBlX2F1ZGlvLmMKPiA+
+ICsgICA6ZG9jOiAgTFBFIEF1ZGlvIGludGVncmF0aW9uIGZvciBIRE1JIG9yIERQIHBsYXliYWNr
+Cj4gPiArCj4gPiArLi4ga2VybmVsLWRvYzo6IGRyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2xw
+ZV9hdWRpby5jCj4gPiArICAgOmludGVybmFsOgo+ID4gKwoKUGxlYXNlIGFwcGx5IGEgZm9sbG93
+LXVwIHBhdGNoIHRvIG1vdmUgdGhpcyBuZXh0IHRvIHRoZSBjaGFwdGVyIGFib3V0IGhkYQphdWRp
+bywgYmVjYXVzZSB0aGF0IG1ha2VzIGltbyBtb3JlIHNlbnNlIHRoYW4ganVzdCBzZW1pLXJhbmRv
+bWx5IGFkZGluZyBpdAphdCB0aGUgZW5kIG9mIHRoZSBjaGFwdGVyLiBBbmQgaXQgd291bGQgYXZv
+aWQgYSBzaWxseSBjb25mbGljdCB3aXRoIHN0dWZmCmluIGRybS1pbnRlbC5naXQsIHdoaWNoIGlu
+ZGVlZCBzaG91bGQgYmUgaGVyZS4KClRoYW5rcywgRGFuaWVsCgo+ID4gIE1lbW9yeSBNYW5hZ2Vt
+ZW50IGFuZCBDb21tYW5kIFN1Ym1pc3Npb24KPiA+ICA9PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09Cj4gPiAgCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2k5
+MTUvTWFrZWZpbGUgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9NYWtlZmlsZQo+ID4gaW5kZXggNzRj
+YTJlOC4uYzYyYWI0NSAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L01ha2Vm
+aWxlCj4gPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9NYWtlZmlsZQo+ID4gQEAgLTEyOSw2
+ICsxMjksOSBAQCBpOTE1LXkgKz0gaW50ZWxfZ3Z0Lm8KPiA+ICBpbmNsdWRlICQoc3JjKS9ndnQv
+TWFrZWZpbGUKPiA+ICBlbmRpZgo+ID4gIAo+ID4gKyMgTFBFIEF1ZGlvIGZvciBWTFYgYW5kIENI
+VAo+ID4gK2k5MTUteSArPSBpbnRlbF9scGVfYXVkaW8ubwo+ID4gKwo+ID4gIG9iai0kKENPTkZJ
+R19EUk1fSTkxNSkgKz0gaTkxNS5vCj4gPiAgCj4gPiAgQ0ZMQUdTX2k5MTVfdHJhY2VfcG9pbnRz
+Lm8gOj0gLUkkKHNyYykKPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1
+X2Rydi5jIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9kcnYuYwo+ID4gaW5kZXggY2ExNjhi
+Mi4uMmUwNTc0YyAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2
+LmMKPiA+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmMKPiA+IEBAIC0xMTQw
+LDcgKzExNDAsNyBAQCBzdGF0aWMgdm9pZCBpOTE1X2RyaXZlcl9yZWdpc3RlcihzdHJ1Y3QgZHJt
+X2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYpCj4gPiAgCWlmIChJU19HRU41KGRldl9wcml2KSkKPiA+
+ICAJCWludGVsX2dwdV9pcHNfaW5pdChkZXZfcHJpdik7Cj4gPiAgCj4gPiAtCWk5MTVfYXVkaW9f
+Y29tcG9uZW50X2luaXQoZGV2X3ByaXYpOwo+ID4gKwlpbnRlbF9hdWRpb19pbml0KGRldl9wcml2
+KTsKPiA+ICAKPiA+ICAJLyoKPiA+ICAJICogU29tZSBwb3J0cyByZXF1aXJlIGNvcnJlY3RseSBz
+ZXQtdXAgaHBkIHJlZ2lzdGVycyBmb3IgZGV0ZWN0aW9uIHRvCj4gPiBAQCAtMTE1OCw3ICsxMTU4
+LDcgQEAgc3RhdGljIHZvaWQgaTkxNV9kcml2ZXJfcmVnaXN0ZXIoc3RydWN0IGRybV9pOTE1X3By
+aXZhdGUgKmRldl9wcml2KQo+ID4gICAqLwo+ID4gIHN0YXRpYyB2b2lkIGk5MTVfZHJpdmVyX3Vu
+cmVnaXN0ZXIoc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2KQo+ID4gIHsKPiA+IC0J
+aTkxNV9hdWRpb19jb21wb25lbnRfY2xlYW51cChkZXZfcHJpdik7Cj4gPiArCWludGVsX2F1ZGlv
+X2RlaW5pdChkZXZfcHJpdik7Cj4gPiAgCj4gPiAgCWludGVsX2dwdV9pcHNfdGVhcmRvd24oKTsK
+PiA+ICAJYWNwaV92aWRlb191bnJlZ2lzdGVyKCk7Cj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9n
+cHUvZHJtL2k5MTUvaTkxNV9kcnYuaCBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfZHJ2LmgK
+PiA+IGluZGV4IDI0NDYyODAuLjhiNjhmOTAwIDEwMDY0NAo+ID4gLS0tIGEvZHJpdmVycy9ncHUv
+ZHJtL2k5MTUvaTkxNV9kcnYuaAo+ID4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9k
+cnYuaAo+ID4gQEAgLTI0NTQsNiArMjQ1NCwxMiBAQCBzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSB7
+Cj4gPiAgCS8qIFVzZWQgdG8gc2F2ZSB0aGUgcGlwZS10by1lbmNvZGVyIG1hcHBpbmcgZm9yIGF1
+ZGlvICovCj4gPiAgCXN0cnVjdCBpbnRlbF9lbmNvZGVyICphdl9lbmNfbWFwW0k5MTVfTUFYX1BJ
+UEVTXTsKPiA+ICAKPiA+ICsJLyogbmVjZXNzYXJ5IHJlc291cmNlIHNoYXJpbmcgd2l0aCBIRE1J
+IExQRSBhdWRpbyBkcml2ZXIuICovCj4gPiArCXN0cnVjdCB7Cj4gPiArCQlzdHJ1Y3QgcGxhdGZv
+cm1fZGV2aWNlICpwbGF0ZGV2Owo+ID4gKwkJaW50CWlycTsKPiA+ICsJfSBscGVfYXVkaW87Cj4g
+PiArCj4gPiAgCS8qCj4gPiAgCSAqIE5PVEU6IFRoaXMgaXMgdGhlIGRyaTEvdW1zIGR1bmdlb24s
+IGRvbid0IGFkZCBzdHVmZiBoZXJlLiBZb3VyIHBhdGNoCj4gPiAgCSAqIHdpbGwgYmUgcmVqZWN0
+ZWQuIEluc3RlYWQgbG9vayBmb3IgYSBiZXR0ZXIgcGxhY2UuCj4gPiBAQCAtMzU5Miw2ICszNTk4
+LDExIEBAIGV4dGVybiBpbnQgaTkxNV9yZXN0b3JlX3N0YXRlKHN0cnVjdCBkcm1faTkxNV9wcml2
+YXRlICpkZXZfcHJpdik7Cj4gPiAgdm9pZCBpOTE1X3NldHVwX3N5c2ZzKHN0cnVjdCBkcm1faTkx
+NV9wcml2YXRlICpkZXZfcHJpdik7Cj4gPiAgdm9pZCBpOTE1X3RlYXJkb3duX3N5c2ZzKHN0cnVj
+dCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdik7Cj4gPiAgCj4gPiArLyogaW50ZWxfbHBlX2F1
+ZGlvLmMgKi8KPiA+ICtpbnQgIGludGVsX2xwZV9hdWRpb19pbml0KHN0cnVjdCBkcm1faTkxNV9w
+cml2YXRlICpkZXZfcHJpdik7Cj4gPiArdm9pZCBpbnRlbF9scGVfYXVkaW9fdGVhcmRvd24oc3Ry
+dWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2KTsKPiA+ICt2b2lkIGludGVsX2xwZV9hdWRp
+b19pcnFfaGFuZGxlcihzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYpOwo+ID4gKwo+
+ID4gIC8qIGludGVsX2kyYy5jICovCj4gPiAgZXh0ZXJuIGludCBpbnRlbF9zZXR1cF9nbWJ1cyhz
+dHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYpOwo+ID4gIGV4dGVybiB2b2lkIGludGVs
+X3RlYXJkb3duX2dtYnVzKHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdik7Cj4gPiBk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9pcnEuYyBiL2RyaXZlcnMvZ3B1
+L2RybS9pOTE1L2k5MTVfaXJxLmMKPiA+IGluZGV4IDZmZWZjMzQuLjQ3ZDYxMzEgMTAwNjQ0Cj4g
+PiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2lycS5jCj4gPiArKysgYi9kcml2ZXJz
+L2dwdS9kcm0vaTkxNS9pOTE1X2lycS5jCj4gPiBAQCAtMTkyNiw2ICsxOTI2LDEwIEBAIHN0YXRp
+YyBpcnFyZXR1cm5fdCB2YWxsZXl2aWV3X2lycV9oYW5kbGVyKGludCBpcnEsIHZvaWQgKmFyZykK
+PiA+ICAJCSAqIHNpZ25hbGxlZCBpbiBpaXIgKi8KPiA+ICAJCXZhbGxleXZpZXdfcGlwZXN0YXRf
+aXJxX2FjayhkZXZfcHJpdiwgaWlyLCBwaXBlX3N0YXRzKTsKPiA+ICAKPiA+ICsJCWlmIChpaXIg
+JiAoSTkxNV9MUEVfUElQRV9BX0lOVEVSUlVQVCB8Cj4gPiArCQkJICAgSTkxNV9MUEVfUElQRV9C
+X0lOVEVSUlVQVCkpCj4gPiArCQkJaW50ZWxfbHBlX2F1ZGlvX2lycV9oYW5kbGVyKGRldl9wcml2
+KTsKPiA+ICsKPiA+ICAJCS8qCj4gPiAgCQkgKiBWTFZfSUlSIGlzIHNpbmdsZSBidWZmZXJlZCwg
+YW5kIHJlZmxlY3RzIHRoZSBsZXZlbAo+ID4gIAkJICogZnJvbSBQSVBFU1RBVC9QT1JUX0hPVFBM
+VUdfU1RBVCwgaGVuY2UgY2xlYXIgaXQgbGFzdC4KPiA+IEBAIC0yMDA2LDYgKzIwMTAsMTEgQEAg
+c3RhdGljIGlycXJldHVybl90IGNoZXJyeXZpZXdfaXJxX2hhbmRsZXIoaW50IGlycSwgdm9pZCAq
+YXJnKQo+ID4gIAkJICogc2lnbmFsbGVkIGluIGlpciAqLwo+ID4gIAkJdmFsbGV5dmlld19waXBl
+c3RhdF9pcnFfYWNrKGRldl9wcml2LCBpaXIsIHBpcGVfc3RhdHMpOwo+ID4gIAo+ID4gKwkJaWYg
+KGlpciAmIChJOTE1X0xQRV9QSVBFX0FfSU5URVJSVVBUIHwKPiA+ICsJCQkgICBJOTE1X0xQRV9Q
+SVBFX0JfSU5URVJSVVBUIHwKPiA+ICsJCQkgICBJOTE1X0xQRV9QSVBFX0NfSU5URVJSVVBUKSkK
+PiA+ICsJCQlpbnRlbF9scGVfYXVkaW9faXJxX2hhbmRsZXIoZGV2X3ByaXYpOwo+ID4gKwo+ID4g
+IAkJLyoKPiA+ICAJCSAqIFZMVl9JSVIgaXMgc2luZ2xlIGJ1ZmZlcmVkLCBhbmQgcmVmbGVjdHMg
+dGhlIGxldmVsCj4gPiAgCQkgKiBmcm9tIFBJUEVTVEFUL1BPUlRfSE9UUExVR19TVEFULCBoZW5j
+ZSBjbGVhciBpdCBsYXN0Lgo+ID4gQEAgLTI5NDgsNiArMjk1Nyw3IEBAIHN0YXRpYyB2b2lkIHZs
+dl9kaXNwbGF5X2lycV9wb3N0aW5zdGFsbChzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3By
+aXYpCj4gPiAgCXUzMiBwaXBlc3RhdF9tYXNrOwo+ID4gIAl1MzIgZW5hYmxlX21hc2s7Cj4gPiAg
+CWVudW0gcGlwZSBwaXBlOwo+ID4gKwl1MzIgdmFsOwo+ID4gIAo+ID4gIAlwaXBlc3RhdF9tYXNr
+ID0gUExBTkVfRkxJUF9ET05FX0lOVF9TVEFUVVNfVkxWIHwKPiA+ICAJCQlQSVBFX0NSQ19ET05F
+X0lOVEVSUlVQVF9TVEFUVVM7Cj4gPiBAQCAtMjk2NCw2ICsyOTc0LDEyIEBAIHN0YXRpYyB2b2lk
+IHZsdl9kaXNwbGF5X2lycV9wb3N0aW5zdGFsbChzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2
+X3ByaXYpCj4gPiAgCj4gPiAgCVdBUk5fT04oZGV2X3ByaXYtPmlycV9tYXNrICE9IH4wKTsKPiA+
+ICAKPiA+ICsJdmFsID0gKEk5MTVfTFBFX1BJUEVfQV9JTlRFUlJVUFQgfAo+ID4gKwkJSTkxNV9M
+UEVfUElQRV9CX0lOVEVSUlVQVCB8Cj4gPiArCQlJOTE1X0xQRV9QSVBFX0NfSU5URVJSVVBUKTsK
+PiA+ICsKPiA+ICsJZW5hYmxlX21hc2sgfD0gdmFsOwo+ID4gKwo+ID4gIAlkZXZfcHJpdi0+aXJx
+X21hc2sgPSB+ZW5hYmxlX21hc2s7Cj4gPiAgCj4gPiAgCUdFTjVfSVJRX0lOSVQoVkxWXywgZGV2
+X3ByaXYtPmlycV9tYXNrLCBlbmFibGVfbWFzayk7Cj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9n
+cHUvZHJtL2k5MTUvaTkxNV9yZWcuaCBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfcmVnLmgK
+PiA+IGluZGV4IDcyZjlmMzYuLjY3MmNiMTAgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL2dwdS9k
+cm0vaTkxNS9pOTE1X3JlZy5oCj4gPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X3Jl
+Zy5oCj4gPiBAQCAtMjQyOCw2ICsyNDI4LDkgQEAgZW51bSBza2xfZGlzcF9wb3dlcl93ZWxscyB7
+Cj4gPiAgI2RlZmluZSBJOTE1X0FTTEVfSU5URVJSVVBUCQkJCSgxPDwwKQo+ID4gICNkZWZpbmUg
+STkxNV9CU0RfVVNFUl9JTlRFUlJVUFQJCQkJKDE8PDI1KQo+ID4gIAo+ID4gKyNkZWZpbmUgSTkx
+NV9IRE1JX0xQRV9BVURJT19CQVNFCShWTFZfRElTUExBWV9CQVNFICsgMHg2NTAwMCkKPiA+ICsj
+ZGVmaW5lIEk5MTVfSERNSV9MUEVfQVVESU9fU0laRQkweDEwMDAKPiA+ICsKPiA+ICAjZGVmaW5l
+IEdFTjZfQlNEX1JOQ0lECQkJX01NSU8oMHgxMjE5OCkKPiA+ICAKPiA+ICAjZGVmaW5lIEdFTjdf
+RkZfVEhSRUFEX01PREUJCV9NTUlPKDB4MjBhMCkKPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dw
+dS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfYXVk
+aW8uYwo+ID4gaW5kZXggMTZjMjAyNy4uMTAzMTU5ZCAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMv
+Z3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMKPiA+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1
+L2ludGVsX2F1ZGlvLmMKPiA+IEBAIC05NTYsMyArOTU2LDI4IEBAIHZvaWQgaTkxNV9hdWRpb19j
+b21wb25lbnRfY2xlYW51cChzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYpCj4gPiAg
+CWNvbXBvbmVudF9kZWwoZGV2X3ByaXYtPmRybS5kZXYsICZpOTE1X2F1ZGlvX2NvbXBvbmVudF9i
+aW5kX29wcyk7Cj4gPiAgCWRldl9wcml2LT5hdWRpb19jb21wb25lbnRfcmVnaXN0ZXJlZCA9IGZh
+bHNlOwo+ID4gIH0KPiA+ICsKPiA+ICsvKioKPiA+ICsgKiBpbnRlbF9hdWRpb19pbml0KCkgLSBJ
+bml0aWFsaXplIHRoZSBhdWRpbyBkcml2ZXIgZWl0aGVyIHVzaW5nCj4gPiArICogY29tcG9uZW50
+IGZyYW1ld29yayBvciB1c2luZyBscGUgYXVkaW8gYnJpZGdlCj4gPiArICogQGRldl9wcml2OiB0
+aGUgaTkxNSBkcm0gZGV2aWNlIHByaXZhdGUgZGF0YQo+ID4gKyAqCj4gPiArICovCj4gPiArdm9p
+ZCBpbnRlbF9hdWRpb19pbml0KHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdikKPiA+
+ICt7Cj4gPiArCWlmIChpbnRlbF9scGVfYXVkaW9faW5pdChkZXZfcHJpdikgPCAwKQo+ID4gKwkJ
+aTkxNV9hdWRpb19jb21wb25lbnRfaW5pdChkZXZfcHJpdik7Cj4gPiArfQo+ID4gKwo+ID4gKy8q
+Kgo+ID4gKyAqIGludGVsX2F1ZGlvX2RlaW5pdCgpIC0gZGVpbml0aWFsaXplIHRoZSBhdWRpbyBk
+cml2ZXIKPiA+ICsgKiBAZGV2X3ByaXY6IHRoZSBpOTE1IGRybSBkZXZpY2UgcHJpdmF0ZSBkYXRh
+Cj4gPiArICoKPiA+ICsgKi8KPiA+ICt2b2lkIGludGVsX2F1ZGlvX2RlaW5pdChzdHJ1Y3QgZHJt
+X2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYpCj4gPiArewo+ID4gKwlpZiAoKGRldl9wcml2KS0+bHBl
+X2F1ZGlvLnBsYXRkZXYgIT0gTlVMTCkKPiA+ICsJCWludGVsX2xwZV9hdWRpb190ZWFyZG93bihk
+ZXZfcHJpdik7Cj4gPiArCWVsc2UKPiA+ICsJCWk5MTVfYXVkaW9fY29tcG9uZW50X2NsZWFudXAo
+ZGV2X3ByaXYpOwo+ID4gK30KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9p
+bnRlbF9kcnYuaCBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2Rydi5oCj4gPiBpbmRleCAw
+Y2VjMDAxLi5mMTYyODgxIDEwMDY0NAo+ID4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50
+ZWxfZHJ2LmgKPiA+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2Rydi5oCj4gPiBA
+QCAtMTIyNSw2ICsxMjI1LDggQEAgdm9pZCBpbnRlbF9hdWRpb19jb2RlY19lbmFibGUoc3RydWN0
+IGludGVsX2VuY29kZXIgKmVuY29kZXIsCj4gPiAgdm9pZCBpbnRlbF9hdWRpb19jb2RlY19kaXNh
+YmxlKHN0cnVjdCBpbnRlbF9lbmNvZGVyICplbmNvZGVyKTsKPiA+ICB2b2lkIGk5MTVfYXVkaW9f
+Y29tcG9uZW50X2luaXQoc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2KTsKPiA+ICB2
+b2lkIGk5MTVfYXVkaW9fY29tcG9uZW50X2NsZWFudXAoc3RydWN0IGRybV9pOTE1X3ByaXZhdGUg
+KmRldl9wcml2KTsKPiA+ICt2b2lkIGludGVsX2F1ZGlvX2luaXQoc3RydWN0IGRybV9pOTE1X3By
+aXZhdGUgKmRldl9wcml2KTsKPiA+ICt2b2lkIGludGVsX2F1ZGlvX2RlaW5pdChzdHJ1Y3QgZHJt
+X2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYpOwo+ID4gIAo+ID4gIC8qIGludGVsX2Rpc3BsYXkuYyAq
+Lwo+ID4gIGVudW0gdHJhbnNjb2RlciBpbnRlbF9jcnRjX3BjaF90cmFuc2NvZGVyKHN0cnVjdCBp
+bnRlbF9jcnRjICpjcnRjKTsKPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9p
+bnRlbF9scGVfYXVkaW8uYyBiL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2xwZV9hdWRpby5j
+Cj4gPiBuZXcgZmlsZSBtb2RlIDEwMDY0NAo+ID4gaW5kZXggMDAwMDAwMC4uN2NlMWI1Ygo+ID4g
+LS0tIC9kZXYvbnVsbAo+ID4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBlX2F1
+ZGlvLmMKPiA+IEBAIC0wLDAgKzEsMzIxIEBACj4gPiArLyoKPiA+ICsgKiBDb3B5cmlnaHQgwqkg
+MjAxNiBJbnRlbCBDb3Jwb3JhdGlvbgo+ID4gKyAqCj4gPiArICogUGVybWlzc2lvbiBpcyBoZXJl
+YnkgZ3JhbnRlZCwgZnJlZSBvZiBjaGFyZ2UsIHRvIGFueSBwZXJzb24gb2J0YWluaW5nIGEKPiA+
+ICsgKiBjb3B5IG9mIHRoaXMgc29mdHdhcmUgYW5kIGFzc29jaWF0ZWQgZG9jdW1lbnRhdGlvbiBm
+aWxlcyAodGhlICJTb2Z0d2FyZSIpLAo+ID4gKyAqIHRvIGRlYWwgaW4gdGhlIFNvZnR3YXJlIHdp
+dGhvdXQgcmVzdHJpY3Rpb24sIGluY2x1ZGluZyB3aXRob3V0IGxpbWl0YXRpb24KPiA+ICsgKiB0
+aGUgcmlnaHRzIHRvIHVzZSwgY29weSwgbW9kaWZ5LCBtZXJnZSwgcHVibGlzaCwgZGlzdHJpYnV0
+ZSwgc3VibGljZW5zZSwKPiA+ICsgKiBhbmQvb3Igc2VsbCBjb3BpZXMgb2YgdGhlIFNvZnR3YXJl
+LCBhbmQgdG8gcGVybWl0IHBlcnNvbnMgdG8gd2hvbSB0aGUKPiA+ICsgKiBTb2Z0d2FyZSBpcyBm
+dXJuaXNoZWQgdG8gZG8gc28sIHN1YmplY3QgdG8gdGhlIGZvbGxvd2luZyBjb25kaXRpb25zOgo+
+ID4gKyAqCj4gPiArICogVGhlIGFib3ZlIGNvcHlyaWdodCBub3RpY2UgYW5kIHRoaXMgcGVybWlz
+c2lvbiBub3RpY2UgKGluY2x1ZGluZyB0aGUgbmV4dAo+ID4gKyAqIHBhcmFncmFwaCkgc2hhbGwg
+YmUgaW5jbHVkZWQgaW4gYWxsIGNvcGllcyBvciBzdWJzdGFudGlhbCBwb3J0aW9ucyBvZiB0aGUK
+PiA+ICsgKiBTb2Z0d2FyZS4KPiA+ICsgKgo+ID4gKyAqIFRIRSBTT0ZUV0FSRSBJUyBQUk9WSURF
+RCAiQVMgSVMiLCBXSVRIT1VUIFdBUlJBTlRZIE9GIEFOWSBLSU5ELCBFWFBSRVNTIE9SCj4gPiAr
+ICogSU1QTElFRCwgSU5DTFVESU5HIEJVVCBOT1QgTElNSVRFRCBUTyBUSEUgV0FSUkFOVElFUyBP
+RiBNRVJDSEFOVEFCSUxJVFksCj4gPiArICogRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBP
+U0UgQU5EIE5PTklORlJJTkdFTUVOVC4gIElOIE5PIEVWRU5UIFNIQUxMCj4gPiArICogVEhFIEFV
+VEhPUlMgT1IgQ09QWVJJR0hUIEhPTERFUlMgQkUgTElBQkxFIEZPUiBBTlkgQ0xBSU0sIERBTUFH
+RVMgT1IgT1RIRVIKPiA+ICsgKiBMSUFCSUxJVFksIFdIRVRIRVIgSU4gQU4gQUNUSU9OIE9GIENP
+TlRSQUNULCBUT1JUIE9SIE9USEVSV0lTRSwgQVJJU0lORwo+ID4gKyAqIEZST00sIE9VVCBPRiBP
+UiBJTiBDT05ORUNUSU9OIFdJVEggVEhFIFNPRlRXQVJFIE9SIFRIRSBVU0UgT1IgT1RIRVIgREVB
+TElOR1MKPiA+ICsgKiBJTiBUSEUgU09GVFdBUkUuCj4gPiArICoKPiA+ICsgKiBBdXRob3JzOgo+
+ID4gKyAqICAgIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IDxwaWVycmUtbG91aXMuYm9zc2FydEBsaW51
+eC5pbnRlbC5jb20+Cj4gPiArICogICAgSmVyb21lIEFuYW5kIDxqZXJvbWUuYW5hbmRAaW50ZWwu
+Y29tPgo+ID4gKyAqICAgIGJhc2VkIG9uIFZFRCBwYXRjaGVzCj4gPiArICoKPiA+ICsgKi8KPiA+
+ICsKPiA+ICsvKioKPiA+ICsgKiBET0M6IExQRSBBdWRpbyBpbnRlZ3JhdGlvbiBmb3IgSERNSSBv
+ciBEUCBwbGF5YmFjawo+ID4gKyAqCj4gPiArICogTW90aXZhdGlvbjoKPiA+ICsgKiBBdG9tIHBs
+YXRmb3JtcyAoZS5nLiB2YWxsZXl2aWV3IGFuZCBjaGVycnlUcmFpbCkgaW50ZWdyYXRlcyBhIERN
+QS1iYXNlZAo+ID4gKyAqIGludGVyZmFjZSBhcyBhbiBhbHRlcm5hdGl2ZSB0byB0aGUgdHJhZGl0
+aW9uYWwgSERhdWRpbyBwYXRoLiBXaGlsZSB0aGlzCj4gPiArICogbW9kZSBpcyB1bnJlbGF0ZWQg
+dG8gdGhlIExQRSBha2EgU1NUIGF1ZGlvIGVuZ2luZSwgdGhlIGRvY3VtZW50YXRpb24gcmVmZXJz
+Cj4gPiArICogdG8gdGhpcyBtb2RlIGFzIExQRSBzbyB3ZSBrZWVwIHRoaXMgbm90YXRpb24gZm9y
+IHRoZSBzYWtlIG9mIGNvbnNpc3RlbmN5Lgo+ID4gKyAqCj4gPiArICogVGhlIGludGVyZmFjZSBp
+cyBoYW5kbGVkIGJ5IGEgc2VwYXJhdGUgc3RhbmRhbG9uZSBkcml2ZXIgbWFpbnRhaW5lZCBpbiB0
+aGUKPiA+ICsgKiBBTFNBIHN1YnN5c3RlbSBmb3Igc2ltcGxpY2l0eS4gVG8gbWluaW1pemUgdGhl
+IGludGVyYWN0aW9uIGJldHdlZW4gdGhlIHR3bwo+ID4gKyAqIHN1YnN5c3RlbXMsIGEgYnJpZGdl
+IGlzIHNldHVwIGJldHdlZW4gdGhlIGhkbWktbHBlLWF1ZGlvIGFuZCBpOTE1Ogo+ID4gKyAqIDEu
+IENyZWF0ZSBhIHBsYXRmb3JtIGRldmljZSB0byBzaGFyZSBNTUlPL0lSUSByZXNvdXJjZXMKPiA+
+ICsgKiAyLiBNYWtlIHRoZSBwbGF0Zm9ybSBkZXZpY2UgY2hpbGQgb2YgaTkxNSBkZXZpY2UgZm9y
+IHJ1bnRpbWUgUE0uCj4gPiArICogMy4gQ3JlYXRlIElSUSBjaGlwIHRvIGZvcndhcmQgdGhlIExQ
+RSBhdWRpbyBpcnFzLgo+ID4gKyAqIHRoZSBoZG1pLWxwZS1hdWRpbyBkcml2ZXIgcHJvYmVzIHRo
+ZSBscGUgYXVkaW8gZGV2aWNlIGFuZCBjcmVhdGVzIGEgbmV3Cj4gPiArICogc291bmQgY2FyZAo+
+ID4gKyAqCj4gPiArICogVGhyZWF0czoKPiA+ICsgKiBEdWUgdG8gdGhlIHJlc3RyaWN0aW9uIGlu
+IExpbnV4IHBsYXRmb3JtIGRldmljZSBtb2RlbCwgdXNlciBuZWVkIG1hbnVhbGx5Cj4gPiArICog
+dW5pbnN0YWxsIHRoZSBoZG1pLWxwZS1hdWRpbyBkcml2ZXIgYmVmb3JlIHVuaW5zdGFsbGluZyBp
+OTE1IG1vZHVsZSwKPiA+ICsgKiBvdGhlcndpc2Ugd2UgbWlnaHQgcnVuIGludG8gdXNlLWFmdGVy
+LWZyZWUgaXNzdWVzIGFmdGVyIGk5MTUgcmVtb3ZlcyB0aGUKPiA+ICsgKiBwbGF0Zm9ybSBkZXZp
+Y2U6IGV2ZW4gdGhvdWdoIGhkbWktbHBlLWF1ZGlvIGRyaXZlciBpcyByZWxlYXNlZCwgdGhlIG1v
+ZHVsZXMKPiA+ICsgKiBpcyBzdGlsbCBpbiAiaW5zdGFsbGVkIiBzdGF0dXMuCj4gPiArICoKPiA+
+ICsgKiBJbXBsZW1lbnRhdGlvbjoKPiA+ICsgKiBUaGUgTU1JTy9SRUcgcGxhdGZvcm0gcmVzb3Vy
+Y2VzIGFyZSBjcmVhdGVkIGFjY29yZGluZyB0byB0aGUgcmVnaXN0ZXJzCj4gPiArICogc3BlY2lm
+aWNhdGlvbi4KPiA+ICsgKiBXaGVuIGZvcndhcmRpbmcgTFBFIGF1ZGlvIGlycXMsIHRoZSBmbG93
+IGNvbnRyb2wgaGFuZGxlciBzZWxlY3Rpb24gZGVwZW5kcwo+ID4gKyAqIG9uIHRoZSBwbGF0Zm9y
+bSwgZm9yIGV4YW1wbGUgb24gdmFsbGV5dmlldyBoYW5kbGVfc2ltcGxlX2lycSBpcyBlbm91Z2gu
+Cj4gPiArICoKPiA+ICsgKi8KPiA+ICsKPiA+ICsjaW5jbHVkZSA8bGludXgvYWNwaS5oPgo+ID4g
+KyNpbmNsdWRlIDxsaW51eC9kZXZpY2UuaD4KPiA+ICsjaW5jbHVkZSA8bGludXgvcGNpLmg+Cj4g
+PiArCj4gPiArI2luY2x1ZGUgImk5MTVfZHJ2LmgiCj4gPiArI2luY2x1ZGUgPGxpbnV4L2RlbGF5
+Lmg+Cj4gPiArI2luY2x1ZGUgPGRybS9pbnRlbF9scGVfYXVkaW8uaD4KPiA+ICsKPiA+ICsjZGVm
+aW5lIEhBU19MUEVfQVVESU8oZGV2X3ByaXYpICgoZGV2X3ByaXYpLT5scGVfYXVkaW8ucGxhdGRl
+diAhPSBOVUxMKQo+ID4gKwo+ID4gK3N0YXRpYyBzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICoKPiA+
+ICtscGVfYXVkaW9fcGxhdGRldl9jcmVhdGUoc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9w
+cml2KQo+ID4gK3sKPiA+ICsJaW50IHJldDsKPiA+ICsJc3RydWN0IGRybV9kZXZpY2UgKmRldiA9
+ICZkZXZfcHJpdi0+ZHJtOwo+ID4gKwlzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlX2luZm8gcGluZm8g
+PSB7fTsKPiA+ICsJc3RydWN0IHJlc291cmNlICpyc2M7Cj4gPiArCXN0cnVjdCBwbGF0Zm9ybV9k
+ZXZpY2UgKnBsYXRkZXY7Cj4gPiArCXN0cnVjdCBpbnRlbF9oZG1pX2xwZV9hdWRpb19wZGF0YSAq
+cGRhdGE7Cj4gPiArCj4gPiArCXBkYXRhID0ga3phbGxvYyhzaXplb2YoKnBkYXRhKSwgR0ZQX0tF
+Uk5FTCk7Cj4gPiArCWlmICghcGRhdGEpCj4gPiArCQlyZXR1cm4gRVJSX1BUUigtRU5PTUVNKTsK
+PiA+ICsKPiA+ICsJcnNjID0ga2NhbGxvYygyLCBzaXplb2YoKnJzYyksIEdGUF9LRVJORUwpOwo+
+ID4gKwlpZiAoIXJzYykgewo+ID4gKwkJa2ZyZWUocGRhdGEpOwo+ID4gKwkJcmV0dXJuIEVSUl9Q
+VFIoLUVOT01FTSk7Cj4gPiArCX0KPiA+ICsKPiA+ICsJcnNjWzBdLnN0YXJ0ICAgID0gcnNjWzBd
+LmVuZCA9IGRldl9wcml2LT5scGVfYXVkaW8uaXJxOwo+ID4gKwlyc2NbMF0uZmxhZ3MgICAgPSBJ
+T1JFU09VUkNFX0lSUTsKPiA+ICsJcnNjWzBdLm5hbWUgICAgID0gImhkbWktbHBlLWF1ZGlvLWly
+cSI7Cj4gPiArCj4gPiArCXJzY1sxXS5zdGFydCAgICA9IHBjaV9yZXNvdXJjZV9zdGFydChkZXYt
+PnBkZXYsIDApICsKPiA+ICsJCUk5MTVfSERNSV9MUEVfQVVESU9fQkFTRTsKPiA+ICsJcnNjWzFd
+LmVuZCAgICAgID0gcGNpX3Jlc291cmNlX3N0YXJ0KGRldi0+cGRldiwgMCkgKwo+ID4gKwkJSTkx
+NV9IRE1JX0xQRV9BVURJT19CQVNFICsgSTkxNV9IRE1JX0xQRV9BVURJT19TSVpFIC0gMTsKPiA+
+ICsJcnNjWzFdLmZsYWdzICAgID0gSU9SRVNPVVJDRV9NRU07Cj4gPiArCXJzY1sxXS5uYW1lICAg
+ICA9ICJoZG1pLWxwZS1hdWRpby1tbWlvIjsKPiA+ICsKPiA+ICsJcGluZm8ucGFyZW50ID0gZGV2
+LT5kZXY7Cj4gPiArCXBpbmZvLm5hbWUgPSAiaGRtaS1scGUtYXVkaW8iOwo+ID4gKwlwaW5mby5p
+ZCA9IC0xOwo+ID4gKwlwaW5mby5yZXMgPSByc2M7Cj4gPiArCXBpbmZvLm51bV9yZXMgPSAyOwo+
+ID4gKwlwaW5mby5kYXRhID0gcGRhdGE7Cj4gPiArCXBpbmZvLnNpemVfZGF0YSA9IHNpemVvZigq
+cGRhdGEpOwo+ID4gKwlwaW5mby5kbWFfbWFzayA9IERNQV9CSVRfTUFTSygzMik7Cj4gPiArCj4g
+PiArCXNwaW5fbG9ja19pbml0KCZwZGF0YS0+bHBlX2F1ZGlvX3Nsb2NrKTsKPiA+ICsKPiA+ICsJ
+cGxhdGRldiA9IHBsYXRmb3JtX2RldmljZV9yZWdpc3Rlcl9mdWxsKCZwaW5mbyk7Cj4gPiArCWlm
+IChJU19FUlIocGxhdGRldikpIHsKPiA+ICsJCXJldCA9IFBUUl9FUlIocGxhdGRldik7Cj4gPiAr
+CQlEUk1fRVJST1IoIkZhaWxlZCB0byBhbGxvY2F0ZSBMUEUgYXVkaW8gcGxhdGZvcm0gZGV2aWNl
+XG4iKTsKPiA+ICsJCWdvdG8gZXJyOwo+ID4gKwl9Cj4gPiArCj4gPiArCWtmcmVlKHJzYyk7Cj4g
+PiArCj4gPiArCXJldHVybiBwbGF0ZGV2Owo+ID4gKwo+ID4gK2VycjoKPiA+ICsJa2ZyZWUocnNj
+KTsKPiA+ICsJa2ZyZWUocGRhdGEpOwo+ID4gKwlyZXR1cm4gRVJSX1BUUihyZXQpOwo+ID4gK30K
+PiA+ICsKPiA+ICtzdGF0aWMgdm9pZCBscGVfYXVkaW9fcGxhdGRldl9kZXN0cm95KHN0cnVjdCBk
+cm1faTkxNV9wcml2YXRlICpkZXZfcHJpdikKPiA+ICt7Cj4gPiArCXBsYXRmb3JtX2RldmljZV91
+bnJlZ2lzdGVyKGRldl9wcml2LT5scGVfYXVkaW8ucGxhdGRldik7Cj4gPiArCWtmcmVlKGRldl9w
+cml2LT5scGVfYXVkaW8ucGxhdGRldi0+ZGV2LmRtYV9tYXNrKTsKPiA+ICt9Cj4gPiArCj4gPiAr
+c3RhdGljIHZvaWQgbHBlX2F1ZGlvX2lycV91bm1hc2soc3RydWN0IGlycV9kYXRhICpkKQo+ID4g
+K3sKPiA+ICsJc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2ID0gZC0+Y2hpcF9kYXRh
+Owo+ID4gKwl1bnNpZ25lZCBsb25nIGlycWZsYWdzOwo+ID4gKwl1MzIgdmFsID0gKEk5MTVfTFBF
+X1BJUEVfQV9JTlRFUlJVUFQgfAo+ID4gKwkJSTkxNV9MUEVfUElQRV9CX0lOVEVSUlVQVCk7Cj4g
+PiArCj4gPiArCWlmIChJU19DSEVSUllWSUVXKGRldl9wcml2KSkKPiA+ICsJCXZhbCB8PSBJOTE1
+X0xQRV9QSVBFX0NfSU5URVJSVVBUOwo+ID4gKwo+ID4gKwlzcGluX2xvY2tfaXJxc2F2ZSgmZGV2
+X3ByaXYtPmlycV9sb2NrLCBpcnFmbGFncyk7Cj4gPiArCj4gPiArCWRldl9wcml2LT5pcnFfbWFz
+ayAmPSB+dmFsOwo+ID4gKwlJOTE1X1dSSVRFKFZMVl9JSVIsIHZhbCk7Cj4gPiArCUk5MTVfV1JJ
+VEUoVkxWX0lJUiwgdmFsKTsKPiA+ICsJSTkxNV9XUklURShWTFZfSU1SLCBkZXZfcHJpdi0+aXJx
+X21hc2spOwo+ID4gKwlQT1NUSU5HX1JFQUQoVkxWX0lNUik7Cj4gPiArCj4gPiArCXNwaW5fdW5s
+b2NrX2lycXJlc3RvcmUoJmRldl9wcml2LT5pcnFfbG9jaywgaXJxZmxhZ3MpOwo+ID4gK30KPiA+
+ICsKPiA+ICtzdGF0aWMgdm9pZCBscGVfYXVkaW9faXJxX21hc2soc3RydWN0IGlycV9kYXRhICpk
+KQo+ID4gK3sKPiA+ICsJc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2ID0gZC0+Y2hp
+cF9kYXRhOwo+ID4gKwl1bnNpZ25lZCBsb25nIGlycWZsYWdzOwo+ID4gKwl1MzIgdmFsID0gKEk5
+MTVfTFBFX1BJUEVfQV9JTlRFUlJVUFQgfAo+ID4gKwkJSTkxNV9MUEVfUElQRV9CX0lOVEVSUlVQ
+VCk7Cj4gPiArCj4gPiArCWlmIChJU19DSEVSUllWSUVXKGRldl9wcml2KSkKPiA+ICsJCXZhbCB8
+PSBJOTE1X0xQRV9QSVBFX0NfSU5URVJSVVBUOwo+ID4gKwo+ID4gKwlzcGluX2xvY2tfaXJxc2F2
+ZSgmZGV2X3ByaXYtPmlycV9sb2NrLCBpcnFmbGFncyk7Cj4gPiArCj4gPiArCWRldl9wcml2LT5p
+cnFfbWFzayB8PSB2YWw7Cj4gPiArCUk5MTVfV1JJVEUoVkxWX0lNUiwgZGV2X3ByaXYtPmlycV9t
+YXNrKTsKPiA+ICsJSTkxNV9XUklURShWTFZfSUlSLCB2YWwpOwo+ID4gKwlJOTE1X1dSSVRFKFZM
+Vl9JSVIsIHZhbCk7Cj4gPiArCVBPU1RJTkdfUkVBRChWTFZfSUlSKTsKPiA+ICsKPiA+ICsJc3Bp
+bl91bmxvY2tfaXJxcmVzdG9yZSgmZGV2X3ByaXYtPmlycV9sb2NrLCBpcnFmbGFncyk7Cj4gPiAr
+fQo+ID4gKwo+ID4gK3N0YXRpYyBzdHJ1Y3QgaXJxX2NoaXAgbHBlX2F1ZGlvX2lycWNoaXAgPSB7
+Cj4gPiArCS5uYW1lID0gImhkbWlfbHBlX2F1ZGlvX2lycWNoaXAiLAo+ID4gKwkuaXJxX21hc2sg
+PSBscGVfYXVkaW9faXJxX21hc2ssCj4gPiArCS5pcnFfdW5tYXNrID0gbHBlX2F1ZGlvX2lycV91
+bm1hc2ssCj4gPiArfTsKPiA+ICsKPiA+ICtzdGF0aWMgaW50IGxwZV9hdWRpb19pcnFfaW5pdChz
+dHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYpCj4gPiArewo+ID4gKwlpbnQgaXJxID0g
+ZGV2X3ByaXYtPmxwZV9hdWRpby5pcnE7Cj4gPiArCj4gPiArCVdBUk5fT04oIWludGVsX2lycXNf
+ZW5hYmxlZChkZXZfcHJpdikpOwo+ID4gKwlpcnFfc2V0X2NoaXBfYW5kX2hhbmRsZXJfbmFtZShp
+cnEsCj4gPiArCQkJCSZscGVfYXVkaW9faXJxY2hpcCwKPiA+ICsJCQkJaGFuZGxlX3NpbXBsZV9p
+cnEsCj4gPiArCQkJCSJoZG1pX2xwZV9hdWRpb19pcnFfaGFuZGxlciIpOwo+ID4gKwo+ID4gKwly
+ZXR1cm4gaXJxX3NldF9jaGlwX2RhdGEoaXJxLCBkZXZfcHJpdik7Cj4gPiArfQo+ID4gKwo+ID4g
+K3N0YXRpYyBib29sIGxwZV9hdWRpb19kZXRlY3Qoc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRl
+dl9wcml2KQo+ID4gK3sKPiA+ICsJaW50IGxwZV9wcmVzZW50ID0gZmFsc2U7Cj4gPiArCj4gPiAr
+CWlmIChJU19WQUxMRVlWSUVXKGRldl9wcml2KSB8fCBJU19DSEVSUllWSUVXKGRldl9wcml2KSkg
+ewo+ID4gKwkJc3RhdGljIGNvbnN0IHN0cnVjdCBwY2lfZGV2aWNlX2lkIGF0b21faGRhdWRpb19p
+ZHNbXSA9IHsKPiA+ICsJCQkvKiBCYXl0cmFpbCAqLwo+ID4gKwkJCXtQQ0lfREVWSUNFKFBDSV9W
+RU5ET1JfSURfSU5URUwsIDB4MGYwNCl9LAo+ID4gKwkJCS8qIEJyYXN3ZWxsICovCj4gPiArCQkJ
+e1BDSV9ERVZJQ0UoUENJX1ZFTkRPUl9JRF9JTlRFTCwgMHgyMjg0KX0sCj4gPiArCQkJe30KPiA+
+ICsJCX07Cj4gPiArCj4gPiArCQlpZiAoIXBjaV9kZXZfcHJlc2VudChhdG9tX2hkYXVkaW9faWRz
+KSkgewo+ID4gKwkJCURSTV9JTkZPKCIlc1xuIiwgIkhEYXVkaW8gY29udHJvbGxlciBub3QgZGV0
+ZWN0ZWQsIHVzaW5nIExQRSBhdWRpbyBpbnN0ZWFkXG4iKTsKPiA+ICsJCQlscGVfcHJlc2VudCA9
+IHRydWU7Cj4gPiArCQl9Cj4gPiArCX0KPiA+ICsJcmV0dXJuIGxwZV9wcmVzZW50Owo+ID4gK30K
+PiA+ICsKPiA+ICtzdGF0aWMgaW50IGxwZV9hdWRpb19zZXR1cChzdHJ1Y3QgZHJtX2k5MTVfcHJp
+dmF0ZSAqZGV2X3ByaXYpCj4gPiArewo+ID4gKwlpbnQgcmV0Owo+ID4gKwo+ID4gKwlkZXZfcHJp
+di0+bHBlX2F1ZGlvLmlycSA9IGlycV9hbGxvY19kZXNjKDApOwo+ID4gKwlpZiAoZGV2X3ByaXYt
+PmxwZV9hdWRpby5pcnEgPCAwKSB7Cj4gPiArCQlEUk1fRVJST1IoIkZhaWxlZCB0byBhbGxvY2F0
+ZSBJUlEgZGVzYzogJWRcbiIsCj4gPiArCQkJZGV2X3ByaXYtPmxwZV9hdWRpby5pcnEpOwo+ID4g
+KwkJcmV0ID0gZGV2X3ByaXYtPmxwZV9hdWRpby5pcnE7Cj4gPiArCQlnb3RvIGVycjsKPiA+ICsJ
+fQo+ID4gKwo+ID4gKwlEUk1fREVCVUcoImlycSA9ICVkXG4iLCBkZXZfcHJpdi0+bHBlX2F1ZGlv
+LmlycSk7Cj4gPiArCj4gPiArCXJldCA9IGxwZV9hdWRpb19pcnFfaW5pdChkZXZfcHJpdik7Cj4g
+PiArCj4gPiArCWlmIChyZXQpIHsKPiA+ICsJCURSTV9FUlJPUigiRmFpbGVkIHRvIGluaXRpYWxp
+emUgaXJxY2hpcCBmb3IgbHBlIGF1ZGlvOiAlZFxuIiwKPiA+ICsJCQlyZXQpOwo+ID4gKwkJZ290
+byBlcnJfZnJlZV9pcnE7Cj4gPiArCX0KPiA+ICsKPiA+ICsJZGV2X3ByaXYtPmxwZV9hdWRpby5w
+bGF0ZGV2ID0gbHBlX2F1ZGlvX3BsYXRkZXZfY3JlYXRlKGRldl9wcml2KTsKPiA+ICsKPiA+ICsJ
+aWYgKElTX0VSUihkZXZfcHJpdi0+bHBlX2F1ZGlvLnBsYXRkZXYpKSB7Cj4gPiArCQlyZXQgPSBQ
+VFJfRVJSKGRldl9wcml2LT5scGVfYXVkaW8ucGxhdGRldik7Cj4gPiArCQlEUk1fRVJST1IoIkZh
+aWxlZCB0byBjcmVhdGUgbHBlIGF1ZGlvIHBsYXRmb3JtIGRldmljZTogJWRcbiIsCj4gPiArCQkJ
+cmV0KTsKPiA+ICsJCWdvdG8gZXJyX2ZyZWVfaXJxOwo+ID4gKwl9Cj4gPiArCj4gPiArCXJldHVy
+biAwOwo+ID4gK2Vycl9mcmVlX2lycToKPiA+ICsJaXJxX2ZyZWVfZGVzYyhkZXZfcHJpdi0+bHBl
+X2F1ZGlvLmlycSk7Cj4gPiArZXJyOgo+ID4gKwlkZXZfcHJpdi0+bHBlX2F1ZGlvLmlycSA9IC0x
+Owo+ID4gKwlkZXZfcHJpdi0+bHBlX2F1ZGlvLnBsYXRkZXYgPSBOVUxMOwo+ID4gKwlyZXR1cm4g
+cmV0Owo+ID4gK30KPiA+ICsKPiA+ICsvKioKPiA+ICsgKiBpbnRlbF9scGVfYXVkaW9faXJxX2hh
+bmRsZXIoKSAtIGZvcndhcmRzIHRoZSBMUEUgYXVkaW8gaXJxCj4gPiArICogQGRldl9wcml2OiB0
+aGUgaTkxNSBkcm0gZGV2aWNlIHByaXZhdGUgZGF0YQo+ID4gKyAqCj4gPiArICogdGhlIExQRSBB
+dWRpbyBpcnEgaXMgZm9yd2FyZGVkIHRvIHRoZSBpcnEgaGFuZGxlciByZWdpc3RlcmVkIGJ5IExQ
+RSBhdWRpbwo+ID4gKyAqIGRyaXZlci4KPiA+ICsgKi8KPiA+ICt2b2lkIGludGVsX2xwZV9hdWRp
+b19pcnFfaGFuZGxlcihzdHJ1Y3QgZHJtX2k5MTVfcHJpdmF0ZSAqZGV2X3ByaXYpCj4gPiArewo+
+ID4gKwlpbnQgcmV0Owo+ID4gKwo+ID4gKwlpZiAoIUhBU19MUEVfQVVESU8oZGV2X3ByaXYpKQo+
+ID4gKwkJcmV0dXJuOwo+ID4gKwo+ID4gKwlyZXQgPSBnZW5lcmljX2hhbmRsZV9pcnEoZGV2X3By
+aXYtPmxwZV9hdWRpby5pcnEpOwo+ID4gKwlpZiAocmV0KQo+ID4gKwkJRFJNX0VSUk9SX1JBVEVM
+SU1JVEVEKCJlcnJvciBoYW5kbGluZyBMUEUgYXVkaW8gaXJxOiAlZFxuIiwKPiA+ICsJCQkJcmV0
+KTsKPiA+ICt9Cj4gPiArCj4gPiArLyoqCj4gPiArICogaW50ZWxfbHBlX2F1ZGlvX2luaXQoKSAt
+IGRldGVjdCBhbmQgc2V0dXAgdGhlIGJyaWRnZSBiZXR3ZWVuIEhETUkgTFBFIEF1ZGlvCj4gPiAr
+ICogZHJpdmVyIGFuZCBpOTE1Cj4gPiArICogQGRldl9wcml2OiB0aGUgaTkxNSBkcm0gZGV2aWNl
+IHByaXZhdGUgZGF0YQo+ID4gKyAqCj4gPiArICogUmV0dXJuOiAwIGlmIHN1Y2Nlc3NmdWwuIG5v
+bi16ZXJvIGlmIGRldGVjdGlvbiBvcgo+ID4gKyAqIGxsb2NhdGlvbi9pbml0aWFsaXphdGlvbiBm
+YWlscwo+ID4gKyAqLwo+ID4gK2ludCBpbnRlbF9scGVfYXVkaW9faW5pdChzdHJ1Y3QgZHJtX2k5
+MTVfcHJpdmF0ZSAqZGV2X3ByaXYpCj4gPiArewo+ID4gKwlpbnQgcmV0ID0gLUVOT0RFVjsKPiA+
+ICsKPiA+ICsJaWYgKGxwZV9hdWRpb19kZXRlY3QoZGV2X3ByaXYpKSB7Cj4gPiArCQlyZXQgPSBs
+cGVfYXVkaW9fc2V0dXAoZGV2X3ByaXYpOwo+ID4gKwkJaWYgKHJldCA8IDApCj4gPiArCQkJRFJN
+X0VSUk9SKCJmYWlsZWQgdG8gc2V0dXAgTFBFIEF1ZGlvIGJyaWRnZVxuIik7Cj4gPiArCX0KPiA+
+ICsJcmV0dXJuIHJldDsKPiA+ICt9Cj4gPiArCj4gPiArLyoqCj4gPiArICogaW50ZWxfbHBlX2F1
+ZGlvX3RlYXJkb3duKCkgLSBkZXN0cm95IHRoZSBicmlkZ2UgYmV0d2VlbiBIRE1JIExQRQo+ID4g
+KyAqIGF1ZGlvIGRyaXZlciBhbmQgaTkxNQo+ID4gKyAqIEBkZXZfcHJpdjogdGhlIGk5MTUgZHJt
+IGRldmljZSBwcml2YXRlIGRhdGEKPiA+ICsgKgo+ID4gKyAqIHJlbGVhc2UgYWxsIHRoZSByZXNv
+dXJjZXMgZm9yIExQRSBhdWRpbyA8LT4gaTkxNSBicmlkZ2UuCj4gPiArICovCj4gPiArdm9pZCBp
+bnRlbF9scGVfYXVkaW9fdGVhcmRvd24oc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2
+KQo+ID4gK3sKPiA+ICsJc3RydWN0IGlycV9kZXNjICpkZXNjOwo+ID4gKwo+ID4gKwlpZiAoIUhB
+U19MUEVfQVVESU8oZGV2X3ByaXYpKQo+ID4gKwkJcmV0dXJuOwo+ID4gKwo+ID4gKwlkZXNjID0g
+aXJxX3RvX2Rlc2MoZGV2X3ByaXYtPmxwZV9hdWRpby5pcnEpOwo+ID4gKwo+ID4gKwlscGVfYXVk
+aW9faXJxX21hc2soJmRlc2MtPmlycV9kYXRhKTsKPiA+ICsKPiA+ICsJbHBlX2F1ZGlvX3BsYXRk
+ZXZfZGVzdHJveShkZXZfcHJpdik7Cj4gPiArCj4gPiArCWlycV9mcmVlX2Rlc2MoZGV2X3ByaXYt
+PmxwZV9hdWRpby5pcnEpOwo+ID4gK30KPiA+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2RybS9pbnRl
+bF9scGVfYXVkaW8uaCBiL2luY2x1ZGUvZHJtL2ludGVsX2xwZV9hdWRpby5oCj4gPiBuZXcgZmls
+ZSBtb2RlIDEwMDY0NAo+ID4gaW5kZXggMDAwMDAwMC4uOTUyZGUwNQo+ID4gLS0tIC9kZXYvbnVs
+bAo+ID4gKysrIGIvaW5jbHVkZS9kcm0vaW50ZWxfbHBlX2F1ZGlvLmgKPiA+IEBAIC0wLDAgKzEs
+NDYgQEAKPiA+ICsvKgo+ID4gKyAqIENvcHlyaWdodCDCqSAyMDE2IEludGVsIENvcnBvcmF0aW9u
+Cj4gPiArICoKPiA+ICsgKiBQZXJtaXNzaW9uIGlzIGhlcmVieSBncmFudGVkLCBmcmVlIG9mIGNo
+YXJnZSwgdG8gYW55IHBlcnNvbiBvYnRhaW5pbmcgYQo+ID4gKyAqIGNvcHkgb2YgdGhpcyBzb2Z0
+d2FyZSBhbmQgYXNzb2NpYXRlZCBkb2N1bWVudGF0aW9uIGZpbGVzICh0aGUgIlNvZnR3YXJlIiks
+Cj4gPiArICogdG8gZGVhbCBpbiB0aGUgU29mdHdhcmUgd2l0aG91dCByZXN0cmljdGlvbiwgaW5j
+bHVkaW5nIHdpdGhvdXQgbGltaXRhdGlvbgo+ID4gKyAqIHRoZSByaWdodHMgdG8gdXNlLCBjb3B5
+LCBtb2RpZnksIG1lcmdlLCBwdWJsaXNoLCBkaXN0cmlidXRlLCBzdWJsaWNlbnNlLAo+ID4gKyAq
+IGFuZC9vciBzZWxsIGNvcGllcyBvZiB0aGUgU29mdHdhcmUsIGFuZCB0byBwZXJtaXQgcGVyc29u
+cyB0byB3aG9tIHRoZQo+ID4gKyAqIFNvZnR3YXJlIGlzIGZ1cm5pc2hlZCB0byBkbyBzbywgc3Vi
+amVjdCB0byB0aGUgZm9sbG93aW5nIGNvbmRpdGlvbnM6Cj4gPiArICoKPiA+ICsgKiBUaGUgYWJv
+dmUgY29weXJpZ2h0IG5vdGljZSBhbmQgdGhpcyBwZXJtaXNzaW9uIG5vdGljZSAoaW5jbHVkaW5n
+IHRoZSBuZXh0Cj4gPiArICogcGFyYWdyYXBoKSBzaGFsbCBiZSBpbmNsdWRlZCBpbiBhbGwgY29w
+aWVzIG9yIHN1YnN0YW50aWFsIHBvcnRpb25zIG9mIHRoZQo+ID4gKyAqIFNvZnR3YXJlLgo+ID4g
+KyAqCj4gPiArICogVEhFIFNPRlRXQVJFIElTIFBST1ZJREVEICJBUyBJUyIsIFdJVEhPVVQgV0FS
+UkFOVFkgT0YgQU5ZIEtJTkQsIEVYUFJFU1MgT1IKPiA+ICsgKiBJTVBMSUVELCBJTkNMVURJTkcg
+QlVUIE5PVCBMSU1JVEVEIFRPIFRIRSBXQVJSQU5USUVTIE9GIE1FUkNIQU5UQUJJTElUWSwKPiA+
+ICsgKiBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRSBBTkQgTk9OSU5GUklOR0VNRU5U
+LiAgSU4gTk8gRVZFTlQgU0hBTEwKPiA+ICsgKiBUSEUgQVVUSE9SUyBPUiBDT1BZUklHSFQgSE9M
+REVSUyBCRSBMSUFCTEUgRk9SIEFOWSBDTEFJTSwgREFNQUdFUyBPUiBPVEhFUgo+ID4gKyAqIExJ
+QUJJTElUWSwgV0hFVEhFUiBJTiBBTiBBQ1RJT04gT0YgQ09OVFJBQ1QsIFRPUlQgT1IgT1RIRVJX
+SVNFLCBBUklTSU5HCj4gPiArICogRlJPTSwgT1VUIE9GIE9SIElOIENPTk5FQ1RJT04gV0lUSCBU
+SEUgU09GVFdBUkUgT1IgVEhFIFVTRSBPUiBPVEhFUiBERUFMSU5HUwo+ID4gKyAqIElOIFRIRSBT
+T0ZUV0FSRS4KPiA+ICsgKi8KPiA+ICsKPiA+ICsjaWZuZGVmIF9JTlRFTF9MUEVfQVVESU9fSF8K
+PiA+ICsjZGVmaW5lIF9JTlRFTF9MUEVfQVVESU9fSF8KPiA+ICsKPiA+ICsjaW5jbHVkZSA8bGlu
+dXgvdHlwZXMuaD4KPiA+ICsjaW5jbHVkZSA8bGludXgvc3BpbmxvY2tfdHlwZXMuaD4KPiA+ICsK
+PiA+ICsjZGVmaW5lIEhETUlfTUFYX0VMRF9CWVRFUwkxMjgKPiA+ICsKPiA+ICtzdHJ1Y3QgaW50
+ZWxfaGRtaV9scGVfYXVkaW9fZWxkIHsKPiA+ICsJaW50IHBvcnRfaWQ7Cj4gPiArCXVuc2lnbmVk
+IGNoYXIgZWxkX2RhdGFbSERNSV9NQVhfRUxEX0JZVEVTXTsKPiA+ICt9Owo+ID4gKwo+ID4gK3N0
+cnVjdCBpbnRlbF9oZG1pX2xwZV9hdWRpb19wZGF0YSB7Cj4gPiArCWJvb2wgbm90aWZ5X3BlbmRp
+bmc7Cj4gPiArCWludCB0bWRzX2Nsb2NrX3NwZWVkOwo+ID4gKwlib29sIGhkbWlfY29ubmVjdGVk
+Owo+ID4gKwlzdHJ1Y3QgaW50ZWxfaGRtaV9scGVfYXVkaW9fZWxkIGVsZDsKPiA+ICsJdm9pZCAo
+Km5vdGlmeV9hdWRpb19scGUpKHZvaWQgKmF1ZGlvX3B0cik7Cj4gPiArCXNwaW5sb2NrX3QgbHBl
+X2F1ZGlvX3Nsb2NrOwo+ID4gK307Cj4gPiArCj4gPiArI2VuZGlmIC8qIF9JOTE1X0xQRV9BVURJ
+T19IXyAqLwo+IAo+IC0tIAo+IEphbmkgTmlrdWxhLCBJbnRlbCBPcGVuIFNvdXJjZSBUZWNobm9s
+b2d5IENlbnRlcgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCj4gSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdAo+IEludGVsLWdmeEBsaXN0cy5mcmVlZGVza3Rv
+cC5vcmcKPiBodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2lu
+dGVsLWdmeAoKLS0gCkRhbmllbCBWZXR0ZXIKU29mdHdhcmUgRW5naW5lZXIsIEludGVsIENvcnBv
+cmF0aW9uCmh0dHA6Ly9ibG9nLmZmd2xsLmNoCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3Rz
+LmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2ludGVsLWdmeAo=
