@@ -1,15 +1,19 @@
-From: jeeja.kp@intel.com
-Subject: [PATCH v3 00/12] ASoC: hdmi: Preparatory work to
-	support MST audio
-Date: Tue, 24 Jan 2017 21:49:02 +0530
-Message-ID: <1485274754-5723-1-git-send-email-jeeja.kp@intel.com>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: Re: [PATCH] ASoC: nau8540: new codec driver
+Date: Thu, 26 Jan 2017 14:30:19 +0800
+Message-ID: <5889977B.4090202@nuvoton.com>
+References: <1483597244-9761-1-git-send-email-KCHSU0@nuvoton.com>
+ <20170109200052.szyldvyxnki2jggj@sirena.org.uk>
+ <58881F56.3080007@nuvoton.com>
+ <20170125125049.aml35ei6oc4kwguu@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id A9B3A266D09
- for <alsa-devel@alsa-project.org>; Tue, 24 Jan 2017 17:07:59 +0100 (CET)
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id B6496266F1C
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jan 2017 07:30:23 +0100 (CET)
+In-Reply-To: <20170125125049.aml35ei6oc4kwguu@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,78 +23,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: WTLI@nuvoton.com, YHCHuang@nuvoton.com, alsa-devel@alsa-project.org, CTLIN0@nuvoton.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+Hi,
+On 1/25/2017 8:50 PM, Mark Brown wrote:
+> On Wed, Jan 25, 2017 at 11:45:26AM +0800, John Hsu wrote:
+>
+>> On 1/10/2017 4:00 AM, Mark Brown wrote:
+>>
+>>> On Thu, Jan 05, 2017 at 02:20:44PM +0800, John Hsu wrote:
+>>>
+>
+>
+>>> Does this sequence need to be done as part of resume as well?
+>>>
+>
+>
+>> These initiation just only need to do once when the codec boots.
+>> I think it's better to do it when driver module is loaded.
+>>
+>
+> Why not on resume?  While it won't always happen system suspend does
+> frequently mean that the device will have lost power so anything done on
+> boot will have been lost.
+>
 
-Display port 1.2 introduces new capability Multi-stream transport (MST)
-which will allow multiple stream to route to single display port where
-multiple monitors are connected. Multiple monitors will be connected by
-a MST Hub or a monitor capable of daisy-chaining.
+Yes, I can move it to resume.
+By the way, is it better to do cache sync instead for the situation?
 
-With MST support, a pin can support multiple ports and on each port a
-monitor can be connected.
 
-This is preparatory patch series to enable DP MST Audio by extending the
-current design from pin to port.
-o i915 acomp APIs are now used to read the ELD info and support is extended
-for MST port as well.
 
-o Configure port/pin/audio infoframe in widget event handlers for dynamic
-routing when monitor is connected/disconnected instead of DAI ops. 
-
-o Use set_tdm slot to set the stream tag instead of dai params and store it
-in pcm context and use this in configuring the converter in widget event
-handler.
-
-o With MST, pin mux for CVT selection will be used to select CVT for
-pin-port instead of pin. So create the pin mux accordingly and update the
-route in skl/bxt machines.
-
-o add channel map support in bxtn machines.
-
-Note:
-o This patch series has dependency on the series
-"ASoC: Intel: Skylake: Driver updates".
-
-o This changes require UCM conf modification, once this series is accepted,
-I will post the UCM change.
-
-o This series depends on DRM changes to enable MST and changes are already
-merged in 4.10-rc1 branch.
-
-Changes v2:
-	Split the patchs to smaller series.
-
-Changes v3:
-	o rebased on latest branch 
-	o Removed already merged patch.
-
-Jeeja KP (12):
-  ASoC: hdac_hdmi: Register widget event handlers
-  ASoC: Intel: Skylake: Use set_tdm_slot to set the dma channel
-  ASoC: hdac_hdmi: Move channel info from pin to PCM structure
-  ASoC: Intel: bxt: add channel map support in rt298 machine
-  ASoC: Intel: bxt: add channel map support in bxt_da7219_max98357a    
-    machine
-  ASoC: hdac_hdmi: Begin to add support for DP Multi-stream audio
-  ASoC: Intel: Skylake: Add route change to rt286 machine
-  ASoC: Intel: Skylake: Add route change to nau88l25_max98357a machine
-  ASoC: Intel: Skylake: Add route change to nau88l25_ssm4567 machine
-  ASoC: Intel: bxt: Add route change to rt298 machine
-  ASoC: Intel: bxt: Add route change to da7219_max98357a machine
-  ASoC: hdac_hdmi: Add support to handle MST capable pin
-
- sound/soc/codecs/hdac_hdmi.c                    | 798 ++++++++++++++----------
- sound/soc/intel/boards/bxt_da7219_max98357a.c   |  55 +-
- sound/soc/intel/boards/bxt_rt298.c              |  58 +-
- sound/soc/intel/boards/skl_nau88l25_max98357a.c |   8 +-
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c   |   9 +-
- sound/soc/intel/boards/skl_rt286.c              |   6 +-
- sound/soc/intel/skylake/skl-pcm.c               |  10 +-
- 7 files changed, 578 insertions(+), 366 deletions(-)
-
--- 
-2.5.0
+===========================================================================================
+The privileged confidential information contained in this email is intended for use only by the addressees as indicated by the original sender of this email. If you are not the addressee indicated in this email or are not responsible for delivery of the email to such a person, please kindly reply to the sender indicating this fact and delete all copies of it from your computer and network server immediately. Your cooperation is highly appreciated. It is advised that any unauthorized use of confidential information of Nuvoton is strictly prohibited; and any information in this email irrelevant to the official business of Nuvoton shall be deemed as neither given nor endorsed by Nuvoton.
