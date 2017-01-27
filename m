@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: cht_bsw_rt5645: add Baytrail
-	MCLK support" to the asoc tree
-Date: Tue, 31 Jan 2017 21:18:09 +0000
-Message-ID: <E1cYfoX-0001B2-Sw@debutante>
-References: <1485461385-14544-11-git-send-email-pierre-louis.bossart@linux.intel.com>
+From: Liam Breck <liam@networkimprov.net>
+Subject: [PATCH v8 1/1] ASoC: omap-mcbsp: Add PM QoS support
+	for McBSP to prevent glitches
+Date: Fri, 27 Jan 2017 14:53:37 -0800
+Message-ID: <20170127225337.17830-1-liam@networkimprov.net>
+References: <20170118072600.15239-1-matt@ranostay.consulting>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0473D267418
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 22:18:19 +0100 (CET)
-In-Reply-To: <1485461385-14544-11-git-send-email-pierre-louis.bossart@linux.intel.com>
+Received: from mail-pg0-f67.google.com (mail-pg0-f67.google.com [74.125.83.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3A150267B76
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2017 23:54:36 +0100 (CET)
+Received: by mail-pg0-f67.google.com with SMTP id 204so25982405pge.2
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2017 14:54:36 -0800 (PST)
+In-Reply-To: <20170118072600.15239-1-matt@ranostay.consulting>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,202 +23,177 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Tony Lindgren <tony@atomide.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Matt Ranostay <matt@ranostay.consulting>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+We can get audio errors if hitting deeper idle states on omaps:
 
-   ASoC: Intel: cht_bsw_rt5645: add Baytrail MCLK support
+[alsa.c:230] error: Fatal problem with alsa output, error -5.
+[audio.c:614] error: Error in writing audio (Input/output error?)!
 
-has been applied to the asoc tree at
+This seems to happen with off mode idle enabled as power for the
+whole SoC may get cut off between filling the McBSP fifo using DMA.
+While active DMA blocks deeper idle states in hardware, McBSP
+activity does not seem to do so.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Basing the QoS latency calculation on the FIFO size, threshold,
+sample rate, and channels.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Based on the original patch by Tony Lindgren
+Link: https://patchwork.kernel.org/patch/9305867/
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From a50477e55fff69e1028f25624ee9fc9182d59b1f Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 26 Jan 2017 14:09:38 -0600
-Subject: [PATCH] ASoC: Intel: cht_bsw_rt5645: add Baytrail MCLK support
-
-The existing code assumes a 19.2 MHz MCLK as the default
-hardware configuration. This is valid for CherryTrail but
-not for Baytrail.
-
-Add explicit MCLK configuration to set the 19.2 clock on/off
-depending on DAPM events.
-
-This is a prerequisite step to enable devices with Baytrail
-and RT5645 such as Asus X205TA
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+From: Matt Ranostay <matt@ranostay.consulting>
+Cc: Tony Lindgren <tony@atomide.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Matt Ranostay <matt@ranostay.consulting>
+Tested-by: Tony Lindgren <tony@atomide.com>
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
- sound/soc/intel/boards/cht_bsw_rt5645.c | 84 ++++++++++++++++++++++++++++-----
- 1 file changed, 71 insertions(+), 13 deletions(-)
+Changes from v1:
+* add calculations for latency per number of FIFO locations
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index f504a0e18f91..468228b73b0b 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -24,6 +24,9 @@
- #include <linux/acpi.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
-+#include <asm/cpu_device_id.h>
-+#include <asm/platform_sst_audio.h>
-+#include <linux/clk.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
-@@ -45,6 +48,7 @@ struct cht_mc_private {
- 	struct snd_soc_jack jack;
- 	struct cht_acpi_card *acpi_card;
- 	char codec_name[16];
-+	struct clk *mclk;
+Changes from v2:
+* add missing mcbsp.h header change
+
+Changes from v3:
+* base the latency calculations on threshold, buffer size, sample
+  rate, and channels
+
+Changes from v4:
+* using Peter Ujfalusi's suggestions for restoring a higher latency on
+  audio stream completion, or if not applicable remove the QoS request
+
+Changes from v5:
+* clean up latency checking logic
+* move logic to .prepare and .shutdown to avoid functions that can sleep
+
+Changes from v6:
+* move QoS removal to asoc_mcbsp_remove from omap_mcbsp_cleanup
+* also remove header include that is unneeded
+
+Changes from v7:
+* fix issue reported by Tony Lindgreen that a player application could close the
+  card after hw_params, and cause an invalid pm_qos_remove_request()
+
+ sound/soc/omap/mcbsp.h      |  3 +++
+ sound/soc/omap/omap-mcbsp.c | 48 ++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 50 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/omap/mcbsp.h b/sound/soc/omap/mcbsp.h
+index 61e93b1c185d..46ae1269a698 100644
+--- a/sound/soc/omap/mcbsp.h
++++ b/sound/soc/omap/mcbsp.h
+@@ -323,8 +323,11 @@ struct omap_mcbsp {
+ 
+ 	unsigned int fmt;
+ 	unsigned int in_freq;
++	unsigned int latency[2];
+ 	int clk_div;
+ 	int wlen;
++
++	struct pm_qos_request pm_qos_req;
  };
  
- static inline struct snd_soc_dai *cht_get_codec_dai(struct snd_soc_card *card)
-@@ -65,6 +69,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
- 	struct snd_soc_dapm_context *dapm = w->dapm;
- 	struct snd_soc_card *card = dapm->card;
- 	struct snd_soc_dai *codec_dai;
-+	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(card);
- 	int ret;
- 
- 	codec_dai = cht_get_codec_dai(card);
-@@ -73,19 +78,30 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
- 		return -EIO;
- 	}
- 
--	if (!SND_SOC_DAPM_EVENT_OFF(event))
--		return 0;
-+	if (SND_SOC_DAPM_EVENT_ON(event)) {
-+		if (ctx->mclk) {
-+			ret = clk_prepare_enable(ctx->mclk);
-+			if (ret < 0) {
-+				dev_err(card->dev,
-+					"could not configure MCLK state");
-+				return ret;
-+			}
-+		}
-+	} else {
-+		/* Set codec sysclk source to its internal clock because codec PLL will
-+		 * be off when idle and MCLK will also be off when codec is
-+		 * runtime suspended. Codec needs clock for jack detection and button
-+		 * press. MCLK is turned off with clock framework or ACPI.
-+		 */
-+		ret = snd_soc_dai_set_sysclk(codec_dai, RT5645_SCLK_S_RCCLK,
-+					48000 * 512, SND_SOC_CLOCK_IN);
-+		if (ret < 0) {
-+			dev_err(card->dev, "can't set codec sysclk: %d\n", ret);
-+			return ret;
-+		}
- 
--	/* Set codec sysclk source to its internal clock because codec PLL will
--	 * be off when idle and MCLK will also be off by ACPI when codec is
--	 * runtime suspended. Codec needs clock for jack detection and button
--	 * press.
--	 */
--	ret = snd_soc_dai_set_sysclk(codec_dai, RT5645_SCLK_S_RCCLK,
--			0, SND_SOC_CLOCK_IN);
--	if (ret < 0) {
--		dev_err(card->dev, "can't set codec sysclk: %d\n", ret);
--		return ret;
-+		if (ctx->mclk)
-+			clk_disable_unprepare(ctx->mclk);
- 	}
- 
- 	return 0;
-@@ -97,7 +113,7 @@ static const struct snd_soc_dapm_widget cht_dapm_widgets[] = {
- 	SND_SOC_DAPM_MIC("Int Mic", NULL),
- 	SND_SOC_DAPM_SPK("Ext Spk", NULL),
- 	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
--			platform_clock_control, SND_SOC_DAPM_POST_PMD),
-+			platform_clock_control, SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
- };
- 
- static const struct snd_soc_dapm_route cht_rt5645_audio_map[] = {
-@@ -225,6 +241,26 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- 
- 	rt5645_set_jack_detect(codec, &ctx->jack, &ctx->jack, &ctx->jack);
- 
-+	if (ctx->mclk) {
-+		/*
-+		 * The firmware might enable the clock at
-+		 * boot (this information may or may not
-+		 * be reflected in the enable clock register).
-+		 * To change the rate we must disable the clock
-+		 * first to cover these cases. Due to common
-+		 * clock framework restrictions that do not allow
-+		 * to disable a clock that has not been enabled,
-+		 * we need to enable the clock first.
-+		 */
-+		ret = clk_prepare_enable(ctx->mclk);
-+		if (!ret)
-+			clk_disable_unprepare(ctx->mclk);
+ void omap_mcbsp_config(struct omap_mcbsp *mcbsp,
+diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
+index d018e966e533..6b40bdbef336 100644
+--- a/sound/soc/omap/omap-mcbsp.c
++++ b/sound/soc/omap/omap-mcbsp.c
+@@ -157,6 +157,17 @@ static void omap_mcbsp_dai_shutdown(struct snd_pcm_substream *substream,
+ 				    struct snd_soc_dai *cpu_dai)
+ {
+ 	struct omap_mcbsp *mcbsp = snd_soc_dai_get_drvdata(cpu_dai);
++	int tx = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
++	int stream1 = tx ? SNDRV_PCM_STREAM_PLAYBACK : SNDRV_PCM_STREAM_CAPTURE;
++	int stream2 = tx ? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
 +
-+		ret = clk_set_rate(ctx->mclk, CHT_PLAT_CLK_3_HZ);
++	if (mcbsp->latency[stream2])
++		pm_qos_update_request(&mcbsp->pm_qos_req,
++				      mcbsp->latency[stream2]);
++	else if (mcbsp->latency[stream1])
++		pm_qos_remove_request(&mcbsp->pm_qos_req);
 +
-+		if (ret)
-+			dev_err(runtime->dev, "unable to set MCLK rate\n");
-+	}
- 	return ret;
++	mcbsp->latency[stream1] = 0;
+ 
+ 	if (!cpu_dai->active) {
+ 		omap_mcbsp_free(mcbsp);
+@@ -164,6 +175,28 @@ static void omap_mcbsp_dai_shutdown(struct snd_pcm_substream *substream,
+ 	}
  }
  
-@@ -349,6 +385,18 @@ static struct cht_acpi_card snd_soc_cards[] = {
- 
- static char cht_rt5640_codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
- 
-+static bool is_valleyview(void)
++static int omap_mcbsp_dai_prepare(struct snd_pcm_substream *substream,
++				  struct snd_soc_dai *cpu_dai)
 +{
-+	static const struct x86_cpu_id cpu_ids[] = {
-+		{ X86_VENDOR_INTEL, 6, 55 }, /* Valleyview, Bay Trail */
-+		{}
-+	};
++	struct omap_mcbsp *mcbsp = snd_soc_dai_get_drvdata(cpu_dai);
++	struct pm_qos_request *pm_qos_req = &mcbsp->pm_qos_req;
++	int tx = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
++	int stream1 = tx ? SNDRV_PCM_STREAM_PLAYBACK : SNDRV_PCM_STREAM_CAPTURE;
++	int stream2 = tx ? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
++	int latency = mcbsp->latency[stream2];
 +
-+	if (!x86_match_cpu(cpu_ids))
-+		return false;
-+	return true;
++	/* Prevent omap hardware from hitting off between FIFO fills */
++	if (!latency || mcbsp->latency[stream1] < latency)
++		latency = mcbsp->latency[stream1];
++
++	if (pm_qos_request_active(pm_qos_req))
++		pm_qos_update_request(pm_qos_req, latency);
++	else if (latency)
++		pm_qos_add_request(pm_qos_req, PM_QOS_CPU_DMA_LATENCY, latency);
++
++	return 0;
 +}
 +
- static int snd_cht_mc_probe(struct platform_device *pdev)
+ static int omap_mcbsp_dai_trigger(struct snd_pcm_substream *substream, int cmd,
+ 				  struct snd_soc_dai *cpu_dai)
  {
- 	int ret_val = 0;
-@@ -391,6 +439,16 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 		cht_dailink[dai_index].codec_name = cht_rt5640_codec_name;
+@@ -226,6 +259,7 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
+ 	int wlen, channels, wpf;
+ 	int pkt_size = 0;
+ 	unsigned int format, div, framesize, master;
++	unsigned int buffer_size = mcbsp->pdata->buffer_size;
+ 
+ 	dma_data = snd_soc_dai_get_dma_data(cpu_dai, substream);
+ 	channels = params_channels(params);
+@@ -240,7 +274,9 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
+ 	default:
+ 		return -EINVAL;
+ 	}
+-	if (mcbsp->pdata->buffer_size) {
++	if (buffer_size) {
++		int latency;
++
+ 		if (mcbsp->dma_op_mode == MCBSP_DMA_MODE_THRESHOLD) {
+ 			int period_words, max_thrsh;
+ 			int divider = 0;
+@@ -271,6 +307,12 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
+ 			/* Use packet mode for non mono streams */
+ 			pkt_size = channels;
+ 		}
++
++		latency = ((((buffer_size - pkt_size) / channels) * 1000)
++				 / (params->rate_num / params->rate_den));
++
++		mcbsp->latency[substream->stream] = latency;
++
+ 		omap_mcbsp_set_threshold(substream, pkt_size);
  	}
  
-+	if (is_valleyview()) {
-+		drv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
-+		if (IS_ERR(drv->mclk)) {
-+			dev_err(&pdev->dev,
-+				"Failed to get MCLK from pmc_plt_clk_3: %ld\n",
-+				PTR_ERR(drv->mclk));
-+			return PTR_ERR(drv->mclk);
-+		}
-+	}
+@@ -554,6 +596,7 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ static const struct snd_soc_dai_ops mcbsp_dai_ops = {
+ 	.startup	= omap_mcbsp_dai_startup,
+ 	.shutdown	= omap_mcbsp_dai_shutdown,
++	.prepare	= omap_mcbsp_dai_prepare,
+ 	.trigger	= omap_mcbsp_dai_trigger,
+ 	.delay		= omap_mcbsp_dai_delay,
+ 	.hw_params	= omap_mcbsp_dai_hw_params,
+@@ -835,6 +878,9 @@ static int asoc_mcbsp_remove(struct platform_device *pdev)
+ 	if (mcbsp->pdata->ops && mcbsp->pdata->ops->free)
+ 		mcbsp->pdata->ops->free(mcbsp->id);
+ 
++	if (pm_qos_request_active(&mcbsp->pm_qos_req))
++		pm_qos_remove_request(&mcbsp->pm_qos_req);
 +
- 	snd_soc_card_set_drvdata(card, drv);
- 	ret_val = devm_snd_soc_register_card(&pdev->dev, card);
- 	if (ret_val) {
--- 
-2.11.0
+ 	omap_mcbsp_cleanup(mcbsp);
+ 
+ 	clk_put(mcbsp->fclk);
