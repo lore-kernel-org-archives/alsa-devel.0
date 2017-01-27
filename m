@@ -1,12 +1,12 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH] sound: soc: davinci - Fix possible NULL derefrence.
-Date: Fri, 27 Jan 2017 11:58:06 +0000
-Message-ID: <20170127115806.vvjvw47qbzcxukrz@sirena.org.uk>
+Date: Fri, 27 Jan 2017 11:58:23 +0000
+Message-ID: <20170127115823.h44w7at2mrclkn5n@sirena.org.uk>
 References: <CGME20170127111104epcas1p2810feef80b04b21983efd16c00b1b651@epcas1p2.samsung.com>
  <1485515457-3055-1-git-send-email-shailendra.v@samsung.com>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="u3t7awmi2s2oxh3u"
+        protocol="application/pgp-signature"; boundary="7cmbtuos44xnxu6c"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
 In-Reply-To: <1485515457-3055-1-git-send-email-shailendra.v@samsung.com>
@@ -16,7 +16,7 @@ Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takas
 List-Id: alsa-devel@alsa-project.org
 
 
---u3t7awmi2s2oxh3u
+--7cmbtuos44xnxu6c
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -24,22 +24,27 @@ On Fri, Jan 27, 2017 at 04:40:57PM +0530, Shailendra Verma wrote:
 > of_match_device could return NULL, and so can cause a NULL
 > pointer dereference later.
 
-It would be worth explaining how the device can instantiate with no
-match...
+Oh, and:
 
---u3t7awmi2s2oxh3u
+Please submit patches using subject lines reflecting the style for the
+subsystem.  This makes it easier for people to identify relevant
+patches.  Look at what existing commits in the area you're changing are
+doing and make sure your subject lines visually resemble what they're
+doing.
+
+--7cmbtuos44xnxu6c
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliLNc0ACgkQJNaLcl1U
-h9Bg5Af/fGYd+lT2NpIUbzoWx4mxBaNItHxQybx6tN6Lb9cgmcoxcCWnkUH1lDKM
-0I0+qD/Ehp1vUURmUa6JPEwpSyMrSueSbHv2+P98qIZjjNnGuPBwOfbSM7qurUOl
-6YPvxuUMh1H9d/qESp1xmCZ1i7Xv5nw3YlWLkjAgyffPnEPPenf2B0Eqi7P6vvcZ
-+4QeB6yFlNwuKrJBXhsJJ3FXs5YvfidHtS3eTuZpdLhUmPPwgdGgHX7fAkfwvTEr
-lGaXg6jqEHzBsF325oYyABheWRyx7kEfnFEO2TmCvhJE3Zohi7PmO3Ceo9rXjg+r
-OD47FwR0T/Jv5Uh00y3hUQaayHtU+g==
-=5sP+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliLNd4ACgkQJNaLcl1U
+h9DPVQf+LYdCki93xelb0P2KUyNUzS8l5XQgbGZkEo3qCm+nHKEVl4gbRnZakHP+
+UzhPBDmAek+ZQXLiC6pShNZXtEpBgbW7pjV/LWZUijjXqvuMptfx1sVVpSOro0v5
+1CMj3dXokSSHBUGOk/sdZaqhVqQvRfKp1nJAchisJI51hzf9w9cWwSdbtt10SXyR
+1+gdC8DjlECQQWZKESiMBnb1Unq7gI7T497aWF6B+XMnO5s+6Aiq4XtkEBMlChwe
+I6R2YSmfeuEGz72gEbz1zh2Pg1ufBJu+WOtAXGhFsqgyFD79HvPnHr6L0Bf71jHH
+55wNYNk/G3GRDGrv1JlnjMR33kQjvw==
+=plB3
 -----END PGP SIGNATURE-----
 
---u3t7awmi2s2oxh3u--
+--7cmbtuos44xnxu6c--
