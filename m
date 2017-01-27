@@ -1,57 +1,49 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Subject: Re: [RFC PATCH 4/5] drm: i915: add DisplayPort amp
- unmute for LPE audio mode
-Date: Fri, 27 Jan 2017 17:46:23 +0200
-Message-ID: <20170127154623.GE31595@intel.com>
-References: <1485461141-14023-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <1485461141-14023-5-git-send-email-pierre-louis.bossart@linux.intel.com>
- <87efzo4xxh.fsf@intel.com> <20170127131734.GP31595@intel.com>
- <20170127143547.GZ31595@intel.com> <s5hvat0ftsf.wl-tiwai@suse.de>
- <d37654f3-3d33-dafc-6069-aaf1beb35844@linux.intel.com>
+From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: Re: [PATCH v2 1/9] drivers: pinctrl: add driver for
+ Allwinner H5 SoC
+Date: Fri, 27 Jan 2017 16:51:59 +0100
+Message-ID: <20170127155159.3e3j6xwf7nis6vtp@lukather>
+References: <20170126154859.55855-1-icenowy@aosc.xyz>
+ <20170126154859.55855-2-icenowy@aosc.xyz>
+Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="bleo7dtcochkw3y2"
+Return-path: <linux-sunxi+bncBDSJBYGBRIMBBKWZVXCAKGQEMNZ3RZA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Content-Disposition: inline
-In-Reply-To: <d37654f3-3d33-dafc-6069-aaf1beb35844@linux.intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Daniel Vetter <daniel.vetter@ffwll.ch>, intel-gfx@lists.freedesktop.org, broonie@kernel.org
+In-Reply-To: <20170126154859.55855-2-icenowy-ymACFijhrKM@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
+Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Andre Przywara <andre.przywara-5wv7dgnIgG8@public.gmane.org>, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBKYW4gMjcsIDIwMTcgYXQgMDg6NTU6MTlBTSAtMDYwMCwgUGllcnJlLUxvdWlzIEJv
-c3NhcnQgd3JvdGU6Cj4gCj4gCj4gPj4+Pj4gKyNkZWZpbmUgQVVEX1BPUlRfRU5fQl9EQkcJCTB4
-NjJGMjAKPiA+Pj4+PiArI2RlZmluZSBBVURfUE9SVF9FTl9DX0RCRwkJMHg2MkYyOAo+ID4+Pj4+
-ICsjZGVmaW5lIEFVRF9QT1JUX0VOX0RfREJHCQkweDYyRjJDCj4gPj4+IFRoZXNlIG1hdGNoIHRo
-ZSBzcGVjLiBCdXQgdG8gbWF0Y2ggdGhlIHN0YW5kYXJkIGk5MTUgY29udmVudGlvbiB0aGV5Cj4g
-Pj4+IHNob3VsZCBiZSBjYWxsZWQgX0FVRF9QT1JUX0VOX0JfREJHIGV0Yy4gU2FtZSBmb3J0aGUg
-Y2hpY2tlbiBiaXQKPiA+Pj4gcmVnaXN0ZXIuCj4gPj4gQWN0dWFsbHkgdGhleSBqdXN0IG1hdGNo
-IG9uZSB2ZXJzaW9uIG9mIHRoZSBzcGVjIEkgaGFkIGx5aW5nIGFyb3VuZC4KPiA+PiBBbm90aGVy
-IHZlcnNpb25zIHNheXM6Cj4gPj4KPiA+PiBBVURfUE9SVF9FTl9CX0RCRyAweDYyRjIwCj4gPj4g
-QVVEX1BPUlRfRU5fQ19EQkcgMHg2MkYzMAo+ID4+IEFVRF9QT1JUX0VOX0RfREJHIDB4NjJGMzQK
-PiA+IFRoYXQncyBpdCEgIE5vdyBmaW5hbGx5IEkgY2FuIGhlYXIgdGhlIGF1ZGlvIGZyb20gRFAz
-IHdpdGggdGhlCj4gPiBhZGRpdGlvbmFsIHBhdGNoIGJlbG93Lgo+IFdvdy4gVGhhbmtzIFZpbGxl
-IGZvciBsb29raW5nIGludG8gdGhpcywgd2UgY291bGQgaGF2ZSBsb3N0IGEgbG90IG9mIAo+IHRp
-bWUuIERvIHlvdSBoYXBwZW4gdG8ga25vdyBpZiB0aG9zZSBwcmV2aW91cyB2YWx1ZXMgYXJlIGR1
-ZSB0byBwb29yIAo+IGRvY3VtZW50YXRpb24gb3IgYSBkaWZmZXJlbnQgc2tldyB3ZSdkIG5lZWQg
-dG8gc3VwcG9ydCwgZS5nLiB3aXRoIGEgCj4gUENJLUlkIHF1aXJrPwoKTm8gaWRlYSByZWFsbHku
-IFlvdSBzaG91bGQgcmVhbGx5IHRlc3QgdGhpcyBvbiBib3RoIENIViBhbmQgVkxWIHdpdGggYWxs
-CnBvc3NpYmxlIHBvcnQvcGlwZSBjb21iaW5hdGlvbnMgdG8gbWFrZSBzdXJlIHdlIGdvdCBpdCBy
-aWdodC4gSSB0cnVzdAp0aGVzZSBWTFYvQ0hWIGRvY3MgYWJvdXQgYXMgbXVjaCBhcyBJIHRydXN0
-IG1vc3QgcG9saXRpY2lhbnMuCgpBbHRlcm5hdGl2ZWx5IHlvdSBjb3VsZCBqdXN0IHJlYWQgYWxs
-IHRob3NlIHJlZ3Mgb24gYm90aCBwbGF0Zm9ybXMgYW5kCnNlZSBpZiB0aGUgdmFsdWVzIHlvdSBn
-ZXQgZnJvbSB0aGVtIGNvbmZvcm0gdG8gYW55IHZpc2libGUgcGF0dGVybiB0aGF0CmNvdWxkIHRl
-bGwgdXMgd2hpY2ggb2Zmc2V0cyBhcmUgdGhlIGNvcnJlY3Qgb25lcy4gVGhleSBtaWdodCBub3Qs
-IGluCndoaWNoIGNhc2UgYWN0dWFsIHRlc3RpbmcgaXMgdGhlIGJlc3QgYmV0LgoKLS0gClZpbGxl
-IFN5cmrDpGzDpApJbnRlbCBPVEMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRl
-c2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8v
-aW50ZWwtZ2Z4Cg==
+
+--bleo7dtcochkw3y2
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
+
+On Thu, Jan 26, 2017 at 11:48:51PM +0800, Icenowy Zheng wrote:
+> Based on the Allwinner H5 datasheet and the pinctrl driver of the
+> backward-compatible H3 this introduces the pin multiplex assignments for
+> the H5 SoC.
+> 
+> H5 introduced some more pin functions (e.g. three more groups of TS
+> pins, and one more groups of SIM pins) than H3.
+> 
+> Signed-off-by: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
+
+Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+
+Maxime
+
+-- 
+Maxime Ripard, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
+--bleo7dtcochkw3y2--
