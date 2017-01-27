@@ -1,89 +1,185 @@
-From: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
-Subject: Re: Re: [PATCH v2 6/9] arm64: dts: allwinner: add
- Allwinner H5 .dtsi
-Date: Sat, 28 Jan 2017 00:03:27 +0800
-Message-ID: <20170127190350.3aiSkR8d@smtp2m.mail.yandex.net>
-Reply-To: icenowy-ymACFijhrKM@public.gmane.org
+From: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 2/7] MFD: add STM32 DFSDM support
+Date: Fri, 27 Jan 2017 17:17:46 +0000
+Message-ID: <20170127171746.lf2nbpsaqs3dmy44@dell>
+References: <1485189145-29576-1-git-send-email-arnaud.pouliquen@st.com>
+ <1485189145-29576-3-git-send-email-arnaud.pouliquen@st.com>
+ <20170124082249.GR16020@dell>
+ <283c0e48-55e2-6516-369d-91dc72d12f73@st.com>
+ <20170124113658.GW16020@dell>
+ <a1aaaa20-ac00-b182-f1c1-63152be41135@st.com>
+ <20170127101545.g53uah57vgfu55o5@dell>
+ <7b3eb38d-4fd1-2006-7423-94f2a7b38b27@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-sunxi+bncBCZLPFN5Q4OBB366VXCAKGQE3GFLTPA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Andre Przywara <andre.przywara-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <7b3eb38d-4fd1-2006-7423-94f2a7b38b27-qxv4g6HH51o@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Cc: "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre TORGUE <alexandre.torgue-qxv4g6HH51o@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 27 Jan 2017, Arnaud Pouliquen wrote:
+> On 01/27/2017 11:15 AM, Lee Jones wrote:
+> > On Tue, 24 Jan 2017, Arnaud Pouliquen wrote:
+> >> On 01/24/2017 12:36 PM, Lee Jones wrote:
+> >>> On Tue, 24 Jan 2017, Arnaud Pouliquen wrote:
+> >>>> On 01/24/2017 09:22 AM, Lee Jones wrote:
+> >>>>> On Mon, 23 Jan 2017, Arnaud Pouliquen wrote:
+> >>>>>
+> >>>>>> DFSDM hardware IP can be used at the same time for ADC sigma delta
+> >>>>>
+> >>>>> Same time as what?
+> >>>> DFSDM is used for ADC acquisition (through IIO) but also PDM microphone
+> >>>> capture (through ASOC).
+> >>>>>
+> >>>>>> conversion and audio PDM microphone.
+> >>>>>> MFD driver is in charge of configuring IP registers and managing IP clocks.
+> >>>>>> For this it exports an API to handles filters and channels resources.
+> >>>>>
+> >>>>> This looks like an ADC driver?  What is it that makes it an MFD?
+> >>>> Yes it a kind of ADC but that supports 2 features audio and iio.
+> >>>> So it has to support 2 features based on 2 separate Frameworks.
+> >>>
+> >>> I'm still unsure why it needs to live in MFD.
+> >>>
+> >>> By the looks of it, this driver needs to move into IIO and you need to
+> >>> call into it from ASoC.
+> >>>
+> >>
+> >> I think i introduce confusion by speaking about ADC for audio...
+> >>
+> >> 1) IIO handles sigma delta ADCs that can be used as example for motor
+> >> controls. the aim is to get value based on an application request or
+> >> using some triggers.
+> >> example: http://www.ti.com/lit/ds/symlink/ads1202.pdf
+> >>
+> >> 2) For audio part, we speak about Digital mems microphones that generate
+> >> PDM format stream. PDM is a continuous real time stream dedicated to
+> >> audio record and must be handled in ASOC ( codec Dmic part driver is
+> >> /sound/soc/codec/dmic.c).
+> >> DMIC example:
+> >> http://www.st.com/content/ccc/resource/technical/document/datasheet/47/bd/d2/13/8d/fd/48/26/DM00121815.pdf/files/DM00121815.pdf/jcr:content/translations/en.DM00121815.pdf
+> >>
+> >> Form my point of view it very strange to handle DMICs in IIO, as it is
+> >> not designed to support audio streams.it is two separate features that
+> >> are not compatible.
+> >>
+> >> Now, from software point of view
+> >> That would means that IIO declares ADCs that it can not expose, because
+> >> DMIC is not IIO standard. But IIO inkern API needs that device is
+> >> declared
+> > 
+> >> So i should define a specific API in IIO for ASOC driver.
+> > 
+> > Yes, this is what I think you should do.
+> > 
+> > MFD is not a dumping ground for devices that do not fit anywhere else.
+> 
+> I fully understand that you don't want to create unnecessary MFD devices.
+> But In case of DFSDM ,it is really a device that supports 2 features.
+> The main evidence is that "ADC acquisition" and "digital microphone"
+> features are handled by two separate frameworks.
+> So this corresponds to two features that share the same device resources
+> (registers, IRQs, clocks).
+> Seems that this match with MFD definition.
+> 
+> Now, if IIO and ASOC maintainers are aligned with you proposal, i will
+> move MFD part in IIO.
+> But in this case, i can not see another way to do it, except a MFD
+> driver hidden in IIO?
+> 
+> Here is my analysis of a design in IIO:
+> 
+> Natural way to do this is to consider that ASOC is a customer of IIO so
+> use the customer.h API.
+> 1) As Digital microphone can not be handled by IIO dev interface, i can
+> not expose them as an IIO channel, that would be visible by applications
+> in /sys/bus/iio/devices/iio
+> 2) ASOC needs to configure DFSDM filter to match to specific frequencies
+> and sample formats requested by users. Not standard IIO interface to do
+> this. (on IIO side this is done by attribute file)
+> 3) audio stream is a real time stream. So for audio quality best is to
+> minimize latencies and Xrun. That why transfer as done from HW to
+> application using LLI DMA transfers with a minimum of copy. This does
+> not match with the IIO inkern API.
+>  => So seems not possible to use IIO inkern API.
+> 
+> That's means that i would need to create a ST specific include file to
+> offer an API to ASoC to handle DFSDM resources linked to the DMIC.
+> and to probe ASOc device in IIO one.
+> So the solution would be to create something like a sub IIO driver That
+> probe and handle some IIO and ASOC devices.
+> Ultimately This would correspond to a MFD driver integrated in IIO...
 
-2017=E5=B9=B41=E6=9C=8827=E6=97=A5 23:58=E4=BA=8E Maxime Ripard <maxime.rip=
-ard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Thu, Jan 26, 2017 at 11:48:56PM +0800, Icenowy Zheng wrote:=20
-> > + mmc@01c0f000 {=20
->
-> Please use a label based syntax here too.=20
->
-> > + compatible =3D "allwinner,sun50i-a64-mmc",=20
-> > + =C2=A0=C2=A0=C2=A0=C2=A0 "allwinner,sun5i-a13-mmc";=20
->
-> The compatibility with the A13 has never been true, and the compatible=20
-> should be "allwinner,sun50i-h5-mmc", "allwinner,sun50i-a64-mmc".=20
->
-> > + clocks =3D <&ccu CLK_BUS_MMC0>, <&ccu CLK_MMC0>;=20
-> > + clock-names =3D "ahb", "mmc";=20
-> > + };=20
-> > +=20
-> > + mmc@01c10000 {=20
-> > + compatible =3D "allwinner,sun50i-a64-mmc",=20
-> > + =C2=A0=C2=A0=C2=A0=C2=A0 "allwinner,sun5i-a13-mmc";=20
-> > + clocks =3D <&ccu CLK_BUS_MMC1>, <&ccu CLK_MMC1>;=20
-> > + clock-names =3D "ahb", "mmc";=20
-> > + };=20
-> > +=20
-> > + mmc@01c11000 {=20
-> > + compatible =3D "allwinner,sun50i-a64-mmc",=20
->
-> And this is very likely to use the emmc compatible.=20
->
-> > + =C2=A0=C2=A0=C2=A0=C2=A0 "allwinner,sun5i-a13-mmc";=20
-> > + clocks =3D <&ccu CLK_BUS_MMC2>, <&ccu CLK_MMC2>;=20
-> > + clock-names =3D "ahb", "mmc";=20
-> > + };=20
-> > +=20
-> > + clock@01c20000 {=20
-> > + compatible =3D "allwinner,sun50i-h5-ccu",=20
-> > + =C2=A0=C2=A0=C2=A0=C2=A0 "allwinner,sun8i-h3-ccu";=20
-> > + };=20
->
-> If it doesn't have the same clocks, it's not compatible with the H3.=20
+The issue is not the creation of an MFD driver to create shared
+resources and probe the child devices.  That's what MFD *is* for.
+What I do take exception to is having lots of code in MFD which
+should clearly live in a different subsystem.
 
-I'll drop it.
+Since this device only serves a couple of functions, I expect it to be
+a few hundred lines, maximum.  Everything else should be farmed out.
+MFD knows nothing of "channels" or "filters" so anything related to
+them (init, get, start, stop, release, etc) needs to find another
+home.  Whether that's in IIO is a separate discussion, but it
+certainly doesn't live in MFD.
 
-It's from the original patch from Andre.
+> Jonathan, Mark, Please could you share your opinion on this topic?
+> 
+> Regards
+> Arnaud
+> 
+> > 
+> >>>>>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+> >>>>>> ---
+> >>>>>>  drivers/mfd/Kconfig             |   11 +
+> >>>>>>  drivers/mfd/Makefile            |    2 +
+> >>>>>>  drivers/mfd/stm32-dfsdm-reg.h   |  220 +++++++++
+> >>>>>>  drivers/mfd/stm32-dfsdm.c       | 1044 +++++++++++++++++++++++++++++++++++++++
+> >>>>>>  include/linux/mfd/stm32-dfsdm.h |  324 ++++++++++++
+> >>>>>>  5 files changed, 1601 insertions(+)
+> >>>>>>  create mode 100644 drivers/mfd/stm32-dfsdm-reg.h
+> >>>>>>  create mode 100644 drivers/mfd/stm32-dfsdm.c
+> >>>>>>  create mode 100644 include/linux/mfd/stm32-dfsdm.h
+> >>>>>>
+> >>>>>> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> >>>>>> index c6df644..4bb660b 100644
+> >>>>>> --- a/drivers/mfd/Kconfig
+> >>>>>> +++ b/drivers/mfd/Kconfig
+> >>>>>> @@ -1607,6 +1607,17 @@ config MFD_STW481X
+> >>>>>>  	  in various ST Microelectronics and ST-Ericsson embedded
+> >>>>>>  	  Nomadik series.
+> >>>>>>  
+> >>>>>> +config MFD_STM32_DFSDM
+> >>>>>> +	tristate "ST Microelectronics STM32 DFSDM"
+> >>>>>> +	depends on (ARCH_STM32 && OF) || COMPILE_TEST
+> >>>>>> +	select MFD_CORE
+> >>>>>> +	select REGMAP
+> >>>>>> +	select REGMAP_MMIO
+> >>>>>> +	help
+> >>>>>> +	  Select this option to enable the STM32 Digital Filter
+> >>>>>> +	  for Sigma Delta Modulators (DFSDM) driver used
+> >>>>>> +	  in various STM32 series.
+> >>>>>> +
+> >>>>>>  menu "Multimedia Capabilities Port drivers"
+> >>>>>>  	depends on ARCH_SA1100
+> >>>>>
+> >>>>> [...]
+> >>>>>
+> >>>>
+> >>>> Regards
+> >>>> Arnaud
+> >>>
+> > 
 
->
-> Maxime=20
->
-> --=20
-> Maxime Ripard, Free Electrons=20
-> Embedded Linux and Kernel engineering=20
-> http://free-electrons.com=20
->
-> --=20
-> You received this message because you are subscribed to the Google Groups=
- "linux-sunxi" group.=20
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org=20
-> For more options, visit https://groups.google.com/d/optout.=20
-
---=20
-You received this message because you are subscribed to the Google Groups "=
-linux-sunxi" group.
-To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-For more options, visit https://groups.google.com/d/optout.
+-- 
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
