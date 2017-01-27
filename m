@@ -1,93 +1,58 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Subject: Re: [RFC PATCH 4/5] drm: i915: add DisplayPort amp
- unmute for LPE audio mode
-Date: Fri, 27 Jan 2017 17:17:12 +0200
-Message-ID: <20170127151712.GD31595@intel.com>
-References: <1485461141-14023-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <1485461141-14023-5-git-send-email-pierre-louis.bossart@linux.intel.com>
- <87efzo4xxh.fsf@intel.com> <20170127131734.GP31595@intel.com>
- <d0cef55f-835c-7f14-b465-0fb829bf66c9@linux.intel.com>
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Subject: [PATCH] ASoC: mt8173-max98090: remove the call to
+ snd_soc_jack_add_pins.
+Date: Fri, 27 Jan 2017 16:20:42 +0100
+Message-ID: <20170127152042.7631-1-enric.balletbo@collabora.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <d0cef55f-835c-7f14-b465-0fb829bf66c9@linux.intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Daniel Vetter <daniel.vetter@ffwll.ch>, intel-gfx@lists.freedesktop.org, broonie@kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Matthias Brugger <matthias.bgg@gmail.com>
+Cc: alsa-devel@alsa-project.org, Garlic Tseng <garlic.tseng@mediatek.com>, linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBKYW4gMjcsIDIwMTcgYXQgMDg6NDc6NTBBTSAtMDYwMCwgUGllcnJlLUxvdWlzIEJv
-c3NhcnQgd3JvdGU6Cj4gVGhhbmtzIEphbmkgYW5kIFZpbGxlIGZvciB0aGUgY29tbWVudHMuIENv
-dXBsZSBvZiBwcmVjaXNpb25zIG5lZWRlZCBiZWxvdzoKPiA+Pgo+ID4+PiAgICNkZWZpbmUgR0VO
-Nl9CU0RfUk5DSUQJCQlfTU1JTygweDEyMTk4KQo+ID4+PiAgIAo+ID4+PiAgICNkZWZpbmUgR0VO
-N19GRl9USFJFQURfTU9ERQkJX01NSU8oMHgyMGEwKQo+ID4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVy
-cy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBlX2F1ZGlvLmMgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9p
-bnRlbF9scGVfYXVkaW8uYwo+ID4+PiBpbmRleCAyNDU1MjNlLi5iMzEzNGVmIDEwMDY0NAo+ID4+
-PiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9scGVfYXVkaW8uYwo+ID4+PiArKysg
-Yi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9scGVfYXVkaW8uYwo+ID4+PiBAQCAtMjQ4LDYg
-KzI0OCwxNSBAQCBzdGF0aWMgaW50IGxwZV9hdWRpb19zZXR1cChzdHJ1Y3QgZHJtX2k5MTVfcHJp
-dmF0ZSAqZGV2X3ByaXYpCj4gPj4+ICAgCQlnb3RvIGVycl9mcmVlX2lycTsKPiA+Pj4gICAJfQo+
-ID4+PiAgIAo+ID4+PiArCS8qIEVuYWJsZSBEUEF1ZGlvIGRlYnVnIGJpdHMgYnkgZGVmYXVsdCAq
-Lwo+ID4+PiArCWlmIChJU19DSEVSUllWSUVXKGRldl9wcml2KSkgewo+ID4gVkxWIHRvby4gQW5k
-IGxpa2UgSSBzYWlkIHdlIG1pZ2h0IG5lZWQgdGhpcyBpbiB0aGUgcG93ZXJ3ZWxsIGNvZGUgYXMK
-PiA+IHdlbGwuIFlvdSBzaG91bGQgbWFrZSBhIHRlc3QgdG8gc2VlIGlmIHRoZSByZWdpc3RlciB2
-YWx1ZSBpcyByZXRhaW5lZAo+ID4gYWNyb3NzIHRoZSBkaXNwbGF5IHBvd2VyIHdlbGwgYmVpbmcg
-dHVybmVkIG9mZi4gRWcuIHNpbXBseSBkaXNhYmxlIGFsbAo+ID4gZGlzcGxheXMsIGNoZWNrIHRo
-ZSBsb2cgdG8gbWFrZSBzdXJlIGl0IHJlYWxseSBkaWQgdHVybiBvZmYgdGhlIGRpc3BsYXkKPiA+
-IHBvd2VyIHdlbGwsIHRoZW4gcmUtZW5hYmxlIHNvbWUgZGlzcGxheXMsIGFuZCBmaW5hbGx5IGNo
-ZWNrIGlmIHRoZQo+ID4gcmVnaXN0ZXIgdmFsdWUgd2FzIHJldGFpbmVkIG9yIG5vdCkuCj4gVkxW
-IGhhcyBEaXNwbGF5UG9ydD8KClllcy4gQW5kIGFzIEkgc2FpZCBlYXJsaWVyIHRoZSBkb2NzIGRv
-bid0IG1ha2UgYW55IGRpc3RpbmNpdG9uIGJldHdlZW4KSERNSSBhbmQgRFAgaW4gdGhlIGF1ZGlv
-IHByb2dyYW1taW5nIHNlcXVlbmNlLiBTbyBiYXNlZCBvbiB0aGUgZG9jcyB3ZQpzaG91bGQgYWx3
-YXlzIHVubXV0ZSB0aGUgYW1wIG1hbnVhbGx5LgoKPkkgdGhvdWdodCB0aGlzIHdhcyBhbiBhZGRp
-dGlvbiBvbiBDSFQsIGFuZCBJIHJlYWxseSAKPiBkb24ndCBrbm93IG9mIGFueSBkZXZpY2VzIHdp
-dGggdGhpcyBjb21iaW5hdGlvbiBvZiBIRGF1ZGlvIGRpc2FibGVkK0RQLiAKPiBJJ2QgcmF0aGVy
-IGtlZXAgdGhpcyBDSFQtb25seSB1bnRpbCB3ZSBmaW5kIGEgZGV2aWNlIHdoZXJlIHRoaXMgY2Fu
-IGJlIAo+IHRlc3RlZC4KPiAKPiBPbiB0aGUgcG93ZXJ3ZWxsLCBJIGNvdWxkIHVzZSBtb3JlIGd1
-aWRhbmNlLiBpIHRyaWVkIHRoaXMgZmlyc3Qgc29sdXRpb24gCj4gdG8gc2VlIGlmIHN0cmVhbWlu
-ZyB3b3JrZWQgKGFuZCBpdCBkaWQgOi0pKS4gSSBkb24ndCBtaW5kIG1vdmluZyB0aGUgCj4gY29k
-ZSBzb21ld2hlcmUgZWxzZSBidXQgSSBoYXZlIG5vIGlkZWEgd2hlcmUuCgoxLiBib290IHdpdGgg
-ZHJtLmRlYnVnPTB4ZQoxLiAnaW50ZWxfcmVnIHJlYWQgMHg2MmYzOCcganVzdCBhZnRlciBib290
-LCB0byBzZWUgdGhhdCB0aGUKICAgY2hpY2tlbiBiaXQgaXMgYXMgaXQgc2hvdWxkCjIuIGRpc2Fi
-bGUgYWxsIGRpc3BsYXlzIChlZy4geHNldCBkcG1zIGZvcmNlIG9mZikKMy4gZ3JlcCAncG93ZXJf
-d2VsbC4qZGlzcGxheScgKG1ha2Ugc3VyZSB0aGUgbGFzdCB0aGluZyBpdCBzYXlzIGlzCiAgICJk
-aXNhYmxpbmciCjQuIHR1cm4gb24gdGhlIGRpc3BsYXlzIChlZy4geHNldCBkcG1zIGZvcmNlIG9u
-KQo1LiAnaW50ZWxfcmVnIHJlYWQgMHg2MmYzOCcgdG8gY2hlY2sgdGhlIGNoaWNrZW4gYml0IGFn
-YWluCgpJZiBpdCBkaWRuJ3Qgc3Vydml2ZSB0aGVuIHdlIG5lZWQgdG8gc2V0IGl0IGluIGVpdGhl
-ciBpbgp2bHZfZGlzcGxheV9wb3dlcl93ZWxsX2luaXQoKSwgb3Igd2UgY291bGQganVzdCBzZXQg
-aXQgd2hlbmV2ZXIKd2Ugc2V0IHRoZSBBTVBfTVVURSBiaXQgZm9yIGFueSBvZiB0aGUgcG9ydHMu
-Cgo+Cj4gPj4+ICsJCXUzMiBjaGlja2VuX2JpdDsKPiA+Pj4gKwo+ID4+PiArCQljaGlja2VuX2Jp
-dCA9IEk5MTVfUkVBRChWTFZfQVVEX0NISUNLRU5fQklUX1JFRyk7Cj4gPj4+ICsJCUk5MTVfV1JJ
-VEUoVkxWX0FVRF9DSElDS0VOX0JJVF9SRUcsCj4gPj4+ICsJCQkgICBjaGlja2VuX2JpdCB8IENI
-SUNLRU5fQklUX0RCR19FTkFCTEUpOwo+ID4+PiArCX0KPiA+Pj4gKwo+ID4+PiAgIAlyZXR1cm4g
-MDsKPiA+Pj4gICBlcnJfZnJlZV9pcnE6Cj4gPj4+ICAgCWlycV9mcmVlX2Rlc2MoZGV2X3ByaXYt
-PmxwZV9hdWRpby5pcnEpOwo+ID4+PiBAQCAtMzU3LDYgKzM2NiwyNCBAQCB2b2lkIGludGVsX2xw
-ZV9hdWRpb19ub3RpZnkoc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2LAo+ID4+PiAg
-IAkJCXBkYXRhLT50bWRzX2Nsb2NrX3NwZWVkID0gdG1kc19jbGtfc3BlZWQ7Cj4gPj4+ICAgCQlp
-ZiAobGlua19yYXRlKQo+ID4+PiAgIAkJCXBkYXRhLT5saW5rX3JhdGUgPSBsaW5rX3JhdGU7Cj4g
-Pj4+ICsKPiA+Pj4gKwkJaWYgKGRwX291dHB1dCkgeyAvKiB1bm11dGUgdGhlIGFtcCAqLwo+ID4g
-VGhlIHNwZWMgZG9lc24ndCBkaXN0aW5xdWlzaCBEUCB2cy4gSERNSSBoZXJlLiBTbyBJIHByZXN1
-bWUgd2Ugc2hvdWxkIGJlCj4gPiBhYmxlIHRvIGRvIHRoaXMgYWx3YXlzLgo+IAo+IEknbGwgdHJ5
-IHRvIHNlZSBpZiBIRE1JIHN0aWxsIHdvcmtzIHdpdGggdGhpcy4gV2UgY291bGQgdGVudGF0aXZl
-bHkgYWRkIAo+IHVubXV0ZSBpbiBhbGwgY2FzZXMgYnV0IEknbGwgbmVlZCB0byBhZGQgYSB0ZXN0
-IGZvciBCYXl0cmFpbCAobm8gUE9SVF9EKSAKPiBzbyBpbiB0aGUgZW5kIGl0J3MgdGhlIHNhbWUg
-bnVtYmVyIG9mIHRlc3RzLgo+IAo+ID4KPiA+IEFuZCBJIHRoaW5rIHdlIG1pZ2h0IHdhbnQgdG8g
-bXV0ZSB0aGluZ3MgYWdhaW4gd2hlbiBkaXNhYmxpbmcgYXVkaW8uCj4gSSB3YXMgd29uZGVyaW5n
-IGlmIHRoZXJlIHdvdWxkIGJlIHNpZGUgZWZmZWN0cyBvZiB3cml0aW5nIHRvIGEgcmVnaXN0ZXIg
-Cj4gY29udHJvbGxpbmcgYSBwb3J0IGlmIHRoYXQgcG9ydCBpcyBub3QgY29ubmVjdGVkIGFueSBs
-b25nZXIuIEknbGwgZ2l2ZSAKPiBpdCBhIHRyeS4KCk5vdGhpbmcgYXBhcnQgZnJvbSBIUEQgY2ly
-Y3VpdHJ5IHJlYWxseSBjYXJlcyBpZiB0aGVyZSdzIGFueXRoaW5nCmNvbm5lY3RlY3Qgb3Igbm90
-LgoKLS0gClZpbGxlIFN5cmrDpGzDpApJbnRlbCBPVEMKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhA
-bGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxt
-YW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+The snd_soc_card_jack_new function can call snd_soc_jack_add_pins for
+you, so pass directly the pins struct when you create the new jack.
+
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+---
+ sound/soc/mediatek/mt8173/mt8173-max98090.c | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
+
+diff --git a/sound/soc/mediatek/mt8173/mt8173-max98090.c b/sound/soc/mediatek/mt8173/mt8173-max98090.c
+index 5524a2c..46c8e6a 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-max98090.c
++++ b/sound/soc/mediatek/mt8173/mt8173-max98090.c
+@@ -79,17 +79,11 @@ static int mt8173_max98090_init(struct snd_soc_pcm_runtime *runtime)
+ 
+ 	/* enable jack detection */
+ 	ret = snd_soc_card_jack_new(card, "Headphone", SND_JACK_HEADPHONE,
+-				    &mt8173_max98090_jack, NULL, 0);
++				    &mt8173_max98090_jack,
++				    mt8173_max98090_jack_pins,
++				    ARRAY_SIZE(mt8173_max98090_jack_pins));
+ 	if (ret) {
+-		dev_err(card->dev, "Can't snd_soc_jack_new %d\n", ret);
+-		return ret;
+-	}
+-
+-	ret = snd_soc_jack_add_pins(&mt8173_max98090_jack,
+-				    ARRAY_SIZE(mt8173_max98090_jack_pins),
+-				    mt8173_max98090_jack_pins);
+-	if (ret) {
+-		dev_err(card->dev, "Can't snd_soc_jack_add_pins %d\n", ret);
++		dev_err(card->dev, "Can't create a new Jack %d\n", ret);
+ 		return ret;
+ 	}
+ 
+-- 
+2.9.3
