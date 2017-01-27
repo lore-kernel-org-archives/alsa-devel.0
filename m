@@ -1,86 +1,56 @@
-From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: Re: [PATCH v2 4/9] arm: dts: sun8i: split Allwinner
- H3 .dtsi
-Date: Fri, 27 Jan 2017 22:10:29 +0100
-Message-ID: <20170127211029.k5ylfhrreqfdn2iz@lukather>
-References: <20170127190239.2MQaUuKh@smtp2o.mail.yandex.net>
-Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+From: John Rigg <aldev2@jrigg.co.uk>
+Subject: Re: Cannot combine audio devices with more than
+	64	channels
+Date: Fri, 27 Jan 2017 20:25:22 +0000
+Message-ID: <20170127202521.GA23636@localhost.localdomain>
+References: <CAKw=HF0hbhxJ1YGjukjFr72xtEh2FjtH6k0Bh+rFcMwejgwcUg@mail.gmail.com>
+ <1cdef19b-a458-7441-2ede-2ba8984ec7cd@ladisch.de>
+ <s5hh94khiao.wl-tiwai@suse.de>
+ <CAKw=HF1H6BCrvgm_8eL3f-L0yoKrqTqBib0kE4z0o73yzGqPKg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="7qkvjbcap2tkdxtz"
-Return-path: <linux-sunxi+bncBDSJBYGBRIMBBRXOV3CAKGQEZT5YZCY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from vm2962.vps.tagadab.com (vm2962.vps.tagadab.com [95.172.24.202])
+ by alsa0.perex.cz (Postfix) with ESMTP id D37FA267AC0
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jan 2017 21:55:05 +0100 (CET)
+Received: from m0 by vm2962.vps.tagadab.com with local (Exim 4.69)
+ (envelope-from <noreply@jrigg.co.uk>) id 1cXD5G-00069W-0X
+ for alsa-devel@alsa-project.org; Fri, 27 Jan 2017 20:25:22 +0000
 Content-Disposition: inline
-In-Reply-To: <20170127190239.2MQaUuKh-ZlSS+R3Zzis0PDqKvflMoHmW9unr2Ajn@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
-Cc: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Andre Przywara <andre.przywara-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <CAKw=HF1H6BCrvgm_8eL3f-L0yoKrqTqBib0kE4z0o73yzGqPKg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Jan 27, 2017 at 02:03:16PM +0100, J=F6rg M=FCller wrote:
+> So I want to apply that patch to my system (Ubuntu Studio 14.04). How
+> do I proceed? I guess, the patch wont be available via apt-get soon,
+> right?
+> So I'd have to compile from source.
+> 1. What source code packages do I need to download?
+> 2. I'm familiar with the usual "/.configure", "make" and "sudo make
+> install" but in the case of this specific alsa-module, is there
+> anything more I'd need to do?
 
---7qkvjbcap2tkdxtz
-Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+One method is to download alsa-lib source, apply the patch, compile
+and install over the top of the existing Ubuntu libasound2 files.
 
-On Sat, Jan 28, 2017 at 12:02:20AM +0800, Icenowy Zheng wrote:
->=20
-> 2017=E5=B9=B41=E6=9C=8827=E6=97=A5 23:55=E4=BA=8E Maxime Ripard <maxime.r=
-ipard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>=E5=86=99=E9=81=93=EF=BC=9A
-> >
-> > On Thu, Jan 26, 2017 at 11:48:54PM +0800, Icenowy Zheng wrote:=20
-> > > - mmc0: mmc@01c0f000 {=20
-> > > + mmc@01c0f000 {=20
-> >
-> > There's no point in removing the labels, and you can even use the=20
-> > label-based syntax to reference them, instead of using the path.=20
->=20
-> I think keeping a tree structure in sub dtsi file will make it more
-> pretty and easy to use :-)
+Another method is to build your own patched libasound2 .deb
+package to replace the standard Ubuntu one.
 
-We're already using that syntax for all the DTS, so it won't be less
-pretty than those.
+I'll be applying the patch here on Debian using the first method.
+If you need instructions on how to do that, feel free to email
+me off list at 'john.rigg.audio at gmail.com' (gmail doesn't like
+my own mail server so I need to use that address to send mail to
+gmail users).
 
-And keeping a tree structure valid is not easier to use than, well,
-not having to keep it.
-
-Maxime
-
---=20
-Maxime Ripard, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
-
---=20
-You received this message because you are subscribed to the Google Groups "=
-linux-sunxi" group.
-To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-For more options, visit https://groups.google.com/d/optout.
-
---7qkvjbcap2tkdxtz
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIcBAEBCAAGBQJYi7dBAAoJEBx+YmzsjxAg2QUP/38ftxITIFgoKnTha63G7UyF
-KWtervmBniGEWkJfekz6M97NmwQvd6Mk2xx0XCHrOpMsSprHAuBRdRIXc40JmcxI
-TYg51vFnEZPKrJ9u89hLdqls99unJr4bJKl5Zjvn4c84VLBnClQNi8e/EU6wBJnc
-BhvAvm3+NuoL/dK2mJos0K4rGY7Y+i6EldKQ2DqmfgRCrnOCs7d/uxpEkLfu2UK8
-ltPCmAZyWXZdqa5EbqJVSMKSSZVvnIOCAQ8objjQuIb4V1k2vXiodVr/Zm/Ziv5S
-kOc/KTgHy7YP2dODlybs5eYvke+oQ/QbomL3i1RxLedJEku9vRz75jnHyTonKLLy
-oPTvZaoG3KNkipkPPyJVHxiA/WmTXUflqhk2gxnxjl7PSFlJelkRkTYu/l51vUwh
-8B4caEI3mWsgmNOJy0NWWv7TfwkKEZ1eUrfSRWIENlrIRQE0rnAZ966h5RCNTGWq
-NIGhSZ4/XlkOODGrCr0pwsA6duhT9ZecXbcHZHIAjt9tEgy1cGwdQbSjUOpFah/e
-TKzO7AxHXF0OVXeCixtPg3RNMpfrPa7qmh7XF2X7RmHaNfuELnqPECCzc3vI952+
-ZMGGjzZqJVckqyPiafTrv7WK+yytfN+7LEixcfcIdq8pGFeJhYxWgRx2AHKx6c5Y
-pj/1bhisw8RGlDJgP3/r
-=BJIC
------END PGP SIGNATURE-----
-
---7qkvjbcap2tkdxtz--
+John
