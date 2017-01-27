@@ -1,64 +1,48 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH RFC 3/3] ALSA: x86: Use config base depending on
-	the pipe
-Date: Fri, 27 Jan 2017 11:36:31 +0100
-Message-ID: <20170127103631.25302-4-tiwai@suse.de>
-References: <20170127103631.25302-1-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20170127103631.25302-1-tiwai@suse.de>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org
+From: Shailendra Verma <shailendra.v@samsung.com>
+Subject: [PATCH] sound: soc: davinci - Fix possible NULL derefrence.
+Date: Fri, 27 Jan 2017 16:40:57 +0530
+Message-ID: <1485515457-3055-1-git-send-email-shailendra.v@samsung.com>
+References: <CGME20170127111104epcas1p2810feef80b04b21983efd16c00b1b651@epcas1p2.samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, p.shailesh@samsung.com, ashish.kalra@samsung.com, Shailendra Verma <shailendra.v@samsung.com>, Shailendra Verma <shailendra.capricorn@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Tm93IHRoZSBwaXBlIHRoYXQgaXMgYmVpbmcgdXNlZCBpcyBwYXNzZWQgb3ZlciBpOTE1IG5vdGlm
-aWNhdGlvbiwgd2UKY2FuIHJlLXNldHVwIHRoZSBoYWRfY29uZmlnX29mZnNldCBkZXBlbmRpbmcg
-b24gaXQgYXQgdGhlIGhvdHBsdWcuClRoaXMgYWxsb3dzLCBhdCBsZWFzdCwgdGhlIHN0cmVhbSB0
-cmFuc2ZlciBvbiB0aGUgc2Vjb25kIERQIHdvcmtpbmcgb24KRGVsbCBXeXNlIDMwNDAgYm94IGhl
-cmUgKGFsdGhvdWdoIGl0J3Mgc3RpbGwgbm90IGF1ZGlibGUgYnkgb3RoZXIKcmVhc29ucykuCgpT
-aWduZWQtb2ZmLWJ5OiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+Ci0tLQogc291bmQveDg2
-L2ludGVsX2hkbWlfbHBlX2F1ZGlvLmMgfCAzMiArKysrKysrKysrKysrKysrKysrKystLS0tLS0t
-LS0tLQogMSBmaWxlIGNoYW5nZWQsIDIxIGluc2VydGlvbnMoKyksIDExIGRlbGV0aW9ucygtKQoK
-ZGlmZiAtLWdpdCBhL3NvdW5kL3g4Ni9pbnRlbF9oZG1pX2xwZV9hdWRpby5jIGIvc291bmQveDg2
-L2ludGVsX2hkbWlfbHBlX2F1ZGlvLmMKaW5kZXggMjNlNWIzNGRjZjQxLi41NWJjMmNmZDIxYzQg
-MTAwNjQ0Ci0tLSBhL3NvdW5kL3g4Ni9pbnRlbF9oZG1pX2xwZV9hdWRpby5jCisrKyBiL3NvdW5k
-L3g4Ni9pbnRlbF9oZG1pX2xwZV9hdWRpby5jCkBAIC00NjMsNiArNDYzLDIyIEBAIHN0YXRpYyB2
-b2lkIG5vdGlmeV9hdWRpb19scGUodm9pZCAqYXVkaW9fcHRyKQogCiAJfSBlbHNlIGlmIChlbGQg
-IT0gTlVMTCkgewogCisJCXN3aXRjaCAoZWxkLT5waXBlX2lkKSB7CisJCWNhc2UgMDoKKwkJCWN0
-eC0+aGFkX2NvbmZpZ19vZmZzZXQgPSBBVURJT19IRE1JX0NPTkZJR19BOworCQkJYnJlYWs7CisJ
-CWNhc2UgMToKKwkJCWN0eC0+aGFkX2NvbmZpZ19vZmZzZXQgPSBBVURJT19IRE1JX0NPTkZJR19C
-OworCQkJYnJlYWs7CisJCWNhc2UgMjoKKwkJCWN0eC0+aGFkX2NvbmZpZ19vZmZzZXQgPSBBVURJ
-T19IRE1JX0NPTkZJR19DOworCQkJYnJlYWs7CisJCWRlZmF1bHQ6CisJCQlkZXZfZGJnKCZobHBl
-X3BkZXYtPmRldiwgIkludmFsaWQgcGlwZSAlZFxuIiwKKwkJCQllbGQtPnBpcGVfaWQpOworCQkJ
-YnJlYWs7CisJCX0KKwogCQloZG1pX3NldF9lbGQoZWxkLT5lbGRfZGF0YSk7CiAKIAkJbWlkX2hk
-bWlfYXVkaW9fc2lnbmFsX2V2ZW50KEhBRF9FVkVOVF9IT1RfUExVRyk7CkBAIC01NjAsMjEgKzU3
-NiwxNSBAQCBzdGF0aWMgaW50IGhkbWlfbHBlX2F1ZGlvX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9k
-ZXZpY2UgKnBkZXYpCiAJY3R4LT5tbWlvX3N0YXJ0ID0gbW1pb19zdGFydDsKIAljdHgtPnRtZHNf
-Y2xvY2tfc3BlZWQgPSBESVNfU0FNUExFX1JBVEVfMTQ4XzU7CiAKLQlpZiAocGNpX2Rldl9wcmVz
-ZW50KGNoZXJyeXZpZXdfaWRzKSkgeworCWlmIChwY2lfZGV2X3ByZXNlbnQoY2hlcnJ5dmlld19p
-ZHMpKQogCQlkZXZfZGJnKCZobHBlX3BkZXYtPmRldiwgIiVzOiBDaGVycnl0cmFpbCBMUEUgLSBE
-ZXRlY3RlZFxuIiwKIAkJCQlfX2Z1bmNfXyk7Ci0JCS8vY3R4LT5oYWRfY29uZmlnX29mZnNldCA9
-IEFVRElPX0hETUlfQ09ORklHX0M7Ci0JCS8qIEZJWE1FOiBoYXJkLWNvZGluZyB0byBDT05GSUdf
-QSBlbmFibGVzIERQIGF1ZGlvIG9uIENIVCwKLQkJICogIGhvdyBkbyBJIGZpbmQgb3V0IHdoaWNo
-IGNvbmZpZyB0byB1c2UgPwotCQkgKiB0aGUgcGlwZSBpcyAtMSAoaW52YWxpZCkgd2hlbiB0aGUg
-bm90aWZ5IGZ1bmN0aW9uIGlzIGNhbGxlZCwKLQkJICogc28gbm90IHN1cmUgaG93IHRvIGdvIGFi
-b3V0IHRoaXMKLQkJICovCi0JCWN0eC0+aGFkX2NvbmZpZ19vZmZzZXQgPSBBVURJT19IRE1JX0NP
-TkZJR19BOwotCX0gZWxzZSB7CisJZWxzZQogCQlkZXZfZGJnKCZobHBlX3BkZXYtPmRldiwgIiVz
-OiBCYXl0cmFpbCBMUEUgLSBBc3N1bWVcbiIsCiAJCQkJX19mdW5jX18pOwotCQljdHgtPmhhZF9j
-b25maWdfb2Zmc2V0ID0gQVVESU9fSERNSV9DT05GSUdfQTsKLQl9CisKKwkvKiBhc3N1bWUgcGlw
-ZSBBIGFzIGRlZmF1bHQgKi8KKwljdHgtPmhhZF9jb25maWdfb2Zmc2V0ID0gQVVESU9fSERNSV9D
-T05GSUdfQTsKIAogCXBkYXRhID0gcGRldi0+ZGV2LnBsYXRmb3JtX2RhdGE7CiAKLS0gCjIuMTEu
-MAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwt
-Z2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8v
-bGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+of_match_device could return NULL, and so can cause a NULL
+pointer dereference later.
+
+Signed-off-by: Shailendra Verma <shailendra.v@samsung.com>
+---
+ sound/soc/davinci/davinci-evm.c |   13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
+index 731fb0d..7a369e0 100644
+--- a/sound/soc/davinci/davinci-evm.c
++++ b/sound/soc/davinci/davinci-evm.c
+@@ -358,13 +358,20 @@ static int evm_aic3x_init(struct snd_soc_pcm_runtime *rtd)
+ static int davinci_evm_probe(struct platform_device *pdev)
+ {
+ 	struct device_node *np = pdev->dev.of_node;
+-	const struct of_device_id *match =
+-		of_match_device(of_match_ptr(davinci_evm_dt_ids), &pdev->dev);
+-	struct snd_soc_dai_link *dai = (struct snd_soc_dai_link *) match->data;
++	const struct of_device_id *match;
++	struct snd_soc_dai_link *dai;
+ 	struct snd_soc_card_drvdata_davinci *drvdata = NULL;
+ 	struct clk *mclk;
+ 	int ret = 0;
+ 
++	match = of_match_device(of_match_ptr(davinci_evm_dt_ids), &pdev->dev);
++	if (!match) {
++		dev_err(&pdev->dev, "Error: No device match found\n");
++		return -ENODEV;
++	}
++
++	dai = (struct snd_soc_dai_link *) match->data;
++
+ 	evm_soc_card.dai_link = dai;
+ 
+ 	dai->codec_of_node = of_parse_phandle(np, "ti,audio-codec", 0);
+-- 
+1.7.9.5
