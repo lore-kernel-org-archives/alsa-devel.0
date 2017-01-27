@@ -1,130 +1,86 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 1/7] MFD: add bindings for STM32 DFSDM driver
-Date: Fri, 27 Jan 2017 14:53:26 -0600
-Message-ID: <20170127205326.rom465uqfp6i33kr@rob-hp-laptop>
-References: <1485189145-29576-1-git-send-email-arnaud.pouliquen@st.com>
- <1485189145-29576-2-git-send-email-arnaud.pouliquen@st.com>
+From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: Re: Re: [PATCH v2 4/9] arm: dts: sun8i: split Allwinner
+ H3 .dtsi
+Date: Fri, 27 Jan 2017 22:10:29 +0100
+Message-ID: <20170127211029.k5ylfhrreqfdn2iz@lukather>
+References: <20170127190239.2MQaUuKh@smtp2o.mail.yandex.net>
+Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="7qkvjbcap2tkdxtz"
+Return-path: <linux-sunxi+bncBDSJBYGBRIMBBRXOV3CAKGQEZT5YZCY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Content-Disposition: inline
-In-Reply-To: <1485189145-29576-2-git-send-email-arnaud.pouliquen@st.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-iio@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Jonathan Cameron <jic23@kernel.org>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Hartmut Knaack <knaack.h@gmx.de>, Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org, Alexandre Torgue <alexandre.torgue@st.com>
+In-Reply-To: <20170127190239.2MQaUuKh-ZlSS+R3Zzis0PDqKvflMoHmW9unr2Ajn@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
+Cc: Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Andre Przywara <andre.przywara-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 23, 2017 at 05:32:19PM +0100, Arnaud Pouliquen wrote:
-> Add bindings information for STM32 Digital Filter for Sigma Delta modulators MFD driver
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-> ---
->  .../devicetree/bindings/mfd/stm32-dfsdm.txt        | 68 ++++++++++++++++++++++
->  1 file changed, 68 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/stm32-dfsdm.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/mfd/stm32-dfsdm.txt b/Documentation/devicetree/bindings/mfd/stm32-dfsdm.txt
-> new file mode 100644
-> index 0000000..e0b45ee
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/mfd/stm32-dfsdm.txt
-> @@ -0,0 +1,68 @@
-> +STMicroelectronics STM32 Digital Filter for Sigma Delta Modulator (DFSDM)
-> +ulti-function device.
-> +
-> +The STM32 DFSDM device is a multifunction device that handles the DFSDM IP.
-> +
-> +The DFSDM IP allows to add processing on Sigma Delta ADC based on SinC filters.
-> +For this, a pool of m filters can be connected to a pool of n channels.
-> +For STM32H7 : m = 4, n = 8.
-> +
-> +Each channel n is assigned to the SPI or Manchester interface n or n + 1.
-> +Channels 0 to 2 can also be connected to ADC IP instance 1 to 3.
-> +Filtering result is stored in a left aligned register, with 8 LSB reserved for
-> +the input channel ID.
-> +
-> +Each filter instance supports two contexts to manage conversions, each one has
-> +its own configurable sequence and trigger:
-> +- regular conversion: used for single or continuous conversion.
-> +- injected conversions: used for triggered conversion.
-> +
-> +Interfaces supported:
-> +- sigma delta ADCs trough IIO framework.
-> +- PDM microphones through ASoC framework.
 
-Bindings describe h/w, not Linux subsystems.
+--7qkvjbcap2tkdxtz
+Content-Type: text/plain; charset=UTF-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +
-> +Required properties:
-> +- compatible:	Must be "st,stm32h7-dfsdm".
-> +- reg:		Specifies the DFSDM block register address and length.
-> +- interrupts:	IRQ lines connected to each DFSDM filter instance.
-> +- clocks:	IP and serial interfaces clocking. Should be set according
-> +		to rcc clock ID and "clock-names".
-> +- clock-names:	Input clock name "dfsdm_clk" must be defined,
-> +		"audio_clk" is optional. If defined CLKOUT is based on the audio
-> +		clock, else "dfsdm_clk" is used.
+On Sat, Jan 28, 2017 at 12:02:20AM +0800, Icenowy Zheng wrote:
+>=20
+> 2017=E5=B9=B41=E6=9C=8827=E6=97=A5 23:55=E4=BA=8E Maxime Ripard <maxime.r=
+ipard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > On Thu, Jan 26, 2017 at 11:48:54PM +0800, Icenowy Zheng wrote:=20
+> > > - mmc0: mmc@01c0f000 {=20
+> > > + mmc@01c0f000 {=20
+> >
+> > There's no point in removing the labels, and you can even use the=20
+> > label-based syntax to reference them, instead of using the path.=20
+>=20
+> I think keeping a tree structure in sub dtsi file will make it more
+> pretty and easy to use :-)
 
-_clk is redundant.
+We're already using that syntax for all the DTS, so it won't be less
+pretty than those.
 
-> +
-> +Optional properties:
-> +- st,clkout-freq: clkout clock frequency (Hz).This clock must be set according
-> +		  to "clock" property. Frequency must be a multiple of the rcc
-> +		  clock frequency. If not, clkout frequency will not be
-> +		  accurate.
+And keeping a tree structure valid is not easier to use than, well,
+not having to keep it.
 
-What is CLKOUT connected to and will you need to describe that in DT?
+Maxime
 
-> +- pinctrl-names:  set to "default".
-> +- pinctrl-0:	  List of phandles pointing to pin configuration nodes for DFSDM
-> +		  module.
-> +		  For Pinctrl properties see ../pinctrl/pinctrl-bindings.txt
-> +Example :
-> +	dfsdm: dfsdm@4400D000 {
-> +		compatible = "st,stm32h7-dfsdm";
-> +		reg = <0x40017000 0x400>;
-> +		interrupts = <110>, <111>, <112>, <113>;
-> +		clocks = <&timer_clk>;
-> +		clock-names = "dfsdm_clk";
-> +		pinctrl-0 = <&dfsdm_ch0 &dfsdm_ch1>;
-> +		pinctrl-names = "default";
-> +		st,clkout-freq = <2480000>;
-> +
-> +		iio_dfsdm0: iio-dfsdm@0 {
+--=20
+Maxime Ripard, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
 
-adc {
+--=20
+You received this message because you are subscribed to the Google Groups "=
+linux-sunxi" group.
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+For more options, visit https://groups.google.com/d/optout.
 
-> +			compatible = "st,stm32-dfsdm-adc";
-> +			#io-channel-cells = <1>;
-> +			reg = <0>;
-> +			status = "disabled";
-> +		};
-> +		dai_dfsdm0: dfsdm-audio@0 {
+--7qkvjbcap2tkdxtz
+Content-Type: application/pgp-signature; name="signature.asc"
 
-digital-mic {
+-----BEGIN PGP SIGNATURE-----
 
-> +			compatible = "st,stm32-dfsdm-audio";
-> +			#sound-dai-cells = <0>;
-> +			reg = <0>;
+iQIcBAEBCAAGBQJYi7dBAAoJEBx+YmzsjxAg2QUP/38ftxITIFgoKnTha63G7UyF
+KWtervmBniGEWkJfekz6M97NmwQvd6Mk2xx0XCHrOpMsSprHAuBRdRIXc40JmcxI
+TYg51vFnEZPKrJ9u89hLdqls99unJr4bJKl5Zjvn4c84VLBnClQNi8e/EU6wBJnc
+BhvAvm3+NuoL/dK2mJos0K4rGY7Y+i6EldKQ2DqmfgRCrnOCs7d/uxpEkLfu2UK8
+ltPCmAZyWXZdqa5EbqJVSMKSSZVvnIOCAQ8objjQuIb4V1k2vXiodVr/Zm/Ziv5S
+kOc/KTgHy7YP2dODlybs5eYvke+oQ/QbomL3i1RxLedJEku9vRz75jnHyTonKLLy
+oPTvZaoG3KNkipkPPyJVHxiA/WmTXUflqhk2gxnxjl7PSFlJelkRkTYu/l51vUwh
+8B4caEI3mWsgmNOJy0NWWv7TfwkKEZ1eUrfSRWIENlrIRQE0rnAZ966h5RCNTGWq
+NIGhSZ4/XlkOODGrCr0pwsA6duhT9ZecXbcHZHIAjt9tEgy1cGwdQbSjUOpFah/e
+TKzO7AxHXF0OVXeCixtPg3RNMpfrPa7qmh7XF2X7RmHaNfuELnqPECCzc3vI952+
+ZMGGjzZqJVckqyPiafTrv7WK+yytfN+7LEixcfcIdq8pGFeJhYxWgRx2AHKx6c5Y
+pj/1bhisw8RGlDJgP3/r
+=BJIC
+-----END PGP SIGNATURE-----
 
-You can't have 2 children with the same unit address. Just drop reg and 
-the unit address.
-
-> +			dmas = <&dmamux1 101 0x400 0x00>;
-> +			dma-names = "rx";
-> +			status = "disabled";
-> +		};
-> +	};
-> -- 
-> 1.9.1
-> 
+--7qkvjbcap2tkdxtz--
