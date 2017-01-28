@@ -1,70 +1,35 @@
-From: Sergej Sawazki <ce3a@gmx.de>
-Subject: [PATCH] ASoC: wm8741: Remove unneeded startup()
-	callback
-Date: Sat, 28 Jan 2017 00:35:45 +0100
-Message-ID: <1485560145-12908-1-git-send-email-ce3a@gmx.de>
+From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Subject: Re: [PATCH v2 8/9] ASoC: sunxi: allow the analog codec
+ driver to be built on ARM64
+Date: Sat, 28 Jan 2017 20:46:39 +0800
+Message-ID: <CAGb2v669B=uYO4HkdHJ=3LdoGEWJxO8y+kmA+X35LYnuDqWL1Q@mail.gmail.com>
+References: <20170126154859.55855-1-icenowy@aosc.xyz> <20170126154859.55855-9-icenowy@aosc.xyz>
+ <20170127200532.pemk36hwyzkun3i5@lukather>
+Reply-To: wens-jdAy2FN1RRM@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
- by alsa0.perex.cz (Postfix) with ESMTP id B5062267B7C
- for <alsa-devel@alsa-project.org>; Sat, 28 Jan 2017 00:36:19 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com, ckeepax@opensource.wolfsonmicro.com
-Cc: Sergej Sawazki <ce3a@gmx.de>, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBCMILY6JWQBBBR5FWLCAKGQEFT5PCZY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20170127200532.pemk36hwyzkun3i5@lukather>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Cc: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Andre Przywara <andre.przywara-5wv7dgnIgG8@public.gmane.org>, linux-clk <linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Do not apply rate constraints in the startup() callback. The machine driver
-can change the sysclk and hence the supported frame rates in its hw_params().
-This callback is unneeded since commit e369bd006fd6 ("ASoC: wm8741: Allow
-master clock switching").
+On Sat, Jan 28, 2017 at 4:05 AM, Maxime Ripard
+<maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
+> On Thu, Jan 26, 2017 at 11:48:58PM +0800, Icenowy Zheng wrote:
+>> As the 64-bit Allwinner H5 SoC has the same analog codec part (also the
+>> same digital part) as H3, enable the driver to be built on ARM64
+>> Allwinner platform, so that it can be used on H5.
+>>
+>> Signed-off-by: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
+>
+> Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
 
-Signed-off-by: Sergej Sawazki <ce3a@gmx.de>
----
- sound/soc/codecs/wm8741.c | 15 ---------------
- 1 file changed, 15 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
-index b8c1940..d6e540a 100644
---- a/sound/soc/codecs/wm8741.c
-+++ b/sound/soc/codecs/wm8741.c
-@@ -176,20 +176,6 @@ static const struct snd_pcm_hw_constraint_list constraints_36864 = {
- 	.list	= rates_36864,
- };
- 
--static int wm8741_startup(struct snd_pcm_substream *substream,
--			  struct snd_soc_dai *dai)
--{
--	struct snd_soc_codec *codec = dai->codec;
--	struct wm8741_priv *wm8741 = snd_soc_codec_get_drvdata(codec);
--
--	if (wm8741->sysclk)
--		snd_pcm_hw_constraint_list(substream->runtime, 0,
--				SNDRV_PCM_HW_PARAM_RATE,
--				wm8741->sysclk_constraints);
--
--	return 0;
--}
--
- static int wm8741_hw_params(struct snd_pcm_substream *substream,
- 			    struct snd_pcm_hw_params *params,
- 			    struct snd_soc_dai *dai)
-@@ -360,7 +346,6 @@ static int wm8741_set_dai_fmt(struct snd_soc_dai *codec_dai,
- 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
- 
- static const struct snd_soc_dai_ops wm8741_dai_ops = {
--	.startup	= wm8741_startup,
- 	.hw_params	= wm8741_hw_params,
- 	.set_sysclk	= wm8741_set_dai_sysclk,
- 	.set_fmt	= wm8741_set_dai_fmt,
--- 
-2.7.4
+Acked-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
