@@ -1,22 +1,18 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: Intel alsa sound request for Laptops
-Date: Sun, 29 Jan 2017 14:23:13 +0100
-Message-ID: <8f6ead3c-32f3-fe85-b37e-b7a286e607ac@metafoo.de>
-References: <DBXPR04MB334548B939F29F8E6E24790F3490@DBXPR04MB334.eurprd04.prod.outlook.com>
- <s5hwpdf9nzt.wl-tiwai@suse.de>
- <DBXPR04MB334D7AB20A0F4C15ADD0CB2F3490@DBXPR04MB334.eurprd04.prod.outlook.com>
- <s5htw8j9bsu.wl-tiwai@suse.de>
- <DBXPR04MB334707A6AE3893371F3297DF3480@DBXPR04MB334.eurprd04.prod.outlook.com>
- <s5hr33m9ugc.wl-tiwai@suse.de>
- <DBXPR04MB334ED59C445FC8FA14DC8EEF3480@DBXPR04MB334.eurprd04.prod.outlook.com>
+From: Jonathan Woithe <jwoithe@just42.net>
+Subject: Re: [FFADO-devel] [PATCH 00/19][RFC v2] ALSA:
+ firewire-motu: new driver for MOTU FireWire series
+Date: Mon, 30 Jan 2017 00:04:56 +1030
+Message-ID: <20170129133456.GC15067@marvin.atrad.com.au>
+References: <20170129035417.2095-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 0EC2C266C89
- for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2017 14:23:14 +0100 (CET)
-In-Reply-To: <DBXPR04MB334ED59C445FC8FA14DC8EEF3480@DBXPR04MB334.eurprd04.prod.outlook.com>
+Received: from server.atrad.com.au (server.atrad.com.au [150.101.241.2])
+ by alsa0.perex.cz (Postfix) with ESMTP id F094F266CE6
+ for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2017 14:35:03 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20170129035417.2095-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,52 +22,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Frankish <john.frankish@outlook.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On 01/29/2017 09:15 AM, John Frankish wrote:
->>>>>>> For two or three kernel versions of alsa divers now, HDMI has 
->>>>>>> been the default alsa device on my laptop (Dell Latitude E7240) - this does not make logical sense.
->>>>>>>
->>>>>>> In the latest kernel version I use, 4.2.9, alsa sound will not 
->>>>>>> work at all unless I load the i915 kernel driver
->>>>>>> - this does not make logical sense and means that I cannot use Xvesa.
->>>>>>>
->>>>>>> Is it possible to make an alsa feature request for analogue 
->>>>>>> sound to be the default alsa device on laptops and for alsa sound to work without the need to load the i915 kernel driver?
->>>>>>>
->>>>>> It's a configuration issue.  Pass the module option if you prefer the secondary device:
->>>>>>
->>>>>> options snd-hda-intel index=1,0
->>>>>>
->>>>> Sure, I realise I can do that, but it's not the point and it's awkward to do so with the "live CD-type" distro I use (tinycorelinux).
->>>>>
->>>>> Laptop sound should work in standalone mode by default - i.e. if 
->>>>> laptop uses analogue sound for its built-in speakers then the alsa default should be analogue sound.
->>>>>
->>>>> The above notwithstanding, analogue sound should work without needing to load the i915 kernel driver.
->>>>>
->>>> For a smart automation, use PulseAudio.  It's exactly for such a purpose.
->>>>
->>>> The kernel driver assigns each device just in the order how they are enumerated.
->>>> In the case of HD-audio, it's the order of PCI devices.
->>>> It's nothing different from any other PCI drivers.
->>>>
->>> OK, but I should not have to add bloat like pulseaudio in order to have basic sound functionality.
->>>
->> For getting the basic sound functionality, you have to set up something.
->> You're asking the high-level automation, hence you need something like PA.
->>
-> I'm not asking for high level automation, I'm asking that when I boot my laptop with alsa the built-in speakers work by default
+On Sun, Jan 29, 2017 at 12:53:58PM +0900, Takashi Sakamoto wrote:
+> This patchset updates a part of my previous RFC, just for MOTU FireWire
+> series.
+> 
+> [RFC][PATCH 00/37] ALSA: firewire: support AMDTP variants
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2015-July/094789.html
+> 
+> This patchset adds support for a part of MOTU FireWire series with their
+> functionality of packet streaming. Below models are newly supported:
+>  - 828
+>  - 828mk2
+>  - 828mk3 (FireWire/Hybrid)
 
-That's OK and a reasonable request. But the thing is other people want to
-use other default configurations, e.g. use the speakers in their HDMI
-monitor by default. This is why at the kernel level ALSA does not get
-involved with policy decisions and leaves this to userspace audio policy
-managers such as PulseAudio.
+I like the general architecture of this driver.
 
-If you don't want to use such a policy manager that's also OK, but then you
-have to take care of policy management yourself by e.g. writing a ALSA
-configuration file or manually specifying your preferred audio playback
-device when starting a audio playback application.
+It's not clear to me whether you have utilised some information about these
+devices from FFADO or have duplicated the protocol reverse engineering
+process yourself.  If the former it would be nice to include a brief
+acknowlegement since the FFADO MOTU protocol documents and code represents a
+large body of work by several people which brought an otherwise undocumented
+protocol into the open.  If the latter then clearly it's a moot point.
+
+Regards
+  jonathan
