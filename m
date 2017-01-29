@@ -1,16 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 16/19] firewire-motu: add support for MOTU 828
-	as a model with protocol version 1
-Date: Sun, 29 Jan 2017 12:54:14 +0900
-Message-ID: <20170129035417.2095-17-o-takashi@sakamocchi.jp>
+Subject: [PATCH 13/19] firewire-motu: add MIDI functionality
+Date: Sun, 29 Jan 2017 12:54:11 +0900
+Message-ID: <20170129035417.2095-14-o-takashi@sakamocchi.jp>
 References: <20170129035417.2095-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 0B1792669F3
- for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2017 04:54:28 +0100 (CET)
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 8AE96266A7A
+ for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2017 04:54:26 +0100 (CET)
 In-Reply-To: <20170129035417.2095-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,307 +24,445 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-MOTU 828 is a first model in this series, produced in 2001. This model
-consists of three chips:
- * TI TSB41AB1 (Physical layer for IEEE 1394 bus)
- * PDI 1394L21BE (Link layer for IEEE 1394 bus and packet processing layer)
- * QuickLogic DA828FW (Data block processing layer and digital signal
-   processing)
+In MOTU FireWire series, MIDI messages are multiplexed to isochronous
+packets as well as PCM frames, while the way is different from the one
+in IEC 61883-6.
 
-This commit adds a support for this model, with its unique protocol as
-version 1. The features of this protocol are:
+MIDI messages are put into a certain position in message chunks. One data
+block can includes one byte of the MIDI messages. When data block includes
+a MIDI byte, the block has a flag in a certain position in the message
+chunks. These positions are unique depending on protocols.
 
- * no MIDI support.
- * Rx packets have no data chunks for control and status messages.
- * Tx packets have data chunks for control and status messages in the end
-   of each data block.
- * All of settings are represented in bit flag in one quadlet address
-   (0x'ffff'f000'0b00).
- * When optical interface is configured as S/PDIF, signals of the interface
-   is multiplexed for packets, instead of signals of coaxial interface.
-   Thus, differed part of data chunks is not used.
+Once a data block includes a MIDI byte, some following data blocks includes
+no MIDI bytes. Next MIDI byte appears on a data block corresponding to
+next cycle of physical MIDI bus. This seems to avoid buffer overflow caused
+by bandwidth differences between IEEE 1394 bus and physical MIDI bus.
+
+This commit adds MIDI functionality to transfer/receive MIDI messages.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig                 |   1 +
- sound/firewire/motu/Makefile           |   3 +-
- sound/firewire/motu/motu-protocol-v1.c | 204 +++++++++++++++++++++++++++++++++
- sound/firewire/motu/motu.c             |   9 ++
- sound/firewire/motu/motu.h             |   2 +
- 5 files changed, 218 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/motu/motu-protocol-v1.c
+ sound/firewire/motu/Makefile      |   2 +-
+ sound/firewire/motu/amdtp-motu.c  |  84 +++++++++++++++++++++
+ sound/firewire/motu/motu-midi.c   | 153 ++++++++++++++++++++++++++++++++++++++
+ sound/firewire/motu/motu-stream.c |   9 ++-
+ sound/firewire/motu/motu.c        |   7 ++
+ sound/firewire/motu/motu.h        |   9 +++
+ 6 files changed, 260 insertions(+), 4 deletions(-)
+ create mode 100644 sound/firewire/motu/motu-midi.c
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 11a3285..a031b9c 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -146,6 +146,7 @@ config SND_FIREWIRE_MOTU
- 	select SND_HWDEP
- 	help
- 	 Say Y here to enable support for FireWire devices which MOTU produced:
-+	  * 828
- 
- 	 To compile this driver as a module, choose M here: the module
- 	 will be called snd-firewire-motu.
 diff --git a/sound/firewire/motu/Makefile b/sound/firewire/motu/Makefile
-index cc195d5..15090be 100644
+index 508b689..a512c1e 100644
 --- a/sound/firewire/motu/Makefile
 +++ b/sound/firewire/motu/Makefile
-@@ -1,3 +1,4 @@
+@@ -1,3 +1,3 @@
  snd-firewire-motu-objs := motu.o amdtp-motu.o motu-transaction.o motu-stream.o \
--			  motu-proc.o motu-pcm.o motu-midi.o motu-hwdep.o
-+			  motu-proc.o motu-pcm.o motu-midi.o motu-hwdep.o \
-+			  motu-protocol-v1.o
+-			  motu-proc.o motu-pcm.o
++			  motu-proc.o motu-pcm.o motu-midi.o
  obj-$(CONFIG_SND_FIREWIRE_MOTU) += snd-firewire-motu.o
-diff --git a/sound/firewire/motu/motu-protocol-v1.c b/sound/firewire/motu/motu-protocol-v1.c
-new file mode 100644
-index 0000000..1087f46
---- /dev/null
-+++ b/sound/firewire/motu/motu-protocol-v1.c
-@@ -0,0 +1,204 @@
+diff --git a/sound/firewire/motu/amdtp-motu.c b/sound/firewire/motu/amdtp-motu.c
+index 11e4412..0930cd8 100644
+--- a/sound/firewire/motu/amdtp-motu.c
++++ b/sound/firewire/motu/amdtp-motu.c
+@@ -13,6 +13,12 @@
+ #define CIP_FMT_MOTU		0x02
+ #define MOTU_FDF_AM824		0x22
+ 
 +/*
-+ * motu-protocol-v1.c - a part of driver for MOTU FireWire series
++ * Nominally 3125 bytes/second, but the MIDI port's clock might be
++ * 1% too slow, and the bus clock 100 ppm too fast.
++ */
++#define MIDI_BYTES_PER_SECOND	3093
++
+ struct amdtp_motu {
+ 	/* For timestamp processing.  */
+ 	unsigned int quotient_ticks_per_event;
+@@ -24,9 +30,18 @@ struct amdtp_motu {
+ 
+ 	unsigned int pcm_chunks;
+ 	unsigned int pcm_byte_offset;
++
++	struct snd_rawmidi_substream *midi;
++	unsigned int midi_ports;
++	unsigned int midi_flag_offset;
++	unsigned int midi_byte_offset;
++
++	int midi_db_count;
++	unsigned int midi_db_interval;
+ };
+ 
+ int amdtp_motu_set_parameters(struct amdtp_stream *s, unsigned int rate,
++			      unsigned int midi_ports,
+ 			      struct snd_motu_packet_format *formats)
+ {
+ 	static const struct {
+@@ -76,6 +91,13 @@ int amdtp_motu_set_parameters(struct amdtp_stream *s, unsigned int rate,
+ 	p->pcm_chunks = pcm_chunks;
+ 	p->pcm_byte_offset = formats->pcm_byte_offset;
+ 
++	p->midi_ports = midi_ports;
++	p->midi_flag_offset = formats->midi_flag_offset;
++	p->midi_byte_offset = formats->midi_byte_offset;
++
++	p->midi_db_count = 0;
++	p->midi_db_interval = rate / MIDI_BYTES_PER_SECOND;
++
+ 	/* IEEE 1394 bus requires. */
+ 	delay = 0x2e00;
+ 
+@@ -187,12 +209,70 @@ int amdtp_motu_add_pcm_hw_constraints(struct amdtp_stream *s,
+ 	return amdtp_stream_add_pcm_hw_constraints(s, runtime);
+ }
+ 
++void amdtp_motu_midi_trigger(struct amdtp_stream *s, unsigned int port,
++			     struct snd_rawmidi_substream *midi)
++{
++	struct amdtp_motu *p = s->protocol;
++
++	if (port < p->midi_ports)
++		WRITE_ONCE(p->midi, midi);
++}
++
++static void write_midi_messages(struct amdtp_stream *s, __be32 *buffer,
++				unsigned int data_blocks)
++{
++	struct amdtp_motu *p = s->protocol;
++	struct snd_rawmidi_substream *midi = READ_ONCE(p->midi);
++	u8 *b;
++	int i;
++
++	for (i = 0; i < data_blocks; i++) {
++		b = (u8 *)buffer;
++
++		if (midi && p->midi_db_count == 0 &&
++		    snd_rawmidi_transmit(midi, b + p->midi_byte_offset, 1) == 1) {
++			b[p->midi_flag_offset] = 0x01;
++		} else {
++			b[p->midi_byte_offset] = 0x00;
++			b[p->midi_flag_offset] = 0x00;
++		}
++
++		buffer += s->data_block_quadlets;
++
++		if (--p->midi_db_count < 0)
++			p->midi_db_count = p->midi_db_interval;
++	}
++}
++
++static void read_midi_messages(struct amdtp_stream *s, __be32 *buffer,
++			       unsigned int data_blocks)
++{
++	struct amdtp_motu *p = s->protocol;
++	struct snd_rawmidi_substream *midi;
++	u8 *b;
++	int i;
++
++	for (i = 0; i < data_blocks; i++) {
++		b = (u8 *)buffer;
++		midi = READ_ONCE(p->midi);
++
++		if (midi && (b[p->midi_flag_offset] & 0x01))
++			snd_rawmidi_receive(midi, b + p->midi_byte_offset, 1);
++
++		buffer += s->data_block_quadlets;
++	}
++}
++
+ static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
+ 				__be32 *buffer, unsigned int data_blocks,
+ 				unsigned int *syt)
+ {
++	struct amdtp_motu *p = s->protocol;
+ 	struct snd_pcm_substream *pcm;
+ 
++	if (p->midi_ports)
++		read_midi_messages(s, buffer, data_blocks);
++
+ 	pcm = ACCESS_ONCE(s->pcm);
+ 	if (data_blocks > 0 && pcm)
+ 		read_pcm_s32(s, pcm->runtime, buffer, data_blocks);
+@@ -246,6 +326,7 @@ static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
+ 				__be32 *buffer, unsigned int data_blocks,
+ 				unsigned int *syt)
+ {
++	struct amdtp_motu *p = (struct amdtp_motu *)s->protocol;
+ 	struct snd_pcm_substream *pcm;
+ 
+ 	/* Not used. */
+@@ -253,6 +334,9 @@ static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
+ 
+ 	/* TODO: how to interact control messages between userspace? */
+ 
++	if (p->midi_ports)
++		write_midi_messages(s, buffer, data_blocks);
++
+ 	pcm = ACCESS_ONCE(s->pcm);
+ 	if (pcm)
+ 		write_pcm_s32(s, pcm->runtime, buffer, data_blocks);
+diff --git a/sound/firewire/motu/motu-midi.c b/sound/firewire/motu/motu-midi.c
+new file mode 100644
+index 0000000..f232f29
+--- /dev/null
++++ b/sound/firewire/motu/motu-midi.c
+@@ -0,0 +1,153 @@
++/*
++ * motu-midi.h - a part of driver for MOTU FireWire series
 + *
 + * Copyright (c) 2015-2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
-+
 +#include "motu.h"
 +
-+#define V1_CLOCK_STATUS_OFFSET			0x0b00
-+#define  V1_OPT_IN_IFACE_IS_SPDIF		0x00008000
-+#define  V1_OPT_OUT_IFACE_IS_SPDIF		0x00004000
-+#define  V1_FETCH_PCM_FRAMES			0x00000080
-+#define  V1_CLOCK_SRC_IS_NOT_FROM_ADAT_DSUB	0x00000020
-+#define  V1_CLOCK_RATE_BASED_ON_48000		0x00000004
-+#define  V1_CLOCK_SRC_SPDIF_ON_OPT_OR_COAX	0x00000002
-+#define  V1_CLOCK_SRC_ADAT_ON_OPT_OR_DSUB	0x00000001
-+
-+static int v1_get_clock_rate(struct snd_motu *motu, unsigned int *rate)
++static int midi_capture_open(struct snd_rawmidi_substream *substream)
 +{
-+	__be32 reg;
-+	u32 data;
-+	int index, err;
++	struct snd_motu *motu = substream->rmidi->private_data;
++	int err;
 +
-+	err = snd_motu_transaction_read(motu, V1_CLOCK_STATUS_OFFSET, &reg,
-+					sizeof(reg));
-+	if (err < 0)
-+		return err;
-+	data = be32_to_cpu(reg);
++	mutex_lock(&motu->mutex);
 +
-+	if (data & V1_CLOCK_RATE_BASED_ON_48000)
-+		index = 1;
-+	else
-+		index = 0;
++	motu->capture_substreams++;
++	err = snd_motu_stream_start_duplex(motu, 0);
 +
-+	*rate = snd_motu_clock_rates[index];
++	mutex_unlock(&motu->mutex);
++
++	return err;
++}
++
++static int midi_playback_open(struct snd_rawmidi_substream *substream)
++{
++	struct snd_motu *motu = substream->rmidi->private_data;
++	int err;
++
++	mutex_lock(&motu->mutex);
++
++	motu->playback_substreams++;
++	err = snd_motu_stream_start_duplex(motu, 0);
++
++	mutex_unlock(&motu->mutex);
++
++	return err;
++}
++
++static int midi_capture_close(struct snd_rawmidi_substream *substream)
++{
++	struct snd_motu *motu = substream->rmidi->private_data;
++
++	mutex_lock(&motu->mutex);
++
++	motu->capture_substreams--;
++	snd_motu_stream_stop_duplex(motu);
++
++	mutex_unlock(&motu->mutex);
 +
 +	return 0;
 +}
 +
-+static int v1_set_clock_rate(struct snd_motu *motu, unsigned int rate)
++static int midi_playback_close(struct snd_rawmidi_substream *substream)
 +{
-+	__be32 reg;
-+	u32 data;
-+	int i, err;
++	struct snd_motu *motu = substream->rmidi->private_data;
 +
-+	for (i = 0; i < ARRAY_SIZE(snd_motu_clock_rates); ++i) {
-+		if (snd_motu_clock_rates[i] == rate)
-+			break;
-+	}
-+	if (i == ARRAY_SIZE(snd_motu_clock_rates))
-+		return -EINVAL;
++	mutex_lock(&motu->mutex);
 +
-+	err = snd_motu_transaction_read(motu, V1_CLOCK_STATUS_OFFSET, &reg,
-+					sizeof(reg));
-+	if (err < 0)
-+		return err;
-+	data = be32_to_cpu(reg);
++	motu->playback_substreams--;
++	snd_motu_stream_stop_duplex(motu);
 +
-+	data &= ~V1_FETCH_PCM_FRAMES;
-+	if (rate == 48000)
-+		data |= V1_CLOCK_RATE_BASED_ON_48000;
-+	else
-+		data &= ~V1_CLOCK_RATE_BASED_ON_48000;
-+
-+	reg = cpu_to_be32(data);
-+	return snd_motu_transaction_write(motu, V1_CLOCK_STATUS_OFFSET, &reg,
-+					  sizeof(reg));
-+}
-+
-+static int v1_get_clock_source(struct snd_motu *motu,
-+			       enum snd_motu_clock_source *src)
-+{
-+	__be32 reg;
-+	u32 data;
-+	int err;
-+
-+	err = snd_motu_transaction_read(motu, V1_CLOCK_STATUS_OFFSET, &reg,
-+					sizeof(reg));
-+	if (err < 0)
-+		return err;
-+
-+	data = be32_to_cpu(reg);
-+	if (data & V1_CLOCK_SRC_ADAT_ON_OPT_OR_DSUB) {
-+		if (data & V1_CLOCK_SRC_IS_NOT_FROM_ADAT_DSUB)
-+			*src = SND_MOTU_CLOCK_SOURCE_ADAT_ON_OPT;
-+		else
-+			*src = SND_MOTU_CLOCK_SOURCE_ADAT_ON_DSUB;
-+	} else if (data & V1_CLOCK_SRC_SPDIF_ON_OPT_OR_COAX) {
-+		if (data & V1_OPT_IN_IFACE_IS_SPDIF)
-+			*src = SND_MOTU_CLOCK_SOURCE_SPDIF_ON_OPT;
-+		else
-+			*src = SND_MOTU_CLOCK_SOURCE_SPDIF_ON_COAX;
-+	} else {
-+		*src = SND_MOTU_CLOCK_SOURCE_INTERNAL;
-+	}
++	mutex_unlock(&motu->mutex);
 +
 +	return 0;
 +}
 +
-+static int v1_switch_fetching_mode(struct snd_motu *motu, bool enable)
++static void midi_capture_trigger(struct snd_rawmidi_substream *substrm, int up)
 +{
-+	__be32 reg;
-+	u32 data;
-+	int err;
++	struct snd_motu *motu = substrm->rmidi->private_data;
++	unsigned long flags;
 +
-+	err = snd_motu_transaction_read(motu, V1_CLOCK_STATUS_OFFSET, &reg,
-+					sizeof(reg));
-+	if (err < 0)
-+		return err;
-+	data = be32_to_cpu(reg);
++	spin_lock_irqsave(&motu->lock, flags);
 +
-+	if (enable)
-+		data |= V1_FETCH_PCM_FRAMES;
++	if (up)
++		amdtp_motu_midi_trigger(&motu->tx_stream, substrm->number,
++					substrm);
 +	else
-+		data &= ~V1_FETCH_PCM_FRAMES;
++		amdtp_motu_midi_trigger(&motu->tx_stream, substrm->number,
++					NULL);
 +
-+	reg = cpu_to_be32(data);
-+	return snd_motu_transaction_write(motu, V1_CLOCK_STATUS_OFFSET, &reg,
-+					  sizeof(reg));
++	spin_unlock_irqrestore(&motu->lock, flags);
 +}
 +
-+static void calculate_fixed_part(struct snd_motu_packet_format *formats,
-+				 enum amdtp_stream_direction dir,
-+				 enum snd_motu_spec_flags flags,
-+				 unsigned char analog_ports)
++static void midi_playback_trigger(struct snd_rawmidi_substream *substrm, int up)
 +{
-+	unsigned char pcm_chunks[3] = {0, 0, 0};
-+	int i;
++	struct snd_motu *motu = substrm->rmidi->private_data;
++	unsigned long flags;
 +
-+	if (dir == AMDTP_IN_STREAM)
-+		formats->msg_chunks = 2;
++	spin_lock_irqsave(&motu->lock, flags);
++
++	if (up)
++		amdtp_motu_midi_trigger(&motu->rx_stream, substrm->number,
++					substrm);
 +	else
-+		formats->msg_chunks = 0;
++		amdtp_motu_midi_trigger(&motu->rx_stream, substrm->number,
++					NULL);
 +
-+	pcm_chunks[0] = analog_ports;
-+	if (flags & SND_MOTU_SPEC_SUPPORT_CLOCK_X2)
-+		pcm_chunks[1] = analog_ports;
-+	if (flags & SND_MOTU_SPEC_SUPPORT_CLOCK_X4)
-+		pcm_chunks[2] = analog_ports;
-+
-+	pcm_chunks[0] += 2;
-+	if (flags & SND_MOTU_SPEC_SUPPORT_CLOCK_X2)
-+		pcm_chunks[1] += 2;
-+
-+	for (i = 0; i < 3; ++i)
-+		formats->fixed_part_pcm_chunks[i] = pcm_chunks[i];
++	spin_unlock_irqrestore(&motu->lock, flags);
 +}
 +
-+static void calculate_differed_part(struct snd_motu_packet_format *formats,
-+				    enum snd_motu_spec_flags flags,
-+				    u32 opt_iface_mode_data,
-+				    u32 opt_iface_mode_mask)
++static void set_midi_substream_names(struct snd_motu *motu,
++				     struct snd_rawmidi_str *str)
 +{
-+	unsigned char pcm_chunks[3] = {0, 0, 0};
-+	int i;
++	struct snd_rawmidi_substream *subs;
 +
-+	/* Packet includes PCM frames from ADAT on optical interface. */
-+	if (!(opt_iface_mode_data & opt_iface_mode_mask)) {
-+		pcm_chunks[0] += 8;
-+		if (flags & SND_MOTU_SPEC_SUPPORT_CLOCK_X2)
-+			pcm_chunks[1] += 4;
++	list_for_each_entry(subs, &str->substreams, list) {
++		snprintf(subs->name, sizeof(subs->name),
++			 "%s MIDI %d", motu->card->shortname, subs->number + 1);
 +	}
-+
-+	for (i = 0; i < 3; ++i)
-+		formats->differed_part_pcm_chunks[i] = pcm_chunks[i];
 +}
 +
-+static int v1_cache_packet_formats(struct snd_motu *motu)
++int snd_motu_create_midi_devices(struct snd_motu *motu)
 +{
-+	__be32 reg;
-+	u32 opt_iface_mode_data;
++	static struct snd_rawmidi_ops capture_ops = {
++		.open		= midi_capture_open,
++		.close		= midi_capture_close,
++		.trigger	= midi_capture_trigger,
++	};
++	static struct snd_rawmidi_ops playback_ops = {
++		.open		= midi_playback_open,
++		.close		= midi_playback_close,
++		.trigger	= midi_playback_trigger,
++	};
++	struct snd_rawmidi *rmidi;
++	struct snd_rawmidi_str *str;
 +	int err;
 +
-+	err = snd_motu_transaction_read(motu, V1_CLOCK_STATUS_OFFSET, &reg,
-+					sizeof(reg));
++	/* create midi ports */
++	err = snd_rawmidi_new(motu->card, motu->card->driver, 0, 1, 1, &rmidi);
 +	if (err < 0)
 +		return err;
-+	opt_iface_mode_data = be32_to_cpu(reg);
 +
-+	calculate_fixed_part(&motu->tx_packet_formats, AMDTP_IN_STREAM,
-+			     motu->spec->flags, motu->spec->analog_in_ports);
-+	calculate_differed_part(&motu->tx_packet_formats, motu->spec->flags,
-+				opt_iface_mode_data, V1_OPT_IN_IFACE_IS_SPDIF);
++	snprintf(rmidi->name, sizeof(rmidi->name),
++		 "%s MIDI", motu->card->shortname);
++	rmidi->private_data = motu;
 +
-+	calculate_fixed_part(&motu->rx_packet_formats, AMDTP_OUT_STREAM,
-+			     motu->spec->flags, motu->spec->analog_out_ports);
-+	calculate_differed_part(&motu->rx_packet_formats, motu->spec->flags,
-+				opt_iface_mode_data, V1_OPT_OUT_IFACE_IS_SPDIF);
++	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT |
++			     SNDRV_RAWMIDI_INFO_OUTPUT |
++			     SNDRV_RAWMIDI_INFO_DUPLEX;
 +
-+	motu->tx_packet_formats.pcm_byte_offset = 4;
-+	motu->rx_packet_formats.pcm_byte_offset = 4;
++	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
++			    &capture_ops);
++	str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
++	set_midi_substream_names(motu, str);
++
++	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
++			    &playback_ops);
++	str = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
++	set_midi_substream_names(motu, str);
 +
 +	return 0;
 +}
+diff --git a/sound/firewire/motu/motu-stream.c b/sound/firewire/motu/motu-stream.c
+index 9aa698f..911d348 100644
+--- a/sound/firewire/motu/motu-stream.c
++++ b/sound/firewire/motu/motu-stream.c
+@@ -28,22 +28,25 @@
+ 
+ static int start_both_streams(struct snd_motu *motu, unsigned int rate)
+ {
++	unsigned int midi_ports = 0;
+ 	__be32 reg;
+ 	u32 data;
+ 	int err;
+ 
++	if (motu->spec->flags & SND_MOTU_SPEC_HAS_MIDI)
++		midi_ports = 1;
 +
-+const struct snd_motu_protocol snd_motu_protocol_v1 = {
-+	.get_clock_rate		= v1_get_clock_rate,
-+	.set_clock_rate		= v1_set_clock_rate,
-+	.get_clock_source	= v1_get_clock_source,
-+	.switch_fetching_mode	= v1_switch_fetching_mode,
-+	.cache_packet_formats	= v1_cache_packet_formats,
-+};
+ 	/* Set packet formation to our packet streaming engine. */
+-	err = amdtp_motu_set_parameters(&motu->rx_stream, rate,
++	err = amdtp_motu_set_parameters(&motu->rx_stream, rate, midi_ports,
+ 					&motu->rx_packet_formats);
+ 	if (err < 0)
+ 		return err;
+ 
+-	err = amdtp_motu_set_parameters(&motu->tx_stream, rate,
++	err = amdtp_motu_set_parameters(&motu->tx_stream, rate, midi_ports,
+ 					&motu->tx_packet_formats);
+ 	if (err < 0)
+ 		return err;
+ 
+-
+ 	/* Get isochronous resources on the bus. */
+ 	err = fw_iso_resources_allocate(&motu->rx_resources,
+ 				amdtp_stream_get_max_payload(&motu->rx_stream),
 diff --git a/sound/firewire/motu/motu.c b/sound/firewire/motu/motu.c
-index 619554b..e9705e3 100644
+index 801d6a7..d4da137 100644
 --- a/sound/firewire/motu/motu.c
 +++ b/sound/firewire/motu/motu.c
-@@ -190,6 +190,14 @@ static void motu_bus_update(struct fw_unit *unit)
- 	snd_motu_transaction_reregister(motu);
- }
+@@ -103,6 +103,12 @@ static void do_registration(struct work_struct *work)
+ 	if (err < 0)
+ 		goto error;
  
-+static struct snd_motu_spec motu_828orig = {
-+	.name = "828",
-+	.protocol = &snd_motu_protocol_v1,
++	if (motu->spec->flags & SND_MOTU_SPEC_HAS_MIDI) {
++		err = snd_motu_create_midi_devices(motu);
++		if (err < 0)
++			goto error;
++	}
 +
-+	.analog_in_ports = 8,
-+	.analog_out_ports = 8,
-+};
-+
- #define SND_MOTU_DEV_ENTRY(model, data)			\
- {							\
- 	.match_flags	= IEEE1394_MATCH_VENDOR_ID |	\
-@@ -202,6 +210,7 @@ static void motu_bus_update(struct fw_unit *unit)
- }
+ 	err = snd_card_register(motu->card);
+ 	if (err < 0)
+ 		goto error;
+@@ -138,6 +144,7 @@ static int motu_probe(struct fw_unit *unit,
+ 	dev_set_drvdata(&unit->device, motu);
  
- static const struct ieee1394_device_id motu_id_table[] = {
-+	SND_MOTU_DEV_ENTRY(0x102802, &motu_828orig),
- 	{ }
- };
- MODULE_DEVICE_TABLE(ieee1394, motu_id_table);
+ 	mutex_init(&motu->mutex);
++	spin_lock_init(&motu->lock);
+ 
+ 	/* Allocate and register this sound card later. */
+ 	INIT_DEFERRABLE_WORK(&motu->dwork, do_registration);
 diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
-index 407ce09..d091f68 100644
+index afc6de6..338b351 100644
 --- a/sound/firewire/motu/motu.h
 +++ b/sound/firewire/motu/motu.h
-@@ -121,6 +121,8 @@ struct snd_motu_spec {
- 	const struct snd_motu_protocol *const protocol;
- };
+@@ -21,12 +21,15 @@
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/info.h>
++#include <sound/rawmidi.h>
  
-+extern const struct snd_motu_protocol snd_motu_protocol_v1;
-+
- int amdtp_motu_init(struct amdtp_stream *s, struct fw_unit *unit,
+ #include "../lib.h"
+ #include "../amdtp-stream.h"
+ #include "../iso-resources.h"
+ 
+ struct snd_motu_packet_format {
++	unsigned char midi_flag_offset;
++	unsigned char midi_byte_offset;
+ 	unsigned char pcm_byte_offset;
+ 
+ 	unsigned char msg_chunks;
+@@ -38,6 +41,7 @@ struct snd_motu {
+ 	struct snd_card *card;
+ 	struct fw_unit *unit;
+ 	struct mutex mutex;
++	spinlock_t lock;
+ 
+ 	bool registered;
+ 	struct delayed_work dwork;
+@@ -113,9 +117,12 @@ int amdtp_motu_init(struct amdtp_stream *s, struct fw_unit *unit,
  		    enum amdtp_stream_direction dir,
  		    const struct snd_motu_protocol *const protocol);
+ int amdtp_motu_set_parameters(struct amdtp_stream *s, unsigned int rate,
++			      unsigned int midi_ports,
+ 			      struct snd_motu_packet_format *formats);
+ int amdtp_motu_add_pcm_hw_constraints(struct amdtp_stream *s,
+ 				      struct snd_pcm_runtime *runtime);
++void amdtp_motu_midi_trigger(struct amdtp_stream *s, unsigned int port,
++			     struct snd_rawmidi_substream *midi);
+ 
+ int snd_motu_transaction_read(struct snd_motu *motu, u32 offset, __be32 *reg,
+ 			      size_t size);
+@@ -133,4 +140,6 @@ void snd_motu_stream_stop_duplex(struct snd_motu *motu);
+ void snd_motu_proc_init(struct snd_motu *motu);
+ 
+ int snd_motu_create_pcm_devices(struct snd_motu *motu);
++
++int snd_motu_create_midi_devices(struct snd_motu *motu);
+ #endif
 -- 
 2.9.3
