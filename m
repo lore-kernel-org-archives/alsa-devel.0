@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 02/19] firewire-motu: postpone sound card
-	registration
-Date: Sun, 29 Jan 2017 12:54:00 +0900
-Message-ID: <20170129035417.2095-3-o-takashi@sakamocchi.jp>
+Subject: [PATCH 05/19] firewire-lib: record cycle count for the
+	first packet
+Date: Sun, 29 Jan 2017 12:54:03 +0900
+Message-ID: <20170129035417.2095-6-o-takashi@sakamocchi.jp>
 References: <20170129035417.2095-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id B5E23266A09
- for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2017 04:54:23 +0100 (CET)
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 33D272669F3
+ for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2017 04:54:26 +0100 (CET)
 In-Reply-To: <20170129035417.2095-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,174 +25,71 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Just after appearing on IEEE 1394 bus, this unit generates several bus
-resets. This is due to loading firmware from on-board flash memory and
-initialize hardware. It's better to postpone sound card registration.
+Currently, packet streaming layer passes generated SYT value to data block
+processing layer. However, this is not enough in a case that the data block
+processing layer generates time stamps by its own ways.
 
-This commit applies this idea.
+For out packet stream, the packet streaming layer guarantees 8,000 times
+calls of data block processing layers per sec. Therefore, when cycle count
+of the first packet is recorded, data block processing layers can calculate
+own time stamps with the recorded value.
+
+For the reason, this commit allows packet streaming layer to record the
+first cycle count. Each data block processing layer can read the count by
+accessing a member of structure for packet streaming layer.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/motu/motu.c | 97 ++++++++++++++++++++++++++++++++++------------
- sound/firewire/motu/motu.h |  5 +++
- 2 files changed, 78 insertions(+), 24 deletions(-)
+ sound/firewire/amdtp-stream.c | 15 +++++++++++++--
+ sound/firewire/amdtp-stream.h |  1 +
+ 2 files changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/sound/firewire/motu/motu.c b/sound/firewire/motu/motu.c
-index 82aae6d..d6ce4f3 100644
---- a/sound/firewire/motu/motu.c
-+++ b/sound/firewire/motu/motu.c
-@@ -38,59 +38,108 @@ static void name_card(struct snd_motu *motu)
- 		 dev_name(&motu->unit->device), 100 << fw_dev->max_speed);
- }
- 
--static void motu_card_free(struct snd_card *card)
-+static void motu_free(struct snd_motu *motu)
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index 00060c4..371cf97 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -671,6 +671,8 @@ static void amdtp_stream_first_callback(struct fw_iso_context *context,
+ 					void *header, void *private_data)
  {
--	struct snd_motu *motu = card->private_data;
--
- 	fw_unit_put(motu->unit);
+ 	struct amdtp_stream *s = private_data;
++	u32 cycle;
++	unsigned int packets;
  
- 	mutex_destroy(&motu->mutex);
-+	kfree(motu);
- }
+ 	/*
+ 	 * For in-stream, first packet has come.
+@@ -679,10 +681,19 @@ static void amdtp_stream_first_callback(struct fw_iso_context *context,
+ 	s->callbacked = true;
+ 	wake_up(&s->callback_wait);
  
--static int motu_probe(struct fw_unit *unit,
--		      const struct ieee1394_device_id *entry)
-+/*
-+ * This module releases the FireWire unit data after all ALSA character devices
-+ * are released by applications. This is for releasing stream data or finishing
-+ * transactions safely. Thus at returning from .remove(), this module still keep
-+ * references for the unit.
-+ */
-+static void motu_card_free(struct snd_card *card)
- {
--	struct snd_card *card;
--	struct snd_motu *motu;
--	int err;
-+	motu_free(card->private_data);
-+}
- 
--	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE,
--			   sizeof(*motu), &card);
--	if (err < 0)
--		return err;
-+static void do_registration(struct work_struct *work)
-+{
-+	struct snd_motu *motu = container_of(work, struct snd_motu, dwork.work);
-+	int err;
- 
--	motu = card->private_data;
--	motu->card = card;
--	motu->unit = fw_unit_get(unit);
--	card->private_free = motu_card_free;
-+	if (motu->registered)
-+		return;
- 
--	mutex_init(&motu->mutex);
-+	err = snd_card_new(&motu->unit->device, -1, NULL, THIS_MODULE, 0,
-+			   &motu->card);
-+	if (err < 0)
-+		return;
- 
- 	name_card(motu);
- 
--	err = snd_card_register(card);
-+	err = snd_card_register(motu->card);
- 	if (err < 0)
- 		goto error;
- 
-+	/*
-+	 * After registered, motu instance can be released corresponding to
-+	 * releasing the sound card instance.
-+	 */
-+	motu->card->private_free = motu_card_free;
-+	motu->card->private_data = motu;
-+	motu->registered = true;
+-	if (s->direction == AMDTP_IN_STREAM)
++	cycle = compute_cycle_count(tstamp);
 +
-+	return;
-+error:
-+	snd_card_free(motu->card);
-+	dev_info(&motu->unit->device,
-+		 "Sound card registration failed: %d\n", err);
-+}
-+
-+static int motu_probe(struct fw_unit *unit,
-+		      const struct ieee1394_device_id *entry)
-+{
-+	struct snd_motu *motu;
-+
-+	/* Allocate this independently of sound card instance. */
-+	motu = kzalloc(sizeof(struct snd_motu), GFP_KERNEL);
-+	if (motu == NULL)
-+		return -ENOMEM;
-+
-+	motu->unit = fw_unit_get(unit);
- 	dev_set_drvdata(&unit->device, motu);
- 
-+	mutex_init(&motu->mutex);
-+
-+	/* Allocate and register this sound card later. */
-+	INIT_DEFERRABLE_WORK(&motu->dwork, do_registration);
-+	snd_fw_schedule_registration(unit, &motu->dwork);
-+
- 	return 0;
--error:
--	snd_card_free(card);
--	return err;
- }
- 
- static void motu_remove(struct fw_unit *unit)
- {
- 	struct snd_motu *motu = dev_get_drvdata(&unit->device);
- 
--	/* No need to wait for releasing card object in this context. */
--	snd_card_free_when_closed(motu->card);
-+	/*
-+	 * Confirm to stop the work for registration before the sound card is
-+	 * going to be released. The work is not scheduled again because bus
-+	 * reset handler is not called anymore.
-+	 */
-+	cancel_delayed_work_sync(&motu->dwork);
-+
-+	if (motu->registered) {
-+		/* No need to wait for releasing card object in this context. */
-+		snd_card_free_when_closed(motu->card);
++	if (s->direction == AMDTP_IN_STREAM) {
++		packets = header_length / IN_PACKET_HEADER_SIZE;
++		cycle = decrement_cycle_count(cycle, packets);
+ 		context->callback.sc = in_stream_callback;
+-	else
 +	} else {
-+		/* Don't forget this case. */
-+		motu_free(motu);
++		packets = header_length / 4;
++		cycle = increment_cycle_count(cycle, QUEUE_LENGTH - packets);
+ 		context->callback.sc = out_stream_callback;
 +	}
++
++	s->start_cycle = cycle;
+ 
+ 	context->callback.sc(context, tstamp, header_length, header, s);
  }
+diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
+index c1bc7fa..edf5646 100644
+--- a/sound/firewire/amdtp-stream.h
++++ b/sound/firewire/amdtp-stream.h
+@@ -130,6 +130,7 @@ struct amdtp_stream {
+ 	/* To wait for first packet. */
+ 	bool callbacked;
+ 	wait_queue_head_t callback_wait;
++	u32 start_cycle;
  
- static void motu_bus_update(struct fw_unit *unit)
- {
--	return;
-+	struct snd_motu *motu = dev_get_drvdata(&unit->device);
-+
-+	/* Postpone a workqueue for deferred registration. */
-+	if (!motu->registered)
-+		snd_fw_schedule_registration(unit, &motu->dwork);
- }
- 
- #define SND_MOTU_DEV_ENTRY(model, data)			\
-diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
-index f3d0b28..eb0ffd5 100644
---- a/sound/firewire/motu/motu.h
-+++ b/sound/firewire/motu/motu.h
-@@ -20,10 +20,15 @@
- #include <sound/control.h>
- #include <sound/core.h>
- 
-+#include "../lib.h"
-+
- struct snd_motu {
- 	struct snd_card *card;
- 	struct fw_unit *unit;
- 	struct mutex mutex;
-+
-+	bool registered;
-+	struct delayed_work dwork;
- };
- 
- #endif
+ 	/* For backends to process data blocks. */
+ 	void *protocol;
 -- 
 2.9.3
