@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 06/19] firewire-lib: add support for source
-	packet header field in CIP header
-Date: Sun, 29 Jan 2017 12:54:04 +0900
-Message-ID: <20170129035417.2095-7-o-takashi@sakamocchi.jp>
+Subject: [PATCH 04/19] firewire-motu: add an abstraction layer
+	for three types of protocols
+Date: Sun, 29 Jan 2017 12:54:02 +0900
+Message-ID: <20170129035417.2095-5-o-takashi@sakamocchi.jp>
 References: <20170129035417.2095-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 337382669E2
- for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2017 04:54:26 +0100 (CET)
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id B8199266A55
+ for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2017 04:54:23 +0100 (CET)
 In-Reply-To: <20170129035417.2095-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,74 +25,139 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-In IEC 61883-1, CIP headers have a SPH field. When a packet has 1 in the
-SPH field, the packet has a source packet headers. A source packet header
-consists of 32 bit field (= 1 quadlet) and it transfers time stamp, which
-is the same value as the lower 25 bits of the IEEE 1394 CYCLE_TIMER
-register and the rest is zero.
+In an aspect of used protocols to communicate, models of MOTU FireWire
+units are categorized to three generations.
 
-This commit just supports source packet header field because IEC 61883-1
-includes ambiguity the position of this header and the number. Each
-protocol layer can have actual implementation according its requirements.
+This commit adds an abstraction layer of the protocols for features
+related to packet streaming functionality. This layer includes 5
+operations.
+
+When configuring packet streaming functionality with sampling rate and
+sampling transmission frequency, .get_clock_rate and .set_clock_rate are
+called with proper arguments. MOTU FireWire series supports up to 192.0kHz.
+
+When checking current source of sampling clock (not clock for packetization
+layer), .get_clock_source is used. Enumeration is added to represent the
+sources supported by this series. This operation can be used to expose
+available sampling rate to user space applications when the unit is
+configured to use input signals as source of clock.
+
+In the protocols, the path between packet handling layer and digital signal
+processing layer can be controlled. This looks a functionality to 'mute'
+the unit. For this feature, .switch_fetching_mode is added. This can be
+used to suppress noises every time packet streaming starts/stops.
+
+In a point of the size of data blocks in a certain sampling transmission
+frequency, the most units accept several modes. This is due to usage of
+optical interfaces. The size differs depending on which modes are
+configured to the interfaces; None, S/PDIF and ADAT. Additionally, format
+of packet is different depending on protocols. To cache current size of
+data blocks and its format, .cache_packet_formats is added. This is used
+by PCM functionality, packet streaming functionality and data block
+processing layer.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp-stream.c | 8 ++++++--
- sound/firewire/amdtp-stream.h | 1 +
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ sound/firewire/motu/motu.c | 12 ++++++++++++
+ sound/firewire/motu/motu.h | 43 +++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 55 insertions(+)
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 371cf97..65c5ed7 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -37,6 +37,8 @@
- #define CIP_SID_MASK		0x3f000000
- #define CIP_DBS_MASK		0x00ff0000
- #define CIP_DBS_SHIFT		16
-+#define CIP_SPH_MASK		0x00000400
-+#define CIP_SPH_SHIFT		10
- #define CIP_DBC_MASK		0x000000ff
- #define CIP_FMT_SHIFT		24
- #define CIP_FMT_MASK		0x3f000000
-@@ -426,6 +428,7 @@ static int handle_out_packet(struct amdtp_stream *s, unsigned int cycle,
+diff --git a/sound/firewire/motu/motu.c b/sound/firewire/motu/motu.c
+index e69aa7b..1e6fc74 100644
+--- a/sound/firewire/motu/motu.c
++++ b/sound/firewire/motu/motu.c
+@@ -14,6 +14,18 @@ MODULE_DESCRIPTION("MOTU FireWire driver");
+ MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
+ MODULE_LICENSE("GPL v2");
  
- 	buffer[0] = cpu_to_be32(ACCESS_ONCE(s->source_node_id_field) |
- 				(s->data_block_quadlets << CIP_DBS_SHIFT) |
-+				((s->sph << CIP_SPH_SHIFT) & CIP_SPH_MASK) |
- 				s->data_block_counter);
- 	buffer[1] = cpu_to_be32(CIP_EOH |
- 				((s->fmt << CIP_FMT_SHIFT) & CIP_FMT_MASK) |
-@@ -454,7 +457,7 @@ static int handle_in_packet(struct amdtp_stream *s,
++const unsigned int snd_motu_clock_rates[SND_MOTU_CLOCK_RATE_COUNT] = {
++	/* mode 0 */
++	[0] =  44100,
++	[1] =  48000,
++	/* mode 1 */
++	[2] =  88200,
++	[3] =  96000,
++	/* mode 2 */
++	[4] = 176400,
++	[5] = 192000,
++};
++
+ static void name_card(struct snd_motu *motu)
  {
- 	__be32 *buffer;
- 	u32 cip_header[2];
--	unsigned int fmt, fdf, syt;
-+	unsigned int sph, fmt, fdf, syt;
- 	unsigned int data_block_quadlets, data_block_counter, dbc_interval;
- 	unsigned int data_blocks;
- 	struct snd_pcm_substream *pcm;
-@@ -482,8 +485,9 @@ static int handle_in_packet(struct amdtp_stream *s,
- 	}
+ 	struct fw_device *fw_dev = fw_parent_device(motu->unit);
+diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
+index cb7324d..cb6b573 100644
+--- a/sound/firewire/motu/motu.h
++++ b/sound/firewire/motu/motu.h
+@@ -22,6 +22,16 @@
  
- 	/* Check valid protocol or not. */
-+	sph = (cip_header[0] & CIP_SPH_MASK) >> CIP_SPH_SHIFT;
- 	fmt = (cip_header[1] & CIP_FMT_MASK) >> CIP_FMT_SHIFT;
--	if (fmt != s->fmt) {
-+	if (sph != s->sph || fmt != s->fmt) {
- 		dev_info_ratelimited(&s->unit->device,
- 				     "Detect unexpected protocol: %08x %08x\n",
- 				     cip_header[0], cip_header[1]);
-diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-index edf5646..679053d 100644
---- a/sound/firewire/amdtp-stream.h
-+++ b/sound/firewire/amdtp-stream.h
-@@ -106,6 +106,7 @@ struct amdtp_stream {
- 	unsigned int source_node_id_field;
- 	unsigned int data_block_quadlets;
- 	unsigned int data_block_counter;
-+	unsigned int sph;
- 	unsigned int fmt;
- 	unsigned int fdf;
- 	/* quirk: fixed interval of dbc between previos/current packets. */
+ #include "../lib.h"
+ 
++struct snd_motu_packet_format {
++	unsigned char midi_flag_offset;
++	unsigned char midi_byte_offset;
++	unsigned char pcm_byte_offset;
++
++	unsigned char msg_chunks;
++	unsigned char fixed_part_pcm_chunks[3];
++	unsigned char differed_part_pcm_chunks[3];
++};
++
+ struct snd_motu {
+ 	struct snd_card *card;
+ 	struct fw_unit *unit;
+@@ -32,6 +42,10 @@ struct snd_motu {
+ 
+ 	/* Model dependent information. */
+ 	const struct snd_motu_spec *spec;
++
++	/* For packet streaming */
++	struct snd_motu_packet_format tx_packet_formats;
++	struct snd_motu_packet_format rx_packet_formats;
+ };
+ 
+ enum snd_motu_spec_flags {
+@@ -46,12 +60,41 @@ enum snd_motu_spec_flags {
+ 	SND_MOTU_SPEC_HAS_MIDI		= 0x0100,
+ };
+ 
++#define SND_MOTU_CLOCK_RATE_COUNT	6
++extern const unsigned int snd_motu_clock_rates[SND_MOTU_CLOCK_RATE_COUNT];
++
++enum snd_motu_clock_source {
++	SND_MOTU_CLOCK_SOURCE_INTERNAL,
++	SND_MOTU_CLOCK_SOURCE_ADAT_ON_DSUB,
++	SND_MOTU_CLOCK_SOURCE_ADAT_ON_OPT,
++	SND_MOTU_CLOCK_SOURCE_ADAT_ON_OPT_A,
++	SND_MOTU_CLOCK_SOURCE_ADAT_ON_OPT_B,
++	SND_MOTU_CLOCK_SOURCE_SPDIF_ON_OPT,
++	SND_MOTU_CLOCK_SOURCE_SPDIF_ON_OPT_A,
++	SND_MOTU_CLOCK_SOURCE_SPDIF_ON_OPT_B,
++	SND_MOTU_CLOCK_SOURCE_SPDIF_ON_COAX,
++	SND_MOTU_CLOCK_SOURCE_AESEBU_ON_XLR,
++	SND_MOTU_CLOCK_SOURCE_WORD_ON_BNC,
++	SND_MOTU_CLOCK_SOURCE_UNKNOWN,
++};
++
++struct snd_motu_protocol {
++	int (*get_clock_rate)(struct snd_motu *motu, unsigned int *rate);
++	int (*set_clock_rate)(struct snd_motu *motu, unsigned int rate);
++	int (*get_clock_source)(struct snd_motu *motu,
++				enum snd_motu_clock_source *source);
++	int (*switch_fetching_mode)(struct snd_motu *motu, bool enable);
++	int (*cache_packet_formats)(struct snd_motu *motu);
++};
++
+ struct snd_motu_spec {
+ 	const char *const name;
+ 	enum snd_motu_spec_flags flags;
+ 
+ 	unsigned char analog_in_ports;
+ 	unsigned char analog_out_ports;
++
++	const struct snd_motu_protocol *const protocol;
+ };
+ 
+ #endif
 -- 
 2.9.3
