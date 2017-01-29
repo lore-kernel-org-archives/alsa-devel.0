@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 15/19] firewire-motu: enable to read
-	transaction cache via hwdep interface
-Date: Sun, 29 Jan 2017 12:54:13 +0900
-Message-ID: <20170129035417.2095-16-o-takashi@sakamocchi.jp>
+Subject: [PATCH 18/19] firewire-lib: add a quirk of packet
+	without valid EOH in CIP format
+Date: Sun, 29 Jan 2017 12:54:16 +0900
+Message-ID: <20170129035417.2095-19-o-takashi@sakamocchi.jp>
 References: <20170129035417.2095-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 0956D2669E2
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id C65AB266A55
  for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2017 04:54:28 +0100 (CET)
 In-Reply-To: <20170129035417.2095-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,119 +25,56 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-MOTU FireWire series can transfer messages to registered address. These
-messages are transferred for the status of internal clock synchronization
-just after starting streams.
+In IEC 61883-1, when two quadlets CIP header is used, the top most bit in
+second CIP header stands. However, packets from units with MOTU protocol
+version 3 have a quirk without this flag. Current packet streaming layer
+handles this as protocol error.
 
-When the synchronization is stable, it's 0x01ffffff. Else, it's 0x05ffffff.
-
-This commit adds a functionality to receive the message. Currently, the
-received message are output to system logging.
+This commit adds a new enumeration constant for this quirk, to handle MOTU
+protocol version 3.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/uapi/sound/firewire.h          |  7 +++++++
- sound/firewire/motu/motu-hwdep.c       | 10 ++++++++--
- sound/firewire/motu/motu-transaction.c | 20 ++++++++++++++++++++
- 3 files changed, 35 insertions(+), 2 deletions(-)
+ sound/firewire/amdtp-stream.c | 5 +++--
+ sound/firewire/amdtp-stream.h | 3 +++
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
-index 59c6d81..29afc5e 100644
---- a/include/uapi/sound/firewire.h
-+++ b/include/uapi/sound/firewire.h
-@@ -10,6 +10,7 @@
- #define SNDRV_FIREWIRE_EVENT_DICE_NOTIFICATION	0xd1ce004e
- #define SNDRV_FIREWIRE_EVENT_EFW_RESPONSE	0x4e617475
- #define SNDRV_FIREWIRE_EVENT_DIGI00X_MESSAGE	0x746e736c
-+#define SNDRV_FIREWIRE_EVENT_MOTU_NOTIFICATION	0x64776479
- 
- struct snd_firewire_event_common {
- 	unsigned int type; /* SNDRV_FIREWIRE_EVENT_xxx */
-@@ -46,12 +47,18 @@ struct snd_firewire_event_digi00x_message {
- 	__u32 message;	/* Digi00x-specific message */
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index f9d12f4..112ad03 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -480,8 +480,9 @@ static int handle_in_packet(struct amdtp_stream *s,
+ 	 * This module supports 'Two-quadlet CIP header with SYT field'.
+ 	 * For convenience, also check FMT field is AM824 or not.
+ 	 */
+-	if (((cip_header[0] & CIP_EOH_MASK) == CIP_EOH) ||
+-	    ((cip_header[1] & CIP_EOH_MASK) != CIP_EOH)) {
++	if ((((cip_header[0] & CIP_EOH_MASK) == CIP_EOH) ||
++	     ((cip_header[1] & CIP_EOH_MASK) != CIP_EOH)) &&
++	    (!(s->flags & CIP_HEADER_WITHOUT_EOH))) {
+ 		dev_info_ratelimited(&s->unit->device,
+ 				"Invalid CIP header for AMDTP: %08X:%08X\n",
+ 				cip_header[0], cip_header[1]);
+diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
+index d2a3163..a31dfd8 100644
+--- a/sound/firewire/amdtp-stream.h
++++ b/sound/firewire/amdtp-stream.h
+@@ -29,6 +29,8 @@
+  * @CIP_JUMBO_PAYLOAD: Only for in-stream. The number of data blocks in an
+  *	packet is larger than IEC 61883-6 defines. Current implementation
+  *	allows 5 times as large as IEC 61883-6 defines.
++ * @CIP_HEADER_WITHOUT_EOH: Only for in-stream. CIP Header doesn't include
++ *	valid EOH.
+  */
+ enum cip_flags {
+ 	CIP_NONBLOCKING		= 0x00,
+@@ -39,6 +41,7 @@ enum cip_flags {
+ 	CIP_SKIP_DBC_ZERO_CHECK	= 0x10,
+ 	CIP_EMPTY_HAS_WRONG_DBC	= 0x20,
+ 	CIP_JUMBO_PAYLOAD	= 0x40,
++	CIP_HEADER_WITHOUT_EOH	= 0x80,
  };
  
-+struct snd_firewire_event_motu_notification {
-+	unsigned int type;
-+	__u32 message;	/* MOTU-specific bits. */
-+};
-+
- union snd_firewire_event {
- 	struct snd_firewire_event_common            common;
- 	struct snd_firewire_event_lock_status       lock_status;
- 	struct snd_firewire_event_dice_notification dice_notification;
- 	struct snd_firewire_event_efw_response      efw_response;
- 	struct snd_firewire_event_digi00x_message   digi00x_message;
-+	struct snd_firewire_event_motu_notification motu_notification;
- };
- 
- 
-diff --git a/sound/firewire/motu/motu-hwdep.c b/sound/firewire/motu/motu-hwdep.c
-index e795a52..b87ccb6 100644
---- a/sound/firewire/motu/motu-hwdep.c
-+++ b/sound/firewire/motu/motu-hwdep.c
-@@ -26,7 +26,7 @@ static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
- 
- 	spin_lock_irq(&motu->lock);
- 
--	while (!motu->dev_lock_changed) {
-+	while (!motu->dev_lock_changed && motu->msg == 0) {
- 		prepare_to_wait(&motu->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
- 		spin_unlock_irq(&motu->lock);
- 		schedule();
-@@ -43,6 +43,12 @@ static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
- 		motu->dev_lock_changed = false;
- 
- 		count = min_t(long, count, sizeof(event.lock_status));
-+	} else {
-+		event.motu_notification.type = SNDRV_FIREWIRE_EVENT_MOTU_NOTIFICATION;
-+		event.motu_notification.message = motu->msg;
-+		motu->msg = 0;
-+
-+		count = min_t(long, count, sizeof(event.motu_notification));
- 	}
- 
- 	spin_unlock_irq(&motu->lock);
-@@ -62,7 +68,7 @@ static unsigned int hwdep_poll(struct snd_hwdep *hwdep, struct file *file,
- 	poll_wait(file, &motu->hwdep_wait, wait);
- 
- 	spin_lock_irq(&motu->lock);
--	if (motu->dev_lock_changed)
-+	if (motu->dev_lock_changed || motu->msg)
- 		events = POLLIN | POLLRDNORM;
- 	else
- 		events = 0;
-diff --git a/sound/firewire/motu/motu-transaction.c b/sound/firewire/motu/motu-transaction.c
-index 416dd98..7fc3009 100644
---- a/sound/firewire/motu/motu-transaction.c
-+++ b/sound/firewire/motu/motu-transaction.c
-@@ -50,7 +50,27 @@ static void handle_message(struct fw_card *card, struct fw_request *request,
- 			   int generation, unsigned long long offset,
- 			   void *data, size_t length, void *callback_data)
- {
-+	struct snd_motu *motu = callback_data;
-+	__be32 *buf = (__be32 *)data;
-+	unsigned long flags;
-+
-+	if (tcode != TCODE_WRITE_QUADLET_REQUEST) {
-+		fw_send_response(card, request, RCODE_COMPLETE);
-+		return;
-+	}
-+
-+	if (offset != motu->async_handler.offset || length != 4) {
-+		fw_send_response(card, request, RCODE_ADDRESS_ERROR);
-+		return;
-+	}
-+
-+	spin_lock_irqsave(&motu->lock, flags);
-+	motu->msg = be32_to_cpu(*buf);
-+	spin_unlock_irqrestore(&motu->lock, flags);
-+
- 	fw_send_response(card, request, RCODE_COMPLETE);
-+
-+	wake_up(&motu->hwdep_wait);
- }
- 
- int snd_motu_transaction_reregister(struct snd_motu *motu)
+ /**
 -- 
 2.9.3
