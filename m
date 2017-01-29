@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 11/19] firewire-motu: add proc node to show
-	current statuc of clock and packet formats
-Date: Sun, 29 Jan 2017 12:54:09 +0900
-Message-ID: <20170129035417.2095-12-o-takashi@sakamocchi.jp>
+Subject: [PATCH 10/19] firewire-motu: add stream management
+	functionality
+Date: Sun, 29 Jan 2017 12:54:08 +0900
+Message-ID: <20170129035417.2095-11-o-takashi@sakamocchi.jp>
 References: <20170129035417.2095-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 6B085266A76
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 67677266A73
  for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2017 04:54:26 +0100 (CET)
 In-Reply-To: <20170129035417.2095-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,181 +25,446 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a proc node for debugging purpose.
+This commit adds a functionality to manage packet streaming.
+
+The streaming is not controlled by CMP, thus against IEC 61883-1. Write
+transaction to certain addresses start/stop packet streaming.
+
+Transactions to 0x'ffff'f000'0b00 results in isochronous channel number for
+both directions and starting/stopping transmission of packets. The
+isochronous channel number is represented in 6 bit field, thus units can
+identify the channels up to 64, as IEEE 1394 bus specification described.
+
+Transactions to 0x'ffff'f000'0b10 results in packet format for both
+directions and transmission speed. When each of data block includes fixed
+part of data chunks only, corresponding flags stand.
+
+When bus reset occurs, the units continue to transmit packets with
+non-contiguous data block counter. This causes discontinuity detection in
+packet streaming engine and ALSA PCM applications receives EPIPE from any
+I/O operation. In this case, typical applications manage to recover
+corresponding PCM substream. This behaviour is kicked much earlier than
+callback of bus reset handler by Linux FireWire subsystem, therefore
+status of packet streaming is not changed in the handler.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/motu/Makefile    |   3 +-
- sound/firewire/motu/motu-proc.c | 118 ++++++++++++++++++++++++++++++++++++++++
- sound/firewire/motu/motu.c      |   2 +
- sound/firewire/motu/motu.h      |   3 +
- 4 files changed, 125 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/motu/motu-proc.c
+ sound/firewire/motu/Makefile      |   2 +-
+ sound/firewire/motu/motu-stream.c | 340 ++++++++++++++++++++++++++++++++++++++
+ sound/firewire/motu/motu.c        |   5 +
+ sound/firewire/motu/motu.h        |  10 ++
+ 4 files changed, 356 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/motu/motu-stream.c
 
 diff --git a/sound/firewire/motu/Makefile b/sound/firewire/motu/Makefile
-index 504a4f9..0eccbe2 100644
+index 03b0769..504a4f9 100644
 --- a/sound/firewire/motu/Makefile
 +++ b/sound/firewire/motu/Makefile
-@@ -1,2 +1,3 @@
--snd-firewire-motu-objs := motu.o amdtp-motu.o motu-transaction.o motu-stream.o
-+snd-firewire-motu-objs := motu.o amdtp-motu.o motu-transaction.o motu-stream.o \
-+			  motu-proc.o
+@@ -1,2 +1,2 @@
+-snd-firewire-motu-objs := motu.o amdtp-motu.o motu-transaction.o
++snd-firewire-motu-objs := motu.o amdtp-motu.o motu-transaction.o motu-stream.o
  obj-$(CONFIG_SND_FIREWIRE_MOTU) += snd-firewire-motu.o
-diff --git a/sound/firewire/motu/motu-proc.c b/sound/firewire/motu/motu-proc.c
+diff --git a/sound/firewire/motu/motu-stream.c b/sound/firewire/motu/motu-stream.c
 new file mode 100644
-index 0000000..4edc064
+index 0000000..9aa698f
 --- /dev/null
-+++ b/sound/firewire/motu/motu-proc.c
-@@ -0,0 +1,118 @@
++++ b/sound/firewire/motu/motu-stream.c
+@@ -0,0 +1,340 @@
 +/*
-+ * motu-proc.c - a part of driver for MOTU FireWire series
++ * motu-stream.c - a part of driver for MOTU FireWire series
 + *
 + * Copyright (c) 2015-2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#include "./motu.h"
++#include "motu.h"
 +
-+static const char *const clock_names[] = {
-+	[SND_MOTU_CLOCK_SOURCE_INTERNAL] = "Internal",
-+	[SND_MOTU_CLOCK_SOURCE_ADAT_ON_DSUB] = "ADAT on Dsub-9pin interface",
-+	[SND_MOTU_CLOCK_SOURCE_ADAT_ON_OPT] = "ADAT on optical interface",
-+	[SND_MOTU_CLOCK_SOURCE_ADAT_ON_OPT_A] = "ADAT on optical interface A",
-+	[SND_MOTU_CLOCK_SOURCE_ADAT_ON_OPT_B] = "ADAT on optical interface B",
-+	[SND_MOTU_CLOCK_SOURCE_SPDIF_ON_OPT] = "S/PDIF on optical interface",
-+	[SND_MOTU_CLOCK_SOURCE_SPDIF_ON_OPT_A] = "S/PDIF on optical interface A",
-+	[SND_MOTU_CLOCK_SOURCE_SPDIF_ON_OPT_B] = "S/PDIF on optical interface B",
-+	[SND_MOTU_CLOCK_SOURCE_SPDIF_ON_COAX] = "S/PCIF on coaxial interface",
-+	[SND_MOTU_CLOCK_SOURCE_AESEBU_ON_XLR] = "AESEBU on XLR interface",
-+	[SND_MOTU_CLOCK_SOURCE_WORD_ON_BNC] = "Word clock on BNC interface",
-+};
++#define	CALLBACK_TIMEOUT	200
 +
-+static void proc_read_clock(struct snd_info_entry *entry,
-+			    struct snd_info_buffer *buffer)
++#define ISOC_COMM_CONTROL_OFFSET		0x0b00
++#define  ISOC_COMM_CONTROL_MASK			0xffff0000
++#define  CHANGE_RX_ISOC_COMM_STATE		0x80000000
++#define  RX_ISOC_COMM_IS_ACTIVATED		0x40000000
++#define  RX_ISOC_COMM_CHANNEL_MASK		0x3f000000
++#define  RX_ISOC_COMM_CHANNEL_SHIFT		24
++#define  CHANGE_TX_ISOC_COMM_STATE		0x00800000
++#define  TX_ISOC_COMM_IS_ACTIVATED		0x00400000
++#define  TX_ISOC_COMM_CHANNEL_MASK		0x003f0000
++#define  TX_ISOC_COMM_CHANNEL_SHIFT		16
++
++#define PACKET_FORMAT_OFFSET			0x0b10
++#define  TX_PACKET_EXCLUDE_DIFFERED_DATA_CHUNKS	0x00000080
++#define  RX_PACKET_EXCLUDE_DIFFERED_DATA_CHUNKS	0x00000040
++#define  TX_PACKET_TRANSMISSION_SPEED_MASK	0x0000000f
++
++static int start_both_streams(struct snd_motu *motu, unsigned int rate)
 +{
++	__be32 reg;
++	u32 data;
++	int err;
 +
-+	struct snd_motu *motu = entry->private_data;
-+	const struct snd_motu_protocol *const protocol = motu->spec->protocol;
-+	unsigned int rate;
-+	enum snd_motu_clock_source source;
++	/* Set packet formation to our packet streaming engine. */
++	err = amdtp_motu_set_parameters(&motu->rx_stream, rate,
++					&motu->rx_packet_formats);
++	if (err < 0)
++		return err;
 +
-+	if (protocol->get_clock_rate(motu, &rate) < 0)
-+		return;
-+	if (protocol->get_clock_source(motu, &source) < 0)
-+		return;
++	err = amdtp_motu_set_parameters(&motu->tx_stream, rate,
++					&motu->tx_packet_formats);
++	if (err < 0)
++		return err;
 +
-+	snd_iprintf(buffer, "Rate:\t%d\n", rate);
-+	snd_iprintf(buffer, "Source:\t%s\n", clock_names[source]);
++
++	/* Get isochronous resources on the bus. */
++	err = fw_iso_resources_allocate(&motu->rx_resources,
++				amdtp_stream_get_max_payload(&motu->rx_stream),
++				fw_parent_device(motu->unit)->max_speed);
++	if (err < 0)
++		return err;
++
++	err = fw_iso_resources_allocate(&motu->tx_resources,
++				amdtp_stream_get_max_payload(&motu->tx_stream),
++				fw_parent_device(motu->unit)->max_speed);
++	if (err < 0)
++		return err;
++
++	/* Configure the unit to start isochronous communication. */
++	err = snd_motu_transaction_read(motu, ISOC_COMM_CONTROL_OFFSET, &reg,
++					sizeof(reg));
++	if (err < 0)
++		return err;
++	data = be32_to_cpu(reg) & ~ISOC_COMM_CONTROL_MASK;
++
++	data |= CHANGE_RX_ISOC_COMM_STATE | RX_ISOC_COMM_IS_ACTIVATED |
++		(motu->rx_resources.channel << RX_ISOC_COMM_CHANNEL_SHIFT) |
++		CHANGE_TX_ISOC_COMM_STATE | TX_ISOC_COMM_IS_ACTIVATED |
++		(motu->tx_resources.channel << TX_ISOC_COMM_CHANNEL_SHIFT);
++
++	reg = cpu_to_be32(data);
++	return snd_motu_transaction_write(motu, ISOC_COMM_CONTROL_OFFSET, &reg,
++					  sizeof(reg));
 +}
 +
-+static void proc_read_format(struct snd_info_entry *entry,
-+			     struct snd_info_buffer *buffer)
++static void stop_both_streams(struct snd_motu *motu)
 +{
-+	struct snd_motu *motu = entry->private_data;
-+	const struct snd_motu_protocol *const protocol = motu->spec->protocol;
-+	unsigned int mode;
-+	struct snd_motu_packet_format *formats;
-+	int i;
++	__be32 reg;
++	u32 data;
++	int err;
 +
-+	if (protocol->cache_packet_formats(motu) < 0)
++	err = motu->spec->protocol->switch_fetching_mode(motu, false);
++	if (err < 0)
 +		return;
 +
-+	snd_iprintf(buffer, "tx:\tmsg\tfixed\tdiffered\n");
-+	for (i = 0; i < SND_MOTU_CLOCK_RATE_COUNT; ++i) {
-+		mode = i >> 1;
++	err = snd_motu_transaction_read(motu, ISOC_COMM_CONTROL_OFFSET, &reg,
++					sizeof(reg));
++	if (err < 0)
++		return;
++	data = be32_to_cpu(reg);
 +
-+		formats = &motu->tx_packet_formats;
-+		snd_iprintf(buffer,
-+			    "%u:\t%u\t%u\t%u\n",
-+			    snd_motu_clock_rates[i],
-+			    formats->msg_chunks,
-+			    formats->fixed_part_pcm_chunks[mode],
-+			    formats->differed_part_pcm_chunks[mode]);
++	data &= ~(RX_ISOC_COMM_IS_ACTIVATED | TX_ISOC_COMM_IS_ACTIVATED);
++	data |= CHANGE_RX_ISOC_COMM_STATE | CHANGE_TX_ISOC_COMM_STATE;
++
++	reg = cpu_to_be32(data);
++	snd_motu_transaction_write(motu, ISOC_COMM_CONTROL_OFFSET, &reg,
++				   sizeof(reg));
++
++	fw_iso_resources_free(&motu->tx_resources);
++	fw_iso_resources_free(&motu->rx_resources);
++}
++
++static int start_isoc_ctx(struct snd_motu *motu, struct amdtp_stream *stream)
++{
++	struct fw_iso_resources *resources;
++	int err;
++
++	if (stream == &motu->rx_stream)
++		resources = &motu->rx_resources;
++	else
++		resources = &motu->tx_resources;
++
++	err = amdtp_stream_start(stream, resources->channel,
++				 fw_parent_device(motu->unit)->max_speed);
++	if (err < 0)
++		return err;
++
++	if (!amdtp_stream_wait_callback(stream, CALLBACK_TIMEOUT)) {
++		amdtp_stream_stop(stream);
++		fw_iso_resources_free(resources);
++		return -ETIMEDOUT;
 +	}
 +
-+	snd_iprintf(buffer, "rx:\tmsg\tfixed\tdiffered\n");
-+	for (i = 0; i < SND_MOTU_CLOCK_RATE_COUNT; ++i) {
-+		mode = i >> 1;
++	return 0;
++}
 +
-+		formats = &motu->rx_packet_formats;
-+		snd_iprintf(buffer,
-+			    "%u:\t%u\t%u\t%u\n",
-+			    snd_motu_clock_rates[i],
-+			    formats->msg_chunks,
-+			    formats->fixed_part_pcm_chunks[mode],
-+			    formats->differed_part_pcm_chunks[mode]);
++static void stop_isoc_ctx(struct snd_motu *motu, struct amdtp_stream *stream)
++{
++	struct fw_iso_resources *resources;
++
++	if (stream == &motu->rx_stream)
++		resources = &motu->rx_resources;
++	else
++		resources = &motu->tx_resources;
++
++	amdtp_stream_stop(stream);
++	fw_iso_resources_free(resources);
++}
++
++static int ensure_packet_formats(struct snd_motu *motu)
++{
++	__be32 reg;
++	u32 data;
++	int err;
++
++	err = snd_motu_transaction_read(motu, PACKET_FORMAT_OFFSET, &reg,
++					sizeof(reg));
++	if (err < 0)
++		return err;
++	data = be32_to_cpu(reg);
++
++	data &= ~(TX_PACKET_EXCLUDE_DIFFERED_DATA_CHUNKS |
++		  RX_PACKET_EXCLUDE_DIFFERED_DATA_CHUNKS|
++		  TX_PACKET_TRANSMISSION_SPEED_MASK);
++	if (motu->tx_packet_formats.differed_part_pcm_chunks[0] == 0)
++		data |= TX_PACKET_EXCLUDE_DIFFERED_DATA_CHUNKS;
++	if (motu->rx_packet_formats.differed_part_pcm_chunks[0] == 0)
++		data |= RX_PACKET_EXCLUDE_DIFFERED_DATA_CHUNKS;
++	data |= fw_parent_device(motu->unit)->max_speed;
++
++	reg = cpu_to_be32(data);
++	return snd_motu_transaction_write(motu, PACKET_FORMAT_OFFSET, &reg,
++					  sizeof(reg));
++}
++
++int snd_motu_stream_start_duplex(struct snd_motu *motu, unsigned int rate)
++{
++	const struct snd_motu_protocol *protocol = motu->spec->protocol;
++	unsigned int curr_rate;
++	int err = 0;
++
++	if (motu->capture_substreams == 0 && motu->playback_substreams == 0)
++		return 0;
++
++	/* Some packet queueing errors. */
++	if (amdtp_streaming_error(&motu->rx_stream) ||
++	    amdtp_streaming_error(&motu->tx_stream)) {
++		amdtp_stream_stop(&motu->rx_stream);
++		amdtp_stream_stop(&motu->tx_stream);
++		stop_both_streams(motu);
++	}
++
++	err = protocol->cache_packet_formats(motu);
++	if (err < 0)
++		return err;
++
++	/* Stop stream if rate is different. */
++	err = protocol->get_clock_rate(motu, &curr_rate);
++	if (err < 0) {
++		dev_err(&motu->unit->device,
++			"fail to get sampling rate: %d\n", err);
++		return err;
++	}
++	if (rate == 0)
++		rate = curr_rate;
++	if (rate != curr_rate) {
++		amdtp_stream_stop(&motu->rx_stream);
++		amdtp_stream_stop(&motu->tx_stream);
++		stop_both_streams(motu);
++	}
++
++	if (!amdtp_stream_running(&motu->rx_stream)) {
++		err = protocol->set_clock_rate(motu, rate);
++		if (err < 0) {
++			dev_err(&motu->unit->device,
++				"fail to set sampling rate: %d\n", err);
++			return err;
++		}
++
++		err = ensure_packet_formats(motu);
++		if (err < 0)
++			return err;
++
++		err = start_both_streams(motu, rate);
++		if (err < 0) {
++			dev_err(&motu->unit->device,
++				"fail to start isochronous comm: %d\n", err);
++			stop_both_streams(motu);
++			return err;
++		}
++
++		err = start_isoc_ctx(motu, &motu->rx_stream);
++		if (err < 0) {
++			dev_err(&motu->unit->device,
++				"fail to start IT context: %d\n", err);
++			stop_both_streams(motu);
++			return err;
++		}
++
++		err = protocol->switch_fetching_mode(motu, true);
++		if (err < 0) {
++			dev_err(&motu->unit->device,
++				"fail to enable frame fetching: %d\n", err);
++			stop_both_streams(motu);
++			return err;
++		}
++	}
++
++	if (!amdtp_stream_running(&motu->tx_stream) &&
++	    motu->capture_substreams > 0) {
++		err = start_isoc_ctx(motu, &motu->tx_stream);
++		if (err < 0) {
++			dev_err(&motu->unit->device,
++				"fail to start IR context: %d", err);
++			amdtp_stream_stop(&motu->rx_stream);
++			stop_both_streams(motu);
++			return err;
++		}
++	}
++
++	return 0;
++}
++
++void snd_motu_stream_stop_duplex(struct snd_motu *motu)
++{
++	if (motu->capture_substreams == 0) {
++		if (amdtp_stream_running(&motu->tx_stream))
++			stop_isoc_ctx(motu, &motu->tx_stream);
++
++		if (motu->playback_substreams == 0) {
++			if (amdtp_stream_running(&motu->rx_stream))
++				stop_isoc_ctx(motu, &motu->rx_stream);
++			stop_both_streams(motu);
++		}
 +	}
 +}
 +
-+static void add_node(struct snd_motu *motu, struct snd_info_entry *root,
-+		     const char *name,
-+		     void (*op)(struct snd_info_entry *e,
-+				struct snd_info_buffer *b))
++static int init_stream(struct snd_motu *motu, enum amdtp_stream_direction dir)
 +{
-+	struct snd_info_entry *entry;
++	int err;
++	struct amdtp_stream *stream;
++	struct fw_iso_resources *resources;
 +
-+	entry = snd_info_create_card_entry(motu->card, name, root);
-+	if (entry == NULL)
-+		return;
-+
-+	snd_info_set_text_ops(entry, motu, op);
-+	if (snd_info_register(entry) < 0)
-+		snd_info_free_entry(entry);
-+}
-+
-+void snd_motu_proc_init(struct snd_motu *motu)
-+{
-+	struct snd_info_entry *root;
-+
-+	/*
-+	 * All nodes are automatically removed at snd_card_disconnect(),
-+	 * by following to link list.
-+	 */
-+	root = snd_info_create_card_entry(motu->card, "firewire",
-+					  motu->card->proc_root);
-+	if (root == NULL)
-+		return;
-+	root->mode = S_IFDIR | S_IRUGO | S_IXUGO;
-+	if (snd_info_register(root) < 0) {
-+		snd_info_free_entry(root);
-+		return;
++	if (dir == AMDTP_IN_STREAM) {
++		stream = &motu->tx_stream;
++		resources = &motu->tx_resources;
++	} else {
++		stream = &motu->rx_stream;
++		resources = &motu->rx_resources;
 +	}
 +
-+	add_node(motu, root, "clock", proc_read_clock);
-+	add_node(motu, root, "format", proc_read_format);
++	err = fw_iso_resources_init(resources, motu->unit);
++	if (err < 0)
++		return err;
++
++	err = amdtp_motu_init(stream, motu->unit, dir, motu->spec->protocol);
++	if (err < 0) {
++		amdtp_stream_destroy(stream);
++		fw_iso_resources_destroy(resources);
++	}
++
++	return err;
++}
++
++static void destroy_stream(struct snd_motu *motu,
++			   enum amdtp_stream_direction dir)
++{
++	struct amdtp_stream *stream;
++	struct fw_iso_resources *resources;
++
++	if (dir == AMDTP_IN_STREAM) {
++		stream = &motu->tx_stream;
++		resources = &motu->tx_resources;
++	} else {
++		stream = &motu->rx_stream;
++		resources = &motu->rx_resources;
++	}
++
++	amdtp_stream_destroy(stream);
++	fw_iso_resources_free(resources);
++}
++
++int snd_motu_stream_init_duplex(struct snd_motu *motu)
++{
++	int err;
++
++	err = init_stream(motu, AMDTP_IN_STREAM);
++	if (err < 0)
++		return err;
++
++	err = init_stream(motu, AMDTP_OUT_STREAM);
++	if (err < 0)
++		destroy_stream(motu, AMDTP_IN_STREAM);
++
++	return err;
++}
++
++/*
++ * This function should be called before starting streams or after stopping
++ * streams.
++ */
++void snd_motu_stream_destroy_duplex(struct snd_motu *motu)
++{
++	destroy_stream(motu, AMDTP_IN_STREAM);
++	destroy_stream(motu, AMDTP_OUT_STREAM);
++
++	motu->playback_substreams = 0;
++	motu->capture_substreams = 0;
 +}
 diff --git a/sound/firewire/motu/motu.c b/sound/firewire/motu/motu.c
-index 9d52238..cbf4ed0 100644
+index db6014c..9d52238 100644
 --- a/sound/firewire/motu/motu.c
 +++ b/sound/firewire/motu/motu.c
-@@ -97,6 +97,8 @@ static void do_registration(struct work_struct *work)
+@@ -56,6 +56,7 @@ static void motu_free(struct snd_motu *motu)
+ {
+ 	snd_motu_transaction_unregister(motu);
+ 
++	snd_motu_stream_destroy_duplex(motu);
+ 	fw_unit_put(motu->unit);
+ 
+ 	mutex_destroy(&motu->mutex);
+@@ -92,6 +93,10 @@ static void do_registration(struct work_struct *work)
  	if (err < 0)
  		goto error;
  
-+	snd_motu_proc_init(motu);
++	err = snd_motu_stream_init_duplex(motu);
++	if (err < 0)
++		goto error;
 +
  	err = snd_card_register(motu->card);
  	if (err < 0)
  		goto error;
 diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
-index 90d2741..4d079d6 100644
+index ed1d779..90d2741 100644
 --- a/sound/firewire/motu/motu.h
 +++ b/sound/firewire/motu/motu.h
-@@ -20,6 +20,7 @@
- #include <sound/control.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
-+#include <sound/info.h>
+@@ -23,6 +23,7 @@
  
  #include "../lib.h"
  #include "../amdtp-stream.h"
-@@ -128,4 +129,6 @@ int snd_motu_stream_init_duplex(struct snd_motu *motu);
- void snd_motu_stream_destroy_duplex(struct snd_motu *motu);
- int snd_motu_stream_start_duplex(struct snd_motu *motu, unsigned int rate);
- void snd_motu_stream_stop_duplex(struct snd_motu *motu);
++#include "../iso-resources.h"
+ 
+ struct snd_motu_packet_format {
+ 	unsigned char pcm_byte_offset;
+@@ -48,6 +49,10 @@ struct snd_motu {
+ 	struct snd_motu_packet_format rx_packet_formats;
+ 	struct amdtp_stream tx_stream;
+ 	struct amdtp_stream rx_stream;
++	struct fw_iso_resources tx_resources;
++	struct fw_iso_resources rx_resources;
++	unsigned int capture_substreams;
++	unsigned int playback_substreams;
+ 
+ 	/* For notification. */
+ 	struct fw_address_handler async_handler;
+@@ -118,4 +123,9 @@ int snd_motu_transaction_write(struct snd_motu *motu, u32 offset, __be32 *reg,
+ int snd_motu_transaction_register(struct snd_motu *motu);
+ int snd_motu_transaction_reregister(struct snd_motu *motu);
+ void snd_motu_transaction_unregister(struct snd_motu *motu);
 +
-+void snd_motu_proc_init(struct snd_motu *motu);
++int snd_motu_stream_init_duplex(struct snd_motu *motu);
++void snd_motu_stream_destroy_duplex(struct snd_motu *motu);
++int snd_motu_stream_start_duplex(struct snd_motu *motu, unsigned int rate);
++void snd_motu_stream_stop_duplex(struct snd_motu *motu);
  #endif
 -- 
 2.9.3
