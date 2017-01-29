@@ -1,15 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 14/19] firewire-motu: add hwdep interface
-Date: Sun, 29 Jan 2017 12:54:12 +0900
-Message-ID: <20170129035417.2095-15-o-takashi@sakamocchi.jp>
+Subject: [PATCH 15/19] firewire-motu: enable to read
+	transaction cache via hwdep interface
+Date: Sun, 29 Jan 2017 12:54:13 +0900
+Message-ID: <20170129035417.2095-16-o-takashi@sakamocchi.jp>
 References: <20170129035417.2095-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 8A92E266A5B
- for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2017 04:54:26 +0100 (CET)
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 0956D2669E2
+ for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2017 04:54:28 +0100 (CET)
 In-Reply-To: <20170129035417.2095-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,503 +25,119 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds hwdep interface so as the other sound drivers for units
-on IEEE 1394 bus have.
+MOTU FireWire series can transfer messages to registered address. These
+messages are transferred for the status of internal clock synchronization
+just after starting streams.
 
-This interface is designed for mixer/control applications. By using this
-interface, an application can get information about firewire node, can
-lock/unlock kernel streaming and can get notification at starting/stopping
-kernel streaming.
+When the synchronization is stable, it's 0x01ffffff. Else, it's 0x05ffffff.
+
+This commit adds a functionality to receive the message. Currently, the
+received message are output to system logging.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/uapi/sound/asound.h       |   3 +-
- include/uapi/sound/firewire.h     |   3 +-
- sound/firewire/motu/Makefile      |   2 +-
- sound/firewire/motu/motu-hwdep.c  | 192 ++++++++++++++++++++++++++++++++++++++
- sound/firewire/motu/motu-midi.c   |  16 ++++
- sound/firewire/motu/motu-pcm.c    |  20 +++-
- sound/firewire/motu/motu-stream.c |  38 ++++++++
- sound/firewire/motu/motu.c        |   5 +
- sound/firewire/motu/motu.h        |  12 +++
- 9 files changed, 284 insertions(+), 7 deletions(-)
- create mode 100644 sound/firewire/motu/motu-hwdep.c
+ include/uapi/sound/firewire.h          |  7 +++++++
+ sound/firewire/motu/motu-hwdep.c       | 10 ++++++++--
+ sound/firewire/motu/motu-transaction.c | 20 ++++++++++++++++++++
+ 3 files changed, 35 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index be353a7..fd7b561 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -107,9 +107,10 @@ enum {
- 	SNDRV_HWDEP_IFACE_FW_DIGI00X,	/* Digidesign Digi 002/003 family */
- 	SNDRV_HWDEP_IFACE_FW_TASCAM,	/* TASCAM FireWire series */
- 	SNDRV_HWDEP_IFACE_LINE6,	/* Line6 USB processors */
-+	SNDRV_HWDEP_IFACE_FW_MOTU,	/* MOTU FireWire series */
- 
- 	/* Don't forget to change the following: */
--	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_LINE6
-+	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_MOTU
- };
- 
- struct snd_hwdep_info {
 diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
-index db79a12..59c6d81 100644
+index 59c6d81..29afc5e 100644
 --- a/include/uapi/sound/firewire.h
 +++ b/include/uapi/sound/firewire.h
-@@ -65,7 +65,8 @@ union snd_firewire_event {
- #define SNDRV_FIREWIRE_TYPE_OXFW	4
- #define SNDRV_FIREWIRE_TYPE_DIGI00X	5
- #define SNDRV_FIREWIRE_TYPE_TASCAM	6
--/* RME, MOTU, ... */
-+#define SNDRV_FIREWIRE_TYPE_MOTU	7
-+/* RME... */
+@@ -10,6 +10,7 @@
+ #define SNDRV_FIREWIRE_EVENT_DICE_NOTIFICATION	0xd1ce004e
+ #define SNDRV_FIREWIRE_EVENT_EFW_RESPONSE	0x4e617475
+ #define SNDRV_FIREWIRE_EVENT_DIGI00X_MESSAGE	0x746e736c
++#define SNDRV_FIREWIRE_EVENT_MOTU_NOTIFICATION	0x64776479
  
- struct snd_firewire_get_info {
- 	unsigned int type; /* SNDRV_FIREWIRE_TYPE_xxx */
-diff --git a/sound/firewire/motu/Makefile b/sound/firewire/motu/Makefile
-index a512c1e..cc195d5 100644
---- a/sound/firewire/motu/Makefile
-+++ b/sound/firewire/motu/Makefile
-@@ -1,3 +1,3 @@
- snd-firewire-motu-objs := motu.o amdtp-motu.o motu-transaction.o motu-stream.o \
--			  motu-proc.o motu-pcm.o motu-midi.o
-+			  motu-proc.o motu-pcm.o motu-midi.o motu-hwdep.o
- obj-$(CONFIG_SND_FIREWIRE_MOTU) += snd-firewire-motu.o
-diff --git a/sound/firewire/motu/motu-hwdep.c b/sound/firewire/motu/motu-hwdep.c
-new file mode 100644
-index 0000000..e795a52
---- /dev/null
-+++ b/sound/firewire/motu/motu-hwdep.c
-@@ -0,0 +1,192 @@
-+/*
-+ * motu-hwdep.c - a part of driver for MOTU FireWire series
-+ *
-+ * Copyright (c) 2015-2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+/*
-+ * This codes have five functionalities.
-+ *
-+ * 1.get information about firewire node
-+ * 2.get notification about starting/stopping stream
-+ * 3.lock/unlock streaming
-+ *
-+ */
-+
-+#include "motu.h"
-+
-+static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
-+		       loff_t *offset)
-+{
-+	struct snd_motu *motu = hwdep->private_data;
-+	DEFINE_WAIT(wait);
-+	union snd_firewire_event event;
-+
-+	spin_lock_irq(&motu->lock);
-+
-+	while (!motu->dev_lock_changed) {
-+		prepare_to_wait(&motu->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
-+		spin_unlock_irq(&motu->lock);
-+		schedule();
-+		finish_wait(&motu->hwdep_wait, &wait);
-+		if (signal_pending(current))
-+			return -ERESTARTSYS;
-+		spin_lock_irq(&motu->lock);
-+	}
-+
-+	memset(&event, 0, sizeof(event));
-+	if (motu->dev_lock_changed) {
-+		event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
-+		event.lock_status.status = (motu->dev_lock_count > 0);
-+		motu->dev_lock_changed = false;
-+
-+		count = min_t(long, count, sizeof(event.lock_status));
-+	}
-+
-+	spin_unlock_irq(&motu->lock);
-+
-+	if (copy_to_user(buf, &event, count))
-+		return -EFAULT;
-+
-+	return count;
-+}
-+
-+static unsigned int hwdep_poll(struct snd_hwdep *hwdep, struct file *file,
-+			       poll_table *wait)
-+{
-+	struct snd_motu *motu = hwdep->private_data;
-+	unsigned int events;
-+
-+	poll_wait(file, &motu->hwdep_wait, wait);
-+
-+	spin_lock_irq(&motu->lock);
-+	if (motu->dev_lock_changed)
-+		events = POLLIN | POLLRDNORM;
-+	else
-+		events = 0;
-+	spin_unlock_irq(&motu->lock);
-+
-+	return events | POLLOUT;
-+}
-+
-+static int hwdep_get_info(struct snd_motu *motu, void __user *arg)
-+{
-+	struct fw_device *dev = fw_parent_device(motu->unit);
-+	struct snd_firewire_get_info info;
-+
-+	memset(&info, 0, sizeof(info));
-+	info.type = SNDRV_FIREWIRE_TYPE_MOTU;
-+	info.card = dev->card->index;
-+	*(__be32 *)&info.guid[0] = cpu_to_be32(dev->config_rom[3]);
-+	*(__be32 *)&info.guid[4] = cpu_to_be32(dev->config_rom[4]);
-+	strlcpy(info.device_name, dev_name(&dev->device),
-+		sizeof(info.device_name));
-+
-+	if (copy_to_user(arg, &info, sizeof(info)))
-+		return -EFAULT;
-+
-+	return 0;
-+}
-+
-+static int hwdep_lock(struct snd_motu *motu)
-+{
-+	int err;
-+
-+	spin_lock_irq(&motu->lock);
-+
-+	if (motu->dev_lock_count == 0) {
-+		motu->dev_lock_count = -1;
-+		err = 0;
-+	} else {
-+		err = -EBUSY;
-+	}
-+
-+	spin_unlock_irq(&motu->lock);
-+
-+	return err;
-+}
-+
-+static int hwdep_unlock(struct snd_motu *motu)
-+{
-+	int err;
-+
-+	spin_lock_irq(&motu->lock);
-+
-+	if (motu->dev_lock_count == -1) {
-+		motu->dev_lock_count = 0;
-+		err = 0;
-+	} else {
-+		err = -EBADFD;
-+	}
-+
-+	spin_unlock_irq(&motu->lock);
-+
-+	return err;
-+}
-+
-+static int hwdep_release(struct snd_hwdep *hwdep, struct file *file)
-+{
-+	struct snd_motu *motu = hwdep->private_data;
-+
-+	spin_lock_irq(&motu->lock);
-+	if (motu->dev_lock_count == -1)
-+		motu->dev_lock_count = 0;
-+	spin_unlock_irq(&motu->lock);
-+
-+	return 0;
-+}
-+
-+static int hwdep_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+	    unsigned int cmd, unsigned long arg)
-+{
-+	struct snd_motu *motu = hwdep->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_FIREWIRE_IOCTL_GET_INFO:
-+		return hwdep_get_info(motu, (void __user *)arg);
-+	case SNDRV_FIREWIRE_IOCTL_LOCK:
-+		return hwdep_lock(motu);
-+	case SNDRV_FIREWIRE_IOCTL_UNLOCK:
-+		return hwdep_unlock(motu);
-+	default:
-+		return -ENOIOCTLCMD;
-+	}
-+}
-+
-+#ifdef CONFIG_COMPAT
-+static int hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+			      unsigned int cmd, unsigned long arg)
-+{
-+	return hwdep_ioctl(hwdep, file, cmd,
-+			   (unsigned long)compat_ptr(arg));
-+}
-+#else
-+#define hwdep_compat_ioctl NULL
-+#endif
-+
-+int snd_motu_create_hwdep_device(struct snd_motu *motu)
-+{
-+	static const struct snd_hwdep_ops ops = {
-+		.read		= hwdep_read,
-+		.release	= hwdep_release,
-+		.poll		= hwdep_poll,
-+		.ioctl		= hwdep_ioctl,
-+		.ioctl_compat	= hwdep_compat_ioctl,
-+	};
-+	struct snd_hwdep *hwdep;
-+	int err;
-+
-+	err = snd_hwdep_new(motu->card, motu->card->driver, 0, &hwdep);
-+	if (err < 0)
-+		return err;
-+
-+	strcpy(hwdep->name, "MOTU");
-+	hwdep->iface = SNDRV_HWDEP_IFACE_FW_MOTU;
-+	hwdep->ops = ops;
-+	hwdep->private_data = motu;
-+	hwdep->exclusive = true;
-+
-+	return 0;
-+}
-diff --git a/sound/firewire/motu/motu-midi.c b/sound/firewire/motu/motu-midi.c
-index f232f29..e3acfcc 100644
---- a/sound/firewire/motu/motu-midi.c
-+++ b/sound/firewire/motu/motu-midi.c
-@@ -12,6 +12,10 @@ static int midi_capture_open(struct snd_rawmidi_substream *substream)
- 	struct snd_motu *motu = substream->rmidi->private_data;
- 	int err;
- 
-+	err = snd_motu_stream_lock_try(motu);
-+	if (err < 0)
-+		return err;
-+
- 	mutex_lock(&motu->mutex);
- 
- 	motu->capture_substreams++;
-@@ -19,6 +23,9 @@ static int midi_capture_open(struct snd_rawmidi_substream *substream)
- 
- 	mutex_unlock(&motu->mutex);
- 
-+	if (err < 0)
-+		snd_motu_stream_lock_release(motu);
-+
- 	return err;
- }
- 
-@@ -27,6 +34,10 @@ static int midi_playback_open(struct snd_rawmidi_substream *substream)
- 	struct snd_motu *motu = substream->rmidi->private_data;
- 	int err;
- 
-+	err = snd_motu_stream_lock_try(motu);
-+	if (err < 0)
-+		return err;
-+
- 	mutex_lock(&motu->mutex);
- 
- 	motu->playback_substreams++;
-@@ -34,6 +45,9 @@ static int midi_playback_open(struct snd_rawmidi_substream *substream)
- 
- 	mutex_unlock(&motu->mutex);
- 
-+	if (err < 0)
-+		snd_motu_stream_lock_release(motu);
-+
- 	return err;
- }
- 
-@@ -48,6 +62,7 @@ static int midi_capture_close(struct snd_rawmidi_substream *substream)
- 
- 	mutex_unlock(&motu->mutex);
- 
-+	snd_motu_stream_lock_release(motu);
- 	return 0;
- }
- 
-@@ -62,6 +77,7 @@ static int midi_playback_close(struct snd_rawmidi_substream *substream)
- 
- 	mutex_unlock(&motu->mutex);
- 
-+	snd_motu_stream_lock_release(motu);
- 	return 0;
- }
- 
-diff --git a/sound/firewire/motu/motu-pcm.c b/sound/firewire/motu/motu-pcm.c
-index a50bcd6..94558f3 100644
---- a/sound/firewire/motu/motu-pcm.c
-+++ b/sound/firewire/motu/motu-pcm.c
-@@ -159,15 +159,19 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	unsigned int rate;
- 	int err;
- 
-+	err = snd_motu_stream_lock_try(motu);
-+	if (err < 0)
-+		return err;
-+
- 	mutex_lock(&motu->mutex);
- 
- 	err = protocol->cache_packet_formats(motu);
- 	if (err < 0)
--		return err;
-+		goto err_locked;
- 
- 	err = init_hw_info(motu, substream);
- 	if (err < 0)
--		return err;
-+		goto err_locked;
- 
- 	/*
- 	 * When source of clock is not internal or any PCM streams are running,
-@@ -175,13 +179,13 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	 */
- 	err = protocol->get_clock_source(motu, &src);
- 	if (err < 0)
--		return err;
-+		goto err_locked;
- 	if (src != SND_MOTU_CLOCK_SOURCE_INTERNAL ||
- 	    amdtp_stream_pcm_running(&motu->tx_stream) ||
- 	    amdtp_stream_pcm_running(&motu->rx_stream)) {
- 		err = protocol->get_clock_rate(motu, &rate);
- 		if (err < 0)
--			return err;
-+			goto err_locked;
- 		substream->runtime->hw.rate_min = rate;
- 		substream->runtime->hw.rate_max = rate;
- 	}
-@@ -191,10 +195,18 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	mutex_unlock(&motu->mutex);
- 
- 	return err;
-+err_locked:
-+	mutex_unlock(&motu->mutex);
-+	snd_motu_stream_lock_release(motu);
-+	return err;
- }
- 
- static int pcm_close(struct snd_pcm_substream *substream)
- {
-+	struct snd_motu *motu = substream->private_data;
-+
-+	snd_motu_stream_lock_release(motu);
-+
- 	return 0;
- }
- 
-diff --git a/sound/firewire/motu/motu-stream.c b/sound/firewire/motu/motu-stream.c
-index 911d348..bd45802 100644
---- a/sound/firewire/motu/motu-stream.c
-+++ b/sound/firewire/motu/motu-stream.c
-@@ -341,3 +341,41 @@ void snd_motu_stream_destroy_duplex(struct snd_motu *motu)
- 	motu->playback_substreams = 0;
- 	motu->capture_substreams = 0;
- }
-+
-+static void motu_lock_changed(struct snd_motu *motu)
-+{
-+	motu->dev_lock_changed = true;
-+	wake_up(&motu->hwdep_wait);
-+}
-+
-+int snd_motu_stream_lock_try(struct snd_motu *motu)
-+{
-+	int err;
-+
-+	spin_lock_irq(&motu->lock);
-+
-+	if (motu->dev_lock_count < 0) {
-+		err = -EBUSY;
-+		goto out;
-+	}
-+
-+	if (motu->dev_lock_count++ == 0)
-+		motu_lock_changed(motu);
-+	err = 0;
-+out:
-+	spin_unlock_irq(&motu->lock);
-+	return err;
-+}
-+
-+void snd_motu_stream_lock_release(struct snd_motu *motu)
-+{
-+	spin_lock_irq(&motu->lock);
-+
-+	if (WARN_ON(motu->dev_lock_count <= 0))
-+		goto out;
-+
-+	if (--motu->dev_lock_count == 0)
-+		motu_lock_changed(motu);
-+out:
-+	spin_unlock_irq(&motu->lock);
-+}
-diff --git a/sound/firewire/motu/motu.c b/sound/firewire/motu/motu.c
-index d4da137..619554b 100644
---- a/sound/firewire/motu/motu.c
-+++ b/sound/firewire/motu/motu.c
-@@ -109,6 +109,10 @@ static void do_registration(struct work_struct *work)
- 			goto error;
- 	}
- 
-+	err = snd_motu_create_hwdep_device(motu);
-+	if (err < 0)
-+		goto error;
-+
- 	err = snd_card_register(motu->card);
- 	if (err < 0)
- 		goto error;
-@@ -145,6 +149,7 @@ static int motu_probe(struct fw_unit *unit,
- 
- 	mutex_init(&motu->mutex);
- 	spin_lock_init(&motu->lock);
-+	init_waitqueue_head(&motu->hwdep_wait);
- 
- 	/* Allocate and register this sound card later. */
- 	INIT_DEFERRABLE_WORK(&motu->dwork, do_registration);
-diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
-index 338b351..407ce09 100644
---- a/sound/firewire/motu/motu.h
-+++ b/sound/firewire/motu/motu.h
-@@ -16,12 +16,15 @@
- #include <linux/mod_devicetable.h>
- #include <linux/mutex.h>
- #include <linux/slab.h>
-+#include <linux/compat.h>
- 
- #include <sound/control.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/info.h>
- #include <sound/rawmidi.h>
-+#include <sound/firewire.h>
-+#include <sound/hwdep.h>
- 
- #include "../lib.h"
- #include "../amdtp-stream.h"
-@@ -62,6 +65,11 @@ struct snd_motu {
- 	/* For notification. */
- 	struct fw_address_handler async_handler;
- 	u32 msg;
-+
-+	/* For uapi */
-+	int dev_lock_count;
-+	bool dev_lock_changed;
-+	wait_queue_head_t hwdep_wait;
+ struct snd_firewire_event_common {
+ 	unsigned int type; /* SNDRV_FIREWIRE_EVENT_xxx */
+@@ -46,12 +47,18 @@ struct snd_firewire_event_digi00x_message {
+ 	__u32 message;	/* Digi00x-specific message */
  };
  
- enum snd_motu_spec_flags {
-@@ -136,10 +144,14 @@ int snd_motu_stream_init_duplex(struct snd_motu *motu);
- void snd_motu_stream_destroy_duplex(struct snd_motu *motu);
- int snd_motu_stream_start_duplex(struct snd_motu *motu, unsigned int rate);
- void snd_motu_stream_stop_duplex(struct snd_motu *motu);
-+int snd_motu_stream_lock_try(struct snd_motu *motu);
-+void snd_motu_stream_lock_release(struct snd_motu *motu);
- 
- void snd_motu_proc_init(struct snd_motu *motu);
- 
- int snd_motu_create_pcm_devices(struct snd_motu *motu);
- 
- int snd_motu_create_midi_devices(struct snd_motu *motu);
++struct snd_firewire_event_motu_notification {
++	unsigned int type;
++	__u32 message;	/* MOTU-specific bits. */
++};
 +
-+int snd_motu_create_hwdep_device(struct snd_motu *motu);
- #endif
+ union snd_firewire_event {
+ 	struct snd_firewire_event_common            common;
+ 	struct snd_firewire_event_lock_status       lock_status;
+ 	struct snd_firewire_event_dice_notification dice_notification;
+ 	struct snd_firewire_event_efw_response      efw_response;
+ 	struct snd_firewire_event_digi00x_message   digi00x_message;
++	struct snd_firewire_event_motu_notification motu_notification;
+ };
+ 
+ 
+diff --git a/sound/firewire/motu/motu-hwdep.c b/sound/firewire/motu/motu-hwdep.c
+index e795a52..b87ccb6 100644
+--- a/sound/firewire/motu/motu-hwdep.c
++++ b/sound/firewire/motu/motu-hwdep.c
+@@ -26,7 +26,7 @@ static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
+ 
+ 	spin_lock_irq(&motu->lock);
+ 
+-	while (!motu->dev_lock_changed) {
++	while (!motu->dev_lock_changed && motu->msg == 0) {
+ 		prepare_to_wait(&motu->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
+ 		spin_unlock_irq(&motu->lock);
+ 		schedule();
+@@ -43,6 +43,12 @@ static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
+ 		motu->dev_lock_changed = false;
+ 
+ 		count = min_t(long, count, sizeof(event.lock_status));
++	} else {
++		event.motu_notification.type = SNDRV_FIREWIRE_EVENT_MOTU_NOTIFICATION;
++		event.motu_notification.message = motu->msg;
++		motu->msg = 0;
++
++		count = min_t(long, count, sizeof(event.motu_notification));
+ 	}
+ 
+ 	spin_unlock_irq(&motu->lock);
+@@ -62,7 +68,7 @@ static unsigned int hwdep_poll(struct snd_hwdep *hwdep, struct file *file,
+ 	poll_wait(file, &motu->hwdep_wait, wait);
+ 
+ 	spin_lock_irq(&motu->lock);
+-	if (motu->dev_lock_changed)
++	if (motu->dev_lock_changed || motu->msg)
+ 		events = POLLIN | POLLRDNORM;
+ 	else
+ 		events = 0;
+diff --git a/sound/firewire/motu/motu-transaction.c b/sound/firewire/motu/motu-transaction.c
+index 416dd98..7fc3009 100644
+--- a/sound/firewire/motu/motu-transaction.c
++++ b/sound/firewire/motu/motu-transaction.c
+@@ -50,7 +50,27 @@ static void handle_message(struct fw_card *card, struct fw_request *request,
+ 			   int generation, unsigned long long offset,
+ 			   void *data, size_t length, void *callback_data)
+ {
++	struct snd_motu *motu = callback_data;
++	__be32 *buf = (__be32 *)data;
++	unsigned long flags;
++
++	if (tcode != TCODE_WRITE_QUADLET_REQUEST) {
++		fw_send_response(card, request, RCODE_COMPLETE);
++		return;
++	}
++
++	if (offset != motu->async_handler.offset || length != 4) {
++		fw_send_response(card, request, RCODE_ADDRESS_ERROR);
++		return;
++	}
++
++	spin_lock_irqsave(&motu->lock, flags);
++	motu->msg = be32_to_cpu(*buf);
++	spin_unlock_irqrestore(&motu->lock, flags);
++
+ 	fw_send_response(card, request, RCODE_COMPLETE);
++
++	wake_up(&motu->hwdep_wait);
+ }
+ 
+ int snd_motu_transaction_reregister(struct snd_motu *motu)
 -- 
 2.9.3
