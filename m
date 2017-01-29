@@ -1,17 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 03/19] firewire-motu: add a structure for
-	model-dependent parameters.
-Date: Sun, 29 Jan 2017 12:54:01 +0900
-Message-ID: <20170129035417.2095-4-o-takashi@sakamocchi.jp>
-References: <20170129035417.2095-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH 00/19][RFC v2] ALSA: firewire-motu: new driver
+	for MOTU FireWire series
+Date: Sun, 29 Jan 2017 12:53:58 +0900
+Message-ID: <20170129035417.2095-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id B41482669E2
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id B42472669F3
  for <alsa-devel@alsa-project.org>; Sun, 29 Jan 2017 04:54:23 +0100 (CET)
-In-Reply-To: <20170129035417.2095-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,80 +23,98 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-MOTU FireWire series doesn't tell drivers their capabilities, thus
-the drivers should have model-dependent parameters and apply it to
-detected models.
+Hi,
 
-This commit adds a structure to represent such parameters. Capabilities
-are represented by enumeration except for the number of analog line
-in/out. Identification name also be in the structure because the units has
-no registers for this purpose.
+This patchset updates a part of my previous RFC, just for MOTU FireWire series.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/motu/motu.c |  7 +++++--
- sound/firewire/motu/motu.h | 23 +++++++++++++++++++++++
- 2 files changed, 28 insertions(+), 2 deletions(-)
+[RFC][PATCH 00/37] ALSA: firewire: support AMDTP variants
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-July/094789.html
 
-diff --git a/sound/firewire/motu/motu.c b/sound/firewire/motu/motu.c
-index d6ce4f3..e69aa7b 100644
---- a/sound/firewire/motu/motu.c
-+++ b/sound/firewire/motu/motu.c
-@@ -31,9 +31,11 @@ static void name_card(struct snd_motu *motu)
- 	}
- 
- 	strcpy(motu->card->driver, "FW-MOTU");
-+	strcpy(motu->card->shortname, motu->spec->name);
-+	strcpy(motu->card->mixername, motu->spec->name);
- 	snprintf(motu->card->longname, sizeof(motu->card->longname),
--		 "MOTU (version:%d), GUID %08x%08x at %s, S%d",
--		 version,
-+		 "MOTU %s (version:%d), GUID %08x%08x at %s, S%d",
-+		 motu->spec->name, version,
- 		 fw_dev->config_rom[3], fw_dev->config_rom[4],
- 		 dev_name(&motu->unit->device), 100 << fw_dev->max_speed);
- }
-@@ -101,6 +103,7 @@ static int motu_probe(struct fw_unit *unit,
- 	if (motu == NULL)
- 		return -ENOMEM;
- 
-+	motu->spec = (const struct snd_motu_spec *)entry->driver_data;
- 	motu->unit = fw_unit_get(unit);
- 	dev_set_drvdata(&unit->device, motu);
- 
-diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
-index eb0ffd5..cb7324d 100644
---- a/sound/firewire/motu/motu.h
-+++ b/sound/firewire/motu/motu.h
-@@ -29,6 +29,29 @@ struct snd_motu {
- 
- 	bool registered;
- 	struct delayed_work dwork;
-+
-+	/* Model dependent information. */
-+	const struct snd_motu_spec *spec;
-+};
-+
-+enum snd_motu_spec_flags {
-+	SND_MOTU_SPEC_SUPPORT_CLOCK_X2	= 0x0001,
-+	SND_MOTU_SPEC_SUPPORT_CLOCK_X4	= 0x0002,
-+	SND_MOTU_SPEC_TX_MICINST_CHUNK	= 0x0004,
-+	SND_MOTU_SPEC_TX_RETURN_CHUNK	= 0x0008,
-+	SND_MOTU_SPEC_TX_REVERB_CHUNK	= 0x0010,
-+	SND_MOTU_SPEC_TX_AESEBU_CHUNK	= 0x0020,
-+	SND_MOTU_SPEC_HAS_OPT_IFACE_A	= 0x0040,
-+	SND_MOTU_SPEC_HAS_OPT_IFACE_B	= 0x0080,
-+	SND_MOTU_SPEC_HAS_MIDI		= 0x0100,
-+};
-+
-+struct snd_motu_spec {
-+	const char *const name;
-+	enum snd_motu_spec_flags flags;
-+
-+	unsigned char analog_in_ports;
-+	unsigned char analog_out_ports;
- };
- 
- #endif
+This patchset adds support for a part of MOTU FireWire series with their
+functionality of packet streaming. Below models are newly supported:
+ - 828
+ - 828mk2
+ - 828mk3 (FireWire/Hybrid)
+
+However, this module cannot handle 828 correctly to generate sound. The reason
+is not clear yet. On the other hand, 828mk2 and 828mk3 can be handled most
+properly via ALSA PCM/MIDI/HwDep interfaces.
+
+Currently, I have a plan to post this patchset to merge into Linux 4.12.
+Corresponding merge window will be estimated to open this April. If you're
+willing to test this module, please report the result till then.
+
+For testers, I prepared for backport modules in my repository. Please follow
+instructions in README.
+https://github.com/takaswie/snd-firewire-improve/tree/topic/motu
+
+As user land tools, I added some stuffs to libhinawa and hinawa-utils. Please
+refer to 'topic/motu' branch of these repositories. You can use
+'hinawa-motu-common-cui' to configure some streaming-related features of the
+above units:
+ * https://github.com/takaswie/libhinawa/tree/topic/motu
+ * https://github.com/takaswie/hinawa-utils/tree/topic/motu
+
+Takashi Sakamoto (19):
+  firewire-motu: add skeleton for Mark of the unicorn (MOTU) FireWire
+    series
+  firewire-motu: postpone sound card registration
+  firewire-motu: add a structure for model-dependent parameters.
+  firewire-motu: add an abstraction layer for three types of protocols
+  firewire-lib: record cycle count for the first packet
+  firewire-lib: add support for source packet header field in CIP header
+  firewire-lib: enable CIP_DBC_IS_END_EVENT for both directions of
+    stream
+  firewire-motu: add MOTU specific protocol layer
+  firewire-motu: handle transactions specific for MOTU FireWire models
+  firewire-motu: add stream management functionality
+  firewire-motu: add proc node to show current statuc of clock and
+    packet formats
+  firewire-motu: add PCM functionality
+  firewire-motu: add MIDI functionality
+  firewire-motu: add hwdep interface
+  firewire-motu: enable to read transaction cache via hwdep interface
+  firewire-motu: add support for MOTU 828 as a model with protocol
+    version 1
+  firewire-motu: add support for MOTU 828mk2 as a model with protocol
+    version 2
+  firewire-lib: add a quirk of packet without valid EOH in CIP format
+  firewire-motu: add support for MOTU 828mk3 (FireWire/Hybrid) as a
+    model with protocol version 3
+
+ include/uapi/sound/asound.h            |   3 +-
+ include/uapi/sound/firewire.h          |  10 +-
+ sound/firewire/Kconfig                 |  13 ++
+ sound/firewire/Makefile                |   1 +
+ sound/firewire/amdtp-stream.c          |  36 ++-
+ sound/firewire/amdtp-stream.h          |   9 +-
+ sound/firewire/motu/Makefile           |   5 +
+ sound/firewire/motu/amdtp-motu.c       | 388 ++++++++++++++++++++++++++++++++
+ sound/firewire/motu/motu-hwdep.c       | 198 ++++++++++++++++
+ sound/firewire/motu/motu-midi.c        | 169 ++++++++++++++
+ sound/firewire/motu/motu-pcm.c         | 398 +++++++++++++++++++++++++++++++++
+ sound/firewire/motu/motu-proc.c        | 118 ++++++++++
+ sound/firewire/motu/motu-protocol-v1.c | 204 +++++++++++++++++
+ sound/firewire/motu/motu-protocol-v2.c | 237 ++++++++++++++++++++
+ sound/firewire/motu/motu-protocol-v3.c | 312 ++++++++++++++++++++++++++
+ sound/firewire/motu/motu-stream.c      | 381 +++++++++++++++++++++++++++++++
+ sound/firewire/motu/motu-transaction.c | 137 ++++++++++++
+ sound/firewire/motu/motu.c             | 273 ++++++++++++++++++++++
+ sound/firewire/motu/motu.h             | 161 +++++++++++++
+ 19 files changed, 3042 insertions(+), 11 deletions(-)
+ create mode 100644 sound/firewire/motu/Makefile
+ create mode 100644 sound/firewire/motu/amdtp-motu.c
+ create mode 100644 sound/firewire/motu/motu-hwdep.c
+ create mode 100644 sound/firewire/motu/motu-midi.c
+ create mode 100644 sound/firewire/motu/motu-pcm.c
+ create mode 100644 sound/firewire/motu/motu-proc.c
+ create mode 100644 sound/firewire/motu/motu-protocol-v1.c
+ create mode 100644 sound/firewire/motu/motu-protocol-v2.c
+ create mode 100644 sound/firewire/motu/motu-protocol-v3.c
+ create mode 100644 sound/firewire/motu/motu-stream.c
+ create mode 100644 sound/firewire/motu/motu-transaction.c
+ create mode 100644 sound/firewire/motu/motu.c
+ create mode 100644 sound/firewire/motu/motu.h
+
 -- 
 2.9.3
