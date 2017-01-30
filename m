@@ -1,88 +1,94 @@
-From: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v3 08/10] dmaengine: sun6i: allow build on
- ARM64 platforms (sun50i)
-Date: Tue, 31 Jan 2017 09:02:36 +0530
-Message-ID: <20170131033236.GH19244@localhost>
-References: <20170129023331.62106-1-icenowy@aosc.xyz>
- <20170129023331.62106-9-icenowy@aosc.xyz>
- <20170130164210.GD19244@localhost>
- <3729521485800635@web23g.yandex.ru>
-Reply-To: vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-sunxi+bncBDLNNTP63EBBBQEKYDCAKGQEDEOK4ZA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Content-Disposition: inline
-In-Reply-To: <3729521485800635-hGpGylqI9Klxpj1cXAZ9Bg@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
-Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Andre Przywara <andre.przywara-5wv7dgnIgG8@public.gmane.org>, "linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org" <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: [PATCH 1/2] ASoC: qcom: lpass-cpu: Remove unnecessary clock checks
+Date: Mon, 30 Jan 2017 13:03:36 -0800
+Message-ID: <20170130210337.28417-1-bjorn.andersson@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 31, 2017 at 02:23:55AM +0800, Icenowy Zheng wrote:
->=20
->=20
-> 31.01.2017, 00:41, "Vinod Koul" <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>:
-> > On Sun, Jan 29, 2017 at 10:33:29AM +0800, Icenowy Zheng wrote:
-> >> =C2=A0As 64-bit Allwinner H5 SoC has the same DMA engine with H3, the =
-DMA
-> >> =C2=A0driver should be allowed to be built for ARM64, in order to make=
- it work on H5.
-> >>
-> >> =C2=A0Signed-off-by: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
-> >> =C2=A0Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-> >> =C2=A0Acked-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-> >> =C2=A0---
-> >> =C2=A0Patch introduced between v1 and v2, to satisfy the newly added H=
-3/H5 audio
-> >> =C2=A0codec support.
-> >>
-> >> =C2=A0=C2=A0drivers/dma/Kconfig | 2 +-
-> >> =C2=A0=C2=A01 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> =C2=A0diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
-> >> =C2=A0index 0d6a96ee9fc7..d01d59812cf3 100644
-> >> =C2=A0--- a/drivers/dma/Kconfig
-> >> =C2=A0+++ b/drivers/dma/Kconfig
-> >> =C2=A0@@ -157,7 +157,7 @@ config DMA_SUN4I
-> >>
-> >> =C2=A0=C2=A0config DMA_SUN6I
-> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tristate "=
-Allwinner A31 SoCs DMA support"
-> >> =C2=A0- depends on MACH_SUN6I || MACH_SUN8I || COMPILE_TEST
-> >> =C2=A0+ depends on MACH_SUN6I || MACH_SUN8I || (ARM64 && ARCH_SUNXI) |=
-| COMPILE_TEST
-> >
-> > Do we really need ARM64 here? also looking at others I wonder why isn't
-> > this MACH_SUNXI...?
->=20
-> You mean directly place "ARCH_SUNXI" here?
->=20
-> SUN4I/SUN5I/SUN7I do not use DMA_SUN6I, they have different DMA
-> controllers.
+Clean up the clock calling code by removing numerous IS_ERR() checks by
+just assigning the clock NULL; as this turn all used functions in the
+clk API to nops.
 
-No my question was different..
+Also include the word "optional" in the error message when failing to acquire
+the optional osr clocks.
 
-We have MACH_SUNxx for 6I and 8I, so why do we have ARCH_SUNXI and if its a=
-n
-arch SUNXI, X means it can take any value...
+Cc: Banajit Goswami <bgoswami@codeaurora.org>
+Cc: Patrick Lai <plai@codeaurora.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ sound/soc/qcom/lpass-cpu.c | 27 ++++++++++-----------------
+ 1 file changed, 10 insertions(+), 17 deletions(-)
 
-This schema looks pretty confusing while reading
-
-Also I had a question on usage of ARM64..
-
---=20
-~Vinod
-
---=20
-You received this message because you are subscribed to the Google Groups "=
-linux-sunxi" group.
-To unsubscribe from this group and stop receiving emails from it, send an e=
-mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-For more options, visit https://groups.google.com/d/optout.
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index eff3f9a8b685..1b912a9bb791 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -33,9 +33,6 @@ static int lpass_cpu_daiops_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
+ 	int ret;
+ 
+-	if (IS_ERR(drvdata->mi2s_osr_clk[dai->driver->id]))
+-		return 0;
+-
+ 	ret = clk_set_rate(drvdata->mi2s_osr_clk[dai->driver->id], freq);
+ 	if (ret)
+ 		dev_err(dai->dev, "%s() error setting mi2s osrclk to %u: %d\n",
+@@ -50,23 +47,18 @@ static int lpass_cpu_daiops_startup(struct snd_pcm_substream *substream,
+ 	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
+ 	int ret;
+ 
+-	if (!IS_ERR(drvdata->mi2s_osr_clk[dai->driver->id])) {
+-		ret = clk_prepare_enable(
+-				drvdata->mi2s_osr_clk[dai->driver->id]);
+-		if (ret) {
+-			dev_err(dai->dev, "%s() error in enabling mi2s osr clk: %d\n",
+-					__func__, ret);
+-			return ret;
+-		}
++	ret = clk_prepare_enable(drvdata->mi2s_osr_clk[dai->driver->id]);
++	if (ret) {
++		dev_err(dai->dev, "%s() error in enabling mi2s osr clk: %d\n",
++				__func__, ret);
++		return ret;
+ 	}
+ 
+ 	ret = clk_prepare_enable(drvdata->mi2s_bit_clk[dai->driver->id]);
+ 	if (ret) {
+ 		dev_err(dai->dev, "%s() error in enabling mi2s bit clk: %d\n",
+ 				__func__, ret);
+-		if (!IS_ERR(drvdata->mi2s_osr_clk[dai->driver->id]))
+-			clk_disable_unprepare(
+-				drvdata->mi2s_osr_clk[dai->driver->id]);
++		clk_disable_unprepare(drvdata->mi2s_osr_clk[dai->driver->id]);
+ 		return ret;
+ 	}
+ 
+@@ -80,8 +72,7 @@ static void lpass_cpu_daiops_shutdown(struct snd_pcm_substream *substream,
+ 
+ 	clk_disable_unprepare(drvdata->mi2s_bit_clk[dai->driver->id]);
+ 
+-	if (!IS_ERR(drvdata->mi2s_osr_clk[dai->driver->id]))
+-		clk_disable_unprepare(drvdata->mi2s_osr_clk[dai->driver->id]);
++	clk_disable_unprepare(drvdata->mi2s_osr_clk[dai->driver->id]);
+ }
+ 
+ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+@@ -505,9 +496,11 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
+ 								clk_name);
+ 		if (IS_ERR(drvdata->mi2s_osr_clk[dai_id])) {
+ 			dev_warn(&pdev->dev,
+-				"%s() error getting mi2s-osr-clk: %ld\n",
++				"%s() error getting optional mi2s-osr-clk: %ld\n",
+ 				__func__,
+ 				PTR_ERR(drvdata->mi2s_osr_clk[dai_id]));
++
++			drvdata->mi2s_osr_clk[dai_id] = NULL;
+ 		}
+ 
+ 		if (variant->num_dai > 1)
+-- 
+2.11.0
