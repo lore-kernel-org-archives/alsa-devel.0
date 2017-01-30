@@ -1,48 +1,78 @@
-From: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH v3 06/10] clk: sunxi-ng: remove transitional
- headers for dt-bindings
-Date: Mon, 30 Jan 2017 10:09:44 +0100
-Message-ID: <20170130090944.ie76ustqtbtdanli@lukather>
-References: <20170129023331.62106-1-icenowy@aosc.xyz>
- <20170129023331.62106-7-icenowy@aosc.xyz>
-Reply-To: maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH] ASoC: wm8741: Remove unneeded startup()
+ callback
+Date: Mon, 30 Jan 2017 09:22:59 +0000
+Message-ID: <20170130092259.GE1754@localhost.localdomain>
+References: <1485560145-12908-1-git-send-email-ce3a@gmx.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="d2szgefl7inb6lb3"
-Return-path: <linux-sunxi+bncBDSJBYGBRIMBBWMFXTCAKGQEVJ6BNCI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C81026681D
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2017 10:22:00 +0100 (CET)
 Content-Disposition: inline
-In-Reply-To: <20170129023331.62106-7-icenowy-ymACFijhrKM@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
-Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Andre Przywara <andre.przywara-5wv7dgnIgG8@public.gmane.org>, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <1485560145-12908-1-git-send-email-ce3a@gmx.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sergej Sawazki <ce3a@gmx.de>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-
---d2szgefl7inb6lb3
-Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline
-
-On Sun, Jan 29, 2017 at 10:33:27AM +0800, Icenowy Zheng wrote:
-> As we have already changed the DTSI file, the trnasitional dt-bindings
-> header sun8i-h3-ccu.h will not be needed any more.
+On Sat, Jan 28, 2017 at 12:35:45AM +0100, Sergej Sawazki wrote:
+> Do not apply rate constraints in the startup() callback. The machine driver
+> can change the sysclk and hence the supported frame rates in its hw_params().
+> This callback is unneeded since commit e369bd006fd6 ("ASoC: wm8741: Allow
+> master clock switching").
 > 
-> Remove them.
+> Signed-off-by: Sergej Sawazki <ce3a@gmx.de>
+> ---
+>  sound/soc/codecs/wm8741.c | 15 ---------------
+>  1 file changed, 15 deletions(-)
 > 
-> Signed-off-by: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
+> diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
+> index b8c1940..d6e540a 100644
+> --- a/sound/soc/codecs/wm8741.c
+> +++ b/sound/soc/codecs/wm8741.c
+> @@ -176,20 +176,6 @@ static const struct snd_pcm_hw_constraint_list constraints_36864 = {
+>  	.list	= rates_36864,
+>  };
+>  
+> -static int wm8741_startup(struct snd_pcm_substream *substream,
+> -			  struct snd_soc_dai *dai)
+> -{
+> -	struct snd_soc_codec *codec = dai->codec;
+> -	struct wm8741_priv *wm8741 = snd_soc_codec_get_drvdata(codec);
+> -
+> -	if (wm8741->sysclk)
+> -		snd_pcm_hw_constraint_list(substream->runtime, 0,
+> -				SNDRV_PCM_HW_PARAM_RATE,
+> -				wm8741->sysclk_constraints);
+> -
+> -	return 0;
+> -}
+> -
 
-Your prefix is wrong, this is not part of the clk framework, but
-rather the DT one.
+This function should not be removed it is performing a useful
+function. If a sysclk has already been configured by the machine
+driver then we should inform user-space of the rates we can
+support from that clock. Without this that information is not
+available to user-space, so instead of user-space being able to
+resample appropriately it would just error out from hw_params.
 
-Maxime
+Are you perhaps missing a call to clear the sysclk from your
+machine driver? Usually a dai_set_sysclk call with a rate of
+zero, also I find if it is a machine driver supporting multiple
+rates you are best to use ignore_pmdown_time on the DAI link,
+assuming the devices don't have long bring up times.
 
--- 
-Maxime Ripard, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
---d2szgefl7inb6lb3--
+Thanks,
+Charles
