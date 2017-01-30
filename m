@@ -1,148 +1,66 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [PATCH 1/7] MFD: add bindings for STM32 DFSDM driver
-Date: Mon, 30 Jan 2017 14:16:52 +0100
-Message-ID: <593e9b20-da85-8303-ffe7-4689afc35331@st.com>
-References: <1485189145-29576-1-git-send-email-arnaud.pouliquen@st.com>
- <1485189145-29576-2-git-send-email-arnaud.pouliquen@st.com>
- <20170127205326.rom465uqfp6i33kr@rob-hp-laptop>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [alsa-devel] [PATCH] Sound: soc: samsung - Fix possible NULL
+ derefrence.
+Date: Mon, 30 Jan 2017 14:34:23 +0100
+Message-ID: <0adef6d5-13bd-5e08-ca53-c8a5969578a2@samsung.com>
+References: <CGME20170130050433epcas3p158c643fc3cba0b3b616dc24a50e11bc0@epcas3p1.samsung.com>
+ <1485752659-30185-1-git-send-email-shailendra.v@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20170127205326.rom465uqfp6i33kr@rob-hp-laptop>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Rob Herring <robh@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Mark Brown <broonie@kernel.org>, Jonathan Cameron <jic23@kernel.org>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Hartmut Knaack <knaack.h@gmx.de>, Lee Jones <lee.jones@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Alexandre TORGUE <alexandre.torgue@st.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-reply-to: <1485752659-30185-1-git-send-email-shailendra.v@samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Shailendra Verma <shailendra.v@samsung.com>, p.shailesh@samsung.com, ashish.kalra@samsung.com, Shailendra Verma <shailendra.capricorn@gmail.com>
+Cc: Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Rob,
+On 01/30/2017 06:04 AM, Shailendra Verma wrote:
+> of_device_get_match_data could return NULL, and so can cause
+> a NULL pointer dereference later.
+> 
+> Signed-off-by: Shailendra Verma <shailendra.v@samsung.com>
+> ---
+>  sound/soc/samsung/i2s.c |    7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+> index 7825bff..b5acce2 100644
+> --- a/sound/soc/samsung/i2s.c
+> +++ b/sound/soc/samsung/i2s.c
+> @@ -1224,8 +1224,13 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+>  	const struct samsung_i2s_dai_data *i2s_dai_data;
+>  	int ret;
+>  
+> -	if (IS_ENABLED(CONFIG_OF) && pdev->dev.of_node)
+> +	if (IS_ENABLED(CONFIG_OF) && pdev->dev.of_node) {
+>  		i2s_dai_data = of_device_get_match_data(&pdev->dev);
+> +		if (!i2s_dai_data) {
+> +			dev_err(&pdev->dev, "no device match found\n");
+> +			return -ENODEV;
+> +		}
+> +	}
 
-Thanks for the review,
-FYI This patch-set has to be abandoned to be redesigned without MFD driver.
-Anyway i will take into account your remarks in my redesign.
+As Javier commented on similar patch for gpu/drm/exynos i2s_dai_data
+can't be NULL as for DT case all struct of_device_id::data entries
+are initialized in this driver and the probe callback can only be
+called when device's compatible string got matched with one of entries
+in the OF device id table.
 
-I just added a comment below to explain CLKOUT.
+>  	else
+>  		i2s_dai_data = (struct samsung_i2s_dai_data *)
+>  				platform_get_device_id(pdev)->driver_data;
+> 
 
-Regards Arnaud
+Similarly in non-dt case all struct_device_id::driver_data entries
+are initialized so i2s_dai_data normally also cannot be NULL here.
+If we were adding a sanity check for i2s_dai_data, it would need to
+be here to cover both dt and non-dt.
 
+I don't think this patch is necessary.  The error log above is slightly
+misleading as actual device/driver matching happens already before
+probe() is called.
 
-On 01/27/2017 09:53 PM, Rob Herring wrote:
-> On Mon, Jan 23, 2017 at 05:32:19PM +0100, Arnaud Pouliquen wrote:
->> Add bindings information for STM32 Digital Filter for Sigma Delta modulators MFD driver
->>
->> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
->> ---
->>  .../devicetree/bindings/mfd/stm32-dfsdm.txt        | 68 ++++++++++++++++++++++
->>  1 file changed, 68 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/mfd/stm32-dfsdm.txt
->>
->> diff --git a/Documentation/devicetree/bindings/mfd/stm32-dfsdm.txt b/Documentation/devicetree/bindings/mfd/stm32-dfsdm.txt
->> new file mode 100644
->> index 0000000..e0b45ee
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/mfd/stm32-dfsdm.txt
->> @@ -0,0 +1,68 @@
->> +STMicroelectronics STM32 Digital Filter for Sigma Delta Modulator (DFSDM)
->> +ulti-function device.
->> +
->> +The STM32 DFSDM device is a multifunction device that handles the DFSDM IP.
->> +
->> +The DFSDM IP allows to add processing on Sigma Delta ADC based on SinC filters.
->> +For this, a pool of m filters can be connected to a pool of n channels.
->> +For STM32H7 : m = 4, n = 8.
->> +
->> +Each channel n is assigned to the SPI or Manchester interface n or n + 1.
->> +Channels 0 to 2 can also be connected to ADC IP instance 1 to 3.
->> +Filtering result is stored in a left aligned register, with 8 LSB reserved for
->> +the input channel ID.
->> +
->> +Each filter instance supports two contexts to manage conversions, each one has
->> +its own configurable sequence and trigger:
->> +- regular conversion: used for single or continuous conversion.
->> +- injected conversions: used for triggered conversion.
->> +
->> +Interfaces supported:
->> +- sigma delta ADCs trough IIO framework.
->> +- PDM microphones through ASoC framework.
-> 
-> Bindings describe h/w, not Linux subsystems.
-> 
->> +
->> +Required properties:
->> +- compatible:	Must be "st,stm32h7-dfsdm".
->> +- reg:		Specifies the DFSDM block register address and length.
->> +- interrupts:	IRQ lines connected to each DFSDM filter instance.
->> +- clocks:	IP and serial interfaces clocking. Should be set according
->> +		to rcc clock ID and "clock-names".
->> +- clock-names:	Input clock name "dfsdm_clk" must be defined,
->> +		"audio_clk" is optional. If defined CLKOUT is based on the audio
->> +		clock, else "dfsdm_clk" is used.
-> 
-> _clk is redundant.
-> 
->> +
->> +Optional properties:
->> +- st,clkout-freq: clkout clock frequency (Hz).This clock must be set according
->> +		  to "clock" property. Frequency must be a multiple of the rcc
->> +		  clock frequency. If not, clkout frequency will not be
->> +		  accurate.
-> 
-> What is CLKOUT connected to and will you need to describe that in DT?
-
-CLKOUT can be outputted to clock SPI interfaces (master mode) or extern
-ADC. This CLKOUT is common for the 8 instances of the SPIs of the DFSDM.
-CLKOUT frequency is computed based on an internal division of the
-"dfsdm_clk" or "audio_clk".
-
-> 
->> +- pinctrl-names:  set to "default".
->> +- pinctrl-0:	  List of phandles pointing to pin configuration nodes for DFSDM
->> +		  module.
->> +		  For Pinctrl properties see ../pinctrl/pinctrl-bindings.txt
->> +Example :
->> +	dfsdm: dfsdm@4400D000 {
->> +		compatible = "st,stm32h7-dfsdm";
->> +		reg = <0x40017000 0x400>;
->> +		interrupts = <110>, <111>, <112>, <113>;
->> +		clocks = <&timer_clk>;
->> +		clock-names = "dfsdm_clk";
->> +		pinctrl-0 = <&dfsdm_ch0 &dfsdm_ch1>;
->> +		pinctrl-names = "default";
->> +		st,clkout-freq = <2480000>;
->> +
->> +		iio_dfsdm0: iio-dfsdm@0 {
-> 
-> adc {
-> 
->> +			compatible = "st,stm32-dfsdm-adc";
->> +			#io-channel-cells = <1>;
->> +			reg = <0>;
->> +			status = "disabled";
->> +		};
->> +		dai_dfsdm0: dfsdm-audio@0 {
-> 
-> digital-mic {
-> 
->> +			compatible = "st,stm32-dfsdm-audio";
->> +			#sound-dai-cells = <0>;
->> +			reg = <0>;
-> 
-> You can't have 2 children with the same unit address. Just drop reg and 
-> the unit address.
-> 
->> +			dmas = <&dmamux1 101 0x400 0x00>;
->> +			dma-names = "rx";
->> +			status = "disabled";
->> +		};
->> +	};
->> -- 
->> 1.9.1
->>
+-- 
+Thanks,
+Sylwester
