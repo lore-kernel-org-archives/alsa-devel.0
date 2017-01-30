@@ -1,64 +1,75 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [PATCH 2/7] MFD: add STM32 DFSDM support
-Date: Mon, 30 Jan 2017 19:14:54 +0100
-Message-ID: <9d1233ee-d043-4e74-0915-075bb376d817@st.com>
-References: <1485189145-29576-1-git-send-email-arnaud.pouliquen@st.com>
- <1485189145-29576-3-git-send-email-arnaud.pouliquen@st.com>
- <20170124082249.GR16020@dell> <283c0e48-55e2-6516-369d-91dc72d12f73@st.com>
- <20170124113658.GW16020@dell> <a1aaaa20-ac00-b182-f1c1-63152be41135@st.com>
- <20170127101545.g53uah57vgfu55o5@dell>
- <7b3eb38d-4fd1-2006-7423-94f2a7b38b27@st.com>
- <20170129175005.2u25l7zd2anlc6tw@sirena.org.uk>
+From: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
+Subject: Re: [PATCH v3 08/10] dmaengine: sun6i: allow build on
+ ARM64 platforms (sun50i)
+Date: Tue, 31 Jan 2017 02:23:55 +0800
+Message-ID: <3729521485800635@web23g.yandex.ru>
+References: <20170129023331.62106-1-icenowy@aosc.xyz>
+	 <20170129023331.62106-9-icenowy@aosc.xyz> <20170130164210.GD19244@localhost>
+Reply-To: icenowy-ymACFijhrKM@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id A524826680A
- for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2017 19:14:58 +0100 (CET)
-In-Reply-To: <20170129175005.2u25l7zd2anlc6tw@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Jonathan Cameron <jic23@kernel.org>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Hartmut Knaack <knaack.h@gmx.de>, Lee Jones <lee.jones@linaro.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Alexandre TORGUE <alexandre.torgue@st.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-sunxi+bncBCZLPFN5Q4OBBPMJX3CAKGQEBKTZOOQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20170130164210.GD19244@localhost>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Andre Przywara <andre.przywara-5wv7dgnIgG8@public.gmane.org>, "linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org" <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Mark,
 
-On 01/29/2017 06:50 PM, Mark Brown wrote:
-> On Fri, Jan 27, 2017 at 02:45:49PM +0100, Arnaud Pouliquen wrote:
-> 
->> Jonathan, Mark, Please could you share your opinion on this
->> topic?
-> 
-> I really don't have enough visbility of what the hardware or
-> software is doing to say much and though there's extensive
-> backtrace in here it's not enough to follow.  If it's a generic ADC
-> that happens to have audio applications then some relationship with
-> IIO might make sense but I don't know how separate the audio and
-> general purpose bits of the hardware are.
-> 
-> Please understand that I get copied in on *lots* of threads about
-> MFDs with drivers getting posted repeatedly for whatever revisions
-> are needed with little relevance to me so it's very random if I
-> even look at these things, much less read them with detail.
-> 
 
-In a first step, your comment is enough from my point of view as you
-are not disagree with the concept of a relationship between ASOC an IIO.
-This confirms that the MFD driver have to be abandoned.
+31.01.2017, 00:41, "Vinod Koul" <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>:
+> On Sun, Jan 29, 2017 at 10:33:29AM +0800, Icenowy Zheng wrote:
+>> =C2=A0As 64-bit Allwinner H5 SoC has the same DMA engine with H3, the DM=
+A
+>> =C2=A0driver should be allowed to be built for ARM64, in order to make i=
+t work on H5.
+>>
+>> =C2=A0Signed-off-by: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
+>> =C2=A0Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+>> =C2=A0Acked-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+>> =C2=A0---
+>> =C2=A0Patch introduced between v1 and v2, to satisfy the newly added H3/=
+H5 audio
+>> =C2=A0codec support.
+>>
+>> =C2=A0=C2=A0drivers/dma/Kconfig | 2 +-
+>> =C2=A0=C2=A01 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> =C2=A0diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
+>> =C2=A0index 0d6a96ee9fc7..d01d59812cf3 100644
+>> =C2=A0--- a/drivers/dma/Kconfig
+>> =C2=A0+++ b/drivers/dma/Kconfig
+>> =C2=A0@@ -157,7 +157,7 @@ config DMA_SUN4I
+>>
+>> =C2=A0=C2=A0config DMA_SUN6I
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tristate "Al=
+lwinner A31 SoCs DMA support"
+>> =C2=A0- depends on MACH_SUN6I || MACH_SUN8I || COMPILE_TEST
+>> =C2=A0+ depends on MACH_SUN6I || MACH_SUN8I || (ARM64 && ARCH_SUNXI) || =
+COMPILE_TEST
+>
+> Do we really need ARM64 here? also looking at others I wonder why isn't
+> this MACH_SUNXI...?
 
-Then details on how to do it is another story, that should trigs some
-other discussions...
+You mean directly place "ARCH_SUNXI" here?
 
-Thanks and Regards,
+SUN4I/SUN5I/SUN7I do not use DMA_SUN6I, they have different DMA
+controllers.
 
-Arnaud
+>
+> --
+> ~Vinod
+
+--=20
+You received this message because you are subscribed to the Google Groups "=
+linux-sunxi" group.
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+For more options, visit https://groups.google.com/d/optout.
