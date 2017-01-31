@@ -1,72 +1,424 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 1/8] ASoC: sun4i-i2s: Update binding documentation to
- include A31
-Date: Tue, 31 Jan 2017 21:17:02 +0000
-Message-ID: <20170131211702.taxbrgxwo7b4daej@sirena.org.uk>
-References: <20170131100552.27949-1-mylene.josserand@free-electrons.com>
- <20170131100552.27949-2-mylene.josserand@free-electrons.com>
+Subject: Applied "ASoC: Intel: cht-bsw-rt5645: add quirks for
+	SSP0/AIF1/AIF2 routing" to the asoc tree
+Date: Tue, 31 Jan 2017 21:17:39 +0000
+Message-ID: <E1cYfo3-0000zz-20@debutante>
+References: <1485461385-14544-16-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6504539648710768471=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20170131100552.27949-2-mylene.josserand@free-electrons.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand@free-electrons.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, perex@perex.cz, wens@csie.org, robh+dt@kernel.org, alexandre.belloni@free-electrons.com, maxime.ripard@free-electrons.com, thomas.petazzoni@free-electrons.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F5282673F2
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 22:17:49 +0100 (CET)
+In-Reply-To: <1485461385-14544-16-git-send-email-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============6504539648710768471==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="fqu4r7deq3qtaryy"
-Content-Disposition: inline
+   ASoC: Intel: cht-bsw-rt5645: add quirks for SSP0/AIF1/AIF2 routing
 
+has been applied to the asoc tree at
 
---fqu4r7deq3qtaryy
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Jan 31, 2017 at 11:05:45AM +0100, Myl=E8ne Josserand wrote:
-> Add a new compatible for sun4i-i2s driver to handle some
-> SoCs that have a reset line that must be asserted/deasserted.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-This doesn't apply against current code, please check and resend.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---fqu4r7deq3qtaryy
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliQ/s4ACgkQJNaLcl1U
-h9Deewf+Nv/3/d0Zf/+w6HSgaUiOeX/UKVLJxlKUfcWeI6QshhwrL6tv4B4ZhMIS
-cueluXSdgenHes0P0r7Axb++OuSZgj24sVJ2CA1XzhikQ80+IOWDWEeDm/yuDkd3
-TvZYW/syTS+S1r9grv8pW6zskuvtgHRmuEWwT/YhQtzU2G8o4cTqvBR4mU6GqbnJ
-QCE0oTuPOzNgD843++0v4VHHcDfApsLDiDXjywnIKeR9jRrryCRcsdzDTu+N2YDS
-XgjjfwWwurwT08GPmaaikY92IeeMgP4WY0ZR2uatBRy8JBy3xft5xDCNtAa6dt3J
-A0uT/01RkoW/hy+2D2Q7XZzMLQMAzA==
-=KM99
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---fqu4r7deq3qtaryy--
+>From 22af29114eb4c400f6847d425caab460c6241c4e Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Thu, 26 Jan 2017 14:09:43 -0600
+Subject: [PATCH] ASoC: Intel: cht-bsw-rt5645: add quirks for SSP0/AIF1/AIF2
+ routing
 
+This driver may be used on Baytrail CR platforms where SSP2 is
+not available.
 
---===============6504539648710768471==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Add quirks and routing detection based on work done for RT5640.
 
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/boards/cht_bsw_rt5645.c | 238 +++++++++++++++++++++++++++++---
+ 1 file changed, 220 insertions(+), 18 deletions(-)
 
---===============6504539648710768471==--
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index 3461e4a88ba8..24b07601fb81 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -23,6 +23,7 @@
+ #include <linux/module.h>
+ #include <linux/acpi.h>
+ #include <linux/platform_device.h>
++#include <linux/dmi.h>
+ #include <linux/slab.h>
+ #include <asm/cpu_device_id.h>
+ #include <asm/platform_sst_audio.h>
+@@ -36,7 +37,8 @@
+ #include "../common/sst-acpi.h"
+ 
+ #define CHT_PLAT_CLK_3_HZ	19200000
+-#define CHT_CODEC_DAI	"rt5645-aif1"
++#define CHT_CODEC_DAI1	"rt5645-aif1"
++#define CHT_CODEC_DAI2	"rt5645-aif2"
+ 
+ struct cht_acpi_card {
+ 	char *codec_id;
+@@ -51,13 +53,33 @@ struct cht_mc_private {
+ 	struct clk *mclk;
+ };
+ 
++#define CHT_RT5645_MAP(quirk)	((quirk) & 0xff)
++#define CHT_RT5645_SSP2_AIF2     BIT(16) /* default is using AIF1  */
++#define CHT_RT5645_SSP0_AIF1     BIT(17)
++#define CHT_RT5645_SSP0_AIF2     BIT(18)
++
++static unsigned long cht_rt5645_quirk = 0;
++
++static void log_quirks(struct device *dev)
++{
++	if (cht_rt5645_quirk & CHT_RT5645_SSP2_AIF2)
++		dev_info(dev, "quirk SSP2_AIF2 enabled");
++	if (cht_rt5645_quirk & CHT_RT5645_SSP0_AIF1)
++		dev_info(dev, "quirk SSP0_AIF1 enabled");
++	if (cht_rt5645_quirk & CHT_RT5645_SSP0_AIF2)
++		dev_info(dev, "quirk SSP0_AIF2 enabled");
++}
++
+ static inline struct snd_soc_dai *cht_get_codec_dai(struct snd_soc_card *card)
+ {
+ 	struct snd_soc_pcm_runtime *rtd;
+ 
+ 	list_for_each_entry(rtd, &card->rtd_list, list) {
+-		if (!strncmp(rtd->codec_dai->name, CHT_CODEC_DAI,
+-			     strlen(CHT_CODEC_DAI)))
++		if (!strncmp(rtd->codec_dai->name, CHT_CODEC_DAI1,
++			     strlen(CHT_CODEC_DAI1)))
++			return rtd->codec_dai;
++		if (!strncmp(rtd->codec_dai->name, CHT_CODEC_DAI2,
++			     strlen(CHT_CODEC_DAI2)))
+ 			return rtd->codec_dai;
+ 	}
+ 	return NULL;
+@@ -125,12 +147,6 @@ static const struct snd_soc_dapm_route cht_rt5645_audio_map[] = {
+ 	{"Headphone", NULL, "HPOR"},
+ 	{"Ext Spk", NULL, "SPOL"},
+ 	{"Ext Spk", NULL, "SPOR"},
+-	{"AIF1 Playback", NULL, "ssp2 Tx"},
+-	{"ssp2 Tx", NULL, "codec_out0"},
+-	{"ssp2 Tx", NULL, "codec_out1"},
+-	{"codec_in0", NULL, "ssp2 Rx" },
+-	{"codec_in1", NULL, "ssp2 Rx" },
+-	{"ssp2 Rx", NULL, "AIF1 Capture"},
+ 	{"Headphone", NULL, "Platform Clock"},
+ 	{"Headset Mic", NULL, "Platform Clock"},
+ 	{"Int Mic", NULL, "Platform Clock"},
+@@ -146,16 +162,42 @@ static const struct snd_soc_dapm_route cht_rt5650_audio_map[] = {
+ 	{"Headphone", NULL, "HPOR"},
+ 	{"Ext Spk", NULL, "SPOL"},
+ 	{"Ext Spk", NULL, "SPOR"},
++	{"Headphone", NULL, "Platform Clock"},
++	{"Headset Mic", NULL, "Platform Clock"},
++	{"Int Mic", NULL, "Platform Clock"},
++	{"Ext Spk", NULL, "Platform Clock"},
++};
++
++static const struct snd_soc_dapm_route cht_rt5645_ssp2_aif1_map[] = {
+ 	{"AIF1 Playback", NULL, "ssp2 Tx"},
+ 	{"ssp2 Tx", NULL, "codec_out0"},
+ 	{"ssp2 Tx", NULL, "codec_out1"},
+ 	{"codec_in0", NULL, "ssp2 Rx" },
+ 	{"codec_in1", NULL, "ssp2 Rx" },
+ 	{"ssp2 Rx", NULL, "AIF1 Capture"},
+-	{"Headphone", NULL, "Platform Clock"},
+-	{"Headset Mic", NULL, "Platform Clock"},
+-	{"Int Mic", NULL, "Platform Clock"},
+-	{"Ext Spk", NULL, "Platform Clock"},
++};
++
++static const struct snd_soc_dapm_route cht_rt5645_ssp2_aif2_map[] = {
++	{"AIF2 Playback", NULL, "ssp2 Tx"},
++	{"ssp2 Tx", NULL, "codec_out0"},
++	{"ssp2 Tx", NULL, "codec_out1"},
++	{"codec_in0", NULL, "ssp2 Rx" },
++	{"codec_in1", NULL, "ssp2 Rx" },
++	{"ssp2 Rx", NULL, "AIF2 Capture"},
++};
++
++static const struct snd_soc_dapm_route cht_rt5645_ssp0_aif1_map[] = {
++	{"AIF1 Playback", NULL, "ssp0 Tx"},
++	{"ssp0 Tx", NULL, "modem_out"},
++	{"modem_in", NULL, "ssp0 Rx" },
++	{"ssp0 Rx", NULL, "AIF1 Capture"},
++};
++
++static const struct snd_soc_dapm_route cht_rt5645_ssp0_aif2_map[] = {
++	{"AIF2 Playback", NULL, "ssp0 Tx"},
++	{"ssp0 Tx", NULL, "modem_out"},
++	{"modem_in", NULL, "ssp0 Rx" },
++	{"ssp0 Rx", NULL, "AIF2 Capture"},
+ };
+ 
+ static const struct snd_kcontrol_new cht_mc_controls[] = {
+@@ -201,11 +243,25 @@ static int cht_aif1_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
++/* uncomment when we have a real quirk
++static int cht_rt5645_quirk_cb(const struct dmi_system_id *id)
++{
++	cht_rt5645_quirk = (unsigned long)id->driver_data;
++	return 1;
++}
++*/
++
++static const struct dmi_system_id cht_rt5645_quirk_table[] = {
++	{
++	},
++};
++
+ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ {
+ 	int ret;
+ 	int jack_type;
+ 	struct snd_soc_codec *codec = runtime->codec;
++	struct snd_soc_card *card = runtime->card;
+ 	struct snd_soc_dai *codec_dai = runtime->codec_dai;
+ 	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(runtime->card);
+ 
+@@ -217,6 +273,26 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ 				RT5645_AD_STEREO_FILTER,
+ 				RT5645_CLK_SEL_I2S1_ASRC);
+ 
++	if (cht_rt5645_quirk & CHT_RT5645_SSP2_AIF2) {
++		ret = snd_soc_dapm_add_routes(&card->dapm,
++					cht_rt5645_ssp2_aif2_map,
++					ARRAY_SIZE(cht_rt5645_ssp2_aif2_map));
++	} else if (cht_rt5645_quirk & CHT_RT5645_SSP0_AIF1) {
++		ret = snd_soc_dapm_add_routes(&card->dapm,
++					cht_rt5645_ssp0_aif1_map,
++					ARRAY_SIZE(cht_rt5645_ssp0_aif1_map));
++	} else if (cht_rt5645_quirk & CHT_RT5645_SSP0_AIF2) {
++		ret = snd_soc_dapm_add_routes(&card->dapm,
++					cht_rt5645_ssp0_aif2_map,
++					ARRAY_SIZE(cht_rt5645_ssp0_aif2_map));
++	} else {
++		ret = snd_soc_dapm_add_routes(&card->dapm,
++					cht_rt5645_ssp2_aif1_map,
++					ARRAY_SIZE(cht_rt5645_ssp2_aif1_map));
++	}
++	if (ret)
++		return ret;
++
+ 	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
+ 	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xF, 0xF, 4, 24);
+ 	if (ret < 0) {
+@@ -267,6 +343,7 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 			    struct snd_pcm_hw_params *params)
+ {
++	int ret;
+ 	struct snd_interval *rate = hw_param_interval(params,
+ 			SNDRV_PCM_HW_PARAM_RATE);
+ 	struct snd_interval *channels = hw_param_interval(params,
+@@ -276,8 +353,39 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	rate->min = rate->max = 48000;
+ 	channels->min = channels->max = 2;
+ 
+-	/* set SSP2 to 24-bit */
+-	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
++	if ((cht_rt5645_quirk & CHT_RT5645_SSP0_AIF1) ||
++		(cht_rt5645_quirk & CHT_RT5645_SSP0_AIF2)) {
++
++		/* set SSP0 to 16-bit */
++		params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
++
++		/*
++		 * Default mode for SSP configuration is TDM 4 slot, override config
++		 * with explicit setting to I2S 2ch 16-bit. The word length is set with
++		 * dai_set_tdm_slot() since there is no other API exposed
++		 */
++		ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
++					SND_SOC_DAIFMT_I2S     |
++					SND_SOC_DAIFMT_NB_IF   |
++					SND_SOC_DAIFMT_CBS_CFS
++			);
++		if (ret < 0) {
++			dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
++			return ret;
++		}
++
++		ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2, 16);
++		if (ret < 0) {
++			dev_err(rtd->dev, "can't set I2S config, err %d\n", ret);
++			return ret;
++		}
++
++	} else {
++
++		/* set SSP2 to 24-bit */
++		params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
++
++	}
+ 	return 0;
+ }
+ 
+@@ -384,7 +492,9 @@ static struct cht_acpi_card snd_soc_cards[] = {
+ 	{"10EC5650", CODEC_TYPE_RT5650, &snd_soc_card_chtrt5650},
+ };
+ 
+-static char cht_rt5640_codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
++static char cht_rt5645_codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
++static char cht_rt5645_codec_aif_name[12]; /*  = "rt5645-aif[1|2]" */
++static char cht_rt5645_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+ 
+ static bool is_valleyview(void)
+ {
+@@ -398,6 +508,11 @@ static bool is_valleyview(void)
+ 	return true;
+ }
+ 
++struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
++	u64 aif_value;       /* 1: AIF1, 2: AIF2 */
++	u64 mclock_value;    /* usually 25MHz (0x17d7940), ignored */
++};
++
+ static int snd_cht_mc_probe(struct platform_device *pdev)
+ {
+ 	int ret_val = 0;
+@@ -408,6 +523,7 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	const char *i2c_name = NULL;
+ 	int dai_index = 0;
+ 	bool found = false;
++	bool is_bytcr = false;
+ 
+ 	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_ATOMIC);
+ 	if (!drv)
+@@ -445,9 +561,95 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	/* fixup codec name based on HID */
+ 	i2c_name = sst_acpi_find_name_from_hid(mach->id);
+ 	if (i2c_name != NULL) {
+-		snprintf(cht_rt5640_codec_name, sizeof(cht_rt5640_codec_name),
++		snprintf(cht_rt5645_codec_name, sizeof(cht_rt5645_codec_name),
+ 			"%s%s", "i2c-", i2c_name);
+-		cht_dailink[dai_index].codec_name = cht_rt5640_codec_name;
++		cht_dailink[dai_index].codec_name = cht_rt5645_codec_name;
++	}
++
++	/*
++	 * swap SSP0 if bytcr is detected
++	 * (will be overridden if DMI quirk is detected)
++	 */
++	if (is_valleyview()) {
++		struct sst_platform_info *p_info = mach->pdata;
++		const struct sst_res_info *res_info = p_info->res_info;
++
++		if (res_info->acpi_ipc_irq_index == 0)
++			is_bytcr = true;
++	}
++
++	if (is_bytcr) {
++		/*
++		 * Baytrail CR platforms may have CHAN package in BIOS, try
++		 * to find relevant routing quirk based as done on Windows
++		 * platforms. We have to read the information directly from the
++		 * BIOS, at this stage the card is not created and the links
++		 * with the codec driver/pdata are non-existent
++		 */
++
++		struct acpi_chan_package chan_package;
++
++		/* format specified: 2 64-bit integers */
++		struct acpi_buffer format = {sizeof("NN"), "NN"};
++		struct acpi_buffer state = {0, NULL};
++		struct sst_acpi_package_context pkg_ctx;
++		bool pkg_found = false;
++
++		state.length = sizeof(chan_package);
++		state.pointer = &chan_package;
++
++		pkg_ctx.name = "CHAN";
++		pkg_ctx.length = 2;
++		pkg_ctx.format = &format;
++		pkg_ctx.state = &state;
++		pkg_ctx.data_valid = false;
++
++		pkg_found = sst_acpi_find_package_from_hid(mach->id, &pkg_ctx);
++		if (pkg_found) {
++			if (chan_package.aif_value == 1) {
++				dev_info(&pdev->dev, "BIOS Routing: AIF1 connected\n");
++				cht_rt5645_quirk |= CHT_RT5645_SSP0_AIF1;
++			} else  if (chan_package.aif_value == 2) {
++				dev_info(&pdev->dev, "BIOS Routing: AIF2 connected\n");
++				cht_rt5645_quirk |= CHT_RT5645_SSP0_AIF2;
++			} else {
++				dev_info(&pdev->dev, "BIOS Routing isn't valid, ignored\n");
++				pkg_found = false;
++			}
++		}
++
++		if (!pkg_found) {
++			/* no BIOS indications, assume SSP0-AIF2 connection */
++			cht_rt5645_quirk |= CHT_RT5645_SSP0_AIF2;
++		}
++	}
++
++	/* check quirks before creating card */
++	dmi_check_system(cht_rt5645_quirk_table);
++	log_quirks(&pdev->dev);
++
++	if ((cht_rt5645_quirk & CHT_RT5645_SSP2_AIF2) ||
++		(cht_rt5645_quirk & CHT_RT5645_SSP0_AIF2)) {
++
++		/* fixup codec aif name */
++		snprintf(cht_rt5645_codec_aif_name,
++			sizeof(cht_rt5645_codec_aif_name),
++			"%s", "rt5645-aif2");
++
++		cht_dailink[dai_index].codec_dai_name =
++			cht_rt5645_codec_aif_name;
++	}
++
++	if ((cht_rt5645_quirk & CHT_RT5645_SSP0_AIF1) ||
++		(cht_rt5645_quirk & CHT_RT5645_SSP0_AIF2)) {
++
++		/* fixup cpu dai name name */
++		snprintf(cht_rt5645_cpu_dai_name,
++			sizeof(cht_rt5645_cpu_dai_name),
++			"%s", "ssp0-port");
++
++		cht_dailink[dai_index].cpu_dai_name =
++			cht_rt5645_cpu_dai_name;
+ 	}
+ 
+ 	if (is_valleyview()) {
+-- 
+2.11.0
