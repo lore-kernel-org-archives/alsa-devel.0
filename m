@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 14/17] ASoC: rt5645: fix error handling for
-	gpio detection
-Date: Tue, 31 Jan 2017 20:00:49 +0000
-Message-ID: <20170131200049.atw7euwvbgsqt7pl@sirena.org.uk>
-References: <1485461385-14544-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <1485461385-14544-15-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: atom: fix frame polarity" to the
+	asoc tree
+Date: Tue, 31 Jan 2017 20:02:17 +0000
+Message-ID: <E1cYed7-0005XB-Cp@debutante>
+References: <1485461385-14544-2-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8906449012109183192=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 97A49267395
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 21:00:58 +0100 (CET)
-In-Reply-To: <1485461385-14544-15-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id AAD24267395
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 21:02:29 +0100 (CET)
+In-Reply-To: <1485461385-14544-2-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,62 +23,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============8906449012109183192==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="n3zvfqaikqhb3waw"
-Content-Disposition: inline
+   ASoC: Intel: atom: fix frame polarity
 
+has been applied to the asoc tree at
 
---n3zvfqaikqhb3waw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, Jan 26, 2017 at 02:09:42PM -0600, Pierre-Louis Bossart wrote:
-> Optional gpio handling should not cause an error status
-> and prevent probing.
-> Remove error return and move error message to dev_info
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> @@ -3660,8 +3660,7 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
->  						       GPIOD_IN);
-> =20
->  	if (IS_ERR(rt5645->gpiod_hp_det)) {
-> -		dev_err(&i2c->dev, "failed to initialize gpiod\n");
-> -		return PTR_ERR(rt5645->gpiod_hp_det);
-> +		dev_info(&i2c->dev, "failed to initialize gpiod\n");
->  	}
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-I'd expect this to depend on what the error is - the normal pattern is
-to check for whatever the error code for "this doesn't exist" is and
-ignore that while treating other things (especially -EPROBE_DEFER but
-also other things) as errors.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---n3zvfqaikqhb3waw
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliQ7PEACgkQJNaLcl1U
-h9A+2Qf+PQveQDV351Tsnl0BhHTcTATeS6f2/7ljp3I76oqidEUqhGYOWSzIkPMo
-r2c/d/xNijc9VUa6R3BLiO36s2BiZBR490eBfVkqY3XikqPTK7kVDzOySxWhZrEM
-rxO/FFOGRiSrqu3IMPzFSgf44q9Zkmo1Yj7tTu9+prbpZ65EXOPIL4IDOQFRHhrQ
-Fa6900M5NFqWxsiy/TPPh8/vKfQTOKxGR6JC/plnSfdEbnoG9zUN3yDGndd3ljOP
-s02ALlfDx5k1h/SCOU5TBmNVIbkbiztW4RbR0GJYekshAE7R/SbXpr4ERVTxdP8T
-HpRFttCFy72h2Z5j6dttMbwQeNUGsw==
-=xDgk
------END PGP SIGNATURE-----
+>From f12f5c84e35c7b66dbc5066a46b502b832b69669 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Thu, 26 Jan 2017 14:09:29 -0600
+Subject: [PATCH] ASoC: Intel: atom: fix frame polarity
 
---n3zvfqaikqhb3waw--
+The current frame sync polarity definitions are inconsistent in the
+Atom/DPCM driver, fix to align with regular ASoC definitions and
+update code in platform and machine drivers for RT5640 and RT5651.
 
---===============8906449012109183192==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/atom/sst-atom-controls.c | 6 ++----
+ sound/soc/intel/boards/bytcr_rt5640.c    | 4 ++--
+ sound/soc/intel/boards/bytcr_rt5651.c    | 2 +-
+ 3 files changed, 5 insertions(+), 7 deletions(-)
 
-
---===============8906449012109183192==--
+diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
+index c7b3cbf92faf..df4430bdafc0 100644
+--- a/sound/soc/intel/atom/sst-atom-controls.c
++++ b/sound/soc/intel/atom/sst-atom-controls.c
+@@ -801,13 +801,11 @@ static int sst_get_frame_sync_polarity(struct snd_soc_dai *dai,
+ 
+ 	switch (format) {
+ 	case SND_SOC_DAIFMT_NB_NF:
+-		return SSP_FS_ACTIVE_LOW;
+-	case SND_SOC_DAIFMT_NB_IF:
++	case SND_SOC_DAIFMT_IB_NF:
+ 		return SSP_FS_ACTIVE_HIGH;
++	case SND_SOC_DAIFMT_NB_IF:
+ 	case SND_SOC_DAIFMT_IB_IF:
+ 		return SSP_FS_ACTIVE_LOW;
+-	case SND_SOC_DAIFMT_IB_NF:
+-		return SSP_FS_ACTIVE_HIGH;
+ 	default:
+ 		dev_err(dai->dev, "Invalid frame sync polarity %d\n", format);
+ 	}
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 9222fdb7af27..1ae4d0ca8064 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -546,7 +546,7 @@ static int byt_rt5640_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 		 */
+ 		ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
+ 					SND_SOC_DAIFMT_I2S     |
+-					SND_SOC_DAIFMT_NB_IF   |
++					SND_SOC_DAIFMT_NB_NF   |
+ 					SND_SOC_DAIFMT_CBS_CFS
+ 			);
+ 		if (ret < 0) {
+@@ -572,7 +572,7 @@ static int byt_rt5640_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 		 */
+ 		ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
+ 					SND_SOC_DAIFMT_I2S     |
+-					SND_SOC_DAIFMT_NB_IF   |
++					SND_SOC_DAIFMT_NB_NF   |
+ 					SND_SOC_DAIFMT_CBS_CFS
+ 			);
+ 		if (ret < 0) {
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 71d801323ff4..3186f015939f 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -185,7 +185,7 @@ static int byt_rt5651_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	 */
+ 	ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
+ 				  SND_SOC_DAIFMT_I2S     |
+-				  SND_SOC_DAIFMT_NB_IF   |
++				  SND_SOC_DAIFMT_NB_NF   |
+ 				  SND_SOC_DAIFMT_CBS_CFS
+ 				  );
+ 
+-- 
+2.11.0
