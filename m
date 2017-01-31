@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Baytrail: add quirk for Lenovo
-	Thinkpad 10" to the asoc tree
-Date: Tue, 31 Jan 2017 21:17:45 +0000
-Message-ID: <E1cYfo9-00012U-45@debutante>
-References: <1485461385-14544-8-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: cht_bsw_rt5645: harden ACPI
+	device detection" to the asoc tree
+Date: Tue, 31 Jan 2017 21:17:48 +0000
+Message-ID: <E1cYfoC-00013K-60@debutante>
+References: <1485461385-14544-14-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0584F267404
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 22:17:53 +0100 (CET)
-In-Reply-To: <1485461385-14544-8-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BFEF2673E8
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 22:17:57 +0100 (CET)
+In-Reply-To: <1485461385-14544-14-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Baytrail: add quirk for Lenovo Thinkpad 10
+   ASoC: Intel: cht_bsw_rt5645: harden ACPI device detection
 
 has been applied to the asoc tree at
 
@@ -53,89 +53,60 @@ to this mail.
 Thanks,
 Mark
 
->From fd0138dc5d17c636477b371d99265c406437c583 Mon Sep 17 00:00:00 2001
+>From 42648c2270ca0c96935dfc5d0f5c4f8d2406cf75 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 26 Jan 2017 14:09:35 -0600
-Subject: [PATCH] ASoC: Intel: Baytrail: add quirk for Lenovo Thinkpad 10
+Date: Thu, 26 Jan 2017 14:09:41 -0600
+Subject: [PATCH] ASoC: Intel: cht_bsw_rt5645: harden ACPI device detection
 
-the BIOS reports this codec as RT5640 but it's a rt5670. Use the
-quirk mechanism to use the cht_bsw_rt5672 machine driver
+Fix classic issue of having multiple codecs listed in DSDT
+but a single one actually enabled. The previous code did
+not handle such errors and could also lead to uninitalized
+configurations
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst/sst_acpi.c | 37 ++++++++++++++++++++++++++++++++++++-
- 1 file changed, 36 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/cht_bsw_rt5645.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index 4c0b89ec42e0..8cc30dfbf87d 100644
---- a/sound/soc/intel/atom/sst/sst_acpi.c
-+++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -400,6 +400,7 @@ static int sst_acpi_remove(struct platform_device *pdev)
- static unsigned long cht_machine_id;
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index 3684bdbd8598..3461e4a88ba8 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -407,22 +407,32 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
+ 	struct sst_acpi_mach *mach;
+ 	const char *i2c_name = NULL;
+ 	int dai_index = 0;
++	bool found = false;
  
- #define CHT_SURFACE_MACH 1
-+#define BYT_THINKPAD_10  2
+ 	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_ATOMIC);
+ 	if (!drv)
+ 		return -ENOMEM;
  
- static int cht_surface_quirk_cb(const struct dmi_system_id *id)
- {
-@@ -407,6 +408,23 @@ static int cht_surface_quirk_cb(const struct dmi_system_id *id)
- 	return 1;
- }
++	mach = (&pdev->dev)->platform_data;
++
+ 	for (i = 0; i < ARRAY_SIZE(snd_soc_cards); i++) {
+-		if (acpi_dev_found(snd_soc_cards[i].codec_id)) {
++		if (acpi_dev_found(snd_soc_cards[i].codec_id) &&
++			(!strncmp(snd_soc_cards[i].codec_id, mach->id, 8))) {
+ 			dev_dbg(&pdev->dev,
+ 				"found codec %s\n", snd_soc_cards[i].codec_id);
+ 			card = snd_soc_cards[i].soc_card;
+ 			drv->acpi_card = &snd_soc_cards[i];
++			found = true;
+ 			break;
+ 		}
+ 	}
++
++	if (!found) {
++		dev_err(&pdev->dev, "No matching HID found in supported list\n");
++		return -ENODEV;
++	}
++
+ 	card->dev = &pdev->dev;
+-	mach = card->dev->platform_data;
+ 	sprintf(drv->codec_name, "i2c-%s:00", drv->acpi_card->codec_id);
  
-+static int byt_thinkpad10_quirk_cb(const struct dmi_system_id *id)
-+{
-+	cht_machine_id = BYT_THINKPAD_10;
-+	return 1;
-+}
-+
-+
-+static const struct dmi_system_id byt_table[] = {
-+	{
-+		.callback = byt_thinkpad10_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "20C3001VHH"),
-+		},
-+	},
-+	{ }
-+};
- 
- static const struct dmi_system_id cht_table[] = {
- 	{
-@@ -424,6 +442,10 @@ static struct sst_acpi_mach cht_surface_mach = {
- 	"10EC5640", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
- 								&chv_platform_data };
- 
-+static struct sst_acpi_mach byt_thinkpad_10 = {
-+	"10EC5640", "cht-bsw-rt5672", "intel/fw_sst_0f28.bin", "cht-bsw", NULL,
-+	                                                        &byt_rvp_platform_data };
-+
- static struct sst_acpi_mach *cht_quirk(void *arg)
- {
- 	struct sst_acpi_mach *mach = arg;
-@@ -436,8 +458,21 @@ static struct sst_acpi_mach *cht_quirk(void *arg)
- 		return mach;
- }
- 
-+static struct sst_acpi_mach *byt_quirk(void *arg)
-+{
-+	struct sst_acpi_mach *mach = arg;
-+
-+	dmi_check_system(byt_table);
-+
-+	if (cht_machine_id == BYT_THINKPAD_10)
-+		return &byt_thinkpad_10;
-+	else
-+		return mach;
-+}
-+
-+
- static struct sst_acpi_mach sst_acpi_bytcr[] = {
--	{"10EC5640", "bytcr_rt5640", "intel/fw_sst_0f28.bin", "bytcr_rt5640", NULL,
-+	{"10EC5640", "bytcr_rt5640", "intel/fw_sst_0f28.bin", "bytcr_rt5640", byt_quirk,
- 						&byt_rvp_platform_data },
- 	{"10EC5642", "bytcr_rt5640", "intel/fw_sst_0f28.bin", "bytcr_rt5640", NULL,
- 						&byt_rvp_platform_data },
+ 	/* set correct codec name */
 -- 
 2.11.0
