@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v8 1/1] ASoC: omap-mcbsp: Add PM QoS
- support for McBSP to prevent glitches
-Date: Tue, 31 Jan 2017 20:22:57 +0000
-Message-ID: <20170131202257.3tft4d2amv2sg42x@sirena.org.uk>
-References: <20170118072600.15239-1-matt@ranostay.consulting>
- <20170127225337.17830-1-liam@networkimprov.net>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 14/17] ASoC: rt5645: fix error handling for
+ gpio detection
+Date: Tue, 31 Jan 2017 14:29:37 -0600
+Message-ID: <2e74f204-05c1-6fa5-6ec4-e95351e7a80a@linux.intel.com>
+References: <1485461385-14544-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <1485461385-14544-15-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <20170131200049.atw7euwvbgsqt7pl@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8717855982876786990=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F520267395
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 21:23:11 +0100 (CET)
-In-Reply-To: <20170127225337.17830-1-liam@networkimprov.net>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id D36B0267395
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 21:29:39 +0100 (CET)
+In-Reply-To: <20170131200049.atw7euwvbgsqt7pl@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,62 +23,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Breck <liam@networkimprov.net>
-Cc: Tony Lindgren <tony@atomide.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Matt Ranostay <matt@ranostay.consulting>
+To: Mark Brown <broonie@kernel.org>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8717855982876786990==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="hbg2gokfd6d55zgx"
-Content-Disposition: inline
 
-
---hbg2gokfd6d55zgx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Jan 27, 2017 at 02:53:37PM -0800, Liam Breck wrote:
-
-> Link: https://patchwork.kernel.org/patch/9305867/
->=20
-> From: Matt Ranostay <matt@ranostay.consulting>
-> Cc: Tony Lindgren <tony@atomide.com>
-> Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> Signed-off-by: Matt Ranostay <matt@ranostay.consulting>
-> Tested-by: Tony Lindgren <tony@atomide.com>
-> Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-> ---
-
-I can't do anything with this as you have not provided a signoff,
-please see SubmittingPatches for details about what the signoff means
-and why it's important.
-
-This also seems to be the first time you've sent this to me...
-
---hbg2gokfd6d55zgx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliQ8iEACgkQJNaLcl1U
-h9AsWgf/REtkQu80s3g9jcq6E/PBSqfsqCMyOCEVbjjsCyX8alFVgQyplLjfwKnh
-a6XRYob/ucYODGhdm1R160wGZuaVTsbBFPKhdTD7n2rFEbIvqcYX6qwVsmCtXWsZ
-y8FuXZdnr+2g9gkLLj6b7FVGGa6F61rVed1RAXBn3LUkm5aJHFg1YWxdq30ONXlk
-6hFR4tMLIHZoNaZUj++K5ld8NIn32ERgZERVUmiwOZl6EgAjgXDLnHl/6xKIoOvC
-bepi3CS9QLQBz8Pc2xcaF927KA88YMYfPBT/PKcmZE0hpX+Xv+CPwHR/S9Veo+fI
-3LItcmSR+Ppi/DzV5GydaxHU3Fdrpg==
-=J4C/
------END PGP SIGNATURE-----
-
---hbg2gokfd6d55zgx--
-
---===============8717855982876786990==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8717855982876786990==--
+On 01/31/2017 02:00 PM, Mark Brown wrote:
+> On Thu, Jan 26, 2017 at 02:09:42PM -0600, Pierre-Louis Bossart wrote:
+>> Optional gpio handling should not cause an error status
+>> and prevent probing.
+>> Remove error return and move error message to dev_info
+>> @@ -3660,8 +3660,7 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+>>   						       GPIOD_IN);
+>>   
+>>   	if (IS_ERR(rt5645->gpiod_hp_det)) {
+>> -		dev_err(&i2c->dev, "failed to initialize gpiod\n");
+>> -		return PTR_ERR(rt5645->gpiod_hp_det);
+>> +		dev_info(&i2c->dev, "failed to initialize gpiod\n");
+>>   	}
+> I'd expect this to depend on what the error is - the normal pattern is
+> to check for whatever the error code for "this doesn't exist" is and
+> ignore that while treating other things (especially -EPROBE_DEFER but
+> also other things) as errors.
+yes, I'll apply the same filter on -ENOENT as for the test for the 
+mclock last month. I should have thought about it, thanks for pointing 
+this out.
