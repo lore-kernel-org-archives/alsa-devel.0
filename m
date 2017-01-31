@@ -1,38 +1,44 @@
-From: kbuild test robot <lkp-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
-Subject: Re: [PATCH v3 3/8] ASoC: Add sun8i digital audio codec
-Date: Tue, 31 Jan 2017 19:34:11 +0800
-Message-ID: <201701311952.eSnc2r78%fengguang.wu@intel.com>
-References: <20170131100552.27949-4-mylene.josserand@free-electrons.com>
+From: Nicholas Bailey <Nicholas.Bailey@glasgow.ac.uk>
+Subject: Re: Ceasing ALSA involvement due to persistent
+	ill-treatment
+Date: Tue, 31 Jan 2017 12:13:19 +0000
+Message-ID: <3689250.PaPlpRF3HL@ariel>
+References: <20170130134531.GH10561@marvin.atrad.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20170131100552.27949-4-mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: kbuild-all-JC7UmRfGjtg@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from hillend.cent.gla.ac.uk (hillend.cent.gla.ac.uk [130.209.16.102])
+ by alsa0.perex.cz (Postfix) with ESMTP id E154B267343
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 13:13:20 +0100 (CET)
+Received: from cas06.campus.gla.ac.uk ([130.209.14.39])
+ by hillend.cent.gla.ac.uk with esmtp (Exim 4.72)
+ (envelope-from <Nicholas.Bailey@glasgow.ac.uk>) id 1cYXJI-0006rJ-80
+ for alsa-devel@alsa-project.org; Tue, 31 Jan 2017 12:13:20 +0000
+In-Reply-To: <20170130134531.GH10561@marvin.atrad.com.au>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mylène,
+On Tuesday, 31 January 2017 00:15:31 GMT Jonathan Woithe wrote:
+> ...
+> tolerated) by some, so instead I will devote my time to the maintenance of
+> FFADO and my other Open Source projects.
+>
+Thank heaven's for that! We use it all the time. Very solid. Thank you for all 
+your work on FFADO, and I wish I'd said that under happier circumstances.
 
-[auto build test WARNING on next-20170130]
-[also build test WARNING on v4.10-rc6]
-[cannot apply to asoc/for-next robh/for-next mripard/sunxi/for-next v4.9-rc8 v4.9-rc7 v4.9-rc6]
-[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
-
-url:    https://github.com/0day-ci/linux/commits/Myl-ne-Josserand/Add-sun8i-A33-audio-driver/20170131-181539
-
-
-coccinelle warnings: (new ones prefixed by >>)
-
->> sound/soc/sunxi/sun8i-codec.c:487:3-8: No need to set .owner here. The core will do it.
-
-Please review and possibly fold the followup patch.
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Nick Bailey
+Director
+Science and Music Research Group
+School of Engineering
+The University of Glasgow
+UK
