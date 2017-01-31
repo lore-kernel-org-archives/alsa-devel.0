@@ -1,18 +1,14 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: sound: unable to handle kernel paging request
-	snd_seq_prioq_cell_out
-Date: Tue, 31 Jan 2017 11:04:46 +0100
-Message-ID: <CACT4Y+YdhDV2H5LLzDTJDVF-qiYHUHhtRaW4rbb4gUhTCQB81w@mail.gmail.com>
+From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?= <mylene.josserand@free-electrons.com>
+Subject: [PATCH v3 0/8] Add sun8i A33 audio driver
+Date: Tue, 31 Jan 2017 11:05:44 +0100
+Message-ID: <20170131100552.27949-1-mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk0-f50.google.com (mail-vk0-f50.google.com
- [209.85.213.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C20E267268
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 11:05:07 +0100 (CET)
-Received: by mail-vk0-f50.google.com with SMTP id t8so233703627vke.3
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 02:05:07 -0800 (PST)
+Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 466E9267268
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 11:08:18 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,66 +18,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
-Cc: syzkaller <syzkaller@googlegroups.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, maxime.ripard@free-electrons.com, wens@csie.org, perex@perex.cz, tiwai@suse.com
+Cc: thomas.petazzoni@free-electrons.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, alexandre.belloni@free-electrons.com, mylene.josserand@free-electrons.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
-The following program triggers wild memory access in snd_seq_prioq_cell_out:
-https://gist.githubusercontent.com/dvyukov/e0bfb47caf577217b3b0550866cba00b/raw/111473e99109fc96a1d3e252c3b8f982e8eaa265/gistfile1.txt
-
-BUG: unable to handle kernel paging request at ffffc9000392ddb8
-IP: snd_seq_prioq_cell_out+0x11d/0x260 sound/core/seq/seq_prioq.c:231
-PGD 6cc6f067
-PUD 6cc70067
-PMD 5f94c067
-PTE 0
-Oops: 0000 [#1] SMP KASAN
-Modules linked in:
-CPU: 2 PID: 375 Comm: syz-executor Not tainted 4.10.0-rc5+ #201
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
-task: ffff880066f92500 task.stack: ffff88005f740000
-RIP: 0010:snd_seq_prioq_cell_out+0x11d/0x260 sound/core/seq/seq_prioq.c:231
-RSP: 0018:ffff88005f7470b8 EFLAGS: 00010046
-RAX: dffffc0000000000 RBX: 1ffff1000bee8e18 RCX: ffffc90000c22000
-RDX: 1ffff92000725bb7 RSI: ffffffff8348787e RDI: ffffc9000392ddb8
-RBP: ffff88005f747208 R08: 0000000000000001 R09: 0000000000000001
-R10: dffffc0000000000 R11: 0000000000000004 R12: ffff8800673cbe80
-R13: ffff88005f7471e0 R14: ffffc9000392dd90 R15: ffff8800673cbe98
-FS:  00007f5262fee700(0000) GS:ffff88006d100000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffc9000392ddb8 CR3: 0000000066209000 CR4: 00000000001406e0
-Call Trace:
- snd_seq_prioq_delete+0x8b/0xf0 sound/core/seq/seq_prioq.c:90
- queue_delete+0x77/0xb0 sound/core/seq/seq_queue.c:152
- snd_seq_queue_client_leave+0x34/0x130 sound/core/seq/seq_queue.c:595
- seq_free_client1.part.5+0x10a/0x410 sound/core/seq/seq_clientmgr.c:258
- seq_free_client1 sound/core/seq/seq_clientmgr.c:255 [inline]
- seq_free_client+0x6f/0x170 sound/core/seq/seq_clientmgr.c:284
- snd_seq_release+0x51/0xe0 sound/core/seq/seq_clientmgr.c:366
- __fput+0x332/0x7f0 fs/file_table.c:208
- ____fput+0x15/0x20 fs/file_table.c:244
- task_work_run+0x18a/0x260 kernel/task_work.c:116
- get_signal+0x148f/0x1820 kernel/signal.c:2143
- do_signal+0xd2/0x2190 arch/x86/kernel/signal.c:807
- exit_to_usermode_loop+0x200/0x2a0 arch/x86/entry/common.c:156
- prepare_exit_to_usermode arch/x86/entry/common.c:190 [inline]
- syscall_return_slowpath+0x4d3/0x570 arch/x86/entry/common.c:259
- entry_SYSCALL_64_fastpath+0xc0/0xc2
-RIP: 0033:0x4457d9
-RSP: 002b:00007f5262fedb58 EFLAGS: 00000286 ORIG_RAX: 0000000000000010
-RAX: 0000000000000000 RBX: 00000000007080a8 RCX: 00000000004457d9
-RDX: 0000000020001000 RSI: 000000004058534c RDI: 0000000000000005
-RBP: 0000000000002250 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000286 R12: 00000000006e0310
-R13: 0000000000000005 R14: 000000004058534c R15: 0000000020001000
-Code: f6 0f 84 90 00 00 00 e8 02 1e 2a fe 49 8d 7e 28 48 b8 00 00 00
-00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 1f 01 00 00 <49>
-8b 46 28 49 8d 7c 24 08 48 89 fa 49 89 04 24 48 c1 ea 03 48
-RIP: snd_seq_prioq_cell_out+0x11d/0x260 sound/core/seq/seq_prioq.c:231
-RSP: ffff88005f7470b8
-CR2: ffffc9000392ddb8
----[ end trace cbaec69c4a9fdbfc ]---
-
-On commit fd694aaa46c7ed811b72eb47d5eb11ce7ab3f7f1 (Jan 26).
+SGVsbG8gZXZlcnlvbmUsCgpUaGlzIGEgVjMgb2YgbXkgQWxsd2lubmVyIEEzMyAoc3VuOGkpIGF1
+ZGlvIGNvZGVjIGRyaXZlci4KVGVzdGVkIG9uIGxpbnV4LW5leHQtMjAxNzAxMzEgdGFnLgoKQ2hh
+bmdlcyBzaW5jZSBWMjoKCS0gUmVtb3ZlZCBwYXRjaGVzIGZyb20gdjIgYWxyZWFkeSBtZXJnZWQ6
+Cgljb21taXQgZWJhZDY0ZDE5Mzc3OSAoIkFTb0M6IHN1bjRpLWkyczogSW5jcmVhc2UgRE1BIG1h
+eCBidXJzdCB0byA4IikKCWNvbW1pdCA2MDNhMGM4YWY5Y2IyICgiY2xrOiBzdW54aS1uZzogYTMz
+OiBBZGQgQ0xLX1NFVF9SQVRFX1BBUkVOVCB0byBhYy1kaWciKQoJLSBSZW1vdmVkICJyZXNldC1u
+YW1lcyIgZnJvbSBzdW40aS1pMnMgZHJpdmVyCgktIEZpeGVkIHRoZSBidWlsZCB3YXJuaW5nIGZy
+b20gc3VuOGktY29kZWMKCS0gRml4ZWQgc29tZSB2YXJpb3VzIHRvcGljcyBzdWNoIGFzIHN1Ympl
+Y3QgbGluZQoJZm9yIGR0IGJpbmRpbmdzIHBhdGNoLCByZW5hbWVkIHRoZSBzaW1wbGUtY2FyZAoJ
+YW5kIGRpc2FibGVkIHRoZSBzaW1wbGUtY2FyZC4KCkNoYW5nZXMgc2luY2UgVjE6CgktIFJlbW92
+ZSB0aGUgYW5hbG9nIGNvZGVjIGRyaXZlciBhcyBhIGJldHRlciB2ZXJzaW9uIGhhcyBiZWVuCglj
+b21taXR0ZWQgYnkgQ2hlbi1ZdSBUc2FpIGFuZCBpcyBhbHJlYWR5IG1lcmdlZC4KCS0gUmVtb3Zl
+IHRoZSBhdWRpby1jYXJkIGFzIHNpbXBsZS1jYXJkIGNhbiBiZSB1c2VkCgktIFRoZSBETUEgbWF4
+YnVyc3QgaXMgc2V0IHRvIDggaW4gdGhlIHN1bjRpLWkycyBpbnN0ZWFkIG9mCglhZGRpbmcgdGhl
+IG1heGJ1cnN0IG9mIDQgaW4gU3VuNmkgZG1hIGVuZ2luZS4KCS0gQ3JlYXRlIGEgbmV3IGNvbXBh
+dGlibGUgZm9yIHN1bjRpLWkycyB0byBoYW5kbGUgdGhlIHJlc2V0CglsaW5lLgoJLSBGaXggdmFy
+aW91cyBwcm9ibGVtcyBpbiBzdW44aS1jb2RlYyBkcml2ZXIgYWNjb3JkaW5nIHRvIFYxJ3MKCXJl
+dmlld3MKCS0gQWRkIHRoZSBwbV9ydW50aW1lIGhvb2tzIGluIHN1bjhpLWNvZGVjIGRyaXZlciB0
+byBwcmVwYXJlLwoJdW5wcmVwYXJlIGNsb2Nrcy4KCS0gVXBkYXRlIHRoZSBEVFMgYWNjb3JkaW5n
+IHRvIENoZW4tWXUncyBhbmFsb2cgY29kZWMgZHJpdmVyLgoJLSBSZW5hbWUgc3VuOGktY29kZWMn
+cyBjbG9ja3MgdG8gImJ1cyIgYW5kICJtb2QiCgktIFRoZSBmaXJzdCAiZGVsYXkiIGlzc3VlIGZy
+b20gVjEgaXMgZml4ZWQgYnkgdXNpbmcgYSBkZWxheQoJd2hlbiBlbmFibGluZyB0aGUgaGVhZHBo
+b25lIGFtcGxpZmllciB0byBsZXQgdGhlIGFtcGxpZmllcgoJYmVpbmcgdXAuCgpQYXRjaGVzIDEg
+YW5kIDIgYWRkIGEgbmV3IGNvbXBhdGlibGUgImFsbHdpbm5lcixzdW42aS1hMzEtaTJzIgp0byBo
+YW5kbGUgdGhlIHJlc2V0IGxpbmUgZm9yIHN1bjRpLWkycyBkcml2ZXIuIEl0IHVzZXMgYSBxdWly
+ayB0bwp1c2UgYSB2ZXJzaW9uIHdpdGggb3Igd2l0aG91dCByZXNldCBsaW5lcy4KClBhdGNoIDMg
+YWRkcyB0aGUgc3VuOGkgY29kZWMgZHJpdmVyIHdoaWNoIHJlcHJlc2VudHMgdGhlIGRpZ2l0YWwg
+cGFydApvZiB0aGUgQTMzIGNvZGVjLiBJdCBzdXBwb3J0cyBvbmx5IHBsYXliYWNrIGZlYXR1cmVz
+LgoKUGF0aCA0IGZpeGVzIHRoZSBwcmV2aW91cyBpc3N1ZSBvZiBhICJmaXJzdCB0aW1lIGRlbGF5
+IiBpbiBWMSAoc2VlIGNvdmVyCmxldHRlcikuIERvIG5vdCBoZXNpdGF0ZSBpZiB5b3UgaGF2ZSBj
+b21tZW50cyBvbiB0aGlzIHBhdGNoLgoKUGF0Y2hlcyA1IGFkZHMgdGhlIGR0LWJpbmRpbmdzIGRv
+Y3VtZW50YXRpb24gZm9yIG5ldyBhdWRpbyBkcml2ZXIKYWRkZWQgaW4gdGhpcyBzZXJpZSAoc3Vu
+OGktY29kZWMpLgoKUGF0Y2ggNiBhZGRzIHRoZSBjcHUgREFJLCBjb2RlYyBhbmQgYXVkaW8gbm9k
+ZXMgdG8gc3VuOGktYTMzIGRldmljZSB0cmVlLgoKUGF0Y2hlcyA3IGFuZCA4IGVuYWJsZSB0aGUg
+YXVkaW8gb24gUGFycm90IGFuZCBTaW5saW54J3MgYm9hcmRzLgoKVGhlIERBSSBmb3IgdGhpcyBB
+MzMgY29kZWMgaXMgdGhlIHNhbWUgdGhhbiBmb3IgQTIwOiAic3VuNGktaTJzIi4KQ3VycmVudGx5
+LCB0aGUgc3VuOGktYTMzIGNvZGVjIGRyaXZlciBoYW5kbGVzIG9ubHkgdGhlIHBsYXliYWNrIGZl
+YXR1cmUuClRoZSBvdGhlciBvbmVzIChzdWNoIGFzIGNhcHR1cmUpIGFuZCBhbGwgb3RoZXIgaW50
+ZXJmYWNlcyBleGNlcHQKaGVhZHBob25lIGFyZSBub3Qgc3VwcG9ydGVkLiBJIHdpbGwgc2VuZCBh
+IHBhdGNoIHRvIGhhbmRsZSB0aGUKY2FwdHVyZSB3aXRoIG1pY3JvcGhvbmVzIGluIG5leHQgZmV3
+IHdlZWtzLgoKRXhhbXBsZXMgb2YgYW1peGVyIGNvbW1hbmRzOgoJYW1peGVyIHNldCAnSGVhZHBo
+b25lJyA3NSUKCWFtaXhlciBzZXQgJ0hlYWRwaG9uZScgb24KCWFtaXhlciBzZXQgJ0RBQycgb24K
+CWFtaXhlciBzZXQgJ1JpZ2h0IERBQyBNaXhlciBSU2xvdCAwJyBvbgoJYW1peGVyIHNldCAnTGVm
+dCBEQUMgTWl4ZXIgTFNsb3QgMCcgb24KCkl0IHdhcyB0ZXN0ZWQgb24gUGFycm90IGFuZCBTaW5s
+aW54IGJvYXJkcy4KCkxldCBtZSBrbm93IGlmIHlvdSBoYXZlIGFueSBjb21tZW50cyBvbiB0aGlz
+IHNlcmllLgoKVGhhbmsgeW91IGluIGFkdmFuY2UsCkJlc3QgcmVnYXJkcywKCk15bMOobmUgSm9z
+c2VyYW5kICg4KToKICBBU29DOiBzdW40aS1pMnM6IFVwZGF0ZSBiaW5kaW5nIGRvY3VtZW50YXRp
+b24gdG8gaW5jbHVkZSBBMzEKICBBU29DOiBzdW40aS1pMnM6IEFkZCBxdWlya3MgdG8gaGFuZGxl
+IGEzMSBjb21wYXRpYmxlCiAgQVNvQzogQWRkIHN1bjhpIGRpZ2l0YWwgYXVkaW8gY29kZWMKICBB
+U29DOiBzdW44aS1jb2RlYy1hbmFsb2c6IEFkZCBhbXBsaWZpZXIgZXZlbnQgdG8gZml4IGZpcnN0
+IGRlbGF5CiAgQVNvQzogY29kZWNzOiBBZGQgc3VuOGktYTMzIGJpbmRpbmcgZG9jdW1lbnRhdGlv
+bgogIEFSTTogZHRzOiBzdW44aTogQWRkIGF1ZGlvIGNvZGVjLCBkYWkgYW5kIGNhcmQgZm9yIEEz
+MwogIEFSTTogZHRzOiBzdW44aTogcGFycm90OiBFbmFibGUgYXVkaW8gbm9kZXMKICBBUk06IGR0
+czogc3VuOGk6IHNpbmxpbng6IEVuYWJsZSBhdWRpbyBub2RlcwoKIC4uLi9kZXZpY2V0cmVlL2Jp
+bmRpbmdzL3NvdW5kL3N1bjRpLWkycy50eHQgICAgICAgIHwgICA1ICsKIC4uLi9kZXZpY2V0cmVl
+L2JpbmRpbmdzL3NvdW5kL3N1bjhpLWEzMy1jb2RlYy50eHQgIHwgIDc1ICsrKysKIGFyY2gvYXJt
+L2Jvb3QvZHRzL3N1bjhpLWEzMy1zaW5saW54LXNpbmEzMy5kdHMgICAgIHwgIDEyICsKIGFyY2gv
+YXJtL2Jvb3QvZHRzL3N1bjhpLWEzMy5kdHNpICAgICAgICAgICAgICAgICAgIHwgIDQ1ICsrCiBh
+cmNoL2FybS9ib290L2R0cy9zdW44aS1yMTYtcGFycm90LmR0cyAgICAgICAgICAgICB8ICAxMiAr
+CiBzb3VuZC9zb2Mvc3VueGkvS2NvbmZpZyAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAx
+MSArCiBzb3VuZC9zb2Mvc3VueGkvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICAgICAgICB8
+ICAgMSArCiBzb3VuZC9zb2Mvc3VueGkvc3VuNGktaTJzLmMgICAgICAgICAgICAgICAgICAgICAg
+ICB8ICA1NyArKy0KIHNvdW5kL3NvYy9zdW54aS9zdW44aS1jb2RlYy1hbmFsb2cuYyAgICAgICAg
+ICAgICAgIHwgIDMwICstCiBzb3VuZC9zb2Mvc3VueGkvc3VuOGktY29kZWMuYyAgICAgICAgICAg
+ICAgICAgICAgICB8IDQ5OSArKysrKysrKysrKysrKysrKysrKysKIDEwIGZpbGVzIGNoYW5nZWQs
+IDc0MyBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQogY3JlYXRlIG1vZGUgMTAwNjQ0IERv
+Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9zdW44aS1hMzMtY29kZWMudHh0
+CiBjcmVhdGUgbW9kZSAxMDA2NDQgc291bmQvc29jL3N1bnhpL3N1bjhpLWNvZGVjLmMKCi0tIAoy
+LjExLjAKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
+c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
