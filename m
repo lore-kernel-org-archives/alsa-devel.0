@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Atom: add machine driver for
-	baytrail-rt5645 hardware" to the asoc tree
-Date: Tue, 31 Jan 2017 21:17:51 +0000
-Message-ID: <E1cYfoF-00014b-6f@debutante>
-References: <1485461385-14544-12-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: rt5645: add support for RT5648" to the
+	asoc tree
+Date: Tue, 31 Jan 2017 21:17:54 +0000
+Message-ID: <E1cYfoI-00015f-9J@debutante>
+References: <1485461385-14544-9-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1ACF92673F2
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 22:17:59 +0100 (CET)
-In-Reply-To: <1485461385-14544-12-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 23D30267436
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 22:18:02 +0100 (CET)
+In-Reply-To: <1485461385-14544-9-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Atom: add machine driver for baytrail-rt5645 hardware
+   ASoC: rt5645: add support for RT5648
 
 has been applied to the asoc tree at
 
@@ -53,35 +53,43 @@ to this mail.
 Thanks,
 Mark
 
->From e1d06914542a198a6ab3d41b9d7f5d62dd744f8b Mon Sep 17 00:00:00 2001
+>From 11ad80898620e09bde6ced7147a5f762bcecce81 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 26 Jan 2017 14:09:39 -0600
-Subject: [PATCH] ASoC: Intel: Atom: add machine driver for baytrail-rt5645
- hardware
+Date: Thu, 26 Jan 2017 14:09:36 -0600
+Subject: [PATCH] ASoC: rt5645: add support for RT5648
 
-Use machine driver initially defined for CherryTrail
+add ACPI ID 10EC5648 found e.g on Asus X205TA and use
+rt5645 driver
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst/sst_acpi.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/codecs/rt5645.c               | 1 +
+ sound/soc/intel/boards/cht_bsw_rt5645.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index 0699ce511755..4c0b89ec42e0 100644
---- a/sound/soc/intel/atom/sst/sst_acpi.c
-+++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -445,6 +445,12 @@ static struct sst_acpi_mach sst_acpi_bytcr[] = {
- 						&byt_rvp_platform_data },
- 	{"10EC5651", "bytcr_rt5651", "intel/fw_sst_0f28.bin", "bytcr_rt5651", NULL,
- 						&byt_rvp_platform_data },
-+	/* some Baytrail platforms rely on RT5645, use CHT machine driver */
-+	{"10EC5645", "cht-bsw-rt5645", "intel/fw_sst_0f28.bin", "cht-bsw", NULL,
-+						&byt_rvp_platform_data },
-+	{"10EC5648", "cht-bsw-rt5645", "intel/fw_sst_0f28.bin", "cht-bsw", NULL,
-+						&byt_rvp_platform_data },
-+
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 10c2a564a715..ccfabeb8aab7 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3545,6 +3545,7 @@ MODULE_DEVICE_TABLE(i2c, rt5645_i2c_id);
+ #ifdef CONFIG_ACPI
+ static const struct acpi_device_id rt5645_acpi_match[] = {
+ 	{ "10EC5645", 0 },
++	{ "10EC5648", 0 },
+ 	{ "10EC5650", 0 },
+ 	{ "10EC5640", 0 },
  	{},
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index 468228b73b0b..3684bdbd8598 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -380,6 +380,7 @@ static struct snd_soc_card snd_soc_card_chtrt5650 = {
+ static struct cht_acpi_card snd_soc_cards[] = {
+ 	{"10EC5640", CODEC_TYPE_RT5645, &snd_soc_card_chtrt5645},
+ 	{"10EC5645", CODEC_TYPE_RT5645, &snd_soc_card_chtrt5645},
++	{"10EC5648", CODEC_TYPE_RT5645, &snd_soc_card_chtrt5645},
+ 	{"10EC5650", CODEC_TYPE_RT5650, &snd_soc_card_chtrt5650},
  };
  
 -- 
