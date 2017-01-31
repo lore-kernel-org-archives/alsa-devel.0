@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8741: Remove unused WM8741_NUM_RATES
-	macro" to the asoc tree
-Date: Tue, 31 Jan 2017 21:17:23 +0000
-Message-ID: <E1cYfnn-0000rY-Hz@debutante>
-References: <1485555653-11326-1-git-send-email-ce3a@gmx.de>
+Subject: Applied "ASoC: Intel: cht-bsw-rt5645: select ASRC
+	source based on routing quirk" to the asoc tree
+Date: Tue, 31 Jan 2017 21:17:35 +0000
+Message-ID: <E1cYfnz-0000ya-Pk@debutante>
+References: <1485461385-14544-17-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 51FDA2673ED
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 22:17:35 +0100 (CET)
-In-Reply-To: <1485555653-11326-1-git-send-email-ce3a@gmx.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id A1CD72673FE
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 22:17:44 +0100 (CET)
+In-Reply-To: <1485461385-14544-17-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sergej Sawazki <ce3a@gmx.de>
-Cc: ckeepax@opensource.wolfsonmicro.com, broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8741: Remove unused WM8741_NUM_RATES macro
+   ASoC: Intel: cht-bsw-rt5645: select ASRC source based on routing quirk
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,57 @@ to this mail.
 Thanks,
 Mark
 
->From c9b0bdc74735a5173cdce67f8a85f85c2e8bccee Mon Sep 17 00:00:00 2001
-From: Sergej Sawazki <ce3a@gmx.de>
-Date: Fri, 27 Jan 2017 23:20:53 +0100
-Subject: [PATCH] ASoC: wm8741: Remove unused WM8741_NUM_RATES macro
+>From d74390b5fe47710e94b03b550d1b8b8f249cd416 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Thu, 26 Jan 2017 14:09:44 -0600
+Subject: [PATCH] ASoC: Intel: cht-bsw-rt5645: select ASRC source based on
+ routing quirk
 
-This macro is unused since commit e369bd006fd6 ("ASoC: wm8741: Allow master
-clock switching").
+Some platforms use AIF2, use routing information to set ASRC as needed
 
-Signed-off-by: Sergej Sawazki <ce3a@gmx.de>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Suggested-by: Bard Liao <bardliao@realtek.com>
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=95681
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8741.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/intel/boards/cht_bsw_rt5645.c | 25 ++++++++++++++++++-------
+ 1 file changed, 18 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
-index 565d477cd790..b8c1940f2243 100644
---- a/sound/soc/codecs/wm8741.c
-+++ b/sound/soc/codecs/wm8741.c
-@@ -37,8 +37,6 @@ static const char *wm8741_supply_names[WM8741_NUM_SUPPLIES] = {
- 	"DVDD",
- };
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index 24b07601fb81..b175eee5d416 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -265,13 +265,24 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ 	struct snd_soc_dai *codec_dai = runtime->codec_dai;
+ 	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(runtime->card);
  
--#define WM8741_NUM_RATES 6
--
- /* codec private data */
- struct wm8741_priv {
- 	struct wm8741_platform_data pdata;
+-	/* Select clk_i2s1_asrc as ASRC clock source */
+-	rt5645_sel_asrc_clk_src(codec,
+-				RT5645_DA_STEREO_FILTER |
+-				RT5645_DA_MONO_L_FILTER |
+-				RT5645_DA_MONO_R_FILTER |
+-				RT5645_AD_STEREO_FILTER,
+-				RT5645_CLK_SEL_I2S1_ASRC);
++	if ((cht_rt5645_quirk & CHT_RT5645_SSP2_AIF2) ||
++	    (cht_rt5645_quirk & CHT_RT5645_SSP0_AIF2)) {
++		/* Select clk_i2s2_asrc as ASRC clock source */
++		rt5645_sel_asrc_clk_src(codec,
++					RT5645_DA_STEREO_FILTER |
++					RT5645_DA_MONO_L_FILTER |
++					RT5645_DA_MONO_R_FILTER |
++					RT5645_AD_STEREO_FILTER,
++					RT5645_CLK_SEL_I2S2_ASRC);
++	} else {
++		/* Select clk_i2s1_asrc as ASRC clock source */
++		rt5645_sel_asrc_clk_src(codec,
++					RT5645_DA_STEREO_FILTER |
++					RT5645_DA_MONO_L_FILTER |
++					RT5645_DA_MONO_R_FILTER |
++					RT5645_AD_STEREO_FILTER,
++					RT5645_CLK_SEL_I2S1_ASRC);
++	}
+ 
+ 	if (cht_rt5645_quirk & CHT_RT5645_SSP2_AIF2) {
+ 		ret = snd_soc_dapm_add_routes(&card->dapm,
 -- 
 2.11.0
