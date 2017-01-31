@@ -1,34 +1,30 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: add support for ALC3270 codec"
-	to the asoc tree
-Date: Tue, 31 Jan 2017 21:17:32 +0000
-Message-ID: <E1cYfnw-0000va-MZ@debutante>
-References: <1485461385-14544-13-git-send-email-pierre-louis.bossart@linux.intel.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: mt8173-max98090: remove the call to
+ snd_soc_jack_add_pins." to the asoc tree
+Date: Tue, 31 Jan 2017 21:17:26 +0000
+Message-ID: <E1cYfnq-0000t3-J0@debutante>
+References: <20170127152042.7631-1-enric.balletbo@collabora.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C74C2673EF
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 22:17:41 +0100 (CET)
-In-Reply-To: <1485461385-14544-13-git-send-email-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <20170127152042.7631-1-enric.balletbo-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: Enric Balletbo i Serra <enric.balletbo-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: add support for ALC3270 codec
+   ASoC: mt8173-max98090: remove the call to snd_soc_jack_add_pins.
 
 has been applied to the asoc tree at
 
@@ -53,48 +49,46 @@ to this mail.
 Thanks,
 Mark
 
->From bf92c6efc68add6b934a2790f650a675a4c38286 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 26 Jan 2017 14:09:40 -0600
-Subject: [PATCH] ASoC: Intel: add support for ALC3270 codec
+>From b1b9e0d3d98ebb1a228d9994b4c9dbac7215e2b9 Mon Sep 17 00:00:00 2001
+From: Enric Balletbo i Serra <enric.balletbo-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Date: Fri, 27 Jan 2017 16:20:42 +0100
+Subject: [PATCH] ASoC: mt8173-max98090: remove the call to
+ snd_soc_jack_add_pins.
 
-Use ACPI ID 10EC3270 to load machine driver for cht-bsw-rt5645
-and add reference to 3270 to use the rt5645 mode
+The snd_soc_card_jack_new function can call snd_soc_jack_add_pins for
+you, so pass directly the pins struct when you create the new jack.
 
-Tested on Asus T100HA
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/intel/atom/sst/sst_acpi.c     | 3 +++
- sound/soc/intel/boards/cht_bsw_rt5645.c | 1 +
- 2 files changed, 4 insertions(+)
+ sound/soc/mediatek/mt8173/mt8173-max98090.c | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index 8cc30dfbf87d..747c0f393d2d 100644
---- a/sound/soc/intel/atom/sst/sst_acpi.c
-+++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -499,6 +499,9 @@ static struct sst_acpi_mach sst_acpi_chv[] = {
- 						&chv_platform_data },
- 	{"10EC5650", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
- 						&chv_platform_data },
-+	{"10EC3270", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
-+						&chv_platform_data },
-+
- 	{"193C9890", "cht-bsw-max98090", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
- 						&chv_platform_data },
- 	/* some CHT-T platforms rely on RT5640, use Baytrail machine driver */
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index b175eee5d416..a97eef6860ff 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -500,6 +500,7 @@ static struct cht_acpi_card snd_soc_cards[] = {
- 	{"10EC5640", CODEC_TYPE_RT5645, &snd_soc_card_chtrt5645},
- 	{"10EC5645", CODEC_TYPE_RT5645, &snd_soc_card_chtrt5645},
- 	{"10EC5648", CODEC_TYPE_RT5645, &snd_soc_card_chtrt5645},
-+	{"10EC3270", CODEC_TYPE_RT5645, &snd_soc_card_chtrt5645},
- 	{"10EC5650", CODEC_TYPE_RT5650, &snd_soc_card_chtrt5650},
- };
+diff --git a/sound/soc/mediatek/mt8173/mt8173-max98090.c b/sound/soc/mediatek/mt8173/mt8173-max98090.c
+index 5524a2c727ec..46c8e6ae00b4 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-max98090.c
++++ b/sound/soc/mediatek/mt8173/mt8173-max98090.c
+@@ -79,17 +79,11 @@ static int mt8173_max98090_init(struct snd_soc_pcm_runtime *runtime)
+ 
+ 	/* enable jack detection */
+ 	ret = snd_soc_card_jack_new(card, "Headphone", SND_JACK_HEADPHONE,
+-				    &mt8173_max98090_jack, NULL, 0);
++				    &mt8173_max98090_jack,
++				    mt8173_max98090_jack_pins,
++				    ARRAY_SIZE(mt8173_max98090_jack_pins));
+ 	if (ret) {
+-		dev_err(card->dev, "Can't snd_soc_jack_new %d\n", ret);
+-		return ret;
+-	}
+-
+-	ret = snd_soc_jack_add_pins(&mt8173_max98090_jack,
+-				    ARRAY_SIZE(mt8173_max98090_jack_pins),
+-				    mt8173_max98090_jack_pins);
+-	if (ret) {
+-		dev_err(card->dev, "Can't snd_soc_jack_add_pins %d\n", ret);
++		dev_err(card->dev, "Can't create a new Jack %d\n", ret);
+ 		return ret;
+ 	}
  
 -- 
 2.11.0
