@@ -1,17 +1,24 @@
-From: Romain Perier <romain.perier@collabora.com>
-Subject: [PATCH v7 4/4] arm: dts: Add support for ES8388 to the
-	Radxa Rock 2
-Date: Tue, 31 Jan 2017 15:55:26 +0100
-Message-ID: <20170131145526.26808-5-romain.perier@collabora.com>
-References: <20170131145526.26808-1-romain.perier@collabora.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH 2/7] MFD: add STM32 DFSDM support
+Date: Tue, 31 Jan 2017 16:30:38 +0100
+Message-ID: <72ac395d-645f-08f6-c6f4-6b3d94187a78@st.com>
+References: <1485189145-29576-1-git-send-email-arnaud.pouliquen@st.com>
+ <1485189145-29576-3-git-send-email-arnaud.pouliquen@st.com>
+ <20170124082249.GR16020@dell> <283c0e48-55e2-6516-369d-91dc72d12f73@st.com>
+ <20170124113658.GW16020@dell> <a1aaaa20-ac00-b182-f1c1-63152be41135@st.com>
+ <20170127101545.g53uah57vgfu55o5@dell>
+ <7b3eb38d-4fd1-2006-7423-94f2a7b38b27@st.com>
+ <20170127171746.lf2nbpsaqs3dmy44@dell>
+ <3810896b-c982-e9fd-b095-658921422855@kernel.org>
+ <80a4e7f9-b972-599c-198a-f05c1713123c@metafoo.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
- by alsa0.perex.cz (Postfix) with ESMTP id C0D11267375
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 15:56:08 +0100 (CET)
-In-Reply-To: <20170131145526.26808-1-romain.perier@collabora.com>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id B3A6B2669CD
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 16:30:43 +0100 (CET)
+In-Reply-To: <80a4e7f9-b972-599c-198a-f05c1713123c@metafoo.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,120 +28,110 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-rockchip@lists.infradead.org, Sjoerd Simons <sjoerd.simons@collabora.co.uk>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Romain Perier <romain.perier@collabora.com>
+To: Lars-Peter Clausen <lars@metafoo.de>, Jonathan Cameron <jic23@kernel.org>, Lee Jones <lee.jones@linaro.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Hartmut Knaack <knaack.h@gmx.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Alexandre TORGUE <alexandre.torgue@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds the DT definition of the es8388 i2c device
-found at address 0x10. It also adds the definition for connecting
-the Rockchip I2S to the es8388 analog output.
+Hello Lars,
 
-This commit is based on the initial work that was done by Sjoerd Simons
-<sjoerd.simons@collabora.com> with some improvements.
+On 01/29/2017 03:19 PM, Lars-Peter Clausen wrote:
+> On 01/29/2017 01:28 PM, Jonathan Cameron wrote:
+> [...]
+>>>> Jonathan, Mark, Please could you share your opinion on this topic?
+>> Hmm - based on a fairly quick read through of the code (which is never
+>> ideal!). I can see that the ideal would indeed be as Lee says, to
+>> expand the IIO interfaces sufficiently to support what you need.
+>>
+>>
+>> So, reading the code (fairly quickly I'm afraid as had a lot of reviews
+>> to catch up on this weekend).
+>> What we need:
+>> 1) DMA support in the ADC driver.  This would be a good anyway!
+>> 2) DMA consumer support - I defer to Lars for comments on this.
+>> 3) Means of describing and controlling the sinc filters applied. 
+>> 4) Appropriate channel support.  I'm not convinced that it doesn't make
+>> sense to have IIO channels for the microphones - at least in a streaming
+>> mode.  It's data - I don't really care what ;)
+>> Coarsely it's a filtered pulse per period counter which is
+>> a perfectly valid type to have a channel for.
+>>
+>> The big question to my mind is the DMA consumer support. How would
+>> it work. It it wouldn't this is somewhat of a non starter.
+>>
+>> To bring up another slightly ugly MFD case where it is borderline
+>> on whether an MFD makes sense (just as a reference point of something
+>> we have discussed a few times before)
+>>
+>> ADCs with features directed at touchscreen support.
+>> These are odd as the ADC bit is generic, but the specific output
+>> and read sequences used for touchscreen reading don't correspond to
+>> anything that makes any real sense for other applications.
+>>
+>> We have started to get hybrid drives that have an MFD underneath but
+>> do the ADC reads through IIO consumer interfaces, and the timing
+>> control from a touchscreen driver.  We haven't really gotten this
+>> one right yet either.
+>>
+>> Here however, to my mind things are different - as I read it
+>> (and feel free to point out what I'm missing), the sound usecase
+>> is just a question of setting up sampling frequencies and filters
+>> appropriate to the microphones and what ASoC expects?
+>>
+>> That's not to say the IIO dma stuff is flexible enough (yet) to
+>> handle the data flows, but perhaps we can work towards that.
+> 
+> Yeah, so this is a bit different, but not unexpected. And I'm sure we'll see
+> more similar hardware in the future. I've talked about this before[1], the
+> cost structure of creating and manufacturing new hardware drives the design
+> in a certain direction so that we end up with general purpose hardware that
+> suddenly has applications in multiple frameworks that were previously fully
+> orthogonal.
+> 
+> This device is certainly not a multi-function-device. It only has one
+> function, it's a sigma-delta demodulator. It is rather a
+> multi-purpose-device. It can be used for sigma-delta demodulation in audio
+> applications as well as more specialized data capture applications.
+> 
+> It's comparable to something like a GPIO that can be used to control a reset
+> pin or turn on and off a LED. The GPIO chip is not considered
+> multi-function-device though, even though it can be used for many different
+> applications.
+> 
+> As for DMA we already have a lot of DMA infrastructure on the audio side and
+> we probably want to reuse that rather than inserting IIO as a middle layer
+> since audio buffer capture as different requirements from IIO buffer and
+> we'd have to go the route of the least common denominator and loose
+> expressibility in the process.
 
-Signed-off-by: Romain Perier <romain.perier@collabora.com>
----
+I'm agree with your analysis.
+Audio DMA engine seems a more secure solution to avoid audio runtime
+issue, and should minimize impact in IIO.
 
-Changes in v7:
- - Added a new label for vccio_codec
- - Use vccio_codec instead of vcca_codec
- - Splitted headphone pins into hp_det and phone_ctl 
-Changes in v6: None
-Changes in v5: None
-Changes in v4:
- - Updated to the new DT binding
- - Added the property 'rockchip,routing'
- - Renamed the node sound_es8388 to sound_i2s
-Changes in v3: None
-Changes in v2: None
+> 
+> I've created a IIO buffer[2] that does not capture data to memory but is
+> only used to enable/disable the data capture process. We use this in setups
+> where the data is passed from the converter to a application specific
+> processing chain without ever going through system memory. This buffer could
+> probably also be used here on the audio side to control the converter state.
 
- arch/arm/boot/dts/rk3288-rock2-som.dtsi   |  2 +-
- arch/arm/boot/dts/rk3288-rock2-square.dts | 42 +++++++++++++++++++++++++++++++
- 2 files changed, 43 insertions(+), 1 deletion(-)
+This remind me HDMI.
+For HDMI, solution integrated is a drm driver that probes
+"hdmi-audio-codec" driver.
 
-diff --git a/arch/arm/boot/dts/rk3288-rock2-som.dtsi b/arch/arm/boot/dts/rk3288-rock2-som.dtsi
-index b25ba80..c4d320c 100644
---- a/arch/arm/boot/dts/rk3288-rock2-som.dtsi
-+++ b/arch/arm/boot/dts/rk3288-rock2-som.dtsi
-@@ -136,7 +136,7 @@
- 				regulator-always-on;
- 			};
- 
--			vcc_io: REG2 {
-+			vcc_io: vccio_codec: REG2 {
- 				regulator-name = "VCC_IO";
- 				regulator-min-microvolt = <3300000>;
- 				regulator-max-microvolt = <3300000>;
-diff --git a/arch/arm/boot/dts/rk3288-rock2-square.dts b/arch/arm/boot/dts/rk3288-rock2-square.dts
-index dd3ad2e..f693c39 100644
---- a/arch/arm/boot/dts/rk3288-rock2-square.dts
-+++ b/arch/arm/boot/dts/rk3288-rock2-square.dts
-@@ -86,6 +86,19 @@
- 		#sound-dai-cells = <0>;
- 	};
- 
-+	sound_i2s {
-+		compatible = "rockchip,rk3288-hdmi-analog";
-+		rockchip,model = "I2S";
-+		rockchip,i2s-controller = <&i2s>;
-+		rockchip,audio-codec = <&es8388>;
-+		rockchip,routing = "Analog", "LOUT2",
-+				   "Analog", "ROUT2";
-+		rockchip,hp-en-gpios = <&gpio8 0 GPIO_ACTIVE_HIGH>;
-+		rockchip,hp-det-gpios = <&gpio7 7 GPIO_ACTIVE_HIGH>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&phone_ctl>, <&hp_det>;
-+	};
-+
- 	sdio_pwrseq: sdio-pwrseq {
- 		compatible = "mmc-pwrseq-simple";
- 		clocks = <&hym8563>;
-@@ -173,10 +186,29 @@
- 	};
- };
- 
-+&i2c2 {
-+	status = "okay";
-+
-+	es8388: es8388@10 {
-+		compatible = "everest,es8388", "everest,es8328";
-+		reg = <0x10>;
-+		AVDD-supply = <&vccio_codec>;
-+		DVDD-supply = <&vccio_codec>;
-+		HPVDD-supply = <&vccio_codec>;
-+		PVDD-supply = <&vccio_codec>;
-+		clocks = <&cru SCLK_I2S0_OUT>;
-+		clock-names = "i2s_clk_out";
-+	};
-+};
-+
- &i2c5 {
- 	status = "okay";
- };
- 
-+&i2s {
-+	status = "okay";
-+};
-+
- &pinctrl {
- 	ir {
- 		ir_int: ir-int {
-@@ -190,6 +222,16 @@
- 		};
- 	};
- 
-+	headphone {
-+		hp_det: hp-det {
-+			rockchip,pins = <7 7 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+
-+		phone_ctl: phone-ctl {
-+			rockchip,pins = <8 0 RK_FUNC_GPIO &pcfg_pull_up>;
-+		};
-+	};
-+
- 	usb {
- 		host_vbus_drv: host-vbus-drv {
- 			rockchip,pins = <0 14 RK_FUNC_GPIO &pcfg_pull_none>;
--- 
-2.9.3
+Something similar could be done. An IIO device that probes a generic DAI
+ASoC driver. Driver data structure should be used to provide DMA config
+and IIO device phandles. Then DAI drivers could use your "hw_consummer"
+interface to control iio device...
+
+> 
+> - Lars
+> 
+> [1]
+> https://lists.linuxfoundation.org/pipermail/ksummit-discuss/2016-July/003029.html
+> 
+> [2]
+> https://github.com/analogdevicesinc/linux/blob/xcomm_zynq/drivers/iio/buffer/hw_consumer.c
+> 
+
+Regards
+Arnaud
