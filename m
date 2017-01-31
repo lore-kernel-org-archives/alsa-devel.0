@@ -1,57 +1,88 @@
-From: Sergej Sawazki <ce3a@gmx.de>
-Subject: Re: [PATCH] ASoC: wm8741: Remove unneeded startup()
- callback
-Date: Mon, 30 Jan 2017 23:56:52 +0100
-Message-ID: <1c9d48c3-770b-3048-23d2-afc22f221077@gmx.de>
-References: <1485560145-12908-1-git-send-email-ce3a@gmx.de>
- <20170130092259.GE1754@localhost.localdomain>
+From: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH v3 08/10] dmaengine: sun6i: allow build on
+ ARM64 platforms (sun50i)
+Date: Tue, 31 Jan 2017 09:02:36 +0530
+Message-ID: <20170131033236.GH19244@localhost>
+References: <20170129023331.62106-1-icenowy@aosc.xyz>
+ <20170129023331.62106-9-icenowy@aosc.xyz>
+ <20170130164210.GD19244@localhost>
+ <3729521485800635@web23g.yandex.ru>
+Reply-To: vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F809266F2C
- for <alsa-devel@alsa-project.org>; Mon, 30 Jan 2017 23:57:28 +0100 (CET)
-In-Reply-To: <20170130092259.GE1754@localhost.localdomain>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, patches@opensource.wolfsonmicro.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-sunxi+bncBDLNNTP63EBBBQEKYDCAKGQEDEOK4ZA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Disposition: inline
+In-Reply-To: <3729521485800635-hGpGylqI9Klxpj1cXAZ9Bg@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
+Cc: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Andre Przywara <andre.przywara-5wv7dgnIgG8@public.gmane.org>, "linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org" <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 30 Jan 2017 09:22:59 +0000, Charles Keepax wrote:
-> On Sat, Jan 28, 2017 at 12:35:45AM +0100, Sergej Sawazki wrote:
->> Do not apply rate constraints in the startup() callback. The machine driver
->> can change the sysclk and hence the supported frame rates in its hw_params().
->> This callback is unneeded since commit e369bd006fd6 ("ASoC: wm8741: Allow
->> master clock switching").
+On Tue, Jan 31, 2017 at 02:23:55AM +0800, Icenowy Zheng wrote:
+>=20
+>=20
+> 31.01.2017, 00:41, "Vinod Koul" <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>:
+> > On Sun, Jan 29, 2017 at 10:33:29AM +0800, Icenowy Zheng wrote:
+> >> =C2=A0As 64-bit Allwinner H5 SoC has the same DMA engine with H3, the =
+DMA
+> >> =C2=A0driver should be allowed to be built for ARM64, in order to make=
+ it work on H5.
+> >>
+> >> =C2=A0Signed-off-by: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
+> >> =C2=A0Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+> >> =C2=A0Acked-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+> >> =C2=A0---
+> >> =C2=A0Patch introduced between v1 and v2, to satisfy the newly added H=
+3/H5 audio
+> >> =C2=A0codec support.
+> >>
+> >> =C2=A0=C2=A0drivers/dma/Kconfig | 2 +-
+> >> =C2=A0=C2=A01 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> =C2=A0diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
+> >> =C2=A0index 0d6a96ee9fc7..d01d59812cf3 100644
+> >> =C2=A0--- a/drivers/dma/Kconfig
+> >> =C2=A0+++ b/drivers/dma/Kconfig
+> >> =C2=A0@@ -157,7 +157,7 @@ config DMA_SUN4I
+> >>
+> >> =C2=A0=C2=A0config DMA_SUN6I
+> >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0tristate "=
+Allwinner A31 SoCs DMA support"
+> >> =C2=A0- depends on MACH_SUN6I || MACH_SUN8I || COMPILE_TEST
+> >> =C2=A0+ depends on MACH_SUN6I || MACH_SUN8I || (ARM64 && ARCH_SUNXI) |=
+| COMPILE_TEST
+> >
+> > Do we really need ARM64 here? also looking at others I wonder why isn't
+> > this MACH_SUNXI...?
+>=20
+> You mean directly place "ARCH_SUNXI" here?
+>=20
+> SUN4I/SUN5I/SUN7I do not use DMA_SUN6I, they have different DMA
+> controllers.
 
-> This function should not be removed it is performing a useful
-> function. If a sysclk has already been configured by the machine
-> driver then we should inform user-space of the rates we can
-> support from that clock. Without this that information is not
-> available to user-space, so instead of user-space being able to
-> resample appropriately it would just error out from hw_params.
-> 
-> Are you perhaps missing a call to clear the sysclk from your
-> machine driver? Usually a dai_set_sysclk call with a rate of
-> zero, also I find if it is a machine driver supporting multiple
-> rates you are best to use ignore_pmdown_time on the DAI link,
-> assuming the devices don't have long bring up times.
+No my question was different..
 
-After clearing the sysclk, the codec should 'pretend' to support all
-rates, right? (no sysclk -> no rate constrains)
+We have MACH_SUNxx for 6I and 8I, so why do we have ARCH_SUNXI and if its a=
+n
+arch SUNXI, X means it can take any value...
 
-After applying rate constraints using snd_pcm_hw_constraint_list(...),
-what would be a clean way to remove the constraints from the rates
-parameter?
+This schema looks pretty confusing while reading
 
-Thanks,
-Sergej
+Also I had a question on usage of ARM64..
+
+--=20
+~Vinod
+
+--=20
+You received this message because you are subscribed to the Google Groups "=
+linux-sunxi" group.
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to linux-sunxi+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+For more options, visit https://groups.google.com/d/optout.
