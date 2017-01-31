@@ -1,96 +1,60 @@
-From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?= <mylene.josserand@free-electrons.com>
-Subject: [PATCH v3 2/8] ASoC: sun4i-i2s: Add quirks to handle
-	a31 compatible
-Date: Tue, 31 Jan 2017 11:05:46 +0100
-Message-ID: <20170131100552.27949-3-mylene.josserand@free-electrons.com>
+From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?=
+        <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: [PATCH v3 7/8] ARM: dts: sun8i: parrot: Enable audio nodes
+Date: Tue, 31 Jan 2017 11:05:51 +0100
+Message-ID: <20170131100552.27949-8-mylene.josserand@free-electrons.com>
 References: <20170131100552.27949-1-mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 51D76267277
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 11:08:25 +0100 (CET)
-In-Reply-To: <20170131100552.27949-1-mylene.josserand@free-electrons.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, maxime.ripard@free-electrons.com, wens@csie.org, perex@perex.cz, tiwai@suse.com
-Cc: thomas.petazzoni@free-electrons.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, alexandre.belloni@free-electrons.com, mylene.josserand@free-electrons.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20170131100552.27949-1-mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-U29tZSBTb0NzIGhhdmUgYSByZXNldCBsaW5lIHRoYXQgbXVzdCBiZSBhc3NlcnRlZC9kZWFzc2Vy
-dGVkLgpUaGlzIHBhdGNoIGFkZHMgYSBxdWlyayB0byBoYW5kbGUgdGhlIG5ldyBjb21wYXRpYmxl
-CiJhbGx3aW5uZXIsc3VuNmktYTMxLWkycyIgd2hpY2ggd2lsbCBkZWFzc2VydCB0aGUgcmVzZXQK
-bGluZSBvbiBwcm9iZSBmdW5jdGlvbiBhbmQgYXNzZXJ0IGl0IG9uIHJlbW92ZSdzIG9uZS4KClRo
-aXMgbmV3IGNvbXBhdGlibGUgaXMgdXNlZnVsIGluIGNhc2Ugb2YgQTMzIGNvZGVjIGRyaXZlciwg
-Zm9yIGV4YW1wbGUuCgpTaWduZWQtb2ZmLWJ5OiBNeWzDqG5lIEpvc3NlcmFuZCA8bXlsZW5lLmpv
-c3NlcmFuZEBmcmVlLWVsZWN0cm9ucy5jb20+Ci0tLQogc291bmQvc29jL3N1bnhpL3N1bjRpLWky
-cy5jIHwgNTcgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKy0tCiAx
-IGZpbGUgY2hhbmdlZCwgNTUgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1n
-aXQgYS9zb3VuZC9zb2Mvc3VueGkvc3VuNGktaTJzLmMgYi9zb3VuZC9zb2Mvc3VueGkvc3VuNGkt
-aTJzLmMKaW5kZXggNDIzNzMyM2VmNTk0Li4zNjM1YmJjNzJjYmMgMTAwNjQ0Ci0tLSBhL3NvdW5k
-L3NvYy9zdW54aS9zdW40aS1pMnMuYworKysgYi9zb3VuZC9zb2Mvc3VueGkvc3VuNGktaTJzLmMK
-QEAgLTE0LDkgKzE0LDExIEBACiAjaW5jbHVkZSA8bGludXgvY2xrLmg+CiAjaW5jbHVkZSA8bGlu
-dXgvZG1hZW5naW5lLmg+CiAjaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+CisjaW5jbHVkZSA8bGlu
-dXgvb2ZfZGV2aWNlLmg+CiAjaW5jbHVkZSA8bGludXgvcGxhdGZvcm1fZGV2aWNlLmg+CiAjaW5j
-bHVkZSA8bGludXgvcG1fcnVudGltZS5oPgogI2luY2x1ZGUgPGxpbnV4L3JlZ21hcC5oPgorI2lu
-Y2x1ZGUgPGxpbnV4L3Jlc2V0Lmg+CiAKICNpbmNsdWRlIDxzb3VuZC9kbWFlbmdpbmVfcGNtLmg+
-CiAjaW5jbHVkZSA8c291bmQvcGNtX3BhcmFtcy5oPgpAQCAtOTIsNiArOTQsNyBAQCBzdHJ1Y3Qg
-c3VuNGlfaTJzIHsKIAlzdHJ1Y3QgY2xrCSpidXNfY2xrOwogCXN0cnVjdCBjbGsJKm1vZF9jbGs7
-CiAJc3RydWN0IHJlZ21hcAkqcmVnbWFwOworCXN0cnVjdCByZXNldF9jb250cm9sICpyc3Q7CiAK
-IAl1bnNpZ25lZCBpbnQJbWNsa19mcmVxOwogCkBAIC02NTEsOSArNjU0LDIyIEBAIHN0YXRpYyBp
-bnQgc3VuNGlfaTJzX3J1bnRpbWVfc3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpkZXYpCiAJcmV0dXJu
-IDA7CiB9CiAKK3N0cnVjdCBzdW40aV9pMnNfcXVpcmtzIHsKKwlib29sIGhhc19yZXNldDsKK307
-CisKK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgc3VuNGlfaTJzX3F1aXJrcyBzdW40aV9hMTBfaTJzX3F1
-aXJrcyA9IHsKKwkuaGFzX3Jlc2V0CT0gZmFsc2UsCit9OworCitzdGF0aWMgY29uc3Qgc3RydWN0
-IHN1bjRpX2kyc19xdWlya3Mgc3VuNmlfYTMxX2kyc19xdWlya3MgPSB7CisJLmhhc19yZXNldAk9
-IHRydWUsCit9OworCiBzdGF0aWMgaW50IHN1bjRpX2kyc19wcm9iZShzdHJ1Y3QgcGxhdGZvcm1f
-ZGV2aWNlICpwZGV2KQogewogCXN0cnVjdCBzdW40aV9pMnMgKmkyczsKKwljb25zdCBzdHJ1Y3Qg
-c3VuNGlfaTJzX3F1aXJrcyAqcXVpcmtzOwogCXN0cnVjdCByZXNvdXJjZSAqcmVzOwogCXZvaWQg
-X19pb21lbSAqcmVnczsKIAlpbnQgaXJxLCByZXQ7CkBAIC02NzQsNiArNjkwLDEyIEBAIHN0YXRp
-YyBpbnQgc3VuNGlfaTJzX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCiAJCXJl
-dHVybiBpcnE7CiAJfQogCisJcXVpcmtzID0gb2ZfZGV2aWNlX2dldF9tYXRjaF9kYXRhKCZwZGV2
-LT5kZXYpOworCWlmICghcXVpcmtzKSB7CisJCWRldl9lcnIoJnBkZXYtPmRldiwgIkZhaWxlZCB0
-byBkZXRlcm1pbmUgdGhlIHF1aXJrcyB0byB1c2VcbiIpOworCQlyZXR1cm4gLUVOT0RFVjsKKwl9
-CisKIAlpMnMtPmJ1c19jbGsgPSBkZXZtX2Nsa19nZXQoJnBkZXYtPmRldiwgImFwYiIpOwogCWlm
-IChJU19FUlIoaTJzLT5idXNfY2xrKSkgewogCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJDYW4ndCBn
-ZXQgb3VyIGJ1cyBjbG9ja1xuIik7CkBAIC02OTIsNyArNzE0LDI0IEBAIHN0YXRpYyBpbnQgc3Vu
-NGlfaTJzX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCiAJCWRldl9lcnIoJnBk
-ZXYtPmRldiwgIkNhbid0IGdldCBvdXIgbW9kIGNsb2NrXG4iKTsKIAkJcmV0dXJuIFBUUl9FUlIo
-aTJzLT5tb2RfY2xrKTsKIAl9Ci0JCisKKwlpZiAocXVpcmtzLT5oYXNfcmVzZXQpIHsKKwkJaTJz
-LT5yc3QgPSBkZXZtX3Jlc2V0X2NvbnRyb2xfZ2V0KCZwZGV2LT5kZXYsIE5VTEwpOworCQlpZiAo
-SVNfRVJSKGkycy0+cnN0KSkgeworCQkJZGV2X2VycigmcGRldi0+ZGV2LCAiRmFpbGVkIHRvIGdl
-dCByZXNldCBjb250cm9sXG4iKTsKKwkJCXJldHVybiBQVFJfRVJSKGkycy0+cnN0KTsKKwkJfQor
-CX0KKworCWlmICghSVNfRVJSKGkycy0+cnN0KSkgeworCQlyZXQgPSByZXNldF9jb250cm9sX2Rl
-YXNzZXJ0KGkycy0+cnN0KTsKKwkJaWYgKHJldCkgeworCQkJZGV2X2VycigmcGRldi0+ZGV2LAor
-CQkJCSJGYWlsZWQgdG8gZGVhc3NlcnQgdGhlIHJlc2V0IGNvbnRyb2xcbiIpOworCQkJcmV0dXJu
-IC1FSU5WQUw7CisJCX0KKwl9CisKIAlpMnMtPnBsYXliYWNrX2RtYV9kYXRhLmFkZHIgPSByZXMt
-PnN0YXJ0ICsgU1VONElfSTJTX0ZJRk9fVFhfUkVHOwogCWkycy0+cGxheWJhY2tfZG1hX2RhdGEu
-bWF4YnVyc3QgPSA4OwogCkBAIC03MjcsMjMgKzc2NiwzNyBAQCBzdGF0aWMgaW50IHN1bjRpX2ky
-c19wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQogCQlzdW40aV9pMnNfcnVudGlt
-ZV9zdXNwZW5kKCZwZGV2LT5kZXYpOwogZXJyX3BtX2Rpc2FibGU6CiAJcG1fcnVudGltZV9kaXNh
-YmxlKCZwZGV2LT5kZXYpOworCWlmICghSVNfRVJSKGkycy0+cnN0KSkKKwkJcmVzZXRfY29udHJv
-bF9hc3NlcnQoaTJzLT5yc3QpOwogCiAJcmV0dXJuIHJldDsKIH0KIAogc3RhdGljIGludCBzdW40
-aV9pMnNfcmVtb3ZlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCiB7CisJc3RydWN0IHN1
-bjRpX2kycyAqaTJzID0gZGV2X2dldF9kcnZkYXRhKCZwZGV2LT5kZXYpOworCiAJc25kX2RtYWVu
-Z2luZV9wY21fdW5yZWdpc3RlcigmcGRldi0+ZGV2KTsKIAogCXBtX3J1bnRpbWVfZGlzYWJsZSgm
-cGRldi0+ZGV2KTsKIAlpZiAoIXBtX3J1bnRpbWVfc3RhdHVzX3N1c3BlbmRlZCgmcGRldi0+ZGV2
-KSkKIAkJc3VuNGlfaTJzX3J1bnRpbWVfc3VzcGVuZCgmcGRldi0+ZGV2KTsKIAorCWlmICghSVNf
-RVJSKGkycy0+cnN0KSkKKwkJcmVzZXRfY29udHJvbF9hc3NlcnQoaTJzLT5yc3QpOworCiAJcmV0
-dXJuIDA7CiB9CiAKIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgb2ZfZGV2aWNlX2lkIHN1bjRpX2kyc19t
-YXRjaFtdID0gewotCXsgLmNvbXBhdGlibGUgPSAiYWxsd2lubmVyLHN1bjRpLWExMC1pMnMiLCB9
-LAorCXsKKwkJLmNvbXBhdGlibGUgPSAiYWxsd2lubmVyLHN1bjRpLWExMC1pMnMiLAorCQkuZGF0
-YSA9ICZzdW40aV9hMTBfaTJzX3F1aXJrcywKKwl9LAorCXsKKwkJLmNvbXBhdGlibGUgPSAiYWxs
-d2lubmVyLHN1bjZpLWEzMS1pMnMiLAorCQkuZGF0YSA9ICZzdW42aV9hMzFfaTJzX3F1aXJrcywK
-Kwl9LAogCXt9CiB9OwogTU9EVUxFX0RFVklDRV9UQUJMRShvZiwgc3VuNGlfaTJzX21hdGNoKTsK
-LS0gCjIuMTEuMAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+Enable the audio codec and the audio dai for the sun8i R16 Parrot board.
+
+Signed-off-by: Mylène Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+---
+ arch/arm/boot/dts/sun8i-r16-parrot.dts | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/arm/boot/dts/sun8i-r16-parrot.dts b/arch/arm/boot/dts/sun8i-r16-parrot.dts
+index e4da572427b1..472c03b7aeab 100644
+--- a/arch/arm/boot/dts/sun8i-r16-parrot.dts
++++ b/arch/arm/boot/dts/sun8i-r16-parrot.dts
+@@ -84,6 +84,14 @@
+ 
+ };
+ 
++&codec {
++	status = "okay";
++};
++
++&dai {
++	status = "okay";
++};
++
+ &ehci0 {
+ 	status = "okay";
+ };
+@@ -317,6 +325,10 @@
+ 	status = "okay";
+ };
+ 
++&sound {
++	status = "okay";
++};
++
+ &uart0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&uart0_pins_b>;
+-- 
+2.11.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
