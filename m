@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: rt5670: add quirk for Lenovo
-	Thinkpad 10" to the asoc tree
-Date: Tue, 31 Jan 2017 21:17:57 +0000
-Message-ID: <E1cYfoL-00016W-BX@debutante>
-References: <1485461385-14544-7-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: add support for Realtek 5651 on
+	Cherrytrail" to the asoc tree
+Date: Tue, 31 Jan 2017 21:18:00 +0000
+Message-ID: <E1cYfoO-00017W-Cc@debutante>
+References: <1485461385-14544-6-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CA19F26743A
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 22:18:06 +0100 (CET)
-In-Reply-To: <1485461385-14544-7-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7B734267442
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 22:18:09 +0100 (CET)
+In-Reply-To: <1485461385-14544-6-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codecs: rt5670: add quirk for Lenovo Thinkpad 10
+   ASoC: Intel: add support for Realtek 5651 on Cherrytrail
 
 has been applied to the asoc tree at
 
@@ -53,31 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From 93ffeaa8ee3f10a0628ad135b552a2497e0bef2c Mon Sep 17 00:00:00 2001
+>From a1a91752cb9c18a81a3e0027054d38da37243ba2 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 26 Jan 2017 14:09:34 -0600
-Subject: [PATCH] ASoC: codecs: rt5670: add quirk for Lenovo Thinkpad 10
+Date: Thu, 26 Jan 2017 14:09:33 -0600
+Subject: [PATCH] ASoC: Intel: add support for Realtek 5651 on Cherrytrail
 
-the BIOS incorrectly reports this codec as 5640 but it is
-really a rt5670
+RT5651 is used on some Cherrytrail platforms, add the ACPI
+ID in machine table.
 
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=156191
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5670.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/intel/atom/sst/sst_acpi.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index 97bafac3bc15..17d20b99f041 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -2814,6 +2814,7 @@ MODULE_DEVICE_TABLE(i2c, rt5670_i2c_id);
- static const struct acpi_device_id rt5670_acpi_match[] = {
- 	{ "10EC5670", 0},
- 	{ "10EC5672", 0},
-+	{ "10EC5640", 0}, /* quirk */
- 	{ },
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index 896ced2dd73c..0699ce511755 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -465,7 +465,9 @@ static struct sst_acpi_mach sst_acpi_chv[] = {
+ 						&chv_platform_data },
+ 	{"10EC3276", "bytcr_rt5640", "intel/fw_sst_22a8.bin", "bytcr_rt5640", NULL,
+ 						&chv_platform_data },
+-
++	/* some CHT-T platforms rely on RT5651, use Baytrail machine driver */
++	{"10EC5651", "bytcr_rt5651", "intel/fw_sst_22a8.bin", "bytcr_rt5651", NULL,
++						&chv_platform_data },
+ 	{},
  };
- MODULE_DEVICE_TABLE(acpi, rt5670_acpi_match);
+ 
 -- 
 2.11.0
