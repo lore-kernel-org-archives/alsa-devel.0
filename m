@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: cht_bsw_rt5645: harden ACPI
-	device detection" to the asoc tree
-Date: Tue, 31 Jan 2017 21:17:48 +0000
-Message-ID: <E1cYfoC-00013K-60@debutante>
-References: <1485461385-14544-14-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: Atom: add machine driver for
+	baytrail-rt5645 hardware" to the asoc tree
+Date: Tue, 31 Jan 2017 21:17:51 +0000
+Message-ID: <E1cYfoF-00014b-6f@debutante>
+References: <1485461385-14544-12-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0BFEF2673E8
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 22:17:57 +0100 (CET)
-In-Reply-To: <1485461385-14544-14-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1ACF92673F2
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 22:17:59 +0100 (CET)
+In-Reply-To: <1485461385-14544-12-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: cht_bsw_rt5645: harden ACPI device detection
+   ASoC: Intel: Atom: add machine driver for baytrail-rt5645 hardware
 
 has been applied to the asoc tree at
 
@@ -53,60 +53,36 @@ to this mail.
 Thanks,
 Mark
 
->From 42648c2270ca0c96935dfc5d0f5c4f8d2406cf75 Mon Sep 17 00:00:00 2001
+>From e1d06914542a198a6ab3d41b9d7f5d62dd744f8b Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 26 Jan 2017 14:09:41 -0600
-Subject: [PATCH] ASoC: Intel: cht_bsw_rt5645: harden ACPI device detection
+Date: Thu, 26 Jan 2017 14:09:39 -0600
+Subject: [PATCH] ASoC: Intel: Atom: add machine driver for baytrail-rt5645
+ hardware
 
-Fix classic issue of having multiple codecs listed in DSDT
-but a single one actually enabled. The previous code did
-not handle such errors and could also lead to uninitalized
-configurations
+Use machine driver initially defined for CherryTrail
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_rt5645.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ sound/soc/intel/atom/sst/sst_acpi.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index 3684bdbd8598..3461e4a88ba8 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -407,22 +407,32 @@ static int snd_cht_mc_probe(struct platform_device *pdev)
- 	struct sst_acpi_mach *mach;
- 	const char *i2c_name = NULL;
- 	int dai_index = 0;
-+	bool found = false;
- 
- 	drv = devm_kzalloc(&pdev->dev, sizeof(*drv), GFP_ATOMIC);
- 	if (!drv)
- 		return -ENOMEM;
- 
-+	mach = (&pdev->dev)->platform_data;
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index 0699ce511755..4c0b89ec42e0 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -445,6 +445,12 @@ static struct sst_acpi_mach sst_acpi_bytcr[] = {
+ 						&byt_rvp_platform_data },
+ 	{"10EC5651", "bytcr_rt5651", "intel/fw_sst_0f28.bin", "bytcr_rt5651", NULL,
+ 						&byt_rvp_platform_data },
++	/* some Baytrail platforms rely on RT5645, use CHT machine driver */
++	{"10EC5645", "cht-bsw-rt5645", "intel/fw_sst_0f28.bin", "cht-bsw", NULL,
++						&byt_rvp_platform_data },
++	{"10EC5648", "cht-bsw-rt5645", "intel/fw_sst_0f28.bin", "cht-bsw", NULL,
++						&byt_rvp_platform_data },
 +
- 	for (i = 0; i < ARRAY_SIZE(snd_soc_cards); i++) {
--		if (acpi_dev_found(snd_soc_cards[i].codec_id)) {
-+		if (acpi_dev_found(snd_soc_cards[i].codec_id) &&
-+			(!strncmp(snd_soc_cards[i].codec_id, mach->id, 8))) {
- 			dev_dbg(&pdev->dev,
- 				"found codec %s\n", snd_soc_cards[i].codec_id);
- 			card = snd_soc_cards[i].soc_card;
- 			drv->acpi_card = &snd_soc_cards[i];
-+			found = true;
- 			break;
- 		}
- 	}
-+
-+	if (!found) {
-+		dev_err(&pdev->dev, "No matching HID found in supported list\n");
-+		return -ENODEV;
-+	}
-+
- 	card->dev = &pdev->dev;
--	mach = card->dev->platform_data;
- 	sprintf(drv->codec_name, "i2c-%s:00", drv->acpi_card->codec_id);
+ 	{},
+ };
  
- 	/* set correct codec name */
 -- 
 2.11.0
