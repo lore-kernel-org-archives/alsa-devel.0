@@ -1,201 +1,61 @@
-From: Liam Breck <liam@networkimprov.net>
-Subject: [PATCH v8.1 1/1] ASoC: omap-mcbsp: Add PM QoS support
-	for McBSP to prevent glitches
-Date: Tue, 31 Jan 2017 13:21:43 -0800
-Message-ID: <20170131212143.24415-1-liam@networkimprov.net>
-References: <20170127225337.17830-1-liam@networkimprov.net>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 0/7] DisplayPort audio support on Cherrytrail
+Date: Tue, 31 Jan 2017 22:36:42 +0100
+Message-ID: <20170131213649.13689-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f194.google.com (mail-pf0-f194.google.com
- [209.85.192.194])
- by alsa0.perex.cz (Postfix) with ESMTP id A1056267584
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 22:22:35 +0100 (CET)
-Received: by mail-pf0-f194.google.com with SMTP id 19so29755669pfo.3
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 13:22:34 -0800 (PST)
-In-Reply-To: <20170127225337.17830-1-liam@networkimprov.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Matt Ranostay <matt@ranostay.consulting>, Tony Lindgren <tony@atomide.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Breck <kernel@networkimprov.net>, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org
+Cc: rakesh.a.ughreja@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-We can get audio errors if hitting deeper idle states on omaps:
-
-[alsa.c:230] error: Fatal problem with alsa output, error -5.
-[audio.c:614] error: Error in writing audio (Input/output error?)!
-
-This seems to happen with off mode idle enabled as power for the
-whole SoC may get cut off between filling the McBSP fifo using DMA.
-While active DMA blocks deeper idle states in hardware, McBSP
-activity does not seem to do so.
-
-Basing the QoS latency calculation on the FIFO size, threshold,
-sample rate, and channels.
-
-Based on the original patch by Tony Lindgren
-Link: https://patchwork.kernel.org/patch/9305867/
-
-From: Matt Ranostay <matt@ranostay.consulting>
-Cc: Tony Lindgren <tony@atomide.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Signed-off-by: Matt Ranostay <matt@ranostay.consulting>
-Signed-off-by: Liam Breck <kernel@networkimprov.net>
-Tested-by: Tony Lindgren <tony@atomide.com>
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
-Changes from v1:
-* add calculations for latency per number of FIFO locations
-
-Changes from v2:
-* add missing mcbsp.h header change
-
-Changes from v3:
-* base the latency calculations on threshold, buffer size, sample
-  rate, and channels
-
-Changes from v4:
-* using Peter Ujfalusi's suggestions for restoring a higher latency on
-  audio stream completion, or if not applicable remove the QoS request
-
-Changes from v5:
-* clean up latency checking logic
-* move logic to .prepare and .shutdown to avoid functions that can sleep
-
-Changes from v6:
-* move QoS removal to asoc_mcbsp_remove from omap_mcbsp_cleanup
-* also remove header include that is unneeded
-
-Changes from v7:
-* fix issue reported by Tony Lindgreen that a player application could close the
-  card after hw_params, and cause an invalid pm_qos_remove_request()
-
- sound/soc/omap/mcbsp.h      |  3 +++
- sound/soc/omap/omap-mcbsp.c | 48 ++++++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 50 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/omap/mcbsp.h b/sound/soc/omap/mcbsp.h
-index 61e93b1c185d..46ae1269a698 100644
---- a/sound/soc/omap/mcbsp.h
-+++ b/sound/soc/omap/mcbsp.h
-@@ -323,8 +323,11 @@ struct omap_mcbsp {
- 
- 	unsigned int fmt;
- 	unsigned int in_freq;
-+	unsigned int latency[2];
- 	int clk_div;
- 	int wlen;
-+
-+	struct pm_qos_request pm_qos_req;
- };
- 
- void omap_mcbsp_config(struct omap_mcbsp *mcbsp,
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index d018e966e533..6b40bdbef336 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -157,6 +157,17 @@ static void omap_mcbsp_dai_shutdown(struct snd_pcm_substream *substream,
- 				    struct snd_soc_dai *cpu_dai)
- {
- 	struct omap_mcbsp *mcbsp = snd_soc_dai_get_drvdata(cpu_dai);
-+	int tx = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
-+	int stream1 = tx ? SNDRV_PCM_STREAM_PLAYBACK : SNDRV_PCM_STREAM_CAPTURE;
-+	int stream2 = tx ? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
-+
-+	if (mcbsp->latency[stream2])
-+		pm_qos_update_request(&mcbsp->pm_qos_req,
-+				      mcbsp->latency[stream2]);
-+	else if (mcbsp->latency[stream1])
-+		pm_qos_remove_request(&mcbsp->pm_qos_req);
-+
-+	mcbsp->latency[stream1] = 0;
- 
- 	if (!cpu_dai->active) {
- 		omap_mcbsp_free(mcbsp);
-@@ -164,6 +175,28 @@ static void omap_mcbsp_dai_shutdown(struct snd_pcm_substream *substream,
- 	}
- }
- 
-+static int omap_mcbsp_dai_prepare(struct snd_pcm_substream *substream,
-+				  struct snd_soc_dai *cpu_dai)
-+{
-+	struct omap_mcbsp *mcbsp = snd_soc_dai_get_drvdata(cpu_dai);
-+	struct pm_qos_request *pm_qos_req = &mcbsp->pm_qos_req;
-+	int tx = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
-+	int stream1 = tx ? SNDRV_PCM_STREAM_PLAYBACK : SNDRV_PCM_STREAM_CAPTURE;
-+	int stream2 = tx ? SNDRV_PCM_STREAM_CAPTURE : SNDRV_PCM_STREAM_PLAYBACK;
-+	int latency = mcbsp->latency[stream2];
-+
-+	/* Prevent omap hardware from hitting off between FIFO fills */
-+	if (!latency || mcbsp->latency[stream1] < latency)
-+		latency = mcbsp->latency[stream1];
-+
-+	if (pm_qos_request_active(pm_qos_req))
-+		pm_qos_update_request(pm_qos_req, latency);
-+	else if (latency)
-+		pm_qos_add_request(pm_qos_req, PM_QOS_CPU_DMA_LATENCY, latency);
-+
-+	return 0;
-+}
-+
- static int omap_mcbsp_dai_trigger(struct snd_pcm_substream *substream, int cmd,
- 				  struct snd_soc_dai *cpu_dai)
- {
-@@ -226,6 +259,7 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 	int wlen, channels, wpf;
- 	int pkt_size = 0;
- 	unsigned int format, div, framesize, master;
-+	unsigned int buffer_size = mcbsp->pdata->buffer_size;
- 
- 	dma_data = snd_soc_dai_get_dma_data(cpu_dai, substream);
- 	channels = params_channels(params);
-@@ -240,7 +274,9 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 	default:
- 		return -EINVAL;
- 	}
--	if (mcbsp->pdata->buffer_size) {
-+	if (buffer_size) {
-+		int latency;
-+
- 		if (mcbsp->dma_op_mode == MCBSP_DMA_MODE_THRESHOLD) {
- 			int period_words, max_thrsh;
- 			int divider = 0;
-@@ -271,6 +307,12 @@ static int omap_mcbsp_dai_hw_params(struct snd_pcm_substream *substream,
- 			/* Use packet mode for non mono streams */
- 			pkt_size = channels;
- 		}
-+
-+		latency = ((((buffer_size - pkt_size) / channels) * 1000)
-+				 / (params->rate_num / params->rate_den));
-+
-+		mcbsp->latency[substream->stream] = latency;
-+
- 		omap_mcbsp_set_threshold(substream, pkt_size);
- 	}
- 
-@@ -554,6 +596,7 @@ static int omap_mcbsp_dai_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- static const struct snd_soc_dai_ops mcbsp_dai_ops = {
- 	.startup	= omap_mcbsp_dai_startup,
- 	.shutdown	= omap_mcbsp_dai_shutdown,
-+	.prepare	= omap_mcbsp_dai_prepare,
- 	.trigger	= omap_mcbsp_dai_trigger,
- 	.delay		= omap_mcbsp_dai_delay,
- 	.hw_params	= omap_mcbsp_dai_hw_params,
-@@ -835,6 +878,9 @@ static int asoc_mcbsp_remove(struct platform_device *pdev)
- 	if (mcbsp->pdata->ops && mcbsp->pdata->ops->free)
- 		mcbsp->pdata->ops->free(mcbsp->id);
- 
-+	if (pm_qos_request_active(&mcbsp->pm_qos_req))
-+		pm_qos_remove_request(&mcbsp->pm_qos_req);
-+
- 	omap_mcbsp_cleanup(mcbsp);
- 
- 	clk_put(mcbsp->fclk);
+SGksCgp0aGUgZm9sbG93aW5nIHBhdGNoZXMgZW5hYmxlIERpc3BsYXlQb3J0IEF1ZGlvIG9uIENo
+ZXJyeXRyYWlsIG1hY2hpbmVzCndoZW4gYXBwbGllZCBvbiB0b3Agb2YgbXkgdG9waWMvaW50ZWwt
+bHBlLWF1ZGlvIGJyYW5jaC4gIFRlc3RzIG9mIERQCmF1ZGlvIHdlcmUgcnVuIG9uIERlbGwgV3lz
+ZSAzMDQwLiAgVGhlIHJlZ3Jlc3Npb24gdGVzdCB3ZXJlIHBlcmZvcm1lZApvbiBCYXl0cmFpbCAo
+Q29tcHV0ZSBTdGljaykgYW5kIENoZXJyeXRyYWlsIChab3RhYyBQSTMzMCkgaW4gSERNSQptb2Rl
+LiAgT24gQ2hlcnJ5dHJhaWwgdGhlcmUgd2VyZSBubyBpc3N1ZXMgY2hhbmdpbmcgYmV0d2VlbiBI
+RE1JIGFuZApEUCBjb25uZWN0b3JzIGR5bmFtaWNhbGx5LgoKQ291bGQgeW91IGk5MTUgcGVvcGxl
+IHJldmlldyBhbmQgZ2l2ZSBBQ0sgaWYgdGhleSBhcmUgT0s/ClRoZSBjaGFuZ2VzIGluIGRybS9p
+OTE1IHNpZGUgYXJlIGZhaXJseSB0cml2aWFsLCBzbyBJJ2QgbGlrZSB0byB0YWtlCnRoZW0gdGhy
+b3VnaCBzb3VuZCBnaXQgdHJlZSBvbmNlIGFmdGVyIEkgcmVjZWl2ZSB5b3VyIEFDS3MuCgoKQ2hh
+bmdlcyBzaW5jZSBSRkM6CiAtIHJlb3JkZXJlZCBhbmQgc3F1YXNoZWQgcGF0Y2hlcwogLSBjbGVh
+bi11cCBvZiByZWdpc3RlciBkZWZpbml0aW9ucyBhbmQgb2Zmc2V0cyAoYmFzZWQgb24gZmVlZGJh
+Y2sgZnJvbQogICBKYW5pL1ZpbGxlKQogLSB1bm11dGUgYW1wIGZvciBib3RoIEhETUkgYW5kIERQ
+IHVuY29uZGl0aW9uYWxseQogLSBtdXRlIGFtcCBvbiBpbnZhbGlkIEVMRCAodW5wbHVnKQogLSBy
+ZW1vdmUgdGVzdCBmb3IgY2hpY2tlbiBiaXQgd2hpY2ggc2VlbXMgdG8gaGF2ZSBubyBlZmZlY3Qg
+aW4gaGFyZHdhcmUKIC0gY29zbWV0aWMgZWRpdHMgdG8gbWFrZSBjaGVja3BhdGNoIGhhcHB5CiAt
+IGNoYW5nZSBpOTE1IG5vdGlmaWNhdGlvbiBhcmd1bWVudCB0byBwYXNzIHRoZSBwbGF0YWZvcm0g
+ZGV2aWNlCiAgIGluc3RlYWQKCgpNb3N0IG9mIGhhcmQgd29yayBpbiB0aGlzIHBhdGNoc2V0IGhh
+cyBiZWVuIGRvbmUgYnkgUGllcnJlLCBzbyBhbGwKY3JlZGl0cyBnbyB0byBoaW0uCgoKdGhhbmtz
+LAoKVGFrYXNoaQoKPT09CgpQaWVycmUtTG91aXMgQm9zc2FydCAoNCk6CiAgZHJtL2k5MTU6IGFk
+ZCBEUCBzdXBwb3J0IGluIExQRSBhdWRpbyBtb2RlCiAgZHJtL2k5MTU6IGFkZCBEaXNwbGF5UG9y
+dCBhbXAgdW5tdXRlIGZvciBMUEUgYXVkaW8gbW9kZQogIEFMU0E6IHg4NjogaW50ZWxfaGRtaTog
+YWRkIGRlZmluaXRpb25zIGFuZCBsb2dpYyBmb3IgRFAgYXVkaW8KICBBTFNBOiB4ODY6IFVzZSBj
+b25maWcgYmFzZSBkZXBlbmRpbmcgb24gdGhlIHBpcGUKClRha2FzaGkgSXdhaSAoMyk6CiAgZHJt
+L2k5MTU6IEF2b2lkIE1TVCBwaXBlIGhhbmRsaW5nIGZvciBMUEUgYXVkaW8KICBkcm0vaTkxNTog
+UGFzcyBwaXBlIHRvIExQRSBhdWRpbyBub3RpZmljYXRpb24KICBkcm0vaTkxNTogUGFzcyBwbGF0
+Zm9ybSBkZXZpY2UgdG8gTFBFIGF1ZGlvIG5vdGlmaWVyCgogZHJpdmVycy9ncHUvZHJtL2k5MTUv
+aTkxNV9kcnYuaCAgICAgICAgfCAgIDMgKy0KIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfcmVn
+LmggICAgICAgIHwgIDEwICsrCiBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jICAg
+ICB8ICAzOCArKysrKy0tLQogZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBlX2F1ZGlvLmMg
+fCAgMjggKysrKystCiBpbmNsdWRlL2RybS9pbnRlbF9scGVfYXVkaW8uaCAgICAgICAgICB8ICAg
+NyArLQogc291bmQveDg2L2ludGVsX2hkbWlfYXVkaW8uYyAgICAgICAgICAgfCAxNzMgKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKy0tLS0tCiBzb3VuZC94ODYvaW50ZWxfaGRtaV9hdWRpby5o
+ICAgICAgICAgICB8ICAgOCArLQogc291bmQveDg2L2ludGVsX2hkbWlfbHBlX2F1ZGlvLmMgICAg
+ICAgfCAgODMgKysrKysrKysrKysrLS0tLQogc291bmQveDg2L2ludGVsX2hkbWlfbHBlX2F1ZGlv
+LmggICAgICAgfCAgMjkgKysrKysrCiA5IGZpbGVzIGNoYW5nZWQsIDMxNSBpbnNlcnRpb25zKCsp
+LCA2NCBkZWxldGlvbnMoLSkKCi0tIAoyLjExLjAKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxp
+c3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2ludGVsLWdmeAo=
