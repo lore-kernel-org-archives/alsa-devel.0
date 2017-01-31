@@ -1,30 +1,34 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: mt8173-max98090: remove the call to
- snd_soc_jack_add_pins." to the asoc tree
-Date: Tue, 31 Jan 2017 21:17:26 +0000
-Message-ID: <E1cYfnq-0000t3-J0@debutante>
-References: <20170127152042.7631-1-enric.balletbo@collabora.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: wm8741: Remove unused WM8741_NUM_RATES
+	macro" to the asoc tree
+Date: Tue, 31 Jan 2017 21:17:23 +0000
+Message-ID: <E1cYfnn-0000rY-Hz@debutante>
+References: <1485555653-11326-1-git-send-email-ce3a@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <20170127152042.7631-1-enric.balletbo-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
-List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: Enric Balletbo i Serra <enric.balletbo-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Matthias Brugger <matthias.bgg-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 51FDA2673ED
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 22:17:35 +0100 (CET)
+In-Reply-To: <1485555653-11326-1-git-send-email-ce3a@gmx.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sergej Sawazki <ce3a@gmx.de>
+Cc: ckeepax@opensource.wolfsonmicro.com, broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mt8173-max98090: remove the call to snd_soc_jack_add_pins.
+   ASoC: wm8741: Remove unused WM8741_NUM_RATES macro
 
 has been applied to the asoc tree at
 
@@ -49,46 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From b1b9e0d3d98ebb1a228d9994b4c9dbac7215e2b9 Mon Sep 17 00:00:00 2001
-From: Enric Balletbo i Serra <enric.balletbo-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Date: Fri, 27 Jan 2017 16:20:42 +0100
-Subject: [PATCH] ASoC: mt8173-max98090: remove the call to
- snd_soc_jack_add_pins.
+>From c9b0bdc74735a5173cdce67f8a85f85c2e8bccee Mon Sep 17 00:00:00 2001
+From: Sergej Sawazki <ce3a@gmx.de>
+Date: Fri, 27 Jan 2017 23:20:53 +0100
+Subject: [PATCH] ASoC: wm8741: Remove unused WM8741_NUM_RATES macro
 
-The snd_soc_card_jack_new function can call snd_soc_jack_add_pins for
-you, so pass directly the pins struct when you create the new jack.
+This macro is unused since commit e369bd006fd6 ("ASoC: wm8741: Allow master
+clock switching").
 
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Sergej Sawazki <ce3a@gmx.de>
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/mt8173/mt8173-max98090.c | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
+ sound/soc/codecs/wm8741.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt8173/mt8173-max98090.c b/sound/soc/mediatek/mt8173/mt8173-max98090.c
-index 5524a2c727ec..46c8e6ae00b4 100644
---- a/sound/soc/mediatek/mt8173/mt8173-max98090.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-max98090.c
-@@ -79,17 +79,11 @@ static int mt8173_max98090_init(struct snd_soc_pcm_runtime *runtime)
+diff --git a/sound/soc/codecs/wm8741.c b/sound/soc/codecs/wm8741.c
+index 565d477cd790..b8c1940f2243 100644
+--- a/sound/soc/codecs/wm8741.c
++++ b/sound/soc/codecs/wm8741.c
+@@ -37,8 +37,6 @@ static const char *wm8741_supply_names[WM8741_NUM_SUPPLIES] = {
+ 	"DVDD",
+ };
  
- 	/* enable jack detection */
- 	ret = snd_soc_card_jack_new(card, "Headphone", SND_JACK_HEADPHONE,
--				    &mt8173_max98090_jack, NULL, 0);
-+				    &mt8173_max98090_jack,
-+				    mt8173_max98090_jack_pins,
-+				    ARRAY_SIZE(mt8173_max98090_jack_pins));
- 	if (ret) {
--		dev_err(card->dev, "Can't snd_soc_jack_new %d\n", ret);
--		return ret;
--	}
+-#define WM8741_NUM_RATES 6
 -
--	ret = snd_soc_jack_add_pins(&mt8173_max98090_jack,
--				    ARRAY_SIZE(mt8173_max98090_jack_pins),
--				    mt8173_max98090_jack_pins);
--	if (ret) {
--		dev_err(card->dev, "Can't snd_soc_jack_add_pins %d\n", ret);
-+		dev_err(card->dev, "Can't create a new Jack %d\n", ret);
- 		return ret;
- 	}
- 
+ /* codec private data */
+ struct wm8741_priv {
+ 	struct wm8741_platform_data pdata;
 -- 
 2.11.0
