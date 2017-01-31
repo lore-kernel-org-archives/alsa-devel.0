@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: soc-core: remove OF adjusting for
-	snd_soc_of_parse_card_name" to the asoc tree
-Date: Tue, 31 Jan 2017 20:02:23 +0000
-Message-ID: <E1cYedD-0005Yv-FZ@debutante>
-References: <878tpxqac4.wl%kuninori.morimoto.gx@renesas.com>
+	snd_soc_of_parse_audio_prefix" to the asoc tree
+Date: Tue, 31 Jan 2017 20:02:26 +0000
+Message-ID: <E1cYedG-0005Zp-Ff@debutante>
+References: <87bmutqad6.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C01B92673B0
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 21:02:35 +0100 (CET)
-In-Reply-To: <878tpxqac4.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BDFA2673B0
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 21:02:36 +0100 (CET)
+In-Reply-To: <87bmutqad6.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: remove OF adjusting for snd_soc_of_parse_card_name
+   ASoC: soc-core: remove OF adjusting for snd_soc_of_parse_audio_prefix
 
 has been applied to the asoc tree at
 
@@ -53,83 +53,79 @@ to this mail.
 Thanks,
 Mark
 
->From b07609cecaac6681a2fca3eebc1bae7b00282620 Mon Sep 17 00:00:00 2001
+>From 440a3006f154a3aca4badf72841c61ac93a72110 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 27 Jan 2017 06:37:51 +0000
+Date: Fri, 27 Jan 2017 06:37:16 +0000
 Subject: [PATCH] ASoC: soc-core: remove OF adjusting for
- snd_soc_of_parse_card_name
+ snd_soc_of_parse_audio_prefix
 
 Because prototype of OF-graph sound card support didn't have Sound Card
-node, commit 8f5ebb1bee15b5720741a98414767bb86f6c2b23
-("ASoC: soc-core: adjust for graph on snd_soc_of_parse_card_name")
+node, commit b6defcca0a604129155ae472b116a2e1688d8995
+("ASoC: soc-core: adjust for graph on snd_soc_of_parse_audio_prefix")
 adjusted to it on each functions.
 
 But final discussion result of ALSA SoC / OF-graph ML, OF-graph sound
 card has node. Thus, this commit became no longer needed.
 
-This reverts commit 8f5ebb1bee15b5720741a98414767bb86f6c2b23.
+This reverts commit b6defcca0a604129155ae472b116a2e1688d8995.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h  |  7 ++-----
- sound/soc/soc-core.c | 11 +++++------
- 2 files changed, 7 insertions(+), 11 deletions(-)
+ include/sound/soc.h  | 6 +-----
+ sound/soc/soc-core.c | 9 +++------
+ 2 files changed, 4 insertions(+), 11 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 34bd033443dc..6ecabeb8d31d 100644
+index 4dccc4f63f5e..34bd033443dc 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -1644,11 +1644,8 @@ static inline struct snd_soc_platform *snd_soc_kcontrol_platform(
- int snd_soc_util_init(void);
- void snd_soc_util_exit(void);
- 
--#define snd_soc_of_parse_card_name(card, propname) \
--	snd_soc_of_parse_card_name_from_node(card, NULL, propname)
--int snd_soc_of_parse_card_name_from_node(struct snd_soc_card *card,
--					 struct device_node *np,
--					 const char *propname);
-+int snd_soc_of_parse_card_name(struct snd_soc_card *card,
-+			       const char *propname);
- int snd_soc_of_parse_audio_simple_widgets(struct snd_soc_card *card,
- 					  const char *propname);
- int snd_soc_of_parse_tdm_slot(struct device_node *np,
+@@ -1656,11 +1656,7 @@ int snd_soc_of_parse_tdm_slot(struct device_node *np,
+ 			      unsigned int *rx_mask,
+ 			      unsigned int *slots,
+ 			      unsigned int *slot_width);
+-#define snd_soc_of_parse_audio_prefix(card, codec_conf, of_node, propname) \
+-	snd_soc_of_parse_audio_prefix_from_node(card, NULL, codec_conf, \
+-						of_node, propname)
+-void snd_soc_of_parse_audio_prefix_from_node(struct snd_soc_card *card,
+-				   struct device_node *np,
++void snd_soc_of_parse_audio_prefix(struct snd_soc_card *card,
+ 				   struct snd_soc_codec_conf *codec_conf,
+ 				   struct device_node *of_node,
+ 				   const char *propname);
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 4ff2448f6023..ebaebc7c9699 100644
+index 656a981f6eb1..4ff2448f6023 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -3492,10 +3492,10 @@ void snd_soc_unregister_codec(struct device *dev)
- EXPORT_SYMBOL_GPL(snd_soc_unregister_codec);
+@@ -3664,18 +3664,15 @@ int snd_soc_of_parse_tdm_slot(struct device_node *np,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_of_parse_tdm_slot);
  
- /* Retrieve a card's name from device tree */
--int snd_soc_of_parse_card_name_from_node(struct snd_soc_card *card,
--					 struct device_node *np,
--					 const char *propname)
-+int snd_soc_of_parse_card_name(struct snd_soc_card *card,
-+			       const char *propname)
+-void snd_soc_of_parse_audio_prefix_from_node(struct snd_soc_card *card,
+-				   struct device_node *np,
++void snd_soc_of_parse_audio_prefix(struct snd_soc_card *card,
+ 				   struct snd_soc_codec_conf *codec_conf,
+ 				   struct device_node *of_node,
+ 				   const char *propname)
  {
-+	struct device_node *np;
++	struct device_node *np = card->dev->of_node;
+ 	const char *str;
  	int ret;
- 
- 	if (!card->dev) {
-@@ -3503,8 +3503,7 @@ int snd_soc_of_parse_card_name_from_node(struct snd_soc_card *card,
- 		return -EINVAL;
- 	}
  
 -	if (!np)
 -		np = card->dev->of_node;
-+	np = card->dev->of_node;
- 
- 	ret = of_property_read_string_index(np, propname, 0, &card->name);
- 	/*
-@@ -3521,7 +3520,7 @@ int snd_soc_of_parse_card_name_from_node(struct snd_soc_card *card,
- 
- 	return 0;
+-
+ 	ret = of_property_read_string(np, propname, &str);
+ 	if (ret < 0) {
+ 		/* no prefix is not error */
+@@ -3685,7 +3682,7 @@ void snd_soc_of_parse_audio_prefix_from_node(struct snd_soc_card *card,
+ 	codec_conf->of_node	= of_node;
+ 	codec_conf->name_prefix	= str;
  }
--EXPORT_SYMBOL_GPL(snd_soc_of_parse_card_name_from_node);
-+EXPORT_SYMBOL_GPL(snd_soc_of_parse_card_name);
+-EXPORT_SYMBOL_GPL(snd_soc_of_parse_audio_prefix_from_node);
++EXPORT_SYMBOL_GPL(snd_soc_of_parse_audio_prefix);
  
- static const struct snd_soc_dapm_widget simple_widgets[] = {
- 	SND_SOC_DAPM_MIC("Microphone", NULL),
+ int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
+ 				   const char *propname)
 -- 
 2.11.0
