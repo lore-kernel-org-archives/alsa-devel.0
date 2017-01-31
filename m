@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: atom: fix frame polarity" to the
-	asoc tree
-Date: Tue, 31 Jan 2017 20:02:17 +0000
-Message-ID: <E1cYed7-0005XB-Cp@debutante>
-References: <1485461385-14544-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: boards: remove .pm_ops in all
+	Atom/DPCM machine drivers" to the asoc tree
+Date: Tue, 31 Jan 2017 20:02:20 +0000
+Message-ID: <E1cYedA-0005Y2-Fd@debutante>
+References: <1485461385-14544-3-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AAD24267395
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 21:02:29 +0100 (CET)
-In-Reply-To: <1485461385-14544-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B8E45267395
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 21:02:30 +0100 (CET)
+In-Reply-To: <1485461385-14544-3-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: Shrirang Bagul <shrirang.bagul@canonical.com>, tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: atom: fix frame polarity
+   ASoC: Intel: boards: remove .pm_ops in all Atom/DPCM machine drivers
 
 has been applied to the asoc tree at
 
@@ -53,77 +53,48 @@ to this mail.
 Thanks,
 Mark
 
->From f12f5c84e35c7b66dbc5066a46b502b832b69669 Mon Sep 17 00:00:00 2001
+>From 3639ac1cd5177685a5c8abb7230096b680e1d497 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 26 Jan 2017 14:09:29 -0600
-Subject: [PATCH] ASoC: Intel: atom: fix frame polarity
+Date: Thu, 26 Jan 2017 14:09:30 -0600
+Subject: [PATCH] ASoC: Intel: boards: remove .pm_ops in all Atom/DPCM machine
+ drivers
 
-The current frame sync polarity definitions are inconsistent in the
-Atom/DPCM driver, fix to align with regular ASoC definitions and
-update code in platform and machine drivers for RT5640 and RT5651.
+This patch corrects an omission in bytcr_rt5640 and bytcr_rt5651.
+All existing machine drivers shall not use .pm_ops to avoid a double
+suspend, as initially implemented by 3f2dcbeaeb2b
+("ASoC: Intel: Remove soc pm handling to allow platform driver handle it").
 
+Reported-by: Shrirang Bagul <shrirang.bagul@canonical.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst-atom-controls.c | 6 ++----
- sound/soc/intel/boards/bytcr_rt5640.c    | 4 ++--
- sound/soc/intel/boards/bytcr_rt5651.c    | 2 +-
- 3 files changed, 5 insertions(+), 7 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 1 -
+ sound/soc/intel/boards/bytcr_rt5651.c | 1 -
+ 2 files changed, 2 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst-atom-controls.c b/sound/soc/intel/atom/sst-atom-controls.c
-index c7b3cbf92faf..df4430bdafc0 100644
---- a/sound/soc/intel/atom/sst-atom-controls.c
-+++ b/sound/soc/intel/atom/sst-atom-controls.c
-@@ -801,13 +801,11 @@ static int sst_get_frame_sync_polarity(struct snd_soc_dai *dai,
- 
- 	switch (format) {
- 	case SND_SOC_DAIFMT_NB_NF:
--		return SSP_FS_ACTIVE_LOW;
--	case SND_SOC_DAIFMT_NB_IF:
-+	case SND_SOC_DAIFMT_IB_NF:
- 		return SSP_FS_ACTIVE_HIGH;
-+	case SND_SOC_DAIFMT_NB_IF:
- 	case SND_SOC_DAIFMT_IB_IF:
- 		return SSP_FS_ACTIVE_LOW;
--	case SND_SOC_DAIFMT_IB_NF:
--		return SSP_FS_ACTIVE_HIGH;
- 	default:
- 		dev_err(dai->dev, "Invalid frame sync polarity %d\n", format);
- 	}
 diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 9222fdb7af27..1ae4d0ca8064 100644
+index 507a86a5eafe..9222fdb7af27 100644
 --- a/sound/soc/intel/boards/bytcr_rt5640.c
 +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -546,7 +546,7 @@ static int byt_rt5640_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 		 */
- 		ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
- 					SND_SOC_DAIFMT_I2S     |
--					SND_SOC_DAIFMT_NB_IF   |
-+					SND_SOC_DAIFMT_NB_NF   |
- 					SND_SOC_DAIFMT_CBS_CFS
- 			);
- 		if (ret < 0) {
-@@ -572,7 +572,7 @@ static int byt_rt5640_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 		 */
- 		ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
- 					SND_SOC_DAIFMT_I2S     |
--					SND_SOC_DAIFMT_NB_IF   |
-+					SND_SOC_DAIFMT_NB_NF   |
- 					SND_SOC_DAIFMT_CBS_CFS
- 			);
- 		if (ret < 0) {
+@@ -846,7 +846,6 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ static struct platform_driver snd_byt_rt5640_mc_driver = {
+ 	.driver = {
+ 		.name = "bytcr_rt5640",
+-		.pm = &snd_soc_pm_ops,
+ 	},
+ 	.probe = snd_byt_rt5640_mc_probe,
+ };
 diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 71d801323ff4..3186f015939f 100644
+index 2d24dc04b597..71d801323ff4 100644
 --- a/sound/soc/intel/boards/bytcr_rt5651.c
 +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -185,7 +185,7 @@ static int byt_rt5651_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 	 */
- 	ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
- 				  SND_SOC_DAIFMT_I2S     |
--				  SND_SOC_DAIFMT_NB_IF   |
-+				  SND_SOC_DAIFMT_NB_NF   |
- 				  SND_SOC_DAIFMT_CBS_CFS
- 				  );
- 
+@@ -319,7 +319,6 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ static struct platform_driver snd_byt_rt5651_mc_driver = {
+ 	.driver = {
+ 		.name = "bytcr_rt5651",
+-		.pm = &snd_soc_pm_ops,
+ 	},
+ 	.probe = snd_byt_rt5651_mc_probe,
+ };
 -- 
 2.11.0
