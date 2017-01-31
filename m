@@ -1,86 +1,55 @@
-From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?= <mylene.josserand@free-electrons.com>
-Subject: [PATCH v3 5/8] ASoC: codecs: Add sun8i-a33 binding
-	documentation
-Date: Tue, 31 Jan 2017 11:05:49 +0100
-Message-ID: <20170131100552.27949-6-mylene.josserand@free-electrons.com>
+From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?=
+        <mylene.josserand@free-electrons.com>
+Subject: [PATCH v3 8/8] ARM: dts: sun8i: sinlinx: Enable audio nodes
+Date: Tue, 31 Jan 2017 11:05:52 +0100
+Message-ID: <20170131100552.27949-9-mylene.josserand@free-electrons.com>
 References: <20170131100552.27949-1-mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 51C28267268
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 11:08:28 +0100 (CET)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20170131100552.27949-1-mylene.josserand@free-electrons.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, maxime.ripard@free-electrons.com, wens@csie.org, perex@perex.cz, tiwai@suse.com
-Cc: thomas.petazzoni@free-electrons.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, alexandre.belloni@free-electrons.com, mylene.josserand@free-electrons.com, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, thomas.petazzoni@free-electrons.com, mylene.josserand@free-electrons.com, alexandre.belloni@free-electrons.com
 List-Id: alsa-devel@alsa-project.org
 
-QWRkIHRoZSBkb2N1bWVudGF0aW9uIGZvciBkdC1iaW5kaW5nIG9mIHRoZSBkaWdpdGFsIGF1ZGlv
-IGNvZGVjIGRyaXZlcgphbmQgdGhlIGF1ZGlvIGNhcmQgZHJpdmVyIGZvciBTdW44aS1hMzMgU29D
-cy4KClNpZ25lZC1vZmYtYnk6IE15bMOobmUgSm9zc2VyYW5kIDxteWxlbmUuam9zc2VyYW5kQGZy
-ZWUtZWxlY3Ryb25zLmNvbT4KLS0tCiAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9zdW44
-aS1hMzMtY29kZWMudHh0ICB8IDc1ICsrKysrKysrKysrKysrKysrKysrKysKIDEgZmlsZSBjaGFu
-Z2VkLCA3NSBpbnNlcnRpb25zKCspCiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3N1bjhpLWEzMy1jb2RlYy50eHQKCmRpZmYgLS1naXQg
-YS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvc3VuOGktYTMzLWNvZGVj
-LnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9zdW44aS1hMzMt
-Y29kZWMudHh0Cm5ldyBmaWxlIG1vZGUgMTAwNjQ0CmluZGV4IDAwMDAwMDAwMDAwMC4uMjQyNWM3
-NGJjZTdlCi0tLSAvZGV2L251bGwKKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
-bmdzL3NvdW5kL3N1bjhpLWEzMy1jb2RlYy50eHQKQEAgLTAsMCArMSw3NSBAQAorQWxsd2lubmVy
-IFNVTjhJIGF1ZGlvIGNvZGVjCistLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
-KworT24gU3VuOGktQTMzIFNvQ3MsIHRoZSBhdWRpbyBpcyBzZXBhcmF0ZWQgaW4gZGlmZmVyZW50
-IHBhcnRzOgorCSAgLSBBIERBSSBkcml2ZXIuIEl0IHVzZXMgdGhlICJzdW40aS1pMnMiIGRyaXZl
-ciB3aGljaCBpcworCSAgZG9jdW1lbnRlZCBoZXJlOgorCSAgRG9jdW1lbnRhdGlvbi9kZXZpY2V0
-cmVlL2JpbmRpbmdzL3NvdW5kL3N1bjRpLWkycy50eHQKKwkgIC0gQW4gYW5hbG9nIHBhcnQgb2Yg
-dGhlIGNvZGVjIHdoaWNoIGlzIGhhbmRsZWQgYXMgUFJDTSByZWdpc3RlcnMuCisJICBTZWUgRG9j
-dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3N1bjhpLWNvZGVjLWFuYWxvZy50
-eHQKKwkgIC0gQW4gZGlnaXRhbCBwYXJ0IG9mIHRoZSBjb2RlYyB3aGljaCBpcyBkb2N1bWVudGVk
-IGluIHRoaXMgY3VycmVudAorCSAgYmluZGluZyBkb2N1bWVudGF0aW9uLgorCSAgLSBBbmQgZmlu
-YWxseSwgYW4gYXVkaW8gY2FyZCB3aGljaCBsaW5rcyBhbGwgdGhlIGFib3ZlIGNvbXBvbmVudHMu
-CisJICBUaGUgc2ltcGxlLWF1ZGlvIGNhcmQgd2lsbCBiZSB1c2VkLgorCSAgU2VlIERvY3VtZW50
-YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9zaW1wbGUtY2FyZC50eHQKKworVGhpcyBi
-aW5kaW5ncyBkb2N1bWVudGF0aW9uIGV4cG9zZXMgU3VuOGkgY29kZWMgKGRpZ2l0YWwgcGFydCku
-CisKK1JlcXVpcmVkIHByb3BlcnRpZXM6CistIGNvbXBhdGlibGU6IG11c3QgYmUgImFsbHdpbm5l
-cixzdW44aS1hMzMtY29kZWMiCistIHJlZzogbXVzdCBjb250YWluIHRoZSByZWdpc3RlcnMgbG9j
-YXRpb24gYW5kIGxlbmd0aAorLSBpbnRlcnJ1cHRzOiBtdXN0IGNvbnRhaW4gdGhlIGNvZGVjIGlu
-dGVycnVwdAorLSBjbG9ja3M6IGEgbGlzdCBvZiBwaGFuZGxlICsgY2xvY2stc3BlY2lmZXIgcGFp
-cnMsIG9uZSBmb3IgZWFjaCBlbnRyeQorICBpbiBjbG9jay1uYW1lcy4KKy0gY2xvY2stbmFtZXM6
-IHNob3VsZCBjb250YWluIGZvbGxvd2luZ3M6CisgICAtICJidXMiOiB0aGUgcGFyZW50IEFQQiBj
-bG9jayBmb3IgdGhpcyBjb250cm9sbGVyCisgICAtICJtb2QiOiB0aGUgcGFyZW50IG1vZHVsZSBj
-bG9jaworCitFeGFtcGxlOgorY29kZWM6IGNvZGVjQDAxYzIyZTAwIHsKKwkjc291bmQtZGFpLWNl
-bGxzID0gPDA+OworCWNvbXBhdGlibGUgPSAiYWxsd2lubmVyLHN1bjhpLWEzMy1jb2RlYyI7CisJ
-cmVnID0gPDB4MDFjMjJlMDAgMHg0MDA+OworCWludGVycnVwdHMgPSA8R0lDX1NQSSAyOSBJUlFf
-VFlQRV9MRVZFTF9ISUdIPjsKKwljbG9ja3MgPSA8JmNjdSBDTEtfQlVTX0NPREVDPiwgPCZjY3Ug
-Q0xLX0FDX0RJRz47CisJY2xvY2stbmFtZXMgPSAiYnVzIiwgIm1vZCI7CisJc3RhdHVzID0gImRp
-c2FibGVkIjsKK307CisKK0hlcmUgaXMgYW4gZXhhbXBsZSB0byBhZGQgYSBzb3VuZCBjYXJkIGFu
-ZCB0aGUgY29kZWMgYmluZGluZyBvbiBzdW44aSBTb0NzIHRoYXQKK2FyZSBzaW1pbGFyIHRvIEEz
-MyB1c2luZyBzaW1wbGUtY2FyZDoKKworCXNvdW5kIHsKKwkJY29tcGF0aWJsZSA9ICJzaW1wbGUt
-YXVkaW8tY2FyZCI7CisJCXNpbXBsZS1hdWRpby1jYXJkLG5hbWUgPSAic3VuOGktYTMzLWF1ZGlv
-IjsKKwkJc2ltcGxlLWF1ZGlvLWNhcmQsZm9ybWF0ID0gImkycyI7CisJCXNpbXBsZS1hdWRpby1j
-YXJkLGZyYW1lLW1hc3RlciA9IDwmbGlua19jb2RlYz47CisJCXNpbXBsZS1hdWRpby1jYXJkLGJp
-dGNsb2NrLW1hc3RlciA9IDwmbGlua19jb2RlYz47CisJCXNpbXBsZS1hdWRpby1jYXJkLG1jbGst
-ZnMgPSA8NTEyPjsKKwkJc2ltcGxlLWF1ZGlvLWNhcmQsYXV4LWRldnMgPSA8JmNvZGVjX2FuYWxv
-Zz47CisJCXNpbXBsZS1hdWRpby1jYXJkLHJvdXRpbmcgPQorCQkJCSJMZWZ0IERBQyIsICJEaWdp
-dGFsIExlZnQgREFDIiwKKwkJCQkiUmlnaHQgREFDIiwgIkRpZ2l0YWwgUmlnaHQgREFDIjsKKwor
-CQlzaW1wbGUtYXVkaW8tY2FyZCxjcHUgeworCQkJc291bmQtZGFpID0gPCZkYWk+OworCQl9Owor
-CisJCWxpbmtfY29kZWM6IHNpbXBsZS1hdWRpby1jYXJkLGNvZGVjIHsKKwkJCXNvdW5kLWRhaSA9
-IDwmY29kZWM+OworCQl9OworCisJc29jQDAxYzAwMDAwIHsKKwkJWy4uLl0KKworCQljb2RlYzog
-Y29kZWNAMDFjMjJlMDAgeworCQkJI3NvdW5kLWRhaS1jZWxscyA9IDwwPjsKKwkJCWNvbXBhdGli
-bGUgPSAiYWxsd2lubmVyLHN1bjhpLWEzMy1jb2RlYyI7CisJCQlyZWcgPSA8MHgwMWMyMmUwMCAw
-eDQwMD47CisJCQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMjkgSVJRX1RZUEVfTEVWRUxfSElHSD47
-CisJCQljbG9ja3MgPSA8JmNjdSBDTEtfQlVTX0NPREVDPiwgPCZjY3UgQ0xLX0FDX0RJRz47CisJ
-CQljbG9jay1uYW1lcyA9ICJidXMiLCAibW9kIjsKKwkJCXN0YXR1cyA9ICJkaXNhYmxlZCI7CisJ
-CX07CisJfTsKKwotLSAKMi4xMS4wCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+Enable the audio codec and the audio dai for the sun8i A33 sinlinx board.
+
+Signed-off-by: Mylène Josserand <mylene.josserand@free-electrons.com>
+---
+ arch/arm/boot/dts/sun8i-a33-sinlinx-sina33.dts | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/arm/boot/dts/sun8i-a33-sinlinx-sina33.dts b/arch/arm/boot/dts/sun8i-a33-sinlinx-sina33.dts
+index c206ed693aa2..a52cf675098e 100644
+--- a/arch/arm/boot/dts/sun8i-a33-sinlinx-sina33.dts
++++ b/arch/arm/boot/dts/sun8i-a33-sinlinx-sina33.dts
+@@ -80,6 +80,14 @@
+ 	};
+ };
+ 
++&codec {
++	status = "okay";
++};
++
++&dai {
++	status = "okay";
++};
++
+ &de {
+ 	status = "okay";
+ };
+@@ -227,6 +235,10 @@
+ 	regulator-name = "vcc-rtc";
+ };
+ 
++&sound {
++	status = "okay";
++};
++
+ &tcon0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&lcd_rgb666_pins>;
+-- 
+2.11.0
