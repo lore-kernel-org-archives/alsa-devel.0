@@ -1,22 +1,24 @@
-From: =?UTF-8?B?SsO2cmcgTcO8bGxlcg==?= <joerg.mueller7744@gmail.com>
-Subject: Re: Cannot combine audio devices with more than 64
-	channels
-Date: Tue, 31 Jan 2017 18:18:48 +0100
-Message-ID: <CAKw=HF1kZ12YOUuBX0MmiyYsPqQ68kafP-cVmWA8FP0dHOAuDw@mail.gmail.com>
+From: John Rigg <aldev2@jrigg.co.uk>
+Subject: Re: Cannot combine audio devices with more than
+	64	channels
+Date: Tue, 31 Jan 2017 17:58:05 +0000
+Message-ID: <20170131175805.GA16643@localhost.localdomain>
 References: <CAKw=HF0hbhxJ1YGjukjFr72xtEh2FjtH6k0Bh+rFcMwejgwcUg@mail.gmail.com>
  <1cdef19b-a458-7441-2ede-2ba8984ec7cd@ladisch.de>
  <s5hh94khiao.wl-tiwai@suse.de>
+ <CAKw=HF1kZ12YOUuBX0MmiyYsPqQ68kafP-cVmWA8FP0dHOAuDw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot0-f196.google.com (mail-ot0-f196.google.com
- [74.125.82.196])
- by alsa0.perex.cz (Postfix) with ESMTP id C5EBA266F1C
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 18:18:49 +0100 (CET)
-Received: by mail-ot0-f196.google.com with SMTP id 73so42500977otj.1
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 09:18:49 -0800 (PST)
-In-Reply-To: <s5hh94khiao.wl-tiwai@suse.de>
+Received: from vm2962.vps.tagadab.com (vm2962.vps.tagadab.com [95.172.24.202])
+ by alsa0.perex.cz (Postfix) with ESMTP id B14F12667EE
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 19:28:01 +0100 (CET)
+Received: from m0 by vm2962.vps.tagadab.com with local (Exim 4.69)
+ (envelope-from <noreply@jrigg.co.uk>) id 1cYcgv-0004L0-76
+ for alsa-devel@alsa-project.org; Tue, 31 Jan 2017 17:58:05 +0000
+Content-Disposition: inline
+In-Reply-To: <CAKw=HF1kZ12YOUuBX0MmiyYsPqQ68kafP-cVmWA8FP0dHOAuDw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,77 +28,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SSBhcHBsaWVkIHRoZSBwYXRjaCB0byBteSBzeXN0ZW0gYW5kIGl0IGZpeGVkIHRoZSBlcnJvciEK
-Ckhvd2V2ZXIsIEkgZ2V0IHRoZSBmb2xsb3dpbmcgZXJyb3Igd2hpY2ggc2VlbXMgdG8gYmUgY2F1
-c2VkIGJ5IGEgY29kZQpub3QgYmVpbmcgYWJsZSB0byBoYW5kbGUgbW9yZSB0aGFuIDI1NiBjaGFu
-bmVsczoKPiB3ZnNAd2ZzMTY6fiQgamFja2QgLVIgLWQgYWxzYSAtQyBtYWRpZnhfcmVjb3JkX2Fs
-bCAtUCBtYWRpZnhfcGxheWJhY2tfYWxsCj4gamFja2RtcCAxLjkuMTAKPiBDb3B5cmlnaHQgMjAw
-MS0yMDA1IFBhdWwgRGF2aXMgYW5kIG90aGVycy4KPiBDb3B5cmlnaHQgMjAwNC0yMDE0IEdyYW1l
-Lgo+IGphY2tkbXAgY29tZXMgd2l0aCBBQlNPTFVURUxZIE5PIFdBUlJBTlRZCj4gVGhpcyBpcyBm
-cmVlIHNvZnR3YXJlLCBhbmQgeW91IGFyZSB3ZWxjb21lIHRvIHJlZGlzdHJpYnV0ZSBpdAo+IHVu
-ZGVyIGNlcnRhaW4gY29uZGl0aW9uczsgc2VlIHRoZSBmaWxlIENPUFlJTkcgZm9yIGRldGFpbHMK
-PiBubyBtZXNzYWdlIGJ1ZmZlciBvdmVycnVucwo+IG5vIG1lc3NhZ2UgYnVmZmVyIG92ZXJydW5z
-Cj4gbm8gbWVzc2FnZSBidWZmZXIgb3ZlcnJ1bnMKPiBKQUNLIHNlcnZlciBzdGFydGluZyBpbiBy
-ZWFsdGltZSBtb2RlIHdpdGggcHJpb3JpdHkgMTAKPiBzZWxmLWNvbm5lY3QtbW9kZSBpcyAiRG9u
-J3QgcmVzdHJpY3Qgc2VsZiBjb25uZWN0IHJlcXVlc3RzIgo+IGF1ZGlvX3Jlc2VydmF0aW9uX2lu
-aXQKPiBBY3F1aXJlIGF1ZGlvIGNhcmQgQXVkaW8wCj4gY3JlYXRpbmcgYWxzYSBkcml2ZXIgLi4u
-IG1hZGlmeF9wbGF5YmFja19hbGx8bWFkaWZ4X3JlY29yZF9hbGx8MTAyNHwyfDQ4MDAwfDB8MHxu
-b21vbnxzd21ldGVyfC18MzJiaXQKPiBjb25maWd1cmluZyBmb3IgNDgwMDBIeiwgcGVyaW9kID0g
-MTAyNCBmcmFtZXMgKDIxLjMgbXMpLCBidWZmZXIgPSAyIHBlcmlvZHMKPiBBTFNBOiBmaW5hbCBz
-ZWxlY3RlZCBzYW1wbGUgZm9ybWF0IGZvciBjYXB0dXJlOiAzMmJpdCBmbG9hdCBsaXR0bGUtZW5k
-aWFuCj4gQUxTQTogdXNlIDggcGVyaW9kcyBmb3IgY2FwdHVyZQo+IEFMU0E6IGZpbmFsIHNlbGVj
-dGVkIHNhbXBsZSBmb3JtYXQgZm9yIHBsYXliYWNrOiAzMmJpdCBmbG9hdCBsaXR0bGUtZW5kaWFu
-Cj4gQUxTQTogdXNlIDggcGVyaW9kcyBmb3IgcGxheWJhY2sKPiBqYWNrZDogLi4vbGludXgvYWxz
-YS9KYWNrQWxzYURyaXZlci5jcHA6MTIyOiB2aXJ0dWFsIGludCBKYWNrOjpKYWNrQWxzYURyaXZl
-cjo6QXR0YWNoKCk6IEFzc2VydGlvbiBgZkNhcHR1cmVDaGFubmVscyA8IDI1NicgZmFpbGVkLgo+
-IEFib3J0ZWQgKGNvcmUgZHVtcGVkKQoKV2hhdCBjb3VsZCBiZSB0aGUgcHJvYmxlbSBoZXJlPwoK
-MjAxNy0wMS0yNyAxMjowOCBHTVQrMDE6MDAgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPjoK
-PiBPbiBUaHUsIDI2IEphbiAyMDE3IDE3OjEzOjUwICswMTAwLAo+IENsZW1lbnMgTGFkaXNjaCB3
-cm90ZToKPj4KPj4gSsO2cmcgTcO8bGxlciB3cm90ZToKPj4gPiBJIGNyZWF0ZWQgYW4gLmFzb3Vu
-ZHJjIHdpdGggMTk0IGlucHV0cyBmb3IgZWFjaCBjYXJkLgo+PiA+Cj4+ID4gcGNtX211bHRpLmM6
-MTA2MDogc25kX3BjbV9tdWx0aV9vcGVuOiBBc3NlcnRpb24gYCFzbGF2ZV9tYXBbc2lkeHNbaV1d
-W3NjaGFubmVsc1tpXV0nIGZhaWxlZC4KPj4gPgo+PiA+IFRvIG1lLCB0aGlzIGxvb2tzIGxpa2Ug
-YSBidWcuCj4+Cj4+IC0tODwtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tPjgtLQo+PiBwY206IG11bHRpOiBhbGxvY2F0ZSBzbGF2
-ZV9tYXAgZHluYW1pY2FsbHkKPj4KPj4gVXNpbmcgYSBmaXhlZC1zaXplIGJ1ZmZlciBmb3IgYW4g
-YXJiaXRyYXJpbHktc2l6ZWQgbGlzdCBpcyBub3QgYSBnb29kIGlkZWEuCj4+Cj4+IFNpZ25lZC1v
-ZmYtYnk6IENsZW1lbnMgTGFkaXNjaCA8Y2xlbWVuc0BsYWRpc2NoLmRlPgo+Cj4gSXQgdHVybmVk
-IG91dCB0aGF0IHdlIGRvbid0IG5lZWQgdGhlIGFycmF5IGF0IGFsbC4KPiBJJ2xsIGFwcGx5IHRo
-ZSBmb2xsb3dpbmcgY2xlYW51cCAoYW5kIGZpeCkgcGF0Y2guICBNeSBwcmV2aW91cyBvbmUgd2Fz
-Cj4gYnVnZ3kuCj4KPgo+IHRoYW5rcywKPgo+IFRha2FzaGkKPgo+IC0tIDg8IC0tCj4gRnJvbTog
-VGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgo+IFN1YmplY3Q6IFtQQVRDSF0gcGNtOiBtdWx0
-aTogRHJvcCB0aGUgZml4ZWQgc2xhdmVfbWFwW10gaW4gc25kX3BjbV9tdWx0aV9vcGVuKCkKPgo+
-IHNsYXZlX21hcFtdIGluIHNuZF9wY21fbXVsdGlfb3BlbigpIGlzIGEgZml4ZWQgc2l6ZSBhcnJh
-eSBhbmQKPiBvYnZpb3VzbHkgd2UgaGF2ZSBubyBvdmVyZmxvdyBjaGVjaywgYW5kIGV2ZW50dWFs
-bHkgdGhlIHByb2dyYW0gZ2V0cwo+IGFuIGVycm9yIHdoZW4gbW9yZSB0aGFuIDY0IGNoYW5uZWxz
-IGFyZSB1c2VkLgo+Cj4gQWx0aG91Z2ggd2UgY2FuIG1vZGlmeSB0aGUgY29kZSB0byBhbGxvY2F0
-ZSB0aGUgYXJyYXkgZHluYW1pY2FsbHksIGl0Cj4gdHVybmVkIG91dCB0aGF0IHdlIGNhbiBkcm9w
-IHRoZSB3aG9sZSBzbGF2ZV9tYXBbXSB0aGluZ3kgaW4gdGhpcwo+IGZ1bmN0aW9uIHdoZW4gbG9v
-a2luZyBhdCB0aGUgY29kZSBjbG9zZWx5LiAgSW4gdGhlIHBhc3QsIGl0IHdhcyB1c2VkCj4gdG8g
-aWRlbnRpZnkgdGhlIG9uZS10by1tYW55IG1hcHBpbmcuICBCdXQgdGhlIGNoZWNrIHdhcyBkcm9w
-cGVkLCBhbmQKPiBub3cgaXQncyBub3RoaW5nIG1vcmUgdGhhbiBhIHNhbml0eSBjaGVjay4KPgo+
-IFJlcG9ydGVkLWJ5OiBKw7ZyZyBNw7xsbGVyIDxqb2VyZy5tdWVsbGVyNzc0NEBnbWFpbC5jb20+
-Cj4gU2lnbmVkLW9mZi1ieTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgo+IC0tLQo+ICBz
-cmMvcGNtL3BjbV9tdWx0aS5jIHwgMyAtLS0KPiAgMSBmaWxlIGNoYW5nZWQsIDMgZGVsZXRpb25z
-KC0pCj4KPiBkaWZmIC0tZ2l0IGEvc3JjL3BjbS9wY21fbXVsdGkuYyBiL3NyYy9wY20vcGNtX211
-bHRpLmMKPiBpbmRleCBjNGIxZmJhMzJjYWMuLjllNGJlNzEyMmMwZiAxMDA2NDQKPiAtLS0gYS9z
-cmMvcGNtL3BjbV9tdWx0aS5jCj4gKysrIGIvc3JjL3BjbS9wY21fbXVsdGkuYwo+IEBAIC0xMDE1
-LDcgKzEwMTUsNiBAQCBpbnQgc25kX3BjbV9tdWx0aV9vcGVuKHNuZF9wY21fdCAqKnBjbXAsIGNv
-bnN0IGNoYXIgKm5hbWUsCj4gICAgICAgICBzbmRfcGNtX211bHRpX3QgKm11bHRpOwo+ICAgICAg
-ICAgdW5zaWduZWQgaW50IGk7Cj4gICAgICAgICBzbmRfcGNtX3N0cmVhbV90IHN0cmVhbTsKPiAt
-ICAgICAgIGNoYXIgc2xhdmVfbWFwWzY0XVs2NF0gPSB7IHsgMCB9IH07Cj4gICAgICAgICBpbnQg
-ZXJyOwo+Cj4gICAgICAgICBhc3NlcnQocGNtcCk7Cj4gQEAgLTEwNTksOCArMTA1OCw2IEBAIGlu
-dCBzbmRfcGNtX211bHRpX29wZW4oc25kX3BjbV90ICoqcGNtcCwgY29uc3QgY2hhciAqbmFtZSwK
-PiAgICAgICAgICAgICAgICAgYmluZC0+c2xhdmVfY2hhbm5lbCA9IHNjaGFubmVsc1tpXTsKPiAg
-ICAgICAgICAgICAgICAgaWYgKHNpZHhzW2ldIDwgMCkKPiAgICAgICAgICAgICAgICAgICAgICAg
-ICBjb250aW51ZTsKPiAtICAgICAgICAgICAgICAgYXNzZXJ0KCFzbGF2ZV9tYXBbc2lkeHNbaV1d
-W3NjaGFubmVsc1tpXV0pOwo+IC0gICAgICAgICAgICAgICBzbGF2ZV9tYXBbc2lkeHNbaV1dW3Nj
-aGFubmVsc1tpXV0gPSAxOwo+ICAgICAgICAgfQo+ICAgICAgICAgbXVsdGktPmNoYW5uZWxzX2Nv
-dW50ID0gY2hhbm5lbHNfY291bnQ7Cj4KPiAtLQo+IDIuMTEuMAo+Cl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Tue, Jan 31, 2017 at 06:18:48PM +0100, J=F6rg M=FCller wrote:
+> I applied the patch to my system and it fixed the error!
+> =
+
+> However, I get the following error which seems to be caused by a code
+> not being able to handle more than 256 channels:
+> > wfs@wfs16:~$ jackd -R -d alsa -C madifx_record_all -P madifx_playback_a=
+ll
+> > jackdmp 1.9.10
+> > Copyright 2001-2005 Paul Davis and others.
+> > Copyright 2004-2014 Grame.
+> > jackdmp comes with ABSOLUTELY NO WARRANTY
+> > This is free software, and you are welcome to redistribute it
+> > under certain conditions; see the file COPYING for details
+> > no message buffer overruns
+> > no message buffer overruns
+> > no message buffer overruns
+> > JACK server starting in realtime mode with priority 10
+> > self-connect-mode is "Don't restrict self connect requests"
+> > audio_reservation_init
+> > Acquire audio card Audio0
+> > creating alsa driver ... madifx_playback_all|madifx_record_all|1024|2|4=
+8000|0|0|nomon|swmeter|-|32bit
+> > configuring for 48000Hz, period =3D 1024 frames (21.3 ms), buffer =3D 2=
+ periods
+> > ALSA: final selected sample format for capture: 32bit float little-endi=
+an
+> > ALSA: use 8 periods for capture
+> > ALSA: final selected sample format for playback: 32bit float little-end=
+ian
+> > ALSA: use 8 periods for playback
+> > jackd: ../linux/alsa/JackAlsaDriver.cpp:122: virtual int Jack::JackAlsa=
+Driver::Attach(): Assertion `fCaptureChannels < 256' failed.
+> > Aborted (core dumped)
+> =
+
+> What could be the problem here?
+
+jackd only allows 256 ports maximum by default. Try using -p option
+to increase it, eg. to 512:
+
+jackd -R -p512 -d alsa....etc
+
+BTW you don't need to specify -R on recent jackd versions as it's
+realtime by default (use -r if you don't want realtime).
+
+John
