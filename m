@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Atom: Add HP Pavilion x2 10-p000
-	machine entry" to the asoc tree
-Date: Tue, 31 Jan 2017 21:18:03 +0000
-Message-ID: <E1cYfoR-00018a-GT@debutante>
-References: <e129703fe81de8fdba680a4a6e27d1e414af2579.1483531270.git.neko@nya.ai>
+Subject: Applied "ASoC: rt5640: Add "10EC3276" ACPI ID" to the
+	asoc tree
+Date: Tue, 31 Jan 2017 21:18:06 +0000
+Message-ID: <E1cYfoU-00019c-OQ@debutante>
+References: <9e2493401df1f2f0419fa175b4fc9a84eb971e28.1483531270.git.neko@nya.ai>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9680D267407
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 22:18:15 +0100 (CET)
-In-Reply-To: <e129703fe81de8fdba680a4a6e27d1e414af2579.1483531270.git.neko@nya.ai>
+ by alsa0.perex.cz (Postfix) with ESMTP id C9DEC26745B
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 22:18:16 +0100 (CET)
+In-Reply-To: <9e2493401df1f2f0419fa175b4fc9a84eb971e28.1483531270.git.neko@nya.ai>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Atom: Add HP Pavilion x2 10-p000 machine entry
+   ASoC: rt5640: Add "10EC3276" ACPI ID
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From e7974816a8fce6cd11dc4dfa9f1c1844a9b5d8df Mon Sep 17 00:00:00 2001
+>From 03200140ee83b3655152bc0c144378732fec8af1 Mon Sep 17 00:00:00 2001
 From: Alexandrov Stansilav <neko@nya.ai>
-Date: Thu, 26 Jan 2017 14:09:32 -0600
-Subject: [PATCH] ASoC: Intel: Atom: Add HP Pavilion x2 10-p000 machine entry
+Date: Thu, 26 Jan 2017 14:09:31 -0600
+Subject: [PATCH] ASoC: rt5640: Add "10EC3276" ACPI ID
 
-Add machine entry for HP X2 Pavilion 10-p100.
-This notebook contains rt5640 codec, but with ACPI ID "10EC3276".
+Add ACPI ID "10EC3276" for sound card found on notebook HP Pavilion X2 10-p000.
+ACPI DSDT Table on this device describes this card as ALC3276, but it is in fact rt5640.
 
 Signed-off-by: Alexandrov Stansilav <neko@nya.ai>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst/sst_acpi.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/rt5640.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index f4d92bbc5373..896ced2dd73c 100644
---- a/sound/soc/intel/atom/sst/sst_acpi.c
-+++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -463,6 +463,8 @@ static struct sst_acpi_mach sst_acpi_chv[] = {
- 	/* some CHT-T platforms rely on RT5640, use Baytrail machine driver */
- 	{"10EC5640", "bytcr_rt5640", "intel/fw_sst_22a8.bin", "bytcr_rt5640", cht_quirk,
- 						&chv_platform_data },
-+	{"10EC3276", "bytcr_rt5640", "intel/fw_sst_22a8.bin", "bytcr_rt5640", NULL,
-+						&chv_platform_data },
- 
- 	{},
- };
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index e29a6defefa0..b857a715ef64 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -2313,6 +2313,7 @@ MODULE_DEVICE_TABLE(of, rt5640_of_match);
+ #ifdef CONFIG_ACPI
+ static const struct acpi_device_id rt5640_acpi_match[] = {
+ 	{ "INT33CA", 0 },
++	{ "10EC3276", 0 },
+ 	{ "10EC5640", 0 },
+ 	{ "10EC5642", 0 },
+ 	{ "INTCCFFD", 0 },
 -- 
 2.11.0
