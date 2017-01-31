@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: add support for RT5648" to the
-	asoc tree
-Date: Tue, 31 Jan 2017 21:17:54 +0000
-Message-ID: <E1cYfoI-00015f-9J@debutante>
-References: <1485461385-14544-9-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: codecs: rt5670: add quirk for Lenovo
+	Thinkpad 10" to the asoc tree
+Date: Tue, 31 Jan 2017 21:17:57 +0000
+Message-ID: <E1cYfoL-00016W-BX@debutante>
+References: <1485461385-14544-7-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 23D30267436
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 22:18:02 +0100 (CET)
-In-Reply-To: <1485461385-14544-9-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CA19F26743A
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 22:18:06 +0100 (CET)
+In-Reply-To: <1485461385-14544-7-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: add support for RT5648
+   ASoC: codecs: rt5670: add quirk for Lenovo Thinkpad 10
 
 has been applied to the asoc tree at
 
@@ -53,44 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From 11ad80898620e09bde6ced7147a5f762bcecce81 Mon Sep 17 00:00:00 2001
+>From 93ffeaa8ee3f10a0628ad135b552a2497e0bef2c Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 26 Jan 2017 14:09:36 -0600
-Subject: [PATCH] ASoC: rt5645: add support for RT5648
+Date: Thu, 26 Jan 2017 14:09:34 -0600
+Subject: [PATCH] ASoC: codecs: rt5670: add quirk for Lenovo Thinkpad 10
 
-add ACPI ID 10EC5648 found e.g on Asus X205TA and use
-rt5645 driver
+the BIOS incorrectly reports this codec as 5640 but it is
+really a rt5670
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c               | 1 +
- sound/soc/intel/boards/cht_bsw_rt5645.c | 1 +
- 2 files changed, 2 insertions(+)
+ sound/soc/codecs/rt5670.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 10c2a564a715..ccfabeb8aab7 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3545,6 +3545,7 @@ MODULE_DEVICE_TABLE(i2c, rt5645_i2c_id);
- #ifdef CONFIG_ACPI
- static const struct acpi_device_id rt5645_acpi_match[] = {
- 	{ "10EC5645", 0 },
-+	{ "10EC5648", 0 },
- 	{ "10EC5650", 0 },
- 	{ "10EC5640", 0 },
- 	{},
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index 468228b73b0b..3684bdbd8598 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5645.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -380,6 +380,7 @@ static struct snd_soc_card snd_soc_card_chtrt5650 = {
- static struct cht_acpi_card snd_soc_cards[] = {
- 	{"10EC5640", CODEC_TYPE_RT5645, &snd_soc_card_chtrt5645},
- 	{"10EC5645", CODEC_TYPE_RT5645, &snd_soc_card_chtrt5645},
-+	{"10EC5648", CODEC_TYPE_RT5645, &snd_soc_card_chtrt5645},
- 	{"10EC5650", CODEC_TYPE_RT5650, &snd_soc_card_chtrt5650},
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index 97bafac3bc15..17d20b99f041 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -2814,6 +2814,7 @@ MODULE_DEVICE_TABLE(i2c, rt5670_i2c_id);
+ static const struct acpi_device_id rt5670_acpi_match[] = {
+ 	{ "10EC5670", 0},
+ 	{ "10EC5672", 0},
++	{ "10EC5640", 0}, /* quirk */
+ 	{ },
  };
- 
+ MODULE_DEVICE_TABLE(acpi, rt5670_acpi_match);
 -- 
 2.11.0
