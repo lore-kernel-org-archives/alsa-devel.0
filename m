@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: remove OF adjusting for
-	snd_soc_of_parse_audio_routing" to the asoc tree
-Date: Tue, 31 Jan 2017 20:02:32 +0000
-Message-ID: <E1cYedM-0005bg-Hm@debutante>
-References: <87d1f9qadv.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: davinci - Fix possible NULL
+	derefrence." to the asoc tree
+Date: Tue, 31 Jan 2017 20:02:35 +0000
+Message-ID: <E1cYedP-0005ci-KU@debutante>
+References: <1485515457-3055-1-git-send-email-shailendra.v@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B4C1C2673A2
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 21:02:42 +0100 (CET)
-In-Reply-To: <87d1f9qadv.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3A6482673B0
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 21:02:54 +0100 (CET)
+In-Reply-To: <1485515457-3055-1-git-send-email-shailendra.v@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Simon <horms@verge.net.au>, Linux-DT <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>
+To: Shailendra Verma <shailendra.v@samsung.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, ashish.kalra@samsung.com, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, p.shailesh@samsung.com, Mark Brown <broonie@kernel.org>, Shailendra Verma <shailendra.capricorn@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: remove OF adjusting for snd_soc_of_parse_audio_routing
+   ASoC: davinci - Fix possible NULL derefrence.
 
 has been applied to the asoc tree at
 
@@ -53,81 +53,47 @@ to this mail.
 Thanks,
 Mark
 
->From 2bc644af610f28d05812f224636a95a57c2631d1 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 27 Jan 2017 06:36:50 +0000
-Subject: [PATCH] ASoC: soc-core: remove OF adjusting for
- snd_soc_of_parse_audio_routing
+>From 3f81d9aa80ae4b513416440e416a6486ef2ad817 Mon Sep 17 00:00:00 2001
+From: Shailendra Verma <shailendra.v@samsung.com>
+Date: Fri, 27 Jan 2017 16:40:57 +0530
+Subject: [PATCH] ASoC: davinci - Fix possible NULL derefrence.
 
-Because prototype of OF-graph sound card support didn't have Sound Card
-node, commit 7364c8dc255232db33bcd1c5b19eb8f34cf6108a
-("ASoC: soc-core: adjust for graph on snd_soc_of_parse_audio_routing")
-adjusted to it on each functions.
+of_match_device could return NULL, and so can cause a NULL
+pointer dereference later.
 
-But final discussion result of ALSA SoC / OF-graph ML, OF-graph sound
-card has node. Thus, this commit became no longer needed.
-
-This reverts commit 7364c8dc255232db33bcd1c5b19eb8f34cf6108a.
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Shailendra Verma <shailendra.v@samsung.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h  | 9 ++-------
- sound/soc/soc-core.c | 9 +++------
- 2 files changed, 5 insertions(+), 13 deletions(-)
+ sound/soc/davinci/davinci-evm.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 2b502f6cc6d0..838e03778b58 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1668,13 +1668,8 @@ void snd_soc_of_parse_audio_prefix_from_node(struct snd_soc_card *card,
- 				   struct snd_soc_codec_conf *codec_conf,
- 				   struct device_node *of_node,
- 				   const char *propname);
--
--#define snd_soc_of_parse_audio_routing(card, propname) \
--	snd_soc_of_parse_audio_routing_from_node(card, NULL, propname)
--int snd_soc_of_parse_audio_routing_from_node(struct snd_soc_card *card,
--					     struct device_node *np,
--					     const char *propname);
--
-+int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
-+				   const char *propname);
- unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
- 				     const char *prefix,
- 				     struct device_node **bitclkmaster,
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index f1901bb1466e..e30984fd649b 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3690,17 +3690,14 @@ void snd_soc_of_parse_audio_prefix_from_node(struct snd_soc_card *card,
- }
- EXPORT_SYMBOL_GPL(snd_soc_of_parse_audio_prefix_from_node);
- 
--int snd_soc_of_parse_audio_routing_from_node(struct snd_soc_card *card,
--				   struct device_node *np,
-+int snd_soc_of_parse_audio_routing(struct snd_soc_card *card,
- 				   const char *propname)
+diff --git a/sound/soc/davinci/davinci-evm.c b/sound/soc/davinci/davinci-evm.c
+index 731fb0d86c6a..7a369e0f2093 100644
+--- a/sound/soc/davinci/davinci-evm.c
++++ b/sound/soc/davinci/davinci-evm.c
+@@ -358,13 +358,20 @@ static struct snd_soc_card evm_soc_card = {
+ static int davinci_evm_probe(struct platform_device *pdev)
  {
-+	struct device_node *np = card->dev->of_node;
- 	int num_routes;
- 	struct snd_soc_dapm_route *routes;
- 	int i, ret;
+ 	struct device_node *np = pdev->dev.of_node;
+-	const struct of_device_id *match =
+-		of_match_device(of_match_ptr(davinci_evm_dt_ids), &pdev->dev);
+-	struct snd_soc_dai_link *dai = (struct snd_soc_dai_link *) match->data;
++	const struct of_device_id *match;
++	struct snd_soc_dai_link *dai;
+ 	struct snd_soc_card_drvdata_davinci *drvdata = NULL;
+ 	struct clk *mclk;
+ 	int ret = 0;
  
--	if (!np)
--		np = card->dev->of_node;
--
- 	num_routes = of_property_count_strings(np, propname);
- 	if (num_routes < 0 || num_routes & 1) {
- 		dev_err(card->dev,
-@@ -3747,7 +3744,7 @@ int snd_soc_of_parse_audio_routing_from_node(struct snd_soc_card *card,
++	match = of_match_device(of_match_ptr(davinci_evm_dt_ids), &pdev->dev);
++	if (!match) {
++		dev_err(&pdev->dev, "Error: No device match found\n");
++		return -ENODEV;
++	}
++
++	dai = (struct snd_soc_dai_link *) match->data;
++
+ 	evm_soc_card.dai_link = dai;
  
- 	return 0;
- }
--EXPORT_SYMBOL_GPL(snd_soc_of_parse_audio_routing_from_node);
-+EXPORT_SYMBOL_GPL(snd_soc_of_parse_audio_routing);
- 
- unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
- 				     const char *prefix,
+ 	dai->codec_of_node = of_parse_phandle(np, "ti,audio-codec", 0);
 -- 
 2.11.0
