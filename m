@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: cht-bsw-rt5645: fix DAI formats"
+Subject: Applied "ASoC: Intel: add support for ALC3270 codec"
 	to the asoc tree
-Date: Tue, 31 Jan 2017 21:17:29 +0000
-Message-ID: <E1cYfnt-0000uR-LQ@debutante>
-References: <1485461385-14544-18-git-send-email-pierre-louis.bossart@linux.intel.com>
+Date: Tue, 31 Jan 2017 21:17:32 +0000
+Message-ID: <E1cYfnw-0000va-MZ@debutante>
+References: <1485461385-14544-13-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 89AB52673E7
- for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 22:17:39 +0100 (CET)
-In-Reply-To: <1485461385-14544-18-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8C74C2673EF
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 22:17:41 +0100 (CET)
+In-Reply-To: <1485461385-14544-13-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: cht-bsw-rt5645: fix DAI formats
+   ASoC: Intel: add support for ALC3270 codec
 
 has been applied to the asoc tree at
 
@@ -53,90 +53,48 @@ to this mail.
 Thanks,
 Mark
 
->From 7bde09dfcf600e7a5c76a5325c6c3dfa60d08295 Mon Sep 17 00:00:00 2001
+>From bf92c6efc68add6b934a2790f650a675a4c38286 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 26 Jan 2017 14:09:45 -0600
-Subject: [PATCH] ASoC: Intel: cht-bsw-rt5645: fix DAI formats
+Date: Thu, 26 Jan 2017 14:09:40 -0600
+Subject: [PATCH] ASoC: Intel: add support for ALC3270 codec
 
-Remove default and set I2S mode correctly both on codec and
-cpu sides
+Use ACPI ID 10EC3270 to load machine driver for cht-bsw-rt5645
+and add reference to 3270 to use the rt5645 mode
+
+Tested on Asus T100HA
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_rt5645.c | 39 ++++++++++++++++++++++++---------
- 1 file changed, 29 insertions(+), 10 deletions(-)
+ sound/soc/intel/atom/sst/sst_acpi.c     | 3 +++
+ sound/soc/intel/boards/cht_bsw_rt5645.c | 1 +
+ 2 files changed, 4 insertions(+)
 
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index 8cc30dfbf87d..747c0f393d2d 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -499,6 +499,9 @@ static struct sst_acpi_mach sst_acpi_chv[] = {
+ 						&chv_platform_data },
+ 	{"10EC5650", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
+ 						&chv_platform_data },
++	{"10EC3270", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
++						&chv_platform_data },
++
+ 	{"193C9890", "cht-bsw-max98090", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
+ 						&chv_platform_data },
+ 	/* some CHT-T platforms rely on RT5640, use Baytrail machine driver */
 diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
-index a97eef6860ff..b972b6526176 100644
+index b175eee5d416..a97eef6860ff 100644
 --- a/sound/soc/intel/boards/cht_bsw_rt5645.c
 +++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
-@@ -304,13 +304,6 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- 	if (ret)
- 		return ret;
+@@ -500,6 +500,7 @@ static struct cht_acpi_card snd_soc_cards[] = {
+ 	{"10EC5640", CODEC_TYPE_RT5645, &snd_soc_card_chtrt5645},
+ 	{"10EC5645", CODEC_TYPE_RT5645, &snd_soc_card_chtrt5645},
+ 	{"10EC5648", CODEC_TYPE_RT5645, &snd_soc_card_chtrt5645},
++	{"10EC3270", CODEC_TYPE_RT5645, &snd_soc_card_chtrt5645},
+ 	{"10EC5650", CODEC_TYPE_RT5650, &snd_soc_card_chtrt5650},
+ };
  
--	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
--	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xF, 0xF, 4, 24);
--	if (ret < 0) {
--		dev_err(runtime->dev, "can't set codec TDM slot %d\n", ret);
--		return ret;
--	}
--
- 	if (ctx->acpi_card->codec_type == CODEC_TYPE_RT5650)
- 		jack_type = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
- 					SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-@@ -377,7 +370,17 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 		 */
- 		ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
- 					SND_SOC_DAIFMT_I2S     |
--					SND_SOC_DAIFMT_NB_IF   |
-+					SND_SOC_DAIFMT_NB_NF   |
-+					SND_SOC_DAIFMT_CBS_CFS
-+			);
-+		if (ret < 0) {
-+			dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
-+			return ret;
-+		}
-+
-+		ret = snd_soc_dai_set_fmt(rtd->codec_dai,
-+					SND_SOC_DAIFMT_I2S     |
-+					SND_SOC_DAIFMT_NB_NF   |
- 					SND_SOC_DAIFMT_CBS_CFS
- 			);
- 		if (ret < 0) {
-@@ -396,6 +399,24 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 		/* set SSP2 to 24-bit */
- 		params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
- 
-+		/*
-+		 * Default mode for SSP configuration is TDM 4 slot
-+		 */
-+		ret = snd_soc_dai_set_fmt(rtd->codec_dai,
-+					SND_SOC_DAIFMT_DSP_B |
-+					SND_SOC_DAIFMT_IB_NF |
-+					SND_SOC_DAIFMT_CBS_CFS);
-+		if (ret < 0) {
-+			dev_err(rtd->dev, "can't set format to TDM %d\n", ret);
-+			return ret;
-+		}
-+
-+		/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
-+		ret = snd_soc_dai_set_tdm_slot(rtd->codec_dai, 0xF, 0xF, 4, 24);
-+		if (ret < 0) {
-+			dev_err(rtd->dev, "can't set codec TDM slot %d\n", ret);
-+			return ret;
-+		}
- 	}
- 	return 0;
- }
-@@ -458,8 +479,6 @@ static struct snd_soc_dai_link cht_dailink[] = {
- 		.no_pcm = 1,
- 		.codec_dai_name = "rt5645-aif1",
- 		.codec_name = "i2c-10EC5645:00",
--		.dai_fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_IB_NF
--					| SND_SOC_DAIFMT_CBS_CFS,
- 		.init = cht_codec_init,
- 		.be_hw_params_fixup = cht_codec_fixup,
- 		.nonatomic = true,
 -- 
 2.11.0
