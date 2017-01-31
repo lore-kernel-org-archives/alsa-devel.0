@@ -1,61 +1,115 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 0/7] DisplayPort audio support on Cherrytrail
-Date: Tue, 31 Jan 2017 22:36:42 +0100
-Message-ID: <20170131213649.13689-1-tiwai@suse.de>
+Subject: [PATCH 4/7] drm/i915: Pass pipe to LPE audio
+	notification
+Date: Tue, 31 Jan 2017 22:36:46 +0100
+Message-ID: <20170131213649.13689-5-tiwai@suse.de>
+References: <20170131213649.13689-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F14A2666EA
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jan 2017 22:36:56 +0100 (CET)
+In-Reply-To: <20170131213649.13689-1-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org
-Cc: rakesh.a.ughreja@intel.com
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jani Nikula <jani.nikula@linux.intel.com>, rakesh.a.ughreja@intel.com, Jerome Anand <jerome.anand@intel.com>, Daniel Vetter <daniel@ffwll.ch>, =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgp0aGUgZm9sbG93aW5nIHBhdGNoZXMgZW5hYmxlIERpc3BsYXlQb3J0IEF1ZGlvIG9uIENo
-ZXJyeXRyYWlsIG1hY2hpbmVzCndoZW4gYXBwbGllZCBvbiB0b3Agb2YgbXkgdG9waWMvaW50ZWwt
-bHBlLWF1ZGlvIGJyYW5jaC4gIFRlc3RzIG9mIERQCmF1ZGlvIHdlcmUgcnVuIG9uIERlbGwgV3lz
-ZSAzMDQwLiAgVGhlIHJlZ3Jlc3Npb24gdGVzdCB3ZXJlIHBlcmZvcm1lZApvbiBCYXl0cmFpbCAo
-Q29tcHV0ZSBTdGljaykgYW5kIENoZXJyeXRyYWlsIChab3RhYyBQSTMzMCkgaW4gSERNSQptb2Rl
-LiAgT24gQ2hlcnJ5dHJhaWwgdGhlcmUgd2VyZSBubyBpc3N1ZXMgY2hhbmdpbmcgYmV0d2VlbiBI
-RE1JIGFuZApEUCBjb25uZWN0b3JzIGR5bmFtaWNhbGx5LgoKQ291bGQgeW91IGk5MTUgcGVvcGxl
-IHJldmlldyBhbmQgZ2l2ZSBBQ0sgaWYgdGhleSBhcmUgT0s/ClRoZSBjaGFuZ2VzIGluIGRybS9p
-OTE1IHNpZGUgYXJlIGZhaXJseSB0cml2aWFsLCBzbyBJJ2QgbGlrZSB0byB0YWtlCnRoZW0gdGhy
-b3VnaCBzb3VuZCBnaXQgdHJlZSBvbmNlIGFmdGVyIEkgcmVjZWl2ZSB5b3VyIEFDS3MuCgoKQ2hh
-bmdlcyBzaW5jZSBSRkM6CiAtIHJlb3JkZXJlZCBhbmQgc3F1YXNoZWQgcGF0Y2hlcwogLSBjbGVh
-bi11cCBvZiByZWdpc3RlciBkZWZpbml0aW9ucyBhbmQgb2Zmc2V0cyAoYmFzZWQgb24gZmVlZGJh
-Y2sgZnJvbQogICBKYW5pL1ZpbGxlKQogLSB1bm11dGUgYW1wIGZvciBib3RoIEhETUkgYW5kIERQ
-IHVuY29uZGl0aW9uYWxseQogLSBtdXRlIGFtcCBvbiBpbnZhbGlkIEVMRCAodW5wbHVnKQogLSBy
-ZW1vdmUgdGVzdCBmb3IgY2hpY2tlbiBiaXQgd2hpY2ggc2VlbXMgdG8gaGF2ZSBubyBlZmZlY3Qg
-aW4gaGFyZHdhcmUKIC0gY29zbWV0aWMgZWRpdHMgdG8gbWFrZSBjaGVja3BhdGNoIGhhcHB5CiAt
-IGNoYW5nZSBpOTE1IG5vdGlmaWNhdGlvbiBhcmd1bWVudCB0byBwYXNzIHRoZSBwbGF0YWZvcm0g
-ZGV2aWNlCiAgIGluc3RlYWQKCgpNb3N0IG9mIGhhcmQgd29yayBpbiB0aGlzIHBhdGNoc2V0IGhh
-cyBiZWVuIGRvbmUgYnkgUGllcnJlLCBzbyBhbGwKY3JlZGl0cyBnbyB0byBoaW0uCgoKdGhhbmtz
-LAoKVGFrYXNoaQoKPT09CgpQaWVycmUtTG91aXMgQm9zc2FydCAoNCk6CiAgZHJtL2k5MTU6IGFk
-ZCBEUCBzdXBwb3J0IGluIExQRSBhdWRpbyBtb2RlCiAgZHJtL2k5MTU6IGFkZCBEaXNwbGF5UG9y
-dCBhbXAgdW5tdXRlIGZvciBMUEUgYXVkaW8gbW9kZQogIEFMU0E6IHg4NjogaW50ZWxfaGRtaTog
-YWRkIGRlZmluaXRpb25zIGFuZCBsb2dpYyBmb3IgRFAgYXVkaW8KICBBTFNBOiB4ODY6IFVzZSBj
-b25maWcgYmFzZSBkZXBlbmRpbmcgb24gdGhlIHBpcGUKClRha2FzaGkgSXdhaSAoMyk6CiAgZHJt
-L2k5MTU6IEF2b2lkIE1TVCBwaXBlIGhhbmRsaW5nIGZvciBMUEUgYXVkaW8KICBkcm0vaTkxNTog
-UGFzcyBwaXBlIHRvIExQRSBhdWRpbyBub3RpZmljYXRpb24KICBkcm0vaTkxNTogUGFzcyBwbGF0
-Zm9ybSBkZXZpY2UgdG8gTFBFIGF1ZGlvIG5vdGlmaWVyCgogZHJpdmVycy9ncHUvZHJtL2k5MTUv
-aTkxNV9kcnYuaCAgICAgICAgfCAgIDMgKy0KIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfcmVn
-LmggICAgICAgIHwgIDEwICsrCiBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jICAg
-ICB8ICAzOCArKysrKy0tLQogZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBlX2F1ZGlvLmMg
-fCAgMjggKysrKystCiBpbmNsdWRlL2RybS9pbnRlbF9scGVfYXVkaW8uaCAgICAgICAgICB8ICAg
-NyArLQogc291bmQveDg2L2ludGVsX2hkbWlfYXVkaW8uYyAgICAgICAgICAgfCAxNzMgKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKy0tLS0tCiBzb3VuZC94ODYvaW50ZWxfaGRtaV9hdWRpby5o
-ICAgICAgICAgICB8ICAgOCArLQogc291bmQveDg2L2ludGVsX2hkbWlfbHBlX2F1ZGlvLmMgICAg
-ICAgfCAgODMgKysrKysrKysrKysrLS0tLQogc291bmQveDg2L2ludGVsX2hkbWlfbHBlX2F1ZGlv
-LmggICAgICAgfCAgMjkgKysrKysrCiA5IGZpbGVzIGNoYW5nZWQsIDMxNSBpbnNlcnRpb25zKCsp
-LCA2NCBkZWxldGlvbnMoLSkKCi0tIAoyLjExLjAKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxp
-c3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2ludGVsLWdmeAo=
+The LPE audio configuration depends on the pipe, thus we need to pass
+the currently used pipe.  It's now embedded in struct
+intel_hdmi_lpe_audio_eld as well as port id.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ drivers/gpu/drm/i915/i915_drv.h        | 2 +-
+ drivers/gpu/drm/i915/intel_audio.c     | 6 +++---
+ drivers/gpu/drm/i915/intel_lpe_audio.c | 3 ++-
+ include/drm/intel_lpe_audio.h          | 1 +
+ 4 files changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
+index 836d823d476b..27311a337e2b 100644
+--- a/drivers/gpu/drm/i915/i915_drv.h
++++ b/drivers/gpu/drm/i915/i915_drv.h
+@@ -3401,7 +3401,7 @@ int  intel_lpe_audio_init(struct drm_i915_private *dev_priv);
+ void intel_lpe_audio_teardown(struct drm_i915_private *dev_priv);
+ void intel_lpe_audio_irq_handler(struct drm_i915_private *dev_priv);
+ void intel_lpe_audio_notify(struct drm_i915_private *dev_priv,
+-			    void *eld, int port, int tmds_clk_speed,
++			    void *eld, int port, int pipe, int tmds_clk_speed,
+ 			    bool dp_output, int link_rate);
+ 
+ /* intel_i2c.c */
+diff --git a/drivers/gpu/drm/i915/intel_audio.c b/drivers/gpu/drm/i915/intel_audio.c
+index d4e6d1136cfe..892169b7952b 100644
+--- a/drivers/gpu/drm/i915/intel_audio.c
++++ b/drivers/gpu/drm/i915/intel_audio.c
+@@ -634,12 +634,12 @@ void intel_audio_codec_enable(struct intel_encoder *intel_encoder,
+ 
+ 	switch (intel_encoder->type) {
+ 	case INTEL_OUTPUT_HDMI:
+-		intel_lpe_audio_notify(dev_priv, connector->eld, port,
++		intel_lpe_audio_notify(dev_priv, connector->eld, port, pipe,
+ 				       crtc_state->port_clock,
+ 				       false, 0);
+ 		break;
+ 	case INTEL_OUTPUT_DP:
+-		intel_lpe_audio_notify(dev_priv, connector->eld, port,
++		intel_lpe_audio_notify(dev_priv, connector->eld, port, pipe,
+ 				       adjusted_mode->crtc_clock,
+ 				       true, crtc_state->port_clock);
+ 		break;
+@@ -680,7 +680,7 @@ void intel_audio_codec_disable(struct intel_encoder *intel_encoder)
+ 						 (int) port, (int) pipe);
+ 	}
+ 
+-	intel_lpe_audio_notify(dev_priv, NULL, port, 0, false, 0);
++	intel_lpe_audio_notify(dev_priv, NULL, port, pipe, 0, false, 0);
+ }
+ 
+ /**
+diff --git a/drivers/gpu/drm/i915/intel_lpe_audio.c b/drivers/gpu/drm/i915/intel_lpe_audio.c
+index f95624a46f27..2ca3c775c6b1 100644
+--- a/drivers/gpu/drm/i915/intel_lpe_audio.c
++++ b/drivers/gpu/drm/i915/intel_lpe_audio.c
+@@ -332,7 +332,7 @@ void intel_lpe_audio_teardown(struct drm_i915_private *dev_priv)
+  * Notify lpe audio driver of eld change.
+  */
+ void intel_lpe_audio_notify(struct drm_i915_private *dev_priv,
+-			    void *eld, int port, int tmds_clk_speed,
++			    void *eld, int port, int pipe, int tmds_clk_speed,
+ 			    bool dp_output, int link_rate)
+ {
+ 	unsigned long irq_flags;
+@@ -360,6 +360,7 @@ void intel_lpe_audio_notify(struct drm_i915_private *dev_priv,
+ 		memcpy(pdata->eld.eld_data, eld,
+ 			HDMI_MAX_ELD_BYTES);
+ 		pdata->eld.port_id = port;
++		pdata->eld.pipe_id = pipe;
+ 		pdata->hdmi_connected = true;
+ 
+ 		pdata->dp_output = dp_output;
+diff --git a/include/drm/intel_lpe_audio.h b/include/drm/intel_lpe_audio.h
+index 857e0eafed79..410128e4cd70 100644
+--- a/include/drm/intel_lpe_audio.h
++++ b/include/drm/intel_lpe_audio.h
+@@ -31,6 +31,7 @@
+ 
+ struct intel_hdmi_lpe_audio_eld {
+ 	int port_id;
++	int pipe_id;
+ 	unsigned char eld_data[HDMI_MAX_ELD_BYTES];
+ };
+ 
+-- 
+2.11.0
