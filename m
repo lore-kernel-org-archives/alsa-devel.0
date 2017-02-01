@@ -1,80 +1,42 @@
-From: Matt Flax <flatmax@flatmax.org>
-Subject: [PATCH v1] ASoC: bcm2835: Remove redundant channel
-	checking code in hw_params
-Date: Wed,  1 Feb 2017 15:45:03 +1100
-Message-ID: <1485924303-30869-1-git-send-email-flatmax@flatmax.org>
-References: <1484443043-13623-1-git-send-email-flatmax@flatmax.org>
+From: Mylene Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: Re: [PATCH v3 1/8] ASoC: sun4i-i2s: Update binding documentation to
+ include A31
+Date: Wed, 1 Feb 2017 08:44:56 +0100
+Message-ID: <feb16b69-388f-10e5-7be5-c750095ee52b@free-electrons.com>
+References: <20170131100552.27949-1-mylene.josserand@free-electrons.com>
+ <20170131100552.27949-2-mylene.josserand@free-electrons.com>
+ <20170131211702.taxbrgxwo7b4daej@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nsstlmta20p.bpe.bigpond.com (nsstlmta20p.bpe.bigpond.com
- [203.38.21.20]) by alsa0.perex.cz (Postfix) with ESMTP id 2ADAA2668AD
- for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2017 05:46:06 +0100 (CET)
-In-Reply-To: <1484443043-13623-1-git-send-email-flatmax@flatmax.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, Florian Meier <florian.meier@koalo.de>, broonie@kernel.org, phil@raspberrypi.org
-Cc: Matt Flax <flatmax@flatmax.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20170131211702.taxbrgxwo7b4daej-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Due to channels_max and channels_min in the bcm2835_i2s_dai structure,
-the channel guard code in bcm2835_i2s_hw_params is redundant.
+Hello,
 
-The bcm2835_i2s_hw_params function checks that the channel count is
-2 before continuing. This code never gets executed because core soc
-checks prevent the execution (upon channel mismatch) of the
-bcm2835_i2s_hw_params function.
+On 31/01/2017 22:17, Mark Brown wrote:
+> On Tue, Jan 31, 2017 at 11:05:45AM +0100, Mylène Josserand wrote:
+>> Add a new compatible for sun4i-i2s driver to handle some
+>> SoCs that have a reset line that must be asserted/deasserted.
+>
+> This doesn't apply against current code, please check and resend.
+>
 
-The redundancy has been tested and checked for the case when
-the bcm2835_i2s_dai structure has channels_max = 2 and a request
-for 8 channels has been made. The test has confirmed that the
-removed code is redundant as it never gets executed when a
-channel mismatch occurs.
+I based my series on linux-next 20170131. Which one I should use?
 
-This redundant channel count check may seem like it will not cause
-any problems however some sound cards (such as the 8 channel
-AudioInjector Octo sound card) require the execution of the
-bcm2835_i2s_hw_params function when channels_max in the
-bcm2835_i2s_dai structure has been increased to 8.
+Thank you in advance,
 
-As the channel checking code in bcm2835_i2s_hw_params is redundant
-and stops certain cards from working it has been removed.
+Best regards,
 
-Signed-off-by: Matt Flax <flatmax@flatmax.org>
----
- sound/soc/bcm/bcm2835-i2s.c | 12 +++---------
- 1 file changed, 3 insertions(+), 9 deletions(-)
-
-diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
-index 6ba2049..1773b83 100644
---- a/sound/soc/bcm/bcm2835-i2s.c
-+++ b/sound/soc/bcm/bcm2835-i2s.c
-@@ -310,15 +310,9 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
- 	ch1pos = data_delay;
- 	ch2pos = bclk_ratio / 2 + data_delay;
- 
--	switch (params_channels(params)) {
--	case 2:
--		format = BCM2835_I2S_CH1(format) | BCM2835_I2S_CH2(format);
--		format |= BCM2835_I2S_CH1(BCM2835_I2S_CHPOS(ch1pos));
--		format |= BCM2835_I2S_CH2(BCM2835_I2S_CHPOS(ch2pos));
--		break;
--	default:
--		return -EINVAL;
--	}
-+	format = BCM2835_I2S_CH1(format) | BCM2835_I2S_CH2(format);
-+	format |= BCM2835_I2S_CH1(BCM2835_I2S_CHPOS(ch1pos));
-+	format |= BCM2835_I2S_CH2(BCM2835_I2S_CHPOS(ch2pos));
- 
- 	/*
- 	 * Set format for both streams.
 -- 
-2.7.4
+Mylène Josserand, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
