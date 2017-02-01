@@ -1,16 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: nau8824: new codec driver
-Date: Wed, 1 Feb 2017 17:40:54 +0000
-Message-ID: <20170201174054.egdzu5rvqyo3ka5o@sirena.org.uk>
-References: <1485402489-31325-1-git-send-email-KCHSU0@nuvoton.com>
+Subject: Re: [PATCH] ASoC: rt5670: add HS ground control
+Date: Wed, 1 Feb 2017 17:43:59 +0000
+Message-ID: <20170201174359.buiiybffgk6ya62d@sirena.org.uk>
+References: <1482999827-14705-1-git-send-email-bardliao@realtek.com>
+ <s5hwpdceuns.wl-tiwai@suse.de>
+ <20170201114713.osuuhyomfuswnrgt@sirena.org.uk>
+ <s5hy3xqaxa1.wl-tiwai@suse.de>
+ <20170201145956.ecoksw7ntapt76n4@sirena.org.uk>
+ <s5ha8a6apux.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3973288503295128074=="
+Content-Type: multipart/mixed; boundary="===============2513186333865476181=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AA912266E0D
- for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2017 18:41:03 +0100 (CET)
-In-Reply-To: <1485402489-31325-1-git-send-email-KCHSU0@nuvoton.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9501C266E0D
+ for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2017 18:44:11 +0100 (CET)
+In-Reply-To: <s5ha8a6apux.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,114 +25,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: WTLI@nuvoton.com, YHCHuang@nuvoton.com, alsa-devel@alsa-project.org, CTLIN0@nuvoton.com, lgirdwood@gmail.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3973288503295128074==
+--===============2513186333865476181==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ursu6d5c7xjbioxw"
+	protocol="application/pgp-signature"; boundary="vrl56k4bejzckce2"
 Content-Disposition: inline
 
 
---ursu6d5c7xjbioxw
+--vrl56k4bejzckce2
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 26, 2017 at 11:48:09AM +0800, John Hsu wrote:
+On Wed, Feb 01, 2017 at 04:32:38PM +0100, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-This looks mostly good, a few fairly small things below:
+> > Sure, it works on that one machine but if someone else did something
+> > similar but using a different GPIO it (from what I remember) might not
+> > work.
 
-> +       SOC_SINGLE_TLV("Speaker Right Volume from DACR",
-> +               NAU8824_REG_CLASSD_GAIN_1, 8, 0x1f, 0, spk_vol_tlv),
+> For other GPIO pin, you'll need to write another similar codes, sure.
+> But why do you need to worry so much about it?  It doesn't work even
+> without this patch, and a complete generalization isn't so trivial,
+> I'm afraid, as it's anyway pretty device-specific.
 
-Names for volume controls need to end with Volume for userspace to
-understand them properly, give these the same names that the DAPM mixer
-controls have but end with Volume instead of Switch and then userspace
-will be able to combine them when displaying.
+I don't know, I need to figure this stuff out which is why the patch is
+still in the queue.  If it is just using a regular GPIO then gpiolib is
+pretty trivial to use.
 
-> +       case SND_SOC_DAPM_POST_PMU:
-> +               /* Prevent startup click by letting charge pump to ramp u=
-p */
-> +               usleep_range(10000, 11000);
-
-I believe the current preference is to do this as just msleep(10).
-
-> +static int nau8824_codec_probe(struct snd_soc_codec *codec)
-> +{
-> +       struct nau8824 *nau8824 =3D snd_soc_codec_get_drvdata(codec);
-> +       struct snd_soc_dapm_context *dapm =3D snd_soc_codec_get_dapm(code=
-c);
-> +
-> +       nau8824->dapm =3D dapm;
-> +       snd_soc_dapm_sync(nau8824->dapm);
-
-This sync shouldn't do anything, just remove it.
-
-> +static int __maybe_unused nau8824_suspend(struct snd_soc_codec *codec)
-> +{
-> +       struct nau8824 *nau8824 =3D snd_soc_codec_get_drvdata(codec);
-> +
-> +       if (nau8824->irq) {
-> +               disable_irq(nau8824->irq);
-> +               snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_OFF);
-> +       }
-
-Why are we disabling the IRQ here? =20
-
-> +       if (nau8824->irq) {
-> +               nau8824_sema_acquire(nau8824, 0);
-> +               enable_irq(nau8824->irq);
-> +       }
-
-We didn't drop this sempahore in the suspend path?  This stuff could at
-least use better comments.
-
-> +       /* Boost FEPGA 20dB */
-> +       regmap_update_bits(regmap, NAU8824_REG_FEPGA_II,
-> +               NAU8824_FEPGA_GAINL_MASK | NAU8824_FEPGA_GAINR_MASK,
-> +               0xa | (0xa << NAU8824_FEPGA_GAINR_SFT));
-
-Possibly something that should be controllable from userspace?
-
-> +       nau8824_reset_chip(nau8824->regmap);
-> +       ret =3D regmap_read(nau8824->regmap, NAU8824_REG_I2C_DEVICE_ID, &=
-value);
-> +       if (ret < 0) {
-> +               dev_err(dev, "Failed to read device id from the NAU8824: =
-%d\n",
-> +                       ret);
-> +               return ret;
-> +       }
-
-Perhaps check the device ID before resetting the chip (and verify that
-the device ID is what's expected)?  That way if the system is
-misconfigured then the check will be less disruptive.
-
---ursu6d5c7xjbioxw
+--vrl56k4bejzckce2
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliSHaYACgkQJNaLcl1U
-h9AohQf+OqswPzcCQztjL0EEKwBn4Or/8YrHHUOeQjAUl4FLyo9PpwgHpRIaLVee
-siyf2to42v+OltffOWLfU2qrBoYToqiAm40fbuR1tihT5Dva/iWxWIMWmBKnFeOs
-DY49V3eJFfB4xYYg9CTMkixkp+pbK4qUSImaiZjVHdUfexjJ5DOt3YIpKOgm35E2
-zrC19M8niWwyhHZnYG7E7mOfFxnFx+iFItKiyOiwApOnIvgHuBgxXZ7iWXUM9rK8
-mJn5+BdwRweD8MTFZLh+2r+UAH8Ak0gn/rgLA//IVF8DL4IHTA8ZsHHegwnAkWpV
-BlQIqLKJ1c5crQenIiQ9BvkN+T9tyw==
-=66H+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliSHl8ACgkQJNaLcl1U
+h9A0IQf+NpHkBG6AkwSHBoYYPItQlSBZDK/ZtdXGbI05RCitEEeiw3LkOKRzjoin
+Yl/nHAGWUPvPg5pflci2/UqkrZ8zZBs/ZYzYc7CVgeRpkEKdR2ckCp3PVKKFrKYC
+NahPXKCWgY2eAJmMCKx9kLTrqggTW8Ry7hH60pUa7KJbxaXnBITJI331JGCmUGeB
+Jm6fjg4lJqe27a2ZUZ1lBl89dOdAA4j5Gg1s6HdFB3qrZngPCDEdD/TXkjbEistr
+iSQUmyw7vBs0TMdfLqT0QW5XYJoJPoZEA25+/tU1YFuDiUg/fLkxXRQAhbPd74D7
+3KcY55gBnAqF7zyfXBT/wHLCGZCK1Q==
+=+S6M
 -----END PGP SIGNATURE-----
 
---ursu6d5c7xjbioxw--
+--vrl56k4bejzckce2--
 
---===============3973288503295128074==
+--===============2513186333865476181==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3973288503295128074==--
+--===============2513186333865476181==--
