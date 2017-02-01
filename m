@@ -1,42 +1,46 @@
-From: Mylene Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: [PATCH v3 1/8] ASoC: sun4i-i2s: Update binding documentation to
- include A31
-Date: Wed, 1 Feb 2017 08:44:56 +0100
-Message-ID: <feb16b69-388f-10e5-7be5-c750095ee52b@free-electrons.com>
-References: <20170131100552.27949-1-mylene.josserand@free-electrons.com>
- <20170131100552.27949-2-mylene.josserand@free-electrons.com>
- <20170131211702.taxbrgxwo7b4daej@sirena.org.uk>
+From: Jeeja KP <jeeja.kp@intel.com>
+Subject: Re: [PATCH v3 00/12] ASoC: hdmi: Preparatory work to
+ support MST audio
+Date: Wed, 1 Feb 2017 15:30:34 +0530
+Message-ID: <20170201100033.GA27228@kpjeeja-desk>
+References: <1485274754-5723-1-git-send-email-jeeja.kp@intel.com>
+ <20170131194510.hxo42jnscjljz5d2@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20170131211702.taxbrgxwo7b4daej-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8E732267414
+ for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2017 10:49:10 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20170131194510.hxo42jnscjljz5d2@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Tue, Jan 31, 2017 at 07:45:10PM +0000, Mark Brown wrote:
+> On Tue, Jan 24, 2017 at 09:49:02PM +0530, jeeja.kp@intel.com wrote:
+> 
+> > Note:
+> > o This patch series has dependency on the series
+> > "ASoC: Intel: Skylake: Driver updates".
+> 
+> That doesn't seem to be in my to review queue, sorry...
+Hi Mark,
+	I looked at the topic/intel branch and the above dependency series
+patch's are already merged. So there is no dependency for the MST series now.
 
-On 31/01/2017 22:17, Mark Brown wrote:
-> On Tue, Jan 31, 2017 at 11:05:45AM +0100, Mylène Josserand wrote:
->> Add a new compatible for sun4i-i2s driver to handle some
->> SoCs that have a reset line that must be asserted/deasserted.
->
-> This doesn't apply against current code, please check and resend.
->
+Regards
+Jeeja
 
-I based my series on linux-next 20170131. Which one I should use?
-
-Thank you in advance,
-
-Best regards,
 
 -- 
-Mylène Josserand, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
