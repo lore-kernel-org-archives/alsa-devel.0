@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 1/2] ASoC: rt5645: fix error handling for gpio
-	detection
-Date: Wed,  1 Feb 2017 12:27:04 -0600
-Message-ID: <1485973625-20553-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/2] ASoC: cht-bsw-rt5645: fix unused variable
+	compiler warning
+Date: Wed,  1 Feb 2017 12:27:05 -0600
+Message-ID: <1485973625-20553-3-git-send-email-pierre-louis.bossart@linux.intel.com>
 References: <1485973625-20553-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 140BB2674E1
- for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2017 19:27:20 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id D6BEC2674E2
+ for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2017 19:27:21 +0100 (CET)
 In-Reply-To: <1485973625-20553-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,35 +25,24 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Optional gpio handling should not cause an error status and prevent
-probing if it's missing.  Remove error return for -ENOENT case and
-move error message to dev_info
+Missed unused variable in previous changes, oops.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/codecs/rt5645.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/cht_bsw_rt5645.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 65ac841..e149f3c 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3660,8 +3660,14 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 						       GPIOD_IN);
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index b972b65..5bcde01 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -262,7 +262,6 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ 	int jack_type;
+ 	struct snd_soc_codec *codec = runtime->codec;
+ 	struct snd_soc_card *card = runtime->card;
+-	struct snd_soc_dai *codec_dai = runtime->codec_dai;
+ 	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(runtime->card);
  
- 	if (IS_ERR(rt5645->gpiod_hp_det)) {
--		dev_err(&i2c->dev, "failed to initialize gpiod\n");
--		return PTR_ERR(rt5645->gpiod_hp_det);
-+		dev_info(&i2c->dev, "failed to initialize gpiod\n");
-+		ret = PTR_ERR(rt5645->gpiod_hp_det);
-+		/*
-+		 * Continue if optional gpiod is missing, bail for all other
-+		 * errors, including -EPROBE_DEFER
-+		 */
-+		if (ret != -ENOENT)
-+			return ret;
- 	}
- 
- 	for (i = 0; i < ARRAY_SIZE(rt5645->supplies); i++)
+ 	if ((cht_rt5645_quirk & CHT_RT5645_SSP2_AIF2) ||
 -- 
 2.7.4
