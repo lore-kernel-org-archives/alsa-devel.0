@@ -1,22 +1,16 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 5/8] ASoC: codecs: Add sun8i-a33 binding
-	documentation
-Date: Wed, 1 Feb 2017 11:30:54 -0600
-Message-ID: <20170201173053.rjqwtxe4sjlttdwa@rob-hp-laptop>
-References: <20170131100552.27949-1-mylene.josserand@free-electrons.com>
- <20170131100552.27949-6-mylene.josserand@free-electrons.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: nau8824: new codec driver
+Date: Wed, 1 Feb 2017 17:40:54 +0000
+Message-ID: <20170201174054.egdzu5rvqyo3ka5o@sirena.org.uk>
+References: <1485402489-31325-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============3973288503295128074=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot0-f196.google.com (mail-ot0-f196.google.com
- [74.125.82.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 30BDC266E0D
- for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2017 18:30:55 +0100 (CET)
-Received: by mail-ot0-f196.google.com with SMTP id 73so46093403otj.1
- for <alsa-devel@alsa-project.org>; Wed, 01 Feb 2017 09:30:55 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <20170131100552.27949-6-mylene.josserand@free-electrons.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id AA912266E0D
+ for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2017 18:41:03 +0100 (CET)
+In-Reply-To: <1485402489-31325-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,117 +20,114 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand@free-electrons.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, wens@csie.org, broonie@kernel.org, alexandre.belloni@free-electrons.com, maxime.ripard@free-electrons.com, thomas.petazzoni@free-electrons.com, linux-arm-kernel@lists.infradead.org
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: WTLI@nuvoton.com, YHCHuang@nuvoton.com, alsa-devel@alsa-project.org, CTLIN0@nuvoton.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jan 31, 2017 at 11:05:49AM +0100, Myl=E8ne Josserand wrote:
-> Add the documentation for dt-binding of the digital audio codec driver
-> and the audio card driver for Sun8i-a33 SoCs.
-> =
 
-> Signed-off-by: Myl=E8ne Josserand <mylene.josserand@free-electrons.com>
-> ---
->  .../devicetree/bindings/sound/sun8i-a33-codec.txt  | 75 ++++++++++++++++=
-++++++
->  1 file changed, 75 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/sun8i-a33-cod=
-ec.txt
-> =
+--===============3973288503295128074==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ursu6d5c7xjbioxw"
+Content-Disposition: inline
 
-> diff --git a/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt =
-b/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt
-> new file mode 100644
-> index 000000000000..2425c74bce7e
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt
-> @@ -0,0 +1,75 @@
-> +Allwinner SUN8I audio codec
-> +------------------------------------
-> +
-> +On Sun8i-A33 SoCs, the audio is separated in different parts:
-> +	  - A DAI driver. It uses the "sun4i-i2s" driver which is
-> +	  documented here:
-> +	  Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-> +	  - An analog part of the codec which is handled as PRCM registers.
-> +	  See Documentation/devicetree/bindings/sound/sun8i-codec-analog.txt
-> +	  - An digital part of the codec which is documented in this current
-> +	  binding documentation.
-> +	  - And finally, an audio card which links all the above components.
-> +	  The simple-audio card will be used.
-> +	  See Documentation/devicetree/bindings/sound/simple-card.txt
-> +
-> +This bindings documentation exposes Sun8i codec (digital part).
-> +
-> +Required properties:
-> +- compatible: must be "allwinner,sun8i-a33-codec"
-> +- reg: must contain the registers location and length
-> +- interrupts: must contain the codec interrupt
-> +- clocks: a list of phandle + clock-specifer pairs, one for each entry
-> +  in clock-names.
-> +- clock-names: should contain followings:
-> +   - "bus": the parent APB clock for this controller
-> +   - "mod": the parent module clock
-> +
-> +Example:
-> +codec: codec@01c22e00 {
 
-This is redundant with the full example below.
+--ursu6d5c7xjbioxw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +	#sound-dai-cells =3D <0>;
-> +	compatible =3D "allwinner,sun8i-a33-codec";
-> +	reg =3D <0x01c22e00 0x400>;
-> +	interrupts =3D <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
-> +	clocks =3D <&ccu CLK_BUS_CODEC>, <&ccu CLK_AC_DIG>;
-> +	clock-names =3D "bus", "mod";
-> +	status =3D "disabled";
-> +};
-> +
-> +Here is an example to add a sound card and the codec binding on sun8i So=
-Cs that
-> +are similar to A33 using simple-card:
-> +
-> +	sound {
-> +		compatible =3D "simple-audio-card";
-> +		simple-audio-card,name =3D "sun8i-a33-audio";
-> +		simple-audio-card,format =3D "i2s";
-> +		simple-audio-card,frame-master =3D <&link_codec>;
-> +		simple-audio-card,bitclock-master =3D <&link_codec>;
-> +		simple-audio-card,mclk-fs =3D <512>;
-> +		simple-audio-card,aux-devs =3D <&codec_analog>;
-> +		simple-audio-card,routing =3D
-> +				"Left DAC", "Digital Left DAC",
-> +				"Right DAC", "Digital Right DAC";
-> +
-> +		simple-audio-card,cpu {
-> +			sound-dai =3D <&dai>;
-> +		};
-> +
-> +		link_codec: simple-audio-card,codec {
-> +			sound-dai =3D <&codec>;
-> +		};
-> +
-> +	soc@01c00000 {
-> +		[...]
-> +
-> +		codec: codec@01c22e00 {
+On Thu, Jan 26, 2017 at 11:48:09AM +0800, John Hsu wrote:
 
-audio-codec@... and drop the leading 0.
+This looks mostly good, a few fairly small things below:
 
-> +			#sound-dai-cells =3D <0>;
-> +			compatible =3D "allwinner,sun8i-a33-codec";
-> +			reg =3D <0x01c22e00 0x400>;
-> +			interrupts =3D <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks =3D <&ccu CLK_BUS_CODEC>, <&ccu CLK_AC_DIG>;
-> +			clock-names =3D "bus", "mod";
-> +			status =3D "disabled";
+> +       SOC_SINGLE_TLV("Speaker Right Volume from DACR",
+> +               NAU8824_REG_CLASSD_GAIN_1, 8, 0x1f, 0, spk_vol_tlv),
 
-Drop status from examples.
+Names for volume controls need to end with Volume for userspace to
+understand them properly, give these the same names that the DAPM mixer
+controls have but end with Volume instead of Switch and then userspace
+will be able to combine them when displaying.
 
-> +		};
-> +	};
+> +       case SND_SOC_DAPM_POST_PMU:
+> +               /* Prevent startup click by letting charge pump to ramp u=
+p */
+> +               usleep_range(10000, 11000);
+
+I believe the current preference is to do this as just msleep(10).
+
+> +static int nau8824_codec_probe(struct snd_soc_codec *codec)
+> +{
+> +       struct nau8824 *nau8824 =3D snd_soc_codec_get_drvdata(codec);
+> +       struct snd_soc_dapm_context *dapm =3D snd_soc_codec_get_dapm(code=
+c);
 > +
-> -- =
+> +       nau8824->dapm =3D dapm;
+> +       snd_soc_dapm_sync(nau8824->dapm);
 
-> 2.11.0
-> =
+This sync shouldn't do anything, just remove it.
+
+> +static int __maybe_unused nau8824_suspend(struct snd_soc_codec *codec)
+> +{
+> +       struct nau8824 *nau8824 =3D snd_soc_codec_get_drvdata(codec);
+> +
+> +       if (nau8824->irq) {
+> +               disable_irq(nau8824->irq);
+> +               snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_OFF);
+> +       }
+
+Why are we disabling the IRQ here? =20
+
+> +       if (nau8824->irq) {
+> +               nau8824_sema_acquire(nau8824, 0);
+> +               enable_irq(nau8824->irq);
+> +       }
+
+We didn't drop this sempahore in the suspend path?  This stuff could at
+least use better comments.
+
+> +       /* Boost FEPGA 20dB */
+> +       regmap_update_bits(regmap, NAU8824_REG_FEPGA_II,
+> +               NAU8824_FEPGA_GAINL_MASK | NAU8824_FEPGA_GAINR_MASK,
+> +               0xa | (0xa << NAU8824_FEPGA_GAINR_SFT));
+
+Possibly something that should be controllable from userspace?
+
+> +       nau8824_reset_chip(nau8824->regmap);
+> +       ret =3D regmap_read(nau8824->regmap, NAU8824_REG_I2C_DEVICE_ID, &=
+value);
+> +       if (ret < 0) {
+> +               dev_err(dev, "Failed to read device id from the NAU8824: =
+%d\n",
+> +                       ret);
+> +               return ret;
+> +       }
+
+Perhaps check the device ID before resetting the chip (and verify that
+the device ID is what's expected)?  That way if the system is
+misconfigured then the check will be less disruptive.
+
+--ursu6d5c7xjbioxw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliSHaYACgkQJNaLcl1U
+h9AohQf+OqswPzcCQztjL0EEKwBn4Or/8YrHHUOeQjAUl4FLyo9PpwgHpRIaLVee
+siyf2to42v+OltffOWLfU2qrBoYToqiAm40fbuR1tihT5Dva/iWxWIMWmBKnFeOs
+DY49V3eJFfB4xYYg9CTMkixkp+pbK4qUSImaiZjVHdUfexjJ5DOt3YIpKOgm35E2
+zrC19M8niWwyhHZnYG7E7mOfFxnFx+iFItKiyOiwApOnIvgHuBgxXZ7iWXUM9rK8
+mJn5+BdwRweD8MTFZLh+2r+UAH8Ak0gn/rgLA//IVF8DL4IHTA8ZsHHegwnAkWpV
+BlQIqLKJ1c5crQenIiQ9BvkN+T9tyw==
+=66H+
+-----END PGP SIGNATURE-----
+
+--ursu6d5c7xjbioxw--
+
+--===============3973288503295128074==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3973288503295128074==--
