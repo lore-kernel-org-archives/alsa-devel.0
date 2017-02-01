@@ -1,72 +1,37 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v8.1 1/1] ASoC: omap-mcbsp: Add PM QoS
- support for McBSP to prevent glitches
-Date: Wed, 1 Feb 2017 17:20:26 +0000
-Message-ID: <20170201172026.6vpryjf6dx23pwst@sirena.org.uk>
-References: <20170127225337.17830-1-liam@networkimprov.net>
- <20170131212143.24415-1-liam@networkimprov.net>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v3 1/8] ASoC: sun4i-i2s: Update binding documentation to
+ include A31
+Date: Wed, 1 Feb 2017 11:26:29 -0600
+Message-ID: <20170201172629.6hcabndljh4bwm5p@rob-hp-laptop>
+References: <20170131100552.27949-1-mylene.josserand@free-electrons.com>
+ <20170131100552.27949-2-mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9180748429414048478=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DB1A1266E0D
- for <alsa-devel@alsa-project.org>; Wed,  1 Feb 2017 18:20:40 +0100 (CET)
-In-Reply-To: <20170131212143.24415-1-liam@networkimprov.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Breck <liam@networkimprov.net>
-Cc: alsa-devel@alsa-project.org, Matt Ranostay <matt@ranostay.consulting>, Tony Lindgren <tony@atomide.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Liam Breck <kernel@networkimprov.net>, linux-omap@vger.kernel.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20170131100552.27949-2-mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Jan 31, 2017 at 11:05:45AM +0100, Mylène Josserand wrote:
+> Add a new compatible for sun4i-i2s driver to handle some
+> SoCs that have a reset line that must be asserted/deasserted.
+> 
+> This new compatible, "allwinner,sun6i-a31-i2s", requires the
+> property "resets" which should be a phandle to the reset line.
+> Except these differences, the compatible is identical to previous one
+> which will not handle a reset line.
+> 
+> Signed-off-by: Mylène Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+> ---
+>  Documentation/devicetree/bindings/sound/sun4i-i2s.txt | 5 +++++
+>  1 file changed, 5 insertions(+)
 
---===============9180748429414048478==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="fufhr3s6cltuuk2n"
-Content-Disposition: inline
-
-
---fufhr3s6cltuuk2n
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jan 31, 2017 at 01:21:43PM -0800, Liam Breck wrote:
-
-> From: Matt Ranostay <matt@ranostay.consulting>
-
-This needs to be at the top of the mail to work, IIRC SubmittingPatches
-covers it (it's useful to try sending the patch to yourself and apply
-it, helps work out if there's any problems).
-
---fufhr3s6cltuuk2n
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliSGNkACgkQJNaLcl1U
-h9B3zwf9G1BIm9v52sr7j5okHTQu7JZdUBa3lB59iQrdoa8UU7I3LMWE3kB9oESp
-qsBxBpKSUJKtQyVoE/p+bT0hUl6pS2NqM+uhR6CcSVuAcKdHAHkwWWf1z7ePHNT+
-RiH5xoN2TrBBskhQLZsiC8o5z6MyPNVgs7L9hCutFDoH1IDbSuf0DEXUCClzaWfW
-/bjpss4ANiDHv8J3MkHJQuH3ZBrj/88XL9rGdatsVn4dc1bqykaSO1mfWojWdvYB
-PboKWOg3ESzTHhSrW039xo6/MBS4MLnhWSkjfcVOZPleZfx6+BlcFY6MkstInyZd
-6pKOk6c7ub7YaxwkCv1G/YJGgKYHig==
-=rKGO
------END PGP SIGNATURE-----
-
---fufhr3s6cltuuk2n--
-
---===============9180748429414048478==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9180748429414048478==--
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
