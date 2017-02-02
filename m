@@ -1,15 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 28/53] ALSA: x86: Remove indirect call of
-	snd_pcm_period_elapsed()
-Date: Thu,  2 Feb 2017 18:02:42 +0100
-Message-ID: <20170202170307.24484-30-tiwai@suse.de>
+Subject: [PATCH 14/53] ALSA: x86: Drop global hlpe_state
+Date: Thu,  2 Feb 2017 18:02:28 +0100
+Message-ID: <20170202170307.24484-16-tiwai@suse.de>
 References: <20170202170307.24484-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id B44C6266912
+ by alsa0.perex.cz (Postfix) with ESMTP id A69182668DD
  for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2017 18:03:16 +0100 (CET)
 In-Reply-To: <20170202170307.24484-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,82 +24,97 @@ To: alsa-devel@alsa-project.org
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jerome Anand <jerome.anand@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Again another indirect call...  Let's straighten it up.
-Also define the had_stream field with a proper type instead of a void
-pointer.
+Now it's the turn to drop the global hlpe_state variable.  It can be
+gracefully embedded in hdmi_lpe_audio_ctx struct.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/x86/intel_hdmi_audio.c | 15 ++++++---------
- sound/x86/intel_hdmi_audio.h |  3 +--
- 2 files changed, 7 insertions(+), 11 deletions(-)
+ sound/x86/intel_hdmi_lpe_audio.c | 21 +++++++++------------
+ 1 file changed, 9 insertions(+), 12 deletions(-)
 
-diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
-index fbfbf5e2b5ad..8b25687601ac 100644
---- a/sound/x86/intel_hdmi_audio.c
-+++ b/sound/x86/intel_hdmi_audio.c
-@@ -1028,14 +1028,12 @@ static int snd_intelhad_open(struct snd_pcm_substream *substream)
- 	return retval;
+diff --git a/sound/x86/intel_hdmi_lpe_audio.c b/sound/x86/intel_hdmi_lpe_audio.c
+index 09c21346071c..775a8b947213 100644
+--- a/sound/x86/intel_hdmi_lpe_audio.c
++++ b/sound/x86/intel_hdmi_lpe_audio.c
+@@ -37,7 +37,6 @@
+ #include "intel_hdmi_audio.h"
+ 
+ /* globals*/
+-static int hlpe_state;
+ static union otm_hdmi_eld_t hlpe_eld;
+ 
+ struct hdmi_lpe_audio_ctx {
+@@ -51,6 +50,7 @@ struct hdmi_lpe_audio_ctx {
+ 	unsigned int had_config_offset;
+ 	int hdmi_audio_interrupt_mask;
+ 	struct work_struct hdmi_audio_wq;
++	int state; /* connection state */
+ };
+ 
+ static void hdmi_set_eld(void *eld)
+@@ -263,10 +263,9 @@ static void notify_audio_lpe(struct platform_device *pdev)
+ 		dev_dbg(&pdev->dev, "%s: Event: HAD_NOTIFY_HOT_UNPLUG\n",
+ 			__func__);
+ 
+-		if (hlpe_state == hdmi_connector_status_connected) {
++		if (ctx->state == hdmi_connector_status_connected) {
+ 
+-			hlpe_state =
+-				hdmi_connector_status_disconnected;
++			ctx->state = hdmi_connector_status_disconnected;
+ 
+ 			mid_hdmi_audio_signal_event(pdev,
+ 				HAD_EVENT_HOT_UNPLUG);
+@@ -297,7 +296,7 @@ static void notify_audio_lpe(struct platform_device *pdev)
+ 
+ 		mid_hdmi_audio_signal_event(pdev, HAD_EVENT_HOT_PLUG);
+ 
+-		hlpe_state = hdmi_connector_status_connected;
++		ctx->state = hdmi_connector_status_connected;
+ 
+ 		dev_dbg(&pdev->dev, "%s: HAD_NOTIFY_ELD : port = %d, tmds = %d\n",
+ 			__func__, eld->port_id,	pdata->tmds_clock_speed);
+@@ -338,9 +337,6 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
+ 
+ 	dev_dbg(&pdev->dev, "Enter %s\n", __func__);
+ 
+-	/*TBD:remove globals*/
+-	hlpe_state = hdmi_connector_status_disconnected;
+-
+ 	/* get resources */
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0) {
+@@ -378,6 +374,7 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
+ 	ctx->mmio_start = mmio_start;
+ 	ctx->tmds_clock_speed = DIS_SAMPLE_RATE_148_5;
+ 	INIT_WORK(&ctx->hdmi_audio_wq, _had_wq);
++	ctx->state = hdmi_connector_status_disconnected;
+ 
+ 	if (pci_dev_present(cherryview_ids))
+ 		dev_dbg(&pdev->dev, "%s: Cherrytrail LPE - Detected\n",
+@@ -468,9 +465,9 @@ static int hdmi_lpe_audio_suspend(struct platform_device *pdev,
+ {
+ 	struct hdmi_lpe_audio_ctx *ctx = platform_get_drvdata(pdev);
+ 
+-	dev_dbg(&pdev->dev, "%s: hlpe_state %d",  __func__, hlpe_state);
++	dev_dbg(&pdev->dev, "%s: state %d",  __func__, ctx->state);
+ 	/* HDMI is not connected, assuming audio device is suspended already */
+-	if (hlpe_state != hdmi_connector_status_disconnected)
++	if (ctx->state != hdmi_connector_status_disconnected)
+ 		hdmi_audio_suspend(ctx->had);
+ 	return 0;
  }
- 
--/**
-+/*
-  * had_period_elapsed - updates the hardware pointer status
-- * @had_substream:substream for which the stream function is called
-- *
-+ * @had_substream: substream for which the stream function is called
-  */
--static void had_period_elapsed(void *had_substream)
-+static void had_period_elapsed(struct snd_pcm_substream *substream)
+@@ -479,9 +476,9 @@ static int hdmi_lpe_audio_resume(struct platform_device *pdev)
  {
--	struct snd_pcm_substream *substream = had_substream;
- 	struct had_stream_pvt *stream;
+ 	struct hdmi_lpe_audio_ctx *ctx = platform_get_drvdata(pdev);
  
- 	if (!substream || !substream->runtime)
-@@ -1058,7 +1056,6 @@ static int snd_intelhad_init_stream(struct snd_pcm_substream *substream)
- {
- 	struct snd_intelhad *intelhaddata = snd_pcm_substream_chip(substream);
- 
--	intelhaddata->stream_info.period_elapsed = had_period_elapsed;
- 	intelhaddata->stream_info.had_substream = substream;
- 	intelhaddata->stream_info.buffer_ptr = 0;
- 	intelhaddata->stream_info.buffer_rendered = 0;
-@@ -1648,11 +1645,11 @@ static int had_process_buffer_done(struct snd_intelhad *intelhaddata)
- 	/* In case of actual data,
- 	 * report buffer_done to above ALSA layer
- 	 */
--	buf_size =  intelhaddata->buf_info[buf_id].buf_size;
-+	buf_size = intelhaddata->buf_info[buf_id].buf_size;
- 	if (stream_type >= HAD_RUNNING_STREAM) {
- 		intelhaddata->stream_info.buffer_rendered +=
- 			(intr_count * buf_size);
--		stream->period_elapsed(stream->had_substream);
-+		had_period_elapsed(stream->had_substream);
- 	}
- 
+-	dev_dbg(&pdev->dev, "%s: hlpe_state %d",  __func__, hlpe_state);
++	dev_dbg(&pdev->dev, "%s: state %d",  __func__, ctx->state);
+ 	/* HDMI is not connected, there is no need to resume audio device */
+-	if (hlpe_state != hdmi_connector_status_disconnected)
++	if (ctx->state != hdmi_connector_status_disconnected)
+ 		hdmi_audio_resume(ctx->had);
  	return 0;
-@@ -1694,7 +1691,7 @@ static int had_process_buffer_underrun(struct snd_intelhad *intelhaddata)
- 	if (stream_type == HAD_RUNNING_STREAM) {
- 		/* Report UNDERRUN error to above layers */
- 		intelhaddata->flag_underrun = 1;
--		stream->period_elapsed(stream->had_substream);
-+		had_period_elapsed(stream->had_substream);
- 	}
- 
- 	return 0;
-diff --git a/sound/x86/intel_hdmi_audio.h b/sound/x86/intel_hdmi_audio.h
-index d301c3021375..bcbb4b262fff 100644
---- a/sound/x86/intel_hdmi_audio.h
-+++ b/sound/x86/intel_hdmi_audio.h
-@@ -75,8 +75,7 @@ struct platform_device;
- 
- struct pcm_stream_info {
- 	int		str_id;
--	void	*had_substream;
--	void	(*period_elapsed)(void *had_substream);
-+	struct snd_pcm_substream	*had_substream;
- 	u32		buffer_ptr;
- 	u64		buffer_rendered;
- 	u32		ring_buf_size;
+ }
 -- 
 2.11.0
