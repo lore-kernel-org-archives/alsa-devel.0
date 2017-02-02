@@ -1,161 +1,93 @@
 From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?=
-        <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: [PATCH v4 2/8] ASoC: sun4i-i2s: Add quirks to handle a31 compatible
-Date: Thu,  2 Feb 2017 10:24:16 +0100
-Message-ID: <20170202092422.5588-3-mylene.josserand@free-electrons.com>
+        <mylene.josserand@free-electrons.com>
+Subject: [PATCH v4 6/8] ARM: dts: sun8i: Add audio codec, dai and card for A33
+Date: Thu,  2 Feb 2017 10:24:20 +0100
+Message-ID: <20170202092422.5588-7-mylene.josserand@free-electrons.com>
 References: <20170202092422.5588-1-mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20170202092422.5588-1-mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170202092422.5588-1-mylene.josserand@free-electrons.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, maxime.ripard@free-electrons.com, wens@csie.org, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, thomas.petazzoni@free-electrons.com, mylene.josserand@free-electrons.com, alexandre.belloni@free-electrons.com
 List-Id: alsa-devel@alsa-project.org
 
-Some SoCs have a reset line that must be asserted/deasserted.
-This patch adds a quirk to handle the new compatible
-"allwinner,sun6i-a31-i2s" which will deassert the reset
-line on probe function and assert it on remove's one.
+Add the audio codec, dai and a simple card to be able to use the
+audio stream of the builtin codec on sun8i SoC.
 
-This new compatible is useful in case of A33 codec driver, for example.
+This commit adds also an audio-routing for the sound card node to link
+the analog DAPM widgets (Right/Left DAC) and the digital one's as they
+are created in different drivers.
 
-Signed-off-by: Mylène Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Acked-by: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Signed-off-by: Mylène Josserand <mylene.josserand@free-electrons.com>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 57 +++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 55 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/sun8i-a33.dtsi | 45 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index 4237323ef594..3635bbc72cbc 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -14,9 +14,11 @@
- #include <linux/clk.h>
- #include <linux/dmaengine.h>
- #include <linux/module.h>
-+#include <linux/of_device.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/regmap.h>
-+#include <linux/reset.h>
+diff --git a/arch/arm/boot/dts/sun8i-a33.dtsi b/arch/arm/boot/dts/sun8i-a33.dtsi
+index fd1e1cddd4a8..4e34ec6613a0 100644
+--- a/arch/arm/boot/dts/sun8i-a33.dtsi
++++ b/arch/arm/boot/dts/sun8i-a33.dtsi
+@@ -69,6 +69,28 @@
+ 		reg = <0x40000000 0x80000000>;
+ 	};
  
- #include <sound/dmaengine_pcm.h>
- #include <sound/pcm_params.h>
-@@ -92,6 +94,7 @@ struct sun4i_i2s {
- 	struct clk	*bus_clk;
- 	struct clk	*mod_clk;
- 	struct regmap	*regmap;
-+	struct reset_control *rst;
- 
- 	unsigned int	mclk_freq;
- 
-@@ -651,9 +654,22 @@ static int sun4i_i2s_runtime_suspend(struct device *dev)
- 	return 0;
- }
- 
-+struct sun4i_i2s_quirks {
-+	bool has_reset;
-+};
++	sound: sound {
++		compatible = "simple-audio-card";
++		simple-audio-card,name = "sun8i-a33-audio";
++		simple-audio-card,format = "i2s";
++		simple-audio-card,frame-master = <&link_codec>;
++		simple-audio-card,bitclock-master = <&link_codec>;
++		simple-audio-card,mclk-fs = <512>;
++		simple-audio-card,aux-devs = <&codec_analog>;
++		simple-audio-card,routing =
++			"Left DAC", "Digital Left DAC",
++			"Right DAC", "Digital Right DAC";
++		status = "disabled";
 +
-+static const struct sun4i_i2s_quirks sun4i_a10_i2s_quirks = {
-+	.has_reset	= false,
-+};
++		simple-audio-card,cpu {
++			sound-dai = <&dai>;
++		};
 +
-+static const struct sun4i_i2s_quirks sun6i_a31_i2s_quirks = {
-+	.has_reset	= true,
-+};
++		link_codec: simple-audio-card,codec {
++			sound-dai = <&codec>;
++		};
++	};
 +
- static int sun4i_i2s_probe(struct platform_device *pdev)
- {
- 	struct sun4i_i2s *i2s;
-+	const struct sun4i_i2s_quirks *quirks;
- 	struct resource *res;
- 	void __iomem *regs;
- 	int irq, ret;
-@@ -674,6 +690,12 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
- 		return irq;
- 	}
+ 	soc@01c00000 {
+ 		tcon0: lcd-controller@01c0c000 {
+ 			compatible = "allwinner,sun8i-a33-tcon";
+@@ -116,6 +138,29 @@
+ 			reset-names = "ahb";
+ 		};
  
-+	quirks = of_device_get_match_data(&pdev->dev);
-+	if (!quirks) {
-+		dev_err(&pdev->dev, "Failed to determine the quirks to use\n");
-+		return -ENODEV;
-+	}
++		dai: dai@01c22c00 {
++			#sound-dai-cells = <0>;
++			compatible = "allwinner,sun6i-a31-i2s";
++			reg = <0x01c22c00 0x200>;
++			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&ccu CLK_BUS_CODEC>, <&ccu CLK_AC_DIG>;
++			clock-names = "apb", "mod";
++			resets = <&ccu RST_BUS_CODEC>;
++			dmas = <&dma 15>, <&dma 15>;
++			dma-names = "rx", "tx";
++			status = "disabled";
++		};
 +
- 	i2s->bus_clk = devm_clk_get(&pdev->dev, "apb");
- 	if (IS_ERR(i2s->bus_clk)) {
- 		dev_err(&pdev->dev, "Can't get our bus clock\n");
-@@ -692,7 +714,24 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
- 		dev_err(&pdev->dev, "Can't get our mod clock\n");
- 		return PTR_ERR(i2s->mod_clk);
- 	}
--	
++		codec: codec@01c22e00 {
++			#sound-dai-cells = <0>;
++			compatible = "allwinner,sun8i-a33-codec";
++			reg = <0x01c22e00 0x400>;
++			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&ccu CLK_BUS_CODEC>, <&ccu CLK_AC_DIG>;
++			clock-names = "bus", "mod";
++			status = "disabled";
++		};
 +
-+	if (quirks->has_reset) {
-+		i2s->rst = devm_reset_control_get(&pdev->dev, NULL);
-+		if (IS_ERR(i2s->rst)) {
-+			dev_err(&pdev->dev, "Failed to get reset control\n");
-+			return PTR_ERR(i2s->rst);
-+		}
-+	}
-+
-+	if (!IS_ERR(i2s->rst)) {
-+		ret = reset_control_deassert(i2s->rst);
-+		if (ret) {
-+			dev_err(&pdev->dev,
-+				"Failed to deassert the reset control\n");
-+			return -EINVAL;
-+		}
-+	}
-+
- 	i2s->playback_dma_data.addr = res->start + SUN4I_I2S_FIFO_TX_REG;
- 	i2s->playback_dma_data.maxburst = 8;
- 
-@@ -727,23 +766,37 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
- 		sun4i_i2s_runtime_suspend(&pdev->dev);
- err_pm_disable:
- 	pm_runtime_disable(&pdev->dev);
-+	if (!IS_ERR(i2s->rst))
-+		reset_control_assert(i2s->rst);
- 
- 	return ret;
- }
- 
- static int sun4i_i2s_remove(struct platform_device *pdev)
- {
-+	struct sun4i_i2s *i2s = dev_get_drvdata(&pdev->dev);
-+
- 	snd_dmaengine_pcm_unregister(&pdev->dev);
- 
- 	pm_runtime_disable(&pdev->dev);
- 	if (!pm_runtime_status_suspended(&pdev->dev))
- 		sun4i_i2s_runtime_suspend(&pdev->dev);
- 
-+	if (!IS_ERR(i2s->rst))
-+		reset_control_assert(i2s->rst);
-+
- 	return 0;
- }
- 
- static const struct of_device_id sun4i_i2s_match[] = {
--	{ .compatible = "allwinner,sun4i-a10-i2s", },
-+	{
-+		.compatible = "allwinner,sun4i-a10-i2s",
-+		.data = &sun4i_a10_i2s_quirks,
-+	},
-+	{
-+		.compatible = "allwinner,sun6i-a31-i2s",
-+		.data = &sun6i_a31_i2s_quirks,
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, sun4i_i2s_match);
+ 		fe0: display-frontend@01e00000 {
+ 			compatible = "allwinner,sun8i-a33-display-frontend";
+ 			reg = <0x01e00000 0x20000>;
 -- 
 2.11.0
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
