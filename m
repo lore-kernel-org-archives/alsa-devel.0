@@ -1,15 +1,16 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 39/53] ALSA: x86: Drop flag_underrun field
-Date: Thu,  2 Feb 2017 18:02:53 +0100
-Message-ID: <20170202170307.24484-41-tiwai@suse.de>
+Subject: [PATCH 50/53] ALSA: x86: Set CA bits for DisplayPort
+	too
+Date: Thu,  2 Feb 2017 18:03:04 +0100
+Message-ID: <20170202170307.24484-52-tiwai@suse.de>
 References: <20170202170307.24484-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 19A88266861
- for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2017 18:03:19 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id C5ED8266849
+ for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2017 18:03:18 +0100 (CET)
 In-Reply-To: <20170202170307.24484-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,61 +25,42 @@ To: alsa-devel@alsa-project.org
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jerome Anand <jerome.anand@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The flag_underrun flag is used to indicate to escalate the XRUN
-reporting at the next position inquiry, but there is a much simpler
-method to achieve it: just call snd_pcm_stop_xrun().
+This is a guess work.  Usually the DP audio info frame is just 8-bit
+shifted from HDMI AI, so let's try to put CA in DIP frame 2 [24-31].
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/x86/intel_hdmi_audio.c | 9 +--------
- sound/x86/intel_hdmi_audio.h | 1 -
- 2 files changed, 1 insertion(+), 9 deletions(-)
+ sound/x86/intel_hdmi_audio.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
-index c0cb59e6a89b..9ecdd9ad0199 100644
+index f49520117dd6..24a18b88c927 100644
 --- a/sound/x86/intel_hdmi_audio.c
 +++ b/sound/x86/intel_hdmi_audio.c
-@@ -1297,11 +1297,6 @@ static snd_pcm_uframes_t snd_intelhad_pcm_pointer(
- 	if (intelhaddata->drv_status == HAD_DRV_DISCONNECTED)
- 		return SNDRV_PCM_POS_XRUN;
+@@ -626,20 +626,20 @@ static void snd_intelhad_prog_dip(struct snd_pcm_substream *substream,
+ 	u8 checksum = 0;
+ 	u32 info_frame;
+ 	int channels;
++	int ca;
  
--	if (intelhaddata->flag_underrun) {
--		intelhaddata->flag_underrun = false;
--		return SNDRV_PCM_POS_XRUN;
--	}
+ 	channels = substream->runtime->channels;
+ 
+ 	had_write_register(intelhaddata, AUD_CNTL_ST, ctrl_state.regval);
+ 
++	ca = snd_intelhad_channel_allocation(intelhaddata, channels);
+ 	if (intelhaddata->dp_output) {
+ 		info_frame = DP_INFO_FRAME_WORD1;
+-		frame2.regval = 1;
++		frame2.regval = (substream->runtime->channels - 1) | (ca << 24);
+ 	} else {
+ 		info_frame = HDMI_INFO_FRAME_WORD1;
+ 		frame2.regx.chnl_cnt = substream->runtime->channels - 1;
 -
- 	/* Use a hw register to calculate sub-period position reports.
- 	 * This makes PulseAudio happier.
- 	 */
-@@ -1642,8 +1637,7 @@ static int had_process_buffer_underrun(struct snd_intelhad *intelhaddata)
+-		frame3.regx.chnl_alloc = snd_intelhad_channel_allocation(
+-			intelhaddata, channels);
++		frame3.regx.chnl_alloc = ca;
  
- 	if (stream_type == HAD_RUNNING_STREAM) {
- 		/* Report UNDERRUN error to above layers */
--		intelhaddata->flag_underrun = true;
--		had_period_elapsed(stream->had_substream);
-+		snd_pcm_stop_xrun(stream->had_substream);
- 	}
- 
- 	return 0;
-@@ -1965,7 +1959,6 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
- 	ctx->drv_status = HAD_DRV_DISCONNECTED;
- 	ctx->dev = &pdev->dev;
- 	ctx->card = card;
--	ctx->flag_underrun = false;
- 	ctx->aes_bits = SNDRV_PCM_DEFAULT_CON_SPDIF;
- 	strcpy(card->driver, INTEL_HAD);
- 	strcpy(card->shortname, INTEL_HAD);
-diff --git a/sound/x86/intel_hdmi_audio.h b/sound/x86/intel_hdmi_audio.h
-index be24682e3946..945f6831f1dd 100644
---- a/sound/x86/intel_hdmi_audio.h
-+++ b/sound/x86/intel_hdmi_audio.h
-@@ -123,7 +123,6 @@ struct snd_intelhad {
- 	enum		intel_had_aud_buf_type curr_buf;
- 	int		valid_buf_cnt;
- 	unsigned int	aes_bits;
--	bool flag_underrun;
- 	struct had_stream_data stream_data;
- 	spinlock_t had_spinlock;
- 	enum		intel_had_aud_buf_type buff_done;
+ 		/* Calculte the byte wide checksum for all valid DIP words */
+ 		for (i = 0; i < BYTES_PER_WORD; i++)
 -- 
 2.11.0
