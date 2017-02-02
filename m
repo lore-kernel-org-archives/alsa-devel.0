@@ -1,15 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 48/53] ALSA: x86: Clean up unused defines and
-	inclusions
-Date: Thu,  2 Feb 2017 18:03:02 +0100
-Message-ID: <20170202170307.24484-50-tiwai@suse.de>
+Subject: [PATCH 52/53] ALSA: x86: Yet more tidy-up and clean-ups
+Date: Thu,  2 Feb 2017 18:03:06 +0100
+Message-ID: <20170202170307.24484-54-tiwai@suse.de>
 References: <20170202170307.24484-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 21B97267590
+ by alsa0.perex.cz (Postfix) with ESMTP id 54C9F26759B
  for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2017 18:03:18 +0100 (CET)
 In-Reply-To: <20170202170307.24484-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,196 +24,197 @@ To: alsa-devel@alsa-project.org
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jerome Anand <jerome.anand@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Many defines and constants are left unused.  Clean them up.
+- Add a few more comments to functions.
+
+- Move the initialization of some PCM state variables to open and
+  prepare callbacks, where these are clearer places.
+
+- Remove superfluous NULL checks.
+
+- Get rid of the bogus drv_status change to CONNECTED at close;
+  this doesn't make any sense.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/x86/intel_hdmi_audio.c     | 10 ++++--
- sound/x86/intel_hdmi_audio.h     | 11 +------
- sound/x86/intel_hdmi_lpe_audio.h | 68 +++++++---------------------------------
- 3 files changed, 20 insertions(+), 69 deletions(-)
+ sound/x86/intel_hdmi_audio.c | 68 +++++++++++++++++++++++---------------------
+ 1 file changed, 36 insertions(+), 32 deletions(-)
 
 diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
-index f825d514500e..82f48fbcd74b 100644
+index 5613c675ce70..f032610d1287 100644
 --- a/sound/x86/intel_hdmi_audio.c
 +++ b/sound/x86/intel_hdmi_audio.c
-@@ -21,19 +21,21 @@
-  * ALSA driver for Intel HDMI audio
-  */
+@@ -965,7 +965,6 @@ static int snd_intelhad_open(struct snd_pcm_substream *substream)
  
-+#include <linux/types.h>
- #include <linux/platform_device.h>
- #include <linux/io.h>
- #include <linux/slab.h>
- #include <linux/module.h>
- #include <linux/interrupt.h>
--#include <linux/acpi.h>
-+#include <linux/pm_runtime.h>
- #include <asm/cacheflush.h>
--#include <sound/pcm.h>
- #include <sound/core.h>
-+#include <sound/asoundef.h>
-+#include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/initval.h>
- #include <sound/control.h>
--#include <sound/initval.h>
-+#include <drm/drm_edid.h>
- #include <drm/intel_lpe_audio.h>
- #include "intel_hdmi_audio.h"
+ 	intelhaddata = snd_pcm_substream_chip(substream);
+ 	runtime = substream->runtime;
+-	intelhaddata->underrun_count = 0;
  
-@@ -929,6 +931,8 @@ static int snd_intelhad_prog_n(u32 aud_samp_freq, u32 *n_param,
+ 	pm_runtime_get_sync(intelhaddata->dev);
+ 
+@@ -989,17 +988,20 @@ static int snd_intelhad_open(struct snd_pcm_substream *substream)
+ 	 */
+ 	retval = snd_pcm_hw_constraint_step(substream->runtime, 0,
+ 			SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 64);
+-	if (retval < 0) {
+-		dev_dbg(intelhaddata->dev, "%s:step_size=64 failed,err=%d\n",
+-			__func__, retval);
++	if (retval < 0)
+ 		goto error;
+-	}
+ 
++	/* expose PCM substream */
+ 	spin_lock_irq(&intelhaddata->had_spinlock);
+ 	intelhaddata->stream_info.substream = substream;
+ 	intelhaddata->stream_info.substream_refcount++;
+ 	spin_unlock_irq(&intelhaddata->had_spinlock);
+ 
++	/* these are cleared in prepare callback, but just to be sure */
++	intelhaddata->curr_buf = 0;
++	intelhaddata->underrun_count = 0;
++	intelhaddata->stream_info.buffer_rendered = 0;
++
+ 	return retval;
+  error:
+ 	pm_runtime_put(intelhaddata->dev);
+@@ -1015,7 +1017,7 @@ static int snd_intelhad_close(struct snd_pcm_substream *substream)
+ 
+ 	intelhaddata = snd_pcm_substream_chip(substream);
+ 
+-	intelhaddata->stream_info.buffer_rendered = 0;
++	/* unreference and sync with the pending PCM accesses */
+ 	spin_lock_irq(&intelhaddata->had_spinlock);
+ 	intelhaddata->stream_info.substream = NULL;
+ 	intelhaddata->stream_info.substream_refcount--;
+@@ -1026,13 +1028,6 @@ static int snd_intelhad_close(struct snd_pcm_substream *substream)
+ 	}
+ 	spin_unlock_irq(&intelhaddata->had_spinlock);
+ 
+-	/* Check if following drv_status modification is required - VA */
+-	if (intelhaddata->drv_status != HAD_DRV_DISCONNECTED) {
+-		intelhaddata->drv_status = HAD_DRV_CONNECTED;
+-		dev_dbg(intelhaddata->dev,
+-			"%s @ %d:DEBUG PLUG/UNPLUG : HAD_DRV_CONNECTED\n",
+-			__func__, __LINE__);
+-	}
+ 	pm_runtime_put(intelhaddata->dev);
+ 	return 0;
+ }
+@@ -1047,9 +1042,6 @@ static int snd_intelhad_hw_params(struct snd_pcm_substream *substream,
+ 	unsigned long addr;
+ 	int pages, buf_size, retval;
+ 
+-	if (!hw_params)
+-		return -EINVAL;
+-
+ 	intelhaddata = snd_pcm_substream_chip(substream);
+ 	buf_size = params_buffer_bytes(hw_params);
+ 	retval = snd_pcm_lib_malloc_pages(substream, buf_size);
+@@ -1124,7 +1116,6 @@ static int snd_intelhad_pcm_trigger(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 		spin_lock(&intelhaddata->had_spinlock);
+-		intelhaddata->curr_buf = 0;
+ 
+ 		/* Stop reporting BUFFER_DONE/UNDERRUN to above layers */
+ 
+@@ -1174,6 +1165,8 @@ static int snd_intelhad_pcm_prepare(struct snd_pcm_substream *substream)
+ 	dev_dbg(intelhaddata->dev, "rate=%d\n", runtime->rate);
+ 	dev_dbg(intelhaddata->dev, "channels=%d\n", runtime->channels);
+ 
++	intelhaddata->curr_buf = 0;
++	intelhaddata->underrun_count = 0;
+ 	intelhaddata->stream_info.buffer_rendered = 0;
+ 
+ 	/* Get N value in KHz */
+@@ -1247,7 +1240,6 @@ snd_intelhad_pcm_pointer(struct snd_pcm_substream *substream)
+ 			dev_dbg(intelhaddata->dev,
+ 				"assume audio_codec_reset, underrun = %d - do xrun\n",
+ 				 intelhaddata->underrun_count);
+-			intelhaddata->underrun_count = 0;
+ 			return SNDRV_PCM_POS_XRUN;
+ 		}
+ 	} else {
+@@ -1277,6 +1269,21 @@ static int snd_intelhad_pcm_mmap(struct snd_pcm_substream *substream,
+ 			vma->vm_end - vma->vm_start, vma->vm_page_prot);
+ }
+ 
++/*
++ * ALSA PCM ops
++ */
++static const struct snd_pcm_ops snd_intelhad_playback_ops = {
++	.open =		snd_intelhad_open,
++	.close =	snd_intelhad_close,
++	.ioctl =	snd_pcm_lib_ioctl,
++	.hw_params =	snd_intelhad_hw_params,
++	.hw_free =	snd_intelhad_hw_free,
++	.prepare =	snd_intelhad_pcm_prepare,
++	.trigger =	snd_intelhad_pcm_trigger,
++	.pointer =	snd_intelhad_pcm_pointer,
++	.mmap =	snd_intelhad_pcm_mmap,
++};
++
+ /* process mode change of the running stream; called in mutex */
+ static int hdmi_audio_mode_change(struct snd_intelhad *intelhaddata)
+ {
+@@ -1564,18 +1571,9 @@ static void had_process_hot_unplug(struct snd_intelhad *intelhaddata)
+ 	intelhaddata->chmap->chmap = NULL;
+ }
+ 
+-/* PCM operations structure and the calls back for the same */
+-static struct snd_pcm_ops snd_intelhad_playback_ops = {
+-	.open =		snd_intelhad_open,
+-	.close =	snd_intelhad_close,
+-	.ioctl =	snd_pcm_lib_ioctl,
+-	.hw_params =	snd_intelhad_hw_params,
+-	.hw_free =	snd_intelhad_hw_free,
+-	.prepare =	snd_intelhad_pcm_prepare,
+-	.trigger =	snd_intelhad_pcm_trigger,
+-	.pointer =	snd_intelhad_pcm_pointer,
+-	.mmap =	snd_intelhad_pcm_mmap,
+-};
++/*
++ * ALSA iec958 and ELD controls
++ */
+ 
+ static int had_iec958_info(struct snd_kcontrol *kcontrol,
+ 				struct snd_ctl_elem_info *uinfo)
+@@ -1651,7 +1649,7 @@ static int had_ctl_eld_get(struct snd_kcontrol *kcontrol,
  	return 0;
  }
  
-+#define MAX_CNT			0xFF
-+
- static void snd_intelhad_handle_underrun(struct snd_intelhad *intelhaddata)
- {
- 	u32 hdmi_status = 0, i = 0;
-diff --git a/sound/x86/intel_hdmi_audio.h b/sound/x86/intel_hdmi_audio.h
-index 9dc0da474f05..dea51fcfc07f 100644
---- a/sound/x86/intel_hdmi_audio.h
-+++ b/sound/x86/intel_hdmi_audio.h
-@@ -30,20 +30,11 @@
- #ifndef _INTEL_HDMI_AUDIO_H_
- #define _INTEL_HDMI_AUDIO_H_
- 
--#include <linux/types.h>
--#include <sound/initval.h>
--#include <linux/version.h>
--#include <linux/pm_runtime.h>
--#include <sound/asoundef.h>
--#include <sound/control.h>
--#include <sound/pcm.h>
--#include <drm/drm_edid.h>
- #include "intel_hdmi_lpe_audio.h"
- 
- #define PCM_INDEX		0
- #define MAX_PB_STREAMS		1
- #define MAX_CAP_STREAMS		0
--#define HDMI_AUDIO_DRIVER	"hdmi-audio"
- 
- #define HDMI_INFO_FRAME_WORD1	0x000a0184
- #define DP_INFO_FRAME_WORD1	0x00441b84
-@@ -85,7 +76,7 @@ struct ring_buf_info {
- 	u8	is_valid;
+-static struct snd_kcontrol_new had_controls[] = {
++static const struct snd_kcontrol_new had_controls[] = {
+ 	{
+ 		.access = SNDRV_CTL_ELEM_ACCESS_READ,
+ 		.iface = SNDRV_CTL_ELEM_IFACE_PCM,
+@@ -1676,7 +1674,9 @@ static struct snd_kcontrol_new had_controls[] = {
+ 	},
  };
  
--/**
+-
 +/*
-  * struct snd_intelhad - intelhad driver structure
-  *
-  * @card: ptr to hold card details
-diff --git a/sound/x86/intel_hdmi_lpe_audio.h b/sound/x86/intel_hdmi_lpe_audio.h
-index 0e8397970e4a..5a5adb7f0cde 100644
---- a/sound/x86/intel_hdmi_lpe_audio.h
-+++ b/sound/x86/intel_hdmi_lpe_audio.h
-@@ -23,20 +23,6 @@
- #ifndef __INTEL_HDMI_LPE_AUDIO_H
- #define __INTEL_HDMI_LPE_AUDIO_H
++ * audio interrupt handler
++ */
+ static irqreturn_t display_pipe_interrupt_handler(int irq, void *dev_id)
+ {
+ 	struct snd_intelhad *ctx = dev_id;
+@@ -1698,6 +1698,9 @@ static irqreturn_t display_pipe_interrupt_handler(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
  
--#include <linux/types.h>
--#include <sound/initval.h>
--#include <linux/version.h>
--#include <linux/pm_runtime.h>
--#include <linux/platform_device.h>
--#include <sound/asoundef.h>
--#include <sound/control.h>
--#include <sound/pcm.h>
--
--#define AUD_CONFIG_VALID_BIT			(1<<9)
--#define AUD_CONFIG_DP_MODE			(1<<15)
--#define AUD_CONFIG_BLOCK_BIT			(1<<7)
--
--#define HMDI_LPE_AUDIO_DRIVER_NAME		"intel-hdmi-lpe-audio"
- #define HAD_MAX_DEVICES		1
- #define HAD_MIN_CHANNEL		2
- #define HAD_MAX_CHANNEL		8
-@@ -96,14 +82,6 @@
- /* Naud Value */
- #define DP_NAUD_VAL					32768
++/*
++ * monitor plug/unplug notification from i915; just kick off the work
++ */
+ static void notify_audio_lpe(struct platform_device *pdev)
+ {
+ 	struct snd_intelhad *ctx = platform_get_drvdata(pdev);
+@@ -1705,6 +1708,7 @@ static void notify_audio_lpe(struct platform_device *pdev)
+ 	schedule_work(&ctx->hdmi_audio_wq);
+ }
  
--/* _AUD_CONFIG register MASK */
--#define AUD_CONFIG_MASK_UNDERRUN	0xC0000000
--#define AUD_CONFIG_MASK_SRDBG		0x00000002
--#define AUD_CONFIG_MASK_FUNCRST		0x00000001
--
--#define MAX_CNT			0xFF
--#define HAD_SUSPEND_DELAY	1000
--
- enum had_drv_status {
- 	HAD_DRV_CONNECTED,
- 	HAD_DRV_RUNNING,
-@@ -120,17 +98,10 @@ enum intel_had_aud_buf_type {
- 	HAD_BUF_TYPE_D = 3,
- };
- 
--enum num_aud_ch {
--	CH_STEREO = 0,
--	CH_THREE_FOUR = 1,
--	CH_FIVE_SIX = 2,
--	CH_SEVEN_EIGHT = 3
--};
--
- /* HDMI Controller register offsets - audio domain common */
- /* Base address for below regs = 0x65000 */
- enum hdmi_ctrl_reg_offset_common {
--	AUDIO_HDMI_CONFIG_A	= 0x000,
-+	AUDIO_HDMI_CONFIG_A = 0x000,
- 	AUDIO_HDMI_CONFIG_B = 0x800,
- 	AUDIO_HDMI_CONFIG_C = 0x900,
- };
-@@ -220,6 +191,10 @@ union aud_cfg {
- 	u32 regval;
- };
- 
-+#define AUD_CONFIG_BLOCK_BIT			(1 << 7)
-+#define AUD_CONFIG_VALID_BIT			(1 << 9)
-+#define AUD_CONFIG_DP_MODE			(1 << 15)
-+
- /* Audio Channel Status 0 Attributes */
- union aud_ch_status_0 {
- 	struct {
-@@ -371,32 +346,13 @@ union aud_info_frame3 {
- 	u32 regval;
- };
- 
--#define HDMI_AUDIO_UNDERRUN     (1UL<<31)
--#define HDMI_AUDIO_BUFFER_DONE  (1UL<<29)
-+/* AUD_HDMI_STATUS bits */
-+#define HDMI_AUDIO_UNDERRUN		(1U << 31)
-+#define HDMI_AUDIO_BUFFER_DONE		(1U << 29)
- 
--
--#define PORT_ENABLE			(1 << 31)
--#define SDVO_AUDIO_ENABLE	(1 << 6)
--
--enum had_caps_list {
--	HAD_GET_ELD = 1,
--	HAD_GET_DISPLAY_RATE,
--	HAD_GET_DP_OUTPUT,
--	HAD_GET_LINK_RATE,
--	HAD_SET_ENABLE_AUDIO,
--	HAD_SET_DISABLE_AUDIO,
--	HAD_SET_ENABLE_AUDIO_INT,
--	HAD_SET_DISABLE_AUDIO_INT,
--};
--
--enum had_event_type {
--	HAD_EVENT_HOT_PLUG = 1,
--	HAD_EVENT_HOT_UNPLUG,
--	HAD_EVENT_MODE_CHANGING,
--	HAD_EVENT_AUDIO_BUFFER_DONE,
--	HAD_EVENT_AUDIO_BUFFER_UNDERRUN,
--	HAD_EVENT_QUERY_IS_AUDIO_BUSY,
--	HAD_EVENT_QUERY_IS_AUDIO_SUSPENDED,
--};
-+/* AUD_HDMI_STATUS register mask */
-+#define AUD_CONFIG_MASK_UNDERRUN	0xC0000000
-+#define AUD_CONFIG_MASK_SRDBG		0x00000002
-+#define AUD_CONFIG_MASK_FUNCRST		0x00000001
- 
- #endif
++/* the work to handle monitor hot plug/unplug */
+ static void had_audio_wq(struct work_struct *work)
+ {
+ 	struct snd_intelhad *ctx =
 -- 
 2.11.0
