@@ -1,55 +1,81 @@
-From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?=
-        <mylene.josserand@free-electrons.com>
-Subject: [PATCH v4 7/8] ARM: dts: sun8i: parrot: Enable audio nodes
-Date: Thu,  2 Feb 2017 10:24:21 +0100
-Message-ID: <20170202092422.5588-8-mylene.josserand@free-electrons.com>
+From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?= <mylene.josserand@free-electrons.com>
+Subject: [PATCH v4 5/8] ASoC: codecs: Add sun8i-a33 binding
+	documentation
+Date: Thu,  2 Feb 2017 10:24:19 +0100
+Message-ID: <20170202092422.5588-6-mylene.josserand@free-electrons.com>
 References: <20170202092422.5588-1-mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id A84BD267530
+ for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2017 10:24:59 +0100 (CET)
 In-Reply-To: <20170202092422.5588-1-mylene.josserand@free-electrons.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, maxime.ripard@free-electrons.com, wens@csie.org, perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, thomas.petazzoni@free-electrons.com, mylene.josserand@free-electrons.com, alexandre.belloni@free-electrons.com
+Cc: thomas.petazzoni@free-electrons.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, alexandre.belloni@free-electrons.com, mylene.josserand@free-electrons.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Enable the audio codec and the audio dai for the sun8i R16 Parrot board.
-
-Signed-off-by: Mylène Josserand <mylene.josserand@free-electrons.com>
----
- arch/arm/boot/dts/sun8i-r16-parrot.dts | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/arch/arm/boot/dts/sun8i-r16-parrot.dts b/arch/arm/boot/dts/sun8i-r16-parrot.dts
-index 47553e522982..f3dc413e8624 100644
---- a/arch/arm/boot/dts/sun8i-r16-parrot.dts
-+++ b/arch/arm/boot/dts/sun8i-r16-parrot.dts
-@@ -84,6 +84,14 @@
- 
- };
- 
-+&codec {
-+	status = "okay";
-+};
-+
-+&dai {
-+	status = "okay";
-+};
-+
- &ehci0 {
- 	status = "okay";
- };
-@@ -325,6 +333,10 @@
- 	status = "okay";
- };
- 
-+&sound {
-+	status = "okay";
-+};
-+
- &uart0 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&uart0_pins_b>;
--- 
-2.11.0
+QWRkIHRoZSBkb2N1bWVudGF0aW9uIGZvciBkdC1iaW5kaW5nIG9mIHRoZSBkaWdpdGFsIGF1ZGlv
+IGNvZGVjIGRyaXZlcgphbmQgdGhlIGF1ZGlvIGNhcmQgZHJpdmVyIGZvciBTdW44aS1hMzMgU29D
+cy4KClNpZ25lZC1vZmYtYnk6IE15bMOobmUgSm9zc2VyYW5kIDxteWxlbmUuam9zc2VyYW5kQGZy
+ZWUtZWxlY3Ryb25zLmNvbT4KQWNrZWQtYnk6IE1heGltZSBSaXBhcmQgPG1heGltZS5yaXBhcmRA
+ZnJlZS1lbGVjdHJvbnMuY29tPgotLS0KIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3N1
+bjhpLWEzMy1jb2RlYy50eHQgIHwgNjMgKysrKysrKysrKysrKysrKysrKysrKwogMSBmaWxlIGNo
+YW5nZWQsIDYzIGluc2VydGlvbnMoKykKIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9u
+L2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvc3VuOGktYTMzLWNvZGVjLnR4dAoKZGlmZiAtLWdp
+dCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9zdW44aS1hMzMtY29k
+ZWMudHh0IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3N1bjhpLWEz
+My1jb2RlYy50eHQKbmV3IGZpbGUgbW9kZSAxMDA2NDQKaW5kZXggMDAwMDAwMDAwMDAwLi4zOTli
+MWI0YmFlMjIKLS0tIC9kZXYvbnVsbAorKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
+ZGluZ3Mvc291bmQvc3VuOGktYTMzLWNvZGVjLnR4dApAQCAtMCwwICsxLDYzIEBACitBbGx3aW5u
+ZXIgU1VOOEkgYXVkaW8gY29kZWMKKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LQorCitPbiBTdW44aS1BMzMgU29DcywgdGhlIGF1ZGlvIGlzIHNlcGFyYXRlZCBpbiBkaWZmZXJl
+bnQgcGFydHM6CisJICAtIEEgREFJIGRyaXZlci4gSXQgdXNlcyB0aGUgInN1bjRpLWkycyIgZHJp
+dmVyIHdoaWNoIGlzCisJICBkb2N1bWVudGVkIGhlcmU6CisJICBEb2N1bWVudGF0aW9uL2Rldmlj
+ZXRyZWUvYmluZGluZ3Mvc291bmQvc3VuNGktaTJzLnR4dAorCSAgLSBBbiBhbmFsb2cgcGFydCBv
+ZiB0aGUgY29kZWMgd2hpY2ggaXMgaGFuZGxlZCBhcyBQUkNNIHJlZ2lzdGVycy4KKwkgIFNlZSBE
+b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvc3VuOGktY29kZWMtYW5hbG9n
+LnR4dAorCSAgLSBBbiBkaWdpdGFsIHBhcnQgb2YgdGhlIGNvZGVjIHdoaWNoIGlzIGRvY3VtZW50
+ZWQgaW4gdGhpcyBjdXJyZW50CisJICBiaW5kaW5nIGRvY3VtZW50YXRpb24uCisJICAtIEFuZCBm
+aW5hbGx5LCBhbiBhdWRpbyBjYXJkIHdoaWNoIGxpbmtzIGFsbCB0aGUgYWJvdmUgY29tcG9uZW50
+cy4KKwkgIFRoZSBzaW1wbGUtYXVkaW8gY2FyZCB3aWxsIGJlIHVzZWQuCisJICBTZWUgRG9jdW1l
+bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3NpbXBsZS1jYXJkLnR4dAorCitUaGlz
+IGJpbmRpbmdzIGRvY3VtZW50YXRpb24gZXhwb3NlcyBTdW44aSBjb2RlYyAoZGlnaXRhbCBwYXJ0
+KS4KKworUmVxdWlyZWQgcHJvcGVydGllczoKKy0gY29tcGF0aWJsZTogbXVzdCBiZSAiYWxsd2lu
+bmVyLHN1bjhpLWEzMy1jb2RlYyIKKy0gcmVnOiBtdXN0IGNvbnRhaW4gdGhlIHJlZ2lzdGVycyBs
+b2NhdGlvbiBhbmQgbGVuZ3RoCistIGludGVycnVwdHM6IG11c3QgY29udGFpbiB0aGUgY29kZWMg
+aW50ZXJydXB0CistIGNsb2NrczogYSBsaXN0IG9mIHBoYW5kbGUgKyBjbG9jay1zcGVjaWZlciBw
+YWlycywgb25lIGZvciBlYWNoIGVudHJ5CisgIGluIGNsb2NrLW5hbWVzLgorLSBjbG9jay1uYW1l
+czogc2hvdWxkIGNvbnRhaW4gZm9sbG93aW5nczoKKyAgIC0gImJ1cyI6IHRoZSBwYXJlbnQgQVBC
+IGNsb2NrIGZvciB0aGlzIGNvbnRyb2xsZXIKKyAgIC0gIm1vZCI6IHRoZSBwYXJlbnQgbW9kdWxl
+IGNsb2NrCisKK0hlcmUgaXMgYW4gZXhhbXBsZSB0byBhZGQgYSBzb3VuZCBjYXJkIGFuZCB0aGUg
+Y29kZWMgYmluZGluZyBvbiBzdW44aSBTb0NzIHRoYXQKK2FyZSBzaW1pbGFyIHRvIEEzMyB1c2lu
+ZyBzaW1wbGUtY2FyZDoKKworCXNvdW5kIHsKKwkJY29tcGF0aWJsZSA9ICJzaW1wbGUtYXVkaW8t
+Y2FyZCI7CisJCXNpbXBsZS1hdWRpby1jYXJkLG5hbWUgPSAic3VuOGktYTMzLWF1ZGlvIjsKKwkJ
+c2ltcGxlLWF1ZGlvLWNhcmQsZm9ybWF0ID0gImkycyI7CisJCXNpbXBsZS1hdWRpby1jYXJkLGZy
+YW1lLW1hc3RlciA9IDwmbGlua19jb2RlYz47CisJCXNpbXBsZS1hdWRpby1jYXJkLGJpdGNsb2Nr
+LW1hc3RlciA9IDwmbGlua19jb2RlYz47CisJCXNpbXBsZS1hdWRpby1jYXJkLG1jbGstZnMgPSA8
+NTEyPjsKKwkJc2ltcGxlLWF1ZGlvLWNhcmQsYXV4LWRldnMgPSA8JmNvZGVjX2FuYWxvZz47CisJ
+CXNpbXBsZS1hdWRpby1jYXJkLHJvdXRpbmcgPQorCQkJCSJMZWZ0IERBQyIsICJEaWdpdGFsIExl
+ZnQgREFDIiwKKwkJCQkiUmlnaHQgREFDIiwgIkRpZ2l0YWwgUmlnaHQgREFDIjsKKworCQlzaW1w
+bGUtYXVkaW8tY2FyZCxjcHUgeworCQkJc291bmQtZGFpID0gPCZkYWk+OworCQl9OworCisJCWxp
+bmtfY29kZWM6IHNpbXBsZS1hdWRpby1jYXJkLGNvZGVjIHsKKwkJCXNvdW5kLWRhaSA9IDwmY29k
+ZWM+OworCQl9OworCisJc29jQDAxYzAwMDAwIHsKKwkJWy4uLl0KKworCQlhdWRpby1jb2RlY0Ax
+YzIyZTAwIHsKKwkJCSNzb3VuZC1kYWktY2VsbHMgPSA8MD47CisJCQljb21wYXRpYmxlID0gImFs
+bHdpbm5lcixzdW44aS1hMzMtY29kZWMiOworCQkJcmVnID0gPDB4MDFjMjJlMDAgMHg0MDA+Owor
+CQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDI5IElSUV9UWVBFX0xFVkVMX0hJR0g+OworCQkJY2xv
+Y2tzID0gPCZjY3UgQ0xLX0JVU19DT0RFQz4sIDwmY2N1IENMS19BQ19ESUc+OworCQkJY2xvY2st
+bmFtZXMgPSAiYnVzIiwgIm1vZCI7CisJCX07CisJfTsKKwotLSAKMi4xMS4wCgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
+bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
+ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
