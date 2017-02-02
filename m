@@ -1,149 +1,126 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: [PATCH] ASoC:nau8825: automatic LRCK and BCLK divide
-	in master mode
-Date: Thu, 2 Feb 2017 15:36:50 +0800
-Message-ID: <1486021010-32340-1-git-send-email-KCHSU0@nuvoton.com>
+From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?=
+        <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: [PATCH v4 0/8] Add sun8i A33 audio driver
+Date: Thu,  2 Feb 2017 10:24:14 +0100
+Message-ID: <20170202092422.5588-1-mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id E266026750E
- for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2017 08:37:04 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Provide the automatic configurable LRC and BCLK divide. The bit clock rate
-can be chosen by userspace. The driver will make configurations of LRCK
-and BCLK automatically when playback or capture in master mode.
+Hello everyone,
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
----
- sound/soc/codecs/nau8825.c | 56 ++++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/nau8825.h |  1 +
- 2 files changed, 57 insertions(+)
+This a V4 of my Allwinner A33 (sun8i) audio codec driver.
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index 4576f98..502443b 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -1007,6 +1007,42 @@ static int nau8825_biq_coeff_put(struct snd_kcontrol *kcontrol,
-        return 0;
- }
+Tested on "for-next" branch of ASoC repository with some patches
+to apply before this series:
+https://patchwork.kernel.org/patch/9447631/
+https://patchwork.kernel.org/patch/9423999/
+and one of my previous patch (from V2):
+https://patchwork.kernel.org/patch/9521121/
 
-+int nau8825_bclk_rate_get_enum(struct snd_kcontrol *kcontrol,
-+       struct snd_ctl_elem_value *ucontrol)
-+{
-+       struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+       struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+       struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
-+       unsigned int item;
-+
-+       item = snd_soc_enum_val_to_item(e, nau8825->bclk_rate);
-+       ucontrol->value.enumerated.item[0] = item;
-+
-+       return 0;
-+}
-+
-+int nau8825_bclk_rate_put_enum(struct snd_kcontrol *kcontrol,
-+       struct snd_ctl_elem_value *ucontrol)
-+{
-+       struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+       struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+       struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
-+       unsigned int *item = ucontrol->value.enumerated.item;
-+       unsigned int val;
-+       bool change = false;
-+
-+       if (item[0] >= e->items)
-+               return -EINVAL;
-+
-+       val = snd_soc_enum_item_to_val(e, item[0]);
-+       if (val != nau8825->bclk_rate) {
-+               nau8825->bclk_rate = val;
-+               change = true;
-+       }
-+
-+       return change;
-+}
-+
- static const char * const nau8825_biq_path[] = {
-        "ADC", "DAC"
- };
-@@ -1031,6 +1067,13 @@ static const struct soc_enum nau8825_dac_oversampl_enum =
-        SOC_ENUM_SINGLE(NAU8825_REG_DAC_CTRL1, NAU8825_DAC_OVERSAMPLE_SFT,
-                ARRAY_SIZE(nau8825_dac_oversampl), nau8825_dac_oversampl);
+Changes since V3:
+	- Rebased my patches under Mark Brown's repo on "for-next" branch.
+	- Removed the .owner from sun8i-codec driver, reported by KBuild robot
+	- Updated patch 05/08 according to Rob Herring's review.
 
-+static const char * const nau8825_bclk_rate[] = {
-+       "128fs", "64fs", "32fs" };
-+
-+static const struct soc_enum nau8825_bclk_rate_enum =
-+       SOC_ENUM_SINGLE(SND_SOC_NOPM, 0,
-+               ARRAY_SIZE(nau8825_bclk_rate), nau8825_bclk_rate);
-+
- static const DECLARE_TLV_DB_MINMAX_MUTE(adc_vol_tlv, -10300, 2400);
- static const DECLARE_TLV_DB_MINMAX_MUTE(sidetone_vol_tlv, -4200, 0);
- static const DECLARE_TLV_DB_MINMAX(dac_vol_tlv, -5400, 0);
-@@ -1055,6 +1098,9 @@ static const struct snd_kcontrol_new nau8825_controls[] = {
-        SOC_ENUM("BIQ Path Select", nau8825_biq_path_enum),
-        SND_SOC_BYTES_EXT("BIQ Coefficients", 20,
-                  nau8825_biq_coeff_get, nau8825_biq_coeff_put),
-+
-+       SOC_ENUM_EXT("BCLK rate", nau8825_bclk_rate_enum,
-+               nau8825_bclk_rate_get_enum, nau8825_bclk_rate_put_enum),
- };
+Changes since V2:
+	- Removed patches from v2 already merged:
+	commit ebad64d193779 ("ASoC: sun4i-i2s: Increase DMA max burst to 8")
+	commit 603a0c8af9cb2 ("clk: sunxi-ng: a33: Add CLK_SET_RATE_PARENT to ac-dig")
+	- Removed "reset-names" from sun4i-i2s driver
+	- Fixed the build warning from sun8i-codec
+	- Fixed some various topics such as subject line
+	for dt bindings patch, renamed the simple-card
+	and disabled the simple-card.
 
- /* DAC Mux 0x33[9] and 0x34[9] */
-@@ -1343,6 +1389,14 @@ static int nau8825_set_dai_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
-        regmap_update_bits(nau8825->regmap, NAU8825_REG_I2S_PCM_CTRL2,
-                NAU8825_I2S_MS_MASK, ctrl2_val);
+Changes since V1:
+	- Remove the analog codec driver as a better version has been
+	committed by Chen-Yu Tsai and is already merged.
+	- Remove the audio-card as simple-card can be used
+	- The DMA maxburst is set to 8 in the sun4i-i2s instead of
+	adding the maxburst of 4 in Sun6i dma engine.
+	- Create a new compatible for sun4i-i2s to handle the reset
+	line.
+	- Fix various problems in sun8i-codec driver according to V1's
+	reviews
+	- Add the pm_runtime hooks in sun8i-codec driver to prepare/
+	unprepare clocks.
+	- Update the DTS according to Chen-Yu's analog codec driver.
+	- Rename sun8i-codec's clocks to "bus" and "mod"
+	- The first "delay" issue from V1 is fixed by using a delay
+	when enabling the headphone amplifier to let the amplifier
+	being up.
 
-+       if (ctrl2_val & NAU8825_I2S_MS_MASTER) {
-+               regmap_update_bits(nau8825->regmap, NAU8825_REG_I2S_PCM_CTRL2,
-+                       NAU8825_I2S_BLK_DIV_MASK, nau8825->bclk_rate);
-+               regmap_update_bits(nau8825->regmap, NAU8825_REG_I2S_PCM_CTRL2,
-+                       NAU8825_I2S_LRC_DIV_MASK,
-+                       (nau8825->bclk_rate + 1) << NAU8825_I2S_LRC_DIV_SFT);
-+       }
-+
-        /* Release the semaphone. */
-        nau8825_sema_release(nau8825);
+Patches 1 and 2 add a new compatible "allwinner,sun6i-a31-i2s"
+to handle the reset line for sun4i-i2s driver. It uses a quirk to
+use a version with or without reset lines.
 
-@@ -2497,6 +2551,8 @@ static int nau8825_i2c_probe(struct i2c_client *i2c,
-                return PTR_ERR(nau8825->regmap);
-        nau8825->dev = dev;
-        nau8825->irq = i2c->irq;
-+       /* assign 32fs as default bit clock rate */
-+       nau8825->bclk_rate = 2;
-        /* Initiate parameters, semaphone and work queue which are needed in
-         * cross talk suppression measurment function.
-         */
-diff --git a/sound/soc/codecs/nau8825.h b/sound/soc/codecs/nau8825.h
-index 514fd13..5f2ed8d 100644
---- a/sound/soc/codecs/nau8825.h
-+++ b/sound/soc/codecs/nau8825.h
-@@ -476,6 +476,7 @@ struct nau8825 {
-        int xtalk_event_mask;
-        bool xtalk_protect;
-        int imp_rms[NAU8825_XTALK_IMM];
-+       int bclk_rate;
- };
+Patch 3 adds the sun8i codec driver which represents the digital part
+of the A33 codec. It supports only playback features.
 
- int nau8825_enable_jack_detect(struct snd_soc_codec *codec,
+Path 4 fixes the previous issue of a "first time delay" in V1 (see cover
+letter). Do not hesitate if you have comments on this patch.
+
+Patches 5 adds the dt-bindings documentation for new audio driver
+added in this serie (sun8i-codec).
+
+Patch 6 adds the cpu DAI, codec and audio nodes to sun8i-a33 device tree.
+
+Patches 7 and 8 enable the audio on Parrot and Sinlinx's boards.
+
+The DAI for this A33 codec is the same than for A20: "sun4i-i2s".
+Currently, the sun8i-a33 codec driver handles only the playback feature.
+The other ones (such as capture) and all other interfaces except
+headphone are not supported. I will send a patch to handle the
+capture with microphones in next few weeks.
+
+Examples of amixer commands:
+	amixer set 'Headphone' 75%
+	amixer set 'Headphone' on
+	amixer set 'DAC' on
+	amixer set 'Right DAC Mixer RSlot 0' on
+	amixer set 'Left DAC Mixer LSlot 0' on
+
+It was tested on Parrot and Sinlinx boards.
+
+Let me know if you have any comments on this serie.
+
+Thank you in advance,
+Best regards,
+
+Mylène Josserand (8):
+  ASoC: sun4i-i2s: Update binding documentation to include A31
+  ASoC: sun4i-i2s: Add quirks to handle a31 compatible
+  ASoC: Add sun8i digital audio codec
+  ASoC: sun8i-codec-analog: Add amplifier event to fix first delay
+  ASoC: codecs: Add sun8i-a33 binding documentation
+  ARM: dts: sun8i: Add audio codec, dai and card for A33
+  ARM: dts: sun8i: parrot: Enable audio nodes
+  ARM: dts: sun8i: sinlinx: Enable audio nodes
+
+ .../devicetree/bindings/sound/sun4i-i2s.txt        |   5 +
+ .../devicetree/bindings/sound/sun8i-a33-codec.txt  |  63 +++
+ arch/arm/boot/dts/sun8i-a33-sinlinx-sina33.dts     |  12 +
+ arch/arm/boot/dts/sun8i-a33.dtsi                   |  45 ++
+ arch/arm/boot/dts/sun8i-r16-parrot.dts             |  12 +
+ sound/soc/sunxi/Kconfig                            |  11 +
+ sound/soc/sunxi/Makefile                           |   1 +
+ sound/soc/sunxi/sun4i-i2s.c                        |  57 ++-
+ sound/soc/sunxi/sun8i-codec-analog.c               |  30 +-
+ sound/soc/sunxi/sun8i-codec.c                      | 498 +++++++++++++++++++++
+ 10 files changed, 730 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt
+ create mode 100644 sound/soc/sunxi/sun8i-codec.c
+
+-- 
+2.11.0
+
 --
-2.6.4
-
-
-
-===========================================================================================
-The privileged confidential information contained in this email is intended for use only by the addressees as indicated by the original sender of this email. If you are not the addressee indicated in this email or are not responsible for delivery of the email to such a person, please kindly reply to the sender indicating this fact and delete all copies of it from your computer and network server immediately. Your cooperation is highly appreciated. It is advised that any unauthorized use of confidential information of Nuvoton is strictly prohibited; and any information in this email irrelevant to the official business of Nuvoton shall be deemed as neither given nor endorsed by Nuvoton.
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
