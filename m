@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: fix error handling for gpio
-	detection" to the asoc tree
-Date: Thu, 02 Feb 2017 11:06:42 +0000
-Message-ID: <E1cZFDu-0005gB-NR@debutante>
-References: <1485973625-20553-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: cht-bsw-rt5645: fix unused variable
+	compiler warning" to the asoc tree
+Date: Thu, 02 Feb 2017 11:06:39 +0000
+Message-ID: <E1cZFDr-0005fD-Nt@debutante>
+References: <1485973625-20553-3-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 85E00267557
+ by alsa0.perex.cz (Postfix) with ESMTP id 85D1126742C
  for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2017 12:06:53 +0100 (CET)
-In-Reply-To: <1485973625-20553-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <1485973625-20553-3-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: fix error handling for gpio detection
+   ASoC: cht-bsw-rt5645: fix unused variable compiler warning
 
 has been applied to the asoc tree at
 
@@ -53,41 +53,30 @@ to this mail.
 Thanks,
 Mark
 
->From cec55827dde1e87f6b91e34f205744d70a7225bc Mon Sep 17 00:00:00 2001
+>From 77e546b7ba3e39e8a739cb18489582044222b7ba Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Wed, 1 Feb 2017 12:27:04 -0600
-Subject: [PATCH] ASoC: rt5645: fix error handling for gpio detection
+Date: Wed, 1 Feb 2017 12:27:05 -0600
+Subject: [PATCH] ASoC: cht-bsw-rt5645: fix unused variable compiler warning
 
-Optional gpio handling should not cause an error status and prevent
-probing if it's missing.  Remove error return for -ENOENT case and
-move error message to dev_info
+Missed unused variable in previous changes, oops.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/cht_bsw_rt5645.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 37fb2b6c34a5..e09fa19f44c0 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3658,8 +3658,14 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 						       GPIOD_IN);
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5645.c b/sound/soc/intel/boards/cht_bsw_rt5645.c
+index b972b6526176..5bcde01d15e6 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5645.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5645.c
+@@ -262,7 +262,6 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ 	int jack_type;
+ 	struct snd_soc_codec *codec = runtime->codec;
+ 	struct snd_soc_card *card = runtime->card;
+-	struct snd_soc_dai *codec_dai = runtime->codec_dai;
+ 	struct cht_mc_private *ctx = snd_soc_card_get_drvdata(runtime->card);
  
- 	if (IS_ERR(rt5645->gpiod_hp_det)) {
--		dev_err(&i2c->dev, "failed to initialize gpiod\n");
--		return PTR_ERR(rt5645->gpiod_hp_det);
-+		dev_info(&i2c->dev, "failed to initialize gpiod\n");
-+		ret = PTR_ERR(rt5645->gpiod_hp_det);
-+		/*
-+		 * Continue if optional gpiod is missing, bail for all other
-+		 * errors, including -EPROBE_DEFER
-+		 */
-+		if (ret != -ENOENT)
-+			return ret;
- 	}
- 
- 	for (i = 0; i < ARRAY_SIZE(rt5645->supplies); i++)
+ 	if ((cht_rt5645_quirk & CHT_RT5645_SSP2_AIF2) ||
 -- 
 2.11.0
