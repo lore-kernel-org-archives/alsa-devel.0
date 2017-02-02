@@ -1,14 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 41/53] ALSA: x86: Drop redundant had_stream_pvt
-Date: Thu,  2 Feb 2017 18:02:55 +0100
-Message-ID: <20170202170307.24484-43-tiwai@suse.de>
+Subject: [PATCH 46/53] ALSA: x86: Use the standard ELD bytes
+	definitions
+Date: Thu,  2 Feb 2017 18:03:00 +0100
+Message-ID: <20170202170307.24484-48-tiwai@suse.de>
 References: <20170202170307.24484-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id F20FB267593
+ by alsa0.perex.cz (Postfix) with ESMTP id F2E19267594
  for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2017 18:03:17 +0100 (CET)
 In-Reply-To: <20170202170307.24484-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,191 +25,225 @@ To: alsa-devel@alsa-project.org
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jerome Anand <jerome.anand@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The had_stream_pvt struct assigned to PCM runtime private data tracks
-merely the stream running status, and the very same information is
-carried by had_stream->stream_type.  Kill it.
+We have some constants defined in drm/drm_edid.h, and clean up our own
+definitions.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/x86/intel_hdmi_audio.c     | 46 ++++------------------------------------
- sound/x86/intel_hdmi_audio.h     |  6 ------
- sound/x86/intel_hdmi_lpe_audio.h | 15 -------------
- 3 files changed, 4 insertions(+), 63 deletions(-)
+ sound/x86/intel_hdmi_audio.c     |  14 ++---
+ sound/x86/intel_hdmi_audio.h     |   3 +-
+ sound/x86/intel_hdmi_lpe_audio.h | 119 ---------------------------------------
+ 3 files changed, 9 insertions(+), 127 deletions(-)
 
 diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
-index 621be602addd..88e9a91f28a0 100644
+index 985b7e8d4eae..496d3e92b2a8 100644
 --- a/sound/x86/intel_hdmi_audio.c
 +++ b/sound/x86/intel_hdmi_audio.c
-@@ -953,7 +953,6 @@ static int snd_intelhad_open(struct snd_pcm_substream *substream)
- {
- 	struct snd_intelhad *intelhaddata;
- 	struct snd_pcm_runtime *runtime;
--	struct had_stream_pvt *stream;
- 	struct had_stream_data *had_stream;
- 	int retval;
+@@ -451,7 +451,7 @@ static int snd_intelhad_channel_allocation(struct snd_intelhad *intelhaddata,
+ 	 */
  
-@@ -968,31 +967,16 @@ static int snd_intelhad_open(struct snd_pcm_substream *substream)
- 		dev_dbg(intelhaddata->dev, "%s: HDMI cable plugged-out\n",
- 			__func__);
- 		retval = -ENODEV;
--		goto exit_put_handle;
--	}
--
--	/* Check, if device already in use */
--	if (runtime->private_data) {
--		dev_dbg(intelhaddata->dev, "Device already in use\n");
--		retval = -EBUSY;
--		goto exit_put_handle;
-+		goto error;
+ 	for (i = 0; i < ARRAY_SIZE(eld_speaker_allocation_bits); i++) {
+-		if (intelhaddata->eld.speaker_allocation_block & (1 << i))
++		if (intelhaddata->eld[DRM_ELD_SPEAKER] & (1 << i))
+ 			spk_mask |= eld_speaker_allocation_bits[i];
  	}
  
- 	/* set the runtime hw parameter with local snd_pcm_hardware struct */
- 	runtime->hw = snd_intel_hadstream;
- 
--	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
--	if (!stream) {
--		retval = -ENOMEM;
--		goto exit_put_handle;
--	}
--	stream->stream_status = STREAM_INIT;
--	runtime->private_data = stream;
--
- 	retval = snd_pcm_hw_constraint_integer(runtime,
- 			 SNDRV_PCM_HW_PARAM_PERIODS);
- 	if (retval < 0)
--		goto exit_err;
-+		goto error;
- 
- 	/* Make sure, that the period size is always aligned
- 	 * 64byte boundary
-@@ -1002,15 +986,12 @@ static int snd_intelhad_open(struct snd_pcm_substream *substream)
- 	if (retval < 0) {
- 		dev_dbg(intelhaddata->dev, "%s:step_size=64 failed,err=%d\n",
- 			__func__, retval);
--		goto exit_err;
-+		goto error;
- 	}
- 
- 	return retval;
--exit_err:
--	kfree(stream);
--exit_put_handle:
-+ error:
- 	pm_runtime_put(intelhaddata->dev);
--	runtime->private_data = NULL;
- 	return retval;
- }
- 
-@@ -1020,16 +1001,8 @@ static int snd_intelhad_open(struct snd_pcm_substream *substream)
-  */
- static void had_period_elapsed(struct snd_pcm_substream *substream)
- {
--	struct had_stream_pvt *stream;
--
- 	if (!substream || !substream->runtime)
+@@ -496,8 +496,8 @@ static void had_build_channel_allocation_map(struct snd_intelhad *intelhaddata)
  		return;
--	stream = substream->runtime->private_data;
--	if (!stream)
--		return;
--
--	if (stream->stream_status != STREAM_RUNNING)
--		return;
- 	snd_pcm_period_elapsed(substream);
- }
- 
-@@ -1042,13 +1015,8 @@ static void had_period_elapsed(struct snd_pcm_substream *substream)
- static int snd_intelhad_close(struct snd_pcm_substream *substream)
- {
- 	struct snd_intelhad *intelhaddata;
--	struct snd_pcm_runtime *runtime;
- 
- 	intelhaddata = snd_pcm_substream_chip(substream);
--	runtime = substream->runtime;
--
--	if (WARN_ON(!runtime->private_data))
--		return 0;
- 
- 	intelhaddata->stream_info.buffer_rendered = 0;
- 	intelhaddata->stream_info.buffer_ptr = 0;
-@@ -1062,8 +1030,6 @@ static int snd_intelhad_close(struct snd_pcm_substream *substream)
- 			"%s @ %d:DEBUG PLUG/UNPLUG : HAD_DRV_CONNECTED\n",
- 			__func__, __LINE__);
  	}
--	kfree(runtime->private_data);
--	runtime->private_data = NULL;
- 	pm_runtime_put(intelhaddata->dev);
- 	return 0;
- }
-@@ -1142,11 +1108,9 @@ static int snd_intelhad_pcm_trigger(struct snd_pcm_substream *substream,
- {
- 	int retval = 0;
- 	struct snd_intelhad *intelhaddata;
--	struct had_stream_pvt *stream;
- 	struct had_stream_data *had_stream;
  
- 	intelhaddata = snd_pcm_substream_chip(substream);
--	stream = substream->runtime->private_data;
- 	had_stream = &intelhaddata->stream_data;
+-	dev_dbg(intelhaddata->dev, "eld.speaker_allocation_block = %x\n",
+-			intelhaddata->eld.speaker_allocation_block);
++	dev_dbg(intelhaddata->dev, "eld speaker = %x\n",
++		intelhaddata->eld[DRM_ELD_SPEAKER]);
  
- 	switch (cmd) {
-@@ -1158,7 +1122,6 @@ static int snd_intelhad_pcm_trigger(struct snd_pcm_substream *substream,
- 			retval = -ENODEV;
+ 	/* WA: Fix the max channel supported to 8 */
+ 
+@@ -508,14 +508,14 @@ static void had_build_channel_allocation_map(struct snd_intelhad *intelhaddata)
+ 	 */
+ 
+ 	/* if 0x2F < eld < 0x4F fall back to 0x2f, else fall back to 0x4F */
+-	eld_high = intelhaddata->eld.speaker_allocation_block & eld_high_mask;
++	eld_high = intelhaddata->eld[DRM_ELD_SPEAKER] & eld_high_mask;
+ 	if ((eld_high & (eld_high-1)) && (eld_high > 0x1F)) {
+ 		/* eld_high & (eld_high-1): if more than 1 bit set */
+ 		/* 0x1F: 7 channels */
+ 		for (i = 1; i < 4; i++) {
+ 			high_msb = eld_high & (0x80 >> i);
+ 			if (high_msb) {
+-				intelhaddata->eld.speaker_allocation_block &=
++				intelhaddata->eld[DRM_ELD_SPEAKER] &=
+ 					high_msb | 0xF;
+ 				break;
+ 			}
+@@ -523,7 +523,7 @@ static void had_build_channel_allocation_map(struct snd_intelhad *intelhaddata)
+ 	}
+ 
+ 	for (i = 0; i < ARRAY_SIZE(eld_speaker_allocation_bits); i++) {
+-		if (intelhaddata->eld.speaker_allocation_block & (1 << i))
++		if (intelhaddata->eld[DRM_ELD_SPEAKER] & (1 << i))
+ 			spk_mask |= eld_speaker_allocation_bits[i];
+ 	}
+ 
+@@ -1743,7 +1743,7 @@ static void had_audio_wq(struct work_struct *work)
  			break;
  		}
--		stream->stream_status = STREAM_RUNNING;
  
- 		had_stream->stream_type = HAD_RUNNING_STREAM;
+-		memcpy(&ctx->eld, eld->eld_data, sizeof(ctx->eld));
++		memcpy(ctx->eld, eld->eld_data, sizeof(ctx->eld));
  
-@@ -1182,7 +1145,6 @@ static int snd_intelhad_pcm_trigger(struct snd_pcm_substream *substream,
- 		/* Reset buffer pointers */
- 		snd_intelhad_reset_audio(intelhaddata, 1);
- 		snd_intelhad_reset_audio(intelhaddata, 0);
--		stream->stream_status = STREAM_DROPPED;
- 		snd_intelhad_enable_audio_int(intelhaddata, false);
- 		break;
- 
+ 		ctx->dp_output = pdata->dp_output;
+ 		ctx->tmds_clock_speed = pdata->tmds_clock_speed;
 diff --git a/sound/x86/intel_hdmi_audio.h b/sound/x86/intel_hdmi_audio.h
-index 258396e61829..3bd2bb60f1f1 100644
+index 2804e94a6710..4ccaa8b18566 100644
 --- a/sound/x86/intel_hdmi_audio.h
 +++ b/sound/x86/intel_hdmi_audio.h
-@@ -86,12 +86,6 @@ struct ring_buf_info {
- 	u8	is_valid;
- };
+@@ -37,6 +37,7 @@
+ #include <sound/asoundef.h>
+ #include <sound/control.h>
+ #include <sound/pcm.h>
++#include <drm/drm_edid.h>
+ #include "intel_hdmi_lpe_audio.h"
  
--struct had_stream_pvt {
--	enum had_stream_status		stream_status;
--	int				stream_ops;
--	ssize_t				dbg_cum_bytes;
--};
--
- struct had_stream_data {
- 	enum had_status_stream		stream_type;
- };
+ #define PCM_INDEX		0
+@@ -107,7 +108,7 @@ struct snd_intelhad {
+ 	enum had_drv_status	drv_status;
+ 	struct		ring_buf_info buf_info[HAD_NUM_OF_RING_BUFS];
+ 	struct		pcm_stream_info stream_info;
+-	union otm_hdmi_eld_t	eld;
++	unsigned char	eld[HDMI_MAX_ELD_BYTES];
+ 	bool dp_output;
+ 	enum		intel_had_aud_buf_type curr_buf;
+ 	int		valid_buf_cnt;
 diff --git a/sound/x86/intel_hdmi_lpe_audio.h b/sound/x86/intel_hdmi_lpe_audio.h
-index 1bc961522d0d..483b9feeff30 100644
+index 1e7e6db987c6..f9c184960b34 100644
 --- a/sound/x86/intel_hdmi_lpe_audio.h
 +++ b/sound/x86/intel_hdmi_lpe_audio.h
-@@ -224,21 +224,6 @@ union otm_hdmi_eld_t {
- };
+@@ -104,125 +104,6 @@
+ #define MAX_CNT			0xFF
+ #define HAD_SUSPEND_DELAY	1000
  
- /**
-- * enum had_status - Audio stream states
-- *
-- * @STREAM_INIT: Stream initialized
-- * @STREAM_RUNNING: Stream running
-- * @STREAM_PAUSED: Stream paused
-- * @STREAM_DROPPED: Stream dropped
-- */
--enum had_stream_status {
--	STREAM_INIT = 0,
--	STREAM_RUNNING = 1,
--	STREAM_PAUSED = 2,
--	STREAM_DROPPED = 3
+-#define OTM_HDMI_ELD_SIZE 128
+-
+-union otm_hdmi_eld_t {
+-	unsigned char eld_data[OTM_HDMI_ELD_SIZE];
+-	struct {
+-		/* Byte[0] = ELD Version Number */
+-		union {
+-			unsigned char   byte0;
+-			struct {
+-				unsigned char reserved:3; /* Reserf */
+-				unsigned char eld_ver:5; /* ELD Version Number */
+-				/* 00000b - reserved
+-				 * 00001b - first rev, obsoleted
+-				 * 00010b - version 2, supporting CEA version
+-				 *			861D or below
+-				 * 00011b:11111b - reserved
+-				 * for future
+-				 */
+-			};
+-		};
+-
+-		/* Byte[1] = Vendor Version Field */
+-		union {
+-			unsigned char vendor_version;
+-			struct {
+-				unsigned char reserved1:3;
+-				unsigned char veld_ver:5; /* Version number of the ELD
+-						     * extension. This value is
+-						     * provisioned and unique to
+-						     * each vendor.
+-						     */
+-			};
+-		};
+-
+-		/* Byte[2] = Baseline Length field */
+-		unsigned char baseline_eld_length; /* Length of the Baseline structure
+-					      *	divided by Four.
+-					      */
+-
+-		/* Byte [3] = Reserved for future use */
+-		unsigned char byte3;
+-
+-		/* Starting of the BaseLine EELD structure
+-		 * Byte[4] = Monitor Name Length
+-		 */
+-		union {
+-			unsigned char byte4;
+-			struct {
+-				unsigned char mnl:5;
+-				unsigned char cea_edid_rev_id:3;
+-			};
+-		};
+-
+-		/* Byte[5] = Capabilities */
+-		union {
+-			unsigned char capabilities;
+-			struct {
+-				unsigned char hdcp:1; /* HDCP support */
+-				unsigned char ai_support:1;   /* AI support */
+-				unsigned char connection_type:2; /* Connection type
+-							    * 00 - HDMI
+-							    * 01 - DP
+-							    * 10 -11  Reserved
+-							    * for future
+-							    * connection types
+-							    */
+-				unsigned char sadc:4; /* Indicates number of 3 bytes
+-						 * Short Audio Descriptors.
+-						 */
+-			};
+-		};
+-
+-		/* Byte[6] = Audio Synch Delay */
+-		unsigned char audio_synch_delay; /* Amount of time reported by the
+-					    * sink that the video trails audio
+-					    * in milliseconds.
+-					    */
+-
+-		/* Byte[7] = Speaker Allocation Block */
+-		union {
+-			unsigned char speaker_allocation_block;
+-			struct {
+-				unsigned char flr:1; /*Front Left and Right channels*/
+-				unsigned char lfe:1; /*Low Frequency Effect channel*/
+-				unsigned char fc:1;  /*Center transmission channel*/
+-				unsigned char rlr:1; /*Rear Left and Right channels*/
+-				unsigned char rc:1; /*Rear Center channel*/
+-				unsigned char flrc:1; /*Front left and Right of Center
+-						 *transmission channels
+-						 */
+-				unsigned char rlrc:1; /*Rear left and Right of Center
+-						 *transmission channels
+-						 */
+-				unsigned char reserved3:1; /* Reserved */
+-			};
+-		};
+-
+-		/* Byte[8 - 15] - 8 Byte port identification value */
+-		unsigned char port_id_value[8];
+-
+-		/* Byte[16 - 17] - 2 Byte Manufacturer ID */
+-		unsigned char manufacturer_id[2];
+-
+-		/* Byte[18 - 19] - 2 Byte Product ID */
+-		unsigned char product_id[2];
+-
+-		/* Byte [20-83] - 64 Bytes of BaseLine Data */
+-		unsigned char mn_sand_sads[64]; /* This will include
+-					   * - ASCII string of Monitor name
+-					   * - List of 3 byte SADs
+-					   * - Zero padding
+-					   */
+-
+-		/* Vendor ELD Block should continue here!
+-		 * No Vendor ELD block defined as of now.
+-		 */
+-	} __packed;
 -};
 -
--/**
-  * enum had_status_stream - HAD stream states
-  */
- enum had_status_stream {
+ enum had_drv_status {
+ 	HAD_DRV_CONNECTED,
+ 	HAD_DRV_RUNNING,
 -- 
 2.11.0
