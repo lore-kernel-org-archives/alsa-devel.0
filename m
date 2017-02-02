@@ -1,79 +1,54 @@
-From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?=
-        <mylene.josserand@free-electrons.com>
-Subject: [PATCH v4 4/8] ASoC: sun8i-codec-analog: Add amplifier event to fix first delay
-Date: Thu,  2 Feb 2017 10:24:18 +0100
-Message-ID: <20170202092422.5588-5-mylene.josserand@free-electrons.com>
+From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?= <mylene.josserand@free-electrons.com>
+Subject: [PATCH v4 1/8] ASoC: sun4i-i2s: Update binding documentation to
+ include A31
+Date: Thu,  2 Feb 2017 10:24:15 +0100
+Message-ID: <20170202092422.5588-2-mylene.josserand@free-electrons.com>
 References: <20170202092422.5588-1-mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 In-Reply-To: <20170202092422.5588-1-mylene.josserand@free-electrons.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, maxime.ripard@free-electrons.com, wens@csie.org, perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, thomas.petazzoni@free-electrons.com, mylene.josserand@free-electrons.com, alexandre.belloni@free-electrons.com
+Cc: thomas.petazzoni@free-electrons.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, alexandre.belloni@free-electrons.com, mylene.josserand@free-electrons.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-When playing a sound for the first time, a short delay, where the audio
-file is not played, can be noticed.
-On a second play (right after), the sound is played correctly.
-If we wait a short time (~5 sec which corresponds to the aplay
-timeout), the delay is back.
-
-This patch fixes it by using an event on headphone amplifier.
-It allows to keep the amplifier enable while playing a sound.
-A delay of 700ms allows to wait that the amplifier is powered-up
-before playing the sound.
-
-Signed-off-by: Mylène Josserand <mylene.josserand@free-electrons.com>
-Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
----
- sound/soc/sunxi/sun8i-codec-analog.c | 30 ++++++++++++++++++++++++++++--
- 1 file changed, 28 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/sunxi/sun8i-codec-analog.c b/sound/soc/sunxi/sun8i-codec-analog.c
-index af02290ebe49..72331332b72e 100644
---- a/sound/soc/sunxi/sun8i-codec-analog.c
-+++ b/sound/soc/sunxi/sun8i-codec-analog.c
-@@ -398,11 +398,37 @@ static const struct snd_kcontrol_new sun8i_codec_hp_src[] = {
- 		      sun8i_codec_hp_src_enum),
- };
- 
-+static int sun8i_headphone_amp_event(struct snd_soc_dapm_widget *w,
-+				     struct snd_kcontrol *k, int event)
-+{
-+	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
-+
-+	if (SND_SOC_DAPM_EVENT_ON(event)) {
-+		snd_soc_component_update_bits(component, SUN8I_ADDA_PAEN_HP_CTRL,
-+					      BIT(SUN8I_ADDA_PAEN_HP_CTRL_HPPAEN),
-+					      BIT(SUN8I_ADDA_PAEN_HP_CTRL_HPPAEN));
-+		/*
-+		 * Need a delay to have the amplifier up. 700ms seems the best
-+		 * compromise between the time to let the amplifier up and the
-+		 * time not to feel this delay while playing a sound.
-+		 */
-+		msleep(700);
-+	} else if (SND_SOC_DAPM_EVENT_OFF(event)) {
-+		snd_soc_component_update_bits(component, SUN8I_ADDA_PAEN_HP_CTRL,
-+					      BIT(SUN8I_ADDA_PAEN_HP_CTRL_HPPAEN),
-+					      0x0);
-+	}
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_dapm_widget sun8i_codec_headphone_widgets[] = {
- 	SND_SOC_DAPM_MUX("Headphone Source Playback Route",
- 			 SND_SOC_NOPM, 0, 0, sun8i_codec_hp_src),
--	SND_SOC_DAPM_OUT_DRV("Headphone Amp", SUN8I_ADDA_PAEN_HP_CTRL,
--			     SUN8I_ADDA_PAEN_HP_CTRL_HPPAEN, 0, NULL, 0),
-+	SND_SOC_DAPM_OUT_DRV_E("Headphone Amp", SUN8I_ADDA_PAEN_HP_CTRL,
-+			       SUN8I_ADDA_PAEN_HP_CTRL_HPPAEN, 0, NULL, 0,
-+			       sun8i_headphone_amp_event,
-+			       SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD),
- 	SND_SOC_DAPM_SUPPLY("HPCOM Protection", SUN8I_ADDA_PAEN_HP_CTRL,
- 			    SUN8I_ADDA_PAEN_HP_CTRL_COMPTEN, 0, NULL, 0),
- 	SND_SOC_DAPM_REG(snd_soc_dapm_supply, "HPCOM", SUN8I_ADDA_PAEN_HP_CTRL,
--- 
-2.11.0
+QWRkIGEgbmV3IGNvbXBhdGlibGUgZm9yIHN1bjRpLWkycyBkcml2ZXIgdG8gaGFuZGxlIHNvbWUK
+U29DcyB0aGF0IGhhdmUgYSByZXNldCBsaW5lIHRoYXQgbXVzdCBiZSBhc3NlcnRlZC9kZWFzc2Vy
+dGVkLgoKVGhpcyBuZXcgY29tcGF0aWJsZSwgImFsbHdpbm5lcixzdW42aS1hMzEtaTJzIiwgcmVx
+dWlyZXMgdGhlCnByb3BlcnR5ICJyZXNldHMiIHdoaWNoIHNob3VsZCBiZSBhIHBoYW5kbGUgdG8g
+dGhlIHJlc2V0IGxpbmUuCkV4Y2VwdCB0aGVzZSBkaWZmZXJlbmNlcywgdGhlIGNvbXBhdGlibGUg
+aXMgaWRlbnRpY2FsIHRvIHByZXZpb3VzIG9uZQp3aGljaCB3aWxsIG5vdCBoYW5kbGUgYSByZXNl
+dCBsaW5lLgoKU2lnbmVkLW9mZi1ieTogTXlsw6huZSBKb3NzZXJhbmQgPG15bGVuZS5qb3NzZXJh
+bmRAZnJlZS1lbGVjdHJvbnMuY29tPgpBY2tlZC1ieTogTWF4aW1lIFJpcGFyZCA8bWF4aW1lLnJp
+cGFyZEBmcmVlLWVsZWN0cm9ucy5jb20+CkFja2VkLWJ5OiBSb2IgSGVycmluZyA8cm9iaEBrZXJu
+ZWwub3JnPgotLS0KIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9zdW40
+aS1pMnMudHh0IHwgNSArKysrKwogMSBmaWxlIGNoYW5nZWQsIDUgaW5zZXJ0aW9ucygrKQoKZGlm
+ZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9zdW40aS1p
+MnMudHh0IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3N1bjRpLWky
+cy50eHQKaW5kZXggN2I1MjZlYzY0OTkxLi5mNGFkYzU4ZjgyYmEgMTAwNjQ0Ci0tLSBhL0RvY3Vt
+ZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9zdW40aS1pMnMudHh0CisrKyBiL0Rv
+Y3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9zdW40aS1pMnMudHh0CkBAIC03
+LDYgKzcsNyBAQCBSZXF1aXJlZCBwcm9wZXJ0aWVzOgogCiAtIGNvbXBhdGlibGU6IHNob3VsZCBi
+ZSBvbmUgb2YgdGhlIGZvbGxvd2luZ3MKICAgIC0gImFsbHdpbm5lcixzdW40aS1hMTAtaTJzIgor
+ICAgLSAiYWxsd2lubmVyLHN1bjZpLWEzMS1pMnMiCiAtIHJlZzogcGh5c2ljYWwgYmFzZSBhZGRy
+ZXNzIG9mIHRoZSBjb250cm9sbGVyIGFuZCBsZW5ndGggb2YgbWVtb3J5IG1hcHBlZAogICByZWdp
+b24uCiAtIGludGVycnVwdHM6IHNob3VsZCBjb250YWluIHRoZSBJMlMgaW50ZXJydXB0LgpAQCAt
+MTksNiArMjAsMTAgQEAgUmVxdWlyZWQgcHJvcGVydGllczoKICAgIC0gIm1vZCIgOiBtb2R1bGUg
+Y2xvY2sgZm9yIHRoZSBJMlMgY29udHJvbGxlcgogLSAjc291bmQtZGFpLWNlbGxzIDogTXVzdCBi
+ZSBlcXVhbCB0byAwCiAKK1JlcXVpcmVkIHByb3BlcnRpZXMgZm9yIHRoZSBmb2xsb3dpbmcgY29t
+cGF0aWJsZXM6CisJLSAiYWxsd2lubmVyLHN1bjZpLWEzMS1pMnMiCistIHJlc2V0czogcGhhbmRs
+ZSB0byB0aGUgcmVzZXQgbGluZSBmb3IgdGhpcyBjb2RlYworCiBFeGFtcGxlOgogCiBpMnMwOiBp
+MnNAMDFjMjI0MDAgewotLSAKMi4xMS4wCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KbGludXgtYXJtLWtlcm5lbCBtYWlsaW5nIGxpc3QKbGludXgtYXJt
+LWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21h
+aWxtYW4vbGlzdGluZm8vbGludXgtYXJtLWtlcm5lbAo=
