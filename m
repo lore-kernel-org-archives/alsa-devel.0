@@ -1,49 +1,79 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Subject: Re: [PATCH 2/7] drm/i915: add DisplayPort amp unmute
- for LPE audio mode
-Date: Thu, 2 Feb 2017 12:06:05 +0200
-Message-ID: <20170202100605.GG31595@intel.com>
-References: <20170131213649.13689-1-tiwai@suse.de>
- <20170131213649.13689-3-tiwai@suse.de>
- <s5ho9ykap9x.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] drm/i915: Enable VLV audio chicken bit for LPE
+	audio
+Date: Thu,  2 Feb 2017 11:12:53 +0100
+Message-ID: <20170202101253.11093-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <s5ho9ykap9x.wl-tiwai@suse.de>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, rakesh.a.ughreja@intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4E103266E00
+ for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2017 11:12:57 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, ntel-gfx@lists.freedesktop.org
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jani Nikula <jani.nikula@linux.intel.com>, rakesh.a.ughreja@intel.com, Jerome Anand <jerome.anand@intel.com>, Daniel Vetter <daniel@ffwll.ch>, =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBGZWIgMDIsIDIwMTcgYXQgMTA6NTc6MzBBTSArMDEwMCwgVGFrYXNoaSBJd2FpIHdy
-b3RlOgo+IE9uIFR1ZSwgMzEgSmFuIDIwMTcgMjI6MzY6NDQgKzAxMDAsCj4gVGFrYXNoaSBJd2Fp
-IHdyb3RlOgo+ID4gCj4gPiBGcm9tOiBQaWVycmUtTG91aXMgQm9zc2FydCA8cGllcnJlLWxvdWlz
-LmJvc3NhcnRAbGludXguaW50ZWwuY29tPgo+ID4gCj4gPiBFbmFibGUgdW5tdXRlL211dGUgYW1w
-IG5vdGlmaWNhdGlvbi4gVGhpcyBkb2Vzbid0IHNlZW0gdG8gYWZmZWN0Cj4gPiBIRE1JIHN1cHBv
-cnQgc28gdGhpcyBpcyBkb25lIHVuY29uZGl0aW9uYWxseS4KPiA+IAo+ID4gQW4gZWFybGllciB2
-ZXJzaW9uIG9mIHRoaXMgcGF0Y2ggc2V0IGEgY2hpY2tlbiBiaXQgYXQgYWRkcmVzcyAweDYyRjM4
-Cj4gPiBwcmlvciB0byB0aGUgbXV0ZS91bm11dGUgYnV0IHRoaXMgcmVnaXN0ZXIgZG9lc24ndCBz
-ZWVtIHRvIGRvIGFueXRoaW5nCj4gPiBzbyB0aGlzIHBoYXNlIHdhcyByZW1vdmVkLgo+IAo+IFNv
-cnJ5LCB0aGlzIHNlZW1zIGxpa2UgYSB3cm9uZyByZXN1bHQuICBJdCB3b3JrZWQgeWVzdGVyZGF5
-LCBidXQgd2hlbgo+IEkgcmV0ZXN0ZWQgdGhlIGxhdGVzdCBjb2RlIHRvZGF5LCBpdCBkaWRuJ3Qg
-d29yayBhbnkgbG9uZ2VyLgo+IFRoZW4sIGFmdGVyIHNldHRpbmcgdGhlIGNoaWNrZW4gYml0LCBp
-dCBzdGFydHMgd29ya2luZyBhZ2Fpbi4KPiAKPiBCdXQgbm93IEkgY2FuJ3QgbWFrZSBpdCBicm9r
-ZW4gYWdhaW4uICBUdXJuIG9mZiB0aGUgbW9uaXRvciwgdHVybiBvZmYKPiB0aGUgbWFjaGluZSwg
-RFBNUyBvZmYsIHN1c3BlbmQvcmVzdW1lLi4uICBBbGwgc3RpbGwgd29ya3Mgd2l0aG91dAo+IGNo
-aWNrZW4gYml0IHNldC4KPiAKPiBBbHNvLCB0aGUgY2hpY2tlbiBiaXQgb2YgdGhlIHJlZ2lzdGVy
-IDB4NjJmMzggY291bGRuJ3QgYmUgcmVhZCBiYWNrLgo+IFRoZSByZWdpc3RlciBhbHdheXMgcmV0
-dXJucyB6ZXJvIHdoZW4gcmVhZC4KClRoZSBkb2NzIGRvIHNheSBpdCdzIHdyaXRlLW9ubHkgYWN0
-dWFsbHkuCgotLSAKVmlsbGUgU3lyasOkbMOkCkludGVsIE9UQwpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVs
-LWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
+The audio chicken bit (register offset 0x62f38) seems required to make
+DP audio working on some machines.  At least, on Dell Wyse 3040, I
+failed to get the audio unless this bit is set once.
+
+Strangely, the bit seems necessary only once, and it persists after
+that, even some power-off cycles.  The register is supposedly
+write-only, so it's no evidence whether the bit keeps effect
+persistently.  But, judging from the experiment, it looks enough to
+set it up once at the device initialization.
+
+The patch is basically a cut from the original patch by Pierre-Louis
+Bossart.
+
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ drivers/gpu/drm/i915/i915_reg.h        | 3 +++
+ drivers/gpu/drm/i915/intel_lpe_audio.c | 7 +++++++
+ 2 files changed, 10 insertions(+)
+
+diff --git a/drivers/gpu/drm/i915/i915_reg.h b/drivers/gpu/drm/i915/i915_reg.h
+index 4e24ba0cdbe8..4f15a3dc6d98 100644
+--- a/drivers/gpu/drm/i915/i915_reg.h
++++ b/drivers/gpu/drm/i915/i915_reg.h
+@@ -2062,6 +2062,9 @@ enum skl_disp_power_wells {
+ #define I915_HDMI_LPE_AUDIO_SIZE	0x1000
+ 
+ /* DisplayPort Audio w/ LPE */
++#define VLV_AUD_CHICKEN_BIT_REG		_MMIO(VLV_DISPLAY_BASE + 0x62F38)
++#define VLV_CHICKEN_BIT_DBG_ENABLE	(1 << 0)
++
+ #define _VLV_AUD_PORT_EN_B_DBG		(VLV_DISPLAY_BASE + 0x62F20)
+ #define _VLV_AUD_PORT_EN_C_DBG		(VLV_DISPLAY_BASE + 0x62F30)
+ #define _VLV_AUD_PORT_EN_D_DBG		(VLV_DISPLAY_BASE + 0x62F34)
+diff --git a/drivers/gpu/drm/i915/intel_lpe_audio.c b/drivers/gpu/drm/i915/intel_lpe_audio.c
+index d3ffe0012692..3ba2799e93bd 100644
+--- a/drivers/gpu/drm/i915/intel_lpe_audio.c
++++ b/drivers/gpu/drm/i915/intel_lpe_audio.c
+@@ -248,6 +248,13 @@ static int lpe_audio_setup(struct drm_i915_private *dev_priv)
+ 		goto err_free_irq;
+ 	}
+ 
++	/* enable chicken bit; at least this is required for Dell Wyse 3040
++	 * with DP outputs (but only sometimes by some reason!)
++	 */
++	I915_WRITE(VLV_AUD_CHICKEN_BIT_REG,
++		   I915_READ(VLV_AUD_CHICKEN_BIT_REG) |
++		   VLV_CHICKEN_BIT_DBG_ENABLE);
++
+ 	return 0;
+ err_free_irq:
+ 	irq_free_desc(dev_priv->lpe_audio.irq);
+-- 
+2.11.0
