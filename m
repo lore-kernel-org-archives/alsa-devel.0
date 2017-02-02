@@ -1,14 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 53/53] ALSA: x86: Rename drv_status to connected
-Date: Thu,  2 Feb 2017 18:03:07 +0100
-Message-ID: <20170202170307.24484-55-tiwai@suse.de>
+Subject: [PATCH 47/53] ALSA: x86: Reduce redundant register
+	field names
+Date: Thu,  2 Feb 2017 18:03:01 +0100
+Message-ID: <20170202170307.24484-49-tiwai@suse.de>
 References: <20170202170307.24484-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 31B362675AF
+ by alsa0.perex.cz (Postfix) with ESMTP id 324E32675B1
  for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2017 18:03:19 +0100 (CET)
 In-Reply-To: <20170202170307.24484-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,240 +25,518 @@ To: alsa-devel@alsa-project.org
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jerome Anand <jerome.anand@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-After the rewrite of the runtime PM code, we have only two driver
-status: CONNECTED and DISCONNECTED.  So it's clearer to use a boolean
-flag, and name it easier one, "connected".
+Currently each register definition contains the own prefix in the
+union struct itself; for example, union aud_ch_status_0 has
+status_0_regx and status_0_regval fields.  These are simply
+superfluous, since usually the type of the variable is seen in its
+declaration or in its name.
+
+In this patch, we cut off these prefixes.  Now all register
+definitions have regx and regval fields consistently, instead.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/x86/intel_hdmi_audio.c     | 40 ++++++++++++++++++++--------------------
- sound/x86/intel_hdmi_audio.h     |  4 ++--
- sound/x86/intel_hdmi_lpe_audio.h |  8 --------
- 3 files changed, 22 insertions(+), 30 deletions(-)
+ sound/x86/intel_hdmi_audio.c     | 102 ++++++++++++-------------
+ sound/x86/intel_hdmi_audio.h     |   1 -
+ sound/x86/intel_hdmi_lpe_audio.h | 156 ++++++++++-----------------------------
+ 3 files changed, 90 insertions(+), 169 deletions(-)
 
 diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
-index f032610d1287..c83f02c2593e 100644
+index 496d3e92b2a8..f825d514500e 100644
 --- a/sound/x86/intel_hdmi_audio.c
 +++ b/sound/x86/intel_hdmi_audio.c
-@@ -202,7 +202,7 @@ mid_hdmi_audio_write(struct snd_intelhad *ctx, u32 reg, u32 val)
- static int had_read_register(struct snd_intelhad *intelhaddata,
- 			     u32 offset, u32 *data)
+@@ -263,7 +263,7 @@ static void snd_intelhad_enable_audio(struct snd_pcm_substream *substream,
+ 				      struct snd_intelhad *intelhaddata,
+ 				      bool enable)
  {
--	if (intelhaddata->drv_status == HAD_DRV_DISCONNECTED)
-+	if (!intelhaddata->connected)
- 		return -ENODEV;
+-	union aud_cfg cfg_val = {.cfg_regval = 0};
++	union aud_cfg cfg_val = {.regval = 0};
+ 	u8 channels, data, mask;
  
- 	mid_hdmi_audio_read(intelhaddata, offset, data);
-@@ -221,7 +221,7 @@ static void fixup_dp_config(struct snd_intelhad *intelhaddata,
- static int had_write_register(struct snd_intelhad *intelhaddata,
- 			      u32 offset, u32 data)
+ 	/*
+@@ -271,9 +271,9 @@ static void snd_intelhad_enable_audio(struct snd_pcm_substream *substream,
+ 	 * In this case just set channels to 2
+ 	 */
+ 	channels = substream ? substream->runtime->channels : 2;
+-	cfg_val.cfg_regx.num_ch = channels - 2;
++	cfg_val.regx.num_ch = channels - 2;
+ 
+-	data = cfg_val.cfg_regval;
++	data = cfg_val.regval;
+ 	if (enable)
+ 		data |= 1;
+ 	mask = AUD_CONFIG_CH_MASK | 1;
+@@ -310,39 +310,39 @@ static void snd_intelhad_reset_audio(struct snd_intelhad *intelhaddata,
+ static int had_prog_status_reg(struct snd_pcm_substream *substream,
+ 			struct snd_intelhad *intelhaddata)
  {
--	if (intelhaddata->drv_status == HAD_DRV_DISCONNECTED)
-+	if (!intelhaddata->connected)
- 		return -ENODEV;
+-	union aud_cfg cfg_val = {.cfg_regval = 0};
+-	union aud_ch_status_0 ch_stat0 = {.status_0_regval = 0};
+-	union aud_ch_status_1 ch_stat1 = {.status_1_regval = 0};
++	union aud_cfg cfg_val = {.regval = 0};
++	union aud_ch_status_0 ch_stat0 = {.regval = 0};
++	union aud_ch_status_1 ch_stat1 = {.regval = 0};
+ 	int format;
  
- 	fixup_dp_config(intelhaddata, offset, &data);
-@@ -234,7 +234,7 @@ static int had_read_modify(struct snd_intelhad *intelhaddata, u32 offset,
- {
- 	u32 val_tmp;
+-	ch_stat0.status_0_regx.lpcm_id = (intelhaddata->aes_bits &
++	ch_stat0.regx.lpcm_id = (intelhaddata->aes_bits &
+ 					  IEC958_AES0_NONAUDIO) >> 1;
+-	ch_stat0.status_0_regx.clk_acc = (intelhaddata->aes_bits &
++	ch_stat0.regx.clk_acc = (intelhaddata->aes_bits &
+ 					  IEC958_AES3_CON_CLOCK) >> 4;
+-	cfg_val.cfg_regx.val_bit = ch_stat0.status_0_regx.lpcm_id;
++	cfg_val.regx.val_bit = ch_stat0.regx.lpcm_id;
  
--	if (intelhaddata->drv_status == HAD_DRV_DISCONNECTED)
-+	if (!intelhaddata->connected)
- 		return -ENODEV;
+ 	switch (substream->runtime->rate) {
+ 	case AUD_SAMPLE_RATE_32:
+-		ch_stat0.status_0_regx.samp_freq = CH_STATUS_MAP_32KHZ;
++		ch_stat0.regx.samp_freq = CH_STATUS_MAP_32KHZ;
+ 		break;
  
- 	mid_hdmi_audio_read(intelhaddata, offset, &val_tmp);
-@@ -556,7 +556,7 @@ static int had_chmap_ctl_info(struct snd_kcontrol *kcontrol,
- 	struct snd_pcm_chmap *info = snd_kcontrol_chip(kcontrol);
- 	struct snd_intelhad *intelhaddata = info->private_data;
+ 	case AUD_SAMPLE_RATE_44_1:
+-		ch_stat0.status_0_regx.samp_freq = CH_STATUS_MAP_44KHZ;
++		ch_stat0.regx.samp_freq = CH_STATUS_MAP_44KHZ;
+ 		break;
+ 	case AUD_SAMPLE_RATE_48:
+-		ch_stat0.status_0_regx.samp_freq = CH_STATUS_MAP_48KHZ;
++		ch_stat0.regx.samp_freq = CH_STATUS_MAP_48KHZ;
+ 		break;
+ 	case AUD_SAMPLE_RATE_88_2:
+-		ch_stat0.status_0_regx.samp_freq = CH_STATUS_MAP_88KHZ;
++		ch_stat0.regx.samp_freq = CH_STATUS_MAP_88KHZ;
+ 		break;
+ 	case AUD_SAMPLE_RATE_96:
+-		ch_stat0.status_0_regx.samp_freq = CH_STATUS_MAP_96KHZ;
++		ch_stat0.regx.samp_freq = CH_STATUS_MAP_96KHZ;
+ 		break;
+ 	case AUD_SAMPLE_RATE_176_4:
+-		ch_stat0.status_0_regx.samp_freq = CH_STATUS_MAP_176KHZ;
++		ch_stat0.regx.samp_freq = CH_STATUS_MAP_176KHZ;
+ 		break;
+ 	case AUD_SAMPLE_RATE_192:
+-		ch_stat0.status_0_regx.samp_freq = CH_STATUS_MAP_192KHZ;
++		ch_stat0.regx.samp_freq = CH_STATUS_MAP_192KHZ;
+ 		break;
  
--	if (intelhaddata->drv_status == HAD_DRV_DISCONNECTED)
-+	if (!intelhaddata->connected)
- 		return -ENODEV;
- 	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
- 	uinfo->count = HAD_MAX_CHANNEL;
-@@ -573,7 +573,7 @@ static int had_chmap_ctl_get(struct snd_kcontrol *kcontrol,
- 	int i;
- 	const struct snd_pcm_chmap_elem *chmap;
- 
--	if (intelhaddata->drv_status == HAD_DRV_DISCONNECTED)
-+	if (!intelhaddata->connected)
- 		return -ENODEV;
- 
- 	mutex_lock(&intelhaddata->mutex);
-@@ -968,7 +968,7 @@ static int snd_intelhad_open(struct snd_pcm_substream *substream)
- 
- 	pm_runtime_get_sync(intelhaddata->dev);
- 
--	if (intelhaddata->drv_status == HAD_DRV_DISCONNECTED) {
-+	if (!intelhaddata->connected) {
- 		dev_dbg(intelhaddata->dev, "%s: HDMI cable plugged-out\n",
- 			__func__);
- 		retval = -ENODEV;
-@@ -1098,7 +1098,7 @@ static int snd_intelhad_pcm_trigger(struct snd_pcm_substream *substream,
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 		/* Disable local INTRs till register prgmng is done */
--		if (intelhaddata->drv_status == HAD_DRV_DISCONNECTED) {
-+		if (!intelhaddata->connected) {
- 			dev_dbg(intelhaddata->dev,
- 				"_START: HDMI cable plugged-out\n");
- 			retval = -ENODEV;
-@@ -1150,7 +1150,7 @@ static int snd_intelhad_pcm_prepare(struct snd_pcm_substream *substream)
- 	intelhaddata = snd_pcm_substream_chip(substream);
- 	runtime = substream->runtime;
- 
--	if (intelhaddata->drv_status == HAD_DRV_DISCONNECTED) {
-+	if (!intelhaddata->connected) {
- 		dev_dbg(intelhaddata->dev, "%s: HDMI cable plugged-out\n",
- 			__func__);
- 		retval = -ENODEV;
-@@ -1219,7 +1219,7 @@ snd_intelhad_pcm_pointer(struct snd_pcm_substream *substream)
- 
- 	intelhaddata = snd_pcm_substream_chip(substream);
- 
--	if (intelhaddata->drv_status == HAD_DRV_DISCONNECTED)
-+	if (!intelhaddata->connected)
- 		return SNDRV_PCM_POS_XRUN;
- 
- 	/* Use a hw register to calculate sub-period position reports.
-@@ -1380,7 +1380,7 @@ static int had_process_buffer_done(struct snd_intelhad *intelhaddata)
- 	intr_count = 1;
- 
- 	spin_lock_irqsave(&intelhaddata->had_spinlock, flags);
--	if (intelhaddata->drv_status == HAD_DRV_DISCONNECTED) {
-+	if (!intelhaddata->connected) {
- 		spin_unlock_irqrestore(&intelhaddata->had_spinlock, flags);
- 		dev_dbg(intelhaddata->dev,
- 			"%s:Device already disconnected\n", __func__);
-@@ -1419,7 +1419,7 @@ static int had_process_buffer_done(struct snd_intelhad *intelhaddata)
- 
- 	spin_unlock_irqrestore(&intelhaddata->had_spinlock, flags);
- 
--	if (intelhaddata->drv_status == HAD_DRV_DISCONNECTED) {
-+	if (!intelhaddata->connected) {
- 		dev_dbg(intelhaddata->dev, "HDMI cable plugged-out\n");
- 		return 0;
+ 	default:
+@@ -351,23 +351,23 @@ static int had_prog_status_reg(struct snd_pcm_substream *substream,
  	}
-@@ -1460,14 +1460,14 @@ static int had_process_buffer_underrun(struct snd_intelhad *intelhaddata)
- 	struct pcm_stream_info *stream;
- 	struct snd_pcm_substream *substream;
- 	unsigned long flags;
--	int drv_status;
-+	int connected;
  
- 	stream = &intelhaddata->stream_info;
+ 	had_write_register(intelhaddata,
+-			   AUD_CH_STATUS_0, ch_stat0.status_0_regval);
++			   AUD_CH_STATUS_0, ch_stat0.regval);
  
- 	spin_lock_irqsave(&intelhaddata->had_spinlock, flags);
- 	buf_id = intelhaddata->curr_buf;
- 	intelhaddata->buff_done = buf_id;
--	drv_status = intelhaddata->drv_status;
-+	connected = intelhaddata->connected;
- 	if (stream->running)
- 		intelhaddata->curr_buf = HAD_BUF_TYPE_A;
+ 	format = substream->runtime->format;
  
-@@ -1478,7 +1478,7 @@ static int had_process_buffer_underrun(struct snd_intelhad *intelhaddata)
+ 	if (format == SNDRV_PCM_FORMAT_S16_LE) {
+-		ch_stat1.status_1_regx.max_wrd_len = MAX_SMPL_WIDTH_20;
+-		ch_stat1.status_1_regx.wrd_len = SMPL_WIDTH_16BITS;
++		ch_stat1.regx.max_wrd_len = MAX_SMPL_WIDTH_20;
++		ch_stat1.regx.wrd_len = SMPL_WIDTH_16BITS;
+ 	} else if (format == SNDRV_PCM_FORMAT_S24_LE) {
+-		ch_stat1.status_1_regx.max_wrd_len = MAX_SMPL_WIDTH_24;
+-		ch_stat1.status_1_regx.wrd_len = SMPL_WIDTH_24BITS;
++		ch_stat1.regx.max_wrd_len = MAX_SMPL_WIDTH_24;
++		ch_stat1.regx.wrd_len = SMPL_WIDTH_24BITS;
+ 	} else {
+-		ch_stat1.status_1_regx.max_wrd_len = 0;
+-		ch_stat1.status_1_regx.wrd_len = 0;
++		ch_stat1.regx.max_wrd_len = 0;
++		ch_stat1.regx.wrd_len = 0;
+ 	}
  
- 	snd_intelhad_handle_underrun(intelhaddata);
- 
--	if (drv_status == HAD_DRV_DISCONNECTED) {
-+	if (!connected) {
- 		dev_dbg(intelhaddata->dev,
- 			"%s:Device already disconnected\n", __func__);
- 		return 0;
-@@ -1501,7 +1501,7 @@ static void had_process_hot_plug(struct snd_intelhad *intelhaddata)
- 	struct snd_pcm_substream *substream;
- 
- 	spin_lock_irq(&intelhaddata->had_spinlock);
--	if (intelhaddata->drv_status == HAD_DRV_CONNECTED) {
-+	if (intelhaddata->connected) {
- 		dev_dbg(intelhaddata->dev, "Device already connected\n");
- 		spin_unlock_irq(&intelhaddata->had_spinlock);
- 		return;
-@@ -1509,7 +1509,7 @@ static void had_process_hot_plug(struct snd_intelhad *intelhaddata)
- 
- 	buf_id = intelhaddata->curr_buf;
- 	intelhaddata->buff_done = buf_id;
--	intelhaddata->drv_status = HAD_DRV_CONNECTED;
-+	intelhaddata->connected = true;
- 	dev_dbg(intelhaddata->dev,
- 		"%s @ %d:DEBUG PLUG/UNPLUG : HAD_DRV_CONNECTED\n",
- 			__func__, __LINE__);
-@@ -1543,7 +1543,7 @@ static void had_process_hot_unplug(struct snd_intelhad *intelhaddata)
- 
- 	spin_lock_irq(&intelhaddata->had_spinlock);
- 
--	if (intelhaddata->drv_status == HAD_DRV_DISCONNECTED) {
-+	if (!intelhaddata->connected) {
- 		dev_dbg(intelhaddata->dev, "Device already disconnected\n");
- 		spin_unlock_irq(&intelhaddata->had_spinlock);
- 		goto out;
-@@ -1554,7 +1554,7 @@ static void had_process_hot_unplug(struct snd_intelhad *intelhaddata)
- 	snd_intelhad_enable_audio_int(intelhaddata, false);
- 	snd_intelhad_enable_audio(substream, intelhaddata, false);
- 
--	intelhaddata->drv_status = HAD_DRV_DISCONNECTED;
-+	intelhaddata->connected = false;
- 	dev_dbg(intelhaddata->dev,
- 		"%s @ %d:DEBUG PLUG/UNPLUG : HAD_DRV_DISCONNECTED\n",
- 			__func__, __LINE__);
-@@ -1855,7 +1855,7 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
- 	ctx = card->private_data;
- 	spin_lock_init(&ctx->had_spinlock);
- 	mutex_init(&ctx->mutex);
--	ctx->drv_status = HAD_DRV_DISCONNECTED;
-+	ctx->connected = false;
- 	ctx->dev = &pdev->dev;
- 	ctx->card = card;
- 	ctx->aes_bits = SNDRV_PCM_DEFAULT_CON_SPDIF;
-@@ -1960,7 +1960,7 @@ static int hdmi_lpe_audio_remove(struct platform_device *pdev)
- {
- 	struct snd_intelhad *ctx = platform_get_drvdata(pdev);
- 
--	if (ctx->drv_status != HAD_DRV_DISCONNECTED)
-+	if (ctx->connected)
- 		snd_intelhad_enable_audio_int(ctx, false);
- 	snd_card_free(ctx->card);
+ 	had_write_register(intelhaddata,
+-			   AUD_CH_STATUS_1, ch_stat1.status_1_regval);
++			   AUD_CH_STATUS_1, ch_stat1.regval);
  	return 0;
+ }
+ 
+@@ -379,26 +379,26 @@ static int had_prog_status_reg(struct snd_pcm_substream *substream,
+ static int snd_intelhad_audio_ctrl(struct snd_pcm_substream *substream,
+ 				   struct snd_intelhad *intelhaddata)
+ {
+-	union aud_cfg cfg_val = {.cfg_regval = 0};
+-	union aud_buf_config buf_cfg = {.buf_cfgval = 0};
++	union aud_cfg cfg_val = {.regval = 0};
++	union aud_buf_config buf_cfg = {.regval = 0};
+ 	u8 channels;
+ 
+ 	had_prog_status_reg(substream, intelhaddata);
+ 
+-	buf_cfg.buf_cfg_regx.audio_fifo_watermark = FIFO_THRESHOLD;
+-	buf_cfg.buf_cfg_regx.dma_fifo_watermark = DMA_FIFO_THRESHOLD;
+-	buf_cfg.buf_cfg_regx.aud_delay = 0;
+-	had_write_register(intelhaddata, AUD_BUF_CONFIG, buf_cfg.buf_cfgval);
++	buf_cfg.regx.audio_fifo_watermark = FIFO_THRESHOLD;
++	buf_cfg.regx.dma_fifo_watermark = DMA_FIFO_THRESHOLD;
++	buf_cfg.regx.aud_delay = 0;
++	had_write_register(intelhaddata, AUD_BUF_CONFIG, buf_cfg.regval);
+ 
+ 	channels = substream->runtime->channels;
+-	cfg_val.cfg_regx.num_ch = channels - 2;
++	cfg_val.regx.num_ch = channels - 2;
+ 	if (channels <= 2)
+-		cfg_val.cfg_regx.layout = LAYOUT0;
++		cfg_val.regx.layout = LAYOUT0;
+ 	else
+-		cfg_val.cfg_regx.layout = LAYOUT1;
++		cfg_val.regx.layout = LAYOUT1;
+ 
+-	cfg_val.cfg_regx.val_bit = 1;
+-	had_write_register(intelhaddata, AUD_CONFIG, cfg_val.cfg_regval);
++	cfg_val.regx.val_bit = 1;
++	had_write_register(intelhaddata, AUD_CONFIG, cfg_val.regval);
+ 	return 0;
+ }
+ 
+@@ -618,49 +618,49 @@ static void snd_intelhad_prog_dip(struct snd_pcm_substream *substream,
+ 				  struct snd_intelhad *intelhaddata)
+ {
+ 	int i;
+-	union aud_ctrl_st ctrl_state = {.ctrl_val = 0};
+-	union aud_info_frame2 frame2 = {.fr2_val = 0};
+-	union aud_info_frame3 frame3 = {.fr3_val = 0};
++	union aud_ctrl_st ctrl_state = {.regval = 0};
++	union aud_info_frame2 frame2 = {.regval = 0};
++	union aud_info_frame3 frame3 = {.regval = 0};
+ 	u8 checksum = 0;
+ 	u32 info_frame;
+ 	int channels;
+ 
+ 	channels = substream->runtime->channels;
+ 
+-	had_write_register(intelhaddata, AUD_CNTL_ST, ctrl_state.ctrl_val);
++	had_write_register(intelhaddata, AUD_CNTL_ST, ctrl_state.regval);
+ 
+ 	if (intelhaddata->dp_output) {
+ 		info_frame = DP_INFO_FRAME_WORD1;
+-		frame2.fr2_val = 1;
++		frame2.regval = 1;
+ 	} else {
+ 		info_frame = HDMI_INFO_FRAME_WORD1;
+-		frame2.fr2_regx.chnl_cnt = substream->runtime->channels - 1;
++		frame2.regx.chnl_cnt = substream->runtime->channels - 1;
+ 
+-		frame3.fr3_regx.chnl_alloc = snd_intelhad_channel_allocation(
++		frame3.regx.chnl_alloc = snd_intelhad_channel_allocation(
+ 			intelhaddata, channels);
+ 
+ 		/* Calculte the byte wide checksum for all valid DIP words */
+ 		for (i = 0; i < BYTES_PER_WORD; i++)
+-			checksum += (info_frame >> i*BITS_PER_BYTE) & MASK_BYTE0;
++			checksum += (info_frame >> (i * 8)) & 0xff;
+ 		for (i = 0; i < BYTES_PER_WORD; i++)
+-			checksum += (frame2.fr2_val >> i*BITS_PER_BYTE) & MASK_BYTE0;
++			checksum += (frame2.regval >> (i * 8)) & 0xff;
+ 		for (i = 0; i < BYTES_PER_WORD; i++)
+-			checksum += (frame3.fr3_val >> i*BITS_PER_BYTE) & MASK_BYTE0;
++			checksum += (frame3.regval >> (i * 8)) & 0xff;
+ 
+-		frame2.fr2_regx.chksum = -(checksum);
++		frame2.regx.chksum = -(checksum);
+ 	}
+ 
+ 	had_write_register(intelhaddata, AUD_HDMIW_INFOFR, info_frame);
+-	had_write_register(intelhaddata, AUD_HDMIW_INFOFR, frame2.fr2_val);
+-	had_write_register(intelhaddata, AUD_HDMIW_INFOFR, frame3.fr3_val);
++	had_write_register(intelhaddata, AUD_HDMIW_INFOFR, frame2.regval);
++	had_write_register(intelhaddata, AUD_HDMIW_INFOFR, frame3.regval);
+ 
+ 	/* program remaining DIP words with zero */
+ 	for (i = 0; i < HAD_MAX_DIP_WORDS-VALID_DIP_WORDS; i++)
+ 		had_write_register(intelhaddata, AUD_HDMIW_INFOFR, 0x0);
+ 
+-	ctrl_state.ctrl_regx.dip_freq = 1;
+-	ctrl_state.ctrl_regx.dip_en_sta = 1;
+-	had_write_register(intelhaddata, AUD_CNTL_ST, ctrl_state.ctrl_val);
++	ctrl_state.regx.dip_freq = 1;
++	ctrl_state.regx.dip_en_sta = 1;
++	had_write_register(intelhaddata, AUD_CNTL_ST, ctrl_state.regval);
+ }
+ 
+ /*
 diff --git a/sound/x86/intel_hdmi_audio.h b/sound/x86/intel_hdmi_audio.h
-index dea51fcfc07f..9f713a8a88bc 100644
+index 4ccaa8b18566..9dc0da474f05 100644
 --- a/sound/x86/intel_hdmi_audio.h
 +++ b/sound/x86/intel_hdmi_audio.h
-@@ -80,7 +80,7 @@ struct ring_buf_info {
-  * struct snd_intelhad - intelhad driver structure
-  *
-  * @card: ptr to hold card details
-- * @drv_status: driver status
-+ * @connected: the monitor connection status
-  * @buf_info: ring buffer info
-  * @stream_info: stream information
-  * @eld: holds ELD info
-@@ -95,7 +95,7 @@ struct ring_buf_info {
-  */
- struct snd_intelhad {
- 	struct snd_card	*card;
--	enum had_drv_status	drv_status;
-+	bool		connected;
- 	struct		ring_buf_info buf_info[HAD_NUM_OF_RING_BUFS];
- 	struct		pcm_stream_info stream_info;
- 	unsigned char	eld[HDMI_MAX_ELD_BYTES];
+@@ -65,7 +65,6 @@
+ #define SMPL_WIDTH_16BITS	0x1
+ #define SMPL_WIDTH_24BITS	0x5
+ #define CHANNEL_ALLOCATION	0x1F
+-#define MASK_BYTE0		0x000000FF
+ #define VALID_DIP_WORDS		3
+ #define LAYOUT0			0
+ #define LAYOUT1			1
 diff --git a/sound/x86/intel_hdmi_lpe_audio.h b/sound/x86/intel_hdmi_lpe_audio.h
-index 5a5adb7f0cde..be9783910a3a 100644
+index f9c184960b34..0e8397970e4a 100644
 --- a/sound/x86/intel_hdmi_lpe_audio.h
 +++ b/sound/x86/intel_hdmi_lpe_audio.h
-@@ -82,14 +82,6 @@
- /* Naud Value */
- #define DP_NAUD_VAL					32768
+@@ -199,13 +199,7 @@ struct channel_map_table {
+ 	int spk_mask;                   /* speaker position bit mask */
+ };
  
--enum had_drv_status {
--	HAD_DRV_CONNECTED,
--	HAD_DRV_RUNNING,
--	HAD_DRV_DISCONNECTED,
--	HAD_DRV_SUSPENDED,
--	HAD_DRV_ERR,
--};
--
- /* enum intel_had_aud_buf_type - HDMI controller ring buffer types */
- enum intel_had_aud_buf_type {
- 	HAD_BUF_TYPE_A = 0,
+-/**
+- * union aud_cfg - Audio configuration
+- *
+- * @cfg_regx: individual register bits
+- * @cfg_regval: full register value
+- *
+- */
++/* Audio configuration */
+ union aud_cfg {
+ 	struct {
+ 		u32 aud_en:1;
+@@ -222,17 +216,11 @@ union aud_cfg {
+ 		u32 bogus_sample:1;
+ 		u32 dp_modei:1;
+ 		u32 rsvd:16;
+-	} cfg_regx;
+-	u32 cfg_regval;
++	} regx;
++	u32 regval;
+ };
+ 
+-/**
+- * union aud_ch_status_0 - Audio Channel Status 0 Attributes
+- *
+- * @status_0_regx:individual register bits
+- * @status_0_regval:full register value
+- *
+- */
++/* Audio Channel Status 0 Attributes */
+ union aud_ch_status_0 {
+ 	struct {
+ 		u32 ch_status:1;
+@@ -246,65 +234,41 @@ union aud_ch_status_0 {
+ 		u32 samp_freq:4;
+ 		u32 clk_acc:2;
+ 		u32 rsvd:2;
+-	} status_0_regx;
+-	u32 status_0_regval;
++	} regx;
++	u32 regval;
+ };
+ 
+-/**
+- * union aud_ch_status_1 - Audio Channel Status 1 Attributes
+- *
+- * @status_1_regx: individual register bits
+- * @status_1_regval: full register value
+- *
+- */
++/* Audio Channel Status 1 Attributes */
+ union aud_ch_status_1 {
+ 	struct {
+ 		u32 max_wrd_len:1;
+ 		u32 wrd_len:3;
+ 		u32 rsvd:28;
+-		} status_1_regx;
+-	u32 status_1_regval;
++	} regx;
++	u32 regval;
+ };
+ 
+-/**
+- * union aud_hdmi_cts - CTS register
+- *
+- * @cts_regx: individual register bits
+- * @cts_regval: full register value
+- *
+- */
++/* CTS register */
+ union aud_hdmi_cts {
+ 	struct {
+ 		u32 cts_val:24;
+ 		u32 en_cts_prog:1;
+ 		u32 rsvd:7;
+-	} cts_regx;
+-	u32 cts_regval;
++	} regx;
++	u32 regval;
+ };
+ 
+-/**
+- * union aud_hdmi_n_enable - N register
+- *
+- * @n_regx: individual register bits
+- * @n_regval: full register value
+- *
+- */
++/* N register */
+ union aud_hdmi_n_enable {
+ 	struct {
+ 		u32 n_val:24;
+ 		u32 en_n_prog:1;
+ 		u32 rsvd:7;
+-	} n_regx;
+-	u32 n_regval;
++	} regx;
++	u32 regval;
+ };
+ 
+-/**
+- * union aud_buf_config -  Audio Buffer configurations
+- *
+- * @buf_cfg_regx: individual register bits
+- * @buf_cfgval: full register value
+- *
+- */
++/* Audio Buffer configurations */
+ union aud_buf_config {
+ 	struct {
+ 		u32 audio_fifo_watermark:8;
+@@ -312,17 +276,11 @@ union aud_buf_config {
+ 		u32 rsvd0:5;
+ 		u32 aud_delay:8;
+ 		u32 rsvd1:8;
+-	} buf_cfg_regx;
+-	u32 buf_cfgval;
++	} regx;
++	u32 regval;
+ };
+ 
+-/**
+- * union aud_buf_ch_swap - Audio Sample Swapping offset
+- *
+- * @buf_ch_swap_regx: individual register bits
+- * @buf_ch_swap_val: full register value
+- *
+- */
++/* Audio Sample Swapping offset */
+ union aud_buf_ch_swap {
+ 	struct {
+ 		u32 first_0:3;
+@@ -334,49 +292,31 @@ union aud_buf_ch_swap {
+ 		u32 first_3:3;
+ 		u32 second_3:3;
+ 		u32 rsvd:8;
+-	} buf_ch_swap_regx;
+-	u32 buf_ch_swap_val;
++	} regx;
++	u32 regval;
+ };
+ 
+-/**
+- * union aud_buf_addr - Address for Audio Buffer
+- *
+- * @buf_addr_regx: individual register bits
+- * @buf_addr_val: full register value
+- *
+- */
++/* Address for Audio Buffer */
+ union aud_buf_addr {
+ 	struct {
+ 		u32 valid:1;
+ 		u32 intr_en:1;
+ 		u32 rsvd:4;
+ 		u32 addr:26;
+-	} buf_addr_regx;
+-	u32 buf_addr_val;
++	} regx;
++	u32 regval;
+ };
+ 
+-/**
+- * union aud_buf_len - Length of Audio Buffer
+- *
+- * @buf_len_regx: individual register bits
+- * @buf_len_val: full register value
+- *
+- */
++/* Length of Audio Buffer */
+ union aud_buf_len {
+ 	struct {
+ 		u32 buf_len:20;
+ 		u32 rsvd:12;
+-	} buf_len_regx;
+-	u32 buf_len_val;
++	} regx;
++	u32 regval;
+ };
+ 
+-/**
+- * union aud_ctrl_st - Audio Control State Register offset
+- *
+- * @ctrl_regx: individual register bits
+- * @ctrl_val: full register value
+- *
+- */
++/* Audio Control State Register offset */
+ union aud_ctrl_st {
+ 	struct {
+ 		u32 ram_addr:4;
+@@ -389,34 +329,22 @@ union aud_ctrl_st {
+ 		u32 dip_idx:3;
+ 		u32 dip_en_sta:4;
+ 		u32 rsvd:7;
+-	} ctrl_regx;
+-	u32 ctrl_val;
++	} regx;
++	u32 regval;
+ };
+ 
+-/**
+- * union aud_info_frame1 - Audio HDMI Widget Data Island Packet offset
+- *
+- * @fr1_regx: individual register bits
+- * @fr1_val: full register value
+- *
+- */
++/* Audio HDMI Widget Data Island Packet offset */
+ union aud_info_frame1 {
+ 	struct {
+ 		u32 pkt_type:8;
+ 		u32 ver_num:8;
+ 		u32 len:5;
+ 		u32 rsvd:11;
+-	} fr1_regx;
+-	u32 fr1_val;
++	} regx;
++	u32 regval;
+ };
+ 
+-/**
+- * union aud_info_frame2 - DIP frame 2
+- *
+- * @fr2_regx: individual register bits
+- * @fr2_val: full register value
+- *
+- */
++/* DIP frame 2 */
+ union aud_info_frame2 {
+ 	struct {
+ 		u32 chksum:8;
+@@ -427,17 +355,11 @@ union aud_info_frame2 {
+ 		u32 smpl_freq:3;
+ 		u32 rsvd1:3;
+ 		u32 format:8;
+-	} fr2_regx;
+-	u32 fr2_val;
++	} regx;
++	u32 regval;
+ };
+ 
+-/**
+- * union aud_info_frame3 - DIP frame 3
+- *
+- * @fr3_regx: individual register bits
+- * @fr3_val: full register value
+- *
+- */
++/* DIP frame 3 */
+ union aud_info_frame3 {
+ 	struct {
+ 		u32 chnl_alloc:8;
+@@ -445,8 +367,8 @@ union aud_info_frame3 {
+ 		u32 lsv:4;
+ 		u32 dm_inh:1;
+ 		u32 rsvd1:16;
+-	} fr3_regx;
+-	u32 fr3_val;
++	} regx;
++	u32 regval;
+ };
+ 
+ #define HDMI_AUDIO_UNDERRUN     (1UL<<31)
 -- 
 2.11.0
