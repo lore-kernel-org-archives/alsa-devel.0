@@ -1,8 +1,8 @@
 From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?=
         <mylene.josserand@free-electrons.com>
-Subject: [PATCH v4 6/8] ARM: dts: sun8i: Add audio codec, dai and card for A33
-Date: Thu,  2 Feb 2017 10:24:20 +0100
-Message-ID: <20170202092422.5588-7-mylene.josserand@free-electrons.com>
+Subject: [PATCH v4 4/8] ASoC: sun8i-codec-analog: Add amplifier event to fix first delay
+Date: Thu,  2 Feb 2017 10:24:18 +0100
+Message-ID: <20170202092422.5588-5-mylene.josserand@free-electrons.com>
 References: <20170202092422.5588-1-mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -14,80 +14,66 @@ To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@ar
 Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, thomas.petazzoni@free-electrons.com, mylene.josserand@free-electrons.com, alexandre.belloni@free-electrons.com
 List-Id: alsa-devel@alsa-project.org
 
-Add the audio codec, dai and a simple card to be able to use the
-audio stream of the builtin codec on sun8i SoC.
+When playing a sound for the first time, a short delay, where the audio
+file is not played, can be noticed.
+On a second play (right after), the sound is played correctly.
+If we wait a short time (~5 sec which corresponds to the aplay
+timeout), the delay is back.
 
-This commit adds also an audio-routing for the sound card node to link
-the analog DAPM widgets (Right/Left DAC) and the digital one's as they
-are created in different drivers.
+This patch fixes it by using an event on headphone amplifier.
+It allows to keep the amplifier enable while playing a sound.
+A delay of 700ms allows to wait that the amplifier is powered-up
+before playing the sound.
 
 Signed-off-by: Mylène Josserand <mylene.josserand@free-electrons.com>
+Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
 ---
- arch/arm/boot/dts/sun8i-a33.dtsi | 45 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+ sound/soc/sunxi/sun8i-codec-analog.c | 30 ++++++++++++++++++++++++++++--
+ 1 file changed, 28 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/sun8i-a33.dtsi b/arch/arm/boot/dts/sun8i-a33.dtsi
-index fd1e1cddd4a8..4e34ec6613a0 100644
---- a/arch/arm/boot/dts/sun8i-a33.dtsi
-+++ b/arch/arm/boot/dts/sun8i-a33.dtsi
-@@ -69,6 +69,28 @@
- 		reg = <0x40000000 0x80000000>;
- 	};
+diff --git a/sound/soc/sunxi/sun8i-codec-analog.c b/sound/soc/sunxi/sun8i-codec-analog.c
+index af02290ebe49..72331332b72e 100644
+--- a/sound/soc/sunxi/sun8i-codec-analog.c
++++ b/sound/soc/sunxi/sun8i-codec-analog.c
+@@ -398,11 +398,37 @@ static const struct snd_kcontrol_new sun8i_codec_hp_src[] = {
+ 		      sun8i_codec_hp_src_enum),
+ };
  
-+	sound: sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,name = "sun8i-a33-audio";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,frame-master = <&link_codec>;
-+		simple-audio-card,bitclock-master = <&link_codec>;
-+		simple-audio-card,mclk-fs = <512>;
-+		simple-audio-card,aux-devs = <&codec_analog>;
-+		simple-audio-card,routing =
-+			"Left DAC", "Digital Left DAC",
-+			"Right DAC", "Digital Right DAC";
-+		status = "disabled";
++static int sun8i_headphone_amp_event(struct snd_soc_dapm_widget *w,
++				     struct snd_kcontrol *k, int event)
++{
++	struct snd_soc_component *component = snd_soc_dapm_to_component(w->dapm);
 +
-+		simple-audio-card,cpu {
-+			sound-dai = <&dai>;
-+		};
++	if (SND_SOC_DAPM_EVENT_ON(event)) {
++		snd_soc_component_update_bits(component, SUN8I_ADDA_PAEN_HP_CTRL,
++					      BIT(SUN8I_ADDA_PAEN_HP_CTRL_HPPAEN),
++					      BIT(SUN8I_ADDA_PAEN_HP_CTRL_HPPAEN));
++		/*
++		 * Need a delay to have the amplifier up. 700ms seems the best
++		 * compromise between the time to let the amplifier up and the
++		 * time not to feel this delay while playing a sound.
++		 */
++		msleep(700);
++	} else if (SND_SOC_DAPM_EVENT_OFF(event)) {
++		snd_soc_component_update_bits(component, SUN8I_ADDA_PAEN_HP_CTRL,
++					      BIT(SUN8I_ADDA_PAEN_HP_CTRL_HPPAEN),
++					      0x0);
++	}
 +
-+		link_codec: simple-audio-card,codec {
-+			sound-dai = <&codec>;
-+		};
-+	};
++	return 0;
++}
 +
- 	soc@01c00000 {
- 		tcon0: lcd-controller@01c0c000 {
- 			compatible = "allwinner,sun8i-a33-tcon";
-@@ -116,6 +138,29 @@
- 			reset-names = "ahb";
- 		};
- 
-+		dai: dai@01c22c00 {
-+			#sound-dai-cells = <0>;
-+			compatible = "allwinner,sun6i-a31-i2s";
-+			reg = <0x01c22c00 0x200>;
-+			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_CODEC>, <&ccu CLK_AC_DIG>;
-+			clock-names = "apb", "mod";
-+			resets = <&ccu RST_BUS_CODEC>;
-+			dmas = <&dma 15>, <&dma 15>;
-+			dma-names = "rx", "tx";
-+			status = "disabled";
-+		};
-+
-+		codec: codec@01c22e00 {
-+			#sound-dai-cells = <0>;
-+			compatible = "allwinner,sun8i-a33-codec";
-+			reg = <0x01c22e00 0x400>;
-+			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_CODEC>, <&ccu CLK_AC_DIG>;
-+			clock-names = "bus", "mod";
-+			status = "disabled";
-+		};
-+
- 		fe0: display-frontend@01e00000 {
- 			compatible = "allwinner,sun8i-a33-display-frontend";
- 			reg = <0x01e00000 0x20000>;
+ static const struct snd_soc_dapm_widget sun8i_codec_headphone_widgets[] = {
+ 	SND_SOC_DAPM_MUX("Headphone Source Playback Route",
+ 			 SND_SOC_NOPM, 0, 0, sun8i_codec_hp_src),
+-	SND_SOC_DAPM_OUT_DRV("Headphone Amp", SUN8I_ADDA_PAEN_HP_CTRL,
+-			     SUN8I_ADDA_PAEN_HP_CTRL_HPPAEN, 0, NULL, 0),
++	SND_SOC_DAPM_OUT_DRV_E("Headphone Amp", SUN8I_ADDA_PAEN_HP_CTRL,
++			       SUN8I_ADDA_PAEN_HP_CTRL_HPPAEN, 0, NULL, 0,
++			       sun8i_headphone_amp_event,
++			       SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD),
+ 	SND_SOC_DAPM_SUPPLY("HPCOM Protection", SUN8I_ADDA_PAEN_HP_CTRL,
+ 			    SUN8I_ADDA_PAEN_HP_CTRL_COMPTEN, 0, NULL, 0),
+ 	SND_SOC_DAPM_REG(snd_soc_dapm_supply, "HPCOM", SUN8I_ADDA_PAEN_HP_CTRL,
 -- 
 2.11.0
