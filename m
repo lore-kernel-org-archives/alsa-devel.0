@@ -1,50 +1,80 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v4 2/2] ASoc: Add devictree bindings for CS35L35 CODEC
-Date: Thu, 2 Feb 2017 09:46:57 -0600
-Message-ID: <CAL_JsqL2GiMh4_9dtsxjKBq3xCyoW=rovifO3HjA-ff-rzr41Q@mail.gmail.com>
-References: <1485360798-15523-1-git-send-email-brian.austin@cirrus.com>
- <c3224f63-e5d1-4874-8317-c5df53d0207d@EX3.ad.cirrus.com> <20170130201655.zuozjbg5jnhwrezy@rob-hp-laptop>
- <b4c5fd4d-cc0b-4e17-923e-87048f391cec@EX3.ad.cirrus.com>
+From: Icenowy Zheng <icenowy@aosc.xyz>
+Subject: Re: [PATCH v3 08/10] dmaengine: sun6i: allow build on
+	ARM64 platforms (sun50i)
+Date: Thu, 02 Feb 2017 23:50:42 +0800
+Message-ID: <5605761486050642@web3m.yandex.ru>
+References: <20170129023331.62106-1-icenowy@aosc.xyz>
+ <20170129023331.62106-9-icenowy@aosc.xyz>
+ <20170130164210.GD19244@localhost>
+ <3729521485800635@web23g.yandex.ru> <20170131033236.GH19244@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <b4c5fd4d-cc0b-4e17-923e-87048f391cec-XU/xxMRwCJnfk+Ne4bZl5AC/G2K4zDHf@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Cc: Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from forward3o.cmail.yandex.net (forward3o.cmail.yandex.net
+ [37.9.109.247]) by alsa0.perex.cz (Postfix) with ESMTP id 36FDC265AF3
+ for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2017 16:50:43 +0100 (CET)
+In-Reply-To: <20170131033236.GH19244@localhost>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andre Przywara <andre.przywara@arm.com>, Linus Walleij <linus.walleij@linaro.org>, "linux-sunxi@googlegroups.com" <linux-sunxi@googlegroups.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jan 30, 2017 at 2:39 PM, Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org> wrote:
-> On Mon, 30 Jan 2017, Rob Herring wrote:
->
->> On Wed, Jan 25, 2017 at 10:13:18AM -0600, Brian Austin wrote:
->> > Add devicetree bindings documentatin for
->> > Cirrus Logic CS35L35 Boosted Amplifier
->> >
->> > Signed-off-by: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
->> > ---
->> >  .../devicetree/bindings/sound/cs35l35.txt          | 171 +++++++++++++++++++++
->> >  1 file changed, 171 insertions(+)
->> >  create mode 100644 Documentation/devicetree/bindings/sound/cs35l35.txt
->>
->> This looks similar to the CS35L33. Please align the property names and
->> perhaps combine into a single binding doc.
->>
->> Rob
->>
-> I can make sure the names are consistent for some of them but most of it
-> would be messy to combine into a single doc IMO. I know it looks similar
-> for some of them like the algorithm nodes but they are very different in
-> parameters and operation.
->
-> Would it suffice to just make sure the properties that are the same be
-> reflected across both docs?
-
-That would be move in the right direction. Then we can see how
-different they are.
-
-Rob
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+CgozMS4wMS4yMDE3LCAxMTozMiwgIlZpbm9kIEtvdWwiIDx2aW5vZC5rb3VsQGludGVsLmNvbT46
+Cj4gT24gVHVlLCBKYW4gMzEsIDIwMTcgYXQgMDI6MjM6NTVBTSArMDgwMCwgSWNlbm93eSBaaGVu
+ZyB3cm90ZToKPj4gwqAzMS4wMS4yMDE3LCAwMDo0MSwgIlZpbm9kIEtvdWwiIDx2aW5vZC5rb3Vs
+QGludGVsLmNvbT46Cj4+IMKgPiBPbiBTdW4sIEphbiAyOSwgMjAxNyBhdCAxMDozMzoyOUFNICsw
+ODAwLCBJY2Vub3d5IFpoZW5nIHdyb3RlOgo+PiDCoD4+IMKgQXMgNjQtYml0IEFsbHdpbm5lciBI
+NSBTb0MgaGFzIHRoZSBzYW1lIERNQSBlbmdpbmUgd2l0aCBIMywgdGhlIERNQQo+PiDCoD4+IMKg
+ZHJpdmVyIHNob3VsZCBiZSBhbGxvd2VkIHRvIGJlIGJ1aWx0IGZvciBBUk02NCwgaW4gb3JkZXIg
+dG8gbWFrZSBpdCB3b3JrIG9uIEg1Lgo+PiDCoD4+Cj4+IMKgPj4gwqBTaWduZWQtb2ZmLWJ5OiBJ
+Y2Vub3d5IFpoZW5nIDxpY2Vub3d5QGFvc2MueHl6Pgo+PiDCoD4+IMKgQWNrZWQtYnk6IE1heGlt
+ZSBSaXBhcmQgPG1heGltZS5yaXBhcmRAZnJlZS1lbGVjdHJvbnMuY29tPgo+PiDCoD4+IMKgQWNr
+ZWQtYnk6IENoZW4tWXUgVHNhaSA8d2Vuc0Bjc2llLm9yZz4KPj4gwqA+PiDCoC0tLQo+PiDCoD4+
+IMKgUGF0Y2ggaW50cm9kdWNlZCBiZXR3ZWVuIHYxIGFuZCB2MiwgdG8gc2F0aXNmeSB0aGUgbmV3
+bHkgYWRkZWQgSDMvSDUgYXVkaW8KPj4gwqA+PiDCoGNvZGVjIHN1cHBvcnQuCj4+IMKgPj4KPj4g
+wqA+PiDCoMKgZHJpdmVycy9kbWEvS2NvbmZpZyB8IDIgKy0KPj4gwqA+PiDCoMKgMSBmaWxlIGNo
+YW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9uKC0pCj4+IMKgPj4KPj4gwqA+PiDCoGRp
+ZmYgLS1naXQgYS9kcml2ZXJzL2RtYS9LY29uZmlnIGIvZHJpdmVycy9kbWEvS2NvbmZpZwo+PiDC
+oD4+IMKgaW5kZXggMGQ2YTk2ZWU5ZmM3Li5kMDFkNTk4MTJjZjMgMTAwNjQ0Cj4+IMKgPj4gwqAt
+LS0gYS9kcml2ZXJzL2RtYS9LY29uZmlnCj4+IMKgPj4gwqArKysgYi9kcml2ZXJzL2RtYS9LY29u
+ZmlnCj4+IMKgPj4gwqBAQCAtMTU3LDcgKzE1Nyw3IEBAIGNvbmZpZyBETUFfU1VONEkKPj4gwqA+
+Pgo+PiDCoD4+IMKgwqBjb25maWcgRE1BX1NVTjZJCj4+IMKgPj4gwqDCoMKgwqDCoMKgwqDCoMKg
+wqB0cmlzdGF0ZSAiQWxsd2lubmVyIEEzMSBTb0NzIERNQSBzdXBwb3J0Igo+PiDCoD4+IMKgLSBk
+ZXBlbmRzIG9uIE1BQ0hfU1VONkkgfHwgTUFDSF9TVU44SSB8fCBDT01QSUxFX1RFU1QKPj4gwqA+
+PiDCoCsgZGVwZW5kcyBvbiBNQUNIX1NVTjZJIHx8IE1BQ0hfU1VOOEkgfHwgKEFSTTY0ICYmIEFS
+Q0hfU1VOWEkpIHx8IENPTVBJTEVfVEVTVAo+PiDCoD4KPj4gwqA+IERvIHdlIHJlYWxseSBuZWVk
+IEFSTTY0IGhlcmU/IGFsc28gbG9va2luZyBhdCBvdGhlcnMgSSB3b25kZXIgd2h5IGlzbid0Cj4+
+IMKgPiB0aGlzIE1BQ0hfU1VOWEkuLi4/Cj4+Cj4+IMKgWW91IG1lYW4gZGlyZWN0bHkgcGxhY2Ug
+IkFSQ0hfU1VOWEkiIGhlcmU/Cj4+Cj4+IMKgU1VONEkvU1VONUkvU1VON0kgZG8gbm90IHVzZSBE
+TUFfU1VONkksIHRoZXkgaGF2ZSBkaWZmZXJlbnQgRE1BCj4+IMKgY29udHJvbGxlcnMuCj4KPiBO
+byBteSBxdWVzdGlvbiB3YXMgZGlmZmVyZW50Li4KPgo+IFdlIGhhdmUgTUFDSF9TVU54eCBmb3Ig
+NkkgYW5kIDhJLCBzbyB3aHkgZG8gd2UgaGF2ZSBBUkNIX1NVTlhJIGFuZCBpZiBpdHMgYW4KPiBh
+cmNoIFNVTlhJLCBYIG1lYW5zIGl0IGNhbiB0YWtlIGFueSB2YWx1ZS4uLgo+Cj4gVGhpcyBzY2hl
+bWEgbG9va3MgcHJldHR5IGNvbmZ1c2luZyB3aGlsZSByZWFkaW5nCgpJdCdzIGEgd2VpcmQgc2No
+ZW1hIG1hZGUgYnkgdGhlIHZlbmRvci4KCj4gQWxzbyBJIGhhZCBhIHF1ZXN0aW9uIG9uIHVzYWdl
+IG9mIEFSTTY0Li4KCkZvciBBUk02NCwgd2UgaGF2ZSBubyBNQUNIX1NVTjUwSSwgYXMgdGhlIG9u
+bHkgQVJNNjQtY2FwYWJsZSBzZXJpZXMgaW4gU1VOWEkKaXMgU1VONTBJLiBTbyBJIHVzZSAoQVJN
+NjQgJiYgQVJDSF9TVU5YSSkgaGVyZSB0byByZXByZXNlbnQgIk1BQ0hfU1VONTBJIi4KClAuUy4g
+QWxsd2lubmVyIGhhdmUgc3VuNGkoQTEwKSwgc3VuNWkoQTEzL0ExMHMvR1I4KSwgc3VuNmkoQTMx
+L0EzMXMpLCBzdW43aShBMjApLApzdW44aShBMjMvQTMzL0gzL1Yzcy9BODNUKSwgc3VuOWkoQTgw
+KSwgc3VuNTBpKEE2NC9INSkuIEZyb20gdGhlIHN1bjZpCmdlbmVyYXRpb24sIHRoaW5ncyBjaGFu
+Z2VkIGEgbG90OyBob3dldmVyLCBzdW43aSBpcyBhIGRlcml2YXRpb24gb2Ygc3VuNGkuIEluIFUt
+Qm9vdCwKZXZlcnkgU29DIGFmdGVyIHN1bjZpIChleGNlcHQgc3VuN2kpIGhhdmUgYW4gb3B0aW9u
+IENPTkZJR19HRU5fU1VONkkuCgpUaGlzIERNQWVuZ2luZSBkcml2ZXIgaXMgZm9yIHRoZSBuZXcg
+Z2VuZXJhdGlvbiBETUEgZW5naW5lLgoKU1VONEksIFNVTjVJIGFuZCBTVU43SSBoYXZlIG5vIGhh
+cmR3YXJlIHRoYXQgdXNlcyBzdWNoIGEgRE1BZW5naW5lLCBzbyBoZXJlJ3MKTUFDSF9TVU42SSB8
+fCBNQUNIX1NVTjhJIHx8IChBUk02NCAmJiBBUkNIX1NVTlhJKSwgdG8gcHJldmVudCBpdCB0byBi
+ZSBidWlsdAppbiBhIGtlcm5lbCB0aGF0IGRvIG5vdCBzdXBwb3J0IGFueSBzeXN0ZW0gd2l0aCBz
+dWNoIGEgRE1BZW5naW5lLgoKPgo+IC0tCj4gflZpbm9kCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
+YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
