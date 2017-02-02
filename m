@@ -1,139 +1,176 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: Re: [PATCH] ASoC: nau8824: new codec driver
-Date: Thu, 2 Feb 2017 11:33:41 +0800
-Message-ID: <5892A895.1090509@nuvoton.com>
-References: <1485402489-31325-1-git-send-email-KCHSU0@nuvoton.com>
- <20170201174054.egdzu5rvqyo3ka5o@sirena.org.uk>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [RFC] [ALSA][CONTROL] Added 2 ioctls for reading/writing values
+ of multiple controls in one go (at once)
+Date: Thu, 2 Feb 2017 12:45:48 +0900
+Message-ID: <a68d296b-9f31-51e1-357c-d75e90b24420@sakamocchi.jp>
+References: <CGME20170202031525epcas1p2164b4ca25afe9fb5cd418d004da961f5@epcas1p2.samsung.com>
+ <1486005286-25625-1-git-send-email-satendra.t@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=iso-2022-jp; format=flowed; delsp=yes
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id F38ED26750E
- for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2017 04:33:46 +0100 (CET)
-In-Reply-To: <20170201174054.egdzu5rvqyo3ka5o@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: WTLI@nuvoton.com, YHCHuang@nuvoton.com, alsa-devel@alsa-project.org, CTLIN0@nuvoton.com, lgirdwood@gmail.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1486005286-25625-1-git-send-email-satendra.t@samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Satendra Singh Thakur <satendra.t@samsung.com>, alsa-devel@alsa-project.org
+Cc: perex@perex.cz, tiwai@suse.com, linux-kernel@vger.kernel.org, hemanshu.s@samsung.com, nishant.s4@samsung.com, ycheon.song@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-On 2/2/2017 1:40 AM, Mark Brown wrote:
-> On Thu, Jan 26, 2017 at 11:48:09AM +0800, John Hsu wrote:
+On Feb 2 2017 12:14, Satendra Singh Thakur wrote:
+> From: satendra singh thakur <satendra.t@samsung.com>
 >
-> This looks mostly good, a few fairly small things below:
+> -Added 2 ioctls in alsa driver's control interface
+> -Added an ioctl to read values of multiple elements at once
+> -Added an ioctl to write values of multiple elements at once
+> -In the absence of above ioctls user needs to call N ioctls to
+>  read/write value of N elements which requires N context switches
+> -Proposed ioctls will allow accessing N elements' values in a single
+>  context switch
+> -Above mentioned ioctl will be useful for alsa utils such as amixer
+>  which reads all controls of given sound card
 >
->
->> +       SOC_SINGLE_TLV("Speaker Right Volume from DACR",
->> +               NAU8824_REG_CLASSD_GAIN_1, 8, 0x1f, 0, spk_vol_tlv),
->>
->
-> Names for volume controls need to end with Volume for userspace to
-> understand them properly, give these the same names that the DAPM mixer
-> controls have but end with Volume instead of Switch and then userspace
-> will be able to combine them when displaying.
->
->
+> Signed-off-by: Satendra Singh Thakur <satendra.t@samsung.com>
+> ---
+>  include/uapi/sound/asound.h |    8 +++++
+>  sound/core/control.c        |   69 +++++++++++++++++++++++++++++++++++++++++++
+>  2 files changed, 77 insertions(+)
 
-We'll rename these controls.
+I'm _strongly_ interested in your two patches, because it has a  
+potentiality to purge ASoC abuse of TLV feature, which was introduced in  
+2014 with a bad reviewing process.
 
->> +       case SND_SOC_DAPM_POST_PMU:
->> +               /* Prevent startup click by letting charge pump to ramp up */
->> +               usleep_range(10000, 11000);
->>
->
-> I believe the current preference is to do this as just msleep(10).
->
->
+Unfortunately, I have a short vacation in this weekend, so my reviewing  
+is postponed to next week, sorry...
 
-Thanks for remind. Note and change it.
+Anyway, in next time, please post them as one patchset so that reviewers  
+easily pick them up. 'git format-patch' and 'git send-email' will assist  
+you.
 
->> +static int nau8824_codec_probe(struct snd_soc_codec *codec)
->> +{
->> +       struct nau8824 *nau8824 = snd_soc_codec_get_drvdata(codec);
->> +       struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
->> +
->> +       nau8824->dapm = dapm;
->> +       snd_soc_dapm_sync(nau8824->dapm);
->>
+> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+> index be353a7..a0dcee7 100644
+> --- a/include/uapi/sound/asound.h
+> +++ b/include/uapi/sound/asound.h
+> @@ -948,6 +948,11 @@ struct snd_ctl_tlv {
+>  	unsigned int length;	/* in bytes aligned to 4 */
+>  	unsigned int tlv[0];	/* first TLV */
+>  };
+> +/*Struct to read/write multiple element values */
+> +struct snd_ctl_elem_values {
+> +	unsigned int num_vals;/* Number of values*/
+> +	struct snd_ctl_elem_value *pvals;/* Pointer to the array of values */
+> +};
 >
-> This sync shouldn't do anything, just remove it.
+>  #define SNDRV_CTL_IOCTL_PVERSION	_IOR('U', 0x00, int)
+>  #define SNDRV_CTL_IOCTL_CARD_INFO	_IOR('U', 0x01, struct snd_ctl_card_info)
+> @@ -974,6 +979,9 @@ struct snd_ctl_tlv {
+>  #define SNDRV_CTL_IOCTL_RAWMIDI_PREFER_SUBDEVICE _IOW('U', 0x42, int)
+>  #define SNDRV_CTL_IOCTL_POWER		_IOWR('U', 0xd0, int)
+>  #define SNDRV_CTL_IOCTL_POWER_STATE	_IOR('U', 0xd1, int)
+> +/*Multipe controls' values read and write*/
+> +#define SNDRV_CTL_IOCTL_ELEMS_READ	_IOWR('U', 0xe0, struct snd_ctl_elem_values)
+> +#define SNDRV_CTL_IOCTL_ELEMS_WRITE	_IOWR('U', 0xe1, struct snd_ctl_elem_values)
 >
+>  /*
+>   *  Read interface.
+> diff --git a/sound/core/control.c b/sound/core/control.c
+> index fb096cb..d60dc98 100644
+> --- a/sound/core/control.c
+> +++ b/sound/core/control.c
+> @@ -942,6 +942,7 @@ static int snd_ctl_elem_read_user(struct snd_card *card,
+>  	return result;
+>  }
 >
+> +
+>  static int snd_ctl_elem_write(struct snd_card *card, struct snd_ctl_file *file,
+>  			      struct snd_ctl_elem_value *control)
+>  {
+> @@ -1000,6 +1001,70 @@ static int snd_ctl_elem_write_user(struct snd_ctl_file *file,
+>  	return result;
+>  }
+>
+> +/**
+> + * snd_ctl_elems_rw_user - Read/Write values of more than one element,
+> + * one by one
+> + * @card: the card to which element belongs to
+> + * @pucontrols: user-space pointer to struct snd_ctl_elem_values
+> + * @write_flag: this flag distinguises write or read type request
+> + *
+> + * This function reads/writes the value of controls with the given IDs
+> + * of the same card
+> + * Return: On full/partial success, It returns number of successful
+> + *		controls read/written.
+> + *		On failure, it returns appropriate error
+> + */
+> +static int snd_ctl_elems_rw_user(struct snd_ctl_file *file,
+> +				struct snd_ctl_elem_values __user *pucontrols,
+> +				bool write_flag)
+> +{
+> +	struct snd_ctl_elem_values controls;
+> +	struct snd_ctl_elem_value control;
+> +	struct snd_ctl_elem_value __user *puvals;
+> +	struct snd_card *card = file->card;
+> +	int result;
+> +	int vals;
+> +	int controls_count = 0;
+> +
+> +	if (copy_from_user(&controls, pucontrols, sizeof(controls)))
+> +		return -EFAULT;
+> +	if (!controls.num_vals || controls.num_vals > card->controls_count)
+> +		return -EINVAL;
+> +	/*assign user-space pointer**/
+> +	puvals = (struct snd_ctl_elem_value __user *) controls.pvals;
+> +	for (vals = 0; vals < controls.num_vals; vals++) {
+> +		if (copy_from_user(&control, puvals + vals, sizeof(control)))
+> +			return -EFAULT;
+> +		snd_power_lock(card);
+> +		result = snd_power_wait(card, SNDRV_CTL_POWER_D0);
+> +		if (result >= 0) {
+> +			if (write_flag == true)
+> +				result = snd_ctl_elem_write(card, file,
+> +						&control);
+> +			else
+> +				result = snd_ctl_elem_read(card,  &control);
+> +		}
+> +		snd_power_unlock(card);
+> +		if (result < 0) {
+> +			/**If control failed to set/get
+> +			 * inform user by sending back -1 in reserved field
+> +			 * so that one can try again for failed elements
+> +			 */
+> +			control.reserved[0] = (unsigned char) -1;
+> +			pr_err("ALSA: control: snd_ctl_elem_write/read failed\
+> +			for control name = %s\n", control.id.name);
+> +		} else {
+> +			controls_count++;
+> +		}
+> +		if (copy_to_user(puvals + vals, &control, sizeof(control)))
+> +			return -EFAULT;
+> +	}
+> +	pr_debug("ALSA: control: Num values successfully read/written %u\n",\
+> +	controls_count);
+> +	/**Return successful control count to user**/
+> +	return controls_count;
+> +}
+> +
+>  static int snd_ctl_elem_lock(struct snd_ctl_file *file,
+>  			     struct snd_ctl_elem_id __user *_id)
+>  {
+> @@ -1515,8 +1580,12 @@ static long snd_ctl_ioctl(struct file *file, unsigned int cmd, unsigned long arg
+>  		return snd_ctl_elem_info_user(ctl, argp);
+>  	case SNDRV_CTL_IOCTL_ELEM_READ:
+>  		return snd_ctl_elem_read_user(card, argp);
+> +	case SNDRV_CTL_IOCTL_ELEMS_READ:
+> +		return snd_ctl_elems_rw_user(ctl, argp, false);
+>  	case SNDRV_CTL_IOCTL_ELEM_WRITE:
+>  		return snd_ctl_elem_write_user(ctl, argp);
+> +	case SNDRV_CTL_IOCTL_ELEMS_WRITE:
+> +		return snd_ctl_elems_rw_user(ctl, argp, true);
+>  	case SNDRV_CTL_IOCTL_ELEM_LOCK:
+>  		return snd_ctl_elem_lock(ctl, argp);
+>  	case SNDRV_CTL_IOCTL_ELEM_UNLOCK:
 
-OK, we'll remove it.
 
->> +static int __maybe_unused nau8824_suspend(struct snd_soc_codec *codec)
->> +{
->> +       struct nau8824 *nau8824 = snd_soc_codec_get_drvdata(codec);
->> +
->> +       if (nau8824->irq) {
->> +               disable_irq(nau8824->irq);
->> +               snd_soc_codec_force_bias_level(codec, SND_SOC_BIAS_OFF);
->> +       }
->>
->
-> Why are we disabling the IRQ here?
->
->
+Thanks
 
-In some cases, there is IRQ storm after resume. It's safe to
-disable IRQ for the case. But the issue is happened because of
-hardware defect. It's not happened for normal case.
-
->> +       if (nau8824->irq) {
->> +               nau8824_sema_acquire(nau8824, 0);
->> +               enable_irq(nau8824->irq);
->> +       }
->>
->
-> We didn't drop this sempahore in the suspend path?  This stuff could at
-> least use better comments.
->
->
-
-The semaphore can help to arrange the sequence between playback and
-jack detection. We can add comment for the purpose.
-
->> +       /* Boost FEPGA 20dB */
->> +       regmap_update_bits(regmap, NAU8824_REG_FEPGA_II,
->> +               NAU8824_FEPGA_GAINL_MASK | NAU8824_FEPGA_GAINR_MASK,
->> +               0xa | (0xa << NAU8824_FEPGA_GAINR_SFT));
->>
->
-> Possibly something that should be controllable from userspace?
->
->
-
-OK, the default configuration can be removed and let usersapce to
-management.
-
->> +       nau8824_reset_chip(nau8824->regmap);
->> +       ret = regmap_read(nau8824->regmap, NAU8824_REG_I2C_DEVICE_ID, &value);
->> +       if (ret < 0) {
->> +               dev_err(dev, "Failed to read device id from the NAU8824: %d\n",
->> +                       ret);
->> +               return ret;
->> +       }
->>
->
-> Perhaps check the device ID before resetting the chip (and verify that
-> the device ID is what's expected)?  That way if the system is
-> misconfigured then the check will be less disruptive.
->
-
-We'll rearrange the sequence.
-
-
-
-===========================================================================================
-The privileged confidential information contained in this email is intended for use only by the addressees as indicated by the original sender of this email. If you are not the addressee indicated in this email or are not responsible for delivery of the email to such a person, please kindly reply to the sender indicating this fact and delete all copies of it from your computer and network server immediately. Your cooperation is highly appreciated. It is advised that any unauthorized use of confidential information of Nuvoton is strictly prohibited; and any information in this email irrelevant to the official business of Nuvoton shall be deemed as neither given nor endorsed by Nuvoton.
+Takashi Sakamoto
