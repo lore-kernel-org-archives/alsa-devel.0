@@ -1,16 +1,16 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 08/53] ALSA: x86: Handle the error from
-	hdmi_audio_probe() properly
-Date: Thu,  2 Feb 2017 18:02:22 +0100
-Message-ID: <20170202170307.24484-10-tiwai@suse.de>
+Subject: [PATCH 01/53] ALSA: x86: Don't set PCM state to
+	DISCONNECTED
+Date: Thu,  2 Feb 2017 18:02:14 +0100
+Message-ID: <20170202170307.24484-2-tiwai@suse.de>
 References: <20170202170307.24484-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 834E32667E0
- for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2017 18:03:15 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 35A13265AF3
+ for <alsa-devel@alsa-project.org>; Thu,  2 Feb 2017 18:03:13 +0100 (CET)
 In-Reply-To: <20170202170307.24484-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,74 +25,30 @@ To: alsa-devel@alsa-project.org
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jerome Anand <jerome.anand@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The error from hdmi_audio_probe() wasn't handled properly, and it may
-leave some resources leaked or mapped.  Fix it and also clean up the
-error paths.
+Theoretically setting the state to SNDRV_PCM_STATE_DISCONNECTED is
+correct.  But, unfortunately, PA gets confused by this action, and it
+won't re-probe the device after HDMI/DP is re-plugged.  (It reprobes
+only when the card itself is recreated.)
+
+As a workaround, set SNDRV_PCM_STATE_SETUP instead.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/x86/intel_hdmi_lpe_audio.c | 25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
+ sound/x86/intel_hdmi_audio_if.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/x86/intel_hdmi_lpe_audio.c b/sound/x86/intel_hdmi_lpe_audio.c
-index 18a2ae6796b8..0c11d82eb99b 100644
---- a/sound/x86/intel_hdmi_lpe_audio.c
-+++ b/sound/x86/intel_hdmi_lpe_audio.c
-@@ -422,16 +422,14 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
- 			NULL);
- 	if (ret < 0) {
- 		dev_err(&hlpe_pdev->dev, "request_irq failed\n");
--		iounmap(mmio_start);
--		return -ENODEV;
-+		goto error_irq;
+diff --git a/sound/x86/intel_hdmi_audio_if.c b/sound/x86/intel_hdmi_audio_if.c
+index 9ae242d62eb2..30b4b25acb24 100644
+--- a/sound/x86/intel_hdmi_audio_if.c
++++ b/sound/x86/intel_hdmi_audio_if.c
+@@ -464,7 +464,7 @@ int had_process_hot_unplug(struct snd_intelhad *intelhaddata)
+ 		spin_unlock_irqrestore(&intelhaddata->had_spinlock, flag_irqs);
+ 		pr_debug("%s: unlock -> sending pcm_stop -> lock\n", __func__);
+ 		snd_pcm_stop(intelhaddata->stream_info.had_substream,
+-				SNDRV_PCM_STATE_DISCONNECTED);
++				SNDRV_PCM_STATE_SETUP);
+ 		spin_lock_irqsave(&intelhaddata->had_spinlock, flag_irqs);
  	}
  
- 	/* alloc and save context */
- 	ctx = kzalloc(sizeof(*ctx), GFP_KERNEL);
- 	if (ctx == NULL) {
--		free_irq(irq, NULL);
--		iounmap(mmio_start);
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto error_ctx;
- 	}
- 
- 	ctx->irq = irq;
-@@ -454,15 +452,16 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
- 
- 	if (pdata == NULL) {
- 		dev_err(&hlpe_pdev->dev, "%s: quit: pdata not allocated by i915!!\n", __func__);
--		kfree(ctx);
--		free_irq(irq, NULL);
--		iounmap(mmio_start);
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto error_probe;
- 	}
- 
- 	platform_set_drvdata(pdev, ctx);
- 
- 	ret = hdmi_audio_probe(pdev, &ctx->had);
-+	if (ret < 0)
-+		goto error_probe;
-+
- 	dev_dbg(&hlpe_pdev->dev, "hdmi lpe audio: setting pin eld notify callback\n");
- 
- 	/* The Audio driver is loading now and we need to notify
-@@ -483,6 +482,14 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
- 	spin_unlock_irqrestore(&pdata->lpe_audio_slock, flag_irq);
- 
- 	return ret;
-+
-+ error_probe:
-+	kfree(ctx);
-+ error_ctx:
-+	free_irq(irq, NULL);
-+ error_irq:
-+	iounmap(mmio_start);
-+	return ret;
- }
- 
- /**
 -- 
 2.11.0
