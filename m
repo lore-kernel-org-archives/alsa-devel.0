@@ -1,20 +1,19 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 1/4] ALSA: x86: Don't pass
- SNDRV_PCM_INFO_BATCH flag
-Date: Fri, 3 Feb 2017 17:13:49 -0600
-Message-ID: <aa88aec1-0703-a683-c19a-9f3b9bd0f233@linux.intel.com>
+Subject: Re: [PATCH 4/4] ALSA: x86: Refactor PCM process engine
+Date: Fri, 3 Feb 2017 17:22:00 -0600
+Message-ID: <e6fec9f8-47ab-3f6a-6c61-774f78e49fb6@linux.intel.com>
 References: <20170203164400.12983-1-tiwai@suse.de>
- <20170203164400.12983-2-tiwai@suse.de>
- <5a4f2f34-81eb-6f40-2849-0212a1f68e78@linux.intel.com>
- <s5h7f57hw23.wl-tiwai@suse.de>
+ <20170203164400.12983-5-tiwai@suse.de>
+ <8efd0a5e-6c2a-7b97-11e7-cd22f68a9cbd@linux.intel.com>
+ <s5h8tpnhw6e.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 118EE266BCF
- for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2017 00:13:53 +0100 (CET)
-In-Reply-To: <s5h7f57hw23.wl-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F5922669C4
+ for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2017 00:22:01 +0100 (CET)
+In-Reply-To: <s5h8tpnhw6e.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,68 +29,91 @@ List-Id: alsa-devel@alsa-project.org
 
 
 
-On 02/03/2017 02:13 PM, Takashi Iwai wrote:
-> On Fri, 03 Feb 2017 20:39:49 +0100,
+On 02/03/2017 02:11 PM, Takashi Iwai wrote:
+> On Fri, 03 Feb 2017 20:47:55 +0100,
 > Pierre-Louis Bossart wrote:
->> On 2/3/17 10:43 AM, Takashi Iwai wrote:
->>> The PCM engine on LPE audio isn't like a batch-style process, but
->>> rather it deals with the standard ring buffer.  Passing the BATCH info
->>> flag is inappropriate.
->> Humm, this is controversial. There are 4 DMA descriptors and getting a
->> precise position in the stream is not straightforward.
-> Well, as far as I've tested, it is.  The buffer length register keeps
-> the remaining bytes, and you can easily read out and compute the
-> current position in fairly exact manner.  Even the old driver has that
-> information -- the patch David added does it.
-Yes, and I don't think anyone on the Intel side quite understood what 
-David did there. The code didn't seem quite right.
+>> On 2/3/17 10:44 AM, Takashi Iwai wrote:
+>>> This is again a big rewrite of the driver; now it touches the code to
+>>> process PCM stream transfers.
+>>>
+>>> The most fundamental change is that now the driver supports more than
+>>> four periods.  Instead of keeping the same index between the ring
+>>> buffers (from A to D) and the PCM buffer periods, now we keep
+>>> difference indices for both.  Also, for the cases with less periods
+>>> than four, we track the head index, too.  That is, we now have four
+>>> indices: ringbuf_head, pcm_head, ringbuf_filled, and pcm_filled.
+>> Well that's not completely right. The DMA can only generate an
+>> interrupt once the buffer you submit was played, and with 4
+>> descriptors you can't have more than 4 points where interrupts are
+>> generated.  If you program different values in different descriptors
+>> then the notion of periodic hardware interrupts will be lost.
+> There is a standard trick such as used for ICH or other drivers.
+> With this kind of hardware, the address to be written to each buffer
+> descriptor can be changed dynamically while streaming.  (BTW, on some
+> hardware like HD-audio, it's not allowed, but HD-audio has a larger
+> table, so it doesn't matter.)
 >
->> Rewind is also
->> not supported so if you remove the BATCH flag you will push PulseAudio
->> into doing timer-based scheduling and rewinds that probably don't
->> work.
-> I don't think there is much difference regarding this.
-> Please check the buffer manage description in my previous post
-We've never tested the hardware in those configurations so I'd like a 
-bit more time to double check how well this might work. None of us has a 
-clear view of how much buffering and pre-fetch is done by the DMA engine 
-so if you rewind 'too much' you may be out of luck.
+> That is, each BD maps to each period on the PCM buffer, and it moves
+> there.  A picture like below would illustrate:
 >
-> In anyway, it'd be appreciated if you can test on your hardware.
-> I could test only on a single machine.
-I can test more but only in 10 days from now so if we could delay this 
-patch a bit it'd be better.
+> At time=0
+>
+>    PCM | 0 | 1 | 2 | 3 | 4 | 5 | .... |n-1|
+>    BD  | A | B | C | D |
+>
+> At time=1 (period elapsed)
+>
+>    PCM | 0 | 1 | 2 | 3 | 4 | 5 | .... |n-1|
+>    BD      | B | C | D | A |
+>
+> At time=2
+>
+>    PCM | 0 | 1 | 2 | 3 | 4 | 5 | .... |n-1|
+>    BD          | C | D | A | B |
+Yes I thought this was a case of a moving window being used but what 
+sort of application needs this? I never understood the benefits of 
+expanding the number of periods, it just forces additional wake-ups for 
+no good reason. It's really silly from a power perspective.
+
+>
+> and so on.
+>
+> For the case periods < 4, it works other way round:
+>
+> t=0
+>    PCM | 0 | 1 |
+>    BD  | A | B | - | - |
+>
+> t=1
+>    PCM     | 1 | 0 |
+>    BD  | - | B | C | - |
+>
+> t=2
+>    PCM         | 0 | 1 |
+>    BD  | - | - | C | D |
+it can be done this way but I don't believe this is required. I think 
+you can mark 2 descriptors as invalid and use only two, i.e. to follow 
+your example you'd loop on A-B. The hardware will loop on the 4 
+descriptors, ignore the invalid ones and stop if it can't find a valid one.
+
 >
 >
-> thanks,
+>>> By this flexibility, we can use even dmix, which requires 16 periods
+>>> as default.
+>>>
+>>> The buffer size could be up to 20bit, so it's set to that value.  But
+>>> the pre-allocation is limited to 128k as default.  It's because the
+>>> chip requires the continuous pages (unfortunately no-SG possible),
+>>> thus we don't want too much continuous pages.
+>> No, that's not true. You need contiguous regions for each descriptor,
+>> but the entire buffer doesn't need to be contiguous.
+> Yeah, in theory, it's possible, but it actually doesn't help much with
+> only four descriptors.  Usually SG buffer management is per page.  And
+> if we fix the size per descriptor, it won't fit what user-space apps
+> want in most cases.  So practically it mandates the continuous pages.
+>
 >
 > Takashi
->
->
->>> Similarly, the DOUBLE flag is also superfluous.  Drop both bits.
->>>
->>> Signed-off-by: Takashi Iwai <tiwai@suse.de>
->>> ---
->>>   sound/x86/intel_hdmi_audio.c | 4 +---
->>>   1 file changed, 1 insertion(+), 3 deletions(-)
->>>
->>> diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
->>> index c83f02c2593e..32a21422e6f5 100644
->>> --- a/sound/x86/intel_hdmi_audio.c
->>> +++ b/sound/x86/intel_hdmi_audio.c
->>> @@ -131,10 +131,8 @@ static const struct channel_map_table map_tables[] = {
->>>   /* hardware capability structure */
->>>   static const struct snd_pcm_hardware snd_intel_hadstream = {
->>>   	.info =	(SNDRV_PCM_INFO_INTERLEAVED |
->>> -		SNDRV_PCM_INFO_DOUBLE |
->>>   		SNDRV_PCM_INFO_MMAP|
->>> -		SNDRV_PCM_INFO_MMAP_VALID |
->>> -		SNDRV_PCM_INFO_BATCH),
->>> +		SNDRV_PCM_INFO_MMAP_VALID),
->>>   	.formats = (SNDRV_PCM_FMTBIT_S24 |
->>>   		SNDRV_PCM_FMTBIT_U24),
->>>   	.rates = SNDRV_PCM_RATE_32000 |
->>>
 > _______________________________________________
 > Alsa-devel mailing list
 > Alsa-devel@alsa-project.org
