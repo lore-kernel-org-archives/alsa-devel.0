@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: fixup reset timing of sync
-	convert_rate" to the asoc tree
-Date: Fri, 03 Feb 2017 12:32:31 +0100
-Message-ID: <E1cZc6R-0007n2-G3@finisterre>
-References: <87d1f1w5mx.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH] ASoC:nau8825: automatic LRCK and BCLK
+ divide in master mode
+Date: Fri, 3 Feb 2017 12:57:57 +0100
+Message-ID: <20170203115757.q2ku7xzymqcx3yq2@sirena.org.uk>
+References: <1486021010-32340-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1908771423326293962=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 19F74265142
- for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2017 12:32:43 +0100 (CET)
-In-Reply-To: <87d1f1w5mx.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D035B266991
+ for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2017 12:58:04 +0100 (CET)
+In-Reply-To: <1486021010-32340-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,77 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Simon <horms@verge.net.au>
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: WTLI@nuvoton.com, YHCHuang@nuvoton.com, alsa-devel@alsa-project.org, CTLIN0@nuvoton.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: rsnd: fixup reset timing of sync convert_rate
+--===============1908771423326293962==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="2pvuonmwssj25pa5"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--2pvuonmwssj25pa5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Thu, Feb 02, 2017 at 03:36:50PM +0800, John Hsu wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> Provide the automatic configurable LRC and BCLK divide. The bit clock rate
+> can be chosen by userspace. The driver will make configurations of LRCK
+> and BCLK automatically when playback or capture in master mode.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+As far as I can tell this only provides manual selection from userspace,
+I can't see the code for automatic selection.  I'd not expect to see any
+userspace control of something like this, if there is an override I'd
+expect it to come from the machine driver, and as I've previously said
+I'd definitely expect automatic selection to be the default like it is
+with other CODEC drivers.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--2pvuonmwssj25pa5
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
 
->From ef30da1c52c633a6eaa017ad0d075aaa809a6154 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 2 Feb 2017 05:01:05 +0000
-Subject: [PATCH] ASoC: rsnd: fixup reset timing of sync convert_rate
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliUcEQACgkQJNaLcl1U
+h9D+qwf+MNMmiNYvPE8D26n0lmO6yidUYBdTuzCipKIowye8LFeIBpBDFjgV+7+A
+YlckX06Dh70F3TQ9I+p9OUWI3quxCXuIXta5m8bi8SFd+r/m5gwzJpvS3W0+kwRi
+Shm/Rk0kqY4mAtkeAI053arnMNVAhaKsSUps0hGb2ceScm1kaqS75FmeHxE7KR+x
+tRDxANMkCHZiLEnyNc56inOggIqKzBULLUpwCF0uf5TbC5UykQSDui5otksPxlEn
+XtB6f+ZBwoGzuBOmLLmrSfehoWMpvicCpPqKO7NPeJRCWpnwhkRviQs50ryo68qW
+48p+RHYpl9jV7sOfwEku/Bg2B1LdWw==
+=tmDO
+-----END PGP SIGNATURE-----
 
-Sync convert rate settings should be availabled *after* Playing.
-Thus, src->sync should be reset first of init function.
-Otherwise, it will set remaining settings when it start playing.
-This patch fixes it. Thanks to Yokoyama-san
+--2pvuonmwssj25pa5--
 
-Reported-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sh/rcar/src.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+--===============1908771423326293962==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index 3a8f65bd1bf9..42db48db09ba 100644
---- a/sound/soc/sh/rcar/src.c
-+++ b/sound/soc/sh/rcar/src.c
-@@ -390,6 +390,9 @@ static int rsnd_src_init(struct rsnd_mod *mod,
- {
- 	struct rsnd_src *src = rsnd_mod_to_src(mod);
- 
-+	/* reset sync convert_rate */
-+	src->sync.val = 0;
-+
- 	rsnd_mod_power_on(mod);
- 
- 	rsnd_src_activation(mod);
-@@ -398,9 +401,6 @@ static int rsnd_src_init(struct rsnd_mod *mod,
- 
- 	rsnd_src_status_clear(mod);
- 
--	/* reset sync convert_rate */
--	src->sync.val = 0;
--
- 	return 0;
- }
- 
--- 
-2.11.0
+
+--===============1908771423326293962==--
