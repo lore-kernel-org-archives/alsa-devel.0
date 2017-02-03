@@ -1,22 +1,22 @@
-From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
-Subject: Re: [PATCH 17/53] ALSA: x86: Drop unused hw_silence
- field
-Date: Fri, 3 Feb 2017 04:25:43 +0000
-Message-ID: <85DFEED57DC57344B2483EF7BF8CB60552CD1551@BGSMSX104.gar.corp.intel.com>
-References: <20170202170307.24484-1-tiwai@suse.de>
- <20170202170307.24484-19-tiwai@suse.de>
- <110ce179-24f5-9898-3d26-44e4c559e55a@linux.intel.com>
- <s5hmve4ickb.wl-tiwai@suse.de>
- <1cc13469-6060-71bd-c10b-2e60ed4d4b0f@linux.intel.com>
+From: Satendra Singh Thakur <satendra.t@samsung.com>
+Subject: [RFC v2] [ALSA][CONTROL] 1. Added 2 ioctls for
+ reading/writing values of multiple controls in one go (at once) 2.
+ Restructured the code for read/write of a single control
+Date: Fri, 03 Feb 2017 10:58:08 +0530
+Message-ID: <1486099688-8057-1-git-send-email-satendra.t@samsung.com>
+References: <CGME20170203052820epcas4p2287bdd4bb4de9e5e4c363bcd6872681e@epcas4p2.samsung.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="_002_85DFEED57DC57344B2483EF7BF8CB60552CD1551BGSMSX104garcor_"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F20D265654
- for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2017 05:25:51 +0100 (CET)
-In-Reply-To: <1cc13469-6060-71bd-c10b-2e60ed4d4b0f@linux.intel.com>
-Content-Language: en-US
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3933B266591
+ for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2017 06:28:24 +0100 (CET)
+Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
+ by mailout3.samsung.com
+ (Oracle Communications Messaging Server 7.0.5.31.0 64bit (built May 5 2014))
+ with ESMTP id <0OKS02ZDP9V90B20@mailout3.samsung.com> for
+ alsa-devel@alsa-project.org; Fri, 03 Feb 2017 14:28:21 +0900 (KST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,359 +26,238 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Anand,
- Jerome" <jerome.anand@intel.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.com, linux-kernel@vger.kernel.org, nishant.s4@samsung.com, hemanshu.s@samsung.com, o-takashi@sakamocchi.jp, satendra singh thakur <satendra.t@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
---_002_85DFEED57DC57344B2483EF7BF8CB60552CD1551BGSMSX104garcor_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+From: satendra singh thakur <satendra.t@samsung.com>
 
+1.Added 2 ioctls in alsa driver's control interface
+-Added an ioctl to read values of multiple elements at once
+-Added an ioctl to write values of multiple elements at once
+-In the absence of above ioctls user needs to call N ioctls to
+ read/write value of N elements which requires N context switches
+-Proposed ioctls will allow accessing N elements' values in a single
+ context switch
+-Above mentioned ioctl will be useful for alsa utils such as amixer
+ which reads all controls of given sound card
+2. Restructured/Combined two functions snd_ctl_elem_read_user and
+snd_ctl_elem_write_user into a single function snd_ctl_elem_rw_user
+-These functions were having most of the code which was similar
+ to each other
+-Thus, there was redundant/duplicate code which was removed
+ and a single function was formed/defined.
+-Removed functions snd_ctl_elem_read_user and snd_ctl_elem_write_user
+ having redundant/duplicate code
+3. This is version 2 of RFC, here we combine previous 2 patches
+ submitted yesterday (02-Feb) with prefix [RFC] [ALSA][CONTROL]
+-Fixed doxygen comments related warnings
+-Fixed stack frame related warning
 
+Signed-off-by: Satendra Singh Thakur <satendra.t@samsung.com>
+---
+ include/uapi/sound/asound.h |    8 +++
+ sound/core/control.c        |  130 +++++++++++++++++++++++++++++++++----------
+ 2 files changed, 109 insertions(+), 29 deletions(-)
 
->-----Original Message-----
->From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-
->project.org] On Behalf Of Pierre-Louis Bossart
->Sent: Friday, February 3, 2017 1:57 AM
->To: Takashi Iwai <tiwai@suse.de>
->Cc: alsa-devel@alsa-project.org; Anand, Jerome <jerome.anand@intel.com>
->Subject: Re: [alsa-devel] [PATCH 17/53] ALSA: x86: Drop unused hw_silence
->field
->
->
->
->On 02/02/2017 02:04 PM, Takashi Iwai wrote:
->> On Thu, 02 Feb 2017 20:11:10 +0100,
->> Pierre-Louis Bossart wrote:
->>> On 2/2/17 11:02 AM, Takashi Iwai wrote:
->>>> It's nowhere used.  Let's drop it.
->>> That's one of the things I wanted to add. When you start playback
->>> there is a 1-2s period where the receiver is still looking at the data
->>> to figure out if it's PCM or compressed, and you lose those 1-2s of
->>> audio. The hw silence mode is a way to keep the link active.
->> I see.  Yes, the feature would be useful.
->>
->>> But I guess we can remove first and re-add later so no objections.
->> Agreed.
->>
->> How would it be actually implemented?  Just avoid to turn off the
->> audio config bits at trigger callback, etc?
->>
->> Since the runtime PM will be in the same game, we'll have to cope with
->> it, too.
->I must admit I don't remember the details, just that's it's the same
->behavior as the HDAudio KAE (Keep Alive Enable) functionality.
->
-
-I have this patch from the past. It won't apply with the recent changes
-in the code. But the silence filling code can be used from there.
-
-The idea was to use hardware functionality to generate silence
-when the hotplug event is detected.
-
-
->>
->>
->> thanks,
->>
->> Takashi
->
->_______________________________________________
->Alsa-devel mailing list
->Alsa-devel@alsa-project.org
->http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
---_002_85DFEED57DC57344B2483EF7BF8CB60552CD1551BGSMSX104garcor_
-Content-Type: application/octet-stream; name="0001-Audio-Silence-fix.patch"
-Content-Description: 0001-Audio-Silence-fix.patch
-Content-Disposition: attachment; filename="0001-Audio-Silence-fix.patch";
-	size=15718; creation-date="Fri, 03 Feb 2017 04:23:54 GMT";
-	modification-date="Fri, 03 Feb 2017 04:23:54 GMT"
-Content-Transfer-Encoding: base64
-
-RnJvbSA4NWVhOGViNjMzZTUzN2NmMmM0YWZkYWM2MzZlZDQ2MmUyM2E4MGQwIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBrdW1hcmFuIDxrdW1hcmFuQGt1bWFyYW4tdWJ1bnR1Lihub25l
-KT4KRGF0ZTogV2VkLCAxMCBTZXAgMjAxNCAxNTozOTo1NSArMDUzMApTdWJqZWN0OiBbUEFUQ0hd
-IEF1ZGlvIiBTaWxlbmNlIGZpeCBTaWduZWQtb2ZmLWJ5OiBrdW1hcmFuCiA8a3VtYXJhbi5zQGlu
-dGVsLmNvbT4KCi0tLQogLi4uL2ludGVsX21lZGlhL2hkbWlfYXVkaW8vaW50ZWxfbWlkX2hkbWlf
-YXVkaW8uYyAgfCAgMTc1ICsrKysrKysrKysrLS0tLS0tLS0tCiAuLi4vaW50ZWxfbWVkaWEvaGRt
-aV9hdWRpby9pbnRlbF9taWRfaGRtaV9hdWRpby5oICB8ICAgMTkgKystCiAuLi4vaGRtaV9hdWRp
-by9pbnRlbF9taWRfaGRtaV9hdWRpb19pZi5jICAgICAgICAgICB8ICAgIDkgKy0KIDMgZmlsZXMg
-Y2hhbmdlZCwgMTIwIGluc2VydGlvbnMoKyksIDgzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvZXh0ZXJuYWxfZHJpdmVycy9pbnRlbF9tZWRpYS9oZG1pX2F1ZGlvL2ludGVsX21p
-ZF9oZG1pX2F1ZGlvLmMgYi9kcml2ZXJzL2V4dGVybmFsX2RyaXZlcnMvaW50ZWxfbWVkaWEvaGRt
-aV9hdWRpby9pbnRlbF9taWRfaGRtaV9hdWRpby5jCmluZGV4IGNhOWQ5MmMuLjZlMzA4ZjAgMTAw
-NzU1Ci0tLSBhL2RyaXZlcnMvZXh0ZXJuYWxfZHJpdmVycy9pbnRlbF9tZWRpYS9oZG1pX2F1ZGlv
-L2ludGVsX21pZF9oZG1pX2F1ZGlvLmMKKysrIGIvZHJpdmVycy9leHRlcm5hbF9kcml2ZXJzL2lu
-dGVsX21lZGlhL2hkbWlfYXVkaW8vaW50ZWxfbWlkX2hkbWlfYXVkaW8uYwpAQCAtNDI0LDEyICs0
-MjQsMTEgQEAgc3RhdGljIHZvaWQgc25kX2ludGVsaGFkX3Jlc2V0X2F1ZGlvX3YxKHU4IHJlc2V0
-KQogICoKICAqIFRoaXMgZnVuY3Rpb24gaXMgY2FsbGVkIGluIHRoZSBwcmVwYXJlIGNhbGxiYWNr
-CiAgKi8KLXN0YXRpYyBpbnQgaGFkX3Byb2dfc3RhdHVzX3JlZyhzdHJ1Y3Qgc25kX3BjbV9zdWJz
-dHJlYW0gKnN1YnN0cmVhbSwKLQkJCXN0cnVjdCBzbmRfaW50ZWxoYWQgKmludGVsaGFkZGF0YSkK
-K3N0YXRpYyBpbnQgaGFkX3Byb2dfc3RhdHVzX3JlZyhzdHJ1Y3Qgc25kX2ludGVsaGFkICppbnRl
-bGhhZGRhdGEpCiB7CiAJdW5pb24gYXVkX2NoX3N0YXR1c18wIGNoX3N0YXQwID0gey5zdGF0dXNf
-MF9yZWd2YWwgPSAwfTsKIAl1bmlvbiBhdWRfY2hfc3RhdHVzXzEgY2hfc3RhdDEgPSB7LnN0YXR1
-c18xX3JlZ3ZhbCA9IDB9OwotCWludCBmb3JtYXQ7CisJdTMyIGZvcm1hdDsKIAogCXByX2RlYnVn
-KCJFbnRyeSAlc1xuIiwgX19mdW5jX18pOwogCkBAIC00MzcsNyArNDM2LDcgQEAgc3RhdGljIGlu
-dCBoYWRfcHJvZ19zdGF0dXNfcmVnKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFt
-LAogCQkJCQkJSUVDOTU4X0FFUzBfTk9OQVVESU8pPj4xOwogCWNoX3N0YXQwLnN0YXR1c18wX3Jl
-Z3guY2xrX2FjYyA9IChpbnRlbGhhZGRhdGEtPmFlc19iaXRzICYKIAkJCQkJCUlFQzk1OF9BRVMz
-X0NPTl9DTE9DSyk+PjQ7Ci0Jc3dpdGNoIChzdWJzdHJlYW0tPnJ1bnRpbWUtPnJhdGUpIHsKKwlz
-d2l0Y2ggKGludGVsaGFkZGF0YS0+cmF0ZSkgewogCWNhc2UgQVVEX1NBTVBMRV9SQVRFXzMyOgog
-CQljaF9zdGF0MC5zdGF0dXNfMF9yZWd4LnNhbXBfZnJlcSA9IENIX1NUQVRVU19NQVBfMzJLSFo7
-CiAJCWJyZWFrOwpAQCAtNDY5LDggKzQ2OCw3IEBAIHN0YXRpYyBpbnQgaGFkX3Byb2dfc3RhdHVz
-X3JlZyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKIAl9CiAJaGFkX3dyaXRl
-X3JlZ2lzdGVyKEFVRF9DSF9TVEFUVVNfMCwgY2hfc3RhdDAuc3RhdHVzXzBfcmVndmFsKTsKIAot
-CWZvcm1hdCA9IHN1YnN0cmVhbS0+cnVudGltZS0+Zm9ybWF0OwotCisJZm9ybWF0ID0gaW50ZWxo
-YWRkYXRhLT5mb3JtYXQ7CiAJaWYgKGZvcm1hdCA9PSBTTkRSVl9QQ01fRk9STUFUX1MxNl9MRSkg
-ewogCQljaF9zdGF0MS5zdGF0dXNfMV9yZWd4Lm1heF93cmRfbGVuID0gTUFYX1NNUExfV0lEVEhf
-MjA7CiAJCWNoX3N0YXQxLnN0YXR1c18xX3JlZ3gud3JkX2xlbiA9IFNNUExfV0lEVEhfMTZCSVRT
-OwpAQCAtNDg2LDQxICs0ODQsNiBAQCBzdGF0aWMgaW50IGhhZF9wcm9nX3N0YXR1c19yZWcoc3Ry
-dWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sCiB9CiAKIC8qKgotICogc25kX2ludGVs
-aGFkX3Byb2dfYXVkaW9fY3RybF92MiAtIHRvIGluaXRpYWxpemUgYXVkaW8KLSAqIHJlZ2lzdGVy
-cyBhbmQgYnVmZmVyIGNvbmZnaXVyYXRpb24gcmVnaXN0ZXJzCi0gKgotICogQHN1YnN0cmVhbTpz
-dWJzdHJlYW0gZm9yIHdoaWNoIHRoZSBwcmVwYXJlIGZ1bmN0aW9uIGlzIGNhbGxlZAotICogQGlu
-dGVsaGFkZGF0YTpzdWJzdHJlYW0gcHJpdmF0ZSBkYXRhCi0gKgotICogVGhpcyBmdW5jdGlvbiBp
-cyBjYWxsZWQgaW4gdGhlIHByZXBhcmUgY2FsbGJhY2sKLSAqLwotaW50IHNuZF9pbnRlbGhhZF9w
-cm9nX2F1ZGlvX2N0cmxfdjIoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sCi0J
-CQkJCXN0cnVjdCBzbmRfaW50ZWxoYWQgKmludGVsaGFkZGF0YSkKLXsKLQl1bmlvbiBhdWRfY2Zn
-IGNmZ192YWwgPSB7LmNmZ19yZWd2YWwgPSAwfTsKLQl1bmlvbiBhdWRfYnVmX2NvbmZpZyBidWZf
-Y2ZnID0gey5idWZfY2ZndmFsID0gMH07Ci0JdTggY2hhbm5lbHM7Ci0KLQloYWRfcHJvZ19zdGF0
-dXNfcmVnKHN1YnN0cmVhbSwgaW50ZWxoYWRkYXRhKTsKLQotCWJ1Zl9jZmcuYnVmX2NmZ19yZWd4
-X3YyLmF1ZGlvX2ZpZm9fd2F0ZXJtYXJrID0gRklGT19USFJFU0hPTEQ7Ci0JYnVmX2NmZy5idWZf
-Y2ZnX3JlZ3hfdjIuZG1hX2ZpZm9fd2F0ZXJtYXJrID0gRE1BX0ZJRk9fVEhSRVNIT0xEOwotCWJ1
-Zl9jZmcuYnVmX2NmZ19yZWd4X3YyLmF1ZF9kZWxheSA9IDA7Ci0JaGFkX3dyaXRlX3JlZ2lzdGVy
-KEFVRF9CVUZfQ09ORklHLCBidWZfY2ZnLmJ1Zl9jZmd2YWwpOwotCi0JY2hhbm5lbHMgPSBzdWJz
-dHJlYW0tPnJ1bnRpbWUtPmNoYW5uZWxzOwotCWNmZ192YWwuY2ZnX3JlZ3hfdjIubnVtX2NoID0g
-Y2hhbm5lbHMgLSAyOwotCWlmIChjaGFubmVscyA8PSAyKQotCQljZmdfdmFsLmNmZ19yZWd4X3Yy
-LmxheW91dCA9IExBWU9VVDA7Ci0JZWxzZQotCQljZmdfdmFsLmNmZ19yZWd4X3YyLmxheW91dCA9
-IExBWU9VVDE7Ci0KLQljZmdfdmFsLmNmZ19yZWd4X3YyLnZhbF9iaXQgPSAxOwotCWhhZF93cml0
-ZV9yZWdpc3RlcihBVURfQ09ORklHLCBjZmdfdmFsLmNmZ19yZWd2YWwpOwotCXJldHVybiAwOwot
-fQotCi0vKioKICAqIHNuZF9pbnRlbGhhZF9wcm9nX2F1ZGlvX2N0cmxfdjEgLSB0byBpbml0aWFs
-aXplIGF1ZGlvCiAgKiByZWdpc3RlcnMgYW5kIGJ1ZmZlciBjb25mZ2l1cmF0aW9uIHJlZ2lzdGVy
-cwogICoKQEAgLTUyOSwyMiArNDkyLDE4IEBAIGludCBzbmRfaW50ZWxoYWRfcHJvZ19hdWRpb19j
-dHJsX3YyKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAogICoKICAqIFRoaXMg
-ZnVuY3Rpb24gaXMgY2FsbGVkIGluIHRoZSBwcmVwYXJlIGNhbGxiYWNrCiAgKi8KLWludCBzbmRf
-aW50ZWxoYWRfcHJvZ19hdWRpb19jdHJsX3YxKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vi
-c3RyZWFtLAotCQkJCQlzdHJ1Y3Qgc25kX2ludGVsaGFkICppbnRlbGhhZGRhdGEpCitpbnQgc25k
-X2ludGVsaGFkX3Byb2dfYXVkaW9fY3RybF92MShzdHJ1Y3Qgc25kX2ludGVsaGFkICppbnRlbGhh
-ZGRhdGEpCiB7CiAJdW5pb24gYXVkX2NmZyBjZmdfdmFsID0gey5jZmdfcmVndmFsID0gMH07CiAJ
-dW5pb24gYXVkX2J1Zl9jb25maWcgYnVmX2NmZyA9IHsuYnVmX2NmZ3ZhbCA9IDB9OwotCXU4IGNo
-YW5uZWxzOwogCi0JaGFkX3Byb2dfc3RhdHVzX3JlZyhzdWJzdHJlYW0sIGludGVsaGFkZGF0YSk7
-CisJaGFkX3Byb2dfc3RhdHVzX3JlZyhpbnRlbGhhZGRhdGEpOwogCiAJYnVmX2NmZy5idWZfY2Zn
-X3JlZ3guZmlmb193aWR0aCA9IEZJRk9fVEhSRVNIT0xEOwogCWJ1Zl9jZmcuYnVmX2NmZ19yZWd4
-LmF1ZF9kZWxheSA9IDA7CiAJaGFkX3dyaXRlX3JlZ2lzdGVyKEFVRF9CVUZfQ09ORklHLCBidWZf
-Y2ZnLmJ1Zl9jZmd2YWwpOwogCi0JY2hhbm5lbHMgPSBzdWJzdHJlYW0tPnJ1bnRpbWUtPmNoYW5u
-ZWxzOwotCi0Jc3dpdGNoIChjaGFubmVscykgeworCXN3aXRjaCAoaW50ZWxoYWRkYXRhLT5jaGFu
-bmVscykgewogCWNhc2UgMToKIAljYXNlIDI6CiAJCWNmZ192YWwuY2ZnX3JlZ3gubnVtX2NoID0g
-Q0hfU1RFUkVPOwpAQCAtNTc1LDYgKzUzNCwyMSBAQCBpbnQgc25kX2ludGVsaGFkX3Byb2dfYXVk
-aW9fY3RybF92MShzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKIAloYWRfd3Jp
-dGVfcmVnaXN0ZXIoQVVEX0NPTkZJRywgY2ZnX3ZhbC5jZmdfcmVndmFsKTsKIAlyZXR1cm4gMDsK
-IH0KKworLyoqCisgKiBzbmRfaW50ZWxoYWRfcHJvZ19zaWxlbmNlX3YxIC0gdG8gZW5hYmxlIHNp
-bGVuY2Ugc3RyZWFtCisgKgorICogQHN1YnN0cmVhbTogQ3VycmVudCBzdWJzdHJlYW0gb3IgTlVM
-TCBpZiBubyBhY3RpdmUgc3Vic3RyZWFtLgorICogQGVuYWJsZTogMSBpZiBhdWRpbyBpcyB0byBi
-ZSBlbmFibGVkOyAwIGlmIGF1ZGlvIGlzIHRvIGJlIGRpc2FibGVkLgorICovCitzdGF0aWMgdm9p
-ZCBzbmRfaW50ZWxoYWRfcHJvZ19zaWxlbmNlX3YxKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAq
-c3Vic3RyZWFtLAorCQkJCQl1OCBlbmFibGUpCit7CisJaGFkX3JlYWRfbW9kaWZ5KEFVRF9DT05G
-SUcsIChlbmFibGUgPDwgOCkgLCBCSVQoOCkpOworCWhhZF9yZWFkX21vZGlmeShBVURfQ09ORklH
-LCAoZW5hYmxlIDw8IDExKSAsIEJJVCgxMSkpOworCit9CisKIC8qCiAgKiBDb21wdXRlIGRlcml2
-ZWQgdmFsdWVzIGluIGNoYW5uZWxfYWxsb2NhdGlvbnNbXS4KICAqLwpAQCAtMTE2NSwyNCArMTEz
-OSwyMCBAQCBzdGF0aWMgaW50IGhhZF9jcmVhdGVfYXVkaW9fY3RscyhzdHJ1Y3Qgc25kX2NhcmQg
-KmNhcmQsIHN0cnVjdCBzbmRfaW50ZWxoYWQgKmludAogICoKICAqIFRoaXMgZnVuY3Rpb24gaXMg
-Y2FsbGVkIGluIHRoZSBwcmVwYXJlIGNhbGxiYWNrCiAgKi8KLXN0YXRpYyB2b2lkIHNuZF9pbnRl
-bGhhZF9wcm9nX2RpcF92MShzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKLQkJ
-CQlzdHJ1Y3Qgc25kX2ludGVsaGFkICppbnRlbGhhZGRhdGEpCitzdGF0aWMgdm9pZCBzbmRfaW50
-ZWxoYWRfcHJvZ19kaXBfdjEoc3RydWN0IHNuZF9pbnRlbGhhZCAqaW50ZWxoYWRkYXRhKQogewog
-CWludCBpOwogCXVuaW9uIGF1ZF9jdHJsX3N0IGN0cmxfc3RhdGUgPSB7LmN0cmxfdmFsID0gMH07
-CiAJdW5pb24gYXVkX2luZm9fZnJhbWUyIGZyYW1lMiA9IHsuZnIyX3ZhbCA9IDB9OwogCXVuaW9u
-IGF1ZF9pbmZvX2ZyYW1lMyBmcmFtZTMgPSB7LmZyM192YWwgPSAwfTsKIAl1OCBjaGVja3N1bSA9
-IDA7Ci0JaW50IGNoYW5uZWxzOwotCi0JY2hhbm5lbHMgPSBzdWJzdHJlYW0tPnJ1bnRpbWUtPmNo
-YW5uZWxzOwogCiAJaGFkX3dyaXRlX3JlZ2lzdGVyKEFVRF9DTlRMX1NULCBjdHJsX3N0YXRlLmN0
-cmxfdmFsKTsKIAotCWZyYW1lMi5mcjJfcmVneC5jaG5sX2NudCA9IHN1YnN0cmVhbS0+cnVudGlt
-ZS0+Y2hhbm5lbHMgLSAxOworCWZyYW1lMi5mcjJfcmVneC5jaG5sX2NudCA9IGludGVsaGFkZGF0
-YS0+Y2hhbm5lbHMgLSAxOwogCiAJZnJhbWUzLmZyM19yZWd4LmNobmxfYWxsb2MgPSBzbmRfaW50
-ZWxoYWRfY2hhbm5lbF9hbGxvY2F0aW9uKAotCQkJCQlpbnRlbGhhZGRhdGEsIGNoYW5uZWxzKTsK
-KwkJCQkJaW50ZWxoYWRkYXRhLCBpbnRlbGhhZGRhdGEtPmNoYW5uZWxzKTsKIAogCS8qQ2FsY3Vs
-dGUgdGhlIGJ5dGUgd2lkZSBjaGVja3N1bSBmb3IgYWxsIHZhbGlkIERJUCB3b3JkcyovCiAJZm9y
-IChpID0gMDsgaSA8IEJZVEVTX1BFUl9XT1JEOyBpKyspCkBAIC0xMjk0LDEyICsxMjY0LDEwIEBA
-IGlubGluZSBpbnQgc25kX2ludGVsaGFkX3JlYWRfbGVuKHN0cnVjdCBzbmRfaW50ZWxoYWQgKmlu
-dGVsaGFkZGF0YSkKICAqIEBhdWRfc2FtcF9mcmVxOiBzYW1wbGluZyBmcmVxdWVuY3kgb2YgYXVk
-aW8gZGF0YQogICogQHRtZHM6IHNhbXBsaW5nIGZyZXF1ZW5jeSBvZiB0aGUgZGlzcGxheSBkYXRh
-CiAgKiBAbl9wYXJhbTogTiB2YWx1ZSwgZGVwZW5kcyBvbiBhdWRfc2FtcF9mcmVxCi0gKiBAaW50
-ZWxoYWRkYXRhOnN1YnN0cmVhbSBwcml2YXRlIGRhdGEKICAqCiAgKiBQcm9ncmFtIENUUyByZWdp
-c3RlciBiYXNlZCBvbiB0aGUgYXVkaW8gYW5kIGRpc3BsYXkgc2FtcGxpbmcgZnJlcXVlbmN5CiAg
-Ki8KLXN0YXRpYyB2b2lkIHNuZF9pbnRlbGhhZF9wcm9nX2N0c192MSh1MzIgYXVkX3NhbXBfZnJl
-cSwgdTMyIHRtZHMsIHUzMiBuX3BhcmFtLAotCQkJCXN0cnVjdCBzbmRfaW50ZWxoYWQgKmludGVs
-aGFkZGF0YSkKK3N0YXRpYyB2b2lkIHNuZF9pbnRlbGhhZF9wcm9nX2N0c192MSh1MzIgYXVkX3Nh
-bXBfZnJlcSwgdTMyIHRtZHMsIHUzMiBuX3BhcmFtKQogewogCXUzMiBjdHNfdmFsOwogCXU2NCBk
-aXZpZGVuZCwgZGl2aXNvcjsKQEAgLTEzNjQsOCArMTMzMiw3IEBAIHN0YXRpYyBpbnQgaGFkX2Nh
-bGN1bGF0ZV9uX3ZhbHVlKHUzMiBhdWRfc2FtcF9mcmVxKQogICogVGhpcyBmdW5jdGlvbiBpcyBj
-YWxsZWQgaW4gdGhlIHByZXBhcmUgY2FsbGJhY2suCiAgKiBJdCBwcm9ncmFtcyBiYXNlZCBvbiB0
-aGUgYXVkaW8gYW5kIGRpc3BsYXkgc2FtcGxpbmcgZnJlcXVlbmN5CiAgKi8KLXN0YXRpYyBpbnQg
-c25kX2ludGVsaGFkX3Byb2dfbl92MSh1MzIgYXVkX3NhbXBfZnJlcSwgdTMyICpuX3BhcmFtLAot
-CQkJCXN0cnVjdCBzbmRfaW50ZWxoYWQgKmludGVsaGFkZGF0YSkKK3N0YXRpYyBpbnQgc25kX2lu
-dGVsaGFkX3Byb2dfbl92MSh1MzIgYXVkX3NhbXBfZnJlcSwgdTMyICpuX3BhcmFtKQogewogCXMz
-MiBuX3ZhbDsKIApAQCAtMTYzNyw2ICsxNjA0LDcgQEAgc3RhdGljIGludCBzbmRfaW50ZWxoYWRf
-aHdfZnJlZShzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkKICogQGNtZDp0aGUg
-c3RyZWFtIGNvbW1hbWQgdGhhdHMgcmVxdWVzdGVkIGZyb20gdXBwZXIgbGF5ZXIKICogVGhpcyBm
-dW5jdGlvbiBpcyBjYWxsZWQgd2hlbmV2ZXIgYW4gYSBzdHJlYW0gYWN0aXZpdHkgaXMgaW52b2tl
-ZAogKi8KKwogc3RhdGljIGludCBzbmRfaW50ZWxoYWRfcGNtX3RyaWdnZXIoc3RydWN0IHNuZF9w
-Y21fc3Vic3RyZWFtICpzdWJzdHJlYW0sCiAJCQkJCWludCBjbWQpCiB7CkBAIC0xNjczLDYgKzE2
-NDEsNyBAQCBzdGF0aWMgaW50IHNuZF9pbnRlbGhhZF9wY21fdHJpZ2dlcihzdHJ1Y3Qgc25kX3Bj
-bV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKIAkJY2FwcyA9IEhETUlfQVVESU9fQlVGRkVSX0RPTkU7
-CiAJCXJldHZhbCA9IGhhZF9zZXRfY2FwcyhIQURfU0VUX0VOQUJMRV9BVURJT19JTlQsICZjYXBz
-KTsKIAkJcmV0dmFsID0gaGFkX3NldF9jYXBzKEhBRF9TRVRfRU5BQkxFX0FVRElPLCBOVUxMKTsK
-KwogCQlpbnRlbGhhZGRhdGEtPm9wcy0+ZW5hYmxlX2F1ZGlvKHN1YnN0cmVhbSwgMSk7CiAKIAkJ
-cHJfZGVidWcoIlByb2Nlc3NlZCBfU3RhcnRcbiIpOwpAQCAtMTY4OSwxOCArMTY1OCwxNiBAQCBz
-dGF0aWMgaW50IHNuZF9pbnRlbGhhZF9wY21fdHJpZ2dlcihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJl
-YW0gKnN1YnN0cmVhbSwKIAogCQloYWRfc3RyZWFtLT5zdHJlYW1fdHlwZSA9IEhBRF9JTklUOwog
-CQlzcGluX3VubG9ja19pcnFyZXN0b3JlKCZpbnRlbGhhZGRhdGEtPmhhZF9zcGlubG9jaywgZmxh
-Z19pcnEpOwotCQkvKiBEaXNhYmxlIEF1ZGlvICovCi0JCS8qIFRvRG86IE5lZWQgdG8gZGlzYWJs
-ZSBVTkRFUlJVTiBpbnRlcnJ1cHRzIGFzIHdlbGwKLQkJICAgY2FwcyA9IEhETUlfQVVESU9fVU5E
-RVJSVU4gfCBIRE1JX0FVRElPX0JVRkZFUl9ET05FOwotCQkgICAqLworCiAJCWNhcHMgPSBIRE1J
-X0FVRElPX0JVRkZFUl9ET05FOwogCQloYWRfc2V0X2NhcHMoSEFEX1NFVF9ESVNBQkxFX0FVRElP
-X0lOVCwgJmNhcHMpOwotCQlpbnRlbGhhZGRhdGEtPm9wcy0+ZW5hYmxlX2F1ZGlvKHN1YnN0cmVh
-bSwgMCk7CisKIAkJLyogUmVzZXQgYnVmZmVyIHBvaW50ZXJzICovCiAJCWludGVsaGFkZGF0YS0+
-b3BzLT5yZXNldF9hdWRpbygxKTsKIAkJaW50ZWxoYWRkYXRhLT5vcHMtPnJlc2V0X2F1ZGlvKDAp
-OworCiAJCXN0cmVhbS0+c3RyZWFtX3N0YXR1cyA9IFNUUkVBTV9EUk9QUEVEOwotCQloYWRfc2V0
-X2NhcHMoSEFEX1NFVF9ESVNBQkxFX0FVRElPLCBOVUxMKTsKKwogCQlicmVhazsKIAogCWRlZmF1
-bHQ6CkBAIC0xNzU2LDYgKzE3MjMsOSBAQCBzdGF0aWMgaW50IHNuZF9pbnRlbGhhZF9wY21fcHJl
-cGFyZShzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkKIAlpZiAocmV0dmFsKQog
-CQlnb3RvIHByZXBfZW5kOwogCisJaW50ZWxoYWRkYXRhLT5jaGFubmVscyA9IHN1YnN0cmVhbS0+
-cnVudGltZS0+Y2hhbm5lbHM7CisJaW50ZWxoYWRkYXRhLT5yYXRlID0gc3Vic3RyZWFtLT5ydW50
-aW1lLT5yYXRlOworCWludGVsaGFkZGF0YS0+Zm9ybWF0ID0gc3Vic3RyZWFtLT5ydW50aW1lLT5m
-b3JtYXQ7CiAKIAkvKiBHZXQgTiB2YWx1ZSBpbiBLSHogKi8KIAlyZXR2YWwgPSBoYWRfZ2V0X2Nh
-cHMoSEFEX0dFVF9TQU1QTElOR19GUkVRLCAmZGlzcF9zYW1wX2ZyZXEpOwpAQCAtMTc2NiwxOCAr
-MTczNiwxOSBAQCBzdGF0aWMgaW50IHNuZF9pbnRlbGhhZF9wY21fcHJlcGFyZShzdHJ1Y3Qgc25k
-X3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkKIAogCWhhZF9nZXRfY2FwcyhIQURfR0VUX0VMRCwg
-JmludGVsaGFkZGF0YS0+ZWVsZCk7CiAKLQlyZXR2YWwgPSBpbnRlbGhhZGRhdGEtPm9wcy0+cHJv
-Z19uKHN1YnN0cmVhbS0+cnVudGltZS0+cmF0ZSwgJm5fcGFyYW0sCi0JCQkJCQkJCWludGVsaGFk
-ZGF0YSk7CisJcmV0dmFsID0gaW50ZWxoYWRkYXRhLT5vcHMtPnByb2dfbihzdWJzdHJlYW0tPnJ1
-bnRpbWUtPnJhdGUsICZuX3BhcmFtKTsKIAlpZiAocmV0dmFsKSB7CiAJCXByX2VycigicHJvZ3Jh
-bW1pbmcgTiB2YWx1ZSBmYWlsZWQgJSN4XG4iLCByZXR2YWwpOwogCQlnb3RvIHByZXBfZW5kOwog
-CX0KIAlpbnRlbGhhZGRhdGEtPm9wcy0+cHJvZ19jdHMoc3Vic3RyZWFtLT5ydW50aW1lLT5yYXRl
-LAotCQkJCQlkaXNwX3NhbXBfZnJlcSwgbl9wYXJhbSwgaW50ZWxoYWRkYXRhKTsKKwkJCQkJZGlz
-cF9zYW1wX2ZyZXEsIG5fcGFyYW0pOworCisJaW50ZWxoYWRkYXRhLT5vcHMtPnByb2dfZGlwKGlu
-dGVsaGFkZGF0YSk7CiAKLQlpbnRlbGhhZGRhdGEtPm9wcy0+cHJvZ19kaXAoc3Vic3RyZWFtLCBp
-bnRlbGhhZGRhdGEpOworCXJldHZhbCA9IGludGVsaGFkZGF0YS0+b3BzLT5hdWRpb19jdHJsKGlu
-dGVsaGFkZGF0YSk7CiAKLQlyZXR2YWwgPSBpbnRlbGhhZGRhdGEtPm9wcy0+YXVkaW9fY3RybChz
-dWJzdHJlYW0sIGludGVsaGFkZGF0YSk7CisJaW50ZWxoYWRkYXRhLT5vcHMtPnNpbGVuY2Uoc3Vi
-c3RyZWFtLCAxKTsKIAogCS8qIFByb2cgYnVmZmVyIGFkZHJlc3MgKi8KIAlyZXR2YWwgPSBzbmRf
-aW50ZWxoYWRfcHJvZ19idWZmZXIoaW50ZWxoYWRkYXRhLApAQCAtMTc5Myw2ICsxNzY0LDU5IEBA
-IHByZXBfZW5kOgogfQogCiAvKioKKyAqIHNuZF9pbnRlbGhhZF9wY21fcHJlcGFyZS0gaW50ZXJu
-YWwgcHJlcGFyYXRpb24gYmVmb3JlIHN0YXJ0aW5nIGEgc3RyZWFtCisgKiBAc3Vic3RyZWFtOiAg
-c3Vic3RyZWFtIGZvciB3aGljaCB0aGUgZnVuY3Rpb24gaXMgY2FsbGVkCisgKiBUaGlzIGZ1bmN0
-aW9uIGlzIGNhbGxlZCB3aGVuIGEgc3RyZWFtIGlzIHN0YXJ0ZWQgZm9yIGludGVybmFsIHByZXBh
-cmF0aW9uLgorICogKi8KKworaW50IHNuZF9pbnRlbGhhZF9zZXRfc2lsZW5jZSh2b2lkKQorewor
-CWludCByZXR2YWwsIGNhcHM7CisJc3RydWN0IHNuZF9pbnRlbGhhZCAqaW50ZWxoYWRkYXRhID0g
-aGFkX2RhdGE7CisJdTMyIGRpc3Bfc2FtcF9mcmVxLCBuX3BhcmFtOworCisJcHJfZGVidWcoIlNl
-dCBzaWxlbmNlIHN0cmVhbSBjYWxsZWRcbiIpOworCisJLyogR2V0IE4gdmFsdWUgaW4gS0h6ICov
-CisJcmV0dmFsID0gaGFkX2dldF9jYXBzKEhBRF9HRVRfU0FNUExJTkdfRlJFUSwgJmRpc3Bfc2Ft
-cF9mcmVxKTsKKwlpZiAocmV0dmFsKSB7CisJCXByX2VycigicXVlcnlpbmcgZGlzcGxheSBzYW1w
-bGluZyBmcmVxIGZhaWxlZCAlI3hcbiIsIHJldHZhbCk7CisJCWdvdG8gcHJlcF9lbmQ7CisJfQor
-CisJaGFkX2dldF9jYXBzKEhBRF9HRVRfRUxELCAmaW50ZWxoYWRkYXRhLT5lZWxkKTsKKworCXJl
-dHZhbCA9IGludGVsaGFkZGF0YS0+b3BzLT5wcm9nX24oaW50ZWxoYWRkYXRhLT5yYXRlLCAmbl9w
-YXJhbSk7CisJaWYgKHJldHZhbCkgeworCQlwcl9lcnIoInByb2dyYW1taW5nIE4gdmFsdWUgZmFp
-bGVkICUjeFxuIiwgcmV0dmFsKTsKKwkJZ290byBwcmVwX2VuZDsKKwl9CisJaW50ZWxoYWRkYXRh
-LT5vcHMtPnByb2dfY3RzKGludGVsaGFkZGF0YS0+cmF0ZSwKKwkJCWRpc3Bfc2FtcF9mcmVxLCBu
-X3BhcmFtKTsKKworCisJaW50ZWxoYWRkYXRhLT5vcHMtPnByb2dfZGlwKGludGVsaGFkZGF0YSk7
-CisKKwlyZXR2YWwgPSBpbnRlbGhhZGRhdGEtPm9wcy0+YXVkaW9fY3RybChpbnRlbGhhZGRhdGEp
-OworCisJLyogUmVzZXQgYnVmZmVyIHBvaW50ZXJzICovCisJaW50ZWxoYWRkYXRhLT5vcHMtPnJl
-c2V0X2F1ZGlvKDEpOworCWludGVsaGFkZGF0YS0+b3BzLT5yZXNldF9hdWRpbygwKTsKKworCWhh
-ZF93cml0ZV9yZWdpc3RlcihBVURfQlVGX0NIX1NXQVAsIFNXQVBfTEZFX0NFTlRFUik7CisKKwlp
-bnRlbGhhZGRhdGEtPm9wcy0+c2lsZW5jZShOVUxMLCAxKTsKKworCWNhcHMgPSBIRE1JX0FVRElP
-X0JVRkZFUl9ET05FOworCXJldHZhbCA9IGhhZF9zZXRfY2FwcyhIQURfU0VUX0VOQUJMRV9BVURJ
-T19JTlQsICZjYXBzKTsKKyAgCXJldHZhbCA9IGhhZF9zZXRfY2FwcyhIQURfU0VUX0VOQUJMRV9B
-VURJTywgTlVMTCk7CisKKwlpbnRlbGhhZGRhdGEtPm9wcy0+ZW5hYmxlX2F1ZGlvKE5VTEwsIDEp
-OworCitwcmVwX2VuZDoKKwlyZXR1cm4gcmV0dmFsOworfQorLyoqCiAgKiBzbmRfaW50ZWxoYWRf
-cGNtX3BvaW50ZXItIHRvIHNlbmQgdGhlIGN1cnJlbnQgYnVmZmVyIHBvaW50ZXJwcm9jZXNzZWQg
-YnkgaHcKICAqCiAgKiBAc3Vic3RyZWFtOiAgc3Vic3RyZWFtIGZvciB3aGljaCB0aGUgZnVuY3Rp
-b24gaXMgY2FsbGVkCkBAIC0xODUwLDYgKzE4NzQsOCBAQCBpbnQgaGRtaV9hdWRpb19tb2RlX2No
-YW5nZShzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkKIAl1MzIgZGlzcF9zYW1w
-X2ZyZXEsIG5fcGFyYW07CiAJc3RydWN0IHNuZF9pbnRlbGhhZCAqaW50ZWxoYWRkYXRhOwogCisJ
-cHJfZGVidWcoImVudHJpbmcgJXNcbiIsIF9fZnVuY19fKTsKKwogCWludGVsaGFkZGF0YSA9IHNu
-ZF9wY21fc3Vic3RyZWFtX2NoaXAoc3Vic3RyZWFtKTsKIAogCS8qIERpc2FibGUgQXVkaW8gKi8K
-QEAgLTE4NjIsMTQgKzE4ODgsMTQgQEAgaW50IGhkbWlfYXVkaW9fbW9kZV9jaGFuZ2Uoc3RydWN0
-IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0pCiAJCWdvdG8gb3V0OwogCX0KIAotCXJldHZh
-bCA9IGludGVsaGFkZGF0YS0+b3BzLT5wcm9nX24oc3Vic3RyZWFtLT5ydW50aW1lLT5yYXRlLCAm
-bl9wYXJhbSwKLQkJCQkJCQkJaW50ZWxoYWRkYXRhKTsKKwlyZXR2YWwgPSBpbnRlbGhhZGRhdGEt
-Pm9wcy0+cHJvZ19uKHN1YnN0cmVhbS0+cnVudGltZS0+cmF0ZSwgJm5fcGFyYW0pOworCiAJaWYg
-KHJldHZhbCkgewogCQlwcl9lcnIoInByb2dyYW1taW5nIE4gdmFsdWUgZmFpbGVkICUjeFxuIiwg
-cmV0dmFsKTsKIAkJZ290byBvdXQ7CiAJfQogCWludGVsaGFkZGF0YS0+b3BzLT5wcm9nX2N0cyhz
-dWJzdHJlYW0tPnJ1bnRpbWUtPnJhdGUsCi0JCQkJCWRpc3Bfc2FtcF9mcmVxLCBuX3BhcmFtLCBp
-bnRlbGhhZGRhdGEpOworCQkJCQlkaXNwX3NhbXBfZnJlcSwgbl9wYXJhbSk7CiAKIAkvKiBFbmFi
-bGUgQXVkaW8gKi8KIAlpbnRlbGhhZGRhdGEtPm9wcy0+ZW5hYmxlX2F1ZGlvKHN1YnN0cmVhbSwg
-MSk7CkBAIC0yMDAwLDYgKzIwMjYsNyBAQCBzdGF0aWMgc3RydWN0IGhhZF9vcHMgaGFkX29wc192
-MSA9IHsKIAkucHJvZ19uID0Jc25kX2ludGVsaGFkX3Byb2dfbl92MSwKIAkucHJvZ19jdHMgPQlz
-bmRfaW50ZWxoYWRfcHJvZ19jdHNfdjEsCiAJLmF1ZGlvX2N0cmwgPQlzbmRfaW50ZWxoYWRfcHJv
-Z19hdWRpb19jdHJsX3YxLAorCS5zaWxlbmNlID0Jc25kX2ludGVsaGFkX3Byb2dfc2lsZW5jZV92
-MSwKIAkucHJvZ19kaXAgPQlzbmRfaW50ZWxoYWRfcHJvZ19kaXBfdjEsCiAJLmhhbmRsZV91bmRl
-cnJ1biA9ICBoYWRfY2xlYXJfdW5kZXJydW5faW50cl92MSwKIH07CmRpZmYgLS1naXQgYS9kcml2
-ZXJzL2V4dGVybmFsX2RyaXZlcnMvaW50ZWxfbWVkaWEvaGRtaV9hdWRpby9pbnRlbF9taWRfaGRt
-aV9hdWRpby5oIGIvZHJpdmVycy9leHRlcm5hbF9kcml2ZXJzL2ludGVsX21lZGlhL2hkbWlfYXVk
-aW8vaW50ZWxfbWlkX2hkbWlfYXVkaW8uaAppbmRleCBlYTM3NDIwLi4xMDJlNjg2IDEwMDY0NAot
-LS0gYS9kcml2ZXJzL2V4dGVybmFsX2RyaXZlcnMvaW50ZWxfbWVkaWEvaGRtaV9hdWRpby9pbnRl
-bF9taWRfaGRtaV9hdWRpby5oCisrKyBiL2RyaXZlcnMvZXh0ZXJuYWxfZHJpdmVycy9pbnRlbF9t
-ZWRpYS9oZG1pX2F1ZGlvL2ludGVsX21pZF9oZG1pX2F1ZGlvLmgKQEAgLTU2OCw2ICs1NjgsMTEg
-QEAgc3RydWN0IHNuZF9pbnRlbGhhZCB7CiAJZW51bQkJaW50ZWxfaGFkX2F1ZF9idWZfdHlwZSBi
-dWZmX2RvbmU7CiAJc3RydWN0IGRldmljZSAqZGV2OwogCXN0cnVjdCBzbmRfa2NvbnRyb2wgKmtj
-dGw7CisKKwl1MzIJCWNoYW5uZWxzOworCXUzMgkJcmF0ZTsKKwl1MzIJCWZvcm1hdDsKKwogCXN0
-cnVjdCBzbmRfcGNtX2NobWFwICpjaG1hcDsKIAl1bnNpZ25lZCBpbnQJYXVkaW9fcmVnX2Jhc2U7
-CiAJYm9vbAkJaHdfc2lsZW5jZTsKQEAgLTU4MCwxNCArNTg1LDExIEBAIHN0cnVjdCBoYWRfb3Bz
-IHsKIAl2b2lkICgqZW5hYmxlX2F1ZGlvKSAoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJz
-dHJlYW0sCiAJCQl1OCBlbmFibGUpOwogCXZvaWQgKCpyZXNldF9hdWRpbykgKHU4IHJlc2V0KTsK
-LQlpbnQgKCpwcm9nX24pICh1MzIgYXVkX3NhbXBfZnJlcSwgdTMyICpuX3BhcmFtLAotCQkJc3Ry
-dWN0IHNuZF9pbnRlbGhhZCAqaW50ZWxoYWRkYXRhKTsKLQl2b2lkICgqcHJvZ19jdHMpICh1MzIg
-YXVkX3NhbXBfZnJlcSwgdTMyIHRtZHMsIHUzMiBuX3BhcmFtLAotCQkJc3RydWN0IHNuZF9pbnRl
-bGhhZCAqaW50ZWxoYWRkYXRhKTsKLQlpbnQgKCphdWRpb19jdHJsKSAoc3RydWN0IHNuZF9wY21f
-c3Vic3RyZWFtICpzdWJzdHJlYW0sCi0JCQkJc3RydWN0IHNuZF9pbnRlbGhhZCAqaW50ZWxoYWRk
-YXRhKTsKLQl2b2lkICgqcHJvZ19kaXApIChzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0
-cmVhbSwKLQkJCQlzdHJ1Y3Qgc25kX2ludGVsaGFkICppbnRlbGhhZGRhdGEpOworCWludCAoKnBy
-b2dfbikgKHUzMiBhdWRfc2FtcF9mcmVxLCB1MzIgKm5fcGFyYW0pOworCXZvaWQgKCpwcm9nX2N0
-cykgKHUzMiBhdWRfc2FtcF9mcmVxLCB1MzIgdG1kcywgdTMyIG5fcGFyYW0pOworCWludCAoKmF1
-ZGlvX2N0cmwpIChzdHJ1Y3Qgc25kX2ludGVsaGFkICppbnRlbGhhZGRhdGEpOworCXZvaWQgKCpz
-aWxlbmNlKSAoc3RydWN0IHNuZF9wY21fc3Vic3RyZWFtICpzdWJzdHJlYW0sIHU4IGVuYWJsZSk7
-CisJdm9pZCAoKnByb2dfZGlwKSAoc3RydWN0IHNuZF9pbnRlbGhhZCAqaW50ZWxoYWRkYXRhKTsK
-IAl2b2lkICgqaGFuZGxlX3VuZGVycnVuKSAoc3RydWN0IHNuZF9pbnRlbGhhZCAqaW50ZWxoYWRk
-YXRhKTsKIH07CiAKQEAgLTYwNSw2ICs2MDcsNyBAQCBpbnQgc25kX2ludGVsaGFkX2luaXRfYXVk
-aW9fY3RybChzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKIAkJCQkJaW50IGZs
-YWdfc2lsZW5jZSk7CiBpbnQgc25kX2ludGVsaGFkX3Byb2dfYnVmZmVyKHN0cnVjdCBzbmRfaW50
-ZWxoYWQgKmludGVsaGFkZGF0YSwKIAkJCQkJaW50IHN0YXJ0LCBpbnQgZW5kKTsKK2ludCBzbmRf
-aW50ZWxoYWRfc2V0X3NpbGVuY2Uodm9pZCk7CiBpbnQgc25kX2ludGVsaGFkX2ludmRfYnVmZmVy
-KGludCBzdGFydCwgaW50IGVuZCk7CiBpbmxpbmUgaW50IHNuZF9pbnRlbGhhZF9yZWFkX2xlbihz
-dHJ1Y3Qgc25kX2ludGVsaGFkICppbnRlbGhhZGRhdGEpOwogdm9pZCBoYWRfYnVpbGRfY2hhbm5l
-bF9hbGxvY2F0aW9uX21hcChzdHJ1Y3Qgc25kX2ludGVsaGFkICppbnRlbGhhZGRhdGEpOwpkaWZm
-IC0tZ2l0IGEvZHJpdmVycy9leHRlcm5hbF9kcml2ZXJzL2ludGVsX21lZGlhL2hkbWlfYXVkaW8v
-aW50ZWxfbWlkX2hkbWlfYXVkaW9faWYuYyBiL2RyaXZlcnMvZXh0ZXJuYWxfZHJpdmVycy9pbnRl
-bF9tZWRpYS9oZG1pX2F1ZGlvL2ludGVsX21pZF9oZG1pX2F1ZGlvX2lmLmMKaW5kZXggMTc1MGIy
-Ny4uYjY5ZGY5MCAxMDA2NDQKLS0tIGEvZHJpdmVycy9leHRlcm5hbF9kcml2ZXJzL2ludGVsX21l
-ZGlhL2hkbWlfYXVkaW8vaW50ZWxfbWlkX2hkbWlfYXVkaW9faWYuYworKysgYi9kcml2ZXJzL2V4
-dGVybmFsX2RyaXZlcnMvaW50ZWxfbWVkaWEvaGRtaV9hdWRpby9pbnRlbF9taWRfaGRtaV9hdWRp
-b19pZi5jCkBAIC02NSw2ICs2NSw3IEBAIGludCBoZG1pX2F1ZGlvX3F1ZXJ5KHZvaWQgKmhhZGRh
-dGEsIGhkbWlfYXVkaW9fZXZlbnRfdCBldmVudCkKIAkJCXByX2RlYnVnKCJBdWRpbyBzdHJlYW0g
-YWN0aXZlXG4iKTsKIAkJCXJldHVybiAtRUJVU1k7CiAJCX0KKwogCQlzcGluX3VubG9ja19pcnFy
-ZXN0b3JlKCZpbnRlbGhhZGRhdGEtPmhhZF9zcGlubG9jaywgZmxhZ19pcnFzKTsKIAlicmVhazsK
-IApAQCAtMzg1LDcgKzM4Niw3IEBAIGludCBoYWRfcHJvY2Vzc19ob3RfcGx1ZyhzdHJ1Y3Qgc25k
-X2ludGVsaGFkICppbnRlbGhhZGRhdGEpCiAJaW50ZWxoYWRkYXRhLT5kcnZfc3RhdHVzID0gSEFE
-X0RSVl9DT05ORUNURUQ7CiAJc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmaW50ZWxoYWRkYXRhLT5o
-YWRfc3BpbmxvY2ssIGZsYWdfaXJxcyk7CiAKLQlwcl9kZWJ1ZygiUHJvY2Vzc2luZyBIT1RfUExV
-RywgYnVmX2lkID0gJWRcbiIsIGJ1Zl9pZCk7CisJcHJfZGVidWcoIlByb2Nlc3NpbmcgSE9UX1BM
-VUcsIGJ1Zl9pZCA9ICVkIGFuZCBod19zaWxlbmNlID0gJWRcbiIsIGJ1Zl9pZCwgaW50ZWxoYWRk
-YXRhLT5od19zaWxlbmNlKTsKIAogCS8qIFNhZmV0eSBjaGVjayAqLwogCWlmIChzdWJzdHJlYW0p
-IHsKQEAgLTM5Niw4ICszOTcsMTQgQEAgaW50IGhhZF9wcm9jZXNzX2hvdF9wbHVnKHN0cnVjdCBz
-bmRfaW50ZWxoYWQgKmludGVsaGFkZGF0YSkKIAkJc25kX3BjbV9zdG9wKHN1YnN0cmVhbSwgU05E
-UlZfUENNX1NUQVRFX1NFVFVQKTsKIAl9CiAKKwlpbnRlbGhhZGRhdGEtPmNoYW5uZWxzID0gMjsK
-KwlpbnRlbGhhZGRhdGEtPnJhdGUgPSBBVURfU0FNUExFX1JBVEVfNDg7CisJaW50ZWxoYWRkYXRh
-LT5mb3JtYXQgPSBTTkRSVl9QQ01fRk9STUFUX1MyNF9MRTsKKwogCWhhZF9idWlsZF9jaGFubmVs
-X2FsbG9jYXRpb25fbWFwKGludGVsaGFkZGF0YSk7CiAKKwlzbmRfaW50ZWxoYWRfc2V0X3NpbGVu
-Y2UoKTsKKwogCXJldHVybiByZXR2YWw7CiB9CiAKLS0gCjEuNy45LjUKCg==
-
---_002_85DFEED57DC57344B2483EF7BF8CB60552CD1551BGSMSX104garcor_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---_002_85DFEED57DC57344B2483EF7BF8CB60552CD1551BGSMSX104garcor_--
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index be353a7..a0dcee7 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -948,6 +948,11 @@ struct snd_ctl_tlv {
+ 	unsigned int length;	/* in bytes aligned to 4 */
+ 	unsigned int tlv[0];	/* first TLV */
+ };
++/*Struct to read/write multiple element values */
++struct snd_ctl_elem_values {
++	unsigned int num_vals;/* Number of values*/
++	struct snd_ctl_elem_value *pvals;/* Pointer to the array of values */
++};
+ 
+ #define SNDRV_CTL_IOCTL_PVERSION	_IOR('U', 0x00, int)
+ #define SNDRV_CTL_IOCTL_CARD_INFO	_IOR('U', 0x01, struct snd_ctl_card_info)
+@@ -974,6 +979,9 @@ struct snd_ctl_tlv {
+ #define SNDRV_CTL_IOCTL_RAWMIDI_PREFER_SUBDEVICE _IOW('U', 0x42, int)
+ #define SNDRV_CTL_IOCTL_POWER		_IOWR('U', 0xd0, int)
+ #define SNDRV_CTL_IOCTL_POWER_STATE	_IOR('U', 0xd1, int)
++/*Multipe controls' values read and write*/
++#define SNDRV_CTL_IOCTL_ELEMS_READ	_IOWR('U', 0xe0, struct snd_ctl_elem_values)
++#define SNDRV_CTL_IOCTL_ELEMS_WRITE	_IOWR('U', 0xe1, struct snd_ctl_elem_values)
+ 
+ /*
+  *  Read interface.
+diff --git a/sound/core/control.c b/sound/core/control.c
+index fb096cb..980046c 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -920,27 +920,6 @@ static int snd_ctl_elem_read(struct snd_card *card,
+ 	return result;
+ }
+ 
+-static int snd_ctl_elem_read_user(struct snd_card *card,
+-				  struct snd_ctl_elem_value __user *_control)
+-{
+-	struct snd_ctl_elem_value *control;
+-	int result;
+-
+-	control = memdup_user(_control, sizeof(*control));
+-	if (IS_ERR(control))
+-		return PTR_ERR(control);
+-
+-	snd_power_lock(card);
+-	result = snd_power_wait(card, SNDRV_CTL_POWER_D0);
+-	if (result >= 0)
+-		result = snd_ctl_elem_read(card, control);
+-	snd_power_unlock(card);
+-	if (result >= 0)
+-		if (copy_to_user(_control, control, sizeof(*control)))
+-			result = -EFAULT;
+-	kfree(control);
+-	return result;
+-}
+ 
+ static int snd_ctl_elem_write(struct snd_card *card, struct snd_ctl_file *file,
+ 			      struct snd_ctl_elem_value *control)
+@@ -976,22 +955,38 @@ static int snd_ctl_elem_write(struct snd_card *card, struct snd_ctl_file *file,
+ 	return result;
+ }
+ 
+-static int snd_ctl_elem_write_user(struct snd_ctl_file *file,
+-				   struct snd_ctl_elem_value __user *_control)
++/**
++ * snd_ctl_elem_rw_user - Read/write value of an element
++ * @file: pointer to control file object
++ * @_control: user pointer to struct snd_ctl_elem_value
++ * @write_flag: flag, true for write, false for read operation
++ *
++ * This function reads the value of controls with the given IDs
++ * of the same card
++ * Return: On success, it returns positive number returned by
++ * snd_ctl_elem_write/snd_ctl_elem_read
++ * On failure, it returns appropriate error
++ */
++
++static int snd_ctl_elem_rw_user(struct snd_ctl_file *file,
++				  struct snd_ctl_elem_value __user *_control,
++			bool write_flag)
+ {
+ 	struct snd_ctl_elem_value *control;
+ 	struct snd_card *card;
+ 	int result;
+-
+ 	control = memdup_user(_control, sizeof(*control));
+ 	if (IS_ERR(control))
+ 		return PTR_ERR(control);
+-
+ 	card = file->card;
+ 	snd_power_lock(card);
+ 	result = snd_power_wait(card, SNDRV_CTL_POWER_D0);
+-	if (result >= 0)
+-		result = snd_ctl_elem_write(card, file, control);
++	if (result >= 0) {
++		if (write_flag == true)
++			result = snd_ctl_elem_write(card, file, control);
++		else
++			result = snd_ctl_elem_read(card, control);
++	}
+ 	snd_power_unlock(card);
+ 	if (result >= 0)
+ 		if (copy_to_user(_control, control, sizeof(*control)))
+@@ -1000,6 +995,79 @@ static int snd_ctl_elem_write_user(struct snd_ctl_file *file,
+ 	return result;
+ }
+ 
++/**
++ * snd_ctl_elems_rw_user - Read/Write values of more than one element,
++ * one by one
++ * @file: pointer to control file object
++ * @pucontrols: user-space pointer to struct snd_ctl_elem_values
++ * @write_flag: this flag distinguises write or read type request
++ *
++ * This function reads/writes the value of controls with the given IDs
++ * of the same card
++ * Return: On full/partial success, It returns number of successful
++ * controls read/written.
++ * On failure, it returns appropriate error
++ */
++static int snd_ctl_elems_rw_user(struct snd_ctl_file *file,
++				struct snd_ctl_elem_values __user *pucontrols,
++				bool write_flag)
++{
++	struct snd_ctl_elem_values controls;
++	struct snd_ctl_elem_value *pcontrol;
++	struct snd_ctl_elem_value __user *puvals;
++	struct snd_card *card;
++	int result;
++	int vals;
++	int controls_count = 0;
++
++	if (copy_from_user(&controls, pucontrols, sizeof(controls)))
++		return -EFAULT;
++	card = file->card;
++	if (!controls.num_vals || controls.num_vals > card->controls_count)
++		return -EINVAL;
++	/*assign user-space pointer**/
++	puvals = (struct snd_ctl_elem_value __user *) controls.pvals;
++	/**allocate memory to pcontrol*/
++	pcontrol = kmalloc(sizeof(*pcontrol), GFP_KERNEL);
++	if (!pcontrol)
++		return -ENOMEM;
++	for (vals = 0; vals < controls.num_vals; vals++) {
++		if (copy_from_user(pcontrol, puvals + vals, sizeof(*pcontrol)))
++			goto exit_err;
++		snd_power_lock(card);
++		result = snd_power_wait(card, SNDRV_CTL_POWER_D0);
++		if (result >= 0) {
++			if (write_flag == true)
++				result = snd_ctl_elem_write(card, file,
++						pcontrol);
++			else
++				result = snd_ctl_elem_read(card,  pcontrol);
++		}
++		snd_power_unlock(card);
++		if (result < 0) {
++			/**If control failed to set/get
++			 * inform user by sending back -1 in reserved field
++			 * so that one can try again for failed elements
++			 */
++			pcontrol->reserved[0] = (unsigned char) -1;
++			pr_err("ALSA: control: snd_ctl_elem_write/read failed\
++			for control name = %s\n", pcontrol->id.name);
++		} else {
++			controls_count++;
++		}
++		if (copy_to_user(puvals + vals, pcontrol, sizeof(*pcontrol)))
++			goto exit_err;
++	}
++	pr_debug("ALSA: control: Num values successfully read/written %u\n",\
++	controls_count);
++	kfree(pcontrol);
++	/**Return successful control count to user**/
++	return controls_count;
++exit_err:
++	kfree(pcontrol);
++	return -EFAULT;
++}
++
+ static int snd_ctl_elem_lock(struct snd_ctl_file *file,
+ 			     struct snd_ctl_elem_id __user *_id)
+ {
+@@ -1514,9 +1582,13 @@ static long snd_ctl_ioctl(struct file *file, unsigned int cmd, unsigned long arg
+ 	case SNDRV_CTL_IOCTL_ELEM_INFO:
+ 		return snd_ctl_elem_info_user(ctl, argp);
+ 	case SNDRV_CTL_IOCTL_ELEM_READ:
+-		return snd_ctl_elem_read_user(card, argp);
++		return snd_ctl_elem_rw_user(ctl, argp, false);
++	case SNDRV_CTL_IOCTL_ELEMS_READ:
++		return snd_ctl_elems_rw_user(ctl, argp, false);
+ 	case SNDRV_CTL_IOCTL_ELEM_WRITE:
+-		return snd_ctl_elem_write_user(ctl, argp);
++		return snd_ctl_elem_rw_user(ctl, argp, true);
++	case SNDRV_CTL_IOCTL_ELEMS_WRITE:
++		return snd_ctl_elems_rw_user(ctl, argp, true);
+ 	case SNDRV_CTL_IOCTL_ELEM_LOCK:
+ 		return snd_ctl_elem_lock(ctl, argp);
+ 	case SNDRV_CTL_IOCTL_ELEM_UNLOCK:
+-- 
+1.7.9.5
