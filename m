@@ -1,39 +1,67 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH 8/9] mfd: wm97xx-core: core support for wm97xx Codec
-Date: Fri, 03 Feb 2017 09:37:03 +0100
-Message-ID: <87y3xn1xhs.fsf@belgarion.home>
-References: <1477510907-23495-1-git-send-email-robert.jarzmik@free.fr>
-        <1477510907-23495-9-git-send-email-robert.jarzmik@free.fr>
-        <20161118165040.GB19884@dell.home> <87twb3r94s.fsf@belgarion.home>
-        <20161121101219.GB32509@dell> <87y406ppjl.fsf@belgarion.home>
-        <20161206111353.fq5445yuzsy7li4i@sirena.org.uk>
+From: Vincent Abriou <vincent.abriou@st.com>
+Subject: [PATCH] ASoc: hdmi-codec: remove HDMI device unregister
+Date: Fri, 3 Feb 2017 11:10:34 +0100
+Message-ID: <1486116634-14930-1-git-send-email-vincent.abriou@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-input-owner@vger.kernel.org>
-In-Reply-To: <20161206111353.fq5445yuzsy7li4i@sirena.org.uk> (Mark Brown's
-        message of "Tue, 6 Dec 2016 11:13:53 +0000")
-Sender: linux-input-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Sebastian Reichel <sre@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, linux-pm@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 951FC2606F7
+ for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2017 11:10:50 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Takashi Iwai <tiwai@suse.com>, Jyri Sarha <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Vincent Abriou <vincent.abriou@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown <broonie@kernel.org> writes:
->> >> As for the "sound specific part", it's because AC97 bus is mainly used in sound
->> >> oriented drivers, but still the codec IPs provide more than just sound, as the
->> >> Wolfson codecs for instance.
->
->> > I'd like to get Mark Brown's opinion on this.
->
-> I'm not sure what the question is, sorry.
+While unregistering the hdmi-codec, the hdmi device list must be
+cleaned up. It avoids kernel page fault when registering again the
+hdmi-codec.
 
-Ok, I've been busy lately and didn't pay attention to this. As I can't answer to
-Mark in Lee's place, and there is a good chance that almost everybody forgot
-what this was about, I'll respin the serie.
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Jyri Sarha <jsarha@ti.com>
+Cc: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>
 
-Then Lee can ask again his question to Mark so that you guys can talk directly
-one to the other.
+Signed-off-by: Vincent Abriou <vincent.abriou@st.com>
+---
+ sound/soc/codecs/hdmi-codec.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-Cheers.
-
---
-Robert
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 90b5948..1ca405e 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -479,6 +479,18 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 
+ static int hdmi_codec_remove(struct platform_device *pdev)
+ {
++	struct device *dev = &pdev->dev;
++	struct list_head *pos;
++
++	list_for_each(pos, &hdmi_device_list) {
++		struct hdmi_device *tmp = pos_to_hdmi_device(pos);
++
++		if (tmp->dev == dev->parent) {
++			list_del(pos);
++			break;
++		}
++	}
++
+ 	snd_soc_unregister_codec(&pdev->dev);
+ 	return 0;
+ }
+-- 
+2.7.4
