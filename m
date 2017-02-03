@@ -1,23 +1,18 @@
-From: "Sutar, Mounesh" <Mounesh_Sutar@mentor.com>
-Subject: Re: [PATCH] alsa-lib: Add htimestamp operation
- in	plugin file
-Date: Fri, 3 Feb 2017 10:57:53 +0000
-Message-ID: <436f8db421d5434eba2b79b4e80b7bf2@SVR-IES-MBX-04.mgc.mentorg.com>
-References: <1480073797-17667-1-git-send-email-sutar.mounesh@gmail.com>
- <s5hmvgj5s6n.wl-tiwai@suse.de>
- <f3796efe-5870-2f87-77b5-6f932b4b5bac@sakamocchi.jp>
- <s5hfuma5n1d.wl-tiwai@suse.de>
- <3c31a911-bf5d-777c-e0a7-f78be000612f@sakamocchi.jp>
- <ebd6c0a3190d458184063bf9de845bd3@SVR-IES-MBX-04.mgc.mentorg.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rsnd: fixup reset timing of sync
+	convert_rate" to the asoc tree
+Date: Fri, 03 Feb 2017 12:32:31 +0100
+Message-ID: <E1cZc6R-0007n2-G3@finisterre>
+References: <87d1f1w5mx.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 3883A2606F7
- for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2017 11:57:59 +0100 (CET)
-In-Reply-To: <ebd6c0a3190d458184063bf9de845bd3@SVR-IES-MBX-04.mgc.mentorg.com>
-Content-Language: en-US
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 19F74265142
+ for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2017 12:32:43 +0100 (CET)
+In-Reply-To: <87d1f1w5mx.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,107 +22,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Takashi Iwai <tiwai@suse.de>
-Cc: "sutar.mounesh@gmail.com" <sutar.mounesh@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andreas Pape <apape@de.adit-jv.com>, "Frkuska,
- Joshua" <Joshua_Frkuska@mentor.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-SGksDQoNCldlIGhhZCB0byByZS1sb29rIG9udG8gdGhpcyBjaGFuZ2UgYWdhaW4gZm9yIHBvc3Np
-YmxlIGNvbnNpZGVyYXRpb24uDQoNClRoZSBleGlzdGluZyBzb2x1dGlvbiBodGltZXN0YW1wIChz
-bmRfcGNtX2dlbmVyaWNfcmVhbF9odGltZXN0YW1wKSAgQUxXQVlTIHJlYWRzIHRoZSBjdXJyZW50
-IHRpbWUsIA0Kd2hpbGUgc25kX3BjbV9nZW5lcmljX2h0aW1lc3RhbXAgcmVhZHMgY29ycmVjdCB0
-aW1lc3RhbXAgZnJvbSBzbGF2ZSBpbmNsdWRpbmcgZXZhbHVhdGlvbiBvZiBUU1RBTVBfTU9ERS4N
-Cg0KRnJvbSBkb2N1bWVudGF0aW9uIG9mIC9zcmMvcGNtL3BjbS5jLCB3ZSBjYW4gc2VlOg0KIiIi
-IiBccGFyIFRpbWVzdGFtcCBtb2RlDQoNClRoZSB0aW1lc3RhbXAgbW9kZSBzcGVjaWZpZXMsIGlm
-IHRpbWVzdGFtcHMgYXJlIGFjdGl2YXRlZC4gQ3VycmVudGx5LCANCm9ubHkgI1NORF9QQ01fVFNU
-QU1QX05PTkUgYW5kICNTTkRfUENNX1RTVEFNUF9NTUFQIG1vZGVzIGFyZSBrbm93bi4NClRoZSBt
-bWFwIG1vZGUgbWVhbnMgdGhhdCB0aW1lc3RhbXAgaXMgdGFrZW4gb24gZXZlcnkgcGVyaW9kIHRp
-bWUgDQpib3VuZGFyeS4gQ29ycmVzcG9uZGluZyBwb3NpdGlvbiBpbiB0aGUgcmluZyBidWZmZXIg
-YXNzaWduZWQgdG8gDQp0aW1lc3RhbXAgY2FuIGJlIG9idGFpbmVkIHVzaW5nICNzbmRfcGNtX2h0
-aW1lc3RhbXAoKSBmdW5jdGlvbi4gIiIiIg0KDQpBcyBzbmRfcGNtX2dlbmVyaWNfaHRpbWVzdGFt
-cCgpIGludGVybmFsbHkgY2FsbHMgc25kX3BjbV9odGltZXN0YW1wKCkgdG8gcmVhZCB0aW1lLCBz
-byBhY2N1cmF0ZSB0aW1lc3RhbXAgY2FuIGJlIHJlYWQgZnJvbSBzbmRfcGNtX2dlbmVyaWNfaHRp
-bWVzdGFtcCgpLg0KDQpBbHNvLCBpbiBjYXNlIG9mIHBjbV9maWxlLCBpZiB0aGUgdW5kZXJseWlu
-ZyBzbGF2ZSBpcyBoYXJkd2FyZSwgdGhlbiB3ZSB3b3VsZCB3aXNoIHRvIHJlYWQgZWxhcHNlZCBo
-YXJkd2FyZSB0aW1lLCANCmFzIGl0IHdpbGwgYmUgdGhlIG1vc3QgYWNjdXJhdGUsIGFzIG9wcG9z
-ZWQgdG8gdGhlIGVsYXBzZWQgd2FsbCB0aW1lLiANClRoaXMgd2lsbCBwcm92aWRlIHBjbV9maWxl
-IHdpdGggdGhlIG1vc3QgYWNjdXJhdGUgdGltZXN0YW1wcy4gDQoNCkxldCB1cyBrbm93LCB5b3Vy
-IG9waW5pb24gb24gdGhpcyB0byByZS1jb25zaWRlciB0aGlzIGNoYW5nZS4NCg0KDQpSZWdhcmRz
-LA0KTW91bmVzaA0KDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBhbHNhLWRl
-dmVsLWJvdW5jZXNAYWxzYS1wcm9qZWN0Lm9yZyBbbWFpbHRvOmFsc2EtZGV2ZWwtYm91bmNlc0Bh
-bHNhLXByb2plY3Qub3JnXSBPbiBCZWhhbGYgT2YgU3V0YXIsIE1vdW5lc2gNClNlbnQ6IDMwIE5v
-dmVtYmVyIDIwMTYgMTI6NTcNClRvOiBUYWthc2hpIFNha2Ftb3RvIDxvLXRha2FzaGlAc2FrYW1v
-Y2NoaS5qcD47IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4NCkNjOiBzdXRhci5tb3VuZXNo
-QGdtYWlsLmNvbTsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBBbmRyZWFzIFBhcGUgPGFw
-YXBlQGRlLmFkaXQtanYuY29tPjsgRnJrdXNrYSwgSm9zaHVhIDxKb3NodWFfRnJrdXNrYUBtZW50
-b3IuY29tPg0KU3ViamVjdDogUmU6IFthbHNhLWRldmVsXSBbUEFUQ0hdIGFsc2EtbGliOiBBZGQg
-aHRpbWVzdGFtcCBvcGVyYXRpb24gaW4gcGx1Z2luIGZpbGUNCg0KSGksDQpJIGRpZCByZWJhc2Ug
-bXkgcmVwbyBiZWZvcmUgYXBwbHlpbmcgdGhpcyBwYXRjaC4gSXQgYXBwbGllZCB3aXRob3V0IGFu
-eSBjb25mbGljdHMuDQoNCmNvbW1pdCAwZDFkMjVmMTY2YTAyOTRiZjU5NmRkMmU2ZjU1NTc5ZTVl
-MDQxODZlDQpBdXRob3I6IEFuZHJlYXMgUGFwZSA8YXBhcGVAZGUuYWRpdC1qdi5jb20+DQpEYXRl
-OiAgIFdlZCBOb3YgMzAgMTI6MDY6MTQgMjAxNiArMDUzMA0KDQogICAgYWxzYS1saWI6IEFkZCBo
-dGltZXN0YW1wIG9wZXJhdGlvbiBpbiBwbHVnaW4gZmlsZQ0KICAgIA0KICAgIFBDTSBvcGVyYXRp
-b24gaHRpbWVzdGFtcCBpcyBub3QgaW1wbGVtZW50ZWQgaW4gcGx1Z2luIGZpbGUuDQogICAgQ2Fs
-bGluZyBzbmRfcGNtX2h0aW1lc3RhbXAoKSBvbiBhIHBsdWdpbiBmaWxlIGNyYXNoZXMuIFRoaXMg
-c2NlbmFyaW8NCiAgICBpcyBjb25zaWRlcmVkIG5vdy4NCiAgICANCiAgICBTaWduZWQtb2ZmLWJ5
-OiBBbmRyZWFzIFBhcGUgPGFwYXBlQGRlLmFkaXQtanYuY29tPg0KICAgIFNpZ25lZC1vZmYtYnk6
-IEpvc2h1YSBGcmt1c2thIDxqb3NodWFfZnJrdXNrYUBtZW50b3IuY29tPg0KDQpNICAgICAgIHNy
-Yy9wY20vcGNtX2ZpbGUuYw0KDQpjb21taXQgMmVmN2E1M2MzMWRlNDdmNWYzMzEyN2E4OTA1NGE2
-NjFhMzFiZDMxMA0KQXV0aG9yOiBNZW5nZG9uZyBMaW4gPG1lbmdkb25nLmxpbkBsaW51eC5pbnRl
-bC5jb20+DQpEYXRlOiAgIEZyaSBOb3YgMjUgMTM6MjA6MDIgMjAxNiArMDgwMA0KDQogICAgdG9w
-b2xvZ3k6IFVwZGF0ZSBwaHlzaWNhbCBsaW5rIGNvbmZpZ3VyYXRpb25zIGluIEJyb2Fkd2VsbCB0
-ZXh0IGNvbmYgZmlsZQ0KICAgIA0KICAgIFRvIG1ha2UgdGhpcyBjb25mIGZpbGUgYSBiZXR0ZXIg
-ZXhhbXBsZSwgYWRkIGNvbmZpZ3VyYXRpb25zIGZvciB0aGUNCiAgICBwaHlzaWNhbCBsaW5rICJD
-b2RlYyIsIHNhbWUgYXMgdGhhdCBkZWZpbmVkIGJ5IEludGVsIEJyb2Fkd2VsbCB1cHN0cmVhbQ0K
-ICAgIG1hY2hpbmUgZHJpdmVyLg0KICAgIA0KICAgIFNpZ25lZC1vZmYtYnk6IE1lbmdkb25nIExp
-biA8bWVuZ2RvbmcubGluQGxpbnV4LmludGVsLmNvbT4NCiAgICBTaWduZWQtb2ZmLWJ5OiBUYWth
-c2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+DQoNCk0gICAgICAgc3JjL2NvbmYvdG9wb2xvZ3kvYnJv
-YWR3ZWxsL2Jyb2Fkd2VsbC5jb25mDQoNCg0KSXQgYXBwZWFycyBhcywgc291cmNlIGNoYW5nZXMg
-YXJlIGF0IGRpZmZlcmVudCBsb2NhdGlvbnMsIGl0IGRpZG7igJl0IHJlcG9ydCBhbnkgY29uZmxp
-Y3RzLg0KU29ycnkgZm9yIG5vdCBvYnNlcnZpbmcgdGhpcyBzb3VyY2UgY2hhbmdlcywgYmVmb3Jl
-IGFwcGx5aW5nIHRoZSBwYXRjaCBhbmQgcHVzaGluZyBpdCB0byBtYWlsaW5nIGxpc3QuDQpBbmQg
-VGhhbmtzIGZvciBwb2ludGluZyBpdCB0byBpbmNsdWRlZCBmaXggY29tbWl0Lg0KDQpSZWdhcmRz
-LA0KTW91bmVzaA0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogVGFrYXNoaSBT
-YWthbW90byBbbWFpbHRvOm8tdGFrYXNoaUBzYWthbW9jY2hpLmpwXQ0KU2VudDogMjkgTm92ZW1i
-ZXIgMjAxNiAyMTowNA0KVG86IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4NCkNjOiBzdXRh
-ci5tb3VuZXNoQGdtYWlsLmNvbTsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBGcmt1c2th
-LCBKb3NodWEgPEpvc2h1YV9Gcmt1c2thQG1lbnRvci5jb20+OyBBbmRyZWFzIFBhcGUgPGFwYXBl
-QGRlLmFkaXQtanYuY29tPjsgU3V0YXIsIE1vdW5lc2ggPE1vdW5lc2hfU3V0YXJAbWVudG9yLmNv
-bT4NClN1YmplY3Q6IFJlOiBbUEFUQ0hdIGFsc2EtbGliOiBBZGQgaHRpbWVzdGFtcCBvcGVyYXRp
-b24gaW4gcGx1Z2luIGZpbGUNCg0KT24gMjAxNuW5tDEx5pyIMzDml6UgMDA6MjIsIFRha2FzaGkg
-SXdhaSB3cm90ZToNCj4gT24gVHVlLCAyOSBOb3YgMjAxNiAxNjoxNTo1NyArMDEwMCwNCj4+Pj4g
-LS0tIGEvc3JjL3BjbS9wY21fZmlsZS5jCTIwMTMtMDctMDggMTQ6MzE6MzYuMDAwMDAwMDAwICsw
-MjAwDQo+Pj4+ICsrKyBiL3NyYy9wY20vcGNtX2ZpbGUuYwkyMDE1LTA1LTA0IDE2OjI2OjEwLjQx
-MzYxNTQwMyArMDIwMA0KPj4+PiBAQCAtNjk4LDYgKzY5OCw3IEBADQo+Pj4+ICAJLnJlYWRpID0g
-c25kX3BjbV9maWxlX3JlYWRpLA0KPj4+PiAgCS5yZWFkbiA9IHNuZF9wY21fZmlsZV9yZWFkbiwN
-Cj4+Pj4gIAkuYXZhaWxfdXBkYXRlID0gc25kX3BjbV9nZW5lcmljX2F2YWlsX3VwZGF0ZSwNCj4+
-Pj4gKwkuaHRpbWVzdGFtcCA9IHNuZF9wY21fZ2VuZXJpY19odGltZXN0YW1wLA0KPj4+PiAgCS5t
-bWFwX2NvbW1pdCA9IHNuZF9wY21fZmlsZV9tbWFwX2NvbW1pdCwNCj4+Pj4gIAkucG9sbF9kZXNj
-cmlwdG9yc19jb3VudCA9IHNuZF9wY21fZ2VuZXJpY19wb2xsX2Rlc2NyaXB0b3JzX2NvdW50LA0K
-Pj4+PiAgCS5wb2xsX2Rlc2NyaXB0b3JzID0gc25kX3BjbV9nZW5lcmljX3BvbGxfZGVzY3JpcHRv
-cnMsDQo+Pg0KPj4gSSBvcHBvc2UgdGhpcyBhcHBsaWNhdGlvbiwgYmVjYXVzZSBkZXNpZ25hdGVk
-IGluaXRpYWxpemF0aW9uIGlzIA0KPj4gYWxyZWFkeSBhcHBsaWVkIHRvIHRoZSAuaHRpbWVzdGFt
-cCBtZW1iZXIuDQo+Pg0KPj4gLi4uDQo+PiAgICAgICAgIC5wb2xsX2Rlc2NyaXB0b3JzID0gc25k
-X3BjbV9nZW5lcmljX3BvbGxfZGVzY3JpcHRvcnMsDQo+PiAgICAgICAgIC5wb2xsX3JldmVudHMg
-PSBzbmRfcGNtX2dlbmVyaWNfcG9sbF9yZXZlbnRzLA0KPj4gICAgICAgICAuaHRpbWVzdGFtcCA9
-IHNuZF9wY21fZ2VuZXJpY19odGltZXN0YW1wLA0KDQpPb3BzLCAnc25kX3BjbV9nZW5lcmljX3Jl
-YWxfaHRpbWVzdGFtcCcgaXMgcHJvcGVyIGhlcmUuLi4NCg0KPj4gfTsNCj4+DQo+PiBQbGVhc2Ug
-c2VlIGJlbG93IGNvbW1pdDoNCj4+IHBjbTpmaWxlOiBhZGQgdGhlIG1pc3NpbmcgaHRpbWVzdGFt
-cCBjYWxsYmFjaw0KPj4gaHR0cDovL2dpdC5hbHNhLXByb2plY3Qub3JnLz9wPWFsc2EtbGliLmdp
-dDthPWNvbW1pdDtoPTY4YWUwYzcyYTUzNzA0DQo+PiBkNDE2ZmU3N2Q0YzYxMmQxZjg4ZDc5MWUw
-Mg0KPj4NCj4+IFRoaXMgbWlzdGFrZSBjYXVzZXMgYmVsb3cgd2FybmluZyB3aXRoIC1Xb3ZlcnJp
-ZGUtaW5pdCBvcHRpb24uDQo+PiBwY21fZmlsZS5jOjcxNDoxNjogd2FybmluZzogaW5pdGlhbGl6
-ZWQgZmllbGQgb3ZlcndyaXR0ZW4gWy1Xb3ZlcnJpZGUtaW5pdF0NCj4+ICAgLmh0aW1lc3RhbXAg
-PSBzbmRfcGNtX2dlbmVyaWNfcmVhbF9odGltZXN0YW1wLA0KPj4gICAgICAgICAgICAgICAgIF5+
-fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn4NCj4+DQo+PiBJIGd1ZXNzIG1lbnRvci9BRElU
-IGRldmVsb3BlcnMgd29ya3MgZm9yIGZvcm1lciBzbmFwc2hvdCwgdGhlbiBtaXNzZWQgDQo+PiB0
-byByZWJhc2UgdG8gY3VycmVudCBtYWlubGluZSBvZiBhbHNhLWxpYi4gSSBzdWdnZXN0IHRoZW0g
-dG8gZGkgDQo+PiByZS1ldmFsdWF0aW9uIHdpdGggY3VycmVudCBtYWlubGluZSB3aXRob3V0IHRo
-aXMgcGF0Y2guDQo+DQo+IEkgb3Zlcmxvb2tlZCBpdCwgdG9vLiAgTm93IHRoZSBjb21taXQgZ290
-IHJldmVydGVkLg0KDQpUaGFua3MuDQoNCg0KVGFrYXNoaSBTYWthbW90bw0KX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCkFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0DQpBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcNCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsDQpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+The patch
+
+   ASoC: rsnd: fixup reset timing of sync convert_rate
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From ef30da1c52c633a6eaa017ad0d075aaa809a6154 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 2 Feb 2017 05:01:05 +0000
+Subject: [PATCH] ASoC: rsnd: fixup reset timing of sync convert_rate
+
+Sync convert rate settings should be availabled *after* Playing.
+Thus, src->sync should be reset first of init function.
+Otherwise, it will set remaining settings when it start playing.
+This patch fixes it. Thanks to Yokoyama-san
+
+Reported-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/src.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
+index 3a8f65bd1bf9..42db48db09ba 100644
+--- a/sound/soc/sh/rcar/src.c
++++ b/sound/soc/sh/rcar/src.c
+@@ -390,6 +390,9 @@ static int rsnd_src_init(struct rsnd_mod *mod,
+ {
+ 	struct rsnd_src *src = rsnd_mod_to_src(mod);
+ 
++	/* reset sync convert_rate */
++	src->sync.val = 0;
++
+ 	rsnd_mod_power_on(mod);
+ 
+ 	rsnd_src_activation(mod);
+@@ -398,9 +401,6 @@ static int rsnd_src_init(struct rsnd_mod *mod,
+ 
+ 	rsnd_src_status_clear(mod);
+ 
+-	/* reset sync convert_rate */
+-	src->sync.val = 0;
+-
+ 	return 0;
+ }
+ 
+-- 
+2.11.0
