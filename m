@@ -1,141 +1,80 @@
-From: Romain Perier <romain.perier@collabora.com>
-Subject: [PATCH v8 4/4] arm: dts: Add support for ES8388 to the
-	Radxa Rock 2
-Date: Fri,  3 Feb 2017 15:38:00 +0100
-Message-ID: <20170203143800.23859-5-romain.perier@collabora.com>
-References: <20170203143800.23859-1-romain.perier@collabora.com>
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Subject: Re: [PATCH] drm/i915: Enable VLV audio chicken bit for
+	LPE audio
+Date: Fri, 3 Feb 2017 16:54:33 +0200
+Message-ID: <20170203145433.GK31595@intel.com>
+References: <20170202101253.11093-1-tiwai@suse.de>
+ <s5h8tpn8kne.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
- by alsa0.perex.cz (Postfix) with ESMTP id 714E5266B17
- for <alsa-devel@alsa-project.org>; Fri,  3 Feb 2017 15:38:16 +0100 (CET)
-In-Reply-To: <20170203143800.23859-1-romain.perier@collabora.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, linux-rockchip@lists.infradead.org, Sjoerd Simons <sjoerd.simons@collabora.co.uk>, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, Romain Perier <romain.perier@collabora.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <s5h8tpn8kne.wl-tiwai@suse.de>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, rakesh.a.ughreja@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds the DT definition of the es8388 i2c device
-found at address 0x10. It also adds the definition for connecting
-the Rockchip I2S to the es8388 analog output.
-
-This commit is based on the initial work that was done by Sjoerd Simons
-<sjoerd.simons@collabora.com> with some improvements.
-
-Signed-off-by: Romain Perier <romain.perier@collabora.com>
----
-
-Changes in v8: None
-Changes in v7:
- - Added a new label for vccio_codec
- - Use vccio_codec instead of vcca_codec
- - Splitted headphone pins into hp_det and phone_ctl 
-Changes in v6: None
-Changes in v5: None
-Changes in v4:
- - Updated to the new DT binding
- - Added the property 'rockchip,routing'
- - Renamed the node sound_es8388 to sound_i2s
-Changes in v3: None
-Changes in v2: None
-
- arch/arm/boot/dts/rk3288-rock2-som.dtsi   |  2 +-
- arch/arm/boot/dts/rk3288-rock2-square.dts | 42 +++++++++++++++++++++++++++++++
- 2 files changed, 43 insertions(+), 1 deletion(-)
-
-diff --git a/arch/arm/boot/dts/rk3288-rock2-som.dtsi b/arch/arm/boot/dts/rk3288-rock2-som.dtsi
-index b25ba80..c4d320c 100644
---- a/arch/arm/boot/dts/rk3288-rock2-som.dtsi
-+++ b/arch/arm/boot/dts/rk3288-rock2-som.dtsi
-@@ -136,7 +136,7 @@
- 				regulator-always-on;
- 			};
- 
--			vcc_io: REG2 {
-+			vcc_io: vccio_codec: REG2 {
- 				regulator-name = "VCC_IO";
- 				regulator-min-microvolt = <3300000>;
- 				regulator-max-microvolt = <3300000>;
-diff --git a/arch/arm/boot/dts/rk3288-rock2-square.dts b/arch/arm/boot/dts/rk3288-rock2-square.dts
-index dd3ad2e..f693c39 100644
---- a/arch/arm/boot/dts/rk3288-rock2-square.dts
-+++ b/arch/arm/boot/dts/rk3288-rock2-square.dts
-@@ -86,6 +86,19 @@
- 		#sound-dai-cells = <0>;
- 	};
- 
-+	sound_i2s {
-+		compatible = "rockchip,rk3288-hdmi-analog";
-+		rockchip,model = "I2S";
-+		rockchip,i2s-controller = <&i2s>;
-+		rockchip,audio-codec = <&es8388>;
-+		rockchip,routing = "Analog", "LOUT2",
-+				   "Analog", "ROUT2";
-+		rockchip,hp-en-gpios = <&gpio8 0 GPIO_ACTIVE_HIGH>;
-+		rockchip,hp-det-gpios = <&gpio7 7 GPIO_ACTIVE_HIGH>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&phone_ctl>, <&hp_det>;
-+	};
-+
- 	sdio_pwrseq: sdio-pwrseq {
- 		compatible = "mmc-pwrseq-simple";
- 		clocks = <&hym8563>;
-@@ -173,10 +186,29 @@
- 	};
- };
- 
-+&i2c2 {
-+	status = "okay";
-+
-+	es8388: es8388@10 {
-+		compatible = "everest,es8388", "everest,es8328";
-+		reg = <0x10>;
-+		AVDD-supply = <&vccio_codec>;
-+		DVDD-supply = <&vccio_codec>;
-+		HPVDD-supply = <&vccio_codec>;
-+		PVDD-supply = <&vccio_codec>;
-+		clocks = <&cru SCLK_I2S0_OUT>;
-+		clock-names = "i2s_clk_out";
-+	};
-+};
-+
- &i2c5 {
- 	status = "okay";
- };
- 
-+&i2s {
-+	status = "okay";
-+};
-+
- &pinctrl {
- 	ir {
- 		ir_int: ir-int {
-@@ -190,6 +222,16 @@
- 		};
- 	};
- 
-+	headphone {
-+		hp_det: hp-det {
-+			rockchip,pins = <7 7 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+
-+		phone_ctl: phone-ctl {
-+			rockchip,pins = <8 0 RK_FUNC_GPIO &pcfg_pull_up>;
-+		};
-+	};
-+
- 	usb {
- 		host_vbus_drv: host-vbus-drv {
- 			rockchip,pins = <0 14 RK_FUNC_GPIO &pcfg_pull_none>;
--- 
-2.9.3
+T24gRnJpLCBGZWIgMDMsIDIwMTcgYXQgMDI6MzI6MzdQTSArMDEwMCwgVGFrYXNoaSBJd2FpIHdy
+b3RlOgo+IE9uIFRodSwgMDIgRmViIDIwMTcgMTE6MTI6NTMgKzAxMDAsCj4gVGFrYXNoaSBJd2Fp
+IHdyb3RlOgo+ID4gCj4gPiBUaGUgYXVkaW8gY2hpY2tlbiBiaXQgKHJlZ2lzdGVyIG9mZnNldCAw
+eDYyZjM4KSBzZWVtcyByZXF1aXJlZCB0byBtYWtlCj4gPiBEUCBhdWRpbyB3b3JraW5nIG9uIHNv
+bWUgbWFjaGluZXMuICBBdCBsZWFzdCwgb24gRGVsbCBXeXNlIDMwNDAsIEkKPiA+IGZhaWxlZCB0
+byBnZXQgdGhlIGF1ZGlvIHVubGVzcyB0aGlzIGJpdCBpcyBzZXQgb25jZS4KPiA+IAo+ID4gU3Ry
+YW5nZWx5LCB0aGUgYml0IHNlZW1zIG5lY2Vzc2FyeSBvbmx5IG9uY2UsIGFuZCBpdCBwZXJzaXN0
+cyBhZnRlcgo+ID4gdGhhdCwgZXZlbiBzb21lIHBvd2VyLW9mZiBjeWNsZXMuICBUaGUgcmVnaXN0
+ZXIgaXMgc3VwcG9zZWRseQo+ID4gd3JpdGUtb25seSwgc28gaXQncyBubyBldmlkZW5jZSB3aGV0
+aGVyIHRoZSBiaXQga2VlcHMgZWZmZWN0Cj4gPiBwZXJzaXN0ZW50bHkuICBCdXQsIGp1ZGdpbmcg
+ZnJvbSB0aGUgZXhwZXJpbWVudCwgaXQgbG9va3MgZW5vdWdoIHRvCj4gPiBzZXQgaXQgdXAgb25j
+ZSBhdCB0aGUgZGV2aWNlIGluaXRpYWxpemF0aW9uLgo+ID4gCj4gPiBUaGUgcGF0Y2ggaXMgYmFz
+aWNhbGx5IGEgY3V0IGZyb20gdGhlIG9yaWdpbmFsIHBhdGNoIGJ5IFBpZXJyZS1Mb3Vpcwo+ID4g
+Qm9zc2FydC4KPiA+IAo+ID4gQ2M6IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IDxwaWVycmUtbG91aXMu
+Ym9zc2FydEBsaW51eC5pbnRlbC5jb20+Cj4gPiBTaWduZWQtb2ZmLWJ5OiBUYWthc2hpIEl3YWkg
+PHRpd2FpQHN1c2UuZGU+Cj4gCj4gSSBnYXZlIGEgdHlwbyB0byBpbnRlbC1nZnggTUwgYWRkcmVz
+cywgbm93IGNvcnJlY3RlZCwgc29ycnkuCj4gCj4gQXJlIHlvdSBpOTE1IGd1eXMgT0sgd2l0aCB0
+aGlzIGNoYW5nZT8gIEknZCBsb3ZlIHRvIGZpeCBpdCBmb3IgNC4xMSBpbgo+IHRpbWUsIHNvIHBs
+ZWFzZSBjaGVjayBhbmQgZ2l2ZSBBQ0suCj4gCj4gCj4gdGhhbmtzLAo+IAo+IFRha2FzaGkKPiAK
+PiA+IC0tLQo+ID4gIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfcmVnLmggICAgICAgIHwgMyAr
+KysKPiA+ICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9scGVfYXVkaW8uYyB8IDcgKysrKysr
+Kwo+ID4gIDIgZmlsZXMgY2hhbmdlZCwgMTAgaW5zZXJ0aW9ucygrKQo+ID4gCj4gPiBkaWZmIC0t
+Z2l0IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9yZWcuaCBiL2RyaXZlcnMvZ3B1L2RybS9p
+OTE1L2k5MTVfcmVnLmgKPiA+IGluZGV4IDRlMjRiYTBjZGJlOC4uNGYxNWEzZGM2ZDk4IDEwMDY0
+NAo+ID4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9yZWcuaAo+ID4gKysrIGIvZHJp
+dmVycy9ncHUvZHJtL2k5MTUvaTkxNV9yZWcuaAo+ID4gQEAgLTIwNjIsNiArMjA2Miw5IEBAIGVu
+dW0gc2tsX2Rpc3BfcG93ZXJfd2VsbHMgewo+ID4gICNkZWZpbmUgSTkxNV9IRE1JX0xQRV9BVURJ
+T19TSVpFCTB4MTAwMAo+ID4gIAo+ID4gIC8qIERpc3BsYXlQb3J0IEF1ZGlvIHcvIExQRSAqLwo+
+ID4gKyNkZWZpbmUgVkxWX0FVRF9DSElDS0VOX0JJVF9SRUcJCV9NTUlPKFZMVl9ESVNQTEFZX0JB
+U0UgKyAweDYyRjM4KQo+ID4gKyNkZWZpbmUgVkxWX0NISUNLRU5fQklUX0RCR19FTkFCTEUJKDEg
+PDwgMCkKPiA+ICsKPiA+ICAjZGVmaW5lIF9WTFZfQVVEX1BPUlRfRU5fQl9EQkcJCShWTFZfRElT
+UExBWV9CQVNFICsgMHg2MkYyMCkKPiA+ICAjZGVmaW5lIF9WTFZfQVVEX1BPUlRfRU5fQ19EQkcJ
+CShWTFZfRElTUExBWV9CQVNFICsgMHg2MkYzMCkKPiA+ICAjZGVmaW5lIF9WTFZfQVVEX1BPUlRf
+RU5fRF9EQkcJCShWTFZfRElTUExBWV9CQVNFICsgMHg2MkYzNCkKPiA+IGRpZmYgLS1naXQgYS9k
+cml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9scGVfYXVkaW8uYyBiL2RyaXZlcnMvZ3B1L2RybS9p
+OTE1L2ludGVsX2xwZV9hdWRpby5jCj4gPiBpbmRleCBkM2ZmZTAwMTI2OTIuLjNiYTI3OTllOTNi
+ZCAxMDA2NDQKPiA+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2xwZV9hdWRpby5j
+Cj4gPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9scGVfYXVkaW8uYwo+ID4gQEAg
+LTI0OCw2ICsyNDgsMTMgQEAgc3RhdGljIGludCBscGVfYXVkaW9fc2V0dXAoc3RydWN0IGRybV9p
+OTE1X3ByaXZhdGUgKmRldl9wcml2KQo+ID4gIAkJZ290byBlcnJfZnJlZV9pcnE7Cj4gPiAgCX0K
+PiA+ICAKPiA+ICsJLyogZW5hYmxlIGNoaWNrZW4gYml0OyBhdCBsZWFzdCB0aGlzIGlzIHJlcXVp
+cmVkIGZvciBEZWxsIFd5c2UgMzA0MAo+ID4gKwkgKiB3aXRoIERQIG91dHB1dHMgKGJ1dCBvbmx5
+IHNvbWV0aW1lcyBieSBzb21lIHJlYXNvbiEpCj4gPiArCSAqLwo+ID4gKwlJOTE1X1dSSVRFKFZM
+Vl9BVURfQ0hJQ0tFTl9CSVRfUkVHLAo+ID4gKwkJICAgSTkxNV9SRUFEKFZMVl9BVURfQ0hJQ0tF
+Tl9CSVRfUkVHKSB8Cj4gPiArCQkgICBWTFZfQ0hJQ0tFTl9CSVRfREJHX0VOQUJMRSk7CgpSTVcg
+c2VlbXMgYSBsaXR0bGUgcG9pbnRsZXNzIHNpbmNlIHlvdSB2ZXJpZmllZCB0aGF0IHRoZSByZWdp
+c3RlciBjYW4ndAphY3R1YWxseSBiZSByZWFkLgoKU28sIHdpdGggdGhlIHJlYWQgZHJvcHBlZApS
+ZXZpZXdlZC1ieTogVmlsbGUgU3lyasOkbMOkIDx2aWxsZS5zeXJqYWxhQGxpbnV4LmludGVsLmNv
+bT4KCj4gPiArCj4gPiAgCXJldHVybiAwOwo+ID4gIGVycl9mcmVlX2lycToKPiA+ICAJaXJxX2Zy
+ZWVfZGVzYyhkZXZfcHJpdi0+bHBlX2F1ZGlvLmlycSk7Cj4gPiAtLSAKPiA+IDIuMTEuMAo+ID4g
+CgotLSAKVmlsbGUgU3lyasOkbMOkCkludGVsIE9UQwpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBs
+aXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9pbnRlbC1nZngK
