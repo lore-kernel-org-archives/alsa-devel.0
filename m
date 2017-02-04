@@ -1,198 +1,259 @@
-From: Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 6/7] ASoC: add bindings for STM32 DFSDM driver
-Date: Sat, 4 Feb 2017 12:13:58 +0000
-Message-ID: <325ec27f-f13d-c561-d4cf-b50cd9a3eadb@kernel.org>
-References: <1485189145-29576-1-git-send-email-arnaud.pouliquen@st.com>
- <1485189145-29576-7-git-send-email-arnaud.pouliquen@st.com>
- <f0f446ea-97a0-8fef-bec5-aefeed42a85a@kernel.org>
- <71612ea0-c9d0-a85e-2d58-72609df57e35@st.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: hdac_hdmi: Move channel info from pin
+	to PCM structure" to the asoc tree
+Date: Sat, 04 Feb 2017 13:12:57 +0100
+Message-ID: <E1cZzD7-0004Uc-Mz@finisterre>
+References: <1484589477-7630-5-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <71612ea0-c9d0-a85e-2d58-72609df57e35-qxv4g6HH51o@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre TORGUE <alexandre.torgue-qxv4g6HH51o@public.gmane.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 09A7C266C5F
+ for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2017 13:13:07 +0100 (CET)
+In-Reply-To: <1484589477-7630-5-git-send-email-jeeja.kp@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jeeja KP <jeeja.kp@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 30/01/17 17:32, Arnaud Pouliquen wrote:
-> Hello Johan,
-> 
-> Please find my comments in-line.
-> 
-> Regards
-> 
-> Arnaud
-> 
-> On 01/29/2017 01:19 PM, Jonathan Cameron wrote:
->> On 23/01/17 16:32, Arnaud Pouliquen wrote:
->>> This patch adds documentation of device tree bindings for the
->>> STM32 DFSDM ASoC driver.
->>>
->>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
->>> ---
->>>  .../devicetree/bindings/sound/st,sm32-adfsdm.txt   | 84 ++++++++++++++++++++++
->>>  1 file changed, 84 insertions(+)
->>>  create mode 100644 Documentation/devicetree/bindings/sound/st,sm32-adfsdm.txt
->>>
->>> diff --git a/Documentation/devicetree/bindings/sound/st,sm32-adfsdm.txt b/Documentation/devicetree/bindings/sound/st,sm32-adfsdm.txt
->>> new file mode 100644
->>> index 0000000..a1d27b8
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/sound/st,sm32-adfsdm.txt
->>> @@ -0,0 +1,84 @@
->>> +STMicroelectronics STM32 ADFSDM ASoC DAI device driver.
->>> +
->>> +STM32 ADFSDM ASoC is a sigma delta audio interface for digital microphone.
->>> +It has to be declared in device-tree as a subnode of the DFSDM mfd node.
->>> +
->>> +It offers possibility to record several mono microphones, with an option to
->>> +synchronize all microphones on a main one (that must be piped to filter 0)
->>> +Audio interface can be exposed through the generic ASoC simple card.
->>> +
->>> +2 Dmics can be connected on one SPI interface instance n.
->>> +Convention is that the DMIC that strobes data on rising edge is connected to the
->>> +corresponding DFSDM channel n; while the Dmic that strobes data on falling edge
->>> +is connected to the channel n-1. Simple card property "bitclock-inversion = <1>"
->>> +is used to specify that microphone strobes data on falling edge.
->>> +
->>> +SPI interface allows to be scheduled by an external SPI clock. To use it
->>> +simple card properties "bitclock-master = <&codec>" and "system-clock-frequency"
->>> +have to be defined in dai-link node.
->>> +
->>> +Required properties:
->>> +- compatible: 	Must be "st,stm32-dfsdm-audio",
->>> +- reg:		Specifies the DFSDM filter instance.
->>> +- interrupts: 	DFSDM filter instance interrupt line.
->>> +- dma:		DMA controller phandle and DMA request line associated to the
->>> +		filter instance ( specified by the field "reg")
->>> +- dma-names: 	must be "rx"
->>> +
->>> +- st,input-id:		Id of the SPI/Manchester interface used.
->>> +- st,dai-filter-order:  SinC filter order from 0 to 5.
->>> +			0: FastSinC
->>> +			[1-5]: order 1 to 5.
->>> +			For audio purpose it is recommended to use order 3 to 5.
->> Interesting for audio you consider it feature of the hardware, but for ADC you
->> consider that this should be userspace controlled.
->> Personally I'd like to see more detail on those filters but if this is convention
->> in Asoc then so be it.
-> 
-> Configure filter and integrator is quite tricky. Updating filter and
-> integrator parameters have impact on sample resolution and output sample
-> rate.
-> Sample resolution is the peak to peak data value and depends on
-> oversampling parameters and filter order.
-> 
-> Output sample rate depends on SPI input clock frequency oversampling
-> parameters and filter order.
-> 
-> High filter order gives a better resolution and a better filter response
-> but allows less dynamic to find the good rate...
-> 
-> So it is a compromise between resolution, rate and filtering.
-> 
-> For ADC use case, filter orders 1 to 3 are recommended.
-> For audio use case, orders 3 to 5 are recommended.
-I'm never against allowing users enough rope to hang themselves
-as long as the defaults are sensible :)
-> 
-> On IIO side i proposed to expose tuning in ABI, to allows application
-> fine tuning.
-> Need to document it...
-> 
-> For ASOC it is another story. Application requests a rate and a sample
-> format. So filter parameters are computed based on SPI bus clock
-> frequency, expected audio sample rate and audio sample format.
-> This is done in stm32_adfsdm_get_best_osr in sound/soc/stm/stm32_adfsdm.c.
-If there is only ever one sensible answer, fair enough on not being
-able to pick and choose.
-> 
-> Now your comment trig a good point. Perhaps a better option in IIO,
-> could be to offer same kind of ABI than ASOC interface:
-> - standard oversampling-ratio ABI. based on it filter and integrator
-> oversampling ratios will be computed to maximize the resolution.
-> - a read only resolution ABI:
-> /sys/bus/iio/devices/iio:deviceX/in_adc_x_resolution. That give the
-> computed resolution.
-Would this be directly exposed in terms of the 'maximum value' that
-could come out?  If so we could use the existing range description
-callbacks (called _available though that's somewhat missleading in
-this case).
-> 
-> In this case filter order will be part of the DT for IIO and ASoC.
-> This would also match with a redesign of the DFSDM driver in IIO...
-Sounds to me like it would be sensible to do restrict things somewhat
-in the first instance, and perhaps rename them as 'defaults' in the
-future if we decide that userspace control does make sense.
-Basically do it the first time someone bashes us over the head with
-a usecase we aren't supporting well.
+The patch
 
-> 
->>> +
->>> +Optional properties:
->>> + - st,dai0-synchronized: Set to 1 to synchronize DAI with DFSDM instance 0.
->>> +
->>> +Exemple of a card with 2 Dmics synchronized and connected on SPI interface 1.
->> Example.
->>> +
->>> +	dfsdm: dfsdm@4400D000 {
->>> +		dai_dfsdm0: dfsdm-audio@0 {
->>> +			compatible = "st,stm32-dfsdm-audio";
->>> +			#sound-dai-cells = <0>;
->>> +			reg = <0>;
->>> +			dmas = <&dmamux1 101 0x400 0x00>;
->>> +			dma-names = "rx";
->>> +			st,input-id = <0>;
->>> +			st,dai-filter-order = <5>;
->>> +		};
->>> +		dai_dfsdm1: dfsdm-audio@1 {
->>> +			compatible = "st,stm32-dfsdm-audio";
->>> +			#sound-dai-cells = <0>;
->>> +			reg = <0>;
->>> +			dmas = <&dmamux1 102 0x400 0x00>;
->>> +			dma-names = "rx";
->>> +			st,input-id = <0>;
->>> +			st,dai0-synchronized = <1>;
->>> +			st,dai-filter-order = <5>;
->>> +		};
->>> +	};
->>> +	sound_dfsdm_pdm {
->>> +		compatible = "simple-audio-card";
->>> +		simple-audio-card,name = "dfsdm_pdm";
->>> +		status = "okay";
->>> +
->>> +		dfsdm0_mic0: simple-audio-card,dai-link@0 {
->>> +			format = "pdm";
->>> +			cpu {
->>> +				sound-dai = <&dai_dfsdm0>;
->>> +			};
->>> +			dmic0_codec: codec {
->>> +				sound-dai = <&dmic0>;
->>> +			};
->>> +		};
->>> +		dfsdm0_mic1: simple-audio-card,dai-link@1 {
->>> +			format = "pdm";
->>> +			bitclock-inversion = <1>;
->>> +			cpu {
->>> +				sound-dai = <&dai_dfsdm1>;
->>> +			};
->>> +			codec {
->>> +				sound-dai = <&dmic1>;
->>> +			};
->>> +		};
->>> +	};
->>>
->> Jonathan
->>
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-iio" in
-> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+   ASoC: hdac_hdmi: Move channel info from pin to PCM structure
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From ab1eea19d0223481fab7345072825d00ce98c339 Mon Sep 17 00:00:00 2001
+From: Jeeja KP <jeeja.kp@intel.com>
+Date: Tue, 24 Jan 2017 21:49:05 +0530
+Subject: [PATCH] ASoC: hdac_hdmi: Move channel info from pin to PCM structure
+
+Channel info is part of the pcm parameter and channel map control is
+created for each pcm. So move channel info to pcm instead of pin
+structure and the mutex lock to pcm.
+
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/hdac_hdmi.c | 76 ++++++++++++++++++++------------------------
+ 1 file changed, 34 insertions(+), 42 deletions(-)
+
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index c0b49f4b7074..2a370d694f6d 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -85,10 +85,6 @@ struct hdac_hdmi_pin {
+ 	hda_nid_t mux_nids[HDA_MAX_CONNECTIONS];
+ 	struct hdac_hdmi_eld eld;
+ 	struct hdac_ext_device *edev;
+-	struct mutex lock;
+-	bool chmap_set;
+-	unsigned char chmap[8]; /* ALSA API channel-map */
+-	int channels; /* current number of channels */
+ };
+ 
+ struct hdac_hdmi_pcm {
+@@ -100,6 +96,9 @@ struct hdac_hdmi_pcm {
+ 	int stream_tag;
+ 	int channels;
+ 	int format;
++	bool chmap_set;
++	unsigned char chmap[8]; /* ALSA API channel-map */
++	struct mutex lock;
+ };
+ 
+ struct hdac_hdmi_dai_pin_map {
+@@ -217,13 +216,13 @@ struct dp_audio_infoframe {
+ };
+ 
+ static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
+-				hda_nid_t cvt_nid, hda_nid_t pin_nid)
++		   struct hdac_hdmi_pcm *pcm, struct hdac_hdmi_pin *pin)
+ {
+ 	uint8_t buffer[HDMI_INFOFRAME_HEADER_SIZE + HDMI_AUDIO_INFOFRAME_SIZE];
+ 	struct hdmi_audio_infoframe frame;
+ 	struct dp_audio_infoframe dp_ai;
+ 	struct hdac_hdmi_priv *hdmi = hdac->private_data;
+-	struct hdac_hdmi_pin *pin;
++	struct hdac_hdmi_cvt *cvt = pcm->cvt;
+ 	u8 *dip;
+ 	int ret;
+ 	int i;
+@@ -231,19 +230,14 @@ static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
+ 	u8 conn_type;
+ 	int channels, ca;
+ 
+-	list_for_each_entry(pin, &hdmi->pin_list, head) {
+-		if (pin->nid == pin_nid)
+-			break;
+-	}
+-
+ 	ca = snd_hdac_channel_allocation(&hdac->hdac, pin->eld.info.spk_alloc,
+-			pin->channels, pin->chmap_set, true, pin->chmap);
++			pcm->channels, pcm->chmap_set, true, pcm->chmap);
+ 
+ 	channels = snd_hdac_get_active_channels(ca);
+-	hdmi->chmap.ops.set_channel_count(&hdac->hdac, cvt_nid, channels);
++	hdmi->chmap.ops.set_channel_count(&hdac->hdac, cvt->nid, channels);
+ 
+ 	snd_hdac_setup_channel_mapping(&hdmi->chmap, pin->nid, false, ca,
+-				pin->channels, pin->chmap, pin->chmap_set);
++				pcm->channels, pcm->chmap, pcm->chmap_set);
+ 
+ 	eld_buf = pin->eld.eld_buffer;
+ 	conn_type = drm_eld_get_conn_type(eld_buf);
+@@ -279,26 +273,26 @@ static int hdac_hdmi_setup_audio_infoframe(struct hdac_ext_device *hdac,
+ 	}
+ 
+ 	/* stop infoframe transmission */
+-	hdac_hdmi_set_dip_index(hdac, pin_nid, 0x0, 0x0);
+-	snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
++	hdac_hdmi_set_dip_index(hdac, pin->nid, 0x0, 0x0);
++	snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
+ 			AC_VERB_SET_HDMI_DIP_XMIT, AC_DIPXMIT_DISABLE);
+ 
+ 
+ 	/*  Fill infoframe. Index auto-incremented */
+-	hdac_hdmi_set_dip_index(hdac, pin_nid, 0x0, 0x0);
++	hdac_hdmi_set_dip_index(hdac, pin->nid, 0x0, 0x0);
+ 	if (conn_type == DRM_ELD_CONN_TYPE_HDMI) {
+ 		for (i = 0; i < sizeof(buffer); i++)
+-			snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
++			snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
+ 				AC_VERB_SET_HDMI_DIP_DATA, buffer[i]);
+ 	} else {
+ 		for (i = 0; i < sizeof(dp_ai); i++)
+-			snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
++			snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
+ 				AC_VERB_SET_HDMI_DIP_DATA, dip[i]);
+ 	}
+ 
+ 	/* Start infoframe */
+-	hdac_hdmi_set_dip_index(hdac, pin_nid, 0x0, 0x0);
+-	snd_hdac_codec_write(&hdac->hdac, pin_nid, 0,
++	hdac_hdmi_set_dip_index(hdac, pin->nid, 0x0, 0x0);
++	snd_hdac_codec_write(&hdac->hdac, pin->nid, 0,
+ 			AC_VERB_SET_HDMI_DIP_XMIT, AC_DIPXMIT_BEST);
+ 
+ 	return 0;
+@@ -476,18 +470,22 @@ static void hdac_hdmi_pcm_close(struct snd_pcm_substream *substream,
+ 	struct hdac_ext_device *hdac = snd_soc_dai_get_drvdata(dai);
+ 	struct hdac_hdmi_priv *hdmi = hdac->private_data;
+ 	struct hdac_hdmi_dai_pin_map *dai_map;
++	struct hdac_hdmi_pcm *pcm;
+ 
+ 	dai_map = &hdmi->dai_map[dai->id];
+ 
+-	if (dai_map->pin) {
+-		mutex_lock(&dai_map->pin->lock);
+-		dai_map->pin->chmap_set = false;
+-		memset(dai_map->pin->chmap, 0, sizeof(dai_map->pin->chmap));
+-		dai_map->pin->channels = 0;
+-		mutex_unlock(&dai_map->pin->lock);
++	pcm = hdac_hdmi_get_pcm_from_cvt(hdmi, dai_map->cvt);
+ 
+-		dai_map->pin = NULL;
++	if (pcm) {
++		mutex_lock(&pcm->lock);
++		pcm->chmap_set = false;
++		memset(pcm->chmap, 0, sizeof(pcm->chmap));
++		pcm->channels = 0;
++		mutex_unlock(&pcm->lock);
+ 	}
++
++	if (dai_map->pin)
++		dai_map->pin = NULL;
+ }
+ 
+ static int
+@@ -611,8 +609,7 @@ static int hdac_hdmi_pin_output_widget_event(struct snd_soc_dapm_widget *w,
+ 
+ 		hdac_hdmi_set_amp(edev, pin->nid, AMP_OUT_UNMUTE);
+ 
+-		return hdac_hdmi_setup_audio_infoframe(edev, pcm->cvt->nid,
+-								pin->nid);
++		return hdac_hdmi_setup_audio_infoframe(edev, pcm, pin);
+ 
+ 	case SND_SOC_DAPM_POST_PMD:
+ 		hdac_hdmi_set_amp(edev, pin->nid, AMP_OUT_MUTE);
+@@ -1110,7 +1107,6 @@ static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
+ 	hdmi->num_pin++;
+ 
+ 	pin->edev = edev;
+-	mutex_init(&pin->lock);
+ 
+ 	return 0;
+ }
+@@ -1361,6 +1357,7 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device)
+ 		return -ENOMEM;
+ 	pcm->pcm_id = device;
+ 	pcm->cvt = hdmi->dai_map[dai->id].cvt;
++	mutex_init(&pcm->lock);
+ 
+ 	snd_pcm = hdac_hdmi_get_pcm_from_id(dai->component->card, device);
+ 	if (snd_pcm) {
+@@ -1506,13 +1503,8 @@ static void hdac_hdmi_get_chmap(struct hdac_device *hdac, int pcm_idx,
+ 	struct hdac_ext_device *edev = to_ehdac_device(hdac);
+ 	struct hdac_hdmi_priv *hdmi = edev->private_data;
+ 	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
+-	struct hdac_hdmi_pin *pin = pcm->pin;
+-
+-	/* chmap is already set to 0 in caller */
+-	if (!pin)
+-		return;
+ 
+-	memcpy(chmap, pin->chmap, ARRAY_SIZE(pin->chmap));
++	memcpy(chmap, pcm->chmap, ARRAY_SIZE(pcm->chmap));
+ }
+ 
+ static void hdac_hdmi_set_chmap(struct hdac_device *hdac, int pcm_idx,
+@@ -1523,12 +1515,12 @@ static void hdac_hdmi_set_chmap(struct hdac_device *hdac, int pcm_idx,
+ 	struct hdac_hdmi_pcm *pcm = get_hdmi_pcm_from_id(hdmi, pcm_idx);
+ 	struct hdac_hdmi_pin *pin = pcm->pin;
+ 
+-	mutex_lock(&pin->lock);
+-	pin->chmap_set = true;
+-	memcpy(pin->chmap, chmap, ARRAY_SIZE(pin->chmap));
++	mutex_lock(&pcm->lock);
++	pcm->chmap_set = true;
++	memcpy(pcm->chmap, chmap, ARRAY_SIZE(pcm->chmap));
+ 	if (prepared)
+-		hdac_hdmi_setup_audio_infoframe(edev, pcm->cvt->nid, pin->nid);
+-	mutex_unlock(&pin->lock);
++		hdac_hdmi_setup_audio_infoframe(edev, pcm, pin);
++	mutex_unlock(&pcm->lock);
+ }
+ 
+ static bool is_hdac_hdmi_pcm_attached(struct hdac_device *hdac, int pcm_idx)
+-- 
+2.11.0
