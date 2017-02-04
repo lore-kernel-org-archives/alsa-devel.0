@@ -1,88 +1,198 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Add route change to
-	rt286 machine" to the asoc tree
-Date: Sat, 04 Feb 2017 13:12:50 +0100
-Message-ID: <E1cZzD0-0004SZ-4O@finisterre>
-References: <1474379180-7132-4-git-send-email-jeeja.kp@intel.com>
+From: Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 6/7] ASoC: add bindings for STM32 DFSDM driver
+Date: Sat, 4 Feb 2017 12:13:58 +0000
+Message-ID: <325ec27f-f13d-c561-d4cf-b50cd9a3eadb@kernel.org>
+References: <1485189145-29576-1-git-send-email-arnaud.pouliquen@st.com>
+ <1485189145-29576-7-git-send-email-arnaud.pouliquen@st.com>
+ <f0f446ea-97a0-8fef-bec5-aefeed42a85a@kernel.org>
+ <71612ea0-c9d0-a85e-2d58-72609df57e35@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 88468266C59
- for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2017 13:13:06 +0100 (CET)
-In-Reply-To: <1474379180-7132-4-git-send-email-jeeja.kp@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>
-Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <71612ea0-c9d0-a85e-2d58-72609df57e35-qxv4g6HH51o@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre TORGUE <alexandre.torgue-qxv4g6HH51o@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 30/01/17 17:32, Arnaud Pouliquen wrote:
+> Hello Johan,
+> 
+> Please find my comments in-line.
+> 
+> Regards
+> 
+> Arnaud
+> 
+> On 01/29/2017 01:19 PM, Jonathan Cameron wrote:
+>> On 23/01/17 16:32, Arnaud Pouliquen wrote:
+>>> This patch adds documentation of device tree bindings for the
+>>> STM32 DFSDM ASoC driver.
+>>>
+>>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+>>> ---
+>>>  .../devicetree/bindings/sound/st,sm32-adfsdm.txt   | 84 ++++++++++++++++++++++
+>>>  1 file changed, 84 insertions(+)
+>>>  create mode 100644 Documentation/devicetree/bindings/sound/st,sm32-adfsdm.txt
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/sound/st,sm32-adfsdm.txt b/Documentation/devicetree/bindings/sound/st,sm32-adfsdm.txt
+>>> new file mode 100644
+>>> index 0000000..a1d27b8
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/sound/st,sm32-adfsdm.txt
+>>> @@ -0,0 +1,84 @@
+>>> +STMicroelectronics STM32 ADFSDM ASoC DAI device driver.
+>>> +
+>>> +STM32 ADFSDM ASoC is a sigma delta audio interface for digital microphone.
+>>> +It has to be declared in device-tree as a subnode of the DFSDM mfd node.
+>>> +
+>>> +It offers possibility to record several mono microphones, with an option to
+>>> +synchronize all microphones on a main one (that must be piped to filter 0)
+>>> +Audio interface can be exposed through the generic ASoC simple card.
+>>> +
+>>> +2 Dmics can be connected on one SPI interface instance n.
+>>> +Convention is that the DMIC that strobes data on rising edge is connected to the
+>>> +corresponding DFSDM channel n; while the Dmic that strobes data on falling edge
+>>> +is connected to the channel n-1. Simple card property "bitclock-inversion = <1>"
+>>> +is used to specify that microphone strobes data on falling edge.
+>>> +
+>>> +SPI interface allows to be scheduled by an external SPI clock. To use it
+>>> +simple card properties "bitclock-master = <&codec>" and "system-clock-frequency"
+>>> +have to be defined in dai-link node.
+>>> +
+>>> +Required properties:
+>>> +- compatible: 	Must be "st,stm32-dfsdm-audio",
+>>> +- reg:		Specifies the DFSDM filter instance.
+>>> +- interrupts: 	DFSDM filter instance interrupt line.
+>>> +- dma:		DMA controller phandle and DMA request line associated to the
+>>> +		filter instance ( specified by the field "reg")
+>>> +- dma-names: 	must be "rx"
+>>> +
+>>> +- st,input-id:		Id of the SPI/Manchester interface used.
+>>> +- st,dai-filter-order:  SinC filter order from 0 to 5.
+>>> +			0: FastSinC
+>>> +			[1-5]: order 1 to 5.
+>>> +			For audio purpose it is recommended to use order 3 to 5.
+>> Interesting for audio you consider it feature of the hardware, but for ADC you
+>> consider that this should be userspace controlled.
+>> Personally I'd like to see more detail on those filters but if this is convention
+>> in Asoc then so be it.
+> 
+> Configure filter and integrator is quite tricky. Updating filter and
+> integrator parameters have impact on sample resolution and output sample
+> rate.
+> Sample resolution is the peak to peak data value and depends on
+> oversampling parameters and filter order.
+> 
+> Output sample rate depends on SPI input clock frequency oversampling
+> parameters and filter order.
+> 
+> High filter order gives a better resolution and a better filter response
+> but allows less dynamic to find the good rate...
+> 
+> So it is a compromise between resolution, rate and filtering.
+> 
+> For ADC use case, filter orders 1 to 3 are recommended.
+> For audio use case, orders 3 to 5 are recommended.
+I'm never against allowing users enough rope to hang themselves
+as long as the defaults are sensible :)
+> 
+> On IIO side i proposed to expose tuning in ABI, to allows application
+> fine tuning.
+> Need to document it...
+> 
+> For ASOC it is another story. Application requests a rate and a sample
+> format. So filter parameters are computed based on SPI bus clock
+> frequency, expected audio sample rate and audio sample format.
+> This is done in stm32_adfsdm_get_best_osr in sound/soc/stm/stm32_adfsdm.c.
+If there is only ever one sensible answer, fair enough on not being
+able to pick and choose.
+> 
+> Now your comment trig a good point. Perhaps a better option in IIO,
+> could be to offer same kind of ABI than ASOC interface:
+> - standard oversampling-ratio ABI. based on it filter and integrator
+> oversampling ratios will be computed to maximize the resolution.
+> - a read only resolution ABI:
+> /sys/bus/iio/devices/iio:deviceX/in_adc_x_resolution. That give the
+> computed resolution.
+Would this be directly exposed in terms of the 'maximum value' that
+could come out?  If so we could use the existing range description
+callbacks (called _available though that's somewhat missleading in
+this case).
+> 
+> In this case filter order will be part of the DT for IIO and ASoC.
+> This would also match with a redesign of the DFSDM driver in IIO...
+Sounds to me like it would be sensible to do restrict things somewhat
+in the first instance, and perhaps rename them as 'defaults' in the
+future if we decide that userspace control does make sense.
+Basically do it the first time someone bashes us over the head with
+a usecase we aren't supporting well.
 
-   ASoC: Intel: Skylake: Add route change to rt286 machine
+> 
+>>> +
+>>> +Optional properties:
+>>> + - st,dai0-synchronized: Set to 1 to synchronize DAI with DFSDM instance 0.
+>>> +
+>>> +Exemple of a card with 2 Dmics synchronized and connected on SPI interface 1.
+>> Example.
+>>> +
+>>> +	dfsdm: dfsdm@4400D000 {
+>>> +		dai_dfsdm0: dfsdm-audio@0 {
+>>> +			compatible = "st,stm32-dfsdm-audio";
+>>> +			#sound-dai-cells = <0>;
+>>> +			reg = <0>;
+>>> +			dmas = <&dmamux1 101 0x400 0x00>;
+>>> +			dma-names = "rx";
+>>> +			st,input-id = <0>;
+>>> +			st,dai-filter-order = <5>;
+>>> +		};
+>>> +		dai_dfsdm1: dfsdm-audio@1 {
+>>> +			compatible = "st,stm32-dfsdm-audio";
+>>> +			#sound-dai-cells = <0>;
+>>> +			reg = <0>;
+>>> +			dmas = <&dmamux1 102 0x400 0x00>;
+>>> +			dma-names = "rx";
+>>> +			st,input-id = <0>;
+>>> +			st,dai0-synchronized = <1>;
+>>> +			st,dai-filter-order = <5>;
+>>> +		};
+>>> +	};
+>>> +	sound_dfsdm_pdm {
+>>> +		compatible = "simple-audio-card";
+>>> +		simple-audio-card,name = "dfsdm_pdm";
+>>> +		status = "okay";
+>>> +
+>>> +		dfsdm0_mic0: simple-audio-card,dai-link@0 {
+>>> +			format = "pdm";
+>>> +			cpu {
+>>> +				sound-dai = <&dai_dfsdm0>;
+>>> +			};
+>>> +			dmic0_codec: codec {
+>>> +				sound-dai = <&dmic0>;
+>>> +			};
+>>> +		};
+>>> +		dfsdm0_mic1: simple-audio-card,dai-link@1 {
+>>> +			format = "pdm";
+>>> +			bitclock-inversion = <1>;
+>>> +			cpu {
+>>> +				sound-dai = <&dai_dfsdm1>;
+>>> +			};
+>>> +			codec {
+>>> +				sound-dai = <&dmic1>;
+>>> +			};
+>>> +		};
+>>> +	};
+>>>
+>> Jonathan
+>>
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-iio" in
+> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
 
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 111c2ae1fb46f66e1acd8b077377919954d6aa64 Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Tue, 24 Jan 2017 21:49:09 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Add route change to rt286 machine
-
-To support MST moved pin to port, this changes the routes based on
-port. So change the route in skl_rt286 machine.
-
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/boards/skl_rt286.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
-index dc5c3611a6ff..5e56af3a6ee3 100644
---- a/sound/soc/intel/boards/skl_rt286.c
-+++ b/sound/soc/intel/boards/skl_rt286.c
-@@ -94,9 +94,9 @@ static const struct snd_soc_dapm_route skylake_rt286_map[] = {
- 	{"DMIC1 Pin", NULL, "DMIC2"},
- 	{"DMic", NULL, "SoC DMIC"},
- 
--	{"HDMI1", NULL, "hif5 Output"},
--	{"HDMI2", NULL, "hif6 Output"},
--	{"HDMI3", NULL, "hif7 Output"},
-+	{"HDMI1", NULL, "hif5-0 Output"},
-+	{"HDMI2", NULL, "hif6-0 Output"},
-+	{"HDMI3", NULL, "hif7-0 Output"},
- 
- 	/* CODEC BE connections */
- 	{ "AIF1 Playback", NULL, "ssp0 Tx"},
--- 
-2.11.0
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
