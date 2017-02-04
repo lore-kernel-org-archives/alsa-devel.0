@@ -1,168 +1,98 @@
-From: Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 2/7] MFD: add STM32 DFSDM support
-Date: Sat, 4 Feb 2017 12:15:39 +0000
-Message-ID: <d33c57fa-7ff7-02f9-dcbc-8cba7d6328af@kernel.org>
-References: <1485189145-29576-1-git-send-email-arnaud.pouliquen@st.com>
- <1485189145-29576-3-git-send-email-arnaud.pouliquen@st.com>
- <20170124082249.GR16020@dell> <283c0e48-55e2-6516-369d-91dc72d12f73@st.com>
- <20170124113658.GW16020@dell> <a1aaaa20-ac00-b182-f1c1-63152be41135@st.com>
- <20170127101545.g53uah57vgfu55o5@dell>
- <7b3eb38d-4fd1-2006-7423-94f2a7b38b27@st.com>
- <20170127171746.lf2nbpsaqs3dmy44@dell>
- <3810896b-c982-e9fd-b095-658921422855@kernel.org>
- <80a4e7f9-b972-599c-198a-f05c1713123c@metafoo.de>
- <7a8c7674-5c02-a58c-de7b-bd9caf15cfb4@metafoo.de>
- <2e6c07cb-f67b-64ff-530b-6bc2073272a9@st.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: Allow to select ES8328_I2C and ES8328_SPI directly" to the asoc tree
+Date: Sat, 04 Feb 2017 13:18:17 +0100
+Message-ID: <E1cZzIH-0005S9-K1@finisterre>
+References: <20170203143800.23859-3-romain.perier@collabora.com>
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <2e6c07cb-f67b-64ff-530b-6bc2073272a9-qxv4g6HH51o@public.gmane.org>
+In-Reply-To: <20170203143800.23859-3-romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Cc: "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre TORGUE <alexandre.torgue-qxv4g6HH51o@public.gmane.org>
+To: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 30/01/17 11:13, Arnaud Pouliquen wrote:
-> Hello,
-> 
-> Thanks everyone for you feedback!
-> My comments below.
-> 
-> On 01/29/2017 03:34 PM, Lars-Peter Clausen wrote:
->> On 01/29/2017 03:19 PM, Lars-Peter Clausen wrote:
->>> On 01/29/2017 01:28 PM, Jonathan Cameron wrote:
->>> [...]
->>>>>> Jonathan, Mark, Please could you share your opinion on this topic?
->>>> Hmm - based on a fairly quick read through of the code (which is never
->>>> ideal!). I can see that the ideal would indeed be as Lee says, to
->>>> expand the IIO interfaces sufficiently to support what you need.
->>>>
->>>>
->>>> So, reading the code (fairly quickly I'm afraid as had a lot of reviews
->>>> to catch up on this weekend).
->>>> What we need:
->>>> 1) DMA support in the ADC driver.  This would be a good anyway!
->>>> 2) DMA consumer support - I defer to Lars for comments on this.
->>>> 3) Means of describing and controlling the sinc filters applied. 
->>>> 4) Appropriate channel support.  I'm not convinced that it doesn't make
->>>> sense to have IIO channels for the microphones - at least in a streaming
->>>> mode.  It's data - I don't really care what ;)
->>>> Coarsely it's a filtered pulse per period counter which is
->>>> a perfectly valid type to have a channel for.
->>>>
->>>> The big question to my mind is the DMA consumer support. How would
->>>> it work. It it wouldn't this is somewhat of a non starter.
->>>>
->>>> To bring up another slightly ugly MFD case where it is borderline
->>>> on whether an MFD makes sense (just as a reference point of something
->>>> we have discussed a few times before)
->>>>
->>>> ADCs with features directed at touchscreen support.
->>>> These are odd as the ADC bit is generic, but the specific output
->>>> and read sequences used for touchscreen reading don't correspond to
->>>> anything that makes any real sense for other applications.
->>>>
->>>> We have started to get hybrid drives that have an MFD underneath but
->>>> do the ADC reads through IIO consumer interfaces, and the timing
->>>> control from a touchscreen driver.  We haven't really gotten this
->>>> one right yet either.
->>>>
->>>> Here however, to my mind things are different - as I read it
->>>> (and feel free to point out what I'm missing), the sound usecase
->>>> is just a question of setting up sampling frequencies and filters
->>>> appropriate to the microphones and what ASoC expects?
->>>>
->>>> That's not to say the IIO dma stuff is flexible enough (yet) to
->>>> handle the data flows, but perhaps we can work towards that.
->>>
->>> Yeah, so this is a bit different, but not unexpected. And I'm sure we'll see
->>> more similar hardware in the future. I've talked about this before[1], the
->>> cost structure of creating and manufacturing new hardware drives the design
->>> in a certain direction so that we end up with general purpose hardware that
->>> suddenly has applications in multiple frameworks that were previously fully
->>> orthogonal.
->>>
->>> This device is certainly not a multi-function-device. It only has one
->>> function, it's a sigma-delta demodulator. It is rather a
->>> multi-purpose-device. It can be used for sigma-delta demodulation in audio
->>> applications as well as more specialized data capture applications.
->>>
->>> It's comparable to something like a GPIO that can be used to control a reset
->>> pin or turn on and off a LED. The GPIO chip is not considered
->>> multi-function-device though, even though it can be used for many different
->>> applications.
->>>
->>> As for DMA we already have a lot of DMA infrastructure on the audio side and
->>> we probably want to reuse that rather than inserting IIO as a middle layer
->>> since audio buffer capture as different requirements from IIO buffer and
->>> we'd have to go the route of the least common denominator and loose
->>> expressibility in the process.
->>>
->>> I've created a IIO buffer[2] that does not capture data to memory but is
->>> only used to enable/disable the data capture process. We use this in setups
->>> where the data is passed from the converter to a application specific
->>> processing chain without ever going through system memory. This buffer could
->>> probably also be used here on the audio side to control the converter state.
->>
->> I forgot to mention. I think the first thing we should do is work on
->> terminology. This is not an ADC, this is a configurable low-pass-filter.
->>
->> It works in conjunction with a analog frontend (ADC) that produces a 1-bit
->> pulse-density-modulated stream, takes that stream and converts it into N-bit
->> PCM samples. The PCM samples are generated at a fraction of the PDM stream
->> samplerate that corresponds to the decimation factor.
->>
->> This is not an unusual device. Many audio CODEC and audio controllers
->> contain such a core as well as most SigmaDelta converters supported by IIO.
->> What is special about this part is that it is a dedicated core that is not
->> embedded in some other hardware component. This creates greater flexibility,
->> but of course also greater complexity that is required to manage all that
->> flexibility.
->>
->> We shouldn't codify anything about the kernel internal frameworks through
->> which the device might be exposed into the devicetree. We should accurately
->> describe the hardware (including the analog frontend) and then create a
->> appropriate software structures to handle them.	
->>
-> 
-> So if everyone is aligned, i will abandon the MFD driver and try to bind
-> an ASoC driver on IIO interface. The "challenge" is to
-> define appropriate relation ship between ASoC and IIO...
-> 
-> In a first step, a lot of question to answers and points to clarify... i
-> will reply to associated mails.
-> 
-> Then I see two main topics to clarify:
-> 	- DFSDM integration in IIO in a generic way. Lars, if i well interpret,
-> your proposal should be to introduce front-end and filter notions in
-> IIO, to support this kind of hardware?
-> 	- DMA engine for audio purpose.
-> I propose to come back with RFC for both subjects.
-> 
-> If you want to have more detail on DFSDM: DFSDM datasheet is included in
-> STM32F413 datasheet available here:
-> http://www.st.com/content/ccc/resource/technical/document/reference_manual/group0/81/ea/88/1f/97/9e/4a/d0/DM00305666/files/DM00305666.pdf/jcr:content/translations/en.DM00305666.pdf
-> 
-> DFSDM Block diagram p 384
-Sounds like a sensible way forward to me.
+The patch
 
-Might well go through a few more rounds before we get this right, but
-I agree with Lars that this looks to be something we are going to meet
-more and more in the future so would be excellent to get it right!
+   ASoC: Allow to select ES8328_I2C and ES8328_SPI directly
 
-Jonathan
-> 
-> Regards
-> Arnaud
-> 
-> 
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-iio" in
-> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From aa00f2c8aff7b85f882b6fd1706fc4241046aba7 Mon Sep 17 00:00:00 2001
+From: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Date: Fri, 3 Feb 2017 15:37:58 +0100
+Subject: [PATCH] ASoC: Allow to select ES8328_I2C and ES8328_SPI directly
+
+Currently, we have to select these symbols explictly via Kconfig, from
+another entry. If we plan to use generic audio drivers like
+simple-audio-card, the user need to be able to enable these symbols
+directly via the menuconfig.
+
+This commit also fixes unmet dependencies to SND_SOC_IMX_ES8328 caused
+by these changes.
+
+Signed-off-by: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+---
+ sound/soc/codecs/Kconfig | 8 ++++----
+ sound/soc/fsl/Kconfig    | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 9e1718a8cb1c..cfa423338963 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -528,12 +528,12 @@ config SND_SOC_ES8328
+ 	tristate "Everest Semi ES8328 CODEC"
+ 
+ config SND_SOC_ES8328_I2C
+-	tristate
+-	select SND_SOC_ES8328
++	depends on SND_SOC_ES8328
++	tristate "I2C support for Everest Semi ES8328 CODEC"
+ 
+ config SND_SOC_ES8328_SPI
+-	tristate
+-	select SND_SOC_ES8328
++	depends on SND_SOC_ES8328
++	tristate "SPI support for Everest Semi ES8328 CODEC"
+ 
+ config SND_SOC_GTM601
+ 	tristate 'GTM601 UMTS modem audio codec'
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 37f9b6201918..0b914a1ca8d2 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -244,7 +244,7 @@ config SND_SOC_IMX_WM8962
+ 
+ config SND_SOC_IMX_ES8328
+ 	tristate "SoC Audio support for i.MX boards with the ES8328 codec"
+-	depends on OF && (I2C || SPI)
++	depends on OF && (I2C || SPI) && SND_SOC_ES8328
+ 	select SND_SOC_ES8328_I2C if I2C
+ 	select SND_SOC_ES8328_SPI if SPI_MASTER
+ 	select SND_SOC_IMX_PCM_DMA
+-- 
+2.11.0
 
 --
 To unsubscribe from this list: send the line "unsubscribe devicetree" in
