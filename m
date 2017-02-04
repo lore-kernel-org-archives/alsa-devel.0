@@ -1,40 +1,77 @@
-From: Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
-Subject: Re: [PATCH v8 4/4] arm: dts: Add support for ES8388 to the Radxa Rock 2
-Date: Sat, 04 Feb 2017 15:15:53 +0100
-Message-ID: <53082230.chFLIDQHUm@phil>
-References: <20170203143800.23859-1-romain.perier@collabora.com> <20170203143800.23859-5-romain.perier@collabora.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: bcm2835: Increase channels_max to 8
+Date: Sat, 4 Feb 2017 16:49:44 +0100
+Message-ID: <20170204154944.timxhmmibc4kngly@sirena.org.uk>
+References: <1485992264-9058-1-git-send-email-flatmax@flatmax.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20170203143800.23859-5-romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============3551148591226470024=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 16869266725
+ for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2017 16:51:15 +0100 (CET)
+In-Reply-To: <1485992264-9058-1-git-send-email-flatmax@flatmax.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Matt Flax <flatmax@flatmax.org>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, phil@raspberrypi.org, Eric Anholt <eric@anholt.net>, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Romain,
 
-Am Freitag, 3. Februar 2017, 15:38:00 CET schrieb Romain Perier:
-> This commit adds the DT definition of the es8388 i2c device
-> found at address 0x10. It also adds the definition for connecting
-> the Rockchip I2S to the es8388 analog output.
-> 
-> This commit is based on the initial work that was done by Sjoerd Simons
-> <sjoerd.simons-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org> with some improvements.
-> 
-> Signed-off-by: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-
-applied for 4.12, with the following changes:
-
-- subject: ARM: dts: rockchip: ... (ARM upper case + "rockchip:")
-- sound-i2s (dash instead of underscore, better alphabetical ordering)
-- es8388: dropped clock-names property, the driver only ever grabs the first
-  clock and clock-names is not part of the binding
+--===============3551148591226470024==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="a5ehrvmgb3dqpqga"
+Content-Disposition: inline
 
 
-Heiko
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--a5ehrvmgb3dqpqga
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Feb 02, 2017 at 10:37:44AM +1100, Matt Flax wrote:
+
+>  	switch (params_channels(params)) {
+>  	case 2:
+> +	case 8:
+>  		format = BCM2835_I2S_CH1(format) | BCM2835_I2S_CH2(format);
+>  		format |= BCM2835_I2S_CH1(BCM2835_I2S_CHPOS(ch1pos));
+>  		format |= BCM2835_I2S_CH2(BCM2835_I2S_CHPOS(ch2pos));
+
+I can't understand how this works.  We're programming the hardware in an
+identical fashion for both channel counts, that means that what we're
+sending will be indistinguishable from a garbled stereo stream.  How
+does this produce working clocks or manage to sync up reliably with
+external clocks?
+
+--a5ehrvmgb3dqpqga
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliV+BcACgkQJNaLcl1U
+h9B41wf/Us8iJqR4ICuVapsRof7NjBb9hp2eMCcu2bz7Y4wJUMDXVO5O7qbfiKgf
+9riBFMc9v1wsdgDLT6fF89O7e/3YCdqACc+QrBMsdz56JXlBj7qCF4pQhFD9dIzE
+JPx9hcSrtF8VZ3LBl9AD555KVpT1Xhi77qlB8isLBfryfD3PMflLG3dW9t/8lNmM
+gEzLlw9OoMAyazp+GHkVDrJfdVeYQE6FgHghY/up5VgAFCbj83IkiYVl6FFSEFbk
+FXPHzHuZ9d5ku3LsFmsl/DC4yjQzZ+hzWke+hA8rfAH2tFFamlENZNqG27qYedLt
+4hzqSP4EKEgeHwuPzsuCeXK6VOt+kQ==
+=b+tM
+-----END PGP SIGNATURE-----
+
+--a5ehrvmgb3dqpqga--
+
+--===============3551148591226470024==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3551148591226470024==--
