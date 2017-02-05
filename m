@@ -1,23 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5670: add HS ground control
-Date: Sat, 4 Feb 2017 17:11:14 +0100
-Message-ID: <20170204161114.v2cifi66qbybyizi@sirena.org.uk>
-References: <1482999827-14705-1-git-send-email-bardliao@realtek.com>
- <s5hwpdceuns.wl-tiwai@suse.de>
- <20170201114713.osuuhyomfuswnrgt@sirena.org.uk>
- <s5hy3xqaxa1.wl-tiwai@suse.de>
- <20170201145956.ecoksw7ntapt76n4@sirena.org.uk>
- <s5ha8a6apux.wl-tiwai@suse.de>
- <20170201174359.buiiybffgk6ya62d@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D70124DF38@RTITMBSV03.realtek.com.tw>
+From: Matt Flax <flatmax@flatmax.org>
+Subject: Re: [PATCH] ASoC: bcm2835: Increase channels_max to 8
+Date: Sun, 5 Feb 2017 12:26:31 +1100
+Message-ID: <a7f5de09-b07b-638d-466f-525e68ebf0f9@flatmax.org>
+References: <1485992264-9058-1-git-send-email-flatmax@flatmax.org>
+ <20170204154944.timxhmmibc4kngly@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4660300872290954704=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A6C352667CC
- for <alsa-devel@alsa-project.org>; Sat,  4 Feb 2017 17:11:29 +0100 (CET)
-In-Reply-To: <ABFD875FF5FB574BA706497D987D48D70124DF38@RTITMBSV03.realtek.com.tw>
+Received: from nschwmtas02p.mx.bigpond.com (nschwmtas02p.mx.bigpond.com
+ [61.9.189.140]) by alsa0.perex.cz (Postfix) with ESMTP id 0C3772666FE
+ for <alsa-devel@alsa-project.org>; Sun,  5 Feb 2017 02:26:40 +0100 (CET)
+In-Reply-To: <20170204154944.timxhmmibc4kngly@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,52 +21,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, Shuming =?utf-8?B?W+iMg+abuOmKmF0=?= <shumingf@realtek.com>, Flove <flove@realtek.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, phil@raspberrypi.org, Eric Anholt <eric@anholt.net>, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4660300872290954704==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="n4d4dpxtsfnyqjma"
-Content-Disposition: inline
 
+On 05/02/17 02:49, Mark Brown wrote:
+> On Thu, Feb 02, 2017 at 10:37:44AM +1100, Matt Flax wrote:
+>
+>>   	switch (params_channels(params)) {
+>>   	case 2:
+>> +	case 8:
+>>   		format = BCM2835_I2S_CH1(format) | BCM2835_I2S_CH2(format);
+>>   		format |= BCM2835_I2S_CH1(BCM2835_I2S_CHPOS(ch1pos));
+>>   		format |= BCM2835_I2S_CH2(BCM2835_I2S_CHPOS(ch2pos));
+> I can't understand how this works.  We're programming the hardware in an
+> identical fashion for both channel counts, that means that what we're
+> sending will be indistinguishable from a garbled stereo stream.  How
+> does this produce working clocks or manage to sync up reliably with
+> external clocks?
+>
+I am not surprised it is confusing, to my knowledge this is the first 
+time that someone has demonstrated this type of I2S signalling.
 
---n4d4dpxtsfnyqjma
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I will attempt to explain why nothing is garbled by talking about what 
+the BCM2835 silicon does.
 
-On Thu, Feb 02, 2017 at 02:38:55AM +0000, Bard Liao wrote:
+In this case BCM2835 is a clock slave and not concerned with generating 
+the I2S clocks, only receiving - think of all clocks and synchrony being 
+generated/managed in hardware on the sound card.
 
-> It is a codec GPIO, indeed. But we don't register it to gpiolib.
-> So there is no other way to touch the GPIO. We are using it to
-> do headset ground control and we should control its level according
-> to if headset is using. That's why we control it by a DAPM event.
+In short the BCM2835 silicon is only concerned with shifting bits into 
+two hardware registers which (after DMA) are interpreted by ALSA 
+according to the specified channel count.
 
-So one option here would be to register it with gpiolib...
+Let me be a little more explicit. Regarding the BCM2835 I2S silicon :
+The BCM2835 I2S silicon is concerned with shifting data from I2S bit 
+streams into hardware registers. The BCM2835 is only concerned with the 
+word format for the hardware registers. The BCM2835 silicon doesn't care 
+about channel count. This is why we use format=* in this part of the  
+bcm2835-i2s.c driver. Specifically we are concerned with the protocol's 
+word format (e.g. BCM2835_I2S_CH1(format)) and the location of the word 
+onset in the bit stream (e.g. BCM2835_I2S_CHPOS(ch1pos)).
 
---n4d4dpxtsfnyqjma
-Content-Type: application/pgp-signature; name="signature.asc"
+This is (to my knowledge) the first time someone has tried this concept 
+and proven that it is successful and robust. My gut feeling is that it 
+will work will most/all silicon. In my opinion it is a little 
+evolution/revolution in I2S signalling.
 
------BEGIN PGP SIGNATURE-----
+Personally, I think it would be better if the code read as follows :
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliV/SIACgkQJNaLcl1U
-h9CC+Af/anXTnEG0ruDhf4fIE2JgD7atKjwmRSKGb4POmLXRV3cX1diUrzyA4oaz
-IZT0/ueHLMPBpohjIuPqNhggePaCMr2aRJEvKtlZR2o8D95FRt8eyoR9Yv3RC9XZ
-3WEOVtiKvBlm5mMJt67RrDncg1GFyfAcZydr8eXvrt6ic+eg+UTp0Pw5wYgT10my
-9qTpFLgxKipLA5BByRFBOxGsj03453PZWqT5vbNSVjD9OG8PblkbMQ2+Dd56um0t
-Mtk/yo7M0ixuWDGRlW+Bij5Bk/jEuGDWG/0cLbdzyv3nrQj0NbPGra9Lvfg5iSlV
-l3cNUj+SBW4ptVoo3PcldrUMuzh9yg==
-=+DDb
------END PGP SIGNATURE-----
+    // if the channel count is even
+    if ( fmod((float)params_channels(params)) != 1 ) {
+           format = BCM2835_I2S_CH1(format) | BCM2835_I2S_CH2(format);
+           format |= BCM2835_I2S_CH1(BCM2835_I2S_CHPOS(ch1pos));
+           format |= BCM2835_I2S_CH2(BCM2835_I2S_CHPOS(ch2pos));
+   } else
+         return -EINVAL;
 
---n4d4dpxtsfnyqjma--
+I would even prefer to get rid of the channel count guard as strictly 
+speaking the format of the I2S bit stream has nothing to do with the 
+channel count !
 
---===============4660300872290954704==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4660300872290954704==--
+thanks
+Matt
