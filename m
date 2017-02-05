@@ -1,111 +1,108 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v7 2/4] dmaengine: Forward slave device pointer to
- of_xlate callback
-Date: Sun, 5 Feb 2017 17:34:57 +0530
-Message-ID: <20170205120457.GX19244@localhost>
-References: <1485340088-25481-1-git-send-email-m.szyprowski@samsung.com>
- <CGME20170125102824eucas1p1cf027184286131ff628eb7113c3f9e60@eucas1p1.samsung.com>
- <1485340088-25481-3-git-send-email-m.szyprowski@samsung.com>
- <26397455-1237-2a66-acf8-215aacc7c9ce@metafoo.de>
- <49c9c23d-ff0a-268a-5edd-931e04eb98b5@samsung.com>
- <22bc3f1b-a629-482a-71b6-06a3c4df628c@samsung.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: bcm2835: Increase channels_max to 8
+Date: Sun, 5 Feb 2017 17:34:51 +0100
+Message-ID: <20170205163451.4x3svwbqdqlfc7t4@sirena.org.uk>
+References: <1485992264-9058-1-git-send-email-flatmax@flatmax.org>
+ <20170204154944.timxhmmibc4kngly@sirena.org.uk>
+ <a7f5de09-b07b-638d-466f-525e68ebf0f9@flatmax.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-pm-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <22bc3f1b-a629-482a-71b6-06a3c4df628c@samsung.com>
-Sender: linux-pm-owner@vger.kernel.org
-To: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: linux-samsung-soc@vger.kernel.org, dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>, Krzysztof Kozlowski <krzk@kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Ulf Hansson <ulf.hansson@linaro.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, Inki Dae <inki.dae@samsung.com>
+Content-Type: multipart/mixed; boundary="===============7590406053490894047=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 272C72669BF
+ for <alsa-devel@alsa-project.org>; Sun,  5 Feb 2017 17:35:47 +0100 (CET)
+In-Reply-To: <a7f5de09-b07b-638d-466f-525e68ebf0f9@flatmax.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Matt Flax <flatmax@flatmax.org>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, phil@raspberrypi.org, Eric Anholt <eric@anholt.net>, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 03, 2017 at 02:01:27PM +0100, Marek Szyprowski wrote:
-> Hi All,
-> 
-> On 2017-01-26 15:43, Marek Szyprowski wrote:
-> >On 2017-01-25 14:12, Lars-Peter Clausen wrote:
-> >>On 01/25/2017 11:28 AM, Marek Szyprowski wrote:
-> >>>Add pointer to slave device to of_dma_xlate to let DMA engine driver
-> >>>to know which slave device is using given DMA channel. This will be
-> >>>later used to implement non-irq-safe runtime PM for DMA engine driver.
-> >>of_dma_xlate() is used to translate from a OF phandle and a
-> >>specifier to a
-> >>DMA channel. On one hand this does not necessarily mean that the
-> >>channel is
-> >>actually going to be used by the slave that called the xlate function.
-> >>Modifying the driver state when a lookup of the channel is done is a
-> >>layering violation. And this approach is also missing a way to
-> >>disassociate
-> >>a slave from a DMA channel, e.g. when it is no longer used.
-> >>
-> >>On the other hand there are other mechanisms to translate
-> >>between some kind
-> >>of firmware handle to a DMA channel which are completely ignored here.
-> >>
-> >>So this approach does not work. This is something that needs to
-> >>be done at
-> >>the dmaengine level, not a the firmware resource translation
-> >>level. And it
-> >>needs a matching method that is called when the channel is disassociated
-> >>from a device, when the device no longer uses the DMA channel.
-> >
-> >Frankly I agree that of_dma_xlate() should only return the
-> >requested channel
-> >to the dmaengine core and do not do any modification in the the
-> >driver state.
-> >
-> >However the current dma engine design and implementation breaks
-> >this rule.
-> >Please check the drivers - how do they implement of_xlate callback. They
-> >usually call dma_get_any_slave_channel, dma_get_slave_channel or
-> >__dma_request_channel there, which in turn calls dma_chan_get, which then
-> >calls back to device_alloc_chan_resources callback. Some of the
-> >drivers also
-> >do a hardware configuration or other resource allocation in of_xlate.
-> >This is a bit messy design and leave no place in the core to set
-> >slave device
-> >before device_alloc_chan_resources callback, where one would
-> >expect to have
-> >it already set.
-> >
-> >The best place to add new calls to the dmaengine drivers to set
-> >slave device
-> >would be just before device_alloc_chan_resources(), what in turn
-> >means that
-> >the current dmaengine core should do in dma_chan_get(). This would
-> >require to
-> >forward the slave device pointer via even more layers including
-> >the of_xlate
-> >callback too. IMHO this is not worth the effort.
-> >
-> >DMA engine core and API definitely needs some cleanup. During such
-> >cleanup
-> >the slave device pointer might be moved out of xlate into separate
-> >callback
-> >when the core gets ready for such operation.
-> >
-> >I ignored other paths for other firmware handle to a DMA channel
-> >translation
-> >mechanism because for the current pl330 driver they are simply not
-> >used. I
-> >assume that if one needs to implement similar things for drivers
-> >relying on
-> >them, he will update the respective DMA engine core parts.
-> >
-> >Slave device assignments can be cleared in
-> >device_chan_release_resources if
-> >this is needed and that what existing DMA engine drivers do with
-> >the resources
-> >allocated in the of_xlate callback...
-> 
-> Vinod: could you comment this patchset? Is there a chance to get it
-> merged or
-> at least give it a try in -next? If not, could you provide some
-> hints what should
-> I do?
 
-Nothing :) I am slowly clearning up my queue and should process this series
-in couple of days or so...
+--===============7590406053490894047==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="hiorppe4vfvbif75"
+Content-Disposition: inline
 
--- 
-~Vinod
+
+--hiorppe4vfvbif75
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Sun, Feb 05, 2017 at 12:26:31PM +1100, Matt Flax wrote:
+> On 05/02/17 02:49, Mark Brown wrote:
+> > On Thu, Feb 02, 2017 at 10:37:44AM +1100, Matt Flax wrote:
+
+> > I can't understand how this works.  We're programming the hardware in an
+> > identical fashion for both channel counts, that means that what we're
+
+> I am not surprised it is confusing, to my knowledge this is the first time
+> that someone has demonstrated this type of I2S signalling.
+
+More than stereo I2S?  That is actually a thing, while most people use
+DSP modes for higher channel counts it's fairly common to have the
+support especially in CODECs that also support DSP mode since the
+hardware implementation is fairly straightforward if you abstracted in
+the bus interface.
+
+> In this case BCM2835 is a clock slave and not concerned with generating the
+> I2S clocks, only receiving - think of all clocks and synchrony being
+> generated/managed in hardware on the sound card.
+
+> In short the BCM2835 silicon is only concerned with shifting bits into two
+> hardware registers which (after DMA) are interpreted by ALSA according to
+> the specified channel count.
+
+Sure, that's what all audio controllers do.  But there's a few problems.
+One is that nothing in your code that prevents this running in master
+mode.  Another is that if this *is* for I2S mode then when doing
+multichannel I2S you usually still respect the left/right indication in
+LRCLK so you will end up with the data in the in memory format:
+
+  L1 R1 L2 R2 L3 R3 L4 R4
+
+but multi channel I2S would usually be rendered with all the left
+channels and all the right channels grouped together so you get:
+
+  L1 L2 L3 L4 R1 R2 R3 R4
+
+It'll also require exact clocking with no spare bits in order to sync
+the right channels with the LRCLK switch but that's not so unusual.
+Looking at the driver it may be possible for the hardware to do DSP
+modes at which point this gets much easier but right now it only has I2S
+support, I've got a feeling that the other end of the link may actually
+be running in a DSP mode.
+
+--hiorppe4vfvbif75
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliXVCsACgkQJNaLcl1U
+h9A0Tgf8Db3+D5PLNDhkdDhR8gjR3wIp8Qxm3R17BZLZ/pREXo5eVpwkn2IBMu6a
+gDT12bHZcb9CxHLlBYlaR9Cltmfb0Si993cYOtKSdvWE18p5VEn7HAaW7g/Aj+MZ
+LsDdEfgr69rwgm+0a84q4faDAT8EG6lc3+f0pie0VKgcSc7GLCXs5hn2hThPP+oX
+t86eDqnLO2ACaDHgJCcCDC3h8grutUQl/GqnuHR5nyi8xQIgjIEH3d8hMvdQQ4cu
+m3Kvhyo7/5W0CiRpflq7pWnHyr9qlkrugxmIcBsLz7UfWUmFPVvR8Ip2Z7cGw5G/
+9PRkGDwfGykX+W+NzNk3CLtSoPGDfA==
+=kHKY
+-----END PGP SIGNATURE-----
+
+--hiorppe4vfvbif75--
+
+--===============7590406053490894047==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7590406053490894047==--
