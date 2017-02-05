@@ -1,88 +1,212 @@
-From: Matt Flax <flatmax@flatmax.org>
-Subject: Re: [PATCH] ASoC: bcm2835: Increase channels_max to 8
-Date: Sun, 5 Feb 2017 12:26:31 +1100
-Message-ID: <a7f5de09-b07b-638d-466f-525e68ebf0f9@flatmax.org>
-References: <1485992264-9058-1-git-send-email-flatmax@flatmax.org>
- <20170204154944.timxhmmibc4kngly@sirena.org.uk>
+From: kbuild test robot <lkp-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH v4 6/8] ARM: dts: sun8i: Add audio codec, dai and card
+ for A33
+Date: Sun, 5 Feb 2017 09:41:25 +0800
+Message-ID: <201702050904.X9UcHCka%fengguang.wu@intel.com>
+References: <20170202092422.5588-7-mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nschwmtas02p.mx.bigpond.com (nschwmtas02p.mx.bigpond.com
- [61.9.189.140]) by alsa0.perex.cz (Postfix) with ESMTP id 0C3772666FE
- for <alsa-devel@alsa-project.org>; Sun,  5 Feb 2017 02:26:40 +0100 (CET)
-In-Reply-To: <20170204154944.timxhmmibc4kngly@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, phil@raspberrypi.org, Eric Anholt <eric@anholt.net>, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Type: multipart/mixed; boundary="envbJBWh7q8WU6mo"
+Content-Transfer-Encoding: 8bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20170202092422.5588-7-mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: kbuild-all-JC7UmRfGjtg@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 
+--envbJBWh7q8WU6mo
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-On 05/02/17 02:49, Mark Brown wrote:
-> On Thu, Feb 02, 2017 at 10:37:44AM +1100, Matt Flax wrote:
->
->>   	switch (params_channels(params)) {
->>   	case 2:
->> +	case 8:
->>   		format = BCM2835_I2S_CH1(format) | BCM2835_I2S_CH2(format);
->>   		format |= BCM2835_I2S_CH1(BCM2835_I2S_CHPOS(ch1pos));
->>   		format |= BCM2835_I2S_CH2(BCM2835_I2S_CHPOS(ch2pos));
-> I can't understand how this works.  We're programming the hardware in an
-> identical fashion for both channel counts, that means that what we're
-> sending will be indistinguishable from a garbled stereo stream.  How
-> does this produce working clocks or manage to sync up reliably with
-> external clocks?
->
-I am not surprised it is confusing, to my knowledge this is the first 
-time that someone has demonstrated this type of I2S signalling.
+Hi Mylène,
 
-I will attempt to explain why nothing is garbled by talking about what 
-the BCM2835 silicon does.
+[auto build test ERROR on asoc/for-next]
+[also build test ERROR on v4.10-rc6]
+[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
 
-In this case BCM2835 is a clock slave and not concerned with generating 
-the I2S clocks, only receiving - think of all clocks and synchrony being 
-generated/managed in hardware on the sound card.
+url:    https://github.com/0day-ci/linux/commits/Myl-ne-Josserand/Add-sun8i-A33-audio-driver/20170202-173022
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+config: arm-vf610m4_defconfig (attached as .config)
+compiler: arm-linux-gnueabi-gcc (Debian 6.1.1-9) 6.1.1 20160705
+reproduce:
+        wget https://git.kernel.org/cgit/linux/kernel/git/wfg/lkp-tests.git/plain/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # save the attached .config to linux build tree
+        make.cross ARCH=arm 
 
-In short the BCM2835 silicon is only concerned with shifting bits into 
-two hardware registers which (after DMA) are interpreted by ALSA 
-according to the specified channel count.
+All errors (new ones prefixed by >>):
 
-Let me be a little more explicit. Regarding the BCM2835 I2S silicon :
-The BCM2835 I2S silicon is concerned with shifting data from I2S bit 
-streams into hardware registers. The BCM2835 is only concerned with the 
-word format for the hardware registers. The BCM2835 silicon doesn't care 
-about channel count. This is why we use format=* in this part of the  
-bcm2835-i2s.c driver. Specifically we are concerned with the protocol's 
-word format (e.g. BCM2835_I2S_CH1(format)) and the location of the word 
-onset in the bit stream (e.g. BCM2835_I2S_CHPOS(ch1pos)).
+>> ERROR: Input tree has errors, aborting (use -f to force output)
 
-This is (to my knowledge) the first time someone has tried this concept 
-and proven that it is successful and robust. My gut feeling is that it 
-will work will most/all silicon. In my opinion it is a little 
-evolution/revolution in I2S signalling.
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
-Personally, I think it would be better if the code read as follows :
+--envbJBWh7q8WU6mo
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
-    // if the channel count is even
-    if ( fmod((float)params_channels(params)) != 1 ) {
-           format = BCM2835_I2S_CH1(format) | BCM2835_I2S_CH2(format);
-           format |= BCM2835_I2S_CH1(BCM2835_I2S_CHPOS(ch1pos));
-           format |= BCM2835_I2S_CH2(BCM2835_I2S_CHPOS(ch2pos));
-   } else
-         return -EINVAL;
+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
+AAA=
 
-I would even prefer to get rid of the channel count guard as strictly 
-speaking the format of the I2S bit stream has nothing to do with the 
-channel count !
-
-thanks
-Matt
+--envbJBWh7q8WU6mo--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
