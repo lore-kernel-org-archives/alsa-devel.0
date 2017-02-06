@@ -1,16 +1,21 @@
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
-Subject: Re: [PATCH -next] ASoC: sun4i-spdif: drop unnessary
- snd_soc_unregister_component()
-Date: Mon, 6 Feb 2017 16:32:55 +0100
-Message-ID: <20170206153255.emowvun4nlssiyvs@lukather>
-References: <20170206152224.7566-1-weiyj.lk@gmail.com>
+From: Dmitry Vyukov <dvyukov@google.com>
+Subject: Re: sound: unable to handle kernel paging request
+	snd_seq_prioq_cell_out
+Date: Mon, 6 Feb 2017 16:43:22 +0100
+Message-ID: <CACT4Y+a9LhsDu4CFsO5sSEv4AMnqZAALLvu61j2QJHf6YCT1FA@mail.gmail.com>
+References: <CACT4Y+YdhDV2H5LLzDTJDVF-qiYHUHhtRaW4rbb4gUhTCQB81w@mail.gmail.com>
+ <s5hefzb5rdg.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6483132919071013805=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E86D266DB0
- for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2017 16:32:56 +0100 (CET)
-In-Reply-To: <20170206152224.7566-1-weiyj.lk@gmail.com>
+Received: from mail-ua0-f170.google.com (mail-ua0-f170.google.com
+ [209.85.217.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 13CA7266DB0
+ for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2017 16:43:44 +0100 (CET)
+Received: by mail-ua0-f170.google.com with SMTP id 35so63509351uak.1
+ for <alsa-devel@alsa-project.org>; Mon, 06 Feb 2017 07:43:44 -0800 (PST)
+In-Reply-To: <s5hefzb5rdg.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,70 +25,139 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Wei Yongjun <weiyj.lk@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Wei Yongjun <weiyongjun1@huawei.com>, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, syzkaller <syzkaller@googlegroups.com>, LKML <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Feb 6, 2017 at 3:24 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Tue, 31 Jan 2017 11:04:46 +0100,
+> Dmitry Vyukov wrote:
+>>
+>> Hello,
+>>
+>> The following program triggers wild memory access in snd_seq_prioq_cell_out:
+>> https://gist.githubusercontent.com/dvyukov/e0bfb47caf577217b3b0550866cba00b/raw/111473e99109fc96a1d3e252c3b8f982e8eaa265/gistfile1.txt
+>>
+>> BUG: unable to handle kernel paging request at ffffc9000392ddb8
+>> IP: snd_seq_prioq_cell_out+0x11d/0x260 sound/core/seq/seq_prioq.c:231
+>> PGD 6cc6f067
+>> PUD 6cc70067
+>> PMD 5f94c067
+>> PTE 0
+>> Oops: 0000 [#1] SMP KASAN
+>> Modules linked in:
+>> CPU: 2 PID: 375 Comm: syz-executor Not tainted 4.10.0-rc5+ #201
+>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+>> task: ffff880066f92500 task.stack: ffff88005f740000
+>> RIP: 0010:snd_seq_prioq_cell_out+0x11d/0x260 sound/core/seq/seq_prioq.c:231
+>> RSP: 0018:ffff88005f7470b8 EFLAGS: 00010046
+>> RAX: dffffc0000000000 RBX: 1ffff1000bee8e18 RCX: ffffc90000c22000
+>> RDX: 1ffff92000725bb7 RSI: ffffffff8348787e RDI: ffffc9000392ddb8
+>> RBP: ffff88005f747208 R08: 0000000000000001 R09: 0000000000000001
+>> R10: dffffc0000000000 R11: 0000000000000004 R12: ffff8800673cbe80
+>> R13: ffff88005f7471e0 R14: ffffc9000392dd90 R15: ffff8800673cbe98
+>> FS:  00007f5262fee700(0000) GS:ffff88006d100000(0000) knlGS:0000000000000000
+>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> CR2: ffffc9000392ddb8 CR3: 0000000066209000 CR4: 00000000001406e0
+>> Call Trace:
+>>  snd_seq_prioq_delete+0x8b/0xf0 sound/core/seq/seq_prioq.c:90
+>>  queue_delete+0x77/0xb0 sound/core/seq/seq_queue.c:152
+>>  snd_seq_queue_client_leave+0x34/0x130 sound/core/seq/seq_queue.c:595
+>>  seq_free_client1.part.5+0x10a/0x410 sound/core/seq/seq_clientmgr.c:258
+>>  seq_free_client1 sound/core/seq/seq_clientmgr.c:255 [inline]
+>>  seq_free_client+0x6f/0x170 sound/core/seq/seq_clientmgr.c:284
+>>  snd_seq_release+0x51/0xe0 sound/core/seq/seq_clientmgr.c:366
+>>  __fput+0x332/0x7f0 fs/file_table.c:208
+>>  ____fput+0x15/0x20 fs/file_table.c:244
+>>  task_work_run+0x18a/0x260 kernel/task_work.c:116
+>>  get_signal+0x148f/0x1820 kernel/signal.c:2143
+>>  do_signal+0xd2/0x2190 arch/x86/kernel/signal.c:807
+>>  exit_to_usermode_loop+0x200/0x2a0 arch/x86/entry/common.c:156
+>>  prepare_exit_to_usermode arch/x86/entry/common.c:190 [inline]
+>>  syscall_return_slowpath+0x4d3/0x570 arch/x86/entry/common.c:259
+>>  entry_SYSCALL_64_fastpath+0xc0/0xc2
+>> RIP: 0033:0x4457d9
+>> RSP: 002b:00007f5262fedb58 EFLAGS: 00000286 ORIG_RAX: 0000000000000010
+>> RAX: 0000000000000000 RBX: 00000000007080a8 RCX: 00000000004457d9
+>> RDX: 0000000020001000 RSI: 000000004058534c RDI: 0000000000000005
+>> RBP: 0000000000002250 R08: 0000000000000000 R09: 0000000000000000
+>> R10: 0000000000000000 R11: 0000000000000286 R12: 00000000006e0310
+>> R13: 0000000000000005 R14: 000000004058534c R15: 0000000020001000
+>> Code: f6 0f 84 90 00 00 00 e8 02 1e 2a fe 49 8d 7e 28 48 b8 00 00 00
+>> 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 1f 01 00 00 <49>
+>> 8b 46 28 49 8d 7c 24 08 48 89 fa 49 89 04 24 48 c1 ea 03 48
+>> RIP: snd_seq_prioq_cell_out+0x11d/0x260 sound/core/seq/seq_prioq.c:231
+>> RSP: ffff88005f7470b8
+>> CR2: ffffc9000392ddb8
+>> ---[ end trace cbaec69c4a9fdbfc ]---
+>>
+>> On commit fd694aaa46c7ed811b72eb47d5eb11ce7ab3f7f1 (Jan 26).
+>
+> This is due to a forced resource release after the loop timeout.
+> You must have seen a message like
+>   ALSA: snd_seq_pool_done timeout: 1 cells remain
+> before the Oops.
 
---===============6483132919071013805==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="oxiextlhxr6nv5zu"
-Content-Disposition: inline
+Yes, there are such messages.
+Applied locally for testing. Thanks!
 
-
---oxiextlhxr6nv5zu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Feb 06, 2017 at 03:22:24PM +0000, Wei Yongjun wrote:
-> From: Wei Yongjun <weiyongjun1@huawei.com>
->=20
-> It's not necessary to unregister a component registered
-> with devm_snd_soc_register_component(). Also removed
-> pointness clk_disable_unprepare() from error path and
-> snd_soc_unregister_platform() from the remove.
->=20
-> Fixes: f8260afa444b ("ASoC: sunxi: Add support for the SPDIF block")
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-
-Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
-
-Thanks,
-Maxime
-
---=20
-Maxime Ripard, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
-
---oxiextlhxr6nv5zu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIcBAEBCAAGBQJYmJcjAAoJEBx+YmzsjxAgFP8QAITSZ06hkN1E6Ga89VAMK/Of
-WUXt7HUxkCLUWrApU9AAR3WaBoWQd8pc0ajzRJWsQwm1VZNEd//kQ+IpKdqwjkNx
-ADXwZApUoqBL5SloPVV97qLSE74PhfUgVG22/0d0yqGXLgjOatObV5MQytXOWgJ4
-b/4wm0AiUEdCfh+jxkuS4bvnP+tmPPGbB5cbT5xuI+hoHETI1cSyTloeIzUJDBQw
-ANLD6TpeEGev/rrbd3JQu7cYp91ag//6CZM6EbaFiM5DiO/Ks4Qvi6mU1+V8UEh1
-jWw7m7BDwt9qiB+7p9kxt9nsTOMUckYyc8w09wgPkc+8JcmbfK9NAdfje+G0OPT6
-8uodAHQBiVeuant3G8UeH6jdhGnsM0RbXqBM6CfAUmZOg+qeo9Whjc7KIawnW3yG
-7Ds8s1IrU4fjaJREtv8tbDaCR7jr0dE0GAoNJFkek8IXNKhtlFaojt1gYayjmzJC
-fpRbL0xAqm6AoPT2Eu7OleYS2cMSPZIX6Uq0narc8FY+ZgusACrYchPpjuQbfH1a
-UwZ4QSAc7B6xYK2/mlPLY47IYSt0oXzXhCW83IjTgNaHn68YsI9j5q3LmiM4DcIy
-MLGg+AhZc2szWMtOvmpnoLwLJ/evx20wSpgOW9JIDPXlE53AaKz7vcaLtTOJ1aam
-zx0laz0C3G3qQ6HV2VtW
-=ucuQ
------END PGP SIGNATURE-----
-
---oxiextlhxr6nv5zu--
-
---===============6483132919071013805==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6483132919071013805==--
+> Below is a simple fix.  I'm going to queue it to for-linus branch.
+>
+>
+> thanks,
+>
+> Takashi
+>
+> -- 8< --
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: seq: Don't handle loop timeout at snd_seq_pool_done()
+>
+> snd_seq_pool_done() syncs with closing of all opened threads, but it
+> aborts the wait loop with a timeout, and proceeds to the release
+> resource even if not all threads have been closed.  The timeout was 5
+> seconds, and if you run a crazy stuff, it can exceed easily, and may
+> result in the access of the invalid memory address -- this is what
+> syzkaller detected in a bug report.
+>
+> As a fix, let the code graduate from naiveness, simply remove the loop
+> timeout.
+>
+> BugLink: http://lkml.kernel.org/r/CACT4Y+YdhDV2H5LLzDTJDVF-qiYHUHhtRaW4rbb4gUhTCQB81w@mail.gmail.com
+> Reported-by: Dmitry Vyukov <dvyukov@google.com>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/core/seq/seq_memory.c | 9 +--------
+>  1 file changed, 1 insertion(+), 8 deletions(-)
+>
+> diff --git a/sound/core/seq/seq_memory.c b/sound/core/seq/seq_memory.c
+> index c850345c43b5..dfa5156f3585 100644
+> --- a/sound/core/seq/seq_memory.c
+> +++ b/sound/core/seq/seq_memory.c
+> @@ -419,7 +419,6 @@ int snd_seq_pool_done(struct snd_seq_pool *pool)
+>  {
+>         unsigned long flags;
+>         struct snd_seq_event_cell *ptr;
+> -       int max_count = 5 * HZ;
+>
+>         if (snd_BUG_ON(!pool))
+>                 return -EINVAL;
+> @@ -432,14 +431,8 @@ int snd_seq_pool_done(struct snd_seq_pool *pool)
+>         if (waitqueue_active(&pool->output_sleep))
+>                 wake_up(&pool->output_sleep);
+>
+> -       while (atomic_read(&pool->counter) > 0) {
+> -               if (max_count == 0) {
+> -                       pr_warn("ALSA: snd_seq_pool_done timeout: %d cells remain\n", atomic_read(&pool->counter));
+> -                       break;
+> -               }
+> +       while (atomic_read(&pool->counter) > 0)
+>                 schedule_timeout_uninterruptible(1);
+> -               max_count--;
+> -       }
+>
+>         /* release all resources */
+>         spin_lock_irqsave(&pool->lock, flags);
+> --
+> 2.11.0
+>
