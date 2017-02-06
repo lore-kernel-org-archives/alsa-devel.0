@@ -1,23 +1,18 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 4/4] ALSA: x86: Refactor PCM process engine
-Date: Mon, 6 Feb 2017 10:00:37 -0600
-Message-ID: <48628c32-c0bd-b443-cf51-d0224817f235@linux.intel.com>
-References: <20170203164400.12983-1-tiwai@suse.de>
- <20170203164400.12983-5-tiwai@suse.de>
- <8efd0a5e-6c2a-7b97-11e7-cd22f68a9cbd@linux.intel.com>
- <s5h8tpnhw6e.wl-tiwai@suse.de>
- <e6fec9f8-47ab-3f6a-6c61-774f78e49fb6@linux.intel.com>
- <s5hvasqgzqd.wl-tiwai@suse.de> <s5hy3xj5ztm.wl-tiwai@suse.de>
- <d9c7482a-4ab5-919a-8561-cbadeb4ae24a@linux.intel.com>
- <s5hy3xj48mt.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v1 3/3] ASoC: zx-i2s: support zx296718 SoC
+ for ZTE's i2s controller driver
+Date: Mon, 6 Feb 2017 16:28:39 +0000
+Message-ID: <20170206162839.ymtwdvtlsj4rogyw@sirena.org.uk>
+References: <1486389020-29432-1-git-send-email-baoyou.xie@linaro.org>
+ <1486389020-29432-3-git-send-email-baoyou.xie@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8490517551710133048=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B5D7266DB0
- for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2017 17:00:39 +0100 (CET)
-In-Reply-To: <s5hy3xj48mt.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A19D266DB0
+ for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2017 17:29:17 +0100 (CET)
+In-Reply-To: <1486389020-29432-3-git-send-email-baoyou.xie@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,87 +22,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Jerome Anand <jerome.anand@intel.com>
+To: Baoyou Xie <baoyou.xie@linaro.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, xie.baoyou@zte.com.cn, vinod.koul@intel.com, linux-kernel@vger.kernel.org, mturquette@baylibre.com, tiwai@suse.com, sboyd@codeaurora.org, lgirdwood@gmail.com, robh+dt@kernel.org, chen.chaokai@zte.com.cn, wang.qiang01@zte.com.cn, jun.nie@linaro.org, shawn.guo@linaro.org, shawnguo@kernel.org, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
+--===============8490517551710133048==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="q34kbfph66mmt6tz"
+Content-Disposition: inline
 
-On 02/06/2017 09:54 AM, Takashi Iwai wrote:
-> On Mon, 06 Feb 2017 16:46:53 +0100,
-> Pierre-Louis Bossart wrote:
->> Looks nice, with one comment below:
->>
->>
->>> +/* process a bd, advance to the next */
->>> +static void had_advance_ringbuf(struct snd_pcm_substream *substream,
->>> +				struct snd_intelhad *intelhaddata)
->>> +{
->>> +	int num_periods = substream->runtime->periods;
->>> +
->>> +	/* reprogram the next buffer */
->>> +	had_prog_bd(substream, intelhaddata);
->>> +
->>> +	/* proceed to next */
->>> +	intelhaddata->pcmbuf_head++;
->>> +	intelhaddata->pcmbuf_head %= num_periods;
->>> +}
->>> +
->>> +/* process the current BD(s);
->>> + * returns the current PCM buffer byte position, or -EPIPE for underrun.
->>> + */
->>> +static int had_process_ringbuf(struct snd_pcm_substream *substream,
->>> +			       struct snd_intelhad *intelhaddata)
->>> +{
->>> +	int len, processed;
->>> +	unsigned long flags;
->>> +
->>> +	processed = 0;
->>> +	spin_lock_irqsave(&intelhaddata->had_spinlock, flags);
->>> +	for (;;) {
->>> +		/* get the remaining bytes on the buffer */
->>> +		had_read_register(intelhaddata,
->>> +				  AUD_BUF_LEN(intelhaddata->bd_head),
->>> +				  &len);
->>> +		if (len < 0 || len > intelhaddata->period_bytes) {
->>> +			dev_dbg(intelhaddata->dev, "Invalid buf length %d\n",
->>> +				len);
->>> +			len = -EPIPE;
->>> +			goto out;
->>> +		}
->>> +
->>> +		if (len > 0) /* OK, this is the current buffer */
->>> +			break;
->>> +
->>> +		/* len=0 => already empty, check the next buffer */
->>> +		if (++processed >= intelhaddata->num_bds) {
->>> +			len = -EPIPE; /* all empty? - report underrun */
->>> +			goto out;
->>> +		}
->>> +		had_advance_ringbuf(substream, intelhaddata);
->>> +	}
->>> +
->>> +	len = intelhaddata->period_bytes - len;
->>> +	len += intelhaddata->period_bytes * intelhaddata->pcmbuf_head;
->> I don't know if this code is completely correct (and I had similar
->> concerns with David's).
->> If the len==0, then the new buffer descriptor will be used in the next
->> iteration. If the register is read immediately, there is a risk that
->> the DMA position has not moved and len then becomes
->> intelhaddata->period_bytes, but the last line will increase the number
->> of bytes by a period. I think there should be a test here to handle
->> this corner case.
-> That's OK.  When len=0, the loop goes to the next buffer -- i.e.
-> pcm_buf is also increased.  Then it reads len=period_bytes and quits
-> the loop.  Now len is re-calculated as
->    len = period_bytes - len;
-> 	--> len = 0
->    len += period_bytes * pcmbuf_head;
-> 	--> len = new head position in bytes
->
-> which is exactly the expected position.
->
->
-ok, i guess I need more coffee... David's code did not include the 
-additional read and I wanted to check this was fine.
-Thanks for the precision.
+
+--q34kbfph66mmt6tz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Feb 06, 2017 at 09:50:20PM +0800, Baoyou Xie wrote:
+
+> +static void zx_i2s_set_clk(struct zx_i2s_info *i2s,
+> +			   unsigned int ch_num, unsigned int sample_rate)
+> +{
+> +	unsigned long val = sample_rate * ch_num * CLK_RAT;
+> +
+> +	clk_set_rate(i2s->dai_wclk, val);
+> +
+> +	if (i2s->dai_pclk)
+> +		clk_set_rate(i2s->dai_pclk, val);
+> +}
+
+There's no error checking here, if we don't care if these calls succeed
+we could save some power and not enable the clocks.  This function is
+also very small and has exactly one user so it's not clear why it's
+split out.
+
+>  static const struct of_device_id zx_i2s_dt_ids[] = {
+>  	{ .compatible = "zte,zx296702-i2s", },
+> +	{ .compatible = "zte,zx296718-i2s", },
+>  	{}
+>  };
+>  MODULE_DEVICE_TABLE(of, zx_i2s_dt_ids);
+
+This adds a new DT binding but does not update the binding document.
+
+--q34kbfph66mmt6tz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliYpDYACgkQJNaLcl1U
+h9Chwgf/axpjVt1m2tfRyJRBHJZRURlloT1xFHn35OmvOKaskxOvTfENLeyy3Phc
+CmcpfPA/B9CN+gzmgCaXWCLpkzTcOQ4nxb9zJhOMbbZaWqgC7cCrc6XHnnMd2m6W
+6RoFH4/KVBZEl/XgGw/hT6FOg/oJZpaRYpu8p0NYMROgCbTLqsO2mpZ0XtYrDRwV
+//bvBWTJkj35UYX8UeKDibAQq3Ao7/W+JvnrxZzYrGOrgXq/xgzU5kLYmmyvqZUe
+3LOdnK87zyf6dbi0+MUnOzArIUZxci9ukUBKYg7ks2rl2KoNSr1xJUQqEtdvEeiC
++6MpheYkE8eibhok4wUV+gPpDHjmzQ==
+=eKKt
+-----END PGP SIGNATURE-----
+
+--q34kbfph66mmt6tz--
+
+--===============8490517551710133048==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8490517551710133048==--
