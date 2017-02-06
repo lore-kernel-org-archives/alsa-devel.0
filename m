@@ -1,70 +1,77 @@
 From: Wei Yongjun <weiyj.lk@gmail.com>
-Subject: [PATCH -next] ASoC: hdmi-codec: fix non static symbol warnings
-Date: Mon,  6 Feb 2017 14:38:30 +0000
-Message-ID: <20170206143830.6871-1-weiyj.lk@gmail.com>
+Subject: [PATCH -next] ASoC: sun4i-spdif: drop unnessary snd_soc_unregister_component()
+Date: Mon,  6 Feb 2017 15:22:24 +0000
+Message-ID: <20170206152224.7566-1-weiyj.lk@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Philipp Zabel <p.zabel@pengutronix.de>, "Jon Medhurst (Tixy)" <tixy@linaro.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Jyri Sarha <jsarha@ti.com>, PC Liao <pc.liao@mediatek.com>
-Cc: Wei Yongjun <weiyongjun1@huawei.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>, Marcus Cooper <codekipper@gmail.com>
+Cc: Wei Yongjun <weiyongjun1@huawei.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Wei Yongjun <weiyongjun1@huawei.com>
 
-Fixes the following sparse warnings:
+It's not necessary to unregister a component registered
+with devm_snd_soc_register_component(). Also removed
+pointness clk_disable_unprepare() from error path and
+snd_soc_unregister_platform() from the remove.
 
-sound/soc/codecs/hdmi-codec.c:34:1: warning:
- symbol 'hdmi_device_list' was not declared. Should it be static?
-sound/soc/codecs/hdmi-codec.c:80:33: warning:
- symbol 'hdmi_codec_stereo_chmaps' was not declared. Should it be static?
-sound/soc/codecs/hdmi-codec.c:87:33: warning:
- symbol 'hdmi_codec_8ch_chmaps' was not declared. Should it be static?
-sound/soc/codecs/hdmi-codec.c:354:6: warning:
- symbol 'hdmi_codec_eld_chmap' was not declared. Should it be static?
-
+Fixes: f8260afa444b ("ASoC: sunxi: Add support for the SPDIF block")
 Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 ---
- sound/soc/codecs/hdmi-codec.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/sunxi/sun4i-spdif.c | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index dc6715a..4982c91 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -31,7 +31,7 @@ struct hdmi_device {
- 	int cnt;
- };
- #define pos_to_hdmi_device(pos)	container_of((pos), struct hdmi_device, list)
--LIST_HEAD(hdmi_device_list);
-+static LIST_HEAD(hdmi_device_list);
+diff --git a/sound/soc/sunxi/sun4i-spdif.c b/sound/soc/sunxi/sun4i-spdif.c
+index c03cd07..eaefd07 100644
+--- a/sound/soc/sunxi/sun4i-spdif.c
++++ b/sound/soc/sunxi/sun4i-spdif.c
+@@ -510,8 +510,7 @@ static int sun4i_spdif_probe(struct platform_device *pdev)
+ 	host->spdif_clk = devm_clk_get(&pdev->dev, "spdif");
+ 	if (IS_ERR(host->spdif_clk)) {
+ 		dev_err(&pdev->dev, "failed to get a spdif clock.\n");
+-		ret = PTR_ERR(host->spdif_clk);
+-		goto err_disable_apb_clk;
++		return PTR_ERR(host->spdif_clk);
+ 	}
  
- #define DAI_NAME_SIZE 16
+ 	host->dma_params_tx.addr = res->start + quirks->reg_dac_txdata;
+@@ -525,7 +524,7 @@ static int sun4i_spdif_probe(struct platform_device *pdev)
+ 		if (IS_ERR(host->rst) && PTR_ERR(host->rst) == -EPROBE_DEFER) {
+ 			ret = -EPROBE_DEFER;
+ 			dev_err(&pdev->dev, "Failed to get reset: %d\n", ret);
+-			goto err_disable_apb_clk;
++			return ret;
+ 		}
+ 		if (!IS_ERR(host->rst))
+ 			reset_control_deassert(host->rst);
+@@ -534,7 +533,7 @@ static int sun4i_spdif_probe(struct platform_device *pdev)
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+ 				&sun4i_spdif_component, &sun4i_spdif_dai, 1);
+ 	if (ret)
+-		goto err_disable_apb_clk;
++		return ret;
  
-@@ -77,14 +77,14 @@ struct hdmi_codec_cea_spk_alloc {
- };
- 
- /* Channel maps  stereo HDMI */
--const struct snd_pcm_chmap_elem hdmi_codec_stereo_chmaps[] = {
-+static const struct snd_pcm_chmap_elem hdmi_codec_stereo_chmaps[] = {
- 	{ .channels = 2,
- 	  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR } },
- 	{ }
- };
- 
- /* Channel maps for multi-channel playbacks, up to 8 n_ch */
--const struct snd_pcm_chmap_elem hdmi_codec_8ch_chmaps[] = {
-+static const struct snd_pcm_chmap_elem hdmi_codec_8ch_chmaps[] = {
- 	{ .channels = 2, /* CA_ID 0x00 */
- 	  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR } },
- 	{ .channels = 4, /* CA_ID 0x01 */
-@@ -351,7 +351,7 @@ static unsigned long hdmi_codec_spk_mask_from_alloc(int spk_alloc)
- 	return spk_mask;
+ 	pm_runtime_enable(&pdev->dev);
+ 	if (!pm_runtime_enabled(&pdev->dev)) {
+@@ -552,9 +551,6 @@ static int sun4i_spdif_probe(struct platform_device *pdev)
+ 		sun4i_spdif_runtime_suspend(&pdev->dev);
+ err_unregister:
+ 	pm_runtime_disable(&pdev->dev);
+-	snd_soc_unregister_component(&pdev->dev);
+-err_disable_apb_clk:
+-	clk_disable_unprepare(host->apb_clk);
+ 	return ret;
  }
  
--void hdmi_codec_eld_chmap(struct hdmi_codec_priv *hcp)
-+static void hdmi_codec_eld_chmap(struct hdmi_codec_priv *hcp)
- {
- 	u8 spk_alloc;
- 	unsigned long spk_mask;
+@@ -564,9 +560,6 @@ static int sun4i_spdif_remove(struct platform_device *pdev)
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+ 		sun4i_spdif_runtime_suspend(&pdev->dev);
+ 
+-	snd_soc_unregister_platform(&pdev->dev);
+-	snd_soc_unregister_component(&pdev->dev);
+-
+ 	return 0;
+ }
