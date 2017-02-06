@@ -1,151 +1,103 @@
-From: =?UTF-8?Q?Andrej_Krut=C3=A1k?= <dev-/tK0A0Qp8GRaa/9Udqfwiw@public.gmane.org>
-Subject: Re: [PATCH] ALSA: line6: Always setup isochronous transfer properties
-Date: Mon, 6 Feb 2017 22:54:59 +0100
-Message-ID: <CAFnc+wVk4=BkArMAHGkkbq241tnueYVrVx3jZBZhcJj-Vk5MRg@mail.gmail.com>
-References: <s5h1svb7ewb.wl-tiwai@suse.de> <1486409698-32147-1-git-send-email-dev@andree.sk>
- <s5hpoivf25t.wl-tiwai@suse.de>
+From: Matt Flax <flatmax@flatmax.org>
+Subject: [PATCH] ASoC: bcm2835: Add 8 channel (multitrack)
+	capability
+Date: Tue,  7 Feb 2017 10:09:36 +1100
+Message-ID: <1486422576-6958-1-git-send-email-flatmax@flatmax.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <s5hpoivf25t.wl-tiwai-l3A5Bk7waGM@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: Igor Zinovev <zinigor-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from nsstlmta23p.bpe.bigpond.com (nsstlmta23p.bpe.bigpond.com
+ [203.38.21.23]) by alsa0.perex.cz (Postfix) with ESMTP id CE852266ED4
+ for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2017 00:09:50 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, Florian Meier <florian.meier@koalo.de>, broonie@kernel.org, phil@raspberrypi.org
+Cc: Matt Flax <flatmax@flatmax.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 6, 2017 at 10:19 PM, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org> wrote:
-> On Mon, 06 Feb 2017 20:34:58 +0100,
-> Andrej Krutak wrote:
->>
->> While not all line6 devices currently support PCM, it causes no
->> harm to 'have it prepared'.
->>
->> This also fixes toneport, which only has PCM - in which case
->> we previously skipped the USB transfer properties detection completely.
->>
->> Signed-off-by: Andrej Krutak <dev-/tK0A0Qp8GRaa/9Udqfwiw@public.gmane.org>
->
-> Well, this looks too complex and vague as a regression fix.  If it
-> were 4.10-rc1, I could take it.  But now it's already rc7 and the next
-> might be final, so I prefer a shorter and easier solution.
->
+This patch adds 8 channel capability by allowing DSP modes. It
+also increases the channels_max (in the bcm2835_i2s_dai structure)
+to 8.
 
-In the end, the patch is just "careful", so that the endpoint
-structures are not read if the devices is not "marked" as having them.
+The driver guards against multitrack mode when the codec isn't
+master. The driver guards against multitrack capability when in
+I2S mode.
 
+Signed-off-by: Matt Flax <flatmax@flatmax.org>
+---
+ sound/soc/bcm/bcm2835-i2s.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-> That said, we can revert the commit as a clear fix at first for 4.10
-> (with Cc to stable), then take this on top as an enhancement for
-> 4.11.
->
-> Still it's important to know whether this works on Igor's system, so
-> Igor, please give this one try.
->
-
-Thanks to zero-init of toneport_properties_table, the proposed simple
-revert should be enough for toneport, and shouldn't break other
-devices (perhaps HD300-HD500 may start showing the dev_err from
-line6_get_interval()).
-
-So do as you like - e.g. simple revert for 4.10 and apply this patch
-for 4.11. But I don't mind if you won't.... :-)
-
-
+diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
+index 6ba2049..022ca13 100644
+--- a/sound/soc/bcm/bcm2835-i2s.c
++++ b/sound/soc/bcm/bcm2835-i2s.c
+@@ -276,11 +276,16 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
+ 		/* otherwise calculate a fitting block ratio */
+ 		bclk_ratio = 2 * data_length;
+ 
+-	/* Clock should only be set up here if CPU is clock master */
++	/* Clock should only be set up here if CPU is clock master.
++	   If codec isn't master guard against multichannel mode. */
+ 	switch (dev->fmt & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBS_CFS:
+ 	case SND_SOC_DAIFMT_CBS_CFM:
+ 		clk_set_rate(dev->clk, sampling_rate * bclk_ratio);
++	case SND_SOC_DAIFMT_CBM_CFS:
++		/* Codec must be master in multichannel mode */
++		if (params_channels(params) > 2)
++			return -EINVAL;
+ 		break;
+ 	default:
+ 		break;
+@@ -294,8 +299,14 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	format |= BCM2835_I2S_CHWID((data_length-8)&0xf);
+ 
++	/* Default data delay to 1 bit.
++	   In I2S mode, we must have 2 channels */
+ 	switch (dev->fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
++		if (params_channels(params) != 2)
++			return -EINVAL;
++	case SND_SOC_DAIFMT_DSP_A:
++	case SND_SOC_DAIFMT_DSP_B:
+ 		data_delay = 1;
+ 		break;
+ 	default:
+@@ -312,6 +323,7 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	switch (params_channels(params)) {
+ 	case 2:
++	case 8:
+ 		format = BCM2835_I2S_CH1(format) | BCM2835_I2S_CH2(format);
+ 		format |= BCM2835_I2S_CH1(BCM2835_I2S_CHPOS(ch1pos));
+ 		format |= BCM2835_I2S_CH2(BCM2835_I2S_CHPOS(ch2pos));
+@@ -577,7 +589,7 @@ static struct snd_soc_dai_driver bcm2835_i2s_dai = {
+ 	.probe	= bcm2835_i2s_dai_probe,
+ 	.playback = {
+ 		.channels_min = 2,
+-		.channels_max = 2,
++		.channels_max = 8,
+ 		.rates =	SNDRV_PCM_RATE_8000_192000,
+ 		.formats =	SNDRV_PCM_FMTBIT_S16_LE
+ 				| SNDRV_PCM_FMTBIT_S24_LE
+@@ -585,7 +597,7 @@ static struct snd_soc_dai_driver bcm2835_i2s_dai = {
+ 		},
+ 	.capture = {
+ 		.channels_min = 2,
+-		.channels_max = 2,
++		.channels_max = 8,
+ 		.rates =	SNDRV_PCM_RATE_8000_192000,
+ 		.formats =	SNDRV_PCM_FMTBIT_S16_LE
+ 				| SNDRV_PCM_FMTBIT_S24_LE
 -- 
-Andrej
-
->
->> ---
->>  sound/usb/line6/driver.c | 49 ++++++++++++++++++++++++++----------------------
->>  1 file changed, 27 insertions(+), 22 deletions(-)
->>
->> diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
->> index 90009c0..0ff5a7d 100644
->> --- a/sound/usb/line6/driver.c
->> +++ b/sound/usb/line6/driver.c
->> @@ -492,42 +492,46 @@ static void line6_destruct(struct snd_card *card)
->>       usb_put_dev(usbdev);
->>  }
->>
->> -/* get data from endpoint descriptor (see usb_maxpacket): */
->> -static void line6_get_interval(struct usb_line6 *line6)
->> +static void line6_get_usb_properties(struct usb_line6 *line6)
->>  {
->>       struct usb_device *usbdev = line6->usbdev;
->>       const struct line6_properties *properties = line6->properties;
->>       int pipe;
->> -     struct usb_host_endpoint *ep;
->> +     struct usb_host_endpoint *ep = NULL;
->>
->> -     if (properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
->> -             pipe =
->> -                     usb_rcvintpipe(line6->usbdev, line6->properties->ep_ctrl_r);
->> -     } else {
->> -             pipe =
->> -                     usb_rcvbulkpipe(line6->usbdev, line6->properties->ep_ctrl_r);
->> +     if (properties->capabilities & LINE6_CAP_CONTROL) {
->> +             if (properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
->> +                     pipe = usb_rcvintpipe(line6->usbdev,
->> +                             line6->properties->ep_ctrl_r);
->> +             } else {
->> +                     pipe = usb_rcvbulkpipe(line6->usbdev,
->> +                             line6->properties->ep_ctrl_r);
->> +             }
->> +             ep = usbdev->ep_in[usb_pipeendpoint(pipe)];
->>       }
->> -     ep = usbdev->ep_in[usb_pipeendpoint(pipe)];
->>
->> +     /* Control data transfer properties */
->>       if (ep) {
->>               line6->interval = ep->desc.bInterval;
->> -             if (usbdev->speed == USB_SPEED_LOW) {
->> -                     line6->intervals_per_second = USB_LOW_INTERVALS_PER_SECOND;
->> -                     line6->iso_buffers = USB_LOW_ISO_BUFFERS;
->> -             } else {
->> -                     line6->intervals_per_second = USB_HIGH_INTERVALS_PER_SECOND;
->> -                     line6->iso_buffers = USB_HIGH_ISO_BUFFERS;
->> -             }
->> -
->>               line6->max_packet_size = le16_to_cpu(ep->desc.wMaxPacketSize);
->>       } else {
->> -             dev_err(line6->ifcdev,
->> -                     "endpoint not available, using fallback values");
->> +             if (properties->capabilities & LINE6_CAP_CONTROL) {
->> +                     dev_err(line6->ifcdev,
->> +                             "endpoint not available, using fallback values");
->> +             }
->>               line6->interval = LINE6_FALLBACK_INTERVAL;
->>               line6->max_packet_size = LINE6_FALLBACK_MAXPACKETSIZE;
->>       }
->> -}
->>
->> +     /* Isochronous transfer properties */
->> +     if (usbdev->speed == USB_SPEED_LOW) {
->> +             line6->intervals_per_second = USB_LOW_INTERVALS_PER_SECOND;
->> +             line6->iso_buffers = USB_LOW_ISO_BUFFERS;
->> +     } else {
->> +             line6->intervals_per_second = USB_HIGH_INTERVALS_PER_SECOND;
->> +             line6->iso_buffers = USB_HIGH_ISO_BUFFERS;
->> +     }
->> +}
->>
->>  /* Enable buffering of incoming messages, flush the buffer */
->>  static int line6_hwdep_open(struct snd_hwdep *hw, struct file *file)
->> @@ -754,8 +758,9 @@ int line6_probe(struct usb_interface *interface,
->>               goto error;
->>       }
->>
->> +     line6_get_usb_properties(line6);
->> +
->>       if (properties->capabilities & LINE6_CAP_CONTROL) {
->> -             line6_get_interval(line6);
->>               ret = line6_init_cap_control(line6);
->>               if (ret < 0)
->>                       goto error;
->> --
->> 2.7.4
->>
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+2.7.4
