@@ -1,20 +1,21 @@
-From: Andrej Krutak <dev@andree.sk>
-Subject: [PATCH] ALSA: line6: Always setup isochronous transfer
-	properties
-Date: Mon,  6 Feb 2017 20:34:58 +0100
-Message-ID: <1486409698-32147-1-git-send-email-dev@andree.sk>
-References: <s5h1svb7ewb.wl-tiwai@suse.de>
+From: Matt Flax <flatmax@flatmax.org>
+Subject: Re: [PATCH] ASoC: bcm2835: Increase channels_max to 8
+Date: Tue, 7 Feb 2017 07:25:48 +1100
+Message-ID: <1ca503f5-f42d-3254-9ecc-14e56f034cc2@flatmax.org>
+References: <1485992264-9058-1-git-send-email-flatmax@flatmax.org>
+ <20170204154944.timxhmmibc4kngly@sirena.org.uk>
+ <a7f5de09-b07b-638d-466f-525e68ebf0f9@flatmax.org>
+ <20170205163451.4x3svwbqdqlfc7t4@sirena.org.uk>
+ <aa6b9cbd-e033-eee6-d7f8-8ba8c8e611ab@flatmax.org>
+ <20170206164359.vnyxa5iumtslxisy@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f193.google.com (mail-wr0-f193.google.com
- [209.85.128.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5AD862654AD
- for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2017 20:35:14 +0100 (CET)
-Received: by mail-wr0-f193.google.com with SMTP id k90so3644952wrc.3
- for <alsa-devel@alsa-project.org>; Mon, 06 Feb 2017 11:35:14 -0800 (PST)
-In-Reply-To: <s5h1svb7ewb.wl-tiwai@suse.de>
+Received: from nsstlmta27p.bpe.bigpond.com (nsstlmta27p.bpe.bigpond.com
+ [203.38.21.27]) by alsa0.perex.cz (Postfix) with ESMTP id 5899D266E26
+ for <alsa-devel@alsa-project.org>; Mon,  6 Feb 2017 21:25:56 +0100 (CET)
+In-Reply-To: <20170206164359.vnyxa5iumtslxisy@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,103 +25,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Igor Zinovev <zinigor@gmail.com>, alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Cc: Andrej Krutak <dev@andree.sk>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, phil@raspberrypi.org, Eric Anholt <eric@anholt.net>, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-While not all line6 devices currently support PCM, it causes no
-harm to 'have it prepared'.
+On 07/02/17 03:43, Mark Brown wrote:
+> On Mon, Feb 06, 2017 at 07:37:03AM +1100, Matt Flax wrote:
+>> On 06/02/17 03:34, Mark Brown wrote:
+>>> Looking at the driver it may be possible for the hardware to do DSP
+>>> modes at which point this gets much easier but right now it only has I2S
+>>> support, I've got a feeling that the other end of the link may actually
+>>> be running in a DSP mode.
+>> You've got it !
+> If you're actually using the device in DSP mode you need to be showing
+> that in the driver, not claiming that it's I2S.
+>
+>> I haven't looked into why, but I am getting the correct channel mapping
+>> under the hood. To me that is a concern of the higher up levels of the ALSA
+>> driver - it was a pleasant surprise when it worked nicely, because to me it
+>> indicated a robustly coded system.
+> If the external device is running in DSP mode it'll work fine.
+>
+>> My next patch is to allow DSP modes in this I2S driver. I wanted to make
+>> sure that this got through first however.
+> This is the wrong way round.
+>
+>> The majority of these other concerns you mention are controlled at the
+>> machine driver level.
+> The driver should be checking for errors, it shouldn't be silently
+> accepting incorrect configurations - we shouldn't be forcing all the
+> machine drivers to replicate code for this, or requiring modifications
+> to machine drivers because a new feature has been added to one of the
+> drivers it uses.
+>
+I understand, that makes sense. I will submit a new patch which adds the 
+DSP mode requirement and guards against misconfiguration.
 
-This also fixes toneport, which only has PCM - in which case
-we previously skipped the USB transfer properties detection completely.
-
-Signed-off-by: Andrej Krutak <dev@andree.sk>
----
- sound/usb/line6/driver.c | 49 ++++++++++++++++++++++++++----------------------
- 1 file changed, 27 insertions(+), 22 deletions(-)
-
-diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index 90009c0..0ff5a7d 100644
---- a/sound/usb/line6/driver.c
-+++ b/sound/usb/line6/driver.c
-@@ -492,42 +492,46 @@ static void line6_destruct(struct snd_card *card)
- 	usb_put_dev(usbdev);
- }
- 
--/* get data from endpoint descriptor (see usb_maxpacket): */
--static void line6_get_interval(struct usb_line6 *line6)
-+static void line6_get_usb_properties(struct usb_line6 *line6)
- {
- 	struct usb_device *usbdev = line6->usbdev;
- 	const struct line6_properties *properties = line6->properties;
- 	int pipe;
--	struct usb_host_endpoint *ep;
-+	struct usb_host_endpoint *ep = NULL;
- 
--	if (properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
--		pipe =
--			usb_rcvintpipe(line6->usbdev, line6->properties->ep_ctrl_r);
--	} else {
--		pipe =
--			usb_rcvbulkpipe(line6->usbdev, line6->properties->ep_ctrl_r);
-+	if (properties->capabilities & LINE6_CAP_CONTROL) {
-+		if (properties->capabilities & LINE6_CAP_CONTROL_MIDI) {
-+			pipe = usb_rcvintpipe(line6->usbdev,
-+				line6->properties->ep_ctrl_r);
-+		} else {
-+			pipe = usb_rcvbulkpipe(line6->usbdev,
-+				line6->properties->ep_ctrl_r);
-+		}
-+		ep = usbdev->ep_in[usb_pipeendpoint(pipe)];
- 	}
--	ep = usbdev->ep_in[usb_pipeendpoint(pipe)];
- 
-+	/* Control data transfer properties */
- 	if (ep) {
- 		line6->interval = ep->desc.bInterval;
--		if (usbdev->speed == USB_SPEED_LOW) {
--			line6->intervals_per_second = USB_LOW_INTERVALS_PER_SECOND;
--			line6->iso_buffers = USB_LOW_ISO_BUFFERS;
--		} else {
--			line6->intervals_per_second = USB_HIGH_INTERVALS_PER_SECOND;
--			line6->iso_buffers = USB_HIGH_ISO_BUFFERS;
--		}
--
- 		line6->max_packet_size = le16_to_cpu(ep->desc.wMaxPacketSize);
- 	} else {
--		dev_err(line6->ifcdev,
--			"endpoint not available, using fallback values");
-+		if (properties->capabilities & LINE6_CAP_CONTROL) {
-+			dev_err(line6->ifcdev,
-+				"endpoint not available, using fallback values");
-+		}
- 		line6->interval = LINE6_FALLBACK_INTERVAL;
- 		line6->max_packet_size = LINE6_FALLBACK_MAXPACKETSIZE;
- 	}
--}
- 
-+	/* Isochronous transfer properties */
-+	if (usbdev->speed == USB_SPEED_LOW) {
-+		line6->intervals_per_second = USB_LOW_INTERVALS_PER_SECOND;
-+		line6->iso_buffers = USB_LOW_ISO_BUFFERS;
-+	} else {
-+		line6->intervals_per_second = USB_HIGH_INTERVALS_PER_SECOND;
-+		line6->iso_buffers = USB_HIGH_ISO_BUFFERS;
-+	}
-+}
- 
- /* Enable buffering of incoming messages, flush the buffer */
- static int line6_hwdep_open(struct snd_hwdep *hw, struct file *file)
-@@ -754,8 +758,9 @@ int line6_probe(struct usb_interface *interface,
- 		goto error;
- 	}
- 
-+	line6_get_usb_properties(line6);
-+
- 	if (properties->capabilities & LINE6_CAP_CONTROL) {
--		line6_get_interval(line6);
- 		ret = line6_init_cap_control(line6);
- 		if (ret < 0)
- 			goto error;
--- 
-2.7.4
+Thank you for your guidance.
+Matt
