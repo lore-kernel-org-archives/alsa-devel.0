@@ -1,63 +1,87 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ALSA: x86: mark hdmi suspend/resume functions
-	as __maybe_unused
-Date: Tue,  7 Feb 2017 14:38:51 +0100
-Message-ID: <20170207133918.1085873-1-arnd@arndb.de>
+From: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: Re: [patch] ASoC: sun4i-i2s: remove some dead code
+Date: Tue, 7 Feb 2017 14:42:15 +0100
+Message-ID: <20170207134215.f47cufvs7tngrabk@lukather>
+References: <20170207131934.GD28207@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
- by alsa0.perex.cz (Postfix) with ESMTP id 88AB7267023
- for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2017 14:39:35 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>, Jerome Anand <jerome.anand@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="suhne6lu3x5odlec"
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20170207131934.GD28207@mwanda>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand@free-electrons.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Chen-Yu Tsai <wens@csie.org>, Wei Yongjun <yongjun_wei@trendmicro.com.cn>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The two functions are unused when CONFIG_PM_SLEEP is disabled:
 
-sound/x86/intel_hdmi_audio.c:1633:12: error: 'hdmi_lpe_audio_resume' defined but not used [-Werror=unused-function]
-sound/x86/intel_hdmi_audio.c:1622:12: error: 'hdmi_lpe_audio_suspend' defined but not used [-Werror=unused-function]
+--suhne6lu3x5odlec
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Marking them as __maybe_unused avoids the warning without introducing an
-ugly #ifdef.
+Hi Dan,
 
-Fixes: 182cdf23dbf6 ("ALSA: x86: Implement runtime PM")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/x86/intel_hdmi_audio.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Tue, Feb 07, 2017 at 04:19:34PM +0300, Dan Carpenter wrote:
+> "i2s->rst" is either NULL or a valid pointer.  We won't probe
+> successfully if it's an error pointer.  That means these checks can be
+> removed.
+>=20
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+>=20
+> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+> index 3635bbc72cbc..d79be3e4361b 100644
+> --- a/sound/soc/sunxi/sun4i-i2s.c
+> +++ b/sound/soc/sunxi/sun4i-i2s.c
+> @@ -723,13 +723,11 @@ static int sun4i_i2s_probe(struct platform_device *=
+pdev)
+>  		}
+>  	}
+> =20
+> -	if (!IS_ERR(i2s->rst)) {
+> -		ret =3D reset_control_deassert(i2s->rst);
+> -		if (ret) {
+> -			dev_err(&pdev->dev,
+> -				"Failed to deassert the reset control\n");
+> -			return -EINVAL;
+> -		}
+> +	ret =3D reset_control_deassert(i2s->rst);
+> +	if (ret) {
+> +		dev_err(&pdev->dev,
+> +			"Failed to deassert the reset control\n");
+> +		return -EINVAL;
 
-diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
-index 8978dc9bf579..0d19a4994bac 100644
---- a/sound/x86/intel_hdmi_audio.c
-+++ b/sound/x86/intel_hdmi_audio.c
-@@ -1619,7 +1619,7 @@ static int hdmi_lpe_audio_runtime_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int hdmi_lpe_audio_suspend(struct device *dev)
-+static int __maybe_unused hdmi_lpe_audio_suspend(struct device *dev)
- {
- 	struct snd_intelhad *ctx = dev_get_drvdata(dev);
- 	int err;
-@@ -1630,7 +1630,7 @@ static int hdmi_lpe_audio_suspend(struct device *dev)
- 	return err;
- }
- 
--static int hdmi_lpe_audio_resume(struct device *dev)
-+static int __maybe_unused hdmi_lpe_audio_resume(struct device *dev)
- {
- 	struct snd_intelhad *ctx = dev_get_drvdata(dev);
- 
--- 
-2.9.0
+In the case where has_reset is false, rst is NULL and will trigger a
+WARN_ON in reset_control_deassert.
+
+The proper fix would be to move it in the previous if block, or to
+change the IS_ERR check for a NULL check.
+
+Maxime
+
+--=20
+Maxime Ripard, Free Electrons
+Embedded Linux and Kernel engineering
+http://free-electrons.com
+
+--suhne6lu3x5odlec
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIcBAEBCAAGBQJYmc6zAAoJEBx+YmzsjxAg2Y4P/0WRUn7PvpNY+c2emXKKdjk7
+egFA11FirlpEKwjSDBTOeTGLaNxWPRlefgaQ7NvhBJtTcDrpveoQBMXxYO9sokGp
+rSd/rNUDHdC9mVnuEpOSfmy5wqORy3wMm6hbrCHiOzE2RtdezTloG23XIOCmdONq
+NP+WQYUPj9SOt1IGf78GeqabVK1Cmz75YMhNKIocgvBjlcTILjKpPs76ylD0pP0T
+REMJcf9bXNioxviympEC5nnxSHjvAZ8znys2nKN6xGFO8vVhAZNAenVCyKANca5x
+rpC9cnQXHpTc26fZ8N62bEywLx9ic1nUY3EkFXABEmhbS2XxJaGOthshcmLWgnS4
+fTg31nsSY5socsv20KaakNrzJESrpnusikpwn9fqyqjY8gqP8L228Zl8aLmSPRdB
+N7eXOk7wu206vKquq5XrmBQT/aHcBBzvBhVAnrkQwuLXRWj6EJbMMfSAh1HFvsBu
+E/vFm/Lmc9j4pheTILDtfe7bP8/xzzxbvzEqCWT8DDv67L8Hcd6Ml+BNewYCjjLm
+KJvf9JE/L9bniRmiegkP5e0pkZiS+eRRIqRadj2afDLKLwjD4kaySRuxwiN18goP
+wNkwPbj/Wvwov5GT8y/550iLe44fQrFTAbYWHygf2Z2gqO9m6Ddtvx46nOekXDF3
+qOdy0o94NeNR8dbHmEH4
+=upaR
+-----END PGP SIGNATURE-----
+
+--suhne6lu3x5odlec--
