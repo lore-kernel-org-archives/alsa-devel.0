@@ -1,119 +1,121 @@
-From: Baoyou Xie <baoyou.xie@linaro.org>
-Subject: [PATCH v2 3/3] ASoC: zx-i2s: support zx296718 SoC for ZTE's i2s  controller driver
-Date: Tue,  7 Feb 2017 11:02:51 +0800
-Message-ID: <1486436571-8682-3-git-send-email-baoyou.xie@linaro.org>
-References: <1486436571-8682-1-git-send-email-baoyou.xie@linaro.org>
-Return-path: <linux-clk-owner@vger.kernel.org>
-In-Reply-To: <1486436571-8682-1-git-send-email-baoyou.xie@linaro.org>
-Sender: linux-clk-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, jun.nie@linaro.org, baoyou.xie@linaro.org, mturquette@baylibre.com, sboyd@codeaurora.org, perex@perex.cz, tiwai@suse.com, shawn.guo@linaro.org, vinod.koul@intel.com
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, shawnguo@kernel.org, xie.baoyou@zte.com.cn, chen.chaokai@zte.com.cn, wang.qiang01@zte.com.cn
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [RFC v2] [ALSA][CONTROL] 1. Added 2 ioctls for
+ reading/writing values of multiple controls in one go (at once) 2.
+ Restructured the code for read/write of a single control
+Date: Tue, 7 Feb 2017 13:33:05 +0900
+Message-ID: <0fece5db-0bde-19eb-1863-bead3e86ce4d@sakamocchi.jp>
+References: <CGME20170203052820epcas4p2287bdd4bb4de9e5e4c363bcd6872681e@epcas4p2.samsung.com>
+ <1486099688-8057-1-git-send-email-satendra.t@samsung.com>
+ <s5hefzfivfh.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 03A15266EF6
+ for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2017 05:33:08 +0100 (CET)
+In-Reply-To: <s5hefzfivfh.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Satendra Singh Thakur <satendra.t@samsung.com>
+Cc: hemanshu.s@samsung.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, nishant.s4@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds zx296718 SoC support for ZTE's i2s controller driver.
+Hi Satendra,
 
-Signed-off-by: Baoyou Xie <baoyou.xie@linaro.org>
----
- sound/soc/zte/zx-i2s.c | 45 +++++++++++++++++++++++++++++++++++----------
- 1 file changed, 35 insertions(+), 10 deletions(-)
+As long as I review, this patch becomes worse than your previous
+patches, because at least two topics are accumulated to the patch:
+  * Code refactoring to aggregate several functions.
+  * Add new ioctl(2) command to handle several elements in one operation.
 
-diff --git a/sound/soc/zte/zx-i2s.c b/sound/soc/zte/zx-i2s.c
-index ed7a56d..2afac69 100644
---- a/sound/soc/zte/zx-i2s.c
-+++ b/sound/soc/zte/zx-i2s.c
-@@ -95,12 +95,13 @@
- struct zx_i2s_info {
- 	struct snd_dmaengine_dai_dma_data	dma_playback;
- 	struct snd_dmaengine_dai_dma_data	dma_capture;
--	struct clk				*dai_clk;
-+	struct clk				*dai_wclk, *dai_pclk;
- 	void __iomem				*reg_base;
- 	int					master;
- 	resource_size_t				mapbase;
- };
- 
-+
- static void zx_i2s_tx_en(void __iomem *base, bool on)
- {
- 	unsigned long val;
-@@ -274,9 +275,14 @@ static int zx_i2s_hw_params(struct snd_pcm_substream *substream,
- 	val |= ZX_I2S_TIMING_CHN(ch_num);
- 	writel_relaxed(val, i2s->reg_base + ZX_I2S_TIMING_CTRL);
- 
--	if (i2s->master)
--		ret = clk_set_rate(i2s->dai_clk,
--				   params_rate(params) * ch_num * CLK_RAT);
-+	if (i2s->master) {
-+		unsigned long rate = params_rate(params) * ch_num * CLK_RAT;
-+
-+		ret = clk_set_rate(i2s->dai_wclk, rate);
-+		if (!ret && i2s->dai_pclk)
-+			ret = clk_set_rate(i2s->dai_pclk, rate);
-+	}
-+
- 	return ret;
- }
- 
-@@ -328,8 +334,19 @@ static int zx_i2s_startup(struct snd_pcm_substream *substream,
- 			  struct snd_soc_dai *dai)
- {
- 	struct zx_i2s_info *zx_i2s = dev_get_drvdata(dai->dev);
-+	int ret;
-+
-+	ret = clk_prepare_enable(zx_i2s->dai_wclk);
-+	if (ret)
-+		return ret;
- 
--	return clk_prepare_enable(zx_i2s->dai_clk);
-+	ret = clk_prepare_enable(zx_i2s->dai_pclk);
-+	if (ret) {
-+		clk_disable_unprepare(zx_i2s->dai_wclk);
-+		return ret;
-+	}
-+
-+	return ret;
- }
- 
- static void zx_i2s_shutdown(struct snd_pcm_substream *substream,
-@@ -337,7 +354,8 @@ static void zx_i2s_shutdown(struct snd_pcm_substream *substream,
- {
- 	struct zx_i2s_info *zx_i2s = dev_get_drvdata(dai->dev);
- 
--	clk_disable_unprepare(zx_i2s->dai_clk);
-+	clk_disable_unprepare(zx_i2s->dai_wclk);
-+	clk_disable_unprepare(zx_i2s->dai_pclk);
- }
- 
- static struct snd_soc_dai_ops zx_i2s_dai_ops = {
-@@ -381,10 +399,16 @@ static int zx_i2s_probe(struct platform_device *pdev)
- 	if (!zx_i2s)
- 		return -ENOMEM;
- 
--	zx_i2s->dai_clk = devm_clk_get(&pdev->dev, "tx");
--	if (IS_ERR(zx_i2s->dai_clk)) {
--		dev_err(&pdev->dev, "Fail to get clk\n");
--		return PTR_ERR(zx_i2s->dai_clk);
-+	zx_i2s->dai_wclk = devm_clk_get(&pdev->dev, "tx");
-+	if (IS_ERR(zx_i2s->dai_wclk)) {
-+		dev_err(&pdev->dev, "Fail to get wclk\n");
-+		return PTR_ERR(zx_i2s->dai_wclk);
-+	}
-+
-+	zx_i2s->dai_pclk = devm_clk_get(&pdev->dev, "pclk");
-+	if (IS_ERR(zx_i2s->dai_pclk)) {
-+		dev_info(&pdev->dev, "have no pclk\n");
-+		zx_i2s->dai_pclk = NULL;
- 	}
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-@@ -414,6 +438,7 @@ static int zx_i2s_probe(struct platform_device *pdev)
- 
- static const struct of_device_id zx_i2s_dt_ids[] = {
- 	{ .compatible = "zte,zx296702-i2s", },
-+	{ .compatible = "zte,zx296718-i2s", },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, zx_i2s_dt_ids);
--- 
-2.7.4
+In this case, patches with mixture topics easily brings long discussion,
+because it includes many points worth to discuss. Thus, it's preferable
+to post patches for each of the topics. In your case, they're related
+each other, therefore post the one after another is merged to upstream
+after enough discussions. In this my message, I focus on the second
+topic.
 
+Next, your idea has large impacts to Linux sound subsystem. I can
+assume that all of devices and applications in this world get affects
+from your work as long as the devices are handled by this subsystem. In
+this case, it's also preferable to discuss between developers. There're
+already below two questions to your patch in this mailing list; the
+below ones from Clemens and Iwai-san;
+
+On Feb 3 2017 02:22, Clemens Ladisch wrote:
+> Satendra Singh Thakur wrote:
+>> -Added an ioctl to read values of multiple elements at once
+>> -Added an ioctl to write values of multiple elements at once
+>> -In the absence of above ioctls user needs to call N ioctls to
+>>  read/write value of N elements which requires N context switches
+>
+> And why are these N context switches a problem?
+>
+>> -Above mentioned ioctl will be useful for alsa utils such as amixer
+>>  which reads all controls of given sound card
+>
+> Is there a noticeable difference?
+
+On Feb 3 2017 16:29, Takashi Iwai wrote:
+> But, could you answer to the question Clemens posted for v1 patch?
+> Namely, do N-times context switching really matter?  Does it give the
+> severe performance issue?
+>
+> If we have a measured number, this thing is worth to consider.
+> OTOH, without the actual measurement but "just because it must be
+> better", it's no good reason for adding a new API/ABI.
+
+They're maintainers of this subsystem. It's better for you to have
+enough communication with them, because they need to find some
+advantages of your code, to go ahead this discussion.
+
+
+Well, in my opinion, current shape of your code is not better for your
+idea, because driver developers can program their control functionality
+so that an operation in one element can change status of the others.
+Let's assume that user space programs manage to change several elements
+with your code. If target elements depends each other due to the above
+design, what's is the preferable result from the operation? I don't
+have exact conclusion yet, but there's a need to add some restrictions
+to handled elements; e.g. only for elements belong to one control
+element set.
+
+
+On Feb 3 2017 16:24, Takashi Iwai wrote:
+> On Thu, 02 Feb 2017 04:45:48 +0100,
+> Takashi Sakamoto wrote:
+>>
+>> I'm _strongly_ interested in your two patches, because it has a
+>> potentiality to purge ASoC abuse of TLV feature, which was introduced
+>> in  2014 with a bad reviewing process.
+>
+> I don't think it can be a replacement for the extended TLV usages.
+> The proposed API is nothing but a loop of ctl elem read/write, and I'm
+> not sure whether it worth to introduce the new ioctls just for that.
+
+In my opinion, an idea to handle several control elements in one system
+call could perhaps overcome current limitation of control elements,
+which comes from definition of 'struct snd_ctl_elem_value'. Aim of the
+abuse of TLV feature in ASoC part essentially comes from the
+limitation, as long as I understand. In this aspect, I was interested
+in his patchset. Of cource, I know this patchset has little functional
+merits in current shape, and better designs are needed to solve the
+abuse. (I have an opinion that it should have been implemented with
+hwdep interface, but being too late...)
+
+By the way, it's not time for me to work for the abuse because I have a
+lot more in the other parts of this subsystem, therefore I'd like
+developers to discuss this patchset without the aspect. Sorry to
+introduce the other points to discuss.
+
+
+Regards
+
+Takashi Sakamoto
