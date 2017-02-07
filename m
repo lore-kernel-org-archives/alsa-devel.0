@@ -1,17 +1,15 @@
-From: jeeja.kp@intel.com
-Subject: [PATCH 16/16] ASoC: Intel: bxt: Add jack port
-	initialize in da7219_max98357a machine
-Date: Tue,  7 Feb 2017 19:10:00 +0530
-Message-ID: <1486474800-11426-17-git-send-email-jeeja.kp@intel.com>
-References: <1486474800-11426-1-git-send-email-jeeja.kp@intel.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ALSA: x86: mark hdmi suspend/resume functions
+	as __maybe_unused
+Date: Tue,  7 Feb 2017 14:38:51 +0100
+Message-ID: <20170207133918.1085873-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id E56AF267049
- for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2017 14:29:20 +0100 (CET)
-In-Reply-To: <1486474800-11426-1-git-send-email-jeeja.kp@intel.com>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
+ by alsa0.perex.cz (Postfix) with ESMTP id 88AB7267023
+ for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2017 14:39:35 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,49 +19,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>, Jerome Anand <jerome.anand@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+The two functions are unused when CONFIG_PM_SLEEP is disabled:
 
-After the pcm jack is created, create and initialize the pin switch
-widget for each port. Pin switch is to enable/disable the pin when
-monitor is connected/disconnected.
+sound/x86/intel_hdmi_audio.c:1633:12: error: 'hdmi_lpe_audio_resume' defined but not used [-Werror=unused-function]
+sound/x86/intel_hdmi_audio.c:1622:12: error: 'hdmi_lpe_audio_suspend' defined but not used [-Werror=unused-function]
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Marking them as __maybe_unused avoids the warning without introducing an
+ugly #ifdef.
+
+Fixes: 182cdf23dbf6 ("ALSA: x86: Implement runtime PM")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- sound/soc/intel/boards/bxt_da7219_max98357a.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ sound/x86/intel_hdmi_audio.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-index 18f3d0e..2cda06c 100644
---- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-@@ -523,10 +523,12 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
- {
- 	struct bxt_card_private *ctx = snd_soc_card_get_drvdata(card);
- 	struct bxt_hdmi_pcm *pcm;
-+	struct snd_soc_codec *codec = NULL;
- 	int err, i = 0;
- 	char jack_name[NAME_SIZE];
- 
- 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
-+		codec = pcm->codec_dai->codec;
- 		snprintf(jack_name, sizeof(jack_name),
- 			"HDMI/DP, pcm=%d Jack", pcm->device);
- 		err = snd_soc_card_jack_new(card, jack_name,
-@@ -544,7 +546,10 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
- 		i++;
- 	}
- 
--	return 0;
-+	if (!codec)
-+		return -EINVAL;
-+
-+	return hdac_hdmi_jack_port_init(codec, &card->dapm);
+diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
+index 8978dc9bf579..0d19a4994bac 100644
+--- a/sound/x86/intel_hdmi_audio.c
++++ b/sound/x86/intel_hdmi_audio.c
+@@ -1619,7 +1619,7 @@ static int hdmi_lpe_audio_runtime_suspend(struct device *dev)
+ 	return 0;
  }
  
- /* broxton audio machine driver for SPT + da7219 */
+-static int hdmi_lpe_audio_suspend(struct device *dev)
++static int __maybe_unused hdmi_lpe_audio_suspend(struct device *dev)
+ {
+ 	struct snd_intelhad *ctx = dev_get_drvdata(dev);
+ 	int err;
+@@ -1630,7 +1630,7 @@ static int hdmi_lpe_audio_suspend(struct device *dev)
+ 	return err;
+ }
+ 
+-static int hdmi_lpe_audio_resume(struct device *dev)
++static int __maybe_unused hdmi_lpe_audio_resume(struct device *dev)
+ {
+ 	struct snd_intelhad *ctx = dev_get_drvdata(dev);
+ 
 -- 
-2.5.0
+2.9.0
