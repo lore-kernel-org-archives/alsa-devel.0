@@ -1,16 +1,16 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH 08/16] ASoC: Intel: Skylake: Create ASoC jack
-	for hdmi in nau88l25_ssm4567 machine
-Date: Tue,  7 Feb 2017 19:09:52 +0530
-Message-ID: <1486474800-11426-9-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH 09/16] ASoC: Intel: bxt: Create ASoC jack for
+	hdmi in bxt_rt298 machine
+Date: Tue,  7 Feb 2017 19:09:53 +0530
+Message-ID: <1486474800-11426-10-git-send-email-jeeja.kp@intel.com>
 References: <1486474800-11426-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id C736D267043
- for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2017 14:28:54 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id D02F0267071
+ for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2017 14:28:57 +0100 (CET)
 In-Reply-To: <1486474800-11426-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,34 +28,34 @@ List-Id: alsa-devel@alsa-project.org
 From: Jeeja KP <jeeja.kp@intel.com>
 
 Creates ASoC jack for HDMI PCM and calls hdmi codec API to initialize
-jack in skl_nau88l25_ssm4567 machine
+jack in bxt_rt298.c machine
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/bxt_rt298.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index 41117bc..5deb68f 100644
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -36,6 +36,7 @@
- static struct snd_soc_jack skylake_headset;
- static struct snd_soc_card skylake_audio_card;
- static const struct snd_pcm_hw_constraint_list *dmic_constraints;
-+static struct snd_soc_jack skylake_hdmi[3];
+diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
+index 09be868..d5f53a6 100644
+--- a/sound/soc/intel/boards/bxt_rt298.c
++++ b/sound/soc/intel/boards/bxt_rt298.c
+@@ -28,6 +28,7 @@
  
- struct skl_hdmi_pcm {
+ /* Headset jack detection DAPM pins */
+ static struct snd_soc_jack broxton_headset;
++static struct snd_soc_jack broxton_hdmi[3];
+ 
+ struct bxt_hdmi_pcm {
  	struct list_head head;
-@@ -654,16 +655,31 @@ static struct snd_soc_dai_link skylake_dais[] = {
+@@ -453,16 +454,30 @@ static struct snd_soc_dai_link broxton_rt298_dais[] = {
  	},
  };
  
 +#define NAME_SIZE	32
- static int skylake_card_late_probe(struct snd_soc_card *card)
+ static int bxt_card_late_probe(struct snd_soc_card *card)
  {
- 	struct skl_nau88125_private *ctx = snd_soc_card_get_drvdata(card);
- 	struct skl_hdmi_pcm *pcm;
+ 	struct bxt_rt286_private *ctx = snd_soc_card_get_drvdata(card);
+ 	struct bxt_hdmi_pcm *pcm;
 -	int err;
 +	int err, i = 0;
 +	char jack_name[NAME_SIZE];
@@ -65,15 +65,14 @@ index 41117bc..5deb68f 100644
 +		snprintf(jack_name, sizeof(jack_name),
 +			"HDMI/DP, pcm=%d Jack", pcm->device);
 +		err = snd_soc_card_jack_new(card, jack_name,
-+					SND_JACK_AVOUT,
-+					&skylake_hdmi[i],
++					SND_JACK_AVOUT, &broxton_hdmi[i],
 +					NULL, 0);
 +
 +		if (err)
 +			return err;
 +
 +		err = hdac_hdmi_jack_init(pcm->codec_dai, pcm->device,
-+						&skylake_hdmi[i]);
++						&broxton_hdmi[i]);
  		if (err < 0)
  			return err;
 +
