@@ -1,15 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: x86: Avoid unconditional call of
-	snd_pcm_period_elapsed()
-Date: Tue,  7 Feb 2017 17:38:00 +0100
-Message-ID: <20170207163800.4039-3-tiwai@suse.de>
+Subject: [PATCH 1/2] ALSA: x86: Cache AUD_CONFIG register value
+Date: Tue,  7 Feb 2017 17:37:59 +0100
+Message-ID: <20170207163800.4039-2-tiwai@suse.de>
 References: <20170207163800.4039-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 1DD57266649
+ by alsa0.perex.cz (Postfix) with ESMTP id 1CBAE266636
  for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2017 17:38:02 +0100 (CET)
 In-Reply-To: <20170207163800.4039-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,104 +24,130 @@ To: alsa-devel@alsa-project.org
 Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jerome Anand <jerome.anand@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-At the interrupt handler, we usually call snd_pcm_period_elapsed() to
-inform the PCM core to proceed the hwptr.  However, the hwptr update
-might have been already processed by the explicit call of PCM pointer
-callback via another thread.  If both happen concurrently, the call of
-snd_pcm_period_elapsed() might be wrong.
-
-Here is the fix for this slightly possible race: had_process_ringbuf()
-returns the number of processed BDs, and the irq handler calls
-snd_pcm_period_elapsed() only when it's not zero.
+At enabling the audio, we modify AUD_CONFIG register bit 0.  So far,
+it does read-modify-write procedure with a special hack for the
+channel bits due to the silicon bug.  But we can optimize it by
+remembering the AUD_CONFIG register value privately.  This simplifies
+the things a lot.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/x86/intel_hdmi_audio.c | 29 ++++++++++++++++++-----------
- 1 file changed, 18 insertions(+), 11 deletions(-)
+ sound/x86/intel_hdmi_audio.c | 39 ++++++++++++---------------------------
+ sound/x86/intel_hdmi_audio.h |  1 +
+ 2 files changed, 13 insertions(+), 27 deletions(-)
 
 diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
-index 15147fec1a7e..a0c9a4e0c95d 100644
+index 34750c54663a..15147fec1a7e 100644
 --- a/sound/x86/intel_hdmi_audio.c
 +++ b/sound/x86/intel_hdmi_audio.c
-@@ -899,10 +899,13 @@ static void had_advance_ringbuf(struct snd_pcm_substream *substream,
+@@ -212,30 +212,13 @@ static void had_write_register(struct snd_intelhad *ctx, u32 reg, u32 val)
+  * bad audio. The fix is to always write the AUD_CONFIG[6:4] with
+  * appropriate value when doing read-modify of AUD_CONFIG register.
+  */
+-static void had_enable_audio(struct snd_pcm_substream *substream,
+-			     struct snd_intelhad *intelhaddata,
++static void had_enable_audio(struct snd_intelhad *intelhaddata,
+ 			     bool enable)
+ {
+-	union aud_cfg cfg_val = {.regval = 0};
+-	u8 channels;
+-	u32 mask, val;
+-
+-	/*
+-	 * If substream is NULL, there is no active stream.
+-	 * In this case just set channels to 2
+-	 */
+-	channels = substream ? substream->runtime->channels : 2;
+-	dev_dbg(intelhaddata->dev, "enable %d, ch=%d\n", enable, channels);
+-
+-	cfg_val.regx.num_ch = channels - 2;
+-	if (enable)
+-		cfg_val.regx.aud_en = 1;
+-	mask = AUD_CONFIG_CH_MASK | 1;
+-
+-	had_read_register(intelhaddata, AUD_CONFIG, &val);
+-	val &= ~mask;
+-	val |= cfg_val.regval;
+-	had_write_register(intelhaddata, AUD_CONFIG, val);
++	/* update the cached value */
++	intelhaddata->aud_config.regx.aud_en = enable;
++	had_write_register(intelhaddata, AUD_CONFIG,
++			   intelhaddata->aud_config.regval);
  }
  
- /* process the current BD(s);
-- * returns the current PCM buffer byte position, or -EPIPE for underrun.
-+ * returns the number of processed BDs, zero if no BD was processed,
-+ * or -EPIPE for underrun.
-+ * When @pos_ret is non-NULL, the current PCM buffer byte position is stored.
-  */
- static int had_process_ringbuf(struct snd_pcm_substream *substream,
--			       struct snd_intelhad *intelhaddata)
-+			       struct snd_intelhad *intelhaddata,
-+			       int *pos_ret)
- {
- 	int len, processed;
- 	unsigned long flags;
-@@ -917,7 +920,7 @@ static int had_process_ringbuf(struct snd_pcm_substream *substream,
- 		if (len < 0 || len > intelhaddata->period_bytes) {
- 			dev_dbg(intelhaddata->dev, "Invalid buf length %d\n",
- 				len);
--			len = -EPIPE;
-+			processed = -EPIPE;
- 			goto out;
- 		}
- 
-@@ -926,23 +929,27 @@ static int had_process_ringbuf(struct snd_pcm_substream *substream,
- 
- 		/* len=0 => already empty, check the next buffer */
- 		if (++processed >= intelhaddata->num_bds) {
--			len = -EPIPE; /* all empty? - report underrun */
-+			processed = -EPIPE; /* all empty? - report underrun */
- 			goto out;
- 		}
- 		had_advance_ringbuf(substream, intelhaddata);
+ /* forcibly ACKs to both BUFFER_DONE and BUFFER_UNDERRUN interrupts */
+@@ -360,6 +343,7 @@ static int had_init_audio_ctrl(struct snd_pcm_substream *substream,
  	}
  
--	len = intelhaddata->period_bytes - len;
--	len += intelhaddata->period_bytes * intelhaddata->pcmbuf_head;
-+	if (pos_ret) {
-+		len = intelhaddata->period_bytes - len;
-+		len += intelhaddata->period_bytes * intelhaddata->pcmbuf_head;
-+		*pos_ret = len;
-+	}
-  out:
- 	spin_unlock_irqrestore(&intelhaddata->had_spinlock, flags);
--	return len;
-+	return processed;
+ 	had_write_register(intelhaddata, AUD_CONFIG, cfg_val.regval);
++	intelhaddata->aud_config = cfg_val;
+ 	return 0;
  }
  
- /* called from irq handler */
- static void had_process_buffer_done(struct snd_intelhad *intelhaddata)
- {
- 	struct snd_pcm_substream *substream;
-+	int processed;
+@@ -1004,6 +988,7 @@ static void had_process_buffer_underrun(struct snd_intelhad *intelhaddata)
  
- 	if (!intelhaddata->connected)
- 		return; /* disconnected? - bail out */
-@@ -952,9 +959,10 @@ static void had_process_buffer_done(struct snd_intelhad *intelhaddata)
- 		return; /* no stream? - bail out */
+ 	/* Handle Underrun interrupt within Audio Unit */
+ 	had_write_register(intelhaddata, AUD_CONFIG, 0);
++	intelhaddata->aud_config.regval = 0;
+ 	/* Reset buffer pointers */
+ 	had_reset_audio(intelhaddata);
  
- 	/* process or stop the stream */
--	if (had_process_ringbuf(substream, intelhaddata) < 0)
-+	processed = had_process_ringbuf(substream, intelhaddata, NULL);
-+	if (processed < 0)
- 		snd_pcm_stop_xrun(substream);
--	else
-+	else if (processed > 0)
- 		snd_pcm_period_elapsed(substream);
+@@ -1169,7 +1154,7 @@ static int had_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
  
+ 		/* Enable Audio */
+ 		had_ack_irqs(intelhaddata); /* FIXME: do we need this? */
+-		had_enable_audio(substream, intelhaddata, true);
++		had_enable_audio(intelhaddata, true);
+ 		break;
+ 
+ 	case SNDRV_PCM_TRIGGER_STOP:
+@@ -1182,7 +1167,7 @@ static int had_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		intelhaddata->stream_info.running = false;
+ 		spin_unlock(&intelhaddata->had_spinlock);
+ 		/* Disable Audio */
+-		had_enable_audio(substream, intelhaddata, false);
++		had_enable_audio(intelhaddata, false);
+ 		/* Reset buffer pointers */
+ 		had_reset_audio(intelhaddata);
+ 		break;
+@@ -1315,7 +1300,7 @@ static int had_process_mode_change(struct snd_intelhad *intelhaddata)
+ 		return 0;
+ 
+ 	/* Disable Audio */
+-	had_enable_audio(substream, intelhaddata, false);
++	had_enable_audio(intelhaddata, false);
+ 
+ 	/* Update CTS value */
+ 	disp_samp_freq = intelhaddata->tmds_clock_speed;
+@@ -1334,7 +1319,7 @@ static int had_process_mode_change(struct snd_intelhad *intelhaddata)
+ 		     n_param, intelhaddata);
+ 
+ 	/* Enable Audio */
+-	had_enable_audio(substream, intelhaddata, true);
++	had_enable_audio(intelhaddata, true);
+ 
+ out:
  	had_substream_put(intelhaddata);
-@@ -1254,8 +1262,7 @@ static snd_pcm_uframes_t had_pcm_pointer(struct snd_pcm_substream *substream)
- 	if (!intelhaddata->connected)
- 		return SNDRV_PCM_POS_XRUN;
+@@ -1389,7 +1374,7 @@ static void had_process_hot_unplug(struct snd_intelhad *intelhaddata)
+ 	}
  
--	len = had_process_ringbuf(substream, intelhaddata);
--	if (len < 0)
-+	if (had_process_ringbuf(substream, intelhaddata, &len) < 0)
- 		return SNDRV_PCM_POS_XRUN;
- 	return bytes_to_frames(substream->runtime, len);
- }
+ 	/* Disable Audio */
+-	had_enable_audio(substream, intelhaddata, false);
++	had_enable_audio(intelhaddata, false);
+ 
+ 	intelhaddata->connected = false;
+ 	dev_dbg(intelhaddata->dev,
+diff --git a/sound/x86/intel_hdmi_audio.h b/sound/x86/intel_hdmi_audio.h
+index fe8d99cb839f..a96728a4e7bc 100644
+--- a/sound/x86/intel_hdmi_audio.h
++++ b/sound/x86/intel_hdmi_audio.h
+@@ -127,6 +127,7 @@ struct snd_intelhad {
+ 	int irq;
+ 	void __iomem *mmio_start;
+ 	unsigned int had_config_offset;
++	union aud_cfg aud_config;	/* AUD_CONFIG reg value cache */
+ 	struct work_struct hdmi_audio_wq;
+ 	struct mutex mutex; /* for protecting chmap and eld */
+ };
 -- 
 2.11.0
