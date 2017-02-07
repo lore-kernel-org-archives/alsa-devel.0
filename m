@@ -1,14 +1,17 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH 00/16] ASoC: hdac_hdmi: Enable MST audio
-Date: Tue,  7 Feb 2017 19:09:44 +0530
-Message-ID: <1486474800-11426-1-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH 03/16] ASoc: hdac_hdmi: Configure pin verbs for
+	MST
+Date: Tue,  7 Feb 2017 19:09:47 +0530
+Message-ID: <1486474800-11426-4-git-send-email-jeeja.kp@intel.com>
+References: <1486474800-11426-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 6801326686E
- for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2017 14:28:38 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2AF0A266FCD
+ for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2017 14:28:41 +0100 (CET)
+In-Reply-To: <1486474800-11426-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,60 +27,54 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-With the patch series "ASoC: hdmi: Preparatory work to support MST audio",
-the design is extended from pin to port mapping to handle MST usecases.
+To enable stream on a specific port of a MST capable pin, the port
+needs to be selected before we configure the pin widget verb.
 
-A pin is MST capable if pipe is valid value (i.e. not -1) in the notify
-callback. If pipe = -1, default port is 0 else port = pipe. A MST capable
-pin widget is programmed by first sending a verb to select the device/port
-and then the actual verb is sent to program the widget.
+When port is selected, all the pin widget verb controlling the sink
+device operation will be directed to selected port. So add port
+selection before configuring the pin widget verb.
 
-This patch series enables MST Audio by configuring MST capable pins and
-extended the jack handling to report event for ports. Now the jack events
-are based on port connect/disconnect. The design is also extended to support
-mapping of multiple port to a single converter.
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+---
+ sound/soc/codecs/hdac_hdmi.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-Now with the introduction of multiple ports with a single pin, a pin widget
-is created to enable/disable path based on device connection. Required
-machine driver changes are done to handle this change.
-
-Also use the ASoC jack instead of snd_jack framework to creates jacks in
-the machine driver.
-
-Note: This patch series has dependency on the series
-"ASoC: hdmi: Preparatory work to support MST audio"  
-
-Jeeja KP (16):
-  ASoC: hdac_hdmi: Add MST verb support
-  ASoC: hdac_hdmi: Handle MST pin jack detection at boot/resume
-  ASoc: hdac_hdmi: Configure pin verbs for MST
-  ASoC: hdac_hdmi: Add support for multiple ports to a PCM
-  ASoC: hdac_hdmi: Use ASoC jack instead of snd_jack
-  ASoC: Intel: Skylake: Create ASoC jack for hdmi in rt286 machine
-  ASoC: Intel: Skylake: Create ASoC jack for hdmi in    
-    skl_nau88l25_max98357a machine
-  ASoC: Intel: Skylake: Create ASoC jack for hdmi in nau88l25_ssm4567
-    machine
-  ASoC: Intel: bxt: Create ASoC jack for hdmi in bxt_rt298 machine
-  ASoC: Intel: bxt: Create ASoC jack for hdmi in bxt_da7219_max98357    
-    machine
-  ASoC: hdac_hdmi: Add machine pin widget for each port
-  ASoC: Intel: Skylake: Add jack port initialize in rt286 machine
-  ASoC: Intel: Skylake: Add jack port initialize in nau88l25_max98357a
-    machine
-  ASoC: Intel: Skylake: Add jack port initialize in nau88l25_ssm4567
-    machine
-  ASoC: Intel: bxt: Add jack port initialize in bxt_rt298 machine
-  ASoC: Intel: bxt: Add jack port initialize in da7219_max98357a machine
-
- sound/soc/codecs/hdac_hdmi.c                    | 438 +++++++++++++++++++-----
- sound/soc/codecs/hdac_hdmi.h                    |   5 +-
- sound/soc/intel/boards/bxt_da7219_max98357a.c   |  26 +-
- sound/soc/intel/boards/bxt_rt298.c              |  26 +-
- sound/soc/intel/boards/skl_nau88l25_max98357a.c |  30 +-
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c   |  30 +-
- sound/soc/intel/boards/skl_rt286.c              |  30 +-
- 7 files changed, 482 insertions(+), 103 deletions(-)
-
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index c5527e8..6cf86a0a 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -448,6 +448,9 @@ static int hdac_hdmi_query_port_connlist(struct hdac_ext_device *hdac,
+ 		return -EINVAL;
+ 	}
+ 
++	if (hdac_hdmi_port_select_set(hdac, port) < 0)
++		return -EIO;
++
+ 	port->num_mux_nids = snd_hdac_get_connections(&hdac->hdac, pin->nid,
+ 			port->mux_nids, HDA_MAX_CONNECTIONS);
+ 	if (port->num_mux_nids == 0)
+@@ -687,6 +690,10 @@ static int hdac_hdmi_pin_output_widget_event(struct snd_soc_dapm_widget *w,
+ 	if (!pcm)
+ 		return -EIO;
+ 
++	/* set the device if pin is mst_capable */
++	if (hdac_hdmi_port_select_set(edev, port) < 0)
++		return -EIO;
++
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+ 		hdac_hdmi_set_power_state(edev, port->pin->nid, AC_PWRST_D0);
+@@ -775,6 +782,11 @@ static int hdac_hdmi_pin_mux_widget_event(struct snd_soc_dapm_widget *w,
+ 		kc  = w->kcontrols[0];
+ 
+ 	mux_idx = dapm_kcontrol_get_value(kc);
++
++	/* set the device if pin is mst_capable */
++	if (hdac_hdmi_port_select_set(edev, port) < 0)
++		return -EIO;
++
+ 	if (mux_idx > 0) {
+ 		snd_hdac_codec_write(&edev->hdac, port->pin->nid, 0,
+ 			AC_VERB_SET_CONNECT_SEL, (mux_idx - 1));
 -- 
 2.5.0
