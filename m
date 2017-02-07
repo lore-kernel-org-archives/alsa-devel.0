@@ -1,16 +1,16 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH 09/16] ASoC: Intel: bxt: Create ASoC jack for
-	hdmi in bxt_rt298 machine
-Date: Tue,  7 Feb 2017 19:09:53 +0530
-Message-ID: <1486474800-11426-10-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH 10/16] ASoC: Intel: bxt: Create ASoC jack for
+	hdmi in bxt_da7219_max98357 machine
+Date: Tue,  7 Feb 2017 19:09:54 +0530
+Message-ID: <1486474800-11426-11-git-send-email-jeeja.kp@intel.com>
 References: <1486474800-11426-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id D02F0267071
- for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2017 14:28:57 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 546FA26707B
+ for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2017 14:29:01 +0100 (CET)
 In-Reply-To: <1486474800-11426-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,33 +28,33 @@ List-Id: alsa-devel@alsa-project.org
 From: Jeeja KP <jeeja.kp@intel.com>
 
 Creates ASoC jack for HDMI PCM and calls hdmi codec API to initialize
-jack in bxt_rt298.c machine
+jack in bxt_da7219_max98357 machine
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/intel/boards/bxt_rt298.c | 19 +++++++++++++++++--
+ sound/soc/intel/boards/bxt_da7219_max98357a.c | 19 +++++++++++++++++--
  1 file changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
-index 09be868..d5f53a6 100644
---- a/sound/soc/intel/boards/bxt_rt298.c
-+++ b/sound/soc/intel/boards/bxt_rt298.c
-@@ -28,6 +28,7 @@
+diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+index a9647a2..18f3d0e 100644
+--- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
++++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+@@ -33,6 +33,7 @@
+ #define QUAD_CHANNEL		4
  
- /* Headset jack detection DAPM pins */
  static struct snd_soc_jack broxton_headset;
 +static struct snd_soc_jack broxton_hdmi[3];
  
  struct bxt_hdmi_pcm {
  	struct list_head head;
-@@ -453,16 +454,30 @@ static struct snd_soc_dai_link broxton_rt298_dais[] = {
+@@ -517,16 +518,30 @@ static struct snd_soc_dai_link broxton_dais[] = {
  	},
  };
  
 +#define NAME_SIZE	32
  static int bxt_card_late_probe(struct snd_soc_card *card)
  {
- 	struct bxt_rt286_private *ctx = snd_soc_card_get_drvdata(card);
+ 	struct bxt_card_private *ctx = snd_soc_card_get_drvdata(card);
  	struct bxt_hdmi_pcm *pcm;
 -	int err;
 +	int err, i = 0;
