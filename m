@@ -1,14 +1,15 @@
-From: olivier moysan <olivier.moysan@st.com>
-Subject: [PATCH v2 0/2] Add STM32 SAI support
-Date: Tue, 7 Feb 2017 14:20:00 +0100
-Message-ID: <1486473602-8957-1-git-send-email-olivier.moysan@st.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ASoC: sun4i-i2s: remove some dead code
+Date: Tue, 7 Feb 2017 16:19:34 +0300
+Message-ID: <20170207131934.GD28207@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id CF0F2266FCD
+Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0776F266FD0
  for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2017 14:20:09 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,88 +19,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, olivier.moysan@st.com
-Cc: arnaud.pouliquen@st.com
+To: Liam Girdwood <lgirdwood@gmail.com>, =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand@free-electrons.com>
+Cc: alsa-devel@alsa-project.org, Wei Yongjun <yongjun_wei@trendmicro.com.cn>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch-set handles the Serial Audio Interface (SAI) IP on STM32 platforms.
+"i2s->rst" is either NULL or a valid pointer.  We won't probe
+successfully if it's an error pointer.  That means these checks can be
+removed.
 
-The SAI IP is composed of two Sub-block A and B. (see the figure below)
-Each sub-block makes use of individual and shared resources.
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Shared resources:
-	- Reset line. Reset common and sub-block registers.
-	- Bus interface clocks. This clock is not exposed in device
-	as it it managed by clock driver, according to kernel clocks gating.
-	- Common register. SAI IP exhibits a common configuration register
-	to manage synchronization modes. NB: These modes are not yet implemented
-	in this version of the SAI driver.
-	- Interrupt. Sub-blocks have their own interrupt status registers but they 
-	share the same interrupt line.
-
-Individual resources:
-	- Register set
-	- DMA request line.
-	- Communication interface. 
-	Each sub-block has its own GPIOs and associated bus lines.
-	- Kernel clock. 
-	Each sub-block has its own dedicated clock for its communication interface.
-
-To reflect this architecture Sub-block A and B are handled by 2 child devices.
-Sub-block A and B devices can be configured independently either as transmitter
-or receiver. A PCM device is associated to each sub-block.
-
-A sub-block has to select the appropriated parent clock at runtime, 
-depending on the audio stream sampling rate to be played or captured.
-Two parent clocks must be provided to support sampling rates multiples
-of 8 kHz or 11.025kHz.
-
- Interface clock  +--------------------------------+
-+---------------> | SAI IP                         |
- Reset            |     +-----------------+        |
-+---------------> |     |common registers |        |
-                  |     +-----------------+        |
-                  |                                |
-                  |    +----------------------+    |
-                  |    | Sub-block A          |    |
- Kernel clock A   |    |                      |    | Bus A
-+--------------------> | +----------------+   +---------------->
-                  |    | |A registers     |   |    |
-                  |    | +----------------+   |    |
-                  |    +----------------------+    |
-                  |                                |
-                  |    +----------------------+    |
-                  |    | Sub-block B          |    |
- Kernel clock B   |    |                      |    | Bus B
-+--------------------> | +----------------+   +----------------->
-                  |    | |B registers     |   |    |
-                  |    | +----------------+   |    |
-                  |    +----------------------+    |
-                  |                                |
-                  +--------------------------------+
-
-Changes in v2:
-	- Fix warnings
-
-olivier moysan (2):
-  ASoC: stm32: add bindings for SAI
-  ASoC: stm32: add SAI driver
-
- .../devicetree/bindings/sound/st,stm32-sai.txt     |  79 ++
- sound/soc/Kconfig                                  |   1 +
- sound/soc/Makefile                                 |   1 +
- sound/soc/stm/Kconfig                              |   8 +
- sound/soc/stm/Makefile                             |   6 +
- sound/soc/stm/stm32_sai.c                          | 123 +++
- sound/soc/stm/stm32_sai.h                          | 202 +++++
- sound/soc/stm/stm32_sai_sub.c                      | 899 +++++++++++++++++++++
- 8 files changed, 1319 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-sai.txt
- create mode 100644 sound/soc/stm/Kconfig
- create mode 100644 sound/soc/stm/Makefile
- create mode 100644 sound/soc/stm/stm32_sai.c
- create mode 100644 sound/soc/stm/stm32_sai.h
- create mode 100644 sound/soc/stm/stm32_sai_sub.c
-
--- 
-1.9.1
+diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+index 3635bbc72cbc..d79be3e4361b 100644
+--- a/sound/soc/sunxi/sun4i-i2s.c
++++ b/sound/soc/sunxi/sun4i-i2s.c
+@@ -723,13 +723,11 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
+-	if (!IS_ERR(i2s->rst)) {
+-		ret = reset_control_deassert(i2s->rst);
+-		if (ret) {
+-			dev_err(&pdev->dev,
+-				"Failed to deassert the reset control\n");
+-			return -EINVAL;
+-		}
++	ret = reset_control_deassert(i2s->rst);
++	if (ret) {
++		dev_err(&pdev->dev,
++			"Failed to deassert the reset control\n");
++		return -EINVAL;
+ 	}
+ 
+ 	i2s->playback_dma_data.addr = res->start + SUN4I_I2S_FIFO_TX_REG;
+@@ -766,8 +764,7 @@ static int sun4i_i2s_probe(struct platform_device *pdev)
+ 		sun4i_i2s_runtime_suspend(&pdev->dev);
+ err_pm_disable:
+ 	pm_runtime_disable(&pdev->dev);
+-	if (!IS_ERR(i2s->rst))
+-		reset_control_assert(i2s->rst);
++	reset_control_assert(i2s->rst);
+ 
+ 	return ret;
+ }
+@@ -782,8 +779,7 @@ static int sun4i_i2s_remove(struct platform_device *pdev)
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+ 		sun4i_i2s_runtime_suspend(&pdev->dev);
+ 
+-	if (!IS_ERR(i2s->rst))
+-		reset_control_assert(i2s->rst);
++	reset_control_assert(i2s->rst);
+ 
+ 	return 0;
+ }
