@@ -1,21 +1,18 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/4] Yet another patchset for LPE audio
- refactoring
-Date: Mon, 6 Feb 2017 19:22:17 -0600
-Message-ID: <9a49639a-5322-ad84-2dc1-73b3451a032e@linux.intel.com>
-References: <20170203164400.12983-1-tiwai@suse.de>
- <s5hshnrf88i.wl-tiwai@suse.de>
- <4b313a18-f7a0-83f6-3f97-2daadec6ebf9@linux.intel.com>
- <s5ho9yff0xx.wl-tiwai@suse.de>
- <149fad5a-898d-ea49-625c-6be1bba350bf@linux.intel.com>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: Re: [PATCH] ASoC:nau8825: automatic LRCK and BCLK
+ divide in master mode
+Date: Tue, 7 Feb 2017 10:24:37 +0800
+Message-ID: <58992FE5.6020001@nuvoton.com>
+References: <1486021010-32340-1-git-send-email-KCHSU0@nuvoton.com>
+ <20170203115757.q2ku7xzymqcx3yq2@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 3FE5726686E
- for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2017 02:22:21 +0100 (CET)
-In-Reply-To: <149fad5a-898d-ea49-625c-6be1bba350bf@linux.intel.com>
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id AFB1D26686E
+ for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2017 03:24:42 +0100 (CET)
+In-Reply-To: <20170203115757.q2ku7xzymqcx3yq2@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,46 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Jerome Anand <jerome.anand@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: WTLI@nuvoton.com, YHCHuang@nuvoton.com, alsa-devel@alsa-project.org, CTLIN0@nuvoton.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-
->>>> - The behavior in had_process_buffer_underrun() isn't clear enough.
->>>>   Or, more exactly, the behavior of AUD_HDMI_STATUS reg and AUD_CONFIG
->>>>   reg look complex, and need a bit more description for readers
->>>>   (including me).
->>>>
->>>> Can you guys enlighten a bit?
->>>
->>> For the LPE_AUDIO_Buffer_config register (65020h), there is one
->>> important field
->>> 10:8: DMA Fifo watermark. The audio unit has 8x64 bytes, this register
->>> define when to fetch data. Bottom line it'd be wise to avoid rewinding
->>> below that FIFO size...
->>
->> Right, this may be needed to be exposed.
->>
->>
->>> There are two possible interrupt sources in the
->>> STREAM_X_LPE_AUD_HDMI_STATUS (65064h)
->>> Bit 31: sample buffer underrun. HDMI audio unit did not have enough
->>> samples to insert in video frame (cleared by writing a one)
->>> Bit 29: buffer done status, write 1 to clear
->>> Bit 15: sample buffer underrun interrupt enable
->>
->> OK, then the current code seems naming the function wrongly.
->> It names had_enable_audio_int() but actually this should be named as
->> had_clear_interrupts() or such.
+Hi,
+On 2/3/2017 7:57 PM, Mark Brown wrote:
+> On Thu, Feb 02, 2017 at 03:36:50PM +0800, John Hsu wrote:
 >
-> I think enable and clear are two separate steps, you only clear what
-> you've enabled, no?
+>
+>> Provide the automatic configurable LRC and BCLK divide. The bit clock rate
+>> can be chosen by userspace. The driver will make configurations of LRCK
+>> and BCLK automatically when playback or capture in master mode.
+>>
+>
+> As far as I can tell this only provides manual selection from userspace,
+> I can't see the code for automatic selection.  I'd not expect to see any
+> userspace control of something like this, if there is an override I'd
+> expect it to come from the machine driver, and as I've previously said
+> I'd definitely expect automatic selection to be the default like it is
+> with other CODEC drivers.
+>
 
-To be crystal-clear, there are two interrupts we care about
-1. buffer interrupt. This is enabled in bit1 of 
-STREAM_X_LPE_AUD_BUFFER_M_ADDR, the hardware will generate an interrupt 
-when the hardware is done reading the data from memory. Bit0 is set 
-after a new address is programmed (or just to reactivate the same address).
-2. underrun interrupt. This is enabled once in the 
-STREAM_X_LPE_AUD_HDMI_STATUS register, you don't need to re-enable it 
-for each buffer.
+I see. Maybe I can get the bit clock and frame sync information when
+hardware parameter. According to the information to make LRC and BCLK
+divide confirguration.
+
+
+
+===========================================================================================
+The privileged confidential information contained in this email is intended for use only by the addressees as indicated by the original sender of this email. If you are not the addressee indicated in this email or are not responsible for delivery of the email to such a person, please kindly reply to the sender indicating this fact and delete all copies of it from your computer and network server immediately. Your cooperation is highly appreciated. It is advised that any unauthorized use of confidential information of Nuvoton is strictly prohibited; and any information in this email irrelevant to the official business of Nuvoton shall be deemed as neither given nor endorsed by Nuvoton.
