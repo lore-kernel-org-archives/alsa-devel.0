@@ -1,49 +1,57 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 2/3] dt: ASoC: zx-i2s: Document for the ZTE zx296718
- I2S controller
-Date: Tue, 7 Feb 2017 12:02:12 +0000
-Message-ID: <20170207120212.uggkwhdeep5o2uxb@sirena.org.uk>
-References: <1486436571-8682-1-git-send-email-baoyou.xie@linaro.org>
- <1486436571-8682-2-git-send-email-baoyou.xie@linaro.org>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4/6] ALSA: x86: Don't pass SNDRV_PCM_INFO_BATCH
+	flag
+Date: Tue,  7 Feb 2017 14:11:20 +0100
+Message-ID: <20170207131122.6345-5-tiwai@suse.de>
+References: <20170207131122.6345-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="muj55hqq6n2fpcsq"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1486436571-8682-2-git-send-email-baoyou.xie@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Baoyou Xie <baoyou.xie@linaro.org>
-Cc: lgirdwood@gmail.com, robh+dt@kernel.org, mark.rutland@arm.com, jun.nie@linaro.org, mturquette@baylibre.com, sboyd@codeaurora.org, perex@perex.cz, tiwai@suse.com, shawn.guo@linaro.org, vinod.koul@intel.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, shawnguo@kernel.org, xie.baoyou@zte.com.cn, chen.chaokai@zte.com.cn, wang.qiang01@zte.com.cn
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 318EE266FD0
+ for <alsa-devel@alsa-project.org>; Tue,  7 Feb 2017 14:11:24 +0100 (CET)
+In-Reply-To: <20170207131122.6345-1-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jerome Anand <jerome.anand@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+The PCM engine on LPE audio isn't like a batch-style process any
+longer, but rather it deals with the standard ring buffer.  Remove the
+BATCH info flag so that PA can handle the buffer in timer-sched mode.
 
---muj55hqq6n2fpcsq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Similarly, the DOUBLE flag is also superfluous.  Drop both bits.
 
-On Tue, Feb 07, 2017 at 11:02:50AM +0800, Baoyou Xie wrote:
-> This patch documents the devicetree for the ZTE's zx296718
-> I2S audio controller.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/x86/intel_hdmi_audio.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-Please submit patches using subject lines reflecting the style for the
-subsystem.  This makes it easier for people to identify relevant
-patches.  Look at what existing commits in the area you're changing are
-doing and make sure your subject lines visually resemble what they're
-doing.
-
---muj55hqq6n2fpcsq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAliZt0AACgkQJNaLcl1U
-h9AdGgf+JxXigVa6NICI/W5LSLwfjqAz2eOErmw198FTl9hvT47oIVUKQmCM6NVd
-xwqaofijbPx+hYHv0DMadTxAnz/R2EosZgIS103L5fkqLtCBVK4ss//7O2p5yiZz
-5L7aa7oB82usANtIhNmn+lDeiYTcobakRHTuJ5rRnuNAJKhc9aAkHGCrV4Cq11AR
-N6o897Mt6iY/WL9ZEkYXpBcueTtFGup0rJBuh2qjy9UVsKLdAdU7zVSH4a+km8f/
-kbOrVnNcEfOSDKj/tXyQp/t147FKXXOG3e/AB/SMAB2+PoJt/u0VM3P92ekZXU39
-ecq+20PeFW3lx5P2PgpN2W1yme90AQ==
-=IiK0
------END PGP SIGNATURE-----
-
---muj55hqq6n2fpcsq--
+diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
+index 5697552f489a..8f87ac3057c6 100644
+--- a/sound/x86/intel_hdmi_audio.c
++++ b/sound/x86/intel_hdmi_audio.c
+@@ -132,10 +132,8 @@ static const struct channel_map_table map_tables[] = {
+ /* hardware capability structure */
+ static const struct snd_pcm_hardware had_pcm_hardware = {
+ 	.info =	(SNDRV_PCM_INFO_INTERLEAVED |
+-		SNDRV_PCM_INFO_DOUBLE |
+-		SNDRV_PCM_INFO_MMAP|
+-		SNDRV_PCM_INFO_MMAP_VALID |
+-		SNDRV_PCM_INFO_BATCH),
++		SNDRV_PCM_INFO_MMAP |
++		SNDRV_PCM_INFO_MMAP_VALID),
+ 	.formats = (SNDRV_PCM_FMTBIT_S16_LE |
+ 		    SNDRV_PCM_FMTBIT_S24_LE |
+ 		    SNDRV_PCM_FMTBIT_S32_LE),
+-- 
+2.11.0
