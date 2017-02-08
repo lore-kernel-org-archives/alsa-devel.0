@@ -1,15 +1,18 @@
-From: Vincent Abriou <vincent.abriou@st.com>
-Subject: [PATCH v2] ASoc: hdmi-codec: remove HDMI device
-	unregister
-Date: Wed, 8 Feb 2017 10:47:01 +0100
-Message-ID: <1486547221-32593-1-git-send-email-vincent.abriou@st.com>
+From: Mylene Josserand <mylene.josserand@free-electrons.com>
+Subject: Re: [PATCH v4 1/8] ASoC: sun4i-i2s: Update binding
+ documentation to include A31
+Date: Wed, 8 Feb 2017 11:10:47 +0100
+Message-ID: <39416532-9020-6e5c-e6ce-4e4264612ac1@free-electrons.com>
+References: <20170202092422.5588-1-mylene.josserand@free-electrons.com>
+ <20170202092422.5588-2-mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id A63E82669E6
- for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2017 10:47:09 +0100 (CET)
+Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 670F92669E6
+ for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2017 11:10:48 +0100 (CET)
+In-Reply-To: <20170202092422.5588-2-mylene.josserand@free-electrons.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,97 +22,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Takashi Iwai <tiwai@suse.com>, Jyri Sarha <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Vincent Abriou <vincent.abriou@st.com>
+To: broonie@kernel.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, wens@csie.org, robh+dt@kernel.org, alexandre.belloni@free-electrons.com, maxime.ripard@free-electrons.com, thomas.petazzoni@free-electrons.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-While unregistering the hdmi-codec, the hdmi device list must be
-cleaned up. It avoid kernel page fault when registering again the
-hdmi-codec.
-
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Jyri Sarha <jsarha@ti.com>
-Cc: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
-
-Signed-off-by: Vincent Abriou <vincent.abriou@st.com>
----
-v2:
- - add mutex to protect hdmi_device_list from concurrent accesses
- - use of internal dev variable in the hdmi_codec_remove function
-
- sound/soc/codecs/hdmi-codec.c | 25 ++++++++++++++++++++++---
- 1 file changed, 22 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index dc6715a..8c5ae1f 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -32,6 +32,7 @@ struct hdmi_device {
- };
- #define pos_to_hdmi_device(pos)	container_of((pos), struct hdmi_device, list)
- LIST_HEAD(hdmi_device_list);
-+static DEFINE_MUTEX(hdmi_mutex);
- 
- #define DAI_NAME_SIZE 16
- 
-@@ -794,6 +795,7 @@ static int hdmi_codec_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	hd = NULL;
-+	mutex_lock(&hdmi_mutex);
- 	list_for_each(pos, &hdmi_device_list) {
- 		struct hdmi_device *tmp = pos_to_hdmi_device(pos);
- 
-@@ -805,13 +807,16 @@ static int hdmi_codec_probe(struct platform_device *pdev)
- 
- 	if (!hd) {
- 		hd = devm_kzalloc(dev, sizeof(*hd), GFP_KERNEL);
--		if (!hd)
-+		if (!hd) {
-+			mutex_unlock(&hdmi_mutex);
- 			return -ENOMEM;
-+		}
- 
- 		hd->dev = dev->parent;
- 
- 		list_add_tail(&hd->list, &hdmi_device_list);
- 	}
-+	mutex_unlock(&hdmi_mutex);
- 
- 	if (hd->cnt >= ARRAY_SIZE(hdmi_dai_name)) {
- 		dev_err(dev, "too many hdmi codec are deteced\n");
-@@ -853,11 +858,25 @@ static int hdmi_codec_probe(struct platform_device *pdev)
- 
- static int hdmi_codec_remove(struct platform_device *pdev)
- {
-+	struct device *dev = &pdev->dev;
-+	struct list_head *pos;
- 	struct hdmi_codec_priv *hcp;
- 
--	hcp = dev_get_drvdata(&pdev->dev);
-+	mutex_lock(&hdmi_mutex);
-+	list_for_each(pos, &hdmi_device_list) {
-+		struct hdmi_device *tmp = pos_to_hdmi_device(pos);
-+
-+		if (tmp->dev == dev->parent) {
-+			list_del(pos);
-+			break;
-+		}
-+	}
-+	mutex_unlock(&hdmi_mutex);
-+
-+	hcp = dev_get_drvdata(dev);
- 	kfree(hcp->chmap_info);
--	snd_soc_unregister_codec(&pdev->dev);
-+	snd_soc_unregister_codec(dev);
-+
- 	return 0;
- }
- 
--- 
-2.7.4
+SGVsbG8gTWFyayBCcm93biwKClRoYW5rIHlvdSB0byBoYXZlIGFwcGxpZWQgbXkgcGF0Y2hlcyEK
+Ck9uIDAyLzAyLzIwMTcgMTA6MjQsIE15bMOobmUgSm9zc2VyYW5kIHdyb3RlOgo+IEFkZCBhIG5l
+dyBjb21wYXRpYmxlIGZvciBzdW40aS1pMnMgZHJpdmVyIHRvIGhhbmRsZSBzb21lCj4gU29DcyB0
+aGF0IGhhdmUgYSByZXNldCBsaW5lIHRoYXQgbXVzdCBiZSBhc3NlcnRlZC9kZWFzc2VydGVkLgo+
+Cj4gVGhpcyBuZXcgY29tcGF0aWJsZSwgImFsbHdpbm5lcixzdW42aS1hMzEtaTJzIiwgcmVxdWly
+ZXMgdGhlCj4gcHJvcGVydHkgInJlc2V0cyIgd2hpY2ggc2hvdWxkIGJlIGEgcGhhbmRsZSB0byB0
+aGUgcmVzZXQgbGluZS4KPiBFeGNlcHQgdGhlc2UgZGlmZmVyZW5jZXMsIHRoZSBjb21wYXRpYmxl
+IGlzIGlkZW50aWNhbCB0byBwcmV2aW91cyBvbmUKPiB3aGljaCB3aWxsIG5vdCBoYW5kbGUgYSBy
+ZXNldCBsaW5lLgo+Cj4gU2lnbmVkLW9mZi1ieTogTXlsw6huZSBKb3NzZXJhbmQgPG15bGVuZS5q
+b3NzZXJhbmRAZnJlZS1lbGVjdHJvbnMuY29tPgo+IEFja2VkLWJ5OiBNYXhpbWUgUmlwYXJkIDxt
+YXhpbWUucmlwYXJkQGZyZWUtZWxlY3Ryb25zLmNvbT4KPiBBY2tlZC1ieTogUm9iIEhlcnJpbmcg
+PHJvYmhAa2VybmVsLm9yZz4KPiAtLS0KPiAgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
+bmdzL3NvdW5kL3N1bjRpLWkycy50eHQgfCA1ICsrKysrCj4gIDEgZmlsZSBjaGFuZ2VkLCA1IGlu
+c2VydGlvbnMoKykKPgo+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
+ZGluZ3Mvc291bmQvc3VuNGktaTJzLnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
+aW5ncy9zb3VuZC9zdW40aS1pMnMudHh0Cj4gaW5kZXggN2I1MjZlYzY0OTkxLi5mNGFkYzU4Zjgy
+YmEgMTAwNjQ0Cj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5k
+L3N1bjRpLWkycy50eHQKPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
+c291bmQvc3VuNGktaTJzLnR4dAo+IEBAIC03LDYgKzcsNyBAQCBSZXF1aXJlZCBwcm9wZXJ0aWVz
+Ogo+Cj4gIC0gY29tcGF0aWJsZTogc2hvdWxkIGJlIG9uZSBvZiB0aGUgZm9sbG93aW5ncwo+ICAg
+ICAtICJhbGx3aW5uZXIsc3VuNGktYTEwLWkycyIKPiArICAgLSAiYWxsd2lubmVyLHN1bjZpLWEz
+MS1pMnMiCj4gIC0gcmVnOiBwaHlzaWNhbCBiYXNlIGFkZHJlc3Mgb2YgdGhlIGNvbnRyb2xsZXIg
+YW5kIGxlbmd0aCBvZiBtZW1vcnkgbWFwcGVkCj4gICAgcmVnaW9uLgo+ICAtIGludGVycnVwdHM6
+IHNob3VsZCBjb250YWluIHRoZSBJMlMgaW50ZXJydXB0Lgo+IEBAIC0xOSw2ICsyMCwxMCBAQCBS
+ZXF1aXJlZCBwcm9wZXJ0aWVzOgo+ICAgICAtICJtb2QiIDogbW9kdWxlIGNsb2NrIGZvciB0aGUg
+STJTIGNvbnRyb2xsZXIKPiAgLSAjc291bmQtZGFpLWNlbGxzIDogTXVzdCBiZSBlcXVhbCB0byAw
+Cj4KPiArUmVxdWlyZWQgcHJvcGVydGllcyBmb3IgdGhlIGZvbGxvd2luZyBjb21wYXRpYmxlczoK
+PiArCS0gImFsbHdpbm5lcixzdW42aS1hMzEtaTJzIgo+ICstIHJlc2V0czogcGhhbmRsZSB0byB0
+aGUgcmVzZXQgbGluZSBmb3IgdGhpcyBjb2RlYwo+ICsKPiAgRXhhbXBsZToKPgo+ICBpMnMwOiBp
+MnNAMDFjMjI0MDAgewo+CgpGb3IgYWxsIG15IHNlcmllcywgeW91IGRpZCBub3QgcGljay11cCB0
+aGlzIHBhdGNoLiBJIHdhcyB3b25kZXJpbmcgaWYgCnlvdSBoYXZlIGFueSBjb21tZW50IG9uIGl0
+PyBJcyB0aGVyZSBzb21ldGhpbmcgd3Jvbmc/CgpUaGFuayB5b3UgaW4gYWR2YW5jZSwKCkJlc3Qg
+cmVnYXJkcywKCi0tIApNeWzDqG5lIEpvc3NlcmFuZCwgRnJlZSBFbGVjdHJvbnMKRW1iZWRkZWQg
+TGludXggYW5kIEtlcm5lbCBlbmdpbmVlcmluZwpodHRwOi8vZnJlZS1lbGVjdHJvbnMuY29tCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
+bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
