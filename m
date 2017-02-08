@@ -1,84 +1,76 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sunxi: allow the analog codec driver to be built on
- ARM64" to the asoc tree
-Date: Wed, 08 Feb 2017 18:34:03 +0000
-Message-ID: <E1cbX47-0000ia-Ks@debutante>
-References: <20170126154859.55855-9-icenowy@aosc.xyz>
+From: Matthias Reichl <hias@horus.com>
+Subject: Re: [PATCH] ASoC: bcm2835: Add 8 channel (multitrack)
+	capability
+Date: Wed, 8 Feb 2017 19:54:00 +0100
+Message-ID: <20170208185359.GA11314@camel2.lan>
+References: <1486422576-6958-1-git-send-email-flatmax@flatmax.org>
+ <20170208182835.6hpwcxiae2lh56d5@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20170126154859.55855-9-icenowy@aosc.xyz>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Icenowy Zheng <icenowy@aosc.xyz>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Andre Przywara <andre.przywara@arm.com>, Linus Walleij <linus.walleij@linaro.org>, linux-sunxi@googlegroups.com, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, linux-gpio@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, dmaengine@vger.kernel.org, Maxime Ripard <maxime.ripard@free-electrons.com>, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.horus.com (mail.horus.com [78.46.148.228])
+ by alsa0.perex.cz (Postfix) with ESMTP id E4A24266AF9
+ for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2017 19:54:01 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20170208182835.6hpwcxiae2lh56d5@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Lee Jones <lee@kernel.org>, Matt Flax <flatmax@flatmax.org>, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Wed, Feb 08, 2017 at 06:28:35PM +0000, Mark Brown wrote:
+> On Tue, Feb 07, 2017 at 10:09:36AM +1100, Matt Flax wrote:
+> 
+> >  	case SND_SOC_DAIFMT_CBS_CFM:
+> >  		clk_set_rate(dev->clk, sampling_rate * bclk_ratio);
+> > +	case SND_SOC_DAIFMT_CBM_CFS:
+> 
+> Is this fall through deliberate?
+> 
+> > +	/* Default data delay to 1 bit.
+> > +	   In I2S mode, we must have 2 channels */
+> >  	switch (dev->fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+> >  	case SND_SOC_DAIFMT_I2S:
+> > +		if (params_channels(params) != 2)
+> > +			return -EINVAL;
+> > +	case SND_SOC_DAIFMT_DSP_A:
+> > +	case SND_SOC_DAIFMT_DSP_B:
+> >  		data_delay = 1;
+> >  		break;
+> >  	default:
 
-   ASoC: sunxi: allow the analog codec driver to be built on ARM64
+Matt, could you please include linux-rpi-kernel@lists.infradead.org
+in your emails?
 
-has been applied to the asoc tree at
+I fail to see the part where DSP modes are actually set up in
+the hardware. bcm2835 still seems to be operating in 2-channel
+stereo I2S mode, i.e. no real frame sync information at the
+hardware level.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+If all you do is adding code to pretend the bcm2835 could do
+multichannel modes wouldn't it be easier to implement that as
+a userspace alsa plugin?
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+> 
+> Same here.  This is also buggy in that it treats DSP A and DSP B
+> identically, they are different so the configuration must be incorrect
+> for one of them.  I suspect this is configuring for DSP A.
+> 
+> You should also really have a setup() function that imposes a channel
+> constraint when in I2S mode, wm8988 is one example here.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From e5028a259733ec2324893cb481023ed6cf7e9723 Mon Sep 17 00:00:00 2001
-From: Icenowy Zheng <icenowy@aosc.xyz>
-Date: Wed, 8 Feb 2017 02:30:40 +0800
-Subject: [PATCH] ASoC: sunxi: allow the analog codec driver to be built on
- ARM64
-
-As the 64-bit Allwinner H5 SoC has the same analog codec part (also the
-same digital part) as H3, enable the driver to be built on ARM64
-Allwinner platform, so that it can be used on H5.
-
-Signed-off-by: Icenowy Zheng <icenowy@aosc.xyz>
-Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
-Acked-by: Chen-Yu Tsai <wens@csie.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sunxi/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
-index 13a8267f17c7..22408bc2d6ec 100644
---- a/sound/soc/sunxi/Kconfig
-+++ b/sound/soc/sunxi/Kconfig
-@@ -22,7 +22,7 @@ config SND_SUN8I_CODEC
- 
- config SND_SUN8I_CODEC_ANALOG
- 	tristate "Allwinner sun8i Codec Analog Controls Support"
--	depends on MACH_SUN8I || COMPILE_TEST
-+	depends on MACH_SUN8I || (ARM64 && ARCH_SUNXI) || COMPILE_TEST
- 	select REGMAP
- 	help
- 	  Say Y or M if you want to add support for the analog controls for
--- 
-2.11.0
+> _______________________________________________
+> linux-rpi-kernel mailing list
+> linux-rpi-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-rpi-kernel
