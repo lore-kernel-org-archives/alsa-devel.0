@@ -1,18 +1,19 @@
-From: Mylene Josserand <mylene.josserand@free-electrons.com>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH v4 1/8] ASoC: sun4i-i2s: Update binding
  documentation to include A31
-Date: Wed, 8 Feb 2017 11:10:47 +0100
-Message-ID: <39416532-9020-6e5c-e6ce-4e4264612ac1@free-electrons.com>
+Date: Wed, 8 Feb 2017 10:33:18 +0000
+Message-ID: <20170208103318.ttqkvddlpyw6pwo6@sirena.org.uk>
 References: <20170202092422.5588-1-mylene.josserand@free-electrons.com>
  <20170202092422.5588-2-mylene.josserand@free-electrons.com>
+ <39416532-9020-6e5c-e6ce-4e4264612ac1@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============6307466263802831192=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 670F92669E6
- for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2017 11:10:48 +0100 (CET)
-In-Reply-To: <20170202092422.5588-2-mylene.josserand@free-electrons.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 064A026684C
+ for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2017 11:33:49 +0100 (CET)
+In-Reply-To: <39416532-9020-6e5c-e6ce-4e4264612ac1@free-electrons.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,44 +23,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
+To: Mylene Josserand <mylene.josserand@free-electrons.com>
 Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, wens@csie.org, robh+dt@kernel.org, alexandre.belloni@free-electrons.com, maxime.ripard@free-electrons.com, thomas.petazzoni@free-electrons.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8gTWFyayBCcm93biwKClRoYW5rIHlvdSB0byBoYXZlIGFwcGxpZWQgbXkgcGF0Y2hlcyEK
-Ck9uIDAyLzAyLzIwMTcgMTA6MjQsIE15bMOobmUgSm9zc2VyYW5kIHdyb3RlOgo+IEFkZCBhIG5l
-dyBjb21wYXRpYmxlIGZvciBzdW40aS1pMnMgZHJpdmVyIHRvIGhhbmRsZSBzb21lCj4gU29DcyB0
-aGF0IGhhdmUgYSByZXNldCBsaW5lIHRoYXQgbXVzdCBiZSBhc3NlcnRlZC9kZWFzc2VydGVkLgo+
-Cj4gVGhpcyBuZXcgY29tcGF0aWJsZSwgImFsbHdpbm5lcixzdW42aS1hMzEtaTJzIiwgcmVxdWly
-ZXMgdGhlCj4gcHJvcGVydHkgInJlc2V0cyIgd2hpY2ggc2hvdWxkIGJlIGEgcGhhbmRsZSB0byB0
-aGUgcmVzZXQgbGluZS4KPiBFeGNlcHQgdGhlc2UgZGlmZmVyZW5jZXMsIHRoZSBjb21wYXRpYmxl
-IGlzIGlkZW50aWNhbCB0byBwcmV2aW91cyBvbmUKPiB3aGljaCB3aWxsIG5vdCBoYW5kbGUgYSBy
-ZXNldCBsaW5lLgo+Cj4gU2lnbmVkLW9mZi1ieTogTXlsw6huZSBKb3NzZXJhbmQgPG15bGVuZS5q
-b3NzZXJhbmRAZnJlZS1lbGVjdHJvbnMuY29tPgo+IEFja2VkLWJ5OiBNYXhpbWUgUmlwYXJkIDxt
-YXhpbWUucmlwYXJkQGZyZWUtZWxlY3Ryb25zLmNvbT4KPiBBY2tlZC1ieTogUm9iIEhlcnJpbmcg
-PHJvYmhAa2VybmVsLm9yZz4KPiAtLS0KPiAgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
-bmdzL3NvdW5kL3N1bjRpLWkycy50eHQgfCA1ICsrKysrCj4gIDEgZmlsZSBjaGFuZ2VkLCA1IGlu
-c2VydGlvbnMoKykKPgo+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3Mvc291bmQvc3VuNGktaTJzLnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9zb3VuZC9zdW40aS1pMnMudHh0Cj4gaW5kZXggN2I1MjZlYzY0OTkxLi5mNGFkYzU4Zjgy
-YmEgMTAwNjQ0Cj4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5k
-L3N1bjRpLWkycy50eHQKPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
-c291bmQvc3VuNGktaTJzLnR4dAo+IEBAIC03LDYgKzcsNyBAQCBSZXF1aXJlZCBwcm9wZXJ0aWVz
-Ogo+Cj4gIC0gY29tcGF0aWJsZTogc2hvdWxkIGJlIG9uZSBvZiB0aGUgZm9sbG93aW5ncwo+ICAg
-ICAtICJhbGx3aW5uZXIsc3VuNGktYTEwLWkycyIKPiArICAgLSAiYWxsd2lubmVyLHN1bjZpLWEz
-MS1pMnMiCj4gIC0gcmVnOiBwaHlzaWNhbCBiYXNlIGFkZHJlc3Mgb2YgdGhlIGNvbnRyb2xsZXIg
-YW5kIGxlbmd0aCBvZiBtZW1vcnkgbWFwcGVkCj4gICAgcmVnaW9uLgo+ICAtIGludGVycnVwdHM6
-IHNob3VsZCBjb250YWluIHRoZSBJMlMgaW50ZXJydXB0Lgo+IEBAIC0xOSw2ICsyMCwxMCBAQCBS
-ZXF1aXJlZCBwcm9wZXJ0aWVzOgo+ICAgICAtICJtb2QiIDogbW9kdWxlIGNsb2NrIGZvciB0aGUg
-STJTIGNvbnRyb2xsZXIKPiAgLSAjc291bmQtZGFpLWNlbGxzIDogTXVzdCBiZSBlcXVhbCB0byAw
-Cj4KPiArUmVxdWlyZWQgcHJvcGVydGllcyBmb3IgdGhlIGZvbGxvd2luZyBjb21wYXRpYmxlczoK
-PiArCS0gImFsbHdpbm5lcixzdW42aS1hMzEtaTJzIgo+ICstIHJlc2V0czogcGhhbmRsZSB0byB0
-aGUgcmVzZXQgbGluZSBmb3IgdGhpcyBjb2RlYwo+ICsKPiAgRXhhbXBsZToKPgo+ICBpMnMwOiBp
-MnNAMDFjMjI0MDAgewo+CgpGb3IgYWxsIG15IHNlcmllcywgeW91IGRpZCBub3QgcGljay11cCB0
-aGlzIHBhdGNoLiBJIHdhcyB3b25kZXJpbmcgaWYgCnlvdSBoYXZlIGFueSBjb21tZW50IG9uIGl0
-PyBJcyB0aGVyZSBzb21ldGhpbmcgd3Jvbmc/CgpUaGFuayB5b3UgaW4gYWR2YW5jZSwKCkJlc3Qg
-cmVnYXJkcywKCi0tIApNeWzDqG5lIEpvc3NlcmFuZCwgRnJlZSBFbGVjdHJvbnMKRW1iZWRkZWQg
-TGludXggYW5kIEtlcm5lbCBlbmdpbmVlcmluZwpodHRwOi8vZnJlZS1lbGVjdHJvbnMuY29tCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
-bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
-bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+--===============6307466263802831192==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="h2iy6oxcawviqapi"
+Content-Disposition: inline
+
+
+--h2iy6oxcawviqapi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Feb 08, 2017 at 11:10:47AM +0100, Mylene Josserand wrote:
+
+> For all my series, you did not pick-up this patch. I was wondering if you
+> have any comment on it? Is there something wrong?
+
+Please resend any patches you think are missing.
+
+--h2iy6oxcawviqapi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlia8+4ACgkQJNaLcl1U
+h9BmNggAhHlylceIltKhIBjd/F2gGnmE56p9rP2n9gb+O8nVtGQpdH4jkH65zeL1
+RlZ8/dXRGQfjcOCfCsr6D4Cjsm370y7k6Vyw5Ne+oyswd3kDBtZEQE9eIfNWGvEw
+rH0AwXsodKBpxmBlF5tVIYlgRuI1b6WLQi0UKwC6w2/QbylvqWUFejwdijc0gIyM
+joEvRrYTubpNV2M+MpjOTgG26aOjjvevEmL62upbTZNpRamExTHOzVVubFb+bGhv
+hmDy/Ci4uV3XxjJoxyaa5sUHlMdDeb/IRTTBC9/wNo/pmCtT8wnYQ1Onx+4s7ypT
+o6sxJUOr1AeJ8RguKBBPnbFNrCz82g==
+=vNpT
+-----END PGP SIGNATURE-----
+
+--h2iy6oxcawviqapi--
+
+--===============6307466263802831192==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6307466263802831192==--
