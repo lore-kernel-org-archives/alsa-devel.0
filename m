@@ -1,34 +1,30 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bxt: Add route change to rt298
-	machine" to the asoc tree
-Date: Wed, 08 Feb 2017 18:34:15 +0000
-Message-ID: <E1cbX4J-0000ox-Lr@debutante>
-References: <1474379180-7132-7-git-send-email-jeeja.kp@intel.com>
+Subject: Applied "ASoC: sunxi: allow the analog codec driver to be built on
+ ARM64" to the asoc tree
+Date: Wed, 08 Feb 2017 18:34:03 +0000
+Message-ID: <E1cbX47-0000ia-Ks@debutante>
+References: <20170126154859.55855-9-icenowy@aosc.xyz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C10D266B17
- for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2017 19:34:24 +0100 (CET)
-In-Reply-To: <1474379180-7132-7-git-send-email-jeeja.kp@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>
-Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20170126154859.55855-9-icenowy@aosc.xyz>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Icenowy Zheng <icenowy@aosc.xyz>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Andre Przywara <andre.przywara@arm.com>, Linus Walleij <linus.walleij@linaro.org>, linux-sunxi@googlegroups.com, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, linux-gpio@vger.kernel.org, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, dmaengine@vger.kernel.org, Maxime Ripard <maxime.ripard@free-electrons.com>, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bxt: Add route change to rt298 machine
+   ASoC: sunxi: allow the analog codec driver to be built on ARM64
 
 has been applied to the asoc tree at
 
@@ -53,36 +49,36 @@ to this mail.
 Thanks,
 Mark
 
->From eaba31035aa925b04d7d63120283e40a0e96e4a8 Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Mon, 6 Feb 2017 12:09:17 +0530
-Subject: [PATCH] ASoC: Intel: bxt: Add route change to rt298 machine
+>From e5028a259733ec2324893cb481023ed6cf7e9723 Mon Sep 17 00:00:00 2001
+From: Icenowy Zheng <icenowy@aosc.xyz>
+Date: Wed, 8 Feb 2017 02:30:40 +0800
+Subject: [PATCH] ASoC: sunxi: allow the analog codec driver to be built on
+ ARM64
 
-To support MST moved pin to port, this changes the routes based on
-port. So change the route in bxt_rt298 machine.
+As the 64-bit Allwinner H5 SoC has the same analog codec part (also the
+same digital part) as H3, enable the driver to be built on ARM64
+Allwinner platform, so that it can be used on H5.
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Icenowy Zheng <icenowy@aosc.xyz>
+Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
+Acked-by: Chen-Yu Tsai <wens@csie.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bxt_rt298.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/sunxi/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
-index bc9ee0975073..09be868833d1 100644
---- a/sound/soc/intel/boards/bxt_rt298.c
-+++ b/sound/soc/intel/boards/bxt_rt298.c
-@@ -92,9 +92,9 @@ static const struct snd_soc_dapm_route broxton_rt298_map[] = {
- 	{"DMIC1 Pin", NULL, "DMIC2"},
- 	{"DMic", NULL, "SoC DMIC"},
+diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
+index 13a8267f17c7..22408bc2d6ec 100644
+--- a/sound/soc/sunxi/Kconfig
++++ b/sound/soc/sunxi/Kconfig
+@@ -22,7 +22,7 @@ config SND_SUN8I_CODEC
  
--	{"HDMI1", NULL, "hif5 Output"},
--	{"HDMI2", NULL, "hif6 Output"},
--	{"HDMI3", NULL, "hif7 Output"},
-+	{"HDMI1", NULL, "hif5-0 Output"},
-+	{"HDMI2", NULL, "hif6-0 Output"},
-+	{"HDMI2", NULL, "hif7-0 Output"},
- 
- 	/* CODEC BE connections */
- 	{ "AIF1 Playback", NULL, "ssp5 Tx"},
+ config SND_SUN8I_CODEC_ANALOG
+ 	tristate "Allwinner sun8i Codec Analog Controls Support"
+-	depends on MACH_SUN8I || COMPILE_TEST
++	depends on MACH_SUN8I || (ARM64 && ARCH_SUNXI) || COMPILE_TEST
+ 	select REGMAP
+ 	help
+ 	  Say Y or M if you want to add support for the analog controls for
 -- 
 2.11.0
