@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdmi-codec: remove HDMI device
-	unregister" to the asoc tree
-Date: Wed, 08 Feb 2017 18:34:00 +0000
-Message-ID: <E1cbX44-0000gl-L0@debutante>
-References: <1486547221-32593-1-git-send-email-vincent.abriou@st.com>
+Subject: Applied "ASoC: hdac_hdmi: Add support to handle MST
+	capable pin" to the asoc tree
+Date: Wed, 08 Feb 2017 18:34:06 +0000
+Message-ID: <E1cbX4A-0000kR-Lj@debutante>
+References: <1485274754-5723-13-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 68B97266B0A
- for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2017 19:34:14 +0100 (CET)
-In-Reply-To: <1486547221-32593-1-git-send-email-vincent.abriou@st.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3717B266B17
+ for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2017 19:34:18 +0100 (CET)
+In-Reply-To: <1485274754-5723-13-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vincent Abriou <vincent.abriou@st.com>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Takashi Iwai <tiwai@suse.com>, Jyri Sarha <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>
+To: Jeeja KP <jeeja.kp@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: hdmi-codec: remove HDMI device unregister
+   ASoC: hdac_hdmi: Add support to handle MST capable pin
 
 has been applied to the asoc tree at
 
@@ -53,86 +53,99 @@ to this mail.
 Thanks,
 Mark
 
->From 8480ac567959eecdc694cf4f9c02d6fa687384b6 Mon Sep 17 00:00:00 2001
-From: Vincent Abriou <vincent.abriou@st.com>
-Date: Wed, 8 Feb 2017 10:47:01 +0100
-Subject: [PATCH] ASoC: hdmi-codec: remove HDMI device unregister
+>From 2acd8309a3a4e6dc04e72d2db0716825095c02d6 Mon Sep 17 00:00:00 2001
+From: Jeeja KP <jeeja.kp@intel.com>
+Date: Mon, 6 Feb 2017 12:09:18 +0530
+Subject: [PATCH] ASoC: hdac_hdmi: Add support to handle MST capable pin
 
-While unregistering the hdmi-codec, the hdmi device list must be
-cleaned up. It avoid kernel page fault when registering again the
-hdmi-codec.
+To handle jack event and configuration of the pin widget for MST
+capable pin, this patch adds:
+o Flag to identify the pin is MST capable.
+o In notify callback(), based on the pipe and port information marks if
+the port is mst_capable. In case of non MST, port is defaulted to zero.
 
-Signed-off-by: Vincent Abriou <vincent.abriou@st.com>
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/hdmi-codec.c | 25 ++++++++++++++++++++++---
- 1 file changed, 22 insertions(+), 3 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 27 ++++++++++++++++++++++++---
+ 1 file changed, 24 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index dc6715a804a1..8c5ae1fc23a9 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -32,6 +32,7 @@ struct hdmi_device {
- };
- #define pos_to_hdmi_device(pos)	container_of((pos), struct hdmi_device, list)
- LIST_HEAD(hdmi_device_list);
-+static DEFINE_MUTEX(hdmi_mutex);
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index d3858b53d273..17a1ad3ead21 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -82,6 +82,7 @@ struct hdac_hdmi_eld {
+ struct hdac_hdmi_pin {
+ 	struct list_head head;
+ 	hda_nid_t nid;
++	bool mst_capable;
+ 	struct hdac_hdmi_port *ports;
+ 	int num_ports;
+ 	struct hdac_ext_device *edev;
+@@ -1065,14 +1066,22 @@ static void hdac_hdmi_present_sense(struct hdac_hdmi_pin *pin,
+ 	struct hdac_hdmi_priv *hdmi = edev->private_data;
+ 	struct hdac_hdmi_pcm *pcm;
+ 	int size = 0;
++	int port_id = -1;
  
- #define DAI_NAME_SIZE 16
+ 	if (!hdmi)
+ 		return;
  
-@@ -794,6 +795,7 @@ static int hdmi_codec_probe(struct platform_device *pdev)
++	/*
++	 * In case of non MST pin, get_eld info API expectes port
++	 * to be -1.
++	 */
+ 	mutex_lock(&hdmi->pin_mutex);
+ 	port->eld.monitor_present = false;
+ 
+-	size = snd_hdac_acomp_get_eld(&edev->hdac, pin->nid, -1,
++	if (pin->mst_capable)
++		port_id = port->id;
++
++	size = snd_hdac_acomp_get_eld(&edev->hdac, pin->nid, port_id,
+ 				&port->eld.monitor_present,
+ 				port->eld.eld_buffer,
+ 				ELD_MAX_SIZE);
+@@ -1167,6 +1176,7 @@ static int hdac_hdmi_add_pin(struct hdac_ext_device *edev, hda_nid_t nid)
  		return -ENOMEM;
  
- 	hd = NULL;
-+	mutex_lock(&hdmi_mutex);
- 	list_for_each(pos, &hdmi_device_list) {
- 		struct hdmi_device *tmp = pos_to_hdmi_device(pos);
+ 	pin->nid = nid;
++	pin->mst_capable = false;
+ 	pin->edev = edev;
+ 	ret = hdac_hdmi_add_ports(hdmi, pin);
+ 	if (ret < 0)
+@@ -1363,6 +1373,7 @@ static void hdac_hdmi_eld_notify_cb(void *aptr, int port, int pipe)
+ 	struct hdac_hdmi_pin *pin = NULL;
+ 	struct hdac_hdmi_port *hport = NULL;
+ 	struct snd_soc_codec *codec = edev->scodec;
++	int i;
  
-@@ -805,13 +807,16 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 	/* Don't know how this mapping is derived */
+ 	hda_nid_t pin_nid = port + 0x04;
+@@ -1389,13 +1400,23 @@ static void hdac_hdmi_eld_notify_cb(void *aptr, int port, int pipe)
  
- 	if (!hd) {
- 		hd = devm_kzalloc(dev, sizeof(*hd), GFP_KERNEL);
--		if (!hd)
-+		if (!hd) {
-+			mutex_unlock(&hdmi_mutex);
- 			return -ENOMEM;
-+		}
- 
- 		hd->dev = dev->parent;
- 
- 		list_add_tail(&hd->list, &hdmi_device_list);
+ 		/* In case of non MST pin, pipe is -1 */
+ 		if (pipe == -1) {
++			pin->mst_capable = false;
+ 			/* if not MST, default is port[0] */
+ 			hport = &pin->ports[0];
+-			break;
++			goto out;
++		} else {
++			for (i = 0; i < pin->num_ports; i++) {
++				pin->mst_capable = true;
++				if (pin->ports[i].id == pipe) {
++					hport = &pin->ports[i];
++					goto out;
++				}
++			}
+ 		}
  	}
-+	mutex_unlock(&hdmi_mutex);
  
- 	if (hd->cnt >= ARRAY_SIZE(hdmi_dai_name)) {
- 		dev_err(dev, "too many hdmi codec are deteced\n");
-@@ -853,11 +858,25 @@ static int hdmi_codec_probe(struct platform_device *pdev)
- 
- static int hdmi_codec_remove(struct platform_device *pdev)
- {
-+	struct device *dev = &pdev->dev;
-+	struct list_head *pos;
- 	struct hdmi_codec_priv *hcp;
- 
--	hcp = dev_get_drvdata(&pdev->dev);
-+	mutex_lock(&hdmi_mutex);
-+	list_for_each(pos, &hdmi_device_list) {
-+		struct hdmi_device *tmp = pos_to_hdmi_device(pos);
-+
-+		if (tmp->dev == dev->parent) {
-+			list_del(pos);
-+			break;
-+		}
-+	}
-+	mutex_unlock(&hdmi_mutex);
-+
-+	hcp = dev_get_drvdata(dev);
- 	kfree(hcp->chmap_info);
--	snd_soc_unregister_codec(&pdev->dev);
-+	snd_soc_unregister_codec(dev);
-+
- 	return 0;
+-	if (hport)
++out:
++	if (pin && hport)
+ 		hdac_hdmi_present_sense(pin, hport);
  }
  
 -- 
