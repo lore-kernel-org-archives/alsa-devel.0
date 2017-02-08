@@ -1,16 +1,20 @@
 From: Baoyou Xie <baoyou.xie@linaro.org>
-Subject: [PATCH v3 1/3] clk: zte: add i2s clocks for zx296718
-Date: Wed,  8 Feb 2017 11:02:33 +0800
-Message-ID: <1486522955-14528-1-git-send-email-baoyou.xie@linaro.org>
+Subject: [PATCH v3 2/3] ASoC: zx-i2s: introduce pclk for zx2967
+	family
+Date: Wed,  8 Feb 2017 11:02:34 +0800
+Message-ID: <1486522955-14528-2-git-send-email-baoyou.xie@linaro.org>
+References: <1486522955-14528-1-git-send-email-baoyou.xie@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f45.google.com (mail-pg0-f45.google.com [74.125.83.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 08B9826683E
- for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2017 04:03:55 +0100 (CET)
-Received: by mail-pg0-f45.google.com with SMTP id 194so44333217pgd.2
- for <alsa-devel@alsa-project.org>; Tue, 07 Feb 2017 19:03:55 -0800 (PST)
+Received: from mail-pf0-f176.google.com (mail-pf0-f176.google.com
+ [209.85.192.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id CC31E266947
+ for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2017 04:04:08 +0100 (CET)
+Received: by mail-pf0-f176.google.com with SMTP id e4so38049107pfg.1
+ for <alsa-devel@alsa-project.org>; Tue, 07 Feb 2017 19:04:08 -0800 (PST)
+In-Reply-To: <1486522955-14528-1-git-send-email-baoyou.xie@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,29 +28,47 @@ To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@ar
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, mathieu.poirier@linaro.org, xie.baoyou@zte.com.cn, linux-kernel@vger.kernel.org, chen.chaokai@zte.com.cn, wang.qiang01@zte.com.cn, shawnguo@kernel.org, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The i2s related clock support is missing from the existing zx296718
-clock driver. This patch adds it, so that the upstream ZX I2S driver
-can work out.
+ZTE's zx2967 I2S controller driver introduces pclk, this
+patch documents this fact.
 
 Signed-off-by: Baoyou Xie <baoyou.xie@linaro.org>
 ---
- drivers/clk/zte/clk-zx296718.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ Documentation/devicetree/bindings/sound/zte,zx-i2s.txt | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/clk/zte/clk-zx296718.c b/drivers/clk/zte/clk-zx296718.c
-index ad5d1df..f106d40 100644
---- a/drivers/clk/zte/clk-zx296718.c
-+++ b/drivers/clk/zte/clk-zx296718.c
-@@ -941,6 +941,10 @@ static struct zx_clk_gate audio_gate_clk[] = {
- 	GATE(AUDIO_SPDIF1_WCLK, "spdif1_wclk", "spdif1_wclk_div", AUDIO_SPDIF1_CLK, 9, CLK_SET_RATE_PARENT, 0),
- 	GATE(AUDIO_TDM_WCLK, "tdm_wclk", "tdm_wclk_div", AUDIO_TDM_CLK, 17, CLK_SET_RATE_PARENT, 0),
- 	GATE(AUDIO_TS_PCLK, "tempsensor_pclk", "clk49m5", AUDIO_TS_CLK, 1, 0, 0),
-+	GATE(AUDIO_I2S0_PCLK, "i2s0_pclk", "clk49m5", AUDIO_I2S0_CLK, 8, 0, 0),
-+	GATE(AUDIO_I2S1_PCLK, "i2s1_pclk", "clk49m5", AUDIO_I2S1_CLK, 8, 0, 0),
-+	GATE(AUDIO_I2S2_PCLK, "i2s2_pclk", "clk49m5", AUDIO_I2S2_CLK, 8, 0, 0),
-+	GATE(AUDIO_I2S3_PCLK, "i2s3_pclk", "clk49m5", AUDIO_I2S3_CLK, 8, 0, 0),
- };
+diff --git a/Documentation/devicetree/bindings/sound/zte,zx-i2s.txt b/Documentation/devicetree/bindings/sound/zte,zx-i2s.txt
+index 7e5aa6f..77390c0 100644
+--- a/Documentation/devicetree/bindings/sound/zte,zx-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/zte,zx-i2s.txt
+@@ -4,7 +4,7 @@ Required properties:
+  - compatible : Must be "zte,zx296702-i2s"
+  - reg : Must contain I2S core's registers location and length
+  - clocks : Pairs of phandle and specifier referencing the controller's clocks.
+- - clock-names: "tx" for the clock to the I2S interface.
++ - clock-names: "wclk" for the wclk, "pclk" for the pclk to the I2S interface.
+  - dmas: Pairs of phandle and specifier for the DMA channel that is used by
+    the core. The core expects two dma channels for transmit.
+  - dma-names : Must be "tx" and "rx"
+@@ -15,13 +15,17 @@ please check:
+ 	* clock/clock-bindings.txt
+ 	* dma/dma.txt
  
- static struct clk_hw_onecell_data audio_hw_onecell_data = {
++Please note that ZTE ZX296702 I2S controller driver is compatible for zx296702
++and zx296718, so compatible string might be set as follow:
++	"zte,zx296718-i2s", "zte,zx296702-i2s"
++
+ Example:
+ 	i2s0: i2s0@0b005000 {
+ 		#sound-dai-cells = <0>;
+-		compatible = "zte,zx296702-i2s";
++		compatible = "zte,zx296718-i2s", "zte,zx296702-i2s";
+ 		reg = <0x0b005000 0x1000>;
+-		clocks = <&lsp0clk ZX296702_I2S0_DIV>;
+-		clock-names = "tx";
++		clocks = <&audiocrm AUDIO_I2S0_WCLK>, <&audiocrm AUDIO_I2S0_PCLK>;
++		clock-names = "wclk", "pclk";
+ 		interrupts = <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>;
+ 		dmas = <&dma 5>, <&dma 6>;
+ 		dma-names = "tx", "rx";
 -- 
 2.7.4
