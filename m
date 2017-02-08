@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: bcm2835: Add 8 channel (multitrack)
-	capability
-Date: Wed, 8 Feb 2017 18:28:35 +0000
-Message-ID: <20170208182835.6hpwcxiae2lh56d5@sirena.org.uk>
-References: <1486422576-6958-1-git-send-email-flatmax@flatmax.org>
+Subject: Re: [PATCH v2] ASoc: hdmi-codec: remove HDMI device
+	unregister
+Date: Wed, 8 Feb 2017 18:33:05 +0000
+Message-ID: <20170208183304.jq2t37iozd4boc5e@sirena.org.uk>
+References: <1486547221-32593-1-git-send-email-vincent.abriou@st.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2649915759401715381=="
+Content-Type: multipart/mixed; boundary="===============5193023935592932143=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A37E266AB2
- for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2017 19:28:50 +0100 (CET)
-In-Reply-To: <1486422576-6958-1-git-send-email-flatmax@flatmax.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9119B266AB2
+ for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2017 19:33:17 +0100 (CET)
+In-Reply-To: <1486547221-32593-1-git-send-email-vincent.abriou@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,70 +21,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Flax <flatmax@flatmax.org>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, phil@raspberrypi.org, Eric Anholt <eric@anholt.net>, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+To: Vincent Abriou <vincent.abriou@st.com>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Takashi Iwai <tiwai@suse.com>, Jyri Sarha <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2649915759401715381==
+--===============5193023935592932143==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="jpxdj7u7cq4ndw5y"
+	protocol="application/pgp-signature"; boundary="iqxpgpvbysbvnqlj"
 Content-Disposition: inline
 
 
---jpxdj7u7cq4ndw5y
+--iqxpgpvbysbvnqlj
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Feb 07, 2017 at 10:09:36AM +1100, Matt Flax wrote:
+On Wed, Feb 08, 2017 at 10:47:01AM +0100, Vincent Abriou wrote:
+> While unregistering the hdmi-codec, the hdmi device list must be
+> cleaned up. It avoid kernel page fault when registering again the
+> hdmi-codec.
 
->  	case SND_SOC_DAIFMT_CBS_CFM:
->  		clk_set_rate(dev->clk, sampling_rate * bclk_ratio);
-> +	case SND_SOC_DAIFMT_CBM_CFS:
+Please submit patches using subject lines reflecting the style for the
+subsystem.  This makes it easier for people to identify relevant
+patches.  Look at what existing commits in the area you're changing are
+doing and make sure your subject lines visually resemble what they're
+doing.
 
-Is this fall through deliberate?
-
-> +	/* Default data delay to 1 bit.
-> +	   In I2S mode, we must have 2 channels */
->  	switch (dev->fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
->  	case SND_SOC_DAIFMT_I2S:
-> +		if (params_channels(params) != 2)
-> +			return -EINVAL;
-> +	case SND_SOC_DAIFMT_DSP_A:
-> +	case SND_SOC_DAIFMT_DSP_B:
->  		data_delay = 1;
->  		break;
->  	default:
-
-Same here.  This is also buggy in that it treats DSP A and DSP B
-identically, they are different so the configuration must be incorrect
-for one of them.  I suspect this is configuring for DSP A.
-
-You should also really have a setup() function that imposes a channel
-constraint when in I2S mode, wm8988 is one example here.
-
---jpxdj7u7cq4ndw5y
+--iqxpgpvbysbvnqlj
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlibY1IACgkQJNaLcl1U
-h9DdKgf+M4g0iq3QrYlZgP33ChGMEQJL/JRtInuON8YvKspa18Xsc6cx3wYZQmRF
-7atZSqu3tJMXab7R/QkastwckSftWmlXf5RQDfFuEUyXYtXBJ0JgNqgxh3iGWiW+
-MJoBjQ/fOt1gpbyi9dKX8z6CxDoMZOrtLhddCdyIYAOZmtBUvro5+RjWcd4ww0oR
-mZ4cv0C2WpNy5+aDVRzXm5GdOois6olLamQgAtpKa0JGLzStnZlQMcvKbWEsnZnb
-nkDPiaHJj2UuIWEeRx89ubODTUR7KS/nrHJNXhqXfKAAgVums/Ym3qvm3+D2hmeJ
-pk4WcJNcjP1dQM0W7F5ym7+wZjynZw==
-=wkXN
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlibZGAACgkQJNaLcl1U
+h9DAcgf+LXZC0tVw9us7uWcq0DRbJ7GY6Te9ODEODt+a4VmdrLNUhaI12CH3/PBB
+NOeidB3ycUCiPnG7aGtWyMM8PqJpY4WYxPnVwN7u41lerFjKv87l5Be5S6UcPTYh
+zrHbJGvEwymG+B30KqVoovrUoc8sFj3Fztm5aOj/0A8+gmJ+PXa4AbxaH5pRxJyv
+20otBj8hZsP/92ef6OINa4bmN+CljOyO+2ZQTsn4q1dwRuxzg4Mlx65wY9rGLy5T
+za2nBZgAWNiACVZBdEAnqF0nmIBwos6IvClvhvbtQ23xJfI7egxHiIPdcmoeGqG+
++lvdqDgulVTL4g3f15z6M0IuiAMang==
+=Mb1w
 -----END PGP SIGNATURE-----
 
---jpxdj7u7cq4ndw5y--
+--iqxpgpvbysbvnqlj--
 
---===============2649915759401715381==
+--===============5193023935592932143==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2649915759401715381==--
+--===============5193023935592932143==--
