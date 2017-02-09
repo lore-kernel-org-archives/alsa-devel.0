@@ -1,141 +1,53 @@
-From: Matt Flax <flatmax@flatmax.org>
-Subject: Re: [PATCH] ASoC: bcm2835: Add 8 channel (multitrack)
- capability
-Date: Thu, 9 Feb 2017 09:48:04 +1100
-Message-ID: <16046371-915e-6faa-0829-b0a9a07756a2@flatmax.org>
-References: <1486422576-6958-1-git-send-email-flatmax@flatmax.org>
- <20170208182835.6hpwcxiae2lh56d5@sirena.org.uk>
- <20170208185359.GA11314@camel2.lan>
- <0f96dd5e-f35b-26f5-fead-98796d11ba89@flatmax.org>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v1 2/3] dt: Document for the ZTE zx296718 I2S controller
+Date: Wed, 8 Feb 2017 18:43:02 -0600
+Message-ID: <20170209004302.njyxhwq5d2kbai7n@rob-hp-laptop>
+References: <1486389020-29432-1-git-send-email-baoyou.xie@linaro.org>
+ <1486389020-29432-2-git-send-email-baoyou.xie@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nsstlmta01p.bpe.bigpond.com (nsstlmta01p.bpe.bigpond.com
- [203.38.21.1]) by alsa0.perex.cz (Postfix) with ESMTP id 3DECB266A0A
- for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2017 23:48:15 +0100 (CET)
-In-Reply-To: <0f96dd5e-f35b-26f5-fead-98796d11ba89@flatmax.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Matthias Reichl <hias@horus.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Lee Jones <lee@kernel.org>, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-clk-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1486389020-29432-2-git-send-email-baoyou.xie@linaro.org>
+Sender: linux-clk-owner@vger.kernel.org
+To: Baoyou Xie <baoyou.xie@linaro.org>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, mark.rutland@arm.com, jun.nie@linaro.org, mturquette@baylibre.com, sboyd@codeaurora.org, perex@perex.cz, tiwai@suse.com, shawn.guo@linaro.org, vinod.koul@intel.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, shawnguo@kernel.org, xie.baoyou@zte.com.cn, chen.chaokai@zte.com.cn, wang.qiang01@zte.com.cn
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Feb 06, 2017 at 09:50:19PM +0800, Baoyou Xie wrote:
+> This patch documents the devicetree for the ZTE's zx296718
+> I2S audio controller.
+> 
+> Signed-off-by: Baoyou Xie <baoyou.xie@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/sound/zte,zx-i2s.txt | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/zte,zx-i2s.txt b/Documentation/devicetree/bindings/sound/zte,zx-i2s.txt
+> index 7e5aa6f..c405561 100644
+> --- a/Documentation/devicetree/bindings/sound/zte,zx-i2s.txt
+> +++ b/Documentation/devicetree/bindings/sound/zte,zx-i2s.txt
+> @@ -1,10 +1,12 @@
+>  ZTE ZX296702 I2S controller
+>  
+>  Required properties:
+> - - compatible : Must be "zte,zx296702-i2s"
+> + - compatible : Should include one of the following strings:
+> +	"zte,zx296702-i2s","zte,zx296718-i2s".
 
-On 09/02/17 08:13, Matt Flax wrote:
->
->
-> On 09/02/17 05:54, Matthias Reichl wrote:
->> On Wed, Feb 08, 2017 at 06:28:35PM +0000, Mark Brown wrote:
->>> On Tue, Feb 07, 2017 at 10:09:36AM +1100, Matt Flax wrote:
->>>
->>>>       case SND_SOC_DAIFMT_CBS_CFM:
->>>>           clk_set_rate(dev->clk, sampling_rate * bclk_ratio);
->>>> +    case SND_SOC_DAIFMT_CBM_CFS:
->>> Is this fall through deliberate?
->>>
->>>> +    /* Default data delay to 1 bit.
->>>> +       In I2S mode, we must have 2 channels */
->>>>       switch (dev->fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
->>>>       case SND_SOC_DAIFMT_I2S:
->>>> +        if (params_channels(params) != 2)
->>>> +            return -EINVAL;
->>>> +    case SND_SOC_DAIFMT_DSP_A:
->>>> +    case SND_SOC_DAIFMT_DSP_B:
->>>>           data_delay = 1;
->>>>           break;
->>>>       default:
->> Matt, could you please include linux-rpi-kernel@lists.infradead.org
->> in your emails?
-> I have joined that list now. It was included originally, but wasn't 
-> accepting my posts.
->> I fail to see the part where DSP modes are actually set up in
->> the hardware. bcm2835 still seems to be operating in 2-channel
->> stereo I2S mode, i.e. no real frame sync information at the
->> hardware level.
-> From the SoC's perspective I agree with you. There is frame 
-> synchronisation at the hardware level, implemented in an master FPGA. 
-> This starts to hit at a lack of functionality in ALSA ... I will 
-> discuss more below.
->> If all you do is adding code to pretend the bcm2835 could do
->> multichannel modes wouldn't it be easier to implement that as
->> a userspace alsa plugin?
->>
->>
-> I am not familiar with how to implement all of this with a plugin ? 
-> Could you give me a little hand in describing that further ? That 
-> would mean that an asoundrc needs to be used to defined to make the 
-> system usable ? Is it something which does the unpacking for us in 
-> user space ? If this happens in user space is there extra cost/latency ?
->
+One per line please.
 
-You know, I am genuinely interested in your concept and still invite an 
-example of your creativity, however ...
-The more I think about this approach, the concept of pushing the support 
-of hardware into user space the more I disagree with it. My 
-understanding is that the Linux Kernel is there to support hardware. The 
-concept of pushing hardware support into user space doesn't seem right.
+>   - reg : Must contain I2S core's registers location and length
+>   - clocks : Pairs of phandle and specifier referencing the controller's clocks.
+> - - clock-names: "tx" for the clock to the I2S interface.
+> + - clock-names: "tx" for the wclk, "pclk" for the pclk to the I2S interface.
+> +	must contain pclk for zx296718 SoC.
 
-As I have pointed out below, there are missing things in ALSA and as 
-Mark previously pointed out "this is a thing". What I understand is that 
-this hardware is a thing and has been thought of before - this happens 
-to be a hardware implementation of this "thing" which ALSA doesn't 
-currently have the capacity to support (e.g. an ASIC/FPGA which is 
-mater, not the SoC nor the Codec).
+I'd reword as "pclk is only present for zte,zx296718-i2s"
 
-I remember back in the '90s when ALSA was started - I witnessed its 
-birth. ALSA was started because of inadequacies of OSS. I truly don't 
-believe that we need a new sound system for Linux as of yet. I also 
-don't believe that because ALSA has these inadequacies (which I mention 
-below) that we need to start afresh. I would personally put effort into 
-this part of ALSA if I had the money to support myself whilst I did it - 
-but I don't. So for now, I am trying to make do with ALSA as best I can. 
-I am trying to put the necessary support for existing hardware into ALSA 
-in its current state and form - in the best possible manner. So please 
-lets continue with support for this hardware in the kernel.
-
-> I would like to bring up another topic here.
->
-> In my opinion some of these changes we are making in this general 
-> thread are only really window dressing.
->
-> We have 4 ways of setting up master, however all of them assume that 
-> either the codec or the SoC is master. None of them allow for 
-> intermediate digital logic between the two.
->
-> In this case there is a FPGA which is matching the system differences 
-> between the Codec and the SoC. In actual fact, the FPGA needs to be 
-> master - a fifth mode.
->
-> A similar problem exists when you are using a sample rate converter 
-> chip. For example, the DAC and ADC are running at different sample 
-> rates. In this case ALSA can't represent both of the sample rates. For 
-> that reason, the ADCs and the DACs have to be hard coded - it is nasty.
->
-> The only solution for me is to use snd_soc_dai_set_fmt in the machine 
-> driver to instruct both to enter slave mode. For what it is worth, I 
-> can also
->
-> In my opinion there is nothing wrong with making hardware level 
-> introductions, such as an ASIC/FPGA to implement the hardware. I 
-> accept the inflexibility of ALSA w.r.t. this type of situation, 
-> however the real fix is to adjust the core of ALSA. Hardware ASICS and 
-> FPGAs which are intermediatries between codecs and SoCs exist and are 
-> used in industry.
->
-> This happens to be one of those cases.
->
-> thanks
-> Matt
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>   - dmas: Pairs of phandle and specifier for the DMA channel that is used by
+>     the core. The core expects two dma channels for transmit.
+>   - dma-names : Must be "tx" and "rx"
+> -- 
+> 2.7.4
+> 
