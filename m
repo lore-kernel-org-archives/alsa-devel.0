@@ -1,52 +1,43 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH] ALSA: hda - adding a new NV HDMI/DP codec ID
-	in the driver
-Date: Thu,  9 Feb 2017 09:20:54 +0800
-Message-ID: <1486603254-25014-1-git-send-email-hui.wang@canonical.com>
+From: Shawn Guo <shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v3 2/3] ASoC: zx-i2s: introduce pclk for zx2967 family
+Date: Thu, 9 Feb 2017 09:48:09 +0800
+Message-ID: <20170209014807.GO3407@dragon>
+References: <1486522955-14528-1-git-send-email-baoyou.xie@linaro.org>
+ <1486522955-14528-2-git-send-email-baoyou.xie@linaro.org>
+ <20170209005207.y6wcrzk43ngfslhl@rob-hp-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id CCEDB266BC9
- for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2017 02:21:01 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: hui.wang@canonical.com, stable@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20170209005207.y6wcrzk43ngfslhl@rob-hp-laptop>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Baoyou Xie <baoyou.xie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, jun.nie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, mathieu.poirier-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, xie.baoyou-Th6q7B73Y6EnDS1+zs4M5A@public.gmane.org, chen.chaokai-Th6q7B73Y6EnDS1+zs4M5A@public.gmane.org, wang.qiang01-Th6q7B73Y6EnDS1+zs4M5A@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Without this change, the HDMI/DP codec will be recognised as a
-generic codec, and there is no sound when playing through this codec.
+On Wed, Feb 08, 2017 at 06:52:07PM -0600, Rob Herring wrote:
+> On Wed, Feb 08, 2017 at 11:02:34AM +0800, Baoyou Xie wrote:
+> > ZTE's zx2967 I2S controller driver introduces pclk, this
+> > patch documents this fact.
+> 
+> Now we have the same subject for patches 2 and 3.
+> 
+> Personally, I'd prefer "dt-bindings: sound: blah...", but not enough to 
+> argue with Mark about it. If that is not the prefix, then it should at 
+> least have "binding" in the subject.
 
-As suggested by NVidia side, after adding the new ID in the driver,
-the sound playing works well.
++1
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/pci/hda/patch_hdmi.c | 1 +
- 1 file changed, 1 insertion(+)
+The prefix of sound bindings is quite unique from other subsystems.
+Looking at the prefix of Documentation/devicetree/bindings/sound/
+commits, I'm always confused whether it's a pure binding commit
+or just submitted as part of the driver patch.  I feel that we
+kinda lose the point of having a prefix.
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 32105ce..fd5efa7 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -3780,6 +3780,7 @@ static int patch_via_hdmi(struct hda_codec *codec)
- HDA_CODEC_ENTRY(0x10de0071, "GPU 71 HDMI/DP",	patch_nvhdmi),
- HDA_CODEC_ENTRY(0x10de0072, "GPU 72 HDMI/DP",	patch_nvhdmi),
- HDA_CODEC_ENTRY(0x10de007d, "GPU 7d HDMI/DP",	patch_nvhdmi),
-+HDA_CODEC_ENTRY(0x10de0080, "GPU 80 HDMI/DP",	patch_nvhdmi),
- HDA_CODEC_ENTRY(0x10de0082, "GPU 82 HDMI/DP",	patch_nvhdmi),
- HDA_CODEC_ENTRY(0x10de0083, "GPU 83 HDMI/DP",	patch_nvhdmi),
- HDA_CODEC_ENTRY(0x10de8001, "MCP73 HDMI",	patch_nvhdmi_2ch),
--- 
-1.9.1
+Just my 2 cents.
+
+Shawn
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
