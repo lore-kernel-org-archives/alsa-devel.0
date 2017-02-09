@@ -1,22 +1,26 @@
-From: Matthias Reichl <hias@horus.com>
-Subject: Re: [PATCH] ASoC: bcm2835: Add 8 channel (multitrack)
- capability
-Date: Thu, 9 Feb 2017 10:29:11 +0100
-Message-ID: <20170209092910.GA2985@delle.lan>
-References: <1486422576-6958-1-git-send-email-flatmax@flatmax.org>
- <20170208182835.6hpwcxiae2lh56d5@sirena.org.uk>
- <20170208185359.GA11314@camel2.lan>
- <0f96dd5e-f35b-26f5-fead-98796d11ba89@flatmax.org>
- <16046371-915e-6faa-0829-b0a9a07756a2@flatmax.org>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v7 2/4] dmaengine: Forward slave device
+ pointer to of_xlate callback
+Date: Thu, 9 Feb 2017 10:55:43 +0100
+Message-ID: <CAPDyKFqYe0YJRzjaOo1N-fgZyJ8JqNnka66kSSg0nWiXOYj=BQ@mail.gmail.com>
+References: <1485340088-25481-1-git-send-email-m.szyprowski@samsung.com>
+ <CGME20170125102824eucas1p1cf027184286131ff628eb7113c3f9e60@eucas1p1.samsung.com>
+ <1485340088-25481-3-git-send-email-m.szyprowski@samsung.com>
+ <26397455-1237-2a66-acf8-215aacc7c9ce@metafoo.de>
+ <49c9c23d-ff0a-268a-5edd-931e04eb98b5@samsung.com>
+ <20170209041123.GK19244@localhost>
+ <ded8b3e8-2ef8-218b-fb6d-783825588fd8@samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.horus.com (mail.horus.com [78.46.148.228])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E2542669C4
- for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2017 10:29:12 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <16046371-915e-6faa-0829-b0a9a07756a2@flatmax.org>
+Received: from mail-ua0-f176.google.com (mail-ua0-f176.google.com
+ [209.85.217.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 588BA2669C4
+ for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2017 10:55:44 +0100 (CET)
+Received: by mail-ua0-f176.google.com with SMTP id i68so130401905uad.0
+ for <alsa-devel@alsa-project.org>; Thu, 09 Feb 2017 01:55:44 -0800 (PST)
+In-Reply-To: <ded8b3e8-2ef8-218b-fb6d-783825588fd8@samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,164 +30,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Flax <flatmax@flatmax.org>
-Cc: alsa-devel@alsa-project.org, Lee Jones <lee@kernel.org>, Mark Brown <broonie@kernel.org>, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+To: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: alsa-devel@alsa-project.org, linux-samsung-soc <linux-samsung-soc@vger.kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, Inki Dae <inki.dae@samsung.com>, Lars-Peter Clausen <lars@metafoo.de>, dmaengine@vger.kernel.org, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 09, 2017 at 09:48:04AM +1100, Matt Flax wrote:
-> 
-> On 09/02/17 08:13, Matt Flax wrote:
-> >
-> >
-> >On 09/02/17 05:54, Matthias Reichl wrote:
-> >>On Wed, Feb 08, 2017 at 06:28:35PM +0000, Mark Brown wrote:
-> >>>On Tue, Feb 07, 2017 at 10:09:36AM +1100, Matt Flax wrote:
-> >>>
-> >>>>      case SND_SOC_DAIFMT_CBS_CFM:
-> >>>>          clk_set_rate(dev->clk, sampling_rate * bclk_ratio);
-> >>>>+    case SND_SOC_DAIFMT_CBM_CFS:
-> >>>Is this fall through deliberate?
-> >>>
-> >>>>+    /* Default data delay to 1 bit.
-> >>>>+       In I2S mode, we must have 2 channels */
-> >>>>      switch (dev->fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-> >>>>      case SND_SOC_DAIFMT_I2S:
-> >>>>+        if (params_channels(params) != 2)
-> >>>>+            return -EINVAL;
-> >>>>+    case SND_SOC_DAIFMT_DSP_A:
-> >>>>+    case SND_SOC_DAIFMT_DSP_B:
-> >>>>          data_delay = 1;
-> >>>>          break;
-> >>>>      default:
-> >>Matt, could you please include linux-rpi-kernel@lists.infradead.org
-> >>in your emails?
-> >I have joined that list now. It was included originally, but wasn't
-> >accepting my posts.
-> >>I fail to see the part where DSP modes are actually set up in
-> >>the hardware. bcm2835 still seems to be operating in 2-channel
-> >>stereo I2S mode, i.e. no real frame sync information at the
-> >>hardware level.
-> >From the SoC's perspective I agree with you. There is frame
-> >synchronisation at the hardware level, implemented in an master FPGA. This
-> >starts to hit at a lack of functionality in ALSA ... I will discuss more
-> >below.
-> >>If all you do is adding code to pretend the bcm2835 could do
-> >>multichannel modes wouldn't it be easier to implement that as
-> >>a userspace alsa plugin?
-> >>
-> >>
-> >I am not familiar with how to implement all of this with a plugin ? Could
-> >you give me a little hand in describing that further ? That would mean
-> >that an asoundrc needs to be used to defined to make the system usable ?
-> >Is it something which does the unpacking for us in user space ? If this
-> >happens in user space is there extra cost/latency ?
+>>
+>> Yes agreed on that, plus the runtime handling needs to be built in, right
+>> now the APIs dont work well with it, we disucssed these during the KS and
+>> this goes without saying, patches are welcome :)
+>
+>
+> Okay, so what is the conclusion? Do you want me to do the whole rework of
+> dma
+> engine core to get this runtime pm patchset for pl330 merged??? Is there any
+> roadmap for this rework prepared, so I can at least take a look at the
+> amount
+> of work needed to be done?
+>
+> I'm rather new to dma engine framework and I only wanted to fix pl330 driver
+> not to block turning off the power domain on Exynos5422/5433 SoCs.
 
-I haven't written a plugin myself, but there are plenty of examples out
-there. Maybe there's already one that does what you need.
+As you probably know, this is a common problem for many dma devices,
+slave devices and platforms.
 
-Have a look at the code in alsa-lib
-http://git.alsa-project.org/?p=alsa-lib.git;a=tree;f=src/pcm
+If possible, it would be great if we could avoid a solution that
+doesn't force changes to lots of "dma consumer" drivers.
 
-Also have a look at how iec958 is handled in most setups (pcm_iec958
-plugin, integration via /usr/share/alsa/cards/*.conf
+>
+> I can also check again if there is any other way to find the slave device in
+> alloc_chan_resources, like for example scanning the device tree for
+> phandles,
+> to avoid changing dmaengine core as this turned out to be too problematic
+> before one will do the proper dma engine core rework.
+>
 
-Plugins don't necessarily add a latency overhead, I've got the impression
-all you need to do is to hook into hw_params and setup the slave hw
-to 2 channels and 4 times the requested samplerate.
+Again, thanks for working on this!
 
-eg when 8-channel 48kHz is requested configure the hardware to
-2-channel 192kHz.
-
-You can pass additional information to the machine driver via controls,
-eg to signal that you are transmitting 8-channel PCM encapsulated in
-a 2-channel stream. Again a good example is iec958, the AES channel
-status bits are transferred to the card via the IEC958 Playback Default
-control in the card .conf via a hook plug.
-
-> You know, I am genuinely interested in your concept and still invite an
-> example of your creativity, however ...
-> The more I think about this approach, the concept of pushing the support of
-> hardware into user space the more I disagree with it. My understanding is
-> that the Linux Kernel is there to support hardware. The concept of pushing
-> hardware support into user space doesn't seem right.
-> 
-> As I have pointed out below, there are missing things in ALSA and as Mark
-> previously pointed out "this is a thing". What I understand is that this
-> hardware is a thing and has been thought of before - this happens to be a
-> hardware implementation of this "thing" which ALSA doesn't currently have
-> the capacity to support (e.g. an ASIC/FPGA which is mater, not the SoC nor
-> the Codec).
-
->From what you describe it looks to me the FPGA is just acting as a codec,
-converting between 2-channel I2S and 8-channel (DSP?) at 1/4 of the I2S rate.
-
-So you have bcm2835 I2S <-> FPGA <-> codec - IOW a standard codec<->codec
-link.
-
-What you seem to be missing is just a method to transfer your 8-channel
-data via a 2-channel link - userspace want's to see an 8-channel PCM,
-but the hardware link (bcm2835-i2s) is only 2-channel.
-
-And that's where IMO as userspace plugin looks like a very good solution.
-It's basically the counterpart of your FPGA and contains the code that's
-neccessary to encapsulate/pack/whatever the 8-channel data into a 2-channel
-stream so it can then be unpacked to 8-channel by the FPGA.
-
-If you go this route your hardware and machine driver will work with
-other I2S codecs as well, and IMO that's a far better solution than
-adding very ugly hacks to a single I2S driver.
-
-so long,
-
-Hias
-
-> 
-> I remember back in the '90s when ALSA was started - I witnessed its birth.
-> ALSA was started because of inadequacies of OSS. I truly don't believe that
-> we need a new sound system for Linux as of yet. I also don't believe that
-> because ALSA has these inadequacies (which I mention below) that we need to
-> start afresh. I would personally put effort into this part of ALSA if I had
-> the money to support myself whilst I did it - but I don't. So for now, I am
-> trying to make do with ALSA as best I can. I am trying to put the necessary
-> support for existing hardware into ALSA in its current state and form - in
-> the best possible manner. So please lets continue with support for this
-> hardware in the kernel.
-> 
-> >I would like to bring up another topic here.
-> >
-> >In my opinion some of these changes we are making in this general thread
-> >are only really window dressing.
-> >
-> >We have 4 ways of setting up master, however all of them assume that
-> >either the codec or the SoC is master. None of them allow for intermediate
-> >digital logic between the two.
-> >
-> >In this case there is a FPGA which is matching the system differences
-> >between the Codec and the SoC. In actual fact, the FPGA needs to be master
-> >- a fifth mode.
-> >
-> >A similar problem exists when you are using a sample rate converter chip.
-> >For example, the DAC and ADC are running at different sample rates. In
-> >this case ALSA can't represent both of the sample rates. For that reason,
-> >the ADCs and the DACs have to be hard coded - it is nasty.
-> >
-> >The only solution for me is to use snd_soc_dai_set_fmt in the machine
-> >driver to instruct both to enter slave mode. For what it is worth, I can
-> >also
-> >
-> >In my opinion there is nothing wrong with making hardware level
-> >introductions, such as an ASIC/FPGA to implement the hardware. I accept
-> >the inflexibility of ALSA w.r.t. this type of situation, however the real
-> >fix is to adjust the core of ALSA. Hardware ASICS and FPGAs which are
-> >intermediatries between codecs and SoCs exist and are used in industry.
-> >
-> >This happens to be one of those cases.
-> >
-> >thanks
-> >Matt
-> >
-> >_______________________________________________
-> >Alsa-devel mailing list
-> >Alsa-devel@alsa-project.org
-> >http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+Kind regards
+Uffe
