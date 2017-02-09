@@ -1,81 +1,103 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 2/3] ASoC: zx-i2s: introduce pclk for
-	zx2967 family
-Date: Thu, 9 Feb 2017 16:47:42 -0600
-Message-ID: <CAL_JsqJHyNgA2FRMcuZ86OFDJ85NAnx_v9F2LrxwwOxJYLOPCA@mail.gmail.com>
-References: <1486522955-14528-1-git-send-email-baoyou.xie@linaro.org>
- <1486522955-14528-2-git-send-email-baoyou.xie@linaro.org>
- <20170209005207.y6wcrzk43ngfslhl@rob-hp-laptop>
- <20170209014807.GO3407@dragon> <20170209120625.lhqcistgyjpy3plq@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: zx-i2s: Add the info of pclk to the binding document
+ for zx2967 family" to the asoc tree
+Date: Thu, 09 Feb 2017 23:46:24 +0000
+Message-ID: <E1cbyPw-0004Dw-6f@debutante>
+References: <1486609978-18482-2-git-send-email-baoyou.xie@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.136])
- by alsa0.perex.cz (Postfix) with ESMTP id AD45026680F
- for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2017 23:48:08 +0100 (CET)
-Received: from mail.kernel.org (localhost [127.0.0.1])
- by mail.kernel.org (Postfix) with ESMTP id B4E9920375
- for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2017 22:48:05 +0000 (UTC)
-Received: from mail-yw0-f179.google.com (mail-yw0-f179.google.com
- [209.85.161.179])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 452572034E
- for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2017 22:48:03 +0000 (UTC)
-Received: by mail-yw0-f179.google.com with SMTP id w75so11347873ywg.1
- for <alsa-devel@alsa-project.org>; Thu, 09 Feb 2017 14:48:03 -0800 (PST)
-In-Reply-To: <20170209120625.lhqcistgyjpy3plq@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Shawn Guo <shawn.guo@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Vinod Koul <vinod.koul@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Michael Turquette <mturquette@baylibre.com>, Takashi Iwai <tiwai@suse.com>, Stephen Boyd <sboyd@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, chen.chaokai@zte.com.cn, Baoyou Xie <xie.baoyou@zte.com.cn>, wang.qiang01@zte.com.cn, Jun Nie <jun.nie@linaro.org>, Baoyou Xie <baoyou.xie@linaro.org>, Shawn Guo <shawnguo@kernel.org>, linux-clk <linux-clk@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1486609978-18482-2-git-send-email-baoyou.xie@linaro.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, mturquette@baylibre.com, tiwai@suse.com, baoyou.xie@linaro.org, linux-clk@vger.kernel.org, vinod.koul@intel.com, chen.chaokai@zte.com.cn, wang.qiang01@zte.com.cn, devicetree@vger.kernel.org, xie.baoyou@zte.com.cn, robh+dt@kernel.org, perex@perex.cz, linux-arm-kernel@lists.infradead.org, mathieu.poirier@linaro.org, sboyd@codeaurora.org, linux-kernel@vger.kernel.org, broonie@kernel.org, jun.nie@linaro.org, shawn.guo@linaro.org, shawnguo@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 9, 2017 at 6:06 AM, Mark Brown <broonie@kernel.org> wrote:
-> On Thu, Feb 09, 2017 at 09:48:09AM +0800, Shawn Guo wrote:
->> On Wed, Feb 08, 2017 at 06:52:07PM -0600, Rob Herring wrote:
->
->> > Personally, I'd prefer "dt-bindings: sound: blah...", but not enough to
->> > argue with Mark about it. If that is not the prefix, then it should at
->> > least have "binding" in the subject.
->
->> +1
->
->> The prefix of sound bindings is quite unique from other subsystems.
->> Looking at the prefix of Documentation/devicetree/bindings/sound/
->> commits, I'm always confused whether it's a pure binding commit
->> or just submitted as part of the driver patch.  I feel that we
->> kinda lose the point of having a prefix.
->
-> That's really not what's happening reliably - other subsystems also seem
-> to have a bunch of things prefixed for the subsystem and the DT specific
-> prefixes are all over the shop, people seem to be making them up at
-> random.
+The patch
 
-I'm getting more picky about the subject and splitting bindings to a
-separate patch, but generally only when I have other comments. And
-I've had to get some maintainers to stop combining commits as they
-apply them.
+   ASoC: zx-i2s: Add the info of pclk to the binding document for zx2967 family
 
-Maybe get_maintainers.pl could spit out the desired prefix and
-checkpatch check it. Evidently, running "git log --oneline" is too
-hard.
+has been applied to the asoc tree at
 
-> If DT binding review were something that reliably and
-> consistently happened and didn't affect the subsystem I'd perhaps buy it
-> but for run of the mill stuff it seems like getting things reviewed in
-> the subsystem is more important.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-I review everything that gets sent to the DT list unless maintainers
-apply it first. I'll still comment afterwards if there's anything
-significant (or I missed that it was applied :)).
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Rob
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From b5f18ba89391da7a92605dc76822580d13e2ef74 Mon Sep 17 00:00:00 2001
+From: Baoyou Xie <baoyou.xie@linaro.org>
+Date: Thu, 9 Feb 2017 11:12:57 +0800
+Subject: [PATCH] ASoC: zx-i2s: Add the info of pclk to the binding document
+ for zx2967 family
+
+ZTE's zx2967 I2S controller driver introduces pclk, this
+patch documents this fact.
+
+Signed-off-by: Baoyou Xie <baoyou.xie@linaro.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ Documentation/devicetree/bindings/sound/zte,zx-i2s.txt | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/sound/zte,zx-i2s.txt b/Documentation/devicetree/bindings/sound/zte,zx-i2s.txt
+index 7e5aa6f6b5a1..292ad5083704 100644
+--- a/Documentation/devicetree/bindings/sound/zte,zx-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/zte,zx-i2s.txt
+@@ -1,10 +1,12 @@
+ ZTE ZX296702 I2S controller
+ 
+ Required properties:
+- - compatible : Must be "zte,zx296702-i2s"
++ - compatible : Must be one of:
++	"zte,zx296718-i2s", "zte,zx296702-i2s"
++	"zte,zx296702-i2s"
+  - reg : Must contain I2S core's registers location and length
+  - clocks : Pairs of phandle and specifier referencing the controller's clocks.
+- - clock-names: "tx" for the clock to the I2S interface.
++ - clock-names: "wclk" for the wclk, "pclk" for the pclk to the I2S interface.
+  - dmas: Pairs of phandle and specifier for the DMA channel that is used by
+    the core. The core expects two dma channels for transmit.
+  - dma-names : Must be "tx" and "rx"
+@@ -16,12 +18,12 @@ please check:
+ 	* dma/dma.txt
+ 
+ Example:
+-	i2s0: i2s0@0b005000 {
++	i2s0: i2s@b005000 {
+ 		#sound-dai-cells = <0>;
+-		compatible = "zte,zx296702-i2s";
++		compatible = "zte,zx296718-i2s", "zte,zx296702-i2s";
+ 		reg = <0x0b005000 0x1000>;
+-		clocks = <&lsp0clk ZX296702_I2S0_DIV>;
+-		clock-names = "tx";
++		clocks = <&audiocrm AUDIO_I2S0_WCLK>, <&audiocrm AUDIO_I2S0_PCLK>;
++		clock-names = "wclk", "pclk";
+ 		interrupts = <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>;
+ 		dmas = <&dma 5>, <&dma 6>;
+ 		dma-names = "tx", "rx";
+-- 
+2.11.0
