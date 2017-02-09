@@ -1,17 +1,31 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/2] pcm: Avoid lock for snd_pcm_nonblock()
-Date: Thu,  9 Feb 2017 20:30:50 +0100
-Message-ID: <20170209193051.14713-1-tiwai@suse.de>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v3 2/3] ASoC: zx-i2s: introduce pclk for
+	zx2967 family
+Date: Thu, 9 Feb 2017 16:47:42 -0600
+Message-ID: <CAL_JsqJHyNgA2FRMcuZ86OFDJ85NAnx_v9F2LrxwwOxJYLOPCA@mail.gmail.com>
+References: <1486522955-14528-1-git-send-email-baoyou.xie@linaro.org>
+ <1486522955-14528-2-git-send-email-baoyou.xie@linaro.org>
+ <20170209005207.y6wcrzk43ngfslhl@rob-hp-laptop>
+ <20170209014807.GO3407@dragon> <20170209120625.lhqcistgyjpy3plq@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id D6D6026680F
- for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2017 20:30:53 +0100 (CET)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 7B2B4ABD9
- for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2017 19:30:53 +0000 (UTC)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id AD45026680F
+ for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2017 23:48:08 +0100 (CET)
+Received: from mail.kernel.org (localhost [127.0.0.1])
+ by mail.kernel.org (Postfix) with ESMTP id B4E9920375
+ for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2017 22:48:05 +0000 (UTC)
+Received: from mail-yw0-f179.google.com (mail-yw0-f179.google.com
+ [209.85.161.179])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 452572034E
+ for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2017 22:48:03 +0000 (UTC)
+Received: by mail-yw0-f179.google.com with SMTP id w75so11347873ywg.1
+ for <alsa-devel@alsa-project.org>; Thu, 09 Feb 2017 14:48:03 -0800 (PST)
+In-Reply-To: <20170209120625.lhqcistgyjpy3plq@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,48 +35,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Shawn Guo <shawn.guo@linaro.org>, Mathieu Poirier <mathieu.poirier@linaro.org>, Vinod Koul <vinod.koul@intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Michael Turquette <mturquette@baylibre.com>, Takashi Iwai <tiwai@suse.com>, Stephen Boyd <sboyd@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, chen.chaokai@zte.com.cn, Baoyou Xie <xie.baoyou@zte.com.cn>, wang.qiang01@zte.com.cn, Jun Nie <jun.nie@linaro.org>, Baoyou Xie <baoyou.xie@linaro.org>, Shawn Guo <shawnguo@kernel.org>, linux-clk <linux-clk@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-snd_pcm_nonblock() is called as snd_pcm_abort().  Since
-snd_pcm_abort() is called often from a signal handler to clean things
-up (e.g. aplay does it), we may face a deadlock if the signal is
-raised during the locked operation.
+On Thu, Feb 9, 2017 at 6:06 AM, Mark Brown <broonie@kernel.org> wrote:
+> On Thu, Feb 09, 2017 at 09:48:09AM +0800, Shawn Guo wrote:
+>> On Wed, Feb 08, 2017 at 06:52:07PM -0600, Rob Herring wrote:
+>
+>> > Personally, I'd prefer "dt-bindings: sound: blah...", but not enough to
+>> > argue with Mark about it. If that is not the prefix, then it should at
+>> > least have "binding" in the subject.
+>
+>> +1
+>
+>> The prefix of sound bindings is quite unique from other subsystems.
+>> Looking at the prefix of Documentation/devicetree/bindings/sound/
+>> commits, I'm always confused whether it's a pure binding commit
+>> or just submitted as part of the driver patch.  I feel that we
+>> kinda lose the point of having a prefix.
+>
+> That's really not what's happening reliably - other subsystems also seem
+> to have a bunch of things prefixed for the subsystem and the DT specific
+> prefixes are all over the shop, people seem to be making them up at
+> random.
 
-There can be some way to check the deadlock state, but they would cost
-much.  Since the race condition of snd_pcm_nonblock() is quite small,
-let's just drop the locking inside snd_pcm_nonblock() as a
-workaround.
+I'm getting more picky about the subject and splitting bindings to a
+separate patch, but generally only when I have other comments. And
+I've had to get some maintainers to stop combining commits as they
+apply them.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- src/pcm/pcm.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+Maybe get_maintainers.pl could spit out the desired prefix and
+checkpatch check it. Evidently, running "git log --oneline" is too
+hard.
 
-diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index 0cf740f854a9..c136d5579320 100644
---- a/src/pcm/pcm.c
-+++ b/src/pcm/pcm.c
-@@ -759,7 +759,10 @@ int snd_pcm_nonblock(snd_pcm_t *pcm, int nonblock)
- 	int err = 0;
- 
- 	assert(pcm);
--	__snd_pcm_lock(pcm); /* forced lock due to pcm field change */
-+	/* FIXME: __snd_pcm_lock() call below is commented out because of the
-+	 * the possible deadlock in signal handler calling snd_pcm_abort()
-+	 */
-+	/* __snd_pcm_lock(pcm); */ /* forced lock due to pcm field change */
- 	if ((err = pcm->ops->nonblock(pcm->op_arg, nonblock)) < 0)
- 		goto unlock;
- 	if (nonblock == 2) {
-@@ -775,7 +778,7 @@ int snd_pcm_nonblock(snd_pcm_t *pcm, int nonblock)
- 			pcm->mode &= ~SND_PCM_NONBLOCK;
- 	}
-  unlock:
--	__snd_pcm_unlock(pcm);
-+	/* __snd_pcm_unlock(pcm); */ /* FIXME: see above */
- 	return err;
- }
- 
--- 
-2.11.0
+> If DT binding review were something that reliably and
+> consistently happened and didn't affect the subsystem I'd perhaps buy it
+> but for run of the mill stuff it seems like getting things reviewed in
+> the subsystem is more important.
+
+I review everything that gets sent to the DT list unless maintainers
+apply it first. I'll still comment afterwards if there's anything
+significant (or I missed that it was applied :)).
+
+Rob
