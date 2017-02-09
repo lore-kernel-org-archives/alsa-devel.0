@@ -1,22 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v7 2/4] dmaengine: Forward slave device
- pointer to of_xlate callback
-Date: Thu, 9 Feb 2017 09:41:23 +0530
-Message-ID: <20170209041123.GK19244@localhost>
-References: <1485340088-25481-1-git-send-email-m.szyprowski@samsung.com>
- <CGME20170125102824eucas1p1cf027184286131ff628eb7113c3f9e60@eucas1p1.samsung.com>
- <1485340088-25481-3-git-send-email-m.szyprowski@samsung.com>
- <26397455-1237-2a66-acf8-215aacc7c9ce@metafoo.de>
- <49c9c23d-ff0a-268a-5edd-931e04eb98b5@samsung.com>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: [PATCH] ASoC: nau8825: automatic BCLK and LRC divde in
+	master mode
+Date: Thu, 9 Feb 2017 15:30:11 +0800
+Message-ID: <1486625411-475-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E7FA267174
- for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2017 05:10:54 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <49c9c23d-ff0a-268a-5edd-931e04eb98b5@samsung.com>
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 77EFA267174
+ for <alsa-devel@alsa-project.org>; Thu,  9 Feb 2017 08:30:25 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,78 +19,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Marek Szyprowski <m.szyprowski@samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-pm@vger.kernel.org, Mark Brown <broonie@kernel.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, "Rafael J. Wysocki" <rjw@rjwysocki.net>, linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>, Inki Dae <inki.dae@samsung.com>, Lars-Peter Clausen <lars@metafoo.de>, dmaengine@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, WTLI@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, benzh@chromium.org, mac.chiang@intel.com, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jan 26, 2017 at 03:43:05PM +0100, Marek Szyprowski wrote:
-> Hi Lars,
-> 
-> On 2017-01-25 14:12, Lars-Peter Clausen wrote:
-> >On 01/25/2017 11:28 AM, Marek Szyprowski wrote:
-> >>Add pointer to slave device to of_dma_xlate to let DMA engine driver
-> >>to know which slave device is using given DMA channel. This will be
-> >>later used to implement non-irq-safe runtime PM for DMA engine driver.
-> >of_dma_xlate() is used to translate from a OF phandle and a specifier to a
-> >DMA channel. On one hand this does not necessarily mean that the channel is
-> >actually going to be used by the slave that called the xlate function.
-> >Modifying the driver state when a lookup of the channel is done is a
-> >layering violation. And this approach is also missing a way to disassociate
-> >a slave from a DMA channel, e.g. when it is no longer used.
-> >
-> >On the other hand there are other mechanisms to translate between some kind
-> >of firmware handle to a DMA channel which are completely ignored here.
-> >
-> >So this approach does not work. This is something that needs to be done at
-> >the dmaengine level, not a the firmware resource translation level. And it
-> >needs a matching method that is called when the channel is disassociated
-> >from a device, when the device no longer uses the DMA channel.
-> 
-> Frankly I agree that of_dma_xlate() should only return the requested channel
-> to the dmaengine core and do not do any modification in the the
-> driver state.
+Provide the automatic configurable LRC and BCLK divide. The driver
+will make configurations of LRC and BCLK automatically according to
+BCLK and FS information in master mode.
 
-True..
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+---
+ sound/soc/codecs/nau8825.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
-> However the current dma engine design and implementation breaks this rule.
-> Please check the drivers - how do they implement of_xlate callback. They
-> usually call dma_get_any_slave_channel, dma_get_slave_channel or
-> __dma_request_channel there, which in turn calls dma_chan_get, which then
-> calls back to device_alloc_chan_resources callback. Some of the drivers also
-> do a hardware configuration or other resource allocation in of_xlate.
-> This is a bit messy design and leave no place in the core to set
-> slave device
-> before device_alloc_chan_resources callback, where one would expect to have
-> it already set.
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index 4576f98..97fbeba 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -1231,7 +1231,7 @@ static int nau8825_hw_params(struct snd_pcm_substream *substream,
+ {
+        struct snd_soc_codec *codec = dai->codec;
+        struct nau8825 *nau8825 = snd_soc_codec_get_drvdata(codec);
+-       unsigned int val_len = 0, osr;
++       unsigned int val_len = 0, osr, ctrl_val, bclk_fs, bclk_div;
 
-We shouldn't be doing much at this stage. We operate on a channel, so the
-channel is returned to the client. We need to do these HW configurations
-when the channel has to be prepred for a txn.
+        nau8825_sema_acquire(nau8825, 3 * HZ);
 
-> The best place to add new calls to the dmaengine drivers to set slave device
-> would be just before device_alloc_chan_resources(), what in turn means that
-> the current dmaengine core should do in dma_chan_get(). This would
-> require to
-> forward the slave device pointer via even more layers including the of_xlate
-> callback too. IMHO this is not worth the effort.
-> 
-> DMA engine core and API definitely needs some cleanup. During such cleanup
-> the slave device pointer might be moved out of xlate into separate callback
-> when the core gets ready for such operation.
+@@ -1261,6 +1261,24 @@ static int nau8825_hw_params(struct snd_pcm_substream *substream,
+                        osr_adc_sel[osr].clk_src << NAU8825_CLK_ADC_SRC_SFT);
+        }
 
-Yes agreed on that, plus the runtime handling needs to be built in, right
-now the APIs dont work well with it, we disucssed these during the KS and
-this goes without saying, patches are welcome :)
++       /* make BCLK and LRC divde configuration if the codec as master. */
++       regmap_read(nau8825->regmap, NAU8825_REG_I2S_PCM_CTRL2, &ctrl_val);
++       if (ctrl_val & NAU8825_I2S_MS_MASTER) {
++               /* get the bclk and fs ratio */
++               bclk_fs = snd_soc_params_to_bclk(params) / params_rate(params);
++               if (bclk_fs <= 32)
++                       bclk_div = 2;
++               else if (bclk_fs <= 64)
++                       bclk_div = 1;
++               else if (bclk_fs <= 128)
++                       bclk_div = 0;
++               else
++                       return -EINVAL;
++               regmap_update_bits(nau8825->regmap, NAU8825_REG_I2S_PCM_CTRL2,
++                       NAU8825_I2S_LRC_DIV_MASK | NAU8825_I2S_BLK_DIV_MASK,
++                       ((bclk_div + 1) << NAU8825_I2S_LRC_DIV_SFT) | bclk_div);
++       }
++
+        switch (params_width(params)) {
+        case 16:
+                val_len |= NAU8825_I2S_DL_16;
+--
+2.6.4
 
-> I ignored other paths for other firmware handle to a DMA channel translation
-> mechanism because for the current pl330 driver they are simply not used. I
-> assume that if one needs to implement similar things for drivers relying on
-> them, he will update the respective DMA engine core parts.
-> 
-> Slave device assignments can be cleared in device_chan_release_resources if
-> this is needed and that what existing DMA engine drivers do with the
-> resources
-> allocated in the of_xlate callback...
 
--- 
-~Vinod
+
+===========================================================================================
+The privileged confidential information contained in this email is intended for use only by the addressees as indicated by the original sender of this email. If you are not the addressee indicated in this email or are not responsible for delivery of the email to such a person, please kindly reply to the sender indicating this fact and delete all copies of it from your computer and network server immediately. Your cooperation is highly appreciated. It is advised that any unauthorized use of confidential information of Nuvoton is strictly prohibited; and any information in this email irrelevant to the official business of Nuvoton shall be deemed as neither given nor endorsed by Nuvoton.
