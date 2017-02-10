@@ -1,23 +1,18 @@
-From: John Rigg <aldev@jrigg.co.uk>
-Subject: Re: Cannot combine audio devices with more than
-	64	channels
-Date: Wed, 8 Feb 2017 16:12:42 +0000
-Message-ID: <20170208161242.GA26477@localhost.localdomain>
-References: <CAKw=HF0hbhxJ1YGjukjFr72xtEh2FjtH6k0Bh+rFcMwejgwcUg@mail.gmail.com>
- <1cdef19b-a458-7441-2ede-2ba8984ec7cd@ladisch.de>
- <s5hh94khiao.wl-tiwai@suse.de>
- <CAKw=HF1kZ12YOUuBX0MmiyYsPqQ68kafP-cVmWA8FP0dHOAuDw@mail.gmail.com>
- <20170131193159.GA17070@localhost.localdomain>
- <CAKw=HF10J=Sr=qrR6yTB_m3yznDh8boUv_qP1MKN75SXFth40w@mail.gmail.com>
+From: Ian W MORRISON <ianwmorrison@gmail.com>
+Subject: [PATCH] ALSA: x86: Ensure VLV bitwise operations are
+	SOC specific
+Date: Fri, 10 Feb 2017 14:33:33 +1100
+Message-ID: <CAFXWsS86Bc7LZfFzT6Wa_z1LDiZk1S2ArbOApa+dE9fmB0hdcw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vm2962.vps.tagadab.com (vm2962.vps.tagadab.com [95.172.24.202])
- by alsa0.perex.cz (Postfix) with ESMTP id 222AA261740
- for <alsa-devel@alsa-project.org>; Wed,  8 Feb 2017 17:43:03 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <CAKw=HF10J=Sr=qrR6yTB_m3yznDh8boUv_qP1MKN75SXFth40w@mail.gmail.com>
+Received: from mail-yw0-f194.google.com (mail-yw0-f194.google.com
+ [209.85.161.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9572926680F
+ for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2017 04:33:35 +0100 (CET)
+Received: by mail-yw0-f194.google.com with SMTP id l16so1743273ywb.2
+ for <alsa-devel@alsa-project.org>; Thu, 09 Feb 2017 19:33:35 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,40 +22,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?iso-8859-1?Q?J=F6rg_M=FCller?= <joerg.mueller7744@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jerome Anand <jerome.anand@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 08, 2017 at 03:12:37PM +0100, J=F6rg M=FCller wrote:
-> John Rigg informed me about the port-max-option of Jack. So I tried
-> running the following commands:
-> jackd --port-max 1024 -d alsa -C madifx_record_all -P madifx_playback_all
-> jackd -p 1024 -d alsa -C madifx_record_all -P madifx_playback_all
-> jackd -p1024 -d alsa -C madifx_record_all -P madifx_playback_all
-> =
+The function vlv_display_irq_postinstall is used by both valleyview
+and cherryview irq handling. I915_LPE_PIPE_C_INTERRUPT is specific
+to cherryview so should be excluded from any valleyview associated
+bitwise operations.
 
-> I also tried ommiting either the option of -C or of -P. But I keep
-> getting the same error:
-> jackd: ../linux/alsa/JackAlsaDriver.cpp:122: virtual int
-> Jack::JackAlsaDriver::Attach(): Assertion `fCaptureChannels < 256'
-> failed.
-> =
+Signed-off-by: Ian W Morrison <linuxium@linuxium.com.au>
+---
+ drivers/gpu/drm/i915/i915_irq.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-> So does that mean jackd doesn't recognize the parameter -p 1024?
+diff --git a/drivers/gpu/drm/i915/i915_irq.c
+b/drivers/gpu/drm/i915/i915_irq.c
+index f0880af..ee61808 100644
+--- a/drivers/gpu/drm/i915/i915_irq.c
++++ b/drivers/gpu/drm/i915/i915_irq.c
+@@ -2940,9 +2940,10 @@ static void vlv_display_irq_postinstall(struct
+drm_i915_private *dev_priv)
 
-I just tried jackd -p1024 here and there's no error message. I don't
-have the hardware to easily test that many ports. I'm using pcm_multi
-with three ice1712 cards and that accepts the jackd -p1024 option.
-I tried adding jack clients until the default 256 ports was exceeded,
-and there's no problem (tried up to 324 ports so far).
+        WARN_ON(dev_priv->irq_mask != ~0);
 
-In jack2/common/JackGlobals.h it has the following:
-#ifndefine PORT_NUM_MAX
-#define PORT_NUM_MAX 4096
-#endif
+-       val = (I915_LPE_PIPE_A_INTERRUPT |
+-               I915_LPE_PIPE_B_INTERRUPT |
+-               I915_LPE_PIPE_C_INTERRUPT);
++       val = I915_LPE_PIPE_A_INTERRUPT |
++               I915_LPE_PIPE_B_INTERRUPT;
++       if (IS_CHERRYVIEW(dev_priv))
++               val |= I915_LPE_PIPE_C_INTERRUPT;
 
-It looks like there's a restriction on driver capture and/or
-playback channels somewhere, but you might have to grep through
-the alsa and jack2 source code to find it.
+        enable_mask |= val;
 
-John
+-- 
+1.9.1
