@@ -1,19 +1,17 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH] ASoC: fsl_sai: support more than 2 channels
-Date: Fri, 10 Feb 2017 23:25:43 -0800
-Message-ID: <20170211072542.GA1884@Asurada>
-References: <20170210184243.15901-1-alexandre.belloni@free-electrons.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 03/13] ALSA: fireface: add model specific
+	structure
+Date: Sat, 11 Feb 2017 23:24:59 +0900
+Message-ID: <20170211142509.4795-4-o-takashi@sakamocchi.jp>
+References: <20170211142509.4795-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f67.google.com (mail-pg0-f67.google.com [74.125.83.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C9962667EE
- for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2017 08:25:58 +0100 (CET)
-Received: by mail-pg0-f67.google.com with SMTP id v184so4725628pgv.1
- for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2017 23:25:58 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <20170210184243.15901-1-alexandre.belloni@free-electrons.com>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 25EDB265DB7
+ for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2017 15:25:14 +0100 (CET)
+In-Reply-To: <20170211142509.4795-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,46 +21,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Timur Tabi <timur@tabi.org>, linux-kernel@vger.kernel.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 10, 2017 at 07:42:43PM +0100, Alexandre Belloni wrote:
-> The FSL SAI can support up to 32 channels using TDM. Report that value so
-> they can actually be used.
-> 
-> Tested using 8 channels.
-> 
-> Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+RME Fireface series has several models and their specifications are
+different. Currently, we find no way to retrieve the specifications
+from actual devices and need to implement them in this driver.
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+This commit adds a structure to describe model specific data. This
+structure has an identical name for each unit, and maximum number of
+data channels in each mode. I'll descibe about the mode in following
+commits.
 
-> ---
->  sound/soc/fsl/fsl_sai.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
-> index 9fadf7e31c5f..18e5ce81527d 100644
-> --- a/sound/soc/fsl/fsl_sai.c
-> +++ b/sound/soc/fsl/fsl_sai.c
-> @@ -668,7 +668,7 @@ static struct snd_soc_dai_driver fsl_sai_dai = {
->  	.playback = {
->  		.stream_name = "CPU-Playback",
->  		.channels_min = 1,
-> -		.channels_max = 2,
-> +		.channels_max = 32,
->  		.rate_min = 8000,
->  		.rate_max = 192000,
->  		.rates = SNDRV_PCM_RATE_KNOT,
-> @@ -677,7 +677,7 @@ static struct snd_soc_dai_driver fsl_sai_dai = {
->  	.capture = {
->  		.stream_name = "CPU-Capture",
->  		.channels_min = 1,
-> -		.channels_max = 2,
-> +		.channels_max = 32,
->  		.rate_min = 8000,
->  		.rate_max = 192000,
->  		.rates = SNDRV_PCM_RATE_KNOT,
-> -- 
-> 2.11.0
-> 
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/fireface/ff.c |  9 +++++----
+ sound/firewire/fireface/ff.h | 14 ++++++++++++++
+ 2 files changed, 19 insertions(+), 4 deletions(-)
+
+diff --git a/sound/firewire/fireface/ff.c b/sound/firewire/fireface/ff.c
+index 7c02639..5c2bd92 100644
+--- a/sound/firewire/fireface/ff.c
++++ b/sound/firewire/fireface/ff.c
+@@ -17,13 +17,12 @@ MODULE_LICENSE("GPL v2");
+ static void name_card(struct snd_ff *ff)
+ {
+ 	struct fw_device *fw_dev = fw_parent_device(ff->unit);
+-	const char *const model = "Fireface Skeleton";
+ 
+ 	strcpy(ff->card->driver, "Fireface");
+-	strcpy(ff->card->shortname, model);
+-	strcpy(ff->card->mixername, model);
++	strcpy(ff->card->shortname, ff->spec->name);
++	strcpy(ff->card->mixername, ff->spec->name);
+ 	snprintf(ff->card->longname, sizeof(ff->card->longname),
+-		 "RME %s, GUID %08x%08x at %s, S%d", model,
++		 "RME %s, GUID %08x%08x at %s, S%d", ff->spec->name,
+ 		 fw_dev->config_rom[3], fw_dev->config_rom[4],
+ 		 dev_name(&ff->unit->device), 100 << fw_dev->max_speed);
+ }
+@@ -86,6 +85,8 @@ static int snd_ff_probe(struct fw_unit *unit,
+ 
+ 	mutex_init(&ff->mutex);
+ 
++	ff->spec = (const struct snd_ff_spec *)entry->driver_data;
++
+ 	/* Register this sound card later. */
+ 	INIT_DEFERRABLE_WORK(&ff->dwork, do_registration);
+ 	snd_fw_schedule_registration(unit, &ff->dwork);
+diff --git a/sound/firewire/fireface/ff.h b/sound/firewire/fireface/ff.h
+index a0faae1..269fa25 100644
+--- a/sound/firewire/fireface/ff.h
++++ b/sound/firewire/fireface/ff.h
+@@ -22,6 +22,18 @@
+ 
+ #include "../lib.h"
+ 
++#define SND_FF_STREAM_MODES		3
++
++struct snd_ff_spec {
++	const char *const name;
++
++	const unsigned int pcm_capture_channels[SND_FF_STREAM_MODES];
++	const unsigned int pcm_playback_channels[SND_FF_STREAM_MODES];
++
++	unsigned int midi_in_ports;
++	unsigned int midi_out_ports;
++};
++
+ struct snd_ff {
+ 	struct snd_card *card;
+ 	struct fw_unit *unit;
+@@ -29,5 +41,7 @@ struct snd_ff {
+ 
+ 	bool registered;
+ 	struct delayed_work dwork;
++
++	const struct snd_ff_spec *spec;
+ };
+ #endif
+-- 
+2.9.3
