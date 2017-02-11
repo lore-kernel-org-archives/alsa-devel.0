@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 10/13] ALSA: fireface: add stream management
+Subject: [PATCH 11/13] ALSA: fireface: add support for PCM
 	functionality
-Date: Sat, 11 Feb 2017 23:25:06 +0900
-Message-ID: <20170211142509.4795-11-o-takashi@sakamocchi.jp>
+Date: Sat, 11 Feb 2017 23:25:07 +0900
+Message-ID: <20170211142509.4795-12-o-takashi@sakamocchi.jp>
 References: <20170211142509.4795-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 1DC76266C6E
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 1EF62266C87
  for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2017 15:25:17 +0100 (CET)
 In-Reply-To: <20170211142509.4795-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,54 +25,67 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-As long as investigating Fireface 400, there're three modes depending
-on sampling transmission frequency. The number of data channels in each
-data block is different depending on the mode. The set of available
-data channels for each mode might be different for each protocol and
-model.
+This commit adds PCM functionality to transmit/receive PCM samples on
+isochronous packet streaming. This commit enables userspace applications
+to start/stop packet streaming via ALSA PCM interface.
 
-The length of registers for the number of isochronous channel is just
-three bits, therefore 0-7ch are available.
+Sampling rate requested by applications is used as sampling transmission
+frequency of AMDTP packet streaming. As I described in followed commits,
+units in this series manages sampling clock independently of sampling
+transmission frequency, and they supports resampling between their packet
+streaming/data block processing layer and sampling data processing layer.
+This commit take this driver to utilize these features for usability.
 
-When bus reset occurs on IEEE 1394 bus, the device discontinues to
-transmit packets. This commit aborts PCM substreams at bus reset handler.
+When internal clock is selected as source signal of sampling clock, this
+driver allows user space applications to start PCM substreams at any rate
+supported by packet streaming engine as sampling transmission frequency.
+In this case, this driver expects units to perform resampling PCM frames
+for rx/tx packets when sampling rate and sampling transmission frequency
+are mismatched. This is for daily use cases.
 
-This commit adds management functionality for the above pacekt streaming.
+When any external clock is selected as the source signal, this driver
+gets configured sampling rate from units, then restricts available
+sampling rate to the rate for PCM applications. This is for studio use
+cases.
 
-The device manages its sampling clock independently of sampling
-transmission frequency against IEC 61883-6. Thus, it's a lower cost to
-change the sampling transmission frequency, while data fetch between
-streaming layer and DSP require larger buffer for resampling. As a result,
-device latency might tend to be larger than ASICs for IEC 61883-1/6 such
-as DM1000/DM1100/DM1500 (BeBoB), DiceII/TCD2210/TCD2220/TCD3070 and
-OXFW970/971.
+Models in this series support 64.0/128.0 kHz of sampling rate, however
+these frequencies are not supported in IEC 61883-6 as sampling transmission
+frequency. Therefore, Packet streaming engine of ALSA firewire stack can't
+handle them. When units are configured to use any external clock as source
+signal of sampling clock and one of these rate is configured as rate of
+the sampling clock, this driver returns EIO to user space applications.
+
+Anyway, this driver doesn't voluntarily configure parameters of sampling
+clock because it's not a part of packet streaming functionality. It's
+better for users to work with appropriate user space implementations to
+configure the parameters in advance of usage.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireface/Makefile    |   3 +-
- sound/firewire/fireface/ff-stream.c | 243 ++++++++++++++++++++++++++++++++++++
- sound/firewire/fireface/ff.c        |   9 ++
- sound/firewire/fireface/ff.h        |  13 ++
- 4 files changed, 267 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/fireface/ff-stream.c
+ sound/firewire/fireface/Makefile |   2 +-
+ sound/firewire/fireface/ff-pcm.c | 390 +++++++++++++++++++++++++++++++++++++++
+ sound/firewire/fireface/ff.c     |   4 +
+ sound/firewire/fireface/ff.h     |   4 +
+ 4 files changed, 399 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/fireface/ff-pcm.c
 
 diff --git a/sound/firewire/fireface/Makefile b/sound/firewire/fireface/Makefile
-index e06e9da..b772fdc 100644
+index b772fdc..e626938 100644
 --- a/sound/firewire/fireface/Makefile
 +++ b/sound/firewire/fireface/Makefile
-@@ -1,2 +1,3 @@
--snd-fireface-objs := ff.o ff-transaction.o ff-midi.o ff-proc.o amdtp-ff.o
-+snd-fireface-objs := ff.o ff-transaction.o ff-midi.o ff-proc.o amdtp-ff.o \
-+		     ff-stream.o
+@@ -1,3 +1,3 @@
+ snd-fireface-objs := ff.o ff-transaction.o ff-midi.o ff-proc.o amdtp-ff.o \
+-		     ff-stream.o
++		     ff-stream.o ff-pcm.o
  obj-$(CONFIG_SND_FIREFACE) += snd-fireface.o
-diff --git a/sound/firewire/fireface/ff-stream.c b/sound/firewire/fireface/ff-stream.c
+diff --git a/sound/firewire/fireface/ff-pcm.c b/sound/firewire/fireface/ff-pcm.c
 new file mode 100644
-index 0000000..0ef6177
+index 0000000..c2a7c3a
 --- /dev/null
-+++ b/sound/firewire/fireface/ff-stream.c
-@@ -0,0 +1,243 @@
++++ b/sound/firewire/fireface/ff-pcm.c
+@@ -0,0 +1,390 @@
 +/*
-+ * ff-stream.c - a part of driver for RME Fireface series
++ * ff-pcm.c - a part of driver for RME Fireface series
 + *
 + * Copyright (c) 2015-2017 Takashi Sakamoto
 + *
@@ -81,317 +94,420 @@ index 0000000..0ef6177
 +
 +#include "ff.h"
 +
-+#define CALLBACK_TIMEOUT_MS	200
-+
-+static int get_rate_mode(unsigned int rate, unsigned int *mode)
++static inline unsigned int get_multiplier_mode_with_index(unsigned int index)
 +{
++	return ((int)index - 1) / 2;
++}
++
++static int hw_rule_rate(struct snd_pcm_hw_params *params,
++			struct snd_pcm_hw_rule *rule)
++{
++	const unsigned int *pcm_channels = rule->private;
++	struct snd_interval *r =
++		hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
++	const struct snd_interval *c =
++		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_interval t = {
++		.min = UINT_MAX, .max = 0, .integer = 1
++	};
++	unsigned int i, mode;
++
++	for (i = 0; i < ARRAY_SIZE(amdtp_rate_table); i++) {
++		mode = get_multiplier_mode_with_index(i);
++		if (!snd_interval_test(c, pcm_channels[mode]))
++			continue;
++
++		t.min = min(t.min, amdtp_rate_table[i]);
++		t.max = max(t.max, amdtp_rate_table[i]);
++	}
++
++	return snd_interval_refine(r, &t);
++}
++
++static int hw_rule_channels(struct snd_pcm_hw_params *params,
++			    struct snd_pcm_hw_rule *rule)
++{
++	const unsigned int *pcm_channels = rule->private;
++	struct snd_interval *c =
++		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	const struct snd_interval *r =
++		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval t = {
++		.min = UINT_MAX, .max = 0, .integer = 1
++	};
++	unsigned int i, mode;
++
++	for (i = 0; i < ARRAY_SIZE(amdtp_rate_table); i++) {
++		mode = get_multiplier_mode_with_index(i);
++		if (!snd_interval_test(r, amdtp_rate_table[i]))
++			continue;
++
++		t.min = min(t.min, pcm_channels[mode]);
++		t.max = max(t.max, pcm_channels[mode]);
++	}
++
++	return snd_interval_refine(c, &t);
++}
++
++static void limit_channels_and_rates(struct snd_pcm_hardware *hw,
++				     const unsigned int *pcm_channels)
++{
++	unsigned int mode;
++	unsigned int rate, channels;
 +	int i;
 +
-+	for (i = 0; i < CIP_SFC_COUNT; i++) {
-+		if (amdtp_rate_table[i] == rate)
-+			break;
++	hw->channels_min = UINT_MAX;
++	hw->channels_max = 0;
++	hw->rate_min = UINT_MAX;
++	hw->rate_max = 0;
++
++	for (i = 0; i < ARRAY_SIZE(amdtp_rate_table); i++) {
++		mode = get_multiplier_mode_with_index(i);
++
++		channels = pcm_channels[mode];
++		if (pcm_channels[mode] == 0)
++			continue;
++		hw->channels_min = min(hw->channels_min, channels);
++		hw->channels_max = max(hw->channels_max, channels);
++
++		rate = amdtp_rate_table[i];
++		hw->rates |= snd_pcm_rate_to_rate_bit(rate);
++		hw->rate_min = min(hw->rate_min, rate);
++		hw->rate_max = max(hw->rate_max, rate);
 +	}
-+
-+	if (i == CIP_SFC_COUNT)
-+		return -EINVAL;
-+
-+	*mode = ((int)i - 1) / 2;
-+
-+	return 0;
 +}
 +
-+/*
-+ * Fireface 400 manages isochronous channel number in 3 bit field. Therefore,
-+ * we can allocate between 0 and 7 channel.
-+ */
-+static int keep_resources(struct snd_ff *ff, unsigned int rate)
++static void limit_period_and_buffer(struct snd_pcm_hardware *hw)
 +{
-+	int mode;
++	hw->periods_min = 2;		/* SNDRV_PCM_INFO_BATCH */
++	hw->periods_max = UINT_MAX;
++
++	hw->period_bytes_min = 4 * hw->channels_max;	/* bytes for a frame */
++
++	/* Just to prevent from allocating much pages. */
++	hw->period_bytes_max = hw->period_bytes_min * 2048;
++	hw->buffer_bytes_max = hw->period_bytes_max * hw->periods_min;
++}
++
++static int pcm_init_hw_params(struct snd_ff *ff,
++			      struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct amdtp_stream *s;
++	const unsigned int *pcm_channels;
 +	int err;
 +
-+	err = get_rate_mode(rate, &mode);
-+	if (err < 0)
-+		return err;
++	runtime->hw.info = SNDRV_PCM_INFO_BATCH |
++			   SNDRV_PCM_INFO_BLOCK_TRANSFER |
++			   SNDRV_PCM_INFO_INTERLEAVED |
++			   SNDRV_PCM_INFO_JOINT_DUPLEX |
++			   SNDRV_PCM_INFO_MMAP |
++			   SNDRV_PCM_INFO_MMAP_VALID;
 +
-+	/* Keep resources for in-stream. */
-+	err = amdtp_ff_set_parameters(&ff->tx_stream, rate,
-+				      ff->spec->pcm_capture_channels[mode]);
-+	if (err < 0)
-+		return err;
-+	ff->tx_resources.channels_mask = 0x00000000000000ffuLL;
-+	err = fw_iso_resources_allocate(&ff->tx_resources,
-+			amdtp_stream_get_max_payload(&ff->tx_stream),
-+			fw_parent_device(ff->unit)->max_speed);
-+	if (err < 0)
-+		return err;
-+
-+	/* Keep resources for out-stream. */
-+	err = amdtp_ff_set_parameters(&ff->rx_stream, rate,
-+				      ff->spec->pcm_playback_channels[mode]);
-+	if (err < 0)
-+		return err;
-+	ff->rx_resources.channels_mask = 0x00000000000000ffuLL;
-+	err = fw_iso_resources_allocate(&ff->rx_resources,
-+			amdtp_stream_get_max_payload(&ff->rx_stream),
-+			fw_parent_device(ff->unit)->max_speed);
-+	if (err < 0)
-+		fw_iso_resources_free(&ff->tx_resources);
-+
-+	return err;
-+}
-+
-+static void release_resources(struct snd_ff *ff)
-+{
-+	fw_iso_resources_free(&ff->tx_resources);
-+	fw_iso_resources_free(&ff->rx_resources);
-+}
-+
-+static inline void finish_session(struct snd_ff *ff)
-+{
-+	ff->spec->protocol->finish_session(ff);
-+	ff->spec->protocol->switch_fetching_mode(ff, false);
-+}
-+
-+static int init_stream(struct snd_ff *ff, enum amdtp_stream_direction dir)
-+{
-+	int err;
-+	struct fw_iso_resources *resources;
-+	struct amdtp_stream *stream;
-+
-+	if (dir == AMDTP_IN_STREAM) {
-+		resources = &ff->tx_resources;
-+		stream = &ff->tx_stream;
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		runtime->hw.formats = SNDRV_PCM_FMTBIT_S32;
++		s = &ff->tx_stream;
++		pcm_channels = ff->spec->pcm_capture_channels;
 +	} else {
-+		resources = &ff->rx_resources;
-+		stream = &ff->rx_stream;
++		runtime->hw.formats = SNDRV_PCM_FMTBIT_S32;
++		s = &ff->rx_stream;
++		pcm_channels = ff->spec->pcm_playback_channels;
 +	}
 +
-+	err = fw_iso_resources_init(resources, ff->unit);
++	/* limit rates */
++	limit_channels_and_rates(&runtime->hw, pcm_channels);
++	limit_period_and_buffer(&runtime->hw);
++
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++				  hw_rule_channels, (void *)pcm_channels,
++				  SNDRV_PCM_HW_PARAM_RATE, -1);
 +	if (err < 0)
 +		return err;
 +
-+	err = amdtp_ff_init(stream, ff->unit, dir);
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
++				  hw_rule_rate, (void *)pcm_channels,
++				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
 +	if (err < 0)
-+		fw_iso_resources_destroy(resources);
++		return err;
 +
-+	return err;
++	return amdtp_ff_add_pcm_hw_constraints(s, runtime);
 +}
 +
-+static void destroy_stream(struct snd_ff *ff, enum amdtp_stream_direction dir)
++static int pcm_open(struct snd_pcm_substream *substream)
 +{
-+	if (dir == AMDTP_IN_STREAM) {
-+		amdtp_stream_destroy(&ff->tx_stream);
-+		fw_iso_resources_destroy(&ff->tx_resources);
-+	} else {
-+		amdtp_stream_destroy(&ff->rx_stream);
-+		fw_iso_resources_destroy(&ff->rx_resources);
-+	}
-+}
-+
-+int snd_ff_stream_init_duplex(struct snd_ff *ff)
-+{
-+	int err;
-+
-+	err = init_stream(ff, AMDTP_OUT_STREAM);
-+	if (err < 0)
-+		goto end;
-+
-+	err = init_stream(ff, AMDTP_IN_STREAM);
-+	if (err < 0)
-+		destroy_stream(ff, AMDTP_OUT_STREAM);
-+end:
-+	return err;
-+}
-+
-+/*
-+ * This function should be called before starting streams or after stopping
-+ * streams.
-+ */
-+void snd_ff_stream_destroy_duplex(struct snd_ff *ff)
-+{
-+	destroy_stream(ff, AMDTP_IN_STREAM);
-+	destroy_stream(ff, AMDTP_OUT_STREAM);
-+}
-+
-+int snd_ff_stream_start_duplex(struct snd_ff *ff, unsigned int rate)
-+{
-+	unsigned int curr_rate;
++	struct snd_ff *ff = substream->private_data;
++	unsigned int rate;
 +	enum snd_ff_clock_src src;
-+	int err;
++	int i, err;
 +
-+	if (ff->substreams_counter == 0)
-+		return 0;
-+
-+	err = ff->spec->protocol->get_clock(ff, &curr_rate, &src);
++	err = pcm_init_hw_params(ff, substream);
 +	if (err < 0)
 +		return err;
-+	if (curr_rate != rate ||
-+	    amdtp_streaming_error(&ff->tx_stream) ||
-+	    amdtp_streaming_error(&ff->rx_stream)) {
-+		finish_session(ff);
 +
-+		amdtp_stream_stop(&ff->tx_stream);
-+		amdtp_stream_stop(&ff->rx_stream);
++	err = ff->spec->protocol->get_clock(ff, &rate, &src);
++	if (err < 0)
++		return err;
 +
-+		release_resources(ff);
++	if (src != SND_FF_CLOCK_SRC_INTERNAL ||
++	    amdtp_stream_pcm_running(&ff->rx_stream) ||
++	    amdtp_stream_pcm_running(&ff->tx_stream)) {
++		for (i = 0; i < CIP_SFC_COUNT; ++i) {
++			if (amdtp_rate_table[i] == rate)
++				break;
++		}
++		/*
++		 * The unit is configured at sampling frequency which packet
++		 * streaming engine can't support.
++		 */
++		if (i >= CIP_SFC_COUNT)
++			return -EIO;
++
++		substream->runtime->hw.rate_min = rate;
++		substream->runtime->hw.rate_max = rate;
 +	}
 +
-+	/*
-+	 * Regardless of current source of clock signal, drivers transfer some
-+	 * packets. Then, the device transfers packets.
-+	 */
-+	if (!amdtp_stream_running(&ff->rx_stream)) {
-+		err = keep_resources(ff, rate);
-+		if (err < 0)
-+			goto error;
++	snd_pcm_set_sync(substream);
 +
-+		err = ff->spec->protocol->begin_session(ff, rate);
-+		if (err < 0)
-+			goto error;
++	return 0;
++}
 +
-+		err = amdtp_stream_start(&ff->rx_stream,
-+					 ff->rx_resources.channel,
-+					 fw_parent_device(ff->unit)->max_speed);
-+		if (err < 0)
-+			goto error;
++static int pcm_close(struct snd_pcm_substream *substream)
++{
++	return 0;
++}
 +
-+		if (!amdtp_stream_wait_callback(&ff->rx_stream,
-+						CALLBACK_TIMEOUT_MS)) {
-+			err = -ETIMEDOUT;
-+			goto error;
-+		}
++static int pcm_capture_hw_params(struct snd_pcm_substream *substream,
++				 struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_ff *ff = substream->private_data;
++	int err;
 +
-+		err = ff->spec->protocol->switch_fetching_mode(ff, true);
-+		if (err < 0)
-+			goto error;
-+	}
++	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
++					       params_buffer_bytes(hw_params));
++	if (err < 0)
++		return err;
 +
-+	if (!amdtp_stream_running(&ff->tx_stream)) {
-+		err = amdtp_stream_start(&ff->tx_stream,
-+					 ff->tx_resources.channel,
-+					 fw_parent_device(ff->unit)->max_speed);
-+		if (err < 0)
-+			goto error;
-+
-+		if (!amdtp_stream_wait_callback(&ff->tx_stream,
-+						CALLBACK_TIMEOUT_MS)) {
-+			err = -ETIMEDOUT;
-+			goto error;
-+		}
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&ff->mutex);
++		ff->substreams_counter++;
++		mutex_unlock(&ff->mutex);
 +	}
 +
 +	return 0;
-+error:
-+	amdtp_stream_stop(&ff->tx_stream);
-+	amdtp_stream_stop(&ff->rx_stream);
++}
 +
-+	finish_session(ff);
-+	release_resources(ff);
++static int pcm_playback_hw_params(struct snd_pcm_substream *substream,
++				  struct snd_pcm_hw_params *hw_params)
++{
++	struct snd_ff *ff = substream->private_data;
++	int err;
++
++	err = snd_pcm_lib_alloc_vmalloc_buffer(substream,
++					       params_buffer_bytes(hw_params));
++	if (err < 0)
++		return err;
++
++	if (substream->runtime->status->state == SNDRV_PCM_STATE_OPEN) {
++		mutex_lock(&ff->mutex);
++		ff->substreams_counter++;
++		mutex_unlock(&ff->mutex);
++	}
++
++	return 0;
++}
++
++static int pcm_capture_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_ff *ff = substream->private_data;
++
++	mutex_lock(&ff->mutex);
++
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		ff->substreams_counter--;
++
++	snd_ff_stream_stop_duplex(ff);
++
++	mutex_unlock(&ff->mutex);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++
++static int pcm_playback_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_ff *ff = substream->private_data;
++
++	mutex_lock(&ff->mutex);
++
++	if (substream->runtime->status->state != SNDRV_PCM_STATE_OPEN)
++		ff->substreams_counter--;
++
++	snd_ff_stream_stop_duplex(ff);
++
++	mutex_unlock(&ff->mutex);
++
++	return snd_pcm_lib_free_vmalloc_buffer(substream);
++}
++
++static int pcm_capture_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_ff *ff = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int err;
++
++	mutex_lock(&ff->mutex);
++
++	err = snd_ff_stream_start_duplex(ff, runtime->rate);
++	if (err >= 0)
++		amdtp_stream_pcm_prepare(&ff->tx_stream);
++
++	mutex_unlock(&ff->mutex);
 +
 +	return err;
 +}
 +
-+void snd_ff_stream_stop_duplex(struct snd_ff *ff)
++static int pcm_playback_prepare(struct snd_pcm_substream *substream)
 +{
-+	if (ff->substreams_counter > 0)
-+		return;
++	struct snd_ff *ff = substream->private_data;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	int err;
 +
-+	amdtp_stream_stop(&ff->tx_stream);
-+	amdtp_stream_stop(&ff->rx_stream);
-+	finish_session(ff);
-+	release_resources(ff);
++	mutex_lock(&ff->mutex);
++
++	err = snd_ff_stream_start_duplex(ff, runtime->rate);
++	if (err >= 0)
++		amdtp_stream_pcm_prepare(&ff->rx_stream);
++
++	mutex_unlock(&ff->mutex);
++
++	return err;
 +}
 +
-+void snd_ff_stream_update_duplex(struct snd_ff *ff)
++static int pcm_capture_trigger(struct snd_pcm_substream *substream, int cmd)
 +{
-+	/* The device discontinue to transfer packets.  */
-+	amdtp_stream_pcm_abort(&ff->tx_stream);
-+	amdtp_stream_stop(&ff->tx_stream);
++	struct snd_ff *ff = substream->private_data;
 +
-+	amdtp_stream_pcm_abort(&ff->rx_stream);
-+	amdtp_stream_stop(&ff->rx_stream);
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		amdtp_stream_pcm_trigger(&ff->tx_stream, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		amdtp_stream_pcm_trigger(&ff->tx_stream, NULL);
++		break;
++	default:
++		return -EINVAL;
++	}
 +
-+	fw_iso_resources_update(&ff->tx_resources);
-+	fw_iso_resources_update(&ff->rx_resources);
++	return 0;
++}
++
++static int pcm_playback_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	struct snd_ff *ff = substream->private_data;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		amdtp_stream_pcm_trigger(&ff->rx_stream, substream);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		amdtp_stream_pcm_trigger(&ff->rx_stream, NULL);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static snd_pcm_uframes_t pcm_capture_pointer(struct snd_pcm_substream *sbstrm)
++{
++	struct snd_ff *ff = sbstrm->private_data;
++
++	return amdtp_stream_pcm_pointer(&ff->tx_stream);
++}
++
++static snd_pcm_uframes_t pcm_playback_pointer(struct snd_pcm_substream *sbstrm)
++{
++	struct snd_ff *ff = sbstrm->private_data;
++
++	return amdtp_stream_pcm_pointer(&ff->rx_stream);
++}
++
++static struct snd_pcm_ops pcm_capture_ops = {
++	.open		= pcm_open,
++	.close		= pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= pcm_capture_hw_params,
++	.hw_free	= pcm_capture_hw_free,
++	.prepare	= pcm_capture_prepare,
++	.trigger	= pcm_capture_trigger,
++	.pointer	= pcm_capture_pointer,
++	.page		= snd_pcm_lib_get_vmalloc_page,
++};
++
++static struct snd_pcm_ops pcm_playback_ops = {
++	.open		= pcm_open,
++	.close		= pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= pcm_playback_hw_params,
++	.hw_free	= pcm_playback_hw_free,
++	.prepare	= pcm_playback_prepare,
++	.trigger	= pcm_playback_trigger,
++	.pointer	= pcm_playback_pointer,
++	.page		= snd_pcm_lib_get_vmalloc_page,
++	.mmap		= snd_pcm_lib_mmap_vmalloc,
++};
++
++int snd_ff_create_pcm_devices(struct snd_ff *ff)
++{
++	struct snd_pcm *pcm;
++	int err;
++
++	err = snd_pcm_new(ff->card, ff->card->driver, 0, 1, 1, &pcm);
++	if (err < 0)
++		return err;
++
++	pcm->private_data = ff;
++	snprintf(pcm->name, sizeof(pcm->name),
++		 "%s PCM", ff->card->shortname);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &pcm_playback_ops);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &pcm_capture_ops);
++
++	return 0;
 +}
 diff --git a/sound/firewire/fireface/ff.c b/sound/firewire/fireface/ff.c
-index 22e7bcb..6bdbebd 100644
+index 6bdbebd..ff62d16 100644
 --- a/sound/firewire/fireface/ff.c
 +++ b/sound/firewire/fireface/ff.c
-@@ -29,6 +29,7 @@ static void name_card(struct snd_ff *ff)
+@@ -72,6 +72,10 @@ static void do_registration(struct work_struct *work)
+ 	if (err < 0)
+ 		goto error;
  
- static void ff_free(struct snd_ff *ff)
- {
-+	snd_ff_stream_destroy_duplex(ff);
- 	snd_ff_transaction_unregister(ff);
- 
- 	fw_unit_put(ff->unit);
-@@ -61,6 +62,10 @@ static void do_registration(struct work_struct *work)
- 
- 	name_card(ff);
- 
-+	err = snd_ff_stream_init_duplex(ff);
++	err = snd_ff_create_pcm_devices(ff);
 +	if (err < 0)
 +		goto error;
 +
- 	snd_ff_proc_init(ff);
- 
- 	err = snd_ff_create_midi_devices(ff);
-@@ -78,6 +83,7 @@ static void do_registration(struct work_struct *work)
- 	return;
- error:
- 	snd_ff_transaction_unregister(ff);
-+	snd_ff_stream_destroy_duplex(ff);
- 	snd_card_free(ff->card);
- 	dev_info(&ff->unit->device,
- 		 "Sound card registration failed: %d\n", err);
-@@ -117,6 +123,9 @@ static void snd_ff_update(struct fw_unit *unit)
- 		snd_fw_schedule_registration(unit, &ff->dwork);
- 
- 	snd_ff_transaction_reregister(ff);
-+
-+	if (ff->registered)
-+		snd_ff_stream_update_duplex(ff);
- }
- 
- static void snd_ff_remove(struct fw_unit *unit)
+ 	err = snd_card_register(ff->card);
+ 	if (err < 0)
+ 		goto error;
 diff --git a/sound/firewire/fireface/ff.h b/sound/firewire/fireface/ff.h
-index fa7242f..6599c11 100644
+index 6599c11..0d5228c 100644
 --- a/sound/firewire/fireface/ff.h
 +++ b/sound/firewire/fireface/ff.h
-@@ -24,6 +24,7 @@
+@@ -21,6 +21,8 @@
+ #include <sound/core.h>
+ #include <sound/info.h>
+ #include <sound/rawmidi.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
  
  #include "../lib.h"
  #include "../amdtp-stream.h"
-+#include "../iso-resources.h"
- 
- #define SND_FF_STREAM_MODES		3
- 
-@@ -68,6 +69,12 @@ struct snd_ff {
- 	ktime_t next_ktime[SND_FF_OUT_MIDI_PORTS];
- 	bool rx_midi_error[SND_FF_OUT_MIDI_PORTS];
- 	unsigned int rx_bytes[SND_FF_OUT_MIDI_PORTS];
-+
-+	unsigned int substreams_counter;
-+	struct amdtp_stream tx_stream;
-+	struct amdtp_stream rx_stream;
-+	struct fw_iso_resources tx_resources;
-+	struct fw_iso_resources rx_resources;
- };
- 
- enum snd_ff_clock_src {
-@@ -107,6 +114,12 @@ int amdtp_ff_add_pcm_hw_constraints(struct amdtp_stream *s,
- int amdtp_ff_init(struct amdtp_stream *s, struct fw_unit *unit,
- 		  enum amdtp_stream_direction dir);
- 
-+int snd_ff_stream_init_duplex(struct snd_ff *ff);
-+void snd_ff_stream_destroy_duplex(struct snd_ff *ff);
-+int snd_ff_stream_start_duplex(struct snd_ff *ff, unsigned int rate);
-+void snd_ff_stream_stop_duplex(struct snd_ff *ff);
-+void snd_ff_stream_update_duplex(struct snd_ff *ff);
-+
- void snd_ff_proc_init(struct snd_ff *ff);
+@@ -124,4 +126,6 @@ void snd_ff_proc_init(struct snd_ff *ff);
  
  int snd_ff_create_midi_devices(struct snd_ff *ff);
+ 
++int snd_ff_create_pcm_devices(struct snd_ff *ff);
++
+ #endif
 -- 
 2.9.3
