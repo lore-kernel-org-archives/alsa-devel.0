@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 04/13] ALSA: fireface: add an abstraction layer
-	for model-specific protocols
-Date: Sat, 11 Feb 2017 23:25:00 +0900
-Message-ID: <20170211142509.4795-5-o-takashi@sakamocchi.jp>
+Subject: [PATCH 01/13] ALSA: fireface: add skeleton for RME
+	Fireface series
+Date: Sat, 11 Feb 2017 23:24:57 +0900
+Message-ID: <20170211142509.4795-2-o-takashi@sakamocchi.jp>
 References: <20170211142509.4795-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 286A2266A65
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 2AD24266AA9
  for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2017 15:25:14 +0100 (CET)
 In-Reply-To: <20170211142509.4795-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,144 +25,211 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-As of 2016, RME discontinued its Fireface series, thus it's OK for us
-to drive known units with three types of firmware.
+This commit adds a new driver for RME Fireface series. This commit just
+creates/removes card instance according to IEEE 1394 bus event. More
+functions will be added in following commits.
 
-As long as investigating Fireface 400 with Windows driver and comparing
-the result to FFADO implementation, these firmwares have different register
-assignments. On the other hand, according to manuals of each models,
-features relevant to packet streaming seem to be common. It's reasonable
-to assume an abstraction layer of protocols to communicate to each models.
-
-This commit adds an abstraction layer for the protocols. This layer
-includes some functions to operate common features of models in this
-series.
-
-In IEC 61883-1/6, the sequence of packet can transfer timing information
-to synchronize transmitters/receivers. Units of each node on IEEE 1394
-bus can generate transmitter's timing clock by handling value of SYT field
-in CIP header with high-precision clock. For audio and music units on
-IEEE 1394 bus, this recovered clock is designed to used for sampling clock
-to capture/generate PCM frames on DSP/ADC/DAC. (Actually, there's no units
-to implement this specification correctly in this world, as long as I
-know).
-
-Fireface series doesn't use this mechanism and isochronous packet with
-CIP header. It uses internal crystal unit as its initial sampling clock.
-When detecting input signals which can be available for sampling clock
-(e.g. ADAT input), drivers can configure units to use the signals as
-source of sampling clock. When something goes wrong, e.g. frequency
-mismatching between the signal and configured value, units switch to
-the other detected signals alternatively. When detecting no alternatives,
-internal crystal unit is used as source of sampling clock. On manual of
-Fireface 400, this mechanism is described as 'Autosync'.
-
-For packet streaming layer, it's enough to get current selection of
-source signals for the sampling clock and its frequency. When internal
-crystal is selected, drivers can sets arbitrary sampling frequency,
-else they should follow configured frequency. For this purpose,
-.get_clock is added.
-
-On the units, packet streaming is controlled by write transactions to
-certain registers. Format of the packet, e.g. the number of data channels
-in a data block, is also configured by the same manner. For this purpose,
-.begin_session and .finish_session is added.
-
-The remarkable point of this protocol is to allow drivers to configure
-arbitrary sampling transmission frequency; e.g. 123.456 Hz. As long as I
-know, there's no DAC/ADC chips which support this kind of capability.
-I think a pair of packet streaming/data block processing layer is isolated
-from sampling data processing layer in a point of governed clock. In
-short, between these parts, resampling layer exists between these parts.
-Actually, for Fireface 400, write transactions to 0x'0000'8010'051c has
-an effect to change sampling clock frequency with base frequency of
-32.0/44.1/48.0 kHz and its multipliers (x2/x4).
-
-For this reason, the abstraction layer has no function to set sampling
-clock. Instead, each implementation of .begin_session is expected to
-configure sampling transmission frequency.
-
-Drivers are allows to bank up data fetching from a pair of packet
-streaming/data block processing layer and sampling data processing layer.
-This feature seems to suppress noises at starting/stopping packet
-streaming. For this purpose, .switch_fetching_mode is added.
-
-As I described in the above, units have remarkable mechanism to manage
-sampling clock and process sampling data. For debugging purpose,
-.dump_sync_status and .dump_clock_config are added. I don't have a need
-to common interface to represent the status and configuration,
-developers can add actual implementation of the abstraction layer as he
-or she likes.
-
-Unlike PCM frames, MIDI messages are transferred by asynchronous
-communication over IEEE 1394 bus, thus target addresses are important for
-this feature. The .midi_high_addr_reg, .midi_rx_port_0_reg and
-.midi_rx_port_1_reg are for this purpose. I'll describe them in following
-commit.
+Three types of firmware have released by RME GmbH; for Fireface 400, for
+Fireface 800 and for UCX/802/UFX. It's reasonable that these models use
+different protocol for communication. Currently, I've investigated
+Fireface 400 and nothing others.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireface/ff.h | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
+ sound/firewire/Kconfig           |   6 +++
+ sound/firewire/Makefile          |   1 +
+ sound/firewire/fireface/Makefile |   2 +
+ sound/firewire/fireface/ff.c     | 113 +++++++++++++++++++++++++++++++++++++++
+ sound/firewire/fireface/ff.h     |  28 ++++++++++
+ 5 files changed, 150 insertions(+)
+ create mode 100644 sound/firewire/fireface/Makefile
+ create mode 100644 sound/firewire/fireface/ff.c
+ create mode 100644 sound/firewire/fireface/ff.h
 
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index 2a91fe8..077e03c 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -153,4 +153,10 @@ config SND_FIREWIRE_MOTU
+ 	 To compile this driver as a module, choose M here: the module
+ 	 will be called snd-firewire-motu.
+ 
++config SND_FIREFACE
++	tristate "RME Fireface series support"
++	select SND_FIREWIRE_LIB
++	help
++	 Say Y here to include support for RME fireface series.
++
+ endif # SND_FIREWIRE
+diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
+index 9388ded..1b98fa3 100644
+--- a/sound/firewire/Makefile
++++ b/sound/firewire/Makefile
+@@ -14,3 +14,4 @@ obj-$(CONFIG_SND_BEBOB) += bebob/
+ obj-$(CONFIG_SND_FIREWIRE_DIGI00X) += digi00x/
+ obj-$(CONFIG_SND_FIREWIRE_TASCAM) += tascam/
+ obj-$(CONFIG_SND_FIREWIRE_MOTU) += motu/
++obj-$(CONFIG_SND_FIREFACE) += fireface/
+diff --git a/sound/firewire/fireface/Makefile b/sound/firewire/fireface/Makefile
+new file mode 100644
+index 0000000..2c64ef6
+--- /dev/null
++++ b/sound/firewire/fireface/Makefile
+@@ -0,0 +1,2 @@
++snd-fireface-objs := ff.o
++obj-$(CONFIG_SND_FIREFACE) += snd-fireface.o
+diff --git a/sound/firewire/fireface/ff.c b/sound/firewire/fireface/ff.c
+new file mode 100644
+index 0000000..358bba2
+--- /dev/null
++++ b/sound/firewire/fireface/ff.c
+@@ -0,0 +1,113 @@
++/*
++ * ff.c - a part of driver for RME Fireface series
++ *
++ * Copyright (c) 2015-2017 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "ff.h"
++
++#define OUI_RME	0x000a35
++
++MODULE_DESCRIPTION("RME Fireface series Driver");
++MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
++MODULE_LICENSE("GPL v2");
++
++static void name_card(struct snd_ff *ff)
++{
++	struct fw_device *fw_dev = fw_parent_device(ff->unit);
++	const char *const model = "Fireface Skeleton";
++
++	strcpy(ff->card->driver, "Fireface");
++	strcpy(ff->card->shortname, model);
++	strcpy(ff->card->mixername, model);
++	snprintf(ff->card->longname, sizeof(ff->card->longname),
++		 "RME %s, GUID %08x%08x at %s, S%d", model,
++		 fw_dev->config_rom[3], fw_dev->config_rom[4],
++		 dev_name(&ff->unit->device), 100 << fw_dev->max_speed);
++}
++
++static void ff_card_free(struct snd_card *card)
++{
++	struct snd_ff *ff = card->private_data;
++
++	fw_unit_put(ff->unit);
++
++	mutex_destroy(&ff->mutex);
++}
++
++static int snd_ff_probe(struct fw_unit *unit,
++			   const struct ieee1394_device_id *entry)
++{
++	struct snd_card *card;
++	struct snd_ff *ff;
++	int err;
++
++	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE,
++			   sizeof(struct snd_ff), &card);
++	if (err < 0)
++		return err;
++	card->private_free = ff_card_free;
++
++	/* initialize myself */
++	ff = card->private_data;
++	ff->card = card;
++	ff->unit = fw_unit_get(unit);
++	dev_set_drvdata(&unit->device, ff);
++
++	mutex_init(&ff->mutex);
++
++	name_card(ff);
++
++	err = snd_card_register(card);
++	if (err < 0) {
++		snd_card_free(card);
++		return err;
++	}
++
++	return 0;
++}
++
++static void snd_ff_update(struct fw_unit *unit)
++{
++	return;
++}
++
++static void snd_ff_remove(struct fw_unit *unit)
++{
++	struct snd_ff *ff = dev_get_drvdata(&unit->device);
++
++	/* No need to wait for releasing card object in this context. */
++	snd_card_free_when_closed(ff->card);
++}
++
++static const struct ieee1394_device_id snd_ff_id_table[] = {
++	{}
++};
++MODULE_DEVICE_TABLE(ieee1394, snd_ff_id_table);
++
++static struct fw_driver ff_driver = {
++	.driver = {
++		.owner	= THIS_MODULE,
++		.name	= "snd-fireface",
++		.bus	= &fw_bus_type,
++	},
++	.probe    = snd_ff_probe,
++	.update   = snd_ff_update,
++	.remove   = snd_ff_remove,
++	.id_table = snd_ff_id_table,
++};
++
++static int __init snd_ff_init(void)
++{
++	return driver_register(&ff_driver.driver);
++}
++
++static void __exit snd_ff_exit(void)
++{
++	driver_unregister(&ff_driver.driver);
++}
++
++module_init(snd_ff_init);
++module_exit(snd_ff_exit);
 diff --git a/sound/firewire/fireface/ff.h b/sound/firewire/fireface/ff.h
-index 269fa25..7be0ea4 100644
---- a/sound/firewire/fireface/ff.h
+new file mode 100644
+index 0000000..64d488e
+--- /dev/null
 +++ b/sound/firewire/fireface/ff.h
-@@ -19,11 +19,13 @@
- #include <linux/compat.h>
- 
- #include <sound/core.h>
-+#include <sound/info.h>
- 
- #include "../lib.h"
- 
- #define SND_FF_STREAM_MODES		3
- 
-+struct snd_ff_protocol;
- struct snd_ff_spec {
- 	const char *const name;
- 
-@@ -32,6 +34,8 @@ struct snd_ff_spec {
- 
- 	unsigned int midi_in_ports;
- 	unsigned int midi_out_ports;
+@@ -0,0 +1,28 @@
++/*
++ * ff.h - a part of driver for RME Fireface series
++ *
++ * Copyright (c) 2015-2017 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
 +
-+	struct snd_ff_protocol *protocol;
- };
- 
- struct snd_ff {
-@@ -44,4 +48,31 @@ struct snd_ff {
- 
- 	const struct snd_ff_spec *spec;
- };
++#ifndef SOUND_FIREFACE_H_INCLUDED
++#define SOUND_FIREFACE_H_INCLUDED
 +
-+enum snd_ff_clock_src {
-+	SND_FF_CLOCK_SRC_INTERNAL,
-+	SND_FF_CLOCK_SRC_SPDIF,
-+	SND_FF_CLOCK_SRC_ADAT,
-+	SND_FF_CLOCK_SRC_WORD,
-+	SND_FF_CLOCK_SRC_LTC,
-+	/* TODO: perhaps ADAT2 and TCO exists. */
++#include <linux/device.h>
++#include <linux/firewire.h>
++#include <linux/firewire-constants.h>
++#include <linux/module.h>
++#include <linux/mod_devicetable.h>
++#include <linux/mutex.h>
++#include <linux/slab.h>
++#include <linux/compat.h>
++
++#include <sound/core.h>
++
++struct snd_ff {
++	struct snd_card *card;
++	struct fw_unit *unit;
++	struct mutex mutex;
 +};
-+
-+struct snd_ff_protocol {
-+	int (*get_clock)(struct snd_ff *ff, unsigned int *rate,
-+			 enum snd_ff_clock_src *src);
-+	int (*begin_session)(struct snd_ff *ff, unsigned int rate);
-+	void (*finish_session)(struct snd_ff *ff);
-+	int (*switch_fetching_mode)(struct snd_ff *ff, bool enable);
-+
-+	void (*dump_sync_status)(struct snd_ff *ff,
-+				 struct snd_info_buffer *buffer);
-+	void (*dump_clock_config)(struct snd_ff *ff,
-+				  struct snd_info_buffer *buffer);
-+
-+	u64 midi_high_addr_reg;
-+	u64 midi_rx_port_0_reg;
-+	u64 midi_rx_port_1_reg;
-+};
-+
- #endif
++#endif
 -- 
 2.9.3
