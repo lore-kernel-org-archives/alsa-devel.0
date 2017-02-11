@@ -1,21 +1,16 @@
-From: Ian W MORRISON <ianwmorrison@gmail.com>
-Subject: Re: [PATCH] ALSA: x86: Ensure VLV bitwise operations
- are SOC specific
-Date: Sat, 11 Feb 2017 10:49:17 +1100
-Message-ID: <CAFXWsS8qseFmQdNctJ_pLo3L8+xM9fFtB5--dAJdR0d1WAANvw@mail.gmail.com>
-References: <CAFXWsS86Bc7LZfFzT6Wa_z1LDiZk1S2ArbOApa+dE9fmB0hdcw@mail.gmail.com>
- <1a612c8b-0b03-46b9-8129-c99d5c524b72@linux.intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [bug report] ASoC: hdac_hdmi: Begin to add support for
+ DP Multi-stream audio
+Date: Sat, 11 Feb 2017 08:11:23 +0300
+Message-ID: <20170211051123.GA16467@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yb0-f195.google.com (mail-yb0-f195.google.com
- [209.85.213.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 15429265DB7
- for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2017 00:49:19 +0100 (CET)
-Received: by mail-yb0-f195.google.com with SMTP id j82so1906706ybg.2
- for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2017 15:49:19 -0800 (PST)
-In-Reply-To: <1a612c8b-0b03-46b9-8129-c99d5c524b72@linux.intel.com>
+Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
+ by alsa0.perex.cz (Postfix) with ESMTP id E0EF72667EE
+ for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2017 06:11:37 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,60 +20,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Jerome Anand <jerome.anand@intel.com>
+To: jeeja.kp@intel.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11 February 2017 at 09:54, Pierre-Louis Bossart <
-pierre-louis.bossart@linux.intel.com> wrote:
+Hello Jeeja KP,
 
-> On 2/9/17 9:33 PM, Ian W MORRISON wrote:
->
->> The function vlv_display_irq_postinstall is used by both valleyview
->> and cherryview irq handling. I915_LPE_PIPE_C_INTERRUPT is specific
->> to cherryview so should be excluded from any valleyview associated
->> bitwise operations.
->>
->
-> it's a write indeed to a field that isn't defined but there is no matching
-> read or action taken as a result of a write of that field. Does this solve
-> a real problem or is this more to make the code more consistent?
->
->
-Certainly the later and only to the point of removing any opportunities for
-problems to exist for the former. In trying to diagnose the '*ERROR* Atomic
-update failure on pipe X' messages in 'dmesg' it was more of a straw grasp.
+The patch 754695f9960b: "ASoC: hdac_hdmi: Begin to add support for DP
+Multi-stream audio" from Feb 6, 2017, leads to the following static
+checker warning:
+
+	sound/soc/codecs/hdac_hdmi.c:742 hdac_hdmi_set_pin_port_mux()
+	error: we previously assumed 'pcm->port' could be null (see line 741)
+
+sound/soc/codecs/hdac_hdmi.c
+   719  static int hdac_hdmi_set_pin_port_mux(struct snd_kcontrol *kcontrol,
+   720                  struct snd_ctl_elem_value *ucontrol)
+   721  {
+   722          int ret;
+   723          struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+   724          struct snd_soc_dapm_widget *w = snd_soc_dapm_kcontrol_widget(kcontrol);
+   725          struct snd_soc_dapm_context *dapm = w->dapm;
+   726          struct hdac_hdmi_port *port = w->priv;
+   727          struct hdac_ext_device *edev = to_hda_ext_device(dapm->dev);
+   728          struct hdac_hdmi_priv *hdmi = edev->private_data;
+   729          struct hdac_hdmi_pcm *pcm = NULL;
+   730          const char *cvt_name =  e->texts[ucontrol->value.enumerated.item[0]];
+   731  
+   732          ret = snd_soc_dapm_put_enum_double(kcontrol, ucontrol);
+   733          if (ret < 0)
+   734                  return ret;
+   735  
+   736          if (port == NULL)
+   737                  return -EINVAL;
+   738  
+   739          mutex_lock(&hdmi->pin_mutex);
+   740          list_for_each_entry(pcm, &hdmi->pcm_list, head) {
+   741                  if (!pcm->port && pcm->port == port &&
+                             ^^^^^^^^^
+test
+
+   742                          pcm->port->id == port->id)
+                                ^^^^^^^^^^^^^
+dereference
+
+   743                          pcm->port = NULL;
+                                ^^^^^^^^^^^^^^^^
+Perhaps the NULL test is reversed?
+
+   744  
+   745                  /*
+   746                   * Jack status is not reported during device probe as the
+   747                   * PCMs are not registered by then. So report it here.
+   748                   */
 
 
->
->> Signed-off-by: Ian W Morrison <linuxium@linuxium.com.au
->> <mailto:linuxium@linuxium.com.au>>
->> ---
->>  drivers/gpu/drm/i915/i915_irq.c | 7 ++++---
->>  1 file changed, 4 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/i915/i915_irq.c
->> b/drivers/gpu/drm/i915/i915_irq.c
->> index f0880af..ee61808 100644
->> --- a/drivers/gpu/drm/i915/i915_irq.c
->> +++ b/drivers/gpu/drm/i915/i915_irq.c
->> @@ -2940,9 +2940,10 @@ static void vlv_display_irq_postinstall(struct
->> drm_i915_private *dev_priv)
->>
->>         WARN_ON(dev_priv->irq_mask != ~0);
->>
->> -       val = (I915_LPE_PIPE_A_INTERRUPT |
->> -               I915_LPE_PIPE_B_INTERRUPT |
->> -               I915_LPE_PIPE_C_INTERRUPT);
->> +       val = I915_LPE_PIPE_A_INTERRUPT |
->> +               I915_LPE_PIPE_B_INTERRUPT;
->> +       if (IS_CHERRYVIEW(dev_priv))
->> +               val |= I915_LPE_PIPE_C_INTERRUPT;
->>
->>         enable_mask |= val;
->>
->> --
->> 1.9.1
->>
->
->
+regards,
+dan carpenter
