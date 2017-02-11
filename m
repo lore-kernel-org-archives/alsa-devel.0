@@ -1,16 +1,19 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [bug report] ASoC: hdac_hdmi: Begin to add support for
- DP Multi-stream audio
-Date: Sat, 11 Feb 2017 08:11:23 +0300
-Message-ID: <20170211051123.GA16467@mwanda>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_sai: support more than 2 channels
+Date: Fri, 10 Feb 2017 23:25:43 -0800
+Message-ID: <20170211072542.GA1884@Asurada>
+References: <20170210184243.15901-1-alexandre.belloni@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
- by alsa0.perex.cz (Postfix) with ESMTP id E0EF72667EE
- for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2017 06:11:37 +0100 (CET)
+Received: from mail-pg0-f67.google.com (mail-pg0-f67.google.com [74.125.83.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C9962667EE
+ for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2017 08:25:58 +0100 (CET)
+Received: by mail-pg0-f67.google.com with SMTP id v184so4725628pgv.1
+ for <alsa-devel@alsa-project.org>; Fri, 10 Feb 2017 23:25:58 -0800 (PST)
 Content-Disposition: inline
+In-Reply-To: <20170210184243.15901-1-alexandre.belloni@free-electrons.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,60 +23,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: jeeja.kp@intel.com
-Cc: alsa-devel@alsa-project.org
+To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Timur Tabi <timur@tabi.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Jeeja KP,
+On Fri, Feb 10, 2017 at 07:42:43PM +0100, Alexandre Belloni wrote:
+> The FSL SAI can support up to 32 channels using TDM. Report that value so
+> they can actually be used.
+> 
+> Tested using 8 channels.
+> 
+> Signed-off-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
 
-The patch 754695f9960b: "ASoC: hdac_hdmi: Begin to add support for DP
-Multi-stream audio" from Feb 6, 2017, leads to the following static
-checker warning:
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 
-	sound/soc/codecs/hdac_hdmi.c:742 hdac_hdmi_set_pin_port_mux()
-	error: we previously assumed 'pcm->port' could be null (see line 741)
-
-sound/soc/codecs/hdac_hdmi.c
-   719  static int hdac_hdmi_set_pin_port_mux(struct snd_kcontrol *kcontrol,
-   720                  struct snd_ctl_elem_value *ucontrol)
-   721  {
-   722          int ret;
-   723          struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-   724          struct snd_soc_dapm_widget *w = snd_soc_dapm_kcontrol_widget(kcontrol);
-   725          struct snd_soc_dapm_context *dapm = w->dapm;
-   726          struct hdac_hdmi_port *port = w->priv;
-   727          struct hdac_ext_device *edev = to_hda_ext_device(dapm->dev);
-   728          struct hdac_hdmi_priv *hdmi = edev->private_data;
-   729          struct hdac_hdmi_pcm *pcm = NULL;
-   730          const char *cvt_name =  e->texts[ucontrol->value.enumerated.item[0]];
-   731  
-   732          ret = snd_soc_dapm_put_enum_double(kcontrol, ucontrol);
-   733          if (ret < 0)
-   734                  return ret;
-   735  
-   736          if (port == NULL)
-   737                  return -EINVAL;
-   738  
-   739          mutex_lock(&hdmi->pin_mutex);
-   740          list_for_each_entry(pcm, &hdmi->pcm_list, head) {
-   741                  if (!pcm->port && pcm->port == port &&
-                             ^^^^^^^^^
-test
-
-   742                          pcm->port->id == port->id)
-                                ^^^^^^^^^^^^^
-dereference
-
-   743                          pcm->port = NULL;
-                                ^^^^^^^^^^^^^^^^
-Perhaps the NULL test is reversed?
-
-   744  
-   745                  /*
-   746                   * Jack status is not reported during device probe as the
-   747                   * PCMs are not registered by then. So report it here.
-   748                   */
-
-
-regards,
-dan carpenter
+> ---
+>  sound/soc/fsl/fsl_sai.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/fsl/fsl_sai.c b/sound/soc/fsl/fsl_sai.c
+> index 9fadf7e31c5f..18e5ce81527d 100644
+> --- a/sound/soc/fsl/fsl_sai.c
+> +++ b/sound/soc/fsl/fsl_sai.c
+> @@ -668,7 +668,7 @@ static struct snd_soc_dai_driver fsl_sai_dai = {
+>  	.playback = {
+>  		.stream_name = "CPU-Playback",
+>  		.channels_min = 1,
+> -		.channels_max = 2,
+> +		.channels_max = 32,
+>  		.rate_min = 8000,
+>  		.rate_max = 192000,
+>  		.rates = SNDRV_PCM_RATE_KNOT,
+> @@ -677,7 +677,7 @@ static struct snd_soc_dai_driver fsl_sai_dai = {
+>  	.capture = {
+>  		.stream_name = "CPU-Capture",
+>  		.channels_min = 1,
+> -		.channels_max = 2,
+> +		.channels_max = 32,
+>  		.rate_min = 8000,
+>  		.rate_max = 192000,
+>  		.rates = SNDRV_PCM_RATE_KNOT,
+> -- 
+> 2.11.0
+> 
