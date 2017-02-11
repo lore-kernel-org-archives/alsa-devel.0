@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 01/13] ALSA: fireface: add skeleton for RME
-	Fireface series
-Date: Sat, 11 Feb 2017 23:24:57 +0900
-Message-ID: <20170211142509.4795-2-o-takashi@sakamocchi.jp>
+Subject: [PATCH 09/13] ALSA: fireface: add unique data
+	processing layer
+Date: Sat, 11 Feb 2017 23:25:05 +0900
+Message-ID: <20170211142509.4795-10-o-takashi@sakamocchi.jp>
 References: <20170211142509.4795-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 2AD24266AA9
- for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2017 15:25:14 +0100 (CET)
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id E070B266B65
+ for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2017 15:25:17 +0100 (CET)
 In-Reply-To: <20170211142509.4795-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,211 +25,251 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds a new driver for RME Fireface series. This commit just
-creates/removes card instance according to IEEE 1394 bus event. More
-functions will be added in following commits.
+As long as investigating Fireface 400, format of payload of each
+isochronous packet is not IEC 61883-1/6. The remarkable points of the
+format are:
+ * The payload consists of some data channels of quadlet size.
+ * Each data channels includes data aligned to little endian order.
+ * One data channel consists of two parts; 8 bit ancillary field and 24 bit
+   PCM frame.
 
-Three types of firmware have released by RME GmbH; for Fireface 400, for
-Fireface 800 and for UCX/802/UFX. It's reasonable that these models use
-different protocol for communication. Currently, I've investigated
-Fireface 400 and nothing others.
+Especially, rx/tx packets includes no CIP headers and different way to
+check packet discontinuity. For tx packet, the ancillary field is used for
+counter. However, the way of counting is different depending on positions
+of data channels. At 44.1 kHz, ancillary field in:
+ * 1st/6th/9th/10th/14th/17th data channels: not used for this purpose.
+ * 2nd/18th data channels: incremented every data block (0x00-0xff).
+ * 3rd/4th/5th/11th/12th/13th data channels: incremented every 256 data
+   blocks (0x00-0x07).
+ * 7th/8th/15th/16th data channels: incremented per the number of data
+   blocks in a packet. The increment can occur inner a packet (0x00-0xff).
+
+For tx packet, tag of each isochronous packet is used for this purpose.
+The value of tag cyclically changes between 0, 1, 2 and 3 in this order.
+The interval is different depending on sampling transmission frequency.
+At 44.1/48.0 kHz, it's 256 data blocks. At 88.2 kHz, it's 96 data blocks.
+
+The number of data blocks in tx packet is exactly the same as
+SYT_INTERVAL. There's no empty packet or no-data packet, thus the
+throughput is not 8,000 packets per sec. On the other hand, the one in
+rx packet is 8,000 packets per sec, thus the number of data blocks is
+different between each packet, depending on sampling transmission
+frequency:
+ * 44.1 kHz: 5 or 6
+ * 48.0 kHz: 5 or 6 or 7
+ * 88.2 kHz: 10 or 11 or 12
+
+This commit adds data processing layer to satisfy the above specification
+in a policy of 'best effort'. Although PCM frames are handled for
+intermediate buffer to user space, the ancillary data is not handled at all
+to reduce CPU usage, thus counter is not checked. The tag is handled in
+packet streaming layer and currently 0 is always used. Furthermore, the
+packet streaming layer is responsible for calculation of the number of data
+blocks for each packet, thus it's not exactly the same sequence of the
+above observation.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig           |   6 +++
- sound/firewire/Makefile          |   1 +
- sound/firewire/fireface/Makefile |   2 +
- sound/firewire/fireface/ff.c     | 113 +++++++++++++++++++++++++++++++++++++++
- sound/firewire/fireface/ff.h     |  28 ++++++++++
- 5 files changed, 150 insertions(+)
- create mode 100644 sound/firewire/fireface/Makefile
- create mode 100644 sound/firewire/fireface/ff.c
- create mode 100644 sound/firewire/fireface/ff.h
+ sound/firewire/fireface/Makefile   |   2 +-
+ sound/firewire/fireface/amdtp-ff.c | 155 +++++++++++++++++++++++++++++++++++++
+ sound/firewire/fireface/ff.h       |   8 ++
+ 3 files changed, 164 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/fireface/amdtp-ff.c
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 2a91fe8..077e03c 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -153,4 +153,10 @@ config SND_FIREWIRE_MOTU
- 	 To compile this driver as a module, choose M here: the module
- 	 will be called snd-firewire-motu.
- 
-+config SND_FIREFACE
-+	tristate "RME Fireface series support"
-+	select SND_FIREWIRE_LIB
-+	help
-+	 Say Y here to include support for RME fireface series.
-+
- endif # SND_FIREWIRE
-diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
-index 9388ded..1b98fa3 100644
---- a/sound/firewire/Makefile
-+++ b/sound/firewire/Makefile
-@@ -14,3 +14,4 @@ obj-$(CONFIG_SND_BEBOB) += bebob/
- obj-$(CONFIG_SND_FIREWIRE_DIGI00X) += digi00x/
- obj-$(CONFIG_SND_FIREWIRE_TASCAM) += tascam/
- obj-$(CONFIG_SND_FIREWIRE_MOTU) += motu/
-+obj-$(CONFIG_SND_FIREFACE) += fireface/
 diff --git a/sound/firewire/fireface/Makefile b/sound/firewire/fireface/Makefile
-new file mode 100644
-index 0000000..2c64ef6
---- /dev/null
+index e88ff9e..e06e9da 100644
+--- a/sound/firewire/fireface/Makefile
 +++ b/sound/firewire/fireface/Makefile
-@@ -0,0 +1,2 @@
-+snd-fireface-objs := ff.o
-+obj-$(CONFIG_SND_FIREFACE) += snd-fireface.o
-diff --git a/sound/firewire/fireface/ff.c b/sound/firewire/fireface/ff.c
+@@ -1,2 +1,2 @@
+-snd-fireface-objs := ff.o ff-transaction.o ff-midi.o ff-proc.o
++snd-fireface-objs := ff.o ff-transaction.o ff-midi.o ff-proc.o amdtp-ff.o
+ obj-$(CONFIG_SND_FIREFACE) += snd-fireface.o
+diff --git a/sound/firewire/fireface/amdtp-ff.c b/sound/firewire/fireface/amdtp-ff.c
 new file mode 100644
-index 0000000..358bba2
+index 0000000..780da9d
 --- /dev/null
-+++ b/sound/firewire/fireface/ff.c
-@@ -0,0 +1,113 @@
++++ b/sound/firewire/fireface/amdtp-ff.c
+@@ -0,0 +1,155 @@
 +/*
-+ * ff.c - a part of driver for RME Fireface series
++ * amdtp-ff.c - a part of driver for RME Fireface series
 + *
 + * Copyright (c) 2015-2017 Takashi Sakamoto
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
++#include <sound/pcm.h>
 +#include "ff.h"
 +
-+#define OUI_RME	0x000a35
++struct amdtp_ff {
++	unsigned int pcm_channels;
++};
 +
-+MODULE_DESCRIPTION("RME Fireface series Driver");
-+MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
-+MODULE_LICENSE("GPL v2");
-+
-+static void name_card(struct snd_ff *ff)
++int amdtp_ff_set_parameters(struct amdtp_stream *s, unsigned int rate,
++			    unsigned int pcm_channels)
 +{
-+	struct fw_device *fw_dev = fw_parent_device(ff->unit);
-+	const char *const model = "Fireface Skeleton";
++	struct amdtp_ff *p = s->protocol;
++	unsigned int data_channels;
 +
-+	strcpy(ff->card->driver, "Fireface");
-+	strcpy(ff->card->shortname, model);
-+	strcpy(ff->card->mixername, model);
-+	snprintf(ff->card->longname, sizeof(ff->card->longname),
-+		 "RME %s, GUID %08x%08x at %s, S%d", model,
-+		 fw_dev->config_rom[3], fw_dev->config_rom[4],
-+		 dev_name(&ff->unit->device), 100 << fw_dev->max_speed);
++	if (amdtp_stream_running(s))
++		return -EBUSY;
++
++	p->pcm_channels = pcm_channels;
++	data_channels = pcm_channels;
++
++	return amdtp_stream_set_parameters(s, rate, data_channels);
 +}
 +
-+static void ff_card_free(struct snd_card *card)
++static void write_pcm_s32(struct amdtp_stream *s,
++			  struct snd_pcm_substream *pcm,
++			  __le32 *buffer, unsigned int frames)
 +{
-+	struct snd_ff *ff = card->private_data;
++	struct amdtp_ff *p = s->protocol;
++	struct snd_pcm_runtime *runtime = pcm->runtime;
++	unsigned int channels, remaining_frames, i, c;
++	const u32 *src;
 +
-+	fw_unit_put(ff->unit);
++	channels = p->pcm_channels;
++	src = (void *)runtime->dma_area +
++			frames_to_bytes(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
 +
-+	mutex_destroy(&ff->mutex);
++	for (i = 0; i < frames; ++i) {
++		for (c = 0; c < channels; ++c) {
++			buffer[c] = cpu_to_le32(*src);
++			src++;
++		}
++		buffer += s->data_block_quadlets;
++		if (--remaining_frames == 0)
++			src = (void *)runtime->dma_area;
++	}
 +}
 +
-+static int snd_ff_probe(struct fw_unit *unit,
-+			   const struct ieee1394_device_id *entry)
++static void read_pcm_s32(struct amdtp_stream *s,
++			 struct snd_pcm_substream *pcm,
++			 __le32 *buffer, unsigned int frames)
 +{
-+	struct snd_card *card;
-+	struct snd_ff *ff;
++	struct amdtp_ff *p = s->protocol;
++	struct snd_pcm_runtime *runtime = pcm->runtime;
++	unsigned int channels, remaining_frames, i, c;
++	u32 *dst;
++
++	channels = p->pcm_channels;
++	dst  = (void *)runtime->dma_area +
++			frames_to_bytes(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
++
++	for (i = 0; i < frames; ++i) {
++		for (c = 0; c < channels; ++c) {
++			*dst = le32_to_cpu(buffer[c]) & 0xffffff00;
++			dst++;
++		}
++		buffer += s->data_block_quadlets;
++		if (--remaining_frames == 0)
++			dst = (void *)runtime->dma_area;
++	}
++}
++
++static void write_pcm_silence(struct amdtp_stream *s,
++			      __le32 *buffer, unsigned int frames)
++{
++	struct amdtp_ff *p = s->protocol;
++	unsigned int i, c, channels = p->pcm_channels;
++
++	for (i = 0; i < frames; ++i) {
++		for (c = 0; c < channels; ++c)
++			buffer[c] = cpu_to_le32(0x00000000);
++		buffer += s->data_block_quadlets;
++	}
++}
++
++int amdtp_ff_add_pcm_hw_constraints(struct amdtp_stream *s,
++				    struct snd_pcm_runtime *runtime)
++{
 +	int err;
 +
-+	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE,
-+			   sizeof(struct snd_ff), &card);
++	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
 +	if (err < 0)
 +		return err;
-+	card->private_free = ff_card_free;
 +
-+	/* initialize myself */
-+	ff = card->private_data;
-+	ff->card = card;
-+	ff->unit = fw_unit_get(unit);
-+	dev_set_drvdata(&unit->device, ff);
++	return amdtp_stream_add_pcm_hw_constraints(s, runtime);
++}
 +
-+	mutex_init(&ff->mutex);
++static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
++					   __be32 *buffer,
++					   unsigned int data_blocks,
++					   unsigned int *syt)
++{
++	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
++	unsigned int pcm_frames;
 +
-+	name_card(ff);
-+
-+	err = snd_card_register(card);
-+	if (err < 0) {
-+		snd_card_free(card);
-+		return err;
++	if (pcm) {
++		write_pcm_s32(s, pcm, (__le32 *)buffer, data_blocks);
++		pcm_frames = data_blocks;
++	} else {
++		write_pcm_silence(s, (__le32 *)buffer, data_blocks);
++		pcm_frames = 0;
 +	}
 +
-+	return 0;
++	return pcm_frames;
 +}
 +
-+static void snd_ff_update(struct fw_unit *unit)
++static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
++					   __be32 *buffer,
++					   unsigned int data_blocks,
++					   unsigned int *syt)
 +{
-+	return;
++	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
++	unsigned int pcm_frames;
++
++	if (pcm) {
++		read_pcm_s32(s, pcm, (__le32 *)buffer, data_blocks);
++		pcm_frames = data_blocks;
++	} else {
++		pcm_frames = 0;
++	}
++
++	return pcm_frames;
 +}
 +
-+static void snd_ff_remove(struct fw_unit *unit)
++int amdtp_ff_init(struct amdtp_stream *s, struct fw_unit *unit,
++		  enum amdtp_stream_direction dir)
 +{
-+	struct snd_ff *ff = dev_get_drvdata(&unit->device);
++	amdtp_stream_process_data_blocks_t process_data_blocks;
 +
-+	/* No need to wait for releasing card object in this context. */
-+	snd_card_free_when_closed(ff->card);
++	if (dir == AMDTP_IN_STREAM)
++		process_data_blocks = process_tx_data_blocks;
++	else
++		process_data_blocks = process_rx_data_blocks;
++
++	return amdtp_stream_init(s, unit, dir, CIP_NO_HEADER, 0,
++				 process_data_blocks, sizeof(struct amdtp_ff));
 +}
-+
-+static const struct ieee1394_device_id snd_ff_id_table[] = {
-+	{}
-+};
-+MODULE_DEVICE_TABLE(ieee1394, snd_ff_id_table);
-+
-+static struct fw_driver ff_driver = {
-+	.driver = {
-+		.owner	= THIS_MODULE,
-+		.name	= "snd-fireface",
-+		.bus	= &fw_bus_type,
-+	},
-+	.probe    = snd_ff_probe,
-+	.update   = snd_ff_update,
-+	.remove   = snd_ff_remove,
-+	.id_table = snd_ff_id_table,
-+};
-+
-+static int __init snd_ff_init(void)
-+{
-+	return driver_register(&ff_driver.driver);
-+}
-+
-+static void __exit snd_ff_exit(void)
-+{
-+	driver_unregister(&ff_driver.driver);
-+}
-+
-+module_init(snd_ff_init);
-+module_exit(snd_ff_exit);
 diff --git a/sound/firewire/fireface/ff.h b/sound/firewire/fireface/ff.h
-new file mode 100644
-index 0000000..64d488e
---- /dev/null
+index 2d1fab2..fa7242f 100644
+--- a/sound/firewire/fireface/ff.h
 +++ b/sound/firewire/fireface/ff.h
-@@ -0,0 +1,28 @@
-+/*
-+ * ff.h - a part of driver for RME Fireface series
-+ *
-+ * Copyright (c) 2015-2017 Takashi Sakamoto
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
+@@ -23,6 +23,7 @@
+ #include <sound/rawmidi.h>
+ 
+ #include "../lib.h"
++#include "../amdtp-stream.h"
+ 
+ #define SND_FF_STREAM_MODES		3
+ 
+@@ -99,6 +100,13 @@ int snd_ff_transaction_register(struct snd_ff *ff);
+ int snd_ff_transaction_reregister(struct snd_ff *ff);
+ void snd_ff_transaction_unregister(struct snd_ff *ff);
+ 
++int amdtp_ff_set_parameters(struct amdtp_stream *s, unsigned int rate,
++			    unsigned int pcm_channels);
++int amdtp_ff_add_pcm_hw_constraints(struct amdtp_stream *s,
++				    struct snd_pcm_runtime *runtime);
++int amdtp_ff_init(struct amdtp_stream *s, struct fw_unit *unit,
++		  enum amdtp_stream_direction dir);
 +
-+#ifndef SOUND_FIREFACE_H_INCLUDED
-+#define SOUND_FIREFACE_H_INCLUDED
-+
-+#include <linux/device.h>
-+#include <linux/firewire.h>
-+#include <linux/firewire-constants.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/mutex.h>
-+#include <linux/slab.h>
-+#include <linux/compat.h>
-+
-+#include <sound/core.h>
-+
-+struct snd_ff {
-+	struct snd_card *card;
-+	struct fw_unit *unit;
-+	struct mutex mutex;
-+};
-+#endif
+ void snd_ff_proc_init(struct snd_ff *ff);
+ 
+ int snd_ff_create_midi_devices(struct snd_ff *ff);
 -- 
 2.9.3
