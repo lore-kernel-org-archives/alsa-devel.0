@@ -1,17 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 03/13] ALSA: fireface: add model specific
-	structure
-Date: Sat, 11 Feb 2017 23:24:59 +0900
-Message-ID: <20170211142509.4795-4-o-takashi@sakamocchi.jp>
-References: <20170211142509.4795-1-o-takashi@sakamocchi.jp>
+Subject: [RFC v3][PATCH 00/13] ALSA: fireface: new driver for
+	RME Fireface series
+Date: Sat, 11 Feb 2017 23:24:56 +0900
+Message-ID: <20170211142509.4795-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 25EDB265DB7
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 27263266A02
  for <alsa-devel@alsa-project.org>; Sat, 11 Feb 2017 15:25:14 +0100 (CET)
-In-Reply-To: <20170211142509.4795-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,81 +23,93 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-RME Fireface series has several models and their specifications are
-different. Currently, we find no way to retrieve the specifications
-from actual devices and need to implement them in this driver.
+Hi,
 
-This commit adds a structure to describe model specific data. This
-structure has an identical name for each unit, and maximum number of
-data channels in each mode. I'll descibe about the mode in following
-commits.
+This patchset is a revised version of my former one:
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/fireface/ff.c |  9 +++++----
- sound/firewire/fireface/ff.h | 14 ++++++++++++++
- 2 files changed, 19 insertions(+), 4 deletions(-)
+[alsa-devel] [RFC v2][PATCH 00/11] ALSA: fireface: new driver for RME Fireface series
+http://mailman.alsa-project.org/pipermail/alsa-devel/2015-December/102261.html
 
-diff --git a/sound/firewire/fireface/ff.c b/sound/firewire/fireface/ff.c
-index 7c02639..5c2bd92 100644
---- a/sound/firewire/fireface/ff.c
-+++ b/sound/firewire/fireface/ff.c
-@@ -17,13 +17,12 @@ MODULE_LICENSE("GPL v2");
- static void name_card(struct snd_ff *ff)
- {
- 	struct fw_device *fw_dev = fw_parent_device(ff->unit);
--	const char *const model = "Fireface Skeleton";
- 
- 	strcpy(ff->card->driver, "Fireface");
--	strcpy(ff->card->shortname, model);
--	strcpy(ff->card->mixername, model);
-+	strcpy(ff->card->shortname, ff->spec->name);
-+	strcpy(ff->card->mixername, ff->spec->name);
- 	snprintf(ff->card->longname, sizeof(ff->card->longname),
--		 "RME %s, GUID %08x%08x at %s, S%d", model,
-+		 "RME %s, GUID %08x%08x at %s, S%d", ff->spec->name,
- 		 fw_dev->config_rom[3], fw_dev->config_rom[4],
- 		 dev_name(&ff->unit->device), 100 << fw_dev->max_speed);
- }
-@@ -86,6 +85,8 @@ static int snd_ff_probe(struct fw_unit *unit,
- 
- 	mutex_init(&ff->mutex);
- 
-+	ff->spec = (const struct snd_ff_spec *)entry->driver_data;
-+
- 	/* Register this sound card later. */
- 	INIT_DEFERRABLE_WORK(&ff->dwork, do_registration);
- 	snd_fw_schedule_registration(unit, &ff->dwork);
-diff --git a/sound/firewire/fireface/ff.h b/sound/firewire/fireface/ff.h
-index a0faae1..269fa25 100644
---- a/sound/firewire/fireface/ff.h
-+++ b/sound/firewire/fireface/ff.h
-@@ -22,6 +22,18 @@
- 
- #include "../lib.h"
- 
-+#define SND_FF_STREAM_MODES		3
-+
-+struct snd_ff_spec {
-+	const char *const name;
-+
-+	const unsigned int pcm_capture_channels[SND_FF_STREAM_MODES];
-+	const unsigned int pcm_playback_channels[SND_FF_STREAM_MODES];
-+
-+	unsigned int midi_in_ports;
-+	unsigned int midi_out_ports;
-+};
-+
- struct snd_ff {
- 	struct snd_card *card;
- 	struct fw_unit *unit;
-@@ -29,5 +41,7 @@ struct snd_ff {
- 
- 	bool registered;
- 	struct delayed_work dwork;
-+
-+	const struct snd_ff_spec *spec;
- };
- #endif
+Since the end of 2015, ALSA firewire stack got many changes. This revision
+adapt the former one to current stack. Furthermore, I add an abstraction layer
+of Fireface protocol to help developers to add support for the rest of models.
+(I'm unwilling to work further for this direction, because of its cost.)
+
+Changes:
+ * Rebase to current ALSA firewire stack and add optimization.
+ * Rename local structure with shorter words.
+ * Delegate a task to configure settings on write-only registers to user space
+   applications.
+ * Switch mode to fetch PCM frames from data blocks to sampling data processing
+   layer voluntarily.
+ * Revise comments with technical information from my analysis to Fireface 400
+   packets.
+
+The rebasing is actually done on my proposal of ALSA MOTU driver. Please apply
+this patchset to it to prevent conflicts.
+[alsa-devel] [PATCH 00/19][RFC v2] ALSA: firewire-motu: new driver for MOTU FireWire series
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-January/117211.html
+
+Currently, I have a plan to post this patchset to merge into Linux 4.12.
+Corresponding merge window will be estimated to open this April. If you're
+willing to test this module, please report the result till then.
+
+Unfortunately, I did this work just with my notes and log dumps, thus without
+any test device. I'm happy if you test this patchset with your Fireface 400.
+For testers, I prepare for backport codes in my repository in github.com.
+Please use 'topic/fireface' branch.
+https://github.com/takaswie/snd-firewire-improve/tree/topic/fireface
+
+If you have any question, please reply to me even if it's trivial; e.g. typo
+in comments, as long as its' technical issue.
+
+
+Regards
+
+Takashi Sakamoto (13):
+  ALSA: fireface: add skeleton for RME Fireface series
+  ALSA: fireface: postpone sound card registration
+  ALSA: fireface: add model specific structure
+  ALSA: fireface: add an abstraction layer for model-specific protocols
+  ALSA: fireface: add transaction support
+  ALSA: fireface: add support for MIDI functionality
+  ALSA: fireface: add proc node to help debugging
+  ALSA: firewire-lib: add no-header packet processing
+  ALSA: fireface: add unique data processing layer
+  ALSA: fireface: add stream management functionality
+  ALSA: fireface: add support for PCM functionality
+  ALSA: fireface: add hwdep interface
+  ALSA: fireface: add support for Fireface 400
+
+ include/uapi/sound/asound.h                 |   3 +-
+ include/uapi/sound/firewire.h               |   2 +-
+ sound/firewire/Kconfig                      |   8 +
+ sound/firewire/Makefile                     |   1 +
+ sound/firewire/amdtp-stream.c               |  84 +++++-
+ sound/firewire/amdtp-stream.h               |   2 +
+ sound/firewire/fireface/Makefile            |   3 +
+ sound/firewire/fireface/amdtp-ff.c          | 155 +++++++++++
+ sound/firewire/fireface/ff-hwdep.c          | 191 +++++++++++++
+ sound/firewire/fireface/ff-midi.c           | 131 +++++++++
+ sound/firewire/fireface/ff-pcm.c            | 404 ++++++++++++++++++++++++++++
+ sound/firewire/fireface/ff-proc.c           |  63 +++++
+ sound/firewire/fireface/ff-protocol-ff400.c | 371 +++++++++++++++++++++++++
+ sound/firewire/fireface/ff-stream.c         | 282 +++++++++++++++++++
+ sound/firewire/fireface/ff-transaction.c    | 295 ++++++++++++++++++++
+ sound/firewire/fireface/ff.c                | 209 ++++++++++++++
+ sound/firewire/fireface/ff.h                | 145 ++++++++++
+ 17 files changed, 2342 insertions(+), 7 deletions(-)
+ create mode 100644 sound/firewire/fireface/Makefile
+ create mode 100644 sound/firewire/fireface/amdtp-ff.c
+ create mode 100644 sound/firewire/fireface/ff-hwdep.c
+ create mode 100644 sound/firewire/fireface/ff-midi.c
+ create mode 100644 sound/firewire/fireface/ff-pcm.c
+ create mode 100644 sound/firewire/fireface/ff-proc.c
+ create mode 100644 sound/firewire/fireface/ff-protocol-ff400.c
+ create mode 100644 sound/firewire/fireface/ff-stream.c
+ create mode 100644 sound/firewire/fireface/ff-transaction.c
+ create mode 100644 sound/firewire/fireface/ff.c
+ create mode 100644 sound/firewire/fireface/ff.h
+
 -- 
 2.9.3
