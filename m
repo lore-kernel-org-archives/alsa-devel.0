@@ -1,29 +1,45 @@
-From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Subject: Re: [PATCH 3/4] ASoC: sun8i-codec: Convert to SOC_MIXER_ARRAY
-Date: Sun, 12 Feb 2017 14:40:41 +0800
-Message-ID: <CAGb2v67sfVaJXYEwzX9c=5Lo0MjnEUcmWd+z_XHEnaSBsjqk7g@mail.gmail.com>
-References: <20170210094133.11382-1-mylene.josserand@free-electrons.com> <20170210094133.11382-4-mylene.josserand@free-electrons.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20170210094133.11382-4-mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: =?UTF-8?Q?Myl=C3=A8ne_Josserand?= <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Thomas Petazzoni <thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Alexandre Belloni <alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] clk: x86: add "mclk" alias for Baytrail/Cherrytrail
+Date: Sun, 12 Feb 2017 16:06:52 -0600
+Message-ID: <1486937212-10093-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+Return-path: <platform-driver-x86-owner@vger.kernel.org>
+Sender: platform-driver-x86-owner@vger.kernel.org
+To: linux-clk@vger.kernel.org, x86@kernel.org, platform-driver-x86@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>
+Cc: alsa-devel@alsa-project.org, Michael Turquette <mturquette@baylibre.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 10, 2017 at 5:41 PM, Mylène Josserand
-<mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org> wrote:
-> SOC_MIXER_ARRAY is a simplified function of SND_SOC_DAPM_MIXER
-> which handles automatically the ARRAY_SIZE of controls.
->
-> Update the driver to use SOC_MIXER_ARRAY.
->
-> Signed-off-by: Mylène Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Due to timing requirements, TI and Conexant manage the audio
+reference clock from their ASoC codec drivers using the "mclk"
+string. This patch adds a default alias to "pmc_plt_clk_3" to
+avoid Intel-specific tests in those codec drivers and use code
+as-is.
+"pmc_plt_clk_3" is used exclusively for audio on all known
+Baytrail/CherryTrail designs and is e.g. routed on the MCLK
+(pin 26) of the MinnowBoardMAX Turbot LSE connector.
 
-Acked-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+
+Notes:
+    This patch only applies on top of linux-next or clk-next, the
+    previous clk-related patches are not yet merged in the audio
+    trees
+
+ drivers/clk/x86/clk-pmc-atom.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/clk/x86/clk-pmc-atom.c b/drivers/clk/x86/clk-pmc-atom.c
+index 2b60577..ba00d27 100644
+--- a/drivers/clk/x86/clk-pmc-atom.c
++++ b/drivers/clk/x86/clk-pmc-atom.c
+@@ -340,6 +340,8 @@ static int plt_clk_probe(struct platform_device *pdev)
+ 
+ 	plt_clk_free_parent_names_loop(parent_names, data->nparents);
+ 
++	clk_add_alias("mclk", dev_name(&pdev->dev), "pmc_plt_clk_3", NULL);
++
+ 	platform_set_drvdata(pdev, data);
+ 	return 0;
+ 
+-- 
+2.7.4
