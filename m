@@ -1,57 +1,32 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 00/16] ASoC: hdac_hdmi: Enable MST audio
-Date: Mon, 13 Feb 2017 14:37:33 +0530
-Message-ID: <20170213090733.GJ2843@localhost>
-References: <1486474800-11426-1-git-send-email-jeeja.kp@intel.com>
+From: =?utf-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>
+Subject: Re: [PATCH v2 0/6] Move dell-led to drivers/platform/x86
+Date: Mon, 13 Feb 2017 12:26:40 +0100
+Message-ID: <20170213112640.GA1188@ozzy.nask.waw.pl>
+References: <20170116132204.6421-1-kernel@kempniu.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 6DB112668EC
- for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2017 10:07:04 +0100 (CET)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <platform-driver-x86-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1486474800-11426-1-git-send-email-jeeja.kp@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: jeeja.kp@intel.com
-Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
+In-Reply-To: <20170116132204.6421-1-kernel@kempniu.pl>
+Sender: platform-driver-x86-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Anthony Wong <anthony.wong@canonical.com>
+Cc: Richard Purdie <rpurdie@rpsys.net>, Jacek Anaszewski <jacek.anaszewski@gmail.com>, Pavel Machek <pavel@ucw.cz>, Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy.shevchenko@gmail.com>, linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 07, 2017 at 07:09:44PM +0530, jeeja.kp@intel.com wrote:
-> From: Jeeja KP <jeeja.kp@intel.com>
-> 
-> With the patch series "ASoC: hdmi: Preparatory work to support MST audio",
-> the design is extended from pin to port mapping to handle MST usecases.
-> 
-> A pin is MST capable if pipe is valid value (i.e. not -1) in the notify
-> callback. If pipe = -1, default port is 0 else port = pipe. A MST capable
-> pin widget is programmed by first sending a verb to select the device/port
-> and then the actual verb is sent to program the widget.
-> 
-> This patch series enables MST Audio by configuring MST capable pins and
-> extended the jack handling to report event for ports. Now the jack events
-> are based on port connect/disconnect. The design is also extended to support
-> mapping of multiple port to a single converter.
-> 
-> Now with the introduction of multiple ports with a single pin, a pin widget
-> is created to enable/disable path based on device connection. Required
-> machine driver changes are done to handle this change.
-> 
-> Also use the ASoC jack instead of snd_jack framework to creates jacks in
-> the machine driver.
-> 
-> Note: This patch series has dependency on the series
-> "ASoC: hdmi: Preparatory work to support MST audio"  
+Hi everyone,
 
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+It has been almost a month since I posted v2, so I hope sending a
+reminder is okay.
+
+Jaroslav, Takashi, could you please ack this patch series from the sound
+subsystem perspective?  Patches 2-4 touch it.
+
+Anthony, have you and your team perhaps had a chance to test this patch
+series on actual hardware?
+
+Thanks,
 
 -- 
-~Vinod
+Best regards,
+Michał Kępień
