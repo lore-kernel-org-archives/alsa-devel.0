@@ -1,20 +1,16 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v4] ASoC: bcm2835: Add 8 channel
-	(multitrack) capability
-Date: Wed, 15 Feb 2017 09:24:39 +0000
-Message-ID: <20170215092439.GB30007@localhost.localdomain>
-References: <1486942035-24038-1-git-send-email-flatmax@flatmax.org>
- <1487106275-4260-1-git-send-email-flatmax@flatmax.org>
+From: Rohit Kumar <me.rohit@live.com>
+Subject: Kernel crash at snd_ctl_find_numid+0x38/0x6c in kernel
+	4.4
+Date: Mon, 13 Feb 2017 18:17:42 +0000
+Message-ID: <TY1PR0301MB10716F5C2D30274FC9DEDA7DED590@TY1PR0301MB1071.apcprd03.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id E7F3D266569
- for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2017 10:23:51 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1487106275-4260-1-git-send-email-flatmax@flatmax.org>
+Received: from SNT004-OMC1S35.hotmail.com (snt004-omc1s35.hotmail.com
+ [65.55.90.46]) by alsa0.perex.cz (Postfix) with ESMTP id 7DE2A2669C8
+ for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2017 19:17:46 +0100 (CET)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,31 +20,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Flax <flatmax@flatmax.org>
-Cc: alsa-devel@alsa-project.org, swarren@wwwdotorg.org, lee@kernel.org, phil@raspberrypi.org, eric@anholt.net, broonie@kernel.org, florian.meier@koalo.de, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 15, 2017 at 08:04:35AM +1100, Matt Flax wrote:
-> This patch adds multitrack capability if in DSP mode A and the
-> codec is master.
-> 
-> In bcm2835_i2s_startup, snd_pcm_hw_constraint_single is used to set
-> channels to 8 if both SND_SOC_DAIFMT_CBM_CFM and SND_SOC_DAIFMT_DSP_A
-> are set. Otherwise, channels are set to 2. These settings are
-> accomplished using the SNDRV_PCM_HW_PARAM_CHANNELS variable.
-> 
-> In bcm2835_i2s_shutdown the channels are set to 2 by default.
-> 
-> In bcm2835_i2s_hw_params, DSP mode A format is now an option.
-> Before replicating the format variable (from ch2 to ch1) for
-> register loading, requested channels are checked to be either 2 or 8.
-> This can be expanded later to accomodate other channel counts if
-> supported by the sound card hardware.
-> 
-> Signed-off-by: Matt Flax <flatmax@flatmax.org>
-> ---
+Hi,
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+I am getting NULL pointer dereference occasionally at snd_ctl_find_numid+0x38/0x6c in 4.4 kernel while accessing snd_kcontrol. The issue is reproduced ocassionally. Can anybody provide any pointer in fixing the issue. Below is the stack trace :
+
+  2662.430298:   <2> PC is at snd_ctl_find_numid+0x38/0x6c
+  2662.437819:   <2> LR is at snd_ctl_find_id+0x38/0xd8
+  2662.662838:   <2> [<ffffff8008c4e35c>] snd_ctl_find_numid+0x38/0x6c
+  2662.667513:   <2> [<ffffff8008c4e900>] snd_ctl_find_id+0x38/0xd8
+  2662.673415:   <2> [<ffffff8008c4f488>] snd_ctl_elem_info+0x40/0x11c
+  2662.678799:   <2> [<ffffff8008c4df5c>] snd_ctl_ioctl_compat+0x3f4/0x740
+  2662.684644:   <2> [<ffffff800823477c>] compat_SyS_ioctl+0x124/0xd88
+
+
+There is no specific usecase when the issue is observed. Sometimes issue occurs during bootup and sometimes during audio usecase.
+
+ Any suggestion will be helpful.
+
 
 Thanks,
-Charles
+
+Rohit
