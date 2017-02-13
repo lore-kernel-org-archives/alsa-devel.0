@@ -1,63 +1,54 @@
-From: Baoyou Xie <baoyou.xie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
-Subject: [PATCH v1 1/3] ASoC: zx-tdm: add documentation for zte's tdm controller
-Date: Mon, 13 Feb 2017 16:17:31 +0800
-Message-ID: <1486973853-25291-1-git-send-email-baoyou.xie@linaro.org>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, jun.nie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, baoyou.xie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, xie.baoyou-Th6q7B73Y6EnDS1+zs4M5A@public.gmane.org, chen.chaokai-Th6q7B73Y6EnDS1+zs4M5A@public.gmane.org, wang.qiang01-Th6q7B73Y6EnDS1+zs4M5A@public.gmane.org
+From: Baoyou Xie <baoyou.xie@linaro.org>
+Subject: [PATCH v1 2/3] MAINTAINERS: add zte tdm controller
+	driver to ARM ZTE architecture
+Date: Mon, 13 Feb 2017 16:17:32 +0800
+Message-ID: <1486973853-25291-2-git-send-email-baoyou.xie@linaro.org>
+References: <1486973853-25291-1-git-send-email-baoyou.xie@linaro.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pf0-f181.google.com (mail-pf0-f181.google.com
+ [209.85.192.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id CEDB72668EC
+ for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2017 09:18:13 +0100 (CET)
+Received: by mail-pf0-f181.google.com with SMTP id 202so22774094pfx.2
+ for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2017 00:18:13 -0800 (PST)
+In-Reply-To: <1486973853-25291-1-git-send-email-baoyou.xie@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, perex@perex.cz, tiwai@suse.com, jun.nie@linaro.org, shawn.guo@linaro.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, xie.baoyou@zte.com.cn, linux-kernel@vger.kernel.org, chen.chaokai@zte.com.cn, wang.qiang01@zte.com.cn, baoyou.xie@linaro.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds dt-binding documentation for zte's tdm controller.
+Add the zte tdm controller driver as maintained by ARM ZTE
+architecture maintainers, as they're parts of the core IP.
 
-Signed-off-by: Baoyou Xie <baoyou.xie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Signed-off-by: Baoyou Xie <baoyou.xie@linaro.org>
 ---
- .../devicetree/bindings/sound/zte,tdm.txt          | 32 ++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/zte,tdm.txt
+ MAINTAINERS | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/zte,tdm.txt b/Documentation/devicetree/bindings/sound/zte,tdm.txt
-new file mode 100644
-index 0000000..f6e4f7f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/zte,tdm.txt
-@@ -0,0 +1,32 @@
-+ZTE TDM DAI driver
-+
-+Required properties:
-+
-+- compatible : should be one of the following.
-+       * zte,zx-tdm
-+- reg : physical base address of the controller and length of memory mapped
-+    region.
-+- clocks : Pairs of phandle and specifier referencing the controller's clocks.
-+- clock-names: "tdm_wclk" for the wclk.
-+               "tdm_pclk" for the pclk.
-+-#clock-cells: should be 1.
-+- zte,tdm-dma-sysctrl : Reference to the sysctrl controller controlling
-+    the dma. includes:
-+	phandle of sysctrl.
-+	register offset in sysctrl for control dma.
-+	mask of the register that be written to dma.
-+	value of the register that be written to dma.
-+
-+Example:
-+
-+	tdm: tdm@1487000 {
-+		compatible = "zte,zx-tdm";
-+		reg = <0x01487000 0x1000>;
-+		clocks = <&audiocrm AUDIO_TDM_WCLK>, <&audiocrm AUDIO_TDM_PCLK>;
-+		clock-names = "tdm_wclk", "tdm_pclk";
-+		#clock-cells = <1>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&tdm_global_pin>;
-+		zte,tdm-dma-sysctrl = <&sysctrl 0x10c 0xf 0xf>;
-+		status = "ok";
-+	};
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e63063b..1269eb6 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1991,7 +1991,9 @@ F:	drivers/soc/zte/
+ F:	Documentation/devicetree/bindings/arm/zte.txt
+ F:	Documentation/devicetree/bindings/clock/zx296702-clk.txt
+ F:	Documentation/devicetree/bindings/soc/zte/
++F:	Documentation/devicetree/bindings/sound/zte,zx-tdm.txt
+ F:	include/dt-bindings/soc/zx*.h
++F:	sound/soc/zte/zx-tdm.c
+ 
+ ARM/ZYNQ ARCHITECTURE
+ M:	Michal Simek <michal.simek@xilinx.com>
 -- 
 2.7.4
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
