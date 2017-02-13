@@ -1,16 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/4] ALSA: x86: Use runtime PM autosuspend
-Date: Mon, 13 Feb 2017 15:39:18 +0100
-Message-ID: <20170213143919.19543-4-tiwai@suse.de>
-References: <20170213143919.19543-1-tiwai@suse.de>
+Subject: [PATCH 0/4] A few more extensions to LPE audio driver
+Date: Mon, 13 Feb 2017 15:39:15 +0100
+Message-ID: <20170213143919.19543-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id E03C0265142
+ by alsa0.perex.cz (Postfix) with ESMTP id EAAFD26691A
  for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2017 15:39:23 +0100 (CET)
-In-Reply-To: <20170213143919.19543-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,86 +22,45 @@ To: alsa-devel@alsa-project.org
 Cc: Ian W MORRISON <ianwmorrison@gmail.com>, Rakesh A Ughreja <rakesh.a.ughreja@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jerome Anand <jerome.anand@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds a few lines to the driver to use autosuspend for the
-runtime PM.  It'll become useful with the combination of the keep-link
-feature.
+Hi,
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/x86/intel_hdmi_audio.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+Linus decided to take another week for 4.11 merge window, so I could
+play a bit more, and here is the result :)
 
-diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
-index 9889cdf3ccf4..95b07a260d54 100644
---- a/sound/x86/intel_hdmi_audio.c
-+++ b/sound/x86/intel_hdmi_audio.c
-@@ -1076,7 +1076,8 @@ static int had_pcm_open(struct snd_pcm_substream *substream)
- 
- 	return retval;
-  error:
--	pm_runtime_put(intelhaddata->dev);
-+	pm_runtime_mark_last_busy(intelhaddata->dev);
-+	pm_runtime_put_autosuspend(intelhaddata->dev);
- 	return retval;
- }
- 
-@@ -1100,7 +1101,8 @@ static int had_pcm_close(struct snd_pcm_substream *substream)
- 	}
- 	spin_unlock_irq(&intelhaddata->had_spinlock);
- 
--	pm_runtime_put(intelhaddata->dev);
-+	pm_runtime_mark_last_busy(intelhaddata->dev);
-+	pm_runtime_put_autosuspend(intelhaddata->dev);
- 	return 0;
- }
- 
-@@ -1605,7 +1607,8 @@ static void had_audio_wq(struct work_struct *work)
- 		had_process_mode_change(ctx);
- 	}
- 	mutex_unlock(&ctx->mutex);
--	pm_runtime_put(ctx->dev);
-+	pm_runtime_mark_last_busy(ctx->dev);
-+	pm_runtime_put_autosuspend(ctx->dev);
- }
- 
- /*
-@@ -1637,10 +1640,17 @@ static int __maybe_unused hdmi_lpe_audio_suspend(struct device *dev)
- 	return err;
- }
- 
-+static int hdmi_lpe_audio_runtime_resume(struct device *dev)
-+{
-+	pm_runtime_mark_last_busy(dev);
-+	return 0;
-+}
-+
- static int __maybe_unused hdmi_lpe_audio_resume(struct device *dev)
- {
- 	struct snd_intelhad *ctx = dev_get_drvdata(dev);
- 
-+	hdmi_lpe_audio_runtime_resume(dev);
- 	snd_power_change_state(ctx->card, SNDRV_CTL_POWER_D0);
- 	return 0;
- }
-@@ -1789,6 +1799,9 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
- 	pdata->notify_pending = false;
- 	spin_unlock_irq(&pdata->lpe_audio_slock);
- 
-+	pm_runtime_use_autosuspend(&pdev->dev);
-+	pm_runtime_mark_last_busy(&pdev->dev);
-+
- 	pm_runtime_set_active(&pdev->dev);
- 	pm_runtime_enable(&pdev->dev);
- 
-@@ -1817,7 +1830,8 @@ static int hdmi_lpe_audio_remove(struct platform_device *pdev)
- 
- static const struct dev_pm_ops hdmi_lpe_audio_pm = {
- 	SET_SYSTEM_SLEEP_PM_OPS(hdmi_lpe_audio_suspend, hdmi_lpe_audio_resume)
--	SET_RUNTIME_PM_OPS(hdmi_lpe_audio_runtime_suspend, NULL, NULL)
-+	SET_RUNTIME_PM_OPS(hdmi_lpe_audio_runtime_suspend,
-+			   hdmi_lpe_audio_runtime_resume, NULL)
- };
- 
- static struct platform_driver hdmi_lpe_audio_driver = {
+The first patch is the fix for possible GPU hang, and this has been
+for a while in my local branch and tested.  This should be OK to merge
+soon.  (It's also as same as what Ian tested in the last weekend.)
+
+The next one is merely a cleanup patch, so it's fine, too.  The third
+one is a transition to use the runtime PM autosuspend, and it's a
+preliminary for the last change.
+
+The last one is the new and experimental one: it enables the keep-link
+feature.  With this patch, the device is managed as default via
+autosuspend, and the link is opened (but silenced) for the pre-given
+time (2 seconds) after the PCM close.  If the application restarts the
+stream quickly, the receiver is still warm and can resume gracefully.
+
+All these patches are found in topic/intel-lpe-audio branch.
+(BTW, I cleaned up my branches: now for-next branch tracks the latest
+ stable patches to be merged, while topic/intel-lpe-audio branch
+ tracks the experimental patches.  Beware that the latter may be
+ rebased frequently.)
+
+
+Takashi
+
+===
+
+Takashi Iwai (4):
+  ALSA: x86: Handle reset at prepare callback
+  ALSA: x86: Drop unused stream.running field
+  ALSA: x86: Use runtime PM autosuspend
+  ALSA: x86: Enable keep-link feature
+
+ sound/x86/intel_hdmi_audio.c | 110 ++++++++++++++++++++++++++++++++-----------
+ sound/x86/intel_hdmi_audio.h |   2 +-
+ 2 files changed, 84 insertions(+), 28 deletions(-)
+
 -- 
 2.11.1
