@@ -1,15 +1,15 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [RFC v2 6/7] IIO: add bindings for stm32 DFSDM filter
-Date: Mon, 13 Feb 2017 17:38:28 +0100
-Message-ID: <1487003909-11710-7-git-send-email-arnaud.pouliquen@st.com>
+Subject: [RFC v2 1/7] iio: Add hardware consumer support
+Date: Mon, 13 Feb 2017 17:38:23 +0100
+Message-ID: <1487003909-11710-2-git-send-email-arnaud.pouliquen@st.com>
 References: <1487003909-11710-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id C7A2E266A53
- for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2017 17:39:13 +0100 (CET)
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 041AA2669C8
+ for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2017 17:39:10 +0100 (CET)
 In-Reply-To: <1487003909-11710-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,146 +24,227 @@ To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jonat
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, olivier moysan <olivier.moysan@st.com>, kernel@stlinux.com, linux-iio@vger.kernel.org, arnaud.pouliquen@st.com, Maxime Coquelin <mcoquelin.stm32@gmail.com>, linux-arm-kernel@lists.infradead.org, Alexandre Torgue <alexandre.torgue@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add bindings that describe Digital Filter for Sigma Delta
-Modulators. DFSDM allows to connect sigma delta
-modulators and/or PDM microphones.
+Hardware consumer's can be used when one IIO device has a direct connection
+to another device in hardware.
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
 ---
- .../bindings/iio/adc/st,stm32-dfsdm-adc.txt        | 125 +++++++++++++++++++++
- 1 file changed, 125 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.txt
+ drivers/iio/Kconfig             |   6 ++
+ drivers/iio/Makefile            |   1 +
+ drivers/iio/hw_consumer.c       | 156 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/iio/hw_consumer.h |  12 ++++
+ 4 files changed, 175 insertions(+)
+ create mode 100644 drivers/iio/hw_consumer.c
+ create mode 100644 include/linux/iio/hw_consumer.h
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.txt b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.txt
+diff --git a/drivers/iio/Kconfig b/drivers/iio/Kconfig
+index 6743b18..956dd18 100644
+--- a/drivers/iio/Kconfig
++++ b/drivers/iio/Kconfig
+@@ -30,6 +30,12 @@ config IIO_CONFIGFS
+ 	  (e.g. software triggers). For more info see
+ 	  Documentation/iio/iio_configfs.txt.
+ 
++config IIO_HW_CONSUMER
++	tristate
++	help
++	  Hardware consumer buffer
++
++
+ config IIO_TRIGGER
+ 	bool "Enable triggered sampling support"
+ 	help
+diff --git a/drivers/iio/Makefile b/drivers/iio/Makefile
+index 87e4c43..8472b97 100644
+--- a/drivers/iio/Makefile
++++ b/drivers/iio/Makefile
+@@ -6,6 +6,7 @@ obj-$(CONFIG_IIO) += industrialio.o
+ industrialio-y := industrialio-core.o industrialio-event.o inkern.o
+ industrialio-$(CONFIG_IIO_BUFFER) += industrialio-buffer.o
+ industrialio-$(CONFIG_IIO_TRIGGER) += industrialio-trigger.o
++obj-$(CONFIG_IIO_HW_CONSUMER) += hw_consumer.o
+ 
+ obj-$(CONFIG_IIO_CONFIGFS) += industrialio-configfs.o
+ obj-$(CONFIG_IIO_SW_DEVICE) += industrialio-sw-device.o
+diff --git a/drivers/iio/hw_consumer.c b/drivers/iio/hw_consumer.c
 new file mode 100644
-index 0000000..83937cb
+index 0000000..66f0732
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.txt
-@@ -0,0 +1,125 @@
-+STMicroelectronics STM32 DFSDM ADC device driver
++++ b/drivers/iio/hw_consumer.c
+@@ -0,0 +1,156 @@
++#include <linux/err.h>
++#include <linux/export.h>
++#include <linux/slab.h>
++#include <linux/mutex.h>
++#include <linux/of.h>
 +
++#include <linux/iio/iio.h>
++#include "iio_core.h"
++#include <linux/iio/machine.h>
++#include <linux/iio/driver.h>
++#include <linux/iio/consumer.h>
++#include <linux/iio/hw_consumer.h>
++#include <linux/iio/buffer.h>
 +
-+STM32 DFSDM ADC is a sigma delta analog-to-digital converter dedicted to
-+interface external sigma delta modulators to stm32 micro controlers.
-+it is mainly targeted for:
-+- Sigma delta modulators ( motor control, metering...)
-+- PDM microphones ( audio digital microphone)
++struct iio_hw_consumer {
++	struct list_head buffers;
++	struct iio_channel *channels;
++};
 +
-+It featured with up to 8 serial digital interface (SPI or Manchester) and
-+up to 4 filters.
++struct hw_consumer_buffer {
++	struct list_head head;
++	struct iio_dev *indio_dev;
++	struct iio_buffer buffer;
++};
 +
-+Each instance of the sub-drivers uses one filter instance.
++static struct hw_consumer_buffer *iio_buffer_to_hw_consumer_buffer(
++	struct iio_buffer *buffer)
++{
++	return container_of(buffer, struct hw_consumer_buffer, buffer);
++}
 +
-+Contents of a stm32 dfsdmc root node:
-+-------------------------------------
-+Required properties:
-+- compatible: Should be "st,stm32-dfsdm-adc".
-+- reg: Offset and length of the DFSDM block register set.
-+- clocks: IP and serial interfaces clocking. Should be set according
-+		to rcc clock ID and "clock-names".
-+- clock-names: Input clock name "dfsdm" must be defined,
-+		"audio" is optional. If defined CLKOUT is based on the audio
-+		clock, else "dfsdm" is used.
-+- clocks: Clock for the analog circuitry (common to all ADCs).
-+- clock-names: Must be "adc".
++static void iio_hw_buf_release(struct iio_buffer *buffer)
++{
++	struct hw_consumer_buffer *hw_buf =
++		iio_buffer_to_hw_consumer_buffer(buffer);
++	kfree(hw_buf->buffer.scan_mask);
++	kfree(hw_buf);
++}
 +
-+Optional properties:
-+- st,clkout-freq: needed for SPI master mode
-+		  SPI clock OUT frequency (Hz).This clock must be set according
-+		  to "clock" property. Frequency must be a multiple of the rcc
-+		  clock frequency. If not, clkout frequency will not be
-+		  accurate.
++static const struct iio_buffer_access_funcs iio_hw_buf_access = {
++	.release = &iio_hw_buf_release,
++	.modes = INDIO_BUFFER_HARDWARE,
++};
 +
-+Contents of a stm32 DFSDM child nodes:
-+----------------------------------------
++static struct hw_consumer_buffer *iio_hw_consumer_get_buffer(
++	struct iio_hw_consumer *hwc, struct iio_dev *indio_dev)
++{
++	struct hw_consumer_buffer *buf;
 +
-+Required properties:
-+- compatible: Must be:
-+	"st,stm32-dfsdm-adc" for sigma delta ADCs
-+	"st,stm32-dfsdm-pdm" for audio digital microphone.
-+- reg: Specifies the DFSDM filter instance.
-+- interrupts: IRQ lines connected to each DFSDM filter instance.
-+- st,adc-channels:	List of single-ended channels muxed for this ADC.
-+- st,adc-channel-names:	List of single-ended channels Name.
-+- st,dai-filter-order:  SinC filter order from 0 to 5.
-+			0: FastSinC
-+			[1-5]: order 1 to 5.
-+			For audio purpose it is recommended to use order 3 to 5.
-+
-+Required properties for "st,stm32-dfsdm-adc" compatibility:
-+- #io-channel-cells = <1>: See the IIO bindings section "IIO consumers".
-+- io-channels: from common iio binding. use to pipe external sigma delta
-+		modulator or internal ADC output to dfsdm channel.
-+
-+Required properties for "st,stm32-dfsdm-pdm" compatibility:
-+- #sound-dai-cells: must be set to 0.
-+- dma: DMA controller phandle and DMA request line associated to the
-+		filter instance ( specified by the field "reg")
-+- dma-names: must be "rx"
-+
-+Optional properties:
-+- st,adc-channel-types:	Single-ended channel input type. Default value is 0.
-+			- "SPI_R": SPI with data on rising edge (default)
-+			- "SPI_F": SPI with data on falling edge
-+			- "MANCH_R": manchester codec, rising edge = logic 0
-+			- "MANCH_F": manchester codec, falling edge = logic 1
-+- st,adc-channel-clk-src: Conversion clock source. default value is 1.
-+			  - "CLKIN": External SPI clock (CLKIN x)
-+			  - "CLKOUT": internal SPI clock (CLKOUT) (default)
-+			  - "CLKOUT_F": internal SPI clock divided by 2 (falling edge).
-+			  - "CLKOUT_R": internal SPI clock divided by 2 (rising edge).
-+
-+- st,adc-alt-channel: Must be defined if Two sigma delta modulator are
-+			  connected on same SPI input.
-+			  If not set channel n is connected to SPI input n.
-+			  If set channel n is connected to SPI input n + 1.
-+
-+- st,filter0-sync: Set to 1 to synchronize with DFSDM filter instance 0.
-+		   to used for multi microphone synchronization.
-+
-+Example of a sigma delta adc purpose:
-+	ads1202: simple_sd_adc@0 {
-+		compatible = "sd-modulator";
-+		#io-channel-cells = <1>;
-+		status = "okay";
-+	};
-+	dfsdm: dfsdm@40017000 {
-+		compatible = "st,stm32h7-dfsdm";
-+		reg = <0x40017000 0x400>;
-+		clocks = <&timer_clk>;
-+		clock-names = "dfsdm";
-+
-+		dfsdm_adc0: dfsdm-adc0@0 {
-+			compatible = "st,stm32-dfsdm-adc";
-+			#io-channel-cells = <1>;
-+			reg = <0>;
-+			interrupts = <110>;
-+			st,adc-channels = <0>;
-+			st,adc-channel-names = "in0";
-+			st,adc-channel-types = "SPI_R";
-+			st,adc-channel-clk-src = "CLKOUT";
-+			io-channels = <&ads1202 0>;
-+	};
-+
-+Example of a pdm microphone purpose:
-+	dfsdm: dfsdm@40017000 {
-+		compatible = "st,stm32h7-dfsdm";
-+		reg = <0x40017000 0x400>;
-+		clocks = <&timer_clk>;
-+		clock-names = "dfsdm";
-+
-+		dfsdm_pdm0: dfsdm-pdm@0 {
-+			compatible = "st,stm32-dfsdm-pdm";
-+			#sound-dai-cells = <0>;
-+			reg = <0>;
-+			interrupts = <110>;
-+			dmas = <&dmamux1 102 0x400 0x00>;
-+			dma-names = "rx";
-+			st,adc-channels = <0>;
-+			st,adc-channel-names = "pdm1";
-+			st,adc-channel-types = "SPI_R";
-+			st,adc-channel-clk-src = "CLKOUT";
-+		};
++	list_for_each_entry(buf, &hwc->buffers, head) {
++		if (buf->indio_dev == indio_dev)
++			return buf;
 +	}
++
++	buf = kzalloc(sizeof(*buf), GFP_KERNEL);
++	if (!buf)
++		return NULL;
++
++	buf->buffer.access = &iio_hw_buf_access;
++	buf->indio_dev = indio_dev;
++	buf->buffer.scan_mask = kcalloc(BITS_TO_LONGS(indio_dev->masklength),
++		sizeof(long), GFP_KERNEL);
++	if (!buf->buffer.scan_mask)
++		goto err_free_buf;
++
++	iio_buffer_init(&buf->buffer);
++	list_add_tail(&buf->head, &hwc->buffers);
++
++	return buf;
++
++err_free_buf:
++	kfree(buf);
++	return NULL;
++}
++
++struct iio_hw_consumer *iio_hw_consumer_alloc(struct device *dev)
++{
++	struct hw_consumer_buffer *buf;
++	struct iio_hw_consumer *hwc;
++	struct iio_channel *chan;
++	int ret;
++
++	hwc = kzalloc(sizeof(*hwc), GFP_KERNEL);
++	if (!hwc)
++		return ERR_PTR(-ENOMEM);
++
++	INIT_LIST_HEAD(&hwc->buffers);
++
++	hwc->channels = iio_channel_get_all(dev);
++	if (IS_ERR(hwc->channels)) {
++		ret = PTR_ERR(hwc->channels);
++		goto err_free_hwc;
++	}
++
++	chan = &hwc->channels[0];
++	while (chan->indio_dev) {
++		buf = iio_hw_consumer_get_buffer(hwc, chan->indio_dev);
++		if (buf == NULL) {
++			ret = -ENOMEM;
++			goto err_put_buffers;
++		}
++		set_bit(chan->channel->scan_index, buf->buffer.scan_mask);
++		chan++;
++	}
++
++	return hwc;
++
++err_put_buffers:
++	list_for_each_entry(buf, &hwc->buffers, head)
++		iio_buffer_put(&buf->buffer);
++	iio_channel_release_all(hwc->channels);
++err_free_hwc:
++	kfree(hwc);
++	return ERR_PTR(ret);
++}
++EXPORT_SYMBOL_GPL(iio_hw_consumer_alloc);
++
++void iio_hw_consumer_free(struct iio_hw_consumer *hwc)
++{
++	struct hw_consumer_buffer *buf;
++
++	iio_channel_release_all(hwc->channels);
++	list_for_each_entry(buf, &hwc->buffers, head)
++		iio_buffer_put(&buf->buffer);
++	kfree(hwc);
++}
++EXPORT_SYMBOL_GPL(iio_hw_consumer_free);
++
++int iio_hw_consumer_enable(struct iio_hw_consumer *hwc)
++{
++	struct hw_consumer_buffer *buf;
++	int ret;
++
++	list_for_each_entry(buf, &hwc->buffers, head) {
++		ret = iio_update_buffers(buf->indio_dev, &buf->buffer, NULL);
++		if (ret)
++			goto err_disable_buffers;
++	}
++
++	return 0;
++
++err_disable_buffers:
++	list_for_each_entry_continue_reverse(buf, &hwc->buffers, head)
++		iio_update_buffers(buf->indio_dev, NULL, &buf->buffer);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(iio_hw_consumer_enable);
++
++void iio_hw_consumer_disable(struct iio_hw_consumer *hwc)
++{
++	struct hw_consumer_buffer *buf;
++
++	list_for_each_entry(buf, &hwc->buffers, head)
++		iio_update_buffers(buf->indio_dev, NULL, &buf->buffer);
++}
++EXPORT_SYMBOL_GPL(iio_hw_consumer_disable);
+diff --git a/include/linux/iio/hw_consumer.h b/include/linux/iio/hw_consumer.h
+new file mode 100644
+index 0000000..f12653d
+--- /dev/null
++++ b/include/linux/iio/hw_consumer.h
+@@ -0,0 +1,12 @@
++#ifndef LINUX_IIO_HW_CONSUMER_BUFFER_H
++#define LINUX_IIO_HW_CONSUMER_BUFFER_H
++
++struct device;
++struct iio_hw_consumer;
++
++struct iio_hw_consumer *iio_hw_consumer_alloc(struct device *dev);
++void iio_hw_consumer_free(struct iio_hw_consumer *hwc);
++int iio_hw_consumer_enable(struct iio_hw_consumer *hwc);
++void iio_hw_consumer_disable(struct iio_hw_consumer *hwc);
++
++#endif
 -- 
 1.9.1
