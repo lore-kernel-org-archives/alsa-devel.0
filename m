@@ -1,188 +1,122 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [RFC v2 3/7] IIO: ADC: add sigma delta modulator
-	support
-Date: Mon, 13 Feb 2017 17:38:25 +0100
-Message-ID: <1487003909-11710-4-git-send-email-arnaud.pouliquen@st.com>
+Subject: [RFC v2 4/7] ASoC: dmaengine_pcm: add copy support
+Date: Mon, 13 Feb 2017 17:38:26 +0100
+Message-ID: <1487003909-11710-5-git-send-email-arnaud.pouliquen@st.com>
 References: <1487003909-11710-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 024F3261A1A
- for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2017 17:39:10 +0100 (CET)
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 In-Reply-To: <1487003909-11710-1-git-send-email-arnaud.pouliquen@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jonathan Cameron <jic23@kernel.org>, Hartmut Knaack <knaack.h@gmx.de>, Lars-Peter Clausen <lars@metafoo.de>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, olivier moysan <olivier.moysan@st.com>, kernel@stlinux.com, linux-iio@vger.kernel.org, arnaud.pouliquen@st.com, Maxime Coquelin <mcoquelin.stm32@gmail.com>, linux-arm-kernel@lists.infradead.org, Alexandre Torgue <alexandre.torgue@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add dummy driver to support sigma delta modulators.
+From: olivier moysan <olivier.moysan@st.com>
 
+Add copy support in pcm damengine operations.
+As example, this allows to:
+- process data before rendering (IEC status insertion),
+- process captured sample ( sample mask and shift).
+
+Signed-off-by: olivier moysan <olivier.moysan@st.com>
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- drivers/iio/adc/Kconfig         |  11 ++++
- drivers/iio/adc/Makefile        |   1 +
- drivers/iio/adc/simple_sd_adc.c | 112 ++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 124 insertions(+)
- create mode 100644 drivers/iio/adc/simple_sd_adc.c
+ include/sound/dmaengine_pcm.h         |  3 +++
+ sound/soc/soc-generic-dmaengine-pcm.c | 37 +++++++++++++++++++++++++++++++++--
+ 2 files changed, 38 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-index e0b3c09..d4366ac 100644
---- a/drivers/iio/adc/Kconfig
-+++ b/drivers/iio/adc/Kconfig
-@@ -419,6 +419,17 @@ config ROCKCHIP_SARADC
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called rockchip_saradc.
+diff --git a/include/sound/dmaengine_pcm.h b/include/sound/dmaengine_pcm.h
+index 67be244..9d7bce8 100644
+--- a/include/sound/dmaengine_pcm.h
++++ b/include/sound/dmaengine_pcm.h
+@@ -137,6 +137,9 @@ struct snd_dmaengine_pcm_config {
+ 	int (*prepare_slave_config)(struct snd_pcm_substream *substream,
+ 			struct snd_pcm_hw_params *params,
+ 			struct dma_slave_config *slave_config);
++	int (*copy)(struct snd_pcm_substream *substream, int channel,
++		    snd_pcm_uframes_t pos,
++		    void __user *buf, snd_pcm_uframes_t count);
+ 	struct dma_chan *(*compat_request_channel)(
+ 			struct snd_soc_pcm_runtime *rtd,
+ 			struct snd_pcm_substream *substream);
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+index 6cef397..bd8332ce 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -329,6 +329,16 @@ static snd_pcm_uframes_t dmaengine_pcm_pointer(
+ 		return snd_dmaengine_pcm_pointer(substream);
+ }
  
-+config SIMPLE_SD_ADC
-+	tristate "Simple sigma delta modulator"
-+	depends on OF
-+        select IIO_BUFFER
-+        select IIO_TRIGGERED_BUFFER
-+	help
-+	  Select this option to enables generic sigma delta modulator.
-+
-+	  This driver can also be built as a module.  If so, the module
-+	  will be called simple-sd-adc.
-+
- config STM32_ADC_CORE
- 	tristate "STMicroelectronics STM32 adc core"
- 	depends on ARCH_STM32 || COMPILE_TEST
-diff --git a/drivers/iio/adc/Makefile b/drivers/iio/adc/Makefile
-index 8e02a94..bd67144 100644
---- a/drivers/iio/adc/Makefile
-+++ b/drivers/iio/adc/Makefile
-@@ -57,3 +57,4 @@ obj-$(CONFIG_VF610_ADC) += vf610_adc.o
- obj-$(CONFIG_VIPERBOARD_ADC) += viperboard_adc.o
- xilinx-xadc-y := xilinx-xadc-core.o xilinx-xadc-events.o
- obj-$(CONFIG_XILINX_XADC) += xilinx-xadc.o
-+obj-$(CONFIG_SIMPLE_SD_ADC) += simple_sd_adc.o
-diff --git a/drivers/iio/adc/simple_sd_adc.c b/drivers/iio/adc/simple_sd_adc.c
-new file mode 100644
-index 0000000..4bc8b3c
---- /dev/null
-+++ b/drivers/iio/adc/simple_sd_adc.c
-@@ -0,0 +1,112 @@
-+/*
-+ * simple sigma delta modulator driver
-+ *
-+ * Copyright (C) 2016, STMicroelectronics - All Rights Reserved
-+ * Author: Arnaud Pouliquen <arnaud.pouliquen@st.com>.
-+ *
-+ * License type: GPLv2
-+ *
-+ * This program is free software; you can redistribute it and/or modify it
-+ * under the terms of the GNU General Public License version 2 as published by
-+ * the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
-+ * or FITNESS FOR A PARTICULAR PURPOSE.
-+ * See the GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License along with
-+ * this program. If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#include <linux/iio/iio.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+
-+#include <linux/iio/triggered_buffer.h>
-+
-+static int simple_sd_of_xlate(struct iio_dev *iio,
-+			      const struct of_phandle_args *iiospec)
++int dmaengine_pcm_copy(struct snd_pcm_substream *substream, int channel,
++		       snd_pcm_uframes_t pos, void __user *buf,
++		       snd_pcm_uframes_t count)
 +{
-+	dev_dbg(&iio->dev, "%s:\n", __func__);
-+	if (iiospec->args[0] != 0) {
-+		dev_err(&iio->dev, "Only one channel supported\n");
-+		return -EINVAL;
-+	}
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct dmaengine_pcm *pcm = soc_platform_to_pcm(rtd->platform);
 +
-+	return 0;
++	return pcm->config->copy(substream, channel, pos, buf, count);
 +}
 +
-+static const struct iio_info simple_sd_iio_info = {
-+	.of_xlate = simple_sd_of_xlate,
+ static const struct snd_pcm_ops dmaengine_pcm_ops = {
+ 	.open		= dmaengine_pcm_open,
+ 	.close		= snd_dmaengine_pcm_close,
+@@ -339,6 +349,17 @@ static snd_pcm_uframes_t dmaengine_pcm_pointer(
+ 	.pointer	= dmaengine_pcm_pointer,
+ };
+ 
++static const struct snd_pcm_ops dmaengine_pcm_ops_with_cpy = {
++	.open		= dmaengine_pcm_open,
++	.close		= snd_dmaengine_pcm_close,
++	.ioctl		= snd_pcm_lib_ioctl,
++	.hw_params	= dmaengine_pcm_hw_params,
++	.hw_free	= snd_pcm_lib_free_pages,
++	.trigger	= snd_dmaengine_pcm_trigger,
++	.pointer	= dmaengine_pcm_pointer,
++	.copy		= dmaengine_pcm_copy,
 +};
 +
-+static const struct iio_buffer_setup_ops simple_sd_buffer_ops;
-+
-+static int simple_sd_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct iio_dev *iio;
-+	struct iio_chan_spec *ch;
-+
-+	dev_dbg(&pdev->dev, "%s:\n", __func__);
-+	iio = devm_iio_device_alloc(dev, 0);
-+	if (!iio)
-+		return -ENOMEM;
-+
-+	/* Define one channel */
-+	ch = devm_kzalloc(&iio->dev, sizeof(*ch), GFP_KERNEL);
-+	if (!ch)
-+		return -ENOMEM;
-+
-+	iio->dev.parent = dev;
-+	iio->dev.of_node = dev->of_node;
-+	iio->name = dev_name(dev);
-+	iio->info = &simple_sd_iio_info;
-+	iio->modes = INDIO_BUFFER_HARDWARE;
-+
-+	ch->type = IIO_VOLTAGE;
-+	ch->indexed = 1;
-+	ch->scan_index = 0;
-+	ch->scan_type.sign = 'u';
-+	ch->scan_type.realbits = 1;
-+	ch->scan_type.storagebits = 1;
-+	ch->scan_type.shift = 0;
-+
-+	iio->num_channels = 1;
-+	iio->channels = ch;
-+
-+	platform_set_drvdata(pdev, iio);
-+
-+	return iio_device_register(iio);
-+}
-+
-+static int simple_sd_remove(struct platform_device *pdev)
-+{
-+	struct iio_dev *iio = platform_get_drvdata(pdev);
-+
-+	iio_device_unregister(iio);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id sd_adc_of_match[] = {
-+	{ .compatible = "sd-modulator" },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, adc081c_of_match);
-+
-+static struct platform_driver simple_sd_adc = {
-+	.driver = {
-+		.name = "simple_sd_adc",
-+		.of_match_table = of_match_ptr(sd_adc_of_match),
+ static const struct snd_soc_platform_driver dmaengine_pcm_platform = {
+ 	.component_driver = {
+ 		.probe_order = SND_SOC_COMP_ORDER_LATE,
+@@ -347,6 +368,14 @@ static snd_pcm_uframes_t dmaengine_pcm_pointer(
+ 	.pcm_new	= dmaengine_pcm_new,
+ };
+ 
++static const struct snd_soc_platform_driver dmaengine_pcm_platform_with_cpy = {
++	.component_driver = {
++		.probe_order = SND_SOC_COMP_ORDER_LATE,
 +	},
-+	.probe = simple_sd_probe,
-+	.remove = simple_sd_remove,
++	.ops		= &dmaengine_pcm_ops_with_cpy,
++	.pcm_new	= dmaengine_pcm_new,
 +};
 +
-+module_platform_driver(simple_sd_adc);
-+
-+MODULE_DESCRIPTION("simple signma delta modulator");
-+MODULE_AUTHOR("Arnaud Pouliquen <arnaud.pouliquen@st.com>");
-+MODULE_LICENSE("GPL v2");
+ static const char * const dmaengine_pcm_dma_channel_names[] = {
+ 	[SNDRV_PCM_STREAM_PLAYBACK] = "tx",
+ 	[SNDRV_PCM_STREAM_CAPTURE] = "rx",
+@@ -439,8 +468,12 @@ int snd_dmaengine_pcm_register(struct device *dev,
+ 	if (ret)
+ 		goto err_free_dma;
+ 
+-	ret = snd_soc_add_platform(dev, &pcm->platform,
+-		&dmaengine_pcm_platform);
++	if (config && config->copy)
++		ret = snd_soc_add_platform(dev, &pcm->platform,
++					   &dmaengine_pcm_platform_with_cpy);
++	else
++		ret = snd_soc_add_platform(dev, &pcm->platform,
++					   &dmaengine_pcm_platform);
+ 	if (ret)
+ 		goto err_free_dma;
+ 
 -- 
 1.9.1
