@@ -1,23 +1,20 @@
-From: Alan Young <consult.awy@gmail.com>
-Subject: Re: [PATCH] [updated] pcm: rate: Add capability to
- pass configuration node to plugins
-Date: Tue, 14 Feb 2017 07:30:22 +0000
-Message-ID: <a15b8e68-a9b5-2ed2-29b2-a0ab5b997d7e@gmail.com>
-References: <bdb7665c-5747-8888-fa2e-552e852fa375@IEE.org>
- <6d7c74b7-da90-5ae9-c355-c6884b2edf09@gmail.com>
- <s5hy3xg8zkp.wl-tiwai@suse.de>
- <e1ebb06d-6f43-fde8-7b9e-653d247a4a19@gmail.com>
- <s5h4lzxxn9c.wl-tiwai@suse.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2] ASoC: bcm2835: Add 8 channel
+ (multitrack) capability
+Date: Tue, 14 Feb 2017 09:32:01 +0000
+Message-ID: <20170214093201.GY1754@localhost.localdomain>
+References: <1486422576-6958-1-git-send-email-flatmax@flatmax.org>
+ <1486942035-24038-1-git-send-email-flatmax@flatmax.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
- by alsa0.perex.cz (Postfix) with ESMTP id AB86E26583C
- for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2017 08:30:24 +0100 (CET)
-Received: by mail-wm0-f65.google.com with SMTP id v77so2118385wmv.0
- for <alsa-devel@alsa-project.org>; Mon, 13 Feb 2017 23:30:24 -0800 (PST)
-In-Reply-To: <s5h4lzxxn9c.wl-tiwai@suse.de>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id B1532266917
+ for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2017 10:31:05 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1486942035-24038-1-git-send-email-flatmax@flatmax.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,61 +24,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Matt Flax <flatmax@flatmax.org>
+Cc: alsa-devel@alsa-project.org, swarren@wwwdotorg.org, lee@kernel.org, phil@raspberrypi.org, eric@anholt.net, broonie@kernel.org, florian.meier@koalo.de, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 14/02/17 07:08, Takashi Iwai wrote:
-> On Mon, 13 Feb 2017 18:20:01 +0100,
-> Alan Young wrote:
->> Here is a revised patch.
->>
->> It is useful for the converter used by a rate plugin to be capable of
->> receiving configuration. This patch enables the "converter" node of
->> the configuration of a "type rate" plugin to be specified as a
->> compound and passed to open func of the converter plugin.
->>
->> The SND_PCM_RATE_PLUGIN_CONF_ENTRY macro is used to define a rate
->> converter plugin entry point that takes the additional snd_config_t
->> *conf parameter. If a rate converter plugin also supports the existing
->> SND_PCM_RATE_PLUGIN_ENTRY entry point, or if passed conf parameter is
->> NULL then it is up to the plugin to determine whether or not this is a
->> fatal condition.
->>
->> Alan.
-> The changes look almost good, but one uncertain change:
->
->>   	else if (snd_config_get_type(converter) == SND_CONFIG_TYPE_COMPOUND) {
->>   		snd_config_iterator_t i, next;
->>   		snd_config_for_each(i, next, converter) {
->>   			snd_config_t *n = snd_config_iterator_entry(i);
->> +			const char *id;
->>   			if (snd_config_get_string(n, &type) < 0)
->>   				break;
->> -			err = rate_open_func(rate, type, 0);
->> +			err = rate_open_func(rate, type, converter, 0);
->>   			if (!err)
->>   				break;
->> +			if (snd_config_get_id(n, &id) >= 0 && id && strcmp(id, "0") != 0)
->> +				break; /* not a simple array of types */
-> What does this check exactly...?
->
+On Mon, Feb 13, 2017 at 10:27:15AM +1100, Matt Flax wrote:
+> This patch adds multitrack capability if in DSP mode A and the
+> codec is master.
+> 
+> In bcm2835_i2s_startup, snd_pcm_hw_constraint_minmax is used to set
+> max channels to 8 if both SND_SOC_DAIFMT_CBM_CFM and
+> SND_SOC_DAIFMT_DSP_A are set. Otherwise, max channels is set to 2.
+> Min channels is always set to 2. These settings are accomplished
+> using the SNDRV_PCM_HW_PARAM_CHANNELS variable.
+> 
+> In bcm2835_i2s_shutdown max channels is set to 2 by default.
+> 
+> In bcm2835_i2s_hw_params, DSP mode A format is now an option.
+> Before replicating the format variable (from ch2 to ch1) for
+> register loading, requested channels are checked to be either 2 or 8.
+> This can be expaneded later to accomodate other channel counts if
+> supported by the sound card hardware.
+> 
+> Signed-off-by: Matt Flax <flatmax@flatmax.org>
+> ---
+<snip>
+> @@ -312,6 +313,7 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
+>  
+>  	switch (params_channels(params)) {
+>  	case 2:
+> +	case 8:
+>  		format = BCM2835_I2S_CH1(format) | BCM2835_I2S_CH2(format);
+>  		format |= BCM2835_I2S_CH1(BCM2835_I2S_CHPOS(ch1pos));
+>  		format |= BCM2835_I2S_CH2(BCM2835_I2S_CHPOS(ch2pos));
+> @@ -526,7 +528,16 @@ static int bcm2835_i2s_startup(struct snd_pcm_substream *substream,
+>  	regmap_update_bits(dev->i2s_regmap, BCM2835_I2S_CS_A_REG,
+>  			BCM2835_I2S_STBY, BCM2835_I2S_STBY);
+>  
+> -	return 0;
+> +	/* Set the max channels to 8 if the codec is master and
+> +	 * we are in DSP A mode. Otherwise only allow 2 channels.
+> +	 */
+> +	if (dev->fmt &
+> +		(SND_SOC_DAIFMT_CBM_CFM | SND_SOC_DAIFMT_DSP_A))
+> +		return snd_pcm_hw_constraint_minmax(substream->runtime,
+> +			SNDRV_PCM_HW_PARAM_CHANNELS, 2, 8);
 
-In the case that snd_config_get_type(converter) == 
-SND_CONFIG_TYPE_COMPOUND, this could be for one of two reasons:
+Would it be worth using snd_pcm_hw_constraint_list here? We are
+going to error out of hw_params if the user requests anything
+other than 2 or 8 channels so we should probably just constrain
+to those two.
 
- 1. Where the configuration contains something like converter {name xxx,
-    other stuff ...}, or
- 2. where configuration contains something like [first second third].
+> +	else
+> +		return snd_pcm_hw_constraint_minmax(substream->runtime,
+> +			SNDRV_PCM_HW_PARAM_CHANNELS, 2, 2);
 
-In the later case, the id fields will be digit strings, with the first 
-entry having the id "0". The test simply stops going around the loop 
-looking for further alternatives if the first did not have id "0".
+snd_pcm_hw_constraint_single, it's exactly the same thing but I
+guess we should probably use the helper if it exists.
 
-However, looking at that again now, I see that the test is flawed 
-because it has no marker to check that it is only applied on the first 
-iteration, so the loop would always stop after testing the second 
-alternative. I could fix that or remove the test altogether - what do 
-you think?
+>  }
+>  
+>  static void bcm2835_i2s_shutdown(struct snd_pcm_substream *substream,
+> @@ -549,6 +560,10 @@ static void bcm2835_i2s_shutdown(struct snd_pcm_substream *substream,
+>  	 * not stop the clock when SND_SOC_DAIFMT_CONT
+>  	 */
+>  	bcm2835_i2s_stop_clock(dev);
+> +
+> +	/* Default to 2 channels */
+> +	snd_pcm_hw_constraint_minmax(substream->runtime,
+> +			SNDRV_PCM_HW_PARAM_CHANNELS, 2, 2);
+>  }
 
-Alan.
+ditto.
+
+Thanks,
+Charles
