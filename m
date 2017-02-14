@@ -1,20 +1,17 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2] ASoC: bcm2835: Add 8 channel
- (multitrack) capability
-Date: Tue, 14 Feb 2017 09:32:01 +0000
-Message-ID: <20170214093201.GY1754@localhost.localdomain>
-References: <1486422576-6958-1-git-send-email-flatmax@flatmax.org>
- <1486942035-24038-1-git-send-email-flatmax@flatmax.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: nau8825: automatic BCLK and LRC
+ divde in master mode
+Date: Tue, 14 Feb 2017 11:09:08 +0000
+Message-ID: <20170214110908.nhklqtcy5dohhned@sirena.org.uk>
+References: <1487051073-2350-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0313005244778904830=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id B1532266917
- for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2017 10:31:05 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1486942035-24038-1-git-send-email-flatmax@flatmax.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 87C71265142
+ for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2017 12:09:20 +0100 (CET)
+In-Reply-To: <1487051073-2350-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,78 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Flax <flatmax@flatmax.org>
-Cc: alsa-devel@alsa-project.org, swarren@wwwdotorg.org, lee@kernel.org, phil@raspberrypi.org, eric@anholt.net, broonie@kernel.org, florian.meier@koalo.de, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, WTLI@nuvoton.com, lgirdwood@gmail.com, benzh@chromium.org, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 13, 2017 at 10:27:15AM +1100, Matt Flax wrote:
-> This patch adds multitrack capability if in DSP mode A and the
-> codec is master.
-> 
-> In bcm2835_i2s_startup, snd_pcm_hw_constraint_minmax is used to set
-> max channels to 8 if both SND_SOC_DAIFMT_CBM_CFM and
-> SND_SOC_DAIFMT_DSP_A are set. Otherwise, max channels is set to 2.
-> Min channels is always set to 2. These settings are accomplished
-> using the SNDRV_PCM_HW_PARAM_CHANNELS variable.
-> 
-> In bcm2835_i2s_shutdown max channels is set to 2 by default.
-> 
-> In bcm2835_i2s_hw_params, DSP mode A format is now an option.
-> Before replicating the format variable (from ch2 to ch1) for
-> register loading, requested channels are checked to be either 2 or 8.
-> This can be expaneded later to accomodate other channel counts if
-> supported by the sound card hardware.
-> 
-> Signed-off-by: Matt Flax <flatmax@flatmax.org>
-> ---
-<snip>
-> @@ -312,6 +313,7 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
->  
->  	switch (params_channels(params)) {
->  	case 2:
-> +	case 8:
->  		format = BCM2835_I2S_CH1(format) | BCM2835_I2S_CH2(format);
->  		format |= BCM2835_I2S_CH1(BCM2835_I2S_CHPOS(ch1pos));
->  		format |= BCM2835_I2S_CH2(BCM2835_I2S_CHPOS(ch2pos));
-> @@ -526,7 +528,16 @@ static int bcm2835_i2s_startup(struct snd_pcm_substream *substream,
->  	regmap_update_bits(dev->i2s_regmap, BCM2835_I2S_CS_A_REG,
->  			BCM2835_I2S_STBY, BCM2835_I2S_STBY);
->  
-> -	return 0;
-> +	/* Set the max channels to 8 if the codec is master and
-> +	 * we are in DSP A mode. Otherwise only allow 2 channels.
-> +	 */
-> +	if (dev->fmt &
-> +		(SND_SOC_DAIFMT_CBM_CFM | SND_SOC_DAIFMT_DSP_A))
-> +		return snd_pcm_hw_constraint_minmax(substream->runtime,
-> +			SNDRV_PCM_HW_PARAM_CHANNELS, 2, 8);
 
-Would it be worth using snd_pcm_hw_constraint_list here? We are
-going to error out of hw_params if the user requests anything
-other than 2 or 8 channels so we should probably just constrain
-to those two.
+--===============0313005244778904830==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="fpypg7eacvjjpqz3"
+Content-Disposition: inline
 
-> +	else
-> +		return snd_pcm_hw_constraint_minmax(substream->runtime,
-> +			SNDRV_PCM_HW_PARAM_CHANNELS, 2, 2);
 
-snd_pcm_hw_constraint_single, it's exactly the same thing but I
-guess we should probably use the helper if it exists.
+--fpypg7eacvjjpqz3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->  }
->  
->  static void bcm2835_i2s_shutdown(struct snd_pcm_substream *substream,
-> @@ -549,6 +560,10 @@ static void bcm2835_i2s_shutdown(struct snd_pcm_substream *substream,
->  	 * not stop the clock when SND_SOC_DAIFMT_CONT
->  	 */
->  	bcm2835_i2s_stop_clock(dev);
-> +
-> +	/* Default to 2 channels */
-> +	snd_pcm_hw_constraint_minmax(substream->runtime,
-> +			SNDRV_PCM_HW_PARAM_CHANNELS, 2, 2);
->  }
+On Tue, Feb 14, 2017 at 01:44:33PM +0800, John Hsu wrote:
+> Provide the automatic configurable LRC and BCLK divide. The driver
+> will make configurations of LRC and BCLK automatically according to
+> BCLK and FS information in master mode.
 
-ditto.
+This patch *still* does not apply.  Please, try sending to yourself and
+applying with git am before you resend to me.  Check that the patch is
+not being corrupted when you send it (things like space/tab conversion
+for example).
 
-Thanks,
-Charles
+--fpypg7eacvjjpqz3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlii5VMACgkQJNaLcl1U
+h9AeaQf/fJtmYowqYbW72Rvj2zHNdUaQ6VoS/opwN1p007tkxQ/wmRU4TMgO5jBt
+JrS9M5r5Rsm5eEDuzlnOMusjC97SuPNlId6Ozt5vNTFL8Xx7BG/EDyjeFoEkfNkj
+YyTrI4NBcZJiOAjRZfAbxPTdkX+AOHGAh7yZCpchwifjSkHAA62O3PzRY7M/QTZF
+bBh/VFyDUEO9fXet4ESMUYuXAJZzHI4hYU0t8OTe8C9OmePDTqrjKDNjU1MrDOSr
+JA51vjmpRe5gZT3NMXZATOkF/3OpzyfZet9gBnKe9sBnG95lU2UElHO8rrCBVDa/
+mit26R7k9IvTEMv/mFMrB4RkI/tN4w==
+=sBO0
+-----END PGP SIGNATURE-----
+
+--fpypg7eacvjjpqz3--
+
+--===============0313005244778904830==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0313005244778904830==--
