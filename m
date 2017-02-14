@@ -1,22 +1,17 @@
-From: Ian W MORRISON <ianwmorrison@gmail.com>
-Subject: Re: [PATCH 0/4] A few more extensions to LPE audio
-	driver
-Date: Wed, 15 Feb 2017 02:12:53 +1100
-Message-ID: <CAFXWsS_Y7=Tc3YnM8=nSwT515DLFrzv8d1U7Z4wtK9p851xHKQ@mail.gmail.com>
-References: <20170213143919.19543-1-tiwai@suse.de>
- <af30c79f-d1ac-2dda-8691-5ee9faab6a1f@linux.intel.com>
- <s5hbmu5xovt.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC v2 4/7] ASoC: dmaengine_pcm: add copy support
+Date: Tue, 14 Feb 2017 17:16:30 +0000
+Message-ID: <20170214171630.qgkyoymxyqjiiblh@sirena.org.uk>
+References: <1487003909-11710-1-git-send-email-arnaud.pouliquen@st.com>
+ <1487003909-11710-5-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3306803402351320719=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yb0-f193.google.com (mail-yb0-f193.google.com
- [209.85.213.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7FA35265142
- for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2017 16:12:54 +0100 (CET)
-Received: by mail-yb0-f193.google.com with SMTP id w194so5676053ybe.1
- for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2017 07:12:54 -0800 (PST)
-In-Reply-To: <s5hbmu5xovt.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id BC2F6265142
+ for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2017 18:17:36 +0100 (CET)
+In-Reply-To: <1487003909-11710-5-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,246 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Rakesh A Ughreja <rakesh.a.ughreja@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jerome Anand <jerome.anand@intel.com>
+To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, olivier moysan <olivier.moysan@st.com>, kernel@stlinux.com, Liam Girdwood <lgirdwood@gmail.com>, linux-iio@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Rob Herring <robh+dt@kernel.org>, linux-arm-kernel@lists.infradead.org, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Hartmut Knaack <knaack.h@gmx.de>, Jonathan Cameron <jic23@kernel.org>, Alexandre Torgue <alexandre.torgue@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-In my testing I've seen the '*ERROR* Atomic update failure on pipe' message
-again on a CHT device whilst running a kernel build from the latest
-'topic/intel-lpe-audio' branch:
 
-[   22.765836] intel_sst_acpi 808622A8:00: FW Version 01.0b.02.02
-[   32.280459] intel_sst_acpi 808622A8:00: FW Version 01.0b.02.02
-[   55.045261] intel_sst_acpi 808622A8:00: FW Version 01.0b.02.02
-[   83.529779] [drm:intel_pipe_update_end [i915]] *ERROR* Atomic update
-failure on pipe A (start=3853 end=3854) time 393 us, min 1073, max 1079,
-scanline start 1072, end 1099
+--===============3306803402351320719==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="hicslhhs4zfgzzsn"
+Content-Disposition: inline
 
-However I cannot replicate it on demand.
 
-On 14 February 2017 at 17:33, Takashi Iwai <tiwai@suse.de> wrote:
+--hicslhhs4zfgzzsn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> On Mon, 13 Feb 2017 23:56:36 +0100,
-> Pierre-Louis Bossart wrote:
-> >
-> >
-> >
-> > On 02/13/2017 08:39 AM, Takashi Iwai wrote:
-> > > Hi,
-> > >
-> > > Linus decided to take another week for 4.11 merge window, so I could
-> > > play a bit more, and here is the result :)
-> > >
-> > > The first patch is the fix for possible GPU hang, and this has been
-> > > for a while in my local branch and tested.  This should be OK to merge
-> > > soon.  (It's also as same as what Ian tested in the last weekend.)
-> > >
-> > > The next one is merely a cleanup patch, so it's fine, too.  The third
-> > > one is a transition to use the runtime PM autosuspend, and it's a
-> > > preliminary for the last change.
-> > >
-> > > The last one is the new and experimental one: it enables the keep-link
-> > > feature.  With this patch, the device is managed as default via
-> > > autosuspend, and the link is opened (but silenced) for the pre-given
-> > > time (2 seconds) after the PCM close.  If the application restarts the
-> > > stream quickly, the receiver is still warm and can resume gracefully.
-> > >
-> > > All these patches are found in topic/intel-lpe-audio branch.
-> > > (BTW, I cleaned up my branches: now for-next branch tracks the latest
-> > >   stable patches to be merged, while topic/intel-lpe-audio branch
-> > >   tracks the experimental patches.  Beware that the latter may be
-> > >   rebased frequently.)
-> > I tried this topic/intel-lpe-audio branch on my Baytrail compute stick
-> > and CHT boards and I see a couple of problems while monkey testing.
-> >
-> > 1. PulseAudio fails to load the HDMI card on startup on the Compute
-> > Stick and only shows the dummy output, killing and restarting
-> > PulseAudio solves the problem. I had not seen this before and this
-> > doesn't happen on CHT devices, not sure if this a pulseaudio problem?
->
-> I guess so.  Could you try to remove ~/.config/pulse and see whether
-> it still happens?
->
->
-> > 2. we had a set of errors in the past that are still present, i see
-> > them 100% of the time:
-> > E: [alsa-sink-HdmiLpeAudio] alsa-sink.c: ALSA woke us up to write new
-> > data to the device, but there was a
-> > ctually nothing to write!
-> > E: [alsa-sink-HdmiLpeAudio] alsa-sink.c: Most likely this is a bug in
-> > the ALSA driver 'snd_hdmi_lpe_audio
-> > '. Please report this issue to the ALSA developers.
-> > E: [alsa-sink-HdmiLpeAudio] alsa-sink.c: We were woken up with POLLOUT
-> > set -- however a subsequent snd_pc
-> > m_avail() returned 0 or another value < min_avail.
->
-> It's a oft-seen issue but interesting.  Though, I wonder whether PA
-> setup is proper when I looked at the below:
->
-> > 3. the third one is new, we have something wrong with the pointer
-> > management. This happened only once in my tests but still, not sure
-> > how it was introduced.
-> >
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c: snd_pcm_avail() returned a
-> > value that is exceptionally large: 13
-> > 6128 bytes (709 ms).
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c: Most likely this is a bug in
-> > the ALSA driver 'snd_hdmi_lpe_audio
-> > '. Please report this issue to the ALSA developers.
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c: snd_pcm_dump():
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c: Hardware PCM card 0 'Intel
-> > HDMI/DP LPE Audio' device 0 subdevice
-> >  0
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c: Its setup is:
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c:   stream       : PLAYBACK
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c:   access       :
-> MMAP_INTERLEAVED
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c:   format       : S16_LE
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c:   subformat    : STD
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c:   channels     : 2
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c:   rate         : 48000
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c:   exact rate   : 48000 (48000/1)
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c:   msbits       : 16
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c:   buffer_size  : 3840
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c:   period_size  : 480
->
-> See the values above.
->
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c:   period_time  : 10000
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c:   tstamp_mode  : ENABLE
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c:   period_step  : 1
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c:   avail_min    : 480
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c:   period_event : 1
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c:   start_threshold  : -1
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c:   stop_threshold   :
-> > 8646911284551352320
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c:   silence_threshold: 0
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c:   silence_size : 0
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c:   boundary     :
-> > 8646911284551352320
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c:   appl_ptr     : 301456
-> > E: [alsa-sink-HdmiLpeAudio] alsa-util.c:   hw_ptr       : 331680
-> >
-> > Indeed this looks like a wrap-around?
->
-> Why PA takes such a small buffer / period size (3840 / 480)?
-> Do you have any special setup?
->
-> My test was with a bit old PA version, but it worked with a larger
-> buffer, IIRC.
->
->
-> > 4. the keep-link thing doesn't seem to work for me. Once PulseAudio
-> > suspends the output, if I try to play a short notification I lose the
-> > first second (as in hearing only 'left' in 'front left', as in with
-> > the first sound I play. I even increased the threshold to 10s and
-> > still no joy. Could there be a higher level suspend that turns the
-> > link off?
->
-> OK, that's somewhat expected in a current patch.  It keeps the link
-> *after* the PCM device is closed, but it doesn't change the behavior
-> so much *during* the PCM is being used by app.  So PA keeps the device
-> opened (maybe in PREPARED state?) after stopping the stream, and at
-> this state, the link gets off because it's prepared for the playback
-> trigger.
->
-> I don't know how we can avoid this: basically the silent output is a
-> fake underrun.  We need to set the invalid BDs to achieve it.
-> Meanwhile, at PREPARED state, the buffer and the h/w must be set ready
-> for streaming and just wait for the stream start toggle at TRIGGER.
->
-> Maybe there is some other way to achieve, but then I'd like to know
-> the reference implementation before further hacking.
->
-> > 5. if I change the display resolution while playing a sound through
-> > hw:0, at the ALSA level the playback stops with all sorts of bad
-> > descriptor errors, which is fine. If I play through PulseAudio the
-> > card is unloaded when the resolution is changed and the sound keeps
-> > playing but to the dummy output. PulseAudio needs to be killed and
-> > restarted to play sound again over HDMI. Wondering if this is the same
-> > problem as for the first case, PulseAudio not able to digest a uevent
-> > when a card is created?
->
-> The problem is that it's no "card" plug.  It's what I pointed in the
-> past about PCM DISCONNECT state handling.  The card itself isn't
-> changed but only the PCM state changes.  We could set PCM as
-> DISCONNECTED, and then PA would treat like the card removal, and the
-> device will be never reprobed unless the driver is really reprobed.
-> It's like what you've seen.  So, in the recent version, it never sets
-> DISCONNECTED but it just stops the stream and rest returns -ENODEV
-> error.
->
-> I'm not sure how PA react to this error case.  Maybe -ENODEV is a bad
-> choice.  Need to ask Tanu about it.
->
->
-> > 6. if I remove the HDMI output and reinsert it, PulseAudio again fails
-> > to detect. I have to kill pulseaudio and restart it. I also saw this
-> > log during plug/unplug
-> > W: [alsa-sink-HdmiLpeAudio] alsa-util.c: Could not recover from
-> > POLLERR|POLLNVAL|POLLHUP with snd_pcm_pre
-> > pare(): No such device
->
-> A similar situation, but it's strange that it still returns -ENODEV.
-> In the current code, -ENODEV should be returned only when the device
-> is "connected", i.e. the mode is set.
->
-> But now looking at the code, I found a superfluous code at hotplug
-> handler that should be removed:
->
-> -- 8< --
-> --- a/sound/x86/intel_hdmi_audio.c
-> +++ b/sound/x86/intel_hdmi_audio.c
-> @@ -1401,16 +1401,6 @@ static void had_process_hot_plug(struct
-> snd_intelhad *intelhaddata)
->                         __func__, __LINE__);
->         spin_unlock_irq(&intelhaddata->had_spinlock);
->
-> -       /* Safety check */
-> -       substream = had_substream_get(intelhaddata);
-> -       if (substream) {
-> -               dev_dbg(intelhaddata->dev,
-> -                       "Force to stop the active stream by
-> disconnection\n");
-> -               /* Set runtime->state to hw_params done */
-> -               snd_pcm_stop(substream, SNDRV_PCM_STATE_SETUP);
-> -               had_substream_put(intelhaddata);
-> -       }
-> -
->         had_build_channel_allocation_map(intelhaddata);
->  }
->
-> -- 8< --
->
-> In anyway I'm going to check the behavior on my device, and reduce the
-> superfluous code.
->
->
-> > 7. I can't get the multichannel sound to work, anything with more that
-> > 2ch is silent except for FR and FL. Playback keeps going but only 2
-> > channels are playing. Not sure if this is my receiver sending bad ELD
-> > information or just that the hw_params are not limited to the
-> > capabilities of the display.
->
-> Could you check ELD output?  Now it's easily seen via ctl element.
-> I have no surround receiver, so cannot check the capabilities,
-> unfortunately.
->
-> About the multi-channel support, I haven't changed the code.
-> For the multi-channels, the driver does:
-> - Set AUD_CONFIG num_ch fields to channles-2
-> - Set AUD_CONFIG layout bit to 1
-> - Set IF2 chnl_cnt to channels-1
-> - Set IF2 chnl_alloc to CA value
->
->
-> > Overall it's pretty robust though compared to the legacy patches,
-> > except for the pulseaudio detection issue there was never a moment
-> > where I had to reboot or do something drastic to recover. Thanks for
-> > all your work Takashi!
->
-> Thanks for your testing!
->
->
-> Takashi
->
+On Mon, Feb 13, 2017 at 05:38:26PM +0100, Arnaud Pouliquen wrote:
+> From: olivier moysan <olivier.moysan@st.com>
+>=20
+> Add copy support in pcm damengine operations.
+> As example, this allows to:
+> - process data before rendering (IEC status insertion),
+> - process captured sample ( sample mask and shift).
+
+dmaengine with copy...  so not DMA at all?  I'm a bit confused about why
+we're extending the dmaengine code to have a copy operation rather than
+just writing driver code.
+
+--hicslhhs4zfgzzsn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlijO20ACgkQJNaLcl1U
+h9C+ZggAheP4mEFbWQ3/f5hPBO1PLdptmUMpXbC/tiCkGNiK+TmpEsRkG0KgDbZ3
+ybftSnkXa2ayTeaaCYG/MEo4BZM5HRhUY1gSINgV+aLsb858Af16cXkHlYMlbjPj
+U4NYhZvDRZ2BLGS3FNwslIsKSv6dj0ACxypyXF+LVpTXShaE0kVqPXznIVOxtJF4
+Yc2Jo2LcApERM2ulnkAtmsHDjKClEzMtSzJfAyLcyWvHPAWzfm24ZTfxB9keodbM
+DLD80zL3H5dahdUwJAWjxC6T1JXPWR6YQi1NSocvMXv2Z2MHstIhiXPRLEo97zKM
+Tu3E4yzY8FYtambuZQwJzUTIOVIdAQ==
+=xEbl
+-----END PGP SIGNATURE-----
+
+--hicslhhs4zfgzzsn--
+
+--===============3306803402351320719==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3306803402351320719==--
