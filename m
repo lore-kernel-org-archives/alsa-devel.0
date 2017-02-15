@@ -1,18 +1,27 @@
-From: Matt Flax <flatmax@flatmax.org>
-Subject: [PATCH v4] ASoC: bcm2835: Add 8 channel (multitrack)
-	capability
-Date: Wed, 15 Feb 2017 08:04:35 +1100
-Message-ID: <1487106275-4260-1-git-send-email-flatmax@flatmax.org>
+From: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+Subject: Re: [PATCH v4] ASoC: bcm2835: Add 8 channel
+ (multitrack) capability
+Date: Wed, 15 Feb 2017 09:30:26 +0100
+Message-ID: <7edd3866-2cad-37a2-ad87-cc8b2c49adb2@invoxia.com>
 References: <1486942035-24038-1-git-send-email-flatmax@flatmax.org>
+ <1487106275-4260-1-git-send-email-flatmax@flatmax.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ipmail04.adl6.internode.on.net (ipmail04.adl6.internode.on.net
- [150.101.137.141])
- by alsa0.perex.cz (Postfix) with ESMTP id 42475266AC3
- for <alsa-devel@alsa-project.org>; Tue, 14 Feb 2017 22:04:55 +0100 (CET)
-In-Reply-To: <1486942035-24038-1-git-send-email-flatmax@flatmax.org>
+Received: from mail-wr0-f180.google.com (mail-wr0-f180.google.com
+ [209.85.128.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2C9C1266569
+ for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2017 09:30:29 +0100 (CET)
+Received: by mail-wr0-f180.google.com with SMTP id o16so185954513wra.1
+ for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2017 00:30:29 -0800 (PST)
+Received: from [192.168.65.131] (AAnnecy-653-1-34-223.w90-27.abo.wanadoo.fr.
+ [90.27.45.223])
+ by smtp.gmail.com with ESMTPSA id x39sm3944218wrb.3.2017.02.15.00.30.27
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 15 Feb 2017 00:30:28 -0800 (PST)
+In-Reply-To: <1487106275-4260-1-git-send-email-flatmax@flatmax.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,96 +31,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org, florian.meier@koalo.de, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, swarren@wwwdotorg.org, lee@kernel.org, phil@raspberrypi.org, eric@anholt.net, ckeepax@opensource.wolfsonmicro.com
-Cc: Matt Flax <flatmax@flatmax.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds multitrack capability if in DSP mode A and the
-codec is master.
+Hi,
 
-In bcm2835_i2s_startup, snd_pcm_hw_constraint_single is used to set
-channels to 8 if both SND_SOC_DAIFMT_CBM_CFM and SND_SOC_DAIFMT_DSP_A
-are set. Otherwise, channels are set to 2. These settings are
-accomplished using the SNDRV_PCM_HW_PARAM_CHANNELS variable.
+On 14/02/2017 22:04, Matt Flax wrote:
+> [...]
+> +	if (dev->fmt &
+> +		(SND_SOC_DAIFMT_CBM_CFM | SND_SOC_DAIFMT_DSP_A))
 
-In bcm2835_i2s_shutdown the channels are set to 2 by default.
+SND_SOC_DAIFMT_DSP_A is not a bit. It is an enum
+	#define SND_SOC_DAIFMT_I2S		1 /* I2S mode */
+	#define SND_SOC_DAIFMT_RIGHT_J		2 /* Right Justified mode */
+	#define SND_SOC_DAIFMT_LEFT_J		3 /* Left Justified mode */
+	#define SND_SOC_DAIFMT_DSP_A		4 /* L data MSB after FRM LRC */
+	#define SND_SOC_DAIFMT_DSP_B		5 /* L data MSB during FRM LRC */
+	#define SND_SOC_DAIFMT_AC97		6 /* AC97 */
+	#define SND_SOC_DAIFMT_PDM		7 /* Pulse density modulation */
 
-In bcm2835_i2s_hw_params, DSP mode A format is now an option.
-Before replicating the format variable (from ch2 to ch1) for
-register loading, requested channels are checked to be either 2 or 8.
-This can be expanded later to accomodate other channel counts if
-supported by the sound card hardware.
+So your test is wrong.
 
-Signed-off-by: Matt Flax <flatmax@flatmax.org>
----
- sound/soc/bcm/bcm2835-i2s.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
+Other question that bother me (I'm not familiar with bcm2835, so may be I'm wrong):
+why should we put channel number constraint in the SOC driver whereas ASOC already compute
+the constraint by making the intersection of channels constraints coming from soc AND codecs.
 
-diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
-index 6ba2049..300516d 100644
---- a/sound/soc/bcm/bcm2835-i2s.c
-+++ b/sound/soc/bcm/bcm2835-i2s.c
-@@ -296,6 +296,7 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
- 
- 	switch (dev->fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
-+	case SND_SOC_DAIFMT_DSP_A:
- 		data_delay = 1;
- 		break;
- 	default:
-@@ -312,6 +313,7 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
- 
- 	switch (params_channels(params)) {
- 	case 2:
-+	case 8:
- 		format = BCM2835_I2S_CH1(format) | BCM2835_I2S_CH2(format);
- 		format |= BCM2835_I2S_CH1(BCM2835_I2S_CHPOS(ch1pos));
- 		format |= BCM2835_I2S_CH2(BCM2835_I2S_CHPOS(ch2pos));
-@@ -526,7 +528,16 @@ static int bcm2835_i2s_startup(struct snd_pcm_substream *substream,
- 	regmap_update_bits(dev->i2s_regmap, BCM2835_I2S_CS_A_REG,
- 			BCM2835_I2S_STBY, BCM2835_I2S_STBY);
- 
--	return 0;
-+	/* Set the max channels to 8 if the codec is master and
-+	 * we are in DSP A mode. Otherwise only allow 2 channels.
-+	 */
-+	if (dev->fmt &
-+		(SND_SOC_DAIFMT_CBM_CFM | SND_SOC_DAIFMT_DSP_A))
-+		return snd_pcm_hw_constraint_single(substream->runtime,
-+			SNDRV_PCM_HW_PARAM_CHANNELS, 8);
-+	else
-+		return snd_pcm_hw_constraint_single(substream->runtime,
-+			SNDRV_PCM_HW_PARAM_CHANNELS, 2);
- }
- 
- static void bcm2835_i2s_shutdown(struct snd_pcm_substream *substream,
-@@ -549,6 +560,10 @@ static void bcm2835_i2s_shutdown(struct snd_pcm_substream *substream,
- 	 * not stop the clock when SND_SOC_DAIFMT_CONT
- 	 */
- 	bcm2835_i2s_stop_clock(dev);
-+
-+	/* Default to 2 channels */
-+	snd_pcm_hw_constraint_single(substream->runtime,
-+			SNDRV_PCM_HW_PARAM_CHANNELS, 2);
- }
- 
- static const struct snd_soc_dai_ops bcm2835_i2s_dai_ops = {
-@@ -576,16 +591,12 @@ static struct snd_soc_dai_driver bcm2835_i2s_dai = {
- 	.name	= "bcm2835-i2s",
- 	.probe	= bcm2835_i2s_dai_probe,
- 	.playback = {
--		.channels_min = 2,
--		.channels_max = 2,
- 		.rates =	SNDRV_PCM_RATE_8000_192000,
- 		.formats =	SNDRV_PCM_FMTBIT_S16_LE
- 				| SNDRV_PCM_FMTBIT_S24_LE
- 				| SNDRV_PCM_FMTBIT_S32_LE
- 		},
- 	.capture = {
--		.channels_min = 2,
--		.channels_max = 2,
- 		.rates =	SNDRV_PCM_RATE_8000_192000,
- 		.formats =	SNDRV_PCM_FMTBIT_S16_LE
- 				| SNDRV_PCM_FMTBIT_S24_LE
--- 
-2.7.4
+If you connect one 8 channel capable soc driver (eg. bcm2835) with a 2 channel codec in DSP_A mode, ASOC already tell
+the user space that the limit is 2 channels.
+Shouldn't you just specify that bcm2835 is 8 channel capable (and may be more), whatever the format is, and let ASOC do the job.
+Given a specific device tree connecting the bcm2835 with one or more codecs is sufficient to specify the limits.
+
+And if in the future someone wants to connect a 4 channels capable codec, or a 2x 2channels codecs, must he also send a new patch with 4 channels support ?
+
+Regards,
+Arnaud
+
+> +		return snd_pcm_hw_constraint_single(substream->runtime,
+> +			SNDRV_PCM_HW_PARAM_CHANNELS, 8);
+> +	else
+> +		return snd_pcm_hw_constraint_single(substream->runtime,
+> +			SNDRV_PCM_HW_PARAM_CHANNELS, 2);
+>   }
+>   
+>   static void bcm2835_i2s_shutdown(struct snd_pcm_substream *substream,
+> @@ -549,6 +560,10 @@ static void bcm2835_i2s_shutdown(struct snd_pcm_substream *substream,
+>   	 * not stop the clock when SND_SOC_DAIFMT_CONT
+>   	 */
+>   	bcm2835_i2s_stop_clock(dev);
+> +
+> +	/* Default to 2 channels */
+> +	snd_pcm_hw_constraint_single(substream->runtime,
+> +			SNDRV_PCM_HW_PARAM_CHANNELS, 2);
+>   }
+>   
+>   static const struct snd_soc_dai_ops bcm2835_i2s_dai_ops = {
+> @@ -576,16 +591,12 @@ static struct snd_soc_dai_driver bcm2835_i2s_dai = {
+>   	.name	= "bcm2835-i2s",
+>   	.probe	= bcm2835_i2s_dai_probe,
+>   	.playback = {
+> -		.channels_min = 2,
+> -		.channels_max = 2,
+>   		.rates =	SNDRV_PCM_RATE_8000_192000,
+>   		.formats =	SNDRV_PCM_FMTBIT_S16_LE
+>   				| SNDRV_PCM_FMTBIT_S24_LE
+>   				| SNDRV_PCM_FMTBIT_S32_LE
+>   		},
+>   	.capture = {
+> -		.channels_min = 2,
+> -		.channels_max = 2,
+>   		.rates =	SNDRV_PCM_RATE_8000_192000,
+>   		.formats =	SNDRV_PCM_FMTBIT_S16_LE
+>   				| SNDRV_PCM_FMTBIT_S24_LE
