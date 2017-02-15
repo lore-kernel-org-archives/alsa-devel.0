@@ -1,108 +1,52 @@
-From: Alex Hung <alex.hung@canonical.com>
-Subject: Re: [PATCH v2 0/6] Move dell-led to
-	drivers/platform/x86
-Date: Wed, 15 Feb 2017 22:31:39 +0800
-Message-ID: <CAJ=jquaJazMKRsKdq=tpPNq=CBtFPcau6SW3nr738v-zTXfC4g@mail.gmail.com>
-References: <20170116132204.6421-1-kernel@kempniu.pl>
- <20170213112640.GA1188@ozzy.nask.waw.pl>
- <CAJ=jqua0W3fmoJFqqVgG2Eq=9E-4toXC0UyQH3TyxZiTtNsODw@mail.gmail.com>
- <20170215135455.GA2014@ozzy.nask.waw.pl>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [RFC v2 4/7] ASoC: dmaengine_pcm: add copy support
+Date: Wed, 15 Feb 2017 14:53:41 +0000
+Message-ID: <20170215145341.sntwx7oqyqmw6azv@sirena.org.uk>
+References: <1487003909-11710-1-git-send-email-arnaud.pouliquen@st.com>
+ <1487003909-11710-5-git-send-email-arnaud.pouliquen@st.com>
+ <20170214171630.qgkyoymxyqjiiblh@sirena.org.uk>
+ <40633f7c-a2ac-1658-cc9d-b30eaff8a95a@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f169.google.com (mail-qk0-f169.google.com
- [209.85.220.169])
- by alsa0.perex.cz (Postfix) with ESMTP id AD2AF266C3D
- for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2017 15:31:41 +0100 (CET)
-Received: by mail-qk0-f169.google.com with SMTP id s186so153268247qkb.1
- for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2017 06:31:41 -0800 (PST)
-In-Reply-To: <20170215135455.GA2014@ozzy.nask.waw.pl>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>
-Cc: "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Anthony Wong <anthony.wong@canonical.com>, Takashi Iwai <tiwai@suse.com>, Andy Shevchenko <andy.shevchenko@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, Jacek Anaszewski <jacek.anaszewski@gmail.com>, Pavel Machek <pavel@ucw.cz>, =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Linux LED Subsystem <linux-leds@vger.kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="33ckhs5hsnh4v5h7"
+Return-path: <linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <40633f7c-a2ac-1658-cc9d-b30eaff8a95a-qxv4g6HH51o@public.gmane.org>
+Sender: linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "kernel-F5mvAk5X5gdBDgjK7y7TUQ@public.gmane.org" <kernel-F5mvAk5X5gdBDgjK7y7TUQ@public.gmane.org>, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre TORGUE <alexandre.torgue-qxv4g6HH51o@public.gmane.org>, Olivier MOYSAN <olivier.moysan-qxv4g6HH51o@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBGZWIgMTUsIDIwMTcgYXQgOTo1NCBQTSwgTWljaGHFgiBLxJlwaWXFhCA8a2VybmVs
-QGtlbXBuaXUucGw+IHdyb3RlOgo+IEFsZXgsCj4KPj4gSSB0ZXN0ZWQgdGhlIHBhdGNoZXMgd2l0
-aCB0aGUgZm9sbG93aW5nIHNldHVwLiBQbGVhc2Ugbm90ZSBJIHRlc3RlZAo+PiB0aGUgbWljcm9w
-aG9uZSBtdXRlIGxlZCBieSBHVUksIGFzIHRoZSBob3RrZXkgZG9lcyBub3Qgd29yayBvbiB0aGlz
-Cj4+IHN5c3RlbS4KPgo+IFRoYW5rIHlvdSBmb3IgdGFraW5nIHRoZSB0aW1lIHRvIHRlc3QgdGhp
-cyBzZXJpZXMsIGl0IGlzIGFwcHJlY2lhdGVkLiAgSQo+IHdvdWxkIG5vdCBleHBlY3QgdGhlIHN3
-aXRjaGluZyBtZXRob2QgKEdVSS9ob3RrZXkpIHRvIG1hdHRlciBoZXJlLCBhcwo+IGxvbmcgYXMg
-d2UgY2FuIGNvbXBhcmUgYmVoYXZpb3Igb2YgdHdvIGtlcm5lbCB2ZXJzaW9ucyBieSBjb25zaXN0
-ZW50bHkKPiB1c2luZyBvbmUgb2YgdGhlbS4KPgo+Pgo+PiAxLiBEb3dubG9hZGVkIHRoZSBiZWxv
-dyBwYXRjaGVzIGZyb20gcGF0Y2h3b3JrCj4+Cj4+IDk1MTg3MzcgQXdhaXRpbmcgVXBzdHJlYW0g
-W3YyLDEvNl0gZGVsbC1sZWQ6IHJlbW92ZSBHVUlEIGNoZWNrIGZyb20KPj4gZGVsbF9taWNtdXRl
-X2xlZF9zZXQoKQo+PiA5NTE4NzYxIEF3YWl0aW5nIFVwc3RyZWFtIFt2MiwyLzZdIEFMU0E6IGhk
-YSAtIHVzZQo+PiBkZWxsX21pY211dGVfbGVkX3NldCgpIGluc3RlYWQgb2YgZGVsbF9hcHBfd21p
-X2xlZF9zZXQoKQo+PiA5NTE4NzQxIEF3YWl0aW5nIFVwc3RyZWFtIFt2MiwzLzZdIEFMU0E6IGhk
-YSAtIHJlbmFtZQo+PiBkZWxsX2xlZF9zZXRfZnVuYyB0byBkZWxsX21pY211dGVfbGVkX3NldF9m
-dW5jCj4+IDk1MTg3MjUgQXdhaXRpbmcgVXBzdHJlYW0gW3YyLDQvNl0gcGxhdGZvcm0veDg2OiBk
-ZWxsLWxhcHRvcDogaW1wb3J0Cj4+IGRlbGxfbWljbXV0ZV9sZWRfc2V0KCkgZnJvbSBkcml2ZXJz
-L2xlZHMvZGVsbC1sZWQuYwo+PiA5NTE4NzI3IEF3YWl0aW5nIFVwc3RyZWFtIFt2Miw1LzZdIGRl
-bGwtbGVkOiByZW1vdmUgY29kZSByZWxhdGVkIHRvIG1pYyBtdXRlIExFRAo+PiA5NTE4NzM1IEF3
-YWl0aW5nIFVwc3RyZWFtIFt2Miw2LzZdIGRlbGwtbGVkOiBtb3ZlIGRyaXZlciB0bwo+PiBkcml2
-ZXJzL3BsYXRmb3JtL3g4Ni9kZWxsLXdtaS1sZWQuYwo+PiA5NTIwMDUzIEF3YWl0aW5nIFVwc3Ry
-ZWFtIFt2Miw2Ky82XSBwbGF0Zm9ybS94ODY6IGRlbGwtd21pLWxlZDogZml4Cj4+IGNvZGluZyBz
-dHlsZSBpc3N1ZXMKPj4KPj4gMi4gSW5zdGFsbGVkIFVidW50dSAxNi4xMCAoTGludXgga2VybmVs
-IDQuOCkgb24gRGVsbCBMYXRpdHVkZSA3MTgwCj4KPiBKdXN0IHRvIGJlIHN1cmUsIEkgYXNzdW1l
-IHlvdSBtZWFudCA3MjgwPwoKVGhpcyBpcyBhIHR5cG8sIGFuZCBpdCBzaG91bGQgYmUgNzQ4MCwg
-d2hpY2ggc2hvdWxkIGJlIHRoZSBzYW1lIGFzIDcyODAuCgo+Cj4+Cj4+ICAgLT4gTWljcm9waG9u
-ZSBtdXRlIGxlZCB3b3JrcyBhcyBleHBlY3RlZAo+Pgo+PiAzLiBBcHBsaWVkIGRvd25sb2FkZWQg
-cGF0Y2hlcyB0byBrZXJuZWwgNC44IHdpdGhvdXQgYW55IGNvbmZsaWN0cywgYnV0Cj4+IGtlcm5l
-bCB3aWxsIG5vdCBjb21waWxlIHN1Y2Nlc3NmdWxseS4KPgo+IEkgYW0gY29uZnVzZWQuICBUaGlz
-IHBhdGNoIHNlcmllcyBzaG91bGQgYXBwbHkgY2xlYW5seSB0byA0LjkgYW5kIGl0cwo+IHN1cnJv
-dW5kaW5ncy4gIEJldHdlZW4gNC44IGFuZCA0LjksIGNvbW1pdCA0ODc1YTVmNzIxODAgKCJBTFNB
-OiBoZGEgLQo+IEZpeCBhIGZhaWx1cmUgb2YgbWljbXV0ZSBsZWQgd2hlbiBoYXZpbmcgbXVsdGkg
-YWRjcyIpIGhhcHBlbmVkLiAgIFRoaXMKPiBtYWtlcyBpdCBpbXBvc3NpYmxlIHRvIGFwcGx5IHRo
-aXMgcGF0Y2ggc2VyaWVzIGNsZWFubHkgb24gdG9wIG9mIDQuOAo+IHdpdGhvdXQgcmVkdWNpbmcg
-Y29udGV4dCB0byBvbmUgbGluZS4KPgo+IE1vcmVvdmVyLCBJIGFwcGxpZWQgdGhpcyBwYXRjaCBz
-ZXJpZXMgKHdpdGggcmVkdWNlZCBjb250ZXh0KSB0byA0LjggYW5kCj4gc3VjY2Vzc2Z1bGx5IGNv
-bXBpbGVkIHRoZSBrZXJuZWwuICBDb3VsZCB5b3Ugc2hlZCBzb21lIGxpZ2h0IG9uIHdoZXJlCj4g
-ZXhhY3RseSBkaWQgeW91ciBidWlsZCBjcmFzaD8KClRoZSBlcnJvciBtZXNzYWdlcyBzdWNoIGFz
-IGJlbG93LCBzbyBpdCBpcyBwcm9iYWJseSBub3QgImZhaWxzIHRvCmNvbXBpbGUiLiBTaW5jZSA0
-Ljkgd29ya3MgYmV0dGVyLCBJIHByb2JhYmx5IHdpbGwgZm9jdXMgb24gNC45ICYgNC4xMCwKdGhv
-dWdoLgoKZmluZCAvaG9tZS9hbGV4aHVuZy9zcmMva2VybmVsL3VidW50dS15YWtrZXR5L2RlYmlh
-bi9idWlsZC9idWlsZC1nZW5lcmljLwotbmFtZSBcKi5rbyB8IFwKICAgIHNlZCAtZSAncy8uKlwv
-XChbXlwvXSpcKVwua28vXDEvJyB8IHNvcnQgPgovaG9tZS9hbGV4aHVuZy9zcmMva2VybmVsL3Vi
-dW50dS15YWtrZXR5L2RlYmlhbi5tYXN0ZXIvYWJpLzQuOC4wLTM3LjM5L2FtZDY0L2dlbmVyaWMu
-bW9kdWxlcwpJSTogQ2hlY2tpbmcgbW9kdWxlcyBmb3IgZ2VuZXJpYy4uLgogICByZWFkaW5nIG5l
-dyBtb2R1bGVzLi4ucmVhZCA0ODIxIG1vZHVsZXMuCiAgIHJlYWRpbmcgb2xkIG1vZHVsZXMuLi4K
-ICAgICAgTUlTUzogZGVsbC1sZWQKICAgICAgTkVXIDogZGVsbC13bWktbGVkCiAgICAgIHJlYWQg
-NDgyMSBtb2R1bGVzIDogbmV3KDEpICBtaXNzaW5nKDEpCkVFOiBNaXNzaW5nIG1vZHVsZXMgKHN0
-YXJ0IGJlZ2dpbmcgZm9yIG1lcmN5KQpkZWJpYW4vcnVsZXMuZC80LWNoZWNrcy5tazoxMjogcmVj
-aXBlIGZvciB0YXJnZXQgJ21vZHVsZS1jaGVjay1nZW5lcmljJyBmYWlsZWQKbWFrZTogKioqIFtt
-b2R1bGUtY2hlY2stZ2VuZXJpY10gRXJyb3IgMQoKCj4KPj4KPj4gNC4gSW5zdGFsbGVkIFVidW50
-dSBaZXN0eSBrZXJuZWwgKExpbnV4IGtlcm5lbCA0LjkpCj4+Cj4+ICAgLT4gTWljcm9waG9uZSBt
-dXRlIGxlZCB3b3JrcyBhcyBleHBlY3RlZAo+Pgo+PiA1LiBBcHBsaWVkIGFuZCBjb21waWxlZCBk
-b3dubG9hZGVkIHBhdGNoZXMgdG8ga2VybmVsIDQuOQo+Pgo+PiAgIC0+IE1pY3JvcGhvbmUgbXV0
-ZSBsZWQgZG9lcyBub3Qgd29yawo+Cj4gQW55IGNoYW5jZSBvZiBhIGdpdCBiaXNlY3Q/CgpDZXJ0
-YWlubHkuIEdpdmUgbWUgc29tZSB0aW1lLgoKPgo+Pgo+PiA2LiBDb21waWxlZCBhbmQgaW5zdGFs
-bGVkIExpbnV4IGtlcm5lbCA0LjEwIHJjOAo+Pgo+PiAgIC0+IE1pY3JvcGhvbmUgbXV0ZSBsZWQg
-ZG9lcyBub3Qgd29yawo+Cj4gVGhpcyBpcyBldmVuIG1vcmUgY29uZnVzaW5nLiAgQmV0d2VlbiA0
-LjksIHdoaWNoIHlvdSBjbGFpbSB3b3JrcyBmaW5lLAo+IGFuZCA0LjEwLXJjOCwgd2hpY2ggeW91
-IGNsYWltIGRvZXMgbm90IHdvcmssIEkgY2FuIHNlZSBubyBjaGFuZ2VzIHRvCj4gZWl0aGVyIGRy
-aXZlcnMvbGVkcy9kZWxsLWxlZC5jIG9yIHNvdW5kL3BjaS9oZGEvZGVsbF93bWlfaGVscGVyLmMu
-Cj4gS2VybmVsIGNvbmZpZ3VyYXRpb24gaXNzdWU/CgpJIHdhcyBzdXJwcmlzZWQgdG9vLCBhbmQg
-SSBjb21waWxlZCBpdCB0d2ljZSBhbmQgaW5zdGFsbGVkIG9uIGJvdGgKVWJ1bnR1IDE2LjA0IGFu
-ZCAxNi4xMC4KCkkgd291bGQgZ3Vlc3MgaXQgaXMgY29uZmlnIHRvby4gT24gNC45LCBpdCB3YXMg
-dXNpbmcgVWJ1bnR1IGRlZmF1bHQuCk9uIDQuMTByYzgsIEkgYW0gcHJldHR5IG11Y2ggdXNpbmcg
-dGhlIGluc3RydWN0aW9uIG9uCmh0dHBzOi8vd2lraS51YnVudHUuY29tL0tlcm5lbFRlYW0vR2l0
-S2VybmVsQnVpbGQuIFRoZSAuY29uZmlnIGlzCmF2YWlsYWJsZSBAIGh0dHA6Ly9wYXN0ZS51YnVu
-dHUuY29tLzI0MDAxMTEzLwoKCj4KPj4KPj4gNy4gQXBwbGllZCBhbmQgY29tcGlsZWQgZG93bmxv
-YWRlZCBwYXRjaGVzIHRvIGtlcm5lbCA0LjEwIHJjOAo+Pgo+PiAgIC0+IE1pY3JvcGhvbmUgbXV0
-ZSBsZWQgZG9lcyBub3Qgd29yawo+Cj4gTm8gc3VycHJpc2VzIGhlcmUgaWYgaXQgcmVhbGx5IGRv
-ZXMgbm90IHdvcmsgd2l0aCA0LjEwLXJjOC4KPgo+IC0tCj4gQmVzdCByZWdhcmRzLAo+IE1pY2hh
-xYIgS8SZcGllxYQKCgoKLS0gCkNoZWVycywKQWxleCBIdW5nCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+--33ckhs5hsnh4v5h7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Feb 15, 2017 at 02:59:18PM +0100, Arnaud Pouliquen wrote:
+
+> For DFSDM we need to re-arrange samples after DMA transfer, before
+> sending them to application.
+> For this, a copy ops(called in snd_pcm_lib_read_transfer) alreday exists
+> in snd_pcm_ops struct.
+
+No, copy() is an alternative to doing DMA rather than something that
+works with DMA.  If you want to have some sort of post processing
+operation it shoudn't be called copy().  It's probably worth considering
+just making a new format and letting userspace convert things here.
+
+--33ckhs5hsnh4v5h7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlika3QACgkQJNaLcl1U
+h9DKrgf/RKMVllUuaZSVpCSv327C4V+u3rtHbhzk50hwN25T16xLJtEr4+Jeuol8
+qab3PO4EkbLfr4VbKZi2c57+2nwRw+XXNiKxIOjkb8t0D2y6UCMvNezepacWnJhM
+pBiT3YmP2y8voF+iXAfM/5EhYIjoTcD7tA4U0tfCH/dDdW3UShgdgm8Tg8C6rh0c
+7JmCH4scZuaqnud2Rwyd8zjdmWXpbQije7TVyc3zmLMxUpx3qgFt5c8Isen6lYRm
+jhPEULoAZslyN8yAzbdFnuRFovFeY2qxfdXmgicNB39yaDNGhcUit5IIxa51NlXZ
+0mnvwj+gqc1sN2/25xIMw4lRnDka7w==
+=iYQi
+-----END PGP SIGNATURE-----
+
+--33ckhs5hsnh4v5h7--
