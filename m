@@ -1,20 +1,21 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v1 3/3] ASoC: zx-96p22: add zte's aud96p22
- controller driver
-Date: Wed, 15 Feb 2017 11:24:25 +0000
-Message-ID: <20170215112425.GC30007@localhost.localdomain>
-References: <1487156110-12840-1-git-send-email-baoyou.xie@linaro.org>
- <1487156110-12840-3-git-send-email-baoyou.xie@linaro.org>
+From: Alex Hung <alex.hung@canonical.com>
+Subject: Re: [PATCH v2 0/6] Move dell-led to
+	drivers/platform/x86
+Date: Wed, 15 Feb 2017 19:56:52 +0800
+Message-ID: <CAJ=jqua0W3fmoJFqqVgG2Eq=9E-4toXC0UyQH3TyxZiTtNsODw@mail.gmail.com>
+References: <20170116132204.6421-1-kernel@kempniu.pl>
+ <20170213112640.GA1188@ozzy.nask.waw.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 39D8E261740
- for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2017 12:23:34 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1487156110-12840-3-git-send-email-baoyou.xie@linaro.org>
+Received: from mail-qk0-f178.google.com (mail-qk0-f178.google.com
+ [209.85.220.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8EF95261740
+ for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2017 12:56:53 +0100 (CET)
+Received: by mail-qk0-f178.google.com with SMTP id u25so148963048qki.2
+ for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2017 03:56:53 -0800 (PST)
+In-Reply-To: <20170213112640.GA1188@ozzy.nask.waw.pl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,46 +25,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Baoyou Xie <baoyou.xie@linaro.org>
-Cc: mark.rutland@arm.com, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com, tiwai@suse.com, srinivas.kandagatla@linaro.org, bardliao@realtek.com, lars@metafoo.de, axel.lin@ingics.com, Paul.Handrigan@cirrus.com, chen.chaokai@zte.com.cn, wang.qiang01@zte.com.cn, devicetree@vger.kernel.org, arnd@arndb.de, yesanishhere@gmail.com, xie.baoyou@zte.com.cn, nh6z@nh6z.net, robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org, oder_chiou@realtek.com, linux-kernel@vger.kernel.org, petr@barix.com, broonie@kernel.org, jun.nie@linaro.org, shawnguo@kernel.org
+To: =?UTF-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>
+Cc: "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Anthony Wong <anthony.wong@canonical.com>, Takashi Iwai <tiwai@suse.com>, Andy Shevchenko <andy.shevchenko@gmail.com>, Richard Purdie <rpurdie@rpsys.net>, Jacek Anaszewski <jacek.anaszewski@gmail.com>, Pavel Machek <pavel@ucw.cz>, =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Linux LED Subsystem <linux-leds@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Feb 15, 2017 at 06:55:10PM +0800, Baoyou Xie wrote:
-> This patch adds aud96p22 controller driver for zte's SoC family.
-> 
-> Signed-off-by: Baoyou Xie <baoyou.xie@linaro.org>
-> ---
-<snip>
-> +static int zx_aud96p22_i2c_write(struct i2c_client *i2c_client,
-> +				 const void *data, size_t count)
-> +{
-> +	int xfer;
-> +
-> +	xfer = i2c_master_send(i2c_client, data, count);
-> +	if (xfer == count)
-> +		return 0;
-> +	else if (xfer < 0)
-> +		return xfer;
-> +	else
-> +		return -EIO;
-> +}
-> +
-> +static int zx_aud96p22_i2c_read(struct i2c_client *i2c_client,
-> +				unsigned char addr)
-> +{
-> +	int xfer;
-> +
-> +	xfer = i2c_smbus_read_word_data(i2c_client, addr);
-> +	if (xfer < 0)
-> +		dev_warn(&i2c_client->dev, "transfer error %d\n", xfer);
-> +
-> +	return xfer;
-> +}
-> +
-
-Is there any reason this isn't using regmap? It looks like it
-should be, have a look at any of the other mainline CODECs for an
-example.
-
-Thanks,
-Charles
+SGksCgpJIHRlc3RlZCB0aGUgcGF0Y2hlcyB3aXRoIHRoZSBmb2xsb3dpbmcgc2V0dXAuIFBsZWFz
+ZSBub3RlIEkgdGVzdGVkCnRoZSBtaWNyb3Bob25lIG11dGUgbGVkIGJ5IEdVSSwgYXMgdGhlIGhv
+dGtleSBkb2VzIG5vdCB3b3JrIG9uIHRoaXMKc3lzdGVtLgoKMS4gRG93bmxvYWRlZCB0aGUgYmVs
+b3cgcGF0Y2hlcyBmcm9tIHBhdGNod29yawoKOTUxODczNyBBd2FpdGluZyBVcHN0cmVhbSBbdjIs
+MS82XSBkZWxsLWxlZDogcmVtb3ZlIEdVSUQgY2hlY2sgZnJvbQpkZWxsX21pY211dGVfbGVkX3Nl
+dCgpCjk1MTg3NjEgQXdhaXRpbmcgVXBzdHJlYW0gW3YyLDIvNl0gQUxTQTogaGRhIC0gdXNlCmRl
+bGxfbWljbXV0ZV9sZWRfc2V0KCkgaW5zdGVhZCBvZiBkZWxsX2FwcF93bWlfbGVkX3NldCgpCjk1
+MTg3NDEgQXdhaXRpbmcgVXBzdHJlYW0gW3YyLDMvNl0gQUxTQTogaGRhIC0gcmVuYW1lCmRlbGxf
+bGVkX3NldF9mdW5jIHRvIGRlbGxfbWljbXV0ZV9sZWRfc2V0X2Z1bmMKOTUxODcyNSBBd2FpdGlu
+ZyBVcHN0cmVhbSBbdjIsNC82XSBwbGF0Zm9ybS94ODY6IGRlbGwtbGFwdG9wOiBpbXBvcnQKZGVs
+bF9taWNtdXRlX2xlZF9zZXQoKSBmcm9tIGRyaXZlcnMvbGVkcy9kZWxsLWxlZC5jCjk1MTg3Mjcg
+QXdhaXRpbmcgVXBzdHJlYW0gW3YyLDUvNl0gZGVsbC1sZWQ6IHJlbW92ZSBjb2RlIHJlbGF0ZWQg
+dG8gbWljIG11dGUgTEVECjk1MTg3MzUgQXdhaXRpbmcgVXBzdHJlYW0gW3YyLDYvNl0gZGVsbC1s
+ZWQ6IG1vdmUgZHJpdmVyIHRvCmRyaXZlcnMvcGxhdGZvcm0veDg2L2RlbGwtd21pLWxlZC5jCjk1
+MjAwNTMgQXdhaXRpbmcgVXBzdHJlYW0gW3YyLDYrLzZdIHBsYXRmb3JtL3g4NjogZGVsbC13bWkt
+bGVkOiBmaXgKY29kaW5nIHN0eWxlIGlzc3VlcwoKMi4gSW5zdGFsbGVkIFVidW50dSAxNi4xMCAo
+TGludXgga2VybmVsIDQuOCkgb24gRGVsbCBMYXRpdHVkZSA3MTgwCgogIC0+IE1pY3JvcGhvbmUg
+bXV0ZSBsZWQgd29ya3MgYXMgZXhwZWN0ZWQKCjMuIEFwcGxpZWQgZG93bmxvYWRlZCBwYXRjaGVz
+IHRvIGtlcm5lbCA0Ljggd2l0aG91dCBhbnkgY29uZmxpY3RzLCBidXQKa2VybmVsIHdpbGwgbm90
+IGNvbXBpbGUgc3VjY2Vzc2Z1bGx5LgoKNC4gSW5zdGFsbGVkIFVidW50dSBaZXN0eSBrZXJuZWwg
+KExpbnV4IGtlcm5lbCA0LjkpCgogIC0+IE1pY3JvcGhvbmUgbXV0ZSBsZWQgd29ya3MgYXMgZXhw
+ZWN0ZWQKCjUuIEFwcGxpZWQgYW5kIGNvbXBpbGVkIGRvd25sb2FkZWQgcGF0Y2hlcyB0byBrZXJu
+ZWwgNC45CgogIC0+IE1pY3JvcGhvbmUgbXV0ZSBsZWQgZG9lcyBub3Qgd29yawoKNi4gQ29tcGls
+ZWQgYW5kIGluc3RhbGxlZCBMaW51eCBrZXJuZWwgNC4xMCByYzgKCiAgLT4gTWljcm9waG9uZSBt
+dXRlIGxlZCBkb2VzIG5vdCB3b3JrCgo3LiBBcHBsaWVkIGFuZCBjb21waWxlZCBkb3dubG9hZGVk
+IHBhdGNoZXMgdG8ga2VybmVsIDQuMTAgcmM4CgogIC0+IE1pY3JvcGhvbmUgbXV0ZSBsZWQgZG9l
+cyBub3Qgd29yawoKCgpPbiBNb24sIEZlYiAxMywgMjAxNyBhdCA3OjI2IFBNLCBNaWNoYcWCIEvE
+mXBpZcWEIDxrZXJuZWxAa2VtcG5pdS5wbD4gd3JvdGU6Cj4gSGkgZXZlcnlvbmUsCj4KPiBJdCBo
+YXMgYmVlbiBhbG1vc3QgYSBtb250aCBzaW5jZSBJIHBvc3RlZCB2Miwgc28gSSBob3BlIHNlbmRp
+bmcgYQo+IHJlbWluZGVyIGlzIG9rYXkuCj4KPiBKYXJvc2xhdiwgVGFrYXNoaSwgY291bGQgeW91
+IHBsZWFzZSBhY2sgdGhpcyBwYXRjaCBzZXJpZXMgZnJvbSB0aGUgc291bmQKPiBzdWJzeXN0ZW0g
+cGVyc3BlY3RpdmU/ICBQYXRjaGVzIDItNCB0b3VjaCBpdC4KPgo+IEFudGhvbnksIGhhdmUgeW91
+IGFuZCB5b3VyIHRlYW0gcGVyaGFwcyBoYWQgYSBjaGFuY2UgdG8gdGVzdCB0aGlzIHBhdGNoCj4g
+c2VyaWVzIG9uIGFjdHVhbCBoYXJkd2FyZT8KPgo+IFRoYW5rcywKPgo+IC0tCj4gQmVzdCByZWdh
+cmRzLAo+IE1pY2hhxYIgS8SZcGllxYQKCgoKLS0gCkNoZWVycywKQWxleCBIdW5nCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
