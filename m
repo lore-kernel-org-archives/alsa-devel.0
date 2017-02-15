@@ -1,48 +1,55 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Kernel crash at snd_ctl_find_numid+0x38/0x6c in
- kernel 4.4
-Date: Wed, 15 Feb 2017 11:08:58 +0100
-Message-ID: <25dfa11c-b4d4-e101-5509-43e7476ff445@ladisch.de>
-References: <TY1PR0301MB10716F5C2D30274FC9DEDA7DED590@TY1PR0301MB1071.apcprd03.prod.outlook.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id A0474261740
- for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2017 11:09:00 +0100 (CET)
-Received: from [10.1.2.4] (unknown [94.101.37.79])
- by webclient5.webclient5.de (Postfix) with ESMTPSA id 50D8E5580748
- for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2017 11:08:59 +0100 (CET)
-In-Reply-To: <TY1PR0301MB10716F5C2D30274FC9DEDA7DED590@TY1PR0301MB1071.apcprd03.prod.outlook.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Baoyou Xie <baoyou.xie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: [PATCH v1 1/3] ASoC: zx-96p22: add documentation for zte's aud96p22  controller
+Date: Wed, 15 Feb 2017 18:55:08 +0800
+Message-ID: <1487156110-12840-1-git-send-email-baoyou.xie@linaro.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: jun.nie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, arnd-r2nGTMty4D4@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org, nh6z-fFIq/eER6g8@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, oder_chiou-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org, axel.lin-8E1dMatC8ynQT0dZR+AlfA@public.gmane.org, petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org, yesanishhere-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org
+Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, baoyou.xie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, xie.baoyou-Th6q7B73Y6EnDS1+zs4M5A@public.gmane.org, chen.chaokai-Th6q7B73Y6EnDS1+zs4M5A@public.gmane.org, wang.qiang01-Th6q7B73Y6EnDS1+zs4M5A@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Rohit Kumar wrote:
-> I am getting NULL pointer dereference occasionally at snd_ctl_find_numid+0x38/0x6c in 4.4 kernel while accessing snd_kcontrol. The issue is reproduced ocassionally. Can anybody provide any pointer in fixing the issue. Below is the stack trace :
->
->   2662.430298:   <2> PC is at snd_ctl_find_numid+0x38/0x6c
->   2662.437819:   <2> LR is at snd_ctl_find_id+0x38/0xd8
->   2662.662838:   <2> [<ffffff8008c4e35c>] snd_ctl_find_numid+0x38/0x6c
->   2662.667513:   <2> [<ffffff8008c4e900>] snd_ctl_find_id+0x38/0xd8
->   2662.673415:   <2> [<ffffff8008c4f488>] snd_ctl_elem_info+0x40/0x11c
->   2662.678799:   <2> [<ffffff8008c4df5c>] snd_ctl_ioctl_compat+0x3f4/0x740
->   2662.684644:   <2> [<ffffff800823477c>] compat_SyS_ioctl+0x124/0xd88
->
-> There is no specific usecase when the issue is observed. Sometimes issue occurs during bootup and sometimes during audio usecase.
+This patch adds dt-binding documentation for zte's aud96p22 controller.
 
-Which hardware?  Which driver?  Does it occur with the latest kernel?
+Signed-off-by: Baoyou Xie <baoyou.xie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+---
+ .../devicetree/bindings/sound/zte,zx-96p22.txt     | 24 ++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/zte,zx-96p22.txt
 
+diff --git a/Documentation/devicetree/bindings/sound/zte,zx-96p22.txt b/Documentation/devicetree/bindings/sound/zte,zx-96p22.txt
+new file mode 100644
+index 0000000..4184566
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/zte,zx-96p22.txt
+@@ -0,0 +1,24 @@
++ZTE zx96p22 controller
++
++Required properties:
++ - compatible : Must be "zte,zx-aud96p22"
++ - #sound-dai-cells: Should be 0
++ - reg : Offset of I2C register for zx96p22
++
++Example:
++
++	audio_i2c0: audio_i2c0@1486000 {
++		compatible = "zte,zx296718-i2c";
++		reg = <0x01486000 0x1000>;
++		interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++		clocks = <&audiocrm AUDIO_I2C0_WCLK>;
++		clock-frequency = <1600000>;
++		status = "ok";
++		inner_codec: aud96p22@22 {
++			compatible = "zte,zx-aud96p22";
++			#sound-dai-cells = <0>;
++			reg = <0x22>;
++		};
++	};
+-- 
+2.7.4
 
-Regards,
-Clemens
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
