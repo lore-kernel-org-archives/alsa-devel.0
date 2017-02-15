@@ -1,97 +1,58 @@
-From: =?utf-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>
-Subject: Re: [PATCH v2 0/6] Move dell-led to drivers/platform/x86
-Date: Wed, 15 Feb 2017 14:54:55 +0100
-Message-ID: <20170215135455.GA2014@ozzy.nask.waw.pl>
-References: <20170116132204.6421-1-kernel@kempniu.pl>
- <20170213112640.GA1188@ozzy.nask.waw.pl>
- <CAJ=jqua0W3fmoJFqqVgG2Eq=9E-4toXC0UyQH3TyxZiTtNsODw@mail.gmail.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [RFC v2 4/7] ASoC: dmaengine_pcm: add copy support
+Date: Wed, 15 Feb 2017 14:59:18 +0100
+Message-ID: <40633f7c-a2ac-1658-cc9d-b30eaff8a95a@st.com>
+References: <1487003909-11710-1-git-send-email-arnaud.pouliquen@st.com>
+ <1487003909-11710-5-git-send-email-arnaud.pouliquen@st.com>
+ <20170214171630.qgkyoymxyqjiiblh@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-leds-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAJ=jqua0W3fmoJFqqVgG2Eq=9E-4toXC0UyQH3TyxZiTtNsODw@mail.gmail.com>
-Sender: linux-leds-owner@vger.kernel.org
-To: Alex Hung <alex.hung@canonical.com>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Anthony Wong <anthony.wong@canonical.com>, Richard Purdie <rpurdie@rpsys.net>, Jacek Anaszewski <jacek.anaszewski@gmail.com>, Pavel Machek <pavel@ucw.cz>, Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy.shevchenko@gmail.com>, Linux LED Subsystem <linux-leds@vger.kernel.org>, "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 1D034265142
+ for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2017 14:59:23 +0100 (CET)
+In-Reply-To: <20170214171630.qgkyoymxyqjiiblh@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Olivier MOYSAN <olivier.moysan@st.com>, "kernel@stlinux.com" <kernel@stlinux.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Rob Herring <robh+dt@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Hartmut Knaack <knaack.h@gmx.de>, Jonathan Cameron <jic23@kernel.org>, Alexandre TORGUE <alexandre.torgue@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-Alex, 
+Hello Mark,
 
-> I tested the patches with the following setup. Please note I tested
-> the microphone mute led by GUI, as the hotkey does not work on this
-> system.
-
-Thank you for taking the time to test this series, it is appreciated.  I
-would not expect the switching method (GUI/hotkey) to matter here, as
-long as we can compare behavior of two kernel versions by consistently
-using one of them.
-
+On 02/14/2017 06:16 PM, Mark Brown wrote:
+> On Mon, Feb 13, 2017 at 05:38:26PM +0100, Arnaud Pouliquen wrote:
+>> From: olivier moysan <olivier.moysan@st.com>
+>> 
+>> Add copy support in pcm damengine operations. As example, this
+>> allows to: - process data before rendering (IEC status
+>> insertion), - process captured sample ( sample mask and shift).
 > 
-> 1. Downloaded the below patches from patchwork
+> dmaengine with copy...  so not DMA at all?  I'm a bit confused
+> about why we're extending the dmaengine code to have a copy
+> operation rather than just writing driver code.
 > 
-> 9518737 Awaiting Upstream [v2,1/6] dell-led: remove GUID check from
-> dell_micmute_led_set()
-> 9518761 Awaiting Upstream [v2,2/6] ALSA: hda - use
-> dell_micmute_led_set() instead of dell_app_wmi_led_set()
-> 9518741 Awaiting Upstream [v2,3/6] ALSA: hda - rename
-> dell_led_set_func to dell_micmute_led_set_func
-> 9518725 Awaiting Upstream [v2,4/6] platform/x86: dell-laptop: import
-> dell_micmute_led_set() from drivers/leds/dell-led.c
-> 9518727 Awaiting Upstream [v2,5/6] dell-led: remove code related to mic mute LED
-> 9518735 Awaiting Upstream [v2,6/6] dell-led: move driver to
-> drivers/platform/x86/dell-wmi-led.c
-> 9520053 Awaiting Upstream [v2,6+/6] platform/x86: dell-wmi-led: fix
-> coding style issues
-> 
-> 2. Installed Ubuntu 16.10 (Linux kernel 4.8) on Dell Latitude 7180
 
-Just to be sure, I assume you meant 7280?
+For DFSDM we need to re-arrange samples after DMA transfer, before
+sending them to application.
+For this, a copy ops(called in snd_pcm_lib_read_transfer) alreday exists
+in snd_pcm_ops struct.
+This ops is not available at soc dma engine level, so at ASoC driver
+level.
+Aim of this patch is to expose the copy in driver. DMA is still used,
+copy ops just allows to handle the copy_to_user in driver.
+Advantage of this add-on is that we still able to take benefice of the
+generic DMA in DFSDM driver.
+Now if you estimate that it is too stm32 SOC specific, the other
+solution is to handle directly the PCM platform device in DFSDM driver.
 
-> 
->   -> Microphone mute led works as expected
-> 
-> 3. Applied downloaded patches to kernel 4.8 without any conflicts, but
-> kernel will not compile successfully.
-
-I am confused.  This patch series should apply cleanly to 4.9 and its
-surroundings.  Between 4.8 and 4.9, commit 4875a5f72180 ("ALSA: hda -
-Fix a failure of micmute led when having multi adcs") happened.   This
-makes it impossible to apply this patch series cleanly on top of 4.8
-without reducing context to one line.
-
-Moreover, I applied this patch series (with reduced context) to 4.8 and
-successfully compiled the kernel.  Could you shed some light on where
-exactly did your build crash?
-
-> 
-> 4. Installed Ubuntu Zesty kernel (Linux kernel 4.9)
-> 
->   -> Microphone mute led works as expected
-> 
-> 5. Applied and compiled downloaded patches to kernel 4.9
-> 
->   -> Microphone mute led does not work
-
-Any chance of a git bisect?
-
-> 
-> 6. Compiled and installed Linux kernel 4.10 rc8
-> 
->   -> Microphone mute led does not work
-
-This is even more confusing.  Between 4.9, which you claim works fine,
-and 4.10-rc8, which you claim does not work, I can see no changes to
-either drivers/leds/dell-led.c or sound/pci/hda/dell_wmi_helper.c.
-Kernel configuration issue?
-
-> 
-> 7. Applied and compiled downloaded patches to kernel 4.10 rc8
-> 
->   -> Microphone mute led does not work
-
-No surprises here if it really does not work with 4.10-rc8.
-
--- 
-Best regards,
-Michał Kępień
+Regards
+Arnaud
