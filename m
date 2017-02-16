@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: mediatek: add power-domain
- get/put ctrl for mt2701
-Date: Thu, 16 Feb 2017 18:26:49 +0000
-Message-ID: <20170216182649.k6vj3rpvzgbquax5@sirena.org.uk>
-References: <1487222836-21174-1-git-send-email-garlic.tseng@mediatek.com>
- <1487222836-21174-2-git-send-email-garlic.tseng@mediatek.com>
+Subject: Re: [PATCH 15/16] ASoC: Intel: bxt: Add jack port
+ initialize in bxt_rt298 machine
+Date: Thu, 16 Feb 2017 18:56:58 +0000
+Message-ID: <20170216185658.relwcxkr357dqjhs@sirena.org.uk>
+References: <1486474800-11426-1-git-send-email-jeeja.kp@intel.com>
+ <1486474800-11426-16-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4594696179428460377=="
+Content-Type: multipart/mixed; boundary="===============6965721431815467421=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DB8FB266A02
- for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2017 19:27:10 +0100 (CET)
-In-Reply-To: <1487222836-21174-2-git-send-email-garlic.tseng@mediatek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F7CD266A02
+ for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2017 19:57:08 +0100 (CET)
+In-Reply-To: <1486474800-11426-16-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Garlic Tseng <garlic.tseng@mediatek.com>
-Cc: alsa-devel@alsa-project.org, ir.lian@mediatek.com, srv_heupstream@mediatek.com, tiwai@suse.de, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+To: jeeja.kp@intel.com
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4594696179428460377==
+--===============6965721431815467421==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="4uhon5fj5av5susm"
+	protocol="application/pgp-signature"; boundary="vf75ouljmsja5zde"
 Content-Disposition: inline
 
 
---4uhon5fj5av5susm
+--vf75ouljmsja5zde
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 16, 2017 at 01:27:15PM +0800, Garlic Tseng wrote:
+On Tue, Feb 07, 2017 at 07:09:59PM +0530, jeeja.kp@intel.com wrote:
+> From: Jeeja KP <jeeja.kp@intel.com>
+>=20
+> After the pcm jack is created, create and initialize the pin switch
+> widget for each port. Pin switch is to enable/disable the pin when
+> monitor is connected/disconnected.
+> ---
 
->  	pm_runtime_enable(&pdev->dev);
->  	if (!pm_runtime_enabled(&pdev->dev))
->  		goto err_pm_disable;
-> +	pm_runtime_get_sync(&pdev->dev);
+This has no signoffs at all, I can't do anything with it.  Vinod, you
+acked this?
 
-You should really check for errors here.
-
---4uhon5fj5av5susm
+--vf75ouljmsja5zde
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlil7ugACgkQJNaLcl1U
-h9Auvgf8DP/0a3HINQuPRhOmPw6Qg6w3EuAY0C7UhkYDZ22QXhW3EzCfTI5LbOGv
-BRuDgmtVSDnLDnJfTbMeCewScIXHErJaNSZCboXmRakzkA+2JgbquJigPh8qMg4F
-5KY0ykAodCWRmLQu3qGiCta3wgpZg/0izc1cxyDRp8lOAFIySpplhxuy+FME8PyO
-7/fUxOGE5AobH8wA4pK78tW+os+ZG7fqry3pqQnEmaYQIWQ2A19wY0zLOMXqw9H3
-XKtgdK+0TAACWwsAaQZj04RtLi7/HqbFsQiz5aSij0r4iuqhBLDSHR3zxJq3hX6H
-4+DoqtgrXcQn+pcAmu0z6X6juaBCWg==
-=RCKs
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlil9fkACgkQJNaLcl1U
+h9B0bwf/SKOUV0v+RRRVf1dY2yJXhhx8GvpILP+5boxlPKmwM91Kr5cAEY9DpVKm
+bDmt17Bo9OGK2L3FI62OvhKiVUEafTlOL5Q6bijtntqQb81y03ag2ZlFzbS5YvS+
+mkbVWe3NGCMy/2x6USz1uCRwq7rq8gjcjCuxgStArRkHX2fGvTmyCsQjq3ZdlpNj
+9/vr34Jwxkb3xACjiOgdwNiGi3Yds7bqZhU8w+Gx1oO9HiCBldg71lnAVDU7eTZZ
+57uobLxAIkiiOh7woOSVXSs3jc0oF3PTs/JcxDG6fo46hbsjdAkqzCDTg530fBkt
+imNIBkt6/XFysUnXjGqN9A3J/uZHnw==
+=htcd
 -----END PGP SIGNATURE-----
 
---4uhon5fj5av5susm--
+--vf75ouljmsja5zde--
 
---===============4594696179428460377==
+--===============6965721431815467421==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4594696179428460377==--
+--===============6965721431815467421==--
