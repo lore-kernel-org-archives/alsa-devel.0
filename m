@@ -1,49 +1,82 @@
-From: =?utf-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>
-Subject: Re: [PATCH v2 0/6] Move dell-led to drivers/platform/x86
-Date: Thu, 16 Feb 2017 13:01:08 +0100
-Message-ID: <20170216120108.GE1350@ozzy.nask.waw.pl>
-References: <20170116132204.6421-1-kernel@kempniu.pl>
- <20170213112640.GA1188@ozzy.nask.waw.pl>
- <CAJ=jqua0W3fmoJFqqVgG2Eq=9E-4toXC0UyQH3TyxZiTtNsODw@mail.gmail.com>
- <20170215135455.GA2014@ozzy.nask.waw.pl>
- <CAJ=jquaJazMKRsKdq=tpPNq=CBtFPcau6SW3nr738v-zTXfC4g@mail.gmail.com>
- <20170216092747.GA1350@ozzy.nask.waw.pl>
- <CAJ=jqub6AwXBeAahmMguq_h4jTkDbxxEL9=T1aLPOOENMdeLcw@mail.gmail.com>
- <20170216113258.GD1350@ozzy.nask.waw.pl>
- <CAHp75Vd=kCrmhpOyUYOzuTiy89tqeTisWj7BQw8r2vvBmFebDw@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: nau8825: automatic BCLK and LRC
+ divde in master mode
+Date: Thu, 16 Feb 2017 12:13:50 +0000
+Message-ID: <20170216121349.q7fa3uwij3ki7t4j@sirena.org.uk>
+References: <1487051073-2350-1-git-send-email-KCHSU0@nuvoton.com>
+ <20170214110908.nhklqtcy5dohhned@sirena.org.uk>
+ <58A509A6.1010304@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-leds-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vd=kCrmhpOyUYOzuTiy89tqeTisWj7BQw8r2vvBmFebDw@mail.gmail.com>
-Sender: linux-leds-owner@vger.kernel.org
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Alex Hung <alex.hung@canonical.com>, Jacek Anaszewski <jacek.anaszewski@gmail.com>, Pavel Machek <pavel@ucw.cz>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Anthony Wong <anthony.wong@canonical.com>, Richard Purdie <rpurdie@rpsys.net>, Pali =?utf-8?B?Um9ow6Fy?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Linux LED Subsystem <linux-leds@vger.kernel.org>, "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============5083037833645758502=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8BDE0267014
+ for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2017 13:13:59 +0100 (CET)
+In-Reply-To: <58A509A6.1010304@nuvoton.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, "anatol.pomozov@gmail.com" <anatol.pomozov@gmail.com>, AC30 YHChuang <YHCHuang@nuvoton.com>, AC30 WTLi <WTLI@nuvoton.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "benzh@chromium.org" <benzh@chromium.org>, AC30 CTLin0 <CTLIN0@nuvoton.com>, MS40 MHKuo <MHKuo@nuvoton.com>, "yong.zhi@intel.com" <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-> On Thu, Feb 16, 2017 at 1:32 PM, Michał Kępień <kernel@kempniu.pl> wrote:
-> 
-> > For maintainers' convenience, I am planning to submit a v3 with all the
-> > tags supplied by everyone who reviewed this series and also some minor
-> > coding style tweaks suggested along the way.
-> 
-> Thanks!
-> I'm a bit busy right now, but I definitely will apply the series this week.
 
-Not sure if I understand correctly, but this series was supposed to go
-through the LED subsystem.  The cover letter said:
+--===============5083037833645758502==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="c4iocfkjqkx4alol"
+Content-Disposition: inline
 
-> As all patches except patch 3 in this series affect the LED subsystem,
-> the series is based on linux-leds/for-4.11.
 
-See also:
+--c4iocfkjqkx4alol
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-    https://www.spinics.net/lists/platform-driver-x86/msg10235.html
-    https://www.spinics.net/lists/platform-driver-x86/msg10237.html
-    https://www.spinics.net/lists/platform-driver-x86/msg10250.html
-    https://www.spinics.net/lists/platform-driver-x86/msg10253.html
+On Thu, Feb 16, 2017 at 10:08:38AM +0800, John Hsu wrote:
+> On 2/14/2017 7:09 PM, Mark Brown wrote:
 
--- 
-Best regards,
-Michał Kępień
+> > This patch *still* does not apply.  Please, try sending to yourself and
+> > applying with git am before you resend to me.  Check that the patch is
+> > not being corrupted when you send it (things like space/tab conversion
+> > for example).
+
+> I have resent the patch to myself. And copy the mail content to a new
+> patch. Then try the command as follows, and it seems work fine.
+> git am --signoff < ASoC-nau8825-auto-BCLK-and-LRC-divide.patch
+
+I looked again, you've got at least space/tab conversion problems in
+there in the copy that ended up in my mailbox.  Perhaps there was some
+temporary problem in the mail system your company uses, can you try
+resending to me and see if it's sorted?
+
+--c4iocfkjqkx4alol
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlill30ACgkQJNaLcl1U
+h9B/Egf+OncT0iKqqzGbBMq4H4Urkfoe6T9MdjkQyRxFQFBhR2IRvSC6f/2Ry6Wc
+Ul58jpixWx34yCpsvgW9DVXnO60LCdVgNUElBNLf77wSasnTCdwYnPiA5gMrwsuV
+m5PiB47uiJXVYkYjgPr61NBOfmdkM/8tsMi+LydSq2jeFvbn04db23lnIuDLCMju
+2DrxI7jWIZeUuvdB9QVRYcCZa5De9FVsCNr2DcN+Rg6LTzUBweNPPsFxTh3AFHwI
+f7I1T2dad38X7qpEz4mF2ePXXO9WrF89lNSCQoI/qVJ9PKgLHtg2SVwTaoRYOx04
++N+sp4l/AQlDhu16Iw2i7tsJlXr8Fw==
+=wm16
+-----END PGP SIGNATURE-----
+
+--c4iocfkjqkx4alol--
+
+--===============5083037833645758502==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5083037833645758502==--
