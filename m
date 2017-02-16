@@ -1,14 +1,14 @@
 From: OnkelDead <onkel@paraair.de>
-Subject: [PATCH v6 1/1] ALSA: Tascam US-16x08 DSP mixer quirk
-Date: Thu, 16 Feb 2017 10:10:50 +0100
-Message-ID: <1487236250-3783-1-git-send-email-onkel@paraair.de>
+Subject: [PATCH v7 1/1] ALSA: Tascam US-16x08 DSP mixer quirk
+Date: Thu, 16 Feb 2017 10:27:17 +0100
+Message-ID: <1487237237-4121-1-git-send-email-onkel@paraair.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.75])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C1392666EA
- for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2017 10:11:13 +0100 (CET)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A5172666EA
+ for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2017 10:27:31 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,11 +22,7 @@ To: alsa-devel@alsa-project.org
 Cc: OnkelDead <onkel@paraair.de>, clemens@ladisch.de, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-Fixed codestyle, removed blank lines among the variable definitions / declarations.
-Changed log messages to usb_audio_dbg(), although they happens in therory only.
-Changed most control names to standard naming rule (where suitable, I'd miss naming rules
-for EQ or compressor features).
-
+Fixed route control enumeration values.
 
 Add mixer quirk for Tascam US-16x08 usb interface.
 Even that this an usb compliant device,
@@ -37,9 +33,9 @@ Signed-off-by: Detlef Urban <onkel@paraair.de>
 ---
  sound/usb/Makefile        |    1 +
  sound/usb/mixer_quirks.c  |    5 +
- sound/usb/mixer_us16x08.c | 1435 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/usb/mixer_us16x08.c | 1426 +++++++++++++++++++++++++++++++++++++++++++++
  sound/usb/mixer_us16x08.h |  122 ++++
- 4 files changed, 1563 insertions(+)
+ 4 files changed, 1554 insertions(+)
  create mode 100644 sound/usb/mixer_us16x08.c
  create mode 100644 sound/usb/mixer_us16x08.h
 
@@ -80,10 +76,10 @@ index 04991b0..4fa0053 100644
  	case USB_ID(0x041e, 0x3042):
 diff --git a/sound/usb/mixer_us16x08.c b/sound/usb/mixer_us16x08.c
 new file mode 100644
-index 0000000..3da0cb5
+index 0000000..67de72d
 --- /dev/null
 +++ b/sound/usb/mixer_us16x08.c
-@@ -0,0 +1,1435 @@
+@@ -0,0 +1,1426 @@
 +/*
 + *   Tascam US-16x08 ALSA driver
 + *
@@ -239,7 +235,7 @@ index 0000000..3da0cb5
 +};
 +
 +/* route enumeration names */
-+static char *route_names[] = {
++const char *route_names[] = {
 +	"Master Left", "Master Right", "Output 1", "Output 2", "Output 3",
 +	"Output 4", "Output 5", "Output 6", "Output 7", "Output 8",
 +};
@@ -278,17 +274,8 @@ index 0000000..3da0cb5
 +{
 +	int i;
 +
-+	uinfo->count = 1;
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
-+	uinfo->value.integer.max = SND_US16X08_KCMAX(kcontrol);
-+	uinfo->value.integer.min = SND_US16X08_KCMIN(kcontrol);
-+	uinfo->value.integer.step = SND_US16X08_KCSTEP(kcontrol);
-+	uinfo->value.enumerated.items = 10;
-+	uinfo->value.enumerated.names_ptr = (__u64) route_names;
-+	uinfo->value.enumerated.names_length = 0;
-+	for (i = 0; i < 10; i++)
-+		uinfo->value.enumerated.names_length +=
-+			strlen(route_names[i]) + 1;
++	return snd_ctl_enum_info(uinfo, 1, 10, route_names);
++
 +	return 0;
 +}
 +
