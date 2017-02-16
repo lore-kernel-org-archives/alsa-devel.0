@@ -1,83 +1,53 @@
-From: Baoyou Xie <baoyou.xie@linaro.org>
-Subject: Re: [PATCH v1 3/3] ASoC: zx-96p22: add zte's aud96p22
-	controller driver
-Date: Thu, 16 Feb 2017 08:24:17 +0800
-Message-ID: <CA+DQWkwjCYsKYW-THWHr=qZTRe-f+m_PnX4fM+6tRuQKwkWxWA@mail.gmail.com>
-References: <1487156110-12840-1-git-send-email-baoyou.xie@linaro.org>
- <1487156110-12840-3-git-send-email-baoyou.xie@linaro.org>
- <20170215112425.GC30007@localhost.localdomain>
+From: Stephen Boyd <sboyd@codeaurora.org>
+Subject: Re: [PATCH] clk: x86: add "mclk" alias for Baytrail/Cherrytrail
+Date: Wed, 15 Feb 2017 16:56:23 -0800
+Message-ID: <20170216005623.GY25384@codeaurora.org>
+References: <1486937212-10093-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+ <20170214190456.GV25384@codeaurora.org>
+ <bc29984e-cc58-69ed-d6ca-b4808d6514dc@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f47.google.com (mail-it0-f47.google.com
- [209.85.214.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 328412666EA
- for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2017 01:24:18 +0100 (CET)
-Received: by mail-it0-f47.google.com with SMTP id 203so82844969ith.0
- for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2017 16:24:18 -0800 (PST)
-In-Reply-To: <20170215112425.GC30007@localhost.localdomain>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, bardliao@realtek.com, lars@metafoo.de, Axel Lin <axel.lin@ingics.com>, Paul.Handrigan@cirrus.com, chen.chaokai@zte.com.cn, wang.qiang01@zte.com.cn, devicetree <devicetree@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, anish kumar <yesanishhere@gmail.com>, "xie.baoyou" <xie.baoyou@zte.com.cn>, nh6z@nh6z.net, Rob Herring <robh+dt@kernel.org>, linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>, oder_chiou@realtek.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, petr@barix.com, broonie@kernel.org, Jun Nie <jun.nie@linaro.org>, Shawn Guo <shawnguo@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-clk-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <bc29984e-cc58-69ed-d6ca-b4808d6514dc@linux.intel.com>
+Sender: linux-clk-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: linux-clk@vger.kernel.org, x86@kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org, Michael Turquette <mturquette@baylibre.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, Charles:
-
-On 15 February 2017 at 19:24, Charles Keepax <
-ckeepax@opensource.wolfsonmicro.com> wrote:
-
-> On Wed, Feb 15, 2017 at 06:55:10PM +0800, Baoyou Xie wrote:
-> > This patch adds aud96p22 controller driver for zte's SoC family.
+On 02/14, Pierre-Louis Bossart wrote:
+> On 2/14/17 1:04 PM, Stephen Boyd wrote:
 > >
-> > Signed-off-by: Baoyou Xie <baoyou.xie@linaro.org>
-> > ---
-> <snip>
-> > +static int zx_aud96p22_i2c_write(struct i2c_client *i2c_client,
-> > +                              const void *data, size_t count)
-> > +{
-> > +     int xfer;
-> > +
-> > +     xfer = i2c_master_send(i2c_client, data, count);
-> > +     if (xfer == count)
-> > +             return 0;
-> > +     else if (xfer < 0)
-> > +             return xfer;
-> > +     else
-> > +             return -EIO;
-> > +}
-> > +
-> > +static int zx_aud96p22_i2c_read(struct i2c_client *i2c_client,
-> > +                             unsigned char addr)
-> > +{
-> > +     int xfer;
-> > +
-> > +     xfer = i2c_smbus_read_word_data(i2c_client, addr);
-> > +     if (xfer < 0)
-> > +             dev_warn(&i2c_client->dev, "transfer error %d\n", xfer);
-> > +
-> > +     return xfer;
-> > +}
-> > +
->
-> Is there any reason this isn't using regmap? It looks like it
-> should be, have a look at any of the other mainline CODECs for an
-> example.
->
-> We can not read the i2c register directly, cause of the i2c is responded
-asynchronous, and involves i2c irq.
+> >This leaks an alias when the driver is removed. Honestly,
+> >clk_add_alias() doesn't work well because of that problem. Can
+> >you just add another lookup with the pointer you already have
+> >instead of passing a NULL device to do a global lookup?
+> 
+> This is a builtin driver that cannot be configured as a module, is
+> the leaked alias problematic?
 
-I suggest that we access i2c through general i2c interface.
+Well we don't suppress driver unbinding via sysfs here, unless I
+missed something, so the leak could be triggered that way.
 
+> I don't mind trying something different but I am not familiar enough
+> with the framework to understand what you are hinting at. Are you
+> suggesting a change on the last parameter such as:
+> 
+> clk_add_alias("mclk", dev_name(&pdev->dev), "pmc_plt_clk_3", &pdev->dev)
+> 
 
-> Thanks,
-> Charles
->
+I mean:
+
+ lookup = clkdev_hw_create(data->clks[3].hw, "mclk", NULL);
+
+and then freeing that lookup with clkdev_drop in the remove of
+the driver. "mclk" is really generic for a connection name
+without an associated device id, so you may want to pass some
+device as the last argument here, but dev_name(&pdev->dev) seems
+odd because that's the clock controller device, not whatever
+device would be calling clk_get() with this created lookup in
+mind.
+
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
