@@ -1,72 +1,60 @@
-From: Julia Lawall <julia.lawall@lip6.fr>
-Subject: [asoc:topic/intel 83/98]
- sound/soc/codecs/hdac_hdmi.c:1884:2-21: iterator with update on line 1885
- (fwd)
-Date: Thu, 16 Feb 2017 22:04:24 +0100 (CET)
-Message-ID: <alpine.DEB.2.20.1702162202330.2121@hadrien>
+From: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Subject: Re: [PATCH v2 0/6] Move dell-led to drivers/platform/x86
+Date: Thu, 16 Feb 2017 23:11:37 +0100
+Message-ID: <afe740e3-7a66-2f2e-00f9-914e89e3f646@gmail.com>
+References: <20170116132204.6421-1-kernel@kempniu.pl>
+ <20170213112640.GA1188@ozzy.nask.waw.pl>
+ <CAJ=jqua0W3fmoJFqqVgG2Eq=9E-4toXC0UyQH3TyxZiTtNsODw@mail.gmail.com>
+ <20170215135455.GA2014@ozzy.nask.waw.pl>
+ <CAJ=jquaJazMKRsKdq=tpPNq=CBtFPcau6SW3nr738v-zTXfC4g@mail.gmail.com>
+ <20170216092747.GA1350@ozzy.nask.waw.pl>
+ <CAJ=jqub6AwXBeAahmMguq_h4jTkDbxxEL9=T1aLPOOENMdeLcw@mail.gmail.com>
+ <20170216113258.GD1350@ozzy.nask.waw.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail3-relais-sop.national.inria.fr
- (mail3-relais-sop.national.inria.fr [192.134.164.104])
- by alsa0.perex.cz (Postfix) with ESMTP id 65259266D57
- for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2017 22:04:25 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <platform-driver-x86-owner@vger.kernel.org>
+In-Reply-To: <20170216113258.GD1350@ozzy.nask.waw.pl>
+Sender: platform-driver-x86-owner@vger.kernel.org
+To: =?UTF-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>, Alex Hung <alex.hung@canonical.com>, Pavel Machek <pavel@ucw.cz>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Anthony Wong <anthony.wong@canonical.com>, Richard Purdie <rpurdie@rpsys.net>, =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy.shevchenko@gmail.com>, Linux LED Subsystem <linux-leds@vger.kernel.org>, "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-I don't think that what is done in lines 1884 and 1885 is the right
-approach.  port is just a local variable that points to the different list
-elements and allows list_for_each_entry to get from one element to the
-other.  Setting port to NULL doesn't change the list, and it makes it
-impossible for list_for_each_entry to find the next element.
+Hi Michał,
 
-julia
+On 02/16/2017 12:32 PM, Michał Kępień wrote:
+>> The led stops working after 4th patch "platform/x86: dell-laptop:
+>> import dell_micmute_led_set() from drivers/leds/dell-led.c", and the
+>> .config is with CONFIG_DELL_LAPTOP=m
+>>
+>> However, I found dell-laptop is not loaded on Latitude 7480 as its
+>> chassis type is Notebook (10), instead of 8 (Portable) or 9 (Laptop).
+>> That's also what I see for newer Dell laptops.
+>>
+>> After I added the below entry into dell-laptop, the led works fine.
+>> This is not in kernel 4.10 rc8 either, and I will submit a patch for
+>> it.
+>>
+>>         {
+>>                 .matches = {
+>>                         DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+>>                         DMI_MATCH(DMI_CHASSIS_TYPE, "10"), /*Notebook*/
+>>                 },
+>>         },
+> 
+> Great, so it all makes sense now.  Thanks once again for investigating.
+> 
+> For maintainers' convenience, I am planning to submit a v3 with all the
+> tags supplied by everyone who reviewed this series and also some minor
+> coding style tweaks suggested along the way.
+> 
+> Alex, in the light of your findings quoted above, would it be okay to
+> also apply your Tested-by to all patches?
+> 
+> Jacek, Pavel, which linux-leds branch would you like me to base v3 on?
 
----------- Forwarded message ----------
-Date: Fri, 17 Feb 2017 05:00:49 +0800
-From: kbuild test robot <fengguang.wu@intel.com>
-To: kbuild@01.org
-Cc: Julia Lawall <julia.lawall@lip6.fr>
-Subject: [asoc:topic/intel 83/98] sound/soc/codecs/hdac_hdmi.c:1884:2-21:
-    iterator with update on line 1885
+Please use for-next branch for that.
 
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/intel
-head:   e3efb2ad834b50cb9c8625155e3e2674f5bc443b
-commit: e0e5d3e5a53b3bc354c18030b78b7ebcb33e004b [83/98] ASoC: hdac_hdmi: Add support for multiple ports to a PCM
-:::::: branch date: 2 hours ago
-:::::: commit date: 2 hours ago
-
->> sound/soc/codecs/hdac_hdmi.c:1884:2-21: iterator with update on line 1885
-
-git remote add asoc https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
-git remote update asoc
-git checkout e0e5d3e5a53b3bc354c18030b78b7ebcb33e004b
-vim +1884 sound/soc/codecs/hdac_hdmi.c
-
-18382ead Subhransu S. Prusty 2015-11-10  1878
-4a3478de Jeeja KP            2016-02-12  1879  	list_for_each_entry_safe(pcm, pcm_next, &hdmi->pcm_list, head) {
-4a3478de Jeeja KP            2016-02-12  1880  		pcm->cvt = NULL;
-e0e5d3e5 Jeeja KP            2017-02-07  1881  		if (list_empty(&pcm->port_list))
-e0e5d3e5 Jeeja KP            2017-02-07  1882  			continue;
-e0e5d3e5 Jeeja KP            2017-02-07  1883
-e0e5d3e5 Jeeja KP            2017-02-07 @1884  		list_for_each_entry(port, &pcm->port_list, head)
-e0e5d3e5 Jeeja KP            2017-02-07 @1885  			port = NULL;
-e0e5d3e5 Jeeja KP            2017-02-07  1886
-4a3478de Jeeja KP            2016-02-12  1887  		list_del(&pcm->head);
-4a3478de Jeeja KP            2016-02-12  1888  		kfree(pcm);
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+-- 
+Best regards,
+Jacek Anaszewski
