@@ -1,22 +1,20 @@
-From: Baoyou Xie <baoyou.xie@linaro.org>
-Subject: Re: [PATCH v1 3/3] ASoC: zx-96p22: add zte's aud96p22
-	controller driver
-Date: Thu, 16 Feb 2017 11:09:36 +0800
-Message-ID: <CA+DQWkyi=OyW5yhJ9cvtVw0ZK8t8KV1oEvFWKAY+Cfac4SN29A@mail.gmail.com>
-References: <1487156110-12840-1-git-send-email-baoyou.xie@linaro.org>
- <1487156110-12840-3-git-send-email-baoyou.xie@linaro.org>
- <20170215112425.GC30007@localhost.localdomain>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH] ASoC: rt286: fix headphone click/crack
+ noise on Dell XPS 9343 I2S mode
+Date: Thu, 16 Feb 2017 05:10:06 +0000
+Message-ID: <CAAd53p57jLT5=uvPDm7jqvQQuuDGDhHjf=GRkPfphKg1K82HQA@mail.gmail.com>
+References: <20170123053514.6193-1-kai.heng.feng@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f51.google.com (mail-it0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id CE3512666EA
- for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2017 04:09:38 +0100 (CET)
-Received: by mail-it0-f51.google.com with SMTP id x75so10864957itb.0
- for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2017 19:09:38 -0800 (PST)
-In-Reply-To: <20170215112425.GC30007@localhost.localdomain>
+Received: from mail-yw0-f176.google.com (mail-yw0-f176.google.com
+ [209.85.161.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id F006A2666EA
+ for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2017 06:10:17 +0100 (CET)
+Received: by mail-yw0-f176.google.com with SMTP id u68so3385277ywg.0
+ for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2017 21:10:17 -0800 (PST)
+In-Reply-To: <20170123053514.6193-1-kai.heng.feng@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,56 +24,178 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, bardliao@realtek.com, lars@metafoo.de, Axel Lin <axel.lin@ingics.com>, Paul.Handrigan@cirrus.com, chen.chaokai@zte.com.cn, wang.qiang01@zte.com.cn, devicetree <devicetree@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, anish kumar <yesanishhere@gmail.com>, "xie.baoyou" <xie.baoyou@zte.com.cn>, nh6z@nh6z.net, Rob Herring <robh+dt@kernel.org>, linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>, oder_chiou@realtek.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, petr@barix.com, broonie@kernel.org, Jun Nie <jun.nie@linaro.org>, Shawn Guo <shawnguo@kernel.org>
+To: bardliao@realtek.com
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On 15 February 2017 at 19:24, Charles Keepax <
-ckeepax@opensource.wolfsonmicro.com> wrote:
+On Mon, Jan 23, 2017 at 1:35 PM Kai-Heng Feng <kai.heng.feng@canonical.com>
+wrote:
 
-> On Wed, Feb 15, 2017 at 06:55:10PM +0800, Baoyou Xie wrote:
-> > This patch adds aud96p22 controller driver for zte's SoC family.
-> >
-> > Signed-off-by: Baoyou Xie <baoyou.xie@linaro.org>
-> > ---
-> <snip>
-> > +static int zx_aud96p22_i2c_write(struct i2c_client *i2c_client,
-> > +                              const void *data, size_t count)
-> > +{
-> > +     int xfer;
-> > +
-> > +     xfer = i2c_master_send(i2c_client, data, count);
-> > +     if (xfer == count)
-> > +             return 0;
-> > +     else if (xfer < 0)
-> > +             return xfer;
-> > +     else
-> > +             return -EIO;
-> > +}
-> > +
-> > +static int zx_aud96p22_i2c_read(struct i2c_client *i2c_client,
-> > +                             unsigned char addr)
-> > +{
-> > +     int xfer;
-> > +
-> > +     xfer = i2c_smbus_read_word_data(i2c_client, addr);
-> > +     if (xfer < 0)
-> > +             dev_warn(&i2c_client->dev, "transfer error %d\n", xfer);
-> > +
-> > +     return xfer;
-> > +}
-> > +
+> HDA mode does not have these issues because necessary workarounds in
+> linux/sound/pci/hda/patch_realtek.c are already applied. So we can
+> leverage these workaournds into rt286.
 >
-> Is there any reason this isn't using regmap? It looks like it
-> should be, have a look at any of the other mainline CODECs for an
-> example.
+> When jack is plugged, it rapidly generates I2C interrupts, which
+> triggers rt286_irq() and rt286_jack_detect(), which causes the noise.
+> alc_fixup_dell_xps13() in patch_realtek.c sets up a pin that can stop
+> the frantic interrupts, hence fixes the click noise.
 >
+> When rt286 is under powersaving state, play a sound with headphone or
+> plug a headphone in will produce a loud crack sound.
+> alc_shutup_dell_xps13() patch_realtek.c mutes the headphone at plugging.
+> Apply the same workaround to LDO2 power event can make the loud crack
+> sound to a more tolerable pop sound. I found that unconditionally apply
+> the workaround to all related power event can help a little further.
 >
-Hi, Charles:
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=112611
+> Link: https://bugzilla.redhat.com/show_bug.cgi?id=1313434
+> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+>
 
-oh, I understood what you said. Please wait for my next version.
+Ping.
+Can anyone help reviewing this?
 
 
-Thanks,
-> Charles
+> ---
+>  sound/soc/codecs/rt286.c | 67
+> +++++++++++++++++++++++++++++++++++++++++++++---
+>  1 file changed, 63 insertions(+), 4 deletions(-)
+>
+> diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+> index 74c0e4e..d041937 100644
+> --- a/sound/soc/codecs/rt286.c
+> +++ b/sound/soc/codecs/rt286.c
+> @@ -36,6 +36,8 @@
+>  #define RT286_VENDOR_ID 0x10ec0286
+>  #define RT288_VENDOR_ID 0x10ec0288
+>
+> +#define AMP_OUT_MUTE 0xb080
+> +
+>  struct rt286_priv {
+>         struct reg_default *index_cache;
+>         int index_cache_size;
+> @@ -47,6 +49,7 @@ struct rt286_priv {
+>         struct delayed_work jack_detect_work;
+>         int sys_clk;
+>         int clk_id;
+> +       void (*mute_hpo_func)(struct snd_soc_codec *codec);
+>  };
+>
+>  static const struct reg_default rt286_index_def[] = {
+> @@ -472,10 +475,51 @@ static int rt286_set_dmic1_event(struct
+> snd_soc_dapm_widget *w,
+>         return 0;
+>  }
+>
+> +/* Add HV, VREF and LDO1 event functions to workaround headphone crack
+> noise */
+> +static int rt286_hv_event(struct snd_soc_dapm_widget *w,
+> +                            struct snd_kcontrol *kcontrol, int event)
+> +{
+> +       struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+> +       struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
+> +
+> +       if (rt286->mute_hpo_func)
+> +               rt286->mute_hpo_func(codec);
+> +
+> +       return 0;
+> +}
+> +
+> +static int rt286_vref_event(struct snd_soc_dapm_widget *w,
+> +                            struct snd_kcontrol *kcontrol, int event)
+> +{
+> +       struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+> +       struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
+> +
+> +       if (rt286->mute_hpo_func)
+> +               rt286->mute_hpo_func(codec);
+> +
+> +       return 0;
+> +}
+> +
+> +static int rt286_ldo1_event(struct snd_soc_dapm_widget *w,
+> +                            struct snd_kcontrol *kcontrol, int event)
+> +{
+> +       struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+> +       struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
+> +
+> +       if (rt286->mute_hpo_func)
+> +               rt286->mute_hpo_func(codec);
+> +
+> +       return 0;
+> +}
+> +
+>  static int rt286_ldo2_event(struct snd_soc_dapm_widget *w,
+>                              struct snd_kcontrol *kcontrol, int event)
+>  {
+>         struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+> +       struct rt286_priv *rt286 = snd_soc_codec_get_drvdata(codec);
+> +
+> +       if (rt286->mute_hpo_func)
+> +               rt286->mute_hpo_func(codec);
+>
+>         switch (event) {
+>         case SND_SOC_DAPM_POST_PMU:
+> @@ -516,16 +560,24 @@ static int rt286_mic1_event(struct
+> snd_soc_dapm_widget *w,
+>         return 0;
+>  }
+>
+> +static void dell_dino_mute_hpo(struct snd_soc_codec *codec)
+> +{
+> +       snd_soc_write(codec, RT286_SET_AMP_GAIN_HPO, AMP_OUT_MUTE);
+> +}
+> +
+>  static const struct snd_soc_dapm_widget rt286_dapm_widgets[] = {
+>         SND_SOC_DAPM_SUPPLY_S("HV", 1, RT286_POWER_CTRL1,
+> -               12, 1, NULL, 0),
+> +               12, 1, rt286_hv_event, SND_SOC_DAPM_PRE_PMD |
+> +               SND_SOC_DAPM_PRE_PMU),
+>         SND_SOC_DAPM_SUPPLY("VREF", RT286_POWER_CTRL1,
+> -               0, 1, NULL, 0),
+> +               0, 1, rt286_vref_event, SND_SOC_DAPM_PRE_PMD |
+> +               SND_SOC_DAPM_PRE_PMU),
+>         SND_SOC_DAPM_SUPPLY_S("LDO1", 1, RT286_POWER_CTRL2,
+> -               2, 0, NULL, 0),
+> +               2, 0, rt286_ldo1_event, SND_SOC_DAPM_PRE_PMD |
+> +               SND_SOC_DAPM_PRE_PMU),
+>         SND_SOC_DAPM_SUPPLY_S("LDO2", 2, RT286_POWER_CTRL1,
+>                 13, 1, rt286_ldo2_event, SND_SOC_DAPM_PRE_PMD |
+> -               SND_SOC_DAPM_POST_PMU),
+> +               SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
+>         SND_SOC_DAPM_SUPPLY("MCLK MODE", RT286_PLL_CTRL1,
+>                 5, 0, NULL, 0),
+>         SND_SOC_DAPM_SUPPLY("MIC1 Input Buffer", SND_SOC_NOPM,
+> @@ -1190,6 +1242,11 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+>                 regmap_update_bits(rt286->regmap,
+>                                         RT286_CBJ_CTRL1, 0xf000, 0xb000);
+>         } else {
+> +               /* Fix headphone click noise */
+> +               if (dmi_check_system(dmi_dell_dino))
+> +                       regmap_write(rt286->regmap,
+> +                                       RT286_MIC1_DET_CTRL, 0x0020);
+> +
+>                 regmap_update_bits(rt286->regmap,
+>                                         RT286_CBJ_CTRL1, 0xf000, 0x5000);
+>         }
+> @@ -1204,6 +1261,7 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+>         mdelay(10);
+>
+>         regmap_write(rt286->regmap, RT286_MISC_CTRL1, 0x0000);
+> +
+>         /* Power down LDO, VREF */
+>         regmap_update_bits(rt286->regmap, RT286_POWER_CTRL2, 0xc, 0x0);
+>         regmap_update_bits(rt286->regmap, RT286_POWER_CTRL1, 0x1001,
+> 0x1001);
+> @@ -1222,6 +1280,7 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+>                         RT286_SET_GPIO_DATA, 0x40, 0x40);
+>                 regmap_update_bits(rt286->regmap,
+>                         RT286_GPIO_CTRL, 0xc, 0x8);
+> +               rt286->mute_hpo_func = dell_dino_mute_hpo;
+>         }
+>
+>         if (rt286->i2c->irq) {
+> --
+> 2.10.0
+>
 >
