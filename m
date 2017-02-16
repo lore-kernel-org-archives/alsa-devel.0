@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoc: hdac_hdmi: Configure pin verbs for MST"
-	to the asoc tree
-Date: Thu, 16 Feb 2017 19:04:42 +0000
-Message-ID: <E1ceRMA-0007dy-5n@debutante>
-References: <1484589477-7630-17-git-send-email-jeeja.kp@intel.com>
+Subject: Applied "ASoC: hdac_hdmi: Handle MST pin jack
+	detection at boot/resume" to the asoc tree
+Date: Thu, 16 Feb 2017 19:04:45 +0000
+Message-ID: <E1ceRMD-0007f8-63@debutante>
+References: <1484589477-7630-16-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EFCFF2670C1
- for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2017 20:04:50 +0100 (CET)
-In-Reply-To: <1484589477-7630-17-git-send-email-jeeja.kp@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D0490267058
+ for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2017 20:04:53 +0100 (CET)
+In-Reply-To: <1484589477-7630-16-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoc: hdac_hdmi: Configure pin verbs for MST
+   ASoC: hdac_hdmi: Handle MST pin jack detection at boot/resume
 
 has been applied to the asoc tree at
 
@@ -53,61 +53,107 @@ to this mail.
 Thanks,
 Mark
 
->From 1b46ebd136b3ad334762d6e66b0b96b432680e50 Mon Sep 17 00:00:00 2001
+>From a9ce96bcd9c4d0c1ffd3d37c000bcee470b2535b Mon Sep 17 00:00:00 2001
 From: Jeeja KP <jeeja.kp@intel.com>
-Date: Tue, 7 Feb 2017 19:09:47 +0530
-Subject: [PATCH] ASoc: hdac_hdmi: Configure pin verbs for MST
+Date: Tue, 7 Feb 2017 19:09:46 +0530
+Subject: [PATCH] ASoC: hdac_hdmi: Handle MST pin jack detection at boot/resume
 
-To enable stream on a specific port of a MST capable pin, the port
-needs to be selected before we configure the pin widget verb.
-
-When port is selected, all the pin widget verb controlling the sink
-device operation will be directed to selected port. So add port
-selection before configuring the pin widget verb.
+The ELD notification can be received asynchronously from the graphics
+side and this may happen just at the moment the sound driver is
+initializing and notification will be missed. Similarly at system
+resume, the notification is ignored as the  ELD and connection states
+are updated in anyway at the end of the resume.
+So check the jack status in boot/resume by querying the port presence
+based on pin caps and report the jack status.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/hdac_hdmi.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/soc/codecs/hdac_hdmi.c | 41 +++++++++++++++++++++++++++++------------
+ 1 file changed, 29 insertions(+), 12 deletions(-)
 
 diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index c5527e81a490..6cf86a0a118c 100644
+index 84b7d6cd7c37..c5527e81a490 100644
 --- a/sound/soc/codecs/hdac_hdmi.c
 +++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -448,6 +448,9 @@ static int hdac_hdmi_query_port_connlist(struct hdac_ext_device *hdac,
- 		return -EINVAL;
+@@ -1551,15 +1551,38 @@ int hdac_hdmi_jack_init(struct snd_soc_dai *dai, int device)
+ }
+ EXPORT_SYMBOL_GPL(hdac_hdmi_jack_init);
+ 
++static void hdac_hdmi_present_sense_all_pins(struct hdac_ext_device *edev,
++			struct hdac_hdmi_priv *hdmi, bool detect_pin_caps)
++{
++	int i;
++	struct hdac_hdmi_pin *pin;
++
++	list_for_each_entry(pin, &hdmi->pin_list, head) {
++		if (detect_pin_caps) {
++
++			if (hdac_hdmi_get_port_len(edev, pin->nid)  == 0)
++				pin->mst_capable = false;
++			else
++				pin->mst_capable = true;
++		}
++
++		for (i = 0; i < pin->num_ports; i++) {
++			if (!pin->mst_capable && i > 0)
++				continue;
++
++			hdac_hdmi_present_sense(pin, &pin->ports[i]);
++		}
++	}
++}
++
+ static int hdmi_codec_probe(struct snd_soc_codec *codec)
+ {
+ 	struct hdac_ext_device *edev = snd_soc_codec_get_drvdata(codec);
+ 	struct hdac_hdmi_priv *hdmi = edev->private_data;
+ 	struct snd_soc_dapm_context *dapm =
+ 		snd_soc_component_get_dapm(&codec->component);
+-	struct hdac_hdmi_pin *pin;
+ 	struct hdac_ext_link *hlink = NULL;
+-	int ret, i;
++	int ret;
+ 
+ 	edev->scodec = codec;
+ 
+@@ -1587,10 +1610,7 @@ static int hdmi_codec_probe(struct snd_soc_codec *codec)
+ 		return ret;
  	}
  
-+	if (hdac_hdmi_port_select_set(hdac, port) < 0)
-+		return -EIO;
-+
- 	port->num_mux_nids = snd_hdac_get_connections(&hdac->hdac, pin->nid,
- 			port->mux_nids, HDA_MAX_CONNECTIONS);
- 	if (port->num_mux_nids == 0)
-@@ -687,6 +690,10 @@ static int hdac_hdmi_pin_output_widget_event(struct snd_soc_dapm_widget *w,
- 	if (!pcm)
- 		return -EIO;
+-	list_for_each_entry(pin, &hdmi->pin_list, head)
+-		for (i = 0; i < pin->num_ports; i++)
+-			hdac_hdmi_present_sense(pin, &pin->ports[i]);
+-
++	hdac_hdmi_present_sense_all_pins(edev, hdmi, true);
+ 	/* Imp: Store the card pointer in hda_codec */
+ 	edev->card = dapm->card->snd_card;
  
-+	/* set the device if pin is mst_capable */
-+	if (hdac_hdmi_port_select_set(edev, port) < 0)
-+		return -EIO;
-+
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
- 		hdac_hdmi_set_power_state(edev, port->pin->nid, AC_PWRST_D0);
-@@ -775,6 +782,11 @@ static int hdac_hdmi_pin_mux_widget_event(struct snd_soc_dapm_widget *w,
- 		kc  = w->kcontrols[0];
+@@ -1638,9 +1658,7 @@ static void hdmi_codec_complete(struct device *dev)
+ {
+ 	struct hdac_ext_device *edev = to_hda_ext_device(dev);
+ 	struct hdac_hdmi_priv *hdmi = edev->private_data;
+-	struct hdac_hdmi_pin *pin;
+ 	struct hdac_device *hdac = &edev->hdac;
+-	int i;
  
- 	mux_idx = dapm_kcontrol_get_value(kc);
-+
-+	/* set the device if pin is mst_capable */
-+	if (hdac_hdmi_port_select_set(edev, port) < 0)
-+		return -EIO;
-+
- 	if (mux_idx > 0) {
- 		snd_hdac_codec_write(&edev->hdac, port->pin->nid, 0,
- 			AC_VERB_SET_CONNECT_SEL, (mux_idx - 1));
+ 	/* Power up afg */
+ 	snd_hdac_codec_read(hdac, hdac->afg, 0,	AC_VERB_SET_POWER_STATE,
+@@ -1652,11 +1670,10 @@ static void hdmi_codec_complete(struct device *dev)
+ 	/*
+ 	 * As the ELD notify callback request is not entertained while the
+ 	 * device is in suspend state. Need to manually check detection of
+-	 * all pins here.
++	 * all pins here. pin capablity change is not support, so use the
++	 * already set pin caps.
+ 	 */
+-	list_for_each_entry(pin, &hdmi->pin_list, head)
+-		for (i = 0; i < pin->num_ports; i++)
+-			hdac_hdmi_present_sense(pin, &pin->ports[i]);
++	hdac_hdmi_present_sense_all_pins(edev, hdmi, false);
+ 
+ 	pm_runtime_put_sync(&edev->hdac.dev);
+ }
 -- 
 2.11.0
