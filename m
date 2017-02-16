@@ -1,100 +1,71 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt286: fix headphone click/crack
- noise on Dell XPS 9343 I2S mode
-Date: Thu, 16 Feb 2017 19:22:30 +0000
-Message-ID: <20170216192230.mg6htsgqbu756e6y@sirena.org.uk>
-References: <20170123053514.6193-1-kai.heng.feng@canonical.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [RFC v2 4/7] ASoC: dmaengine_pcm: add copy support
+Date: Thu, 16 Feb 2017 20:14:27 +0000
+Message-ID: <20170216201427.z7ixcwbuyvb7ajgn@sirena.org.uk>
+References: <1487003909-11710-1-git-send-email-arnaud.pouliquen@st.com>
+ <1487003909-11710-5-git-send-email-arnaud.pouliquen@st.com>
+ <20170214171630.qgkyoymxyqjiiblh@sirena.org.uk>
+ <40633f7c-a2ac-1658-cc9d-b30eaff8a95a@st.com>
+ <20170215145341.sntwx7oqyqmw6azv@sirena.org.uk>
+ <338f8db7-2077-626f-986b-b4e3df40469c@st.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6121792286251010649=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 732A1266D50
- for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2017 20:22:39 +0100 (CET)
-In-Reply-To: <20170123053514.6193-1-kai.heng.feng@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: oder_chiou@realtek.com, bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="7tmmzmmcxmah5mqc"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <338f8db7-2077-626f-986b-b4e3df40469c-qxv4g6HH51o@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, "linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "kernel-F5mvAk5X5gdBDgjK7y7TUQ@public.gmane.org" <kernel-F5mvAk5X5gdBDgjK7y7TUQ@public.gmane.org>, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre TORGUE <alexandre.torgue-qxv4g6HH51o@public.gmane.org>, Olivier MOYSAN <olivier.moysan-qxv4g6HH51o@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6121792286251010649==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="pzpwfkvxx5s4yjzz"
-Content-Disposition: inline
-
-
---pzpwfkvxx5s4yjzz
+--7tmmzmmcxmah5mqc
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jan 23, 2017 at 01:35:14PM +0800, Kai-Heng Feng wrote:
+On Wed, Feb 15, 2017 at 04:46:44PM +0100, Arnaud Pouliquen wrote:
+> On 02/15/2017 03:53 PM, Mark Brown wrote:
+> > On Wed, Feb 15, 2017 at 02:59:18PM +0100, Arnaud Pouliquen wrote:
 
-> +static void dell_dino_mute_hpo(struct snd_soc_codec *codec)
-> +{
-> +	snd_soc_write(codec, RT286_SET_AMP_GAIN_HPO, AMP_OUT_MUTE);
-> +}
-> +
+> > No, copy() is an alternative to doing DMA rather than something
+> > that works with DMA.  If you want to have some sort of post
+> > processing operation it shoudn't be called copy().  It's probably
+> > worth considering just making a new format and letting userspace
+> > convert things here.
 
-How does this ever get unmuted, should it be an _AUTODISABLE control
-instead?
+> You mean using a plug-in alsa to do it? this seems not possible with
+> tiny-alsa...
+> Without a plug-in, driver will not be compatible with standard audio
+> application.
 
-> @@ -1204,6 +1261,7 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
->  	mdelay(10);
-> =20
->  	regmap_write(rt286->regmap, RT286_MISC_CTRL1, 0x0000);
-> +
->  	/* Power down LDO, VREF */
->  	regmap_update_bits(rt286->regmap, RT286_POWER_CTRL2, 0xc, 0x0);
->  	regmap_update_bits(rt286->regmap, RT286_POWER_CTRL1, 0x1001, 0x1001);
+Right.  But if you're using tinyalsa you've got some open coded system
+specific stuff anyway!
 
-Random whitespace change.
+> Do you think this would be reasonable if i implement something similar
+> in my driver, without using the soc generic DMA engine?
 
-> @@ -1222,6 +1280,7 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
->  			RT286_SET_GPIO_DATA, 0x40, 0x40);
->  		regmap_update_bits(rt286->regmap,
->  			RT286_GPIO_CTRL, 0xc, 0x8);
-> +		rt286->mute_hpo_func =3D dell_dino_mute_hpo;
->  	}
+Probably.  It might even be possible to fit it elegently into the
+generic dmaengine code, just don't say it's a copy() operation since
+that's a specific thing in ALSA.
 
-Why would we only do this on some machines, does this break others?
-
-This change does appear to be two different changes merged into one,
-there's the GPIO setup and this automute thing and they don't seem to
-overlap AFAICT - they should be split into separate patches unless
-there's some reason why they overlap but I'm not seeing that.
-
---pzpwfkvxx5s4yjzz
+--7tmmzmmcxmah5mqc
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlil+/UACgkQJNaLcl1U
-h9DA2wf/ZOCCEYtdyuRd/fzWOWF6TjmVOYID4uqFuftyeQeIhsrcRS5MyM1fYx0R
-aGf5dRXl5ojLjvI9pvD/51S12L7tIJSX/5cfNDi/nK0LrgwRbJJYc+f8hMPaSQLZ
-eBoQKOLaT0yiL2StejaVVwHj+Y2u+AnNrliHreMntNR1F+SQVk24dHJhnpV08vaj
-P0/NkphlF6G2T289ZjziJYPZsTOS9KhmKIcNu9SfkVDBgjLsG+Z3ep9m+Opv6N4t
-HSzF37smtV3IDPgDyYX9B/cxVf4EkEEsNBmmY4oBNx1jHDyhTYrBmquq0YSsIzZi
-oQKySK8kBg3pSoGG3sZb2j60SNMajA==
-=sD+D
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlimCCIACgkQJNaLcl1U
+h9Cklgf6A8OM/wvcw9Pgv95z65Oh1spkmE78Oc9GpTsn19JugWb9tbmN4sj7XoU0
+2dQgGD/SdYjwd9gnt1S8z7BzRg8xQV8uVkl7tgeJY2hlIxdrSOYsI0zJOfABuC3M
+It+6DdGnpYTCyBCsa388Uhtyc02XI5Wnhg8MFevU/Lqq4kaNqdsA4451ufbejXdV
+NB5JDmFv2nxCS2NYXt/D/eazCZqEJVHUyOW9+3nplJcekrKhRGiAjd68p640kWp3
+OCU0wbUb84G5/M00pl4DzlsLrS1AgztfDP1CJrtJvlsheNzPPUDaqIhlBQVGn/aM
+lxCG+tfZ47koyc0Iz7azf3qxJMfILw==
+=c56f
 -----END PGP SIGNATURE-----
 
---pzpwfkvxx5s4yjzz--
-
---===============6121792286251010649==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6121792286251010649==--
+--7tmmzmmcxmah5mqc--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
