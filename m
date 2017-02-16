@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bxt: Add jack port initialize in
-	da7219_max98357a machine" to the asoc tree
-Date: Thu, 16 Feb 2017 19:04:06 +0000
-Message-ID: <E1ceRLa-0007Rv-8E@debutante>
-References: <1484589477-7630-30-git-send-email-jeeja.kp@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Add jack port
+	initialize in nau88l25_ssm4567 machine" to the asoc tree
+Date: Thu, 16 Feb 2017 19:04:09 +0000
+Message-ID: <E1ceRLd-0007Sr-8E@debutante>
+References: <1484589477-7630-28-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 86903266D77
- for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2017 20:04:15 +0100 (CET)
-In-Reply-To: <1484589477-7630-30-git-send-email-jeeja.kp@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0E15A267044
+ for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2017 20:04:17 +0100 (CET)
+In-Reply-To: <1484589477-7630-28-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bxt: Add jack port initialize in da7219_max98357a machine
+   ASoC: Intel: Skylake: Add jack port initialize in nau88l25_ssm4567 machine
 
 has been applied to the asoc tree at
 
@@ -53,11 +53,11 @@ to this mail.
 Thanks,
 Mark
 
->From c5cf9f37a0fb6e50d68f6dcf58b93b2c47c780a1 Mon Sep 17 00:00:00 2001
+>From 86b5703158ff39e5efe9480784a7cad1b4baef59 Mon Sep 17 00:00:00 2001
 From: Jeeja KP <jeeja.kp@intel.com>
-Date: Tue, 7 Feb 2017 19:10:00 +0530
-Subject: [PATCH] ASoC: Intel: bxt: Add jack port initialize in
- da7219_max98357a machine
+Date: Tue, 7 Feb 2017 19:09:58 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Add jack port initialize in
+ nau88l25_ssm4567 machine
 
 After the pcm jack is created, create and initialize the pin switch
 widget for each port. Pin switch is to enable/disable the pin when
@@ -67,17 +67,27 @@ Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bxt_da7219_max98357a.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/skl_nau88l25_ssm4567.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-index 18f3d0e1a6b2..2cda06cde4d1 100644
---- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-@@ -523,10 +523,12 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
+diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+index 5deb68f0c1f0..eb7751b0599b 100644
+--- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
++++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
+@@ -136,9 +136,6 @@ static const struct snd_soc_dapm_route skylake_map[] = {
+ 	{"MIC", NULL, "Headset Mic"},
+ 	{"DMic", NULL, "SoC DMIC"},
+ 
+-	{"DP1", NULL, "hif5-0 Output"},
+-	{"DP2", NULL, "hif6-0 Output"},
+-
+ 	/* CODEC BE connections */
+ 	{ "Left Playback", NULL, "ssp0 Tx"},
+ 	{ "Right Playback", NULL, "ssp0 Tx"},
+@@ -660,10 +657,12 @@ static int skylake_card_late_probe(struct snd_soc_card *card)
  {
- 	struct bxt_card_private *ctx = snd_soc_card_get_drvdata(card);
- 	struct bxt_hdmi_pcm *pcm;
+ 	struct skl_nau88125_private *ctx = snd_soc_card_get_drvdata(card);
+ 	struct skl_hdmi_pcm *pcm;
 +	struct snd_soc_codec *codec = NULL;
  	int err, i = 0;
  	char jack_name[NAME_SIZE];
@@ -87,7 +97,7 @@ index 18f3d0e1a6b2..2cda06cde4d1 100644
  		snprintf(jack_name, sizeof(jack_name),
  			"HDMI/DP, pcm=%d Jack", pcm->device);
  		err = snd_soc_card_jack_new(card, jack_name,
-@@ -544,7 +546,10 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
+@@ -682,7 +681,10 @@ static int skylake_card_late_probe(struct snd_soc_card *card)
  		i++;
  	}
  
@@ -98,6 +108,6 @@ index 18f3d0e1a6b2..2cda06cde4d1 100644
 +	return hdac_hdmi_jack_port_init(codec, &card->dapm);
  }
  
- /* broxton audio machine driver for SPT + da7219 */
+ /* skylake audio machine driver for SPT + NAU88L25 */
 -- 
 2.11.0
