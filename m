@@ -1,17 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: add power-domain get/put ctrl for mt2701" to the asoc tree
-Date: Thu, 16 Feb 2017 19:04:54 +0000
-Message-ID: <E1ceRMM-0007iZ-43@debutante>
-References: <1487222836-21174-2-git-send-email-garlic.tseng@mediatek.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1487222836-21174-2-git-send-email-garlic.tseng@mediatek.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, tiwai@suse.de, alsa-devel@alsa-project.org, ir.lian@mediatek.com, srv_heupstream@mediatek.com, garlic.tseng@mediatek.com, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: Intel: bxt: Add jack port initialize in
+	da7219_max98357a machine" to the asoc tree
+Date: Thu, 16 Feb 2017 19:04:06 +0000
+Message-ID: <E1ceRLa-0007Rv-8E@debutante>
+References: <1484589477-7630-30-git-send-email-jeeja.kp@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 86903266D77
+ for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2017 20:04:15 +0100 (CET)
+In-Reply-To: <1484589477-7630-30-git-send-email-jeeja.kp@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jeeja KP <jeeja.kp@intel.com>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com, tiwai@suse.de, broonie@kernel.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: add power-domain get/put ctrl for mt2701
+   ASoC: Intel: bxt: Add jack port initialize in da7219_max98357a machine
 
 has been applied to the asoc tree at
 
@@ -36,38 +53,51 @@ to this mail.
 Thanks,
 Mark
 
->From cc3e1ce2c73c0e44373eb364f94e4fefebf7719e Mon Sep 17 00:00:00 2001
-From: Garlic Tseng <garlic.tseng@mediatek.com>
-Date: Thu, 16 Feb 2017 13:27:15 +0800
-Subject: [PATCH] ASoC: mediatek: add power-domain get/put ctrl for mt2701
+>From c5cf9f37a0fb6e50d68f6dcf58b93b2c47c780a1 Mon Sep 17 00:00:00 2001
+From: Jeeja KP <jeeja.kp@intel.com>
+Date: Tue, 7 Feb 2017 19:10:00 +0530
+Subject: [PATCH] ASoC: Intel: bxt: Add jack port initialize in
+ da7219_max98357a machine
 
-add power-domain ctrl for audio driver
+After the pcm jack is created, create and initialize the pin switch
+widget for each port. Pin switch is to enable/disable the pin when
+monitor is connected/disconnected.
 
-Signed-off-by: Garlic Tseng <garlic.tseng@mediatek.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/intel/boards/bxt_da7219_max98357a.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-index 34a6123480d3..c7fa3e663463 100644
---- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-+++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-@@ -1578,6 +1578,7 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
- 	pm_runtime_enable(&pdev->dev);
- 	if (!pm_runtime_enabled(&pdev->dev))
- 		goto err_pm_disable;
-+	pm_runtime_get_sync(&pdev->dev);
+diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+index 18f3d0e1a6b2..2cda06cde4d1 100644
+--- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
++++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+@@ -523,10 +523,12 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
+ {
+ 	struct bxt_card_private *ctx = snd_soc_card_get_drvdata(card);
+ 	struct bxt_hdmi_pcm *pcm;
++	struct snd_soc_codec *codec = NULL;
+ 	int err, i = 0;
+ 	char jack_name[NAME_SIZE];
  
- 	ret = snd_soc_register_platform(&pdev->dev, &mtk_afe_pcm_platform);
- 	if (ret) {
-@@ -1617,6 +1618,7 @@ static int mt2701_afe_pcm_dev_remove(struct platform_device *pdev)
- 	pm_runtime_disable(&pdev->dev);
- 	if (!pm_runtime_status_suspended(&pdev->dev))
- 		mt2701_afe_runtime_suspend(&pdev->dev);
-+	pm_runtime_put_sync(&pdev->dev);
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
++		codec = pcm->codec_dai->codec;
+ 		snprintf(jack_name, sizeof(jack_name),
+ 			"HDMI/DP, pcm=%d Jack", pcm->device);
+ 		err = snd_soc_card_jack_new(card, jack_name,
+@@ -544,7 +546,10 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
+ 		i++;
+ 	}
  
- 	snd_soc_unregister_component(&pdev->dev);
- 	snd_soc_unregister_platform(&pdev->dev);
+-	return 0;
++	if (!codec)
++		return -EINVAL;
++
++	return hdac_hdmi_jack_port_init(codec, &card->dapm);
+ }
+ 
+ /* broxton audio machine driver for SPT + da7219 */
 -- 
 2.11.0
