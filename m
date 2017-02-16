@@ -1,18 +1,22 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: Re: [PATCH] ASoC: nau8825: automatic BCLK and LRC
- divde in master mode
-Date: Thu, 16 Feb 2017 10:08:38 +0800
-Message-ID: <58A509A6.1010304@nuvoton.com>
-References: <1487051073-2350-1-git-send-email-KCHSU0@nuvoton.com>
- <20170214110908.nhklqtcy5dohhned@sirena.org.uk>
+From: Baoyou Xie <baoyou.xie@linaro.org>
+Subject: Re: [PATCH v1 3/3] ASoC: zx-96p22: add zte's aud96p22
+	controller driver
+Date: Thu, 16 Feb 2017 11:09:36 +0800
+Message-ID: <CA+DQWkyi=OyW5yhJ9cvtVw0ZK8t8KV1oEvFWKAY+Cfac4SN29A@mail.gmail.com>
+References: <1487156110-12840-1-git-send-email-baoyou.xie@linaro.org>
+ <1487156110-12840-3-git-send-email-baoyou.xie@linaro.org>
+ <20170215112425.GC30007@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 86B402666EA
- for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2017 03:08:43 +0100 (CET)
-In-Reply-To: <20170214110908.nhklqtcy5dohhned@sirena.org.uk>
+Received: from mail-it0-f51.google.com (mail-it0-f51.google.com
+ [209.85.214.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE3512666EA
+ for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2017 04:09:38 +0100 (CET)
+Received: by mail-it0-f51.google.com with SMTP id x75so10864957itb.0
+ for <alsa-devel@alsa-project.org>; Wed, 15 Feb 2017 19:09:38 -0800 (PST)
+In-Reply-To: <20170215112425.GC30007@localhost.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +26,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, "anatol.pomozov@gmail.com" <anatol.pomozov@gmail.com>, AC30 YHChuang <YHCHuang@nuvoton.com>, AC30 WTLi <WTLI@nuvoton.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "benzh@chromium.org" <benzh@chromium.org>, AC30 CTLin0 <CTLIN0@nuvoton.com>, MS40 MHKuo <MHKuo@nuvoton.com>, "yong.zhi@intel.com" <yong.zhi@intel.com>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, tiwai@suse.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, bardliao@realtek.com, lars@metafoo.de, Axel Lin <axel.lin@ingics.com>, Paul.Handrigan@cirrus.com, chen.chaokai@zte.com.cn, wang.qiang01@zte.com.cn, devicetree <devicetree@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, anish kumar <yesanishhere@gmail.com>, "xie.baoyou" <xie.baoyou@zte.com.cn>, nh6z@nh6z.net, Rob Herring <robh+dt@kernel.org>, linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>, oder_chiou@realtek.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, petr@barix.com, broonie@kernel.org, Jun Nie <jun.nie@linaro.org>, Shawn Guo <shawnguo@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-On 2/14/2017 7:09 PM, Mark Brown wrote:
-> On Tue, Feb 14, 2017 at 01:44:33PM +0800, John Hsu wrote:
->> Provide the automatic configurable LRC and BCLK divide. The driver
->> will make configurations of LRC and BCLK automatically according to
->> BCLK and FS information in master mode.
+On 15 February 2017 at 19:24, Charles Keepax <
+ckeepax@opensource.wolfsonmicro.com> wrote:
+
+> On Wed, Feb 15, 2017 at 06:55:10PM +0800, Baoyou Xie wrote:
+> > This patch adds aud96p22 controller driver for zte's SoC family.
+> >
+> > Signed-off-by: Baoyou Xie <baoyou.xie@linaro.org>
+> > ---
+> <snip>
+> > +static int zx_aud96p22_i2c_write(struct i2c_client *i2c_client,
+> > +                              const void *data, size_t count)
+> > +{
+> > +     int xfer;
+> > +
+> > +     xfer = i2c_master_send(i2c_client, data, count);
+> > +     if (xfer == count)
+> > +             return 0;
+> > +     else if (xfer < 0)
+> > +             return xfer;
+> > +     else
+> > +             return -EIO;
+> > +}
+> > +
+> > +static int zx_aud96p22_i2c_read(struct i2c_client *i2c_client,
+> > +                             unsigned char addr)
+> > +{
+> > +     int xfer;
+> > +
+> > +     xfer = i2c_smbus_read_word_data(i2c_client, addr);
+> > +     if (xfer < 0)
+> > +             dev_warn(&i2c_client->dev, "transfer error %d\n", xfer);
+> > +
+> > +     return xfer;
+> > +}
+> > +
 >
-> This patch *still* does not apply.  Please, try sending to yourself and
-> applying with git am before you resend to me.  Check that the patch is
-> not being corrupted when you send it (things like space/tab conversion
-> for example).
+> Is there any reason this isn't using regmap? It looks like it
+> should be, have a look at any of the other mainline CODECs for an
+> example.
+>
+>
+Hi, Charles:
 
-I have resent the patch to myself. And copy the mail content to a new
-patch. Then try the command as follows, and it seems work fine.
-git am --signoff < ASoC-nau8825-auto-BCLK-and-LRC-divide.patch
-
-Here are the git logs in my site.
-
-commit ce7f61934872c0bc701d93de2db39260b44a8ebd
-Author: John Hsu <KCHSU0@nuvoton.com>
-Date:   Wed Feb 15 17:13:43 2017 +0800
-
-     ASoC: nau8825: automatic BCLK and LRC divde in master mode
-
-     Provide the automatic configurable LRC and BCLK divide. The driver
-     will make configurations of LRC and BCLK automatically according to
-     BCLK and FS information in master mode.
-
-     Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
-
-commit 71d7b89701f4e2bee4710bd229e254156006f69b
-Merge: 92dfbd1 af4b654 66ead50
-Author: Mark Brown <broonie@kernel.org>
-Date:   Thu Feb 9 23:48:22 2017 +0000
-
-     Merge remote-tracking branches 'asoc/topic/wm8753' and
-'asoc/topic/zte' into asoc-next
-
-commit 92dfbd159676290c359f94ff0e5637eb00d4b170
+oh, I understood what you said. Please wait for my next version.
 
 
-
-
-===========================================================================================
-The privileged confidential information contained in this email is intended for use only by the addressees as indicated by the original sender of this email. If you are not the addressee indicated in this email or are not responsible for delivery of the email to such a person, please kindly reply to the sender indicating this fact and delete all copies of it from your computer and network server immediately. Your cooperation is highly appreciated. It is advised that any unauthorized use of confidential information of Nuvoton is strictly prohibited; and any information in this email irrelevant to the official business of Nuvoton shall be deemed as neither given nor endorsed by Nuvoton.
+Thanks,
+> Charles
+>
