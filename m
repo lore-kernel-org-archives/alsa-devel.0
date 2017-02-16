@@ -1,103 +1,195 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] clk: x86: add "mclk" alias for
-	Baytrail/Cherrytrail
-Date: Thu, 16 Feb 2017 10:31:10 +0000
-Message-ID: <20170216103109.ljlnpk5xppsjfrhe@sirena.org.uk>
-References: <1486937212-10093-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <20170214190456.GV25384@codeaurora.org>
- <bc29984e-cc58-69ed-d6ca-b4808d6514dc@linux.intel.com>
- <20170216005623.GY25384@codeaurora.org>
- <CAHp75Vdm3v6UdKgVhUjQebQ8QYrughezuxbaZXmM9gw=qgJ2VQ@mail.gmail.com>
+From: Alex Hung <alex.hung@canonical.com>
+Subject: Re: [PATCH v2 0/6] Move dell-led to drivers/platform/x86
+Date: Thu, 16 Feb 2017 18:35:23 +0800
+Message-ID: <CAJ=jqub6AwXBeAahmMguq_h4jTkDbxxEL9=T1aLPOOENMdeLcw@mail.gmail.com>
+References: <20170116132204.6421-1-kernel@kempniu.pl> <20170213112640.GA1188@ozzy.nask.waw.pl>
+ <CAJ=jqua0W3fmoJFqqVgG2Eq=9E-4toXC0UyQH3TyxZiTtNsODw@mail.gmail.com>
+ <20170215135455.GA2014@ozzy.nask.waw.pl> <CAJ=jquaJazMKRsKdq=tpPNq=CBtFPcau6SW3nr738v-zTXfC4g@mail.gmail.com>
+ <20170216092747.GA1350@ozzy.nask.waw.pl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3513190955452651212=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 06A002666EA
- for <alsa-devel@alsa-project.org>; Thu, 16 Feb 2017 11:31:29 +0100 (CET)
-In-Reply-To: <CAHp75Vdm3v6UdKgVhUjQebQ8QYrughezuxbaZXmM9gw=qgJ2VQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Michael Turquette <mturquette@baylibre.com>, "x86@kernel.org" <x86@kernel.org>, Stephen Boyd <sboyd@codeaurora.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Platform Driver <platform-driver-x86@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, linux-clk@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Return-path: <platform-driver-x86-owner@vger.kernel.org>
+In-Reply-To: <20170216092747.GA1350@ozzy.nask.waw.pl>
+Sender: platform-driver-x86-owner@vger.kernel.org
+To: =?UTF-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Anthony Wong <anthony.wong@canonical.com>, Richard Purdie <rpurdie@rpsys.net>, Jacek Anaszewski <jacek.anaszewski@gmail.com>, Pavel Machek <pavel@ucw.cz>, =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy.shevchenko@gmail.com>, Linux LED Subsystem <linux-leds@vger.kernel.org>, "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Feb 16, 2017 at 5:27 PM, Micha=C5=82 K=C4=99pie=C5=84 <kernel@kempn=
+iu.pl> wrote:
+>> On Wed, Feb 15, 2017 at 9:54 PM, Micha=C5=82 K=C4=99pie=C5=84 <kernel@ke=
+mpniu.pl> wrote:
+>> > Alex,
+>> >
+>> >> I tested the patches with the following setup. Please note I tested
+>> >> the microphone mute led by GUI, as the hotkey does not work on this
+>> >> system.
+>> >
+>> > Thank you for taking the time to test this series, it is appreciated. =
+ I
+>> > would not expect the switching method (GUI/hotkey) to matter here, as
+>> > long as we can compare behavior of two kernel versions by consistently
+>> > using one of them.
+>> >
+>> >>
+>> >> 1. Downloaded the below patches from patchwork
+>> >>
+>> >> 9518737 Awaiting Upstream [v2,1/6] dell-led: remove GUID check from
+>> >> dell_micmute_led_set()
+>> >> 9518761 Awaiting Upstream [v2,2/6] ALSA: hda - use
+>> >> dell_micmute_led_set() instead of dell_app_wmi_led_set()
+>> >> 9518741 Awaiting Upstream [v2,3/6] ALSA: hda - rename
+>> >> dell_led_set_func to dell_micmute_led_set_func
+>> >> 9518725 Awaiting Upstream [v2,4/6] platform/x86: dell-laptop: import
+>> >> dell_micmute_led_set() from drivers/leds/dell-led.c
+>> >> 9518727 Awaiting Upstream [v2,5/6] dell-led: remove code related to m=
+ic mute LED
+>> >> 9518735 Awaiting Upstream [v2,6/6] dell-led: move driver to
+>> >> drivers/platform/x86/dell-wmi-led.c
+>> >> 9520053 Awaiting Upstream [v2,6+/6] platform/x86: dell-wmi-led: fix
+>> >> coding style issues
+>> >>
+>> >> 2. Installed Ubuntu 16.10 (Linux kernel 4.8) on Dell Latitude 7180
+>> >
+>> > Just to be sure, I assume you meant 7280?
+>>
+>> This is a typo, and it should be 7480, which should be the same as 7280.
+>>
+>> >
+>> >>
+>> >>   -> Microphone mute led works as expected
+>> >>
+>> >> 3. Applied downloaded patches to kernel 4.8 without any conflicts, bu=
+t
+>> >> kernel will not compile successfully.
+>> >
+>> > I am confused.  This patch series should apply cleanly to 4.9 and its
+>> > surroundings.  Between 4.8 and 4.9, commit 4875a5f72180 ("ALSA: hda -
+>> > Fix a failure of micmute led when having multi adcs") happened.   This
+>> > makes it impossible to apply this patch series cleanly on top of 4.8
+>> > without reducing context to one line.
+>> >
+>> > Moreover, I applied this patch series (with reduced context) to 4.8 an=
+d
+>> > successfully compiled the kernel.  Could you shed some light on where
+>> > exactly did your build crash?
+>>
+>> The error messages such as below, so it is probably not "fails to
+>> compile". Since 4.9 works better, I probably will focus on 4.9 & 4.10,
+>> though.
+>
+> I agree as I see no reason for this patch series to be backported.
+>
+>>
+>> find /home/alexhung/src/kernel/ubuntu-yakkety/debian/build/build-generic=
+/
+>> -name \*.ko | \
+>>     sed -e 's/.*\/\([^\/]*\)\.ko/\1/' | sort >
+>> /home/alexhung/src/kernel/ubuntu-yakkety/debian.master/abi/4.8.0-37.39/a=
+md64/generic.modules
+>> II: Checking modules for generic...
+>>    reading new modules...read 4821 modules.
+>>    reading old modules...
+>>       MISS: dell-led
+>>       NEW : dell-wmi-led
+>>       read 4821 modules : new(1)  missing(1)
+>> EE: Missing modules (start begging for mercy)
+>> debian/rules.d/4-checks.mk:12: recipe for target 'module-check-generic' =
+failed
+>> make: *** [module-check-generic] Error 1
+>
+> Ah, okay, so you are using the Debian/Ubuntu build method.  The messages
+> it spits out are correct as the purpose of this series is to remove
+> dell-led and create dell-wmi-led.  However, I have never compiled a
+> kernel using the Debian/Ubuntu way, so I am unable to give you any tips
+> for getting rid of the "Missing modules" error message.
+>
+>>
+>>
+>> >
+>> >>
+>> >> 4. Installed Ubuntu Zesty kernel (Linux kernel 4.9)
+>> >>
+>> >>   -> Microphone mute led works as expected
+>> >>
+>> >> 5. Applied and compiled downloaded patches to kernel 4.9
+>> >>
+>> >>   -> Microphone mute led does not work
+>> >
+>> > Any chance of a git bisect?
+>>
+>> Certainly. Give me some time.
+>
+> Sure, no rush, though before you start bisecting, please check whether
+> CONFIG_DELL_LAPTOP is enabled in your kernel configuration for 4.9.
 
---===============3513190955452651212==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="hy7rxqv6jg7bmv7s"
-Content-Disposition: inline
+The led stops working after 4th patch "platform/x86: dell-laptop:
+import dell_micmute_led_set() from drivers/leds/dell-led.c", and the
+.config is with CONFIG_DELL_LAPTOP=3Dm
+
+However, I found dell-laptop is not loaded on Latitude 7480 as its
+chassis type is Notebook (10), instead of 8 (Portable) or 9 (Laptop).
+That's also what I see for newer Dell laptops.
+
+After I added the below entry into dell-laptop, the led works fine.
+This is not in kernel 4.10 rc8 either, and I will submit a patch for
+it.
+
+        {
+                .matches =3D {
+                        DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+                        DMI_MATCH(DMI_CHASSIS_TYPE, "10"), /*Notebook*/
+                },
+        },
 
 
---hy7rxqv6jg7bmv7s
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Feb 16, 2017 at 04:05:19AM +0200, Andy Shevchenko wrote:
-> On Thu, Feb 16, 2017 at 2:56 AM, Stephen Boyd <sboyd@codeaurora.org> wrote:
-
-> > and then freeing that lookup with clkdev_drop in the remove of
-> > the driver. "mclk" is really generic for a connection name
-> > without an associated device id, so you may want to pass some
-> > device as the last argument here, but dev_name(&pdev->dev) seems
-> > odd because that's the clock controller device, not whatever
-> > device would be calling clk_get() with this created lookup in
-> > mind.
-
-> Here is the problem with CLK framework since it's (was?) too oriented
-> to ARM and clock trees.
-
-That's not really much more of a problem for x86 than it is for ARM,
-things got easier for ARM with the introduction of device tree but this
-stuff all predates device tree.
-
-> The best option for x86 is to place it in some platform code, which is
-> bad idea per se.
-> For example, GPIO, PWM, etc have static look up tables and glue
-> drivers (like PCI part of the driver, or I2C, or similar) can fill
-> that table based on ID.
-
-Platform code seems fine?
-
-> My personal opinion that the best place is not the clock driver for
-> that, rather converting existing drivers to take clock name based on
-> some (platform related) ID.
-
-That doesn't scale so well, you end up needing the platform code anyway
-and it's one more thing to go wrong when configuring the platform code
-so you may as well just do something idiomatic with the platform code.
-Some systems did historically do things like this, that's where the use
-of the device pointer for namespacing came from.
-
---hy7rxqv6jg7bmv7s
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlilf20ACgkQJNaLcl1U
-h9BRaQgAgKNlcDX3hkJC6Qw0K4jGulvx87nakbv9kn2+gYC81C09MvafJpJA8Vqk
-99/pSS6F4X9Ss9WmnJ1Lzs/Z1Y3SzrkZpFJBVFMomzuFTWRciyksa/Ub02njIMd6
-wW6mHWKdIc+akTKgN329Q7X/foU5ZfBe4GBco5NnpRx9JYMcfoTMHDxJ5J0X4QwO
-YDKW1KyDRf+Li6PWXRLT14HRjlizEu+CIPczQMlwy51E5+UCZPiRJp/eW/MHljIc
-iSeZ77LilEp4pAEyXKeYgu5Ilx8jASX7QF4xn3M9Ru/AiWRKe4Fqe7evfSYJv4Y2
-V9JoVJ0vNSdMkWqlDX2eHYJdrIsALQ==
-=nfEp
------END PGP SIGNATURE-----
-
---hy7rxqv6jg7bmv7s--
-
---===============3513190955452651212==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+>
+>>
+>> >
+>> >>
+>> >> 6. Compiled and installed Linux kernel 4.10 rc8
+>> >>
+>> >>   -> Microphone mute led does not work
+>> >
+>> > This is even more confusing.  Between 4.9, which you claim works fine,
+>> > and 4.10-rc8, which you claim does not work, I can see no changes to
+>> > either drivers/leds/dell-led.c or sound/pci/hda/dell_wmi_helper.c.
+>> > Kernel configuration issue?
+>>
+>> I was surprised too, and I compiled it twice and installed on both
+>> Ubuntu 16.04 and 16.10.
+>>
+>> I would guess it is config too. On 4.9, it was using Ubuntu default.
+>> On 4.10rc8, I am pretty much using the instruction on
+>> https://wiki.ubuntu.com/KernelTeam/GitKernelBuild. The .config is
+>> available @ http://paste.ubuntu.com/24001113/
+>
+> CONFIG_DELL_SMBIOS is not set in that .config.  That prevents you from
+> enabling CONFIG_LEDS_DELL_NETBOOKS, which is required for the microphone
+> mute LED to work without this patch series applied.
+>
+>>
+>>
+>> >
+>> >>
+>> >> 7. Applied and compiled downloaded patches to kernel 4.10 rc8
+>> >>
+>> >>   -> Microphone mute led does not work
+>> >
+>> > No surprises here if it really does not work with 4.10-rc8.
+>
+> My remark regarding CONFIG_DELL_LAPTOP also applies to 4.10-rc8 with
+> this patch series applied.
+>
+> Thanks again for your work on this,
+>
+> --
+> Best regards,
+> Micha=C5=82 K=C4=99pie=C5=84
 
 
---===============3513190955452651212==--
+
+--=20
+Cheers,
+Alex Hung
