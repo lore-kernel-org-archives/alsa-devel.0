@@ -1,18 +1,12 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH 35/35] sound/soc: Convert remaining uses of
-	pr_warning to pr_warn
-Date: Thu, 16 Feb 2017 23:11:48 -0800
-Message-ID: <3d93f7226ba34fede99f72ec038098a3d98a139a.1487314667.git.joe@perches.com>
-References: <cover.1487314666.git.joe@perches.com>
+From: sutar.mounesh@gmail.com
+Subject: [PATCH 1/6] pcm: dmix_rewind corrupts application
+	pointer fix
+Date: Fri, 17 Feb 2017 12:45:36 +0530
+Message-ID: <1487315736-8950-1-git-send-email-sutar.mounesh@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtprelay.hostedemail.com (smtprelay0157.hostedemail.com
- [216.40.44.157])
- by alsa0.perex.cz (Postfix) with ESMTP id 90172266B83
- for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2017 08:13:18 +0100 (CET)
-In-Reply-To: <cover.1487314666.git.joe@perches.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,67 +16,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linuxppc-dev@lists.ozlabs.org
+To: patch@alsa-project.org
+Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org, Ravikiran Polepalli <ravikiran_polepalli@mentor.com>, Mounesh Sutar <sutar.mounesh@gmail.com>, Mikhail Durnev <mikhail_durnev@mentor.com>, mounesh_sutar@mentor.com
 List-Id: alsa-devel@alsa-project.org
 
-To enable eventual removal of pr_warning
+From: Timo Wischer <twischer@de.adit-jv.com>
 
-This makes pr_warn use consistent for sound/soc
+sometimes pulseaudio stops with the following assertion in libasound.so:
+alsa-lib-1.0.29/src/pcm/pcm.c:2761:
+snd_pcm_area_copy: Assertion `dst < src || dst >= src + bytes' failed.
+Application pointer is handled properly, in cases of rewind operations.
 
-Prior to this patch, there were 5 uses of pr_warning and
-10 uses of pr_warn in sound/soc
+Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
+Signed-off-by: Ravikiran Polepalli <ravikiran_polepalli@mentor.com>
+Signed-off-by: Mikhail Durnev <mikhail_durnev@mentor.com>
+Signed-off-by: Mounesh Sutar <sutar.mounesh@gmail.com>
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- sound/soc/fsl/imx-audmux.c     | 6 +++---
- sound/soc/samsung/s3c-i2s-v2.c | 6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
-index fc57da341d61..41e877d2b400 100644
---- a/sound/soc/fsl/imx-audmux.c
-+++ b/sound/soc/fsl/imx-audmux.c
-@@ -152,7 +152,7 @@ static void audmux_debugfs_init(void)
+diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
+index dd0356e..4b763e2 100644
+--- a/src/pcm/pcm_dmix.c
++++ b/src/pcm/pcm_dmix.c
+@@ -706,7 +706,7 @@ static snd_pcm_sframes_t snd_pcm_dmix_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t f
+ {
+ 	snd_pcm_direct_t *dmix = pcm->private_data;
+ 	snd_pcm_uframes_t slave_appl_ptr, slave_size;
+-	snd_pcm_uframes_t appl_ptr, size, transfer, result;
++	snd_pcm_uframes_t appl_ptr, size, transfer, result, frames_to_remix;
+ 	int err;
+ 	const snd_pcm_channel_area_t *src_areas, *dst_areas;
  
- 	audmux_debugfs_root = debugfs_create_dir("audmux", NULL);
- 	if (!audmux_debugfs_root) {
--		pr_warning("Failed to create AUDMUX debugfs root\n");
-+		pr_warn("Failed to create AUDMUX debugfs root\n");
- 		return;
+@@ -717,6 +717,11 @@ static snd_pcm_sframes_t snd_pcm_dmix_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t f
+ 			return err;
  	}
  
-@@ -160,8 +160,8 @@ static void audmux_debugfs_init(void)
- 		snprintf(buf, sizeof(buf), "ssi%lu", i);
- 		if (!debugfs_create_file(buf, 0444, audmux_debugfs_root,
- 					 (void *)i, &audmux_debugfs_fops))
--			pr_warning("Failed to create AUDMUX port %lu debugfs file\n",
--				   i);
-+			pr_warn("Failed to create AUDMUX port %lu debugfs file\n",
-+				i);
++	/* (appl_ptr - last_appl_ptr) indicates the frames which are not already mixed
++	   (last_appl_ptr - hw_ptr)  indicates the frames which are already mixed but not played yet.
++	   So they can be remixed.
++	 */
++
+ 	if (dmix->last_appl_ptr < dmix->appl_ptr)
+ 		size = dmix->appl_ptr - dmix->last_appl_ptr;
+ 	else
+@@ -729,6 +734,9 @@ static snd_pcm_sframes_t snd_pcm_dmix_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t f
+ 		return size;
+ 	result = size;
+ 
++	/* Always at this point last_appl_ptr == appl_ptr
++	   So (appl_ptr - hw_ptr) indicates the frames which can be remixed
++	 */
+ 	if (dmix->hw_ptr < dmix->appl_ptr)
+ 		size = dmix->appl_ptr - dmix->hw_ptr;
+ 	else
+@@ -741,9 +749,12 @@ static snd_pcm_sframes_t snd_pcm_dmix_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t f
+ 		slave_size = dmix->slave_appl_ptr + (pcm->boundary - dmix->slave_hw_ptr);
+ 	if (slave_size < size)
+ 		size = slave_size;
+-	frames -= size;
+-	result += size;
+-		
++
++	/* frames which should be remixed will be saved
++	   to also backward the appl pointer on success
++	 */
++	frames_to_remix = size;
++
+ 	/* add sample areas here */
+ 	src_areas = snd_pcm_mmap_areas(pcm);
+ 	dst_areas = snd_pcm_mmap_areas(dmix->spcm);
+@@ -769,15 +780,15 @@ static snd_pcm_sframes_t snd_pcm_dmix_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t f
+ 		appl_ptr += transfer;
+ 		appl_ptr %= pcm->buffer_size;
  	}
+-	dmix->last_appl_ptr -= frames;
+-	dmix->last_appl_ptr %= pcm->boundary;
+-	dmix->slave_appl_ptr -= frames;
+-	dmix->slave_appl_ptr %= dmix->slave_boundary;
+ 	dmix_up_sem(dmix);
+ 
+-	snd_pcm_mmap_appl_backward(pcm, frames);
++	snd_pcm_mmap_appl_backward(pcm, frames_to_remix);
++	result += frames_to_remix;
++	/* At this point last_appl_ptr and appl_ptr has to indicate the
++	 * position of the first not mixed frame
++	 */
+ 
+-	return result + frames;
++	return result;
  }
  
-diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
-index 644f186fd35c..7423e4257a1b 100644
---- a/sound/soc/samsung/s3c-i2s-v2.c
-+++ b/sound/soc/samsung/s3c-i2s-v2.c
-@@ -669,13 +669,13 @@ static int s3c2412_i2s_suspend(struct snd_soc_dai *dai)
- 		iismod = readl(i2s->regs + S3C2412_IISMOD);
- 
- 		if (iismod & S3C2412_IISCON_RXDMA_ACTIVE)
--			pr_warning("%s: RXDMA active?\n", __func__);
-+			pr_warn("%s: RXDMA active?\n", __func__);
- 
- 		if (iismod & S3C2412_IISCON_TXDMA_ACTIVE)
--			pr_warning("%s: TXDMA active?\n", __func__);
-+			pr_warn("%s: TXDMA active?\n", __func__);
- 
- 		if (iismod & S3C2412_IISCON_IIS_ACTIVE)
--			pr_warning("%s: IIS active\n", __func__);
-+			pr_warn("%s: IIS active\n", __func__);
- 	}
- 
- 	return 0;
+ static snd_pcm_sframes_t snd_pcm_dmix_forwardable(snd_pcm_t *pcm)
 -- 
-2.10.0.rc2.1.g053435c
+2.7.4
