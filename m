@@ -1,7 +1,7 @@
 From: sutar.mounesh@gmail.com
-Subject: [PATCH 5/6] pcm:extplug: refinement of masks in extplug
-Date: Fri, 17 Feb 2017 12:47:49 +0530
-Message-ID: <1487315869-9119-1-git-send-email-sutar.mounesh@gmail.com>
+Subject: [PATCH 6/6] pcm:plug: save converter config
+Date: Fri, 17 Feb 2017 12:48:02 +0530
+Message-ID: <1487315882-9160-1-git-send-email-sutar.mounesh@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -16,30 +16,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: patch@alsa-project.org
-Cc: Mounesh Sutar <sutar.mounesh@gmail.com>, alsa-devel@alsa-project.org, Awais Belal <awais_belal@mentor.com>, mounesh_sutar@mentor.com
+Cc: Mounesh Sutar <sutar.mounesh@gmail.com>, alsa-devel@alsa-project.org, Andreas Pape <apape@de.adit-jv.com>, mounesh_sutar@mentor.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Awais Belal <awais_belal@mentor.com>
+From: Andreas Pape <apape@de.adit-jv.com>
 
-It should be possible to use empty mask format with extplug.
-The refinement of mask via extplug is now modified,
-to accept empty masks as well to work properly.
+Passed config is freed after call to open, thus it is invalid when
+trying to extract the converter name. So config entry is saved
+for later usage.
 
-Signed-off-by: Awais Belal <awais_belal@mentor.com>
+Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
 Signed-off-by: Mounesh Sutar <sutar.mounesh@gmail.com>
 
-diff --git a/src/pcm/pcm_extplug.c b/src/pcm/pcm_extplug.c
-index a04f826..1004f54 100644
---- a/src/pcm/pcm_extplug.c
-+++ b/src/pcm/pcm_extplug.c
-@@ -172,6 +172,8 @@ int snd_ext_parm_mask_refine(snd_mask_t *mask, struct snd_ext_parm *parm, int ty
- 	unsigned int i;
- 
- 	parm += type;
-+	if (!parm->active)
-+		return 0;
- 	memset(&bits, 0, sizeof(bits));
- 	for (i = 0; i < parm->num_list; i++)
- 		bits.bits[parm->list[i] / 32] |= 1U << (parm->list[i] % 32);
+diff --git a/src/pcm/pcm_plug.c b/src/pcm/pcm_plug.c
+index 266707b..6d0c03d 100644
+--- a/src/pcm/pcm_plug.c
++++ b/src/pcm/pcm_plug.c
+@@ -64,6 +64,8 @@ static int snd_pcm_plug_close(snd_pcm_t *pcm)
+ 	snd_pcm_plug_t *plug = pcm->private_data;
+ 	int err, result = 0;
+ 	free(plug->ttable);
++	if (plug->rate_converter)
++		snd_config_delete((snd_config_t*)plug->rate_converter);
+ 	assert(plug->gen.slave == plug->req_slave);
+ 	if (plug->gen.close_slave) {
+ 		snd_pcm_unlink_hw_ptr(pcm, plug->req_slave);
+@@ -1108,7 +1110,15 @@ int snd_pcm_plug_open(snd_pcm_t **pcmp,
+ 	plug->sformat = sformat;
+ 	plug->schannels = schannels;
+ 	plug->srate = srate;
+-	plug->rate_converter = rate_converter;
++	if (rate_converter) {
++		if ((err = snd_config_copy((snd_config_t**)&plug->rate_converter,
++					   (snd_config_t *)rate_converter)) < 0)
++			free(plug);
++			return err;
++	}
++	else
++		snd_config_delete((snd_config_t*)plug->rate_converter);
++
+ 	plug->gen.slave = plug->req_slave = slave;
+ 	plug->gen.close_slave = close_slave;
+ 	plug->route_policy = route_policy;
+@@ -1119,6 +1129,8 @@ int snd_pcm_plug_open(snd_pcm_t **pcmp,
+ 	
+ 	err = snd_pcm_new(&pcm, SND_PCM_TYPE_PLUG, name, slave->stream, slave->mode);
+ 	if (err < 0) {
++		if (plug->rate_converter)
++			snd_config_delete((snd_config_t*)plug->rate_converter);
+ 		free(plug);
+ 		return err;
+ 	}
 -- 
 2.7.4
