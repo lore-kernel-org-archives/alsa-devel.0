@@ -1,98 +1,109 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
-Subject: Re: [PATCH 35/35] sound/soc: Convert remaining uses of
- pr_warning to pr_warn
-Date: Fri, 17 Feb 2017 12:28:44 -0800
-Message-ID: <20170217202844.GA8215@Asurada-Nvidia>
-References: <cover.1487314666.git.joe@perches.com>
- <3d93f7226ba34fede99f72ec038098a3d98a139a.1487314667.git.joe@perches.com>
+From: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Subject: Re: [PATCH v3 0/7] Move dell-led to drivers/platform/x86
+Date: Fri, 17 Feb 2017 23:15:24 +0100
+Message-ID: <ae94a1a6-822d-68f6-3533-b9e1a4d3296a@gmail.com>
+References: <20170217075753.12702-1-kernel@kempniu.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f67.google.com (mail-pg0-f67.google.com [74.125.83.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 394382671DB
- for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2017 21:28:40 +0100 (CET)
-Received: by mail-pg0-f67.google.com with SMTP id y6so4623926pgy.2
- for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2017 12:28:40 -0800 (PST)
-Content-Disposition: inline
-In-Reply-To: <3d93f7226ba34fede99f72ec038098a3d98a139a.1487314667.git.joe@perches.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Joe Perches <joe@perches.com>
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Sangbeom Kim <sbkim73@samsung.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Timur Tabi <timur@tabi.org>, Krzysztof Kozlowski <krzk@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170217075753.12702-1-kernel@kempniu.pl>
+Sender: linux-kernel-owner@vger.kernel.org
+To: =?UTF-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>, Richard Purdie <rpurdie@rpsys.net>, Pavel Machek <pavel@ucw.cz>, Matthew Garrett <mjg59@srcf.ucam.org>, =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Alex Hung <alex.hung@canonical.com>, linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 16, 2017 at 11:11:48PM -0800, Joe Perches wrote:
-> To enable eventual removal of pr_warning
-> 
-> This makes pr_warn use consistent for sound/soc
-> 
-> Prior to this patch, there were 5 uses of pr_warning and
-> 10 uses of pr_warn in sound/soc
-> 
-> Signed-off-by: Joe Perches <joe@perches.com>
+Hi Michał,
 
-For imx-audmux.c,
+Thanks for collecting relevant credits.
+I've applied the patchset to the for-4.12 branch of linux-leds.git.
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Best regards,
+Jacek Anaszewski
 
-> ---
->  sound/soc/fsl/imx-audmux.c     | 6 +++---
->  sound/soc/samsung/s3c-i2s-v2.c | 6 +++---
->  2 files changed, 6 insertions(+), 6 deletions(-)
+On 02/17/2017 08:57 AM, Michał Kępień wrote:
+> This patch series moves the dell-led driver from the LED subsystem to
+> the x86 platform driver subsystem.
 > 
-> diff --git a/sound/soc/fsl/imx-audmux.c b/sound/soc/fsl/imx-audmux.c
-> index fc57da341d61..41e877d2b400 100644
-> --- a/sound/soc/fsl/imx-audmux.c
-> +++ b/sound/soc/fsl/imx-audmux.c
-> @@ -152,7 +152,7 @@ static void audmux_debugfs_init(void)
->  
->  	audmux_debugfs_root = debugfs_create_dir("audmux", NULL);
->  	if (!audmux_debugfs_root) {
-> -		pr_warning("Failed to create AUDMUX debugfs root\n");
-> +		pr_warn("Failed to create AUDMUX debugfs root\n");
->  		return;
->  	}
->  
-> @@ -160,8 +160,8 @@ static void audmux_debugfs_init(void)
->  		snprintf(buf, sizeof(buf), "ssi%lu", i);
->  		if (!debugfs_create_file(buf, 0444, audmux_debugfs_root,
->  					 (void *)i, &audmux_debugfs_fops))
-> -			pr_warning("Failed to create AUDMUX port %lu debugfs file\n",
-> -				   i);
-> +			pr_warn("Failed to create AUDMUX port %lu debugfs file\n",
-> +				i);
->  	}
->  }
->  
-> diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
-> index 644f186fd35c..7423e4257a1b 100644
-> --- a/sound/soc/samsung/s3c-i2s-v2.c
-> +++ b/sound/soc/samsung/s3c-i2s-v2.c
-> @@ -669,13 +669,13 @@ static int s3c2412_i2s_suspend(struct snd_soc_dai *dai)
->  		iismod = readl(i2s->regs + S3C2412_IISMOD);
->  
->  		if (iismod & S3C2412_IISCON_RXDMA_ACTIVE)
-> -			pr_warning("%s: RXDMA active?\n", __func__);
-> +			pr_warn("%s: RXDMA active?\n", __func__);
->  
->  		if (iismod & S3C2412_IISCON_TXDMA_ACTIVE)
-> -			pr_warning("%s: TXDMA active?\n", __func__);
-> +			pr_warn("%s: TXDMA active?\n", __func__);
->  
->  		if (iismod & S3C2412_IISCON_IIS_ACTIVE)
-> -			pr_warning("%s: IIS active\n", __func__);
-> +			pr_warn("%s: IIS active\n", __func__);
->  	}
->  
->  	return 0;
-> -- 
-> 2.10.0.rc2.1.g053435c
+> The original motivation behind this effort was to move all code using
+> the dell-smbios module to the x86 platform driver subsystem.  While I
+> was investigating the possibilities to do that, it quickly emerged that
+> dell-led can and in fact should be moved to the x86 platform driver
+> subsystem in its entirety.
+> 
+> dell-led consists of two major parts:
+> 
+>   - the part exposing a microphone mute LED interface, introduced in
+>     db6d8cc00773 ("dell-led: add mic mute led interface"); this
+>     interface is used by sound/pci/hda/dell_wmi_helper.c; while the
+>     original implementation used a WMI interface, it was changed to use
+>     dell-smbios in cf0d7ea33596 ("dell-led: use dell_smbios_find_token()
+>     for finding mic DMI tokens") and 0c41a08e131d ("dell-led: use
+>     dell_smbios_send_request() for performing SMBIOS calls"),
+> 
+>   - the part handling an activity LED present in Dell Latitude 2100
+>     netbooks, introduced in 72dcd8d08aca ("leds: Add Dell Business Class
+>     Netbook LED driver"); it binds to a specific WMI GUID and then
+>     registers a LED device which is controlled using WMI (i.e. it is
+>     essentially a WMI driver).
+> 
+> Patches 1 and 2 clean up the microphone mute LED interface to minimize
+> the amount of code moved around.
+> 
+> Patch 3 updates a variable name in sound/pci/hda/dell_wmi_helper.c so
+> that it better matches that variable's role.
+> 
+> Patch 4 moves the microphone mute LED interface to
+> drivers/platform/x86/dell-laptop.c, effectively causing
+> sound/pci/hda/dell_wmi_helper.c to depend on CONFIG_DELL_LAPTOP instead
+> of CONFIG_LEDS_DELL_NETBOOKS.
+> 
+> Patch 5 reverts dell-led to the state it was in after its initial commit
+> 72dcd8d08aca ("leds: Add Dell Business Class Netbook LED driver") by
+> removing all remnants of the microphone mute LED handling code.
+> 
+> Patch 6 moves all that is left of dell-led (i.e. the activity LED part,
+> as originally implemented), to a new module which is placed in
+> drivers/platform/x86/dell-wmi-led.c.
+> 
+> Patch 7 fixes coding style issues in drivers/platform/x86/dell-wmi-led.c
+> to make sure it gets a clean start in the x86 platform driver subsystem.
+> 
+> As all patches except patch 3 in this series affect the LED subsystem,
+> the series is based on linux-leds/for-next.
+> 
+> Changes from v2:
+> 
+>   - Add patch 7 fixing coding style issues (feedback from Joe and Andy
+>     taken into account).
+> 
+>   - Add leading zero to constants in patch 4.
+> 
+>   - Move dell-led.h include one line higher in patch 4.
+> 
+> Changes from v1:
+> 
+>   - Squash patches 2-4 from v1 into a single patch (#2 in v2).
+> 
+>   - Add patch 3.
+> 
+>   - Fix subject pattern in patch 4.
+> 
+>   - Slight commit message adjustments, including fixing a typo
+>     ("COFIG_LEDS_DELL_NETBOOKS") in patch 6.
+> 
+>   - Remove the name of the module's source file from the header comment
+>     in drivers/platform/x86/dell-wmi-led.c to avoid the need to update
+>     it in the future.
+> 
+>  drivers/leds/Kconfig                               |   9 --
+>  drivers/leds/Makefile                              |   1 -
+>  drivers/platform/x86/Kconfig                       |   8 ++
+>  drivers/platform/x86/Makefile                      |   1 +
+>  drivers/platform/x86/dell-laptop.c                 |  28 ++++
+>  .../dell-led.c => platform/x86/dell-wmi-led.c}     | 141 +++++----------------
+>  include/linux/dell-led.h                           |   6 +-
+>  sound/pci/hda/dell_wmi_helper.c                    |  30 ++---
+>  8 files changed, 86 insertions(+), 138 deletions(-)
+>  rename drivers/{leds/dell-led.c => platform/x86/dell-wmi-led.c} (56%)
 > 
