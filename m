@@ -1,60 +1,26 @@
-From: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Subject: Re: [PATCH v2 0/6] Move dell-led to drivers/platform/x86
-Date: Thu, 16 Feb 2017 23:11:37 +0100
-Message-ID: <afe740e3-7a66-2f2e-00f9-914e89e3f646@gmail.com>
-References: <20170116132204.6421-1-kernel@kempniu.pl>
- <20170213112640.GA1188@ozzy.nask.waw.pl>
- <CAJ=jqua0W3fmoJFqqVgG2Eq=9E-4toXC0UyQH3TyxZiTtNsODw@mail.gmail.com>
- <20170215135455.GA2014@ozzy.nask.waw.pl>
- <CAJ=jquaJazMKRsKdq=tpPNq=CBtFPcau6SW3nr738v-zTXfC4g@mail.gmail.com>
- <20170216092747.GA1350@ozzy.nask.waw.pl>
- <CAJ=jqub6AwXBeAahmMguq_h4jTkDbxxEL9=T1aLPOOENMdeLcw@mail.gmail.com>
- <20170216113258.GD1350@ozzy.nask.waw.pl>
+From: Shawn Guo <shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 1/3] ASoC: zx-tdm: add bindings doc for zte's tdm
+ controller
+Date: Fri, 17 Feb 2017 09:32:20 +0800
+Message-ID: <20170217013218.GA3114@dragon>
+References: <1487243106-22841-1-git-send-email-baoyou.xie@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <platform-driver-x86-owner@vger.kernel.org>
-In-Reply-To: <20170216113258.GD1350@ozzy.nask.waw.pl>
-Sender: platform-driver-x86-owner@vger.kernel.org
-To: =?UTF-8?B?TWljaGHFgiBLxJlwaWXFhA==?= <kernel@kempniu.pl>, Alex Hung <alex.hung@canonical.com>, Pavel Machek <pavel@ucw.cz>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Anthony Wong <anthony.wong@canonical.com>, Richard Purdie <rpurdie@rpsys.net>, =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy.shevchenko@gmail.com>, Linux LED Subsystem <linux-leds@vger.kernel.org>, "platform-driver-x86@vger.kernel.org" <platform-driver-x86@vger.kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1487243106-22841-1-git-send-email-baoyou.xie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Baoyou Xie <baoyou.xie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, jun.nie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, xie.baoyou-Th6q7B73Y6EnDS1+zs4M5A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, chen.chaokai-Th6q7B73Y6EnDS1+zs4M5A@public.gmane.org, wang.qiang01-Th6q7B73Y6EnDS1+zs4M5A@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Michał,
+On Thu, Feb 16, 2017 at 07:05:04PM +0800, Baoyou Xie wrote:
+> This patch adds dt-binding documentation for zte's tdm controller.
+> 
+> Signed-off-by: Baoyou Xie <baoyou.xie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 
-On 02/16/2017 12:32 PM, Michał Kępień wrote:
->> The led stops working after 4th patch "platform/x86: dell-laptop:
->> import dell_micmute_led_set() from drivers/leds/dell-led.c", and the
->> .config is with CONFIG_DELL_LAPTOP=m
->>
->> However, I found dell-laptop is not loaded on Latitude 7480 as its
->> chassis type is Notebook (10), instead of 8 (Portable) or 9 (Laptop).
->> That's also what I see for newer Dell laptops.
->>
->> After I added the below entry into dell-laptop, the led works fine.
->> This is not in kernel 4.10 rc8 either, and I will submit a patch for
->> it.
->>
->>         {
->>                 .matches = {
->>                         DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
->>                         DMI_MATCH(DMI_CHASSIS_TYPE, "10"), /*Notebook*/
->>                 },
->>         },
-> 
-> Great, so it all makes sense now.  Thanks once again for investigating.
-> 
-> For maintainers' convenience, I am planning to submit a v3 with all the
-> tags supplied by everyone who reviewed this series and also some minor
-> coding style tweaks suggested along the way.
-> 
-> Alex, in the light of your findings quoted above, would it be okay to
-> also apply your Tested-by to all patches?
-> 
-> Jacek, Pavel, which linux-leds branch would you like me to base v3 on?
-
-Please use for-next branch for that.
-
--- 
-Best regards,
-Jacek Anaszewski
+Reviewed-by: Shawn Guo <shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
