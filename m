@@ -1,7 +1,8 @@
 From: sutar.mounesh@gmail.com
-Subject: [PATCH 6/6] pcm:plug: save converter config
-Date: Fri, 17 Feb 2017 12:48:02 +0530
-Message-ID: <1487315882-9160-1-git-send-email-sutar.mounesh@gmail.com>
+Subject: [PATCH 1/1] alsa-plugins: enhancing configuration
+	support for alsa plugins
+Date: Fri, 17 Feb 2017 12:54:19 +0530
+Message-ID: <1487316259-9321-1-git-send-email-sutar.mounesh@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -16,56 +17,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: patch@alsa-project.org
-Cc: Mounesh Sutar <sutar.mounesh@gmail.com>, alsa-devel@alsa-project.org, Andreas Pape <apape@de.adit-jv.com>, mounesh_sutar@mentor.com
+Cc: alsa-devel@alsa-project.org, Mikhail Durnev <mikhail_durnev@mentor.com>, mounesh_sutar@mentor.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Andreas Pape <apape@de.adit-jv.com>
+From: Mounesh Sutar <mounesh_sutar@mentor.com>
 
-Passed config is freed after call to open, thus it is invalid when
-trying to extract the converter name. So config entry is saved
-for later usage.
+Following plugins are made configurable in alsa-plugins:
+* oss
+* mix
+* usbstream
+* arcamav
+* speexdsp
 
-Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
-Signed-off-by: Mounesh Sutar <sutar.mounesh@gmail.com>
+Signed-off-by: Mikhail Durnev <mikhail_durnev@mentor.com>
+Signed-off-by: Mounesh Sutar <mounesh_sutar@mentor.com>
 
-diff --git a/src/pcm/pcm_plug.c b/src/pcm/pcm_plug.c
-index 266707b..6d0c03d 100644
---- a/src/pcm/pcm_plug.c
-+++ b/src/pcm/pcm_plug.c
-@@ -64,6 +64,8 @@ static int snd_pcm_plug_close(snd_pcm_t *pcm)
- 	snd_pcm_plug_t *plug = pcm->private_data;
- 	int err, result = 0;
- 	free(plug->ttable);
-+	if (plug->rate_converter)
-+		snd_config_delete((snd_config_t*)plug->rate_converter);
- 	assert(plug->gen.slave == plug->req_slave);
- 	if (plug->gen.close_slave) {
- 		snd_pcm_unlink_hw_ptr(pcm, plug->req_slave);
-@@ -1108,7 +1110,15 @@ int snd_pcm_plug_open(snd_pcm_t **pcmp,
- 	plug->sformat = sformat;
- 	plug->schannels = schannels;
- 	plug->srate = srate;
--	plug->rate_converter = rate_converter;
-+	if (rate_converter) {
-+		if ((err = snd_config_copy((snd_config_t**)&plug->rate_converter,
-+					   (snd_config_t *)rate_converter)) < 0)
-+			free(plug);
-+			return err;
-+	}
-+	else
-+		snd_config_delete((snd_config_t*)plug->rate_converter);
+diff --git a/configure.ac b/configure.ac
+index a55c735..190d935 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -20,6 +20,30 @@ PKG_CHECK_MODULES(ALSA, alsa >= 1.0.11)
+ AC_CHECK_LIB(asound, snd_pcm_ioplug_create,,
+ 	     AC_ERROR([*** libasound has no external plugin SDK]), -ldl)
+ 
++AC_ARG_ENABLE([oss],
++      AS_HELP_STRING([--disable-oss], [Disable building of OSS plugin]))
++AS_IF([test "x$enable_oss" != "xno"],
++      [AM_CONDITIONAL(HAVE_OSS, true)],
++      [AM_CONDITIONAL(HAVE_OSS, false)])
 +
- 	plug->gen.slave = plug->req_slave = slave;
- 	plug->gen.close_slave = close_slave;
- 	plug->route_policy = route_policy;
-@@ -1119,6 +1129,8 @@ int snd_pcm_plug_open(snd_pcm_t **pcmp,
- 	
- 	err = snd_pcm_new(&pcm, SND_PCM_TYPE_PLUG, name, slave->stream, slave->mode);
- 	if (err < 0) {
-+		if (plug->rate_converter)
-+			snd_config_delete((snd_config_t*)plug->rate_converter);
- 		free(plug);
- 		return err;
- 	}
++AC_ARG_ENABLE([mix],
++      AS_HELP_STRING([--disable-mix], [Disable building of upmix and vdownmix plugins]))
++AS_IF([test "x$enable_mix" != "xno"],
++      [AM_CONDITIONAL(HAVE_MIX, true)],
++      [AM_CONDITIONAL(HAVE_MIX, false)])
++
++AC_ARG_ENABLE([usbstream],
++      AS_HELP_STRING([--disable-usbstream], [Disable building of usb_stream plugin]))
++AS_IF([test "x$enable_usbstream" != "xno"],
++      [AM_CONDITIONAL(HAVE_USBSTREAM, true)],
++      [AM_CONDITIONAL(HAVE_USBSTREAM, false)])
++
++AC_ARG_ENABLE([arcamav],
++      AS_HELP_STRING([--disable-arcamav], [Disable building of Arcam AV control plugin]))
++AS_IF([test "x$enable_arcamav" != "xno"],
++      [AM_CONDITIONAL(HAVE_ARCAMAV, true)],
++      [AM_CONDITIONAL(HAVE_ARCAMAV, false)])
++
+ AC_ARG_ENABLE([jack],
+       AS_HELP_STRING([--disable-jack], [Disable building of JACK plugin]))
+ 
+@@ -108,7 +132,12 @@ AC_SUBST(AVCODEC_CFLAGS)
+ AC_SUBST(AVCODEC_LIBS)
+ AC_SUBST(AVCODEC_HEADER)
+ 
+-PKG_CHECK_MODULES(speexdsp, [speexdsp >= 1.2], [HAVE_SPEEXDSP="yes"], [HAVE_SPEEXDSP=""])
++AC_ARG_ENABLE([speexdsp],
++      AS_HELP_STRING([--disable-speexdsp], [Disable building of speexdsp plugin]))
++
++if test "x$enable_speexdsp" != "xno"; then
++  PKG_CHECK_MODULES(speexdsp, [speexdsp >= 1.2rc2], [HAVE_SPEEXDSP="yes"], [HAVE_SPEEXDSP=""])
++fi
+ AM_CONDITIONAL(HAVE_SPEEXDSP, test "$HAVE_SPEEXDSP" = "yes")
+ 
+ AC_ARG_WITH([speex],
 -- 
 2.7.4
