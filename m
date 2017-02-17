@@ -1,8 +1,8 @@
 From: sutar.mounesh@gmail.com
-Subject: [PATCH 1/6] pcm: dmix_rewind corrupts application
-	pointer fix
-Date: Fri, 17 Feb 2017 12:45:36 +0530
-Message-ID: <1487315736-8950-1-git-send-email-sutar.mounesh@gmail.com>
+Subject: [PATCH 2/6] pcm:direct: fix race on clearing timer
+	events
+Date: Fri, 17 Feb 2017 12:45:56 +0530
+Message-ID: <1487315756-8991-1-git-send-email-sutar.mounesh@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -17,93 +17,101 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: patch@alsa-project.org
-Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org, Ravikiran Polepalli <ravikiran_polepalli@mentor.com>, Mounesh Sutar <sutar.mounesh@gmail.com>, Mikhail Durnev <mikhail_durnev@mentor.com>, mounesh_sutar@mentor.com
+Cc: Jiada Wang <jiada_wang@mentor.com>, Mounesh Sutar <sutar.mounesh@gmail.com>, alsa-devel@alsa-project.org, Andreas Pape <apape@de.adit-jv.com>, mounesh_sutar@mentor.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Timo Wischer <twischer@de.adit-jv.com>
+From: Andreas Pape <apape@de.adit-jv.com>
 
-sometimes pulseaudio stops with the following assertion in libasound.so:
-alsa-lib-1.0.29/src/pcm/pcm.c:2761:
-snd_pcm_area_copy: Assertion `dst < src || dst >= src + bytes' failed.
-Application pointer is handled properly, in cases of rewind operations.
+snd_timer handling is racy: plugins clear timer queue if avail_min
+is not reached to force a sleep on timer. The race can happen if
+the expected event arrives in between the avail check and the
+clearing of pending events. If this race happens, the user will
+unnecessarily wait for one more timer event. On low latency/realtime
+streams this can lead to xruns and must be avoided.
 
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
-Signed-off-by: Ravikiran Polepalli <ravikiran_polepalli@mentor.com>
-Signed-off-by: Mikhail Durnev <mikhail_durnev@mentor.com>
+As a fix we recheck avail after having cleared poll events.
+
+Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
 Signed-off-by: Mounesh Sutar <sutar.mounesh@gmail.com>
 
-diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
-index dd0356e..4b763e2 100644
---- a/src/pcm/pcm_dmix.c
-+++ b/src/pcm/pcm_dmix.c
-@@ -706,7 +706,7 @@ static snd_pcm_sframes_t snd_pcm_dmix_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t f
- {
- 	snd_pcm_direct_t *dmix = pcm->private_data;
- 	snd_pcm_uframes_t slave_appl_ptr, slave_size;
--	snd_pcm_uframes_t appl_ptr, size, transfer, result;
-+	snd_pcm_uframes_t appl_ptr, size, transfer, result, frames_to_remix;
- 	int err;
- 	const snd_pcm_channel_area_t *src_areas, *dst_areas;
- 
-@@ -717,6 +717,11 @@ static snd_pcm_sframes_t snd_pcm_dmix_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t f
- 			return err;
- 	}
- 
-+	/* (appl_ptr - last_appl_ptr) indicates the frames which are not already mixed
-+	   (last_appl_ptr - hw_ptr)  indicates the frames which are already mixed but not played yet.
-+	   So they can be remixed.
-+	 */
-+
- 	if (dmix->last_appl_ptr < dmix->appl_ptr)
- 		size = dmix->appl_ptr - dmix->last_appl_ptr;
- 	else
-@@ -729,6 +734,9 @@ static snd_pcm_sframes_t snd_pcm_dmix_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t f
- 		return size;
- 	result = size;
- 
-+	/* Always at this point last_appl_ptr == appl_ptr
-+	   So (appl_ptr - hw_ptr) indicates the frames which can be remixed
-+	 */
- 	if (dmix->hw_ptr < dmix->appl_ptr)
- 		size = dmix->appl_ptr - dmix->hw_ptr;
- 	else
-@@ -741,9 +749,12 @@ static snd_pcm_sframes_t snd_pcm_dmix_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t f
- 		slave_size = dmix->slave_appl_ptr + (pcm->boundary - dmix->slave_hw_ptr);
- 	if (slave_size < size)
- 		size = slave_size;
--	frames -= size;
--	result += size;
--		
-+
-+	/* frames which should be remixed will be saved
-+	   to also backward the appl pointer on success
-+	 */
-+	frames_to_remix = size;
-+
- 	/* add sample areas here */
- 	src_areas = snd_pcm_mmap_areas(pcm);
- 	dst_areas = snd_pcm_mmap_areas(dmix->spcm);
-@@ -769,15 +780,15 @@ static snd_pcm_sframes_t snd_pcm_dmix_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t f
- 		appl_ptr += transfer;
- 		appl_ptr %= pcm->buffer_size;
- 	}
--	dmix->last_appl_ptr -= frames;
--	dmix->last_appl_ptr %= pcm->boundary;
--	dmix->slave_appl_ptr -= frames;
--	dmix->slave_appl_ptr %= dmix->slave_boundary;
- 	dmix_up_sem(dmix);
- 
--	snd_pcm_mmap_appl_backward(pcm, frames);
-+	snd_pcm_mmap_appl_backward(pcm, frames_to_remix);
-+	result += frames_to_remix;
-+	/* At this point last_appl_ptr and appl_ptr has to indicate the
-+	 * position of the first not mixed frame
-+	 */
- 
--	return result + frames;
-+	return result;
+diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
+index 364191b..8a75c42 100644
+--- a/src/pcm/pcm_direct.c
++++ b/src/pcm/pcm_direct.c
+@@ -515,10 +515,12 @@ int snd_pcm_direct_async(snd_pcm_t *pcm, int sig, pid_t pid)
  }
  
- static snd_pcm_sframes_t snd_pcm_dmix_forwardable(snd_pcm_t *pcm)
+ /* empty the timer read queue */
+-void snd_pcm_direct_clear_timer_queue(snd_pcm_direct_t *dmix)
++int snd_pcm_direct_clear_timer_queue(snd_pcm_direct_t *dmix)
+ {
++	int changed = 0;
+ 	if (dmix->timer_need_poll) {
+ 		while (poll(&dmix->timer_fd, 1, 0) > 0) {
++			changed++;
+ 			/* we don't need the value */
+ 			if (dmix->tread) {
+ 				snd_timer_tread_t rbuf[4];
+@@ -533,15 +535,17 @@ void snd_pcm_direct_clear_timer_queue(snd_pcm_direct_t *dmix)
+ 			snd_timer_tread_t rbuf[4];
+ 			int len;
+ 			while ((len = snd_timer_read(dmix->timer, rbuf,
+-						     sizeof(rbuf))) > 0 &&
++						     sizeof(rbuf))) > 0
++						     && (++changed) &&
+ 			       len != sizeof(rbuf[0]))
+ 				;
+ 		} else {
+ 			snd_timer_read_t rbuf;
+ 			while (snd_timer_read(dmix->timer, &rbuf, sizeof(rbuf)) > 0)
+-				;
++				changed++;
+ 		}
+ 	}
++	return changed;
+ }
+ 
+ int snd_pcm_direct_timer_stop(snd_pcm_direct_t *dmix)
+@@ -693,6 +697,8 @@ int snd_pcm_direct_poll_revents(snd_pcm_t *pcm, struct pollfd *pfds, unsigned in
+ 	int empty = 0;
+ 
+ 	assert(pfds && nfds == 1 && revents);
++
++timer_changed:
+ 	events = pfds[0].revents;
+ 	if (events & POLLIN) {
+ 		snd_pcm_uframes_t avail;
+@@ -720,7 +726,16 @@ int snd_pcm_direct_poll_revents(snd_pcm_t *pcm, struct pollfd *pfds, unsigned in
+ 		break;
+ 	default:
+ 		if (empty) {
+-			snd_pcm_direct_clear_timer_queue(dmix);
++			/* here we have a race condition:
++			 * if period event arrived after the avail_update call
++			 * above we might clear this event with the following
++			 * clear_timer_queue.
++			 * There is no way to do this in atomic manner, so we
++			 * need to recheck avail_update if we successfully
++			 * cleared a poll event.
++			 */
++			if (snd_pcm_direct_clear_timer_queue(dmix))
++				goto timer_changed;
+ 			events &= ~(POLLOUT|POLLIN);
+ 			/* additional check */
+ 			switch (__snd_pcm_state(pcm)) {
+diff --git a/src/pcm/pcm_direct.h b/src/pcm/pcm_direct.h
+index fba55fd..24e85f0 100644
+--- a/src/pcm/pcm_direct.h
++++ b/src/pcm/pcm_direct.h
+@@ -322,7 +322,7 @@ int snd_pcm_direct_munmap(snd_pcm_t *pcm);
+ int snd_pcm_direct_prepare(snd_pcm_t *pcm);
+ int snd_pcm_direct_resume(snd_pcm_t *pcm);
+ int snd_pcm_direct_timer_stop(snd_pcm_direct_t *dmix);
+-void snd_pcm_direct_clear_timer_queue(snd_pcm_direct_t *dmix);
++int snd_pcm_direct_clear_timer_queue(snd_pcm_direct_t *dmix);
+ int snd_pcm_direct_set_timer_params(snd_pcm_direct_t *dmix);
+ int snd_pcm_direct_open_secondary_client(snd_pcm_t **spcmp, snd_pcm_direct_t *dmix, const char *client_name);
+ 
 -- 
 2.7.4
