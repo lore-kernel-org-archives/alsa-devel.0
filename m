@@ -1,85 +1,100 @@
-From: sutar.mounesh@gmail.com
-Subject: [PATCH 1/1] alsa-plugins: enhancing configuration
-	support for alsa plugins
-Date: Fri, 17 Feb 2017 12:54:19 +0530
-Message-ID: <1487316259-9321-1-git-send-email-sutar.mounesh@gmail.com>
+From: =?UTF-8?q?Micha=C5=82=20K=C4=99pie=C5=84?= <kernel@kempniu.pl>
+Subject: [PATCH v3 0/7] Move dell-led to drivers/platform/x86
+Date: Fri, 17 Feb 2017 08:57:46 +0100
+Message-ID: <20170217075753.12702-1-kernel@kempniu.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Mikhail Durnev <mikhail_durnev@mentor.com>, mounesh_sutar@mentor.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <platform-driver-x86-owner@vger.kernel.org>
+Sender: platform-driver-x86-owner@vger.kernel.org
+To: Richard Purdie <rpurdie@rpsys.net>, Jacek Anaszewski <jacek.anaszewski@gmail.com>, Pavel Machek <pavel@ucw.cz>, Matthew Garrett <mjg59@srcf.ucam.org>, =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Alex Hung <alex.hung@canonical.com>, linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mounesh Sutar <mounesh_sutar@mentor.com>
+This patch series moves the dell-led driver from the LED subsystem to
+the x86 platform driver subsystem.
 
-Following plugins are made configurable in alsa-plugins:
-* oss
-* mix
-* usbstream
-* arcamav
-* speexdsp
+The original motivation behind this effort was to move all code using
+the dell-smbios module to the x86 platform driver subsystem.  While I
+was investigating the possibilities to do that, it quickly emerged that
+dell-led can and in fact should be moved to the x86 platform driver
+subsystem in its entirety.
 
-Signed-off-by: Mikhail Durnev <mikhail_durnev@mentor.com>
-Signed-off-by: Mounesh Sutar <mounesh_sutar@mentor.com>
+dell-led consists of two major parts:
 
-diff --git a/configure.ac b/configure.ac
-index a55c735..190d935 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -20,6 +20,30 @@ PKG_CHECK_MODULES(ALSA, alsa >= 1.0.11)
- AC_CHECK_LIB(asound, snd_pcm_ioplug_create,,
- 	     AC_ERROR([*** libasound has no external plugin SDK]), -ldl)
- 
-+AC_ARG_ENABLE([oss],
-+      AS_HELP_STRING([--disable-oss], [Disable building of OSS plugin]))
-+AS_IF([test "x$enable_oss" != "xno"],
-+      [AM_CONDITIONAL(HAVE_OSS, true)],
-+      [AM_CONDITIONAL(HAVE_OSS, false)])
-+
-+AC_ARG_ENABLE([mix],
-+      AS_HELP_STRING([--disable-mix], [Disable building of upmix and vdownmix plugins]))
-+AS_IF([test "x$enable_mix" != "xno"],
-+      [AM_CONDITIONAL(HAVE_MIX, true)],
-+      [AM_CONDITIONAL(HAVE_MIX, false)])
-+
-+AC_ARG_ENABLE([usbstream],
-+      AS_HELP_STRING([--disable-usbstream], [Disable building of usb_stream plugin]))
-+AS_IF([test "x$enable_usbstream" != "xno"],
-+      [AM_CONDITIONAL(HAVE_USBSTREAM, true)],
-+      [AM_CONDITIONAL(HAVE_USBSTREAM, false)])
-+
-+AC_ARG_ENABLE([arcamav],
-+      AS_HELP_STRING([--disable-arcamav], [Disable building of Arcam AV control plugin]))
-+AS_IF([test "x$enable_arcamav" != "xno"],
-+      [AM_CONDITIONAL(HAVE_ARCAMAV, true)],
-+      [AM_CONDITIONAL(HAVE_ARCAMAV, false)])
-+
- AC_ARG_ENABLE([jack],
-       AS_HELP_STRING([--disable-jack], [Disable building of JACK plugin]))
- 
-@@ -108,7 +132,12 @@ AC_SUBST(AVCODEC_CFLAGS)
- AC_SUBST(AVCODEC_LIBS)
- AC_SUBST(AVCODEC_HEADER)
- 
--PKG_CHECK_MODULES(speexdsp, [speexdsp >= 1.2], [HAVE_SPEEXDSP="yes"], [HAVE_SPEEXDSP=""])
-+AC_ARG_ENABLE([speexdsp],
-+      AS_HELP_STRING([--disable-speexdsp], [Disable building of speexdsp plugin]))
-+
-+if test "x$enable_speexdsp" != "xno"; then
-+  PKG_CHECK_MODULES(speexdsp, [speexdsp >= 1.2rc2], [HAVE_SPEEXDSP="yes"], [HAVE_SPEEXDSP=""])
-+fi
- AM_CONDITIONAL(HAVE_SPEEXDSP, test "$HAVE_SPEEXDSP" = "yes")
- 
- AC_ARG_WITH([speex],
+  - the part exposing a microphone mute LED interface, introduced in
+    db6d8cc00773 ("dell-led: add mic mute led interface"); this
+    interface is used by sound/pci/hda/dell_wmi_helper.c; while the
+    original implementation used a WMI interface, it was changed to use
+    dell-smbios in cf0d7ea33596 ("dell-led: use dell_smbios_find_token()
+    for finding mic DMI tokens") and 0c41a08e131d ("dell-led: use
+    dell_smbios_send_request() for performing SMBIOS calls"),
+
+  - the part handling an activity LED present in Dell Latitude 2100
+    netbooks, introduced in 72dcd8d08aca ("leds: Add Dell Business Class
+    Netbook LED driver"); it binds to a specific WMI GUID and then
+    registers a LED device which is controlled using WMI (i.e. it is
+    essentially a WMI driver).
+
+Patches 1 and 2 clean up the microphone mute LED interface to minimize
+the amount of code moved around.
+
+Patch 3 updates a variable name in sound/pci/hda/dell_wmi_helper.c so
+that it better matches that variable's role.
+
+Patch 4 moves the microphone mute LED interface to
+drivers/platform/x86/dell-laptop.c, effectively causing
+sound/pci/hda/dell_wmi_helper.c to depend on CONFIG_DELL_LAPTOP instead
+of CONFIG_LEDS_DELL_NETBOOKS.
+
+Patch 5 reverts dell-led to the state it was in after its initial commit
+72dcd8d08aca ("leds: Add Dell Business Class Netbook LED driver") by
+removing all remnants of the microphone mute LED handling code.
+
+Patch 6 moves all that is left of dell-led (i.e. the activity LED part,
+as originally implemented), to a new module which is placed in
+drivers/platform/x86/dell-wmi-led.c.
+
+Patch 7 fixes coding style issues in drivers/platform/x86/dell-wmi-led.c
+to make sure it gets a clean start in the x86 platform driver subsystem.
+
+As all patches except patch 3 in this series affect the LED subsystem,
+the series is based on linux-leds/for-next.
+
+Changes from v2:
+
+  - Add patch 7 fixing coding style issues (feedback from Joe and Andy
+    taken into account).
+
+  - Add leading zero to constants in patch 4.
+
+  - Move dell-led.h include one line higher in patch 4.
+
+Changes from v1:
+
+  - Squash patches 2-4 from v1 into a single patch (#2 in v2).
+
+  - Add patch 3.
+
+  - Fix subject pattern in patch 4.
+
+  - Slight commit message adjustments, including fixing a typo
+    ("COFIG_LEDS_DELL_NETBOOKS") in patch 6.
+
+  - Remove the name of the module's source file from the header comment
+    in drivers/platform/x86/dell-wmi-led.c to avoid the need to update
+    it in the future.
+
+ drivers/leds/Kconfig                               |   9 --
+ drivers/leds/Makefile                              |   1 -
+ drivers/platform/x86/Kconfig                       |   8 ++
+ drivers/platform/x86/Makefile                      |   1 +
+ drivers/platform/x86/dell-laptop.c                 |  28 ++++
+ .../dell-led.c => platform/x86/dell-wmi-led.c}     | 141 +++++----------------
+ include/linux/dell-led.h                           |   6 +-
+ sound/pci/hda/dell_wmi_helper.c                    |  30 ++---
+ 8 files changed, 86 insertions(+), 138 deletions(-)
+ rename drivers/{leds/dell-led.c => platform/x86/dell-wmi-led.c} (56%)
+
 -- 
-2.7.4
+2.11.1
