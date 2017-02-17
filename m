@@ -1,158 +1,45 @@
-From: =?UTF-8?q?Micha=C5=82=20K=C4=99pie=C5=84?= <kernel@kempniu.pl>
-Subject: [PATCH v3 4/7] platform/x86: dell-laptop: import dell_micmute_led_set() from drivers/leds/dell-led.c
-Date: Fri, 17 Feb 2017 08:57:50 +0100
-Message-ID: <20170217075753.12702-5-kernel@kempniu.pl>
-References: <20170217075753.12702-1-kernel@kempniu.pl>
+From: Jeeja KP <jeeja.kp@intel.com>
+Subject: Re: [PATCH 15/16] ASoC: Intel: bxt: Add jack port
+ initialize in bxt_rt298 machine
+Date: Fri, 17 Feb 2017 14:21:25 +0530
+Message-ID: <20170217085124.GA15029@kpjeeja-desk>
+References: <1486474800-11426-1-git-send-email-jeeja.kp@intel.com>
+ <1486474800-11426-16-git-send-email-jeeja.kp@intel.com>
+ <20170216185658.relwcxkr357dqjhs@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170217075753.12702-1-kernel@kempniu.pl>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Purdie <rpurdie@rpsys.net>, Jacek Anaszewski <jacek.anaszewski@gmail.com>, Pavel Machek <pavel@ucw.cz>, Matthew Garrett <mjg59@srcf.ucam.org>, =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali.rohar@gmail.com>, Darren Hart <dvhart@infradead.org>, Andy Shevchenko <andy@infradead.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Alex Hung <alex.hung@canonical.com>, linux-leds@vger.kernel.org, platform-driver-x86@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A0E92668B2
+ for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2017 09:39:40 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20170216185658.relwcxkr357dqjhs@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-To ensure all users of dell-smbios are in drivers/platform/x86, move the
-dell_micmute_led_set() method from drivers/leds/dell-led.c to
-drivers/platform/x86/dell-laptop.c.
+On Thu, Feb 16, 2017 at 06:56:58PM +0000, Mark Brown wrote:
+> On Tue, Feb 07, 2017 at 07:09:59PM +0530, jeeja.kp@intel.com wrote:
+> > From: Jeeja KP <jeeja.kp@intel.com>
+> > 
+> > After the pcm jack is created, create and initialize the pin switch
+> > widget for each port. Pin switch is to enable/disable the pin when
+> > monitor is connected/disconnected.
+> > ---
+> 
+> This has no signoffs at all, I can't do anything with it.  Vinod, you
+> acked this?
+Sorry, I missed it. I will take care from next time onwards.
+I will fix and resend this patch.
 
-Signed-off-by: Michał Kępień <kernel@kempniu.pl>
-Tested-by: Alex Hung <alex.hung@canonical.com>
-Reviewed-by: Pali Rohár <pali.rohar@gmail.com>
-Acked-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Acked-by: Takashi Iwai <tiwai@suse.de>
----
- drivers/leds/dell-led.c            | 29 -----------------------------
- drivers/platform/x86/dell-laptop.c | 28 ++++++++++++++++++++++++++++
- sound/pci/hda/dell_wmi_helper.c    |  6 +++---
- 3 files changed, 31 insertions(+), 32 deletions(-)
-
-diff --git a/drivers/leds/dell-led.c b/drivers/leds/dell-led.c
-index f9002d9bb757..c9cc36a7c890 100644
---- a/drivers/leds/dell-led.c
-+++ b/drivers/leds/dell-led.c
-@@ -16,7 +16,6 @@
- #include <linux/slab.h>
- #include <linux/module.h>
- #include <linux/dmi.h>
--#include <linux/dell-led.h>
- #include "../platform/x86/dell-smbios.h"
- 
- MODULE_AUTHOR("Louis Davis/Jim Dailey");
-@@ -43,34 +42,6 @@ MODULE_ALIAS("wmi:" DELL_LED_BIOS_GUID);
- #define CMD_LED_OFF	17
- #define CMD_LED_BLINK	18
- 
--#define GLOBAL_MIC_MUTE_ENABLE	0x364
--#define GLOBAL_MIC_MUTE_DISABLE	0x365
--
--int dell_micmute_led_set(int state)
--{
--	struct calling_interface_buffer *buffer;
--	struct calling_interface_token *token;
--
--	if (state == 0)
--		token = dell_smbios_find_token(GLOBAL_MIC_MUTE_DISABLE);
--	else if (state == 1)
--		token = dell_smbios_find_token(GLOBAL_MIC_MUTE_ENABLE);
--	else
--		return -EINVAL;
--
--	if (!token)
--		return -ENODEV;
--
--	buffer = dell_smbios_get_buffer();
--	buffer->input[0] = token->location;
--	buffer->input[1] = token->value;
--	dell_smbios_send_request(1, 0);
--	dell_smbios_release_buffer();
--
--	return state;
--}
--EXPORT_SYMBOL_GPL(dell_micmute_led_set);
--
- struct bios_args {
- 	unsigned char length;
- 	unsigned char result_code;
-diff --git a/drivers/platform/x86/dell-laptop.c b/drivers/platform/x86/dell-laptop.c
-index 14392a01ab36..9e35205779c0 100644
---- a/drivers/platform/x86/dell-laptop.c
-+++ b/drivers/platform/x86/dell-laptop.c
-@@ -29,6 +29,7 @@
- #include <linux/mm.h>
- #include <linux/i8042.h>
- #include <linux/debugfs.h>
-+#include <linux/dell-led.h>
- #include <linux/seq_file.h>
- #include <acpi/video.h>
- #include "dell-rbtn.h"
-@@ -42,6 +43,8 @@
- #define KBD_LED_AUTO_50_TOKEN 0x02EB
- #define KBD_LED_AUTO_75_TOKEN 0x02EC
- #define KBD_LED_AUTO_100_TOKEN 0x02F6
-+#define GLOBAL_MIC_MUTE_ENABLE 0x0364
-+#define GLOBAL_MIC_MUTE_DISABLE 0x0365
- 
- struct quirk_entry {
- 	u8 touchpad_led;
-@@ -1972,6 +1975,31 @@ static void kbd_led_exit(void)
- 	led_classdev_unregister(&kbd_led);
- }
- 
-+int dell_micmute_led_set(int state)
-+{
-+	struct calling_interface_buffer *buffer;
-+	struct calling_interface_token *token;
-+
-+	if (state == 0)
-+		token = dell_smbios_find_token(GLOBAL_MIC_MUTE_DISABLE);
-+	else if (state == 1)
-+		token = dell_smbios_find_token(GLOBAL_MIC_MUTE_ENABLE);
-+	else
-+		return -EINVAL;
-+
-+	if (!token)
-+		return -ENODEV;
-+
-+	buffer = dell_smbios_get_buffer();
-+	buffer->input[0] = token->location;
-+	buffer->input[1] = token->value;
-+	dell_smbios_send_request(1, 0);
-+	dell_smbios_release_buffer();
-+
-+	return state;
-+}
-+EXPORT_SYMBOL_GPL(dell_micmute_led_set);
-+
- static int __init dell_init(void)
- {
- 	struct calling_interface_buffer *buffer;
-diff --git a/sound/pci/hda/dell_wmi_helper.c b/sound/pci/hda/dell_wmi_helper.c
-index 516237ad6ef5..7efa7bd7acb2 100644
---- a/sound/pci/hda/dell_wmi_helper.c
-+++ b/sound/pci/hda/dell_wmi_helper.c
-@@ -2,7 +2,7 @@
-  * to be included from codec driver
-  */
- 
--#if IS_ENABLED(CONFIG_LEDS_DELL_NETBOOKS)
-+#if IS_ENABLED(CONFIG_DELL_LAPTOP)
- #include <linux/dell-led.h>
- 
- static int dell_led_value;
-@@ -67,10 +67,10 @@ static void alc_fixup_dell_wmi(struct hda_codec *codec,
- 	}
- }
- 
--#else /* CONFIG_LEDS_DELL_NETBOOKS */
-+#else /* CONFIG_DELL_LAPTOP */
- static void alc_fixup_dell_wmi(struct hda_codec *codec,
- 			       const struct hda_fixup *fix, int action)
- {
- }
- 
--#endif /* CONFIG_LEDS_DELL_NETBOOKS */
-+#endif /* CONFIG_DELL_LAPTOP */
 -- 
-2.11.1
