@@ -1,7 +1,7 @@
 From: sutar.mounesh@gmail.com
-Subject: [PATCH 4/6] pcm: status dump fix timestamp formatting
-Date: Fri, 17 Feb 2017 12:47:36 +0530
-Message-ID: <1487315856-9078-1-git-send-email-sutar.mounesh@gmail.com>
+Subject: [PATCH 5/6] pcm:extplug: refinement of masks in extplug
+Date: Fri, 17 Feb 2017 12:47:49 +0530
+Message-ID: <1487315869-9119-1-git-send-email-sutar.mounesh@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -16,45 +16,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: patch@alsa-project.org
-Cc: Mounesh Sutar <sutar.mounesh@gmail.com>, alsa-devel@alsa-project.org, Andreas Pape <apape@de.adit-jv.com>, mounesh_sutar@mentor.com
+Cc: Mounesh Sutar <sutar.mounesh@gmail.com>, alsa-devel@alsa-project.org, Awais Belal <awais_belal@mentor.com>, mounesh_sutar@mentor.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Andreas Pape <apape@de.adit-jv.com>
+From: Awais Belal <awais_belal@mentor.com>
 
-nanosecond part formatted with %06 will give incorrect/confusing results:
+It should be possible to use empty mask format with extplug.
+The refinement of mask via extplug is now modified,
+to accept empty masks as well to work properly.
 
-trigger_time: 154.9748287
-trigger_time: 154.60109090
-trigger_time: 154.110425257
-
-time seems to run backwards...
-
-This patch converts to us before printing
-which gives the correct/expected result:
-
-trigger_time: 154.009748
-trigger_time: 154.060109
-trigger_time: 154.110425
-
-Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
+Signed-off-by: Awais Belal <awais_belal@mentor.com>
 Signed-off-by: Mounesh Sutar <sutar.mounesh@gmail.com>
 
-diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index 493e903..a16fd86 100644
---- a/src/pcm/pcm.c
-+++ b/src/pcm/pcm.c
-@@ -2194,9 +2194,10 @@ int snd_pcm_status_dump(snd_pcm_status_t *status, snd_output_t *out)
- 	assert(status);
- 	snd_output_printf(out, "  state       : %s\n", snd_pcm_state_name((snd_pcm_state_t) status->state));
- 	snd_output_printf(out, "  trigger_time: %ld.%06ld\n",
--		status->trigger_tstamp.tv_sec, status->trigger_tstamp.tv_nsec);
-+			  status->trigger_tstamp.tv_sec,
-+			  status->trigger_tstamp.tv_nsec / 1000);
- 	snd_output_printf(out, "  tstamp      : %ld.%06ld\n",
--		status->tstamp.tv_sec, status->tstamp.tv_nsec);
-+		status->tstamp.tv_sec, status->tstamp.tv_nsec / 1000);
- 	snd_output_printf(out, "  delay       : %ld\n", (long)status->delay);
- 	snd_output_printf(out, "  avail       : %ld\n", (long)status->avail);
- 	snd_output_printf(out, "  avail_max   : %ld\n", (long)status->avail_max);
+diff --git a/src/pcm/pcm_extplug.c b/src/pcm/pcm_extplug.c
+index a04f826..1004f54 100644
+--- a/src/pcm/pcm_extplug.c
++++ b/src/pcm/pcm_extplug.c
+@@ -172,6 +172,8 @@ int snd_ext_parm_mask_refine(snd_mask_t *mask, struct snd_ext_parm *parm, int ty
+ 	unsigned int i;
+ 
+ 	parm += type;
++	if (!parm->active)
++		return 0;
+ 	memset(&bits, 0, sizeof(bits));
+ 	for (i = 0; i < parm->num_list; i++)
+ 		bits.bits[parm->list[i] / 32] |= 1U << (parm->list[i] % 32);
 -- 
 2.7.4
