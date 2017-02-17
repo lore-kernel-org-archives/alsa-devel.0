@@ -1,17 +1,15 @@
-From: Jeeja KP <jeeja.kp@intel.com>
-Subject: Re: [PATCH v2] ASoC: hdac_hdmi: Enable MST audio
-Date: Fri, 17 Feb 2017 14:55:10 +0530
-Message-ID: <20170217092510.GA17288@kpjeeja-desk>
-References: <1487323230-17170-1-git-send-email-jeeja.kp@intel.com>
+From: jeeja.kp@intel.com
+Subject: [PATCH v2] ASoC: Intel: bxt: Add jack port initialize
+	in bxt_rt298 machine
+Date: Fri, 17 Feb 2017 15:04:46 +0530
+Message-ID: <1487324086-17469-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F6372668B2
- for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2017 10:13:25 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1487323230-17170-1-git-send-email-jeeja.kp@intel.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 57E302668B2
+ for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2017 10:23:05 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,51 +20,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 17, 2017 at 02:50:29PM +0530, jeeja.kp@intel.com wrote:
-> From: Jeeja KP <jeeja.kp@intel.com>
->
+From: Jeeja KP <jeeja.kp@intel.com>
 
-Please ignore, by mistake it went out of my mailbox.
-i will resend the patch.
+After the pcm jack is created, create and initialize the pin switch
+widget for each port. Pin switch is to enable/disable the pin when
+monitor is connected/disconnected.
+
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+---
+Change in v2:
+	Add the SOB.
+
+ sound/soc/intel/boards/bxt_rt298.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
+index d5f53a6..176c080 100644
+--- a/sound/soc/intel/boards/bxt_rt298.c
++++ b/sound/soc/intel/boards/bxt_rt298.c
+@@ -459,10 +459,12 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
+ {
+ 	struct bxt_rt286_private *ctx = snd_soc_card_get_drvdata(card);
+ 	struct bxt_hdmi_pcm *pcm;
++	struct snd_soc_codec *codec = NULL;
+ 	int err, i = 0;
+ 	char jack_name[NAME_SIZE];
  
-> With the patch series "ASoC: hdmi: Preparatory work to support MST audio",
-> the design is extended from pin to port mapping to handle MST usecases.
-> 
-> A pin is MST capable if pipe is valid value (i.e. not -1) in the notify
-> callback. If pipe = -1, default port is 0 else port = pipe. A MST capable
-> pin widget is programmed by first sending a verb to select the device/port
-> and then the actual verb is sent to program the widget.
-> 
-> This patch series enables MST Audio by configuring MST capable pins and
-> extended the jack handling to report event for ports. Now the jack events
-> are based on port connect/disconnect. The design is also extended to support
-> mapping of multiple port to a single converter.
-> 
-> Now with the introduction of multiple ports with a single pin, a pin widget
-> is created to enable/disable path based on device connection. Required
-> machine driver changes are done to handle this change.
-> 
-> Also use the ASoC jack instead of snd_jack framework to creates jacks in
-> the machine driver.
-> 
-> Note: This patch series has dependency on the series
-> "ASoC: hdmi: Preparatory work to support MST audio"  
-> 
-> Change v2:
-> 	- Fixed the SOB missing in the patch.
-> 	- Removed already applied patches.
-> 
-> Jeeja KP (1):
->   ASoC: Intel: bxt: Add jack port initialize in bxt_rt298 machine
-> 
->  sound/soc/intel/boards/bxt_rt298.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> -- 
-> 2.5.0
-> 
-
+ 	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
++		codec = pcm->codec_dai->codec;
+ 		snprintf(jack_name, sizeof(jack_name),
+ 			"HDMI/DP, pcm=%d Jack", pcm->device);
+ 		err = snd_soc_card_jack_new(card, jack_name,
+@@ -480,7 +482,10 @@ static int bxt_card_late_probe(struct snd_soc_card *card)
+ 		i++;
+ 	}
+ 
+-	return 0;
++	if (!codec)
++		return -EINVAL;
++
++	return hdac_hdmi_jack_port_init(codec, &card->dapm);
+ }
+ 
+ 
 -- 
+2.5.0
