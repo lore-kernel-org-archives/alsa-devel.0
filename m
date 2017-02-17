@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH] ASoC: nau8825: automatic BCLK and LRC
  divde in master mode
-Date: Fri, 17 Feb 2017 10:40:47 +0000
-Message-ID: <20170217104047.vhrcehhojpkdeksu@sirena.org.uk>
+Date: Fri, 17 Feb 2017 10:43:54 +0000
+Message-ID: <20170217104354.e6ylky6xqjaasl6m@sirena.org.uk>
 References: <1487296533-20893-1-git-send-email-KCHSU0@nuvoton.com>
+ <20170217104047.vhrcehhojpkdeksu@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6815052219497371416=="
+Content-Type: multipart/mixed; boundary="===============6114549329574261328=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 42A452668B2
- for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2017 11:40:58 +0100 (CET)
-In-Reply-To: <1487296533-20893-1-git-send-email-KCHSU0@nuvoton.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8464B2668B2
+ for <alsa-devel@alsa-project.org>; Fri, 17 Feb 2017 11:44:00 +0100 (CET)
+In-Reply-To: <20170217104047.vhrcehhojpkdeksu@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,50 +27,49 @@ Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com,
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6815052219497371416==
+--===============6114549329574261328==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ilkbycesqy7cfxq7"
+	protocol="application/pgp-signature"; boundary="uvpcusvyjybju7sp"
 Content-Disposition: inline
 
 
---ilkbycesqy7cfxq7
+--uvpcusvyjybju7sp
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Feb 17, 2017 at 09:55:33AM +0800, John Hsu wrote:
-> configurable LRC and BCLK divide. The driver
-> will make configurations of LRC and BCLK automatically according to
-> BCLK and FS information in master mode.
+On Fri, Feb 17, 2017 at 10:40:47AM +0000, Mark Brown wrote:
 
-> -       unsigned int val_len = 0, osr;
-> +       unsigned int val_len = 0, osr, ctrl_val, bclk_fs, bclk_div;
+> This is still broken, the above has tabs replaced by spaces.  I think
+> I'll try to fix up by hand but it's going to be fiddly and that's a one
+> time thing...
 
-This is still broken, the above has tabs replaced by spaces.  I think
-I'll try to fix up by hand but it's going to be fiddly and that's a one
-time thing...
+OK, that worked - it's definitely a tab/space problem.  Please
+investigate this and try to get it fixed though, I'm not doing that for
+every patch you send.  It may be something to do with what happens when
+it leaves your company mail system and looks fine internally?
 
---ilkbycesqy7cfxq7
+--uvpcusvyjybju7sp
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlim0y8ACgkQJNaLcl1U
-h9B0lAf+INF8MZfQ/aN3uVBzv6jwe0B+pI9xSTYAC90TeOSuk10FtEPrgITstKGk
-rfrS5bBVr8vOc09C8WG8/XRnCQ8MOqMAKnY0Vov2i7XTx0i+G7cCT1KUIZbRbKxV
-bIu6dHZHYgfzY8AcSS9cHZUvPcmu84ODrjjW6HGdQNao0p3zA28DpfPgZ8Ztl5SF
-KvaHulayAQixnbIX6h3Cyx95dv8ASOp9x3Gee/gslWAKVlPO6CY/l2hAC/JkqBty
-6Y+1Vin3eWech0ArYH7AbtQJRmrNrnyJDjNg3cdhLY8uJS3S1V91qiRq4hJKrjts
-0d4kVJvIP4jCRlTHC08jqDPWOSGXtg==
-=jUMq
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlim0+kACgkQJNaLcl1U
+h9AVQgf+KMEB6gJzDT6JA71mUGdLa28NiFoEVXoeZ4kThbbPi66lFrFBt0vFPQDK
+ltPg9DY1FMiaXdGS5dcwoEi6hWYwPMLrGTqGvNDjdlWWPMjqOSUJ5DpT2zUWMe8S
+m71/tXynZnfoPY7cmXyljgYs9mLsSInquQTz5hJJ5dKzfH+kk8HTDDPOb17hNB4L
+VIJX9XsL3Qam/euM+2JgS/wRLxJJyMaFNL2+0dgGhdbj53wHKVtaRU0IExcj5mcM
+eJDyuRkzliJYRA/gndkL+eAdtwQUkdoc0frtJZ8Ou4GrYQqJigXYq5wEi6aMGDam
+DusHopVlJ52i8lqrKE8TgqFpVA373A==
+=DagX
 -----END PGP SIGNATURE-----
 
---ilkbycesqy7cfxq7--
+--uvpcusvyjybju7sp--
 
---===============6815052219497371416==
+--===============6114549329574261328==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6815052219497371416==--
+--===============6114549329574261328==--
