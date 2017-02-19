@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fix ES8328_I2C/SPI dependencies" to the asoc tree
+Subject: Applied "ASoC: sun4i-spdif: drop unnessary
+	snd_soc_unregister_component()" to the asoc tree
 Date: Sun, 19 Feb 2017 16:34:54 +0000
-Message-ID: <E1cfURq-0004g4-S7@finisterre>
-References: <20170206122820.1659902-1-arnd@arndb.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170206122820.1659902-1-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Romain Perier <romain.perier@collabora.com>alsa-devel@alsa-project.org
+Message-ID: <E1cfURq-0004f9-8x@finisterre>
+References: <20170206152224.7566-1-weiyj.lk@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 29195266A73
+ for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2017 17:35:55 +0100 (CET)
+In-Reply-To: <20170206152224.7566-1-weiyj.lk@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Wei Yongjun <weiyongjun1@huawei.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fix ES8328_I2C/SPI dependencies
+   ASoC: sun4i-spdif: drop unnessary snd_soc_unregister_component()
 
 has been applied to the asoc tree at
 
@@ -37,75 +53,76 @@ to this mail.
 Thanks,
 Mark
 
->From 245c5c7b0863eda23e8cb1907e74579a42185888 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Mon, 6 Feb 2017 13:27:11 +0100
-Subject: [PATCH] ASoC: fix ES8328_I2C/SPI dependencies
+>From c97c4604c008f3d489cc3201de80e313aeb501d6 Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Date: Mon, 6 Feb 2017 15:22:24 +0000
+Subject: [PATCH] ASoC: sun4i-spdif: drop unnessary
+ snd_soc_unregister_component()
 
-The two front-ends to the codec can now be selected individually, but fail to
-build when the bus support is missing:
+It's not necessary to unregister a component registered
+with devm_snd_soc_register_component(). Also removed
+pointness clk_disable_unprepare() from error path and
+snd_soc_unregister_platform() from the remove.
 
-sound/built-in.o: In function `es8328_spi_probe':
-es8328-spi.c:(.text+0x125854): undefined reference to `__devm_regmap_init_spi'
-sound/built-in.o: In function `es8328_spi_driver_init':
-es8328-spi.c:(.init.text+0x3589): undefined reference to `__spi_register_driver'
-
-Related to this, the added dependency on SND_SOC_ES8328 breaks:
-
-warning: (SND_SOC_ALL_CODECS) selects SND_SOC_ES8328_I2C which has unmet direct dependencies (SOUND && !M68K && !UML && SND && SND_SOC && SND_SOC_ES8328 && I2C)
-
-This adds the respective Kconfig dependencies and changes SND_SOC_ES8328 to a hidden
-symbol that is selected implicitly by the two more specific options, as we do for
-some other codecs. We have to remove the 'depends on' for SND_SOC_IMX_ES8328 in the
-same step to avoid a recursive dependency.
-
-Fixes: aa00f2c8aff7 ("ASoC: Allow to select ES8328_I2C and ES8328_SPI directly")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Fixes: f8260afa444b ("ASoC: sunxi: Add support for the SPDIF block")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Acked-by: Maxime Ripard <maxime.ripard@free-electrons.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/Kconfig | 12 +++++++-----
- sound/soc/fsl/Kconfig    |  2 +-
- 2 files changed, 8 insertions(+), 6 deletions(-)
+ sound/soc/sunxi/sun4i-spdif.c | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index cfa423338963..0426e5c53829 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -525,15 +525,17 @@ config SND_SOC_HDMI_CODEC
- 	select HDMI
+diff --git a/sound/soc/sunxi/sun4i-spdif.c b/sound/soc/sunxi/sun4i-spdif.c
+index c03cd07a9b19..eaefd07a5ed0 100644
+--- a/sound/soc/sunxi/sun4i-spdif.c
++++ b/sound/soc/sunxi/sun4i-spdif.c
+@@ -510,8 +510,7 @@ static int sun4i_spdif_probe(struct platform_device *pdev)
+ 	host->spdif_clk = devm_clk_get(&pdev->dev, "spdif");
+ 	if (IS_ERR(host->spdif_clk)) {
+ 		dev_err(&pdev->dev, "failed to get a spdif clock.\n");
+-		ret = PTR_ERR(host->spdif_clk);
+-		goto err_disable_apb_clk;
++		return PTR_ERR(host->spdif_clk);
+ 	}
  
- config SND_SOC_ES8328
--	tristate "Everest Semi ES8328 CODEC"
-+	tristate
+ 	host->dma_params_tx.addr = res->start + quirks->reg_dac_txdata;
+@@ -525,7 +524,7 @@ static int sun4i_spdif_probe(struct platform_device *pdev)
+ 		if (IS_ERR(host->rst) && PTR_ERR(host->rst) == -EPROBE_DEFER) {
+ 			ret = -EPROBE_DEFER;
+ 			dev_err(&pdev->dev, "Failed to get reset: %d\n", ret);
+-			goto err_disable_apb_clk;
++			return ret;
+ 		}
+ 		if (!IS_ERR(host->rst))
+ 			reset_control_deassert(host->rst);
+@@ -534,7 +533,7 @@ static int sun4i_spdif_probe(struct platform_device *pdev)
+ 	ret = devm_snd_soc_register_component(&pdev->dev,
+ 				&sun4i_spdif_component, &sun4i_spdif_dai, 1);
+ 	if (ret)
+-		goto err_disable_apb_clk;
++		return ret;
  
- config SND_SOC_ES8328_I2C
--	depends on SND_SOC_ES8328
--	tristate "I2C support for Everest Semi ES8328 CODEC"
-+	tristate "Everest Semi ES8328 CODEC (I2C)"
-+	depends on I2C
-+	select SND_SOC_ES8328
+ 	pm_runtime_enable(&pdev->dev);
+ 	if (!pm_runtime_enabled(&pdev->dev)) {
+@@ -552,9 +551,6 @@ static int sun4i_spdif_probe(struct platform_device *pdev)
+ 		sun4i_spdif_runtime_suspend(&pdev->dev);
+ err_unregister:
+ 	pm_runtime_disable(&pdev->dev);
+-	snd_soc_unregister_component(&pdev->dev);
+-err_disable_apb_clk:
+-	clk_disable_unprepare(host->apb_clk);
+ 	return ret;
+ }
  
- config SND_SOC_ES8328_SPI
--	depends on SND_SOC_ES8328
--	tristate "SPI support for Everest Semi ES8328 CODEC"
-+	tristate "Everest Semi ES8328 CODEC (SPI)"
-+	depends on SPI_MASTER
-+	select SND_SOC_ES8328
+@@ -564,9 +560,6 @@ static int sun4i_spdif_remove(struct platform_device *pdev)
+ 	if (!pm_runtime_status_suspended(&pdev->dev))
+ 		sun4i_spdif_runtime_suspend(&pdev->dev);
  
- config SND_SOC_GTM601
- 	tristate 'GTM601 UMTS modem audio codec'
-diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
-index 0b914a1ca8d2..37f9b6201918 100644
---- a/sound/soc/fsl/Kconfig
-+++ b/sound/soc/fsl/Kconfig
-@@ -244,7 +244,7 @@ config SND_SOC_IMX_WM8962
+-	snd_soc_unregister_platform(&pdev->dev);
+-	snd_soc_unregister_component(&pdev->dev);
+-
+ 	return 0;
+ }
  
- config SND_SOC_IMX_ES8328
- 	tristate "SoC Audio support for i.MX boards with the ES8328 codec"
--	depends on OF && (I2C || SPI) && SND_SOC_ES8328
-+	depends on OF && (I2C || SPI)
- 	select SND_SOC_ES8328_I2C if I2C
- 	select SND_SOC_ES8328_SPI if SPI_MASTER
- 	select SND_SOC_IMX_PCM_DMA
 -- 
 2.11.0
