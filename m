@@ -1,102 +1,111 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: Add driver for CX2092X I2S Audio
-	DSP
-Date: Sun, 19 Feb 2017 16:27:17 +0000
-Message-ID: <20170219162717.kwbeapezjjpcp6br@sirena.org.uk>
-References: <1487427991-18174-3-git-send-email-simon.ho@conexant.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6477978271575773274=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1226F26583C
- for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2017 17:27:38 +0100 (CET)
-In-Reply-To: <1487427991-18174-3-git-send-email-simon.ho@conexant.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: simon.ho.cnxt@gmail.com
-Cc: Simon Ho <simon.ho@conexant.com>, alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com
+Subject: Applied "ASoC: fix ES8328_I2C/SPI dependencies" to the asoc tree
+Date: Sun, 19 Feb 2017 16:34:54 +0000
+Message-ID: <E1cfURq-0004g4-S7@finisterre>
+References: <20170206122820.1659902-1-arnd@arndb.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170206122820.1659902-1-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Romain Perier <romain.perier@collabora.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============6477978271575773274==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="oqjok3vuxzgot3pr"
-Content-Disposition: inline
+   ASoC: fix ES8328_I2C/SPI dependencies
 
+has been applied to the asoc tree at
 
---oqjok3vuxzgot3pr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Sat, Feb 18, 2017 at 10:26:31PM +0800, simon.ho.cnxt@gmail.com wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> +static const struct snd_kcontrol_new cx2092x_snd_controls[] = {
-> +	CX2092X_CONTROL("SendCmd", cmd_info, cmd_get, cmd_put,
-> +		SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_WRITE|
-> +		SNDRV_CTL_ELEM_ACCESS_VOLATILE),
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-This is just tunnels commands from some magic userspace application
-straight through to the device, taking all the control out of standard
-Linux.  What are these controls doing and why aren't we managing them
-through standard interfaces?  This tends to end up creating problems
-with things like power management as for example userspace might not
-figure out that things like suspend and resume are happening.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> +static int cx2092x_reset(struct snd_soc_codec *codec)
-> +{
-> +	struct cx2092x_priv *cx2092x = snd_soc_codec_get_drvdata(codec);
-> +
-> +	if (gpio_is_valid(cx2092x->gpio_reset)) {
-> +		gpio_set_value(cx2092x->gpio_reset, 0);
-> +		mdelay(10);
-> +		gpio_set_value(cx2092x->gpio_reset, 1);
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Use the _cansleep() versions unless you've got a good reason not to,
-that way GPIOs on slow buses can be used.
+Thanks,
+Mark
 
-> +	if (of_match_device(cx2092x_dt_ids, dev))
-> +		cx2092x->gpio_reset =
-> +			of_get_named_gpio(dev->of_node, "reset-gpio", 0);
+>From 245c5c7b0863eda23e8cb1907e74579a42185888 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Mon, 6 Feb 2017 13:27:11 +0100
+Subject: [PATCH] ASoC: fix ES8328_I2C/SPI dependencies
 
-Why do we care if we managed to match the device ID?  The GPIO is
-optional anyway.  It's also better to use the gpiod_ APIs if you can,
-that's more modern and removes the need to special case DT.
+The two front-ends to the codec can now be selected individually, but fail to
+build when the bus support is missing:
 
-> +	if (gpio_is_valid(cx2092x->gpio_reset)) {
-> +		int ret;
+sound/built-in.o: In function `es8328_spi_probe':
+es8328-spi.c:(.text+0x125854): undefined reference to `__devm_regmap_init_spi'
+sound/built-in.o: In function `es8328_spi_driver_init':
+es8328-spi.c:(.init.text+0x3589): undefined reference to `__spi_register_driver'
 
-Don't declare variables in the middle of functions.
+Related to this, the added dependency on SND_SOC_ES8328 breaks:
 
---oqjok3vuxzgot3pr
-Content-Type: application/pgp-signature; name="signature.asc"
+warning: (SND_SOC_ALL_CODECS) selects SND_SOC_ES8328_I2C which has unmet direct dependencies (SOUND && !M68K && !UML && SND && SND_SOC && SND_SOC_ES8328 && I2C)
 
------BEGIN PGP SIGNATURE-----
+This adds the respective Kconfig dependencies and changes SND_SOC_ES8328 to a hidden
+symbol that is selected implicitly by the two more specific options, as we do for
+some other codecs. We have to remove the 'depends on' for SND_SOC_IMX_ES8328 in the
+same step to avoid a recursive dependency.
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlipx2QACgkQJNaLcl1U
-h9C3Wgf9EUV+ZHXqvpMSViKywGUXUazJ4FS6Xq5DQAu/uABXmLpF1x9Gh7PPx5T6
-1iplnFOAp3TmyyRiv8FFS6ETPETFuZyQIIm/iKt6xz70ul9XfsR9AF5oGz/h6hIk
-4oQxcaFRALjIHvTPzk1PF1bUfQbqOw9HfYYPvCyQyweqsiZcvsn6GYG8sNDtq9nW
-kwNXdwfKL3xfKL9ns6m4SMPD/zsJsF2X2C97Ly+R/j49YolyhcIkUOUS3pyjKGZa
-HJ6ejYh+ZqZoDg9hUwcHaMRDlWUTWR51Sw7YZfFE1WiIo1j5SXKJzdStzmC4aYXx
-hAGWiXj2etCkTfTM4aDYoa1weu33tg==
-=6Ieh
------END PGP SIGNATURE-----
+Fixes: aa00f2c8aff7 ("ASoC: Allow to select ES8328_I2C and ES8328_SPI directly")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/Kconfig | 12 +++++++-----
+ sound/soc/fsl/Kconfig    |  2 +-
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
---oqjok3vuxzgot3pr--
-
---===============6477978271575773274==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6477978271575773274==--
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index cfa423338963..0426e5c53829 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -525,15 +525,17 @@ config SND_SOC_HDMI_CODEC
+ 	select HDMI
+ 
+ config SND_SOC_ES8328
+-	tristate "Everest Semi ES8328 CODEC"
++	tristate
+ 
+ config SND_SOC_ES8328_I2C
+-	depends on SND_SOC_ES8328
+-	tristate "I2C support for Everest Semi ES8328 CODEC"
++	tristate "Everest Semi ES8328 CODEC (I2C)"
++	depends on I2C
++	select SND_SOC_ES8328
+ 
+ config SND_SOC_ES8328_SPI
+-	depends on SND_SOC_ES8328
+-	tristate "SPI support for Everest Semi ES8328 CODEC"
++	tristate "Everest Semi ES8328 CODEC (SPI)"
++	depends on SPI_MASTER
++	select SND_SOC_ES8328
+ 
+ config SND_SOC_GTM601
+ 	tristate 'GTM601 UMTS modem audio codec'
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 0b914a1ca8d2..37f9b6201918 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -244,7 +244,7 @@ config SND_SOC_IMX_WM8962
+ 
+ config SND_SOC_IMX_ES8328
+ 	tristate "SoC Audio support for i.MX boards with the ES8328 codec"
+-	depends on OF && (I2C || SPI) && SND_SOC_ES8328
++	depends on OF && (I2C || SPI)
+ 	select SND_SOC_ES8328_I2C if I2C
+ 	select SND_SOC_ES8328_SPI if SPI_MASTER
+ 	select SND_SOC_IMX_PCM_DMA
+-- 
+2.11.0
