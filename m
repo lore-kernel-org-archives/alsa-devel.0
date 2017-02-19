@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: cx2092x: Add DT bingings doc for
-	CX2092X DSP
-Date: Sun, 19 Feb 2017 16:20:49 +0000
-Message-ID: <20170219162049.3ezlsqoyagrwfzmw@sirena.org.uk>
-References: <1487427991-18174-1-git-send-email-simon.ho@conexant.com>
- <1487427991-18174-2-git-send-email-simon.ho@conexant.com>
+Subject: Re: [PATCH 2/2] ASoC: Add driver for CX2092X I2S Audio
+	DSP
+Date: Sun, 19 Feb 2017 16:27:17 +0000
+Message-ID: <20170219162717.kwbeapezjjpcp6br@sirena.org.uk>
+References: <1487427991-18174-3-git-send-email-simon.ho@conexant.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6075530451952186632=="
+Content-Type: multipart/mixed; boundary="===============6477978271575773274=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C9B426583C
- for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2017 17:21:47 +0100 (CET)
-In-Reply-To: <1487427991-18174-2-git-send-email-simon.ho@conexant.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1226F26583C
+ for <alsa-devel@alsa-project.org>; Sun, 19 Feb 2017 17:27:38 +0100 (CET)
+In-Reply-To: <1487427991-18174-3-git-send-email-simon.ho@conexant.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,47 +26,77 @@ Cc: Simon Ho <simon.ho@conexant.com>, alsa-devel@alsa-project.org, tiwai@suse.co
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6075530451952186632==
+--===============6477978271575773274==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="nmld4bnshboqfl4o"
+	protocol="application/pgp-signature"; boundary="oqjok3vuxzgot3pr"
 Content-Disposition: inline
 
 
---nmld4bnshboqfl4o
+--oqjok3vuxzgot3pr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Feb 18, 2017 at 10:26:30PM +0800, simon.ho.cnxt@gmail.com wrote:
+On Sat, Feb 18, 2017 at 10:26:31PM +0800, simon.ho.cnxt@gmail.com wrote:
 
-> +  - reset-gpio:  A GPIO spec to define which pin is connected to the chip's
-> +                 !RESET pin. If specified, the driver will assert a hardware
-> +                 reset at probe time.
+> +static const struct snd_kcontrol_new cx2092x_snd_controls[] = {
+> +	CX2092X_CONTROL("SendCmd", cmd_info, cmd_get, cmd_put,
+> +		SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_WRITE|
+> +		SNDRV_CTL_ELEM_ACCESS_VOLATILE),
 
-The DT people say all GPIO specifier names have to be pluralised so this
-needs to be -gpios even if there's only one GPIO.
+This is just tunnels commands from some magic userspace application
+straight through to the device, taking all the control out of standard
+Linux.  What are these controls doing and why aren't we managing them
+through standard interfaces?  This tends to end up creating problems
+with things like power management as for example userspace might not
+figure out that things like suspend and resume are happening.
 
---nmld4bnshboqfl4o
+> +static int cx2092x_reset(struct snd_soc_codec *codec)
+> +{
+> +	struct cx2092x_priv *cx2092x = snd_soc_codec_get_drvdata(codec);
+> +
+> +	if (gpio_is_valid(cx2092x->gpio_reset)) {
+> +		gpio_set_value(cx2092x->gpio_reset, 0);
+> +		mdelay(10);
+> +		gpio_set_value(cx2092x->gpio_reset, 1);
+
+Use the _cansleep() versions unless you've got a good reason not to,
+that way GPIOs on slow buses can be used.
+
+> +	if (of_match_device(cx2092x_dt_ids, dev))
+> +		cx2092x->gpio_reset =
+> +			of_get_named_gpio(dev->of_node, "reset-gpio", 0);
+
+Why do we care if we managed to match the device ID?  The GPIO is
+optional anyway.  It's also better to use the gpiod_ APIs if you can,
+that's more modern and removes the need to special case DT.
+
+> +	if (gpio_is_valid(cx2092x->gpio_reset)) {
+> +		int ret;
+
+Don't declare variables in the middle of functions.
+
+--oqjok3vuxzgot3pr
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlipxeAACgkQJNaLcl1U
-h9A4HQf/UoGhuYpOwFoAM7kUYIirJPurDjuKnmCn/iKQovhDBnBy2g2nWTW7pOA8
-Ulh/z9i7iBIi8obmzgswQtgcEp6n2IkRODgcfcyNlsOWmYJlXmsMJVSe/UBap7LK
-O6Scwh4bIEQeDDRlf4Ol43s3SnSBEJKbcsQYC1sC+CWWq1LdoPiqhQnMr+haQzNC
-eEYDev2tFwZkd/tLcpReebN/a5siForanhrU1NFH0gfI1Wo6j/yIJGzdXbYWB2wP
-RdjHrnUbIeXd0HwgMpjEHQ946xH3R2lAuTdtQ6yVCrT43MTM821NKVzhg/D39WO6
-JD+ltmDBx81YlVxsLfji9rIr803hFw==
-=GUoj
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlipx2QACgkQJNaLcl1U
+h9C3Wgf9EUV+ZHXqvpMSViKywGUXUazJ4FS6Xq5DQAu/uABXmLpF1x9Gh7PPx5T6
+1iplnFOAp3TmyyRiv8FFS6ETPETFuZyQIIm/iKt6xz70ul9XfsR9AF5oGz/h6hIk
+4oQxcaFRALjIHvTPzk1PF1bUfQbqOw9HfYYPvCyQyweqsiZcvsn6GYG8sNDtq9nW
+kwNXdwfKL3xfKL9ns6m4SMPD/zsJsF2X2C97Ly+R/j49YolyhcIkUOUS3pyjKGZa
+HJ6ejYh+ZqZoDg9hUwcHaMRDlWUTWR51Sw7YZfFE1WiIo1j5SXKJzdStzmC4aYXx
+hAGWiXj2etCkTfTM4aDYoa1weu33tg==
+=6Ieh
 -----END PGP SIGNATURE-----
 
---nmld4bnshboqfl4o--
+--oqjok3vuxzgot3pr--
 
---===============6075530451952186632==
+--===============6477978271575773274==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6075530451952186632==--
+--===============6477978271575773274==--
