@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/5] ALSA: usb-audio: localize one-referrer
-	variable
-Date: Tue, 21 Feb 2017 05:09:17 +0900
-Message-ID: <20170220200921.824-2-o-takashi@sakamocchi.jp>
+Subject: [PATCH 5/5] ALSA: usb-audio: fix msleep timeout due to
+	minimum resolution of task scheduling
+Date: Tue, 21 Feb 2017 05:09:21 +0900
+Message-ID: <20170220200921.824-6-o-takashi@sakamocchi.jp>
 References: <20170220200921.824-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 20001266B2C
- for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2017 21:09:27 +0100 (CET)
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 829F5266B39
+ for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2017 21:09:31 +0100 (CET)
 In-Reply-To: <20170220200921.824-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,12 +25,16 @@ To: onkel@paraair.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When accessed by one referrer inner a file, variables should have static
-qualifier to declare local-linkage.
+Depending on tick-related kernel configuration; e.g. HZ, task scheduler
+necessarily has no guarantee for its minimum resolution against ~20 msec
+msleep timeout.
 
-This commit fixes the bug. Sparse generated below warnings.
-sound/usb/mixer_us16x08.c:156:13: warning: duplicate const
-sound/usb/mixer_us16x08.c:156:18: warning: symbol 'route_names' was not declared. Should it be static?
+This commit expands msleep timeout up to 20 msec with an optimistic view
+to packet handling capability of the target device. 'checkpatch.pl'
+generated below warning.
+
+WARNING: msleep < 20ms can sleep for up to 20ms; see Documentation/timers/timers-howto.txt
++		msleep(15);
 
 Fixes: d2bb390a2081 ("ALSA: usb-audio: Tascam US-16x08 DSP mixer quirk")
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
@@ -39,17 +43,17 @@ Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/usb/mixer_us16x08.c b/sound/usb/mixer_us16x08.c
-index 301939b..019336f 100644
+index d34dd1c..1c2d167 100644
 --- a/sound/usb/mixer_us16x08.c
 +++ b/sound/usb/mixer_us16x08.c
-@@ -153,7 +153,7 @@ static const char ratio_map[] = {
- };
+@@ -548,7 +548,7 @@ static int snd_us16x08_eqswitch_put(struct snd_kcontrol *kcontrol,
+ 		if (err < 0)
+ 			break;
+ 		store->val[b_idx][3][index] = val;
+-		msleep(15);
++		msleep(20);
+ 	}
  
- /* route enumeration names */
--const const char *route_names[] = {
-+static const char *const route_names[] = {
- 	"Master Left", "Master Right", "Output 1", "Output 2", "Output 3",
- 	"Output 4", "Output 5", "Output 6", "Output 7", "Output 8",
- };
+ 	if (err > 0) {
 -- 
 2.9.3
