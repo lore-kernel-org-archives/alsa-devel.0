@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: drop useles self-assignments" to
-	the asoc tree
-Date: Tue, 21 Feb 2017 15:05:11 -0800
-Message-ID: <E1cgJUd-0004mU-BN@finisterre>
+Subject: Applied "ASoC: rsnd: check return value of init
+	function" to the asoc tree
+Date: Tue, 21 Feb 2017 15:05:10 -0800
+Message-ID: <E1cgJUc-0004ln-Vt@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1DDF126680A
- for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2017 00:05:24 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 07FB3266DD5
+ for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2017 00:05:25 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: drop useles self-assignments
+   ASoC: rsnd: check return value of init function
 
 has been applied to the asoc tree at
 
@@ -52,36 +52,45 @@ to this mail.
 Thanks,
 Mark
 
->From 34157f7bec8276b4296cf2ec172fc13385ac8af7 Mon Sep 17 00:00:00 2001
+>From 56d2c61d611a50e58dba521be1325dc90f9cc933 Mon Sep 17 00:00:00 2001
 From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Date: Mon, 20 Feb 2017 21:58:34 +0100
-Subject: [PATCH] ASoC: rsnd: drop useles self-assignments
+Date: Mon, 20 Feb 2017 22:05:07 +0100
+Subject: [PATCH] ASoC: rsnd: check return value of init function
 
-Coverity reported (CID 1397992) this self-assignment. I think the code
-stays readable even with the assignments removed.
+Currently, this function cannot fail for the ADG case. Still, let's
+apply defensive programming techniques to make sure we fail gracefully
+whenever rsnd_mod_init() gets extended with another failure case.
+Reported by Coverity (CID 1397893).
 
 Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/sh/rcar/adg.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 948c5ec87980..72966bdd3daa 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -674,12 +674,10 @@ static int rsnd_soc_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	/* set clock inversion */
- 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
- 	case SND_SOC_DAIFMT_NB_IF:
--		rdai->bit_clk_inv =  rdai->bit_clk_inv;
- 		rdai->frm_clk_inv = !rdai->frm_clk_inv;
- 		break;
- 	case SND_SOC_DAIFMT_IB_NF:
- 		rdai->bit_clk_inv = !rdai->bit_clk_inv;
--		rdai->frm_clk_inv =  rdai->frm_clk_inv;
- 		break;
- 	case SND_SOC_DAIFMT_IB_IF:
- 		rdai->bit_clk_inv = !rdai->bit_clk_inv;
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index 85a33ac0a5c4..54146f66538c 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -564,6 +564,7 @@ int rsnd_adg_probe(struct rsnd_priv *priv)
+ 	struct rsnd_adg *adg;
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 	struct device_node *np = dev->of_node;
++	int ret;
+ 
+ 	adg = devm_kzalloc(dev, sizeof(*adg), GFP_KERNEL);
+ 	if (!adg) {
+@@ -571,8 +572,10 @@ int rsnd_adg_probe(struct rsnd_priv *priv)
+ 		return -ENOMEM;
+ 	}
+ 
+-	rsnd_mod_init(priv, &adg->mod, &adg_ops,
++	ret = rsnd_mod_init(priv, &adg->mod, &adg_ops,
+ 		      NULL, NULL, 0, 0);
++	if (ret)
++		return ret;
+ 
+ 	rsnd_adg_get_clkin(priv, adg);
+ 	rsnd_adg_get_clkout(priv, adg);
 -- 
 2.11.0
