@@ -1,20 +1,17 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 4/5] ALSA: usb-audio: deallocate memory
- objects in error path
-Date: Wed, 22 Feb 2017 07:59:31 +0900
-Message-ID: <0f1bb4cb-daa3-7dd9-aa55-990b67c34a38@sakamocchi.jp>
-References: <20170220200921.824-1-o-takashi@sakamocchi.jp>
- <20170220200921.824-5-o-takashi@sakamocchi.jp> <s5hwpckpoz4.wl-tiwai@suse.de>
- <d7632df1-6524-d01c-cbcf-136902976953@sakamocchi.jp>
- <c4b1c062-2099-bd14-0bc2-5a2f9b1d30ab@sakamocchi.jp>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rsnd: drop useles self-assignments" to
+	the asoc tree
+Date: Tue, 21 Feb 2017 15:05:11 -0800
+Message-ID: <E1cgJUd-0004mU-BN@finisterre>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 0B1AB26680A
- for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2017 23:59:34 +0100 (CET)
-In-Reply-To: <c4b1c062-2099-bd14-0bc2-5a2f9b1d30ab@sakamocchi.jp>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1DDF126680A
+ for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2017 00:05:24 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,40 +21,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: onkel@paraair.de, alsa-devel@alsa-project.org
+To: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Feb 22 2017 07:45, Takashi Sakamoto wrote:
-> On Fe 21 2017 11:32, Takashi Sakamoto wrote:
->> But it's wrong. The allocated memory objects are used for private data
->> for each control element set. I didn't care of it...
->>
->> Here, what I should fix is just for error path. I'll post revised
->> version of this patch this night.
->
-> I realize that this is not concern because the code includes assignment
-> deallocate function to each control element set. Thus, in error path,
-> the allocated private data is going to free in below callgrach.
->
-> (sound/usb/mixer_us16x08.c)
-> add_new_ctl(elem)
->   kctl->private_free = freeer;
->   (sound/usb/mixer.c)
->   ->snd_usb_mixer_add_control(kctl)
->     (sound/core/control.c)
->     ->snd_ctl_add(kctl)
->       ->snd_ctl_free_one(kctl)
->         (in error path)
->         ->kcontrol->private_free(kctl);
->         (sound/usb/mixer_us16x08.c)
->         = freeer()
+The patch
 
-Oops. On the other hand, the private data for unregistered control 
-element set is not deallocated automatically in error path of the other 
-control element set. It should be fixed...
+   ASoC: rsnd: drop useles self-assignments
 
+has been applied to the asoc tree at
 
-Regards
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Takashi Sakamoto
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 34157f7bec8276b4296cf2ec172fc13385ac8af7 Mon Sep 17 00:00:00 2001
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Date: Mon, 20 Feb 2017 21:58:34 +0100
+Subject: [PATCH] ASoC: rsnd: drop useles self-assignments
+
+Coverity reported (CID 1397992) this self-assignment. I think the code
+stays readable even with the assignments removed.
+
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/core.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 948c5ec87980..72966bdd3daa 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -674,12 +674,10 @@ static int rsnd_soc_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	/* set clock inversion */
+ 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+ 	case SND_SOC_DAIFMT_NB_IF:
+-		rdai->bit_clk_inv =  rdai->bit_clk_inv;
+ 		rdai->frm_clk_inv = !rdai->frm_clk_inv;
+ 		break;
+ 	case SND_SOC_DAIFMT_IB_NF:
+ 		rdai->bit_clk_inv = !rdai->bit_clk_inv;
+-		rdai->frm_clk_inv =  rdai->frm_clk_inv;
+ 		break;
+ 	case SND_SOC_DAIFMT_IB_IF:
+ 		rdai->bit_clk_inv = !rdai->bit_clk_inv;
+-- 
+2.11.0
