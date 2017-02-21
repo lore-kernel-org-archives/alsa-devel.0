@@ -1,7 +1,7 @@
 From: Elena Reshetova <elena.reshetova@intel.com>
-Subject: [PATCH 5/9] tools: convert map.refcnt from atomic_t to refcount_t
-Date: Tue, 21 Feb 2017 17:34:59 +0200
-Message-ID: <1487691303-31858-6-git-send-email-elena.reshetova@intel.com>
+Subject: [PATCH 3/9] tools: convert comm_str.refcnt from atomic_t to refcount_t
+Date: Tue, 21 Feb 2017 17:34:57 +0200
+Message-ID: <1487691303-31858-4-git-send-email-elena.reshetova@intel.com>
 References: <1487691303-31858-1-git-send-email-elena.reshetova@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1487691303-31858-1-git-send-email-elena.reshetova@intel.com>
@@ -21,71 +21,69 @@ Signed-off-by: Hans Liljestrand <ishkamiel@gmail.com>
 Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: David Windsor <dwindsor@gmail.com>
 ---
- tools/perf/util/map.c | 6 +++---
- tools/perf/util/map.h | 6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ tools/perf/util/comm.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/tools/perf/util/map.c b/tools/perf/util/map.c
-index 0a943e7..f0e2428 100644
---- a/tools/perf/util/map.c
-+++ b/tools/perf/util/map.c
-@@ -141,7 +141,7 @@ void map__init(struct map *map, enum map_type type,
- 	RB_CLEAR_NODE(&map->rb_node);
- 	map->groups   = NULL;
- 	map->erange_warned = false;
--	atomic_set(&map->refcnt, 1);
-+	refcount_set(&map->refcnt, 1);
- }
- 
- struct map *map__new(struct machine *machine, u64 start, u64 len,
-@@ -255,7 +255,7 @@ void map__delete(struct map *map)
- 
- void map__put(struct map *map)
- {
--	if (map && atomic_dec_and_test(&map->refcnt))
-+	if (map && refcount_dec_and_test(&map->refcnt))
- 		map__delete(map);
- }
- 
-@@ -354,7 +354,7 @@ struct map *map__clone(struct map *from)
- 	struct map *map = memdup(from, sizeof(*map));
- 
- 	if (map != NULL) {
--		atomic_set(&map->refcnt, 1);
-+		refcount_set(&map->refcnt, 1);
- 		RB_CLEAR_NODE(&map->rb_node);
- 		dso__get(map->dso);
- 		map->groups = NULL;
-diff --git a/tools/perf/util/map.h b/tools/perf/util/map.h
-index abdacf8..9545ff3 100644
---- a/tools/perf/util/map.h
-+++ b/tools/perf/util/map.h
-@@ -1,7 +1,7 @@
- #ifndef __PERF_MAP_H
- #define __PERF_MAP_H
- 
+diff --git a/tools/perf/util/comm.c b/tools/perf/util/comm.c
+index 21b7ff3..0fd3d70 100644
+--- a/tools/perf/util/comm.c
++++ b/tools/perf/util/comm.c
+@@ -2,12 +2,12 @@
+ #include "util.h"
+ #include <stdlib.h>
+ #include <stdio.h>
 -#include <linux/atomic.h>
 +#include <linux/refcount.h>
- #include <linux/compiler.h>
- #include <linux/list.h>
- #include <linux/rbtree.h>
-@@ -51,7 +51,7 @@ struct map {
  
- 	struct dso		*dso;
- 	struct map_groups	*groups;
--	atomic_t		refcnt;
-+	refcount_t		refcnt;
+ struct comm_str {
+ 	char *str;
+ 	struct rb_node rb_node;
+-	atomic_t refcnt;
++	refcount_t refcnt;
  };
  
- struct kmap {
-@@ -150,7 +150,7 @@ struct map *map__clone(struct map *map);
- static inline struct map *map__get(struct map *map)
+ /* Should perhaps be moved to struct machine */
+@@ -16,13 +16,13 @@ static struct rb_root comm_str_root;
+ static struct comm_str *comm_str__get(struct comm_str *cs)
  {
- 	if (map)
--		atomic_inc(&map->refcnt);
-+		refcount_inc(&map->refcnt);
- 	return map;
+ 	if (cs)
+-		atomic_inc(&cs->refcnt);
++		refcount_inc(&cs->refcnt);
+ 	return cs;
  }
  
+ static void comm_str__put(struct comm_str *cs)
+ {
+-	if (cs && atomic_dec_and_test(&cs->refcnt)) {
++	if (cs && refcount_dec_and_test(&cs->refcnt)) {
+ 		rb_erase(&cs->rb_node, &comm_str_root);
+ 		zfree(&cs->str);
+ 		free(cs);
+@@ -43,7 +43,7 @@ static struct comm_str *comm_str__alloc(const char *str)
+ 		return NULL;
+ 	}
+ 
+-	atomic_set(&cs->refcnt, 0);
++	refcount_set(&cs->refcnt, 1);
+ 
+ 	return cs;
+ }
+@@ -95,8 +95,6 @@ struct comm *comm__new(const char *str, u64 timestamp, bool exec)
+ 		return NULL;
+ 	}
+ 
+-	comm_str__get(comm->comm_str);
+-
+ 	return comm;
+ }
+ 
+@@ -108,7 +106,6 @@ int comm__override(struct comm *comm, const char *str, u64 timestamp, bool exec)
+ 	if (!new)
+ 		return -ENOMEM;
+ 
+-	comm_str__get(new);
+ 	comm_str__put(old);
+ 	comm->comm_str = new;
+ 	comm->start = timestamp;
 -- 
 2.7.4
