@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: check return value of init
-	function" to the asoc tree
+Subject: Applied "ASoC: mediatek: add I2C dependency for
+	CS42XX8" to the asoc tree
 Date: Tue, 21 Feb 2017 15:05:10 -0800
-Message-ID: <E1cgJUc-0004ln-Vt@finisterre>
+Message-ID: <E1cgJUc-0004l6-Gv@finisterre>
+References: <20170221220108.200734-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 07FB3266DD5
- for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2017 00:05:25 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 88E8426680A
+ for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2017 00:05:37 +0100 (CET)
+In-Reply-To: <20170221220108.200734-1-arnd@arndb.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Koro Chen <koro.chen@mediatek.com>, alsa-devel@alsa-project.org, Garlic Tseng <garlic.tseng@mediatek.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, Philipp Zabel <p.zabel@pengutronix.de>, PC Liao <pc.liao@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: check return value of init function
+   ASoC: mediatek: add I2C dependency for CS42XX8
 
 has been applied to the asoc tree at
 
@@ -52,45 +53,38 @@ to this mail.
 Thanks,
 Mark
 
->From 56d2c61d611a50e58dba521be1325dc90f9cc933 Mon Sep 17 00:00:00 2001
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Date: Mon, 20 Feb 2017 22:05:07 +0100
-Subject: [PATCH] ASoC: rsnd: check return value of init function
+>From 72cedf599fcebfd6cd2550274d7855838068d28c Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Tue, 21 Feb 2017 23:00:46 +0100
+Subject: [PATCH] ASoC: mediatek: add I2C dependency for CS42XX8
 
-Currently, this function cannot fail for the ADG case. Still, let's
-apply defensive programming techniques to make sure we fail gracefully
-whenever rsnd_mod_init() gets extended with another failure case.
-Reported by Coverity (CID 1397893).
+We should not select drivers that depend on I2C when that is disabled,
+as it results in a build error:
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+warning: (SND_SOC_MT2701_CS42448) selects SND_SOC_CS42XX8_I2C which has unmet direct dependencies (SOUND && !M68K && !UML && SND && SND_SOC && I2C)
+sound/soc/codecs/cs42xx8-i2c.c:60:1: warning: data definition has no type or storage class
+ module_i2c_driver(cs42xx8_i2c_driver);
+sound/soc/codecs/cs42xx8-i2c.c:60:1: error: type defaults to 'int' in declaration of 'module_i2c_driver' [-Werror=implicit-int]
+
+Fixes: 1f458d53f76c ("ASoC: mediatek: Add mt2701-cs42448 driver and config option.")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/adg.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/mediatek/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
-index 85a33ac0a5c4..54146f66538c 100644
---- a/sound/soc/sh/rcar/adg.c
-+++ b/sound/soc/sh/rcar/adg.c
-@@ -564,6 +564,7 @@ int rsnd_adg_probe(struct rsnd_priv *priv)
- 	struct rsnd_adg *adg;
- 	struct device *dev = rsnd_priv_to_dev(priv);
- 	struct device_node *np = dev->of_node;
-+	int ret;
+diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+index 05cf809cf9e1..d7013bde6f45 100644
+--- a/sound/soc/mediatek/Kconfig
++++ b/sound/soc/mediatek/Kconfig
+@@ -13,7 +13,7 @@ config SND_SOC_MT2701
  
- 	adg = devm_kzalloc(dev, sizeof(*adg), GFP_KERNEL);
- 	if (!adg) {
-@@ -571,8 +572,10 @@ int rsnd_adg_probe(struct rsnd_priv *priv)
- 		return -ENOMEM;
- 	}
- 
--	rsnd_mod_init(priv, &adg->mod, &adg_ops,
-+	ret = rsnd_mod_init(priv, &adg->mod, &adg_ops,
- 		      NULL, NULL, 0, 0);
-+	if (ret)
-+		return ret;
- 
- 	rsnd_adg_get_clkin(priv, adg);
- 	rsnd_adg_get_clkout(priv, adg);
+ config SND_SOC_MT2701_CS42448
+ 	tristate "ASoc Audio driver for MT2701 with CS42448 codec"
+-	depends on SND_SOC_MT2701
++	depends on SND_SOC_MT2701 && I2C
+ 	select SND_SOC_CS42XX8_I2C
+ 	select SND_SOC_BT_SCO
+ 	help
 -- 
 2.11.0
