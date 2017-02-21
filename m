@@ -1,18 +1,26 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 2/2] ASoC: Add driver support fro
- Conexant CX2092X DSP
-Date: Tue, 21 Feb 2017 08:09:22 -0600
-Message-ID: <5a9da642-797c-991f-43a3-93504b9a9557@linux.intel.com>
-References: <cover.1487595577.git.simon.ho@conexant.com>
- <8e60523e79239348a8591c50abef02a699b99683.1487595577.git.simon.ho@conexant.com>
+From: Alan Young <Alan.Young@IEE.org>
+Subject: Re: [PATCH] [updated] pcm: rate: Add capability to
+ pass configuration node to plugins
+Date: Tue, 21 Feb 2017 14:34:44 +0000
+Message-ID: <3b8cd9c9-8248-b22a-ebb8-dce7d901951d@IEE.org>
+References: <bdb7665c-5747-8888-fa2e-552e852fa375@IEE.org>
+ <6d7c74b7-da90-5ae9-c355-c6884b2edf09@gmail.com>
+ <s5hy3xg8zkp.wl-tiwai@suse.de>
+ <e1ebb06d-6f43-fde8-7b9e-653d247a4a19@gmail.com>
+ <s5h4lzxxn9c.wl-tiwai@suse.de>
+ <a15b8e68-a9b5-2ed2-29b2-a0ab5b997d7e@gmail.com>
+ <a66a494e-3bd6-c813-6786-ca9deceabdc0@IEE.org> <s5hwpcosqrp.wl-tiwai@suse.de>
+ <7b3c655f-4b7a-e10a-90ff-5cb480332f3f@IEE.org> <s5hefywsnoz.wl-tiwai@suse.de>
+ <da34dc72-db60-d707-4747-1601123e7f81@IEE.org> <s5hr32r67l4.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------F6498F2B2FC0F4A7FD302AF5"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 6A6862666EA
- for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2017 15:09:29 +0100 (CET)
-In-Reply-To: <8e60523e79239348a8591c50abef02a699b99683.1487595577.git.simon.ho@conexant.com>
+Received: from mail-wm0-f51.google.com (mail-wm0-f51.google.com [74.125.82.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id C93B42666EA
+ for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2017 15:34:46 +0100 (CET)
+Received: by mail-wm0-f51.google.com with SMTP id v77so77092619wmv.0
+ for <alsa-devel@alsa-project.org>; Tue, 21 Feb 2017 06:34:46 -0800 (PST)
+In-Reply-To: <s5hr32r67l4.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,668 +30,219 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: simon.ho.cnxt@gmail.com, alsa-devel@alsa-project.org
-Cc: broonie@kernel.org, Simon Ho <simon.ho@conexant.com>, tiwai@suse.com, lgirdwood@gmail.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------F6498F2B2FC0F4A7FD302AF5
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Updated patch to address latest comments.
+
+--------------F6498F2B2FC0F4A7FD302AF5
+Content-Type: text/x-patch;
+ name="0001-pcm-rate-Add-capability-to-pass-configuration-node-t.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-pcm-rate-Add-capability-to-pass-configuration-node-t.pa";
+ filename*1="tch"
+
+>From e15901209b4c8902c79ba1da5a025f40adb9b1b1 Mon Sep 17 00:00:00 2001
+From: Alan Young <consult.awy@gmail.com>
+Date: Thu, 7 Apr 2016 09:15:04 +0100
+Subject: [PATCH] pcm: rate: Add capability to pass configuration node to
+ plugins
+
+If a rate plugin uses a node (compound) instead of a plain string for
+its "converter", and that compound is not a simple string array, then
+the compound will be passed as an additional parameter to the new plugin
+open() function (SND_PCM_RATE_PLUGIN_CONF_ENTRY(XXX)). The previous
+open() function (SND_PCM_RATE_PLUGIN_ENTRY(XXX)) will be called if the
+CONF version is not found. It is up to the plugin to determine whether
+the presence of the conf parameter is mandatory.
+
+Signed-off-by: Alan Young <consult.awy@gmail.com>
+---
+ include/pcm_rate.h |  5 +++-
+ src/pcm/pcm_rate.c | 84 ++++++++++++++++++++++++++++++++++++++++++++++++------
+ 2 files changed, 79 insertions(+), 10 deletions(-)
+
+diff --git a/include/pcm_rate.h b/include/pcm_rate.h
+index 4d70df2..da278ac 100644
+--- a/include/pcm_rate.h
++++ b/include/pcm_rate.h
+@@ -120,11 +120,14 @@ typedef struct snd_pcm_rate_ops {
+ typedef int (*snd_pcm_rate_open_func_t)(unsigned int version, void **objp,
+ 					snd_pcm_rate_ops_t *opsp);
+ 
++typedef int (*snd_pcm_rate_open_conf_func_t)(unsigned int version, void **objp,
++					snd_pcm_rate_ops_t *opsp, const snd_config_t *conf);
++
+ /**
+  * Define the object entry for external PCM rate-converter plugins
+  */
+ #define SND_PCM_RATE_PLUGIN_ENTRY(name) _snd_pcm_rate_##name##_open
+-
++#define SND_PCM_RATE_PLUGIN_CONF_ENTRY(name) _snd_pcm_rate_##name##_open_conf
+ 
+ #ifndef DOC_HIDDEN
+ /* old rate_ops for protocol version 0x010001 */
+diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
+index cbb7618..6f26724 100644
+--- a/src/pcm/pcm_rate.c
++++ b/src/pcm/pcm_rate.c
+@@ -1258,26 +1258,48 @@ static const char *const default_rate_plugins[] = {
+ 	"speexrate", "linear", NULL
+ };
+ 
+-static int rate_open_func(snd_pcm_rate_t *rate, const char *type, int verbose)
++static int rate_open_func(snd_pcm_rate_t *rate, const char *type, const snd_config_t *converter_conf, int verbose)
+ {
+-	char open_name[64], lib_name[128], *lib = NULL;
++	char open_name[64], open_conf_name[64], lib_name[128], *lib = NULL;
+ 	snd_pcm_rate_open_func_t open_func;
++	snd_pcm_rate_open_conf_func_t open_conf_func;
+ 	int err;
+ 
+ 	snprintf(open_name, sizeof(open_name), "_snd_pcm_rate_%s_open", type);
++	snprintf(open_conf_name, sizeof(open_conf_name), "_snd_pcm_rate_%s_open_conf", type);
+ 	if (!is_builtin_plugin(type)) {
+ 		snprintf(lib_name, sizeof(lib_name),
+ 				 "%s/libasound_module_rate_%s.so", ALSA_PLUGIN_DIR, type);
+ 		lib = lib_name;
+ 	}
++
++	rate->rate_min = SND_PCM_PLUGIN_RATE_MIN;
++	rate->rate_max = SND_PCM_PLUGIN_RATE_MAX;
++	rate->plugin_version = SND_PCM_RATE_PLUGIN_VERSION;
++
++	open_conf_func = snd_dlobj_cache_get(lib, open_conf_name, NULL, verbose && converter_conf != NULL);
++	if (open_conf_func) {
++		err = open_conf_func(SND_PCM_RATE_PLUGIN_VERSION,
++				     &rate->obj, &rate->ops, converter_conf);
++		if (!err) {
++			rate->plugin_version = rate->ops.version;
++			if (rate->ops.get_supported_rates)
++				rate->ops.get_supported_rates(rate->obj,
++							      &rate->rate_min,
++							      &rate->rate_max);
++			rate->open_func = open_conf_func;
++			return 0;
++		} else {
++			snd_dlobj_cache_put(open_conf_func);
++			return err;
++		}
++	}
++
+ 	open_func = snd_dlobj_cache_get(lib, open_name, NULL, verbose);
+ 	if (!open_func)
+ 		return -ENOENT;
+ 
+ 	rate->open_func = open_func;
+-	rate->rate_min = SND_PCM_PLUGIN_RATE_MIN;
+-	rate->rate_max = SND_PCM_PLUGIN_RATE_MAX;
+-	rate->plugin_version = SND_PCM_RATE_PLUGIN_VERSION;
+ 
+ 	err = open_func(SND_PCM_RATE_PLUGIN_VERSION, &rate->obj, &rate->ops);
+ 	if (!err) {
+@@ -1301,6 +1323,30 @@ static int rate_open_func(snd_pcm_rate_t *rate, const char *type, int verbose)
+ }
+ #endif
+ 
++/*
++ * If the conf is an array of alternatives then the id of
++ * the first element will be "0" (or maybe NULL). Otherwise assume it is
++ * a structure.
++ */
++static int is_string_array(const snd_config_t *conf)
++{
++	snd_config_iterator_t i;
++
++	if (snd_config_get_type(conf) != SND_CONFIG_TYPE_COMPOUND)
++		return 0;
++
++	i = snd_config_iterator_first(conf);
++	if (i && i != snd_config_iterator_end(conf)) {
++		snd_config_t *n = snd_config_iterator_entry(i);
++		const char *id;
++		snd_config_get_id(n, &id);
++		if (id && strcmp(id, "0") != 0)
++			return 0;
++	}
++
++	return 1;
++}
++
+ /**
+  * \brief Creates a new rate PCM
+  * \param pcmp Returns created PCM handle
+@@ -1353,24 +1399,39 @@ int snd_pcm_rate_open(snd_pcm_t **pcmp, const char *name,
+ 	if (!converter) {
+ 		const char *const *types;
+ 		for (types = default_rate_plugins; *types; types++) {
+-			err = rate_open_func(rate, *types, 0);
++			err = rate_open_func(rate, *types, NULL, 0);
+ 			if (!err) {
+ 				type = *types;
+ 				break;
+ 			}
+ 		}
+ 	} else if (!snd_config_get_string(converter, &type))
+-		err = rate_open_func(rate, type, 1);
+-	else if (snd_config_get_type(converter) == SND_CONFIG_TYPE_COMPOUND) {
++		err = rate_open_func(rate, type, NULL, 1);
++	else if (is_string_array(converter)) {
+ 		snd_config_iterator_t i, next;
+ 		snd_config_for_each(i, next, converter) {
+ 			snd_config_t *n = snd_config_iterator_entry(i);
+ 			if (snd_config_get_string(n, &type) < 0)
+ 				break;
+-			err = rate_open_func(rate, type, 0);
++			err = rate_open_func(rate, type, NULL, 0);
+ 			if (!err)
+ 				break;
+ 		}
++	}
++	else if (snd_config_get_type(converter) == SND_CONFIG_TYPE_COMPOUND) {
++		snd_config_iterator_t i, next;
++		snd_config_for_each(i, next, converter) {
++			snd_config_t *n = snd_config_iterator_entry(i);
++			const char *id;
++			snd_config_get_id(n, &id);
++			if (strcmp(id, "name") != 0)
++				continue;
++			snd_config_get_string(n, &type);
++			break;
++		}
++		if (type) {
++			err = rate_open_func(rate, type, converter, 1);
++		}
+ 	} else {
+ 		SNDERR("Invalid type for rate converter");
+ 		snd_pcm_free(pcm);
+@@ -1439,6 +1500,11 @@ pcm.name {
+ 	converter [ STR1 STR2 ... ]	# optional
+ 				# Converter type, default is taken from
+ 				# defaults.pcm.rate_converter
++	# or
++	converter {		# optional
++		name STR	# Convertor type
++		xxx yyy		# optional convertor-specific configuration
++	}
+ }
+ \endcode
+ 
+-- 
+2.5.5
 
 
-On 02/20/2017 07:01 PM, simon.ho.cnxt@gmail.com wrote:
-> From: Simon Ho <simon.ho@conexant.com>
->
-> Initial commit of Conexant CX20921/CX20924 I2S Audio DSP driver
->
-> Signed-off-by: Simon Ho <simon.ho@conexant.com>
-> ---
->   sound/soc/codecs/Kconfig       |  17 ++
->   sound/soc/codecs/Makefile      |   6 +
->   sound/soc/codecs/cx2092x-i2c.c |  54 ++++++
->   sound/soc/codecs/cx2092x-spi.c |  57 ++++++
->   sound/soc/codecs/cx2092x.c     | 411 +++++++++++++++++++++++++++++++++++++++++
->   sound/soc/codecs/cx2092x.h     |  26 +++
->   6 files changed, 571 insertions(+)
->   create mode 100644 sound/soc/codecs/cx2092x-i2c.c
->   create mode 100644 sound/soc/codecs/cx2092x-spi.c
->   create mode 100644 sound/soc/codecs/cx2092x.c
->   create mode 100644 sound/soc/codecs/cx2092x.h
->
-> diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-> index e49e9da..a98d3c2 100644
-> --- a/sound/soc/codecs/Kconfig
-> +++ b/sound/soc/codecs/Kconfig
-> @@ -63,6 +63,8 @@ config SND_SOC_ALL_CODECS
->   	select SND_SOC_CS47L24 if MFD_CS47L24
->   	select SND_SOC_CS53L30 if I2C
->   	select SND_SOC_CX20442 if TTY
-> +	select SND_SOC_CX2092X_I2C if I2C
-> +	select SND_SOC_CX2092X_SPI if SPI_MASTER
->   	select SND_SOC_DA7210 if SND_SOC_I2C_AND_SPI
->   	select SND_SOC_DA7213 if I2C
->   	select SND_SOC_DA7218 if I2C
-> @@ -491,6 +493,21 @@ config SND_SOC_CX20442
->   	tristate
->   	depends on TTY
->   
-> +config SND_SOC_CX2092X
-> +	tristate
-> +
-> +config SND_SOC_CX2092X_I2C
-> +	tristate "Conexant CX20921/CX2094 CODEC (I2C)"
-> +	depends on I2C
-> +	select SND_SOC_CX2092X
-> +	select REGMAP_I2C
-> +
-> +config SND_SOC_CX2092X_SPI
-> +	tristate "Conexant CX20921/CX2094 CODEC (SPI)"
-> +	depends on SPI_MASTER
-> +	select SND_SOC_CX2092X
-> +	select REGMAP_SPI
-> +
->   config SND_SOC_JZ4740_CODEC
->   	select REGMAP_MMIO
->   	tristate
-> diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-> index 1796cb9..e30a398 100644
-> --- a/sound/soc/codecs/Makefile
-> +++ b/sound/soc/codecs/Makefile
-> @@ -56,6 +56,9 @@ snd-soc-cs4349-objs := cs4349.o
->   snd-soc-cs47l24-objs := cs47l24.o
->   snd-soc-cs53l30-objs := cs53l30.o
->   snd-soc-cx20442-objs := cx20442.o
-> +snd-soc-cx2092x-objs := cx2092x.o
-> +snd-soc-cx2092x-i2c-objs := cx2092x-i2c.o
-> +snd-soc-cx2092x-spi-objs := cx2092x-spi.o
->   snd-soc-da7210-objs := da7210.o
->   snd-soc-da7213-objs := da7213.o
->   snd-soc-da7218-objs := da7218.o
-> @@ -286,6 +289,9 @@ obj-$(CONFIG_SND_SOC_CS4349)	+= snd-soc-cs4349.o
->   obj-$(CONFIG_SND_SOC_CS47L24)	+= snd-soc-cs47l24.o
->   obj-$(CONFIG_SND_SOC_CS53L30)	+= snd-soc-cs53l30.o
->   obj-$(CONFIG_SND_SOC_CX20442)	+= snd-soc-cx20442.o
-> +obj-$(CONFIG_SND_SOC_CX2092X)	+= snd-soc-cx2092x.o
-> +obj-$(CONFIG_SND_SOC_CX2092X_I2C)	+= snd-soc-cx2092x-i2c.o
-> +obj-$(CONFIG_SND_SOC_CX2092X_SPI)	+= snd-soc-cx2092x-spi.o
->   obj-$(CONFIG_SND_SOC_DA7210)	+= snd-soc-da7210.o
->   obj-$(CONFIG_SND_SOC_DA7213)	+= snd-soc-da7213.o
->   obj-$(CONFIG_SND_SOC_DA7218)	+= snd-soc-da7218.o
-> diff --git a/sound/soc/codecs/cx2092x-i2c.c b/sound/soc/codecs/cx2092x-i2c.c
-> new file mode 100644
-> index 0000000..a07800e
-> --- /dev/null
-> +++ b/sound/soc/codecs/cx2092x-i2c.c
-> @@ -0,0 +1,54 @@
-> +/*
-> + * cx2092x-i2c.c -- CX20921 and CX20924 I2C Audio driver
-> + *
-> + * Copyright:   (C) 2017 Conexant Systems, Inc.
-> + *
-> + * This is based on Alexander Sverdlin's CS4271 driver code.
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + *
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/i2c.h>
-> +#include <linux/regmap.h>
-> +#include <sound/soc.h>
-> +#include "cx2092x.h"
-> +
-> +static int cx2092x_i2c_probe(struct i2c_client *i2c,
-> +		const struct i2c_device_id *id)
-> +{
-> +	return cx2092x_dev_probe(&i2c->dev,
-> +			devm_regmap_init_i2c(i2c, &cx2092x_regmap_config));
-> +}
-> +static int cx2092x_i2c_remove(struct i2c_client *client)
-> +{
-> +	snd_soc_unregister_codec(&client->dev);
-> +	return 0;
-> +}
-> +
-> +static const struct i2c_device_id cx2092x_i2c_id[] = {
-> +	{"cx20921", 0},
-> +	{"cx20924", 0},
-> +	{}
-> +};
-> +
-> +MODULE_DEVICE_TABLE(i2c, cx2092x_i2c_id);
-> +
-> +static struct i2c_driver cx2092x_i2c_driver = {
-> +	.driver = {
-> +		.name = "cx2092x",
-> +		.owner = THIS_MODULE,
-field not needed
-> +		.of_match_table = of_match_ptr(cx2092x_dt_ids),
-> +	},
-> +	.id_table = cx2092x_i2c_id,
-> +	.probe = cx2092x_i2c_probe,
-> +	.remove = cx2092x_i2c_remove,
-> +};
-> +module_i2c_driver(cx2092x_i2c_driver);
-> +
-> +MODULE_DESCRIPTION("ASoC CX2092X I2C Driver");
-> +MODULE_AUTHOR("Simon Ho <simon.ho@conexant.com>");
-> +MODULE_LICENSE("GPL");
-> diff --git a/sound/soc/codecs/cx2092x-spi.c b/sound/soc/codecs/cx2092x-spi.c
-> new file mode 100644
-> index 0000000..3723909
-> --- /dev/null
-> +++ b/sound/soc/codecs/cx2092x-spi.c
-> @@ -0,0 +1,57 @@
-> +/*
-> + * cx2092x-spi.c -- CX20921 and CX20924 SPI Audio driver
-> + *
-> + * Copyright:   (C) 2017 Conexant Systems, Inc.
-> + *
-> + * This is based on Alexander Sverdlin's CS4271 driver code.
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + *
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/spi/spi.h>
-> +#include <linux/regmap.h>
-> +#include <sound/soc.h>
-> +#include "cx2092x.h"
-> +
-> +static int cx2092x_spi_probe(struct spi_device *spi)
-> +{
-> +	struct regmap_config config;
-> +
-> +	config = cx2092x_regmap_config;
-> +	config.write_flag_mask = 0x81;
-human-readable value to explain what this does?
-> +
-> +	return cx2092x_dev_probe(&spi->dev,
-> +			devm_regmap_init_spi(spi, &cx2092x_regmap_config));
-> +}
-> +
-> +static int cx2092x_spi_remove(struct spi_device *spi)
-> +{
-> +	snd_soc_unregister_codec(&spi->dev);
-> +	return 0;
-> +}
-> +
-> +static const struct spi_device_id cx2092x_spi_id[] = {
-> +	{"cx20921", 0},
-> +	{"cx20924", 0},
-> +	{}
-> +};
-> +
-> +static struct spi_driver cx2092x_spi_driver = {
-> +	.driver = {
-> +		.name = "cx2092x",
-> +		.of_match_table = of_match_ptr(cx2092x_dt_ids),
-> +	},
-> +	.id_table = cx2092x_spi_id,
-> +	.probe = cx2092x_spi_probe,
-> +	.remove = cx2092x_spi_remove,
-> +};
-> +
-> +module_spi_driver(cx2092x_spi_driver);
-> +
-> +MODULE_DESCRIPTION("ASoC CX2092X SPI Driver");
-> +MODULE_AUTHOR("Simon Ho <simon.ho@conexant.com>");
-> +MODULE_LICENSE("GPL");
-> diff --git a/sound/soc/codecs/cx2092x.c b/sound/soc/codecs/cx2092x.c
-> new file mode 100644
-> index 0000000..a15e3f9
-> --- /dev/null
-> +++ b/sound/soc/codecs/cx2092x.c
-> @@ -0,0 +1,411 @@
-> +/*
-> + * cx2092x.c -- CX20921 and CX20924 ALSA SoC Audio driver
-> + *
-> + * Copyright:   (C) 2017 Conexant Systems, Inc.
-> + *
-> + * This is based on Alexander Sverdlin's CS4271 driver code.
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + *
-> + */
-> +
-> +#include <linux/module.h>
-> +#include <linux/slab.h>
-> +#include <linux/delay.h>
-> +#include <linux/of.h>
-> +#include <linux/of_device.h>
-> +#include <linux/of_gpio.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <sound/pcm.h>
-> +#include <sound/soc.h>
-> +#include "cx2092x.h"
-> +
-> +#define CX2092X_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
-> +			 SNDRV_PCM_FMTBIT_S24_LE | \
-> +			 SNDRV_PCM_FMTBIT_S32_LE)
-> +
-> +#define CX2092X_CAPE_ID(a, b, c, d)  (((a) - 0x20) << 8 | \
-> +				      ((b) - 0x20) << 14| \
-> +				      ((c) - 0x20) << 20| \
-> +				      ((d) - 0x20) << 26)
-> +
-> +#define CX2092X_ID2CH_A(id)  (((((unsigned int)(id)) >> 8) & 0x3f) + 0x20)
-> +#define CX2092X_ID2CH_B(id)  (((((unsigned int)(id)) >> 14) & 0x3f) + 0x20)
-> +#define CX2092X_ID2CH_C(id)  (((((unsigned int)(id)) >> 20) & 0x3f) + 0x20)
-> +#define CX2092X_ID2CH_D(id)  (((((unsigned int)(id)) >> 26) & 0x3f) + 0x20)
-> +
-> +#define CX2092X_CONTROL(xname, xinfo, xget, xput, xaccess) { \
-> +	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = (xname), \
-> +	.access = xaccess, .info = xinfo, .get = xget, .put = xput, \
-> +	}
-> +
-> +#define CX2092X_CMD_GET(item)   ((item) |  0x0100)
-> +#define CX2092X_CMD_SIZE 13
-> +
-> +/*
-> + * Defines the command format which is used to communicate with cx2092x device.
-> + */
-> +struct cx2092x_cmd {
-> +	int	num_32b_words:16;   /* Indicates how many data to be sent.
-> +				     * If operation is successful, this will
-> +				     * be updated with the number of returned
-> +				     * data in word. one word == 4 bytes.
-> +				     */
-> +
-> +	u32	command_id:15;
-> +	u32	reply:1;            /* The device will set this flag once
-> +				     * the operation is complete.
-> +				     */
-> +	u32	app_module_id;
-> +	u32	data[CX2092X_CMD_SIZE]; /* Used for storing parameters and
-> +					 * receiving the returned data from
-> +					 * device.
-> +					 */
-> +};
-> +
-> +/* codec private data*/
-> +struct cx2092x_priv {
-> +	struct device *dev;
-> +	struct regmap *regmap;
-> +	struct gpio_desc *gpiod_reset;
-> +	struct cx2092x_cmd cmd;
-> +	int cmd_res;
-> +};
-> +
-> +/*
-> + * This functions takes cx2092x_cmd structure as input and output parameters
-> + * to communicate CX2092X. If operation is successfully, it returns number of
-> + * returned data and stored the returned data in "cmd->data" array.
-> + * Otherwise, it returns the error code.
-> + */
-> +static int cx2092x_sendcmd(struct snd_soc_codec *codec,
-> +			   struct cx2092x_cmd *cmd)
-> +{
-> +	struct cx2092x_priv *cx2092x = snd_soc_codec_get_drvdata(codec);
-> +	int ret = 0;
-> +	int num_32b_words = cmd->num_32b_words;
-> +	unsigned long time_out;
-> +	u32 *i2c_data = (u32 *)cmd;
-> +	int size = num_32b_words + 2;
-> +
-> +	/* calculate how many WORD that will be wrote to device*/
-written to
-> +	cmd->num_32b_words = cmd->command_id & CX2092X_CMD_GET(0) ?
-> +			     CX2092X_CMD_SIZE : num_32b_words;
-> +
-> +
-> +	/* write all command data except fo frist 4 bytes*/
-first
-> +	ret = regmap_bulk_write(cx2092x->regmap, 4, &i2c_data[1], size - 1);
-shouldn't size be set on the actual cmd->num_32b_words, here you are 
-using the value prior to the test?
-> +	if (ret < 0) {
-> +		dev_err(cx2092x->dev, "Failed to write command data\n");
-> +		goto LEAVE;
-> +	}
-> +
-> +	/* write first 4 bytes command data*/
-> +	ret = regmap_bulk_write(cx2092x->regmap, 0, i2c_data, 1);
-> +	if (ret < 0) {
-> +		dev_err(cx2092x->dev, "Failed to write command\n");
-> +		goto LEAVE;
-> +	}
-> +
-> +	/* continuously read the first bytes data from device until
-> +	 * either timeout or the flag 'reply' is set.
-> +	 */
-> +	time_out = msecs_to_jiffies(2000);
-> +	time_out += jiffies;
-> +	do {
-> +		regmap_bulk_read(cx2092x->regmap, 0, &i2c_data[0], 1);
-> +		if (cmd->reply == 1)
-> +			break;
-> +		mdelay(10);
-> +
-> +	} while (!time_after(jiffies, time_out));
-> +
-> +	if (cmd->reply == 1) {
-> +		/* check if there is returned data. If yes copy the returned
-> +		 * data to cmd->data array
-> +		 */
-> +		if (cmd->num_32b_words > 0)
-> +			regmap_bulk_read(cx2092x->regmap, 8, &i2c_data[2],
-> +					 cmd->num_32b_words);
-> +		/* return error code if operation is not successful.*/
-> +		else if (cmd->num_32b_words < 0)
-> +			dev_err(cx2092x->dev, "SendCmd failed, err = %d\n",
-> +				cmd->num_32b_words);
-> +
-> +		ret = cmd->num_32b_words;
-> +	} else {
-> +		dev_err(cx2092x->dev, "SendCmd timeout\n");
-> +		ret = -EBUSY;
-> +	}
-> +
-> +LEAVE:
-> +	return ret;
-> +}
-> +
-> +
-> +static int cmd_info(struct snd_kcontrol *kcontrol,
-> +		struct snd_ctl_elem_info *uinfo)
-> +{
-> +	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
-> +	uinfo->count = sizeof(struct cx2092x_cmd);
-> +
-> +	return 0;
-> +}
-> +
-> +static int cmd_get(struct snd_kcontrol *kcontrol,
-> +		struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-> +	struct cx2092x_priv *cx2092x =
-> +		snd_soc_component_get_drvdata(component);
-> +
-> +	memcpy(ucontrol->value.bytes.data, &cx2092x->cmd,
-> +			sizeof(cx2092x->cmd));
-> +
-> +	return 0;
-> +}
-> +
-> +static int cmd_put(struct snd_kcontrol *kcontrol,
-> +		   struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-> +	struct cx2092x_priv *cx2092x = snd_soc_component_get_drvdata(component);
-> +	struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
-> +
-> +	memcpy(&cx2092x->cmd, ucontrol->value.bytes.data,
-> +			sizeof(cx2092x->cmd));
-> +
-> +	cx2092x->cmd_res = cx2092x_sendcmd(codec, &cx2092x->cmd);
-> +
-> +	if (cx2092x->cmd_res < 0)
-> +		dev_err(codec->dev, "Failed to send cmd, ret = %d\n",
-> +			cx2092x->cmd_res);
-> +
-> +	return cx2092x->cmd_res < 0 ? cx2092x->cmd_res : 0;
-return cmd_res in if block and return 0 otherwise?
-> +}
-> +
-> +
-> +static int mode_info(struct snd_kcontrol *kcontrol,
-> +		     struct snd_ctl_elem_info *uinfo)
-> +{
-> +	uinfo->type = SNDRV_CTL_ELEM_TYPE_BYTES;
-> +	uinfo->count = 4;
-> +
-> +	return 0;
-> +}
-> +
-> +static int mode_get(struct snd_kcontrol *kcontrol,
-> +		    struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-> +	struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
-> +	struct cx2092x_cmd cmd;
-> +	int ret = 0;
-> +
-> +	cmd.command_id = 0x12f; /*CX2092X_CMD_GET(SOS_RESOURCE);*/
-> +	cmd.reply = 0;
-> +	cmd.app_module_id = CX2092X_CAPE_ID('S', 'O', 'S', ' ');
-SOS :-) ?
-> +	cmd.num_32b_words = 1;
-> +	cmd.data[0] = CX2092X_CAPE_ID('C', 'T', 'R', 'L');
-> +
-> +	ret = cx2092x_sendcmd(codec, &cmd);
-> +	if (ret <= 0)
-> +		dev_err(codec->dev, "Failed to get current mode, ret = %d\n",
-> +			ret);
-> +	else {
-> +		ucontrol->value.bytes.data[0] = CX2092X_ID2CH_A(cmd.data[0]);
-> +		ucontrol->value.bytes.data[1] = CX2092X_ID2CH_B(cmd.data[0]);
-> +		ucontrol->value.bytes.data[2] = CX2092X_ID2CH_C(cmd.data[0]);
-> +		ucontrol->value.bytes.data[3] = CX2092X_ID2CH_D(cmd.data[0]);
-> +
-> +		dev_dbg(codec->dev, "Current mode = %c%c%c%c\n",
-> +			ucontrol->value.bytes.data[0],
-> +			ucontrol->value.bytes.data[1],
-> +			ucontrol->value.bytes.data[2],
-> +			ucontrol->value.bytes.data[3]);
-> +
-> +		ret = 0;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static int mode_put(struct snd_kcontrol *kcontrol,
-> +		    struct snd_ctl_elem_value *ucontrol)
-> +{
-> +	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
-> +	struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
-> +	struct cx2092x_cmd cmd;
-> +	int ret = -1;
-> +
-> +	cmd.command_id = 4;
-> +	cmd.reply = 0;
-> +	cmd.app_module_id = CX2092X_CAPE_ID('C', 'T', 'R', 'L');
-> +	cmd.num_32b_words = 1;
-> +	cmd.data[0] = CX2092X_CAPE_ID(ucontrol->value.bytes.data[0],
-> +				      ucontrol->value.bytes.data[1],
-> +				      ucontrol->value.bytes.data[2],
-> +				      ucontrol->value.bytes.data[3]);
-> +
-> +	ret = cx2092x_sendcmd(codec, &cmd);
-> +	if (ret < 0) {
-> +		dev_err(codec->dev, "Failed to set mode, ret =%d\n", ret);
-> +	} else {
-> +		dev_dbg(codec->dev, "Set mode successfully, ret = %d\n", ret);
-> +		ret = 0;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
-> +static const struct snd_kcontrol_new cx2092x_snd_controls[] = {
-> +	CX2092X_CONTROL("SendCmd", cmd_info, cmd_get, cmd_put,
-> +		SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_WRITE|
-> +		SNDRV_CTL_ELEM_ACCESS_VOLATILE),
-> +	CX2092X_CONTROL("Mode", mode_info, mode_get, mode_put,
-> +		SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_WRITE|
-> +		SNDRV_CTL_ELEM_ACCESS_VOLATILE),
-> +};
-> +
-> +
-> +static const struct snd_soc_dapm_widget cx2092x_dapm_widgets[] = {
-> +	SND_SOC_DAPM_AIF_OUT("Mic AIF", "Capture", 0,
-> +			     SND_SOC_NOPM, 0, 0),
-> +	SND_SOC_DAPM_INPUT("MIC"),
-> +};
-> +
-> +static const struct snd_soc_dapm_route cx2092x_intercon[] = {
-> +	{"Mic AIF", NULL, "MIC"},
-> +};
-> +
-> +
-> +static struct snd_soc_dai_driver soc_codec_cx2092x_dai[] = {
-> +	{
-> +		.name = "cx2092x-aif",
-> +		.capture = {
-> +		.stream_name = "Capture",
-> +		.channels_min = 2,
-> +		.channels_max = 2,
-> +		.rates = SNDRV_PCM_RATE_48000,
-> +		.formats = CX2092X_FORMATS,
-> +		},
-> +	},
-> +	{
-> +		.name = "cx2092x-dsp",
-> +		.capture = {
-> +		.stream_name = "AEC Ref",
-explain what AEC ref means if there is no playback?
-> +		.channels_min = 2,
-> +		.channels_max = 2,
-> +		.rates = SNDRV_PCM_RATE_48000,
-> +		.formats = CX2092X_FORMATS,
-> +		},
-> +	},
-> +};
-> +
-> +static int cx2092x_reset(struct snd_soc_codec *codec)
-> +{
-> +	struct cx2092x_priv *cx2092x = snd_soc_codec_get_drvdata(codec);
-> +
-> +	if (cx2092x->gpiod_reset) {
-> +		gpiod_set_value_cansleep(cx2092x->gpiod_reset, 0);
-> +		mdelay(10);
-> +		gpiod_set_value_cansleep(cx2092x->gpiod_reset, 1);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +const struct of_device_id cx2092x_dt_ids[] = {
-> +	{ .compatible = "cnxt,cx20921", },
-> +	{ .compatible = "cnxt,cx20924", },
-> +	{ }
-> +};
-> +EXPORT_SYMBOL_GPL(cx2092x_dt_ids);
-> +MODULE_DEVICE_TABLE(of, cx2092x_dt_ids);
-> +
-> +static int cx2092x_probe(struct snd_soc_codec *codec)
-> +{
-> +	return cx2092x_reset(codec);
-> +}
-> +
-> +static int cx2092x_remove(struct snd_soc_codec *codec)
-> +{
-> +	struct cx2092x_priv *cx2092x = snd_soc_codec_get_drvdata(codec);
-> +
-> +	if (cx2092x->gpiod_reset)
-> +		/* Set codec to the reset state */
-> +		gpiod_set_value_cansleep(cx2092x->gpiod_reset, 0);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct snd_soc_codec_driver soc_codec_driver_cx2092x = {
-> +	.probe = cx2092x_probe,
-> +	.remove = cx2092x_remove,
-> +
-> +	.component_driver = {
-> +		.controls = cx2092x_snd_controls,
-> +		.num_controls = ARRAY_SIZE(cx2092x_snd_controls),
-> +		.dapm_widgets = cx2092x_dapm_widgets,
-> +		.num_dapm_widgets = ARRAY_SIZE(cx2092x_dapm_widgets),
-> +		.dapm_routes = cx2092x_intercon,
-> +		.num_dapm_routes = ARRAY_SIZE(cx2092x_intercon),
-> +	},
-> +};
-> +EXPORT_SYMBOL_GPL(soc_codec_driver_cx2092x);
-> +
-> +static bool cx2092x_volatile_register(struct device *dev, unsigned int reg)
-> +{
-> +	return true; /*all register are volatile*/
-> +}
-> +
-> +const struct regmap_config cx2092x_regmap_config = {
-> +	.reg_bits = 16,
-> +	.val_bits = 32,
-> +	.reg_stride = 4,
-> +	.max_register = CX2092X_REG_MAX,
-> +	.cache_type = REGCACHE_NONE,
-> +	.volatile_reg = cx2092x_volatile_register,
-> +	.val_format_endian = REGMAP_ENDIAN_NATIVE,
-> +};
-> +EXPORT_SYMBOL_GPL(cx2092x_regmap_config);
-> +
-> +int cx2092x_dev_probe(struct device *dev, struct regmap *regmap)
-> +{
-> +	struct cx2092x_priv *cx2092x;
-> +	int ret;
-> +
-> +	if (IS_ERR(regmap))
-> +		return PTR_ERR(regmap);
-> +
-> +	cx2092x = devm_kzalloc(dev, sizeof(*cx2092x), GFP_KERNEL);
-> +	if (!cx2092x)
-> +		return -ENOMEM;
-> +
-> +	/* GPIOs */
-> +	cx2092x->gpiod_reset = devm_gpiod_get_optional(dev, "reset",
-> +						       GPIOD_OUT_LOW);
-> +	if (IS_ERR(cx2092x->gpiod_reset))
-> +		return PTR_ERR(cx2092x->gpiod_reset);
-> +
-> +	dev_set_drvdata(dev, cx2092x);
-> +	cx2092x->regmap = regmap;
-> +	cx2092x->dev = dev;
-> +
-> +	ret = snd_soc_register_codec(cx2092x->dev, &soc_codec_driver_cx2092x,
-> +				soc_codec_cx2092x_dai,
-> +				ARRAY_SIZE(soc_codec_cx2092x_dai));
-> +	if (ret < 0)
-> +		dev_err(dev, "Failed to register codec: %d\n", ret);
-> +	else
-> +		dev_dbg(dev, "%s: Register codec.\n", __func__);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(cx2092x_dev_probe);
-> +
-> +MODULE_DESCRIPTION("ASoC CX2092X ALSA SoC Driver");
-> +MODULE_AUTHOR("Simon Ho <simon.ho@conexant.com>");
-> +MODULE_LICENSE("GPL");
-> diff --git a/sound/soc/codecs/cx2092x.h b/sound/soc/codecs/cx2092x.h
-> new file mode 100644
-> index 0000000..9577be8
-> --- /dev/null
-> +++ b/sound/soc/codecs/cx2092x.h
-> @@ -0,0 +1,26 @@
-> +/*
-> + * cx2092x.h -- CX20921 and CX20924 Audio driver
-> + *
-> + * Copyright:   (C) 2017 Conexant Systems, Inc.
-> + *
-> + * This is based on Alexander Sverdlin's CS4271 driver code.
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + *
-> + */
-> +
-> +#ifndef __CX2092X_PRIV_H__
-> +#define __CX2092X_PRIV_H__
-> +
-> +#include <linux/regmap.h>
-> +
-> +extern const struct of_device_id cx2092x_dt_ids[];
-> +extern const struct regmap_config cx2092x_regmap_config;
-> +
-> +int cx2092x_dev_probe(struct device *dev, struct regmap *regmap);
-> +
-> +#define CX2092X_REG_MAX 0x2000
-> +
-> +#endif
+--------------F6498F2B2FC0F4A7FD302AF5
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------F6498F2B2FC0F4A7FD302AF5--
