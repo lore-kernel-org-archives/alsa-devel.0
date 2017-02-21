@@ -1,7 +1,7 @@
 From: Elena Reshetova <elena.reshetova@intel.com>
-Subject: [PATCH 7/9] tools: convert perf_map.refcnt from atomic_t to refcount_t
-Date: Tue, 21 Feb 2017 17:35:01 +0200
-Message-ID: <1487691303-31858-8-git-send-email-elena.reshetova@intel.com>
+Subject: [PATCH 6/9] tools: convert map_groups.refcnt from atomic_t to refcount_t
+Date: Tue, 21 Feb 2017 17:35:00 +0200
+Message-ID: <1487691303-31858-7-git-send-email-elena.reshetova@intel.com>
 References: <1487691303-31858-1-git-send-email-elena.reshetova@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1487691303-31858-1-git-send-email-elena.reshetova@intel.com>
@@ -21,107 +21,53 @@ Signed-off-by: Hans Liljestrand <ishkamiel@gmail.com>
 Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: David Windsor <dwindsor@gmail.com>
 ---
- tools/perf/util/evlist.c | 18 +++++++++---------
- tools/perf/util/evlist.h |  4 ++--
- 2 files changed, 11 insertions(+), 11 deletions(-)
+ tools/perf/util/map.c | 4 ++--
+ tools/perf/util/map.h | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index b601f28..564b924 100644
---- a/tools/perf/util/evlist.c
-+++ b/tools/perf/util/evlist.c
-@@ -777,7 +777,7 @@ union perf_event *perf_mmap__read_forward(struct perf_mmap *md, bool check_messu
- 	/*
- 	 * Check if event was unmapped due to a POLLHUP/POLLERR.
- 	 */
--	if (!atomic_read(&md->refcnt))
-+	if (!refcount_read(&md->refcnt))
- 		return NULL;
- 
- 	head = perf_mmap__read_head(md);
-@@ -794,7 +794,7 @@ perf_mmap__read_backward(struct perf_mmap *md)
- 	/*
- 	 * Check if event was unmapped due to a POLLHUP/POLLERR.
- 	 */
--	if (!atomic_read(&md->refcnt))
-+	if (!refcount_read(&md->refcnt))
- 		return NULL;
- 
- 	head = perf_mmap__read_head(md);
-@@ -856,7 +856,7 @@ void perf_mmap__read_catchup(struct perf_mmap *md)
- {
- 	u64 head;
- 
--	if (!atomic_read(&md->refcnt))
-+	if (!refcount_read(&md->refcnt))
- 		return;
- 
- 	head = perf_mmap__read_head(md);
-@@ -875,14 +875,14 @@ static bool perf_mmap__empty(struct perf_mmap *md)
- 
- static void perf_mmap__get(struct perf_mmap *map)
- {
--	atomic_inc(&map->refcnt);
-+	refcount_inc(&map->refcnt);
- }
- 
- static void perf_mmap__put(struct perf_mmap *md)
- {
--	BUG_ON(md->base && atomic_read(&md->refcnt) == 0);
-+	BUG_ON(md->base && refcount_read(&md->refcnt) == 0);
- 
--	if (atomic_dec_and_test(&md->refcnt))
-+	if (refcount_dec_and_test(&md->refcnt))
- 		perf_mmap__munmap(md);
- }
- 
-@@ -894,7 +894,7 @@ void perf_mmap__consume(struct perf_mmap *md, bool overwrite)
- 		perf_mmap__write_tail(md, old);
+diff --git a/tools/perf/util/map.c b/tools/perf/util/map.c
+index f0e2428..1d9ebcf 100644
+--- a/tools/perf/util/map.c
++++ b/tools/perf/util/map.c
+@@ -485,7 +485,7 @@ void map_groups__init(struct map_groups *mg, struct machine *machine)
+ 		maps__init(&mg->maps[i]);
  	}
- 
--	if (atomic_read(&md->refcnt) == 1 && perf_mmap__empty(md))
-+	if (refcount_read(&md->refcnt) == 1 && perf_mmap__empty(md))
- 		perf_mmap__put(md);
+ 	mg->machine = machine;
+-	atomic_set(&mg->refcnt, 1);
++	refcount_set(&mg->refcnt, 1);
  }
  
-@@ -937,7 +937,7 @@ static void perf_mmap__munmap(struct perf_mmap *map)
- 		munmap(map->base, perf_mmap__mmap_len(map));
- 		map->base = NULL;
- 		map->fd = -1;
--		atomic_set(&map->refcnt, 0);
-+		refcount_set(&map->refcnt, 0);
- 	}
- 	auxtrace_mmap__munmap(&map->auxtrace_mmap);
- }
-@@ -1001,7 +1001,7 @@ static int perf_mmap__mmap(struct perf_mmap *map,
- 	 * evlist layer can't just drop it when filtering events in
- 	 * perf_evlist__filter_pollfd().
- 	 */
--	atomic_set(&map->refcnt, 2);
-+	refcount_set(&map->refcnt, 2);
- 	map->prev = 0;
- 	map->mask = mp->mask;
- 	map->base = mmap(NULL, perf_mmap__mmap_len(map), mp->prot,
-diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
-index 389b9cc..3994299 100644
---- a/tools/perf/util/evlist.h
-+++ b/tools/perf/util/evlist.h
-@@ -1,7 +1,7 @@
- #ifndef __PERF_EVLIST_H
- #define __PERF_EVLIST_H 1
+ static void __maps__purge(struct maps *maps)
+@@ -547,7 +547,7 @@ void map_groups__delete(struct map_groups *mg)
  
--#include <linux/atomic.h>
-+#include <linux/refcount.h>
- #include <linux/list.h>
- #include <api/fd/array.h>
- #include <stdio.h>
-@@ -29,7 +29,7 @@ struct perf_mmap {
- 	void		 *base;
- 	int		 mask;
- 	int		 fd;
+ void map_groups__put(struct map_groups *mg)
+ {
+-	if (mg && atomic_dec_and_test(&mg->refcnt))
++	if (mg && refcount_dec_and_test(&mg->refcnt))
+ 		map_groups__delete(mg);
+ }
+ 
+diff --git a/tools/perf/util/map.h b/tools/perf/util/map.h
+index 9545ff3..c8a5a64 100644
+--- a/tools/perf/util/map.h
++++ b/tools/perf/util/map.h
+@@ -67,7 +67,7 @@ struct maps {
+ struct map_groups {
+ 	struct maps	 maps[MAP__NR_TYPES];
+ 	struct machine	 *machine;
 -	atomic_t	 refcnt;
 +	refcount_t	 refcnt;
- 	u64		 prev;
- 	struct auxtrace_mmap auxtrace_mmap;
- 	char		 event_copy[PERF_SAMPLE_MAX_SIZE] __attribute__((aligned(8)));
+ };
+ 
+ struct map_groups *map_groups__new(struct machine *machine);
+@@ -77,7 +77,7 @@ bool map_groups__empty(struct map_groups *mg);
+ static inline struct map_groups *map_groups__get(struct map_groups *mg)
+ {
+ 	if (mg)
+-		atomic_inc(&mg->refcnt);
++		refcount_inc(&mg->refcnt);
+ 	return mg;
+ }
+ 
 -- 
 2.7.4
