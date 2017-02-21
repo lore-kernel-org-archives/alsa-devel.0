@@ -1,7 +1,7 @@
 From: Elena Reshetova <elena.reshetova@intel.com>
-Subject: [PATCH 4/9] tools: convert dso.refcnt from atomic_t to refcount_t
-Date: Tue, 21 Feb 2017 17:34:58 +0200
-Message-ID: <1487691303-31858-5-git-send-email-elena.reshetova@intel.com>
+Subject: [PATCH 5/9] tools: convert map.refcnt from atomic_t to refcount_t
+Date: Tue, 21 Feb 2017 17:34:59 +0200
+Message-ID: <1487691303-31858-6-git-send-email-elena.reshetova@intel.com>
 References: <1487691303-31858-1-git-send-email-elena.reshetova@intel.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1487691303-31858-1-git-send-email-elena.reshetova@intel.com>
@@ -21,60 +21,71 @@ Signed-off-by: Hans Liljestrand <ishkamiel@gmail.com>
 Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: David Windsor <dwindsor@gmail.com>
 ---
- tools/perf/util/dso.c | 6 +++---
- tools/perf/util/dso.h | 4 ++--
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ tools/perf/util/map.c | 6 +++---
+ tools/perf/util/map.h | 6 +++---
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/tools/perf/util/dso.c b/tools/perf/util/dso.c
-index 3abe337..f88aa44 100644
---- a/tools/perf/util/dso.c
-+++ b/tools/perf/util/dso.c
-@@ -1109,7 +1109,7 @@ struct dso *dso__new(const char *name)
- 		INIT_LIST_HEAD(&dso->node);
- 		INIT_LIST_HEAD(&dso->data.open_entry);
- 		pthread_mutex_init(&dso->lock, NULL);
--		atomic_set(&dso->refcnt, 1);
-+		refcount_set(&dso->refcnt, 1);
- 	}
- 
- 	return dso;
-@@ -1147,13 +1147,13 @@ void dso__delete(struct dso *dso)
- struct dso *dso__get(struct dso *dso)
- {
- 	if (dso)
--		atomic_inc(&dso->refcnt);
-+		refcount_inc(&dso->refcnt);
- 	return dso;
+diff --git a/tools/perf/util/map.c b/tools/perf/util/map.c
+index 0a943e7..f0e2428 100644
+--- a/tools/perf/util/map.c
++++ b/tools/perf/util/map.c
+@@ -141,7 +141,7 @@ void map__init(struct map *map, enum map_type type,
+ 	RB_CLEAR_NODE(&map->rb_node);
+ 	map->groups   = NULL;
+ 	map->erange_warned = false;
+-	atomic_set(&map->refcnt, 1);
++	refcount_set(&map->refcnt, 1);
  }
  
- void dso__put(struct dso *dso)
+ struct map *map__new(struct machine *machine, u64 start, u64 len,
+@@ -255,7 +255,7 @@ void map__delete(struct map *map)
+ 
+ void map__put(struct map *map)
  {
--	if (dso && atomic_dec_and_test(&dso->refcnt))
-+	if (dso && refcount_dec_and_test(&dso->refcnt))
- 		dso__delete(dso);
+-	if (map && atomic_dec_and_test(&map->refcnt))
++	if (map && refcount_dec_and_test(&map->refcnt))
+ 		map__delete(map);
  }
  
-diff --git a/tools/perf/util/dso.h b/tools/perf/util/dso.h
-index ecc4bbd..12350b1 100644
---- a/tools/perf/util/dso.h
-+++ b/tools/perf/util/dso.h
+@@ -354,7 +354,7 @@ struct map *map__clone(struct map *from)
+ 	struct map *map = memdup(from, sizeof(*map));
+ 
+ 	if (map != NULL) {
+-		atomic_set(&map->refcnt, 1);
++		refcount_set(&map->refcnt, 1);
+ 		RB_CLEAR_NODE(&map->rb_node);
+ 		dso__get(map->dso);
+ 		map->groups = NULL;
+diff --git a/tools/perf/util/map.h b/tools/perf/util/map.h
+index abdacf8..9545ff3 100644
+--- a/tools/perf/util/map.h
++++ b/tools/perf/util/map.h
 @@ -1,7 +1,7 @@
- #ifndef __PERF_DSO
- #define __PERF_DSO
+ #ifndef __PERF_MAP_H
+ #define __PERF_MAP_H
  
 -#include <linux/atomic.h>
 +#include <linux/refcount.h>
- #include <linux/types.h>
+ #include <linux/compiler.h>
+ #include <linux/list.h>
  #include <linux/rbtree.h>
- #include <sys/types.h>
-@@ -187,7 +187,7 @@ struct dso {
- 		void	 *priv;
- 		u64	 db_id;
- 	};
--	atomic_t	 refcnt;
-+	refcount_t	 refcnt;
- 	char		 name[0];
+@@ -51,7 +51,7 @@ struct map {
+ 
+ 	struct dso		*dso;
+ 	struct map_groups	*groups;
+-	atomic_t		refcnt;
++	refcount_t		refcnt;
  };
+ 
+ struct kmap {
+@@ -150,7 +150,7 @@ struct map *map__clone(struct map *map);
+ static inline struct map *map__get(struct map *map)
+ {
+ 	if (map)
+-		atomic_inc(&map->refcnt);
++		refcount_inc(&map->refcnt);
+ 	return map;
+ }
  
 -- 
 2.7.4
