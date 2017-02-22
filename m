@@ -1,76 +1,67 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [RFC v2 2/7] IIO: Add bindings for simple sigma
-	delta adc
-Date: Wed, 22 Feb 2017 09:17:50 -0600
-Message-ID: <20170222151750.h5d7gycltwnk7b4t@rob-hp-laptop>
-References: <1487003909-11710-1-git-send-email-arnaud.pouliquen@st.com>
- <1487003909-11710-3-git-send-email-arnaud.pouliquen@st.com>
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [PATCH 1/9] tools: convert cgroup_sel.refcnt from atomic_t to
+ refcount_t
+Date: Wed, 22 Feb 2017 12:37:54 -0300
+Message-ID: <20170222153754.GA20447@kernel.org>
+References: <1487691303-31858-1-git-send-email-elena.reshetova@intel.com>
+ <1487691303-31858-2-git-send-email-elena.reshetova@intel.com>
+ <20170221154356.GF5052@kernel.org>
+ <2236FBA76BA1254E88B949DDB74E612B41C4EC7E@IRSMSX102.ger.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot0-f193.google.com (mail-ot0-f193.google.com
- [74.125.82.193])
- by alsa0.perex.cz (Postfix) with ESMTP id ADA1C266D63
- for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2017 16:17:52 +0100 (CET)
-Received: by mail-ot0-f193.google.com with SMTP id w44so576200otw.1
- for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2017 07:17:52 -0800 (PST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1487003909-11710-3-git-send-email-arnaud.pouliquen@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, olivier moysan <olivier.moysan@st.com>, kernel@stlinux.com, Liam Girdwood <lgirdwood@gmail.com>, linux-iio@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Hartmut Knaack <knaack.h@gmx.de>, Jonathan Cameron <jic23@kernel.org>, Alexandre Torgue <alexandre.torgue@st.com>
+In-Reply-To: <2236FBA76BA1254E88B949DDB74E612B41C4EC7E@IRSMSX102.ger.corp.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Reshetova, Elena" <elena.reshetova@intel.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "peterz@infradead.org" <peterz@infradead.org>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "mingo@redhat.com" <mingo@redhat.com>, "alexander.shishkin@linux.intel.com" <alexander.shishkin@linux.intel.com>, "jolsa@kernel.org" <jolsa@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "matija.glavinic-pecotic.ext@nokia.com" <matija.glavinic-pecotic.ext@nokia.com>, Hans Liljestrand <ishkamiel@gmail.com>, Kees Cook <keescook@chromium.org>, David Windsor <dwindsor@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 13, 2017 at 05:38:24PM +0100, Arnaud Pouliquen wrote:
-> Add documentation of device tree bindings to support
-> sigma delta modulator in IIO framework.
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-> ---
->  Documentation/devicetree/bindings/iio/adc/simple_sd_adc.txt | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/simple_sd_adc.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/adc/simple_sd_adc.txt b/Documentation/devicetree/bindings/iio/adc/simple_sd_adc.txt
-> new file mode 100644
-> index 0000000..2b3968a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/adc/simple_sd_adc.txt
-> @@ -0,0 +1,13 @@
-> +Device-Tree bindings for simple sigma delta adc
+Em Wed, Feb 22, 2017 at 02:29:18PM +0000, Reshetova, Elena escreveu:
+> > Em Tue, Feb 21, 2017 at 05:34:55PM +0200, Elena Reshetova escreveu:
+> > > refcount_t type and corresponding API should be
+> > > used instead of atomic_t when the variable is used as
+> > > a reference counter. This allows to avoid accidental
+> > > refcounter overflows that might lead to use-after-free
+> > > situations.
+> > >  #define __CGROUP_H__
+> > >
+> > > -#include <linux/atomic.h>
+> > > +#include <linux/refcount.h>
+> > 
+> > So this is the first one, I was expecting the copy from
+> > include/linux/refcount.h to be made to tools/include/linux/refcount.h,
+> > as was done for tools/include/linux/atomic.h and all the other stuff in
+> > tools/include/
+> > 
+> > See:
+> > 
+> > commit c4b6014e8bb0c8d47fe5c71ebc604f31091e5d3f
+> > Author: Arnaldo Carvalho de Melo <acme@redhat.com>
+> > Date:   Mon Jul 11 10:28:48 2016 -0300
+> > 
+> >     tools: Add copy of perf_event.h to tools/include/linux/
+> > 
+> > --------------
+> > 
+> > For one of the reasons we've been doing this.
+ 
+> Hm.. I have taken a look on it and I am confused.  refcount.h is not
+> exactly standalone header and seems to bring in quite some many
+> dependencies to other headers (linux/bug.h, linux/mutex.h etc.), which
+> are not present in tools headers dirs.
 
-What makes it "simple"?
+> I tried to compile perf tool as a start, copied the refcount.h to
+> tools/include/linux/ and somewhere after it wanted me to bring the
+> 10th header I stopped, because this cannot be right, or?
 
-> +
-> +Required properties:
-> +- compatible: should be "sd-modulator".
-> +- #io-channel-cells = <1>: See the IIO bindings section "IIO consumers".
-> +
-> +Example node:
-> +
-> +	ads1202: simple_sd_adc@0 {
+So, it doesn't have to be a straight copy, and it just shows the problem
+with using the kernel headers directly, i.e. tools/perf/ uses atomic.h,
+and uses that for refcounting, but not all of include/linux/refcount.h
+should be copied to tools/include/linux/refcount.h.
 
-Is ads1202 the actual chip? Then it should be in the compatible list.
+I'll try doing the work, that way I'll read about this new stuff, will
+come back here with what I find, so you can continue on the kernel bits
+for now, ok?
 
-unit address without a reg prop is an error. The node name should be 
-"adc".
-
-> +		compatible = "sd-modulator";
-> +		#io-channel-cells = <1>;
-> +		status = "okay";
-
-Drop status from examples.
-
-> +	};
-> -- 
-> 1.9.1
-> 
+- Arnaldo
