@@ -1,53 +1,124 @@
-From: "Reshetova, Elena" <elena.reshetova@intel.com>
-Subject: RE: [PATCH 1/9] tools: convert cgroup_sel.refcnt from atomic_t to
- refcount_t
-Date: Wed, 22 Feb 2017 14:29:18 +0000
-Message-ID: <2236FBA76BA1254E88B949DDB74E612B41C4EC7E@IRSMSX102.ger.corp.intel.com>
-References: <1487691303-31858-1-git-send-email-elena.reshetova@intel.com>
- <1487691303-31858-2-git-send-email-elena.reshetova@intel.com>
- <20170221154356.GF5052@kernel.org>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v2 6/7] ASoC: add simple-graph-card document
+Date: Wed, 22 Feb 2017 09:07:49 -0600
+Message-ID: <20170222150749.pxs6gvnbvopvasu6@rob-hp-laptop>
+References: <87zihq7mja.wl%kuninori.morimoto.gx@renesas.com>
+ <87r3327mdo.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170221154356.GF5052@kernel.org>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "peterz@infradead.org" <peterz@infradead.org>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "mingo@redhat.com" <mingo@redhat.com>, "alexander.shishkin@linux.intel.com" <alexander.shishkin@linux.intel.com>, "jolsa@kernel.org" <jolsa@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "matija.glavinic-pecotic.ext@nokia.com" <matija.glavinic-pecotic.ext@nokia.com>, Hans Liljestrand <ishkamiel@gmail.com>, Kees Cook <keescook@chromium.org>, David Windsor <dwindsor@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <87r3327mdo.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Linux-DT <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-> Em Tue, Feb 21, 2017 at 05:34:55PM +0200, Elena Reshetova escreveu:
-> > refcount_t type and corresponding API should be
-> > used instead of atomic_t when the variable is used as
-> > a reference counter. This allows to avoid accidental
-> > refcounter overflows that might lead to use-after-free
-> > situations.
-> >  #define __CGROUP_H__
-> >
-> > -#include <linux/atomic.h>
-> > +#include <linux/refcount.h>
+On Mon, Feb 13, 2017 at 04:22:54AM +0000, Kuninori Morimoto wrote:
 > 
-> So this is the first one, I was expecting the copy from
-> include/linux/refcount.h to be made to tools/include/linux/refcount.h,
-> as was done for tools/include/linux/atomic.h and all the other stuff in
-> tools/include/
+> From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
 > 
-> See:
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+> ---
+> v1 -> v2
 > 
-> commit c4b6014e8bb0c8d47fe5c71ebc604f31091e5d3f
-> Author: Arnaldo Carvalho de Melo <acme@redhat.com>
-> Date:   Mon Jul 11 10:28:48 2016 -0300
+>  - no change
 > 
->     tools: Add copy of perf_event.h to tools/include/linux/
-> 
-> --------------
-> 
-> For one of the reasons we've been doing this.
+>  .../bindings/sound/simple-graph-card.txt           | 137 +++++++++++++++++++++
 
-Hm.. I have taken a look on it and I am confused.
-refcount.h is not exactly standalone header and seems to bring in quite some many dependencies to other headers (linux/bug.h, linux/mutex.h etc.), which are not present in tools headers dirs.
-I tried to compile perf tool as a start, copied the refcount.h to tools/include/linux/ and somewhere after it wanted me to bring the 10th header I stopped, because this cannot be right, or?
+Drop the "simple". Just graph-card is enough.
 
-Best Regards,
-Elena.
+>  1 file changed, 137 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/simple-graph-card.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/simple-graph-card.txt b/Documentation/devicetree/bindings/sound/simple-graph-card.txt
+> new file mode 100644
+> index 0000000..5fa7b74
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/simple-graph-card.txt
+> @@ -0,0 +1,137 @@
+> +Simple-Graph-Card:
+> +
+> +Simple-Graph-Card specifies audio DAI connections of SoC <-> codec.
+> +It is based on common bindings for device graphs.
+> +see ${LINUX}/Documentation/devicetree/bindings/graph.txt
+> +
+> +Basically, Simple-Graph-Card property is same as Simple-Card.
+> +see ${LINUX}/Documentation/devicetree/bindings/sound/simple-card.txt
+> +
+> +Below are same as Simple-Card.
+> +
+> +- simple-audio-card,name
+> +- simple-audio-card,format
+> +- simple-audio-card,frame-master
+> +- simple-audio-card,bitclock-master
+> +- simple-audio-card,bitclock-inversion
+> +- simple-audio-card,frame-inversion
+> +- simple-audio-card,dai-tdm-slot-num
+> +- simple-audio-card,dai-tdm-slot-width
+> +- clocks / system-clock-frequency
+> +
+> +These should be implemented
+
+What do you mean by implemented? These are new? For anything new, I 
+think you should drop "simple-audio-card,".
+
+> +- simple-audio-card,widgets
+> +- simple-audio-card,routing
+> +- simple-audio-card,mclk-fs
+> +- simple-audio-card,hp-det-gpio
+> +- simple-audio-card,mic-det-gpio
+
+-gpios
+
+> +
+> +Required properties:
+> +
+> +- compatible				: "asoc-simple-graph-card";
+> +- dais					: list of CPU DAI port{s}
+> +
+> +Example: Single DAI case
+> +
+> +	sound_card: sound {
+> +		compatible = "asoc-simple-graph-card";
+> +
+> +		dais = <&cpu_port>;
+> +	};
+> +
+> +	codec {
+> +		...
+> +		port {
+> +			codec_endpoint: endpoint {
+> +				remote-endpoint = <&cpu_endpoint>;
+> +			};
+> +		};
+> +	};
+> +
+> +	cpu {
+
+cpu is already a standard node name, so you need something different. 
+This would be the I2S/SSI controller typically, right? Perhaps 
+"dai-controller" for a standard name. 
+
+> +		...
+> +		cpu_port: port@0 {
+> +			cpu_endpoint: endpoint {
+> +				remote-endpoint = <&codec_endpoint>;
+> +
+> +				simple-audio-card,format = "left_j";
+> +				simple-audio-card,bitclock-master = <&cpu_endpoint>;
+> +				simple-audio-card,frame-master = <&cpu_endpoint>;
+
+It looks silly to have a phandle to yourself. Perhaps these should be 
+boolean. Define new properties if you need to.
+
+
+> +				...
+> +			};
+> +		};
+> +	};
+> +
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
