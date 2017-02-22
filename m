@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6] ASoC: bcm2835: Add 8 channel
-	(multitrack) capability
-Date: Wed, 22 Feb 2017 10:28:47 -0800
-Message-ID: <20170222182847.wdvk4stm5gbt46ch@sirena.org.uk>
-References: <1486422576-6958-1-git-send-email-flatmax@flatmax.org>
- <1487740949-27583-1-git-send-email-flatmax@flatmax.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [bug report] ALSA: usb-audio: Tascam US-16x08 DSP
+	mixer quirk
+Date: Wed, 22 Feb 2017 21:46:49 +0300
+Message-ID: <20170222184649.GA589@mwanda>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4597581967821378171=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 899CE266E3A
- for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2017 19:29:06 +0100 (CET)
-In-Reply-To: <1487740949-27583-1-git-send-email-flatmax@flatmax.org>
+Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4FAB7266E3A
+ for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2017 19:47:31 +0100 (CET)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,51 +20,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Flax <flatmax@flatmax.org>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, phil@raspberrypi.org, Eric Anholt <eric@anholt.net>, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Cc: Detlef Urban <onkel@paraair.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hello Detlef Urban,
 
---===============4597581967821378171==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="33msiqzta5lvne4a"
-Content-Disposition: inline
+This is a semi-automatic email about new static checker warnings.
 
+The patch d2bb390a2081: "ALSA: usb-audio: Tascam US-16x08 DSP mixer 
+quirk" from Feb 20, 2017, leads to the following Smatch complaint:
 
---33msiqzta5lvne4a
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+sound/usb/mixer_us16x08.c:716 snd_us16x08_meter_get()
+	 warn: variable dereferenced before check 'elem' (see line 711)
 
-On Wed, Feb 22, 2017 at 04:22:29PM +1100, Matt Flax wrote:
-> This patch adds multitrack capability if in DSP mode A and the
-> codec is master.
+sound/usb/mixer_us16x08.c
+   710		struct usb_mixer_elem_info *elem = kcontrol->private_data;
+   711		struct snd_usb_audio *chip = elem->head.mixer->chip;
+                                             ^^^^^^^^^^^^^^^^^^^^^^
+Dereference.
 
-As I'm pretty sure I've said before please don't send new patches in
-reply to existing threads, it makes it much harder to follow what's
-going on and what the current versions of things are.
+   712		struct snd_us16x08_meter_store *store = elem->private_data;
+   713		u8 meter_urb[64];
+   714		char tmp[max(sizeof(mix_init_msg1), sizeof(mix_init_msg2))];
+   715	
+   716		if (elem) {
+                    ^^^^
+Check.
 
---33msiqzta5lvne4a
-Content-Type: application/pgp-signature; name="signature.asc"
+   717			store = (struct snd_us16x08_meter_store *) elem->private_data;
+   718			chip = elem->head.mixer->chip;
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlit2F4ACgkQJNaLcl1U
-h9C2rgf/S5WzNVBAVWUAjQMrQ+YJ+b3qNTjwgXLLCLR3ZEu/s2pYUoeSgRXTC3Uf
-4f3BYTxQzGGIqdQCyNHNcGXtS6iME2CeBq1NyNMDw7rg7q62NJVTFZNtdL8fpn2J
-9v5vgFc/A3rJIEPsplA9rVpzvlp78A5XAQUIRv9ucKZiW4xUqKu6U/cgaNkYWkdW
-0eeB/cyaJbliZcQxOlkGZ9Xu6+tlHgJBpdDbrPp+J7XS5l5dBp5lKujO8HziZ432
-zXj0Frb/GEJj/ZSMsHc1WtRDoaxo66qfNcRHP5ckGNZXUAMJIhdOXxaHNkGFIoBa
-JLWBu82x1BypSyVnEOXchAoLT3tjIg==
-=CArA
------END PGP SIGNATURE-----
-
---33msiqzta5lvne4a--
-
---===============4597581967821378171==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4597581967821378171==--
+regards,
+dan carpenter
