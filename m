@@ -1,124 +1,76 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v2 6/7] ASoC: add simple-graph-card document
-Date: Wed, 22 Feb 2017 09:07:49 -0600
-Message-ID: <20170222150749.pxs6gvnbvopvasu6@rob-hp-laptop>
-References: <87zihq7mja.wl%kuninori.morimoto.gx@renesas.com>
- <87r3327mdo.wl%kuninori.morimoto.gx@renesas.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [RFC v2 2/7] IIO: Add bindings for simple sigma
+	delta adc
+Date: Wed, 22 Feb 2017 09:17:50 -0600
+Message-ID: <20170222151750.h5d7gycltwnk7b4t@rob-hp-laptop>
+References: <1487003909-11710-1-git-send-email-arnaud.pouliquen@st.com>
+ <1487003909-11710-3-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ot0-f193.google.com (mail-ot0-f193.google.com
+ [74.125.82.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id ADA1C266D63
+ for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2017 16:17:52 +0100 (CET)
+Received: by mail-ot0-f193.google.com with SMTP id w44so576200otw.1
+ for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2017 07:17:52 -0800 (PST)
 Content-Disposition: inline
-In-Reply-To: <87r3327mdo.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Linux-DT <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1487003909-11710-3-git-send-email-arnaud.pouliquen@st.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, olivier moysan <olivier.moysan@st.com>, kernel@stlinux.com, Liam Girdwood <lgirdwood@gmail.com>, linux-iio@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Hartmut Knaack <knaack.h@gmx.de>, Jonathan Cameron <jic23@kernel.org>, Alexandre Torgue <alexandre.torgue@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 13, 2017 at 04:22:54AM +0000, Kuninori Morimoto wrote:
+On Mon, Feb 13, 2017 at 05:38:24PM +0100, Arnaud Pouliquen wrote:
+> Add documentation of device tree bindings to support
+> sigma delta modulator in IIO framework.
 > 
-> From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-> 
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 > ---
-> v1 -> v2
+>  Documentation/devicetree/bindings/iio/adc/simple_sd_adc.txt | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/simple_sd_adc.txt
 > 
->  - no change
-> 
->  .../bindings/sound/simple-graph-card.txt           | 137 +++++++++++++++++++++
-
-Drop the "simple". Just graph-card is enough.
-
->  1 file changed, 137 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/simple-graph-card.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/simple-graph-card.txt b/Documentation/devicetree/bindings/sound/simple-graph-card.txt
+> diff --git a/Documentation/devicetree/bindings/iio/adc/simple_sd_adc.txt b/Documentation/devicetree/bindings/iio/adc/simple_sd_adc.txt
 > new file mode 100644
-> index 0000000..5fa7b74
+> index 0000000..2b3968a
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/simple-graph-card.txt
-> @@ -0,0 +1,137 @@
-> +Simple-Graph-Card:
-> +
-> +Simple-Graph-Card specifies audio DAI connections of SoC <-> codec.
-> +It is based on common bindings for device graphs.
-> +see ${LINUX}/Documentation/devicetree/bindings/graph.txt
-> +
-> +Basically, Simple-Graph-Card property is same as Simple-Card.
-> +see ${LINUX}/Documentation/devicetree/bindings/sound/simple-card.txt
-> +
-> +Below are same as Simple-Card.
-> +
-> +- simple-audio-card,name
-> +- simple-audio-card,format
-> +- simple-audio-card,frame-master
-> +- simple-audio-card,bitclock-master
-> +- simple-audio-card,bitclock-inversion
-> +- simple-audio-card,frame-inversion
-> +- simple-audio-card,dai-tdm-slot-num
-> +- simple-audio-card,dai-tdm-slot-width
-> +- clocks / system-clock-frequency
-> +
-> +These should be implemented
+> +++ b/Documentation/devicetree/bindings/iio/adc/simple_sd_adc.txt
+> @@ -0,0 +1,13 @@
+> +Device-Tree bindings for simple sigma delta adc
 
-What do you mean by implemented? These are new? For anything new, I 
-think you should drop "simple-audio-card,".
-
-> +- simple-audio-card,widgets
-> +- simple-audio-card,routing
-> +- simple-audio-card,mclk-fs
-> +- simple-audio-card,hp-det-gpio
-> +- simple-audio-card,mic-det-gpio
-
--gpios
+What makes it "simple"?
 
 > +
 > +Required properties:
+> +- compatible: should be "sd-modulator".
+> +- #io-channel-cells = <1>: See the IIO bindings section "IIO consumers".
 > +
-> +- compatible				: "asoc-simple-graph-card";
-> +- dais					: list of CPU DAI port{s}
+> +Example node:
 > +
-> +Example: Single DAI case
-> +
-> +	sound_card: sound {
-> +		compatible = "asoc-simple-graph-card";
-> +
-> +		dais = <&cpu_port>;
+> +	ads1202: simple_sd_adc@0 {
+
+Is ads1202 the actual chip? Then it should be in the compatible list.
+
+unit address without a reg prop is an error. The node name should be 
+"adc".
+
+> +		compatible = "sd-modulator";
+> +		#io-channel-cells = <1>;
+> +		status = "okay";
+
+Drop status from examples.
+
 > +	};
-> +
-> +	codec {
-> +		...
-> +		port {
-> +			codec_endpoint: endpoint {
-> +				remote-endpoint = <&cpu_endpoint>;
-> +			};
-> +		};
-> +	};
-> +
-> +	cpu {
-
-cpu is already a standard node name, so you need something different. 
-This would be the I2S/SSI controller typically, right? Perhaps 
-"dai-controller" for a standard name. 
-
-> +		...
-> +		cpu_port: port@0 {
-> +			cpu_endpoint: endpoint {
-> +				remote-endpoint = <&codec_endpoint>;
-> +
-> +				simple-audio-card,format = "left_j";
-> +				simple-audio-card,bitclock-master = <&cpu_endpoint>;
-> +				simple-audio-card,frame-master = <&cpu_endpoint>;
-
-It looks silly to have a phandle to yourself. Perhaps these should be 
-boolean. Define new properties if you need to.
-
-
-> +				...
-> +			};
-> +		};
-> +	};
-> +
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> -- 
+> 1.9.1
+> 
