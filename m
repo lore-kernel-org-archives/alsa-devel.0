@@ -1,34 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: add I2C dependency for
-	CS42XX8" to the asoc tree
-Date: Tue, 21 Feb 2017 15:05:10 -0800
-Message-ID: <E1cgJUc-0004l6-Gv@finisterre>
-References: <20170221220108.200734-1-arnd@arndb.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 88E8426680A
- for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2017 00:05:37 +0100 (CET)
-In-Reply-To: <20170221220108.200734-1-arnd@arndb.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Koro Chen <koro.chen@mediatek.com>, alsa-devel@alsa-project.org, Garlic Tseng <garlic.tseng@mediatek.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, Philipp Zabel <p.zabel@pengutronix.de>, PC Liao <pc.liao@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>, linux-arm-kernel@lists.infradead.org
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: zx-tdm: add bindings doc for zte's tdm controller" to the asoc tree
+Date: Tue, 21 Feb 2017 16:26:08 -0800
+Message-ID: <E1cgKky-0005Tb-3E@finisterre>
+References: <1487243106-22841-1-git-send-email-baoyou.xie@linaro.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1487243106-22841-1-git-send-email-baoyou.xie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.orgbroonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, jun.nie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, xie.baoyou-Th6q7B73Y6EnDS1+zs4M5A@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, chen.chaokai-Th6q7B73Y6EnDS1+zs4M5A@public.gmane.org, wang.qiang01-Th6q7B73Y6EnDS1+zs4M5A@public.gmane.org, baoyou.xie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: add I2C dependency for CS42XX8
+   ASoC: zx-tdm: add bindings doc for zte's tdm controller
 
 has been applied to the asoc tree at
 
@@ -53,38 +36,61 @@ to this mail.
 Thanks,
 Mark
 
->From 72cedf599fcebfd6cd2550274d7855838068d28c Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Tue, 21 Feb 2017 23:00:46 +0100
-Subject: [PATCH] ASoC: mediatek: add I2C dependency for CS42XX8
+>From 5949dae3a4512fa1ca61eac947c349442acc12b0 Mon Sep 17 00:00:00 2001
+From: Baoyou Xie <baoyou.xie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Date: Thu, 16 Feb 2017 19:05:04 +0800
+Subject: [PATCH] ASoC: zx-tdm: add bindings doc for zte's tdm controller
 
-We should not select drivers that depend on I2C when that is disabled,
-as it results in a build error:
+This patch adds dt-binding documentation for zte's tdm controller.
 
-warning: (SND_SOC_MT2701_CS42448) selects SND_SOC_CS42XX8_I2C which has unmet direct dependencies (SOUND && !M68K && !UML && SND && SND_SOC && I2C)
-sound/soc/codecs/cs42xx8-i2c.c:60:1: warning: data definition has no type or storage class
- module_i2c_driver(cs42xx8_i2c_driver);
-sound/soc/codecs/cs42xx8-i2c.c:60:1: error: type defaults to 'int' in declaration of 'module_i2c_driver' [-Werror=implicit-int]
-
-Fixes: 1f458d53f76c ("ASoC: mediatek: Add mt2701-cs42448 driver and config option.")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Baoyou Xie <baoyou.xie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Reviewed-by: Shawn Guo <shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/mediatek/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/sound/zte,tdm.txt          | 30 ++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/zte,tdm.txt
 
-diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
-index 05cf809cf9e1..d7013bde6f45 100644
---- a/sound/soc/mediatek/Kconfig
-+++ b/sound/soc/mediatek/Kconfig
-@@ -13,7 +13,7 @@ config SND_SOC_MT2701
- 
- config SND_SOC_MT2701_CS42448
- 	tristate "ASoc Audio driver for MT2701 with CS42448 codec"
--	depends on SND_SOC_MT2701
-+	depends on SND_SOC_MT2701 && I2C
- 	select SND_SOC_CS42XX8_I2C
- 	select SND_SOC_BT_SCO
- 	help
+diff --git a/Documentation/devicetree/bindings/sound/zte,tdm.txt b/Documentation/devicetree/bindings/sound/zte,tdm.txt
+new file mode 100644
+index 000000000000..2a07ca655264
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/zte,tdm.txt
+@@ -0,0 +1,30 @@
++ZTE TDM DAI driver
++
++Required properties:
++
++- compatible : should be one of the following.
++       * zte,zx296718-tdm
++- reg : physical base address of the controller and length of memory mapped
++    region.
++- clocks : Pairs of phandle and specifier referencing the controller's clocks.
++- clock-names: "wclk" for the wclk.
++               "pclk" for the pclk.
++-#clock-cells: should be 1.
++- zte,tdm-dma-sysctrl : Reference to the sysctrl controller controlling
++    the dma. includes:
++	phandle of sysctrl.
++	register offset in sysctrl for control dma.
++	mask of the register that be written to sysctrl.
++
++Example:
++
++	tdm: tdm@1487000 {
++		compatible = "zte,zx296718-tdm";
++		reg = <0x01487000 0x1000>;
++		clocks = <&audiocrm AUDIO_TDM_WCLK>, <&audiocrm AUDIO_TDM_PCLK>;
++		clock-names = "wclk", "pclk";
++		#clock-cells = <1>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&tdm_global_pin>;
++		zte,tdm-dma-sysctrl = <&sysctrl 0x10c 4>;
++	};
 -- 
 2.11.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
