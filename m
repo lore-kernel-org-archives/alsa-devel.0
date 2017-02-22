@@ -1,54 +1,55 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [bug report] ALSA: usb-audio: Tascam US-16x08 DSP
-	mixer quirk
-Date: Wed, 22 Feb 2017 21:46:49 +0300
-Message-ID: <20170222184649.GA589@mwanda>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 4/8] sound: soc: pxa: Suppress SND_MMP_SOC for arm64
+Date: Wed, 22 Feb 2017 10:47:34 -0800
+Message-ID: <20170222184734.wmkbzfsz4yklofcg@sirena.org.uk>
+References: <20170222022929.10540-1-afaerber@suse.de>
+ <20170222022929.10540-5-afaerber@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
- by alsa0.perex.cz (Postfix) with ESMTP id 4FAB7266E3A
- for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2017 19:47:31 +0100 (CET)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="bhhb7bdri6ffkv2d"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: Detlef Urban <onkel@paraair.de>, alsa-devel@alsa-project.org
+In-Reply-To: <20170222022929.10540-5-afaerber@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>
+Cc: linux-arm-kernel@lists.infradead.org, Eric Miao <eric.y.miao@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, info@andromedabox.org, linux-kernel@vger.kernel.org, Daniel Mack <daniel@zonque.org>, Robert Jarzmik <robert.jarzmik@free.fr>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Detlef Urban,
 
-This is a semi-automatic email about new static checker warnings.
+--bhhb7bdri6ffkv2d
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The patch d2bb390a2081: "ALSA: usb-audio: Tascam US-16x08 DSP mixer 
-quirk" from Feb 20, 2017, leads to the following Smatch complaint:
+On Wed, Feb 22, 2017 at 03:29:24AM +0100, Andreas F=E4rber wrote:
 
-sound/usb/mixer_us16x08.c:716 snd_us16x08_meter_get()
-	 warn: variable dereferenced before check 'elem' (see line 711)
+This is patch 4 of 8, what's going on with dependencies here?
 
-sound/usb/mixer_us16x08.c
-   710		struct usb_mixer_elem_info *elem = kcontrol->private_data;
-   711		struct snd_usb_audio *chip = elem->head.mixer->chip;
-                                             ^^^^^^^^^^^^^^^^^^^^^^
-Dereference.
+Please use subject lines matching the style for the subsystem.  This
+makes it easier for people to identify relevant patches.
 
-   712		struct snd_us16x08_meter_store *store = elem->private_data;
-   713		u8 meter_urb[64];
-   714		char tmp[max(sizeof(mix_init_msg1), sizeof(mix_init_msg2))];
-   715	
-   716		if (elem) {
-                    ^^^^
-Check.
+>  config SND_MMP_SOC
+> -	bool "Soc Audio for Marvell MMP chips"
+> -	depends on ARCH_MMP
+> +	bool "SoC Audio for Marvell MMP chips"
+> +	depends on ARCH_MMP && ARM
 
-   717			store = (struct snd_us16x08_meter_store *) elem->private_data;
-   718			chip = elem->head.mixer->chip;
+There are no obvious build time architecture dependencies for this
+driver, shouldn't we have an || COMPILE_TEST in here?
 
-regards,
-dan carpenter
+--bhhb7bdri6ffkv2d
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlit3MYACgkQJNaLcl1U
+h9Ca8Qf8D1dyTYXcClzVbS57p2kGhSfhVxxUqLaLQA0QMRB242SUt5hHi8p4M6+S
+pha2MGfdMpsFjKs46wAgrDmIF5XgHi+RLdal8Zgkf2Vr2HFgudd2Tv5cIfy0j4Ze
+F0mJtj3gHcfwdeQxNmJpLH0Uojrp475CBtQI7M0Qze6l+GldpBfuU5kGde6BM3v4
+iZr2i8ngMQHselJoorEbrukg9AetRr0COiIWn/t37z4YKWWNryeP9CVEZOLJBV6H
+AUY69S34Dii80ZbnZcnHu89fMslX1/OvapkZ7WvtkT8/WF7WmfmpKj4JXliVcd3T
+1AJk0FLQYqnaw3y8r3GPLH1E2HniAw==
+=0NE9
+-----END PGP SIGNATURE-----
+
+--bhhb7bdri6ffkv2d--
