@@ -1,80 +1,183 @@
-From: "Reshetova, Elena" <elena.reshetova@intel.com>
-Subject: RE: [PATCH 1/9] tools: convert cgroup_sel.refcnt from atomic_t to
- refcount_t
-Date: Wed, 22 Feb 2017 16:10:59 +0000
-Message-ID: <2236FBA76BA1254E88B949DDB74E612B41C4EE30@IRSMSX102.ger.corp.intel.com>
-References: <1487691303-31858-1-git-send-email-elena.reshetova@intel.com>
- <1487691303-31858-2-git-send-email-elena.reshetova@intel.com>
- <20170221154356.GF5052@kernel.org>
- <2236FBA76BA1254E88B949DDB74E612B41C4EC7E@IRSMSX102.ger.corp.intel.com>
- <20170222153754.GA20447@kernel.org>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [RFC v2 6/7] IIO: add bindings for stm32 DFSDM filter
+Date: Wed, 22 Feb 2017 10:42:09 -0600
+Message-ID: <20170222164209.62lk5igeymckhimv@rob-hp-laptop>
+References: <1487003909-11710-1-git-send-email-arnaud.pouliquen@st.com>
+ <1487003909-11710-7-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170222153754.GA20447@kernel.org>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "peterz@infradead.org" <peterz@infradead.org>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "mingo@redhat.com" <mingo@redhat.com>, "alexander.shishkin@linux.intel.com" <alexander.shishkin@linux.intel.com>, "jolsa@kernel.org" <jolsa@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "matija.glavinic-pecotic.ext@nokia.com" <matija.glavinic-pecotic.ext@nokia.com>, Hans Liljestrand <ishkamiel@gmail.com>, Kees Cook <keescook@chromium.org>, David Windsor <dwindsor@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1487003909-11710-7-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Sender: linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kernel-F5mvAk5X5gdBDgjK7y7TUQ@public.gmane.org, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Torgue <alexandre.torgue-qxv4g6HH51o@public.gmane.org>, olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-> Em Wed, Feb 22, 2017 at 02:29:18PM +0000, Reshetova, Elena escreveu:
-> > > Em Tue, Feb 21, 2017 at 05:34:55PM +0200, Elena Reshetova escreveu:
-> > > > refcount_t type and corresponding API should be
-> > > > used instead of atomic_t when the variable is used as
-> > > > a reference counter. This allows to avoid accidental
-> > > > refcounter overflows that might lead to use-after-free
-> > > > situations.
-> > > >  #define __CGROUP_H__
-> > > >
-> > > > -#include <linux/atomic.h>
-> > > > +#include <linux/refcount.h>
-> > >
-> > > So this is the first one, I was expecting the copy from
-> > > include/linux/refcount.h to be made to tools/include/linux/refcount.h,
-> > > as was done for tools/include/linux/atomic.h and all the other stuff in
-> > > tools/include/
-> > >
-> > > See:
-> > >
-> > > commit c4b6014e8bb0c8d47fe5c71ebc604f31091e5d3f
-> > > Author: Arnaldo Carvalho de Melo <acme@redhat.com>
-> > > Date:   Mon Jul 11 10:28:48 2016 -0300
-> > >
-> > >     tools: Add copy of perf_event.h to tools/include/linux/
-> > >
-> > > --------------
-> > >
-> > > For one of the reasons we've been doing this.
+On Mon, Feb 13, 2017 at 05:38:28PM +0100, Arnaud Pouliquen wrote:
+> Add bindings that describe Digital Filter for Sigma Delta
+> Modulators. DFSDM allows to connect sigma delta
+> modulators and/or PDM microphones.
 > 
-> > Hm.. I have taken a look on it and I am confused.  refcount.h is not
-> > exactly standalone header and seems to bring in quite some many
-> > dependencies to other headers (linux/bug.h, linux/mutex.h etc.), which
-> > are not present in tools headers dirs.
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+> ---
+>  .../bindings/iio/adc/st,stm32-dfsdm-adc.txt        | 125 +++++++++++++++++++++
+>  1 file changed, 125 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.txt
 > 
-> > I tried to compile perf tool as a start, copied the refcount.h to
-> > tools/include/linux/ and somewhere after it wanted me to bring the
-> > 10th header I stopped, because this cannot be right, or?
-> 
-> So, it doesn't have to be a straight copy, and it just shows the problem
-> with using the kernel headers directly, i.e. tools/perf/ uses atomic.h,
-> and uses that for refcounting, but not all of include/linux/refcount.h
-> should be copied to tools/include/linux/refcount.h.
+> diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.txt b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.txt
+> new file mode 100644
+> index 0000000..83937cb
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.txt
+> @@ -0,0 +1,125 @@
+> +STMicroelectronics STM32 DFSDM ADC device driver
+> +
+> +
+> +STM32 DFSDM ADC is a sigma delta analog-to-digital converter dedicted to
+> +interface external sigma delta modulators to stm32 micro controlers.
+> +it is mainly targeted for:
+> +- Sigma delta modulators ( motor control, metering...)
+> +- PDM microphones ( audio digital microphone)
+> +
+> +It featured with up to 8 serial digital interface (SPI or Manchester) and
+> +up to 4 filters.
+> +
+> +Each instance of the sub-drivers uses one filter instance.
+> +
+> +Contents of a stm32 dfsdmc root node:
+> +-------------------------------------
+> +Required properties:
+> +- compatible: Should be "st,stm32-dfsdm-adc".
+> +- reg: Offset and length of the DFSDM block register set.
+> +- clocks: IP and serial interfaces clocking. Should be set according
+> +		to rcc clock ID and "clock-names".
+> +- clock-names: Input clock name "dfsdm" must be defined,
+> +		"audio" is optional. If defined CLKOUT is based on the audio
+> +		clock, else "dfsdm" is used.
+> +- clocks: Clock for the analog circuitry (common to all ADCs).
+> +- clock-names: Must be "adc".
+> +
+> +Optional properties:
+> +- st,clkout-freq: needed for SPI master mode
+> +		  SPI clock OUT frequency (Hz).This clock must be set according
+> +		  to "clock" property. Frequency must be a multiple of the rcc
+> +		  clock frequency. If not, clkout frequency will not be
+> +		  accurate.
 
-Oh, this is a good hint. Actually when I drop the *_lock and *_mutex_lock functions
-(which are not needed by tools anyway), indeed most of the issues with header inclusions are gone. 
-However, there are still some additional atomic functions needed that are not present in current atomic headers of tools.
+We already have a standard property to specify the SPI freq.
 
+> +
+> +Contents of a stm32 DFSDM child nodes:
+> +----------------------------------------
+> +
+> +Required properties:
+> +- compatible: Must be:
+> +	"st,stm32-dfsdm-adc" for sigma delta ADCs
+> +	"st,stm32-dfsdm-pdm" for audio digital microphone.
+> +- reg: Specifies the DFSDM filter instance.
+> +- interrupts: IRQ lines connected to each DFSDM filter instance.
+> +- st,adc-channels:	List of single-ended channels muxed for this ADC.
+> +- st,adc-channel-names:	List of single-ended channels Name.
+
+Why do you need names?
+
+> +- st,dai-filter-order:  SinC filter order from 0 to 5.
+> +			0: FastSinC
+> +			[1-5]: order 1 to 5.
+> +			For audio purpose it is recommended to use order 3 to 5.
+> +
+> +Required properties for "st,stm32-dfsdm-adc" compatibility:
+> +- #io-channel-cells = <1>: See the IIO bindings section "IIO consumers".
+> +- io-channels: from common iio binding. use to pipe external sigma delta
+> +		modulator or internal ADC output to dfsdm channel.
+> +
+> +Required properties for "st,stm32-dfsdm-pdm" compatibility:
+> +- #sound-dai-cells: must be set to 0.
+> +- dma: DMA controller phandle and DMA request line associated to the
+> +		filter instance ( specified by the field "reg")
+> +- dma-names: must be "rx"
+> +
+> +Optional properties:
+> +- st,adc-channel-types:	Single-ended channel input type. Default value is 0.
+
+How is the default 0 when the values are strings?
+
+> +			- "SPI_R": SPI with data on rising edge (default)
+> +			- "SPI_F": SPI with data on falling edge
+> +			- "MANCH_R": manchester codec, rising edge = logic 0
+> +			- "MANCH_F": manchester codec, falling edge = logic 1
+> +- st,adc-channel-clk-src: Conversion clock source. default value is 1.
+
+Ditto.
+
+Perhaps you should be using the clock binding and assigned-clocks 
+property.
+
+> +			  - "CLKIN": External SPI clock (CLKIN x)
+> +			  - "CLKOUT": internal SPI clock (CLKOUT) (default)
+> +			  - "CLKOUT_F": internal SPI clock divided by 2 (falling edge).
+> +			  - "CLKOUT_R": internal SPI clock divided by 2 (rising edge).
+> +
+> +- st,adc-alt-channel: Must be defined if Two sigma delta modulator are
+> +			  connected on same SPI input.
+> +			  If not set channel n is connected to SPI input n.
+> +			  If set channel n is connected to SPI input n + 1.
+> +
+> +- st,filter0-sync: Set to 1 to synchronize with DFSDM filter instance 0.
+> +		   to used for multi microphone synchronization.
+
+Is there an instance 1?  If not, drop the 0. If you need to expand to 
+multiple instances, you can have multiple values.
+
+> +
+> +Example of a sigma delta adc purpose:
+> +	ads1202: simple_sd_adc@0 {
+> +		compatible = "sd-modulator";
+> +		#io-channel-cells = <1>;
+> +		status = "okay";
+> +	};
+> +	dfsdm: dfsdm@40017000 {
+> +		compatible = "st,stm32h7-dfsdm";
+> +		reg = <0x40017000 0x400>;
+> +		clocks = <&timer_clk>;
+> +		clock-names = "dfsdm";
+> +
+> +		dfsdm_adc0: dfsdm-adc0@0 {
+> +			compatible = "st,stm32-dfsdm-adc";
+> +			#io-channel-cells = <1>;
+> +			reg = <0>;
+> +			interrupts = <110>;
+> +			st,adc-channels = <0>;
+
+Does reg provide the same thing?
+
+> +			st,adc-channel-names = "in0";
+> +			st,adc-channel-types = "SPI_R";
+> +			st,adc-channel-clk-src = "CLKOUT";
+> +			io-channels = <&ads1202 0>;
+> +	};
+> +
+> +Example of a pdm microphone purpose:
+> +	dfsdm: dfsdm@40017000 {
+> +		compatible = "st,stm32h7-dfsdm";
+> +		reg = <0x40017000 0x400>;
+> +		clocks = <&timer_clk>;
+> +		clock-names = "dfsdm";
+> +
+> +		dfsdm_pdm0: dfsdm-pdm@0 {
+> +			compatible = "st,stm32-dfsdm-pdm";
+> +			#sound-dai-cells = <0>;
+> +			reg = <0>;
+> +			interrupts = <110>;
+> +			dmas = <&dmamux1 102 0x400 0x00>;
+> +			dma-names = "rx";
+> +			st,adc-channels = <0>;
+> +			st,adc-channel-names = "pdm1";
+> +			st,adc-channel-types = "SPI_R";
+> +			st,adc-channel-clk-src = "CLKOUT";
+> +		};
+> +	}
+> -- 
+> 1.9.1
 > 
-> I'll try doing the work, that way I'll read about this new stuff, will
-> come back here with what I find, so you can continue on the kernel bits
-> for now, ok?
-
-Sure, if you want to take it over, nobosy won't complain! We need many of such changes merged and not everyone is so nice to help :)
-I think after the needed headers/functions from refcount/atomic are in place in tools, the current patches should compile with no or almost no changes, so hopefully it still makes your work easier!
-
-Best Regards,
-Elena.
-> 
-> - Arnaldo
