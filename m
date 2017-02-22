@@ -1,183 +1,72 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [RFC v2 6/7] IIO: add bindings for stm32 DFSDM filter
-Date: Wed, 22 Feb 2017 10:42:09 -0600
-Message-ID: <20170222164209.62lk5igeymckhimv@rob-hp-laptop>
-References: <1487003909-11710-1-git-send-email-arnaud.pouliquen@st.com>
- <1487003909-11710-7-git-send-email-arnaud.pouliquen@st.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v6] ASoC: bcm2835: Add 8 channel
+	(multitrack) capability
+Date: Wed, 22 Feb 2017 10:28:47 -0800
+Message-ID: <20170222182847.wdvk4stm5gbt46ch@sirena.org.uk>
+References: <1486422576-6958-1-git-send-email-flatmax@flatmax.org>
+ <1487740949-27583-1-git-send-email-flatmax@flatmax.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1487003909-11710-7-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Sender: linux-iio-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kernel-F5mvAk5X5gdBDgjK7y7TUQ@public.gmane.org, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Torgue <alexandre.torgue-qxv4g6HH51o@public.gmane.org>, olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============4597581967821378171=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 899CE266E3A
+ for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2017 19:29:06 +0100 (CET)
+In-Reply-To: <1487740949-27583-1-git-send-email-flatmax@flatmax.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Matt Flax <flatmax@flatmax.org>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, phil@raspberrypi.org, Eric Anholt <eric@anholt.net>, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 13, 2017 at 05:38:28PM +0100, Arnaud Pouliquen wrote:
-> Add bindings that describe Digital Filter for Sigma Delta
-> Modulators. DFSDM allows to connect sigma delta
-> modulators and/or PDM microphones.
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-> ---
->  .../bindings/iio/adc/st,stm32-dfsdm-adc.txt        | 125 +++++++++++++++++++++
->  1 file changed, 125 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.txt b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.txt
-> new file mode 100644
-> index 0000000..83937cb
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.txt
-> @@ -0,0 +1,125 @@
-> +STMicroelectronics STM32 DFSDM ADC device driver
-> +
-> +
-> +STM32 DFSDM ADC is a sigma delta analog-to-digital converter dedicted to
-> +interface external sigma delta modulators to stm32 micro controlers.
-> +it is mainly targeted for:
-> +- Sigma delta modulators ( motor control, metering...)
-> +- PDM microphones ( audio digital microphone)
-> +
-> +It featured with up to 8 serial digital interface (SPI or Manchester) and
-> +up to 4 filters.
-> +
-> +Each instance of the sub-drivers uses one filter instance.
-> +
-> +Contents of a stm32 dfsdmc root node:
-> +-------------------------------------
-> +Required properties:
-> +- compatible: Should be "st,stm32-dfsdm-adc".
-> +- reg: Offset and length of the DFSDM block register set.
-> +- clocks: IP and serial interfaces clocking. Should be set according
-> +		to rcc clock ID and "clock-names".
-> +- clock-names: Input clock name "dfsdm" must be defined,
-> +		"audio" is optional. If defined CLKOUT is based on the audio
-> +		clock, else "dfsdm" is used.
-> +- clocks: Clock for the analog circuitry (common to all ADCs).
-> +- clock-names: Must be "adc".
-> +
-> +Optional properties:
-> +- st,clkout-freq: needed for SPI master mode
-> +		  SPI clock OUT frequency (Hz).This clock must be set according
-> +		  to "clock" property. Frequency must be a multiple of the rcc
-> +		  clock frequency. If not, clkout frequency will not be
-> +		  accurate.
 
-We already have a standard property to specify the SPI freq.
+--===============4597581967821378171==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="33msiqzta5lvne4a"
+Content-Disposition: inline
 
-> +
-> +Contents of a stm32 DFSDM child nodes:
-> +----------------------------------------
-> +
-> +Required properties:
-> +- compatible: Must be:
-> +	"st,stm32-dfsdm-adc" for sigma delta ADCs
-> +	"st,stm32-dfsdm-pdm" for audio digital microphone.
-> +- reg: Specifies the DFSDM filter instance.
-> +- interrupts: IRQ lines connected to each DFSDM filter instance.
-> +- st,adc-channels:	List of single-ended channels muxed for this ADC.
-> +- st,adc-channel-names:	List of single-ended channels Name.
 
-Why do you need names?
+--33msiqzta5lvne4a
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> +- st,dai-filter-order:  SinC filter order from 0 to 5.
-> +			0: FastSinC
-> +			[1-5]: order 1 to 5.
-> +			For audio purpose it is recommended to use order 3 to 5.
-> +
-> +Required properties for "st,stm32-dfsdm-adc" compatibility:
-> +- #io-channel-cells = <1>: See the IIO bindings section "IIO consumers".
-> +- io-channels: from common iio binding. use to pipe external sigma delta
-> +		modulator or internal ADC output to dfsdm channel.
-> +
-> +Required properties for "st,stm32-dfsdm-pdm" compatibility:
-> +- #sound-dai-cells: must be set to 0.
-> +- dma: DMA controller phandle and DMA request line associated to the
-> +		filter instance ( specified by the field "reg")
-> +- dma-names: must be "rx"
-> +
-> +Optional properties:
-> +- st,adc-channel-types:	Single-ended channel input type. Default value is 0.
+On Wed, Feb 22, 2017 at 04:22:29PM +1100, Matt Flax wrote:
+> This patch adds multitrack capability if in DSP mode A and the
+> codec is master.
 
-How is the default 0 when the values are strings?
+As I'm pretty sure I've said before please don't send new patches in
+reply to existing threads, it makes it much harder to follow what's
+going on and what the current versions of things are.
 
-> +			- "SPI_R": SPI with data on rising edge (default)
-> +			- "SPI_F": SPI with data on falling edge
-> +			- "MANCH_R": manchester codec, rising edge = logic 0
-> +			- "MANCH_F": manchester codec, falling edge = logic 1
-> +- st,adc-channel-clk-src: Conversion clock source. default value is 1.
+--33msiqzta5lvne4a
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Ditto.
+-----BEGIN PGP SIGNATURE-----
 
-Perhaps you should be using the clock binding and assigned-clocks 
-property.
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlit2F4ACgkQJNaLcl1U
+h9C2rgf/S5WzNVBAVWUAjQMrQ+YJ+b3qNTjwgXLLCLR3ZEu/s2pYUoeSgRXTC3Uf
+4f3BYTxQzGGIqdQCyNHNcGXtS6iME2CeBq1NyNMDw7rg7q62NJVTFZNtdL8fpn2J
+9v5vgFc/A3rJIEPsplA9rVpzvlp78A5XAQUIRv9ucKZiW4xUqKu6U/cgaNkYWkdW
+0eeB/cyaJbliZcQxOlkGZ9Xu6+tlHgJBpdDbrPp+J7XS5l5dBp5lKujO8HziZ432
+zXj0Frb/GEJj/ZSMsHc1WtRDoaxo66qfNcRHP5ckGNZXUAMJIhdOXxaHNkGFIoBa
+JLWBu82x1BypSyVnEOXchAoLT3tjIg==
+=CArA
+-----END PGP SIGNATURE-----
 
-> +			  - "CLKIN": External SPI clock (CLKIN x)
-> +			  - "CLKOUT": internal SPI clock (CLKOUT) (default)
-> +			  - "CLKOUT_F": internal SPI clock divided by 2 (falling edge).
-> +			  - "CLKOUT_R": internal SPI clock divided by 2 (rising edge).
-> +
-> +- st,adc-alt-channel: Must be defined if Two sigma delta modulator are
-> +			  connected on same SPI input.
-> +			  If not set channel n is connected to SPI input n.
-> +			  If set channel n is connected to SPI input n + 1.
-> +
-> +- st,filter0-sync: Set to 1 to synchronize with DFSDM filter instance 0.
-> +		   to used for multi microphone synchronization.
+--33msiqzta5lvne4a--
 
-Is there an instance 1?  If not, drop the 0. If you need to expand to 
-multiple instances, you can have multiple values.
+--===============4597581967821378171==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-> +
-> +Example of a sigma delta adc purpose:
-> +	ads1202: simple_sd_adc@0 {
-> +		compatible = "sd-modulator";
-> +		#io-channel-cells = <1>;
-> +		status = "okay";
-> +	};
-> +	dfsdm: dfsdm@40017000 {
-> +		compatible = "st,stm32h7-dfsdm";
-> +		reg = <0x40017000 0x400>;
-> +		clocks = <&timer_clk>;
-> +		clock-names = "dfsdm";
-> +
-> +		dfsdm_adc0: dfsdm-adc0@0 {
-> +			compatible = "st,stm32-dfsdm-adc";
-> +			#io-channel-cells = <1>;
-> +			reg = <0>;
-> +			interrupts = <110>;
-> +			st,adc-channels = <0>;
 
-Does reg provide the same thing?
-
-> +			st,adc-channel-names = "in0";
-> +			st,adc-channel-types = "SPI_R";
-> +			st,adc-channel-clk-src = "CLKOUT";
-> +			io-channels = <&ads1202 0>;
-> +	};
-> +
-> +Example of a pdm microphone purpose:
-> +	dfsdm: dfsdm@40017000 {
-> +		compatible = "st,stm32h7-dfsdm";
-> +		reg = <0x40017000 0x400>;
-> +		clocks = <&timer_clk>;
-> +		clock-names = "dfsdm";
-> +
-> +		dfsdm_pdm0: dfsdm-pdm@0 {
-> +			compatible = "st,stm32-dfsdm-pdm";
-> +			#sound-dai-cells = <0>;
-> +			reg = <0>;
-> +			interrupts = <110>;
-> +			dmas = <&dmamux1 102 0x400 0x00>;
-> +			dma-names = "rx";
-> +			st,adc-channels = <0>;
-> +			st,adc-channel-names = "pdm1";
-> +			st,adc-channel-types = "SPI_R";
-> +			st,adc-channel-clk-src = "CLKOUT";
-> +		};
-> +	}
-> -- 
-> 1.9.1
-> 
+--===============4597581967821378171==--
