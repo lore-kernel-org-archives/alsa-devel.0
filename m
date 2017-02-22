@@ -1,16 +1,16 @@
 From: Matt Flax <flatmax@flatmax.org>
-Subject: [PATCH v5] ASoC: bcm2835: Add 8 channel (multitrack)
+Subject: [PATCH v6] ASoC: bcm2835: Add 8 channel (multitrack)
 	capability
-Date: Wed, 22 Feb 2017 16:18:33 +1100
-Message-ID: <1487740713-27093-1-git-send-email-flatmax@flatmax.org>
+Date: Wed, 22 Feb 2017 16:22:29 +1100
+Message-ID: <1487740949-27583-1-git-send-email-flatmax@flatmax.org>
 References: <1486422576-6958-1-git-send-email-flatmax@flatmax.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nsstlmta25p.bpe.bigpond.com (nsstlmta25p.bpe.bigpond.com
- [203.38.21.25]) by alsa0.perex.cz (Postfix) with ESMTP id 91590266DCF
- for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2017 06:20:55 +0100 (CET)
+Received: from nskntmtas04p.mx.bigpond.com (nskntmtas04p.mx.bigpond.com
+ [61.9.168.146]) by alsa0.perex.cz (Postfix) with ESMTP id EBF54261740
+ for <alsa-devel@alsa-project.org>; Wed, 22 Feb 2017 06:22:43 +0100 (CET)
 In-Reply-To: <1486422576-6958-1-git-send-email-flatmax@flatmax.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -47,7 +47,7 @@ Signed-off-by: Matt Flax <flatmax@flatmax.org>
  1 file changed, 16 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
-index 6ba2049..300516d 100644
+index 6ba2049..48ac884 100644
 --- a/sound/soc/bcm/bcm2835-i2s.c
 +++ b/sound/soc/bcm/bcm2835-i2s.c
 @@ -296,6 +296,7 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
@@ -74,8 +74,8 @@ index 6ba2049..300516d 100644
 +	/* Set the max channels to 8 if the codec is master and
 +	 * we are in DSP A mode. Otherwise only allow 2 channels.
 +	 */
-+	if (dev->fmt &
-+		(SND_SOC_DAIFMT_CBM_CFM | SND_SOC_DAIFMT_DSP_A))
++	if (dev->fmt & (SND_SOC_DAIFMT_MASTER_MASK | SND_SOC_DAIFMT_FORMAT_MASK)
++		  == (SND_SOC_DAIFMT_CBM_CFM | SND_SOC_DAIFMT_DSP_A))
 +		return snd_pcm_hw_constraint_single(substream->runtime,
 +			SNDRV_PCM_HW_PARAM_CHANNELS, 8);
 +	else
