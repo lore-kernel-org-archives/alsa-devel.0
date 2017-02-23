@@ -1,107 +1,107 @@
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [PATCH 3/9] tools: convert comm_str.refcnt from atomic_t to
+From: "Reshetova, Elena" <elena.reshetova@intel.com>
+Subject: RE: [PATCH 1/9] tools: convert cgroup_sel.refcnt from atomic_t to
  refcount_t
-Date: Thu, 23 Feb 2017 10:02:17 -0300
-Message-ID: <20170223130217.GC3595@kernel.org>
+Date: Thu, 23 Feb 2017 13:10:21 +0000
+Message-ID: <2236FBA76BA1254E88B949DDB74E612B41C4F509@IRSMSX102.ger.corp.intel.com>
 References: <1487691303-31858-1-git-send-email-elena.reshetova@intel.com>
- <1487691303-31858-4-git-send-email-elena.reshetova@intel.com>
- <20170222203350.GE20447@kernel.org>
- <20170222222045.GJ20447@kernel.org>
- <20170222223104.GK20447@kernel.org>
- <2236FBA76BA1254E88B949DDB74E612B41C4F3BD@IRSMSX102.ger.corp.intel.com>
+ <1487691303-31858-2-git-send-email-elena.reshetova@intel.com>
+ <20170221154356.GF5052@kernel.org>
+ <2236FBA76BA1254E88B949DDB74E612B41C4EC7E@IRSMSX102.ger.corp.intel.com>
+ <20170222153754.GA20447@kernel.org>
+ <2236FBA76BA1254E88B949DDB74E612B41C4EE30@IRSMSX102.ger.corp.intel.com>
+ <20170222202819.GC20447@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <2236FBA76BA1254E88B949DDB74E612B41C4F3BD@IRSMSX102.ger.corp.intel.com>
+In-Reply-To: <20170222202819.GC20447@kernel.org>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Reshetova, Elena" <elena.reshetova@intel.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Peter Zijlstra <peterz@infradead.org>, gregkh@linuxfoundation.org, Ingo Molnar <mingo@kernel.org>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Mark Rutland <mark.rutland@arm.com>, akpm@linux-foundation.org, matija.glavinic-pecotic.ext@nokia.com, Hans Liljestrand <ishkamiel@gmail.com>, Kees Cook <keescook@chromium.org>, David Windsor <dwindsor@gmail.com>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "peterz@infradead.org" <peterz@infradead.org>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "mingo@redhat.com" <mingo@redhat.com>, "alexander.shishkin@linux.intel.com" <alexander.shishkin@linux.intel.com>, "jolsa@kernel.org" <jolsa@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "matija.glavinic-pecotic.ext@nokia.com" <matija.glavinic-pecotic.ext@nokia.com>, Hans Liljestrand <ishkamiel@gmail.com>, Kees Cook <keescook@chromium.org>, David Windsor <dwindsor@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Em Thu, Feb 23, 2017 at 09:16:07AM +0000, Reshetova, Elena escreveu:
-> > Em Wed, Feb 22, 2017 at 07:20:45PM -0300, Arnaldo Carvalho de Melo
-> > > > make: *** [install-bin] Error 2
-> > > > make: Leaving directory '/home/acme/git/linux/tools/perf'
-> > > > [acme@jouet linux]$
-
-> > > > 3) not test building your patches :-\
- 
-> Sorry about compilation errors: I totally forgot that tools is not
-> getting compiled automatically when you build the whole tree with all
-> configs on, so these patches really slipped through untested.
-
-np, each component in the tree has its own idiosyncrasies, its really
-difficult to test something so sweeping like this change, thanks again
-for doing this work, use-after-free is evil, we should do more things
-like this :-)
-
-> > > > I'll let this pass this time, minor, I am removing the now unused
-> > > > comm_str__get() function.
-
-> > > But it can't get unused, because the comm_str__findnew() may return an
-> > > existing entry, that _needs_ to get its refcount bumped, that is the
-> > > reason for this refcount to be there... reinstating it:
- 
-> True, we missed that it was reused behind the scenes. Your fix below
-> does it correctly.  The object resuse seems to be one of the main
-> issues of this atomic_t to refcount_t conversions through the kernel.
-> We have sooo many places where this happens (obvious and not so
-> obvious ones) and every single of them would fail in run-time, unless
-> we can modify the code not to do increments on zero. 
-
-Yeah, but this code wasn't using the right idiom, which is to, in a
-"__findnew()" method to lock it and before dropping the lock to bump the
-refcount of whatever is going to be returned, so that after the lock is
-dropped we don't open a window where that object can get removed from
-the rbtree and hit the bit bucket.
- 
-> > > #0  0x00007ffff522491f in raise () from /lib64/libc.so.6
-> > > #1  0x00007ffff522651a in abort () from /lib64/libc.so.6
-> > > #2  0x00007ffff5268200 in __libc_message () from /lib64/libc.so.6
-> > > #3  0x00007ffff527188a in _int_free () from /lib64/libc.so.6
-> > > #4  0x00007ffff52752bc in free () from /lib64/libc.so.6
-> > > #5  0x000000000051125f in comm_str__put (cs=0x35038e0) at util/comm.c:20
-> > > #6  0x00000000005115b3 in comm__free (comm=0x6f4ee90) at
-
-> > > And this brings us to my learning experience, i.e. this should've been caught
-> > > by this machinery, right? But that only if I leaked this object, right?
+> Em Wed, Feb 22, 2017 at 04:10:59PM +0000, Reshetova, Elena escreveu:
+> > > Em Wed, Feb 22, 2017 at 02:29:18PM +0000, Reshetova, Elena escreveu:
+> > > > > Em Tue, Feb 21, 2017 at 05:34:55PM +0200, Elena Reshetova escreveu:
+> > > > > > refcount_t type and corresponding API should be
+> > > > > > used instead of atomic_t when the variable is used as
+> > > > > > a reference counter. This allows to avoid accidental
+> > > > > > refcounter overflows that might lead to use-after-free
+> > > > > > situations.
+> > > > > >  #define __CGROUP_H__
+> > > > > >
+> > > > > > -#include <linux/atomic.h>
+> > > > > > +#include <linux/refcount.h>
+> > > > >
+> > > > > So this is the first one, I was expecting the copy from
+> > > > > include/linux/refcount.h to be made to tools/include/linux/refcount.h,
+> > > > > as was done for tools/include/linux/atomic.h and all the other stuff in
+> > > > > tools/include/
+> > > > >
+> > > > > See:
+> > > > >
+> > > > > commit c4b6014e8bb0c8d47fe5c71ebc604f31091e5d3f
+> > > > > Author: Arnaldo Carvalho de Melo <acme@redhat.com>
+> > > > > Date:   Mon Jul 11 10:28:48 2016 -0300
+> > > > >
+> > > > >     tools: Add copy of perf_event.h to tools/include/linux/
+> > > > >
+> > > > > --------------
+> > > > >
+> > > > > For one of the reasons we've been doing this.
 > > >
-> > > I need to read more on this, that is for sure ;-)
- 
-> The way how current refcount_t implemented it would refuse to do any
-> increments/decrements on zero, or increments/decrements on max values.
-> Also, it should WARN about this cases so that people can trace the
-> issue.
+> > > > Hm.. I have taken a look on it and I am confused.  refcount.h is not
+> > > > exactly standalone header and seems to bring in quite some many
+> > > > dependencies to other headers (linux/bug.h, linux/mutex.h etc.), which
+> > > > are not present in tools headers dirs.
+> > >
+> > > > I tried to compile perf tool as a start, copied the refcount.h to
+> > > > tools/include/linux/ and somewhere after it wanted me to bring the
+> > > > 10th header I stopped, because this cannot be right, or?
+> > >
+> > > So, it doesn't have to be a straight copy, and it just shows the problem
+> > > with using the kernel headers directly, i.e. tools/perf/ uses atomic.h,
+> > > and uses that for refcounting, but not all of include/linux/refcount.h
+> > > should be copied to tools/include/linux/refcount.h.
+> 
+> > Oh, this is a good hint. Actually when I drop the *_lock and
+> > *_mutex_lock functions (which are not needed by tools anyway), indeed
+> > most of the issues with header inclusions are gone.  However, there
+> > are still some additional atomic functions needed that are not present
+> > in current atomic headers of tools.
+> 
+> I did it, needed a good number of bits and pieces into
+> tools/{include,arch}/, now I am processing your patches and...
+> 
+> > > I'll try doing the work, that way I'll read about this new stuff, will
+> > > come back here with what I find, so you can continue on the kernel bits
+> > > for now, ok?
+> 
+> > Sure, if you want to take it over, nobosy won't complain! We need many
+> > of such changes merged and not everyone is so nice to help :) I think
+> > after the needed headers/functions from refcount/atomic are in place
+> > in tools, the current patches should compile with no or almost no
+> > changes, so hopefully it still makes your work easier!
+> 
+> You use things in refcount.h for which you are not adding the relevant
+> headers, like UINT_MAX, that is defined in linux/kernel.h, but that file
+> is not included in refcount.h, most of the time it is available by luck,
+> being something so commonly included, but some of your patches don't
+> build because of that, so I am moving the include <linux/refcount.h> to
+> after other headers to continue.
+> 
+> The right thing tho is to fix linux/refcount.h (and then its trimmed
+> down copy in tools/) to have everything it needs not to contribute to
+> the header messentropy. 8-)
 
-Humm, but the sequence is:
+I agree that fixing refcount.h is the correct way to resolve this. 
+I just send this one line patch to Peter directly. 
 
-1. refcount_set(1)
+Best Regards,
+Elena.
 
-2. recount_dec_and_test(1) -> 0
-      delete object, _free_ it
-
-3. if there is any reference to it yet, without holding a refcount_inc()
-   obtained reference (a __get() method for the protected object) it may
-   well be pointing to something that was reused for another unrelated
-   object, so it can get a value != 0 and then the next
-   refcount_dec_and_test() will not catch it being zero as set in step #2.
-
-   To really catch this we would have to just not delete it when it
-   refcunt_dec_and_test(1) sets it to zero, i.e. _leak_ it, right?
-
-I'll check some other conversion done in the kernel to see where I am
-missing something...
-
-> > For reference, this is the patch on top of this:
-> > 
-> > +++ b/tools/perf/util/comm.c
-> > @@ -13,6 +13,13 @@ struct comm_str {
-
-<SNIP>
- 
-> This looks correct now.
-
-Thanks for checking,
-
-- Arnaldo 
+> 
+> Anyway, I'll put this in a branch later so that you can take a look.
+> 
+> - Arnaldo
