@@ -1,39 +1,72 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH 00/35] treewide trivial patches converting
- pr_warning to pr_warn
-Date: Thu, 23 Feb 2017 09:18:24 -0800
-Message-ID: <1487870304.14159.29.camel@perches.com>
-References: <cover.1487314666.git.joe@perches.com>
- <CAL_JsqLTaq-QLTqfyDO8EVJYpgeUx1e4J0Fo2NvfFWqVoiVedQ@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v6] ASoC: bcm2835: Add 8 channel
+ (multitrack) capability
+Date: Thu, 23 Feb 2017 09:28:27 -0800
+Message-ID: <20170223172827.gp7uhievk3vxxhz4@sirena.org.uk>
+References: <1486422576-6958-1-git-send-email-flatmax@flatmax.org>
+ <1487740949-27583-1-git-send-email-flatmax@flatmax.org>
+ <20170222182847.wdvk4stm5gbt46ch@sirena.org.uk>
+ <15a86aef-f091-0f86-f971-4ed56579b428@flatmax.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <xen-devel-bounces@lists.xen.org>
-In-Reply-To: <CAL_JsqLTaq-QLTqfyDO8EVJYpgeUx1e4J0Fo2NvfFWqVoiVedQ@mail.gmail.com>
-List-Unsubscribe: <https://lists.xen.org/cgi-bin/mailman/options/xen-devel>,
- <mailto:xen-devel-request@lists.xen.org?subject=unsubscribe>
-List-Post: <mailto:xen-devel@lists.xen.org>
-List-Help: <mailto:xen-devel-request@lists.xen.org?subject=help>
-List-Subscribe: <https://lists.xen.org/cgi-bin/mailman/listinfo/xen-devel>,
- <mailto:xen-devel-request@lists.xen.org?subject=subscribe>
-Errors-To: xen-devel-bounces@lists.xen.org
-Sender: "Xen-devel" <xen-devel-bounces@lists.xen.org>
-To: Rob Herring <robh@kernel.org>
-Cc: "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, linux-ia64@vger.kernel.org, SH-Linux <linux-sh@vger.kernel.org>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, nouveau@lists.freedesktop.org, Linux-ALSA <alsa-devel@alsa-project.org>, dri-devel <dri-devel@lists.freedesktop.org>, virtualization@lists.linux-foundation.org, "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>, "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, sparclinux@vger.kernel.org, drbd-dev@lists.linbit.com, linux-scsi@vger.kernel.org, Richard Weinberger <richard@nod.at>, sfi-devel@simplefirmware.org, amd-gfx@lists.freedesktop.org, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>, tboot-devel@lists.sourceforge.net, oprofile-list@lists.sf.net, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, xen-devel@lists.xenproject.org, linux-media@vger.k
+Content-Type: multipart/mixed; boundary="===============9122018115866202336=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id A8C8A266F2B
+ for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2017 18:28:51 +0100 (CET)
+In-Reply-To: <15a86aef-f091-0f86-f971-4ed56579b428@flatmax.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Matt Flax <flatmax@flatmax.org>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, phil@raspberrypi.org, Eric Anholt <eric@anholt.net>, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCAyMDE3LTAyLTIzIGF0IDA5OjI4IC0wNjAwLCBSb2IgSGVycmluZyB3cm90ZToKPiBP
-biBGcmksIEZlYiAxNywgMjAxNyBhdCAxOjExIEFNLCBKb2UgUGVyY2hlcyA8am9lQHBlcmNoZXMu
-Y29tPiB3cm90ZToKPiA+IFRoZXJlIGFyZSB+NDMwMCB1c2VzIG9mIHByX3dhcm4gYW5kIH4yNTAg
-dXNlcyBvZiB0aGUgb2xkZXIKPiA+IHByX3dhcm5pbmcgaW4gdGhlIGtlcm5lbCBzb3VyY2UgdHJl
-ZS4KPiA+IAo+ID4gTWFrZSB0aGUgdXNlIG9mIHByX3dhcm4gY29uc2lzdGVudCBhY3Jvc3MgYWxs
-IGtlcm5lbCBmaWxlcy4KPiA+IAo+ID4gVGhpcyBleGNsdWRlcyBhbGwgZmlsZXMgaW4gdG9vbHMv
-IGFzIHRoZXJlIGlzIGEgc2VwYXJhdGUKPiA+IGRlZmluZSBwcl93YXJuaW5nIGZvciB0aGF0IGRp
-cmVjdG9yeSB0cmVlIGFuZCBwcl93YXJuIGlzCj4gPiBub3QgdXNlZCBpbiB0b29scy8uCj4gPiAK
-PiA+IERvbmUgd2l0aCAnc2VkIHMvXGJwcl93YXJuaW5nXGIvcHJfd2Fybi8nIGFuZCBzb21lIGVt
-YWNzaW5nLgpbXQo+IFdoZXJlJ3MgdGhlIHJlbW92YWwgb2YgcHJfd2FybmluZyBzbyB3ZSBkb24n
-dCBoYXZlIG1vcmUgc25lYWsgaW4/CgpBZnRlciBhbGwgb2YgdGhlc2UgYWN0dWFsbHkgZ2V0IGFw
-cGxpZWQsCmFuZCBtYXliZSBhIGN5Y2xlIG9yIHR3byBsYXRlciwgb25lIHdvdWxkCmdldCBzZW50
-LgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fClhlbi1k
-ZXZlbCBtYWlsaW5nIGxpc3QKWGVuLWRldmVsQGxpc3RzLnhlbi5vcmcKaHR0cHM6Ly9saXN0cy54
-ZW4ub3JnL3hlbi1kZXZlbAo=
+
+--===============9122018115866202336==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="3zsdhhhhzwkjkjqz"
+Content-Disposition: inline
+
+
+--3zsdhhhhzwkjkjqz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Feb 23, 2017 at 09:45:54AM +1100, Matt Flax wrote:
+
+> Understood, would you like me to resend my patch on a new thread ?
+
+It's fine, I've seen it this time.  Just please remember this in future.
+
+--3zsdhhhhzwkjkjqz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlivG7gACgkQJNaLcl1U
+h9BDkQgAhHHSvBIoKGuIGZEWvMTk7aeV/a6FmUkZ439vlNe067/s6S6GWHg3C1Lp
+w4ToMkgCvjhGlANmGzl2XHVq+1lpPdMu0216OMHGGK5LD7CZtY7OnVwNZatS8wPM
+2yyy/SymbDUVgrHPm7NTojIeDFeEbRhLFQzqiBUVekK5Pd+vrAnz/aPAWvy+Tqz6
+rJknFyzvCXYrblfAjReZCa3JNnrlUbEkhqhAcV7sPr/AyEo+3OHeZOvF84Eusqxb
+HzmHqcCF+Bp+/qflAdxbuweCIykk9+klaguI5MMq8/O0d3wUr4qtux8urKHcQs4s
+Lax6wbjehD5oBfgyqJD5qlkZ9bk+KQ==
+=dDPz
+-----END PGP SIGNATURE-----
+
+--3zsdhhhhzwkjkjqz--
+
+--===============9122018115866202336==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9122018115866202336==--
