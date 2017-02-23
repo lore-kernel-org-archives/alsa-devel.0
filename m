@@ -1,134 +1,76 @@
 From: "Reshetova, Elena" <elena.reshetova@intel.com>
-Subject: RE: [PATCH 3/9] tools: convert comm_str.refcnt from atomic_t to
- refcount_t
-Date: Thu, 23 Feb 2017 09:16:07 +0000
-Message-ID: <2236FBA76BA1254E88B949DDB74E612B41C4F3BD@IRSMSX102.ger.corp.intel.com>
+Subject: RE: [PATCH 0/9] tools subsystem refcounter conversions
+Date: Thu, 23 Feb 2017 11:39:10 +0000
+Message-ID: <2236FBA76BA1254E88B949DDB74E612B41C4F449@IRSMSX102.ger.corp.intel.com>
 References: <1487691303-31858-1-git-send-email-elena.reshetova@intel.com>
- <1487691303-31858-4-git-send-email-elena.reshetova@intel.com>
- <20170222203350.GE20447@kernel.org> <20170222222045.GJ20447@kernel.org>
- <20170222223104.GK20447@kernel.org>
+ <20170221153935.GE5052@kernel.org> <20170222232329.GN20447@kernel.org>
+ <20170222232917.GO20447@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170222223104.GK20447@kernel.org>
+In-Reply-To: <20170222232917.GO20447@kernel.org>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "peterz@infradead.org" <peterz@infradead.org>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, Ingo Molnar <mingo@kernel.org>, "alexander.shishkin@linux.intel.com" <alexander.shishkin@linux.intel.com>, "jolsa@kernel.org" <jolsa@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "matija.glavinic-pecotic.ext@nokia.com" <matija.glavinic-pecotic.ext@nokia.com>, Hans Liljestrand <ishkamiel@gmail.com>, Kees Cook <keescook@chromium.org>, David Windsor <dwindsor@gmail.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "peterz@infradead.org" <peterz@infradead.org>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "mingo@redhat.com" <mingo@redhat.com>, "alexander.shishkin@linux.intel.com" <alexander.shishkin@linux.intel.com>, "jolsa@kernel.org" <jolsa@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "matija.glavinic-pecotic.ext@nokia.com" <matija.glavinic-pecotic.ext@nokia.com>
 List-Id: alsa-devel@alsa-project.org
 
-PiBFbSBXZWQsIEZlYiAyMiwgMjAxNyBhdCAwNzoyMDo0NVBNIC0wMzAwLCBBcm5hbGRvIENhcnZh
-bGhvIGRlIE1lbG8NCj4gZXNjcmV2ZXU6DQo+ID4gRW0gV2VkLCBGZWIgMjIsIDIwMTcgYXQgMDU6
-MzM6NTBQTSAtMDMwMCwgQXJuYWxkbyBDYXJ2YWxobyBkZSBNZWxvDQo+IGVzY3JldmV1Og0KPiA+
-ID4gRW0gVHVlLCBGZWIgMjEsIDIwMTcgYXQgMDU6MzQ6NTdQTSArMDIwMCwgRWxlbmEgUmVzaGV0
-b3ZhIGVzY3JldmV1Og0KPiA+ID4gPiByZWZjb3VudF90IHR5cGUgYW5kIGNvcnJlc3BvbmRpbmcg
-QVBJIHNob3VsZCBiZQ0KPiA+ID4gPiB1c2VkIGluc3RlYWQgb2YgYXRvbWljX3Qgd2hlbiB0aGUg
-dmFyaWFibGUgaXMgdXNlZCBhcw0KPiA+ID4gPiBhIHJlZmVyZW5jZSBjb3VudGVyLiBUaGlzIGFs
-bG93cyB0byBhdm9pZCBhY2NpZGVudGFsDQo+ID4gPiA+IHJlZmNvdW50ZXIgb3ZlcmZsb3dzIHRo
-YXQgbWlnaHQgbGVhZCB0byB1c2UtYWZ0ZXItZnJlZQ0KPiA+ID4gPiBzaXR1YXRpb25zLg0KPiA+
-ID4gPg0KPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBFbGVuYSBSZXNoZXRvdmEgPGVsZW5hLnJlc2hl
-dG92YUBpbnRlbC5jb20+DQo+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IEhhbnMgTGlsamVzdHJhbmQg
-PGlzaGthbWllbEBnbWFpbC5jb20+DQo+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IEtlZXMgQ29vayA8
-a2Vlc2Nvb2tAY2hyb21pdW0ub3JnPg0KPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBEYXZpZCBXaW5k
-c29yIDxkd2luZHNvckBnbWFpbC5jb20+DQo+ID4gPg0KPiA+ID4gWW91IGFyZSBkb2luZyB0d28g
-dGhpbmdzICh3ZWxsIHRocmVlKSB0aGluZ3MgaGVyZToNCj4gPiA+DQo+ID4gPiAxLiBjb252ZXJ0
-aW5nIHRvIHJlZmNudC5oDQo+ID4gPg0KPiA+ID4gMi4gSW5pdGlhdGlvbmcgdGhlIHJlZmNvdW50
-IHRvIDEsIHdoaWNoIG1ha2VzIHRoaXMgdGFrZSBwbGFjZToNCj4gPiA+DQo+ID4gPiBbYWNtZUBq
-b3VldCBsaW51eF0kIG0NCj4gPiA+IG1ha2U6IEVudGVyaW5nIGRpcmVjdG9yeSAnL2hvbWUvYWNt
-ZS9naXQvbGludXgvdG9vbHMvcGVyZicNCj4gPiA+ICAgQlVJTEQ6ICAgRG9pbmcgJ21ha2UgLWo0
-JyBwYXJhbGxlbCBidWlsZA0KPiA+ID4gV2FybmluZzogYXJjaC94ODYvaW5jbHVkZS9hc20vY3B1
-ZmVhdHVyZXMuaCBkaWZmZXJzIGZyb20ga2VybmVsDQo+ID4gPiAgIENDICAgICAgIC90bXAvYnVp
-bGQvcGVyZi91dGlsL2NvbW0ubw0KPiA+ID4gICBJTlNUQUxMICB0cmFjZV9wbHVnaW5zDQo+ID4g
-PiB1dGlsL2NvbW0uYzoxNjoyNTogZXJyb3I6IOKAmGNvbW1fc3RyX19nZXTigJkgZGVmaW5lZCBi
-dXQgbm90IHVzZWQgWy0NCj4gV2Vycm9yPXVudXNlZC1mdW5jdGlvbl0NCj4gPiA+ICBzdGF0aWMg
-c3RydWN0IGNvbW1fc3RyICpjb21tX3N0cl9fZ2V0KHN0cnVjdCBjb21tX3N0ciAqY3MpDQo+ID4g
-PiAgICAgICAgICAgICAgICAgICAgICAgICAgXn5+fn5+fn5+fn5+fg0KPiA+ID4gY2MxOiBhbGwg
-d2FybmluZ3MgYmVpbmcgdHJlYXRlZCBhcyBlcnJvcnMNCj4gPiA+IG12OiBjYW5ub3Qgc3RhdCAn
-L3RtcC9idWlsZC9wZXJmL3V0aWwvLmNvbW0uby50bXAnOiBObyBzdWNoIGZpbGUgb3INCj4gZGly
-ZWN0b3J5DQo+ID4gPiAvaG9tZS9hY21lL2dpdC9saW51eC90b29scy9idWlsZC9NYWtlZmlsZS5i
-dWlsZDoxMDE6IHJlY2lwZSBmb3IgdGFyZ2V0DQo+ICcvdG1wL2J1aWxkL3BlcmYvdXRpbC9jb21t
-Lm8nIGZhaWxlZA0KPiA+ID4gbWFrZVs0XTogKioqIFsvdG1wL2J1aWxkL3BlcmYvdXRpbC9jb21t
-Lm9dIEVycm9yIDENCj4gPiA+IC9ob21lL2FjbWUvZ2l0L2xpbnV4L3Rvb2xzL2J1aWxkL01ha2Vm
-aWxlLmJ1aWxkOjE0NDogcmVjaXBlIGZvciB0YXJnZXQNCj4gJ3V0aWwnIGZhaWxlZA0KPiA+ID4g
-bWFrZVszXTogKioqIFt1dGlsXSBFcnJvciAyDQo+ID4gPiBNYWtlZmlsZS5wZXJmOjUyMzogcmVj
-aXBlIGZvciB0YXJnZXQgJy90bXAvYnVpbGQvcGVyZi9saWJwZXJmLWluLm8nIGZhaWxlZA0KPiA+
-ID4gbWFrZVsyXTogKioqIFsvdG1wL2J1aWxkL3BlcmYvbGlicGVyZi1pbi5vXSBFcnJvciAyDQo+
-ID4gPiBNYWtlZmlsZS5wZXJmOjIwNDogcmVjaXBlIGZvciB0YXJnZXQgJ3N1Yi1tYWtlJyBmYWls
-ZWQNCj4gPiA+IG1ha2VbMV06ICoqKiBbc3ViLW1ha2VdIEVycm9yIDINCj4gPiA+IE1ha2VmaWxl
-OjEwODogcmVjaXBlIGZvciB0YXJnZXQgJ2luc3RhbGwtYmluJyBmYWlsZWQNCj4gPiA+IG1ha2U6
-ICoqKiBbaW5zdGFsbC1iaW5dIEVycm9yIDINCj4gPiA+IG1ha2U6IExlYXZpbmcgZGlyZWN0b3J5
-ICcvaG9tZS9hY21lL2dpdC9saW51eC90b29scy9wZXJmJw0KPiA+ID4gW2FjbWVAam91ZXQgbGlu
-dXhdJA0KPiA+ID4NCj4gPiA+IDMpIG5vdCB0ZXN0IGJ1aWxkaW5nIHlvdXIgcGF0Y2hlcyA6LVwN
-Cg0KU29ycnkgYWJvdXQgY29tcGlsYXRpb24gZXJyb3JzOiBJIHRvdGFsbHkgZm9yZ290IHRoYXQg
-dG9vbHMgaXMgbm90IGdldHRpbmcgY29tcGlsZWQgYXV0b21hdGljYWxseSB3aGVuIHlvdSBidWls
-ZCB0aGUgd2hvbGUgdHJlZSB3aXRoIGFsbCBjb25maWdzIG9uLCBzbyB0aGVzZSBwYXRjaGVzIA0K
-cmVhbGx5IHNsaXBwZWQgdGhyb3VnaCB1bnRlc3RlZC4NCg0KPiA+ID4NCj4gPiA+IEknbGwgbGV0
-IHRoaXMgcGFzcyB0aGlzIHRpbWUsIG1pbm9yLCBJIGFtIHJlbW92aW5nIHRoZSBub3cgdW51c2Vk
-DQo+ID4gPiBjb21tX3N0cl9fZ2V0KCkgZnVuY3Rpb24uDQo+ID4NCj4gPiBCdXQgaXQgY2FuJ3Qg
-Z2V0IHVudXNlZCwgYmVjYXVzZSB0aGUgY29tbV9zdHJfX2ZpbmRuZXcoKSBtYXkgcmV0dXJuIGFu
-DQo+ID4gZXhpc3RpbmcgZW50cnksIHRoYXQgX25lZWRzXyB0byBnZXQgaXRzIHJlZmNvdW50IGJ1
-bXBlZCwgdGhhdCBpcyB0aGUNCj4gPiByZWFzb24gZm9yIHRoaXMgcmVmY291bnQgdG8gYmUgdGhl
-cmUuLi4gcmVpbnN0YXRpbmcgaXQ6DQoNClRydWUsIHdlIG1pc3NlZCB0aGF0IGl0IHdhcyByZXVz
-ZWQgYmVoaW5kIHRoZSBzY2VuZXMuIFlvdXIgZml4IGJlbG93IGRvZXMgaXQgY29ycmVjdGx5LiAN
-ClRoZSBvYmplY3QgcmVzdXNlIHNlZW1zIHRvIGJlIG9uZSBvZiB0aGUgbWFpbiBpc3N1ZXMgb2Yg
-dGhpcyBhdG9taWNfdCB0byByZWZjb3VudF90IGNvbnZlcnNpb25zIHRocm91Z2ggdGhlIGtlcm5l
-bC4gDQpXZSBoYXZlIHNvb28gbWFueSBwbGFjZXMgd2hlcmUgdGhpcyBoYXBwZW5zIChvYnZpb3Vz
-IGFuZCBub3Qgc28gb2J2aW91cyBvbmVzKSBhbmQgZXZlcnkgc2luZ2xlIG9mIHRoZW0gd291bGQg
-ZmFpbCBpbiBydW4tdGltZSwgdW5sZXNzIHdlIGNhbiBtb2RpZnkgdGhlIGNvZGUgbm90IHRvIGRv
-IGluY3JlbWVudHMgb24gemVyby4gDQoNCj4gPg0KPiA+ICMwICAweDAwMDA3ZmZmZjUyMjQ5MWYg
-aW4gcmFpc2UgKCkgZnJvbSAvbGliNjQvbGliYy5zby42DQo+ID4gIzEgIDB4MDAwMDdmZmZmNTIy
-NjUxYSBpbiBhYm9ydCAoKSBmcm9tIC9saWI2NC9saWJjLnNvLjYNCj4gPiAjMiAgMHgwMDAwN2Zm
-ZmY1MjY4MjAwIGluIF9fbGliY19tZXNzYWdlICgpIGZyb20gL2xpYjY0L2xpYmMuc28uNg0KPiA+
-ICMzICAweDAwMDA3ZmZmZjUyNzE4OGEgaW4gX2ludF9mcmVlICgpIGZyb20gL2xpYjY0L2xpYmMu
-c28uNg0KPiA+ICM0ICAweDAwMDA3ZmZmZjUyNzUyYmMgaW4gZnJlZSAoKSBmcm9tIC9saWI2NC9s
-aWJjLnNvLjYNCj4gPiAjNSAgMHgwMDAwMDAwMDAwNTExMjVmIGluIGNvbW1fc3RyX19wdXQgKGNz
-PTB4MzUwMzhlMCkgYXQgdXRpbC9jb21tLmM6MjANCj4gPiAjNiAgMHgwMDAwMDAwMDAwNTExNWIz
-IGluIGNvbW1fX2ZyZWUgKGNvbW09MHg2ZjRlZTkwKSBhdA0KPiB1dGlsL2NvbW0uYzoxMTMNCj4g
-PiAjNyAgMHgwMDAwMDAwMDAwNTExZTEwIGluIHRocmVhZF9fZGVsZXRlICh0aHJlYWQ9MHg2ZjRl
-ZTEwKSBhdA0KPiB1dGlsL3RocmVhZC5jOjgxDQo+ID4gIzggIDB4MDAwMDAwMDAwMDUxMWYwZSBp
-biB0aHJlYWRfX3B1dCAodGhyZWFkPTB4NmY0ZWUxMCkgYXQNCj4gdXRpbC90aHJlYWQuYzoxMDMN
-Cj4gPiAjOSAgMHgwMDAwMDAwMDAwNTA0ZWE2IGluIG1hY2hpbmVfX3Byb2Nlc3NfZm9ya19ldmVu
-dA0KPiAobWFjaGluZT0weDIxZjRiZjgsIGV2ZW50PTB4N2ZmZmVkNmI1NGEwLCBzYW1wbGU9MHg3
-ZmZmZmZmZjg0MjApIGF0DQo+IHV0aWwvbWFjaGluZS5jOjE0OTYNCj4gPiAjMTAgMHgwMDAwMDAw
-MDAwNTA1MDkyIGluIG1hY2hpbmVfX3Byb2Nlc3NfZXZlbnQgKG1hY2hpbmU9MHgyMWY0YmY4LA0K
-PiBldmVudD0weDdmZmZlZDZiNTRhMCwgc2FtcGxlPTB4N2ZmZmZmZmY4NDIwKSBhdCB1dGlsL21h
-Y2hpbmUuYzoxNTQ0DQo+ID4gIzExIDB4MDAwMDAwMDAwMDQ1MWFlOSBpbiBwZXJmX3RvcF9fbW1h
-cF9yZWFkX2lkeCAodG9wPTB4N2ZmZmZmZmZhN2MwLA0KPiBpZHg9MykgYXQgYnVpbHRpbi10b3Au
-Yzo4NDQNCj4gPiAjMTIgMHgwMDAwMDAwMDAwNDUxYmI2IGluIHBlcmZfdG9wX19tbWFwX3JlYWQg
-KHRvcD0weDdmZmZmZmZmYTdjMCkgYXQNCj4gYnVpbHRpbi10b3AuYzo4NTcNCj4gPiAjMTMgMHgw
-MDAwMDAwMDAwNDUyMjI5IGluIF9fY21kX3RvcCAodG9wPTB4N2ZmZmZmZmZhN2MwKSBhdCBidWls
-dGluLQ0KPiB0b3AuYzoxMDAyDQo+ID4gIzE0IDB4MDAwMDAwMDAwMDQ1MzZhMyBpbiBjbWRfdG9w
-IChhcmdjPTAsIGFyZ3Y9MHg3ZmZmZmZmZmUxNTAsDQo+IHByZWZpeD0weDApIGF0IGJ1aWx0aW4t
-dG9wLmM6MTMzMg0KPiA+ICMxNSAweDAwMDAwMDAwMDA0YjgyYTggaW4gcnVuX2J1aWx0aW4gKHA9
-MHhhMTdjZDAgPGNvbW1hbmRzKzMzNj4sDQo+IGFyZ2M9NCwgYXJndj0weDdmZmZmZmZmZTE1MCkg
-YXQgcGVyZi5jOjM1OQ0KPiA+ICMxNiAweDAwMDAwMDAwMDA0Yjg1MTUgaW4gaGFuZGxlX2ludGVy
-bmFsX2NvbW1hbmQgKGFyZ2M9NCwNCj4gYXJndj0weDdmZmZmZmZmZTE1MCkgYXQgcGVyZi5jOjQy
-MQ0KPiA+ICMxNyAweDAwMDAwMDAwMDA0Yjg2NWEgaW4gcnVuX2FyZ3YgKGFyZ2NwPTB4N2ZmZmZm
-ZmZkZjljLA0KPiBhcmd2PTB4N2ZmZmZmZmZkZjkwKSBhdCBwZXJmLmM6NDY3DQo+ID4gIzE4IDB4
-MDAwMDAwMDAwMDRiOGE1ZCBpbiBtYWluIChhcmdjPTQsIGFyZ3Y9MHg3ZmZmZmZmZmUxNTApIGF0
-IHBlcmYuYzo2MTQNCj4gPg0KPiA+IEFuZCB0aGlzIGJyaW5ncyB1cyB0byBteSBsZWFybmluZyBl
-eHBlcmllbmNlLCBpLmUuIHRoaXMgc2hvdWxkJ3ZlIGJlZW4gY2F1Z2h0DQo+ID4gYnkgdGhpcyBt
-YWNoaW5lcnksIHJpZ2h0PyBCdXQgdGhhdCBvbmx5IGlmIEkgbGVha2VkIHRoaXMgb2JqZWN0LCBy
-aWdodD8NCj4gPg0KPiA+IEkgbmVlZCB0byByZWFkIG1vcmUgb24gdGhpcywgdGhhdCBpcyBmb3Ig
-c3VyZSA7LSkNCg0KVGhlIHdheSBob3cgY3VycmVudCByZWZjb3VudF90IGltcGxlbWVudGVkIGl0
-IHdvdWxkIHJlZnVzZSB0byBkbyBhbnkgaW5jcmVtZW50cy9kZWNyZW1lbnRzIG9uIHplcm8sIG9y
-IGluY3JlbWVudHMvZGVjcmVtZW50cyBvbiBtYXggdmFsdWVzLiANCkFsc28sIGl0IHNob3VsZCBX
-QVJOIGFib3V0IHRoaXMgY2FzZXMgc28gdGhhdCBwZW9wbGUgY2FuIHRyYWNlIHRoZSBpc3N1ZS4N
-Cg0KPiANCj4gRm9yIHJlZmVyZW5jZSwgdGhpcyBpcyB0aGUgcGF0Y2ggb24gdG9wIG9mIHRoaXM6
-DQo+IA0KPiArKysgYi90b29scy9wZXJmL3V0aWwvY29tbS5jDQo+IEBAIC0xMyw2ICsxMywxMyBA
-QCBzdHJ1Y3QgY29tbV9zdHIgew0KPiAgLyogU2hvdWxkIHBlcmhhcHMgYmUgbW92ZWQgdG8gc3Ry
-dWN0IG1hY2hpbmUgKi8NCj4gIHN0YXRpYyBzdHJ1Y3QgcmJfcm9vdCBjb21tX3N0cl9yb290Ow0K
-PiANCj4gK3N0YXRpYyBzdHJ1Y3QgY29tbV9zdHIgKmNvbW1fc3RyX19nZXQoc3RydWN0IGNvbW1f
-c3RyICpjcykNCj4gK3sNCj4gKyAgICAgICBpZiAoY3MpDQo+ICsgICAgICAgICAgICAgICByZWZj
-b3VudF9pbmMoJmNzLT5yZWZjbnQpOw0KPiArICAgICAgIHJldHVybiBjczsNCj4gK30NCj4gKw0K
-PiAgc3RhdGljIHZvaWQgY29tbV9zdHJfX3B1dChzdHJ1Y3QgY29tbV9zdHIgKmNzKQ0KPiAgew0K
-PiAgICAgICAgIGlmIChjcyAmJiByZWZjb3VudF9kZWNfYW5kX3Rlc3QoJmNzLT5yZWZjbnQpKSB7
-DQo+IEBAIC01NCw3ICs2MSw3IEBAIHN0YXRpYyBzdHJ1Y3QgY29tbV9zdHIgKmNvbW1fc3RyX19m
-aW5kbmV3KGNvbnN0IGNoYXINCj4gKnN0ciwgc3RydWN0IHJiX3Jvb3QgKnJvb3QpDQo+IA0KPiAg
-ICAgICAgICAgICAgICAgY21wID0gc3RyY21wKHN0ciwgaXRlci0+c3RyKTsNCj4gICAgICAgICAg
-ICAgICAgIGlmICghY21wKQ0KPiAtICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gaXRlcjsN
-Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIGNvbW1fc3RyX19nZXQoaXRlcik7DQo+
-IA0KPiAgICAgICAgICAgICAgICAgaWYgKGNtcCA8IDApDQo+ICAgICAgICAgICAgICAgICAgICAg
-ICAgIHAgPSAmKCpwKS0+cmJfbGVmdDsNCj4gW2FjbWVAam91ZXQgbGludXhdJA0KDQpUaGlzIGxv
-b2tzIGNvcnJlY3Qgbm93Lg0KCQ0KDQo=
+> Em Wed, Feb 22, 2017 at 08:23:29PM -0300, Arnaldo Carvalho de Melo
+> escreveu:
+> > Em Tue, Feb 21, 2017 at 12:39:35PM -0300, Arnaldo Carvalho de Melo
+> escreveu:
+> > > Em Tue, Feb 21, 2017 at 05:34:54PM +0200, Elena Reshetova escreveu:
+> > > > Now when new refcount_t type and API are finally merged
+> > > > (see include/linux/refcount.h), the following
+> > > > patches convert various refcounters in the tools susystem from atomic_t
+> > > > to refcount_t. By doing this we prevent intentional or accidental
+> > > > underflows or overflows that can led to use-after-free vulnerabilities.
+> > >
+> > > Thanks for working on this! I was almost going to jump on doing this
+> > > myself!
+> > >
+> > > I'll try and get this merged ASAP.
+> >
+> > So, please take a look at my tmp.perf/refcount branch at:
+> >
+> > git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git
+
+I took a look on it and it looks good. Just one thing I want to double check with regards to this commit:
+https://kernel.googlesource.com/pub/scm/linux/kernel/git/acme/linux/+/58d561002587bf2572f9e6f4d222659e4068fadf%5E%21/#F0
+
+And more specifically to this chunk:
+
+@@ -937,7 +937,7 @@
+ 		munmap(map->base, perf_mmap__mmap_len(map));
+ 		map->base = NULL;
+ 		map->fd = -1;
+-		atomic_set(&map->refcnt, 0);
++		refcount_set(&map->refcnt, 0);
+ 	}
+ 	auxtrace_mmap__munmap(&map->auxtrace_mmap);
+ }
+
+So, when the refcount set to zero in this place, what exactly happens to the perf_map object after? 
+I just want to double check that we don't have  another hiding reusage case here when refcounter later on is simply incremented vs. set to "2." 
+
+
+> >
+> > There are multiple fixes in it to get it to build and test it, so far,
+> > with:
+> >
+> >   perf top -F 15000 -d 0
+> >
+> > while doing kernel builds and tight usleep 1 loops to create lots of
+> > short lived threads with its map_groups, maps, dsos, etc.
+> >
+> > Now running some build tests in some 36 containers with assorted distros
+> > and cross compilers.
+> 
+> Tomorrow I'll inject some refcount errors to test this all.
+
+
+Thank you!
+
+Best Regards,
+Elena.
