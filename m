@@ -1,85 +1,107 @@
 From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [PATCH 0/9] tools subsystem refcounter conversions
-Date: Thu, 23 Feb 2017 09:50:08 -0300
-Message-ID: <20170223125008.GB3595@kernel.org>
+Subject: Re: [PATCH 3/9] tools: convert comm_str.refcnt from atomic_t to
+ refcount_t
+Date: Thu, 23 Feb 2017 10:02:17 -0300
+Message-ID: <20170223130217.GC3595@kernel.org>
 References: <1487691303-31858-1-git-send-email-elena.reshetova@intel.com>
- <20170221153935.GE5052@kernel.org>
- <20170222232329.GN20447@kernel.org>
- <20170222232917.GO20447@kernel.org>
- <2236FBA76BA1254E88B949DDB74E612B41C4F449@IRSMSX102.ger.corp.intel.com>
+ <1487691303-31858-4-git-send-email-elena.reshetova@intel.com>
+ <20170222203350.GE20447@kernel.org>
+ <20170222222045.GJ20447@kernel.org>
+ <20170222223104.GK20447@kernel.org>
+ <2236FBA76BA1254E88B949DDB74E612B41C4F3BD@IRSMSX102.ger.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <2236FBA76BA1254E88B949DDB74E612B41C4F449@IRSMSX102.ger.corp.intel.com>
+In-Reply-To: <2236FBA76BA1254E88B949DDB74E612B41C4F3BD@IRSMSX102.ger.corp.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: "Reshetova, Elena" <elena.reshetova@intel.com>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "peterz@infradead.org" <peterz@infradead.org>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "mingo@redhat.com" <mingo@redhat.com>, "alexander.shishkin@linux.intel.com" <alexander.shishkin@linux.intel.com>, "jolsa@kernel.org" <jolsa@kernel.org>, "mark.rutland@arm.com" <mark.rutland@arm.com>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>, "matija.glavinic-pecotic.ext@nokia.com" <matija.glavinic-pecotic.ext@nokia.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Peter Zijlstra <peterz@infradead.org>, gregkh@linuxfoundation.org, Ingo Molnar <mingo@kernel.org>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, Mark Rutland <mark.rutland@arm.com>, akpm@linux-foundation.org, matija.glavinic-pecotic.ext@nokia.com, Hans Liljestrand <ishkamiel@gmail.com>, Kees Cook <keescook@chromium.org>, David Windsor <dwindsor@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Em Thu, Feb 23, 2017 at 11:39:10AM +0000, Reshetova, Elena escreveu:
-> > Em Wed, Feb 22, 2017 at 08:23:29PM -0300, Arnaldo Carvalho de Melo
-> > escreveu:
-> > > Em Tue, Feb 21, 2017 at 12:39:35PM -0300, Arnaldo Carvalho de Melo
-> > escreveu:
-> > > > Em Tue, Feb 21, 2017 at 05:34:54PM +0200, Elena Reshetova escreveu:
-> > > > > Now when new refcount_t type and API are finally merged
-> > > > > (see include/linux/refcount.h), the following
-> > > > > patches convert various refcounters in the tools susystem from atomic_t
-> > > > > to refcount_t. By doing this we prevent intentional or accidental
-> > > > > underflows or overflows that can led to use-after-free vulnerabilities.
-> > > >
-> > > > Thanks for working on this! I was almost going to jump on doing this
-> > > > myself!
-> > > >
-> > > > I'll try and get this merged ASAP.
-> > >
-> > > So, please take a look at my tmp.perf/refcount branch at:
-> > >
-> > > git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git
-> 
-> I took a look on it and it looks good. Just one thing I want to double check with regards to this commit:
-> https://kernel.googlesource.com/pub/scm/linux/kernel/git/acme/linux/+/58d561002587bf2572f9e6f4d222659e4068fadf%5E%21/#F0
-> 
-> And more specifically to this chunk:
-> 
-> @@ -937,7 +937,7 @@
->  		munmap(map->base, perf_mmap__mmap_len(map));
->  		map->base = NULL;
->  		map->fd = -1;
-> -		atomic_set(&map->refcnt, 0);
-> +		refcount_set(&map->refcnt, 0);
->  	}
->  	auxtrace_mmap__munmap(&map->auxtrace_mmap);
->  }
- 
-> So, when the refcount set to zero in this place, what exactly happens
-> to the perf_map object after?  I just want to double check that we
-> don't have  another hiding reusage case here when refcounter later on
-> is simply incremented vs. set to "2." 
+Em Thu, Feb 23, 2017 at 09:16:07AM +0000, Reshetova, Elena escreveu:
+> > Em Wed, Feb 22, 2017 at 07:20:45PM -0300, Arnaldo Carvalho de Melo
+> > > > make: *** [install-bin] Error 2
+> > > > make: Leaving directory '/home/acme/git/linux/tools/perf'
+> > > > [acme@jouet linux]$
 
-So, this looks fishy and I don't recall why that was done that way, this
-conversion to refcnt_t and the debug associated with it provides a good
-opportunity for us to try to get that to a more familiar reference
-counting workflow, I'll take a look at it.
-
-- Arnaldo
+> > > > 3) not test building your patches :-\
  
-> > > There are multiple fixes in it to get it to build and test it, so far,
-> > > with:
+> Sorry about compilation errors: I totally forgot that tools is not
+> getting compiled automatically when you build the whole tree with all
+> configs on, so these patches really slipped through untested.
+
+np, each component in the tree has its own idiosyncrasies, its really
+difficult to test something so sweeping like this change, thanks again
+for doing this work, use-after-free is evil, we should do more things
+like this :-)
+
+> > > > I'll let this pass this time, minor, I am removing the now unused
+> > > > comm_str__get() function.
+
+> > > But it can't get unused, because the comm_str__findnew() may return an
+> > > existing entry, that _needs_ to get its refcount bumped, that is the
+> > > reason for this refcount to be there... reinstating it:
+ 
+> True, we missed that it was reused behind the scenes. Your fix below
+> does it correctly.  The object resuse seems to be one of the main
+> issues of this atomic_t to refcount_t conversions through the kernel.
+> We have sooo many places where this happens (obvious and not so
+> obvious ones) and every single of them would fail in run-time, unless
+> we can modify the code not to do increments on zero. 
+
+Yeah, but this code wasn't using the right idiom, which is to, in a
+"__findnew()" method to lock it and before dropping the lock to bump the
+refcount of whatever is going to be returned, so that after the lock is
+dropped we don't open a window where that object can get removed from
+the rbtree and hit the bit bucket.
+ 
+> > > #0  0x00007ffff522491f in raise () from /lib64/libc.so.6
+> > > #1  0x00007ffff522651a in abort () from /lib64/libc.so.6
+> > > #2  0x00007ffff5268200 in __libc_message () from /lib64/libc.so.6
+> > > #3  0x00007ffff527188a in _int_free () from /lib64/libc.so.6
+> > > #4  0x00007ffff52752bc in free () from /lib64/libc.so.6
+> > > #5  0x000000000051125f in comm_str__put (cs=0x35038e0) at util/comm.c:20
+> > > #6  0x00000000005115b3 in comm__free (comm=0x6f4ee90) at
+
+> > > And this brings us to my learning experience, i.e. this should've been caught
+> > > by this machinery, right? But that only if I leaked this object, right?
 > > >
-> > >   perf top -F 15000 -d 0
-> > >
-> > > while doing kernel builds and tight usleep 1 loops to create lots of
-> > > short lived threads with its map_groups, maps, dsos, etc.
-> > >
-> > > Now running some build tests in some 36 containers with assorted distros
-> > > and cross compilers.
+> > > I need to read more on this, that is for sure ;-)
+ 
+> The way how current refcount_t implemented it would refuse to do any
+> increments/decrements on zero, or increments/decrements on max values.
+> Also, it should WARN about this cases so that people can trace the
+> issue.
+
+Humm, but the sequence is:
+
+1. refcount_set(1)
+
+2. recount_dec_and_test(1) -> 0
+      delete object, _free_ it
+
+3. if there is any reference to it yet, without holding a refcount_inc()
+   obtained reference (a __get() method for the protected object) it may
+   well be pointing to something that was reused for another unrelated
+   object, so it can get a value != 0 and then the next
+   refcount_dec_and_test() will not catch it being zero as set in step #2.
+
+   To really catch this we would have to just not delete it when it
+   refcunt_dec_and_test(1) sets it to zero, i.e. _leak_ it, right?
+
+I'll check some other conversion done in the kernel to see where I am
+missing something...
+
+> > For reference, this is the patch on top of this:
 > > 
-> > Tomorrow I'll inject some refcount errors to test this all.
-> 
-> 
-> Thank you!
-> 
-> Best Regards,
-> Elena.
+> > +++ b/tools/perf/util/comm.c
+> > @@ -13,6 +13,13 @@ struct comm_str {
+
+<SNIP>
+ 
+> This looks correct now.
+
+Thanks for checking,
+
+- Arnaldo 
