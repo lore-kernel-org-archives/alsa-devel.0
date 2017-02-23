@@ -1,78 +1,57 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 00/35] treewide trivial patches converting pr_warning to
- pr_warn
-Date: Thu, 23 Feb 2017 09:28:23 -0600
-Message-ID: <CAL_JsqLTaq-QLTqfyDO8EVJYpgeUx1e4J0Fo2NvfFWqVoiVedQ@mail.gmail.com>
-References: <cover.1487314666.git.joe@perches.com>
+From: =?UTF-8?Q?R=c3=a9mi_Pincent?= <mr.lahorde@laposte.net>
+Subject: [Bug report] dmix on armv8
+Date: Thu, 23 Feb 2017 16:46:26 +0100
+Message-ID: <46451130-4651-855e-b055-7ef6c9e4537e@laposte.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-In-Reply-To: <cover.1487314666.git.joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
-List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
-Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
-Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-To: Joe Perches <joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org>
-Cc: "linux-fbdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-fbdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-ia64-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, SH-Linux <linux-sh-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Alexander Shishkin <alexander.shishkin-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, nouveau-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, dri-devel <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, virtualization-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org, "linux-ide-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-ide-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-mtd-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-mtd-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, sparclinux-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, drbd-dev-cunTk1MwBs8qoQakbn7OcQ@public.gmane.org, linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Richard Weinberger <richard-/L3Ra7n9ekc@public.gmane.org>, sfi-devel-yLnuTTp1/kvcsJTPyzm5gB2eb7JE58TQ@public.gmane.org, amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, "linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, tboot-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, oprofile-list-TtF/mJH4Jtrk1uMJSBkQmQ@public.gmane.org, "linux-input-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-input-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, xen-devel-GuqFBffKawtpuQazS67q72D2FQJk+8+b@public.gmane.org, linux-media@vger.k
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtpoutz2.laposte.net (smtpoutz299.laposte.net [178.22.154.199])
+ by alsa0.perex.cz (Postfix) with ESMTP id C0311266860
+ for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2017 16:46:30 +0100 (CET)
+Received: from smtpoutz2.laposte.net (localhost [127.0.0.1])
+ by lpn-prd-vrout011 (Postfix) with ESMTP id D98ED52BC13
+ for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2017 16:46:29 +0100 (CET)
+Received: from smtpoutz2.laposte.net (localhost [127.0.0.1])
+ by lpn-prd-vrout011 (Postfix) with ESMTP id CB33152B81E
+ for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2017 16:46:29 +0100 (CET)
+Received: from lpn-prd-vrin004 (lpn-prd-vrin004.prosodie [10.128.63.5])
+ by lpn-prd-vrout011 (Postfix) with ESMTP id 9311752BC13
+ for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2017 16:46:29 +0100 (CET)
+Received: from lpn-prd-vrin004 (localhost [127.0.0.1])
+ by lpn-prd-vrin004 (Postfix) with ESMTP id 814A0710AC1
+ for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2017 16:46:29 +0100 (CET)
+Received: from [192.168.132.10] (a4h-creativity-lab3.inrialpes.fr
+ [194.199.16.203])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+ (No client certificate requested)
+ by lpn-prd-vrin004 (Postfix) with ESMTPSA id 375AE710AC5
+ for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2017 16:46:27 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBGZWIgMTcsIDIwMTcgYXQgMToxMSBBTSwgSm9lIFBlcmNoZXMgPGpvZUBwZXJjaGVz
-LmNvbT4gd3JvdGU6Cj4gVGhlcmUgYXJlIH40MzAwIHVzZXMgb2YgcHJfd2FybiBhbmQgfjI1MCB1
-c2VzIG9mIHRoZSBvbGRlcgo+IHByX3dhcm5pbmcgaW4gdGhlIGtlcm5lbCBzb3VyY2UgdHJlZS4K
-Pgo+IE1ha2UgdGhlIHVzZSBvZiBwcl93YXJuIGNvbnNpc3RlbnQgYWNyb3NzIGFsbCBrZXJuZWwg
-ZmlsZXMuCj4KPiBUaGlzIGV4Y2x1ZGVzIGFsbCBmaWxlcyBpbiB0b29scy8gYXMgdGhlcmUgaXMg
-YSBzZXBhcmF0ZQo+IGRlZmluZSBwcl93YXJuaW5nIGZvciB0aGF0IGRpcmVjdG9yeSB0cmVlIGFu
-ZCBwcl93YXJuIGlzCj4gbm90IHVzZWQgaW4gdG9vbHMvLgo+Cj4gRG9uZSB3aXRoICdzZWQgcy9c
-YnByX3dhcm5pbmdcYi9wcl93YXJuLycgYW5kIHNvbWUgZW1hY3NpbmcuCj4KPiBNaXNjZWxsYW5l
-YToKPgo+IG8gQ29hbGVzY2UgZm9ybWF0cyBhbmQgcmVhbGlnbiBhcmd1bWVudHMKPgo+IFNvbWUg
-ZmlsZXMgbm90IGNvbXBpbGVkIC0gbm8gY3Jvc3MtY29tcGlsZXJzCj4KPiBKb2UgUGVyY2hlcyAo
-MzUpOgo+ICAgYWxwaGE6IENvbnZlcnQgcmVtYWluaW5nIHVzZXMgb2YgcHJfd2FybmluZyB0byBw
-cl93YXJuCj4gICBBUk06IGVwOTN4eDogQ29udmVydCByZW1haW5pbmcgdXNlcyBvZiBwcl93YXJu
-aW5nIHRvIHByX3dhcm4KPiAgIGFybTY0OiBDb252ZXJ0IHJlbWFpbmluZyB1c2VzIG9mIHByX3dh
-cm5pbmcgdG8gcHJfd2Fybgo+ICAgYXJjaC9ibGFja2ZpbjogQ29udmVydCByZW1haW5pbmcgdXNl
-cyBvZiBwcl93YXJuaW5nIHRvIHByX3dhcm4KPiAgIGlhNjQ6IENvbnZlcnQgcmVtYWluaW5nIHVz
-ZSBvZiBwcl93YXJuaW5nIHRvIHByX3dhcm4KPiAgIHBvd2VycGM6IENvbnZlcnQgcmVtYWluaW5n
-IHVzZXMgb2YgcHJfd2FybmluZyB0byBwcl93YXJuCj4gICBzaDogQ29udmVydCByZW1haW5pbmcg
-dXNlcyBvZiBwcl93YXJuaW5nIHRvIHByX3dhcm4KPiAgIHNwYXJjOiBDb252ZXJ0IHJlbWFpbmlu
-ZyB1c2Ugb2YgcHJfd2FybmluZyB0byBwcl93YXJuCj4gICB4ODY6IENvbnZlcnQgcmVtYWluaW5n
-IHVzZXMgb2YgcHJfd2FybmluZyB0byBwcl93YXJuCj4gICBkcml2ZXJzL2FjcGk6IENvbnZlcnQg
-cmVtYWluaW5nIHVzZXMgb2YgcHJfd2FybmluZyB0byBwcl93YXJuCj4gICBibG9jay9kcmJkOiBD
-b252ZXJ0IHJlbWFpbmluZyB1c2VzIG9mIHByX3dhcm5pbmcgdG8gcHJfd2Fybgo+ICAgZ2Ryb206
-IENvbnZlcnQgcmVtYWluaW5nIHVzZXMgb2YgcHJfd2FybmluZyB0byBwcl93YXJuCj4gICBkcml2
-ZXJzL2NoYXI6IENvbnZlcnQgcmVtYWluaW5nIHVzZSBvZiBwcl93YXJuaW5nIHRvIHByX3dhcm4K
-PiAgIGNsb2Nrc291cmNlOiBDb252ZXJ0IHJlbWFpbmluZyB1c2Ugb2YgcHJfd2FybmluZyB0byBw
-cl93YXJuCj4gICBkcml2ZXJzL2NyeXB0bzogQ29udmVydCByZW1haW5pbmcgdXNlcyBvZiBwcl93
-YXJuaW5nIHRvIHByX3dhcm4KPiAgIGZtYzogQ29udmVydCByZW1haW5pbmcgdXNlIG9mIHByX3dh
-cm5pbmcgdG8gcHJfd2Fybgo+ICAgZHJpdmVycy9ncHU6IENvbnZlcnQgcmVtYWluaW5nIHVzZXMg
-b2YgcHJfd2FybmluZyB0byBwcl93YXJuCj4gICBkcml2ZXJzL2lkZTogQ29udmVydCByZW1haW5p
-bmcgdXNlcyBvZiBwcl93YXJuaW5nIHRvIHByX3dhcm4KPiAgIGRyaXZlcnMvaW5wdXQ6IENvbnZl
-cnQgcmVtYWluaW5nIHVzZXMgb2YgcHJfd2FybmluZyB0byBwcl93YXJuCj4gICBkcml2ZXJzL2lz
-ZG46IENvbnZlcnQgcmVtYWluaW5nIHVzZXMgb2YgcHJfd2FybmluZyB0byBwcl93YXJuCj4gICBk
-cml2ZXJzL21hY2ludG9zaDogQ29udmVydCByZW1haW5pbmcgdXNlcyBvZiBwcl93YXJuaW5nIHRv
-IHByX3dhcm4KPiAgIGRyaXZlcnMvbWVkaWE6IENvbnZlcnQgcmVtYWluaW5nIHVzZSBvZiBwcl93
-YXJuaW5nIHRvIHByX3dhcm4KPiAgIGRyaXZlcnMvbWZkOiBDb252ZXJ0IHJlbWFpbmluZyB1c2Vz
-IG9mIHByX3dhcm5pbmcgdG8gcHJfd2Fybgo+ICAgZHJpdmVycy9tdGQ6IENvbnZlcnQgcmVtYWlu
-aW5nIHVzZXMgb2YgcHJfd2FybmluZyB0byBwcl93YXJuCj4gICBkcml2ZXJzL29mOiBDb252ZXJ0
-IHJlbWFpbmluZyB1c2VzIG9mIHByX3dhcm5pbmcgdG8gcHJfd2Fybgo+ICAgZHJpdmVycy9vcHJv
-ZmlsZTogQ29udmVydCByZW1haW5pbmcgdXNlcyBvZiBwcl93YXJuaW5nIHRvIHByX3dhcm4KPiAg
-IGRyaXZlcnMvcGxhdGZvcm06IENvbnZlcnQgcmVtYWluaW5nIHVzZXMgb2YgcHJfd2FybmluZyB0
-byBwcl93YXJuCj4gICBkcml2ZXJzL3JhcGlkaW86IENvbnZlcnQgcmVtYWluaW5nIHVzZSBvZiBw
-cl93YXJuaW5nIHRvIHByX3dhcm4KPiAgIGRyaXZlcnMvc2NzaTogQ29udmVydCByZW1haW5pbmcg
-dXNlIG9mIHByX3dhcm5pbmcgdG8gcHJfd2Fybgo+ICAgZHJpdmVycy9zaDogQ29udmVydCByZW1h
-aW5pbmcgdXNlIG9mIHByX3dhcm5pbmcgdG8gcHJfd2Fybgo+ICAgZHJpdmVycy90dHk6IENvbnZl
-cnQgcmVtYWluaW5nIHVzZXMgb2YgcHJfd2FybmluZyB0byBwcl93YXJuCj4gICBkcml2ZXJzL3Zp
-ZGVvOiBDb252ZXJ0IHJlbWFpbmluZyB1c2VzIG9mIHByX3dhcm5pbmcgdG8gcHJfd2Fybgo+ICAg
-a2VybmVsL3RyYWNlOiBDb252ZXJ0IHJlbWFpbmluZyB1c2VzIG9mIHByX3dhcm5pbmcgdG8gcHJf
-d2Fybgo+ICAgbGliOiBDb252ZXJ0IHJlbWFpbmluZyB1c2VzIG9mIHByX3dhcm5pbmcgdG8gcHJf
-d2Fybgo+ICAgc291bmQvc29jOiBDb252ZXJ0IHJlbWFpbmluZyB1c2VzIG9mIHByX3dhcm5pbmcg
-dG8gcHJfd2FybgoKV2hlcmUncyB0aGUgcmVtb3ZhbCBvZiBwcl93YXJuaW5nIHNvIHdlIGRvbid0
-IGhhdmUgbW9yZSBzbmVhayBpbj8KClJvYgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwphbWQtZ2Z4IG1haWxpbmcgbGlzdAphbWQtZ2Z4QGxpc3RzLmZyZWVk
-ZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2FtZC1nZngK
+Here is my alsa config :
+http://www.alsa-project.org/db/?f=d8c96ba81442526650f277e0b7d43dfb6fd668a4
+
+On raspberry I cannot use dmix plugin, when I run a speaker-test with a very simple config using dmix (refer given 
+config in alsa result), its stays stuck.
+When I use default alsa config (direct use of hw:0,0 without dmix), mixing is done as said here :
+
+    NOTE: For ALSA 1.0.9rc2 and higher you don't need to setup dmix for analogue output. Dmix is enabled by default for
+    soundcards which don't support hardware mixing. You still need to set it up for digital outputs.
+
+Here are some users having same problem 
+http://raspberrypi.stackexchange.com/questions/57787/using-the-alsa-dmix-plugin-on-raspbian-jessie . I'm not sure it is 
+an alsa problem. But alsa developers could help solving this issue.
+
+regards
+lah
