@@ -1,32 +1,21 @@
-From: =?UTF-8?Q?R=c3=a9mi_Pincent?= <mr.lahorde@laposte.net>
-Subject: [Bug report] dmix on armv8
-Date: Thu, 23 Feb 2017 16:46:26 +0100
-Message-ID: <46451130-4651-855e-b055-7ef6c9e4537e@laposte.net>
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+Subject: Re: [PATCH 0/9] tools subsystem refcounter conversions
+Date: Thu, 23 Feb 2017 13:23:44 -0300
+Message-ID: <20170223162344.GD3595@kernel.org>
+References: <1487691303-31858-1-git-send-email-elena.reshetova@intel.com>
+ <20170221153935.GE5052@kernel.org>
+ <20170222232329.GN20447@kernel.org>
+ <20170222232917.GO20447@kernel.org>
+ <2236FBA76BA1254E88B949DDB74E612B41C4F449@IRSMSX102.ger.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtpoutz2.laposte.net (smtpoutz299.laposte.net [178.22.154.199])
- by alsa0.perex.cz (Postfix) with ESMTP id C0311266860
- for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2017 16:46:30 +0100 (CET)
-Received: from smtpoutz2.laposte.net (localhost [127.0.0.1])
- by lpn-prd-vrout011 (Postfix) with ESMTP id D98ED52BC13
- for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2017 16:46:29 +0100 (CET)
-Received: from smtpoutz2.laposte.net (localhost [127.0.0.1])
- by lpn-prd-vrout011 (Postfix) with ESMTP id CB33152B81E
- for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2017 16:46:29 +0100 (CET)
-Received: from lpn-prd-vrin004 (lpn-prd-vrin004.prosodie [10.128.63.5])
- by lpn-prd-vrout011 (Postfix) with ESMTP id 9311752BC13
- for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2017 16:46:29 +0100 (CET)
-Received: from lpn-prd-vrin004 (localhost [127.0.0.1])
- by lpn-prd-vrin004 (Postfix) with ESMTP id 814A0710AC1
- for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2017 16:46:29 +0100 (CET)
-Received: from [192.168.132.10] (a4h-creativity-lab3.inrialpes.fr
- [194.199.16.203])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by lpn-prd-vrin004 (Postfix) with ESMTPSA id 375AE710AC5
- for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2017 16:46:27 +0100 (CET)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id D4F3E266860
+ for <alsa-devel@alsa-project.org>; Thu, 23 Feb 2017 17:23:52 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <2236FBA76BA1254E88B949DDB74E612B41C4F449@IRSMSX102.ger.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -36,22 +25,119 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "Reshetova, Elena" <elena.reshetova@intel.com>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "peterz@infradead.org" <peterz@infradead.org>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alexander.shishkin@linux.intel.com" <alexander.shishkin@linux.intel.com>, "mingo@redhat.com" <mingo@redhat.com>, "matija.glavinic-pecotic.ext@nokia.com" <matija.glavinic-pecotic.ext@nokia.com>, "jolsa@kernel.org" <jolsa@kernel.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-Here is my alsa config :
-http://www.alsa-project.org/db/?f=d8c96ba81442526650f277e0b7d43dfb6fd668a4
+Em Thu, Feb 23, 2017 at 11:39:10AM +0000, Reshetova, Elena escreveu:
+> > Em Wed, Feb 22, 2017 at 08:23:29PM -0300, Arnaldo Carvalho de Melo
+> > escreveu:
+> > > Em Tue, Feb 21, 2017 at 12:39:35PM -0300, Arnaldo Carvalho de Melo
+> > escreveu:
+> > > > Em Tue, Feb 21, 2017 at 05:34:54PM +0200, Elena Reshetova escreveu:
+> > > > > Now when new refcount_t type and API are finally merged
+> > > > > (see include/linux/refcount.h), the following
+> > > > > patches convert various refcounters in the tools susystem from atomic_t
+> > > > > to refcount_t. By doing this we prevent intentional or accidental
+> > > > > underflows or overflows that can led to use-after-free vulnerabilities.
+> > > >
+> > > > Thanks for working on this! I was almost going to jump on doing this
+> > > > myself!
+> > > >
+> > > > I'll try and get this merged ASAP.
+> > >
+> > > So, please take a look at my tmp.perf/refcount branch at:
+> > >
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git
+> 
+> I took a look on it and it looks good. Just one thing I want to double check with regards to this commit:
+> https://kernel.googlesource.com/pub/scm/linux/kernel/git/acme/linux/+/58d561002587bf2572f9e6f4d222659e4068fadf%5E%21/#F0
+> 
+> And more specifically to this chunk:
+> 
+> @@ -937,7 +937,7 @@
+>  		munmap(map->base, perf_mmap__mmap_len(map));
+>  		map->base = NULL;
+>  		map->fd = -1;
+> -		atomic_set(&map->refcnt, 0);
+> +		refcount_set(&map->refcnt, 0);
+>  	}
+>  	auxtrace_mmap__munmap(&map->auxtrace_mmap);
+>  }
+> 
+> So, when the refcount set to zero in this place, what exactly happens to the perf_map object after? 
+> I just want to double check that we don't have  another hiding reusage case here when refcounter later on is simply incremented vs. set to "2." 
 
-On raspberry I cannot use dmix plugin, when I run a speaker-test with a very simple config using dmix (refer given 
-config in alsa result), its stays stuck.
-When I use default alsa config (direct use of hw:0,0 without dmix), mixing is done as said here :
+So, this is an odd use of a reference count, the patch below should help
+understand it?
 
-    NOTE: For ALSA 1.0.9rc2 and higher you don't need to setup dmix for analogue output. Dmix is enabled by default for
-    soundcards which don't support hardware mixing. You still need to set it up for digital outputs.
+Those perf_mmap objects are created in a batch fashion, it being zero
+just means it isn't yet mmaped at all, and we check for that before
+using it.
 
-Here are some users having same problem 
-http://raspberrypi.stackexchange.com/questions/57787/using-the-alsa-dmix-plugin-on-raspbian-jessie . I'm not sure it is 
-an alsa problem. But alsa developers could help solving this issue.
+So, it remains a bug to do a dec for a zeroed refcount, and the
+refcount_t infrastructure will catch it, which helps tools/.
 
-regards
-lah
+- Arnaldo
+
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index 564b924fb48a..5a70f08d2518 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -974,8 +974,19 @@ static struct perf_mmap *perf_evlist__alloc_mmap(struct perf_evlist *evlist)
+ 	if (!map)
+ 		return NULL;
+ 
+-	for (i = 0; i < evlist->nr_mmaps; i++)
++	for (i = 0; i < evlist->nr_mmaps; i++) {
+ 		map[i].fd = -1;
++		/*
++		 * When the perf_mmap() call is made we grab one refcount, plus
++		 * one extra to let perf_evlist__mmap_consume() get the last
++		 * events after all real references (perf_mmap__get()) are
++		 * dropped.
++		 *
++		 * Each PERF_EVENT_IOC_SET_OUTPUT points to this mmap and
++		 * thus does perf_mmap__get() on it.
++ 		 */
++		refcount_set(&map[i].refcnt, 0);
++	}
+ 	return map;
+ }
+ 
+@@ -988,6 +999,7 @@ struct mmap_params {
+ static int perf_mmap__mmap(struct perf_mmap *map,
+ 			   struct mmap_params *mp, int fd)
+ {
++	perf_mmap__get(map);
+ 	/*
+ 	 * The last one will be done at perf_evlist__mmap_consume(), so that we
+ 	 * make sure we don't prevent tools from consuming every last event in
+@@ -1001,7 +1013,7 @@ static int perf_mmap__mmap(struct perf_mmap *map,
+ 	 * evlist layer can't just drop it when filtering events in
+ 	 * perf_evlist__filter_pollfd().
+ 	 */
+-	refcount_set(&map->refcnt, 2);
++	perf_mmap__get(map); /* This is not a dup, see the comment above! */
+ 	map->prev = 0;
+ 	map->mask = mp->mask;
+ 	map->base = mmap(NULL, perf_mmap__mmap_len(map), mp->prot,
+ 
+> > > There are multiple fixes in it to get it to build and test it, so far,
+> > > with:
+> > >
+> > >   perf top -F 15000 -d 0
+> > >
+> > > while doing kernel builds and tight usleep 1 loops to create lots of
+> > > short lived threads with its map_groups, maps, dsos, etc.
+> > >
+> > > Now running some build tests in some 36 containers with assorted distros
+> > > and cross compilers.
+> > 
+> > Tomorrow I'll inject some refcount errors to test this all.
+> 
+> 
+> Thank you!
+> 
+> Best Regards,
+> Elena.
