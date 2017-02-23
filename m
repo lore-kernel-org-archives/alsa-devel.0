@@ -1,89 +1,69 @@
-From: Breno Leitao <leitao@debian.org>
-Subject: powerpc64 workaround
-Date: Mon, 20 Feb 2017 16:32:35 -0300
-Message-ID: <20170220193234.GA10305@gmail.com>
+From: =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
+Subject: Re: [PATCH v2 4/8] sound: soc: pxa: Suppress SND_MMP_SOC for arm64
+Date: Thu, 23 Feb 2017 15:11:46 +0100
+Message-ID: <473e4976-77eb-4b67-e874-ae6bd717ddaa@suse.de>
+References: <20170222022929.10540-1-afaerber@suse.de>
+ <20170222022929.10540-5-afaerber@suse.de>
+ <20170222184734.wmkbzfsz4yklofcg@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6283108456572564192=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f176.google.com (mail-qk0-f176.google.com
- [209.85.220.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C050266917
- for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2017 20:32:41 +0100 (CET)
-Received: by mail-qk0-f176.google.com with SMTP id x71so38141226qkb.3
- for <alsa-devel@alsa-project.org>; Mon, 20 Feb 2017 11:32:41 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20170222184734.wmkbzfsz4yklofcg@sirena.org.uk>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: info@andromedabox.org, alsa-devel@alsa-project.org, Eric Miao <eric.y.miao@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, Jaroslav Kysela <perex@perex.cz>, Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
+Am 22.02.2017 um 19:47 schrieb Mark Brown:
+> On Wed, Feb 22, 2017 at 03:29:24AM +0100, Andreas F=E4rber wrote:
+> =
 
---===============6283108456572564192==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="pWyiEgJYm5f9v55/"
-Content-Disposition: inline
+> This is patch 4 of 8, what's going on with dependencies here?
 
+No dependencies on previous patches. 5/8 adds ARCH_MMP to arm64.
 
---pWyiEgJYm5f9v55/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It compiled without this (just Kconfig warnings), so this could go
+through the appropriate sound tree as a cleanup.
 
-Hello Takashi,
+> Please use subject lines matching the style for the subsystem.  This
+> makes it easier for people to identify relevant patches.
 
-Fourteen years ago you commited a patch in alsa-libs entitled "added
-workaround for ppc64." and I am curious about it.  What is this
-workaround for? Is this still needed?
+Should I make it "ASoC: pxa: ..." then? SND_MMP_SOC selects SND_ARM,
+which in sound/arm/Kconfig says 'Drivers that are implemented on ASoC
+can be found in "ALSA for SoC audio support" section.', which confused
+me about whether or not this is an ASoC compliant driver if it selects a
+non-ASoC symbol.
 
-Currently it seems to be causing some issues on ppc64le (ABI v2) when
-building this package, and we are reverting it downstream in order to
-avoid FTBFS on alsa-libs:=20
+>>  config SND_MMP_SOC
+>> -	bool "Soc Audio for Marvell MMP chips"
+>> -	depends on ARCH_MMP
+>> +	bool "SoC Audio for Marvell MMP chips"
+>> +	depends on ARCH_MMP && ARM
+> =
 
-https://github.com/alpinelinux/aports/pull/911
+> There are no obvious build time architecture dependencies for this
+> driver, shouldn't we have an || COMPILE_TEST in here?
 
-https://github.com/buildroot/buildroot/blob/master/package/alsa-lib/0005-re=
-move-powerpc64-workaround.patch
+I'm the wrong person to answer that - the symbol relies on
+architecture-specific SND_ARM, and my understanding was that the code
+still relies on platform data, therefore it did not seem worthwhile to
+just disable inapplicable dependencies such as MMP_SRAM
+(arch/arm/mach-mmp/; superseded by DT mmio-sram) or SND_ARM.
 
-Anyway, do you think it is still important?
+Regards,
+Andreas
 
-Thank you,
-Breno
+-- =
 
---pWyiEgJYm5f9v55/
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBCAAGBQJYq0RSAAoJEDWjk5/8eHdtYDYP/2BLcpPjzcsMUL91776eazpb
-WZdG1qSTaTW0eq+QQnaR6KN1lvbsT9pj/389K+4dZHyseFLeIGIXDpEPv+gYvVq5
-wrQOYm2r/l/JUrnJFLN+m3McRIVI6Hh+03AX5H8vqKX+vG0jTGs4kaeu826ky2E5
-dfq13042NtbQTj/0qs6KuWbZuhjwYzxX5EPtelxIELNl8/tXuJ+WTB+S3OaxZ0+U
-y8Gel/mFAVnw/x9nfeCxPhLpsEogDwcOKg1dWzvDskK/ynVDBRYpq2vLB6jjbmOs
-8shuR3NaxIn25a/ftyEaHnh4brM4tsIGVrOLVQPd7+2ULQEidC+2+hV4hc03xQry
-bpvt1Fugw0oqFMEI2VeDxKyquPbdDW91RT/iXT3jIZXoetNwyIRqxBFTbzZdg31E
-F8N/4AwjmOo7PZrhn9fhtTYEKxL+lBIWVZO9zpgDF1b5c9LXQvOG781huzA0Yxaw
-m4RIp+IU8tWsmmClCZm8UUD+nWrRiTJpEK14xVQToPmN/+Anv6LteYA/aLMJAosQ
-76TSV+uUQ4wBB2btLPv8WkA9JByO5reZuoxXXFSJtxkptFb9oeF6WYLfge83Dwje
-5XSHjyM+7FWg2VvGwPjYgNOT5xUGFO9rXVjJzpHH+x0gK9auqvSVNQYwubCnvVol
-r6CTfyhZTNbyywOdJXXS
-=ltvc
------END PGP SIGNATURE-----
-
---pWyiEgJYm5f9v55/--
-
---===============6283108456572564192==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6283108456572564192==--
+SUSE Linux GmbH, Maxfeldstr. 5, 90409 N=FCrnberg, Germany
+GF: Felix Imend=F6rffer, Jane Smithard, Graham Norton
+HRB 21284 (AG N=FCrnberg)
