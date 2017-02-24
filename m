@@ -1,36 +1,173 @@
-From: Songjun Wu <songjun.wu@microchip.com>
-Subject: [PATCH] ASoC: atmel-classd: fix audio clock rate
-Date: Fri, 24 Feb 2017 15:10:43 +0800
-Message-ID: <20170224071043.25522-1-songjun.wu@microchip.com>
+From: "Reshetova, Elena" <elena.reshetova@intel.com>
+Subject: Re: [PATCH 0/9] tools subsystem refcounter conversions
+Date: Fri, 24 Feb 2017 07:27:32 +0000
+Message-ID: <2236FBA76BA1254E88B949DDB74E612B41C4F9DA@IRSMSX102.ger.corp.intel.com>
+References: <1487691303-31858-1-git-send-email-elena.reshetova@intel.com>
+ <20170221153935.GE5052@kernel.org> <20170222232329.GN20447@kernel.org>
+ <20170222232917.GO20447@kernel.org>
+ <2236FBA76BA1254E88B949DDB74E612B41C4F449@IRSMSX102.ger.corp.intel.com>
+ <20170223162344.GD3595@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: nicolas.ferre@microchip.com, broonie@kernel.org, linux-arm-kernel@lists.infradead.org
-Cc: Songjun Wu <songjun.wu@microchip.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 38AD2266FFF
+ for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2017 08:27:39 +0100 (CET)
+In-Reply-To: <20170223162344.GD3595@kernel.org>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "peterz@infradead.org" <peterz@infradead.org>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alexander.shishkin@linux.intel.com" <alexander.shishkin@linux.intel.com>, "mingo@redhat.com" <mingo@redhat.com>, "matija.glavinic-pecotic.ext@nokia.com" <matija.glavinic-pecotic.ext@nokia.com>, "jolsa@kernel.org" <jolsa@kernel.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-Fix the audio clock rate according to the datasheet.
+> Em Thu, Feb 23, 2017 at 11:39:10AM +0000, Reshetova, Elena escreveu:
+> > > Em Wed, Feb 22, 2017 at 08:23:29PM -0300, Arnaldo Carvalho de Melo
+> > > escreveu:
+> > > > Em Tue, Feb 21, 2017 at 12:39:35PM -0300, Arnaldo Carvalho de Melo
+> > > escreveu:
+> > > > > Em Tue, Feb 21, 2017 at 05:34:54PM +0200, Elena Reshetova escreveu:
+> > > > > > Now when new refcount_t type and API are finally merged
+> > > > > > (see include/linux/refcount.h), the following
+> > > > > > patches convert various refcounters in the tools susystem from
+> atomic_t
+> > > > > > to refcount_t. By doing this we prevent intentional or accidental
+> > > > > > underflows or overflows that can led to use-after-free vulnerabilities.
+> > > > >
+> > > > > Thanks for working on this! I was almost going to jump on doing this
+> > > > > myself!
+> > > > >
+> > > > > I'll try and get this merged ASAP.
+> > > >
+> > > > So, please take a look at my tmp.perf/refcount branch at:
+> > > >
+> > > > git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git
+> >
+> > I took a look on it and it looks good. Just one thing I want to double check
+> with regards to this commit:
+> >
+> https://kernel.googlesource.com/pub/scm/linux/kernel/git/acme/linux/+/58d
+> 561002587bf2572f9e6f4d222659e4068fadf%5E%21/#F0
+> >
+> > And more specifically to this chunk:
+> >
+> > @@ -937,7 +937,7 @@
+> >  		munmap(map->base,
+> perf_mmap__mmap_len(map));
+> >  		map->base = NULL;
+> >  		map->fd = -1;
+> > -		atomic_set(&map->refcnt, 0);
+> > +		refcount_set(&map->refcnt, 0);
+> >  	}
+> >  	auxtrace_mmap__munmap(&map->auxtrace_mmap);
+> >  }
+> >
+> > So, when the refcount set to zero in this place, what exactly happens to the
+> perf_map object after?
+> > I just want to double check that we don't have  another hiding reusage case
+> here when refcounter later on is simply incremented vs. set to "2."
+> 
+> So, this is an odd use of a reference count, the patch below should help
+> understand it?
 
-Reported-by: Dushara Jayasinghe <dushara@successful.com.au>
-Signed-off-by: Songjun Wu <songjun.wu@microchip.com>
----
+Yes, it helps, indeed, but I think we have an issue here. See below inline in patch. 
 
- sound/soc/atmel/atmel-classd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> Those perf_mmap objects are created in a batch fashion, it being zero
+> just means it isn't yet mmaped at all, and we check for that before
+> using it.
+> 
+> So, it remains a bug to do a dec for a zeroed refcount, and the
+> refcount_t infrastructure will catch it, which helps tools/.
+> 
+> - Arnaldo
+> 
+> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+> index 564b924fb48a..5a70f08d2518 100644
+> --- a/tools/perf/util/evlist.c
+> +++ b/tools/perf/util/evlist.c
+> @@ -974,8 +974,19 @@ static struct perf_mmap
+> *perf_evlist__alloc_mmap(struct perf_evlist *evlist)
+>  	if (!map)
+>  		return NULL;
+> 
+> -	for (i = 0; i < evlist->nr_mmaps; i++)
+> +	for (i = 0; i < evlist->nr_mmaps; i++) {
+>  		map[i].fd = -1;
+> +		/*
+> +		 * When the perf_mmap() call is made we grab
+> one refcount, plus
+> +		 * one extra to let perf_evlist__mmap_consume()
+> get the last
+> +		 * events after all real references
+> (perf_mmap__get()) are
+> +		 * dropped.
+> +		 *
+> +		 * Each PERF_EVENT_IOC_SET_OUTPUT points to
+> this mmap and
+> +		 * thus does perf_mmap__get() on it.
+> + 		 */
+> +		refcount_set(&map[i].refcnt, 0);
+> +	}
+>  	return map;
+>  }
+> 
+> @@ -988,6 +999,7 @@ struct mmap_params {
+>  static int perf_mmap__mmap(struct perf_mmap *map,
+>  			   struct mmap_params *mp, int fd)
+>  {
+> +	perf_mmap__get(map);
+>  	/*
+>  	 * The last one will be done at perf_evlist__mmap_consume(),
+> so that we
+>  	 * make sure we don't prevent tools from consuming every last
+> event in
+> @@ -1001,7 +1013,7 @@ static int perf_mmap__mmap(struct perf_mmap
+> *map,
+>  	 * evlist layer can't just drop it when filtering events in
+>  	 * perf_evlist__filter_pollfd().
+>  	 */
+> -	refcount_set(&map->refcnt, 2);
+> +	perf_mmap__get(map); /* This is not a dup, see the comment
+> above! */
 
-diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
-index 89ac5f5a93eb..7ae46c2647d4 100644
---- a/sound/soc/atmel/atmel-classd.c
-+++ b/sound/soc/atmel/atmel-classd.c
-@@ -349,7 +349,7 @@ static int atmel_classd_codec_dai_digital_mute(struct snd_soc_dai *codec_dai,
- }
- 
- #define CLASSD_ACLK_RATE_11M2896_MPY_8 (112896 * 100 * 8)
--#define CLASSD_ACLK_RATE_12M288_MPY_8  (12228 * 1000 * 8)
-+#define CLASSD_ACLK_RATE_12M288_MPY_8  (12288 * 1000 * 8)
- 
- static struct {
- 	int rate;
--- 
-2.11.0
+This change now means that instead of doing refcount_set to 2 when refcount value is "0", you are doing two
+refcount_inc() via perf_mmap__get(), which is not going to do any increments when refcount value is zero. 
+So, in that sense having just one refcount_set to 2 with a good explanation why it is needed is better :)
+
+When I asked about it initially, I just wanted to make sure there are no other refcount_inc()s happening on the object when its refcount value is zero. Which looks to be the case apart from the one above. 
+
+Best Regards,
+Elena.
+
+>  	map->prev = 0;
+>  	map->mask = mp->mask;
+>  	map->base = mmap(NULL, perf_mmap__mmap_len(map), mp-
+> >prot,
+> 
+> > > > There are multiple fixes in it to get it to build and test it, so far,
+> > > > with:
+> > > >
+> > > >   perf top -F 15000 -d 0
+> > > >
+> > > > while doing kernel builds and tight usleep 1 loops to create lots of
+> > > > short lived threads with its map_groups, maps, dsos, etc.
+> > > >
+> > > > Now running some build tests in some 36 containers with assorted distros
+> > > > and cross compilers.
+> > >
+> > > Tomorrow I'll inject some refcount errors to test this all.
+> >
+> >
+> > Thank you!
+> >
+> > Best Regards,
+> > Elena.
