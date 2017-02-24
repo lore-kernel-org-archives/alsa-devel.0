@@ -1,23 +1,19 @@
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [PATCH 0/9] tools subsystem refcounter conversions
-Date: Fri, 24 Feb 2017 10:32:53 -0300
-Message-ID: <20170224133253.GH3595@kernel.org>
-References: <1487691303-31858-1-git-send-email-elena.reshetova@intel.com>
- <20170221153935.GE5052@kernel.org>
- <20170222232329.GN20447@kernel.org>
- <20170222232917.GO20447@kernel.org>
- <2236FBA76BA1254E88B949DDB74E612B41C4F449@IRSMSX102.ger.corp.intel.com>
- <20170223162344.GD3595@kernel.org>
- <2236FBA76BA1254E88B949DDB74E612B41C4F9DA@IRSMSX102.ger.corp.intel.com>
+From: Matt Flax <flatmax@flatmax.org>
+Subject: Re: [PATCH v8] ASoC: bcm2835: Add 8 channel
+ (multitrack) capability
+Date: Sat, 25 Feb 2017 00:50:47 +1100
+Message-ID: <3b693ff9-b3a6-1c10-5b1a-78be04006113@flatmax.org>
+References: <1486422576-6958-1-git-send-email-flatmax@flatmax.org>
+ <1487746600-11065-1-git-send-email-flatmax@flatmax.org>
+ <20170224121832.GA19227@camel2.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 511692667E0
- for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2017 14:33:04 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <2236FBA76BA1254E88B949DDB74E612B41C4F9DA@IRSMSX102.ger.corp.intel.com>
+Received: from nschwmtas06p.mx.bigpond.com (nschwmtas06p.mx.bigpond.com
+ [61.9.189.152]) by alsa0.perex.cz (Postfix) with ESMTP id A2C5A2667E0
+ for <alsa-devel@alsa-project.org>; Fri, 24 Feb 2017 14:50:56 +0100 (CET)
+In-Reply-To: <20170224121832.GA19227@camel2.lan>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,153 +23,173 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Reshetova, Elena" <elena.reshetova@intel.com>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "peterz@infradead.org" <peterz@infradead.org>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alexander.shishkin@linux.intel.com" <alexander.shishkin@linux.intel.com>, "mingo@redhat.com" <mingo@redhat.com>, "matija.glavinic-pecotic.ext@nokia.com" <matija.glavinic-pecotic.ext@nokia.com>, "jolsa@kernel.org" <jolsa@kernel.org>, "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+To: Matthias Reichl <hias@horus.com>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Phil Elwell <phil@raspberrypi.org>, Eric Anholt <eric@anholt.net>, Mark Brown <broonie@kernel.org>, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Em Fri, Feb 24, 2017 at 07:27:32AM +0000, Reshetova, Elena escreveu:
-> > Em Thu, Feb 23, 2017 at 11:39:10AM +0000, Reshetova, Elena escreveu:
-> > > > Em Wed, Feb 22, 2017 at 08:23:29PM -0300, Arnaldo Carvalho de Melo
-> > > > escreveu:
-> > > > > Em Tue, Feb 21, 2017 at 12:39:35PM -0300, Arnaldo Carvalho de Melo
-> > > > escreveu:
-> > > > > > Em Tue, Feb 21, 2017 at 05:34:54PM +0200, Elena Reshetova escreveu:
-> > > > > > > Now when new refcount_t type and API are finally merged
-> > > > > > > (see include/linux/refcount.h), the following
-> > > > > > > patches convert various refcounters in the tools susystem from
-> > atomic_t
-> > > > > > > to refcount_t. By doing this we prevent intentional or accidental
-> > > > > > > underflows or overflows that can led to use-after-free vulnerabilities.
-> > > > > >
-> > > > > > Thanks for working on this! I was almost going to jump on doing this
-> > > > > > myself!
-> > > > > >
-> > > > > > I'll try and get this merged ASAP.
-> > > > >
-> > > > > So, please take a look at my tmp.perf/refcount branch at:
-> > > > >
-> > > > > git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git
-> > >
-> > > I took a look on it and it looks good. Just one thing I want to double check
-> > with regards to this commit:
-> > >
-> > https://kernel.googlesource.com/pub/scm/linux/kernel/git/acme/linux/+/58d
-> > 561002587bf2572f9e6f4d222659e4068fadf%5E%21/#F0
-> > >
-> > > And more specifically to this chunk:
-> > >
-> > > @@ -937,7 +937,7 @@
-> > >  		munmap(map->base,
-> > perf_mmap__mmap_len(map));
-> > >  		map->base = NULL;
-> > >  		map->fd = -1;
-> > > -		atomic_set(&map->refcnt, 0);
-> > > +		refcount_set(&map->refcnt, 0);
-> > >  	}
-> > >  	auxtrace_mmap__munmap(&map->auxtrace_mmap);
-> > >  }
-> > >
-> > > So, when the refcount set to zero in this place, what exactly happens to the
-> > perf_map object after?
-> > > I just want to double check that we don't have  another hiding reusage case
-> > here when refcounter later on is simply incremented vs. set to "2."
-> > 
-> > So, this is an odd use of a reference count, the patch below should help
-> > understand it?
-> 
-> Yes, it helps, indeed, but I think we have an issue here. See below inline in patch. 
-> 
-> > 
-> > Those perf_mmap objects are created in a batch fashion, it being zero
-> > just means it isn't yet mmaped at all, and we check for that before
-> > using it.
-> > 
-> > So, it remains a bug to do a dec for a zeroed refcount, and the
-> > refcount_t infrastructure will catch it, which helps tools/.
-> > 
-> > - Arnaldo
-> > 
-> > diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-> > index 564b924fb48a..5a70f08d2518 100644
-> > --- a/tools/perf/util/evlist.c
-> > +++ b/tools/perf/util/evlist.c
-> > @@ -974,8 +974,19 @@ static struct perf_mmap
-> > *perf_evlist__alloc_mmap(struct perf_evlist *evlist)
-> >  	if (!map)
-> >  		return NULL;
-> > 
-> > -	for (i = 0; i < evlist->nr_mmaps; i++)
-> > +	for (i = 0; i < evlist->nr_mmaps; i++) {
-> >  		map[i].fd = -1;
-> > +		/*
-> > +		 * When the perf_mmap() call is made we grab
-> > one refcount, plus
-> > +		 * one extra to let perf_evlist__mmap_consume()
-> > get the last
-> > +		 * events after all real references
-> > (perf_mmap__get()) are
-> > +		 * dropped.
-> > +		 *
-> > +		 * Each PERF_EVENT_IOC_SET_OUTPUT points to
-> > this mmap and
-> > +		 * thus does perf_mmap__get() on it.
-> > + 		 */
-> > +		refcount_set(&map[i].refcnt, 0);
-> > +	}
-> >  	return map;
-> >  }
-> > 
-> > @@ -988,6 +999,7 @@ struct mmap_params {
-> >  static int perf_mmap__mmap(struct perf_mmap *map,
-> >  			   struct mmap_params *mp, int fd)
-> >  {
-> > +	perf_mmap__get(map);
-> >  	/*
-> >  	 * The last one will be done at perf_evlist__mmap_consume(),
-> > so that we
-> >  	 * make sure we don't prevent tools from consuming every last
-> > event in
-> > @@ -1001,7 +1013,7 @@ static int perf_mmap__mmap(struct perf_mmap
-> > *map,
-> >  	 * evlist layer can't just drop it when filtering events in
-> >  	 * perf_evlist__filter_pollfd().
-> >  	 */
-> > -	refcount_set(&map->refcnt, 2);
-> > +	perf_mmap__get(map); /* This is not a dup, see the comment
-> > above! */
- 
-> This change now means that instead of doing refcount_set to 2 when refcount value is "0", you are doing two
-> refcount_inc() via perf_mmap__get(), which is not going to do any increments when refcount value is zero. 
-> So, in that sense having just one refcount_set to 2 with a good explanation why it is needed is better :)
 
-Duh, thanks for pointint it out, will leave the comments, remove the
-pair of perf_mmap__get()
- 
-> When I asked about it initially, I just wanted to make sure there are no other refcount_inc()s happening on the object when its refcount value is zero. Which looks to be the case apart from the one above. 
-> 
-> Best Regards,
-> Elena.
-> 
-> >  	map->prev = 0;
-> >  	map->mask = mp->mask;
-> >  	map->base = mmap(NULL, perf_mmap__mmap_len(map), mp-
-> > >prot,
-> > 
-> > > > > There are multiple fixes in it to get it to build and test it, so far,
-> > > > > with:
-> > > > >
-> > > > >   perf top -F 15000 -d 0
-> > > > >
-> > > > > while doing kernel builds and tight usleep 1 loops to create lots of
-> > > > > short lived threads with its map_groups, maps, dsos, etc.
-> > > > >
-> > > > > Now running some build tests in some 36 containers with assorted distros
-> > > > > and cross compilers.
-> > > >
-> > > > Tomorrow I'll inject some refcount errors to test this all.
-> > >
-> > >
-> > > Thank you!
-> > >
-> > > Best Regards,
-> > > Elena.
+
+On 24/02/17 23:18, Matthias Reichl wrote:
+> Hi Matt,
+>
+> please include me in CC, your emails don't seem to get through
+> linux-rpi-kernel reliably.
+>
+> I did a few tests with WM5102 in DSP A mode connected to RPi3
+> with downstream kernel 4.9.11 plus your patch. wm5102 was configured
+> as master, cpu<->codec dai_link.dai_fmt =
+> SND_SOC_DAIFMT_DSP_A | SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBM_CFM
+>
+> Comments are inline.
+
+Sure will do, thanks for testing. My comments are also inline.
+
+>
+> On Wed, Feb 22, 2017 at 05:56:40PM +1100, Matt Flax wrote:
+>> This patch adds multitrack capability if in DSP mode A and the
+>> codec is master.
+>>
+>> In bcm2835_i2s_startup, snd_pcm_hw_constraint_single is used to set
+>> channels to 8 if both SND_SOC_DAIFMT_CBM_CFM and SND_SOC_DAIFMT_DSP_A
+>> are set. Otherwise, channels are set to 2. These settings are
+>> accomplished using the SNDRV_PCM_HW_PARAM_CHANNELS variable.
+>>
+>> In bcm2835_i2s_shutdown the channels are set to 2 by default.
+>>
+>> In bcm2835_i2s_hw_params, DSP mode A format is now an option.
+>> Before replicating the format variable (from ch2 to ch1) for
+>> register loading, requested channels are checked to be either 2 or 8.
+>> This can be expanded later to accomodate other channel counts if
+>> supported by the sound card hardware.
+>>
+>> Signed-off-by: Matt Flax <flatmax at flatmax.org>
+>> ---
+>>   sound/soc/bcm/bcm2835-i2s.c | 22 +++++++++++++++++-----
+>>   1 file changed, 17 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
+>> index 6ba2049..4b5f3f1 100644
+>> --- a/sound/soc/bcm/bcm2835-i2s.c
+>> +++ b/sound/soc/bcm/bcm2835-i2s.c
+>> @@ -296,6 +296,7 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
+>>   
+>>   	switch (dev->fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+>>   	case SND_SOC_DAIFMT_I2S:
+>> +	case SND_SOC_DAIFMT_DSP_A:
+>>   		data_delay = 1;
+> In DSP_A mode data_delay should be set to 0. With data_delay = 1
+> the MSB is transmitted 1 clock cycle too late and the LSB of the
+> previous sample is received as MSB (i.e. you get loud noise).
+>
+> See these screenshots, I2S data was 0xF000 (S16_LE format)
+>
+> data_delay = 1:
+> http://www.horus.com/~hias/tmp/rpi/bcm2835-dsp-a-delay-1.png
+>
+> data_delay = 0:
+> http://www.horus.com/~hias/tmp/rpi/bcm2835-dsp-a-delay-0.png
+
+I can do this, however that would require DSP mode B to have an offset 
+of -1, which can't be set in the BCM2835 position register.
+
+I really like your approach, however it needs extra resources at the 
+hardware level. Without those resources it will never be usable and 
+stable. The reason is that you will never be able to get proper 
+synchrony and your channels will be randomly shifted. It is the curious 
+nature of the BCM2835 I2S silicon - I have used an FPGA to overcome this 
+problem.
+
+>>   		break;
+>>   	default:
+>> @@ -312,6 +313,7 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
+>>   
+>>   	switch (params_channels(params)) {
+>>   	case 2:
+>> +	case 8:
+>>   		format = BCM2835_I2S_CH1(format) | BCM2835_I2S_CH2(format);
+>>   		format |= BCM2835_I2S_CH1(BCM2835_I2S_CHPOS(ch1pos));
+>>   		format |= BCM2835_I2S_CH2(BCM2835_I2S_CHPOS(ch2pos));
+>> @@ -526,7 +528,17 @@ static int bcm2835_i2s_startup(struct snd_pcm_substream *substream,
+>>   	regmap_update_bits(dev->i2s_regmap, BCM2835_I2S_CS_A_REG,
+>>   			BCM2835_I2S_STBY, BCM2835_I2S_STBY);
+>>   
+>> -	return 0;
+>> +	/* Set the max channels to 8 if the codec is master and
+>> +	 * we are in DSP A mode. Otherwise only allow 2 channels.
+>> +	 */
+>> +	if ((dev->fmt &
+>> +		(SND_SOC_DAIFMT_MASTER_MASK | SND_SOC_DAIFMT_FORMAT_MASK))
+>> +			== (SND_SOC_DAIFMT_CBM_CFM | SND_SOC_DAIFMT_DSP_A))
+>> +		return snd_pcm_hw_constraint_single(substream->runtime,
+>> +			SNDRV_PCM_HW_PARAM_CHANNELS, 8);
+> I'm not sure why you are limiting to exactly 8 channels. 2 channels
+> worked fine here, too. Haven't tested with 4 or 6 channels yet but I
+> guess any even number of channels should work.
+>
+> In 8-channel configuration I often got swapped/shifted channels.
+> Not 100% sure why, but probably because bcm2835 hadn't DMAed the
+> data in when the codec started the clocks - in that case bcm2835 seems
+> to repeat the last stereo frame data it had in it's buffer. I haven't
+> digged into that deeper though, could be something in my test setup as
+> well.
+
+Ah - there you go - I would imagine they are only shifted, not swapped !
+
+I have a very robust stream, where I never get swapped channels. In 
+other words, I find that the channels 1 to 8 are always locked to the 
+correct pins.
+
+Multichannel simply can't be done (on the BCM2835) without a suitable 
+FPGA/ASIC/chip between the codec and the BCM2835.
+
+>> +	else
+>> +		return snd_pcm_hw_constraint_single(substream->runtime,
+>> +			SNDRV_PCM_HW_PARAM_CHANNELS, 2);
+>>   }
+>>   
+>>   static void bcm2835_i2s_shutdown(struct snd_pcm_substream *substream,
+>> @@ -549,6 +561,10 @@ static void bcm2835_i2s_shutdown(struct snd_pcm_substream *substream,
+>>   	 * not stop the clock when SND_SOC_DAIFMT_CONT
+>>   	 */
+>>   	bcm2835_i2s_stop_clock(dev);
+>> +
+>> +	/* Default to 2 channels */
+>> +	snd_pcm_hw_constraint_single(substream->runtime,
+>> +			SNDRV_PCM_HW_PARAM_CHANNELS, 2);
+>>   }
+>>   
+>>   static const struct snd_soc_dai_ops bcm2835_i2s_dai_ops = {
+>> @@ -576,16 +592,12 @@ static struct snd_soc_dai_driver bcm2835_i2s_dai = {
+>>   	.name	= "bcm2835-i2s",
+>>   	.probe	= bcm2835_i2s_dai_probe,
+>>   	.playback = {
+>> -		.channels_min = 2,
+>> -		.channels_max = 2,
+>>   		.rates =	SNDRV_PCM_RATE_8000_192000,
+>>   		.formats =	SNDRV_PCM_FMTBIT_S16_LE
+>>   				| SNDRV_PCM_FMTBIT_S24_LE
+>>   				| SNDRV_PCM_FMTBIT_S32_LE
+>>   		},
+>>   	.capture = {
+>> -		.channels_min = 2,
+>> -		.channels_max = 2,
+>>   		.rates =	SNDRV_PCM_RATE_8000_192000,
+>>   		.formats =	SNDRV_PCM_FMTBIT_S16_LE
+>>   				| SNDRV_PCM_FMTBIT_S24_LE
+> With .channels_max removed I get no alsa PCMs with the downstream
+> card drivers - "aplay -L" only reported the "null" PCM.
+>
+> Changing that to .channels_min = 2, .channels_max = 8 brought
+> back the PCMs.
+>
+>
+That is curious, channels_max and channels_min are set in _startup 
+implicitly in the snd_pcm_hw_constraint_single call which is inlined to 
+the snd_pcm_hw_constraint_minmax call.
+
+I have tested with an Audio Injector stereo card for the Pi ... I can 
+confirm this problem. I will look into it further.
+
+Can anyone explain why this would happen ?
+
+Matt
