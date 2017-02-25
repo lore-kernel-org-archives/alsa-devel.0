@@ -1,64 +1,121 @@
-From: Mihai Burduselu <michelcatalin@gmail.com>
-Subject: [PATCH] soc: blackfin: remove 'out of memory' message
-Date: Sat, 25 Feb 2017 12:29:33 +0200
-Message-ID: <20170225102933.6879-1-michelcatalin@gmail.com>
+From: Corina Palade <corina.palade103@gmail.com>
+Subject: [PATCH] soc: xtensa: Replace "unsigned" with "unsigned int"
+Date: Sat, 25 Feb 2017 02:29:58 -0800
+Message-ID: <1488018598-13338-1-git-send-email-corina.palade103@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.com, michelcatalin@gmail.com
-Cc: lgirdwood@gmail.com, broonie@kernel.org, adi-buildroot-devel@lists.sourceforge.net, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: jcmvbkbc@gmail.com, tiwai@suse.com, perex@perex.cz
+Cc: lgirdwood@gmail.com, broonie@kernel.org, linux-xtensa@linux-xtensa.org, alsa-devel@alsa-project.org, corina.palade103@gmail.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-reported by checkpatch.pl
+This was reported by checkpatch.pl.
 
-Signed-off-by: Mihai Burduselu <michelcatalin@gmail.com>
+Signed-off-by: Corina Palade <corina.palade103@gmail.com>
 ---
- sound/soc/blackfin/bf5xx-sport.c | 8 ++------
- sound/soc/blackfin/bf6xx-sport.c | 4 +---
- 2 files changed, 3 insertions(+), 9 deletions(-)
+ sound/soc/xtensa/xtfpga-i2s.c | 38 +++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
-diff --git a/sound/soc/blackfin/bf5xx-sport.c b/sound/soc/blackfin/bf5xx-sport.c
-index 9dfa1241ea66..c445d6cc875e 100644
---- a/sound/soc/blackfin/bf5xx-sport.c
-+++ b/sound/soc/blackfin/bf5xx-sport.c
-@@ -876,10 +876,8 @@ struct sport_device *sport_init(struct platform_device *pdev,
- 	}
+diff --git a/sound/soc/xtensa/xtfpga-i2s.c b/sound/soc/xtensa/xtfpga-i2s.c
+index 8382ffa..01a2622 100644
+--- a/sound/soc/xtensa/xtfpga-i2s.c
++++ b/sound/soc/xtensa/xtfpga-i2s.c
+@@ -76,22 +76,22 @@ struct xtfpga_i2s {
+ 	 * handler by means of synchronize_rcu call.
+ 	 */
+ 	struct snd_pcm_substream __rcu *tx_substream;
+-	unsigned (*tx_fn)(struct xtfpga_i2s *i2s,
++	unsigned int (*tx_fn)(struct xtfpga_i2s *i2s,
+ 			  struct snd_pcm_runtime *runtime,
+-			  unsigned tx_ptr);
+-	unsigned tx_ptr; /* next frame index in the sample buffer */
++			  unsigned int tx_ptr);
++	unsigned int tx_ptr; /* next frame index in the sample buffer */
  
- 	sport = kzalloc(sizeof(*sport), GFP_KERNEL);
--	if (!sport) {
--		dev_err(dev, "failed to allocate for sport device\n");
-+	if (!sport)
- 		goto __init_err0;
--	}
+ 	/* current fifo level estimate.
+ 	 * Doesn't have to be perfectly accurate, but must be not less than
+ 	 * the actual FIFO level in order to avoid stall on push attempt.
+ 	 */
+-	unsigned tx_fifo_level;
++	unsigned int tx_fifo_level;
  
- 	sport->num = param.num;
- 	sport->dma_rx_chan = param.dma_rx_chan;
-@@ -921,10 +919,8 @@ struct sport_device *sport_init(struct platform_device *pdev,
- 	sport->dummy_count = param.dummy_count;
+ 	/* FIFO level at which level interrupt occurs */
+-	unsigned tx_fifo_low;
++	unsigned int tx_fifo_low;
  
- 	sport->private_data = kzalloc(priv_size, GFP_KERNEL);
--	if (!sport->private_data) {
--		dev_err(dev, "could not alloc priv data %zu bytes\n", priv_size);
-+	if (!sport->private_data)
- 		goto __init_err4;
--	}
+ 	/* maximal FIFO level */
+-	unsigned tx_fifo_high;
++	unsigned int tx_fifo_high;
+ };
  
- 	if (L1_DATA_A_LENGTH)
- 		sport->dummy_buf = l1_data_sram_zalloc(param.dummy_count * 2);
-diff --git a/sound/soc/blackfin/bf6xx-sport.c b/sound/soc/blackfin/bf6xx-sport.c
-index dfb744381c42..b56ff75d4c13 100644
---- a/sound/soc/blackfin/bf6xx-sport.c
-+++ b/sound/soc/blackfin/bf6xx-sport.c
-@@ -388,10 +388,8 @@ struct sport_device *sport_create(struct platform_device *pdev)
+ static bool xtfpga_i2s_wr_reg(struct device *dev, unsigned int reg)
+@@ -130,9 +130,9 @@ static const struct regmap_config xtfpga_i2s_regmap_config = {
+  * the LSB of each word is used.
+  */
+ #define xtfpga_pcm_tx_fn(channels, sample_bits) \
+-static unsigned xtfpga_pcm_tx_##channels##x##sample_bits( \
++static unsigned int xtfpga_pcm_tx_##channels##x##sample_bits( \
+ 	struct xtfpga_i2s *i2s, struct snd_pcm_runtime *runtime, \
+-	unsigned tx_ptr) \
++	unsigned int tx_ptr) \
+ { \
+ 	const u##sample_bits (*p)[channels] = \
+ 		(void *)runtime->dma_area; \
+@@ -165,8 +165,8 @@ static bool xtfpga_pcm_push_tx(struct xtfpga_i2s *i2s)
+ 	tx_substream = rcu_dereference(i2s->tx_substream);
+ 	tx_active = tx_substream && snd_pcm_running(tx_substream);
+ 	if (tx_active) {
+-		unsigned tx_ptr = ACCESS_ONCE(i2s->tx_ptr);
+-		unsigned new_tx_ptr = i2s->tx_fn(i2s, tx_substream->runtime,
++		unsigned int tx_ptr = ACCESS_ONCE(i2s->tx_ptr);
++		unsigned int new_tx_ptr = i2s->tx_fn(i2s, tx_substream->runtime,
+ 						 tx_ptr);
+ 
+ 		cmpxchg(&i2s->tx_ptr, tx_ptr, new_tx_ptr);
+@@ -178,8 +178,8 @@ static bool xtfpga_pcm_push_tx(struct xtfpga_i2s *i2s)
+ 
+ static void xtfpga_pcm_refill_fifo(struct xtfpga_i2s *i2s)
+ {
+-	unsigned int_status;
+-	unsigned i;
++	unsigned int int_status;
++	unsigned int i;
+ 
+ 	regmap_read(i2s->regmap, XTFPGA_I2S_INT_STATUS,
+ 		    &int_status);
+@@ -227,7 +227,7 @@ static irqreturn_t xtfpga_i2s_threaded_irq_handler(int irq, void *dev_id)
+ {
+ 	struct xtfpga_i2s *i2s = dev_id;
+ 	struct snd_pcm_substream *tx_substream;
+-	unsigned config, int_status, int_mask;
++	unsigned int config, int_status, int_mask;
+ 
+ 	regmap_read(i2s->regmap, XTFPGA_I2S_CONFIG, &config);
+ 	regmap_read(i2s->regmap, XTFPGA_I2S_INT_MASK, &int_mask);
+@@ -284,11 +284,11 @@ static int xtfpga_i2s_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_soc_dai *dai)
+ {
+ 	struct xtfpga_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+-	unsigned srate = params_rate(params);
+-	unsigned channels = params_channels(params);
+-	unsigned period_size = params_period_size(params);
+-	unsigned sample_size = snd_pcm_format_width(params_format(params));
+-	unsigned freq, ratio, level;
++	unsigned int srate = params_rate(params);
++	unsigned int channels = params_channels(params);
++	unsigned int period_size = params_period_size(params);
++	unsigned int sample_size = snd_pcm_format_width(params_format(params));
++	unsigned int freq, ratio, level;
+ 	int err;
+ 
+ 	regmap_update_bits(i2s->regmap, XTFPGA_I2S_CONFIG,
+@@ -393,7 +393,7 @@ static int xtfpga_pcm_hw_params(struct snd_pcm_substream *substream,
  	int ret;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct xtfpga_i2s *i2s = runtime->private_data;
+-	unsigned channels = params_channels(hw_params);
++	unsigned int channels = params_channels(hw_params);
  
- 	sport = kzalloc(sizeof(*sport), GFP_KERNEL);
--	if (!sport) {
--		dev_err(dev, "Unable to allocate memory for sport device\n");
-+	if (!sport)
- 		return NULL;
--	}
- 	sport->pdev = pdev;
- 
- 	ret = sport_get_resource(sport);
+ 	switch (channels) {
+ 	case 1:
 -- 
-2.11.0
+2.7.4
