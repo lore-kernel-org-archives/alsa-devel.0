@@ -1,70 +1,64 @@
-From: Banu Calin <banucaliniulian@gmail.com>
-Subject: [PATCH] soc: atmel: Add line after declaration.
-Date: Sat, 25 Feb 2017 12:29:49 +0200
-Message-ID: <1488018589-7188-1-git-send-email-banucaliniulian@gmail.com>
+From: Mihai Burduselu <michelcatalin@gmail.com>
+Subject: [PATCH] soc: blackfin: remove 'out of memory' message
+Date: Sat, 25 Feb 2017 12:29:33 +0200
+Message-ID: <20170225102933.6879-1-michelcatalin@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, banucaliniulian@gmail.com
+To: perex@perex.cz, tiwai@suse.com, michelcatalin@gmail.com
+Cc: lgirdwood@gmail.com, broonie@kernel.org, adi-buildroot-devel@lists.sourceforge.net, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This was reported by checkpatch.pl
+reported by checkpatch.pl
 
-Signed-off-by: Banu Calin <banucaliniulian@gmail.com>
+Signed-off-by: Mihai Burduselu <michelcatalin@gmail.com>
 ---
- sound/atmel/ac97c.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/blackfin/bf5xx-sport.c | 8 ++------
+ sound/soc/blackfin/bf6xx-sport.c | 4 +---
+ 2 files changed, 3 insertions(+), 9 deletions(-)
 
-diff --git a/sound/atmel/ac97c.c b/sound/atmel/ac97c.c
-index 6dad042..4a0a48e 100644
---- a/sound/atmel/ac97c.c
-+++ b/sound/atmel/ac97c.c
-@@ -95,12 +95,14 @@ struct atmel_ac97c {
- static void atmel_ac97c_dma_playback_period_done(void *arg)
- {
- 	struct atmel_ac97c *chip = arg;
-+
- 	snd_pcm_period_elapsed(chip->playback_substream);
- }
+diff --git a/sound/soc/blackfin/bf5xx-sport.c b/sound/soc/blackfin/bf5xx-sport.c
+index 9dfa1241ea66..c445d6cc875e 100644
+--- a/sound/soc/blackfin/bf5xx-sport.c
++++ b/sound/soc/blackfin/bf5xx-sport.c
+@@ -876,10 +876,8 @@ struct sport_device *sport_init(struct platform_device *pdev,
+ 	}
  
- static void atmel_ac97c_dma_capture_period_done(void *arg)
- {
- 	struct atmel_ac97c *chip = arg;
-+
- 	snd_pcm_period_elapsed(chip->capture_substream);
- }
+ 	sport = kzalloc(sizeof(*sport), GFP_KERNEL);
+-	if (!sport) {
+-		dev_err(dev, "failed to allocate for sport device\n");
++	if (!sport)
+ 		goto __init_err0;
+-	}
  
-@@ -297,6 +299,7 @@ static int atmel_ac97c_capture_hw_params(struct snd_pcm_substream *substream,
- static int atmel_ac97c_playback_hw_free(struct snd_pcm_substream *substream)
- {
- 	struct atmel_ac97c *chip = snd_pcm_substream_chip(substream);
-+
- 	if (cpu_is_at32ap7000()) {
- 		if (test_and_clear_bit(DMA_TX_READY, &chip->flags))
- 			dw_dma_cyclic_free(chip->dma.tx_chan);
-@@ -307,6 +310,7 @@ static int atmel_ac97c_playback_hw_free(struct snd_pcm_substream *substream)
- static int atmel_ac97c_capture_hw_free(struct snd_pcm_substream *substream)
- {
- 	struct atmel_ac97c *chip = snd_pcm_substream_chip(substream);
-+
- 	if (cpu_is_at32ap7000()) {
- 		if (test_and_clear_bit(DMA_RX_READY, &chip->flags))
- 			dw_dma_cyclic_free(chip->dma.rx_chan);
-@@ -659,6 +663,7 @@ static irqreturn_t atmel_ac97c_interrupt(int irq, void *dev)
- 	if (sr & AC97C_SR_CAEVT) {
- 		struct snd_pcm_runtime *runtime;
- 		int offset, next_period, block_size;
-+
- 		dev_dbg(&chip->pdev->dev, "channel A event%s%s%s%s%s%s\n",
- 				casr & AC97C_CSR_OVRUN   ? " OVRUN"   : "",
- 				casr & AC97C_CSR_RXRDY   ? " RXRDY"   : "",
-@@ -804,6 +809,7 @@ static int atmel_ac97c_pcm_new(struct atmel_ac97c *chip)
- static int atmel_ac97c_mixer_new(struct atmel_ac97c *chip)
- {
- 	struct snd_ac97_template template;
-+
- 	memset(&template, 0, sizeof(template));
- 	template.private_data = chip;
- 	return snd_ac97_mixer(chip->ac97_bus, &template, &chip->ac97);
+ 	sport->num = param.num;
+ 	sport->dma_rx_chan = param.dma_rx_chan;
+@@ -921,10 +919,8 @@ struct sport_device *sport_init(struct platform_device *pdev,
+ 	sport->dummy_count = param.dummy_count;
+ 
+ 	sport->private_data = kzalloc(priv_size, GFP_KERNEL);
+-	if (!sport->private_data) {
+-		dev_err(dev, "could not alloc priv data %zu bytes\n", priv_size);
++	if (!sport->private_data)
+ 		goto __init_err4;
+-	}
+ 
+ 	if (L1_DATA_A_LENGTH)
+ 		sport->dummy_buf = l1_data_sram_zalloc(param.dummy_count * 2);
+diff --git a/sound/soc/blackfin/bf6xx-sport.c b/sound/soc/blackfin/bf6xx-sport.c
+index dfb744381c42..b56ff75d4c13 100644
+--- a/sound/soc/blackfin/bf6xx-sport.c
++++ b/sound/soc/blackfin/bf6xx-sport.c
+@@ -388,10 +388,8 @@ struct sport_device *sport_create(struct platform_device *pdev)
+ 	int ret;
+ 
+ 	sport = kzalloc(sizeof(*sport), GFP_KERNEL);
+-	if (!sport) {
+-		dev_err(dev, "Unable to allocate memory for sport device\n");
++	if (!sport)
+ 		return NULL;
+-	}
+ 	sport->pdev = pdev;
+ 
+ 	ret = sport_get_resource(sport);
 -- 
-2.7.4
+2.11.0
