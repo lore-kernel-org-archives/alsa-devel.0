@@ -1,32 +1,34 @@
-From: Alin Grigorean <alin.grig93@gmail.com>
-Subject: [PATCH] ASoC: fsl: Remove unneeded init of static variable
-Date: Sat, 25 Feb 2017 12:47:26 +0200
-Message-ID: <20170225104726.15936-1-alin.grig93@gmail.com>
+From: Mihai Burduselu <michelcatalin@gmail.com>
+Subject: [PATCH] ASoC: dwc: remove 'out of memory' message
+Date: Sat, 25 Feb 2017 13:03:23 +0200
+Message-ID: <20170225110323.7506-1-michelcatalin@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: timur@tabi.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, perex@perex.cz, tiwai@suse.com
-Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, fabio.estevam@nxp.com, lgirdwood@gmail.com, broonie@kernel.org, Alin Grigorean <alin.grig93@gmail.com>
+To: tiwai@suse.com, perex@perex.cz
+Cc: lgirdwood@gmail.com, broonie@kernel.org, Jose.Abreu@synopsys.com, s.nawrocki@samsung.com, colin.king@canonical.com, michelcatalin@gmail.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This was reported by checkpatch.pl
-
-Signed-off-by: Alin Grigorean <alin.grig93@gmail.com>
+Reported by checkpatch.pl
+Signed-off-by: Mihai Burduselu <michelcatalin@gmail.com>
 ---
- sound/soc/fsl/imx-pcm-fiq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/dwc/designware_i2s.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/fsl/imx-pcm-fiq.c b/sound/soc/fsl/imx-pcm-fiq.c
-index dac6688540dc..92410f7ca1fa 100644
---- a/sound/soc/fsl/imx-pcm-fiq.c
-+++ b/sound/soc/fsl/imx-pcm-fiq.c
-@@ -282,7 +282,7 @@ static int imx_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
- }
+diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
+index 9c46e4112026..6479768cc6a1 100644
+--- a/sound/soc/dwc/designware_i2s.c
++++ b/sound/soc/dwc/designware_i2s.c
+@@ -611,10 +611,8 @@ static int dw_i2s_probe(struct platform_device *pdev)
+ 	const char *clk_id;
  
--static int ssi_irq = 0;
-+static int ssi_irq;
+ 	dev = devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_KERNEL);
+-	if (!dev) {
+-		dev_warn(&pdev->dev, "kzalloc fail\n");
++	if (!dev)
+ 		return -ENOMEM;
+-	}
  
- static int imx_pcm_fiq_new(struct snd_soc_pcm_runtime *rtd)
- {
+ 	dw_i2s_dai = devm_kzalloc(&pdev->dev, sizeof(*dw_i2s_dai), GFP_KERNEL);
+ 	if (!dw_i2s_dai)
 -- 
-2.11.1
+2.11.0
