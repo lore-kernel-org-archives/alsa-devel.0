@@ -1,47 +1,74 @@
-From: Camelia Moise <camelia.moise21@gmail.com>
-Subject: [PATCH] ASoC: mxs-saif: Removing whitespace before a
-	pointer and its name
-Date: Sat, 25 Feb 2017 12:37:18 +0200
-Message-ID: <1488019038-11409-1-git-send-email-camelia.moise21@gmail.com>
+From: Codrut Grosu <codrut.cristian.grosu@gmail.com>
+Subject: [PATCH] ASoC: pxa: Added */ to the next line
+Date: Sat, 25 Feb 2017 23:20:30 +0200
+Message-ID: <1488057630-14575-1-git-send-email-codrut.cristian.grosu@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 8DE9A26683E
- for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2017 11:37:30 +0100 (CET)
-Received: by mail-wm0-f67.google.com with SMTP id v77so6384294wmv.0
- for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2017 02:37:30 -0800 (PST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, jk@lintech.de, broonie@kernel.org, Camelia Moise <camelia.moise21@gmail.com>, khoroshilov@ispras.ru
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: perex@perex.cz, daniel@zonque.org, robert.jarzmik@free.fr, haojian.zhuang@gmail.com, tiwai@suse.com, philipp.zabel@gmail.com, lost.distance@yahoo.com
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Codrut Grosu <codrut.cristian.grosu@gmail.com>, broonie@kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Camelia Moise <camelia.moise21@gmail.com>
----
- sound/soc/mxs/mxs-saif.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This was reported by checkpatch.pl
 
-diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
-index b42f301..729249a 100644
---- a/sound/soc/mxs/mxs-saif.c
-+++ b/sound/soc/mxs/mxs-saif.c
-@@ -78,7 +78,7 @@ static int mxs_saif_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
-  * from its master_id.
-  * Note that the master could be itself.
-  */
--static inline struct mxs_saif *mxs_saif_get_master(struct mxs_saif * saif)
-+static inline struct mxs_saif *mxs_saif_get_master(struct mxs_saif *saif)
- {
- 	return mxs_saif[saif->master_id];
- }
--- 
-2.7.4
+Signed-off-by: Codrut Grosu <codrut.cristian.grosu@gmail.com>
+---
+ sound/soc/pxa/hx4700.c     | 3 ++-
+ sound/soc/pxa/pxa-ssp.c    | 3 ++-
+ sound/soc/pxa/pxa2xx-pcm.c | 3 ++-
+ 3 files changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/pxa/hx4700.c b/sound/soc/pxa/hx4700.c
+index 8548304..17c2e67 100644
+--- a/sound/soc/pxa/hx4700.c
++++ b/sound/soc/pxa/hx4700.c
+@@ -70,7 +70,8 @@ static int hx4700_hw_params(struct snd_pcm_substream *substream,
+ 		return ret;
+
+ 	/* inform codec driver about clock freq *
+-	 * (PXA I2S always uses divider 256)    */
++	 * (PXA I2S always uses divider 256)
++	 */
+ 	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 256 * params_rate(params),
+ 			SND_SOC_CLOCK_IN);
+ 	if (ret < 0)
+diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+index 3cad990..3bdace6 100644
+--- a/sound/soc/pxa/pxa-ssp.c
++++ b/sound/soc/pxa/pxa-ssp.c
+@@ -254,7 +254,8 @@ static int pxa_ssp_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ 	}
+
+ 	/* The SSP clock must be disabled when changing SSP clock mode
+-	 * on PXA2xx.  On PXA3xx it must be enabled when doing so. */
++	 * on PXA2xx.  On PXA3xx it must be enabled when doing so.
++	 */
+ 	if (ssp->type != PXA3xx_SSP)
+ 		clk_disable_unprepare(ssp->clk);
+ 	val = pxa_ssp_read_reg(ssp, SSCR0) | sscr0;
+diff --git a/sound/soc/pxa/pxa2xx-pcm.c b/sound/soc/pxa/pxa2xx-pcm.c
+index b51d7a0..3926cd8 100644
+--- a/sound/soc/pxa/pxa2xx-pcm.c
++++ b/sound/soc/pxa/pxa2xx-pcm.c
+@@ -31,7 +31,8 @@ static int pxa2xx_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	dma = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+
+ 	/* return if this is a bufferless transfer e.g.
+-	 * codec <--> BT codec or GSM modem -- lg FIXME */
++	 * codec <--> BT codec or GSM modem -- lg
++	 */
+ 	if (!dma)
+ 		return 0;
+
+--
+1.9.1
