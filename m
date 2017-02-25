@@ -1,17 +1,17 @@
-From: Cristian Done <done.cristian@gmail.com>
-Subject: [PATCH] ASoC: sh: Remove redundant out of memory
-	message
-Date: Sat, 25 Feb 2017 12:16:29 +0200
-Message-ID: <20170225101629.12694-1-done.cristian@gmail.com>
+From: Camelia Moise <camelia.moise21@gmail.com>
+Subject: [PATCH] ASoC: mxs-saif: Removing whitespace before a
+	pointer and its name
+Date: Sat, 25 Feb 2017 12:37:18 +0200
+Message-ID: <1488019038-11409-1-git-send-email-camelia.moise21@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id EE4E6266AFA
- for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2017 11:16:47 +0100 (CET)
-Received: by mail-wm0-f68.google.com with SMTP id r18so6334358wmd.3
- for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2017 02:16:47 -0800 (PST)
+Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DE9A26683E
+ for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2017 11:37:30 +0100 (CET)
+Received: by mail-wm0-f67.google.com with SMTP id v77so6384294wmv.0
+ for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2017 02:37:30 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,25 +22,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: perex@perex.cz, tiwai@suse.com
-Cc: Cristian Done <done.cristian@gmail.com>, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, jk@lintech.de, broonie@kernel.org, Camelia Moise <camelia.moise21@gmail.com>, khoroshilov@ispras.ru
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Cristian Done <done.cristian@gmail.com>
+Signed-off-by: Camelia Moise <camelia.moise21@gmail.com>
 ---
- sound/soc/sh/fsi.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/mxs/mxs-saif.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
-index ead520182e26..6793dc359114 100644
---- a/sound/soc/sh/fsi.c
-+++ b/sound/soc/sh/fsi.c
-@@ -1964,7 +1964,6 @@ static int fsi_probe(struct platform_device *pdev)
- 
- 	master = devm_kzalloc(&pdev->dev, sizeof(*master), GFP_KERNEL);
- 	if (!master) {
--		dev_err(&pdev->dev, "Could not allocate master\n");
- 		return -ENOMEM;
- 	}
- 
+diff --git a/sound/soc/mxs/mxs-saif.c b/sound/soc/mxs/mxs-saif.c
+index b42f301..729249a 100644
+--- a/sound/soc/mxs/mxs-saif.c
++++ b/sound/soc/mxs/mxs-saif.c
+@@ -78,7 +78,7 @@ static int mxs_saif_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+  * from its master_id.
+  * Note that the master could be itself.
+  */
+-static inline struct mxs_saif *mxs_saif_get_master(struct mxs_saif * saif)
++static inline struct mxs_saif *mxs_saif_get_master(struct mxs_saif *saif)
+ {
+ 	return mxs_saif[saif->master_id];
+ }
 -- 
-2.11.0
+2.7.4
