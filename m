@@ -1,45 +1,68 @@
-From: Codrut Grosu <codrut.cristian.grosu@gmail.com>
-Subject: [PATCH] ASoC: sun4i-codec: Remove spaces before tabs.
-Date: Sat, 25 Feb 2017 12:39:48 +0200
-Message-ID: <1488019188-15408-1-git-send-email-codrut.cristian.grosu@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: maxime.ripard@free-electrons.com, perex@perex.cz, tiwai@suse.com, wens@csie.org
-Cc: robh@kernel.org, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, dannym@scratchpost.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Codrut Grosu <codrut.cristian.grosu@gmail.com>, broonie@kernel.org, linux-arm-kernel@lists.infradead.org
+From: Calin Cruceru <calin@rosedu.org>
+Subject: [PATCH] ASoC: samsung: Remove extra blank lines
+Date: Sat, 25 Feb 2017 12:11:11 +0200
+Message-ID: <20170225101111.12707-1-calin@rosedu.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.com
+Cc: krzk@kernel.org, sbkim73@samsung.com, s.nawrocki@samsung.com, lgirdwood@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Calin Cruceru <calin@rosedu.org>
 List-Id: alsa-devel@alsa-project.org
 
 This was reported by checkpatch.pl
 
-Signed-off-by: Codrut GROSU <codrut.cristian.grosu@gmail.com>
+Signed-off-by: Calin Cruceru <calin@rosedu.org>
 ---
- sound/soc/sunxi/sun4i-codec.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/samsung/bells.c      | 1 -
+ sound/soc/samsung/i2s-regs.h   | 2 --
+ sound/soc/samsung/i2s.c        | 1 -
+ sound/soc/samsung/s3c-i2s-v2.c | 1 -
+ 4 files changed, 5 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index c3aab10..7ba6849 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -1139,8 +1139,8 @@ static int sun4i_codec_dai_probe(struct snd_soc_dai *dai)
- 		.stream_name	= "Capture",
- 		.channels_min	= 1,
- 		.channels_max	= 2,
--		.rates 		= SUN4I_CODEC_RATES,
--		.formats 	= SUN4I_CODEC_FORMATS,
-+		.rates		= SUN4I_CODEC_RATES,
-+		.formats	= SUN4I_CODEC_FORMATS,
- 		.sig_bits	= 24,
- 	 },
+diff --git a/sound/soc/samsung/bells.c b/sound/soc/samsung/bells.c
+index 3dd246fa0059..34deba461ae1 100644
+--- a/sound/soc/samsung/bells.c
++++ b/sound/soc/samsung/bells.c
+@@ -446,7 +446,6 @@ static struct snd_soc_card bells_cards[] = {
+ 	},
  };
+ 
+-
+ static int bells_probe(struct platform_device *pdev)
+ {
+ 	int ret;
+diff --git a/sound/soc/samsung/i2s-regs.h b/sound/soc/samsung/i2s-regs.h
+index 9170c311d66e..fe6914005494 100644
+--- a/sound/soc/samsung/i2s-regs.h
++++ b/sound/soc/samsung/i2s-regs.h
+@@ -160,5 +160,3 @@
+ #define I2SSIZE_SHIFT		(16)
+ 
+ #endif /* __SND_SOC_SAMSUNG_I2S_REGS_H */
+-
+-
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 52a47ed292a4..af3ba4d4ccc5 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1242,7 +1242,6 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 		i2s_dai_data = (struct samsung_i2s_dai_data *)
+ 				platform_get_device_id(pdev)->driver_data;
+ 
+-
+ 	pri_dai = i2s_alloc_dai(pdev, false);
+ 	if (!pri_dai) {
+ 		dev_err(&pdev->dev, "Unable to alloc I2S_pri\n");
+diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
+index 644f186fd35c..8f42deaa184b 100644
+--- a/sound/soc/samsung/s3c-i2s-v2.c
++++ b/sound/soc/samsung/s3c-i2s-v2.c
+@@ -72,7 +72,6 @@ static inline void dbg_showcon(const char *fn, u32 con)
+ }
+ #endif
+ 
+-
+ /* Turn on or off the transmission path. */
+ static void s3c2412_snd_txctrl(struct s3c_i2sv2_info *i2s, int on)
+ {
 -- 
-1.9.1
+2.11.0
