@@ -1,41 +1,47 @@
-From: Codrut Grosu <codrut.cristian.grosu@gmail.com>
-Subject: [PATCH] ASoC: txx9: Added requiered spaces.
-Date: Sat, 25 Feb 2017 12:12:21 +0200
-Message-ID: <1488017541-14080-1-git-send-email-codrut.cristian.grosu@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: tiwai@suse.com, perex@perex.cz
-Cc: lgirdwood@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Codrut Grosu <codrut.cristian.grosu@gmail.com>
+From: Mihai-Valentin DUMITRU <mihai.dumitru2201@gmail.com>
+Subject: [PATCH] ASoC: rockchip: i2s: Remove unnecessary 'out of memory'
+ message
+Date: Sat, 25 Feb 2017 12:18:34 +0200
+Message-ID: <20170225101834.28232-1-mihai.dumitru2201@stud.acs.upb.ro>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: perex@perex.cz, tiwai@suse.com, heiko@sntech.de
+Cc: alsa-devel@alsa-project.org, Mihai-Valentin DUMITRU <mihai.dumitru2201@gmail.com>, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, broonie@kernel.org, Mihai-Valentin DUMITRU <mihai.dumitru2201@stud.acs.upb.ro>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This was reported by checpatch.pl
+This was reported by checkpatch.pl
 
-Signed-off-by: Codrut GROSU <codrut.cristian.grosu@gmail.com>
+Signed-off-by: Mihai-Valentin DUMITRU <mihai.dumitru2201@gmail.com>
 ---
- sound/soc/txx9/txx9aclc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/rockchip/rockchip_i2s.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/txx9/txx9aclc.c b/sound/soc/txx9/txx9aclc.c
-index a8f705b..98fb989 100644
---- a/sound/soc/txx9/txx9aclc.c
-+++ b/sound/soc/txx9/txx9aclc.c
-@@ -206,7 +206,7 @@ static void txx9aclc_dma_tasklet(unsigned long data)
- static int txx9aclc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- {
- 	struct txx9aclc_dmadata *dmadata = substream->runtime->private_data;
--	struct txx9aclc_plat_drvdata *drvdata =txx9aclc_drvdata;
-+	struct txx9aclc_plat_drvdata *drvdata = txx9aclc_drvdata;
- 	void __iomem *base = drvdata->base;
- 	unsigned long flags;
- 	int ret = 0;
-@@ -340,7 +340,7 @@ static bool filter(struct dma_chan *chan, void *param)
- static int txx9aclc_dma_init(struct txx9aclc_soc_device *dev,
- 			     struct txx9aclc_dmadata *dmadata)
- {
--	struct txx9aclc_plat_drvdata *drvdata =txx9aclc_drvdata;
-+	struct txx9aclc_plat_drvdata *drvdata = txx9aclc_drvdata;
- 	struct txx9dmac_slave *ds = &dmadata->dma_slave;
- 	dma_cap_mask_t mask;
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 974915cb4c4f..d02a1045fc0b 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -551,10 +551,8 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
+ 	int val;
+ 
+ 	i2s = devm_kzalloc(&pdev->dev, sizeof(*i2s), GFP_KERNEL);
+-	if (!i2s) {
+-		dev_err(&pdev->dev, "Can't allocate rk_i2s_dev\n");
++	if (!i2s)
+ 		return -ENOMEM;
+-	}
+ 
+ 	i2s->dev = &pdev->dev;
  
 -- 
-1.9.1
+2.11.1
