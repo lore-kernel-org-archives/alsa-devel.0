@@ -1,52 +1,32 @@
-From: dspmihai <despotovici.mihai@gmail.com>
-Subject: [PATCH] ASoC: spear: Remove redundant message
-Date: Sat, 25 Feb 2017 02:33:30 -0800
-Message-ID: <1488018810-11973-1-git-send-email-despotovici.mihai@gmail.com>
+From: Alin Grigorean <alin.grig93@gmail.com>
+Subject: [PATCH] ASoC: fsl: Remove unneeded init of static variable
+Date: Sat, 25 Feb 2017 12:47:26 +0200
+Message-ID: <20170225104726.15936-1-alin.grig93@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.com
-Cc: lgirdwood@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, dspmihai <despotovici.mihai@gmail.com>
+To: timur@tabi.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, perex@perex.cz, tiwai@suse.com
+Cc: linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, fabio.estevam@nxp.com, lgirdwood@gmail.com, broonie@kernel.org, Alin Grigorean <alin.grig93@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 This was reported by checkpatch.pl
 
-Signed-off-by: Despotovici Mihai <despotovici.mihai@gmail.com>
+Signed-off-by: Alin Grigorean <alin.grig93@gmail.com>
 ---
- sound/soc/spear/spdif_in.c  | 4 +---
- sound/soc/spear/spdif_out.c | 4 +---
- 2 files changed, 2 insertions(+), 6 deletions(-)
+ sound/soc/fsl/imx-pcm-fiq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/spear/spdif_in.c b/sound/soc/spear/spdif_in.c
-index 977a078..0f3b1a8 100644
---- a/sound/soc/spear/spdif_in.c
-+++ b/sound/soc/spear/spdif_in.c
-@@ -216,10 +216,8 @@ static int spdif_in_probe(struct platform_device *pdev)
- 		return -EINVAL;
+diff --git a/sound/soc/fsl/imx-pcm-fiq.c b/sound/soc/fsl/imx-pcm-fiq.c
+index dac6688540dc..92410f7ca1fa 100644
+--- a/sound/soc/fsl/imx-pcm-fiq.c
++++ b/sound/soc/fsl/imx-pcm-fiq.c
+@@ -282,7 +282,7 @@ static int imx_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
+ }
  
- 	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
--	if (!host) {
--		dev_warn(&pdev->dev, "kzalloc fail\n");
-+	if (!host)
- 		return -ENOMEM;
--	}
+-static int ssi_irq = 0;
++static int ssi_irq;
  
- 	host->io_base = io_base;
- 	host->irq = platform_get_irq(pdev, 0);
-diff --git a/sound/soc/spear/spdif_out.c b/sound/soc/spear/spdif_out.c
-index 0a72d52..58d5843 100644
---- a/sound/soc/spear/spdif_out.c
-+++ b/sound/soc/spear/spdif_out.c
-@@ -282,10 +282,8 @@ static int spdif_out_probe(struct platform_device *pdev)
- 	int ret;
- 
- 	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
--	if (!host) {
--		dev_warn(&pdev->dev, "kzalloc fail\n");
-+	if (!host)
- 		return -ENOMEM;
--	}
- 
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	host->io_base = devm_ioremap_resource(&pdev->dev, res);
+ static int imx_pcm_fiq_new(struct snd_soc_pcm_runtime *rtd)
+ {
 -- 
-2.7.4
+2.11.1
