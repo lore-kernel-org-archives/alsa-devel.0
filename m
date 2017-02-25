@@ -1,16 +1,15 @@
 From: Matt Flax <flatmax@flatmax.org>
-Subject: [PATCH 1/3] ASoC : Add an IC bit and frame master mode
-	(SoC and Codec slave).
-Date: Sat, 25 Feb 2017 16:03:12 +1100
-Message-ID: <057bbc69c3dcbb5199782ae6fe44d73862b8a1d1.1487997974.git.flatmax@flatmax.org>
+Subject: [PATCH 2/3] ASoC: cs42xx8: allow IC master mode.
+Date: Sat, 25 Feb 2017 16:03:13 +1100
+Message-ID: <851a0a9ff20c077fc2d6ff84c1824ba462ce19ca.1487997974.git.flatmax@flatmax.org>
 References: <cover.1487997974.git.flatmax@flatmax.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nskntmtas05p.mx.bigpond.com (nskntmtas05p.mx.bigpond.com
- [61.9.168.149]) by alsa0.perex.cz (Postfix) with ESMTP id E53772670B6
- for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2017 06:04:08 +0100 (CET)
+Received: from nsstlmta36p.bpe.bigpond.com (nsstlmta36p.bpe.bigpond.com
+ [203.38.21.36]) by alsa0.perex.cz (Postfix) with ESMTP id 916472668C0
+ for <alsa-devel@alsa-project.org>; Sat, 25 Feb 2017 06:04:11 +0100 (CET)
 In-Reply-To: <cover.1487997974.git.flatmax@flatmax.org>
 In-Reply-To: <cover.1487997974.git.flatmax@flatmax.org>
 References: <cover.1487997974.git.flatmax@flatmax.org>
@@ -27,42 +26,28 @@ To: flatmax@flatmax.org
 Cc: hias@horus.com, alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, phil@raspberrypi.org, Liam Girdwood <lgirdwood@gmail.com>, Eric Anholt <eric@anholt.net>, florian.kauer@koalo.de, broonie@kernel.org, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, ckeepax@opensource.wolfsonmicro.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds a new clock mode to the SoC system. The new mode
-allows for an IC (between the SoC and the Codec) to be bit and
-frame master.
+This patch allows the cs42xx8 to be put into slave mode when an IC
+(between this codec and the SoC) is master.
 
-As SoC and codec drivers default to return -EINVAL, this new mode
-can not set either as master.
+It sets slave mode by treating SND_SOC_DAIFMT_IBM_IFM in the same way
+it treats SND_SOC_DAIFMT_CBS_CFS.
 
 Signed-off-by: Matt Flax <flatmax@flatmax.org>
 ---
- include/sound/soc-dai.h | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ sound/soc/codecs/cs42xx8.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index 200e1f0..22f516f 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -77,14 +77,17 @@ struct snd_compr_stream;
- /*
-  * DAI hardware clock masters.
-  *
-- * This is wrt the codec, the inverse is true for the interface
-- * i.e. if the codec is clk and FRM master then the interface is
-- * clk and frame slave.
-+ * SND_SOC_DAIFMT_C* definitions are wrt the codec, the inverse is true
-+ * for the interface. i.e. if the codec is clk and FRM master then the
-+ * interface is clk and frame slave.
-+ * The SND_SOC_DAIFMT_IBM_IFM indicates that an IC inbetween the codec and SoC
-+ * is master. In SND_SOC_DAIFMT_IBM_IFM mode both the codec and SoC are slaves.
-  */
- #define SND_SOC_DAIFMT_CBM_CFM		(1 << 12) /* codec clk & FRM master */
- #define SND_SOC_DAIFMT_CBS_CFM		(2 << 12) /* codec clk slave & FRM master */
- #define SND_SOC_DAIFMT_CBM_CFS		(3 << 12) /* codec clk master & frame slave */
- #define SND_SOC_DAIFMT_CBS_CFS		(4 << 12) /* codec clk & FRM slave */
-+#define SND_SOC_DAIFMT_IBM_IFM		(5 << 12) /* IC clk & FRM master */
- 
- #define SND_SOC_DAIFMT_FORMAT_MASK	0x000f
- #define SND_SOC_DAIFMT_CLOCK_MASK	0x00f0
+diff --git a/sound/soc/codecs/cs42xx8.c b/sound/soc/codecs/cs42xx8.c
+index c1785bd..34f9adb 100644
+--- a/sound/soc/codecs/cs42xx8.c
++++ b/sound/soc/codecs/cs42xx8.c
+@@ -235,6 +235,7 @@ static int cs42xx8_set_dai_fmt(struct snd_soc_dai *codec_dai,
+ 	/* Set master/slave audio interface */
+ 	switch (format & SND_SOC_DAIFMT_MASTER_MASK) {
+ 	case SND_SOC_DAIFMT_CBS_CFS:
++	case SND_SOC_DAIFMT_IBM_IFM:
+ 		cs42xx8->slave_mode = true;
+ 		break;
+ 	case SND_SOC_DAIFMT_CBM_CFM:
 -- 
 2.7.4
