@@ -1,19 +1,16 @@
-From: Icenowy Zheng <icenowy@aosc.xyz>
-Subject: Re: [PATCH 3/9] ASoC: sun8i-codec-analog: add support
-	for V3s SoC
-Date: Sun, 26 Feb 2017 15:08:44 +0800
-Message-ID: <7002681488092924@web8j.yandex.ru>
-References: <20170225123029.55939-1-icenowy@aosc.xyz>
- <20170225123029.55939-3-icenowy@aosc.xyz>
- <CAGb2v67YfVo7RhkAPUZusfJiCW-_m6-d-=uq-DdgjEWNKYWVsQ@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ASoC: dwc: remove 'out of memory' message
+Date: Sun, 26 Feb 2017 17:03:22 +0900
+Message-ID: <9da9efc3-cd9b-70a5-a764-e8be32e67d13@sakamocchi.jp>
+References: <20170225110323.7506-1-michelcatalin@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from forward2m.cmail.yandex.net (forward2m.cmail.yandex.net
- [5.255.216.20]) by alsa0.perex.cz (Postfix) with ESMTP id 47406266928
- for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2017 08:08:46 +0100 (CET)
-In-Reply-To: <CAGb2v67YfVo7RhkAPUZusfJiCW-_m6-d-=uq-DdgjEWNKYWVsQ@mail.gmail.com>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 23275266ADE
+ for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2017 09:03:30 +0100 (CET)
+In-Reply-To: <20170225110323.7506-1-michelcatalin@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,54 +20,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Chen-Yu Tsai <wens@csie.org>
-Cc: devicetree <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+To: Mihai Burduselu <michelcatalin@gmail.com>, tiwai@suse.com, perex@perex.cz
+Cc: Jose.Abreu@synopsys.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, broonie@kernel.org, s.nawrocki@samsung.com, colin.king@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-CgoyNi4wMi4yMDE3LCAxNDoxNiwgIkNoZW4tWXUgVHNhaSIgPHdlbnNAY3NpZS5vcmc+Ogo+IE9u
-IFNhdCwgRmViIDI1LCAyMDE3IGF0IDg6MzAgUE0sIEljZW5vd3kgWmhlbmcgPGljZW5vd3lAYW9z
-Yy54eXo+IHdyb3RlOgo+PiDCoFRoZSBWM3MgU29DIGZlYXR1cmVzIGFuIGFuYWxvZyBjb2RlYyB3
-aXRoIGhlYWRwaG9uZSBzdXBwb3J0IGJ1dCB3aXRob3V0Cj4+IMKgbWljMiBhbmQgbGluZWluLgo+
-Cj4gSXQgZG9lc24ndCBoYXZlIE1CSUFTIGVpdGhlci4gUGxlYXNlIHNwbGl0IGl0IG91dCBhcyB3
-ZWxsLgoKVGhhbmtzIGZvciB5b3VyIHRpcHMgOy0pCgo+Cj4gQ2hlbll1Cj4KPj4gwqBBZGQgc3Vw
-cG9ydCBmb3IgaXQuCj4+Cj4+IMKgU2lnbmVkLW9mZi1ieTogSWNlbm93eSBaaGVuZyA8aWNlbm93
-eUBhb3NjLnh5ej4KPj4gwqAtLS0KPj4gwqDCoERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9zb3VuZC9zdW44aS1jb2RlYy1hbmFsb2cudHh0IHwgMSArCj4+IMKgwqBzb3VuZC9zb2Mv
-c3VueGkvc3VuOGktY29kZWMtYW5hbG9nLmMgfCA5ICsrKysrKysrKwo+PiDCoMKgMiBmaWxlcyBj
-aGFuZ2VkLCAxMCBpbnNlcnRpb25zKCspCj4+Cj4+IMKgZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRp
-b24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9zdW44aS1jb2RlYy1hbmFsb2cudHh0IGIvRG9j
-dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3N1bjhpLWNvZGVjLWFuYWxvZy50
-eHQKPj4gwqBpbmRleCA3NzliNzM1NzgxYmEuLjFiNmU3YzRlNTBhYiAxMDA2NDQKPj4gwqAtLS0g
-YS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvc3VuOGktY29kZWMtYW5h
-bG9nLnR4dAo+PiDCoCsrKyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3Vu
-ZC9zdW44aS1jb2RlYy1hbmFsb2cudHh0Cj4+IMKgQEAgLTQsNiArNCw3IEBAIFJlcXVpcmVkIHBy
-b3BlcnRpZXM6Cj4+IMKgwqAtIGNvbXBhdGlibGU6IG11c3QgYmUgb25lIG9mIHRoZSBmb2xsb3dp
-bmcgY29tcGF0aWJsZXM6Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAtICJh
-bGx3aW5uZXIsc3VuOGktYTIzLWNvZGVjLWFuYWxvZyIKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoC0gImFsbHdpbm5lcixzdW44aS1oMy1jb2RlYy1hbmFsb2ciCj4+IMKgKyAt
-ICJhbGx3aW5uZXIsc3VuOGktdjNzLWNvZGVjLWFuYWxvZyIKPj4KPj4gwqDCoFJlcXVpcmVkIHBy
-b3BlcnRpZXMgaWYgbm90IGEgc3ViLW5vZGUgb2YgdGhlIFBSQ00gbm9kZToKPj4gwqDCoC0gcmVn
-OiBtdXN0IGNvbnRhaW4gdGhlIHJlZ2lzdGVycyBsb2NhdGlvbiBhbmQgbGVuZ3RoCj4+IMKgZGlm
-ZiAtLWdpdCBhL3NvdW5kL3NvYy9zdW54aS9zdW44aS1jb2RlYy1hbmFsb2cuYyBiL3NvdW5kL3Nv
-Yy9zdW54aS9zdW44aS1jb2RlYy1hbmFsb2cuYwo+PiDCoGluZGV4IDZjMTdjOTljMmM4ZC4uNjM3
-NTkzMjE3N2EzIDEwMDY0NAo+PiDCoC0tLSBhL3NvdW5kL3NvYy9zdW54aS9zdW44aS1jb2RlYy1h
-bmFsb2cuYwo+PiDCoCsrKyBiL3NvdW5kL3NvYy9zdW54aS9zdW44aS1jb2RlYy1hbmFsb2cuYwo+
-PiDCoEBAIC02OTUsNiArNjk1LDExIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc3VuOGlfY29kZWNf
-YW5hbG9nX3F1aXJrcyBzdW44aV9oM19xdWlya3MgPSB7Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoC5o
-YXNfbWljMiA9IHRydWUsCj4+IMKgwqB9Owo+Pgo+PiDCoCtzdGF0aWMgY29uc3Qgc3RydWN0IHN1
-bjhpX2NvZGVjX2FuYWxvZ19xdWlya3Mgc3VuOGlfdjNzX3F1aXJrcyA9IHsKPj4gwqArIC5oYXNf
-aGVhZHBob25lID0gdHJ1ZSwKPj4gwqArIC5oYXNfaG1pYyA9IHRydWUsCj4+IMKgK307Cj4+IMKg
-Kwo+PiDCoMKgc3RhdGljIGludCBzdW44aV9jb2RlY19hbmFsb2dfY21wbnRfcHJvYmUoc3RydWN0
-IHNuZF9zb2NfY29tcG9uZW50ICpjbXBudCkKPj4gwqDCoHsKPj4gwqDCoMKgwqDCoMKgwqDCoMKg
-c3RydWN0IGRldmljZSAqZGV2ID0gY21wbnQtPmRldjsKPj4gwqBAQCAtNzYyLDYgKzc2NywxMCBA
-QCBzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2RldmljZV9pZCBzdW44aV9jb2RlY19hbmFsb2dfb2Zf
-bWF0Y2hbXSA9IHsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5jb21wYXRp
-YmxlID0gImFsbHdpbm5lcixzdW44aS1oMy1jb2RlYy1hbmFsb2ciLAo+PiDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgLmRhdGEgPSAmc3VuOGlfaDNfcXVpcmtzLAo+PiDCoMKgwqDC
-oMKgwqDCoMKgwqB9LAo+PiDCoCsgewo+PiDCoCsgLmNvbXBhdGlibGUgPSAiYWxsd2lubmVyLHN1
-bjhpLXYzcy1jb2RlYy1hbmFsb2ciLAo+PiDCoCsgLmRhdGEgPSAmc3VuOGlfdjNzX3F1aXJrcywK
-Pj4gwqArIH0sCj4+IMKgwqDCoMKgwqDCoMKgwqDCoHt9Cj4+IMKgwqB9Owo+PiDCoMKgTU9EVUxF
-X0RFVklDRV9UQUJMRShvZiwgc3VuOGlfY29kZWNfYW5hbG9nX29mX21hdGNoKTsKPj4gwqAtLQo+
-PiDCoDIuMTEuMQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
-cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi,
+
+On Feb 25 2017 20:03, Mihai Burduselu wrote:
+> Reported by checkpatch.pl
+> Signed-off-by: Mihai Burduselu <michelcatalin@gmail.com>
+> ---
+>  sound/soc/dwc/designware_i2s.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/designware_i2s.c
+> index 9c46e4112026..6479768cc6a1 100644
+> --- a/sound/soc/dwc/designware_i2s.c
+> +++ b/sound/soc/dwc/designware_i2s.c
+> @@ -611,10 +611,8 @@ static int dw_i2s_probe(struct platform_device *pdev)
+>  	const char *clk_id;
+>
+>  	dev = devm_kzalloc(&pdev->dev, sizeof(*dev), GFP_KERNEL);
+> -	if (!dev) {
+> -		dev_warn(&pdev->dev, "kzalloc fail\n");
+> +	if (!dev)
+
+The line for 'dev_warn()' should be kept.
+
+>  		return -ENOMEM;
+> -	}
+>
+>  	dw_i2s_dai = devm_kzalloc(&pdev->dev, sizeof(*dw_i2s_dai), GFP_KERNEL);
+>  	if (!dw_i2s_dai)
+
+
+Regards
+
+Takashi Sakamoto
