@@ -1,26 +1,33 @@
-From: Matt Flax <flatmax@flatmax.org>
-Subject: Re: [PATCH v8] ASoC: bcm2835: Add 8 channel
- (multitrack) capability
-Date: Mon, 27 Feb 2017 07:28:26 +1100
-Message-ID: <7e6a4096-036b-929a-3e81-2c70843a4dbc@flatmax.org>
-References: <1486422576-6958-1-git-send-email-flatmax@flatmax.org>
- <1487746600-11065-1-git-send-email-flatmax@flatmax.org>
- <20170224121832.GA19227@camel2.lan>
- <3b693ff9-b3a6-1c10-5b1a-78be04006113@flatmax.org>
- <20170224202553.GA28529@camel2.lan>
- <501e4af5-51b7-c124-4a29-ef5804d8a03c@flatmax.org>
- <20170224230159.GA30456@camel2.lan>
- <27367161-11c6-2d62-cea0-f8936d8477e8@laposte.net>
- <1dd0f2a2-0927-f700-1c45-22538d7c9820@flatmax.org>
- <aba83f3e-400d-d167-d917-1a6112db78bb@flatmax.org>
+From: =?UTF-8?Q?Emmanuel_Fust=c3=a9?= <emmanuel.fuste@laposte.net>
+Subject: Re: [PATCH 0/3] ASoC: Enable a new IC master mode:
+ bcm2835<=>IC<=>cs42xx8
+Date: Sun, 26 Feb 2017 21:41:11 +0100
+Message-ID: <141ed0ce-2801-1ace-84b5-c2881ad8921d@laposte.net>
+References: <cover.1487997974.git.flatmax@flatmax.org>
+ <20170225133952.GA28091@camel2.lan>
+ <8cf68a3e-330d-e76d-e276-5df5453e3baf@flatmax.org>
+ <20170226144958.GA5543@camel2.lan>
+Reply-To: emmanuel.fuste@laposte.net
 Mime-Version: 1.0
 Content-Type: text/plain; charset="windows-1252"; Format="flowed"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nskntmtas05p.mx.bigpond.com (nskntmtas05p.mx.bigpond.com
- [61.9.168.149]) by alsa0.perex.cz (Postfix) with ESMTP id ED258266A74
- for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2017 21:28:33 +0100 (CET)
-In-Reply-To: <aba83f3e-400d-d167-d917-1a6112db78bb@flatmax.org>
+Received: from smtp.laposte.net (smtpoutz25.laposte.net [194.117.213.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 80494266A74
+ for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2017 21:41:13 +0100 (CET)
+Received: from smtp.laposte.net (localhost [127.0.0.1])
+ by lpn-prd-vrout013 (Postfix) with ESMTP id 4736D104C08
+ for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2017 21:41:13 +0100 (CET)
+Received: from smtp.laposte.net (localhost [127.0.0.1])
+ by lpn-prd-vrout013 (Postfix) with ESMTP id 35B37104C4B
+ for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2017 21:41:13 +0100 (CET)
+Received: from lpn-prd-vrin003 (lpn-prd-vrin003.laposte [10.128.63.4])
+ by lpn-prd-vrout013 (Postfix) with ESMTP id 340F2104C36
+ for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2017 21:41:13 +0100 (CET)
+Received: from lpn-prd-vrin003 (localhost [127.0.0.1])
+ by lpn-prd-vrin003 (Postfix) with ESMTP id 1FA7748EA32
+ for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2017 21:41:13 +0100 (CET)
+In-Reply-To: <20170226144958.GA5543@camel2.lan>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,198 +37,151 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: emmanuel.fuste@laposte.net, Matthias Reichl <hias@horus.com>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Phil Elwell <phil@raspberrypi.org>, Eric Anholt <eric@anholt.net>, Mark Brown <broonie@kernel.org>, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+To: Matthias Reichl <hias@horus.com>, Matt Flax <flatmax@flatmax.org>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, phil@raspberrypi.org, Liam Girdwood <lgirdwood@gmail.com>, Eric Anholt <eric@anholt.net>, florian.kauer@koalo.de, broonie@kernel.org, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, ckeepax@opensource.wolfsonmicro.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 25/02/17 16:04, Matt Flax wrote:
->
->
-> On 25/02/17 13:38, Matt Flax wrote:
->>
->>
->> On 25/02/17 11:08, Emmanuel Fust=E9 wrote:
->>> Le 25/02/2017 =E0 00:02, Matthias Reichl a =E9crit :
->>>> On Sat, Feb 25, 2017 at 08:30:03AM +1100, Matt Flax wrote:
->>>>>
->>>>> On 25/02/17 07:25, Matthias Reichl wrote:
->>>>>
->>>>>> I'd put it in another way: it seems to me that the bcm2835 I2S
->>>>>> won't reliably sync in DSP mode A.
->>>>>>
->>>>>>
->>>>> What you are explaining here is the nature of the BCM2835 =
-
->>>>> responding to a
->>>>> codec master. The hardware setup you are describing is elegantly =
-
->>>>> simple, but
->>>>> TOO simple.
->>>> Your patch only changes the CPU DAI driver. At this point it doesn't
->>>> matter if the codec or an external source is driving the clocks.
+Le 26/02/2017 =E0 15:49, Matthias Reichl a =E9crit :
+> On Sun, Feb 26, 2017 at 09:13:09AM +1100, Matt Flax wrote:
+>> On 26/02/17 00:39, Matthias Reichl wrote:
+>>> On Sat, Feb 25, 2017 at 04:03:11PM +1100, Matt Flax wrote:
+>>>> This patch set lets the ASoC system specify that an IC between the SoC=
+ and codec
+>>>> is master. This is intended to put both the SoC and Codec into slave m=
+odes.
 >>>>
->>>> If the clock timing adheres to DSP mode A timing and you add code
->>>> to the the CPU DAI driver so it can operate in DSP mode A then
->>>> that should also work. If not, it's broken.
+>>>> By default un-patched SoC and Codec drivers will return -EINVAL if the=
+y aren't
+>>>> enabled and tested for this mode.
 >>>>
->>>> The (rather brief) publically available bcm2835 datasheet only
->>>> mentions I2S mode and my tests lead me to the conclusion that the
->>>> bcm2835 is actually expecting I2S timing, not DSP A - at least with
->>>> the current code.
->>> After reading this long thread and gluing all info together, my =
-
->>> guess is that the "real" thing he's trying to do is to introduce a =
-
->>> new DPS mode which is nothing more than a multichannel capable I2S =
-
->>> mode or a "DSP I" mode : DSP A with data_delay 1.
->>> As it is basically an I2S (2 channel) encapsulation of multichannel =
-
->>> stream, the real question is alsa plugin or new bastardized DSP mode ?
+>>>> soc-dia.h has the new SND_SOC_DAIFMT_IBM_IFM definition set as :
+>>>> #define SND_SOC_DAIFMT_IBM_IFM		(5 << 12) /* IC clk & FRM master */
+>>>>
+>>>> The cs42xx8 codec driver is enabled for this mode and so too is the BC=
+M2835
+>>>> SoC driver. This forms a chain : bcm2835<=3D>IC<=3D>cs42xx8
+>>>> where the IC is bit and frame master.
+>>> Model your IC as a codec. No need to add patches to random drivers
+>>> and add a flag with the rather meaningless semantics "someone else is
+>>> automagically setting up clocks for me".
 >>>
->>
->> I am not sure if creating a new DSP mode is necesary ?
->>
->> Having a conflict over DSP mode is a "red herring". Below we talk =
-
->> about clocking and timing mater, it is likely that that is where the =
-
->> real problem is.
->>
->>>>
->>>>> Measurements on a system which uses a codec master don't represent =
-
->>>>> a robust
->>>>> implementation of multichannel with the BCM2835. My experiments =
-
->>>>> (and now
->>>>> yours) have shown that the system has a bit shift and an =
-
->>>>> uncontrollable
->>>>> channel drift.
->>>>>
->>>>> Multichannel simply can't be done (on the BCM2835) without control =
-
->>>>> at the
->>>>> hardware level - this requires an intermediate master control chip.
->>>>>
->>>>> The Audio Injector Octo machine driver, sets both the codec and =
-
->>>>> the BCM2835
->>>>> as slaves - the FPGA is master because it has to control both the =
-
->>>>> BCM2835
->>>>> and the codec's systems to get reliability. You can see the =
-
->>>>> machine driver
->>>>> on github :
->>>>> https://github.com/flatmax/linux/blob/rpi-4.4.y/sound/soc/bcm/audioin=
-jector-octo-soundcard.c =
-
->>>>>
->>>>>
->>>>> It has taken month to implement a robust solution to this problem =
-
->>>>> using an
->>>>> FPGA and the result is a fantastic (Audio Injector Octo) sound =
-
->>>>> card. I am
->>>>> almost certain this hardware technique can be used on all stereo =
-
->>>>> I2S SoC
->>>>> chips.
->>>> Can you please provide details about the timing / protocol you are
->>>> actually using?
->>> I suspect that the FPGA act as an I2S <=3D> DSP A translator, taking =
-
->>> care of data_delay difference translation relative to the falling =
-
->>> edge of LRCLK.
->>> It could translate the duration of the one BCLK duration of LRCLK =
-
->>> DSP A pulse to standard I2S LRCLK even if most codecs works with I2S =
-
->>> fs LRCLK timing as the sync point is the falling edge.
->>> As the FPGA has to deals with the clocks of the two sides, it's more =
-
->>> simple if it's the master.
->>> If I'm right, the real used mode from the soc point of view is I2S =
-
->>> and all of this is valid for all I2S IP, there is nothing BMC2835 =
-
->>> specific here. It is not the right place to do the mod.
 >>>
+>> My last patch, used the two codec approach, however it was pointed out t=
+hat
+>> the
+>> bcm2835 was run in DSP mode with a codec master (rather then IC master) =
+and
+>> that
+>> the patch doesn't work. Which is clearly true and a problem, it can only
+>> work with an
+>> intermediate non-codec master.
 >>
+>> I think you summed it up well with your statement :
 >>
->> That is right, the functionality doesn't exist in ALSA to have =
-
->> neither the codec nor the SoC as master.
->>  As I have mentioned before, this is really window dressing for the =
-
->> lack of functionality currently in ALSA.
->>
->> Consider that the same problem exists for sample rate converter =
-
->> chips, it isn't only the Audio Injector Octo's use case.
->>
->> I would like to change focus to the missing piece of the puzzle where =
-
->> an FPGA or ASIC is bit and frame master. For example a new definition :
->> #define SND_SOC_DAIFMT_ABM_AFM          (5 << 12) /* ASIC clk & FRM =
-
->> master */
->>
->> Now with this new mode, it will force all codecs and SoC drivers to =
-
->> fail EINVAL unless they have been manually set up to handle an ASIC =
-
->> master.
->>
->> This also solves the problem Mattias brought up where choosing DSP =
-
->> mode and codec master causes this terrible channel swapping and bit =
-
->> offset. Now we fail if in DSP mode with a codec master, or succeed in =
-
->> DSP mode with an ASIC master :
->>
->> Example for the bcm2835_is2.c :
->>
->>     /* In DSP mode, ensure that an ASIC is master */
->>     if ((dev->fmt & SND_SOC_DAIFMT_FORMAT_MASK)
->>                                           =3D=3D SND_SOC_DAIFMT_DSP_A)
->>         if ((dev->fmt & SND_SOC_DAIFMT_MASTER_MASK)
->>                                        !=3D SND_SOC_DAIFMT_ABM_AFM )
->>             return -EINVAL;
->>         else
->>             return snd_pcm_hw_constraint_single(substream->runtime,
->> SNDRV_PCM_HW_PARAM_CHANNELS, 8);
->>
-> I am sending a patch set which implements this concept to the list.
+>> On 25/02/17 Matthias Reichl wrote:
+>> If the clock timing adheres to DSP mode A timing and you add code
+>> to the the CPU DAI driver so it can operate in DSP mode A then
+>> that should also work. If not, it's broken.
+> Your bcm2835 patch doesn't configure the bcm2835 to DSP mode A,
+> it's still setup for I2S (slave) mode. You are just adding code
+> to pretend it's running in DSP mode A. Don't do that, it's wrong.
 >
+>> This patch set fixes the problem of a daisy chain of three possible mast=
+ers
+>> (CPU <=3D> IC <=3D> codec) where only the IC can be master. In fact, whe=
+n retro
+>> fitting DSP mode to old silicon, the CPU can specify which of the three =
+can
+>> be masters
+>> and there is no chance that someone can fire the system up with the wrong
+>> master
+>> (which we know produces bit offset and random channel swapping when a co=
+dec
+>> is
+>> master).
+> Please follow the advice I gave you about 3 weeks ago and model your
+> setup properly.
+>
+> | So you have bcm2835 I2S <-> FPGA <-> codec - IOW a standard codec<->cod=
+ec
+> | link.
+> |
+> | What you seem to be missing is just a method to transfer your 8-channel
+> | data via a 2-channel link - userspace want's to see an 8-channel PCM,
+> | but the hardware link (bcm2835-i2s) is only 2-channel.
+> |
+> | And that's where IMO as userspace plugin looks like a very good solutio=
+n.
+> | It's basically the counterpart of your FPGA and contains the code that's
+> | neccessary to encapsulate/pack/whatever the 8-channel data into a 2-cha=
+nnel
+> | stream so it can then be unpacked to 8-channel by the FPGA.
+> |
+> | If you go this route your hardware and machine driver will work with
+> | other I2S codecs as well, and IMO that's a far better solution than
+> | adding very ugly hacks to a single I2S driver.
+>
+> If you add an active hardware component (your "IC"/FPGA) you also
+> have to model that in software.
+>
+> If that component is acting as a clock master it probably has some
+> method to setup clocks. Even if you don't have that, eg if you
+> are running at some fixed rate you'll have to store that information
+> somewhere.
+>
+> The place to do that is in a codec driver. In your setup it'll look
+> like this:
+>
+> That "IC" codec has 2 DAIs and operates as a clock master on both.
+> You link one DAI in I2S mode to the bcm2835 and the other DAI
+> in DSP (or whatever mode you are using) to the cs42xx8.
+>
+> If you model it this way you no longer work against ALSA and
+> you can stop adding hacks to existing drivers.
+>
+ From the beginning, I completely agree with you when you take the two =
 
-Hey Matthias, I had an idea which may work with your setup, which =
+problems apart:
+- for the timing problem : model properly the converter as a codec
+- for the encapsulation problem : do the encapsulation / packing with a =
 
-doesn't include the FPGA.
+userspace plugin
 
-Firstly, add a DSP mode B to the bcm2835_i2s.c driver. Set its delay to =
+But when you take the whole together, the plugin part seems completely =
 
-0. Now we have (in the bcm2835_i2s.c) DSP mode A as delay of 1 and DSP =
+overcomplicated.
+As the whole is properly modeled, if we could have a simple solution to =
 
-mode B as a delay of 0. Set your codec to DSP mode A, the CPU (bcm2835) =
+relax the channel numbers constraint on the I2S on the higher part of =
 
-to DSP mode B. This solves the bit shift issue you mentioned before.
+the stack all will "magically" work with little effort/complexity.
 
-Secondly, to try to get rid of your random channels swapping, can you =
+Otherwise, the user-space packer would have to do a lot of more than =
 
-please check and if necessary change the DMA setup in the dts (or =
+packing :  interact with private machine driver controls to manage all =
 
-elsewhere if necessary) so that it will DMA in multiples of 8 ? Don't =
+the channels and the machine driver will need to forward /translate some =
 
-know but a hunch suggests that this may fix things ... which would be =
+parts to directly drive the final (cs42xx8) codec. An potentially if =
 
-amazing.
+such hardware continue to pop-up, each machine driver will need it's own =
 
-Matt
+user-space counterpart.
+
+Packing DSD in PCM (DoP) require zero kernel knowledge and could be =
+
+fully implemented in user-space as we don't change the number of channel =
+
+assumption of the data part of the format. But here, we simply want the =
+
+DSP A data semantic with the I2S hardware bus timing.
+
+I'm a complete newbie to ASoC  but I take part to this tread to learn as =
+
+I hate to see how badly all diy and amateur audio hw are integrated with =
+
+Alsa/ASoC/Linux and so never go upstream. On a professional/commercial =
+
+dev, you would never take this ... convoluted I2S multi channel path.
+
+Emmanuel.
