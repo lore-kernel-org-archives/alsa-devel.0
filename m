@@ -1,24 +1,24 @@
-From: "Sutar, Mounesh" <Mounesh_Sutar@mentor.com>
-Subject: Re: [PATCH] alsa-lib: Add htimestamp operation
- in	plugin file
-Date: Mon, 27 Feb 2017 07:54:43 +0000
-Message-ID: <f09a8ae3baa54f089d82e01954ec4838@SVR-IES-MBX-04.mgc.mentorg.com>
-References: <1480073797-17667-1-git-send-email-sutar.mounesh@gmail.com>
- <s5hmvgj5s6n.wl-tiwai@suse.de>
- <f3796efe-5870-2f87-77b5-6f932b4b5bac@sakamocchi.jp>
- <s5hfuma5n1d.wl-tiwai@suse.de>
- <3c31a911-bf5d-777c-e0a7-f78be000612f@sakamocchi.jp>
- <ebd6c0a3190d458184063bf9de845bd3@SVR-IES-MBX-04.mgc.mentorg.com>
- <436f8db421d5434eba2b79b4e80b7bf2@SVR-IES-MBX-04.mgc.mentorg.com>
+From: Matthias Reichl <hias@horus.com>
+Subject: Re: [PATCH 0/3] ASoC: Enable a new IC master mode:
+ bcm2835<=>IC<=>cs42xx8
+Date: Mon, 27 Feb 2017 09:04:34 +0100
+Message-ID: <20170227080433.GA2718@delle.lan>
+References: <cover.1487997974.git.flatmax@flatmax.org>
+ <20170225133952.GA28091@camel2.lan>
+ <8cf68a3e-330d-e76d-e276-5df5453e3baf@flatmax.org>
+ <20170226144958.GA5543@camel2.lan>
+ <732a71ac-5ec5-37e1-1190-be036ea34555@flatmax.org>
+ <20170226221648.GA10974@camel2.lan>
+ <7cef41ee-ef00-22b7-830f-517a9d594ed0@flatmax.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 2A2FE2669AF
- for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2017 08:54:49 +0100 (CET)
-In-Reply-To: <436f8db421d5434eba2b79b4e80b7bf2@SVR-IES-MBX-04.mgc.mentorg.com>
-Content-Language: en-US
+Received: from mail.horus.com (mail.horus.com [78.46.148.228])
+ by alsa0.perex.cz (Postfix) with ESMTP id 721ED2667A9
+ for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2017 09:04:35 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <7cef41ee-ef00-22b7-830f-517a9d594ed0@flatmax.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,118 +28,161 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Takashi Iwai <tiwai@suse.de>
-Cc: "sutar.mounesh@gmail.com" <sutar.mounesh@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andreas Pape <apape@de.adit-jv.com>, "Frkuska,
- Joshua" <Joshua_Frkuska@mentor.com>
+To: Matt Flax <flatmax@flatmax.org>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, phil@raspberrypi.org, Liam Girdwood <lgirdwood@gmail.com>, Eric Anholt <eric@anholt.net>, florian.kauer@koalo.de, broonie@kernel.org, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, ckeepax@opensource.wolfsonmicro.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-cGluZw0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogYWxzYS1kZXZlbC1ib3Vu
-Y2VzQGFsc2EtcHJvamVjdC5vcmcgW21haWx0bzphbHNhLWRldmVsLWJvdW5jZXNAYWxzYS1wcm9q
-ZWN0Lm9yZ10gT24gQmVoYWxmIE9mIFN1dGFyLCBNb3VuZXNoDQpTZW50OiAwMyBGZWJydWFyeSAy
-MDE3IDE2OjI4DQpUbzogVGFrYXNoaSBTYWthbW90byA8by10YWthc2hpQHNha2Ftb2NjaGkuanA+
-OyBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+DQpDYzogc3V0YXIubW91bmVzaEBnbWFpbC5j
-b207IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgQW5kcmVhcyBQYXBlIDxhcGFwZUBkZS5h
-ZGl0LWp2LmNvbT47IEZya3Vza2EsIEpvc2h1YSA8Sm9zaHVhX0Zya3Vza2FAbWVudG9yLmNvbT4N
-ClN1YmplY3Q6IFJlOiBbYWxzYS1kZXZlbF0gW1BBVENIXSBhbHNhLWxpYjogQWRkIGh0aW1lc3Rh
-bXAgb3BlcmF0aW9uIGluIHBsdWdpbiBmaWxlDQoNCkhpLA0KDQpXZSBoYWQgdG8gcmUtbG9vayBv
-bnRvIHRoaXMgY2hhbmdlIGFnYWluIGZvciBwb3NzaWJsZSBjb25zaWRlcmF0aW9uLg0KDQpUaGUg
-ZXhpc3Rpbmcgc29sdXRpb24gaHRpbWVzdGFtcCAoc25kX3BjbV9nZW5lcmljX3JlYWxfaHRpbWVz
-dGFtcCkgIEFMV0FZUyByZWFkcyB0aGUgY3VycmVudCB0aW1lLCB3aGlsZSBzbmRfcGNtX2dlbmVy
-aWNfaHRpbWVzdGFtcCByZWFkcyBjb3JyZWN0IHRpbWVzdGFtcCBmcm9tIHNsYXZlIGluY2x1ZGlu
-ZyBldmFsdWF0aW9uIG9mIFRTVEFNUF9NT0RFLg0KDQpGcm9tIGRvY3VtZW50YXRpb24gb2YgL3Ny
-Yy9wY20vcGNtLmMsIHdlIGNhbiBzZWU6DQoiIiIiIFxwYXIgVGltZXN0YW1wIG1vZGUNCg0KVGhl
-IHRpbWVzdGFtcCBtb2RlIHNwZWNpZmllcywgaWYgdGltZXN0YW1wcyBhcmUgYWN0aXZhdGVkLiBD
-dXJyZW50bHksIG9ubHkgI1NORF9QQ01fVFNUQU1QX05PTkUgYW5kICNTTkRfUENNX1RTVEFNUF9N
-TUFQIG1vZGVzIGFyZSBrbm93bi4NClRoZSBtbWFwIG1vZGUgbWVhbnMgdGhhdCB0aW1lc3RhbXAg
-aXMgdGFrZW4gb24gZXZlcnkgcGVyaW9kIHRpbWUgYm91bmRhcnkuIENvcnJlc3BvbmRpbmcgcG9z
-aXRpb24gaW4gdGhlIHJpbmcgYnVmZmVyIGFzc2lnbmVkIHRvIHRpbWVzdGFtcCBjYW4gYmUgb2J0
-YWluZWQgdXNpbmcgI3NuZF9wY21faHRpbWVzdGFtcCgpIGZ1bmN0aW9uLiAiIiIiDQoNCkFzIHNu
-ZF9wY21fZ2VuZXJpY19odGltZXN0YW1wKCkgaW50ZXJuYWxseSBjYWxscyBzbmRfcGNtX2h0aW1l
-c3RhbXAoKSB0byByZWFkIHRpbWUsIHNvIGFjY3VyYXRlIHRpbWVzdGFtcCBjYW4gYmUgcmVhZCBm
-cm9tIHNuZF9wY21fZ2VuZXJpY19odGltZXN0YW1wKCkuDQoNCkFsc28sIGluIGNhc2Ugb2YgcGNt
-X2ZpbGUsIGlmIHRoZSB1bmRlcmx5aW5nIHNsYXZlIGlzIGhhcmR3YXJlLCB0aGVuIHdlIHdvdWxk
-IHdpc2ggdG8gcmVhZCBlbGFwc2VkIGhhcmR3YXJlIHRpbWUsIGFzIGl0IHdpbGwgYmUgdGhlIG1v
-c3QgYWNjdXJhdGUsIGFzIG9wcG9zZWQgdG8gdGhlIGVsYXBzZWQgd2FsbCB0aW1lLiANClRoaXMg
-d2lsbCBwcm92aWRlIHBjbV9maWxlIHdpdGggdGhlIG1vc3QgYWNjdXJhdGUgdGltZXN0YW1wcy4g
-DQoNCkxldCB1cyBrbm93LCB5b3VyIG9waW5pb24gb24gdGhpcyB0byByZS1jb25zaWRlciB0aGlz
-IGNoYW5nZS4NCg0KDQpSZWdhcmRzLA0KTW91bmVzaA0KDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2Fn
-ZS0tLS0tDQpGcm9tOiBhbHNhLWRldmVsLWJvdW5jZXNAYWxzYS1wcm9qZWN0Lm9yZyBbbWFpbHRv
-OmFsc2EtZGV2ZWwtYm91bmNlc0BhbHNhLXByb2plY3Qub3JnXSBPbiBCZWhhbGYgT2YgU3V0YXIs
-IE1vdW5lc2gNClNlbnQ6IDMwIE5vdmVtYmVyIDIwMTYgMTI6NTcNClRvOiBUYWthc2hpIFNha2Ft
-b3RvIDxvLXRha2FzaGlAc2FrYW1vY2NoaS5qcD47IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5k
-ZT4NCkNjOiBzdXRhci5tb3VuZXNoQGdtYWlsLmNvbTsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnOyBBbmRyZWFzIFBhcGUgPGFwYXBlQGRlLmFkaXQtanYuY29tPjsgRnJrdXNrYSwgSm9zaHVh
-IDxKb3NodWFfRnJrdXNrYUBtZW50b3IuY29tPg0KU3ViamVjdDogUmU6IFthbHNhLWRldmVsXSBb
-UEFUQ0hdIGFsc2EtbGliOiBBZGQgaHRpbWVzdGFtcCBvcGVyYXRpb24gaW4gcGx1Z2luIGZpbGUN
-Cg0KSGksDQpJIGRpZCByZWJhc2UgbXkgcmVwbyBiZWZvcmUgYXBwbHlpbmcgdGhpcyBwYXRjaC4g
-SXQgYXBwbGllZCB3aXRob3V0IGFueSBjb25mbGljdHMuDQoNCmNvbW1pdCAwZDFkMjVmMTY2YTAy
-OTRiZjU5NmRkMmU2ZjU1NTc5ZTVlMDQxODZlDQpBdXRob3I6IEFuZHJlYXMgUGFwZSA8YXBhcGVA
-ZGUuYWRpdC1qdi5jb20+DQpEYXRlOiAgIFdlZCBOb3YgMzAgMTI6MDY6MTQgMjAxNiArMDUzMA0K
-DQogICAgYWxzYS1saWI6IEFkZCBodGltZXN0YW1wIG9wZXJhdGlvbiBpbiBwbHVnaW4gZmlsZQ0K
-ICAgIA0KICAgIFBDTSBvcGVyYXRpb24gaHRpbWVzdGFtcCBpcyBub3QgaW1wbGVtZW50ZWQgaW4g
-cGx1Z2luIGZpbGUuDQogICAgQ2FsbGluZyBzbmRfcGNtX2h0aW1lc3RhbXAoKSBvbiBhIHBsdWdp
-biBmaWxlIGNyYXNoZXMuIFRoaXMgc2NlbmFyaW8NCiAgICBpcyBjb25zaWRlcmVkIG5vdy4NCiAg
-ICANCiAgICBTaWduZWQtb2ZmLWJ5OiBBbmRyZWFzIFBhcGUgPGFwYXBlQGRlLmFkaXQtanYuY29t
-Pg0KICAgIFNpZ25lZC1vZmYtYnk6IEpvc2h1YSBGcmt1c2thIDxqb3NodWFfZnJrdXNrYUBtZW50
-b3IuY29tPg0KDQpNICAgICAgIHNyYy9wY20vcGNtX2ZpbGUuYw0KDQpjb21taXQgMmVmN2E1M2Mz
-MWRlNDdmNWYzMzEyN2E4OTA1NGE2NjFhMzFiZDMxMA0KQXV0aG9yOiBNZW5nZG9uZyBMaW4gPG1l
-bmdkb25nLmxpbkBsaW51eC5pbnRlbC5jb20+DQpEYXRlOiAgIEZyaSBOb3YgMjUgMTM6MjA6MDIg
-MjAxNiArMDgwMA0KDQogICAgdG9wb2xvZ3k6IFVwZGF0ZSBwaHlzaWNhbCBsaW5rIGNvbmZpZ3Vy
-YXRpb25zIGluIEJyb2Fkd2VsbCB0ZXh0IGNvbmYgZmlsZQ0KICAgIA0KICAgIFRvIG1ha2UgdGhp
-cyBjb25mIGZpbGUgYSBiZXR0ZXIgZXhhbXBsZSwgYWRkIGNvbmZpZ3VyYXRpb25zIGZvciB0aGUN
-CiAgICBwaHlzaWNhbCBsaW5rICJDb2RlYyIsIHNhbWUgYXMgdGhhdCBkZWZpbmVkIGJ5IEludGVs
-IEJyb2Fkd2VsbCB1cHN0cmVhbQ0KICAgIG1hY2hpbmUgZHJpdmVyLg0KICAgIA0KICAgIFNpZ25l
-ZC1vZmYtYnk6IE1lbmdkb25nIExpbiA8bWVuZ2RvbmcubGluQGxpbnV4LmludGVsLmNvbT4NCiAg
-ICBTaWduZWQtb2ZmLWJ5OiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+DQoNCk0gICAgICAg
-c3JjL2NvbmYvdG9wb2xvZ3kvYnJvYWR3ZWxsL2Jyb2Fkd2VsbC5jb25mDQoNCg0KSXQgYXBwZWFy
-cyBhcywgc291cmNlIGNoYW5nZXMgYXJlIGF0IGRpZmZlcmVudCBsb2NhdGlvbnMsIGl0IGRpZG7i
-gJl0IHJlcG9ydCBhbnkgY29uZmxpY3RzLg0KU29ycnkgZm9yIG5vdCBvYnNlcnZpbmcgdGhpcyBz
-b3VyY2UgY2hhbmdlcywgYmVmb3JlIGFwcGx5aW5nIHRoZSBwYXRjaCBhbmQgcHVzaGluZyBpdCB0
-byBtYWlsaW5nIGxpc3QuDQpBbmQgVGhhbmtzIGZvciBwb2ludGluZyBpdCB0byBpbmNsdWRlZCBm
-aXggY29tbWl0Lg0KDQpSZWdhcmRzLA0KTW91bmVzaA0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2Ut
-LS0tLQ0KRnJvbTogVGFrYXNoaSBTYWthbW90byBbbWFpbHRvOm8tdGFrYXNoaUBzYWthbW9jY2hp
-LmpwXQ0KU2VudDogMjkgTm92ZW1iZXIgMjAxNiAyMTowNA0KVG86IFRha2FzaGkgSXdhaSA8dGl3
-YWlAc3VzZS5kZT4NCkNjOiBzdXRhci5tb3VuZXNoQGdtYWlsLmNvbTsgYWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnOyBGcmt1c2thLCBKb3NodWEgPEpvc2h1YV9Gcmt1c2thQG1lbnRvci5jb20+
-OyBBbmRyZWFzIFBhcGUgPGFwYXBlQGRlLmFkaXQtanYuY29tPjsgU3V0YXIsIE1vdW5lc2ggPE1v
-dW5lc2hfU3V0YXJAbWVudG9yLmNvbT4NClN1YmplY3Q6IFJlOiBbUEFUQ0hdIGFsc2EtbGliOiBB
-ZGQgaHRpbWVzdGFtcCBvcGVyYXRpb24gaW4gcGx1Z2luIGZpbGUNCg0KT24gMjAxNuW5tDEx5pyI
-MzDml6UgMDA6MjIsIFRha2FzaGkgSXdhaSB3cm90ZToNCj4gT24gVHVlLCAyOSBOb3YgMjAxNiAx
-NjoxNTo1NyArMDEwMCwNCj4+Pj4gLS0tIGEvc3JjL3BjbS9wY21fZmlsZS5jCTIwMTMtMDctMDgg
-MTQ6MzE6MzYuMDAwMDAwMDAwICswMjAwDQo+Pj4+ICsrKyBiL3NyYy9wY20vcGNtX2ZpbGUuYwky
-MDE1LTA1LTA0IDE2OjI2OjEwLjQxMzYxNTQwMyArMDIwMA0KPj4+PiBAQCAtNjk4LDYgKzY5OCw3
-IEBADQo+Pj4+ICAJLnJlYWRpID0gc25kX3BjbV9maWxlX3JlYWRpLA0KPj4+PiAgCS5yZWFkbiA9
-IHNuZF9wY21fZmlsZV9yZWFkbiwNCj4+Pj4gIAkuYXZhaWxfdXBkYXRlID0gc25kX3BjbV9nZW5l
-cmljX2F2YWlsX3VwZGF0ZSwNCj4+Pj4gKwkuaHRpbWVzdGFtcCA9IHNuZF9wY21fZ2VuZXJpY19o
-dGltZXN0YW1wLA0KPj4+PiAgCS5tbWFwX2NvbW1pdCA9IHNuZF9wY21fZmlsZV9tbWFwX2NvbW1p
-dCwNCj4+Pj4gIAkucG9sbF9kZXNjcmlwdG9yc19jb3VudCA9IHNuZF9wY21fZ2VuZXJpY19wb2xs
-X2Rlc2NyaXB0b3JzX2NvdW50LA0KPj4+PiAgCS5wb2xsX2Rlc2NyaXB0b3JzID0gc25kX3BjbV9n
-ZW5lcmljX3BvbGxfZGVzY3JpcHRvcnMsDQo+Pg0KPj4gSSBvcHBvc2UgdGhpcyBhcHBsaWNhdGlv
-biwgYmVjYXVzZSBkZXNpZ25hdGVkIGluaXRpYWxpemF0aW9uIGlzIA0KPj4gYWxyZWFkeSBhcHBs
-aWVkIHRvIHRoZSAuaHRpbWVzdGFtcCBtZW1iZXIuDQo+Pg0KPj4gLi4uDQo+PiAgICAgICAgIC5w
-b2xsX2Rlc2NyaXB0b3JzID0gc25kX3BjbV9nZW5lcmljX3BvbGxfZGVzY3JpcHRvcnMsDQo+PiAg
-ICAgICAgIC5wb2xsX3JldmVudHMgPSBzbmRfcGNtX2dlbmVyaWNfcG9sbF9yZXZlbnRzLA0KPj4g
-ICAgICAgICAuaHRpbWVzdGFtcCA9IHNuZF9wY21fZ2VuZXJpY19odGltZXN0YW1wLA0KDQpPb3Bz
-LCAnc25kX3BjbV9nZW5lcmljX3JlYWxfaHRpbWVzdGFtcCcgaXMgcHJvcGVyIGhlcmUuLi4NCg0K
-Pj4gfTsNCj4+DQo+PiBQbGVhc2Ugc2VlIGJlbG93IGNvbW1pdDoNCj4+IHBjbTpmaWxlOiBhZGQg
-dGhlIG1pc3NpbmcgaHRpbWVzdGFtcCBjYWxsYmFjaw0KPj4gaHR0cDovL2dpdC5hbHNhLXByb2pl
-Y3Qub3JnLz9wPWFsc2EtbGliLmdpdDthPWNvbW1pdDtoPTY4YWUwYzcyYTUzNzA0DQo+PiBkNDE2
-ZmU3N2Q0YzYxMmQxZjg4ZDc5MWUwMg0KPj4NCj4+IFRoaXMgbWlzdGFrZSBjYXVzZXMgYmVsb3cg
-d2FybmluZyB3aXRoIC1Xb3ZlcnJpZGUtaW5pdCBvcHRpb24uDQo+PiBwY21fZmlsZS5jOjcxNDox
-Njogd2FybmluZzogaW5pdGlhbGl6ZWQgZmllbGQgb3ZlcndyaXR0ZW4gWy1Xb3ZlcnJpZGUtaW5p
-dF0NCj4+ICAgLmh0aW1lc3RhbXAgPSBzbmRfcGNtX2dlbmVyaWNfcmVhbF9odGltZXN0YW1wLA0K
-Pj4gICAgICAgICAgICAgICAgIF5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn4NCj4+DQo+
-PiBJIGd1ZXNzIG1lbnRvci9BRElUIGRldmVsb3BlcnMgd29ya3MgZm9yIGZvcm1lciBzbmFwc2hv
-dCwgdGhlbiBtaXNzZWQgDQo+PiB0byByZWJhc2UgdG8gY3VycmVudCBtYWlubGluZSBvZiBhbHNh
-LWxpYi4gSSBzdWdnZXN0IHRoZW0gdG8gZGkgDQo+PiByZS1ldmFsdWF0aW9uIHdpdGggY3VycmVu
-dCBtYWlubGluZSB3aXRob3V0IHRoaXMgcGF0Y2guDQo+DQo+IEkgb3Zlcmxvb2tlZCBpdCwgdG9v
-LiAgTm93IHRoZSBjb21taXQgZ290IHJldmVydGVkLg0KDQpUaGFua3MuDQoNCg0KVGFrYXNoaSBT
-YWthbW90bw0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18N
-CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0DQpBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcNCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-DQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QNCkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZw0KaHR0cDovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwNCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On Mon, Feb 27, 2017 at 09:35:14AM +1100, Matt Flax wrote:
+> 
+> 
+> On 27/02/17 09:16, Matthias Reichl wrote:
+> >On Mon, Feb 27, 2017 at 07:21:13AM +1100, Matt Flax wrote:
+> >>
+> >>On 27/02/17 01:49, Matthias Reichl wrote:
+> >>>On Sun, Feb 26, 2017 at 09:13:09AM +1100, Matt Flax wrote:
+> >>>>On 26/02/17 00:39, Matthias Reichl wrote:
+> >>>>>On Sat, Feb 25, 2017 at 04:03:11PM +1100, Matt Flax wrote:
+> >>>>>>This patch set lets the ASoC system specify that an IC between the SoC and codec
+> >>>>>>is master. This is intended to put both the SoC and Codec into slave modes.
+> >>>>>>
+> >>>>>>By default un-patched SoC and Codec drivers will return -EINVAL if they aren't
+> >>>>>>enabled and tested for this mode.
+> >>>>>>
+> >>>>>>soc-dia.h has the new SND_SOC_DAIFMT_IBM_IFM definition set as :
+> >>>>>>#define SND_SOC_DAIFMT_IBM_IFM		(5 << 12) /* IC clk & FRM master */
+> >>>>>>
+> >>>>>>The cs42xx8 codec driver is enabled for this mode and so too is the BCM2835
+> >>>>>>SoC driver. This forms a chain : bcm2835<=>IC<=>cs42xx8
+> >>>>>>where the IC is bit and frame master.
+> >>>>>Model your IC as a codec. No need to add patches to random drivers
+> >>>>>and add a flag with the rather meaningless semantics "someone else is
+> >>>>>automagically setting up clocks for me".
+> >>>>>
+> >>>>>
+> >>>>My last patch, used the two codec approach, however it was pointed out that
+> >>>>the
+> >>>>bcm2835 was run in DSP mode with a codec master (rather then IC master) and
+> >>>>that
+> >>>>the patch doesn't work. Which is clearly true and a problem, it can only
+> >>>>work with an
+> >>>>intermediate non-codec master.
+> >>>>
+> >>>>I think you summed it up well with your statement :
+> >>>>
+> >>>>On 25/02/17 Matthias Reichl wrote:
+> >>>>If the clock timing adheres to DSP mode A timing and you add code
+> >>>>to the the CPU DAI driver so it can operate in DSP mode A then
+> >>>>that should also work. If not, it's broken.
+> >>>Your bcm2835 patch doesn't configure the bcm2835 to DSP mode A,
+> >>>it's still setup for I2S (slave) mode. You are just adding code
+> >>>to pretend it's running in DSP mode A. Don't do that, it's wrong.
+> >>All configuration is done in a machine driver, which I haven't submitted.
+> >>The machine driver's dai_fmt is as follows :
+> >>
+> >>.dai_fmt = SND_SOC_DAIFMT_IBM_IFM|SND_SOC_DAIFMT_DSP_A|SND_SOC_DAIFMT_NB_NF,
+> >>
+> >>>>This patch set fixes the problem of a daisy chain of three possible masters
+> >>>>(CPU <=> IC <=> codec) where only the IC can be master. In fact, when retro
+> >>>>fitting DSP mode to old silicon, the CPU can specify which of the three can
+> >>>>be masters
+> >>>>and there is no chance that someone can fire the system up with the wrong
+> >>>>master
+> >>>>(which we know produces bit offset and random channel swapping when a codec
+> >>>>is
+> >>>>master).
+> >>>Please follow the advice I gave you about 3 weeks ago and model your
+> >>>setup properly.
+> >>>
+> >>>| So you have bcm2835 I2S <-> FPGA <-> codec - IOW a standard codec<->codec
+> >>>| link.
+> >>>|
+> >>>| What you seem to be missing is just a method to transfer your 8-channel
+> >>>| data via a 2-channel link - userspace want's to see an 8-channel PCM,
+> >>>| but the hardware link (bcm2835-i2s) is only 2-channel.
+> >>>|
+> >>>| And that's where IMO as userspace plugin looks like a very good solution.
+> >>>| It's basically the counterpart of your FPGA and contains the code that's
+> >>>| neccessary to encapsulate/pack/whatever the 8-channel data into a 2-channel
+> >>>| stream so it can then be unpacked to 8-channel by the FPGA.
+> >>>|
+> >>>| If you go this route your hardware and machine driver will work with
+> >>>| other I2S codecs as well, and IMO that's a far better solution than
+> >>>| adding very ugly hacks to a single I2S driver.
+> >>>
+> >>>If you add an active hardware component (your "IC"/FPGA) you also
+> >>>have to model that in software.
+> >>>
+> >>>If that component is acting as a clock master it probably has some
+> >>>method to setup clocks. Even if you don't have that, eg if you
+> >>>are running at some fixed rate you'll have to store that information
+> >>>somewhere.
+> >>Clocks are set up in the machine driver as well.
+> >>
+> >>>The place to do that is in a codec driver. In your setup it'll look
+> >>>like this:
+> >>>
+> >>>That "IC" codec has 2 DAIs and operates as a clock master on both.
+> >>>You link one DAI in I2S mode to the bcm2835 and the other DAI
+> >>>in DSP (or whatever mode you are using) to the cs42xx8.
+> >>>
+> >>>If you model it this way you no longer work against ALSA and
+> >>>you can stop adding hacks to existing drivers.
+> >>>
+> >>>
+> >>Thanks, this is actually very constructive advice. Let me try to understand
+> >>what
+> >>you are suggesting here... I am confused about how to set bit depth
+> >>correctly for
+> >>the codec when I play to the IC chip in this setup... lets walk me through
+> >>this one...
+> >>
+> >>I implement a new codec which matches this IC. The IC can be setup to be
+> >>master in
+> >>its dai fmt. The sound card shows up with two devices, only the IC device
+> >>can be used to play
+> >>and record.
+> >Actually you don't get 2 PCMs from that in userspace, you are only
+> >telling ALSA that your stream is routed through another codec inbetween.
+> >
+> >>Say I use aplay to play to the first device (the IC chip) it does hw_params
+> >>and clocks are set.
+> >>But the second device (the codec) never gets hw_params executed ? If I
+> >>select 16 or 24 bits,
+> >>it never knows ... is that right ? If so, how do we solve this problem ?
+> >Have a look at the end of Documentation/sound/alsa/soc/DPCM.txt
+> >where codec<->codec links are explained.
+> >
+> >You can setup the stream parameters for the "IC"<->"real codec" link
+> >with snd_soc_dai_link.params.
+> >
+> >You can do that for example in your machine driver in hwparams:
+> >when hw_params is called eg with 2 channels 192kHz just set the
+> >dai link parameters of the codec to 8 channels 48kHz.
+> >
+> >Maybe using dynamic pcm (which offers a be_hw_params_fixup hook)
+> >is the more appropriate way to do that, but I can't tell for sure
+> >as I never used it and am not familiar with it.
+> >
+> >
+> 
+> Thanks for this information, I will give this a go - seems a better way now
+> then introducing an IC master into the mix !
+> 
+> Do you agree that we still need the BCM2835 SoC CPU driver to be expanded to
+> handle DSP mode
+> and multichannel setups ? I can't see any other way to enable the
+> multichannel hardware setup without altering bcm2835_i2s.c to handle DSP
+> mode and more then 2 channels in its _hw_params.
+
+No, DSP mode and multichannel don't work on the BCM2835. Keep the driver
+as it is.
+
+Use the alsa plugin approach to tunnel multichannel data over a 2-channel
+PCM and you don't need to modify existing drivers.
+
+so long,
+
+Hias
+> 
+> thanks
+> Matt
