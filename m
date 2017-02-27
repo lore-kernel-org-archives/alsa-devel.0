@@ -1,19 +1,19 @@
-From: Icenowy Zheng <icenowy@aosc.xyz>
-Subject: Re: [PATCH 5/9] dmaengine: sun6i: support V3s SoC
-	variant
-Date: Mon, 27 Feb 2017 18:48:01 +0800
-Message-ID: <1426971488192481@web6g.yandex.ru>
-References: <20170225123029.55939-1-icenowy@aosc.xyz>
- <20170225123029.55939-5-icenowy@aosc.xyz>
- <20170227075021.e7e43o54s23jzfto@lukather>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [RFC v2 2/7] IIO: Add bindings for simple sigma
+	delta adc
+Date: Mon, 27 Feb 2017 12:15:47 +0100
+Message-ID: <6943aaf5-b580-0fd1-7a2e-b99f7a266388@st.com>
+References: <1487003909-11710-1-git-send-email-arnaud.pouliquen@st.com>
+ <1487003909-11710-3-git-send-email-arnaud.pouliquen@st.com>
+ <20170222151750.h5d7gycltwnk7b4t@rob-hp-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from forward3m.cmail.yandex.net (forward3m.cmail.yandex.net
- [5.255.216.21]) by alsa0.perex.cz (Postfix) with ESMTP id EAAA5266DE0
- for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2017 11:48:03 +0100 (CET)
-In-Reply-To: <20170227075021.e7e43o54s23jzfto@lukather>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 3CA30266ADE
+ for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2017 12:15:51 +0100 (CET)
+In-Reply-To: <20170222151750.h5d7gycltwnk7b4t@rob-hp-laptop>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,65 +23,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Maxime Ripard <maxime.ripard@free-electrons.com>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>, "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Rob Herring <robh@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Olivier MOYSAN <olivier.moysan@st.com>, "kernel@stlinux.com" <kernel@stlinux.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Mark Brown <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Hartmut Knaack <knaack.h@gmx.de>, Jonathan Cameron <jic23@kernel.org>, Alexandre TORGUE <alexandre.torgue@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-CgoyNy4wMi4yMDE3LCAxNTo1MCwgIk1heGltZSBSaXBhcmQiIDxtYXhpbWUucmlwYXJkQGZyZWUt
-ZWxlY3Ryb25zLmNvbT46Cj4gT24gU2F0LCBGZWIgMjUsIDIwMTcgYXQgMDg6MzA6MjVQTSArMDgw
-MCwgSWNlbm93eSBaaGVuZyB3cm90ZToKPj4gwqBBbGx3aW5uZXIgVjNzIGhhcyBhIERNQSBlbmdp
-bmUgc2ltaWxhciB0byB0aGUgb25lcyBmcm9tIEEzMSwgYnV0IHdpdGgKPj4gwqBmZXdlciBjaGFu
-bmVscyBhbmQgRFJRcy4KPj4KPj4gwqBBZGQgc3VwcG9ydCBmb3IgaXQuCj4+Cj4+IMKgQXMgaXQg
-YWxzbyBuZWVkcyB0aGUgc3BlY2lhbCBnYXRlIGJpdCwgbWFrZSB0aGUgZ2F0ZSBiaXQgZ2VuZXJp
-Yy4KPgo+IFRoYXQgc2hvdWxkIGJlIHBhcnQgb2YgYSBzZXBhcmF0ZSBwYXRjaC4KCk9LLgoKPgo+
-PiDCoEFjY29yZGluZyB0byBCU1Agc291cmNlIGNvZGUsIFNVTjhJVzYgKEE4M1QpIGFsc28gbmVl
-ZHMgdGhlIGJpdCwgc28gaXQKPj4gwqBoYXZlIGFsc28gYmVlbiBzcGVjaWZpZWQgZ2F0ZV9uZWVk
-ZWQgcHJvcGVydHkuCj4+Cj4+IMKgU2lnbmVkLW9mZi1ieTogSWNlbm93eSBaaGVuZyA8aWNlbm93
-eUBhb3NjLnh5ej4KPj4gwqAtLS0KPj4gwqDCoERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9kbWEvc3VuNmktZG1hLnR4dCB8IDEgKwo+PiDCoMKgZHJpdmVycy9kbWEvc3VuNmktZG1h
-LmMgfCAxNyArKysrKysrKysrKysrKy0tLQo+PiDCoMKgMiBmaWxlcyBjaGFuZ2VkLCAxNSBpbnNl
-cnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQo+Pgo+PiDCoGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0
-aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZG1hL3N1bjZpLWRtYS50eHQgYi9Eb2N1bWVudGF0aW9u
-L2RldmljZXRyZWUvYmluZGluZ3MvZG1hL3N1bjZpLWRtYS50eHQKPj4gwqBpbmRleCA2YjI2NzA0
-NWY1MjIuLjk4ZmJlMWE1YzZkZCAxMDA2NDQKPj4gwqAtLS0gYS9Eb2N1bWVudGF0aW9uL2Rldmlj
-ZXRyZWUvYmluZGluZ3MvZG1hL3N1bjZpLWRtYS50eHQKPj4gwqArKysgYi9Eb2N1bWVudGF0aW9u
-L2RldmljZXRyZWUvYmluZGluZ3MvZG1hL3N1bjZpLWRtYS50eHQKPj4gwqBAQCAtOSw2ICs5LDcg
-QEAgUmVxdWlyZWQgcHJvcGVydGllczoKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCJhbGx3aW5uZXIsc3VuOGktYTIzLWRtYSIKPj4gwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCJhbGx3aW5uZXIsc3VuOGktYTgzdC1kbWEiCj4+IMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAiYWxsd2lubmVyLHN1bjhpLWgzLWRt
-YSIKPj4gwqArICJhbGx3aW5uZXIsc3VuOGktdjNzLWRtYSIKPj4gwqDCoC0gcmVnOiBTaG91bGQg
-Y29udGFpbiB0aGUgcmVnaXN0ZXJzIGJhc2UgYWRkcmVzcyBhbmQgbGVuZ3RoCj4+IMKgwqAtIGlu
-dGVycnVwdHM6IFNob3VsZCBjb250YWluIGEgcmVmZXJlbmNlIHRvIHRoZSBpbnRlcnJ1cHQgdXNl
-ZCBieSB0aGlzIGRldmljZQo+PiDCoMKgLSBjbG9ja3M6IFNob3VsZCBjb250YWluIGEgcmVmZXJl
-bmNlIHRvIHRoZSBwYXJlbnQgQUhCIGNsb2NrCj4+IMKgZGlmZiAtLWdpdCBhL2RyaXZlcnMvZG1h
-L3N1bjZpLWRtYS5jIGIvZHJpdmVycy9kbWEvc3VuNmktZG1hLmMKPj4gwqBpbmRleCBhMjM1ODc4
-MGFiMmMuLjFmMzg0MjRjMWIxNCAxMDA2NDQKPj4gwqAtLS0gYS9kcml2ZXJzL2RtYS9zdW42aS1k
-bWEuYwo+PiDCoCsrKyBiL2RyaXZlcnMvZG1hL3N1bjZpLWRtYS5jCj4+IMKgQEAgLTEwMSw2ICsx
-MDEsNyBAQCBzdHJ1Y3Qgc3VuNmlfZG1hX2NvbmZpZyB7Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKg
-dTMyIG5yX21heF9jaGFubmVsczsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqB1MzIgbnJfbWF4X3Jl
-cXVlc3RzOwo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoHUzMiBucl9tYXhfdmNoYW5zOwo+PiDCoCsg
-Ym9vbCBnYXRlX25lZWRlZDsKPj4gwqDCoH07Cj4+Cj4+IMKgwqAvKgo+PiDCoEBAIC0xMDA5LDEy
-ICsxMDEwLDE0IEBAIHN0YXRpYyBzdHJ1Y3Qgc3VuNmlfZG1hX2NvbmZpZyBzdW44aV9hMjNfZG1h
-X2NmZyA9IHsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqAubnJfbWF4X2NoYW5uZWxzID0gOCwKPj4g
-wqDCoMKgwqDCoMKgwqDCoMKgwqAubnJfbWF4X3JlcXVlc3RzID0gMjQsCj4+IMKgwqDCoMKgwqDC
-oMKgwqDCoMKgLm5yX21heF92Y2hhbnMgPSAzNywKPj4gwqArIC5nYXRlX25lZWRlZCA9IHRydWUs
-Cj4+IMKgwqB9Owo+Pgo+PiDCoMKgc3RhdGljIHN0cnVjdCBzdW42aV9kbWFfY29uZmlnIHN1bjhp
-X2E4M3RfZG1hX2NmZyA9IHsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqAubnJfbWF4X2NoYW5uZWxz
-ID0gOCwKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqAubnJfbWF4X3JlcXVlc3RzID0gMjgsCj4+IMKg
-wqDCoMKgwqDCoMKgwqDCoMKgLm5yX21heF92Y2hhbnMgPSAzOSwKPj4gwqArIC5nYXRlX25lZWRl
-ZCA9IHRydWUsCj4+IMKgwqB9Owo+Pgo+PiDCoMKgLyoKPj4gwqBAQCAtMTAyOCwxMSArMTAzMSwx
-OSBAQCBzdGF0aWMgc3RydWN0IHN1bjZpX2RtYV9jb25maWcgc3VuOGlfaDNfZG1hX2NmZyA9IHsK
-Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqAubnJfbWF4X3ZjaGFucyA9IDM0LAo+PiDCoMKgfTsKPj4K
-Pj4gwqArc3RhdGljIHN0cnVjdCBzdW42aV9kbWFfY29uZmlnIHN1bjhpX3Yzc19kbWFfY2ZnID0g
-ewo+PiDCoCsgLm5yX21heF9jaGFubmVscyA9IDgsCj4+IMKgKyAubnJfbWF4X3JlcXVlc3RzID0g
-MjMsCj4+IMKgKyAubnJfbWF4X3ZjaGFucyA9IDI0LAo+Cj4gVGhpcyBvbmUgaXMgc3VzcGljaW91
-cy4gVGhlcmUncyBqdXN0IGEgc2luZ2xlIGVuZHBvaW50IHRoYXQgY2FuIGJlCj4gdXNlZCBpbiBi
-b3RoIGRpcmVjdGlvbnM/Cgpucl9tYXhfdmNoYW5zIGlzIHRoZSBlbmRwb2ludCBudW1iZXIuIG5y
-X21heF9yZXF1ZXN0cyBpcyB0aGUKbWF4aW11bSBEUlEgbnVtYmVyLCBmb3IgVjNzLCBhY2NvcmRp
-bmcgdG8gdGhlIGRhdGFzaGVldCwgaXQncwoyMzogU1BJMF97UixUfVguCgo+Cj4gTWF4aW1lCj4K
-PiAtLQo+IE1heGltZSBSaXBhcmQsIEZyZWUgRWxlY3Ryb25zCj4gRW1iZWRkZWQgTGludXggYW5k
-IEtlcm5lbCBlbmdpbmVlcmluZwo+IGh0dHA6Ly9mcmVlLWVsZWN0cm9ucy5jb20KX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hello Rob,
+
+Please find my answers in-line
+
+Regards,
+
+Arnaud
+
+On 02/22/2017 04:17 PM, Rob Herring wrote:
+> On Mon, Feb 13, 2017 at 05:38:24PM +0100, Arnaud Pouliquen wrote:
+>> Add documentation of device tree bindings to support
+>> sigma delta modulator in IIO framework.
+>>
+>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+>> ---
+>>  Documentation/devicetree/bindings/iio/adc/simple_sd_adc.txt | 13 +++++++++++++
+>>  1 file changed, 13 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/iio/adc/simple_sd_adc.txt
+>>
+>> diff --git a/Documentation/devicetree/bindings/iio/adc/simple_sd_adc.txt b/Documentation/devicetree/bindings/iio/adc/simple_sd_adc.txt
+>> new file mode 100644
+>> index 0000000..2b3968a
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/iio/adc/simple_sd_adc.txt
+>> @@ -0,0 +1,13 @@
+>> +Device-Tree bindings for simple sigma delta adc
+> 
+> What makes it "simple"?
+"simple" sigma delta modulator are external chip that just converts
+analog signal in sigma delta modulation. No configuration needs.
+"Simple" is use to differentiate SD ADC that offers interfaces to
+activate some internal processing ( gain, offset compensation...)
+
+> 
+>> +
+>> +Required properties:
+>> +- compatible: should be "sd-modulator".
+>> +- #io-channel-cells = <1>: See the IIO bindings section "IIO consumers".
+>> +
+>> +Example node:
+>> +
+>> +	ads1202: simple_sd_adc@0 {
+> 
+> Is ads1202 the actual chip? Then it should be in the compatible list.
+I tried to define a generic device to support several SD modulator
+chips, inspired by ALSA "dmic-codec" device.
+I have none exhaustive list of chip that can be handled by the driver,
+but i found several devices that could match...
+That why i did not use chip name in compatible list.
+What should be the best way to do it?
+
+> 
+> unit address without a reg prop is an error. The node name should be 
+> "adc".
+> 
+>> +		compatible = "sd-modulator";
+>> +		#io-channel-cells = <1>;
+>> +		status = "okay";
+> 
+> Drop status from examples.
+> 
+>> +	};
+>> -- 
+>> 1.9.1
+>>
