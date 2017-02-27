@@ -1,19 +1,11 @@
-From: Thierry Reding <thierry.reding@gmail.com>
-Subject: Re: [PATCH] ASoC: tegra: Add blank line after
-	declarations
-Date: Mon, 27 Feb 2017 08:27:42 +0100
-Message-ID: <20170227072742.GB27415@ulmo.ba.sec>
-References: <1488049157-6535-1-git-send-email-codrut.cristian.grosu@gmail.com>
+From: sutar.mounesh@gmail.com
+Subject: [PATCH 6/6 V2] pcm:plug: save converter config
+Date: Mon, 27 Feb 2017 12:57:37 +0530
+Message-ID: <1488180457-9063-1-git-send-email-sutar.mounesh@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1516719786678968770=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f193.google.com (mail-wr0-f193.google.com
- [209.85.128.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 384A62669AF
- for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2017 08:27:44 +0100 (CET)
-Received: by mail-wr0-f193.google.com with SMTP id l37so364678wrc.3
- for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2017 23:27:44 -0800 (PST)
-In-Reply-To: <1488049157-6535-1-git-send-email-codrut.cristian.grosu@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,60 +15,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Codrut Grosu <codrut.cristian.grosu@gmail.com>
-Cc: gnurou@gmail.com, alsa-devel@alsa-project.org, swarren@wwwdotorg.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com, nicoleotsuka@gmail.com, Julia.Lawall@lip6.fr, broonie@kernel.org, linux-tegra@vger.kernel.org
+To: patch@alsa-project.org
+Cc: Mounesh Sutar <sutar.mounesh@gmail.com>, alsa-devel@alsa-project.org, Andreas Pape <apape@de.adit-jv.com>, mounesh_sutar@mentor.com
 List-Id: alsa-devel@alsa-project.org
 
+From: Andreas Pape <apape@de.adit-jv.com>
 
---===============1516719786678968770==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="2B/JsCI69OhZNC5r"
-Content-Disposition: inline
+Passed config is freed after call to open, thus it is invalid when
+trying to extract the converter name. So config entry is saved
+for later usage.
 
+Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
+Signed-off-by: Mounesh Sutar <sutar.mounesh@gmail.com>
 
---2B/JsCI69OhZNC5r
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sat, Feb 25, 2017 at 08:59:17PM +0200, Codrut Grosu wrote:
-> This was reported by checkpatch.pl
->=20
-> Signed-off-by: Codrut GROSU <codrut.cristian.grosu@gmail.com>
-> ---
->  sound/soc/tegra/tegra20_das.c  | 1 +
->  sound/soc/tegra/tegra30_ahub.c | 1 +
->  2 files changed, 2 insertions(+)
-
-Acked-by: Thierry Reding <treding@nvidia.com>
-
---2B/JsCI69OhZNC5r
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAliz1O4ACgkQ3SOs138+
-s6FkEQ/+Nuxn/b9JrdWj0tZRVTDSu1nvZx1LMLNRBLsS9xwddIoRE7yILBaTh5GJ
-1NBeT6QHrx7W9Vk60WPiVeqhFkNBS7XQZcR4XQpl/mEATa7irpueea+rO77ZkYvH
-N4H/yfOiWYyFihrQl+1iGwBUGpg+lhhnJKBZ1pkhJ02cZvrVmIX2Dq8fufVv5JxN
-vkpbigcy4SO2ngFb7jnJIWqh/KggY334h1/oUtxtvDgpYaQioij1aRFhg2MCS2el
-3zJ80FQUY4qitgXf7eCM7tbX4hfNRNupdEBi3YrHxJqLVap6528zoq/ktbzA4SjO
-aBkQSYMD8KAkgOWRLDGI9Ti8MKaG2NoTMV8xXdypbW52sX5jKGIEWaUOs8eKbq1T
-D2Tp4xbNUyeIPndg5NDOClk/jMnz7fTGiszvOcPHL1U6QWq14vKcU9/JRI1xQ59N
-Xld1vDBAcVWkOYRy6zZ9Xu7F5ZJ036isdjqm+n8UtS1cRpC71LuKyqG21J498lCC
-Zhc1DTOsqAehP2wkuWowBp0QvWoysGbQBuCuuZ3qiMBlBKCrYa4p2zEQXfL3KGYW
-ImveLnQH4DVtKm/8783PN4twrUxtA1lil1zmBPJfhJCX66nPJHrcr8VADlyp0Y7s
-ojRpIzkhGEAy390/7wjLclKhj0HOB7Vo2JWhhFblcSG14XDK2Ig=
-=cZlG
------END PGP SIGNATURE-----
-
---2B/JsCI69OhZNC5r--
-
---===============1516719786678968770==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1516719786678968770==--
+diff --git a/src/pcm/pcm_plug.c b/src/pcm/pcm_plug.c
+index 266707b..ad0e99e 100644
+--- a/src/pcm/pcm_plug.c
++++ b/src/pcm/pcm_plug.c
+@@ -64,6 +64,8 @@ static int snd_pcm_plug_close(snd_pcm_t *pcm)
+ 	snd_pcm_plug_t *plug = pcm->private_data;
+ 	int err, result = 0;
+ 	free(plug->ttable);
++	if (plug->rate_converter)
++		snd_config_delete((snd_config_t*)plug->rate_converter);
+ 	assert(plug->gen.slave == plug->req_slave);
+ 	if (plug->gen.close_slave) {
+ 		snd_pcm_unlink_hw_ptr(pcm, plug->req_slave);
+@@ -1108,7 +1110,13 @@ int snd_pcm_plug_open(snd_pcm_t **pcmp,
+ 	plug->sformat = sformat;
+ 	plug->schannels = schannels;
+ 	plug->srate = srate;
+-	plug->rate_converter = rate_converter;
++	if (rate_converter) {
++		if ((err = snd_config_copy((snd_config_t**)&plug->rate_converter,
++					   (snd_config_t *)rate_converter)) < 0)
++			free(plug);
++			return err;
++	}
++
+ 	plug->gen.slave = plug->req_slave = slave;
+ 	plug->gen.close_slave = close_slave;
+ 	plug->route_policy = route_policy;
+@@ -1119,6 +1127,8 @@ int snd_pcm_plug_open(snd_pcm_t **pcmp,
+ 	
+ 	err = snd_pcm_new(&pcm, SND_PCM_TYPE_PLUG, name, slave->stream, slave->mode);
+ 	if (err < 0) {
++		if (plug->rate_converter)
++			snd_config_delete((snd_config_t*)plug->rate_converter);
+ 		free(plug);
+ 		return err;
+ 	}
+-- 
+2.7.4
