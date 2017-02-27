@@ -1,35 +1,17 @@
-From: =?UTF-8?Q?Emmanuel_Fust=c3=a9?= <emmanuel.fuste@laposte.net>
-Subject: Re: [PATCH 0/3] ASoC: Enable a new IC master mode:
- bcm2835<=>IC<=>cs42xx8
-Date: Sun, 26 Feb 2017 23:49:49 +0100
-Message-ID: <97c0ea59-edbd-ed59-eb4a-82019dae080c@laposte.net>
-References: <cover.1487997974.git.flatmax@flatmax.org>
- <20170225133952.GA28091@camel2.lan>
- <8cf68a3e-330d-e76d-e276-5df5453e3baf@flatmax.org>
- <20170226144958.GA5543@camel2.lan>
- <141ed0ce-2801-1ace-84b5-c2881ad8921d@laposte.net>
- <bb7f470f-ab3c-4185-ac4b-431bc8b9c000@flatmax.org>
-Reply-To: emmanuel.fuste@laposte.net
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH -next] ASoC: hdmi-codec: fix non static
+	symbol warnings
+Date: Mon, 27 Feb 2017 10:08:15 +0900
+Message-ID: <4a2e36fb-8529-c86a-1d9c-2d85fd39d530@sakamocchi.jp>
+References: <20170206143830.6871-1-weiyj.lk@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; Format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.laposte.net (smtpoutz25.laposte.net [194.117.213.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C533266A74
- for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2017 23:49:49 +0100 (CET)
-Received: from smtp.laposte.net (localhost [127.0.0.1])
- by lpn-prd-vrout013 (Postfix) with ESMTP id E0593104C4B
- for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2017 23:49:48 +0100 (CET)
-Received: from smtp.laposte.net (localhost [127.0.0.1])
- by lpn-prd-vrout013 (Postfix) with ESMTP id D295F104C77
- for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2017 23:49:48 +0100 (CET)
-Received: from lpn-prd-vrin003 (lpn-prd-vrin003.laposte [10.128.63.4])
- by lpn-prd-vrout013 (Postfix) with ESMTP id CEA2B104C4B
- for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2017 23:49:48 +0100 (CET)
-Received: from lpn-prd-vrin003 (localhost [127.0.0.1])
- by lpn-prd-vrin003 (Postfix) with ESMTP id BC90048EA14
- for <alsa-devel@alsa-project.org>; Sun, 26 Feb 2017 23:49:48 +0100 (CET)
-In-Reply-To: <bb7f470f-ab3c-4185-ac4b-431bc8b9c000@flatmax.org>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id CC29B266AA9
+ for <alsa-devel@alsa-project.org>; Mon, 27 Feb 2017 02:08:21 +0100 (CET)
+In-Reply-To: <20170206143830.6871-1-weiyj.lk@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -39,66 +21,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Flax <flatmax@flatmax.org>
-Cc: alsa-devel@alsa-project.org, ckeepax@opensource.wolfsonmicro.com
+To: Wei Yongjun <weiyj.lk@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Philipp Zabel <p.zabel@pengutronix.de>, "Jon Medhurst (Tixy)" <tixy@linaro.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Jyri Sarha <jsarha@ti.com>, PC Liao <pc.liao@mediatek.com>
+Cc: alsa-devel@alsa-project.org, Wei Yongjun <weiyongjun1@huawei.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Le 26/02/2017 =E0 22:44, Matt Flax a =E9crit :
->
->
-> On 27/02/17 07:41, Emmanuel Fust=E9 wrote:
->>
->>
->> I'm a complete newbie to ASoC  but I take part to this tread to learn =
-
->> as I hate to see how badly all diy and amateur audio hw are =
-
->> integrated with Alsa/ASoC/Linux and so never go upstream. On a =
-
->> professional/commercial dev, you would never take this ... convoluted =
-
->> I2S multi channel path.
->>
->
-> Hey Emmanuel,
->
-> We now know that we can retrofit legacy I2S silicon for multichannel, =
-
-> in a very direct manner.
->
-> If you were a chip manufacturer and you could potentially increase =
-
-> your market take up by hundreds of millions of new potential low power =
-
-> devices, wouldn't you manufacture ALL new chips with these minor =
-
-> modifications ?
->
-> Matt
 Hi,
 
-No, because this is a hack. There is established an more importantly  =
+On Feb 6 2017 23:38, Wei Yongjun wrote:
+> From: Wei Yongjun <weiyongjun1@huawei.com>
+>
+> Fixes the following sparse warnings:
+>
+> sound/soc/codecs/hdmi-codec.c:34:1: warning:
+>  symbol 'hdmi_device_list' was not declared. Should it be static?
+> sound/soc/codecs/hdmi-codec.c:80:33: warning:
+>  symbol 'hdmi_codec_stereo_chmaps' was not declared. Should it be static?
+> sound/soc/codecs/hdmi-codec.c:87:33: warning:
+>  symbol 'hdmi_codec_8ch_chmaps' was not declared. Should it be static?
+> sound/soc/codecs/hdmi-codec.c:354:6: warning:
+>  symbol 'hdmi_codec_eld_chmap' was not declared. Should it be static?
+>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> ---
+>  sound/soc/codecs/hdmi-codec.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 
-interoperable bus standards to do multichannel digital audio : TDM/DSP =
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-A/DSP B
-As today standards, even ultra low power and low powerfull IC are able =
+Unfortunately, this patch causes conflict to Mark's PR[0], due to a 
+commit 8480ac567959 ("ASoC: hdmi-codec: remove HDMI device 
+unregister")[1]. I think it better for you to post again with rebasing 
+this on the PR, however it depends on Mark's maintenance policy (he 
+could resolve the conflict by his hand and apply).
 
-to do standard multichannel serial audio. Atmel AT & ARM cortex  M =B5C, =
+[0] 
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-February/118079.html
+[1] 
+https://git.kernel.org/cgit/linux/kernel/git/tiwai/sound.git/commit/?id=8480ac567959
 
-STMicro STM32 family etc ...
-I2S signaling is only part of the equation, fifo, DMA handling, etc... =
+> diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+> index dc6715a..4982c91 100644
+> --- a/sound/soc/codecs/hdmi-codec.c
+> +++ b/sound/soc/codecs/hdmi-codec.c
+> @@ -31,7 +31,7 @@ struct hdmi_device {
+>  	int cnt;
+>  };
+>  #define pos_to_hdmi_device(pos)	container_of((pos), struct hdmi_device, list)
+> -LIST_HEAD(hdmi_device_list);
+> +static LIST_HEAD(hdmi_device_list);
+>
+>  #define DAI_NAME_SIZE 16
+>
+> @@ -77,14 +77,14 @@ struct hdmi_codec_cea_spk_alloc {
+>  };
+>
+>  /* Channel maps  stereo HDMI */
+> -const struct snd_pcm_chmap_elem hdmi_codec_stereo_chmaps[] = {
+> +static const struct snd_pcm_chmap_elem hdmi_codec_stereo_chmaps[] = {
+>  	{ .channels = 2,
+>  	  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR } },
+>  	{ }
+>  };
+>
+>  /* Channel maps for multi-channel playbacks, up to 8 n_ch */
+> -const struct snd_pcm_chmap_elem hdmi_codec_8ch_chmaps[] = {
+> +static const struct snd_pcm_chmap_elem hdmi_codec_8ch_chmaps[] = {
+>  	{ .channels = 2, /* CA_ID 0x00 */
+>  	  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR } },
+>  	{ .channels = 4, /* CA_ID 0x01 */
+> @@ -351,7 +351,7 @@ static unsigned long hdmi_codec_spk_mask_from_alloc(int spk_alloc)
+>  	return spk_mask;
+>  }
+>
+> -void hdmi_codec_eld_chmap(struct hdmi_codec_priv *hcp)
+> +static void hdmi_codec_eld_chmap(struct hdmi_codec_priv *hcp)
+>  {
+>  	u8 spk_alloc;
+>  	unsigned long spk_mask;
 
-of the multichannel part could be important depending of the implementation.
-And the FPGA glue logic is way more costly than choosing a SOC / =B5C with =
 
-a properly designed multichannel serial audio IP.
-The real question is why this SOC so poorly endowed with bad device IP =
+Thanks
 
-is so popular... but this is another story...
-
-Don't get me wrong. I'm nevertheless a real supporter of this "hack". =
-
-But it should be done the "right" way.
-
-Emmanuel.
+Takashi Sakamoto
