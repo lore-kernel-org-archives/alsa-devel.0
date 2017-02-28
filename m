@@ -1,19 +1,20 @@
-From: Maxime Ripard <maxime.ripard@free-electrons.com>
+From: Icenowy Zheng <icenowy@aosc.xyz>
 Subject: Re: [PATCH 5/9] dmaengine: sun6i: support V3s SoC
 	variant
-Date: Tue, 28 Feb 2017 18:56:04 +0100
-Message-ID: <20170228175604.kdlmjjcncfljnbfp@lukather>
+Date: Wed, 01 Mar 2017 01:58:33 +0800
+Message-ID: <535111488304713@web26h.yandex.ru>
 References: <20170225123029.55939-1-icenowy@aosc.xyz>
  <20170225123029.55939-5-icenowy@aosc.xyz>
  <20170227075021.e7e43o54s23jzfto@lukather>
- <1426971488192481@web6g.yandex.ru>
+ <1426971488192481@web6g.yandex.ru> <20170228175604.kdlmjjcncfljnbfp@lukather>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8228053245081889857=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
- by alsa0.perex.cz (Postfix) with ESMTP id AA353266718
- for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2017 18:56:05 +0100 (CET)
-In-Reply-To: <1426971488192481@web6g.yandex.ru>
+Received: from forward3j.cmail.yandex.net (forward3j.cmail.yandex.net
+ [5.255.227.21]) by alsa0.perex.cz (Postfix) with ESMTP id C873F266718
+ for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2017 18:58:35 +0100 (CET)
+In-Reply-To: <20170228175604.kdlmjjcncfljnbfp@lukather>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,149 +24,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Icenowy Zheng <icenowy@aosc.xyz>
+To: Maxime Ripard <maxime.ripard@free-electrons.com>
 Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>, "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---===============8228053245081889857==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="x2rus7yuyqbzeq22"
-Content-Disposition: inline
-
-
---x2rus7yuyqbzeq22
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Feb 27, 2017 at 06:48:01PM +0800, Icenowy Zheng wrote:
->=20
->=20
-> 27.02.2017, 15:50, "Maxime Ripard" <maxime.ripard@free-electrons.com>:
-> > On Sat, Feb 25, 2017 at 08:30:25PM +0800, Icenowy Zheng wrote:
-> >> =A0Allwinner V3s has a DMA engine similar to the ones from A31, but wi=
-th
-> >> =A0fewer channels and DRQs.
-> >>
-> >> =A0Add support for it.
-> >>
-> >> =A0As it also needs the special gate bit, make the gate bit generic.
-> >
-> > That should be part of a separate patch.
->=20
-> OK.
->=20
-> >
-> >> =A0According to BSP source code, SUN8IW6 (A83T) also needs the bit, so=
- it
-> >> =A0have also been specified gate_needed property.
-> >>
-> >> =A0Signed-off-by: Icenowy Zheng <icenowy@aosc.xyz>
-> >> =A0---
-> >> =A0=A0Documentation/devicetree/bindings/dma/sun6i-dma.txt | 1 +
-> >> =A0=A0drivers/dma/sun6i-dma.c | 17 ++++++++++++++---
-> >> =A0=A02 files changed, 15 insertions(+), 3 deletions(-)
-> >>
-> >> =A0diff --git a/Documentation/devicetree/bindings/dma/sun6i-dma.txt b/=
-Documentation/devicetree/bindings/dma/sun6i-dma.txt
-> >> =A0index 6b267045f522..98fbe1a5c6dd 100644
-> >> =A0--- a/Documentation/devicetree/bindings/dma/sun6i-dma.txt
-> >> =A0+++ b/Documentation/devicetree/bindings/dma/sun6i-dma.txt
-> >> =A0@@ -9,6 +9,7 @@ Required properties:
-> >> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0"allwinner=
-,sun8i-a23-dma"
-> >> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0"allwinner=
-,sun8i-a83t-dma"
-> >> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0"allwinner=
-,sun8i-h3-dma"
-> >> =A0+ "allwinner,sun8i-v3s-dma"
-> >> =A0=A0- reg: Should contain the registers base address and length
-> >> =A0=A0- interrupts: Should contain a reference to the interrupt used b=
-y this device
-> >> =A0=A0- clocks: Should contain a reference to the parent AHB clock
-> >> =A0diff --git a/drivers/dma/sun6i-dma.c b/drivers/dma/sun6i-dma.c
-> >> =A0index a2358780ab2c..1f38424c1b14 100644
-> >> =A0--- a/drivers/dma/sun6i-dma.c
-> >> =A0+++ b/drivers/dma/sun6i-dma.c
-> >> =A0@@ -101,6 +101,7 @@ struct sun6i_dma_config {
-> >> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0u32 nr_max_channels;
-> >> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0u32 nr_max_requests;
-> >> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0u32 nr_max_vchans;
-> >> =A0+ bool gate_needed;
-> >> =A0=A0};
-> >>
-> >> =A0=A0/*
-> >> =A0@@ -1009,12 +1010,14 @@ static struct sun6i_dma_config sun8i_a23_dm=
-a_cfg =3D {
-> >> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0.nr_max_channels =3D 8,
-> >> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0.nr_max_requests =3D 24,
-> >> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0.nr_max_vchans =3D 37,
-> >> =A0+ .gate_needed =3D true,
-> >> =A0=A0};
-> >>
-> >> =A0=A0static struct sun6i_dma_config sun8i_a83t_dma_cfg =3D {
-> >> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0.nr_max_channels =3D 8,
-> >> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0.nr_max_requests =3D 28,
-> >> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0.nr_max_vchans =3D 39,
-> >> =A0+ .gate_needed =3D true,
-> >> =A0=A0};
-> >>
-> >> =A0=A0/*
-> >> =A0@@ -1028,11 +1031,19 @@ static struct sun6i_dma_config sun8i_h3_dma=
-_cfg =3D {
-> >> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0.nr_max_vchans =3D 34,
-> >> =A0=A0};
-> >>
-> >> =A0+static struct sun6i_dma_config sun8i_v3s_dma_cfg =3D {
-> >> =A0+ .nr_max_channels =3D 8,
-> >> =A0+ .nr_max_requests =3D 23,
-> >> =A0+ .nr_max_vchans =3D 24,
-> >
-> > This one is suspicious. There's just a single endpoint that can be
-> > used in both directions?
->=20
-> nr_max_vchans is the endpoint number. nr_max_requests is the
-> maximum DRQ number, for V3s, according to the datasheet, it's
-> 23: SPI0_{R,T}X.
-
-There's not a lot of endpoints indeed, but you need 28 vchans (2 *
-14).
-
-Maxime
-
---=20
-Maxime Ripard, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
-
---x2rus7yuyqbzeq22
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIcBAEBCAAGBQJYtbmwAAoJEBx+YmzsjxAgeccP/0UxEr4x4xFKW5akT/NFg7zk
-wd5pE6xnCGmZv12SQ2R63bnbB0uNLUqsQaaNA44wJFLAaim6Pz99tM6O9dThhYmx
-S3qWcIx4GMiqma1Pmcw7ReZOL1bL/qvtOzCqgLHKuUICE6lMk1b1iAYJ1jyfm4hn
-2hexl1bT0tZt4wem8S6LnUJ21aSdA55JyKjOyU/1ufsuitKYY1QurEQEb3seeGwN
-md1IfFar1rvAr3KrufOdQNdhlaGcJ+Zb4GJ1X+oInEhs5DiynYrsFclJXmHqL71s
-tml6ZlttVGlZ2vFls45XQ+nNrLVgsJb+lLUnp+3lIL1jAaxtLrQlYLbUqf4UGRo2
-mp6UVeFjkxu3/nc2gx19oI5LhRtHeQR3y5H4rLpdWUSVb0QbJOqmdhE0AgDSEE0u
-P7pCujUD/Axs5JcTx9Iw6oOhLabapzWtu7InhveRrFaj1XsMSE1TkayxTshzMbK/
-BoCxDBSrDtlcOzpL1huX/qI4GrPzGrmAtVGcpK8oOvK1p0LDxG2Rtic/ftamYG8G
-5QLzsj8jMJ5+xWrdadImTIJ22c7znCFIMgl6oizyajOHQiagIco4F7gfc3j+w08T
-9xMAARSD16pLHtCa/lKpVoXTb6aaXCVoEx7zulMIFUXAs2FJ1vQ4yl8c9wvLq0XE
-8peD9glZPF+mBf3G/Pbu
-=xvy2
------END PGP SIGNATURE-----
-
---x2rus7yuyqbzeq22--
-
---===============8228053245081889857==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8228053245081889857==--
+CgowMS4wMy4yMDE3LCAwMTo1NiwgIk1heGltZSBSaXBhcmQiIDxtYXhpbWUucmlwYXJkQGZyZWUt
+ZWxlY3Ryb25zLmNvbT46Cj4gT24gTW9uLCBGZWIgMjcsIDIwMTcgYXQgMDY6NDg6MDFQTSArMDgw
+MCwgSWNlbm93eSBaaGVuZyB3cm90ZToKPj4gwqAyNy4wMi4yMDE3LCAxNTo1MCwgIk1heGltZSBS
+aXBhcmQiIDxtYXhpbWUucmlwYXJkQGZyZWUtZWxlY3Ryb25zLmNvbT46Cj4+IMKgPiBPbiBTYXQs
+IEZlYiAyNSwgMjAxNyBhdCAwODozMDoyNVBNICswODAwLCBJY2Vub3d5IFpoZW5nIHdyb3RlOgo+
+PiDCoD4+IMKgQWxsd2lubmVyIFYzcyBoYXMgYSBETUEgZW5naW5lIHNpbWlsYXIgdG8gdGhlIG9u
+ZXMgZnJvbSBBMzEsIGJ1dCB3aXRoCj4+IMKgPj4gwqBmZXdlciBjaGFubmVscyBhbmQgRFJRcy4K
+Pj4gwqA+Pgo+PiDCoD4+IMKgQWRkIHN1cHBvcnQgZm9yIGl0Lgo+PiDCoD4+Cj4+IMKgPj4gwqBB
+cyBpdCBhbHNvIG5lZWRzIHRoZSBzcGVjaWFsIGdhdGUgYml0LCBtYWtlIHRoZSBnYXRlIGJpdCBn
+ZW5lcmljLgo+PiDCoD4KPj4gwqA+IFRoYXQgc2hvdWxkIGJlIHBhcnQgb2YgYSBzZXBhcmF0ZSBw
+YXRjaC4KPj4KPj4gwqBPSy4KPj4KPj4gwqA+Cj4+IMKgPj4gwqBBY2NvcmRpbmcgdG8gQlNQIHNv
+dXJjZSBjb2RlLCBTVU44SVc2IChBODNUKSBhbHNvIG5lZWRzIHRoZSBiaXQsIHNvIGl0Cj4+IMKg
+Pj4gwqBoYXZlIGFsc28gYmVlbiBzcGVjaWZpZWQgZ2F0ZV9uZWVkZWQgcHJvcGVydHkuCj4+IMKg
+Pj4KPj4gwqA+PiDCoFNpZ25lZC1vZmYtYnk6IEljZW5vd3kgWmhlbmcgPGljZW5vd3lAYW9zYy54
+eXo+Cj4+IMKgPj4gwqAtLS0KPj4gwqA+PiDCoMKgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
+bmRpbmdzL2RtYS9zdW42aS1kbWEudHh0IHwgMSArCj4+IMKgPj4gwqDCoGRyaXZlcnMvZG1hL3N1
+bjZpLWRtYS5jIHwgMTcgKysrKysrKysrKysrKystLS0KPj4gwqA+PiDCoMKgMiBmaWxlcyBjaGFu
+Z2VkLCAxNSBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQo+PiDCoD4+Cj4+IMKgPj4gwqBk
+aWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2RtYS9zdW42aS1k
+bWEudHh0IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2RtYS9zdW42aS1kbWEu
+dHh0Cj4+IMKgPj4gwqBpbmRleCA2YjI2NzA0NWY1MjIuLjk4ZmJlMWE1YzZkZCAxMDA2NDQKPj4g
+wqA+PiDCoC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9kbWEvc3VuNmkt
+ZG1hLnR4dAo+PiDCoD4+IMKgKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
+L2RtYS9zdW42aS1kbWEudHh0Cj4+IMKgPj4gwqBAQCAtOSw2ICs5LDcgQEAgUmVxdWlyZWQgcHJv
+cGVydGllczoKPj4gwqA+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+ImFsbHdpbm5lcixzdW44aS1hMjMtZG1hIgo+PiDCoD4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAiYWxsd2lubmVyLHN1bjhpLWE4M3QtZG1hIgo+PiDCoD4+IMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAiYWxsd2lubmVyLHN1bjhpLWgzLWRt
+YSIKPj4gwqA+PiDCoCsgImFsbHdpbm5lcixzdW44aS12M3MtZG1hIgo+PiDCoD4+IMKgwqAtIHJl
+ZzogU2hvdWxkIGNvbnRhaW4gdGhlIHJlZ2lzdGVycyBiYXNlIGFkZHJlc3MgYW5kIGxlbmd0aAo+
+PiDCoD4+IMKgwqAtIGludGVycnVwdHM6IFNob3VsZCBjb250YWluIGEgcmVmZXJlbmNlIHRvIHRo
+ZSBpbnRlcnJ1cHQgdXNlZCBieSB0aGlzIGRldmljZQo+PiDCoD4+IMKgwqAtIGNsb2NrczogU2hv
+dWxkIGNvbnRhaW4gYSByZWZlcmVuY2UgdG8gdGhlIHBhcmVudCBBSEIgY2xvY2sKPj4gwqA+PiDC
+oGRpZmYgLS1naXQgYS9kcml2ZXJzL2RtYS9zdW42aS1kbWEuYyBiL2RyaXZlcnMvZG1hL3N1bjZp
+LWRtYS5jCj4+IMKgPj4gwqBpbmRleCBhMjM1ODc4MGFiMmMuLjFmMzg0MjRjMWIxNCAxMDA2NDQK
+Pj4gwqA+PiDCoC0tLSBhL2RyaXZlcnMvZG1hL3N1bjZpLWRtYS5jCj4+IMKgPj4gwqArKysgYi9k
+cml2ZXJzL2RtYS9zdW42aS1kbWEuYwo+PiDCoD4+IMKgQEAgLTEwMSw2ICsxMDEsNyBAQCBzdHJ1
+Y3Qgc3VuNmlfZG1hX2NvbmZpZyB7Cj4+IMKgPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqB1MzIgbnJf
+bWF4X2NoYW5uZWxzOwo+PiDCoD4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgdTMyIG5yX21heF9yZXF1
+ZXN0czsKPj4gwqA+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoHUzMiBucl9tYXhfdmNoYW5zOwo+PiDC
+oD4+IMKgKyBib29sIGdhdGVfbmVlZGVkOwo+PiDCoD4+IMKgwqB9Owo+PiDCoD4+Cj4+IMKgPj4g
+wqDCoC8qCj4+IMKgPj4gwqBAQCAtMTAwOSwxMiArMTAxMCwxNCBAQCBzdGF0aWMgc3RydWN0IHN1
+bjZpX2RtYV9jb25maWcgc3VuOGlfYTIzX2RtYV9jZmcgPSB7Cj4+IMKgPj4gwqDCoMKgwqDCoMKg
+wqDCoMKgwqAubnJfbWF4X2NoYW5uZWxzID0gOCwKPj4gwqA+PiDCoMKgwqDCoMKgwqDCoMKgwqDC
+oC5ucl9tYXhfcmVxdWVzdHMgPSAyNCwKPj4gwqA+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoC5ucl9t
+YXhfdmNoYW5zID0gMzcsCj4+IMKgPj4gwqArIC5nYXRlX25lZWRlZCA9IHRydWUsCj4+IMKgPj4g
+wqDCoH07Cj4+IMKgPj4KPj4gwqA+PiDCoMKgc3RhdGljIHN0cnVjdCBzdW42aV9kbWFfY29uZmln
+IHN1bjhpX2E4M3RfZG1hX2NmZyA9IHsKPj4gwqA+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoC5ucl9t
+YXhfY2hhbm5lbHMgPSA4LAo+PiDCoD4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgLm5yX21heF9yZXF1
+ZXN0cyA9IDI4LAo+PiDCoD4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgLm5yX21heF92Y2hhbnMgPSAz
+OSwKPj4gwqA+PiDCoCsgLmdhdGVfbmVlZGVkID0gdHJ1ZSwKPj4gwqA+PiDCoMKgfTsKPj4gwqA+
+Pgo+PiDCoD4+IMKgwqAvKgo+PiDCoD4+IMKgQEAgLTEwMjgsMTEgKzEwMzEsMTkgQEAgc3RhdGlj
+IHN0cnVjdCBzdW42aV9kbWFfY29uZmlnIHN1bjhpX2gzX2RtYV9jZmcgPSB7Cj4+IMKgPj4gwqDC
+oMKgwqDCoMKgwqDCoMKgwqAubnJfbWF4X3ZjaGFucyA9IDM0LAo+PiDCoD4+IMKgwqB9Owo+PiDC
+oD4+Cj4+IMKgPj4gwqArc3RhdGljIHN0cnVjdCBzdW42aV9kbWFfY29uZmlnIHN1bjhpX3Yzc19k
+bWFfY2ZnID0gewo+PiDCoD4+IMKgKyAubnJfbWF4X2NoYW5uZWxzID0gOCwKPj4gwqA+PiDCoCsg
+Lm5yX21heF9yZXF1ZXN0cyA9IDIzLAo+PiDCoD4+IMKgKyAubnJfbWF4X3ZjaGFucyA9IDI0LAo+
+PiDCoD4KPj4gwqA+IFRoaXMgb25lIGlzIHN1c3BpY2lvdXMuIFRoZXJlJ3MganVzdCBhIHNpbmds
+ZSBlbmRwb2ludCB0aGF0IGNhbiBiZQo+PiDCoD4gdXNlZCBpbiBib3RoIGRpcmVjdGlvbnM/Cj4+
+Cj4+IMKgbnJfbWF4X3ZjaGFucyBpcyB0aGUgZW5kcG9pbnQgbnVtYmVyLiBucl9tYXhfcmVxdWVz
+dHMgaXMgdGhlCj4+IMKgbWF4aW11bSBEUlEgbnVtYmVyLCBmb3IgVjNzLCBhY2NvcmRpbmcgdG8g
+dGhlIGRhdGFzaGVldCwgaXQncwo+PiDCoDIzOiBTUEkwX3tSLFR9WC4KPgo+IFRoZXJlJ3Mgbm90
+IGEgbG90IG9mIGVuZHBvaW50cyBpbmRlZWQsIGJ1dCB5b3UgbmVlZCAyOCB2Y2hhbnMgKDIgKgo+
+IDE0KS4KClNvcnJ5IGJ1dCBJIGNvdW50ZWQgb25seSAxMiBwYWlycyBvZiB2Y2hhbnM6ClBvcnQg
+MC4gU1JBTQpQb3J0IDEuIFNEUkFNClBvcnQgNi4gVUFSVDAKUG9ydCA3LiBVQVJUMQpQb3J0IDgu
+IFVBUlQyClBvcnQgMTUuIEF1ZGlvIENvZGVjClBvcnQgMTYuIENFClBvcnQgMTcuIE9URyBFUDEK
+UG9ydCAxOC4gT1RHIEVQMgpQb3J0IDE5LiBPVEcgRVAzClBvcnQgMjAuIE9URyBFUDQKUG9ydCAy
+My4gU1BJMAoKPgo+IE1heGltZQo+Cj4gLS0KPiBNYXhpbWUgUmlwYXJkLCBGcmVlIEVsZWN0cm9u
+cwo+IEVtYmVkZGVkIExpbnV4IGFuZCBLZXJuZWwgZW5naW5lZXJpbmcKPiBodHRwOi8vZnJlZS1l
+bGVjdHJvbnMuY29tCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
