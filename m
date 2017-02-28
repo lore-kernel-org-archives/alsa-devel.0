@@ -1,20 +1,17 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: sound: spinlock lockup in snd_timer_user_tinterrupt
-Date: Tue, 28 Feb 2017 15:08:40 +0100
-Message-ID: <CACT4Y+bjDKYawj0Rhu7Ps_hRU_w++Y5504M45GUQSp5Rn_=a5Q@mail.gmail.com>
-References: <CACT4Y+ZpcRxd68_chu4v7pvZxhV34PDMhMCA_dMkODrRT+w=tA@mail.gmail.com>
- <s5h8toq1koz.wl-tiwai@suse.de>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH] ASoC: ux500: drop platform DAI assignments
+Date: Tue, 28 Feb 2017 15:43:43 +0100
+Message-ID: <20170228144343.10721-1-linus.walleij@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ua0-f177.google.com (mail-ua0-f177.google.com
- [209.85.217.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 4FCA9266EF9
- for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2017 15:09:02 +0100 (CET)
-Received: by mail-ua0-f177.google.com with SMTP id x24so14191453uab.0
- for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2017 06:09:01 -0800 (PST)
-In-Reply-To: <s5h8toq1koz.wl-tiwai@suse.de>
+Received: from mail-lf0-f45.google.com (mail-lf0-f45.google.com
+ [209.85.215.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24376265142
+ for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2017 15:43:51 +0100 (CET)
+Received: by mail-lf0-f45.google.com with SMTP id z127so6485625lfa.2
+ for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2017 06:43:51 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,81 +21,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, syzkaller <syzkaller@googlegroups.com>, LKML <linux-kernel@vger.kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Lee Jones <lee.jones@linaro.org>, Linus Walleij <linus.walleij@linaro.org>, Ulf Hansson <ulf.hansson@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Feb 28, 2017 at 2:58 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Mon, 27 Feb 2017 21:46:48 +0100,
-> Dmitry Vyukov wrote:
->>
->> Hello,
->>
->> The following program locks up system:
->> https://gist.githubusercontent.com/dvyukov/1b5cdca7f0fc6254afd4816901160e4c/raw/024c53be2112c83e5d64f3e4d5e8aa38ded727e3/gistfile1.txt
->
-> Thanks.  It doesn't look like the hard lockup, but it keeps the IRQs
-> too busy, resulting in a quasi-lockup.
->
-> The problem is that the timer accepted the too low resolution.  A
-> simple fix would be to give an error for a too short parameter.
-> The fix patch is attached below.  Please give it a try.
+This platform is completely probed by device tree nowadays, so
+we need to do a bigger cleanup removing all the non-DT codepaths.
+This cleanup must however go in as a fix since it fixes a
+regression.
 
-Pushed to our bots. Thanks.
+Currently when Ux500 audio is enabled, dmesg complains like
+this:
 
-> -- 8< --
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: timer: Reject user params with too small ticks
->
-> When a user sets a too small ticks with a fine-grained timer like
-> hrtimer, the kernel tries to fire up the timer irq too frequently.
-> This may lead to the condensed locks, eventually the kernel spinlock
-> lockup with warnings.
->
-> For avoiding such a situation, we define a lower limit of the
-> resolution, namely 1ms.  When the user passes a too small tick value
-> that results in less than that, the kernel returns -EINVAL now.
->
-> Reported-by: Dmitry Vyukov <dvyukov@google.com>
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/core/timer.c | 18 +++++++++++++++---
->  1 file changed, 15 insertions(+), 3 deletions(-)
->
-> diff --git a/sound/core/timer.c b/sound/core/timer.c
-> index fc144f43faa6..ad153149b231 100644
-> --- a/sound/core/timer.c
-> +++ b/sound/core/timer.c
-> @@ -1702,9 +1702,21 @@ static int snd_timer_user_params(struct file *file,
->                 return -EBADFD;
->         if (copy_from_user(&params, _params, sizeof(params)))
->                 return -EFAULT;
-> -       if (!(t->hw.flags & SNDRV_TIMER_HW_SLAVE) && params.ticks < 1) {
-> -               err = -EINVAL;
-> -               goto _end;
-> +       if (!(t->hw.flags & SNDRV_TIMER_HW_SLAVE)) {
-> +               u64 resolution;
-> +
-> +               if (params.ticks < 1) {
-> +                       err = -EINVAL;
-> +                       goto _end;
-> +               }
-> +
-> +               /* Don't allow resolution less than 1ms */
-> +               resolution = snd_timer_resolution(tu->timeri);
-> +               resolution *= params.ticks;
-> +               if (resolution < 1000000) {
-> +                       err = -EINVAL;
-> +                       goto _end;
-> +               }
->         }
->         if (params.queue_size > 0 &&
->             (params.queue_size < 32 || params.queue_size > 1024)) {
-> --
-> 2.11.1
->
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller+unsubscribe@googlegroups.com.
-> For more options, visit https://groups.google.com/d/optout.
+entry->name == "prealloc"
+entry->name == "prealloc_max"
+entry->name == "prealloc"
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 95 at ../fs/proc/generic.c:346
+proc_register+0xf0/0x110
+proc_dir_entry 'sub0/prealloc' already registered
+(...)
+entry->name == "prealloc_max"
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 95 at ../fs/proc/generic.c:346
+proc_register+0xf0/0x110
+proc_dir_entry 'sub0/prealloc_max' already registered
+(...)
+snd-soc-mop500 soc:sound: ab8500-codec-dai.0 <->
+80124000.msp mapping ok
+entry->name == "prealloc"
+entry->name == "prealloc_max"
+entry->name == "prealloc"
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 95 at ../fs/proc/generic.c:346
+proc_register+0xf0/0x110
+proc_dir_entry 'sub0/prealloc' already registered
+(...)
+entry->name == "prealloc_max"
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 95 at ../fs/proc/generic.c:346
+proc_register+0xf0/0x110
+proc_dir_entry 'sub0/prealloc_max' already registered
+snd-soc-mop500 soc:sound: ab8500-codec-dai.1 <->
+80125000.msp mapping ok
+
+This is because PCMs are created twice for the same hardware,
+and this happens because both "platform" and "CPU" DAI links
+are specified.
+
+But platform/CPU is an either/or pair, not a both/and pair.
+This has maybe worked in the past, but it is causing trouble
+now, so let us begin the cleanups by removing the platform
+assignment and silencing the boot noise, and make a proper DT
+cleanup for the next kernel cycle.
+
+Cc: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ sound/soc/ux500/mop500.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/sound/soc/ux500/mop500.c b/sound/soc/ux500/mop500.c
+index ba9fc099cf67..b50f68a439ce 100644
+--- a/sound/soc/ux500/mop500.c
++++ b/sound/soc/ux500/mop500.c
+@@ -33,7 +33,6 @@ static struct snd_soc_dai_link mop500_dai_links[] = {
+ 		.stream_name = "ab8500_0",
+ 		.cpu_dai_name = "ux500-msp-i2s.1",
+ 		.codec_dai_name = "ab8500-codec-dai.0",
+-		.platform_name = "ux500-msp-i2s.1",
+ 		.codec_name = "ab8500-codec.0",
+ 		.init = mop500_ab8500_machine_init,
+ 		.ops = mop500_ab8500_ops,
+@@ -43,7 +42,6 @@ static struct snd_soc_dai_link mop500_dai_links[] = {
+ 		.stream_name = "ab8500_1",
+ 		.cpu_dai_name = "ux500-msp-i2s.3",
+ 		.codec_dai_name = "ab8500-codec-dai.1",
+-		.platform_name = "ux500-msp-i2s.3",
+ 		.codec_name = "ab8500-codec.0",
+ 		.init = NULL,
+ 		.ops = mop500_ab8500_ops,
+@@ -87,8 +85,6 @@ static int mop500_of_probe(struct platform_device *pdev,
+ 	for (i = 0; i < 2; i++) {
+ 		mop500_dai_links[i].cpu_of_node = msp_np[i];
+ 		mop500_dai_links[i].cpu_dai_name = NULL;
+-		mop500_dai_links[i].platform_of_node = msp_np[i];
+-		mop500_dai_links[i].platform_name = NULL;
+ 		mop500_dai_links[i].codec_of_node = codec_np;
+ 		mop500_dai_links[i].codec_name = NULL;
+ 	}
+-- 
+2.9.3
