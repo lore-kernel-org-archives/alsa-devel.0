@@ -1,17 +1,17 @@
-From: Liam Girdwood <liam.r.girdwood@intel.com>
-Subject: Re: [PATCH v1] ASoC: Intel: bdw-rt5677: Use
- devm_gpiod_get()
-Date: Tue, 28 Feb 2017 15:19:38 +0000
-Message-ID: <1488295178.2575.24.camel@loki>
-References: <20170220174610.47314-1-andriy.shevchenko@linux.intel.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: ctxfi: Fallback DMA mask to 32bit
+Date: Tue, 28 Feb 2017 17:24:07 +0100
+Message-ID: <20170228162407.32296-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D833261740
- for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2017 16:19:43 +0100 (CET)
-In-Reply-To: <20170220174610.47314-1-andriy.shevchenko@linux.intel.com>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id DFDA2266718
+ for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2017 17:24:09 +0100 (CET)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 5C689ABC6
+ for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2017 16:24:09 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,49 +21,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2017-02-20 at 19:46 +0200, Andy Shevchenko wrote:
-> Since index is always 0 replace devm_gpiod_get_index() by devm_gpiod_get()
-> and apply proper flags.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  sound/soc/intel/boards/bdw-rt5677.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
-> index ab383af14ca2..8284a40829be 100644
-> --- a/sound/soc/intel/boards/bdw-rt5677.c
-> +++ b/sound/soc/intel/boards/bdw-rt5677.c
-> @@ -205,13 +205,12 @@ static int bdw_rt5677_init(struct snd_soc_pcm_runtime *rtd)
->  			RT5677_CLK_SEL_I2S1_ASRC);
->  
->  	/* Request rt5677 GPIO for headphone amp control */
-> -	bdw_rt5677->gpio_hp_en = devm_gpiod_get_index(codec->dev,
-> -			"headphone-enable", 0, 0);
-> +	bdw_rt5677->gpio_hp_en = devm_gpiod_get(codec->dev, "headphone-enable",
-> +						GPIOD_OUT_LOW);
->  	if (IS_ERR(bdw_rt5677->gpio_hp_en)) {
->  		dev_err(codec->dev, "Can't find HP_AMP_SHDN_L gpio\n");
->  		return PTR_ERR(bdw_rt5677->gpio_hp_en);
->  	}
-> -	gpiod_direction_output(bdw_rt5677->gpio_hp_en, 0);
->  
->  	/* Create and initialize headphone jack */
->  	if (!snd_soc_card_jack_new(rtd->card, "Headphone Jack",
+Currently ctxfi driver tries to set only the 64bit DMA mask on 64bit
+architectures, and bails out if it fails.  This causes a problem on
+some platforms since the 64bit DMA isn't always guaranteed.  We should
+fall back to the default 32bit DMA when 64bit DMA fails.
 
-Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Fixes: 6d74b86d3c0f ("ALSA: ctxfi - Allow 64bit DMA")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/ctxfi/cthw20k1.c | 19 ++++++-------------
+ sound/pci/ctxfi/cthw20k2.c | 19 ++++++-------------
+ 2 files changed, 12 insertions(+), 26 deletions(-)
 
----------------------------------------------------------------------
-Intel Corporation (UK) Limited
-Registered No. 1134945 (England)
-Registered Office: Pipers Way, Swindon SN3 1RJ
-VAT No: 860 2173 47
-
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+diff --git a/sound/pci/ctxfi/cthw20k1.c b/sound/pci/ctxfi/cthw20k1.c
+index 9667cbfb0ca2..ab4cdab5cfa5 100644
+--- a/sound/pci/ctxfi/cthw20k1.c
++++ b/sound/pci/ctxfi/cthw20k1.c
+@@ -27,12 +27,6 @@
+ #include "cthw20k1.h"
+ #include "ct20k1reg.h"
+ 
+-#if BITS_PER_LONG == 32
+-#define CT_XFI_DMA_MASK		DMA_BIT_MASK(32) /* 32 bit PTE */
+-#else
+-#define CT_XFI_DMA_MASK		DMA_BIT_MASK(64) /* 64 bit PTE */
+-#endif
+-
+ struct hw20k1 {
+ 	struct hw hw;
+ 	spinlock_t reg_20k1_lock;
+@@ -1904,19 +1898,18 @@ static int hw_card_start(struct hw *hw)
+ {
+ 	int err;
+ 	struct pci_dev *pci = hw->pci;
++	const unsigned int dma_bits = BITS_PER_LONG;
+ 
+ 	err = pci_enable_device(pci);
+ 	if (err < 0)
+ 		return err;
+ 
+ 	/* Set DMA transfer mask */
+-	if (dma_set_mask(&pci->dev, CT_XFI_DMA_MASK) < 0 ||
+-	    dma_set_coherent_mask(&pci->dev, CT_XFI_DMA_MASK) < 0) {
+-		dev_err(hw->card->dev,
+-			"architecture does not support PCI busmaster DMA with mask 0x%llx\n",
+-			CT_XFI_DMA_MASK);
+-		err = -ENXIO;
+-		goto error1;
++	if (dma_set_mask(&pci->dev, DMA_BIT_MASK(dma_bits))) {
++		dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(dma_bits));
++	} else {
++		dma_set_mask(&pci->dev, DMA_BIT_MASK(32));
++		dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(32));
+ 	}
+ 
+ 	if (!hw->io_base) {
+diff --git a/sound/pci/ctxfi/cthw20k2.c b/sound/pci/ctxfi/cthw20k2.c
+index 6414ecf93efa..18ee7768b7c4 100644
+--- a/sound/pci/ctxfi/cthw20k2.c
++++ b/sound/pci/ctxfi/cthw20k2.c
+@@ -26,12 +26,6 @@
+ #include "cthw20k2.h"
+ #include "ct20k2reg.h"
+ 
+-#if BITS_PER_LONG == 32
+-#define CT_XFI_DMA_MASK		DMA_BIT_MASK(32) /* 32 bit PTE */
+-#else
+-#define CT_XFI_DMA_MASK		DMA_BIT_MASK(64) /* 64 bit PTE */
+-#endif
+-
+ struct hw20k2 {
+ 	struct hw hw;
+ 	/* for i2c */
+@@ -2029,19 +2023,18 @@ static int hw_card_start(struct hw *hw)
+ 	int err = 0;
+ 	struct pci_dev *pci = hw->pci;
+ 	unsigned int gctl;
++	const unsigned int dma_bits = BITS_PER_LONG;
+ 
+ 	err = pci_enable_device(pci);
+ 	if (err < 0)
+ 		return err;
+ 
+ 	/* Set DMA transfer mask */
+-	if (dma_set_mask(&pci->dev, CT_XFI_DMA_MASK) < 0 ||
+-	    dma_set_coherent_mask(&pci->dev, CT_XFI_DMA_MASK) < 0) {
+-		dev_err(hw->card->dev,
+-			"architecture does not support PCI busmaster DMA with mask 0x%llx\n",
+-			CT_XFI_DMA_MASK);
+-		err = -ENXIO;
+-		goto error1;
++	if (!dma_set_mask(&pci->dev, DMA_BIT_MASK(dma_bits))) {
++		dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(dma_bits));
++	} else {
++		dma_set_mask(&pci->dev, DMA_BIT_MASK(32));
++		dma_set_coherent_mask(&pci->dev, DMA_BIT_MASK(32));
+ 	}
+ 
+ 	if (!hw->io_base) {
+-- 
+2.11.1
