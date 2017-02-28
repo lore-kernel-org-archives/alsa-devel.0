@@ -1,18 +1,28 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH -next] ASoC: hdmi-codec: fix non static
-	symbol warnings
-Date: Tue, 28 Feb 2017 09:42:31 +0000
-Message-ID: <20170228094231.5sztq62lehgymu7m@sirena.org.uk>
-References: <20170206143830.6871-1-weiyj.lk@gmail.com>
- <4a2e36fb-8529-c86a-1d9c-2d85fd39d530@sakamocchi.jp>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 0/3] ASoC: Enable a new IC master mode:
+ bcm2835<=>IC<=>cs42xx8
+Date: Tue, 28 Feb 2017 09:59:29 +0000
+Message-ID: <20170228095929.GH2742@localhost.localdomain>
+References: <8cf68a3e-330d-e76d-e276-5df5453e3baf@flatmax.org>
+ <20170226144958.GA5543@camel2.lan>
+ <732a71ac-5ec5-37e1-1190-be036ea34555@flatmax.org>
+ <20170226221648.GA10974@camel2.lan>
+ <7cef41ee-ef00-22b7-830f-517a9d594ed0@flatmax.org>
+ <20170227080433.GA2718@delle.lan>
+ <170950f7-354f-e6a9-cefb-834a00fadd1b@flatmax.org>
+ <20170227103024.GF2718@delle.lan>
+ <7b78c782-28e1-4849-5d00-8caf30847d5c@flatmax.org>
+ <20170227115108.GA6732@delle.lan>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6861936694721202964=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 53627267208
- for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2017 10:43:44 +0100 (CET)
-In-Reply-To: <4a2e36fb-8529-c86a-1d9c-2d85fd39d530@sakamocchi.jp>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3FB3A267208
+ for <alsa-devel@alsa-project.org>; Tue, 28 Feb 2017 10:58:29 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20170227115108.GA6732@delle.lan>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,60 +32,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: "Jon Medhurst (Tixy)" <tixy@linaro.org>, alsa-devel@alsa-project.org, Wei Yongjun <weiyj.lk@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Takashi Iwai <tiwai@suse.com>, Jyri Sarha <jsarha@ti.com>, Liam Girdwood <lgirdwood@gmail.com>, Wei Yongjun <weiyongjun1@huawei.com>, Philipp Zabel <p.zabel@pengutronix.de>, PC Liao <pc.liao@mediatek.com>
+To: Matthias Reichl <hias@horus.com>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, phil@raspberrypi.org, Liam Girdwood <lgirdwood@gmail.com>, Matt Flax <flatmax@flatmax.org>, Eric Anholt <eric@anholt.net>, florian.kauer@koalo.de, broonie@kernel.org, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Feb 27, 2017 at 12:51:08PM +0100, Matthias Reichl wrote:
+> On Mon, Feb 27, 2017 at 10:21:25PM +1100, Matt Flax wrote:
+> > 
+> > 
+> > On 27/02/17 21:30, Matthias Reichl wrote:
+> > >
+> > >I don't see that. Some people might want to be able to use multichannel
+> > >on RPi, but that's something very different than adding code that just
+> > >lies about driver capabilites.
+> > >
+> > 
+> > I am going to invite you over for dinner to eat steamed vegetables :)
+> > If I make the steamed vegetables in the microwave and they taste like
+> > steamed vegetables, are they steamed vegetables ?
+> 
+> If you connect an amplifier with a volume control to your soundcard
+> does that mean that your soundcard now has a volume control? No, your
+> amp has.
+> 
+> > I have a bcm2835 (Pi 2 and 3) SoC here. It is producing multichannel (8 out,
+> > 6 in) audio. In ALSA we call that DSP mode - right ?!
+> 
+> No. DSP modes are protocol/timing specifications as I2S, PDP, S/PDIF, ...
+> You can look these up in datasheets and if a chip implements such a
+> protocol you can be sure that it adheres to that standard - i.e. it
+> will sync the frames to the pulses on LRclk.
+> 
 
---===============6861936694721202964==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="y22kbzrbggvlxfzt"
-Content-Disposition: inline
+I agree with the thoughts in this thread really if the AP doesn't
+actually support DSP A mode we shouldn't add DSP A mode.
 
-
---y22kbzrbggvlxfzt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Feb 27, 2017 at 10:08:15AM +0900, Takashi Sakamoto wrote:
-> On Feb 6 2017 23:38, Wei Yongjun wrote:
-> > From: Wei Yongjun <weiyongjun1@huawei.com>
-
-I don't seem to have this patch?
-
-> Unfortunately, this patch causes conflict to Mark's PR[0], due to a commit
-> 8480ac567959 ("ASoC: hdmi-codec: remove HDMI device unregister")[1]. I think
-> it better for you to post again with rebasing this on the PR, however it
-> depends on Mark's maintenance policy (he could resolve the conflict by his
-> hand and apply).
-
-If it's in what went to Linus already I'd prefer a rebase as I'd have to
-dig out an old tree, I will make some effort to do merges if I can find
-a baseline to apply patches against though sometimes if things are
-complicated enough I'll ask people to do that for me.
-
---y22kbzrbggvlxfzt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAli1RgYACgkQJNaLcl1U
-h9Colgf6AgrXGin3LelXh0l3d3GXZVNNnbQO4vPEbyidwPWcL0hmnuXZTGzHXxJi
-sPhZVNESIVYXFXfMkhX4ohSittDuVHboWVJFj7hYnAyzIGxdQ774FU/9+IvoC3sy
-H+4pxzO1/3cVcgb4Ge5477VuNBj2V+MThJCDPb/E3RyUWKJkN9bumUyZgSiivnJ3
-XQNU0pvYChFV/+11OMbPZAMJciJcc6XsMwYlC6VNQ4jJNRwhZays547A/JmsCevV
-B1VJAPIA1ChJMV5iOnr9mvTnMj2VrfMInhUbnRKcrzo5Ter4F5tA/JVfyqHOFf+d
-tOGQaY+sMI46W8al9eKepwVfninSqA==
-=AfM7
------END PGP SIGNATURE-----
-
---y22kbzrbggvlxfzt--
-
---===============6861936694721202964==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6861936694721202964==--
+Thanks,
+Charles
