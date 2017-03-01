@@ -1,8 +1,7 @@
 From: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Subject: [PATCH RESEND 4/4] ASoC: rockchip: Enable 192khz in hw_params
- operation
-Date: Wed,  1 Mar 2017 10:11:07 +0100
-Message-ID: <20170301091107.10578-5-romain.perier@collabora.com>
+Subject: [PATCH RESEND 3/4] ASoC: es8328: Enabling support for 192k
+Date: Wed,  1 Mar 2017 10:11:06 +0100
+Message-ID: <20170301091107.10578-4-romain.perier@collabora.com>
 References: <20170301091107.10578-1-romain.perier@collabora.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,27 +21,32 @@ To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brow
 Cc: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-As the sampling frequency is supported by es8328 in slave mode,
-add support for it in the corresponding operation.
+The master and slave modes don't share the same table for MCLK/LRCLK
+ratios. The slaves mode has bigger ratios that allow to use BCLK that
+matche sampling frequency of 192khz.
+
+This commit enables this rate only for slave mode, i.e it does not
+declare this frequency in sysclk_contraints, resulting to an error in
+master mode (not supported CLK).
 
 Signed-off-by: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
 ---
- sound/soc/rockchip/rk3288_hdmi_analog.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/es8328.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/rockchip/rk3288_hdmi_analog.c b/sound/soc/rockchip/rk3288_hdmi_analog.c
-index b60abf3..dbc53e4 100644
---- a/sound/soc/rockchip/rk3288_hdmi_analog.c
-+++ b/sound/soc/rockchip/rk3288_hdmi_analog.c
-@@ -93,6 +93,9 @@ static int rk_hw_params(struct snd_pcm_substream *substream,
- 	case 96000:
- 		mclk = 12288000;
- 		break;
-+	case 192000:
-+		mclk = 24576000;
-+		break;
- 	case 11025:
- 	case 22050:
- 	case 44100:
+diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
+index 1363a68..ed7cc42 100644
+--- a/sound/soc/codecs/es8328.c
++++ b/sound/soc/codecs/es8328.c
+@@ -69,7 +69,8 @@ static const char * const supply_names[ES8328_SUPPLY_NUM] = {
+ 	"HPVDD",
+ };
+ 
+-#define ES8328_RATES (SNDRV_PCM_RATE_96000 | \
++#define ES8328_RATES (SNDRV_PCM_RATE_192000 | \
++		SNDRV_PCM_RATE_96000 | \
+ 		SNDRV_PCM_RATE_88200 | \
+ 		SNDRV_PCM_RATE_8000_48000)
+ #define ES8328_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
 -- 
 2.9.3
