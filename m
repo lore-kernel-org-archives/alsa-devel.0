@@ -1,16 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] conf/cards: add VC4-HDMI card
-Date: Thu, 2 Mar 2017 10:19:59 +0000
-Message-ID: <20170302101959.htyekdn33eozfpe5@sirena.org.uk>
-References: <1488449526-16850-1-git-send-email-boris.brezillon@free-electrons.com>
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: [RESEND PATCH] conf/cards: add VC4-HDMI card
+Date: Thu,  2 Mar 2017 11:49:33 +0100
+Message-ID: <1488451773-22010-1-git-send-email-boris.brezillon@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3634419044440472125=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 557B5266A8A
- for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2017 11:20:13 +0100 (CET)
-In-Reply-To: <1488449526-16850-1-git-send-email-boris.brezillon@free-electrons.com>
+Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id E7D51266A8A
+ for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2017 11:49:36 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,49 +18,134 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Boris Brezillon <boris.brezillon@free-electrons.com>
-Cc: Eric Anholt <eric@anholt.net>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: Eric Anholt <eric@anholt.net>, Boris Brezillon <boris.brezillon@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
+Add a conf file for the VC4-HDMI sound card.
 
---===============3634419044440472125==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="qk3qgijpqhglgu7f"
-Content-Disposition: inline
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+Hi,
 
+Sorry for the noise, but I didn't send this patch to the alsa-lib
+maintainer on my first attempt.
 
---qk3qgijpqhglgu7f
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This patch is adding a card config file for the audio sound card whose
+driver has been submitted here [1] (not accepted yet).
 
-On Thu, Mar 02, 2017 at 11:12:06AM +0100, Boris Brezillon wrote:
-> Add a conf file for the VC4-HDMI sound card.
+Since I am a total newbie to the alsa world, I'd like to get some
+feedback on this patch.
 
-You need to send alsa-lib patches to Takashi, I only deal with kernel
-stuff.
+Also, the card only supports 2 to 8 channels, and I wonder if we should
+add a plug element to support mono streams, and where this element
+should be added (after or before the iec958 element).
 
---qk3qgijpqhglgu7f
-Content-Type: application/pgp-signature; name="signature.asc"
+Regards,
 
------BEGIN PGP SIGNATURE-----
+Boris
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAli38c4ACgkQJNaLcl1U
-h9CCJgf/a2PMxxcsNQO2FAOysJH4dGLO4Az9tdJ8NGa83j1zixXYLwD4H+oKtuHt
-7DjVmh4KH6QESWamA3Ef4ht9Ul9ili23GLaUBOBoSyRP0N1PPT0Aw5qIKWl4eCc9
-T1Gs7sU+aTGPxjRvBUx4sy6CzwYJQoGhQr3hBQnuXa7huJ9prLTS3ndsktvbmCbd
-C7J9yBkLxgIPWpzIenAAlYJzT8D6FkUTbaSSRhiEzDwhe8A4caU5ED6ZuZ7axODY
-ViCdieQ9dspNkdQRF8mM06wfr1pJAjO7YaE9E6dUIJA9GceX+On6fe4clLI8nnWe
-jJ3dFLjs4QmGnG/1fgQsc1EASXBpAA==
-=7Xza
------END PGP SIGNATURE-----
+[1]https://www.spinics.net/lists/arm-kernel/msg565182.html
 
---qk3qgijpqhglgu7f--
+ src/conf/cards/Makefile.am   |  1 +
+ src/conf/cards/aliases.conf  |  1 +
+ src/conf/cards/vc4-hdmi.conf | 64 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 66 insertions(+)
+ create mode 100644 src/conf/cards/vc4-hdmi.conf
 
---===============3634419044440472125==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3634419044440472125==--
+diff --git a/src/conf/cards/Makefile.am b/src/conf/cards/Makefile.am
+index e8b530e80a8f..00999f0186d6 100644
+--- a/src/conf/cards/Makefile.am
++++ b/src/conf/cards/Makefile.am
+@@ -51,6 +51,7 @@ cfg_files = aliases.conf \
+ 	TRID4DWAVENX.conf \
+ 	USB-Audio.conf \
+ 	YMF744.conf \
++	vc4-hdmi.conf \
+ 	VIA686A.conf \
+ 	VIA8233.conf \
+ 	VIA8233A.conf \
+diff --git a/src/conf/cards/aliases.conf b/src/conf/cards/aliases.conf
+index 60f9d26974fd..18a920f41e46 100644
+--- a/src/conf/cards/aliases.conf
++++ b/src/conf/cards/aliases.conf
+@@ -56,6 +56,7 @@ AV200 cards.CMI8788
+ CMI8786 cards.CMI8788
+ CMI8787 cards.CMI8788
+ pistachio cards.pistachio-card
++VC4-HDMI cards.vc4-hdmi
+ 
+ <confdir:pcm/default.conf>
+ <confdir:pcm/dmix.conf>
+diff --git a/src/conf/cards/vc4-hdmi.conf b/src/conf/cards/vc4-hdmi.conf
+new file mode 100644
+index 000000000000..027804a145d1
+--- /dev/null
++++ b/src/conf/cards/vc4-hdmi.conf
+@@ -0,0 +1,64 @@
++#
++# Configuration for the VC4-HDMI sound card using software IEC958
++# subframe conversion
++#
++
++<confdir:pcm/front.conf>
++
++vc4-hdmi.pcm.front.0 {
++	@args [ CARD ]
++	@args.CARD {
++		type string
++	}
++	type hw
++	card $CARD
++}
++
++# default with dmix
++vc4-hdmi.pcm.default {
++	@args [ CARD ]
++	@args.CARD {
++		type string
++	}
++	type asym
++	playback.pcm {
++		type plug
++		slave.pcm {
++			@func concat
++			strings [ "dmix:" $CARD ]
++		}
++	}
++}
++
++<confdir:pcm/iec958.conf>
++
++vc4-hdmi.pcm.iec958.0 {
++	@args [ CARD AES0 AES1 AES2 AES3 ]
++	@args.CARD {
++		type string
++	}
++	@args.AES0 {
++		type integer
++	}
++	@args.AES1 {
++		type integer
++	}
++	@args.AES2 {
++		type integer
++	}
++	@args.AES3 {
++		type integer
++	}
++	type iec958
++	slave {
++		format IEC958_SUBFRAME_LE
++		pcm {
++			type plug
++			slave.pcm {
++				type hw
++				card $CARD
++			}
++		}
++	}
++	status [ $AES0 $AES1 $AES2 $AES3 ]
++}
+-- 
+2.7.4
