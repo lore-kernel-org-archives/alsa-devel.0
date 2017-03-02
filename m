@@ -1,18 +1,14 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Skylake: fix invalid memory
- access due to wrong reference of pointer
-Date: Thu, 2 Mar 2017 14:26:13 +0530
-Message-ID: <20170302085612.GR2843@localhost>
-References: <20170224024841.10515-1-takashi.sakamoto@miraclelinux.com>
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+Subject: [PATCH] conf/cards: add VC4-HDMI card
+Date: Thu,  2 Mar 2017 11:12:06 +0100
+Message-ID: <1488449526-16850-1-git-send-email-boris.brezillon@free-electrons.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 9869C266A8A
- for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2017 09:55:22 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20170224024841.10515-1-takashi.sakamoto@miraclelinux.com>
+Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 40DDE266A8A
+ for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2017 11:12:18 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,32 +18,131 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <takashi.sakamoto@miraclelinux.com>
-Cc: alsa-devel@alsa-project.org, hirotaka.furukawa@miraclelinux.com, ichiro.suzuki@miraclelinux.com, ryotaro.shibata@miraclelinux.com, "# v4 . 5+" <stable@vger.kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, broonie@kernel.org, shreyas.nc@intel.com, jeeja.kp@intel.com, yukie.kato@miraclelinux.com
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org
+Cc: Eric Anholt <eric@anholt.net>, Boris Brezillon <boris.brezillon@free-electrons.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Feb 24, 2017 at 11:48:41AM +0900, Takashi Sakamoto wrote:
-> In 'skl_tplg_set_module_init_data()', a pointer to 'params' member of
-> 'struct skl_algo_data' is calculated, then casted to (u32 *) and assigned
-> to a member of configuration data. The configuration data is passed to the
-> other functions and used to process intel IPC. In this processing, the
-> value of member is used to get message data, however this can bring invalid
-> memory access in 'skl_set_module_params()' as a result of calculation of
-> a pointer for actual message data.
-> 
-> (sound/soc/intel/skylake/skl-topology.c)
-> skl_tplg_init_pipe_modules()
-> ->skl_tplg_set_module_init_data() (has this bug)
-> ->skl_tplg_set_module_params()
->   (sound/soc/intel/skylake/skl-messages.c)
->   ->skl_set_module_params()
->     ((char *)param) + data_offset
-> 
-> This commit fixes the bug.
+Add a conf file for the VC4-HDMI sound card.
 
-Thanks Takashi San for the fix
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+Hi,
 
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+This patch is adding a card config file for the audio sound card whose
+driver has been submitted here [1] (not accepted yet).
 
+Since I am a total newbie to the alsa world, I'd like to get some
+feedback on this patch.
+
+Also, the card only supports 2 to 8 channels, and I wonder if we should
+add a plug element to support mono streams, and where this element
+should be added (after or before the iec958 element).
+
+Regards,
+
+Boris
+
+[1]https://www.spinics.net/lists/arm-kernel/msg565182.html
+
+ src/conf/cards/Makefile.am   |  1 +
+ src/conf/cards/aliases.conf  |  1 +
+ src/conf/cards/vc4-hdmi.conf | 64 ++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 66 insertions(+)
+ create mode 100644 src/conf/cards/vc4-hdmi.conf
+
+diff --git a/src/conf/cards/Makefile.am b/src/conf/cards/Makefile.am
+index e8b530e80a8f..00999f0186d6 100644
+--- a/src/conf/cards/Makefile.am
++++ b/src/conf/cards/Makefile.am
+@@ -51,6 +51,7 @@ cfg_files = aliases.conf \
+ 	TRID4DWAVENX.conf \
+ 	USB-Audio.conf \
+ 	YMF744.conf \
++	vc4-hdmi.conf \
+ 	VIA686A.conf \
+ 	VIA8233.conf \
+ 	VIA8233A.conf \
+diff --git a/src/conf/cards/aliases.conf b/src/conf/cards/aliases.conf
+index 60f9d26974fd..18a920f41e46 100644
+--- a/src/conf/cards/aliases.conf
++++ b/src/conf/cards/aliases.conf
+@@ -56,6 +56,7 @@ AV200 cards.CMI8788
+ CMI8786 cards.CMI8788
+ CMI8787 cards.CMI8788
+ pistachio cards.pistachio-card
++VC4-HDMI cards.vc4-hdmi
+ 
+ <confdir:pcm/default.conf>
+ <confdir:pcm/dmix.conf>
+diff --git a/src/conf/cards/vc4-hdmi.conf b/src/conf/cards/vc4-hdmi.conf
+new file mode 100644
+index 000000000000..027804a145d1
+--- /dev/null
++++ b/src/conf/cards/vc4-hdmi.conf
+@@ -0,0 +1,64 @@
++#
++# Configuration for the VC4-HDMI sound card using software IEC958
++# subframe conversion
++#
++
++<confdir:pcm/front.conf>
++
++vc4-hdmi.pcm.front.0 {
++	@args [ CARD ]
++	@args.CARD {
++		type string
++	}
++	type hw
++	card $CARD
++}
++
++# default with dmix
++vc4-hdmi.pcm.default {
++	@args [ CARD ]
++	@args.CARD {
++		type string
++	}
++	type asym
++	playback.pcm {
++		type plug
++		slave.pcm {
++			@func concat
++			strings [ "dmix:" $CARD ]
++		}
++	}
++}
++
++<confdir:pcm/iec958.conf>
++
++vc4-hdmi.pcm.iec958.0 {
++	@args [ CARD AES0 AES1 AES2 AES3 ]
++	@args.CARD {
++		type string
++	}
++	@args.AES0 {
++		type integer
++	}
++	@args.AES1 {
++		type integer
++	}
++	@args.AES2 {
++		type integer
++	}
++	@args.AES3 {
++		type integer
++	}
++	type iec958
++	slave {
++		format IEC958_SUBFRAME_LE
++		pcm {
++			type plug
++			slave.pcm {
++				type hw
++				card $CARD
++			}
++		}
++	}
++	status [ $AES0 $AES1 $AES2 $AES3 ]
++}
 -- 
-~Vinod
+2.7.4
