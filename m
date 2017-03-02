@@ -1,14 +1,22 @@
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-Subject: [RESEND PATCH] conf/cards: add VC4-HDMI card
-Date: Thu,  2 Mar 2017 11:49:33 +0100
-Message-ID: <1488451773-22010-1-git-send-email-boris.brezillon@free-electrons.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: es7134: add dt-bindings for the
+	es7134 dac
+Date: Thu, 2 Mar 2017 10:25:53 -0600
+Message-ID: <20170302162553.pholygfbvlhyoty7@rob-hp-laptop>
+References: <20170227154724.13724-1-jbrunet@baylibre.com>
+ <20170227154724.13724-3-jbrunet@baylibre.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
- by alsa0.perex.cz (Postfix) with ESMTP id E7D51266A8A
- for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2017 11:49:36 +0100 (CET)
+Received: from mail-oi0-f65.google.com (mail-oi0-f65.google.com
+ [209.85.218.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5EEB7266A8A
+ for <alsa-devel@alsa-project.org>; Thu,  2 Mar 2017 17:25:56 +0100 (CET)
+Received: by mail-oi0-f65.google.com with SMTP id x195so1483438oia.2
+ for <alsa-devel@alsa-project.org>; Thu, 02 Mar 2017 08:25:56 -0800 (PST)
+Content-Disposition: inline
+In-Reply-To: <20170227154724.13724-3-jbrunet@baylibre.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,134 +26,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: Eric Anholt <eric@anholt.net>, Boris Brezillon <boris.brezillon@free-electrons.com>
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add a conf file for the VC4-HDMI sound card.
+On Mon, Feb 27, 2017 at 04:47:24PM +0100, Jerome Brunet wrote:
+> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+> ---
+>  Documentation/devicetree/bindings/sound/everest,es7134.txt | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/everest,es7134.txt
 
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
-Hi,
-
-Sorry for the noise, but I didn't send this patch to the alsa-lib
-maintainer on my first attempt.
-
-This patch is adding a card config file for the audio sound card whose
-driver has been submitted here [1] (not accepted yet).
-
-Since I am a total newbie to the alsa world, I'd like to get some
-feedback on this patch.
-
-Also, the card only supports 2 to 8 channels, and I wonder if we should
-add a plug element to support mono streams, and where this element
-should be added (after or before the iec958 element).
-
-Regards,
-
-Boris
-
-[1]https://www.spinics.net/lists/arm-kernel/msg565182.html
-
- src/conf/cards/Makefile.am   |  1 +
- src/conf/cards/aliases.conf  |  1 +
- src/conf/cards/vc4-hdmi.conf | 64 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 66 insertions(+)
- create mode 100644 src/conf/cards/vc4-hdmi.conf
-
-diff --git a/src/conf/cards/Makefile.am b/src/conf/cards/Makefile.am
-index e8b530e80a8f..00999f0186d6 100644
---- a/src/conf/cards/Makefile.am
-+++ b/src/conf/cards/Makefile.am
-@@ -51,6 +51,7 @@ cfg_files = aliases.conf \
- 	TRID4DWAVENX.conf \
- 	USB-Audio.conf \
- 	YMF744.conf \
-+	vc4-hdmi.conf \
- 	VIA686A.conf \
- 	VIA8233.conf \
- 	VIA8233A.conf \
-diff --git a/src/conf/cards/aliases.conf b/src/conf/cards/aliases.conf
-index 60f9d26974fd..18a920f41e46 100644
---- a/src/conf/cards/aliases.conf
-+++ b/src/conf/cards/aliases.conf
-@@ -56,6 +56,7 @@ AV200 cards.CMI8788
- CMI8786 cards.CMI8788
- CMI8787 cards.CMI8788
- pistachio cards.pistachio-card
-+VC4-HDMI cards.vc4-hdmi
- 
- <confdir:pcm/default.conf>
- <confdir:pcm/dmix.conf>
-diff --git a/src/conf/cards/vc4-hdmi.conf b/src/conf/cards/vc4-hdmi.conf
-new file mode 100644
-index 000000000000..027804a145d1
---- /dev/null
-+++ b/src/conf/cards/vc4-hdmi.conf
-@@ -0,0 +1,64 @@
-+#
-+# Configuration for the VC4-HDMI sound card using software IEC958
-+# subframe conversion
-+#
-+
-+<confdir:pcm/front.conf>
-+
-+vc4-hdmi.pcm.front.0 {
-+	@args [ CARD ]
-+	@args.CARD {
-+		type string
-+	}
-+	type hw
-+	card $CARD
-+}
-+
-+# default with dmix
-+vc4-hdmi.pcm.default {
-+	@args [ CARD ]
-+	@args.CARD {
-+		type string
-+	}
-+	type asym
-+	playback.pcm {
-+		type plug
-+		slave.pcm {
-+			@func concat
-+			strings [ "dmix:" $CARD ]
-+		}
-+	}
-+}
-+
-+<confdir:pcm/iec958.conf>
-+
-+vc4-hdmi.pcm.iec958.0 {
-+	@args [ CARD AES0 AES1 AES2 AES3 ]
-+	@args.CARD {
-+		type string
-+	}
-+	@args.AES0 {
-+		type integer
-+	}
-+	@args.AES1 {
-+		type integer
-+	}
-+	@args.AES2 {
-+		type integer
-+	}
-+	@args.AES3 {
-+		type integer
-+	}
-+	type iec958
-+	slave {
-+		format IEC958_SUBFRAME_LE
-+		pcm {
-+			type plug
-+			slave.pcm {
-+				type hw
-+				card $CARD
-+			}
-+		}
-+	}
-+	status [ $AES0 $AES1 $AES2 $AES3 ]
-+}
--- 
-2.7.4
+Acked-by: Rob Herring <robh@kernel.org>
