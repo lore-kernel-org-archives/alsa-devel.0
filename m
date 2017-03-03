@@ -1,17 +1,13 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Update bxt_da7219_max98357a
- to add a new platform clock widget
-Date: Fri, 3 Mar 2017 05:07:14 -0600
-Message-ID: <369663ea-a17d-ddc8-9f03-41716410f215@linux.intel.com>
-References: <1488491697-18576-1-git-send-email-harshapriya.n@intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: [GIT PULL] Gemini lake audio firmware
+Date: Fri, 3 Mar 2017 19:05:25 +0530
+Message-ID: <20170303133525.GT2843@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5632288120352090573=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 78651266834
- for <alsa-devel@alsa-project.org>; Fri,  3 Mar 2017 12:07:17 +0100 (CET)
-In-Reply-To: <1488491697-18576-1-git-send-email-harshapriya.n@intel.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 35FA3266AFE
+ for <alsa-devel@alsa-project.org>; Fri,  3 Mar 2017 14:34:32 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,121 +17,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Harsha Priya <harshapriya.n@intel.com>, broonie@kernel.org, vinod.koul@intel.com, alsa-devel@alsa-project.org
-Cc: sathyanarayana.nujella@intel.com
+To: linux-firmware@kernel.org
+Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
+--===============5632288120352090573==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="JWEK1jqKZ6MHAcjA"
+Content-Disposition: inline
 
-On 03/02/2017 03:54 PM, Harsha Priya wrote:
-> This patch adds a platform clock widget to turn off the clock only when
-> both headset capture and headset playback are not in use. This removes
-> turning off the clock in hw_free so that the clock is on when
-> either capture or playback of headset is in progress.
 
-When the platform_clock widget is used, we typically use the EVENT_ON 
-case to turn on the PLL and we turn it off in the EVENT_OFF case.
-Here you are turning the PLL on in a .hw_params function and off in a 
-EVENT_OFF.
-Is this asymmetry required or could the PLL enablement be handled with 
-EVENT_ON?
+--JWEK1jqKZ6MHAcjA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
-> Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
-> Signed-off-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
-> ---
->   sound/soc/intel/boards/bxt_da7219_max98357a.c | 58 +++++++++++++++++++--------
->   1 file changed, 41 insertions(+), 17 deletions(-)
->
-> diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-> index 2cda06c..ed58809 100644
-> --- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-> +++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-> @@ -55,6 +55,42 @@ enum {
->   	BXT_DPCM_AUDIO_HDMI3_PB,
->   };
->   
-> +static inline struct snd_soc_dai *bxt_get_codec_dai(struct snd_soc_card *card)
-> +{
-> +	struct snd_soc_pcm_runtime *rtd;
-> +
-> +	list_for_each_entry(rtd, &card->rtd_list, list) {
-> +
-> +		if (!strncmp(rtd->codec_dai->name, BXT_DIALOG_CODEC_DAI,
-> +			     strlen(BXT_DIALOG_CODEC_DAI)))
-> +			return rtd->codec_dai;
-> +	}
-> +
-> +	return NULL;
-> +}
-> +
-> +static int platform_clock_control(struct snd_soc_dapm_widget *w,
-> +	struct snd_kcontrol *k, int  event)
-> +{
-> +	int ret = 0;
-> +	struct snd_soc_dapm_context *dapm = w->dapm;
-> +	struct snd_soc_card *card = dapm->card;
-> +	struct snd_soc_dai *codec_dai;
-> +
-> +	codec_dai = bxt_get_codec_dai(card);
-> +	if (!codec_dai) {
-> +		dev_err(card->dev, "Codec dai not found; Unable to stop PLL\n");
-> +		return -EIO;
-> +	}
-> +
-> +	if (SND_SOC_DAPM_EVENT_OFF(event)) {
-> +		ret = snd_soc_dai_set_pll(codec_dai, 0,
-> +			DA7219_SYSCLK_MCLK, 0, 0);
-> +	}
-> +
-> +	return ret;
-> +}
-> +
->   static const struct snd_kcontrol_new broxton_controls[] = {
->   	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
->   	SOC_DAPM_PIN_SWITCH("Headset Mic"),
-> @@ -69,6 +105,8 @@ enum {
->   	SND_SOC_DAPM_SPK("HDMI1", NULL),
->   	SND_SOC_DAPM_SPK("HDMI2", NULL),
->   	SND_SOC_DAPM_SPK("HDMI3", NULL),
-> +	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
-> +			platform_clock_control,	SND_SOC_DAPM_POST_PMD),
->   };
->   
->   static const struct snd_soc_dapm_route broxton_map[] = {
-> @@ -109,6 +147,9 @@ enum {
->   	/* DMIC */
->   	{"dmic01_hifi", NULL, "DMIC01 Rx"},
->   	{"DMIC01 Rx", NULL, "DMIC AIF"},
-> +
-> +	{ "Headphone Jack", NULL, "Platform Clock" },
-> +	{ "Headset Mic", NULL, "Platform Clock" },
->   };
->   
->   static int broxton_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
-> @@ -265,25 +306,8 @@ static int broxton_da7219_hw_params(struct snd_pcm_substream *substream,
->   	return ret;
->   }
->   
-> -static int broxton_da7219_hw_free(struct snd_pcm_substream *substream)
-> -{
-> -	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> -	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-> -	int ret;
-> -
-> -	ret = snd_soc_dai_set_pll(codec_dai, 0,
-> -			DA7219_SYSCLK_MCLK, 0, 0);
-> -	if (ret < 0) {
-> -		dev_err(codec_dai->dev, "failed to stop PLL: %d\n", ret);
-> -		return -EIO;
-> -	}
-> -
-> -	return ret;
-> -}
-> -
->   static const struct snd_soc_ops broxton_da7219_ops = {
->   	.hw_params = broxton_da7219_hw_params,
-> -	.hw_free = broxton_da7219_hw_free,
->   };
->   
->   static int broxton_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+Hi,
+
+Please pull to receive the Geminilake audio firmware used in Intel Geminila=
+ke
+devices with Audio DSP.
+
+The following changes since commit 4b9559fb0565f582a21a4070a81a3b6a7d77610b:
+
+  linux-firmware: update firmware file for atusb (2016-12-07 01:01:04 +0000)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git glk
+
+for you to fetch changes up to dc76591484e43cc031a28eeecae68196a98a1550:
+
+  linux-firmware: intel: Add Geminilake audio firmware (2017-03-03 15:40:35=
+ +0530)
+
+----------------------------------------------------------------
+Subhransu S. Prusty (1):
+      linux-firmware: intel: Add Geminilake audio firmware
+
+ WHENCE                     |   6 ++++++
+ intel/dsp_fw_glk.bin       |   1 +
+ intel/dsp_fw_glk_v1814.bin | Bin 0 -> 505608 bytes
+ 3 files changed, 7 insertions(+)
+ create mode 120000 intel/dsp_fw_glk.bin
+ create mode 100644 intel/dsp_fw_glk_v1814.bin
+
+Thanks
+--=20
+~Vinod
+
+--JWEK1jqKZ6MHAcjA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJYuXEdAAoJEHwUBw8lI4NHyMAP/07ytOxkE7wsT67fNcAxyfUe
+kh7BAncbUT+aad/VnHaHK9m6h3adSihPQvIrnPnvcrmZ2cv6bsix9nKfzbP15kTq
+Xs7S0+7ek8h9r6dADpvHqeZZKx7HDlsS/MQOedu4BxmQ15jU7ynUtcayHzZRCoGp
+7uA2FrU9Ls6RJxbHAp0PgI0v2mykaJbZG3CTKr4Wi6V+3nAyCbRhTfA/vPCGhqum
+jMtnn7149Eh9tB6AC+iXEd8GyPGg8x+ER6IPmqERze9E3DkGPFJxDApCh7ucbWhW
+AN7cD+6nLo4xmOUI05X5iNWIjlaQaCdnGTgyvavRAJI7jFFyp+Vrwnib6+n+p2G0
+vThknE8mRKacRfbvQ3BVDum49z7iGHni2AxaZB6XczH0nzP0lWnyNbZePmpW1JtT
+MWXsGEm6hTT40PQZEDzPmvMyLomEsLW0kzOkhzWzPvO4A7EVSe1/DjOKF+h22rAY
+QIdZGhfWjN20lV9xQH0hmIdOahl82obgKEpL8E90e8hVJhSgcBKCW8nHn25rsODF
+JiyqiDc8P7k8wq3WFRRpzGnq79zjGSS2DnxooZGcbTKk3HQrUKpysh3gt2q4NStU
+eY9mBY/MzvR2WH0jBjgAYGFwNIQG5EaFMupLogeI98uJXkQt1cOnf+KwgHzHmrtk
+asXApL8nrDaIAJRu01FX
+=rmbz
+-----END PGP SIGNATURE-----
+
+--JWEK1jqKZ6MHAcjA--
+
+--===============5632288120352090573==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5632288120352090573==--
