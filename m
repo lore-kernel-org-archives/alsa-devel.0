@@ -1,45 +1,90 @@
-From: Michael Zoran <mzoran-O+n0w2l5AFbk1uMJSBkQmQ@public.gmane.org>
-Subject: Investigating a headphone driver for RPI
-Date: Sat, 04 Mar 2017 07:13:17 -0800
-Message-ID: <1488640397.7058.4.camel@crowfest.net>
+From: Dmitry Vyukov <dvyukov@google.com>
+Subject: sound: another deadlock in snd_seq_pool_done
+Date: Sat, 4 Mar 2017 17:31:21 +0100
+Message-ID: <CACT4Y+aqqy8bZA1fFieifNxR2fAfFQQABcBHj801+u5ePV0URw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-rpi-kernel-bounces+glkr-linux-rpi-kernel=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rpi-kernel>,
- <mailto:linux-rpi-kernel-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-rpi-kernel/>
-List-Post: <mailto:linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-rpi-kernel-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rpi-kernel>,
- <mailto:linux-rpi-kernel-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "linux-rpi-kernel" <linux-rpi-kernel-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-rpi-kernel-bounces+glkr-linux-rpi-kernel=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ua0-f177.google.com (mail-ua0-f177.google.com
+ [209.85.217.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 06A762668AC
+ for <alsa-devel@alsa-project.org>; Sat,  4 Mar 2017 17:31:43 +0100 (CET)
+Received: by mail-ua0-f177.google.com with SMTP id q7so103157347uaf.2
+ for <alsa-devel@alsa-project.org>; Sat, 04 Mar 2017 08:31:43 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
+Cc: syzkaller <syzkaller@googlegroups.com>
 List-Id: alsa-devel@alsa-project.org
 
-CUknbSBkb2luZyBzb21lIGludmVzdGlnYXRpb24gaW50byBwb3RlbnRpYWxseSBtYWtpbmcgYQpo
-ZWFkcGhvbmUgYXVkaW8gZHJpdmVyIGZvciB0aGUgUmFzcGJlcnJ5IFBJIHRoYXQgZG9lc24ndCB1
-c2UgdGhlCmZpcm13YXJlLiAgVGhlIGlkZWEgaXMgdG8gdXNlIHRoZSBQV00gaGFyZHdhcmUgdGhh
-dCB0aGUgUlBJIGhhcyB0bwpnZW5lcmF0ZSB0aGUgYXVkaW8uCgoJQSBzb2MgZHJpdmVyIGluIGNv
-bmNlcHQgc2hvdWxkIGJlIGVhc3kgZW5vdWdoLCBhbmQgSSdtIHRyeWluZwp0byBtb2RpZnkgdGhl
-IEhETUkgZHJpdmVyIHRoYXQgd2FzIHN1Ym1pdHRlZCBlYXJsaWVyLiAgIFRoZSBvbmx5IGlzc3Vl
-CmlzIHRoYXQgdG8gZHJpdmUgdGhlIFBXTSwgdGhlIGZvcm1hdCBvZiBvZiB0aGUgYXVkaW8gbmVl
-ZHMgdG8gYmUgcmF0aGVyCmV4b3RpYygxMiBiaXQgdW5zaWduZWQgNDhLSHosIG9yIDggYml0IHVu
-c2lnbmVkIDk2MEtIeikuIMKgCgoJSSdtIGhhdmluZyBtYXNzaXZlIGlzc3VlcyBnZXR0aW5nIGEg
-QVNvYyBkcml2ZXIgdG8gd29yayB3aXRoCnRoZXNlIGZvcm1hdHMuICAgSSBlaXRoZXIgZ2V0IGlz
-c3VlcyB0aGF0IHRoZSBjb2RlYyBhbmQgY3B1IGRyaXZlcgpjYW4ndCBhZ3JlZSBvbiB0aGUgZm9y
-bWF0KFRoZSBjb2RlYyBpcyBhIGZha2UgY29kZWMgdGhhdCBkb2Vzbid0IGRvCmFueXRoaW5nKSwg
-b3IgdGhlIERNQSBlbmdpbmUgZXJyb3JzIG91dCB3aXRoIGVycm9yIC0yMi4KClF1ZXN0aW9uczoK
-CgkxLiBJIGxpa2UgdGhlIEFTb2MgY29uY2VwdCwgYnV0IEknbSB3b25kZXJpbmcgaWYgcGVyaGFw
-cyBhCnJlZ3VsYXIgQUxTQSBkcml2ZXIgd291bGQgYmUgYmV0dGVyIGhlcmUuICBBIHJlZ3VsYXIg
-QUxTQSBkcml2ZXIgd291bGQKYmUgbGlrZSAxMHggdGhlIGxpbmVzIG9mIGNvZGUsIGJ1dCBJIHdv
-dWxkIGhhdmUgbXVjaCBtb3JlIGZsZXhpYmlsaXR5CnRvIGRvIFNPTUUgc2lnbmFsIGNvbmRpdGlv
-bmluZyBpbiB0aGUgZHJpdmVyIGl0c2VsZiBhbmQgY291bGQgcmVwb3J0IGFzCnN1cHBvcnRpbmcg
-YSBTMTZfTEUgZm9ybWF0IHdoaWNoIGV2ZXJ5dGhpbmcgd29ya3Mgd2l0aC4KCgkyLiBBcmUgcmVn
-dWxhciBBTFNBIGRyaXZlcnMgc3RpbGwgYmVpbmcgYWNjZXB0ZWQgZm9yIFNCQyBsaWtlCnRoZSBS
-UEksIG9yIGlzIEFTb2MgbWFuZGF0b3J5PwoKCVRoYW5rcy4JIAoKX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtcnBpLWtlcm5lbCBtYWlsaW5nIGxp
-c3QKbGludXgtcnBpLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
-YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtcnBpLWtlcm5lbAo=
+Hello,
+
+The following program creates processes deadlocked in snd_seq_pool_done:
+
+https://gist.githubusercontent.com/dvyukov/97efc9cb6d63b1b2c7b737b82cc8b0d6/raw/3546b133ae0b2d3e1190ae7c1f4e240ce7ce132e/gistfile1.txt
+
+After few seconds I get:
+
+# ps afxu | grep a.out
+root      8660  2.0  0.0      0     0 pts/0    Zl   16:27   0:00
+[a.out] <defunct>
+
+# kill -9 8660
+
+# cat /proc/8660/status
+Name: a.out
+State: Z (zombie)
+Tgid: 8660
+Ngid: 0
+Pid: 8660
+PPid: 1
+TracerPid: 0
+Uid: 0 0 0 0
+Gid: 0 0 0 0
+FDSize: 0
+Groups: 0
+NStgid: 8660
+NSpid: 8660
+NSpgid: 8660
+NSsid: 2971
+Threads: 2
+SigQ: 1/3304
+SigPnd: 0000000000000000
+ShdPnd: 0000000000000100
+SigBlk: 0000000000000000
+SigIgn: 0000000180000000
+SigCgt: 0000000000000440
+CapInh: 0000000000000000
+CapPrm: 0000003fffffffff
+CapEff: 0000003fffffffff
+CapBnd: 0000003fffffffff
+CapAmb: 0000000000000000
+NoNewPrivs: 0
+Seccomp: 0
+Cpus_allowed: f
+Cpus_allowed_list: 0-3
+Mems_allowed: 00000000,00000001
+Mems_allowed_list: 0
+voluntary_ctxt_switches: 12
+nonvoluntary_ctxt_switches: 0
+
+# cat /proc/8660/task/*/stack
+[<ffffffff835406db>] snd_seq_pool_done+0x31b/0x620
+sound/core/seq/seq_memory.c:436
+[<ffffffff8353a11e>] snd_seq_ioctl_set_client_pool+0x1ae/0x600
+sound/core/seq/seq_clientmgr.c:1836
+[<ffffffff835382ba>] snd_seq_ioctl+0x2da/0x4d0
+sound/core/seq/seq_clientmgr.c:2130
+[<ffffffff81aced2f>] vfs_ioctl fs/ioctl.c:45 [inline]
+[<ffffffff81aced2f>] do_vfs_ioctl+0x1bf/0x1790 fs/ioctl.c:685
+[<ffffffff81ad038f>] SYSC_ioctl fs/ioctl.c:700 [inline]
+[<ffffffff81ad038f>] SyS_ioctl+0x8f/0xc0 fs/ioctl.c:691
+[<ffffffff8457dc41>] entry_SYSCALL_64_fastpath+0x1f/0xc2
