@@ -1,64 +1,45 @@
-From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: [GIT PULL] Gemini lake audio firmware
-Date: Fri, 3 Mar 2017 09:52:07 -0800
-Message-ID: <20170303175207.GZ13400@bombadil.infradead.org>
-References: <20170303133525.GT2843@localhost>
+From: Michael Zoran <mzoran-O+n0w2l5AFbk1uMJSBkQmQ@public.gmane.org>
+Subject: Investigating a headphone driver for RPI
+Date: Sat, 04 Mar 2017 07:13:17 -0800
+Message-ID: <1488640397.7058.4.camel@crowfest.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bombadil.infradead.org (bombadil.infradead.org [65.50.211.133])
- by alsa0.perex.cz (Postfix) with ESMTP id CD5442668AC
- for <alsa-devel@alsa-project.org>; Fri,  3 Mar 2017 18:52:10 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20170303133525.GT2843@localhost>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org, linux-firmware@kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-rpi-kernel-bounces+glkr-linux-rpi-kernel=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rpi-kernel>,
+ <mailto:linux-rpi-kernel-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-rpi-kernel/>
+List-Post: <mailto:linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-rpi-kernel-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rpi-kernel>,
+ <mailto:linux-rpi-kernel-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "linux-rpi-kernel" <linux-rpi-kernel-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-rpi-kernel-bounces+glkr-linux-rpi-kernel=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 03, 2017 at 07:05:25PM +0530, Vinod Koul wrote:
-> Hi,
-> 
-> Please pull to receive the Geminilake audio firmware used in Intel Geminilake
-> devices with Audio DSP.
-> 
-> The following changes since commit 4b9559fb0565f582a21a4070a81a3b6a7d77610b:
-> 
->   linux-firmware: update firmware file for atusb (2016-12-07 01:01:04 +0000)
-> 
-> are available in the git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git glk
-> 
-> for you to fetch changes up to dc76591484e43cc031a28eeecae68196a98a1550:
-> 
->   linux-firmware: intel: Add Geminilake audio firmware (2017-03-03 15:40:35 +0530)
-> 
-
-Pulled, thanks Vinod.
-
-regards, Kyle
-
-> ----------------------------------------------------------------
-> Subhransu S. Prusty (1):
->       linux-firmware: intel: Add Geminilake audio firmware
-> 
->  WHENCE                     |   6 ++++++
->  intel/dsp_fw_glk.bin       |   1 +
->  intel/dsp_fw_glk_v1814.bin | Bin 0 -> 505608 bytes
->  3 files changed, 7 insertions(+)
->  create mode 120000 intel/dsp_fw_glk.bin
->  create mode 100644 intel/dsp_fw_glk_v1814.bin
-> 
-> Thanks
-> -- 
-> ~Vinod
+CUknbSBkb2luZyBzb21lIGludmVzdGlnYXRpb24gaW50byBwb3RlbnRpYWxseSBtYWtpbmcgYQpo
+ZWFkcGhvbmUgYXVkaW8gZHJpdmVyIGZvciB0aGUgUmFzcGJlcnJ5IFBJIHRoYXQgZG9lc24ndCB1
+c2UgdGhlCmZpcm13YXJlLiAgVGhlIGlkZWEgaXMgdG8gdXNlIHRoZSBQV00gaGFyZHdhcmUgdGhh
+dCB0aGUgUlBJIGhhcyB0bwpnZW5lcmF0ZSB0aGUgYXVkaW8uCgoJQSBzb2MgZHJpdmVyIGluIGNv
+bmNlcHQgc2hvdWxkIGJlIGVhc3kgZW5vdWdoLCBhbmQgSSdtIHRyeWluZwp0byBtb2RpZnkgdGhl
+IEhETUkgZHJpdmVyIHRoYXQgd2FzIHN1Ym1pdHRlZCBlYXJsaWVyLiAgIFRoZSBvbmx5IGlzc3Vl
+CmlzIHRoYXQgdG8gZHJpdmUgdGhlIFBXTSwgdGhlIGZvcm1hdCBvZiBvZiB0aGUgYXVkaW8gbmVl
+ZHMgdG8gYmUgcmF0aGVyCmV4b3RpYygxMiBiaXQgdW5zaWduZWQgNDhLSHosIG9yIDggYml0IHVu
+c2lnbmVkIDk2MEtIeikuIMKgCgoJSSdtIGhhdmluZyBtYXNzaXZlIGlzc3VlcyBnZXR0aW5nIGEg
+QVNvYyBkcml2ZXIgdG8gd29yayB3aXRoCnRoZXNlIGZvcm1hdHMuICAgSSBlaXRoZXIgZ2V0IGlz
+c3VlcyB0aGF0IHRoZSBjb2RlYyBhbmQgY3B1IGRyaXZlcgpjYW4ndCBhZ3JlZSBvbiB0aGUgZm9y
+bWF0KFRoZSBjb2RlYyBpcyBhIGZha2UgY29kZWMgdGhhdCBkb2Vzbid0IGRvCmFueXRoaW5nKSwg
+b3IgdGhlIERNQSBlbmdpbmUgZXJyb3JzIG91dCB3aXRoIGVycm9yIC0yMi4KClF1ZXN0aW9uczoK
+CgkxLiBJIGxpa2UgdGhlIEFTb2MgY29uY2VwdCwgYnV0IEknbSB3b25kZXJpbmcgaWYgcGVyaGFw
+cyBhCnJlZ3VsYXIgQUxTQSBkcml2ZXIgd291bGQgYmUgYmV0dGVyIGhlcmUuICBBIHJlZ3VsYXIg
+QUxTQSBkcml2ZXIgd291bGQKYmUgbGlrZSAxMHggdGhlIGxpbmVzIG9mIGNvZGUsIGJ1dCBJIHdv
+dWxkIGhhdmUgbXVjaCBtb3JlIGZsZXhpYmlsaXR5CnRvIGRvIFNPTUUgc2lnbmFsIGNvbmRpdGlv
+bmluZyBpbiB0aGUgZHJpdmVyIGl0c2VsZiBhbmQgY291bGQgcmVwb3J0IGFzCnN1cHBvcnRpbmcg
+YSBTMTZfTEUgZm9ybWF0IHdoaWNoIGV2ZXJ5dGhpbmcgd29ya3Mgd2l0aC4KCgkyLiBBcmUgcmVn
+dWxhciBBTFNBIGRyaXZlcnMgc3RpbGwgYmVpbmcgYWNjZXB0ZWQgZm9yIFNCQyBsaWtlCnRoZSBS
+UEksIG9yIGlzIEFTb2MgbWFuZGF0b3J5PwoKCVRoYW5rcy4JIAoKX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KbGludXgtcnBpLWtlcm5lbCBtYWlsaW5nIGxp
+c3QKbGludXgtcnBpLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZy
+YWRlYWQub3JnL21haWxtYW4vbGlzdGluZm8vbGludXgtcnBpLWtlcm5lbAo=
