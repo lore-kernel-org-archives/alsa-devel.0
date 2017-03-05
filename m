@@ -1,111 +1,75 @@
-From: Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [RFC v2 2/7] IIO: Add bindings for simple sigma
-	delta adc
-Date: Sun, 5 Mar 2017 11:04:06 +0000
-Message-ID: <dbf92596-d7b7-5bb0-2e59-cd54ffc78f4e@kernel.org>
-References: <1487003909-11710-1-git-send-email-arnaud.pouliquen@st.com>
- <1487003909-11710-3-git-send-email-arnaud.pouliquen@st.com>
- <20170222151750.h5d7gycltwnk7b4t@rob-hp-laptop>
- <6943aaf5-b580-0fd1-7a2e-b99f7a266388@st.com>
+From: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
+Subject: [PATCH v2 00/12] Add support for the audio codec on
+ Allwinner V3s
+Date: Sun,  5 Mar 2017 21:36:57 +0800
+Message-ID: <20170305133709.6288-1-icenowy@aosc.xyz>
+Reply-To: icenowy-ymACFijhrKM@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from saturn.retrosnub.co.uk (saturn.retrosnub.co.uk [178.18.118.26])
- by alsa0.perex.cz (Postfix) with ESMTP id 3640B26686A
- for <alsa-devel@alsa-project.org>; Sun,  5 Mar 2017 12:04:07 +0100 (CET)
-In-Reply-To: <6943aaf5-b580-0fd1-7a2e-b99f7a266388@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>, Rob Herring <robh@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Olivier MOYSAN <olivier.moysan@st.com>, "kernel@stlinux.com" <kernel@stlinux.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Mark Brown <broonie@kernel.org>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Hartmut Knaack <knaack.h@gmx.de>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Alexandre TORGUE <alexandre.torgue@st.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBCZLPFN5Q4OBBKNJ6DCQKGQE4ABEPBQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 27/02/17 11:15, Arnaud Pouliquen wrote:
-> Hello Rob,
-> 
-> Please find my answers in-line
-> 
-> Regards,
-> 
-> Arnaud
-> 
-> On 02/22/2017 04:17 PM, Rob Herring wrote:
->> On Mon, Feb 13, 2017 at 05:38:24PM +0100, Arnaud Pouliquen wrote:
->>> Add documentation of device tree bindings to support
->>> sigma delta modulator in IIO framework.
->>>
->>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
->>> ---
->>>  Documentation/devicetree/bindings/iio/adc/simple_sd_adc.txt | 13 +++++++++++++
->>>  1 file changed, 13 insertions(+)
->>>  create mode 100644 Documentation/devicetree/bindings/iio/adc/simple_sd_adc.txt
->>>
->>> diff --git a/Documentation/devicetree/bindings/iio/adc/simple_sd_adc.txt b/Documentation/devicetree/bindings/iio/adc/simple_sd_adc.txt
->>> new file mode 100644
->>> index 0000000..2b3968a
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/iio/adc/simple_sd_adc.txt
->>> @@ -0,0 +1,13 @@
->>> +Device-Tree bindings for simple sigma delta adc
->>
->> What makes it "simple"?
-> "simple" sigma delta modulator are external chip that just converts
-> analog signal in sigma delta modulation. No configuration needs.
-> "Simple" is use to differentiate SD ADC that offers interfaces to
-> activate some internal processing ( gain, offset compensation...)
-My gut feeling would be to drop the term simple.  If device is more complex
-it needs to be explicitly supported, hence will be named whatever!
-> 
->>
->>> +
->>> +Required properties:
->>> +- compatible: should be "sd-modulator".
->>> +- #io-channel-cells = <1>: See the IIO bindings section "IIO consumers".
->>> +
->>> +Example node:
->>> +
->>> +	ads1202: simple_sd_adc@0 {
->>
->> Is ads1202 the actual chip? Then it should be in the compatible list.
-> I tried to define a generic device to support several SD modulator
-> chips, inspired by ALSA "dmic-codec" device.
-> I have none exhaustive list of chip that can be handled by the driver,
-> but i found several devices that could match...
-> That why i did not use chip name in compatible list.
-> What should be the best way to do it?
-Rob, would the fallback approach (I brought this up in  another branch of
-this discussion) work here,
+Allwinner V3s features a audio codec with dedicated digital and analog parts,
+like the ones on A23/H3, but much simpler (lack of MIC2, LINE IN and MBIAS).
 
-compatible = "ads1201", "sd-modulator'?
+Add support for it.
 
-Main advantage is that people won't then lie in their board files just to
-avoid changing the driver to introduce their new part.  They'll just
-be less specific than would be ideal.
-> 
->>
->> unit address without a reg prop is an error. The node name should be 
->> "adc".
->>
->>> +		compatible = "sd-modulator";
->>> +		#io-channel-cells = <1>;
->>> +		status = "okay";
->>
->> Drop status from examples.
->>
->>> +	};
->>> -- 
->>> 1.9.1
->>>
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-iio" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+In order to make the codec usable, DMA support is also added in this series;
+the support of Lichee Pi Zero's dock board is also added here, as it's the
+only board hackable that come with ports connected to the codec.
+
+Patch 1~3 split out parts that is not available on V3s in the analog codec.
+
+Patch 4/5 adds support for V3s in analog/digital codec.
+
+Patch 6 add the gate bit as a common quirk of sun6i-dma driver, as V3s also
+needs it.
+
+Patch 7 really adds support for V3s in DMA engine.
+
+Patch 8 restores the inclusion of CCU headers in the DTSI file of V3s, as
+it's removed when merging.
+
+Patch 9/10/11 adds three parts of V3s: DMA engine, codec support and pinmux
+of mmc1 (used on Lichee Pi Zero dock).
+
+Patch 12 adds support for Lichee Pi Zero dock, with support of mmc1 and
+codec.
+
+Icenowy Zheng (12):
+  ASoC: sun8i-codec-analog: split out mic2
+  ASoC: sun8i-codec-analog: split out line in
+  ASoC: sun8i-codec-analog: split out mbias
+  ASoC: sun8i-codec-analog: add support for V3s SoC
+  ASoC: sun4i-codec: Add support for V3s codec
+  dmaengine: sun6i: make gate bit in sun8i's DMA engines a common quirk
+  dmaengine: sun6i: support V3s SoC variant
+  ARM: dts: sun8i: restore the inclusion of ccu headers in V3s DTSI
+  ARM: dts: sun8i: add DMA engine in V3s DTSI
+  ARM: dts: sun8i: add audio codec support into V3s DTSI
+  ARM: dts: sun8i: add pinmux for V3s mmc1
+  ARM: dts: sun8i: add device tree for Lichee Pi Zero with Dock
+
+ .../devicetree/bindings/dma/sun6i-dma.txt          |   1 +
+ .../devicetree/bindings/sound/sun4i-codec.txt      |  11 +-
+ .../bindings/sound/sun8i-codec-analog.txt          |   1 +
+ arch/arm/boot/dts/Makefile                         |   3 +-
+ arch/arm/boot/dts/sun8i-v3s-licheepi-zero-dock.dts |  67 +++++++
+ arch/arm/boot/dts/sun8i-v3s.dtsi                   | 103 ++++++----
+ drivers/dma/sun6i-dma.c                            |  22 ++-
+ sound/soc/sunxi/sun4i-codec.c                      |  59 ++++++
+ sound/soc/sunxi/sun8i-codec-analog.c               | 211 +++++++++++++++++----
+ 9 files changed, 405 insertions(+), 73 deletions(-)
+ create mode 100644 arch/arm/boot/dts/sun8i-v3s-licheepi-zero-dock.dts
+
+-- 
+2.11.1
