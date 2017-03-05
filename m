@@ -1,23 +1,16 @@
-From: Alain Kalker <a.c.kalker@gmail.com>
-Subject: [BUG] src/conf/alsa.conf: Hard-coded path
- `/etc/asound.conf`, needs `@func sysconfdir`.
-Date: Sun, 5 Mar 2017 19:17:55 +0100
-Message-ID: <a844ffab-3a8b-bc92-9296-0554682553cf@gmail.com>
+From: Alistair Buxton <a.j.buxton@gmail.com>
+Subject: [BUG] Meter causes freeze when closing audio device
+Date: Sun, 5 Mar 2017 22:20:42 +0000
+Message-ID: <CAO-Op+FW8CL8bvnr6m4Rfj9HSKnPOSBL05k9K5XXrwvpokOtaw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f177.google.com (mail-wr0-f177.google.com
- [209.85.128.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 4420226583C
- for <alsa-devel@alsa-project.org>; Sun,  5 Mar 2017 19:17:57 +0100 (CET)
-Received: by mail-wr0-f177.google.com with SMTP id l37so102921132wrc.1
- for <alsa-devel@alsa-project.org>; Sun, 05 Mar 2017 10:17:57 -0800 (PST)
-Received: from [192.168.1.116] ([84.245.9.255])
- by smtp.googlemail.com with ESMTPSA id o70sm11682914wmi.26.2017.03.05.10.17.55
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Sun, 05 Mar 2017 10:17:55 -0800 (PST)
+Received: from mail-wm0-f52.google.com (mail-wm0-f52.google.com [74.125.82.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id EABE026583C
+ for <alsa-devel@alsa-project.org>; Sun,  5 Mar 2017 23:20:43 +0100 (CET)
+Received: by mail-wm0-f52.google.com with SMTP id n11so51191760wma.0
+ for <alsa-devel@alsa-project.org>; Sun, 05 Mar 2017 14:20:43 -0800 (PST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,28 +23,69 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The file `src/conf/alsa.conf` contains the hard-coded path 
-`/etc/asound.conf`, which in some use cases may not be correct.
+To reproduce, put the following in asound.conf or .asoundrc:
 
-One particular use case: Termux[1], a "Linux subsystem for Android", 
-plans to use ALSA plugins to communicate with the OpenSL ES 
-implementation in Android. In doing so, it needs to not conflict with 
-any vendor provided ALSA implentation, which could conceivably use an 
-`/etc/asound.conf` of its own. At any rate, the system `/etc` directory 
-is normally not writable by non-root users of Android.
+pcm.mymeter {
+        type meter
+        slave.pcm "dmixer"
+}
 
-I would suggest adding a `snd_func_sysconfdir` in `src/confmisc.c 
-(analogous to `snd_func_datadir`) so packagers and users can place a 
-global `asound.conf` file in a directory to which they have write access 
-and which doesn't conflict with the systems ALSA.
-The desired path can already be specified at build time by using 
-`./configure --sysconfdir=<dir>`, which conveniently defaults to 
-PREFIX/etc in any case. It is available as configure variable: 
-`sysconfdir='${prefix}/etc'`, and only needs to be substituted to be 
-available to `src/confmisc.c`.
+pcm.dmixer  {
+        type dmix
+        ipc_key 1024
+        slave {
+                pcm "hw:0,0"
+                period_time 0
+                period_size 1024
+                buffer_size 4096
+                rate 48000
+        }
+        bindings {
+                0 0
+                1 1
+        }
+}
 
-Kind regards,
+ctl.dmixer {
+        type hw
+        card 0
+}
 
-Alain Kalker
+If pulseaudio is running, suspend it:
 
-[1]: https://termux.com/
+pasuspender sleep 1d
+
+Now run aplay (you may need to change sample format):
+
+aplay -v -fS16_LE -r48000 -c2 -d1 -Dmymeter /dev/zero
+
+Expected result: aplay should play one second of silence and then exit.
+
+Actual result: About 50% of the time, aplay plays one second of silence and
+then freezes forever in poll().
+
+Playing directly to dmixer does not freeze.
+
+Backtrace:
+
+(gdb) bt
+#0  0xb6ce5b80 in poll () at ../sysdeps/unix/syscall-template.S:81
+#1  0xb6e5c428 in poll (__timeout=-1, __nfds=1, __fds=0xbe96c408)
+    at /usr/include/arm-linux-gnueabihf/bits/poll2.h:46
+#2  snd1_pcm_wait_nocheck (pcm=pcm@entry=0xc69570, timeout=timeout@entry=-1)
+at pcm.c:2418
+#3  0xb6e961d8 in snd_pcm_dmix_drain (pcm=0xc69570) at pcm_dmix.c:649
+#4  0x0000de90 in ?? ()
+Backtrace stopped: previous frame identical to this frame (corrupt stack?)
+
+Also reproducible with other audio players such as sox and ogg123.
+
+Reproducible on Ubuntu 17.04 beta with libasound2 1.1.3 and virtualbox
+audio device.
+Reproducible on Ubuntu 16.04 with libasound2 1.1.0 and Intel HD audio.
+Reproducible on Raspbian Jessie with libasound 1.0.28 and
+snd_soc_hifiberry_dac.
+
+-- 
+Alistair Buxton
+a.j.buxton@gmail.com
