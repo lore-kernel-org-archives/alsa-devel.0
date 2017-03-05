@@ -1,12 +1,13 @@
 From: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
-Subject: [PATCH v2 05/12] ASoC: sun4i-codec: Add support for V3s codec
-Date: Sun,  5 Mar 2017 21:37:02 +0800
-Message-ID: <20170305133709.6288-6-icenowy@aosc.xyz>
+Subject: [PATCH v2 06/12] dmaengine: sun6i: make gate bit in
+ sun8i's DMA engines a common quirk
+Date: Sun,  5 Mar 2017 21:37:03 +0800
+Message-ID: <20170305133709.6288-7-icenowy@aosc.xyz>
 References: <20170305133709.6288-1-icenowy@aosc.xyz>
 Reply-To: icenowy-ymACFijhrKM@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCZLPFN5Q4OBBDVK6DCQKGQEPMEEAAQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCZLPFN5Q4OBBHFK6DCQKGQEXZ2VGAY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 In-Reply-To: <20170305133709.6288-1-icenowy-ymACFijhrKM@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
@@ -19,158 +20,62 @@ To: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Rob Herring
 Cc: dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The codec in the V3s is similar to the one found on the A31. One key
-difference is the analog path controls are routed through the PRCM
-block. This is supported by the sun8i-codec-analog driver, and tied
-into this codec driver with the audio card's aux_dev.
+Originally we enable a special gate bit when the compatible indicates
+A23/33.
 
-In addition, the V3s does not have LINEIN, LINEOUT, MBIAS and MIC2,
-MIC3, and the FIFO related registers are like H3.
+But according to BSP sources and user manuals, more SoCs will need this
+gate bit.
+
+So make it a common quirk configured in the config struct.
+
+The BSP source also indicates that A83T will need this gate bit (there's
+"SUN8IW6" in the #ifdef's), so also enable this gate bit for it.
 
 Signed-off-by: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
 ---
- .../devicetree/bindings/sound/sun4i-codec.txt      | 11 ++--
- sound/soc/sunxi/sun4i-codec.c                      | 59 ++++++++++++++++++++++
- 2 files changed, 66 insertions(+), 4 deletions(-)
+ drivers/dma/sun6i-dma.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/sun4i-codec.txt b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
-index 3863531d1e6d..2d4e10deb6f4 100644
---- a/Documentation/devicetree/bindings/sound/sun4i-codec.txt
-+++ b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
-@@ -7,6 +7,7 @@ Required properties:
- 		- "allwinner,sun7i-a20-codec"
- 		- "allwinner,sun8i-a23-codec"
- 		- "allwinner,sun8i-h3-codec"
-+		- "allwinner,sun8i-v3s-codec"
- - reg: must contain the registers location and length
- - interrupts: must contain the codec interrupt
- - dmas: DMA channels for tx and rx dma. See the DMA client binding,
-@@ -25,6 +26,7 @@ Required properties for the following compatibles:
- 		- "allwinner,sun6i-a31-codec"
- 		- "allwinner,sun8i-a23-codec"
- 		- "allwinner,sun8i-h3-codec"
-+		- "allwinner,sun8i-v3s-codec"
- - resets: phandle to the reset control for this device
- - allwinner,audio-routing: A list of the connections between audio components.
- 			   Each entry is a pair of strings, the first being the
-@@ -34,15 +36,15 @@ Required properties for the following compatibles:
- 			   Audio pins on the SoC:
- 			   "HP"
- 			   "HPCOM"
--			   "LINEIN"
--			   "LINEOUT"	(not on sun8i-a23)
-+			   "LINEIN"	(not on sun8i-v3s)
-+			   "LINEOUT"	(not on sun8i-a23 or sun8i-v3s)
- 			   "MIC1"
--			   "MIC2"
-+			   "MIC2"	(not on sun8i-v3s)
- 			   "MIC3"	(sun6i-a31 only)
- 
- 			   Microphone biases from the SoC:
- 			   "HBIAS"
--			   "MBIAS"
-+			   "MBIAS"	(not on sun8i-v3s)
- 
- 			   Board connectors:
- 			   "Headphone"
-@@ -55,6 +57,7 @@ Required properties for the following compatibles:
- Required properties for the following compatibles:
- 		- "allwinner,sun8i-a23-codec"
- 		- "allwinner,sun8i-h3-codec"
-+		- "allwinner,sun8i-v3s-codec"
- - allwinner,codec-analog-controls: A phandle to the codec analog controls
- 				   block in the PRCM.
- 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index c3aab10fa085..7f1b1aa95e0b 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -1339,6 +1339,44 @@ static struct snd_soc_card *sun8i_h3_codec_create_card(struct device *dev)
- 	return card;
+diff --git a/drivers/dma/sun6i-dma.c b/drivers/dma/sun6i-dma.c
+index a2358780ab2c..889fb24023cd 100644
+--- a/drivers/dma/sun6i-dma.c
++++ b/drivers/dma/sun6i-dma.c
+@@ -101,6 +101,7 @@ struct sun6i_dma_config {
+ 	u32 nr_max_channels;
+ 	u32 nr_max_requests;
+ 	u32 nr_max_vchans;
++	bool gate_needed;
  };
  
-+static struct snd_soc_card *sun8i_v3s_codec_create_card(struct device *dev)
-+{
-+	struct snd_soc_card *card;
-+	int ret;
-+
-+	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
-+	if (!card)
-+		return ERR_PTR(-ENOMEM);
-+
-+	aux_dev.codec_of_node = of_parse_phandle(dev->of_node,
-+						 "allwinner,codec-analog-controls",
-+						 0);
-+	if (!aux_dev.codec_of_node) {
-+		dev_err(dev, "Can't find analog controls for codec.\n");
-+		return ERR_PTR(-EINVAL);
-+	};
-+
-+	card->dai_link = sun4i_codec_create_link(dev, &card->num_links);
-+	if (!card->dai_link)
-+		return ERR_PTR(-ENOMEM);
-+
-+	card->dev		= dev;
-+	card->name		= "V3s Audio Codec";
-+	card->dapm_widgets	= sun6i_codec_card_dapm_widgets;
-+	card->num_dapm_widgets	= ARRAY_SIZE(sun6i_codec_card_dapm_widgets);
-+	card->dapm_routes	= sun8i_codec_card_routes;
-+	card->num_dapm_routes	= ARRAY_SIZE(sun8i_codec_card_routes);
-+	card->aux_dev		= &aux_dev;
-+	card->num_aux_devs	= 1;
-+	card->fully_routed	= true;
-+
-+	ret = snd_soc_of_parse_audio_routing(card, "allwinner,audio-routing");
-+	if (ret)
-+		dev_warn(dev, "failed to parse audio-routing: %d\n", ret);
-+
-+	return card;
-+};
-+
- static const struct regmap_config sun4i_codec_regmap_config = {
- 	.reg_bits	= 32,
- 	.reg_stride	= 4,
-@@ -1374,6 +1412,13 @@ static const struct regmap_config sun8i_h3_codec_regmap_config = {
- 	.max_register	= SUN8I_H3_CODEC_ADC_DBG,
+ /*
+@@ -1009,12 +1010,14 @@ static struct sun6i_dma_config sun8i_a23_dma_cfg = {
+ 	.nr_max_channels = 8,
+ 	.nr_max_requests = 24,
+ 	.nr_max_vchans   = 37,
++	.gate_needed	 = true,
  };
  
-+static const struct regmap_config sun8i_v3s_codec_regmap_config = {
-+	.reg_bits	= 32,
-+	.reg_stride	= 4,
-+	.val_bits	= 32,
-+	.max_register	= SUN6I_CODEC_HMIC_DATA,
-+};
-+
- struct sun4i_codec_quirks {
- 	const struct regmap_config *regmap_config;
- 	const struct snd_soc_codec_driver *codec;
-@@ -1422,6 +1467,16 @@ static const struct sun4i_codec_quirks sun8i_a23_codec_quirks = {
- 	.has_reset	= true,
+ static struct sun6i_dma_config sun8i_a83t_dma_cfg = {
+ 	.nr_max_channels = 8,
+ 	.nr_max_requests = 28,
+ 	.nr_max_vchans   = 39,
++	.gate_needed	 = true,
  };
  
-+static const struct sun4i_codec_quirks sun8i_v3s_codec_quirks = {
-+	.regmap_config	= &sun8i_v3s_codec_regmap_config,
-+	.codec		= &sun8i_a23_codec_codec,
-+	.create_card	= sun8i_v3s_codec_create_card,
-+	.reg_adc_fifoc	= REG_FIELD(SUN6I_CODEC_ADC_FIFOC, 0, 31),
-+	.reg_dac_txdata	= SUN8I_H3_CODEC_DAC_TXDATA,
-+	.reg_adc_rxdata	= SUN6I_CODEC_ADC_RXDATA,
-+	.has_reset	= true,
-+};
-+
- static const struct sun4i_codec_quirks sun8i_h3_codec_quirks = {
- 	.regmap_config	= &sun8i_h3_codec_regmap_config,
+ /*
+@@ -1177,10 +1180,10 @@ static int sun6i_dma_probe(struct platform_device *pdev)
  	/*
-@@ -1458,6 +1513,10 @@ static const struct of_device_id sun4i_codec_of_match[] = {
- 		.compatible = "allwinner,sun8i-h3-codec",
- 		.data = &sun8i_h3_codec_quirks,
- 	},
-+	{
-+		.compatible = "allwinner,sun8i-v3s-codec",
-+		.data = &sun8i_v3s_codec_quirks,
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, sun4i_codec_of_match);
+ 	 * sun8i variant requires us to toggle a dma gating register,
+ 	 * as seen in Allwinner's SDK. This register is not documented
+-	 * in the A23 user manual.
++	 * in the A23 user manual, but documented at least in V3s user
++	 * manual.
+ 	 */
+-	if (of_device_is_compatible(pdev->dev.of_node,
+-				    "allwinner,sun8i-a23-dma"))
++	if (sdc->cfg->gate_needed)
+ 		writel(SUN8I_DMA_GATE_ENABLE, sdc->base + SUN8I_DMA_GATE);
+ 
+ 	return 0;
 -- 
 2.11.1
