@@ -1,16 +1,16 @@
 From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: [PATCH 11/35] perf cpumap: Convert cpu_map.refcnt from
+Subject: [PATCH 15/35] perf map: Convert map_groups.refcnt from
 	atomic_t to refcount_t
-Date: Mon,  6 Mar 2017 16:38:01 -0300
-Message-ID: <20170306193825.24011-12-acme@kernel.org>
+Date: Mon,  6 Mar 2017 16:38:05 -0300
+Message-ID: <20170306193825.24011-16-acme@kernel.org>
 References: <20170306193825.24011-1-acme@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
- by alsa0.perex.cz (Postfix) with ESMTP id 191102669CE
- for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2017 20:38:44 +0100 (CET)
+Received: from bombadil.infradead.org (bombadil.infradead.org [65.50.211.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4DD212669BD
+ for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2017 20:38:43 +0100 (CET)
 In-Reply-To: <20170306193825.24011-1-acme@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,8 +27,8 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Elena Reshetova <elena.reshetova@intel.com>
 
-The refcount_t type and corresponding API should be used instead of atomic_t
-when the variable is used as a reference counter.
+The refcount_t type and corresponding API should be used instead of
+atomic_t when the variable is used as a reference counter.
 
 This allows to avoid accidental refcounter overflows that might lead to
 use-after-free situations.
@@ -49,123 +49,104 @@ Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Matija Glavinic Pecotic <matija.glavinic-pecotic.ext@nokia.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: alsa-devel@alsa-project.org
-Link: http://lkml.kernel.org/r/1487691303-31858-3-git-send-email-elena.reshetova@intel.com
-[ fixed mixed conversion to refcount in tests/cpumap.c ]
+Link: http://lkml.kernel.org/r/1487691303-31858-7-git-send-email-elena.reshetova@intel.com
+[ Did the missing conversion of tests/thread-mg-share.c too ]
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/tests/cpumap.c |  2 +-
- tools/perf/util/cpumap.c  | 16 ++++++++--------
- tools/perf/util/cpumap.h  |  4 ++--
- 3 files changed, 11 insertions(+), 11 deletions(-)
+ tools/perf/tests/thread-mg-share.c | 12 ++++++------
+ tools/perf/util/map.c              |  4 ++--
+ tools/perf/util/map.h              |  4 ++--
+ 3 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/tools/perf/tests/cpumap.c b/tools/perf/tests/cpumap.c
-index f168a85992d0..4478773cdb97 100644
---- a/tools/perf/tests/cpumap.c
-+++ b/tools/perf/tests/cpumap.c
-@@ -66,7 +66,7 @@ static int process_event_cpus(struct perf_tool *tool __maybe_unused,
- 	TEST_ASSERT_VAL("wrong nr",  map->nr == 2);
- 	TEST_ASSERT_VAL("wrong cpu", map->map[0] == 1);
- 	TEST_ASSERT_VAL("wrong cpu", map->map[1] == 256);
--	TEST_ASSERT_VAL("wrong refcnt", atomic_read(&map->refcnt) == 1);
-+	TEST_ASSERT_VAL("wrong refcnt", refcount_read(&map->refcnt) == 1);
- 	cpu_map__put(map);
- 	return 0;
+diff --git a/tools/perf/tests/thread-mg-share.c b/tools/perf/tests/thread-mg-share.c
+index 188b63140fc8..76686dd6f5ec 100644
+--- a/tools/perf/tests/thread-mg-share.c
++++ b/tools/perf/tests/thread-mg-share.c
+@@ -43,7 +43,7 @@ int test__thread_mg_share(int subtest __maybe_unused)
+ 			leader && t1 && t2 && t3 && other);
+ 
+ 	mg = leader->mg;
+-	TEST_ASSERT_EQUAL("wrong refcnt", atomic_read(&mg->refcnt), 4);
++	TEST_ASSERT_EQUAL("wrong refcnt", refcount_read(&mg->refcnt), 4);
+ 
+ 	/* test the map groups pointer is shared */
+ 	TEST_ASSERT_VAL("map groups don't match", mg == t1->mg);
+@@ -71,25 +71,25 @@ int test__thread_mg_share(int subtest __maybe_unused)
+ 	machine__remove_thread(machine, other_leader);
+ 
+ 	other_mg = other->mg;
+-	TEST_ASSERT_EQUAL("wrong refcnt", atomic_read(&other_mg->refcnt), 2);
++	TEST_ASSERT_EQUAL("wrong refcnt", refcount_read(&other_mg->refcnt), 2);
+ 
+ 	TEST_ASSERT_VAL("map groups don't match", other_mg == other_leader->mg);
+ 
+ 	/* release thread group */
+ 	thread__put(leader);
+-	TEST_ASSERT_EQUAL("wrong refcnt", atomic_read(&mg->refcnt), 3);
++	TEST_ASSERT_EQUAL("wrong refcnt", refcount_read(&mg->refcnt), 3);
+ 
+ 	thread__put(t1);
+-	TEST_ASSERT_EQUAL("wrong refcnt", atomic_read(&mg->refcnt), 2);
++	TEST_ASSERT_EQUAL("wrong refcnt", refcount_read(&mg->refcnt), 2);
+ 
+ 	thread__put(t2);
+-	TEST_ASSERT_EQUAL("wrong refcnt", atomic_read(&mg->refcnt), 1);
++	TEST_ASSERT_EQUAL("wrong refcnt", refcount_read(&mg->refcnt), 1);
+ 
+ 	thread__put(t3);
+ 
+ 	/* release other group  */
+ 	thread__put(other_leader);
+-	TEST_ASSERT_EQUAL("wrong refcnt", atomic_read(&other_mg->refcnt), 1);
++	TEST_ASSERT_EQUAL("wrong refcnt", refcount_read(&other_mg->refcnt), 1);
+ 
+ 	thread__put(other);
+ 
+diff --git a/tools/perf/util/map.c b/tools/perf/util/map.c
+index f0e2428efd0b..1d9ebcf9e38e 100644
+--- a/tools/perf/util/map.c
++++ b/tools/perf/util/map.c
+@@ -485,7 +485,7 @@ void map_groups__init(struct map_groups *mg, struct machine *machine)
+ 		maps__init(&mg->maps[i]);
+ 	}
+ 	mg->machine = machine;
+-	atomic_set(&mg->refcnt, 1);
++	refcount_set(&mg->refcnt, 1);
  }
-diff --git a/tools/perf/util/cpumap.c b/tools/perf/util/cpumap.c
-index 8c7504939113..39ad2caccf56 100644
---- a/tools/perf/util/cpumap.c
-+++ b/tools/perf/util/cpumap.c
-@@ -29,7 +29,7 @@ static struct cpu_map *cpu_map__default_new(void)
- 			cpus->map[i] = i;
  
- 		cpus->nr = nr_cpus;
--		atomic_set(&cpus->refcnt, 1);
-+		refcount_set(&cpus->refcnt, 1);
- 	}
+ static void __maps__purge(struct maps *maps)
+@@ -547,7 +547,7 @@ void map_groups__delete(struct map_groups *mg)
  
- 	return cpus;
-@@ -43,7 +43,7 @@ static struct cpu_map *cpu_map__trim_new(int nr_cpus, int *tmp_cpus)
- 	if (cpus != NULL) {
- 		cpus->nr = nr_cpus;
- 		memcpy(cpus->map, tmp_cpus, payload_size);
--		atomic_set(&cpus->refcnt, 1);
-+		refcount_set(&cpus->refcnt, 1);
- 	}
- 
- 	return cpus;
-@@ -252,7 +252,7 @@ struct cpu_map *cpu_map__dummy_new(void)
- 	if (cpus != NULL) {
- 		cpus->nr = 1;
- 		cpus->map[0] = -1;
--		atomic_set(&cpus->refcnt, 1);
-+		refcount_set(&cpus->refcnt, 1);
- 	}
- 
- 	return cpus;
-@@ -269,7 +269,7 @@ struct cpu_map *cpu_map__empty_new(int nr)
- 		for (i = 0; i < nr; i++)
- 			cpus->map[i] = -1;
- 
--		atomic_set(&cpus->refcnt, 1);
-+		refcount_set(&cpus->refcnt, 1);
- 	}
- 
- 	return cpus;
-@@ -278,7 +278,7 @@ struct cpu_map *cpu_map__empty_new(int nr)
- static void cpu_map__delete(struct cpu_map *map)
+ void map_groups__put(struct map_groups *mg)
  {
- 	if (map) {
--		WARN_ONCE(atomic_read(&map->refcnt) != 0,
-+		WARN_ONCE(refcount_read(&map->refcnt) != 0,
- 			  "cpu_map refcnt unbalanced\n");
- 		free(map);
- 	}
-@@ -287,13 +287,13 @@ static void cpu_map__delete(struct cpu_map *map)
- struct cpu_map *cpu_map__get(struct cpu_map *map)
- {
- 	if (map)
--		atomic_inc(&map->refcnt);
-+		refcount_inc(&map->refcnt);
- 	return map;
+-	if (mg && atomic_dec_and_test(&mg->refcnt))
++	if (mg && refcount_dec_and_test(&mg->refcnt))
+ 		map_groups__delete(mg);
  }
  
- void cpu_map__put(struct cpu_map *map)
- {
--	if (map && atomic_dec_and_test(&map->refcnt))
-+	if (map && refcount_dec_and_test(&map->refcnt))
- 		cpu_map__delete(map);
- }
- 
-@@ -357,7 +357,7 @@ int cpu_map__build_map(struct cpu_map *cpus, struct cpu_map **res,
- 	/* ensure we process id in increasing order */
- 	qsort(c->map, c->nr, sizeof(int), cmp_ids);
- 
--	atomic_set(&c->refcnt, 1);
-+	refcount_set(&c->refcnt, 1);
- 	*res = c;
- 	return 0;
- }
-diff --git a/tools/perf/util/cpumap.h b/tools/perf/util/cpumap.h
-index 1a0549af8f5c..e84491636c1b 100644
---- a/tools/perf/util/cpumap.h
-+++ b/tools/perf/util/cpumap.h
-@@ -3,13 +3,13 @@
- 
- #include <stdio.h>
- #include <stdbool.h>
--#include <linux/atomic.h>
-+#include <linux/refcount.h>
- 
- #include "perf.h"
- #include "util/debug.h"
- 
- struct cpu_map {
--	atomic_t refcnt;
-+	refcount_t refcnt;
- 	int nr;
- 	int map[];
+diff --git a/tools/perf/util/map.h b/tools/perf/util/map.h
+index 9545ff343ec5..c8a5a644c0a9 100644
+--- a/tools/perf/util/map.h
++++ b/tools/perf/util/map.h
+@@ -67,7 +67,7 @@ struct maps {
+ struct map_groups {
+ 	struct maps	 maps[MAP__NR_TYPES];
+ 	struct machine	 *machine;
+-	atomic_t	 refcnt;
++	refcount_t	 refcnt;
  };
+ 
+ struct map_groups *map_groups__new(struct machine *machine);
+@@ -77,7 +77,7 @@ bool map_groups__empty(struct map_groups *mg);
+ static inline struct map_groups *map_groups__get(struct map_groups *mg)
+ {
+ 	if (mg)
+-		atomic_inc(&mg->refcnt);
++		refcount_inc(&mg->refcnt);
+ 	return mg;
+ }
+ 
 -- 
 2.9.3
