@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [v5 2/2] dt: bindings: sound: Add bindings file
-	for CS35L35
-Date: Mon, 6 Mar 2017 11:22:56 +0100
-Message-ID: <20170306102256.hisrl6o55vj22fe6@sirena.org.uk>
-References: <1488550172-32299-1-git-send-email-brian.austin@cirrus.com>
- <d1e85503-c400-45f6-aa89-a24dd16cb44a@EX3.ad.cirrus.com>
+Subject: Re: [v5 1/2] ASoC: Add support for Cirrus Logic
+	CS35L35 Amplifier
+Date: Mon, 6 Mar 2017 11:28:58 +0100
+Message-ID: <20170306102858.5r4idptgqebatgr7@sirena.org.uk>
+References: <4c9a1ffa-ce09-46f5-a55d-19c81c377f85@EX3.ad.cirrus.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5009467364020186733=="
+Content-Type: multipart/mixed; boundary="===============0803988299791303328=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1044A261740
- for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2017 11:23:08 +0100 (CET)
-In-Reply-To: <d1e85503-c400-45f6-aa89-a24dd16cb44a@EX3.ad.cirrus.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BD5F7261740
+ for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2017 11:29:11 +0100 (CET)
+In-Reply-To: <4c9a1ffa-ce09-46f5-a55d-19c81c377f85@EX3.ad.cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,52 +26,72 @@ Cc: alsa-devel@alsa-project.org, robh+dt@kernel.org, ckeepax@opensource.wolfsonm
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5009467364020186733==
+--===============0803988299791303328==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ehvn7yol7aykndua"
+	protocol="application/pgp-signature"; boundary="udzvmcc5kjivejbe"
 Content-Disposition: inline
 
 
---ehvn7yol7aykndua
+--udzvmcc5kjivejbe
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 03, 2017 at 08:09:32AM -0600, Brian Austin wrote:
-> Add bindings documentation for CS35L35 Amplifier
->=20
-> Changes for v5
-> Make IPeak and BST parameters consistent with
-> previous devices that have similar properties
+On Fri, Mar 03, 2017 at 08:09:31AM -0600, Brian Austin wrote:
 
-Please put inter-version changelogs after the --- as covered in
-SubmittingPatches.
+> +		regmap_update_bits(cs35l35->regmap, CS35L35_PWRCTL1,
+> +					CS35L35_PDN_ALL_MASK, 0);
+> +	break;
+> +	case SND_SOC_DAPM_POST_PMD:
 
-Please use subject lines matching the style for the subsystem.  This
-makes it easier for people to identify relevant patches.
+Coding style: break should be indented along with the code block (as it
+is in the rest of the driver).
 
---ehvn7yol7aykndua
+> +static const struct snd_kcontrol_new cs35l35_aud_controls[] = {
+> +	SOC_SINGLE_SX_TLV("Digital Audio Volume", CS35L35_AMP_DIG_VOL,
+> +		      0, 0x34, 0xE4, dig_vol_tlv),
+> +	SOC_SINGLE_TLV("AMP Audio Gain", CS35L35_AMP_GAIN_AUD_CTL, 0, 19, 0,
+> +			amp_gain_tlv),
+
+Volume controls should always end in Volume so that userspace knows how
+to handle them.
+
+> +			case CS35L35_SP_SCLKS_32FS:
+> +			case CS35L35_SP_SCLKS_64FS:
+> +			break;
+> +			default:
+
+Indentation again.
+
+> +err:
+> +	regulator_bulk_disable(cs35l35->num_supplies,
+> +			       cs35l35->supplies);
+> +	/* should we release reset-gpio? */
+
+Probably best to leave the device in reset, it'll make things a bit more
+robust.
+
+--udzvmcc5kjivejbe
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAli9OH8ACgkQJNaLcl1U
-h9DnSAf+LjfF1h+yuEXl2O76DmUBM01wHKgx9ae/sqqq5btCcYCpz3uT3ifKzt0E
-84lic1mK/eyCH4rfCgJIGyGmc9JL40HxNDluPzCSsvtG1EULFRA/PFLWlN/6nXYs
-mn8bsxREUU4moPyv7CZYYeraoIgDYxox81i1ZxK5LnSzbevF/5WVjPCr5uH/hiSX
-JnP6bJT5fzBJVsQd0oKdjs3iOjVylJGa3kobNIGmhpashsRHYq0A6jISf6IW0Q52
-89gUbQck5YS619ZQXSdeL8zI3t3bIT04h8ODiyZQsCNLFUGgyD0G4djgonNVR4vK
-x9I8xw8P932rLxONNDM5mivVsqTnqQ==
-=BjfZ
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAli9OekACgkQJNaLcl1U
+h9C0Qgf8DVMhScXtGv+QRaMUK+zObZRqrk4U37omrrAt3c+uqTP8unyjuMpEitLM
+xLoLs9zU1kuKw3iTgGVziyBS9f8g3RL3k4wMVZhqEgod/zNdJH1Oz8wI/lR6vWkR
+A2GDmFDbhkeZh/Bmty8wi7ZyBXalPELG42mgl1xeMwFCjJnDomJHzdjvJPdFnJkr
+Z0OAPRXu5lalNhP8BEEDoX7j39gVtnFpa+7KJ6lO40BL/hxSkDyvjtemI7FR53a7
+gX5NtAwsN5HCjwDER4PHNvpJkAvpeBZJ6Qg47K5nOHxXaOfnIY+sHMqYl/oivrUY
+cCluY6lvjkR76koT6E6WdjgJw3bjxw==
+=FEEJ
 -----END PGP SIGNATURE-----
 
---ehvn7yol7aykndua--
+--udzvmcc5kjivejbe--
 
---===============5009467364020186733==
+--===============0803988299791303328==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5009467364020186733==--
+--===============0803988299791303328==--
