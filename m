@@ -1,16 +1,16 @@
 From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: [PATCH 15/35] perf map: Convert map_groups.refcnt from
+Subject: [PATCH 12/35] perf comm: Convert comm_str.refcnt from
 	atomic_t to refcount_t
-Date: Mon,  6 Mar 2017 16:38:05 -0300
-Message-ID: <20170306193825.24011-16-acme@kernel.org>
+Date: Mon,  6 Mar 2017 16:38:02 -0300
+Message-ID: <20170306193825.24011-13-acme@kernel.org>
 References: <20170306193825.24011-1-acme@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bombadil.infradead.org (bombadil.infradead.org [65.50.211.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 4DD212669BD
- for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2017 20:38:43 +0100 (CET)
+Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id 195232669D8
+ for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2017 20:38:44 +0100 (CET)
 In-Reply-To: <20170306193825.24011-1-acme@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -49,104 +49,84 @@ Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Matija Glavinic Pecotic <matija.glavinic-pecotic.ext@nokia.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: alsa-devel@alsa-project.org
-Link: http://lkml.kernel.org/r/1487691303-31858-7-git-send-email-elena.reshetova@intel.com
-[ Did the missing conversion of tests/thread-mg-share.c too ]
+Link: http://lkml.kernel.org/r/1487691303-31858-4-git-send-email-elena.reshetova@intel.com
+[ Reinstated comm_str__get() function, needed when reusing entries in the rbtree ]
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/tests/thread-mg-share.c | 12 ++++++------
- tools/perf/util/map.c              |  4 ++--
- tools/perf/util/map.h              |  4 ++--
- 3 files changed, 10 insertions(+), 10 deletions(-)
+ tools/perf/util/comm.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
-diff --git a/tools/perf/tests/thread-mg-share.c b/tools/perf/tests/thread-mg-share.c
-index 188b63140fc8..76686dd6f5ec 100644
---- a/tools/perf/tests/thread-mg-share.c
-+++ b/tools/perf/tests/thread-mg-share.c
-@@ -43,7 +43,7 @@ int test__thread_mg_share(int subtest __maybe_unused)
- 			leader && t1 && t2 && t3 && other);
+diff --git a/tools/perf/util/comm.c b/tools/perf/util/comm.c
+index 21b7ff382c3f..32837b6f7879 100644
+--- a/tools/perf/util/comm.c
++++ b/tools/perf/util/comm.c
+@@ -2,12 +2,12 @@
+ #include "util.h"
+ #include <stdlib.h>
+ #include <stdio.h>
+-#include <linux/atomic.h>
++#include <linux/refcount.h>
  
- 	mg = leader->mg;
--	TEST_ASSERT_EQUAL("wrong refcnt", atomic_read(&mg->refcnt), 4);
-+	TEST_ASSERT_EQUAL("wrong refcnt", refcount_read(&mg->refcnt), 4);
- 
- 	/* test the map groups pointer is shared */
- 	TEST_ASSERT_VAL("map groups don't match", mg == t1->mg);
-@@ -71,25 +71,25 @@ int test__thread_mg_share(int subtest __maybe_unused)
- 	machine__remove_thread(machine, other_leader);
- 
- 	other_mg = other->mg;
--	TEST_ASSERT_EQUAL("wrong refcnt", atomic_read(&other_mg->refcnt), 2);
-+	TEST_ASSERT_EQUAL("wrong refcnt", refcount_read(&other_mg->refcnt), 2);
- 
- 	TEST_ASSERT_VAL("map groups don't match", other_mg == other_leader->mg);
- 
- 	/* release thread group */
- 	thread__put(leader);
--	TEST_ASSERT_EQUAL("wrong refcnt", atomic_read(&mg->refcnt), 3);
-+	TEST_ASSERT_EQUAL("wrong refcnt", refcount_read(&mg->refcnt), 3);
- 
- 	thread__put(t1);
--	TEST_ASSERT_EQUAL("wrong refcnt", atomic_read(&mg->refcnt), 2);
-+	TEST_ASSERT_EQUAL("wrong refcnt", refcount_read(&mg->refcnt), 2);
- 
- 	thread__put(t2);
--	TEST_ASSERT_EQUAL("wrong refcnt", atomic_read(&mg->refcnt), 1);
-+	TEST_ASSERT_EQUAL("wrong refcnt", refcount_read(&mg->refcnt), 1);
- 
- 	thread__put(t3);
- 
- 	/* release other group  */
- 	thread__put(other_leader);
--	TEST_ASSERT_EQUAL("wrong refcnt", atomic_read(&other_mg->refcnt), 1);
-+	TEST_ASSERT_EQUAL("wrong refcnt", refcount_read(&other_mg->refcnt), 1);
- 
- 	thread__put(other);
- 
-diff --git a/tools/perf/util/map.c b/tools/perf/util/map.c
-index f0e2428efd0b..1d9ebcf9e38e 100644
---- a/tools/perf/util/map.c
-+++ b/tools/perf/util/map.c
-@@ -485,7 +485,7 @@ void map_groups__init(struct map_groups *mg, struct machine *machine)
- 		maps__init(&mg->maps[i]);
- 	}
- 	mg->machine = machine;
--	atomic_set(&mg->refcnt, 1);
-+	refcount_set(&mg->refcnt, 1);
- }
- 
- static void __maps__purge(struct maps *maps)
-@@ -547,7 +547,7 @@ void map_groups__delete(struct map_groups *mg)
- 
- void map_groups__put(struct map_groups *mg)
- {
--	if (mg && atomic_dec_and_test(&mg->refcnt))
-+	if (mg && refcount_dec_and_test(&mg->refcnt))
- 		map_groups__delete(mg);
- }
- 
-diff --git a/tools/perf/util/map.h b/tools/perf/util/map.h
-index 9545ff343ec5..c8a5a644c0a9 100644
---- a/tools/perf/util/map.h
-+++ b/tools/perf/util/map.h
-@@ -67,7 +67,7 @@ struct maps {
- struct map_groups {
- 	struct maps	 maps[MAP__NR_TYPES];
- 	struct machine	 *machine;
--	atomic_t	 refcnt;
-+	refcount_t	 refcnt;
+ struct comm_str {
+ 	char *str;
+ 	struct rb_node rb_node;
+-	atomic_t refcnt;
++	refcount_t refcnt;
  };
  
- struct map_groups *map_groups__new(struct machine *machine);
-@@ -77,7 +77,7 @@ bool map_groups__empty(struct map_groups *mg);
- static inline struct map_groups *map_groups__get(struct map_groups *mg)
+ /* Should perhaps be moved to struct machine */
+@@ -16,13 +16,13 @@ static struct rb_root comm_str_root;
+ static struct comm_str *comm_str__get(struct comm_str *cs)
  {
- 	if (mg)
--		atomic_inc(&mg->refcnt);
-+		refcount_inc(&mg->refcnt);
- 	return mg;
+ 	if (cs)
+-		atomic_inc(&cs->refcnt);
++		refcount_inc(&cs->refcnt);
+ 	return cs;
  }
  
+ static void comm_str__put(struct comm_str *cs)
+ {
+-	if (cs && atomic_dec_and_test(&cs->refcnt)) {
++	if (cs && refcount_dec_and_test(&cs->refcnt)) {
+ 		rb_erase(&cs->rb_node, &comm_str_root);
+ 		zfree(&cs->str);
+ 		free(cs);
+@@ -43,7 +43,7 @@ static struct comm_str *comm_str__alloc(const char *str)
+ 		return NULL;
+ 	}
+ 
+-	atomic_set(&cs->refcnt, 0);
++	refcount_set(&cs->refcnt, 1);
+ 
+ 	return cs;
+ }
+@@ -61,7 +61,7 @@ static struct comm_str *comm_str__findnew(const char *str, struct rb_root *root)
+ 
+ 		cmp = strcmp(str, iter->str);
+ 		if (!cmp)
+-			return iter;
++			return comm_str__get(iter);
+ 
+ 		if (cmp < 0)
+ 			p = &(*p)->rb_left;
+@@ -95,8 +95,6 @@ struct comm *comm__new(const char *str, u64 timestamp, bool exec)
+ 		return NULL;
+ 	}
+ 
+-	comm_str__get(comm->comm_str);
+-
+ 	return comm;
+ }
+ 
+@@ -108,7 +106,6 @@ int comm__override(struct comm *comm, const char *str, u64 timestamp, bool exec)
+ 	if (!new)
+ 		return -ENOMEM;
+ 
+-	comm_str__get(new);
+ 	comm_str__put(old);
+ 	comm->comm_str = new;
+ 	comm->start = timestamp;
 -- 
 2.9.3
