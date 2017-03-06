@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: Enable 192khz in hw_params
-	operation" to the asoc tree
-Date: Mon, 06 Mar 2017 11:46:40 +0100
-Message-ID: <E1ckqA4-0002T6-Kw@finisterre>
-References: <20170224160104.29354-5-romain.perier@collabora.com>
+Subject: Applied "ASoC: es8328: Simplify rates definition" to
+	the asoc tree
+Date: Mon, 06 Mar 2017 11:46:48 +0100
+Message-ID: <E1ckqAC-0002V0-7M@finisterre>
+References: <20170224160104.29354-2-romain.perier@collabora.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E69B6266DAE
- for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2017 11:47:25 +0100 (CET)
-In-Reply-To: <20170224160104.29354-5-romain.perier@collabora.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 39454266E25
+ for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2017 11:47:32 +0100 (CET)
+In-Reply-To: <20170224160104.29354-2-romain.perier@collabora.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: Enable 192khz in hw_params operation
+   ASoC: es8328: Simplify rates definition
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,41 @@ to this mail.
 Thanks,
 Mark
 
->From 2e589fdc35c281fe1b1abe8a70004022ca504cf7 Mon Sep 17 00:00:00 2001
+>From c7ad841eaef66114d404c8fc02a67f5ef507b1bb Mon Sep 17 00:00:00 2001
 From: Romain Perier <romain.perier@collabora.com>
-Date: Wed, 1 Mar 2017 10:11:07 +0100
-Subject: [PATCH] ASoC: rockchip: Enable 192khz in hw_params operation
+Date: Wed, 1 Mar 2017 10:11:04 +0100
+Subject: [PATCH] ASoC: es8328: Simplify rates definition
 
-As the sampling frequency is supported by es8328 in slave mode,
-add support for it in the corresponding operation.
+Currently most of the standard rates are supported by this driver.
+Instead of defining each supported rate one by one, we use the SND macro
+SNDRV_PCM_RATE_8000_48000. Also adds support for 88.2khz as the codec
+supports it and the sys clocks are already supported.
 
 Signed-off-by: Romain Perier <romain.perier@collabora.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rk3288_hdmi_analog.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/es8328.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/rockchip/rk3288_hdmi_analog.c b/sound/soc/rockchip/rk3288_hdmi_analog.c
-index b60abf322ce1..dbc53e48c52c 100644
---- a/sound/soc/rockchip/rk3288_hdmi_analog.c
-+++ b/sound/soc/rockchip/rk3288_hdmi_analog.c
-@@ -93,6 +93,9 @@ static int rk_hw_params(struct snd_pcm_substream *substream,
- 	case 96000:
- 		mclk = 12288000;
- 		break;
-+	case 192000:
-+		mclk = 24576000;
-+		break;
- 	case 11025:
- 	case 22050:
- 	case 44100:
+diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
+index 51dca8662942..1363a68155a9 100644
+--- a/sound/soc/codecs/es8328.c
++++ b/sound/soc/codecs/es8328.c
+@@ -70,13 +70,8 @@ static const char * const supply_names[ES8328_SUPPLY_NUM] = {
+ };
+ 
+ #define ES8328_RATES (SNDRV_PCM_RATE_96000 | \
+-		SNDRV_PCM_RATE_48000 | \
+-		SNDRV_PCM_RATE_44100 | \
+-		SNDRV_PCM_RATE_32000 | \
+-		SNDRV_PCM_RATE_22050 | \
+-		SNDRV_PCM_RATE_16000 | \
+-		SNDRV_PCM_RATE_11025 | \
+-		SNDRV_PCM_RATE_8000)
++		SNDRV_PCM_RATE_88200 | \
++		SNDRV_PCM_RATE_8000_48000)
+ #define ES8328_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
+ 		SNDRV_PCM_FMTBIT_S18_3LE | \
+ 		SNDRV_PCM_FMTBIT_S20_3LE | \
 -- 
 2.11.0
