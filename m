@@ -1,33 +1,30 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: TLV320AIC23: Unquote NULL from control
-	name" to the asoc tree
-Date: Mon, 06 Mar 2017 11:46:33 +0100
-Message-ID: <E1ckq9x-0002RB-IJ@finisterre>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: rockchip: Enable 192khz in hw_params operation" to the
+ asoc tree
+Date: Mon, 06 Mar 2017 11:46:36 +0100
+Message-ID: <E1ckqA0-0002S8-LP@finisterre>
+References: <20170224160104.29354-5-romain.perier@collabora.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C4E1E266DBF
- for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2017 11:46:43 +0100 (CET)
-In-Reply-To: 
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liviu Dudau <liviu@dudau.co.uk>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Return-path: <linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <20170224160104.29354-5-romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rockchip>,
+ <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-rockchip/>
+List-Post: <mailto:linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rockchip>,
+ <mailto:linux-rockchip-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-rockchip" <linux-rockchip-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-rockchip-bounces+glpar-linux-rockchip=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Sjoerd Simons <sjoerd.simons-ZGY8ohtN/8pPYcu2f3hruQ@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: TLV320AIC23: Unquote NULL from control name
+   ASoC: rockchip: Enable 192khz in hw_params operation
 
 has been applied to the asoc tree at
 
@@ -52,46 +49,33 @@ to this mail.
 Thanks,
 Mark
 
->From a03faba972cb0f9b3a46d8054e674d5492e06c38 Mon Sep 17 00:00:00 2001
-From: Liviu Dudau <liviu@dudau.co.uk>
-Date: Wed, 1 Mar 2017 12:26:28 +0000
-Subject: [PATCH] ASoC: TLV320AIC23: Unquote NULL from control name
+>From 89433a284d2cc07ca07d4fa414485aa241fc98e2 Mon Sep 17 00:00:00 2001
+From: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Date: Wed, 1 Mar 2017 10:11:07 +0100
+Subject: [PATCH] ASoC: rockchip: Enable 192khz in hw_params operation
 
-Without this I am getting the following messages at boot on my Trimslice:
-   tlv320aic23-codec 2-001a: Control not supported for path LLINEIN -> [NULL] -> Line Input
-   tlv320aic23-codec 2-001a: ASoC: no dapm match for LLINEIN --> NULL --> Line Input
-   tlv320aic23-codec 2-001a: ASoC: Failed to add route LLINEIN -> NULL -> Line Input
-   tlv320aic23-codec 2-001a: Control not supported for path RLINEIN -> [NULL] -> Line Input
-   tlv320aic23-codec 2-001a: ASoC: no dapm match for RLINEIN --> NULL --> Line Input
-   tlv320aic23-codec 2-001a: ASoC: Failed to add route RLINEIN -> NULL -> Line Input
-   tlv320aic23-codec 2-001a: Control not supported for path MICIN -> [NULL] -> Mic Input
-   tlv320aic23-codec 2-001a: ASoC: no dapm match for MICIN --> NULL --> Mic Input
-   tlv320aic23-codec 2-001a: ASoC: Failed to add route MICIN -> NULL -> Mic Input
-   tegra-snd-trimslice sound: tlv320aic23-hifi <-> 70002800.i2s mapping ok
+As the sampling frequency is supported by es8328 in slave mode,
+add support for it in the corresponding operation.
 
-Signed-off-by: Liviu Dudau <liviu@dudau.co.uk>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/codecs/tlv320aic23.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ sound/soc/rockchip/rk3288_hdmi_analog.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/codecs/tlv320aic23.c b/sound/soc/codecs/tlv320aic23.c
-index 410cae0f2060..628a8eeaab68 100644
---- a/sound/soc/codecs/tlv320aic23.c
-+++ b/sound/soc/codecs/tlv320aic23.c
-@@ -174,10 +174,9 @@ static const struct snd_soc_dapm_route tlv320aic23_intercon[] = {
- 	{"ROUT", NULL, "Output Mixer"},
- 
- 	/* Inputs */
--	{"Line Input", "NULL", "LLINEIN"},
--	{"Line Input", "NULL", "RLINEIN"},
--
--	{"Mic Input", "NULL", "MICIN"},
-+	{"Line Input", NULL, "LLINEIN"},
-+	{"Line Input", NULL, "RLINEIN"},
-+	{"Mic Input", NULL, "MICIN"},
- 
- 	/* input mux */
- 	{"Capture Source", "Line", "Line Input"},
+diff --git a/sound/soc/rockchip/rk3288_hdmi_analog.c b/sound/soc/rockchip/rk3288_hdmi_analog.c
+index b60abf322ce1..dbc53e48c52c 100644
+--- a/sound/soc/rockchip/rk3288_hdmi_analog.c
++++ b/sound/soc/rockchip/rk3288_hdmi_analog.c
+@@ -93,6 +93,9 @@ static int rk_hw_params(struct snd_pcm_substream *substream,
+ 	case 96000:
+ 		mclk = 12288000;
+ 		break;
++	case 192000:
++		mclk = 24576000;
++		break;
+ 	case 11025:
+ 	case 22050:
+ 	case 44100:
 -- 
 2.11.0
