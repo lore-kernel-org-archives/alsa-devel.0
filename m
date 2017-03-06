@@ -1,26 +1,18 @@
-From: Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [PATCH 4/4] ASoC: sun8i-codec: Convert to use
-	SND_SOC_DAPM_AIF_IN
-Date: Mon, 6 Mar 2017 17:56:28 +0800
-Message-ID: <CAGb2v64Q0LysCPq2SpoNSqpyWDzNQ_CDhNipOGjW43dfnDABpw@mail.gmail.com>
-References: <20170210094133.11382-1-mylene.josserand@free-electrons.com>
- <20170210094133.11382-5-mylene.josserand@free-electrons.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [v5 2/2] dt: bindings: sound: Add bindings file
+	for CS35L35
+Date: Mon, 6 Mar 2017 11:22:56 +0100
+Message-ID: <20170306102256.hisrl6o55vj22fe6@sirena.org.uk>
+References: <1488550172-32299-1-git-send-email-brian.austin@cirrus.com>
+ <d1e85503-c400-45f6-aa89-a24dd16cb44a@EX3.ad.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============5009467364020186733=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.csie.ntu.edu.tw (smtp.csie.ntu.edu.tw [140.112.30.61])
- by alsa0.perex.cz (Postfix) with ESMTP id 502F8266D14
- for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2017 10:56:54 +0100 (CET)
-Received: from mail-io0-f182.google.com (mail-io0-f182.google.com
- [209.85.223.182])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested) (Authenticated sender: b93043)
- by smtp.csie.ntu.edu.tw (Postfix) with ESMTPSA id 4392520432
- for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2017 17:56:51 +0800 (CST)
-Received: by mail-io0-f182.google.com with SMTP id l7so109574829ioe.3
- for <alsa-devel@alsa-project.org>; Mon, 06 Mar 2017 01:56:51 -0800 (PST)
-In-Reply-To: <20170210094133.11382-5-mylene.josserand@free-electrons.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1044A261740
+ for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2017 11:23:08 +0100 (CET)
+In-Reply-To: <d1e85503-c400-45f6-aa89-a24dd16cb44a@EX3.ad.cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,74 +22,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?Q?Myl=C3=A8ne_Josserand?= <mylene.josserand@free-electrons.com>, Maxime Ripard <maxime.ripard@free-electrons.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+To: Brian Austin <brian.austin@cirrus.com>
+Cc: alsa-devel@alsa-project.org, robh+dt@kernel.org, ckeepax@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBGZWIgMTAsIDIwMTcgYXQgNTo0MSBQTSwgTXlsw6huZSBKb3NzZXJhbmQKPG15bGVu
-ZS5qb3NzZXJhbmRAZnJlZS1lbGVjdHJvbnMuY29tPiB3cm90ZToKPiBVcGRhdGUgdGhlIGRyaXZl
-ciB0byB1c2UgU05EX1NPQ19EQVBNX0FJRl9JTiBpbnN0ZWFkIG9mCj4gU05EX1NPQ19EQVBNX0RB
-Qy4KPgo+IFNldCB0aGUgcm91dGUgbmFtZXMgc28gaXQgbXVzdCBiZSB1cGRhdGVkIG9uIHRoZSBk
-ZXZpY2UgdHJlZSB0b28uCj4KPiBTaWduZWQtb2ZmLWJ5OiBNeWzDqG5lIEpvc3NlcmFuZCA8bXls
-ZW5lLmpvc3NlcmFuZEBmcmVlLWVsZWN0cm9ucy5jb20+Cj4gLS0tCj4gIGFyY2gvYXJtL2Jvb3Qv
-ZHRzL3N1bjhpLWEzMy5kdHNpIHwgIDQgKystLQoKVGhpcyBwYXRjaCBsb29rcyBPSywgYnV0IGhh
-dmluZyB0aGUgRFRTIGNoYW5nZXMgaW4gdGhlIHNhbWUgcGF0Y2gKcHJvYmFibHkgaXNuJ3QgYSBn
-b29kIGlkZWEuIEkgd291bGQgcmVhbGx5IGxpa2UgdG8gc2VlIHRoaXMgc2VyaWVzCm1lcmdlZCBm
-b3IgNC4xMSwgc28gd2UgY2FuIGV4cG9zZSBhIGdvb2QgbWl4ZXIgaW50ZXJmYWNlIHRvIHVzZXJz
-cGFjZQpkdXJpbmcgdGhlIGZpcnN0IGtlcm5lbCByZWxlYXNlIHN1cHBvcnRpbmcgdGhlIEEzMyBj
-b2RlYy4gVGhhdCBsaWtlbHkKbWVhbnMgc29tZSBicmVha2FnZSBiZXR3ZWVuIHdoZW4gdGhlIGFz
-b2MgYml0cyBhbmQgdGhlIGR0cyBiaXRzIGxhbmQKdGhvdWdoLgoKTWF4aW1lLCBhbnkgaWRlYXM/
-CgoKUmVnYXJkcwpDaGVuWXUKCj4gIHNvdW5kL3NvYy9zdW54aS9zdW44aS1jb2RlYy5jICAgIHwg
-MjAgKysrKysrKysrKystLS0tLS0tLS0KPiAgMiBmaWxlcyBjaGFuZ2VkLCAxMyBpbnNlcnRpb25z
-KCspLCAxMSBkZWxldGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS9hcmNoL2FybS9ib290L2R0cy9z
-dW44aS1hMzMuZHRzaSBiL2FyY2gvYXJtL2Jvb3QvZHRzL3N1bjhpLWEzMy5kdHNpCj4gaW5kZXgg
-NGUzNGVjNjYxM2EwLi5lOWUyZTczMTI0NjAgMTAwNjQ0Cj4gLS0tIGEvYXJjaC9hcm0vYm9vdC9k
-dHMvc3VuOGktYTMzLmR0c2kKPiArKysgYi9hcmNoL2FybS9ib290L2R0cy9zdW44aS1hMzMuZHRz
-aQo+IEBAIC03OCw4ICs3OCw4IEBACj4gICAgICAgICAgICAgICAgIHNpbXBsZS1hdWRpby1jYXJk
-LG1jbGstZnMgPSA8NTEyPjsKPiAgICAgICAgICAgICAgICAgc2ltcGxlLWF1ZGlvLWNhcmQsYXV4
-LWRldnMgPSA8JmNvZGVjX2FuYWxvZz47Cj4gICAgICAgICAgICAgICAgIHNpbXBsZS1hdWRpby1j
-YXJkLHJvdXRpbmcgPQo+IC0gICAgICAgICAgICAgICAgICAgICAgICJMZWZ0IERBQyIsICJEaWdp
-dGFsIExlZnQgREFDIiwKPiAtICAgICAgICAgICAgICAgICAgICAgICAiUmlnaHQgREFDIiwgIkRp
-Z2l0YWwgUmlnaHQgREFDIjsKPiArICAgICAgICAgICAgICAgICAgICAgICAiTGVmdCBEQUMiLCAi
-QUlGMSBTbG90IDAgTGVmdCIsCj4gKyAgICAgICAgICAgICAgICAgICAgICAgIlJpZ2h0IERBQyIs
-ICJBSUYxIFNsb3QgMCBSaWdodCI7Cj4gICAgICAgICAgICAgICAgIHN0YXR1cyA9ICJkaXNhYmxl
-ZCI7Cj4KPiAgICAgICAgICAgICAgICAgc2ltcGxlLWF1ZGlvLWNhcmQsY3B1IHsKPiBkaWZmIC0t
-Z2l0IGEvc291bmQvc29jL3N1bnhpL3N1bjhpLWNvZGVjLmMgYi9zb3VuZC9zb2Mvc3VueGkvc3Vu
-OGktY29kZWMuYwo+IGluZGV4IGE3NWE5ODM5NzRkOS4uOWIxNWE1ZWUyMzVmIDEwMDY0NAo+IC0t
-LSBhL3NvdW5kL3NvYy9zdW54aS9zdW44aS1jb2RlYy5jCj4gKysrIGIvc291bmQvc29jL3N1bnhp
-L3N1bjhpLWNvZGVjLmMKPiBAQCAtMjgxLDExICsyODEsMTMgQEAgc3RhdGljIGNvbnN0IHN0cnVj
-dCBzbmRfc29jX2RhcG1fd2lkZ2V0IHN1bjhpX2NvZGVjX2RhcG1fd2lkZ2V0c1tdID0gewo+ICAg
-ICAgICAgU05EX1NPQ19EQVBNX1NVUFBMWSgiREFDIiwgU1VOOElfREFDX0RJR19DVFJMLCBTVU44
-SV9EQUNfRElHX0NUUkxfRU5EQSwKPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMCwgTlVM
-TCwgMCksCj4KPiAtICAgICAgIC8qIEFuYWxvZyBEQUMgKi8KPiAtICAgICAgIFNORF9TT0NfREFQ
-TV9EQUMoIkRpZ2l0YWwgTGVmdCBEQUMiLCAiUGxheWJhY2siLCBTVU44SV9BSUYxX0RBQ0RBVF9D
-VFJMLAo+IC0gICAgICAgICAgICAgICAgICAgICAgICBTVU44SV9BSUYxX0RBQ0RBVF9DVFJMX0FJ
-RjFfREEwTF9FTkEsIDApLAo+IC0gICAgICAgU05EX1NPQ19EQVBNX0RBQygiRGlnaXRhbCBSaWdo
-dCBEQUMiLCAiUGxheWJhY2siLCBTVU44SV9BSUYxX0RBQ0RBVF9DVFJMLAo+IC0gICAgICAgICAg
-ICAgICAgICAgICAgICBTVU44SV9BSUYxX0RBQ0RBVF9DVFJMX0FJRjFfREEwUl9FTkEsIDApLAo+
-ICsgICAgICAgLyogQW5hbG9nIERBQyBBSUYgKi8KPiArICAgICAgIFNORF9TT0NfREFQTV9BSUZf
-SU4oIkFJRjEgU2xvdCAwIExlZnQiLCAiUGxheWJhY2siLCAwLAo+ICsgICAgICAgICAgICAgICAg
-ICAgICAgICAgICBTVU44SV9BSUYxX0RBQ0RBVF9DVFJMLAo+ICsgICAgICAgICAgICAgICAgICAg
-ICAgICAgICBTVU44SV9BSUYxX0RBQ0RBVF9DVFJMX0FJRjFfREEwTF9FTkEsIDApLAo+ICsgICAg
-ICAgU05EX1NPQ19EQVBNX0FJRl9JTigiQUlGMSBTbG90IDAgUmlnaHQiLCAiUGxheWJhY2siLCAw
-LAo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICBTVU44SV9BSUYxX0RBQ0RBVF9DVFJMLAo+
-ICsgICAgICAgICAgICAgICAgICAgICAgICAgICBTVU44SV9BSUYxX0RBQ0RBVF9DVFJMX0FJRjFf
-REEwUl9FTkEsIDApLAo+Cj4gICAgICAgICAvKiBEQUMgTWl4ZXJzICovCj4gICAgICAgICBTT0Nf
-TUlYRVJfQVJSQVkoIkxlZnQgRGlnaXRhbCBEQUMgTWl4ZXIiLCBTTkRfU09DX05PUE0sIDAsIDAs
-Cj4gQEAgLTMyOSwxNCArMzMxLDE0IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBt
-X3JvdXRlIHN1bjhpX2NvZGVjX2RhcG1fcm91dGVzW10gPSB7Cj4gICAgICAgICB7ICJEQUMiLCBO
-VUxMLCAiTU9EQ0xLIERBQyIgfSwKPgo+ICAgICAgICAgLyogREFDIFJvdXRlcyAqLwo+IC0gICAg
-ICAgeyAiRGlnaXRhbCBMZWZ0IERBQyIsIE5VTEwsICJEQUMiIH0sCj4gLSAgICAgICB7ICJEaWdp
-dGFsIFJpZ2h0IERBQyIsIE5VTEwsICJEQUMiIH0sCj4gKyAgICAgICB7ICJBSUYxIFNsb3QgMCBS
-aWdodCIsIE5VTEwsICJEQUMiIH0sCj4gKyAgICAgICB7ICJBSUYxIFNsb3QgMCBMZWZ0IiwgTlVM
-TCwgIkRBQyIgfSwKPgo+ICAgICAgICAgLyogREFDIE1peGVyIFJvdXRlcyAqLwo+ICAgICAgICAg
-eyAiTGVmdCBEaWdpdGFsIERBQyBNaXhlciIsICJBSUYxIFNsb3QgMCBEaWdpdGFsIERBQyBQbGF5
-YmFjayBTd2l0Y2giLAo+IC0gICAgICAgICAiRGlnaXRhbCBMZWZ0IERBQyJ9LAo+ICsgICAgICAg
-ICAiQUlGMSBTbG90IDAgTGVmdCJ9LAo+ICAgICAgICAgeyAiUmlnaHQgRGlnaXRhbCBEQUMgTWl4
-ZXIiLCAiQUlGMSBTbG90IDAgRGlnaXRhbCBEQUMgUGxheWJhY2sgU3dpdGNoICIsCj4gLSAgICAg
-ICAgICJEaWdpdGFsIFJpZ2h0IERBQyJ9LAo+ICsgICAgICAgICAiQUlGMSBTbG90IDAgUmlnaHQi
-fSwKPiAgfTsKPgo+ICBzdGF0aWMgc3RydWN0IHNuZF9zb2NfZGFpX29wcyBzdW44aV9jb2RlY19k
-YWlfb3BzID0gewo+IC0tCj4gMi4xMS4wCj4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+
+--===============5009467364020186733==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ehvn7yol7aykndua"
+Content-Disposition: inline
+
+
+--ehvn7yol7aykndua
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Mar 03, 2017 at 08:09:32AM -0600, Brian Austin wrote:
+> Add bindings documentation for CS35L35 Amplifier
+>=20
+> Changes for v5
+> Make IPeak and BST parameters consistent with
+> previous devices that have similar properties
+
+Please put inter-version changelogs after the --- as covered in
+SubmittingPatches.
+
+Please use subject lines matching the style for the subsystem.  This
+makes it easier for people to identify relevant patches.
+
+--ehvn7yol7aykndua
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAli9OH8ACgkQJNaLcl1U
+h9DnSAf+LjfF1h+yuEXl2O76DmUBM01wHKgx9ae/sqqq5btCcYCpz3uT3ifKzt0E
+84lic1mK/eyCH4rfCgJIGyGmc9JL40HxNDluPzCSsvtG1EULFRA/PFLWlN/6nXYs
+mn8bsxREUU4moPyv7CZYYeraoIgDYxox81i1ZxK5LnSzbevF/5WVjPCr5uH/hiSX
+JnP6bJT5fzBJVsQd0oKdjs3iOjVylJGa3kobNIGmhpashsRHYq0A6jISf6IW0Q52
+89gUbQck5YS619ZQXSdeL8zI3t3bIT04h8ODiyZQsCNLFUGgyD0G4djgonNVR4vK
+x9I8xw8P932rLxONNDM5mivVsqTnqQ==
+=BjfZ
+-----END PGP SIGNATURE-----
+
+--ehvn7yol7aykndua--
+
+--===============5009467364020186733==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5009467364020186733==--
