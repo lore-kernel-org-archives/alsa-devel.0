@@ -1,15 +1,15 @@
 From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Subject: Re: [PATCH v2 01/12] ASoC: sun8i-codec-analog: split
- out mic2
-Date: Mon, 6 Mar 2017 11:43:19 +0800
-Message-ID: <CAGb2v6785Oj+RxK-TqeyGHw4OntKEzt_nnTxLbVVmym4JR+oTg@mail.gmail.com>
-References: <20170305133709.6288-1-icenowy@aosc.xyz> <20170305133709.6288-2-icenowy@aosc.xyz>
+Subject: Re: [PATCH v2 02/12] ASoC: sun8i-codec-analog: split
+ out line in
+Date: Mon, 6 Mar 2017 11:45:39 +0800
+Message-ID: <CAGb2v66MKJ003hn8U0Y=O77gzAPLN-1vOfF3XOP9TdFJpageOQ@mail.gmail.com>
+References: <20170305133709.6288-1-icenowy@aosc.xyz> <20170305133709.6288-3-icenowy@aosc.xyz>
 Reply-To: wens-jdAy2FN1RRM@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-sunxi+bncBCMILY6JWQBBB4FV6PCQKGQEB7VSRNI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCMILY6JWQBBB65W6PCQKGQEBZYH7UA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20170305133709.6288-2-icenowy-ymACFijhrKM@public.gmane.org>
+In-Reply-To: <20170305133709.6288-3-icenowy-ymACFijhrKM@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <https://groups.google.com/group/linux-sunxi
@@ -21,7 +21,7 @@ Cc: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Rob Herring
 List-Id: alsa-devel@alsa-project.org
 
 On Sun, Mar 5, 2017 at 9:36 PM, Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org> wrote:
-> Allwinner V3s features an analog codec without MIC2.
+> Allwinner V3s features an analog codec without LINEIN.
 >
 > Split out this part, in order to prepare for the V3s analog codec.
 >
