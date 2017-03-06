@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ALSA: ASoC: TLV320AIC23: Unquote NULL from
-	control name
-Date: Mon, 6 Mar 2017 11:41:18 +0100
-Message-ID: <20170306104118.6v763cejdc3ow6ef@sirena.org.uk>
-References: <20170301122628.10392-1-liviu@dudau.co.uk>
+Subject: Applied "ASoC: es7134: add dt-bindings for the es7134
+	dac" to the asoc tree
+Date: Mon, 06 Mar 2017 11:46:12 +0100
+Message-ID: <E1ckq9c-0002Mq-QV@finisterre>
+References: <20170227154724.13724-3-jbrunet@baylibre.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7622204102617195780=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 552FA261740
- for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2017 11:42:07 +0100 (CET)
-In-Reply-To: <20170301122628.10392-1-liviu@dudau.co.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3F935261740
+ for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2017 11:46:24 +0100 (CET)
+In-Reply-To: <20170227154724.13724-3-jbrunet@baylibre.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,50 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liviu Dudau <liviu@dudau.co.uk>
-Cc: LKML <linux-kernel@vger.kernel.org>, ALSA devel <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7622204102617195780==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="neci4vy5fgejob6e"
-Content-Disposition: inline
+   ASoC: es7134: add dt-bindings for the es7134 dac
 
+has been applied to the asoc tree at
 
---neci4vy5fgejob6e
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Mar 01, 2017 at 12:26:28PM +0000, Liviu Dudau wrote:
-> Without this I am getting the following messages at boot on my Trimslice:
->    tlv320aic23-codec 2-001a: Control not supported for path LLINEIN -> [NULL] -> Line Input
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Please use subject lines matching the style for the subsystem.  This
-makes it easier for people to identify relevant patches.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---neci4vy5fgejob6e
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAli9PM0ACgkQJNaLcl1U
-h9Axqwf/atuVnE4PW8mL13F7nhNCo1N7jEZ51JEEKpds/sOdmzWombFTZyyMzK56
-48SPlBkNvDhrjFHj2+hSkmGCfgO9OogS/9y9aFUCKw7ace5WPV2k5Y9Gm6RM+cov
-8jujdvWsMfy8B7gkkyByZzSP6HN2sEhz2MRLf1rHeTdROtV1sxE9pJXR30E4qq0C
-/NUwRu+n5aiULF8MCgdWKqOhs8XuE6A5HYXf3WCHWzu3sRC70LNcfW8RCGx2/pQA
-y5YZPa5XzYJdCV0LUxTrGlfCm+u3xR1TcYoK2OHYpK7i/BXVE1jqXIrobIvLcwkt
-3QNbZLaT98vV7oWKyathqj0+44gqBg==
-=QdEp
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---neci4vy5fgejob6e--
+>From 59c15fcd7b8f3e85baba167a3b7c0cbc692ebd90 Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Mon, 27 Feb 2017 16:47:24 +0100
+Subject: [PATCH] ASoC: es7134: add dt-bindings for the es7134 dac
 
---===============7622204102617195780==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ Documentation/devicetree/bindings/sound/everest,es7134.txt | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/everest,es7134.txt
 
-
---===============7622204102617195780==--
+diff --git a/Documentation/devicetree/bindings/sound/everest,es7134.txt b/Documentation/devicetree/bindings/sound/everest,es7134.txt
+new file mode 100644
+index 000000000000..5495a3cb8b7b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/everest,es7134.txt
+@@ -0,0 +1,10 @@
++ES7134 i2s DA converter
++
++Required properties:
++- compatible : "everest,es7134" or "everest,es7144"
++
++Example:
++
++i2s_codec: external-codec {
++	compatible = "everest,es7134";
++};
+-- 
+2.11.0
