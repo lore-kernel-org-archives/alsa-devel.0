@@ -1,16 +1,16 @@
 From: Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: [PATCH 14/35] perf map: Convert map.refcnt from
+Subject: [PATCH 17/35] perf thread: convert thread.refcnt from
 	atomic_t to refcount_t
-Date: Mon,  6 Mar 2017 16:38:04 -0300
-Message-ID: <20170306193825.24011-15-acme@kernel.org>
+Date: Mon,  6 Mar 2017 16:38:07 -0300
+Message-ID: <20170306193825.24011-18-acme@kernel.org>
 References: <20170306193825.24011-1-acme@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from merlin.infradead.org (merlin.infradead.org [205.233.59.134])
- by alsa0.perex.cz (Postfix) with ESMTP id 196672669E3
- for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2017 20:38:44 +0100 (CET)
+Received: from bombadil.infradead.org (bombadil.infradead.org [65.50.211.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4FA652669CC
+ for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2017 20:38:43 +0100 (CET)
 In-Reply-To: <20170306193825.24011-1-acme@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,8 +27,8 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Elena Reshetova <elena.reshetova@intel.com>
 
-The refcount_t type and corresponding API should be used instead of
-atomic_t when the variable is used as a reference counter.
+The refcount_t type and corresponding API should be used instead of atomic_t
+when the variable is used as a reference counter.
 
 This allows to avoid accidental refcounter overflows that might lead to
 use-after-free situations.
@@ -49,74 +49,80 @@ Cc: Mark Rutland <mark.rutland@arm.com>
 Cc: Matija Glavinic Pecotic <matija.glavinic-pecotic.ext@nokia.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: alsa-devel@alsa-project.org
-Link: http://lkml.kernel.org/r/1487691303-31858-6-git-send-email-elena.reshetova@intel.com
+Link: http://lkml.kernel.org/r/1487691303-31858-9-git-send-email-elena.reshetova@intel.com
+[ Did missing conversion in __machine__remove_thread() ]
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+
 Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 ---
- tools/perf/util/map.c | 6 +++---
- tools/perf/util/map.h | 6 +++---
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ tools/perf/util/machine.c | 2 +-
+ tools/perf/util/thread.c  | 6 +++---
+ tools/perf/util/thread.h  | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/tools/perf/util/map.c b/tools/perf/util/map.c
-index 0a943e7b1ea7..f0e2428efd0b 100644
---- a/tools/perf/util/map.c
-+++ b/tools/perf/util/map.c
-@@ -141,7 +141,7 @@ void map__init(struct map *map, enum map_type type,
- 	RB_CLEAR_NODE(&map->rb_node);
- 	map->groups   = NULL;
- 	map->erange_warned = false;
--	atomic_set(&map->refcnt, 1);
-+	refcount_set(&map->refcnt, 1);
- }
+diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
+index 71c9720d4973..b9974fe41bc1 100644
+--- a/tools/perf/util/machine.c
++++ b/tools/perf/util/machine.c
+@@ -1439,7 +1439,7 @@ static void __machine__remove_thread(struct machine *machine, struct thread *th,
+ 	if (machine->last_match == th)
+ 		machine->last_match = NULL;
  
- struct map *map__new(struct machine *machine, u64 start, u64 len,
-@@ -255,7 +255,7 @@ void map__delete(struct map *map)
+-	BUG_ON(atomic_read(&th->refcnt) == 0);
++	BUG_ON(refcount_read(&th->refcnt) == 0);
+ 	if (lock)
+ 		pthread_rwlock_wrlock(&machine->threads_lock);
+ 	rb_erase_init(&th->rb_node, &machine->threads);
+diff --git a/tools/perf/util/thread.c b/tools/perf/util/thread.c
+index f5af87f66663..74e79d26b421 100644
+--- a/tools/perf/util/thread.c
++++ b/tools/perf/util/thread.c
+@@ -53,7 +53,7 @@ struct thread *thread__new(pid_t pid, pid_t tid)
+ 			goto err_thread;
  
- void map__put(struct map *map)
+ 		list_add(&comm->list, &thread->comm_list);
+-		atomic_set(&thread->refcnt, 1);
++		refcount_set(&thread->refcnt, 1);
+ 		RB_CLEAR_NODE(&thread->rb_node);
+ 	}
+ 
+@@ -88,13 +88,13 @@ void thread__delete(struct thread *thread)
+ struct thread *thread__get(struct thread *thread)
  {
--	if (map && atomic_dec_and_test(&map->refcnt))
-+	if (map && refcount_dec_and_test(&map->refcnt))
- 		map__delete(map);
+ 	if (thread)
+-		atomic_inc(&thread->refcnt);
++		refcount_inc(&thread->refcnt);
+ 	return thread;
  }
  
-@@ -354,7 +354,7 @@ struct map *map__clone(struct map *from)
- 	struct map *map = memdup(from, sizeof(*map));
- 
- 	if (map != NULL) {
--		atomic_set(&map->refcnt, 1);
-+		refcount_set(&map->refcnt, 1);
- 		RB_CLEAR_NODE(&map->rb_node);
- 		dso__get(map->dso);
- 		map->groups = NULL;
-diff --git a/tools/perf/util/map.h b/tools/perf/util/map.h
-index abdacf800c98..9545ff343ec5 100644
---- a/tools/perf/util/map.h
-+++ b/tools/perf/util/map.h
+ void thread__put(struct thread *thread)
+ {
+-	if (thread && atomic_dec_and_test(&thread->refcnt)) {
++	if (thread && refcount_dec_and_test(&thread->refcnt)) {
+ 		/*
+ 		 * Remove it from the dead_threads list, as last reference
+ 		 * is gone.
+diff --git a/tools/perf/util/thread.h b/tools/perf/util/thread.h
+index 99263cb6e6b6..e57188546465 100644
+--- a/tools/perf/util/thread.h
++++ b/tools/perf/util/thread.h
 @@ -1,7 +1,7 @@
- #ifndef __PERF_MAP_H
- #define __PERF_MAP_H
+ #ifndef __PERF_THREAD_H
+ #define __PERF_THREAD_H
  
 -#include <linux/atomic.h>
 +#include <linux/refcount.h>
- #include <linux/compiler.h>
- #include <linux/list.h>
  #include <linux/rbtree.h>
-@@ -51,7 +51,7 @@ struct map {
- 
- 	struct dso		*dso;
- 	struct map_groups	*groups;
+ #include <linux/list.h>
+ #include <unistd.h>
+@@ -23,7 +23,7 @@ struct thread {
+ 	pid_t			tid;
+ 	pid_t			ppid;
+ 	int			cpu;
 -	atomic_t		refcnt;
 +	refcount_t		refcnt;
- };
- 
- struct kmap {
-@@ -150,7 +150,7 @@ struct map *map__clone(struct map *map);
- static inline struct map *map__get(struct map *map)
- {
- 	if (map)
--		atomic_inc(&map->refcnt);
-+		refcount_inc(&map->refcnt);
- 	return map;
- }
- 
+ 	char			shortname[3];
+ 	bool			comm_set;
+ 	int			comm_len;
 -- 
 2.9.3
