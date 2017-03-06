@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 02/10] Updated max98927_reg table with
- physical defaults. Replaced max98927.h for better legibility
-Date: Mon, 6 Mar 2017 11:30:14 +0100
-Message-ID: <20170306103014.c3alwel45g7gn7su@sirena.org.uk>
+Subject: Re: [PATCH 01/10] ALSA SoC MAX98927 driver - Initial
+	release
+Date: Mon, 6 Mar 2017 11:35:50 +0100
+Message-ID: <20170306103550.wwxkbhvizbrgdthd@sirena.org.uk>
 References: <1488552768-14901-1-git-send-email-ryans.lee@maximintegrated.com>
- <1488552768-14901-3-git-send-email-ryans.lee@maximintegrated.com>
+ <1488552768-14901-2-git-send-email-ryans.lee@maximintegrated.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0471241256540404197=="
+Content-Type: multipart/mixed; boundary="===============3877185005444369442=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C5DF4261740
- for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2017 11:31:23 +0100 (CET)
-In-Reply-To: <1488552768-14901-3-git-send-email-ryans.lee@maximintegrated.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D5015261740
+ for <alsa-devel@alsa-project.org>; Mon,  6 Mar 2017 11:36:53 +0100 (CET)
+In-Reply-To: <1488552768-14901-2-git-send-email-ryans.lee@maximintegrated.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,50 +27,53 @@ Cc: mark.rutland@arm.com, oder_chiou@realtek.com, Damien.Horsley@imgtec.com, mic
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0471241256540404197==
+--===============3877185005444369442==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="pjsgxa3cd2mhwtj2"
+	protocol="application/pgp-signature"; boundary="ohltba6jdxnpkvzg"
 Content-Disposition: inline
 
 
---pjsgxa3cd2mhwtj2
+--ohltba6jdxnpkvzg
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 03, 2017 at 11:52:40PM +0900, Ryan Lee wrote:
+On Fri, Mar 03, 2017 at 11:52:39PM +0900, Ryan Lee wrote:
+> From: Ryan Lee <RyanS.Lee@maximintegrated.com>
+>=20
 > Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
 > ---
-> Some register values in 'max98927_reg_map' table was not physical default.
-> Random mix of strangely formatted #defines and numbers was fixed.
-> Reclassified register definition in 'max98927.h' for better legibility. Unused definition has been removed, too.
+>=20
+> Initial release of ALSA SoC MAX98927 driver.
 
-Please place the changelog before the ---, as covered in
-SubmttingPatches the changelog after the --- is for inter-version
-changelogs and other administrative things that shouldn't end up in the
-git history.
+The rest of this patch series appears to be bug fixes to this driver.
+Please don't submit things like this, if there are problems with code
+you're trying to add then squash those fixes into the initial patch.
+Otherwise you're making it harder for people to review the series by
+sending code with known problems in it.
 
---pjsgxa3cd2mhwtj2
+--ohltba6jdxnpkvzg
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAli9OjUACgkQJNaLcl1U
-h9DVSwf9Ffp1857WRWAnYyqlG1Gjo0sFTifzUTTI0VG91fTF+WbwBEUIvL2p0HSL
-WPqWcwOBIPtOG4RtWZ6BwYcY+FAhB2VkZvlfSRGl+ELp8H0UaZCXU4x6PDHoJFWA
-oEmTHbkSLqAm7EccHl3LfohnHifSIHuPras2aq16h1RWuEP11UKwREwElyd5JRY4
-VUuZve7o+6J+K3UJQIV3kSfmL5qoaAzBkJxJ9llhoyjLBPb2bGDZNRHT8FTAFHWr
-98YlotHGVmZArWwtLN4Bp7ScBl6dC68weji3Lgww25taz0fG4TTASwawqyQI0P6i
-aYuT0q4ocCehtnghX7St87h5NmaR4A==
-=nsY+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAli9O4UACgkQJNaLcl1U
+h9C/0wf+LAR36MZR8HKNAffJtN2chCa2ckH8xcCG7W8COZDMjG2U1Xe1VeY2/5hn
+msZFExtrBHqQiUpZ9mQh6HEq/Q4c0oxqT0LgbAQCxXjMeT8+dDGSsz9/UY4G3wsp
+9NHXbrFLzn5vbPeVknyhqUh8zRLbzie2zX478XA5PpXib7wbL29tXDBPCCOIiEzi
+8OLGrY5c8pGLPueASmkwzTu3LCvcjTNDPyIxAaIe3CxEK6d72FQNEHyaKDxGL1lV
+RTN800cJ16vl0AQtCu7Yifq4zaxlhKKPra+lK+OS3Wc/rtqgF4MvspSCxZ4NrYeD
+qbm20DylNiZEtjDkEkTpA/IVY3EPlQ==
+=WWUL
 -----END PGP SIGNATURE-----
 
---pjsgxa3cd2mhwtj2--
+--ohltba6jdxnpkvzg--
 
---===============0471241256540404197==
+--===============3877185005444369442==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0471241256540404197==--
+--===============3877185005444369442==--
