@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: Remove space before semicolon" to
-	the asoc tree
-Date: Tue, 07 Mar 2017 14:33:48 +0100
-Message-ID: <E1clFFM-0005fX-KS@finisterre>
+Subject: Applied "ASoC: txx9: Added blank line after
+	declarations" to the asoc tree
+Date: Tue, 07 Mar 2017 14:33:20 +0100
+Message-ID: <E1clFEu-0005YW-Rj@finisterre>
+References: <1488050273-7929-1-git-send-email-codrut.cristian.grosu@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DD580266F95
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 14:33:58 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FCF7267051
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 14:34:19 +0100 (CET)
+In-Reply-To: <1488050273-7929-1-git-send-email-codrut.cristian.grosu@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Codrut Grosu <codrut.cristian.grosu@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com, Codrut GROSU <codrut.cristian.grosu@gmail.com>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: Remove space before semicolon
+   ASoC: txx9: Added blank line after declarations
 
 has been applied to the asoc tree at
 
@@ -52,49 +52,30 @@ to this mail.
 Thanks,
 Mark
 
->From 3e22e9d702ee719c8106fd44578b12ce27999ae6 Mon Sep 17 00:00:00 2001
+>From c2dcce361ab7161e494e93f19a2945574c5a2cd7 Mon Sep 17 00:00:00 2001
 From: Codrut Grosu <codrut.cristian.grosu@gmail.com>
-Date: Sat, 25 Feb 2017 22:33:00 +0200
-Subject: [PATCH] ASoC: pxa: Remove space before semicolon
+Date: Sat, 25 Feb 2017 21:17:53 +0200
+Subject: [PATCH] ASoC: txx9: Added blank line after declarations
 
 This was reported by checkpatch.pl
 
-Signed-off-by: Codrut Grosu <codrut.cristian.grosu@gmail.com>
+Signed-off-by: Codrut GROSU <codrut.cristian.grosu@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/spitz.c | 4 ++--
- sound/soc/pxa/z2.c    | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/txx9/txx9aclc.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
-index 07d77cddac60..d38a2b519c52 100644
---- a/sound/soc/pxa/spitz.c
-+++ b/sound/soc/pxa/spitz.c
-@@ -230,8 +230,8 @@ static const struct snd_soc_dapm_route spitz_audio_map[] = {
- 	{"Headset Jack", NULL, "ROUT1"},
- 
- 	/* ext speaker connected to LOUT2, ROUT2  */
--	{"Ext Spk", NULL , "ROUT2"},
--	{"Ext Spk", NULL , "LOUT2"},
-+	{"Ext Spk", NULL, "ROUT2"},
-+	{"Ext Spk", NULL, "LOUT2"},
- 
- 	/* mic is connected to input 1 - with bias */
- 	{"LINPUT1", NULL, "Mic Bias"},
-diff --git a/sound/soc/pxa/z2.c b/sound/soc/pxa/z2.c
-index 990b1aa6d7f6..6d88d9acc666 100644
---- a/sound/soc/pxa/z2.c
-+++ b/sound/soc/pxa/z2.c
-@@ -119,8 +119,8 @@ static const struct snd_soc_dapm_route z2_audio_map[] = {
- 	{"Headphone Jack", NULL, "ROUT1"},
- 
- 	/* ext speaker connected to LOUT2, ROUT2  */
--	{"Ext Spk", NULL , "ROUT2"},
--	{"Ext Spk", NULL , "LOUT2"},
-+	{"Ext Spk", NULL, "ROUT2"},
-+	{"Ext Spk", NULL, "LOUT2"},
- 
- 	/* mic is connected to R input 2 - with bias */
- 	{"RINPUT2", NULL, "Mic Bias"},
+diff --git a/sound/soc/txx9/txx9aclc.c b/sound/soc/txx9/txx9aclc.c
+index a8f705bb60dc..2cb2e0672c44 100644
+--- a/sound/soc/txx9/txx9aclc.c
++++ b/sound/soc/txx9/txx9aclc.c
+@@ -392,6 +392,7 @@ static int txx9aclc_pcm_remove(struct snd_soc_platform *platform)
+ 	for (i = 0; i < 2; i++) {
+ 		struct txx9aclc_dmadata *dmadata = &dev->dmadata[i];
+ 		struct dma_chan *chan = dmadata->dma_chan;
++
+ 		if (chan) {
+ 			dmadata->frag_count = -1;
+ 			dmaengine_terminate_all(chan);
 -- 
 2.11.0
