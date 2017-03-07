@@ -1,16 +1,16 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH 06/10] ASoC: Intel: Skylake: Remove BE prepare
-	ops
-Date: Tue,  7 Mar 2017 23:44:02 +0530
-Message-ID: <1488910446-26415-7-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH 07/10] ASoC: Intel: Skylake: Disable
+	notifications at boot after DSP FW init
+Date: Tue,  7 Mar 2017 23:44:03 +0530
+Message-ID: <1488910446-26415-8-git-send-email-jeeja.kp@intel.com>
 References: <1488910446-26415-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 501C8267050
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 19:02:27 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 34AB2267098
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 19:02:30 +0100 (CET)
 In-Reply-To: <1488910446-26415-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,55 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
+Cc: tiwai@suse.de, G Kranthi <gudishax.kranthikumar@intel.com>, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+From: G Kranthi <gudishax.kranthikumar@intel.com>
 
-Remove BE prepare ops which enables MCLK by default. If MCLK is required
-to be enabled for any specific platform, it needs to be enabled in the
-corresponding machine driver.
+DSP firmware sends notification every 1m, which is disabled in runtime
+suspend. But if a system has no runtime pm, we keep getting
+notification, so disable after FW init as well.
 
+Signed-off-by: G Kranthi <gudishax.kranthikumar@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 18 ------------------
- 1 file changed, 18 deletions(-)
+ sound/soc/intel/skylake/skl-messages.c | 2 +-
+ sound/soc/intel/skylake/skl-pcm.c      | 1 +
+ sound/soc/intel/skylake/skl-sst-dsp.h  | 2 ++
+ 3 files changed, 4 insertions(+), 1 deletion(-)
 
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index ed57696..29523dd 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -58,7 +58,7 @@ static int skl_free_dma_buf(struct device *dev, struct snd_dma_buffer *dmab)
+ #define NOTIFICATION_MASK 0xf
+ 
+ /* disable notfication for underruns/overruns from firmware module */
+-static void skl_dsp_enable_notification(struct skl_sst *ctx, bool enable)
++void skl_dsp_enable_notification(struct skl_sst *ctx, bool enable)
+ {
+ 	struct notification_mask mask;
+ 	struct skl_ipc_large_config_msg	msg = {0};
 diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index e12520e..a5d46f7 100644
+index a5d46f7..270fec7 100644
 --- a/sound/soc/intel/skylake/skl-pcm.c
 +++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -262,23 +262,6 @@ static int skl_pcm_open(struct snd_pcm_substream *substream,
- 	return 0;
- }
+@@ -1214,6 +1214,7 @@ static int skl_platform_soc_probe(struct snd_soc_platform *platform)
+ 		}
+ 		skl_populate_modules(skl);
+ 		skl->skl_sst->update_d0i3c = skl_update_d0i3c;
++		skl_dsp_enable_notification(skl->skl_sst, false);
+ 	}
+ 	pm_runtime_mark_last_busy(platform->dev);
+ 	pm_runtime_put_autosuspend(platform->dev);
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
+index 849410d..e8d1e14 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.h
++++ b/sound/soc/intel/skylake/skl-sst-dsp.h
+@@ -235,4 +235,6 @@ int skl_get_pvt_instance_id_map(struct skl_sst *ctx,
+ void skl_freeup_uuid_list(struct skl_sst *ctx);
  
--static int skl_be_prepare(struct snd_pcm_substream *substream,
--		struct snd_soc_dai *dai)
--{
--	struct skl *skl = get_skl_ctx(dai->dev);
--	struct skl_sst *ctx = skl->skl_sst;
--	struct skl_module_cfg *mconfig;
--
--	if (dai->playback_widget->power || dai->capture_widget->power)
--		return 0;
--
--	mconfig = skl_tplg_be_get_cpr_module(dai, substream->stream);
--	if (mconfig == NULL)
--		return -EINVAL;
--
--	return skl_dsp_set_dma_control(ctx, mconfig);
--}
--
- static int skl_pcm_prepare(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
-@@ -649,7 +632,6 @@ static struct snd_soc_dai_ops skl_dmic_dai_ops = {
- 
- static struct snd_soc_dai_ops skl_be_ssp_dai_ops = {
- 	.hw_params = skl_be_hw_params,
--	.prepare = skl_be_prepare,
- };
- 
- static struct snd_soc_dai_ops skl_link_dai_ops = {
+ int skl_dsp_strip_extended_manifest(struct firmware *fw);
++void skl_dsp_enable_notification(struct skl_sst *ctx, bool enable);
++
+ #endif /*__SKL_SST_DSP_H__*/
 -- 
 2.5.0
