@@ -1,210 +1,87 @@
-From: libin.yang@intel.com
-Subject: [PATCH] ALSA: hda - set intel audio clock to a
-	properly value
-Date: Tue,  7 Mar 2017 14:20:22 +0800
-Message-ID: <1488867622-21765-1-git-send-email-libin.yang@intel.com>
+From: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH v2 00/12] Add support for the audio codec on
+ Allwinner V3s
+Date: Tue, 7 Mar 2017 14:27:26 +0530
+Message-ID: <20170307085726.GJ2843@localhost>
+References: <20170305133709.6288-1-icenowy@aosc.xyz>
+Reply-To: vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id D0C2A2669EA
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 07:28:05 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: libin.yang@intel.com, mengdong.lin@intel.com, infernix@infernix.net
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBDLNNTP63EBBBV7L7HCQKGQERTWPJXA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Disposition: inline
+In-Reply-To: <20170305133709.6288-1-icenowy-ymACFijhrKM@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
+Cc: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Libin Yang <libin.yang@intel.com>
+On Sun, Mar 05, 2017 at 09:36:57PM +0800, Icenowy Zheng wrote:
+> Allwinner V3s features a audio codec with dedicated digital and analog parts,
+> like the ones on A23/H3, but much simpler (lack of MIC2, LINE IN and MBIAS).
+> 
+> Add support for it.
+> 
+> In order to make the codec usable, DMA support is also added in this series;
+> the support of Lichee Pi Zero's dock board is also added here, as it's the
+> only board hackable that come with ports connected to the codec.
+> 
+> Patch 1~3 split out parts that is not available on V3s in the analog codec.
+> 
+> Patch 4/5 adds support for V3s in analog/digital codec.
+> 
+> Patch 6 add the gate bit as a common quirk of sun6i-dma driver, as V3s also
+> needs it.
+> 
+> Patch 7 really adds support for V3s in DMA engine.
+> 
+> Patch 8 restores the inclusion of CCU headers in the DTSI file of V3s, as
+> it's removed when merging.
+> 
+> Patch 9/10/11 adds three parts of V3s: DMA engine, codec support and pinmux
+> of mmc1 (used on Lichee Pi Zero dock).
 
-On some Intel platforms, the audio clock may not be set correctly
-with initial setting. This will cause the audio playback/capture
-rates wrong.
+And are these dependent upon rest, if not can you please send them
+separately!
 
-This patch checks the audio clock setting and will set it to a
-properly value if it is not set correct.
+> 
+> Patch 12 adds support for Lichee Pi Zero dock, with support of mmc1 and
+> codec.
+> 
+> Icenowy Zheng (12):
+>   ASoC: sun8i-codec-analog: split out mic2
+>   ASoC: sun8i-codec-analog: split out line in
+>   ASoC: sun8i-codec-analog: split out mbias
+>   ASoC: sun8i-codec-analog: add support for V3s SoC
+>   ASoC: sun4i-codec: Add support for V3s codec
+>   dmaengine: sun6i: make gate bit in sun8i's DMA engines a common quirk
+>   dmaengine: sun6i: support V3s SoC variant
+>   ARM: dts: sun8i: restore the inclusion of ccu headers in V3s DTSI
+>   ARM: dts: sun8i: add DMA engine in V3s DTSI
+>   ARM: dts: sun8i: add audio codec support into V3s DTSI
+>   ARM: dts: sun8i: add pinmux for V3s mmc1
+>   ARM: dts: sun8i: add device tree for Lichee Pi Zero with Dock
+> 
+>  .../devicetree/bindings/dma/sun6i-dma.txt          |   1 +
+>  .../devicetree/bindings/sound/sun4i-codec.txt      |  11 +-
+>  .../bindings/sound/sun8i-codec-analog.txt          |   1 +
+>  arch/arm/boot/dts/Makefile                         |   3 +-
+>  arch/arm/boot/dts/sun8i-v3s-licheepi-zero-dock.dts |  67 +++++++
+>  arch/arm/boot/dts/sun8i-v3s.dtsi                   | 103 ++++++----
+>  drivers/dma/sun6i-dma.c                            |  22 ++-
+>  sound/soc/sunxi/sun4i-codec.c                      |  59 ++++++
+>  sound/soc/sunxi/sun8i-codec-analog.c               | 211 +++++++++++++++++----
+>  9 files changed, 405 insertions(+), 73 deletions(-)
+>  create mode 100644 arch/arm/boot/dts/sun8i-v3s-licheepi-zero-dock.dts
+> 
+> -- 
+> 2.11.1
+> 
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=188411
-
-Signed-off-by: Libin Yang <libin.yang@intel.com>
----
- include/sound/hda_register.h        | 12 +++--
- sound/hda/ext/hdac_ext_controller.c |  6 +--
- sound/pci/hda/hda_intel.c           | 91 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 103 insertions(+), 6 deletions(-)
-
-diff --git a/include/sound/hda_register.h b/include/sound/hda_register.h
-index 0013063..7ea16cb 100644
---- a/include/sound/hda_register.h
-+++ b/include/sound/hda_register.h
-@@ -227,6 +227,8 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
- #define AZX_REG_PPLCLLPU		0xC
- 
- /* registers for Multiple Links Capability Structure */
-+/* Multiple Links Capability */
-+#define AZX_REG_ML_CAP_BASE		0xc00
- #define AZX_ML_CAP_ID			0x2
- #define AZX_REG_ML_MLCH			0x00
- #define AZX_REG_ML_MLCD			0x04
-@@ -243,9 +245,13 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
- #define AZX_REG_ML_LOUTPAY		0x20
- #define AZX_REG_ML_LINPAY		0x30
- 
--#define AZX_MLCTL_SPA			(1<<16)
--#define AZX_MLCTL_CPA			23
--
-+#define AZX_REG_ML_LCAPx(x)	(AZX_REG_ML_CAP_BASE + (0x40 + 0x40 * x))
-+#define AZX_REG_ML_LCTLx(x)	(AZX_REG_ML_CAP_BASE + (0x44 + 0x40 * x))
-+#define ML_LCTL_SCF_MASK			0xF
-+#define AZX_MLCTL_SPA				(0x1 << 16)
-+#define AZX_MLCTL_CPA				(0x1 << 23)
-+#define AZX_MLCTL_SPA_SHIFT			16
-+#define AZX_MLCTL_CPA_SHIFT			23
- 
- /* registers for DMA Resume Capability Structure */
- #define AZX_DRSM_CAP_ID			0x5
-diff --git a/sound/hda/ext/hdac_ext_controller.c b/sound/hda/ext/hdac_ext_controller.c
-index 2614691..84f3b81 100644
---- a/sound/hda/ext/hdac_ext_controller.c
-+++ b/sound/hda/ext/hdac_ext_controller.c
-@@ -171,7 +171,7 @@ static int check_hdac_link_power_active(struct hdac_ext_link *link, bool enable)
- {
- 	int timeout;
- 	u32 val;
--	int mask = (1 << AZX_MLCTL_CPA);
-+	int mask = (1 << AZX_MLCTL_CPA_SHIFT);
- 
- 	udelay(3);
- 	timeout = 150;
-@@ -179,10 +179,10 @@ static int check_hdac_link_power_active(struct hdac_ext_link *link, bool enable)
- 	do {
- 		val = readl(link->ml_addr + AZX_REG_ML_LCTL);
- 		if (enable) {
--			if (((val & mask) >> AZX_MLCTL_CPA))
-+			if (((val & mask) >> AZX_MLCTL_CPA_SHIFT))
- 				return 0;
- 		} else {
--			if (!((val & mask) >> AZX_MLCTL_CPA))
-+			if (!((val & mask) >> AZX_MLCTL_CPA_SHIFT))
- 				return 0;
- 		}
- 		udelay(3);
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index c8256a8..017f64f 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -539,6 +539,94 @@ static void bxt_reduce_dma_latency(struct azx *chip)
- 	azx_writel(chip, SKL_EM4L, val);
- }
- 
-+/*
-+ * ML_LCAP bits:
-+ *  bit 0: 6 MHz Supported
-+ *  bit 1: 12 MHz Supported
-+ *  bit 2: 24 MHz Supported
-+ *  bit 3: 48 MHz Supported
-+ *  bit 4: 96 MHz Supported
-+ *  bit 5: 192 MHz Supported
-+ */
-+static int intel_get_lctl_scf(struct azx *chip)
-+{
-+	u32 val;
-+
-+	val = azx_readl(chip, ML_LCAPx(0));
-+
-+	if (val & (1 << 2))
-+		return 2;
-+	else if (val & (1 << 3))
-+		return 3;
-+	else if (val & (1 << 1))
-+		return 1;
-+	else if (val & (1 << 4))
-+		return 4;
-+	else if (val & (1 << 5))
-+		return 5;
-+
-+	dev_warn(chip->card->dev, "set audio clock frequency to 6MHz");
-+	return 0;
-+}
-+
-+static void intel_init_lctl(struct azx *chip)
-+{
-+	u32 val;
-+	int timeout;
-+
-+	/* 0. check lctl register value is correct or not */
-+	/* the codecs are sharing the first link setting by default */
-+	val = azx_readl(chip, ML_LCTLx(0));
-+	/* if SCF is already set, let's use it */
-+	if ((val & ML_LCTL_SCF_MASK) != 0)
-+		return;
-+
-+	/*
-+	 * Before operatiing on SPA, CPA must match SPA.
-+	 * Any deviation may result in undefined behavior.
-+	 */
-+	if (((val & AZX_MLCTL_SPA) >> AZX_MLCTL_SPA_SHIFT) ^
-+		((val & AZX_MLCTL_CPA) >> AZX_MLCTL_CPA_SHIFT))
-+		return;
-+
-+	/* 1. turn link down: set SPA to 0 and wait CPA to 0 */
-+	val = azx_readl(chip, ML_LCTLx(0));
-+	val &= ~AZX_MLCTL_SPA;
-+	azx_writel(chip, ML_LCTLx(0), val);
-+	/* wait for CPA */
-+	timeout = 50;
-+	while (timeout) {
-+		if ((azx_readl(chip, ML_LCTLx(0)) & AZX_MLCTL_CPA) == 0)
-+			break;
-+		timeout--;
-+		udelay(10);
-+	}
-+	if (!timeout)
-+		goto SET_SPA;
-+	/* need add 100ns delay for hardware ready */
-+	udelay(100);
-+
-+	/* 2. update SCF to select a properly audio clock*/
-+	val &= ~ML_LCTL_SCF_MASK;
-+	val |= intel_get_lctl_scf(chip);
-+	azx_writel(chip, ML_LCTLx(0), val);
-+
-+SET_SPA:
-+	/* 4. turn link up: set SPA to 1 and wait CPA to 1 */
-+	val = azx_readl(chip, ML_LCTLx(0));
-+	val |= AZX_MLCTL_SPA;
-+	azx_writel(chip, ML_LCTLx(0), val);
-+	timeout = 50;
-+	while (timeout) {
-+		if ((azx_readl(chip, ML_LCTLx(0)) & AZX_MLCTL_CPA) != 0)
-+			break;
-+		timeout--;
-+		udelay(10);
-+	}
-+	/* need add 100ns delay for hardware ready */
-+	udelay(100);
-+}
-+
- static void hda_intel_init_chip(struct azx *chip, bool full_reset)
- {
- 	struct hdac_bus *bus = azx_bus(chip);
-@@ -564,6 +652,9 @@ static void hda_intel_init_chip(struct azx *chip, bool full_reset)
- 	/* reduce dma latency to avoid noise */
- 	if (IS_BXT(pci))
- 		bxt_reduce_dma_latency(chip);
-+
-+	if (IS_SKL_PLUS(pci))
-+		intel_init_lctl(chip);
- }
- 
- /* calculate runtime delay from LPIB */
 -- 
-2.7.4
+~Vinod
