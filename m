@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ALSA: ASoC: TLV320AIC23: Unquote NULL from
-	control name
-Date: Tue, 7 Mar 2017 13:06:31 +0100
-Message-ID: <20170307120631.ixlwdjldliqijw4k@sirena.org.uk>
-References: <20170301122628.10392-1-liviu@dudau.co.uk>
- <20170306104118.6v763cejdc3ow6ef@sirena.org.uk>
- <20170307005408.GB8397@bart.dudau.co.uk>
+Subject: Applied "ASoC: wm_adsp: Acknowledge controls should
+	also check the DSP is running" to the asoc tree
+Date: Tue, 07 Mar 2017 13:27:15 +0100
+Message-ID: <E1clECx-0003u6-A0@finisterre>
+References: <1488819274-9791-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4492149246184015505=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B23A32669EA
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 13:06:50 +0100 (CET)
-In-Reply-To: <20170307005408.GB8397@bart.dudau.co.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id 00A44266AD7
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 13:27:34 +0100 (CET)
+In-Reply-To: <1488819274-9791-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,58 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liviu Dudau <liviu@dudau.co.uk>
-Cc: LKML <linux-kernel@vger.kernel.org>, ALSA devel <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============4492149246184015505==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="ubii4tvbwali66eb"
-Content-Disposition: inline
+   ASoC: wm_adsp: Acknowledge controls should also check the DSP is running
 
+has been applied to the asoc tree at
 
---ubii4tvbwali66eb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Mar 07, 2017 at 12:54:08AM +0000, Liviu Dudau wrote:
-> On Mon, Mar 06, 2017 at 11:41:18AM +0100, Mark Brown wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > Please use subject lines matching the style for the subsystem.  This
-> > makes it easier for people to identify relevant patches.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Other than the additional ALSA: prefix I have matched the format used
-> by previous commits touching the file. I'm not clear where I have made the
-> mistake and what would have been the better subject line.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-It's the extra ALSA prefix, the start of the subject line is the most
-important bit to get right since it's that that people are most likely
-to pattern match on.  You also used caps for the name of the CODEC,
-normally they use lower case, though that is less important.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---ubii4tvbwali66eb
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+>From 7b4af793a7a4f8e04175eb6600ba9c8ba855ad20 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Mon, 6 Mar 2017 16:54:34 +0000
+Subject: [PATCH] ASoC: wm_adsp: Acknowledge controls should also check the DSP
+ is running
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAli+okYACgkQJNaLcl1U
-h9BIcgf/SCeZ3U9FxtvQWLtq2vBX1nyRMxokKJh+GbDxfAczO52FgAhH55tD2R9D
-poBp+e5vwDtbbF42tXGGnlv+Xof1BQ20mAegkc/KTJoNfM7QJTmQQCKzb1SQNuiL
-nt6oAGUmaZif0YaC+oY90OtyPaCyW/MITdlWRchOmT6hplLvR4hu80m2zRPQ5wvg
-m/qEOiDhqyue65JT0I82bTHiX+YI3EjlcalwsM0k0dJ0swnI1L/Z7wzN7Nj88OCr
-zhIMcrlGS9Vzxw7axq+aszjAxnWdWAm3uoOATAPqOI4H20mR35lkrvcivLjPJU+v
-FBFWRXXHrAY4JjaGzYTT2+NPHFaX9Q==
-=JIDr
------END PGP SIGNATURE-----
+We should not be writing acknowledge controls until the firmware is
+running, as in the case of preloaded firmwares the DSP memory may be
+unaccessible to whilst in the preloaded state. This means a write to the
+control during this time could be lost.
 
---ubii4tvbwali66eb--
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/wm_adsp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---===============4492149246184015505==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4492149246184015505==--
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 6313b3da967b..bbdb72f73df1 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -952,7 +952,7 @@ static int wm_coeff_put_acked(struct snd_kcontrol *kctl,
+ 
+ 	mutex_lock(&ctl->dsp->pwr_lock);
+ 
+-	if (ctl->enabled)
++	if (ctl->enabled && ctl->dsp->running)
+ 		ret = wm_coeff_write_acked_control(ctl, val);
+ 	else
+ 		ret = -EPERM;
+-- 
+2.11.0
