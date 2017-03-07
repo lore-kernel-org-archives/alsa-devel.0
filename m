@@ -1,29 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: Add space around '='" to the asoc tree
-Date: Tue, 07 Mar 2017 14:33:03 +0100
-Message-ID: <E1clFEd-0005UD-4p@finisterre>
-References: <1488054323-11363-1-git-send-email-codrut.cristian.grosu@gmail.com>
+Subject: Applied "ASoC: omap: Remove unnecessary 'out of
+	memory' message" to the asoc tree
+Date: Tue, 07 Mar 2017 14:33:28 +0100
+Message-ID: <E1clFF2-0005ae-DD@finisterre>
+References: <1488136326-3602-1-git-send-email-constantinescu33@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1488054323-11363-1-git-send-email-codrut.cristian.grosu@gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Codrut Grosu <codrut.cristian.grosu@gmail.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com, haojian.zhuang@gmail.com, perex@perex.cz, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, robert.jarzmik@free.fr, daniel@zonque.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id BF804266FA1
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 14:33:45 +0100 (CET)
+In-Reply-To: <1488136326-3602-1-git-send-email-constantinescu33@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Adriana Constantinescu <constantinescu33@gmail.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, peter.ujfalusi@ti.com, broonie@kernel.org, linux-omap@vger.kernel.org, jarkko.nikula@bitmer.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: Add space around '='
+   ASoC: omap: Remove unnecessary 'out of memory' message
 
 has been applied to the asoc tree at
 
@@ -48,74 +53,36 @@ to this mail.
 Thanks,
 Mark
 
->From 7be5c5fe9287c7f5cc0f2f3c742d602c82daa2d6 Mon Sep 17 00:00:00 2001
-From: Codrut Grosu <codrut.cristian.grosu@gmail.com>
-Date: Sat, 25 Feb 2017 22:25:23 +0200
-Subject: [PATCH] ASoC: pxa: Add space around '='
+>From 8804e073a8b7b85e98e46a239da4d2d92adfe124 Mon Sep 17 00:00:00 2001
+From: Adriana Constantinescu <constantinescu33@gmail.com>
+Date: Sun, 26 Feb 2017 21:12:06 +0200
+Subject: [PATCH] ASoC: omap: Remove unnecessary 'out of memory' message
 
-This was reported by checkpatch.pl
+Out of memory message detected using checkpatch.pl
 
-Signed-off-by: Codrut Grosu <codrut.cristian.grosu@gmail.com>
-Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Signed-off-by: Adriana Constantinescu <constantinescu33@gmail.com>
+Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/e750_wm9705.c    | 2 +-
- sound/soc/pxa/e800_wm9712.c    | 2 +-
- sound/soc/pxa/em-x270.c        | 2 +-
- sound/soc/pxa/mioa701_wm9713.c | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/omap/rx51.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/pxa/e750_wm9705.c b/sound/soc/pxa/e750_wm9705.c
-index fdcd94adee7c..82bcbbb1841b 100644
---- a/sound/soc/pxa/e750_wm9705.c
-+++ b/sound/soc/pxa/e750_wm9705.c
-@@ -81,7 +81,7 @@ static struct snd_soc_dai_link e750_dai[] = {
- 		.name = "AC97 Aux",
- 		.stream_name = "AC97 Aux",
- 		.cpu_dai_name = "pxa2xx-ac97-aux",
--		.codec_dai_name ="wm9705-aux",
-+		.codec_dai_name = "wm9705-aux",
- 		.platform_name = "pxa-pcm-audio",
- 		.codec_name = "wm9705-codec",
- 	},
-diff --git a/sound/soc/pxa/e800_wm9712.c b/sound/soc/pxa/e800_wm9712.c
-index 2df714f70ec0..1ed8aa2348f1 100644
---- a/sound/soc/pxa/e800_wm9712.c
-+++ b/sound/soc/pxa/e800_wm9712.c
-@@ -81,7 +81,7 @@ static struct snd_soc_dai_link e800_dai[] = {
- 		.name = "AC97 Aux",
- 		.stream_name = "AC97 Aux",
- 		.cpu_dai_name = "pxa2xx-ac97-aux",
--		.codec_dai_name ="wm9712-aux",
-+		.codec_dai_name = "wm9712-aux",
- 		.platform_name = "pxa-pcm-audio",
- 		.codec_name = "wm9712-codec",
- 	},
-diff --git a/sound/soc/pxa/em-x270.c b/sound/soc/pxa/em-x270.c
-index 6f2020f6c8d3..e046770ce70e 100644
---- a/sound/soc/pxa/em-x270.c
-+++ b/sound/soc/pxa/em-x270.c
-@@ -43,7 +43,7 @@ static struct snd_soc_dai_link em_x270_dai[] = {
- 		.name = "AC97 Aux",
- 		.stream_name = "AC97 Aux",
- 		.cpu_dai_name = "pxa2xx-ac97-aux",
--		.codec_dai_name ="wm9712-aux",
-+		.codec_dai_name = "wm9712-aux",
- 		.platform_name = "pxa-pcm-audio",
- 		.codec_name = "wm9712-codec",
- 	},
-diff --git a/sound/soc/pxa/mioa701_wm9713.c b/sound/soc/pxa/mioa701_wm9713.c
-index 8760a6687885..c4c6fbedc723 100644
---- a/sound/soc/pxa/mioa701_wm9713.c
-+++ b/sound/soc/pxa/mioa701_wm9713.c
-@@ -157,7 +157,7 @@ static struct snd_soc_dai_link mioa701_dai[] = {
- 		.name = "AC97 Aux",
- 		.stream_name = "AC97 Aux",
- 		.cpu_dai_name = "pxa2xx-ac97-aux",
--		.codec_dai_name ="wm9713-aux",
-+		.codec_dai_name = "wm9713-aux",
- 		.codec_name = "wm9713-codec",
- 		.platform_name = "pxa-pcm-audio",
- 		.ops = &mioa701_ops,
+diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
+index a76845748a10..086b59b7b6d7 100644
+--- a/sound/soc/omap/rx51.c
++++ b/sound/soc/omap/rx51.c
+@@ -433,10 +433,9 @@ static int rx51_soc_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
+-	if (pdata == NULL) {
+-		dev_err(card->dev, "failed to create private data\n");
++	if (pdata == NULL)
+ 		return -ENOMEM;
+-	}
++
+ 	snd_soc_card_set_drvdata(card, pdata);
+ 
+ 	pdata->tvout_selection_gpio = devm_gpiod_get(card->dev,
 -- 
 2.11.0
