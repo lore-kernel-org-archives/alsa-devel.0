@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: txx9: Added requiered spaces." to the
-	asoc tree
-Date: Tue, 07 Mar 2017 15:21:29 +0100
-Message-ID: <E1clFzV-0006ee-Ls@finisterre>
-References: <1488017541-14080-1-git-send-email-codrut.cristian.grosu@gmail.com>
+Subject: Applied "ASoC: samsung: Remove extra blank lines" to
+	the asoc tree
+Date: Tue, 07 Mar 2017 15:21:33 +0100
+Message-ID: <E1clFzZ-0006fd-6B@finisterre>
+References: <20170225101111.12707-1-calin@rosedu.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 79B89266FCB
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 15:22:20 +0100 (CET)
-In-Reply-To: <1488017541-14080-1-git-send-email-codrut.cristian.grosu@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C197266FE1
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 15:22:34 +0100 (CET)
+In-Reply-To: <20170225101111.12707-1-calin@rosedu.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com, Codrut GROSU <codrut.cristian.grosu@gmail.com>, broonie@kernel.org
+To: Calin Cruceru <calin@rosedu.org>
+Cc: alsa-devel@alsa-project.org, sbkim73@samsung.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, krzk@kernel.org, tiwai@suse.com, broonie@kernel.org, s.nawrocki@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: txx9: Added requiered spaces.
+   ASoC: samsung: Remove extra blank lines
 
 has been applied to the asoc tree at
 
@@ -52,40 +53,67 @@ to this mail.
 Thanks,
 Mark
 
->From 84052652feb89e76fde6fd37d26c9649da715557 Mon Sep 17 00:00:00 2001
-From: Codrut Grosu <codrut.cristian.grosu@gmail.com>
-Date: Sat, 25 Feb 2017 12:12:21 +0200
-Subject: [PATCH] ASoC: txx9: Added requiered spaces.
+>From 114ab993e1845a4152bc01d1075b1fb38e741df9 Mon Sep 17 00:00:00 2001
+From: Calin Cruceru <calin@rosedu.org>
+Date: Sat, 25 Feb 2017 12:11:11 +0200
+Subject: [PATCH] ASoC: samsung: Remove extra blank lines
 
-This was reported by checpatch.pl
+This was reported by checkpatch.pl
 
-Signed-off-by: Codrut GROSU <codrut.cristian.grosu@gmail.com>
+Signed-off-by: Calin Cruceru <calin@rosedu.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/txx9/txx9aclc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/samsung/bells.c      | 1 -
+ sound/soc/samsung/i2s-regs.h   | 2 --
+ sound/soc/samsung/i2s.c        | 1 -
+ sound/soc/samsung/s3c-i2s-v2.c | 1 -
+ 4 files changed, 5 deletions(-)
 
-diff --git a/sound/soc/txx9/txx9aclc.c b/sound/soc/txx9/txx9aclc.c
-index 2cb2e0672c44..7912bf09dc4d 100644
---- a/sound/soc/txx9/txx9aclc.c
-+++ b/sound/soc/txx9/txx9aclc.c
-@@ -206,7 +206,7 @@ static void txx9aclc_dma_tasklet(unsigned long data)
- static int txx9aclc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
- {
- 	struct txx9aclc_dmadata *dmadata = substream->runtime->private_data;
--	struct txx9aclc_plat_drvdata *drvdata =txx9aclc_drvdata;
-+	struct txx9aclc_plat_drvdata *drvdata = txx9aclc_drvdata;
- 	void __iomem *base = drvdata->base;
- 	unsigned long flags;
- 	int ret = 0;
-@@ -340,7 +340,7 @@ static bool filter(struct dma_chan *chan, void *param)
- static int txx9aclc_dma_init(struct txx9aclc_soc_device *dev,
- 			     struct txx9aclc_dmadata *dmadata)
- {
--	struct txx9aclc_plat_drvdata *drvdata =txx9aclc_drvdata;
-+	struct txx9aclc_plat_drvdata *drvdata = txx9aclc_drvdata;
- 	struct txx9dmac_slave *ds = &dmadata->dma_slave;
- 	dma_cap_mask_t mask;
+diff --git a/sound/soc/samsung/bells.c b/sound/soc/samsung/bells.c
+index 3dd246fa0059..34deba461ae1 100644
+--- a/sound/soc/samsung/bells.c
++++ b/sound/soc/samsung/bells.c
+@@ -446,7 +446,6 @@ static struct snd_soc_card bells_cards[] = {
+ 	},
+ };
  
+-
+ static int bells_probe(struct platform_device *pdev)
+ {
+ 	int ret;
+diff --git a/sound/soc/samsung/i2s-regs.h b/sound/soc/samsung/i2s-regs.h
+index 9170c311d66e..fe6914005494 100644
+--- a/sound/soc/samsung/i2s-regs.h
++++ b/sound/soc/samsung/i2s-regs.h
+@@ -160,5 +160,3 @@
+ #define I2SSIZE_SHIFT		(16)
+ 
+ #endif /* __SND_SOC_SAMSUNG_I2S_REGS_H */
+-
+-
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index 52a47ed292a4..af3ba4d4ccc5 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -1242,7 +1242,6 @@ static int samsung_i2s_probe(struct platform_device *pdev)
+ 		i2s_dai_data = (struct samsung_i2s_dai_data *)
+ 				platform_get_device_id(pdev)->driver_data;
+ 
+-
+ 	pri_dai = i2s_alloc_dai(pdev, false);
+ 	if (!pri_dai) {
+ 		dev_err(&pdev->dev, "Unable to alloc I2S_pri\n");
+diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
+index 644f186fd35c..8f42deaa184b 100644
+--- a/sound/soc/samsung/s3c-i2s-v2.c
++++ b/sound/soc/samsung/s3c-i2s-v2.c
+@@ -72,7 +72,6 @@ static inline void dbg_showcon(const char *fn, u32 con)
+ }
+ #endif
+ 
+-
+ /* Turn on or off the transmission path. */
+ static void s3c2412_snd_txctrl(struct s3c_i2sv2_info *i2s, int on)
+ {
 -- 
 2.11.0
