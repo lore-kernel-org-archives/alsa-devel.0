@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: Remove unneeded else after return
-	statement" to the asoc tree
-Date: Tue, 07 Mar 2017 14:33:46 +0100
-Message-ID: <E1clFFK-0005eq-7b@finisterre>
+Subject: Applied "ASoC: tegra: Add blank line after
+	declarations" to the asoc tree
+Date: Tue, 07 Mar 2017 14:33:24 +0100
+Message-ID: <E1clFEy-0005Zf-Hu@finisterre>
+References: <1488049157-6535-1-git-send-email-codrut.cristian.grosu@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 72B32266F0F
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 14:33:55 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 618D6266FBF
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 14:34:07 +0100 (CET)
+In-Reply-To: <1488049157-6535-1-git-send-email-codrut.cristian.grosu@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Codrut Grosu <codrut.cristian.grosu@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: gnurou@gmail.com, alsa-devel@alsa-project.org, nicoleotsuka@gmail.com, swarren@wwwdotorg.org, lgirdwood@gmail.com, tiwai@suse.com, Codrut GROSU <codrut.cristian.grosu@gmail.com>, Julia.Lawall@lip6.fr, broonie@kernel.org, thierry.reding@gmail.com, linux-tegra@vger.kernel.org, Thierry Reding <treding@nvidia.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: Remove unneeded else after return statement
+   ASoC: tegra: Add blank line after declarations
 
 has been applied to the asoc tree at
 
@@ -52,34 +52,44 @@ to this mail.
 Thanks,
 Mark
 
->From 291aaff0c6f2c56645061b9c8afadc0bb1251676 Mon Sep 17 00:00:00 2001
+>From bf3c6ef7f5b1e43739ad0356a5afee5127c86465 Mon Sep 17 00:00:00 2001
 From: Codrut Grosu <codrut.cristian.grosu@gmail.com>
-Date: Sat, 25 Feb 2017 23:26:56 +0200
-Subject: [PATCH] ASoC: pxa: Remove unneeded else after return statement
+Date: Sat, 25 Feb 2017 20:59:17 +0200
+Subject: [PATCH] ASoC: tegra: Add blank line after declarations
 
 This was reported by checkpatch.pl
 
-Signed-off-by: Codrut Grosu <codrut.cristian.grosu@gmail.com>
+Signed-off-by: Codrut GROSU <codrut.cristian.grosu@gmail.com>
+Acked-by: Thierry Reding <treding@nvidia.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/pxa2xx-ac97.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/tegra/tegra20_das.c  | 1 +
+ sound/soc/tegra/tegra30_ahub.c | 1 +
+ 2 files changed, 2 insertions(+)
 
-diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
-index 2e2fb1838ec2..f49bf02e5ec2 100644
---- a/sound/soc/pxa/pxa2xx-ac97.c
-+++ b/sound/soc/pxa/pxa2xx-ac97.c
-@@ -140,9 +140,8 @@ static int pxa2xx_ac97_mic_startup(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/tegra/tegra20_das.c b/sound/soc/tegra/tegra20_das.c
+index 6d4a2774135e..4024e3abbeed 100644
+--- a/sound/soc/tegra/tegra20_das.c
++++ b/sound/soc/tegra/tegra20_das.c
+@@ -41,6 +41,7 @@ static inline void tegra20_das_write(u32 reg, u32 val)
+ static inline u32 tegra20_das_read(u32 reg)
  {
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 		return -ENODEV;
--	else
--		snd_soc_dai_set_dma_data(cpu_dai, substream,
--					 &pxa2xx_ac97_pcm_mic_mono_in);
-+	snd_soc_dai_set_dma_data(cpu_dai, substream,
-+				 &pxa2xx_ac97_pcm_mic_mono_in);
- 
- 	return 0;
+ 	u32 val;
++
+ 	regmap_read(das->regmap, reg, &val);
+ 	return val;
+ }
+diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
+index d7494c0e9053..8c10ae7982ba 100644
+--- a/sound/soc/tegra/tegra30_ahub.c
++++ b/sound/soc/tegra/tegra30_ahub.c
+@@ -41,6 +41,7 @@ static inline void tegra30_apbif_write(u32 reg, u32 val)
+ static inline u32 tegra30_apbif_read(u32 reg)
+ {
+ 	u32 val;
++
+ 	regmap_read(ahub->regmap_apbif, reg, &val);
+ 	return val;
  }
 -- 
 2.11.0
