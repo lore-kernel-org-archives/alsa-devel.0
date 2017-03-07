@@ -1,34 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs35l35: Add bindings file for CS35L35"
-	to the asoc tree
-Date: Tue, 07 Mar 2017 13:57:36 +0100
-Message-ID: <E1clEgK-0004iA-HS@finisterre>
-References: <d1e85503-c400-45f6-aa89-a24dd16cb44a@EX3.ad.cirrus.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 503C7266E29
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 13:57:47 +0100 (CET)
-In-Reply-To: <d1e85503-c400-45f6-aa89-a24dd16cb44a@EX3.ad.cirrus.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Brian Austin <brian.austin@cirrus.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, ckeepax@opensource.wolfsonmicro.com, robh+dt@kernel.org, lgirdwood@gmail.com
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: tegra: Remove unnecessary 'out of memory' message" to the asoc tree
+Date: Tue, 07 Mar 2017 13:57:11 +0100
+Message-ID: <E1clEfv-0004bl-NZ@finisterre>
+References: <1488021488-17847-1-git-send-email-codrut.cristian.grosu@gmail.com>
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1488021488-17847-1-git-send-email-codrut.cristian.grosu-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: Codrut GROSU <codrut.cristian.grosu-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Thierry Reding <treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org, marcel.ziswiler-2KBjVHiyJgBBDgjK7y7TUQ@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, nicoleotsuka-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Julia.Lawall-L2FTfq7BK8M@public.gmane.orgbroonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs35l35: Add bindings file for CS35L35
+   ASoC: tegra: Remove unnecessary 'out of memory' message
 
 has been applied to the asoc tree at
 
@@ -53,196 +36,241 @@ to this mail.
 Thanks,
 Mark
 
->From ed864461bfbdacefc242d4c0675989915a1431b0 Mon Sep 17 00:00:00 2001
-From: Brian Austin <brian.austin@cirrus.com>
-Date: Mon, 6 Mar 2017 08:08:00 -0600
-Subject: [PATCH] ASoC: cs35l35: Add bindings file for CS35L35
+>From e2c187a689b4a717024ba90c67a6ecd8ff36a23e Mon Sep 17 00:00:00 2001
+From: Codrut Grosu <codrut.cristian.grosu-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Date: Sat, 25 Feb 2017 13:18:08 +0200
+Subject: [PATCH] ASoC: tegra: Remove unnecessary 'out of memory' message
 
-Add bindings documentation for CS35L35 Amplifier
+This was reported by checkpatch.pl
 
-Signed-off-by: Brian Austin <brian.austin@cirrus.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Codrut GROSU <codrut.cristian.grosu-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Acked-by: Thierry Reding <treding-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- .../devicetree/bindings/sound/cs35l35.txt          | 171 +++++++++++++++++++++
- 1 file changed, 171 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/cs35l35.txt
+ sound/soc/tegra/tegra20_ac97.c   | 1 -
+ sound/soc/tegra/tegra20_das.c    | 1 -
+ sound/soc/tegra/tegra20_i2s.c    | 1 -
+ sound/soc/tegra/tegra20_spdif.c  | 5 ++---
+ sound/soc/tegra/tegra30_ahub.c   | 4 +---
+ sound/soc/tegra/tegra30_i2s.c    | 1 -
+ sound/soc/tegra/tegra_alc5632.c  | 4 +---
+ sound/soc/tegra/tegra_max98090.c | 4 +---
+ sound/soc/tegra/tegra_rt5640.c   | 4 +---
+ sound/soc/tegra/tegra_sgtl5000.c | 4 +---
+ sound/soc/tegra/tegra_wm8753.c   | 4 +---
+ sound/soc/tegra/tegra_wm8903.c   | 4 +---
+ sound/soc/tegra/tegra_wm9712.c   | 4 +---
+ sound/soc/tegra/trimslice.c      | 4 +---
+ 14 files changed, 11 insertions(+), 34 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/cs35l35.txt b/Documentation/devicetree/bindings/sound/cs35l35.txt
-new file mode 100644
-index 000000000000..07d9c0f177fb
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/cs35l35.txt
-@@ -0,0 +1,171 @@
-+CS35L35 Boosted Speaker Amplifier
+diff --git a/sound/soc/tegra/tegra20_ac97.c b/sound/soc/tegra/tegra20_ac97.c
+index a68368edab9c..affad46bf188 100644
+--- a/sound/soc/tegra/tegra20_ac97.c
++++ b/sound/soc/tegra/tegra20_ac97.c
+@@ -318,7 +318,6 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
+ 	ac97 = devm_kzalloc(&pdev->dev, sizeof(struct tegra20_ac97),
+ 			    GFP_KERNEL);
+ 	if (!ac97) {
+-		dev_err(&pdev->dev, "Can't allocate tegra20_ac97\n");
+ 		ret = -ENOMEM;
+ 		goto err;
+ 	}
+diff --git a/sound/soc/tegra/tegra20_das.c b/sound/soc/tegra/tegra20_das.c
+index 89add13c31cf..6d4a2774135e 100644
+--- a/sound/soc/tegra/tegra20_das.c
++++ b/sound/soc/tegra/tegra20_das.c
+@@ -142,7 +142,6 @@ static int tegra20_das_probe(struct platform_device *pdev)
+ 
+ 	das = devm_kzalloc(&pdev->dev, sizeof(struct tegra20_das), GFP_KERNEL);
+ 	if (!das) {
+-		dev_err(&pdev->dev, "Can't allocate tegra20_das\n");
+ 		ret = -ENOMEM;
+ 		goto err;
+ 	}
+diff --git a/sound/soc/tegra/tegra20_i2s.c b/sound/soc/tegra/tegra20_i2s.c
+index 14106fa82bca..26253c2849e7 100644
+--- a/sound/soc/tegra/tegra20_i2s.c
++++ b/sound/soc/tegra/tegra20_i2s.c
+@@ -345,7 +345,6 @@ static int tegra20_i2s_platform_probe(struct platform_device *pdev)
+ 
+ 	i2s = devm_kzalloc(&pdev->dev, sizeof(struct tegra20_i2s), GFP_KERNEL);
+ 	if (!i2s) {
+-		dev_err(&pdev->dev, "Can't allocate tegra20_i2s\n");
+ 		ret = -ENOMEM;
+ 		goto err;
+ 	}
+diff --git a/sound/soc/tegra/tegra20_spdif.c b/sound/soc/tegra/tegra20_spdif.c
+index a0c3640572b9..767c0491e11a 100644
+--- a/sound/soc/tegra/tegra20_spdif.c
++++ b/sound/soc/tegra/tegra20_spdif.c
+@@ -271,10 +271,9 @@ static int tegra20_spdif_platform_probe(struct platform_device *pdev)
+ 
+ 	spdif = devm_kzalloc(&pdev->dev, sizeof(struct tegra20_spdif),
+ 			     GFP_KERNEL);
+-	if (!spdif) {
+-		dev_err(&pdev->dev, "Can't allocate tegra20_spdif\n");
++	if (!spdif)
+ 		return -ENOMEM;
+-	}
 +
-+Required properties:
-+
-+  - compatible : "cirrus,cs35l35"
-+
-+  - reg : the I2C address of the device for I2C
-+
-+  - VA-supply, VP-supply : power supplies for the device,
-+    as covered in
-+    Documentation/devicetree/bindings/regulator/regulator.txt.
-+
-+  - interrupt-parent : Specifies the phandle of the interrupt controller to
-+    which the IRQs from CS35L35 are delivered to.
-+  - interrupts : IRQ line info CS35L35.
-+    (See Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
-+    for further information relating to interrupt properties)
-+
-+Optional properties:
-+  - reset-gpios : gpio used to reset the amplifier
-+
-+  - cirrus,stereo-config : Boolean to determine if there are 2 AMPs for a
-+  Stereo configuration
-+
-+  - cirrus,audio-channel : Set Location of Audio Signal on Serial Port
-+  0 = Data Packet received on Left I2S Channel
-+  1 = Data Packet received on Right I2S Channel
-+
-+  - cirrus,advisory-channel : Set Location of Advisory Signal on Serial Port
-+  0 = Data Packet received on Left I2S Channel
-+  1 = Data Packet received on Right I2S Channel
-+
-+  - cirrus,shared-boost : Boolean to enable ClassH tracking of Advisory Signal
-+  if 2 Devices share Boost BST_CTL
-+
-+  - cirrus,sp-drv-strength : Value for setting the Serial Port drive strength
-+  Table 3-10 of the datasheet lists drive-strength specifications
-+  0 = 1x (Default)
-+  1 = .5x
-+
-+  - cirrus,bst-pdn-fet-on : Boolean to determine if the Boost PDN control
-+  powers down with a rectification FET On or Off. If VSPK is supplied
-+  externally then FET is off.
-+
-+  - cirrus,boost-ctl-millivolt : Boost Voltage Value.  Configures the boost
-+    converter's output voltage in mV. The range is from 2600mV to 9000mV with
-+    increments of 100mV.
-+    (Default) VP
-+
-+  - cirrus,boost-peak-milliamp : Boost-converter peak current limit in mA.
-+  Configures the peak current by monitoring the current through the boost FET.
-+  Range starts at 1680mA and goes to a maximum of 4480mA with increments of
-+  110mA.
-+  (Default) 2.46 Amps
-+
-+  - cirrus,amp-gain-zc : Boolean to determine if to use Amplifier gain-change
-+  zero-cross
-+
-+Optional H/G Algorithm sub-node:
-+
-+  The cs35l35 node can have a single "cirrus,classh-internal-algo" sub-node
-+  that will disable automatic control of the internal H/G Algorithm.
-+
-+  It is strongly recommended that the Datasheet be referenced when adjusting
-+  or using these Class H Algorithm controls over the internal Algorithm.
-+  Serious damage can occur to the Device and surrounding components.
-+
-+  - cirrus,classh-internal-algo : Sub-node for the Internal Class H Algorithm
-+  See Section 4.3 Internal Class H Algorithm in the Datasheet.
-+  If not used, the device manages the ClassH Algorithm internally.
-+
-+Optional properties for the "cirrus,classh-internal-algo" Sub-node
-+
-+  Section 7.29 Class H Control
-+  - cirrus,classh-bst-overide : Boolean
-+  - cirrus,classh-bst-max-limit
-+  - cirrus,classh-mem-depth
-+
-+  Section 7.30 Class H Headroom Control
-+  - cirrus,classh-headroom
-+
-+  Section 7.31 Class H Release Rate
-+  - cirrus,classh-release-rate
-+
-+  Section 7.32 Class H Weak FET Drive Control
-+  - cirrus,classh-wk-fet-disable
-+  - cirrus,classh-wk-fet-delay
-+  - cirrus,classh-wk-fet-thld
-+
-+  Section 7.34 Class H VP Control
-+  - cirrus,classh-vpch-auto
-+  - cirrus,classh-vpch-rate
-+  - cirrus,classh-vpch-man
-+
-+Optional Monitor Signal Format sub-node:
-+
-+  The cs35l35 node can have a single "cirrus,monitor-signal-format" sub-node
-+  for adjusting the Depth, Location and Frame of the Monitoring Signals
-+  for Algorithms.
-+
-+  See Sections 4.8.2 through 4.8.4 Serial-Port Control in the Datasheet
-+
-+  -cirrus,monitor-signal-format : Sub-node for the Monitor Signaling Formating
-+  on the I2S Port. Each of the 3 8 bit values in the array contain the settings
-+  for depth, location, and frame.
-+
-+  If not used, the defaults for the 6 monitor signals is used.
-+
-+  Sections 7.44 - 7.53 lists values for the depth, location, and frame
-+  for each monitoring signal.
-+
-+  - cirrus,imon : 3 8 bit values to set the depth, location, and frame
-+  of the IMON monitor signal.
-+
-+  - cirrus,vmon : 3 8 bit values to set the depth, location, and frame
-+  of the VMON monitor signal.
-+
-+  - cirrus,vpmon : 3 8 bit values to set the depth, location, and frame
-+  of the VPMON monitor signal.
-+
-+  - cirrus,vbstmon : 3 8 bit values to set the depth, location, and frame
-+  of the VBSTMON monitor signal
-+
-+  - cirrus,vpbrstat : 3 8 bit values to set the depth, location, and frame
-+  of the VPBRSTAT monitor signal
-+
-+  - cirrus,zerofill : 3 8 bit values to set the depth, location, and frame\
-+  of the ZEROFILL packet in the monitor signal
-+
-+Example:
-+
-+cs35l35: cs35l35@20 {
-+	compatible = "cirrus,cs35l35";
-+	reg = <0x20>;
-+	VA-supply = <&dummy_vreg>;
-+	VP-supply = <&dummy_vreg>;
-+	reset-gpios = <&axi_gpio 54 0>;
-+	interrupt-parent = <&gpio8>;
-+	interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
-+	cirrus,boost-ctl-millivolt = <9000>;
-+
-+	cirrus,stereo-config;
-+	cirrus,audio-channel = <0x00>;
-+	cirrus,advisory-channel = <0x01>;
-+	cirrus,shared-boost;
-+
-+	cirrus,classh-internal-algo {
-+		cirrus,classh-bst-overide;
-+		cirrus,classh-bst-max-limit = <0x01>;
-+		cirrus,classh-mem-depth = <0x01>;
-+		cirrus,classh-release-rate = <0x08>;
-+		cirrus,classh-headroom-millivolt = <0x0B>;
-+		cirrus,classh-wk-fet-disable = <0x01>;
-+		cirrus,classh-wk-fet-delay = <0x04>;
-+		cirrus,classh-wk-fet-thld = <0x01>;
-+		cirrus,classh-vpch-auto = <0x01>;
-+		cirrus,classh-vpch-rate = <0x02>;
-+		cirrus,classh-vpch-man = <0x05>;
-+	};
-+
-+	/* Depth, Location, Frame */
-+	cirrus,monitor-signal-format {
-+		cirrus,imon = /bits/ 8 <0x03 0x00 0x01>;
-+		cirrus,vmon = /bits/ 8 <0x03 0x00 0x00>;
-+		cirrus,vpmon = /bits/ 8 <0x03 0x04 0x00>;
-+		cirrus,vbstmon = /bits/ 8 <0x03 0x04 0x01>;
-+		cirrus,vpbrstat = /bits/ 8 <0x00 0x04 0x00>;
-+		cirrus,zerofill = /bits/ 8 <0x00 0x00 0x00>;
-+	};
-+
-+};
+ 	dev_set_drvdata(&pdev->dev, spdif);
+ 
+ 	spdif->clk_spdif_out = devm_clk_get(&pdev->dev, "spdif_out");
+diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
+index fef3b9a21a66..d7494c0e9053 100644
+--- a/sound/soc/tegra/tegra30_ahub.c
++++ b/sound/soc/tegra/tegra30_ahub.c
+@@ -560,10 +560,8 @@ static int tegra30_ahub_probe(struct platform_device *pdev)
+ 
+ 	ahub = devm_kzalloc(&pdev->dev, sizeof(struct tegra30_ahub),
+ 			    GFP_KERNEL);
+-	if (!ahub) {
+-		dev_err(&pdev->dev, "Can't allocate tegra30_ahub\n");
++	if (!ahub)
+ 		return -ENOMEM;
+-	}
+ 	dev_set_drvdata(&pdev->dev, ahub);
+ 
+ 	ahub->soc_data = soc_data;
+diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
+index 8e55583aa104..b2b279c96029 100644
+--- a/sound/soc/tegra/tegra30_i2s.c
++++ b/sound/soc/tegra/tegra30_i2s.c
+@@ -385,7 +385,6 @@ static int tegra30_i2s_platform_probe(struct platform_device *pdev)
+ 
+ 	i2s = devm_kzalloc(&pdev->dev, sizeof(struct tegra30_i2s), GFP_KERNEL);
+ 	if (!i2s) {
+-		dev_err(&pdev->dev, "Can't allocate tegra30_i2s\n");
+ 		ret = -ENOMEM;
+ 		goto err;
+ 	}
+diff --git a/sound/soc/tegra/tegra_alc5632.c b/sound/soc/tegra/tegra_alc5632.c
+index eead6e7f205b..0509902512cc 100644
+--- a/sound/soc/tegra/tegra_alc5632.c
++++ b/sound/soc/tegra/tegra_alc5632.c
+@@ -169,10 +169,8 @@ static int tegra_alc5632_probe(struct platform_device *pdev)
+ 
+ 	alc5632 = devm_kzalloc(&pdev->dev,
+ 			sizeof(struct tegra_alc5632), GFP_KERNEL);
+-	if (!alc5632) {
+-		dev_err(&pdev->dev, "Can't allocate tegra_alc5632\n");
++	if (!alc5632)
+ 		return -ENOMEM;
+-	}
+ 
+ 	card->dev = &pdev->dev;
+ 	platform_set_drvdata(pdev, card);
+diff --git a/sound/soc/tegra/tegra_max98090.c b/sound/soc/tegra/tegra_max98090.c
+index a403db6d563e..c34a54d6e812 100644
+--- a/sound/soc/tegra/tegra_max98090.c
++++ b/sound/soc/tegra/tegra_max98090.c
+@@ -225,10 +225,8 @@ static int tegra_max98090_probe(struct platform_device *pdev)
+ 
+ 	machine = devm_kzalloc(&pdev->dev,
+ 			sizeof(struct tegra_max98090), GFP_KERNEL);
+-	if (!machine) {
+-		dev_err(&pdev->dev, "Can't allocate tegra_max98090\n");
++	if (!machine)
+ 		return -ENOMEM;
+-	}
+ 
+ 	card->dev = &pdev->dev;
+ 	platform_set_drvdata(pdev, card);
+diff --git a/sound/soc/tegra/tegra_rt5640.c b/sound/soc/tegra/tegra_rt5640.c
+index 25b9fc03ba62..93a356802345 100644
+--- a/sound/soc/tegra/tegra_rt5640.c
++++ b/sound/soc/tegra/tegra_rt5640.c
+@@ -170,10 +170,8 @@ static int tegra_rt5640_probe(struct platform_device *pdev)
+ 
+ 	machine = devm_kzalloc(&pdev->dev,
+ 			sizeof(struct tegra_rt5640), GFP_KERNEL);
+-	if (!machine) {
+-		dev_err(&pdev->dev, "Can't allocate tegra_rt5640\n");
++	if (!machine)
+ 		return -ENOMEM;
+-	}
+ 
+ 	card->dev = &pdev->dev;
+ 	platform_set_drvdata(pdev, card);
+diff --git a/sound/soc/tegra/tegra_sgtl5000.c b/sound/soc/tegra/tegra_sgtl5000.c
+index 4bbab098f50b..6dda01f69983 100644
+--- a/sound/soc/tegra/tegra_sgtl5000.c
++++ b/sound/soc/tegra/tegra_sgtl5000.c
+@@ -120,10 +120,8 @@ static int tegra_sgtl5000_driver_probe(struct platform_device *pdev)
+ 
+ 	machine = devm_kzalloc(&pdev->dev, sizeof(struct tegra_sgtl5000),
+ 			       GFP_KERNEL);
+-	if (!machine) {
+-		dev_err(&pdev->dev, "Can't allocate tegra_sgtl5000 struct\n");
++	if (!machine)
+ 		return -ENOMEM;
+-	}
+ 
+ 	card->dev = &pdev->dev;
+ 	platform_set_drvdata(pdev, card);
+diff --git a/sound/soc/tegra/tegra_wm8753.c b/sound/soc/tegra/tegra_wm8753.c
+index bdedd1028569..d0ab0026a4cd 100644
+--- a/sound/soc/tegra/tegra_wm8753.c
++++ b/sound/soc/tegra/tegra_wm8753.c
+@@ -128,10 +128,8 @@ static int tegra_wm8753_driver_probe(struct platform_device *pdev)
+ 
+ 	machine = devm_kzalloc(&pdev->dev, sizeof(struct tegra_wm8753),
+ 			       GFP_KERNEL);
+-	if (!machine) {
+-		dev_err(&pdev->dev, "Can't allocate tegra_wm8753 struct\n");
++	if (!machine)
+ 		return -ENOMEM;
+-	}
+ 
+ 	card->dev = &pdev->dev;
+ 	platform_set_drvdata(pdev, card);
+diff --git a/sound/soc/tegra/tegra_wm8903.c b/sound/soc/tegra/tegra_wm8903.c
+index 2013e9c4bba0..dbfb49298ae8 100644
+--- a/sound/soc/tegra/tegra_wm8903.c
++++ b/sound/soc/tegra/tegra_wm8903.c
+@@ -248,10 +248,8 @@ static int tegra_wm8903_driver_probe(struct platform_device *pdev)
+ 
+ 	machine = devm_kzalloc(&pdev->dev, sizeof(struct tegra_wm8903),
+ 			       GFP_KERNEL);
+-	if (!machine) {
+-		dev_err(&pdev->dev, "Can't allocate tegra_wm8903 struct\n");
++	if (!machine)
+ 		return -ENOMEM;
+-	}
+ 
+ 	card->dev = &pdev->dev;
+ 	platform_set_drvdata(pdev, card);
+diff --git a/sound/soc/tegra/tegra_wm9712.c b/sound/soc/tegra/tegra_wm9712.c
+index 6492f8143ff1..c9cd22432627 100644
+--- a/sound/soc/tegra/tegra_wm9712.c
++++ b/sound/soc/tegra/tegra_wm9712.c
+@@ -77,10 +77,8 @@ static int tegra_wm9712_driver_probe(struct platform_device *pdev)
+ 
+ 	machine = devm_kzalloc(&pdev->dev, sizeof(struct tegra_wm9712),
+ 			       GFP_KERNEL);
+-	if (!machine) {
+-		dev_err(&pdev->dev, "Can't allocate tegra_wm9712 struct\n");
++	if (!machine)
+ 		return -ENOMEM;
+-	}
+ 
+ 	card->dev = &pdev->dev;
+ 	platform_set_drvdata(pdev, card);
+diff --git a/sound/soc/tegra/trimslice.c b/sound/soc/tegra/trimslice.c
+index 870f84ab5005..c9dcad9bb931 100644
+--- a/sound/soc/tegra/trimslice.c
++++ b/sound/soc/tegra/trimslice.c
+@@ -123,10 +123,8 @@ static int tegra_snd_trimslice_probe(struct platform_device *pdev)
+ 
+ 	trimslice = devm_kzalloc(&pdev->dev, sizeof(struct tegra_trimslice),
+ 				 GFP_KERNEL);
+-	if (!trimslice) {
+-		dev_err(&pdev->dev, "Can't allocate tegra_trimslice\n");
++	if (!trimslice)
+ 		return -ENOMEM;
+-	}
+ 
+ 	card->dev = &pdev->dev;
+ 	platform_set_drvdata(pdev, card);
 -- 
 2.11.0
