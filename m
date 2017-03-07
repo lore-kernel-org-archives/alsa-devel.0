@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dio2125: add dio2125 amp driver" to the
-	asoc tree
-Date: Tue, 07 Mar 2017 13:57:33 +0100
-Message-ID: <E1clEgH-0004hJ-7G@finisterre>
-References: <20170306174451.24406-3-jbrunet@baylibre.com>
+Subject: Applied "ASoC: cs35l35: Add bindings file for CS35L35"
+	to the asoc tree
+Date: Tue, 07 Mar 2017 13:57:36 +0100
+Message-ID: <E1clEgK-0004iA-HS@finisterre>
+References: <d1e85503-c400-45f6-aa89-a24dd16cb44a@EX3.ad.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C712C266F04
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 13:57:43 +0100 (CET)
-In-Reply-To: <20170306174451.24406-3-jbrunet@baylibre.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 503C7266E29
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 13:57:47 +0100 (CET)
+In-Reply-To: <d1e85503-c400-45f6-aa89-a24dd16cb44a@EX3.ad.cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: alsa-devel@alsa-project.org, Neil Armstrong <narmstrong@baylibre.com>, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+To: Brian Austin <brian.austin@cirrus.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, ckeepax@opensource.wolfsonmicro.com, robh+dt@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dio2125: add dio2125 amp driver
+   ASoC: cs35l35: Add bindings file for CS35L35
 
 has been applied to the asoc tree at
 
@@ -53,190 +53,196 @@ to this mail.
 Thanks,
 Mark
 
->From 85825d5e886912655f6c1896d76035ce1316254b Mon Sep 17 00:00:00 2001
-From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Mon, 6 Mar 2017 18:44:50 +0100
-Subject: [PATCH] ASoC: dio2125: add dio2125 amp driver
+>From ed864461bfbdacefc242d4c0675989915a1431b0 Mon Sep 17 00:00:00 2001
+From: Brian Austin <brian.austin@cirrus.com>
+Date: Mon, 6 Mar 2017 08:08:00 -0600
+Subject: [PATCH] ASoC: cs35l35: Add bindings file for CS35L35
 
-The dio2125 is a stereo output driver with adjustable gain.
+Add bindings documentation for CS35L35 Amplifier
 
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Brian Austin <brian.austin@cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/Kconfig   |   5 ++
- sound/soc/codecs/Makefile  |   2 +
- sound/soc/codecs/dio2125.c | 120 +++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 127 insertions(+)
- create mode 100644 sound/soc/codecs/dio2125.c
+ .../devicetree/bindings/sound/cs35l35.txt          | 171 +++++++++++++++++++++
+ 1 file changed, 171 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cs35l35.txt
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index e49e9da7f1f6..5e5fcb660ca3 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -69,6 +69,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_DA7219 if I2C
- 	select SND_SOC_DA732X if I2C
- 	select SND_SOC_DA9055 if I2C
-+	select SND_SOC_DIO2125
- 	select SND_SOC_DMIC
- 	select SND_SOC_ES8328_SPI if SPI_MASTER
- 	select SND_SOC_ES8328_I2C if I2C
-@@ -516,6 +517,10 @@ config SND_SOC_DA732X
- config SND_SOC_DA9055
- 	tristate
- 
-+config SND_SOC_DIO2125
-+	tristate "Dioo DIO2125 Amplifier"
-+	select GPIOLIB
-+
- config SND_SOC_DMIC
- 	tristate
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index 1796cb987e71..04894fa8891b 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -221,6 +221,7 @@ snd-soc-wm9712-objs := wm9712.o
- snd-soc-wm9713-objs := wm9713.o
- snd-soc-wm-hubs-objs := wm_hubs.o
- # Amp
-+snd-soc-dio2125-objs := dio2125.o
- snd-soc-max9877-objs := max9877.o
- snd-soc-max98504-objs := max98504.o
- snd-soc-tpa6130a2-objs := tpa6130a2.o
-@@ -448,6 +449,7 @@ obj-$(CONFIG_SND_SOC_WM_ADSP)	+= snd-soc-wm-adsp.o
- obj-$(CONFIG_SND_SOC_WM_HUBS)	+= snd-soc-wm-hubs.o
- 
- # Amp
-+obj-$(CONFIG_SND_SOC_DIO2125)	+= snd-soc-dio2125.o
- obj-$(CONFIG_SND_SOC_MAX9877)	+= snd-soc-max9877.o
- obj-$(CONFIG_SND_SOC_MAX98504)	+= snd-soc-max98504.o
- obj-$(CONFIG_SND_SOC_TPA6130A2)	+= snd-soc-tpa6130a2.o
-diff --git a/sound/soc/codecs/dio2125.c b/sound/soc/codecs/dio2125.c
+diff --git a/Documentation/devicetree/bindings/sound/cs35l35.txt b/Documentation/devicetree/bindings/sound/cs35l35.txt
 new file mode 100644
-index 000000000000..015e310556d3
+index 000000000000..07d9c0f177fb
 --- /dev/null
-+++ b/sound/soc/codecs/dio2125.c
-@@ -0,0 +1,120 @@
-+/*
-+ * Copyright (c) 2017 BayLibre, SAS.
-+ * Author: Jerome Brunet <jbrunet@baylibre.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of version 2 of the GNU General Public License as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, see <http://www.gnu.org/licenses/>.
-+ * The full GNU General Public License is included in this distribution
-+ * in the file called COPYING.
-+ */
++++ b/Documentation/devicetree/bindings/sound/cs35l35.txt
+@@ -0,0 +1,171 @@
++CS35L35 Boosted Speaker Amplifier
 +
-+#include <linux/gpio/consumer.h>
-+#include <linux/module.h>
-+#include <sound/soc.h>
++Required properties:
 +
-+#define DRV_NAME "dio2125"
++  - compatible : "cirrus,cs35l35"
 +
-+struct dio2125 {
-+	struct gpio_desc *gpiod_enable;
++  - reg : the I2C address of the device for I2C
++
++  - VA-supply, VP-supply : power supplies for the device,
++    as covered in
++    Documentation/devicetree/bindings/regulator/regulator.txt.
++
++  - interrupt-parent : Specifies the phandle of the interrupt controller to
++    which the IRQs from CS35L35 are delivered to.
++  - interrupts : IRQ line info CS35L35.
++    (See Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
++    for further information relating to interrupt properties)
++
++Optional properties:
++  - reset-gpios : gpio used to reset the amplifier
++
++  - cirrus,stereo-config : Boolean to determine if there are 2 AMPs for a
++  Stereo configuration
++
++  - cirrus,audio-channel : Set Location of Audio Signal on Serial Port
++  0 = Data Packet received on Left I2S Channel
++  1 = Data Packet received on Right I2S Channel
++
++  - cirrus,advisory-channel : Set Location of Advisory Signal on Serial Port
++  0 = Data Packet received on Left I2S Channel
++  1 = Data Packet received on Right I2S Channel
++
++  - cirrus,shared-boost : Boolean to enable ClassH tracking of Advisory Signal
++  if 2 Devices share Boost BST_CTL
++
++  - cirrus,sp-drv-strength : Value for setting the Serial Port drive strength
++  Table 3-10 of the datasheet lists drive-strength specifications
++  0 = 1x (Default)
++  1 = .5x
++
++  - cirrus,bst-pdn-fet-on : Boolean to determine if the Boost PDN control
++  powers down with a rectification FET On or Off. If VSPK is supplied
++  externally then FET is off.
++
++  - cirrus,boost-ctl-millivolt : Boost Voltage Value.  Configures the boost
++    converter's output voltage in mV. The range is from 2600mV to 9000mV with
++    increments of 100mV.
++    (Default) VP
++
++  - cirrus,boost-peak-milliamp : Boost-converter peak current limit in mA.
++  Configures the peak current by monitoring the current through the boost FET.
++  Range starts at 1680mA and goes to a maximum of 4480mA with increments of
++  110mA.
++  (Default) 2.46 Amps
++
++  - cirrus,amp-gain-zc : Boolean to determine if to use Amplifier gain-change
++  zero-cross
++
++Optional H/G Algorithm sub-node:
++
++  The cs35l35 node can have a single "cirrus,classh-internal-algo" sub-node
++  that will disable automatic control of the internal H/G Algorithm.
++
++  It is strongly recommended that the Datasheet be referenced when adjusting
++  or using these Class H Algorithm controls over the internal Algorithm.
++  Serious damage can occur to the Device and surrounding components.
++
++  - cirrus,classh-internal-algo : Sub-node for the Internal Class H Algorithm
++  See Section 4.3 Internal Class H Algorithm in the Datasheet.
++  If not used, the device manages the ClassH Algorithm internally.
++
++Optional properties for the "cirrus,classh-internal-algo" Sub-node
++
++  Section 7.29 Class H Control
++  - cirrus,classh-bst-overide : Boolean
++  - cirrus,classh-bst-max-limit
++  - cirrus,classh-mem-depth
++
++  Section 7.30 Class H Headroom Control
++  - cirrus,classh-headroom
++
++  Section 7.31 Class H Release Rate
++  - cirrus,classh-release-rate
++
++  Section 7.32 Class H Weak FET Drive Control
++  - cirrus,classh-wk-fet-disable
++  - cirrus,classh-wk-fet-delay
++  - cirrus,classh-wk-fet-thld
++
++  Section 7.34 Class H VP Control
++  - cirrus,classh-vpch-auto
++  - cirrus,classh-vpch-rate
++  - cirrus,classh-vpch-man
++
++Optional Monitor Signal Format sub-node:
++
++  The cs35l35 node can have a single "cirrus,monitor-signal-format" sub-node
++  for adjusting the Depth, Location and Frame of the Monitoring Signals
++  for Algorithms.
++
++  See Sections 4.8.2 through 4.8.4 Serial-Port Control in the Datasheet
++
++  -cirrus,monitor-signal-format : Sub-node for the Monitor Signaling Formating
++  on the I2S Port. Each of the 3 8 bit values in the array contain the settings
++  for depth, location, and frame.
++
++  If not used, the defaults for the 6 monitor signals is used.
++
++  Sections 7.44 - 7.53 lists values for the depth, location, and frame
++  for each monitoring signal.
++
++  - cirrus,imon : 3 8 bit values to set the depth, location, and frame
++  of the IMON monitor signal.
++
++  - cirrus,vmon : 3 8 bit values to set the depth, location, and frame
++  of the VMON monitor signal.
++
++  - cirrus,vpmon : 3 8 bit values to set the depth, location, and frame
++  of the VPMON monitor signal.
++
++  - cirrus,vbstmon : 3 8 bit values to set the depth, location, and frame
++  of the VBSTMON monitor signal
++
++  - cirrus,vpbrstat : 3 8 bit values to set the depth, location, and frame
++  of the VPBRSTAT monitor signal
++
++  - cirrus,zerofill : 3 8 bit values to set the depth, location, and frame\
++  of the ZEROFILL packet in the monitor signal
++
++Example:
++
++cs35l35: cs35l35@20 {
++	compatible = "cirrus,cs35l35";
++	reg = <0x20>;
++	VA-supply = <&dummy_vreg>;
++	VP-supply = <&dummy_vreg>;
++	reset-gpios = <&axi_gpio 54 0>;
++	interrupt-parent = <&gpio8>;
++	interrupts = <3 IRQ_TYPE_LEVEL_LOW>;
++	cirrus,boost-ctl-millivolt = <9000>;
++
++	cirrus,stereo-config;
++	cirrus,audio-channel = <0x00>;
++	cirrus,advisory-channel = <0x01>;
++	cirrus,shared-boost;
++
++	cirrus,classh-internal-algo {
++		cirrus,classh-bst-overide;
++		cirrus,classh-bst-max-limit = <0x01>;
++		cirrus,classh-mem-depth = <0x01>;
++		cirrus,classh-release-rate = <0x08>;
++		cirrus,classh-headroom-millivolt = <0x0B>;
++		cirrus,classh-wk-fet-disable = <0x01>;
++		cirrus,classh-wk-fet-delay = <0x04>;
++		cirrus,classh-wk-fet-thld = <0x01>;
++		cirrus,classh-vpch-auto = <0x01>;
++		cirrus,classh-vpch-rate = <0x02>;
++		cirrus,classh-vpch-man = <0x05>;
++	};
++
++	/* Depth, Location, Frame */
++	cirrus,monitor-signal-format {
++		cirrus,imon = /bits/ 8 <0x03 0x00 0x01>;
++		cirrus,vmon = /bits/ 8 <0x03 0x00 0x00>;
++		cirrus,vpmon = /bits/ 8 <0x03 0x04 0x00>;
++		cirrus,vbstmon = /bits/ 8 <0x03 0x04 0x01>;
++		cirrus,vpbrstat = /bits/ 8 <0x00 0x04 0x00>;
++		cirrus,zerofill = /bits/ 8 <0x00 0x00 0x00>;
++	};
++
 +};
-+
-+static int drv_event(struct snd_soc_dapm_widget *w,
-+		     struct snd_kcontrol *control, int event)
-+{
-+	struct snd_soc_component *c = snd_soc_dapm_to_component(w->dapm);
-+	struct dio2125 *priv = snd_soc_component_get_drvdata(c);
-+	int val;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		val = 1;
-+		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		val = 0;
-+		break;
-+	default:
-+		WARN(1, "Unexpected event");
-+		return -EINVAL;
-+	}
-+
-+	gpiod_set_value(priv->gpiod_enable, val);
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dapm_widget dio2125_dapm_widgets[] = {
-+	SND_SOC_DAPM_INPUT("INL"),
-+	SND_SOC_DAPM_INPUT("INR"),
-+	SND_SOC_DAPM_OUT_DRV_E("DRV", SND_SOC_NOPM, 0, 0, NULL, 0, drv_event,
-+			       (SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD)),
-+	SND_SOC_DAPM_OUTPUT("OUTL"),
-+	SND_SOC_DAPM_OUTPUT("OUTR"),
-+};
-+
-+static const struct snd_soc_dapm_route dio2125_dapm_routes[] = {
-+	{ "DRV", NULL, "INL" },
-+	{ "DRV", NULL, "INR" },
-+	{ "OUTL", NULL, "DRV" },
-+	{ "OUTR", NULL, "DRV" },
-+};
-+
-+static const struct snd_soc_component_driver dio2125_component_driver = {
-+	.dapm_widgets		= dio2125_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(dio2125_dapm_widgets),
-+	.dapm_routes		= dio2125_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(dio2125_dapm_routes),
-+};
-+
-+static int dio2125_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct dio2125 *priv;
-+	int err;
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (priv == NULL)
-+		return -ENOMEM;
-+	platform_set_drvdata(pdev, priv);
-+
-+	priv->gpiod_enable = devm_gpiod_get(dev, "enable", GPIOD_OUT_LOW);
-+	if (IS_ERR(priv->gpiod_enable)) {
-+		err = PTR_ERR(priv->gpiod_enable);
-+		if (err != -EPROBE_DEFER)
-+			dev_err(dev, "Failed to get 'enable' gpio: %d", err);
-+		return err;
-+	}
-+
-+	return devm_snd_soc_register_component(dev, &dio2125_component_driver,
-+					       NULL, 0);
-+}
-+
-+#ifdef CONFIG_OF
-+static const struct of_device_id dio2125_ids[] = {
-+	{ .compatible = "dioo,dio2125", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, dio2125_ids);
-+#endif
-+
-+static struct platform_driver dio2125_driver = {
-+	.driver = {
-+		.name = DRV_NAME,
-+		.of_match_table = of_match_ptr(dio2125_ids),
-+	},
-+	.probe = dio2125_probe,
-+};
-+
-+module_platform_driver(dio2125_driver);
-+
-+MODULE_DESCRIPTION("ASoC DIO2125 output driver");
-+MODULE_AUTHOR("Jerome Brunet <jbrunet@baylibre.com>");
-+MODULE_LICENSE("GPL");
 -- 
 2.11.0
