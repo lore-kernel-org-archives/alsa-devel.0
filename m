@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Acknowledge controls should
-	also check the DSP is running" to the asoc tree
-Date: Tue, 07 Mar 2017 13:27:15 +0100
-Message-ID: <E1clECx-0003u6-A0@finisterre>
-References: <1488819274-9791-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: wm_adsp: Return an error on write to a
+	disabled volatile control" to the asoc tree
+Date: Tue, 07 Mar 2017 13:27:20 +0100
+Message-ID: <E1clED2-0003uw-NZ@finisterre>
+References: <1488819274-9791-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 00A44266AD7
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 13:27:34 +0100 (CET)
-In-Reply-To: <1488819274-9791-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D2DD2266ADA
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 13:27:35 +0100 (CET)
+In-Reply-To: <1488819274-9791-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Acknowledge controls should also check the DSP is running
+   ASoC: wm_adsp: Return an error on write to a disabled volatile control
 
 has been applied to the asoc tree at
 
@@ -53,35 +53,47 @@ to this mail.
 Thanks,
 Mark
 
->From 7b4af793a7a4f8e04175eb6600ba9c8ba855ad20 Mon Sep 17 00:00:00 2001
+>From 67430a39ca7a6af28aade5acb92d43ee257c1014 Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Mon, 6 Mar 2017 16:54:34 +0000
-Subject: [PATCH] ASoC: wm_adsp: Acknowledge controls should also check the DSP
- is running
+Date: Mon, 6 Mar 2017 16:54:33 +0000
+Subject: [PATCH] ASoC: wm_adsp: Return an error on write to a disabled
+ volatile control
 
-We should not be writing acknowledge controls until the firmware is
-running, as in the case of preloaded firmwares the DSP memory may be
-unaccessible to whilst in the preloaded state. This means a write to the
-control during this time could be lost.
+Volatile controls should only be accessed when the firmware is active,
+currently however writes to these controls will succeed, but the data
+will be lost, if the firmware is powered down. Update this behaviour such
+that an error is returned the same as it is for reads.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/wm_adsp.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 6313b3da967b..bbdb72f73df1 100644
+index d151224ffcca..6313b3da967b 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -952,7 +952,7 @@ static int wm_coeff_put_acked(struct snd_kcontrol *kctl,
+@@ -899,7 +899,10 @@ static int wm_coeff_put(struct snd_kcontrol *kctl,
  
  	mutex_lock(&ctl->dsp->pwr_lock);
  
--	if (ctl->enabled)
-+	if (ctl->enabled && ctl->dsp->running)
- 		ret = wm_coeff_write_acked_control(ctl, val);
- 	else
- 		ret = -EPERM;
+-	memcpy(ctl->cache, p, ctl->len);
++	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE)
++		ret = -EPERM;
++	else
++		memcpy(ctl->cache, p, ctl->len);
+ 
+ 	ctl->set = 1;
+ 	if (ctl->enabled && ctl->dsp->running)
+@@ -926,6 +929,8 @@ static int wm_coeff_tlv_put(struct snd_kcontrol *kctl,
+ 		ctl->set = 1;
+ 		if (ctl->enabled && ctl->dsp->running)
+ 			ret = wm_coeff_write_control(ctl, ctl->cache, size);
++		else if (ctl->flags & WMFW_CTL_FLAG_VOLATILE)
++			ret = -EPERM;
+ 	}
+ 
+ 	mutex_unlock(&ctl->dsp->pwr_lock);
 -- 
 2.11.0
