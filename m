@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: omap: Remove unnecessary 'out of
-	memory' message" to the asoc tree
-Date: Tue, 07 Mar 2017 14:33:28 +0100
-Message-ID: <E1clFF2-0005ae-DD@finisterre>
-References: <1488136326-3602-1-git-send-email-constantinescu33@gmail.com>
+Subject: Applied "ASoC: pxa: Remove spaces before tabs" to the
+	asoc tree
+Date: Tue, 07 Mar 2017 14:33:38 +0100
+Message-ID: <E1clFFC-0005cl-8A@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BF804266FA1
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 14:33:45 +0100 (CET)
-In-Reply-To: <1488136326-3602-1-git-send-email-constantinescu33@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 94411266FA8
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 14:33:47 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Adriana Constantinescu <constantinescu33@gmail.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, peter.ujfalusi@ti.com, broonie@kernel.org, linux-omap@vger.kernel.org, jarkko.nikula@bitmer.com
+To: Codrut Grosu <codrut.cristian.grosu@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: omap: Remove unnecessary 'out of memory' message
+   ASoC: pxa: Remove spaces before tabs
 
 has been applied to the asoc tree at
 
@@ -53,36 +52,58 @@ to this mail.
 Thanks,
 Mark
 
->From 8804e073a8b7b85e98e46a239da4d2d92adfe124 Mon Sep 17 00:00:00 2001
-From: Adriana Constantinescu <constantinescu33@gmail.com>
-Date: Sun, 26 Feb 2017 21:12:06 +0200
-Subject: [PATCH] ASoC: omap: Remove unnecessary 'out of memory' message
+>From 672e3cbe783e2f3f40bdc19e5cb09accdd3e4b6b Mon Sep 17 00:00:00 2001
+From: Codrut Grosu <codrut.cristian.grosu@gmail.com>
+Date: Sat, 25 Feb 2017 22:50:29 +0200
+Subject: [PATCH] ASoC: pxa: Remove spaces before tabs
 
-Out of memory message detected using checkpatch.pl
+This was reported by checkpatch.pl
 
-Signed-off-by: Adriana Constantinescu <constantinescu33@gmail.com>
-Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Signed-off-by: Codrut Grosu <codrut.cristian.grosu@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/omap/rx51.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/pxa/pxa2xx-i2s.c | 6 +++---
+ sound/soc/pxa/pxa2xx-pcm.c | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
-index a76845748a10..086b59b7b6d7 100644
---- a/sound/soc/omap/rx51.c
-+++ b/sound/soc/omap/rx51.c
-@@ -433,10 +433,9 @@ static int rx51_soc_probe(struct platform_device *pdev)
- 	}
+diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
+index 27aa0e4341bc..3fb60baf6eab 100644
+--- a/sound/soc/pxa/pxa2xx-i2s.c
++++ b/sound/soc/pxa/pxa2xx-i2s.c
+@@ -46,10 +46,10 @@
+ #define SACR0_STRF	(1 << 5)	/* FIFO Select for EFWR Special Function */
+ #define SACR0_EFWR	(1 << 4)	/* Enable EFWR Function  */
+ #define SACR0_RST	(1 << 3)	/* FIFO, i2s Register Reset */
+-#define SACR0_BCKD	(1 << 2) 	/* Bit Clock Direction */
++#define SACR0_BCKD	(1 << 2)	/* Bit Clock Direction */
+ #define SACR0_ENB	(1 << 0)	/* Enable I2S Link */
+ #define SACR1_ENLBF	(1 << 5)	/* Enable Loopback */
+-#define SACR1_DRPL	(1 << 4) 	/* Disable Replaying Function */
++#define SACR1_DRPL	(1 << 4)	/* Disable Replaying Function */
+ #define SACR1_DREC	(1 << 3)	/* Disable Recording Function */
+ #define SACR1_AMSL	(1 << 0)	/* Specify Alternate Mode */
  
- 	pdata = devm_kzalloc(&pdev->dev, sizeof(*pdata), GFP_KERNEL);
--	if (pdata == NULL) {
--		dev_err(card->dev, "failed to create private data\n");
-+	if (pdata == NULL)
- 		return -ENOMEM;
--	}
-+
- 	snd_soc_card_set_drvdata(card, pdata);
+@@ -60,7 +60,7 @@
+ #define SASR0_TFS	(1 << 3)	/* Tx FIFO Service Request */
+ #define SASR0_BSY	(1 << 2)	/* I2S Busy */
+ #define SASR0_RNE	(1 << 1)	/* Rx FIFO Not Empty */
+-#define SASR0_TNF	(1 << 0) 	/* Tx FIFO Not Empty */
++#define SASR0_TNF	(1 << 0)	/* Tx FIFO Not Empty */
  
- 	pdata->tvout_selection_gpio = devm_gpiod_get(card->dev,
+ #define SAICR_ROR	(1 << 6)	/* Clear Rx FIFO Overrun Interrupt */
+ #define SAICR_TUR	(1 << 5)	/* Clear Tx FIFO Underrun Interrupt */
+diff --git a/sound/soc/pxa/pxa2xx-pcm.c b/sound/soc/pxa/pxa2xx-pcm.c
+index 410d48b93031..b51d7a0755d5 100644
+--- a/sound/soc/pxa/pxa2xx-pcm.c
++++ b/sound/soc/pxa/pxa2xx-pcm.c
+@@ -85,7 +85,7 @@ static int pxa2xx_soc_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ }
+ 
+ static struct snd_soc_platform_driver pxa2xx_soc_platform = {
+-	.ops 	= &pxa2xx_pcm_ops,
++	.ops		= &pxa2xx_pcm_ops,
+ 	.pcm_new	= pxa2xx_soc_pcm_new,
+ 	.pcm_free	= pxa2xx_pcm_free_dma_buffers,
+ };
 -- 
 2.11.0
