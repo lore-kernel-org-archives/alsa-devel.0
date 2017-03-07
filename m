@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel-classd: fix audio clock rate" to
-	the asoc tree
-Date: Tue, 07 Mar 2017 15:21:22 +0100
-Message-ID: <E1clFzO-0006cY-F7@finisterre>
-References: <20170224071043.25522-1-songjun.wu@microchip.com>
+Subject: Applied "ASoC: txx9: Added requiered spaces." to the
+	asoc tree
+Date: Tue, 07 Mar 2017 15:21:29 +0100
+Message-ID: <E1clFzV-0006ee-Ls@finisterre>
+References: <1488017541-14080-1-git-send-email-codrut.cristian.grosu@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 02B27266FC5
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 15:22:05 +0100 (CET)
-In-Reply-To: <20170224071043.25522-1-songjun.wu@microchip.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 79B89266FCB
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 15:22:20 +0100 (CET)
+In-Reply-To: <1488017541-14080-1-git-send-email-codrut.cristian.grosu@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Songjun Wu <songjun.wu@microchip.com>
-Cc: alsa-devel@alsa-project.org, Dushara Jayasinghe <dushara@successful.com.au>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, nicolas.ferre@microchip.com, stable@vger.kernel.org, linux-kernel@vger.kernel.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com, Codrut GROSU <codrut.cristian.grosu@gmail.com>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel-classd: fix audio clock rate
+   ASoC: txx9: Added requiered spaces.
 
 has been applied to the asoc tree at
 
@@ -53,34 +52,40 @@ to this mail.
 Thanks,
 Mark
 
->From cd3ac9affc43b44f49d7af70d275f0bd426ba643 Mon Sep 17 00:00:00 2001
-From: Songjun Wu <songjun.wu@microchip.com>
-Date: Fri, 24 Feb 2017 15:10:43 +0800
-Subject: [PATCH] ASoC: atmel-classd: fix audio clock rate
+>From 84052652feb89e76fde6fd37d26c9649da715557 Mon Sep 17 00:00:00 2001
+From: Codrut Grosu <codrut.cristian.grosu@gmail.com>
+Date: Sat, 25 Feb 2017 12:12:21 +0200
+Subject: [PATCH] ASoC: txx9: Added requiered spaces.
 
-Fix the audio clock rate according to the datasheet.
+This was reported by checpatch.pl
 
-Reported-by: Dushara Jayasinghe <dushara@successful.com.au>
-Signed-off-by: Songjun Wu <songjun.wu@microchip.com>
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+Signed-off-by: Codrut GROSU <codrut.cristian.grosu@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/atmel/atmel-classd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/txx9/txx9aclc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
-index 89ac5f5a93eb..7ae46c2647d4 100644
---- a/sound/soc/atmel/atmel-classd.c
-+++ b/sound/soc/atmel/atmel-classd.c
-@@ -349,7 +349,7 @@ static int atmel_classd_codec_dai_digital_mute(struct snd_soc_dai *codec_dai,
- }
+diff --git a/sound/soc/txx9/txx9aclc.c b/sound/soc/txx9/txx9aclc.c
+index 2cb2e0672c44..7912bf09dc4d 100644
+--- a/sound/soc/txx9/txx9aclc.c
++++ b/sound/soc/txx9/txx9aclc.c
+@@ -206,7 +206,7 @@ static void txx9aclc_dma_tasklet(unsigned long data)
+ static int txx9aclc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
+ 	struct txx9aclc_dmadata *dmadata = substream->runtime->private_data;
+-	struct txx9aclc_plat_drvdata *drvdata =txx9aclc_drvdata;
++	struct txx9aclc_plat_drvdata *drvdata = txx9aclc_drvdata;
+ 	void __iomem *base = drvdata->base;
+ 	unsigned long flags;
+ 	int ret = 0;
+@@ -340,7 +340,7 @@ static bool filter(struct dma_chan *chan, void *param)
+ static int txx9aclc_dma_init(struct txx9aclc_soc_device *dev,
+ 			     struct txx9aclc_dmadata *dmadata)
+ {
+-	struct txx9aclc_plat_drvdata *drvdata =txx9aclc_drvdata;
++	struct txx9aclc_plat_drvdata *drvdata = txx9aclc_drvdata;
+ 	struct txx9dmac_slave *ds = &dmadata->dma_slave;
+ 	dma_cap_mask_t mask;
  
- #define CLASSD_ACLK_RATE_11M2896_MPY_8 (112896 * 100 * 8)
--#define CLASSD_ACLK_RATE_12M288_MPY_8  (12228 * 1000 * 8)
-+#define CLASSD_ACLK_RATE_12M288_MPY_8  (12288 * 1000 * 8)
- 
- static struct {
- 	int rate;
 -- 
 2.11.0
