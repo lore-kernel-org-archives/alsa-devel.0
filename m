@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tegra: Add blank line after
-	declarations" to the asoc tree
-Date: Tue, 07 Mar 2017 14:33:24 +0100
-Message-ID: <E1clFEy-0005Zf-Hu@finisterre>
-References: <1488049157-6535-1-git-send-email-codrut.cristian.grosu@gmail.com>
+Subject: Applied "ASoC: pxa: Remove space before semicolon" to
+	the asoc tree
+Date: Tue, 07 Mar 2017 14:33:48 +0100
+Message-ID: <E1clFFM-0005fX-KS@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 618D6266FBF
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 14:34:07 +0100 (CET)
-In-Reply-To: <1488049157-6535-1-git-send-email-codrut.cristian.grosu@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DD580266F95
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 14:33:58 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: gnurou@gmail.com, alsa-devel@alsa-project.org, nicoleotsuka@gmail.com, swarren@wwwdotorg.org, lgirdwood@gmail.com, tiwai@suse.com, Codrut GROSU <codrut.cristian.grosu@gmail.com>, Julia.Lawall@lip6.fr, broonie@kernel.org, thierry.reding@gmail.com, linux-tegra@vger.kernel.org, Thierry Reding <treding@nvidia.com>, linux-kernel@vger.kernel.org
+To: Codrut Grosu <codrut.cristian.grosu@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tegra: Add blank line after declarations
+   ASoC: pxa: Remove space before semicolon
 
 has been applied to the asoc tree at
 
@@ -52,44 +52,49 @@ to this mail.
 Thanks,
 Mark
 
->From bf3c6ef7f5b1e43739ad0356a5afee5127c86465 Mon Sep 17 00:00:00 2001
+>From 3e22e9d702ee719c8106fd44578b12ce27999ae6 Mon Sep 17 00:00:00 2001
 From: Codrut Grosu <codrut.cristian.grosu@gmail.com>
-Date: Sat, 25 Feb 2017 20:59:17 +0200
-Subject: [PATCH] ASoC: tegra: Add blank line after declarations
+Date: Sat, 25 Feb 2017 22:33:00 +0200
+Subject: [PATCH] ASoC: pxa: Remove space before semicolon
 
 This was reported by checkpatch.pl
 
-Signed-off-by: Codrut GROSU <codrut.cristian.grosu@gmail.com>
-Acked-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Codrut Grosu <codrut.cristian.grosu@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/tegra/tegra20_das.c  | 1 +
- sound/soc/tegra/tegra30_ahub.c | 1 +
- 2 files changed, 2 insertions(+)
+ sound/soc/pxa/spitz.c | 4 ++--
+ sound/soc/pxa/z2.c    | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra20_das.c b/sound/soc/tegra/tegra20_das.c
-index 6d4a2774135e..4024e3abbeed 100644
---- a/sound/soc/tegra/tegra20_das.c
-+++ b/sound/soc/tegra/tegra20_das.c
-@@ -41,6 +41,7 @@ static inline void tegra20_das_write(u32 reg, u32 val)
- static inline u32 tegra20_das_read(u32 reg)
- {
- 	u32 val;
-+
- 	regmap_read(das->regmap, reg, &val);
- 	return val;
- }
-diff --git a/sound/soc/tegra/tegra30_ahub.c b/sound/soc/tegra/tegra30_ahub.c
-index d7494c0e9053..8c10ae7982ba 100644
---- a/sound/soc/tegra/tegra30_ahub.c
-+++ b/sound/soc/tegra/tegra30_ahub.c
-@@ -41,6 +41,7 @@ static inline void tegra30_apbif_write(u32 reg, u32 val)
- static inline u32 tegra30_apbif_read(u32 reg)
- {
- 	u32 val;
-+
- 	regmap_read(ahub->regmap_apbif, reg, &val);
- 	return val;
- }
+diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
+index 07d77cddac60..d38a2b519c52 100644
+--- a/sound/soc/pxa/spitz.c
++++ b/sound/soc/pxa/spitz.c
+@@ -230,8 +230,8 @@ static const struct snd_soc_dapm_route spitz_audio_map[] = {
+ 	{"Headset Jack", NULL, "ROUT1"},
+ 
+ 	/* ext speaker connected to LOUT2, ROUT2  */
+-	{"Ext Spk", NULL , "ROUT2"},
+-	{"Ext Spk", NULL , "LOUT2"},
++	{"Ext Spk", NULL, "ROUT2"},
++	{"Ext Spk", NULL, "LOUT2"},
+ 
+ 	/* mic is connected to input 1 - with bias */
+ 	{"LINPUT1", NULL, "Mic Bias"},
+diff --git a/sound/soc/pxa/z2.c b/sound/soc/pxa/z2.c
+index 990b1aa6d7f6..6d88d9acc666 100644
+--- a/sound/soc/pxa/z2.c
++++ b/sound/soc/pxa/z2.c
+@@ -119,8 +119,8 @@ static const struct snd_soc_dapm_route z2_audio_map[] = {
+ 	{"Headphone Jack", NULL, "ROUT1"},
+ 
+ 	/* ext speaker connected to LOUT2, ROUT2  */
+-	{"Ext Spk", NULL , "ROUT2"},
+-	{"Ext Spk", NULL , "LOUT2"},
++	{"Ext Spk", NULL, "ROUT2"},
++	{"Ext Spk", NULL, "LOUT2"},
+ 
+ 	/* mic is connected to R input 2 - with bias */
+ 	{"RINPUT2", NULL, "Mic Bias"},
 -- 
 2.11.0
