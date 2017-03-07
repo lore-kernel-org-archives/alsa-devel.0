@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bxtn: Store the FW/Library
-	context at boot" to the asoc tree
-Date: Tue, 07 Mar 2017 13:57:19 +0100
-Message-ID: <E1clEg3-0004dX-76@finisterre>
-References: <1483330807-9518-6-git-send-email-jeeja.kp@intel.com>
+Subject: Applied "ASoC: Intel: bdw-rt5677: Use
+	devm_gpiod_get()" to the asoc tree
+Date: Tue, 07 Mar 2017 13:57:22 +0100
+Message-ID: <E1clEg6-0004eO-Fc@finisterre>
+References: <20170220174610.47314-1-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BC4DB266E1A
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 13:57:28 +0100 (CET)
-In-Reply-To: <1483330807-9518-6-git-send-email-jeeja.kp@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 40D04266E52
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 13:57:32 +0100 (CET)
+In-Reply-To: <20170220174610.47314-1-andriy.shevchenko@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com, tiwai@suse.de, broonie@kernel.org, liam.r.girdwood@intel.com
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bxtn: Store the FW/Library context at boot
+   ASoC: Intel: bdw-rt5677: Use devm_gpiod_get()
 
 has been applied to the asoc tree at
 
@@ -53,142 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From 31d648f051fe82c9d6c2176b1b5ee402b1a18f21 Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Fri, 17 Feb 2017 22:48:56 +0530
-Subject: [PATCH] ASoC: Intel: bxtn: Store the FW/Library context at boot
+>From b3ec72ace939b0abd75d5d875e77cf0b777debb7 Mon Sep 17 00:00:00 2001
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Date: Mon, 20 Feb 2017 19:46:10 +0200
+Subject: [PATCH] ASoC: Intel: bdw-rt5677: Use devm_gpiod_get()
 
-Store the DSP firmware/library at boot, so that for S3 to S0 transition
-use the stored ctx for downloading the firmware to DSP memory.
+Since index is always 0 replace devm_gpiod_get_index() by devm_gpiod_get()
+and apply proper flags.
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/bxt-sst.c | 55 +++++++++++++++++++++++++--------------
- 1 file changed, 36 insertions(+), 19 deletions(-)
+ sound/soc/intel/boards/bdw-rt5677.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-index 15a063a403cc..7762d5a18fce 100644
---- a/sound/soc/intel/skylake/bxt-sst.c
-+++ b/sound/soc/intel/skylake/bxt-sst.c
-@@ -50,33 +50,47 @@ static unsigned int bxt_get_errorcode(struct sst_dsp *ctx)
- 	 return sst_dsp_shim_read(ctx, BXT_ADSP_ERROR_CODE);
- }
+diff --git a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
+index 53c6b4cbb1e1..14d9693c1641 100644
+--- a/sound/soc/intel/boards/bdw-rt5677.c
++++ b/sound/soc/intel/boards/bdw-rt5677.c
+@@ -193,13 +193,12 @@ static int bdw_rt5677_init(struct snd_soc_pcm_runtime *rtd)
+ 			RT5677_CLK_SEL_I2S1_ASRC);
  
-+static void sst_bxt_release_library(struct skl_lib_info *linfo, int lib_count)
-+{
-+	int i;
-+
-+	for (i = 1; i < lib_count; i++) {
-+		if (linfo[i].fw) {
-+			release_firmware(linfo[i].fw);
-+			linfo[i].fw = NULL;
-+		}
-+	}
-+}
-+
- static int
- bxt_load_library(struct sst_dsp *ctx, struct skl_lib_info *linfo, int lib_count)
- {
- 	struct snd_dma_buffer dmab;
- 	struct skl_sst *skl = ctx->thread_context;
--	const struct firmware *fw = NULL;
- 	struct firmware stripped_fw;
- 	int ret = 0, i, dma_id, stream_tag;
- 
- 	/* library indices start from 1 to N. 0 represents base FW */
- 	for (i = 1; i < lib_count; i++) {
--		ret = request_firmware(&fw, linfo[i].name, ctx->dev);
--		if (ret < 0) {
--			dev_err(ctx->dev, "Request lib %s failed:%d\n",
-+		if (linfo[i].fw == NULL) {
-+			ret = request_firmware(&linfo[i].fw, linfo[i].name,
-+						ctx->dev);
-+			if (ret < 0) {
-+				dev_err(ctx->dev, "Request lib %s failed:%d\n",
- 					linfo[i].name, ret);
--			return ret;
-+				goto load_library_failed;
-+			}
- 		}
- 
- 		if (skl->is_first_boot) {
--			ret = snd_skl_parse_uuids(ctx, fw,
-+			ret = snd_skl_parse_uuids(ctx, linfo[i].fw,
- 					BXT_ADSP_FW_BIN_HDR_OFFSET, i);
- 			if (ret < 0)
- 				goto load_library_failed;
- 		}
- 
--		stripped_fw.data = fw->data;
--		stripped_fw.size = fw->size;
-+		stripped_fw.data = linfo[i].fw->data;
-+		stripped_fw.size = linfo[i].fw->size;
- 		skl_dsp_strip_extended_manifest(&stripped_fw);
- 
- 		stream_tag = ctx->dsp_ops.prepare(ctx->dev, 0x40,
-@@ -99,14 +113,12 @@ bxt_load_library(struct sst_dsp *ctx, struct skl_lib_info *linfo, int lib_count)
- 
- 		ctx->dsp_ops.trigger(ctx->dev, false, stream_tag);
- 		ctx->dsp_ops.cleanup(ctx->dev, &dmab, stream_tag);
--		release_firmware(fw);
--		fw = NULL;
+ 	/* Request rt5677 GPIO for headphone amp control */
+-	bdw_rt5677->gpio_hp_en = devm_gpiod_get_index(codec->dev,
+-			"headphone-enable", 0, 0);
++	bdw_rt5677->gpio_hp_en = devm_gpiod_get(codec->dev, "headphone-enable",
++						GPIOD_OUT_LOW);
+ 	if (IS_ERR(bdw_rt5677->gpio_hp_en)) {
+ 		dev_err(codec->dev, "Can't find HP_AMP_SHDN_L gpio\n");
+ 		return PTR_ERR(bdw_rt5677->gpio_hp_en);
  	}
+-	gpiod_direction_output(bdw_rt5677->gpio_hp_en, 0);
  
- 	return ret;
- 
- load_library_failed:
--	release_firmware(fw);
-+	sst_bxt_release_library(linfo, lib_count);
- 	return ret;
- }
- 
-@@ -208,16 +220,14 @@ static int bxt_load_base_firmware(struct sst_dsp *ctx)
- 	struct skl_sst *skl = ctx->thread_context;
- 	int ret;
- 
--	ret = request_firmware(&ctx->fw, ctx->fw_name, ctx->dev);
--	if (ret < 0) {
--		dev_err(ctx->dev, "Request firmware failed %d\n", ret);
--		goto sst_load_base_firmware_failed;
-+	if (ctx->fw == NULL) {
-+		ret = request_firmware(&ctx->fw, ctx->fw_name, ctx->dev);
-+		if (ret < 0) {
-+			dev_err(ctx->dev, "Request firmware failed %d\n", ret);
-+			return ret;
-+		}
- 	}
- 
--	/* check for extended manifest */
--	if (ctx->fw == NULL)
--		goto sst_load_base_firmware_failed;
--
- 	/* prase uuids on first boot */
- 	if (skl->is_first_boot) {
- 		ret = snd_skl_parse_uuids(ctx, ctx->fw, BXT_ADSP_FW_BIN_HDR_OFFSET, 0);
-@@ -265,8 +275,11 @@ static int bxt_load_base_firmware(struct sst_dsp *ctx)
- 		}
- 	}
- 
-+	return ret;
-+
- sst_load_base_firmware_failed:
- 	release_firmware(ctx->fw);
-+	ctx->fw = NULL;
- 	return ret;
- }
- 
-@@ -635,6 +648,10 @@ EXPORT_SYMBOL_GPL(bxt_sst_init_fw);
- 
- void bxt_sst_dsp_cleanup(struct device *dev, struct skl_sst *ctx)
- {
-+
-+	sst_bxt_release_library(ctx->lib_info, ctx->lib_count);
-+	if (ctx->dsp->fw)
-+		release_firmware(ctx->dsp->fw);
- 	skl_freeup_uuid_list(ctx);
- 	skl_ipc_free(&ctx->ipc);
- 	ctx->dsp->cl_dev.ops.cl_cleanup_controller(ctx->dsp);
+ 	/* Create and initialize headphone jack */
+ 	if (!snd_soc_card_jack_new(rtd->card, "Headphone Jack",
 -- 
 2.11.0
