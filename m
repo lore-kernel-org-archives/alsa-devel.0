@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bdw-rt5677: Use
-	devm_gpiod_get()" to the asoc tree
-Date: Tue, 07 Mar 2017 13:57:22 +0100
-Message-ID: <E1clEg6-0004eO-Fc@finisterre>
-References: <20170220174610.47314-1-andriy.shevchenko@linux.intel.com>
+Subject: Applied "ASoC: dio2125: add dt-bindings" to the asoc
+	tree
+Date: Tue, 07 Mar 2017 13:57:29 +0100
+Message-ID: <E1clEgD-0004gQ-RC@finisterre>
+References: <20170306174451.24406-4-jbrunet@baylibre.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 40D04266E52
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 13:57:32 +0100 (CET)
-In-Reply-To: <20170220174610.47314-1-andriy.shevchenko@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C9AB266E52
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 13:57:40 +0100 (CET)
+In-Reply-To: <20170306174451.24406-4-jbrunet@baylibre.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Neil Armstrong <narmstrong@baylibre.com>, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bdw-rt5677: Use devm_gpiod_get()
+   ASoC: dio2125: add dt-bindings
 
 has been applied to the asoc tree at
 
@@ -53,40 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From b3ec72ace939b0abd75d5d875e77cf0b777debb7 Mon Sep 17 00:00:00 2001
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Date: Mon, 20 Feb 2017 19:46:10 +0200
-Subject: [PATCH] ASoC: Intel: bdw-rt5677: Use devm_gpiod_get()
+>From 1e03580b3a7213292fae9a6677edfaa83843fa4e Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Mon, 6 Mar 2017 18:44:51 +0100
+Subject: [PATCH] ASoC: dio2125: add dt-bindings
 
-Since index is always 0 replace devm_gpiod_get_index() by devm_gpiod_get()
-and apply proper flags.
-
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bdw-rt5677.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/sound/dioo,dio2125.txt | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/dioo,dio2125.txt
 
-diff --git a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
-index 53c6b4cbb1e1..14d9693c1641 100644
---- a/sound/soc/intel/boards/bdw-rt5677.c
-+++ b/sound/soc/intel/boards/bdw-rt5677.c
-@@ -193,13 +193,12 @@ static int bdw_rt5677_init(struct snd_soc_pcm_runtime *rtd)
- 			RT5677_CLK_SEL_I2S1_ASRC);
- 
- 	/* Request rt5677 GPIO for headphone amp control */
--	bdw_rt5677->gpio_hp_en = devm_gpiod_get_index(codec->dev,
--			"headphone-enable", 0, 0);
-+	bdw_rt5677->gpio_hp_en = devm_gpiod_get(codec->dev, "headphone-enable",
-+						GPIOD_OUT_LOW);
- 	if (IS_ERR(bdw_rt5677->gpio_hp_en)) {
- 		dev_err(codec->dev, "Can't find HP_AMP_SHDN_L gpio\n");
- 		return PTR_ERR(bdw_rt5677->gpio_hp_en);
- 	}
--	gpiod_direction_output(bdw_rt5677->gpio_hp_en, 0);
- 
- 	/* Create and initialize headphone jack */
- 	if (!snd_soc_card_jack_new(rtd->card, "Headphone Jack",
+diff --git a/Documentation/devicetree/bindings/sound/dioo,dio2125.txt b/Documentation/devicetree/bindings/sound/dioo,dio2125.txt
+new file mode 100644
+index 000000000000..63dbfe0f11d0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/dioo,dio2125.txt
+@@ -0,0 +1,12 @@
++DIO2125 Audio Driver
++
++Required properties:
++- compatible : "dioo,dio2125"
++- enable-gpios : the gpio connected to the enable pin of the dio2125
++
++Example:
++
++amp: analog-amplifier {
++	compatible = "dioo,dio2125";
++	enable-gpios = <&gpio GPIOH_3 0>;
++};
 -- 
 2.11.0
