@@ -1,33 +1,29 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: Remove unneeded return statement
-	in void function" to the asoc tree
-Date: Tue, 07 Mar 2017 14:33:35 +0100
-Message-ID: <E1clFF9-0005c4-MA@finisterre>
+Subject: Applied "ASoC: pxa: Add space around '='" to the asoc tree
+Date: Tue, 07 Mar 2017 14:33:03 +0100
+Message-ID: <E1clFEd-0005UD-4p@finisterre>
+References: <1488054323-11363-1-git-send-email-codrut.cristian.grosu@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C1CCF266FA2
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 14:33:45 +0100 (CET)
-In-Reply-To: 
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1488054323-11363-1-git-send-email-codrut.cristian.grosu@gmail.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Codrut Grosu <codrut.cristian.grosu@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com, haojian.zhuang@gmail.com, perex@perex.cz, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, robert.jarzmik@free.fr, daniel@zonque.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: Remove unneeded return statement in void function
+   ASoC: pxa: Add space around '='
 
 has been applied to the asoc tree at
 
@@ -52,43 +48,74 @@ to this mail.
 Thanks,
 Mark
 
->From 17339f6099154678485244cc17d700f19ece0dc0 Mon Sep 17 00:00:00 2001
+>From 7be5c5fe9287c7f5cc0f2f3c742d602c82daa2d6 Mon Sep 17 00:00:00 2001
 From: Codrut Grosu <codrut.cristian.grosu@gmail.com>
-Date: Sat, 25 Feb 2017 23:06:36 +0200
-Subject: [PATCH] ASoC: pxa: Remove unneeded return statement in void function
+Date: Sat, 25 Feb 2017 22:25:23 +0200
+Subject: [PATCH] ASoC: pxa: Add space around '='
 
 This was reported by checkpatch.pl
 
 Signed-off-by: Codrut Grosu <codrut.cristian.grosu@gmail.com>
+Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/mmp-pcm.c  | 1 -
- sound/soc/pxa/mmp-sspa.c | 1 -
- 2 files changed, 2 deletions(-)
+ sound/soc/pxa/e750_wm9705.c    | 2 +-
+ sound/soc/pxa/e800_wm9712.c    | 2 +-
+ sound/soc/pxa/em-x270.c        | 2 +-
+ sound/soc/pxa/mioa701_wm9713.c | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/pxa/mmp-pcm.c b/sound/soc/pxa/mmp-pcm.c
-index 96df9b2d8fc4..5b5f1a442891 100644
---- a/sound/soc/pxa/mmp-pcm.c
-+++ b/sound/soc/pxa/mmp-pcm.c
-@@ -166,7 +166,6 @@ static void mmp_pcm_free_dma_buffers(struct snd_pcm *pcm)
- 		buf->area = NULL;
- 	}
- 
--	return;
- }
- 
- static int mmp_pcm_preallocate_dma_buffer(struct snd_pcm_substream *substream,
-diff --git a/sound/soc/pxa/mmp-sspa.c b/sound/soc/pxa/mmp-sspa.c
-index ca8b23f8c525..9cc35012e6e5 100644
---- a/sound/soc/pxa/mmp-sspa.c
-+++ b/sound/soc/pxa/mmp-sspa.c
-@@ -119,7 +119,6 @@ static void mmp_sspa_shutdown(struct snd_pcm_substream *substream,
- 	clk_disable(priv->sspa->clk);
- 	clk_disable(priv->sysclk);
- 
--	return;
- }
- 
- /*
+diff --git a/sound/soc/pxa/e750_wm9705.c b/sound/soc/pxa/e750_wm9705.c
+index fdcd94adee7c..82bcbbb1841b 100644
+--- a/sound/soc/pxa/e750_wm9705.c
++++ b/sound/soc/pxa/e750_wm9705.c
+@@ -81,7 +81,7 @@ static struct snd_soc_dai_link e750_dai[] = {
+ 		.name = "AC97 Aux",
+ 		.stream_name = "AC97 Aux",
+ 		.cpu_dai_name = "pxa2xx-ac97-aux",
+-		.codec_dai_name ="wm9705-aux",
++		.codec_dai_name = "wm9705-aux",
+ 		.platform_name = "pxa-pcm-audio",
+ 		.codec_name = "wm9705-codec",
+ 	},
+diff --git a/sound/soc/pxa/e800_wm9712.c b/sound/soc/pxa/e800_wm9712.c
+index 2df714f70ec0..1ed8aa2348f1 100644
+--- a/sound/soc/pxa/e800_wm9712.c
++++ b/sound/soc/pxa/e800_wm9712.c
+@@ -81,7 +81,7 @@ static struct snd_soc_dai_link e800_dai[] = {
+ 		.name = "AC97 Aux",
+ 		.stream_name = "AC97 Aux",
+ 		.cpu_dai_name = "pxa2xx-ac97-aux",
+-		.codec_dai_name ="wm9712-aux",
++		.codec_dai_name = "wm9712-aux",
+ 		.platform_name = "pxa-pcm-audio",
+ 		.codec_name = "wm9712-codec",
+ 	},
+diff --git a/sound/soc/pxa/em-x270.c b/sound/soc/pxa/em-x270.c
+index 6f2020f6c8d3..e046770ce70e 100644
+--- a/sound/soc/pxa/em-x270.c
++++ b/sound/soc/pxa/em-x270.c
+@@ -43,7 +43,7 @@ static struct snd_soc_dai_link em_x270_dai[] = {
+ 		.name = "AC97 Aux",
+ 		.stream_name = "AC97 Aux",
+ 		.cpu_dai_name = "pxa2xx-ac97-aux",
+-		.codec_dai_name ="wm9712-aux",
++		.codec_dai_name = "wm9712-aux",
+ 		.platform_name = "pxa-pcm-audio",
+ 		.codec_name = "wm9712-codec",
+ 	},
+diff --git a/sound/soc/pxa/mioa701_wm9713.c b/sound/soc/pxa/mioa701_wm9713.c
+index 8760a6687885..c4c6fbedc723 100644
+--- a/sound/soc/pxa/mioa701_wm9713.c
++++ b/sound/soc/pxa/mioa701_wm9713.c
+@@ -157,7 +157,7 @@ static struct snd_soc_dai_link mioa701_dai[] = {
+ 		.name = "AC97 Aux",
+ 		.stream_name = "AC97 Aux",
+ 		.cpu_dai_name = "pxa2xx-ac97-aux",
+-		.codec_dai_name ="wm9713-aux",
++		.codec_dai_name = "wm9713-aux",
+ 		.codec_name = "wm9713-codec",
+ 		.platform_name = "pxa-pcm-audio",
+ 		.ops = &mioa701_ops,
 -- 
 2.11.0
