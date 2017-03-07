@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Return an error on write to a
-	disabled volatile control" to the asoc tree
-Date: Tue, 07 Mar 2017 13:27:20 +0100
-Message-ID: <E1clED2-0003uw-NZ@finisterre>
-References: <1488819274-9791-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 2/3] ASoC: dio2125: add dio2125 amp driver
+Date: Tue, 7 Mar 2017 13:36:53 +0100
+Message-ID: <20170307123653.jg7jqe4sft2pqycc@sirena.org.uk>
+References: <20170306174451.24406-1-jbrunet@baylibre.com>
+ <20170306174451.24406-3-jbrunet@baylibre.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5631692076765131265=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D2DD2266ADA
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 13:27:35 +0100 (CET)
-In-Reply-To: <1488819274-9791-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B9F1266AE4
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 13:37:01 +0100 (CET)
+In-Reply-To: <20170306174451.24406-3-jbrunet@baylibre.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,78 +21,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: Kevin Hilman <khilman@baylibre.com>, alsa-devel@alsa-project.org, Neil Armstrong <narmstrong@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: wm_adsp: Return an error on write to a disabled volatile control
+--===============5631692076765131265==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="3zht5fsd6afpsqth"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--3zht5fsd6afpsqth
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Mon, Mar 06, 2017 at 06:44:50PM +0100, Jerome Brunet wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> +	gpiod_set_value(priv->gpiod_enable, val);
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+You should use gpiod_set_value_cansleep() so that the driver can work
+with all GPIOs unless there's a specific need to have GPIOs you can
+control in interrupt (which should be the case for anything you're using
+for DAPM control).
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Please submit an incremental patch fixing this.
 
-Thanks,
-Mark
+--3zht5fsd6afpsqth
+Content-Type: application/pgp-signature; name="signature.asc"
 
->From 67430a39ca7a6af28aade5acb92d43ee257c1014 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Mon, 6 Mar 2017 16:54:33 +0000
-Subject: [PATCH] ASoC: wm_adsp: Return an error on write to a disabled
- volatile control
+-----BEGIN PGP SIGNATURE-----
 
-Volatile controls should only be accessed when the firmware is active,
-currently however writes to these controls will succeed, but the data
-will be lost, if the firmware is powered down. Update this behaviour such
-that an error is returned the same as it is for reads.
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAli+qWQACgkQJNaLcl1U
+h9CnXwf/QaBOS0M8G9dC7mC3HvfJkfX+GTk4G3UmPM3r3DCDqWa7rGp7EVPhauEY
+1aObtb14lRtXkkeSpwUz2YdWutqCaUiuXMUG6GH8f/vgksuVEB7E9hWqDshEHS1L
++orTapscEMicncx700BdQ3KTS1CWBgPd24wgTjWH6bb+GJQscZvmDkWtzvCWhDme
+TS1W3dE50pPQapvprTNOqreJHsT5njeU85FA2zuzyt9JDqV4rbe92C4TYE1os/b3
+3ipTkX/LqgPF2K3rL3wAaG7YC77xWEBFWdy3T+ZwvVZcscZzvpgbqx6YCEMJf11w
+e+7hiQZ2mYFL6QxQlnVsjJBKJi7bYg==
+=o9ai
+-----END PGP SIGNATURE-----
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/wm_adsp.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+--3zht5fsd6afpsqth--
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index d151224ffcca..6313b3da967b 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -899,7 +899,10 @@ static int wm_coeff_put(struct snd_kcontrol *kctl,
- 
- 	mutex_lock(&ctl->dsp->pwr_lock);
- 
--	memcpy(ctl->cache, p, ctl->len);
-+	if (ctl->flags & WMFW_CTL_FLAG_VOLATILE)
-+		ret = -EPERM;
-+	else
-+		memcpy(ctl->cache, p, ctl->len);
- 
- 	ctl->set = 1;
- 	if (ctl->enabled && ctl->dsp->running)
-@@ -926,6 +929,8 @@ static int wm_coeff_tlv_put(struct snd_kcontrol *kctl,
- 		ctl->set = 1;
- 		if (ctl->enabled && ctl->dsp->running)
- 			ret = wm_coeff_write_control(ctl, ctl->cache, size);
-+		else if (ctl->flags & WMFW_CTL_FLAG_VOLATILE)
-+			ret = -EPERM;
- 	}
- 
- 	mutex_unlock(&ctl->dsp->pwr_lock);
--- 
-2.11.0
+--===============5631692076765131265==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5631692076765131265==--
