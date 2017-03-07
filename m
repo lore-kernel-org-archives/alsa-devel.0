@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dio2125: add dt-bindings" to the asoc
-	tree
-Date: Tue, 07 Mar 2017 13:57:29 +0100
-Message-ID: <E1clEgD-0004gQ-RC@finisterre>
-References: <20170306174451.24406-4-jbrunet@baylibre.com>
+Subject: Applied "ASoC: Intel: Skylake: fix spelling mistake:
+	"allocationf" -> "allocation"" to the asoc tree
+Date: Tue, 07 Mar 2017 13:57:26 +0100
+Message-ID: <E1clEgA-0004fV-8c@finisterre>
+References: <20170221185005.27973-1-colin.king@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C9AB266E52
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 13:57:40 +0100 (CET)
-In-Reply-To: <20170306174451.24406-4-jbrunet@baylibre.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 285F6266AC4
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 13:57:42 +0100 (CET)
+In-Reply-To: <20170221185005.27973-1-colin.king@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Neil Armstrong <narmstrong@baylibre.com>, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+To: Colin Ian King <colin.king@canonical.com>
+Cc: alsa-devel@alsa-project.org, Dharageswari R <dharageswari.r@intel.com>, Vinod Koul <vinod.koul@intel.com>, Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dio2125: add dt-bindings
+   ASoC: Intel: Skylake: fix spelling mistake: "allocationf" -> "allocation"
 
 has been applied to the asoc tree at
 
@@ -53,35 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From 1e03580b3a7213292fae9a6677edfaa83843fa4e Mon Sep 17 00:00:00 2001
-From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Mon, 6 Mar 2017 18:44:51 +0100
-Subject: [PATCH] ASoC: dio2125: add dt-bindings
+>From 08458871b60c4bfe49973ce1c27a2b4bc4c159b0 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Tue, 21 Feb 2017 18:50:05 +0000
+Subject: [PATCH] ASoC: Intel: Skylake: fix spelling mistake: "allocationf" ->
+ "allocation"
 
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Trivial fix to spelling mistake in dev_err message.
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/dioo,dio2125.txt | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/dioo,dio2125.txt
+ sound/soc/intel/skylake/skl-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/dioo,dio2125.txt b/Documentation/devicetree/bindings/sound/dioo,dio2125.txt
-new file mode 100644
-index 000000000000..63dbfe0f11d0
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/dioo,dio2125.txt
-@@ -0,0 +1,12 @@
-+DIO2125 Audio Driver
-+
-+Required properties:
-+- compatible : "dioo,dio2125"
-+- enable-gpios : the gpio connected to the enable pin of the dio2125
-+
-+Example:
-+
-+amp: analog-amplifier {
-+	compatible = "dioo,dio2125";
-+	enable-gpios = <&gpio GPIOH_3 0>;
-+};
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index e12520e142ff..635cbb1e7d91 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1165,7 +1165,7 @@ static int skl_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 						snd_dma_pci_data(skl->pci),
+ 						size, MAX_PREALLOC_SIZE);
+ 		if (retval) {
+-			dev_err(dai->dev, "dma buffer allocationf fail\n");
++			dev_err(dai->dev, "dma buffer allocation fail\n");
+ 			return retval;
+ 		}
+ 	}
 -- 
 2.11.0
