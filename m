@@ -1,30 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa-ssp: Added blank line after declarations" to the
- asoc tree
-Date: Tue, 07 Mar 2017 14:33:51 +0100
-Message-ID: <E1clFFP-0005gZ-No@finisterre>
-References: <1488058430-15393-1-git-send-email-codrut.cristian.grosu@gmail.com>
+Subject: Applied "ASoC: pxa: Remove unneeded else after return
+	statement" to the asoc tree
+Date: Tue, 07 Mar 2017 14:33:46 +0100
+Message-ID: <E1clFFK-0005eq-7b@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1488058430-15393-1-git-send-email-codrut.cristian.grosu@gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 72B32266F0F
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 14:33:55 +0100 (CET)
+In-Reply-To: 
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Codrut Grosu <codrut.cristian.grosu@gmail.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com, haojian.zhuang@gmail.com, perex@perex.cz, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, robert.jarzmik@free.fr, daniel@zonque.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa-ssp: Added blank line after declarations
+   ASoC: pxa: Remove unneeded else after return statement
 
 has been applied to the asoc tree at
 
@@ -49,30 +52,34 @@ to this mail.
 Thanks,
 Mark
 
->From 1dbe692380de6eebdd3702b820a4bee6b931a2e5 Mon Sep 17 00:00:00 2001
+>From 291aaff0c6f2c56645061b9c8afadc0bb1251676 Mon Sep 17 00:00:00 2001
 From: Codrut Grosu <codrut.cristian.grosu@gmail.com>
-Date: Sat, 25 Feb 2017 23:33:50 +0200
-Subject: [PATCH] ASoC: pxa-ssp: Added blank line after declarations
+Date: Sat, 25 Feb 2017 23:26:56 +0200
+Subject: [PATCH] ASoC: pxa: Remove unneeded else after return statement
 
 This was reported by checkpatch.pl
 
 Signed-off-by: Codrut Grosu <codrut.cristian.grosu@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/pxa-ssp.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/pxa/pxa2xx-ac97.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index 3cad990dad2c..e9f6df38b152 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -354,6 +354,7 @@ static int pxa_ssp_set_dai_pll(struct snd_soc_dai *cpu_dai, int pll_id,
- 		if (ssp->type == PXA3xx_SSP) {
- 			u32 val;
- 			u64 tmp = 19968;
-+
- 			tmp *= 1000000;
- 			do_div(tmp, freq_out);
- 			val = tmp;
+diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
+index 2e2fb1838ec2..f49bf02e5ec2 100644
+--- a/sound/soc/pxa/pxa2xx-ac97.c
++++ b/sound/soc/pxa/pxa2xx-ac97.c
+@@ -140,9 +140,8 @@ static int pxa2xx_ac97_mic_startup(struct snd_pcm_substream *substream,
+ {
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		return -ENODEV;
+-	else
+-		snd_soc_dai_set_dma_data(cpu_dai, substream,
+-					 &pxa2xx_ac97_pcm_mic_mono_in);
++	snd_soc_dai_set_dma_data(cpu_dai, substream,
++				 &pxa2xx_ac97_pcm_mic_mono_in);
+ 
+ 	return 0;
+ }
 -- 
 2.11.0
