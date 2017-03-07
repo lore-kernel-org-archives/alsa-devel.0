@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ux500: Added blank line after
-	declarations" to the asoc tree
-Date: Tue, 07 Mar 2017 14:33:10 +0100
-Message-ID: <E1clFEk-0005Vv-Q3@finisterre>
+Subject: Applied "ASoC: ux500: Remove unuseful break after
+	return" to the asoc tree
+Date: Tue, 07 Mar 2017 14:33:13 +0100
+Message-ID: <E1clFEn-0005We-Bx@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B46E266AC4
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 14:33:20 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id DD116266AC4
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 14:33:22 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,7 +26,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ux500: Added blank line after declarations
+   ASoC: ux500: Remove unuseful break after return
 
 has been applied to the asoc tree at
 
@@ -51,30 +51,30 @@ to this mail.
 Thanks,
 Mark
 
->From fe3a980cd39125efb7e9ddd67dd0f1a9ef237171 Mon Sep 17 00:00:00 2001
+>From b1c5d923720a066b95249f3702a94d27b5714ee9 Mon Sep 17 00:00:00 2001
 From: Codrut Grosu <codrut.cristian.grosu@gmail.com>
-Date: Sat, 25 Feb 2017 21:50:21 +0200
-Subject: [PATCH] ASoC: ux500: Added blank line after declarations
+Date: Sat, 25 Feb 2017 21:41:25 +0200
+Subject: [PATCH] ASoC: ux500: Remove unuseful break after return
 
 This was reported by checkpatch.pl
 
 Signed-off-by: Codrut GROSU <codrut.cristian.grosu@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/ux500/ux500_msp_dai.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/ux500/ux500_msp_i2s.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/ux500/ux500_msp_dai.c b/sound/soc/ux500/ux500_msp_dai.c
-index 36e9bb2bd634..ec5152aa3f6e 100644
---- a/sound/soc/ux500/ux500_msp_dai.c
-+++ b/sound/soc/ux500/ux500_msp_dai.c
-@@ -133,6 +133,7 @@ static int setup_pcm_framing(struct snd_soc_dai *dai, unsigned int rate,
- 	struct ux500_msp_i2s_drvdata *drvdata = dev_get_drvdata(dai->dev);
+diff --git a/sound/soc/ux500/ux500_msp_i2s.c b/sound/soc/ux500/ux500_msp_i2s.c
+index 959d7b4edf56..bd5266aca0f1 100644
+--- a/sound/soc/ux500/ux500_msp_i2s.c
++++ b/sound/soc/ux500/ux500_msp_i2s.c
+@@ -604,7 +604,6 @@ int ux500_msp_i2s_trigger(struct ux500_msp *msp, int cmd, int direction)
+ 		break;
+ 	default:
+ 		return -EINVAL;
+-		break;
+ 	}
  
- 	u32 frame_length = MSP_FRAME_LEN_1;
-+
- 	prot_desc->frame_width = 0;
- 
- 	switch (drvdata->slots) {
+ 	return 0;
 -- 
 2.11.0
