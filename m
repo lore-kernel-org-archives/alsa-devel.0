@@ -1,18 +1,14 @@
-From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: Re: [PATCH 0/3] ASoC: add dio2125 amplifier support
-Date: Tue, 07 Mar 2017 17:26:17 +0100
-Message-ID: <1488903977.28627.4.camel@baylibre.com>
-References: <20170306174451.24406-1-jbrunet@baylibre.com>
+From: jeeja.kp@intel.com
+Subject: [PATCH 00/10] ASoC: Intel: Skylake: Driver updates
+Date: Tue,  7 Mar 2017 23:43:56 +0530
+Message-ID: <1488910446-26415-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f47.google.com (mail-wm0-f47.google.com [74.125.82.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F712266FA0
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 17:26:19 +0100 (CET)
-Received: by mail-wm0-f47.google.com with SMTP id t189so9450852wmt.1
- for <alsa-devel@alsa-project.org>; Tue, 07 Mar 2017 08:26:18 -0800 (PST)
-In-Reply-To: <20170306174451.24406-1-jbrunet@baylibre.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id E7C61266FA0
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 19:02:04 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,40 +18,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Neil Armstrong <narmstrong@baylibre.com>, linux-kernel@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTWFyaywKCkluIHRoaXMgc2VyaWVzLCB5b3UgYXBwbGllZCBwYXRjaCAyIGFuZCAzIGJ1dCBu
-b3QgcGF0Y2ggMS4KKHNvIHRoZSBkaW9vIHByZWZpeCBpcyB1c2VkIGJ1dCBub3QgZG9jdW1lbnRl
-ZCkKCklzIGl0IG9uIHB1cnBvc2UgPwpUaGUgcGF0Y2ggZG9lcyBub3QgaGF2ZSB0aGUgIkFTb0Mi
-IHByZWZpeCwgdGhpcyBtYXliZSB3aHkgaXQgd2FzCm1pc3NlZC4gU2luY2UsIHRoZSBmaWxlIGRv
-ZXMgbm8gYmVsb25nIHRvIGFsc2EsIEkgd2Fzbid0IHN1cmUgd2hldGhlcgp0byBwdXQgdGhlIHBy
-ZWZpeCBvciBub3QuCgpSZWdhcmRzCgpKZXJvbWUKCk9uIE1vbiwgMjAxNy0wMy0wNiBhdCAxODo0
-NCArMDEwMCwgSmVyb21lIEJydW5ldCB3cm90ZToKPiBUaGlzIHBhdGNoc2V0IGFkZHMgdGhlIHN1
-cHBvcnQgZm9yIHRoZSBkaW8yMTI1IGZyb20gRGlvbwo+IG1pY3JvY2lyY3VpdHMuCj4gVGhlIGRp
-bzIxMjUgaXMgYXVkaW8gZHJpdmVyIHdpdGggYWRqdXN0YWJsZSBnYWluLiBUaGUgRU4gcGFkIGFs
-bG93cwo+IHRvCj4gZW5hYmxlIG9yIGRpc2FibGUgdGhlIG91dHB1dHMgb2YgdGhlIGRyaXZlci4K
-PiAKPiBUaGUgbGluayB0byB0aGUgZGF0YXNoZWV0IGlzIG5vdCBwcm92aWRlZCBhcyBwYXJ0IG9m
-IHRoZSBjb21taXQuIEl0Cj4gaXMgbm90Cj4gcHJvdmlkZWQgdGhlIG1hbnVmYWN0dXJlciBhbmQg
-aXQgaXMgZG91YnRmdWwgaXQgd2lsbCBzdGlsbCBiZQo+IGF2YWlsYWJsZSBhCj4gZmV3IHllYXJz
-IGZyb20gbm93LiBTdGlsbCBwcm92aWRlZCBoZXJlIGluIGNhc2UgYW55b25lIGlzIGludGVyZXN0
-ZWQKPiBbMF0uCj4gCj4gVGhpcyBwYXRjaHNldCBoYXMgYmVlbiB0ZXN0ZWQgb24gQW1sb2dpYydz
-IG1lc29uLWd4YmItcDIwMCBib2FyZC4KPiAKPiBbMF06IGh0dHA6Ly93d3cud2luaW5lLmNvbS9M
-aW5lJUU5JTlGJUIzL0RJTzIxMjVYTTEwJTIwVjEuMC5wZGYKPiAKPiBKZXJvbWUgQnJ1bmV0ICgz
-KToKPiDCoCBkdC1iaW5kaW5nczogYWRkIHZlbmRvciBwcmVmaXggZm9yIERpb28KPiDCoCBBU29D
-OiBkaW8yMTI1OiBhZGQgZGlvMjEyNSBhbXAgZHJpdmVyCj4gwqAgQVNvQzogZGlvMjEyNTogYWRk
-IGR0LWJpbmRpbmdzCj4gCj4gwqAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9kaW9vLGRp
-bzIxMjUudHh0wqDCoMKgwqDCoHzCoMKgMTIgKysrCj4gwqAuLi4vZGV2aWNldHJlZS9iaW5kaW5n
-cy92ZW5kb3ItcHJlZml4ZXMudHh0wqDCoMKgwqDCoMKgwqDCoHzCoMKgwqAxICsKPiDCoHNvdW5k
-L3NvYy9jb2RlY3MvS2NvbmZpZ8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoHzCoMKgwqA1ICsKPiDCoHNvdW5kL3NvYy9jb2RlY3MvTWFrZWZpbGXC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfMKgwqDC
-oDIgKwo+IMKgc291bmQvc29jL2NvZGVjcy9kaW8yMTI1LmPCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHwgMTIwCj4gKysrKysrKysrKysrKysrKysrKysr
-Cj4gwqA1IGZpbGVzIGNoYW5nZWQsIDE0MCBpbnNlcnRpb25zKCspCj4gwqBjcmVhdGUgbW9kZSAx
-MDA2NDQKPiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvZGlvbyxkaW8y
-MTI1LnR4dAo+IMKgY3JlYXRlIG1vZGUgMTAwNjQ0IHNvdW5kL3NvYy9jb2RlY3MvZGlvMjEyNS5j
-Cj4gCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+From: Jeeja KP <jeeja.kp@intel.com>
+
+This patch series provides updates and fixes on the following:
+ Fix parameter overwrite for KPB DSP Module.
+ To handle module download with size > dma buffer size.
+ Fix to handle dsp pipes correctly.
+ Disable notification after dsp boot.
+ Remove get dsp_ops in cleanup routine.
+ Disable interrupt when DSP is in D3.
+ Update DSP core state in D0.
+ Reload the firmware in case of D3 failure.
+
+Dharageswari R (1):
+  ASoC: Intel: Skylake: Fix parameter overwrite for KPB Module
+
+G Kranthi (2):
+  ASoC: Intel: Skylake: Disable notifications at boot after DSP FW init
+  ASoC: Intel: Skylake: Remove get dsp_ops in cleanup routine
+
+Guneshwor Singh (1):
+  ASoC: Intel: Skylake: Fix not to stop src pipe in pre pmd event
+    handler
+
+Jeeja KP (6):
+  ASoC: Intel: Skylake: Fix to delete DSP pipe after stopping pipe
+  ASoC: Intel: bxtn: Disable interrupt when DSP is in D3
+  ASoC: Intel: bxtn: Update DSP core state in D0
+  ASoC: Intel: bxtn: Reload the firmware in case of D3 failure
+  ASoC: Intel: Skylake: Remove BE prepare ops
+  ASoC: Intel: Skylake: Fix module load when module size > DMA buffer
+    size
+
+ sound/soc/intel/skylake/bxt-sst.c       | 14 ++++++-
+ sound/soc/intel/skylake/skl-messages.c  | 12 ++----
+ sound/soc/intel/skylake/skl-pcm.c       | 19 +---------
+ sound/soc/intel/skylake/skl-sst-cldma.c | 26 ++++++++-----
+ sound/soc/intel/skylake/skl-sst-cldma.h |  2 +-
+ sound/soc/intel/skylake/skl-sst-dsp.c   |  6 ++-
+ sound/soc/intel/skylake/skl-sst-dsp.h   |  3 ++
+ sound/soc/intel/skylake/skl-sst-ipc.c   | 67 ++++++++++++++++++++++-----------
+ sound/soc/intel/skylake/skl-sst-ipc.h   |  7 ++++
+ sound/soc/intel/skylake/skl-sst.c       | 49 ++++++++++++++++++------
+ sound/soc/intel/skylake/skl-topology.c  | 56 ++++++++++++++-------------
+ 11 files changed, 162 insertions(+), 99 deletions(-)
+
+-- 
+2.5.0
