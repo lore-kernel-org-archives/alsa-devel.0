@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ux500: Added */ to the next line" to
-	the asoc tree
-Date: Tue, 07 Mar 2017 14:33:16 +0100
-Message-ID: <E1clFEq-0005Xb-Ed@finisterre>
-References: <1488051202-8563-1-git-send-email-codrut.cristian.grosu@gmail.com>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 2/3] ASoC: dio2125: add dio2125 amp driver
+Date: Tue, 7 Mar 2017 14:47:54 +0100
+Message-ID: <f8d8557b-39bb-265c-9fa7-2034a0364594@metafoo.de>
+References: <20170306174451.24406-1-jbrunet@baylibre.com>
+ <20170306174451.24406-3-jbrunet@baylibre.com>
+ <20170307123653.jg7jqe4sft2pqycc@sirena.org.uk>
+ <1488892400.2420.26.camel@baylibre.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 79CD9266FCD
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 14:34:21 +0100 (CET)
-In-Reply-To: <1488051202-8563-1-git-send-email-codrut.cristian.grosu@gmail.com>
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id B6676266EEB
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 14:47:57 +0100 (CET)
+In-Reply-To: <1488892400.2420.26.camel@baylibre.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,62 +23,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com, Codrut GROSU <codrut.cristian.grosu@gmail.com>, broonie@kernel.org, colin.king@canonical.com
+To: Jerome Brunet <jbrunet@baylibre.com>, Mark Brown <broonie@kernel.org>
+Cc: Kevin Hilman <khilman@baylibre.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Neil Armstrong <narmstrong@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 03/07/2017 02:13 PM, Jerome Brunet wrote:
+> On Tue, 2017-03-07 at 13:36 +0100, Mark Brown wrote:
+>> On Mon, Mar 06, 2017 at 06:44:50PM +0100, Jerome Brunet wrote:
+>>
+>>> +	gpiod_set_value(priv->gpiod_enable, val);
+>>
+>> You should use gpiod_set_value_cansleep() so that the driver can work
+>> with all GPIOs unless there's a specific need to have GPIOs you can
+>> control in interrupt (which should be the case for anything you're
+>> using
+>> for DAPM control).
+> 
+> Indeed, Thanks for pointing this out.
+> I have question regarding this DAPM control.
+> Here, I put the control in DAPM so it can help with the pop noise
+> reduction, but I think it would be nice if the user could force the
+> mute if he wants to.
+> 
+> Would it be OK to add a user control and some logic so the output is
+> enabled only if DAPM and the user agree it should ?
 
-   ASoC: ux500: Added */ to the next line
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 8fcf1e5eb460d8f032c699280f5a33fbf3716c29 Mon Sep 17 00:00:00 2001
-From: Codrut Grosu <codrut.cristian.grosu@gmail.com>
-Date: Sat, 25 Feb 2017 21:33:22 +0200
-Subject: [PATCH] ASoC: ux500: Added */ to the next line
-
-This was reported by checkpatch.pl
-
-Signed-off-by: Codrut GROSU <codrut.cristian.grosu@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/ux500/ux500_msp_dai.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/ux500/ux500_msp_dai.c b/sound/soc/ux500/ux500_msp_dai.c
-index b343efd9be5b..36e9bb2bd634 100644
---- a/sound/soc/ux500/ux500_msp_dai.c
-+++ b/sound/soc/ux500/ux500_msp_dai.c
-@@ -482,7 +482,8 @@ static int ux500_msp_dai_prepare(struct snd_pcm_substream *substream,
- 	if ((drvdata->fmt & SND_SOC_DAIFMT_MASTER_MASK) &&
- 		(drvdata->msp->f_bitclk > 19200000)) {
- 		/* If the bit-clock is higher than 19.2MHz, Vape should be
--		 * run in 100% OPP. Only when bit-clock is used (MSP master) */
-+		 * run in 100% OPP. Only when bit-clock is used (MSP master)
-+		 */
- 		prcmu_qos_update_requirement(PRCMU_QOS_APE_OPP,
- 					"ux500-msp-i2s", 100);
- 		drvdata->vape_opp_constraint = 1;
--- 
-2.11.0
+You could put a DAPM switch on the path. This way DAPM will take care of
+muting the output if the user toggles the control and other DAPM widgets
+connected to the output of the AMP will also be aware that it is off.
