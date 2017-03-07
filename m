@@ -1,16 +1,16 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH 04/10] ASoC: Intel: bxtn: Update DSP core state
-	in D0
-Date: Tue,  7 Mar 2017 23:44:00 +0530
-Message-ID: <1488910446-26415-5-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH 05/10] ASoC: Intel: bxtn: Reload the firmware
+	in case of D3 failure
+Date: Tue,  7 Mar 2017 23:44:01 +0530
+Message-ID: <1488910446-26415-6-git-send-email-jeeja.kp@intel.com>
 References: <1488910446-26415-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id B124A266FD9
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 19:02:20 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id E6D71267041
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 19:02:22 +0100 (CET)
 In-Reply-To: <1488910446-26415-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,59 +27,36 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-In system suspend, firmware needs to be re-downloaded as IMR is cleared.
-When firmware is downloaded in D0, core state is not set to running
-state causing instability with subsequent D0-D3 cycles.
-
-So set the core state correctly during D0 and check the DSP core state
-if not in reset to set the DSP to D3.
+If D3 IPC fails or times out, firmware needs to be reloaded as driver
+continues the reset.
+So set the fw_load flag to false to reload the firmware in D0.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/intel/skylake/bxt-sst.c     | 1 +
- sound/soc/intel/skylake/skl-sst-dsp.c | 6 ++++--
- 2 files changed, 5 insertions(+), 2 deletions(-)
+ sound/soc/intel/skylake/bxt-sst.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-index d9cd67d..c6f18b5 100644
+index c6f18b5..b30f887 100644
 --- a/sound/soc/intel/skylake/bxt-sst.c
 +++ b/sound/soc/intel/skylake/bxt-sst.c
-@@ -428,6 +428,7 @@ static int bxt_set_dsp_D0(struct sst_dsp *ctx, unsigned int core_id)
- 				return ret;
- 			}
- 		}
-+		skl->cores.state[core_id] = SKL_DSP_RUNNING;
- 		return ret;
- 	}
+@@ -515,10 +515,16 @@ static int bxt_set_dsp_D3(struct sst_dsp *ctx, unsigned int core_id)
  
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.c b/sound/soc/intel/skylake/skl-sst-dsp.c
-index c3deefa..0833272 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.c
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.c
-@@ -355,12 +355,13 @@ int skl_dsp_get_core(struct sst_dsp *ctx, unsigned int core_id)
- 		ret = ctx->fw_ops.set_state_D0(ctx, core_id);
- 		if (ret < 0) {
- 			dev_err(ctx->dev, "unable to get core%d\n", core_id);
--			return ret;
-+			goto out;
- 		}
- 	}
+ 	ret = skl_ipc_set_dx(&skl->ipc, BXT_INSTANCE_ID,
+ 				BXT_BASE_FW_MODULE_ID, &dx);
+-	if (ret < 0)
++	if (ret < 0) {
+ 		dev_err(ctx->dev,
+ 		"Failed to set DSP to D3:core id = %d;Continue reset\n",
+ 		core_id);
++		/*
++		 * In case of D3 failure, re-download the firmware, so set
++		 * fw_loaded to false.
++		 */
++		skl->fw_loaded = false;
++	}
  
- 	skl->cores.usage_count[core_id]++;
- 
-+out:
- 	dev_dbg(ctx->dev, "core id %d state %d usage_count %d\n",
- 			core_id, skl->cores.state[core_id],
- 			skl->cores.usage_count[core_id]);
-@@ -379,7 +380,8 @@ int skl_dsp_put_core(struct sst_dsp *ctx, unsigned int core_id)
- 		return -EINVAL;
- 	}
- 
--	if (--skl->cores.usage_count[core_id] == 0) {
-+	if ((--skl->cores.usage_count[core_id] == 0) &&
-+		(skl->cores.state[core_id] != SKL_DSP_RESET)) {
- 		ret = ctx->fw_ops.set_state_D3(ctx, core_id);
- 		if (ret < 0) {
- 			dev_err(ctx->dev, "unable to put core %d: %d\n",
+ 	if (core_id == SKL_DSP_CORE0_ID) {
+ 		/* disable Interrupt */
 -- 
 2.5.0
