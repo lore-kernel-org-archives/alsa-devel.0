@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dio2125: use gpiod_set_value_cansleep"
-	to the asoc tree
-Date: Tue, 07 Mar 2017 15:21:37 +0100
-Message-ID: <E1clFzd-0006ga-4n@finisterre>
-References: <20170307131222.23907-1-jbrunet@baylibre.com>
+Subject: Applied "ASoC: atmel-classd: fix audio clock rate" to
+	the asoc tree
+Date: Tue, 07 Mar 2017 15:21:22 +0100
+Message-ID: <E1clFzO-0006cY-F7@finisterre>
+References: <20170224071043.25522-1-songjun.wu@microchip.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 17259266FA1
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 15:21:50 +0100 (CET)
-In-Reply-To: <20170307131222.23907-1-jbrunet@baylibre.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 02B27266FC5
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 15:22:05 +0100 (CET)
+In-Reply-To: <20170224071043.25522-1-songjun.wu@microchip.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: alsa-devel@alsa-project.org, Neil Armstrong <narmstrong@baylibre.com>, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+To: Songjun Wu <songjun.wu@microchip.com>
+Cc: alsa-devel@alsa-project.org, Dushara Jayasinghe <dushara@successful.com.au>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, nicolas.ferre@microchip.com, stable@vger.kernel.org, linux-kernel@vger.kernel.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dio2125: use gpiod_set_value_cansleep
+   ASoC: atmel-classd: fix audio clock rate
 
 has been applied to the asoc tree at
 
@@ -53,34 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From ea2a2ad17ca1e9dbb01ac935f1b1b53f99f73b13 Mon Sep 17 00:00:00 2001
-From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Tue, 7 Mar 2017 14:12:22 +0100
-Subject: [PATCH] ASoC: dio2125: use gpiod_set_value_cansleep
+>From cd3ac9affc43b44f49d7af70d275f0bd426ba643 Mon Sep 17 00:00:00 2001
+From: Songjun Wu <songjun.wu@microchip.com>
+Date: Fri, 24 Feb 2017 15:10:43 +0800
+Subject: [PATCH] ASoC: atmel-classd: fix audio clock rate
 
-Use the "cansleep" variant of gpiod_set_value so the driver can be used
-with slow gpio controllers as well.
+Fix the audio clock rate according to the datasheet.
 
-Fixes: 85825d5e8869 ("ASoC: dio2125: add dio2125 amp driver")
-Reported-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Reported-by: Dushara Jayasinghe <dushara@successful.com.au>
+Signed-off-by: Songjun Wu <songjun.wu@microchip.com>
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
 ---
- sound/soc/codecs/dio2125.c | 2 +-
+ sound/soc/atmel/atmel-classd.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/dio2125.c b/sound/soc/codecs/dio2125.c
-index 015e310556d3..09451cd44f9b 100644
---- a/sound/soc/codecs/dio2125.c
-+++ b/sound/soc/codecs/dio2125.c
-@@ -46,7 +46,7 @@ static int drv_event(struct snd_soc_dapm_widget *w,
- 		return -EINVAL;
- 	}
- 
--	gpiod_set_value(priv->gpiod_enable, val);
-+	gpiod_set_value_cansleep(priv->gpiod_enable, val);
- 
- 	return 0;
+diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
+index 89ac5f5a93eb..7ae46c2647d4 100644
+--- a/sound/soc/atmel/atmel-classd.c
++++ b/sound/soc/atmel/atmel-classd.c
+@@ -349,7 +349,7 @@ static int atmel_classd_codec_dai_digital_mute(struct snd_soc_dai *codec_dai,
  }
+ 
+ #define CLASSD_ACLK_RATE_11M2896_MPY_8 (112896 * 100 * 8)
+-#define CLASSD_ACLK_RATE_12M288_MPY_8  (12228 * 1000 * 8)
++#define CLASSD_ACLK_RATE_12M288_MPY_8  (12288 * 1000 * 8)
+ 
+ static struct {
+ 	int rate;
 -- 
 2.11.0
