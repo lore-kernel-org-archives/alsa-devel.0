@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: Remove extra blank lines" to
-	the asoc tree
-Date: Tue, 07 Mar 2017 15:21:33 +0100
-Message-ID: <E1clFzZ-0006fd-6B@finisterre>
-References: <20170225101111.12707-1-calin@rosedu.org>
+From: Jurgen Kramer <gtmkramer@xs4all.nl>
+Subject: Re: [RFC] Merge DSD_U32_BE devices list
+Date: Tue, 07 Mar 2017 17:17:45 +0100
+Message-ID: <1488903465.2443.1.camel@xs4all.nl>
+References: <7117b647-e9ba-a182-4a4d-8182ef77e2a0@melcoinc.co.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C197266FE1
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 15:22:34 +0100 (CET)
-In-Reply-To: <20170225101111.12707-1-calin@rosedu.org>
+Received: from lb1-smtp-cloud3.xs4all.net (lb1-smtp-cloud3.xs4all.net
+ [194.109.24.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id 69B1B266FA0
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 17:17:48 +0100 (CET)
+In-Reply-To: <7117b647-e9ba-a182-4a4d-8182ef77e2a0@melcoinc.co.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,98 +21,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Calin Cruceru <calin@rosedu.org>
-Cc: alsa-devel@alsa-project.org, sbkim73@samsung.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, krzk@kernel.org, tiwai@suse.com, broonie@kernel.org, s.nawrocki@samsung.com
+To: Naoki MATSUMOTO <n-matsumoto@melcoinc.co.jp>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: samsung: Remove extra blank lines
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 114ab993e1845a4152bc01d1075b1fb38e741df9 Mon Sep 17 00:00:00 2001
-From: Calin Cruceru <calin@rosedu.org>
-Date: Sat, 25 Feb 2017 12:11:11 +0200
-Subject: [PATCH] ASoC: samsung: Remove extra blank lines
-
-This was reported by checkpatch.pl
-
-Signed-off-by: Calin Cruceru <calin@rosedu.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/samsung/bells.c      | 1 -
- sound/soc/samsung/i2s-regs.h   | 2 --
- sound/soc/samsung/i2s.c        | 1 -
- sound/soc/samsung/s3c-i2s-v2.c | 1 -
- 4 files changed, 5 deletions(-)
-
-diff --git a/sound/soc/samsung/bells.c b/sound/soc/samsung/bells.c
-index 3dd246fa0059..34deba461ae1 100644
---- a/sound/soc/samsung/bells.c
-+++ b/sound/soc/samsung/bells.c
-@@ -446,7 +446,6 @@ static struct snd_soc_card bells_cards[] = {
- 	},
- };
- 
--
- static int bells_probe(struct platform_device *pdev)
- {
- 	int ret;
-diff --git a/sound/soc/samsung/i2s-regs.h b/sound/soc/samsung/i2s-regs.h
-index 9170c311d66e..fe6914005494 100644
---- a/sound/soc/samsung/i2s-regs.h
-+++ b/sound/soc/samsung/i2s-regs.h
-@@ -160,5 +160,3 @@
- #define I2SSIZE_SHIFT		(16)
- 
- #endif /* __SND_SOC_SAMSUNG_I2S_REGS_H */
--
--
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index 52a47ed292a4..af3ba4d4ccc5 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -1242,7 +1242,6 @@ static int samsung_i2s_probe(struct platform_device *pdev)
- 		i2s_dai_data = (struct samsung_i2s_dai_data *)
- 				platform_get_device_id(pdev)->driver_data;
- 
--
- 	pri_dai = i2s_alloc_dai(pdev, false);
- 	if (!pri_dai) {
- 		dev_err(&pdev->dev, "Unable to alloc I2S_pri\n");
-diff --git a/sound/soc/samsung/s3c-i2s-v2.c b/sound/soc/samsung/s3c-i2s-v2.c
-index 644f186fd35c..8f42deaa184b 100644
---- a/sound/soc/samsung/s3c-i2s-v2.c
-+++ b/sound/soc/samsung/s3c-i2s-v2.c
-@@ -72,7 +72,6 @@ static inline void dbg_showcon(const char *fn, u32 con)
- }
- #endif
- 
--
- /* Turn on or off the transmission path. */
- static void s3c2412_snd_txctrl(struct s3c_i2sv2_info *i2s, int on)
- {
--- 
-2.11.0
+SGVsbG8gTmFva2ksCgpPbiBUdWUsIDIwMTctMDMtMDcgYXQgMTU6NTMgKzA5MDAsIE5hb2tpIE1B
+VFNVTU9UTyB3cm90ZToKPiBEZWFyIE1yLmxpbnR3ZWFrZXIKPiBDQzphbHNhLW1sCj4gCj4gSGVs
+bG8gbmljZSB0byBtZWV0IHlvdS7CoAo+IEkga25vdyB0aGF0IHlvdSB3b3JrIGZvciB4bW9zLW5h
+dGl2ZS1kc2QuCj4gWW91IGhhcyBjb250cmlidXRlZCBsaW51eCwgYWxzYS1saWIgYW5kIG1wZC4K
+PiBZb3UgaGF2ZSBwYXRjaGVzIG9mIHhtb3MtbmF0aXZlLWRzZCBkZXZpY2UgbGlzdCBvbiBnaXRo
+dWIuwqAKPiBodHRwczovL2dpdGh1Yi5jb20vbGludHdlYWtlci94bW9zLW5hdGl2ZS1kc2QvdHJl
+ZS9tYXN0ZXIvU1JQTVMvcGF0Y2gKPiBlcy9rZXJuZWzCoAo+IHNvLCBJIHdhbnQgdG8gbWVyZ2Ug
+dXBzdHJlYW1lIGtlcm5lbC4gYmVjYXVzZSwgTVBEIDAuMjAgb3ZlciBzdXBwb3J0Cj4gRFNEX1Uz
+Ml9CRS7CoAo+IAo+IEN1cnJlbnQga2VybmVsIGhhcyBmZXcgc3VwcG9ydCBkZXZpY2VzLsKgCj4g
+aHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L2Fsc2EtZGV2ZWwvbGlzdC8/cT1k
+c2TCoAo+IAo+IEkgd2FudCB0byBjcmVhdGUgcGF0Y2guIENvdWxkIHlvdSBwbGVhc2UgdGVsbCBt
+ZSBhbnl0aGluZyBwcm9ibGVtcz8KPiAKSSBhbSBwbGFubmluZyBvbiBzZW5kaW5nIGluIGEgcGF0
+Y2goc2V0KSBhZGRpbmcgYWxsIHJlbWFpbmluZyBkZXZpY2VzCm5vdCBpbiB0aGUga2VybmVsIHll
+dC4gVGltZSBmcmFtZTogKy8tIDIgd2Vla3MuCgpKdXJnZW4KX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
