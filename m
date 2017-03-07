@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: Remove spaces before tabs" to the
-	asoc tree
-Date: Tue, 07 Mar 2017 14:33:38 +0100
-Message-ID: <E1clFFC-0005cl-8A@finisterre>
+Subject: Applied "ASoC: pxa: Add space around ':' and '('" to
+	the asoc tree
+Date: Tue, 07 Mar 2017 14:33:40 +0100
+Message-ID: <E1clFFE-0005dS-Q3@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 94411266FA8
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 14:33:47 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1963E266F89
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 14:33:50 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: Remove spaces before tabs
+   ASoC: pxa: Add space around ':' and '('
 
 has been applied to the asoc tree at
 
@@ -52,58 +52,45 @@ to this mail.
 Thanks,
 Mark
 
->From 672e3cbe783e2f3f40bdc19e5cb09accdd3e4b6b Mon Sep 17 00:00:00 2001
+>From ca87cfad69e6b657a4f5fa665b67aee275792af4 Mon Sep 17 00:00:00 2001
 From: Codrut Grosu <codrut.cristian.grosu@gmail.com>
-Date: Sat, 25 Feb 2017 22:50:29 +0200
-Subject: [PATCH] ASoC: pxa: Remove spaces before tabs
+Date: Sat, 25 Feb 2017 22:42:33 +0200
+Subject: [PATCH] ASoC: pxa: Add space around ':' and '('
 
 This was reported by checkpatch.pl
 
 Signed-off-by: Codrut Grosu <codrut.cristian.grosu@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/pxa2xx-i2s.c | 6 +++---
- sound/soc/pxa/pxa2xx-pcm.c | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/pxa/pxa2xx-i2s.c | 2 +-
+ sound/soc/pxa/tosa.c       | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
-index 27aa0e4341bc..3fb60baf6eab 100644
+index 0389cf7b4b1e..27aa0e4341bc 100644
 --- a/sound/soc/pxa/pxa2xx-i2s.c
 +++ b/sound/soc/pxa/pxa2xx-i2s.c
-@@ -46,10 +46,10 @@
- #define SACR0_STRF	(1 << 5)	/* FIFO Select for EFWR Special Function */
- #define SACR0_EFWR	(1 << 4)	/* Enable EFWR Function  */
- #define SACR0_RST	(1 << 3)	/* FIFO, i2s Register Reset */
--#define SACR0_BCKD	(1 << 2) 	/* Bit Clock Direction */
-+#define SACR0_BCKD	(1 << 2)	/* Bit Clock Direction */
- #define SACR0_ENB	(1 << 0)	/* Enable I2S Link */
- #define SACR1_ENLBF	(1 << 5)	/* Enable Loopback */
--#define SACR1_DRPL	(1 << 4) 	/* Disable Replaying Function */
-+#define SACR1_DRPL	(1 << 4)	/* Disable Replaying Function */
- #define SACR1_DREC	(1 << 3)	/* Disable Recording Function */
- #define SACR1_AMSL	(1 << 0)	/* Specify Alternate Mode */
+@@ -119,7 +119,7 @@ static int pxa_i2s_wait(void)
+ 	int i;
  
-@@ -60,7 +60,7 @@
- #define SASR0_TFS	(1 << 3)	/* Tx FIFO Service Request */
- #define SASR0_BSY	(1 << 2)	/* I2S Busy */
- #define SASR0_RNE	(1 << 1)	/* Rx FIFO Not Empty */
--#define SASR0_TNF	(1 << 0) 	/* Tx FIFO Not Empty */
-+#define SASR0_TNF	(1 << 0)	/* Tx FIFO Not Empty */
- 
- #define SAICR_ROR	(1 << 6)	/* Clear Rx FIFO Overrun Interrupt */
- #define SAICR_TUR	(1 << 5)	/* Clear Tx FIFO Underrun Interrupt */
-diff --git a/sound/soc/pxa/pxa2xx-pcm.c b/sound/soc/pxa/pxa2xx-pcm.c
-index 410d48b93031..b51d7a0755d5 100644
---- a/sound/soc/pxa/pxa2xx-pcm.c
-+++ b/sound/soc/pxa/pxa2xx-pcm.c
-@@ -85,7 +85,7 @@ static int pxa2xx_soc_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 	/* flush the Rx FIFO */
+-	for(i = 0; i < 16; i++)
++	for (i = 0; i < 16; i++)
+ 		SADR;
+ 	return 0;
+ }
+diff --git a/sound/soc/pxa/tosa.c b/sound/soc/pxa/tosa.c
+index e022b2a777f6..1812748b75bf 100644
+--- a/sound/soc/pxa/tosa.c
++++ b/sound/soc/pxa/tosa.c
+@@ -133,7 +133,7 @@ static int tosa_set_spk(struct snd_kcontrol *kcontrol,
+ static int tosa_hp_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *k, int event)
+ {
+-	gpio_set_value(TOSA_GPIO_L_MUTE, SND_SOC_DAPM_EVENT_ON(event) ? 1 :0);
++	gpio_set_value(TOSA_GPIO_L_MUTE, SND_SOC_DAPM_EVENT_ON(event) ? 1 : 0);
+ 	return 0;
  }
  
- static struct snd_soc_platform_driver pxa2xx_soc_platform = {
--	.ops 	= &pxa2xx_pcm_ops,
-+	.ops		= &pxa2xx_pcm_ops,
- 	.pcm_new	= pxa2xx_soc_pcm_new,
- 	.pcm_free	= pxa2xx_pcm_free_dma_buffers,
- };
 -- 
 2.11.0
