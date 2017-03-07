@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: dio2125: add dio2125 amp driver
-Date: Tue, 7 Mar 2017 13:36:53 +0100
-Message-ID: <20170307123653.jg7jqe4sft2pqycc@sirena.org.uk>
-References: <20170306174451.24406-1-jbrunet@baylibre.com>
- <20170306174451.24406-3-jbrunet@baylibre.com>
+Subject: Re: [PATCH] ASoC: dwc: remove 'out of memory' message
+Date: Tue, 7 Mar 2017 13:56:17 +0100
+Message-ID: <20170307125617.rwxhqji4gfsjpoxc@sirena.org.uk>
+References: <20170225110323.7506-1-michelcatalin@gmail.com>
+ <9da9efc3-cd9b-70a5-a764-e8be32e67d13@sakamocchi.jp>
+ <s5hshmyz6k2.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5631692076765131265=="
+Content-Type: multipart/mixed; boundary="===============9170195107719600405=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B9F1266AE4
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 13:37:01 +0100 (CET)
-In-Reply-To: <20170306174451.24406-3-jbrunet@baylibre.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 13AAC266AC4
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 13:56:37 +0100 (CET)
+In-Reply-To: <s5hshmyz6k2.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,54 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Kevin Hilman <khilman@baylibre.com>, alsa-devel@alsa-project.org, Neil Armstrong <narmstrong@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jose.Abreu@synopsys.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, s.nawrocki@samsung.com, colin.king@canonical.com, Mihai Burduselu <michelcatalin@gmail.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5631692076765131265==
+--===============9170195107719600405==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="3zht5fsd6afpsqth"
+	protocol="application/pgp-signature"; boundary="cajxcc4w3mphzmtk"
 Content-Disposition: inline
 
 
---3zht5fsd6afpsqth
+--cajxcc4w3mphzmtk
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Mar 06, 2017 at 06:44:50PM +0100, Jerome Brunet wrote:
+On Tue, Feb 28, 2017 at 04:19:41PM +0100, Takashi Iwai wrote:
 
-> +	gpiod_set_value(priv->gpiod_enable, val);
+> However, the problem of this (and lots of other) patch is that it
+> doesn't give proper information.  Instead, in a single line, it merely
+> declares checkpatch.pl as a bible.  Very helpful, eh?
 
-You should use gpiod_set_value_cansleep() so that the driver can work
-with all GPIOs unless there's a specific need to have GPIOs you can
-control in interrupt (which should be the case for anything you're using
-for DAPM control).
+> So, please reconsider the changelog when you submit this kind of
+> patches.
 
-Please submit an incremental patch fixing this.
+Yeah, it's a *huge* set of patches with poor changelogs and very minor
+benefits which is more work to digest than it seems useful to.
 
---3zht5fsd6afpsqth
+--cajxcc4w3mphzmtk
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAli+qWQACgkQJNaLcl1U
-h9CnXwf/QaBOS0M8G9dC7mC3HvfJkfX+GTk4G3UmPM3r3DCDqWa7rGp7EVPhauEY
-1aObtb14lRtXkkeSpwUz2YdWutqCaUiuXMUG6GH8f/vgksuVEB7E9hWqDshEHS1L
-+orTapscEMicncx700BdQ3KTS1CWBgPd24wgTjWH6bb+GJQscZvmDkWtzvCWhDme
-TS1W3dE50pPQapvprTNOqreJHsT5njeU85FA2zuzyt9JDqV4rbe92C4TYE1os/b3
-3ipTkX/LqgPF2K3rL3wAaG7YC77xWEBFWdy3T+ZwvVZcscZzvpgbqx6YCEMJf11w
-e+7hiQZ2mYFL6QxQlnVsjJBKJi7bYg==
-=o9ai
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAli+rfAACgkQJNaLcl1U
+h9Dg+Af8DbM0uqJIK3G8JfXhJw2kHkEXv+5z9aqsQZKxmjr8jrGp/cxs2d5rckSa
+RsXk4/R67CUGXke1bF5NynuiENGcGwwRxIYp1zg5y3nFANKu2wvagkbD/zBGH3Ui
+NcmrSPX2AEms/w3QTNMXAbl3YguVSXviWnceJ2pYqyOStOcuUxbebKF/TwALnfJB
+Gi3b0GCwJRZdAtADvfD7jIW8DMzrfqB/iMCLhuc5zISEcN+Z+vbVNKGiL0yTnCOI
+wWe1p2HBffvU/KZxRHCAavqavpUEKCJsHOecOP/Ko6c+5EodLJw3cp+bsZDh7GRN
+OkJD49qEIoRHQMIuIcdZR6RRI0HAfg==
+=BTHO
 -----END PGP SIGNATURE-----
 
---3zht5fsd6afpsqth--
+--cajxcc4w3mphzmtk--
 
---===============5631692076765131265==
+--===============9170195107719600405==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5631692076765131265==--
+--===============9170195107719600405==--
