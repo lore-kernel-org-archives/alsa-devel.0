@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa-ssp: Line up *s in block comments"
-	to the asoc tree
-Date: Tue, 07 Mar 2017 14:33:33 +0100
-Message-ID: <E1clFF7-0005bN-0j@finisterre>
+Subject: Applied "ASoC: pxa: Remove unneeded return statement
+	in void function" to the asoc tree
+Date: Tue, 07 Mar 2017 14:33:35 +0100
+Message-ID: <E1clFF9-0005c4-MA@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D9218266F97
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 14:33:42 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id C1CCF266FA2
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 14:33:45 +0100 (CET)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa-ssp: Line up *s in block comments
+   ASoC: pxa: Remove unneeded return statement in void function
 
 has been applied to the asoc tree at
 
@@ -52,43 +52,43 @@ to this mail.
 Thanks,
 Mark
 
->From 34e82433c26ea6908fa19783fee2c4bba5bad9c8 Mon Sep 17 00:00:00 2001
+>From 17339f6099154678485244cc17d700f19ece0dc0 Mon Sep 17 00:00:00 2001
 From: Codrut Grosu <codrut.cristian.grosu@gmail.com>
-Date: Sat, 25 Feb 2017 23:40:31 +0200
-Subject: [PATCH] ASoC: pxa-ssp: Line up *s in block comments
+Date: Sat, 25 Feb 2017 23:06:36 +0200
+Subject: [PATCH] ASoC: pxa: Remove unneeded return statement in void function
 
 This was reported by checkpatch.pl
 
 Signed-off-by: Codrut Grosu <codrut.cristian.grosu@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/pxa-ssp.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/pxa/mmp-pcm.c  | 1 -
+ sound/soc/pxa/mmp-sspa.c | 1 -
+ 2 files changed, 2 deletions(-)
 
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index e9f6df38b152..0291c7cb64eb 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -591,13 +591,13 @@ static int pxa_ssp_hw_params(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/pxa/mmp-pcm.c b/sound/soc/pxa/mmp-pcm.c
+index 96df9b2d8fc4..5b5f1a442891 100644
+--- a/sound/soc/pxa/mmp-pcm.c
++++ b/sound/soc/pxa/mmp-pcm.c
+@@ -166,7 +166,6 @@ static void mmp_pcm_free_dma_buffers(struct snd_pcm *pcm)
+ 		buf->area = NULL;
+ 	}
  
- 		if ((pxa_ssp_get_scr(ssp) == 4) && (width == 16)) {
- 			/* This is a special case where the bitclk is 64fs
--			* and we're not dealing with 2*32 bits of audio
--			* samples.
--			*
--			* The SSP values used for that are all found out by
--			* trying and failing a lot; some of the registers
--			* needed for that mode are only available on PXA3xx.
--			*/
-+			 * and we're not dealing with 2*32 bits of audio
-+			 * samples.
-+			 *
-+			 * The SSP values used for that are all found out by
-+			 * trying and failing a lot; some of the registers
-+			 * needed for that mode are only available on PXA3xx.
-+			 */
- 			if (ssp->type != PXA3xx_SSP)
- 				return -EINVAL;
+-	return;
+ }
  
+ static int mmp_pcm_preallocate_dma_buffer(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/pxa/mmp-sspa.c b/sound/soc/pxa/mmp-sspa.c
+index ca8b23f8c525..9cc35012e6e5 100644
+--- a/sound/soc/pxa/mmp-sspa.c
++++ b/sound/soc/pxa/mmp-sspa.c
+@@ -119,7 +119,6 @@ static void mmp_sspa_shutdown(struct snd_pcm_substream *substream,
+ 	clk_disable(priv->sspa->clk);
+ 	clk_disable(priv->sysclk);
+ 
+-	return;
+ }
+ 
+ /*
 -- 
 2.11.0
