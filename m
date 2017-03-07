@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: fix invalid memory
-	access due to wrong reference of pointer" to the asoc tree
-Date: Tue, 07 Mar 2017 15:21:26 +0100
-Message-ID: <E1clFzS-0006dg-A7@finisterre>
-References: <20170224024841.10515-1-takashi.sakamoto@miraclelinux.com>
+Subject: Applied "ASoC: dio2125: use gpiod_set_value_cansleep"
+	to the asoc tree
+Date: Tue, 07 Mar 2017 15:21:37 +0100
+Message-ID: <E1clFzd-0006ga-4n@finisterre>
+References: <20170307131222.23907-1-jbrunet@baylibre.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 237E0266EEB
- for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 15:21:41 +0100 (CET)
-In-Reply-To: <20170224024841.10515-1-takashi.sakamoto@miraclelinux.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 17259266FA1
+ for <alsa-devel@alsa-project.org>; Tue,  7 Mar 2017 15:21:50 +0100 (CET)
+In-Reply-To: <20170307131222.23907-1-jbrunet@baylibre.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,15 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <takashi.sakamoto@miraclelinux.com>
-Cc: alsa-devel@alsa-project.org, hirotaka.furukawa@miraclelinux.com, Vinod Koul <vinod.koul@intel.com>, ichiro.suzuki@miraclelinux.com, ryotaro.shibata@miraclelinux.com, stable@vger.kernel.org, broonie@kernel.org, shreyas.nc@intel.com, jeeja.kp@intel.com, ",
- Takashi Sakamoto <o-takashi@sakamocchi.jp>, yukie.kato@miraclelinux.com,
- alsa-devel@alsa-project.org"@alsa-project.org
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: alsa-devel@alsa-project.org, Neil Armstrong <narmstrong@baylibre.com>, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: fix invalid memory access due to wrong reference of pointer
+   ASoC: dio2125: use gpiod_set_value_cansleep
 
 has been applied to the asoc tree at
 
@@ -55,51 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From d1a6fe41d3c4ff0d26f0b186d774493555ca5282 Mon Sep 17 00:00:00 2001
-From: Takashi Sakamoto <takashi.sakamoto@miraclelinux.com>
-Date: Fri, 24 Feb 2017 11:48:41 +0900
-Subject: [PATCH] ASoC: Intel: Skylake: fix invalid memory access due to wrong
- reference of pointer
+>From ea2a2ad17ca1e9dbb01ac935f1b1b53f99f73b13 Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Tue, 7 Mar 2017 14:12:22 +0100
+Subject: [PATCH] ASoC: dio2125: use gpiod_set_value_cansleep
 
-In 'skl_tplg_set_module_init_data()', a pointer to 'params' member of
-'struct skl_algo_data' is calculated, then casted to (u32 *) and assigned
-to a member of configuration data. The configuration data is passed to the
-other functions and used to process intel IPC. In this processing, the
-value of member is used to get message data, however this can bring invalid
-memory access in 'skl_set_module_params()' as a result of calculation of
-a pointer for actual message data.
+Use the "cansleep" variant of gpiod_set_value so the driver can be used
+with slow gpio controllers as well.
 
-(sound/soc/intel/skylake/skl-topology.c)
-skl_tplg_init_pipe_modules()
-->skl_tplg_set_module_init_data() (has this bug)
-->skl_tplg_set_module_params()
-  (sound/soc/intel/skylake/skl-messages.c)
-  ->skl_set_module_params()
-    ((char *)param) + data_offset
-
-This commit fixes the bug.
-
-Fixes: abb740033b56 ("ASoC: Intel: Skylake: Add support to configure module params")
-Signed-off-by: Takashi Sakamoto <takashi.sakamoto@miraclelinux.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+Fixes: 85825d5e8869 ("ASoC: dio2125: add dio2125 amp driver")
+Reported-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: <stable@vger.kernel.org> # v4.5+
 ---
- sound/soc/intel/skylake/skl-topology.c | 2 +-
+ sound/soc/codecs/dio2125.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index ed58b5b3555a..2dbfb1b24ef4 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -512,7 +512,7 @@ static int skl_tplg_set_module_init_data(struct snd_soc_dapm_widget *w)
- 			if (bc->set_params != SKL_PARAM_INIT)
- 				continue;
+diff --git a/sound/soc/codecs/dio2125.c b/sound/soc/codecs/dio2125.c
+index 015e310556d3..09451cd44f9b 100644
+--- a/sound/soc/codecs/dio2125.c
++++ b/sound/soc/codecs/dio2125.c
+@@ -46,7 +46,7 @@ static int drv_event(struct snd_soc_dapm_widget *w,
+ 		return -EINVAL;
+ 	}
  
--			mconfig->formats_config.caps = (u32 *)&bc->params;
-+			mconfig->formats_config.caps = (u32 *)bc->params;
- 			mconfig->formats_config.caps_size = bc->size;
+-	gpiod_set_value(priv->gpiod_enable, val);
++	gpiod_set_value_cansleep(priv->gpiod_enable, val);
  
- 			break;
+ 	return 0;
+ }
 -- 
 2.11.0
