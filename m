@@ -1,31 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun8i-codec: Remove analog "HP" widget" to the asoc
- tree
-Date: Wed, 08 Mar 2017 14:22:49 +0100
-Message-ID: <E1clbYH-0000Eb-1z@finisterre>
-References: <20170210094133.11382-2-mylene.josserand@free-electrons.com>
+Subject: Applied "ASoC: rt5665: fix getting wrong work handler
+	container" to the asoc tree
+Date: Wed, 08 Mar 2017 14:23:21 +0100
+Message-ID: <E1clbYn-0000Mq-2N@finisterre>
+References: <1488970990-18967-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0186801177740658231=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20170210094133.11382-2-mylene.josserand@free-electrons.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-Cc: mark.rutland@arm.com, thomas.petazzoni@free-electrons.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org, perex@perex.cz, wens@csie.org, broonie@kernel.org, alexandre.belloni@free-electrons.com, maxime.ripard@free-electrons.com, mylene.josserand@free-electrons.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id EAAED267258
+ for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2017 14:24:31 +0100 (CET)
+In-Reply-To: <1488970990-18967-1-git-send-email-bardliao@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, stable@vger.kernel.org, broonie@kernel.org, shumingf@realtek.com, xiaoxiang@pinecone.net, zhongan@pinecone.net, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
-
---===============0186801177740658231==
-Content-Type: text/plain
 
 The patch
 
-   ASoC: sun8i-codec: Remove analog "HP" widget
+   ASoC: rt5665: fix getting wrong work handler container
 
 has been applied to the asoc tree at
 
@@ -50,65 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From 4aa8146c89f336230de7f449805bd0edfc878fd4 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?=
- <mylene.josserand@free-electrons.com>
-Date: Fri, 10 Feb 2017 10:41:30 +0100
-Subject: [PATCH] ASoC: sun8i-codec: Remove analog "HP" widget
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From f1994a9c0930de4b2244816e62120cad08283cdc Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Wed, 8 Mar 2017 19:03:10 +0800
+Subject: [PATCH] ASoC: rt5665: fix getting wrong work handler container
 
-The "HP" widget is already present and take part to
-the analog part (sun8i-codec-analog).
+We got rt5665 private data from wrong work. It will result in kernel
+panic.
 
-Remove it from the digital part as it is unnecessary.
-
-Signed-off-by: Mylène Josserand <mylene.josserand@free-electrons.com>
-Acked-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
 ---
- sound/soc/sunxi/sun8i-codec.c | 6 ------
- 1 file changed, 6 deletions(-)
+ sound/soc/codecs/rt5665.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index b92bdc8361af..d60f6fbd36a2 100644
---- a/sound/soc/sunxi/sun8i-codec.c
-+++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -321,8 +321,6 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
- 			    SUN8I_MOD_RST_CTL_AIF1, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("RST DAC", SUN8I_MOD_RST_CTL,
- 			    SUN8I_MOD_RST_CTL_DAC, 0, NULL, 0),
--
--	SND_SOC_DAPM_OUTPUT("HP"),
- };
+diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
+index 324461e985b3..fe2cf1ed8237 100644
+--- a/sound/soc/codecs/rt5665.c
++++ b/sound/soc/codecs/rt5665.c
+@@ -1241,7 +1241,7 @@ static irqreturn_t rt5665_irq(int irq, void *data)
+ static void rt5665_jd_check_handler(struct work_struct *work)
+ {
+ 	struct rt5665_priv *rt5665 = container_of(work, struct rt5665_priv,
+-		calibrate_work.work);
++		jd_check_work.work);
  
- static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
-@@ -344,10 +342,6 @@ static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
- 	/* DAC Mixer Routes */
- 	{ "Left DAC Mixer", "LSlot 0", "Digital Left DAC"},
- 	{ "Right DAC Mixer", "RSlot 0", "Digital Right DAC"},
--
--	/* End of route : HP out */
--	{ "HP", NULL, "Left DAC Mixer" },
--	{ "HP", NULL, "Right DAC Mixer" },
- };
- 
- static struct snd_soc_dai_ops sun8i_codec_dai_ops = {
+ 	if (snd_soc_read(rt5665->codec, RT5665_AJD1_CTRL) & 0x0010) {
+ 		/* jack out */
 -- 
 2.11.0
-
-
-
---===============0186801177740658231==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============0186801177740658231==--
