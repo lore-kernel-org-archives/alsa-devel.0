@@ -1,17 +1,20 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH 8/8] ASoC: rt5665: enable TDM if more than 2
-	channels
-Date: Wed, 8 Mar 2017 19:05:36 +0800
-Message-ID: <1488971136-19100-8-git-send-email-bardliao@realtek.com>
-References: <1488971136-19100-1-git-send-email-bardliao@realtek.com>
+From: Florian Kauer <florian.kauer@koalo.de>
+Subject: Re: [PATCH] ASoC: bcm_2835: Simplify mono guard by
+ returning error on mono
+Date: Wed, 8 Mar 2017 12:13:05 +0100
+Message-ID: <d86dad56-3291-6ac0-5109-eeb83e7f1215@koalo.de>
+References: <1488970734-6596-1-git-send-email-flatmax@flatmax.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id EF779266927
- for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2017 12:05:53 +0100 (CET)
-In-Reply-To: <1488971136-19100-1-git-send-email-bardliao@realtek.com>
+Received: from mail-wr0-f194.google.com (mail-wr0-f194.google.com
+ [209.85.128.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 521FD266AF9
+ for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2017 12:13:17 +0100 (CET)
+Received: by mail-wr0-f194.google.com with SMTP id l37so3669168wrc.3
+ for <alsa-devel@alsa-project.org>; Wed, 08 Mar 2017 03:13:17 -0800 (PST)
+In-Reply-To: <1488970734-6596-1-git-send-email-flatmax@flatmax.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,157 +24,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, xiaoxiang@pinecone.net, zhongan@pinecone.net, flove@realtek.com
+To: Matt Flax <flatmax@flatmax.org>, alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, Florian Meier <florian.meier@koalo.de>, broonie@kernel.org, phil@raspberrypi.org, hias@horus.com, ckeepax@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Martin Sperl <kernel@martin.sperl.org>, Scott Branden <sbranden@broadcom.com>, Ray Jui <rjui@broadcom.com>, Florian Fainelli <f.fainelli@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-TDM is necessary for more than 2 channels. And there is no control bit
-to specify which slots are using. Machine driver will not need to call
-snd_soc_dai_set_tdm_slot if we do it in rt5665_hw_params.
+I don't really see why it simplifies the code.
+Actually, the number of lines is even increased by this patch.
+And the logic will fail if ever params_channels would return something
+larger than 2.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt5665.c | 114 ++++++++++++++++++++++++----------------------
- 1 file changed, 59 insertions(+), 55 deletions(-)
+Greetings,
+Florian
 
-diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
-index 52148fc..25acdb36 100644
---- a/sound/soc/codecs/rt5665.c
-+++ b/sound/soc/codecs/rt5665.c
-@@ -3967,6 +3967,62 @@ static const struct snd_soc_dapm_route rt5665_dapm_routes[] = {
- 	{"PDMR", NULL, "PDM R Playback"},
- };
- 
-+static int rt5665_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
-+			unsigned int rx_mask, int slots, int slot_width)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	unsigned int val = 0;
-+
-+	if (rx_mask || tx_mask)
-+		val |= RT5665_I2S1_MODE_TDM;
-+
-+	switch (slots) {
-+	case 4:
-+		val |= RT5665_TDM_IN_CH_4;
-+		val |= RT5665_TDM_OUT_CH_4;
-+		break;
-+	case 6:
-+		val |= RT5665_TDM_IN_CH_6;
-+		val |= RT5665_TDM_OUT_CH_6;
-+		break;
-+	case 8:
-+		val |= RT5665_TDM_IN_CH_8;
-+		val |= RT5665_TDM_OUT_CH_8;
-+		break;
-+	case 2:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	switch (slot_width) {
-+	case 20:
-+		val |= RT5665_TDM_IN_LEN_20;
-+		val |= RT5665_TDM_OUT_LEN_20;
-+		break;
-+	case 24:
-+		val |= RT5665_TDM_IN_LEN_24;
-+		val |= RT5665_TDM_OUT_LEN_24;
-+		break;
-+	case 32:
-+		val |= RT5665_TDM_IN_LEN_32;
-+		val |= RT5665_TDM_OUT_LEN_32;
-+		break;
-+	case 16:
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	snd_soc_update_bits(codec, RT5665_TDM_CTRL_1,
-+		RT5665_I2S1_MODE_MASK | RT5665_TDM_IN_CH_MASK |
-+		RT5665_TDM_OUT_CH_MASK | RT5665_TDM_IN_LEN_MASK |
-+		RT5665_TDM_OUT_LEN_MASK, val);
-+
-+	return 0;
-+}
-+
-+
- static int rt5665_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
- {
-@@ -4013,6 +4069,9 @@ static int rt5665_hw_params(struct snd_pcm_substream *substream,
- 	switch (dai->id) {
- 	case RT5665_AIF1_1:
- 	case RT5665_AIF1_2:
-+		if (params_channels(params) > 2)
-+			rt5665_set_tdm_slot(dai, 0xf, 0xf,
-+				params_channels(params), params_width(params));
- 		mask_clk = RT5665_I2S_PD1_MASK;
- 		val_clk = pre_div << RT5665_I2S_PD1_SFT;
- 		snd_soc_update_bits(codec, RT5665_I2S1_SDP,
-@@ -4229,61 +4288,6 @@ static int rt5665_set_codec_pll(struct snd_soc_codec *codec, int pll_id,
- 	return 0;
- }
- 
--static int rt5665_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
--			unsigned int rx_mask, int slots, int slot_width)
--{
--	struct snd_soc_codec *codec = dai->codec;
--	unsigned int val = 0;
--
--	if (rx_mask || tx_mask)
--		val |= RT5665_I2S1_MODE_TDM;
--
--	switch (slots) {
--	case 4:
--		val |= RT5665_TDM_IN_CH_4;
--		val |= RT5665_TDM_OUT_CH_4;
--		break;
--	case 6:
--		val |= RT5665_TDM_IN_CH_6;
--		val |= RT5665_TDM_OUT_CH_6;
--		break;
--	case 8:
--		val |= RT5665_TDM_IN_CH_8;
--		val |= RT5665_TDM_OUT_CH_8;
--		break;
--	case 2:
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	switch (slot_width) {
--	case 20:
--		val |= RT5665_TDM_IN_LEN_20;
--		val |= RT5665_TDM_OUT_LEN_20;
--		break;
--	case 24:
--		val |= RT5665_TDM_IN_LEN_24;
--		val |= RT5665_TDM_OUT_LEN_24;
--		break;
--	case 32:
--		val |= RT5665_TDM_IN_LEN_32;
--		val |= RT5665_TDM_OUT_LEN_32;
--		break;
--	case 16:
--		break;
--	default:
--		return -EINVAL;
--	}
--
--	snd_soc_update_bits(codec, RT5665_TDM_CTRL_1,
--		RT5665_I2S1_MODE_MASK | RT5665_TDM_IN_CH_MASK |
--		RT5665_TDM_OUT_CH_MASK | RT5665_TDM_IN_LEN_MASK |
--		RT5665_TDM_OUT_LEN_MASK, val);
--
--	return 0;
--}
--
- static int rt5665_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
- {
- 	struct snd_soc_codec *codec = dai->codec;
--- 
-2.7.4
+On 08.03.2017 11:58, Matt Flax wrote:
+> This patch simplifies the bcm2835_i2s.c code when the driver returns
+> error on mono channel requests. It does this by testing for mono
+> instead of using a switch statement to test for stereo.
+>
+> The bcm2835_i2s driver can only work in stereo mode. Whilst leaving
+> the driver entirel compliant with the I2S protocol, it simplifies the
+> code by removing a few redundant lines of code.
+>
+> Signed-off-by: Matt Flax <flatmax@flatmax.org>
+> ---
+>  sound/soc/bcm/bcm2835-i2s.c | 17 +++++++++--------
+>  1 file changed, 9 insertions(+), 8 deletions(-)
+>
+> diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
+> index 6ba2049..1e6a1da 100644
+> --- a/sound/soc/bcm/bcm2835-i2s.c
+> +++ b/sound/soc/bcm/bcm2835-i2s.c
+> @@ -310,15 +310,16 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
+>  	ch1pos = data_delay;
+>  	ch2pos = bclk_ratio / 2 + data_delay;
+>
+> -	switch (params_channels(params)) {
+> -	case 2:
+> -		format = BCM2835_I2S_CH1(format) | BCM2835_I2S_CH2(format);
+> -		format |= BCM2835_I2S_CH1(BCM2835_I2S_CHPOS(ch1pos));
+> -		format |= BCM2835_I2S_CH2(BCM2835_I2S_CHPOS(ch2pos));
+> -		break;
+> -	default:
+> +	/* C
+> +	 * Check we aren't setting channel 2 on a mono stream.
+> +	 * We currently only support stereo
+> +	 */
+> +	if (params_channels(params) == 1)
+>  		return -EINVAL;
+> -	}
+> +
+> +	format = BCM2835_I2S_CH1(format) | BCM2835_I2S_CH2(format);
+> +	format |= BCM2835_I2S_CH1(BCM2835_I2S_CHPOS(ch1pos));
+> +	format |= BCM2835_I2S_CH2(BCM2835_I2S_CHPOS(ch2pos));
+>
+>  	/*
+>  	 * Set format for both streams.
+>
