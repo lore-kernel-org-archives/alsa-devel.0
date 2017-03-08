@@ -1,20 +1,16 @@
-From: "Austin, Brian" <Brian.Austin@cirrus.com>
-Subject: Re: [PATCH 1/5] ASoC: cs35l35: Add missing return in
- probe
-Date: Wed, 8 Mar 2017 19:55:36 +0000
-Message-ID: <e1d91274-e6c6-4de6-abe2-44490efabeb3@EX4.ad.cirrus.com>
-References: <1488991371-22513-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Eric Anholt <eric@anholt.net>
+Subject: Re: [RFC PATCH] sound: bcm2835-analog-audio: Add
+	driver for bcm2835(Raspberry PI) headphone jack.
+Date: Wed, 08 Mar 2017 14:27:02 -0800
+Message-ID: <87pohrjtft.fsf@eliezer.anholt.net>
+References: <20170307092109.3083-1-mzoran@crowfest.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6405787081929892897=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id B34C7266B5E
- for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2017 20:55:46 +0100 (CET)
-In-Reply-To: <1488991371-22513-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Content-Language: en-US
-Content-ID: <FB500D88E1DEF4428737431A8667839C@ad.cirrus.com>
+Received: from anholt.net (anholt.net [50.246.234.109])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6DF17266B5E
+ for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2017 23:33:05 +0100 (CET)
+In-Reply-To: <20170307092109.3083-1-mzoran@crowfest.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,23 +20,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, "broonie@kernel.org" <broonie@kernel.org>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>
+To: stefan.wahren@i2se.com, alsa-devel@alsa-project.org, linux-rpi-kernel@lists.infradead.org
+Cc: boris.brezillon@free-electrons.com, Michael Zoran <mzoran@crowfest.net>
 List-Id: alsa-devel@alsa-project.org
 
+--===============6405787081929892897==
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha512; protocol="application/pgp-signature"
 
+--=-=-=
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-On 3/8/17, 10:42 AM, "alsa-devel-bounces@alsa-project.org on behalf of
-Charles Keepax" <alsa-devel-bounces@alsa-project.org on behalf of
-ckeepax@opensource.wolfsonmicro.com> wrote:
+Michael Zoran <mzoran@crowfest.net> writes:
 
->A return statement is missing just before the error paths at the end of
->probe. This causes us to fall straight into the error path and disable
->the supplies and re-enable reset, as these are only controlled during
->probe this causes the part to no longer function.
+> Someone on the internet mentioned that if we have a HDMI Audio driver, wh=
+y not
+> have a driver for the headphone/analog jack on the Raspberry PI that does=
+n't
+> use the firmware.  So I quickly make up a prototype that isn't submit qua=
+lity=20
+> yet, but is very functional.  The idea is to like the firmware, just use =
+the
+> PWM of the bcm2835 to generate the audio.
 >
->Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
->---
+> Questions:
+>
+> 1. Is this something that people would want in the upstream kernel and
+> would be seriously considered for submission?
 
-For the series
-Acked-by: Brian Austin <brian.austin@cirrus.com>
+I'm certainly interested -- the more we can take over from the closed
+source stack, the better Linux on the Raspberry Pi will be.
+
+Make sure you use standard DT properties for describing the DMA channel,
+add your new compatible string to pwm-bcm2835.txt, and document that
+that compat string requires the DMA properties.
+
+> 2. Is it a complete deal breaker that the driver is a regular ALSA driver=
+=20
+> instead of a ASoC driver?
+
+I don't think so.  I think the goal of ASoC is to provide utilities that
+make your SoC ALSA drivers smaller.
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE/JuuFDWp9/ZkuCBXtdYpNtH8nugFAljAhTYACgkQtdYpNtH8
+nuiADA/+I+Ej4nOL+lvT2CWSC2k+s7ZVhR3u+9PW4ADG+8XrY+Z0Rddi641UlA4p
+KvurzZbwYiU4uh3Sq/ljjXcmFhsbyyuQLjYMQgpPdhQxHUCc7nr3Axj3T52DcCXZ
+H0Vh7m4CYjy7q94WXwnIsHE0U66TqzB9TJ37fXd81oRJdSPfCkIwtrHjwzSiUKNy
+pPgn4EK7MajAYf8gabQCupiejH7xwGwxVAkVnxb5ldg3h78PhaUW4TqGQJdaQO1w
+pbtgIos4/HsupfUra9EAPIq6Jnr7B5iaMM92Dgwgj/AKkiZsNXVsOVrngBcDcpEc
+xG0D1LR1zHTfpriCCpYvVIwu+WQdYMZSIWfI4J1+S3WxTnYaA9sdEvi+HbbrhLhw
+K14VepQaEhONKZULdcI7q7jr1BteI3Xc9T+uotd/mSKRnyqyyX0PAVNL2aipgFjH
+cvu3iDJsKqge3+7YOv0ZSx3MCiUML4sGiES/TDFpp2/57tj4ERUbIFKWnldRbkvh
+G9ihpc6h0Sczw5rV3bHmtQ/Qft/ZowU73EPUD4l6JFWNUFxX5orAruliXy2KYLH+
+rX+1zgEWu1/MTIUj9jQXnYF9BDrWO8nMQdzHpi/GkIrNu6S01h1q1QmqMJhibMTQ
+3QLaj9exc+YQLGDrwh4anfP1uI2tiXkhzlDLjM9Wo332AxPpsdI=
+=Lkiy
+-----END PGP SIGNATURE-----
+--=-=-=--
+
+--===============6405787081929892897==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6405787081929892897==--
