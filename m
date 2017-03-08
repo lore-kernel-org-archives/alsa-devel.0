@@ -1,31 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun8i-codec: Convert to SOC_MIXER_ARRAY" to the asoc
- tree
-Date: Wed, 08 Mar 2017 14:22:37 +0100
-Message-ID: <E1clbY5-0000Bz-OU@finisterre>
-References: <20170210094133.11382-4-mylene.josserand@free-electrons.com>
+Subject: Applied "ASoC: rt5665: Vref3 is necessary for Mono
+	Amp" to the asoc tree
+Date: Wed, 08 Mar 2017 14:23:13 +0100
+Message-ID: <E1clbYf-0000Ki-Jq@finisterre>
+References: <1488971136-19100-3-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1555954210506675728=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20170210094133.11382-4-mylene.josserand@free-electrons.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-Cc: mark.rutland@arm.com, thomas.petazzoni@free-electrons.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org, perex@perex.cz, wens@csie.org, broonie@kernel.org, alexandre.belloni@free-electrons.com, maxime.ripard@free-electrons.com, mylene.josserand@free-electrons.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB8DB2671DE
+ for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2017 14:23:38 +0100 (CET)
+In-Reply-To: <1488971136-19100-3-git-send-email-bardliao@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, xiaoxiang@pinecone.net, zhongan@pinecone.net, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
-
---===============1555954210506675728==
-Content-Type: text/plain
 
 The patch
 
-   ASoC: sun8i-codec: Convert to SOC_MIXER_ARRAY
+   ASoC: rt5665: Vref3 is necessary for Mono Amp
 
 has been applied to the asoc tree at
 
@@ -50,62 +53,30 @@ to this mail.
 Thanks,
 Mark
 
->From fa22ca4f905d7001ed966bc95bcffb890a1b8d73 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?=
- <mylene.josserand@free-electrons.com>
-Date: Fri, 10 Feb 2017 10:41:32 +0100
-Subject: [PATCH] ASoC: sun8i-codec: Convert to SOC_MIXER_ARRAY
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From 8f365313beb20742b68cb29a7d1ca6b27c036d81 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Wed, 8 Mar 2017 19:05:31 +0800
+Subject: [PATCH] ASoC: rt5665: Vref3 is necessary for Mono Amp
 
-SOC_MIXER_ARRAY is a simplified function of SND_SOC_DAPM_MIXER
-which handles automatically the ARRAY_SIZE of controls.
+Vref3 is necessary for Mono Amp. So add it to dapm routes
 
-Update the driver to use SOC_MIXER_ARRAY.
-
-Signed-off-by: Mylène Josserand <mylene.josserand@free-electrons.com>
-Acked-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun8i-codec.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ sound/soc/codecs/rt5665.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index 107fa8213600..a75a983974d9 100644
---- a/sound/soc/sunxi/sun8i-codec.c
-+++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -288,12 +288,10 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
- 			 SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0R_ENA, 0),
- 
- 	/* DAC Mixers */
--	SND_SOC_DAPM_MIXER("Left Digital DAC Mixer", SND_SOC_NOPM, 0, 0,
--			   sun8i_dac_mixer_controls,
--			   ARRAY_SIZE(sun8i_dac_mixer_controls)),
--	SND_SOC_DAPM_MIXER("Right Digital DAC Mixer", SND_SOC_NOPM, 0, 0,
--			   sun8i_dac_mixer_controls,
--			   ARRAY_SIZE(sun8i_dac_mixer_controls)),
-+	SOC_MIXER_ARRAY("Left Digital DAC Mixer", SND_SOC_NOPM, 0, 0,
-+			sun8i_dac_mixer_controls),
-+	SOC_MIXER_ARRAY("Right Digital DAC Mixer", SND_SOC_NOPM, 0, 0,
-+			sun8i_dac_mixer_controls),
- 
- 	/* Clocks */
- 	SND_SOC_DAPM_SUPPLY("MODCLK AFI1", SUN8I_MOD_CLK_ENA,
+diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
+index a4c07c2ee414..7a0244e5e321 100644
+--- a/sound/soc/codecs/rt5665.c
++++ b/sound/soc/codecs/rt5665.c
+@@ -3912,6 +3912,7 @@ static const struct snd_soc_dapm_route rt5665_dapm_routes[] = {
+ 	{"Mono MIX", "MONOVOL Switch", "MONOVOL"},
+ 	{"Mono Amp", NULL, "Mono MIX"},
+ 	{"Mono Amp", NULL, "Vref2"},
++	{"Mono Amp", NULL, "Vref3"},
+ 	{"Mono Amp", NULL, "CLKDET SYS"},
+ 	{"Mono Amp", NULL, "CLKDET MONO"},
+ 	{"Mono Playback", "Switch", "Mono Amp"},
 -- 
 2.11.0
-
-
-
---===============1555954210506675728==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============1555954210506675728==--
