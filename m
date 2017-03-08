@@ -1,34 +1,31 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: imx-pcm-dma: simplify pcm_config" to
-	the asoc tree
-Date: Wed, 08 Mar 2017 14:23:33 +0100
-Message-ID: <E1clbYz-0000Sn-VP@finisterre>
-References: <20170308091702.9584-1-l.stach@pengutronix.de>
+Subject: Applied "ASoC: sun8i-codec: Remove analog "HP" widget" to the asoc
+ tree
+Date: Wed, 08 Mar 2017 14:22:49 +0100
+Message-ID: <E1clbYH-0000Eb-1z@finisterre>
+References: <20170210094133.11382-2-mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 776DC2671F6
- for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2017 14:23:48 +0100 (CET)
-In-Reply-To: <20170308091702.9584-1-l.stach@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Lucas Stach <l.stach@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, patchwork-lst@pengutronix.de, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de, Fabio Estevam <fabio.estevam@nxp.com>
+Content-Type: multipart/mixed; boundary="===============0186801177740658231=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20170210094133.11382-2-mylene.josserand@free-electrons.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Cc: mark.rutland@arm.com, thomas.petazzoni@free-electrons.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org, perex@perex.cz, wens@csie.org, broonie@kernel.org, alexandre.belloni@free-electrons.com, maxime.ripard@free-electrons.com, mylene.josserand@free-electrons.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
+
+--===============0186801177740658231==
+Content-Type: text/plain
 
 The patch
 
-   ASoC: imx-pcm-dma: simplify pcm_config
+   ASoC: sun8i-codec: Remove analog "HP" widget
 
 has been applied to the asoc tree at
 
@@ -53,78 +50,65 @@ to this mail.
 Thanks,
 Mark
 
->From 70d435ba1cd6a955e715b8a4729bbc9044e9d7ff Mon Sep 17 00:00:00 2001
-From: Lucas Stach <l.stach@pengutronix.de>
-Date: Wed, 8 Mar 2017 10:17:02 +0100
-Subject: [PATCH] ASoC: imx-pcm-dma: simplify pcm_config
+>From 4aa8146c89f336230de7f449805bd0edfc878fd4 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?=
+ <mylene.josserand@free-electrons.com>
+Date: Fri, 10 Feb 2017 10:41:30 +0100
+Subject: [PATCH] ASoC: sun8i-codec: Remove analog "HP" widget
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-The generic snd_dmaengine_pcm is able to retrieve all the needed
-information from the attached dmaengine and is in fact able to
-provide much more accurate flags to userspace, like the SDMA engine
-being only able to operate in batch mode.
+The "HP" widget is already present and take part to
+the analog part (sun8i-codec-analog).
 
-To avoid any future inconsistencies between the dmaengine and the
-pcm_config, rip out the fixed config and rely on the core to fill
-in the right flags derived from the dmaengine information.
+Remove it from the digital part as it is unnecessary.
 
-Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+Signed-off-by: Mylène Josserand <mylene.josserand@free-electrons.com>
+Acked-by: Chen-Yu Tsai <wens@csie.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/imx-pcm-dma.c | 28 ----------------------------
- 1 file changed, 28 deletions(-)
+ sound/soc/sunxi/sun8i-codec.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/sound/soc/fsl/imx-pcm-dma.c b/sound/soc/fsl/imx-pcm-dma.c
-index f3d3d1ffa84e..314814ddd2b0 100644
---- a/sound/soc/fsl/imx-pcm-dma.c
-+++ b/sound/soc/fsl/imx-pcm-dma.c
-@@ -33,48 +33,20 @@ static bool filter(struct dma_chan *chan, void *param)
- 	return true;
- }
- 
--static const struct snd_pcm_hardware imx_pcm_hardware = {
--	.info = SNDRV_PCM_INFO_INTERLEAVED |
--		SNDRV_PCM_INFO_BLOCK_TRANSFER |
--		SNDRV_PCM_INFO_MMAP |
--		SNDRV_PCM_INFO_MMAP_VALID |
--		SNDRV_PCM_INFO_PAUSE |
--		SNDRV_PCM_INFO_RESUME,
--	.buffer_bytes_max = IMX_DEFAULT_DMABUF_SIZE,
--	.period_bytes_min = 128,
--	.period_bytes_max = 65535, /* Limited by SDMA engine */
--	.periods_min = 2,
--	.periods_max = 255,
--	.fifo_size = 0,
--};
+diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
+index b92bdc8361af..d60f6fbd36a2 100644
+--- a/sound/soc/sunxi/sun8i-codec.c
++++ b/sound/soc/sunxi/sun8i-codec.c
+@@ -321,8 +321,6 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
+ 			    SUN8I_MOD_RST_CTL_AIF1, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY("RST DAC", SUN8I_MOD_RST_CTL,
+ 			    SUN8I_MOD_RST_CTL_DAC, 0, NULL, 0),
 -
- static const struct snd_dmaengine_pcm_config imx_dmaengine_pcm_config = {
--	.pcm_hardware = &imx_pcm_hardware,
- 	.prepare_slave_config = snd_dmaengine_pcm_prepare_slave_config,
- 	.compat_filter_fn = filter,
--	.prealloc_buffer_size = IMX_DEFAULT_DMABUF_SIZE,
+-	SND_SOC_DAPM_OUTPUT("HP"),
  };
  
- int imx_pcm_dma_init(struct platform_device *pdev, size_t size)
- {
- 	struct snd_dmaengine_pcm_config *config;
--	struct snd_pcm_hardware *pcm_hardware;
- 
- 	config = devm_kzalloc(&pdev->dev,
- 			sizeof(struct snd_dmaengine_pcm_config), GFP_KERNEL);
- 	if (!config)
- 		return -ENOMEM;
- 	*config = imx_dmaengine_pcm_config;
--	if (size)
--		config->prealloc_buffer_size = size;
+ static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
+@@ -344,10 +342,6 @@ static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
+ 	/* DAC Mixer Routes */
+ 	{ "Left DAC Mixer", "LSlot 0", "Digital Left DAC"},
+ 	{ "Right DAC Mixer", "RSlot 0", "Digital Right DAC"},
 -
--	pcm_hardware = devm_kzalloc(&pdev->dev,
--			sizeof(struct snd_pcm_hardware), GFP_KERNEL);
--	*pcm_hardware = imx_pcm_hardware;
--	if (size)
--		pcm_hardware->buffer_bytes_max = size;
--
--	config->pcm_hardware = pcm_hardware;
+-	/* End of route : HP out */
+-	{ "HP", NULL, "Left DAC Mixer" },
+-	{ "HP", NULL, "Right DAC Mixer" },
+ };
  
- 	return devm_snd_dmaengine_pcm_register(&pdev->dev,
- 		config,
+ static struct snd_soc_dai_ops sun8i_codec_dai_ops = {
 -- 
 2.11.0
+
+
+
+--===============0186801177740658231==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--===============0186801177740658231==--
