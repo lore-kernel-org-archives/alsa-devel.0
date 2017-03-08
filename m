@@ -1,17 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/3] ASoC: add dio2125 amplifier support
-Date: Wed, 8 Mar 2017 11:00:20 +0100
-Message-ID: <20170308100020.dop5pno3m2sj6fmv@sirena.org.uk>
-References: <20170306174451.24406-1-jbrunet@baylibre.com>
- <1488903977.28627.4.camel@baylibre.com>
+From: Matt Flax <flatmax@flatmax.org>
+Subject: [PATCH] ASoC: bcm_2835: Simplify mono guard by
+	returning error on mono
+Date: Wed,  8 Mar 2017 21:58:54 +1100
+Message-ID: <1488970734-6596-1-git-send-email-flatmax@flatmax.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5824730129033249059=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 47FFF267044
- for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2017 11:00:35 +0100 (CET)
-In-Reply-To: <1488903977.28627.4.camel@baylibre.com>
+Received: from nsstlmta02p.bpe.bigpond.com (nsstlmta02p.bpe.bigpond.com
+ [203.38.21.2]) by alsa0.perex.cz (Postfix) with ESMTP id 3A4D526697F
+ for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2017 11:59:49 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,62 +19,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Neil Armstrong <narmstrong@baylibre.com>, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, Eric Anholt <eric@anholt.net>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, Florian Meier <florian.meier@koalo.de>, broonie@kernel.org, phil@raspberrypi.org, hias@horus.com, ckeepax@opensource.wolfsonmicro.com, florian.kauer@koalo.de, Liam Girdwood <lgirdwood@gmail.com>, Martin Sperl <kernel@martin.sperl.org>, Scott Branden <sbranden@broadcom.com>, Ray Jui <rjui@broadcom.com>, Florian Fainelli <f.fainelli@gmail.com>
+Cc: Matt Flax <flatmax@flatmax.org>
 List-Id: alsa-devel@alsa-project.org
 
+This patch simplifies the bcm2835_i2s.c code when the driver returns
+error on mono channel requests. It does this by testing for mono
+instead of using a switch statement to test for stereo.
 
---===============5824730129033249059==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="7vk47e7bvsnganlx"
-Content-Disposition: inline
+The bcm2835_i2s driver can only work in stereo mode. Whilst leaving
+the driver entirel compliant with the I2S protocol, it simplifies the
+code by removing a few redundant lines of code.
 
+Signed-off-by: Matt Flax <flatmax@flatmax.org>
+---
+ sound/soc/bcm/bcm2835-i2s.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
---7vk47e7bvsnganlx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Mar 07, 2017 at 05:26:17PM +0100, Jerome Brunet wrote:
-> Hi Mark,
-
-Please don't top post, reply in line with needed context.  This allows
-readers to readily follow the flow of conversation and understand what
-you are talking about and also helps ensure that everything in the
-discussion is being addressed.
-
-> In this series, you applied patch 2 and 3 but not patch 1.
-> (so the dioo prefix is used but not documented)
-
-> Is it on purpose ?
-> The patch does not have the "ASoC" prefix, this maybe why it was
-> missed. Since, the file does no belong to alsa, I wasn't sure whether
-> to put the prefix or not.
-
-This is a generic DT patch, not part of the bindings, so I'd expect the
-DT maintainers to take it.
-
---7vk47e7bvsnganlx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAli/1jAACgkQJNaLcl1U
-h9ByKgf9Eit2EVynjCrirpq/lrV2Vf/9l9lZmwFwcpukLnyfSTEncqO2RPNKxR4h
-ndiUpM2vUyMSRnYKHiZFzx+ENvFScF013QbLuq5G1FlMCruqpB28hhnZMzcq8e+f
-aNBN9lvkqd/zQhq3kibC4Za3T8BWZVpQk9yzsNWScY1rT+3lluwpdqT2XqyYyqc7
-rPgQv54kIatRq94+cc7cZUGx+IJ6fXSxPrYDv1b5fkFqko2VY4Ja3Pi69D8t1bNb
-I1ZjN69ud9z7IBuvS50T1UoNsJ3nKj6a3FBE6Tzvtw5X9Cs5QOu+mLWVL4JK8i0O
-9eh6TlitMEDtBjvgmPS7gRSJg3ks8w==
-=Tpig
------END PGP SIGNATURE-----
-
---7vk47e7bvsnganlx--
-
---===============5824730129033249059==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5824730129033249059==--
+diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
+index 6ba2049..1e6a1da 100644
+--- a/sound/soc/bcm/bcm2835-i2s.c
++++ b/sound/soc/bcm/bcm2835-i2s.c
+@@ -310,15 +310,16 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	ch1pos = data_delay;
+ 	ch2pos = bclk_ratio / 2 + data_delay;
+ 
+-	switch (params_channels(params)) {
+-	case 2:
+-		format = BCM2835_I2S_CH1(format) | BCM2835_I2S_CH2(format);
+-		format |= BCM2835_I2S_CH1(BCM2835_I2S_CHPOS(ch1pos));
+-		format |= BCM2835_I2S_CH2(BCM2835_I2S_CHPOS(ch2pos));
+-		break;
+-	default:
++	/* C
++	 * Check we aren't setting channel 2 on a mono stream.
++	 * We currently only support stereo
++	 */
++	if (params_channels(params) == 1)
+ 		return -EINVAL;
+-	}
++
++	format = BCM2835_I2S_CH1(format) | BCM2835_I2S_CH2(format);
++	format |= BCM2835_I2S_CH1(BCM2835_I2S_CHPOS(ch1pos));
++	format |= BCM2835_I2S_CH2(BCM2835_I2S_CHPOS(ch2pos));
+ 
+ 	/*
+ 	 * Set format for both streams.
+-- 
+2.7.4
