@@ -1,94 +1,94 @@
-From: Eric Anholt <eric@anholt.net>
-Subject: Re: [RFC PATCH] sound: bcm2835-analog-audio: Add
-	driver for bcm2835(Raspberry PI) headphone jack.
-Date: Wed, 08 Mar 2017 14:27:02 -0800
-Message-ID: <87pohrjtft.fsf@eliezer.anholt.net>
-References: <20170307092109.3083-1-mzoran@crowfest.net>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6405787081929892897=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from anholt.net (anholt.net [50.246.234.109])
- by alsa0.perex.cz (Postfix) with ESMTP id 6DF17266B5E
- for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2017 23:33:05 +0100 (CET)
-In-Reply-To: <20170307092109.3083-1-mzoran@crowfest.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: stefan.wahren@i2se.com, alsa-devel@alsa-project.org, linux-rpi-kernel@lists.infradead.org
-Cc: boris.brezillon@free-electrons.com, Michael Zoran <mzoran@crowfest.net>
+From: Brian Norris <briannorris@chromium.org>
+Subject: [PATCH for-4.11] ASoC: don't dereference NULL pcm_{new,free}
+Date: Wed,  8 Mar 2017 15:18:54 -0800
+Message-ID: <20170308231854.50167-1-briannorris@chromium.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Brian Norris <briannorris@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
---===============6405787081929892897==
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
+Not all platform drivers have pcm_{new,free} callbacks. Seen with a
+"snd-soc-dummy" codec from sound/soc/rockchip/rk3399_gru_sound.c.
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Resolves an OOPS seen on v4.11-rc1 with Google Kevin (Samsung Chromebook
+Plus):
 
-Michael Zoran <mzoran@crowfest.net> writes:
+[    2.863304] rk3399-gru-sound sound: HiFi <-> ff880000.i2s mapping ok
+[    2.886930] rk3399-gru-sound sound: rt5514-aif1 <-> ff880000.i2s mapping ok
+[    2.912496] rk3399-gru-sound sound: da7219-hifi <-> ff880000.i2s mapping ok
+[    2.936157] Unable to handle kernel NULL pointer dereference at virtual address 00000000
+[    2.945221] pgd = ffffff8008f65000
+[    2.949040] [00000000] *pgd=00000000f7dfe003, *pud=00000000f7dfe003, *pmd=0000000000000000
+[    2.958307] Internal error: Oops: 86000005 [#1] PREEMPT SMP
+[    2.964532] Modules linked in:
+[    2.967945] CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W       4.11.0-rc1+ #941
+[    2.976597] Hardware name: Google Kevin (DT)
+[    2.981364] task: ffffffc0f1cd0000 task.stack: ffffffc0f1ccc000
+[    2.987978] PC is at 0x0
+[    2.990806] LR is at snd_soc_platform_drv_pcm_new+0x74/0x84
+[    2.997030] pc : [<0000000000000000>] lr : [<ffffff80086298f4>] pstate: 60000145
+[    3.005293] sp : ffffffc0f1ccf9a0
+...
+[    3.657268] [<          (null)>]           (null)
+[    3.662523] [<ffffff8008638a48>] soc_new_pcm+0x3b8/0x458
+[    3.668457] [<ffffff800862c1f4>] snd_soc_register_card+0x900/0xd40
+[    3.675361] [<ffffff8008639288>] devm_snd_soc_register_card+0x5c/0x98
+[    3.682559] [<ffffff8008645a7c>] rockchip_sound_probe+0x1b0/0x1f4
+[    3.689369] [<ffffff800846c55c>] platform_drv_probe+0x60/0xac
+[    3.695789] [<ffffff800846a2cc>] driver_probe_device+0x14c/0x2d0
+[    3.702499] [<ffffff800846a4d4>] __driver_attach+0x84/0xb0
+[    3.708628] [<ffffff8008469158>] bus_for_each_dev+0x9c/0xcc
+[    3.714853] [<ffffff8008469ca0>] driver_attach+0x2c/0x34
+[    3.720786] [<ffffff8008469800>] bus_add_driver+0xf0/0x1f4
+[    3.726914] [<ffffff800846b230>] driver_register+0x9c/0xe8
+[    3.733042] [<ffffff800846c4a0>] __platform_driver_register+0x60/0x6c
+[    3.740241] [<ffffff8008c3a720>] rockchip_sound_driver_init+0x18/0x20
+[    3.747438] [<ffffff8008083204>] do_one_initcall+0xa0/0x138
+[    3.753666] [<ffffff8008c00d70>] kernel_init_freeable+0x1ac/0x264
+[    3.760474] [<ffffff8008783914>] kernel_init+0x18/0x100
+[    3.766310] [<ffffff8008082ec0>] ret_from_fork+0x10/0x50
+[    3.772246] Code: bad PC value
+[    3.775704] ---[ end trace f68728a0d3053b53 ]---
+[    3.787286] Kernel panic - not syncing: Fatal exception
+[    3.793126] SMP: stopping secondary CPUs
+[    3.797508] Kernel Offset: disabled
+[    3.801400] Memory Limit: none
 
-> Someone on the internet mentioned that if we have a HDMI Audio driver, wh=
-y not
-> have a driver for the headphone/analog jack on the Raspberry PI that does=
-n't
-> use the firmware.  So I quickly make up a prototype that isn't submit qua=
-lity=20
-> yet, but is very functional.  The idea is to like the firmware, just use =
-the
-> PWM of the bcm2835 to generate the audio.
->
-> Questions:
->
-> 1. Is this something that people would want in the upstream kernel and
-> would be seriously considered for submission?
+Fixes: 99b04f4c4051 ("ASoC: add Component level pcm_new/pcm_free")
+Signed-off-by: Brian Norris <briannorris@chromium.org>
+---
+I'm really not that familiar with this subsystem... but this does fix the
+crash seen here.
 
-I'm certainly interested -- the more we can take over from the closed
-source stack, the better Linux on the Raspberry Pi will be.
+ sound/soc/soc-core.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Make sure you use standard DT properties for describing the DMA channel,
-add your new compatible string to pwm-bcm2835.txt, and document that
-that compat string requires the DMA properties.
-
-> 2. Is it a complete deal breaker that the driver is a regular ALSA driver=
-=20
-> instead of a ASoC driver?
-
-I don't think so.  I think the goal of ASoC is to provide utilities that
-make your SoC ALSA drivers smaller.
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEE/JuuFDWp9/ZkuCBXtdYpNtH8nugFAljAhTYACgkQtdYpNtH8
-nuiADA/+I+Ej4nOL+lvT2CWSC2k+s7ZVhR3u+9PW4ADG+8XrY+Z0Rddi641UlA4p
-KvurzZbwYiU4uh3Sq/ljjXcmFhsbyyuQLjYMQgpPdhQxHUCc7nr3Axj3T52DcCXZ
-H0Vh7m4CYjy7q94WXwnIsHE0U66TqzB9TJ37fXd81oRJdSPfCkIwtrHjwzSiUKNy
-pPgn4EK7MajAYf8gabQCupiejH7xwGwxVAkVnxb5ldg3h78PhaUW4TqGQJdaQO1w
-pbtgIos4/HsupfUra9EAPIq6Jnr7B5iaMM92Dgwgj/AKkiZsNXVsOVrngBcDcpEc
-xG0D1LR1zHTfpriCCpYvVIwu+WQdYMZSIWfI4J1+S3WxTnYaA9sdEvi+HbbrhLhw
-K14VepQaEhONKZULdcI7q7jr1BteI3Xc9T+uotd/mSKRnyqyyX0PAVNL2aipgFjH
-cvu3iDJsKqge3+7YOv0ZSx3MCiUML4sGiES/TDFpp2/57tj4ERUbIFKWnldRbkvh
-G9ihpc6h0Sczw5rV3bHmtQ/Qft/ZowU73EPUD4l6JFWNUFxX5orAruliXy2KYLH+
-rX+1zgEWu1/MTIUj9jQXnYF9BDrWO8nMQdzHpi/GkIrNu6S01h1q1QmqMJhibMTQ
-3QLaj9exc+YQLGDrwh4anfP1uI2tiXkhzlDLjM9Wo332AxPpsdI=
-=Lkiy
------END PGP SIGNATURE-----
---=-=-=--
-
---===============6405787081929892897==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6405787081929892897==--
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 6dca408faae3..2722bb0c5573 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -3326,7 +3326,10 @@ static int snd_soc_platform_drv_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct snd_soc_platform *platform = rtd->platform;
+ 
+-	return platform->driver->pcm_new(rtd);
++	if (platform->driver->pcm_new)
++		return platform->driver->pcm_new(rtd);
++	else
++		return 0;
+ }
+ 
+ static void snd_soc_platform_drv_pcm_free(struct snd_pcm *pcm)
+@@ -3334,7 +3337,8 @@ static void snd_soc_platform_drv_pcm_free(struct snd_pcm *pcm)
+ 	struct snd_soc_pcm_runtime *rtd = pcm->private_data;
+ 	struct snd_soc_platform *platform = rtd->platform;
+ 
+-	platform->driver->pcm_free(pcm);
++	if (platform->driver->pcm_free)
++		platform->driver->pcm_free(pcm);
+ }
+ 
+ /**
+-- 
+2.12.0.246.ga2ecc84866-goog
