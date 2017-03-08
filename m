@@ -1,42 +1,94 @@
-From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: [PATCH 1/5] ASoC: cs35l35: Add missing return in probe
-Date: Wed, 8 Mar 2017 16:42:47 +0000
-Message-ID: <1488991371-22513-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 3/5] ASoC: cs35l35: Add for configuring drive
+	mode in unused slots
+Date: Wed, 8 Mar 2017 16:42:49 +0000
+Message-ID: <1488991371-22513-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1488991371-22513-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id C0CA5266B16
+ for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2017 17:41:50 +0100 (CET)
+In-Reply-To: <1488991371-22513-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-A return statement is missing just before the error paths at the end of
-probe. This causes us to fall straight into the error path and disable
-the supplies and re-enable reset, as these are only controlled during
-probe this causes the part to no longer function.
+Add support for setting how the I2S pins are driven in unused slots,
+currently the chip will just use the default of drive 0, however this
+causes issues when multiple devices are attached to the same bus.
 
-Signed-off-by: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/cs35l35.c | 2 ++
- 1 file changed, 2 insertions(+)
+ include/sound/cs35l35.h    | 2 ++
+ sound/soc/codecs/cs35l35.c | 7 +++++++
+ sound/soc/codecs/cs35l35.h | 4 ++++
+ 3 files changed, 13 insertions(+)
 
+diff --git a/include/sound/cs35l35.h b/include/sound/cs35l35.h
+index de92e452..983c610 100644
+--- a/include/sound/cs35l35.h
++++ b/include/sound/cs35l35.h
+@@ -80,6 +80,8 @@ struct cs35l35_platform_data {
+ 	bool stereo;
+ 	/* serial port drive strength */
+ 	int sp_drv_str;
++	/* serial port drive in unused slots */
++	int sp_drv_unused;
+ 	/* Boost Power Down with FET */
+ 	bool bst_pdn_fet_on;
+ 	/* Boost Voltage : used if ClassH Algo Enabled */
 diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
-index 260ed42..48b45dc 100644
+index 48b45dc..5a9fe5a 100644
 --- a/sound/soc/codecs/cs35l35.c
 +++ b/sound/soc/codecs/cs35l35.c
-@@ -1509,6 +1509,8 @@ static int cs35l35_i2c_probe(struct i2c_client *i2c_client,
- 		goto err;
- 	}
+@@ -789,6 +789,11 @@ static int cs35l35_codec_probe(struct snd_soc_codec *codec)
+ 				CS35L35_SP_DRV_MASK,
+ 				cs35l35->pdata.sp_drv_str <<
+ 				CS35L35_SP_DRV_SHIFT);
++	if (cs35l35->pdata.sp_drv_unused)
++		regmap_update_bits(cs35l35->regmap, CS35L35_SP_FMT_CTL3,
++				   CS35L35_SP_I2S_DRV_MASK,
++				   cs35l35->pdata.sp_drv_unused <<
++				   CS35L35_SP_I2S_DRV_SHIFT);
  
-+	return 0;
+ 	if (classh->classh_algo_enable) {
+ 		if (classh->classh_bst_override)
+@@ -1169,6 +1174,8 @@ static int cs35l35_handle_of_data(struct i2c_client *i2c_client,
+ 
+ 	if (of_property_read_u32(np, "cirrus,sp-drv-strength", &val32) >= 0)
+ 		pdata->sp_drv_str = val32;
++	if (of_property_read_u32(np, "cirrus,sp-drv-unused", &val32) >= 0)
++		pdata->sp_drv_unused = val32 | CS35L35_VALID_PDATA;
+ 
+ 	pdata->stereo = of_property_read_bool(np, "cirrus,stereo-config");
+ 
+diff --git a/sound/soc/codecs/cs35l35.h b/sound/soc/codecs/cs35l35.h
+index e27a7fe..c203081 100644
+--- a/sound/soc/codecs/cs35l35.h
++++ b/sound/soc/codecs/cs35l35.h
+@@ -190,6 +190,10 @@
+ #define CS35L35_AMP_GAIN_ZC_MASK	0x10
+ #define CS35L35_AMP_GAIN_ZC_SHIFT	4
+ 
++/* CS35L35_SP_FMT_CTL3 */
++#define CS35L35_SP_I2S_DRV_MASK		0x03
++#define CS35L35_SP_I2S_DRV_SHIFT	0
 +
- err:
- 	regulator_bulk_disable(cs35l35->num_supplies,
- 			       cs35l35->supplies);
+ /* Class H Algorithm Control */
+ #define CS35L35_CH_STEREO_MASK		0x40
+ #define CS35L35_CH_STEREO_SHIFT		6
 -- 
 2.1.4
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
