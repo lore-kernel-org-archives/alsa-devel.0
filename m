@@ -1,21 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PLUGINS] Multichannel over I2S : extra cost of
- user space plugins
-Date: Wed, 8 Mar 2017 15:34:53 +0100
-Message-ID: <07e1b7d5-e36f-4e01-a453-b3d1bfc81049@ladisch.de>
-References: <b4d4d4e3-1b94-4ff1-eabe-d3fe28b9b94c@flatmax.org>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 2/5] ASoC: cs35l35: Add device tree binding for
+	I2S drive configuration
+Date: Wed, 8 Mar 2017 16:42:48 +0000
+Message-ID: <1488991371-22513-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+References: <1488991371-22513-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id DD90F266B02
- for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2017 15:34:56 +0100 (CET)
-Received: from [10.1.2.4] (unknown [94.101.37.79])
- by webclient5.webclient5.de (Postfix) with ESMTPSA id EE3575582158
- for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2017 15:34:55 +0100 (CET)
-In-Reply-To: <b4d4d4e3-1b94-4ff1-eabe-d3fe28b9b94c@flatmax.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B12A266B02
+ for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2017 17:41:49 +0100 (CET)
+In-Reply-To: <1488991371-22513-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,36 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: broonie@kernel.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Matt Flax wrote:
-> Recently I was advised to channel multichannel audio over stereo I2S
+Add a binding for setting how the I2S pins are driven in unused slots,
+currently the chip will just use the default of drive 0, however
+this causes issues when multiple devices are attached to the same bus.
 
-Why would you want to do that?  Don't you have the appropriate number of I=
-=B2S lines?
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ Documentation/devicetree/bindings/sound/cs35l35.txt | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-> and unpack in user space with plugins.
-
-Why?
-
-> Right now, with a hacked machine driver, I get DMA unpacking to multichan=
-nel for free.
->
-> If I switch to user space ALSA plugin unpacking, as advised, can anyone a=
-nswer the following questions please :
->
-> If I want to handle all word sizes which are currently implemented S16 ->=
- S32, do I need to use different plugins to handle different word sizes ?
-
-Plugins can query what the actual sample format is (and can constrain them =
-to what they support).
-
-> Regarding the actual channel unpacking, will it cost a lot more to do thi=
-s in user space, rather then using the DMA silicon ?
-
-Of course.
-
-
-Regards,
-Clemens
+diff --git a/Documentation/devicetree/bindings/sound/cs35l35.txt b/Documentation/devicetree/bindings/sound/cs35l35.txt
+index 07d9c0f..958f0ea 100644
+--- a/Documentation/devicetree/bindings/sound/cs35l35.txt
++++ b/Documentation/devicetree/bindings/sound/cs35l35.txt
+@@ -37,6 +37,11 @@ Optional properties:
+   Table 3-10 of the datasheet lists drive-strength specifications
+   0 = 1x (Default)
+   1 = .5x
++  - cirrus,sp-drv-unused : Determines how unused slots should be driven on the
++  Serial Port.
++  0 - Hi-Z
++  2 - Drive 0's (Default)
++  3 - Drive 1's
+ 
+   - cirrus,bst-pdn-fet-on : Boolean to determine if the Boost PDN control
+   powers down with a rectification FET On or Off. If VSPK is supplied
+-- 
+2.1.4
