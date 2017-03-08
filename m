@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5665: increase button detection
-	accuracy" to the asoc tree
-Date: Wed, 08 Mar 2017 14:23:00 +0100
-Message-ID: <E1clbYS-0000Hn-9r@finisterre>
-References: <1488971136-19100-5-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: rt5665: enable TDM if more than 2
+	channels" to the asoc tree
+Date: Wed, 08 Mar 2017 14:22:56 +0100
+Message-ID: <E1clbYO-0000Gf-QG@finisterre>
+References: <1488971136-19100-8-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1BCD8267197
- for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2017 14:23:16 +0100 (CET)
-In-Reply-To: <1488971136-19100-5-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 005B6267198
+ for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2017 14:23:17 +0100 (CET)
+In-Reply-To: <1488971136-19100-8-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5665: increase button detection accuracy
+   ASoC: rt5665: enable TDM if more than 2 channels
 
 has been applied to the asoc tree at
 
@@ -53,32 +53,159 @@ to this mail.
 Thanks,
 Mark
 
->From 246126b0a4f24f8e88f148c9d0d6d72e6fafe6cc Mon Sep 17 00:00:00 2001
+>From 948059ddf93f4dfbb1f2f00885d2172b835a03b1 Mon Sep 17 00:00:00 2001
 From: Bard Liao <bardliao@realtek.com>
-Date: Wed, 8 Mar 2017 19:05:33 +0800
-Subject: [PATCH] ASoC: rt5665: increase button detection accuracy
+Date: Wed, 8 Mar 2017 19:05:36 +0800
+Subject: [PATCH] ASoC: rt5665: enable TDM if more than 2 channels
 
-Use sar adc for button detection to increase accuracy.
+TDM is necessary for more than 2 channels. And there is no control bit
+to specify which slots are using. Machine driver will not need to call
+snd_soc_dai_set_tdm_slot if we do it in rt5665_hw_params.
 
 Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5665.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt5665.c | 114 ++++++++++++++++++++++++----------------------
+ 1 file changed, 59 insertions(+), 55 deletions(-)
 
 diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
-index 61137160c116..de2c104bbaf3 100644
+index de2c104bbaf3..b8c50ed72396 100644
 --- a/sound/soc/codecs/rt5665.c
 +++ b/sound/soc/codecs/rt5665.c
-@@ -1139,7 +1139,8 @@ static void rt5665_enable_push_button_irq(struct snd_soc_codec *codec,
- 	bool enable)
+@@ -3964,6 +3964,62 @@ static const struct snd_soc_dapm_route rt5665_dapm_routes[] = {
+ 	{"PDMR", NULL, "PDM R Playback"},
+ };
+ 
++static int rt5665_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
++			unsigned int rx_mask, int slots, int slot_width)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	unsigned int val = 0;
++
++	if (rx_mask || tx_mask)
++		val |= RT5665_I2S1_MODE_TDM;
++
++	switch (slots) {
++	case 4:
++		val |= RT5665_TDM_IN_CH_4;
++		val |= RT5665_TDM_OUT_CH_4;
++		break;
++	case 6:
++		val |= RT5665_TDM_IN_CH_6;
++		val |= RT5665_TDM_OUT_CH_6;
++		break;
++	case 8:
++		val |= RT5665_TDM_IN_CH_8;
++		val |= RT5665_TDM_OUT_CH_8;
++		break;
++	case 2:
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	switch (slot_width) {
++	case 20:
++		val |= RT5665_TDM_IN_LEN_20;
++		val |= RT5665_TDM_OUT_LEN_20;
++		break;
++	case 24:
++		val |= RT5665_TDM_IN_LEN_24;
++		val |= RT5665_TDM_OUT_LEN_24;
++		break;
++	case 32:
++		val |= RT5665_TDM_IN_LEN_32;
++		val |= RT5665_TDM_OUT_LEN_32;
++		break;
++	case 16:
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	snd_soc_update_bits(codec, RT5665_TDM_CTRL_1,
++		RT5665_I2S1_MODE_MASK | RT5665_TDM_IN_CH_MASK |
++		RT5665_TDM_OUT_CH_MASK | RT5665_TDM_IN_LEN_MASK |
++		RT5665_TDM_OUT_LEN_MASK, val);
++
++	return 0;
++}
++
++
+ static int rt5665_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
  {
- 	if (enable) {
--		snd_soc_write(codec, RT5665_4BTN_IL_CMD_1, 0x000b);
-+		snd_soc_write(codec, RT5665_4BTN_IL_CMD_1, 0x0003);
-+		snd_soc_update_bits(codec, RT5665_SAR_IL_CMD_9, 0x1, 0x1);
- 		snd_soc_write(codec, RT5665_IL_CMD_1, 0x0048);
- 		snd_soc_update_bits(codec, RT5665_4BTN_IL_CMD_2,
- 				RT5665_4BTN_IL_MASK | RT5665_4BTN_IL_RST_MASK,
+@@ -4010,6 +4066,9 @@ static int rt5665_hw_params(struct snd_pcm_substream *substream,
+ 	switch (dai->id) {
+ 	case RT5665_AIF1_1:
+ 	case RT5665_AIF1_2:
++		if (params_channels(params) > 2)
++			rt5665_set_tdm_slot(dai, 0xf, 0xf,
++				params_channels(params), params_width(params));
+ 		mask_clk = RT5665_I2S_PD1_MASK;
+ 		val_clk = pre_div << RT5665_I2S_PD1_SFT;
+ 		snd_soc_update_bits(codec, RT5665_I2S1_SDP,
+@@ -4227,61 +4286,6 @@ static int rt5665_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int Source,
+ 	return 0;
+ }
+ 
+-static int rt5665_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
+-			unsigned int rx_mask, int slots, int slot_width)
+-{
+-	struct snd_soc_codec *codec = dai->codec;
+-	unsigned int val = 0;
+-
+-	if (rx_mask || tx_mask)
+-		val |= RT5665_I2S1_MODE_TDM;
+-
+-	switch (slots) {
+-	case 4:
+-		val |= RT5665_TDM_IN_CH_4;
+-		val |= RT5665_TDM_OUT_CH_4;
+-		break;
+-	case 6:
+-		val |= RT5665_TDM_IN_CH_6;
+-		val |= RT5665_TDM_OUT_CH_6;
+-		break;
+-	case 8:
+-		val |= RT5665_TDM_IN_CH_8;
+-		val |= RT5665_TDM_OUT_CH_8;
+-		break;
+-	case 2:
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	switch (slot_width) {
+-	case 20:
+-		val |= RT5665_TDM_IN_LEN_20;
+-		val |= RT5665_TDM_OUT_LEN_20;
+-		break;
+-	case 24:
+-		val |= RT5665_TDM_IN_LEN_24;
+-		val |= RT5665_TDM_OUT_LEN_24;
+-		break;
+-	case 32:
+-		val |= RT5665_TDM_IN_LEN_32;
+-		val |= RT5665_TDM_OUT_LEN_32;
+-		break;
+-	case 16:
+-		break;
+-	default:
+-		return -EINVAL;
+-	}
+-
+-	snd_soc_update_bits(codec, RT5665_TDM_CTRL_1,
+-		RT5665_I2S1_MODE_MASK | RT5665_TDM_IN_CH_MASK |
+-		RT5665_TDM_OUT_CH_MASK | RT5665_TDM_IN_LEN_MASK |
+-		RT5665_TDM_OUT_LEN_MASK, val);
+-
+-	return 0;
+-}
+-
+ static int rt5665_set_bclk_ratio(struct snd_soc_dai *dai, unsigned int ratio)
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
 -- 
 2.11.0
