@@ -1,34 +1,28 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5665: Vref3 is necessary for Mono
-	Amp" to the asoc tree
-Date: Wed, 08 Mar 2017 14:23:13 +0100
-Message-ID: <E1clbYf-0000Ki-Jq@finisterre>
-References: <1488971136-19100-3-git-send-email-bardliao@realtek.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AB8DB2671DE
- for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2017 14:23:38 +0100 (CET)
-In-Reply-To: <1488971136-19100-3-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, xiaoxiang@pinecone.net, zhongan@pinecone.net, flove@realtek.com
+Subject: Applied "ASoC: fsl: Remove unneeded init of static variable" to the
+ asoc tree
+Date: Wed, 08 Mar 2017 14:23:26 +0100
+Message-ID: <E1clbYs-0000O9-K4@finisterre>
+References: <20170225104726.15936-1-alin.grig93@gmail.com>
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <20170225104726.15936-1-alin.grig93@gmail.com>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: Alin Grigorean <alin.grig93@gmail.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, timur@tabi.org, Xiubo.Lee@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com, perex@perex.cz, nicoleotsuka@gmail.com, broonie@kernel.org, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5665: Vref3 is necessary for Mono Amp
+   ASoC: fsl: Remove unneeded init of static variable
 
 has been applied to the asoc tree at
 
@@ -53,30 +47,32 @@ to this mail.
 Thanks,
 Mark
 
->From 8f365313beb20742b68cb29a7d1ca6b27c036d81 Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Wed, 8 Mar 2017 19:05:31 +0800
-Subject: [PATCH] ASoC: rt5665: Vref3 is necessary for Mono Amp
+>From cb7d53b499f95febd4b5bc80a473706c717d5d2c Mon Sep 17 00:00:00 2001
+From: Alin Grigorean <alin.grig93@gmail.com>
+Date: Sat, 25 Feb 2017 12:47:26 +0200
+Subject: [PATCH] ASoC: fsl: Remove unneeded init of static variable
 
-Vref3 is necessary for Mono Amp. So add it to dapm routes
+This was reported by checkpatch.pl
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Alin Grigorean <alin.grig93@gmail.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5665.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/fsl/imx-pcm-fiq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
-index a4c07c2ee414..7a0244e5e321 100644
---- a/sound/soc/codecs/rt5665.c
-+++ b/sound/soc/codecs/rt5665.c
-@@ -3912,6 +3912,7 @@ static const struct snd_soc_dapm_route rt5665_dapm_routes[] = {
- 	{"Mono MIX", "MONOVOL Switch", "MONOVOL"},
- 	{"Mono Amp", NULL, "Mono MIX"},
- 	{"Mono Amp", NULL, "Vref2"},
-+	{"Mono Amp", NULL, "Vref3"},
- 	{"Mono Amp", NULL, "CLKDET SYS"},
- 	{"Mono Amp", NULL, "CLKDET MONO"},
- 	{"Mono Playback", "Switch", "Mono Amp"},
+diff --git a/sound/soc/fsl/imx-pcm-fiq.c b/sound/soc/fsl/imx-pcm-fiq.c
+index dac6688540dc..92410f7ca1fa 100644
+--- a/sound/soc/fsl/imx-pcm-fiq.c
++++ b/sound/soc/fsl/imx-pcm-fiq.c
+@@ -282,7 +282,7 @@ static int imx_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
+ }
+ 
+-static int ssi_irq = 0;
++static int ssi_irq;
+ 
+ static int imx_pcm_fiq_new(struct snd_soc_pcm_runtime *rtd)
+ {
 -- 
 2.11.0
