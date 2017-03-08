@@ -1,8 +1,7 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 3/5] ASoC: cs35l35: Add for configuring drive
-	mode in unused slots
-Date: Wed, 8 Mar 2017 16:42:49 +0000
-Message-ID: <1488991371-22513-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 5/5] ASoC: cs35l35: Add IRQF_SHARED to IRQ flags
+Date: Wed, 8 Mar 2017 16:42:51 +0000
+Message-ID: <1488991371-22513-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1488991371-22513-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +9,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
  [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id C0CA5266B16
- for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2017 17:41:50 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 938BF266FF0
+ for <alsa-devel@alsa-project.org>; Wed,  8 Mar 2017 17:42:26 +0100 (CET)
 In-Reply-To: <1488991371-22513-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,69 +25,29 @@ To: broonie@kernel.org
 Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add support for setting how the I2S pins are driven in unused slots,
-currently the chip will just use the default of drive 0, however this
-causes issues when multiple devices are attached to the same bus.
+As it is quite common to use a stereo pair of amps but share the IRQ
+line between them both add the IRQF_SHARED flag whilst requesting
+cs35l35's IRQ.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- include/sound/cs35l35.h    | 2 ++
- sound/soc/codecs/cs35l35.c | 7 +++++++
- sound/soc/codecs/cs35l35.h | 4 ++++
- 3 files changed, 13 insertions(+)
+ sound/soc/codecs/cs35l35.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/cs35l35.h b/include/sound/cs35l35.h
-index de92e452..983c610 100644
---- a/include/sound/cs35l35.h
-+++ b/include/sound/cs35l35.h
-@@ -80,6 +80,8 @@ struct cs35l35_platform_data {
- 	bool stereo;
- 	/* serial port drive strength */
- 	int sp_drv_str;
-+	/* serial port drive in unused slots */
-+	int sp_drv_unused;
- 	/* Boost Power Down with FET */
- 	bool bst_pdn_fet_on;
- 	/* Boost Voltage : used if ClassH Algo Enabled */
 diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
-index 48b45dc..5a9fe5a 100644
+index 99bcdb9..7c4d74e 100644
 --- a/sound/soc/codecs/cs35l35.c
 +++ b/sound/soc/codecs/cs35l35.c
-@@ -789,6 +789,11 @@ static int cs35l35_codec_probe(struct snd_soc_codec *codec)
- 				CS35L35_SP_DRV_MASK,
- 				cs35l35->pdata.sp_drv_str <<
- 				CS35L35_SP_DRV_SHIFT);
-+	if (cs35l35->pdata.sp_drv_unused)
-+		regmap_update_bits(cs35l35->regmap, CS35L35_SP_FMT_CTL3,
-+				   CS35L35_SP_I2S_DRV_MASK,
-+				   cs35l35->pdata.sp_drv_unused <<
-+				   CS35L35_SP_I2S_DRV_SHIFT);
+@@ -1427,8 +1427,8 @@ static int cs35l35_i2c_probe(struct i2c_client *i2c_client,
+ 	init_completion(&cs35l35->pdn_done);
  
- 	if (classh->classh_algo_enable) {
- 		if (classh->classh_bst_override)
-@@ -1169,6 +1174,8 @@ static int cs35l35_handle_of_data(struct i2c_client *i2c_client,
- 
- 	if (of_property_read_u32(np, "cirrus,sp-drv-strength", &val32) >= 0)
- 		pdata->sp_drv_str = val32;
-+	if (of_property_read_u32(np, "cirrus,sp-drv-unused", &val32) >= 0)
-+		pdata->sp_drv_unused = val32 | CS35L35_VALID_PDATA;
- 
- 	pdata->stereo = of_property_read_bool(np, "cirrus,stereo-config");
- 
-diff --git a/sound/soc/codecs/cs35l35.h b/sound/soc/codecs/cs35l35.h
-index e27a7fe..c203081 100644
---- a/sound/soc/codecs/cs35l35.h
-+++ b/sound/soc/codecs/cs35l35.h
-@@ -190,6 +190,10 @@
- #define CS35L35_AMP_GAIN_ZC_MASK	0x10
- #define CS35L35_AMP_GAIN_ZC_SHIFT	4
- 
-+/* CS35L35_SP_FMT_CTL3 */
-+#define CS35L35_SP_I2S_DRV_MASK		0x03
-+#define CS35L35_SP_I2S_DRV_SHIFT	0
-+
- /* Class H Algorithm Control */
- #define CS35L35_CH_STEREO_MASK		0x40
- #define CS35L35_CH_STEREO_SHIFT		6
+ 	ret = devm_request_threaded_irq(dev, i2c_client->irq, NULL, cs35l35_irq,
+-					IRQF_ONESHOT | IRQF_TRIGGER_LOW,
+-					"cs35l35", cs35l35);
++					IRQF_ONESHOT | IRQF_TRIGGER_LOW |
++					IRQF_SHARED, "cs35l35", cs35l35);
+ 	if (ret != 0) {
+ 		dev_err(dev, "Failed to request IRQ: %d\n", ret);
+ 		goto err;
 -- 
 2.1.4
