@@ -1,14 +1,14 @@
-From: "Sutar, Mounesh" <Mounesh_Sutar@mentor.com>
-Subject: Re: [PATCH v3 6/6] pcm:plug: save converter config
-Date: Thu, 9 Mar 2017 10:21:18 +0000
-Message-ID: <4f438adcb1cc4665832b336ff9eed86b@SVR-IES-MBX-04.mgc.mentorg.com>
-References: <1488535109-11572-1-git-send-email-sutar.mounesh@gmail.com>
+From: "Felix Bruns" <abaoaqu@gmx.de>
+Subject: (no subject)
+Date: Thu, 9 Mar 2017 11:32:42 +0100
+Message-ID: <trinity-2d394a27-58cd-4ce9-825d-b60a87c3339a-1489055562057@3capp-gmx-bs64>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1488535109-11572-1-git-send-email-sutar.mounesh@gmail.com>
-Content-Language: en-US
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9CD72671D3
+ for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2017 11:32:42 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,65 +18,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "patch@alsa-project.org" <patch@alsa-project.org>
-Cc: "sutar.mounesh@gmail.com" <sutar.mounesh@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andreas Pape <apape@de.adit-jv.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-ping
+   Hello,
 
------Original Message-----
-From: sutar.mounesh@gmail.com [mailto:sutar.mounesh@gmail.com] 
-Sent: 03 March 2017 15:28
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org; Sutar, Mounesh <Mounesh_Sutar@mentor.com>; Andreas Pape <apape@de.adit-jv.com>; Mounesh Sutar <sutar.mounesh@gmail.com>
-Subject: [PATCH v3 6/6] pcm:plug: save converter config
+   I am working on embedded device (using an i.MX6  MCU) which has an
+   external amplifier for sound amplification.
 
-From: Andreas Pape <apape@de.adit-jv.com>
+   Unfortunately I could not find information if and how the gain of
+   hardware amplifiers are controlled by ALSA.
+   Can somebody clarify or point me to an example?
 
-Passed config is freed after call to open, thus it is invalid when trying to extract the converter name. So config entry is saved for later usage.
-
-Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
-Signed-off-by: Mounesh Sutar <sutar.mounesh@gmail.com>
-
-diff --git a/src/pcm/pcm_plug.c b/src/pcm/pcm_plug.c index 266707b..c643278 100644
---- a/src/pcm/pcm_plug.c
-+++ b/src/pcm/pcm_plug.c
-@@ -64,6 +64,10 @@ static int snd_pcm_plug_close(snd_pcm_t *pcm)
- 	snd_pcm_plug_t *plug = pcm->private_data;
- 	int err, result = 0;
- 	free(plug->ttable);
-+	if (plug->rate_converter) {
-+		snd_config_delete((snd_config_t*)plug->rate_converter);
-+		plug->rate_converter = NULL;
-+	}
- 	assert(plug->gen.slave == plug->req_slave);
- 	if (plug->gen.close_slave) {
- 		snd_pcm_unlink_hw_ptr(pcm, plug->req_slave); @@ -1108,7 +1112,14 @@ int snd_pcm_plug_open(snd_pcm_t **pcmp,
- 	plug->sformat = sformat;
- 	plug->schannels = schannels;
- 	plug->srate = srate;
--	plug->rate_converter = rate_converter;
-+	if (rate_converter) {
-+		if ((err = snd_config_copy((snd_config_t**)&plug->rate_converter,
-+					   (snd_config_t *)rate_converter)) < 0) {
-+			free(plug);
-+			return err;
-+		}
-+	}
-+
- 	plug->gen.slave = plug->req_slave = slave;
- 	plug->gen.close_slave = close_slave;
- 	plug->route_policy = route_policy;
-@@ -1119,6 +1130,10 @@ int snd_pcm_plug_open(snd_pcm_t **pcmp,
- 	
- 	err = snd_pcm_new(&pcm, SND_PCM_TYPE_PLUG, name, slave->stream, slave->mode);
- 	if (err < 0) {
-+		if (plug->rate_converter) {
-+			snd_config_delete((snd_config_t*)plug->rate_converter);
-+			plug->rate_converter = NULL;
-+		}
- 		free(plug);
- 		return err;
- 	}
---
-2.7.4
+   Thanks and kind regards,
+   Felix Bruns
