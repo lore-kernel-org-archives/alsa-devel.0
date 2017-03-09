@@ -1,78 +1,44 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: [PATCH] ALSA: hda - add support for docking station
-	for HP 840 G3
-Date: Thu,  9 Mar 2017 13:30:09 +0100
-Message-ID: <20170309123009.4242-1-perex@perex.cz>
+From: Romain Perier <romain.perier@collabora.com>
+Subject: Re: [PATCH] ASoC: es8328: Remove extra blank lines
+Date: Thu, 9 Mar 2017 17:00:06 +0100
+Message-ID: <91ec78bf-bf28-405f-2486-0d70229cd424@collabora.com>
+References: <1488019328-9481-1-git-send-email-narcisaanamaria12@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 487CE267224
- for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2017 13:30:51 +0100 (CET)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
-Cc: Takashi Iwai <tiwai@suse.de>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1488019328-9481-1-git-send-email-narcisaanamaria12@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Narcisa Ana Maria Vasile <narcisaanamaria12@gmail.com>, perex@perex.cz, tiwai@suse.com
+Cc: lgirdwood@gmail.com, broonie@kernel.org, john@metanate.com, kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This tested patch adds missing initialization for Line-In/Out PINs for
-the docking station for HP 840 G3.
+Hello,
 
-Signed-off-by: Jaroslav Kysela <perex@perex.cz>
----
- sound/pci/hda/patch_conexant.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
 
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index c15c51b..69266b8 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -261,6 +261,7 @@ enum {
- 	CXT_FIXUP_HP_530,
- 	CXT_FIXUP_CAP_MIX_AMP_5047,
- 	CXT_FIXUP_MUTE_LED_EAPD,
-+	CXT_FIXUP_HP_DOCK,
- 	CXT_FIXUP_HP_SPECTRE,
- 	CXT_FIXUP_HP_GATE_MIC,
- };
-@@ -778,6 +779,14 @@ static const struct hda_fixup cxt_fixups[] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = cxt_fixup_mute_led_eapd,
- 	},
-+	[CXT_FIXUP_HP_DOCK] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x16, 0x21011020 }, /* line-out */
-+			{ 0x18, 0x2181103f }, /* line-in */
-+			{ }
-+		}
-+	},
- 	[CXT_FIXUP_HP_SPECTRE] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = (const struct hda_pintbl[]) {
-@@ -839,6 +848,7 @@ static const struct snd_pci_quirk cxt5066_fixups[] = {
- 	SND_PCI_QUIRK(0x1025, 0x0543, "Acer Aspire One 522", CXT_FIXUP_STEREO_DMIC),
- 	SND_PCI_QUIRK(0x1025, 0x054c, "Acer Aspire 3830TG", CXT_FIXUP_ASPIRE_DMIC),
- 	SND_PCI_QUIRK(0x1025, 0x054f, "Acer Aspire 4830T", CXT_FIXUP_ASPIRE_DMIC),
-+	SND_PCI_QUIRK(0x103c, 0x8079, "HP EliteBook 840 G3", CXT_FIXUP_HP_DOCK),
- 	SND_PCI_QUIRK(0x103c, 0x8174, "HP Spectre x360", CXT_FIXUP_HP_SPECTRE),
- 	SND_PCI_QUIRK(0x103c, 0x8115, "HP Z1 Gen3", CXT_FIXUP_HP_GATE_MIC),
- 	SND_PCI_QUIRK(0x1043, 0x138d, "Asus", CXT_FIXUP_HEADPHONE_MIC_PIN),
-@@ -871,6 +881,7 @@ static const struct hda_model_fixup cxt5066_fixup_models[] = {
- 	{ .id = CXT_PINCFG_LEMOTE_A1205, .name = "lemote-a1205" },
- 	{ .id = CXT_FIXUP_OLPC_XO, .name = "olpc-xo" },
- 	{ .id = CXT_FIXUP_MUTE_LED_EAPD, .name = "mute-led-eapd" },
-+	{ .id = CXT_FIXUP_HP_DOCK, .name = "hp-dock" },
- 	{}
- };
- 
--- 
-2.9.3
+Le 25/02/2017 à 11:42, Narcisa Ana Maria Vasile a écrit :
+> This was reported by checkpatch.pl
+>
+> Signed-off-by: Narcisa Ana Maria Vasile <narcisaanamaria12@gmail.com>
+> ---
+>  sound/soc/codecs/es8328.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
+> index 3f84fbd..1967157 100644
+> --- a/sound/soc/codecs/es8328.c
+> +++ b/sound/soc/codecs/es8328.c
+> @@ -177,8 +177,6 @@ static int es8328_put_deemph(struct snd_kcontrol *kcontrol,
+>  	return 0;
+>  }
+>  
+> -
+> -
+>  static const struct snd_kcontrol_new es8328_snd_controls[] = {
+>  	SOC_DOUBLE_R_TLV("Capture Digital Volume",
+>  		ES8328_ADCCONTROL8, ES8328_ADCCONTROL9,
+Reviewed-by: Romain Perier <romain.perier@collabora.com>
+
+
+Regards,
+Romain
