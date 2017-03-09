@@ -1,19 +1,19 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 07/10] ASoC: Intel: Skylake: Disable
- notifications at boot after DSP FW init
-Date: Thu, 9 Mar 2017 11:47:45 +0530
-Message-ID: <20170309061745.GR2843@localhost>
-References: <1488910446-26415-1-git-send-email-jeeja.kp@intel.com>
- <1488910446-26415-8-git-send-email-jeeja.kp@intel.com>
+From: Mylene Josserand <mylene.josserand@free-electrons.com>
+Subject: Re: [PATCH 4/4] ASoC: sun8i-codec: Convert to use
+	SND_SOC_DAPM_AIF_IN
+Date: Thu, 9 Mar 2017 09:20:54 +0100
+Message-ID: <21d377a3-8e9d-34fa-b5c7-da6456bf31e8@free-electrons.com>
+References: <20170210094133.11382-1-mylene.josserand@free-electrons.com>
+ <20170210094133.11382-5-mylene.josserand@free-electrons.com>
+ <CAGb2v64Q0LysCPq2SpoNSqpyWDzNQ_CDhNipOGjW43dfnDABpw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 540F72671A3
- for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2017 07:16:51 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1488910446-26415-8-git-send-email-jeeja.kp@intel.com>
+Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id CEE882671B3
+ for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2017 09:20:55 +0100 (CET)
+In-Reply-To: <CAGb2v64Q0LysCPq2SpoNSqpyWDzNQ_CDhNipOGjW43dfnDABpw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,16 +23,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: jeeja.kp@intel.com
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, G Kranthi <gudishax.kranthikumar@intel.com>, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com
+To: Chen-Yu Tsai <wens@csie.org>, Maxime Ripard <maxime.ripard@free-electrons.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 07, 2017 at 11:44:03PM +0530, jeeja.kp@intel.com wrote:
-> From: G Kranthi <gudishax.kranthikumar@intel.com>
-> 
-> DSP firmware sends notification every 1m, which is disabled in runtime
-
-I think you mean 1ms, right?
-
--- 
-~Vinod
+SGkgQ2hlbi1ZdSwKClRoYW5rIHlvdSBmb3IgdGhlIHJldmlldy4KCk9uIDA2LzAzLzIwMTcgMTA6
+NTYsIENoZW4tWXUgVHNhaSB3cm90ZToKPiBPbiBGcmksIEZlYiAxMCwgMjAxNyBhdCA1OjQxIFBN
+LCBNeWzDqG5lIEpvc3NlcmFuZAo+IDxteWxlbmUuam9zc2VyYW5kQGZyZWUtZWxlY3Ryb25zLmNv
+bT4gd3JvdGU6Cj4+IFVwZGF0ZSB0aGUgZHJpdmVyIHRvIHVzZSBTTkRfU09DX0RBUE1fQUlGX0lO
+IGluc3RlYWQgb2YKPj4gU05EX1NPQ19EQVBNX0RBQy4KPj4KPj4gU2V0IHRoZSByb3V0ZSBuYW1l
+cyBzbyBpdCBtdXN0IGJlIHVwZGF0ZWQgb24gdGhlIGRldmljZSB0cmVlIHRvby4KPj4KPj4gU2ln
+bmVkLW9mZi1ieTogTXlsw6huZSBKb3NzZXJhbmQgPG15bGVuZS5qb3NzZXJhbmRAZnJlZS1lbGVj
+dHJvbnMuY29tPgo+PiAtLS0KPj4gIGFyY2gvYXJtL2Jvb3QvZHRzL3N1bjhpLWEzMy5kdHNpIHwg
+IDQgKystLQo+Cj4gVGhpcyBwYXRjaCBsb29rcyBPSywgYnV0IGhhdmluZyB0aGUgRFRTIGNoYW5n
+ZXMgaW4gdGhlIHNhbWUgcGF0Y2gKPiBwcm9iYWJseSBpc24ndCBhIGdvb2QgaWRlYS4gSSB3b3Vs
+ZCByZWFsbHkgbGlrZSB0byBzZWUgdGhpcyBzZXJpZXMKPiBtZXJnZWQgZm9yIDQuMTEsIHNvIHdl
+IGNhbiBleHBvc2UgYSBnb29kIG1peGVyIGludGVyZmFjZSB0byB1c2Vyc3BhY2UKPiBkdXJpbmcg
+dGhlIGZpcnN0IGtlcm5lbCByZWxlYXNlIHN1cHBvcnRpbmcgdGhlIEEzMyBjb2RlYy4gVGhhdCBs
+aWtlbHkKPiBtZWFucyBzb21lIGJyZWFrYWdlIGJldHdlZW4gd2hlbiB0aGUgYXNvYyBiaXRzIGFu
+ZCB0aGUgZHRzIGJpdHMgbGFuZAo+IHRob3VnaC4KClllcywgYXMgaXQgbWVhbnMgc29tZSBicmVh
+a2FnZSwgSSBkaWQgbm90IGtub3cgaWYgMiBwYXRjaGVzIHdpbGwgYmUgZmluZSAKb3Igbm90LgoK
+Pgo+IE1heGltZSwgYW55IGlkZWFzPwo+CgpJIGFza2VkIGhpbSBkaXJlY3RseSBhbmQgaGUgYWdy
+ZWVzLgoKSXQgaXMgZmluZSBmb3IgbWUgc28gSSB3aWxsIHNlbmQgYSB2MiB3aXRoIHRoaXMgcGF0
+Y2ggc3BsaXQuCgpCZXN0IHJlZ2FyZHMsCgotLSAKTXlsw6huZSBKb3NzZXJhbmQsIEZyZWUgRWxl
+Y3Ryb25zCkVtYmVkZGVkIExpbnV4IGFuZCBLZXJuZWwgZW5naW5lZXJpbmcKaHR0cDovL2ZyZWUt
+ZWxlY3Ryb25zLmNvbQoKPgo+IFJlZ2FyZHMKPiBDaGVuWXUKPgo+PiAgc291bmQvc29jL3N1bnhp
+L3N1bjhpLWNvZGVjLmMgICAgfCAyMCArKysrKysrKysrKy0tLS0tLS0tLQo+PiAgMiBmaWxlcyBj
+aGFuZ2VkLCAxMyBpbnNlcnRpb25zKCspLCAxMSBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdp
+dCBhL2FyY2gvYXJtL2Jvb3QvZHRzL3N1bjhpLWEzMy5kdHNpIGIvYXJjaC9hcm0vYm9vdC9kdHMv
+c3VuOGktYTMzLmR0c2kKPj4gaW5kZXggNGUzNGVjNjYxM2EwLi5lOWUyZTczMTI0NjAgMTAwNjQ0
+Cj4+IC0tLSBhL2FyY2gvYXJtL2Jvb3QvZHRzL3N1bjhpLWEzMy5kdHNpCj4+ICsrKyBiL2FyY2gv
+YXJtL2Jvb3QvZHRzL3N1bjhpLWEzMy5kdHNpCj4+IEBAIC03OCw4ICs3OCw4IEBACj4+ICAgICAg
+ICAgICAgICAgICBzaW1wbGUtYXVkaW8tY2FyZCxtY2xrLWZzID0gPDUxMj47Cj4+ICAgICAgICAg
+ICAgICAgICBzaW1wbGUtYXVkaW8tY2FyZCxhdXgtZGV2cyA9IDwmY29kZWNfYW5hbG9nPjsKPj4g
+ICAgICAgICAgICAgICAgIHNpbXBsZS1hdWRpby1jYXJkLHJvdXRpbmcgPQo+PiAtICAgICAgICAg
+ICAgICAgICAgICAgICAiTGVmdCBEQUMiLCAiRGlnaXRhbCBMZWZ0IERBQyIsCj4+IC0gICAgICAg
+ICAgICAgICAgICAgICAgICJSaWdodCBEQUMiLCAiRGlnaXRhbCBSaWdodCBEQUMiOwo+PiArICAg
+ICAgICAgICAgICAgICAgICAgICAiTGVmdCBEQUMiLCAiQUlGMSBTbG90IDAgTGVmdCIsCj4+ICsg
+ICAgICAgICAgICAgICAgICAgICAgICJSaWdodCBEQUMiLCAiQUlGMSBTbG90IDAgUmlnaHQiOwo+
+PiAgICAgICAgICAgICAgICAgc3RhdHVzID0gImRpc2FibGVkIjsKPj4KPj4gICAgICAgICAgICAg
+ICAgIHNpbXBsZS1hdWRpby1jYXJkLGNwdSB7Cj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2Mvc3Vu
+eGkvc3VuOGktY29kZWMuYyBiL3NvdW5kL3NvYy9zdW54aS9zdW44aS1jb2RlYy5jCj4+IGluZGV4
+IGE3NWE5ODM5NzRkOS4uOWIxNWE1ZWUyMzVmIDEwMDY0NAo+PiAtLS0gYS9zb3VuZC9zb2Mvc3Vu
+eGkvc3VuOGktY29kZWMuYwo+PiArKysgYi9zb3VuZC9zb2Mvc3VueGkvc3VuOGktY29kZWMuYwo+
+PiBAQCAtMjgxLDExICsyODEsMTMgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhcG1f
+d2lkZ2V0IHN1bjhpX2NvZGVjX2RhcG1fd2lkZ2V0c1tdID0gewo+PiAgICAgICAgIFNORF9TT0Nf
+REFQTV9TVVBQTFkoIkRBQyIsIFNVTjhJX0RBQ19ESUdfQ1RSTCwgU1VOOElfREFDX0RJR19DVFJM
+X0VOREEsCj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAwLCBOVUxMLCAwKSwKPj4KPj4g
+LSAgICAgICAvKiBBbmFsb2cgREFDICovCj4+IC0gICAgICAgU05EX1NPQ19EQVBNX0RBQygiRGln
+aXRhbCBMZWZ0IERBQyIsICJQbGF5YmFjayIsIFNVTjhJX0FJRjFfREFDREFUX0NUUkwsCj4+IC0g
+ICAgICAgICAgICAgICAgICAgICAgICBTVU44SV9BSUYxX0RBQ0RBVF9DVFJMX0FJRjFfREEwTF9F
+TkEsIDApLAo+PiAtICAgICAgIFNORF9TT0NfREFQTV9EQUMoIkRpZ2l0YWwgUmlnaHQgREFDIiwg
+IlBsYXliYWNrIiwgU1VOOElfQUlGMV9EQUNEQVRfQ1RSTCwKPj4gLSAgICAgICAgICAgICAgICAg
+ICAgICAgIFNVTjhJX0FJRjFfREFDREFUX0NUUkxfQUlGMV9EQTBSX0VOQSwgMCksCj4+ICsgICAg
+ICAgLyogQW5hbG9nIERBQyBBSUYgKi8KPj4gKyAgICAgICBTTkRfU09DX0RBUE1fQUlGX0lOKCJB
+SUYxIFNsb3QgMCBMZWZ0IiwgIlBsYXliYWNrIiwgMCwKPj4gKyAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIFNVTjhJX0FJRjFfREFDREFUX0NUUkwsCj4+ICsgICAgICAgICAgICAgICAgICAgICAg
+ICAgICBTVU44SV9BSUYxX0RBQ0RBVF9DVFJMX0FJRjFfREEwTF9FTkEsIDApLAo+PiArICAgICAg
+IFNORF9TT0NfREFQTV9BSUZfSU4oIkFJRjEgU2xvdCAwIFJpZ2h0IiwgIlBsYXliYWNrIiwgMCwK
+Pj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgIFNVTjhJX0FJRjFfREFDREFUX0NUUkwsCj4+
+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICBTVU44SV9BSUYxX0RBQ0RBVF9DVFJMX0FJRjFf
+REEwUl9FTkEsIDApLAo+Pgo+PiAgICAgICAgIC8qIERBQyBNaXhlcnMgKi8KPj4gICAgICAgICBT
+T0NfTUlYRVJfQVJSQVkoIkxlZnQgRGlnaXRhbCBEQUMgTWl4ZXIiLCBTTkRfU09DX05PUE0sIDAs
+IDAsCj4+IEBAIC0zMjksMTQgKzMzMSwxNCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2Nf
+ZGFwbV9yb3V0ZSBzdW44aV9jb2RlY19kYXBtX3JvdXRlc1tdID0gewo+PiAgICAgICAgIHsgIkRB
+QyIsIE5VTEwsICJNT0RDTEsgREFDIiB9LAo+Pgo+PiAgICAgICAgIC8qIERBQyBSb3V0ZXMgKi8K
+Pj4gLSAgICAgICB7ICJEaWdpdGFsIExlZnQgREFDIiwgTlVMTCwgIkRBQyIgfSwKPj4gLSAgICAg
+ICB7ICJEaWdpdGFsIFJpZ2h0IERBQyIsIE5VTEwsICJEQUMiIH0sCj4+ICsgICAgICAgeyAiQUlG
+MSBTbG90IDAgUmlnaHQiLCBOVUxMLCAiREFDIiB9LAo+PiArICAgICAgIHsgIkFJRjEgU2xvdCAw
+IExlZnQiLCBOVUxMLCAiREFDIiB9LAo+Pgo+PiAgICAgICAgIC8qIERBQyBNaXhlciBSb3V0ZXMg
+Ki8KPj4gICAgICAgICB7ICJMZWZ0IERpZ2l0YWwgREFDIE1peGVyIiwgIkFJRjEgU2xvdCAwIERp
+Z2l0YWwgREFDIFBsYXliYWNrIFN3aXRjaCIsCj4+IC0gICAgICAgICAiRGlnaXRhbCBMZWZ0IERB
+QyJ9LAo+PiArICAgICAgICAgIkFJRjEgU2xvdCAwIExlZnQifSwKPj4gICAgICAgICB7ICJSaWdo
+dCBEaWdpdGFsIERBQyBNaXhlciIsICJBSUYxIFNsb3QgMCBEaWdpdGFsIERBQyBQbGF5YmFjayBT
+d2l0Y2ggIiwKPj4gLSAgICAgICAgICJEaWdpdGFsIFJpZ2h0IERBQyJ9LAo+PiArICAgICAgICAg
+IkFJRjEgU2xvdCAwIFJpZ2h0In0sCj4+ICB9Owo+Pgo+PiAgc3RhdGljIHN0cnVjdCBzbmRfc29j
+X2RhaV9vcHMgc3VuOGlfY29kZWNfZGFpX29wcyA9IHsKPj4gLS0KPj4gMi4xMS4wCj4+Cl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
