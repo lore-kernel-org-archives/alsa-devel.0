@@ -1,15 +1,15 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH v3 1/2] ASoC: rt5665: move set_pll to codec
-	level
-Date: Thu, 9 Mar 2017 19:31:13 +0800
-Message-ID: <1489059074-12046-1-git-send-email-bardliao@realtek.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: [PATCH] ALSA: hda - add support for docking station
+	for HP 820 G2
+Date: Thu,  9 Mar 2017 13:29:13 +0100
+Message-ID: <20170309122913.4184-1-perex@perex.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 41FDD267024
- for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2017 12:31:24 +0100 (CET)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0ED79267224
+ for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2017 13:30:00 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,86 +19,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, xiaoxiang@pinecone.net, zhongan@pinecone.net, flove@realtek.com
+To: ALSA development <alsa-devel@alsa-project.org>
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Move set_pll function to codec level and people can use it at both
-codec and dai level. Also, lower case "source" to keep it consistent.
+This tested patch adds missing initialization for Line-In/Out PINs for
+the docking station for HP 820 G2.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 ---
- sound/soc/codecs/rt5665.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ sound/pci/hda/patch_realtek.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
-index 1baa9ce..b36e217 100644
---- a/sound/soc/codecs/rt5665.c
-+++ b/sound/soc/codecs/rt5665.c
-@@ -4222,15 +4222,15 @@ static int rt5665_set_dai_sysclk(struct snd_soc_dai *dai,
- 	return 0;
- }
- 
--static int rt5665_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int Source,
--			unsigned int freq_in, unsigned int freq_out)
-+static int rt5665_set_codec_pll(struct snd_soc_codec *codec, int pll_id,
-+				int source, unsigned int freq_in,
-+				unsigned int freq_out)
- {
--	struct snd_soc_codec *codec = dai->codec;
- 	struct rt5665_priv *rt5665 = snd_soc_codec_get_drvdata(codec);
- 	struct rl6231_pll_code pll_code;
- 	int ret;
- 
--	if (Source == rt5665->pll_src && freq_in == rt5665->pll_in &&
-+	if (source == rt5665->pll_src && freq_in == rt5665->pll_in &&
- 	    freq_out == rt5665->pll_out)
- 		return 0;
- 
-@@ -4244,7 +4244,7 @@ static int rt5665_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int Source,
- 		return 0;
- 	}
- 
--	switch (Source) {
-+	switch (source) {
- 	case RT5665_PLL1_S_MCLK:
- 		snd_soc_update_bits(codec, RT5665_GLB_CLK,
- 			RT5665_PLL1_SRC_MASK, RT5665_PLL1_SRC_MCLK);
-@@ -4262,7 +4262,7 @@ static int rt5665_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int Source,
- 				RT5665_PLL1_SRC_MASK, RT5665_PLL1_SRC_BCLK3);
- 		break;
- 	default:
--		dev_err(codec->dev, "Unknown PLL Source %d\n", Source);
-+		dev_err(codec->dev, "Unknown PLL Source %d\n", source);
- 		return -EINVAL;
- 	}
- 
-@@ -4284,7 +4284,7 @@ static int rt5665_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int Source,
- 
- 	rt5665->pll_in = freq_in;
- 	rt5665->pll_out = freq_out;
--	rt5665->pll_src = Source;
-+	rt5665->pll_src = source;
- 
- 	return 0;
- }
-@@ -4403,7 +4403,6 @@ static const struct snd_soc_dai_ops rt5665_aif_dai_ops = {
- 	.set_fmt = rt5665_set_dai_fmt,
- 	.set_sysclk = rt5665_set_dai_sysclk,
- 	.set_tdm_slot = rt5665_set_tdm_slot,
--	.set_pll = rt5665_set_dai_pll,
- 	.set_bclk_ratio = rt5665_set_bclk_ratio,
- };
- 
-@@ -4512,7 +4511,8 @@ static struct snd_soc_codec_driver soc_codec_dev_rt5665 = {
- 		.num_dapm_widgets = ARRAY_SIZE(rt5665_dapm_widgets),
- 		.dapm_routes = rt5665_dapm_routes,
- 		.num_dapm_routes = ARRAY_SIZE(rt5665_dapm_routes),
--	}
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 73a0046..147bddb 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4847,6 +4847,7 @@ enum {
+ 	ALC286_FIXUP_HP_GPIO_LED,
+ 	ALC280_FIXUP_HP_GPIO2_MIC_HOTKEY,
+ 	ALC280_FIXUP_HP_DOCK_PINS,
++	ALC269_FIXUP_HP_DOCK_GPIO_MIC1_LED,
+ 	ALC280_FIXUP_HP_9480M,
+ 	ALC288_FIXUP_DELL_HEADSET_MODE,
+ 	ALC288_FIXUP_DELL1_MIC_NO_PRESENCE,
+@@ -5388,6 +5389,16 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC280_FIXUP_HP_GPIO4
+ 	},
++	[ALC269_FIXUP_HP_DOCK_GPIO_MIC1_LED] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x1b, 0x21011020 }, /* line-out */
++			{ 0x18, 0x2181103f }, /* line-in */
++			{ },
++		},
++		.chained = true,
++		.chain_id = ALC269_FIXUP_HP_GPIO_MIC1_LED
 +	},
-+	.set_pll = rt5665_set_codec_pll,
- };
- 
- 
+ 	[ALC280_FIXUP_HP_9480M] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc280_fixup_hp_9480m,
+@@ -5646,7 +5657,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x2256, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x2257, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x2259, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
+-	SND_PCI_QUIRK(0x103c, 0x225a, "HP", ALC269_FIXUP_HP_GPIO_MIC1_LED),
++	SND_PCI_QUIRK(0x103c, 0x225a, "HP", ALC269_FIXUP_HP_DOCK_GPIO_MIC1_LED),
+ 	SND_PCI_QUIRK(0x103c, 0x2260, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+ 	SND_PCI_QUIRK(0x103c, 0x2263, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+ 	SND_PCI_QUIRK(0x103c, 0x2264, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+@@ -5814,6 +5825,7 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
+ 	{.id = ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC, .name = "headset-mode-no-hp-mic"},
+ 	{.id = ALC269_FIXUP_LENOVO_DOCK, .name = "lenovo-dock"},
+ 	{.id = ALC269_FIXUP_HP_GPIO_LED, .name = "hp-gpio-led"},
++	{.id = ALC269_FIXUP_HP_DOCK_GPIO_MIC1_LED, .name = "hp-dock-gpio-mic1-led"},
+ 	{.id = ALC269_FIXUP_DELL1_MIC_NO_PRESENCE, .name = "dell-headset-multi"},
+ 	{.id = ALC269_FIXUP_DELL2_MIC_NO_PRESENCE, .name = "dell-headset-dock"},
+ 	{.id = ALC283_FIXUP_CHROME_BOOK, .name = "alc283-dac-wcaps"},
 -- 
-2.7.4
+2.9.3
