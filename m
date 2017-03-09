@@ -1,17 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH for-4.11] ASoC: don't dereference NULL
-	pcm_{new, free}
-Date: Thu, 9 Mar 2017 12:09:18 +0100
-Message-ID: <20170309110918.getjla6iawgjpfrq@sirena.org.uk>
-References: <20170308231854.50167-1-briannorris@chromium.org>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH v2 2/2] ASoC: rt5665: move set_sysclk to codec
+	level
+Date: Thu, 9 Mar 2017 19:22:52 +0800
+Message-ID: <1489058572-11917-2-git-send-email-bardliao@realtek.com>
+References: <1489058572-11917-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3440901540787222993=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 35CFB2671D3
- for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2017 12:10:38 +0100 (CET)
-In-Reply-To: <20170308231854.50167-1-briannorris@chromium.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 471F42671D3
+ for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2017 12:23:15 +0100 (CET)
+In-Reply-To: <1489058572-11917-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,61 +21,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Brian Norris <briannorris@chromium.org>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, xiaoxiang@pinecone.net, zhongan@pinecone.net, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+Move set_sysclk to codec level and people can use it at both
+codec and dai level.
 
---===============3440901540787222993==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="bkcchgg6exn7kagu"
-Content-Disposition: inline
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt5665.c | 9 ++++-----
+ sound/soc/tegra/Kconfig   | 1 +
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-
---bkcchgg6exn7kagu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Mar 08, 2017 at 03:18:54PM -0800, Brian Norris wrote:
-> Not all platform drivers have pcm_{new,free} callbacks. Seen with a
-> "snd-soc-dummy" codec from sound/soc/rockchip/rk3399_gru_sound.c.
->=20
-> Resolves an OOPS seen on v4.11-rc1 with Google Kevin (Samsung Chromebook
-> Plus):
->=20
-> [    2.863304] rk3399-gru-sound sound: HiFi <-> ff880000.i2s mapping ok
-> [    2.886930] rk3399-gru-sound sound: rt5514-aif1 <-> ff880000.i2s mappi=
-ng ok
-
-Please think hard before including complete backtraces in upstream
-reports, they are very large and contain almost no useful information
-relative to their size so often obscure the relevant content in your
-message. If part of the backtrace is usefully illustrative then it's
-usually better to pull out the relevant sections.
-
---bkcchgg6exn7kagu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljBN9sACgkQJNaLcl1U
-h9ASZgf+Oo3xEmolDL/GoyNXNPpy/URBLFC2tWwUeat7sfLMFIhuHrvu2acx39y3
-tcYEB0WJVDiCYX2QT1fa8L99LoJWYj43mH4bptwZUfLBzHuScVXWoeQaBS/dsxtm
-wKs+mQZMDG4ieTSuwCqEGvfhf2E8KbOFlgu2RAUtSXNOa7rCpRHZdWQbJw9jG2pj
-MR7ZlKbrq7FuVtRjU40g1GtsBc1i49CYnB4zY4DXnMvLGQOXNEnf4UL7TifPB0FG
-5zPwonRmqygP5QY6yc5nyoTJB2xKVtKihUb8TBfRWD6nzRclhfIkpsfRKbIG3TNo
-5oYn5NU7Cq3epIX93iF5XKnz2L8D9A==
-=Q369
------END PGP SIGNATURE-----
-
---bkcchgg6exn7kagu--
-
---===============3440901540787222993==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3440901540787222993==--
+diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
+index b36e217..1d00c60 100644
+--- a/sound/soc/codecs/rt5665.c
++++ b/sound/soc/codecs/rt5665.c
+@@ -4188,10 +4188,9 @@ static int rt5665_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	return 0;
+ }
+ 
+-static int rt5665_set_dai_sysclk(struct snd_soc_dai *dai,
+-		int clk_id, unsigned int freq, int dir)
++static int rt5665_set_codec_sysclk(struct snd_soc_codec *codec, int clk_id,
++				   int source, unsigned int freq, int dir)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+ 	struct rt5665_priv *rt5665 = snd_soc_codec_get_drvdata(codec);
+ 	unsigned int reg_val = 0;
+ 
+@@ -4217,7 +4216,7 @@ static int rt5665_set_dai_sysclk(struct snd_soc_dai *dai,
+ 	rt5665->sysclk = freq;
+ 	rt5665->sysclk_src = clk_id;
+ 
+-	dev_dbg(dai->dev, "Sysclk is %dHz and clock id is %d\n", freq, clk_id);
++	dev_dbg(codec->dev, "Sysclk is %dHz and clock id is %d\n", freq, clk_id);
+ 
+ 	return 0;
+ }
+@@ -4401,7 +4400,6 @@ static int rt5665_resume(struct snd_soc_codec *codec)
+ static const struct snd_soc_dai_ops rt5665_aif_dai_ops = {
+ 	.hw_params = rt5665_hw_params,
+ 	.set_fmt = rt5665_set_dai_fmt,
+-	.set_sysclk = rt5665_set_dai_sysclk,
+ 	.set_tdm_slot = rt5665_set_tdm_slot,
+ 	.set_bclk_ratio = rt5665_set_bclk_ratio,
+ };
+@@ -4512,6 +4510,7 @@ static struct snd_soc_codec_driver soc_codec_dev_rt5665 = {
+ 		.dapm_routes = rt5665_dapm_routes,
+ 		.num_dapm_routes = ARRAY_SIZE(rt5665_dapm_routes),
+ 	},
++	.set_sysclk = rt5665_set_codec_sysclk,
+ 	.set_pll = rt5665_set_codec_pll,
+ };
+ 
+diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
+index efbe8d4..3630961 100644
+--- a/sound/soc/tegra/Kconfig
++++ b/sound/soc/tegra/Kconfig
+@@ -67,6 +67,7 @@ config SND_SOC_TEGRA_RT5640
+ 	select SND_SOC_TEGRA20_I2S if ARCH_TEGRA_2x_SOC
+ 	select SND_SOC_TEGRA30_I2S if ARCH_TEGRA_3x_SOC
+ 	select SND_SOC_RT5640
++	select SND_SOC_RT5664
+ 	help
+ 	  Say Y or M here if you want to add support for SoC audio on Tegra
+ 	  boards using the RT5640 codec, such as Dalmore.
+-- 
+2.7.4
