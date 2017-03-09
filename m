@@ -1,17 +1,14 @@
-From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?= <mylene.josserand@free-electrons.com>
-Subject: [PATCH v2 3/3] ARM: dts: sun8i: Update audio-routing
-	with renamed widgets
-Date: Thu,  9 Mar 2017 10:56:02 +0100
-Message-ID: <20170309095602.13809-4-mylene.josserand@free-electrons.com>
-References: <20170309095602.13809-1-mylene.josserand@free-electrons.com>
+From: "Sutar, Mounesh" <Mounesh_Sutar@mentor.com>
+Subject: Re: [PATCH v3 6/6] pcm:plug: save converter config
+Date: Thu, 9 Mar 2017 10:21:18 +0000
+Message-ID: <4f438adcb1cc4665832b336ff9eed86b@SVR-IES-MBX-04.mgc.mentorg.com>
+References: <1488535109-11572-1-git-send-email-sutar.mounesh@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 315752671E3
- for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2017 10:56:27 +0100 (CET)
-In-Reply-To: <20170309095602.13809-1-mylene.josserand@free-electrons.com>
+In-Reply-To: <1488535109-11572-1-git-send-email-sutar.mounesh@gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,25 +18,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, maxime.ripard@free-electrons.com, wens@csie.org, perex@perex.cz, tiwai@suse.com
-Cc: thomas.petazzoni@free-electrons.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, alexandre.belloni@free-electrons.com, mylene.josserand@free-electrons.com, linux-arm-kernel@lists.infradead.org
+To: "patch@alsa-project.org" <patch@alsa-project.org>
+Cc: "sutar.mounesh@gmail.com" <sutar.mounesh@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andreas Pape <apape@de.adit-jv.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIGRpZ2l0YWwgQUlGIGludGVyZmFjZXMgaGFzIGJlZW4gcmVuYW1lZCBpbiB0aGUgc3VuOGkg
-YXVkaW8gY29kZWMKZHJpdmVyIHNvIHRoZSBhdWRpby1yb3V0aW5nIGluIHRoZSBkZXZpY2UgdHJl
-ZSBtdXN0IGJlIHJlbmFtZWQgdG9vLgoKU2lnbmVkLW9mZi1ieTogTXlsw6huZSBKb3NzZXJhbmQg
-PG15bGVuZS5qb3NzZXJhbmRAZnJlZS1lbGVjdHJvbnMuY29tPgotLS0KIGFyY2gvYXJtL2Jvb3Qv
-ZHRzL3N1bjhpLWEzMy5kdHNpIHwgNCArKy0tCiAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25z
-KCspLCAyIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2FyY2gvYXJtL2Jvb3QvZHRzL3N1bjhp
-LWEzMy5kdHNpIGIvYXJjaC9hcm0vYm9vdC9kdHMvc3VuOGktYTMzLmR0c2kKaW5kZXggMThjMTc0
-ZmVmODRmLi4wNDY3ZmIzNjViZmMgMTAwNjQ0Ci0tLSBhL2FyY2gvYXJtL2Jvb3QvZHRzL3N1bjhp
-LWEzMy5kdHNpCisrKyBiL2FyY2gvYXJtL2Jvb3QvZHRzL3N1bjhpLWEzMy5kdHNpCkBAIC0xMTMs
-OCArMTEzLDggQEAKIAkJc2ltcGxlLWF1ZGlvLWNhcmQsbWNsay1mcyA9IDw1MTI+OwogCQlzaW1w
-bGUtYXVkaW8tY2FyZCxhdXgtZGV2cyA9IDwmY29kZWNfYW5hbG9nPjsKIAkJc2ltcGxlLWF1ZGlv
-LWNhcmQscm91dGluZyA9Ci0JCQkiTGVmdCBEQUMiLCAiRGlnaXRhbCBMZWZ0IERBQyIsCi0JCQki
-UmlnaHQgREFDIiwgIkRpZ2l0YWwgUmlnaHQgREFDIjsKKwkJCSJMZWZ0IERBQyIsICJBSUYxIFNs
-b3QgMCBMZWZ0IiwKKwkJCSJSaWdodCBEQUMiLCAiQUlGMSBTbG90IDAgUmlnaHQiOwogCQlzdGF0
-dXMgPSAiZGlzYWJsZWQiOwogCiAJCXNpbXBsZS1hdWRpby1jYXJkLGNwdSB7Ci0tIAoyLjExLjAK
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+ping
+
+-----Original Message-----
+From: sutar.mounesh@gmail.com [mailto:sutar.mounesh@gmail.com] 
+Sent: 03 March 2017 15:28
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org; Sutar, Mounesh <Mounesh_Sutar@mentor.com>; Andreas Pape <apape@de.adit-jv.com>; Mounesh Sutar <sutar.mounesh@gmail.com>
+Subject: [PATCH v3 6/6] pcm:plug: save converter config
+
+From: Andreas Pape <apape@de.adit-jv.com>
+
+Passed config is freed after call to open, thus it is invalid when trying to extract the converter name. So config entry is saved for later usage.
+
+Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
+Signed-off-by: Mounesh Sutar <sutar.mounesh@gmail.com>
+
+diff --git a/src/pcm/pcm_plug.c b/src/pcm/pcm_plug.c index 266707b..c643278 100644
+--- a/src/pcm/pcm_plug.c
++++ b/src/pcm/pcm_plug.c
+@@ -64,6 +64,10 @@ static int snd_pcm_plug_close(snd_pcm_t *pcm)
+ 	snd_pcm_plug_t *plug = pcm->private_data;
+ 	int err, result = 0;
+ 	free(plug->ttable);
++	if (plug->rate_converter) {
++		snd_config_delete((snd_config_t*)plug->rate_converter);
++		plug->rate_converter = NULL;
++	}
+ 	assert(plug->gen.slave == plug->req_slave);
+ 	if (plug->gen.close_slave) {
+ 		snd_pcm_unlink_hw_ptr(pcm, plug->req_slave); @@ -1108,7 +1112,14 @@ int snd_pcm_plug_open(snd_pcm_t **pcmp,
+ 	plug->sformat = sformat;
+ 	plug->schannels = schannels;
+ 	plug->srate = srate;
+-	plug->rate_converter = rate_converter;
++	if (rate_converter) {
++		if ((err = snd_config_copy((snd_config_t**)&plug->rate_converter,
++					   (snd_config_t *)rate_converter)) < 0) {
++			free(plug);
++			return err;
++		}
++	}
++
+ 	plug->gen.slave = plug->req_slave = slave;
+ 	plug->gen.close_slave = close_slave;
+ 	plug->route_policy = route_policy;
+@@ -1119,6 +1130,10 @@ int snd_pcm_plug_open(snd_pcm_t **pcmp,
+ 	
+ 	err = snd_pcm_new(&pcm, SND_PCM_TYPE_PLUG, name, slave->stream, slave->mode);
+ 	if (err < 0) {
++		if (plug->rate_converter) {
++			snd_config_delete((snd_config_t*)plug->rate_converter);
++			plug->rate_converter = NULL;
++		}
+ 		free(plug);
+ 		return err;
+ 	}
+--
+2.7.4
