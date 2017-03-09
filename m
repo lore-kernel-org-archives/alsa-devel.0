@@ -1,44 +1,41 @@
-From: Romain Perier <romain.perier@collabora.com>
-Subject: Re: [PATCH] ASoC: es8328: Remove extra blank lines
-Date: Thu, 9 Mar 2017 17:00:06 +0100
-Message-ID: <91ec78bf-bf28-405f-2486-0d70229cd424@collabora.com>
-References: <1488019328-9481-1-git-send-email-narcisaanamaria12@gmail.com>
+From: Chemsi Mehdi <chmsmehdi@gmail.com>
+Subject: Is snd_pcm_hw_constraint_mask64 really needed ?
+Date: Thu, 9 Mar 2017 17:23:46 +0100
+Message-ID: <CAHkWnPZu3a5WdsXzF8_faxdoYPOuSgcqkAu3tX_EL4VCczqYqw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1488019328-9481-1-git-send-email-narcisaanamaria12@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Narcisa Ana Maria Vasile <narcisaanamaria12@gmail.com>, perex@perex.cz, tiwai@suse.com
-Cc: lgirdwood@gmail.com, broonie@kernel.org, john@metanate.com, kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qk0-f180.google.com (mail-qk0-f180.google.com
+ [209.85.220.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2D0BF267028
+ for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2017 17:23:47 +0100 (CET)
+Received: by mail-qk0-f180.google.com with SMTP id v125so124375717qkh.2
+ for <alsa-devel@alsa-project.org>; Thu, 09 Mar 2017 08:23:47 -0800 (PST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Dear ALSA expert ,
 
 
-Le 25/02/2017 à 11:42, Narcisa Ana Maria Vasile a écrit :
-> This was reported by checkpatch.pl
->
-> Signed-off-by: Narcisa Ana Maria Vasile <narcisaanamaria12@gmail.com>
-> ---
->  sound/soc/codecs/es8328.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
-> index 3f84fbd..1967157 100644
-> --- a/sound/soc/codecs/es8328.c
-> +++ b/sound/soc/codecs/es8328.c
-> @@ -177,8 +177,6 @@ static int es8328_put_deemph(struct snd_kcontrol *kcontrol,
->  	return 0;
->  }
->  
-> -
-> -
->  static const struct snd_kcontrol_new es8328_snd_controls[] = {
->  	SOC_DOUBLE_R_TLV("Capture Digital Volume",
->  		ES8328_ADCCONTROL8, ES8328_ADCCONTROL9,
-Reviewed-by: Romain Perier <romain.perier@collabora.com>
+I am working with an alsa codec driver  where the driver is calling
+err = snd_pcm_hw_constraint_mask64(substream->runtime,
+SNDRV_PCM_HW_PARAM_FORMAT, formats);
+my driver is already setting format before that so I wonder why this
+function is called?
+Looks like it is  needed to add audio constraints to substreams at
+open/startup time, but why ?
+what can be the issue if I do not call it ?
 
+Please explain to me Takashi.
 
-Regards,
-Romain
+Thanks a lot in advance.
