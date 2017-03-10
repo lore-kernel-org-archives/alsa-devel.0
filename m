@@ -1,19 +1,18 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: sound: another deadlock in snd_seq_pool_done
-Date: Fri, 10 Mar 2017 10:19:13 +0100
-Message-ID: <CACT4Y+Y17sfHrUS+Sxp1L3z6+01230qs6-TumtH7YkDAOcc8-g@mail.gmail.com>
-References: <CACT4Y+aqqy8bZA1fFieifNxR2fAfFQQABcBHj801+u5ePV0URw@mail.gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Skylake: code cleanup for pin
+ fixup limitation
+Date: Fri, 10 Mar 2017 22:24:44 +0530
+Message-ID: <20170310165443.GW2843@localhost>
+References: <20170308084702.20558-1-takashi.sakamoto@miraclelinux.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ua0-f176.google.com (mail-ua0-f176.google.com
- [209.85.217.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 3ECE126583C
- for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2017 10:19:35 +0100 (CET)
-Received: by mail-ua0-f176.google.com with SMTP id q7so91927312uaf.2
- for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2017 01:19:35 -0800 (PST)
-In-Reply-To: <CACT4Y+aqqy8bZA1fFieifNxR2fAfFQQABcBHj801+u5ePV0URw@mail.gmail.com>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1004926583C
+ for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2017 17:54:01 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <20170308084702.20558-1-takashi.sakamoto@miraclelinux.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,74 +22,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
-Cc: syzkaller <syzkaller@googlegroups.com>
+To: Takashi Sakamoto <takashi.sakamoto@miraclelinux.com>
+Cc: alsa-devel@alsa-project.org, ichiro.suzuki@miraclelinux.com, broonie@kernel.org, shreyas.nc@intel.com, jeeja.kp@intel.com, yukie.kato@miraclelinux.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Mar 4, 2017 at 5:31 PM, Dmitry Vyukov <dvyukov@google.com> wrote:
-> Hello,
->
-> The following program creates processes deadlocked in snd_seq_pool_done:
->
-> https://gist.githubusercontent.com/dvyukov/97efc9cb6d63b1b2c7b737b82cc8b0d6/raw/3546b133ae0b2d3e1190ae7c1f4e240ce7ce132e/gistfile1.txt
->
-> After few seconds I get:
->
-> # ps afxu | grep a.out
-> root      8660  2.0  0.0      0     0 pts/0    Zl   16:27   0:00
-> [a.out] <defunct>
->
-> # kill -9 8660
->
-> # cat /proc/8660/status
-> Name: a.out
-> State: Z (zombie)
-> Tgid: 8660
-> Ngid: 0
-> Pid: 8660
-> PPid: 1
-> TracerPid: 0
-> Uid: 0 0 0 0
-> Gid: 0 0 0 0
-> FDSize: 0
-> Groups: 0
-> NStgid: 8660
-> NSpid: 8660
-> NSpgid: 8660
-> NSsid: 2971
-> Threads: 2
-> SigQ: 1/3304
-> SigPnd: 0000000000000000
-> ShdPnd: 0000000000000100
-> SigBlk: 0000000000000000
-> SigIgn: 0000000180000000
-> SigCgt: 0000000000000440
-> CapInh: 0000000000000000
-> CapPrm: 0000003fffffffff
-> CapEff: 0000003fffffffff
-> CapBnd: 0000003fffffffff
-> CapAmb: 0000000000000000
-> NoNewPrivs: 0
-> Seccomp: 0
-> Cpus_allowed: f
-> Cpus_allowed_list: 0-3
-> Mems_allowed: 00000000,00000001
-> Mems_allowed_list: 0
-> voluntary_ctxt_switches: 12
-> nonvoluntary_ctxt_switches: 0
->
-> # cat /proc/8660/task/*/stack
-> [<ffffffff835406db>] snd_seq_pool_done+0x31b/0x620
-> sound/core/seq/seq_memory.c:436
-> [<ffffffff8353a11e>] snd_seq_ioctl_set_client_pool+0x1ae/0x600
-> sound/core/seq/seq_clientmgr.c:1836
-> [<ffffffff835382ba>] snd_seq_ioctl+0x2da/0x4d0
-> sound/core/seq/seq_clientmgr.c:2130
-> [<ffffffff81aced2f>] vfs_ioctl fs/ioctl.c:45 [inline]
-> [<ffffffff81aced2f>] do_vfs_ioctl+0x1bf/0x1790 fs/ioctl.c:685
-> [<ffffffff81ad038f>] SYSC_ioctl fs/ioctl.c:700 [inline]
-> [<ffffffff81ad038f>] SyS_ioctl+0x8f/0xc0 fs/ioctl.c:691
-> [<ffffffff8457dc41>] entry_SYSCALL_64_fastpath+0x1f/0xc2
+Hi Takashi-San,
 
+On Wed, Mar 08, 2017 at 05:47:02PM +0900, Takashi Sakamoto wrote:
+> As a commit 4cd9899f0d16 ("ASoC: Intel: Skylake: Add multiple pin
+> formats") describes, 'fixups is applied to pin 0 only'. On the other
+> hand, the commit left some codes as what they were. This might
+> confuses readers.
+> 
+> This commit fixes the issue. This doesn't change driver behaviour at all.
 
-A friendly ping.
+Thanks, this also looks good. So,
+
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+Tested-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+
+> 
+> Fixes: 4cd9899f0d16 ("ASoC: Intel: Skylake: Add multiple pin formats")
+> Signed-off-by: Takashi Sakamoto <takashi.sakamoto@miraclelinux.com>
+> ---
+>  sound/soc/intel/skylake/skl-topology.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
+> 
+> diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+> index f38f8e6..8651359 100644
+> --- a/sound/soc/intel/skylake/skl-topology.c
+> +++ b/sound/soc/intel/skylake/skl-topology.c
+> @@ -310,13 +310,11 @@ static void skl_tplg_update_buffer_size(struct skl_sst *ctx,
+>  		multiplier = 5;
+>  
+>  	mcfg->ibs = DIV_ROUND_UP(in_fmt->s_freq, 1000) *
+> -			(mcfg->in_fmt->channels) *
+> -			(mcfg->in_fmt->bit_depth >> 3) *
+> +			in_fmt->channels * (in_fmt->bit_depth >> 3) *
+>  			multiplier;
+>  
+> -	mcfg->obs = DIV_ROUND_UP(mcfg->out_fmt->s_freq, 1000) *
+> -			(mcfg->out_fmt->channels) *
+> -			(mcfg->out_fmt->bit_depth >> 3) *
+> +	mcfg->obs = DIV_ROUND_UP(out_fmt->s_freq, 1000) *
+> +			out_fmt->channels * (out_fmt->bit_depth >> 3) *
+>  			multiplier;
+>  }
+>  
+> -- 
+> 2.9.3
+> 
+
+-- 
+~Vinod
