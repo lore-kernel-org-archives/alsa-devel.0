@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 3/5] ASoC: Intel: Atom: enable BYT/CHT+DA7213
-	machine driver
-Date: Thu,  9 Mar 2017 18:19:00 -0600
-Message-ID: <1489105142-25878-4-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 5/5] ASoC: Intel: Enable bytcht_nocodec machine
+	driver
+Date: Thu,  9 Mar 2017 18:19:02 -0600
+Message-ID: <1489105142-25878-6-git-send-email-pierre-louis.bossart@linux.intel.com>
 References: <1489105142-25878-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 4440C267028
- for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2017 01:19:11 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 24712267264
+ for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2017 01:19:13 +0100 (CET)
 In-Reply-To: <1489105142-25878-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,38 +25,48 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, vinod.koul@intel.com, Adam.Thomson.Opensource@diasemi.com, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add entries in HID table and reference to bytcht_da7213 driver
+Make sure this machine driver is only used if enabled explicitly
+and if there is no information found in the SSDT.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/atom/sst/sst_acpi.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/intel/atom/sst/sst_acpi.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index 747c0f3..b24bf08 100644
+index b24bf08..18fe46e 100644
 --- a/sound/soc/intel/atom/sst/sst_acpi.c
 +++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -480,6 +480,10 @@ static struct sst_acpi_mach sst_acpi_bytcr[] = {
+@@ -489,7 +489,14 @@ static struct sst_acpi_mach sst_acpi_bytcr[] = {
  						&byt_rvp_platform_data },
- 	{"10EC5651", "bytcr_rt5651", "intel/fw_sst_0f28.bin", "bytcr_rt5651", NULL,
+ 	{"10EC5648", "cht-bsw-rt5645", "intel/fw_sst_0f28.bin", "cht-bsw", NULL,
  						&byt_rvp_platform_data },
-+	{"DLGS7212", "bytcht_da7213", "intel/fw_sst_0f28.bin", "bytcht_da7213", NULL,
+-
++#if IS_ENABLED(CONFIG_SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH)
++	/*
++	 * This is always last in the table so that it is selected only when
++	 * enabled explicitly and there is no codec-related information in SSDT
++	 */
++	{"80860F28", "bytcht_nocodec", "intel/fw_sst_0f28.bin", "bytcht_nocodec", NULL,
 +						&byt_rvp_platform_data },
-+	{"DLGS7213", "bytcht_da7213", "intel/fw_sst_0f28.bin", "bytcht_da7213", NULL,
-+						&byt_rvp_platform_data },
- 	/* some Baytrail platforms rely on RT5645, use CHT machine driver */
- 	{"10EC5645", "cht-bsw-rt5645", "intel/fw_sst_0f28.bin", "cht-bsw", NULL,
- 						&byt_rvp_platform_data },
-@@ -504,6 +508,10 @@ static struct sst_acpi_mach sst_acpi_chv[] = {
++#endif
+ 	{},
+ };
  
- 	{"193C9890", "cht-bsw-max98090", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
+@@ -520,6 +527,14 @@ static struct sst_acpi_mach sst_acpi_chv[] = {
+ 	/* some CHT-T platforms rely on RT5651, use Baytrail machine driver */
+ 	{"10EC5651", "bytcr_rt5651", "intel/fw_sst_22a8.bin", "bytcr_rt5651", NULL,
  						&chv_platform_data },
-+	{"DLGS7212", "bytcht_da7213", "intel/fw_sst_22a8.bin", "bytcht_da7213", NULL,
++#if IS_ENABLED(CONFIG_SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH)
++	/*
++	 * This is always last in the table so that it is selected only when
++	 * enabled explicitly and there is no codec-related information in SSDT
++	 */
++	{"808622A8", "bytcht_nocodec", "intel/fw_sst_22a8.bin", "bytcht_nocodec", NULL,
 +						&chv_platform_data },
-+	{"DLGS7213", "bytcht_da7213", "intel/fw_sst_22a8.bin", "bytcht_da7213", NULL,
-+						&chv_platform_data },
- 	/* some CHT-T platforms rely on RT5640, use Baytrail machine driver */
- 	{"10EC5640", "bytcr_rt5640", "intel/fw_sst_22a8.bin", "bytcr_rt5640", cht_quirk,
- 						&chv_platform_data },
++#endif
+ 	{},
+ };
+ 
 -- 
 2.7.4
