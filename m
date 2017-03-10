@@ -1,17 +1,16 @@
-From: Chemsi Mehdi <chmsmehdi@gmail.com>
-Subject: Is snd_pcm_hw_constraint_mask64 really needed ?
-Date: Thu, 9 Mar 2017 17:23:46 +0100
-Message-ID: <CAHkWnPZu3a5WdsXzF8_faxdoYPOuSgcqkAu3tX_EL4VCczqYqw@mail.gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 1/5] ASoC: da7213: add ACPI support
+Date: Thu,  9 Mar 2017 18:18:58 -0600
+Message-ID: <1489105142-25878-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+References: <1489105142-25878-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f180.google.com (mail-qk0-f180.google.com
- [209.85.220.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D0BF267028
- for <alsa-devel@alsa-project.org>; Thu,  9 Mar 2017 17:23:47 +0100 (CET)
-Received: by mail-qk0-f180.google.com with SMTP id v125so124375717qkh.2
- for <alsa-devel@alsa-project.org>; Thu, 09 Mar 2017 08:23:47 -0800 (PST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1D11826699B
+ for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2017 01:19:10 +0100 (CET)
+In-Reply-To: <1489105142-25878-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,21 +20,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, vinod.koul@intel.com, Adam.Thomson.Opensource@diasemi.com, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Dear ALSA expert ,
+Add DLGS7212 and DLGS7213 HID
 
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/codecs/da7213.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-I am working with an alsa codec driver  where the driver is calling
-err = snd_pcm_hw_constraint_mask64(substream->runtime,
-SNDRV_PCM_HW_PARAM_FORMAT, formats);
-my driver is already setting format before that so I wonder why this
-function is called?
-Looks like it is  needed to add audio constraints to substreams at
-open/startup time, but why ?
-what can be the issue if I do not call it ?
-
-Please explain to me Takashi.
-
-Thanks a lot in advance.
+diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
+index 12da558..6dd7578 100644
+--- a/sound/soc/codecs/da7213.c
++++ b/sound/soc/codecs/da7213.c
+@@ -12,6 +12,7 @@
+  * option) any later version.
+  */
+ 
++#include <linux/acpi.h>
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/i2c.h>
+@@ -1528,12 +1529,23 @@ static int da7213_set_bias_level(struct snd_soc_codec *codec,
+ 	return 0;
+ }
+ 
++#if defined(CONFIG_OF)
+ /* DT */
+ static const struct of_device_id da7213_of_match[] = {
+ 	{ .compatible = "dlg,da7213", },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, da7213_of_match);
++#endif
++
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id da7213_acpi_match[] = {
++	{ "DLGS7212", 0},
++	{ "DLGS7213", 0},
++	{ },
++};
++MODULE_DEVICE_TABLE(acpi, da7213_acpi_match);
++#endif
+ 
+ static enum da7213_micbias_voltage
+ 	da7213_of_micbias_lvl(struct snd_soc_codec *codec, u32 val)
+@@ -1844,6 +1856,7 @@ static struct i2c_driver da7213_i2c_driver = {
+ 	.driver = {
+ 		.name = "da7213",
+ 		.of_match_table = of_match_ptr(da7213_of_match),
++		.acpi_match_table = ACPI_PTR(da7213_acpi_match),
+ 	},
+ 	.probe		= da7213_i2c_probe,
+ 	.remove		= da7213_remove,
+-- 
+2.7.4
