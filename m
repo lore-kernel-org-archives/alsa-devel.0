@@ -1,77 +1,46 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: Skylake: code cleanup for pin
- fixup limitation
-Date: Fri, 10 Mar 2017 22:24:44 +0530
-Message-ID: <20170310165443.GW2843@localhost>
-References: <20170308084702.20558-1-takashi.sakamoto@miraclelinux.com>
+From: Brian Norris <briannorris@chromium.org>
+Subject: Re: [PATCH for-4.11] ASoC: don't dereference NULL pcm_{new,free}
+Date: Fri, 10 Mar 2017 16:24:07 -0800
+Message-ID: <20170311002406.GA4586@google.com>
+References: <20170308231854.50167-1-briannorris@chromium.org>
+ <20170309110918.getjla6iawgjpfrq@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 1004926583C
- for <alsa-devel@alsa-project.org>; Fri, 10 Mar 2017 17:54:01 +0100 (CET)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20170308084702.20558-1-takashi.sakamoto@miraclelinux.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <takashi.sakamoto@miraclelinux.com>
-Cc: alsa-devel@alsa-project.org, ichiro.suzuki@miraclelinux.com, broonie@kernel.org, shreyas.nc@intel.com, jeeja.kp@intel.com, yukie.kato@miraclelinux.com
+In-Reply-To: <20170309110918.getjla6iawgjpfrq@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi-San,
-
-On Wed, Mar 08, 2017 at 05:47:02PM +0900, Takashi Sakamoto wrote:
-> As a commit 4cd9899f0d16 ("ASoC: Intel: Skylake: Add multiple pin
-> formats") describes, 'fixups is applied to pin 0 only'. On the other
-> hand, the commit left some codes as what they were. This might
-> confuses readers.
+On Thu, Mar 09, 2017 at 12:09:18PM +0100, Mark Brown wrote:
+> On Wed, Mar 08, 2017 at 03:18:54PM -0800, Brian Norris wrote:
+> > Not all platform drivers have pcm_{new,free} callbacks. Seen with a
+> > "snd-soc-dummy" codec from sound/soc/rockchip/rk3399_gru_sound.c.
+> > 
+> > Resolves an OOPS seen on v4.11-rc1 with Google Kevin (Samsung Chromebook
+> > Plus):
+> > 
+> > [    2.863304] rk3399-gru-sound sound: HiFi <-> ff880000.i2s mapping ok
+> > [    2.886930] rk3399-gru-sound sound: rt5514-aif1 <-> ff880000.i2s mapping ok
 > 
-> This commit fixes the issue. This doesn't change driver behaviour at all.
+> Please think hard before including complete backtraces in upstream
+> reports, they are very large and contain almost no useful information
+> relative to their size so often obscure the relevant content in your
+> message. If part of the backtrace is usefully illustrative then it's
+> usually better to pull out the relevant sections.
 
-Thanks, this also looks good. So,
+I did think, and I did trim the trace significantly. I believe (or
+believed; maybe incorrectly) that much of the remaining context *was*
+useful, and that it could have answered some of Kuninori's questions, if
+he chose to dig himself. As admitted in the commit message, I don't
+really understand all of the relationships here, so it's hard to
+highlight "only the relevant sections".
 
-Acked-by: Vinod Koul <vinod.koul@intel.com>
-Tested-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+I'm sorry that my post did not meet your standards though. Next time
+I'll just post a revert with little context and no attempt to understand
+what actually went wrong.
 
-> 
-> Fixes: 4cd9899f0d16 ("ASoC: Intel: Skylake: Add multiple pin formats")
-> Signed-off-by: Takashi Sakamoto <takashi.sakamoto@miraclelinux.com>
-> ---
->  sound/soc/intel/skylake/skl-topology.c | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
-> 
-> diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-> index f38f8e6..8651359 100644
-> --- a/sound/soc/intel/skylake/skl-topology.c
-> +++ b/sound/soc/intel/skylake/skl-topology.c
-> @@ -310,13 +310,11 @@ static void skl_tplg_update_buffer_size(struct skl_sst *ctx,
->  		multiplier = 5;
->  
->  	mcfg->ibs = DIV_ROUND_UP(in_fmt->s_freq, 1000) *
-> -			(mcfg->in_fmt->channels) *
-> -			(mcfg->in_fmt->bit_depth >> 3) *
-> +			in_fmt->channels * (in_fmt->bit_depth >> 3) *
->  			multiplier;
->  
-> -	mcfg->obs = DIV_ROUND_UP(mcfg->out_fmt->s_freq, 1000) *
-> -			(mcfg->out_fmt->channels) *
-> -			(mcfg->out_fmt->bit_depth >> 3) *
-> +	mcfg->obs = DIV_ROUND_UP(out_fmt->s_freq, 1000) *
-> +			out_fmt->channels * (out_fmt->bit_depth >> 3) *
->  			multiplier;
->  }
->  
-> -- 
-> 2.9.3
-> 
-
--- 
-~Vinod
+Regards,
+Brian
