@@ -1,46 +1,51 @@
 From: Brian Norris <briannorris@chromium.org>
 Subject: Re: [PATCH for-4.11] ASoC: don't dereference NULL pcm_{new,free}
-Date: Fri, 10 Mar 2017 16:24:07 -0800
-Message-ID: <20170311002406.GA4586@google.com>
+Date: Fri, 10 Mar 2017 16:39:39 -0800
+Message-ID: <20170311003939.GB4586@google.com>
 References: <20170308231854.50167-1-briannorris@chromium.org>
- <20170309110918.getjla6iawgjpfrq@sirena.org.uk>
+ <87zigvz4q3.wl%kuninori.morimoto.gx@renesas.com>
+ <20170309002129.GA99773@google.com>
+ <87varjz31k.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20170309110918.getjla6iawgjpfrq@sirena.org.uk>
+In-Reply-To: <87varjz31k.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 09, 2017 at 12:09:18PM +0100, Mark Brown wrote:
-> On Wed, Mar 08, 2017 at 03:18:54PM -0800, Brian Norris wrote:
-> > Not all platform drivers have pcm_{new,free} callbacks. Seen with a
-> > "snd-soc-dummy" codec from sound/soc/rockchip/rk3399_gru_sound.c.
-> > 
-> > Resolves an OOPS seen on v4.11-rc1 with Google Kevin (Samsung Chromebook
-> > Plus):
-> > 
-> > [    2.863304] rk3399-gru-sound sound: HiFi <-> ff880000.i2s mapping ok
-> > [    2.886930] rk3399-gru-sound sound: rt5514-aif1 <-> ff880000.i2s mapping ok
+Hi Kuninori,
+
+On Thu, Mar 09, 2017 at 12:53:50AM +0000, Kuninori Morimoto wrote:
+> > All I know is that I'm definitely hitting a NULL
+> > platform->driver->pcm_new callback, and that either reverting your patch
+> > or applying the patch I just sent fixes it.
 > 
-> Please think hard before including complete backtraces in upstream
-> reports, they are very large and contain almost no useful information
-> relative to their size so often obscure the relevant content in your
-> message. If part of the backtrace is usefully illustrative then it's
-> usually better to pull out the relevant sections.
+> I want to know why this happen.
+> Can you show me which driver is calling snd_soc_add_platform() in your case ?
 
-I did think, and I did trim the trace significantly. I believe (or
-believed; maybe incorrectly) that much of the remaining context *was*
-useful, and that it could have answered some of Kuninori's questions, if
-he chose to dig himself. As admitted in the commit message, I don't
-really understand all of the relationships here, so it's hard to
-highlight "only the relevant sections".
+There are 4 drivers calling that:
 
-I'm sorry that my post did not meet your standards though. Next time
-I'll just post a revert with little context and no attempt to understand
-what actually went wrong.
+  snd_soc_dummy_probe
+  rt5514_spi_probe
+  2 instances of snd_dmaengine_pcm_register, via rockchip_i2s_probe
 
-Regards,
+Only the latter two seem to run the assignment here:
+
+	if (platform_drv->pcm_new)
+		platform->component.pcm_new = snd_soc_platform_drv_pcm_new;
+
+Both snd_soc_dummy_probe and rt5514_spi_probe find ->pcm_new NULL here.
+
+I'm running with the sound/soc/rockchip/rk3399_gru_sound.c platform
+driver. If it helps, I'm using the DT posted at [1]. IIUC, the "RT5514
+DSP" link is trying to link up a "snd-soc-dummy" instance.
+
+I'm fairly thoroughly confused. Any better ideas?
+
 Brian
+
+[1] https://www.spinics.net/lists/arm-kernel/msg561964.html
+    [PATCH v2 4/6] arm64: dts: rockchip: add Gru/Kevin DTS
