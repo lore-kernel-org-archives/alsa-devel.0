@@ -1,62 +1,40 @@
-From: Michael Zoran <mzoran-O+n0w2l5AFbk1uMJSBkQmQ@public.gmane.org>
-Subject: [PATCH 4/4] dts: bcm283x.dtsi: Add analog audio/headphone jack for bcm2835
-Date: Sat, 11 Mar 2017 22:38:20 -0800
-Message-ID: <20170312063820.19313-4-mzoran@crowfest.net>
-References: <20170312063820.19313-1-mzoran@crowfest.net>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20170312063820.19313-1-mzoran-O+n0w2l5AFbk1uMJSBkQmQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-AbSShOkvfpQ@public.gmane.org, eric-WhKQ6XTQaPysTnJN9+BGXg@public.gmane.org, stefan.wahren-eS4NqCHxEME@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: Michael Zoran <mzoran-O+n0w2l5AFbk1uMJSBkQmQ@public.gmane.org>
+From: Michael Zoran <mzoran@crowfest.net>
+Subject: bcm2835-analog-audio: Is my driver PWM, ALSA or neither
+Date: Sun, 12 Mar 2017 03:37:01 -0700
+Message-ID: <1489315021.23529.3.camel@crowfest.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-pwm-owner@vger.kernel.org>
+Sender: linux-pwm-owner@vger.kernel.org
+To: linux-pwm@vger.kernel.org, alsa-devel@alsa-project.org, linux-rpi-kernel@lists.infradead.org
+Cc: eric@anholt.net, stefan.wahren@i2se.com
 List-Id: alsa-devel@alsa-project.org
 
-Add the DT nodes for the analog audio/headphone jack for the BCM2835
+I have submitted to ALSA a driver that uses the PWM hardware of the
+Raspbery PI(bcm2835) as an audio driver.
 
-Signed-off-by: Michael Zoran <mzoran-O+n0w2l5AFbk1uMJSBkQmQ@public.gmane.org>
----
- arch/arm/boot/dts/bcm283x.dtsi | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-March/118652.
+html
 
-diff --git a/arch/arm/boot/dts/bcm283x.dtsi b/arch/arm/boot/dts/bcm283x.dtsi
-index 9798bc9293d8..bf2cd463a6e6 100644
---- a/arch/arm/boot/dts/bcm283x.dtsi
-+++ b/arch/arm/boot/dts/bcm283x.dtsi
-@@ -338,7 +338,12 @@
- 				brcm,pins = <42 43>;
- 				brcm,function = <BCM2835_FSEL_ALT5>;
- 			};
--		};
-+
-+                        analog_audio_pins: analog_audio_pins {
-+                                brcm,pins = <40 45>;
-+                                brcm,function = <4 4>; /* Alt0 */
-+                        };
-+                };
- 
- 		uart0: serial@7e201000 {
- 			compatible = "brcm,bcm2835-pl011", "arm,pl011", "arm,primecell";
-@@ -464,6 +469,17 @@
- 			status = "disabled";
- 		};
- 
-+                analogaudio: analogaudio@7e20c000 {
-+                        compatible = "brcm,bcm2835-analog-audio";
-+                        reg = <0x7e20c000 0x28>;
-+                        clocks = <&clocks BCM2835_CLOCK_PWM>;
-+                        assigned-clocks = <&clocks BCM2835_CLOCK_PWM>;
-+                        pinctrl-names = "default";
-+                        pinctrl-0 = <&analog_audio_pins>;
-+                        dmas = <&dma 5>;
-+                        dma-names = "tx";
-+                };
-+
- 		sdhci: sdhci@7e300000 {
- 			compatible = "brcm,bcm2835-sdhci";
- 			reg = <0x7e300000 0x100>;
--- 
-2.11.0
+The driver is currently mutually exclusive with the standard PWM
+driver, mostly because the standard PWM interface is not adequate to
+have an audio driver written on top of it.  
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+But as I think more, I see no reason the user needs to chose at boot
+time if they want traditional PWM or AUDIO. So I'm thinking of some how
+combining the two drivers.
+
+My question:
+1. Is my driver a PWM driver that exposes an ALSA interface in additon
+to PWM?
+2. Is my driver a ALSA driver that also exposes PWM.
+3. Could my driver potentially go under misc or something new and
+expose both a PWM and ALSA interface.
+4. Perhaps I should have both a PWM driver and a ALSA driver that both
+talk through a totally new but very small driver that controls access
+to the PWM hardware.  How would the function drivers get loaded in this
+case?
+
+And the $10,000 question of the day is who should I be e-mailing the
+driver to and which topic branches should the driver be merged through?
