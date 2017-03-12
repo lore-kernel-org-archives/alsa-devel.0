@@ -1,7 +1,7 @@
 From: Michael Zoran <mzoran-O+n0w2l5AFbk1uMJSBkQmQ@public.gmane.org>
-Subject: [PATCH 3/4] sound: arm: Add build system for bcm2835-analog-audio driver.
-Date: Sat, 11 Mar 2017 22:38:19 -0800
-Message-ID: <20170312063820.19313-3-mzoran@crowfest.net>
+Subject: [PATCH 4/4] dts: bcm283x.dtsi: Add analog audio/headphone jack for bcm2835
+Date: Sat, 11 Mar 2017 22:38:20 -0800
+Message-ID: <20170312063820.19313-4-mzoran@crowfest.net>
 References: <20170312063820.19313-1-mzoran@crowfest.net>
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 In-Reply-To: <20170312063820.19313-1-mzoran-O+n0w2l5AFbk1uMJSBkQmQ@public.gmane.org>
@@ -10,53 +10,49 @@ To: perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, robh
 Cc: Michael Zoran <mzoran-O+n0w2l5AFbk1uMJSBkQmQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Update the build system to add the bcm2835-analog-audio driver.
+Add the DT nodes for the analog audio/headphone jack for the BCM2835
 
 Signed-off-by: Michael Zoran <mzoran-O+n0w2l5AFbk1uMJSBkQmQ@public.gmane.org>
 ---
- sound/arm/Kconfig  | 10 +++++++++-
- sound/arm/Makefile |  3 +++
- 2 files changed, 12 insertions(+), 1 deletion(-)
+ arch/arm/boot/dts/bcm283x.dtsi | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/sound/arm/Kconfig b/sound/arm/Kconfig
-index 65171f6657a2..71aef1dae6b8 100644
---- a/sound/arm/Kconfig
-+++ b/sound/arm/Kconfig
-@@ -2,7 +2,7 @@
- 
- menuconfig SND_ARM
- 	bool "ARM sound devices"
--	depends on ARM
-+	depends on ARM || ARM64
- 	default y
- 	help
- 	  Support for sound devices specific to ARM architectures.
-@@ -11,6 +11,14 @@ menuconfig SND_ARM
- 
- if SND_ARM
- 
-+config SND_BCM2835_ANALOG_AUDIO
-+	tristate "Analog/Headphone jack support for BCM2835"
-+	depends on ARCH_BCM2835 && HAS_DMA
-+	select SND_PCM
-+	help
-+	    Say y or m to support the analog/headphone jack
-+	    for the BCM2835 as used by the Raspberry PI.
+diff --git a/arch/arm/boot/dts/bcm283x.dtsi b/arch/arm/boot/dts/bcm283x.dtsi
+index 9798bc9293d8..bf2cd463a6e6 100644
+--- a/arch/arm/boot/dts/bcm283x.dtsi
++++ b/arch/arm/boot/dts/bcm283x.dtsi
+@@ -338,7 +338,12 @@
+ 				brcm,pins = <42 43>;
+ 				brcm,function = <BCM2835_FSEL_ALT5>;
+ 			};
+-		};
 +
- config SND_ARMAACI
- 	tristate "ARM PrimeCell PL041 AC Link support"
- 	depends on ARM_AMBA
-diff --git a/sound/arm/Makefile b/sound/arm/Makefile
-index 8c0c851d4641..744ff77e580a 100644
---- a/sound/arm/Makefile
-+++ b/sound/arm/Makefile
-@@ -14,3 +14,6 @@ snd-pxa2xx-lib-$(CONFIG_SND_PXA2XX_LIB_AC97)	+= pxa2xx-ac97-lib.o
++                        analog_audio_pins: analog_audio_pins {
++                                brcm,pins = <40 45>;
++                                brcm,function = <4 4>; /* Alt0 */
++                        };
++                };
  
- obj-$(CONFIG_SND_PXA2XX_AC97)	+= snd-pxa2xx-ac97.o
- snd-pxa2xx-ac97-objs		:= pxa2xx-ac97.o
+ 		uart0: serial@7e201000 {
+ 			compatible = "brcm,bcm2835-pl011", "arm,pl011", "arm,primecell";
+@@ -464,6 +469,17 @@
+ 			status = "disabled";
+ 		};
+ 
++                analogaudio: analogaudio@7e20c000 {
++                        compatible = "brcm,bcm2835-analog-audio";
++                        reg = <0x7e20c000 0x28>;
++                        clocks = <&clocks BCM2835_CLOCK_PWM>;
++                        assigned-clocks = <&clocks BCM2835_CLOCK_PWM>;
++                        pinctrl-names = "default";
++                        pinctrl-0 = <&analog_audio_pins>;
++                        dmas = <&dma 5>;
++                        dma-names = "tx";
++                };
 +
-+obj-$(CONFIG_SND_BCM2835_ANALOG_AUDIO) += bcm2835-analog-audio.o
-+
+ 		sdhci: sdhci@7e300000 {
+ 			compatible = "brcm,bcm2835-sdhci";
+ 			reg = <0x7e300000 0x100>;
 -- 
 2.11.0
 
