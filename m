@@ -1,47 +1,68 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 01/10] ALSA SoC MAX98927 driver - Initial release
-Date: Sun, 12 Mar 2017 09:11:02 -0500
-Message-ID: <20170312141102.fxigzia2nvfuli2d@rob-hp-laptop>
-References: <1488552768-14901-1-git-send-email-ryans.lee@maximintegrated.com>
- <1488552768-14901-2-git-send-email-ryans.lee@maximintegrated.com>
+From: walter harms <wharms@bfs.de>
+Subject: Re: [PATCH] ASoC: cs35l35: trivial fix to indentation
+Date: Sun, 12 Mar 2017 15:55:28 +0100
+Message-ID: <58C56160.9070208@bfs.de>
+References: <20170311191922.6209-1-colin.king@canonical.com>
+Reply-To: wharms@bfs.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1488552768-14901-2-git-send-email-ryans.lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Ryan Lee <ryans.lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org>
-Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, arnd-r2nGTMty4D4@public.gmane.org, michael-dyjBcgdgk7Pe9wHmmfpqLFaTQe2KTcn/@public.gmane.org, oder_chiou-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org, yesanishhere-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, jacob-EZCvousvhKUZux3j3Bed6dkegs52MxvZ@public.gmane.org, Damien.Horsley-1AXoQHu6uovQT0dZR+AlfA@public.gmane.org, bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org, kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org, petr-Qh/3xLP0EvwAvxtiuMwx3w@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, nh6z-fFIq/eER6g8@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, kernel-janitors-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx02-sz.bfs.de (mx02-sz.bfs.de [194.94.69.103])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0E9B3266A10
+ for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2017 15:55:33 +0100 (CET)
+In-Reply-To: <20170311191922.6209-1-colin.king@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Colin King <colin.king@canonical.com>
+Cc: Brian Austin <brian.austin@cirrus.com>, Jiri Kosina <trivial@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 03, 2017 at 11:52:39PM +0900, Ryan Lee wrote:
-> From: Ryan Lee <RyanS.Lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org>
+
+
+Am 11.03.2017 20:19, schrieb Colin King:
+> From: Colin Ian King <colin.king@canonical.com>
 > 
-> Signed-off-by: Ryan Lee <ryans.lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org>
+> Remove extraneous tab to correct the nesting level indentation
+> 
+> Detected by CoverityScan, CID#1416584 ("Nesting level does
+> not match indentation")
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 > ---
+>  sound/soc/codecs/cs35l35.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-> Initial release of ALSA SoC MAX98927 driver.
-> 
->  .../devicetree/bindings/sound/max98927.txt         |   32 +
+> diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
+> index 260ed42..43d33f4 100644
+> --- a/sound/soc/codecs/cs35l35.c
+> +++ b/sound/soc/codecs/cs35l35.c
+> @@ -1370,7 +1370,8 @@ static int cs35l35_i2c_probe(struct i2c_client *i2c_client,
+>  
+>  	for (i = 0; i < ARRAY_SIZE(cs35l35_supplies); i++)
+>  		cs35l35->supplies[i].supply = cs35l35_supplies[i];
+> -		cs35l35->num_supplies = ARRAY_SIZE(cs35l35_supplies);
+> +
+> +	cs35l35->num_supplies = ARRAY_SIZE(cs35l35_supplies);
+>  
 
-In addition to what Mark said, please split bindings to a separate 
-patch.
 
->  sound/soc/codecs/Kconfig                           |    5 +
->  sound/soc/codecs/Makefile                          |    2 +
->  sound/soc/codecs/max98927.c                        |  954 +++++++++++++++
->  sound/soc/codecs/max98927.h                        | 1253 ++++++++++++++++++++
->  5 files changed, 2246 insertions(+)
->  create mode 100755 Documentation/devicetree/bindings/sound/max98927.txt
->  mode change 100644 => 100755 sound/soc/codecs/Kconfig
->  mode change 100644 => 100755 sound/soc/codecs/Makefile
->  create mode 100755 sound/soc/codecs/max98927.c
->  create mode 100755 sound/soc/codecs/max98927.h
+I have the feeling is better before the loop:
 
-These files should not be executable.
+cs35l35->num_supplies = ARRAY_SIZE(cs35l35_supplies);
 
-Rob
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+for (i = 0; i < cs35l35->num_supplies; i++)
+     cs35l35->supplies[i].supply = cs35l35_supplies[i];
+
+re,
+ wh
+
+>  	ret = devm_regulator_bulk_get(&i2c_client->dev,
+>  			cs35l35->num_supplies,
