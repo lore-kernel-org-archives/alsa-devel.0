@@ -1,16 +1,16 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH V2 06/10] ASoC: Intel: Skylake: Remove BE
-	prepare ops
-Date: Mon, 13 Mar 2017 22:11:28 +0530
-Message-ID: <1489423292-19997-7-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH V2 04/10] ASoC: Intel: bxtn: Update DSP core
+	state in D0
+Date: Mon, 13 Mar 2017 22:11:26 +0530
+Message-ID: <1489423292-19997-5-git-send-email-jeeja.kp@intel.com>
 References: <1489423292-19997-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F159266CE2
- for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 17:29:46 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id A0EAE266CAF
+ for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 17:29:40 +0100 (CET)
 In-Reply-To: <1489423292-19997-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,50 +27,59 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-Remove BE prepare ops which enables MCLK by default. If MCLK is required
-to be enabled for any specific platform, it needs to be enabled in the
-corresponding machine driver.
+In system suspend, firmware needs to be re-downloaded as IMR is cleared.
+When firmware is downloaded in D0, core state is not set to running
+state causing instability with subsequent D0-D3 cycles.
+
+So set the core state correctly during D0 and check the DSP core state
+if not in reset to set the DSP to D3.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 18 ------------------
- 1 file changed, 18 deletions(-)
+ sound/soc/intel/skylake/bxt-sst.c     | 1 +
+ sound/soc/intel/skylake/skl-sst-dsp.c | 6 ++++--
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 635cbb1..e3d206d 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -262,23 +262,6 @@ static int skl_pcm_open(struct snd_pcm_substream *substream,
- 	return 0;
- }
+diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
+index b34c965..2a2bb94 100644
+--- a/sound/soc/intel/skylake/bxt-sst.c
++++ b/sound/soc/intel/skylake/bxt-sst.c
+@@ -446,6 +446,7 @@ static int bxt_set_dsp_D0(struct sst_dsp *ctx, unsigned int core_id)
+ 				return ret;
+ 			}
+ 		}
++		skl->cores.state[core_id] = SKL_DSP_RUNNING;
+ 		return ret;
+ 	}
  
--static int skl_be_prepare(struct snd_pcm_substream *substream,
--		struct snd_soc_dai *dai)
--{
--	struct skl *skl = get_skl_ctx(dai->dev);
--	struct skl_sst *ctx = skl->skl_sst;
--	struct skl_module_cfg *mconfig;
--
--	if (dai->playback_widget->power || dai->capture_widget->power)
--		return 0;
--
--	mconfig = skl_tplg_be_get_cpr_module(dai, substream->stream);
--	if (mconfig == NULL)
--		return -EINVAL;
--
--	return skl_dsp_set_dma_control(ctx, mconfig);
--}
--
- static int skl_pcm_prepare(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
-@@ -649,7 +632,6 @@ static struct snd_soc_dai_ops skl_dmic_dai_ops = {
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.c b/sound/soc/intel/skylake/skl-sst-dsp.c
+index c3deefa..0833272 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.c
++++ b/sound/soc/intel/skylake/skl-sst-dsp.c
+@@ -355,12 +355,13 @@ int skl_dsp_get_core(struct sst_dsp *ctx, unsigned int core_id)
+ 		ret = ctx->fw_ops.set_state_D0(ctx, core_id);
+ 		if (ret < 0) {
+ 			dev_err(ctx->dev, "unable to get core%d\n", core_id);
+-			return ret;
++			goto out;
+ 		}
+ 	}
  
- static struct snd_soc_dai_ops skl_be_ssp_dai_ops = {
- 	.hw_params = skl_be_hw_params,
--	.prepare = skl_be_prepare,
- };
+ 	skl->cores.usage_count[core_id]++;
  
- static struct snd_soc_dai_ops skl_link_dai_ops = {
++out:
+ 	dev_dbg(ctx->dev, "core id %d state %d usage_count %d\n",
+ 			core_id, skl->cores.state[core_id],
+ 			skl->cores.usage_count[core_id]);
+@@ -379,7 +380,8 @@ int skl_dsp_put_core(struct sst_dsp *ctx, unsigned int core_id)
+ 		return -EINVAL;
+ 	}
+ 
+-	if (--skl->cores.usage_count[core_id] == 0) {
++	if ((--skl->cores.usage_count[core_id] == 0) &&
++		(skl->cores.state[core_id] != SKL_DSP_RESET)) {
+ 		ret = ctx->fw_ops.set_state_D3(ctx, core_id);
+ 		if (ret < 0) {
+ 			dev_err(ctx->dev, "unable to put core %d: %d\n",
 -- 
 2.5.0
