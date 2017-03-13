@@ -1,17 +1,18 @@
 From: Takashi Sakamoto <takashi.sakamoto@miraclelinux.com>
-Subject: [PATCH v2] ASoC: hdmi-codec: fix non static symbol
-	warnings
-Date: Mon, 13 Mar 2017 11:26:18 +0900
-Message-ID: <20170313022618.21103-1-takashi.sakamoto@miraclelinux.com>
+Subject: [PATCH] ASoC: core: remove redundunt address operation
+	for array type variable
+Date: Mon, 13 Mar 2017 12:07:43 +0900
+Message-ID: <20170313030743.25019-1-takashi.sakamoto@miraclelinux.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f47.google.com (mail-pg0-f47.google.com [74.125.83.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 50E132666E1
- for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 03:26:39 +0100 (CET)
-Received: by mail-pg0-f47.google.com with SMTP id 77so57981360pgc.1
- for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2017 19:26:39 -0700 (PDT)
+Received: from mail-pf0-f178.google.com (mail-pf0-f178.google.com
+ [209.85.192.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id D544F2666E1
+ for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 04:07:51 +0100 (CET)
+Received: by mail-pf0-f178.google.com with SMTP id v190so63854598pfb.1
+ for <alsa-devel@alsa-project.org>; Sun, 12 Mar 2017 20:07:51 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,67 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, kuninori.morimoto.gx@renesas.com, arnaud.pouliquen@st.com, weiyongjun1@huawei.com
+To: broonie@kernel.org
 Cc: ichiro.suzuki@miraclelinux.com, alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>, yukie.kato@miraclelinux.com
 List-Id: alsa-devel@alsa-project.org
 
-Fixes the following sparse warnings:
+The type of 'struct snd_ctl_elem_value.value.bytes.data' is 'unsigned
+char[512]'. In C language specification, address operation (&) for this
+type is just ignored, therefore:
 
-$ make C=2 sound/soc/codecs/hdmi-codec.o
-sound/soc/codecs/hdmi-codec.c:34:1: warning:
- symbol 'hdmi_device_list' was not declared. Should it be static?
-sound/soc/codecs/hdmi-codec.c:80:33: warning:
- symbol 'hdmi_codec_stereo_chmaps' was not declared. Should it be static?
-sound/soc/codecs/hdmi-codec.c:87:33: warning:
- symbol 'hdmi_codec_8ch_chmaps' was not declared. Should it be static?
-sound/soc/codecs/hdmi-codec.c:354:6: warning:
- symbol 'hdmi_codec_eld_chmap' was not declared. Should it be static?
+struct snd_ctl_elem_value elem_value;
+printf("%p\n", elem_value.value.bytes.data);
+printf("%p\n", &elem_value.value.bytes.data);
+
+These two evaluation have the same value, a pointer to the first element
+of the array.
+
+This kind of address operation is not good for readers, because it easily
+brings confusions as an address operations to pointers. For example,
+
+struct snd_kcontrol_new template;
+printf("%p\n", template.name);
+printf("%p\n", &template.name);
+
+These two evaluation have the different value. The former is
+'unsigned char *', while the latter is 'unsigned char **'.
+
+This commit removes redundant address operation for array type variable
+to avoid misreading in reader side.
 
 Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Fixes: f831b055ecec ("ASoC: core: Add support for masking out parts of coefficient blocks")
 Signed-off-by: Takashi Sakamoto <takashi.sakamoto@miraclelinux.com>
 ---
- sound/soc/codecs/hdmi-codec.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/soc-ops.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 8c5ae1f..6ba6aa5 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -31,7 +31,7 @@ struct hdmi_device {
- 	int cnt;
- };
- #define pos_to_hdmi_device(pos)	container_of((pos), struct hdmi_device, list)
--LIST_HEAD(hdmi_device_list);
-+static LIST_HEAD(hdmi_device_list);
- static DEFINE_MUTEX(hdmi_mutex);
- 
- #define DAI_NAME_SIZE 16
-@@ -78,14 +78,14 @@ struct hdmi_codec_cea_spk_alloc {
- };
- 
- /* Channel maps  stereo HDMI */
--const struct snd_pcm_chmap_elem hdmi_codec_stereo_chmaps[] = {
-+static const struct snd_pcm_chmap_elem hdmi_codec_stereo_chmaps[] = {
- 	{ .channels = 2,
- 	  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR } },
- 	{ }
- };
- 
- /* Channel maps for multi-channel playbacks, up to 8 n_ch */
--const struct snd_pcm_chmap_elem hdmi_codec_8ch_chmaps[] = {
-+static const struct snd_pcm_chmap_elem hdmi_codec_8ch_chmaps[] = {
- 	{ .channels = 2, /* CA_ID 0x00 */
- 	  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR } },
- 	{ .channels = 4, /* CA_ID 0x01 */
-@@ -352,7 +352,7 @@ static unsigned long hdmi_codec_spk_mask_from_alloc(int spk_alloc)
- 	return spk_mask;
- }
- 
--void hdmi_codec_eld_chmap(struct hdmi_codec_priv *hcp)
-+static void hdmi_codec_eld_chmap(struct hdmi_codec_priv *hcp)
- {
- 	u8 spk_alloc;
- 	unsigned long spk_mask;
+diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
+index 500f98c..76b199b 100644
+--- a/sound/soc/soc-ops.c
++++ b/sound/soc/soc-ops.c
+@@ -658,11 +658,11 @@ int snd_soc_bytes_get(struct snd_kcontrol *kcontrol,
+ 			ucontrol->value.bytes.data[0] &= ~params->mask;
+ 			break;
+ 		case 2:
+-			((u16 *)(&ucontrol->value.bytes.data))[0]
++			((u16 *)ucontrol->value.bytes.data)[0]
+ 				&= cpu_to_be16(~params->mask);
+ 			break;
+ 		case 4:
+-			((u32 *)(&ucontrol->value.bytes.data))[0]
++			((u32 *)ucontrol->value.bytes.data)[0]
+ 				&= cpu_to_be32(~params->mask);
+ 			break;
+ 		default:
 -- 
 2.9.3
