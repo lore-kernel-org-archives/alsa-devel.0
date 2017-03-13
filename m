@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: core: remove redundunt address
- operation for array type variable
-Date: Mon, 13 Mar 2017 16:54:19 +0000
-Message-ID: <20170313165418.m4n2njcf6wq4c3mq@sirena.org.uk>
-References: <20170313030743.25019-1-takashi.sakamoto@miraclelinux.com>
+Subject: Applied "ASoC: rt5665: move set_sysclk to codec level"
+	to the asoc tree
+Date: Mon, 13 Mar 2017 16:56:27 +0000
+Message-ID: <E1cnTGl-0004dH-42@debutante>
+References: <1489059074-12046-2-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3321926485357367921=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E216266B13
- for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 17:54:25 +0100 (CET)
-In-Reply-To: <20170313030743.25019-1-takashi.sakamoto@miraclelinux.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6280F266CC6
+ for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 17:56:46 +0100 (CET)
+In-Reply-To: <1489059074-12046-2-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,65 +22,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <takashi.sakamoto@miraclelinux.com>
-Cc: ichiro.suzuki@miraclelinux.com, alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>, yukie.kato@miraclelinux.com
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, xiaoxiang@pinecone.net, zhongan@pinecone.net, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============3321926485357367921==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="q475ihpgyjwp6uwj"
-Content-Disposition: inline
+   ASoC: rt5665: move set_sysclk to codec level
 
+has been applied to the asoc tree at
 
---q475ihpgyjwp6uwj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Mar 13, 2017 at 12:07:43PM +0900, Takashi Sakamoto wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> These two evaluation have the same value, a pointer to the first element
-> of the array.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> This kind of address operation is not good for readers, because it easily
-> brings confusions as an address operations to pointers. For example,
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-This is done explicitly for clarity, in order to make it clear that the
-value is a pointer rather than being (say) an integer.  The value is the
-same as you say but that's only clear if the reader realizes that data
-is an array.  If I were clarifying this I'd change to explicitly take
-the address of the first element of the array rather than the array as
-a whole.=20
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> Fixes: f831b055ecec ("ASoC: core: Add support for masking out parts of co=
-efficient blocks")
+Thanks,
+Mark
 
-This is a style change rather than a fix.
+>From 28d2ca39be43fab0caee2f13d818504e9e802ef7 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Thu, 9 Mar 2017 19:31:14 +0800
+Subject: [PATCH] ASoC: rt5665: move set_sysclk to codec level
 
---q475ihpgyjwp6uwj
-Content-Type: application/pgp-signature; name="signature.asc"
+Move set_sysclk to codec level and people can use it at both
+codec and dai level.
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt5665.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljGzroACgkQJNaLcl1U
-h9A2pgf/fJXTCP5bskbHKhgKwfNgs16VPhBteNH2rnuRweSp6SyOCD0Pcq18pmL/
-am6iRBfBjvgBB+PRYLhikcQL0RU+3DDIdQOXGVsCWxu2IDnhmw4zAy7yVcxyR1Gh
-/Z82COvserntWN1i+yAqAa1bdSRwx2UxAsXtn3zvTPlaIrhfi6xmJHwjzjR/7R8K
-ULGwwl7bxNemAucQJgjx2sJbmoevCeXvSVjNbtfp+ofvdTrGDHfR2097DlU37MCv
-K70FSTjn5kT7gHSFx6E3LSO8C3B5U58mTXvxfP6/u5GMhsJZJb+5sqlWXnljKaBx
-By2cKLzIjLMLBYezM8tNCBxTKR1jSA==
-=0ZuD
------END PGP SIGNATURE-----
-
---q475ihpgyjwp6uwj--
-
---===============3321926485357367921==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3321926485357367921==--
+diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
+index b36e217345f6..1d00c6078feb 100644
+--- a/sound/soc/codecs/rt5665.c
++++ b/sound/soc/codecs/rt5665.c
+@@ -4188,10 +4188,9 @@ static int rt5665_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	return 0;
+ }
+ 
+-static int rt5665_set_dai_sysclk(struct snd_soc_dai *dai,
+-		int clk_id, unsigned int freq, int dir)
++static int rt5665_set_codec_sysclk(struct snd_soc_codec *codec, int clk_id,
++				   int source, unsigned int freq, int dir)
+ {
+-	struct snd_soc_codec *codec = dai->codec;
+ 	struct rt5665_priv *rt5665 = snd_soc_codec_get_drvdata(codec);
+ 	unsigned int reg_val = 0;
+ 
+@@ -4217,7 +4216,7 @@ static int rt5665_set_dai_sysclk(struct snd_soc_dai *dai,
+ 	rt5665->sysclk = freq;
+ 	rt5665->sysclk_src = clk_id;
+ 
+-	dev_dbg(dai->dev, "Sysclk is %dHz and clock id is %d\n", freq, clk_id);
++	dev_dbg(codec->dev, "Sysclk is %dHz and clock id is %d\n", freq, clk_id);
+ 
+ 	return 0;
+ }
+@@ -4401,7 +4400,6 @@ static int rt5665_resume(struct snd_soc_codec *codec)
+ static const struct snd_soc_dai_ops rt5665_aif_dai_ops = {
+ 	.hw_params = rt5665_hw_params,
+ 	.set_fmt = rt5665_set_dai_fmt,
+-	.set_sysclk = rt5665_set_dai_sysclk,
+ 	.set_tdm_slot = rt5665_set_tdm_slot,
+ 	.set_bclk_ratio = rt5665_set_bclk_ratio,
+ };
+@@ -4512,6 +4510,7 @@ static struct snd_soc_codec_driver soc_codec_dev_rt5665 = {
+ 		.dapm_routes = rt5665_dapm_routes,
+ 		.num_dapm_routes = ARRAY_SIZE(rt5665_dapm_routes),
+ 	},
++	.set_sysclk = rt5665_set_codec_sysclk,
+ 	.set_pll = rt5665_set_codec_pll,
+ };
+ 
+-- 
+2.11.0
