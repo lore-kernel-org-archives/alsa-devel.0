@@ -1,17 +1,14 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH V2 01/10] ASoC: Intel: Skylake: Fix to delete
-	DSP pipe after stopping pipe
-Date: Mon, 13 Mar 2017 22:11:23 +0530
-Message-ID: <1489423292-19997-2-git-send-email-jeeja.kp@intel.com>
-References: <1489423292-19997-1-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH V2 00/10] ASoC: Intel: Skylake: Driver updates
+Date: Mon, 13 Mar 2017 22:11:22 +0530
+Message-ID: <1489423292-19997-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id D8DA3266B09
- for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 17:29:24 +0100 (CET)
-In-Reply-To: <1489423292-19997-1-git-send-email-jeeja.kp@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E2D1C266B09
+ for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 17:29:21 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,27 +24,52 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jeeja KP <jeeja.kp@intel.com>
 
-DSP pipe needs to stopped before deleting the pipe. Currently check is
-for pipe state > STARTED, which is incorrect. So changed to include
-pipe state STARTED to stop the pipe if it started.
+This patch series provides updates and fixes on the following:
+ Fix parameter overwrite for KPB DSP Module.
+ To handle module download with size > dma buffer size.
+ Fix to handle dsp pipes correctly.
+ Disable notification after dsp boot.
+ Remove get dsp_ops in cleanup routine.
+ Disable interrupt when DSP is in D3.
+ Update DSP core state in D0.
+ Reload the firmware in case of D3 failure.
 
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
----
- sound/soc/intel/skylake/skl-messages.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes in v2:
+	- fixed the typo's in commit message.
+	- handle error in case when ipc fails in case of load module.
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index e668704..ed57696 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -1098,7 +1098,7 @@ int skl_delete_pipe(struct skl_sst *ctx, struct skl_pipe *pipe)
- 	dev_dbg(ctx->dev, "%s: pipe = %d\n", __func__, pipe->ppl_id);
- 
- 	/* If pipe is started, do stop the pipe in FW. */
--	if (pipe->state > SKL_PIPE_STARTED) {
-+	if (pipe->state >= SKL_PIPE_STARTED) {
- 		ret = skl_set_pipe_state(ctx, pipe, PPL_PAUSED);
- 		if (ret < 0) {
- 			dev_err(ctx->dev, "Failed to stop pipeline\n");
+Dharageswari R (1):
+  ASoC: Intel: Skylake: Fix parameter overwrite for KPB Module
+
+G Kranthi (2):
+  ASoC: Intel: Skylake: Disable notifications at boot after DSP FW init
+  ASoC: Intel: Skylake: Remove get dsp_ops in cleanup routine
+
+Guneshwor Singh (1):
+  ASoC: Intel: Skylake: Fix not to stop src pipe in pre pmd event
+    handler
+
+Jeeja KP (6):
+  ASoC: Intel: Skylake: Fix to delete DSP pipe after stopping pipe
+  ASoC: Intel: bxtn: Disable interrupt when DSP is in D3
+  ASoC: Intel: bxtn: Update DSP core state in D0
+  ASoC: Intel: bxtn: Reload the firmware in case of D3 failure
+  ASoC: Intel: Skylake: Remove BE prepare ops
+  ASoC: Intel: Skylake: Fix module load when module size > DMA buffer
+    size
+
+ sound/soc/intel/skylake/bxt-sst.c       | 14 ++++++-
+ sound/soc/intel/skylake/skl-messages.c  | 12 ++----
+ sound/soc/intel/skylake/skl-pcm.c       | 19 +---------
+ sound/soc/intel/skylake/skl-sst-cldma.c | 26 ++++++++-----
+ sound/soc/intel/skylake/skl-sst-cldma.h |  2 +-
+ sound/soc/intel/skylake/skl-sst-dsp.c   |  6 ++-
+ sound/soc/intel/skylake/skl-sst-dsp.h   |  3 ++
+ sound/soc/intel/skylake/skl-sst-ipc.c   | 66 ++++++++++++++++++++++-----------
+ sound/soc/intel/skylake/skl-sst-ipc.h   |  7 ++++
+ sound/soc/intel/skylake/skl-sst.c       | 53 ++++++++++++++++++++------
+ sound/soc/intel/skylake/skl-topology.c  | 56 ++++++++++++++--------------
+ 11 files changed, 165 insertions(+), 99 deletions(-)
+
 -- 
 2.5.0
