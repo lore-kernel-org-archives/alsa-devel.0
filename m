@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7213: add ACPI support" to the asoc
-	tree
-Date: Mon, 13 Mar 2017 16:58:14 +0000
-Message-ID: <E1cnTIU-00057u-8X@debutante>
-References: <1489105142-25878-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: cs35l35: Fix display revision id" to
+	the asoc tree
+Date: Mon, 13 Mar 2017 16:57:57 +0000
+Message-ID: <E1cnTID-000537-Dq@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A2FE6266D16
- for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 17:58:25 +0100 (CET)
-In-Reply-To: <1489105142-25878-2-git-send-email-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 523A5266CE6
+ for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 17:58:06 +0100 (CET)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: vinod.koul@intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, Adam.Thomson.Opensource@diasemi.com
+To: Axel Lin <axel.lin@ingics.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Paul Handrigan <Paul.Handrigan@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7213: add ACPI support
+   ASoC: cs35l35: Fix display revision id
 
 has been applied to the asoc tree at
 
@@ -53,63 +52,30 @@ to this mail.
 Thanks,
 Mark
 
->From 8f42c23a9861df7796e019d32fd5c4dea01c8e51 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 9 Mar 2017 18:18:58 -0600
-Subject: [PATCH] ASoC: da7213: add ACPI support
+>From 82875163a8ef1e25477402c5ebb8f5beaea5e93e Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Sat, 11 Mar 2017 20:57:07 +0800
+Subject: [PATCH] ASoC: cs35l35: Fix display revision id
 
-Add DLGS7212 and DLGS7213 HID
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Acked-by: Paul Handrigan <Paul.Handrigan@cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7213.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ sound/soc/codecs/cs35l35.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
-index 12da55882c06..6dd7578f0bb8 100644
---- a/sound/soc/codecs/da7213.c
-+++ b/sound/soc/codecs/da7213.c
-@@ -12,6 +12,7 @@
-  * option) any later version.
-  */
+diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
+index 7c4d74ec32cb..a9e45dea309e 100644
+--- a/sound/soc/codecs/cs35l35.c
++++ b/sound/soc/codecs/cs35l35.c
+@@ -1463,7 +1463,7 @@ static int cs35l35_i2c_probe(struct i2c_client *i2c_client,
+ 	}
  
-+#include <linux/acpi.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/i2c.h>
-@@ -1528,12 +1529,23 @@ static int da7213_set_bias_level(struct snd_soc_codec *codec,
- 	return 0;
- }
+ 	dev_info(dev, "Cirrus Logic CS35L35 (%x), Revision: %02X\n",
+-		 devid, ret & 0xFF);
++		 devid, reg & 0xFF);
  
-+#if defined(CONFIG_OF)
- /* DT */
- static const struct of_device_id da7213_of_match[] = {
- 	{ .compatible = "dlg,da7213", },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, da7213_of_match);
-+#endif
-+
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id da7213_acpi_match[] = {
-+	{ "DLGS7212", 0},
-+	{ "DLGS7213", 0},
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(acpi, da7213_acpi_match);
-+#endif
- 
- static enum da7213_micbias_voltage
- 	da7213_of_micbias_lvl(struct snd_soc_codec *codec, u32 val)
-@@ -1844,6 +1856,7 @@ static struct i2c_driver da7213_i2c_driver = {
- 	.driver = {
- 		.name = "da7213",
- 		.of_match_table = of_match_ptr(da7213_of_match),
-+		.acpi_match_table = ACPI_PTR(da7213_acpi_match),
- 	},
- 	.probe		= da7213_i2c_probe,
- 	.remove		= da7213_remove,
+ 	/* Set the INT Masks for critical errors */
+ 	regmap_write(cs35l35->regmap, CS35L35_INT_MASK_1,
 -- 
 2.11.0
