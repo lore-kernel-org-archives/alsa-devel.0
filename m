@@ -1,87 +1,218 @@
-From: Brian Norris <briannorris@chromium.org>
-Subject: Re: [PATCH for-4.11] ASoC: don't dereference NULL pcm_{new,free}
-Date: Mon, 13 Mar 2017 14:52:56 -0700
-Message-ID: <20170313215256.GD4586@google.com>
-References: <20170308231854.50167-1-briannorris@chromium.org>
- <20170309110918.getjla6iawgjpfrq@sirena.org.uk>
- <20170311002406.GA4586@google.com>
- <20170313125004.yrqranp3sxsfkmfx@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20170313125004.yrqranp3sxsfkmfx@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+From: Till Smejkal <till.smejkal@googlemail.com>
+Subject: [RFC PATCH 00/13] Introduce first class virtual address spaces
+Date: Mon, 13 Mar 2017 15:14:02 -0700
+Message-ID: <20170313221415.9375-1-till.smejkal@gmail.com>
+Return-path: <owner-linux-aio@kvack.org>
+Sender: owner-linux-aio@kvack.org
+To: Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Steven Miao <realmz6@gmail.com>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, "David S. Miller" <davem@dave>
+Cc: linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, linux-arm-kernel@lists.infradead.org, adi-buildroot-devel@lists.sourceforge.net, linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org, linux-metag@vger.kernel.org, linux-mips@linux-mips.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org, linux-media@vger.kernel.org, linux-mtd@lists.infradead.org, linux-usb@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-aio@kvack.org, linux-mm@kvack.org, linux-api@vger.kernel.org, linux-arch@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 13, 2017 at 12:50:04PM +0000, Mark Brown wrote:
-> On Fri, Mar 10, 2017 at 04:24:07PM -0800, Brian Norris wrote:
-> > On Thu, Mar 09, 2017 at 12:09:18PM +0100, Mark Brown wrote:
-> 
-> > > Please think hard before including complete backtraces in upstream
-> > > reports, they are very large and contain almost no useful information
-> > > relative to their size so often obscure the relevant content in your
-> > > message. If part of the backtrace is usefully illustrative then it's
-> > > usually better to pull out the relevant sections.
-> 
-> > I did think, and I did trim the trace significantly. I believe (or
-> > believed; maybe incorrectly) that much of the remaining context *was*
-> > useful, and that it could have answered some of Kuninori's questions, if
-> > he chose to dig himself. As admitted in the commit message, I don't
-> > really understand all of the relationships here, so it's hard to
-> > highlight "only the relevant sections".
-> 
-> Any editing you'd done is really not obvious looking at the trace (the
+First class virtual address spaces (also called VAS) are a new functionality of
+the Linux kernel allowing address spaces to exist independently of processes.
+The general idea behind this feature is described in a paper at ASPLOS16 with
+the title 'SpaceJMP: Programming with Multiple Virtual Address Spaces' [1].
 
-There's a "..." in there why I trimmed a huge amount of junk that arm64
-likes to dump, like surrounding memory context near the $pc and $sp.
-Probably more.
+This patchset extends the kernel memory management subsystem with a new
+type of address spaces (called VAS) which can be created and destroyed
+independently of processes by a user in the system. During its lifetime
+such a VAS can be attached to processes by the user which allows a process
+to have multiple address spaces and thereby multiple, potentially
+different, views on the system's main memory. During its execution the
+threads belonging to the process are able to switch freely between the
+different attached VAS and the process' original AS enabling them to
+utilize the different available views on the memory. These multiple virtual
+address spaces per process and the possibility to switch between them
+freely can be used in multiple interesting ways as also outlined in the
+mentioned paper. Some of the many possible applications are for example to
+compartmentalize a process for security reasons, to improve the performance
+of data-centric applications and to introduce new application models [1].
 
-> inclusion of the top of the trace with the pgd and so on which really
-> need the image to be useful is a bit of a flag here, as is the bit at
-> the end after the end of the trace).  It's certainly not mentioned or
+In addition to the concept of first class virtual address spaces, this
+patchset introduces yet another feature called VAS segments. VAS segments
+are memory regions which have a fixed size and position in the virtual
+address space and can be shared between multiple first class virtual
+address spaces. Such shareable memory regions are especially useful for
+in-memory pointer-based data structures or other pure in-memory data.
 
-The PC (0) and LR (which is not reflected in the backtrace) are useful.
+First class virtual address spaces have a significant advantage compared to
+forking a process and using inter process communication mechanism, namely
+that creating and switching between VAS is significant faster than creating
+and switching between processes. As it can be seen in the following table,
+measured on an Intel Xeon E5620 CPU with 2.40GHz, creating a VAS is about 7
+times faster than forking and switching between VAS is up to 4 times faster
+than switching between processes.
 
-> referenced.  At the very least for probe errors it's generally safe to
-> cut down to just the driver probe function is being called rather than
-> showing the entire device model call stack, it's vanishingly rare for
-> that to be adding anything and it's generally several times deeper than
-> what the driver is doing.
+            |     VAS     |  processes  |
+    -------------------------------------
+    switch  |       468ns |      1944ns |
+    create  |     20003ns |    150491ns |
 
-Sure, this could have been trimmed about 50% without losing information.
-I can try to be more precise next time, but the 50% useful info included
-was quite intentional. Particularly, I'm not very happy with my patch,
-so alternatives are welcome (esp. from those who might be able to glean
-more from the report than I could).
+Hence, first class virtual address spaces provide a fast mechanism for
+applications to utilize multiple virtual address spaces in parallel with a
+higher performance than splitting up the application into multiple
+independent processes.
 
-> > I'm sorry that my post did not meet your standards though. Next time
-> > I'll just post a revert with little context and no attempt to understand
-> > what actually went wrong.
-> 
-> Providing changes with little context and no conveyed understanding of
-> exactly what went wrong is a very big part of the reason for complaining
-> about people just splatting backtraces in and certainly not what I was
-> asking for, it's sadly common to see a backtrace provided in lieu of any
-> analysis and it does make the whole thing harder to read.  That would be
-> even more problematic than what you sent, I wouldn't have applied such a
-> change at all unless I somehow reverse engineered the analysis.
+Both VAS and VAS segments have another significant advantage when combined
+with non-volatile memory. Because of their independent life cycle from
+processes and other kernel data structures, they can be used to save
+special memory regions or even whole AS into non-volatile memory making it
+possible to reuse them across multiple system reboots.
 
-Sure, I can understand frustration with essentially contentless "bug
-reports." And I got frustrated by a seemingly pat response that was
-(IMO) a bit mistargeted.
+At the current state of the development, first class virtual address spaces
+have one limitation, that we haven't been able to solve so far. The feature
+allows, that different threads of the same process can execute in different
+AS at the same time. This is possible, because the VAS-switch operation
+only changes the active mm_struct for the task_struct of the calling
+thread. However, when a thread switches into a first class virtual address
+space, some parts of its original AS are duplicated into the new one to
+allow the thread to continue its execution at its current state.
+Accordingly, parts of the processes AS (e.g. the code section, data
+section, heap section and stack sections) exist in multiple AS if the
+process has a VAS attached to it. Changes to these shared memory regions
+are synchronized between the address spaces whenever a thread switches
+between two of them. Unfortunately, in some scenarios the kernel is not
+able to properly synchronize all these shared memory regions because of
+conflicting changes. One such example happens if there are two threads, one
+executing in an attached first class virtual address space, the other in
+the tasks original address space. If both threads make changes to the heap
+section that cause expansion of the underlying vm_area_struct, the kernel
+cannot correctly synchronize these changes, because that would cause parts
+of the virtual address space to be overwritten with unrelated data. In the
+current implementation such conflicts are only detected but not resolved
+and result in an error code being returned by the kernel during the VAS
+switch operation. Unfortunately, that means for the particular thread that
+tried to make the switch, that it cannot do this anymore in the future and
+accordingly has to be killed.
 
-> You do have a reasonable analysis of your change in the first couple of
-> lines ("Not all platform drivers have pcm_{new,free} callbacks...")
-> which is why I applied it, it's at least not going to do any harm to
-> check that there's a function being provided.
+This code was developed during an internship at Hewlett Packard Enterprise.
 
-I suppose.
+[1] http://impact.crhc.illinois.edu/shared/Papers/ASPLOS16-SpaceJMP.pdf
 
-BTW, I don't see the patch applied anywhere (and I have no reply -
-either manual or automated/patchwork - other than the above quote to say
-it was).
+Till Smejkal (13):
+  mm: Add mm_struct argument to 'mmap_region'
+  mm: Add mm_struct argument to 'do_mmap' and 'do_mmap_pgoff'
+  mm: Rename 'unmap_region' and add mm_struct argument
+  mm: Add mm_struct argument to 'get_unmapped_area' and
+    'vm_unmapped_area'
+  mm: Add mm_struct argument to 'mm_populate' and '__mm_populate'
+  mm/mmap: Export 'vma_link' and 'find_vma_links' to mm subsystem
+  kernel/fork: Split and export 'mm_alloc' and 'mm_init'
+  kernel/fork: Define explicitly which mm_struct to duplicate during
+    fork
+  mm/memory: Add function to one-to-one duplicate page ranges
+  mm: Introduce first class virtual address spaces
+  mm/vas: Introduce VAS segments - shareable address space regions
+  mm/vas: Add lazy-attach support for first class virtual address spaces
+  fs/proc: Add procfs support for first class virtual address spaces
 
-Brian
+ MAINTAINERS                                  |   10 +
+ arch/alpha/kernel/osf_sys.c                  |   19 +-
+ arch/arc/mm/mmap.c                           |    8 +-
+ arch/arm/kernel/process.c                    |    2 +-
+ arch/arm/mach-rpc/ecard.c                    |    2 +-
+ arch/arm/mm/mmap.c                           |   19 +-
+ arch/arm64/kernel/vdso.c                     |    2 +-
+ arch/blackfin/include/asm/pgtable.h          |    3 +-
+ arch/blackfin/kernel/sys_bfin.c              |    5 +-
+ arch/frv/mm/elf-fdpic.c                      |   11 +-
+ arch/hexagon/kernel/vdso.c                   |    2 +-
+ arch/ia64/kernel/perfmon.c                   |    3 +-
+ arch/ia64/kernel/sys_ia64.c                  |    6 +-
+ arch/ia64/mm/hugetlbpage.c                   |    7 +-
+ arch/metag/mm/hugetlbpage.c                  |   11 +-
+ arch/mips/kernel/vdso.c                      |    4 +-
+ arch/mips/mm/mmap.c                          |   27 +-
+ arch/parisc/kernel/sys_parisc.c              |   19 +-
+ arch/parisc/mm/hugetlbpage.c                 |    7 +-
+ arch/powerpc/include/asm/book3s/64/hugetlb.h |    6 +-
+ arch/powerpc/include/asm/page_64.h           |    3 +-
+ arch/powerpc/kernel/vdso.c                   |    2 +-
+ arch/powerpc/mm/hugetlbpage-radix.c          |    9 +-
+ arch/powerpc/mm/hugetlbpage.c                |    9 +-
+ arch/powerpc/mm/mmap.c                       |   17 +-
+ arch/powerpc/mm/slice.c                      |   25 +-
+ arch/s390/kernel/vdso.c                      |    3 +-
+ arch/s390/mm/mmap.c                          |   42 +-
+ arch/sh/kernel/vsyscall/vsyscall.c           |    2 +-
+ arch/sh/mm/mmap.c                            |   19 +-
+ arch/sparc/include/asm/pgtable_64.h          |    4 +-
+ arch/sparc/kernel/sys_sparc_32.c             |    6 +-
+ arch/sparc/kernel/sys_sparc_64.c             |   31 +-
+ arch/sparc/mm/hugetlbpage.c                  |   26 +-
+ arch/tile/kernel/vdso.c                      |    2 +-
+ arch/tile/mm/elf.c                           |    2 +-
+ arch/tile/mm/hugetlbpage.c                   |   26 +-
+ arch/x86/entry/syscalls/syscall_32.tbl       |   16 +
+ arch/x86/entry/syscalls/syscall_64.tbl       |   16 +
+ arch/x86/entry/vdso/vma.c                    |    2 +-
+ arch/x86/kernel/sys_x86_64.c                 |   19 +-
+ arch/x86/mm/hugetlbpage.c                    |   26 +-
+ arch/x86/mm/mpx.c                            |    6 +-
+ arch/xtensa/kernel/syscall.c                 |    7 +-
+ drivers/char/mem.c                           |   15 +-
+ drivers/dax/dax.c                            |   10 +-
+ drivers/media/usb/uvc/uvc_v4l2.c             |    6 +-
+ drivers/media/v4l2-core/v4l2-dev.c           |    8 +-
+ drivers/media/v4l2-core/videobuf2-v4l2.c     |    5 +-
+ drivers/mtd/mtdchar.c                        |    3 +-
+ drivers/usb/gadget/function/uvc_v4l2.c       |    3 +-
+ fs/aio.c                                     |    4 +-
+ fs/exec.c                                    |    5 +-
+ fs/hugetlbfs/inode.c                         |    8 +-
+ fs/proc/base.c                               |  528 ++++
+ fs/proc/inode.c                              |   11 +-
+ fs/proc/internal.h                           |    1 +
+ fs/ramfs/file-mmu.c                          |    5 +-
+ fs/ramfs/file-nommu.c                        |   10 +-
+ fs/romfs/mmap-nommu.c                        |    3 +-
+ include/linux/fs.h                           |    2 +-
+ include/linux/huge_mm.h                      |   12 +-
+ include/linux/hugetlb.h                      |   10 +-
+ include/linux/mm.h                           |   53 +-
+ include/linux/mm_types.h                     |   16 +-
+ include/linux/sched.h                        |   34 +-
+ include/linux/shmem_fs.h                     |    5 +-
+ include/linux/syscalls.h                     |   21 +
+ include/linux/vas.h                          |  322 +++
+ include/linux/vas_types.h                    |  173 ++
+ include/media/v4l2-dev.h                     |    3 +-
+ include/media/videobuf2-v4l2.h               |    5 +-
+ include/uapi/asm-generic/unistd.h            |   34 +-
+ include/uapi/linux/Kbuild                    |    1 +
+ include/uapi/linux/vas.h                     |   28 +
+ init/main.c                                  |    2 +
+ ipc/shm.c                                    |   22 +-
+ kernel/events/uprobes.c                      |    2 +-
+ kernel/exit.c                                |    2 +
+ kernel/fork.c                                |   99 +-
+ kernel/sys_ni.c                              |   18 +
+ mm/Kconfig                                   |   47 +
+ mm/Makefile                                  |    1 +
+ mm/gup.c                                     |    4 +-
+ mm/huge_memory.c                             |   83 +-
+ mm/hugetlb.c                                 |  205 +-
+ mm/internal.h                                |   19 +
+ mm/memory.c                                  |  469 +++-
+ mm/mlock.c                                   |   21 +-
+ mm/mmap.c                                    |  124 +-
+ mm/mremap.c                                  |   13 +-
+ mm/nommu.c                                   |   17 +-
+ mm/shmem.c                                   |   14 +-
+ mm/util.c                                    |    4 +-
+ mm/vas.c                                     | 3466 ++++++++++++++++++++++++++
+ sound/core/pcm_native.c                      |    3 +-
+ 96 files changed, 5927 insertions(+), 545 deletions(-)
+ create mode 100644 include/linux/vas.h
+ create mode 100644 include/linux/vas_types.h
+ create mode 100644 include/uapi/linux/vas.h
+ create mode 100644 mm/vas.c
+
+-- 
+2.12.0
+
+--
+To unsubscribe, send a message with 'unsubscribe linux-aio' in
+the body to majordomo@kvack.org.  For more info on Linux AIO,
+see: http://www.kvack.org/aio/
+Don't email: <a href=mailto:"aart@kvack.org">aart@kvack.org</a>
