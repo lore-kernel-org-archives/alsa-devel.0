@@ -1,24 +1,21 @@
-From: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
-Subject: Re: Help debugging a sound problem
-Date: Mon, 13 Mar 2017 09:37:05 +0100
-Message-ID: <cd82e427-6618-cb75-a51d-44c423992a7c@invoxia.com>
-References: <AM2PR07MB1027F3B5CB106FB3AACC1A78A1250@AM2PR07MB1027.eurprd07.prod.outlook.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH] ASoC: rt286: fix headphone click/crack
+ noise on Dell XPS 9343 I2S mode
+Date: Mon, 13 Mar 2017 08:41:41 +0000
+Message-ID: <CAAd53p5LgLDfRbhHvwzN6KKhsqW+yHU-bKnyXKdciCXsu0Vq2Q@mail.gmail.com>
+References: <20170123053514.6193-1-kai.heng.feng@canonical.com>
+ <20170216192230.mg6htsgqbu756e6y@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f43.google.com (mail-wm0-f43.google.com [74.125.82.43])
- by alsa0.perex.cz (Postfix) with ESMTP id DF5FD265823
- for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 09:37:07 +0100 (CET)
-Received: by mail-wm0-f43.google.com with SMTP id v186so34501585wmd.0
- for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 01:37:07 -0700 (PDT)
-Received: from [192.168.65.110] (AAnnecy-653-1-203-107.w86-209.abo.wanadoo.fr.
- [86.209.22.107])
- by smtp.gmail.com with ESMTPSA id c58sm24032098wrc.9.2017.03.13.01.37.06
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 13 Mar 2017 01:37:06 -0700 (PDT)
-In-Reply-To: <AM2PR07MB1027F3B5CB106FB3AACC1A78A1250@AM2PR07MB1027.eurprd07.prod.outlook.com>
+Received: from mail-yw0-f171.google.com (mail-yw0-f171.google.com
+ [209.85.161.171])
+ by alsa0.perex.cz (Postfix) with ESMTP id 02A07265823
+ for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 09:41:52 +0100 (CET)
+Received: by mail-yw0-f171.google.com with SMTP id v76so54665074ywg.0
+ for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 01:41:52 -0700 (PDT)
+In-Reply-To: <20170216192230.mg6htsgqbu756e6y@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,60 +25,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: oder_chiou@realtek.com, bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hmm, doesn't look like an audio related issue at all.
+On Fri, Feb 17, 2017 at 3:22 AM Mark Brown <broonie@kernel.org> wrote:
 
-If I have to bet, I would say something like "time required to load 
-application/library pages from the filesystem"
-How is mounted you root filesystem ?
-What is the memory pressure ?
-You should look at /proc/PID/smaps and compare the content BEFORE and AFTER.
+> On Mon, Jan 23, 2017 at 01:35:14PM +0800, Kai-Heng Feng wrote:
+>
+> > +static void dell_dino_mute_hpo(struct snd_soc_codec *codec)
+> > +{
+> > +     snd_soc_write(codec, RT286_SET_AMP_GAIN_HPO, AMP_OUT_MUTE);
+> > +}
+> > +
+>
+> How does this ever get unmuted, should it be an _AUTODISABLE control
+> instead?
+>
 
-good luck :)
-Arnaud
+I think the AMP is overrode by another value when playing sound, but I am
+not sure.
 
-On 13/03/2017 07:43, Jorge Fernandez Monteagudo wrote:
-> Hi all,
+Can there be multiple callbacks hooked to the same widget?
+In this case, in addition to hpol_enable_control(), can I register another
+callback to "HPO L"?
+
+
 >
+> > @@ -1204,6 +1261,7 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+> >       mdelay(10);
+> >
+> >       regmap_write(rt286->regmap, RT286_MISC_CTRL1, 0x0000);
+> > +
+> >       /* Power down LDO, VREF */
+> >       regmap_update_bits(rt286->regmap, RT286_POWER_CTRL2, 0xc, 0x0);
+> >       regmap_update_bits(rt286->regmap, RT286_POWER_CTRL1, 0x1001,
+> 0x1001);
 >
-> This is my first email to the list. I've joined to it because I don't know where to look for help.
+> Random whitespace change.
 >
+> > @@ -1222,6 +1280,7 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+> >                       RT286_SET_GPIO_DATA, 0x40, 0x40);
+> >               regmap_update_bits(rt286->regmap,
+> >                       RT286_GPIO_CTRL, 0xc, 0x8);
+> > +             rt286->mute_hpo_func = dell_dino_mute_hpo;
+> >       }
 >
-> We have a iMX6 (ARM) board with a STA559BW audio codec connected by the I2S interface.
+> Why would we only do this on some machines, does this break others?
 >
-> We are using a 3.14.52 kernel with a custom sta559 codec driver based on the TAS5709 codec
+
+Because there's already an existing dmi quirk "dmi_dell_dino", I think I
+should just follow.
+I don't know if this may break other machines or not, I only have XPS 9343
+to test.
+
+
 >
-> driver. Our system has the alsa library 1.0.28. Our application uses SDL 1.2.15 to handle the sound
+> This change does appear to be two different changes merged into one,
+> there's the GPIO setup and this automute thing and they don't seem to
+> overlap AFAICT - they should be split into separate patches unless
+> there's some reason why they overlap but I'm not seeing that.
 >
-> system.
->
->
-> When we run the application the sound system works ok, but when we leave the application running
->
-> without playing any sound for one night then next morning we found the sound is delayed more or less
->
-> one second from when the sound is played until the sound it's heard. Traces in the SDL audiocallback
->
-> are ok, the same as when the sound is played ok.
->
->
-> Another clue. An 'aplay' executed in another console is played ok with no delay.
->
->
-> Another one. If the application process is attached with gdb and then deattached then the sounds works
->
-> ok again!
->
->
-> Any help is welcome in order to begin to debug this situation.
->
->
-> Thanks!
->
-> Jorge
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+Understood. I'll split them in later version.
