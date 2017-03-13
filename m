@@ -1,18 +1,16 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 1/5] ASoC: da7213: add ACPI support
-Date: Mon, 13 Mar 2017 14:07:55 -0500
-Message-ID: <5c0818d5-13c3-10e5-71da-7e7ec6ab3d3d@linux.intel.com>
-References: <1489105142-25878-1-git-send-email-pierre-louis.bossart@linux.intel.com>
- <1489105142-25878-2-git-send-email-pierre-louis.bossart@linux.intel.com>
- <2E89032DDAA8B9408CB92943514A03370142A9AD76@SW-EX-MBX01.diasemi.com>
+From: Bhumika Goyal <bhumirks@gmail.com>
+Subject: [PATCH] ASoC: fsl: constify snd_soc_ops structures
+Date: Tue, 14 Mar 2017 00:42:22 +0530
+Message-ID: <1489432342-4328-1-git-send-email-bhumirks@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 323FF266B13
- for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 20:08:00 +0100 (CET)
-In-Reply-To: <2E89032DDAA8B9408CB92943514A03370142A9AD76@SW-EX-MBX01.diasemi.com>
+Received: from mail-pg0-f65.google.com (mail-pg0-f65.google.com [74.125.83.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id A3C89266B13
+ for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 20:12:34 +0100 (CET)
+Received: by mail-pg0-f65.google.com with SMTP id b5so19146045pgg.1
+ for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 12:12:34 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,80 +20,133 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, "vinod.koul@intel.com" <vinod.koul@intel.com>, "broonie@kernel.org" <broonie@kernel.org>
+To: julia.lawall@lip6.fr, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, timur@tabi.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, fabio.estevam@nxp.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Cc: Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 3/13/17 11:10 AM, Adam Thomson wrote:
-> On 10 March 2017 00:19, Pierre-Louis Bossart wrote:
->
->> Add DLGS7212 and DLGS7213 HID
->>
->> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> ---
->>  sound/soc/codecs/da7213.c | 13 +++++++++++++
->>  1 file changed, 13 insertions(+)
->>
->> diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
->> index 12da558..6dd7578 100644
->> --- a/sound/soc/codecs/da7213.c
->> +++ b/sound/soc/codecs/da7213.c
->> @@ -12,6 +12,7 @@
->>   * option) any later version.
->>   */
->>
->> +#include <linux/acpi.h>
->>  #include <linux/clk.h>
->>  #include <linux/delay.h>
->>  #include <linux/i2c.h>
->> @@ -1528,12 +1529,23 @@ static int da7213_set_bias_level(struct snd_soc_codec
->> *codec,
->>  	return 0;
->>  }
->>
->> +#if defined(CONFIG_OF)
->>  /* DT */
->>  static const struct of_device_id da7213_of_match[] = {
->>  	{ .compatible = "dlg,da7213", },
->>  	{ }
->>  };
->>  MODULE_DEVICE_TABLE(of, da7213_of_match);
->> +#endif
->> +
->> +#ifdef CONFIG_ACPI
->> +static const struct acpi_device_id da7213_acpi_match[] = {
->> +	{ "DLGS7212", 0},
->> +	{ "DLGS7213", 0},
->> +	{ },
->> +};
->> +MODULE_DEVICE_TABLE(acpi, da7213_acpi_match);
->> +#endif
->
-> The #ifdefs aren't strictly necessary here so might be cleaner to remove them.
+Declare snd_soc_ops structures as const as they are only stored
+in the ops field of a snd_soc_dai_link structure. This field is
+of type const, so snd_soc_ops structures having this property
+can be made const too.
 
-Looks like Mark applied the patch already. We've had all sort of reports 
-in the past that everything need to build without ACPI so I prefer to 
-err on the cautious side.
+The following .o files did not compile:
+sound/soc/fsl/{p1022_rdk.c/p1022_ds.c/mpc8610_hpcd.c}
 
->
->>
->>  static enum da7213_micbias_voltage
->>  	da7213_of_micbias_lvl(struct snd_soc_codec *codec, u32 val)
->> @@ -1844,6 +1856,7 @@ static struct i2c_driver da7213_i2c_driver = {
->>  	.driver = {
->>  		.name = "da7213",
->>  		.of_match_table = of_match_ptr(da7213_of_match),
->> +		.acpi_match_table = ACPI_PTR(da7213_acpi_match),
->>  	},
->>  	.probe		= da7213_i2c_probe,
->>  	.remove		= da7213_remove,
->> --
->> 2.7.4
->
-> As a general comment, it would be nice if the current of_property_read_* calls
-> could be converted to device_property_read_* calls instead, so both ACPI and DT
-> initialisation of bindings is supported.
+Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+---
+ sound/soc/fsl/eukrea-tlv320.c   | 2 +-
+ sound/soc/fsl/imx-mc13783.c     | 2 +-
+ sound/soc/fsl/mpc8610_hpcd.c    | 2 +-
+ sound/soc/fsl/mx27vis-aic32x4.c | 2 +-
+ sound/soc/fsl/p1022_ds.c        | 2 +-
+ sound/soc/fsl/p1022_rdk.c       | 2 +-
+ sound/soc/fsl/phycore-ac97.c    | 2 +-
+ sound/soc/fsl/wm1133-ev1.c      | 2 +-
+ 8 files changed, 8 insertions(+), 8 deletions(-)
 
-It's something we can test with the MinnowBoard by just adding _DSD 
-properties to the ACPI definitions. But I am not too hot on doing this 
-myself since I have no ARM platform to test for non-regressions.
+diff --git a/sound/soc/fsl/eukrea-tlv320.c b/sound/soc/fsl/eukrea-tlv320.c
+index 883087f..84ef638 100644
+--- a/sound/soc/fsl/eukrea-tlv320.c
++++ b/sound/soc/fsl/eukrea-tlv320.c
+@@ -64,7 +64,7 @@ static int eukrea_tlv320_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static struct snd_soc_ops eukrea_tlv320_snd_ops = {
++static const struct snd_soc_ops eukrea_tlv320_snd_ops = {
+ 	.hw_params	= eukrea_tlv320_hw_params,
+ };
+ 
+diff --git a/sound/soc/fsl/imx-mc13783.c b/sound/soc/fsl/imx-mc13783.c
+index bb04590..9d19b80 100644
+--- a/sound/soc/fsl/imx-mc13783.c
++++ b/sound/soc/fsl/imx-mc13783.c
+@@ -48,7 +48,7 @@ static int imx_mc13783_hifi_hw_params(struct snd_pcm_substream *substream,
+ 	return snd_soc_dai_set_tdm_slot(cpu_dai, 0x3, 0x3, 2, 16);
+ }
+ 
+-static struct snd_soc_ops imx_mc13783_hifi_ops = {
++static const struct snd_soc_ops imx_mc13783_hifi_ops = {
+ 	.hw_params = imx_mc13783_hifi_hw_params,
+ };
+ 
+diff --git a/sound/soc/fsl/mpc8610_hpcd.c b/sound/soc/fsl/mpc8610_hpcd.c
+index ddf49f3..a639b52 100644
+--- a/sound/soc/fsl/mpc8610_hpcd.c
++++ b/sound/soc/fsl/mpc8610_hpcd.c
+@@ -174,7 +174,7 @@ static int mpc8610_hpcd_machine_remove(struct snd_soc_card *card)
+ /**
+  * mpc8610_hpcd_ops: ASoC machine driver operations
+  */
+-static struct snd_soc_ops mpc8610_hpcd_ops = {
++static const struct snd_soc_ops mpc8610_hpcd_ops = {
+ 	.startup = mpc8610_hpcd_startup,
+ };
+ 
+diff --git a/sound/soc/fsl/mx27vis-aic32x4.c b/sound/soc/fsl/mx27vis-aic32x4.c
+index 198eeb3..d7ec3d2 100644
+--- a/sound/soc/fsl/mx27vis-aic32x4.c
++++ b/sound/soc/fsl/mx27vis-aic32x4.c
+@@ -73,7 +73,7 @@ static int mx27vis_aic32x4_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static struct snd_soc_ops mx27vis_aic32x4_snd_ops = {
++static const struct snd_soc_ops mx27vis_aic32x4_snd_ops = {
+ 	.hw_params	= mx27vis_aic32x4_hw_params,
+ };
+ 
+diff --git a/sound/soc/fsl/p1022_ds.c b/sound/soc/fsl/p1022_ds.c
+index a1f780e..41c623c 100644
+--- a/sound/soc/fsl/p1022_ds.c
++++ b/sound/soc/fsl/p1022_ds.c
+@@ -184,7 +184,7 @@ static int p1022_ds_machine_remove(struct snd_soc_card *card)
+ /**
+  * p1022_ds_ops: ASoC machine driver operations
+  */
+-static struct snd_soc_ops p1022_ds_ops = {
++static const struct snd_soc_ops p1022_ds_ops = {
+ 	.startup = p1022_ds_startup,
+ };
+ 
+diff --git a/sound/soc/fsl/p1022_rdk.c b/sound/soc/fsl/p1022_rdk.c
+index d4d88a8..4afbdd6 100644
+--- a/sound/soc/fsl/p1022_rdk.c
++++ b/sound/soc/fsl/p1022_rdk.c
+@@ -188,7 +188,7 @@ static int p1022_rdk_machine_remove(struct snd_soc_card *card)
+ /**
+  * p1022_rdk_ops: ASoC machine driver operations
+  */
+-static struct snd_soc_ops p1022_rdk_ops = {
++static const struct snd_soc_ops p1022_rdk_ops = {
+ 	.startup = p1022_rdk_startup,
+ };
+ 
+diff --git a/sound/soc/fsl/phycore-ac97.c b/sound/soc/fsl/phycore-ac97.c
+index ae403c2..66fb6c4 100644
+--- a/sound/soc/fsl/phycore-ac97.c
++++ b/sound/soc/fsl/phycore-ac97.c
+@@ -23,7 +23,7 @@
+ 
+ static struct snd_soc_card imx_phycore;
+ 
+-static struct snd_soc_ops imx_phycore_hifi_ops = {
++static const struct snd_soc_ops imx_phycore_hifi_ops = {
+ };
+ 
+ static struct snd_soc_dai_link imx_phycore_dai_ac97[] = {
+diff --git a/sound/soc/fsl/wm1133-ev1.c b/sound/soc/fsl/wm1133-ev1.c
+index b454972..cdaf163 100644
+--- a/sound/soc/fsl/wm1133-ev1.c
++++ b/sound/soc/fsl/wm1133-ev1.c
+@@ -139,7 +139,7 @@ static int wm1133_ev1_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static struct snd_soc_ops wm1133_ev1_ops = {
++static const struct snd_soc_ops wm1133_ev1_ops = {
+ 	.hw_params = wm1133_ev1_hw_params,
+ };
+ 
+-- 
+2.7.4
