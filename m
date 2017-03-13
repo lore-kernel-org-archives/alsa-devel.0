@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs35l35: Fix display revision id" to
-	the asoc tree
-Date: Mon, 13 Mar 2017 16:57:57 +0000
-Message-ID: <E1cnTID-000537-Dq@debutante>
+Subject: Applied "ASoC: Intel: add machine driver for BYT/CHT +
+	DA7213" to the asoc tree
+Date: Mon, 13 Mar 2017 16:58:09 +0000
+Message-ID: <E1cnTIP-00056w-Nj@debutante>
+References: <1489105142-25878-3-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 523A5266CE6
- for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 17:58:06 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 37D09266D71
+ for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 17:58:29 +0100 (CET)
+In-Reply-To: <1489105142-25878-3-git-send-email-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Axel Lin <axel.lin@ingics.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Paul Handrigan <Paul.Handrigan@cirrus.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: vinod.koul@intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, Adam.Thomson.Opensource@diasemi.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs35l35: Fix display revision id
+   ASoC: Intel: add machine driver for BYT/CHT + DA7213
 
 has been applied to the asoc tree at
 
@@ -52,30 +53,361 @@ to this mail.
 Thanks,
 Mark
 
->From 82875163a8ef1e25477402c5ebb8f5beaea5e93e Mon Sep 17 00:00:00 2001
-From: Axel Lin <axel.lin@ingics.com>
-Date: Sat, 11 Mar 2017 20:57:07 +0800
-Subject: [PATCH] ASoC: cs35l35: Fix display revision id
+>From 82cf89de2c9c2efcafde452ed76f85e7ef7f6ce0 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Thu, 9 Mar 2017 18:18:59 -0600
+Subject: [PATCH] ASoC: Intel: add machine driver for BYT/CHT + DA7213
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
-Acked-by: Paul Handrigan <Paul.Handrigan@cirrus.com>
+Add new machine driver, tested with Ard-Audio-DA7212 [1]
+connected to MinnowBoardMAX Turbot.
+
+The MCLK is managed by the codec driver using the "mclk" handle
+to reuse existing code, but it could just as well be handled
+by this machine driver.
+
+[1] http://www.dialog-semiconductor.com/content/ard-audio-da7212
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs35l35.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/Kconfig                |  12 ++
+ sound/soc/intel/boards/Makefile        |   2 +
+ sound/soc/intel/boards/bytcht_da7213.c | 283 +++++++++++++++++++++++++++++++++
+ 3 files changed, 297 insertions(+)
+ create mode 100644 sound/soc/intel/boards/bytcht_da7213.c
 
-diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
-index 7c4d74ec32cb..a9e45dea309e 100644
---- a/sound/soc/codecs/cs35l35.c
-+++ b/sound/soc/codecs/cs35l35.c
-@@ -1463,7 +1463,7 @@ static int cs35l35_i2c_probe(struct i2c_client *i2c_client,
- 	}
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index 526855ad479e..8d32fc336eb8 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -202,6 +202,18 @@ config SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH
+ 	  platforms with MAX98090 audio codec it also can support TI jack chip as aux device.
+ 	  If unsure select "N".
  
- 	dev_info(dev, "Cirrus Logic CS35L35 (%x), Revision: %02X\n",
--		 devid, ret & 0xFF);
-+		 devid, reg & 0xFF);
- 
- 	/* Set the INT Masks for critical errors */
- 	regmap_write(cs35l35->regmap, CS35L35_INT_MASK_1,
++config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
++	tristate "ASoC Audio driver for Intel Baytrail & Cherrytrail with DA7212/7213 codec"
++	depends on X86_INTEL_LPSS && I2C && ACPI
++	select SND_SOC_DA7213
++	select SND_SST_ATOM_HIFI2_PLATFORM
++	select SND_SST_IPC_ACPI
++	select SND_SOC_INTEL_SST_MATCH if ACPI
++	help
++	  This adds support for ASoC machine driver for Intel(R) Baytrail & CherryTrail
++	  platforms with DA7212/7213 audio codec.
++	  If unsure select "N".
++
+ config SND_SOC_INTEL_SKYLAKE
+ 	tristate
+ 	select SND_HDA_EXT_CORE
+diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
+index 5639f10774e6..8a5d9edd16ee 100644
+--- a/sound/soc/intel/boards/Makefile
++++ b/sound/soc/intel/boards/Makefile
+@@ -10,6 +10,7 @@ snd-soc-sst-bytcr-rt5651-objs := bytcr_rt5651.o
+ snd-soc-sst-cht-bsw-rt5672-objs := cht_bsw_rt5672.o
+ snd-soc-sst-cht-bsw-rt5645-objs := cht_bsw_rt5645.o
+ snd-soc-sst-cht-bsw-max98090_ti-objs := cht_bsw_max98090_ti.o
++snd-soc-sst-byt-cht-da7213-objs := bytcht_da7213.o
+ snd-soc-skl_rt286-objs := skl_rt286.o
+ snd-skl_nau88l25_max98357a-objs := skl_nau88l25_max98357a.o
+ snd-soc-skl_nau88l25_ssm4567-objs := skl_nau88l25_ssm4567.o
+@@ -26,6 +27,7 @@ obj-$(CONFIG_SND_SOC_INTEL_BYTCR_RT5651_MACH) += snd-soc-sst-bytcr-rt5651.o
+ obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_RT5672_MACH) += snd-soc-sst-cht-bsw-rt5672.o
+ obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_RT5645_MACH) += snd-soc-sst-cht-bsw-rt5645.o
+ obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH) += snd-soc-sst-cht-bsw-max98090_ti.o
++obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_DA7213_MACH) += snd-soc-sst-byt-cht-da7213.o
+ obj-$(CONFIG_SND_SOC_INTEL_SKL_RT286_MACH) += snd-soc-skl_rt286.o
+ obj-$(CONFIG_SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH) += snd-skl_nau88l25_max98357a.o
+ obj-$(CONFIG_SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH) += snd-soc-skl_nau88l25_ssm4567.o
+diff --git a/sound/soc/intel/boards/bytcht_da7213.c b/sound/soc/intel/boards/bytcht_da7213.c
+new file mode 100644
+index 000000000000..18873e23f404
+--- /dev/null
++++ b/sound/soc/intel/boards/bytcht_da7213.c
+@@ -0,0 +1,283 @@
++/*
++ *  bytcht-da7213.c - ASoc Machine driver for Intel Baytrail and
++ *             Cherrytrail-based platforms, with Dialog DA7213 codec
++ *
++ *  Copyright (C) 2017 Intel Corporation
++ *  Author: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
++ *
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ */
++
++#include <linux/module.h>
++#include <linux/acpi.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <asm/platform_sst_audio.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include "../../codecs/da7213.h"
++#include "../atom/sst-atom-controls.h"
++#include "../common/sst-acpi.h"
++
++static const struct snd_kcontrol_new controls[] = {
++	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
++	SOC_DAPM_PIN_SWITCH("Headset Mic"),
++	SOC_DAPM_PIN_SWITCH("Mic"),
++	SOC_DAPM_PIN_SWITCH("Aux In"),
++};
++
++static const struct snd_soc_dapm_widget dapm_widgets[] = {
++	SND_SOC_DAPM_HP("Headphone Jack", NULL),
++	SND_SOC_DAPM_MIC("Headset Mic", NULL),
++	SND_SOC_DAPM_MIC("Mic", NULL),
++	SND_SOC_DAPM_LINE("Aux In", NULL),
++};
++
++static const struct snd_soc_dapm_route audio_map[] = {
++	{"Headphone Jack", NULL, "HPL"},
++	{"Headphone Jack", NULL, "HPR"},
++
++	{"AUXL", NULL, "Aux In"},
++	{"AUXR", NULL, "Aux In"},
++
++	/* Assume Mic1 is linked to Headset and Mic2 to on-board mic */
++	{"MIC1", NULL, "Headset Mic"},
++	{"MIC2", NULL, "Mic"},
++
++	/* SOC-codec link */
++	{"ssp2 Tx", NULL, "codec_out0"},
++	{"ssp2 Tx", NULL, "codec_out1"},
++	{"codec_in0", NULL, "ssp2 Rx"},
++	{"codec_in1", NULL, "ssp2 Rx"},
++
++	{"Playback", NULL, "ssp2 Tx"},
++	{"ssp2 Rx", NULL, "Capture"},
++};
++
++static int codec_fixup(struct snd_soc_pcm_runtime *rtd,
++		       struct snd_pcm_hw_params *params)
++{
++	int ret;
++	struct snd_interval *rate = hw_param_interval(params,
++			SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels = hw_param_interval(params,
++						SNDRV_PCM_HW_PARAM_CHANNELS);
++
++	/* The DSP will convert the FE rate to 48k, stereo, 24bits */
++	rate->min = rate->max = 48000;
++	channels->min = channels->max = 2;
++
++	/* set SSP2 to 24-bit */
++	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
++
++	/*
++	 * Default mode for SSP configuration is TDM 4 slot, override config
++	 * with explicit setting to I2S 2ch 24-bit. The word length is set with
++	 * dai_set_tdm_slot() since there is no other API exposed
++	 */
++	ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
++				  SND_SOC_DAIFMT_I2S     |
++				  SND_SOC_DAIFMT_NB_NF   |
++				  SND_SOC_DAIFMT_CBS_CFS);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
++		return ret;
++	}
++
++	ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2, 24);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set I2S config, err %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int aif1_startup(struct snd_pcm_substream *substream)
++{
++	return snd_pcm_hw_constraint_single(substream->runtime,
++			SNDRV_PCM_HW_PARAM_RATE, 48000);
++}
++
++static int aif1_hw_params(struct snd_pcm_substream *substream,
++			  struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	int ret;
++
++	ret = snd_soc_dai_set_sysclk(codec_dai, DA7213_CLKSRC_MCLK,
++				     19200000, SND_SOC_CLOCK_IN);
++	if (ret < 0)
++		dev_err(codec_dai->dev, "can't set codec sysclk configuration\n");
++
++	ret = snd_soc_dai_set_pll(codec_dai, 0,
++			DA7213_SYSCLK_PLL_SRM, 0, DA7213_PLL_FREQ_OUT_98304000);
++	if (ret < 0) {
++		dev_err(codec_dai->dev, "failed to start PLL: %d\n", ret);
++		return -EIO;
++	}
++
++	return ret;
++}
++
++static int aif1_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	int ret;
++
++	ret = snd_soc_dai_set_pll(codec_dai, 0,
++				  DA7213_SYSCLK_MCLK, 0, 0);
++	if (ret < 0) {
++		dev_err(codec_dai->dev, "failed to stop PLL: %d\n", ret);
++		return -EIO;
++	}
++
++	return ret;
++}
++
++static const struct snd_soc_ops aif1_ops = {
++	.startup = aif1_startup,
++};
++
++static const struct snd_soc_ops ssp2_ops = {
++	.hw_params = aif1_hw_params,
++	.hw_free = aif1_hw_free,
++
++};
++
++static struct snd_soc_dai_link dailink[] = {
++	[MERR_DPCM_AUDIO] = {
++		.name = "Audio Port",
++		.stream_name = "Audio",
++		.cpu_dai_name = "media-cpu-dai",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.codec_name = "snd-soc-dummy",
++		.platform_name = "sst-mfld-platform",
++		.nonatomic = true,
++		.dynamic = 1,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		.ops = &aif1_ops,
++	},
++	[MERR_DPCM_DEEP_BUFFER] = {
++		.name = "Deep-Buffer Audio Port",
++		.stream_name = "Deep-Buffer Audio",
++		.cpu_dai_name = "deepbuffer-cpu-dai",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.codec_name = "snd-soc-dummy",
++		.platform_name = "sst-mfld-platform",
++		.nonatomic = true,
++		.dynamic = 1,
++		.dpcm_playback = 1,
++		.ops = &aif1_ops,
++	},
++	[MERR_DPCM_COMPR] = {
++		.name = "Compressed Port",
++		.stream_name = "Compress",
++		.cpu_dai_name = "compress-cpu-dai",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.codec_name = "snd-soc-dummy",
++		.platform_name = "sst-mfld-platform",
++	},
++	/* CODEC<->CODEC link */
++	/* back ends */
++	{
++		.name = "SSP2-Codec",
++		.id = 1,
++		.cpu_dai_name = "ssp2-port",
++		.platform_name = "sst-mfld-platform",
++		.no_pcm = 1,
++		.codec_dai_name = "da7213-hifi",
++		.codec_name = "i2c-DLGS7213:00",
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
++						| SND_SOC_DAIFMT_CBS_CFS,
++		.be_hw_params_fixup = codec_fixup,
++		.nonatomic = true,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		.ops = &ssp2_ops,
++	},
++};
++
++/* SoC card */
++static struct snd_soc_card bytcht_da7213_card = {
++	.name = "bytcht-da7213",
++	.owner = THIS_MODULE,
++	.dai_link = dailink,
++	.num_links = ARRAY_SIZE(dailink),
++	.controls = controls,
++	.num_controls = ARRAY_SIZE(controls),
++	.dapm_widgets = dapm_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(dapm_widgets),
++	.dapm_routes = audio_map,
++	.num_dapm_routes = ARRAY_SIZE(audio_map),
++};
++
++static char codec_name[16]; /* i2c-<HID>:00 with HID being 8 chars */
++
++static int bytcht_da7213_probe(struct platform_device *pdev)
++{
++	int ret_val = 0;
++	int i;
++	struct snd_soc_card *card;
++	struct sst_acpi_mach *mach;
++	const char *i2c_name = NULL;
++	int dai_index = 0;
++
++	mach = (&pdev->dev)->platform_data;
++	card = &bytcht_da7213_card;
++	card->dev = &pdev->dev;
++
++	/* fix index of codec dai */
++	dai_index = MERR_DPCM_COMPR + 1;
++	for (i = 0; i < ARRAY_SIZE(dailink); i++) {
++		if (!strcmp(dailink[i].codec_name, "i2c-DLGS7213:00")) {
++			dai_index = i;
++			break;
++		}
++	}
++
++	/* fixup codec name based on HID */
++	i2c_name = sst_acpi_find_name_from_hid(mach->id);
++	if (i2c_name != NULL) {
++		snprintf(codec_name, sizeof(codec_name),
++			"%s%s", "i2c-", i2c_name);
++		dailink[dai_index].codec_name = codec_name;
++	}
++
++	ret_val = devm_snd_soc_register_card(&pdev->dev, card);
++	if (ret_val) {
++		dev_err(&pdev->dev,
++			"snd_soc_register_card failed %d\n", ret_val);
++		return ret_val;
++	}
++	platform_set_drvdata(pdev, card);
++	return ret_val;
++}
++
++static struct platform_driver bytcht_da7213_driver = {
++	.driver = {
++		.name = "bytcht_da7213",
++	},
++	.probe = bytcht_da7213_probe,
++};
++module_platform_driver(bytcht_da7213_driver);
++
++MODULE_DESCRIPTION("ASoC Intel(R) Baytrail/Cherrytrail+DA7213 Machine driver");
++MODULE_AUTHOR("Pierre-Louis Bossart");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:bytcht_da7213");
 -- 
 2.11.0
