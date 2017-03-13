@@ -1,34 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Atom: enable BYT/CHT+DA7213
-	machine driver" to the asoc tree
-Date: Mon, 13 Mar 2017 16:58:06 +0000
-Message-ID: <E1cnTIM-00055z-JU@debutante>
-References: <1489105142-25878-4-git-send-email-pierre-louis.bossart@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DED2B266CF6
- for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 17:58:17 +0100 (CET)
-In-Reply-To: <1489105142-25878-4-git-send-email-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: vinod.koul@intel.com, tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, Adam.Thomson.Opensource@diasemi.com
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: cs35l35: Add missing return in probe" to the asoc tree
+Date: Mon, 13 Mar 2017 16:59:05 +0000
+Message-ID: <E1cnTJJ-0005E9-Ug@debutante>
+References: <1488991371-22513-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1488991371-22513-1-git-send-email-ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Atom: enable BYT/CHT+DA7213 machine driver
+   ASoC: cs35l35: Add missing return in probe
 
 has been applied to the asoc tree at
 
@@ -53,45 +37,40 @@ to this mail.
 Thanks,
 Mark
 
->From a63b8a117d39ba1b979daa71c6ab350a043694f5 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Thu, 9 Mar 2017 18:19:00 -0600
-Subject: [PATCH] ASoC: Intel: Atom: enable BYT/CHT+DA7213 machine driver
+>From 1bb06ada038548b4e2449159e80badf106bb779f Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Date: Wed, 8 Mar 2017 16:42:47 +0000
+Subject: [PATCH] ASoC: cs35l35: Add missing return in probe
 
-Add entries in HID table and reference to bytcht_da7213 driver
+A return statement is missing just before the error paths at the end of
+probe. This causes us to fall straight into the error path and disable
+the supplies and re-enable reset, as these are only controlled during
+probe this causes the part to no longer function.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Acked-by: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/intel/atom/sst/sst_acpi.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/codecs/cs35l35.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index 747c0f393d2d..b24bf08606ae 100644
---- a/sound/soc/intel/atom/sst/sst_acpi.c
-+++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -480,6 +480,10 @@ static struct sst_acpi_mach sst_acpi_bytcr[] = {
- 						&byt_rvp_platform_data },
- 	{"10EC5651", "bytcr_rt5651", "intel/fw_sst_0f28.bin", "bytcr_rt5651", NULL,
- 						&byt_rvp_platform_data },
-+	{"DLGS7212", "bytcht_da7213", "intel/fw_sst_0f28.bin", "bytcht_da7213", NULL,
-+						&byt_rvp_platform_data },
-+	{"DLGS7213", "bytcht_da7213", "intel/fw_sst_0f28.bin", "bytcht_da7213", NULL,
-+						&byt_rvp_platform_data },
- 	/* some Baytrail platforms rely on RT5645, use CHT machine driver */
- 	{"10EC5645", "cht-bsw-rt5645", "intel/fw_sst_0f28.bin", "cht-bsw", NULL,
- 						&byt_rvp_platform_data },
-@@ -504,6 +508,10 @@ static struct sst_acpi_mach sst_acpi_chv[] = {
+diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
+index 260ed42c71e9..48b45dc904ea 100644
+--- a/sound/soc/codecs/cs35l35.c
++++ b/sound/soc/codecs/cs35l35.c
+@@ -1509,6 +1509,8 @@ static int cs35l35_i2c_probe(struct i2c_client *i2c_client,
+ 		goto err;
+ 	}
  
- 	{"193C9890", "cht-bsw-max98090", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
- 						&chv_platform_data },
-+	{"DLGS7212", "bytcht_da7213", "intel/fw_sst_22a8.bin", "bytcht_da7213", NULL,
-+						&chv_platform_data },
-+	{"DLGS7213", "bytcht_da7213", "intel/fw_sst_22a8.bin", "bytcht_da7213", NULL,
-+						&chv_platform_data },
- 	/* some CHT-T platforms rely on RT5640, use Baytrail machine driver */
- 	{"10EC5640", "bytcr_rt5640", "intel/fw_sst_22a8.bin", "bytcr_rt5640", cht_quirk,
- 						&chv_platform_data },
++	return 0;
++
+ err:
+ 	regulator_bulk_disable(cs35l35->num_supplies,
+ 			       cs35l35->supplies);
 -- 
 2.11.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
