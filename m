@@ -1,95 +1,87 @@
 From: Brian Norris <briannorris@chromium.org>
 Subject: Re: [PATCH for-4.11] ASoC: don't dereference NULL pcm_{new,free}
-Date: Mon, 13 Mar 2017 14:41:28 -0700
-Message-ID: <20170313214127.GC4586@google.com>
+Date: Mon, 13 Mar 2017 14:52:56 -0700
+Message-ID: <20170313215256.GD4586@google.com>
 References: <20170308231854.50167-1-briannorris@chromium.org>
- <87zigvz4q3.wl%kuninori.morimoto.gx@renesas.com>
- <20170309002129.GA99773@google.com>
- <87varjz31k.wl%kuninori.morimoto.gx@renesas.com>
- <20170311003939.GB4586@google.com>
- <87a88pj105.wl%kuninori.morimoto.gx@renesas.com>
+ <20170309110918.getjla6iawgjpfrq@sirena.org.uk>
+ <20170311002406.GA4586@google.com>
+ <20170313125004.yrqranp3sxsfkmfx@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <87a88pj105.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <20170313125004.yrqranp3sxsfkmfx@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 13, 2017 at 03:46:00AM +0000, Kuninori Morimoto wrote:
-> > There are 4 drivers calling that:
-> > 
-> >   snd_soc_dummy_probe
-> >   rt5514_spi_probe
-> >   2 instances of snd_dmaengine_pcm_register, via rockchip_i2s_probe
-> > 
-> > Only the latter two seem to run the assignment here:
-> > 
-> > 	if (platform_drv->pcm_new)
-> > 		platform->component.pcm_new = snd_soc_platform_drv_pcm_new;
-> > 
-> > Both snd_soc_dummy_probe and rt5514_spi_probe find ->pcm_new NULL here.
+On Mon, Mar 13, 2017 at 12:50:04PM +0000, Mark Brown wrote:
+> On Fri, Mar 10, 2017 at 04:24:07PM -0800, Brian Norris wrote:
+> > On Thu, Mar 09, 2017 at 12:09:18PM +0100, Mark Brown wrote:
 > 
-> Hmm...
+> > > Please think hard before including complete backtraces in upstream
+> > > reports, they are very large and contain almost no useful information
+> > > relative to their size so often obscure the relevant content in your
+> > > message. If part of the backtrace is usefully illustrative then it's
+> > > usually better to pull out the relevant sections.
 > 
-> The crasher was snd_dmaengine_pcm_register's platform ?
+> > I did think, and I did trim the trace significantly. I believe (or
+> > believed; maybe incorrectly) that much of the remaining context *was*
+> > useful, and that it could have answered some of Kuninori's questions, if
+> > he chose to dig himself. As admitted in the commit message, I don't
+> > really understand all of the relationships here, so it's hard to
+> > highlight "only the relevant sections".
+> 
+> Any editing you'd done is really not obvious looking at the trace (the
 
-No, actually it wasn't. It was spi2.0, which was a dummy, from
-snd_soc_dummy_probe(). But somehow snd_soc_platform_drv_pcm_new() got
-called for it...
+There's a "..." in there why I trimmed a huge amount of junk that arm64
+likes to dump, like surrounding memory context near the $pc and $sp.
+Probably more.
 
-> This means, in your current kernel, dmaengine platform dosn't call
-> its .pcm_new (= dmaengine_pcm_new) somehow ?
+> inclusion of the top of the trace with the pgd and so on which really
+> need the image to be useful is a bit of a flag here, as is the bit at
+> the end after the end of the trace).  It's certainly not mentioned or
 
-I believe not. I'm still thoroughly confused though :)
+The PC (0) and LR (which is not reflected in the backtrace) are useful.
 
-> I'm wondering why ->pcm_new became NULL which exists on probe timing ?
-> Can you check component and driver by this patch ?
-> This is very rough but enough for debug
+> referenced.  At the very least for probe errors it's generally safe to
+> cut down to just the driver probe function is being called rather than
+> showing the entire device model call stack, it's vanishingly rare for
+> that to be adding anything and it's generally several times deeper than
+> what the driver is doing.
 
-I added this (along with a bunch of debugging, including a form of my
-current patch, to avoid still crashing on the NULL pointer). Trimmed
-log (with some of the framework's dev_dbg() enabled):
+Sure, this could have been trimmed about 50% without losing information.
+I can try to be more precise next time, but the 50% useful info included
+was quite intentional. Particularly, I'm not very happy with my patch,
+so alternatives are welcome (esp. from those who might be able to glean
+more from the report than I could).
 
-[    2.521638] snd-soc-dummy snd-soc-dummy: codec register snd-soc-dummy
-[    2.523532] da7219 8-001a: codec register 8-001a
-[    2.523850] max98357a max98357a: codec register max98357a
-[    2.530256] rt5514 1-0057: codec register 1-0057
-[    2.531615] -------add name: ff880000.i2s, ffffff800888a598
-[    2.531976] -------add name: ff8a0000.i2s, ffffff800888a598
-[    2.532706] rk3399-gru-sound sound: ASoC: binding MAX98357A
-[    2.532721] rk3399-gru-sound sound: ASoC: binding RT5514
-[    2.532736] rk3399-gru-sound sound: ASoC: binding DA7219
-[    2.532745] rk3399-gru-sound sound: ASoC: binding RT5514 DSP
-[    2.537327] rk3399-gru-sound sound: ASoC: probe rk3399-gru-sound dai link 0 late -2
-[    2.537332] rk3399-gru-sound sound: ASoC: probe rk3399-gru-sound dai link 1 late -2
-[    2.537336] rk3399-gru-sound sound: ASoC: probe rk3399-gru-sound dai link 2 late -2
-[    2.537340] rk3399-gru-sound sound: ASoC: probe rk3399-gru-sound dai link 3 late -2
-[    2.537344] rk3399-gru-sound sound: ASoC: probe rk3399-gru-sound dai link 0 late -1
-[    2.537347] rk3399-gru-sound sound: ASoC: probe rk3399-gru-sound dai link 1 late -1
-[    2.537351] rk3399-gru-sound sound: ASoC: probe rk3399-gru-sound dai link 2 late -1
-[    2.537354] rk3399-gru-sound sound: ASoC: probe rk3399-gru-sound dai link 3 late -1
-[    2.537358] rk3399-gru-sound sound: ASoC: probe rk3399-gru-sound dai link 0 late 0
-[    2.537362] rk3399-gru-sound sound: ASoC: probe rk3399-gru-sound dai link 1 late 0
-[    2.537365] rk3399-gru-sound sound: ASoC: probe rk3399-gru-sound dai link 2 late 0
-[    2.537369] rk3399-gru-sound sound: ASoC: probe rk3399-gru-sound dai link 3 late 0
-[    2.537373] rk3399-gru-sound sound: ASoC: probe rk3399-gru-sound dai link 0 late 1
-[    2.537376] rk3399-gru-sound sound: ASoC: probe rk3399-gru-sound dai link 1 late 1
-[    2.537380] rk3399-gru-sound sound: ASoC: probe rk3399-gru-sound dai link 2 late 1
-[    2.537383] rk3399-gru-sound sound: ASoC: probe rk3399-gru-sound dai link 3 late 1
-[    2.537387] rk3399-gru-sound sound: ASoC: probe rk3399-gru-sound dai link 0 late 2
-[    2.537569] -------use name: ff880000.i2s, ffffff800888a598
-[    3.543003] rk3399-gru-sound sound: HiFi <-> ff880000.i2s mapping ok
-[    3.550150] rk3399-gru-sound sound: ASoC: probe rk3399-gru-sound dai link 1 late 2
-[    3.558828] -------use name: ff880000.i2s, ffffff800888a598
-[    3.746799] rk3399-gru-sound sound: rt5514-aif1 <-> ff880000.i2s mapping ok
-[    3.754635] rk3399-gru-sound sound: ASoC: probe rk3399-gru-sound dai link 2 late 2
-[    3.764970] -------use name: ff880000.i2s, ffffff800888a598
-[    3.976496] rk3399-gru-sound sound: da7219-hifi <-> ff880000.i2s mapping ok
-[    3.984292] rk3399-gru-sound sound: ASoC: probe rk3399-gru-sound dai link 3 late 2
-[    3.992927] -------use name: spi2.0, ffffff80090aeb90
-[    4.170426] *** pcm_new was NULL ***
-[    4.174426] rk3399-gru-sound sound: snd-soc-dummy-dai <-> spi2.0 mapping ok
-[    4.186804] input: rk3399-gru-sound Headset Jack as /devices/platform/sound/sound/card0/input5
+> > I'm sorry that my post did not meet your standards though. Next time
+> > I'll just post a revert with little context and no attempt to understand
+> > what actually went wrong.
+> 
+> Providing changes with little context and no conveyed understanding of
+> exactly what went wrong is a very big part of the reason for complaining
+> about people just splatting backtraces in and certainly not what I was
+> asking for, it's sadly common to see a backtrace provided in lieu of any
+> analysis and it does make the whole thing harder to read.  That would be
+> even more problematic than what you sent, I wouldn't have applied such a
+> change at all unless I somehow reverse engineered the analysis.
+
+Sure, I can understand frustration with essentially contentless "bug
+reports." And I got frustrated by a seemingly pat response that was
+(IMO) a bit mistargeted.
+
+> You do have a reasonable analysis of your change in the first couple of
+> lines ("Not all platform drivers have pcm_{new,free} callbacks...")
+> which is why I applied it, it's at least not going to do any harm to
+> check that there's a function being provided.
+
+I suppose.
+
+BTW, I don't see the patch applied anywhere (and I have no reply -
+either manual or automated/patchwork - other than the above quote to say
+it was).
+
+Brian
