@@ -1,17 +1,17 @@
-From: jeeja.kp@intel.com
-Subject: [PATCH V2 10/10] ASoC: Intel: Skylake: Fix parameter
-	overwrite for KPB Module
-Date: Mon, 13 Mar 2017 22:11:32 +0530
-Message-ID: <1489423292-19997-11-git-send-email-jeeja.kp@intel.com>
-References: <1489423292-19997-1-git-send-email-jeeja.kp@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: hdmi-codec: fix non static symbol
+	warnings
+Date: Mon, 13 Mar 2017 16:50:09 +0000
+Message-ID: <20170313165009.gusafsjhbbblbmdj@sirena.org.uk>
+References: <20170313022618.21103-1-takashi.sakamoto@miraclelinux.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7979038010555168211=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C313266CCE
- for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 17:30:00 +0100 (CET)
-In-Reply-To: <1489423292-19997-1-git-send-email-jeeja.kp@intel.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7EEE8266B13
+ for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 17:50:24 +0100 (CET)
+In-Reply-To: <20170313022618.21103-1-takashi.sakamoto@miraclelinux.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,105 +21,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Dharageswari R <dharageswari.r@intel.com>, tiwai@suse.de, "Kranthikumar,
- GudishaX" <gudishax.kranthikumar@intel.com>, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
+To: Takashi Sakamoto <takashi.sakamoto@miraclelinux.com>
+Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, ichiro.suzuki@miraclelinux.com, arnaud.pouliquen@st.com, Takashi Sakamoto <o-takashi@sakamocchi.jp>, weiyongjun1@huawei.com, yukie.kato@miraclelinux.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Dharageswari R <dharageswari.r@intel.com>
 
-KPB module default parameter were overwritten by the dynamic instance
-id once use case is executed. This will cause module crash from
-subsequent execution of use case as the updated parameters are used.
+--===============7979038010555168211==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="na5i4zbv4iatxyj6"
+Content-Disposition: inline
 
-So instead of over writing the default parameter, make a copy and
-update the module parameter and use this in IPC message.
 
-Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
-Signed-off-by: Kranthikumar, GudishaX <gudishax.kranthikumar@intel.com>
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
----
- sound/soc/intel/skylake/skl-topology.c | 47 +++++++++++++++++++++-------------
- 1 file changed, 29 insertions(+), 18 deletions(-)
+--na5i4zbv4iatxyj6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index f04a251..33a4e0d 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -680,26 +680,29 @@ static int skl_tplg_mixer_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
--static int skl_fill_sink_instance_id(struct skl_sst *ctx,
--				struct skl_algo_data *alg_data)
-+static int skl_fill_sink_instance_id(struct skl_sst *ctx, u32 *params,
-+				int size, struct skl_module_cfg *mcfg)
- {
--	struct skl_kpb_params *params = (struct skl_kpb_params *)alg_data->params;
--	struct skl_mod_inst_map *inst;
- 	int i, pvt_id;
- 
--	inst = params->map;
-+	if (mcfg->m_type == SKL_MODULE_TYPE_KPB) {
-+		struct skl_kpb_params *kpb_params =
-+				(struct skl_kpb_params *)params;
-+		struct skl_mod_inst_map *inst = kpb_params->map;
- 
--	for (i = 0; i < params->num_modules; i++) {
--		pvt_id = skl_get_pvt_instance_id_map(ctx,
--					inst->mod_id, inst->inst_id);
--		if (pvt_id < 0)
--			return -EINVAL;
--		inst->inst_id = pvt_id;
--		inst++;
-+		for (i = 0; i < kpb_params->num_modules; i++) {
-+			pvt_id = skl_get_pvt_instance_id_map(ctx, inst->mod_id,
-+								inst->inst_id);
-+			if (pvt_id < 0)
-+				return -EINVAL;
-+
-+			inst->inst_id = pvt_id;
-+			inst++;
-+		}
- 	}
-+
- 	return 0;
- }
--
- /*
-  * Some modules require params to be set after the module is bound to
-  * all pins connected.
-@@ -716,6 +719,7 @@ static int skl_tplg_set_module_bind_params(struct snd_soc_dapm_widget *w,
- 	struct soc_bytes_ext *sb;
- 	struct skl_algo_data *bc;
- 	struct skl_specific_cfg *sp_cfg;
-+	u32 *params;
- 
- 	/*
- 	 * check all out/in pins are in bind state.
-@@ -748,11 +752,18 @@ static int skl_tplg_set_module_bind_params(struct snd_soc_dapm_widget *w,
- 			bc = (struct skl_algo_data *)sb->dobj.private;
- 
- 			if (bc->set_params == SKL_PARAM_BIND) {
--				if (mconfig->m_type == SKL_MODULE_TYPE_KPB)
--					skl_fill_sink_instance_id(ctx, bc);
--				ret = skl_set_module_params(ctx,
--						(u32 *)bc->params, bc->max,
--						bc->param_id, mconfig);
-+				params = kzalloc(bc->max, GFP_KERNEL);
-+				if (!params)
-+					return -ENOMEM;
-+
-+				memcpy(params, bc->params, bc->max);
-+				skl_fill_sink_instance_id(ctx, params, bc->max,
-+								mconfig);
-+
-+				ret = skl_set_module_params(ctx, params,
-+						bc->max, bc->param_id, mconfig);
-+				kfree(params);
-+
- 				if (ret < 0)
- 					return ret;
- 			}
--- 
-2.5.0
+On Mon, Mar 13, 2017 at 11:26:18AM +0900, Takashi Sakamoto wrote:
+
+> Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+> Signed-off-by: Takashi Sakamoto <takashi.sakamoto@miraclelinux.com>
+
+Did you write this or did Wei Yongjun?  If they did then the patch
+should show them as the author.
+
+--na5i4zbv4iatxyj6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljGzcEACgkQJNaLcl1U
+h9DzAwf7BAqBRjQqI6PDfz7Byyzx0qbn8Zv5ZVCkA3JfTEhE8aU+qSCGUo/dzMmA
+RLtZ/n+BFidhrRTua/iJWmmaU8bZ9RpmUyGoLVNNa0OHIiqhdhf9s1Wqmdenc6YE
+1Hfv3jaDGAuDWJaR6inv5Wm5QTnWi/m/nHOxZ0h3jYm+87B4RE3I+hvB3Q6a0oIS
+wk/Sy24qQnKbUUT59pwrvw4QA4YAO2HT+hbsSOtVxkmYv/tl3Yxbg58E0UQXOfN6
+xXxJFMTu8z1Q+C8KP7iO2G3F9thNjfmEHFt74JWG3grfyb1EhMu+78vRrROx0miV
+MCU+qRlaWfkpfu0uy0NeMrNj7bnrSA==
+=E6Zy
+-----END PGP SIGNATURE-----
+
+--na5i4zbv4iatxyj6--
+
+--===============7979038010555168211==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7979038010555168211==--
