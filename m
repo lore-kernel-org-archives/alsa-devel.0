@@ -1,16 +1,14 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] ASoC: cs35l35: returning uninitialized in
-	probe()
-Date: Mon, 13 Mar 2017 15:32:37 +0300
-Message-ID: <20170313123237.GA9287@mwanda>
+From: "Felix Bruns" <abaoaqu@gmx.de>
+Subject: Support for hardware amplifier
+Date: Mon, 13 Mar 2017 13:39:23 +0100
+Message-ID: <trinity-3cd7c391-e04b-46d6-acf6-9f79662cab0d-1489408763815@3capp-gmx-bs77>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D44D2669C4
- for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 13:33:05 +0100 (CET)
-Content-Disposition: inline
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A297266927
+ for <alsa-devel@alsa-project.org>; Mon, 13 Mar 2017 13:39:24 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,25 +18,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Brian Austin <brian.austin@cirrus.com>
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-If cs35l35->pdata.stereo is false then "ret" isn't initialized.
-
-Fixes: 6387f866a2cc ("ASoC: Add support for Cirrus Logic CS35L35 Amplifier")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
-index 260ed42c71e9..142ae642eaa1 100644
---- a/sound/soc/codecs/cs35l35.c
-+++ b/sound/soc/codecs/cs35l35.c
-@@ -964,7 +964,7 @@ static int cs35l35_codec_probe(struct snd_soc_codec *codec)
- 		}
- 	}
- 
--	return ret;
-+	return 0;
- }
- 
- static struct snd_soc_codec_driver soc_codec_dev_cs35l35 = {
+SGksCgpJIGFtIHdvcmtpbmcgb24gZW1iZWRkZWQgZGV2aWNlICh1c2luZyBhbiBpLk1YNiAgTUNV
+KSB3aGljaCBoYXMgYW4gZXh0ZXJuYWwgYW1wbGlmaWVyLgoKVW5mb3J0dW5hdGVseSBJIGNvdWxk
+IG5vdCBmaW5kIG11Y2ggaW5mb3JtYXRpb24gaWYgYW5kIGhvdyB0aGUgZ2FpbiBvZiBoYXJkd2Fy
+ZSBhbXBsaWZpZXJzIGFyZSBjb250cm9sbGVkIGJ5IGFsc2EuCihUaGUgb25seSBleGFtcGxlIGZv
+ciBoYXJkd2FyZSBhbXBsaWZpY2F0aW9uIEkgZm91bmQgaXMgdGhlIGFyY2FtLWF2IHBsdWdpbi4u
+LikKCklzIGNyZWF0aW5nIGEgcGx1Z2luIHRoZSByZWNvbW1lbmRlZCB3YXkgb2Ygc3VwcG9ydGlu
+ZyAoZXh0ZXJuYWwpIGhhcmR3YXJlIGFtcGxpZmljYXRpb24gaW4gYWxzYT8KQ2FuIHNvbWVib2R5
+IGNsYXJpZnkgb3IgcG9pbnQgbWUgdG8gYW5vdGhlciBleGFtcGxlPwoKVGhhbmtzIGFuZCBraW5k
+IHJlZ2FyZHMsCkZlbGl4IEJydW5zCgpwczogU29ycnkgZm9yIHBvc3RpbmcgdGhpcyB0d2ljZS4K
+wqAKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
