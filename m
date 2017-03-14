@@ -1,38 +1,55 @@
-From: Stefan Wahren <stefan.wahren-eS4NqCHxEME@public.gmane.org>
-Subject: Re: [PATCH 4/4] dts: bcm283x.dtsi: Add analog audio/headphone jack
- for bcm2835
-Date: Tue, 14 Mar 2017 11:07:35 +0100
-Message-ID: <952dc3e0-a01a-bb21-78bd-d3639251c84a@i2se.com>
-References: <20170312063820.19313-1-mzoran@crowfest.net>
- <20170312063820.19313-4-mzoran@crowfest.net>
- <a5ae562f-6843-f137-6470-36c53cfd1799@i2se.com>
- <1489481279.656.1.camel@crowfest.net>
+From: David Laight <David.Laight@ACULAB.COM>
+Subject: RE: [RFC PATCH 07/13] kernel/fork: Split and export 'mm_alloc' and
+ 'mm_init'
+Date: Tue, 14 Mar 2017 10:18:03 +0000
+Message-ID: <063D6719AE5E284EB5DD2968C1650D6DCFFB03F4@AcuExch.aculab.com>
+References: <20170313221415.9375-1-till.smejkal@gmail.com>
+ <20170313221415.9375-8-till.smejkal@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1489481279.656.1.camel-O+n0w2l5AFbk1uMJSBkQmQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Michael Zoran <mzoran-O+n0w2l5AFbk1uMJSBkQmQ@public.gmane.org>, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, eric-WhKQ6XTQaPysTnJN9+BGXg@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <owner-linux-aio@kvack.org>
+In-Reply-To: <20170313221415.9375-8-till.smejkal@gmail.com>
+Content-Language: en-US
+Sender: owner-linux-aio@kvack.org
+To: 'Till Smejkal' <till.smejkal@googlemail.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will
+ Deacon <will.deacon@arm.com>, Steven Miao <realmz6@gmail.com>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@>
+Cc: "linux-mips@linux-mips.org" <linux-mips@linux-mips.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>, "linux-aio@kvack.org" <linux-aio@kvack.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>, "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>, "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>, "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>, "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>, "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>, "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>, "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>, "adi-buildroot-devel@lists.sourceforge.net" <adi-build>
 List-Id: alsa-devel@alsa-project.org
 
-Am 14.03.2017 um 09:47 schrieb Michael Zoran:
-> On Tue, 2017-03-14 at 09:05 +0100, Stefan Wahren wrote:
->
->> AFAIK the Raspberry Pi 3 uses pin 40 and 41.
->>
-> I did all my testing on the RPI 3, so I'm almost certain it's correct. 
-> It matches with the schematic and it matches with what the downstream
-> tree uses for the firmware based driver(dummy claiming of pins).
+From: Linuxppc-dev Till Smejkal
+> Sent: 13 March 2017 22:14
+> The only way until now to create a new memory map was via the exported
+> function 'mm_alloc'. Unfortunately, this function not only allocates a ne=
+w
+> memory map, but also completely initializes it. However, with the
+> introduction of first class virtual address spaces, some initialization
+> steps done in 'mm_alloc' are not applicable to the memory maps needed for
+> this feature and hence would lead to errors in the kernel code.
+>=20
+> Instead of introducing a new function that can allocate and initialize
+> memory maps for first class virtual address spaces and potentially
+> duplicate some code, I decided to split the mm_alloc function as well as
+> the 'mm_init' function that it uses.
+>=20
+> Now there are four functions exported instead of only one. The new
+> 'mm_alloc' function only allocates a new mm_struct and zeros it out. If o=
+ne
+> want to have the old behavior of mm_alloc one can use the newly introduce=
+d
+> function 'mm_alloc_and_setup' which not only allocates a new mm_struct bu=
+t
+> also fully initializes it.
+...
 
-The reduced schematic that i have name the pins as AUD_PWM0 and
-AUD_PWM1, which says nothing about the actual pins. Do you have a better
-document?
+That looks like bugs waiting to happen.
+You need unchanged code to fail to compile.
 
-In the firmware dt-blob.dts [1] the Raspberry Pi 3 uses pin 40 and 41.
+	David
 
-[1] - https://github.com/raspberrypi/firmware/blob/master/extra/dt-blob.dts
+
 --
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+To unsubscribe, send a message with 'unsubscribe linux-aio' in
+the body to majordomo@kvack.org.  For more info on Linux AIO,
+see: http://www.kvack.org/aio/
+Don't email: <a href=mailto:"aart@kvack.org">aart@kvack.org</a>
