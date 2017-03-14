@@ -1,66 +1,49 @@
-From: Till Smejkal <till.smejkal@googlemail.com>
-Subject: Re: [RFC PATCH 10/13] mm: Introduce first class virtual address
- spaces
-Date: Mon, 13 Mar 2017 19:34:27 -0700
-Message-ID: <20170314023427.3p4a5qxtl5eh5epi@arch-dev>
-References: <cd1adda8-bf6a-47ad-bff3-5bc6626ac100@synopsys.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH v2] ASoC: hdmi-codec: fix non static symbol
+	warnings
+Date: Tue, 14 Mar 2017 13:01:57 +0900
+Message-ID: <3d254f6b-f254-c119-287d-5532112eb5cc@sakamocchi.jp>
+References: <20170313022618.21103-1-takashi.sakamoto@miraclelinux.com>
+ <20170313165009.gusafsjhbbblbmdj@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <owner-linux-mm@kvack.org>
-Content-Disposition: inline
-In-Reply-To: <cd1adda8-bf6a-47ad-bff3-5bc6626ac100@synopsys.com>
-Sender: owner-linux-mm@kvack.org
-To: Vineet Gupta <Vineet.Gupta1@synopsys.com>
-Cc: Till Smejkal <till.smejkal@googlemail.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Steven Miao <realmz6@gmail.com>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, "James E.J.  Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dalias@libc.org>, "David S. Miller" <dav>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 2FD64266DD6
+ for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2017 05:02:01 +0100 (CET)
+In-Reply-To: <20170313165009.gusafsjhbbblbmdj@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Takashi Sakamoto <takashi.sakamoto@miraclelinux.com>
+Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, ichiro.suzuki@miraclelinux.com, arnaud.pouliquen@st.com, weiyongjun1@huawei.com, yukie.kato@miraclelinux.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Vineet,
+On Mar 14 2017 01:50, Mark Brown wrote:
+> On Mon, Mar 13, 2017 at 11:26:18AM +0900, Takashi Sakamoto wrote:
+>
+>> Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+>> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+>> Signed-off-by: Takashi Sakamoto <takashi.sakamoto@miraclelinux.com>
+>
+> Did you write this or did Wei Yongjun?  If they did then the patch
+> should show them as the author.
 
-On Mon, 13 Mar 2017, Vineet Gupta wrote:
-> I've not looked at the patches closely (or read the references paper fully yet),
-> but at first glance it seems on ARC architecture, we can can potentially
-> use/leverage this mechanism to implement the shared TLB entries. Before anyone
-> shouts these are not same as the IA64/x86 protection keys which allow TLB entries
-> with different protection bits across processes etc. These TLB entries are
-> actually *shared* by processes.
-> 
-> Conceptually there's shared address spaces, independent of processes. e.g. ldso
-> code is shared address space #1, libc (code) #2 .... System can support a limited
-> number of shared addr spaces (say 64, enough for typical embedded sys).
-> 
-> While Normal TLB entries are tagged with ASID (Addr space ID) to keep them unique
-> across processes, Shared TLB entries are tagged with Shared address space ID.
-> 
-> A process MMU context consists of ASID (a single number) and a SASID bitmap (to
-> allow "subscription" to multiple Shared spaces. The subscriptions are set up bu
-> userspace ld.so which knows about the libs process wants to map.
-> 
-> The restriction ofcourse is that the spaces are mapped at *same* vaddr is all
-> participating processes. I know this goes against whole security, address space
-> randomization - but it gives much better real time performance. Why does each
-> process need to take a MMU exception for libc code...
-> 
-> So long story short - it seems there can be multiple uses of this infrastructure !
+I'm sure that you've rejected such a patch in which sender is not commit 
+author. With this memory, I sent this patch with my name as author 
+regardless of original author.
 
-During the development of this code, we also looked at shared TLB entries, but
-the other way around. We wanted to use them to prevent flushing of TLB entries of
-shared memory regions when switching between multiple ASes. Unfortunately, we never
-finished this part of the code.
+What fashion is suitable for you? Please give me enough instruction to 
+your fashion in this case, Mark. I'm puzzled.
 
-However, we also investigated into a different use-case for first class virtual
-address spaces that is related to what you propose if I didn't understand something
-wrong. The idea is to move shared libraries into their own first class virtual
-address space and only load some small trampoline code in the application AS. This
-trampoline code performs the VAS switch in the libraries AS and execute the requested
-function there. If we combine this architecture with tagged TLB entries to prevent
-TLB flushes during the switch operation, it can also reach an acceptable performance.
-A side effect of moving the shared library into its own AS is that it can not be used
-by ROP-attacks because it is not accessible in the application's AS.
 
-Till
+Regards
 
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
+Takashi Sakamoto
