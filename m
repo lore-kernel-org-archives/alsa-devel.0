@@ -1,17 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: don't dereference NULL pcm_{new,
-	free}" to the asoc tree
-Date: Mon, 13 Mar 2017 13:19:49 +0100
-Message-ID: <E1cnOx3-0001rb-M5@finisterre>
+Subject: Re: [PATCH for-4.11] ASoC: don't dereference NULL
+	pcm_{new, free}
+Date: Tue, 14 Mar 2017 14:36:54 +0100
+Message-ID: <20170314133654.w5neqkkaennht7lm@sirena.org.uk>
+References: <20170308231854.50167-1-briannorris@chromium.org>
+ <20170309110918.getjla6iawgjpfrq@sirena.org.uk>
+ <20170311002406.GA4586@google.com>
+ <20170313125004.yrqranp3sxsfkmfx@sirena.org.uk>
+ <20170313215256.GD4586@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7017219870631134762=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C154C266E42
- for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2017 14:06:35 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id CCBDE266E42
+ for <alsa-devel@alsa-project.org>; Tue, 14 Mar 2017 14:37:19 +0100 (CET)
+In-Reply-To: <20170313215256.GD4586@google.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,76 +26,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Brian Norris <briannorris@chromium.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: don't dereference NULL pcm_{new,free}
+--===============7017219870631134762==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="hqwo63np7ryzkuck"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--hqwo63np7ryzkuck
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Mon, Mar 13, 2017 at 02:52:56PM -0700, Brian Norris wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> Sure, I can understand frustration with essentially contentless "bug
+> reports." And I got frustrated by a seemingly pat response that was
+> (IMO) a bit mistargeted.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+It *is* a pat response, it's one of the things I find I have to send
+often enough that I've got a canned response for it - I find that if I
+don't do things like that then after a while what gets sent becomes so
+brief that unless you're really familiar with what's being said it can
+be hard to understand the feedback.  It's tricky though because as you
+say it's fairly obvious it's a form letter.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> BTW, I don't see the patch applied anywhere (and I have no reply -
+> either manual or automated/patchwork - other than the above quote to say
+> it was).
 
-Thanks,
-Mark
+20170309102819.bx5paxtffvmvmuov@sirena.org.uk, fix/core  Didn't seem to
+have made -next today, guess it'll hit tomorrow.
 
->From d6c098a1db468b7fd4635e831f276851dfd8852c Mon Sep 17 00:00:00 2001
-From: Brian Norris <briannorris@chromium.org>
-Date: Wed, 8 Mar 2017 15:18:54 -0800
-Subject: [PATCH] ASoC: don't dereference NULL pcm_{new,free}
+--hqwo63np7ryzkuck
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Not all platform drivers have pcm_{new,free} callbacks. Seen with a
-"snd-soc-dummy" codec from sound/soc/rockchip/rk3399_gru_sound.c.
+-----BEGIN PGP SIGNATURE-----
 
-Fixes: 99b04f4c4051 ("ASoC: add Component level pcm_new/pcm_free")
-Signed-off-by: Brian Norris <briannorris@chromium.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-core.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljH8fUACgkQJNaLcl1U
+h9DHnQf8Dp8TOITFj8fgGDolYRGo9V0Zq15Div9/IkTg9gItkzNzAafKTX7boUTk
+sQ62PcxkP3NNK6Qy559LpcXIimbcmXPjVV/QtihndrU2zmwjSZt2nuuRS0CQwekT
+8d7EGqYO+FL/QXiWog1u2gB6zxPQaymH86TUxPIrATM3U131OPHtdbnorf8hi6zQ
+jXpz7bXsOlgPBwS0PB5hvVMZ1yFfyQAgec36erzHor5gZq/P+GZ6MPdMIT3H1uSz
+EeF8cwahlA2hrPm+b8LP6qfeWKzRGUebcN8h3JPEEMaWZHJOWBcSdKJLSlHLu5FP
+0qEEcbRv/dLl4Di/fJTI8+5m3l57WQ==
+=dKFW
+-----END PGP SIGNATURE-----
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 6dca408faae3..2722bb0c5573 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3326,7 +3326,10 @@ static int snd_soc_platform_drv_pcm_new(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct snd_soc_platform *platform = rtd->platform;
- 
--	return platform->driver->pcm_new(rtd);
-+	if (platform->driver->pcm_new)
-+		return platform->driver->pcm_new(rtd);
-+	else
-+		return 0;
- }
- 
- static void snd_soc_platform_drv_pcm_free(struct snd_pcm *pcm)
-@@ -3334,7 +3337,8 @@ static void snd_soc_platform_drv_pcm_free(struct snd_pcm *pcm)
- 	struct snd_soc_pcm_runtime *rtd = pcm->private_data;
- 	struct snd_soc_platform *platform = rtd->platform;
- 
--	platform->driver->pcm_free(pcm);
-+	if (platform->driver->pcm_free)
-+		platform->driver->pcm_free(pcm);
- }
- 
- /**
--- 
-2.11.0
+--hqwo63np7ryzkuck--
+
+--===============7017219870631134762==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7017219870631134762==--
