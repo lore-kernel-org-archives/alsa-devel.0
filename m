@@ -1,57 +1,43 @@
-From: Till Smejkal <till.smejkal@googlemail.com>
-Subject: Re: [RFC PATCH 07/13] kernel/fork: Split and export 'mm_alloc' and
- 'mm_init'
-Date: Tue, 14 Mar 2017 09:18:55 -0700
-Message-ID: <20170314161855.2g2gc3ff4ifj2lqt@arch-dev>
-References: <063D6719AE5E284EB5DD2968C1650D6DCFFB03F4@AcuExch.aculab.com>
+From: Daniel Baluta <daniel.baluta@nxp.com>
+Subject: [RFC PATCH] ASoC: wm8960: Use physical width for bclk
+Date: Tue, 14 Mar 2017 18:57:02 +0200
+Message-ID: <1489510622-30981-1-git-send-email-daniel.baluta@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <owner-linux-mm@kvack.org>
-Content-Disposition: inline
-In-Reply-To: <063D6719AE5E284EB5DD2968C1650D6DCFFB03F4@AcuExch.aculab.com>
-Sender: owner-linux-mm@kvack.org
-To: David Laight <David.Laight@ACULAB.COM>
-Cc: 'Till Smejkal' <till.smejkal@googlemail.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Steven Miao <realmz6@gmail.com>, Richard Kuo <rkuo@codeaurora.org>, Tony Luck <tony.luck@intel.com>, Fenghua Yu <fenghua.yu@intel.com>, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Yoshinori Sato <ysato@users.sourceforge.jp>, Rich Felker <dal>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, tiwai@suse.com
+Cc: ckeepax@opensource.wolfsonmicro.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, shengjiu.wang@freescale.com, mihai.serban@nxp.com, viorel.suman@nxp.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 14 Mar 2017, David Laight wrote:
-> From: Linuxppc-dev Till Smejkal
-> > Sent: 13 March 2017 22:14
-> > The only way until now to create a new memory map was via the exported
-> > function 'mm_alloc'. Unfortunately, this function not only allocates a new
-> > memory map, but also completely initializes it. However, with the
-> > introduction of first class virtual address spaces, some initialization
-> > steps done in 'mm_alloc' are not applicable to the memory maps needed for
-> > this feature and hence would lead to errors in the kernel code.
-> > 
-> > Instead of introducing a new function that can allocate and initialize
-> > memory maps for first class virtual address spaces and potentially
-> > duplicate some code, I decided to split the mm_alloc function as well as
-> > the 'mm_init' function that it uses.
-> > 
-> > Now there are four functions exported instead of only one. The new
-> > 'mm_alloc' function only allocates a new mm_struct and zeros it out. If one
-> > want to have the old behavior of mm_alloc one can use the newly introduced
-> > function 'mm_alloc_and_setup' which not only allocates a new mm_struct but
-> > also fully initializes it.
-> ...
-> 
-> That looks like bugs waiting to happen.
-> You need unchanged code to fail to compile.
+bclk is derived from sysclk with the help of bclk_divs. Anyhow, for
+S20_3LE format there is no bclk_divs that could be used to derive
+an exact bclk.
 
-Thank you for this hint. I can give the new mm_alloc function a different name so
-that code that uses the *old* mm_alloc function will fail to compile. I just reused
-the old name when I wrote the code, because mm_alloc was only used in very few
-locations in the kernel (2 times in the whole kernel source) which made identifying
-and changing them very easy. I also don't think that there will be many users in the
-kernel for mm_alloc in the future because it is a relatively low level data
-structure. But if it is better to use a different name for the new function, I am
-very happy to change this.
+We can fix this by using storage size instead the exact
+number of bits of the sample when computing bclk.
 
-Till
+With this approach we can play S20_3LE encoded files at the cost of
+some unused BCLK cycles for S20_3LE and S24_LE.
 
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+---
+ sound/soc/codecs/wm8960.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index e1429e3..18ca5fc 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -722,7 +722,8 @@ static int wm8960_hw_params(struct snd_pcm_substream *substream,
+ 	bool tx = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+ 	int i;
+ 
+-	wm8960->bclk = snd_soc_params_to_bclk(params);
++	wm8960->bclk = params_physical_width(params) *
++		params_channels(params) * params_rate(params);
+ 	if (params_channels(params) == 1)
+ 		wm8960->bclk *= 2;
+ 
+-- 
+2.7.4
