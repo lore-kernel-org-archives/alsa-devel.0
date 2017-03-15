@@ -1,19 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Applied "ASoC: sun8i-codec: Update mixer to use
- SOC_DAPM_DOUBLE" to the asoc tree
-Date: Wed, 15 Mar 2017 13:43:23 +0000
-Message-ID: <20170315134323.i3pvla3pzejmkxwh@sirena.org.uk>
-References: <20170210094133.11382-3-mylene.josserand@free-electrons.com>
- <E1clbY9-0000DH-LY@finisterre>
- <CAGb2v6428PpYPzpHngLgaeziwKN8u-TYiNO1bs7TFw-7VrQOAg@mail.gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ALSA: x86: Select CONFIG_HDMI_LPE_AUDIO as
+ default
+Date: Wed, 15 Mar 2017 08:54:40 -0500
+Message-ID: <0c4dea52-f119-4fd5-7428-71250f6c0104@linux.intel.com>
+References: <CAFXWsS8PkZ7pRLMqC7zABYS_CKxJ4=6TUGeGsvCYepMMjo+0qg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5360590623768876407=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5511F266861
- for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 14:44:14 +0100 (CET)
-In-Reply-To: <CAGb2v6428PpYPzpHngLgaeziwKN8u-TYiNO1bs7TFw-7VrQOAg@mail.gmail.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 72FFE266861
+ for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 14:54:43 +0100 (CET)
+In-Reply-To: <CAFXWsS8PkZ7pRLMqC7zABYS_CKxJ4=6TUGeGsvCYepMMjo+0qg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,60 +21,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Chen-Yu Tsai <wens@csie.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Linux-ALSA <alsa-devel@alsa-project.org>, devicetree <devicetree@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+To: Ian W MORRISON <ianwmorrison@gmail.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+On 3/15/17 1:34 AM, Ian W MORRISON wrote:
+> The upstream kernel builds for distributions such as Ubuntu which now
+> includes binary packages for v4.11 mainline kernel release candidates
+> are promoted as a way of testing upstream kernels to to confirm that
+> upstream has fixed a specific issue (see
+> https://wiki.ubuntu.com/Kernel/MainlineBuilds).
+>
+> Unfortunately the long awaited patch for providing HDMI audio support
+> for Bay Trail and Cherry Trail devices does not include this support
+> through a module built by default.
+>
+> By defining the default of the two associated CONFIG settings (SND_X86
+> and HDMI_LPE_AUDIO) as a module, upstream kernel builds would
+> automatically provide the much desired HDMI audio support by default.
 
---===============5360590623768876407==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="n2uvbpnnrncu25wb"
-Content-Disposition: inline
+I have mixed feelings about this. This would make the life of some 
+distros easier but at the same time it's not needed by everyone, e.g. 
+Chrome does not need this, the skews they use have the HDaudio output.
 
+Likewise none of the SST-based machine drivers are selected by default, 
+so distros already have to select what they want to support, and it's no 
+big deal for them to select this option while they are at it.
+I am not going to fight this patch but I feel it's a bit inconsistent 
+with how other options are enabled. If it was really helpful to select 
+modules by default then we should also select all the SST options. If 
+it's not then nothing is selected by default.
 
---n2uvbpnnrncu25wb
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Mar 14, 2017 at 12:31:22PM +0800, Chen-Yu Tsai wrote:
-> On Wed, Mar 8, 2017 at 9:22 PM, Mark Brown <broonie@kernel.org> wrote:
-
-Please delete unneeded context from mails when replying.  Doing this
-makes it much easier to find your reply in the message, helping ensure
-it won't be missed by people scrolling through the irrelevant quoted
-material.
-
-> This patch changes the mixer controls exposed to user space.
-
-> This driver was just introduced in 4.11-rc1. Would it make sense to
-> merge these cleanup patches as fixes for 4.11, so we don't affect
-> userspace across kernel releases?
-
-It would but it doesn't pick over cleanly, it looks like it depends on
-some of the other changes.
-
---n2uvbpnnrncu25wb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljJRPsACgkQJNaLcl1U
-h9Dj/wf/SNU2hHs4DgTS+ihcsCYQZJe/qr7Q1z2HfrembKBZDasroMYh41IrKigQ
-/qOT8TVZDNNwONty6k53PVQfOba85BoVtHzgyBr4STtRGAGwNo60NlHS9SYsbLJp
-wT5rt7lC57mSN3Zb8SYq5NAX9gu4sHVZmjajp6FYbhunVHFCVCcMVmi0Es9qmdGL
-ZA7fcm6Eu2swtX9gzny1BYZjKW2fMuFhtj5KaJUookc/SRqtek5vQAmV5sByayw2
-TAXpzsV2bdseEBBHKVn4eVqeuRc7kac/eCSUzheXQz0Kq1twHVH+O0fl9BJFkW7W
-CWEw9l4duWBKscI6UsFp8CGAcdYUog==
-=WuMp
------END PGP SIGNATURE-----
-
---n2uvbpnnrncu25wb--
-
---===============5360590623768876407==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5360590623768876407==--
+>
+> This patch uses a Kconfig 'default' statement to include the driver as
+> default.
+>
+> Signed-off-by: Ian W Morrison <linuxium@linuxium.com.au
+> <mailto:linuxium@linuxium.com.au>>
+> ---
+>  sound/x86/Kconfig | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/sound/x86/Kconfig b/sound/x86/Kconfig
+> index 84c8f8fc..439850c 100644
+> --- a/sound/x86/Kconfig
+> +++ b/sound/x86/Kconfig
+> @@ -1,6 +1,7 @@
+>  menuconfig SND_X86
+>         tristate "X86 sound devices"
+>         depends on X86
+> +       default m
+>         ---help---
+>           X86 sound devices that don't fall under SoC or PCI categories
+>
+> @@ -9,6 +10,7 @@ if SND_X86
+>  config HDMI_LPE_AUDIO
+>         tristate "HDMI audio without HDaudio on Intel Atom platforms"
+>         depends on DRM_I915
+> +       default m
+>         select SND_PCM
+>         help
+>          Choose this option to support HDMI LPE Audio mode
+> --
+> 1.9.1
