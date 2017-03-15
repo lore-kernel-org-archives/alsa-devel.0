@@ -1,17 +1,28 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ALSA: x86: Select CONFIG_HDMI_LPE_AUDIO as
- default
-Date: Wed, 15 Mar 2017 08:54:40 -0500
-Message-ID: <0c4dea52-f119-4fd5-7428-71250f6c0104@linux.intel.com>
-References: <CAFXWsS8PkZ7pRLMqC7zABYS_CKxJ4=6TUGeGsvCYepMMjo+0qg@mail.gmail.com>
+From: Chen-Yu Tsai <wens@csie.org>
+Subject: Re: Applied "ASoC: sun8i-codec: Update mixer to use
+ SOC_DAPM_DOUBLE" to the asoc tree
+Date: Wed, 15 Mar 2017 22:15:22 +0800
+Message-ID: <CAGb2v67-b+8CM0MqhT_YQeuNxEnVoxG-COZPy8LW32Eb-QE67Q@mail.gmail.com>
+References: <20170210094133.11382-3-mylene.josserand@free-electrons.com>
+ <E1clbY9-0000DH-LY@finisterre>
+ <CAGb2v6428PpYPzpHngLgaeziwKN8u-TYiNO1bs7TFw-7VrQOAg@mail.gmail.com>
+ <20170315134323.i3pvla3pzejmkxwh@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 72FFE266861
- for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 14:54:43 +0100 (CET)
-In-Reply-To: <CAFXWsS8PkZ7pRLMqC7zABYS_CKxJ4=6TUGeGsvCYepMMjo+0qg@mail.gmail.com>
+Received: from smtp.csie.ntu.edu.tw (smtp.csie.ntu.edu.tw [140.112.30.61])
+ by alsa0.perex.cz (Postfix) with ESMTP id 210C1266861
+ for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 15:15:48 +0100 (CET)
+Received: from mail-io0-f173.google.com (mail-io0-f173.google.com
+ [209.85.223.173])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested) (Authenticated sender: b93043)
+ by smtp.csie.ntu.edu.tw (Postfix) with ESMTPSA id 841E020432
+ for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 22:15:44 +0800 (CST)
+Received: by mail-io0-f173.google.com with SMTP id z13so20869866iof.2
+ for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 07:15:44 -0700 (PDT)
+In-Reply-To: <20170315134323.i3pvla3pzejmkxwh@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,65 +32,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ian W MORRISON <ianwmorrison@gmail.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+To: Mark Brown <broonie@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Linux-ALSA <alsa-devel@alsa-project.org>, devicetree <devicetree@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, =?UTF-8?Q?Myl=C3=A8ne_Josserand?= <mylene.josserand@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 3/15/17 1:34 AM, Ian W MORRISON wrote:
-> The upstream kernel builds for distributions such as Ubuntu which now
-> includes binary packages for v4.11 mainline kernel release candidates
-> are promoted as a way of testing upstream kernels to to confirm that
-> upstream has fixed a specific issue (see
-> https://wiki.ubuntu.com/Kernel/MainlineBuilds).
+On Wed, Mar 15, 2017 at 9:43 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Tue, Mar 14, 2017 at 12:31:22PM +0800, Chen-Yu Tsai wrote:
+>> On Wed, Mar 8, 2017 at 9:22 PM, Mark Brown <broonie@kernel.org> wrote:
+>> This patch changes the mixer controls exposed to user space.
 >
-> Unfortunately the long awaited patch for providing HDMI audio support
-> for Bay Trail and Cherry Trail devices does not include this support
-> through a module built by default.
+>> This driver was just introduced in 4.11-rc1. Would it make sense to
+>> merge these cleanup patches as fixes for 4.11, so we don't affect
+>> userspace across kernel releases?
 >
-> By defining the default of the two associated CONFIG settings (SND_X86
-> and HDMI_LPE_AUDIO) as a module, upstream kernel builds would
-> automatically provide the much desired HDMI audio support by default.
+> It would but it doesn't pick over cleanly, it looks like it depends on
+> some of the other changes.
 
-I have mixed feelings about this. This would make the life of some 
-distros easier but at the same time it's not needed by everyone, e.g. 
-Chrome does not need this, the skews they use have the HDaudio output.
+It depends on the second half of commit 4aa8146c89f3 ("ASoC: sun8i-codec:
+Remove analog "HP" widget"), which is also a cleanup. Would it be OK
+to pick these two over to fixes then? Or should we send a clean version
+instead?
 
-Likewise none of the SST-based machine drivers are selected by default, 
-so distros already have to select what they want to support, and it's no 
-big deal for them to select this option while they are at it.
-I am not going to fight this patch but I feel it's a bit inconsistent 
-with how other options are enabled. If it was really helpful to select 
-modules by default then we should also select all the SST options. If 
-it's not then nothing is selected by default.
-
->
-> This patch uses a Kconfig 'default' statement to include the driver as
-> default.
->
-> Signed-off-by: Ian W Morrison <linuxium@linuxium.com.au
-> <mailto:linuxium@linuxium.com.au>>
-> ---
->  sound/x86/Kconfig | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/sound/x86/Kconfig b/sound/x86/Kconfig
-> index 84c8f8fc..439850c 100644
-> --- a/sound/x86/Kconfig
-> +++ b/sound/x86/Kconfig
-> @@ -1,6 +1,7 @@
->  menuconfig SND_X86
->         tristate "X86 sound devices"
->         depends on X86
-> +       default m
->         ---help---
->           X86 sound devices that don't fall under SoC or PCI categories
->
-> @@ -9,6 +10,7 @@ if SND_X86
->  config HDMI_LPE_AUDIO
->         tristate "HDMI audio without HDaudio on Intel Atom platforms"
->         depends on DRM_I915
-> +       default m
->         select SND_PCM
->         help
->          Choose this option to support HDMI LPE Audio mode
-> --
-> 1.9.1
+ChenYu
