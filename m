@@ -1,21 +1,18 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [RFC PATCH] ASoC: wm8960: Use physical width for
 	bclk
-Date: Wed, 15 Mar 2017 11:43:24 +0000
-Message-ID: <1489578203.15165.46.camel@nxp.com>
+Date: Wed, 15 Mar 2017 13:33:18 +0000
+Message-ID: <20170315133318.qo7fpoffmyh2chmz@sirena.org.uk>
 References: <1489510622-30981-1-git-send-email-daniel.baluta@nxp.com>
  <20170315091901.GF6986@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============2371939474319376859=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR02-AM5-obe.outbound.protection.outlook.com
- (mail-eopbgr00053.outbound.protection.outlook.com [40.107.0.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 6CEF1266861
- for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 12:43:26 +0100 (CET)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5ED41266861
+ for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 14:33:36 +0100 (CET)
 In-Reply-To: <20170315091901.GF6986@localhost.localdomain>
-Content-Language: en-US
-Content-ID: <C25AE49FA258364FAC4E25D0157CC717@eurprd04.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,46 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "ckeepax@opensource.wolfsonmicro.com" <ckeepax@opensource.wolfsonmicro.com>, "broonie@kernel.org" <broonie@kernel.org>
-Cc: "shengjiu.wang@freescale.com" <shengjiu.wang@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Viorel Suman <viorel.suman@nxp.com>, Mihai Serban <mihai.serban@nxp.com>, "tiwai@suse.com" <tiwai@suse.com>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, shengjiu.wang@freescale.com, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, viorel.suman@nxp.com, mihai.serban@nxp.com, tiwai@suse.com, Daniel Baluta <daniel.baluta@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTWksIDIwMTctMDMtMTUgYXQgMDk6MTkgKzAwMDAsIENoYXJsZXMgS2VlcGF4IHdyb3RlOg0K
-PiBPbiBUdWUsIE1hciAxNCwgMjAxNyBhdCAwNjo1NzowMlBNICswMjAwLCBEYW5pZWwgQmFsdXRh
-IHdyb3RlOg0KPiA+IA0KPiA+IGJjbGsgaXMgZGVyaXZlZCBmcm9tIHN5c2NsayB3aXRoIHRoZSBo
-ZWxwIG9mIGJjbGtfZGl2cy4gQW55aG93LCBmb3INCj4gPiBTMjBfM0xFIGZvcm1hdCB0aGVyZSBp
-cyBubyBiY2xrX2RpdnMgdGhhdCBjb3VsZCBiZSB1c2VkIHRvIGRlcml2ZQ0KPiA+IGFuIGV4YWN0
-IGJjbGsuDQo+ID4gDQo+ID4gV2UgY2FuIGZpeCB0aGlzIGJ5IHVzaW5nIHN0b3JhZ2Ugc2l6ZSBp
-bnN0ZWFkIHRoZSBleGFjdA0KPiA+IG51bWJlciBvZiBiaXRzIG9mIHRoZSBzYW1wbGUgd2hlbiBj
-b21wdXRpbmcgYmNsay4NCj4gPiANCj4gPiBXaXRoIHRoaXMgYXBwcm9hY2ggd2UgY2FuIHBsYXkg
-UzIwXzNMRSBlbmNvZGVkIGZpbGVzIGF0IHRoZSBjb3N0IG9mDQo+ID4gc29tZSB1bnVzZWQgQkNM
-SyBjeWNsZXMgZm9yIFMyMF8zTEUgYW5kIFMyNF9MRS4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5
-OiBEYW5pZWwgQmFsdXRhIDxkYW5pZWwuYmFsdXRhQG54cC5jb20+DQo+ID4gLS0tDQo+ID4gwqBz
-b3VuZC9zb2MvY29kZWNzL3dtODk2MC5jIHwgMyArKy0NCj4gPiDCoDEgZmlsZSBjaGFuZ2VkLCAy
-IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvc291
-bmQvc29jL2NvZGVjcy93bTg5NjAuYyBiL3NvdW5kL3NvYy9jb2RlY3Mvd204OTYwLmMNCj4gPiBp
-bmRleCBlMTQyOWUzLi4xOGNhNWZjIDEwMDY0NA0KPiA+IC0tLSBhL3NvdW5kL3NvYy9jb2RlY3Mv
-d204OTYwLmMNCj4gPiArKysgYi9zb3VuZC9zb2MvY29kZWNzL3dtODk2MC5jDQo+ID4gQEAgLTcy
-Miw3ICs3MjIsOCBAQCBzdGF0aWMgaW50IHdtODk2MF9od19wYXJhbXMoc3RydWN0DQo+ID4gc25k
-X3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwNCj4gPiDCoAlib29sIHR4ID0gc3Vic3RyZWFtLT5z
-dHJlYW0gPT0gU05EUlZfUENNX1NUUkVBTV9QTEFZQkFDSzsNCj4gPiDCoAlpbnQgaTsNCj4gPiDC
-oA0KPiA+IC0Jd204OTYwLT5iY2xrID0gc25kX3NvY19wYXJhbXNfdG9fYmNsayhwYXJhbXMpOw0K
-PiA+ICsJd204OTYwLT5iY2xrID0gcGFyYW1zX3BoeXNpY2FsX3dpZHRoKHBhcmFtcykgKg0KPiA+
-ICsJCXBhcmFtc19jaGFubmVscyhwYXJhbXMpICogcGFyYW1zX3JhdGUocGFyYW1zKTsNCj4gPiDC
-oAlpZiAocGFyYW1zX2NoYW5uZWxzKHBhcmFtcykgPT0gMSkNCj4gPiDCoAkJd204OTYwLT5iY2xr
-ICo9IDI7DQo+IFdvdWxkIHF1aXRlIGxpa2UgdG8gc2VlIE1hcmsncyB0aG91Z2h0cyBvbiB0aGlz
-LiBGZWVscyBhIGJpdCB0bw0KPiBtZSAoYWx0aG91Z2ggSSBhbSBub3QgY2VydGFpbikgbGlrZSB3
-ZSBhcmUgc29sdmluZyB0aGUgcHJvYmxlbSBpbg0KPiB0aGUgd3JvbmcgcGxhY2UsIGlzbid0IHRo
-aXMgcmVhbGx5IHNldHRpbmcgdGhlIGRlc2lyZWQgQkNMSyBhbmQNCj4gdGhlbiBpbiB3bTg5NjBf
-Y29uZmlndXJlX2Nsb2NraW5nIHdlIHNob3VsZCBzZXQgdGhlIGxvd2VzdCBCQ0xLDQo+IHdlIGNh
-biB0aGF0IGlzIGdyZWF0ZXIgdGhhbiBvciBlcXVhbCB0byB0aGUgZGVzaXJlZC4NCg0KSXMgdGhl
-cmUgYW55IHN0YW5kYXJkIHdheSBvZiBkb2luZyB0aGlzIGluIEFTb0M/IENvdWxkbid0IGZpbmQg
-YW55DQpleGFtcGxlIHdoZXJlIHRoZSBiaXRjbGsgaXMgcmVsYXhlZCB0byBsb3dlc3QgdmFsdWUg
-Z3JlYXRlciB0aGFuIHRoZQ0KZGVzaXJlZCBvbmUuDQoNCkkgaGF2ZSBwcmVwYXJlZCBzb21lIHBh
-dGNoZXMgd2l0aCB0aGlzIGFwcHJvYWNoLCB5b3UgY2FuIGxvb2sgYXQgdGhlbQ0KaGVyZToNCg0K
-aHR0cDovL3Bhc3RlYmluLmNvbS8weFcwRTgyTsKgLSBzb21lIHJlZmFjdG9yaW5nIG9mIHN5c2Ns
-ayBzZWFyY2gNCmh0dHA6Ly9wYXN0ZWJpbi5jb20vUVJ0MVVUN1HCoC0gcmVsYXggYml0Y2xrIHZh
-bHVlDQoNCkRhbmllbC4NCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+
+--===============2371939474319376859==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="c5756h73xogkajuw"
+Content-Disposition: inline
+
+
+--c5756h73xogkajuw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Mar 15, 2017 at 09:19:01AM +0000, Charles Keepax wrote:
+> On Tue, Mar 14, 2017 at 06:57:02PM +0200, Daniel Baluta wrote:
+
+> > -	wm8960->bclk = snd_soc_params_to_bclk(params);
+> > +	wm8960->bclk = params_physical_width(params) *
+> > +		params_channels(params) * params_rate(params);
+> >  	if (params_channels(params) == 1)
+> >  		wm8960->bclk *= 2;
+
+> Would quite like to see Mark's thoughts on this. Feels a bit to
+> me (although I am not certain) like we are solving the problem in
+> the wrong place, isn't this really setting the desired BCLK and
+> then in wm8960_configure_clocking we should set the lowest BCLK
+> we can that is greater than or equal to the desired.
+
+Exactly, this is the wrong fix in the wrong place - if this is something
+we want to do we should be doing it in the shared functions so all
+CODECs get the same behaviour but really I think Charles' suggestion
+makes more sense.
+
+--c5756h73xogkajuw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljJQp0ACgkQJNaLcl1U
+h9Cv0gf/a8ShsGPV26/iBsJOD1gVi7D/XkPV6qoqKhaq3KeM9F8QlaJfGFCevfcz
+A/YdOJgxRI/kW6bq/9zpebXKUeVY3/t2YfuKeNY5YIfwwhSuQPjaxPWsStTbiMO7
+Eb0fppv6E1cAWC7+5WWP6IZPaAtRMbJQqyGqrGXszbqxWESkBtrC/EwakZnXZJwM
+JpjxCNybVxCCybMCLO7kxz8O8EFKHg4DFIhBuwvLMYD8Hqc9JaAGd/2q8O9RK4ZU
+h1f0/ZsZIZTiK2yyfgImYRLX+pGF3YaSo5YWd7iM/wIVXDo/wgRiPwWeWPd3DHRt
+z1pkDItSFMHFmx6vnrNHMXrEZ5zAKw==
+=wX7S
+-----END PGP SIGNATURE-----
+
+--c5756h73xogkajuw--
+
+--===============2371939474319376859==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2371939474319376859==--
