@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Remove get dsp_ops in
-	cleanup routine" to the asoc tree
-Date: Wed, 15 Mar 2017 18:13:24 +0000
-Message-ID: <E1coDQK-0002EH-Pg@debutante>
-References: <1489423292-19997-9-git-send-email-jeeja.kp@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Disable notifications
+	at boot after DSP FW init" to the asoc tree
+Date: Wed, 15 Mar 2017 18:13:29 +0000
+Message-ID: <E1coDQP-0002GR-MM@debutante>
+References: <1488910446-26415-8-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C9E326705E
- for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 19:13:33 +0100 (CET)
-In-Reply-To: <1489423292-19997-9-git-send-email-jeeja.kp@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7331C267056
+ for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 19:13:38 +0100 (CET)
+In-Reply-To: <1488910446-26415-8-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Remove get dsp_ops in cleanup routine
+   ASoC: Intel: Skylake: Disable notifications at boot after DSP FW init
 
 has been applied to the asoc tree at
 
@@ -53,65 +53,61 @@ to this mail.
 Thanks,
 Mark
 
->From 7bd86a30599de479bd863e18472207337485d339 Mon Sep 17 00:00:00 2001
+>From cb729d80b5c556acf38f1f04a1f0550472a75987 Mon Sep 17 00:00:00 2001
 From: G Kranthi <gudishax.kranthikumar@intel.com>
-Date: Mon, 13 Mar 2017 22:11:30 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Remove get dsp_ops in cleanup routine
+Date: Mon, 13 Mar 2017 22:11:29 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Disable notifications at boot after DSP
+ FW init
 
-dsp ops is already set in init, so use this in cleanup routine
-instead of again retrieving it. Also constify struct skl_dsp_ops.
+DSP firmware sends notification every 1ms, which is disabled in runtime
+suspend. But if a system has no runtime pm, we keep getting
+notification, so disable after FW init as well.
 
 Signed-off-by: G Kranthi <gudishax.kranthikumar@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-messages.c | 8 ++------
- sound/soc/intel/skylake/skl-sst-ipc.h  | 2 ++
- 2 files changed, 4 insertions(+), 6 deletions(-)
+ sound/soc/intel/skylake/skl-messages.c | 2 +-
+ sound/soc/intel/skylake/skl-pcm.c      | 1 +
+ sound/soc/intel/skylake/skl-sst-dsp.h  | 2 ++
+ 3 files changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 29523ddcfab0..ba1ec973ded7 100644
+index ed576965cacc..29523ddcfab0 100644
 --- a/sound/soc/intel/skylake/skl-messages.c
 +++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -274,6 +274,7 @@ int skl_init_dsp(struct skl *skl)
- 	if (ret < 0)
- 		return ret;
+@@ -58,7 +58,7 @@ static int skl_free_dma_buf(struct device *dev, struct snd_dma_buffer *dmab)
+ #define NOTIFICATION_MASK 0xf
  
-+	skl->skl_sst->dsp_ops = ops;
- 	dev_dbg(bus->dev, "dsp registration status=%d\n", ret);
+ /* disable notfication for underruns/overruns from firmware module */
+-static void skl_dsp_enable_notification(struct skl_sst *ctx, bool enable)
++void skl_dsp_enable_notification(struct skl_sst *ctx, bool enable)
+ {
+ 	struct notification_mask mask;
+ 	struct skl_ipc_large_config_msg	msg = {0};
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index e3d206d50f3e..2f90bc40be77 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1214,6 +1214,7 @@ static int skl_platform_soc_probe(struct snd_soc_platform *platform)
+ 		}
+ 		skl_populate_modules(skl);
+ 		skl->skl_sst->update_d0i3c = skl_update_d0i3c;
++		skl_dsp_enable_notification(skl->skl_sst, false);
+ 	}
+ 	pm_runtime_mark_last_busy(platform->dev);
+ 	pm_runtime_put_autosuspend(platform->dev);
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
+index 849410d0823e..e8d1e149e0cd 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.h
++++ b/sound/soc/intel/skylake/skl-sst-dsp.h
+@@ -235,4 +235,6 @@ int skl_get_pvt_instance_id_map(struct skl_sst *ctx,
+ void skl_freeup_uuid_list(struct skl_sst *ctx);
  
- 	return ret;
-@@ -284,16 +285,11 @@ int skl_free_dsp(struct skl *skl)
- 	struct hdac_ext_bus *ebus = &skl->ebus;
- 	struct hdac_bus *bus = ebus_to_hbus(ebus);
- 	struct skl_sst *ctx = skl->skl_sst;
--	const struct skl_dsp_ops *ops;
- 
- 	/* disable  ppcap interrupt */
- 	snd_hdac_ext_bus_ppcap_int_enable(&skl->ebus, false);
- 
--	ops = skl_get_dsp_ops(skl->pci->device);
--	if (!ops)
--		return -EIO;
--
--	ops->cleanup(bus->dev, ctx);
-+	ctx->dsp_ops->cleanup(bus->dev, ctx);
- 
- 	if (ctx->dsp->addr.lpe)
- 		iounmap(ctx->dsp->addr.lpe);
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
-index 9660ace379ab..7d21f055328d 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.h
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.h
-@@ -105,6 +105,8 @@ struct skl_sst {
- 	void (*update_d0i3c)(struct device *dev, bool enable);
- 
- 	struct skl_d0i3_data d0i3;
+ int skl_dsp_strip_extended_manifest(struct firmware *fw);
++void skl_dsp_enable_notification(struct skl_sst *ctx, bool enable);
 +
-+	const struct skl_dsp_ops *dsp_ops;
- };
- 
- struct skl_ipc_init_instance_msg {
+ #endif /*__SKL_SST_DSP_H__*/
 -- 
 2.11.0
