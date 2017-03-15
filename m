@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: add bindings for rk3368 i2s"
-	to the asoc tree
-Date: Wed, 15 Mar 2017 18:13:59 +0000
-Message-ID: <E1coDQt-0002TY-Lw@debutante>
+Subject: Applied "ASoC: tas2552: Improve DT binding document
+	example" to the asoc tree
+Date: Wed, 15 Mar 2017 18:13:57 +0000
+Message-ID: <E1coDQr-0002SW-1Y@debutante>
+References: <1489434963-2843-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 07455267121
- for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 19:14:07 +0100 (CET)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id AE09B267094
+ for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 19:14:10 +0100 (CET)
+In-Reply-To: <1489434963-2843-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jianqun Xu <jay.xu@rock-chips.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, dmurphy@ti.com, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: add bindings for rk3368 i2s
+   ASoC: tas2552: Improve DT binding document example
 
 has been applied to the asoc tree at
 
@@ -52,31 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From f49efce4ed6fdec17a32406eccb56fc167f43b6c Mon Sep 17 00:00:00 2001
-From: Jianqun Xu <jay.xu@rock-chips.com>
-Date: Wed, 15 Mar 2017 14:14:00 +0800
-Subject: [PATCH] ASoC: rockchip: add bindings for rk3368 i2s
+>From 6cd6ad0e45b9ea48bf3b62eee2dd7238f3e4dd7c Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Date: Mon, 13 Mar 2017 16:56:03 -0300
+Subject: [PATCH] ASoC: tas2552: Improve DT binding document example
 
-Add devicetree bindings for i2s controller found on rk3368
-processors from rockchip.
+Improve DT binding document example by providing the mandatory
+regulator properties.
 
-Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/rockchip-i2s.txt | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/devicetree/bindings/sound/tas2552.txt | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-index a6600f6dea64..206aba1b34bb 100644
---- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-@@ -9,6 +9,7 @@ Required properties:
-    - "rockchip,rk3066-i2s": for rk3066
-    - "rockchip,rk3188-i2s", "rockchip,rk3066-i2s": for rk3188
-    - "rockchip,rk3288-i2s", "rockchip,rk3066-i2s": for rk3288
-+   - "rockchip,rk3368-i2s", "rockchip,rk3066-i2s": for rk3368
-    - "rockchip,rk3399-i2s", "rockchip,rk3066-i2s": for rk3399
- - reg: physical base address of the controller and length of memory mapped
-   region.
+diff --git a/Documentation/devicetree/bindings/sound/tas2552.txt b/Documentation/devicetree/bindings/sound/tas2552.txt
+index c49992c0b62a..54c1c87c4ad8 100644
+--- a/Documentation/devicetree/bindings/sound/tas2552.txt
++++ b/Documentation/devicetree/bindings/sound/tas2552.txt
+@@ -25,6 +25,9 @@ Example:
+ tas2552: tas2552@41 {
+ 	compatible = "ti,tas2552";
+ 	reg = <0x41>;
++	vbat-supply = <&reg_vbat>;
++	iovdd-supply = <&reg_iovdd>;
++	avdd-supply = <&reg_avdd>;
+ 	enable-gpio = <&gpio4 2 GPIO_ACTIVE_HIGH>;
+ };
+ 
 -- 
 2.11.0
