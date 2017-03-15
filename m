@@ -1,35 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix parameter overwrite
-	for KPB Module" to the asoc tree
-Date: Wed, 15 Mar 2017 18:13:18 +0000
-Message-ID: <E1coDQE-0002C3-QG@debutante>
-References: <1488910446-26415-11-git-send-email-jeeja.kp@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F26F267044
- for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 19:13:28 +0100 (CET)
-In-Reply-To: <1488910446-26415-11-git-send-email-jeeja.kp@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dharageswari R <dharageswari.r@intel.com>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com, "Kranthikumar, ,
- GudishaX" <gudishax.kranthikumar@intel.com>, tiwai@suse.de, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
+Subject: Applied "ASoC: fsl: constify snd_soc_ops structures" to the asoc tree
+Date: Wed, 15 Mar 2017 18:13:51 +0000
+Message-ID: <E1coDQl-0002Qk-W9@debutante>
+References: <1489432342-4328-1-git-send-email-bhumirks@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1489432342-4328-1-git-send-email-bhumirks@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bhumika Goyal <bhumirks@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, julia.lawall@lip6.fr, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, timur@tabi.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, fabio.estevam@nxp.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix parameter overwrite for KPB Module
+   ASoC: fsl: constify snd_soc_ops structures
 
 has been applied to the asoc tree at
 
@@ -54,105 +37,135 @@ to this mail.
 Thanks,
 Mark
 
->From bf3e5ef5d549f650c13bef2b2192057cfef33d38 Mon Sep 17 00:00:00 2001
-From: Dharageswari R <dharageswari.r@intel.com>
-Date: Mon, 13 Mar 2017 22:11:32 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix parameter overwrite for KPB Module
+>From 5ace37bd7947e28dec5559a57ddc6e1d997dbec5 Mon Sep 17 00:00:00 2001
+From: Bhumika Goyal <bhumirks@gmail.com>
+Date: Tue, 14 Mar 2017 00:42:22 +0530
+Subject: [PATCH] ASoC: fsl: constify snd_soc_ops structures
 
-KPB module default parameter were overwritten by the dynamic instance
-id once use case is executed. This will cause module crash from
-subsequent execution of use case as the updated parameters are used.
+Declare snd_soc_ops structures as const as they are only stored
+in the ops field of a snd_soc_dai_link structure. This field is
+of type const, so snd_soc_ops structures having this property
+can be made const too.
 
-So instead of over writing the default parameter, make a copy and
-update the module parameter and use this in IPC message.
+The following .o files did not compile:
+sound/soc/fsl/{p1022_rdk.c/p1022_ds.c/mpc8610_hpcd.c}
 
-Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
-Signed-off-by: Kranthikumar, GudishaX <gudishax.kranthikumar@intel.com>
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 47 +++++++++++++++++++++-------------
- 1 file changed, 29 insertions(+), 18 deletions(-)
+ sound/soc/fsl/eukrea-tlv320.c   | 2 +-
+ sound/soc/fsl/imx-mc13783.c     | 2 +-
+ sound/soc/fsl/mpc8610_hpcd.c    | 2 +-
+ sound/soc/fsl/mx27vis-aic32x4.c | 2 +-
+ sound/soc/fsl/p1022_ds.c        | 2 +-
+ sound/soc/fsl/p1022_rdk.c       | 2 +-
+ sound/soc/fsl/phycore-ac97.c    | 2 +-
+ sound/soc/fsl/wm1133-ev1.c      | 2 +-
+ 8 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index d4058d2a8023..c6bd4bb49ec0 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -678,26 +678,29 @@ static int skl_tplg_mixer_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
+diff --git a/sound/soc/fsl/eukrea-tlv320.c b/sound/soc/fsl/eukrea-tlv320.c
+index 883087f2b092..84ef6385736c 100644
+--- a/sound/soc/fsl/eukrea-tlv320.c
++++ b/sound/soc/fsl/eukrea-tlv320.c
+@@ -64,7 +64,7 @@ static int eukrea_tlv320_hw_params(struct snd_pcm_substream *substream,
  	return 0;
  }
  
--static int skl_fill_sink_instance_id(struct skl_sst *ctx,
--				struct skl_algo_data *alg_data)
-+static int skl_fill_sink_instance_id(struct skl_sst *ctx, u32 *params,
-+				int size, struct skl_module_cfg *mcfg)
- {
--	struct skl_kpb_params *params = (struct skl_kpb_params *)alg_data->params;
--	struct skl_mod_inst_map *inst;
- 	int i, pvt_id;
+-static struct snd_soc_ops eukrea_tlv320_snd_ops = {
++static const struct snd_soc_ops eukrea_tlv320_snd_ops = {
+ 	.hw_params	= eukrea_tlv320_hw_params,
+ };
  
--	inst = params->map;
-+	if (mcfg->m_type == SKL_MODULE_TYPE_KPB) {
-+		struct skl_kpb_params *kpb_params =
-+				(struct skl_kpb_params *)params;
-+		struct skl_mod_inst_map *inst = kpb_params->map;
+diff --git a/sound/soc/fsl/imx-mc13783.c b/sound/soc/fsl/imx-mc13783.c
+index bb0459018b45..9d19b808f634 100644
+--- a/sound/soc/fsl/imx-mc13783.c
++++ b/sound/soc/fsl/imx-mc13783.c
+@@ -48,7 +48,7 @@ static int imx_mc13783_hifi_hw_params(struct snd_pcm_substream *substream,
+ 	return snd_soc_dai_set_tdm_slot(cpu_dai, 0x3, 0x3, 2, 16);
+ }
  
--	for (i = 0; i < params->num_modules; i++) {
--		pvt_id = skl_get_pvt_instance_id_map(ctx,
--					inst->mod_id, inst->inst_id);
--		if (pvt_id < 0)
--			return -EINVAL;
--		inst->inst_id = pvt_id;
--		inst++;
-+		for (i = 0; i < kpb_params->num_modules; i++) {
-+			pvt_id = skl_get_pvt_instance_id_map(ctx, inst->mod_id,
-+								inst->inst_id);
-+			if (pvt_id < 0)
-+				return -EINVAL;
-+
-+			inst->inst_id = pvt_id;
-+			inst++;
-+		}
- 	}
-+
+-static struct snd_soc_ops imx_mc13783_hifi_ops = {
++static const struct snd_soc_ops imx_mc13783_hifi_ops = {
+ 	.hw_params = imx_mc13783_hifi_hw_params,
+ };
+ 
+diff --git a/sound/soc/fsl/mpc8610_hpcd.c b/sound/soc/fsl/mpc8610_hpcd.c
+index ddf49f30b23f..a639b52c16f6 100644
+--- a/sound/soc/fsl/mpc8610_hpcd.c
++++ b/sound/soc/fsl/mpc8610_hpcd.c
+@@ -174,7 +174,7 @@ static int mpc8610_hpcd_machine_remove(struct snd_soc_card *card)
+ /**
+  * mpc8610_hpcd_ops: ASoC machine driver operations
+  */
+-static struct snd_soc_ops mpc8610_hpcd_ops = {
++static const struct snd_soc_ops mpc8610_hpcd_ops = {
+ 	.startup = mpc8610_hpcd_startup,
+ };
+ 
+diff --git a/sound/soc/fsl/mx27vis-aic32x4.c b/sound/soc/fsl/mx27vis-aic32x4.c
+index 198eeb3f3f7a..d7ec3d20065c 100644
+--- a/sound/soc/fsl/mx27vis-aic32x4.c
++++ b/sound/soc/fsl/mx27vis-aic32x4.c
+@@ -73,7 +73,7 @@ static int mx27vis_aic32x4_hw_params(struct snd_pcm_substream *substream,
  	return 0;
  }
--
- /*
-  * Some modules require params to be set after the module is bound to
-  * all pins connected.
-@@ -714,6 +717,7 @@ static int skl_tplg_set_module_bind_params(struct snd_soc_dapm_widget *w,
- 	struct soc_bytes_ext *sb;
- 	struct skl_algo_data *bc;
- 	struct skl_specific_cfg *sp_cfg;
-+	u32 *params;
  
- 	/*
- 	 * check all out/in pins are in bind state.
-@@ -746,11 +750,18 @@ static int skl_tplg_set_module_bind_params(struct snd_soc_dapm_widget *w,
- 			bc = (struct skl_algo_data *)sb->dobj.private;
+-static struct snd_soc_ops mx27vis_aic32x4_snd_ops = {
++static const struct snd_soc_ops mx27vis_aic32x4_snd_ops = {
+ 	.hw_params	= mx27vis_aic32x4_hw_params,
+ };
  
- 			if (bc->set_params == SKL_PARAM_BIND) {
--				if (mconfig->m_type == SKL_MODULE_TYPE_KPB)
--					skl_fill_sink_instance_id(ctx, bc);
--				ret = skl_set_module_params(ctx,
--						(u32 *)bc->params, bc->max,
--						bc->param_id, mconfig);
-+				params = kzalloc(bc->max, GFP_KERNEL);
-+				if (!params)
-+					return -ENOMEM;
-+
-+				memcpy(params, bc->params, bc->max);
-+				skl_fill_sink_instance_id(ctx, params, bc->max,
-+								mconfig);
-+
-+				ret = skl_set_module_params(ctx, params,
-+						bc->max, bc->param_id, mconfig);
-+				kfree(params);
-+
- 				if (ret < 0)
- 					return ret;
- 			}
+diff --git a/sound/soc/fsl/p1022_ds.c b/sound/soc/fsl/p1022_ds.c
+index a1f780ecadf5..41c623c55c16 100644
+--- a/sound/soc/fsl/p1022_ds.c
++++ b/sound/soc/fsl/p1022_ds.c
+@@ -184,7 +184,7 @@ static int p1022_ds_machine_remove(struct snd_soc_card *card)
+ /**
+  * p1022_ds_ops: ASoC machine driver operations
+  */
+-static struct snd_soc_ops p1022_ds_ops = {
++static const struct snd_soc_ops p1022_ds_ops = {
+ 	.startup = p1022_ds_startup,
+ };
+ 
+diff --git a/sound/soc/fsl/p1022_rdk.c b/sound/soc/fsl/p1022_rdk.c
+index d4d88a8cb9c0..4afbdd610bfa 100644
+--- a/sound/soc/fsl/p1022_rdk.c
++++ b/sound/soc/fsl/p1022_rdk.c
+@@ -188,7 +188,7 @@ static int p1022_rdk_machine_remove(struct snd_soc_card *card)
+ /**
+  * p1022_rdk_ops: ASoC machine driver operations
+  */
+-static struct snd_soc_ops p1022_rdk_ops = {
++static const struct snd_soc_ops p1022_rdk_ops = {
+ 	.startup = p1022_rdk_startup,
+ };
+ 
+diff --git a/sound/soc/fsl/phycore-ac97.c b/sound/soc/fsl/phycore-ac97.c
+index ae403c29688f..66fb6c4614d2 100644
+--- a/sound/soc/fsl/phycore-ac97.c
++++ b/sound/soc/fsl/phycore-ac97.c
+@@ -23,7 +23,7 @@
+ 
+ static struct snd_soc_card imx_phycore;
+ 
+-static struct snd_soc_ops imx_phycore_hifi_ops = {
++static const struct snd_soc_ops imx_phycore_hifi_ops = {
+ };
+ 
+ static struct snd_soc_dai_link imx_phycore_dai_ac97[] = {
+diff --git a/sound/soc/fsl/wm1133-ev1.c b/sound/soc/fsl/wm1133-ev1.c
+index b454972dce35..cdaf16367b47 100644
+--- a/sound/soc/fsl/wm1133-ev1.c
++++ b/sound/soc/fsl/wm1133-ev1.c
+@@ -139,7 +139,7 @@ static int wm1133_ev1_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static struct snd_soc_ops wm1133_ev1_ops = {
++static const struct snd_soc_ops wm1133_ev1_ops = {
+ 	.hw_params = wm1133_ev1_hw_params,
+ };
+ 
 -- 
 2.11.0
