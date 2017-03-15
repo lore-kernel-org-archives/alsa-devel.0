@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH] ASoC: wm8960: Use physical width for
-	bclk
-Date: Wed, 15 Mar 2017 13:33:18 +0000
-Message-ID: <20170315133318.qo7fpoffmyh2chmz@sirena.org.uk>
-References: <1489510622-30981-1-git-send-email-daniel.baluta@nxp.com>
- <20170315091901.GF6986@localhost.localdomain>
+Subject: Re: Applied "ASoC: sun8i-codec: Update mixer to use
+ SOC_DAPM_DOUBLE" to the asoc tree
+Date: Wed, 15 Mar 2017 13:43:23 +0000
+Message-ID: <20170315134323.i3pvla3pzejmkxwh@sirena.org.uk>
+References: <20170210094133.11382-3-mylene.josserand@free-electrons.com>
+ <E1clbY9-0000DH-LY@finisterre>
+ <CAGb2v6428PpYPzpHngLgaeziwKN8u-TYiNO1bs7TFw-7VrQOAg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2371939474319376859=="
+Content-Type: multipart/mixed; boundary="===============5360590623768876407=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5ED41266861
- for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 14:33:36 +0100 (CET)
-In-Reply-To: <20170315091901.GF6986@localhost.localdomain>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5511F266861
+ for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 14:44:14 +0100 (CET)
+In-Reply-To: <CAGb2v6428PpYPzpHngLgaeziwKN8u-TYiNO1bs7TFw-7VrQOAg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,63 +23,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, shengjiu.wang@freescale.com, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, viorel.suman@nxp.com, mihai.serban@nxp.com, tiwai@suse.com, Daniel Baluta <daniel.baluta@nxp.com>
+To: Chen-Yu Tsai <wens@csie.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, Linux-ALSA <alsa-devel@alsa-project.org>, devicetree <devicetree@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2371939474319376859==
+--===============5360590623768876407==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="c5756h73xogkajuw"
+	protocol="application/pgp-signature"; boundary="n2uvbpnnrncu25wb"
 Content-Disposition: inline
 
 
---c5756h73xogkajuw
+--n2uvbpnnrncu25wb
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Mar 15, 2017 at 09:19:01AM +0000, Charles Keepax wrote:
-> On Tue, Mar 14, 2017 at 06:57:02PM +0200, Daniel Baluta wrote:
+On Tue, Mar 14, 2017 at 12:31:22PM +0800, Chen-Yu Tsai wrote:
+> On Wed, Mar 8, 2017 at 9:22 PM, Mark Brown <broonie@kernel.org> wrote:
 
-> > -	wm8960->bclk = snd_soc_params_to_bclk(params);
-> > +	wm8960->bclk = params_physical_width(params) *
-> > +		params_channels(params) * params_rate(params);
-> >  	if (params_channels(params) == 1)
-> >  		wm8960->bclk *= 2;
+Please delete unneeded context from mails when replying.  Doing this
+makes it much easier to find your reply in the message, helping ensure
+it won't be missed by people scrolling through the irrelevant quoted
+material.
 
-> Would quite like to see Mark's thoughts on this. Feels a bit to
-> me (although I am not certain) like we are solving the problem in
-> the wrong place, isn't this really setting the desired BCLK and
-> then in wm8960_configure_clocking we should set the lowest BCLK
-> we can that is greater than or equal to the desired.
+> This patch changes the mixer controls exposed to user space.
 
-Exactly, this is the wrong fix in the wrong place - if this is something
-we want to do we should be doing it in the shared functions so all
-CODECs get the same behaviour but really I think Charles' suggestion
-makes more sense.
+> This driver was just introduced in 4.11-rc1. Would it make sense to
+> merge these cleanup patches as fixes for 4.11, so we don't affect
+> userspace across kernel releases?
 
---c5756h73xogkajuw
+It would but it doesn't pick over cleanly, it looks like it depends on
+some of the other changes.
+
+--n2uvbpnnrncu25wb
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljJQp0ACgkQJNaLcl1U
-h9Cv0gf/a8ShsGPV26/iBsJOD1gVi7D/XkPV6qoqKhaq3KeM9F8QlaJfGFCevfcz
-A/YdOJgxRI/kW6bq/9zpebXKUeVY3/t2YfuKeNY5YIfwwhSuQPjaxPWsStTbiMO7
-Eb0fppv6E1cAWC7+5WWP6IZPaAtRMbJQqyGqrGXszbqxWESkBtrC/EwakZnXZJwM
-JpjxCNybVxCCybMCLO7kxz8O8EFKHg4DFIhBuwvLMYD8Hqc9JaAGd/2q8O9RK4ZU
-h1f0/ZsZIZTiK2yyfgImYRLX+pGF3YaSo5YWd7iM/wIVXDo/wgRiPwWeWPd3DHRt
-z1pkDItSFMHFmx6vnrNHMXrEZ5zAKw==
-=wX7S
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljJRPsACgkQJNaLcl1U
+h9Dj/wf/SNU2hHs4DgTS+ihcsCYQZJe/qr7Q1z2HfrembKBZDasroMYh41IrKigQ
+/qOT8TVZDNNwONty6k53PVQfOba85BoVtHzgyBr4STtRGAGwNo60NlHS9SYsbLJp
+wT5rt7lC57mSN3Zb8SYq5NAX9gu4sHVZmjajp6FYbhunVHFCVCcMVmi0Es9qmdGL
+ZA7fcm6Eu2swtX9gzny1BYZjKW2fMuFhtj5KaJUookc/SRqtek5vQAmV5sByayw2
+TAXpzsV2bdseEBBHKVn4eVqeuRc7kac/eCSUzheXQz0Kq1twHVH+O0fl9BJFkW7W
+CWEw9l4duWBKscI6UsFp8CGAcdYUog==
+=WuMp
 -----END PGP SIGNATURE-----
 
---c5756h73xogkajuw--
+--n2uvbpnnrncu25wb--
 
---===============2371939474319376859==
+--===============5360590623768876407==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2371939474319376859==--
+--===============5360590623768876407==--
