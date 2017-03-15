@@ -1,31 +1,35 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun8i-codec: Convert to use SND_SOC_DAPM_AIF_IN" to
- the asoc tree
-Date: Wed, 15 Mar 2017 18:13:00 +0000
-Message-ID: <E1coDPw-000246-Bz@debutante>
-References: <20170309095602.13809-3-mylene.josserand@free-electrons.com>
+Subject: Applied "ASoC: Intel: Skylake: Fix parameter overwrite
+	for KPB Module" to the asoc tree
+Date: Wed, 15 Mar 2017 18:13:18 +0000
+Message-ID: <E1coDQE-0002C3-QG@debutante>
+References: <1488910446-26415-11-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7339248925914600500=="
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20170309095602.13809-3-mylene.josserand@free-electrons.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-Cc: mark.rutland@arm.com, thomas.petazzoni@free-electrons.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org, perex@perex.cz, wens@csie.org, broonie@kernel.org, alexandre.belloni@free-electrons.com, maxime.ripard@free-electrons.com, mylene.josserand@free-electrons.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F26F267044
+ for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 19:13:28 +0100 (CET)
+In-Reply-To: <1488910446-26415-11-git-send-email-jeeja.kp@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dharageswari R <dharageswari.r@intel.com>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com, "Kranthikumar, ,
+ GudishaX" <gudishax.kranthikumar@intel.com>, tiwai@suse.de, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
-
---===============7339248925914600500==
-Content-Type: text/plain
 
 The patch
 
-   ASoC: sun8i-codec: Convert to use SND_SOC_DAPM_AIF_IN
+   ASoC: Intel: Skylake: Fix parameter overwrite for KPB Module
 
 has been applied to the asoc tree at
 
@@ -50,82 +54,105 @@ to this mail.
 Thanks,
 Mark
 
->From 9123aa8645463ca30ac8c62a07eb23e07c3aa091 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?=
- <mylene.josserand@free-electrons.com>
-Date: Thu, 9 Mar 2017 10:56:01 +0100
-Subject: [PATCH] ASoC: sun8i-codec: Convert to use SND_SOC_DAPM_AIF_IN
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From bf3e5ef5d549f650c13bef2b2192057cfef33d38 Mon Sep 17 00:00:00 2001
+From: Dharageswari R <dharageswari.r@intel.com>
+Date: Mon, 13 Mar 2017 22:11:32 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix parameter overwrite for KPB Module
 
-Update the driver to use SND_SOC_DAPM_AIF_IN instead of
-SND_SOC_DAPM_DAC.
-Rename the interface's widgets to be more precise on which slot
-the interface is connected.
+KPB module default parameter were overwritten by the dynamic instance
+id once use case is executed. This will cause module crash from
+subsequent execution of use case as the updated parameters are used.
 
-Signed-off-by: Mylène Josserand <mylene.josserand@free-electrons.com>
+So instead of over writing the default parameter, make a copy and
+update the module parameter and use this in IPC message.
+
+Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
+Signed-off-by: Kranthikumar, GudishaX <gudishax.kranthikumar@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun8i-codec.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+ sound/soc/intel/skylake/skl-topology.c | 47 +++++++++++++++++++++-------------
+ 1 file changed, 29 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index 90cda9569503..5723c3404f6b 100644
---- a/sound/soc/sunxi/sun8i-codec.c
-+++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -281,11 +281,13 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
- 	SND_SOC_DAPM_SUPPLY("DAC", SUN8I_DAC_DIG_CTRL, SUN8I_DAC_DIG_CTRL_ENDA,
- 			    0, NULL, 0),
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index d4058d2a8023..c6bd4bb49ec0 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -678,26 +678,29 @@ static int skl_tplg_mixer_dapm_pre_pmu_event(struct snd_soc_dapm_widget *w,
+ 	return 0;
+ }
  
--	/* Analog DAC */
--	SND_SOC_DAPM_DAC("Digital Left DAC", "Playback", SUN8I_AIF1_DACDAT_CTRL,
--			 SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0L_ENA, 0),
--	SND_SOC_DAPM_DAC("Digital Right DAC", "Playback", SUN8I_AIF1_DACDAT_CTRL,
--			 SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0R_ENA, 0),
-+	/* Analog DAC AIF */
-+	SND_SOC_DAPM_AIF_IN("AIF1 Slot 0 Left", "Playback", 0,
-+			    SUN8I_AIF1_DACDAT_CTRL,
-+			    SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0L_ENA, 0),
-+	SND_SOC_DAPM_AIF_IN("AIF1 Slot 0 Right", "Playback", 0,
-+			    SUN8I_AIF1_DACDAT_CTRL,
-+			    SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0R_ENA, 0),
+-static int skl_fill_sink_instance_id(struct skl_sst *ctx,
+-				struct skl_algo_data *alg_data)
++static int skl_fill_sink_instance_id(struct skl_sst *ctx, u32 *params,
++				int size, struct skl_module_cfg *mcfg)
+ {
+-	struct skl_kpb_params *params = (struct skl_kpb_params *)alg_data->params;
+-	struct skl_mod_inst_map *inst;
+ 	int i, pvt_id;
  
- 	/* DAC Mixers */
- 	SOC_MIXER_ARRAY("Left Digital DAC Mixer", SND_SOC_NOPM, 0, 0,
-@@ -329,14 +331,14 @@ static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
- 	{ "DAC", NULL, "MODCLK DAC" },
+-	inst = params->map;
++	if (mcfg->m_type == SKL_MODULE_TYPE_KPB) {
++		struct skl_kpb_params *kpb_params =
++				(struct skl_kpb_params *)params;
++		struct skl_mod_inst_map *inst = kpb_params->map;
  
- 	/* DAC Routes */
--	{ "Digital Left DAC", NULL, "DAC" },
--	{ "Digital Right DAC", NULL, "DAC" },
-+	{ "AIF1 Slot 0 Right", NULL, "DAC" },
-+	{ "AIF1 Slot 0 Left", NULL, "DAC" },
+-	for (i = 0; i < params->num_modules; i++) {
+-		pvt_id = skl_get_pvt_instance_id_map(ctx,
+-					inst->mod_id, inst->inst_id);
+-		if (pvt_id < 0)
+-			return -EINVAL;
+-		inst->inst_id = pvt_id;
+-		inst++;
++		for (i = 0; i < kpb_params->num_modules; i++) {
++			pvt_id = skl_get_pvt_instance_id_map(ctx, inst->mod_id,
++								inst->inst_id);
++			if (pvt_id < 0)
++				return -EINVAL;
++
++			inst->inst_id = pvt_id;
++			inst++;
++		}
+ 	}
++
+ 	return 0;
+ }
+-
+ /*
+  * Some modules require params to be set after the module is bound to
+  * all pins connected.
+@@ -714,6 +717,7 @@ static int skl_tplg_set_module_bind_params(struct snd_soc_dapm_widget *w,
+ 	struct soc_bytes_ext *sb;
+ 	struct skl_algo_data *bc;
+ 	struct skl_specific_cfg *sp_cfg;
++	u32 *params;
  
- 	/* DAC Mixer Routes */
- 	{ "Left Digital DAC Mixer", "AIF1 Slot 0 Digital DAC Playback Switch",
--	  "Digital Left DAC"},
-+	  "AIF1 Slot 0 Left"},
- 	{ "Right Digital DAC Mixer", "AIF1 Slot 0 Digital DAC Playback Switch",
--	  "Digital Right DAC"},
-+	  "AIF1 Slot 0 Right"},
- };
+ 	/*
+ 	 * check all out/in pins are in bind state.
+@@ -746,11 +750,18 @@ static int skl_tplg_set_module_bind_params(struct snd_soc_dapm_widget *w,
+ 			bc = (struct skl_algo_data *)sb->dobj.private;
  
- static struct snd_soc_dai_ops sun8i_codec_dai_ops = {
+ 			if (bc->set_params == SKL_PARAM_BIND) {
+-				if (mconfig->m_type == SKL_MODULE_TYPE_KPB)
+-					skl_fill_sink_instance_id(ctx, bc);
+-				ret = skl_set_module_params(ctx,
+-						(u32 *)bc->params, bc->max,
+-						bc->param_id, mconfig);
++				params = kzalloc(bc->max, GFP_KERNEL);
++				if (!params)
++					return -ENOMEM;
++
++				memcpy(params, bc->params, bc->max);
++				skl_fill_sink_instance_id(ctx, params, bc->max,
++								mconfig);
++
++				ret = skl_set_module_params(ctx, params,
++						bc->max, bc->param_id, mconfig);
++				kfree(params);
++
+ 				if (ret < 0)
+ 					return ret;
+ 			}
 -- 
 2.11.0
-
-
-
---===============7339248925914600500==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-linux-arm-kernel mailing list
-linux-arm-kernel@lists.infradead.org
-http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-
---===============7339248925914600500==--
