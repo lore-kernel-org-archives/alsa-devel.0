@@ -1,20 +1,19 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [RFC PATCH 1/2] ASoC: codec: wm8960: Refactor
-	sysclk freq search
-Date: Wed, 15 Mar 2017 16:22:32 +0000
-Message-ID: <20170315162232.GJ6986@localhost.localdomain>
-References: <1489591986-6302-1-git-send-email-daniel.baluta@nxp.com>
- <1489591986-6302-2-git-send-email-daniel.baluta@nxp.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ALSA: x86: Select CONFIG_HDMI_LPE_AUDIO as
+ default
+Date: Wed, 15 Mar 2017 11:36:00 -0500
+Message-ID: <3e864089-bfe0-ae60-93a5-565f30ad2d5a@linux.intel.com>
+References: <CAFXWsS8PkZ7pRLMqC7zABYS_CKxJ4=6TUGeGsvCYepMMjo+0qg@mail.gmail.com>
+ <0c4dea52-f119-4fd5-7428-71250f6c0104@linux.intel.com>
+ <CAFXWsS8xSgQ_vMayspTNH8LhVPFDjR8crqmc7kt=XGeXnWmQ5g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 28DAE266861
- for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 17:21:31 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <1489591986-6302-2-git-send-email-daniel.baluta@nxp.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3DF4A266861
+ for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 17:36:04 +0100 (CET)
+In-Reply-To: <CAFXWsS8xSgQ_vMayspTNH8LhVPFDjR8crqmc7kt=XGeXnWmQ5g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,139 +23,120 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Baluta <daniel.baluta@nxp.com>
-Cc: alsa-devel@alsa-project.org, shengjiu.wang@freescale.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, broonie@kernel.org, viorel.suman@nxp.com, mihai.serban@nxp.com, tiwai@suse.com
+To: Ian W MORRISON <ianwmorrison@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 15, 2017 at 05:33:05PM +0200, Daniel Baluta wrote:
-> Add a separate function for finding (sysclk, lrclk, bclk)
-> when the clock is auto or mclk. This makes code easier to
-> read and reduces the indentation level in wm8960_configure_clocking.
-> 
-> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-> ---
->  sound/soc/codecs/wm8960.c | 82 +++++++++++++++++++++++++++++++++++------------
->  1 file changed, 62 insertions(+), 20 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-> index 3bf081a..cb2ff2d 100644
-> --- a/sound/soc/codecs/wm8960.c
-> +++ b/sound/soc/codecs/wm8960.c
-> @@ -604,12 +604,71 @@ static const int bclk_divs[] = {
->  	120, 160, 220, 240, 320, 320, 320
->  };
->  
-> +/**
-> + * wm8960_configure_sysclk - checks if there is a sysclk frequency available
-> + *	The sysclk must be chosen such that:
-> + *		- sysclk     = MCLK / sysclk_divs
-> + *		- lrclk      = sysclk / dac_divs
-> + *		- 10 * bclk  = sysclk / bclk_divs
-> + *
-> + * @wm8960_priv: wm8960 codec private data
-> + * @mclk: MCLK used to derive sysclk
-> + * @_i: sysclk_divs index for found sysclk
-> + * @_j: dac_divs index for found lrclk
-> + * @_k: bclk_divs index for found bclk
-> + *
-> + * Returns:
-> + * -1, in case no sysclk frequency available found
-> + *  0, in case an exact match is found. See @_i, @_j, @_k
-> + *
-> + */
-> +int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
-> +		      int *_i, int *_j, int *_k)
+On 3/15/17 10:28 AM, Ian W MORRISON wrote:
+>
+>
+> On 16 March 2017 at 00:54, Pierre-Louis Bossart
+> <pierre-louis.bossart@linux.intel.com
+> <mailto:pierre-louis.bossart@linux.intel.com>> wrote:
+>
+>     On 3/15/17 1:34 AM, Ian W MORRISON wrote:
+>
+>         The upstream kernel builds for distributions such as Ubuntu
+>         which now
+>         includes binary packages for v4.11 mainline kernel release
+>         candidates
+>         are promoted as a way of testing upstream kernels to to confirm that
+>         upstream has fixed a specific issue (see
+>         https://wiki.ubuntu.com/Kernel/MainlineBuilds
+>         <https://wiki.ubuntu.com/Kernel/MainlineBuilds>).
+>
+>         Unfortunately the long awaited patch for providing HDMI audio
+>         support
+>         for Bay Trail and Cherry Trail devices does not include this support
+>         through a module built by default.
+>
+>         By defining the default of the two associated CONFIG settings
+>         (SND_X86
+>         and HDMI_LPE_AUDIO) as a module, upstream kernel builds would
+>         automatically provide the much desired HDMI audio support by
+>         default.
+>
+>
+>     I have mixed feelings about this. This would make the life of some
+>     distros easier but at the same time it's not needed by everyone,
+>     e.g. Chrome does not need this, the skews they use have the HDaudio
+>     output.
+>
+>     Likewise none of the SST-based machine drivers are selected by
+>     default, so distros already have to select what they want to
+>     support, and it's no big deal for them to select this option while
+>     they are at it.
+>     I am not going to fight this patch but I feel it's a bit
+>     inconsistent with how other options are enabled. If it was really
+>     helpful to select modules by default then we should also select all
+>     the SST options. If it's not then nothing is selected by default.
+>
+>
+> I did consider arguing that as 'HDMI', 'SND_SOC_HDMI_CODEC', 'DRM' and
+> 'DRM_I915' are set presumably as video and audio are seen as a function
+> of the OS rather than only being enabled by a distro. So adding
+> 'HDMI_LPE_AUDIO' was in keeping with concept of the OS providing core
+> functionality that a distro could disable it if required. But I thought
+> that might distract from the purpose of the patch and needlessly provoke
+> discussion!
+>
+> I too looked at the current state which I found to be inconsistent. For
+> example a default config built currently sets
+> 'SND_SOC_INTEL_BYT_RT5640_MACH=m' which in turn then sets
+> 'SND_SOC_INTEL_BAYTRAIL=m' and 'SND_SOC_INTEL_SST=m' among others.
+> Likewise 'PINCTRL_BAYTRAIL=y' is set whereas 'PINCTRL_CHERRYVIEW' isn't.
+> Again I didn't want to open a can of worms as I've not fully identified
+> the extent of the inconsistencies and again it might detract from the
+> purpose of the patch.
+>
+> I concluded that it was better to provide audio over HDMI by default for
+> the simple reason that distros may not add it because they didn't see
+> the need or might even overlooked it and that they could always exclude
+> it if they had a reason. The primary goal being to make the provision of
+> audio for BYT and CHT devices as simple and as quick possible.
 
-This probably wants to be static.
+Objection withdrawn. There are two audio interfaces for HDMI, and 
+HDaudio is enabled by default so we should do the same for the LPE_AUDIO 
+mode. Also the DRM part does the detection unconditionally so we might 
+as well support both modes.
 
-> +{
-> +	int sysclk, bclk, lrclk;
-> +	int i, j, k;
-> +	int diff;
-> +
-> +	bclk = wm8960->bclk;
-> +	lrclk = wm8960->lrclk;
-> +
-> +	/* check if the sysclk frequency is available. */
-> +	for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
-> +		if (sysclk_divs[i] == -1)
-> +			continue;
-> +		sysclk = mclk / sysclk_divs[i];
-> +		for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {
-> +			if (sysclk != dac_divs[j] * lrclk)
-> +				continue;
-> +			for (k = 0; k < ARRAY_SIZE(bclk_divs); ++k) {
-> +				diff = sysclk - bclk * bclk_divs[k] / 10;
-> +				if (diff == 0) {
-> +					*_i = i;
-> +					*_j = j;
-> +					*_k = k;
-
-I would be tempted to move these ...
-
-> +					break;
-> +				}
-> +			}
-> +			if (k != ARRAY_SIZE(bclk_divs))
-> +				break;
-> +		}
-> +		if (j != ARRAY_SIZE(dac_divs))
-> +			break;
-> +	}
-> +
-> +	if (i != ARRAY_SIZE(sysclk_divs))
-> +		return 0;
-> +
-
-Down here and give _i, _j, _k slightly more descriptive names, I
-know the original code didn't have great names either but might
-as well make things a bit nicer as we are factoring it out.
-
-> +	return -1;
-> +}
-> +
->  static int wm8960_configure_clocking(struct snd_soc_codec *codec)
->  {
->  	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
->  	int sysclk, bclk, lrclk, freq_out, freq_in;
->  	u16 iface1 = snd_soc_read(codec, WM8960_IFACE1);
->  	int i, j, k;
-> +	int ret;
->  
->  	if (!(iface1 & (1<<6))) {
->  		dev_dbg(codec->dev,
-> @@ -643,27 +702,10 @@ static int wm8960_configure_clocking(struct snd_soc_codec *codec)
->  	}
->  
->  	if (wm8960->clk_id != WM8960_SYSCLK_PLL) {
-> -		/* check if the sysclk frequency is available. */
-> -		for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
-> -			if (sysclk_divs[i] == -1)
-> -				continue;
-> -			sysclk = freq_out / sysclk_divs[i];
-> -			for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {
-> -				if (sysclk != dac_divs[j] * lrclk)
-> -					continue;
-> -				for (k = 0; k < ARRAY_SIZE(bclk_divs); ++k)
-> -					if (sysclk == bclk * bclk_divs[k] / 10)
-> -						break;
-> -				if (k != ARRAY_SIZE(bclk_divs))
-> -					break;
-> -			}
-> -			if (j != ARRAY_SIZE(dac_divs))
-> -				break;
-> -		}
-> -
-> -		if (i != ARRAY_SIZE(sysclk_divs)) {
-> +		ret = wm8960_configure_sysclk(wm8960, freq_out, &i, &j, &k);
-> +		if (ret == 0)
->  			goto configure_clock;
-> -		} else if (wm8960->clk_id != WM8960_SYSCLK_AUTO) {
-> +		else if (wm8960->clk_id != WM8960_SYSCLK_AUTO) {
-
-If one clause of the if has brackets the other should too.
-
-Otherwise, I think this looks fine.
-
-Thanks,
-Charles
+>
+>
+>         This patch uses a Kconfig 'default' statement to include the
+>         driver as
+>         default.
+>
+>         Signed-off-by: Ian W Morrison <linuxium@linuxium.com.au
+>         <mailto:linuxium@linuxium.com.au>
+>         <mailto:linuxium@linuxium.com.au <mailto:linuxium@linuxium.com.au>>>
+>         ---
+>          sound/x86/Kconfig | 2 ++
+>          1 file changed, 2 insertions(+)
+>
+>         diff --git a/sound/x86/Kconfig b/sound/x86/Kconfig
+>         index 84c8f8fc..439850c 100644
+>         --- a/sound/x86/Kconfig
+>         +++ b/sound/x86/Kconfig
+>         @@ -1,6 +1,7 @@
+>          menuconfig SND_X86
+>                 tristate "X86 sound devices"
+>                 depends on X86
+>         +       default m
+>                 ---help---
+>                   X86 sound devices that don't fall under SoC or PCI
+>         categories
+>
+>         @@ -9,6 +10,7 @@ if SND_X86
+>          config HDMI_LPE_AUDIO
+>                 tristate "HDMI audio without HDaudio on Intel Atom
+>         platforms"
+>                 depends on DRM_I915
+>         +       default m
+>                 select SND_PCM
+>                 help
+>                  Choose this option to support HDMI LPE Audio mode
+>         --
+>         1.9.1
+>
+>
+>
