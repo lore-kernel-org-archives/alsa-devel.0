@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Remove BE prepare ops"
-	to the asoc tree
-Date: Wed, 15 Mar 2017 18:13:32 +0000
-Message-ID: <E1coDQS-0002Hh-Qr@debutante>
-References: <1488910446-26415-7-git-send-email-jeeja.kp@intel.com>
+Subject: Applied "ASoC: Intel: bxtn: Reload the firmware in
+	case of D3 failure" to the asoc tree
+Date: Wed, 15 Mar 2017 18:13:35 +0000
+Message-ID: <E1coDQV-0002Il-SR@debutante>
+References: <1488910446-26415-6-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EFBD32670BB
- for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 19:13:41 +0100 (CET)
-In-Reply-To: <1488910446-26415-7-git-send-email-jeeja.kp@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 97548267066
+ for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 19:13:44 +0100 (CET)
+In-Reply-To: <1488910446-26415-6-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Remove BE prepare ops
+   ASoC: Intel: bxtn: Reload the firmware in case of D3 failure
 
 has been applied to the asoc tree at
 
@@ -53,57 +53,43 @@ to this mail.
 Thanks,
 Mark
 
->From 3643ff10d48140a283d2e50c0e0a47f290cc3e4d Mon Sep 17 00:00:00 2001
+>From 03de8c2ef82fae29d53de7eb86b0ca10501499fc Mon Sep 17 00:00:00 2001
 From: Jeeja KP <jeeja.kp@intel.com>
-Date: Mon, 13 Mar 2017 22:11:28 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Remove BE prepare ops
+Date: Mon, 13 Mar 2017 22:11:27 +0530
+Subject: [PATCH] ASoC: Intel: bxtn: Reload the firmware in case of D3 failure
 
-Remove BE prepare ops which enables MCLK by default. If MCLK is required
-to be enabled for any specific platform, it needs to be enabled in the
-corresponding machine driver.
+If D3 IPC fails or times out, firmware needs to be reloaded as driver
+continues the reset.
+So set the fw_load flag to false to reload the firmware in D0.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 18 ------------------
- 1 file changed, 18 deletions(-)
+ sound/soc/intel/skylake/bxt-sst.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 635cbb1e7d91..e3d206d50f3e 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -262,23 +262,6 @@ static int skl_pcm_open(struct snd_pcm_substream *substream,
- 	return 0;
- }
+diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
+index 2a2bb944cd40..600d95891996 100644
+--- a/sound/soc/intel/skylake/bxt-sst.c
++++ b/sound/soc/intel/skylake/bxt-sst.c
+@@ -533,10 +533,16 @@ static int bxt_set_dsp_D3(struct sst_dsp *ctx, unsigned int core_id)
  
--static int skl_be_prepare(struct snd_pcm_substream *substream,
--		struct snd_soc_dai *dai)
--{
--	struct skl *skl = get_skl_ctx(dai->dev);
--	struct skl_sst *ctx = skl->skl_sst;
--	struct skl_module_cfg *mconfig;
--
--	if (dai->playback_widget->power || dai->capture_widget->power)
--		return 0;
--
--	mconfig = skl_tplg_be_get_cpr_module(dai, substream->stream);
--	if (mconfig == NULL)
--		return -EINVAL;
--
--	return skl_dsp_set_dma_control(ctx, mconfig);
--}
--
- static int skl_pcm_prepare(struct snd_pcm_substream *substream,
- 		struct snd_soc_dai *dai)
- {
-@@ -649,7 +632,6 @@ static struct snd_soc_dai_ops skl_dmic_dai_ops = {
+ 	ret = skl_ipc_set_dx(&skl->ipc, BXT_INSTANCE_ID,
+ 				BXT_BASE_FW_MODULE_ID, &dx);
+-	if (ret < 0)
++	if (ret < 0) {
+ 		dev_err(ctx->dev,
+ 		"Failed to set DSP to D3:core id = %d;Continue reset\n",
+ 		core_id);
++		/*
++		 * In case of D3 failure, re-download the firmware, so set
++		 * fw_loaded to false.
++		 */
++		skl->fw_loaded = false;
++	}
  
- static struct snd_soc_dai_ops skl_be_ssp_dai_ops = {
- 	.hw_params = skl_be_hw_params,
--	.prepare = skl_be_prepare,
- };
- 
- static struct snd_soc_dai_ops skl_link_dai_ops = {
+ 	if (core_id == SKL_DSP_CORE0_ID) {
+ 		/* disable Interrupt */
 -- 
 2.11.0
