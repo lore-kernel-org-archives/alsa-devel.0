@@ -1,28 +1,22 @@
-From: Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH] ASoC: tas2552: Improve DT binding document
-	example
-Date: Wed, 15 Mar 2017 09:48:18 -0500
-Message-ID: <CAL_JsqL3tP=x+ATn6thfEi38+zsAGCZ2mSPuyFmn3-qEsYa5kg@mail.gmail.com>
-References: <1489434963-2843-1-git-send-email-festevam@gmail.com>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Subject: Re: [RFC PATCH] ASoC: wm8960: Use physical width for
+	bclk
+Date: Wed, 15 Mar 2017 17:11:32 +0200
+Message-ID: <CAEnQRZDkn=AUZo2LwqarQmYMh4SQcxksZZdxJFA618k9yKtQtQ@mail.gmail.com>
+References: <1489510622-30981-1-git-send-email-daniel.baluta@nxp.com>
+ <20170315091901.GF6986@localhost.localdomain>
+ <20170315133318.qo7fpoffmyh2chmz@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 89E7E266861
- for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 15:48:43 +0100 (CET)
-Received: from mail.kernel.org (localhost [127.0.0.1])
- by mail.kernel.org (Postfix) with ESMTP id 30BAA20457
- for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 14:48:40 +0000 (UTC)
-Received: from mail-ua0-f175.google.com (mail-ua0-f175.google.com
- [209.85.217.175])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 3D4DA202E9
- for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 14:48:39 +0000 (UTC)
-Received: by mail-ua0-f175.google.com with SMTP id u30so10593457uau.0
- for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 07:48:39 -0700 (PDT)
-In-Reply-To: <1489434963-2843-1-git-send-email-festevam@gmail.com>
+Received: from mail-it0-f66.google.com (mail-it0-f66.google.com
+ [209.85.214.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id BB6C4266861
+ for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 16:11:36 +0100 (CET)
+Received: by mail-it0-f66.google.com with SMTP id g138so3374047itb.0
+ for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 08:11:36 -0700 (PDT)
+In-Reply-To: <20170315133318.qo7fpoffmyh2chmz@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,21 +26,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, dmurphy@ti.com
+To: Mark Brown <broonie@kernel.org>
+Cc: shengjiu.wang@freescale.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, viorel.suman@nxp.com, Takashi Iwai <tiwai@suse.com>, mihai.serban@nxp.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Daniel Baluta <daniel.baluta@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 13, 2017 at 2:56 PM, Fabio Estevam <festevam@gmail.com> wrote:
-> From: Fabio Estevam <fabio.estevam@nxp.com>
+On Wed, Mar 15, 2017 at 3:33 PM, Mark Brown <broonie@kernel.org> wrote:
+> On Wed, Mar 15, 2017 at 09:19:01AM +0000, Charles Keepax wrote:
+>> On Tue, Mar 14, 2017 at 06:57:02PM +0200, Daniel Baluta wrote:
 >
-> Improve DT binding document example by providing the mandatory
-> regulator properties.
+>> > -   wm8960->bclk = snd_soc_params_to_bclk(params);
+>> > +   wm8960->bclk = params_physical_width(params) *
+>> > +           params_channels(params) * params_rate(params);
+>> >     if (params_channels(params) == 1)
+>> >             wm8960->bclk *= 2;
 >
-> Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
-> ---
->  Documentation/devicetree/bindings/sound/tas2552.txt | 3 +++
->  1 file changed, 3 insertions(+)
+>> Would quite like to see Mark's thoughts on this. Feels a bit to
+>> me (although I am not certain) like we are solving the problem in
+>> the wrong place, isn't this really setting the desired BCLK and
+>> then in wm8960_configure_clocking we should set the lowest BCLK
+>> we can that is greater than or equal to the desired.
+>
+> Exactly, this is the wrong fix in the wrong place - if this is something
+> we want to do we should be doing it in the shared functions so all
+> CODECs get the same behaviour but really I think Charles' suggestion
+> makes more sense.
 
-This needs to go to the DT list, but is trivial enough, so
+I see your point. Thanks a lot for feedback.
 
-Acked-by: Rob Herring <robh@kernel.org>
+I already have an implementation for Charles' suggestion.
+ Will send the patches asap.
+
+thanks,
+Daniel.
