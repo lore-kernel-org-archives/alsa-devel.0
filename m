@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bxtn: Disable interrupt when DSP
-	is in D3" to the asoc tree
-Date: Wed, 15 Mar 2017 18:13:42 +0000
-Message-ID: <E1coDQc-0002Kz-Vv@debutante>
-References: <1488910446-26415-4-git-send-email-jeeja.kp@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Fix not to stop src
+	pipe in pre pmd event handler" to the asoc tree
+Date: Wed, 15 Mar 2017 18:13:45 +0000
+Message-ID: <E1coDQf-0002MP-Vu@debutante>
+References: <1488910446-26415-3-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CB58226705E
- for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 19:13:51 +0100 (CET)
-In-Reply-To: <1488910446-26415-4-git-send-email-jeeja.kp@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 732562670F5
+ for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 19:13:54 +0100 (CET)
+In-Reply-To: <1488910446-26415-3-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jeeja KP <jeeja.kp@intel.com>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com, tiwai@suse.de, broonie@kernel.org, liam.r.girdwood@intel.com
+To: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com, tiwai@suse.de, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bxtn: Disable interrupt when DSP is in D3
+   ASoC: Intel: Skylake: Fix not to stop src pipe in pre pmd event handler
 
 has been applied to the asoc tree at
 
@@ -53,36 +53,43 @@ to this mail.
 Thanks,
 Mark
 
->From 5518af9f97940e84de6a4bf6fed212a95278f818 Mon Sep 17 00:00:00 2001
-From: Jeeja KP <jeeja.kp@intel.com>
-Date: Mon, 13 Mar 2017 22:11:25 +0530
-Subject: [PATCH] ASoC: Intel: bxtn: Disable interrupt when DSP is in D3
+>From 3b563e0a8406bf47cd39ca59f8453b3d968d996a Mon Sep 17 00:00:00 2001
+From: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Date: Mon, 13 Mar 2017 22:11:24 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix not to stop src pipe in pre pmd
+ event handler
 
-When DSP is in D3, no interrupts are expected, so disable
-interrupt while entering D3.
+If the widget is a mixin module, just unbind between source and sink
+and don't stop the source pipe as there can be multiple sinks
+connected.
 
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/bxt-sst.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/intel/skylake/skl-topology.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-index d3be1be5a372..b34c96508605 100644
---- a/sound/soc/intel/skylake/bxt-sst.c
-+++ b/sound/soc/intel/skylake/bxt-sst.c
-@@ -537,6 +537,11 @@ static int bxt_set_dsp_D3(struct sst_dsp *ctx, unsigned int core_id)
- 		"Failed to set DSP to D3:core id = %d;Continue reset\n",
- 		core_id);
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index e7836a2e18f0..d4058d2a8023 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -973,15 +973,6 @@ static int skl_tplg_mixer_dapm_pre_pmd_event(struct snd_soc_dapm_widget *w,
+ 			src_mconfig = sink_mconfig->m_in_pin[i].tgt_mcfg;
+ 			if (!src_mconfig)
+ 				continue;
+-			/*
+-			 * If path_found == 1, that means pmd for source
+-			 * pipe has not occurred, source is connected to
+-			 * some other sink. so its responsibility of sink
+-			 * to unbind itself from source.
+-			 */
+-			ret = skl_stop_pipe(ctx, src_mconfig->pipe);
+-			if (ret < 0)
+-				return ret;
  
-+	if (core_id == SKL_DSP_CORE0_ID) {
-+		/* disable Interrupt */
-+		skl_ipc_op_int_disable(ctx);
-+		skl_ipc_int_disable(ctx);
-+	}
- 	ret = skl_dsp_disable_core(ctx, core_mask);
- 	if (ret < 0) {
- 		dev_err(ctx->dev, "Failed to disable core %d\n", ret);
+ 			ret = skl_unbind_modules(ctx,
+ 						src_mconfig, sink_mconfig);
 -- 
 2.11.0
