@@ -1,30 +1,28 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Add AU1761 audio codec as selectable
-	option" to the asoc tree
-Date: Wed, 15 Mar 2017 18:13:12 +0000
-Message-ID: <E1coDQ8-00029c-Qf@debutante>
-References: <1487970034-6003-1-git-send-email-me>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: sun8i-codec-analog: split out mic2" to
+ the asoc tree
+Date: Wed, 15 Mar 2017 18:13:09 +0000
+Message-ID: <E1coDQ5-00028R-DE@debutante>
+References: <20170305133709.6288-2-icenowy@aosc.xyz>
+Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1487970034-6003-1-git-send-email-me>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bryce Ferguson <bryce.ferguson@rockwellcollins.com>
-Cc: patch@alsa-project.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-sunxi+bncBDQ2L75W5QGBBQUIU3DAKGQEKQGGTPA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20170305133709.6288-2-icenowy-ymACFijhrKM@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
+Cc: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Add AU1761 audio codec as selectable option
+   ASoC: sun8i-codec-analog: split out mic2
 
 has been applied to the asoc tree at
 
@@ -49,41 +47,201 @@ to this mail.
 Thanks,
 Mark
 
->From e54fde61715df828c2f06883a6eb756bb5d88006 Mon Sep 17 00:00:00 2001
-From: Bryce Ferguson <bryce.ferguson@rockwellcollins.com>
-Date: Mon, 27 Feb 2017 08:17:42 -0600
-Subject: [PATCH] ASoC: Add AU1761 audio codec as selectable option
+>From 3f48947d56ff3e42e2e490714025e984af817f5d Mon Sep 17 00:00:00 2001
+From: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
+Date: Sun, 5 Mar 2017 21:36:58 +0800
+Subject: [PATCH] ASoC: sun8i-codec-analog: split out mic2
 
-This commit adds the ADI AU1761 audio codec as a selectable option
-in the kernel config.  Currently the driver can only be selected
-for ADI blackfin devices or if SND_SOC_ALL_CODECS is enabled.
+Allwinner V3s features an analog codec without MIC2.
 
-Signed-off-by: Bryce Ferguson <bryce.ferguson@rockwellcollins.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Split out this part, in order to prepare for the V3s analog codec.
+
+Signed-off-by: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
+Acked-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/codecs/Kconfig | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/sunxi/sun8i-codec-analog.c | 92 +++++++++++++++++++++++++++++-------
+ 1 file changed, 76 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 9e1718a8cb1c..71039982dae4 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -302,12 +302,14 @@ config SND_SOC_ADAU1761
- 	select SND_SOC_ADAU17X1
+diff --git a/sound/soc/sunxi/sun8i-codec-analog.c b/sound/soc/sunxi/sun8i-codec-analog.c
+index 72331332b72e..b95ff045cd7f 100644
+--- a/sound/soc/sunxi/sun8i-codec-analog.c
++++ b/sound/soc/sunxi/sun8i-codec-analog.c
+@@ -259,17 +259,11 @@ static const struct snd_kcontrol_new sun8i_codec_common_controls[] = {
+ 	SOC_SINGLE_TLV("Mic1 Playback Volume", SUN8I_ADDA_MICIN_GCTRL,
+ 		       SUN8I_ADDA_MICIN_GCTRL_MIC1G,
+ 		       0x7, 0, sun8i_codec_out_mixer_pregain_scale),
+-	SOC_SINGLE_TLV("Mic2 Playback Volume",
+-		       SUN8I_ADDA_MICIN_GCTRL, SUN8I_ADDA_MICIN_GCTRL_MIC2G,
+-		       0x7, 0, sun8i_codec_out_mixer_pregain_scale),
  
- config SND_SOC_ADAU1761_I2C
--	tristate
-+	tristate "Analog Devices AU1761 CODEC - I2C"
-+	depends on I2C
- 	select SND_SOC_ADAU1761
- 	select REGMAP_I2C
+-	/* Microphone Amp boost gains */
++	/* Microphone Amp boost gain */
+ 	SOC_SINGLE_TLV("Mic1 Boost Volume", SUN8I_ADDA_MIC1G_MICBIAS_CTRL,
+ 		       SUN8I_ADDA_MIC1G_MICBIAS_CTRL_MIC1BOOST, 0x7, 0,
+ 		       sun8i_codec_mic_gain_scale),
+-	SOC_SINGLE_TLV("Mic2 Boost Volume", SUN8I_ADDA_MIC2G_CTRL,
+-		       SUN8I_ADDA_MIC2G_CTRL_MIC2BOOST, 0x7, 0,
+-		       sun8i_codec_mic_gain_scale),
  
- config SND_SOC_ADAU1761_SPI
--	tristate
-+	tristate "Analog Devices AU1761 CODEC - SPI"
-+	depends on SPI
- 	select SND_SOC_ADAU1761
- 	select REGMAP_SPI
+ 	/* ADC */
+ 	SOC_SINGLE_TLV("ADC Gain Capture Volume", SUN8I_ADDA_ADC_AP_EN,
+@@ -298,9 +292,8 @@ static const struct snd_soc_dapm_widget sun8i_codec_common_widgets[] = {
+ 	/* Line In */
+ 	SND_SOC_DAPM_INPUT("LINEIN"),
+ 
+-	/* Microphone inputs */
++	/* Microphone input */
+ 	SND_SOC_DAPM_INPUT("MIC1"),
+-	SND_SOC_DAPM_INPUT("MIC2"),
+ 
+ 	/* Microphone Bias */
+ 	SND_SOC_DAPM_SUPPLY("MBIAS", SUN8I_ADDA_MIC1G_MICBIAS_CTRL,
+@@ -310,8 +303,6 @@ static const struct snd_soc_dapm_widget sun8i_codec_common_widgets[] = {
+ 	/* Mic input path */
+ 	SND_SOC_DAPM_PGA("Mic1 Amplifier", SUN8I_ADDA_MIC1G_MICBIAS_CTRL,
+ 			 SUN8I_ADDA_MIC1G_MICBIAS_CTRL_MIC1AMPEN, 0, NULL, 0),
+-	SND_SOC_DAPM_PGA("Mic2 Amplifier", SUN8I_ADDA_MIC2G_CTRL,
+-			 SUN8I_ADDA_MIC2G_CTRL_MIC2AMPEN, 0, NULL, 0),
+ 
+ 	/* Mixers */
+ 	SND_SOC_DAPM_MIXER("Left Mixer", SUN8I_ADDA_DAC_PA_SRC,
+@@ -335,35 +326,30 @@ static const struct snd_soc_dapm_widget sun8i_codec_common_widgets[] = {
+ static const struct snd_soc_dapm_route sun8i_codec_common_routes[] = {
+ 	/* Microphone Routes */
+ 	{ "Mic1 Amplifier", NULL, "MIC1"},
+-	{ "Mic2 Amplifier", NULL, "MIC2"},
+ 
+ 	/* Left Mixer Routes */
+ 	{ "Left Mixer", "DAC Playback Switch", "Left DAC" },
+ 	{ "Left Mixer", "DAC Reversed Playback Switch", "Right DAC" },
+ 	{ "Left Mixer", "Line In Playback Switch", "LINEIN" },
+ 	{ "Left Mixer", "Mic1 Playback Switch", "Mic1 Amplifier" },
+-	{ "Left Mixer", "Mic2 Playback Switch", "Mic2 Amplifier" },
+ 
+ 	/* Right Mixer Routes */
+ 	{ "Right Mixer", "DAC Playback Switch", "Right DAC" },
+ 	{ "Right Mixer", "DAC Reversed Playback Switch", "Left DAC" },
+ 	{ "Right Mixer", "Line In Playback Switch", "LINEIN" },
+ 	{ "Right Mixer", "Mic1 Playback Switch", "Mic1 Amplifier" },
+-	{ "Right Mixer", "Mic2 Playback Switch", "Mic2 Amplifier" },
+ 
+ 	/* Left ADC Mixer Routes */
+ 	{ "Left ADC Mixer", "Mixer Capture Switch", "Left Mixer" },
+ 	{ "Left ADC Mixer", "Mixer Reversed Capture Switch", "Right Mixer" },
+ 	{ "Left ADC Mixer", "Line In Capture Switch", "LINEIN" },
+ 	{ "Left ADC Mixer", "Mic1 Capture Switch", "Mic1 Amplifier" },
+-	{ "Left ADC Mixer", "Mic2 Capture Switch", "Mic2 Amplifier" },
+ 
+ 	/* Right ADC Mixer Routes */
+ 	{ "Right ADC Mixer", "Mixer Capture Switch", "Right Mixer" },
+ 	{ "Right ADC Mixer", "Mixer Reversed Capture Switch", "Left Mixer" },
+ 	{ "Right ADC Mixer", "Line In Capture Switch", "LINEIN" },
+ 	{ "Right ADC Mixer", "Mic1 Capture Switch", "Mic1 Amplifier" },
+-	{ "Right ADC Mixer", "Mic2 Capture Switch", "Mic2 Amplifier" },
+ 
+ 	/* ADC Routes */
+ 	{ "Left ADC", NULL, "Left ADC Mixer" },
+@@ -578,19 +564,87 @@ static int sun8i_codec_add_lineout(struct snd_soc_component *cmpnt)
+ 	return 0;
+ }
+ 
++/* mic2 specific controls, widgets and routes */
++static const struct snd_kcontrol_new sun8i_codec_mic2_controls[] = {
++	/* Mixer pre-gain */
++	SOC_SINGLE_TLV("Mic2 Playback Volume",
++		       SUN8I_ADDA_MICIN_GCTRL, SUN8I_ADDA_MICIN_GCTRL_MIC2G,
++		       0x7, 0, sun8i_codec_out_mixer_pregain_scale),
++
++	/* Microphone Amp boost gain */
++	SOC_SINGLE_TLV("Mic2 Boost Volume", SUN8I_ADDA_MIC2G_CTRL,
++		       SUN8I_ADDA_MIC2G_CTRL_MIC2BOOST, 0x7, 0,
++		       sun8i_codec_mic_gain_scale),
++};
++
++static const struct snd_soc_dapm_widget sun8i_codec_mic2_widgets[] = {
++	/* Microphone input */
++	SND_SOC_DAPM_INPUT("MIC2"),
++
++	/* Mic input path */
++	SND_SOC_DAPM_PGA("Mic2 Amplifier", SUN8I_ADDA_MIC2G_CTRL,
++			 SUN8I_ADDA_MIC2G_CTRL_MIC2AMPEN, 0, NULL, 0),
++};
++
++static const struct snd_soc_dapm_route sun8i_codec_mic2_routes[] = {
++	{ "Mic2 Amplifier", NULL, "MIC2"},
++
++	{ "Left Mixer", "Mic2 Playback Switch", "Mic2 Amplifier" },
++
++	{ "Right Mixer", "Mic2 Playback Switch", "Mic2 Amplifier" },
++
++	{ "Left ADC Mixer", "Mic2 Capture Switch", "Mic2 Amplifier" },
++
++	{ "Right ADC Mixer", "Mic2 Capture Switch", "Mic2 Amplifier" },
++};
++
++static int sun8i_codec_add_mic2(struct snd_soc_component *cmpnt)
++{
++	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(cmpnt);
++	struct device *dev = cmpnt->dev;
++	int ret;
++
++	ret = snd_soc_add_component_controls(cmpnt,
++					     sun8i_codec_mic2_controls,
++					     ARRAY_SIZE(sun8i_codec_mic2_controls));
++	if (ret) {
++		dev_err(dev, "Failed to add MIC2 controls: %d\n", ret);
++		return ret;
++	}
++
++	ret = snd_soc_dapm_new_controls(dapm, sun8i_codec_mic2_widgets,
++					ARRAY_SIZE(sun8i_codec_mic2_widgets));
++	if (ret) {
++		dev_err(dev, "Failed to add MIC2 DAPM widgets: %d\n", ret);
++		return ret;
++	}
++
++	ret = snd_soc_dapm_add_routes(dapm, sun8i_codec_mic2_routes,
++				      ARRAY_SIZE(sun8i_codec_mic2_routes));
++	if (ret) {
++		dev_err(dev, "Failed to add MIC2 DAPM routes: %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
+ struct sun8i_codec_analog_quirks {
+ 	bool has_headphone;
+ 	bool has_hmic;
+ 	bool has_lineout;
++	bool has_mic2;
+ };
+ 
+ static const struct sun8i_codec_analog_quirks sun8i_a23_quirks = {
+ 	.has_headphone	= true,
+ 	.has_hmic	= true,
++	.has_mic2	= true,
+ };
+ 
+ static const struct sun8i_codec_analog_quirks sun8i_h3_quirks = {
+ 	.has_lineout	= true,
++	.has_mic2	= true,
+ };
+ 
+ static int sun8i_codec_analog_cmpnt_probe(struct snd_soc_component *cmpnt)
+@@ -626,6 +680,12 @@ static int sun8i_codec_analog_cmpnt_probe(struct snd_soc_component *cmpnt)
+ 			return ret;
+ 	}
+ 
++	if (quirks->has_mic2) {
++		ret = sun8i_codec_add_mic2(cmpnt);
++		if (ret)
++			return ret;
++	}
++
+ 	return 0;
+ }
  
 -- 
 2.11.0
