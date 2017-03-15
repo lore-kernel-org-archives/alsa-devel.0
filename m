@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bxtn: Update DSP core state in
-	D0" to the asoc tree
-Date: Wed, 15 Mar 2017 18:13:38 +0000
-Message-ID: <E1coDQY-0002Jw-SG@debutante>
-References: <1488910446-26415-5-git-send-email-jeeja.kp@intel.com>
+Subject: Applied "ASoC: Intel: bxtn: Disable interrupt when DSP
+	is in D3" to the asoc tree
+Date: Wed, 15 Mar 2017 18:13:42 +0000
+Message-ID: <E1coDQc-0002Kz-Vv@debutante>
+References: <1488910446-26415-4-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C0222670CF
- for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 19:13:47 +0100 (CET)
-In-Reply-To: <1488910446-26415-5-git-send-email-jeeja.kp@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CB58226705E
+ for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 19:13:51 +0100 (CET)
+In-Reply-To: <1488910446-26415-4-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bxtn: Update DSP core state in D0
+   ASoC: Intel: bxtn: Disable interrupt when DSP is in D3
 
 has been applied to the asoc tree at
 
@@ -53,66 +53,36 @@ to this mail.
 Thanks,
 Mark
 
->From 1fb344a33a2f99378128281df97770e2c5182c2d Mon Sep 17 00:00:00 2001
+>From 5518af9f97940e84de6a4bf6fed212a95278f818 Mon Sep 17 00:00:00 2001
 From: Jeeja KP <jeeja.kp@intel.com>
-Date: Mon, 13 Mar 2017 22:11:26 +0530
-Subject: [PATCH] ASoC: Intel: bxtn: Update DSP core state in D0
+Date: Mon, 13 Mar 2017 22:11:25 +0530
+Subject: [PATCH] ASoC: Intel: bxtn: Disable interrupt when DSP is in D3
 
-In system suspend, firmware needs to be re-downloaded as IMR is cleared.
-When firmware is downloaded in D0, core state is not set to running
-state causing instability with subsequent D0-D3 cycles.
-
-So set the core state correctly during D0 and check the DSP core state
-if not in reset to set the DSP to D3.
+When DSP is in D3, no interrupts are expected, so disable
+interrupt while entering D3.
 
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/bxt-sst.c     | 1 +
- sound/soc/intel/skylake/skl-sst-dsp.c | 6 ++++--
- 2 files changed, 5 insertions(+), 2 deletions(-)
+ sound/soc/intel/skylake/bxt-sst.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-index b34c96508605..2a2bb944cd40 100644
+index d3be1be5a372..b34c96508605 100644
 --- a/sound/soc/intel/skylake/bxt-sst.c
 +++ b/sound/soc/intel/skylake/bxt-sst.c
-@@ -446,6 +446,7 @@ static int bxt_set_dsp_D0(struct sst_dsp *ctx, unsigned int core_id)
- 				return ret;
- 			}
- 		}
-+		skl->cores.state[core_id] = SKL_DSP_RUNNING;
- 		return ret;
- 	}
+@@ -537,6 +537,11 @@ static int bxt_set_dsp_D3(struct sst_dsp *ctx, unsigned int core_id)
+ 		"Failed to set DSP to D3:core id = %d;Continue reset\n",
+ 		core_id);
  
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.c b/sound/soc/intel/skylake/skl-sst-dsp.c
-index c3deefab65d6..08332723c700 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.c
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.c
-@@ -355,12 +355,13 @@ int skl_dsp_get_core(struct sst_dsp *ctx, unsigned int core_id)
- 		ret = ctx->fw_ops.set_state_D0(ctx, core_id);
- 		if (ret < 0) {
- 			dev_err(ctx->dev, "unable to get core%d\n", core_id);
--			return ret;
-+			goto out;
- 		}
- 	}
- 
- 	skl->cores.usage_count[core_id]++;
- 
-+out:
- 	dev_dbg(ctx->dev, "core id %d state %d usage_count %d\n",
- 			core_id, skl->cores.state[core_id],
- 			skl->cores.usage_count[core_id]);
-@@ -379,7 +380,8 @@ int skl_dsp_put_core(struct sst_dsp *ctx, unsigned int core_id)
- 		return -EINVAL;
- 	}
- 
--	if (--skl->cores.usage_count[core_id] == 0) {
-+	if ((--skl->cores.usage_count[core_id] == 0) &&
-+		(skl->cores.state[core_id] != SKL_DSP_RESET)) {
- 		ret = ctx->fw_ops.set_state_D3(ctx, core_id);
- 		if (ret < 0) {
- 			dev_err(ctx->dev, "unable to put core %d: %d\n",
++	if (core_id == SKL_DSP_CORE0_ID) {
++		/* disable Interrupt */
++		skl_ipc_op_int_disable(ctx);
++		skl_ipc_int_disable(ctx);
++	}
+ 	ret = skl_dsp_disable_core(ctx, core_mask);
+ 	if (ret < 0) {
+ 		dev_err(ctx->dev, "Failed to disable core %d\n", ret);
 -- 
 2.11.0
