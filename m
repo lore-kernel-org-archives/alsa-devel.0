@@ -1,15 +1,21 @@
-From: Philipp Zabel <p.zabel@pengutronix.de>
-Subject: [PATCH v2 14/14] ASoC: sunxi: simplify optional reset
-	handling
-Date: Wed, 15 Mar 2017 12:31:57 +0100
-Message-ID: <20170315113157.13218-1-p.zabel@pengutronix.de>
+From: Daniel Baluta <daniel.baluta@nxp.com>
+Subject: Re: [RFC PATCH] ASoC: wm8960: Use physical width for
+	bclk
+Date: Wed, 15 Mar 2017 11:43:24 +0000
+Message-ID: <1489578203.15165.46.camel@nxp.com>
+References: <1489510622-30981-1-git-send-email-daniel.baluta@nxp.com>
+ <20170315091901.GF6986@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.4.pengutronix.de (metis.ext.4.pengutronix.de
- [92.198.50.35]) by alsa0.perex.cz (Postfix) with ESMTP id 39141266861
- for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 12:31:58 +0100 (CET)
+Received: from EUR02-AM5-obe.outbound.protection.outlook.com
+ (mail-eopbgr00053.outbound.protection.outlook.com [40.107.0.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6CEF1266861
+ for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 12:43:26 +0100 (CET)
+In-Reply-To: <20170315091901.GF6986@localhost.localdomain>
+Content-Language: en-US
+Content-ID: <C25AE49FA258364FAC4E25D0157CC717@eurprd04.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,44 +25,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Maxime Ripard <maxime.ripard@free-electrons.com>
+To: "ckeepax@opensource.wolfsonmicro.com" <ckeepax@opensource.wolfsonmicro.com>, "broonie@kernel.org" <broonie@kernel.org>
+Cc: "shengjiu.wang@freescale.com" <shengjiu.wang@freescale.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Viorel Suman <viorel.suman@nxp.com>, Mihai Serban <mihai.serban@nxp.com>, "tiwai@suse.com" <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-As of commit bb475230b8e5 ("reset: make optional functions really
-optional"), the reset framework API calls use NULL pointers to describe
-optional, non-present reset controls.
-
-This allows to return errors from devm_reset_control_get_optional and to
-call reset_control_deassert unconditionally.
-
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
-Acked-by: Mark Brown <broonie@kernel.org>
-Acked-by: Chen-Yu Tsai <wens@csie.org>
----
- sound/soc/sunxi/sun4i-spdif.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/sunxi/sun4i-spdif.c b/sound/soc/sunxi/sun4i-spdif.c
-index eaefd07a5ed08..cdf8a6d86010c 100644
---- a/sound/soc/sunxi/sun4i-spdif.c
-+++ b/sound/soc/sunxi/sun4i-spdif.c
-@@ -521,13 +521,12 @@ static int sun4i_spdif_probe(struct platform_device *pdev)
- 
- 	if (quirks->has_reset) {
- 		host->rst = devm_reset_control_get_optional(&pdev->dev, NULL);
--		if (IS_ERR(host->rst) && PTR_ERR(host->rst) == -EPROBE_DEFER) {
--			ret = -EPROBE_DEFER;
-+		if (IS_ERR(host->rst)) {
-+			ret = PTR_ERR(host->rst);
- 			dev_err(&pdev->dev, "Failed to get reset: %d\n", ret);
- 			return ret;
- 		}
--		if (!IS_ERR(host->rst))
--			reset_control_deassert(host->rst);
-+		reset_control_deassert(host->rst);
- 	}
- 
- 	ret = devm_snd_soc_register_component(&pdev->dev,
--- 
-2.11.0
+T24gTWksIDIwMTctMDMtMTUgYXQgMDk6MTkgKzAwMDAsIENoYXJsZXMgS2VlcGF4IHdyb3RlOg0K
+PiBPbiBUdWUsIE1hciAxNCwgMjAxNyBhdCAwNjo1NzowMlBNICswMjAwLCBEYW5pZWwgQmFsdXRh
+IHdyb3RlOg0KPiA+IA0KPiA+IGJjbGsgaXMgZGVyaXZlZCBmcm9tIHN5c2NsayB3aXRoIHRoZSBo
+ZWxwIG9mIGJjbGtfZGl2cy4gQW55aG93LCBmb3INCj4gPiBTMjBfM0xFIGZvcm1hdCB0aGVyZSBp
+cyBubyBiY2xrX2RpdnMgdGhhdCBjb3VsZCBiZSB1c2VkIHRvIGRlcml2ZQ0KPiA+IGFuIGV4YWN0
+IGJjbGsuDQo+ID4gDQo+ID4gV2UgY2FuIGZpeCB0aGlzIGJ5IHVzaW5nIHN0b3JhZ2Ugc2l6ZSBp
+bnN0ZWFkIHRoZSBleGFjdA0KPiA+IG51bWJlciBvZiBiaXRzIG9mIHRoZSBzYW1wbGUgd2hlbiBj
+b21wdXRpbmcgYmNsay4NCj4gPiANCj4gPiBXaXRoIHRoaXMgYXBwcm9hY2ggd2UgY2FuIHBsYXkg
+UzIwXzNMRSBlbmNvZGVkIGZpbGVzIGF0IHRoZSBjb3N0IG9mDQo+ID4gc29tZSB1bnVzZWQgQkNM
+SyBjeWNsZXMgZm9yIFMyMF8zTEUgYW5kIFMyNF9MRS4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5
+OiBEYW5pZWwgQmFsdXRhIDxkYW5pZWwuYmFsdXRhQG54cC5jb20+DQo+ID4gLS0tDQo+ID4gwqBz
+b3VuZC9zb2MvY29kZWNzL3dtODk2MC5jIHwgMyArKy0NCj4gPiDCoDEgZmlsZSBjaGFuZ2VkLCAy
+IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvc291
+bmQvc29jL2NvZGVjcy93bTg5NjAuYyBiL3NvdW5kL3NvYy9jb2RlY3Mvd204OTYwLmMNCj4gPiBp
+bmRleCBlMTQyOWUzLi4xOGNhNWZjIDEwMDY0NA0KPiA+IC0tLSBhL3NvdW5kL3NvYy9jb2RlY3Mv
+d204OTYwLmMNCj4gPiArKysgYi9zb3VuZC9zb2MvY29kZWNzL3dtODk2MC5jDQo+ID4gQEAgLTcy
+Miw3ICs3MjIsOCBAQCBzdGF0aWMgaW50IHdtODk2MF9od19wYXJhbXMoc3RydWN0DQo+ID4gc25k
+X3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwNCj4gPiDCoAlib29sIHR4ID0gc3Vic3RyZWFtLT5z
+dHJlYW0gPT0gU05EUlZfUENNX1NUUkVBTV9QTEFZQkFDSzsNCj4gPiDCoAlpbnQgaTsNCj4gPiDC
+oA0KPiA+IC0Jd204OTYwLT5iY2xrID0gc25kX3NvY19wYXJhbXNfdG9fYmNsayhwYXJhbXMpOw0K
+PiA+ICsJd204OTYwLT5iY2xrID0gcGFyYW1zX3BoeXNpY2FsX3dpZHRoKHBhcmFtcykgKg0KPiA+
+ICsJCXBhcmFtc19jaGFubmVscyhwYXJhbXMpICogcGFyYW1zX3JhdGUocGFyYW1zKTsNCj4gPiDC
+oAlpZiAocGFyYW1zX2NoYW5uZWxzKHBhcmFtcykgPT0gMSkNCj4gPiDCoAkJd204OTYwLT5iY2xr
+ICo9IDI7DQo+IFdvdWxkIHF1aXRlIGxpa2UgdG8gc2VlIE1hcmsncyB0aG91Z2h0cyBvbiB0aGlz
+LiBGZWVscyBhIGJpdCB0bw0KPiBtZSAoYWx0aG91Z2ggSSBhbSBub3QgY2VydGFpbikgbGlrZSB3
+ZSBhcmUgc29sdmluZyB0aGUgcHJvYmxlbSBpbg0KPiB0aGUgd3JvbmcgcGxhY2UsIGlzbid0IHRo
+aXMgcmVhbGx5IHNldHRpbmcgdGhlIGRlc2lyZWQgQkNMSyBhbmQNCj4gdGhlbiBpbiB3bTg5NjBf
+Y29uZmlndXJlX2Nsb2NraW5nIHdlIHNob3VsZCBzZXQgdGhlIGxvd2VzdCBCQ0xLDQo+IHdlIGNh
+biB0aGF0IGlzIGdyZWF0ZXIgdGhhbiBvciBlcXVhbCB0byB0aGUgZGVzaXJlZC4NCg0KSXMgdGhl
+cmUgYW55IHN0YW5kYXJkIHdheSBvZiBkb2luZyB0aGlzIGluIEFTb0M/IENvdWxkbid0IGZpbmQg
+YW55DQpleGFtcGxlIHdoZXJlIHRoZSBiaXRjbGsgaXMgcmVsYXhlZCB0byBsb3dlc3QgdmFsdWUg
+Z3JlYXRlciB0aGFuIHRoZQ0KZGVzaXJlZCBvbmUuDQoNCkkgaGF2ZSBwcmVwYXJlZCBzb21lIHBh
+dGNoZXMgd2l0aCB0aGlzIGFwcHJvYWNoLCB5b3UgY2FuIGxvb2sgYXQgdGhlbQ0KaGVyZToNCg0K
+aHR0cDovL3Bhc3RlYmluLmNvbS8weFcwRTgyTsKgLSBzb21lIHJlZmFjdG9yaW5nIG9mIHN5c2Ns
+ayBzZWFyY2gNCmh0dHA6Ly9wYXN0ZWJpbi5jb20vUVJ0MVVUN1HCoC0gcmVsYXggYml0Y2xrIHZh
+bHVlDQoNCkRhbmllbC4NCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
