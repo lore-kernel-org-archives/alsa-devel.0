@@ -1,51 +1,174 @@
-From: Till Smejkal <till.smejkal@googlemail.com>
-Subject: Re: [RFC PATCH 00/13] Introduce first class virtual address spaces
-Date: Wed, 15 Mar 2017 16:18:43 -0700
-Message-ID: <20170315231843.sgxzg6qj34anyirs@arch-dev>
-References: <20170315220952.GA1435@intel.com>
+From: Harsha Priya <harshapriya.n@intel.com>
+Subject: [PATCH v2] ASoC: Intel: Update bxt_da7219_max98357a to
+	add a new
+Date: Wed, 15 Mar 2017 16:28:25 -0700
+Message-ID: <1489620505-24841-1-git-send-email-harshapriya.n@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <owner-linux-aio@kvack.org>
-Content-Disposition: inline
-In-Reply-To: <20170315220952.GA1435@intel.com>
-Sender: owner-linux-aio@kvack.org
-To: "Luck, Tony" <tony.luck@intel.com>
-Cc: Andy Lutomirski <luto@amacapital.net>, Andy Lutomirski <luto@kernel.org>, Till Smejkal <till.smejkal@googlemail.com>, Richard Henderson <rth@twiddle.net>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@synopsys.com>, Russell King <linux@armlinux.org.uk>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Steven Miao <realmz6@gmail.com>, Richard Kuo <rkuo@codeaurora.org>, Fenghua Yu <fenghua.yu@intel.com>, James Hogan <james.hogan@imgtec.com>, Ralf Baechle <ralf@linux-mips.org>, "James E.J. Bottomley" <jejb@parisc-linux.org>, Helge Deller <deller@gmx.de>, Benjamin Herrenschmidt <benh@kernel.crashing.org>, Paul Mackerras <paulus@samba.org>, Michael Ellerman <mpe@ellerman.id.au>, Martin Schwidefsky <schwidefsky@de.ibm.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, Yoshinori Sato <ysato>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 546EA2670AF
+ for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2017 00:28:41 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, vinod.koul@intel.com, alsa-devel@alsa-project.org
+Cc: harshapriya.n@intel.com, sathyanarayana.nujella@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 15 Mar 2017, Luck, Tony wrote:
-> On Wed, Mar 15, 2017 at 03:02:34PM -0700, Till Smejkal wrote:
-> > I don't agree here. VAS segments are basically in-memory files that are handled by
-> > the kernel directly without using a file system. Hence, if an application uses a VAS
-> > segment to store data the same rules apply as if it uses a file. Everything that it
-> > saves in the VAS segment might be accessible by other applications. An application
-> > using VAS segments should be aware of this fact. In addition, the resources that are
-> > represented by a VAS segment are not leaked. As I said, VAS segments are much like
-> > files. Hence, if you don't want to use them any more, delete them. But as with files,
-> > the kernel will not delete them for you (although something like this can be added).
-> 
-> So how do they differ from shmget(2), shmat(2), shmdt(2), shmctl(2)?
-> 
-> Apart from VAS having better names, instead of silly "key_t key" ones.
+This patch adds a platform clock widget to turn off the clock only when
+both headset capture and headset playback are not in use. This removes
+turning off the clock in hw_free so that the clock is on when
+either capture or playback of headset is in progress.
 
-Unfortunately, I have to admit that the VAS segments don't differ from shm* a lot.
-The implementation is differently, but the functionality that you can achieve with it
-is very similar. I am sorry. We should have looked more closely at the whole
-functionality that is provided by the shmem subsystem before working on VAS segments.
+Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
+Signed-off-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+---
+ sound/soc/intel/boards/bxt_da7219_max98357a.c | 97 +++++++++++++++------------
+ 1 file changed, 53 insertions(+), 44 deletions(-)
 
-However, VAS segments are not the key part of this patch set. The more interesting
-functionality in our opinion is the introduction of first class virtual address
-spaces and what they can be used for. VAS segments were just another logical step for
-us (from first class virtual address spaces to first class virtual address space
-segments) but since their functionality can be achieved with various other already
-existing features of the Linux kernel, I will probably drop them in future versions
-of the patchset.
-
-Thanks
-Till
-
---
-To unsubscribe, send a message with 'unsubscribe linux-aio' in
-the body to majordomo@kvack.org.  For more info on Linux AIO,
-see: http://www.kvack.org/aio/
-Don't email: <a href=mailto:"aart@kvack.org">aart@kvack.org</a>
+diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+index 2cda06c..3a8c4d9 100644
+--- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
++++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+@@ -55,6 +55,54 @@ enum {
+ 	BXT_DPCM_AUDIO_HDMI3_PB,
+ };
+ 
++static inline struct snd_soc_dai *bxt_get_codec_dai(struct snd_soc_card *card)
++{
++	struct snd_soc_pcm_runtime *rtd;
++
++	list_for_each_entry(rtd, &card->rtd_list, list) {
++
++		if (!strncmp(rtd->codec_dai->name, BXT_DIALOG_CODEC_DAI,
++			     strlen(BXT_DIALOG_CODEC_DAI)))
++			return rtd->codec_dai;
++	}
++
++	return NULL;
++}
++
++static int platform_clock_control(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *k, int  event)
++{
++	int ret = 0;
++	struct snd_soc_dapm_context *dapm = w->dapm;
++	struct snd_soc_card *card = dapm->card;
++	struct snd_soc_dai *codec_dai;
++
++	codec_dai = bxt_get_codec_dai(card);
++	if (!codec_dai) {
++		dev_err(card->dev, "Codec dai not found; Unable to set/unset codec pll\n");
++		return -EIO;
++	}
++
++	if (SND_SOC_DAPM_EVENT_OFF(event)) {
++		ret = snd_soc_dai_set_pll(codec_dai, 0,
++			DA7219_SYSCLK_MCLK, 0, 0);
++		if (ret)
++			dev_err(card->dev, "failed to stop PLL: %d\n", ret);
++	} else if(SND_SOC_DAPM_EVENT_ON(event)) {
++		ret = snd_soc_dai_set_sysclk(codec_dai,
++                        DA7219_CLKSRC_MCLK, 19200000, SND_SOC_CLOCK_IN);
++		if (ret)
++			dev_err(card->dev, "can't set codec sysclk configuration\n");
++
++		ret = snd_soc_dai_set_pll(codec_dai, 0,
++			DA7219_SYSCLK_PLL_SRM, 0, DA7219_PLL_FREQ_OUT_98304);
++		if (ret)
++			dev_err(card->dev, "failed to start PLL: %d\n", ret);
++	}
++
++	return ret;
++}
++
+ static const struct snd_kcontrol_new broxton_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
+ 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+@@ -69,6 +117,8 @@ enum {
+ 	SND_SOC_DAPM_SPK("HDMI1", NULL),
+ 	SND_SOC_DAPM_SPK("HDMI2", NULL),
+ 	SND_SOC_DAPM_SPK("HDMI3", NULL),
++	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
++			platform_clock_control,	SND_SOC_DAPM_POST_PMD|SND_SOC_DAPM_PRE_PMU),
+ };
+ 
+ static const struct snd_soc_dapm_route broxton_map[] = {
+@@ -109,6 +159,9 @@ enum {
+ 	/* DMIC */
+ 	{"dmic01_hifi", NULL, "DMIC01 Rx"},
+ 	{"DMIC01 Rx", NULL, "DMIC AIF"},
++
++	{ "Headphone Jack", NULL, "Platform Clock" },
++	{ "Headset Mic", NULL, "Platform Clock" },
+ };
+ 
+ static int broxton_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+@@ -243,49 +296,6 @@ static int bxt_fe_startup(struct snd_pcm_substream *substream)
+ 	.startup = bxt_fe_startup,
+ };
+ 
+-static int broxton_da7219_hw_params(struct snd_pcm_substream *substream,
+-				struct snd_pcm_hw_params *params)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-	int ret;
+-
+-	ret = snd_soc_dai_set_sysclk(codec_dai,
+-			DA7219_CLKSRC_MCLK, 19200000, SND_SOC_CLOCK_IN);
+-	if (ret < 0)
+-		dev_err(codec_dai->dev, "can't set codec sysclk configuration\n");
+-
+-	ret = snd_soc_dai_set_pll(codec_dai, 0,
+-			DA7219_SYSCLK_PLL_SRM, 0, DA7219_PLL_FREQ_OUT_98304);
+-	if (ret < 0) {
+-		dev_err(codec_dai->dev, "failed to start PLL: %d\n", ret);
+-		return -EIO;
+-	}
+-
+-	return ret;
+-}
+-
+-static int broxton_da7219_hw_free(struct snd_pcm_substream *substream)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-	int ret;
+-
+-	ret = snd_soc_dai_set_pll(codec_dai, 0,
+-			DA7219_SYSCLK_MCLK, 0, 0);
+-	if (ret < 0) {
+-		dev_err(codec_dai->dev, "failed to stop PLL: %d\n", ret);
+-		return -EIO;
+-	}
+-
+-	return ret;
+-}
+-
+-static const struct snd_soc_ops broxton_da7219_ops = {
+-	.hw_params = broxton_da7219_hw_params,
+-	.hw_free = broxton_da7219_hw_free,
+-};
+-
+ static int broxton_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+ 			struct snd_pcm_hw_params *params)
+ {
+@@ -467,7 +477,6 @@ static int broxton_refcap_startup(struct snd_pcm_substream *substream)
+ 			SND_SOC_DAIFMT_CBS_CFS,
+ 		.ignore_pmdown_time = 1,
+ 		.be_hw_params_fixup = broxton_ssp_fixup,
+-		.ops = &broxton_da7219_ops,
+ 		.dpcm_playback = 1,
+ 		.dpcm_capture = 1,
+ 	},
+-- 
+1.9.1
