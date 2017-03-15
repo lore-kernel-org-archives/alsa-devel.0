@@ -1,26 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/3] ASoC: Enable a new IC master mode:
- bcm2835<=>IC<=>cs42xx8
-Date: Wed, 15 Mar 2017 19:01:08 +0000
-Message-ID: <20170315190108.y6ybxm3nfgnutajv@sirena.org.uk>
-References: <20170226144958.GA5543@camel2.lan>
- <732a71ac-5ec5-37e1-1190-be036ea34555@flatmax.org>
- <20170226221648.GA10974@camel2.lan>
- <7cef41ee-ef00-22b7-830f-517a9d594ed0@flatmax.org>
- <20170227080433.GA2718@delle.lan>
- <170950f7-354f-e6a9-cefb-834a00fadd1b@flatmax.org>
- <20170227103024.GF2718@delle.lan>
- <7b78c782-28e1-4849-5d00-8caf30847d5c@flatmax.org>
- <20170227115108.GA6732@delle.lan>
- <20170228095929.GH2742@localhost.localdomain>
+Subject: Re: [PATCH 1/3] ASoC : Add an IC bit and frame master
+ mode (SoC and Codec slave).
+Date: Wed, 15 Mar 2017 19:02:12 +0000
+Message-ID: <20170315190212.x5c3kyyl4osrs4gu@sirena.org.uk>
+References: <cover.1487997974.git.flatmax@flatmax.org>
+ <057bbc69c3dcbb5199782ae6fe44d73862b8a1d1.1487997974.git.flatmax@flatmax.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7790394976269023000=="
+Content-Type: multipart/mixed; boundary="===============7769826670572577610=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BFAC8266872
- for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 20:01:26 +0100 (CET)
-In-Reply-To: <20170228095929.GH2742@localhost.localdomain>
+ by alsa0.perex.cz (Postfix) with ESMTP id DB1DD267066
+ for <alsa-devel@alsa-project.org>; Wed, 15 Mar 2017 20:02:18 +0100 (CET)
+In-Reply-To: <057bbc69c3dcbb5199782ae6fe44d73862b8a1d1.1487997974.git.flatmax@flatmax.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,73 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Eric Anholt <eric@anholt.net>, Lee Jones <lee@kernel.org>, phil@raspberrypi.org, Liam Girdwood <lgirdwood@gmail.com>, Matt Flax <flatmax@flatmax.org>, Matthias Reichl <hias@horus.com>, florian.kauer@koalo.de, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+To: Matt Flax <flatmax@flatmax.org>
+Cc: hias@horus.com, alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>, phil@raspberrypi.org, Liam Girdwood <lgirdwood@gmail.com>, Eric Anholt <eric@anholt.net>, florian.kauer@koalo.de, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, ckeepax@opensource.wolfsonmicro.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7790394976269023000==
+--===============7769826670572577610==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="chqdtwvielyvtqqk"
+	protocol="application/pgp-signature"; boundary="2bbpp5t43ooqg27r"
 Content-Disposition: inline
 
 
---chqdtwvielyvtqqk
+--2bbpp5t43ooqg27r
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 28, 2017 at 09:59:29AM +0000, Charles Keepax wrote:
-> On Mon, Feb 27, 2017 at 12:51:08PM +0100, Matthias Reichl wrote:
+On Sat, Feb 25, 2017 at 04:03:12PM +1100, Matt Flax wrote:
+> This patch adds a new clock mode to the SoC system. The new mode
+> allows for an IC (between the SoC and the Codec) to be bit and
+> frame master.
+>=20
+> As SoC and codec drivers default to return -EINVAL, this new mode
+> can not set either as master.
 
-> > > I have a bcm2835 (Pi 2 and 3) SoC here. It is producing multichannel (8 out,
-> > > 6 in) audio. In ALSA we call that DSP mode - right ?!
+I think I'd expect to see this device represented as a CODEC with two
+CODEC-CODEC links rather than transparently as here.
 
-> > No. DSP modes are protocol/timing specifications as I2S, PDP, S/PDIF, ...
-> > You can look these up in datasheets and if a chip implements such a
-> > protocol you can be sure that it adheres to that standard - i.e. it
-> > will sync the frames to the pulses on LRclk.
-
-> I agree with the thoughts in this thread really if the AP doesn't
-> actually support DSP A mode we shouldn't add DSP A mode.
-
-The trouble here is that this isn't 100% clear, the specifications of
-the DSP modes are such that only one edge in the LRCLK matters and so
-providing you're doing mono or have exact clocking they interoperate
-perfectly well.  We already frequently do similar things the other way,
-most of the programmable serial ports can't actually do I2S modes
-properly and rely on exact clocking to get things right when operating
-as I2S since they only sync on one edge (though they can generally
-generate the clocks correctly when operating as master, they just don't
-pay attention to the left/right switch edge).
-
-That said unless we're doing something with the data layout or similar
-configuration there's a fairly strong case for putting the mangling for
-this in the core, something like just falling back to I2S mode if we set
-DSP A and so on.  Which would be a lot nicer if we actually got round to
-putting mode capability information in the drivers.
-
---chqdtwvielyvtqqk
+--2bbpp5t43ooqg27r
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljJj3MACgkQJNaLcl1U
-h9BH5gf/cd4khu/srdSy7HxgS9nfeaWs5m3Zt/+oDcpkWV2S76vvUmz1bLX1P4En
-bqd+cMPSn72b6/UbVLDFyXEoJeZFC5OSTD7raY7liTYb7sPrJj3vANJlTpM5HgSi
-auL8ReK4GDVeXWydDgZygmwVFFljekbKCwB8OD7XDoKm/pSK18POeSXOxE0HB9cJ
-z/O8WWLRnY54XbRNu5hL2jyXL9M4TEN5rA6z+XUf90hwb6xVxfHY5eUOLQ0booZd
-uURxR3mbj7JxEdrJoclLv7eURqxIXU9oXWBvtjQaferFCztIQl6RxDM8V6jgBoXB
-Ha1TzpJZp56Nsw/1L2Nbwvmlg3jPpQ==
-=9fN4
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljJj7MACgkQJNaLcl1U
+h9CSagf/eJ791TqKWhVQB8L1GeOWH1qQl3/f8e8aW9vZb+xLcjkczafMqLBNZN5A
+j06JGyD9r9P57mwfUOMpQvaBm0msULwFryU97QLkAbTK4eMnCLS82f4s+aaanoBF
+5VIn3qYY1QzGnYaSzvSpGx5kLqKlpI759hsYV2ghFm/U5x+0EY7AVRLhLv0r1YKM
+QcUlxYz/ZHAveusMVRhtEacgLKvTzmZMva/LEhJdDTlCDxkc1v7vf9mBc7GVhUyA
+sgvPW+WpgN2cA01CJmwFl0N1B0xJpbEQbfDTAStTkTh00iweacDTXhuIjDFusE1B
+rhNdwXYXPzCbkI6LzkukNr9rwPL7SA==
+=M9EI
 -----END PGP SIGNATURE-----
 
---chqdtwvielyvtqqk--
+--2bbpp5t43ooqg27r--
 
---===============7790394976269023000==
+--===============7769826670572577610==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7790394976269023000==--
+--===============7769826670572577610==--
