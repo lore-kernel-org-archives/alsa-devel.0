@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5665: set i2s pin share
-	configuration" to the asoc tree
-Date: Thu, 16 Mar 2017 14:11:11 +0000
-Message-ID: <E1coW7T-0002cv-KF@debutante>
-References: <1489643921-29900-2-git-send-email-bardliao@realtek.com>
+From: olivier moysan <olivier.moysan@st.com>
+Subject: [RFC PATCH 0/2] ASoC: wm8994: master clock issues
+Date: Thu, 16 Mar 2017 17:41:21 +0100
+Message-ID: <1489682483-13051-1-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 04BB52666EC
- for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2017 15:11:35 +0100 (CET)
-In-Reply-To: <1489643921-29900-2-git-send-email-bardliao@realtek.com>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 41C8D267183
+ for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2017 17:41:30 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,129 +19,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, xiaoxiang@pinecone.net, zhongan@pinecone.net, flove@realtek.com
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, olivier.moysan@st.com
+Cc: arnaud.pouliquen@st.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hello,
 
-   ASoC: rt5665: set i2s pin share configuration
+I face two issues using wm8994 codec driver.
+Below is a description of the use cases rising the problem.
+I added the patches which allow to fix these issues.
+These minimalist patches can be seen as a starting point for a discussion on the best
+way to handle the use cases exposed.
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+- ASoC: wm8994: default master clock selection
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Use case:
+CPU DAI and codec are managed through simple card.
+Wolson codec wm8994 is set as slave of CPU DAI and CPU DAI feeds codec with master clock.
+Master clock is derived from mclk-fs property and provided to CPU DAI and codec 
+through snd_soc_dai_set_sysclk API. 
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Analysis:
+The simple card assumes id 0 for master clock.
+However wm8994 codec exposes master clock ids from 1 to 4. (MCLK1, MCLK2 ..)
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+The proposal in this patch is to define a default selection regarding master clock
+when id 0 is provided.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
 
-Thanks,
-Mark
+- ASoC: wm8994: delay aifxclk activation
 
->From 9b5d3865b3b410d21213807642b47e84a3fc081b Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Thu, 16 Mar 2017 13:58:41 +0800
-Subject: [PATCH] ASoC: rt5665: set i2s pin share configuration
+Use case:
+Wolson codec wm8994 is set as slave of CPU DAI and CPU DAI feeds codec with master clock.
+CPU DAI generates master clock when enabled in trigger callback.
+So master clock is available only at runtime. 
+Master clock is not available when configuring codec through alsa controls.
 
-I2S2 and I2S3 are share pins. We need to configure it when i2s is
-active and disable it when i2s is inactive. To disable i2s pins
-means to set them as gpio.
+Analysis:
+When we configure aifx clock while master clock is not active, related registers are not updated in wm8894 codec.
+A way to go around this problem, is to delay aifxclk activation until SND_SOC_DAPM_POST_PMU DAPM stage.
+The purpose of patch here is to illustrate this workaround. 
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt5665.c | 58 ++++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 55 insertions(+), 3 deletions(-)
+What I cannot clearly figure out, is  how this may impact other uses of wm8894 codec.
+I try to know if it's worth investigating further in this direction or if it will not be applicable.
+If not applicable, what maybe the other options ?
 
-diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
-index 1d00c6078feb..5545d084b0b6 100644
---- a/sound/soc/codecs/rt5665.c
-+++ b/sound/soc/codecs/rt5665.c
-@@ -2604,6 +2604,55 @@ static int rt5655_set_verf(struct snd_soc_dapm_widget *w,
- 	return 0;
- }
- 
-+static int rt5665_i2s_pin_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	unsigned int val1, val2, mask1, mask2 = 0;
-+
-+	switch (w->shift) {
-+	case RT5665_PWR_I2S2_1_BIT:
-+		mask1 = RT5665_GP2_PIN_MASK | RT5665_GP3_PIN_MASK |
-+			RT5665_GP4_PIN_MASK | RT5665_GP5_PIN_MASK;
-+		val1 = RT5665_GP2_PIN_BCLK2 | RT5665_GP3_PIN_LRCK2 |
-+			RT5665_GP4_PIN_DACDAT2_1 | RT5665_GP5_PIN_ADCDAT2_1;
-+		break;
-+	case RT5665_PWR_I2S2_2_BIT:
-+		mask1 = RT5665_GP2_PIN_MASK | RT5665_GP3_PIN_MASK |
-+			RT5665_GP8_PIN_MASK;
-+		val1 = RT5665_GP2_PIN_BCLK2 | RT5665_GP3_PIN_LRCK2 |
-+			RT5665_GP8_PIN_DACDAT2_2;
-+		mask2 = RT5665_GP9_PIN_MASK;
-+		val2 = RT5665_GP9_PIN_ADCDAT2_2;
-+		break;
-+	case RT5665_PWR_I2S3_BIT:
-+		mask1 = RT5665_GP6_PIN_MASK | RT5665_GP7_PIN_MASK |
-+			RT5665_GP8_PIN_MASK;
-+		val1 = RT5665_GP6_PIN_BCLK3 | RT5665_GP7_PIN_LRCK3 |
-+			RT5665_GP8_PIN_DACDAT3;
-+		mask2 = RT5665_GP9_PIN_MASK;
-+		val2 = RT5665_GP9_PIN_ADCDAT3;
-+		break;
-+	}
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		snd_soc_update_bits(codec, RT5665_GPIO_CTRL_1, mask1, val1);
-+		if (mask2)
-+			snd_soc_update_bits(codec, RT5665_GPIO_CTRL_2,
-+					    mask2, val2);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		snd_soc_update_bits(codec, RT5665_GPIO_CTRL_1, mask1, 0);
-+		if (mask2)
-+			snd_soc_update_bits(codec, RT5665_GPIO_CTRL_2,
-+					    mask2, 0);
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	return 0;
-+}
- 
- static const struct snd_soc_dapm_widget rt5665_dapm_widgets[] = {
- 	SND_SOC_DAPM_SUPPLY("LDO2", RT5665_PWR_ANLG_3, RT5665_PWR_LDO2_BIT, 0,
-@@ -2856,11 +2905,14 @@ static const struct snd_soc_dapm_widget rt5665_dapm_widgets[] = {
- 	SND_SOC_DAPM_SUPPLY("I2S1_2", RT5665_PWR_DIG_1, RT5665_PWR_I2S1_2_BIT,
- 		0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("I2S2_1", RT5665_PWR_DIG_1, RT5665_PWR_I2S2_1_BIT,
--		0, NULL, 0),
-+		0, rt5665_i2s_pin_event, SND_SOC_DAPM_PRE_PMU |
-+		SND_SOC_DAPM_POST_PMD),
- 	SND_SOC_DAPM_SUPPLY("I2S2_2", RT5665_PWR_DIG_1, RT5665_PWR_I2S2_2_BIT,
--		0, NULL, 0),
-+		0, rt5665_i2s_pin_event, SND_SOC_DAPM_PRE_PMU |
-+		SND_SOC_DAPM_POST_PMD),
- 	SND_SOC_DAPM_SUPPLY("I2S3", RT5665_PWR_DIG_1, RT5665_PWR_I2S3_BIT,
--		0, NULL, 0),
-+		0, rt5665_i2s_pin_event, SND_SOC_DAPM_PRE_PMU |
-+		SND_SOC_DAPM_POST_PMD),
- 	SND_SOC_DAPM_PGA("IF1 DAC1", SND_SOC_NOPM, 0, 0, NULL, 0),
- 	SND_SOC_DAPM_PGA("IF1 DAC2", SND_SOC_NOPM, 0, 0, NULL, 0),
- 	SND_SOC_DAPM_PGA("IF1 DAC3", SND_SOC_NOPM, 0, 0, NULL, 0),
+regards
+olivier
+
+
+olivier moysan (2):
+  ASoC: wm8994: default master clock selection
+  ASoC: wm8994: delay aifxclk activation
+
+ sound/soc/codecs/wm8994.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
 -- 
-2.11.0
+1.9.1
