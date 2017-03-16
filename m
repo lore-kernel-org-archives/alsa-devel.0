@@ -1,52 +1,83 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: Applied "ASoC: sun8i-codec: Update mixer to use SOC_DAPM_DOUBLE"
- to the asoc tree
-Date: Thu, 16 Mar 2017 14:06:53 +0000
-Message-ID: <20170316140653.jjnta4le6kws36l5@sirena.org.uk>
-References: <20170210094133.11382-3-mylene.josserand@free-electrons.com>
- <E1clbY9-0000DH-LY@finisterre>
- <CAGb2v6428PpYPzpHngLgaeziwKN8u-TYiNO1bs7TFw-7VrQOAg@mail.gmail.com>
- <20170315134323.i3pvla3pzejmkxwh@sirena.org.uk>
- <CAGb2v67-b+8CM0MqhT_YQeuNxEnVoxG-COZPy8LW32Eb-QE67Q@mail.gmail.com>
+Subject: Re: [PATCH v2] ASoC: rt286: fix headphone click/crack
+ noise on Dell XPS 9343 I2S mode
+Date: Thu, 16 Mar 2017 14:09:46 +0000
+Message-ID: <20170316140946.kikw2rjinafu6qo5@sirena.org.uk>
+References: <20170316083951.11247-1-kai.heng.feng@canonical.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="3jtbdw426c2622qy"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAGb2v67-b+8CM0MqhT_YQeuNxEnVoxG-COZPy8LW32Eb-QE67Q@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Chen-Yu Tsai <wens@csie.org>
-Cc: =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand@free-electrons.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, devicetree <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: multipart/mixed; boundary="===============6147172426839322889=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 919762666EC
+ for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2017 15:09:55 +0100 (CET)
+In-Reply-To: <20170316083951.11247-1-kai.heng.feng@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc: oder_chiou@realtek.com, bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---3jtbdw426c2622qy
+--===============6147172426839322889==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="glg4eaxpqfcltgcj"
+Content-Disposition: inline
+
+
+--glg4eaxpqfcltgcj
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Mar 15, 2017 at 10:15:22PM +0800, Chen-Yu Tsai wrote:
+On Thu, Mar 16, 2017 at 04:39:51PM +0800, Kai-Heng Feng wrote:
 
-> It depends on the second half of commit 4aa8146c89f3 ("ASoC: sun8i-codec:
-> Remove analog "HP" widget"), which is also a cleanup. Would it be OK
-> to pick these two over to fixes then? Or should we send a clean version
-> instead?
+> +	switch (event) {
+> +	case SND_SOC_DAPM_PRE_PMD:
+> +	case SND_SOC_DAPM_POST_PMD:
+> +	case SND_SOC_DAPM_POST_PMU:
+> +		snd_soc_write(codec, RT286_SET_AMP_GAIN_HPO, AMP_OUT_MUTE);
+> +		break;
+> +	case SND_SOC_DAPM_PRE_PMU:
+> +		snd_soc_write(codec, RT286_SET_AMP_GAIN_HPO, AMP_OUT_UNMUTE);
+> +		break;
 
-That also doesn't pick over cleanly, can you send a new version against
-Linus' tree, that'll be easiest and safest I think.
+After power up we mute the amplifier?  That's worthy of a comment...
 
---3jtbdw426c2622qy
+> +	rt286->is_dell_dino = dmi_check_system(dmi_dell_dino) ? true : false;
+> +
+
+Just directly assign the boolean value, the ternery operator is just
+making thins harder to read here.
+
+--glg4eaxpqfcltgcj
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljKm/0ACgkQJNaLcl1U
-h9DIlAf/UTj+suKqDu7tfUUfI0UoxqbDU0X/uYOyL0t3tCb225zmt/K/XGqzUNd6
-KUSKRa9dQP0Wjp+BcW/5imxNcdWmi0SX1Un8iCoNLt6FKNHZ6947jvgaglH60dF5
-yu6Kgg9dlqJ/IL0pRcnfw2k8UFsfwyCqOYF0ZK9C/dr5Cbz+GvHhxMlXubyB6ENq
-Ja0sDn6mtb8QSDpjSXenjyRYw4n+HX/pwmEheC1XYskgWNnPNqHumu+If9SkVcHP
-IhvlAiZSW3pEsa3zJsJ8FjsNWjAxv/iNnUlCJagefA2qV0ypuvLFs3NNdOZXWG/5
-pqCZwbeIaGOnvF7w8FxJFTn29sCx0g==
-=fzGz
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljKnKkACgkQJNaLcl1U
+h9AXhgf+Kdu7GiyCqq4D+ltNz8Ka0Jlm2jr38KiZ3/nB0OH+mTc3e1AdMlbGOcTE
+wqzKY6ZhfZs+fnhCAxfXky0A8aajnVHpLxkDknwzJknu09kVV59RQkpJXNr4yzba
+/zs9o6rP8M2Qs9pZRCExA3M3NWChhArN5xjl9FWsc9lHxTYqdiaDh1F2oAKC/hHV
+Ivq39iFqbN31Ve6g5wb+rhXXkXMi96qGo4vkJIj2CJg9DncSCcL1IvjklNf2NIsa
+K3bfsG9lu4XW7kqxPupQ8H4QjsFRsQcJA2woHbN1rtzN3yNCtwkJo/uYQzavGFH4
+atMoyEgdzX4ho4TgGdd+Bo3AxnWG5g==
+=XS2B
 -----END PGP SIGNATURE-----
 
---3jtbdw426c2622qy--
+--glg4eaxpqfcltgcj--
+
+--===============6147172426839322889==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6147172426839322889==--
