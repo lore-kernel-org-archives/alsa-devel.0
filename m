@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card: add new simple_priv_to_card() macro" to the asoc tree
-Date: Thu, 16 Mar 2017 14:11:02 +0000
-Message-ID: <E1coW7K-0002a5-HB@debutante>
-References: <87innbcfuq.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: simple-scu-card: add new simple_priv_to_card() macro" to the asoc tree
+Date: Thu, 16 Mar 2017 14:10:59 +0000
+Message-ID: <E1coW7H-0002ZE-Hd@debutante>
+References: <87h92vcfu7.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87innbcfuq.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87h92vcfu7.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card: add new simple_priv_to_card() macro
+   ASoC: simple-scu-card: add new simple_priv_to_card() macro
 
 has been applied to the asoc tree at
 
@@ -37,10 +37,10 @@ to this mail.
 Thanks,
 Mark
 
->From 5be509576cf634ad384025f50fc4fcb941d14256 Mon Sep 17 00:00:00 2001
+>From d27f3b4a2d81e873de4d11899e510a1a507da8e3 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 15 Mar 2017 04:44:00 +0000
-Subject: [PATCH] ASoC: simple-card: add new simple_priv_to_card() macro
+Date: Wed, 15 Mar 2017 04:44:16 +0000
+Subject: [PATCH] ASoC: simple-scu-card: add new simple_priv_to_card() macro
 
 Current simple card driver is directly calling priv->snd_card
 everywhere, but it makes unreadable code.
@@ -49,15 +49,15 @@ Let's use simple_priv_to_card() macro for it
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-card.c | 41 +++++++++++++++++++++++------------------
- 1 file changed, 23 insertions(+), 18 deletions(-)
+ sound/soc/generic/simple-scu-card.c | 35 ++++++++++++++++++++---------------
+ 1 file changed, 20 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 9ad05e237ee0..948f3ba02d12 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -40,9 +40,10 @@ struct simple_card_data {
- 	struct snd_soc_dai_link *dai_link;
+diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
+index 93d7d8980cd5..cd0f3f50eebf 100644
+--- a/sound/soc/generic/simple-scu-card.c
++++ b/sound/soc/generic/simple-scu-card.c
+@@ -31,9 +31,10 @@ struct simple_card_data {
+ 	u32 convert_channels;
  };
  
 -#define simple_priv_to_dev(priv) ((priv)->snd_card.dev)
@@ -69,109 +69,85 @@ index 9ad05e237ee0..948f3ba02d12 100644
  
  #define DAI	"sound-dai"
  #define CELL	"#sound-dai-cells"
-@@ -323,6 +324,7 @@ static int asoc_simple_card_parse_aux_devs(struct device_node *node,
- {
+@@ -109,6 +110,7 @@ static int asoc_simple_card_dai_link_of(struct device_node *np,
  	struct device *dev = simple_priv_to_dev(priv);
- 	struct device_node *aux_node;
+ 	struct snd_soc_dai_link *dai_link = simple_priv_to_link(priv, idx);
+ 	struct asoc_simple_dai *dai_props = simple_priv_to_props(priv, idx);
 +	struct snd_soc_card *card = simple_priv_to_card(priv);
- 	int i, n, len;
- 
- 	if (!of_find_property(node, PREFIX "aux-devs", &len))
-@@ -332,19 +334,19 @@ static int asoc_simple_card_parse_aux_devs(struct device_node *node,
- 	if (n <= 0)
- 		return -EINVAL;
- 
--	priv->snd_card.aux_dev = devm_kzalloc(dev,
--			n * sizeof(*priv->snd_card.aux_dev), GFP_KERNEL);
--	if (!priv->snd_card.aux_dev)
-+	card->aux_dev = devm_kzalloc(dev,
-+			n * sizeof(*card->aux_dev), GFP_KERNEL);
-+	if (!card->aux_dev)
- 		return -ENOMEM;
- 
- 	for (i = 0; i < n; i++) {
- 		aux_node = of_parse_phandle(node, PREFIX "aux-devs", i);
- 		if (!aux_node)
- 			return -EINVAL;
--		priv->snd_card.aux_dev[i].codec_of_node = aux_node;
-+		card->aux_dev[i].codec_of_node = aux_node;
- 	}
- 
--	priv->snd_card.num_aux_devs = n;
-+	card->num_aux_devs = n;
- 	return 0;
- }
- 
-@@ -352,6 +354,7 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 				     struct simple_card_data *priv)
- {
- 	struct device *dev = simple_priv_to_dev(priv);
-+	struct snd_soc_card *card = simple_priv_to_card(priv);
- 	struct device_node *dai_link;
  	int ret;
  
-@@ -362,7 +365,7 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 	if (is_fe) {
+@@ -163,7 +165,7 @@ static int asoc_simple_card_dai_link_of(struct device_node *np,
+ 		if (ret < 0)
+ 			return ret;
  
- 	/* The off-codec widgets */
- 	if (of_property_read_bool(node, PREFIX "widgets")) {
--		ret = snd_soc_of_parse_audio_simple_widgets(&priv->snd_card,
-+		ret = snd_soc_of_parse_audio_simple_widgets(card,
- 					PREFIX "widgets");
- 		if (ret)
- 			goto card_parse_end;
-@@ -370,7 +373,7 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+-		snd_soc_of_parse_audio_prefix(&priv->snd_card,
++		snd_soc_of_parse_audio_prefix(card,
+ 					      &priv->codec_conf,
+ 					      dai_link->codec_of_node,
+ 					      PREFIX "prefix");
+@@ -201,6 +203,7 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ {
+ 	struct device *dev = simple_priv_to_dev(priv);
+ 	struct device_node *np;
++	struct snd_soc_card *card = simple_priv_to_card(priv);
+ 	unsigned int daifmt = 0;
+ 	bool is_fe;
+ 	int ret, i;
+@@ -208,7 +211,7 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 	if (!node)
+ 		return -EINVAL;
  
- 	/* DAPM routes */
- 	if (of_property_read_bool(node, PREFIX "routing")) {
--		ret = snd_soc_of_parse_audio_routing(&priv->snd_card,
-+		ret = snd_soc_of_parse_audio_routing(card,
- 					PREFIX "routing");
- 		if (ret)
- 			goto card_parse_end;
-@@ -401,7 +404,7 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 			goto card_parse_end;
+-	ret = snd_soc_of_parse_audio_routing(&priv->snd_card, PREFIX "routing");
++	ret = snd_soc_of_parse_audio_routing(card, PREFIX "routing");
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -239,12 +242,12 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 		i++;
  	}
  
 -	ret = asoc_simple_card_parse_card_name(&priv->snd_card, PREFIX);
 +	ret = asoc_simple_card_parse_card_name(card, PREFIX);
  	if (ret < 0)
- 		goto card_parse_end;
+ 		return ret;
  
-@@ -420,6 +423,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 	struct simple_dai_props *dai_props;
+ 	dev_dbg(dev, "New card: %s\n",
+-		priv->snd_card.name ? priv->snd_card.name : "");
++		card->name ? card->name : "");
+ 	dev_dbg(dev, "convert_rate     %d\n", priv->convert_rate);
+ 	dev_dbg(dev, "convert_channels %d\n", priv->convert_channels);
+ 
+@@ -256,6 +259,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	struct simple_card_data *priv;
+ 	struct snd_soc_dai_link *dai_link;
+ 	struct asoc_simple_dai *dai_props;
++	struct snd_soc_card *card;
  	struct device *dev = &pdev->dev;
  	struct device_node *np = dev->of_node;
-+	struct snd_soc_card *card;
  	int num, ret;
- 
- 	/* Get the number of DAI links */
-@@ -442,10 +446,11 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 	priv->dai_link			= dai_link;
+@@ -276,12 +280,13 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	priv->dai_link				= dai_link;
  
  	/* Init snd_soc_card */
--	priv->snd_card.owner		= THIS_MODULE;
--	priv->snd_card.dev		= dev;
--	priv->snd_card.dai_link		= priv->dai_link;
--	priv->snd_card.num_links	= num;
+-	priv->snd_card.owner			= THIS_MODULE;
+-	priv->snd_card.dev			= dev;
+-	priv->snd_card.dai_link			= priv->dai_link;
+-	priv->snd_card.num_links		= num;
+-	priv->snd_card.codec_conf		= &priv->codec_conf;
+-	priv->snd_card.num_configs		= 1;
 +	card = simple_priv_to_card(priv);
 +	card->owner		= THIS_MODULE;
 +	card->dev		= dev;
 +	card->dai_link		= priv->dai_link;
 +	card->num_links		= num;
++	card->codec_conf	= &priv->codec_conf;
++	card->num_configs	= 1;
  
- 	if (np && of_device_is_available(np)) {
- 
-@@ -474,7 +479,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 			return -EINVAL;
- 		}
- 
--		priv->snd_card.name	= (cinfo->card) ? cinfo->card : cinfo->name;
-+		card->name		= (cinfo->card) ? cinfo->card : cinfo->name;
- 		dai_link->name		= cinfo->name;
- 		dai_link->stream_name	= cinfo->name;
- 		dai_link->platform_name	= cinfo->platform;
-@@ -489,13 +494,13 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 					sizeof(priv->dai_props->codec_dai));
+ 	ret = asoc_simple_card_parse_of(np, priv);
+ 	if (ret < 0) {
+@@ -290,13 +295,13 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 		goto err;
  	}
  
 -	snd_soc_card_set_drvdata(&priv->snd_card, priv);
