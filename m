@@ -1,87 +1,93 @@
-From: Eric Anholt <eric@anholt.net>
-Subject: Re: [PATCH v2 2/3] drm/vc4: Add HDMI audio support
-Date: Thu, 16 Mar 2017 11:13:12 -0700
-Message-ID: <87tw6tyts7.fsf@eliezer.anholt.net>
-References: <20170227202803.12855-1-eric@anholt.net>
- <20170227202803.12855-2-eric@anholt.net>
+From: Matt Flax <flatmax@flatmax.org>
+Subject: Re: [PATCH 0/3] ASoC: Enable a new IC master mode:
+ bcm2835<=>IC<=>cs42xx8
+Date: Fri, 17 Mar 2017 07:51:49 +1100
+Message-ID: <7d8d38f7-53aa-cc3d-4bbd-141649528a8a@flatmax.org>
+References: <20170226144958.GA5543@camel2.lan>
+ <732a71ac-5ec5-37e1-1190-be036ea34555@flatmax.org>
+ <20170226221648.GA10974@camel2.lan>
+ <7cef41ee-ef00-22b7-830f-517a9d594ed0@flatmax.org>
+ <20170227080433.GA2718@delle.lan>
+ <170950f7-354f-e6a9-cefb-834a00fadd1b@flatmax.org>
+ <20170227103024.GF2718@delle.lan>
+ <7b78c782-28e1-4849-5d00-8caf30847d5c@flatmax.org>
+ <20170227115108.GA6732@delle.lan>
+ <20170228095929.GH2742@localhost.localdomain>
+ <20170315190108.y6ybxm3nfgnutajv@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1198938152=="
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20170227202803.12855-2-eric@anholt.net>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Lee Jones <lee@kernel.org>, Florian Fainelli <f.fainelli@gmail.com>, dri-devel@lists.freedesktop.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org
-Cc: Stefan Wahren <stefan.wahren@i2se.com>, Stephen Warren <swarren@wwwdotorg.org>, linux-kernel@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from nsstlmta34p.bpe.bigpond.com (nsstlmta34p.bpe.bigpond.com
+ [203.38.21.34]) by alsa0.perex.cz (Postfix) with ESMTP id EA67C2668C6
+ for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2017 21:51:57 +0100 (CET)
+In-Reply-To: <20170315190108.y6ybxm3nfgnutajv@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Eric Anholt <eric@anholt.net>, Lee Jones <lee@kernel.org>, phil@raspberrypi.org, Liam Girdwood <lgirdwood@gmail.com>, Matthias Reichl <hias@horus.com>, florian.kauer@koalo.de, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
---===============1198938152==
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
 
---=-=-=
-Content-Type: text/plain
 
-Eric Anholt <eric@anholt.net> writes:
-
-> The HDMI encoder IP embeds all needed blocks to output audio, with a
-> custom DAI called MAI moving audio between the two parts of the HDMI
-> core.  This driver now exposes a sound card to let users stream audio
-> to their display.
+On 16/03/17 06:01, Mark Brown wrote:
+> On Tue, Feb 28, 2017 at 09:59:29AM +0000, Charles Keepax wrote:
+>> On Mon, Feb 27, 2017 at 12:51:08PM +0100, Matthias Reichl wrote:
+>>>> I have a bcm2835 (Pi 2 and 3) SoC here. It is producing multichannel (8 out,
+>>>> 6 in) audio. In ALSA we call that DSP mode - right ?!
+>>> No. DSP modes are protocol/timing specifications as I2S, PDP, S/PDIF, ...
+>>> You can look these up in datasheets and if a chip implements such a
+>>> protocol you can be sure that it adheres to that standard - i.e. it
+>>> will sync the frames to the pulses on LRclk.
+>> I agree with the thoughts in this thread really if the AP doesn't
+>> actually support DSP A mode we shouldn't add DSP A mode.
+> The trouble here is that this isn't 100% clear, the specifications of
+> the DSP modes are such that only one edge in the LRCLK matters and so
+> providing you're doing mono or have exact clocking they interoperate
+> perfectly well.  We already frequently do similar things the other way,
+> most of the programmable serial ports can't actually do I2S modes
+> properly and rely on exact clocking to get things right when operating
+> as I2S since they only sync on one edge (though they can generally
+> generate the clocks correctly when operating as master, they just don't
+> pay attention to the left/right switch edge).
 >
-> Using the hdmi-codec driver has been considered here, but MAI meant
-> having to significantly rework hdmi-codec, and it would have left
-> little shared code with the I2S mode anyway.
->
-> The encoder requires that the audio be SPDIF-formatted frames only,
-> which alsalib will format-convert for us.
->
-> This patch is the combined work of Eric Anholt (initial register setup
-> with a separate dmaengine driver and using simple-audio-card) and
-> Boris Brezillon (moving it all into HDMI, massive debug to get it
-> actually working), and which Eric has the permission to release.
->
-> v2: Drop "-audio" from sound card name, since that's already implied
->     (suggestion by Boris)
+> That said unless we're doing something with the data layout or similar
+> configuration there's a fairly strong case for putting the mangling for
+> this in the core, something like just falling back to I2S mode if we set
+> DSP A and so on.  Which would be a lot nicer if we actually got round to
+> putting mode capability information in the drivers.
 
-On IRC, Mark Brown disclaimed responsibility for reviewing this code, so
-I've merged it to drm-misc-next.
+I agree, the data layout is already configurable in the bcm2835_i2s.c 
+platform driver. We can already use the "snd_soc_dai_set_bclk_ratio" 
+function to manage word offsets in our machine drivers.
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+There is nothing which says that the bcm2835 SoC is I2S restricted in 
+any way. In fact, the reference document says quite the opposite.
 
------BEGIN PGP SIGNATURE-----
+In the reference "BCM2835 ARM Peripherals" pdf, they call the audio 
+system an "APB peripheral". They are saying that it is reconfigurable 
+and part of the AMBA family of interconnect schemes.
 
-iQIzBAEBCgAdFiEE/JuuFDWp9/ZkuCBXtdYpNtH8nugFAljK1bgACgkQtdYpNtH8
-nuifNQ//Up4UyRyedX5PgQXFzs3Jq6XSMAze7UdO/WLbbXLjjLpZ6mP0PXjPjaJL
-3mHZcY/CkfMF3zyWfyeZe6W8Is8aRp/pVFJZ5479KBtM9+zmxv1r36TLCpHaKU+v
-izcsMbzQJby9gYJtNHkkqO92z3Cve/ZusKiMvzPo8ouXCBN9CmBwECFa8LsMLDWr
-1fleiiH5E17mNSDQnHJNoRS68Je5yrD6kZ2ritioocfo3q8IirXuYW2r1biB7c/y
-1zY5EBQjXik/vm16rYcYV8grkaS6aODhGAIl3ZOK7bF4Lu1D9xBDmIn7SBNBlCgy
-JbacGkvKcIgpfeQ/B2hVznJwiewu25KMLR+x9ihDl2GhZa+uDsriScRrwutLLVkZ
-aDoWUudLz7DOhIbuJ8A9aF8Cc1ZS3f4dDBueW1ApXIxms8v4s6V23LuuaUI0BTG3
-TQA0TeY8LVqkvm39wcu/fimwIM9JNECLdGsMRy+AhQChQ135sxCIutmt9MUEL7Wm
-vQdWWtzfuLR3af2/YTBZfUw49y2cUOkNnVPcQeIWmS70nZZcY188QvEe+me4y29n
-vcWktfjymb2anTDgyBfhi1/tLFSKnM+xl74EDquzVX0g+o+qbivyhyBWgZTF9zqv
-fe8GLJVmSy1uz4T2yWm6d0FTCWmaUnii9inpMfih35OMzeYBMVA=
-=1Kxx
------END PGP SIGNATURE-----
---=-=-=--
+As far as the bcm2835_i2s platform driver goes, it has implemented an 
+AMBA protocol, where audio words are counted from the LR clock onset - 
+for some reason people are insisting this is an I2S bus. Really our 
+implementation is not I2S at all, because word onsets are programmable 
+and flexible in the bcm2835_i2s.c driver.
 
---===============1198938152==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
+What I have been trying to make happen over the past few months is to 
+enable a different capability of the AMBA audio core on the bcm2835. Can 
+you suggest a realistic approach to realising this which is acceptable 
+to the ALSA code base ?
 
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+Do you suggest I go back to the approach of implementing the DSP mode 
+for this platform driver ?
 
---===============1198938152==--
+thanks
+Matt
