@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-scu-card: use defined dev on probe()" to the asoc tree
-Date: Thu, 16 Mar 2017 14:11:05 +0000
-Message-ID: <E1coW7N-0002ay-Fc@debutante>
-References: <87k27rcfv9.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rcar: dma: remove unnecessary "volatile"" to the asoc tree
+Date: Thu, 16 Mar 2017 14:11:17 +0000
+Message-ID: <E1coW7Z-0002fF-KU@debutante>
+References: <87a88l3lcw.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87k27rcfv9.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87a88l3lcw.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-scu-card: use defined dev on probe()
+   ASoC: rcar: dma: remove unnecessary "volatile"
 
 has been applied to the asoc tree at
 
@@ -37,41 +37,60 @@ to this mail.
 Thanks,
 Mark
 
->From 40b68dac75a1d16266d3c89244ccf7b899afac3e Mon Sep 17 00:00:00 2001
+>From 9986943ef5d61a9bea3c86000d91d3b789f0060e Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 15 Mar 2017 04:43:40 +0000
-Subject: [PATCH] ASoC: simple-scu-card: use defined dev on probe()
+Date: Thu, 16 Mar 2017 04:22:09 +0000
+Subject: [PATCH] ASoC: rcar: dma: remove unnecessary "volatile"
 
-Current asoc_simple_card_probe() already has dev definition,
-but some place doesn't use it. Let's fix this issue.
+commit 2a3af642eb20("ASoC: rcar: clear DE bit only in PDMACHCR...")
+added rsnd_dmapp_bset(), but it used copy-paste. Thus, it had
+unnecessary "volatile", and had below warning on x86.
+This patch fix it.
 
+   sound/soc/sh/rcar/dma.c: In function 'rsnd_dmapp_bset':
+>> sound/soc/sh/rcar/dma.c:463:21: warning: passing argument 1 of \
+   'ioread32' discards 'volatile' qualifier from pointer target \
+   type [-Wdiscarded-qualifiers]
+     u32 val = ioread32(addr);
+                        ^~~~
+   In file included from arch/x86/include/asm/io.h:203:0,
+                    from arch/x86/include/asm/realmode.h:5,
+                    from arch/x86/include/asm/acpi.h:33,
+                    from arch/x86/include/asm/fixmap.h:19,
+                    from arch/x86/include/asm/apic.h:10,
+                    from arch/x86/include/asm/smp.h:12,
+                    from include/linux/smp.h:59,
+                    from include/linux/topology.h:33,
+                    from include/linux/gfp.h:8,
+                    from include/linux/idr.h:16,
+                    from include/linux/kernfs.h:14,
+                    from include/linux/sysfs.h:15,
+                    from include/linux/kobject.h:21,
+                    from include/linux/of.h:21,
+                    from include/linux/of_dma.h:16,
+                    from sound/soc/sh/rcar/dma.c:12:
+   include/asm-generic/iomap.h:31:21: note: expected 'void *' \
+   but argument is of type 'volatile void *'
+    extern unsigned int ioread32(void __iomem *);
+                        ^~~~~~~~
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-scu-card.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/sh/rcar/dma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
-index bb86ee042490..93d7d8980cd5 100644
---- a/sound/soc/generic/simple-scu-card.c
-+++ b/sound/soc/generic/simple-scu-card.c
-@@ -257,7 +257,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 	struct snd_soc_dai_link *dai_link;
- 	struct asoc_simple_dai *dai_props;
- 	struct device *dev = &pdev->dev;
--	struct device_node *np = pdev->dev.of_node;
-+	struct device_node *np = dev->of_node;
- 	int num, ret;
+diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
+index c2e199b4fcf4..241cb3b08a07 100644
+--- a/sound/soc/sh/rcar/dma.c
++++ b/sound/soc/sh/rcar/dma.c
+@@ -459,7 +459,7 @@ static void rsnd_dmapp_bset(struct rsnd_dma *dma, u32 data, u32 mask, u32 reg)
+ 	struct rsnd_mod *mod = rsnd_mod_get(dma);
+ 	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
+ 	struct rsnd_dma_ctrl *dmac = rsnd_priv_to_dmac(priv);
+-	volatile void __iomem *addr = rsnd_dmapp_addr(dmac, dma, reg);
++	void __iomem *addr = rsnd_dmapp_addr(dmac, dma, reg);
+ 	u32 val = ioread32(addr);
  
- 	/* Allocate the private data */
-@@ -292,7 +292,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 
- 	snd_soc_card_set_drvdata(&priv->snd_card, priv);
- 
--	ret = devm_snd_soc_register_card(&pdev->dev, &priv->snd_card);
-+	ret = devm_snd_soc_register_card(dev, &priv->snd_card);
- 	if (ret >= 0)
- 		return ret;
- err:
+ 	val &= ~mask;
 -- 
 2.11.0
