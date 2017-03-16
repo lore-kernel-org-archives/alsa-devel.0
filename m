@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rcar: dma: remove unnecessary "volatile"" to the asoc tree
-Date: Thu, 16 Mar 2017 14:11:17 +0000
-Message-ID: <E1coW7Z-0002fF-KU@debutante>
-References: <87a88l3lcw.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87a88l3lcw.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: rt5665: fix define of
+	RT5665_HP_DRIVER_5X" to the asoc tree
+Date: Thu, 16 Mar 2017 14:11:14 +0000
+Message-ID: <E1coW7W-0002dy-Jt@debutante>
+References: <1489643921-29900-1-git-send-email-bardliao@realtek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D423F2671D3
+ for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2017 15:11:34 +0100 (CET)
+In-Reply-To: <1489643921-29900-1-git-send-email-bardliao@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, xiaoxiang@pinecone.net, zhongan@pinecone.net, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rcar: dma: remove unnecessary "volatile"
+   ASoC: rt5665: fix define of RT5665_HP_DRIVER_5X
 
 has been applied to the asoc tree at
 
@@ -37,60 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From 9986943ef5d61a9bea3c86000d91d3b789f0060e Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 16 Mar 2017 04:22:09 +0000
-Subject: [PATCH] ASoC: rcar: dma: remove unnecessary "volatile"
+>From 763811987d5088d0461164f80e9d16869847a040 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Thu, 16 Mar 2017 13:58:40 +0800
+Subject: [PATCH] ASoC: rt5665: fix define of RT5665_HP_DRIVER_5X
 
-commit 2a3af642eb20("ASoC: rcar: clear DE bit only in PDMACHCR...")
-added rsnd_dmapp_bset(), but it used copy-paste. Thus, it had
-unnecessary "volatile", and had below warning on x86.
-This patch fix it.
+It is (0x3 << 2), not (0x2 << 2).
 
-   sound/soc/sh/rcar/dma.c: In function 'rsnd_dmapp_bset':
->> sound/soc/sh/rcar/dma.c:463:21: warning: passing argument 1 of \
-   'ioread32' discards 'volatile' qualifier from pointer target \
-   type [-Wdiscarded-qualifiers]
-     u32 val = ioread32(addr);
-                        ^~~~
-   In file included from arch/x86/include/asm/io.h:203:0,
-                    from arch/x86/include/asm/realmode.h:5,
-                    from arch/x86/include/asm/acpi.h:33,
-                    from arch/x86/include/asm/fixmap.h:19,
-                    from arch/x86/include/asm/apic.h:10,
-                    from arch/x86/include/asm/smp.h:12,
-                    from include/linux/smp.h:59,
-                    from include/linux/topology.h:33,
-                    from include/linux/gfp.h:8,
-                    from include/linux/idr.h:16,
-                    from include/linux/kernfs.h:14,
-                    from include/linux/sysfs.h:15,
-                    from include/linux/kobject.h:21,
-                    from include/linux/of.h:21,
-                    from include/linux/of_dma.h:16,
-                    from sound/soc/sh/rcar/dma.c:12:
-   include/asm-generic/iomap.h:31:21: note: expected 'void *' \
-   but argument is of type 'volatile void *'
-    extern unsigned int ioread32(void __iomem *);
-                        ^~~~~~~~
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/dma.c | 2 +-
+ sound/soc/codecs/rt5665.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index c2e199b4fcf4..241cb3b08a07 100644
---- a/sound/soc/sh/rcar/dma.c
-+++ b/sound/soc/sh/rcar/dma.c
-@@ -459,7 +459,7 @@ static void rsnd_dmapp_bset(struct rsnd_dma *dma, u32 data, u32 mask, u32 reg)
- 	struct rsnd_mod *mod = rsnd_mod_get(dma);
- 	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
- 	struct rsnd_dma_ctrl *dmac = rsnd_priv_to_dmac(priv);
--	volatile void __iomem *addr = rsnd_dmapp_addr(dmac, dma, reg);
-+	void __iomem *addr = rsnd_dmapp_addr(dmac, dma, reg);
- 	u32 val = ioread32(addr);
- 
- 	val &= ~mask;
+diff --git a/sound/soc/codecs/rt5665.h b/sound/soc/codecs/rt5665.h
+index 12f7080a0d3c..a30f5e6d0628 100644
+--- a/sound/soc/codecs/rt5665.h
++++ b/sound/soc/codecs/rt5665.h
+@@ -1106,7 +1106,7 @@
+ #define RT5665_HP_DRIVER_MASK			(0x3 << 2)
+ #define RT5665_HP_DRIVER_1X			(0x0 << 2)
+ #define RT5665_HP_DRIVER_3X			(0x1 << 2)
+-#define RT5665_HP_DRIVER_5X			(0x2 << 2)
++#define RT5665_HP_DRIVER_5X			(0x3 << 2)
+ #define RT5665_LDO1_DVO_MASK			(0x3)
+ #define RT5665_LDO1_DVO_09			(0x0)
+ #define RT5665_LDO1_DVO_10			(0x1)
 -- 
 2.11.0
