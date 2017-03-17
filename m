@@ -1,18 +1,21 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v3 10/11] ASoC: add bindings for stm32 DFSDM
-	filter
-Date: Fri, 17 Mar 2017 15:08:23 +0100
-Message-ID: <1489759704-30217-11-git-send-email-arnaud.pouliquen@st.com>
-References: <1489759704-30217-1-git-send-email-arnaud.pouliquen@st.com>
+From: Olivier MOYSAN <olivier.moysan@st.com>
+Subject: Re: [RFC PATCH 2/2] ASoC: wm8994: delay aifxclk
+	activation
+Date: Fri, 17 Mar 2017 15:37:24 +0000
+Message-ID: <6a5eb30d-bb98-4216-8b0a-4fdb38cd80e4@st.com>
+References: <1489682483-13051-1-git-send-email-olivier.moysan@st.com>
+ <1489682483-13051-3-git-send-email-olivier.moysan@st.com>
+ <20170316175152.hqipd5yvfdrt2ywd@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 718F8266A0A
- for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2017 15:09:02 +0100 (CET)
-In-Reply-To: <1489759704-30217-1-git-send-email-arnaud.pouliquen@st.com>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 7E1402669D8
+ for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2017 16:37:27 +0100 (CET)
+In-Reply-To: <20170316175152.hqipd5yvfdrt2ywd@sirena.org.uk>
+Content-Language: en-US
+Content-ID: <6D67799633E6F34EAB6FD8B383A27787@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,68 +25,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jonathan Cameron <jic23@kernel.org>, Hartmut Knaack <knaack.h@gmx.de>, Lars-Peter Clausen <lars@metafoo.de>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, olivier moysan <olivier.moysan@st.com>, kernel@stlinux.com, linux-iio@vger.kernel.org, arnaud.pouliquen@st.com, Maxime Coquelin <mcoquelin.stm32@gmail.com>, linux-arm-kernel@lists.infradead.org, Alexandre Torgue <alexandre.torgue@st.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alexandre TORGUE <alexandre.torgue@st.com>, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add bindings that describes audio settings to support
-Digital Filter for pulse density modulation(PDM) microphone.
+Hello Mark,
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
----
-V2->V3:
-   Fixes based on V2 comments
+On 03/16/2017 06:51 PM, Mark Brown wrote:
+> On Thu, Mar 16, 2017 at 05:41:23PM +0100, olivier moysan wrote:
+>> Signed-off-by: olivier moysan <olivier.moysan@st.com>
+>> ---
+>>  sound/soc/codecs/wm8994.c | 4 +++-
+>>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> ...with no changelog.  That's especially important here, we really don't
+> want to be messing with the clock activation ordering on this device
+> without a good and clear understanding of what's going on.
+>
 
- .../devicetree/bindings/sound/st,stm32-adfsdm.txt  | 41 ++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt
+Sorry. I put it in cover letter only.
+I send a v2 with more explanations.
 
-diff --git a/Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt b/Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt
-new file mode 100644
-index 0000000..ab610bc
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt
-@@ -0,0 +1,40 @@
-+STMicroelectronics audio DFSDM DT bindings
-+
-+This driver supports audio PDM microphone capture through Digital Filter format
-+Sigma Delta modulators (DFSDM).
-+
-+Required properties:
-+  - compatible: "st,stm32h7-adfsdm".
-+
-+  - #sound-dai-cells : Must be equal to 0
-+
-+  - io-channels : phandle to iio dfsdm instance node.
-+
-+
-+Example of a simple sound card using audio DFSDM node.
-+
-+	dmic0: dmic_@0 {
-+		compatible = "dmic-codec";
-+		#sound-dai-cells = <0>;
-+	};
-+
-+	asoc-pdm@0 {
-+		compatible = "st,stm32h7-adfsdm";
-+		#sound-dai-cells = <0>;
-+		io-channels = <&dfsdm_adc0 0>;
-+	};
-+
-+	sound_dfsdm_pdm {
-+ 		compatible = "simple-audio-card";
-+ 		simple-audio-card,name = "dfsdm_pdm";
-+
-+ 		dfsdm0_mic0: simple-audio-card,dai-link@0 {
-+ 			format = "pdm";
-+ 			cpu {
-+ 				sound-dai = <&asoc_pdm1>;
-+ 			};
-+ 			dmic0_codec: codec {
-+ 				sound-dai = <&dmic0>;
-+ 			};
-+ 		};
-+	};
-\ No newline at end of file
--- 
-1.9.1
+regards
+olivier
