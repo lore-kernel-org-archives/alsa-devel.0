@@ -1,49 +1,80 @@
-From: Mylene Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: Re: Applied "ASoC: sun8i-codec: Update mixer to use SOC_DAPM_DOUBLE"
- to the asoc tree
-Date: Fri, 17 Mar 2017 09:13:36 +0100
-Message-ID: <e90d7737-0dab-b656-c431-68e48aba073d@free-electrons.com>
-References: <20170210094133.11382-3-mylene.josserand@free-electrons.com>
- <E1clbY9-0000DH-LY@finisterre>
- <CAGb2v6428PpYPzpHngLgaeziwKN8u-TYiNO1bs7TFw-7VrQOAg@mail.gmail.com>
- <20170315134323.i3pvla3pzejmkxwh@sirena.org.uk>
- <CAGb2v67-b+8CM0MqhT_YQeuNxEnVoxG-COZPy8LW32Eb-QE67Q@mail.gmail.com>
- <20170316140653.jjnta4le6kws36l5@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: rt286: fix headphone click/crack
+ noise on Dell XPS 9343 I2S mode
+Date: Fri, 17 Mar 2017 13:04:44 +0000
+Message-ID: <20170317130444.jw5ahc2hmgdoacpk@sirena.org.uk>
+References: <20170316083951.11247-1-kai.heng.feng@canonical.com>
+ <20170316140946.kikw2rjinafu6qo5@sirena.org.uk>
+ <CAAd53p6rqb9EFfFMC8EgYXdr86NLTD7BYRbwMM_xvUgUQFwKSg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20170316140653.jjnta4le6kws36l5-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Thomas Petazzoni <thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Alexandre Belloni <alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============9190776379854033989=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 85F502666C5
+ for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2017 14:04:55 +0100 (CET)
+In-Reply-To: <CAAd53p6rqb9EFfFMC8EgYXdr86NLTD7BYRbwMM_xvUgUQFwKSg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc: oder_chiou@realtek.com, bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-On 16/03/2017 15:06, Mark Brown wrote:
-> On Wed, Mar 15, 2017 at 10:15:22PM +0800, Chen-Yu Tsai wrote:
->
->> It depends on the second half of commit 4aa8146c89f3 ("ASoC: sun8i-codec:
->> Remove analog "HP" widget"), which is also a cleanup. Would it be OK
->> to pick these two over to fixes then? Or should we send a clean version
->> instead?
->
-> That also doesn't pick over cleanly, can you send a new version against
-> Linus' tree, that'll be easiest and safest I think.
->
+--===============9190776379854033989==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="rpn6753kn5gvww2j"
+Content-Disposition: inline
 
-No problem, I will do that.
 
-Thank you!
+--rpn6753kn5gvww2j
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Best regards,
+On Fri, Mar 17, 2017 at 02:41:04AM +0000, Kai-Heng Feng wrote:
+> On Thu, Mar 16, 2017 at 10:09 PM Mark Brown <broonie@kernel.org> wrote:
 
--- 
-Mylène Josserand, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> > > +     rt286->is_dell_dino = dmi_check_system(dmi_dell_dino) ? true :
+> > false;
+
+> > Just directly assign the boolean value, the ternery operator is just
+> > making thins harder to read here.
+
+> Should I make the int implicitly convert to bool or use '!!' operator?
+
+Use implicit conversion like you're already doing - the above already
+evaluates the function as a boolean in order to use it in the ternery
+operator.
+
+--rpn6753kn5gvww2j
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljL3usACgkQJNaLcl1U
+h9BFUAf/bcvG96CxplzNEcgDRa9irh/1Jat70yasQeYEWZ/oPWd7voviVNtWjCB0
+oA9Lgd4tVhbk6UgJS6Ge/DH2sEIceT4b1/bacFWHaAARoaM1iF2V2NEtZ9fHhFSA
+bHnwKzuW0LPPK1vqu2OdIccnzy09gBpUPFMDSXQvsmBHnRY9Ad+Q23NrZTWeu4s7
+uhZAliTqk/BETorPMe41ijhtIVu5lsntn7wG8tO7Dp0tmlK/l2n+EMA5uKq6FHP2
+wXvYWk8jVWwsS2tnrLgxXjltXU/DnwftSLmSdWpUQU6h2Nal8q8PS8Z6zjvVte9V
+lE4WyakwBHbLjDFBydHSPLOj0ttZ9g==
+=pvI2
+-----END PGP SIGNATURE-----
+
+--rpn6753kn5gvww2j--
+
+--===============9190776379854033989==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============9190776379854033989==--
