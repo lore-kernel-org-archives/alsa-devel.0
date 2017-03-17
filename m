@@ -1,16 +1,16 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: cs35l35: Stash dev pointer directly
-	rather than CODEC pointer
-Date: Fri, 17 Mar 2017 15:44:55 +0000
-Message-ID: <1489765495-8502-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH v3 00/11] Add STM32 DFSDM support
+Date: Fri, 17 Mar 2017 17:36:37 +0100
+Message-ID: <634a5739-c34a-e936-d89c-ea73a26c421e@st.com>
+References: <1489759704-30217-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id E3D872669D8
- for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2017 16:43:52 +0100 (CET)
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 1764A2669D8
+ for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2017 17:37:19 +0100 (CET)
+In-Reply-To: <1489759704-30217-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,156 +20,147 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com, patches@opensource.wolfsonmicro.com
+To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jonathan Cameron <jic23@kernel.org>, Hartmut Knaack <knaack.h@gmx.de>, Lars-Peter Clausen <lars@metafoo.de>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Olivier MOYSAN <olivier.moysan@st.com>, "kernel@stlinux.com" <kernel@stlinux.com>, "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Alexandre TORGUE <alexandre.torgue@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-The driver stashes a CODEC pointer in the cs35l35_private structure,
-which is used to obtain a struct device pointer for error messages in the
-interrupt handler.
+Oops stupid guy i am...I have forgotten to tag the series as [RFC]
+instead of [PATCH] in subjects.
+Apologize for any inconvenience caused.
 
-However, doing so is not very safe as the interrupt is registered, as it
-should be in bus probe, but the CODEC pointer can't be safely stored until
-the ASoC level probe. This leaves a window between the two probes where if
-any interrupts are received a NULL pointer will be deferenced in the IRQ
-handler.
+Regards
+Arnaud
 
-Fix this issue by saving a pointer to the device directly and passing that
-to the error messages in the interrupt handler rather than using the CODEC
-pointer to access the device pointer.
-
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/cs35l35.c | 29 ++++++++++++++---------------
- sound/soc/codecs/cs35l35.h |  2 +-
- 2 files changed, 15 insertions(+), 16 deletions(-)
-
-diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
-index 05117fc..1d9f332 100644
---- a/sound/soc/codecs/cs35l35.c
-+++ b/sound/soc/codecs/cs35l35.c
-@@ -741,8 +741,6 @@ static int cs35l35_codec_probe(struct snd_soc_codec *codec)
- 	struct monitor_cfg *monitor_config = &cs35l35->pdata.mon_cfg;
- 	int ret;
- 
--	cs35l35->codec = codec;
--
- 	/* Set Platform Data */
- 	if (cs35l35->pdata.bst_vctl)
- 		regmap_update_bits(cs35l35->regmap, CS35L35_BST_CVTR_V_CTL,
-@@ -1004,7 +1002,6 @@ static struct regmap_config cs35l35_regmap = {
- static irqreturn_t cs35l35_irq(int irq, void *data)
- {
- 	struct cs35l35_private *cs35l35 = data;
--	struct snd_soc_codec *codec = cs35l35->codec;
- 	unsigned int sticky1, sticky2, sticky3, sticky4;
- 	unsigned int mask1, mask2, mask3, mask4, current1;
- 
-@@ -1032,7 +1029,7 @@ static irqreturn_t cs35l35_irq(int irq, void *data)
- 
- 	/* handle the interrupts */
- 	if (sticky1 & CS35L35_CAL_ERR) {
--		dev_crit(codec->dev, "Calibration Error\n");
-+		dev_crit(cs35l35->dev, "Calibration Error\n");
- 
- 		/* error is no longer asserted; safe to reset */
- 		if (!(current1 & CS35L35_CAL_ERR)) {
-@@ -1051,10 +1048,10 @@ static irqreturn_t cs35l35_irq(int irq, void *data)
- 	}
- 
- 	if (sticky1 & CS35L35_AMP_SHORT) {
--		dev_crit(codec->dev, "AMP Short Error\n");
-+		dev_crit(cs35l35->dev, "AMP Short Error\n");
- 		/* error is no longer asserted; safe to reset */
- 		if (!(current1 & CS35L35_AMP_SHORT)) {
--			dev_dbg(codec->dev, "Amp short error release\n");
-+			dev_dbg(cs35l35->dev, "Amp short error release\n");
- 			regmap_update_bits(cs35l35->regmap,
- 					CS35L35_PROT_RELEASE_CTL,
- 					CS35L35_SHORT_RLS, 0);
-@@ -1069,11 +1066,11 @@ static irqreturn_t cs35l35_irq(int irq, void *data)
- 	}
- 
- 	if (sticky1 & CS35L35_OTW) {
--		dev_warn(codec->dev, "Over temperature warning\n");
-+		dev_warn(cs35l35->dev, "Over temperature warning\n");
- 
- 		/* error is no longer asserted; safe to reset */
- 		if (!(current1 & CS35L35_OTW)) {
--			dev_dbg(codec->dev, "Over temperature warn release\n");
-+			dev_dbg(cs35l35->dev, "Over temperature warn release\n");
- 			regmap_update_bits(cs35l35->regmap,
- 					CS35L35_PROT_RELEASE_CTL,
- 					CS35L35_OTW_RLS, 0);
-@@ -1088,10 +1085,10 @@ static irqreturn_t cs35l35_irq(int irq, void *data)
- 	}
- 
- 	if (sticky1 & CS35L35_OTE) {
--		dev_crit(codec->dev, "Over temperature error\n");
-+		dev_crit(cs35l35->dev, "Over temperature error\n");
- 		/* error is no longer asserted; safe to reset */
- 		if (!(current1 & CS35L35_OTE)) {
--			dev_dbg(codec->dev, "Over temperature error release\n");
-+			dev_dbg(cs35l35->dev, "Over temperature error release\n");
- 			regmap_update_bits(cs35l35->regmap,
- 					CS35L35_PROT_RELEASE_CTL,
- 					CS35L35_OTE_RLS, 0);
-@@ -1106,7 +1103,7 @@ static irqreturn_t cs35l35_irq(int irq, void *data)
- 	}
- 
- 	if (sticky3 & CS35L35_BST_HIGH) {
--		dev_crit(codec->dev, "VBST error: powering off!\n");
-+		dev_crit(cs35l35->dev, "VBST error: powering off!\n");
- 		regmap_update_bits(cs35l35->regmap, CS35L35_PWRCTL2,
- 			CS35L35_PDN_AMP, CS35L35_PDN_AMP);
- 		regmap_update_bits(cs35l35->regmap, CS35L35_PWRCTL1,
-@@ -1114,7 +1111,7 @@ static irqreturn_t cs35l35_irq(int irq, void *data)
- 	}
- 
- 	if (sticky3 & CS35L35_LBST_SHORT) {
--		dev_crit(codec->dev, "LBST error: powering off!\n");
-+		dev_crit(cs35l35->dev, "LBST error: powering off!\n");
- 		regmap_update_bits(cs35l35->regmap, CS35L35_PWRCTL2,
- 			CS35L35_PDN_AMP, CS35L35_PDN_AMP);
- 		regmap_update_bits(cs35l35->regmap, CS35L35_PWRCTL1,
-@@ -1122,13 +1119,13 @@ static irqreturn_t cs35l35_irq(int irq, void *data)
- 	}
- 
- 	if (sticky2 & CS35L35_VPBR_ERR)
--		dev_dbg(codec->dev, "Error: Reactive Brownout\n");
-+		dev_dbg(cs35l35->dev, "Error: Reactive Brownout\n");
- 
- 	if (sticky4 & CS35L35_VMON_OVFL)
--		dev_dbg(codec->dev, "Error: VMON overflow\n");
-+		dev_dbg(cs35l35->dev, "Error: VMON overflow\n");
- 
- 	if (sticky4 & CS35L35_IMON_OVFL)
--		dev_dbg(codec->dev, "Error: IMON overflow\n");
-+		dev_dbg(cs35l35->dev, "Error: IMON overflow\n");
- 
- 	return IRQ_HANDLED;
- }
-@@ -1365,6 +1362,8 @@ static int cs35l35_i2c_probe(struct i2c_client *i2c_client,
- 	if (!cs35l35)
- 		return -ENOMEM;
- 
-+	cs35l35->dev = dev;
-+
- 	i2c_set_clientdata(i2c_client, cs35l35);
- 	cs35l35->regmap = devm_regmap_init_i2c(i2c_client, &cs35l35_regmap);
- 	if (IS_ERR(cs35l35->regmap)) {
-diff --git a/sound/soc/codecs/cs35l35.h b/sound/soc/codecs/cs35l35.h
-index c203081..156d2f0 100644
---- a/sound/soc/codecs/cs35l35.h
-+++ b/sound/soc/codecs/cs35l35.h
-@@ -265,7 +265,7 @@
- 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
- 
- struct  cs35l35_private {
--	struct snd_soc_codec *codec;
-+	struct device *dev;
- 	struct cs35l35_platform_data pdata;
- 	struct regmap *regmap;
- 	struct regulator_bulk_data supplies[2];
--- 
-2.1.4
+On 03/17/2017 03:08 PM, Arnaud POULIQUEN wrote:
+> Hello,
+> 
+> I kept it as RFC as i reworked the global design (but also because not full validated...).
+> Regarding Mark and Jonathan's comments, I decided to  try an implementation 
+> with DMA support in IIO instead of handling it in ASOC.
+> Solution seems more straightforward but as DMA cyclic mode and associated buffer
+> block API is not part of IIO today, I still need some hacks...
+> To be honest, I tried to integrate DMA cyclic management and associated buffer block 
+> Consumer API. but no enough expertise on IIO to success... :(
+> 
+> Advantage vs V2:
+> 	- No more data processing need in ASoC , done in IIO
+>         - ASoC uses IIO consumer interface ( except for buffer callback)
+> Drawback :
+> 	- Need to create a "SPI bus" trigger to allo to use Buffer consumer API
+>         	=> Need to find a solution to set this trigger by default in IIO audio driver
+>         - No standard buffer management
+>         	- Implement DMA cyclic in DFSDM IIO driver.
+>                 - Define specific API to handle  buffer callback per period instead of 
+>                   callback per samples generated by iio_push_to_buffers_with_timestamp.
+>  
+> V2-V3 delta:
+> 	- New patches to support ASoC DMA codec in DT 
+>   		- ASoC: Add Bindins for DMIC codec driver.
+>   		- ASoC: codec: add DT support in dmic codec.
+>         - New patches to allow in-kernel set of IIO buffer size and watermark   
+>   		- IIO: consumer: allow to set buffer sizes.
+> 	- IIO DFSDM drivers
+>         	- Split audio and ADC support in 2 drivers.
+>                 - Implement DMA cyclic mode.
+>                 - Add SPI bus Trigger for buffer management.
+>                 
+> 	- IIO sigma delta adc drivers
+>         	-  Suppress "simple and rename driver.
+>          
+>          - ASoC driver
+>          	- Suppress DMA engine.
+>                 - Suppress copy ops.
+>                 - Use IIO consmumer interface to enable/Disable DFSDM.        
+> 
+> Regards,
+> 
+> Arnaud
+> 
+> Arnaud Pouliquen (11):
+>   iio: Add hardware consumer support
+>   IIO: Add DT bindings for sigma delta adc modulator
+>   IIO: ADC: add sigma delta modulator support
+>   IIO: add DT bindings for stm32 DFSDM filter
+>   IIO: ADC: add stm32 DFSDM support for Sigma delta ADC
+>   IIO: ADC: add stm32 DFSDM support for PDM microphone
+>   IIO: consumer: allow to set buffer sizes
+>   ASoC: Add Bindins for DMIC codec driver
+>   ASoC: codec: add DT support in dmic codec
+>   ASoC: add bindings for stm32 DFSDM filter
+>   ASoC: stm32: add DFSDM DAI support
+> 
+>  .../bindings/iio/adc/sigma-delta-modulator.txt     |  13 +
+>  .../bindings/iio/adc/st,stm32-dfsdm-adc.txt        | 120 ++++
+>  Documentation/devicetree/bindings/sound/dmic.txt   |  11 +
+>  .../devicetree/bindings/sound/st,stm32-adfsdm.txt  |  41 ++
+>  drivers/iio/Kconfig                                |   6 +
+>  drivers/iio/Makefile                               |   1 +
+>  drivers/iio/adc/Kconfig                            |  50 ++
+>  drivers/iio/adc/Makefile                           |   4 +
+>  drivers/iio/adc/sd_adc_modulator.c                 |  98 +++
+>  drivers/iio/adc/stm32-dfsdm-adc.c                  | 419 ++++++++++++
+>  drivers/iio/adc/stm32-dfsdm-audio.c                | 720 +++++++++++++++++++++
+>  drivers/iio/adc/stm32-dfsdm-core.c                 | 658 +++++++++++++++++++
+>  drivers/iio/adc/stm32-dfsdm.h                      | 372 +++++++++++
+>  drivers/iio/buffer/industrialio-buffer-cb.c        |  12 +
+>  drivers/iio/hw_consumer.c                          | 156 +++++
+>  include/linux/iio/adc/stm32-dfsdm-audio.h          |  41 ++
+>  include/linux/iio/consumer.h                       |  13 +
+>  include/linux/iio/hw_consumer.h                    |  12 +
+>  sound/soc/Kconfig                                  |   1 +
+>  sound/soc/Makefile                                 |   1 +
+>  sound/soc/codecs/dmic.c                            |   8 +
+>  sound/soc/stm/Kconfig                              |  10 +
+>  sound/soc/stm/Makefile                             |   2 +
+>  sound/soc/stm/stm32_adfsdm.c                       | 362 +++++++++++
+>  24 files changed, 3131 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.txt
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/dmic.txt
+>  create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt
+>  create mode 100644 drivers/iio/adc/sd_adc_modulator.c
+>  create mode 100644 drivers/iio/adc/stm32-dfsdm-adc.c
+>  create mode 100644 drivers/iio/adc/stm32-dfsdm-audio.c
+>  create mode 100644 drivers/iio/adc/stm32-dfsdm-core.c
+>  create mode 100644 drivers/iio/adc/stm32-dfsdm.h
+>  create mode 100644 drivers/iio/hw_consumer.c
+>  create mode 100644 include/linux/iio/adc/stm32-dfsdm-audio.h
+>  create mode 100644 include/linux/iio/hw_consumer.h
+>  create mode 100644 sound/soc/stm/Kconfig
+>  create mode 100644 sound/soc/stm/Makefile
+>  create mode 100644 sound/soc/stm/stm32_adfsdm.c
+> 
+> V2:
+> 
+> Patch-set associated to this RFC proposes an implementation of the
+> DFSDM features shared between ASoC and IIO frameworks.
+> 
+> Patch-set is only a Skeleton of the drivers, so a base to discuss and validate a design. 
+> It contains minimum code to allow probing (with DT) and to expose the ASoC and IIO ABI.
+> Hope that is sufficent in a first step to allow to focus on APIs.
+> 
+> In this patch-set there are two new APIs used:
+> 	- IIO in-kern API: based on hw_customer API proposed by Lars
+>  	- ASOC <-> IIO API inspired by API defined for hdmi-codec for ASoC/DRM interconnect. 
+>    	  API is dedicated to DFSDM only.
+> 
+> Notice also that this design is based on following assumption:
+> 	- Audio stream ABI interface is ASoC, no access to data through IIO ABI for PDM. 
+> 	- ASoC DMA should be used for audio transfer as designed for real time stream.
+> 	- Need some runtime parameters exchange between ASoC and IIO
+> 	  due to the correlation between the sample frequency, the DFSDM decimation 
+>           factor and the associated scaling.
+> 
+> - "ASoC: dmaengine_pcm: add copy support" patch:
+>  I added a patch in ASoC that allows to implement a copy function to process data 
+>  after DMA transfer. Requested, as DFSDM samples captured contain channel ID 
+>  on 8-LSB bits and need also a potential rescale to present DAT on 24-bits.  	
+> 
+> - "IIO: ADC: add sigma delta modulator support" patch:
+> Simple dummy driver created to support external Sigma delta modulator. 
+> It is binded to DFSDM driver through hw_customer API.
+> 
+> 
+> - 
+> 1.9.1
+> 
