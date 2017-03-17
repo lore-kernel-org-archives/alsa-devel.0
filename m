@@ -1,21 +1,13 @@
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH v2] ASoC: rt286: fix headphone click/crack
- noise on Dell XPS 9343 I2S mode
-Date: Fri, 17 Mar 2017 02:41:04 +0000
-Message-ID: <CAAd53p6rqb9EFfFMC8EgYXdr86NLTD7BYRbwMM_xvUgUQFwKSg@mail.gmail.com>
-References: <20170316083951.11247-1-kai.heng.feng@canonical.com>
- <20170316140946.kikw2rjinafu6qo5@sirena.org.uk>
+From: "Sutar, Mounesh" <Mounesh_Sutar@mentor.com>
+Subject: Re: [PATCH v3 6/6] pcm:plug: save converter config
+Date: Fri, 17 Mar 2017 06:19:15 +0000
+Message-ID: <6827d4eaf65340e0a7da2ca34fcd7e52@SVR-IES-MBX-04.mgc.mentorg.com>
+References: <1488535109-11572-1-git-send-email-sutar.mounesh@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f177.google.com (mail-yw0-f177.google.com
- [209.85.161.177])
- by alsa0.perex.cz (Postfix) with ESMTP id BC8D12668CC
- for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2017 03:41:16 +0100 (CET)
-Received: by mail-yw0-f177.google.com with SMTP id v198so45235505ywc.2
- for <alsa-devel@alsa-project.org>; Thu, 16 Mar 2017 19:41:15 -0700 (PDT)
-In-Reply-To: <20170316140946.kikw2rjinafu6qo5@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,33 +17,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: oder_chiou@realtek.com, bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
+To: "patch@alsa-project.org" <patch@alsa-project.org>
+Cc: "sutar.mounesh@gmail.com" <sutar.mounesh@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Andreas Pape <apape@de.adit-jv.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 16, 2017 at 10:09 PM Mark Brown <broonie@kernel.org> wrote:
+ping
 
-> On Thu, Mar 16, 2017 at 04:39:51PM +0800, Kai-Heng Feng wrote:
->
-> > +     switch (event) {
-> > +     case SND_SOC_DAPM_PRE_PMD:
-> > +     case SND_SOC_DAPM_POST_PMD:
-> > +     case SND_SOC_DAPM_POST_PMU:
-> > +             snd_soc_write(codec, RT286_SET_AMP_GAIN_HPO, AMP_OUT_MUTE);
-> > +             break;
-> > +     case SND_SOC_DAPM_PRE_PMU:
-> > +             snd_soc_write(codec, RT286_SET_AMP_GAIN_HPO,
-> AMP_OUT_UNMUTE);
-> > +             break;
->
-> After power up we mute the amplifier?  That's worthy of a comment...
->
-> > +     rt286->is_dell_dino = dmi_check_system(dmi_dell_dino) ? true :
-> false;
-> > +
->
-> Just directly assign the boolean value, the ternery operator is just
-> making thins harder to read here.
->
+-----Original Message-----
+From: Sutar, Mounesh 
+Sent: 09 March 2017 15:51
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org; Andreas Pape <apape@de.adit-jv.com>; 'sutar.mounesh@gmail.com' <sutar.mounesh@gmail.com>
+Subject: RE: [PATCH v3 6/6] pcm:plug: save converter config
 
-Should I make the int implicitly convert to bool or use '!!' operator?
+ping
+
+-----Original Message-----
+From: sutar.mounesh@gmail.com [mailto:sutar.mounesh@gmail.com] 
+Sent: 03 March 2017 15:28
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org; Sutar, Mounesh <Mounesh_Sutar@mentor.com>; Andreas Pape <apape@de.adit-jv.com>; Mounesh Sutar <sutar.mounesh@gmail.com>
+Subject: [PATCH v3 6/6] pcm:plug: save converter config
+
+From: Andreas Pape <apape@de.adit-jv.com>
+
+Passed config is freed after call to open, thus it is invalid when trying to extract the converter name. So config entry is saved for later usage.
+
+Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
+Signed-off-by: Mounesh Sutar <sutar.mounesh@gmail.com>
+
+diff --git a/src/pcm/pcm_plug.c b/src/pcm/pcm_plug.c index 266707b..c643278 100644
+--- a/src/pcm/pcm_plug.c
++++ b/src/pcm/pcm_plug.c
+@@ -64,6 +64,10 @@ static int snd_pcm_plug_close(snd_pcm_t *pcm)
+ 	snd_pcm_plug_t *plug = pcm->private_data;
+ 	int err, result = 0;
+ 	free(plug->ttable);
++	if (plug->rate_converter) {
++		snd_config_delete((snd_config_t*)plug->rate_converter);
++		plug->rate_converter = NULL;
++	}
+ 	assert(plug->gen.slave == plug->req_slave);
+ 	if (plug->gen.close_slave) {
+ 		snd_pcm_unlink_hw_ptr(pcm, plug->req_slave); @@ -1108,7 +1112,14 @@ int snd_pcm_plug_open(snd_pcm_t **pcmp,
+ 	plug->sformat = sformat;
+ 	plug->schannels = schannels;
+ 	plug->srate = srate;
+-	plug->rate_converter = rate_converter;
++	if (rate_converter) {
++		if ((err = snd_config_copy((snd_config_t**)&plug->rate_converter,
++					   (snd_config_t *)rate_converter)) < 0) {
++			free(plug);
++			return err;
++		}
++	}
++
+ 	plug->gen.slave = plug->req_slave = slave;
+ 	plug->gen.close_slave = close_slave;
+ 	plug->route_policy = route_policy;
+@@ -1119,6 +1130,10 @@ int snd_pcm_plug_open(snd_pcm_t **pcmp,
+ 	
+ 	err = snd_pcm_new(&pcm, SND_PCM_TYPE_PLUG, name, slave->stream, slave->mode);
+ 	if (err < 0) {
++		if (plug->rate_converter) {
++			snd_config_delete((snd_config_t*)plug->rate_converter);
++			plug->rate_converter = NULL;
++		}
+ 		free(plug);
+ 		return err;
+ 	}
+--
+2.7.4
