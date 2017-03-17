@@ -1,17 +1,16 @@
-From: olivier moysan <olivier.moysan@st.com>
-Subject: [RFC PATCH v2 2/2] ASoC: wm8994: delay aifxclk
-	activation
-Date: Fri, 17 Mar 2017 16:41:51 +0100
-Message-ID: <1489765311-29857-3-git-send-email-olivier.moysan@st.com>
-References: <1489765311-29857-1-git-send-email-olivier.moysan@st.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: cs35l35: Stash dev pointer directly
+	rather than CODEC pointer
+Date: Fri, 17 Mar 2017 15:44:55 +0000
+Message-ID: <1489765495-8502-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 93A1C267211
- for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2017 16:42:00 +0100 (CET)
-In-Reply-To: <1489765311-29857-1-git-send-email-olivier.moysan@st.com>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id E3D872669D8
+ for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2017 16:43:52 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,61 +20,156 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, olivier.moysan@st.com
-Cc: arnaud.pouliquen@st.com
+To: broonie@kernel.org
+Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com, patches@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch is a draft.
+The driver stashes a CODEC pointer in the cs35l35_private structure,
+which is used to obtain a struct device pointer for error messages in the
+interrupt handler.
 
-The aim of this patch is to allow the following use case:
-- The codec wm8994 is configured as a slave of CPU DAI
-- The codec is configured before runtime
-- CPU DAI provides master clock to the codec at runtime only
+However, doing so is not very safe as the interrupt is registered, as it
+should be in bus probe, but the CODEC pointer can't be safely stored until
+the ASoC level probe. This leaves a window between the two probes where if
+any interrupts are received a NULL pointer will be deferenced in the IRQ
+handler.
 
-The wm8994 cannot be configured as long as master clock
-is not provided to the codec.
-aif clock, charge pump and DC servo registers are written
-to the codec but are not read back at their expected values,
-when the master clock is not set during configuration.
-In this use case, master clock is not available before
-pcm stream start.
-So previous settings are failing
-if there are set in SND_SOC_DAPM_PRE_PMU stage.
+Fix this issue by saving a pointer to the device directly and passing that
+to the error messages in the interrupt handler rather than using the CODEC
+pointer to access the device pointer.
 
-A way to go around this problem, is to delay aifxclk activation
-until SND_SOC_DAPM_POST_PMU DAPM stage.
-However delaying aif clock may have side effect on other use cases.
-
-The purpose of this patch is to illustrate the principle of the fix
-and to check if it may be applicable in all other contexts.
-
-
-Signed-off-by: olivier moysan <olivier.moysan@st.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8994.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/codecs/cs35l35.c | 29 ++++++++++++++---------------
+ sound/soc/codecs/cs35l35.h |  2 +-
+ 2 files changed, 15 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index ccf640a..6782d9e 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -1262,7 +1262,7 @@ static int late_enable_ev(struct snd_soc_dapm_widget *w,
- 	struct wm8994_priv *wm8994 = snd_soc_codec_get_drvdata(codec);
+diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
+index 05117fc..1d9f332 100644
+--- a/sound/soc/codecs/cs35l35.c
++++ b/sound/soc/codecs/cs35l35.c
+@@ -741,8 +741,6 @@ static int cs35l35_codec_probe(struct snd_soc_codec *codec)
+ 	struct monitor_cfg *monitor_config = &cs35l35->pdata.mon_cfg;
+ 	int ret;
  
- 	switch (event) {
--	case SND_SOC_DAPM_PRE_PMU:
-+	case SND_SOC_DAPM_POST_PMU:
- 		if (wm8994->aif1clk_enable) {
- 			aif1clk_ev(w, kcontrol, SND_SOC_DAPM_PRE_PMU);
- 			snd_soc_update_bits(codec, WM8994_AIF1_CLOCKING_1,
-@@ -1615,6 +1615,8 @@ static SOC_ENUM_SINGLE_DECL(aif2dacr_src_enum,
- SND_SOC_DAPM_MUX_E("Right Headphone Mux", SND_SOC_NOPM, 0, 0, &wm_hubs_hpr_mux,
- 		   late_enable_ev, SND_SOC_DAPM_PRE_PMU),
+-	cs35l35->codec = codec;
+-
+ 	/* Set Platform Data */
+ 	if (cs35l35->pdata.bst_vctl)
+ 		regmap_update_bits(cs35l35->regmap, CS35L35_BST_CVTR_V_CTL,
+@@ -1004,7 +1002,6 @@ static struct regmap_config cs35l35_regmap = {
+ static irqreturn_t cs35l35_irq(int irq, void *data)
+ {
+ 	struct cs35l35_private *cs35l35 = data;
+-	struct snd_soc_codec *codec = cs35l35->codec;
+ 	unsigned int sticky1, sticky2, sticky3, sticky4;
+ 	unsigned int mask1, mask2, mask3, mask4, current1;
  
-+SND_SOC_DAPM_POST("Late Enable PGA", late_enable_ev),
+@@ -1032,7 +1029,7 @@ static irqreturn_t cs35l35_irq(int irq, void *data)
+ 
+ 	/* handle the interrupts */
+ 	if (sticky1 & CS35L35_CAL_ERR) {
+-		dev_crit(codec->dev, "Calibration Error\n");
++		dev_crit(cs35l35->dev, "Calibration Error\n");
+ 
+ 		/* error is no longer asserted; safe to reset */
+ 		if (!(current1 & CS35L35_CAL_ERR)) {
+@@ -1051,10 +1048,10 @@ static irqreturn_t cs35l35_irq(int irq, void *data)
+ 	}
+ 
+ 	if (sticky1 & CS35L35_AMP_SHORT) {
+-		dev_crit(codec->dev, "AMP Short Error\n");
++		dev_crit(cs35l35->dev, "AMP Short Error\n");
+ 		/* error is no longer asserted; safe to reset */
+ 		if (!(current1 & CS35L35_AMP_SHORT)) {
+-			dev_dbg(codec->dev, "Amp short error release\n");
++			dev_dbg(cs35l35->dev, "Amp short error release\n");
+ 			regmap_update_bits(cs35l35->regmap,
+ 					CS35L35_PROT_RELEASE_CTL,
+ 					CS35L35_SHORT_RLS, 0);
+@@ -1069,11 +1066,11 @@ static irqreturn_t cs35l35_irq(int irq, void *data)
+ 	}
+ 
+ 	if (sticky1 & CS35L35_OTW) {
+-		dev_warn(codec->dev, "Over temperature warning\n");
++		dev_warn(cs35l35->dev, "Over temperature warning\n");
+ 
+ 		/* error is no longer asserted; safe to reset */
+ 		if (!(current1 & CS35L35_OTW)) {
+-			dev_dbg(codec->dev, "Over temperature warn release\n");
++			dev_dbg(cs35l35->dev, "Over temperature warn release\n");
+ 			regmap_update_bits(cs35l35->regmap,
+ 					CS35L35_PROT_RELEASE_CTL,
+ 					CS35L35_OTW_RLS, 0);
+@@ -1088,10 +1085,10 @@ static irqreturn_t cs35l35_irq(int irq, void *data)
+ 	}
+ 
+ 	if (sticky1 & CS35L35_OTE) {
+-		dev_crit(codec->dev, "Over temperature error\n");
++		dev_crit(cs35l35->dev, "Over temperature error\n");
+ 		/* error is no longer asserted; safe to reset */
+ 		if (!(current1 & CS35L35_OTE)) {
+-			dev_dbg(codec->dev, "Over temperature error release\n");
++			dev_dbg(cs35l35->dev, "Over temperature error release\n");
+ 			regmap_update_bits(cs35l35->regmap,
+ 					CS35L35_PROT_RELEASE_CTL,
+ 					CS35L35_OTE_RLS, 0);
+@@ -1106,7 +1103,7 @@ static irqreturn_t cs35l35_irq(int irq, void *data)
+ 	}
+ 
+ 	if (sticky3 & CS35L35_BST_HIGH) {
+-		dev_crit(codec->dev, "VBST error: powering off!\n");
++		dev_crit(cs35l35->dev, "VBST error: powering off!\n");
+ 		regmap_update_bits(cs35l35->regmap, CS35L35_PWRCTL2,
+ 			CS35L35_PDN_AMP, CS35L35_PDN_AMP);
+ 		regmap_update_bits(cs35l35->regmap, CS35L35_PWRCTL1,
+@@ -1114,7 +1111,7 @@ static irqreturn_t cs35l35_irq(int irq, void *data)
+ 	}
+ 
+ 	if (sticky3 & CS35L35_LBST_SHORT) {
+-		dev_crit(codec->dev, "LBST error: powering off!\n");
++		dev_crit(cs35l35->dev, "LBST error: powering off!\n");
+ 		regmap_update_bits(cs35l35->regmap, CS35L35_PWRCTL2,
+ 			CS35L35_PDN_AMP, CS35L35_PDN_AMP);
+ 		regmap_update_bits(cs35l35->regmap, CS35L35_PWRCTL1,
+@@ -1122,13 +1119,13 @@ static irqreturn_t cs35l35_irq(int irq, void *data)
+ 	}
+ 
+ 	if (sticky2 & CS35L35_VPBR_ERR)
+-		dev_dbg(codec->dev, "Error: Reactive Brownout\n");
++		dev_dbg(cs35l35->dev, "Error: Reactive Brownout\n");
+ 
+ 	if (sticky4 & CS35L35_VMON_OVFL)
+-		dev_dbg(codec->dev, "Error: VMON overflow\n");
++		dev_dbg(cs35l35->dev, "Error: VMON overflow\n");
+ 
+ 	if (sticky4 & CS35L35_IMON_OVFL)
+-		dev_dbg(codec->dev, "Error: IMON overflow\n");
++		dev_dbg(cs35l35->dev, "Error: IMON overflow\n");
+ 
+ 	return IRQ_HANDLED;
+ }
+@@ -1365,6 +1362,8 @@ static int cs35l35_i2c_probe(struct i2c_client *i2c_client,
+ 	if (!cs35l35)
+ 		return -ENOMEM;
+ 
++	cs35l35->dev = dev;
 +
- SND_SOC_DAPM_POST("Late Disable PGA", late_disable_ev)
- };
+ 	i2c_set_clientdata(i2c_client, cs35l35);
+ 	cs35l35->regmap = devm_regmap_init_i2c(i2c_client, &cs35l35_regmap);
+ 	if (IS_ERR(cs35l35->regmap)) {
+diff --git a/sound/soc/codecs/cs35l35.h b/sound/soc/codecs/cs35l35.h
+index c203081..156d2f0 100644
+--- a/sound/soc/codecs/cs35l35.h
++++ b/sound/soc/codecs/cs35l35.h
+@@ -265,7 +265,7 @@
+ 			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
  
+ struct  cs35l35_private {
+-	struct snd_soc_codec *codec;
++	struct device *dev;
+ 	struct cs35l35_platform_data pdata;
+ 	struct regmap *regmap;
+ 	struct regulator_bulk_data supplies[2];
 -- 
-1.9.1
+2.1.4
