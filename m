@@ -1,8 +1,8 @@
 From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH v3 08/11] ASoC: Add bindings for DMIC codec
-	driver
-Date: Fri, 17 Mar 2017 15:08:21 +0100
-Message-ID: <1489759704-30217-9-git-send-email-arnaud.pouliquen@st.com>
+Subject: [PATCH v3 09/11] ASoC: codec: add DT support in dmic
+	codec
+Date: Fri, 17 Mar 2017 15:08:22 +0100
+Message-ID: <1489759704-30217-10-git-send-email-arnaud.pouliquen@st.com>
 References: <1489759704-30217-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
  [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 2B094266B26
- for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2017 15:08:59 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5E06B266B6D
+ for <alsa-devel@alsa-project.org>; Fri, 17 Mar 2017 15:09:01 +0100 (CET)
 In-Reply-To: <1489759704-30217-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,30 +26,34 @@ To: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jonat
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, olivier moysan <olivier.moysan@st.com>, kernel@stlinux.com, linux-iio@vger.kernel.org, arnaud.pouliquen@st.com, Maxime Coquelin <mcoquelin.stm32@gmail.com>, linux-arm-kernel@lists.infradead.org, Alexandre Torgue <alexandre.torgue@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds documentation of device tree bindings for audio DMIC codec.
+Add of_table to allows DT probing.
 
 Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 ---
- Documentation/devicetree/bindings/sound/dmic.txt | 11 +++++++++++
- 1 file changed, 11 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/dmic.txt
+ sound/soc/codecs/dmic.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/dmic.txt b/Documentation/devicetree/bindings/sound/dmic.txt
-new file mode 100644
-index 0000000..eb2a9d4
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/dmic.txt
-@@ -0,0 +1,11 @@
-+Device-Tree bindings for dmic codec
+diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
+index c82b9dc..d04cac9 100644
+--- a/sound/soc/codecs/dmic.c
++++ b/sound/soc/codecs/dmic.c
+@@ -73,9 +73,17 @@ static int dmic_dev_remove(struct platform_device *pdev)
+ 
+ MODULE_ALIAS("platform:dmic-codec");
+ 
++static const struct of_device_id dmic_dev_match[] = {
++	{
++		.compatible = "dmic-codec",
++	},
++	{},
++};
 +
-+Required properties:
-+	- compatible: should be "dmic-codec".
-+
-+Example node:
-+
-+	dmic_audio: dmic_audio@0 {
-+		compatible = "dmic-codec";
-+		status = "okay";
-+	};
+ static struct platform_driver dmic_driver = {
+ 	.driver = {
+ 		.name = "dmic-codec",
++		.of_match_table = dmic_dev_match,
+ 	},
+ 	.probe = dmic_dev_probe,
+ 	.remove = dmic_dev_remove,
 -- 
 1.9.1
