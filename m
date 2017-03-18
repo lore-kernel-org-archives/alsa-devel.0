@@ -1,18 +1,17 @@
-From: Cheng Sun <chengsun9@gmail.com>
-Subject: dmix/dshare: discrepancy between snd_pcm_{status, state,
-	delay}
-Date: Sat, 18 Mar 2017 12:18:55 +0000
-Message-ID: <CAG6t6sP0FbSD-ai4+Q5pFEdCY4rchC5AU89FsmDKy6=STde++A@mail.gmail.com>
+From: Bhumika Goyal <bhumirks@gmail.com>
+Subject: [PATCH] ASoC: omap: constify snd_soc_ops structures
+Date: Sat, 18 Mar 2017 19:34:11 +0530
+Message-ID: <1489845851-25364-1-git-send-email-bhumirks@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f51.google.com (mail-it0-f51.google.com
- [209.85.214.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E2752666E1
- for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2017 13:19:17 +0100 (CET)
-Received: by mail-it0-f51.google.com with SMTP id m27so47636631iti.0
- for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2017 05:19:17 -0700 (PDT)
+Received: from mail-pf0-f196.google.com (mail-pf0-f196.google.com
+ [209.85.192.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A8662666E1
+ for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2017 15:04:25 +0100 (CET)
+Received: by mail-pf0-f196.google.com with SMTP id p189so6210843pfp.0
+ for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2017 07:04:25 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,38 +21,118 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: julia.lawall@lip6.fr, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Declare snd_soc_ops structures as const as they are only stored
+in the ops field of a snd_soc_dai_link structure. This field is
+of type const, so snd_soc_ops structures having this property
+can be made const too.
 
-I've been tracking down the cause of an indefinite hang in PortAudio
-whenever an xrun occurs, and bisected the issue to the following.
+Cross compiled the .o files for arm architecture.
 
-After commits faf53c19 (dshare) and 38a2d2ed (dmix), the semantics of
-snd_pcm_state and snd_pcm_delay are no longer the same as a query to
-snd_pcm_status, and a subsequent snd_pcm_status_get_*.
+Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+---
+ sound/soc/omap/am3517evm.c        | 2 +-
+ sound/soc/omap/n810.c             | 2 +-
+ sound/soc/omap/omap-abe-twl6040.c | 2 +-
+ sound/soc/omap/omap-twl4030.c     | 2 +-
+ sound/soc/omap/omap3pandora.c     | 2 +-
+ sound/soc/omap/osk5912.c          | 2 +-
+ sound/soc/omap/rx51.c             | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
 
-Note that these two commits remove the lines that set the state field
-in the snd_pcm_status_t:
-
--       status->state = snd_pcm_state(dshare->spcm);
-
-This causes the behaviour where, when a dmix's slave suffers an xrun,
-and the dmix's status is queried, snd_pcm_status_get_state returns
-RUNNING, and yet snd_pcm_state returns XRUN.
-
-The reason why I am not attaching a patch right now is because I am
-confused as to the commit message in faf53c19, which explicitly
-states:
-
-    Note: snd_pcm_dshare_delay() is not updated.
-
-Which leads me to think that this change in semantics was perhaps
-deliberate (if not documented anywhere). However I'm not sure what the
-rationale is, so I'm not clear on the right way to go about fixing it.
-
-If anyone could shed any further light into this, I'd be very grateful.
-
-Cheers,
-Cheng
+diff --git a/sound/soc/omap/am3517evm.c b/sound/soc/omap/am3517evm.c
+index 25a33e9..d565102 100644
+--- a/sound/soc/omap/am3517evm.c
++++ b/sound/soc/omap/am3517evm.c
+@@ -49,7 +49,7 @@ static int am3517evm_hw_params(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
+ 
+-static struct snd_soc_ops am3517evm_ops = {
++static const struct snd_soc_ops am3517evm_ops = {
+ 	.hw_params = am3517evm_hw_params,
+ };
+ 
+diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
+index fdecb70..71e5f31 100644
+--- a/sound/soc/omap/n810.c
++++ b/sound/soc/omap/n810.c
+@@ -124,7 +124,7 @@ static int n810_hw_params(struct snd_pcm_substream *substream,
+ 	return err;
+ }
+ 
+-static struct snd_soc_ops n810_ops = {
++static const struct snd_soc_ops n810_ops = {
+ 	.startup = n810_startup,
+ 	.hw_params = n810_hw_params,
+ 	.shutdown = n810_shutdown,
+diff --git a/sound/soc/omap/omap-abe-twl6040.c b/sound/soc/omap/omap-abe-twl6040.c
+index 89fe95e..614b18d 100644
+--- a/sound/soc/omap/omap-abe-twl6040.c
++++ b/sound/soc/omap/omap-abe-twl6040.c
+@@ -70,7 +70,7 @@ static int omap_abe_hw_params(struct snd_pcm_substream *substream,
+ 	return ret;
+ }
+ 
+-static struct snd_soc_ops omap_abe_ops = {
++static const struct snd_soc_ops omap_abe_ops = {
+ 	.hw_params = omap_abe_hw_params,
+ };
+ 
+diff --git a/sound/soc/omap/omap-twl4030.c b/sound/soc/omap/omap-twl4030.c
+index 7431314..a24b0de 100644
+--- a/sound/soc/omap/omap-twl4030.c
++++ b/sound/soc/omap/omap-twl4030.c
+@@ -73,7 +73,7 @@ static int omap_twl4030_hw_params(struct snd_pcm_substream *substream,
+ 	return snd_soc_runtime_set_dai_fmt(rtd, fmt);
+ }
+ 
+-static struct snd_soc_ops omap_twl4030_ops = {
++static const struct snd_soc_ops omap_twl4030_ops = {
+ 	.hw_params = omap_twl4030_hw_params,
+ };
+ 
+diff --git a/sound/soc/omap/omap3pandora.c b/sound/soc/omap/omap3pandora.c
+index 732e749..4e3de71 100644
+--- a/sound/soc/omap/omap3pandora.c
++++ b/sound/soc/omap/omap3pandora.c
+@@ -184,7 +184,7 @@ static int omap3pandora_in_init(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
+ }
+ 
+-static struct snd_soc_ops omap3pandora_ops = {
++static const struct snd_soc_ops omap3pandora_ops = {
+ 	.hw_params = omap3pandora_hw_params,
+ };
+ 
+diff --git a/sound/soc/omap/osk5912.c b/sound/soc/omap/osk5912.c
+index aa4053b..e409677 100644
+--- a/sound/soc/omap/osk5912.c
++++ b/sound/soc/omap/osk5912.c
+@@ -68,7 +68,7 @@ static int osk_hw_params(struct snd_pcm_substream *substream,
+ 	return err;
+ }
+ 
+-static struct snd_soc_ops osk_ops = {
++static const struct snd_soc_ops osk_ops = {
+ 	.startup = osk_startup,
+ 	.hw_params = osk_hw_params,
+ 	.shutdown = osk_shutdown,
+diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
+index a768457..66ac358 100644
+--- a/sound/soc/omap/rx51.c
++++ b/sound/soc/omap/rx51.c
+@@ -123,7 +123,7 @@ static int rx51_hw_params(struct snd_pcm_substream *substream,
+ 				      SND_SOC_CLOCK_IN);
+ }
+ 
+-static struct snd_soc_ops rx51_ops = {
++static const struct snd_soc_ops rx51_ops = {
+ 	.startup = rx51_startup,
+ 	.hw_params = rx51_hw_params,
+ };
+-- 
+2.7.4
