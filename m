@@ -1,13 +1,14 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v3 6/6] pcm:plug: save converter config
-Date: Sat, 18 Mar 2017 11:28:20 +0900
-Message-ID: <a8c623e2-5e64-457d-a879-328c9423c29d@sakamocchi.jp>
-References: <1488535109-11572-1-git-send-email-sutar.mounesh@gmail.com>
+From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?= <mylene.josserand@free-electrons.com>
+Subject: [PATCH v3 0/5] ASoC: sun8i-a33 clean-up for 4.11
+Date: Sat, 18 Mar 2017 08:55:04 +0100
+Message-ID: <20170318075509.3836-1-mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1488535109-11572-1-git-send-email-sutar.mounesh@gmail.com>
+Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 65D6B266927
+ for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2017 08:55:30 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -17,73 +18,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: sutar.mounesh@gmail.com, patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Andreas Pape <apape@de.adit-jv.com>, mounesh_sutar@mentor.com
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, maxime.ripard@free-electrons.com, wens@csie.org, robh+dt@kernel.org, mark.rutland@arm.com
+Cc: thomas.petazzoni@free-electrons.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, alexandre.belloni@free-electrons.com, =?UTF-8?q?Myl=C3=A8ne=20Josserand?= <mylene.josserand@free-electrons.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Mar 3 2017 18:58, sutar.mounesh@gmail.com wrote:
-> From: Andreas Pape <apape@de.adit-jv.com>
->
-> Passed config is freed after call to open, thus it is invalid when
-> trying to extract the converter name. So config entry is saved
-> for later usage.
->
-> Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
-> Signed-off-by: Mounesh Sutar <sutar.mounesh@gmail.com>
-
-I agree with your idea to fix this issue. However...
-
-> diff --git a/src/pcm/pcm_plug.c b/src/pcm/pcm_plug.c
-> index 266707b..c643278 100644
-> --- a/src/pcm/pcm_plug.c
-> +++ b/src/pcm/pcm_plug.c
-> @@ -64,6 +64,10 @@ static int snd_pcm_plug_close(snd_pcm_t *pcm)
->  	snd_pcm_plug_t *plug = pcm->private_data;
->  	int err, result = 0;
->  	free(plug->ttable);
-> +	if (plug->rate_converter) {
-> +		snd_config_delete((snd_config_t*)plug->rate_converter);
-> +		plug->rate_converter = NULL;
-> +	}
->  	assert(plug->gen.slave == plug->req_slave);
->  	if (plug->gen.close_slave) {
->  		snd_pcm_unlink_hw_ptr(pcm, plug->req_slave);
-> @@ -1108,7 +1112,14 @@ int snd_pcm_plug_open(snd_pcm_t **pcmp,
->  	plug->sformat = sformat;
->  	plug->schannels = schannels;
->  	plug->srate = srate;
-> -	plug->rate_converter = rate_converter;
-> +	if (rate_converter) {
-> +		if ((err = snd_config_copy((snd_config_t**)&plug->rate_converter,
-> +					   (snd_config_t *)rate_converter)) < 0) {
-> +			free(plug);
-> +			return err;
-> +		}
-> +	}
-> +
-
-The 'rate_converter' member is not referred in a call of following 
-snd_pcm_new(), thus the copy operation can be postponed enough later 
-than the call. This dedicates code simplicity, I think.
-
->  	plug->gen.slave = plug->req_slave = slave;
->  	plug->gen.close_slave = close_slave;
->  	plug->route_policy = route_policy;
-> @@ -1119,6 +1130,10 @@ int snd_pcm_plug_open(snd_pcm_t **pcmp,
->  	
->  	err = snd_pcm_new(&pcm, SND_PCM_TYPE_PLUG, name, slave->stream, slave->mode);
->  	if (err < 0) {
-> +		if (plug->rate_converter) {
-> +			snd_config_delete((snd_config_t*)plug->rate_converter);
-> +			plug->rate_converter = NULL;
-> +		}
->  		free(plug);
->  		return err;
->  	}
-
-
-Thanks
-
-Takashi Sakamoto
+SGkgZXZlcnlvbmUsCgpBcyBkaXNjdXNzZWQgaW4gdGhpcyB0aHJlYWQgWzFdLCBoZXJlIGFyZSBh
+IFYzIG9mIHRoZSBjbGVhbnVwIHNlcmllcyBmb3IKdGhlIHN1bjhpLWEzMyBkcml2ZXIgKGludHJv
+ZHVjZWQgaW4gdjQuMTEtcmMxKSBhcyBmaXhlcyBmb3IgdjQuMTEuCgpCYXNlZCBvbjogTGludXMg
+cmVwb3NpdG9yeSAtIG1hc3RlciBicmFuY2gKTGFzdCBjb21taXQ6IDg4NDFiNWYwY2QgKCJNZXJn
+ZSB0YWcgJ25mcy1mb3ItNC4xMS0yJyBvZgogICAgIGdpdDovL2dpdC5saW51eC1uZnMub3JnL3By
+b2plY3RzL2FubmEvbGludXgtbmZzIikKCkNoYW5nZXMgc2luY2UgdjEgYW5kIHYyOgoJLSBQYXRj
+aCAwMTogTm8gY2hhbmdlcyBmcm9tIHYxLCBpdCBhcHBsaWVzIGRpcmVjdGx5CgktIFBhdGNoIDAy
+OiBObyBjaGFuZ2VzIGZyb20gdjEsIGl0IGFwcGxpZXMgZGlyZWN0bHkKCW9uY2UgcGF0Y2ggMDEg
+aGFzIGJlZW4gYXBwbGllZC4KCS0gUGF0Y2ggMDM6IE5vIGNoYW5nZXMgZnJvbSB2MiwgaXQgYXBw
+bGllcyBkaXJlY3RseQoJLSBQYXRjaCAwNDogUmViYXNlZCBvbiBtYXN0ZXIgYnJhbmNoCgktIFBh
+dGNoIDA1OiBObyBjaGFuZ2VzIGZyb20gdjIsIGl0IGFwcGxpZXMgZGlyZWN0bHkKClBhdGNoIDAx
+IHJlbW92ZXMgc29tZSB1bm5lY2Vzc2FyeSB3aWRnZXRzLgpQYXRjaCAwMiB1cGRhdGVzIHRoZSBk
+cml2ZXIgdG8gdXNlIFNPQ19EQVBNX0RPVUJMRS4KUGF0Y2ggMDMgcmVtb3ZlcyBhIHNwYWNlIG9u
+IGEgd2lkZ2V0IG5hbWUgdGhhdCBpbXBsaWVzIGFuIGVycm9yCm9uIGF1ZGlvIHJvdXRpbmcgYXMg
+dGhlIHdpZGdldCBpcyB1bmtub3duLgpQYXRjaCAwNCBpbXByb3ZlcyBzb21lIHdpZGdldHMgKG5h
+bWVzIGFuZCB0eXBlcykuCkFzIHdpZGdldCBuYW1lcyBjaGFuZ2VkIGluIHBhdGNoIDA0LCB0aGUg
+cGF0Y2ggMDUgaXMgbmVlZGVkIHRvIHVzZQp0aGUgc2FtZSBuYW1lcyBvbiBhdWRpbyByb3V0aW5n
+LiBPdGhlcndpc2UsIHRoZSBkZXZpY2UgdHJlZSBmb3Igc3VuOGktYTMzCndpbGwgYmUgYnJva2Vu
+IGFuZCB0aGUgYXVkaW8gY29kZWMgd2lsbCBub3Qgd29yay4KCk9ubHkgcGF0Y2hlcyAwMSBhbmQg
+MDIgd2VyZSBpbml0aWFsbHkgd2FudGVkIGFzIGZpeGVzIGZvciB2NC4xMSBidXQsIHdpdGggQ2hl
+bi1ZdSwKd2UgdGhvdWdodCB0aGF0IHBhdGNoIDAzIGFuZCAwNCBjb3VsZCBiZSBhbHNvIGFwcGxp
+ZWQgYXMgZml4ZXMuIEFzIHBhdGNoIDA0CmNyZWF0ZXMgYSBicmVhayB3aXRoIHRoZSBkZXZpY2Ug
+dHJlZSwgSSBhZGRlZCBwYXRjaCAwNSBpbiB0aGlzIHNlcmllcy4KCkxldCBtZSBrbm93IHdoYXQg
+eW91IHRoaW5rLgoKWzFdOiBodHRwczovL2xrbWwub3JnL2xrbWwvMjAxNy8zLzE0LzQKClRoYW5r
+IHlvdSBpbiBhZHZhbmNlLAoKQmVzdCByZWdhcmRzLAoKTXlsw6huZSBKb3NzZXJhbmQgKDUpOgog
+IEFTb0M6IHN1bjhpLWNvZGVjOiBSZW1vdmUgYW5hbG9nICJIUCIgd2lkZ2V0CiAgQVNvQzogc3Vu
+OGktY29kZWM6IFVwZGF0ZSBtaXhlciB0byB1c2UgU09DX0RBUE1fRE9VQkxFCiAgQVNvQzogc3Vu
+OGktY29kZWM6IEZpeCBzcGFjZSBvbiBhdWRpby1yb3V0aW5nIHdpZGdldAogIEFTb0M6IHN1bjhp
+LWNvZGVjOiBDb252ZXJ0IHRvIHVzZSBTTkRfU09DX0RBUE1fQUlGX0lOCiAgQVJNOiBkdHM6IHN1
+bjhpOiBVcGRhdGUgYXVkaW8tcm91dGluZyB3aXRoIHJlbmFtZWQgd2lkZ2V0cwoKIGFyY2gvYXJt
+L2Jvb3QvZHRzL3N1bjhpLWEzMy5kdHNpIHwgIDQgKy0tCiBzb3VuZC9zb2Mvc3VueGkvc3VuOGkt
+Y29kZWMuYyAgICB8IDY3ICsrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
+IDIgZmlsZXMgY2hhbmdlZCwgMzIgaW5zZXJ0aW9ucygrKSwgMzkgZGVsZXRpb25zKC0pCgotLSAK
+Mi4xMS4wCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
