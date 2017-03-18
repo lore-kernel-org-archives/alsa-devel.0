@@ -1,21 +1,17 @@
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH] ASoC: samsung: constify snd_soc_ops
-	structures
-Date: Sat, 18 Mar 2017 17:34:40 +0200
-Message-ID: <20170318153440.mujlcov2ikj4ckbc@kozik-lap>
-References: <1489849299-11340-1-git-send-email-bhumirks@gmail.com>
+From: Bhumika Goyal <bhumirks@gmail.com>
+Subject: [PATCH] ASoC: mediatek: constify snd_soc_ops structures
+Date: Sat, 18 Mar 2017 23:13:14 +0530
+Message-ID: <1489858994-11659-1-git-send-email-bhumirks@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f195.google.com (mail-wr0-f195.google.com
- [209.85.128.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 88B7F266AF1
- for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2017 16:34:47 +0100 (CET)
-Received: by mail-wr0-f195.google.com with SMTP id u108so12865197wrb.2
- for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2017 08:34:47 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1489849299-11340-1-git-send-email-bhumirks@gmail.com>
+Received: from mail-pf0-f195.google.com (mail-pf0-f195.google.com
+ [209.85.192.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4788B266AF1
+ for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2017 18:43:24 +0100 (CET)
+Received: by mail-pf0-f195.google.com with SMTP id o126so12117872pfb.1
+ for <alsa-devel@alsa-project.org>; Sat, 18 Mar 2017 10:43:24 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,40 +21,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bhumika Goyal <bhumirks@gmail.com>
-Cc: alsa-devel@alsa-project.org, sbkim73@samsung.com, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, julia.lawall@lip6.fr, broonie@kernel.org, s.nawrocki@samsung.com
+To: julia.lawall@lip6.fr, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Mar 18, 2017 at 08:31:39PM +0530, Bhumika Goyal wrote:
-> Declare snd_soc_ops structures as const as they are only stored
-> in the ops field of a snd_soc_dai_link structure. This field is
-> of type const, so snd_soc_ops structures having this property
-> can be made const too.
-> 
-> Cross compiled the files arndale_rt5631.o, h1940_uda1380.o, jive_wm8750.o,
-> littlemill.o, neo1973_wm8753.o and rx1950_uda1380.o for arm architecture.
-> 
-> Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
-> ---
->  sound/soc/samsung/arndale_rt5631.c  | 2 +-
->  sound/soc/samsung/h1940_uda1380.c   | 2 +-
->  sound/soc/samsung/jive_wm8750.c     | 2 +-
->  sound/soc/samsung/littlemill.c      | 2 +-
->  sound/soc/samsung/neo1973_wm8753.c  | 2 +-
->  sound/soc/samsung/rx1950_uda1380.c  | 2 +-
->  sound/soc/samsung/s3c24xx_simtec.c  | 2 +-
->  sound/soc/samsung/s3c24xx_uda134x.c | 2 +-
->  sound/soc/samsung/smartq_wm8987.c   | 2 +-
->  sound/soc/samsung/smdk_spdif.c      | 2 +-
->  sound/soc/samsung/smdk_wm8580.c     | 2 +-
->  sound/soc/samsung/smdk_wm8994.c     | 2 +-
->  sound/soc/samsung/smdk_wm8994pcm.c  | 2 +-
->  sound/soc/samsung/tm2_wm5110.c      | 2 +-
->  sound/soc/samsung/tobermory.c       | 2 +-
->  15 files changed, 15 insertions(+), 15 deletions(-)
-> 
+Declare snd_soc_ops structures as const as they are only stored
+in the ops field of a snd_soc_dai_link structure. This field is
+of type const, so snd_soc_ops structures having this property
+can be made const too.
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+---
+ sound/soc/mediatek/mt2701/mt2701-cs42448.c       | 2 +-
+ sound/soc/mediatek/mt8173/mt8173-max98090.c      | 2 +-
+ sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c | 2 +-
+ sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c | 2 +-
+ sound/soc/mediatek/mt8173/mt8173-rt5650.c        | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
-Best regards,
-Krzysztof
+diff --git a/sound/soc/mediatek/mt2701/mt2701-cs42448.c b/sound/soc/mediatek/mt2701/mt2701-cs42448.c
+index 1e7e8d4..aa5b31b 100644
+--- a/sound/soc/mediatek/mt2701/mt2701-cs42448.c
++++ b/sound/soc/mediatek/mt2701/mt2701-cs42448.c
+@@ -129,7 +129,7 @@ static int mt2701_cs42448_fe_ops_startup(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
+ 
+-static struct snd_soc_ops mt2701_cs42448_48k_fe_ops = {
++static const struct snd_soc_ops mt2701_cs42448_48k_fe_ops = {
+ 	.startup = mt2701_cs42448_fe_ops_startup,
+ };
+ 
+diff --git a/sound/soc/mediatek/mt8173/mt8173-max98090.c b/sound/soc/mediatek/mt8173/mt8173-max98090.c
+index 46c8e6a..e0c2b23 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-max98090.c
++++ b/sound/soc/mediatek/mt8173/mt8173-max98090.c
+@@ -67,7 +67,7 @@ static int mt8173_max98090_hw_params(struct snd_pcm_substream *substream,
+ 				      SND_SOC_CLOCK_IN);
+ }
+ 
+-static struct snd_soc_ops mt8173_max98090_ops = {
++static const struct snd_soc_ops mt8173_max98090_ops = {
+ 	.hw_params = mt8173_max98090_hw_params,
+ };
+ 
+diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
+index 467f704..5e383eb 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
++++ b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5514.c
+@@ -75,7 +75,7 @@ static int mt8173_rt5650_rt5514_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static struct snd_soc_ops mt8173_rt5650_rt5514_ops = {
++static const struct snd_soc_ops mt8173_rt5650_rt5514_ops = {
+ 	.hw_params = mt8173_rt5650_rt5514_hw_params,
+ };
+ 
+diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
+index 1b8b2a7..fed1f15 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
++++ b/sound/soc/mediatek/mt8173/mt8173-rt5650-rt5676.c
+@@ -79,7 +79,7 @@ static int mt8173_rt5650_rt5676_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static struct snd_soc_ops mt8173_rt5650_rt5676_ops = {
++static const struct snd_soc_ops mt8173_rt5650_rt5676_ops = {
+ 	.hw_params = mt8173_rt5650_rt5676_hw_params,
+ };
+ 
+diff --git a/sound/soc/mediatek/mt8173/mt8173-rt5650.c b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
+index ba65f41..a784708 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-rt5650.c
++++ b/sound/soc/mediatek/mt8173/mt8173-rt5650.c
+@@ -105,7 +105,7 @@ static int mt8173_rt5650_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static struct snd_soc_ops mt8173_rt5650_ops = {
++static const struct snd_soc_ops mt8173_rt5650_ops = {
+ 	.hw_params = mt8173_rt5650_hw_params,
+ };
+ 
+-- 
+2.7.4
