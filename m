@@ -1,28 +1,26 @@
-From: Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v4 9/9] ASoC: add audio-graph-card support
-Date: Mon, 20 Mar 2017 15:32:24 -0500
-Message-ID: <CAL_JsqJFNnBUDN4AjseZN4zWh1dH30c1ay=0sYAnY3-6td0LSg@mail.gmail.com>
-References: <8760jdivfm.wl%kuninori.morimoto.gx@renesas.com>
- <87shmhhghc.wl%kuninori.morimoto.gx@renesas.com>
+From: Ian W MORRISON <ianwmorrison@gmail.com>
+Subject: Re: [PATCH v2] ALSA: x86: Select CONFIG_HDMI_LPE_AUDIO
+	as default
+Date: Tue, 21 Mar 2017 09:02:25 +1100
+Message-ID: <CAFXWsS_AEbkbcNz7d=u7PxH7QgY-RdomkkYmN7wnQ37M7g==4Q@mail.gmail.com>
+References: <CAFXWsS9-pEX0pF5=94_VK8xSF6sXC9991zbrnWByYB+++ve59Q@mail.gmail.com>
+ <s5h1stsl6oq.wl-tiwai@suse.de>
+ <CAFXWsS8-e3c_yB+vmCnwpi8PMXOLexQMmxeQD=j39tXhCqZ4+Q@mail.gmail.com>
+ <s5h60j4xrut.wl-tiwai@suse.de>
+ <CAFXWsS80cxYnzXSNUnAfWCiW40sjBcTtLKyiQqeSLRtawC8K-Q@mail.gmail.com>
+ <s5hshm8w9fa.wl-tiwai@suse.de>
+ <CAFXWsS8v9tc+de=OwY+d3mwD2WW3gDB_WR63TpwfJOiXjEMTmw@mail.gmail.com>
+ <s5hshm7kf03.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E9E12668F6
- for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 21:32:51 +0100 (CET)
-Received: from mail.kernel.org (localhost [127.0.0.1])
- by mail.kernel.org (Postfix) with ESMTP id AA6B120386
- for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 20:32:48 +0000 (UTC)
-Received: from mail-yw0-f177.google.com (mail-yw0-f177.google.com
- [209.85.161.177])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id AF38C20361
- for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 20:32:45 +0000 (UTC)
-Received: by mail-yw0-f177.google.com with SMTP id o4so98108987ywd.3
- for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 13:32:45 -0700 (PDT)
-In-Reply-To: <87shmhhghc.wl%kuninori.morimoto.gx@renesas.com>
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F69D266F51
+ for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 23:02:26 +0100 (CET)
+Received: by mail-wm0-f66.google.com with SMTP id x124so17245474wmf.3
+ for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 15:02:26 -0700 (PDT)
+In-Reply-To: <s5hshm7kf03.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,386 +30,268 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-DT <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 13, 2017 at 12:54 AM, Kuninori Morimoto
-<kuninori.morimoto.gx@renesas.com> wrote:
+On 21 March 2017 at 04:57, Takashi Iwai <tiwai@suse.de> wrote:
+
+> On Mon, 20 Mar 2017 16:12:01 +0100,
+> Ian W MORRISON wrote:
+> >
+> > On 20 March 2017 at 21:04, Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > > On Mon, 20 Mar 2017 10:41:07 +0100,
+> > > Ian W MORRISON wrote:
+> > > >
+> > > > On 20 March 2017 at 19:41, Takashi Iwai <tiwai@suse.de> wrote:
+> > > >
+> > > > > On Mon, 20 Mar 2017 09:17:30 +0100,
+> > > > > Ian W MORRISON wrote:
+> > > > > >
+> > > > > > Oops ... forgot to copy alsa-devel and Pierre-Louis.
+> > > > > >
+> > > > > > On 20 March 2017 at 18:59, Takashi Iwai <tiwai@suse.de> wrote:
+> > > > > >
+> > > > > > > On Mon, 20 Mar 2017 08:42:32 +0100,
+> > > > > > > Ian W MORRISON wrote:
+> > > > > > > >
+> > > > > > > > The upstream kernel builds for distributions such as Ubuntu
+> > > which now
+> > > > > > > > includes binary packages for v4.11 mainline kernel release
+> > > > > candidates are
+> > > > > > > > promoted as a way of testing upstream kernels to to confirm
+> that
+> > > > > upstream
+> > > > > > > > has fixed a specific issue (see https://wiki.ubuntu.com/
+> > > > > > > > Kernel/MainlineBuilds).
+> > > > > > > >
+> > > > > > > > Unfortunately the long awaited patch for providing HDMI audio
+> > > > > support for
+> > > > > > > > Bay Trail and Cherry Trail devices does not include this
+> support
+> > > > > through
+> > > > > > > a
+> > > > > > > > module built by default.
+> > > > > > > >
+> > > > > > > > Through including by default of the two associated CONFIG
+> > > settings
+> > > > > > > (SND_X86
+> > > > > > > > and HDMI_LPE_AUDIO), upstream kernel builds would
+> automatically
+> > > > > provide
+> > > > > > > the
+> > > > > > > > much desired HDMI audio support by default.
+> > > > > > > >
+> > > > > > > > This patch uses a Kconfig 'default' statement to include the
+> > > driver
+> > > > > as
+> > > > > > > > default.
+> > > > > > > >
+> > > > > > > > Changes in version 2: CONFIG_SND_X86 now a bool and changed
+> > > default
+> > > > > m to
+> > > > > > > > default y
+> > > > > > > >
+> > > > > > > > Signed-off-by: Ian W Morrison <linuxium@linuxium.com.au>
+> > > > > > > > ---
+> > > > > > > >  sound/x86/Kconfig | 4 +++-
+> > > > > > > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > > > > > > >
+> > > > > > > > diff --git a/sound/x86/Kconfig b/sound/x86/Kconfig
+> > > > > > > > index 84c8f8fc..cac2270 100644
+> > > > > > > > --- a/sound/x86/Kconfig
+> > > > > > > > +++ b/sound/x86/Kconfig
+> > > > > > > > @@ -1,6 +1,7 @@
+> > > > > > > >  menuconfig SND_X86
+> > > > > > > > -       tristate "X86 sound devices"
+> > > > > > > > +       bool "X86 sound devices"
+> > > > > > > >         depends on X86
+> > > > > > > > +       default y
+> > > > > > >
+> > > > > > > This one is OK, but ...
+> > > > > > >
+> > > > > > > >         ---help---
+> > > > > > > >           X86 sound devices that don't fall under SoC or PCI
+> > > > > categories
+> > > > > > > >
+> > > > > > > > @@ -9,6 +10,7 @@ if SND_X86
+> > > > > > > >  config HDMI_LPE_AUDIO
+> > > > > > > >         tristate "HDMI audio without HDaudio on Intel Atom
+> > > platforms"
+> > > > > > > >         depends on DRM_I915
+> > > > > > > > +       default y
+> > > > > > >
+> > > > > > > ... this is wrong.  Each driver config itself should be left
+> > > > > > > unspecified.
+> > > > > > >
+> > > > > > > It's distributor's job to choose the right config here.
+> > > > > > >
+> > > > > > > Actually this goes back to one of my earlier points: A
+> distributor
+> > > > > doesn't
+> > > > > > have to set 'HDMI' as HDMI audio is automatically provided.
+> > > > >
+> > > > > Provided by who...?
+> > > > >
+> > > >
+> > > >
+> > > > I suppose it is provided as a result of the architecture one runs the
+> > > > primary Makefile on. With 'uname -m' returning 'x86_64' running 'make
+> > > > defconfig' results in 'CONFIG_HDMI=y' being set so
+> > > 'drivers/video/Makefile'
+> > > > automatically makes 'drivers/video/hdmi.c' and as
+> > > > 'arch/x86/configs/x86_64_defconfig' includes 'CONFIG_DRM=y' and
+> > > > 'CONFIG_DRM_I915=y' and 'drivers/gpu/drm/i915/Makefile' makes
+> > > > 'intel_audio.c'.
+> > >
+> > > The defconfig stuff supports only the limited device sets that are
+> > > supposed to be very common.  Is HDMI_LPE_AUDIO classified really as
+> > > such a thing?  I don't know...
+> > >
+> > >
+> > In this instance I'd suggest that HDMI_LPE_AUDIO is common as without it
+> > you do not get HDMI audio on all x86_64 devices. However see my comment
+> > below.
+> >
+> >
+> > >
+> > > > > > This is just an
+> > > > > > extension because by setting 'HDMI_LPE_AUDIO' the missing audio
+> > > support
+> > > > > for
+> > > > > > BYT and CHT SoCs is then provided. Therefore, in this albeit
+> unusual
+> > > > > > instance, I reason is it appropriate to set HDMI_LPE_AUDIO so
+> that
+> > > audio
+> > > > > is
+> > > > > > automatically provided regardless of distribution. If a
+> distributor
+> > > > > didn't
+> > > > > > want to allow audio for BYT and CHT SoC based devices running
+> their
+> > > > > distro
+> > > > > > then they could always remove it from their distro specific
+> config.
+> > > > >
+> > > > > It's a wrong approach.  What we're discussing about is just a
+> > > > > configuration for a new individual driver, and the same rule
+> should be
+> > > > > applied to it like others.
+> > > > >
+> > > > > Check other drivers.  See whether default=y (or =m) is set to
+> > > > > CONFIG_E1000E, as a random example.  With your argument, it
+> should  be
+> > > > > set to y or m as default, since the Ethernet functionality is
+> already
+> > > > > provided by the network core.
+> > > > >
+> > > > > In general, we don't set the default values to the driver configs
+> > > > > unless there is a VERY specific reason to do so.
+> > > > >
+> > > > >
+> > > > I'm trying to get HDMI audio by default for BYT & CHT SoC but
+> currently
+> > > > this requires 'CONFIG_HDMI_LPE_AUDIO' set with a value of 'm'. I
+> don't
+> > > want
+> > > > to argue a 'special case' or promote a 'wrong approach' but just get
+> HDMI
+> > > > audio working so is there another way to achieve this?
+> > >
+> > > What's wrong with manually setting CONFIG_HDMI_LPE_AUDIO=m or =y?
+> > > IOW, do all features on your CHT/BYT machines work without adjusting
+> > > manually after defconfig?  If you have to do it in anyway, what makes
+> > > it special for HDMI_LPD_AUDIO?
+> > >
+> > >
+> > I've just tested various scenarios using a variety of devices with
+> > v4.11-rc3. Having CONFIG_HDMI_LPE_AUDIO set by default is sufficient to
+> get
+> > audio on BYT/CHT devices over HDMI.
+> >
+> > For example installing Ubuntu 16.04.2 on a BYT/CHT device, then upgrading
+> > the kernel to v4.11-rc3 using the deb-binary from
+> http://kernel.ubuntu.com/~
+> > kernel-ppa/mainline/v4.11-rc3/ (an example of a current distro which is
+> > compiling without setting CONFIG_HDMI_LPE_AUDIO) and there is no audio
+> over
+> > HDMI. Alternatively downloading v4.11-rc3 source, making defconfig,
+> > manually setting CONFIG_HDMI_LPE_AUDIO, compiling and installing the
+> > kernel on the BYT/CHT device will give you audio over HDMI.
+> >
+> > If the BYT/CHT device has other sound cards (e.g accessed via a headphone
+> > jack) then audio without setting CONFIG_HDMI_LPE_AUDIO may be possible
+> > depending on the codec used and whether it is provided by default in the
+> > kernel. So for example a Tronsmart Ara (CHT) device has audio over
+> > headphones using the pre-compiled deb-binary above but no audio over
+> HDMI.
+> > Whereas with a (1st gen) Intel Compute Stick (BYT) device no audio is
+> > possible using the pre-compiled deb-binary as the device only has an HDMI
+> > port. To get sound you must therefore currently use a self-compiled
+> kernel
+> > with CONFIG_HDMI_LPE_AUDIO set.
+> >
+> > Whilst Canonical may set CONFIG_HDMI_LPE_AUDIO to provide audio on
+> BYT/CHT
+> > devices by when is unknown and there is no guarantee they actually will.
+> >
+> > This will be similar for all other distros with the worst case scenario
+> > that no distributor adds CONFIG_HDMI_LPE_AUDIO to their configs resulting
+> > in (arguably) little point including HDMI LPE audio support in the
+> kernel.
+> >
+> > I've laboured the point about 'BYT/CHT devices audio over HDMI' but to
+> > answer your question completely there are other BYT/CHT devices
+> (typically
+> > tablets) that need a whole other bunch of patches to fix this and that.
+> > They may need specialist kernel configs with specific settings but that
+> is
+> > a separate issue to the basic functional need of having audio over HDMI.
+> >
+> > Does the above explanation justify my current approach or is there an
+> > alternative that can be considered?
 >
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> Sorry, no, you've explained how much you love the HDMI audio, but it
+> doesn't answer my question clearly.
 >
-> OF-graph base DT binding are used on V4L2, and ALSA SoC is using
-> different style of DT today. Now ALSA SoC supports simple-card driver
-> for generic/simple sound card.
-> In the future, V4L2 / ALSA will support HDMI, and then, DT bindings
-> between V4L2 / ALSA should be merged.
-> This patch adds new Audio Graph Card which is OF-graph base of
-> simple-card
+
+Whatever love there was is diminishing rapidly!
+
+Let me set the context: the range of BYT/CHT devices sold as HDMI sticks or
+HDMI boxes which are designed to connect to an HDMI output device (TV or
+monitor) and typically have Windows installed as the OS and are used
+primarily as media PCs, HTPCs or as 'mini' PCs. They become essentially
+useless for their designated purpose when installed with a mainstream Linux
+based OS such as Ubuntu at the moment because there is no audio over HDMI.
+
+
 >
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> ---
-> v3 -> v4
+> My question is simple: are *all* features the upstream kernel supports
+> for your device now (e.g. input, network or whatever) enabled by the
+> pure arch/x86/configs/x86_64_defconfig *without* manually setting the
+> configs to y or m?  I bet you likely have to set some configs there
+> manually to m or y.
 >
->  - use "label"
->  - use "dai-format"
->  - don't use prefix
 >
->  sound/soc/generic/Kconfig            |   8 +
->  sound/soc/generic/Makefile           |   2 +
->  sound/soc/generic/audio-graph-card.c | 301 +++++++++++++++++++++++++++++++++++
->  3 files changed, 311 insertions(+)
->  create mode 100644 sound/soc/generic/audio-graph-card.c
+No. CONFIG_HDMI_LPE_AUDIO is the only config that needs to be manually set
+to get *all* features from the upstream kernel.
+
+
+> Then, if the manual selection for such missing configs is acceptable,
+> what makes the HDMI audio so special and it must be set to y/m as
+> default, while other devices aren't set like that...?  That's the
+> question.
 >
-> diff --git a/sound/soc/generic/Kconfig b/sound/soc/generic/Kconfig
-> index d023959..121a48e 100644
-> --- a/sound/soc/generic/Kconfig
-> +++ b/sound/soc/generic/Kconfig
-> @@ -14,3 +14,11 @@ config SND_SIMPLE_SCU_CARD
->         help
->           This option enables generic simple SCU sound card support.
->           It supports DPCM of multi CPU single Codec system.
-> +
-> +config SND_AUDIO_GRAPH_CARD
-> +       tristate "ASoC Audio Graph sound card support"
-> +       depends on OF
-> +       select SND_SIMPLE_CARD_UTILS
-> +       help
-> +         This option enables generic simple simple sound card support
-> +         with OF-graph DT bindings.
-> diff --git a/sound/soc/generic/Makefile b/sound/soc/generic/Makefile
-> index ee750f3..670068f 100644
-> --- a/sound/soc/generic/Makefile
-> +++ b/sound/soc/generic/Makefile
-> @@ -1,7 +1,9 @@
->  snd-soc-simple-card-utils-objs := simple-card-utils.o
->  snd-soc-simple-card-objs       := simple-card.o
->  snd-soc-simple-scu-card-objs   := simple-scu-card.o
-> +snd-soc-audio-graph-card-objs  := audio-graph-card.o
 >
->  obj-$(CONFIG_SND_SIMPLE_CARD_UTILS)    += snd-soc-simple-card-utils.o
->  obj-$(CONFIG_SND_SIMPLE_CARD)          += snd-soc-simple-card.o
->  obj-$(CONFIG_SND_SIMPLE_SCU_CARD)      += snd-soc-simple-scu-card.o
-> +obj-$(CONFIG_SND_AUDIO_GRAPH_CARD)     += snd-soc-audio-graph-card.o
-> diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-> new file mode 100644
-> index 0000000..07afdfa
-> --- /dev/null
-> +++ b/sound/soc/generic/audio-graph-card.c
-> @@ -0,0 +1,301 @@
-> +/*
-> + * ASoC audio graph sound card support
-> + *
-> + * Copyright (C) 2016 Renesas Solutions Corp.
-> + * Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-> + *
-> + * based on ${LINUX}/sound/soc/generic/simple-card.c
-> + *
-> + * This program is free software; you can redistribute it and/or modify
-> + * it under the terms of the GNU General Public License version 2 as
-> + * published by the Free Software Foundation.
-> + */
-> +#include <linux/clk.h>
-> +#include <linux/device.h>
-> +#include <linux/gpio.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/of_device.h>
-> +#include <linux/of_gpio.h>
-> +#include <linux/of_graph.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/string.h>
-> +#include <sound/jack.h>
-> +#include <sound/simple_card_utils.h>
-> +
-> +struct graph_card_data {
-> +       struct snd_soc_card snd_card;
-> +       struct graph_dai_props {
-> +               struct asoc_simple_dai cpu_dai;
-> +               struct asoc_simple_dai codec_dai;
-> +       } *dai_props;
-> +       struct snd_soc_dai_link *dai_link;
-> +};
-> +
-> +#define graph_priv_to_dev(priv) ((priv)->snd_card.dev)
-> +#define graph_priv_to_link(priv, i) ((priv)->snd_card.dai_link + (i))
-> +#define graph_priv_to_props(priv, i) ((priv)->dai_props + (i))
-> +
-> +static int asoc_graph_card_startup(struct snd_pcm_substream *substream)
-> +{
-> +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +       struct graph_card_data *priv =  snd_soc_card_get_drvdata(rtd->card);
-> +       struct graph_dai_props *dai_props =
-> +               graph_priv_to_props(priv, rtd->num);
-> +       int ret;
-> +
-> +       ret = clk_prepare_enable(dai_props->cpu_dai.clk);
-> +       if (ret)
-> +               return ret;
-> +
-> +       ret = clk_prepare_enable(dai_props->codec_dai.clk);
-> +       if (ret)
-> +               clk_disable_unprepare(dai_props->cpu_dai.clk);
-> +
-> +       return ret;
-> +}
-> +
-> +static void asoc_graph_card_shutdown(struct snd_pcm_substream *substream)
-> +{
-> +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> +       struct graph_card_data *priv =  snd_soc_card_get_drvdata(rtd->card);
-> +       struct graph_dai_props *dai_props =
-> +               graph_priv_to_props(priv, rtd->num);
-> +
-> +       clk_disable_unprepare(dai_props->cpu_dai.clk);
-> +
-> +       clk_disable_unprepare(dai_props->codec_dai.clk);
-> +}
-> +
-> +static struct snd_soc_ops asoc_graph_card_ops = {
-> +       .startup = asoc_graph_card_startup,
-> +       .shutdown = asoc_graph_card_shutdown,
-> +};
-> +
-> +static int asoc_graph_card_dai_init(struct snd_soc_pcm_runtime *rtd)
-> +{
-> +       struct graph_card_data *priv =  snd_soc_card_get_drvdata(rtd->card);
-> +       struct snd_soc_dai *codec = rtd->codec_dai;
-> +       struct snd_soc_dai *cpu = rtd->cpu_dai;
-> +       struct graph_dai_props *dai_props =
-> +               graph_priv_to_props(priv, rtd->num);
-> +       int ret;
-> +
-> +       ret = asoc_simple_card_init_dai(codec, &dai_props->codec_dai);
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       ret = asoc_simple_card_init_dai(cpu, &dai_props->cpu_dai);
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       return 0;
-> +}
-> +
-> +static int asoc_graph_card_dai_link_of(struct device_node *cpu_port,
-> +                                       struct graph_card_data *priv,
-> +                                       int idx)
-> +{
-> +       struct device *dev = graph_priv_to_dev(priv);
-> +       struct snd_soc_dai_link *dai_link = graph_priv_to_link(priv, idx);
-> +       struct graph_dai_props *dai_props = graph_priv_to_props(priv, idx);
-> +       struct asoc_simple_dai *cpu_dai = &dai_props->cpu_dai;
-> +       struct asoc_simple_dai *codec_dai = &dai_props->codec_dai;
-> +       struct device_node *cpu_ep    = of_get_next_child(cpu_port, NULL);
-> +       struct device_node *codec_ep = of_graph_get_remote_endpoint(cpu_ep);
-> +       struct device_node *rcpu_ep = of_graph_get_remote_endpoint(codec_ep);
-> +       int ret;
-> +
-> +       if (rcpu_ep != cpu_ep) {
-> +               dev_err(dev, "remote-endpoint missmatch (%s/%s/%s)\n",
-> +                       cpu_ep->name, codec_ep->name, rcpu_ep->name);
-> +               return -EINVAL;
-> +       }
+>
+The requested patch sets CONFIG_HDMI_LPE_AUDIO so mainstream Linux distro
+kernels would automatically provide the new kernel feature of HDMI LPE
+audio support.
 
-We should have this check in dtc rather than the kernel.
 
-> +
-> +       ret = asoc_simple_card_parse_daifmt(dev, cpu_ep, codec_ep,
-> +                                           NULL, &dai_link->dai_fmt);
-> +       if (ret < 0)
-> +               goto dai_link_of_err;
-> +
-> +       /*
-> +        * we need to consider "mclk-fs" around here
-> +        * see simple-card
-> +        */
-> +
-> +       ret = asoc_simple_card_parse_graph_cpu(cpu_ep, dai_link);
-> +       if (ret < 0)
-> +               goto dai_link_of_err;
-> +
-> +       ret = asoc_simple_card_parse_graph_codec(codec_ep, dai_link);
-> +       if (ret < 0)
-> +               goto dai_link_of_err;
-> +
-> +       ret = snd_soc_of_parse_tdm_slot(cpu_ep,
-> +                                       &cpu_dai->tx_slot_mask,
-> +                                       &cpu_dai->rx_slot_mask,
-> +                                       &cpu_dai->slots,
-> +                                       &cpu_dai->slot_width);
-> +       if (ret < 0)
-> +               goto dai_link_of_err;
-> +
-> +       ret = snd_soc_of_parse_tdm_slot(codec_ep,
-> +                                       &codec_dai->tx_slot_mask,
-> +                                       &codec_dai->rx_slot_mask,
-> +                                       &codec_dai->slots,
-> +                                       &codec_dai->slot_width);
-> +       if (ret < 0)
-> +               goto dai_link_of_err;
-> +
-> +       ret = asoc_simple_card_parse_clk_cpu(dev, cpu_ep, dai_link, cpu_dai);
-> +       if (ret < 0)
-> +               goto dai_link_of_err;
-> +
-> +       ret = asoc_simple_card_parse_clk_codec(dev, codec_ep, dai_link, codec_dai);
-> +       if (ret < 0)
-> +               goto dai_link_of_err;
-> +
-> +       ret = asoc_simple_card_canonicalize_dailink(dai_link);
-> +       if (ret < 0)
-> +               goto dai_link_of_err;
-> +
-> +       ret = asoc_simple_card_set_dailink_name(dev, dai_link,
-> +                                               "%s-%s",
-> +                                               dai_link->cpu_dai_name,
-> +                                               dai_link->codec_dai_name);
-> +       if (ret < 0)
-> +               goto dai_link_of_err;
-> +
-> +       dai_link->ops = &asoc_graph_card_ops;
-> +       dai_link->init = asoc_graph_card_dai_init;
-> +
-> +       dev_dbg(dev, "\tname : %s\n", dai_link->stream_name);
-> +       dev_dbg(dev, "\tformat : %04x\n", dai_link->dai_fmt);
-> +       dev_dbg(dev, "\tcpu : %s / %d\n",
-> +               dai_link->cpu_dai_name,
-> +               dai_props->cpu_dai.sysclk);
-> +       dev_dbg(dev, "\tcodec : %s / %d\n",
-> +               dai_link->codec_dai_name,
-> +               dai_props->codec_dai.sysclk);
-> +
-> +       asoc_simple_card_canonicalize_cpu(dai_link,
-> +                                         priv->snd_card.num_links == 1);
-> +
-> +dai_link_of_err:
-> +       of_node_put(codec_ep);
-> +
-> +       return ret;
-> +}
-> +
-> +static int asoc_graph_card_parse_of(struct device *dev,
-> +                                    struct graph_card_data *priv)
-> +{
-> +       struct device_node *node = dev->of_node;
-> +       struct snd_soc_card *card = &priv->snd_card;
-> +       struct device_node *np;
-> +       int idx = 0;
-> +       int ret;
-> +
-> +       /*
-> +        * we need to consider "widgets", "routing", "mclk-fs" around here
-> +        * see simple-card
-> +        */
-> +
-> +       while ((np = of_parse_phandle(node, "dais", idx))) {
-
-of_for_each_phandle
-
-> +               ret = asoc_graph_card_dai_link_of(np, priv, idx++);
-> +               if (ret < 0)
-> +                       return ret;
-> +       }
-> +
-> +       return asoc_simple_card_parse_card_name(card, NULL);
-> +}
-> +
-> +static int asoc_graph_get_dais_count(struct device *dev)
-> +{
-> +       struct device_node *node = dev->of_node;
-> +       int count = 0;
-> +
-> +       if (of_get_property(node, "dais", NULL)) {
-> +               while (of_parse_phandle(node, "dais", count))
-
-of_for_each_phandle
-
-> +                       count++;
-> +       } else {
-> +               count = 1;
-
-This should be an error or 0, right?
-
-> +       }
-> +
-> +       return count;
-> +}
-> +
-> +static int asoc_graph_card_probe(struct platform_device *pdev)
-> +{
-> +       struct graph_card_data *priv;
-> +       struct snd_soc_dai_link *dai_link;
-> +       struct graph_dai_props *dai_props;
-> +       struct device *dev = &pdev->dev;
-> +       int num, ret;
-> +
-> +       /* Allocate the private data and the DAI link array */
-> +       priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> +       if (!priv)
-> +               return -ENOMEM;
-> +
-> +       num = asoc_graph_get_dais_count(dev);
-> +
-> +       dai_props = devm_kzalloc(dev, sizeof(*dai_props) * num, GFP_KERNEL);
-> +       dai_link  = devm_kzalloc(dev, sizeof(*dai_link)  * num, GFP_KERNEL);
-> +       if (!dai_props || !dai_link)
-> +               return -ENOMEM;
-> +
-> +       priv->dai_props                 = dai_props;
-> +       priv->dai_link                  = dai_link;
-> +
-> +       /* Init snd_soc_card */
-> +       priv->snd_card.owner            = THIS_MODULE;
-> +       priv->snd_card.dev              = dev;
-> +       priv->snd_card.dai_link         = dai_link;
-> +       priv->snd_card.num_links        = num;
-> +
-> +       ret = asoc_graph_card_parse_of(dev, priv);
-> +       if (ret < 0) {
-> +               if (ret != -EPROBE_DEFER)
-> +                       dev_err(dev, "parse error %d\n", ret);
-> +               goto err;
-> +       }
-> +
-> +       snd_soc_card_set_drvdata(&priv->snd_card, priv);
-> +
-> +       ret = devm_snd_soc_register_card(dev, &priv->snd_card);
-> +       if (ret >= 0)
-> +               return ret;
-> +err:
-> +       asoc_simple_card_clean_reference(&priv->snd_card);
-> +
-> +       return ret;
-> +}
-> +
-> +static int asoc_graph_card_remove(struct platform_device *pdev)
-> +{
-> +       struct snd_soc_card *card = platform_get_drvdata(pdev);
-> +       struct graph_card_data *priv = snd_soc_card_get_drvdata(card);
-> +
-> +       return asoc_simple_card_clean_reference(&priv->snd_card);
-> +}
-> +
-> +static const struct of_device_id asoc_graph_of_match[] = {
-> +       { .compatible = "audio-graph-card", },
-> +       {},
-> +};
-> +MODULE_DEVICE_TABLE(of, asoc_graph_of_match);
-> +
-> +static struct platform_driver asoc_graph_card = {
-> +       .driver = {
-> +               .name = "asoc-audio-graph-card",
-> +               .of_match_table = asoc_graph_of_match,
-> +       },
-> +       .probe = asoc_graph_card_probe,
-> +       .remove = asoc_graph_card_remove,
-> +};
-> +module_platform_driver(asoc_graph_card);
-> +
-> +MODULE_ALIAS("platform:asoc-audio-graph-card");
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_DESCRIPTION("ASoC Audio Graph Sound Card");
-> +MODULE_AUTHOR("Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>");
-> --
-> 1.9.1
+> thanks,
+>
+> Takashi
 >
