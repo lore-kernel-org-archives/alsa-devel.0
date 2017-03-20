@@ -1,20 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 5/5] ARM: dts: sun8i: Update
- audio-routing with renamed widgets
-Date: Mon, 20 Mar 2017 16:30:47 +0000
-Message-ID: <20170320163047.3xizwkq6pogi73gp@sirena.org.uk>
-References: <20170318075509.3836-1-mylene.josserand@free-electrons.com>
- <20170318075509.3836-6-mylene.josserand@free-electrons.com>
- <20170320113817.rcphcvrizi4yphhe@sirena.org.uk>
- <CAGb2v66ZLeoSQt0y2QVcDEBujS7JLQAptDq1WL8f8rkwSni6uw@mail.gmail.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 1/4] dt-bindings: Document the dmas and
+ dma-names properties for bcm2835-analog-audio
+Date: Mon, 20 Mar 2017 11:50:09 -0500
+Message-ID: <20170320165009.ylrohjwettdy2lgf@rob-hp-laptop>
+References: <20170312063820.19313-1-mzoran@crowfest.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3173900721030755844=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 77792266D9D
- for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 17:31:12 +0100 (CET)
-In-Reply-To: <CAGb2v66ZLeoSQt0y2QVcDEBujS7JLQAptDq1WL8f8rkwSni6uw@mail.gmail.com>
+Received: from mail-ot0-f196.google.com (mail-ot0-f196.google.com
+ [74.125.82.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 61384266D9D
+ for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 17:50:12 +0100 (CET)
+Received: by mail-ot0-f196.google.com with SMTP id i1so19887979ota.3
+ for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 09:50:12 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20170312063820.19313-1-mzoran@crowfest.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,58 +25,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Chen-Yu Tsai <wens@csie.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand@free-electrons.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+To: Michael Zoran <mzoran@crowfest.net>
+Cc: mark.rutland@arm.co, stefan.wahren@i2se.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, tiwai@suse.com, eric@anholt.net, linux-rpi-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, Mar 11, 2017 at 10:38:17PM -0800, Michael Zoran wrote:
+> Add documentation for the DMA properties required when using the
+> PWM controller of the bcm2835 for analog audio output.
+> 
+> Signed-off-by: Michael Zoran <mzoran@crowfest.net>
+> ---
+>  Documentation/devicetree/bindings/pwm/pwm-bcm2835.txt | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/pwm/pwm-bcm2835.txt b/Documentation/devicetree/bindings/pwm/pwm-bcm2835.txt
+> index cf573e85b11d..08fc06fc083a 100644
+> --- a/Documentation/devicetree/bindings/pwm/pwm-bcm2835.txt
+> +++ b/Documentation/devicetree/bindings/pwm/pwm-bcm2835.txt
+> @@ -1,14 +1,21 @@
+>  BCM2835 PWM controller (Raspberry Pi controller)
+>  
+>  Required properties:
+> -- compatible: should be "brcm,bcm2835-pwm"
+> +- compatible: should be "brcm,bcm2835-pwm" or "brcm,bcm2835-analog-audio"
 
---===============3173900721030755844==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="gyokpzpzpw6uxcee"
-Content-Disposition: inline
+Compatibles are not for selecting usage modes. You should describe the 
+connection to the pwm that makes it an audio output rather than change 
+the compatible.
 
-
---gyokpzpzpw6uxcee
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Mar 20, 2017 at 07:53:37PM +0800, Chen-Yu Tsai wrote:
-> On Mon, Mar 20, 2017 at 7:38 PM, Mark Brown <broonie@kernel.org> wrote:
-
-> > Given that these are fixes it probably makes sense that they all go in
-> > together, can I get some acks for this and I'll apply it?
-
-> Acked-by: Chen-Yu Tsai <wens@csie.org>
-
-> Though this patch should go in through the arm-soc tree.
-
-Well, ideally but I'm not sure it's a super big deal to get the odd bit
-coming through so long as it doesn't conflict, it's more of a big deal
-to make sure that we don't get the ASoC side without the DT side and
-vice versa.
-
---gyokpzpzpw6uxcee
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljQA7YACgkQJNaLcl1U
-h9CjoQf+Je6RtQfGkq0vooHmdHRZUzlJTnC4LWrDoC/+zF8ji5CtfqwNFZGD92rH
-U5h3nk52dFH+ucdSOPjtjQp7EFnTo5mJ2U2ufMACFYvidVhZh2Y2NUMpQyjvXF1d
-7kulTZqBJyy+gG77W9vksy/e08gwc67H/9Ykm1Fr6D8y8/WocZ77KWFcTd+eRHf4
-DkqlT0wvDX5dags8ictYr3JXi41uI1Sr2CbrKQtbm9ISo0l8HiMGD/8OhhwUuJL2
-xyASCFWfX5NsiDl+0dy/ww273JKl5LHAvog42KV+LX2tqnKeFYvOR2N22Upk5lxo
-Ej3kNUvcXB/2fpeXlcQ9yMoO3NBhEQ==
-=OOu+
------END PGP SIGNATURE-----
-
---gyokpzpzpw6uxcee--
-
---===============3173900721030755844==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3173900721030755844==--
+>  - reg: physical base address and length of the controller's registers
+>  - clocks: This clock defines the base clock frequency of the PWM hardware
+>    system, the period and the duty_cycle of the PWM signal is a multiple of
+>    the base period.
+> +
+> +Required properties(PWM Output):
+>  - #pwm-cells: Should be 2. See pwm.txt in this directory for a description of
+>    the cells format.
+>  
+> +Required properties(Audio Output):
+> +- dmas: Should contain one entry pointing to the DMA channel used to
+> +	transfer audio data
+> +- dma-names:   Should contain "tx"
+> +
+>  Examples:
+>  
+>  pwm@2020c000 {
+> -- 
+> 2.11.0
+> 
