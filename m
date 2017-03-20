@@ -1,23 +1,20 @@
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Subject: Re: [PATCH v3] ASoC: rt286: fix headphone click/crack
- noise on Dell XPS 9343 I2S mode
-Date: Tue, 21 Mar 2017 00:23:53 +0800
-Message-ID: <CAAd53p4T33uKEPVHET1F-PFVbW9R-JeKoCTzYwCP7+iM+j0+qg@mail.gmail.com>
-References: <20170320035831.10762-1-kai.heng.feng@canonical.com>
- <20170320150845.7rltrhycdkk2mza4@sirena.org.uk>
- <CAAd53p53MnZcSEgS47wWcCfm48=J6O3ynjqBdfN6_1nhBMdNwA@mail.gmail.com>
- <20170320160622.5s2oqdyluvanjp2u@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 5/5] ARM: dts: sun8i: Update
+ audio-routing with renamed widgets
+Date: Mon, 20 Mar 2017 16:30:47 +0000
+Message-ID: <20170320163047.3xizwkq6pogi73gp@sirena.org.uk>
+References: <20170318075509.3836-1-mylene.josserand@free-electrons.com>
+ <20170318075509.3836-6-mylene.josserand@free-electrons.com>
+ <20170320113817.rcphcvrizi4yphhe@sirena.org.uk>
+ <CAGb2v66ZLeoSQt0y2QVcDEBujS7JLQAptDq1WL8f8rkwSni6uw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3173900721030755844=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f180.google.com (mail-yw0-f180.google.com
- [209.85.161.180])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E0BA266D9D
- for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 17:23:55 +0100 (CET)
-Received: by mail-yw0-f180.google.com with SMTP id p77so93288502ywg.1
- for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 09:23:55 -0700 (PDT)
-In-Reply-To: <20170320160622.5s2oqdyluvanjp2u@sirena.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 77792266D9D
+ for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 17:31:12 +0100 (CET)
+In-Reply-To: <CAGb2v66ZLeoSQt0y2QVcDEBujS7JLQAptDq1WL8f8rkwSni6uw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,64 +24,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+To: Chen-Yu Tsai <wens@csie.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, =?iso-8859-1?Q?Myl=E8ne?= Josserand <mylene.josserand@free-electrons.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 21, 2017 at 12:06 AM, Mark Brown <broonie@kernel.org> wrote:
-> On Mon, Mar 20, 2017 at 03:46:13PM +0000, Kai-Heng Feng wrote:
->> On Mon, Mar 20, 2017 at 11:08 PM Mark Brown <broonie@kernel.org> wrote:
->
->> > As covered in SubmittingPatches this should come after the ---, it
->> > doesn't need to end up in the changelogs.
->
->> Do you mean
->> https://github.com/git/git/blob/master/Documentation/SubmittingPatches#L197
->>  ?
->> I didn't find any hard rules regarding this, but I'll keep it in mind.
->
-> As it says there "...and inserted automatically following the three dash
-> line".
 
-I saw iteration changelog in git log all over the place, maybe add a
-rule section for each subsystem?
+--===============3173900721030755844==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="gyokpzpzpw6uxcee"
+Content-Disposition: inline
 
->
->> > > SND_SOC_DAPM_POST_PMD: +     case SND_SOC_DAPM_POST_PMU: +
->> > > snd_soc_write(codec, RT286_SET_AMP_GAIN_HPO, AMP_OUT_MUTE); +
->> > > break; +     case SND_SOC_DAPM_PRE_PMU:
->
-> Please fix your mail client not to completely mangle quoted patches when
-> replying.
 
-Okay. I was toying with Google Inbox.
+--gyokpzpzpw6uxcee
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->
->> > To repeat what I said last time:
->
->> > | After power up we mute the amplifier?  That's worthy of a
->> > comment...
->
->> IIUC, HPO Power's  _POST_PMU is triggered right before power down
->> (_PRE_PMD), hence it's pretty logical to mute the amplifier at this
->> stage.  I can't quite see anything wrong here.
->
-> No, that is not the case - I'm not sure what would lead you to believe
-> that it is.  _POST_PMU is triggered as the last step of powering up the
-> widget as the name might suggest.  Has this code been tested at all?
+On Mon, Mar 20, 2017 at 07:53:37PM +0800, Chen-Yu Tsai wrote:
+> On Mon, Mar 20, 2017 at 7:38 PM, Mark Brown <broonie@kernel.org> wrote:
 
-I had the same thought originally, but printk under each case suggests
-otherwise - _POST_PMU is triggered not right after _PRE_PMU but right
-before _PRE_PMD.
+> > Given that these are fixes it probably makes sense that they all go in
+> > together, can I get some acks for this and I'll apply it?
 
-And yes, the patch was tested on a real machine.
+> Acked-by: Chen-Yu Tsai <wens@csie.org>
 
->
->> So no I didn't ignore your comment, I simply misinterpreted what you
->> meant.  Because of the logical assumption, I thought you were talking
->> the unmute part in _PRE_PMU, which I did add in the changelog.
->
-> You didn't reply to my review comment and you sent the same code again.
-> That looks an awful lot like being ignored.
+> Though this patch should go in through the arm-soc tree.
 
-Fair enough, I thought changelog is sufficient.
+Well, ideally but I'm not sure it's a super big deal to get the odd bit
+coming through so long as it doesn't conflict, it's more of a big deal
+to make sure that we don't get the ASoC side without the DT side and
+vice versa.
+
+--gyokpzpzpw6uxcee
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljQA7YACgkQJNaLcl1U
+h9CjoQf+Je6RtQfGkq0vooHmdHRZUzlJTnC4LWrDoC/+zF8ji5CtfqwNFZGD92rH
+U5h3nk52dFH+ucdSOPjtjQp7EFnTo5mJ2U2ufMACFYvidVhZh2Y2NUMpQyjvXF1d
+7kulTZqBJyy+gG77W9vksy/e08gwc67H/9Ykm1Fr6D8y8/WocZ77KWFcTd+eRHf4
+DkqlT0wvDX5dags8ictYr3JXi41uI1Sr2CbrKQtbm9ISo0l8HiMGD/8OhhwUuJL2
+xyASCFWfX5NsiDl+0dy/ww273JKl5LHAvog42KV+LX2tqnKeFYvOR2N22Upk5lxo
+Ej3kNUvcXB/2fpeXlcQ9yMoO3NBhEQ==
+=OOu+
+-----END PGP SIGNATURE-----
+
+--gyokpzpzpw6uxcee--
+
+--===============3173900721030755844==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3173900721030755844==--
