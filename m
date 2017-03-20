@@ -1,78 +1,83 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v2] clk: x86: add "mclk" alias for
- Baytrail/Cherrytrail
-Date: Sun, 19 Mar 2017 20:47:24 -0500
-Message-ID: <2dbe7397-2c7a-fe94-270c-f02e7e1a6bbb@linux.intel.com>
-References: <1487622236-16901-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH 2/2] ASoC: rt5665: fix wrong pre div reg of IF2
+	and IF3
+Date: Mon, 20 Mar 2017 10:20:54 +0800
+Message-ID: <1489976454-7441-2-git-send-email-bardliao@realtek.com>
+References: <1489976454-7441-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-clk-owner@vger.kernel.org>
-In-Reply-To: <1487622236-16901-1-git-send-email-pierre-louis.bossart@linux.intel.com>
-Sender: linux-clk-owner@vger.kernel.org
-To: linux-clk@vger.kernel.org, x86@kernel.org, platform-driver-x86@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Michael Turquette <mturquette@baylibre.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id E09E526690C
+ for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 03:21:12 +0100 (CET)
+In-Reply-To: <1489976454-7441-1-git-send-email-bardliao@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, xiaoxiang@pinecone.net, zhongan@pinecone.net, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On 2/20/17 2:23 PM, Pierre-Louis Bossart wrote:
-> Due to timing requirements, TI and Conexant manage the audio
-> reference clock from their ASoC codec drivers using the "mclk"
-> string. This patch adds another lookup for the "pmc_plt_clk_3"
-> clock to avoid Intel-specific tests in those codec drivers and
-> use code as-is.
->
-> To avoid a leak, clk_add_alias() is not used in this patch.
-> Instead the lookup is created manually as part of the .probe()
-> step and dropped in the .remove() step.
->
-> "pmc_plt_clk_3" is used exclusively for audio on all known
-> Baytrail/CherryTrail designs and is e.g. routed on the MCLK
-> (pin 26) of the MinnowBoardMAX Turbot LSE connector.
->
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+The pre divider control register of IF1 and IF2/3 are different.
+The driver used the same register for all interfaces which was a
+mistake.
 
-Was there any objection or feedback on this patch?
-The functionality is needed for a couple of audio drivers from Conexant 
-and Dialog initially written for ARM platforms.
-Thanks
--Pierre
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt5665.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-
-> ---
->  drivers/clk/x86/clk-pmc-atom.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/drivers/clk/x86/clk-pmc-atom.c b/drivers/clk/x86/clk-pmc-atom.c
-> index 2b60577..fafc991 100644
-> --- a/drivers/clk/x86/clk-pmc-atom.c
-> +++ b/drivers/clk/x86/clk-pmc-atom.c
-> @@ -54,6 +54,7 @@ struct clk_plt_data {
->  	struct clk_plt_fixed **parents;
->  	u8 nparents;
->  	struct clk_plt *clks[PMC_CLK_NUM];
-> +	struct clk_lookup *mclk_lookup;
->  };
->
->  /* Return an index in parent table */
-> @@ -337,6 +338,11 @@ static int plt_clk_probe(struct platform_device *pdev)
->  			goto err_unreg_clk_plt;
->  		}
->  	}
-> +	data->mclk_lookup = clkdev_hw_create(&data->clks[3]->hw, "mclk", NULL);
-> +	if (IS_ERR(data->mclk_lookup)) {
-> +		err = PTR_ERR(data->mclk_lookup);
-> +		goto err_unreg_clk_plt;
-> +	}
->
->  	plt_clk_free_parent_names_loop(parent_names, data->nparents);
->
-> @@ -356,6 +362,7 @@ static int plt_clk_remove(struct platform_device *pdev)
->
->  	data = platform_get_drvdata(pdev);
->
-> +	clkdev_drop(data->mclk_lookup);
->  	plt_clk_unregister_loop(data, PMC_CLK_NUM);
->  	plt_clk_unregister_parents(data);
->  	return 0;
->
-
+diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
+index 21b07ca..42bb5fd 100644
+--- a/sound/soc/codecs/rt5665.c
++++ b/sound/soc/codecs/rt5665.c
+@@ -4080,7 +4080,7 @@ static int rt5665_hw_params(struct snd_pcm_substream *substream,
+ {
+ 	struct snd_soc_codec *codec = dai->codec;
+ 	struct rt5665_priv *rt5665 = snd_soc_codec_get_drvdata(codec);
+-	unsigned int val_len = 0, val_clk, mask_clk, val_bits = 0x0100;
++	unsigned int val_len = 0, val_clk, reg_clk, mask_clk, val_bits = 0x0100;
+ 	int pre_div, frame_size;
+ 
+ 	rt5665->lrck[dai->id] = params_rate(params);
+@@ -4124,6 +4124,7 @@ static int rt5665_hw_params(struct snd_pcm_substream *substream,
+ 		if (params_channels(params) > 2)
+ 			rt5665_set_tdm_slot(dai, 0xf, 0xf,
+ 				params_channels(params), params_width(params));
++		reg_clk = RT5665_ADDA_CLK_1;
+ 		mask_clk = RT5665_I2S_PD1_MASK;
+ 		val_clk = pre_div << RT5665_I2S_PD1_SFT;
+ 		snd_soc_update_bits(codec, RT5665_I2S1_SDP,
+@@ -4131,12 +4132,14 @@ static int rt5665_hw_params(struct snd_pcm_substream *substream,
+ 		break;
+ 	case RT5665_AIF2_1:
+ 	case RT5665_AIF2_2:
++		reg_clk = RT5665_ADDA_CLK_2;
+ 		mask_clk = RT5665_I2S_PD2_MASK;
+ 		val_clk = pre_div << RT5665_I2S_PD2_SFT;
+ 		snd_soc_update_bits(codec, RT5665_I2S2_SDP,
+ 			RT5665_I2S_DL_MASK, val_len);
+ 		break;
+ 	case RT5665_AIF3:
++		reg_clk = RT5665_ADDA_CLK_2;
+ 		mask_clk = RT5665_I2S_PD3_MASK;
+ 		val_clk = pre_div << RT5665_I2S_PD3_SFT;
+ 		snd_soc_update_bits(codec, RT5665_I2S3_SDP,
+@@ -4147,7 +4150,7 @@ static int rt5665_hw_params(struct snd_pcm_substream *substream,
+ 		return -EINVAL;
+ 	}
+ 
+-	snd_soc_update_bits(codec, RT5665_ADDA_CLK_1, mask_clk, val_clk);
++	snd_soc_update_bits(codec, reg_clk, mask_clk, val_clk);
+ 	snd_soc_update_bits(codec, RT5665_STO1_DAC_SIL_DET, 0x3700, val_bits);
+ 
+ 	switch (rt5665->lrck[dai->id]) {
+-- 
+2.7.4
