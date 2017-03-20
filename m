@@ -1,16 +1,21 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: [PATCH] ASoC: STI: Fix null ptr deference in IRQ
-	handler
-Date: Mon, 20 Mar 2017 18:09:15 +0100
-Message-ID: <1490029755-15746-1-git-send-email-arnaud.pouliquen@st.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3] ASoC: rt286: fix headphone click/crack
+ noise on Dell XPS 9343 I2S mode
+Date: Mon, 20 Mar 2017 17:26:47 +0000
+Message-ID: <20170320172647.t7qacxqcgawe7xlf@sirena.org.uk>
+References: <20170320035831.10762-1-kai.heng.feng@canonical.com>
+ <20170320150845.7rltrhycdkk2mza4@sirena.org.uk>
+ <CAAd53p53MnZcSEgS47wWcCfm48=J6O3ynjqBdfN6_1nhBMdNwA@mail.gmail.com>
+ <20170320160622.5s2oqdyluvanjp2u@sirena.org.uk>
+ <CAAd53p4T33uKEPVHET1F-PFVbW9R-JeKoCTzYwCP7+iM+j0+qg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2491646795590098225=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id D6080266D9D
- for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 18:09:33 +0100 (CET)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4E7BF266EF3
+ for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 18:26:58 +0100 (CET)
+In-Reply-To: <CAAd53p4T33uKEPVHET1F-PFVbW9R-JeKoCTzYwCP7+iM+j0+qg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,108 +25,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, broonie@kernel.org, arnaud.pouliquen@st.com, lgirdwood@gmail.com, kernel@stlinux.com
+To: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-With RTlinux a race condition has been found that leads to NULL ptr crash:
-- On CPU 0: uni_player_irq_handler is called to treat XRUN
- "(player->state == UNIPERIF_STATE_STOPPED)" is FALSE so status is checked,
- dev_err(player->dev, "FIFO underflow error detected") is printed
-and then snd_pcm_stream_lock should be called to lock stream for stopping.
-- On CPU 1: application stop and close the stream.
-Issue is that the stop and shutdown functions are executed while
-"FIFO underflow error detected" is printed.
-So when CPU 0 call snd_pcm_stream_lock is player->substream is already null.
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
----
- sound/soc/sti/uniperif_player.c | 9 +++------
- sound/soc/sti/uniperif_reader.c | 8 +++++---
- 2 files changed, 8 insertions(+), 9 deletions(-)
+--===============2491646795590098225==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="va442svrmrnoixzj"
+Content-Disposition: inline
 
-diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
-index 60ae31a..6fa9eee 100644
---- a/sound/soc/sti/uniperif_player.c
-+++ b/sound/soc/sti/uniperif_player.c
-@@ -65,8 +65,10 @@ static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
- 	unsigned int status;
- 	unsigned int tmp;
- 
-+	snd_pcm_stream_lock(player->substream);
- 	if (player->state == UNIPERIF_STATE_STOPPED) {
- 		/* Unexpected IRQ: do nothing */
-+		snd_pcm_stream_unlock(player->substream);
- 		return IRQ_NONE;
- 	}
- 
-@@ -88,9 +90,7 @@ static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
- 			SET_UNIPERIF_ITM_BCLR_FIFO_ERROR(player);
- 
- 			/* Stop the player */
--			snd_pcm_stream_lock(player->substream);
- 			snd_pcm_stop(player->substream, SNDRV_PCM_STATE_XRUN);
--			snd_pcm_stream_unlock(player->substream);
- 		}
- 
- 		ret = IRQ_HANDLED;
-@@ -104,9 +104,7 @@ static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
- 		SET_UNIPERIF_ITM_BCLR_DMA_ERROR(player);
- 
- 		/* Stop the player */
--		snd_pcm_stream_lock(player->substream);
- 		snd_pcm_stop(player->substream, SNDRV_PCM_STATE_XRUN);
--		snd_pcm_stream_unlock(player->substream);
- 
- 		ret = IRQ_HANDLED;
- 	}
-@@ -138,13 +136,12 @@ static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
- 		dev_err(player->dev, "Underflow recovery failed\n");
- 
- 		/* Stop the player */
--		snd_pcm_stream_lock(player->substream);
- 		snd_pcm_stop(player->substream, SNDRV_PCM_STATE_XRUN);
--		snd_pcm_stream_unlock(player->substream);
- 
- 		ret = IRQ_HANDLED;
- 	}
- 
-+	snd_pcm_stream_unlock(player->substream);
- 	return ret;
- }
- 
-diff --git a/sound/soc/sti/uniperif_reader.c b/sound/soc/sti/uniperif_reader.c
-index 5992c6a..9273f59 100644
---- a/sound/soc/sti/uniperif_reader.c
-+++ b/sound/soc/sti/uniperif_reader.c
-@@ -46,9 +46,11 @@ static irqreturn_t uni_reader_irq_handler(int irq, void *dev_id)
- 	struct uniperif *reader = dev_id;
- 	unsigned int status;
- 
-+	snd_pcm_stream_lock(reader->substream);
- 	if (reader->state == UNIPERIF_STATE_STOPPED) {
- 		/* Unexpected IRQ: do nothing */
- 		dev_warn(reader->dev, "unexpected IRQ\n");
-+		snd_pcm_stream_unlock(reader->substream);
- 		return IRQ_HANDLED;
- 	}
- 
-@@ -60,13 +62,13 @@ static irqreturn_t uni_reader_irq_handler(int irq, void *dev_id)
- 	if (unlikely(status & UNIPERIF_ITS_FIFO_ERROR_MASK(reader))) {
- 		dev_err(reader->dev, "FIFO error detected\n");
- 
--		snd_pcm_stream_lock(reader->substream);
- 		snd_pcm_stop(reader->substream, SNDRV_PCM_STATE_XRUN);
--		snd_pcm_stream_unlock(reader->substream);
- 
--		return IRQ_HANDLED;
-+		ret = IRQ_HANDLED;
- 	}
- 
-+	snd_pcm_stream_unlock(reader->substream);
-+
- 	return ret;
- }
- 
--- 
-1.9.1
+
+--va442svrmrnoixzj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Mar 21, 2017 at 12:23:53AM +0800, Kai-Heng Feng wrote:
+> On Tue, Mar 21, 2017 at 12:06 AM, Mark Brown <broonie@kernel.org> wrote:
+
+> > As it says there "...and inserted automatically following the three dash
+> > line".
+
+> I saw iteration changelog in git log all over the place, maybe add a
+> rule section for each subsystem?
+
+Some people won't push back, the only people who insist on anything
+different are the graphics people.
+
+> I had the same thought originally, but printk under each case suggests
+> otherwise - _POST_PMU is triggered not right after _PRE_PMU but right
+> before _PRE_PMD.
+
+Then you've broken something else on your system, that is obviously
+completely nonsensical and would break anything that relies on having a
+_POST_PMU event.  Why would we have two events that run at the same time
+one of which is obviously misnamed?
+
+> > > You didn't reply to my review comment and you sent the same code
+> > > again.
+> > That looks an awful lot like being ignored.
+
+> Fair enough, I thought changelog is sufficient.
+
+I'm not seeing anything in the changelog that addresses this.
+
+--va442svrmrnoixzj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljQENcACgkQJNaLcl1U
+h9DTbwf/dBQUnftyISbcXK2n6NRRXtTm4tY7ksva5QB0g1UqkDF8XdscDCNZ41ax
+ovOqCMqPJk92NZgjCnvqAYInhgbH9c3us1CDwLr0+Q55/l1kBr/zHUVoOyVFpLCX
+L8NL/gmELjHiHUlJoeXG7qtDmFcOTlZ1ghMeDkvckMYaEEsZxdwY4fFMyyQzBLBj
+n0Y4xBQEW55gz4l19eRNKkslz1Lfr4HeCvO3rTllfrfCiiF3/iPPfLIyIxpMXOk/
+wpyfrIl0ng88q2EC/fp6ZZQuNLRGdrtQ/JROGpvd5bv//bSToDOhw4acx5DGjt1E
+ArmR3TFHblg6tZpIcs7LsI+bBLcYHA==
+=aais
+-----END PGP SIGNATURE-----
+
+--va442svrmrnoixzj--
+
+--===============2491646795590098225==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2491646795590098225==--
