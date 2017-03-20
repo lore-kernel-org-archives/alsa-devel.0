@@ -1,176 +1,78 @@
-From: Sebastian Reichel <sre@kernel.org>
-Subject: Re: [PATCH] ASoC: omap: constify snd_soc_ops structures
-Date: Mon, 20 Mar 2017 01:53:26 +0100
-Message-ID: <20170320005326.7gkckcy4rbgqij3h@earth>
-References: <1489845851-25364-1-git-send-email-bhumirks@gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v2] clk: x86: add "mclk" alias for
+ Baytrail/Cherrytrail
+Date: Sun, 19 Mar 2017 20:47:24 -0500
+Message-ID: <2dbe7397-2c7a-fe94-270c-f02e7e1a6bbb@linux.intel.com>
+References: <1487622236-16901-1-git-send-email-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ytm2ahlf4y2rom4v"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1489845851-25364-1-git-send-email-bhumirks@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Bhumika Goyal <bhumirks@gmail.com>
-Cc: julia.lawall@lip6.fr, peter.ujfalusi@ti.com, jarkko.nikula@bitmer.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-clk-owner@vger.kernel.org>
+In-Reply-To: <1487622236-16901-1-git-send-email-pierre-louis.bossart@linux.intel.com>
+Sender: linux-clk-owner@vger.kernel.org
+To: linux-clk@vger.kernel.org, x86@kernel.org, platform-driver-x86@vger.kernel.org, Stephen Boyd <sboyd@codeaurora.org>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Michael Turquette <mturquette@baylibre.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 2/20/17 2:23 PM, Pierre-Louis Bossart wrote:
+> Due to timing requirements, TI and Conexant manage the audio
+> reference clock from their ASoC codec drivers using the "mclk"
+> string. This patch adds another lookup for the "pmc_plt_clk_3"
+> clock to avoid Intel-specific tests in those codec drivers and
+> use code as-is.
+>
+> To avoid a leak, clk_add_alias() is not used in this patch.
+> Instead the lookup is created manually as part of the .probe()
+> step and dropped in the .remove() step.
+>
+> "pmc_plt_clk_3" is used exclusively for audio on all known
+> Baytrail/CherryTrail designs and is e.g. routed on the MCLK
+> (pin 26) of the MinnowBoardMAX Turbot LSE connector.
+>
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
---ytm2ahlf4y2rom4v
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Was there any objection or feedback on this patch?
+The functionality is needed for a couple of audio drivers from Conexant 
+and Dialog initially written for ARM platforms.
+Thanks
+-Pierre
 
-Hi,
 
-On Sat, Mar 18, 2017 at 07:34:11PM +0530, Bhumika Goyal wrote:
-> Declare snd_soc_ops structures as const as they are only stored
-> in the ops field of a snd_soc_dai_link structure. This field is
-> of type const, so snd_soc_ops structures having this property
-> can be made const too.
->=20
-> Cross compiled the .o files for arm architecture.
->=20
-> Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
-
-I actually noticed this while working on Droid 4's sound support and
-added this to my TODO list - stroking it off again now :)
-
-Reviewed-by: Sebastian Reichel <sre@kernel.org>
-
->  sound/soc/omap/am3517evm.c        | 2 +-
->  sound/soc/omap/n810.c             | 2 +-
->  sound/soc/omap/omap-abe-twl6040.c | 2 +-
->  sound/soc/omap/omap-twl4030.c     | 2 +-
->  sound/soc/omap/omap3pandora.c     | 2 +-
->  sound/soc/omap/osk5912.c          | 2 +-
->  sound/soc/omap/rx51.c             | 2 +-
->  7 files changed, 7 insertions(+), 7 deletions(-)
->=20
-> diff --git a/sound/soc/omap/am3517evm.c b/sound/soc/omap/am3517evm.c
-> index 25a33e9..d565102 100644
-> --- a/sound/soc/omap/am3517evm.c
-> +++ b/sound/soc/omap/am3517evm.c
-> @@ -49,7 +49,7 @@ static int am3517evm_hw_params(struct snd_pcm_substream=
- *substream,
->  	return ret;
->  }
-> =20
-> -static struct snd_soc_ops am3517evm_ops =3D {
-> +static const struct snd_soc_ops am3517evm_ops =3D {
->  	.hw_params =3D am3517evm_hw_params,
+> ---
+>  drivers/clk/x86/clk-pmc-atom.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/drivers/clk/x86/clk-pmc-atom.c b/drivers/clk/x86/clk-pmc-atom.c
+> index 2b60577..fafc991 100644
+> --- a/drivers/clk/x86/clk-pmc-atom.c
+> +++ b/drivers/clk/x86/clk-pmc-atom.c
+> @@ -54,6 +54,7 @@ struct clk_plt_data {
+>  	struct clk_plt_fixed **parents;
+>  	u8 nparents;
+>  	struct clk_plt *clks[PMC_CLK_NUM];
+> +	struct clk_lookup *mclk_lookup;
 >  };
-> =20
-> diff --git a/sound/soc/omap/n810.c b/sound/soc/omap/n810.c
-> index fdecb70..71e5f31 100644
-> --- a/sound/soc/omap/n810.c
-> +++ b/sound/soc/omap/n810.c
-> @@ -124,7 +124,7 @@ static int n810_hw_params(struct snd_pcm_substream *s=
-ubstream,
->  	return err;
->  }
-> =20
-> -static struct snd_soc_ops n810_ops =3D {
-> +static const struct snd_soc_ops n810_ops =3D {
->  	.startup =3D n810_startup,
->  	.hw_params =3D n810_hw_params,
->  	.shutdown =3D n810_shutdown,
-> diff --git a/sound/soc/omap/omap-abe-twl6040.c b/sound/soc/omap/omap-abe-=
-twl6040.c
-> index 89fe95e..614b18d 100644
-> --- a/sound/soc/omap/omap-abe-twl6040.c
-> +++ b/sound/soc/omap/omap-abe-twl6040.c
-> @@ -70,7 +70,7 @@ static int omap_abe_hw_params(struct snd_pcm_substream =
-*substream,
->  	return ret;
->  }
-> =20
-> -static struct snd_soc_ops omap_abe_ops =3D {
-> +static const struct snd_soc_ops omap_abe_ops =3D {
->  	.hw_params =3D omap_abe_hw_params,
->  };
-> =20
-> diff --git a/sound/soc/omap/omap-twl4030.c b/sound/soc/omap/omap-twl4030.c
-> index 7431314..a24b0de 100644
-> --- a/sound/soc/omap/omap-twl4030.c
-> +++ b/sound/soc/omap/omap-twl4030.c
-> @@ -73,7 +73,7 @@ static int omap_twl4030_hw_params(struct snd_pcm_substr=
-eam *substream,
->  	return snd_soc_runtime_set_dai_fmt(rtd, fmt);
->  }
-> =20
-> -static struct snd_soc_ops omap_twl4030_ops =3D {
-> +static const struct snd_soc_ops omap_twl4030_ops =3D {
->  	.hw_params =3D omap_twl4030_hw_params,
->  };
-> =20
-> diff --git a/sound/soc/omap/omap3pandora.c b/sound/soc/omap/omap3pandora.c
-> index 732e749..4e3de71 100644
-> --- a/sound/soc/omap/omap3pandora.c
-> +++ b/sound/soc/omap/omap3pandora.c
-> @@ -184,7 +184,7 @@ static int omap3pandora_in_init(struct snd_soc_pcm_ru=
-ntime *rtd)
+>
+>  /* Return an index in parent table */
+> @@ -337,6 +338,11 @@ static int plt_clk_probe(struct platform_device *pdev)
+>  			goto err_unreg_clk_plt;
+>  		}
+>  	}
+> +	data->mclk_lookup = clkdev_hw_create(&data->clks[3]->hw, "mclk", NULL);
+> +	if (IS_ERR(data->mclk_lookup)) {
+> +		err = PTR_ERR(data->mclk_lookup);
+> +		goto err_unreg_clk_plt;
+> +	}
+>
+>  	plt_clk_free_parent_names_loop(parent_names, data->nparents);
+>
+> @@ -356,6 +362,7 @@ static int plt_clk_remove(struct platform_device *pdev)
+>
+>  	data = platform_get_drvdata(pdev);
+>
+> +	clkdev_drop(data->mclk_lookup);
+>  	plt_clk_unregister_loop(data, PMC_CLK_NUM);
+>  	plt_clk_unregister_parents(data);
 >  	return 0;
->  }
-> =20
-> -static struct snd_soc_ops omap3pandora_ops =3D {
-> +static const struct snd_soc_ops omap3pandora_ops =3D {
->  	.hw_params =3D omap3pandora_hw_params,
->  };
-> =20
-> diff --git a/sound/soc/omap/osk5912.c b/sound/soc/omap/osk5912.c
-> index aa4053b..e409677 100644
-> --- a/sound/soc/omap/osk5912.c
-> +++ b/sound/soc/omap/osk5912.c
-> @@ -68,7 +68,7 @@ static int osk_hw_params(struct snd_pcm_substream *subs=
-tream,
->  	return err;
->  }
-> =20
-> -static struct snd_soc_ops osk_ops =3D {
-> +static const struct snd_soc_ops osk_ops =3D {
->  	.startup =3D osk_startup,
->  	.hw_params =3D osk_hw_params,
->  	.shutdown =3D osk_shutdown,
-> diff --git a/sound/soc/omap/rx51.c b/sound/soc/omap/rx51.c
-> index a768457..66ac358 100644
-> --- a/sound/soc/omap/rx51.c
-> +++ b/sound/soc/omap/rx51.c
-> @@ -123,7 +123,7 @@ static int rx51_hw_params(struct snd_pcm_substream *s=
-ubstream,
->  				      SND_SOC_CLOCK_IN);
->  }
-> =20
-> -static struct snd_soc_ops rx51_ops =3D {
-> +static const struct snd_soc_ops rx51_ops =3D {
->  	.startup =3D rx51_startup,
->  	.hw_params =3D rx51_hw_params,
->  };
-> --=20
-> 2.7.4
->=20
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-omap" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
 
---ytm2ahlf4y2rom4v
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAljPKAYACgkQ2O7X88g7
-+pp5yRAAhyy7O4On0obdIBmN01Q8jznwinsFUhQvRnHI/ZLmGrZ0pP5GJm9yB4vQ
-AessxVly7IrlUKx+E+Gs3mVPCn3wsxhjx9fxRrdYlKBMEmgz0PjdWuSrX3tIEWJF
-ay1uK3jZtiYsF+OkNOcdT0HAd8b8CI+OczQMODq/QxQYCkubTsLgqhBXAfqIqV84
-U1MeBO7wJNiXNj3Xbe4F2VvT2qWYJF0SzzBx1053QgjdgJ28TcHo0KIKSFe7h9i0
-NtjviO+VsId82xyYt6iZ+5f8YF4++8VyFiBFtb4wjNO3CSSyTyUZDGJXb6EWvhhT
-TtIu06NEZXcTiXtId2dFBqZNYOO4ytjDMRGVCLCiJ1Q2sEKJhB3q+89noKdjUql5
-HccHnKbpIUxaXz/TPl0eVv31YO1yr1sQxsfLlKclNzpesTQQw6Sgl90/i/XGStmy
-b1uJEPT/jW1lRwgZz1m0VXF0spgjGnrKMQ7x7Ht6wSUDbnWeUsAR/UHSFIyZZ1ya
-UxxfICBlY+wXQF+kDltVmVJebOsisGPmWp+pI5c5iE/bbZ+krqpcQcE9tYWW/8kv
-Iq40L2+Ty94S5GmyJcLtsJ/fpP7KYTc+fz2JFN6zK1Oi6iRZVnLYxqrYbqECHoBB
-VMQJi5CRB5MpfW4F8t7REs0wofvNrCu5RJB0B8oQwEUVfED6JdM=
-=Nbbv
------END PGP SIGNATURE-----
-
---ytm2ahlf4y2rom4v--
