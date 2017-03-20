@@ -1,18 +1,18 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH 0/2] conf/ucm: Remove intel UCM conf files
- from	alsa-lib repo
-Date: Mon, 20 Mar 2017 13:50:35 +0000
-Message-ID: <1490017835.2549.54.camel@loki>
-References: <cover.1487576432.git.fuweix.tang@intel.com>
- <s5hbmsww5ad.wl-tiwai@suse.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [RFC PATCH 0/2] ASoC: wm8994: master clock issues
+Date: Mon, 20 Mar 2017 14:11:37 +0000
+Message-ID: <20170320141137.GR6986@localhost.localdomain>
+References: <1489682483-13051-1-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id CC4DE266D9D
- for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 14:50:40 +0100 (CET)
-In-Reply-To: <s5hbmsww5ad.wl-tiwai@suse.de>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6527B266D9D
+ for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 15:10:36 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1489682483-13051-1-git-send-email-olivier.moysan@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,89 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: mengdong.lin@intel.com, alsa-devel@alsa-project.org, fuweix.tang@intel.com
+To: olivier moysan <olivier.moysan@st.com>
+Cc: alsa-devel@alsa-project.org, alexandre.torgue@st.com, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Fuwei, I think this is your old patch version as I had similar comments
-last week about licence and commit message.
+On Thu, Mar 16, 2017 at 05:41:21PM +0100, olivier moysan wrote:
+> Hello,
+> 
+> I face two issues using wm8994 codec driver.
+> Below is a description of the use cases rising the problem.
+> I added the patches which allow to fix these issues.
+> These minimalist patches can be seen as a starting point for a discussion on the best
+> way to handle the use cases exposed.
+> 
+> 
+> - ASoC: wm8994: default master clock selection
+> 
+> Use case:
+> CPU DAI and codec are managed through simple card.
+> Wolson codec wm8994 is set as slave of CPU DAI and CPU DAI feeds codec with master clock.
+> Master clock is derived from mclk-fs property and provided to CPU DAI and codec 
+> through snd_soc_dai_set_sysclk API. 
+> 
+> Analysis:
+> The simple card assumes id 0 for master clock.
+> However wm8994 codec exposes master clock ids from 1 to 4. (MCLK1, MCLK2 ..)
+> 
+> The proposal in this patch is to define a default selection regarding master clock
+> when id 0 is provided.
+> 
+> 
+> - ASoC: wm8994: delay aifxclk activation
+> 
+> Use case:
+> Wolson codec wm8994 is set as slave of CPU DAI and CPU DAI feeds codec with master clock.
+> CPU DAI generates master clock when enabled in trigger callback.
+> So master clock is available only at runtime. 
+> Master clock is not available when configuring codec through alsa controls.
+> 
+> Analysis:
+> When we configure aifx clock while master clock is not active, related registers are not updated in wm8894 codec.
+> A way to go around this problem, is to delay aifxclk activation until SND_SOC_DAPM_POST_PMU DAPM stage.
+> The purpose of patch here is to illustrate this workaround. 
+> 
+> What I cannot clearly figure out, is  how this may impact other uses of wm8894 codec.
+> I try to know if it's worth investigating further in this direction or if it will not be applicable.
+> If not applicable, what maybe the other options ?
+> 
+> regards
+> olivier
 
-On Mon, 2017-03-20 at 12:34 +0100, Takashi Iwai wrote:
-> On Wed, 15 Mar 2017 07:45:38 +0100,
-> fuweix.tang@intel.com wrote:
-> > 
-> > From: Fuwei Tang <fuweix.tang@intel.com>
-> > 
-> > Remove the intel UCM configs from alsa-lib repo.
-> > 
-> > Another series will add them to a dedicated UCM conf repo.
-> 
-> So the intention is to *move* the files to another repo, right?
-> Removal is only one of the steps.
-> 
+Would be good to CC patches@opensource.wolfsonmicro.com on the
+next version of these patches as well, higher chance someone here
+will notice and have a look over them.
 
-Yes, move the Intel files under BSD license as the first step.
-Subsequent steps are to then move and hopefully re-license the other UCM
-files once author approval had been granted. 
-
-Liam
-
-> > License can be changed to BSD for intel files,
-> 
-> I couldn't find it in your next patchset.  Where is BSD license
-> defined...?
-> 
-> > and left as "unknown" for other conf files when they are moved from 
-> > alsa-lib to the new repo.The alsa-lib LGPL license does not cover runtime configuration files.
-> 
-> It may cover, but this isn't really intended in our case.  Also we
-> have no problem regarding the authorship.
-> So my understanding is that it's fine to move to another repo with a
-> declaration of a more relaxed license.  But IANAL.
-> 
-> In anyway, the alsa-project.org site is maintained by Jaroslav, and a
-> creation of a new git repo requires his manual action.  I added him to
-> Cc now.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> > 
-> > Fuwei Tang (2):
-> >   conf/ucm: Remove conf files of broxton-rt298 platform
-> >   conf/ucm: Remove conf files of skylake-rt286 platfrom
-> > 
-> >  configure.ac                                  |   2 -
-> >  src/conf/ucm/Makefile.am                      |   2 +-
-> >  src/conf/ucm/broxton-rt298/Hdmi1              |  22 -----
-> >  src/conf/ucm/broxton-rt298/Hdmi2              |  14 ---
-> >  src/conf/ucm/broxton-rt298/HiFi               | 129 --------------------------
-> >  src/conf/ucm/broxton-rt298/Makefile.am        |   4 -
-> >  src/conf/ucm/broxton-rt298/broxton-rt298.conf |  58 ------------
-> >  src/conf/ucm/skylake-rt286/Hdmi1              |  20 ----
-> >  src/conf/ucm/skylake-rt286/Hdmi2              |  20 ----
-> >  src/conf/ucm/skylake-rt286/HiFi               | 129 --------------------------
-> >  src/conf/ucm/skylake-rt286/Makefile.am        |   4 -
-> >  src/conf/ucm/skylake-rt286/skylake-rt286.conf |  60 ------------
-> >  12 files changed, 1 insertion(+), 463 deletions(-)
-> >  delete mode 100644 src/conf/ucm/broxton-rt298/Hdmi1
-> >  delete mode 100644 src/conf/ucm/broxton-rt298/Hdmi2
-> >  delete mode 100644 src/conf/ucm/broxton-rt298/HiFi
-> >  delete mode 100644 src/conf/ucm/broxton-rt298/Makefile.am
-> >  delete mode 100644 src/conf/ucm/broxton-rt298/broxton-rt298.conf
-> >  delete mode 100644 src/conf/ucm/skylake-rt286/Hdmi1
-> >  delete mode 100644 src/conf/ucm/skylake-rt286/Hdmi2
-> >  delete mode 100644 src/conf/ucm/skylake-rt286/HiFi
-> >  delete mode 100644 src/conf/ucm/skylake-rt286/Makefile.am
-> >  delete mode 100644 src/conf/ucm/skylake-rt286/skylake-rt286.conf
-> > 
-> > -- 
-> > 2.7.4
-> > 
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> > 
+Thanks,
+Charles
