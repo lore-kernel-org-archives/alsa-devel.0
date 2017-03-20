@@ -1,24 +1,23 @@
 From: Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v4 6/9] ASoC: add snd_soc_get_dai_id()
-Date: Mon, 20 Mar 2017 15:20:29 -0500
-Message-ID: <CAL_JsqKx9qj=ACowGapaT5hdYcevY6urLn_ntFUxAJVrzhc2AA@mail.gmail.com>
-References: <8760jdivfm.wl%kuninori.morimoto.gx@renesas.com> <87wpbthgir.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH v4 7/9] ASoC: simple-card-utils: add asoc_simple_card_parse_graph_dai()
+Date: Mon, 20 Mar 2017 15:26:06 -0500
+Message-ID: <CAL_JsqLD0VyU+4xDrfSHKCKAdppxLG2uFzPyjSyn4cU7j4B8_A@mail.gmail.com>
+References: <8760jdivfm.wl%kuninori.morimoto.gx@renesas.com> <87vardhgia.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <87wpbthgir.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+In-Reply-To: <87vardhgia.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
 Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>, Linux-DT <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 13, 2017 at 12:53 AM, Kuninori Morimoto
+On Mon, Mar 13, 2017 at 12:54 AM, Kuninori Morimoto
 <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org> wrote:
->
 > From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
 >
-> ALSA SoC needs to know connected DAI ID for probing.
-> On OF-graph case, basically we can check DT port location.
+> simple-card already has asoc_simple_card_parse_dai(),
+> but graph base parsing needs graph specific version of it.
 >
 > Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
 > ---
@@ -26,70 +25,89 @@ On Mon, Mar 13, 2017 at 12:53 AM, Kuninori Morimoto
 >
 >  - no change
 >
->  include/sound/soc.h  |  1 +
->  sound/soc/soc-core.c | 23 +++++++++++++++++++++++
->  2 files changed, 24 insertions(+)
+>  include/sound/simple_card_utils.h     | 10 ++++++++++
+>  sound/soc/generic/simple-card-utils.c | 36 +++++++++++++++++++++++++++++++++++
+>  2 files changed, 46 insertions(+)
 >
-> diff --git a/include/sound/soc.h b/include/sound/soc.h
-> index cdfb55f..ab4639e 100644
-> --- a/include/sound/soc.h
-> +++ b/include/sound/soc.h
-> @@ -1664,6 +1664,7 @@ unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
->                                      const char *prefix,
->                                      struct device_node **bitclkmaster,
->                                      struct device_node **framemaster);
-> +int snd_soc_get_dai_id(struct device_node *ep);
->  int snd_soc_get_dai_name(struct of_phandle_args *args,
->                          const char **dai_name);
->  int snd_soc_of_get_dai_name(struct device_node *of_node,
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index 175ade0..c91010d 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -34,6 +34,7 @@
->  #include <linux/ctype.h>
->  #include <linux/slab.h>
+> diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
+> index af58d23..efab584 100644
+> --- a/include/sound/simple_card_utils.h
+> +++ b/include/sound/simple_card_utils.h
+> @@ -60,6 +60,16 @@ int asoc_simple_card_parse_dai(struct device_node *node,
+>                                   const char *cells_name,
+>                                   int *is_single_links);
+>
+> +#define asoc_simple_card_parse_graph_cpu(ep, dai_link)                 \
+> +       asoc_simple_card_parse_graph_dai(ep, &dai_link->cpu_of_node,    \
+> +                                        &dai_link->cpu_dai_name)
+> +#define asoc_simple_card_parse_graph_codec(ep, dai_link)               \
+> +       asoc_simple_card_parse_graph_dai(ep, &dai_link->codec_of_node,  \
+> +                                        &dai_link->codec_dai_name)
+> +int asoc_simple_card_parse_graph_dai(struct device_node *ep,
+> +                                    struct device_node **endpoint_np,
+> +                                    const char **dai_name);
+> +
+>  int asoc_simple_card_init_dai(struct snd_soc_dai *dai,
+>                               struct asoc_simple_dai *simple_dai);
+>
+> diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+> index 4dfd9a2..67c3fa4 100644
+> --- a/sound/soc/generic/simple-card-utils.c
+> +++ b/sound/soc/generic/simple-card-utils.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/clk.h>
+>  #include <linux/module.h>
 >  #include <linux/of.h>
 > +#include <linux/of_graph.h>
->  #include <linux/dmi.h>
->  #include <sound/core.h>
->  #include <sound/jack.h>
-> @@ -4040,6 +4041,28 @@ unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
->  }
->  EXPORT_SYMBOL_GPL(snd_soc_of_parse_daifmt);
+>  #include <sound/simple_card_utils.h>
 >
-> +int snd_soc_get_dai_id(struct device_node *ep)
-
-Shouldn't the DAI id be the index of the "dais" property?
-
+>  int asoc_simple_card_parse_daifmt(struct device *dev,
+> @@ -174,6 +175,41 @@ int asoc_simple_card_parse_dai(struct device_node *node,
+>  }
+>  EXPORT_SYMBOL_GPL(asoc_simple_card_parse_dai);
+>
+> +int asoc_simple_card_parse_graph_dai(struct device_node *ep,
+> +                                    struct device_node **dai_of_node,
+> +                                    const char **dai_name)
 > +{
 > +       struct device_node *node;
-> +       struct device_node *endpoint;
-> +       int i, id;
+> +       struct of_phandle_args args;
+> +       int ret;
 > +
+> +       if (!ep)
+> +               return 0;
+> +       if (!dai_name)
+> +               return 0;
+> +
+> +       /*
+> +        * of_graph_get_port_parent() will call
+> +        * of_node_put(). So, call of_node_get() here
+> +        */
+> +       of_node_get(ep);
 > +       node = of_graph_get_port_parent(ep);
 > +
-> +       i = 0;
-> +       id = -1;
-> +       for_each_endpoint_of_node(node, endpoint) {
-> +               if (endpoint == ep)
-> +                       id = i;
+> +       /* Get dai->name */
+> +       args.np         = node;
+> +       args.args[0]    = snd_soc_get_dai_id(ep);
+> +       args.args_count = (of_graph_get_endpoint_count(node) > 1);
 
-I don't see how this works when you have 1 DAI controller with
-multiple endpoints versus multiple DAI controllers with a single
-endpoint each. All the IDs will be 0 in the latter case.
+This is a bit pointless. It's not the kernel's job to validate the DT.
+If you don't have a graph, then of_graph_get_port_parent would have
+already failed.
 
-> +               i++;
-> +       }
-> +       if (id < 0)
-> +               return -ENODEV;
 > +
-> +       return id;
+> +       ret = snd_soc_get_dai_name(&args, dai_name);
+> +       if (ret < 0)
+> +               return ret;
+> +
+> +       *dai_of_node = node;
+> +
+> +       return 0;
 > +}
-> +EXPORT_SYMBOL_GPL(snd_soc_get_dai_id);
+> +EXPORT_SYMBOL_GPL(asoc_simple_card_parse_graph_dai);
 > +
->  int snd_soc_get_dai_name(struct of_phandle_args *args,
->                                 const char **dai_name)
+>  int asoc_simple_card_init_dai(struct snd_soc_dai *dai,
+>                               struct asoc_simple_dai *simple_dai)
 >  {
 > --
 > 1.9.1
