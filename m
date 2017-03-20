@@ -1,21 +1,17 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: sound: another deadlock in snd_seq_pool_done
-Date: Mon, 20 Mar 2017 10:01:56 +0100
-Message-ID: <CACT4Y+bYqx=HprGxe4dnQPmODJ9OiKTpVQspnqxZxsGHPdZv5Q@mail.gmail.com>
-References: <CACT4Y+aqqy8bZA1fFieifNxR2fAfFQQABcBHj801+u5ePV0URw@mail.gmail.com>
- <CACT4Y+Y17sfHrUS+Sxp1L3z6+01230qs6-TumtH7YkDAOcc8-g@mail.gmail.com>
- <s5ha88gl8m5.wl-tiwai@suse.de>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH] ASoC: wm8903: add regulator handling
+Date: Mon, 20 Mar 2017 10:13:52 +0100
+Message-ID: <20170320091352.4115-1-linus.walleij@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk0-f51.google.com (mail-vk0-f51.google.com
- [209.85.213.51])
- by alsa0.perex.cz (Postfix) with ESMTP id CE826266D04
- for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 10:02:18 +0100 (CET)
-Received: by mail-vk0-f51.google.com with SMTP id d188so66469517vka.0
- for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 02:02:18 -0700 (PDT)
-In-Reply-To: <s5ha88gl8m5.wl-tiwai@suse.de>
+Received: from mail-lf0-f47.google.com (mail-lf0-f47.google.com
+ [209.85.215.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A117266CC6
+ for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 10:13:58 +0100 (CET)
+Received: by mail-lf0-f47.google.com with SMTP id z15so52730897lfd.1
+ for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 02:13:58 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,87 +21,147 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, syzkaller <syzkaller@googlegroups.com>, LKML <linux-kernel@vger.kernel.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Stephen Warren <swarren@nvidia.com>, Linus Walleij <linus.walleij@linaro.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 20, 2017 at 8:17 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Fri, 10 Mar 2017 10:19:13 +0100,
-> Dmitry Vyukov wrote:
->>
->> On Sat, Mar 4, 2017 at 5:31 PM, Dmitry Vyukov <dvyukov@google.com> wrote:
->> > Hello,
->> >
->> > The following program creates processes deadlocked in snd_seq_pool_done:
->> >
->> > https://gist.githubusercontent.com/dvyukov/97efc9cb6d63b1b2c7b737b82cc8b0d6/raw/3546b133ae0b2d3e1190ae7c1f4e240ce7ce132e/gistfile1.txt
->> >
->> > After few seconds I get:
->> >
->> > # ps afxu | grep a.out
->> > root      8660  2.0  0.0      0     0 pts/0    Zl   16:27   0:00
->> > [a.out] <defunct>
->> >
->> > # kill -9 8660
->> >
->> > # cat /proc/8660/status
->> > Name: a.out
->> > State: Z (zombie)
->> > Tgid: 8660
->> > Ngid: 0
->> > Pid: 8660
->> > PPid: 1
->> > TracerPid: 0
->> > Uid: 0 0 0 0
->> > Gid: 0 0 0 0
->> > FDSize: 0
->> > Groups: 0
->> > NStgid: 8660
->> > NSpid: 8660
->> > NSpgid: 8660
->> > NSsid: 2971
->> > Threads: 2
->> > SigQ: 1/3304
->> > SigPnd: 0000000000000000
->> > ShdPnd: 0000000000000100
->> > SigBlk: 0000000000000000
->> > SigIgn: 0000000180000000
->> > SigCgt: 0000000000000440
->> > CapInh: 0000000000000000
->> > CapPrm: 0000003fffffffff
->> > CapEff: 0000003fffffffff
->> > CapBnd: 0000003fffffffff
->> > CapAmb: 0000000000000000
->> > NoNewPrivs: 0
->> > Seccomp: 0
->> > Cpus_allowed: f
->> > Cpus_allowed_list: 0-3
->> > Mems_allowed: 00000000,00000001
->> > Mems_allowed_list: 0
->> > voluntary_ctxt_switches: 12
->> > nonvoluntary_ctxt_switches: 0
->> >
->> > # cat /proc/8660/task/*/stack
->> > [<ffffffff835406db>] snd_seq_pool_done+0x31b/0x620
->> > sound/core/seq/seq_memory.c:436
->> > [<ffffffff8353a11e>] snd_seq_ioctl_set_client_pool+0x1ae/0x600
->> > sound/core/seq/seq_clientmgr.c:1836
->> > [<ffffffff835382ba>] snd_seq_ioctl+0x2da/0x4d0
->> > sound/core/seq/seq_clientmgr.c:2130
->> > [<ffffffff81aced2f>] vfs_ioctl fs/ioctl.c:45 [inline]
->> > [<ffffffff81aced2f>] do_vfs_ioctl+0x1bf/0x1790 fs/ioctl.c:685
->> > [<ffffffff81ad038f>] SYSC_ioctl fs/ioctl.c:700 [inline]
->> > [<ffffffff81ad038f>] SyS_ioctl+0x8f/0xc0 fs/ioctl.c:691
->> > [<ffffffff8457dc41>] entry_SYSCALL_64_fastpath+0x1f/0xc2
->>
->>
->> A friendly ping.
->
-> Sorry for the delay, I've been on vacation for over the last two
-> weeks.  (And I have a deja vu feeing, as if I so often receive your
-> syzkaller bug reports during or just before my vacation in the past,
-> too... :)
->
-> Will take a look at this soon after digesting the pending mails.
+The WM8903 has four different voltage inputs: AVDD, CPVDD, DBVDD
+and DCVDD. On the Qualcomm APQ8060 Dragonboard these are all
+supplied from proper regulators and thus need activating and
+binding.
 
-I swear I don't stack them up to send right before your vacation :)
+This is a quick-and-dirty solution just grabbing and enabling the
+regulator supplies on probe() and disabling them on remove() and
+the errorpath. More elaborate power management is likely possible.
+
+I assume the nVidia designs using this codec have some hard-wired
+always-on power and will be happy with using the dummy regulators
+for this. But someone from the nVidia camp should probably check
+whether they can bind these to proper regulators instead.
+
+We also amend the DT binding document. A small change like this
+does not warrant a separate patch for augmenting these.
+
+Cc: devicetree@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Stephen Warren <swarren@nvidia.com>
+Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+Mark: I was thinking about adding runtime PM for disabling
+these regulators when unused, but I'm uncertain about the
+interaction with DAPM in that regard. This atleast gives us
+control over the supplies.
+---
+ Documentation/devicetree/bindings/sound/wm8903.txt | 13 +++++++++
+ sound/soc/codecs/wm8903.c                          | 31 ++++++++++++++++++++++
+ 2 files changed, 44 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/sound/wm8903.txt b/Documentation/devicetree/bindings/sound/wm8903.txt
+index 94ec32c194bb..afc51caf1137 100644
+--- a/Documentation/devicetree/bindings/sound/wm8903.txt
++++ b/Documentation/devicetree/bindings/sound/wm8903.txt
+@@ -28,6 +28,14 @@ Optional properties:
+     performed. If any entry has the value 0xffffffff, that GPIO's
+     configuration will not be modified.
+ 
++  - AVDD-supply : Analog power supply regulator on the AVDD pin.
++
++  - CPVDD-supply : Charge pump supply regulator on the CPVDD pin.
++
++  - DBVDD-supply : Digital buffer supply regulator for the DBVDD pin.
++
++  - DCVDD-supply : Digital core supply regulator for the DCVDD pin.
++
+ Pins on the device (for linking into audio routes):
+ 
+   * IN1L
+@@ -54,6 +62,11 @@ codec: wm8903@1a {
+ 	reg = <0x1a>;
+ 	interrupts = < 347 >;
+ 
++	AVDD-supply = <&fooreg_a>;
++	CPVDD-supply = <&fooreg_b>;
++	DBVDD-supply = <&fooreg_c>;
++	DCVDC-supply = <&fooreg_d>;
++
+ 	gpio-controller;
+ 	#gpio-cells = <2>;
+ 
+diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
+index 6e887c2c42b1..237eeb9a8b97 100644
+--- a/sound/soc/codecs/wm8903.c
++++ b/sound/soc/codecs/wm8903.c
+@@ -24,6 +24,7 @@
+ #include <linux/pm.h>
+ #include <linux/i2c.h>
+ #include <linux/regmap.h>
++#include <linux/regulator/consumer.h>
+ #include <linux/slab.h>
+ #include <linux/irq.h>
+ #include <linux/mutex.h>
+@@ -115,10 +116,19 @@ static const struct reg_default wm8903_reg_defaults[] = {
+ 	{ 172, 0x0000 },    /* R172 - Analogue Output Bias 0 */
+ };
+ 
++#define WM8903_NUM_SUPPLIES 4
++static const char *wm8903_supply_names[WM8903_NUM_SUPPLIES] = {
++	"AVDD",
++	"CPVDD",
++	"DBVDD",
++	"DCVDD",
++};
++
+ struct wm8903_priv {
+ 	struct wm8903_platform_data *pdata;
+ 	struct device *dev;
+ 	struct regmap *regmap;
++	struct regulator_bulk_data supplies[WM8903_NUM_SUPPLIES];
+ 
+ 	int sysclk;
+ 	int irq;
+@@ -2030,6 +2040,23 @@ static int wm8903_i2c_probe(struct i2c_client *i2c,
+ 
+ 	pdata = wm8903->pdata;
+ 
++	for (i = 0; i < ARRAY_SIZE(wm8903->supplies); i++)
++		wm8903->supplies[i].supply = wm8903_supply_names[i];
++
++	ret = devm_regulator_bulk_get(&i2c->dev, ARRAY_SIZE(wm8903->supplies),
++				      wm8903->supplies);
++	if (ret != 0) {
++		dev_err(&i2c->dev, "Failed to request supplies: %d\n", ret);
++		return ret;
++	}
++
++	ret = regulator_bulk_enable(ARRAY_SIZE(wm8903->supplies),
++				    wm8903->supplies);
++	if (ret != 0) {
++		dev_err(&i2c->dev, "Failed to enable supplies: %d\n", ret);
++		return ret;
++	}
++
+ 	ret = regmap_read(wm8903->regmap, WM8903_SW_RESET_AND_ID, &val);
+ 	if (ret != 0) {
+ 		dev_err(&i2c->dev, "Failed to read chip ID: %d\n", ret);
+@@ -2160,6 +2187,8 @@ static int wm8903_i2c_probe(struct i2c_client *i2c,
+ 
+ 	return 0;
+ err:
++	regulator_bulk_disable(ARRAY_SIZE(wm8903->supplies),
++			       wm8903->supplies);
+ 	return ret;
+ }
+ 
+@@ -2167,6 +2196,8 @@ static int wm8903_i2c_remove(struct i2c_client *client)
+ {
+ 	struct wm8903_priv *wm8903 = i2c_get_clientdata(client);
+ 
++	regulator_bulk_disable(ARRAY_SIZE(wm8903->supplies),
++			       wm8903->supplies);
+ 	if (client->irq)
+ 		free_irq(client->irq, wm8903);
+ 	wm8903_free_gpio(wm8903);
+-- 
+2.9.3
