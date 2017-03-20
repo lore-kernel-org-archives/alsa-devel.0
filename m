@@ -1,19 +1,21 @@
-From: Mylene Josserand <mylene.josserand@free-electrons.com>
-Subject: Re: [PATCH v3 2/5] ASoC: sun8i-codec: Update mixer to
- use SOC_DAPM_DOUBLE
-Date: Mon, 20 Mar 2017 16:30:32 +0100
-Message-ID: <8183f4bb-497d-2839-fd0c-2527a02dd276@free-electrons.com>
-References: <20170318075509.3836-1-mylene.josserand@free-electrons.com>
- <20170318075509.3836-3-mylene.josserand@free-electrons.com>
- <CAGb2v65RSi-yxK1aJb8vnMKNTmLmH8nqSzFs1RLxErQyYcL-4w@mail.gmail.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: Re: [PATCH v3] ASoC: rt286: fix headphone click/crack
+ noise on Dell XPS 9343 I2S mode
+Date: Mon, 20 Mar 2017 15:46:13 +0000
+Message-ID: <CAAd53p53MnZcSEgS47wWcCfm48=J6O3ynjqBdfN6_1nhBMdNwA@mail.gmail.com>
+References: <20170320035831.10762-1-kai.heng.feng@canonical.com>
+ <20170320150845.7rltrhycdkk2mza4@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
- by alsa0.perex.cz (Postfix) with ESMTP id C028D266D9D
- for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 16:30:44 +0100 (CET)
-In-Reply-To: <CAGb2v65RSi-yxK1aJb8vnMKNTmLmH8nqSzFs1RLxErQyYcL-4w@mail.gmail.com>
+Received: from mail-yw0-f182.google.com (mail-yw0-f182.google.com
+ [209.85.161.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 30E8D266D9D
+ for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 16:46:24 +0100 (CET)
+Received: by mail-yw0-f182.google.com with SMTP id p77so92528151ywg.1
+ for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 08:46:24 -0700 (PDT)
+In-Reply-To: <20170320150845.7rltrhycdkk2mza4@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,95 +25,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Chen-Yu Tsai <wens@csie.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Thomas Petazzoni <thomas.petazzoni@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: oder_chiou@realtek.com, bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgQ2hlbi1ZdSwKCk9uIDIwLzAzLzIwMTcgMTI6NDYsIENoZW4tWXUgVHNhaSB3cm90ZToKPiBP
-biBTYXQsIE1hciAxOCwgMjAxNyBhdCAzOjU1IFBNLCBNeWzDqG5lIEpvc3NlcmFuZAo+IDxteWxl
-bmUuam9zc2VyYW5kQGZyZWUtZWxlY3Ryb25zLmNvbT4gd3JvdGU6Cj4+IFVwZGF0ZSB0aGUgZHJp
-dmVyIHRvIHVzZSB0aGUgbmV3IFNPQ19EQVBNX0RPVUJMRSBkZWZpbml0aW9uCj4+IG9uIHRoZSBk
-aWdpdGFsIERBQyBtaXhlci4KPj4gVXBkYXRlIHRoZSBuYW1lcyBhY2NvcmRpbmdseSBhcywgd2hl
-biB0aGV5IGFyZSBzaGFyZWQsIHRoZQo+PiBjb250cm9scyBhcmUgbm90IHByZWZpeGVkIHdpdGgg
-dGhlIHdpZGdldCdzIG5hbWUgYW55bW9yZS4KPj4KPj4gU2lnbmVkLW9mZi1ieTogTXlsw6huZSBK
-b3NzZXJhbmQgPG15bGVuZS5qb3NzZXJhbmRAZnJlZS1lbGVjdHJvbnMuY29tPgo+PiAtLS0KPj4g
-IHNvdW5kL3NvYy9zdW54aS9zdW44aS1jb2RlYy5jIHwgNDUgKysrKysrKysrKysrKysrKysrKyst
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+PiAgMSBmaWxlIGNoYW5nZWQsIDIxIGluc2VydGlvbnMo
-KyksIDI0IGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL3N1bnhpL3N1
-bjhpLWNvZGVjLmMgYi9zb3VuZC9zb2Mvc3VueGkvc3VuOGktY29kZWMuYwo+PiBpbmRleCBkNjBm
-NmZiZDM2YTIuLjEwN2ZhODIxMzYwMCAxMDA2NDQKPj4gLS0tIGEvc291bmQvc29jL3N1bnhpL3N1
-bjhpLWNvZGVjLmMKPj4gKysrIGIvc291bmQvc29jL3N1bnhpL3N1bjhpLWNvZGVjLmMKPj4gQEAg
-LTI1OSwyNSArMjU5LDIwIEBAIHN0YXRpYyBpbnQgc3VuOGlfY29kZWNfaHdfcGFyYW1zKHN0cnVj
-dCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAo+PiAgICAgICAgIHJldHVybiAwOwo+PiAg
-fQo+Pgo+PiAtc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfa2NvbnRyb2xfbmV3IHN1bjhpX291dHB1
-dF9sZWZ0X21peGVyX2NvbnRyb2xzW10gPSB7Cj4+IC0gICAgICAgU09DX0RBUE1fU0lOR0xFKCJM
-U2xvdCAwIiwgU1VOOElfREFDX01YUl9TUkMsCj4+IC0gICAgICAgICAgICAgICAgICAgICAgIFNV
-TjhJX0RBQ19NWFJfU1JDX0RBQ0xfTVhSX1NSQ19BSUYxREEwTCwgMSwgMCksCj4+IC0gICAgICAg
-U09DX0RBUE1fU0lOR0xFKCJMU2xvdCAxIiwgU1VOOElfREFDX01YUl9TUkMsCj4+IC0gICAgICAg
-ICAgICAgICAgICAgICAgIFNVTjhJX0RBQ19NWFJfU1JDX0RBQ0xfTVhSX1NSQ19BSUYxREExTCwg
-MSwgMCksCj4+IC0gICAgICAgU09DX0RBUE1fU0lOR0xFKCJEQUNMIiwgU1VOOElfREFDX01YUl9T
-UkMsCj4+IC0gICAgICAgICAgICAgICAgICAgICAgIFNVTjhJX0RBQ19NWFJfU1JDX0RBQ0xfTVhS
-X1NSQ19BSUYyREFDTCwgMSwgMCksCj4+IC0gICAgICAgU09DX0RBUE1fU0lOR0xFKCJBRENMIiwg
-U1VOOElfREFDX01YUl9TUkMsCj4+IC0gICAgICAgICAgICAgICAgICAgICAgIFNVTjhJX0RBQ19N
-WFJfU1JDX0RBQ0xfTVhSX1NSQ19BRENMLCAxLCAwKSwKPj4gLX07Cj4+IC0KPj4gLXN0YXRpYyBj
-b25zdCBzdHJ1Y3Qgc25kX2tjb250cm9sX25ldyBzdW44aV9vdXRwdXRfcmlnaHRfbWl4ZXJfY29u
-dHJvbHNbXSA9IHsKPj4gLSAgICAgICBTT0NfREFQTV9TSU5HTEUoIlJTbG90IDAiLCBTVU44SV9E
-QUNfTVhSX1NSQywKPj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX2tjb250cm9sX25ldyBzdW44
-aV9kYWNfbWl4ZXJfY29udHJvbHNbXSA9IHsKPj4gKyAgICAgICBTT0NfREFQTV9ET1VCTEUoIkFJ
-RjEgU2xvdCAwIERpZ2l0YWwgREFDIFBsYXliYWNrIFN3aXRjaCIsCj4+ICsgICAgICAgICAgICAg
-ICAgICAgICAgIFNVTjhJX0RBQ19NWFJfU1JDLAo+PiArICAgICAgICAgICAgICAgICAgICAgICBT
-VU44SV9EQUNfTVhSX1NSQ19EQUNMX01YUl9TUkNfQUlGMURBMEwsCj4+ICAgICAgICAgICAgICAg
-ICAgICAgICAgIFNVTjhJX0RBQ19NWFJfU1JDX0RBQ1JfTVhSX1NSQ19BSUYxREEwUiwgMSwgMCks
-Cj4+IC0gICAgICAgU09DX0RBUE1fU0lOR0xFKCJSU2xvdCAxIiwgU1VOOElfREFDX01YUl9TUkMs
-Cj4+ICsgICAgICAgU09DX0RBUE1fRE9VQkxFKCJBSUYxIFNsb3QgMSBEaWdpdGFsIERBQyBQbGF5
-YmFjayBTd2l0Y2giLAo+PiArICAgICAgICAgICAgICAgICAgICAgICBTVU44SV9EQUNfTVhSX1NS
-QywKPj4gKyAgICAgICAgICAgICAgICAgICAgICAgU1VOOElfREFDX01YUl9TUkNfREFDTF9NWFJf
-U1JDX0FJRjFEQTFMLAo+PiAgICAgICAgICAgICAgICAgICAgICAgICBTVU44SV9EQUNfTVhSX1NS
-Q19EQUNSX01YUl9TUkNfQUlGMURBMVIsIDEsIDApLAo+PiAtICAgICAgIFNPQ19EQVBNX1NJTkdM
-RSgiREFDUiIsIFNVTjhJX0RBQ19NWFJfU1JDLAo+PiArICAgICAgIFNPQ19EQVBNX0RPVUJMRSgi
-QUlGMiBEaWdpdGFsIERBQyBQbGF5YmFjayBTd2l0Y2giLCBTVU44SV9EQUNfTVhSX1NSQywKPj4g
-KyAgICAgICAgICAgICAgICAgICAgICAgU1VOOElfREFDX01YUl9TUkNfREFDTF9NWFJfU1JDX0FJ
-RjJEQUNMLAo+PiAgICAgICAgICAgICAgICAgICAgICAgICBTVU44SV9EQUNfTVhSX1NSQ19EQUNS
-X01YUl9TUkNfQUlGMkRBQ1IsIDEsIDApLAo+PiAtICAgICAgIFNPQ19EQVBNX1NJTkdMRSgiQURD
-UiIsIFNVTjhJX0RBQ19NWFJfU1JDLAo+PiArICAgICAgIFNPQ19EQVBNX0RPVUJMRSgiQURDIERp
-Z2l0YWwgREFDIFBsYXliYWNrIFN3aXRjaCIsIFNVTjhJX0RBQ19NWFJfU1JDLAo+PiArICAgICAg
-ICAgICAgICAgICAgICAgICBTVU44SV9EQUNfTVhSX1NSQ19EQUNMX01YUl9TUkNfQURDTCwKPj4g
-ICAgICAgICAgICAgICAgICAgICAgICAgU1VOOElfREFDX01YUl9TUkNfREFDUl9NWFJfU1JDX0FE
-Q1IsIDEsIDApLAo+PiAgfTsKPj4KPj4gQEAgLTI5MywxMiArMjg4LDEyIEBAIHN0YXRpYyBjb25z
-dCBzdHJ1Y3Qgc25kX3NvY19kYXBtX3dpZGdldCBzdW44aV9jb2RlY19kYXBtX3dpZGdldHNbXSA9
-IHsKPj4gICAgICAgICAgICAgICAgICAgICAgICAgIFNVTjhJX0FJRjFfREFDREFUX0NUUkxfQUlG
-MV9EQTBSX0VOQSwgMCksCj4+Cj4+ICAgICAgICAgLyogREFDIE1peGVycyAqLwo+PiAtICAgICAg
-IFNORF9TT0NfREFQTV9NSVhFUigiTGVmdCBEQUMgTWl4ZXIiLCBTTkRfU09DX05PUE0sIDAsIDAs
-Cj4+IC0gICAgICAgICAgICAgICAgICAgICAgICAgIHN1bjhpX291dHB1dF9sZWZ0X21peGVyX2Nv
-bnRyb2xzLAo+PiAtICAgICAgICAgICAgICAgICAgICAgICAgICBBUlJBWV9TSVpFKHN1bjhpX291
-dHB1dF9sZWZ0X21peGVyX2NvbnRyb2xzKSksCj4+IC0gICAgICAgU05EX1NPQ19EQVBNX01JWEVS
-KCJSaWdodCBEQUMgTWl4ZXIiLCBTTkRfU09DX05PUE0sIDAsIDAsCj4+IC0gICAgICAgICAgICAg
-ICAgICAgICAgICAgIHN1bjhpX291dHB1dF9yaWdodF9taXhlcl9jb250cm9scywKPj4gLSAgICAg
-ICAgICAgICAgICAgICAgICAgICAgQVJSQVlfU0laRShzdW44aV9vdXRwdXRfcmlnaHRfbWl4ZXJf
-Y29udHJvbHMpKSwKPj4gKyAgICAgICBTTkRfU09DX0RBUE1fTUlYRVIoIkxlZnQgRGlnaXRhbCBE
-QUMgTWl4ZXIiLCBTTkRfU09DX05PUE0sIDAsIDAsCj4+ICsgICAgICAgICAgICAgICAgICAgICAg
-ICAgIHN1bjhpX2RhY19taXhlcl9jb250cm9scywKPj4gKyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgQVJSQVlfU0laRShzdW44aV9kYWNfbWl4ZXJfY29udHJvbHMpKSwKPj4gKyAgICAgICBTTkRf
-U09DX0RBUE1fTUlYRVIoIlJpZ2h0IERpZ2l0YWwgREFDIE1peGVyIiwgU05EX1NPQ19OT1BNLCAw
-LCAwLAo+PiArICAgICAgICAgICAgICAgICAgICAgICAgICBzdW44aV9kYWNfbWl4ZXJfY29udHJv
-bHMsCj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAgIEFSUkFZX1NJWkUoc3VuOGlfZGFjX21p
-eGVyX2NvbnRyb2xzKSksCj4+Cj4+ICAgICAgICAgLyogQ2xvY2tzICovCj4+ICAgICAgICAgU05E
-X1NPQ19EQVBNX1NVUFBMWSgiTU9EQ0xLIEFGSTEiLCBTVU44SV9NT0RfQ0xLX0VOQSwKPj4gQEAg
-LTM0MCw4ICszMzUsMTAgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhcG1fcm91dGUg
-c3VuOGlfY29kZWNfZGFwbV9yb3V0ZXNbXSA9IHsKPj4gICAgICAgICB7ICJEaWdpdGFsIFJpZ2h0
-IERBQyIsIE5VTEwsICJEQUMiIH0sCj4+Cj4+ICAgICAgICAgLyogREFDIE1peGVyIFJvdXRlcyAq
-Lwo+PiAtICAgICAgIHsgIkxlZnQgREFDIE1peGVyIiwgIkxTbG90IDAiLCAiRGlnaXRhbCBMZWZ0
-IERBQyJ9LAo+PiAtICAgICAgIHsgIlJpZ2h0IERBQyBNaXhlciIsICJSU2xvdCAwIiwgIkRpZ2l0
-YWwgUmlnaHQgREFDIn0sCj4+ICsgICAgICAgeyAiTGVmdCBEaWdpdGFsIERBQyBNaXhlciIsICJB
-SUYxIFNsb3QgMCBEaWdpdGFsIERBQyBQbGF5YmFjayBTd2l0Y2giLAo+PiArICAgICAgICAgIkRp
-Z2l0YWwgTGVmdCBEQUMifSwKPj4gKyAgICAgICB7ICJSaWdodCBEaWdpdGFsIERBQyBNaXhlciIs
-ICJBSUYxIFNsb3QgMCBEaWdpdGFsIERBQyBQbGF5YmFjayBTd2l0Y2ggIiwKPgo+IFRoZSBleHRy
-YSBzcGFjZSBmaXhlZCBpbiB0aGUgbmV4dCBwYXRjaCBjb3VsZCBiZSBzcXVhc2hlZCBpbnRvIHRo
-aXMKPiBwYXRjaC4gT3RoZXJ3aXNlLAoKT2gsIHllcywgc29ycnkgYWJvdXQgdGhhdC4KCkkgd2ls
-bCBzZW5kIGEgVjQgd2l0aCB0aGUgZml4ZXMgeW91IHBvaW50ZWQgbWUgb24gdGhpcyBzZXJpZXMu
-CgpUaGFua3MhCgpCZXN0IHJlZ2FyZHMsCgotLSAKTXlsw6huZSBKb3NzZXJhbmQsIEZyZWUgRWxl
-Y3Ryb25zCkVtYmVkZGVkIExpbnV4IGFuZCBLZXJuZWwgZW5naW5lZXJpbmcKaHR0cDovL2ZyZWUt
-ZWxlY3Ryb25zLmNvbQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+On Mon, Mar 20, 2017 at 11:08 PM Mark Brown <broonie@kernel.org> wrote:
+
+> On Mon, Mar 20, 2017 at 11:58:31AM +0800, Kai-Heng Feng wrote:
+>
+> > v3:
+> > Implicit conversion instead of tenary operator.
+> >
+> > v2:
+> > Use 'HP Power' instead of individual power events.
+>
+> As covered in SubmittingPatches this should come after the ---, it
+> doesn't need to end up in the changelogs.
+>
+
+Do you mean
+https://github.com/git/git/blob/master/Documentation/SubmittingPatches#L197
+ ?
+I didn't find any hard rules regarding this, but I'll keep it in mind.
+
+
+>
+> > +     switch (event) {
+> > +     case SND_SOC_DAPM_PRE_PMD:
+> > +     case SND_SOC_DAPM_POST_PMD:
+> > +     case SND_SOC_DAPM_POST_PMU:
+> > +             snd_soc_write(codec, RT286_SET_AMP_GAIN_HPO, AMP_OUT_MUTE);
+> > +             break;
+> > +     case SND_SOC_DAPM_PRE_PMU:
+>
+> To repeat what I said last time:
+>
+> | After power up we mute the amplifier?  That's worthy of a comment...
+
+
+
+
+> Please don't ignore review comments, people are generally making them
+> for a reason and are likely to have the same concerns if issues remain
+> unaddressed.  Having to repeat the same comments can get repetitive and
+> make people question the value of time spent reviewing.  If you disagree
+> with the review comments that's fine but you need to reply and discuss
+> your concerns so that the reviewer can understand your decisions.
+>
+
+IIUC, HPO Power's  _POST_PMU is triggered right before power down
+(_PRE_PMD), hence it's pretty logical to mute the amplifier at this stage.
+I can't quite see anything wrong here.
+
+So no I didn't ignore your comment, I simply misinterpreted what you meant.
+Because of the logical assumption, I thought you were talking the unmute
+part in _PRE_PMU, which I did add in the changelog.
+
+Again, what's the issue here?
