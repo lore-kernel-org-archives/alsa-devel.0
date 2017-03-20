@@ -1,17 +1,24 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3] ASoC: rt286: fix headphone click/crack
- noise on Dell XPS 9343 I2S mode
-Date: Mon, 20 Mar 2017 15:08:45 +0000
-Message-ID: <20170320150845.7rltrhycdkk2mza4@sirena.org.uk>
-References: <20170320035831.10762-1-kai.heng.feng@canonical.com>
+From: Ian W MORRISON <ianwmorrison@gmail.com>
+Subject: Re: [PATCH v2] ALSA: x86: Select CONFIG_HDMI_LPE_AUDIO
+	as default
+Date: Tue, 21 Mar 2017 02:12:01 +1100
+Message-ID: <CAFXWsS8v9tc+de=OwY+d3mwD2WW3gDB_WR63TpwfJOiXjEMTmw@mail.gmail.com>
+References: <CAFXWsS9-pEX0pF5=94_VK8xSF6sXC9991zbrnWByYB+++ve59Q@mail.gmail.com>
+ <s5h1stsl6oq.wl-tiwai@suse.de>
+ <CAFXWsS8-e3c_yB+vmCnwpi8PMXOLexQMmxeQD=j39tXhCqZ4+Q@mail.gmail.com>
+ <s5h60j4xrut.wl-tiwai@suse.de>
+ <CAFXWsS80cxYnzXSNUnAfWCiW40sjBcTtLKyiQqeSLRtawC8K-Q@mail.gmail.com>
+ <s5hshm8w9fa.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0745203338660487662=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E116266E37
- for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 16:08:57 +0100 (CET)
-In-Reply-To: <20170320035831.10762-1-kai.heng.feng@canonical.com>
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 16B80266D9D
+ for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 16:12:02 +0100 (CET)
+Received: by mail-wm0-f66.google.com with SMTP id z133so15155068wmb.2
+ for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 08:12:02 -0700 (PDT)
+In-Reply-To: <s5hshm8w9fa.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,74 +28,220 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc: oder_chiou@realtek.com, bardliao@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 20 March 2017 at 21:04, Takashi Iwai <tiwai@suse.de> wrote:
 
---===============0745203338660487662==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="nnupsqqa4zggsve5"
-Content-Disposition: inline
+> On Mon, 20 Mar 2017 10:41:07 +0100,
+> Ian W MORRISON wrote:
+> >
+> > On 20 March 2017 at 19:41, Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > > On Mon, 20 Mar 2017 09:17:30 +0100,
+> > > Ian W MORRISON wrote:
+> > > >
+> > > > Oops ... forgot to copy alsa-devel and Pierre-Louis.
+> > > >
+> > > > On 20 March 2017 at 18:59, Takashi Iwai <tiwai@suse.de> wrote:
+> > > >
+> > > > > On Mon, 20 Mar 2017 08:42:32 +0100,
+> > > > > Ian W MORRISON wrote:
+> > > > > >
+> > > > > > The upstream kernel builds for distributions such as Ubuntu
+> which now
+> > > > > > includes binary packages for v4.11 mainline kernel release
+> > > candidates are
+> > > > > > promoted as a way of testing upstream kernels to to confirm that
+> > > upstream
+> > > > > > has fixed a specific issue (see https://wiki.ubuntu.com/
+> > > > > > Kernel/MainlineBuilds).
+> > > > > >
+> > > > > > Unfortunately the long awaited patch for providing HDMI audio
+> > > support for
+> > > > > > Bay Trail and Cherry Trail devices does not include this support
+> > > through
+> > > > > a
+> > > > > > module built by default.
+> > > > > >
+> > > > > > Through including by default of the two associated CONFIG
+> settings
+> > > > > (SND_X86
+> > > > > > and HDMI_LPE_AUDIO), upstream kernel builds would automatically
+> > > provide
+> > > > > the
+> > > > > > much desired HDMI audio support by default.
+> > > > > >
+> > > > > > This patch uses a Kconfig 'default' statement to include the
+> driver
+> > > as
+> > > > > > default.
+> > > > > >
+> > > > > > Changes in version 2: CONFIG_SND_X86 now a bool and changed
+> default
+> > > m to
+> > > > > > default y
+> > > > > >
+> > > > > > Signed-off-by: Ian W Morrison <linuxium@linuxium.com.au>
+> > > > > > ---
+> > > > > >  sound/x86/Kconfig | 4 +++-
+> > > > > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > > > > >
+> > > > > > diff --git a/sound/x86/Kconfig b/sound/x86/Kconfig
+> > > > > > index 84c8f8fc..cac2270 100644
+> > > > > > --- a/sound/x86/Kconfig
+> > > > > > +++ b/sound/x86/Kconfig
+> > > > > > @@ -1,6 +1,7 @@
+> > > > > >  menuconfig SND_X86
+> > > > > > -       tristate "X86 sound devices"
+> > > > > > +       bool "X86 sound devices"
+> > > > > >         depends on X86
+> > > > > > +       default y
+> > > > >
+> > > > > This one is OK, but ...
+> > > > >
+> > > > > >         ---help---
+> > > > > >           X86 sound devices that don't fall under SoC or PCI
+> > > categories
+> > > > > >
+> > > > > > @@ -9,6 +10,7 @@ if SND_X86
+> > > > > >  config HDMI_LPE_AUDIO
+> > > > > >         tristate "HDMI audio without HDaudio on Intel Atom
+> platforms"
+> > > > > >         depends on DRM_I915
+> > > > > > +       default y
+> > > > >
+> > > > > ... this is wrong.  Each driver config itself should be left
+> > > > > unspecified.
+> > > > >
+> > > > > It's distributor's job to choose the right config here.
+> > > > >
+> > > > > Actually this goes back to one of my earlier points: A distributor
+> > > doesn't
+> > > > have to set 'HDMI' as HDMI audio is automatically provided.
+> > >
+> > > Provided by who...?
+> > >
+> >
+> >
+> > I suppose it is provided as a result of the architecture one runs the
+> > primary Makefile on. With 'uname -m' returning 'x86_64' running 'make
+> > defconfig' results in 'CONFIG_HDMI=y' being set so
+> 'drivers/video/Makefile'
+> > automatically makes 'drivers/video/hdmi.c' and as
+> > 'arch/x86/configs/x86_64_defconfig' includes 'CONFIG_DRM=y' and
+> > 'CONFIG_DRM_I915=y' and 'drivers/gpu/drm/i915/Makefile' makes
+> > 'intel_audio.c'.
+>
+> The defconfig stuff supports only the limited device sets that are
+> supposed to be very common.  Is HDMI_LPE_AUDIO classified really as
+> such a thing?  I don't know...
+>
+>
+In this instance I'd suggest that HDMI_LPE_AUDIO is common as without it
+you do not get HDMI audio on all x86_64 devices. However see my comment
+below.
 
 
---nnupsqqa4zggsve5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>
+> > > > This is just an
+> > > > extension because by setting 'HDMI_LPE_AUDIO' the missing audio
+> support
+> > > for
+> > > > BYT and CHT SoCs is then provided. Therefore, in this albeit unusual
+> > > > instance, I reason is it appropriate to set HDMI_LPE_AUDIO so that
+> audio
+> > > is
+> > > > automatically provided regardless of distribution. If a distributor
+> > > didn't
+> > > > want to allow audio for BYT and CHT SoC based devices running their
+> > > distro
+> > > > then they could always remove it from their distro specific config.
+> > >
+> > > It's a wrong approach.  What we're discussing about is just a
+> > > configuration for a new individual driver, and the same rule should be
+> > > applied to it like others.
+> > >
+> > > Check other drivers.  See whether default=y (or =m) is set to
+> > > CONFIG_E1000E, as a random example.  With your argument, it should  be
+> > > set to y or m as default, since the Ethernet functionality is already
+> > > provided by the network core.
+> > >
+> > > In general, we don't set the default values to the driver configs
+> > > unless there is a VERY specific reason to do so.
+> > >
+> > >
+> > I'm trying to get HDMI audio by default for BYT & CHT SoC but currently
+> > this requires 'CONFIG_HDMI_LPE_AUDIO' set with a value of 'm'. I don't
+> want
+> > to argue a 'special case' or promote a 'wrong approach' but just get HDMI
+> > audio working so is there another way to achieve this?
+>
+> What's wrong with manually setting CONFIG_HDMI_LPE_AUDIO=m or =y?
+> IOW, do all features on your CHT/BYT machines work without adjusting
+> manually after defconfig?  If you have to do it in anyway, what makes
+> it special for HDMI_LPD_AUDIO?
+>
+>
+I've just tested various scenarios using a variety of devices with
+v4.11-rc3. Having CONFIG_HDMI_LPE_AUDIO set by default is sufficient to get
+audio on BYT/CHT devices over HDMI.
 
-On Mon, Mar 20, 2017 at 11:58:31AM +0800, Kai-Heng Feng wrote:
+For example installing Ubuntu 16.04.2 on a BYT/CHT device, then upgrading
+the kernel to v4.11-rc3 using the deb-binary from http://kernel.ubuntu.com/~
+kernel-ppa/mainline/v4.11-rc3/ (an example of a current distro which is
+compiling without setting CONFIG_HDMI_LPE_AUDIO) and there is no audio over
+HDMI. Alternatively downloading v4.11-rc3 source, making defconfig,
+manually setting CONFIG_HDMI_LPE_AUDIO, compiling and installing the
+kernel on the BYT/CHT device will give you audio over HDMI.
 
-> v3:
-> Implicit conversion instead of tenary operator.
->=20
-> v2:
-> Use 'HP Power' instead of individual power events.
+If the BYT/CHT device has other sound cards (e.g accessed via a headphone
+jack) then audio without setting CONFIG_HDMI_LPE_AUDIO may be possible
+depending on the codec used and whether it is provided by default in the
+kernel. So for example a Tronsmart Ara (CHT) device has audio over
+headphones using the pre-compiled deb-binary above but no audio over HDMI.
+Whereas with a (1st gen) Intel Compute Stick (BYT) device no audio is
+possible using the pre-compiled deb-binary as the device only has an HDMI
+port. To get sound you must therefore currently use a self-compiled kernel
+with CONFIG_HDMI_LPE_AUDIO set.
 
-As covered in SubmittingPatches this should come after the ---, it
-doesn't need to end up in the changelogs.
+Whilst Canonical may set CONFIG_HDMI_LPE_AUDIO to provide audio on BYT/CHT
+devices by when is unknown and there is no guarantee they actually will.
+This will be similar for all other distros with the worst case scenario
+that no distributor adds CONFIG_HDMI_LPE_AUDIO to their configs resulting
+in (arguably) little point including HDMI LPE audio support in the kernel.
 
-> +	switch (event) {
-> +	case SND_SOC_DAPM_PRE_PMD:
-> +	case SND_SOC_DAPM_POST_PMD:
-> +	case SND_SOC_DAPM_POST_PMU:
-> +		snd_soc_write(codec, RT286_SET_AMP_GAIN_HPO, AMP_OUT_MUTE);
-> +		break;
-> +	case SND_SOC_DAPM_PRE_PMU:
+I've laboured the point about 'BYT/CHT devices audio over HDMI' but to
+answer your question completely there are other BYT/CHT devices (typically
+tablets) that need a whole other bunch of patches to fix this and that.
+They may need specialist kernel configs with specific settings but that is
+a separate issue to the basic functional need of having audio over HDMI.
 
-To repeat what I said last time:
-
-| After power up we mute the amplifier?  That's worthy of a comment...
-
-Please don't ignore review comments, people are generally making them
-for a reason and are likely to have the same concerns if issues remain
-unaddressed.  Having to repeat the same comments can get repetitive and
-make people question the value of time spent reviewing.  If you disagree
-with the review comments that's fine but you need to reply and discuss
-your concerns so that the reviewer can understand your decisions.
-
---nnupsqqa4zggsve5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljP8HwACgkQJNaLcl1U
-h9C4AQf/UFcAUUsnOyedRKXND3zRPPbLw2iOfZSpdWd9nOkuynEkOCQ8KiwxSmkr
-BBjEak8bwZsL2Zix+YrNTIbWiJ8TEDMhzrYXhCQsTTuO9vIlYN6kdeTxTN/hcgfF
-EytgPJSMrGKYVItwA0l199U0uy67ikvdVvFp7Gzeq2fC81om0CDHNM7DzayY3hyu
-7j6EqZG7/bH9x5fB4wcPzfy870T7bo80MuIawlthE23wgsmYWxObCNzVmZ4zO/IX
-aedqARUpihC2AB/j21Dh6EyCPTF9+OoskNahIiBYKC7zevW7UH7t+tFkIkvJC3IP
-cJ4EdG+oJsw8gzCsahlo2ijVFGJnPw==
-=SE0u
------END PGP SIGNATURE-----
-
---nnupsqqa4zggsve5--
-
---===============0745203338660487662==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Does the above explanation justify my current approach or is there an
+alternative that can be considered?
 
 
---===============0745203338660487662==--
+> > Would adding
+> > 'CONFIG_HDMI_LPE_AUDIO=y' to 'arch/x86/configs/x86_64_defconfig' be
+> another
+> > mistake (assuming 'CONFIG_SND_X86' was set as per the first part of the
+> > revised patch)? Would anyone even accept a patch
+> > to 'arch/x86/configs/x86_64_defconfig' if this was acceptable?
+>
+> The content in x86_64_defconfig is another story, and it's maintained
+> by x86 guys, so you can try it, of corse...
+>
+>
+>
+If I have exhausted the possibilities here I guess I'll have to go knocking
+on their door.
+
+
+> Takashi
+> >
+> >
+> > >
+> > > Takashi
+> > >
+>
