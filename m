@@ -1,19 +1,19 @@
-From: Olivier MOYSAN <olivier.moysan@st.com>
-Subject: Re: [RESEND PATCH v2 1/2] ASoC: stm32: add bindings
-	for SAI
-Date: Tue, 21 Mar 2017 10:31:54 +0000
-Message-ID: <2d9ee6db-e030-39ef-1988-b8305bcf042f@st.com>
-References: <f6a9354e-dbab-f485-c763-21c8e3af3d62@st.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH] ASoC: STI: Fix null ptr deference in IRQ
+	handler
+Date: Tue, 21 Mar 2017 11:32:51 +0100
+Message-ID: <757acc2d-8586-3ed9-6f85-221458686e48@st.com>
+References: <1490029755-15746-1-git-send-email-arnaud.pouliquen@st.com>
+ <s5htw6nkfod.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id E99B52670FC
- for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 11:31:57 +0100 (CET)
-In-Reply-To: <f6a9354e-dbab-f485-c763-21c8e3af3d62@st.com>
-Content-Language: en-US
-Content-ID: <47D692996A275247AFE178858F154E10@st.com>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A6B5267121
+ for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 11:32:53 +0100 (CET)
+In-Reply-To: <s5htw6nkfod.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,176 +23,149 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alexandre TORGUE <alexandre.torgue@st.com>, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>, "broonie@kernel.org" <broonie@kernel.org>, "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "kernel@stlinux.com" <kernel@stlinux.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Rob,
 
-On 03/18/2017 09:43 PM, Rob Herring wrote:
-> On Thu, Mar 16, 2017 at 5:50 AM, Olivier MOYSAN <olivier.moysan@st.com> wrote:
->> Hello Rob,
->>
->> Thanks for your feedback.
->>
->> On 03/15/2017 06:46 PM, Rob Herring wrote:
->>> On Tue, Mar 07, 2017 at 10:44:31AM +0100, olivier moysan wrote:
->>>> This patch adds documentation of device tree bindings for the
->>>> STM32 SAI ASoC driver.
->>>>
->>>> Signed-off-by: olivier moysan <olivier.moysan@st.com>
->>>> ---
->>>>  .../devicetree/bindings/sound/st,stm32-sai.txt     | 79 ++++++++++++++++++++++
->>>>  1 file changed, 79 insertions(+)
->>>>  create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-sai.txt
->>>>
->>>> diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.txt b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
->>>> new file mode 100644
->>>> index 0000000..b3be26d
->>>> --- /dev/null
->>>> +++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
->>>> @@ -0,0 +1,79 @@
->>>> +STMicroelectronics STM32 Serial Audio Interface (SAI).
->>>> +
->>>> +The SAI interface (Serial Audio Interface) offers a wide set of audio protocols
->>>> +as I2S standards, LSB or MSB-justified, PCM/DSP, TDM, and AC'97.
->>>> +The SAI contains two independent audio sub-blocks. Each sub-block has
->>>> +its own clock generator and I/O lines controller.
->>>> +
->>>> +Required properties:
->>>> +  - compatible: Should be "st,stm32f4-sai"
->>>> +  - reg: Base address and size of SAI common register set.
->>>> +  - clocks: Must contain phandle and clock specifier pairs for each entry
->>>> +    in clock-names.
->>>> +  - clock-names: Must contain "clk_x8k" and "clk_x11k"
->>>> +    "clk_x8k": SAI parent clock for sampling rates multiple of 8kHz.
->>>> +    "clk_x11k": SAI parent clock for sampling rates multiple of 11.025kHz.
->>>
->>> clk_ is redundant.
->>>
->>
->> Do you mean, removing clk_ prefix ?
->
-> Yes.
->
->>
->>>> +  - interrupts: cpu DAI interrupt line shared by SAI sub-blocks
->>>> +
->>>> +Note: Each SAI controller should have an alias correctly numbered
->>>> +in "aliases" node, to provide explicit name to CPU DAI.
->>>
->>> No, it shouldn't. Why do you need that?
->>>
->>
->> Yes, this is not mandatory. This is convenient to identify sai
->> controller, as we may have up to 8 instances.
->> I can make it optional, or remove it if you think it is not relevant.
->
-> Remove it.
->
 
-One more thing regarding aliases.
-In future patches, I will add alsa controls to configure sai.
-Some stm32 socs exhibit several sai (4 instances for H7)
-It will be necessary to identify to which sai each control apply,
-through the control names:
-	SAI1A control X
-	SAI2A control X
-	...
-sub-node compatible already allows to identify A or B sub-instance.
-
-An alternative to alias, may be to use dev_name information to identify 
-sai instance. But this does not produce user friendly control names.
-
-Another way is to use compatible also. The drawback here
-is to multiply compatible names. (many soc families and many instances)
-
-What is your recommendation ?
-If there is another solution, I did not consider, please let me know.
-
+On 03/20/2017 06:42 PM, Takashi Iwai wrote:
+> On Mon, 20 Mar 2017 18:09:15 +0100,
+> Arnaud Pouliquen wrote:
 >>
->>>
->>>> +
->>>> +Optional properties:
->>>> +  - resets: Reference to a reset controller asserting the SAI
->>>> +
->>>> +SAI subnodes:
->>>> +Two subnodes corresponding to SAI sub-block instances A et B can be defined.
->>>> +Subnode can be omitted for unsused sub-block.
->>>> +
->>>> +SAI subnodes required properties:
->>>> +  - compatible: Should be "st,stm32-sai-sub-a" or "st,stm32-sai-sub-b"
->>>> +    for SAI sub-block A or B respectively.
->>>> +  - reg: Base address and size of SAI sub-block register set.
->>>> +  - clocks: Must contain one phandle and clock specifier pair
->>>> +    for sai_ck which feeds the internal clock generator.
->>>> +  - clock-names: Must contain "sai_ck".
->>>> +  - dmas: see Documentation/devicetree/bindings/dma/stm32-dma.txt
->>>> +  - dma-names: identifier string for each DMA request line
->>>> +    "tx": if sai sub-block is configured as playback DAI
->>>> +    "rx": if sai sub-block is configured as capture DAI
->>>> +  - pinctrl-names: should contain only value "default"
->>>> +  - pinctrl-0: see Documentation/devicetree/bindings/pinctrl/pinctrl-stm32.txt
->>>> +
->>>> +Example:
->>>> +sai1: sai1@40015800 {
->>>> +    compatible = "st,stm32f4-sai";
->>>> +    reg = <0x40015800 0x400>;
->>
->>         reg = <0x40015800 0x4>;
->>
->>>> +    clocks = <&rcc 1 CLK_SAIQ_PDIV>, <&rcc 1 CLK_I2SQ_PDIV>;
->>>> +    clock-names = "clk_x8k", "clk_x11k";
->>>> +    interrupts = <87>;
->>>> +    resets = <&rcc 310>;
->>>> +
->>>> +    sai1b: sai@1 {
->>>
->>> unit address needs a reg property.
->>>
->>> audio-controller@1
->>>
->>
->> Right. This needs to be updated as follows:
->>         sai1b: sai1b@40015824 {
->
-> audio-controller@...
->
->>                 ...
->>                 reg = <0x40015824 0x1C>;
->>                 ...
->>         };
->>
->>>> +            #sound-dai-cells = <0>;
->>>> +            compatible = "st,stm32-sai-sub-b";
->>>> +            clocks = <&rcc 1 CLK_SAI2>;
->>>> +            clock-names = "sai_ck";
->>>> +            dmas = <&dma2 5 0 0x400 0x1>;
->>>> +            dma-names = "tx";
->>>> +    };
->>>> +};
->>>> +
->>>> +sound {
->>>> +    compatible = "simple-audio-card";
->>>
->>> Perhaps you want to use the graph-card here. It's getting close to
->>> merging.
->>>
->>
->> mclk-fs property is required when SAI is configured as master.
->> It seems that mclk-fs is not supported in current version
->> of audio graph card. So I thing I should keep simple card for the time
->> being. Anyway, I plan further updates for SAI, so I will
->> have opportunity to change to graph card at that time.
->
-> Well, it's not easy to switch later and maintain compatibility. Is it
-> complicated to add mclk-fs property? The intent is graph-card supports
-> everything simple-card supports.
->
-> Rob
->
+>> With RTlinux a race condition has been found that leads to NULL ptr crash:
+>> - On CPU 0: uni_player_irq_handler is called to treat XRUN
+>>  "(player->state == UNIPERIF_STATE_STOPPED)" is FALSE so status is checked,
+>>  dev_err(player->dev, "FIFO underflow error detected") is printed
+>> and then snd_pcm_stream_lock should be called to lock stream for stopping.
+>> - On CPU 1: application stop and close the stream.
+>> Issue is that the stop and shutdown functions are executed while
+>> "FIFO underflow error detected" is printed.
+>> So when CPU 0 call snd_pcm_stream_lock is player->substream is already null.
+> 
+> Hrm, how the first call of snd_pcm_stream_lock() with
+> player->substream to be guaranteed to be non-NULL?
 
-Right, it should not be too complicated to add mclk-fs support to 
-graph-card.
+Not sure that it is possible to be 100% save, but player->substream
+should not be null...
 
-BRs
-olivier
+ Use case at risk: Stop request occurs just before IRQ.
+1) IRQ handler locked on snd_pcm_stream_lock(player->substream)
+2) uni_player_stop clear IRQ flags and set player->state ==
+UNIPERIF_STATE_STOPPED. So no more IRQs after UNIPERIF_STATE_STOPPED state.
+3) As stream is cleared after close, i guess that between stop and close
+following IRQ handler code should be executed
+
+  	if (player->state == UNIPERIF_STATE_STOPPED) {
+  		/* Unexpected IRQ: do nothing */
+ 		snd_pcm_stream_unlock(player->substream);
+  		return IRQ_NONE;
+  	}
+
+Anyway adding a check of player->substream in IRQ handler before locking
+seems more save.
+
+I will add it in a V2
+
+Thanks
+
+Arnaud
+
+> 
+> 
+> Takashi
+> 
+> 
+>>
+>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+>> ---
+>>  sound/soc/sti/uniperif_player.c | 9 +++------
+>>  sound/soc/sti/uniperif_reader.c | 8 +++++---
+>>  2 files changed, 8 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
+>> index 60ae31a..6fa9eee 100644
+>> --- a/sound/soc/sti/uniperif_player.c
+>> +++ b/sound/soc/sti/uniperif_player.c
+>> @@ -65,8 +65,10 @@ static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
+>>  	unsigned int status;
+>>  	unsigned int tmp;
+>>  
+>> +	snd_pcm_stream_lock(player->substream);
+>>  	if (player->state == UNIPERIF_STATE_STOPPED) {
+>>  		/* Unexpected IRQ: do nothing */
+>> +		snd_pcm_stream_unlock(player->substream);
+>>  		return IRQ_NONE;
+>>  	}
+>>  
+>> @@ -88,9 +90,7 @@ static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
+>>  			SET_UNIPERIF_ITM_BCLR_FIFO_ERROR(player);
+>>  
+>>  			/* Stop the player */
+>> -			snd_pcm_stream_lock(player->substream);
+>>  			snd_pcm_stop(player->substream, SNDRV_PCM_STATE_XRUN);
+>> -			snd_pcm_stream_unlock(player->substream);
+>>  		}
+>>  
+>>  		ret = IRQ_HANDLED;
+>> @@ -104,9 +104,7 @@ static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
+>>  		SET_UNIPERIF_ITM_BCLR_DMA_ERROR(player);
+>>  
+>>  		/* Stop the player */
+>> -		snd_pcm_stream_lock(player->substream);
+>>  		snd_pcm_stop(player->substream, SNDRV_PCM_STATE_XRUN);
+>> -		snd_pcm_stream_unlock(player->substream);
+>>  
+>>  		ret = IRQ_HANDLED;
+>>  	}
+>> @@ -138,13 +136,12 @@ static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
+>>  		dev_err(player->dev, "Underflow recovery failed\n");
+>>  
+>>  		/* Stop the player */
+>> -		snd_pcm_stream_lock(player->substream);
+>>  		snd_pcm_stop(player->substream, SNDRV_PCM_STATE_XRUN);
+>> -		snd_pcm_stream_unlock(player->substream);
+>>  
+>>  		ret = IRQ_HANDLED;
+>>  	}
+>>  
+>> +	snd_pcm_stream_unlock(player->substream);
+>>  	return ret;
+>>  }
+>>  
+>> diff --git a/sound/soc/sti/uniperif_reader.c b/sound/soc/sti/uniperif_reader.c
+>> index 5992c6a..9273f59 100644
+>> --- a/sound/soc/sti/uniperif_reader.c
+>> +++ b/sound/soc/sti/uniperif_reader.c
+>> @@ -46,9 +46,11 @@ static irqreturn_t uni_reader_irq_handler(int irq, void *dev_id)
+>>  	struct uniperif *reader = dev_id;
+>>  	unsigned int status;
+>>  
+>> +	snd_pcm_stream_lock(reader->substream);
+>>  	if (reader->state == UNIPERIF_STATE_STOPPED) {
+>>  		/* Unexpected IRQ: do nothing */
+>>  		dev_warn(reader->dev, "unexpected IRQ\n");
+>> +		snd_pcm_stream_unlock(reader->substream);
+>>  		return IRQ_HANDLED;
+>>  	}
+>>  
+>> @@ -60,13 +62,13 @@ static irqreturn_t uni_reader_irq_handler(int irq, void *dev_id)
+>>  	if (unlikely(status & UNIPERIF_ITS_FIFO_ERROR_MASK(reader))) {
+>>  		dev_err(reader->dev, "FIFO error detected\n");
+>>  
+>> -		snd_pcm_stream_lock(reader->substream);
+>>  		snd_pcm_stop(reader->substream, SNDRV_PCM_STATE_XRUN);
+>> -		snd_pcm_stream_unlock(reader->substream);
+>>  
+>> -		return IRQ_HANDLED;
+>> +		ret = IRQ_HANDLED;
+>>  	}
+>>  
+>> +	snd_pcm_stream_unlock(reader->substream);
+>> +
+>>  	return ret;
+>>  }
+>>  
+>> -- 
+>> 1.9.1
+>>
