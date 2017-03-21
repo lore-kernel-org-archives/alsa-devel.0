@@ -1,17 +1,43 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun8i-codec: Remove analog "HP" widget"
-	to the asoc tree
-Date: Tue, 21 Mar 2017 18:45:57 +0000
-Message-ID: <E1cqOn7-0001Bk-6c@debutante>
-References: <20170210094133.11382-2-mylene.josserand@free-electrons.com>
+From: =?UTF-8?Q?Emmanuel_Fust=c3=a9?= <emmanuel.fuste@laposte.net>
+Subject: Re: [PATCH 0/3] ASoC: Enable a new IC master mode:
+ bcm2835<=>IC<=>cs42xx8
+Date: Tue, 21 Mar 2017 22:21:04 +0100
+Message-ID: <e0adcc6c-8bf4-adae-874b-c291e71e5712@laposte.net>
+References: <20170226144958.GA5543@camel2.lan>
+ <732a71ac-5ec5-37e1-1190-be036ea34555@flatmax.org>
+ <20170226221648.GA10974@camel2.lan>
+ <7cef41ee-ef00-22b7-830f-517a9d594ed0@flatmax.org>
+ <20170227080433.GA2718@delle.lan>
+ <170950f7-354f-e6a9-cefb-834a00fadd1b@flatmax.org>
+ <20170227103024.GF2718@delle.lan>
+ <7b78c782-28e1-4849-5d00-8caf30847d5c@flatmax.org>
+ <20170227115108.GA6732@delle.lan>
+ <20170228095929.GH2742@localhost.localdomain>
+ <20170315190108.y6ybxm3nfgnutajv@sirena.org.uk>
+ <7d8d38f7-53aa-cc3d-4bbd-141649528a8a@flatmax.org>
+ <8c62f014-d246-e0c1-2b02-a28a2c2786b7@metafoo.de>
+ <000fbaa4-4c7c-5b13-0806-7e42672a4a55@flatmax.org>
+Reply-To: emmanuel.fuste@laposte.net
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1281130112911099090=="
+Content-Type: text/plain; charset="windows-1252"; Format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 60F4326737F
- for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 19:46:41 +0100 (CET)
-In-Reply-To: <20170210094133.11382-2-mylene.josserand@free-electrons.com>
+Received: from smtp.laposte.net (smtpoutz25.laposte.net [194.117.213.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id E51992668CA
+ for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 22:21:07 +0100 (CET)
+Received: from smtp.laposte.net (localhost [127.0.0.1])
+ by lpn-prd-vrout013 (Postfix) with ESMTP id C573D104709
+ for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 22:21:06 +0100 (CET)
+Received: from smtp.laposte.net (localhost [127.0.0.1])
+ by lpn-prd-vrout013 (Postfix) with ESMTP id B7A59104C4C
+ for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 22:21:06 +0100 (CET)
+Received: from lpn-prd-vrin002 (lpn-prd-vrin002.laposte [10.128.63.3])
+ by lpn-prd-vrout013 (Postfix) with ESMTP id B357E104709
+ for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 22:21:06 +0100 (CET)
+Received: from lpn-prd-vrin002 (localhost [127.0.0.1])
+ by lpn-prd-vrin002 (Postfix) with ESMTP id 966B75BFEA1
+ for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 22:21:06 +0100 (CET)
+In-Reply-To: <000fbaa4-4c7c-5b13-0806-7e42672a4a55@flatmax.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,93 +47,139 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: mark.rutland@arm.com, thomas.petazzoni@free-electrons.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org, wens@csie.org, broonie@kernel.org, alexandre.belloni@free-electrons.com, maxime.ripard@free-electrons.com, mylene.josserand@free-electrons.com, linux-arm-kernel@lists.infradead.org
+To: Matt Flax <flatmax@flatmax.org>, Lars-Peter Clausen <lars@metafoo.de>, Mark Brown <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Stephen Warren <swarren@wwwdotorg.org>, Eric Anholt <eric@anholt.net>, Lee Jones <lee@kernel.org>, phil@raspberrypi.org, Liam Girdwood <lgirdwood@gmail.com>, Matthias Reichl <hias@horus.com>, florian.kauer@koalo.de, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
---===============1281130112911099090==
-Content-Type: text/plain
+Le 16/03/2017 =E0 23:14, Matt Flax a =E9crit :
+>
+>
+> On 17/03/17 08:27, Lars-Peter Clausen wrote:
+>> On 03/16/2017 09:51 PM, Matt Flax wrote:
+>>>
+>>> On 16/03/17 06:01, Mark Brown wrote:
+>>>> On Tue, Feb 28, 2017 at 09:59:29AM +0000, Charles Keepax wrote:
+>>>>> On Mon, Feb 27, 2017 at 12:51:08PM +0100, Matthias Reichl wrote:
+>>>>>>> I have a bcm2835 (Pi 2 and 3) SoC here. It is producing =
 
-The patch
+>>>>>>> multichannel (8
+>>>>>>> out,
+>>>>>>> 6 in) audio. In ALSA we call that DSP mode - right ?!
+>>>>>> No. DSP modes are protocol/timing specifications as I2S, PDP, =
 
-   ASoC: sun8i-codec: Remove analog "HP" widget
+>>>>>> S/PDIF, ...
+>>>>>> You can look these up in datasheets and if a chip implements such a
+>>>>>> protocol you can be sure that it adheres to that standard - i.e. it
+>>>>>> will sync the frames to the pulses on LRclk.
+>>>>> I agree with the thoughts in this thread really if the AP doesn't
+>>>>> actually support DSP A mode we shouldn't add DSP A mode.
+>>>> The trouble here is that this isn't 100% clear, the specifications of
+>>>> the DSP modes are such that only one edge in the LRCLK matters and so
+>>>> providing you're doing mono or have exact clocking they interoperate
+>>>> perfectly well.  We already frequently do similar things the other =
 
-has been applied to the asoc tree at
+>>>> way,
+>>>> most of the programmable serial ports can't actually do I2S modes
+>>>> properly and rely on exact clocking to get things right when operating
+>>>> as I2S since they only sync on one edge (though they can generally
+>>>> generate the clocks correctly when operating as master, they just =
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+>>>> don't
+>>>> pay attention to the left/right switch edge).
+>>>>
+>>>> That said unless we're doing something with the data layout or similar
+>>>> configuration there's a fairly strong case for putting the mangling =
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+>>>> for
+>>>> this in the core, something like just falling back to I2S mode if =
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+>>>> we set
+>>>> DSP A and so on.  Which would be a lot nicer if we actually got =
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+>>>> round to
+>>>> putting mode capability information in the drivers.
+>>> I agree, the data layout is already configurable in the bcm2835_i2s.c
+>>> platform driver. We can already use the "snd_soc_dai_set_bclk_ratio"
+>>> function to manage word offsets in our machine drivers.
+>>>
+>>> There is nothing which says that the bcm2835 SoC is I2S restricted =
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+>>> in any
+>>> way. In fact, the reference document says quite the opposite.
+>>>
+>>> In the reference "BCM2835 ARM Peripherals" pdf, they call the audio =
 
-Thanks,
-Mark
+>>> system
+>>> an "APB peripheral". They are saying that it is reconfigurable and =
 
->From a82f16188a32a3c889916c582ea2d9188e3c2734 Mon Sep 17 00:00:00 2001
-From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?=
- <mylene.josserand@free-electrons.com>
-Date: Sat, 18 Mar 2017 08:55:05 +0100
-Subject: [PATCH] ASoC: sun8i-codec: Remove analog "HP" widget
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>>> part of
+>>> the AMBA family of interconnect schemes.
+>>>
+>>> As far as the bcm2835_i2s platform driver goes, it has implemented =
 
-The "HP" widget is already present and take part to
-the analog part (sun8i-codec-analog).
+>>> an AMBA
+>>> protocol, where audio words are counted from the LR clock onset - =
 
-Remove it from the digital part as it is unnecessary.
+>>> for some
+>>> reason people are insisting this is an I2S bus. Really our =
 
-Signed-off-by: Mylène Josserand <mylene.josserand@free-electrons.com>
-Acked-by: Chen-Yu Tsai <wens@csie.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/sunxi/sun8i-codec.c | 6 ------
- 1 file changed, 6 deletions(-)
+>>> implementation is
+>>> not I2S at all, because word onsets are programmable and flexible in =
 
-diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index b92bdc8361af..d60f6fbd36a2 100644
---- a/sound/soc/sunxi/sun8i-codec.c
-+++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -321,8 +321,6 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
- 			    SUN8I_MOD_RST_CTL_AIF1, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("RST DAC", SUN8I_MOD_RST_CTL,
- 			    SUN8I_MOD_RST_CTL_DAC, 0, NULL, 0),
--
--	SND_SOC_DAPM_OUTPUT("HP"),
- };
- 
- static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
-@@ -344,10 +342,6 @@ static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
- 	/* DAC Mixer Routes */
- 	{ "Left DAC Mixer", "LSlot 0", "Digital Left DAC"},
- 	{ "Right DAC Mixer", "RSlot 0", "Digital Right DAC"},
--
--	/* End of route : HP out */
--	{ "HP", NULL, "Left DAC Mixer" },
--	{ "HP", NULL, "Right DAC Mixer" },
- };
- 
- static struct snd_soc_dai_ops sun8i_codec_dai_ops = {
--- 
-2.11.0
+>>> the
+>>> bcm2835_i2s.c driver.
+>> AMBA/APB is the interface which connects the peripheral to the system =
 
+>> memory
+>> bus. It is the interface over which the CPU does configuration register
+>> writes. This has nothing and absolutely nothing to do with the I2S =
 
---===============1281130112911099090==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+>> interface
+>> that is also implemented by the peripheral that is used to stream =
 
+>> audio to
+>> and from external components.
+>>
+>
+> Their (BCM reference) document [1] specifically states "It supports =
 
---===============1281130112911099090==--
+> many classic PCM formats including I2S".
+>
+> Do agree with Mark's statement "the specifications of the DSP modes =
+
+> are such that only one edge in the LRCLK matters" ?
+>
+> If we look at the bcm2835 platform driver setup, it is concerned with =
+
+> bit clock counting to specify the audio data for both of the AMBA/APB =
+
+> channels from serial bitstream into memory. It has two channels into =
+
+> memory, however "it supports many classic PCM formats" ... my vote for =
+
+> one classic format is DSP mode !
+>
+> Do you see a problem with that ?
+>
+> thanks
+> Matt
+> [1] =
+
+> https://www.raspberrypi.org/wp-content/uploads/2012/02/BCM2835-ARM-Periph=
+erals.pdf
+> _______________________________________________
+>
+Re-reading this document, the bcm2835 PCM IP block SHOULD support real =
+
+DSP mode, with one BCLK pulsed LRCLK, zero BCLK delay etc...
+It just need to be properly setup.
+According to the same document, you could program the bmc up to 16 =
+
+32bits channels when in master mode, so I suspect that you could go up =
+
+to this limit in slave mode.
+But as it is designed, it could only use up to two of any channels among =
+
+the 16.
+
+Emmanuel.
