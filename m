@@ -1,133 +1,103 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [PATCH v3 1/2] ASoC: codec: wm8960: Refactor sysclk freq search
-Date: Tue, 21 Mar 2017 17:03:24 +0200
-Message-ID: <1490108605-20538-2-git-send-email-daniel.baluta@nxp.com>
-References: <1490108605-20538-1-git-send-email-daniel.baluta@nxp.com>
+From: Arun Raghavan <arun@arunraghavan.net>
+Subject: Re: pulseaudio fails to start with kernel 4.11,
+ caused by new snd_hdmi_lpe_audio module)
+Date: Tue, 21 Mar 2017 20:35:51 +0530
+Message-ID: <1490108751.2258359.918534584.065F4BB5@webmail.messagingengine.com>
+References: <2549c113-f06b-f22e-d36e-f59fc2969bcb@redhat.com>
+ <s5h8to0w4fs.wl-tiwai@suse.de>
+ <6754b5cd-f6d0-e2e3-0f01-992946ec1b92@linux.intel.com>
+ <s5hk27jjigd.wl-tiwai@suse.de>
+ <1490082870.1321124.918129488.4F3143F8@webmail.messagingengine.com>
+ <bba100b1-5e74-093a-7625-a7feaba1a065@redhat.com>
+ <1490087065.1333106.918176776.2A6E8968@webmail.messagingengine.com>
+ <6a430d78-fecf-8b17-6b62-6f7740d8bdfb@redhat.com>
+Reply-To: General PulseAudio Discussion
+ <pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1490108605-20538-1-git-send-email-daniel.baluta@nxp.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, tiwai@suse.com
-Cc: ckeepax@opensource.wolfsonmicro.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, shengjiu.wang@freescale.com, mihai.serban@nxp.com, viorel.suman@nxp.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
+In-Reply-To: <6a430d78-fecf-8b17-6b62-6f7740d8bdfb@redhat.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
+Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
+To: Hans de Goede <hdegoede@redhat.com>, Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, pulseaudio-discuss@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-Add a separate function for finding (sysclk, lrclk, bclk)
-when the clock is auto or mclk. This makes code easier to
-read and reduces the indentation level in wm8960_configure_clocking.
-
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
-Changes since v2:
-	* none
-
- sound/soc/codecs/wm8960.c | 80 ++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 61 insertions(+), 19 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 3bf081a..25a4a11 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -604,12 +604,71 @@ static const int bclk_divs[] = {
- 	120, 160, 220, 240, 320, 320, 320
- };
- 
-+/**
-+ * wm8960_configure_sysclk - checks if there is a sysclk frequency available
-+ *	The sysclk must be chosen such that:
-+ *		- sysclk     = MCLK / sysclk_divs
-+ *		- lrclk      = sysclk / dac_divs
-+ *		- 10 * bclk  = sysclk / bclk_divs
-+ *
-+ * @wm8960_priv: wm8960 codec private data
-+ * @mclk: MCLK used to derive sysclk
-+ * @sysclk_idx: sysclk_divs index for found sysclk
-+ * @dac_idx: dac_divs index for found lrclk
-+ * @bclk_idx: bclk_divs index for found bclk
-+ *
-+ * Returns:
-+ * -1, in case no sysclk frequency available found
-+ *  0, in case an exact (@sysclk_idx, @dac_idx, @bclk_idx) match is found
-+ */
-+static
-+int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
-+			    int *sysclk_idx, int *dac_idx, int *bclk_idx)
-+{
-+	int sysclk, bclk, lrclk;
-+	int i, j, k;
-+	int diff;
-+
-+	bclk = wm8960->bclk;
-+	lrclk = wm8960->lrclk;
-+
-+	/* check if the sysclk frequency is available. */
-+	for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
-+		if (sysclk_divs[i] == -1)
-+			continue;
-+		sysclk = mclk / sysclk_divs[i];
-+		for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {
-+			if (sysclk != dac_divs[j] * lrclk)
-+				continue;
-+			for (k = 0; k < ARRAY_SIZE(bclk_divs); ++k) {
-+				diff = sysclk - bclk * bclk_divs[k] / 10;
-+				if (diff == 0) {
-+					*sysclk_idx = i;
-+					*dac_idx = j;
-+					*bclk_idx = k;
-+					break;
-+				}
-+			}
-+			if (k != ARRAY_SIZE(bclk_divs))
-+				break;
-+		}
-+		if (j != ARRAY_SIZE(dac_divs))
-+			break;
-+	}
-+
-+	if (i != ARRAY_SIZE(sysclk_divs))
-+		return 0;
-+
-+	return -1;
-+}
-+
- static int wm8960_configure_clocking(struct snd_soc_codec *codec)
- {
- 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
- 	int sysclk, bclk, lrclk, freq_out, freq_in;
- 	u16 iface1 = snd_soc_read(codec, WM8960_IFACE1);
- 	int i, j, k;
-+	int ret;
- 
- 	if (!(iface1 & (1<<6))) {
- 		dev_dbg(codec->dev,
-@@ -643,25 +702,8 @@ static int wm8960_configure_clocking(struct snd_soc_codec *codec)
- 	}
- 
- 	if (wm8960->clk_id != WM8960_SYSCLK_PLL) {
--		/* check if the sysclk frequency is available. */
--		for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
--			if (sysclk_divs[i] == -1)
--				continue;
--			sysclk = freq_out / sysclk_divs[i];
--			for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {
--				if (sysclk != dac_divs[j] * lrclk)
--					continue;
--				for (k = 0; k < ARRAY_SIZE(bclk_divs); ++k)
--					if (sysclk == bclk * bclk_divs[k] / 10)
--						break;
--				if (k != ARRAY_SIZE(bclk_divs))
--					break;
--			}
--			if (j != ARRAY_SIZE(dac_divs))
--				break;
--		}
--
--		if (i != ARRAY_SIZE(sysclk_divs)) {
-+		ret = wm8960_configure_sysclk(wm8960, freq_out, &i, &j, &k);
-+		if (ret == 0) {
- 			goto configure_clock;
- 		} else if (wm8960->clk_id != WM8960_SYSCLK_AUTO) {
- 			dev_err(codec->dev, "failed to configure clock\n");
--- 
-2.7.4
+CgpPbiBUdWUsIDIxIE1hciAyMDE3LCBhdCAwODoxOSBQTSwgSGFucyBkZSBHb2VkZSB3cm90ZToK
+PiBIaSwKPiAKPiBPbiAyMS0wMy0xNyAxMDowNCwgQXJ1biBSYWdoYXZhbiB3cm90ZToKPiA+Cj4g
+Pgo+ID4gT24gVHVlLCAyMSBNYXIgMjAxNywgYXQgMDI6MjYgUE0sIEhhbnMgZGUgR29lZGUgd3Jv
+dGU6Cj4gPj4gSGksCj4gPj4KPiA+PiBPbiAyMS0wMy0xNyAwODo1NCwgQXJ1biBSYWdoYXZhbiB3
+cm90ZToKPiA+Pj4gT24gVHVlLCAyMSBNYXIgMjAxNywgYXQgMTE6MTAgQU0sIFRha2FzaGkgSXdh
+aSB3cm90ZToKPiA+Pj4+IE9uIFR1ZSwgMjEgTWFyIDIwMTcgMDA6MDk6MjIgKzAxMDAsCj4gPj4+
+PiBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPiA+Pj4+Pgo+ID4+Pj4+IE9uIDMvMjAvMTcg
+NDo1MiBBTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+ID4+Pj4+PiBPbiBNb24sIDIwIE1hciAyMDE3
+IDEyOjQyOjU4ICswMTAwLAo+ID4+Pj4+PiBIYW5zIGRlIEdvZWRlIHdyb3RlOgo+ID4+Pj4+Pj4K
+PiA+Pj4+Pj4+IEhpLAo+ID4+Pj4+Pj4KPiA+Pj4+Pj4+IExhdGVseSBJJ3ZlIGJlZW4gd29ya2lu
+ZyBvbiBmaXhpbmcgdmFyaW91cyBpc3N1ZXMgcGVvcGxlCj4gPj4+Pj4+PiBhcmUgaGF2aW5nIHdp
+dGggYmF5dHJhaWwgLyBjaGVycnl0cmFpbCBkZXZpY2VzLiBPbmUgdGhpbmcKPiA+Pj4+Pj4+IEkg
+bm90aWNlZCB3aGVuIG1vdmluZyBteSB0ZXN0aW5nIC8gZGV2ZWxvcG1lbnQgdG8gNC4xMSBpcwo+
+ID4+Pj4+Pj4gdGhhdCBwdWxzZWF1ZGlvIGRvZXMgbm90IHdvcmsgKGl0IGFib3J0cyB3aGlsZSBz
+dGFydGluZykKPiA+Pj4+Pj4+IHRoaXMgc2VlbWVkIHRvIGJlIGNhdXNlZCBieSB0aGUgbmV3IHNu
+ZF9oZG1pX2xwZV9hdWRpbwo+ID4+Pj4+Pj4gbW9kdWxlLiBJZiBJIGJsYWNrbGlzdCB0aGF0IGFs
+bCBpcyBmaW5lLiBBbnkgaWRlYSB3aGF0Cj4gPj4+Pj4+PiBpcyBjYXVzaW5nIHRoaXMgPwo+ID4+
+Pj4+Pgo+ID4+Pj4+PiBJIG5vdGljZWQgaXQgb25jZSwgdG9vLCBidXQgSSBoYWQgbm8gdGltZSB0
+byBjaGVjayBmdXJ0aGVyLgo+ID4+Pj4+PiBNb3JlIGludGVyZXN0aW5nbHksIFBBIHdvcmtzIGZp
+bmUgd2hlbiBMUEUgYXVkaW8gaXMgdGhlIHNpbmdsZSBkcml2ZXIKPiA+Pj4+Pj4gKGkuZS4gYmxh
+Y2tsaXN0IEludGVsIFNTVCBpbnN0ZWFkKSwgdG9vLiAgU28gaXQncyBtb3JlIGxpa2VseSBhIGJ1
+ZyBpbgo+ID4+Pj4+PiBQQS4KPiA+Pj4+Pj4KPiA+Pj4+Pj4gV2hhdCBoYXBwZW5zIHdoZW4geW91
+IG1vZHByb2JlIExQRSBhdWRpbyBkcml2ZXIgYWZ0ZXIgc3RhcnRpbmcgdGhlCj4gPj4+Pj4+IHNl
+c3Npb24/ICBJZiBpdCBraWxscyBQQSwgd2UgY2FuIGRlYnVnIG1vcmUgZWFzaWx5IDopCj4gPj4+
+Pj4KPiA+Pj4+PiBJJ3ZlIHNlZW4gdGhpcyBhcyB3ZWxsLCBJIGNvdWxkIGdldCBlaXRoZXIgb25l
+IG9mIHRoZSB0d28gYnV0IG5vdAo+ID4+Pj4+IGJvdGgsIGNvdWxkIHRoaXMgYmUgZHVlIHRvIHRo
+ZSBmYWN0IHRoYXQgb25lIHNldCBvZiBtaXhlcnMgaXMKPiA+Pj4+PiBjb25maWd1cmVkIHdpdGgg
+VUNNIGFuZCB0aGUgb3RoZXIgZHJpdmVyIGlzbid0IGNvbmZpZ3VyZWQgYnkgVUNNPwo+ID4+Pj4K
+PiA+Pj4+IE5vIGlkZWEsIGFuZCBJIGhhZCBzdGlsbCBubyB0aW1lIHRvIGNoZWNrIChzdGlsbCBw
+cm9jZXNzaW5nIHRoZQo+ID4+Pj4gcGlsZSBvZiBwZW5kaW5nIG1haWxzIGFuZCBvdGhlciBidWdz
+IDopLiAgTGV0IG1lIGFkZCBQQSBndXlzIHRvIENjLgo+ID4+Pgo+ID4+PiBOb3Qgc3VyZSBpZiBh
+bnlvbmUgaGVyZSBoYXMgdGhlIGhhcmR3YXJlIGFuZCBJIGhhdmVuJ3Qgc2VlbiBhbnkKPiA+Pj4g
+Y29tcGxhaW50cyBlaXRoZXIgLS0gaGF2aW5nIGEgYmFja3RyYWNlIChvciBldmVuIGxvY2F0aW9u
+IG9mIHRoZSBhc3NlcnQpCj4gPj4+IHdvdWxkIGJlIGEgZ29vZCBzdGFydC4KPiA+Pgo+ID4+IE9r
+LCB0aGlzIGlzIHdlaXJkLiBTaW5jZSB5b3Ugd2VyZSBhc2tpbmcgZm9yIG1vcmUgaW5mbyBJIHRy
+aWVkIHRvCj4gPj4gY29sbGVjdCBhIGJhY2t0cmFjZSAvIGxvZ3MuIEJ1dCB3aGF0IGlzIGhhcHBl
+bmluZyBpcyB0aGF0IGFmdGVyCj4gPj4gdGhlIHNuZF9oZG1pX2xwZV9hdWRpbyBtb2R1bGUgbG9h
+ZHMsIHB1bHNlIGRvZXMgaXRzIHRoaW5nIGFuZAo+ID4+IHRoZW4gZXhpdHMgd2l0aCBhIG1lc3Nh
+Z2Ugb2YgImtpbGxlZCIgaW4gZ2RiIC8gb24gdGhlIHRlcm1pbmFsCj4gPj4gZnJvbSB3aGljaCBJ
+IHN0YXJ0ZWQgaXQuIEkgZG9uJ3QgZ2V0IGEgY2hhbmNlIHRvIGdldCBhIGJhY2t0cmFjZQo+ID4+
+IGluIGdkYiAuLi4gIFNvIHRoaXMgZG9lcyBmZWVsIGxpa2UgYSBrZXJuZWwgYnVnIHRvIG1lLCBu
+b3JtYWxseQo+ID4+IHRoaXMgc29ydCBvZiAia2lsbGVkIiBiZWhhdmlvciBpcyBzZWVuIG9uIHNv
+bWUga2VybmVsIG9vcHNlcy4uLgo+ID4+Cj4gPj4gQnV0IGRtZXNnIGlzIGZyZWUgb2YgYW55IG9v
+cHNlcyA/Cj4gPj4KPiA+PiBBbnl3YXlzIGhlcmUgaXMgYSBsb2cgb2YgcHVsc2VhdWRpbyAtdiBm
+aXJzdCB3aXRob3V0IHRoZQo+ID4+IGhkbWkgbW9kdWxlIGFuZCB0aGVuIHRoZSBtb2R1bGUgZ2V0
+cyBwcm9iZWQuIFdoZXJlIHRoZSBsb2cKPiA+PiBhYnJ1cHRseSBlbmRzIGlzIHdoZXJlIEkgZ290
+IHRoZSAiS2lsbGVkIiBtZXNzYWdlIG9uIHRoZQo+ID4+IHRlcm1pbmFsLgo+ID4KPiA+IFRoYXQn
+cyB0aGUga2VybmVsIGtpbGxpbmcgb2YgUEEgZm9yIGV4Y2VlZGluZyBSVCBsaW1pdHMgKHRoZXJl
+J3MgYSBwYXRjaAo+ID4gaW4gdGhlIHRpbWVycyB0aXAgdGhhdCdsbCBub3cgcHJvdmlkZSBhbiBl
+cnJvciBpbiBkbWVzZykuCj4gPgo+ID4gSXQgc291bmRzIHBvc3NpYmxlIHRoYXQgdGhlcmUgaXMg
+c29tZSBjYWxsIHRvIHRoZSBBTFNBIEFQSSB0aGF0IHdlIGFyZQo+ID4gbWFraW5nIHRoYXQgcmVz
+dWx0cyBpbiB0aGUgZHJpdmVyIGJsb2NraW5nIGZvciBsb25nIGVub3VnaCB0byBleGNlZWQgdGhl
+Cj4gPiBSVCBsaW1pdC4gWW91IGNhbiB2ZXJpZnkgdGhpcyBieSBzZXR0aW5nICdyZWFsdGltZS1z
+Y2hlZHVsaW5nID0gbm8nIGluCj4gPiAvZXRjL3B1bHNlL2RhZW1vbi5jb25mIGFuZCB0aGVuIHN0
+YXJ0aW5nIFBBLgo+ID4KPiA+IElmIHRoYXQgd29ya3MsCj4gCj4gWWVwIHRoYXQgd29ya3MsIGdv
+b2QgY2FsbC4KPiAKPiA+IHBlcmYgd2lsbCBsaWtlbHkgYmUgYWJsZSB0byBzaG93IHlvdSB3aGF0
+J3MgYmxvY2tpbmcuCj4gCj4gSSdtIG5vdCBhbGwgdGhhdCBmYW1pbGlhciB3aXRoIHBlcmYsIGNh
+biB5b3UgcHJvdmlkZSBtZSB3aXRoCj4gYSBwZXJmIGNtZGxpbmUgdG8gc3RhcnQgcHVsc2VhdWRp
+byB3aXRoIHdoaWNoIHdpbGwgZ2VuZXJhdGUgYSBsb2cKPiBmaWxlIHdpdGggdGhlIGluZm8geW91
+IGFyZSBsb29raW5nIGZvciA/CgpJJ20gbm8gcGVyZiBleHBlcnQgbXlzZWxmLCBidXQgSSdkIHN0
+YXJ0IHdpdGg6CgoxLiBzdWRvIHBlcmYgc2NoZWQgcmVjb3JkCjIuIFN0YXJ0IFBBIGluIGFub3Ro
+ZXIgdGFiCjMuIHN1ZG8gcGVyZiBzY2hlZCBsYXRlbmN5ID4gbGF0ZW5jeS50eHQKClRoZSBsYXRl
+bmN5IHJlcG9ydCBzaG91bGQgc2hvdyB5b3UgYXQgd2hhdCB0aW1lIHRoZSBtYXhpbXVtIGRlbGF5
+Cm9jY3VycmVkIGFuZCBob3cgbGFyZ2UgaXQgd2FzLgoKVGhpbmtpbmcgYWJvdXQgaXQsIGEgc2lt
+cGxlICdwZXJmIHJlY29yZCBwdWxzZWF1ZGlvJyBhbmQgJ3BlcmYgcmVwb3J0JwptaWdodCBhbHNv
+IHRlbGwgeW91IHdoZXJlIENQVSB0aW1lIHdhcyBzcGVudC4KCkNoZWVycywKQXJ1bgpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpwdWxzZWF1ZGlvLWRpc2N1
+c3MgbWFpbGluZyBsaXN0CnB1bHNlYXVkaW8tZGlzY3Vzc0BsaXN0cy5mcmVlZGVza3RvcC5vcmcK
+aHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9wdWxzZWF1ZGlv
+LWRpc2N1c3MK
