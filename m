@@ -1,11 +1,21 @@
-From: sutar.mounesh@gmail.com
-Subject: [PATCH v4 6/6] pcm:plug: save converter config
-Date: Tue, 21 Mar 2017 11:19:43 +0530
-Message-ID: <1490075383-3051-1-git-send-email-sutar.mounesh@gmail.com>
+From: Ian W MORRISON <ianwmorrison@gmail.com>
+Subject: Re: [PATCH] ALSA: x86: Remove CONFIG_SND_X86 as
+	unnecessary
+Date: Tue, 21 Mar 2017 17:24:13 +1100
+Message-ID: <CAFXWsS-Cis6L4AkWNrvxrj6x=X96CgaiTcDcwbsHqdD_m=_Skw@mail.gmail.com>
+References: <CAFXWsS_uOqZa0p2vn0QiF-Hn945LTp9wtmx6z7--uOcDiLzQOw@mail.gmail.com>
+ <s5hlgrzjiqb.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wr0-f193.google.com (mail-wr0-f193.google.com
+ [209.85.128.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DA28267000
+ for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 07:24:13 +0100 (CET)
+Received: by mail-wr0-f193.google.com with SMTP id u108so21081256wrb.2
+ for <alsa-devel@alsa-project.org>; Mon, 20 Mar 2017 23:24:13 -0700 (PDT)
+In-Reply-To: <s5hlgrzjiqb.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -15,56 +25,74 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Mounesh Sutar <sutar.mounesh@gmail.com>, alsa-devel@alsa-project.org, Andreas Pape <apape@de.adit-jv.com>, mounesh_sutar@mentor.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Andreas Pape <apape@de.adit-jv.com>
+On 21 March 2017 at 16:34, Takashi Iwai <tiwai@suse.de> wrote:
 
-Passed config is freed after call to open, thus it is invalid when
-trying to extract the converter name. So config entry is saved
-for later usage.
+> On Tue, 21 Mar 2017 06:28:07 +0100,
+> Ian W MORRISON wrote:
+> >
+> > Create a specific menu for the CONFIG_HDMI_LPE_AUDIO setting.
+> > Add additional narrative to further explain the function of the
+> > CONFIG_HDMI_LPE_AUDIO setting.
+> > Remove subsequently unnecessary CONFIG_SND_X86 setting.
+> >
+> > Signed-off-by: Ian W Morrison <linuxium@linuxium.com.au>
+> > ---
+> >  sound/x86/Kconfig | 11 +++--------
+> >  1 file changed, 3 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/sound/x86/Kconfig b/sound/x86/Kconfig
+> > index 84c8f8fc..a89d769 100644
+> > --- a/sound/x86/Kconfig
+> > +++ b/sound/x86/Kconfig
+> > @@ -1,10 +1,5 @@
+> > -menuconfig SND_X86
+> > -       tristate "X86 sound devices"
+> > -       depends on X86
+> > -       ---help---
+> > -         X86 sound devices that don't fall under SoC or PCI categories
+> > -
+> > -if SND_X86
+> > +menu "HDMI LPE for SoC audio support"
+> > +       comment "Required for HDMI audio support on Intel Baytrail and
+> > Cherrytrail"
+>
+> No...  This is doubly wrong.  First off, the section isn't only about
+> LPE audio, but it filters about x86-specific sound devices.  Second,
+> by your change, it misses the dependency on X86.
+>
+>
+Unfortunately I was trying to simplify things. I reviewed the original
+David Henningsson (Canonical) code (see  https://github.com/01org/
+baytrailaudio/blob/4014095b2a8fe60cd081bfcb0b6b0ecdcb36d1d5/hdmi_audio_
+20150319.patch) which is why I lost the X86 dependency. There was never a
+filter for x86-specific sound devices before so I assumed it could be
+removed as I thought it was created specifically for the HDMI LPE audio
+driver and was only adding complexity. As the only door I haven't tried so
+far is the one marked 'exit' I'm off there now. This patch can die quietly
+as what I was trying to do appears fundamentally unacceptable.
 
-Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
-Signed-off-by: Mounesh Sutar <sutar.mounesh@gmail.com>
 
-diff --git a/src/pcm/pcm_plug.c b/src/pcm/pcm_plug.c
-index 266707b..f1ae814 100644
---- a/src/pcm/pcm_plug.c
-+++ b/src/pcm/pcm_plug.c
-@@ -64,6 +64,10 @@ static int snd_pcm_plug_close(snd_pcm_t *pcm)
- 	snd_pcm_plug_t *plug = pcm->private_data;
- 	int err, result = 0;
- 	free(plug->ttable);
-+	if (plug->rate_converter) {
-+		snd_config_delete((snd_config_t*)plug->rate_converter);
-+		plug->rate_converter = NULL;
-+	}
- 	assert(plug->gen.slave == plug->req_slave);
- 	if (plug->gen.close_slave) {
- 		snd_pcm_unlink_hw_ptr(pcm, plug->req_slave);
-@@ -1108,7 +1112,6 @@ int snd_pcm_plug_open(snd_pcm_t **pcmp,
- 	plug->sformat = sformat;
- 	plug->schannels = schannels;
- 	plug->srate = srate;
--	plug->rate_converter = rate_converter;
- 	plug->gen.slave = plug->req_slave = slave;
- 	plug->gen.close_slave = close_slave;
- 	plug->route_policy = route_policy;
-@@ -1125,6 +1128,14 @@ int snd_pcm_plug_open(snd_pcm_t **pcmp,
- 	pcm->ops = &snd_pcm_plug_ops;
- 	pcm->fast_ops = slave->fast_ops;
- 	pcm->fast_op_arg = slave->fast_op_arg;
-+	if (rate_converter) {
-+		if ((err = snd_config_copy((snd_config_t**)&plug->rate_converter,
-+					   (snd_config_t *)rate_converter)) < 0) {
-+			snd_pcm_free(pcm);
-+			free(plug);
-+			return err;
-+		}
-+	}
- 	pcm->private_data = plug;
- 	pcm->poll_fd = slave->poll_fd;
- 	pcm->poll_events = slave->poll_events;
--- 
-2.7.4
+> I wonder whether the tristate of CONFIG_SND_X86 makes something bad
+> for Canonical's build.  Try to change to bool like below.  Does it
+> improve the situation?
+>
+>
+> Takashi
+>
+> -- 8< --
+> diff --git a/sound/x86/Kconfig b/sound/x86/Kconfig
+> index 84c8f8fc597c..707a8bd1725d 100644
+> --- a/sound/x86/Kconfig
+> +++ b/sound/x86/Kconfig
+> @@ -1,5 +1,5 @@
+>  menuconfig SND_X86
+> -       tristate "X86 sound devices"
+> +       bool "X86 sound devices"
+>         depends on X86
+>         ---help---
+>           X86 sound devices that don't fall under SoC or PCI categories
+>
