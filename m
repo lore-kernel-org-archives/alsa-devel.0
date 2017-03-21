@@ -1,20 +1,20 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: sound: another deadlock in snd_seq_pool_done
-Date: Tue, 21 Mar 2017 13:48:27 +0100
-Message-ID: <CACT4Y+b8RN+y5zYUAXD_rd1VjFD8DPBwmcr1Ec7Ba8qY4d5j-w@mail.gmail.com>
-References: <CACT4Y+aqqy8bZA1fFieifNxR2fAfFQQABcBHj801+u5ePV0URw@mail.gmail.com>
- <s5hr31qu8c6.wl-tiwai@suse.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 2/2] ASoC: codec: wm8960: Relax bit
+	clock computation
+Date: Tue, 21 Mar 2017 12:52:07 +0000
+Message-ID: <20170321125207.GX6986@localhost.localdomain>
+References: <1490090976-25877-1-git-send-email-daniel.baluta@nxp.com>
+ <1490090976-25877-3-git-send-email-daniel.baluta@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk0-f53.google.com (mail-vk0-f53.google.com
- [209.85.213.53])
- by alsa0.perex.cz (Postfix) with ESMTP id F34672671BA
- for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 13:48:48 +0100 (CET)
-Received: by mail-vk0-f53.google.com with SMTP id j64so78094315vkg.3
- for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 05:48:48 -0700 (PDT)
-In-Reply-To: <s5hr31qu8c6.wl-tiwai@suse.de>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 461352671BA
+ for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 13:51:03 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1490090976-25877-3-git-send-email-daniel.baluta@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,173 +24,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, syzkaller <syzkaller@googlegroups.com>, LKML <linux-kernel@vger.kernel.org>
+To: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: alsa-devel@alsa-project.org, shengjiu.wang@freescale.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, broonie@kernel.org, viorel.suman@nxp.com, mihai.serban@nxp.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 21, 2017 at 1:23 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Sat, 04 Mar 2017 17:31:21 +0100,
-> Dmitry Vyukov wrote:
->>
->> Hello,
->>
->> The following program creates processes deadlocked in snd_seq_pool_done:
->>
->> https://gist.githubusercontent.com/dvyukov/97efc9cb6d63b1b2c7b737b82cc8b0d6/raw/3546b133ae0b2d3e1190ae7c1f4e240ce7ce132e/gistfile1.txt
->>
->> After few seconds I get:
->>
->> # ps afxu | grep a.out
->> root      8660  2.0  0.0      0     0 pts/0    Zl   16:27   0:00
->> [a.out] <defunct>
->>
->> # kill -9 8660
->>
->> # cat /proc/8660/status
->> Name: a.out
->> State: Z (zombie)
->> Tgid: 8660
->> Ngid: 0
->> Pid: 8660
->> PPid: 1
->> TracerPid: 0
->> Uid: 0 0 0 0
->> Gid: 0 0 0 0
->> FDSize: 0
->> Groups: 0
->> NStgid: 8660
->> NSpid: 8660
->> NSpgid: 8660
->> NSsid: 2971
->> Threads: 2
->> SigQ: 1/3304
->> SigPnd: 0000000000000000
->> ShdPnd: 0000000000000100
->> SigBlk: 0000000000000000
->> SigIgn: 0000000180000000
->> SigCgt: 0000000000000440
->> CapInh: 0000000000000000
->> CapPrm: 0000003fffffffff
->> CapEff: 0000003fffffffff
->> CapBnd: 0000003fffffffff
->> CapAmb: 0000000000000000
->> NoNewPrivs: 0
->> Seccomp: 0
->> Cpus_allowed: f
->> Cpus_allowed_list: 0-3
->> Mems_allowed: 00000000,00000001
->> Mems_allowed_list: 0
->> voluntary_ctxt_switches: 12
->> nonvoluntary_ctxt_switches: 0
->>
->> # cat /proc/8660/task/*/stack
->> [<ffffffff835406db>] snd_seq_pool_done+0x31b/0x620
->> sound/core/seq/seq_memory.c:436
->> [<ffffffff8353a11e>] snd_seq_ioctl_set_client_pool+0x1ae/0x600
->> sound/core/seq/seq_clientmgr.c:1836
->> [<ffffffff835382ba>] snd_seq_ioctl+0x2da/0x4d0
->> sound/core/seq/seq_clientmgr.c:2130
->> [<ffffffff81aced2f>] vfs_ioctl fs/ioctl.c:45 [inline]
->> [<ffffffff81aced2f>] do_vfs_ioctl+0x1bf/0x1790 fs/ioctl.c:685
->> [<ffffffff81ad038f>] SYSC_ioctl fs/ioctl.c:700 [inline]
->> [<ffffffff81ad038f>] SyS_ioctl+0x8f/0xc0 fs/ioctl.c:691
->> [<ffffffff8457dc41>] entry_SYSCALL_64_fastpath+0x1f/0xc2
->
-> Now I've been trying to reproduce the hang, alas it didn't happen on
-> my VM by some reason.
->
-> In anyway, below is an untested fix for possible races against
-> snd_seq_pool_done() and cell insertions.  Could you check whether it
-> cures your issue?
-
-
-I reproduced it again within 10 second. Then restarted kernel with
-this patch and now it runs for 10 minutes without any hanged
-processes.
-
-Tested-by: Dmitry Vyukov <dvyukov@google.com>
-
-Thanks!
-
-
+On Tue, Mar 21, 2017 at 12:09:36PM +0200, Daniel Baluta wrote:
+> WM8960 derives bit clock from sysclock using BCLKDIV[3:0] of R8
+> clocking register (See WM8960 datasheet, page 71).
+> 
+> There are use cases, like this:
+> aplay -Dhw:0,0 -r 48000 -c 1 -f S20_3LE -t raw audio48k20b_3LE1c.pcm
+> 
+> where no BCLKDIV applied to sysclock can give us the exact requested
+> bitclk, so driver fails to configure clocking and aplay fails to run.
+> 
+> Fix this by relaxing bitclk computation, so that when no exact value
+> can be derived from sysclk pick the closest value greater than
+> expected bitclk.
+> 
+> Suggested-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 > ---
-> diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-> index 4c935202ce23..f3b1d7f50b81 100644
-> --- a/sound/core/seq/seq_clientmgr.c
-> +++ b/sound/core/seq/seq_clientmgr.c
-> @@ -1832,6 +1832,7 @@ static int snd_seq_ioctl_set_client_pool(struct snd_seq_client *client,
->              info->output_pool != client->pool->size)) {
->                 if (snd_seq_write_pool_allocated(client)) {
->                         /* remove all existing cells */
-> +                       snd_seq_pool_mark_closing(client->pool);
->                         snd_seq_queue_client_leave_cells(client->number);
->                         snd_seq_pool_done(client->pool);
->                 }
-> diff --git a/sound/core/seq/seq_fifo.c b/sound/core/seq/seq_fifo.c
-> index 448efd4e980e..33980d1c8037 100644
-> --- a/sound/core/seq/seq_fifo.c
-> +++ b/sound/core/seq/seq_fifo.c
-> @@ -72,6 +72,9 @@ void snd_seq_fifo_delete(struct snd_seq_fifo **fifo)
->                 return;
->         *fifo = NULL;
->
-> +       if (f->pool)
-> +               snd_seq_pool_mark_closing(f->pool);
-> +
->         snd_seq_fifo_clear(f);
->
->         /* wake up clients if any */
-> diff --git a/sound/core/seq/seq_memory.c b/sound/core/seq/seq_memory.c
-> index 1a1acf3ddda4..d4c61ec9be13 100644
-> --- a/sound/core/seq/seq_memory.c
-> +++ b/sound/core/seq/seq_memory.c
-> @@ -415,6 +415,18 @@ int snd_seq_pool_init(struct snd_seq_pool *pool)
->         return 0;
->  }
->
-> +/* refuse the further insertion to the pool */
-> +void snd_seq_pool_mark_closing(struct snd_seq_pool *pool)
-> +{
-> +       unsigned long flags;
-> +
-> +       if (snd_BUG_ON(!pool))
-> +               return;
-> +       spin_lock_irqsave(&pool->lock, flags);
-> +       pool->closing = 1;
-> +       spin_unlock_irqrestore(&pool->lock, flags);
-> +}
-> +
->  /* remove events */
->  int snd_seq_pool_done(struct snd_seq_pool *pool)
->  {
-> @@ -425,10 +437,6 @@ int snd_seq_pool_done(struct snd_seq_pool *pool)
->                 return -EINVAL;
->
->         /* wait for closing all threads */
-> -       spin_lock_irqsave(&pool->lock, flags);
-> -       pool->closing = 1;
-> -       spin_unlock_irqrestore(&pool->lock, flags);
-> -
->         if (waitqueue_active(&pool->output_sleep))
->                 wake_up(&pool->output_sleep);
->
-> @@ -485,6 +493,7 @@ int snd_seq_pool_delete(struct snd_seq_pool **ppool)
->         *ppool = NULL;
->         if (pool == NULL)
->                 return 0;
-> +       snd_seq_pool_mark_closing(pool);
->         snd_seq_pool_done(pool);
->         kfree(pool);
->         return 0;
-> diff --git a/sound/core/seq/seq_memory.h b/sound/core/seq/seq_memory.h
-> index 4a2ec779b8a7..32f959c17786 100644
-> --- a/sound/core/seq/seq_memory.h
-> +++ b/sound/core/seq/seq_memory.h
-> @@ -84,6 +84,7 @@ static inline int snd_seq_total_cells(struct snd_seq_pool *pool)
->  int snd_seq_pool_init(struct snd_seq_pool *pool);
->
->  /* done pool - free events */
-> +void snd_seq_pool_mark_closing(struct snd_seq_pool *pool);
->  int snd_seq_pool_done(struct snd_seq_pool *pool);
->
->  /* create pool */
+> Changes since v1:
+> 	* use a marker to check if a match is found
+> 	* didn't removed PLL as Charles suggested because there is
+> 	a special PLL mode which explictly uses PLL. We could start
+> 	a discussion on not using PLL when deriving bitclk, but this
+> 	is to be done in another patch.
+> 
+
+Could you elaborate on this a little more am I not sure I follow
+100%? There is a mode which explictly requires the PLL to be used
+(WM8960_SYSCLK_PLL) but in that case your wm8960_configure_sysclk
+code will not be called so I don't see what is causing that to have
+an effect on this patch?
+
+Thanks,
+Charles
