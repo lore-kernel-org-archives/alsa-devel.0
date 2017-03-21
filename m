@@ -1,32 +1,18 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 1/4] dt-bindings: Document the dmas and
- dma-names properties for bcm2835-analog-audio
-Date: Tue, 21 Mar 2017 12:59:57 -0500
-Message-ID: <CAL_JsqJEHiuLTvUPZ3+jamzQ5sarTGokRuLdBap9g+xPvPvryA@mail.gmail.com>
-References: <20170312063820.19313-1-mzoran@crowfest.net>
- <20170320165009.ylrohjwettdy2lgf@rob-hp-laptop>
- <1490029654.11105.7.camel@crowfest.net>
- <CAL_JsqJrLjqobGEWuvrOrU_wXmADUTAXbDRTaE-ukpE6sHRYLQ@mail.gmail.com>
- <1490103037.11105.30.camel@crowfest.net>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: Update bxt_da7219_max98357a to
+	add a new" to the asoc tree
+Date: Tue, 21 Mar 2017 18:45:21 +0000
+Message-ID: <E1cqOmX-00014I-LE@debutante>
+References: <1489620505-24841-1-git-send-email-harshapriya.n@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 3637F267194
- for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 19:00:28 +0100 (CET)
-Received: from mail.kernel.org (localhost [127.0.0.1])
- by mail.kernel.org (Postfix) with ESMTP id F2E3E2035D
- for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 18:00:20 +0000 (UTC)
-Received: from mail-yw0-f176.google.com (mail-yw0-f176.google.com
- [209.85.161.176])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id 9AFE4203C4
- for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 18:00:18 +0000 (UTC)
-Received: by mail-yw0-f176.google.com with SMTP id v76so115071592ywg.0
- for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 11:00:18 -0700 (PDT)
-In-Reply-To: <1490103037.11105.30.camel@crowfest.net>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3754B267186
+ for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 19:45:35 +0100 (CET)
+In-Reply-To: <1489620505-24841-1-git-send-email-harshapriya.n@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -36,89 +22,189 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Michael Zoran <mzoran@crowfest.net>
-Cc: Mark Rutland <mark.rutland@arm.com>, Stefan Wahren <stefan.wahren@i2se.com>, Linux-ALSA <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Eric Anholt <eric@anholt.net>, linux-rpi-kernel@lists.infradead.org
+Cc: vinod.koul@intel.com, harshapriya.n@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, sathyanarayana.nujella@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 21, 2017 at 8:30 AM, Michael Zoran <mzoran@crowfest.net> wrote:
-> On Tue, 2017-03-21 at 07:53 -0500, Rob Herring wrote:
->> On Mon, Mar 20, 2017 at 12:07 PM, Michael Zoran <mzoran@crowfest.net>
->> wrote:
->> > On Mon, 2017-03-20 at 11:50 -0500, Rob Herring wrote:
->> > > On Sat, Mar 11, 2017 at 10:38:17PM -0800, Michael Zoran wrote:
->> > > > Add documentation for the DMA properties required when using
->> > > > the
->> > > > PWM controller of the bcm2835 for analog audio output.
->> > > >
->> > > > Signed-off-by: Michael Zoran <mzoran@crowfest.net>
->> > > > ---
->> > > >  Documentation/devicetree/bindings/pwm/pwm-bcm2835.txt | 9
->> > > > ++++++++-
->> > > >  1 file changed, 8 insertions(+), 1 deletion(-)
->> > > >
->> > > > diff --git a/Documentation/devicetree/bindings/pwm/pwm-
->> > > > bcm2835.txt
->> > > > b/Documentation/devicetree/bindings/pwm/pwm-bcm2835.txt
->> > > > index cf573e85b11d..08fc06fc083a 100644
->> > > > --- a/Documentation/devicetree/bindings/pwm/pwm-bcm2835.txt
->> > > > +++ b/Documentation/devicetree/bindings/pwm/pwm-bcm2835.txt
->> > > > @@ -1,14 +1,21 @@
->> > > >  BCM2835 PWM controller (Raspberry Pi controller)
->> > > >
->> > > >  Required properties:
->> > > > -- compatible: should be "brcm,bcm2835-pwm"
->> > > > +- compatible: should be "brcm,bcm2835-pwm" or "brcm,bcm2835-
->> > > > analog-audio"
->> > >
->> > > Compatibles are not for selecting usage modes. You should
->> > > describe
->> > > the
->> > > connection to the pwm that makes it an audio output rather than
->> > > change
->> > > the compatible.
->> > >
->> >
->> > Cool, that's good to know that someone let me know after all this
->> > time.
->>
->> Well, there are more submitters than reviewers and maintainers and we
->> have travel and vacation (aka lives).
->>
->> >  And please tell how if DT nodes are an exact documentation of the
->> > hardware how are virtualized DT nodes like firmware getting into
->> > the
->> > DTs?
->>
->> DT is software's view of the hardware. Firmware provides interfaces
->> to
->> the OS just like a h/w device does. And just like h/w devices, the
->> firmware is not discoverable and needs to be described. Originally,
->> DT
->> was the firmware's interface to the OS with OpenFirmware.
->>
->> Rob
->
-> OK, I understand better know.  So it sounds like what I really want to
-> do is be able to keep the existing DT as much as possible but load an
-> alternative driver.   Presumably at the request of the end user some
-> how.
->
-> I'm not sure something like that is supported in the linux kernel.  For
-> this specific example, I don't know of any reason I couldn't write a
-> replacement driver for the existing PWM control that does both audio
-> and standard PWM, but I've heard replacing existing drivers is really
-> accepted and having alternative drivers isn't something that's
-> supported.
+The patch
 
-2 drivers for the same compatible would be a bit of a problem without
-any other information to tell one of the drivers not to probe.
+   ASoC: Intel: Update bxt_da7219_max98357a to add a new
 
-What I had in mind was adding a pwm-audio node (describing what's
-connected to the PWM output) similar to what we have for
-pwm-backlight. We already have pwm-beeper as well. In theory, then a
-pwm-audio driver could work with any PWM. In reality, the overhead
-would be too high for dumb PWMs. You would need some batching support
-in the PWM subsystem in order to use DMA effectively, and I don't know
-if the PWM subsystem supports that currently.
+has been applied to the asoc tree at
 
-Rob
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From d7fba9dcf6cd74cb8a8ab1c4c2629a3f7df00bc9 Mon Sep 17 00:00:00 2001
+From: Harsha Priya <harshapriya.n@intel.com>
+Date: Wed, 15 Mar 2017 16:28:25 -0700
+Subject: [PATCH] ASoC: Intel: Update bxt_da7219_max98357a to add a new
+
+This patch adds a platform clock widget to turn off the clock only when
+both headset capture and headset playback are not in use. This removes
+turning off the clock in hw_free so that the clock is on when
+either capture or playback of headset is in progress.
+
+Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
+Signed-off-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/boards/bxt_da7219_max98357a.c | 97 +++++++++++++++------------
+ 1 file changed, 53 insertions(+), 44 deletions(-)
+
+diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+index 2cda06cde4d1..3a8c4d954a91 100644
+--- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
++++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+@@ -55,6 +55,54 @@ enum {
+ 	BXT_DPCM_AUDIO_HDMI3_PB,
+ };
+ 
++static inline struct snd_soc_dai *bxt_get_codec_dai(struct snd_soc_card *card)
++{
++	struct snd_soc_pcm_runtime *rtd;
++
++	list_for_each_entry(rtd, &card->rtd_list, list) {
++
++		if (!strncmp(rtd->codec_dai->name, BXT_DIALOG_CODEC_DAI,
++			     strlen(BXT_DIALOG_CODEC_DAI)))
++			return rtd->codec_dai;
++	}
++
++	return NULL;
++}
++
++static int platform_clock_control(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *k, int  event)
++{
++	int ret = 0;
++	struct snd_soc_dapm_context *dapm = w->dapm;
++	struct snd_soc_card *card = dapm->card;
++	struct snd_soc_dai *codec_dai;
++
++	codec_dai = bxt_get_codec_dai(card);
++	if (!codec_dai) {
++		dev_err(card->dev, "Codec dai not found; Unable to set/unset codec pll\n");
++		return -EIO;
++	}
++
++	if (SND_SOC_DAPM_EVENT_OFF(event)) {
++		ret = snd_soc_dai_set_pll(codec_dai, 0,
++			DA7219_SYSCLK_MCLK, 0, 0);
++		if (ret)
++			dev_err(card->dev, "failed to stop PLL: %d\n", ret);
++	} else if(SND_SOC_DAPM_EVENT_ON(event)) {
++		ret = snd_soc_dai_set_sysclk(codec_dai,
++                        DA7219_CLKSRC_MCLK, 19200000, SND_SOC_CLOCK_IN);
++		if (ret)
++			dev_err(card->dev, "can't set codec sysclk configuration\n");
++
++		ret = snd_soc_dai_set_pll(codec_dai, 0,
++			DA7219_SYSCLK_PLL_SRM, 0, DA7219_PLL_FREQ_OUT_98304);
++		if (ret)
++			dev_err(card->dev, "failed to start PLL: %d\n", ret);
++	}
++
++	return ret;
++}
++
+ static const struct snd_kcontrol_new broxton_controls[] = {
+ 	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
+ 	SOC_DAPM_PIN_SWITCH("Headset Mic"),
+@@ -69,6 +117,8 @@ static const struct snd_soc_dapm_widget broxton_widgets[] = {
+ 	SND_SOC_DAPM_SPK("HDMI1", NULL),
+ 	SND_SOC_DAPM_SPK("HDMI2", NULL),
+ 	SND_SOC_DAPM_SPK("HDMI3", NULL),
++	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
++			platform_clock_control,	SND_SOC_DAPM_POST_PMD|SND_SOC_DAPM_PRE_PMU),
+ };
+ 
+ static const struct snd_soc_dapm_route broxton_map[] = {
+@@ -109,6 +159,9 @@ static const struct snd_soc_dapm_route broxton_map[] = {
+ 	/* DMIC */
+ 	{"dmic01_hifi", NULL, "DMIC01 Rx"},
+ 	{"DMIC01 Rx", NULL, "DMIC AIF"},
++
++	{ "Headphone Jack", NULL, "Platform Clock" },
++	{ "Headset Mic", NULL, "Platform Clock" },
+ };
+ 
+ static int broxton_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
+@@ -243,49 +296,6 @@ static const struct snd_soc_ops broxton_da7219_fe_ops = {
+ 	.startup = bxt_fe_startup,
+ };
+ 
+-static int broxton_da7219_hw_params(struct snd_pcm_substream *substream,
+-				struct snd_pcm_hw_params *params)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-	int ret;
+-
+-	ret = snd_soc_dai_set_sysclk(codec_dai,
+-			DA7219_CLKSRC_MCLK, 19200000, SND_SOC_CLOCK_IN);
+-	if (ret < 0)
+-		dev_err(codec_dai->dev, "can't set codec sysclk configuration\n");
+-
+-	ret = snd_soc_dai_set_pll(codec_dai, 0,
+-			DA7219_SYSCLK_PLL_SRM, 0, DA7219_PLL_FREQ_OUT_98304);
+-	if (ret < 0) {
+-		dev_err(codec_dai->dev, "failed to start PLL: %d\n", ret);
+-		return -EIO;
+-	}
+-
+-	return ret;
+-}
+-
+-static int broxton_da7219_hw_free(struct snd_pcm_substream *substream)
+-{
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-	int ret;
+-
+-	ret = snd_soc_dai_set_pll(codec_dai, 0,
+-			DA7219_SYSCLK_MCLK, 0, 0);
+-	if (ret < 0) {
+-		dev_err(codec_dai->dev, "failed to stop PLL: %d\n", ret);
+-		return -EIO;
+-	}
+-
+-	return ret;
+-}
+-
+-static const struct snd_soc_ops broxton_da7219_ops = {
+-	.hw_params = broxton_da7219_hw_params,
+-	.hw_free = broxton_da7219_hw_free,
+-};
+-
+ static int broxton_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+ 			struct snd_pcm_hw_params *params)
+ {
+@@ -467,7 +477,6 @@ static struct snd_soc_dai_link broxton_dais[] = {
+ 			SND_SOC_DAIFMT_CBS_CFS,
+ 		.ignore_pmdown_time = 1,
+ 		.be_hw_params_fixup = broxton_ssp_fixup,
+-		.ops = &broxton_da7219_ops,
+ 		.dpcm_playback = 1,
+ 		.dpcm_capture = 1,
+ 	},
+-- 
+2.11.0
