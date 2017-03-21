@@ -1,18 +1,15 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: Re: [PATCH v3] ASoC: rt286: fix headphone click/crack
-	noise on Dell XPS 9343 I2S mode
-Date: Tue, 21 Mar 2017 03:07:25 +0000
-Message-ID: <ABFD875FF5FB574BA706497D987D48D701C4E587@RTITEXTEMP.realtek.com.tw>
-References: <20170320035831.10762-1-kai.heng.feng@canonical.com>
+From: fuweix.tang@intel.com
+Subject: [PATCH v2 0/3] ucm-conf: Add intel UCM conf files to
+	alsa-ucm-conf repo
+Date: Tue, 21 Mar 2017 11:15:30 +0800
+Message-ID: <cover.1490064444.git.fuweix.tang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 50F92266F51
- for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 04:07:30 +0100 (CET)
-In-Reply-To: <20170320035831.10762-1-kai.heng.feng@canonical.com>
-Content-Language: zh-TW
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 730D8266F51
+ for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 04:15:41 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,36 +19,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kai-Heng Feng <kai.heng.feng@canonical.com>, "broonie@kernel.org" <broonie@kernel.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, Fuwei Tang <fuweix.tang@intel.com>, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Kai-Heng Feng [mailto:kai.heng.feng@canonical.com]
-> Sent: Monday, March 20, 2017 11:59 AM
-> To: broonie@kernel.org
-> Cc: lgirdwood@gmail.com; Bard Liao; Oder Chiou;
-> alsa-devel@alsa-project.org; linux-kernel@vger.kernel.org; Kai-Heng Feng
-> Subject: [PATCH v3] ASoC: rt286: fix headphone click/crack noise on Dell XPS
-> 9343 I2S mode
-> 
-> +	switch (event) {
-> +	case SND_SOC_DAPM_PRE_PMD:
-> +	case SND_SOC_DAPM_POST_PMD:
-> +	case SND_SOC_DAPM_POST_PMU:
-> +		snd_soc_write(codec, RT286_SET_AMP_GAIN_HPO,
-> AMP_OUT_MUTE);
-> +		break;
-> +	case SND_SOC_DAPM_PRE_PMU:
-> +		snd_soc_write(codec, RT286_SET_AMP_GAIN_HPO,
-> AMP_OUT_UNMUTE);
-> +		break;
+From: Fuwei Tang <fuweix.tang@intel.com>
 
-Besides Mark's comment, I have question here. It seems you want to mute
-HPO before "HP Power" is powered up and after "HP Power" is powered down.
-But "HPO L" and "HPO R" are autodisable. And "HP Power" is only connect to
-"HPO L" and "HPO R". From my understanding, HPO will mute if "HP Power"
-is powered down. Any specific reason for muting HPO again before "HP Power"
-is powered up? Will HPO be unmuted before "HP Power" is powered up on your
-system? Or should the event be associated with "LDO1"? Which power will
-cause the click noise?
+Add the intel UCM configs to a dedicated UCM conf repo and release them using
+the BSD license.
+The other non intel UCM files can be moved over when there is agreement with the
+file authors, but in the mean time they will stay in alsa-lib.
+The configs are moved from alsa-lib repo. The original authorship and commit
+message of all config files will be reserved.
+
+Fuwei Tang (1):
+  ucm-conf: Set up for installation
+
+Vinod Koul (2):
+  ucm-conf: broxton: add broxton-rt298 conf files
+  ucm-conf: skylake: add skylake-rt286 conf files
+
+ .gitignore                       |  12 ++++
+ ChangeLog                        |   1 +
+ INSTALL                          |   1 +
+ Makefile.am                      |   1 +
+ broxton-rt298/Hdmi1              |  22 +++++++
+ broxton-rt298/Hdmi2              |  14 +++++
+ broxton-rt298/HiFi               | 129 +++++++++++++++++++++++++++++++++++++++
+ broxton-rt298/Makefile.am        |   4 ++
+ broxton-rt298/broxton-rt298.conf |  58 ++++++++++++++++++
+ configure.ac                     |  24 ++++++++
+ gitcompile                       |   5 ++
+ skylake-rt286/Hdmi1              |  20 ++++++
+ skylake-rt286/Hdmi2              |  20 ++++++
+ skylake-rt286/HiFi               | 129 +++++++++++++++++++++++++++++++++++++++
+ skylake-rt286/Makefile.am        |   4 ++
+ skylake-rt286/skylake-rt286.conf |  60 ++++++++++++++++++
+ 16 files changed, 504 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 ChangeLog
+ create mode 120000 INSTALL
+ create mode 100644 Makefile.am
+ create mode 100644 broxton-rt298/Hdmi1
+ create mode 100644 broxton-rt298/Hdmi2
+ create mode 100644 broxton-rt298/HiFi
+ create mode 100644 broxton-rt298/Makefile.am
+ create mode 100644 broxton-rt298/broxton-rt298.conf
+ create mode 100644 configure.ac
+ create mode 100755 gitcompile
+ create mode 100644 skylake-rt286/Hdmi1
+ create mode 100644 skylake-rt286/Hdmi2
+ create mode 100644 skylake-rt286/HiFi
+ create mode 100644 skylake-rt286/Makefile.am
+ create mode 100644 skylake-rt286/skylake-rt286.conf
+
+-- 
+2.7.4
