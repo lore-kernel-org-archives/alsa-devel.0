@@ -1,20 +1,20 @@
-From: Michael Zoran <mzoran@crowfest.net>
-Subject: Re: [PATCH 1/4] dt-bindings: Document the dmas and
- dma-names properties for bcm2835-analog-audio
-Date: Tue, 21 Mar 2017 06:30:37 -0700
-Message-ID: <1490103037.11105.30.camel@crowfest.net>
-References: <20170312063820.19313-1-mzoran@crowfest.net>
- <20170320165009.ylrohjwettdy2lgf@rob-hp-laptop>
- <1490029654.11105.7.camel@crowfest.net>
- <CAL_JsqJrLjqobGEWuvrOrU_wXmADUTAXbDRTaE-ukpE6sHRYLQ@mail.gmail.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH] ASoC: STI: Fix null ptr deference in IRQ
+	handler
+Date: Tue, 21 Mar 2017 14:31:50 +0100
+Message-ID: <1ae45d7e-8bac-d9da-0be8-c3c251b03e52@st.com>
+References: <1490029755-15746-1-git-send-email-arnaud.pouliquen@st.com>
+ <s5htw6nkfod.wl-tiwai@suse.de> <757acc2d-8586-3ed9-6f85-221458686e48@st.com>
+ <s5ha88evrsf.wl-tiwai@suse.de> <825b0c73-01be-6e59-7bad-009ed0c94e94@st.com>
+ <s5hinn2u6ab.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gw.crowfest.net (gw.crowfest.net [52.42.241.221])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E2A72671BA
- for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 14:30:39 +0100 (CET)
-In-Reply-To: <CAL_JsqJrLjqobGEWuvrOrU_wXmADUTAXbDRTaE-ukpE6sHRYLQ@mail.gmail.com>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 5707A2671BA
+ for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 14:31:52 +0100 (CET)
+In-Reply-To: <s5hinn2u6ab.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,57 +24,223 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, Stefan Wahren <stefan.wahren@i2se.com>, Linux-ALSA <alsa-devel@alsa-project.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Eric Anholt <eric@anholt.net>, linux-rpi-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "broonie@kernel.org" <broonie@kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "kernel@stlinux.com" <kernel@stlinux.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAyMDE3LTAzLTIxIGF0IDA3OjUzIC0wNTAwLCBSb2IgSGVycmluZyB3cm90ZToKPiBP
-biBNb24sIE1hciAyMCwgMjAxNyBhdCAxMjowNyBQTSwgTWljaGFlbCBab3JhbiA8bXpvcmFuQGNy
-b3dmZXN0Lm5ldD4KPiB3cm90ZToKPiA+IE9uIE1vbiwgMjAxNy0wMy0yMCBhdCAxMTo1MCAtMDUw
-MCwgUm9iIEhlcnJpbmcgd3JvdGU6Cj4gPiA+IE9uIFNhdCwgTWFyIDExLCAyMDE3IGF0IDEwOjM4
-OjE3UE0gLTA4MDAsIE1pY2hhZWwgWm9yYW4gd3JvdGU6Cj4gPiA+ID4gQWRkIGRvY3VtZW50YXRp
-b24gZm9yIHRoZSBETUEgcHJvcGVydGllcyByZXF1aXJlZCB3aGVuIHVzaW5nCj4gPiA+ID4gdGhl
-Cj4gPiA+ID4gUFdNIGNvbnRyb2xsZXIgb2YgdGhlIGJjbTI4MzUgZm9yIGFuYWxvZyBhdWRpbyBv
-dXRwdXQuCj4gPiA+ID4gCj4gPiA+ID4gU2lnbmVkLW9mZi1ieTogTWljaGFlbCBab3JhbiA8bXpv
-cmFuQGNyb3dmZXN0Lm5ldD4KPiA+ID4gPiAtLS0KPiA+ID4gPiDCoERvY3VtZW50YXRpb24vZGV2
-aWNldHJlZS9iaW5kaW5ncy9wd20vcHdtLWJjbTI4MzUudHh0IHwgOQo+ID4gPiA+ICsrKysrKysr
-LQo+ID4gPiA+IMKgMSBmaWxlIGNoYW5nZWQsIDggaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigt
-KQo+ID4gPiA+IAo+ID4gPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
-YmluZGluZ3MvcHdtL3B3bS0KPiA+ID4gPiBiY20yODM1LnR4dAo+ID4gPiA+IGIvRG9jdW1lbnRh
-dGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3B3bS9wd20tYmNtMjgzNS50eHQKPiA+ID4gPiBpbmRl
-eCBjZjU3M2U4NWIxMWQuLjA4ZmMwNmZjMDgzYSAxMDA2NDQKPiA+ID4gPiAtLS0gYS9Eb2N1bWVu
-dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcHdtL3B3bS1iY20yODM1LnR4dAo+ID4gPiA+ICsr
-KyBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9wd20vcHdtLWJjbTI4MzUudHh0
-Cj4gPiA+ID4gQEAgLTEsMTQgKzEsMjEgQEAKPiA+ID4gPiDCoEJDTTI4MzUgUFdNIGNvbnRyb2xs
-ZXIgKFJhc3BiZXJyeSBQaSBjb250cm9sbGVyKQo+ID4gPiA+IAo+ID4gPiA+IMKgUmVxdWlyZWQg
-cHJvcGVydGllczoKPiA+ID4gPiAtLSBjb21wYXRpYmxlOiBzaG91bGQgYmUgImJyY20sYmNtMjgz
-NS1wd20iCj4gPiA+ID4gKy0gY29tcGF0aWJsZTogc2hvdWxkIGJlICJicmNtLGJjbTI4MzUtcHdt
-IiBvciAiYnJjbSxiY20yODM1LQo+ID4gPiA+IGFuYWxvZy1hdWRpbyIKPiA+ID4gCj4gPiA+IENv
-bXBhdGlibGVzIGFyZSBub3QgZm9yIHNlbGVjdGluZyB1c2FnZSBtb2Rlcy4gWW91IHNob3VsZAo+
-ID4gPiBkZXNjcmliZQo+ID4gPiB0aGUKPiA+ID4gY29ubmVjdGlvbiB0byB0aGUgcHdtIHRoYXQg
-bWFrZXMgaXQgYW4gYXVkaW8gb3V0cHV0IHJhdGhlciB0aGFuCj4gPiA+IGNoYW5nZQo+ID4gPiB0
-aGUgY29tcGF0aWJsZS4KPiA+ID4gCj4gPiAKPiA+IENvb2wsIHRoYXQncyBnb29kIHRvIGtub3cg
-dGhhdCBzb21lb25lIGxldCBtZSBrbm93IGFmdGVyIGFsbCB0aGlzCj4gPiB0aW1lLgo+IAo+IFdl
-bGwsIHRoZXJlIGFyZSBtb3JlIHN1Ym1pdHRlcnMgdGhhbiByZXZpZXdlcnMgYW5kIG1haW50YWlu
-ZXJzIGFuZCB3ZQo+IGhhdmUgdHJhdmVsIGFuZCB2YWNhdGlvbiAoYWthIGxpdmVzKS4KPiAKPiA+
-IMKgQW5kIHBsZWFzZSB0ZWxsIGhvdyBpZiBEVCBub2RlcyBhcmUgYW4gZXhhY3QgZG9jdW1lbnRh
-dGlvbiBvZiB0aGUKPiA+IGhhcmR3YXJlIGhvdyBhcmUgdmlydHVhbGl6ZWQgRFQgbm9kZXMgbGlr
-ZSBmaXJtd2FyZSBnZXR0aW5nIGludG8KPiA+IHRoZQo+ID4gRFRzPwo+IAo+IERUIGlzIHNvZnR3
-YXJlJ3MgdmlldyBvZiB0aGUgaGFyZHdhcmUuIEZpcm13YXJlIHByb3ZpZGVzIGludGVyZmFjZXMK
-PiB0bwo+IHRoZSBPUyBqdXN0IGxpa2UgYSBoL3cgZGV2aWNlIGRvZXMuIEFuZCBqdXN0IGxpa2Ug
-aC93IGRldmljZXMsIHRoZQo+IGZpcm13YXJlIGlzIG5vdCBkaXNjb3ZlcmFibGUgYW5kIG5lZWRz
-IHRvIGJlIGRlc2NyaWJlZC4gT3JpZ2luYWxseSwKPiBEVAo+IHdhcyB0aGUgZmlybXdhcmUncyBp
-bnRlcmZhY2UgdG8gdGhlIE9TIHdpdGggT3BlbkZpcm13YXJlLgo+IAo+IFJvYgoKT0ssIEkgdW5k
-ZXJzdGFuZCBiZXR0ZXIga25vdy4gIFNvIGl0IHNvdW5kcyBsaWtlIHdoYXQgSSByZWFsbHkgd2Fu
-dCB0bwpkbyBpcyBiZSBhYmxlIHRvIGtlZXAgdGhlIGV4aXN0aW5nIERUIGFzIG11Y2ggYXMgcG9z
-c2libGUgYnV0IGxvYWQgYW4KYWx0ZXJuYXRpdmUgZHJpdmVyLiAgIFByZXN1bWFibHkgYXQgdGhl
-IHJlcXVlc3Qgb2YgdGhlIGVuZCB1c2VyIHNvbWUKaG93LgoKSSdtIG5vdCBzdXJlIHNvbWV0aGlu
-ZyBsaWtlIHRoYXQgaXMgc3VwcG9ydGVkIGluIHRoZSBsaW51eCBrZXJuZWwuICBGb3IKdGhpcyBz
-cGVjaWZpYyBleGFtcGxlLCBJIGRvbid0IGtub3cgb2YgYW55IHJlYXNvbiBJIGNvdWxkbid0IHdy
-aXRlIGEKcmVwbGFjZW1lbnQgZHJpdmVyIGZvciB0aGUgZXhpc3RpbmcgUFdNIGNvbnRyb2wgdGhh
-dCBkb2VzIGJvdGggYXVkaW8KYW5kIHN0YW5kYXJkIFBXTSwgYnV0IEkndmUgaGVhcmQgcmVwbGFj
-aW5nIGV4aXN0aW5nIGRyaXZlcnMgaXMgcmVhbGx5CmFjY2VwdGVkIGFuZCBoYXZpbmcgYWx0ZXJu
-YXRpdmUgZHJpdmVycyBpc24ndCBzb21ldGhpbmcgdGhhdCdzCnN1cHBvcnRlZC4KCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+
+On 03/21/2017 02:07 PM, Takashi Iwai wrote:
+> On Tue, 21 Mar 2017 13:55:43 +0100,
+> Arnaud Pouliquen wrote:
+>>
+>>
+>>
+>> On 03/21/2017 11:38 AM, Takashi Iwai wrote:
+>>> On Tue, 21 Mar 2017 11:32:51 +0100,
+>>> Arnaud Pouliquen wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 03/20/2017 06:42 PM, Takashi Iwai wrote:
+>>>>> On Mon, 20 Mar 2017 18:09:15 +0100,
+>>>>> Arnaud Pouliquen wrote:
+>>>>>>
+>>>>>> With RTlinux a race condition has been found that leads to NULL ptr crash:
+>>>>>> - On CPU 0: uni_player_irq_handler is called to treat XRUN
+>>>>>>  "(player->state == UNIPERIF_STATE_STOPPED)" is FALSE so status is checked,
+>>>>>>  dev_err(player->dev, "FIFO underflow error detected") is printed
+>>>>>> and then snd_pcm_stream_lock should be called to lock stream for stopping.
+>>>>>> - On CPU 1: application stop and close the stream.
+>>>>>> Issue is that the stop and shutdown functions are executed while
+>>>>>> "FIFO underflow error detected" is printed.
+>>>>>> So when CPU 0 call snd_pcm_stream_lock is player->substream is already null.
+>>>>>
+>>>>> Hrm, how the first call of snd_pcm_stream_lock() with
+>>>>> player->substream to be guaranteed to be non-NULL?
+>>>>
+>>>> Not sure that it is possible to be 100% save, but player->substream
+>>>> should not be null...
+>>>>
+>>>>  Use case at risk: Stop request occurs just before IRQ.
+>>>> 1) IRQ handler locked on snd_pcm_stream_lock(player->substream)
+>>>> 2) uni_player_stop clear IRQ flags and set player->state ==
+>>>> UNIPERIF_STATE_STOPPED. So no more IRQs after UNIPERIF_STATE_STOPPED state.
+>>>> 3) As stream is cleared after close, i guess that between stop and close
+>>>> following IRQ handler code should be executed
+>>>>
+>>>>   	if (player->state == UNIPERIF_STATE_STOPPED) {
+>>>>   		/* Unexpected IRQ: do nothing */
+>>>>  		snd_pcm_stream_unlock(player->substream);
+>>>>   		return IRQ_NONE;
+>>>>   	}
+>>>>
+>>>> Anyway adding a check of player->substream in IRQ handler before locking
+>>>> seems more save.
+>>>
+>>> Well, if the PCM stop happens right after the call of
+>>> uni_player_irq_handler() but just before the spinlock call, you may
+>>> still hit NULL dereference.
+>> For me this is not possible... please tell me if i missed something.
+>>
+>> Substream is set to null in snd_pcm_release so after the close.
+>> That why i set player->substream to NULL in uni_player_shutdown
+>> that corresponds to DAI shutdown op.
+>> So should not be possible to race the null condition.
+>> Only way should be that stop and close is executed between
+>> The uni_player_irq_handler call and the spinlock.
+> 
+> Why?  In theory the PCM can be stopped at any time, even if an IRQ is
+> pending.  There is no synchronization there in general.  That is, when
+> a hardware trigger the IRQ for the period elapse, and the kernel
+> prepares the ISR call.  Meanwhile user-space stops the PCM and another
+> CPU executes it at the same time, and this may happen before the IRQ
+> gets actually called.
+> 
+> Yes, the race window is very small, but it's still racy.
+Full agree with the usecase, This is part of the issue observed on RT
+linux...
+But my point is that the substream is not released on pcm stop, so
+substream pointer is still valid.
+Another point is that this IRQ is not used for period elapse but to
+inform on IP errors. So no PCM stream management.
+
+> 
+>>> That is, it's not safe to refer to player->substream unless we ensure
+>>> non-NULL in other way.
+>> Not use it seems not possible as usage is to call snd_pcm_stop on underrun.
+> 
+> The problem is that player->substream assignment isn't protected.  The
+> spinlock you're taking is already the member of player->substream, so
+> it's not safe to take that lock before player->substream itself is
+> assured.
+player->substream is set /clear on open/close so when IP is disable.
+So no IRQ when player->substream is null.
+Anyway better to have too much than less protection...
+What do you suggest? to add a spinlock in driver to protect
+player->substream?
+
+Arnaud
+> 
+> 
+> Takashi
+> 
+> 
+>>
+>> Thanks
+>>
+>> Arnaud
+>>
+>>>
+>>>
+>>> thanks,
+>>>
+>>> Takashi
+>>>
+>>>>
+>>>> I will add it in a V2
+>>>>
+>>>> Thanks
+>>>>
+>>>> Arnaud
+>>>>
+>>>>>
+>>>>>
+>>>>> Takashi
+>>>>>
+>>>>>
+>>>>>>
+>>>>>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+>>>>>> ---
+>>>>>>  sound/soc/sti/uniperif_player.c | 9 +++------
+>>>>>>  sound/soc/sti/uniperif_reader.c | 8 +++++---
+>>>>>>  2 files changed, 8 insertions(+), 9 deletions(-)
+>>>>>>
+>>>>>> diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
+>>>>>> index 60ae31a..6fa9eee 100644
+>>>>>> --- a/sound/soc/sti/uniperif_player.c
+>>>>>> +++ b/sound/soc/sti/uniperif_player.c
+>>>>>> @@ -65,8 +65,10 @@ static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
+>>>>>>  	unsigned int status;
+>>>>>>  	unsigned int tmp;
+>>>>>>  
+>>>>>> +	snd_pcm_stream_lock(player->substream);
+>>>>>>  	if (player->state == UNIPERIF_STATE_STOPPED) {
+>>>>>>  		/* Unexpected IRQ: do nothing */
+>>>>>> +		snd_pcm_stream_unlock(player->substream);
+>>>>>>  		return IRQ_NONE;
+>>>>>>  	}
+>>>>>>  
+>>>>>> @@ -88,9 +90,7 @@ static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
+>>>>>>  			SET_UNIPERIF_ITM_BCLR_FIFO_ERROR(player);
+>>>>>>  
+>>>>>>  			/* Stop the player */
+>>>>>> -			snd_pcm_stream_lock(player->substream);
+>>>>>>  			snd_pcm_stop(player->substream, SNDRV_PCM_STATE_XRUN);
+>>>>>> -			snd_pcm_stream_unlock(player->substream);
+>>>>>>  		}
+>>>>>>  
+>>>>>>  		ret = IRQ_HANDLED;
+>>>>>> @@ -104,9 +104,7 @@ static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
+>>>>>>  		SET_UNIPERIF_ITM_BCLR_DMA_ERROR(player);
+>>>>>>  
+>>>>>>  		/* Stop the player */
+>>>>>> -		snd_pcm_stream_lock(player->substream);
+>>>>>>  		snd_pcm_stop(player->substream, SNDRV_PCM_STATE_XRUN);
+>>>>>> -		snd_pcm_stream_unlock(player->substream);
+>>>>>>  
+>>>>>>  		ret = IRQ_HANDLED;
+>>>>>>  	}
+>>>>>> @@ -138,13 +136,12 @@ static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
+>>>>>>  		dev_err(player->dev, "Underflow recovery failed\n");
+>>>>>>  
+>>>>>>  		/* Stop the player */
+>>>>>> -		snd_pcm_stream_lock(player->substream);
+>>>>>>  		snd_pcm_stop(player->substream, SNDRV_PCM_STATE_XRUN);
+>>>>>> -		snd_pcm_stream_unlock(player->substream);
+>>>>>>  
+>>>>>>  		ret = IRQ_HANDLED;
+>>>>>>  	}
+>>>>>>  
+>>>>>> +	snd_pcm_stream_unlock(player->substream);
+>>>>>>  	return ret;
+>>>>>>  }
+>>>>>>  
+>>>>>> diff --git a/sound/soc/sti/uniperif_reader.c b/sound/soc/sti/uniperif_reader.c
+>>>>>> index 5992c6a..9273f59 100644
+>>>>>> --- a/sound/soc/sti/uniperif_reader.c
+>>>>>> +++ b/sound/soc/sti/uniperif_reader.c
+>>>>>> @@ -46,9 +46,11 @@ static irqreturn_t uni_reader_irq_handler(int irq, void *dev_id)
+>>>>>>  	struct uniperif *reader = dev_id;
+>>>>>>  	unsigned int status;
+>>>>>>  
+>>>>>> +	snd_pcm_stream_lock(reader->substream);
+>>>>>>  	if (reader->state == UNIPERIF_STATE_STOPPED) {
+>>>>>>  		/* Unexpected IRQ: do nothing */
+>>>>>>  		dev_warn(reader->dev, "unexpected IRQ\n");
+>>>>>> +		snd_pcm_stream_unlock(reader->substream);
+>>>>>>  		return IRQ_HANDLED;
+>>>>>>  	}
+>>>>>>  
+>>>>>> @@ -60,13 +62,13 @@ static irqreturn_t uni_reader_irq_handler(int irq, void *dev_id)
+>>>>>>  	if (unlikely(status & UNIPERIF_ITS_FIFO_ERROR_MASK(reader))) {
+>>>>>>  		dev_err(reader->dev, "FIFO error detected\n");
+>>>>>>  
+>>>>>> -		snd_pcm_stream_lock(reader->substream);
+>>>>>>  		snd_pcm_stop(reader->substream, SNDRV_PCM_STATE_XRUN);
+>>>>>> -		snd_pcm_stream_unlock(reader->substream);
+>>>>>>  
+>>>>>> -		return IRQ_HANDLED;
+>>>>>> +		ret = IRQ_HANDLED;
+>>>>>>  	}
+>>>>>>  
+>>>>>> +	snd_pcm_stream_unlock(reader->substream);
+>>>>>> +
+>>>>>>  	return ret;
+>>>>>>  }
+>>>>>>  
+>>>>>> -- 
+>>>>>> 1.9.1
+>>>>>>
+>>>>
+>>
