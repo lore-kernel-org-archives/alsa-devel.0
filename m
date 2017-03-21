@@ -1,140 +1,81 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH 6/6] ASoC: arizona: Add support for new micbias
-	regulators
-Date: Tue, 21 Mar 2017 14:45:39 +0000
-Message-ID: <1490107539-23995-6-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: [PATCH 2/6] regulator: helpers: Add regmap set_pull_down helper
+Date: Tue, 21 Mar 2017 14:45:35 +0000
+Message-ID: <1490107539-23995-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1490107539-23995-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 77203266718
- for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 15:44:36 +0100 (CET)
-In-Reply-To: <1490107539-23995-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, robh+dt@kernel.org, lee.jones@linaro.org
+Content-Type: text/plain
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1490107539-23995-1-git-send-email-ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Change the widgets from the old SND_SOC_DAPM_SUPPLY widgets into
-SND_SOC_DAPM_REGULATOR_SUPPLY widgets now that we have proper regulator
-support for the micbiases.
+Add a helper function regulator_set_pull_down_regmap to allow regmap
+based regulators to easily enable pull down.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
 ---
- sound/soc/codecs/cs47l24.c | 6 ++----
- sound/soc/codecs/wm5102.c  | 9 +++------
- sound/soc/codecs/wm5110.c  | 9 +++------
- sound/soc/codecs/wm8997.c  | 9 +++------
- sound/soc/codecs/wm8998.c  | 9 +++------
- 5 files changed, 14 insertions(+), 28 deletions(-)
+ drivers/regulator/helpers.c      | 18 ++++++++++++++++++
+ include/linux/regulator/driver.h |  4 ++++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
-index 47e6fdd..c5dc322 100644
---- a/sound/soc/codecs/cs47l24.c
-+++ b/sound/soc/codecs/cs47l24.c
-@@ -386,10 +386,8 @@ SND_SOC_DAPM_PGA_E("IN2R PGA", ARIZONA_INPUT_ENABLES, ARIZONA_IN2R_ENA_SHIFT,
- 		   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD |
- 		   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
+diff --git a/drivers/regulator/helpers.c b/drivers/regulator/helpers.c
+index a75e7da..2ae7c3a 100644
+--- a/drivers/regulator/helpers.c
++++ b/drivers/regulator/helpers.c
+@@ -464,6 +464,24 @@ int regulator_set_soft_start_regmap(struct regulator_dev *rdev)
+ EXPORT_SYMBOL_GPL(regulator_set_soft_start_regmap);
  
--SND_SOC_DAPM_SUPPLY("MICBIAS1", ARIZONA_MIC_BIAS_CTRL_1,
--		    ARIZONA_MICB1_ENA_SHIFT, 0, NULL, 0),
--SND_SOC_DAPM_SUPPLY("MICBIAS2", ARIZONA_MIC_BIAS_CTRL_2,
--		    ARIZONA_MICB1_ENA_SHIFT, 0, NULL, 0),
-+SND_SOC_DAPM_REGULATOR_SUPPLY("MICBIAS1", 0, SND_SOC_DAPM_REGULATOR_BYPASS),
-+SND_SOC_DAPM_REGULATOR_SUPPLY("MICBIAS2", 0, SND_SOC_DAPM_REGULATOR_BYPASS),
+ /**
++ * regulator_set_pull_down_regmap - Default set_pull_down() using regmap
++ *
++ * @rdev: device to operate on.
++ */
++int regulator_set_pull_down_regmap(struct regulator_dev *rdev)
++{
++	unsigned int val;
++
++	val = rdev->desc->pull_down_val_on;
++	if (!val)
++		val = rdev->desc->pull_down_mask;
++
++	return regmap_update_bits(rdev->regmap, rdev->desc->pull_down_reg,
++				  rdev->desc->pull_down_mask, val);
++}
++EXPORT_SYMBOL_GPL(regulator_set_pull_down_regmap);
++
++/**
+  * regulator_get_bypass_regmap - Default get_bypass() using regmap
+  *
+  * @rdev: device to operate on.
+diff --git a/include/linux/regulator/driver.h b/include/linux/regulator/driver.h
+index 7e2e70d..97b55b5 100644
+--- a/include/linux/regulator/driver.h
++++ b/include/linux/regulator/driver.h
+@@ -348,6 +348,9 @@ struct regulator_desc {
+ 	unsigned int soft_start_reg;
+ 	unsigned int soft_start_mask;
+ 	unsigned int soft_start_val_on;
++	unsigned int pull_down_reg;
++	unsigned int pull_down_mask;
++	unsigned int pull_down_val_on;
  
- SND_SOC_DAPM_PGA("Noise Generator", ARIZONA_COMFORT_NOISE_GENERATOR,
- 		 ARIZONA_NOISE_GEN_ENA_SHIFT, 0, NULL, 0),
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index 1fe358e..2a817f8 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -1137,12 +1137,9 @@ SND_SOC_DAPM_PGA_E("IN3R PGA", ARIZONA_INPUT_ENABLES, ARIZONA_IN3R_ENA_SHIFT,
- 		   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD |
- 		   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
+ 	unsigned int enable_time;
  
--SND_SOC_DAPM_SUPPLY("MICBIAS1", ARIZONA_MIC_BIAS_CTRL_1,
--		    ARIZONA_MICB1_ENA_SHIFT, 0, NULL, 0),
--SND_SOC_DAPM_SUPPLY("MICBIAS2", ARIZONA_MIC_BIAS_CTRL_2,
--		    ARIZONA_MICB2_ENA_SHIFT, 0, NULL, 0),
--SND_SOC_DAPM_SUPPLY("MICBIAS3", ARIZONA_MIC_BIAS_CTRL_3,
--		    ARIZONA_MICB3_ENA_SHIFT, 0, NULL, 0),
-+SND_SOC_DAPM_REGULATOR_SUPPLY("MICBIAS1", 0, SND_SOC_DAPM_REGULATOR_BYPASS),
-+SND_SOC_DAPM_REGULATOR_SUPPLY("MICBIAS2", 0, SND_SOC_DAPM_REGULATOR_BYPASS),
-+SND_SOC_DAPM_REGULATOR_SUPPLY("MICBIAS3", 0, SND_SOC_DAPM_REGULATOR_BYPASS),
+@@ -480,6 +483,7 @@ int regulator_set_voltage_time_sel(struct regulator_dev *rdev,
+ int regulator_set_bypass_regmap(struct regulator_dev *rdev, bool enable);
+ int regulator_get_bypass_regmap(struct regulator_dev *rdev, bool *enable);
+ int regulator_set_soft_start_regmap(struct regulator_dev *rdev);
++int regulator_set_pull_down_regmap(struct regulator_dev *rdev);
  
- SND_SOC_DAPM_PGA("Noise Generator", ARIZONA_COMFORT_NOISE_GENERATOR,
- 		 ARIZONA_NOISE_GEN_ENA_SHIFT, 0, NULL, 0),
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 1bc9421..57f3b41 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -1157,12 +1157,9 @@ SND_SOC_DAPM_PGA_E("IN4R PGA", ARIZONA_INPUT_ENABLES, ARIZONA_IN4R_ENA_SHIFT,
- 		   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD |
- 		   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
- 
--SND_SOC_DAPM_SUPPLY("MICBIAS1", ARIZONA_MIC_BIAS_CTRL_1,
--		    ARIZONA_MICB1_ENA_SHIFT, 0, NULL, 0),
--SND_SOC_DAPM_SUPPLY("MICBIAS2", ARIZONA_MIC_BIAS_CTRL_2,
--		    ARIZONA_MICB1_ENA_SHIFT, 0, NULL, 0),
--SND_SOC_DAPM_SUPPLY("MICBIAS3", ARIZONA_MIC_BIAS_CTRL_3,
--		    ARIZONA_MICB1_ENA_SHIFT, 0, NULL, 0),
-+SND_SOC_DAPM_REGULATOR_SUPPLY("MICBIAS1", 0, SND_SOC_DAPM_REGULATOR_BYPASS),
-+SND_SOC_DAPM_REGULATOR_SUPPLY("MICBIAS2", 0, SND_SOC_DAPM_REGULATOR_BYPASS),
-+SND_SOC_DAPM_REGULATOR_SUPPLY("MICBIAS3", 0, SND_SOC_DAPM_REGULATOR_BYPASS),
- 
- SND_SOC_DAPM_PGA("Noise Generator", ARIZONA_COMFORT_NOISE_GENERATOR,
- 		 ARIZONA_NOISE_GEN_ENA_SHIFT, 0, NULL, 0),
-diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
-index 49401a8..455d88a 100644
---- a/sound/soc/codecs/wm8997.c
-+++ b/sound/soc/codecs/wm8997.c
-@@ -452,12 +452,9 @@ SND_SOC_DAPM_PGA_E("IN2R PGA", ARIZONA_INPUT_ENABLES, ARIZONA_IN2R_ENA_SHIFT,
- 		   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD |
- 		   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
- 
--SND_SOC_DAPM_SUPPLY("MICBIAS1", ARIZONA_MIC_BIAS_CTRL_1,
--		    ARIZONA_MICB1_ENA_SHIFT, 0, NULL, 0),
--SND_SOC_DAPM_SUPPLY("MICBIAS2", ARIZONA_MIC_BIAS_CTRL_2,
--		    ARIZONA_MICB2_ENA_SHIFT, 0, NULL, 0),
--SND_SOC_DAPM_SUPPLY("MICBIAS3", ARIZONA_MIC_BIAS_CTRL_3,
--		    ARIZONA_MICB3_ENA_SHIFT, 0, NULL, 0),
-+SND_SOC_DAPM_REGULATOR_SUPPLY("MICBIAS1", 0, SND_SOC_DAPM_REGULATOR_BYPASS),
-+SND_SOC_DAPM_REGULATOR_SUPPLY("MICBIAS2", 0, SND_SOC_DAPM_REGULATOR_BYPASS),
-+SND_SOC_DAPM_REGULATOR_SUPPLY("MICBIAS3", 0, SND_SOC_DAPM_REGULATOR_BYPASS),
- 
- SND_SOC_DAPM_PGA("Noise Generator", ARIZONA_COMFORT_NOISE_GENERATOR,
- 		 ARIZONA_NOISE_GEN_ENA_SHIFT, 0, NULL, 0),
-diff --git a/sound/soc/codecs/wm8998.c b/sound/soc/codecs/wm8998.c
-index 44f4471..a5e87ba 100644
---- a/sound/soc/codecs/wm8998.c
-+++ b/sound/soc/codecs/wm8998.c
-@@ -587,12 +587,9 @@ SND_SOC_DAPM_PGA_E("IN2 PGA", ARIZONA_INPUT_ENABLES, ARIZONA_IN2L_ENA_SHIFT,
- 		   SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMD |
- 		   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
- 
--SND_SOC_DAPM_SUPPLY("MICBIAS1", ARIZONA_MIC_BIAS_CTRL_1,
--		    ARIZONA_MICB1_ENA_SHIFT, 0, NULL, 0),
--SND_SOC_DAPM_SUPPLY("MICBIAS2", ARIZONA_MIC_BIAS_CTRL_2,
--		    ARIZONA_MICB1_ENA_SHIFT, 0, NULL, 0),
--SND_SOC_DAPM_SUPPLY("MICBIAS3", ARIZONA_MIC_BIAS_CTRL_3,
--		    ARIZONA_MICB1_ENA_SHIFT, 0, NULL, 0),
-+SND_SOC_DAPM_REGULATOR_SUPPLY("MICBIAS1", 0, SND_SOC_DAPM_REGULATOR_BYPASS),
-+SND_SOC_DAPM_REGULATOR_SUPPLY("MICBIAS2", 0, SND_SOC_DAPM_REGULATOR_BYPASS),
-+SND_SOC_DAPM_REGULATOR_SUPPLY("MICBIAS3", 0, SND_SOC_DAPM_REGULATOR_BYPASS),
- 
- SND_SOC_DAPM_PGA("Tone Generator 1", ARIZONA_TONE_GENERATOR_1,
- 		 ARIZONA_TONE1_ENA_SHIFT, 0, NULL, 0),
+ int regulator_set_active_discharge_regmap(struct regulator_dev *rdev,
+ 					  bool enable);
 -- 
 2.1.4
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
