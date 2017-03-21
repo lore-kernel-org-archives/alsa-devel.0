@@ -1,14 +1,20 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: x86: Make CONFIG_SND_X86 bool
-Date: Tue, 21 Mar 2017 13:30:08 +0100
-Message-ID: <20170321123008.19027-1-tiwai@suse.de>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 1/2] ASoC: codec: wm8960: Refactor
+	sysclk freq search
+Date: Tue, 21 Mar 2017 12:43:02 +0000
+Message-ID: <20170321124302.GW6986@localhost.localdomain>
+References: <1490090976-25877-1-git-send-email-daniel.baluta@nxp.com>
+ <1490090976-25877-2-git-send-email-daniel.baluta@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id D20742671BA
- for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 13:30:10 +0100 (CET)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 33DB22671BA
+ for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 13:42:00 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <1490090976-25877-2-git-send-email-daniel.baluta@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,34 +24,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Ian W MORRISON <ianwmorrison@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: alsa-devel@alsa-project.org, shengjiu.wang@freescale.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, broonie@kernel.org, viorel.suman@nxp.com, mihai.serban@nxp.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-CONFIG_SND_X86 is a menu config to filter only for x86-specific
-drivers in its sub-menu, and this doesn't have to be tristate but
-rather it should be a bool.  Also, like other sub-menu configs, it's
-more user-friendly to be default=y; it's merely a menu config and the
-actual drivers are configured in the sub-menu, after all.
+On Tue, Mar 21, 2017 at 12:09:35PM +0200, Daniel Baluta wrote:
+> Add a separate function for finding (sysclk, lrclk, bclk)
+> when the clock is auto or mclk. This makes code easier to
+> read and reduces the indentation level in wm8960_configure_clocking.
+> 
+> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+> ---
 
-Fixes: 287599cf2d77 ("ALSA: add Intel HDMI LPE audio driver for BYT/CHT-T")
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/x86/Kconfig | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
-diff --git a/sound/x86/Kconfig b/sound/x86/Kconfig
-index 84c8f8fc597c..8adf4d1bd46e 100644
---- a/sound/x86/Kconfig
-+++ b/sound/x86/Kconfig
-@@ -1,6 +1,7 @@
- menuconfig SND_X86
--	tristate "X86 sound devices"
-+	bool "X86 sound devices"
- 	depends on X86
-+	default y
- 	---help---
- 	  X86 sound devices that don't fall under SoC or PCI categories
- 
--- 
-2.11.1
+Thanks,
+Charles
