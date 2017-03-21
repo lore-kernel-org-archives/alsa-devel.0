@@ -1,47 +1,86 @@
-From: Mylene Josserand <mylene.josserand@free-electrons.com>
-Subject: Re: [PATCH v3 1/5] ASoC: sun8i-codec: Remove analog "HP" widget
-Date: Tue, 21 Mar 2017 10:00:03 +0100
-Message-ID: <1e24d943-adc1-259a-a4e3-99e480796213@free-electrons.com>
-References: <20170318075509.3836-1-mylene.josserand@free-electrons.com>
- <20170318075509.3836-2-mylene.josserand@free-electrons.com>
- <20170320173903.fc2m4euobea3npyq@sirena.org.uk>
+From: Arun Raghavan <arun@arunraghavan.net>
+Subject: Re: pulseaudio fails to start with kernel 4.11,
+ caused by new snd_hdmi_lpe_audio module)
+Date: Tue, 21 Mar 2017 14:34:25 +0530
+Message-ID: <1490087065.1333106.918176776.2A6E8968@webmail.messagingengine.com>
+References: <2549c113-f06b-f22e-d36e-f59fc2969bcb@redhat.com>
+ <s5h8to0w4fs.wl-tiwai@suse.de>
+ <6754b5cd-f6d0-e2e3-0f01-992946ec1b92@linux.intel.com>
+ <s5hk27jjigd.wl-tiwai@suse.de>
+ <1490082870.1321124.918129488.4F3143F8@webmail.messagingengine.com>
+ <bba100b1-5e74-093a-7625-a7feaba1a065@redhat.com>
+Reply-To: General PulseAudio Discussion
+ <pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170320173903.fc2m4euobea3npyq@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, maxime.ripard@free-electrons.com, wens@csie.org, robh+dt@kernel.org, mark.rutland@arm.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, thomas.petazzoni@free-electrons.com, alexandre.belloni@free-electrons.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
+In-Reply-To: <bba100b1-5e74-093a-7625-a7feaba1a065@redhat.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
+Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
+To: Hans de Goede <hdegoede@redhat.com>, Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, pulseaudio-discuss@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
-
-On 20/03/2017 18:39, Mark Brown wrote:
-> On Sat, Mar 18, 2017 at 08:55:05AM +0100, Mylène Josserand wrote:
->> The "HP" widget is already present and take part to
->> the analog part (sun8i-codec-analog).
->>
->> Remove it from the digital part as it is unnecessary.
->
-> I know I said to send against Linus' tree but it turns out this actually
-> conflicts with some of the existing fixes, please see my fixes/sunxi
-> branch and resend against that.  Sorry for the hassle here.
->
-
-It does not apply because my driver ("sun8i-codec") is, currently, not 
-available in your fix/sunxi branch:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/tree/sound/soc/sunxi?h=fix/sunxi
-
-Should I apply the patches (which add my driver) as "dependencies" and 
-indicate it in my cover letter? Let me know what I should do.
-
-Thank you for the help!
-
-Best regards,
-
--- 
-Mylène Josserand, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+CgpPbiBUdWUsIDIxIE1hciAyMDE3LCBhdCAwMjoyNiBQTSwgSGFucyBkZSBHb2VkZSB3cm90ZToK
+PiBIaSwKPiAKPiBPbiAyMS0wMy0xNyAwODo1NCwgQXJ1biBSYWdoYXZhbiB3cm90ZToKPiA+IE9u
+IFR1ZSwgMjEgTWFyIDIwMTcsIGF0IDExOjEwIEFNLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gPj4g
+T24gVHVlLCAyMSBNYXIgMjAxNyAwMDowOToyMiArMDEwMCwKPiA+PiBQaWVycmUtTG91aXMgQm9z
+c2FydCB3cm90ZToKPiA+Pj4KPiA+Pj4gT24gMy8yMC8xNyA0OjUyIEFNLCBUYWthc2hpIEl3YWkg
+d3JvdGU6Cj4gPj4+PiBPbiBNb24sIDIwIE1hciAyMDE3IDEyOjQyOjU4ICswMTAwLAo+ID4+Pj4g
+SGFucyBkZSBHb2VkZSB3cm90ZToKPiA+Pj4+Pgo+ID4+Pj4+IEhpLAo+ID4+Pj4+Cj4gPj4+Pj4g
+TGF0ZWx5IEkndmUgYmVlbiB3b3JraW5nIG9uIGZpeGluZyB2YXJpb3VzIGlzc3VlcyBwZW9wbGUK
+PiA+Pj4+PiBhcmUgaGF2aW5nIHdpdGggYmF5dHJhaWwgLyBjaGVycnl0cmFpbCBkZXZpY2VzLiBP
+bmUgdGhpbmcKPiA+Pj4+PiBJIG5vdGljZWQgd2hlbiBtb3ZpbmcgbXkgdGVzdGluZyAvIGRldmVs
+b3BtZW50IHRvIDQuMTEgaXMKPiA+Pj4+PiB0aGF0IHB1bHNlYXVkaW8gZG9lcyBub3Qgd29yayAo
+aXQgYWJvcnRzIHdoaWxlIHN0YXJ0aW5nKQo+ID4+Pj4+IHRoaXMgc2VlbWVkIHRvIGJlIGNhdXNl
+ZCBieSB0aGUgbmV3IHNuZF9oZG1pX2xwZV9hdWRpbwo+ID4+Pj4+IG1vZHVsZS4gSWYgSSBibGFj
+a2xpc3QgdGhhdCBhbGwgaXMgZmluZS4gQW55IGlkZWEgd2hhdAo+ID4+Pj4+IGlzIGNhdXNpbmcg
+dGhpcyA/Cj4gPj4+Pgo+ID4+Pj4gSSBub3RpY2VkIGl0IG9uY2UsIHRvbywgYnV0IEkgaGFkIG5v
+IHRpbWUgdG8gY2hlY2sgZnVydGhlci4KPiA+Pj4+IE1vcmUgaW50ZXJlc3RpbmdseSwgUEEgd29y
+a3MgZmluZSB3aGVuIExQRSBhdWRpbyBpcyB0aGUgc2luZ2xlIGRyaXZlcgo+ID4+Pj4gKGkuZS4g
+YmxhY2tsaXN0IEludGVsIFNTVCBpbnN0ZWFkKSwgdG9vLiAgU28gaXQncyBtb3JlIGxpa2VseSBh
+IGJ1ZyBpbgo+ID4+Pj4gUEEuCj4gPj4+Pgo+ID4+Pj4gV2hhdCBoYXBwZW5zIHdoZW4geW91IG1v
+ZHByb2JlIExQRSBhdWRpbyBkcml2ZXIgYWZ0ZXIgc3RhcnRpbmcgdGhlCj4gPj4+PiBzZXNzaW9u
+PyAgSWYgaXQga2lsbHMgUEEsIHdlIGNhbiBkZWJ1ZyBtb3JlIGVhc2lseSA6KQo+ID4+Pgo+ID4+
+PiBJJ3ZlIHNlZW4gdGhpcyBhcyB3ZWxsLCBJIGNvdWxkIGdldCBlaXRoZXIgb25lIG9mIHRoZSB0
+d28gYnV0IG5vdAo+ID4+PiBib3RoLCBjb3VsZCB0aGlzIGJlIGR1ZSB0byB0aGUgZmFjdCB0aGF0
+IG9uZSBzZXQgb2YgbWl4ZXJzIGlzCj4gPj4+IGNvbmZpZ3VyZWQgd2l0aCBVQ00gYW5kIHRoZSBv
+dGhlciBkcml2ZXIgaXNuJ3QgY29uZmlndXJlZCBieSBVQ00/Cj4gPj4KPiA+PiBObyBpZGVhLCBh
+bmQgSSBoYWQgc3RpbGwgbm8gdGltZSB0byBjaGVjayAoc3RpbGwgcHJvY2Vzc2luZyB0aGUKPiA+
+PiBwaWxlIG9mIHBlbmRpbmcgbWFpbHMgYW5kIG90aGVyIGJ1Z3MgOikuICBMZXQgbWUgYWRkIFBB
+IGd1eXMgdG8gQ2MuCj4gPgo+ID4gTm90IHN1cmUgaWYgYW55b25lIGhlcmUgaGFzIHRoZSBoYXJk
+d2FyZSBhbmQgSSBoYXZlbid0IHNlZW4gYW55Cj4gPiBjb21wbGFpbnRzIGVpdGhlciAtLSBoYXZp
+bmcgYSBiYWNrdHJhY2UgKG9yIGV2ZW4gbG9jYXRpb24gb2YgdGhlIGFzc2VydCkKPiA+IHdvdWxk
+IGJlIGEgZ29vZCBzdGFydC4KPiAKPiBPaywgdGhpcyBpcyB3ZWlyZC4gU2luY2UgeW91IHdlcmUg
+YXNraW5nIGZvciBtb3JlIGluZm8gSSB0cmllZCB0bwo+IGNvbGxlY3QgYSBiYWNrdHJhY2UgLyBs
+b2dzLiBCdXQgd2hhdCBpcyBoYXBwZW5pbmcgaXMgdGhhdCBhZnRlcgo+IHRoZSBzbmRfaGRtaV9s
+cGVfYXVkaW8gbW9kdWxlIGxvYWRzLCBwdWxzZSBkb2VzIGl0cyB0aGluZyBhbmQKPiB0aGVuIGV4
+aXRzIHdpdGggYSBtZXNzYWdlIG9mICJraWxsZWQiIGluIGdkYiAvIG9uIHRoZSB0ZXJtaW5hbAo+
+IGZyb20gd2hpY2ggSSBzdGFydGVkIGl0LiBJIGRvbid0IGdldCBhIGNoYW5jZSB0byBnZXQgYSBi
+YWNrdHJhY2UKPiBpbiBnZGIgLi4uICBTbyB0aGlzIGRvZXMgZmVlbCBsaWtlIGEga2VybmVsIGJ1
+ZyB0byBtZSwgbm9ybWFsbHkKPiB0aGlzIHNvcnQgb2YgImtpbGxlZCIgYmVoYXZpb3IgaXMgc2Vl
+biBvbiBzb21lIGtlcm5lbCBvb3BzZXMuLi4KPiAKPiBCdXQgZG1lc2cgaXMgZnJlZSBvZiBhbnkg
+b29wc2VzID8KPiAKPiBBbnl3YXlzIGhlcmUgaXMgYSBsb2cgb2YgcHVsc2VhdWRpbyAtdiBmaXJz
+dCB3aXRob3V0IHRoZQo+IGhkbWkgbW9kdWxlIGFuZCB0aGVuIHRoZSBtb2R1bGUgZ2V0cyBwcm9i
+ZWQuIFdoZXJlIHRoZSBsb2cKPiBhYnJ1cHRseSBlbmRzIGlzIHdoZXJlIEkgZ290IHRoZSAiS2ls
+bGVkIiBtZXNzYWdlIG9uIHRoZQo+IHRlcm1pbmFsLgoKVGhhdCdzIHRoZSBrZXJuZWwga2lsbGlu
+ZyBvZiBQQSBmb3IgZXhjZWVkaW5nIFJUIGxpbWl0cyAodGhlcmUncyBhIHBhdGNoCmluIHRoZSB0
+aW1lcnMgdGlwIHRoYXQnbGwgbm93IHByb3ZpZGUgYW4gZXJyb3IgaW4gZG1lc2cpLgoKSXQgc291
+bmRzIHBvc3NpYmxlIHRoYXQgdGhlcmUgaXMgc29tZSBjYWxsIHRvIHRoZSBBTFNBIEFQSSB0aGF0
+IHdlIGFyZQptYWtpbmcgdGhhdCByZXN1bHRzIGluIHRoZSBkcml2ZXIgYmxvY2tpbmcgZm9yIGxv
+bmcgZW5vdWdoIHRvIGV4Y2VlZCB0aGUKUlQgbGltaXQuIFlvdSBjYW4gdmVyaWZ5IHRoaXMgYnkg
+c2V0dGluZyAncmVhbHRpbWUtc2NoZWR1bGluZyA9IG5vJyBpbgovZXRjL3B1bHNlL2RhZW1vbi5j
+b25mIGFuZCB0aGVuIHN0YXJ0aW5nIFBBLgoKSWYgdGhhdCB3b3JrcywgcGVyZiB3aWxsIGxpa2Vs
+eSBiZSBhYmxlIHRvIHNob3cgeW91IHdoYXQncyBibG9ja2luZy4KCi0tIEFydW4KX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KcHVsc2VhdWRpby1kaXNjdXNz
+IG1haWxpbmcgbGlzdApwdWxzZWF1ZGlvLWRpc2N1c3NAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0
+dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vcHVsc2VhdWRpby1k
+aXNjdXNzCg==
