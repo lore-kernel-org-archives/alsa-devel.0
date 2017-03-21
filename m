@@ -1,60 +1,38 @@
-From: Arun Raghavan <arun@arunraghavan.net>
-Subject: Re: pulseaudio fails to start with kernel 4.11,
- caused by new snd_hdmi_lpe_audio module)
-Date: Tue, 21 Mar 2017 13:24:30 +0530
-Message-ID: <1490082870.1321124.918129488.4F3143F8@webmail.messagingengine.com>
-References: <2549c113-f06b-f22e-d36e-f59fc2969bcb@redhat.com>
- <s5h8to0w4fs.wl-tiwai@suse.de>
- <6754b5cd-f6d0-e2e3-0f01-992946ec1b92@linux.intel.com>
- <s5hk27jjigd.wl-tiwai@suse.de>
-Reply-To: General PulseAudio Discussion
- <pulseaudio-discuss@lists.freedesktop.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: hw/sw params API in alsa-lib miscompiled,
+ result: unusable alsa-utils
+Date: Tue, 21 Mar 2017 09:10:09 +0100
+Message-ID: <d3512e34-5dde-33fc-6b4f-ad68f1b47550@ladisch.de>
+References: <20170320151949.1d7494b6@amazur-u.kat.adbgroup.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
-In-Reply-To: <s5hk27jjigd.wl-tiwai@suse.de>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
-Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, pulseaudio-discuss@lists.freedesktop.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from webclient5.webclient5.de (webclient5.webclient5.de
+ [136.243.32.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id DA822266CE6
+ for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 09:10:15 +0100 (CET)
+Received: from [10.1.2.4] (unknown [94.101.37.79])
+ by webclient5.webclient5.de (Postfix) with ESMTPSA id EDED45583319
+ for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 09:10:13 +0100 (CET)
+In-Reply-To: <20170320151949.1d7494b6@amazur-u.kat.adbgroup.pl>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gVHVlLCAyMSBNYXIgMjAxNywgYXQgMTE6MTAgQU0sIFRha2FzaGkgSXdhaSB3cm90ZToKPiBP
-biBUdWUsIDIxIE1hciAyMDE3IDAwOjA5OjIyICswMTAwLAo+IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0
-IHdyb3RlOgo+ID4gCj4gPiBPbiAzLzIwLzE3IDQ6NTIgQU0sIFRha2FzaGkgSXdhaSB3cm90ZToK
-PiA+ID4gT24gTW9uLCAyMCBNYXIgMjAxNyAxMjo0Mjo1OCArMDEwMCwKPiA+ID4gSGFucyBkZSBH
-b2VkZSB3cm90ZToKPiA+ID4+Cj4gPiA+PiBIaSwKPiA+ID4+Cj4gPiA+PiBMYXRlbHkgSSd2ZSBi
-ZWVuIHdvcmtpbmcgb24gZml4aW5nIHZhcmlvdXMgaXNzdWVzIHBlb3BsZQo+ID4gPj4gYXJlIGhh
-dmluZyB3aXRoIGJheXRyYWlsIC8gY2hlcnJ5dHJhaWwgZGV2aWNlcy4gT25lIHRoaW5nCj4gPiA+
-PiBJIG5vdGljZWQgd2hlbiBtb3ZpbmcgbXkgdGVzdGluZyAvIGRldmVsb3BtZW50IHRvIDQuMTEg
-aXMKPiA+ID4+IHRoYXQgcHVsc2VhdWRpbyBkb2VzIG5vdCB3b3JrIChpdCBhYm9ydHMgd2hpbGUg
-c3RhcnRpbmcpCj4gPiA+PiB0aGlzIHNlZW1lZCB0byBiZSBjYXVzZWQgYnkgdGhlIG5ldyBzbmRf
-aGRtaV9scGVfYXVkaW8KPiA+ID4+IG1vZHVsZS4gSWYgSSBibGFja2xpc3QgdGhhdCBhbGwgaXMg
-ZmluZS4gQW55IGlkZWEgd2hhdAo+ID4gPj4gaXMgY2F1c2luZyB0aGlzID8KPiA+ID4KPiA+ID4g
-SSBub3RpY2VkIGl0IG9uY2UsIHRvbywgYnV0IEkgaGFkIG5vIHRpbWUgdG8gY2hlY2sgZnVydGhl
-ci4KPiA+ID4gTW9yZSBpbnRlcmVzdGluZ2x5LCBQQSB3b3JrcyBmaW5lIHdoZW4gTFBFIGF1ZGlv
-IGlzIHRoZSBzaW5nbGUgZHJpdmVyCj4gPiA+IChpLmUuIGJsYWNrbGlzdCBJbnRlbCBTU1QgaW5z
-dGVhZCksIHRvby4gIFNvIGl0J3MgbW9yZSBsaWtlbHkgYSBidWcgaW4KPiA+ID4gUEEuCj4gPiA+
-Cj4gPiA+IFdoYXQgaGFwcGVucyB3aGVuIHlvdSBtb2Rwcm9iZSBMUEUgYXVkaW8gZHJpdmVyIGFm
-dGVyIHN0YXJ0aW5nIHRoZQo+ID4gPiBzZXNzaW9uPyAgSWYgaXQga2lsbHMgUEEsIHdlIGNhbiBk
-ZWJ1ZyBtb3JlIGVhc2lseSA6KQo+ID4gCj4gPiBJJ3ZlIHNlZW4gdGhpcyBhcyB3ZWxsLCBJIGNv
-dWxkIGdldCBlaXRoZXIgb25lIG9mIHRoZSB0d28gYnV0IG5vdAo+ID4gYm90aCwgY291bGQgdGhp
-cyBiZSBkdWUgdG8gdGhlIGZhY3QgdGhhdCBvbmUgc2V0IG9mIG1peGVycyBpcwo+ID4gY29uZmln
-dXJlZCB3aXRoIFVDTSBhbmQgdGhlIG90aGVyIGRyaXZlciBpc24ndCBjb25maWd1cmVkIGJ5IFVD
-TT8KPiAKPiBObyBpZGVhLCBhbmQgSSBoYWQgc3RpbGwgbm8gdGltZSB0byBjaGVjayAoc3RpbGwg
-cHJvY2Vzc2luZyB0aGUKPiBwaWxlIG9mIHBlbmRpbmcgbWFpbHMgYW5kIG90aGVyIGJ1Z3MgOiku
-ICBMZXQgbWUgYWRkIFBBIGd1eXMgdG8gQ2MuCgpOb3Qgc3VyZSBpZiBhbnlvbmUgaGVyZSBoYXMg
-dGhlIGhhcmR3YXJlIGFuZCBJIGhhdmVuJ3Qgc2VlbiBhbnkKY29tcGxhaW50cyBlaXRoZXIgLS0g
-aGF2aW5nIGEgYmFja3RyYWNlIChvciBldmVuIGxvY2F0aW9uIG9mIHRoZSBhc3NlcnQpCndvdWxk
-IGJlIGEgZ29vZCBzdGFydC4KCkNoZWVycywKQXJ1bgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpwdWxzZWF1ZGlvLWRpc2N1c3MgbWFpbGluZyBsaXN0CnB1
-bHNlYXVkaW8tZGlzY3Vzc0BsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVl
-ZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9wdWxzZWF1ZGlvLWRpc2N1c3MK
+Deweloper wrote:
+> I built alsa-lib
+
+How?
+
+
+Regards,
+Clemens
