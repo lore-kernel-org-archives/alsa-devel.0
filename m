@@ -1,18 +1,19 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [PATCH v2 1/2] ASoC: codec: wm8960: Refactor sysclk
-	freq search
-Date: Tue, 21 Mar 2017 12:09:35 +0200
-Message-ID: <1490090976-25877-2-git-send-email-daniel.baluta@nxp.com>
-References: <1490090976-25877-1-git-send-email-daniel.baluta@nxp.com>
+From: Olivier MOYSAN <olivier.moysan@st.com>
+Subject: Re: [RESEND PATCH v2 1/2] ASoC: stm32: add bindings
+	for SAI
+Date: Tue, 21 Mar 2017 10:31:54 +0000
+Message-ID: <2d9ee6db-e030-39ef-1988-b8305bcf042f@st.com>
+References: <f6a9354e-dbab-f485-c763-21c8e3af3d62@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com
- (mail-he1eur01on0053.outbound.protection.outlook.com [104.47.0.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 420D52670FB
- for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 11:09:51 +0100 (CET)
-In-Reply-To: <1490090976-25877-1-git-send-email-daniel.baluta@nxp.com>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id E99B52670FC
+ for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 11:31:57 +0100 (CET)
+In-Reply-To: <f6a9354e-dbab-f485-c763-21c8e3af3d62@st.com>
+Content-Language: en-US
+Content-ID: <47D692996A275247AFE178858F154E10@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,130 +23,176 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org, tiwai@suse.com
-Cc: shengjiu.wang@freescale.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, viorel.suman@nxp.com, mihai.serban@nxp.com, ckeepax@opensource.wolfsonmicro.com
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alexandre TORGUE <alexandre.torgue@st.com>, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>, "broonie@kernel.org" <broonie@kernel.org>, "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add a separate function for finding (sysclk, lrclk, bclk)
-when the clock is auto or mclk. This makes code easier to
-read and reduces the indentation level in wm8960_configure_clocking.
+Hello Rob,
 
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
----
-Changes since v1:
-	* made wm8960_configure_sysclk static
-	* renamed i, j, with sysclk_idx, dac_idx, bclk_idx
-	* added brackets to if() branch
-	* kept the update of (sysclk_idx, ...) inside "for" loop
-	because next patch requires (sysclk_idx, ..) to be saved
-	inside loop
+On 03/18/2017 09:43 PM, Rob Herring wrote:
+> On Thu, Mar 16, 2017 at 5:50 AM, Olivier MOYSAN <olivier.moysan@st.com> wrote:
+>> Hello Rob,
+>>
+>> Thanks for your feedback.
+>>
+>> On 03/15/2017 06:46 PM, Rob Herring wrote:
+>>> On Tue, Mar 07, 2017 at 10:44:31AM +0100, olivier moysan wrote:
+>>>> This patch adds documentation of device tree bindings for the
+>>>> STM32 SAI ASoC driver.
+>>>>
+>>>> Signed-off-by: olivier moysan <olivier.moysan@st.com>
+>>>> ---
+>>>>  .../devicetree/bindings/sound/st,stm32-sai.txt     | 79 ++++++++++++++++++++++
+>>>>  1 file changed, 79 insertions(+)
+>>>>  create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-sai.txt
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.txt b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
+>>>> new file mode 100644
+>>>> index 0000000..b3be26d
+>>>> --- /dev/null
+>>>> +++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
+>>>> @@ -0,0 +1,79 @@
+>>>> +STMicroelectronics STM32 Serial Audio Interface (SAI).
+>>>> +
+>>>> +The SAI interface (Serial Audio Interface) offers a wide set of audio protocols
+>>>> +as I2S standards, LSB or MSB-justified, PCM/DSP, TDM, and AC'97.
+>>>> +The SAI contains two independent audio sub-blocks. Each sub-block has
+>>>> +its own clock generator and I/O lines controller.
+>>>> +
+>>>> +Required properties:
+>>>> +  - compatible: Should be "st,stm32f4-sai"
+>>>> +  - reg: Base address and size of SAI common register set.
+>>>> +  - clocks: Must contain phandle and clock specifier pairs for each entry
+>>>> +    in clock-names.
+>>>> +  - clock-names: Must contain "clk_x8k" and "clk_x11k"
+>>>> +    "clk_x8k": SAI parent clock for sampling rates multiple of 8kHz.
+>>>> +    "clk_x11k": SAI parent clock for sampling rates multiple of 11.025kHz.
+>>>
+>>> clk_ is redundant.
+>>>
+>>
+>> Do you mean, removing clk_ prefix ?
+>
+> Yes.
+>
+>>
+>>>> +  - interrupts: cpu DAI interrupt line shared by SAI sub-blocks
+>>>> +
+>>>> +Note: Each SAI controller should have an alias correctly numbered
+>>>> +in "aliases" node, to provide explicit name to CPU DAI.
+>>>
+>>> No, it shouldn't. Why do you need that?
+>>>
+>>
+>> Yes, this is not mandatory. This is convenient to identify sai
+>> controller, as we may have up to 8 instances.
+>> I can make it optional, or remove it if you think it is not relevant.
+>
+> Remove it.
+>
 
- sound/soc/codecs/wm8960.c | 80 ++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 61 insertions(+), 19 deletions(-)
+One more thing regarding aliases.
+In future patches, I will add alsa controls to configure sai.
+Some stm32 socs exhibit several sai (4 instances for H7)
+It will be necessary to identify to which sai each control apply,
+through the control names:
+	SAI1A control X
+	SAI2A control X
+	...
+sub-node compatible already allows to identify A or B sub-instance.
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 3bf081a..25a4a11 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -604,12 +604,71 @@ static const int bclk_divs[] = {
- 	120, 160, 220, 240, 320, 320, 320
- };
- 
-+/**
-+ * wm8960_configure_sysclk - checks if there is a sysclk frequency available
-+ *	The sysclk must be chosen such that:
-+ *		- sysclk     = MCLK / sysclk_divs
-+ *		- lrclk      = sysclk / dac_divs
-+ *		- 10 * bclk  = sysclk / bclk_divs
-+ *
-+ * @wm8960_priv: wm8960 codec private data
-+ * @mclk: MCLK used to derive sysclk
-+ * @sysclk_idx: sysclk_divs index for found sysclk
-+ * @dac_idx: dac_divs index for found lrclk
-+ * @bclk_idx: bclk_divs index for found bclk
-+ *
-+ * Returns:
-+ * -1, in case no sysclk frequency available found
-+ *  0, in case an exact (@sysclk_idx, @dac_idx, @bclk_idx) match is found
-+ */
-+static
-+int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
-+			    int *sysclk_idx, int *dac_idx, int *bclk_idx)
-+{
-+	int sysclk, bclk, lrclk;
-+	int i, j, k;
-+	int diff;
-+
-+	bclk = wm8960->bclk;
-+	lrclk = wm8960->lrclk;
-+
-+	/* check if the sysclk frequency is available. */
-+	for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
-+		if (sysclk_divs[i] == -1)
-+			continue;
-+		sysclk = mclk / sysclk_divs[i];
-+		for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {
-+			if (sysclk != dac_divs[j] * lrclk)
-+				continue;
-+			for (k = 0; k < ARRAY_SIZE(bclk_divs); ++k) {
-+				diff = sysclk - bclk * bclk_divs[k] / 10;
-+				if (diff == 0) {
-+					*sysclk_idx = i;
-+					*dac_idx = j;
-+					*bclk_idx = k;
-+					break;
-+				}
-+			}
-+			if (k != ARRAY_SIZE(bclk_divs))
-+				break;
-+		}
-+		if (j != ARRAY_SIZE(dac_divs))
-+			break;
-+	}
-+
-+	if (i != ARRAY_SIZE(sysclk_divs))
-+		return 0;
-+
-+	return -1;
-+}
-+
- static int wm8960_configure_clocking(struct snd_soc_codec *codec)
- {
- 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
- 	int sysclk, bclk, lrclk, freq_out, freq_in;
- 	u16 iface1 = snd_soc_read(codec, WM8960_IFACE1);
- 	int i, j, k;
-+	int ret;
- 
- 	if (!(iface1 & (1<<6))) {
- 		dev_dbg(codec->dev,
-@@ -643,25 +702,8 @@ static int wm8960_configure_clocking(struct snd_soc_codec *codec)
- 	}
- 
- 	if (wm8960->clk_id != WM8960_SYSCLK_PLL) {
--		/* check if the sysclk frequency is available. */
--		for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
--			if (sysclk_divs[i] == -1)
--				continue;
--			sysclk = freq_out / sysclk_divs[i];
--			for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {
--				if (sysclk != dac_divs[j] * lrclk)
--					continue;
--				for (k = 0; k < ARRAY_SIZE(bclk_divs); ++k)
--					if (sysclk == bclk * bclk_divs[k] / 10)
--						break;
--				if (k != ARRAY_SIZE(bclk_divs))
--					break;
--			}
--			if (j != ARRAY_SIZE(dac_divs))
--				break;
--		}
--
--		if (i != ARRAY_SIZE(sysclk_divs)) {
-+		ret = wm8960_configure_sysclk(wm8960, freq_out, &i, &j, &k);
-+		if (ret == 0) {
- 			goto configure_clock;
- 		} else if (wm8960->clk_id != WM8960_SYSCLK_AUTO) {
- 			dev_err(codec->dev, "failed to configure clock\n");
--- 
-2.7.4
+An alternative to alias, may be to use dev_name information to identify 
+sai instance. But this does not produce user friendly control names.
+
+Another way is to use compatible also. The drawback here
+is to multiply compatible names. (many soc families and many instances)
+
+What is your recommendation ?
+If there is another solution, I did not consider, please let me know.
+
+>>
+>>>
+>>>> +
+>>>> +Optional properties:
+>>>> +  - resets: Reference to a reset controller asserting the SAI
+>>>> +
+>>>> +SAI subnodes:
+>>>> +Two subnodes corresponding to SAI sub-block instances A et B can be defined.
+>>>> +Subnode can be omitted for unsused sub-block.
+>>>> +
+>>>> +SAI subnodes required properties:
+>>>> +  - compatible: Should be "st,stm32-sai-sub-a" or "st,stm32-sai-sub-b"
+>>>> +    for SAI sub-block A or B respectively.
+>>>> +  - reg: Base address and size of SAI sub-block register set.
+>>>> +  - clocks: Must contain one phandle and clock specifier pair
+>>>> +    for sai_ck which feeds the internal clock generator.
+>>>> +  - clock-names: Must contain "sai_ck".
+>>>> +  - dmas: see Documentation/devicetree/bindings/dma/stm32-dma.txt
+>>>> +  - dma-names: identifier string for each DMA request line
+>>>> +    "tx": if sai sub-block is configured as playback DAI
+>>>> +    "rx": if sai sub-block is configured as capture DAI
+>>>> +  - pinctrl-names: should contain only value "default"
+>>>> +  - pinctrl-0: see Documentation/devicetree/bindings/pinctrl/pinctrl-stm32.txt
+>>>> +
+>>>> +Example:
+>>>> +sai1: sai1@40015800 {
+>>>> +    compatible = "st,stm32f4-sai";
+>>>> +    reg = <0x40015800 0x400>;
+>>
+>>         reg = <0x40015800 0x4>;
+>>
+>>>> +    clocks = <&rcc 1 CLK_SAIQ_PDIV>, <&rcc 1 CLK_I2SQ_PDIV>;
+>>>> +    clock-names = "clk_x8k", "clk_x11k";
+>>>> +    interrupts = <87>;
+>>>> +    resets = <&rcc 310>;
+>>>> +
+>>>> +    sai1b: sai@1 {
+>>>
+>>> unit address needs a reg property.
+>>>
+>>> audio-controller@1
+>>>
+>>
+>> Right. This needs to be updated as follows:
+>>         sai1b: sai1b@40015824 {
+>
+> audio-controller@...
+>
+>>                 ...
+>>                 reg = <0x40015824 0x1C>;
+>>                 ...
+>>         };
+>>
+>>>> +            #sound-dai-cells = <0>;
+>>>> +            compatible = "st,stm32-sai-sub-b";
+>>>> +            clocks = <&rcc 1 CLK_SAI2>;
+>>>> +            clock-names = "sai_ck";
+>>>> +            dmas = <&dma2 5 0 0x400 0x1>;
+>>>> +            dma-names = "tx";
+>>>> +    };
+>>>> +};
+>>>> +
+>>>> +sound {
+>>>> +    compatible = "simple-audio-card";
+>>>
+>>> Perhaps you want to use the graph-card here. It's getting close to
+>>> merging.
+>>>
+>>
+>> mclk-fs property is required when SAI is configured as master.
+>> It seems that mclk-fs is not supported in current version
+>> of audio graph card. So I thing I should keep simple card for the time
+>> being. Anyway, I plan further updates for SAI, so I will
+>> have opportunity to change to graph card at that time.
+>
+> Well, it's not easy to switch later and maintain compatibility. Is it
+> complicated to add mclk-fs property? The intent is graph-card supports
+> everything simple-card supports.
+>
+> Rob
+>
+
+Right, it should not be too complicated to add mclk-fs support to 
+graph-card.
+
+BRs
+olivier
