@@ -1,16 +1,16 @@
 From: fuweix.tang@intel.com
-Subject: [PATCH v2 2/3] ucm-conf: broxton: add broxton-rt298
+Subject: [PATCH v2 3/3] ucm-conf: skylake: add skylake-rt286
 	conf files
-Date: Tue, 21 Mar 2017 11:15:32 +0800
-Message-ID: <68144cb2411095ea9c3938975fe8044f4b5cd035.1490064444.git.fuweix.tang@intel.com>
+Date: Tue, 21 Mar 2017 11:15:33 +0800
+Message-ID: <4b0ac4d762098ca38eef472fa18ed83bea929eb7.1490064444.git.fuweix.tang@intel.com>
 References: <cover.1490064444.git.fuweix.tang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 883B5266FAD
- for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 04:15:44 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 40F5C266FBD
+ for <alsa-devel@alsa-project.org>; Tue, 21 Mar 2017 04:15:45 +0100 (CET)
 In-Reply-To: <cover.1490064444.git.fuweix.tang@intel.com>
 In-Reply-To: <cover.1490064444.git.fuweix.tang@intel.com>
 References: <cover.1490064444.git.fuweix.tang@intel.com>
@@ -24,50 +24,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Nishit Sharma <nishitx.sharma@intel.com>, G Kranthi <gudishax.kranthikumar@intel.com>, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, Fuwei Tang <fuweix.tang@intel.com>
+Cc: Nishit Sharma <nishitx.sharma@intel.com>, tiwai@suse.de, mengdong.lin@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, Fuwei Tang <fuweix.tang@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Karthik D M <karthik.d.m@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 From: Vinod Koul <vinod.koul@intel.com>
 
-This adds the UCM conf files for broxton enabling with rt298 codec on
-I2S audio, HDMI and DMIC ports.
+This add the UCM conf files for skylake enabling I2S audio, HDMI and DMIC
+ports.
 
-This patch is based on commit 360c976aaa05 ("conf/ucm: broxton: add broxton-rt298 conf files")
+This patch is based on commit 4dfae1adb314 ("conf/ucm: skylake: add skylake-rt286 conf files")
 from alsa-lib by Vinod Koul <vinod.koul@intel.com>.
 Original authorship is retained.
 
+Signed-off-by: Karthik D M <karthik.d.m@intel.com>
 Signed-off-by: Nishit Sharma <nishitx.sharma@intel.com>
-Signed-off-by: G Kranthi <gudishax.kranthikumar@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Fuwei Tang <fuweix.tang@intel.com>
 ---
  Makefile.am                      |   2 +-
- broxton-rt298/Hdmi1              |  22 +++++++
- broxton-rt298/Hdmi2              |  14 +++++
- broxton-rt298/HiFi               | 129 +++++++++++++++++++++++++++++++++++++++
- broxton-rt298/Makefile.am        |   4 ++
- broxton-rt298/broxton-rt298.conf |  58 ++++++++++++++++++
  configure.ac                     |   3 +-
- 7 files changed, 230 insertions(+), 2 deletions(-)
- create mode 100644 broxton-rt298/Hdmi1
- create mode 100644 broxton-rt298/Hdmi2
- create mode 100644 broxton-rt298/HiFi
- create mode 100644 broxton-rt298/Makefile.am
- create mode 100644 broxton-rt298/broxton-rt298.conf
+ skylake-rt286/Hdmi1              |  20 ++++++
+ skylake-rt286/Hdmi2              |  20 ++++++
+ skylake-rt286/HiFi               | 129 +++++++++++++++++++++++++++++++++++++++
+ skylake-rt286/Makefile.am        |   4 ++
+ skylake-rt286/skylake-rt286.conf |  60 ++++++++++++++++++
+ 7 files changed, 236 insertions(+), 2 deletions(-)
+ create mode 100644 skylake-rt286/Hdmi1
+ create mode 100644 skylake-rt286/Hdmi2
+ create mode 100644 skylake-rt286/HiFi
+ create mode 100644 skylake-rt286/Makefile.am
+ create mode 100644 skylake-rt286/skylake-rt286.conf
 
 diff --git a/Makefile.am b/Makefile.am
-index e2baa04..5f86692 100644
+index 5f86692..f351b75 100644
 --- a/Makefile.am
 +++ b/Makefile.am
 @@ -1 +1 @@
--SUBDIRS=
-+SUBDIRS=broxton-rt298
-diff --git a/broxton-rt298/Hdmi1 b/broxton-rt298/Hdmi1
+-SUBDIRS=broxton-rt298
++SUBDIRS=broxton-rt298 skylake-rt286
+diff --git a/configure.ac b/configure.ac
+index c797f58..2503641 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -14,7 +14,8 @@ AM_INIT_AUTOMAKE
+ 
+ # Checks for library functions.
+ AC_CONFIG_FILES([Makefile
+-		 broxton-rt298/Makefile])
++		 broxton-rt298/Makefile
++		 skylake-rt286/Makefile])
+ 
+ ALSA_CONFIG_DIR="/usr/share/alsa"
+ test "x$prefix" != xNONE && ALSA_CONFIG_DIR=$prefix
+diff --git a/skylake-rt286/Hdmi1 b/skylake-rt286/Hdmi1
 new file mode 100644
-index 0000000..48514f4
+index 0000000..0e00fc8
 --- /dev/null
-+++ b/broxton-rt298/Hdmi1
-@@ -0,0 +1,22 @@
++++ b/skylake-rt286/Hdmi1
+@@ -0,0 +1,20 @@
 +# Usecase for device HDMI1/Display Port stereo playback on Intel SKYLAKE/KABYLAKE platforms
 +# For Audio in I2S mode
 +
@@ -75,95 +90,69 @@ index 0000000..48514f4
 +        Comment "HDMI/Display Port 1 Stereo"
 +
 +        EnableSequence [
-+                exec "echo Hdmi1 EnableSequnece"
 +        ]
 +
 +        DisableSequence [
-+                exec "echo Hdmi1 DisableSequnece"
 +        ]
 +
 +        Value {
-+                PlaybackPCM "hw:broxtonrt298,4"
++                PlaybackPCM "hw:skylakert286,4"
 +                PlaybackChannels "2"
 +                PlaybackPriority "3"
 +                JackControl "HDMI/DP, pcm=4 Jack"
 +        }
 +}
 +
-diff --git a/broxton-rt298/Hdmi2 b/broxton-rt298/Hdmi2
+diff --git a/skylake-rt286/Hdmi2 b/skylake-rt286/Hdmi2
 new file mode 100644
-index 0000000..764f8b9
+index 0000000..89b31aa
 --- /dev/null
-+++ b/broxton-rt298/Hdmi2
-@@ -0,0 +1,14 @@
-+# Usecase for device HDMI2/Display Port stereo playback on Intel Broxton platforms
++++ b/skylake-rt286/Hdmi2
+@@ -0,0 +1,20 @@
++# Usecase for device HDMI2/Display Port stereo playback on Intel SKYLAKE/KABYLAKE platforms
 +# For Audio in I2S mode
 +
 +SectionDevice."Hdmi2" {
 +        Comment "HDMI/Display Port 2 Stereo"
 +
++        EnableSequence [
++        ]
++
++        DisableSequence [
++        ]
++
 +        Value {
-+                PlaybackPCM "hw:broxtonrt298,5"
++                PlaybackPCM "hw:skylakert286,5"
 +                PlaybackChannels "2"
 +                PlaybackPriority "4"
 +                JackControl "HDMI/DP, pcm=5 Jack"
 +        }
 +}
 +
-diff --git a/broxton-rt298/HiFi b/broxton-rt298/HiFi
+diff --git a/skylake-rt286/HiFi b/skylake-rt286/HiFi
 new file mode 100644
-index 0000000..2e2d6fe
+index 0000000..5f403db
 --- /dev/null
-+++ b/broxton-rt298/HiFi
++++ b/skylake-rt286/HiFi
 @@ -0,0 +1,129 @@
 +# Usecase for stereo playback Speaker and Headset, Recording on DMIC and Headset MIC.
-+# For Audio in I2S mode on Intel Broxton platforms
++# For Audio in I2S mode on Intel SKYLAKE/KABYLAKE platforms
 +
 +SectionVerb {
 +
 +	EnableSequence [
-+		cdev "hw:broxtonrt298"
++		cdev "hw:skylakert286"
 +		cset "name='media0_out mo dmic01_hifi_in mi Switch' 1"
 +	]
 +
 +	DisableSequence [
-+		cdev "hw:broxtonrt298"
++		cdev "hw:skylakert286"
 +	]
 +
 +	Value {
 +		TQ "HiFi"
-+		CapturePCM "hw:broxtonrt298,1"
-+		PlaybackPCM "hw:broxtonrt298,0"
-+	}
-+}
-+
-+SectionDevice."dmiccap" {
-+	Comment "DMIC Stereo"
-+
-+	ConflictingDevice [
-+		"Headset"
-+	]
-+
-+	EnableSequence [
-+
-+		cdev "hw:broxtonrt298"
-+		exec "echo broxtonrt298 dmiccap called"
-+		cset "name='media0_out mo dmic01_hifi_in mi Switch' 1"
-+		cset "name='media0_out mo codec0_in mi Switch' 0"
-+		cset "name='Mic Jack Switch' 0"
-+
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:broxtonrt298"
-+		cset "name='media0_out mo codec0_in mi Switch' 1"
-+		cset "name='media0_out mo dmic01_hifi_in mi Switch' 0"
-+		cset "name='Mic Jack Switch' 1"
-+		cset "name='ADC 0 Mux' 0"
-+	]
-+	Value {
-+		CaptureChannels "2"
-+		CapturePriority "2"
++		CapturePCM "hw:skylakert286,1"
++		PlaybackPCM "hw:skylakert286,0"
 +	}
 +}
 +
@@ -174,8 +163,7 @@ index 0000000..2e2d6fe
 +		"Speaker"
 +	]
 +	EnableSequence [
-+		cdev "hw:broxtonrt298"
-+		exec "echo broxtonrt298 Headphone called"
++		cdev "hw:skylakert286"
 +		cset "name='HPO L Switch' 1"
 +		cset "name='HPO R Switch' 1"
 +		cset "name='Headphone Jack Switch' 1"
@@ -183,7 +171,6 @@ index 0000000..2e2d6fe
 +	]
 +
 +	DisableSequence [
-+		cdev "hw:broxtonrt298"
 +	]
 +	Value {
 +		PlaybackChannels "2"
@@ -200,8 +187,7 @@ index 0000000..2e2d6fe
 +		"Headphones"
 +	]
 +	EnableSequence [
-+		cdev "hw:broxtonrt298"
-+		exec "echo broxtonrt298 speaker called"
++		cdev "hw:skylakert286"
 +		cset "name='SPO Switch' 1"
 +		cset "name='Speaker Playback Switch' 1,1"
 +		cset "name='Speaker Switch' 1"
@@ -225,17 +211,16 @@ index 0000000..2e2d6fe
 +		"dmiccap"
 +	]
 +	EnableSequence [
-+		cdev "hw:broxtonrt298"
-+		exec "echo broxtonrt298 Headset called"
++		cdev "hw:skylakert286"
 +		cset "name='media0_out mo codec0_in mi Switch' 1"
-+		cset "name='ADC0 Capture Volume' 105,105"
++		cset "name='ADC0 Capture Switch' 1,1"
 +		cset "name='ADC 0 Mux' 0"
 +		cset "name='Mic Jack Switch' 1"
 +		cset "name='media0_out mo dmic01_hifi_in mi Switch' 0"
 +	]
 +
 +	DisableSequence [
-+		cdev "hw:broxtonrt298"
++		cdev "hw:skylakert286"
 +		cset "name='media0_out mo dmic01_hifi_in mi Switch' 1"
 +		cset "name='media0_out mo codec0_in mi Switch' 0"
 +	]
@@ -245,23 +230,57 @@ index 0000000..2e2d6fe
 +		JackControl "Mic Jack"
 +	}
 +}
-diff --git a/broxton-rt298/Makefile.am b/broxton-rt298/Makefile.am
++
++
++SectionDevice."dmiccap" {
++	Comment "DMIC Stereo"
++
++	ConflictingDevice [
++		"Headpset"
++	]
++
++	EnableSequence [
++
++		cdev "hw:skylakert286"
++		cset "name='media0_out mo dmic01_hifi_in mi Switch' 1"
++		cset "name='media0_out mo codec0_in mi Switch' 0"
++		cset "name='ADC0 Capture Switch' 0,0"
++		cset "name='Mic Jack Switch' 0"
++		cset "name='ADC 0 Mux' 0"
++
++	]
++
++	DisableSequence [
++		cdev "hw:skylakert286"
++		cset "name='media0_out mo codec0_in mi Switch' 1"
++		cset "name='media0_out mo dmic01_hifi_in mi Switch' 0"
++		cset "name='ADC0 Capture Switch' 1,1"
++		cset "name='Mic Jack Switch' 1"
++		cset "name='ADC 0 Mux' 2"
++	]
++	Value {
++		CaptureChannels "2"
++		CapturePriority "2"
++	}
++}
++
+diff --git a/skylake-rt286/Makefile.am b/skylake-rt286/Makefile.am
 new file mode 100644
-index 0000000..80f480e
+index 0000000..9d6a85a
 --- /dev/null
-+++ b/broxton-rt298/Makefile.am
++++ b/skylake-rt286/Makefile.am
 @@ -0,0 +1,4 @@
 +alsaconfigdir = @ALSA_CONFIG_DIR@
-+ucmdir = $(alsaconfigdir)/ucm/broxton-rt298
-+ucm_DATA = broxton-rt298.conf HiFi Hdmi1 Hdmi2
++ucmdir = $(alsaconfigdir)/ucm/skylake-rt286
++ucm_DATA = skylake-rt286.conf HiFi Hdmi1 Hdmi2
 +EXTRA_DIST = $(ucm_DATA)
-diff --git a/broxton-rt298/broxton-rt298.conf b/broxton-rt298/broxton-rt298.conf
+diff --git a/skylake-rt286/skylake-rt286.conf b/skylake-rt286/skylake-rt286.conf
 new file mode 100644
-index 0000000..3f3d0be
+index 0000000..2a74744
 --- /dev/null
-+++ b/broxton-rt298/broxton-rt298.conf
-@@ -0,0 +1,58 @@
-+# UCM for Intel Broxton platforms
++++ b/skylake-rt286/skylake-rt286.conf
+@@ -0,0 +1,60 @@
++# UCM for Intel SKYLAKE/KABYLAKE platforms
 +# For Audio in I2S mode
 +
 +SectionUseCase."HiFi" {
@@ -280,15 +299,14 @@ index 0000000..3f3d0be
 +}
 +
 +ValueDefaults {
-+	PlaybackCTL "hw:broxtonrt298"
-+	CaptureCTL "hw:broxtonrt298"
++	PlaybackCTL "hw:skylakert286"
++	CaptureCTL "hw:skylakert286"
 +	CaptureChannels "2"
 +	CapturePriority "2"
 +}
 +
 +SectionDefaults [
-+	cdev "hw:broxtonrt298"
-+	exec "echo broxtonrt298 CONF Defaults"
++	cdev "hw:skylakert286"
 +	cset "name='Headphone Jack Switch' 1"
 +	cset "name='Speaker Switch' 1"
 +	cset "name='Speaker Playback Switch' 0,0"
@@ -297,6 +315,9 @@ index 0000000..3f3d0be
 +	cset "name='Mic Jack Switch' 1"
 +	cset "name='ADC 0 Mux' 2"
 +	cset "name='ADC 1 Mux' 0"
++	cset "name='ADC0 Capture Volume' 105,105"
++	cset "name='ADC0 Capture Switch' 1,1"
++	cset "name='AMIC Volume' 3"
 +	cset "name='DAC0 Playback Volume' 100,100"
 +	cset "name='HPO L Switch' 0"
 +	cset "name='HPO Mux' 0"
@@ -319,19 +340,5 @@ index 0000000..3f3d0be
 +	cset "name='media0_out mo dmic01_hifi_in mi Switch' 1"
 +	cset "name='media0_out mo media0_in mi Switch' 0"
 +]
-diff --git a/configure.ac b/configure.ac
-index 0723060..c797f58 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -13,7 +13,8 @@ AM_INIT_AUTOMAKE
- # Checks for typedefs, structures, and compiler characteristics.
- 
- # Checks for library functions.
--AC_CONFIG_FILES([Makefile])
-+AC_CONFIG_FILES([Makefile
-+		 broxton-rt298/Makefile])
- 
- ALSA_CONFIG_DIR="/usr/share/alsa"
- test "x$prefix" != xNONE && ALSA_CONFIG_DIR=$prefix
 -- 
 2.7.4
