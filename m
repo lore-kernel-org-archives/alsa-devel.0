@@ -1,60 +1,69 @@
-From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH 1/6] regulator: helpers: Add regmap set_soft_start helper
-Date: Wed, 22 Mar 2017 12:57:09 +0000
-Message-ID: <20170322125709.GI6986@localhost.localdomain>
-References: <1490107539-23995-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ASoC: intel: remove unused variable data and
+	associated code
+Date: Wed, 22 Mar 2017 14:36:44 +0000
+Message-ID: <20170322143644.29051-1-colin.king@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1490107539-23995-1-git-send-email-ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id A6DA8266A73
+ for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2017 15:36:53 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Mar 21, 2017 at 02:45:34PM +0000, Charles Keepax wrote:
-> Add a helper function regulator_set_soft_start_regmap to allow regmap
-> based regulators to easily enable soft start.
-> 
-> Signed-off-by: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-> ---
->  drivers/regulator/helpers.c      | 18 ++++++++++++++++++
->  include/linux/regulator/driver.h |  4 ++++
->  2 files changed, 22 insertions(+)
-> 
-> diff --git a/drivers/regulator/helpers.c b/drivers/regulator/helpers.c
-> index 379cdac..a75e7da 100644
-> --- a/drivers/regulator/helpers.c
-> +++ b/drivers/regulator/helpers.c
-> @@ -446,6 +446,24 @@ int regulator_set_bypass_regmap(struct regulator_dev *rdev, bool enable)
->  EXPORT_SYMBOL_GPL(regulator_set_bypass_regmap);
->  
->  /**
-> + * regulator_set_soft_start_regmap - Default set_soft_start() using regmap
-> + *
-> + * @rdev: device to operate on.
-> + */
-> +int regulator_set_soft_start_regmap(struct regulator_dev *rdev)
-> +{
-> +	unsigned int val;
-> +
-> +	val = rdev->desc->soft_start_val_on;
-> +	if (!val)
-> +		val = rdev->desc->soft_start_mask;
-> +
-> +	return regmap_update_bits(rdev->regmap, rdev->desc->soft_start_reg,
-> +				  rdev->desc->soft_start_mask, val);
-> +}
-> +EXPORT_SYMBOL_GPL(regulator_set_soft_start_regmap);
-> +
+From: Colin Ian King <colin.king@canonical.com>
 
-Apologies there are some small bugs here let me respin the
-series.
+The variable 'data' is assigned null and never re-assigned. There
+is also a redundant check for data being non-null which is always
+false, so remove this and the variable data and dma_addr as they
+are not used once the dead code has been removed.
 
-Thanks,
-Charles
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Detected with CoverityScan, CID#1324015 ("'Constant' variable gaurds
+dead code")
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/intel/haswell/sst-haswell-ipc.c | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/sound/soc/intel/haswell/sst-haswell-ipc.c b/sound/soc/intel/haswell/sst-haswell-ipc.c
+index a3459d1682a6..d33bdaf92c57 100644
+--- a/sound/soc/intel/haswell/sst-haswell-ipc.c
++++ b/sound/soc/intel/haswell/sst-haswell-ipc.c
+@@ -2000,10 +2000,8 @@ int sst_hsw_module_set_param(struct sst_hsw *hsw,
+ 	u32 param_size, char *param)
+ {
+ 	int ret;
+-	unsigned char *data = NULL;
+ 	u32 header = 0;
+ 	u32 payload_size = 0, transfer_parameter_size = 0;
+-	dma_addr_t dma_addr = 0;
+ 	struct sst_hsw_transfer_parameter *parameter;
+ 	struct device *dev = hsw->dev;
+ 
+@@ -2047,10 +2045,6 @@ int sst_hsw_module_set_param(struct sst_hsw *hsw,
+ 
+ 	kfree(parameter);
+ 
+-	if (data)
+-		dma_free_coherent(hsw->dsp->dma_dev,
+-			param_size, (void *)data, dma_addr);
+-
+ 	return ret;
+ }
+ 
+-- 
+2.11.0
