@@ -1,15 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 00/18] ALSA: firewire-motu: new driver for MOTU
-	FireWire series
-Date: Wed, 22 Mar 2017 21:30:10 +0900
-Message-ID: <20170322123028.24148-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH 02/18] ALSA: firewire-motu: postpone sound card
+	registration
+Date: Wed, 22 Mar 2017 21:30:12 +0900
+Message-ID: <20170322123028.24148-3-o-takashi@sakamocchi.jp>
+References: <20170322123028.24148-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 445FE2673BA
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 4450F2670FC
  for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2017 13:30:39 +0100 (CET)
+In-Reply-To: <20170322123028.24148-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,96 +25,174 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Just after appearing on IEEE 1394 bus, this unit generates several bus
+resets. This is due to loading firmware from on-board flash memory and
+initialize hardware. It's better to postpone sound card registration.
 
-This patchset updates my previous RFCv2, and go for ALSA upstream.
-http://mailman.alsa-project.org/pipermail/alsa-devel/2017-January/117211.html
+This commit applies this idea.
 
-This patchset newly adds a driver into ALSA firewire stack, to support for
-some models in MOTU FireWire series:
- - 828mk2
- - 828mk3 (FireWire only)
- - 828mk3 (Hybrid)
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/motu/motu.c | 97 ++++++++++++++++++++++++++++++++++------------
+ sound/firewire/motu/motu.h |  5 +++
+ 2 files changed, 78 insertions(+), 24 deletions(-)
 
-The driver supports playbacking/capturing PCM frames and MIDI messages for any
-sampling transfer frequencies, with current ALSA IEC 61883-1/6 packet streaming
-engine.
-
-Unfortunately, units on MOTU FireWire series have many quirks against
-IEC 61883-1/6. This brings much commits and descriptions on this patchset.
-Sorry for reviewers but I'm glad to get your assist for this patchset.
-
-As I note in 8th commit, at sampling transfer frequency based on 44.1kHz, the
-driver handles the units with choppy noises every few seconds. This is an issue
-which is not resolved yet.
-
-Changes from RFCv2:
- - drop trial support for 828. If you have interests in development, please
-   refer to one commit of my previous RFC. It describes v1 protocol.
-  - http://mailman.alsa-project.org/pipermail/alsa-devel/2017-January/117226.html
- - improve commit messages.
-
-Takashi Sakamoto (18):
-  ALSA: firewire-motu: add skeleton for Mark of the unicorn (MOTU)
-    FireWire series
-  ALSA: firewire-motu: postpone sound card registration
-  ALSA: firewire-motu: add a structure for model-dependent parameters.
-  ALSA: firewire-motu: add an abstraction layer for three types of
-    protocols
-  ALSA: firewire-lib: record cycle count for the first packet
-  ALSA: firewire-lib: add support for source packet header field in CIP
-    header
-  ALSA: firewire-lib: enable CIP_DBC_IS_END_EVENT for both directions of
-    stream
-  ALSA: firewire-motu: add MOTU specific protocol layer
-  ALSA: firewire-motu: handle transactions specific for MOTU FireWire
-    models
-  ALSA: firewire-motu: add stream management functionality
-  ALSA: firewire-motu: add proc node to show current statuc of clock and
-    packet formats
-  ALSA: firewire-motu: add PCM functionality
-  ALSA: firewire-motu: add MIDI functionality
-  ALSA: firewire-motu: add hwdep interface
-  ALSA: firewire-motu: enable to read transaction cache via hwdep
-    interface
-  ALSA: firewire-motu: add support for MOTU 828mk2 as a model with
-    protocol version 2
-  ALSA: firewire-lib: add a quirk of packet without valid EOH in CIP
-    format
-  ALSA: firewire-motu: add support for MOTU 828mk3 (FireWire/Hybrid) as
-    a model with protocol version 3
-
- include/uapi/sound/asound.h            |   3 +-
- include/uapi/sound/firewire.h          |  10 +-
- sound/firewire/Kconfig                 |  12 +
- sound/firewire/Makefile                |   1 +
- sound/firewire/amdtp-stream.c          |  36 ++-
- sound/firewire/amdtp-stream.h          |   9 +-
- sound/firewire/motu/Makefile           |   4 +
- sound/firewire/motu/amdtp-motu.c       | 388 ++++++++++++++++++++++++++++++++
- sound/firewire/motu/motu-hwdep.c       | 198 ++++++++++++++++
- sound/firewire/motu/motu-midi.c        | 169 ++++++++++++++
- sound/firewire/motu/motu-pcm.c         | 398 +++++++++++++++++++++++++++++++++
- sound/firewire/motu/motu-proc.c        | 118 ++++++++++
- sound/firewire/motu/motu-protocol-v2.c | 237 ++++++++++++++++++++
- sound/firewire/motu/motu-protocol-v3.c | 312 ++++++++++++++++++++++++++
- sound/firewire/motu/motu-stream.c      | 381 +++++++++++++++++++++++++++++++
- sound/firewire/motu/motu-transaction.c | 137 ++++++++++++
- sound/firewire/motu/motu.c             | 264 ++++++++++++++++++++++
- sound/firewire/motu/motu.h             | 161 +++++++++++++
- 18 files changed, 2827 insertions(+), 11 deletions(-)
- create mode 100644 sound/firewire/motu/Makefile
- create mode 100644 sound/firewire/motu/amdtp-motu.c
- create mode 100644 sound/firewire/motu/motu-hwdep.c
- create mode 100644 sound/firewire/motu/motu-midi.c
- create mode 100644 sound/firewire/motu/motu-pcm.c
- create mode 100644 sound/firewire/motu/motu-proc.c
- create mode 100644 sound/firewire/motu/motu-protocol-v2.c
- create mode 100644 sound/firewire/motu/motu-protocol-v3.c
- create mode 100644 sound/firewire/motu/motu-stream.c
- create mode 100644 sound/firewire/motu/motu-transaction.c
- create mode 100644 sound/firewire/motu/motu.c
- create mode 100644 sound/firewire/motu/motu.h
-
+diff --git a/sound/firewire/motu/motu.c b/sound/firewire/motu/motu.c
+index 2684e74..bdd82dd 100644
+--- a/sound/firewire/motu/motu.c
++++ b/sound/firewire/motu/motu.c
+@@ -38,59 +38,108 @@ static void name_card(struct snd_motu *motu)
+ 		 dev_name(&motu->unit->device), 100 << fw_dev->max_speed);
+ }
+ 
+-static void motu_card_free(struct snd_card *card)
++static void motu_free(struct snd_motu *motu)
+ {
+-	struct snd_motu *motu = card->private_data;
+-
+ 	fw_unit_put(motu->unit);
+ 
+ 	mutex_destroy(&motu->mutex);
++	kfree(motu);
+ }
+ 
+-static int motu_probe(struct fw_unit *unit,
+-		      const struct ieee1394_device_id *entry)
++/*
++ * This module releases the FireWire unit data after all ALSA character devices
++ * are released by applications. This is for releasing stream data or finishing
++ * transactions safely. Thus at returning from .remove(), this module still keep
++ * references for the unit.
++ */
++static void motu_card_free(struct snd_card *card)
+ {
+-	struct snd_card *card;
+-	struct snd_motu *motu;
+-	int err;
++	motu_free(card->private_data);
++}
+ 
+-	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE,
+-			   sizeof(*motu), &card);
+-	if (err < 0)
+-		return err;
++static void do_registration(struct work_struct *work)
++{
++	struct snd_motu *motu = container_of(work, struct snd_motu, dwork.work);
++	int err;
+ 
+-	motu = card->private_data;
+-	motu->card = card;
+-	motu->unit = fw_unit_get(unit);
+-	card->private_free = motu_card_free;
++	if (motu->registered)
++		return;
+ 
+-	mutex_init(&motu->mutex);
++	err = snd_card_new(&motu->unit->device, -1, NULL, THIS_MODULE, 0,
++			   &motu->card);
++	if (err < 0)
++		return;
+ 
+ 	name_card(motu);
+ 
+-	err = snd_card_register(card);
++	err = snd_card_register(motu->card);
+ 	if (err < 0)
+ 		goto error;
+ 
++	/*
++	 * After registered, motu instance can be released corresponding to
++	 * releasing the sound card instance.
++	 */
++	motu->card->private_free = motu_card_free;
++	motu->card->private_data = motu;
++	motu->registered = true;
++
++	return;
++error:
++	snd_card_free(motu->card);
++	dev_info(&motu->unit->device,
++		 "Sound card registration failed: %d\n", err);
++}
++
++static int motu_probe(struct fw_unit *unit,
++		      const struct ieee1394_device_id *entry)
++{
++	struct snd_motu *motu;
++
++	/* Allocate this independently of sound card instance. */
++	motu = kzalloc(sizeof(struct snd_motu), GFP_KERNEL);
++	if (motu == NULL)
++		return -ENOMEM;
++
++	motu->unit = fw_unit_get(unit);
+ 	dev_set_drvdata(&unit->device, motu);
+ 
++	mutex_init(&motu->mutex);
++
++	/* Allocate and register this sound card later. */
++	INIT_DEFERRABLE_WORK(&motu->dwork, do_registration);
++	snd_fw_schedule_registration(unit, &motu->dwork);
++
+ 	return 0;
+-error:
+-	snd_card_free(card);
+-	return err;
+ }
+ 
+ static void motu_remove(struct fw_unit *unit)
+ {
+ 	struct snd_motu *motu = dev_get_drvdata(&unit->device);
+ 
+-	/* No need to wait for releasing card object in this context. */
+-	snd_card_free_when_closed(motu->card);
++	/*
++	 * Confirm to stop the work for registration before the sound card is
++	 * going to be released. The work is not scheduled again because bus
++	 * reset handler is not called anymore.
++	 */
++	cancel_delayed_work_sync(&motu->dwork);
++
++	if (motu->registered) {
++		/* No need to wait for releasing card object in this context. */
++		snd_card_free_when_closed(motu->card);
++	} else {
++		/* Don't forget this case. */
++		motu_free(motu);
++	}
+ }
+ 
+ static void motu_bus_update(struct fw_unit *unit)
+ {
+-	return;
++	struct snd_motu *motu = dev_get_drvdata(&unit->device);
++
++	/* Postpone a workqueue for deferred registration. */
++	if (!motu->registered)
++		snd_fw_schedule_registration(unit, &motu->dwork);
+ }
+ 
+ #define SND_MOTU_DEV_ENTRY(model)			\
+diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
+index f3d0b28..eb0ffd5 100644
+--- a/sound/firewire/motu/motu.h
++++ b/sound/firewire/motu/motu.h
+@@ -20,10 +20,15 @@
+ #include <sound/control.h>
+ #include <sound/core.h>
+ 
++#include "../lib.h"
++
+ struct snd_motu {
+ 	struct snd_card *card;
+ 	struct fw_unit *unit;
+ 	struct mutex mutex;
++
++	bool registered;
++	struct delayed_work dwork;
+ };
+ 
+ #endif
 -- 
 2.9.3
