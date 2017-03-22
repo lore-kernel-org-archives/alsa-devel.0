@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 01/18] ALSA: firewire-motu: add skeleton for
-	Mark of the unicorn (MOTU) FireWire series
-Date: Wed, 22 Mar 2017 21:30:11 +0900
-Message-ID: <20170322123028.24148-2-o-takashi@sakamocchi.jp>
+Subject: [PATCH 05/18] ALSA: firewire-lib: record cycle count
+	for the first packet
+Date: Wed, 22 Mar 2017 21:30:15 +0900
+Message-ID: <20170322123028.24148-6-o-takashi@sakamocchi.jp>
 References: <20170322123028.24148-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 4973D2673BD
- for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2017 13:30:39 +0100 (CET)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id C292F2673BC
+ for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2017 13:30:42 +0100 (CET)
 In-Reply-To: <20170322123028.24148-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,232 +25,71 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds an new driver for MOTU FireWire series. In this commit,
-this driver just creates/removes card instance according to bus event.
-More functionalities will be added in following commits.
+Currently, packet streaming layer passes generated SYT value to data block
+processing layer. However, this is not enough in a case that the data block
+processing layer generates time stamps by its own ways.
+
+For out-packet stream, the packet streaming layer guarantees 8,000 times
+calls of data block processing layers per sec. Therefore, when cycle count
+of the first packet is recorded, data block processing layers can calculate
+own time stamps with the recorded value.
+
+For the reason, this commit allows packet streaming layer to record the
+first cycle count. Each data block processing layer can read the count by
+accessing a member of structure for packet streaming layer.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig       |  10 ++++
- sound/firewire/Makefile      |   1 +
- sound/firewire/motu/Makefile |   2 +
- sound/firewire/motu/motu.c   | 134 +++++++++++++++++++++++++++++++++++++++++++
- sound/firewire/motu/motu.h   |  29 ++++++++++
- 5 files changed, 176 insertions(+)
- create mode 100644 sound/firewire/motu/Makefile
- create mode 100644 sound/firewire/motu/motu.c
- create mode 100644 sound/firewire/motu/motu.h
+ sound/firewire/amdtp-stream.c | 15 +++++++++++++--
+ sound/firewire/amdtp-stream.h |  1 +
+ 2 files changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 9f00696..11a3285 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -140,4 +140,14 @@ config SND_FIREWIRE_TASCAM
- 	 To compile this driver as a module, choose M here: the module
- 	 will be called snd-firewire-tascam.
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index 00060c4..371cf97 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -671,6 +671,8 @@ static void amdtp_stream_first_callback(struct fw_iso_context *context,
+ 					void *header, void *private_data)
+ {
+ 	struct amdtp_stream *s = private_data;
++	u32 cycle;
++	unsigned int packets;
  
-+config SND_FIREWIRE_MOTU
-+	tristate "Mark of the unicorn FireWire series support"
-+	select SND_FIREWIRE_LIB
-+	select SND_HWDEP
-+	help
-+	 Say Y here to enable support for FireWire devices which MOTU produced:
+ 	/*
+ 	 * For in-stream, first packet has come.
+@@ -679,10 +681,19 @@ static void amdtp_stream_first_callback(struct fw_iso_context *context,
+ 	s->callbacked = true;
+ 	wake_up(&s->callback_wait);
+ 
+-	if (s->direction == AMDTP_IN_STREAM)
++	cycle = compute_cycle_count(tstamp);
 +
-+	 To compile this driver as a module, choose M here: the module
-+	 will be called snd-firewire-motu.
-+
- endif # SND_FIREWIRE
-diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
-index 0ee1fb1..9388ded 100644
---- a/sound/firewire/Makefile
-+++ b/sound/firewire/Makefile
-@@ -13,3 +13,4 @@ obj-$(CONFIG_SND_FIREWORKS) += fireworks/
- obj-$(CONFIG_SND_BEBOB) += bebob/
- obj-$(CONFIG_SND_FIREWIRE_DIGI00X) += digi00x/
- obj-$(CONFIG_SND_FIREWIRE_TASCAM) += tascam/
-+obj-$(CONFIG_SND_FIREWIRE_MOTU) += motu/
-diff --git a/sound/firewire/motu/Makefile b/sound/firewire/motu/Makefile
-new file mode 100644
-index 0000000..d7819d5
---- /dev/null
-+++ b/sound/firewire/motu/Makefile
-@@ -0,0 +1,2 @@
-+snd-firewire-motu-objs := motu.o
-+obj-$(CONFIG_SND_FIREWIRE_MOTU) += snd-firewire-motu.o
-diff --git a/sound/firewire/motu/motu.c b/sound/firewire/motu/motu.c
-new file mode 100644
-index 0000000..2684e74
---- /dev/null
-+++ b/sound/firewire/motu/motu.c
-@@ -0,0 +1,134 @@
-+/*
-+ * motu.c - a part of driver for MOTU FireWire series
-+ *
-+ * Copyright (c) 2015-2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#include "motu.h"
-+
-+#define OUI_MOTU	0x0001f2
-+
-+MODULE_DESCRIPTION("MOTU FireWire driver");
-+MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
-+MODULE_LICENSE("GPL v2");
-+
-+static void name_card(struct snd_motu *motu)
-+{
-+	struct fw_device *fw_dev = fw_parent_device(motu->unit);
-+	struct fw_csr_iterator it;
-+	int key, val;
-+	u32 version = 0;
-+
-+	fw_csr_iterator_init(&it, motu->unit->directory);
-+	while (fw_csr_iterator_next(&it, &key, &val)) {
-+		switch (key) {
-+		case CSR_VERSION:
-+			version = val;
-+			break;
-+		}
++	if (s->direction == AMDTP_IN_STREAM) {
++		packets = header_length / IN_PACKET_HEADER_SIZE;
++		cycle = decrement_cycle_count(cycle, packets);
+ 		context->callback.sc = in_stream_callback;
+-	else
++	} else {
++		packets = header_length / 4;
++		cycle = increment_cycle_count(cycle, QUEUE_LENGTH - packets);
+ 		context->callback.sc = out_stream_callback;
 +	}
 +
-+	strcpy(motu->card->driver, "FW-MOTU");
-+	snprintf(motu->card->longname, sizeof(motu->card->longname),
-+		 "MOTU (version:%d), GUID %08x%08x at %s, S%d",
-+		 version,
-+		 fw_dev->config_rom[3], fw_dev->config_rom[4],
-+		 dev_name(&motu->unit->device), 100 << fw_dev->max_speed);
-+}
-+
-+static void motu_card_free(struct snd_card *card)
-+{
-+	struct snd_motu *motu = card->private_data;
-+
-+	fw_unit_put(motu->unit);
-+
-+	mutex_destroy(&motu->mutex);
-+}
-+
-+static int motu_probe(struct fw_unit *unit,
-+		      const struct ieee1394_device_id *entry)
-+{
-+	struct snd_card *card;
-+	struct snd_motu *motu;
-+	int err;
-+
-+	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE,
-+			   sizeof(*motu), &card);
-+	if (err < 0)
-+		return err;
-+
-+	motu = card->private_data;
-+	motu->card = card;
-+	motu->unit = fw_unit_get(unit);
-+	card->private_free = motu_card_free;
-+
-+	mutex_init(&motu->mutex);
-+
-+	name_card(motu);
-+
-+	err = snd_card_register(card);
-+	if (err < 0)
-+		goto error;
-+
-+	dev_set_drvdata(&unit->device, motu);
-+
-+	return 0;
-+error:
-+	snd_card_free(card);
-+	return err;
-+}
-+
-+static void motu_remove(struct fw_unit *unit)
-+{
-+	struct snd_motu *motu = dev_get_drvdata(&unit->device);
-+
-+	/* No need to wait for releasing card object in this context. */
-+	snd_card_free_when_closed(motu->card);
-+}
-+
-+static void motu_bus_update(struct fw_unit *unit)
-+{
-+	return;
-+}
-+
-+#define SND_MOTU_DEV_ENTRY(model)			\
-+{							\
-+	.match_flags	= IEEE1394_MATCH_VENDOR_ID |	\
-+			  IEEE1394_MATCH_MODEL_ID |	\
-+			  IEEE1394_MATCH_SPECIFIER_ID,	\
-+	.vendor_id	= OUI_MOTU,			\
-+	.model_id	= model,			\
-+	.specifier_id	= OUI_MOTU,			\
-+}
-+
-+static const struct ieee1394_device_id motu_id_table[] = {
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(ieee1394, motu_id_table);
-+
-+static struct fw_driver motu_driver = {
-+	.driver   = {
-+		.owner	= THIS_MODULE,
-+		.name	= KBUILD_MODNAME,
-+		.bus	= &fw_bus_type,
-+	},
-+	.probe    = motu_probe,
-+	.update   = motu_bus_update,
-+	.remove   = motu_remove,
-+	.id_table = motu_id_table,
-+};
-+
-+static int __init alsa_motu_init(void)
-+{
-+	return driver_register(&motu_driver.driver);
-+}
-+
-+static void __exit alsa_motu_exit(void)
-+{
-+	driver_unregister(&motu_driver.driver);
-+}
-+
-+module_init(alsa_motu_init);
-+module_exit(alsa_motu_exit);
-diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
-new file mode 100644
-index 0000000..f3d0b28
---- /dev/null
-+++ b/sound/firewire/motu/motu.h
-@@ -0,0 +1,29 @@
-+/*
-+ * motu.h - a part of driver for MOTU FireWire series
-+ *
-+ * Copyright (c) 2015-2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
-+ *
-+ * Licensed under the terms of the GNU General Public License, version 2.
-+ */
-+
-+#ifndef SOUND_FIREWIRE_MOTU_H_INCLUDED
-+#define SOUND_FIREWIRE_MOTU_H_INCLUDED
-+
-+#include <linux/device.h>
-+#include <linux/firewire.h>
-+#include <linux/firewire-constants.h>
-+#include <linux/module.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/mutex.h>
-+#include <linux/slab.h>
-+
-+#include <sound/control.h>
-+#include <sound/core.h>
-+
-+struct snd_motu {
-+	struct snd_card *card;
-+	struct fw_unit *unit;
-+	struct mutex mutex;
-+};
-+
-+#endif
++	s->start_cycle = cycle;
+ 
+ 	context->callback.sc(context, tstamp, header_length, header, s);
+ }
+diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
+index c1bc7fa..edf5646 100644
+--- a/sound/firewire/amdtp-stream.h
++++ b/sound/firewire/amdtp-stream.h
+@@ -130,6 +130,7 @@ struct amdtp_stream {
+ 	/* To wait for first packet. */
+ 	bool callbacked;
+ 	wait_queue_head_t callback_wait;
++	u32 start_cycle;
+ 
+ 	/* For backends to process data blocks. */
+ 	void *protocol;
 -- 
 2.9.3
