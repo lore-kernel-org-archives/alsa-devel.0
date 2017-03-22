@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 02/18] ALSA: firewire-motu: postpone sound card
-	registration
-Date: Wed, 22 Mar 2017 21:30:12 +0900
-Message-ID: <20170322123028.24148-3-o-takashi@sakamocchi.jp>
+Subject: [PATCH 04/18] ALSA: firewire-motu: add an abstraction
+	layer for three types of protocols
+Date: Wed, 22 Mar 2017 21:30:14 +0900
+Message-ID: <20170322123028.24148-5-o-takashi@sakamocchi.jp>
 References: <20170322123028.24148-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 4450F2670FC
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 468EF2673BB
  for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2017 13:30:39 +0100 (CET)
 In-Reply-To: <20170322123028.24148-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,172 +25,138 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Just after appearing on IEEE 1394 bus, this unit generates several bus
-resets. This is due to loading firmware from on-board flash memory and
-initialize hardware. It's better to postpone sound card registration.
+In an aspect of used protocols to communicate, models of MOTU FireWire
+units are categorized to three generations.
 
-This commit applies this idea.
+This commit adds an abstraction layer of the protocols for features
+related to packet streaming functionality. This layer includes 5
+operations.
+
+When configuring packet streaming functionality with sampling rate and
+sampling transmission frequency, .get_clock_rate and .set_clock_rate are
+called with proper arguments. MOTU FireWire series supports up to 192.0kHz.
+
+When checking current source of sampling clock (not clock for packetization
+layer), .get_clock_source is used. Enumeration is added to represent the
+sources supported by this series. This operation can be used to expose
+available sampling rate to user space applications when the unit is
+configured to use any input signal as source of clock instead of crystal
+clock.
+
+In the protocols, the path between packet processing layer and digital
+signal processing layer can be controlled. This looks a functionality to
+'mute' the unit. For this feature, .switch_fetching_mode is added. This
+can be used to suppress noises every time packet streaming starts/stops.
+
+In a point of the size of data blocks at a certain sampling transmission
+frequency, the most units accept several modes. This is due to usage of
+optical interfaces. The size differs depending on which modes are
+configured to the interfaces; None, S/PDIF and ADAT. Additionally, format
+of packet is different depending on protocols. To cache current size of
+data blocks and its format, .cache_packet_formats is added. This is used
+by PCM functionality, packet streaming functionality and data block
+processing layer.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/motu/motu.c | 97 ++++++++++++++++++++++++++++++++++------------
- sound/firewire/motu/motu.h |  5 +++
- 2 files changed, 78 insertions(+), 24 deletions(-)
+ sound/firewire/motu/motu.c | 12 ++++++++++++
+ sound/firewire/motu/motu.h | 43 +++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 55 insertions(+)
 
 diff --git a/sound/firewire/motu/motu.c b/sound/firewire/motu/motu.c
-index 2684e74..bdd82dd 100644
+index e69aa7b..1e6fc74 100644
 --- a/sound/firewire/motu/motu.c
 +++ b/sound/firewire/motu/motu.c
-@@ -38,59 +38,108 @@ static void name_card(struct snd_motu *motu)
- 		 dev_name(&motu->unit->device), 100 << fw_dev->max_speed);
- }
+@@ -14,6 +14,18 @@ MODULE_DESCRIPTION("MOTU FireWire driver");
+ MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
+ MODULE_LICENSE("GPL v2");
  
--static void motu_card_free(struct snd_card *card)
-+static void motu_free(struct snd_motu *motu)
++const unsigned int snd_motu_clock_rates[SND_MOTU_CLOCK_RATE_COUNT] = {
++	/* mode 0 */
++	[0] =  44100,
++	[1] =  48000,
++	/* mode 1 */
++	[2] =  88200,
++	[3] =  96000,
++	/* mode 2 */
++	[4] = 176400,
++	[5] = 192000,
++};
++
+ static void name_card(struct snd_motu *motu)
  {
--	struct snd_motu *motu = card->private_data;
--
- 	fw_unit_put(motu->unit);
- 
- 	mutex_destroy(&motu->mutex);
-+	kfree(motu);
- }
- 
--static int motu_probe(struct fw_unit *unit,
--		      const struct ieee1394_device_id *entry)
-+/*
-+ * This module releases the FireWire unit data after all ALSA character devices
-+ * are released by applications. This is for releasing stream data or finishing
-+ * transactions safely. Thus at returning from .remove(), this module still keep
-+ * references for the unit.
-+ */
-+static void motu_card_free(struct snd_card *card)
- {
--	struct snd_card *card;
--	struct snd_motu *motu;
--	int err;
-+	motu_free(card->private_data);
-+}
- 
--	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE,
--			   sizeof(*motu), &card);
--	if (err < 0)
--		return err;
-+static void do_registration(struct work_struct *work)
-+{
-+	struct snd_motu *motu = container_of(work, struct snd_motu, dwork.work);
-+	int err;
- 
--	motu = card->private_data;
--	motu->card = card;
--	motu->unit = fw_unit_get(unit);
--	card->private_free = motu_card_free;
-+	if (motu->registered)
-+		return;
- 
--	mutex_init(&motu->mutex);
-+	err = snd_card_new(&motu->unit->device, -1, NULL, THIS_MODULE, 0,
-+			   &motu->card);
-+	if (err < 0)
-+		return;
- 
- 	name_card(motu);
- 
--	err = snd_card_register(card);
-+	err = snd_card_register(motu->card);
- 	if (err < 0)
- 		goto error;
- 
-+	/*
-+	 * After registered, motu instance can be released corresponding to
-+	 * releasing the sound card instance.
-+	 */
-+	motu->card->private_free = motu_card_free;
-+	motu->card->private_data = motu;
-+	motu->registered = true;
-+
-+	return;
-+error:
-+	snd_card_free(motu->card);
-+	dev_info(&motu->unit->device,
-+		 "Sound card registration failed: %d\n", err);
-+}
-+
-+static int motu_probe(struct fw_unit *unit,
-+		      const struct ieee1394_device_id *entry)
-+{
-+	struct snd_motu *motu;
-+
-+	/* Allocate this independently of sound card instance. */
-+	motu = kzalloc(sizeof(struct snd_motu), GFP_KERNEL);
-+	if (motu == NULL)
-+		return -ENOMEM;
-+
-+	motu->unit = fw_unit_get(unit);
- 	dev_set_drvdata(&unit->device, motu);
- 
-+	mutex_init(&motu->mutex);
-+
-+	/* Allocate and register this sound card later. */
-+	INIT_DEFERRABLE_WORK(&motu->dwork, do_registration);
-+	snd_fw_schedule_registration(unit, &motu->dwork);
-+
- 	return 0;
--error:
--	snd_card_free(card);
--	return err;
- }
- 
- static void motu_remove(struct fw_unit *unit)
- {
- 	struct snd_motu *motu = dev_get_drvdata(&unit->device);
- 
--	/* No need to wait for releasing card object in this context. */
--	snd_card_free_when_closed(motu->card);
-+	/*
-+	 * Confirm to stop the work for registration before the sound card is
-+	 * going to be released. The work is not scheduled again because bus
-+	 * reset handler is not called anymore.
-+	 */
-+	cancel_delayed_work_sync(&motu->dwork);
-+
-+	if (motu->registered) {
-+		/* No need to wait for releasing card object in this context. */
-+		snd_card_free_when_closed(motu->card);
-+	} else {
-+		/* Don't forget this case. */
-+		motu_free(motu);
-+	}
- }
- 
- static void motu_bus_update(struct fw_unit *unit)
- {
--	return;
-+	struct snd_motu *motu = dev_get_drvdata(&unit->device);
-+
-+	/* Postpone a workqueue for deferred registration. */
-+	if (!motu->registered)
-+		snd_fw_schedule_registration(unit, &motu->dwork);
- }
- 
- #define SND_MOTU_DEV_ENTRY(model)			\
+ 	struct fw_device *fw_dev = fw_parent_device(motu->unit);
 diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
-index f3d0b28..eb0ffd5 100644
+index cb7324d..cb6b573 100644
 --- a/sound/firewire/motu/motu.h
 +++ b/sound/firewire/motu/motu.h
-@@ -20,10 +20,15 @@
- #include <sound/control.h>
- #include <sound/core.h>
+@@ -22,6 +22,16 @@
  
-+#include "../lib.h"
+ #include "../lib.h"
+ 
++struct snd_motu_packet_format {
++	unsigned char midi_flag_offset;
++	unsigned char midi_byte_offset;
++	unsigned char pcm_byte_offset;
++
++	unsigned char msg_chunks;
++	unsigned char fixed_part_pcm_chunks[3];
++	unsigned char differed_part_pcm_chunks[3];
++};
 +
  struct snd_motu {
  	struct snd_card *card;
  	struct fw_unit *unit;
- 	struct mutex mutex;
+@@ -32,6 +42,10 @@ struct snd_motu {
+ 
+ 	/* Model dependent information. */
+ 	const struct snd_motu_spec *spec;
 +
-+	bool registered;
-+	struct delayed_work dwork;
++	/* For packet streaming */
++	struct snd_motu_packet_format tx_packet_formats;
++	struct snd_motu_packet_format rx_packet_formats;
+ };
+ 
+ enum snd_motu_spec_flags {
+@@ -46,12 +60,41 @@ enum snd_motu_spec_flags {
+ 	SND_MOTU_SPEC_HAS_MIDI		= 0x0100,
+ };
+ 
++#define SND_MOTU_CLOCK_RATE_COUNT	6
++extern const unsigned int snd_motu_clock_rates[SND_MOTU_CLOCK_RATE_COUNT];
++
++enum snd_motu_clock_source {
++	SND_MOTU_CLOCK_SOURCE_INTERNAL,
++	SND_MOTU_CLOCK_SOURCE_ADAT_ON_DSUB,
++	SND_MOTU_CLOCK_SOURCE_ADAT_ON_OPT,
++	SND_MOTU_CLOCK_SOURCE_ADAT_ON_OPT_A,
++	SND_MOTU_CLOCK_SOURCE_ADAT_ON_OPT_B,
++	SND_MOTU_CLOCK_SOURCE_SPDIF_ON_OPT,
++	SND_MOTU_CLOCK_SOURCE_SPDIF_ON_OPT_A,
++	SND_MOTU_CLOCK_SOURCE_SPDIF_ON_OPT_B,
++	SND_MOTU_CLOCK_SOURCE_SPDIF_ON_COAX,
++	SND_MOTU_CLOCK_SOURCE_AESEBU_ON_XLR,
++	SND_MOTU_CLOCK_SOURCE_WORD_ON_BNC,
++	SND_MOTU_CLOCK_SOURCE_UNKNOWN,
++};
++
++struct snd_motu_protocol {
++	int (*get_clock_rate)(struct snd_motu *motu, unsigned int *rate);
++	int (*set_clock_rate)(struct snd_motu *motu, unsigned int rate);
++	int (*get_clock_source)(struct snd_motu *motu,
++				enum snd_motu_clock_source *source);
++	int (*switch_fetching_mode)(struct snd_motu *motu, bool enable);
++	int (*cache_packet_formats)(struct snd_motu *motu);
++};
++
+ struct snd_motu_spec {
+ 	const char *const name;
+ 	enum snd_motu_spec_flags flags;
+ 
+ 	unsigned char analog_in_ports;
+ 	unsigned char analog_out_ports;
++
++	const struct snd_motu_protocol *const protocol;
  };
  
  #endif
