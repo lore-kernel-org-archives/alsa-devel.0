@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 04/18] ALSA: firewire-motu: add an abstraction
-	layer for three types of protocols
-Date: Wed, 22 Mar 2017 21:30:14 +0900
-Message-ID: <20170322123028.24148-5-o-takashi@sakamocchi.jp>
+Subject: [PATCH 01/18] ALSA: firewire-motu: add skeleton for
+	Mark of the unicorn (MOTU) FireWire series
+Date: Wed, 22 Mar 2017 21:30:11 +0900
+Message-ID: <20170322123028.24148-2-o-takashi@sakamocchi.jp>
 References: <20170322123028.24148-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 468EF2673BB
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 4973D2673BD
  for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2017 13:30:39 +0100 (CET)
 In-Reply-To: <20170322123028.24148-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,140 +25,232 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-In an aspect of used protocols to communicate, models of MOTU FireWire
-units are categorized to three generations.
-
-This commit adds an abstraction layer of the protocols for features
-related to packet streaming functionality. This layer includes 5
-operations.
-
-When configuring packet streaming functionality with sampling rate and
-sampling transmission frequency, .get_clock_rate and .set_clock_rate are
-called with proper arguments. MOTU FireWire series supports up to 192.0kHz.
-
-When checking current source of sampling clock (not clock for packetization
-layer), .get_clock_source is used. Enumeration is added to represent the
-sources supported by this series. This operation can be used to expose
-available sampling rate to user space applications when the unit is
-configured to use any input signal as source of clock instead of crystal
-clock.
-
-In the protocols, the path between packet processing layer and digital
-signal processing layer can be controlled. This looks a functionality to
-'mute' the unit. For this feature, .switch_fetching_mode is added. This
-can be used to suppress noises every time packet streaming starts/stops.
-
-In a point of the size of data blocks at a certain sampling transmission
-frequency, the most units accept several modes. This is due to usage of
-optical interfaces. The size differs depending on which modes are
-configured to the interfaces; None, S/PDIF and ADAT. Additionally, format
-of packet is different depending on protocols. To cache current size of
-data blocks and its format, .cache_packet_formats is added. This is used
-by PCM functionality, packet streaming functionality and data block
-processing layer.
+This commit adds an new driver for MOTU FireWire series. In this commit,
+this driver just creates/removes card instance according to bus event.
+More functionalities will be added in following commits.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/motu/motu.c | 12 ++++++++++++
- sound/firewire/motu/motu.h | 43 +++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 55 insertions(+)
+ sound/firewire/Kconfig       |  10 ++++
+ sound/firewire/Makefile      |   1 +
+ sound/firewire/motu/Makefile |   2 +
+ sound/firewire/motu/motu.c   | 134 +++++++++++++++++++++++++++++++++++++++++++
+ sound/firewire/motu/motu.h   |  29 ++++++++++
+ 5 files changed, 176 insertions(+)
+ create mode 100644 sound/firewire/motu/Makefile
+ create mode 100644 sound/firewire/motu/motu.c
+ create mode 100644 sound/firewire/motu/motu.h
 
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index 9f00696..11a3285 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -140,4 +140,14 @@ config SND_FIREWIRE_TASCAM
+ 	 To compile this driver as a module, choose M here: the module
+ 	 will be called snd-firewire-tascam.
+ 
++config SND_FIREWIRE_MOTU
++	tristate "Mark of the unicorn FireWire series support"
++	select SND_FIREWIRE_LIB
++	select SND_HWDEP
++	help
++	 Say Y here to enable support for FireWire devices which MOTU produced:
++
++	 To compile this driver as a module, choose M here: the module
++	 will be called snd-firewire-motu.
++
+ endif # SND_FIREWIRE
+diff --git a/sound/firewire/Makefile b/sound/firewire/Makefile
+index 0ee1fb1..9388ded 100644
+--- a/sound/firewire/Makefile
++++ b/sound/firewire/Makefile
+@@ -13,3 +13,4 @@ obj-$(CONFIG_SND_FIREWORKS) += fireworks/
+ obj-$(CONFIG_SND_BEBOB) += bebob/
+ obj-$(CONFIG_SND_FIREWIRE_DIGI00X) += digi00x/
+ obj-$(CONFIG_SND_FIREWIRE_TASCAM) += tascam/
++obj-$(CONFIG_SND_FIREWIRE_MOTU) += motu/
+diff --git a/sound/firewire/motu/Makefile b/sound/firewire/motu/Makefile
+new file mode 100644
+index 0000000..d7819d5
+--- /dev/null
++++ b/sound/firewire/motu/Makefile
+@@ -0,0 +1,2 @@
++snd-firewire-motu-objs := motu.o
++obj-$(CONFIG_SND_FIREWIRE_MOTU) += snd-firewire-motu.o
 diff --git a/sound/firewire/motu/motu.c b/sound/firewire/motu/motu.c
-index e69aa7b..1e6fc74 100644
---- a/sound/firewire/motu/motu.c
+new file mode 100644
+index 0000000..2684e74
+--- /dev/null
 +++ b/sound/firewire/motu/motu.c
-@@ -14,6 +14,18 @@ MODULE_DESCRIPTION("MOTU FireWire driver");
- MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
- MODULE_LICENSE("GPL v2");
- 
-+const unsigned int snd_motu_clock_rates[SND_MOTU_CLOCK_RATE_COUNT] = {
-+	/* mode 0 */
-+	[0] =  44100,
-+	[1] =  48000,
-+	/* mode 1 */
-+	[2] =  88200,
-+	[3] =  96000,
-+	/* mode 2 */
-+	[4] = 176400,
-+	[5] = 192000,
+@@ -0,0 +1,134 @@
++/*
++ * motu.c - a part of driver for MOTU FireWire series
++ *
++ * Copyright (c) 2015-2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include "motu.h"
++
++#define OUI_MOTU	0x0001f2
++
++MODULE_DESCRIPTION("MOTU FireWire driver");
++MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
++MODULE_LICENSE("GPL v2");
++
++static void name_card(struct snd_motu *motu)
++{
++	struct fw_device *fw_dev = fw_parent_device(motu->unit);
++	struct fw_csr_iterator it;
++	int key, val;
++	u32 version = 0;
++
++	fw_csr_iterator_init(&it, motu->unit->directory);
++	while (fw_csr_iterator_next(&it, &key, &val)) {
++		switch (key) {
++		case CSR_VERSION:
++			version = val;
++			break;
++		}
++	}
++
++	strcpy(motu->card->driver, "FW-MOTU");
++	snprintf(motu->card->longname, sizeof(motu->card->longname),
++		 "MOTU (version:%d), GUID %08x%08x at %s, S%d",
++		 version,
++		 fw_dev->config_rom[3], fw_dev->config_rom[4],
++		 dev_name(&motu->unit->device), 100 << fw_dev->max_speed);
++}
++
++static void motu_card_free(struct snd_card *card)
++{
++	struct snd_motu *motu = card->private_data;
++
++	fw_unit_put(motu->unit);
++
++	mutex_destroy(&motu->mutex);
++}
++
++static int motu_probe(struct fw_unit *unit,
++		      const struct ieee1394_device_id *entry)
++{
++	struct snd_card *card;
++	struct snd_motu *motu;
++	int err;
++
++	err = snd_card_new(&unit->device, -1, NULL, THIS_MODULE,
++			   sizeof(*motu), &card);
++	if (err < 0)
++		return err;
++
++	motu = card->private_data;
++	motu->card = card;
++	motu->unit = fw_unit_get(unit);
++	card->private_free = motu_card_free;
++
++	mutex_init(&motu->mutex);
++
++	name_card(motu);
++
++	err = snd_card_register(card);
++	if (err < 0)
++		goto error;
++
++	dev_set_drvdata(&unit->device, motu);
++
++	return 0;
++error:
++	snd_card_free(card);
++	return err;
++}
++
++static void motu_remove(struct fw_unit *unit)
++{
++	struct snd_motu *motu = dev_get_drvdata(&unit->device);
++
++	/* No need to wait for releasing card object in this context. */
++	snd_card_free_when_closed(motu->card);
++}
++
++static void motu_bus_update(struct fw_unit *unit)
++{
++	return;
++}
++
++#define SND_MOTU_DEV_ENTRY(model)			\
++{							\
++	.match_flags	= IEEE1394_MATCH_VENDOR_ID |	\
++			  IEEE1394_MATCH_MODEL_ID |	\
++			  IEEE1394_MATCH_SPECIFIER_ID,	\
++	.vendor_id	= OUI_MOTU,			\
++	.model_id	= model,			\
++	.specifier_id	= OUI_MOTU,			\
++}
++
++static const struct ieee1394_device_id motu_id_table[] = {
++	{ }
++};
++MODULE_DEVICE_TABLE(ieee1394, motu_id_table);
++
++static struct fw_driver motu_driver = {
++	.driver   = {
++		.owner	= THIS_MODULE,
++		.name	= KBUILD_MODNAME,
++		.bus	= &fw_bus_type,
++	},
++	.probe    = motu_probe,
++	.update   = motu_bus_update,
++	.remove   = motu_remove,
++	.id_table = motu_id_table,
 +};
 +
- static void name_card(struct snd_motu *motu)
- {
- 	struct fw_device *fw_dev = fw_parent_device(motu->unit);
++static int __init alsa_motu_init(void)
++{
++	return driver_register(&motu_driver.driver);
++}
++
++static void __exit alsa_motu_exit(void)
++{
++	driver_unregister(&motu_driver.driver);
++}
++
++module_init(alsa_motu_init);
++module_exit(alsa_motu_exit);
 diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
-index cb7324d..cb6b573 100644
---- a/sound/firewire/motu/motu.h
+new file mode 100644
+index 0000000..f3d0b28
+--- /dev/null
 +++ b/sound/firewire/motu/motu.h
-@@ -22,6 +22,16 @@
- 
- #include "../lib.h"
- 
-+struct snd_motu_packet_format {
-+	unsigned char midi_flag_offset;
-+	unsigned char midi_byte_offset;
-+	unsigned char pcm_byte_offset;
+@@ -0,0 +1,29 @@
++/*
++ * motu.h - a part of driver for MOTU FireWire series
++ *
++ * Copyright (c) 2015-2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
 +
-+	unsigned char msg_chunks;
-+	unsigned char fixed_part_pcm_chunks[3];
-+	unsigned char differed_part_pcm_chunks[3];
++#ifndef SOUND_FIREWIRE_MOTU_H_INCLUDED
++#define SOUND_FIREWIRE_MOTU_H_INCLUDED
++
++#include <linux/device.h>
++#include <linux/firewire.h>
++#include <linux/firewire-constants.h>
++#include <linux/module.h>
++#include <linux/mod_devicetable.h>
++#include <linux/mutex.h>
++#include <linux/slab.h>
++
++#include <sound/control.h>
++#include <sound/core.h>
++
++struct snd_motu {
++	struct snd_card *card;
++	struct fw_unit *unit;
++	struct mutex mutex;
 +};
 +
- struct snd_motu {
- 	struct snd_card *card;
- 	struct fw_unit *unit;
-@@ -32,6 +42,10 @@ struct snd_motu {
- 
- 	/* Model dependent information. */
- 	const struct snd_motu_spec *spec;
-+
-+	/* For packet streaming */
-+	struct snd_motu_packet_format tx_packet_formats;
-+	struct snd_motu_packet_format rx_packet_formats;
- };
- 
- enum snd_motu_spec_flags {
-@@ -46,12 +60,41 @@ enum snd_motu_spec_flags {
- 	SND_MOTU_SPEC_HAS_MIDI		= 0x0100,
- };
- 
-+#define SND_MOTU_CLOCK_RATE_COUNT	6
-+extern const unsigned int snd_motu_clock_rates[SND_MOTU_CLOCK_RATE_COUNT];
-+
-+enum snd_motu_clock_source {
-+	SND_MOTU_CLOCK_SOURCE_INTERNAL,
-+	SND_MOTU_CLOCK_SOURCE_ADAT_ON_DSUB,
-+	SND_MOTU_CLOCK_SOURCE_ADAT_ON_OPT,
-+	SND_MOTU_CLOCK_SOURCE_ADAT_ON_OPT_A,
-+	SND_MOTU_CLOCK_SOURCE_ADAT_ON_OPT_B,
-+	SND_MOTU_CLOCK_SOURCE_SPDIF_ON_OPT,
-+	SND_MOTU_CLOCK_SOURCE_SPDIF_ON_OPT_A,
-+	SND_MOTU_CLOCK_SOURCE_SPDIF_ON_OPT_B,
-+	SND_MOTU_CLOCK_SOURCE_SPDIF_ON_COAX,
-+	SND_MOTU_CLOCK_SOURCE_AESEBU_ON_XLR,
-+	SND_MOTU_CLOCK_SOURCE_WORD_ON_BNC,
-+	SND_MOTU_CLOCK_SOURCE_UNKNOWN,
-+};
-+
-+struct snd_motu_protocol {
-+	int (*get_clock_rate)(struct snd_motu *motu, unsigned int *rate);
-+	int (*set_clock_rate)(struct snd_motu *motu, unsigned int rate);
-+	int (*get_clock_source)(struct snd_motu *motu,
-+				enum snd_motu_clock_source *source);
-+	int (*switch_fetching_mode)(struct snd_motu *motu, bool enable);
-+	int (*cache_packet_formats)(struct snd_motu *motu);
-+};
-+
- struct snd_motu_spec {
- 	const char *const name;
- 	enum snd_motu_spec_flags flags;
- 
- 	unsigned char analog_in_ports;
- 	unsigned char analog_out_ports;
-+
-+	const struct snd_motu_protocol *const protocol;
- };
- 
- #endif
++#endif
 -- 
 2.9.3
