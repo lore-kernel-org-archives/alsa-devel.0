@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 06/18] ALSA: firewire-lib: add support for
-	source packet header field in CIP header
-Date: Wed, 22 Mar 2017 21:30:16 +0900
-Message-ID: <20170322123028.24148-7-o-takashi@sakamocchi.jp>
+Subject: [PATCH 07/18] ALSA: firewire-lib: enable
+	CIP_DBC_IS_END_EVENT for both directions of stream
+Date: Wed, 22 Mar 2017 21:30:17 +0900
+Message-ID: <20170322123028.24148-8-o-takashi@sakamocchi.jp>
 References: <20170322123028.24148-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id C2E652673BF
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id E0F7C2673C0
  for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2017 13:30:42 +0100 (CET)
 In-Reply-To: <20170322123028.24148-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,75 +25,58 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-In IEC 61883-1, CIP headers can have a SPH field. When a packet has 1 in
-SPH field of its CIP header, the packet has a source packet headers. A
-source packet header consists of 32 bit field (= 1 quadlet) and it
-transfers time stamp, which is the same value as the lower 25 bits of the
-IEEE 1394 CYCLE_TIMER register and the rest is zero.
+Commit c8bdf49b9935("ALSA: fireworks/firewire-lib: Add a quirk for the
+meaning of dbc") adds CIP_DBC_IS_END_EVENT flag just for tx packets.
+However, MOTU FireWire series has this quirk for rx packets.
 
-This commit just supports source packet header field because IEC 61883-1
-includes ambiguity the position of this header and its count. Each
-protocol layer is allowed to have actual implementation according its
-requirements.
+This commit allows both directions with the flag.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp-stream.c | 8 ++++++--
- sound/firewire/amdtp-stream.h | 1 +
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ sound/firewire/amdtp-stream.c | 8 +++++++-
+ sound/firewire/amdtp-stream.h | 4 ++--
+ 2 files changed, 9 insertions(+), 3 deletions(-)
 
 diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 371cf97..65c5ed7 100644
+index 65c5ed7..f9d12f4 100644
 --- a/sound/firewire/amdtp-stream.c
 +++ b/sound/firewire/amdtp-stream.c
-@@ -37,6 +37,8 @@
- #define CIP_SID_MASK		0x3f000000
- #define CIP_DBS_MASK		0x00ff0000
- #define CIP_DBS_SHIFT		16
-+#define CIP_SPH_MASK		0x00000400
-+#define CIP_SPH_SHIFT		10
- #define CIP_DBC_MASK		0x000000ff
- #define CIP_FMT_SHIFT		24
- #define CIP_FMT_MASK		0x3f000000
-@@ -426,6 +428,7 @@ static int handle_out_packet(struct amdtp_stream *s, unsigned int cycle,
+@@ -426,6 +426,10 @@ static int handle_out_packet(struct amdtp_stream *s, unsigned int cycle,
+ 	data_blocks = calculate_data_blocks(s, syt);
+ 	pcm_frames = s->process_data_blocks(s, buffer + 2, data_blocks, &syt);
  
++	if (s->flags & CIP_DBC_IS_END_EVENT)
++		s->data_block_counter =
++				(s->data_block_counter + data_blocks) & 0xff;
++
  	buffer[0] = cpu_to_be32(ACCESS_ONCE(s->source_node_id_field) |
  				(s->data_block_quadlets << CIP_DBS_SHIFT) |
-+				((s->sph << CIP_SPH_SHIFT) & CIP_SPH_MASK) |
- 				s->data_block_counter);
- 	buffer[1] = cpu_to_be32(CIP_EOH |
- 				((s->fmt << CIP_FMT_SHIFT) & CIP_FMT_MASK) |
-@@ -454,7 +457,7 @@ static int handle_in_packet(struct amdtp_stream *s,
- {
- 	__be32 *buffer;
- 	u32 cip_header[2];
--	unsigned int fmt, fdf, syt;
-+	unsigned int sph, fmt, fdf, syt;
- 	unsigned int data_block_quadlets, data_block_counter, dbc_interval;
- 	unsigned int data_blocks;
- 	struct snd_pcm_substream *pcm;
-@@ -482,8 +485,9 @@ static int handle_in_packet(struct amdtp_stream *s,
- 	}
+ 				((s->sph << CIP_SPH_SHIFT) & CIP_SPH_MASK) |
+@@ -435,7 +439,9 @@ static int handle_out_packet(struct amdtp_stream *s, unsigned int cycle,
+ 				((s->fdf << CIP_FDF_SHIFT) & CIP_FDF_MASK) |
+ 				(syt & CIP_SYT_MASK));
  
- 	/* Check valid protocol or not. */
-+	sph = (cip_header[0] & CIP_SPH_MASK) >> CIP_SPH_SHIFT;
- 	fmt = (cip_header[1] & CIP_FMT_MASK) >> CIP_FMT_SHIFT;
--	if (fmt != s->fmt) {
-+	if (sph != s->sph || fmt != s->fmt) {
- 		dev_info_ratelimited(&s->unit->device,
- 				     "Detect unexpected protocol: %08x %08x\n",
- 				     cip_header[0], cip_header[1]);
+-	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
++	if (!(s->flags & CIP_DBC_IS_END_EVENT))
++		s->data_block_counter =
++				(s->data_block_counter + data_blocks) & 0xff;
+ 	payload_length = 8 + data_blocks * 4 * s->data_block_quadlets;
+ 
+ 	trace_out_packet(s, cycle, buffer, payload_length, index);
 diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-index edf5646..679053d 100644
+index 679053d..d2a3163 100644
 --- a/sound/firewire/amdtp-stream.h
 +++ b/sound/firewire/amdtp-stream.h
-@@ -106,6 +106,7 @@ struct amdtp_stream {
- 	unsigned int source_node_id_field;
- 	unsigned int data_block_quadlets;
- 	unsigned int data_block_counter;
-+	unsigned int sph;
- 	unsigned int fmt;
- 	unsigned int fdf;
- 	/* quirk: fixed interval of dbc between previos/current packets. */
+@@ -18,8 +18,8 @@
+  *	SYT_INTERVAL samples, with these two types alternating so that
+  *	the overall sample rate comes out right.
+  * @CIP_EMPTY_WITH_TAG0: Only for in-stream. Empty in-packets have TAG0.
+- * @CIP_DBC_IS_END_EVENT: Only for in-stream. The value of dbc in an in-packet
+- *	corresponds to the end of event in the packet. Out of IEC 61883.
++ * @CIP_DBC_IS_END_EVENT: The value of dbc in an packet corresponds to the end
++ * of event in the packet. Out of IEC 61883.
+  * @CIP_WRONG_DBS: Only for in-stream. The value of dbs is wrong in in-packets.
+  *	The value of data_block_quadlets is used instead of reported value.
+  * @CIP_SKIP_DBC_ZERO_CHECK: Only for in-stream.  Packets with zero in dbc is
 -- 
 2.9.3
