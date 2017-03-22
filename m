@@ -1,15 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 14/18] ALSA: firewire-motu: add hwdep interface
-Date: Wed, 22 Mar 2017 21:30:24 +0900
-Message-ID: <20170322123028.24148-15-o-takashi@sakamocchi.jp>
+Subject: [PATCH 16/18] ALSA: firewire-motu: add support for
+	MOTU 828mk2 as a model with protocol version 2
+Date: Wed, 22 Mar 2017 21:30:26 +0900
+Message-ID: <20170322123028.24148-17-o-takashi@sakamocchi.jp>
 References: <20170322123028.24148-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 165A22673C7
- for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2017 13:30:42 +0100 (CET)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 5DC272673E9
+ for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2017 13:30:45 +0100 (CET)
 In-Reply-To: <20170322123028.24148-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,504 +25,348 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds hwdep interface so as the other sound drivers for units
-on IEEE 1394 bus have.
+MOTU 828mk2 is one of second generation in MOTU FireWire series, produced in
+2003. This model consists of four chips:
+ * TI TSB41AB2 (Physical layer for IEEE 1394 bus)
+ * PDI 1394L40BE (Link layer for IEEE 1394 bus and packet processing layer)
+ * ALTERA ACEX 1K EP1K30 Series FPGA (Data block processing layer)
+ * TI TMS320VC5402 (Digital signal processing)
 
-This interface is designed for mixer/control applications. By using this
-interface, an application can get information about firewire node, can
-lock/unlock kernel streaming and can get notification at starting/stopping
-kernel streaming.
+This commit adds a support for this model, with its unique protocol as
+version 2. The features of this protocol are:
+
+ * Support data chunks for status and control messages for both
+   directions.
+ * Support a pair of MIDI input/output.
+ * Support a data chunk for mic/instrument independent of analog line in.
+ * Support a data chunk for playback return.
+ * Support independent data chunks for S/PDIF of both optical/coaxial
+   interfaces.
+ * Support independent data chunks for each of main out and phone out.
+
+Status of clock is configured by write transactions to 0x'ffff'f000'0b14.
+Modes of optical interfaces are configured by write transactions to
+0x'ffff'f000'0c04.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/uapi/sound/asound.h       |   3 +-
- include/uapi/sound/firewire.h     |   3 +-
- sound/firewire/motu/Makefile      |   2 +-
- sound/firewire/motu/motu-hwdep.c  | 192 ++++++++++++++++++++++++++++++++++++++
- sound/firewire/motu/motu-midi.c   |  16 ++++
- sound/firewire/motu/motu-pcm.c    |  20 +++-
- sound/firewire/motu/motu-stream.c |  38 ++++++++
- sound/firewire/motu/motu.c        |   5 +
- sound/firewire/motu/motu.h        |  13 +++
- 9 files changed, 285 insertions(+), 7 deletions(-)
- create mode 100644 sound/firewire/motu/motu-hwdep.c
+ sound/firewire/Kconfig                 |   1 +
+ sound/firewire/motu/Makefile           |   3 +-
+ sound/firewire/motu/motu-protocol-v2.c | 237 +++++++++++++++++++++++++++++++++
+ sound/firewire/motu/motu.c             |  14 ++
+ sound/firewire/motu/motu.h             |   2 +
+ 5 files changed, 256 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/motu/motu-protocol-v2.c
 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index be353a7..fd7b561 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -107,9 +107,10 @@ enum {
- 	SNDRV_HWDEP_IFACE_FW_DIGI00X,	/* Digidesign Digi 002/003 family */
- 	SNDRV_HWDEP_IFACE_FW_TASCAM,	/* TASCAM FireWire series */
- 	SNDRV_HWDEP_IFACE_LINE6,	/* Line6 USB processors */
-+	SNDRV_HWDEP_IFACE_FW_MOTU,	/* MOTU FireWire series */
+diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
+index 11a3285..951d510 100644
+--- a/sound/firewire/Kconfig
++++ b/sound/firewire/Kconfig
+@@ -146,6 +146,7 @@ config SND_FIREWIRE_MOTU
+ 	select SND_HWDEP
+ 	help
+ 	 Say Y here to enable support for FireWire devices which MOTU produced:
++	  * 828mk2
  
- 	/* Don't forget to change the following: */
--	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_LINE6
-+	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_MOTU
- };
- 
- struct snd_hwdep_info {
-diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
-index db79a12..59c6d81 100644
---- a/include/uapi/sound/firewire.h
-+++ b/include/uapi/sound/firewire.h
-@@ -65,7 +65,8 @@ union snd_firewire_event {
- #define SNDRV_FIREWIRE_TYPE_OXFW	4
- #define SNDRV_FIREWIRE_TYPE_DIGI00X	5
- #define SNDRV_FIREWIRE_TYPE_TASCAM	6
--/* RME, MOTU, ... */
-+#define SNDRV_FIREWIRE_TYPE_MOTU	7
-+/* RME... */
- 
- struct snd_firewire_get_info {
- 	unsigned int type; /* SNDRV_FIREWIRE_TYPE_xxx */
+ 	 To compile this driver as a module, choose M here: the module
+ 	 will be called snd-firewire-motu.
 diff --git a/sound/firewire/motu/Makefile b/sound/firewire/motu/Makefile
-index a512c1e..cc195d5 100644
+index cc195d5..21968bc 100644
 --- a/sound/firewire/motu/Makefile
 +++ b/sound/firewire/motu/Makefile
-@@ -1,3 +1,3 @@
+@@ -1,3 +1,4 @@
  snd-firewire-motu-objs := motu.o amdtp-motu.o motu-transaction.o motu-stream.o \
--			  motu-proc.o motu-pcm.o motu-midi.o
-+			  motu-proc.o motu-pcm.o motu-midi.o motu-hwdep.o
+-			  motu-proc.o motu-pcm.o motu-midi.o motu-hwdep.o
++			  motu-proc.o motu-pcm.o motu-midi.o motu-hwdep.o \
++			  motu-protocol-v2.o
  obj-$(CONFIG_SND_FIREWIRE_MOTU) += snd-firewire-motu.o
-diff --git a/sound/firewire/motu/motu-hwdep.c b/sound/firewire/motu/motu-hwdep.c
+diff --git a/sound/firewire/motu/motu-protocol-v2.c b/sound/firewire/motu/motu-protocol-v2.c
 new file mode 100644
-index 0000000..e795a52
+index 0000000..05b5d287
 --- /dev/null
-+++ b/sound/firewire/motu/motu-hwdep.c
-@@ -0,0 +1,192 @@
++++ b/sound/firewire/motu/motu-protocol-v2.c
+@@ -0,0 +1,237 @@
 +/*
-+ * motu-hwdep.c - a part of driver for MOTU FireWire series
++ * motu-protocol-v2.c - a part of driver for MOTU FireWire series
 + *
 + * Copyright (c) 2015-2017 Takashi Sakamoto <o-takashi@sakamocchi.jp>
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+/*
-+ * This codes have five functionalities.
-+ *
-+ * 1.get information about firewire node
-+ * 2.get notification about starting/stopping stream
-+ * 3.lock/unlock streaming
-+ *
-+ */
-+
 +#include "motu.h"
 +
-+static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
-+		       loff_t *offset)
++#define V2_CLOCK_STATUS_OFFSET			0x0b14
++#define  V2_CLOCK_RATE_MASK			0x00000038
++#define  V2_CLOCK_RATE_SHIFT			3
++#define  V2_CLOCK_SRC_MASK			0x00000007
++#define  V2_CLOCK_SRC_SHIFT			0
++
++#define V2_IN_OUT_CONF_OFFSET			0x0c04
++#define  V2_OPT_OUT_IFACE_MASK			0x00000c00
++#define  V2_OPT_OUT_IFACE_SHIFT			10
++#define  V2_OPT_IN_IFACE_MASK			0x00000300
++#define  V2_OPT_IN_IFACE_SHIFT			8
++#define  V2_OPT_IFACE_MODE_NONE			0
++#define  V2_OPT_IFACE_MODE_ADAT			1
++#define  V2_OPT_IFACE_MODE_SPDIF		2
++
++static int v2_get_clock_rate(struct snd_motu *motu, unsigned int *rate)
 +{
-+	struct snd_motu *motu = hwdep->private_data;
-+	DEFINE_WAIT(wait);
-+	union snd_firewire_event event;
++	__be32 reg;
++	unsigned int index;
++	int err;
 +
-+	spin_lock_irq(&motu->lock);
++	err = snd_motu_transaction_read(motu, V2_CLOCK_STATUS_OFFSET, &reg,
++					sizeof(reg));
++	if (err < 0)
++		return err;
 +
-+	while (!motu->dev_lock_changed) {
-+		prepare_to_wait(&motu->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
-+		spin_unlock_irq(&motu->lock);
-+		schedule();
-+		finish_wait(&motu->hwdep_wait, &wait);
-+		if (signal_pending(current))
-+			return -ERESTARTSYS;
-+		spin_lock_irq(&motu->lock);
-+	}
++	index = (be32_to_cpu(reg) & V2_CLOCK_RATE_MASK) >> V2_CLOCK_RATE_SHIFT;
++	if (index >= ARRAY_SIZE(snd_motu_clock_rates))
++		return -EIO;
 +
-+	memset(&event, 0, sizeof(event));
-+	if (motu->dev_lock_changed) {
-+		event.lock_status.type = SNDRV_FIREWIRE_EVENT_LOCK_STATUS;
-+		event.lock_status.status = (motu->dev_lock_count > 0);
-+		motu->dev_lock_changed = false;
-+
-+		count = min_t(long, count, sizeof(event.lock_status));
-+	}
-+
-+	spin_unlock_irq(&motu->lock);
-+
-+	if (copy_to_user(buf, &event, count))
-+		return -EFAULT;
-+
-+	return count;
-+}
-+
-+static unsigned int hwdep_poll(struct snd_hwdep *hwdep, struct file *file,
-+			       poll_table *wait)
-+{
-+	struct snd_motu *motu = hwdep->private_data;
-+	unsigned int events;
-+
-+	poll_wait(file, &motu->hwdep_wait, wait);
-+
-+	spin_lock_irq(&motu->lock);
-+	if (motu->dev_lock_changed)
-+		events = POLLIN | POLLRDNORM;
-+	else
-+		events = 0;
-+	spin_unlock_irq(&motu->lock);
-+
-+	return events | POLLOUT;
-+}
-+
-+static int hwdep_get_info(struct snd_motu *motu, void __user *arg)
-+{
-+	struct fw_device *dev = fw_parent_device(motu->unit);
-+	struct snd_firewire_get_info info;
-+
-+	memset(&info, 0, sizeof(info));
-+	info.type = SNDRV_FIREWIRE_TYPE_MOTU;
-+	info.card = dev->card->index;
-+	*(__be32 *)&info.guid[0] = cpu_to_be32(dev->config_rom[3]);
-+	*(__be32 *)&info.guid[4] = cpu_to_be32(dev->config_rom[4]);
-+	strlcpy(info.device_name, dev_name(&dev->device),
-+		sizeof(info.device_name));
-+
-+	if (copy_to_user(arg, &info, sizeof(info)))
-+		return -EFAULT;
++	*rate = snd_motu_clock_rates[index];
 +
 +	return 0;
 +}
 +
-+static int hwdep_lock(struct snd_motu *motu)
++static int v2_set_clock_rate(struct snd_motu *motu, unsigned int rate)
 +{
++	__be32 reg;
++	u32 data;
++	int i;
 +	int err;
 +
-+	spin_lock_irq(&motu->lock);
-+
-+	if (motu->dev_lock_count == 0) {
-+		motu->dev_lock_count = -1;
-+		err = 0;
-+	} else {
-+		err = -EBUSY;
++	for (i = 0; i < ARRAY_SIZE(snd_motu_clock_rates); ++i) {
++		if (snd_motu_clock_rates[i] == rate)
++			break;
 +	}
++	if (i == ARRAY_SIZE(snd_motu_clock_rates))
++		return -EINVAL;
 +
-+	spin_unlock_irq(&motu->lock);
++	err = snd_motu_transaction_read(motu, V2_CLOCK_STATUS_OFFSET, &reg,
++					sizeof(reg));
++	if (err < 0)
++		return err;
++	data = be32_to_cpu(reg);
 +
-+	return err;
++	data &= ~V2_CLOCK_RATE_MASK;
++	data |= i << V2_CLOCK_RATE_SHIFT;
++
++	reg = cpu_to_be32(data);
++	return snd_motu_transaction_write(motu, V2_CLOCK_STATUS_OFFSET, &reg,
++					  sizeof(reg));
 +}
 +
-+static int hwdep_unlock(struct snd_motu *motu)
++static int v2_get_clock_source(struct snd_motu *motu,
++			       enum snd_motu_clock_source *src)
 +{
++	__be32 reg;
++	unsigned int index;
 +	int err;
 +
-+	spin_lock_irq(&motu->lock);
++	err = snd_motu_transaction_read(motu, V2_CLOCK_STATUS_OFFSET, &reg,
++					sizeof(reg));
++	if (err < 0)
++		return err;
 +
-+	if (motu->dev_lock_count == -1) {
-+		motu->dev_lock_count = 0;
-+		err = 0;
-+	} else {
-+		err = -EBADFD;
-+	}
++	index = be32_to_cpu(reg) & V2_CLOCK_SRC_MASK;
++	if (index > 5)
++		return -EIO;
 +
-+	spin_unlock_irq(&motu->lock);
++	/* To check the configuration of optical interface. */
++	err = snd_motu_transaction_read(motu, V2_IN_OUT_CONF_OFFSET, &reg,
++					sizeof(reg));
++	if (err < 0)
++		return err;
 +
-+	return err;
-+}
-+
-+static int hwdep_release(struct snd_hwdep *hwdep, struct file *file)
-+{
-+	struct snd_motu *motu = hwdep->private_data;
-+
-+	spin_lock_irq(&motu->lock);
-+	if (motu->dev_lock_count == -1)
-+		motu->dev_lock_count = 0;
-+	spin_unlock_irq(&motu->lock);
-+
-+	return 0;
-+}
-+
-+static int hwdep_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+	    unsigned int cmd, unsigned long arg)
-+{
-+	struct snd_motu *motu = hwdep->private_data;
-+
-+	switch (cmd) {
-+	case SNDRV_FIREWIRE_IOCTL_GET_INFO:
-+		return hwdep_get_info(motu, (void __user *)arg);
-+	case SNDRV_FIREWIRE_IOCTL_LOCK:
-+		return hwdep_lock(motu);
-+	case SNDRV_FIREWIRE_IOCTL_UNLOCK:
-+		return hwdep_unlock(motu);
++	switch (index) {
++	case 0:
++		*src = SND_MOTU_CLOCK_SOURCE_INTERNAL;
++		break;
++	case 1:
++		if (be32_to_cpu(reg) & 0x00000200)
++			*src = SND_MOTU_CLOCK_SOURCE_SPDIF_ON_OPT;
++		else
++			*src = SND_MOTU_CLOCK_SOURCE_ADAT_ON_OPT;
++		break;
++	case 2:
++		*src = SND_MOTU_CLOCK_SOURCE_SPDIF_ON_COAX;
++		break;
++	case 4:
++		*src = SND_MOTU_CLOCK_SOURCE_WORD_ON_BNC;
++		break;
++	case 5:
++		*src = SND_MOTU_CLOCK_SOURCE_ADAT_ON_DSUB;
++		break;
 +	default:
-+		return -ENOIOCTLCMD;
++		return -EIO;
 +	}
-+}
-+
-+#ifdef CONFIG_COMPAT
-+static int hwdep_compat_ioctl(struct snd_hwdep *hwdep, struct file *file,
-+			      unsigned int cmd, unsigned long arg)
-+{
-+	return hwdep_ioctl(hwdep, file, cmd,
-+			   (unsigned long)compat_ptr(arg));
-+}
-+#else
-+#define hwdep_compat_ioctl NULL
-+#endif
-+
-+int snd_motu_create_hwdep_device(struct snd_motu *motu)
-+{
-+	static const struct snd_hwdep_ops ops = {
-+		.read		= hwdep_read,
-+		.release	= hwdep_release,
-+		.poll		= hwdep_poll,
-+		.ioctl		= hwdep_ioctl,
-+		.ioctl_compat	= hwdep_compat_ioctl,
-+	};
-+	struct snd_hwdep *hwdep;
-+	int err;
-+
-+	err = snd_hwdep_new(motu->card, motu->card->driver, 0, &hwdep);
-+	if (err < 0)
-+		return err;
-+
-+	strcpy(hwdep->name, "MOTU");
-+	hwdep->iface = SNDRV_HWDEP_IFACE_FW_MOTU;
-+	hwdep->ops = ops;
-+	hwdep->private_data = motu;
-+	hwdep->exclusive = true;
 +
 +	return 0;
 +}
-diff --git a/sound/firewire/motu/motu-midi.c b/sound/firewire/motu/motu-midi.c
-index f232f29..e3acfcc 100644
---- a/sound/firewire/motu/motu-midi.c
-+++ b/sound/firewire/motu/motu-midi.c
-@@ -12,6 +12,10 @@ static int midi_capture_open(struct snd_rawmidi_substream *substream)
- 	struct snd_motu *motu = substream->rmidi->private_data;
- 	int err;
- 
-+	err = snd_motu_stream_lock_try(motu);
-+	if (err < 0)
-+		return err;
 +
- 	mutex_lock(&motu->mutex);
- 
- 	motu->capture_substreams++;
-@@ -19,6 +23,9 @@ static int midi_capture_open(struct snd_rawmidi_substream *substream)
- 
- 	mutex_unlock(&motu->mutex);
- 
-+	if (err < 0)
-+		snd_motu_stream_lock_release(motu);
-+
- 	return err;
- }
- 
-@@ -27,6 +34,10 @@ static int midi_playback_open(struct snd_rawmidi_substream *substream)
- 	struct snd_motu *motu = substream->rmidi->private_data;
- 	int err;
- 
-+	err = snd_motu_stream_lock_try(motu);
-+	if (err < 0)
-+		return err;
-+
- 	mutex_lock(&motu->mutex);
- 
- 	motu->playback_substreams++;
-@@ -34,6 +45,9 @@ static int midi_playback_open(struct snd_rawmidi_substream *substream)
- 
- 	mutex_unlock(&motu->mutex);
- 
-+	if (err < 0)
-+		snd_motu_stream_lock_release(motu);
-+
- 	return err;
- }
- 
-@@ -48,6 +62,7 @@ static int midi_capture_close(struct snd_rawmidi_substream *substream)
- 
- 	mutex_unlock(&motu->mutex);
- 
-+	snd_motu_stream_lock_release(motu);
- 	return 0;
- }
- 
-@@ -62,6 +77,7 @@ static int midi_playback_close(struct snd_rawmidi_substream *substream)
- 
- 	mutex_unlock(&motu->mutex);
- 
-+	snd_motu_stream_lock_release(motu);
- 	return 0;
- }
- 
-diff --git a/sound/firewire/motu/motu-pcm.c b/sound/firewire/motu/motu-pcm.c
-index a50bcd6..94558f3 100644
---- a/sound/firewire/motu/motu-pcm.c
-+++ b/sound/firewire/motu/motu-pcm.c
-@@ -159,15 +159,19 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	unsigned int rate;
- 	int err;
- 
-+	err = snd_motu_stream_lock_try(motu);
-+	if (err < 0)
-+		return err;
-+
- 	mutex_lock(&motu->mutex);
- 
- 	err = protocol->cache_packet_formats(motu);
- 	if (err < 0)
--		return err;
-+		goto err_locked;
- 
- 	err = init_hw_info(motu, substream);
- 	if (err < 0)
--		return err;
-+		goto err_locked;
- 
- 	/*
- 	 * When source of clock is not internal or any PCM streams are running,
-@@ -175,13 +179,13 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	 */
- 	err = protocol->get_clock_source(motu, &src);
- 	if (err < 0)
--		return err;
-+		goto err_locked;
- 	if (src != SND_MOTU_CLOCK_SOURCE_INTERNAL ||
- 	    amdtp_stream_pcm_running(&motu->tx_stream) ||
- 	    amdtp_stream_pcm_running(&motu->rx_stream)) {
- 		err = protocol->get_clock_rate(motu, &rate);
- 		if (err < 0)
--			return err;
-+			goto err_locked;
- 		substream->runtime->hw.rate_min = rate;
- 		substream->runtime->hw.rate_max = rate;
- 	}
-@@ -191,10 +195,18 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	mutex_unlock(&motu->mutex);
- 
- 	return err;
-+err_locked:
-+	mutex_unlock(&motu->mutex);
-+	snd_motu_stream_lock_release(motu);
-+	return err;
- }
- 
- static int pcm_close(struct snd_pcm_substream *substream)
- {
-+	struct snd_motu *motu = substream->private_data;
-+
-+	snd_motu_stream_lock_release(motu);
-+
- 	return 0;
- }
- 
-diff --git a/sound/firewire/motu/motu-stream.c b/sound/firewire/motu/motu-stream.c
-index 911d348..bd45802 100644
---- a/sound/firewire/motu/motu-stream.c
-+++ b/sound/firewire/motu/motu-stream.c
-@@ -341,3 +341,41 @@ void snd_motu_stream_destroy_duplex(struct snd_motu *motu)
- 	motu->playback_substreams = 0;
- 	motu->capture_substreams = 0;
- }
-+
-+static void motu_lock_changed(struct snd_motu *motu)
++static int v2_switch_fetching_mode(struct snd_motu *motu, bool enable)
 +{
-+	motu->dev_lock_changed = true;
-+	wake_up(&motu->hwdep_wait);
++	/* V2 protocol doesn't have this feature. */
++	return 0;
 +}
 +
-+int snd_motu_stream_lock_try(struct snd_motu *motu)
++static void calculate_fixed_part(struct snd_motu_packet_format *formats,
++				 enum amdtp_stream_direction dir,
++				 enum snd_motu_spec_flags flags,
++				 unsigned char analog_ports)
 +{
-+	int err;
++	unsigned char pcm_chunks[3] = {0, 0, 0};
 +
-+	spin_lock_irq(&motu->lock);
++	formats->msg_chunks = 2;
 +
-+	if (motu->dev_lock_count < 0) {
-+		err = -EBUSY;
-+		goto out;
++	pcm_chunks[0] = analog_ports;
++	pcm_chunks[1] = analog_ports;
++	if (flags & SND_MOTU_SPEC_SUPPORT_CLOCK_X4)
++		pcm_chunks[2] = analog_ports;
++
++	if (dir == AMDTP_IN_STREAM) {
++		if (flags & SND_MOTU_SPEC_TX_MICINST_CHUNK) {
++			pcm_chunks[0] += 2;
++			pcm_chunks[1] += 2;
++		}
++		if (flags & SND_MOTU_SPEC_TX_RETURN_CHUNK) {
++			pcm_chunks[0] += 2;
++			pcm_chunks[1] += 2;
++		}
++	} else {
++		/*
++		 * Packets to v2 units transfer main-out-1/2 and phone-out-1/2.
++		 */
++		pcm_chunks[0] += 4;
++		pcm_chunks[1] += 4;
 +	}
 +
-+	if (motu->dev_lock_count++ == 0)
-+		motu_lock_changed(motu);
-+	err = 0;
-+out:
-+	spin_unlock_irq(&motu->lock);
-+	return err;
++	/*
++	 * All of v2 models have a pair of coaxial interfaces for digital in/out
++	 * port. At 44.1/48.0/88.2/96.0 kHz, packets includes PCM from these
++	 * ports.
++	 */
++	pcm_chunks[0] += 2;
++	pcm_chunks[1] += 2;
++
++	/* This part should be multiples of 4. */
++	formats->fixed_part_pcm_chunks[0] = round_up(2 + pcm_chunks[0], 4) - 2;
++	formats->fixed_part_pcm_chunks[1] = round_up(2 + pcm_chunks[1], 4) - 2;
++	if (flags & SND_MOTU_SPEC_SUPPORT_CLOCK_X4)
++		formats->fixed_part_pcm_chunks[2] =
++					round_up(2 + pcm_chunks[2], 4) - 2;
 +}
 +
-+void snd_motu_stream_lock_release(struct snd_motu *motu)
++static void calculate_differed_part(struct snd_motu_packet_format *formats,
++				    enum snd_motu_spec_flags flags,
++				    u32 data, u32 mask, u32 shift)
 +{
-+	spin_lock_irq(&motu->lock);
++	unsigned char pcm_chunks[3] = {0, 0};
 +
-+	if (WARN_ON(motu->dev_lock_count <= 0))
-+		goto out;
++	/*
++	 * When optical interfaces are configured for S/PDIF (TOSLINK),
++	 * the above PCM frames come from them, instead of coaxial
++	 * interfaces.
++	 */
++	data = (data & mask) >> shift;
++	if ((flags & SND_MOTU_SPEC_HAS_OPT_IFACE_A) &&
++	    data == V2_OPT_IFACE_MODE_ADAT) {
++		pcm_chunks[0] += 8;
++		pcm_chunks[1] += 4;
++	}
 +
-+	if (--motu->dev_lock_count == 0)
-+		motu_lock_changed(motu);
-+out:
-+	spin_unlock_irq(&motu->lock);
++	/* At mode x4, no data chunks are supported in this part. */
++	formats->differed_part_pcm_chunks[0] = pcm_chunks[0];
++	formats->differed_part_pcm_chunks[1] = pcm_chunks[1];
 +}
++
++static int v2_cache_packet_formats(struct snd_motu *motu)
++{
++	__be32 reg;
++	u32 data;
++	int err;
++
++	err = snd_motu_transaction_read(motu, V2_IN_OUT_CONF_OFFSET, &reg,
++					sizeof(reg));
++	if (err < 0)
++		return err;
++	data = be32_to_cpu(reg);
++
++	calculate_fixed_part(&motu->tx_packet_formats, AMDTP_IN_STREAM,
++			     motu->spec->flags, motu->spec->analog_in_ports);
++	calculate_differed_part(&motu->tx_packet_formats, motu->spec->flags,
++			data, V2_OPT_IN_IFACE_MASK, V2_OPT_IN_IFACE_SHIFT);
++
++	calculate_fixed_part(&motu->rx_packet_formats, AMDTP_OUT_STREAM,
++			     motu->spec->flags, motu->spec->analog_out_ports);
++	calculate_differed_part(&motu->rx_packet_formats, motu->spec->flags,
++			data, V2_OPT_OUT_IFACE_MASK, V2_OPT_OUT_IFACE_SHIFT);
++
++	motu->tx_packet_formats.midi_flag_offset = 4;
++	motu->tx_packet_formats.midi_byte_offset = 6;
++	motu->tx_packet_formats.pcm_byte_offset = 10;
++
++	motu->rx_packet_formats.midi_flag_offset = 4;
++	motu->rx_packet_formats.midi_byte_offset = 6;
++	motu->rx_packet_formats.pcm_byte_offset = 10;
++
++	return 0;
++}
++
++const struct snd_motu_protocol snd_motu_protocol_v2 = {
++	.get_clock_rate		= v2_get_clock_rate,
++	.set_clock_rate		= v2_set_clock_rate,
++	.get_clock_source	= v2_get_clock_source,
++	.switch_fetching_mode	= v2_switch_fetching_mode,
++	.cache_packet_formats	= v2_cache_packet_formats,
++};
 diff --git a/sound/firewire/motu/motu.c b/sound/firewire/motu/motu.c
-index d4da137..619554b 100644
+index 619554b..0acd134 100644
 --- a/sound/firewire/motu/motu.c
 +++ b/sound/firewire/motu/motu.c
-@@ -109,6 +109,10 @@ static void do_registration(struct work_struct *work)
- 			goto error;
- 	}
+@@ -190,6 +190,19 @@ static void motu_bus_update(struct fw_unit *unit)
+ 	snd_motu_transaction_reregister(motu);
+ }
  
-+	err = snd_motu_create_hwdep_device(motu);
-+	if (err < 0)
-+		goto error;
++static struct snd_motu_spec motu_828mk2 = {
++	.name = "828mk2",
++	.protocol = &snd_motu_protocol_v2,
++	.flags = SND_MOTU_SPEC_SUPPORT_CLOCK_X2 |
++		 SND_MOTU_SPEC_TX_MICINST_CHUNK |
++		 SND_MOTU_SPEC_TX_RETURN_CHUNK |
++		 SND_MOTU_SPEC_HAS_OPT_IFACE_A |
++		 SND_MOTU_SPEC_HAS_MIDI,
 +
- 	err = snd_card_register(motu->card);
- 	if (err < 0)
- 		goto error;
-@@ -145,6 +149,7 @@ static int motu_probe(struct fw_unit *unit,
++	.analog_in_ports = 8,
++	.analog_out_ports = 8,
++};
++
+ #define SND_MOTU_DEV_ENTRY(model, data)			\
+ {							\
+ 	.match_flags	= IEEE1394_MATCH_VENDOR_ID |	\
+@@ -202,6 +215,7 @@ static void motu_bus_update(struct fw_unit *unit)
+ }
  
- 	mutex_init(&motu->mutex);
- 	spin_lock_init(&motu->lock);
-+	init_waitqueue_head(&motu->hwdep_wait);
- 
- 	/* Allocate and register this sound card later. */
- 	INIT_DEFERRABLE_WORK(&motu->dwork, do_registration);
+ static const struct ieee1394_device_id motu_id_table[] = {
++	SND_MOTU_DEV_ENTRY(0x101800, &motu_828mk2),
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(ieee1394, motu_id_table);
 diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
-index 338b351..7b1d85f 100644
+index 7b1d85f..29f20a5 100644
 --- a/sound/firewire/motu/motu.h
 +++ b/sound/firewire/motu/motu.h
-@@ -16,12 +16,16 @@
- #include <linux/mod_devicetable.h>
- #include <linux/mutex.h>
- #include <linux/slab.h>
-+#include <linux/compat.h>
-+#include <linux/sched/signal.h>
- 
- #include <sound/control.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/info.h>
- #include <sound/rawmidi.h>
-+#include <sound/firewire.h>
-+#include <sound/hwdep.h>
- 
- #include "../lib.h"
- #include "../amdtp-stream.h"
-@@ -62,6 +66,11 @@ struct snd_motu {
- 	/* For notification. */
- 	struct fw_address_handler async_handler;
- 	u32 msg;
-+
-+	/* For uapi */
-+	int dev_lock_count;
-+	bool dev_lock_changed;
-+	wait_queue_head_t hwdep_wait;
+@@ -122,6 +122,8 @@ struct snd_motu_spec {
+ 	const struct snd_motu_protocol *const protocol;
  };
  
- enum snd_motu_spec_flags {
-@@ -136,10 +145,14 @@ int snd_motu_stream_init_duplex(struct snd_motu *motu);
- void snd_motu_stream_destroy_duplex(struct snd_motu *motu);
- int snd_motu_stream_start_duplex(struct snd_motu *motu, unsigned int rate);
- void snd_motu_stream_stop_duplex(struct snd_motu *motu);
-+int snd_motu_stream_lock_try(struct snd_motu *motu);
-+void snd_motu_stream_lock_release(struct snd_motu *motu);
- 
- void snd_motu_proc_init(struct snd_motu *motu);
- 
- int snd_motu_create_pcm_devices(struct snd_motu *motu);
- 
- int snd_motu_create_midi_devices(struct snd_motu *motu);
++extern const struct snd_motu_protocol snd_motu_protocol_v2;
 +
-+int snd_motu_create_hwdep_device(struct snd_motu *motu);
- #endif
+ int amdtp_motu_init(struct amdtp_stream *s, struct fw_unit *unit,
+ 		    enum amdtp_stream_direction dir,
+ 		    const struct snd_motu_protocol *const protocol);
 -- 
 2.9.3
