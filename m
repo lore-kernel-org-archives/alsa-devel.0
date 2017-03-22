@@ -1,59 +1,143 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [alsa-devel] [PATCH 0/3] ASoC: Enable a new IC master mode:
- bcm2835<=>IC<=>cs42xx8
-Date: Wed, 22 Mar 2017 12:34:40 +0000
-Message-ID: <20170322123440.GH6986@localhost.localdomain>
-References: <20170228095929.GH2742@localhost.localdomain>
- <20170315190108.y6ybxm3nfgnutajv@sirena.org.uk>
- <7d8d38f7-53aa-cc3d-4bbd-141649528a8a@flatmax.org>
- <8c62f014-d246-e0c1-2b02-a28a2c2786b7@metafoo.de>
- <000fbaa4-4c7c-5b13-0806-7e42672a4a55@flatmax.org>
- <e0adcc6c-8bf4-adae-874b-c291e71e5712@laposte.net>
- <20170321221145.GA7258@camel2.lan>
- <579f0763-a5bd-f820-b36f-b6437e331b4b@flatmax.org>
- <20170322094301.GE6986@localhost.localdomain>
- <64802e9b-ffe9-65e3-502a-4253674fb4c7@flatmax.org>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 15/18] ALSA: firewire-motu: enable to read
+	transaction cache via hwdep interface
+Date: Wed, 22 Mar 2017 21:30:25 +0900
+Message-ID: <20170322123028.24148-16-o-takashi@sakamocchi.jp>
+References: <20170322123028.24148-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <64802e9b-ffe9-65e3-502a-4253674fb4c7@flatmax.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Matt Flax <flatmax@flatmax.org>
-Cc: Emmanuel =?iso-8859-1?Q?Fust=E9?= <emmanuel.fuste@laposte.net>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@wwwdotorg.org>, Eric Anholt <eric@anholt.net>, Lee Jones <lee@kernel.org>, phil@raspberrypi.org, Liam Girdwood <lgirdwood@gmail.com>, Matthias Reichl <hias@horus.com>, florian.kauer@koalo.de, Mark Brown <broonie@kernel.org>, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 9B0A62673CD
+ for <alsa-devel@alsa-project.org>; Wed, 22 Mar 2017 13:30:44 +0100 (CET)
+In-Reply-To: <20170322123028.24148-1-o-takashi@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 22, 2017 at 11:04:34PM +1100, Matt Flax wrote:
-> >Are we saying that what gets transmitted on the bus is neither valid
-> >I2S or DSP mode data? But as you have your custom hardware block in
-> >the middle it interprets this data correctly and converts it to a
-> >regular bus format on the other side that goes to the CODEC?
-> >
-> >
-> Yes, essentially there is translation between the two data word edge
-> triggered ABP (the bcm2835's PCM block) and a Cirrus Logic TDM codec.
+MOTU FireWire series can transfer messages to registered address. These
+messages are transferred for the status of internal clock synchronization
+just after starting streams.
 
-Hmm... I guess that is the root difficulty here. As we probably
-don't want to call it DSP mode in the driver if connecting it
-to something that was expecting data in that format wouldn't
-work. Especially if the device actually could support DSP mode as
-well, since we would then be blocking someone for implementing
-legimate DSP mode in the future.
+When the synchronization is stable, it's 0x01ffffff. Else, it's 0x05ffffff.
 
-I guess really the correct thing to do would be to add some
-define for the new format, but I can see that might be a tricky
-road. Would perhaps some sort of BESPOKE define or something be
-possible to indicate odd formats that don't fall into regular
-classifications?
+This commit adds a functionality for user space applications to receive
+content of the message.
 
-Thanks,
-Charles
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ include/uapi/sound/firewire.h          |  7 +++++++
+ sound/firewire/motu/motu-hwdep.c       | 10 ++++++++--
+ sound/firewire/motu/motu-transaction.c | 20 ++++++++++++++++++++
+ 3 files changed, 35 insertions(+), 2 deletions(-)
+
+diff --git a/include/uapi/sound/firewire.h b/include/uapi/sound/firewire.h
+index 59c6d81..29afc5e 100644
+--- a/include/uapi/sound/firewire.h
++++ b/include/uapi/sound/firewire.h
+@@ -10,6 +10,7 @@
+ #define SNDRV_FIREWIRE_EVENT_DICE_NOTIFICATION	0xd1ce004e
+ #define SNDRV_FIREWIRE_EVENT_EFW_RESPONSE	0x4e617475
+ #define SNDRV_FIREWIRE_EVENT_DIGI00X_MESSAGE	0x746e736c
++#define SNDRV_FIREWIRE_EVENT_MOTU_NOTIFICATION	0x64776479
+ 
+ struct snd_firewire_event_common {
+ 	unsigned int type; /* SNDRV_FIREWIRE_EVENT_xxx */
+@@ -46,12 +47,18 @@ struct snd_firewire_event_digi00x_message {
+ 	__u32 message;	/* Digi00x-specific message */
+ };
+ 
++struct snd_firewire_event_motu_notification {
++	unsigned int type;
++	__u32 message;	/* MOTU-specific bits. */
++};
++
+ union snd_firewire_event {
+ 	struct snd_firewire_event_common            common;
+ 	struct snd_firewire_event_lock_status       lock_status;
+ 	struct snd_firewire_event_dice_notification dice_notification;
+ 	struct snd_firewire_event_efw_response      efw_response;
+ 	struct snd_firewire_event_digi00x_message   digi00x_message;
++	struct snd_firewire_event_motu_notification motu_notification;
+ };
+ 
+ 
+diff --git a/sound/firewire/motu/motu-hwdep.c b/sound/firewire/motu/motu-hwdep.c
+index e795a52..b87ccb6 100644
+--- a/sound/firewire/motu/motu-hwdep.c
++++ b/sound/firewire/motu/motu-hwdep.c
+@@ -26,7 +26,7 @@ static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
+ 
+ 	spin_lock_irq(&motu->lock);
+ 
+-	while (!motu->dev_lock_changed) {
++	while (!motu->dev_lock_changed && motu->msg == 0) {
+ 		prepare_to_wait(&motu->hwdep_wait, &wait, TASK_INTERRUPTIBLE);
+ 		spin_unlock_irq(&motu->lock);
+ 		schedule();
+@@ -43,6 +43,12 @@ static long hwdep_read(struct snd_hwdep *hwdep, char __user *buf, long count,
+ 		motu->dev_lock_changed = false;
+ 
+ 		count = min_t(long, count, sizeof(event.lock_status));
++	} else {
++		event.motu_notification.type = SNDRV_FIREWIRE_EVENT_MOTU_NOTIFICATION;
++		event.motu_notification.message = motu->msg;
++		motu->msg = 0;
++
++		count = min_t(long, count, sizeof(event.motu_notification));
+ 	}
+ 
+ 	spin_unlock_irq(&motu->lock);
+@@ -62,7 +68,7 @@ static unsigned int hwdep_poll(struct snd_hwdep *hwdep, struct file *file,
+ 	poll_wait(file, &motu->hwdep_wait, wait);
+ 
+ 	spin_lock_irq(&motu->lock);
+-	if (motu->dev_lock_changed)
++	if (motu->dev_lock_changed || motu->msg)
+ 		events = POLLIN | POLLRDNORM;
+ 	else
+ 		events = 0;
+diff --git a/sound/firewire/motu/motu-transaction.c b/sound/firewire/motu/motu-transaction.c
+index 416dd98..7fc3009 100644
+--- a/sound/firewire/motu/motu-transaction.c
++++ b/sound/firewire/motu/motu-transaction.c
+@@ -50,7 +50,27 @@ static void handle_message(struct fw_card *card, struct fw_request *request,
+ 			   int generation, unsigned long long offset,
+ 			   void *data, size_t length, void *callback_data)
+ {
++	struct snd_motu *motu = callback_data;
++	__be32 *buf = (__be32 *)data;
++	unsigned long flags;
++
++	if (tcode != TCODE_WRITE_QUADLET_REQUEST) {
++		fw_send_response(card, request, RCODE_COMPLETE);
++		return;
++	}
++
++	if (offset != motu->async_handler.offset || length != 4) {
++		fw_send_response(card, request, RCODE_ADDRESS_ERROR);
++		return;
++	}
++
++	spin_lock_irqsave(&motu->lock, flags);
++	motu->msg = be32_to_cpu(*buf);
++	spin_unlock_irqrestore(&motu->lock, flags);
++
+ 	fw_send_response(card, request, RCODE_COMPLETE);
++
++	wake_up(&motu->hwdep_wait);
+ }
+ 
+ int snd_motu_transaction_reregister(struct snd_motu *motu)
+-- 
+2.9.3
