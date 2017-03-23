@@ -1,126 +1,128 @@
-From: sutar.mounesh@gmail.com
-Subject: [PATCH 1/1] pcm:file: delegate htimestamping to slave
-	instead of always getting real_htimestamp
-Date: Thu, 23 Mar 2017 17:10:45 +0530
-Message-ID: <1490269245-16858-1-git-send-email-sutar.mounesh@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Mounesh Sutar <sutar.mounesh@gmail.com>, alsa-devel@alsa-project.org, Andreas Pape <apape@de.adit-jv.com>, mounesh_sutar@mentor.com
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Subject: [PATCH] ASoC: WM8962: Let codec driver enable/disable its MCLK
+Date: Thu, 23 Mar 2017 14:01:50 +0200
+Message-ID: <1490270510-17061-1-git-send-email-daniel.baluta@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: timur@tabi.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, fabio.estevam@nxp.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, daniel.baluta@nxp.com, mihai.serban@nxp.com, viorel.suman@nxp.com, shengjiu.wang@nxp.com, Nicolin Chen <b42378@freescale.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Andreas Pape <apape@de.adit-jv.com>
+From: Nicolin Chen <b42378@freescale.com>
 
-purpose of this fix, is to read most accurate timestamps.
+WM8962 needs its MCLK when powerup in wm8962_resume(). Thus it's better
+to control the MCLK in codec driver. Thus remove the clock enable in
+machine dirver accordingly.
 
- From documentation of /src/pcm/pcm.c, we can see:
- """" \par Timestamp mode
+While at it, get rid of imx_wm8962_remove function since it is now
+empty.
 
- The timestamp mode specifies, if timestamps are activated. Currently, only #SND_PCM_TSTAMP_NONE and #SND_PCM_TSTAMP_MMAP modes are known.
- The mmap mode means that timestamp is taken on every period time boundary. Corresponding position in the ring buffer assigned to timestamp can be obtained using #snd_pcm_htimestamp() function. """"
+Signed-off-by: Nicolin Chen <b42378@freescale.com>
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+---
+ sound/soc/fsl/imx-wm8962.c | 40 ++++++++--------------------------------
+ 1 file changed, 8 insertions(+), 32 deletions(-)
 
- As snd_pcm_generic_htimestamp() internally calls snd_pcm_htimestamp() to read time, so accurate timestamp can be read from snd_pcm_generic_htimestamp().
-
- Also, in case of pcm_file, if the underlying slave is hardware, then we would wish to read elapsed hardware time, as it will be the most accurate, as opposed to the elapsed wall time.
- This will provide pcm_file with the most accurate timestamps.
-
- Following are the timesamps read with timestamp enabled, for with fix and without fix scenarios:
-
- 1> With fix:
-:~#time aplay --enable-tstamp -Dhtstamp_test --period-time=5000 -v -fdat /dev/urandom
-Playing raw data '/dev/urandom' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
-File PCM (file=/tmp/swarate_out.wav)
-Final file PCM (file=/tmp/swarate_out.wav)
-..
-
-Slave: Hardware PCM card 0 'imx6q-sabresd-wm8962' device 0 subdevice 0
-Its setup is:
-  stream       : PLAYBACK
-  access       : RW_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 16
-  buffer_size  : 24000
-  period_size  : 240
-  period_time  : 5000
-  tstamp_mode  : ENABLE
-  .
-  .
-Before sleep = 142:409.807623
-After sleep = 142:409.807623
-Before sleep = 142:414.806016 (calling snd_pcm_htimestamp(handle, &avail, &tstamp_before))
-sleep of 2 milisec
-After sleep = 142:414.806016 (calling snd_pcm_htimestamp(handle, &avail, &tstamp_after)
->From the above timestamps, we can see that slave has returned the same timestamps, as --period-time choosen is 5msec.
-
-2> Without this fix:
-The timestamps are returned with realtime value.
-
-:~# time aplay --enable-tstamp -Dhtstamp_test --period-time=5000 -v -fdat /dev/urandom
-Playing raw data '/dev/urandom' : Signed 16 bit Little Endian, Rate 48000 Hz, Stereo
-File PCM (file=/tmp/swarate_out.wav)
-Final file PCM (file=/tmp/swarate_out.wav)
-.
-.
-Slave: Hardware PCM card 0 'imx6q-sabresd-wm8962' device 0 subdevice 0
-Its setup is:
-  stream       : PLAYBACK
-  access       : RW_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 2
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 16
-  buffer_size  : 24000
-  period_size  : 240
-  period_time  : 5000
-  tstamp_mode  : ENABLE
-.
-.
-Before sleep = 241:136.875845 (calling snd_pcm_htimestamp(handle, &avail, &tstamp_before))
-sleep of 2 milisec
-After sleep = 241:139.076376 (calling snd_pcm_htimestamp(handle, &avail, &tstamp_after)
-
-We can observe here, the timestamps shows time diff of ~2ms, which is the time gap of sleep duration.
-Before sleep = 241:139.617588
-After sleep = 241:141.746845
-Before sleep = 241:142.291618
-After sleep = 241:144.406406
-Before sleep = 241:144.951421
-After sleep = 241:147.066118
-Before sleep = 241:147.623421
-After sleep = 241:149.740573
-
-Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
-Signed-off-by: Mounesh Sutar <sutar.mounesh@gmail.com>
-
-diff --git a/src/pcm/pcm_file.c b/src/pcm/pcm_file.c
-index 8012251..fe36a1c 100644
---- a/src/pcm/pcm_file.c
-+++ b/src/pcm/pcm_file.c
-@@ -728,7 +728,7 @@ static const snd_pcm_fast_ops_t snd_pcm_file_fast_ops = {
- 	.poll_descriptors_count = snd_pcm_generic_poll_descriptors_count,
- 	.poll_descriptors = snd_pcm_generic_poll_descriptors,
- 	.poll_revents = snd_pcm_generic_poll_revents,
--	.htimestamp = snd_pcm_generic_real_htimestamp,
-+	.htimestamp = snd_pcm_generic_htimestamp,
+diff --git a/sound/soc/fsl/imx-wm8962.c b/sound/soc/fsl/imx-wm8962.c
+index 1b60958..3d894d9 100644
+--- a/sound/soc/fsl/imx-wm8962.c
++++ b/sound/soc/fsl/imx-wm8962.c
+@@ -33,7 +33,6 @@ struct imx_wm8962_data {
+ 	struct snd_soc_card card;
+ 	char codec_dai_name[DAI_NAME_SIZE];
+ 	char platform_name[DAI_NAME_SIZE];
+-	struct clk *codec_clk;
+ 	unsigned int clk_frequency;
  };
  
- /**
+@@ -163,6 +162,7 @@ static int imx_wm8962_probe(struct platform_device *pdev)
+ 	struct imx_priv *priv = &card_priv;
+ 	struct i2c_client *codec_dev;
+ 	struct imx_wm8962_data *data;
++	struct clk *codec_clk;
+ 	int int_port, ext_port;
+ 	int ret;
+ 
+@@ -231,19 +231,14 @@ static int imx_wm8962_probe(struct platform_device *pdev)
+ 		goto fail;
+ 	}
+ 
+-	data->codec_clk = devm_clk_get(&codec_dev->dev, NULL);
+-	if (IS_ERR(data->codec_clk)) {
+-		ret = PTR_ERR(data->codec_clk);
++	codec_clk = devm_clk_get(&codec_dev->dev, NULL);
++	if (IS_ERR(codec_clk)) {
++		ret = PTR_ERR(codec_clk);
+ 		dev_err(&codec_dev->dev, "failed to get codec clk: %d\n", ret);
+ 		goto fail;
+ 	}
+ 
+-	data->clk_frequency = clk_get_rate(data->codec_clk);
+-	ret = clk_prepare_enable(data->codec_clk);
+-	if (ret) {
+-		dev_err(&codec_dev->dev, "failed to enable codec clk: %d\n", ret);
+-		goto fail;
+-	}
++	data->clk_frequency = clk_get_rate(codec_clk);
+ 
+ 	data->dai.name = "HiFi";
+ 	data->dai.stream_name = "HiFi";
+@@ -258,10 +253,10 @@ static int imx_wm8962_probe(struct platform_device *pdev)
+ 	data->card.dev = &pdev->dev;
+ 	ret = snd_soc_of_parse_card_name(&data->card, "model");
+ 	if (ret)
+-		goto clk_fail;
++		goto fail;
+ 	ret = snd_soc_of_parse_audio_routing(&data->card, "audio-routing");
+ 	if (ret)
+-		goto clk_fail;
++		goto fail;
+ 	data->card.num_links = 1;
+ 	data->card.owner = THIS_MODULE;
+ 	data->card.dai_link = &data->dai;
+@@ -277,16 +272,9 @@ static int imx_wm8962_probe(struct platform_device *pdev)
+ 	ret = devm_snd_soc_register_card(&pdev->dev, &data->card);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
+-		goto clk_fail;
++		goto fail;
+ 	}
+ 
+-	of_node_put(ssi_np);
+-	of_node_put(codec_np);
+-
+-	return 0;
+-
+-clk_fail:
+-	clk_disable_unprepare(data->codec_clk);
+ fail:
+ 	of_node_put(ssi_np);
+ 	of_node_put(codec_np);
+@@ -294,17 +282,6 @@ static int imx_wm8962_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int imx_wm8962_remove(struct platform_device *pdev)
+-{
+-	struct snd_soc_card *card = platform_get_drvdata(pdev);
+-	struct imx_wm8962_data *data = snd_soc_card_get_drvdata(card);
+-
+-	if (!IS_ERR(data->codec_clk))
+-		clk_disable_unprepare(data->codec_clk);
+-
+-	return 0;
+-}
+-
+ static const struct of_device_id imx_wm8962_dt_ids[] = {
+ 	{ .compatible = "fsl,imx-audio-wm8962", },
+ 	{ /* sentinel */ }
+@@ -318,7 +295,6 @@ static struct platform_driver imx_wm8962_driver = {
+ 		.of_match_table = imx_wm8962_dt_ids,
+ 	},
+ 	.probe = imx_wm8962_probe,
+-	.remove = imx_wm8962_remove,
+ };
+ module_platform_driver(imx_wm8962_driver);
+ 
 -- 
 2.7.4
