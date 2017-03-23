@@ -1,128 +1,106 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: [PATCH] ASoC: WM8962: Let codec driver enable/disable its MCLK
-Date: Thu, 23 Mar 2017 14:01:50 +0200
-Message-ID: <1490270510-17061-1-git-send-email-daniel.baluta@gmail.com>
+From: Dmitry Vyukov <dvyukov@google.com>
+Subject: sound: use-after-free in snd_seq_cell_alloc
+Date: Thu, 23 Mar 2017 13:23:03 +0100
+Message-ID: <CACT4Y+a5eqN0GjVA8WuF9VKg4_4ZK-+b+ZVsiVnTuHvc8-rgFQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: timur@tabi.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com, fabio.estevam@nxp.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org, daniel.baluta@nxp.com, mihai.serban@nxp.com, viorel.suman@nxp.com, shengjiu.wang@nxp.com, Nicolin Chen <b42378@freescale.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
+Cc: syzkaller <syzkaller@googlegroups.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Nicolin Chen <b42378@freescale.com>
+Hello,
 
-WM8962 needs its MCLK when powerup in wm8962_resume(). Thus it's better
-to control the MCLK in codec driver. Thus remove the clock enable in
-machine dirver accordingly.
+I've got the following report while running syzkaller fuzzer on
+093b995e3b55a0ae0670226ddfcb05bfbf0099ae. Unfortunately this is not
+reproducible so far.
 
-While at it, get rid of imx_wm8962_remove function since it is now
-empty.
-
-Signed-off-by: Nicolin Chen <b42378@freescale.com>
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
----
- sound/soc/fsl/imx-wm8962.c | 40 ++++++++--------------------------------
- 1 file changed, 8 insertions(+), 32 deletions(-)
-
-diff --git a/sound/soc/fsl/imx-wm8962.c b/sound/soc/fsl/imx-wm8962.c
-index 1b60958..3d894d9 100644
---- a/sound/soc/fsl/imx-wm8962.c
-+++ b/sound/soc/fsl/imx-wm8962.c
-@@ -33,7 +33,6 @@ struct imx_wm8962_data {
- 	struct snd_soc_card card;
- 	char codec_dai_name[DAI_NAME_SIZE];
- 	char platform_name[DAI_NAME_SIZE];
--	struct clk *codec_clk;
- 	unsigned int clk_frequency;
- };
- 
-@@ -163,6 +162,7 @@ static int imx_wm8962_probe(struct platform_device *pdev)
- 	struct imx_priv *priv = &card_priv;
- 	struct i2c_client *codec_dev;
- 	struct imx_wm8962_data *data;
-+	struct clk *codec_clk;
- 	int int_port, ext_port;
- 	int ret;
- 
-@@ -231,19 +231,14 @@ static int imx_wm8962_probe(struct platform_device *pdev)
- 		goto fail;
- 	}
- 
--	data->codec_clk = devm_clk_get(&codec_dev->dev, NULL);
--	if (IS_ERR(data->codec_clk)) {
--		ret = PTR_ERR(data->codec_clk);
-+	codec_clk = devm_clk_get(&codec_dev->dev, NULL);
-+	if (IS_ERR(codec_clk)) {
-+		ret = PTR_ERR(codec_clk);
- 		dev_err(&codec_dev->dev, "failed to get codec clk: %d\n", ret);
- 		goto fail;
- 	}
- 
--	data->clk_frequency = clk_get_rate(data->codec_clk);
--	ret = clk_prepare_enable(data->codec_clk);
--	if (ret) {
--		dev_err(&codec_dev->dev, "failed to enable codec clk: %d\n", ret);
--		goto fail;
--	}
-+	data->clk_frequency = clk_get_rate(codec_clk);
- 
- 	data->dai.name = "HiFi";
- 	data->dai.stream_name = "HiFi";
-@@ -258,10 +253,10 @@ static int imx_wm8962_probe(struct platform_device *pdev)
- 	data->card.dev = &pdev->dev;
- 	ret = snd_soc_of_parse_card_name(&data->card, "model");
- 	if (ret)
--		goto clk_fail;
-+		goto fail;
- 	ret = snd_soc_of_parse_audio_routing(&data->card, "audio-routing");
- 	if (ret)
--		goto clk_fail;
-+		goto fail;
- 	data->card.num_links = 1;
- 	data->card.owner = THIS_MODULE;
- 	data->card.dai_link = &data->dai;
-@@ -277,16 +272,9 @@ static int imx_wm8962_probe(struct platform_device *pdev)
- 	ret = devm_snd_soc_register_card(&pdev->dev, &data->card);
- 	if (ret) {
- 		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
--		goto clk_fail;
-+		goto fail;
- 	}
- 
--	of_node_put(ssi_np);
--	of_node_put(codec_np);
--
--	return 0;
--
--clk_fail:
--	clk_disable_unprepare(data->codec_clk);
- fail:
- 	of_node_put(ssi_np);
- 	of_node_put(codec_np);
-@@ -294,17 +282,6 @@ static int imx_wm8962_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
--static int imx_wm8962_remove(struct platform_device *pdev)
--{
--	struct snd_soc_card *card = platform_get_drvdata(pdev);
--	struct imx_wm8962_data *data = snd_soc_card_get_drvdata(card);
--
--	if (!IS_ERR(data->codec_clk))
--		clk_disable_unprepare(data->codec_clk);
--
--	return 0;
--}
--
- static const struct of_device_id imx_wm8962_dt_ids[] = {
- 	{ .compatible = "fsl,imx-audio-wm8962", },
- 	{ /* sentinel */ }
-@@ -318,7 +295,6 @@ static struct platform_driver imx_wm8962_driver = {
- 		.of_match_table = imx_wm8962_dt_ids,
- 	},
- 	.probe = imx_wm8962_probe,
--	.remove = imx_wm8962_remove,
- };
- module_platform_driver(imx_wm8962_driver);
- 
--- 
-2.7.4
+==================================================================
+BUG: KASAN: use-after-free in __lock_acquire+0x39df/0x3a80
+kernel/locking/lockdep.c:3230 at addr ffff8800495fb6a0
+Read of size 8 by task syz-executor7/17253
+CPU: 2 PID: 17253 Comm: syz-executor7 Not tainted 4.11.0-rc3+ #364
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+Call Trace:
+ __asan_report_load8_noabort+0x29/0x30 mm/kasan/report.c:337
+ __lock_acquire+0x39df/0x3a80 kernel/locking/lockdep.c:3230
+ lock_acquire+0x1ee/0x590 kernel/locking/lockdep.c:3762
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x9f/0xd0 kernel/locking/spinlock.c:159
+ snd_seq_cell_alloc.isra.1+0x17d/0x6a0 sound/core/seq/seq_memory.c:238
+ snd_seq_event_dup+0x15d/0xa00 sound/core/seq/seq_memory.c:309
+ snd_seq_fifo_event_in+0xe3/0x420 sound/core/seq/seq_fifo.c:128
+ snd_seq_deliver_single_event.constprop.12+0x814/0x980
+sound/core/seq/seq_clientmgr.c:615
+ snd_seq_deliver_event+0x12c/0x720 sound/core/seq/seq_clientmgr.c:818
+ snd_seq_kernel_client_dispatch+0x131/0x160 sound/core/seq/seq_clientmgr.c:2319
+ snd_seq_system_notify+0x11b/0x160 sound/core/seq/seq_system.c:112
+ snd_seq_client_notify_subscription+0x16f/0x210
+sound/core/seq/seq_clientmgr.c:1414
+ subscribe_port sound/core/seq/seq_ports.c:434 [inline]
+ check_and_subscribe_port+0x725/0x950 sound/core/seq/seq_ports.c:510
+ snd_seq_port_connect+0x3e5/0x700 sound/core/seq/seq_ports.c:579
+ snd_seq_ioctl_subscribe_port+0x24b/0x300 sound/core/seq/seq_clientmgr.c:1443
+ snd_seq_kernel_client_ctl+0x122/0x160 sound/core/seq/seq_clientmgr.c:2350
+ snd_seq_oss_midi_open+0x640/0x850 sound/core/seq/oss/seq_oss_midi.c:375
+ snd_seq_oss_synth_setup_midi+0x109/0x4d0 sound/core/seq/oss/seq_oss_synth.c:281
+ snd_seq_oss_open+0x70f/0x8b0 sound/core/seq/oss/seq_oss_init.c:274
+ odev_open+0x6a/0x90 sound/core/seq/oss/seq_oss.c:138
+ soundcore_open+0x321/0x630 sound/sound_core.c:639
+ chrdev_open+0x257/0x730 fs/char_dev.c:392
+ do_dentry_open+0x710/0xc80 fs/open.c:751
+ vfs_open+0x105/0x220 fs/open.c:864
+ do_last fs/namei.c:3349 [inline]
+ path_openat+0x1151/0x35b0 fs/namei.c:3490
+ do_filp_open+0x249/0x370 fs/namei.c:3525
+ do_sys_open+0x502/0x6d0 fs/open.c:1051
+ SYSC_openat fs/open.c:1078 [inline]
+ SyS_openat+0x30/0x40 fs/open.c:1072
+ entry_SYSCALL_64_fastpath+0x1f/0xc2
+RIP: 0033:0x445b79
+RSP: 002b:00007f02452a6858 EFLAGS: 00000292 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 0000000000708000 RCX: 0000000000445b79
+RDX: 0000000000000000 RSI: 0000000020063ff0 RDI: ffffffffffffff9c
+RBP: 0000000000000086 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000292 R12: 00000000006e0fe0
+R13: 0000000000001000 R14: 0000000000000003 R15: 0000000020000000
+Object at ffff8800495fb600, in cache kmalloc-192 size: 192
+Allocated:
+PID = 17260
+ kmalloc include/linux/slab.h:490 [inline]
+ kzalloc include/linux/slab.h:663 [inline]
+ snd_seq_pool_new+0x93/0x2f0 sound/core/seq/seq_memory.c:470
+ snd_seq_fifo_new+0xc3/0x360 sound/core/seq/seq_fifo.c:41
+ snd_seq_open+0x404/0x520 sound/core/seq/seq_clientmgr.c:333
+ snd_open+0x1fa/0x3f0 sound/core/sound.c:177
+ chrdev_open+0x257/0x730 fs/char_dev.c:392
+ do_dentry_open+0x710/0xc80 fs/open.c:751
+ vfs_open+0x105/0x220 fs/open.c:864
+ do_last fs/namei.c:3349 [inline]
+ path_openat+0x1151/0x35b0 fs/namei.c:3490
+ do_filp_open+0x249/0x370 fs/namei.c:3525
+ do_sys_open+0x502/0x6d0 fs/open.c:1051
+ SYSC_open fs/open.c:1069 [inline]
+ SyS_open+0x2d/0x40 fs/open.c:1064
+ entry_SYSCALL_64_fastpath+0x1f/0xc2
+Freed:
+PID = 17280
+ kfree+0xd7/0x250 mm/slab.c:3831
+ snd_seq_pool_delete+0x52/0x70 sound/core/seq/seq_memory.c:498
+ snd_seq_fifo_resize+0x263/0x3e0 sound/core/seq/seq_fifo.c:275
+ snd_seq_ioctl_set_client_pool+0x481/0x600 sound/core/seq/seq_clientmgr.c:1849
+ snd_seq_ioctl+0x204/0x470 sound/core/seq/seq_clientmgr.c:2131
+ vfs_ioctl fs/ioctl.c:45 [inline]
+ do_vfs_ioctl+0x1af/0x16d0 fs/ioctl.c:685
+ SYSC_ioctl fs/ioctl.c:700 [inline]
+ SyS_ioctl+0x8f/0xc0 fs/ioctl.c:691
+ entry_SYSCALL_64_fastpath+0x1f/0xc2
+Memory state around the buggy address:
+ ffff8800495fb580: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+ ffff8800495fb600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff8800495fb680: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+                               ^
+ ffff8800495fb700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff8800495fb780: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+==================================================================
