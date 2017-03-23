@@ -1,20 +1,17 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 09/11] ASoC: Intel: Skylake: Fix DMA
- position reporting for capture stream
-Date: Thu, 23 Mar 2017 10:31:30 -0500
-Message-ID: <b73996bd-1a67-1f6a-e6da-04dd9c719451@linux.intel.com>
-References: <1490275926-2270-1-git-send-email-jeeja.kp@intel.com>
- <1490275926-2270-10-git-send-email-jeeja.kp@intel.com>
- <8e50b63f-a9e7-537b-af1e-93e120d81ef9@linux.intel.com>
- <85DFEED57DC57344B2483EF7BF8CB60552D0BABB@BGSMSX104.gar.corp.intel.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: [PATCH v2 1/2] ASoC: STI: Fix reader substream pointer
+	set
+Date: Thu, 23 Mar 2017 19:39:54 +0100
+Message-ID: <1490294395-13416-2-git-send-email-arnaud.pouliquen@st.com>
+References: <1490294395-13416-1-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C995266AF5
- for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2017 16:31:24 +0100 (CET)
-In-Reply-To: <85DFEED57DC57344B2483EF7BF8CB60552D0BABB@BGSMSX104.gar.corp.intel.com>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id C6D48266A33
+ for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2017 19:40:00 +0100 (CET)
+In-Reply-To: <1490294395-13416-1-git-send-email-arnaud.pouliquen@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,27 +21,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>, "Kp, Jeeja" <jeeja.kp@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "R, Dharageswari" <dharageswari.r@intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "Shah, Hardik T" <hardik.t.shah@intel.com>, Patches Audio <patches.audio@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, broonie@kernel.org, arnaud.pouliquen@st.com, lgirdwood@gmail.com, kernel@stlinux.com
 List-Id: alsa-devel@alsa-project.org
 
+reader->substream is used in IRQ handler for error case but is never set.
+Set value to pcm substream on DAI startup and clean it on dai shutdown.
 
->>>  	 * HAD space reflects the actual data that is transferred.
->>>  	 * Use the position buffer for capture, as DPIB write gets
->>>  	 * completed earlier than the actual data written to the DDR.
->>> +	 *
->>> +	 * For capture stream following workaround is required to fix the
->>> +	 * incorrect position reporting.
->>> +	 *
->>> +	 * 1. Wait for 20us before reading the DMA position in buffer once
->>> +	 * the interrupt is generated for stream completion.
->>
->> is this really 20us regardless of the sampling frequency/channel count?
->> 20us is one sample at 48kHz so wondering how generic this work-around is...
->
-> Yes, this is independent of PCM parameters. Update happens on the
-> HDA frame boundary i.e. 20.833uSec.
+Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+---
+ sound/soc/sti/uniperif_reader.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Makes sense. it's worth updating the comments though to make it 
-self-explanatory.
+diff --git a/sound/soc/sti/uniperif_reader.c b/sound/soc/sti/uniperif_reader.c
+index 5992c6a..93a8df6 100644
+--- a/sound/soc/sti/uniperif_reader.c
++++ b/sound/soc/sti/uniperif_reader.c
+@@ -349,6 +349,8 @@ static int uni_reader_startup(struct snd_pcm_substream *substream,
+ 	struct uniperif *reader = priv->dai_data.uni;
+ 	int ret;
+ 
++	reader->substream = substream;
++
+ 	if (!UNIPERIF_TYPE_IS_TDM(reader))
+ 		return 0;
+ 
+@@ -378,6 +380,7 @@ static void uni_reader_shutdown(struct snd_pcm_substream *substream,
+ 		/* Stop the reader */
+ 		uni_reader_stop(reader);
+ 	}
++	reader->substream = NULL;
+ }
+ 
+ static const struct snd_soc_dai_ops uni_reader_dai_ops = {
+-- 
+1.9.1
