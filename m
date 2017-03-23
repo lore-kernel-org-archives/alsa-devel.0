@@ -1,15 +1,20 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ALSA: au88x0: avoid theoretical uninitialized
-	access
-Date: Thu, 23 Mar 2017 16:15:55 +0100
-Message-ID: <20170323151607.636485-1-arnd@arndb.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 09/11] ASoC: Intel: Skylake: Fix DMA
+ position reporting for capture stream
+Date: Thu, 23 Mar 2017 10:31:30 -0500
+Message-ID: <b73996bd-1a67-1f6a-e6da-04dd9c719451@linux.intel.com>
+References: <1490275926-2270-1-git-send-email-jeeja.kp@intel.com>
+ <1490275926-2270-10-git-send-email-jeeja.kp@intel.com>
+ <8e50b63f-a9e7-537b-af1e-93e120d81ef9@linux.intel.com>
+ <85DFEED57DC57344B2483EF7BF8CB60552D0BABB@BGSMSX104.gar.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.134])
- by alsa0.perex.cz (Postfix) with ESMTP id 10F56266A33
- for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2017 16:16:17 +0100 (CET)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C995266AF5
+ for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2017 16:31:24 +0100 (CET)
+In-Reply-To: <85DFEED57DC57344B2483EF7BF8CB60552D0BABB@BGSMSX104.gar.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,39 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Colin Ian King <colin.king@canonical.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+To: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>, "Kp, Jeeja" <jeeja.kp@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "R, Dharageswari" <dharageswari.r@intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "Shah, Hardik T" <hardik.t.shah@intel.com>, Patches Audio <patches.audio@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
+ Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The latest gcc-7.0.1 snapshot points out that we if nr_ch is zero, we never
-initialize some variables:
 
-sound/pci/au88x0/au88x0_core.c: In function 'vortex_adb_allocroute':
-sound/pci/au88x0/au88x0_core.c:2304:68: error: 'mix[0]' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-sound/pci/au88x0/au88x0_core.c:2305:58: error: 'src[0]' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+>>>  	 * HAD space reflects the actual data that is transferred.
+>>>  	 * Use the position buffer for capture, as DPIB write gets
+>>>  	 * completed earlier than the actual data written to the DDR.
+>>> +	 *
+>>> +	 * For capture stream following workaround is required to fix the
+>>> +	 * incorrect position reporting.
+>>> +	 *
+>>> +	 * 1. Wait for 20us before reading the DMA position in buffer once
+>>> +	 * the interrupt is generated for stream completion.
+>>
+>> is this really 20us regardless of the sampling frequency/channel count?
+>> 20us is one sample at 48kHz so wondering how generic this work-around is...
+>
+> Yes, this is independent of PCM parameters. Update happens on the
+> HDA frame boundary i.e. 20.833uSec.
 
-I assume this can never happen in practice, but adding a check here doesn't
-hurt either and avoids the warning. The code has been unchanged since
-the start of git history.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/pci/au88x0/au88x0_core.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/sound/pci/au88x0/au88x0_core.c b/sound/pci/au88x0/au88x0_core.c
-index e1af24f87566..c308a4f70550 100644
---- a/sound/pci/au88x0/au88x0_core.c
-+++ b/sound/pci/au88x0/au88x0_core.c
-@@ -2279,6 +2279,9 @@ vortex_adb_allocroute(vortex_t *vortex, int dma, int nr_ch, int dir,
- 	} else {
- 		int src[2], mix[2];
- 
-+		if (nr_ch < 1)
-+			return -EINVAL;
-+
- 		/* Get SRC and MIXER hardware resources. */
- 		for (i = 0; i < nr_ch; i++) {
- 			if ((mix[i] =
--- 
-2.9.0
+Makes sense. it's worth updating the comments though to make it 
+self-explanatory.
