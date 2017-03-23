@@ -1,16 +1,16 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH 03/11] ASoC: hdac_hdmi: Update sig_bits based
-	on converter capability
-Date: Thu, 23 Mar 2017 19:01:58 +0530
-Message-ID: <1490275926-2270-4-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH 04/11] ASoC: Intel: Skylake: Add 16-bit
+	constraint to FE bxt_rt298 machine
+Date: Thu, 23 Mar 2017 19:01:59 +0530
+Message-ID: <1490275926-2270-5-git-send-email-jeeja.kp@intel.com>
 References: <1490275926-2270-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E49726721A
- for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2017 14:19:50 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4469526721A
+ for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2017 14:19:55 +0100 (CET)
 In-Reply-To: <1490275926-2270-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,45 +22,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
+Cc: tiwai@suse.de, G Kranthi <gudishax.kranthikumar@intel.com>, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+From: G Kranthi <gudishax.kranthikumar@intel.com>
 
-When creating the codec dai, use sig_bits to update the max bps based
-on the codec capability. So both the link DMA and codec format will be
-calculated based on DAI sig_bits.
+Add constraint to FE to restrict sample format to 16-bit for bxt_rt298
+machine
 
-So update the sig_bits with converter capability and use the sig_bits
-for HDA format calculation.
-
+Signed-off-by: G Kranthi <gudishax.kranthikumar@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/codecs/hdac_hdmi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/bxt_rt298.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index fd272a4..bc2e74f 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -469,7 +469,7 @@ static int hdac_hdmi_set_hw_params(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
+index 176c080..1a68d04 100644
+--- a/sound/soc/intel/boards/bxt_rt298.c
++++ b/sound/soc/intel/boards/bxt_rt298.c
+@@ -274,12 +274,15 @@ static int bxt_fe_startup(struct snd_pcm_substream *substream)
+ 	 * on this platform for PCM device we support:
+ 	 *      48Khz
+ 	 *      stereo
++	 *	16-bit audio
+ 	 */
  
- 	format = snd_hdac_calc_stream_format(params_rate(hparams),
- 			params_channels(hparams), params_format(hparams),
--			24, 0);
-+			dai->driver->playback.sig_bits, 0);
+ 	runtime->hw.channels_max = 2;
+ 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+ 				&constraints_channels);
  
- 	pcm = hdac_hdmi_get_pcm_from_cvt(hdmi, dai_map->cvt);
- 	if (!pcm)
-@@ -1419,8 +1419,8 @@ static int hdac_hdmi_create_dais(struct hdac_device *hdac,
- 		hdmi_dais[i].playback.rate_min = rate_min;
- 		hdmi_dais[i].playback.channels_min = 2;
- 		hdmi_dais[i].playback.channels_max = 2;
-+		hdmi_dais[i].playback.sig_bits = bps;
- 		hdmi_dais[i].ops = &hdmi_dai_ops;
--
- 		i++;
- 	}
++	runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
++	snd_pcm_hw_constraint_msbits(runtime, 0, 16, 16);
+ 	snd_pcm_hw_constraint_list(runtime, 0,
+ 				SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
  
 -- 
 2.5.0
