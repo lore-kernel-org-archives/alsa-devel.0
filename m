@@ -1,20 +1,15 @@
-From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
-Subject: Re: [PATCH 09/11] ASoC: Intel: Skylake: Fix DMA
- position reporting for capture stream
-Date: Thu, 23 Mar 2017 15:08:39 +0000
-Message-ID: <85DFEED57DC57344B2483EF7BF8CB60552D0BABB@BGSMSX104.gar.corp.intel.com>
-References: <1490275926-2270-1-git-send-email-jeeja.kp@intel.com>
- <1490275926-2270-10-git-send-email-jeeja.kp@intel.com>
- <8e50b63f-a9e7-537b-af1e-93e120d81ef9@linux.intel.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ALSA: au88x0: avoid theoretical uninitialized
+	access
+Date: Thu, 23 Mar 2017 16:15:55 +0100
+Message-ID: <20170323151607.636485-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E91E266A33
- for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2017 16:09:06 +0100 (CET)
-In-Reply-To: <8e50b63f-a9e7-537b-af1e-93e120d81ef9@linux.intel.com>
-Content-Language: en-US
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id 10F56266A33
+ for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2017 16:16:17 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,98 +19,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "Kp, Jeeja" <jeeja.kp@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "R, Dharageswari" <dharageswari.r@intel.com>, "tiwai@suse.de" <tiwai@suse.de>, "Shah, Hardik T" <hardik.t.shah@intel.com>, Patches Audio <patches.audio@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Colin Ian King <colin.king@canonical.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
+The latest gcc-7.0.1 snapshot points out that we if nr_ch is zero, we never
+initialize some variables:
 
+sound/pci/au88x0/au88x0_core.c: In function 'vortex_adb_allocroute':
+sound/pci/au88x0/au88x0_core.c:2304:68: error: 'mix[0]' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+sound/pci/au88x0/au88x0_core.c:2305:58: error: 'src[0]' may be used uninitialized in this function [-Werror=maybe-uninitialized]
 
->-----Original Message-----
->From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com]
->Sent: Thursday, March 23, 2017 7:13 AM
->To: Kp, Jeeja <jeeja.kp@intel.com>; alsa-devel@alsa-project.org
->Cc: R, Dharageswari <dharageswari.r@intel.com>; tiwai@suse.de; Shah, Hardik
->T <hardik.t.shah@intel.com>; Patches Audio <patches.audio@intel.com>;
->broonie@kernel.org; Girdwood, Liam R <liam.r.girdwood@intel.com>
->Subject: Re: [alsa-devel] [PATCH 09/11] ASoC: Intel: Skylake: Fix DMA position
->reporting for capture stream
->
->On 3/23/17 8:32 AM, jeeja.kp@intel.com wrote:
->> From: Hardik T Shah <hardik.t.shah@intel.com>
->>
->> As per hardware recommendation, for every capture stream completion
->> following operations need to be done in order to reflect the actual
->> data that is received in position buffer.
->>
->> 1. Wait for 20us before reading the DMA position in buffer once the
->> interrupt is generated for stream completion.
->> 2. Read any of the register to flush the DMA position value. This is
->> dummy read operation.
->>
->> Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
->> Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
->> Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
->> ---
->>  sound/soc/intel/skylake/skl-pcm.c | 22 ++++++++++++++++++++--
->>  1 file changed, 20 insertions(+), 2 deletions(-)
->>
->> diff --git a/sound/soc/intel/skylake/skl-pcm.c
->b/sound/soc/intel/skylake/skl-pcm.c
->> index ef440d8..149221c 100644
->> --- a/sound/soc/intel/skylake/skl-pcm.c
->> +++ b/sound/soc/intel/skylake/skl-pcm.c
->> @@ -21,6 +21,7 @@
->>
->>  #include <linux/pci.h>
->>  #include <linux/pm_runtime.h>
->> +#include <linux/delay.h>
->>  #include <sound/pcm_params.h>
->>  #include <sound/soc.h>
->>  #include "skl.h"
->> @@ -1063,13 +1064,30 @@ static snd_pcm_uframes_t
->skl_platform_pcm_pointer
->>  	 * HAD space reflects the actual data that is transferred.
->>  	 * Use the position buffer for capture, as DPIB write gets
->>  	 * completed earlier than the actual data written to the DDR.
->> +	 *
->> +	 * For capture stream following workaround is required to fix the
->> +	 * incorrect position reporting.
->> +	 *
->> +	 * 1. Wait for 20us before reading the DMA position in buffer once
->> +	 * the interrupt is generated for stream completion.
->
->is this really 20us regardless of the sampling frequency/channel count?
->20us is one sample at 48kHz so wondering how generic this work-around is...
+I assume this can never happen in practice, but adding a check here doesn't
+hurt either and avoids the warning. The code has been unchanged since
+the start of git history.
 
-Yes, this is independent of PCM parameters. Update happens on the 
-HDA frame boundary i.e. 20.833uSec.
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ sound/pci/au88x0/au88x0_core.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-
->
->> +	 * 2. Read DPIB register to flush the DMA position value. This dummy
->> +	 * read is required to flush DMA position value.
->> +	 * 3. Read the DMA Position-in-Buffer. This value now will be equal to
->> +	 * or greater than period boundary.
->>  	 */
->> -	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
->> +
->> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
->>  		pos = readl(ebus->bus.remap_addr +
->AZX_REG_VS_SDXDPIB_XBASE +
->>  				(AZX_REG_VS_SDXDPIB_XINTERVAL *
->>  				hdac_stream(hstream)->index));
->> -	else
->> +	} else {
->> +		udelay(20);
->> +		readl(ebus->bus.remap_addr +
->> +				AZX_REG_VS_SDXDPIB_XBASE +
->> +				(AZX_REG_VS_SDXDPIB_XINTERVAL *
->> +				 hdac_stream(hstream)->index));
->>  		pos =
->snd_hdac_stream_get_pos_posbuf(hdac_stream(hstream));
->> +	}
->>
->>  	if (pos >= hdac_stream(hstream)->bufsize)
->>  		pos = 0;
->>
+diff --git a/sound/pci/au88x0/au88x0_core.c b/sound/pci/au88x0/au88x0_core.c
+index e1af24f87566..c308a4f70550 100644
+--- a/sound/pci/au88x0/au88x0_core.c
++++ b/sound/pci/au88x0/au88x0_core.c
+@@ -2279,6 +2279,9 @@ vortex_adb_allocroute(vortex_t *vortex, int dma, int nr_ch, int dir,
+ 	} else {
+ 		int src[2], mix[2];
+ 
++		if (nr_ch < 1)
++			return -EINVAL;
++
+ 		/* Get SRC and MIXER hardware resources. */
+ 		for (i = 0; i < nr_ch; i++) {
+ 			if ((mix[i] =
+-- 
+2.9.0
