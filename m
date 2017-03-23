@@ -1,16 +1,16 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH 06/11] ASoC: Intel: Skylake: Remove redundant
-	vmixer handler
-Date: Thu, 23 Mar 2017 19:02:01 +0530
-Message-ID: <1490275926-2270-7-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH 07/11] ASoC: Intel: Skylake: remove hard coded
+	ACPI path
+Date: Thu, 23 Mar 2017 19:02:02 +0530
+Message-ID: <1490275926-2270-8-git-send-email-jeeja.kp@intel.com>
 References: <1490275926-2270-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E939267255
- for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2017 14:20:01 +0100 (CET)
+ by alsa0.perex.cz (Postfix) with ESMTP id ADD3926721A
+ for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2017 14:20:04 +0100 (CET)
 In-Reply-To: <1490275926-2270-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,64 +27,39 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Vinod Koul <vinod.koul@intel.com>
 
-Initially vmixer and mixer widget handlers were bit different, but over
-time they became same so remove the duplicate code.
+We should not hard code the ACPI path to get acpi_handle. Instead use
+ACPI_HANDLE macro to do the job.
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/intel/skylake/skl-topology.c | 32 +-------------------------------
- 1 file changed, 1 insertion(+), 31 deletions(-)
+ sound/soc/intel/skylake/skl-nhlt.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 1db4d68..b061e4e 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -1073,36 +1073,6 @@ static int skl_tplg_pga_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
- }
+diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
+index 7eb9c41..e3f0667 100644
+--- a/sound/soc/intel/skylake/skl-nhlt.c
++++ b/sound/soc/intel/skylake/skl-nhlt.c
+@@ -24,8 +24,6 @@
+ static u8 OSC_UUID[16] = {0x6E, 0x88, 0x9F, 0xA6, 0xEB, 0x6C, 0x94, 0x45,
+ 				0xA4, 0x1F, 0x7B, 0x5D, 0xCE, 0x24, 0xC5, 0x53};
  
- /*
-- * In modelling, we assume there will be ONLY one mixer in a pipeline.  If
-- * mixer is not required then it is treated as static mixer aka vmixer with
-- * a hard path to source module
-- * So we don't need to check if source is started or not as hard path puts
-- * dependency on each other
-- */
--static int skl_tplg_vmixer_event(struct snd_soc_dapm_widget *w,
--				struct snd_kcontrol *k, int event)
--{
--	struct snd_soc_dapm_context *dapm = w->dapm;
--	struct skl *skl = get_skl_ctx(dapm->dev);
+-#define DSDT_NHLT_PATH "\\_SB.PCI0.HDAS"
 -
--	switch (event) {
--	case SND_SOC_DAPM_PRE_PMU:
--		return skl_tplg_mixer_dapm_pre_pmu_event(w, skl);
--
--	case SND_SOC_DAPM_POST_PMU:
--		return skl_tplg_mixer_dapm_post_pmu_event(w, skl);
--
--	case SND_SOC_DAPM_PRE_PMD:
--		return skl_tplg_mixer_dapm_pre_pmd_event(w, skl);
--
--	case SND_SOC_DAPM_POST_PMD:
--		return skl_tplg_mixer_dapm_post_pmd_event(w, skl);
--	}
--
--	return 0;
--}
--
--/*
-  * In modelling, we assume there will be ONLY one mixer in a pipeline. If a
-  * second one is required that is created as another pipe entity.
-  * The mixer is responsible for pipe management and represent a pipeline
-@@ -1570,7 +1540,7 @@ int skl_tplg_be_update_params(struct snd_soc_dai *dai,
+ struct nhlt_acpi_table *skl_nhlt_init(struct device *dev)
+ {
+ 	acpi_handle handle;
+@@ -33,8 +31,9 @@ struct nhlt_acpi_table *skl_nhlt_init(struct device *dev)
+ 	struct nhlt_resource_desc  *nhlt_ptr = NULL;
+ 	struct nhlt_acpi_table *nhlt_table = NULL;
  
- static const struct snd_soc_tplg_widget_events skl_tplg_widget_ops[] = {
- 	{SKL_MIXER_EVENT, skl_tplg_mixer_event},
--	{SKL_VMIXER_EVENT, skl_tplg_vmixer_event},
-+	{SKL_VMIXER_EVENT, skl_tplg_mixer_event},
- 	{SKL_PGA_EVENT, skl_tplg_pga_event},
- };
+-	if (ACPI_FAILURE(acpi_get_handle(NULL, DSDT_NHLT_PATH, &handle))) {
+-		dev_err(dev, "Requested NHLT device not found\n");
++	handle = ACPI_HANDLE(dev);
++	if (!handle) {
++		dev_err(dev, "Didn't find ACPI_HANDLE\n");
+ 		return NULL;
+ 	}
  
 -- 
 2.5.0
