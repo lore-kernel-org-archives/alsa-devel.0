@@ -1,118 +1,64 @@
-From: Mark Hills <mark@xwax.org>
-Subject: Regressions on x86(_64) and >128 mixer controls
-Date: Fri, 24 Mar 2017 11:22:18 +0000 (GMT)
-Message-ID: <1703241029200.20580@stax.localdomain>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v3 02/11] IIO: Add DT bindings for sigma delta adc
+ modulator
+Date: Fri, 24 Mar 2017 09:21:32 -0500
+Message-ID: <20170324142131.cm72er2cc2kggxco@rob-hp-laptop>
+References: <1489759704-30217-1-git-send-email-arnaud.pouliquen@st.com>
+ <1489759704-30217-3-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from jazz.pogo.org.uk (jazz.pogo.org.uk [213.138.114.167])
- by alsa0.perex.cz (Postfix) with ESMTP id 44C5D2668D2
- for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2017 12:22:19 +0100 (CET)
-Received: from cpc93786-hari17-2-0-cust2676.20-2.cable.virginm.net
- ([82.36.106.117] helo=stax.localdomain)
- by jazz.pogo.org.uk with esmtps (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
- (Exim 4.88 (FreeBSD)) (envelope-from <mark@xwax.org>)
- id 1crNIQ-00065F-Mw
- for alsa-devel@alsa-project.org; Fri, 24 Mar 2017 11:22:18 +0000
-Received: from mark (helo=localhost)
- by stax.localdomain with local-esmtp (Exim 4.84)
- (envelope-from <mark@xwax.org>) id 1crNIQ-0000aD-7r
- for alsa-devel@alsa-project.org; Fri, 24 Mar 2017 11:22:18 +0000
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1489759704-30217-3-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kernel-F5mvAk5X5gdBDgjK7y7TUQ@public.gmane.org, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Torgue <alexandre.torgue-qxv4g6HH51o@public.gmane.org>, olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-I have an echo3g (Layla) PCI soundcard on x86_64. alsamixer and alsactl 
-fail with the following:
+On Fri, Mar 17, 2017 at 03:08:15PM +0100, Arnaud Pouliquen wrote:
+> Add documentation of device tree bindings to support
+> sigma delta modulator in IIO framework.
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+> ---
+> V2 -> V3 :
+> 	-Rename to suppress "simple"
+>         - add "ads1201" compatibility
+>  
+>  .../devicetree/bindings/iio/adc/sigma-delta-modulator.txt   | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.txt b/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.txt
+> new file mode 100644
+> index 0000000..27f04a3
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.txt
+> @@ -0,0 +1,13 @@
+> +Device-Tree bindings for sigma delta modulator
+> +
+> +Required properties:
+> +- compatible: should be "ads1201", "sd-modulator". "sd-modulator" can be use
+> +	as a generic SD modulator if modulator not specified in compatible list.
+> +- #io-channel-cells = <1>: See the IIO bindings section "IIO consumers".
+> +
+> +Example node:
+> +
+> +	ads1202: simple_sd_adc@0 {
 
-  alsactl: control.c:2976: snd_ctl_elem_value_get_integer: Assertion `idx < ARRAY_SIZE(obj->value.integer.value)' failed.
+adc@...
 
-In question is idx=128, and this "value" array in alsa-lib:
+With that,
 
-  struct snd_ctl_elem_value {
-          struct snd_ctl_elem_id id;    /* W: element ID */
-          unsigned int indirect: 1;     /* W: indirect access - obsoleted */
-          union {
-                  union {
-                          long value[128];
-                          long *value_ptr;        /* obsoleted */
-                  } integer;  
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 
-At first it appears just to be hitting the fixed limit of 128.
-
-However, this used to work -- and at the time I was using 32-bit kernel 
-and userland on an otherwise similar system (not they are both 64-bit)
-
-Increasing the array size cascades to a new problem which suggests these 
-controls don't actually exist:
-
-  ./alsactl/alsactl: get_control:258: Cannot read control '2,0,0,PCM Playback Volume,0': Inappropriate ioctl for device
-
-So I investigated the origin of this 256, which is here in 
-linux/sound/pci/echoaudio/echoaudio.c:
-
-  static int snd_echo_mixer_info(struct snd_kcontrol *kcontrol,
-                                 struct snd_ctl_elem_info *uinfo)
-  {
-          struct echoaudio *chip;
-
-          chip = snd_kcontrol_chip(kcontrol);
-          uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-          uinfo->value.integer.min = ECHOGAIN_MINOUT;
-          uinfo->value.integer.max = ECHOGAIN_MAXOUT;
-          uinfo->dimen.d[0] = num_busses_out(chip);              /* = 16 */
-          uinfo->dimen.d[1] = num_busses_in(chip);               /* = 16 */
-          uinfo->count = uinfo->dimen.d[0] * uinfo->dimen.d[1];  /* = 256 */
-          return 0;
-  }
-
-These values are derived from constants in the source code for this 
-Layla3G device; I can find nothing on this path that would cause variation 
-between a 32-bit and 64-bit kernel -- the code suggests like this value 
-has always been 256 in the kernel, so I can't come up with a reason that 
-it could vary. I don't have enough knowledge of the hardware to know if 
-256 /is/ the correct value here.
-
-Something which may be related happened for a period when I was using 
-32-bit userland with 64-bit kernel. This broke a number of tools (incl. 
-echomixer)
-
-Compare alsa-lib/include/alsa/asound.h:
-
-  struct snd_ctl_elem_info {
-          struct snd_ctl_elem_id id;      /* W: element ID */
-          snd_ctl_elem_type_t type;       /* R: value type - SNDRV_CTL_ELEM_TYPE_* */
-          unsigned int access;            /* R: value access (bitmask) - SNDRV_CTL_ELEM_ACCESS_* */
-          unsigned int count;             /* count of values */
-          __kernel_pid_t owner;           /* owner's PID of this control */
-          union {
-                  struct {
-                          long min;               /* R: minimum value */
-                          long max;               /* R: maximum value */
-                          long step;              /* R: step (0 variable) */
-                  } integer;
-
-and notice the use of 'long' in this struct. It has a 
-shadow/equivalent/identical in linux/uapi/sound/asound.h, copied to 
-userland, using:
-
- 	if (ioctl(hw->fd, SNDRV_CTL_IOCTL_ELEM_INFO, info) < 0)
-		return -errno;
-
-The kernel and userland can have different interpretations of 'long';
-do these really not need to be the 'int' type?
-
-Though maybe I am missing something -- surely I am not the only person to 
-have used a 32-bit userland on a 64-bit kernel?
-
--- 
-Mark
+> +		compatible = "sd-modulator";
+> +		#io-channel-cells = <1>;
+> +	};
+> -- 
+> 1.9.1
+> 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
