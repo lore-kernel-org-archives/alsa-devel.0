@@ -1,17 +1,26 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: jack - check status of GPIO-based
-	pins on resume
-Date: Fri, 24 Mar 2017 18:51:47 +0000
-Message-ID: <20170324185147.rwbi2qqynr2yggq2@sirena.org.uk>
-References: <20170321235043.GA9831@dtor-ws>
+Subject: Re: [PATCH 0/3] ASoC: Enable a new IC master mode:
+ bcm2835<=>IC<=>cs42xx8
+Date: Fri, 24 Mar 2017 19:09:55 +0000
+Message-ID: <20170324190955.nxw5az4mza2ia6wl@sirena.org.uk>
+References: <20170228095929.GH2742@localhost.localdomain>
+ <20170315190108.y6ybxm3nfgnutajv@sirena.org.uk>
+ <7d8d38f7-53aa-cc3d-4bbd-141649528a8a@flatmax.org>
+ <8c62f014-d246-e0c1-2b02-a28a2c2786b7@metafoo.de>
+ <000fbaa4-4c7c-5b13-0806-7e42672a4a55@flatmax.org>
+ <e0adcc6c-8bf4-adae-874b-c291e71e5712@laposte.net>
+ <20170321221145.GA7258@camel2.lan>
+ <579f0763-a5bd-f820-b36f-b6437e331b4b@flatmax.org>
+ <20170322094301.GE6986@localhost.localdomain>
+ <64802e9b-ffe9-65e3-502a-4253674fb4c7@flatmax.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0731592729672069259=="
+Content-Type: multipart/mixed; boundary="===============3642062434408262250=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9FEA82669DD
- for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2017 19:52:02 +0100 (CET)
-In-Reply-To: <20170321235043.GA9831@dtor-ws>
+ by alsa0.perex.cz (Postfix) with ESMTP id 00AC42669DD
+ for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2017 20:10:31 +0100 (CET)
+In-Reply-To: <64802e9b-ffe9-65e3-502a-4253674fb4c7@flatmax.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,59 +30,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Matt Flax <flatmax@flatmax.org>
+Cc: Emmanuel =?iso-8859-1?Q?Fust=E9?= <emmanuel.fuste@laposte.net>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@wwwdotorg.org>, Eric Anholt <eric@anholt.net>, Lee Jones <lee@kernel.org>, phil@raspberrypi.org, Liam Girdwood <lgirdwood@gmail.com>, Matthias Reichl <hias@horus.com>, florian.kauer@koalo.de, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0731592729672069259==
+--===============3642062434408262250==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="x2u6iaae2j6wu27n"
+	protocol="application/pgp-signature"; boundary="pm2jo63xyijliwfb"
 Content-Disposition: inline
 
 
---x2u6iaae2j6wu27n
+--pm2jo63xyijliwfb
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 21, 2017 at 04:50:43PM -0700, Dmitry Torokhov wrote:
-> From: Dmitry Torokhov <dtor@chromium.org>
->=20
-> For GPIO-backed pins that are not configured as wakeup sources, we may
-> miss change in their state that happens while system is suspended. Let's
-> use PM notifier to refresh their state upon resume.
->=20
-> Signed-off-by: Dmitry Torokhov <dtor@chromium.org>
-> ---
+On Wed, Mar 22, 2017 at 11:04:34PM +1100, Matt Flax wrote:
+> On 22/03/17 20:43, Charles Keepax wrote:
 
-Please send patches from the mail account corresponding to the signoff,
-not doing that makes the patch look like it's missing a signoff (as it's
-got the From line so more than one signoff is expected but there's only
-one) which slows down review.
+> > Are we saying that what gets transmitted on the bus is neither valid
+> > I2S or DSP mode data? But as you have your custom hardware block in
+> > the middle it interprets this data correctly and converts it to a
+> > regular bus format on the other side that goes to the CODEC?
 
---x2u6iaae2j6wu27n
+> Yes, essentially there is translation between the two data word edge
+> triggered ABP (the bcm2835's PCM block) and a Cirrus Logic TDM codec.
+
+Could you please be concrete about what the two formats you're talking
+about here are and how these differences are observable on the wire?  I
+don't know what "two data word edge triggered ABP" means.
+
+--pm2jo63xyijliwfb
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljVasMACgkQJNaLcl1U
-h9Ao/gf+J/N5ufrYVRBZyk9CQRd2jq7GAV984QrPOHBMu2Xin1L3JcPrgcUZO/u+
-qiq8YzuYDiyo4nLeuz7ahhPPx53Wwqhm0zNFmoZWo6IxnB2mA2sIVfb6hEk+qabI
-uVfVDPuV4wOf0p8xo5eV6xhgPMubTAGbRc3y6FCDq+RAz+/vqSzbH2XIEFr/hbMf
-z35DMpGydV1yNAB1dXRYHd1F42iB1IL8S4sn8wkVUWU6a/1xJ/1Xk98DY65YFhQJ
-G5+/CDYL0dVfQnHFgw/3pQ1jUypXUugTvlEgpKbAVi+f40LkSE5tF26psPXVeg3v
-uQW6z97nF4RReH4wjFm+yH6C3rQYww==
-=mZUQ
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljVbwIACgkQJNaLcl1U
+h9AK8wgAhKTtzGYEwml9mWU+kZtznc6kjE83ptMIkwwN73Qhc/EUZXu3H/27HpVd
+iwGAAIbBkkntKrfgSx22DPpfB2lGQ4F93aTidpLXefkJno+lBGq9F1yKxzcwE3vN
+kSFmS1Rt35uBbi2i2b3IuqHTszbAL6klADBiOMBpU40k1L5hU/00UCQRV+A96yeB
+vSiEqfHItcBcwaT+I08TmHYrpKqmmr4KHFAKfrLMfsXWAWpSanOU0h9WTeH2Fe+m
+drfagWxb2BkJebOCVtdb32xmwRm1/J1iYgidetb0++3O+D0/YsCcod67chYygxvg
+VLu81/3HwtWKInv3+QqBo0PzLshkKg==
+=HfX3
 -----END PGP SIGNATURE-----
 
---x2u6iaae2j6wu27n--
+--pm2jo63xyijliwfb--
 
---===============0731592729672069259==
+--===============3642062434408262250==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0731592729672069259==--
+--===============3642062434408262250==--
