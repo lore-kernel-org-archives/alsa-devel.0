@@ -1,17 +1,15 @@
-From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: [GIT PULL] Broxton audio fw update
-Date: Fri, 24 Mar 2017 09:48:08 -0700
-Message-ID: <20170324164808.GI13400@bombadil.infradead.org>
-References: <20170322163000.GB2843@localhost>
+From: jeeja.kp@intel.com
+Subject: [PATCH v2 00/11] ASoC: Intel: Skylake: More driver
+	updates
+Date: Fri, 24 Mar 2017 23:10:23 +0530
+Message-ID: <1490377234-30257-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bombadil.infradead.org (bombadil.infradead.org [65.50.211.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 1ED132669DD
- for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2017 17:48:09 +0100 (CET)
-Content-Disposition: inline
-In-Reply-To: <20170322163000.GB2843@localhost>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id C82162669DD
+ for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2017 18:28:12 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,29 +19,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org, linux-firmware@kernel.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 22, 2017 at 10:00:00PM +0530, Vinod Koul wrote:
-> Hi,
-> 
-> Please pull to receive updated audio firmware for broxton platform.
-> 
-> The following changes since commit e39f0e3e6897ad865b3704f61218ae83f98a85da:
-> 
->   Merge git://git.marvell.com/mwifiex-firmware (2017-03-14 08:58:33 -0400)
-> 
-> are available in the git repository at:
-> 
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git apl
-> 
-> for you to fetch changes up to a4dde74b504522d239e8521617b53b03f393ed6a:
-> 
->   linux-firmware: intel: Update Broxton audio firmware (2017-03-22 21:53:18 +0530)
-> 
+From: Jeeja KP <jeeja.kp@intel.com>
 
-pulled, thanks vinod.
+This patch series provides updates on the following:
+ o Fix LLCH register read.
+ o Add 16-bit constraint to FE bxt_rt298 machine.
+ o Fix DMA position reporting for capture stream.
+ o Use the sig_bits to define dai bps caps.
+ o Update sig_bits based on converter capability.
+ o Rearrangement of code to cleanup SKL SST library.
+ o Add support for deferred DSP module bind.
 
-regards, kyle
+Changes in v2:
+	- Addressed Pierre's comments for "Fix DMA position reporting
+	  for capture stream" patch.
+
+B, Jayachandran (1):
+  ALSA: hda: Fix LLCH register read
+
+G Kranthi (1):
+  ASoC: Intel: Skylake: Add 16-bit constraint to FE bxt_rt298 machine
+
+Hardik T Shah (1):
+  ASoC: Intel: Skylake: Fix DMA position reporting for capture stream
+
+Jeeja KP (5):
+  ASoC: Intel: Skylake: Use the sig_bits to define dai bps capability
+  ASoC: hdac_hdmi: Update sig_bits based on converter capability
+  ASoC: Intel: Skylake: Rearrangement of code to cleanup SKL SST library
+  ASoC: Intel: Skylake: Fix module state after unbind and delete
+  ASoC: Intel: Skylake: Add support for deferred DSP module bind
+
+Vinod Koul (3):
+  ASoC: Intel: Skylake: Don't unload module when in use
+  ASoC: Intel: Skylake: Remove redundant vmixer handler
+  ASoC: Intel: Skylake: remove hard coded ACPI path
+
+ sound/hda/hdac_controller.c             |   2 +-
+ sound/soc/codecs/hdac_hdmi.c            |   4 +-
+ sound/soc/intel/boards/bxt_rt298.c      |   3 +
+ sound/soc/intel/skylake/skl-messages.c  |   2 +-
+ sound/soc/intel/skylake/skl-nhlt.c      |   7 +-
+ sound/soc/intel/skylake/skl-pcm.c       |  95 ++++++++++++++++---
+ sound/soc/intel/skylake/skl-sst-dsp.h   |  24 +++--
+ sound/soc/intel/skylake/skl-sst-ipc.h   |   8 ++
+ sound/soc/intel/skylake/skl-sst-utils.c |  60 ++----------
+ sound/soc/intel/skylake/skl-sst.c       |   5 +
+ sound/soc/intel/skylake/skl-topology.c  | 159 +++++++++++++++++++++++++-------
+ sound/soc/intel/skylake/skl-topology.h  |  17 ++--
+ sound/soc/intel/skylake/skl.h           |   1 +
+ 13 files changed, 263 insertions(+), 124 deletions(-)
+
+-- 
+2.5.0
