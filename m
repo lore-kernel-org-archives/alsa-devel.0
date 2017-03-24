@@ -1,26 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/3] ASoC: Enable a new IC master mode:
- bcm2835<=>IC<=>cs42xx8
-Date: Fri, 24 Mar 2017 19:11:59 +0000
-Message-ID: <20170324191159.wyikevxc7dmvkaup@sirena.org.uk>
-References: <20170315190108.y6ybxm3nfgnutajv@sirena.org.uk>
- <7d8d38f7-53aa-cc3d-4bbd-141649528a8a@flatmax.org>
- <8c62f014-d246-e0c1-2b02-a28a2c2786b7@metafoo.de>
- <000fbaa4-4c7c-5b13-0806-7e42672a4a55@flatmax.org>
- <e0adcc6c-8bf4-adae-874b-c291e71e5712@laposte.net>
- <20170321221145.GA7258@camel2.lan>
- <579f0763-a5bd-f820-b36f-b6437e331b4b@flatmax.org>
- <20170322094301.GE6986@localhost.localdomain>
- <64802e9b-ffe9-65e3-502a-4253674fb4c7@flatmax.org>
- <1bec6abc-c296-eb93-a096-e4b8f1c7e1a4@wwwdotorg.org>
+Subject: Applied "ASoC: codec: wm8960: Relax bit clock
+	computation" to the asoc tree
+Date: Fri, 24 Mar 2017 19:15:58 +0000
+Message-ID: <E1crUgo-00060g-Dg@debutante>
+References: <1490108605-20538-3-git-send-email-daniel.baluta@nxp.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9100130859344327384=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id ED2542669DD
- for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2017 20:12:24 +0100 (CET)
-In-Reply-To: <1bec6abc-c296-eb93-a096-e4b8f1c7e1a4@wwwdotorg.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4AC3E26752B
+ for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2017 20:16:23 +0100 (CET)
+In-Reply-To: <1490108605-20538-3-git-send-email-daniel.baluta@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,65 +22,136 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>
-Cc: Emmanuel =?iso-8859-1?Q?Fust=E9?= <emmanuel.fuste@laposte.net>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Eric Anholt <eric@anholt.net>, Lee Jones <lee@kernel.org>, phil@raspberrypi.org, Liam Girdwood <lgirdwood@gmail.com>, Matt Flax <flatmax@flatmax.org>, Matthias Reichl <hias@horus.com>, florian.kauer@koalo.de, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org
+To: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: shengjiu.wang@freescale.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, tiwai@suse.com, broonie@kernel.org, viorel.suman@nxp.com, mihai.serban@nxp.com, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============9100130859344327384==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="6nu5e7uincaexexa"
-Content-Disposition: inline
+   ASoC: codec: wm8960: Relax bit clock computation
 
+has been applied to the asoc tree at
 
---6nu5e7uincaexexa
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Mar 22, 2017 at 09:38:28AM -0600, Stephen Warren wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> Now the BCM2835 I2S controller does appear to have a few features beyond
-> plain I2S/DSP modes, that not all I2S controllers might have, such as:
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> - Frame length, FS length, channel position, and channel width are specified
-> at bit resolution rather than byte/sample/...
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> - PDM mode (for digital mics).
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> - Sign extension of RX data.
+Thanks,
+Mark
 
-> So, the controller can generate/receive some formats beyond plain I2S/DSP,
-> but to be honest I doubt that this level of detail needs to be exposed to
-> the ALSA/ASoC core or user-space, nor is it required to interface to any
-> typical HW, so it can be hidden in the driver's register programming
-> implementation.
+>From 3c01b9ee2ab9d0dffe837c12ed93740516a673d7 Mon Sep 17 00:00:00 2001
+From: Daniel Baluta <daniel.baluta@nxp.com>
+Date: Tue, 21 Mar 2017 17:03:25 +0200
+Subject: [PATCH] ASoC: codec: wm8960: Relax bit clock computation
 
-At the minute the driver doesn't even support these features, it just
-supports plain stereo I2S mode and it *may* be that all that's needed
-here is the addition of the DSP modes.
+WM8960 derives bit clock from sysclock using BCLKDIV[3:0] of R8
+clocking register (See WM8960 datasheet, page 71).
 
---6nu5e7uincaexexa
-Content-Type: application/pgp-signature; name="signature.asc"
+There are use cases, like this:
+aplay -Dhw:0,0 -r 48000 -c 1 -f S20_3LE -t raw audio48k20b_3LE1c.pcm
 
------BEGIN PGP SIGNATURE-----
+where no BCLKDIV applied to sysclock can give us the exact requested
+bitclk, so driver fails to configure clocking and aplay fails to run.
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljVb34ACgkQJNaLcl1U
-h9A+7gf/Z09mCdNg2pkW799BQSnFh6YN6IjW/zCIZtiHpMK02xphXWHQ7QjtDWta
-3Wu6qTaa+Zh7huhKP2EiTCYyi2sF7H+sslRO9OQr0BjLPsA2T5p5vtbVxj7cyZ+a
-SqrkMEiIjmvP/ydkGf2Zkf0DAFK2CmQDAMXTUpZc0MA68ZSCXz1NUFLmVyNqbCMd
-1isM7ZMS/wlKcF4MLsihwq3SLLeDWe2cIgjzvTTkBd+8uw8I6BakVam0TJL8DonI
-Ipco4CQRIi8cxGLdgebUuuo1Ukcn+XJHka4tqebXwYwro93SuyPkqDVZd3aN1T78
-b58uBWDhNgS4xkeKwVlBt0SkKmWqfg==
-=mt5r
------END PGP SIGNATURE-----
+Fix this by relaxing bitclk computation, so that when no exact value
+can be derived from sysclk pick the closest value greater than
+expected bitclk.
 
---6nu5e7uincaexexa--
+Suggested-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/wm8960.c | 28 +++++++++++++++++++---------
+ 1 file changed, 19 insertions(+), 9 deletions(-)
 
---===============9100130859344327384==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9100130859344327384==--
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 25a4a11929fe..ce159f13e7a4 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -611,6 +611,10 @@ static const int bclk_divs[] = {
+  *		- lrclk      = sysclk / dac_divs
+  *		- 10 * bclk  = sysclk / bclk_divs
+  *
++ *	If we cannot find an exact match for (sysclk, lrclk, bclk)
++ *	triplet, we relax the bclk such that bclk is chosen as the
++ *	closest available frequency greater than expected bclk.
++ *
+  * @wm8960_priv: wm8960 codec private data
+  * @mclk: MCLK used to derive sysclk
+  * @sysclk_idx: sysclk_divs index for found sysclk
+@@ -618,8 +622,9 @@ static const int bclk_divs[] = {
+  * @bclk_idx: bclk_divs index for found bclk
+  *
+  * Returns:
+- * -1, in case no sysclk frequency available found
+- *  0, in case an exact (@sysclk_idx, @dac_idx, @bclk_idx) match is found
++ *  -1, in case no sysclk frequency available found
++ * >=0, in case we could derive bclk and lrclk from sysclk using
++ *      (@sysclk_idx, @dac_idx, @bclk_idx) dividers
+  */
+ static
+ int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
+@@ -627,7 +632,10 @@ int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
+ {
+ 	int sysclk, bclk, lrclk;
+ 	int i, j, k;
+-	int diff;
++	int diff, closest = mclk;
++
++	/* marker for no match */
++	*bclk_idx = -1;
+ 
+ 	bclk = wm8960->bclk;
+ 	lrclk = wm8960->lrclk;
+@@ -648,6 +656,12 @@ int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
+ 					*bclk_idx = k;
+ 					break;
+ 				}
++				if (diff > 0 && closest > diff) {
++					*sysclk_idx = i;
++					*dac_idx = j;
++					*bclk_idx = k;
++					closest = diff;
++				}
+ 			}
+ 			if (k != ARRAY_SIZE(bclk_divs))
+ 				break;
+@@ -655,11 +669,7 @@ int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
+ 		if (j != ARRAY_SIZE(dac_divs))
+ 			break;
+ 	}
+-
+-	if (i != ARRAY_SIZE(sysclk_divs))
+-		return 0;
+-
+-	return -1;
++	return *bclk_idx;
+ }
+ 
+ static int wm8960_configure_clocking(struct snd_soc_codec *codec)
+@@ -703,7 +713,7 @@ static int wm8960_configure_clocking(struct snd_soc_codec *codec)
+ 
+ 	if (wm8960->clk_id != WM8960_SYSCLK_PLL) {
+ 		ret = wm8960_configure_sysclk(wm8960, freq_out, &i, &j, &k);
+-		if (ret == 0) {
++		if (ret >= 0) {
+ 			goto configure_clock;
+ 		} else if (wm8960->clk_id != WM8960_SYSCLK_AUTO) {
+ 			dev_err(codec->dev, "failed to configure clock\n");
+-- 
+2.11.0
