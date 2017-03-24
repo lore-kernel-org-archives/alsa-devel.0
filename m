@@ -1,16 +1,16 @@
 From: jeeja.kp@intel.com
-Subject: [PATCH v2 08/11] ASoC: Intel: Skylake: Rearrangement
-	of code to cleanup SKL SST library
-Date: Fri, 24 Mar 2017 23:10:31 +0530
-Message-ID: <1490377234-30257-9-git-send-email-jeeja.kp@intel.com>
+Subject: [PATCH v2 07/11] ASoC: Intel: Skylake: remove hard
+	coded ACPI path
+Date: Fri, 24 Mar 2017 23:10:30 +0530
+Message-ID: <1490377234-30257-8-git-send-email-jeeja.kp@intel.com>
 References: <1490377234-30257-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E7A0267506
- for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2017 18:28:44 +0100 (CET)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 248842674F3
+ for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2017 18:28:45 +0100 (CET)
 In-Reply-To: <1490377234-30257-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,347 +22,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
 
-Skylake driver topology header/driver structure is referenced and used
-in SST library which creates circular dependency. Hence the
-rearrangement.
+We should not hard code the ACPI path to get acpi_handle. Instead use
+ACPI_HANDLE macro to do the job.
 
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c       | 35 +++++++++++++++----
- sound/soc/intel/skylake/skl-sst-dsp.h   | 24 +++++++++----
- sound/soc/intel/skylake/skl-sst-ipc.h   |  8 +++++
- sound/soc/intel/skylake/skl-sst-utils.c | 60 +++++----------------------------
- sound/soc/intel/skylake/skl-topology.c  | 11 ++++--
- sound/soc/intel/skylake/skl-topology.h  | 13 -------
- 6 files changed, 70 insertions(+), 81 deletions(-)
+ sound/soc/intel/skylake/skl-nhlt.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 3c61dba..ef440d8 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -1174,29 +1174,52 @@ static int skl_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 	return retval;
- }
+diff --git a/sound/soc/intel/skylake/skl-nhlt.c b/sound/soc/intel/skylake/skl-nhlt.c
+index 7eb9c41..e3f0667 100644
+--- a/sound/soc/intel/skylake/skl-nhlt.c
++++ b/sound/soc/intel/skylake/skl-nhlt.c
+@@ -24,8 +24,6 @@
+ static u8 OSC_UUID[16] = {0x6E, 0x88, 0x9F, 0xA6, 0xEB, 0x6C, 0x94, 0x45,
+ 				0xA4, 0x1F, 0x7B, 0x5D, 0xCE, 0x24, 0xC5, 0x53};
  
-+static int skl_get_module_info(struct skl *skl, struct skl_module_cfg *mconfig)
-+{
-+	struct skl_sst *ctx = skl->skl_sst;
-+	struct uuid_module *module;
-+	uuid_le *uuid_mod;
-+
-+	uuid_mod = (uuid_le *)mconfig->guid;
-+
-+	if (list_empty(&ctx->uuid_list)) {
-+		dev_err(ctx->dev, "Module list is empty\n");
-+		return -EIO;
-+	}
-+
-+	list_for_each_entry(module, &ctx->uuid_list, list) {
-+		if (uuid_le_cmp(*uuid_mod, module->uuid) == 0) {
-+			mconfig->id.module_id = module->id;
-+			mconfig->is_loadable = module->is_loadable;
-+			return 0;
-+		}
-+	}
-+
-+	return -EIO;
-+}
-+
- static int skl_populate_modules(struct skl *skl)
+-#define DSDT_NHLT_PATH "\\_SB.PCI0.HDAS"
+-
+ struct nhlt_acpi_table *skl_nhlt_init(struct device *dev)
  {
- 	struct skl_pipeline *p;
- 	struct skl_pipe_module *m;
- 	struct snd_soc_dapm_widget *w;
- 	struct skl_module_cfg *mconfig;
--	int ret;
-+	int ret = 0;
+ 	acpi_handle handle;
+@@ -33,8 +31,9 @@ struct nhlt_acpi_table *skl_nhlt_init(struct device *dev)
+ 	struct nhlt_resource_desc  *nhlt_ptr = NULL;
+ 	struct nhlt_acpi_table *nhlt_table = NULL;
  
- 	list_for_each_entry(p, &skl->ppl_list, node) {
- 		list_for_each_entry(m, &p->pipe->w_list, node) {
--
- 			w = m->w;
- 			mconfig = w->priv;
- 
--			ret = snd_skl_get_module_info(skl->skl_sst, mconfig);
-+			ret = skl_get_module_info(skl, mconfig);
- 			if (ret < 0) {
- 				dev_err(skl->skl_sst->dev,
--					"query module info failed:%d\n", ret);
--				goto err;
-+					"query module info failed\n");
-+				return ret;
- 			}
- 		}
- 	}
--err:
-+
- 	return ret;
- }
- 
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
-index 5d7a93a..7229a12 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.h
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.h
-@@ -17,13 +17,14 @@
- #define __SKL_SST_DSP_H__
- 
- #include <linux/interrupt.h>
-+#include <linux/uuid.h>
- #include <sound/memalloc.h>
- #include "skl-sst-cldma.h"
--#include "skl-topology.h"
- 
- struct sst_dsp;
- struct skl_sst;
- struct sst_dsp_device;
-+struct skl_lib_info;
- 
- /* Intel HD Audio General DSP Registers */
- #define SKL_ADSP_GEN_BASE		0x0
-@@ -172,6 +173,19 @@ struct skl_dsp_loader_ops {
- 				 int stream_tag);
- };
- 
-+#define MAX_INSTANCE_BUFF 2
-+
-+struct uuid_module {
-+	uuid_le uuid;
-+	int id;
-+	int is_loadable;
-+	int max_instance;
-+	u64 pvt_id[MAX_INSTANCE_BUFF];
-+	int *instance_id;
-+
-+	struct list_head list;
-+};
-+
- struct skl_load_module_info {
- 	u16 mod_id;
- 	const struct firmware *fw;
-@@ -223,14 +237,10 @@ int bxt_sst_init_fw(struct device *dev, struct skl_sst *ctx);
- void skl_sst_dsp_cleanup(struct device *dev, struct skl_sst *ctx);
- void bxt_sst_dsp_cleanup(struct device *dev, struct skl_sst *ctx);
- 
--int snd_skl_get_module_info(struct skl_sst *ctx,
--				struct skl_module_cfg *mconfig);
- int snd_skl_parse_uuids(struct sst_dsp *ctx, const struct firmware *fw,
- 				unsigned int offset, int index);
--int skl_get_pvt_id(struct skl_sst *ctx,
--				struct skl_module_cfg *mconfig);
--int skl_put_pvt_id(struct skl_sst *ctx,
--				struct skl_module_cfg *mconfig);
-+int skl_get_pvt_id(struct skl_sst *ctx, uuid_le *uuid_mod, int instance_id);
-+int skl_put_pvt_id(struct skl_sst *ctx, uuid_le *uuid_mod, int *pvt_id);
- int skl_get_pvt_instance_id_map(struct skl_sst *ctx,
- 				int module_id, int instance_id);
- void skl_freeup_uuid_list(struct skl_sst *ctx);
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
-index fc07c39..4abf98c 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.h
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.h
-@@ -69,6 +69,14 @@ struct skl_d0i3_data {
- 	struct delayed_work work;
- };
- 
-+#define SKL_LIB_NAME_LENGTH 128
-+#define SKL_MAX_LIB 16
-+
-+struct skl_lib_info {
-+	char name[SKL_LIB_NAME_LENGTH];
-+	const struct firmware *fw;
-+};
-+
- struct skl_sst {
- 	struct device *dev;
- 	struct sst_dsp *dsp;
-diff --git a/sound/soc/intel/skylake/skl-sst-utils.c b/sound/soc/intel/skylake/skl-sst-utils.c
-index ea162fb..6d5bff0 100644
---- a/sound/soc/intel/skylake/skl-sst-utils.c
-+++ b/sound/soc/intel/skylake/skl-sst-utils.c
-@@ -94,19 +94,6 @@ struct adsp_fw_hdr {
- 	u32 load_offset;
- } __packed;
- 
--#define MAX_INSTANCE_BUFF 2
--
--struct uuid_module {
--	uuid_le uuid;
--	int id;
--	int is_loadable;
--	int max_instance;
--	u64 pvt_id[MAX_INSTANCE_BUFF];
--	int *instance_id;
--
--	struct list_head list;
--};
--
- struct skl_ext_manifest_hdr {
- 	u32 id;
- 	u32 len;
-@@ -115,32 +102,6 @@ struct skl_ext_manifest_hdr {
- 	u32 entries;
- };
- 
--int snd_skl_get_module_info(struct skl_sst *ctx,
--				struct skl_module_cfg *mconfig)
--{
--	struct uuid_module *module;
--	uuid_le *uuid_mod;
--
--	uuid_mod = (uuid_le *)mconfig->guid;
--
--	if (list_empty(&ctx->uuid_list)) {
--		dev_err(ctx->dev, "Module list is empty\n");
--		return -EINVAL;
--	}
--
--	list_for_each_entry(module, &ctx->uuid_list, list) {
--		if (uuid_le_cmp(*uuid_mod, module->uuid) == 0) {
--			mconfig->id.module_id = module->id;
--			mconfig->is_loadable = module->is_loadable;
--
--			return 0;
--		}
--	}
--
--	return -EINVAL;
--}
--EXPORT_SYMBOL_GPL(snd_skl_get_module_info);
--
- static int skl_get_pvtid_map(struct uuid_module *module, int instance_id)
- {
- 	int pvt_id;
-@@ -222,21 +183,18 @@ static inline int skl_pvtid_128(struct uuid_module *module)
-  * This generates a 128 bit private unique id for a module TYPE so that
-  * module instance is unique
-  */
--int skl_get_pvt_id(struct skl_sst *ctx, struct skl_module_cfg *mconfig)
-+int skl_get_pvt_id(struct skl_sst *ctx, uuid_le *uuid_mod, int instance_id)
- {
- 	struct uuid_module *module;
--	uuid_le *uuid_mod;
- 	int pvt_id;
- 
--	uuid_mod = (uuid_le *)mconfig->guid;
--
- 	list_for_each_entry(module, &ctx->uuid_list, list) {
- 		if (uuid_le_cmp(*uuid_mod, module->uuid) == 0) {
- 
- 			pvt_id = skl_pvtid_128(module);
- 			if (pvt_id >= 0) {
--				module->instance_id[pvt_id] =
--						mconfig->id.instance_id;
-+				module->instance_id[pvt_id] = instance_id;
-+
- 				return pvt_id;
- 			}
- 		}
-@@ -254,23 +212,21 @@ EXPORT_SYMBOL_GPL(skl_get_pvt_id);
-  *
-  * This frees a 128 bit private unique id previously generated
-  */
--int skl_put_pvt_id(struct skl_sst *ctx, struct skl_module_cfg *mconfig)
-+int skl_put_pvt_id(struct skl_sst *ctx, uuid_le *uuid_mod, int *pvt_id)
- {
- 	int i;
--	uuid_le *uuid_mod;
- 	struct uuid_module *module;
- 
--	uuid_mod = (uuid_le *)mconfig->guid;
- 	list_for_each_entry(module, &ctx->uuid_list, list) {
- 		if (uuid_le_cmp(*uuid_mod, module->uuid) == 0) {
- 
--			if (mconfig->id.pvt_id != 0)
--				i = (mconfig->id.pvt_id) / 64;
-+			if (*pvt_id != 0)
-+				i = (*pvt_id) / 64;
- 			else
- 				i = 0;
- 
--			module->pvt_id[i] &= ~(1 << (mconfig->id.pvt_id));
--			mconfig->id.pvt_id = -1;
-+			module->pvt_id[i] &= ~(1 << (*pvt_id));
-+			*pvt_id = -1;
- 			return 0;
- 		}
- 	}
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 35d9d7b..8bd5ded 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -539,6 +539,7 @@ skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
- 	int ret = 0;
- 
- 	list_for_each_entry(w_module, &pipe->w_list, node) {
-+		uuid_le *uuid_mod;
- 		w = w_module->w;
- 		mconfig = w->priv;
- 
-@@ -576,13 +577,15 @@ skl_tplg_init_pipe_modules(struct skl *skl, struct skl_pipe *pipe)
- 		 * FE/BE params
- 		 */
- 		skl_tplg_update_module_params(w, ctx);
--		mconfig->id.pvt_id = skl_get_pvt_id(ctx, mconfig);
-+		uuid_mod = (uuid_le *)mconfig->guid;
-+		mconfig->id.pvt_id = skl_get_pvt_id(ctx, uuid_mod,
-+						mconfig->id.instance_id);
- 		if (mconfig->id.pvt_id < 0)
- 			return ret;
- 		skl_tplg_set_module_init_data(w);
- 		ret = skl_init_module(ctx, mconfig);
- 		if (ret < 0) {
--			skl_put_pvt_id(ctx, mconfig);
-+			skl_put_pvt_id(ctx, uuid_mod, &mconfig->id.pvt_id);
- 			return ret;
- 		}
- 		skl_tplg_alloc_pipe_mcps(skl, mconfig);
-@@ -602,7 +605,9 @@ static int skl_tplg_unload_pipe_modules(struct skl_sst *ctx,
- 	struct skl_module_cfg *mconfig = NULL;
- 
- 	list_for_each_entry(w_module, &pipe->w_list, node) {
-+		uuid_le *uuid_mod;
- 		mconfig  = w_module->w->priv;
-+		uuid_mod = (uuid_le *)mconfig->guid;
- 
- 		if (mconfig->is_loadable && ctx->dsp->fw_ops.unload_mod &&
- 			mconfig->m_state > SKL_MODULE_UNINIT) {
-@@ -611,7 +616,7 @@ static int skl_tplg_unload_pipe_modules(struct skl_sst *ctx,
- 			if (ret < 0)
- 				return -EIO;
- 		}
--		skl_put_pvt_id(ctx, mconfig);
-+		skl_put_pvt_id(ctx, uuid_mod, &mconfig->id.pvt_id);
+-	if (ACPI_FAILURE(acpi_get_handle(NULL, DSDT_NHLT_PATH, &handle))) {
+-		dev_err(dev, "Requested NHLT device not found\n");
++	handle = ACPI_HANDLE(dev);
++	if (!handle) {
++		dev_err(dev, "Didn't find ACPI_HANDLE\n");
+ 		return NULL;
  	}
  
- 	/* no modules to unload in this path, so return */
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index bf2c63b..8536d03 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -336,19 +336,6 @@ struct skl_pipeline {
- 	struct list_head node;
- };
- 
--#define SKL_LIB_NAME_LENGTH 128
--#define SKL_MAX_LIB 16
--
--struct skl_lib_info {
--	char name[SKL_LIB_NAME_LENGTH];
--	const struct firmware *fw;
--};
--
--struct skl_manifest {
--	u32 lib_count;
--	struct skl_lib_info lib[SKL_MAX_LIB];
--};
--
- static inline struct skl *get_skl_ctx(struct device *dev)
- {
- 	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
 -- 
 2.5.0
