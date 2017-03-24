@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: core: remove pointless auxiliary from snd_soc_component" to the asoc tree
-Date: Fri, 24 Mar 2017 19:16:40 +0000
-Message-ID: <E1crUhU-00068l-0z@debutante>
-References: <87o9xcp6zi.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87o9xcp6zi.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>Sylwester Nawrocki <s.nawrocki@samsung.com>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: simple-card: fix simple_dai clk lookup"
+	to the asoc tree
+Date: Fri, 24 Mar 2017 19:16:34 +0000
+Message-ID: <E1crUhO-00066s-7j@debutante>
+References: <20170323140526.14699-1-l.stach@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D6D826756F
+ for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2017 20:16:43 +0100 (CET)
+In-Reply-To: <20170323140526.14699-1-l.stach@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lucas Stach <l.stach@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, patchwork-lst@pengutronix.de, Mark Brown <broonie@kernel.org>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: core: remove pointless auxiliary from snd_soc_component
+   ASoC: simple-card: fix simple_dai clk lookup
 
 has been applied to the asoc tree at
 
@@ -37,101 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From 991454e17070eaf5286a666d9e896fd6fb332c72 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 24 Mar 2017 00:13:00 +0000
-Subject: [PATCH] ASoC: core: remove pointless auxiliary from snd_soc_component
+>From 971edb0a0087b65bd3726d23b2dffff405d48f72 Mon Sep 17 00:00:00 2001
+From: Lucas Stach <l.stach@pengutronix.de>
+Date: Thu, 23 Mar 2017 15:05:26 +0100
+Subject: [PATCH] ASoC: simple-card: fix simple_dai clk lookup
 
-commit 1a653aa44725 ("ASoC: core: replace aux_comp_list to ...")
-tried to replace aux_comp_list to component_dev_list,
-but it failed because of binding timing. Thus, Sylwester fixuped it by
-commit d2e3a1358c37 ("ASoC: Fix binding and probing of auxiliary...").
+The clock needs to be stored in the simple_dai structure, so it can
+be enabled later on. This has been broken during the conversion to use
+devm_* functions for the clk lookup.
 
-One of main purpose of commit 1a653aa44725 ("ASoC: core: replace...")
-was remove replaceable list (= list_aux) from snd_soc_component by using
-new "auxiliary" flags (but it failed).
-Because of this background, current code has reborned card_aux_list
-(= same as original list_aux), and almost pointless "auxiliary" flags.
-
-Let's remove pointless "auxiliary" flags by this patch
-This means, it is same as revert both
-commit 1a653aa44725 ("ASoC: core: replace aux_comp_list to ...") and
-commit d2e3a1358c37 ("ASoC: Fix binding and probing of auxiliary...").
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Fixes: e984fd61e860 (ASoC: simple-card: use devm_get_clk_from_child())
+Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h  |  1 -
- sound/soc/soc-core.c | 15 +++++----------
- 2 files changed, 5 insertions(+), 11 deletions(-)
+ sound/soc/generic/simple-card-utils.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index cdfb55f7aede..ee838b0d5db8 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -812,7 +812,6 @@ struct snd_soc_component {
- 
- 	unsigned int ignore_pmdown_time:1; /* pmdown_time is ignored at stop */
- 	unsigned int registered_as_component:1;
--	unsigned int auxiliary:1; /* for auxiliary component of the card */
- 	unsigned int suspended:1; /* is in suspend PM state */
- 
- 	struct list_head list;
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index d29fbc7195a0..a6f840beacb0 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1776,7 +1776,6 @@ static int soc_bind_aux_dev(struct snd_soc_card *card, int num)
- 	}
- 
- 	component->init = aux_dev->init;
--	component->auxiliary = 1;
- 	list_add(&component->card_aux_list, &card->aux_comp_list);
- 
- 	return 0;
-@@ -1788,14 +1787,13 @@ static int soc_bind_aux_dev(struct snd_soc_card *card, int num)
- 
- static int soc_probe_aux_devices(struct snd_soc_card *card)
- {
--	struct snd_soc_component *comp, *tmp;
-+	struct snd_soc_component *comp;
- 	int order;
- 	int ret;
- 
- 	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
- 		order++) {
--		list_for_each_entry_safe(comp, tmp, &card->aux_comp_list,
--					 card_aux_list) {
-+		list_for_each_entry(comp, &card->aux_comp_list, card_aux_list) {
- 			if (comp->driver->probe_order == order) {
- 				ret = soc_probe_component(card,	comp);
- 				if (ret < 0) {
-@@ -1804,7 +1802,6 @@ static int soc_probe_aux_devices(struct snd_soc_card *card)
- 						comp->name, ret);
- 					return ret;
- 				}
--				list_del(&comp->card_aux_list);
- 			}
- 		}
- 	}
-@@ -1820,14 +1817,12 @@ static void soc_remove_aux_devices(struct snd_soc_card *card)
- 	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
- 		order++) {
- 		list_for_each_entry_safe(comp, _comp,
--			&card->component_dev_list, card_list) {
--
--			if (!comp->auxiliary)
--				continue;
-+			&card->aux_comp_list, card_aux_list) {
- 
- 			if (comp->driver->remove_order == order) {
- 				soc_remove_component(comp);
--				comp->auxiliary = 0;
-+				/* remove it from the card's aux_comp_list */
-+				list_del(&comp->card_aux_list);
- 			}
- 		}
- 	}
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 4924575d2e95..343b291fc372 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -115,6 +115,7 @@ int asoc_simple_card_parse_clk(struct device *dev,
+ 	clk = devm_get_clk_from_child(dev, node, NULL);
+ 	if (!IS_ERR(clk)) {
+ 		simple_dai->sysclk = clk_get_rate(clk);
++		simple_dai->clk = clk;
+ 	} else if (!of_property_read_u32(node, "system-clock-frequency", &val)) {
+ 		simple_dai->sysclk = val;
+ 	} else {
 -- 
 2.11.0
