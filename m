@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec: wm8960: Refactor sysclk freq search" to the asoc tree
-Date: Fri, 24 Mar 2017 19:16:05 +0000
-Message-ID: <E1crUgv-00061m-3u@debutante>
-References: <1490090976-25877-2-git-send-email-daniel.baluta@nxp.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1490090976-25877-2-git-send-email-daniel.baluta@nxp.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Baluta <daniel.baluta@nxp.com>
-Cc: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, tiwai@suse.com, shengjiu.wang@freescale.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, viorel.suman@nxp.com, mihai.serban@nxp.comckeepax@opensource.wolfsonmicro.comalsa-devel@alsa-project.org
+Subject: Applied "ASoC: jack - check status of GPIO-based pins
+	on resume" to the asoc tree
+Date: Fri, 24 Mar 2017 19:16:10 +0000
+Message-ID: <E1crUh0-00062f-1f@debutante>
+References: <20170321235043.GA9831@dtor-ws>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 574582669DD
+ for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2017 20:16:22 +0100 (CET)
+In-Reply-To: <20170321235043.GA9831@dtor-ws>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dmitry Torokhov <dtor@chromium.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec: wm8960: Refactor sysclk freq search
+   ASoC: jack - check status of GPIO-based pins on resume
 
 has been applied to the asoc tree at
 
@@ -37,125 +53,95 @@ to this mail.
 Thanks,
 Mark
 
->From 3ddc97211cbb61a5f59882c26f8e3158c86e34bb Mon Sep 17 00:00:00 2001
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Date: Tue, 21 Mar 2017 17:03:24 +0200
-Subject: [PATCH] ASoC: codec: wm8960: Refactor sysclk freq search
+>From 73548dd316adec41172c31d63a0c35a97bf9577f Mon Sep 17 00:00:00 2001
+From: Dmitry Torokhov <dtor@chromium.org>
+Date: Tue, 21 Mar 2017 16:50:43 -0700
+Subject: [PATCH] ASoC: jack - check status of GPIO-based pins on resume
 
-Add a separate function for finding (sysclk, lrclk, bclk)
-when the clock is auto or mclk. This makes code easier to
-read and reduces the indentation level in wm8960_configure_clocking.
+For GPIO-backed pins that are not configured as wakeup sources, we may
+miss change in their state that happens while system is suspended. Let's
+use PM notifier to refresh their state upon resume.
 
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Dmitry Torokhov <dtor@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8960.c | 80 ++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 61 insertions(+), 19 deletions(-)
+ include/sound/soc.h  |  1 +
+ sound/soc/soc-jack.c | 30 ++++++++++++++++++++++++++++++
+ 2 files changed, 31 insertions(+)
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 3bf081a7e450..25a4a11929fe 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -604,12 +604,71 @@ static const int bclk_divs[] = {
- 	120, 160, 220, 240, 320, 320, 320
- };
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 2b502f6cc6d0..1d20abec4995 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -722,6 +722,7 @@ struct snd_soc_jack_gpio {
+ 	/* private: */
+ 	struct snd_soc_jack *jack;
+ 	struct delayed_work work;
++	struct notifier_block pm_notifier;
+ 	struct gpio_desc *desc;
  
-+/**
-+ * wm8960_configure_sysclk - checks if there is a sysclk frequency available
-+ *	The sysclk must be chosen such that:
-+ *		- sysclk     = MCLK / sysclk_divs
-+ *		- lrclk      = sysclk / dac_divs
-+ *		- 10 * bclk  = sysclk / bclk_divs
-+ *
-+ * @wm8960_priv: wm8960 codec private data
-+ * @mclk: MCLK used to derive sysclk
-+ * @sysclk_idx: sysclk_divs index for found sysclk
-+ * @dac_idx: dac_divs index for found lrclk
-+ * @bclk_idx: bclk_divs index for found bclk
-+ *
-+ * Returns:
-+ * -1, in case no sysclk frequency available found
-+ *  0, in case an exact (@sysclk_idx, @dac_idx, @bclk_idx) match is found
-+ */
-+static
-+int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
-+			    int *sysclk_idx, int *dac_idx, int *bclk_idx)
+ 	void *data;
+diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
+index fbaa1bb41102..a03dcbb94baf 100644
+--- a/sound/soc/soc-jack.c
++++ b/sound/soc/soc-jack.c
+@@ -19,6 +19,7 @@
+ #include <linux/workqueue.h>
+ #include <linux/delay.h>
+ #include <linux/export.h>
++#include <linux/suspend.h>
+ #include <trace/events/asoc.h>
+ 
+ /**
+@@ -293,6 +294,27 @@ static void gpio_work(struct work_struct *work)
+ 	snd_soc_jack_gpio_detect(gpio);
+ }
+ 
++static int snd_soc_jack_pm_notifier(struct notifier_block *nb,
++				    unsigned long action, void *data)
 +{
-+	int sysclk, bclk, lrclk;
-+	int i, j, k;
-+	int diff;
++	struct snd_soc_jack_gpio *gpio =
++			container_of(nb, struct snd_soc_jack_gpio, pm_notifier);
 +
-+	bclk = wm8960->bclk;
-+	lrclk = wm8960->lrclk;
-+
-+	/* check if the sysclk frequency is available. */
-+	for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
-+		if (sysclk_divs[i] == -1)
-+			continue;
-+		sysclk = mclk / sysclk_divs[i];
-+		for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {
-+			if (sysclk != dac_divs[j] * lrclk)
-+				continue;
-+			for (k = 0; k < ARRAY_SIZE(bclk_divs); ++k) {
-+				diff = sysclk - bclk * bclk_divs[k] / 10;
-+				if (diff == 0) {
-+					*sysclk_idx = i;
-+					*dac_idx = j;
-+					*bclk_idx = k;
-+					break;
-+				}
-+			}
-+			if (k != ARRAY_SIZE(bclk_divs))
-+				break;
-+		}
-+		if (j != ARRAY_SIZE(dac_divs))
-+			break;
++	switch (action) {
++	case PM_POST_SUSPEND:
++	case PM_POST_HIBERNATION:
++	case PM_POST_RESTORE:
++		/*
++		 * Use workqueue so we do not have to care about running
++		 * concurrently with work triggered by the interrupt handler.
++		 */
++		queue_delayed_work(system_power_efficient_wq, &gpio->work, 0);
++		break;
 +	}
 +
-+	if (i != ARRAY_SIZE(sysclk_divs))
-+		return 0;
-+
-+	return -1;
++	return NOTIFY_DONE;
 +}
 +
- static int wm8960_configure_clocking(struct snd_soc_codec *codec)
- {
- 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
- 	int sysclk, bclk, lrclk, freq_out, freq_in;
- 	u16 iface1 = snd_soc_read(codec, WM8960_IFACE1);
- 	int i, j, k;
-+	int ret;
+ /**
+  * snd_soc_jack_add_gpios - Associate GPIO pins with an ASoC jack
+  *
+@@ -369,6 +391,13 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
+ 					i, ret);
+ 		}
  
- 	if (!(iface1 & (1<<6))) {
- 		dev_dbg(codec->dev,
-@@ -643,25 +702,8 @@ static int wm8960_configure_clocking(struct snd_soc_codec *codec)
- 	}
++		/*
++		 * Register PM notifier so we do not miss state transitions
++		 * happening while system is asleep.
++		 */
++		gpios[i].pm_notifier.notifier_call = snd_soc_jack_pm_notifier;
++		register_pm_notifier(&gpios[i].pm_notifier);
++
+ 		/* Expose GPIO value over sysfs for diagnostic purposes */
+ 		gpiod_export(gpios[i].desc, false);
  
- 	if (wm8960->clk_id != WM8960_SYSCLK_PLL) {
--		/* check if the sysclk frequency is available. */
--		for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
--			if (sysclk_divs[i] == -1)
--				continue;
--			sysclk = freq_out / sysclk_divs[i];
--			for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {
--				if (sysclk != dac_divs[j] * lrclk)
--					continue;
--				for (k = 0; k < ARRAY_SIZE(bclk_divs); ++k)
--					if (sysclk == bclk * bclk_divs[k] / 10)
--						break;
--				if (k != ARRAY_SIZE(bclk_divs))
--					break;
--			}
--			if (j != ARRAY_SIZE(dac_divs))
--				break;
--		}
--
--		if (i != ARRAY_SIZE(sysclk_divs)) {
-+		ret = wm8960_configure_sysclk(wm8960, freq_out, &i, &j, &k);
-+		if (ret == 0) {
- 			goto configure_clock;
- 		} else if (wm8960->clk_id != WM8960_SYSCLK_AUTO) {
- 			dev_err(codec->dev, "failed to configure clock\n");
+@@ -428,6 +457,7 @@ void snd_soc_jack_free_gpios(struct snd_soc_jack *jack, int count,
+ 
+ 	for (i = 0; i < count; i++) {
+ 		gpiod_unexport(gpios[i].desc);
++		unregister_pm_notifier(&gpios[i].pm_notifier);
+ 		free_irq(gpiod_to_irq(gpios[i].desc), &gpios[i]);
+ 		cancel_delayed_work_sync(&gpios[i].work);
+ 		gpiod_put(gpios[i].desc);
 -- 
 2.11.0
