@@ -1,18 +1,18 @@
 From: Nicolin Chen <nicoleotsuka@gmail.com>
 Subject: Re: [PATCH] ASoC: WM8962: Let codec driver
 	enable/disable its MCLK
-Date: Thu, 23 Mar 2017 21:49:36 -0700
-Message-ID: <20170324044935.GA4067@Asurada-CZ80>
+Date: Thu, 23 Mar 2017 21:58:15 -0700
+Message-ID: <20170324045814.GA15344@Asurada-CZ80>
 References: <1490270510-17061-1-git-send-email-daniel.baluta@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f68.google.com (mail-pg0-f68.google.com [74.125.83.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 9106E266A33
- for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2017 05:49:43 +0100 (CET)
-Received: by mail-pg0-f68.google.com with SMTP id 79so822510pgf.0
- for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2017 21:49:43 -0700 (PDT)
+Received: from mail-pg0-f67.google.com (mail-pg0-f67.google.com [74.125.83.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 70B17266A33
+ for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2017 05:58:21 +0100 (CET)
+Received: by mail-pg0-f67.google.com with SMTP id 79so852144pgf.0
+ for <alsa-devel@alsa-project.org>; Thu, 23 Mar 2017 21:58:21 -0700 (PDT)
 Content-Disposition: inline
 In-Reply-To: <1490270510-17061-1-git-send-email-daniel.baluta@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,25 +25,8 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Daniel Baluta <daniel.baluta@gmail.com>
-Cc: daniel.baluta@nxp.com, alsa-devel@alsa-project.org, Nicolin Chen <b42378@freescale.com>, timur@tabi.org, Xiubo.Lee@gmail.com, linux-kernel@vger.kernel.org, shengjiu.wang@nxp.com, tiwai@suse.com, lgirdwood@gmail.com, mihai.serban@nxp.com, broonie@kernel.org, viorel.suman@nxp.com, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
+Cc: daniel.baluta@nxp.com, alsa-devel@alsa-project.org, timur@tabi.org, Xiubo.Lee@gmail.com, linux-kernel@vger.kernel.org, shengjiu.wang@nxp.com, tiwai@suse.com, lgirdwood@gmail.com, mihai.serban@nxp.com, broonie@kernel.org, viorel.suman@nxp.com, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
-
-Hi,
-
-Could you please revise the subject a bit? I forgot what's the
-original one I submitted (internally) years ago. But the patch
-is for imx-wm8962 instead of WM8962.
-
-So please use
-  ASoC: fsl: imx-wm8962: 
-or at least
-  ASoC: imx-wm8962: 
-
-The change itself looks fine though.
-
-Thanks
-Nic
-----
 
 On Thu, Mar 23, 2017 at 02:01:50PM +0200, Daniel Baluta wrote:
 > From: Nicolin Chen <b42378@freescale.com>
@@ -56,6 +39,14 @@ On Thu, Mar 23, 2017 at 02:01:50PM +0200, Daniel Baluta wrote:
 > empty.
 > 
 > Signed-off-by: Nicolin Chen <b42378@freescale.com>
+
+Hmm...it'd probably be better to let yourself be the author and remove
+my signed-off here. Just got an email deliver failure since that email
+address is apparently not available any more.
+
+Thanks
+Nicolin
+
 > Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 > ---
 >  sound/soc/fsl/imx-wm8962.c | 40 ++++++++--------------------------------
