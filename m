@@ -1,17 +1,21 @@
-From: Daniel Baluta <daniel.baluta@gmail.com>
-Subject: [PATCH v2] ASoC: imx-wm8960: Let codec driver
-	enable/disable its MCLK
-Date: Fri, 24 Mar 2017 11:14:48 +0200
-Message-ID: <1490346888-30937-1-git-send-email-daniel.baluta@gmail.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH 5/6] mfd: arizona: Add support for new
+	micbias regulators
+Date: Fri, 24 Mar 2017 09:42:23 +0000
+Message-ID: <20170324094223.ncuq3uhd2tmbonmp@dell>
+References: <1490107539-23995-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ <1490107539-23995-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 94B47267214
- for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2017 10:15:00 +0100 (CET)
-Received: by mail-wm0-f68.google.com with SMTP id n11so1966784wma.0
- for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2017 02:15:00 -0700 (PDT)
+Received: from mail-wm0-f48.google.com (mail-wm0-f48.google.com [74.125.82.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B94C267214
+ for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2017 10:42:27 +0100 (CET)
+Received: by mail-wm0-f48.google.com with SMTP id n11so8547094wma.0
+ for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2017 02:42:27 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1490107539-23995-5-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,130 +25,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: daniel.baluta@nxp.com, timur@tabi.org, Xiubo.Lee@gmail.com, linux-kernel@vger.kernel.org, shengjiu.wang@nxp.com, tiwai@suse.com, nicoleotsuka@gmail.com, mihai.serban@nxp.com, viorel.suman@nxp.com, fabio.estevam@nxp.com, linuxppc-dev@lists.ozlabs.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, robh+dt@kernel.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Daniel Baluta <daniel.baluta@nxp.com>
-
-WM8962 needs its MCLK when powerup in wm8962_resume(). Thus it's better
-to control the MCLK in codec driver. Thus remove the clock enable in
-machine driver accordingly.
-
-While at it, get rid of imx_wm8962_remove function since it is now
-empty.
-
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
----
-Changes since v1:
-	* s/wm8960/imx-wm890/ in subject prefix
-	* s/dirver/driver in commit message
-	* took ownership over the patch from Nicolin Chen
-	as per his agreement.
-
- sound/soc/fsl/imx-wm8962.c | 40 ++++++++--------------------------------
- 1 file changed, 8 insertions(+), 32 deletions(-)
-
-diff --git a/sound/soc/fsl/imx-wm8962.c b/sound/soc/fsl/imx-wm8962.c
-index 1b60958..3d894d9 100644
---- a/sound/soc/fsl/imx-wm8962.c
-+++ b/sound/soc/fsl/imx-wm8962.c
-@@ -33,7 +33,6 @@ struct imx_wm8962_data {
- 	struct snd_soc_card card;
- 	char codec_dai_name[DAI_NAME_SIZE];
- 	char platform_name[DAI_NAME_SIZE];
--	struct clk *codec_clk;
- 	unsigned int clk_frequency;
- };
- 
-@@ -163,6 +162,7 @@ static int imx_wm8962_probe(struct platform_device *pdev)
- 	struct imx_priv *priv = &card_priv;
- 	struct i2c_client *codec_dev;
- 	struct imx_wm8962_data *data;
-+	struct clk *codec_clk;
- 	int int_port, ext_port;
- 	int ret;
- 
-@@ -231,19 +231,14 @@ static int imx_wm8962_probe(struct platform_device *pdev)
- 		goto fail;
- 	}
- 
--	data->codec_clk = devm_clk_get(&codec_dev->dev, NULL);
--	if (IS_ERR(data->codec_clk)) {
--		ret = PTR_ERR(data->codec_clk);
-+	codec_clk = devm_clk_get(&codec_dev->dev, NULL);
-+	if (IS_ERR(codec_clk)) {
-+		ret = PTR_ERR(codec_clk);
- 		dev_err(&codec_dev->dev, "failed to get codec clk: %d\n", ret);
- 		goto fail;
- 	}
- 
--	data->clk_frequency = clk_get_rate(data->codec_clk);
--	ret = clk_prepare_enable(data->codec_clk);
--	if (ret) {
--		dev_err(&codec_dev->dev, "failed to enable codec clk: %d\n", ret);
--		goto fail;
--	}
-+	data->clk_frequency = clk_get_rate(codec_clk);
- 
- 	data->dai.name = "HiFi";
- 	data->dai.stream_name = "HiFi";
-@@ -258,10 +253,10 @@ static int imx_wm8962_probe(struct platform_device *pdev)
- 	data->card.dev = &pdev->dev;
- 	ret = snd_soc_of_parse_card_name(&data->card, "model");
- 	if (ret)
--		goto clk_fail;
-+		goto fail;
- 	ret = snd_soc_of_parse_audio_routing(&data->card, "audio-routing");
- 	if (ret)
--		goto clk_fail;
-+		goto fail;
- 	data->card.num_links = 1;
- 	data->card.owner = THIS_MODULE;
- 	data->card.dai_link = &data->dai;
-@@ -277,16 +272,9 @@ static int imx_wm8962_probe(struct platform_device *pdev)
- 	ret = devm_snd_soc_register_card(&pdev->dev, &data->card);
- 	if (ret) {
- 		dev_err(&pdev->dev, "snd_soc_register_card failed (%d)\n", ret);
--		goto clk_fail;
-+		goto fail;
- 	}
- 
--	of_node_put(ssi_np);
--	of_node_put(codec_np);
--
--	return 0;
--
--clk_fail:
--	clk_disable_unprepare(data->codec_clk);
- fail:
- 	of_node_put(ssi_np);
- 	of_node_put(codec_np);
-@@ -294,17 +282,6 @@ static int imx_wm8962_probe(struct platform_device *pdev)
- 	return ret;
- }
- 
--static int imx_wm8962_remove(struct platform_device *pdev)
--{
--	struct snd_soc_card *card = platform_get_drvdata(pdev);
--	struct imx_wm8962_data *data = snd_soc_card_get_drvdata(card);
--
--	if (!IS_ERR(data->codec_clk))
--		clk_disable_unprepare(data->codec_clk);
--
--	return 0;
--}
--
- static const struct of_device_id imx_wm8962_dt_ids[] = {
- 	{ .compatible = "fsl,imx-audio-wm8962", },
- 	{ /* sentinel */ }
-@@ -318,7 +295,6 @@ static struct platform_driver imx_wm8962_driver = {
- 		.of_match_table = imx_wm8962_dt_ids,
- 	},
- 	.probe = imx_wm8962_probe,
--	.remove = imx_wm8962_remove,
- };
- module_platform_driver(imx_wm8962_driver);
- 
--- 
-2.7.4
+T24gVHVlLCAyMSBNYXIgMjAxNywgQ2hhcmxlcyBLZWVwYXggd3JvdGU6Cgo+IEFkZCBtZmRfY2Vs
+bCdzIGZvciBlYWNoIG9mIHRoZSBuZXcgbWljYmlhcyByZWd1bGF0b3JzLCAgcHJvdmlkZSB0aGUK
+PiBhcHByb3ByaWF0ZSBzdXBwbHkgbWFwcGluZyBmb3IgdGhlc2UsIGFuZCByZW1vdmUgdGhlIG9s
+ZCBjb2RlIHRoYXQKPiBjb25maWd1cmVkIHRoZSBtaWNiaWFzZXMgbm93IHRoYXQgdGhlIHJlZ3Vs
+YXRvciBkcml2ZXIgZG9lcyBzby4KPiAKPiBTaWduZWQtb2ZmLWJ5OiBDaGFybGVzIEtlZXBheCA8
+Y2tlZXBheEBvcGVuc291cmNlLndvbGZzb25taWNyby5jb20+Cj4gLS0tCj4gIGRyaXZlcnMvbWZk
+L2FyaXpvbmEtY29yZS5jIHwgNTYgKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLQo+ICAxIGZpbGUgY2hhbmdlZCwgMjIgaW5zZXJ0aW9ucygrKSwgMzQgZGVsZXRp
+b25zKC0pCgpBcHBsaWVkLCB0aGFua3MuCgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL21mZC9hcml6
+b25hLWNvcmUuYyBiL2RyaXZlcnMvbWZkL2FyaXpvbmEtY29yZS5jCj4gaW5kZXggYjZkNGJjNi4u
+ZTdlYmE1ZCAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL21mZC9hcml6b25hLWNvcmUuYwo+ICsrKyBi
+L2RyaXZlcnMvbWZkL2FyaXpvbmEtY29yZS5jCj4gQEAgLTkzNiwxMCArOTM2LDE2IEBAIHN0YXRp
+YyBjb25zdCBjaGFyICogY29uc3Qgd201MTAyX3N1cHBsaWVzW10gPSB7Cj4gIAkiQ1BWREQiLAo+
+ICAJIlNQS1ZEREwiLAo+ICAJIlNQS1ZERFIiLAo+ICsJIk1JQ0JJQVMxIiwKPiArCSJNSUNCSUFT
+MiIsCj4gKwkiTUlDQklBUzMiLAo+ICB9Owo+ICAKPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBtZmRf
+Y2VsbCB3bTUxMDJfZGV2c1tdID0gewo+ICAJeyAubmFtZSA9ICJhcml6b25hLW1pY3N1cHAiIH0s
+Cj4gKwl7IC5uYW1lID0gImFyaXpvbmEtbWljYmlhcyIsIC5pZCA9IDEgfSwKPiArCXsgLm5hbWUg
+PSAiYXJpem9uYS1taWNiaWFzIiwgLmlkID0gMiB9LAo+ICsJeyAubmFtZSA9ICJhcml6b25hLW1p
+Y2JpYXMiLCAuaWQgPSAzIH0sCj4gIAl7IC5uYW1lID0gImFyaXpvbmEtZ3BpbyIgfSwKPiAgCXsK
+PiAgCQkubmFtZSA9ICJhcml6b25hLWV4dGNvbiIsCj4gQEAgLTk1Nyw2ICs5NjMsOSBAQCBzdGF0
+aWMgY29uc3Qgc3RydWN0IG1mZF9jZWxsIHdtNTEwMl9kZXZzW10gPSB7Cj4gIAo+ICBzdGF0aWMg
+Y29uc3Qgc3RydWN0IG1mZF9jZWxsIHdtNTExMF9kZXZzW10gPSB7Cj4gIAl7IC5uYW1lID0gImFy
+aXpvbmEtbWljc3VwcCIgfSwKPiArCXsgLm5hbWUgPSAiYXJpem9uYS1taWNiaWFzIiwgLmlkID0g
+MSB9LAo+ICsJeyAubmFtZSA9ICJhcml6b25hLW1pY2JpYXMiLCAuaWQgPSAyIH0sCj4gKwl7IC5u
+YW1lID0gImFyaXpvbmEtbWljYmlhcyIsIC5pZCA9IDMgfSwKPiAgCXsgLm5hbWUgPSAiYXJpem9u
+YS1ncGlvIiB9LAo+ICAJewo+ICAJCS5uYW1lID0gImFyaXpvbmEtZXh0Y29uIiwKPiBAQCAtOTc2
+LDkgKzk4NSwxMyBAQCBzdGF0aWMgY29uc3QgY2hhciAqIGNvbnN0IGNzNDdsMjRfc3VwcGxpZXNb
+XSA9IHsKPiAgCSJNSUNWREQiLAo+ICAJIkNQVkREIiwKPiAgCSJTUEtWREQiLAo+ICsJIk1JQ0JJ
+QVMxIiwKPiArCSJNSUNCSUFTMiIsCj4gIH07Cj4gIAo+ICBzdGF0aWMgY29uc3Qgc3RydWN0IG1m
+ZF9jZWxsIGNzNDdsMjRfZGV2c1tdID0gewo+ICsJeyAubmFtZSA9ICJhcml6b25hLW1pY2JpYXMi
+LCAuaWQgPSAxIH0sCj4gKwl7IC5uYW1lID0gImFyaXpvbmEtbWljYmlhcyIsIC5pZCA9IDIgfSwK
+PiAgCXsgLm5hbWUgPSAiYXJpem9uYS1ncGlvIiB9LAo+ICAJeyAubmFtZSA9ICJhcml6b25hLWhh
+cHRpY3MiIH0sCj4gIAl7IC5uYW1lID0gImFyaXpvbmEtcHdtIiB9LAo+IEBAIC05OTQsMTAgKzEw
+MDcsMTYgQEAgc3RhdGljIGNvbnN0IGNoYXIgKiBjb25zdCB3bTg5OTdfc3VwcGxpZXNbXSA9IHsK
+PiAgCSJEQlZERDIiLAo+ICAJIkNQVkREIiwKPiAgCSJTUEtWREQiLAo+ICsJIk1JQ0JJQVMxIiwK
+PiArCSJNSUNCSUFTMiIsCj4gKwkiTUlDQklBUzMiLAo+ICB9Owo+ICAKPiAgc3RhdGljIGNvbnN0
+IHN0cnVjdCBtZmRfY2VsbCB3bTg5OTdfZGV2c1tdID0gewo+ICAJeyAubmFtZSA9ICJhcml6b25h
+LW1pY3N1cHAiIH0sCj4gKwl7IC5uYW1lID0gImFyaXpvbmEtbWljYmlhcyIsIC5pZCA9IDEgfSwK
+PiArCXsgLm5hbWUgPSAiYXJpem9uYS1taWNiaWFzIiwgLmlkID0gMiB9LAo+ICsJeyAubmFtZSA9
+ICJhcml6b25hLW1pY2JpYXMiLCAuaWQgPSAzIH0sCj4gIAl7IC5uYW1lID0gImFyaXpvbmEtZ3Bp
+byIgfSwKPiAgCXsKPiAgCQkubmFtZSA9ICJhcml6b25hLWV4dGNvbiIsCj4gQEAgLTEwMTUsNiAr
+MTAzNCw5IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbWZkX2NlbGwgd204OTk3X2RldnNbXSA9IHsK
+PiAgCj4gIHN0YXRpYyBjb25zdCBzdHJ1Y3QgbWZkX2NlbGwgd204OTk4X2RldnNbXSA9IHsKPiAg
+CXsgLm5hbWUgPSAiYXJpem9uYS1taWNzdXBwIiB9LAo+ICsJeyAubmFtZSA9ICJhcml6b25hLW1p
+Y2JpYXMiLCAuaWQgPSAxIH0sCj4gKwl7IC5uYW1lID0gImFyaXpvbmEtbWljYmlhcyIsIC5pZCA9
+IDIgfSwKPiArCXsgLm5hbWUgPSAiYXJpem9uYS1taWNiaWFzIiwgLmlkID0gMyB9LAo+ICAJeyAu
+bmFtZSA9ICJhcml6b25hLWdwaW8iIH0sCj4gIAl7Cj4gIAkJLm5hbWUgPSAiYXJpem9uYS1leHRj
+b24iLAo+IEBAIC0xNDA0LDQwICsxNDI2LDYgQEAgaW50IGFyaXpvbmFfZGV2X2luaXQoc3RydWN0
+IGFyaXpvbmEgKmFyaXpvbmEpCj4gIAkJZ290byBlcnJfcmVzZXQ7Cj4gIAl9Cj4gIAo+IC0JZm9y
+IChpID0gMDsgaSA8IEFSSVpPTkFfTUFYX01JQ0JJQVM7IGkrKykgewo+IC0JCWlmICghYXJpem9u
+YS0+cGRhdGEubWljYmlhc1tpXS5tViAmJgo+IC0JCSAgICAhYXJpem9uYS0+cGRhdGEubWljYmlh
+c1tpXS5ieXBhc3MpCj4gLQkJCWNvbnRpbnVlOwo+IC0KPiAtCQkvKiBBcHBseSBkZWZhdWx0IGZv
+ciBieXBhc3MgbW9kZSAqLwo+IC0JCWlmICghYXJpem9uYS0+cGRhdGEubWljYmlhc1tpXS5tVikK
+PiAtCQkJYXJpem9uYS0+cGRhdGEubWljYmlhc1tpXS5tViA9IDI4MDA7Cj4gLQo+IC0JCXZhbCA9
+IChhcml6b25hLT5wZGF0YS5taWNiaWFzW2ldLm1WIC0gMTUwMCkgLyAxMDA7Cj4gLQo+IC0JCXZh
+bCA8PD0gQVJJWk9OQV9NSUNCMV9MVkxfU0hJRlQ7Cj4gLQo+IC0JCWlmIChhcml6b25hLT5wZGF0
+YS5taWNiaWFzW2ldLmV4dF9jYXApCj4gLQkJCXZhbCB8PSBBUklaT05BX01JQ0IxX0VYVF9DQVA7
+Cj4gLQo+IC0JCWlmIChhcml6b25hLT5wZGF0YS5taWNiaWFzW2ldLmRpc2NoYXJnZSkKPiAtCQkJ
+dmFsIHw9IEFSSVpPTkFfTUlDQjFfRElTQ0g7Cj4gLQo+IC0JCWlmIChhcml6b25hLT5wZGF0YS5t
+aWNiaWFzW2ldLnNvZnRfc3RhcnQpCj4gLQkJCXZhbCB8PSBBUklaT05BX01JQ0IxX1JBVEU7Cj4g
+LQo+IC0JCWlmIChhcml6b25hLT5wZGF0YS5taWNiaWFzW2ldLmJ5cGFzcykKPiAtCQkJdmFsIHw9
+IEFSSVpPTkFfTUlDQjFfQllQQVNTOwo+IC0KPiAtCQlyZWdtYXBfdXBkYXRlX2JpdHMoYXJpem9u
+YS0+cmVnbWFwLAo+IC0JCQkJICAgQVJJWk9OQV9NSUNfQklBU19DVFJMXzEgKyBpLAo+IC0JCQkJ
+ICAgQVJJWk9OQV9NSUNCMV9MVkxfTUFTSyB8Cj4gLQkJCQkgICBBUklaT05BX01JQ0IxX0VYVF9D
+QVAgfAo+IC0JCQkJICAgQVJJWk9OQV9NSUNCMV9ESVNDSCB8Cj4gLQkJCQkgICBBUklaT05BX01J
+Q0IxX0JZUEFTUyB8Cj4gLQkJCQkgICBBUklaT05BX01JQ0IxX1JBVEUsIHZhbCk7Cj4gLQl9Cj4g
+LQo+ICAJZm9yIChpID0gMDsgaSA8IEFSSVpPTkFfTUFYX0lOUFVUOyBpKyspIHsKPiAgCQkvKiBE
+ZWZhdWx0IGZvciBib3RoIGlzIDAgc28gbm9vcCB3aXRoIGRlZmF1bHRzICovCj4gIAkJdmFsID0g
+YXJpem9uYS0+cGRhdGEuZG1pY19yZWZbaV0KCi0tIApMZWUgSm9uZXMKTGluYXJvIFNUTWljcm9l
+bGVjdHJvbmljcyBMYW5kaW5nIFRlYW0gTGVhZApMaW5hcm8ub3JnIOKUgiBPcGVuIHNvdXJjZSBz
+b2Z0d2FyZSBmb3IgQVJNIFNvQ3MKRm9sbG93IExpbmFybzogRmFjZWJvb2sgfCBUd2l0dGVyIHwg
+QmxvZwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
