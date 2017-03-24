@@ -1,64 +1,47 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v3 02/11] IIO: Add DT bindings for sigma delta adc
- modulator
-Date: Fri, 24 Mar 2017 09:21:32 -0500
-Message-ID: <20170324142131.cm72er2cc2kggxco@rob-hp-laptop>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v3 04/11] IIO: add DT bindings for stm32
+	DFSDM filter
+Date: Fri, 24 Mar 2017 09:37:32 -0500
+Message-ID: <20170324143732.nvq2wfra6q3hcrhs@rob-hp-laptop>
 References: <1489759704-30217-1-git-send-email-arnaud.pouliquen@st.com>
- <1489759704-30217-3-git-send-email-arnaud.pouliquen@st.com>
+ <1489759704-30217-5-git-send-email-arnaud.pouliquen@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f66.google.com (mail-oi0-f66.google.com
+ [209.85.218.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 71FC32669DD
+ for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2017 15:37:34 +0100 (CET)
+Received: by mail-oi0-f66.google.com with SMTP id l203so357284oia.3
+ for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2017 07:37:34 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <1489759704-30217-3-git-send-email-arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
-Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, kernel-F5mvAk5X5gdBDgjK7y7TUQ@public.gmane.org, Maxime Coquelin <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre Torgue <alexandre.torgue-qxv4g6HH51o@public.gmane.org>, olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
+In-Reply-To: <1489759704-30217-5-git-send-email-arnaud.pouliquen@st.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, olivier moysan <olivier.moysan@st.com>, kernel@stlinux.com, Liam Girdwood <lgirdwood@gmail.com>, linux-iio@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Hartmut Knaack <knaack.h@gmx.de>, Jonathan Cameron <jic23@kernel.org>, Alexandre Torgue <alexandre.torgue@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Mar 17, 2017 at 03:08:15PM +0100, Arnaud Pouliquen wrote:
-> Add documentation of device tree bindings to support
-> sigma delta modulator in IIO framework.
+On Fri, Mar 17, 2017 at 03:08:17PM +0100, Arnaud Pouliquen wrote:
+> Add bindings that describes Digital Filter for Sigma Delta
+> Modulators. DFSDM allows to connect sigma delta
+> modulators.
 > 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
 > ---
-> V2 -> V3 :
-> 	-Rename to suppress "simple"
->         - add "ads1201" compatibility
->  
->  .../devicetree/bindings/iio/adc/sigma-delta-modulator.txt   | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.txt
+> V2->V3:
+>    Fixes based on V2 comments
 > 
-> diff --git a/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.txt b/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.txt
-> new file mode 100644
-> index 0000000..27f04a3
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iio/adc/sigma-delta-modulator.txt
-> @@ -0,0 +1,13 @@
-> +Device-Tree bindings for sigma delta modulator
-> +
-> +Required properties:
-> +- compatible: should be "ads1201", "sd-modulator". "sd-modulator" can be use
-> +	as a generic SD modulator if modulator not specified in compatible list.
-> +- #io-channel-cells = <1>: See the IIO bindings section "IIO consumers".
-> +
-> +Example node:
-> +
-> +	ads1202: simple_sd_adc@0 {
+>  .../bindings/iio/adc/st,stm32-dfsdm-adc.txt        | 120 +++++++++++++++++++++
+>  1 file changed, 120 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.txt
 
-adc@...
-
-With that,
-
-Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-
-> +		compatible = "sd-modulator";
-> +		#io-channel-cells = <1>;
-> +	};
-> -- 
-> 1.9.1
-> 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Acked-by: Rob Herring <robh@kernel.org>
