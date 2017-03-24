@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rcar: enable PCM RATE untile 192000" to the asoc tree
-Date: Fri, 24 Mar 2017 19:16:28 +0000
-Message-ID: <E1crUhI-00064v-6J@debutante>
-References: <87shm5oonl.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rcar: ssi: don't set SSICR.CKDV = 000 with SSIWSR.CONT" to the asoc tree
+Date: Fri, 24 Mar 2017 19:16:24 +0000
+Message-ID: <E1crUhE-000641-Ef@debutante>
+References: <87zigenerc.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87shm5oonl.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87zigenerc.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rcar: enable PCM RATE untile 192000
+   ASoC: rcar: ssi: don't set SSICR.CKDV = 000 with SSIWSR.CONT
 
 has been applied to the asoc tree at
 
@@ -37,32 +37,43 @@ to this mail.
 Thanks,
 Mark
 
->From dc2721564f6da549f6eb29ac5bca28d65beadcb7 Mon Sep 17 00:00:00 2001
-From: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
-Date: Wed, 22 Mar 2017 05:43:35 +0000
-Subject: [PATCH] ASoC: rcar: enable PCM RATE untile 192000
+>From 6b8530cc056efd4a11b034ca5b1e9f7e9563f553 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 22 Mar 2017 04:02:43 +0000
+Subject: [PATCH] ASoC: rcar: ssi: don't set SSICR.CKDV = 000 with SSIWSR.CONT
 
-R-Car sound can handle untile 192000 rate.
+R-Car Datasheet is indicating "SSICR.CKDV = 000 is invalid when
+SSIWSR.WS_MODE = 1 or SSIWSR.CONT = 1".
+Current driver will set CONT, thus, we shouldn't use CKDV = 000.
+This patch fixup it.
 
-Signed-off-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Reported-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sh/rcar/ssi.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 72966bdd3daa..3e852e00b277 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -96,7 +96,7 @@
- #include <linux/pm_runtime.h>
- #include "rsnd.h"
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 411bda2387ad..135c5669f796 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -228,6 +228,15 @@ static int rsnd_ssi_master_clk_start(struct rsnd_mod *mod,
+ 	for (j = 0; j < ARRAY_SIZE(ssi_clk_mul_table); j++) {
  
--#define RSND_RATES SNDRV_PCM_RATE_8000_96000
-+#define RSND_RATES SNDRV_PCM_RATE_8000_192000
- #define RSND_FMTS (SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S16_LE)
- 
- static const struct of_device_id rsnd_of_match[] = {
+ 		/*
++		 * It will set SSIWSR.CONT here, but SSICR.CKDV = 000
++		 * with it is not allowed. (SSIWSR.WS_MODE with
++		 * SSICR.CKDV = 000 is not allowed either).
++		 * Skip it. See SSICR.CKDV
++		 */
++		if (j == 0)
++			continue;
++
++		/*
+ 		 * this driver is assuming that
+ 		 * system word is 32bit x chan
+ 		 * see rsnd_ssi_init()
 -- 
 2.11.0
