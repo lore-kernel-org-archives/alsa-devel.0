@@ -1,103 +1,51 @@
-From: Dmitry Torokhov <dtor@chromium.org>
-Subject: [PATCH] ASoC: jack - check status of GPIO-based pins on resume
-Date: Fri, 24 Mar 2017 12:20:24 -0700
-Message-ID: <20170324192024.GA13029@dtor-ws>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: Re: [PATCH] ASoC: jack - check status of GPIO-based
+	pins on resume
+Date: Fri, 24 Mar 2017 12:22:09 -0700
+Message-ID: <20170324192209.GB18364@dtor-ws>
+References: <20170321235043.GA9831@dtor-ws>
+ <20170324185147.rwbi2qqynr2yggq2@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pg0-f68.google.com (mail-pg0-f68.google.com [74.125.83.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 606CF2669DD
+ for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2017 20:22:13 +0100 (CET)
+Received: by mail-pg0-f68.google.com with SMTP id w20so2099870pgc.1
+ for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2017 12:22:12 -0700 (PDT)
 Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
+In-Reply-To: <20170324185147.rwbi2qqynr2yggq2@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-For GPIO-backed pins that are not configured as wakeup sources, we may
-miss change in their state that happens while system is suspended. Let's
-use PM notifier to refresh their state upon resume.
+On Fri, Mar 24, 2017 at 06:51:47PM +0000, Mark Brown wrote:
+> On Tue, Mar 21, 2017 at 04:50:43PM -0700, Dmitry Torokhov wrote:
+> > From: Dmitry Torokhov <dtor@chromium.org>
+> > 
+> > For GPIO-backed pins that are not configured as wakeup sources, we may
+> > miss change in their state that happens while system is suspended. Let's
+> > use PM notifier to refresh their state upon resume.
+> > 
+> > Signed-off-by: Dmitry Torokhov <dtor@chromium.org>
+> > ---
+> 
+> Please send patches from the mail account corresponding to the signoff,
+> not doing that makes the patch look like it's missing a signoff (as it's
+> got the From line so more than one signoff is expected but there's only
+> one) which slows down review.
 
-Signed-off-by: Dmitry Torokhov <dtor@chromium.org>
----
- include/sound/soc.h  |  1 +
- sound/soc/soc-jack.c | 30 ++++++++++++++++++++++++++++++
- 2 files changed, 31 insertions(+)
-
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index b86168a21d56..c0b8bf463940 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -722,6 +722,7 @@ struct snd_soc_jack_gpio {
- 	/* private: */
- 	struct snd_soc_jack *jack;
- 	struct delayed_work work;
-+	struct notifier_block pm_notifier;
- 	struct gpio_desc *desc;
- 
- 	void *data;
-diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
-index fbaa1bb41102..d90af94ec1be 100644
---- a/sound/soc/soc-jack.c
-+++ b/sound/soc/soc-jack.c
-@@ -19,6 +19,7 @@
- #include <linux/workqueue.h>
- #include <linux/delay.h>
- #include <linux/export.h>
-+#include <linux/suspend.h>
- #include <trace/events/asoc.h>
- 
- /**
-@@ -293,6 +294,27 @@ static void gpio_work(struct work_struct *work)
- 	snd_soc_jack_gpio_detect(gpio);
- }
- 
-+static int snd_soc_jack_pm_notifier(struct notifier_block *nb,
-+				    unsigned long action, void *data)
-+{
-+	struct snd_soc_jack_gpio *gpio =
-+			container_of(nb, struct snd_soc_jack_gpio, pm_notifier);
-+
-+	switch (action) {
-+	case PM_POST_SUSPEND:
-+	case PM_POST_HIBERNATION:
-+	case PM_POST_RESTORE:
-+		/*
-+		 * Use workqueue so we do not have to care about running
-+		 * concurrently with work triggered by interrupt handler.
-+		 */
-+		queue_delayed_work(system_power_efficient_wq, &gpio->work, 0);
-+		break;
-+	}
-+
-+	return NOTIFY_DONE;
-+}
-+
- /**
-  * snd_soc_jack_add_gpios - Associate GPIO pins with an ASoC jack
-  *
-@@ -369,6 +391,13 @@ int snd_soc_jack_add_gpios(struct snd_soc_jack *jack, int count,
- 					i, ret);
- 		}
- 
-+		/*
-+		 * Register PM notifier so we do not miss state transitions
-+		 * happening while system is asleep.
-+		 */
-+		gpios[i].pm_notifier.notifier_call = snd_soc_jack_pm_notifier;
-+		register_pm_notifier(&gpios[i].pm_notifier);
-+
- 		/* Expose GPIO value over sysfs for diagnostic purposes */
- 		gpiod_export(gpios[i].desc, false);
- 
-@@ -428,6 +457,7 @@ void snd_soc_jack_free_gpios(struct snd_soc_jack *jack, int count,
- 
- 	for (i = 0; i < count; i++) {
- 		gpiod_unexport(gpios[i].desc);
-+		unregister_pm_notifier(&gpios[i].pm_notifier);
- 		free_irq(gpiod_to_irq(gpios[i].desc), &gpios[i]);
- 		cancel_delayed_work_sync(&gpios[i].work);
- 		gpiod_put(gpios[i].desc);
--- 
-2.12.1.578.ge9c3154ca4-goog
-
+Resent from @chromium.
 
 -- 
 Dmitry
