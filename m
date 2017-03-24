@@ -1,22 +1,24 @@
-From: "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>
-Subject: Re: [PATCH v2 09/11] ASoC: Intel:
-	Skylake:	Fix	DMA	position reporting for capture stream
-Date: Fri, 24 Mar 2017 20:51:13 +0000
-Message-ID: <85DFEED57DC57344B2483EF7BF8CB60552D1C563@BGSMSX104.gar.corp.intel.com>
-References: <1490377234-30257-1-git-send-email-jeeja.kp@intel.com>
- <1490377234-30257-10-git-send-email-jeeja.kp@intel.com>
- <s5hpoh6ed0k.wl-tiwai@suse.de>
- <85DFEED57DC57344B2483EF7BF8CB60552D1C38C@BGSMSX104.gar.corp.intel.com>
- <s5hlgruech8.wl-tiwai@suse.de>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [pulseaudio-discuss] pulseaudio fails to start
+ with kernel 4.11, caused by new snd_hdmi_lpe_audio module)
+Date: Fri, 24 Mar 2017 23:01:47 +0100
+Message-ID: <30b18b96-eaa4-70e0-522d-dc8237d25642@redhat.com>
+References: <2549c113-f06b-f22e-d36e-f59fc2969bcb@redhat.com>
+ <s5h8to0w4fs.wl-tiwai@suse.de>
+ <6754b5cd-f6d0-e2e3-0f01-992946ec1b92@linux.intel.com>
+ <s5hk27jjigd.wl-tiwai@suse.de>
+ <1490082870.1321124.918129488.4F3143F8@webmail.messagingengine.com>
+ <bba100b1-5e74-093a-7625-a7feaba1a065@redhat.com>
+ <b693d927-229e-e00a-ada5-29d12154547b@linux.intel.com>
+ <s5hvar0fjzf.wl-tiwai@suse.de> <1490379539.24554.2.camel@iki.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 975C1266927
- for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2017 21:51:19 +0100 (CET)
-In-Reply-To: <s5hlgruech8.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+ by alsa0.perex.cz (Postfix) with ESMTP id 86038266927
+ for <alsa-devel@alsa-project.org>; Fri, 24 Mar 2017 23:01:51 +0100 (CET)
+In-Reply-To: <1490379539.24554.2.camel@iki.fi>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,167 +28,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "R,
- Dharageswari" <dharageswari.r@intel.com>, Patches Audio <patches.audio@intel.com>, "Shah,
- Hardik T" <hardik.t.shah@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "Girdwood, Liam R" <liam.r.girdwood@intel.com>, "Kp,
- Jeeja" <jeeja.kp@intel.com>
+To: Tanu Kaskinen <tanuk@iki.fi>, Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, pulseaudio-discuss@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
+On 03/24/2017 07:18 PM, Tanu Kaskinen wrote:
+> On Thu, 2017-03-23 at 09:57 +0100, Takashi Iwai wrote:
+>> On Thu, 23 Mar 2017 04:16:52 +0100,
+>> Pierre-Louis Bossart wrote:
+>>>
+>>> On 3/21/17 2:56 AM, Hans de Goede wrote:
+>>>> I: [pulseaudio] alsa-sink.c: Using 1.0 fragments of size 352832 bytes
+>>>> (2000.18ms), buffer size is 352832 bytes (2000.18ms)
+>>>> I: [pulseaudio] alsa-sink.c: Time scheduling watermark is 20.00ms
+>>>> I: [pulseaudio] alsa-sink.c: Driver does not support hardware volume
+>>>> control, falling back to software volume control.
+>>>> I: [pulseaudio] alsa-sink.c: Driver does not support hardware mute
+>>>> control, falling back to software mute control.
+>>>> I: [alsa-sink-HdmiLpeAudio] core-util.c: Successfully enabled SCHED_RR
+>>>> scheduling for thread, with priority 5.
+>>>> I: [alsa-sink-HdmiLpeAudio] alsa-sink.c: Starting playback.
+>>>> I: [alsa-sink-HdmiLpeAudio] (alsa-lib)pcm_hw.c: SNDRV_PCM_IOCTL_HWSYNC
+>>>> failed (-32)
+>>>
+>>> Humm, single period and hw_sync failed, this could be testing the
+>>> robustness of the single-period code and its mapping on multiple DMA
+>>> descriptors? I haven't looked at the alsa module in eons but can't the
+>>> number of periods be forced to two with module parameters while
+>>> keeping the timer-based schedulng?
+>
+> I think the code doesn't currently support this.
+>
+>> It's -EPIPE and this is supposed to be the intentional error code from
+>> HDMI LPE audio driver.  The streaming doesn't work when the gfx is
+>> disconnected or the monitor audio is off.  It accepts the open, but it
+>> returns -EPIPE for further accesses.
+>>
+>> Maybe -EPIPE is no sensible choice, but the problem is that the driver
+>> can't use the PCM DISCONNECT state because PA interprets it being the
+>> complete disconnection of the card object instead of a temporary
+>> disablement of PCM.
+>
+> So is this a PulseAudio bug?
+>
+> I: [alsa-sink-HdmiLpeAudio] alsa-sink.c: Starting playback.
+> I: [alsa-sink-HdmiLpeAudio] (alsa-lib)pcm_hw.c: SNDRV_PCM_IOCTL_HWSYNC failed (-32)
+>
+> The "Starting playback" message is printed just before the
+> snd_pcm_start() call. PulseAudio doesn't check the return value of
+> snd_pcm_start(), but maybe it should? Does the HWSYNC happen in
+> snd_pcm_start()?
+>
+> Can this EPIPE thing happen also during playback, not just when
+> starting?
 
->-----Original Message-----
->From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-
->project.org] On Behalf Of Takashi Iwai
->Sent: Friday, March 24, 2017 11:50 AM
->To: Ughreja, Rakesh A <rakesh.a.ughreja@intel.com>
->Cc: alsa-devel@alsa-project.org; R, Dharageswari <dharageswari.r@intel.com>;
->Patches Audio <patches.audio@intel.com>; Shah, Hardik T
-><hardik.t.shah@intel.com>; broonie@kernel.org; Girdwood, Liam R
-><liam.r.girdwood@intel.com>; Kp, Jeeja <jeeja.kp@intel.com>
->Subject: Re: [alsa-devel] [PATCH v2 09/11] ASoC: Intel: Skylake: Fix DMA
->position reporting for capture stream
->
->On Fri, 24 Mar 2017 19:43:52 +0100,
->Ughreja, Rakesh A wrote:
->>
->>
->>
->> >-----Original Message-----
->> >From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-
->bounces@alsa-
->> >project.org] On Behalf Of Takashi Iwai
->> >Sent: Friday, March 24, 2017 11:38 AM
->> >To: Kp, Jeeja <jeeja.kp@intel.com>
->> >Cc: alsa-devel@alsa-project.org; R, Dharageswari
-><dharageswari.r@intel.com>;
->> >Patches Audio <patches.audio@intel.com>; Shah, Hardik T
->> ><hardik.t.shah@intel.com>; broonie@kernel.org; Girdwood, Liam R
->> ><liam.r.girdwood@intel.com>
->> >Subject: Re: [alsa-devel] [PATCH v2 09/11] ASoC: Intel: Skylake: Fix DMA
->> >position reporting for capture stream
->> >
->> >On Fri, 24 Mar 2017 18:40:32 +0100,
->> >jeeja.kp@intel.com wrote:
->> >>
->> >> From: Hardik T Shah <hardik.t.shah@intel.com>
->> >>
->> >> As per hardware recommendation, for every capture stream completion
->> >> following operations need to be done in order to reflect the actual
->> >> data that is received in position buffer.
->> >>
->> >> 1. Wait for 20us before reading the DMA position in buffer once the
->> >> interrupt is generated for stream completion.
->> >> 2. Read any of the register to flush the DMA position value. This is
->> >> dummy read operation.
->> >
->> >Are these workarounds needed for the legacy driver?
->> >If yes, which chips require it?
->> >
->>
->> Yes, these are needed in legacy driver as well.
->> From SKL and BXT onwards, it is needed.
->
->OK, thanks for confirmation.
->
->Now, from what I read in the above, is the workaround required *only*
->after the interrupt is generated?  20us delay isn't so cheap, and we
->tend to inquire PCM positions often.  If the workaround is needed only
->after the PCM period elapse, we can set some flag in the irq handler
->and apply the workaround only when necessary.
->
+So is this the likely cause of the RT code killing pa, or do you
+still need me to gather perf output ?
 
-Yes, Takashi the workaround is required only in the period elapsed
-interrupt. In some cases the DMA Position updates are delayed and so
-when the period elapsed interrupt occurs the wait_for_avail thinks that
-one period worth of data is not available and so returns only on the 
-next period elapsed interrupt. This creates problem for 2 periods
-playback/capture streams.
+Regards,
 
-So even in the period elapsed interrupt the wait is required only if the
-position is less than the period boundary.
-
->
->Takashi
->
->>
->> >
->> >thanks,
->> >
->> >Takashi
->> >
->> >>
->> >> Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
->> >> Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
->> >> Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
->> >> ---
->> >>  sound/soc/intel/skylake/skl-pcm.c | 23 +++++++++++++++++++++--
->> >>  1 file changed, 21 insertions(+), 2 deletions(-)
->> >>
->> >> diff --git a/sound/soc/intel/skylake/skl-pcm.c
->> >b/sound/soc/intel/skylake/skl-pcm.c
->> >> index ef440d8..1823197 100644
->> >> --- a/sound/soc/intel/skylake/skl-pcm.c
->> >> +++ b/sound/soc/intel/skylake/skl-pcm.c
->> >> @@ -21,6 +21,7 @@
->> >>
->> >>  #include <linux/pci.h>
->> >>  #include <linux/pm_runtime.h>
->> >> +#include <linux/delay.h>
->> >>  #include <sound/pcm_params.h>
->> >>  #include <sound/soc.h>
->> >>  #include "skl.h"
->> >> @@ -1063,13 +1064,31 @@ static snd_pcm_uframes_t
->> >skl_platform_pcm_pointer
->> >>  	 * HAD space reflects the actual data that is transferred.
->> >>  	 * Use the position buffer for capture, as DPIB write gets
->> >>  	 * completed earlier than the actual data written to the DDR.
->> >> +	 *
->> >> +	 * For capture stream following workaround is required to fix the
->> >> +	 * incorrect position reporting.
->> >> +	 *
->> >> +	 * 1. Wait for 20us before reading the DMA position in buffer once
->> >> +	 * the interrupt is generated for stream completion as update happens
->> >> +	 * on the HDA frame boundary i.e. 20.833uSec.
->> >> +	 * 2. Read DPIB register to flush the DMA position value. This dummy
->> >> +	 * read is required to flush DMA position value.
->> >> +	 * 3. Read the DMA Position-in-Buffer. This value now will be equal to
->> >> +	 * or greater than period boundary.
->> >>  	 */
->> >> -	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
->> >> +
->> >> +	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
->> >>  		pos = readl(ebus->bus.remap_addr +
->> >AZX_REG_VS_SDXDPIB_XBASE +
->> >>  				(AZX_REG_VS_SDXDPIB_XINTERVAL *
->> >>  				hdac_stream(hstream)->index));
->> >> -	else
->> >> +	} else {
->> >> +		udelay(20);
->> >> +		readl(ebus->bus.remap_addr +
->> >> +				AZX_REG_VS_SDXDPIB_XBASE +
->> >> +				(AZX_REG_VS_SDXDPIB_XINTERVAL *
->> >> +				 hdac_stream(hstream)->index));
->> >>  		pos =
->> >snd_hdac_stream_get_pos_posbuf(hdac_stream(hstream));
->> >> +	}
->> >>
->> >>  	if (pos >= hdac_stream(hstream)->bufsize)
->> >>  		pos = 0;
->> >> --
->> >> 2.5.0
->> >>
->> >> _______________________________________________
->> >> Alsa-devel mailing list
->> >> Alsa-devel@alsa-project.org
->> >> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->> >>
->> >_______________________________________________
->> >Alsa-devel mailing list
->> >Alsa-devel@alsa-project.org
->> >http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
->_______________________________________________
->Alsa-devel mailing list
->Alsa-devel@alsa-project.org
->http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Hans
