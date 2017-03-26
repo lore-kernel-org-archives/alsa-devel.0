@@ -1,120 +1,60 @@
-From: Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH v3 07/11] IIO: consumer: allow to set
-	buffer sizes
-Date: Sat, 25 Mar 2017 16:01:21 +0000
-Message-ID: <91627cf5-5fb5-c3aa-c0cb-760688ec3ed9@kernel.org>
-References: <1489759704-30217-1-git-send-email-arnaud.pouliquen@st.com>
- <1489759704-30217-8-git-send-email-arnaud.pouliquen@st.com>
- <951c19fa-d3b8-f4cd-cac1-64e3b8d1cf01@kernel.org>
- <b2715233-63e7-4c9d-49fc-ad6ca8be0d75@st.com>
+From: Leo Yan <leo.yan-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: [PATCH 0/5] Convert to use devm_*() for amba attached modules
+Date: Sun, 26 Mar 2017 22:41:49 +0800
+Message-ID: <1490539314-9681-1-git-send-email-leo.yan@linaro.org>
+Reply-To: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from saturn.retrosnub.co.uk (saturn.retrosnub.co.uk [178.18.118.26])
- by alsa0.perex.cz (Postfix) with ESMTP id 69CCA2665D5
- for <alsa-devel@alsa-project.org>; Sat, 25 Mar 2017 17:01:22 +0100 (CET)
-In-Reply-To: <b2715233-63e7-4c9d-49fc-ad6ca8be0d75@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Pouliquen <arnaud.pouliquen@st.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Hartmut Knaack <knaack.h@gmx.de>, Lars-Peter Clausen <lars@metafoo.de>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Olivier MOYSAN <olivier.moysan@st.com>, "kernel@stlinux.com" <kernel@stlinux.com>, "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Alexandre TORGUE <alexandre.torgue@st.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <rtc-linux+bncBC4IFTUFXEFBBUVG37DAKGQE6WWQYIQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Post: <https://groups.google.com/group/rtc-linux/post>, <mailto:rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:rtc-linux+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/rtc-linux
+List-Subscribe: <https://groups.google.com/group/rtc-linux/subscribe>, <mailto:rtc-linux+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+712029733259+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/rtc-linux/subscribe>
+To: Russell King <linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>, Dmitry Torokhov <dmitry.torokhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alessandro Zummo <a.zummo-BfzFCNDTiLLj+vYz1yj4TQ@public.gmane.org>, Alexandre Belloni <alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Baptiste Reynal <b.reynal-lrHrjnjw1UfHK3s98zE1ajGjJy/sRE9J@public.gmane.org>, Alex Williamson <alex.williamson-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, linux-input-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kvm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: Leo Yan <leo.yan-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 20/03/17 11:30, Arnaud Pouliquen wrote:
-> 
-> 
-> On 03/19/2017 11:44 PM, Jonathan Cameron wrote:
->> On 17/03/17 14:08, Arnaud Pouliquen wrote:
->>> Add iio consumer API to set buffer size and watermark according
->>> to sysfs API.
->>>
->>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
->> Hmm. Not keen on the length one.  Setting a requested watermark
->> is fair enough.  There is no actually buffer in these cases though
->> so setting it's length is downright odd..
-> Length and watermark are configurable from user land through sysfs.
-> Seems to me logic to also propose it in inkern API...
-> But I can clean length , no problem.
-The concept of length for the consumer interface doesn't currently
-make sense as it refers to an actual buffer.   The consumer interface
-currently passes one entry at a time...
-> 
->>
->> Guess this is part of the hacks we need to clean up by doing
->> the dma buffer consumer stuff right...
-> Yes all is linked :-).
-> 
->>
->> Jonathan
->>> ---
->>>  drivers/iio/buffer/industrialio-buffer-cb.c | 12 ++++++++++++
->>>  include/linux/iio/consumer.h                | 13 +++++++++++++
->>>  2 files changed, 25 insertions(+)
->>>
->>> diff --git a/drivers/iio/buffer/industrialio-buffer-cb.c b/drivers/iio/buffer/industrialio-buffer-cb.c
->>> index b8f550e..43c066a 100644
->>> --- a/drivers/iio/buffer/industrialio-buffer-cb.c
->>> +++ b/drivers/iio/buffer/industrialio-buffer-cb.c
->>> @@ -103,6 +103,18 @@ struct iio_cb_buffer *iio_channel_get_all_cb(struct device *dev,
->>>  }
->>>  EXPORT_SYMBOL_GPL(iio_channel_get_all_cb);
->>>  
->>> +int iio_channel_cb_set_buffer_params(struct iio_cb_buffer *cb_buff,
->>> +				      size_t length, size_t watermark)
->>> +{
->>> +	if (!length || length < watermark)
->>> +		return -EINVAL;
->>> +	cb_buff->buffer.watermark = watermark;
->>> +	cb_buff->buffer.length = length;
->>> +
->>> +	return 0;
->>> +}
->>> +EXPORT_SYMBOL_GPL(iio_channel_start_all_cb);
->>> +
->>>  int iio_channel_start_all_cb(struct iio_cb_buffer *cb_buff)
->>>  {
->>>  	return iio_update_buffers(cb_buff->indio_dev, &cb_buff->buffer,
->>> diff --git a/include/linux/iio/consumer.h b/include/linux/iio/consumer.h
->>> index cb44771..0f6e94d 100644
->>> --- a/include/linux/iio/consumer.h
->>> +++ b/include/linux/iio/consumer.h
->>> @@ -134,6 +134,19 @@ struct iio_cb_buffer *iio_channel_get_all_cb(struct device *dev,
->>>  						       void *private),
->>>  					     void *private);
->>>  /**
->>> + * iio_channel_cb_set_buffer_size() - set the buffer length.
->>> + * @cb_buffer:		The callback buffer from whom we want the channel
->>> + *			information.
->>> + * @length: buffer length in bytes
->>> + * @watermark: buffer watermark in bytes
->>> + *
->>> + * This function allows to configure the buffer length. The watermark if
->>> + * forced to half of the buffer.
->>> + */
->>> +int iio_channel_cb_set_buffer_params(struct iio_cb_buffer *cb_buffer,
->>> +				     size_t length, size_t watermark);
->>> +
->>> +/**
->>>   * iio_channel_release_all_cb() - release and unregister the callback.
->>>   * @cb_buffer:		The callback buffer that was allocated.
->>>   */
->>>
->>
->> --
->> To unsubscribe from this list: send the line "unsubscribe linux-iio" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-iio" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+When review device driver modules which attach to amba bus, found
+several modules are not using devm_*() apis to manage resource. As
+result, some drivers have memory leakage or missing iomem unmapping
+when rmmod module. And the code has many "goto" tags to handle
+different failures.
+
+So this patch series is to convert to use devm_*() for moudules which
+are attached to amba bus to manage resource and get more robust and
+neat code.
+
+Patch 0003 "drivers/rtc/rtc-pl031.c: Convert to use devm_*()" has been
+verified on 96boards Hikey. Other patches can pass building but have
+not really tested on hardware.
+
+
+Leo Yan (5):
+  Input: ambakmi - Convert to use devm_*()
+  drivers/rtc/rtc-pl030.c: Convert to use devm_*()
+  drivers/rtc/rtc-pl031.c: Convert to use devm_*()
+  vfio: platform: Convert to use devm_*()
+  ALSA: AACI: Convert to use devm_ioremap_resource()
+
+ drivers/input/serio/ambakmi.c     | 44 +++++++----------------------
+ drivers/rtc/rtc-pl030.c           | 49 ++++++++------------------------
+ drivers/rtc/rtc-pl031.c           | 59 ++++++++++-----------------------------
+ drivers/vfio/platform/vfio_amba.c | 25 ++++++-----------
+ sound/arm/aaci.c                  | 21 ++++----------
+ 5 files changed, 51 insertions(+), 147 deletions(-)
+
+-- 
+2.7.4
+
+-- 
+You received this message because you are subscribed to "rtc-linux".
+Membership options at http://groups.google.com/group/rtc-linux .
+Please read http://groups.google.com/group/rtc-linux/web/checklist
+before submitting a driver.
+--- 
+You received this message because you are subscribed to the Google Groups "rtc-linux" group.
+To unsubscribe from this group and stop receiving emails from it, send an email to rtc-linux+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+For more options, visit https://groups.google.com/d/optout.
