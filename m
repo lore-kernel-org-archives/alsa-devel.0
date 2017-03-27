@@ -1,23 +1,18 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2 09/11] ASoC: Intel: Skylake:	Fix DMA
- position reporting for capture stream
-Date: Mon, 27 Mar 2017 15:59:54 +0530
-Message-ID: <20170327102954.GM9308@localhost>
+Subject: Re: [PATCH v2 00/11] ASoC: Intel: Skylake: More driver
+ updates
+Date: Mon, 27 Mar 2017 16:01:46 +0530
+Message-ID: <20170327103145.GN9308@localhost>
 References: <1490377234-30257-1-git-send-email-jeeja.kp@intel.com>
- <1490377234-30257-10-git-send-email-jeeja.kp@intel.com>
- <s5hpoh6ed0k.wl-tiwai@suse.de>
- <85DFEED57DC57344B2483EF7BF8CB60552D1C38C@BGSMSX104.gar.corp.intel.com>
- <s5hlgruech8.wl-tiwai@suse.de>
- <85DFEED57DC57344B2483EF7BF8CB60552D1C563@BGSMSX104.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 0AE2B26583C
- for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2017 12:28:38 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB2BB26583C
+ for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2017 12:30:33 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <85DFEED57DC57344B2483EF7BF8CB60552D1C563@BGSMSX104.gar.corp.intel.com>
+In-Reply-To: <1490377234-30257-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,46 +22,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "R,
- Dharageswari" <dharageswari.r@intel.com>, Patches Audio <patches.audio@intel.com>, "Shah,
- Hardik T" <hardik.t.shah@intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "Ughreja, Rakesh A" <rakesh.a.ughreja@intel.com>, "Girdwood,
- Liam R" <liam.r.girdwood@intel.com>, "Kp, Jeeja" <jeeja.kp@intel.com>
+To: jeeja.kp@intel.com
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Mar 25, 2017 at 02:21:13AM +0530, Ughreja, Rakesh A wrote:
-> >> >Are these workarounds needed for the legacy driver?
-> >> >If yes, which chips require it?
-> >> >
-> >>
-> >> Yes, these are needed in legacy driver as well.
-> >> From SKL and BXT onwards, it is needed.
-> >
-> >OK, thanks for confirmation.
-> >
-> >Now, from what I read in the above, is the workaround required *only*
-> >after the interrupt is generated?  20us delay isn't so cheap, and we
-> >tend to inquire PCM positions often.  If the workaround is needed only
-> >after the PCM period elapse, we can set some flag in the irq handler
-> >and apply the workaround only when necessary.
-> >
+On Fri, Mar 24, 2017 at 11:10:23PM +0530, jeeja.kp@intel.com wrote:
+> From: Jeeja KP <jeeja.kp@intel.com>
 > 
-> Yes, Takashi the workaround is required only in the period elapsed
-> interrupt. In some cases the DMA Position updates are delayed and so
-> when the period elapsed interrupt occurs the wait_for_avail thinks that
-> one period worth of data is not available and so returns only on the 
-> next period elapsed interrupt. This creates problem for 2 periods
-> playback/capture streams.
+> This patch series provides updates on the following:
+>  o Fix LLCH register read.
+>  o Add 16-bit constraint to FE bxt_rt298 machine.
+>  o Fix DMA position reporting for capture stream.
+>  o Use the sig_bits to define dai bps caps.
+>  o Update sig_bits based on converter capability.
+>  o Rearrangement of code to cleanup SKL SST library.
+>  o Add support for deferred DSP module bind.
 > 
-> So even in the period elapsed interrupt the wait is required only if the
-> position is less than the period boundary.
+> Changes in v2:
+> 	- Addressed Pierre's comments for "Fix DMA position reporting
+> 	  for capture stream" patch.
+> 
+> B, Jayachandran (1):
+>   ALSA: hda: Fix LLCH register read
+> 
+> G Kranthi (1):
+>   ASoC: Intel: Skylake: Add 16-bit constraint to FE bxt_rt298 machine
+> 
+> Hardik T Shah (1):
+>   ASoC: Intel: Skylake: Fix DMA position reporting for capture stream
+> 
+> Jeeja KP (5):
+>   ASoC: Intel: Skylake: Use the sig_bits to define dai bps capability
+>   ASoC: hdac_hdmi: Update sig_bits based on converter capability
+>   ASoC: Intel: Skylake: Rearrangement of code to cleanup SKL SST library
+>   ASoC: Intel: Skylake: Fix module state after unbind and delete
+>   ASoC: Intel: Skylake: Add support for deferred DSP module bind
 
-Hi Takashi,
+All these:
 
-So we need this for 2 periods when the device is in irq mode. Not for other
-cases. ie SKL_PLUS..
-
-But have you seen any user reports on this till now.
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 
 -- 
 ~Vinod
