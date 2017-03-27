@@ -1,14 +1,17 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ASoC: intel: Don't print FW version repeatedly
-Date: Mon, 27 Mar 2017 10:39:58 +0200
-Message-ID: <20170327083958.18020-1-tiwai@suse.de>
+From: Keyon Jie <yang.jie@linux.intel.com>
+Subject: Re: [PATCH] ASoC: intel: remove unused variable data
+ and associated code
+Date: Mon, 27 Mar 2017 17:41:29 +0800
+Message-ID: <58D8DE49.5030306@linux.intel.com>
+References: <20170322143644.29051-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 36A7D26696C
- for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2017 10:40:03 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id D597626648D
+ for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2017 11:37:54 +0200 (CEST)
+In-Reply-To: <20170322143644.29051-1-colin.king@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,37 +21,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Colin King <colin.king@canonical.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Intel SST driver spews an info message "FW Versoin xxxx" at each time
-the device gets initialized.  Since it's triggered at each PM (or even
-runtime PM), it appears so ofetn, and rather becomes annoying than
-useful.
-
-This patch suppresses the superfluous messages by checking the
-currently loaded FW version with the previously loaded one.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/soc/intel/atom/sst/sst_ipc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/atom/sst/sst_ipc.c b/sound/soc/intel/atom/sst/sst_ipc.c
-index 14c2d9d18180..20b01e02ed8f 100644
---- a/sound/soc/intel/atom/sst/sst_ipc.c
-+++ b/sound/soc/intel/atom/sst/sst_ipc.c
-@@ -236,7 +236,9 @@ static void process_fw_init(struct intel_sst_drv *sst_drv_ctx,
- 		retval = init->result;
- 		goto ret;
- 	}
--	dev_info(sst_drv_ctx->dev, "FW Version %02x.%02x.%02x.%02x\n",
-+	if (memcmp(&sst_drv_ctx->fw_version, &init->fw_version,
-+		   sizeof(init->fw_version)))
-+		dev_info(sst_drv_ctx->dev, "FW Version %02x.%02x.%02x.%02x\n",
- 			init->fw_version.type, init->fw_version.major,
- 			init->fw_version.minor, init->fw_version.build);
- 	dev_dbg(sst_drv_ctx->dev, "Build date %s Time %s\n",
--- 
-2.11.1
+Ck9uIDIwMTflubQwM+aciDIy5pelIDIyOjM2LCBDb2xpbiBLaW5nIHdyb3RlOgo+IEZyb206IENv
+bGluIElhbiBLaW5nIDxjb2xpbi5raW5nQGNhbm9uaWNhbC5jb20+Cj4KPiBUaGUgdmFyaWFibGUg
+J2RhdGEnIGlzIGFzc2lnbmVkIG51bGwgYW5kIG5ldmVyIHJlLWFzc2lnbmVkLiBUaGVyZQo+IGlz
+IGFsc28gYSByZWR1bmRhbnQgY2hlY2sgZm9yIGRhdGEgYmVpbmcgbm9uLW51bGwgd2hpY2ggaXMg
+YWx3YXlzCj4gZmFsc2UsIHNvIHJlbW92ZSB0aGlzIGFuZCB0aGUgdmFyaWFibGUgZGF0YSBhbmQg
+ZG1hX2FkZHIgYXMgdGhleQo+IGFyZSBub3QgdXNlZCBvbmNlIHRoZSBkZWFkIGNvZGUgaGFzIGJl
+ZW4gcmVtb3ZlZC4KPgo+IERldGVjdGVkIHdpdGggQ292ZXJpdHlTY2FuLCBDSUQjMTMyNDAxNSAo
+IidDb25zdGFudCcgdmFyaWFibGUgZ2F1cmRzCj4gZGVhZCBjb2RlIikKPgo+IFNpZ25lZC1vZmYt
+Ynk6IENvbGluIElhbiBLaW5nIDxjb2xpbi5raW5nQGNhbm9uaWNhbC5jb20+CgpUaGFuayB5b3Ug
+Zm9yIGZpeGluZyBpdC4KCkFja2VkLWJ5OiBKaWUgWWFuZyA8eWFuZy5qaWVAaW50ZWwuY29tPgoK
+dGhhbmtzLAp+S2V5b24KCj4gLS0tCj4gICBzb3VuZC9zb2MvaW50ZWwvaGFzd2VsbC9zc3QtaGFz
+d2VsbC1pcGMuYyB8IDYgLS0tLS0tCj4gICAxIGZpbGUgY2hhbmdlZCwgNiBkZWxldGlvbnMoLSkK
+Pgo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvaGFzd2VsbC9zc3QtaGFzd2VsbC1pcGMu
+YyBiL3NvdW5kL3NvYy9pbnRlbC9oYXN3ZWxsL3NzdC1oYXN3ZWxsLWlwYy5jCj4gaW5kZXggYTM0
+NTlkMTY4MmE2Li5kMzNiZGFmOTJjNTcgMTAwNjQ0Cj4gLS0tIGEvc291bmQvc29jL2ludGVsL2hh
+c3dlbGwvc3N0LWhhc3dlbGwtaXBjLmMKPiArKysgYi9zb3VuZC9zb2MvaW50ZWwvaGFzd2VsbC9z
+c3QtaGFzd2VsbC1pcGMuYwo+IEBAIC0yMDAwLDEwICsyMDAwLDggQEAgaW50IHNzdF9oc3dfbW9k
+dWxlX3NldF9wYXJhbShzdHJ1Y3Qgc3N0X2hzdyAqaHN3LAo+ICAgCXUzMiBwYXJhbV9zaXplLCBj
+aGFyICpwYXJhbSkKPiAgIHsKPiAgIAlpbnQgcmV0Owo+IC0JdW5zaWduZWQgY2hhciAqZGF0YSA9
+IE5VTEw7Cj4gICAJdTMyIGhlYWRlciA9IDA7Cj4gICAJdTMyIHBheWxvYWRfc2l6ZSA9IDAsIHRy
+YW5zZmVyX3BhcmFtZXRlcl9zaXplID0gMDsKPiAtCWRtYV9hZGRyX3QgZG1hX2FkZHIgPSAwOwo+
+ICAgCXN0cnVjdCBzc3RfaHN3X3RyYW5zZmVyX3BhcmFtZXRlciAqcGFyYW1ldGVyOwo+ICAgCXN0
+cnVjdCBkZXZpY2UgKmRldiA9IGhzdy0+ZGV2Owo+Cj4gQEAgLTIwNDcsMTAgKzIwNDUsNiBAQCBp
+bnQgc3N0X2hzd19tb2R1bGVfc2V0X3BhcmFtKHN0cnVjdCBzc3RfaHN3ICpoc3csCj4KPiAgIAlr
+ZnJlZShwYXJhbWV0ZXIpOwo+Cj4gLQlpZiAoZGF0YSkKPiAtCQlkbWFfZnJlZV9jb2hlcmVudCho
+c3ctPmRzcC0+ZG1hX2RldiwKPiAtCQkJcGFyYW1fc2l6ZSwgKHZvaWQgKilkYXRhLCBkbWFfYWRk
+cik7Cj4gLQo+ICAgCXJldHVybiByZXQ7Cj4gICB9Cj4KPgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
