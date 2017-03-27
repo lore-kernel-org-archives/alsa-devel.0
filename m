@@ -1,26 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 0/3] ASoC: Enable a new IC master mode:
- bcm2835<=>IC<=>cs42xx8
-Date: Mon, 27 Mar 2017 12:30:05 +0100
-Message-ID: <20170327113005.czudkmmsrgs6isgk@sirena.org.uk>
-References: <000fbaa4-4c7c-5b13-0806-7e42672a4a55@flatmax.org>
- <e0adcc6c-8bf4-adae-874b-c291e71e5712@laposte.net>
- <20170321221145.GA7258@camel2.lan>
- <579f0763-a5bd-f820-b36f-b6437e331b4b@flatmax.org>
- <20170322094301.GE6986@localhost.localdomain>
- <64802e9b-ffe9-65e3-502a-4253674fb4c7@flatmax.org>
- <20170324190955.nxw5az4mza2ia6wl@sirena.org.uk>
- <3c818d92-498e-868c-696b-a9b709af5415@flatmax.org>
- <20170327100126.osj3o2qtq4jwex3s@sirena.org.uk>
- <289fc02f-4bdc-4bb7-6827-39c644816b70@flatmax.org>
+Subject: Applied "ASoC: intel: Don't print FW version
+	repeatedly" to the asoc tree
+Date: Mon, 27 Mar 2017 12:32:11 +0100
+Message-ID: <E1csSsd-0000nF-Fr@debutante>
+References: <20170327083958.18020-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7724948801649904586=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 71E1A26583C
- for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2017 13:30:41 +0200 (CEST)
-In-Reply-To: <289fc02f-4bdc-4bb7-6827-39c644816b70@flatmax.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2ECF626583C
+ for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2017 13:32:22 +0200 (CEST)
+In-Reply-To: <20170327083958.18020-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,62 +22,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Flax <flatmax@flatmax.org>
-Cc: Emmanuel =?iso-8859-1?Q?Fust=E9?= <emmanuel.fuste@laposte.net>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Stephen Warren <swarren@wwwdotorg.org>, Eric Anholt <eric@anholt.net>, Lee Jones <lee@kernel.org>, phil@raspberrypi.org, Liam Girdwood <lgirdwood@gmail.com>, Matthias Reichl <hias@horus.com>, florian.kauer@koalo.de, Florian Meier <florian.meier@koalo.de>, linux-rpi-kernel@lists.infradead.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7724948801649904586==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="gqm47gsq42veieli"
-Content-Disposition: inline
+   ASoC: intel: Don't print FW version repeatedly
 
+has been applied to the asoc tree at
 
---gqm47gsq42veieli
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Mar 27, 2017 at 09:35:33PM +1100, Matt Flax wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> In this case, there is the TDM (DSP mode) protocol on the Codec. The SoC
-> however is communicating in channel pairs {{0, 1}, {2, 3}, {4, 5}, {6, 7}}.
-> Each channel separated by the PCM_FS clk leading edge.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> As far as the codec is concerned it is DSP mode. As far as the SoC is
-> concerned, it is not I2S, nor is it strictly DSP mode because there is more
-> then one PCM_FS per frame !
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> If we look at this from the perspective of the Codec, then it is DSP mode. I
-> am just not sure what to call the SoC's protocol, other then multi-paired
-> PCM.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-This isn't DSP mode from anything's point of view, the extra frame syncs
-mean it's a whole new format.  Off the top of my head I'd suggest just
-running it as stereo DSP mode from a kernel point of view and fixing
-things up in userspace.
+Thanks,
+Mark
 
---gqm47gsq42veieli
-Content-Type: application/pgp-signature; name="signature.asc"
+>From 36d96039e710488b53256defed0fd291e0f1a34b Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Mon, 27 Mar 2017 10:39:58 +0200
+Subject: [PATCH] ASoC: intel: Don't print FW version repeatedly
 
------BEGIN PGP SIGNATURE-----
+Intel SST driver spews an info message "FW Versoin xxxx" at each time
+the device gets initialized.  Since it's triggered at each PM (or even
+runtime PM), it appears so ofetn, and rather becomes annoying than
+useful.
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljY970ACgkQJNaLcl1U
-h9AV6wf/WEv/n/f0x1vaoa9MYRTjriF6lF/lqfLD3EzmqT8UH6MvyNvlE6haHGOR
-KhySEB4x0StHMpanLZdGdmYZfrGikOsBSPWz9xtAMZ0p/EC192TQkxCy3NFmwCia
-WxF2bVzapp9bCznYX9SThcygbnbQ9ZX07nkIu+2jBEosF6AMBLmqasSuvHBPbRPT
-zjPVbfZCmQEBJZ8DqltD8itFCK0xCuzDi42Vg8AADtyfNsYr2D03eDpgLK12vMyA
-DQqi6ntZmR8DHW7iAzb34/ti09l6il5cTbVdMJ5mGhuRPcG1sExdTmgDB609Wpjd
-AMRmL4TtMjd+oaELBgHrqqm+Nq8dYw==
-=qSRL
------END PGP SIGNATURE-----
+This patch suppresses the superfluous messages by checking the
+currently loaded FW version with the previously loaded one.
 
---gqm47gsq42veieli--
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/atom/sst/sst_ipc.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---===============7724948801649904586==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7724948801649904586==--
+diff --git a/sound/soc/intel/atom/sst/sst_ipc.c b/sound/soc/intel/atom/sst/sst_ipc.c
+index 14c2d9d18180..20b01e02ed8f 100644
+--- a/sound/soc/intel/atom/sst/sst_ipc.c
++++ b/sound/soc/intel/atom/sst/sst_ipc.c
+@@ -236,7 +236,9 @@ static void process_fw_init(struct intel_sst_drv *sst_drv_ctx,
+ 		retval = init->result;
+ 		goto ret;
+ 	}
+-	dev_info(sst_drv_ctx->dev, "FW Version %02x.%02x.%02x.%02x\n",
++	if (memcmp(&sst_drv_ctx->fw_version, &init->fw_version,
++		   sizeof(init->fw_version)))
++		dev_info(sst_drv_ctx->dev, "FW Version %02x.%02x.%02x.%02x\n",
+ 			init->fw_version.type, init->fw_version.major,
+ 			init->fw_version.minor, init->fw_version.build);
+ 	dev_dbg(sst_drv_ctx->dev, "Build date %s Time %s\n",
+-- 
+2.11.0
