@@ -1,18 +1,20 @@
-From: Brian Austin <brian.austin@cirrus.com>
-Subject: Re: [PATCH] ASoC: cs35l35: Clear reset_gpio on the
- error path in probe
-Date: Mon, 27 Mar 2017 11:04:49 -0500
-Message-ID: <cd6a5b2d-8874-4adb-b940-54a11c68ef03@EX3.ad.cirrus.com>
-References: <1490630067-23455-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH v2 2/2] ASoC: STI: Fix null ptr deference
+	in IRQ handler
+Date: Mon, 27 Mar 2017 18:15:20 +0200
+Message-ID: <a1035887-c048-ff5b-8cb1-d03d8326e97d@st.com>
+References: <1490294395-13416-1-git-send-email-arnaud.pouliquen@st.com>
+ <1490294395-13416-3-git-send-email-arnaud.pouliquen@st.com>
+ <s5hfui3g6jm.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id A825726583C
- for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2017 18:00:42 +0200 (CEST)
-In-Reply-To: <1490630067-23455-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6978526583C
+ for <alsa-devel@alsa-project.org>; Mon, 27 Mar 2017 18:15:24 +0200 (CEST)
+In-Reply-To: <s5hfui3g6jm.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,20 +24,105 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, broonie@kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, kernel@stlinux.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 27 Mar 2017, Charles Keepax wrote:
 
-> The error path in probe attempts to put the device back into reset.
-> Should we fail to get the reset_gpio (such as a probe defer) we will
-> leave the error value in there, which the gpiod_set_value_cansleep on
-> the error path will attempt to deference.
+Hello Takashi
+
+Thanks for your comments,
+Please find my answers below
+
+Regards Arnaud
+
+On 03/23/2017 08:02 PM, Takashi Iwai wrote:
+> On Thu, 23 Mar 2017 19:39:55 +0100,
+> Arnaud Pouliquen wrote:
+>>
+>> With RTlinux a race condition has been found that leads to NULL ptr crash:
+>> - On CPU 0: uni_player_irq_handler is called to treat XRUN
+>>  "(player->state == UNIPERIF_STATE_STOPPED)" is FALSE so status is checked,
+>>  dev_err(player->dev, "FIFO underflow error detected") is printed
+>> and then snd_pcm_stream_lock should be called to lock stream for stopping.
+>> - On CPU 1: application stop and close the stream.
+>> Issue is that the stop and shutdown functions are executed while
+>> "FIFO underflow error detected" is printed.
+>> So when CPU 0 calls snd_pcm_stream_lock, player->substream is already null.
+>>
+>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+>>
+>> ---
+>> V2: Add spinlock to protect player/reader->substream
+>> ---
+>>  sound/soc/sti/uniperif.h        |  1 +
+>>  sound/soc/sti/uniperif_player.c | 34 +++++++++++++++++++++++-----------
+>>  sound/soc/sti/uniperif_reader.c | 24 ++++++++++++++++++++----
+>>  3 files changed, 44 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/sound/soc/sti/uniperif.h b/sound/soc/sti/uniperif.h
+>> index d487dd2..cfcb0ea 100644
+>> --- a/sound/soc/sti/uniperif.h
+>> +++ b/sound/soc/sti/uniperif.h
+>> @@ -1299,6 +1299,7 @@ struct uniperif {
+>>  	int ver; /* IP version, used by register access macros */
+>>  	struct regmap_field *clk_sel;
+>>  	struct regmap_field *valid_sel;
+>> +	spinlock_t irq_lock; /* used to prevent race condition with IRQ */
+>>  
+>>  	/* capabilities */
+>>  	const struct snd_pcm_hardware *hw;
+>> diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
+>> index 60ae31a..8f3a582 100644
+>> --- a/sound/soc/sti/uniperif_player.c
+>> +++ b/sound/soc/sti/uniperif_player.c
+>> @@ -65,10 +65,13 @@ static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
+>>  	unsigned int status;
+>>  	unsigned int tmp;
+>>  
+>> -	if (player->state == UNIPERIF_STATE_STOPPED) {
+>> -		/* Unexpected IRQ: do nothing */
+>> -		return IRQ_NONE;
+>> -	}
+>> +	spin_lock(&player->irq_lock);
+>> +	if (!player->substream)
+>> +		goto IRQ_END;
 > 
-> Fix this issue by clearing reset_gpio before we head into the error
-> path.
+> This will be NULL-dereference, as it calls snd_pcm_stream_unlock() there.
+> Also, use lower letters for labels.
+Beginner's fault...
 > 
-> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-> ---
-Acked-by: Brian Austin <brian.austin@cirrus.com>
+> 
+>> +
+>> +	snd_pcm_stream_lock(player->substream);
+> 
+> Actually we don't need to take this lock here any longer since we have
+> irq_lock.  Better to keep the stream lock only around the stop.
+
+Needed to protect "player->state".
+The irq_lock does not ensure that application calls a PCM stop in
+parallel on another CPU. That means that i need also to protect
+uni_player_stop and uni_player_start to protect layer->state.
+But in this case i will have a double lock when call snd_pcm_stop in IRQ
+handler.
+
+> 
+> 
+>> +	if (player->state == UNIPERIF_STATE_STOPPED)
+>> +		goto IRQ_END;
+>>  
+>>  	/* Get interrupt status & clear them immediately */
+>>  	status = GET_UNIPERIF_ITS(player);
+>> @@ -88,9 +91,7 @@ static irqreturn_t uni_player_irq_handler(int irq, void *dev_id)
+>>  			SET_UNIPERIF_ITM_BCLR_FIFO_ERROR(player);
+>>  
+>>  			/* Stop the player */
+>> -			snd_pcm_stream_lock(player->substream);
+>>  			snd_pcm_stop(player->substream, SNDRV_PCM_STATE_XRUN);
+>> -			snd_pcm_stream_unlock(player->substream);
+> 
+> BTW, these three calls can be simplified with snd_pcm_stop_xrun().
+> 
+> 
+> Takashi
+> 
