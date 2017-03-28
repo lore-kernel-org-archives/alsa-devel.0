@@ -1,18 +1,16 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH v2 2/8] regulator: arizona-ldo1: Avoid
+Subject: [PATCH v2 1/8] regulator: arizona-micsupp: Avoid
 	potential memory leak reading init_data
-Date: Tue, 28 Mar 2017 15:14:38 +0100
-Message-ID: <1490710484-25277-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-References: <1490710484-25277-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Date: Tue, 28 Mar 2017 15:14:37 +0100
+Message-ID: <1490710484-25277-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 26CB626648D
- for <alsa-devel@alsa-project.org>; Tue, 28 Mar 2017 16:13:56 +0200 (CEST)
-In-Reply-To: <1490710484-25277-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F842266DEE
+ for <alsa-devel@alsa-project.org>; Tue, 28 Mar 2017 16:13:49 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -38,40 +36,40 @@ Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 
 New patch in the series since v1.
 
- drivers/regulator/arizona-ldo1.c | 9 +++++----
+ drivers/regulator/arizona-micsupp.c | 9 +++++----
  1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/regulator/arizona-ldo1.c b/drivers/regulator/arizona-ldo1.c
-index e76d094..b726fa1 100644
---- a/drivers/regulator/arizona-ldo1.c
-+++ b/drivers/regulator/arizona-ldo1.c
-@@ -186,7 +186,8 @@ static const struct regulator_init_data arizona_ldo1_wm5110 = {
+diff --git a/drivers/regulator/arizona-micsupp.c b/drivers/regulator/arizona-micsupp.c
+index 22bd714..5e38861 100644
+--- a/drivers/regulator/arizona-micsupp.c
++++ b/drivers/regulator/arizona-micsupp.c
+@@ -199,7 +199,8 @@ static const struct regulator_init_data arizona_micsupp_ext_default = {
  	.num_consumer_supplies = 1,
  };
  
--static int arizona_ldo1_of_get_pdata(struct arizona *arizona,
-+static int arizona_ldo1_of_get_pdata(struct device *dev,
-+				     struct arizona *arizona,
- 				     struct regulator_config *config,
- 				     const struct regulator_desc *desc)
+-static int arizona_micsupp_of_get_pdata(struct arizona *arizona,
++static int arizona_micsupp_of_get_pdata(struct device *dev,
++					struct arizona *arizona,
+ 					struct regulator_config *config,
+ 					const struct regulator_desc *desc)
  {
-@@ -212,8 +213,7 @@ static int arizona_ldo1_of_get_pdata(struct arizona *arizona,
- 	if (init_node) {
- 		config->of_node = init_node;
+@@ -213,7 +214,7 @@ static int arizona_micsupp_of_get_pdata(struct arizona *arizona,
+ 	if (np) {
+ 		config->of_node = np;
  
--		init_data = of_get_regulator_init_data(arizona->dev, init_node,
--						       desc);
-+		init_data = of_get_regulator_init_data(dev, init_node, desc);
+-		init_data = of_get_regulator_init_data(arizona->dev, np, desc);
++		init_data = of_get_regulator_init_data(dev, np, desc);
  
  		if (init_data) {
- 			init_data->consumer_supplies = &ldo1->supply;
-@@ -283,7 +283,8 @@ static int arizona_ldo1_probe(struct platform_device *pdev)
+ 			init_data->consumer_supplies = &micsupp->supply;
+@@ -268,8 +269,8 @@ static int arizona_micsupp_probe(struct platform_device *pdev)
  
  	if (IS_ENABLED(CONFIG_OF)) {
  		if (!dev_get_platdata(arizona->dev)) {
--			ret = arizona_ldo1_of_get_pdata(arizona, &config, desc);
-+			ret = arizona_ldo1_of_get_pdata(&pdev->dev, arizona,
-+							&config, desc);
+-			ret = arizona_micsupp_of_get_pdata(arizona, &config,
+-							   desc);
++			ret = arizona_micsupp_of_get_pdata(&pdev->dev, arizona,
++							   &config, desc);
  			if (ret < 0)
  				return ret;
  		}
