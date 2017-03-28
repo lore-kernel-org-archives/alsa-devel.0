@@ -1,8 +1,8 @@
 From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: [PATCH v2 7/8] regulator: arizona-micbias: Add
-	description of micbias binding
-Date: Tue, 28 Mar 2017 15:14:43 +0100
-Message-ID: <1490710484-25277-7-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH v2 6/8] regulator: arizona-micbias: Add
+	regulator driver for Arizona micbiases
+Date: Tue, 28 Mar 2017 15:14:42 +0100
+Message-ID: <1490710484-25277-6-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 References: <1490710484-25277-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 818C6266DF0
+ by alsa0.perex.cz (Postfix) with ESMTP id 81099266DEF
  for <alsa-devel@alsa-project.org>; Tue, 28 Mar 2017 16:13:49 +0200 (CEST)
 In-Reply-To: <1490710484-25277-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,31 +26,293 @@ To: broonie@kernel.org
 Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org, lee.jones@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-Add the new micbias regulators into the Arizona regulator binding
-document.
+Add a driver for controlling the micbias regulators on the Arizona class
+audio CODECs. This will replace earlier fixed support that initialised
+the micbias's with fixed settings from platform data, although that
+platform data can still be used to configure the constraints on this new
+regulator.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Acked-by: Rob Herring <robh@kernel.org>
 ---
 
-No changes since v1.
+Changes since v1:
+ - Use active_discharge rather than pull_down as that is what the
+   regulator actually does.
+ - Pass the micbias device rather than the arizona device to
+   of_get_regulator_init_data to avoid leaking init_data
+ - Update the pdata to use an actual regulator_init_data
+ - Tidy up the code to make it a little easier to follow
 
- Documentation/devicetree/bindings/regulator/arizona-regulator.txt | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/regulator/Makefile          |   2 +-
+ drivers/regulator/arizona-micbias.c | 228 ++++++++++++++++++++++++++++++++++++
+ include/linux/mfd/arizona/pdata.h   |   6 +-
+ 3 files changed, 231 insertions(+), 5 deletions(-)
+ create mode 100644 drivers/regulator/arizona-micbias.c
 
-diff --git a/Documentation/devicetree/bindings/regulator/arizona-regulator.txt b/Documentation/devicetree/bindings/regulator/arizona-regulator.txt
-index 443564d..68a13d5 100644
---- a/Documentation/devicetree/bindings/regulator/arizona-regulator.txt
-+++ b/Documentation/devicetree/bindings/regulator/arizona-regulator.txt
-@@ -15,3 +15,9 @@ Optional subnodes:
-     Documentation/devicetree/bindings/regulator/regulator.txt
-   - micvdd : Initial data for the MICVDD regulator, as covered in
-     Documentation/devicetree/bindings/regulator/regulator.txt
+diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
+index ef7725e..b670e87 100644
+--- a/drivers/regulator/Makefile
++++ b/drivers/regulator/Makefile
+@@ -19,7 +19,7 @@ obj-$(CONFIG_REGULATOR_ACT8865) += act8865-regulator.o
+ obj-$(CONFIG_REGULATOR_ACT8945A) += act8945a-regulator.o
+ obj-$(CONFIG_REGULATOR_AD5398) += ad5398.o
+ obj-$(CONFIG_REGULATOR_ANATOP) += anatop-regulator.o
+-obj-$(CONFIG_REGULATOR_ARIZONA) += arizona-micsupp.o arizona-ldo1.o
++obj-$(CONFIG_REGULATOR_ARIZONA) += arizona-micsupp.o arizona-ldo1.o arizona-micbias.o
+ obj-$(CONFIG_REGULATOR_AS3711) += as3711-regulator.o
+ obj-$(CONFIG_REGULATOR_AS3722) += as3722-regulator.o
+ obj-$(CONFIG_REGULATOR_AXP20X) += axp20x-regulator.o
+diff --git a/drivers/regulator/arizona-micbias.c b/drivers/regulator/arizona-micbias.c
+new file mode 100644
+index 0000000..622e659
+--- /dev/null
++++ b/drivers/regulator/arizona-micbias.c
+@@ -0,0 +1,228 @@
++/*
++ * arizona-micbias.c  --  Microphone bias supplies for Arizona devices
++ *
++ * Copyright 2017 Cirrus Logic Inc.
++ *
++ * Author: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ */
 +
-+  - MICBIASx : Initial data for the MICBIAS regulators, as covered in
-+    Documentation/devicetree/bindings/regulator/regulator.txt but the
-+    following additional properties are also supported:
-+      - wlf,ext-cap : Specifies if the MICBIAS has external decoupling
-+        capacitors attached.
++#include <linux/err.h>
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/moduleparam.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++#include <linux/regulator/driver.h>
++#include <linux/regulator/machine.h>
++#include <linux/regulator/of_regulator.h>
++#include <linux/slab.h>
++
++#include <linux/mfd/arizona/core.h>
++#include <linux/mfd/arizona/pdata.h>
++#include <linux/mfd/arizona/registers.h>
++
++#define ARIZONA_MICBIAS_MAX_SELECTOR 0xD
++
++struct arizona_micbias_priv {
++	int id;
++	struct arizona *arizona;
++
++	struct device_node *np;
++	struct regulator_desc desc;
++	struct regulator_consumer_supply supply;
++	struct regulator_init_data *init_data;
++
++	struct regulator_dev *regulator;
++};
++
++static const struct regulator_ops arizona_micbias_ops = {
++	.enable = regulator_enable_regmap,
++	.disable = regulator_disable_regmap,
++	.is_enabled = regulator_is_enabled_regmap,
++	.list_voltage = regulator_list_voltage_linear,
++	.map_voltage = regulator_map_voltage_linear,
++	.get_voltage_sel = regulator_get_voltage_sel_regmap,
++	.set_voltage_sel = regulator_set_voltage_sel_regmap,
++	.get_bypass = regulator_get_bypass_regmap,
++	.set_bypass = regulator_set_bypass_regmap,
++	.set_soft_start = regulator_set_soft_start_regmap,
++	.set_active_discharge = regulator_set_active_discharge_regmap,
++};
++
++static const struct regulator_desc arizona_micbias_desc_tmpl = {
++	.supply_name = "MICVDD",
++	.type = REGULATOR_VOLTAGE,
++	.ops = &arizona_micbias_ops,
++
++	.min_uV = 1500000,
++	.uV_step = 100000,
++	.n_voltages = ARIZONA_MICBIAS_MAX_SELECTOR + 1,
++
++	.vsel_reg = ARIZONA_MIC_BIAS_CTRL_1,
++	.vsel_mask = ARIZONA_MICB1_LVL_MASK,
++	.enable_reg = ARIZONA_MIC_BIAS_CTRL_1,
++	.enable_mask = ARIZONA_MICB1_ENA,
++	.bypass_reg = ARIZONA_MIC_BIAS_CTRL_1,
++	.bypass_mask = ARIZONA_MICB1_BYPASS,
++	.soft_start_reg = ARIZONA_MIC_BIAS_CTRL_1,
++	.soft_start_mask = ARIZONA_MICB1_RATE,
++	.active_discharge_reg = ARIZONA_MIC_BIAS_CTRL_1,
++	.active_discharge_mask = ARIZONA_MICB1_DISCH,
++	.active_discharge_on = ARIZONA_MICB1_DISCH,
++
++	.owner = THIS_MODULE,
++};
++
++static const struct regulator_init_data arizona_micbias_tmpl = {
++	.constraints = {
++		.valid_ops_mask = REGULATOR_CHANGE_STATUS |
++				  REGULATOR_CHANGE_VOLTAGE |
++				  REGULATOR_CHANGE_BYPASS,
++		.min_uV = 1500000,
++		.max_uV = 2800000,
++	},
++};
++
++static int arizona_micbias_of_get_pdata(struct device *dev,
++					struct device_node *np,
++					struct arizona_micbias_priv *micbias)
++{
++	struct arizona *arizona = micbias->arizona;
++	struct arizona_micbias *pdata = &arizona->pdata.micbias[micbias->id];
++
++	micbias->np = of_get_child_by_name(np, micbias->desc.name);
++	if (micbias->np) {
++		micbias->init_data = of_get_regulator_init_data(dev,
++								micbias->np,
++								&micbias->desc);
++
++		pdata->ext_cap = of_property_read_bool(micbias->np,
++						       "wlf,ext-cap");
++	}
++
++	return 0;
++}
++
++static int arizona_micbias_init_pdata(struct device *dev,
++				      struct arizona_micbias_priv *micbias)
++{
++	struct arizona *arizona = micbias->arizona;
++	struct arizona_micbias *pdata = &arizona->pdata.micbias[micbias->id];
++	int ret;
++
++	if (pdata->init_data)
++		return 0;
++
++	if (IS_ENABLED(CONFIG_OF)) {
++		struct device_node *np = arizona->dev->of_node;
++
++		ret = arizona_micbias_of_get_pdata(dev, np, micbias);
++		if (ret < 0) {
++			dev_err(dev, "Failed to parse DT: %d\n", ret);
++			return ret;
++		}
++	}
++
++	if (!micbias->init_data) {
++		micbias->init_data = devm_kmemdup(dev,
++						  &arizona_micbias_tmpl,
++						  sizeof(arizona_micbias_tmpl),
++						  GFP_KERNEL);
++		if (!micbias->init_data)
++			return -ENOMEM;
++	}
++
++	micbias->supply.supply = micbias->desc.name;
++	micbias->supply.dev_name = dev_name(arizona->dev);
++
++	micbias->init_data->consumer_supplies = &micbias->supply;
++	micbias->init_data->num_consumer_supplies = 1;
++
++	pdata->init_data = micbias->init_data;
++
++	return 0;
++}
++
++static int arizona_micbias_probe(struct platform_device *pdev)
++{
++	struct arizona *arizona = dev_get_drvdata(pdev->dev.parent);
++	int id = pdev->id;
++	struct arizona_micbias *pdata = &arizona->pdata.micbias[id];
++	struct arizona_micbias_priv *micbias;
++	struct regulator_config config = { };
++	unsigned int val;
++	int ret;
++
++	micbias = devm_kzalloc(&pdev->dev, sizeof(*micbias), GFP_KERNEL);
++	if (micbias == NULL)
++		return -ENOMEM;
++
++	micbias->id = id;
++	micbias->arizona = arizona;
++
++	micbias->desc = arizona_micbias_desc_tmpl;
++	micbias->desc.name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
++					    "MICBIAS%d", id + 1);
++	micbias->desc.vsel_reg += id;
++	micbias->desc.enable_reg += id;
++	micbias->desc.bypass_reg += id;
++	micbias->desc.soft_start_reg += id;
++	micbias->desc.pull_down_reg += id;
++
++	ret = arizona_micbias_init_pdata(&pdev->dev, micbias);
++	if (ret)
++		return ret;
++
++	if (pdata->ext_cap)
++		val = ARIZONA_MICB1_EXT_CAP;
++	else
++		val = 0;
++
++	/*
++	 * The core expects the regulator to have bypass disabled by default
++	 * so clear it, whilst we set the external cap.
++	 */
++	regmap_update_bits(arizona->regmap, ARIZONA_MIC_BIAS_CTRL_1 + id,
++			   ARIZONA_MICB1_EXT_CAP | ARIZONA_MICB1_BYPASS, val);
++
++	config.dev = arizona->dev;
++	config.regmap = arizona->regmap;
++	config.of_node = micbias->np;
++	config.init_data = pdata->init_data;
++	config.driver_data = micbias;
++
++	micbias->regulator = devm_regulator_register(&pdev->dev,
++						     &micbias->desc,
++						     &config);
++
++	of_node_put(config.of_node);
++
++	if (IS_ERR(micbias->regulator)) {
++		ret = PTR_ERR(micbias->regulator);
++		dev_err(arizona->dev, "Failed to register %s supply: %d\n",
++			micbias->desc.name, ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static struct platform_driver arizona_micbias_driver = {
++	.probe = arizona_micbias_probe,
++	.driver		= {
++		.name	= "arizona-micbias",
++	},
++};
++
++module_platform_driver(arizona_micbias_driver);
++
++/* Module information */
++MODULE_AUTHOR("Charles Keepax <ckeepax@opensource.wolfsonmicro.com>");
++MODULE_DESCRIPTION("Arizona microphone bias supply driver");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:arizona-micbias");
+diff --git a/include/linux/mfd/arizona/pdata.h b/include/linux/mfd/arizona/pdata.h
+index 64faeef..89a3512 100644
+--- a/include/linux/mfd/arizona/pdata.h
++++ b/include/linux/mfd/arizona/pdata.h
+@@ -56,11 +56,9 @@
+ struct regulator_init_data;
+ 
+ struct arizona_micbias {
+-	int mV;                    /** Regulated voltage */
++	/* Regulator configuration */
++	const struct regulator_init_data *init_data;
+ 	unsigned int ext_cap:1;    /** External capacitor fitted */
+-	unsigned int discharge:1;  /** Actively discharge */
+-	unsigned int soft_start:1; /** Disable aggressive startup ramp rate */
+-	unsigned int bypass:1;     /** Use bypass mode */
+ };
+ 
+ struct arizona_micd_config {
 -- 
 2.1.4
