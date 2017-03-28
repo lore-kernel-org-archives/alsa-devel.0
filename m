@@ -1,20 +1,24 @@
-From: Ryans Lee <RyanS.Lee@maximintegrated.com>
-Subject: Re: [PATCH] ASoC: Add support for Maxim Integrated
-	MAX98927 Amplifier
-Date: Tue, 28 Mar 2017 15:36:02 +0000
-Message-ID: <BY2PR11MB0837EED36FBC3BAF061272FAE7320@BY2PR11MB0837.namprd11.prod.outlook.com>
-References: <1489970423-29353-1-git-send-email-ryans.lee@maximintegrated.com>
- <20170324152613.qzvsviznhiz5f3sj@rob-hp-laptop>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3 2/2] ASoC: imx-wm8962: Fix codec_clk
+ cleanup
+Date: Tue, 28 Mar 2017 16:42:38 +0100
+Message-ID: <20170328154238.GS6986@localhost.localdomain>
+References: <1490691532-2086-1-git-send-email-daniel.baluta@nxp.com>
+ <1490691532-2086-3-git-send-email-daniel.baluta@nxp.com>
+ <20170328092103.GQ6986@localhost.localdomain>
+ <CAEnQRZAx1o9xtbf3u1A_Zun7MSaJjdjunpJm1Q6=ZAA3beoFbA@mail.gmail.com>
+ <20170328115306.GR6986@localhost.localdomain>
+ <20170328152457.2j5zaxdbdavpuspa@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com
- (mail-cys01nam02on0116.outbound.protection.outlook.com [104.47.37.116])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E35426583C
- for <alsa-devel@alsa-project.org>; Tue, 28 Mar 2017 17:36:09 +0200 (CEST)
-In-Reply-To: <20170324152613.qzvsviznhiz5f3sj@rob-hp-laptop>
-Content-Language: en-US
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4429726583C
+ for <alsa-devel@alsa-project.org>; Tue, 28 Mar 2017 17:41:34 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20170328152457.2j5zaxdbdavpuspa@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,104 +28,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh@kernel.org>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>, "srinivas.kandagatla@linaro.org" <srinivas.kandagatla@linaro.org>, "romain.perier@collabora.com" <romain.perier@collabora.com>, "bardliao@realtek.com" <bardliao@realtek.com>, "lars@metafoo.de" <lars@metafoo.de>, "axel.lin@ingics.com" <axel.lin@ingics.com>, "Paul.Handrigan@cirrus.com" <Paul.Handrigan@cirrus.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "arnd@arndb.de" <arnd@arndb.de>, "nh6z@nh6z.net" <nh6z@nh6z.net>, "broonie@kernel.org" <broonie@kernel.org>, "ckeepax@opensource.wolfsonmicro.com" <ckeepax@opensource.wolfsonmicro.com>, "dgreid@google.com" <dgreid@google.com>, oder_chiou@realtek.co
+To: Mark Brown <broonie@kernel.org>
+Cc: Daniel Baluta <daniel.baluta@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Xiubo.Lee@gmail.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, linuxppc-dev@lists.ozlabs.org, fabio.estevam@nxp.com, Daniel Baluta <daniel.baluta@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Mar 28, 2017 at 04:24:57PM +0100, Mark Brown wrote:
+> On Tue, Mar 28, 2017 at 12:53:06PM +0100, Charles Keepax wrote:
+> > On Tue, Mar 28, 2017 at 01:47:04PM +0300, Daniel Baluta wrote:
+> 
+> > > >> -     codec_clk = devm_clk_get(&codec_dev->dev, NULL);
+> > > >> +     codec_clk = clk_get(&codec_dev->dev, NULL);
+> 
+> > > is different from &codec_dev->dev.
+> 
+> > I get that they are different, I just don't get why changing
+> > from a devm_clk_get to a clk_get is a better fix than changing
+> > &codec->dev to &pdev->dev.
+> 
+> This should be clear from the semantics of clk_get(): you're looking up
+> the clock in the context of the supplied device and the clock is
+> attached to the CODEC so you need to look up in the CODEC context.  What
+> would be even better would be to move the allocation of the clock into
+> the CODEC driver...
 
-> -----Original Message-----
-> From: Rob Herring [mailto:robh@kernel.org]
-> Sent: Friday, March 24, 2017 8:26 AM
-> To: Ryans Lee <RyanS.Lee@maximintegrated.com>
-> Cc: lgirdwood@gmail.com; broonie@kernel.org; mark.rutland@arm.com; 
-> perex@perex.cz; tiwai@suse.com; kuninori.morimoto.gx@renesas.com; 
-> arnd@arndb.de; ckeepax@opensource.wolfsonmicro.com; lars@metafoo.de; 
-> bardliao@realtek.com; nh6z@nh6z.net; KCHSU0@nuvoton.com; 
-> axel.lin@ingics.com; romain.perier@collabora.com; petr@barix.com; 
-> srinivas.kandagatla@linaro.org; oder_chiou@realtek.com; 
-> Paul.Handrigan@cirrus.com; alsa-devel@alsa-project.org; 
-> devicetree@vger.kernel.org; linux-kernel@vger.kernel.org; 
-> dgreid@google.com
-> Subject: Re: [PATCH] ASoC: Add support for Maxim Integrated MAX98927 
-> Amplifier
->
-> EXTERNAL EMAIL
->
->
->
-> On Mon, Mar 20, 2017 at 09:40:23AM +0900, Ryan Lee wrote:
->> Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
->> ---
->> Resubmit the intial version of MAX98927 driver. Added all fixes into the initial patch.
->>
->>  .../devicetree/bindings/sound/max98927.txt         |   39 +
->>  sound/soc/codecs/Kconfig                           |    5 +
->>  sound/soc/codecs/Makefile                          |    2 +
->>  sound/soc/codecs/max98927.c                        | 1040 ++++++++++++++++++++
->>  sound/soc/codecs/max98927.h                        |  267 +++++
->>  5 files changed, 1353 insertions(+)
->>  create mode 100755
->> Documentation/devicetree/bindings/sound/max98927.txt
->>  mode change 100644 => 100755 sound/soc/codecs/Kconfig  mode change
->> 100644 => 100755 sound/soc/codecs/Makefile  create mode 100755 
->> sound/soc/codecs/max98927.c  create mode 100755 
->> sound/soc/codecs/max98927.h
->>
->> diff --git a/Documentation/devicetree/bindings/sound/max98927.txt
->> b/Documentation/devicetree/bindings/sound/max98927.txt
->> new file mode 100755
->> index 0000000..d610879
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/sound/max98927.txt
->> @@ -0,0 +1,39 @@
->> +max98927 audio CODEC
->> +
->> +This device supports I2C.
->
-> Can we combine this and the other max9892x bindings. They all look similar.
-They are not same but almost similar. I combined MAX98925, MAX98926 and MAX98927 bindings into MAX9892x.txt
-Thank you for your feedback.
->
->> +
->> +Required properties:
->> +
->> +  - compatible : "maxim,max98927"
->> +
->> +  - maxim,vmon-slot-no : slot number used to send voltage 
->> + information
->
-> While vendor prefix is preferred, so is using the same property names.
-> Either use the existing names or deprecate the old ones in favor of these.
-To use same property names, I kept existing names. Thanks.
+Ah yes thats what I was missing.
 
->
->> +                   or in inteleave mode this will be used as
->> +                   interleave slot.
->> +                   This property can be set to values from 0 to 15 for slot 0 to 15.
->> +                   Default value is 0.
->> +
->> +  - maxim,imon-slot-no : slot number used to send current information
->> +                   This property can be set to values from 0 to 15 for slot 0 to 15.
->> +                   Default value is 0.
->> +
->> +  - maxim,interleave-mode : When using two MAX98927 in a system it is
->> +                   possible to create ADC data that that will
->> +                   overflow the frame size. Digital Audio Interleave
->> +                   mode provides a means to output VMON and IMON data
->> +                   from two devices on a single DOUT line when running
->> +                   smaller frames sizes such as 32 BCLKS per LRCLK or
->> +                   48 BCLKS per LRCLK.
->> +                   This property can be set to values from 0 to 1 for off and on.
->> +                   Default value is 0.
->> +
->> +  - reg : the I2C address of the device for I2C
->> +
->> +Example:
->> +
->> +codec: max98927@3a {
->> +   compatible = "maxim,max98927";
->> +   maxim,vmon-slot-no = <0>;
->> +   maxim,imon-slot-no = <1>;
->> +   maxim,interleave-mode = <0>;
->> +   reg = <0x3a>;
->> +};
+Thanks,
+Charles
