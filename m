@@ -1,36 +1,38 @@
-From: Max Kellermann <max@duempel.org>
-Subject: Re: dmix, snd_pcm_drain(), SND_PCM_NONBLOCK - bug?
-Date: Wed, 29 Mar 2017 19:59:27 +0200
-Message-ID: <20170329175927.GA27507@swift.blarg.de>
-References: <20170316122336.GA7038@swift.blarg.de>
- <s5h4lyol7ob.wl-tiwai@suse.de>
+From: Eugene Ganeev <easymodofrf@gmail.com>
+Subject: [PATCH] ALSA: oxygen - Fix snd_oxygen module not loading for some
+ (new?) Xonar DG SI cards.
+Date: Wed, 29 Mar 2017 22:13:11 +0100
+Message-ID: <20170329211311.GA4751@unit02.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from swift.blarg.de (swift.blarg.de [78.47.110.205])
- by alsa0.perex.cz (Postfix) with ESMTP id 702B226701C
- for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2017 19:59:28 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <s5h4lyol7ob.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2017/03/20 08:38, Takashi Iwai <tiwai@suse.de> wrote:
-> Yeah, the code is obviously wrong.  And it seems that now Jaroslav
-> already fixed the issue in git repo.  Please give it a try.
+My Xonar DG SI card is showing up in lspci but no module is loaded for
+it.
 
-The bug reporter confirmed that this commit fixes his MPD problem.
-Thanks.
+The patch just adds a new value with card's PCI ID to oxygen_ids array.
 
-Max
+Signed-off-by: Eugene Ganeev <easymodofrf@gmail.com>
+---
+ sound/pci/oxygen/oxygen.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/pci/oxygen/oxygen.c b/sound/pci/oxygen/oxygen.c
+index ada6c256378e..99ba0354d4cc 100644
+--- a/sound/pci/oxygen/oxygen.c
++++ b/sound/pci/oxygen/oxygen.c
+@@ -110,6 +110,7 @@ static DEFINE_PCI_DEVICE_TABLE(oxygen_ids) = {
+ 	{ OXYGEN_PCI_SUBID(0x1a58, 0x0910), .driver_data = MODEL_CMEDIA_REF },
+ 	/* Asus Xonar DG */
+ 	{ OXYGEN_PCI_SUBID(0x1043, 0x8467), .driver_data = MODEL_XONAR_DG },
++	{ OXYGEN_PCI_SUBID(0x1043, 0x855e), .driver_data = MODEL_XONAR_DG },
+ 	/* Asus Xonar DGX */
+ 	{ OXYGEN_PCI_SUBID(0x1043, 0x8521), .driver_data = MODEL_XONAR_DGX },
+ 	/* PCI 2.0 HD Audio */
+-- 
+2.11.1
