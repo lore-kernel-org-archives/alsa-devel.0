@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Remove redundant vmixer
-	handler" to the asoc tree
-Date: Wed, 29 Mar 2017 12:54:24 +0100
-Message-ID: <E1ctCBE-0001XQ-64@debutante>
-References: <1490275926-2270-7-git-send-email-jeeja.kp@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Don't unload module
+	when in use" to the asoc tree
+Date: Wed, 29 Mar 2017 12:54:27 +0100
+Message-ID: <E1ctCBH-0001YN-3b@debutante>
+References: <1490275926-2270-6-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DE030266F89
- for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2017 13:54:32 +0200 (CEST)
-In-Reply-To: <1490275926-2270-7-git-send-email-jeeja.kp@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 73203266F88
+ for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2017 13:54:36 +0200 (CEST)
+In-Reply-To: <1490275926-2270-6-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Remove redundant vmixer handler
+   ASoC: Intel: Skylake: Don't unload module when in use
 
 has been applied to the asoc tree at
 
@@ -53,70 +53,36 @@ to this mail.
 Thanks,
 Mark
 
->From 9a1e350709492cf512a3c4781915d567b34f8d26 Mon Sep 17 00:00:00 2001
+>From f7ea77772dfaa404ac0bcdea5c262c24e8b860db Mon Sep 17 00:00:00 2001
 From: Vinod Koul <vinod.koul@intel.com>
-Date: Fri, 24 Mar 2017 23:10:29 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Remove redundant vmixer handler
+Date: Fri, 24 Mar 2017 23:10:28 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Don't unload module when in use
 
-Initially vmixer and mixer widget handlers were bit different, but over
-time they became same so remove the duplicate code.
+A module may have multiple instances in DSP, so unload only when usage
+count is zero.
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 32 +-------------------------------
- 1 file changed, 1 insertion(+), 31 deletions(-)
+ sound/soc/intel/skylake/skl-sst.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 43f9cb380a76..35d9d7b43dd2 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -1073,36 +1073,6 @@ static int skl_tplg_pga_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
- }
- 
- /*
-- * In modelling, we assume there will be ONLY one mixer in a pipeline.  If
-- * mixer is not required then it is treated as static mixer aka vmixer with
-- * a hard path to source module
-- * So we don't need to check if source is started or not as hard path puts
-- * dependency on each other
-- */
--static int skl_tplg_vmixer_event(struct snd_soc_dapm_widget *w,
--				struct snd_kcontrol *k, int event)
--{
--	struct snd_soc_dapm_context *dapm = w->dapm;
--	struct skl *skl = get_skl_ctx(dapm->dev);
--
--	switch (event) {
--	case SND_SOC_DAPM_PRE_PMU:
--		return skl_tplg_mixer_dapm_pre_pmu_event(w, skl);
--
--	case SND_SOC_DAPM_POST_PMU:
--		return skl_tplg_mixer_dapm_post_pmu_event(w, skl);
--
--	case SND_SOC_DAPM_PRE_PMD:
--		return skl_tplg_mixer_dapm_pre_pmd_event(w, skl);
--
--	case SND_SOC_DAPM_POST_PMD:
--		return skl_tplg_mixer_dapm_post_pmd_event(w, skl);
--	}
--
--	return 0;
--}
--
--/*
-  * In modelling, we assume there will be ONLY one mixer in a pipeline. If a
-  * second one is required that is created as another pipe entity.
-  * The mixer is responsible for pipe management and represent a pipeline
-@@ -1570,7 +1540,7 @@ int skl_tplg_be_update_params(struct snd_soc_dai *dai,
- 
- static const struct snd_soc_tplg_widget_events skl_tplg_widget_ops[] = {
- 	{SKL_MIXER_EVENT, skl_tplg_mixer_event},
--	{SKL_VMIXER_EVENT, skl_tplg_vmixer_event},
-+	{SKL_VMIXER_EVENT, skl_tplg_mixer_event},
- 	{SKL_PGA_EVENT, skl_tplg_pga_event},
- };
- 
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index 39d4aaac73bf..539529729e3f 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -417,6 +417,11 @@ static int skl_unload_module(struct sst_dsp *ctx, u16 mod_id)
+ 		dev_err(ctx->dev, "Module bad usage cnt!:%d\n", usage_cnt);
+ 		return -EIO;
+ 	}
++
++	/* if module is used by others return, no need to unload */
++	if (usage_cnt > 0)
++		return 0;
++
+ 	ret = skl_ipc_unload_modules(&skl->ipc,
+ 			SKL_NUM_MODULES, &mod_id);
+ 	if (ret < 0) {
 -- 
 2.11.0
