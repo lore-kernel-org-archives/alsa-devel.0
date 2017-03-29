@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ALSA: hda: Fix LLCH register read" to the
-	asoc tree
-Date: Wed, 29 Mar 2017 12:02:24 +0100
-Message-ID: <E1ctBMu-0007JH-GO@debutante>
-References: <1490275926-2270-2-git-send-email-jeeja.kp@intel.com>
+Subject: Applied "ASoC: mediatek: add bindings for wm8960 codec
+	machine driver" to the asoc tree
+Date: Wed, 29 Mar 2017 12:02:30 +0100
+Message-ID: <E1ctBN0-0007Ky-2K@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8459C266EFF
- for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2017 13:02:40 +0200 (CEST)
-In-Reply-To: <1490275926-2270-2-git-send-email-jeeja.kp@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 60106266EFA
+ for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2017 13:02:38 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,14 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: B@sirena.org.uk
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, "B,
- Jayachandran" <jayachandran.b@intel.com>, patches.audio@intel.com, Vinod Koul <vinod.koul@intel.com>, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
+To: Ryder Lee <ryder.lee@mediatek.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ALSA: hda: Fix LLCH register read
+   ASoC: mediatek: add bindings for wm8960 codec machine driver
 
 has been applied to the asoc tree at
 
@@ -54,34 +52,49 @@ to this mail.
 Thanks,
 Mark
 
->From ccfdf9f6a47179941cb8b5f1d3df9734e54b38c4 Mon Sep 17 00:00:00 2001
-From: "B, Jayachandran" <jayachandran.b@intel.com>
-Date: Fri, 24 Mar 2017 23:10:24 +0530
-Subject: [PATCH] ALSA: hda: Fix LLCH register read
+>From 768abad46df941b6f921f358d3b17e51451b29bd Mon Sep 17 00:00:00 2001
+From: Ryder Lee <ryder.lee@mediatek.com>
+Date: Wed, 29 Mar 2017 16:59:32 +0800
+Subject: [PATCH] ASoC: mediatek: add bindings for wm8960 codec machine driver
 
-LLCH is a 16 bit register. Use readw instead of readl API.
+add device tree bindings for mt2701-wm8960.
 
-Signed-off-by: B, Jayachandran <jayachandran.b@intel.com>
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
-Acked-by: Takashi Iwai <tiwai@suse.de>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/hda/hdac_controller.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/sound/mt2701-wm8960.txt    | 24 ++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt2701-wm8960.txt
 
-diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
-index 043065867656..6f1e99c9fed9 100644
---- a/sound/hda/hdac_controller.c
-+++ b/sound/hda/hdac_controller.c
-@@ -268,7 +268,7 @@ int snd_hdac_bus_parse_capabilities(struct hdac_bus *bus)
- 	unsigned int offset;
- 	unsigned int counter = 0;
- 
--	offset = snd_hdac_chip_readl(bus, LLCH);
-+	offset = snd_hdac_chip_readw(bus, LLCH);
- 
- 	/* Lets walk the linked capabilities list */
- 	do {
+diff --git a/Documentation/devicetree/bindings/sound/mt2701-wm8960.txt b/Documentation/devicetree/bindings/sound/mt2701-wm8960.txt
+new file mode 100644
+index 000000000000..809b609ea9d0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/mt2701-wm8960.txt
+@@ -0,0 +1,24 @@
++MT2701 with WM8960 CODEC
++
++Required properties:
++- compatible: "mediatek,mt2701-wm8960-machine"
++- mediatek,platform: the phandle of MT2701 ASoC platform
++- audio-routing: a list of the connections between audio
++- mediatek,audio-codec: the phandles of wm8960 codec
++- pinctrl-names: Should contain only one value - "default"
++- pinctrl-0: Should specify pin control groups used for this controller.
++
++Example:
++
++	sound:sound {
++		compatible = "mediatek,mt2701-wm8960-machine";
++		mediatek,platform = <&afe>;
++		audio-routing =
++			"Headphone", "HP_L",
++			"Headphone", "HP_R",
++			"LINPUT1", "AMIC",
++			"RINPUT1", "AMIC";
++		mediatek,audio-codec = <&wm8960>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&aud_pins_default>;
++	};
 -- 
 2.11.0
