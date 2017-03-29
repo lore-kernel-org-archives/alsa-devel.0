@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Don't unload module
-	when in use" to the asoc tree
-Date: Wed, 29 Mar 2017 12:54:27 +0100
-Message-ID: <E1ctCBH-0001YN-3b@debutante>
-References: <1490275926-2270-6-git-send-email-jeeja.kp@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Add 16-bit constraint
+	to FE bxt_rt298 machine" to the asoc tree
+Date: Wed, 29 Mar 2017 12:54:30 +0100
+Message-ID: <E1ctCBK-0001ZS-1X@debutante>
+References: <1490275926-2270-5-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 73203266F88
- for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2017 13:54:36 +0200 (CEST)
-In-Reply-To: <1490275926-2270-6-git-send-email-jeeja.kp@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id EA35B266FA9
+ for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2017 13:54:38 +0200 (CEST)
+In-Reply-To: <1490275926-2270-5-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
+To: G Kranthi <gudishax.kranthikumar@intel.com>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, patches.audio@intel.com, tiwai@suse.de, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Don't unload module when in use
+   ASoC: Intel: Skylake: Add 16-bit constraint to FE bxt_rt298 machine
 
 has been applied to the asoc tree at
 
@@ -53,36 +53,42 @@ to this mail.
 Thanks,
 Mark
 
->From f7ea77772dfaa404ac0bcdea5c262c24e8b860db Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Fri, 24 Mar 2017 23:10:28 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Don't unload module when in use
+>From e59ed0875b0681ebd1e5062b739742f98f24274c Mon Sep 17 00:00:00 2001
+From: G Kranthi <gudishax.kranthikumar@intel.com>
+Date: Fri, 24 Mar 2017 23:10:27 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Add 16-bit constraint to FE bxt_rt298
+ machine
 
-A module may have multiple instances in DSP, so unload only when usage
-count is zero.
+Add constraint to FE to restrict sample format to 16-bit for bxt_rt298
+machine
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: G Kranthi <gudishax.kranthikumar@intel.com>
 Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-sst.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/intel/boards/bxt_rt298.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
-index 39d4aaac73bf..539529729e3f 100644
---- a/sound/soc/intel/skylake/skl-sst.c
-+++ b/sound/soc/intel/skylake/skl-sst.c
-@@ -417,6 +417,11 @@ static int skl_unload_module(struct sst_dsp *ctx, u16 mod_id)
- 		dev_err(ctx->dev, "Module bad usage cnt!:%d\n", usage_cnt);
- 		return -EIO;
- 	}
-+
-+	/* if module is used by others return, no need to unload */
-+	if (usage_cnt > 0)
-+		return 0;
-+
- 	ret = skl_ipc_unload_modules(&skl->ipc,
- 			SKL_NUM_MODULES, &mod_id);
- 	if (ret < 0) {
+diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
+index 176c080a9818..1a68d043c803 100644
+--- a/sound/soc/intel/boards/bxt_rt298.c
++++ b/sound/soc/intel/boards/bxt_rt298.c
+@@ -274,12 +274,15 @@ static int bxt_fe_startup(struct snd_pcm_substream *substream)
+ 	 * on this platform for PCM device we support:
+ 	 *      48Khz
+ 	 *      stereo
++	 *	16-bit audio
+ 	 */
+ 
+ 	runtime->hw.channels_max = 2;
+ 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+ 				&constraints_channels);
+ 
++	runtime->hw.formats = SNDRV_PCM_FMTBIT_S16_LE;
++	snd_pcm_hw_constraint_msbits(runtime, 0, 16, 16);
+ 	snd_pcm_hw_constraint_list(runtime, 0,
+ 				SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
+ 
 -- 
 2.11.0
