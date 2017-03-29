@@ -1,143 +1,125 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [PATCH v3 10/11] ASoC: add bindings for stm32
-	DFSDM filter
-Date: Wed, 29 Mar 2017 14:42:38 +0200
-Message-ID: <473f36db-0c0e-00d2-3610-c24bf3f1d541@st.com>
-References: <1489759704-30217-1-git-send-email-arnaud.pouliquen@st.com>
- <1489759704-30217-11-git-send-email-arnaud.pouliquen@st.com>
- <20170324145208.6tj5swol5du5lkyc@rob-hp-laptop>
+From: Tanu Kaskinen <tanuk@iki.fi>
+Subject: Re: [alsa-devel] pulseaudio fails to start
+ with kernel 4.11, caused by new snd_hdmi_lpe_audio module)
+Date: Wed, 29 Mar 2017 15:59:45 +0300
+Message-ID: <1490792385.2239.3.camel@iki.fi>
+References: <2549c113-f06b-f22e-d36e-f59fc2969bcb@redhat.com>
+ <s5h8to0w4fs.wl-tiwai@suse.de>
+ <6754b5cd-f6d0-e2e3-0f01-992946ec1b92@linux.intel.com>
+ <s5hk27jjigd.wl-tiwai@suse.de>
+ <1490082870.1321124.918129488.4F3143F8@webmail.messagingengine.com>
+ <bba100b1-5e74-093a-7625-a7feaba1a065@redhat.com>
+ <b693d927-229e-e00a-ada5-29d12154547b@linux.intel.com>
+ <s5hvar0fjzf.wl-tiwai@suse.de> <1490379539.24554.2.camel@iki.fi>
+ <30b18b96-eaa4-70e0-522d-dc8237d25642@redhat.com>
+ <1490731828.2698.4.camel@iki.fi> <s5hy3vok68j.wl-tiwai@suse.de>
+Reply-To: General PulseAudio Discussion
+ <pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id CE65E266F2E
- for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2017 14:42:45 +0200 (CEST)
-In-Reply-To: <20170324145208.6tj5swol5du5lkyc@rob-hp-laptop>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Olivier MOYSAN <olivier.moysan@st.com>, "kernel@stlinux.com" <kernel@stlinux.com>, Liam Girdwood <lgirdwood@gmail.com>, "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Mark Brown <broonie@kernel.org>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Hartmut Knaack <knaack.h@gmx.de>, Jonathan Cameron <jic23@kernel.org>, Alexandre TORGUE <alexandre.torgue@st.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
+In-Reply-To: <s5hy3vok68j.wl-tiwai@suse.de>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
+Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, pulseaudio-discuss@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Rob,
-
-Sorry for this dirty/crappy patch...
-Please find answers below
-
-Thanks
-
-Arnaud
-
-
-On 03/24/2017 03:52 PM, Rob Herring wrote:
-> On Fri, Mar 17, 2017 at 03:08:23PM +0100, Arnaud Pouliquen wrote:
->> Add bindings that describes audio settings to support
->> Digital Filter for pulse density modulation(PDM) microphone.
->>
->> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
->> ---
->> V2->V3:
->>    Fixes based on V2 comments
->>
->>  .../devicetree/bindings/sound/st,stm32-adfsdm.txt  | 41 ++++++++++++++++++++++
->>  1 file changed, 41 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt
->>
->> diff --git a/Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt b/Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt
->> new file mode 100644
->> index 0000000..ab610bc
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/sound/st,stm32-adfsdm.txt
->> @@ -0,0 +1,40 @@
->> +STMicroelectronics audio DFSDM DT bindings
->> +
->> +This driver supports audio PDM microphone capture through Digital Filter format
->> +Sigma Delta modulators (DFSDM).
->> +
->> +Required properties:
->> +  - compatible: "st,stm32h7-adfsdm".
->> +
->> +  - #sound-dai-cells : Must be equal to 0
->> +
->> +  - io-channels : phandle to iio dfsdm instance node.
->> +
->> +
->> +Example of a simple sound card using audio DFSDM node.
->> +
->> +	dmic0: dmic_@0 {
-> 
-> Drop the '_' and unit address.
-> 
->> +		compatible = "dmic-codec";
->> +		#sound-dai-cells = <0>;
->> +	};
->> +
->> +	asoc-pdm@0 {
-> 
-> asoc is a Linux term. Drop the unit address.
-> 
->> +		compatible = "st,stm32h7-adfsdm";
-> 
-> Is this a separate block from the ADC? A drawing of the h/w blocks and 
-> connections would help.
-I don't know how to explain it...So don't hesitate is still not clear.
-On DFSDM we can connect 2 ADC types:
-- Generic Sigma delta(SD) ADC for analog to digital conversion
-- Digital microphones for audio capture.
-
-In both cases, an SPI or Manchester bus is used to transfer 1-bit stream
- to DFSDM.
-1) In case of SD ADC, The link is described in IIO declaration using
-"io-channels" property ( [04/11] IIO: add DT bindings for stm32 DFSDM
-filter)
-2) For audio purpose, the link is done by the simple or the graph card
-So this device exposes the Digital audio interface (DAI) associated to
-the DFSDM ADC.
-Link between the DFSDM DAI and the DFSDM IIO device is done through the
-"io-channels" property.
-
-> 
->> +		#sound-dai-cells = <0>;
->> +		io-channels = <&dfsdm_adc0 0>;
->> +	};
->> +
->> +	sound_dfsdm_pdm {
-> 
-> sound-card {
-> 
->> + 		compatible = "simple-audio-card";
->> + 		simple-audio-card,name = "dfsdm_pdm";
->> +
->> + 		dfsdm0_mic0: simple-audio-card,dai-link@0 {
-> 
-> I'd suggest moving to the graph card.
-yes should be in V4
-> 
->> + 			format = "pdm";
->> + 			cpu {
->> + 				sound-dai = <&asoc_pdm1>;
-> 
-> This phandle doesn't point to anything.
-> 
->> + 			};
->> + 			dmic0_codec: codec {
->> + 				sound-dai = <&dmic0>;
->> + 			};
->> + 		};
->> +	};
->> \ No newline at end of file
-> 
-> ^^^
-> 
->> -- 
->> 1.9.1
->>
+T24gV2VkLCAyMDE3LTAzLTI5IGF0IDA3OjIxICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
+T24gVHVlLCAyOCBNYXIgMjAxNyAyMjoxMDoyOCArMDIwMCwKPiBUYW51IEthc2tpbmVuIHdyb3Rl
+Ogo+ID4gCj4gPiBPbiBGcmksIDIwMTctMDMtMjQgYXQgMjM6MDEgKzAxMDAsIEhhbnMgZGUgR29l
+ZGUgd3JvdGU6Cj4gPiA+IEhpLAo+ID4gPiAKPiA+ID4gT24gMDMvMjQvMjAxNyAwNzoxOCBQTSwg
+VGFudSBLYXNraW5lbiB3cm90ZToKPiA+ID4gPiBPbiBUaHUsIDIwMTctMDMtMjMgYXQgMDk6NTcg
+KzAxMDAsIFRha2FzaGkgSXdhaSB3cm90ZToKPiA+ID4gPiA+IE9uIFRodSwgMjMgTWFyIDIwMTcg
+MDQ6MTY6NTIgKzAxMDAsCj4gPiA+ID4gPiBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPiA+
+ID4gPiA+ID4gCj4gPiA+ID4gPiA+IE9uIDMvMjEvMTcgMjo1NiBBTSwgSGFucyBkZSBHb2VkZSB3
+cm90ZToKPiA+ID4gPiA+ID4gPiBJOiBbcHVsc2VhdWRpb10gYWxzYS1zaW5rLmM6IFVzaW5nIDEu
+MCBmcmFnbWVudHMgb2Ygc2l6ZSAzNTI4MzIgYnl0ZXMKPiA+ID4gPiA+ID4gPiAoMjAwMC4xOG1z
+KSwgYnVmZmVyIHNpemUgaXMgMzUyODMyIGJ5dGVzICgyMDAwLjE4bXMpCj4gPiA+ID4gPiA+ID4g
+STogW3B1bHNlYXVkaW9dIGFsc2Etc2luay5jOiBUaW1lIHNjaGVkdWxpbmcgd2F0ZXJtYXJrIGlz
+IDIwLjAwbXMKPiA+ID4gPiA+ID4gPiBJOiBbcHVsc2VhdWRpb10gYWxzYS1zaW5rLmM6IERyaXZl
+ciBkb2VzIG5vdCBzdXBwb3J0IGhhcmR3YXJlIHZvbHVtZQo+ID4gPiA+ID4gPiA+IGNvbnRyb2ws
+IGZhbGxpbmcgYmFjayB0byBzb2Z0d2FyZSB2b2x1bWUgY29udHJvbC4KPiA+ID4gPiA+ID4gPiBJ
+OiBbcHVsc2VhdWRpb10gYWxzYS1zaW5rLmM6IERyaXZlciBkb2VzIG5vdCBzdXBwb3J0IGhhcmR3
+YXJlIG11dGUKPiA+ID4gPiA+ID4gPiBjb250cm9sLCBmYWxsaW5nIGJhY2sgdG8gc29mdHdhcmUg
+bXV0ZSBjb250cm9sLgo+ID4gPiA+ID4gPiA+IEk6IFthbHNhLXNpbmstSGRtaUxwZUF1ZGlvXSBj
+b3JlLXV0aWwuYzogU3VjY2Vzc2Z1bGx5IGVuYWJsZWQgU0NIRURfUlIKPiA+ID4gPiA+ID4gPiBz
+Y2hlZHVsaW5nIGZvciB0aHJlYWQsIHdpdGggcHJpb3JpdHkgNS4KPiA+ID4gPiA+ID4gPiBJOiBb
+YWxzYS1zaW5rLUhkbWlMcGVBdWRpb10gYWxzYS1zaW5rLmM6IFN0YXJ0aW5nIHBsYXliYWNrLgo+
+ID4gPiA+ID4gPiA+IEk6IFthbHNhLXNpbmstSGRtaUxwZUF1ZGlvXSAoYWxzYS1saWIpcGNtX2h3
+LmM6IFNORFJWX1BDTV9JT0NUTF9IV1NZTkMKPiA+ID4gPiA+ID4gPiBmYWlsZWQgKC0zMikKPiA+
+ID4gPiA+ID4gCj4gPiA+ID4gPiA+IEh1bW0sIHNpbmdsZSBwZXJpb2QgYW5kIGh3X3N5bmMgZmFp
+bGVkLCB0aGlzIGNvdWxkIGJlIHRlc3RpbmcgdGhlCj4gPiA+ID4gPiA+IHJvYnVzdG5lc3Mgb2Yg
+dGhlIHNpbmdsZS1wZXJpb2QgY29kZSBhbmQgaXRzIG1hcHBpbmcgb24gbXVsdGlwbGUgRE1BCj4g
+PiA+ID4gPiA+IGRlc2NyaXB0b3JzPyBJIGhhdmVuJ3QgbG9va2VkIGF0IHRoZSBhbHNhIG1vZHVs
+ZSBpbiBlb25zIGJ1dCBjYW4ndCB0aGUKPiA+ID4gPiA+ID4gbnVtYmVyIG9mIHBlcmlvZHMgYmUg
+Zm9yY2VkIHRvIHR3byB3aXRoIG1vZHVsZSBwYXJhbWV0ZXJzIHdoaWxlCj4gPiA+ID4gPiA+IGtl
+ZXBpbmcgdGhlIHRpbWVyLWJhc2VkIHNjaGVkdWxuZz8KPiA+ID4gPiAKPiA+ID4gPiBJIHRoaW5r
+IHRoZSBjb2RlIGRvZXNuJ3QgY3VycmVudGx5IHN1cHBvcnQgdGhpcy4KPiA+ID4gPiAKPiA+ID4g
+PiA+IEl0J3MgLUVQSVBFIGFuZCB0aGlzIGlzIHN1cHBvc2VkIHRvIGJlIHRoZSBpbnRlbnRpb25h
+bCBlcnJvciBjb2RlIGZyb20KPiA+ID4gPiA+IEhETUkgTFBFIGF1ZGlvIGRyaXZlci4gIFRoZSBz
+dHJlYW1pbmcgZG9lc24ndCB3b3JrIHdoZW4gdGhlIGdmeCBpcwo+ID4gPiA+ID4gZGlzY29ubmVj
+dGVkIG9yIHRoZSBtb25pdG9yIGF1ZGlvIGlzIG9mZi4gIEl0IGFjY2VwdHMgdGhlIG9wZW4sIGJ1
+dCBpdAo+ID4gPiA+ID4gcmV0dXJucyAtRVBJUEUgZm9yIGZ1cnRoZXIgYWNjZXNzZXMuCj4gPiA+
+ID4gPiAKPiA+ID4gPiA+IE1heWJlIC1FUElQRSBpcyBubyBzZW5zaWJsZSBjaG9pY2UsIGJ1dCB0
+aGUgcHJvYmxlbSBpcyB0aGF0IHRoZSBkcml2ZXIKPiA+ID4gPiA+IGNhbid0IHVzZSB0aGUgUENN
+IERJU0NPTk5FQ1Qgc3RhdGUgYmVjYXVzZSBQQSBpbnRlcnByZXRzIGl0IGJlaW5nIHRoZQo+ID4g
+PiA+ID4gY29tcGxldGUgZGlzY29ubmVjdGlvbiBvZiB0aGUgY2FyZCBvYmplY3QgaW5zdGVhZCBv
+ZiBhIHRlbXBvcmFyeQo+ID4gPiA+ID4gZGlzYWJsZW1lbnQgb2YgUENNLgo+ID4gPiA+IAo+ID4g
+PiA+IFNvIGlzIHRoaXMgYSBQdWxzZUF1ZGlvIGJ1Zz8KPiA+ID4gPiAKPiA+ID4gPiBJOiBbYWxz
+YS1zaW5rLUhkbWlMcGVBdWRpb10gYWxzYS1zaW5rLmM6IFN0YXJ0aW5nIHBsYXliYWNrLgo+ID4g
+PiA+IEk6IFthbHNhLXNpbmstSGRtaUxwZUF1ZGlvXSAoYWxzYS1saWIpcGNtX2h3LmM6IFNORFJW
+X1BDTV9JT0NUTF9IV1NZTkMgZmFpbGVkICgtMzIpCj4gPiA+ID4gCj4gPiA+ID4gVGhlICJTdGFy
+dGluZyBwbGF5YmFjayIgbWVzc2FnZSBpcyBwcmludGVkIGp1c3QgYmVmb3JlIHRoZQo+ID4gPiA+
+IHNuZF9wY21fc3RhcnQoKSBjYWxsLiBQdWxzZUF1ZGlvIGRvZXNuJ3QgY2hlY2sgdGhlIHJldHVy
+biB2YWx1ZSBvZgo+ID4gPiA+IHNuZF9wY21fc3RhcnQoKSwgYnV0IG1heWJlIGl0IHNob3VsZD8g
+RG9lcyB0aGUgSFdTWU5DIGhhcHBlbiBpbgo+ID4gPiA+IHNuZF9wY21fc3RhcnQoKT8KPiA+ID4g
+PiAKPiA+ID4gPiBDYW4gdGhpcyBFUElQRSB0aGluZyBoYXBwZW4gYWxzbyBkdXJpbmcgcGxheWJh
+Y2ssIG5vdCBqdXN0IHdoZW4KPiA+ID4gPiBzdGFydGluZz8KPiA+ID4gCj4gPiA+IFNvIGlzIHRo
+aXMgdGhlIGxpa2VseSBjYXVzZSBvZiB0aGUgUlQgY29kZSBraWxsaW5nIHBhLCBvciBkbyB5b3UK
+PiA+ID4gc3RpbGwgbmVlZCBtZSB0byBnYXRoZXIgcGVyZiBvdXRwdXQgPwo+ID4gCj4gPiBUaGUg
+cGVyZiBvdXRwdXQgd291bGQgYmUgaW50ZXJlc3RpbmcuCj4gPiAKPiA+IEl0J3Mgc3RpbGwgdW5j
+bGVhciB0byBtZSBpZiB0aGUgaHdzeW5jIHRoaW5nIGlzIGEgYnVnIGluIGFsc2EsIG9yCj4gPiBz
+b21ldGhpbmcgdGhhdCBwdWxzZWF1ZGlvIHNob3VsZCBkZWFsIHdpdGguIElmIHRoZXJlJ3Mgbm8g
+ZnVydGhlciBpbnB1dAo+ID4gZnJvbSB0aGUgYWxzYSBkZXZlbG9wZXJzLCB3b3VsZCB5b3UgYmUg
+YWJsZSB0byB0ZXN0IGEgcHVsc2VhdWRpbyBwYXRjaAo+ID4gaWYgSSB3cml0ZSBvbmU/IEZpcnN0
+IEknZCBsaWtlIHRvIGNoZWNrIHdoZXRoZXIgdGhlIGh3c3luYyBlcnJvcgo+ID4gaGFwcGVucyBp
+bnNpZGUgc25kX3BjbV9zdGFydCgpLCBhbmQgaWYgc28sIGRvZXMgdGhlIGVycm9yIGdldCByZXBv
+cnRlZAo+ID4gaW4gdGhlIHNuZF9wY21fc3RhcnQoKSByZXR1cm4gdmFsdWUuIElmIHNuZF9wY21f
+c3RhcnQoKSByZXR1cm5zIGFuCj4gPiBlcnJvciwgcHVsc2VhdWRpbyBzaG91bGQgcHJvYmFibHkg
+cmVhY3QgdG8gaXQsIGFsdGhvdWdoIEknbSBub3Qgc3VyZQo+ID4gaG93LiBJdCB3b3VsZCBiZSBl
+YXN5IHRvIGp1c3QgcmVtb3ZlIHRoZSBzaW5rIGlmIHRoZXJlJ3MgYW4gZXJyb3IsIGJ1dAo+ID4g
+SSB1bmRlcnN0b29kIFRha2FzaGkncyBjb21tZW50IHNvIHRoYXQgaXQgbWlnaHQgYmUgYW4gaW50
+ZXJtaXR0ZW50Cj4gPiBlcnJvciB0aGF0IGRlcGVuZHMgb24gdGhlIGdyYXBoaWNzIHN0YXRlLCBh
+bmQgaWYgdGhhdCdzIHRoZSBjYXNlLAo+ID4gcHVsc2VhdWRpbyB3b3VsZCBoYXZlIHRvIHJldHJ5
+IHdoZW4gdGhlIGdyYXBoaWNzIHN0YXRlIGNoYW5nZXMsIGJ1dCBJCj4gPiBkb24ndCBrbm93IHdo
+YXQga2luZCBvZiBldmVudCBjb3VsZCBiZSB1c2VkIHRvIGdldCBhIG5vdGlmaWNhdGlvbiBhYm91
+dAo+ID4gdGhlIHN0YXRlIGNoYW5nZS4KPiAKPiBEb2VzIFBBIHJlYWxseSBuZWVkIHRvIHN0YXJ0
+IHN0cmVhbWluZyBhdCBpdHMgaW52b2NhdGlvbiB0aW1lPwo+IFRoZSBjcmFzaCBoYXBwZW5zIHdo
+ZW4gUEEgZ2V0cyBzdGFydGVkIHZpYSBkZXNrdG9wIGF1dG9zdGFydCwgYW5kIGF0Cj4gdGhpcyBt
+b21lbnQsIHRoZSBIRE1JIGdyYXBoaWNzIHN0YXRlIGlzIHBvc3NpYmxlIGRpc2Nvbm5lY3RlZCBi
+ZWZvcmUKPiB4cmFuZHIgc2V0dXAuICBUaGUgSERNSSBjb25uZWN0aW9uIHN0YXRlIHNob3VsZCBo
+YXZlIGJlZW4gaW5mb3JtZWQgLwo+IG5vdGlmaWVkIHRvIFBBIHZpYSB0aGUgamFjayBpbnRlcmZh
+Y2UsIHNvIGl0IHNob3VsZCBiZSBwb3NzaWJsZSB0bwo+IGp1ZGdlIGJlZm9yZWhhbmQuCj4gCj4g
+T3IgaXQgbWlnaHQgYmUgc29tZXRoaW5nIHdyb25nIGluIHRoZSBkcml2ZXIgc2lkZSByZWdhcmRp
+bmcgdGhlIGphY2sKPiBzdGF0ZSBwcm9jZXNzaW5nPwoKSSBoYWQgYSBjbG9zZXIgbG9vayBhdCB0
+aGUgUEEgbG9nIHRoYXQgd2FzIHBvc3RlZCBlYXJsaWVyLiBJdCBsb29rcwpsaWtlIHRoZSBkZXZp
+Y2UgbnVtYmVyaW5nIGlzIG5vbi1zdGFuZGFyZC4gVHJ5aW5nIHRvIG9wZW4gYW55IG9mIHRoZQpo
+ZG1pOjEseCBkZXZpY2VzIGZhaWxzLiBodzoxIGNhbiBiZSBvcGVuZWQsIGFuZCBwdWxzZWF1ZGlv
+IGFzc3VtZXMgdGhhdAppdCdzIGFuIGFuYWxvZyBzdGVyZW8gZGV2aWNlLiBKYWNrIGRldGVjdGlv
+biBpc24ndCBnb2luZyB0byB3b3JrIGluCnRoaXMgc2l0dWF0aW9uLCBiZWNhdXNlIHB1bHNlYXVk
+aW8gZG9lc24ndCBrbm93IHRoYXQgaXQgc2hvdWxkIGJlCmxvb2tpbmcgYXQgdGhlIGhkbWkgamFj
+a3MuCgpDYW4gdGhlIGRyaXZlciBiZSBmaXhlZCB0byB1c2UgdGhlIHN0YW5kYXJkIEhETUkgZGV2
+aWNlIG51bWJlcnM/CgotLSAKVGFudQoKaHR0cHM6Ly93d3cucGF0cmVvbi5jb20vdGFudWsKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KcHVsc2VhdWRpby1k
+aXNjdXNzIG1haWxpbmcgbGlzdApwdWxzZWF1ZGlvLWRpc2N1c3NAbGlzdHMuZnJlZWRlc2t0b3Au
+b3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vcHVsc2Vh
+dWRpby1kaXNjdXNzCg==
