@@ -1,16 +1,18 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] sound: oxygen: simply setting of the shortname
- for Xonar DG cards
-Date: Wed, 29 Mar 2017 20:55:50 +0200
-Message-ID: <3be118b8-c133-a9e7-4971-bd6d805c47e7@ladisch.de>
+Subject: Re: [PATCH] ALSA: oxygen - Fix snd_oxygen module not
+ loading for some (new?) Xonar DG SI cards.
+Date: Wed, 29 Mar 2017 20:56:16 +0200
+Message-ID: <51152705-a2af-f1d9-b51a-019237e9d334@ladisch.de>
+References: <20170329211311.GA4751@unit02.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from webclient5.webclient5.de (webclient5.webclient5.de
  [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id B5BD6267024
- for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2017 20:56:24 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id D4174267060
+ for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2017 20:56:47 +0200 (CEST)
+In-Reply-To: <20170329211311.GA4751@unit02.localdomain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,41 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, Eugene Ganeev <easymodofrf@gmail.com>
+To: Eugene Ganeev <easymodofrf@gmail.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-We don't need to manually set the card name; with an entry in the
-names[] array, this happens automatically.
+Eugene Ganeev wrote:
+> My Xonar DG SI card is showing up in lspci but no module is loaded for
+> it.
+>
+> The patch just adds a new value with card's PCI ID to oxygen_ids array.
 
-Signed-off-by: Clemens Ladisch <clemens@ladisch.de>
----
- sound/pci/oxygen/oxygen.c |    6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Is the hardware identical?  Do all the inputs and outputs work?
 
-diff --git a/sound/pci/oxygen/oxygen.c b/sound/pci/oxygen/oxygen.c
-index 74afb6b75976..e36ed8af55ad 100644
---- a/sound/pci/oxygen/oxygen.c
-+++ b/sound/pci/oxygen/oxygen.c
-@@ -767,6 +767,8 @@ static int get_oxygen_model(struct oxygen *chip,
- 		[MODEL_FANTASIA]	= "TempoTec HiFier Fantasia",
- 		[MODEL_SERENADE]	= "TempoTec HiFier Serenade",
- 		[MODEL_HG2PCI]		= "CMI8787-HG2PCI",
-+		[MODEL_XONAR_DG]        = "Xonar DG",
-+		[MODEL_XONAR_DGX]       = "Xonar DGX",
- 	};
+> Signed-off-by: Eugene Ganeev <easymodofrf@gmail.com>
+> ---
+>  sound/pci/oxygen/oxygen.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/sound/pci/oxygen/oxygen.c b/sound/pci/oxygen/oxygen.c
+> index ada6c256378e..99ba0354d4cc 100644
+> --- a/sound/pci/oxygen/oxygen.c
+> +++ b/sound/pci/oxygen/oxygen.c
+> @@ -110,6 +110,7 @@ static DEFINE_PCI_DEVICE_TABLE(oxygen_ids) = {
+>  	{ OXYGEN_PCI_SUBID(0x1a58, 0x0910), .driver_data = MODEL_CMEDIA_REF },
+>  	/* Asus Xonar DG */
+>  	{ OXYGEN_PCI_SUBID(0x1043, 0x8467), .driver_data = MODEL_XONAR_DG },
+> +	{ OXYGEN_PCI_SUBID(0x1043, 0x855e), .driver_data = MODEL_XONAR_DG },
 
- 	chip->model = model_generic;
-@@ -829,12 +831,8 @@ static int get_oxygen_model(struct oxygen *chip,
- 		chip->model.dac_channels_mixer = 2;
- 		break;
- 	case MODEL_XONAR_DG:
--		chip->model = model_xonar_dg;
--		chip->model.shortname = "Xonar DG";
--		break;
- 	case MODEL_XONAR_DGX:
- 		chip->model = model_xonar_dg;
--		chip->model.shortname = "Xonar DGX";
- 		break;
- 	}
- 	if (id->driver_data == MODEL_MERIDIAN ||
+Please add the correct name to the names[] array.
+
+
+Regards.
+Clemens
