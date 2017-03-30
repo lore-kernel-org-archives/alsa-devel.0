@@ -1,90 +1,88 @@
-From: Pascal Wichmann <pascal.wichmann@pa-w.de>
-Subject: Problems with the DP MST audio support patchset
-Date: Wed, 29 Mar 2017 12:42:31 +0200
-Message-ID: <6800ee6e-31c2-b5eb-fbb2-6826d8c66dc9@pa-w.de>
+From: Eugene Ganeev <easymodofrf@gmail.com>
+Subject: Re: [PATCH] ALSA: oxygen - Fix snd_oxygen module not loading for
+ some (new?) Xonar DG SI cards.
+Date: Thu, 30 Mar 2017 03:55:08 +0100
+Message-ID: <20170330025507.GA961@unit02.localdomain>
+References: <20170329211311.GA4751@unit02.localdomain>
+ <51152705-a2af-f1d9-b51a-019237e9d334@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web02.pwsrv.de (web02.pwsrv.de [188.68.38.65])
- by alsa0.perex.cz (Postfix) with ESMTP id B0DEE266EF9
- for <alsa-devel@alsa-project.org>; Wed, 29 Mar 2017 12:42:34 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Libin Yang <libin.yang@linux.intel.com>, alsa-devel@alsa-project.org
-Cc: Pascal Wichmann <pascal.wichmann@pa-w.de>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <51152705-a2af-f1d9-b51a-019237e9d334@ladisch.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+On Wed, Mar 29, 2017 at 08:56:16PM +0200, Clemens Ladisch wrote:
+> Eugene Ganeev wrote:
+> > My Xonar DG SI card is showing up in lspci but no module is loaded for
+> > it.
+> >
+> > The patch just adds a new value with card's PCI ID to oxygen_ids array.
+> 
+> Is the hardware identical?  Do all the inputs and outputs work?
+ 
+According to asus website they both use C-MEDIA CMI8786. The difference is that DG SI is 7.1 surround compared to 5.1 in DG.
+I've tested the patch, all ports seem to work except rear out. So basically the card is usable unless you use 7.1 setup. 
 
-Hello,
+> Please add the correct name to the names[] array.
+> 
+> 
+> Regards.
+> Clemens.
 
-I am not sure whether alsa-devel is the right place for this kind of
-question. If it is not, please tell me a better place for them.
+[PATCH v2] sound: oxygen: add Xonar DG SI support
 
-I am building my kernel against the drm-tip freedesktop repository which
-includes the patches from December 2016 (message id
-<1480992519-108079-1-git-send-email-libin.yang@intel.com> and
-follow-ups on alsa-devel). I am using a ThinkPad X250 and the ThinkPad
-Ultra
-Dock with the HDMI output connected to my YAMAHA HTR-2866; this hdmi
-output is seen as display port and uses DP MST from the dock.
+Add PCI ID for the Asus Xonar DG SI card.
 
-In principle, everything is working quite well; however, I frequently
-recognize two weird behaviours:
+Signed-off-by: Eugene Ganeev <easymodofrf@gmail.com>
 
-* First of all, my audio receiver has 5.1 support. When I
-  configure my laptop to send 5.1 audio using alsa or pulseaudio, there
-is
-  only silence and no audio signal reaches the receiver; however, when I
-  choose 7.1 digital surround (which my receiver actually does not suppo
-rt
-  natively), everything works well and the two additional speakers are
-split
-  to the existing ones (I do not know whether alsa/the kernel or the
-  receiver
-  does this, probably it is the receiver).
-  This problem is pretty much only esthetical, as everything works fine
-  if I use the 7.1 "work-around" (Digital Stereo does work also,
-  but obviously does not support the full 5.1 setup)
-* The other problem -- which is actually very annoying -- is that there
-  frequently is silence though there is audio playing; this happens now
-  and then, but when there has been *no* output for a while, it always
-  happens a few seconds after starting the new output and lasts for two
-  to three seconds.
-  During these periods of silence, the icons on my receiver indicating
-  that there is an audio source are also gone.
-  This problem occurs with 7.1 configuration as well as with Digital
-  Stereo.
+---
 
-I am not sure what these problems are caused by and do not know what kin
-d
-of debug information you may require to get more hints on how to solve
-them. Any hints are appreciated.
+v2:
+	- Added model name to names[] array.
 
-Thank you for your advice,
-Pascal Wichmann
------BEGIN PGP SIGNATURE-----
+ sound/pci/oxygen/oxygen.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-iQIzBAEBCAAdFiEE/gJ8Tpn0OtJz8hxD6+YIa34W/zYFAljbj5cACgkQ6+YIa34W
-/zbIVg//QP4A0wUE2MyaEAenN8nUpNV5ASglRTZ0N5hXBjD+B/sxIMkJdtSynlcB
-eBYL90ZLuFHxdfXsltifeY29D7CaHfyqQCeJUfzV+RgUGrlv0wqk2vA9Dfc+RTIT
-PBORlyuknqIV14z8vxMGO/1+Po/S8AFplK/QJs9Y+irGAX+CAhBMlVMt8V5rbL+e
-oD8KRWgPIwuYShhd0f3tmgqdhRn9RUQgBaYOaq1pXdI/nNDHZuRA021zytkkV4rR
-NGG2zOsgrrXo82ac1AAeUXlNczqUCM7UXNLjpVYUQQotEMZd9d6oL5/Iq/bD7Z8i
-Z+bzOWymzaaThqarc11UL9ngJr6JsDNXgdDrLgLbkSE1r6Knq66qzOmzZL7qeUDI
-1JeCNkmztn82VLovRogQTY8p8Ye7gXwVUPNDocCoeBKgRA6u2VGs+zJljCDOiyT9
-cCA+QGMpRMz+KLt82Bt5/vE6TzngUEOZli34wNhf6DaHYo+0j4TpiCZT3roIVlp+
-C+tPvDsbt9SfVLKvmoDCKAS8o5wp7+jESAsTEMzssBeN6LYKTWeAJeZHymf17ckb
-Y3oub8Wk5bEvZh0AO5q7wqdWMLuTc9BSmJ8eJA0jNV+m9sGKxaTB/qFMfNoJjfFD
-yvBBeYvic0btTtOiQAPEia1igNR9vt1hpj5wCI6xNQwSekM1bOQ=
-=/6Dp
------END PGP SIGNATURE-----
+diff --git a/sound/pci/oxygen/oxygen.c b/sound/pci/oxygen/oxygen.c
+index 74afb6b75976..7ba1099fefb1 100644
+--- a/sound/pci/oxygen/oxygen.c
++++ b/sound/pci/oxygen/oxygen.c
+@@ -94,6 +94,7 @@ enum {
+ 	MODEL_2CH_OUTPUT,
+ 	MODEL_HG2PCI,
+ 	MODEL_XONAR_DG,
++	MODEL_XONAR_DG_SI,
+ 	MODEL_XONAR_DGX,
+ };
+ 
+@@ -110,6 +111,8 @@ static const struct pci_device_id oxygen_ids[] = {
+ 	{ OXYGEN_PCI_SUBID(0x1a58, 0x0910), .driver_data = MODEL_CMEDIA_REF },
+ 	/* Asus Xonar DG */
+ 	{ OXYGEN_PCI_SUBID(0x1043, 0x8467), .driver_data = MODEL_XONAR_DG },
++	/* Asus Xonar DG SI */
++	{ OXYGEN_PCI_SUBID(0x1043, 0x855e), .driver_data = MODEL_XONAR_DG_SI },
+ 	/* Asus Xonar DGX */
+ 	{ OXYGEN_PCI_SUBID(0x1043, 0x8521), .driver_data = MODEL_XONAR_DGX },
+ 	/* PCI 2.0 HD Audio */
+@@ -767,6 +770,7 @@ static int get_oxygen_model(struct oxygen *chip,
+ 		[MODEL_FANTASIA]	= "TempoTec HiFier Fantasia",
+ 		[MODEL_SERENADE]	= "TempoTec HiFier Serenade",
+ 		[MODEL_HG2PCI]		= "CMI8787-HG2PCI",
++		[MODEL_XONAR_DG_SI]	= "Asus Xonar DG SI",
+ 	};
+ 
+ 	chip->model = model_generic;
+@@ -832,6 +836,9 @@ static int get_oxygen_model(struct oxygen *chip,
+ 		chip->model = model_xonar_dg;
+ 		chip->model.shortname = "Xonar DG";
+ 		break;
++	case MODEL_XONAR_DG_SI:
++		chip->model = model_xonar_dg;
++		break;
+ 	case MODEL_XONAR_DGX:
+ 		chip->model = model_xonar_dg;
+ 		chip->model.shortname = "Xonar DGX";
