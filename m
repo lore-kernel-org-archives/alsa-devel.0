@@ -1,123 +1,39 @@
-From: Tanu Kaskinen <tanuk@iki.fi>
-Subject: Re: [alsa-devel] pulseaudio fails to start
- with kernel 4.11, caused by new snd_hdmi_lpe_audio module)
-Date: Thu, 30 Mar 2017 19:06:47 +0300
-Message-ID: <1490890007.4549.1.camel@iki.fi>
-References: <2549c113-f06b-f22e-d36e-f59fc2969bcb@redhat.com>
- <s5h8to0w4fs.wl-tiwai@suse.de>
- <6754b5cd-f6d0-e2e3-0f01-992946ec1b92@linux.intel.com>
- <s5hk27jjigd.wl-tiwai@suse.de>
- <1490082870.1321124.918129488.4F3143F8@webmail.messagingengine.com>
- <bba100b1-5e74-093a-7625-a7feaba1a065@redhat.com>
- <b693d927-229e-e00a-ada5-29d12154547b@linux.intel.com>
- <s5hvar0fjzf.wl-tiwai@suse.de> <1490379539.24554.2.camel@iki.fi>
- <30b18b96-eaa4-70e0-522d-dc8237d25642@redhat.com>
- <1490731828.2698.4.camel@iki.fi> <s5hy3vok68j.wl-tiwai@suse.de>
- <1490792385.2239.3.camel@iki.fi> <s5ho9wkjkqm.wl-tiwai@suse.de>
- <1490793259.2239.5.camel@iki.fi> <s5hh92cjjsl.wl-tiwai@suse.de>
- <1490798428.2239.9.camel@iki.fi> <s5hzig4i1an.wl-tiwai@suse.de>
-Reply-To: General PulseAudio Discussion
- <pulseaudio-discuss@lists.freedesktop.org>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: bxtn: fix spelling mistake:
+ "Timout" -> "Timeout"
+Date: Thu, 30 Mar 2017 21:46:24 +0530
+Message-ID: <20170330161624.GX9308@localhost>
+References: <20170330100934.19887-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
-In-Reply-To: <s5hzig4i1an.wl-tiwai@suse.de>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
-List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
-List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
- <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
-Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, pulseaudio-discuss@lists.freedesktop.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B188266829
+ for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2017 18:15:06 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20170330100934.19887-1-colin.king@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Colin King <colin.king@canonical.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jayachandran B <jayachandran.b@intel.com>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Ramesh Babu <ramesh.babu@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAyMDE3LTAzLTI5IGF0IDE2OjUxICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
-T24gV2VkLCAyOSBNYXIgMjAxNyAxNjo0MDoyOCArMDIwMCwKPiBUYW51IEthc2tpbmVuIHdyb3Rl
-Ogo+ID4gCj4gPiBPbiBXZWQsIDIwMTctMDMtMjkgYXQgMTU6MjYgKzAyMDAsIFRha2FzaGkgSXdh
-aSB3cm90ZToKPiA+ID4gT24gV2VkLCAyOSBNYXIgMjAxNyAxNToxNDoxOSArMDIwMCwKPiA+ID4g
-VGFudSBLYXNraW5lbiB3cm90ZToKPiA+ID4gPiAKPiA+ID4gPiBPbiBXZWQsIDIwMTctMDMtMjkg
-YXQgMTU6MDYgKzAyMDAsIFRha2FzaGkgSXdhaSB3cm90ZToKPiA+ID4gPiA+IE9uIFdlZCwgMjkg
-TWFyIDIwMTcgMTQ6NTk6NDUgKzAyMDAsCj4gPiA+ID4gPiBUYW51IEthc2tpbmVuIHdyb3RlOgo+
-ID4gPiA+ID4gPiAKPiA+ID4gPiA+ID4gT24gV2VkLCAyMDE3LTAzLTI5IGF0IDA3OjIxICswMjAw
-LCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gPiA+ID4gPiA+ID4gRG9lcyBQQSByZWFsbHkgbmVlZCB0
-byBzdGFydCBzdHJlYW1pbmcgYXQgaXRzIGludm9jYXRpb24gdGltZT8KPiA+ID4gPiA+ID4gPiBU
-aGUgY3Jhc2ggaGFwcGVucyB3aGVuIFBBIGdldHMgc3RhcnRlZCB2aWEgZGVza3RvcCBhdXRvc3Rh
-cnQsIGFuZCBhdAo+ID4gPiA+ID4gPiA+IHRoaXMgbW9tZW50LCB0aGUgSERNSSBncmFwaGljcyBz
-dGF0ZSBpcyBwb3NzaWJsZSBkaXNjb25uZWN0ZWQgYmVmb3JlCj4gPiA+ID4gPiA+ID4geHJhbmRy
-IHNldHVwLiAgVGhlIEhETUkgY29ubmVjdGlvbiBzdGF0ZSBzaG91bGQgaGF2ZSBiZWVuIGluZm9y
-bWVkIC8KPiA+ID4gPiA+ID4gPiBub3RpZmllZCB0byBQQSB2aWEgdGhlIGphY2sgaW50ZXJmYWNl
-LCBzbyBpdCBzaG91bGQgYmUgcG9zc2libGUgdG8KPiA+ID4gPiA+ID4gPiBqdWRnZSBiZWZvcmVo
-YW5kLgo+ID4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiA+IE9yIGl0IG1pZ2h0IGJlIHNvbWV0aGlu
-ZyB3cm9uZyBpbiB0aGUgZHJpdmVyIHNpZGUgcmVnYXJkaW5nIHRoZSBqYWNrCj4gPiA+ID4gPiA+
-ID4gc3RhdGUgcHJvY2Vzc2luZz8KPiA+ID4gPiA+ID4gCj4gPiA+ID4gPiA+IEkgaGFkIGEgY2xv
-c2VyIGxvb2sgYXQgdGhlIFBBIGxvZyB0aGF0IHdhcyBwb3N0ZWQgZWFybGllci4gSXQgbG9va3MK
-PiA+ID4gPiA+ID4gbGlrZSB0aGUgZGV2aWNlIG51bWJlcmluZyBpcyBub24tc3RhbmRhcmQuIFRy
-eWluZyB0byBvcGVuIGFueSBvZiB0aGUKPiA+ID4gPiA+ID4gaGRtaToxLHggZGV2aWNlcyBmYWls
-cy4gaHc6MSBjYW4gYmUgb3BlbmVkLCBhbmQgcHVsc2VhdWRpbyBhc3N1bWVzIHRoYXQKPiA+ID4g
-PiA+ID4gaXQncyBhbiBhbmFsb2cgc3RlcmVvIGRldmljZS4gSmFjayBkZXRlY3Rpb24gaXNuJ3Qg
-Z29pbmcgdG8gd29yayBpbgo+ID4gPiA+ID4gPiB0aGlzIHNpdHVhdGlvbiwgYmVjYXVzZSBwdWxz
-ZWF1ZGlvIGRvZXNuJ3Qga25vdyB0aGF0IGl0IHNob3VsZCBiZQo+ID4gPiA+ID4gPiBsb29raW5n
-IGF0IHRoZSBoZG1pIGphY2tzLgo+ID4gPiA+ID4gPiAKPiA+ID4gPiA+ID4gQ2FuIHRoZSBkcml2
-ZXIgYmUgZml4ZWQgdG8gdXNlIHRoZSBzdGFuZGFyZCBIRE1JIGRldmljZSBudW1iZXJzPwo+ID4g
-PiA+ID4gCj4gPiA+ID4gPiBIbW0sIGl0IG1pZ2h0IGJlIHRoZSBtaXNzaW5nIGhkbWkgUENNIGRl
-ZmluaXRpb24/Cj4gPiA+ID4gPiAKPiA+ID4gPiA+IFRoZSBsYXRlc3QgYWxzYS1saWIgZ2l0IGFs
-cmVhZHkgY29udGFpbnMgdGhlIGNhcmQgY29uZmlnIGZvciBIRE1JIExQRQo+ID4gPiA+ID4gYXVk
-aW8sIGFuZCB0aGlzIG1pZ2h0IGhlbHAuICAoVGhvdWdoLCBJIHRob3VnaHQgSSBzdGlsbCBzYXcg
-dGhlIHNhbWUKPiA+ID4gPiA+IFBBIHByb2JsZW0gZXZlbiB3aXRoIHRoZSBjYXJkIGNvbmZpZy4g
-IFVuZm9ydHVuYXRlbHkgSSBjYW4ndCBhY2Nlc3MKPiA+ID4gPiA+IHRoZSBib3ggd2l0aCB0aGUg
-RFAgYXVkaW8gcmlnaHQgbm93LCBzbyBvdGhlcnMgbWF5IGhlbHAgbW9yZSBxdWlja2x5Cj4gPiA+
-ID4gPiB0aGFuIG1lLi4uKQo+ID4gPiA+ID4gCj4gPiA+ID4gPiBDYW4gYW55b25lIGNvbmZpcm0g
-dGhhdCB5b3UgaGF2ZSB0aGUgbGF0ZXN0IGFsc2EtbGliIGdpdCBpbnN0YWxsZWQgYW5kCj4gPiA+
-ID4gPiB3aGV0aGVyIHRoZSBQQSBpc3N1ZSBpcyBmaXhlZCBvciBub3Q/Cj4gPiA+ID4gCj4gPiA+
-ID4gSWYgdGhlIGFsc2EtbGliIGNvbmZpZ3VyYXRpb24ganVzdCBtYXBzIGhkbWk6MSwwIHRvIGh3
-OjEsMCwgdGhlbiBJCj4gPiA+ID4gd291bGQgZXhwZWN0IHRoaXMgcHJvYmxlbSB0byBwZXJzaXN0
-LiBJZiBodzoxLDAgY2FuIGJlIG9wZW5lZCwKPiA+ID4gPiBwdWxzZWF1ZGlvIHdpbGwgdGhpbmsg
-dGhhdCB0aGVyZSdzIGFuIGFuYWxvZyBzdGVyZW8gb3V0cHV0LiBJZiBoZG1pOjEsMAo+ID4gPiA+
-IHdvcmtzIHRvbywgdGhlbiBwdWxzZWF1ZGlvIHdpbGwgdGhpbmsgdGhhdCB0aGVyZSBhcmUgdHdv
-IHNlcGFyYXRlCj4gPiA+ID4gb3V0cHV0cywgYW5kIGlmIHRoZSBoZG1pIGphY2sgc3RhdGUgc2F5
-cyB0aGF0IGhkbWkgaXMgbm90IGF2YWlsYWJsZSwKPiA+ID4gPiBwdWxzZWF1ZGlvIHdpbGwgdXNl
-IHdoYXQgaXQgdGhpbmtzIGlzIGFuIGFuYWxvZyBvdXRwdXQuCj4gPiA+IAo+ID4gPiBBaGEsIHRo
-YXQgZXhwbGFpbnMuCj4gPiA+IAo+ID4gPiA+IElmIGl0J3Mgbm90IHBvc3NpYmxlIHRvIGNoYW5n
-ZSB0aGUgZGV2aWNlIG51bWJlcmluZyBpbiB0aGUgZHJpdmVyLCB0aGlzCj4gPiA+ID4gd2lsbCBo
-YXZlIHRvIGJlIHdvcmtlZCBhcm91bmQgaW4gcHVsc2VhdWRpbyBzb21laG93IChwdWxzZWF1ZGlv
-Cj4gPiA+ID4gc2hvdWxkbid0IHRyeSB0byB1c2UgaHc6MSwwIG9uIHRoaXMgaGFyZHdhcmUpLgo+
-ID4gPiAKPiA+ID4gV2VsbCwgaXQncyBub3QgaW1wb3NzaWJsZSB0byBjaGFuZ2UgaW4gdGhlIGRy
-aXZlciBzaWRlLCBidXQgSSBoZXNpdGF0ZQo+ID4gPiB0byBkbyBzbywgc2luY2UgaXQncyBub3Qg
-cmlnaHQsIElNTy4KPiA+ID4gCj4gPiA+IEluIGdlbmVyYWwsIHRoZSBQQ00gZGV2aWNlIzAgaXNu
-J3QgYWx3YXlzIGZvciBhbiBhbmFsb2cgb3V0cHV0LAo+ID4gPiBhbHRob3VnaCBpdCdzIGRlIGZh
-Y3RvIHN0YW5kYXJkLCBhcyBtb3N0IGJvYXJkcyBoYXZlIGJvdGggYW5hbG9nIGFuZAo+ID4gPiBI
-RE1JL0RQLiAgRm9yIEhELWF1ZGlvLCB3ZSBldmVuIGtlcHQgdGhlIGNvbnN0YW50IFBDTSBkZXYj
-IGV2ZW4gaWYgbm8KPiA+ID4gYW5hbG9nIG91dHB1dCBpcyBwcmVzZW50OyBidXQgaXQncyBqdXN0
-IHRvIG1ha2UgdGhlIGNvbmZpZ3VyYXRpb24KPiA+ID4gZWFzaWVyLCBhbmQgaXQgZG9lc24ndCBt
-ZWFuIHRoYXQgUENNIGRldiMwIGlzIGZvciB0aGUgYW5hbG9nIEkvTy4KPiA+IAo+ID4gSSBhZ3Jl
-ZSwgaXQncyBub3QgZ29vZCB0byBhc3N1bWUgdGhhdCBodzp4LDAgaXMgYWx3YXlzIGFuYWxvZyBz
-dGVyZW8KPiA+IG91dHB1dC4gUHVsc2VhdWRpbyBzaG91bGQgZmFsbCBiYWNrIHRvIGh3OiBvbmx5
-IGlmIG5vdGhpbmcgZWxzZSB3b3Jrcy4KPiA+IAo+ID4gVGhlIGphY2sgbmFtZSBwcm9ibGVtIGlz
-IGVhc2lseSBzb2x2ZWQgaW4gcHVsc2VhdWRpbywgYnV0IHRoZXJlJ3Mgb25lCj4gPiBtb3JlIHBy
-b2JsZW0gcmVsYXRlZCB0byB0aGUgZGV2aWNlIG51bWJlcnM6IHB1bHNlYXVkaW8gbmVlZHMgdG8g
-a25vdwo+ID4gd2hpY2ggRUxEIGVsZW1lbnQgY29ycmVzcG9uZHMgdG8gd2hpY2ggUENNIGRldmlj
-ZS4gQ3VycmVudGx5IHRoZQo+ID4gbWFwcGluZyBpcyBoYXJkY29kZWQ6IGhkbWk6eCwwIGlzIGV4
-cGVjdGVkIHRvIGFsd2F5cyBjb3JyZXNwb25kIHRvIHRoZQo+ID4gRUxEIGVsZW1lbnQgb2YgZGV2
-aWNlIDMuIElzIHRoZXJlIGFueSB3YXkgcHVsc2VhdWRpbyBjb3VsZCBxdWVyeSB0aGUKPiA+IG1h
-cHBpbmcgaW5zdGVhZCBvZiBoYXJkY29kaW5nIGl0Pwo+IAo+IE9oIHRoYXQncyB1Z2x5LiAgVGhp
-cyBtZXNzIGNvbWVzIGZyb20gdGhlIEhELWF1ZGlvIGNvbmZpZ3VyYXRpb24sIG15Cj4gYmFkLgo+
-IAo+IFRoZSBFTEQgaW5kZXggbnVtYmVyIGlzIGFsaWduZWQgd2l0aCB0aGUgUENNIGRldmljZSBu
-dW1iZXIgKGluIGEgd2F5Cj4gb2YgaHc6eCx5KSwgdGh1cyBpdCdzIDMgZm9yIEhELWF1ZGlvLiAg
-SXQncyB1c2VkIGZvciBIRE1JL0RQIGphY2ssCj4gdG9vLgo+IAo+IEkgZ3Vlc3MgeW91IGNhbiBn
-ZXQgdGhpcyBmcm9tIHNuZF9wY21faW5mbygpID0+Cj4gc25kX3BjbV9pbmZvX2dldF9kZXZpY2Uo
-KSBjYWxsIGZvciB0aGUgb3BlbmVkIHN0cmVhbT8KPiBUaGUgdXN1YWwgcGx1Z2lucyBzaG91bGQg
-cmV0dXJuIHRoZSBzbHNhdmUgcGNtIGluZm8sIHNvIGV2ZW4gZm9yCj4gaGRtaTp4LHksIGl0IHNo
-b3VsZCByZWFjaCB0byB0aGUgdW5kZXJseWluZyBoYXJkd2FyZSBQQ00uCgpUaGF0IHNvdW5kcyB3
-b3JrYWJsZS4gVW5sZXNzIHNvbWVvbmUgZWxzZSB3YW50cyB0byBoZWxwIHdpdGggdGhpcywgSSds
-bAp3b3JrIG9uIHRoZSBQdWxzZUF1ZGlvIGNoYW5nZXMuCgpJIGNyZWF0ZWQgYSBidWcgcmVwb3J0
-IGhlcmU6Cmh0dHBzOi8vYnVncy5mcmVlZGVza3RvcC5vcmcvc2hvd19idWcuY2dpP2lkPTEwMDQ4
-OAoKLS0gClRhbnUKCmh0dHBzOi8vd3d3LnBhdHJlb24uY29tL3RhbnVrCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCnB1bHNlYXVkaW8tZGlzY3VzcyBtYWls
-aW5nIGxpc3QKcHVsc2VhdWRpby1kaXNjdXNzQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczov
-L2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL3B1bHNlYXVkaW8tZGlzY3Vz
-cwo=
+On Thu, Mar 30, 2017 at 11:09:34AM +0100, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> trivial fix to spelling mistake in dev_err error message
+
+Nice catch Colin
+
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+
+-- 
+~Vinod
