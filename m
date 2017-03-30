@@ -1,18 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: bxtn: fix spelling mistake:
- "Timout" -> "Timeout"
-Date: Thu, 30 Mar 2017 21:46:24 +0530
-Message-ID: <20170330161624.GX9308@localhost>
-References: <20170330100934.19887-1-colin.king@canonical.com>
+From: Pascal Wichmann <pascal.wichmann@pa-w.de>
+Subject: Re: Problems with the DP MST audio support patchset
+Date: Thu, 30 Mar 2017 18:35:41 +0200
+Message-ID: <63a71394-1cd4-e3e3-7364-37c2da90c791@pa-w.de>
+References: <6800ee6e-31c2-b5eb-fbb2-6826d8c66dc9@pa-w.de>
+ <bceb4859-6dc9-b7a8-4d3a-81ac2a1fa907@pa-w.de>
+ <96A12704CE18D347B625EE2D4A099D19524850F3@SHSMSX103.ccr.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B188266829
- for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2017 18:15:06 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20170330100934.19887-1-colin.king@canonical.com>
+Received: from web02.pwsrv.de (web02.pwsrv.de [188.68.38.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F0B4266829
+ for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2017 18:35:43 +0200 (CEST)
+In-Reply-To: <96A12704CE18D347B625EE2D4A099D19524850F3@SHSMSX103.ccr.corp.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,18 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Colin King <colin.king@canonical.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jayachandran B <jayachandran.b@intel.com>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Ramesh Babu <ramesh.babu@intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>, Jeeja KP <jeeja.kp@intel.com>
+To: "Yang, Libin" <libin.yang@intel.com>, Libin Yang <libin.yang@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 30, 2017 at 11:09:34AM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> trivial fix to spelling mistake in dev_err error message
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-Nice catch Colin
+Hi,
 
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+> Do you mean the issue is caused by the patches 
+> 1480992519-108079-1-git-send-email-libin.yang@intel.com?
+I don't know whether the issues are caused directly by the
+specific patches; without them, digital audio does not work at
+all in my setup. Using analog audio however does not have the problems
+mentioned in my first email.
 
--- 
-~Vinod
+> I can't see which patches are included you mentioned in the link.
+I am building my kernel from drm-tip. The relevant patches enabling DP M
+ST
+audio seem to be "ALSA: hda - add DP mst verb support" [0] as well as
+"ALSA: hda - add DP MST audio support" [1].
+
+> Do you know if the DP MST audio mode is used in your case?
+I think it is used; at least dp/hdmi audio does not work at all without
+building against drm-tip. (the outputs are all stated as unplugged
+and unavailable in pavucontrol for example)
+Is there any way to know for sure?
+
+Regards,
+Pascal
+
+[0]
+https://cgit.freedesktop.org/drm-tip/commit/?id=13800f397ee3b4996f316b9c
+aa8482cb90edef0d
+[1]
+https://cgit.freedesktop.org/drm-tip/commit/?id=9152085defb6426ce8f9989c
+a27e4450daefbd89
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE/gJ8Tpn0OtJz8hxD6+YIa34W/zYFAljdM90ACgkQ6+YIa34W
+/zZk8A//YmadcSwYQTJIJKHJREjGSITGPx6wQYA8dix2EvP0frhnL5LEAfzCUD0b
+05H9cc+kBG3z6dIs6yytX6TFtKlqnE/ka1D80+ZYiMf/RTYpowJWXogoPF8iVW68
+MTaUtM5/CGhFF/e1V7AKDX36r5eVKYwKNUIb1vXE+nU6WbuzNrQn/vgwtIboCXsj
+AQVC9RT7sRHnNVNq+WD4NYNSKfTJasnhbGo1+X3eTjY5vcWb/5H3ysaayW9WqnkI
+W3jYdoQmWCDZC14dKGnNZJ5J1WlF03qh95bQTJB7CDl66Nqqck621MbSzLp3+2xv
+0eliZLcdumLhzu6wjTKcqXsyhejhRYYR25AfKGvB8zbujKnHZOSWO1T5QgJKOVHY
+oAQAgivpmNppGuNBmFKOWDnB5pec+kx3YDo9TnTUhPfXs04vGV0nnzugt9iu9STq
+kzhu5fTmRfNK6uImcL4lo8JKmFu8Ws60kO0OcuUh8xd0dFy1vNF4qA0cZZywBGp+
+YSsTzKhljHiq2aV1CpG2xMIom1YR38agTVWbL1aeGZf3FZUhD1+G9aLB1Lz6dmfg
+lLlne94HGnvgGoJkTx7BR6MRmUDDb4E8sdnx/yGtJ8ILKImAMJBURHfdcv3wp+GC
+oihf+BjIdV7BSDFMBxW/UeEM616rmNOGbG7zWxXoH6ZTWB50CwA=
+=8Sl2
+-----END PGP SIGNATURE-----
