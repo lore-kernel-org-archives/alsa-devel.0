@@ -1,22 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bxtn: fix spelling mistake: "Timout" -> "Timeout"" to the asoc tree
-Date: Thu, 30 Mar 2017 22:23:06 +0100
-Message-ID: <E1cthX8-0008Bl-JD@debutante>
-References: <20170330100934.19887-1-colin.king@canonical.com>
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <20170330100934.19887-1-colin.king@canonical.com>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Jayachandran B <jayachandran.b@intel.com>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>, Ramesh Babu <ramesh.babu@intel.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "regulator: arizona-ldo1: Avoid potential memory leak reading init_data" to the regulator tree
+Date: Thu, 30 Mar 2017 22:23:17 +0100
+Message-ID: <E1cthXJ-0008Fy-NA@debutante>
+References: <1490710484-25277-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1490710484-25277-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, lgirdwood@gmail.com, lee.jones@linaro.org, robh+dt@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.comlinux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bxtn: fix spelling mistake: "Timout" -> "Timeout"
+   regulator: arizona-ldo1: Avoid potential memory leak reading init_data
 
-has been applied to the asoc tree at
+has been applied to the regulator tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git 
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,33 +37,58 @@ to this mail.
 Thanks,
 Mark
 
->From 5f75b19ef99054736aa80b70dbdf2f7a86a22007 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Thu, 30 Mar 2017 11:09:34 +0100
-Subject: [PATCH] ASoC: Intel: bxtn: fix spelling mistake: "Timout" ->
- "Timeout"
+>From 0feb837a42c95fee901e03f76a1266db85ceb6ec Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Tue, 28 Mar 2017 15:14:38 +0100
+Subject: [PATCH] regulator: arizona-ldo1: Avoid potential memory leak reading
+ init_data
 
-trivial fix to spelling mistake in dev_err error message
+The device argument passed to of_get_regulator_init_data is used to
+do some devres memory allocation. Currently the driver passes the MFD
+device pointer to this function, this could result in the init_data
+allocation being leaked if the regulator is unbound but the MFD isn't.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Correct this issue by correctly passing the local platform device.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/bxt-sst.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/regulator/arizona-ldo1.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-index 600d95891996..268bdaec8042 100644
---- a/sound/soc/intel/skylake/bxt-sst.c
-+++ b/sound/soc/intel/skylake/bxt-sst.c
-@@ -171,7 +171,7 @@ static int sst_bxt_prepare_fw(struct sst_dsp *ctx,
- 					SKL_ADSP_REG_HIPCIE_DONE,
- 					BXT_INIT_TIMEOUT, "HIPCIE Done");
- 	if (ret < 0) {
--		dev_err(ctx->dev, "Timout for Purge Request%d\n", ret);
-+		dev_err(ctx->dev, "Timeout for Purge Request%d\n", ret);
- 		goto base_fw_load_failed;
- 	}
+diff --git a/drivers/regulator/arizona-ldo1.c b/drivers/regulator/arizona-ldo1.c
+index 302b57cb89c6..cf558168664d 100644
+--- a/drivers/regulator/arizona-ldo1.c
++++ b/drivers/regulator/arizona-ldo1.c
+@@ -186,7 +186,8 @@ static const struct regulator_init_data arizona_ldo1_wm5110 = {
+ 	.num_consumer_supplies = 1,
+ };
  
+-static int arizona_ldo1_of_get_pdata(struct arizona *arizona,
++static int arizona_ldo1_of_get_pdata(struct device *dev,
++				     struct arizona *arizona,
+ 				     struct regulator_config *config,
+ 				     const struct regulator_desc *desc)
+ {
+@@ -212,8 +213,7 @@ static int arizona_ldo1_of_get_pdata(struct arizona *arizona,
+ 	if (init_node) {
+ 		config->of_node = init_node;
+ 
+-		init_data = of_get_regulator_init_data(arizona->dev, init_node,
+-						       desc);
++		init_data = of_get_regulator_init_data(dev, init_node, desc);
+ 
+ 		if (init_data) {
+ 			init_data->consumer_supplies = &ldo1->supply;
+@@ -283,7 +283,8 @@ static int arizona_ldo1_probe(struct platform_device *pdev)
+ 
+ 	if (IS_ENABLED(CONFIG_OF)) {
+ 		if (!dev_get_platdata(arizona->dev)) {
+-			ret = arizona_ldo1_of_get_pdata(arizona, &config, desc);
++			ret = arizona_ldo1_of_get_pdata(&pdev->dev, arizona,
++							&config, desc);
+ 			if (ret < 0)
+ 				return ret;
+ 		}
 -- 
 2.11.0
-
