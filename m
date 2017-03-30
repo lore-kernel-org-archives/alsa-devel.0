@@ -1,20 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] ALSA: oxygen - Fix snd_oxygen module not
- loading for some (new?) Xonar DG SI cards.
-Date: Thu, 30 Mar 2017 09:20:58 +0200
-Message-ID: <6bb14a89-1879-9fca-db19-acb21dac4bb6@ladisch.de>
-References: <20170329211311.GA4751@unit02.localdomain>
- <51152705-a2af-f1d9-b51a-019237e9d334@ladisch.de>
- <20170330025507.GA961@unit02.localdomain>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: [PATCH] ALSA: hda - set intel audio clock to
+	a	properly value
+Date: Thu, 30 Mar 2017 07:58:12 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D1952484D93@SHSMSX103.ccr.corp.intel.com>
+References: <1488867622-21765-1-git-send-email-libin.yang@intel.com>
+ <FE1218A4CE6FF04999892577E0FB3E8361EEB7F0@BGSMSX102.gar.corp.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id A5815266BA4
- for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2017 09:20:59 +0200 (CEST)
-In-Reply-To: <20170330025507.GA961@unit02.localdomain>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 416B1266BA4
+ for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2017 09:58:16 +0200 (CEST)
+In-Reply-To: <FE1218A4CE6FF04999892577E0FB3E8361EEB7F0@BGSMSX102.gar.corp.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,91 +23,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Eugene Ganeev <easymodofrf@gmail.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+To: "Kp, Jeeja" <jeeja.kp@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "tiwai@suse.de" <tiwai@suse.de>
+Cc: "Lin, Mengdong" <mengdong.lin@intel.com>, "infernix@infernix.net" <infernix@infernix.net>
 List-Id: alsa-devel@alsa-project.org
 
-Eugene Ganeev wrote:
-> On Wed, Mar 29, 2017 at 08:56:16PM +0200, Clemens Ladisch wrote:
->> Eugene Ganeev wrote:
->>> My Xonar DG SI card is showing up in lspci but no module is loaded for
->>> it.
->>>
->>> The patch just adds a new value with card's PCI ID to oxygen_ids array.
+Hi Jeeja,
+
+>-----Original Message-----
+>From: Kp, Jeeja
+>Sent: Thursday, March 23, 2017 9:11 PM
+>To: Yang, Libin <libin.yang@intel.com>; alsa-devel@alsa-project.org;
+>tiwai@suse.de
+>Cc: Lin, Mengdong <mengdong.lin@intel.com>; infernix@infernix.net
+>Subject: RE: [alsa-devel] [PATCH] ALSA: hda - set intel audio clock to a properly
+>value
+>
+>> -----Original Message-----
+>> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-
+>> bounces@alsa-project.org] On Behalf Of Yang, Libin
+>> Sent: Tuesday, March 7, 2017 11:50 AM
+>> To: alsa-devel@alsa-project.org; tiwai@suse.de
+>> Cc: Yang, Libin <libin.yang@intel.com>; Lin, Mengdong
+>> <mengdong.lin@intel.com>; infernix@infernix.net
+>> Subject: [alsa-devel] [PATCH] ALSA: hda - set intel audio clock to a
+>> properly value
 >>
->> Is the hardware identical?  Do all the inputs and outputs work?
+>> From: Libin Yang <libin.yang@intel.com>
+>>
+>> On some Intel platforms, the audio clock may not be set correctly with
+>> initial setting. This will cause the audio playback/capture rates wrong.
+>>
+>> This patch checks the audio clock setting and will set it to a
+>> properly value if it is not set correct.
+>>
+>> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=188411
+>>
+>> Signed-off-by: Libin Yang <libin.yang@intel.com>
+>> ---
+>>  include/sound/hda_register.h        | 12 +++--
+>>  sound/hda/ext/hdac_ext_controller.c |  6 +--
+>>  sound/pci/hda/hda_intel.c           | 91
+>> +++++++++++++++++++++++++++++++++++++
+>>  3 files changed, 103 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/include/sound/hda_register.h
+>> b/include/sound/hda_register.h index 0013063..7ea16cb 100644
+>> --- a/include/sound/hda_register.h
+>> +++ b/include/sound/hda_register.h
+>> @@ -227,6 +227,8 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2,
+>> SDO3 };
+>>  #define AZX_REG_PPLCLLPU		0xC
+>>
+>>  /* registers for Multiple Links Capability Structure */
+>> +/* Multiple Links Capability */
+>> +#define AZX_REG_ML_CAP_BASE		0xc00
+>Base is already available as part of bus, use bus->mlcap
 >
-> According to asus website they both use C-MEDIA CMI8786. The difference is that DG SI is 7.1 surround compared to 5.1 in DG.
-> I've tested the patch, all ports seem to work except rear out. So basically the card is usable unless you use 7.1 setup.
+>
+>> +#define AZX_REG_ML_LCAPx(x)	(AZX_REG_ML_CAP_BASE + (0x40 +
+>> 0x40 * x))
+>> +#define AZX_REG_ML_LCTLx(x)	(AZX_REG_ML_CAP_BASE + (0x44 +
+>> 0x40 * x))
+>This is specific to the had legacy driver as only link0 is used, I think this can be
+>moved to driver  As define. If it required to use all the link, then need to use
+>ext functions to initialize the address per link.
 
-Strange.  This would imply that the CS4245 is used for both headphones
-output and back surround output.
+I'm not very sure what's your meaning. Do you mean using
++#define AZX_REG_ML_LCAP0	(AZX_REG_ML_CAP_BASE + 0x40)
 
-And of course this should be supported.  Are you willing to experiment?
-(In theory, it should suffice to adjust model.dac_channels_pcm and
-model.adjust_dac_routing.)
+>
+>> +#define ML_LCTL_SCF_MASK			0xF
+>> +#define AZX_MLCTL_SPA				(0x1 << 16)
+>> +#define AZX_MLCTL_CPA				(0x1 << 23)
+>> +#define AZX_MLCTL_SPA_SHIFT			16
+>> +#define AZX_MLCTL_CPA_SHIFT			23
+>>
+>> +
+>>  static void hda_intel_init_chip(struct azx *chip, bool full_reset)  {
+>>  	struct hdac_bus *bus = azx_bus(chip); @@ -564,6 +652,9 @@ static
+>> void hda_intel_init_chip(struct azx *chip, bool
+>> full_reset)
+>> +
+>> +	if (IS_SKL_PLUS(pci))
+>> +		intel_init_lctl(chip);
+>Use bus->mlcap to check for multilink capability  is present.
 
->> Please add the correct name to the names[] array.
->
-> [PATCH v2] sound: oxygen: add Xonar DG SI support
->
-> Add PCI ID for the Asus Xonar DG SI card.
->
-> Signed-off-by: Eugene Ganeev <easymodofrf@gmail.com>
->
-> ---
->
-> v2:
-> 	- Added model name to names[] array.
->
->  sound/pci/oxygen/oxygen.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/sound/pci/oxygen/oxygen.c b/sound/pci/oxygen/oxygen.c
-> index 74afb6b75976..7ba1099fefb1 100644
-> --- a/sound/pci/oxygen/oxygen.c
-> +++ b/sound/pci/oxygen/oxygen.c
-> @@ -94,6 +94,7 @@ enum {
->  	MODEL_2CH_OUTPUT,
->  	MODEL_HG2PCI,
->  	MODEL_XONAR_DG,
-> +	MODEL_XONAR_DG_SI,
->  	MODEL_XONAR_DGX,
->  };
->
-> @@ -110,6 +111,8 @@ static const struct pci_device_id oxygen_ids[] = {
->  	{ OXYGEN_PCI_SUBID(0x1a58, 0x0910), .driver_data = MODEL_CMEDIA_REF },
->  	/* Asus Xonar DG */
->  	{ OXYGEN_PCI_SUBID(0x1043, 0x8467), .driver_data = MODEL_XONAR_DG },
-> +	/* Asus Xonar DG SI */
-> +	{ OXYGEN_PCI_SUBID(0x1043, 0x855e), .driver_data = MODEL_XONAR_DG_SI },
->  	/* Asus Xonar DGX */
->  	{ OXYGEN_PCI_SUBID(0x1043, 0x8521), .driver_data = MODEL_XONAR_DGX },
->  	/* PCI 2.0 HD Audio */
-> @@ -767,6 +770,7 @@ static int get_oxygen_model(struct oxygen *chip,
->  		[MODEL_FANTASIA]	= "TempoTec HiFier Fantasia",
->  		[MODEL_SERENADE]	= "TempoTec HiFier Serenade",
->  		[MODEL_HG2PCI]		= "CMI8787-HG2PCI",
-> +		[MODEL_XONAR_DG_SI]	= "Asus Xonar DG SI",
->  	};
->
->  	chip->model = model_generic;
-> @@ -832,6 +836,9 @@ static int get_oxygen_model(struct oxygen *chip,
->  		chip->model = model_xonar_dg;
->  		chip->model.shortname = "Xonar DG";
->  		break;
-> +	case MODEL_XONAR_DG_SI:
-> +		chip->model = model_xonar_dg;
-> +		break;
->  	case MODEL_XONAR_DGX:
->  		chip->model = model_xonar_dg;
->  		chip->model.shortname = "Xonar DGX";
+Get it.
 
-This does no longer apply because of the other names[] patch.
-
-And I forgot to mention: please also update sound/pci/Kconfig and
-Documentation/sound/alsa-configuration.rst.
-
-
-Regards,
-Clemens
+Thanks,
+Libin
