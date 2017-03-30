@@ -1,64 +1,71 @@
-From: Paul Stone <metabagel@icloud.com>
-Subject: mono/stereo translation & number of frames per period
-Date: Thu, 30 Mar 2017 20:03:13 +0000 (GMT)
-Message-ID: <c803630b-965e-40fa-be7b-e16c8682431f@me.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from st11p00im-asmtp002.me.com (st11p00im-asmtp002.me.com
- [17.172.80.96]) by alsa0.perex.cz (Postfix) with ESMTP id 1682D267153
- for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2017 22:03:17 +0200 (CEST)
-Received: from process-dkim-sign-daemon.st11p00im-asmtp002.me.com by
- st11p00im-asmtp002.me.com
- (Oracle Communications Messaging Server 7.0.5.38.0 64bit (built Feb 26 2016))
- id <0ONN0030085DYJ00@st11p00im-asmtp002.me.com> for
- alsa-devel@alsa-project.org; Thu, 30 Mar 2017 20:03:16 +0000 (GMT)
-Received: from st13p13im-spool002.me.com ([17.164.57.97])
- by st11p00im-asmtp002.me.com
- (Oracle Communications Messaging Server 7.0.5.38.0 64bit (built Feb 26 2016))
- with ESMTP id <0ONN00BVS91EGH10@st11p00im-asmtp002.me.com> for
- alsa-devel@alsa-project.org; Thu, 30 Mar 2017 20:03:14 +0000 (GMT)
-Received: from localhost ([17.164.56.54]) by st13p13im-spool002.mac.com
- (Oracle Communications Messaging Server 7.0.5.38.0 64bit (built Feb 26 2016))
- with ESMTP id <0ONN009BD91EWB10@st13p13im-spool002.mac.com> for
- alsa-devel@alsa-project.org; Thu, 30 Mar 2017 20:03:14 +0000 (GMT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rcar: call missing of_clk_del_provider() when remove" to the asoc tree
+Date: Thu, 30 Mar 2017 22:22:48 +0100
+Message-ID: <E1cthWq-00089S-5w@debutante>
+References: <87mvc3edvh.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87mvc3edvh.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SSB0aG91Z2h0IHRoYXQgc2ltcGx5IGJ5IHJlcG9ydGluZyB0aGF0IG15IGRyaXZlciBvbmx5IHN1
-cHBvcnRzIHR3byBjaGFubmVscywgdGhhdCBJIGNvdWxkIHNpbXBseSB1dGlsaXplIGEgbWl4ZXIg
-b3IgdGhhdCBBTFNBIHdvdWxkIGF1dG9tYXRpY2FsbHkgc3VwcG9ydCBzZW5kaW5nIGFuZCByZWNl
-aXZpbmcgbW9uYXVyYWwgZGF0YSB0by9mcm9tIG15IHN0ZXJlby1vbmx5IGRyaXZlci4gVWx0aW1h
-dGVseSzCoEkgd2Fzbid0IGFibGUgdG8gbWFrZSBpdCB3b3JrLsKgSXMgdGhpcyBhIG1vZGUgb2Yg
-b3BlcmF0aW9uIHRoYXQgQUxTQSBzdXBwb3J0cywgb3IgZG9lcyBBTFNBIHJlcXVpcmUgdGhlIGRy
-aXZlciB0byBzdXBwb3J0IHNpbmdsZS1jaGFubmVsIG9wZXJhdGlvbiBpbiBvcmRlciB0byBzZW5k
-L3JlY2VpdmUgbW9uYXVyYWwgZGF0YT8KClNvLCBJIGRlY2lkZWQgdGhhdCBJIHNob3VsZCBzdXBw
-b3J0IGJvdGjCoG1vbm8gYW5kwqBzdGVyZW8gaW4gdGhlIGRyaXZlci4gSXTCoGFwcGVhcnMgdGhh
-dCBBTFNBIGxvb2tzIGF0IHRoZSBtaW5pbXVtIHBlcmlvZCBzaXplIGFuZCBkZWNpZGVzIHRvIHNl
-bmQgdGhhdCBtdWNoIGF1ZGlvIGRhdGEgZm9yIHBsYXliYWNrLiBUaGUgbWluaW11bSBwZXJpb2Qg
-c2l6ZSBpcyBpbiBieXRlcywgd2hpY2ggbWVhbnMgdGhhdCB0aGUgbnVtYmVyIG9mIG1vbm8gYW5k
-IHN0ZXJlbyBmcmFtZXMgcGVyIHBlcmlvZCB3aWxsIGRpZmZlci4gVGhpcyBpbnRyb2R1Y2VzIGEg
-Yml0IG9mIGFkZGl0aW9uYWwgdW53YW50ZWQgY29tcGxleGl0eS4gSSdtIHdvbmRlcmluZyBpZiB0
-aGVyZSBpcyBhIHdheSBmb3IgQUxTQSB0byBzdXBwb3J0IGEgZml4ZWQgbnVtYmVyIG9mIGZyYW1l
-cyBwZXIgcGVyaW9kLiBJIHNlZcKgdGhhdCB0aGVyZSBpcyBhIGJpdCBmaWVsZCBTTkRSVl9QQ01f
-SU5GT19GSUZPX0lOX0ZSQU1FUywgYW5kIGEgZmlmb19zaXplIGgvdyBwYXJhbWV0ZXIsIGJ1dCBJ
-J20gbm90IHN1cmUgaG93IHRoaXMgcmVsYXRlcyB0byB0aGUgcGVyaW9kIHNpemUuCgpJIGZlZWwg
-bGlrZSB0aGlzIGlzIGEgY29tbW9uIG1vZGUgb2Ygb3BlcmF0aW9uIChmaXhlZCBudW1iZXIgb2Yg
-ZnJhbWVzIHBlciBwZXJpb2QsIHJlZ2FyZGxlc3Mgb2YgdGhlIG51bWJlciBvZiBjaGFubmVscyks
-IGFuZCB0aGF0IGl0J3MgbGlrZWx5IHN1cHBvcnRlZCBieSBBTFNBLCBidXQgSSBkb24ndCBrbm93
-IGhvdyBpdCdzIHN1cHBvc2VkIHRvIHdvcmsuIFNob3VsZCBJIHNldCB1cCBhIHJ1bGUgdG8gYWx0
-ZXIgdGhlIG1pbmltdW0gcGVyaW9kIHNpemUsIGJhc2VkIG9uIHRoZSBudW1iZXIgb2YgY2hhbm5l
-bHM/CgpCZXN0IFJlZ2FyZHMsClBhdWwgU3RvbmUKX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+The patch
+
+   ASoC: rcar: call missing of_clk_del_provider() when remove
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From b5aac5a9adf667f907c34c520e023bc19f8c226c Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 30 Mar 2017 01:49:27 +0000
+Subject: [PATCH] ASoC: rcar: call missing of_clk_del_provider() when remove
+
+adg is calling of_clk_add_provider() when probe time,
+thus, remove should call of_clk_del_provider(), it doesn't now.
+This patch fix this issue.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/adg.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index 56107454bdb3..9665c1fa7216 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -587,5 +587,10 @@ int rsnd_adg_probe(struct rsnd_priv *priv)
+ 
+ void rsnd_adg_remove(struct rsnd_priv *priv)
+ {
++	struct device *dev = rsnd_priv_to_dev(priv);
++	struct device_node *np = dev->of_node;
++
++	of_clk_del_provider(np);
++
+ 	rsnd_adg_clk_disable(priv);
+ }
+-- 
+2.11.0
