@@ -1,22 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rcar: fixup of_clk_add_provider() usage for multi clkout" to the asoc tree
-Date: Thu, 30 Mar 2017 22:23:03 +0100
-Message-ID: <E1cthX5-0008Ae-Jb@debutante>
-References: <87o9wjedvz.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87o9wjedvz.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+Subject: Applied "regulator: arizona-micsupp: Avoid potential memory leak reading init_data" to the regulator tree
+Date: Thu, 30 Mar 2017 22:23:20 +0100
+Message-ID: <E1cthXM-0008HL-L7@debutante>
+References: <1490710484-25277-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1490710484-25277-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, lgirdwood@gmail.com, lee.jones@linaro.org, robh+dt@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.comlinux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rcar: fixup of_clk_add_provider() usage for multi clkout
+   regulator: arizona-micsupp: Avoid potential memory leak reading init_data
 
-has been applied to the asoc tree at
+has been applied to the regulator tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git 
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,48 +37,58 @@ to this mail.
 Thanks,
 Mark
 
->From d7f298197a22f11b38059f257842dac7c30a564c Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 30 Mar 2017 01:49:06 +0000
-Subject: [PATCH] ASoC: rcar: fixup of_clk_add_provider() usage for multi
- clkout
+>From 2543ef3173889373fc07df61520e1bb42a99c85e Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Tue, 28 Mar 2017 15:14:37 +0100
+Subject: [PATCH] regulator: arizona-micsupp: Avoid potential memory leak
+ reading init_data
 
-Current adg is calling of_clk_add_povider() multiple times,
-but it is not correct usage. This patch fixup its parameter
-and call it once.
+The device argument passed to of_get_regulator_init_data is used to
+do some devres memory allocation. Currently the driver passes the MFD
+device pointer to this function, this could result in the init_data
+allocation being leaked if the regulator is unbound but the MFD isn't.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Correct this issue by correctly passing the local platform device.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/adg.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ drivers/regulator/arizona-micsupp.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
-index 85a33ac0a5c4..56107454bdb3 100644
---- a/sound/soc/sh/rcar/adg.c
-+++ b/sound/soc/sh/rcar/adg.c
-@@ -537,16 +537,14 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
- 			clk = clk_register_fixed_rate(dev, clkout_name[i],
- 						      parent_clk_name, 0,
- 						      req_rate);
--			if (!IS_ERR(clk)) {
--				adg->onecell.clks	= adg->clkout;
--				adg->onecell.clk_num	= CLKOUTMAX;
--
-+			adg->clkout[i] = ERR_PTR(-ENOENT);
-+			if (!IS_ERR(clk))
- 				adg->clkout[i] = clk;
--
--				of_clk_add_provider(np, of_clk_src_onecell_get,
--						    &adg->onecell);
--			}
- 		}
-+		adg->onecell.clks	= adg->clkout;
-+		adg->onecell.clk_num	= CLKOUTMAX;
-+		of_clk_add_provider(np, of_clk_src_onecell_get,
-+				    &adg->onecell);
- 	}
+diff --git a/drivers/regulator/arizona-micsupp.c b/drivers/regulator/arizona-micsupp.c
+index fcb98dbda837..0ed14e41de11 100644
+--- a/drivers/regulator/arizona-micsupp.c
++++ b/drivers/regulator/arizona-micsupp.c
+@@ -197,7 +197,8 @@ static const struct regulator_init_data arizona_micsupp_ext_default = {
+ 	.num_consumer_supplies = 1,
+ };
  
- 	adg->ckr = ckr;
+-static int arizona_micsupp_of_get_pdata(struct arizona *arizona,
++static int arizona_micsupp_of_get_pdata(struct device *dev,
++					struct arizona *arizona,
+ 					struct regulator_config *config,
+ 					const struct regulator_desc *desc)
+ {
+@@ -211,7 +212,7 @@ static int arizona_micsupp_of_get_pdata(struct arizona *arizona,
+ 	if (np) {
+ 		config->of_node = np;
+ 
+-		init_data = of_get_regulator_init_data(arizona->dev, np, desc);
++		init_data = of_get_regulator_init_data(dev, np, desc);
+ 
+ 		if (init_data) {
+ 			init_data->consumer_supplies = &micsupp->supply;
+@@ -266,8 +267,8 @@ static int arizona_micsupp_probe(struct platform_device *pdev)
+ 
+ 	if (IS_ENABLED(CONFIG_OF)) {
+ 		if (!dev_get_platdata(arizona->dev)) {
+-			ret = arizona_micsupp_of_get_pdata(arizona, &config,
+-							   desc);
++			ret = arizona_micsupp_of_get_pdata(&pdev->dev, arizona,
++							   &config, desc);
+ 			if (ret < 0)
+ 				return ret;
+ 		}
 -- 
 2.11.0
