@@ -1,22 +1,22 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "MAINTAINERS: Add missing regulator regex for Wolfson Arizona parts" to the regulator tree
-Date: Thu, 30 Mar 2017 22:23:14 +0100
-Message-ID: <E1cthXG-0008Ev-NL@debutante>
-References: <1490710484-25277-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1490710484-25277-3-git-send-email-ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.orglinux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: bxtn: fix spelling mistake: "Timout" -> "Timeout"" to the asoc tree
+Date: Thu, 30 Mar 2017 22:23:06 +0100
+Message-ID: <E1cthX8-0008Bl-JD@debutante>
+References: <20170330100934.19887-1-colin.king@canonical.com>
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+In-Reply-To: <20170330100934.19887-1-colin.king@canonical.com>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Jayachandran B <jayachandran.b@intel.com>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>, Ramesh Babu <ramesh.babu@intel.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   MAINTAINERS: Add missing regulator regex for Wolfson Arizona parts
+   ASoC: Intel: bxtn: fix spelling mistake: "Timout" -> "Timeout"
 
-has been applied to the regulator tree at
+has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git 
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
@@ -37,38 +37,33 @@ to this mail.
 Thanks,
 Mark
 
->From cdf4275e957c6bad3756e98942341667f1d7de7d Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Date: Tue, 28 Mar 2017 15:14:39 +0100
-Subject: [PATCH] MAINTAINERS: Add missing regulator regex for Wolfson Arizona
- parts
+>From 5f75b19ef99054736aa80b70dbdf2f7a86a22007 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Thu, 30 Mar 2017 11:09:34 +0100
+Subject: [PATCH] ASoC: Intel: bxtn: fix spelling mistake: "Timout" ->
+ "Timeout"
 
-The maintainers entry for the Wolfson parts seems to be missing
-an entry that covers the Arizona regulator drivers, correct this by
-adding one.
+trivial fix to spelling mistake in dev_err error message
 
-Signed-off-by: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/intel/skylake/bxt-sst.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 9bf5aa617cf2..ef0c801aff45 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13119,6 +13119,7 @@ F:	drivers/mfd/cs47l24*
- F:	drivers/power/supply/wm83*.c
- F:	drivers/rtc/rtc-wm83*.c
- F:	drivers/regulator/wm8*.c
-+F:	drivers/regulator/arizona*
- F:	drivers/video/backlight/wm83*_bl.c
- F:	drivers/watchdog/wm83*_wdt.c
- F:	include/linux/mfd/arizona/
+diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
+index 600d95891996..268bdaec8042 100644
+--- a/sound/soc/intel/skylake/bxt-sst.c
++++ b/sound/soc/intel/skylake/bxt-sst.c
+@@ -171,7 +171,7 @@ static int sst_bxt_prepare_fw(struct sst_dsp *ctx,
+ 					SKL_ADSP_REG_HIPCIE_DONE,
+ 					BXT_INIT_TIMEOUT, "HIPCIE Done");
+ 	if (ret < 0) {
+-		dev_err(ctx->dev, "Timout for Purge Request%d\n", ret);
++		dev_err(ctx->dev, "Timeout for Purge Request%d\n", ret);
+ 		goto base_fw_load_failed;
+ 	}
+ 
 -- 
 2.11.0
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
