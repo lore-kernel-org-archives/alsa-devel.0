@@ -1,90 +1,94 @@
-From: Pascal Wichmann <pascal.wichmann@pa-w.de>
-Subject: Re: Problems with the DP MST audio support patchset
-Date: Thu, 30 Mar 2017 12:21:44 +0200
-Message-ID: <bceb4859-6dc9-b7a8-4d3a-81ac2a1fa907@pa-w.de>
-References: <6800ee6e-31c2-b5eb-fbb2-6826d8c66dc9@pa-w.de>
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Subject: Re: [PATCH v2 2/2] drm/i915: Implement cdclk
+ restrictions based on Azalia BCLK
+Date: Thu, 30 Mar 2017 14:42:09 +0300
+Message-ID: <20170330114209.GF30290@intel.com>
+References: <1488931972-2865-1-git-send-email-dhinakaran.pandiyan@intel.com>
+ <1488931972-2865-2-git-send-email-dhinakaran.pandiyan@intel.com>
+ <20170329085006.GQ30290@intel.com>
+ <1490823357.31644.39.camel@dk-H97M-D3H>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7158891613416704295=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from web02.pwsrv.de (web02.pwsrv.de [188.68.38.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 1723D2666E1
- for <alsa-devel@alsa-project.org>; Thu, 30 Mar 2017 12:21:57 +0200 (CEST)
-In-Reply-To: <6800ee6e-31c2-b5eb-fbb2-6826d8c66dc9@pa-w.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Libin Yang <libin.yang@linux.intel.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <1490823357.31644.39.camel@dk-H97M-D3H>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: "Pandiyan, Dhinakaran" <dhinakaran.pandiyan@intel.com>
+Cc: "Conselvan De Oliveira, Ander" <ander.conselvan.de.oliveira@intel.com>, alsa-devel@alsa-project.org, "Zanoni, Paulo R" <paulo.r.zanoni@intel.com>, Takashi Iwai <tiwai@suse.de>, "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>, Libin Yang <libin.yang@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---===============7158891613416704295==
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="8BCFLTwr1JhhfrvP2jMEKM2tSANXIKPh3"
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---8BCFLTwr1JhhfrvP2jMEKM2tSANXIKPh3
-Content-Type: multipart/mixed; boundary="50e4AHVrINIXnXSsNPIx52Fd3RohxjdhI";
- protected-headers="v1"
-From: Pascal Wichmann <pascal.wichmann@pa-w.de>
-To: Libin Yang <libin.yang@linux.intel.com>, alsa-devel@alsa-project.org
-Message-ID: <bceb4859-6dc9-b7a8-4d3a-81ac2a1fa907@pa-w.de>
-Subject: Re: [alsa-devel] Problems with the DP MST audio support patchset
-References: <6800ee6e-31c2-b5eb-fbb2-6826d8c66dc9@pa-w.de>
-In-Reply-To: <6800ee6e-31c2-b5eb-fbb2-6826d8c66dc9@pa-w.de>
-
---50e4AHVrINIXnXSsNPIx52Fd3RohxjdhI
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: quoted-printable
-
-> I am not sure what these problems are caused by and do not know what ki=
-n
-> d
-> of debug information you may require to get more hints on how to solve
-> them. Any hints are appreciated.
-
-I have run alsa-info.sh to get more details:
-http://www.alsa-project.org/db/?f=3D124149d1cae74a6622176e13f9c5c63b5411a=
-f88
-
-
---50e4AHVrINIXnXSsNPIx52Fd3RohxjdhI--
-
---8BCFLTwr1JhhfrvP2jMEKM2tSANXIKPh3
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE/gJ8Tpn0OtJz8hxD6+YIa34W/zYFAljc3EMACgkQ6+YIa34W
-/zb3jw/+KEuOA53herfrttoWc605rC9VQ31YiJoM4aiahdtoRrgUCNAesGNtA8GF
-ikG/vR2uxAIQgWFPG+HitnXmjDu0Ia4xq39lyxOYc3+0Ysq+WuWR6CWK+s0ntDWN
-mZ1EnlOcNl7gpAY3+dVTzEzmIaKlOt62zV97bVOpLhj/Kd+A5tDNdcVgJx93aBiX
-u+SCBDjfZ5KAcVGJ6Umqn+BB5Ylj89alUd84nm2w6D89SSnxrOMQx19CYGi1sai+
-5yx9l/aaPXX94h5TcstSgoboD35Jqi/eBYHmnk+b8+i59NA/h0p3naMug9xroAYG
-iu/yol0L19NuErnaS4E/3685IuxxrAMaaORjUDl26IrUTcLCEmjE0HdLst0oUCAQ
-EH11NRC1sEhWIFwUCIPzWUuzTgnyaVfaUYJGjc75iVIMJ7pmVu+vgKBbEXIUSuVD
-gXqZxWHuqhaYnCbSj8lejU9YkWo3NUIoTvPjD2Gvk0Yfm8RtDBc6IN7Pr05BN1ST
-ReH4M3HFtldRERPAtY38Tw2WJ7Qn9xb+hCgZd1nJk5a4lVC6sdQz+Rba9f9F96OB
-kRVU7w/p+sSfwMVpJVf4ob1cMMWRfWNXSe7l6qPOILedxzKZwAJWM0ESzkUW0jtX
-L5gi+3ujOebUXXcdd6saIL3XHY5uGId4dd4CgLQ6kez2ibUrwG8=
-=EohO
------END PGP SIGNATURE-----
-
---8BCFLTwr1JhhfrvP2jMEKM2tSANXIKPh3--
-
---===============7158891613416704295==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7158891613416704295==--
+T24gV2VkLCBNYXIgMjksIDIwMTcgYXQgMDk6MTY6MzZQTSArMDAwMCwgUGFuZGl5YW4sIERoaW5h
+a2FyYW4gd3JvdGU6Cj4gT24gV2VkLCAyMDE3LTAzLTI5IGF0IDExOjUwICswMzAwLCBWaWxsZSBT
+eXJqw6Rsw6Qgd3JvdGU6Cj4gPiBPbiBUdWUsIE1hciAwNywgMjAxNyBhdCAwNDoxMjo1MlBNIC0w
+ODAwLCBEaGluYWthcmFuIFBhbmRpeWFuIHdyb3RlOgo+ID4gPiBBY2NvcmRpbmcgdG8gQlNwZWMs
+ICJUaGUgQ0QgY2xvY2sgZnJlcXVlbmN5IG11c3QgYmUgYXQgbGVhc3QgdHdpY2UgdGhlCj4gPiA+
+IGZyZXF1ZW5jeSBvZiB0aGUgQXphbGlhIEJDTEsuIiBhbmQgQkNMSyBpcyBjb25maWd1cmVkIHRv
+IDk2IE1IeiBieQo+ID4gPiBkZWZhdWx0LiBUaGlzIGNoZWNrIGlzIG5lZWRlZCBiZWNhdXNlIEJY
+VCBhbmQgR0xLIHN1cHBvcnQgY2RjbGsKPiA+ID4gZnJlcXVlbmNpZXMgbGVzcyB0aGFuIDE5MiBN
+SHouCj4gPiA+IAo+ID4gPiBTaWduZWQtb2ZmLWJ5OiBEaGluYWthcmFuIFBhbmRpeWFuIDxkaGlu
+YWthcmFuLnBhbmRpeWFuQGludGVsLmNvbT4KPiA+ID4gLS0tCj4gPiA+ICBkcml2ZXJzL2dwdS9k
+cm0vaTkxNS9pbnRlbF9jZGNsay5jIHwgMTIgKysrKysrKysrKysrCj4gPiA+ICAxIGZpbGUgY2hh
+bmdlZCwgMTIgaW5zZXJ0aW9ucygrKQo+ID4gPiAKPiA+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+Z3B1L2RybS9pOTE1L2ludGVsX2NkY2xrLmMgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9j
+ZGNsay5jCj4gPiA+IGluZGV4IGU4YzExODEuLjdiMWFjMWQgMTAwNjQ0Cj4gPiA+IC0tLSBhL2Ry
+aXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2NkY2xrLmMKPiA+ID4gKysrIGIvZHJpdmVycy9ncHUv
+ZHJtL2k5MTUvaW50ZWxfY2RjbGsuYwo+ID4gPiBAQCAtMTQ1OCw2ICsxNDU4LDE4IEBAIHN0YXRp
+YyBpbnQgYmR3X2FkanVzdF9taW5fcGlwZV9waXhlbF9yYXRlKHN0cnVjdCBpbnRlbF9jcnRjX3N0
+YXRlICpjcnRjX3N0YXRlLAo+ID4gPiAgCQkJcGl4ZWxfcmF0ZSA9IG1heCg0MzIwMDAsIHBpeGVs
+X3JhdGUpOwo+ID4gPiAgCX0KPiA+ID4gIAo+ID4gPiArCS8qIEFjY29yZGluZyB0byBCU3BlYywg
+IlRoZSBDRCBjbG9jayBmcmVxdWVuY3kgbXVzdCBiZSBhdCBsZWFzdCB0d2ljZQo+ID4gPiArCSAq
+IHRoZSBmcmVxdWVuY3kgb2YgdGhlIEF6YWxpYSBCQ0xLLiIgYW5kIEJDTEsgaXMgOTYgTUh6IGJ5
+IGRlZmF1bHQuCj4gPiA+ICsJICogVGhlIGNoZWNrIGZvciBHTEsgaGFzIHRvIGJlIGFkanVzdGVk
+IGFzIHRoZSBwbGF0Zm9ybSBjYW4gb3V0cHV0Cj4gPiA+ICsJICogdHdvIHBpeGVscyBwZXIgY2xv
+Y2suCj4gPiA+ICsJICovCj4gPiA+ICsJaWYgKGNydGNfc3RhdGUtPmhhc19hdWRpbykgewo+ID4g
+PiArCQlpZiAoSVNfR0VNSU5JTEFLRShkZXZfcHJpdikpCj4gPiA+ICsJCQlwaXhlbF9yYXRlID0g
+bWF4KDIgKiAyICogOTYwMDAsIHBpeGVsX3JhdGUpOwo+ID4gCj4gPiBCVFcgdGhhdCB4MiBmYWN0
+b3IgZm9yIEdMSyBsb29rcyB3cm9uZy4gSXQgc2hvdWxkIGJlIC8yLgo+ID4gCj4gPiBodHRwczov
+L2J1Z3MuZnJlZWRlc2t0b3Aub3JnL3Nob3dfYnVnLmNnaT9pZD0xMDA0MzkKPiA+IAo+IAo+IEJT
+cGVjWzFdIHNheXMgY2RjbGsgbmVlZHMgdG8gYmUgPiAyKjk2IE1IeiAoYXphbGlhIGJjbGspLiBU
+byBzZXQgYSBjZGNsawo+ID4gMTkyIE1IeiBvbiBHTEssIHdlIG5lZWQgdG8gcGFzcyBpbiBtYXhf
+cGl4Y2xrID0gMioxOTIgTUh6LiBCdXQgd2l0aCBhCj4gZmFjdG9yIG9mIC8yLCB3ZSBjYW4gZW5k
+IHVwIHBpY2tpbmcgMTU4LjQgTUh6IG9yIDc5LjIgTUh6IGZvciBjZGNsaywKPiB3aGljaCBhcmUg
+bG93ZXIgdGhhbiAxOTIgTUh6Lgo+IAo+IAo+IAlzdGF0aWMgaW50IGdsa19jYWxjX2NkY2xrKGlu
+dCBtYXhfcGl4Y2xrKQo+IAl7Cj4gCSAgICAgICAgaWYgKG1heF9waXhjbGsgPiAyICogMTU4NDAw
+KQo+ICAgICAgICAgCSAgICAgICAgcmV0dXJuIDMxNjgwMDsKPiAJICAgICAgICBlbHNlIGlmICht
+YXhfcGl4Y2xrID4gMiAqIDc5MjAwKQo+ICAgICAgICAgCSAgICAgICAgcmV0dXJuIDE1ODQwMDsK
+PiAgICAgICAgIAllbHNlCj4gICAgICAgICAJICAgICAgICByZXR1cm4gNzkyMDA7Cj4gCX0KPiAK
+PiBbMV0gR2VtaW5pbGFrZSBDbG9ja3MKPiAiMTU4LjQgTUh6IENEIChjYW5ub3QgYmUgdXNlZCB3
+aGVuIGF1ZGlvIGlzIGVuYWJsZWQgYW5kIEF6YWxpYSBCQ0xLIGlzCj4gOTYgTUh6KQo+IDMxNi44
+IE1IeiBDRAo+IDc5LjIgTUh6IENEIChleGNsdXNpdmVseSBmb3IgcmVzb2x1dGlvbnMgdXAgdG8g
+MTA4MHAgaW4gbG93IHBvd2VyIHNpbmdsZQo+IHBpcGUgZURQL01JUEkgY29uZmlndXJhdGlvbnMs
+IG5vIGF1ZGlvIHN1cHBvcnQpIgoKQXJnaC4gU28gaXQncyByZWFsbHkgYWJvdXQgdGhlIGNkY2xr
+IGZyZXEgdnMuIGJjbGsuIEFwcGFyZW50bHkgdGhlIGZhY3QKdGhhdCB0aGUgcGlwZSBjYW4gb3V0
+cHV0IHR3byBwaXhlbHMgcGVyIGNsb2NrIGRvZXNuJ3QgZXh0ZW5kIHRvIHRoZSBIREEKc2lkZS4g
+T0ssIHRoZW4gdGhlIGNvZGUgbG9va3MgY29ycmVjdC4KCkJ1dCBob3cgZG8gd2Uga25vdyB0aGUg
+YmNsayBpcyByZWFsbHkgOTZNaHo/IE9yIGFyZSB3ZSBqdXN0IG1ha2luZyBhCndvcnN0IGNhc2Ug
+ZXN0aW1hdGUgaGVyZT8gQmFzZSBvbiB0aGUgaGRhIHNwZWMgSSB0aGluayBiY2xrIHNob3VsZCB0
+eXBpY2FsbHkKYmUgMjQgTUh6LCBidXQgb2YgY291cnNlIHRoZSBoZGEgc3BlYyBpcyBzbyBvbGQg
+dGhhdCBpdCBwcm9iYWJseSBoYXMKbGl0dGxlIHRvIGRvIHdpdGggdG9kYXkncyByZWFsaXRpZXMu
+IEkgZ3Vlc3MgaWRlYWxseSB3ZSdkIGxpa2UgdGhlIGF1ZGlvCmRyaXZlciB0byB0ZWxsIHVzIHdo
+YXQgdGhlIGZyZXF1ZW5jeSBpcywgb3Igd2UnZCBkaWcgdGhhdCB1cCBmcm9tCnNvbWV3aGVyZSBv
+dXJzZWx2ZXMuCgpIbW0uIEFVRF9GUkVRX0NOVFJMIHNlZW1zIHRvIGhhdmUgc29tZXRoaW5nLiA5
+NiB2cy4gNDggTUh6LiBCdXQgSSdtIG5vdCBzdXJlCndlIGNvdWxkIHRydXN0IHRoYXQgYXQgYm9v
+dCB0aW1lLiBOb3Qgc3VyZSBpZiB0aGUgYXVkaW8gZHJpdmVyIHdpbGwgbWFrZQppdHMgb3duIGNo
+b2ljZSBpZiBCQ0xLIHNvbWV3aGVyZS4gQ2FuIGFueSBhbHNhIGZvbGtzIGhlbHAgdXM/Cgo+IAo+
+IAo+IAo+IC1ESwo+IAo+ID4gPiArCQlpZiAoSVNfQlJPWFRPTihkZXZfcHJpdikpCj4gPiA+ICsJ
+CQlwaXhlbF9yYXRlID0gbWF4KDIgKiA5NjAwMCwgcGl4ZWxfcmF0ZSk7Cj4gPiA+ICsJfQo+ID4g
+PiArCj4gPiA+ICAJcmV0dXJuIHBpeGVsX3JhdGU7Cj4gPiA+ICB9Cj4gPiA+ICAKPiA+ID4gLS0g
+Cj4gPiA+IDIuNy40Cj4gPiA+IAo+ID4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwo+ID4gPiBJbnRlbC1nZnggbWFpbGluZyBsaXN0Cj4gPiA+IEludGVs
+LWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKPiA+ID4gaHR0cHM6Ly9saXN0cy5mcmVlZGVza3Rv
+cC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngKPiA+IAo+IAoKLS0gClZpbGxlIFN5cmrD
+pGzDpApJbnRlbCBPVEMKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Au
+b3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwt
+Z2Z4Cg==
