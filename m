@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rcar: call missing of_clk_del_provider() when remove" to the asoc tree
-Date: Thu, 30 Mar 2017 22:22:48 +0100
-Message-ID: <E1cthWq-00089S-5w@debutante>
-References: <87mvc3edvh.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rcar: fixup of_clk_add_provider() usage for multi clkout" to the asoc tree
+Date: Thu, 30 Mar 2017 22:23:03 +0100
+Message-ID: <E1cthX5-0008Ae-Jb@debutante>
+References: <87o9wjedvz.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87mvc3edvh.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87o9wjedvz.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rcar: call missing of_clk_del_provider() when remove
+   ASoC: rcar: fixup of_clk_add_provider() usage for multi clkout
 
 has been applied to the asoc tree at
 
@@ -37,35 +37,48 @@ to this mail.
 Thanks,
 Mark
 
->From b5aac5a9adf667f907c34c520e023bc19f8c226c Mon Sep 17 00:00:00 2001
+>From d7f298197a22f11b38059f257842dac7c30a564c Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 30 Mar 2017 01:49:27 +0000
-Subject: [PATCH] ASoC: rcar: call missing of_clk_del_provider() when remove
+Date: Thu, 30 Mar 2017 01:49:06 +0000
+Subject: [PATCH] ASoC: rcar: fixup of_clk_add_provider() usage for multi
+ clkout
 
-adg is calling of_clk_add_provider() when probe time,
-thus, remove should call of_clk_del_provider(), it doesn't now.
-This patch fix this issue.
+Current adg is calling of_clk_add_povider() multiple times,
+but it is not correct usage. This patch fixup its parameter
+and call it once.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/adg.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/sh/rcar/adg.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
-index 56107454bdb3..9665c1fa7216 100644
+index 85a33ac0a5c4..56107454bdb3 100644
 --- a/sound/soc/sh/rcar/adg.c
 +++ b/sound/soc/sh/rcar/adg.c
-@@ -587,5 +587,10 @@ int rsnd_adg_probe(struct rsnd_priv *priv)
+@@ -537,16 +537,14 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
+ 			clk = clk_register_fixed_rate(dev, clkout_name[i],
+ 						      parent_clk_name, 0,
+ 						      req_rate);
+-			if (!IS_ERR(clk)) {
+-				adg->onecell.clks	= adg->clkout;
+-				adg->onecell.clk_num	= CLKOUTMAX;
+-
++			adg->clkout[i] = ERR_PTR(-ENOENT);
++			if (!IS_ERR(clk))
+ 				adg->clkout[i] = clk;
+-
+-				of_clk_add_provider(np, of_clk_src_onecell_get,
+-						    &adg->onecell);
+-			}
+ 		}
++		adg->onecell.clks	= adg->clkout;
++		adg->onecell.clk_num	= CLKOUTMAX;
++		of_clk_add_provider(np, of_clk_src_onecell_get,
++				    &adg->onecell);
+ 	}
  
- void rsnd_adg_remove(struct rsnd_priv *priv)
- {
-+	struct device *dev = rsnd_priv_to_dev(priv);
-+	struct device_node *np = dev->of_node;
-+
-+	of_clk_del_provider(np);
-+
- 	rsnd_adg_clk_disable(priv);
- }
+ 	adg->ckr = ckr;
 -- 
 2.11.0
