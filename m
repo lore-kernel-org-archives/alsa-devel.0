@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "regulator: arizona-micsupp: Avoid potential memory leak reading init_data" to the regulator tree
-Date: Thu, 30 Mar 2017 22:23:20 +0100
-Message-ID: <E1cthXM-0008HL-L7@debutante>
-References: <1490710484-25277-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1490710484-25277-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, lgirdwood@gmail.com, lee.jones@linaro.org, robh+dt@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.comlinux-kernel@vger.kernel.org
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "MAINTAINERS: Add missing regulator regex for Wolfson Arizona parts" to the regulator tree
+Date: Thu, 30 Mar 2017 22:23:14 +0100
+Message-ID: <E1cthXG-0008Ev-NL@debutante>
+References: <1490710484-25277-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1490710484-25277-3-git-send-email-ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.orglinux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   regulator: arizona-micsupp: Avoid potential memory leak reading init_data
+   MAINTAINERS: Add missing regulator regex for Wolfson Arizona parts
 
 has been applied to the regulator tree at
 
@@ -37,58 +37,38 @@ to this mail.
 Thanks,
 Mark
 
->From 2543ef3173889373fc07df61520e1bb42a99c85e Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Tue, 28 Mar 2017 15:14:37 +0100
-Subject: [PATCH] regulator: arizona-micsupp: Avoid potential memory leak
- reading init_data
+>From cdf4275e957c6bad3756e98942341667f1d7de7d Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Date: Tue, 28 Mar 2017 15:14:39 +0100
+Subject: [PATCH] MAINTAINERS: Add missing regulator regex for Wolfson Arizona
+ parts
 
-The device argument passed to of_get_regulator_init_data is used to
-do some devres memory allocation. Currently the driver passes the MFD
-device pointer to this function, this could result in the init_data
-allocation being leaked if the regulator is unbound but the MFD isn't.
+The maintainers entry for the Wolfson parts seems to be missing
+an entry that covers the Arizona regulator drivers, correct this by
+adding one.
 
-Correct this issue by correctly passing the local platform device.
-
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- drivers/regulator/arizona-micsupp.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/regulator/arizona-micsupp.c b/drivers/regulator/arizona-micsupp.c
-index fcb98dbda837..0ed14e41de11 100644
---- a/drivers/regulator/arizona-micsupp.c
-+++ b/drivers/regulator/arizona-micsupp.c
-@@ -197,7 +197,8 @@ static const struct regulator_init_data arizona_micsupp_ext_default = {
- 	.num_consumer_supplies = 1,
- };
- 
--static int arizona_micsupp_of_get_pdata(struct arizona *arizona,
-+static int arizona_micsupp_of_get_pdata(struct device *dev,
-+					struct arizona *arizona,
- 					struct regulator_config *config,
- 					const struct regulator_desc *desc)
- {
-@@ -211,7 +212,7 @@ static int arizona_micsupp_of_get_pdata(struct arizona *arizona,
- 	if (np) {
- 		config->of_node = np;
- 
--		init_data = of_get_regulator_init_data(arizona->dev, np, desc);
-+		init_data = of_get_regulator_init_data(dev, np, desc);
- 
- 		if (init_data) {
- 			init_data->consumer_supplies = &micsupp->supply;
-@@ -266,8 +267,8 @@ static int arizona_micsupp_probe(struct platform_device *pdev)
- 
- 	if (IS_ENABLED(CONFIG_OF)) {
- 		if (!dev_get_platdata(arizona->dev)) {
--			ret = arizona_micsupp_of_get_pdata(arizona, &config,
--							   desc);
-+			ret = arizona_micsupp_of_get_pdata(&pdev->dev, arizona,
-+							   &config, desc);
- 			if (ret < 0)
- 				return ret;
- 		}
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9bf5aa617cf2..ef0c801aff45 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -13119,6 +13119,7 @@ F:	drivers/mfd/cs47l24*
+ F:	drivers/power/supply/wm83*.c
+ F:	drivers/rtc/rtc-wm83*.c
+ F:	drivers/regulator/wm8*.c
++F:	drivers/regulator/arizona*
+ F:	drivers/video/backlight/wm83*_bl.c
+ F:	drivers/watchdog/wm83*_wdt.c
+ F:	include/linux/mfd/arizona/
 -- 
 2.11.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
