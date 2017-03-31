@@ -1,95 +1,58 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: Problems with the DP MST audio support patchset
-Date: Fri, 31 Mar 2017 06:29:01 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D19524866B0@SHSMSX103.ccr.corp.intel.com>
-References: <6800ee6e-31c2-b5eb-fbb2-6826d8c66dc9@pa-w.de>
- <bceb4859-6dc9-b7a8-4d3a-81ac2a1fa907@pa-w.de>
- <96A12704CE18D347B625EE2D4A099D19524850F3@SHSMSX103.ccr.corp.intel.com>
- <63a71394-1cd4-e3e3-7364-37c2da90c791@pa-w.de>
- <96A12704CE18D347B625EE2D4A099D19524854BD@SHSMSX103.ccr.corp.intel.com>
- <49ff23f3-7c58-abf1-f1ff-87822f0b0585@pa-w.de>
+From: Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH 0/7] DisplayPort audio support on Cherrytrail
+Date: Fri, 31 Mar 2017 08:29:55 +0200
+Message-ID: <CAKMK7uF9ovHW7EcThmcw9CZbA-Nzn++K19vqJ8rq7a0zdz7vcA@mail.gmail.com>
+References: <20170131213649.13689-1-tiwai@suse.de>
+ <20170313083357.7i5h4ob4a5sxlb5g@phenom.ffwll.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id E45C6266BCE
- for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2017 08:29:06 +0200 (CEST)
-In-Reply-To: <49ff23f3-7c58-abf1-f1ff-87822f0b0585@pa-w.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "tiwai@suse.de" <tiwai@suse.de>, Pascal Wichmann <pascal.wichmann@pa-w.de>, Libin Yang <libin.yang@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <20170313083357.7i5h4ob4a5sxlb5g@phenom.ffwll.local>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, intel-gfx <intel-gfx@lists.freedesktop.org>, Rakesh A Ughreja <rakesh.a.ughreja@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
-
-Do you have some suggestion for this issue.
-
-Hi Pascal,
-
-Please see my comments below.
-
->-----Original Message-----
->From: Pascal Wichmann [mailto:pascal.wichmann@pa-w.de]
->Sent: Friday, March 31, 2017 2:12 PM
->To: Yang, Libin <libin.yang@intel.com>; Libin Yang
-><libin.yang@linux.intel.com>; alsa-devel@alsa-project.org
->Subject: Re: [alsa-devel] Problems with the DP MST audio support patchset
->
->-----BEGIN PGP SIGNED MESSAGE-----
->Hash: SHA256
->
->Hi,
->
->> Get it. Basically, 5.1 audio should work. What format are you using
->> for testing the 5.1 audio?
->I do not use a specific format for testing; the issue occurs using speaker-test as
->well as using any application with audio output as for example vlc, rhythmbox
->or a browser like chromium or firefox.
->
->As mentioned, when configuring the output as digital stereo or 7.1 surround,
->except for the second issue explained in my first mail (which actually is more
->annoying) the audio works.
-
-Yes, that's strange. I asked about the format is try to make sure you are using the
-same format as 7.1. As you are using speaker-test, the format is not the problem.
-
-We tried to reproduce this issue here and unfortunately failed. We can't make
-the HDMI work through our AV receiver. 
-
-I checked your alsa-info.sh output and didn't find the problem.
-
-Regard,
-Libin
-
->
->Regards,
->Pascal
->-----BEGIN PGP SIGNATURE-----
->
->iQIzBAEBCAAdFiEE/gJ8Tpn0OtJz8hxD6+YIa34W/zYFAljd8yIACgkQ6+YIa34W
->/zY3Bw/+MW4ziQgRwY8/ElLytL9ewBQaft4DZLZoVaJomIwhgpr1y135rpJRnmM
->B
->XkQk9Qr7qMTmE8/wTssEwJwZ38HFcrn5sSGlhIPIcqy3J3D4EM3ANTo0xzl2yoYc
->zLxPuu+t+hPBeWOZgK34IjhQzuRZLXx5lsPFNpCAzJKbP8RTExw1Zu+OvbZQAieU
->YM7T6nf3s98BF2/1DLdXjl62PDxVQ08olPM/euEhi3DzsZs60hIkI6ebNsXy6xnN
->Os+bHh5Mgc5vdjjDEQ9+or8aPFd9FeOo1qSZemNPe3h8OLCtuUt53SkmJwqpW
->3qH
->L8Wa/xjOxPFDVw9Ehyp+jD51s4lY+xk0h4+De+lL1pq0srNM1NdDEh0+x5kjCBf9
->l2XaXN0sxmDmJkIRzdPYrQ1NB3ieNAhqHGcj+Zb4x/gzH8WJ8Z/+VQZVu4sntorj
->4JcIzmw7U8LdU2t3ytqZ6JTlrr1t+V31gIDQuB1M5G336Qj7F5XVJxVc989uEOkP
->qWIMLXrWXUhKqMSBfpQkTAFKGbD4xR6A9Em/efRdXFkZH+AXiZxTSfZt1dSFqO
->Z6
->OtVhL3Ew4RW7xSXTwILB1eh4uoFnztLm9VCB9JGoge2OQII8QcNMUbdoNtoNjL
->xh
->XkMkWCnd8iPYH0ix0dMKdaTI0c8JUCWZKjun2Tx9jePLoMuqE60=
->=JrNV
->-----END PGP SIGNATURE-----
+T24gTW9uLCBNYXIgMTMsIDIwMTcgYXQgOTozMyBBTSwgRGFuaWVsIFZldHRlciA8ZGFuaWVsQGZm
+d2xsLmNoPiB3cm90ZToKPiBPbiBUdWUsIEphbiAzMSwgMjAxNyBhdCAxMDozNjo0MlBNICswMTAw
+LCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+IEhpLAo+Pgo+PiB0aGUgZm9sbG93aW5nIHBhdGNoZXMg
+ZW5hYmxlIERpc3BsYXlQb3J0IEF1ZGlvIG9uIENoZXJyeXRyYWlsIG1hY2hpbmVzCj4+IHdoZW4g
+YXBwbGllZCBvbiB0b3Agb2YgbXkgdG9waWMvaW50ZWwtbHBlLWF1ZGlvIGJyYW5jaC4gIFRlc3Rz
+IG9mIERQCj4+IGF1ZGlvIHdlcmUgcnVuIG9uIERlbGwgV3lzZSAzMDQwLiAgVGhlIHJlZ3Jlc3Np
+b24gdGVzdCB3ZXJlIHBlcmZvcm1lZAo+PiBvbiBCYXl0cmFpbCAoQ29tcHV0ZSBTdGljaykgYW5k
+IENoZXJyeXRyYWlsIChab3RhYyBQSTMzMCkgaW4gSERNSQo+PiBtb2RlLiAgT24gQ2hlcnJ5dHJh
+aWwgdGhlcmUgd2VyZSBubyBpc3N1ZXMgY2hhbmdpbmcgYmV0d2VlbiBIRE1JIGFuZAo+PiBEUCBj
+b25uZWN0b3JzIGR5bmFtaWNhbGx5Lgo+Pgo+PiBDb3VsZCB5b3UgaTkxNSBwZW9wbGUgcmV2aWV3
+IGFuZCBnaXZlIEFDSyBpZiB0aGV5IGFyZSBPSz8KPj4gVGhlIGNoYW5nZXMgaW4gZHJtL2k5MTUg
+c2lkZSBhcmUgZmFpcmx5IHRyaXZpYWwsIHNvIEknZCBsaWtlIHRvIHRha2UKPj4gdGhlbSB0aHJv
+dWdoIHNvdW5kIGdpdCB0cmVlIG9uY2UgYWZ0ZXIgSSByZWNlaXZlIHlvdXIgQUNLcy4KPj4KPj4K
+Pj4gQ2hhbmdlcyBzaW5jZSBSRkM6Cj4+ICAtIHJlb3JkZXJlZCBhbmQgc3F1YXNoZWQgcGF0Y2hl
+cwo+PiAgLSBjbGVhbi11cCBvZiByZWdpc3RlciBkZWZpbml0aW9ucyBhbmQgb2Zmc2V0cyAoYmFz
+ZWQgb24gZmVlZGJhY2sgZnJvbQo+PiAgICBKYW5pL1ZpbGxlKQo+PiAgLSB1bm11dGUgYW1wIGZv
+ciBib3RoIEhETUkgYW5kIERQIHVuY29uZGl0aW9uYWxseQo+PiAgLSBtdXRlIGFtcCBvbiBpbnZh
+bGlkIEVMRCAodW5wbHVnKQo+PiAgLSByZW1vdmUgdGVzdCBmb3IgY2hpY2tlbiBiaXQgd2hpY2gg
+c2VlbXMgdG8gaGF2ZSBubyBlZmZlY3QgaW4gaGFyZHdhcmUKPj4gIC0gY29zbWV0aWMgZWRpdHMg
+dG8gbWFrZSBjaGVja3BhdGNoIGhhcHB5Cj4+ICAtIGNoYW5nZSBpOTE1IG5vdGlmaWNhdGlvbiBh
+cmd1bWVudCB0byBwYXNzIHRoZSBwbGF0YWZvcm0gZGV2aWNlCj4+ICAgIGluc3RlYWQKPj4KPj4K
+Pj4gTW9zdCBvZiBoYXJkIHdvcmsgaW4gdGhpcyBwYXRjaHNldCBoYXMgYmVlbiBkb25lIGJ5IFBp
+ZXJyZSwgc28gYWxsCj4+IGNyZWRpdHMgZ28gdG8gaGltLgo+Cj4gUGxlYXNlIGJ1aWxkIHRoZSBo
+dG1sZG9jcyBhbmQgZml4IHRoZSBuZXcgZmFsbG91dCB0aGVzZSBwYXRjaGVzIGNyZWF0ZToKPgo+
+ICQgbWFrZSAgIERPQ0JPT0tTPSIiIGh0bWxkb2NzCj4KPiAwZGF5IHNob3VsZCBiZSByZXBvcnRp
+bmcgdGhlc2UgKGlmIGl0IHNjYW5zIHlvdXIgbWFpbGluZyBsaXN0KSwgYnV0Cj4gdGhlcmUncyBi
+ZWVuIGEgaGljY3VwIHJlY2VudGx5Lgo+Cj4gR29vZCBkb2NzIG1hdHRlciBhbmQgYWxsIHRoYXQg
+Li4uCgpBcHBhcmVudGx5IHRoaXMgaXMgc3RpbGwgbm90IGZpeGVkLCBJIGFwcGxpZWQgYSBmaXh1
+cCBwYXRjaCBub3cgZnJvbQpzb21lb25lIGVsc2UuIFRzay4KLURhbmllbAotLSAKRGFuaWVsIFZl
+dHRlcgpTb2Z0d2FyZSBFbmdpbmVlciwgSW50ZWwgQ29ycG9yYXRpb24KKzQxICgwKSA3OSAzNjUg
+NTcgNDggLSBodHRwOi8vYmxvZy5mZndsbC5jaApfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0
+cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9pbnRlbC1nZngK
