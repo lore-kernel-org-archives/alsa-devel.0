@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 09/14] ALSA: firewire-lib: add no-header packet
-	processing
-Date: Fri, 31 Mar 2017 22:06:07 +0900
-Message-ID: <20170331130612.18331-10-o-takashi@sakamocchi.jp>
+Subject: [PATCH 10/14] ALSA: fireface: add unique data
+	processing layer
+Date: Fri, 31 Mar 2017 22:06:08 +0900
+Message-ID: <20170331130612.18331-11-o-takashi@sakamocchi.jp>
 References: <20170331130612.18331-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 406A6267233
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 41E00267234
  for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2017 15:06:25 +0200 (CEST)
 In-Reply-To: <20170331130612.18331-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,232 +25,251 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-As long as investigating Fireface 400, IEC 61883-1/6 is not applied to
-its packet streaming protocol. Remarks of the specific protocol are:
- * Each packet doesn't include CIP headers.
- * 64,0 and 128,0 kHz are supported.
- * The device doesn't necessarily transmit 8,000 packets per second.
- * 0, 1, 2, 3 are used as tag for rx isochronous packets, however 0 is
-   used for tx isochronous packets.
+As long as investigating Fireface 400, format of payload of each
+isochronous packet is not IEC 61883-1/6, thus its format of data block
+is not AM824. The remarkable points of the format are:
+ * The payload just consists of some data channels of quadlet size without
+   CIP header.
+ * Each data channels includes data aligned to little endian order.
+ * One data channel consists of two parts; 8 bit ancillary field and 24 bit
+   PCM frame.
 
-On the other hand, there's a common feature. The number of data blocks
-transferred in a second is the same as sampling transmission frequency.
-Current ALSA IEC 61883-1/6 engine already has a method to calculate it and
-this driver can utilize it for rx packets, as well as tx packets.
+Due to lack of CIP headers, rx/tx packets include no CIP headers and
+different way to check packet discontinuity. For tx packet, the ancillary
+field is used for counter. However, the way of counting is different
+depending on positions of data channels. At 44.1 kHz, ancillary field in:
+ * 1st/6th/9th/10th/14th/17th data channels: not used for this purpose.
+ * 2nd/18th data channels: incremented every data block (0x00-0xff).
+ * 3rd/4th/5th/11th/12th/13th data channels: incremented every 256 data
+   blocks (0x00-0x07).
+ * 7th/8th/15th/16th data channels: incremented per the number of data
+   blocks in a packet. The increment can occur per packet (0x00-0xff).
 
-This commit adds support for the transferring protocol. CIP_NO_HEADERS
-flag is newly added. When this flag is set:
- * Both of 0 (without CIP header) and 1 (with CIP header) are used as tag
-   to handle incoming isochronous packet.
- * 0 (without CIP header) is used as tag to transfer outgoing isochronous
-   packet.
- * Skip CIP header evaluation.
- * Use unique way to calculate the quadlets of isochronous packet payload.
+For tx packet, tag of each isochronous packet is used for this purpose.
+The value of tag cyclically changes between 0, 1, 2 and 3 in this order.
+The interval is different depending on sampling transmission frequency.
+At 44.1/48.0 kHz, it's 256 data blocks. At 88.2 kHz, it's 96 data blocks.
 
-In ALSA PCM interface, 128.0 kHz is not supported, and the ALSA
-IEC 61883-1/6 engine doesn't support 64.0 kHz. These modes are dropped.
+The number of data blocks in tx packet is exactly the same as
+SYT_INTERVAL. There's no empty packet or no-data packet, thus the
+throughput is not 8,000 packets per sec. On the other hand, the one in
+rx packet is 8,000 packets per sec, thus the number of data blocks is
+different between each packet, depending on sampling transmission
+frequency:
+ * 44.1 kHz: 5 or 6
+ * 48.0 kHz: 5 or 6 or 7
+ * 88.2 kHz: 10 or 11 or 12
 
-The sequence of rx packet has a remarkable quirk about tag. This will be
-described in later commits.
+This commit adds data processing layer to satisfy the above specification
+in a policy of 'best effort'. Although PCM frames are handled for
+intermediate buffer to user space, the ancillary data is not handled at all
+to reduce CPU usage, thus counter is not checked. 0 is always used for tag
+of isochronous packet. Furthermore, the packet streaming layer is
+responsible for calculation of the number of data blocks for each packet,
+thus it's not exactly the same sequence from the above observation.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/amdtp-stream.c | 80 ++++++++++++++++++++++++++++++++++++++++---
- sound/firewire/amdtp-stream.h |  6 ++++
- 2 files changed, 81 insertions(+), 5 deletions(-)
+ sound/firewire/fireface/Makefile   |   2 +-
+ sound/firewire/fireface/amdtp-ff.c | 155 +++++++++++++++++++++++++++++++++++++
+ sound/firewire/fireface/ff.h       |   8 ++
+ 3 files changed, 164 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/fireface/amdtp-ff.c
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 646e8e3..a03b37b 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -27,6 +27,7 @@
- 
- /* isochronous header parameters */
- #define ISO_DATA_LENGTH_SHIFT	16
-+#define TAG_NO_CIP_HEADER	0
- #define TAG_CIP			1
- 
- /* common isochronous packet header parameters */
-@@ -234,11 +235,15 @@ EXPORT_SYMBOL(amdtp_stream_set_parameters);
- unsigned int amdtp_stream_get_max_payload(struct amdtp_stream *s)
- {
- 	unsigned int multiplier = 1;
-+	unsigned int header_size = 0;
- 
- 	if (s->flags & CIP_JUMBO_PAYLOAD)
- 		multiplier = 5;
-+	if (!(s->flags & CIP_NO_HEADER))
-+		header_size = 8;
- 
--	return 8 + s->syt_interval * s->data_block_quadlets * 4 * multiplier;
-+	return header_size +
-+		s->syt_interval * s->data_block_quadlets * 4 * multiplier;
- }
- EXPORT_SYMBOL(amdtp_stream_get_max_payload);
- 
-@@ -380,7 +385,7 @@ static int queue_packet(struct amdtp_stream *s, unsigned int header_length,
- 		goto end;
- 
- 	p.interrupt = IS_ALIGNED(s->packet_index + 1, INTERRUPT_INTERVAL);
--	p.tag = TAG_CIP;
-+	p.tag = s->tag;
- 	p.header_length = header_length;
- 	if (payload_length > 0)
- 		p.payload_length = payload_length;
-@@ -457,6 +462,34 @@ static int handle_out_packet(struct amdtp_stream *s,
- 	return 0;
- }
- 
-+static int handle_out_packet_without_header(struct amdtp_stream *s,
-+			unsigned int payload_length, unsigned int cycle,
-+			unsigned int index)
+diff --git a/sound/firewire/fireface/Makefile b/sound/firewire/fireface/Makefile
+index e88ff9e..e06e9da 100644
+--- a/sound/firewire/fireface/Makefile
++++ b/sound/firewire/fireface/Makefile
+@@ -1,2 +1,2 @@
+-snd-fireface-objs := ff.o ff-transaction.o ff-midi.o ff-proc.o
++snd-fireface-objs := ff.o ff-transaction.o ff-midi.o ff-proc.o amdtp-ff.o
+ obj-$(CONFIG_SND_FIREFACE) += snd-fireface.o
+diff --git a/sound/firewire/fireface/amdtp-ff.c b/sound/firewire/fireface/amdtp-ff.c
+new file mode 100644
+index 0000000..780da9d
+--- /dev/null
++++ b/sound/firewire/fireface/amdtp-ff.c
+@@ -0,0 +1,155 @@
++/*
++ * amdtp-ff.c - a part of driver for RME Fireface series
++ *
++ * Copyright (c) 2015-2017 Takashi Sakamoto
++ *
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#include <sound/pcm.h>
++#include "ff.h"
++
++struct amdtp_ff {
++	unsigned int pcm_channels;
++};
++
++int amdtp_ff_set_parameters(struct amdtp_stream *s, unsigned int rate,
++			    unsigned int pcm_channels)
 +{
-+	__be32 *buffer;
-+	unsigned int syt;
-+	unsigned int data_blocks;
-+	unsigned int pcm_frames;
-+	struct snd_pcm_substream *pcm;
++	struct amdtp_ff *p = s->protocol;
++	unsigned int data_channels;
 +
-+	buffer = s->buffer.packets[s->packet_index].buffer;
-+	syt = calculate_syt(s, cycle);
-+	data_blocks = calculate_data_blocks(s, syt);
-+	pcm_frames = s->process_data_blocks(s, buffer, data_blocks, &syt);
-+	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
++	if (amdtp_stream_running(s))
++		return -EBUSY;
 +
-+	payload_length = data_blocks * 4 * s->data_block_quadlets;
-+	if (queue_out_packet(s, payload_length) < 0)
-+		return -EIO;
++	p->pcm_channels = pcm_channels;
++	data_channels = pcm_channels;
 +
-+	pcm = ACCESS_ONCE(s->pcm);
-+	if (pcm && pcm_frames > 0)
-+		update_pcm_pointers(s, pcm, pcm_frames);
-+
-+	/* No need to return the number of handled data blocks. */
-+	return 0;
++	return amdtp_stream_set_parameters(s, rate, data_channels);
 +}
 +
- static int handle_in_packet(struct amdtp_stream *s,
- 			    unsigned int payload_length, unsigned int cycle,
- 			    unsigned int index)
-@@ -573,6 +606,30 @@ static int handle_in_packet(struct amdtp_stream *s,
- 	return 0;
- }
- 
-+static int handle_in_packet_without_header(struct amdtp_stream *s,
-+			unsigned int payload_quadlets, unsigned int cycle,
-+			unsigned int index)
++static void write_pcm_s32(struct amdtp_stream *s,
++			  struct snd_pcm_substream *pcm,
++			  __le32 *buffer, unsigned int frames)
 +{
-+	__be32 *buffer;
-+	unsigned int data_blocks;
-+	struct snd_pcm_substream *pcm;
-+	unsigned int pcm_frames;
++	struct amdtp_ff *p = s->protocol;
++	struct snd_pcm_runtime *runtime = pcm->runtime;
++	unsigned int channels, remaining_frames, i, c;
++	const u32 *src;
 +
-+	buffer = s->buffer.packets[s->packet_index].buffer;
-+	data_blocks = payload_quadlets / s->data_block_quadlets;
-+	pcm_frames = s->process_data_blocks(s, buffer, data_blocks, NULL);
-+	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
++	channels = p->pcm_channels;
++	src = (void *)runtime->dma_area +
++			frames_to_bytes(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
 +
-+	if (queue_in_packet(s) < 0)
-+		return -EIO;
-+
-+	pcm = ACCESS_ONCE(s->pcm);
-+	if (pcm && pcm_frames > 0)
-+		update_pcm_pointers(s, pcm, pcm_frames);
-+
-+	return 0;
++	for (i = 0; i < frames; ++i) {
++		for (c = 0; c < channels; ++c) {
++			buffer[c] = cpu_to_le32(*src);
++			src++;
++		}
++		buffer += s->data_block_quadlets;
++		if (--remaining_frames == 0)
++			src = (void *)runtime->dma_area;
++	}
 +}
 +
- /*
-  * In CYCLE_TIMER register of IEEE 1394, 7 bits are used to represent second. On
-  * the other hand, in DMA descriptors of 1394 OHCI, 3 bits are used to represent
-@@ -616,7 +673,7 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
- 
- 	for (i = 0; i < packets; ++i) {
- 		cycle = increment_cycle_count(cycle, 1);
--		if (handle_out_packet(s, 0, cycle, i) < 0) {
-+		if (s->handle_packet(s, 0, cycle, i) < 0) {
- 			s->packet_index = -1;
- 			amdtp_stream_pcm_abort(s);
- 			return;
-@@ -663,7 +720,7 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
- 			break;
- 		}
- 
--		if (handle_in_packet(s, payload_length, cycle, i) < 0)
-+		if (s->handle_packet(s, payload_length, cycle, i) < 0)
- 			break;
- 	}
- 
-@@ -699,10 +756,18 @@ static void amdtp_stream_first_callback(struct fw_iso_context *context,
- 		packets = header_length / IN_PACKET_HEADER_SIZE;
- 		cycle = decrement_cycle_count(cycle, packets);
- 		context->callback.sc = in_stream_callback;
-+		if (s->flags & CIP_NO_HEADER)
-+			s->handle_packet = handle_in_packet_without_header;
-+		else
-+			s->handle_packet = handle_in_packet;
- 	} else {
- 		packets = header_length / 4;
- 		cycle = increment_cycle_count(cycle, QUEUE_LENGTH - packets);
- 		context->callback.sc = out_stream_callback;
-+		if (s->flags & CIP_NO_HEADER)
-+			s->handle_packet = handle_out_packet_without_header;
-+		else
-+			s->handle_packet = handle_out_packet;
- 	}
- 
- 	s->start_cycle = cycle;
-@@ -782,6 +847,11 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 
- 	amdtp_stream_update(s);
- 
-+	if (s->flags & CIP_NO_HEADER)
-+		s->tag = TAG_NO_CIP_HEADER;
++static void read_pcm_s32(struct amdtp_stream *s,
++			 struct snd_pcm_substream *pcm,
++			 __le32 *buffer, unsigned int frames)
++{
++	struct amdtp_ff *p = s->protocol;
++	struct snd_pcm_runtime *runtime = pcm->runtime;
++	unsigned int channels, remaining_frames, i, c;
++	u32 *dst;
++
++	channels = p->pcm_channels;
++	dst  = (void *)runtime->dma_area +
++			frames_to_bytes(runtime, s->pcm_buffer_pointer);
++	remaining_frames = runtime->buffer_size - s->pcm_buffer_pointer;
++
++	for (i = 0; i < frames; ++i) {
++		for (c = 0; c < channels; ++c) {
++			*dst = le32_to_cpu(buffer[c]) & 0xffffff00;
++			dst++;
++		}
++		buffer += s->data_block_quadlets;
++		if (--remaining_frames == 0)
++			dst = (void *)runtime->dma_area;
++	}
++}
++
++static void write_pcm_silence(struct amdtp_stream *s,
++			      __le32 *buffer, unsigned int frames)
++{
++	struct amdtp_ff *p = s->protocol;
++	unsigned int i, c, channels = p->pcm_channels;
++
++	for (i = 0; i < frames; ++i) {
++		for (c = 0; c < channels; ++c)
++			buffer[c] = cpu_to_le32(0x00000000);
++		buffer += s->data_block_quadlets;
++	}
++}
++
++int amdtp_ff_add_pcm_hw_constraints(struct amdtp_stream *s,
++				    struct snd_pcm_runtime *runtime)
++{
++	int err;
++
++	err = snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
++	if (err < 0)
++		return err;
++
++	return amdtp_stream_add_pcm_hw_constraints(s, runtime);
++}
++
++static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
++					   __be32 *buffer,
++					   unsigned int data_blocks,
++					   unsigned int *syt)
++{
++	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
++	unsigned int pcm_frames;
++
++	if (pcm) {
++		write_pcm_s32(s, pcm, (__le32 *)buffer, data_blocks);
++		pcm_frames = data_blocks;
++	} else {
++		write_pcm_silence(s, (__le32 *)buffer, data_blocks);
++		pcm_frames = 0;
++	}
++
++	return pcm_frames;
++}
++
++static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
++					   __be32 *buffer,
++					   unsigned int data_blocks,
++					   unsigned int *syt)
++{
++	struct snd_pcm_substream *pcm = ACCESS_ONCE(s->pcm);
++	unsigned int pcm_frames;
++
++	if (pcm) {
++		read_pcm_s32(s, pcm, (__le32 *)buffer, data_blocks);
++		pcm_frames = data_blocks;
++	} else {
++		pcm_frames = 0;
++	}
++
++	return pcm_frames;
++}
++
++int amdtp_ff_init(struct amdtp_stream *s, struct fw_unit *unit,
++		  enum amdtp_stream_direction dir)
++{
++	amdtp_stream_process_data_blocks_t process_data_blocks;
++
++	if (dir == AMDTP_IN_STREAM)
++		process_data_blocks = process_tx_data_blocks;
 +	else
-+		s->tag = TAG_CIP;
++		process_data_blocks = process_rx_data_blocks;
 +
- 	s->packet_index = 0;
- 	do {
- 		if (s->direction == AMDTP_IN_STREAM)
-@@ -794,7 +864,7 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
++	return amdtp_stream_init(s, unit, dir, CIP_NO_HEADER, 0,
++				 process_data_blocks, sizeof(struct amdtp_ff));
++}
+diff --git a/sound/firewire/fireface/ff.h b/sound/firewire/fireface/ff.h
+index 2d1fab2..fa7242f 100644
+--- a/sound/firewire/fireface/ff.h
++++ b/sound/firewire/fireface/ff.h
+@@ -23,6 +23,7 @@
+ #include <sound/rawmidi.h>
  
- 	/* NOTE: TAG1 matches CIP. This just affects in stream. */
- 	tag = FW_ISO_CONTEXT_MATCH_TAG1;
--	if (s->flags & CIP_EMPTY_WITH_TAG0)
-+	if ((s->flags & CIP_EMPTY_WITH_TAG0) || (s->flags & CIP_NO_HEADER))
- 		tag |= FW_ISO_CONTEXT_MATCH_TAG0;
+ #include "../lib.h"
++#include "../amdtp-stream.h"
  
- 	s->callbacked = false;
-diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-index a31dfd8..2bd4de4 100644
---- a/sound/firewire/amdtp-stream.h
-+++ b/sound/firewire/amdtp-stream.h
-@@ -31,6 +31,7 @@
-  *	allows 5 times as large as IEC 61883-6 defines.
-  * @CIP_HEADER_WITHOUT_EOH: Only for in-stream. CIP Header doesn't include
-  *	valid EOH.
-+ * @CIP_NO_HEADERS: a lack of headers in packets
-  */
- enum cip_flags {
- 	CIP_NONBLOCKING		= 0x00,
-@@ -42,6 +43,7 @@ enum cip_flags {
- 	CIP_EMPTY_HAS_WRONG_DBC	= 0x20,
- 	CIP_JUMBO_PAYLOAD	= 0x40,
- 	CIP_HEADER_WITHOUT_EOH	= 0x80,
-+	CIP_NO_HEADER		= 0x100,
- };
+ #define SND_FF_STREAM_MODES		3
  
- /**
-@@ -104,6 +106,10 @@ struct amdtp_stream {
- 	struct fw_iso_context *context;
- 	struct iso_packets_buffer buffer;
- 	int packet_index;
-+	int tag;
-+	int (*handle_packet)(struct amdtp_stream *s,
-+			unsigned int payload_quadlets, unsigned int cycle,
-+			unsigned int index);
+@@ -99,6 +100,13 @@ int snd_ff_transaction_register(struct snd_ff *ff);
+ int snd_ff_transaction_reregister(struct snd_ff *ff);
+ void snd_ff_transaction_unregister(struct snd_ff *ff);
  
- 	/* For CIP headers. */
- 	unsigned int source_node_id_field;
++int amdtp_ff_set_parameters(struct amdtp_stream *s, unsigned int rate,
++			    unsigned int pcm_channels);
++int amdtp_ff_add_pcm_hw_constraints(struct amdtp_stream *s,
++				    struct snd_pcm_runtime *runtime);
++int amdtp_ff_init(struct amdtp_stream *s, struct fw_unit *unit,
++		  enum amdtp_stream_direction dir);
++
+ void snd_ff_proc_init(struct snd_ff *ff);
+ 
+ int snd_ff_create_midi_devices(struct snd_ff *ff);
 -- 
 2.9.3
