@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 06/14] ALSA: fireface: add support for MIDI
+Subject: [PATCH 11/14] ALSA: fireface: add stream management
 	functionality
-Date: Fri, 31 Mar 2017 22:06:04 +0900
-Message-ID: <20170331130612.18331-7-o-takashi@sakamocchi.jp>
+Date: Fri, 31 Mar 2017 22:06:09 +0900
+Message-ID: <20170331130612.18331-12-o-takashi@sakamocchi.jp>
 References: <20170331130612.18331-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 6CA5026723F
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 3F2B0267232
  for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2017 15:06:25 +0200 (CEST)
 In-Reply-To: <20170331130612.18331-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,40 +25,54 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-In previous commit, fireface driver supports unique transaction mechanism
-for MIDI feature. This commit adds MIDI functionality for userspace
-applications.
+This commit adds management functionality for packet streaming.
 
-As I wrote in a followed commit, user space applications get some
-requirement from this driver. It should not touch a register to which
-units transmit MIDI messages. It should configure a register in which
-MIDI transmission is controlled.
+As long as investigating Fireface 400, there're three modes depending
+on sampling transmission frequency. The number of data channels in each
+data block is different depending on the mode. The set of available
+data channels for each mode might be different for each protocol and
+model.
+
+The length of registers for the number of isochronous channel is just
+three bits, therefore 0-7ch are available.
+
+When bus reset occurs on IEEE 1394 bus, the device discontinues to
+transmit packets. This commit aborts PCM substreams at bus reset handler.
+
+As I described in followed commits, The device manages its sampling clock
+independently of sampling transmission frequency against IEC 61883-6.
+Thus, it's a lower cost to change the sampling transmission frequency,
+while data fetch between streaming layer and DSP require larger buffer
+for resampling. As a result, device latency might tend to be larger than
+ASICs for IEC 61883-1/6 such as DM1000/DM1100/DM1500 (BeBoB),
+DiceII/TCD2210/TCD2220/TCD3070 and OXFW970/971.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/fireface/Makefile  |   2 +-
- sound/firewire/fireface/ff-midi.c | 131 ++++++++++++++++++++++++++++++++++++++
- sound/firewire/fireface/ff.c      |   5 ++
- sound/firewire/fireface/ff.h      |   3 +
- 4 files changed, 140 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/fireface/ff-midi.c
+ sound/firewire/fireface/Makefile    |   3 +-
+ sound/firewire/fireface/ff-stream.c | 243 ++++++++++++++++++++++++++++++++++++
+ sound/firewire/fireface/ff.c        |   9 ++
+ sound/firewire/fireface/ff.h        |  13 ++
+ 4 files changed, 267 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/fireface/ff-stream.c
 
 diff --git a/sound/firewire/fireface/Makefile b/sound/firewire/fireface/Makefile
-index 864aacc..8e465e4 100644
+index e06e9da..b772fdc 100644
 --- a/sound/firewire/fireface/Makefile
 +++ b/sound/firewire/fireface/Makefile
-@@ -1,2 +1,2 @@
--snd-fireface-objs := ff.o ff-transaction.o
-+snd-fireface-objs := ff.o ff-transaction.o ff-midi.o
+@@ -1,2 +1,3 @@
+-snd-fireface-objs := ff.o ff-transaction.o ff-midi.o ff-proc.o amdtp-ff.o
++snd-fireface-objs := ff.o ff-transaction.o ff-midi.o ff-proc.o amdtp-ff.o \
++		     ff-stream.o
  obj-$(CONFIG_SND_FIREFACE) += snd-fireface.o
-diff --git a/sound/firewire/fireface/ff-midi.c b/sound/firewire/fireface/ff-midi.c
+diff --git a/sound/firewire/fireface/ff-stream.c b/sound/firewire/fireface/ff-stream.c
 new file mode 100644
-index 0000000..29ee0a7
+index 0000000..0ef6177
 --- /dev/null
-+++ b/sound/firewire/fireface/ff-midi.c
-@@ -0,0 +1,131 @@
++++ b/sound/firewire/fireface/ff-stream.c
+@@ -0,0 +1,243 @@
 +/*
-+ * ff-midi.c - a part of driver for RME Fireface series
++ * ff-stream.c - a part of driver for RME Fireface series
 + *
 + * Copyright (c) 2015-2017 Takashi Sakamoto
 + *
@@ -67,168 +81,317 @@ index 0000000..29ee0a7
 +
 +#include "ff.h"
 +
-+static int midi_capture_open(struct snd_rawmidi_substream *substream)
++#define CALLBACK_TIMEOUT_MS	200
++
++static int get_rate_mode(unsigned int rate, unsigned int *mode)
 +{
-+	/* Do nothing. */
-+	return 0;
-+}
++	int i;
 +
-+static int midi_playback_open(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_ff *ff = substream->rmidi->private_data;
-+
-+	/* Initialize internal status. */
-+	ff->running_status[substream->number] = 0;
-+	ff->rx_midi_error[substream->number] = false;
-+
-+	ACCESS_ONCE(ff->rx_midi_substreams[substream->number]) = substream;
-+
-+	return 0;
-+}
-+
-+static int midi_capture_close(struct snd_rawmidi_substream *substream)
-+{
-+	/* Do nothing. */
-+	return 0;
-+}
-+
-+static int midi_playback_close(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_ff *ff = substream->rmidi->private_data;
-+
-+	cancel_work_sync(&ff->rx_midi_work[substream->number]);
-+	ACCESS_ONCE(ff->rx_midi_substreams[substream->number]) = NULL;
-+
-+	return 0;
-+}
-+
-+static void midi_capture_trigger(struct snd_rawmidi_substream *substream,
-+				 int up)
-+{
-+	struct snd_ff *ff = substream->rmidi->private_data;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&ff->lock, flags);
-+
-+	if (up)
-+		ACCESS_ONCE(ff->tx_midi_substreams[substream->number]) =
-+								substream;
-+	else
-+		ACCESS_ONCE(ff->tx_midi_substreams[substream->number]) = NULL;
-+
-+	spin_unlock_irqrestore(&ff->lock, flags);
-+}
-+
-+static void midi_playback_trigger(struct snd_rawmidi_substream *substream,
-+				  int up)
-+{
-+	struct snd_ff *ff = substream->rmidi->private_data;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&ff->lock, flags);
-+
-+	if (up || !ff->rx_midi_error[substream->number])
-+		schedule_work(&ff->rx_midi_work[substream->number]);
-+
-+	spin_unlock_irqrestore(&ff->lock, flags);
-+}
-+
-+static struct snd_rawmidi_ops midi_capture_ops = {
-+	.open		= midi_capture_open,
-+	.close		= midi_capture_close,
-+	.trigger	= midi_capture_trigger,
-+};
-+
-+static struct snd_rawmidi_ops midi_playback_ops = {
-+	.open		= midi_playback_open,
-+	.close		= midi_playback_close,
-+	.trigger	= midi_playback_trigger,
-+};
-+
-+static void set_midi_substream_names(struct snd_rawmidi_str *stream,
-+				     const char *const name)
-+{
-+	struct snd_rawmidi_substream *substream;
-+
-+	list_for_each_entry(substream, &stream->substreams, list) {
-+		snprintf(substream->name, sizeof(substream->name),
-+			 "%s MIDI %d", name, substream->number + 1);
++	for (i = 0; i < CIP_SFC_COUNT; i++) {
++		if (amdtp_rate_table[i] == rate)
++			break;
 +	}
++
++	if (i == CIP_SFC_COUNT)
++		return -EINVAL;
++
++	*mode = ((int)i - 1) / 2;
++
++	return 0;
 +}
 +
-+int snd_ff_create_midi_devices(struct snd_ff *ff)
++/*
++ * Fireface 400 manages isochronous channel number in 3 bit field. Therefore,
++ * we can allocate between 0 and 7 channel.
++ */
++static int keep_resources(struct snd_ff *ff, unsigned int rate)
 +{
-+	struct snd_rawmidi *rmidi;
-+	struct snd_rawmidi_str *stream;
++	int mode;
 +	int err;
 +
-+	err = snd_rawmidi_new(ff->card, ff->card->driver, 0,
-+			      ff->spec->midi_out_ports, ff->spec->midi_in_ports,
-+			      &rmidi);
++	err = get_rate_mode(rate, &mode);
 +	if (err < 0)
 +		return err;
 +
-+	snprintf(rmidi->name, sizeof(rmidi->name),
-+		 "%s MIDI", ff->card->shortname);
-+	rmidi->private_data = ff;
++	/* Keep resources for in-stream. */
++	err = amdtp_ff_set_parameters(&ff->tx_stream, rate,
++				      ff->spec->pcm_capture_channels[mode]);
++	if (err < 0)
++		return err;
++	ff->tx_resources.channels_mask = 0x00000000000000ffuLL;
++	err = fw_iso_resources_allocate(&ff->tx_resources,
++			amdtp_stream_get_max_payload(&ff->tx_stream),
++			fw_parent_device(ff->unit)->max_speed);
++	if (err < 0)
++		return err;
 +
-+	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_INPUT;
-+	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_INPUT,
-+			    &midi_capture_ops);
-+	stream = &rmidi->streams[SNDRV_RAWMIDI_STREAM_INPUT];
-+	set_midi_substream_names(stream, ff->card->shortname);
++	/* Keep resources for out-stream. */
++	err = amdtp_ff_set_parameters(&ff->rx_stream, rate,
++				      ff->spec->pcm_playback_channels[mode]);
++	if (err < 0)
++		return err;
++	ff->rx_resources.channels_mask = 0x00000000000000ffuLL;
++	err = fw_iso_resources_allocate(&ff->rx_resources,
++			amdtp_stream_get_max_payload(&ff->rx_stream),
++			fw_parent_device(ff->unit)->max_speed);
++	if (err < 0)
++		fw_iso_resources_free(&ff->tx_resources);
 +
-+	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_OUTPUT;
-+	snd_rawmidi_set_ops(rmidi, SNDRV_RAWMIDI_STREAM_OUTPUT,
-+			    &midi_playback_ops);
-+	stream = &rmidi->streams[SNDRV_RAWMIDI_STREAM_OUTPUT];
-+	set_midi_substream_names(stream, ff->card->shortname);
++	return err;
++}
 +
-+	rmidi->info_flags |= SNDRV_RAWMIDI_INFO_DUPLEX;
++static void release_resources(struct snd_ff *ff)
++{
++	fw_iso_resources_free(&ff->tx_resources);
++	fw_iso_resources_free(&ff->rx_resources);
++}
++
++static inline void finish_session(struct snd_ff *ff)
++{
++	ff->spec->protocol->finish_session(ff);
++	ff->spec->protocol->switch_fetching_mode(ff, false);
++}
++
++static int init_stream(struct snd_ff *ff, enum amdtp_stream_direction dir)
++{
++	int err;
++	struct fw_iso_resources *resources;
++	struct amdtp_stream *stream;
++
++	if (dir == AMDTP_IN_STREAM) {
++		resources = &ff->tx_resources;
++		stream = &ff->tx_stream;
++	} else {
++		resources = &ff->rx_resources;
++		stream = &ff->rx_stream;
++	}
++
++	err = fw_iso_resources_init(resources, ff->unit);
++	if (err < 0)
++		return err;
++
++	err = amdtp_ff_init(stream, ff->unit, dir);
++	if (err < 0)
++		fw_iso_resources_destroy(resources);
++
++	return err;
++}
++
++static void destroy_stream(struct snd_ff *ff, enum amdtp_stream_direction dir)
++{
++	if (dir == AMDTP_IN_STREAM) {
++		amdtp_stream_destroy(&ff->tx_stream);
++		fw_iso_resources_destroy(&ff->tx_resources);
++	} else {
++		amdtp_stream_destroy(&ff->rx_stream);
++		fw_iso_resources_destroy(&ff->rx_resources);
++	}
++}
++
++int snd_ff_stream_init_duplex(struct snd_ff *ff)
++{
++	int err;
++
++	err = init_stream(ff, AMDTP_OUT_STREAM);
++	if (err < 0)
++		goto end;
++
++	err = init_stream(ff, AMDTP_IN_STREAM);
++	if (err < 0)
++		destroy_stream(ff, AMDTP_OUT_STREAM);
++end:
++	return err;
++}
++
++/*
++ * This function should be called before starting streams or after stopping
++ * streams.
++ */
++void snd_ff_stream_destroy_duplex(struct snd_ff *ff)
++{
++	destroy_stream(ff, AMDTP_IN_STREAM);
++	destroy_stream(ff, AMDTP_OUT_STREAM);
++}
++
++int snd_ff_stream_start_duplex(struct snd_ff *ff, unsigned int rate)
++{
++	unsigned int curr_rate;
++	enum snd_ff_clock_src src;
++	int err;
++
++	if (ff->substreams_counter == 0)
++		return 0;
++
++	err = ff->spec->protocol->get_clock(ff, &curr_rate, &src);
++	if (err < 0)
++		return err;
++	if (curr_rate != rate ||
++	    amdtp_streaming_error(&ff->tx_stream) ||
++	    amdtp_streaming_error(&ff->rx_stream)) {
++		finish_session(ff);
++
++		amdtp_stream_stop(&ff->tx_stream);
++		amdtp_stream_stop(&ff->rx_stream);
++
++		release_resources(ff);
++	}
++
++	/*
++	 * Regardless of current source of clock signal, drivers transfer some
++	 * packets. Then, the device transfers packets.
++	 */
++	if (!amdtp_stream_running(&ff->rx_stream)) {
++		err = keep_resources(ff, rate);
++		if (err < 0)
++			goto error;
++
++		err = ff->spec->protocol->begin_session(ff, rate);
++		if (err < 0)
++			goto error;
++
++		err = amdtp_stream_start(&ff->rx_stream,
++					 ff->rx_resources.channel,
++					 fw_parent_device(ff->unit)->max_speed);
++		if (err < 0)
++			goto error;
++
++		if (!amdtp_stream_wait_callback(&ff->rx_stream,
++						CALLBACK_TIMEOUT_MS)) {
++			err = -ETIMEDOUT;
++			goto error;
++		}
++
++		err = ff->spec->protocol->switch_fetching_mode(ff, true);
++		if (err < 0)
++			goto error;
++	}
++
++	if (!amdtp_stream_running(&ff->tx_stream)) {
++		err = amdtp_stream_start(&ff->tx_stream,
++					 ff->tx_resources.channel,
++					 fw_parent_device(ff->unit)->max_speed);
++		if (err < 0)
++			goto error;
++
++		if (!amdtp_stream_wait_callback(&ff->tx_stream,
++						CALLBACK_TIMEOUT_MS)) {
++			err = -ETIMEDOUT;
++			goto error;
++		}
++	}
 +
 +	return 0;
++error:
++	amdtp_stream_stop(&ff->tx_stream);
++	amdtp_stream_stop(&ff->rx_stream);
++
++	finish_session(ff);
++	release_resources(ff);
++
++	return err;
++}
++
++void snd_ff_stream_stop_duplex(struct snd_ff *ff)
++{
++	if (ff->substreams_counter > 0)
++		return;
++
++	amdtp_stream_stop(&ff->tx_stream);
++	amdtp_stream_stop(&ff->rx_stream);
++	finish_session(ff);
++	release_resources(ff);
++}
++
++void snd_ff_stream_update_duplex(struct snd_ff *ff)
++{
++	/* The device discontinue to transfer packets.  */
++	amdtp_stream_pcm_abort(&ff->tx_stream);
++	amdtp_stream_stop(&ff->tx_stream);
++
++	amdtp_stream_pcm_abort(&ff->rx_stream);
++	amdtp_stream_stop(&ff->rx_stream);
++
++	fw_iso_resources_update(&ff->tx_resources);
++	fw_iso_resources_update(&ff->rx_resources);
 +}
 diff --git a/sound/firewire/fireface/ff.c b/sound/firewire/fireface/ff.c
-index 4db630f..11d76b3 100644
+index 22e7bcb..6bdbebd 100644
 --- a/sound/firewire/fireface/ff.c
 +++ b/sound/firewire/fireface/ff.c
-@@ -61,6 +61,10 @@ static void do_registration(struct work_struct *work)
+@@ -29,6 +29,7 @@ static void name_card(struct snd_ff *ff)
+ 
+ static void ff_free(struct snd_ff *ff)
+ {
++	snd_ff_stream_destroy_duplex(ff);
+ 	snd_ff_transaction_unregister(ff);
+ 
+ 	fw_unit_put(ff->unit);
+@@ -61,6 +62,10 @@ static void do_registration(struct work_struct *work)
  
  	name_card(ff);
  
-+	err = snd_ff_create_midi_devices(ff);
++	err = snd_ff_stream_init_duplex(ff);
 +	if (err < 0)
 +		goto error;
 +
- 	err = snd_card_register(ff->card);
- 	if (err < 0)
- 		goto error;
-@@ -91,6 +95,7 @@ static int snd_ff_probe(struct fw_unit *unit,
- 	dev_set_drvdata(&unit->device, ff);
+ 	snd_ff_proc_init(ff);
  
- 	mutex_init(&ff->mutex);
-+	spin_lock_init(&ff->lock);
+ 	err = snd_ff_create_midi_devices(ff);
+@@ -78,6 +83,7 @@ static void do_registration(struct work_struct *work)
+ 	return;
+ error:
+ 	snd_ff_transaction_unregister(ff);
++	snd_ff_stream_destroy_duplex(ff);
+ 	snd_card_free(ff->card);
+ 	dev_info(&ff->unit->device,
+ 		 "Sound card registration failed: %d\n", err);
+@@ -117,6 +123,9 @@ static void snd_ff_update(struct fw_unit *unit)
+ 		snd_fw_schedule_registration(unit, &ff->dwork);
  
- 	ff->spec = (const struct snd_ff_spec *)entry->driver_data;
+ 	snd_ff_transaction_reregister(ff);
++
++	if (ff->registered)
++		snd_ff_stream_update_duplex(ff);
+ }
  
+ static void snd_ff_remove(struct fw_unit *unit)
 diff --git a/sound/firewire/fireface/ff.h b/sound/firewire/fireface/ff.h
-index bac2e58..2944bde 100644
+index fa7242f..6599c11 100644
 --- a/sound/firewire/fireface/ff.h
 +++ b/sound/firewire/fireface/ff.h
-@@ -47,6 +47,7 @@ struct snd_ff {
- 	struct snd_card *card;
- 	struct fw_unit *unit;
- 	struct mutex mutex;
-+	spinlock_t lock;
+@@ -24,6 +24,7 @@
  
- 	bool registered;
- 	struct delayed_work dwork;
-@@ -98,4 +99,6 @@ int snd_ff_transaction_register(struct snd_ff *ff);
- int snd_ff_transaction_reregister(struct snd_ff *ff);
- void snd_ff_transaction_unregister(struct snd_ff *ff);
+ #include "../lib.h"
+ #include "../amdtp-stream.h"
++#include "../iso-resources.h"
  
-+int snd_ff_create_midi_devices(struct snd_ff *ff);
+ #define SND_FF_STREAM_MODES		3
+ 
+@@ -68,6 +69,12 @@ struct snd_ff {
+ 	ktime_t next_ktime[SND_FF_OUT_MIDI_PORTS];
+ 	bool rx_midi_error[SND_FF_OUT_MIDI_PORTS];
+ 	unsigned int rx_bytes[SND_FF_OUT_MIDI_PORTS];
 +
- #endif
++	unsigned int substreams_counter;
++	struct amdtp_stream tx_stream;
++	struct amdtp_stream rx_stream;
++	struct fw_iso_resources tx_resources;
++	struct fw_iso_resources rx_resources;
+ };
+ 
+ enum snd_ff_clock_src {
+@@ -107,6 +114,12 @@ int amdtp_ff_add_pcm_hw_constraints(struct amdtp_stream *s,
+ int amdtp_ff_init(struct amdtp_stream *s, struct fw_unit *unit,
+ 		  enum amdtp_stream_direction dir);
+ 
++int snd_ff_stream_init_duplex(struct snd_ff *ff);
++void snd_ff_stream_destroy_duplex(struct snd_ff *ff);
++int snd_ff_stream_start_duplex(struct snd_ff *ff, unsigned int rate);
++void snd_ff_stream_stop_duplex(struct snd_ff *ff);
++void snd_ff_stream_update_duplex(struct snd_ff *ff);
++
+ void snd_ff_proc_init(struct snd_ff *ff);
+ 
+ int snd_ff_create_midi_devices(struct snd_ff *ff);
 -- 
 2.9.3
