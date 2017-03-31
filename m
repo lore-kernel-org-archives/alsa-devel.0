@@ -2,29 +2,30 @@ From: Paul Stone <metabagel@icloud.com>
 Subject: Re:
  =?utf-8?q?mono/stereo_translation_=26_number_of_fram?=
  =?utf-8?q?es_per_period?=
-Date: Fri, 31 Mar 2017 21:14:54 +0000 (GMT)
-Message-ID: <84ce3d13-5625-4fbc-a114-4dbcbba0d811@me.com>
+Date: Fri, 31 Mar 2017 21:20:15 +0000 (GMT)
+Message-ID: <1c4eab52-2d28-4560-bb29-74009f5a9906@me.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from st11p00im-asmtp004.me.com (st11p00im-asmtp004.me.com
- [17.172.80.98]) by alsa0.perex.cz (Postfix) with ESMTP id 9E5D82668F6
- for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2017 23:14:58 +0200 (CEST)
-Received: from process-dkim-sign-daemon.st11p00im-asmtp004.me.com by
- st11p00im-asmtp004.me.com
+Received: from pv33p00im-asmtp002.me.com (pv33p00im-asmtp002.me.com
+ [17.142.194.251])
+ by alsa0.perex.cz (Postfix) with ESMTP id 49C8C2668F6
+ for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2017 23:22:24 +0200 (CEST)
+Received: from process-dkim-sign-daemon.pv33p00im-asmtp002.me.com by
+ pv33p00im-asmtp002.me.com
  (Oracle Communications Messaging Server 7.0.5.38.0 64bit (built Feb 26 2016))
- id <0ONP00A003E22300@st11p00im-asmtp004.me.com> for
- alsa-devel@alsa-project.org; Fri, 31 Mar 2017 21:14:57 +0000 (GMT)
+ id <0ONP0060076TEP00@pv33p00im-asmtp002.me.com> for
+ alsa-devel@alsa-project.org; Fri, 31 Mar 2017 21:20:17 +0000 (GMT)
 Received: from st13p13im-spool001.me.com ([17.164.57.96])
- by st11p00im-asmtp004.me.com
+ by pv33p00im-asmtp002.me.com
  (Oracle Communications Messaging Server 7.0.5.38.0 64bit (built Feb 26 2016))
- with ESMTP id <0ONP00KE170UIC40@st11p00im-asmtp004.me.com> for
- alsa-devel@alsa-project.org; Fri, 31 Mar 2017 21:14:54 +0000 (GMT)
+ with ESMTP id <0ONP006SX79RGN00@pv33p00im-asmtp002.me.com> for
+ alsa-devel@alsa-project.org; Fri, 31 Mar 2017 21:20:16 +0000 (GMT)
 Received: from localhost ([17.164.56.54]) by st13p13im-spool001.mac.com
  (Oracle Communications Messaging Server 7.0.5.38.0 64bit (built Feb 26 2016))
- with ESMTP id <0ONP00GLH70UDU10@st13p13im-spool001.mac.com> for
- alsa-devel@alsa-project.org; Fri, 31 Mar 2017 21:14:54 +0000 (GMT)
+ with ESMTP id <0ONP00GPN79RDU10@st13p13im-spool001.mac.com> for
+ alsa-devel@alsa-project.org; Fri, 31 Mar 2017 21:20:15 +0000 (GMT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -37,7 +38,14 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is becoming increasingly difficult and frustrating. I've tried to work around ALSA by setting up a different chunk size for mono vs. stereo. However, ALSA now wants the total stereo buffer size to be half as large, in accordance with the chunk size. This seems completely arbitrary to me. Why can I not specify the buffer size?
-
-I feel like I must be missing something very basic.
--Paul Stone
+SSBzZXQgdXAgdGhlIGJ1ZmZlcl9ieXRlc19tYXggdG8gY29ycmVzcG9uZCB3aXRowqBhIGJ1ZmZl
+ciBzaXplIG9mIDQga0IuIEZvciBTMTZfTEUgYW5kIHN0ZXJlbyBpbnRlcmxlYXZlZCwgdGhhdCBt
+ZWFucyAxMDI0IGZyYW1lcyBpbiB0aGUgYnVmZmVyLiDCoFdoZW4gaXQgZ29lcyBhYm92ZSA1MTIs
+IEkgZ2V0IGEgQlVHIHdhcm5pbmcgZnJvbSBBTFNBOgoKWyAyNDEuMjE5MTg0XSBBTFNBIHNvdW5k
+L2NvcmUvcGNtX2xpYi5jOjM1MiBCVUc6IHBjbUMzRDBwOjAsIHBvcyA9IDUxMiwgYnVmZmVyIHNp
+emUgPSA1MTIsIHBlcmlvZCBzaXplID0gMTI4CgpJIGd1ZXNzIEkgd2lsbCBoYXZlIHRvIGRyaWxs
+wqBkb3duIGludG8gQUxTQSBhbmQgc2VlIHdoZXJlIHRoYXQgYnVmZmVyIHNpemUgaXMgY29taW5n
+IGZyb20uCgotUGF1bCBTdG9uZQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwK
