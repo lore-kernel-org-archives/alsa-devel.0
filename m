@@ -1,67 +1,62 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH] ALSA: hda - fix a problem for lineout on a Dell AIO machine
-Date: Fri, 31 Mar 2017 10:31:40 +0800
-Message-ID: <1490927500-12672-1-git-send-email-hui.wang@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: stable@vger.kernel.org, hui.wang@canonical.com
+From: Pascal Wichmann <pascal.wichmann@pa-w.de>
+Subject: Re: Problems with the DP MST audio support patchset
+Date: Fri, 31 Mar 2017 08:11:52 +0200
+Message-ID: <49ff23f3-7c58-abf1-f1ff-87822f0b0585@pa-w.de>
+References: <6800ee6e-31c2-b5eb-fbb2-6826d8c66dc9@pa-w.de>
+ <bceb4859-6dc9-b7a8-4d3a-81ac2a1fa907@pa-w.de>
+ <96A12704CE18D347B625EE2D4A099D19524850F3@SHSMSX103.ccr.corp.intel.com>
+ <63a71394-1cd4-e3e3-7364-37c2da90c791@pa-w.de>
+ <96A12704CE18D347B625EE2D4A099D19524854BD@SHSMSX103.ccr.corp.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from web02.pwsrv.de (web02.pwsrv.de [188.68.38.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id D1AE2266BCE
+ for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2017 08:11:55 +0200 (CEST)
+In-Reply-To: <96A12704CE18D347B625EE2D4A099D19524854BD@SHSMSX103.ccr.corp.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Yang, Libin" <libin.yang@intel.com>, Libin Yang <libin.yang@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On this Dell AIO machine, the lineout jack does not work.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-We found the pin 0x1a is assigned to lineout on this machine, and in
-the past, we applied ALC298_FIXUP_DELL1_MIC_NO_PRESENCE to fix the
-heaset-set mic problem for this machine, this fixup will redefine
-the pin 0x1a to headphone-mic, as a result the lineout doesn't
-work anymore.
+Hi,
 
-After consulting with Dell, they told us this machine doesn't support
-microphone via headset jack, so we add a new fixup which only defines
-the pin 0x18 as the headset-mic.
+> Get it. Basically, 5.1 audio should work. What format are you using
+>  for testing the 5.1 audio?
+I do not use a specific format for testing; the issue occurs using
+speaker-test as well as using any application with audio output as for
+example vlc, rhythmbox or a browser like chromium or firefox.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+As mentioned, when configuring the output as digital stereo or 7.1
+surround, except for the second issue explained in my first mail
+(which actually is more annoying) the audio works.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 634e64a..1bf3d67 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4878,6 +4878,7 @@ enum {
- 	ALC256_FIXUP_ASUS_AIO_GPIO2,
- 	ALC233_FIXUP_ASUS_MIC_NO_PRESENCE,
- 	ALC233_FIXUP_EAPD_COEF_AND_MIC_NO_PRESENCE,
-+	ALC298_FIXUP_DELL_AIO_MIC_NO_PRESENCE,
- };
- 
- static const struct hda_fixup alc269_fixups[] = {
-@@ -5567,7 +5568,7 @@ enum {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc298_fixup_speaker_volume,
- 		.chained = true,
--		.chain_id = ALC298_FIXUP_DELL1_MIC_NO_PRESENCE,
-+		.chain_id = ALC298_FIXUP_DELL_AIO_MIC_NO_PRESENCE,
- 	},
- 	[ALC256_FIXUP_DELL_INSPIRON_7559_SUBWOOFER] = {
- 		.type = HDA_FIXUP_PINS,
-@@ -5638,6 +5639,15 @@ enum {
- 		.chained = true,
- 		.chain_id = ALC233_FIXUP_ASUS_MIC_NO_PRESENCE
- 	},
-+	[ALC298_FIXUP_DELL_AIO_MIC_NO_PRESENCE] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x18, 0x01a1913c }, /* use as headset mic, without its own jack detect */
-+			{ }
-+		},
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_HEADSET_MODE
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
--- 
-1.9.1
+Regards,
+Pascal
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEE/gJ8Tpn0OtJz8hxD6+YIa34W/zYFAljd8yIACgkQ6+YIa34W
+/zY3Bw/+MW4ziQgRwY8/ElLytL9ewBQaft4DZLZoVaJomIwhgpr1y135rpJRnmMB
+XkQk9Qr7qMTmE8/wTssEwJwZ38HFcrn5sSGlhIPIcqy3J3D4EM3ANTo0xzl2yoYc
+zLxPuu+t+hPBeWOZgK34IjhQzuRZLXx5lsPFNpCAzJKbP8RTExw1Zu+OvbZQAieU
+YM7T6nf3s98BF2/1DLdXjl62PDxVQ08olPM/euEhi3DzsZs60hIkI6ebNsXy6xnN
+Os+bHh5Mgc5vdjjDEQ9+or8aPFd9FeOo1qSZemNPe3h8OLCtuUt53SkmJwqpW3qH
+L8Wa/xjOxPFDVw9Ehyp+jD51s4lY+xk0h4+De+lL1pq0srNM1NdDEh0+x5kjCBf9
+l2XaXN0sxmDmJkIRzdPYrQ1NB3ieNAhqHGcj+Zb4x/gzH8WJ8Z/+VQZVu4sntorj
+4JcIzmw7U8LdU2t3ytqZ6JTlrr1t+V31gIDQuB1M5G336Qj7F5XVJxVc989uEOkP
+qWIMLXrWXUhKqMSBfpQkTAFKGbD4xR6A9Em/efRdXFkZH+AXiZxTSfZt1dSFqOZ6
+OtVhL3Ew4RW7xSXTwILB1eh4uoFnztLm9VCB9JGoge2OQII8QcNMUbdoNtoNjLxh
+XkMkWCnd8iPYH0ix0dMKdaTI0c8JUCWZKjun2Tx9jePLoMuqE60=
+=JrNV
+-----END PGP SIGNATURE-----
