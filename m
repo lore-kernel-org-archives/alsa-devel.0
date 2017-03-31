@@ -1,98 +1,67 @@
-From: "Yang, Libin" <libin.yang@intel.com>
-Subject: Re: Problems with the DP MST audio support patchset
-Date: Fri, 31 Mar 2017 01:27:08 +0000
-Message-ID: <96A12704CE18D347B625EE2D4A099D19524854BD@SHSMSX103.ccr.corp.intel.com>
-References: <6800ee6e-31c2-b5eb-fbb2-6826d8c66dc9@pa-w.de>
- <bceb4859-6dc9-b7a8-4d3a-81ac2a1fa907@pa-w.de>
- <96A12704CE18D347B625EE2D4A099D19524850F3@SHSMSX103.ccr.corp.intel.com>
- <63a71394-1cd4-e3e3-7364-37c2da90c791@pa-w.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 91BDB266BCE
- for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2017 03:27:12 +0200 (CEST)
-In-Reply-To: <63a71394-1cd4-e3e3-7364-37c2da90c791@pa-w.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pascal Wichmann <pascal.wichmann@pa-w.de>, Libin Yang <libin.yang@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - fix a problem for lineout on a Dell AIO machine
+Date: Fri, 31 Mar 2017 10:31:40 +0800
+Message-ID: <1490927500-12672-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: stable@vger.kernel.org, hui.wang@canonical.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Pascal,
+On this Dell AIO machine, the lineout jack does not work.
 
->-----Original Message-----
->From: Pascal Wichmann [mailto:pascal.wichmann@pa-w.de]
->Sent: Friday, March 31, 2017 12:36 AM
->To: Yang, Libin <libin.yang@intel.com>; Libin Yang
-><libin.yang@linux.intel.com>; alsa-devel@alsa-project.org
->Subject: Re: [alsa-devel] Problems with the DP MST audio support patchset
->
->-----BEGIN PGP SIGNED MESSAGE-----
->Hash: SHA256
->
->Hi,
->
->> Do you mean the issue is caused by the patches
->> 1480992519-108079-1-git-send-email-libin.yang@intel.com?
->I don't know whether the issues are caused directly by the specific patches;
->without them, digital audio does not work at all in my setup. Using analog
->audio however does not have the problems mentioned in my first email.
->
->> I can't see which patches are included you mentioned in the link.
->I am building my kernel from drm-tip. The relevant patches enabling DP M ST
->audio seem to be "ALSA: hda - add DP mst verb support" [0] as well as
->"ALSA: hda - add DP MST audio support" [1].
->
->> Do you know if the DP MST audio mode is used in your case?
->I think it is used; at least dp/hdmi audio does not work at all without building
->against drm-tip. (the outputs are all stated as unplugged and unavailable in
->pavucontrol for example) Is there any way to know for sure?
+We found the pin 0x1a is assigned to lineout on this machine, and in
+the past, we applied ALC298_FIXUP_DELL1_MIC_NO_PRESENCE to fix the
+heaset-set mic problem for this machine, this fixup will redefine
+the pin 0x1a to headphone-mic, as a result the lineout doesn't
+work anymore.
 
-Get it. Basically, 5.1 audio should work. What format are you using for
-testing the 5.1 audio?
+After consulting with Dell, they told us this machine doesn't support
+microphone via headset jack, so we add a new fixup which only defines
+the pin 0x18 as the headset-mic.
 
-Regards,
-Libin
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
->
->Regards,
->Pascal
->
->[0]
->https://cgit.freedesktop.org/drm-tip/commit/?id=13800f397ee3b4996f316b9c
->aa8482cb90edef0d
->[1]
->https://cgit.freedesktop.org/drm-tip/commit/?id=9152085defb6426ce8f9989c
->a27e4450daefbd89
->-----BEGIN PGP SIGNATURE-----
->
->iQIzBAEBCAAdFiEE/gJ8Tpn0OtJz8hxD6+YIa34W/zYFAljdM90ACgkQ6+YIa34W
->/zZk8A//YmadcSwYQTJIJKHJREjGSITGPx6wQYA8dix2EvP0frhnL5LEAfzCUD0b
->05H9cc+kBG3z6dIs6yytX6TFtKlqnE/ka1D80+ZYiMf/RTYpowJWXogoPF8iVW68
->MTaUtM5/CGhFF/e1V7AKDX36r5eVKYwKNUIb1vXE+nU6WbuzNrQn/vgwtIboC
->Xsj
->AQVC9RT7sRHnNVNq+WD4NYNSKfTJasnhbGo1+X3eTjY5vcWb/5H3ysaayW9W
->qnkI
->W3jYdoQmWCDZC14dKGnNZJ5J1WlF03qh95bQTJB7CDl66Nqqck621MbSzLp3+
->2xv
->0eliZLcdumLhzu6wjTKcqXsyhejhRYYR25AfKGvB8zbujKnHZOSWO1T5QgJKOVHY
->oAQAgivpmNppGuNBmFKOWDnB5pec+kx3YDo9TnTUhPfXs04vGV0nnzugt9iu9
->STq
->kzhu5fTmRfNK6uImcL4lo8JKmFu8Ws60kO0OcuUh8xd0dFy1vNF4qA0cZZywBG
->p+
->YSsTzKhljHiq2aV1CpG2xMIom1YR38agTVWbL1aeGZf3FZUhD1+G9aLB1Lz6dmf
->g
->lLlne94HGnvgGoJkTx7BR6MRmUDDb4E8sdnx/yGtJ8ILKImAMJBURHfdcv3wp+G
->C
->oihf+BjIdV7BSDFMBxW/UeEM616rmNOGbG7zWxXoH6ZTWB50CwA=
->=8Sl2
->-----END PGP SIGNATURE-----
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 634e64a..1bf3d67 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4878,6 +4878,7 @@ enum {
+ 	ALC256_FIXUP_ASUS_AIO_GPIO2,
+ 	ALC233_FIXUP_ASUS_MIC_NO_PRESENCE,
+ 	ALC233_FIXUP_EAPD_COEF_AND_MIC_NO_PRESENCE,
++	ALC298_FIXUP_DELL_AIO_MIC_NO_PRESENCE,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -5567,7 +5568,7 @@ enum {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc298_fixup_speaker_volume,
+ 		.chained = true,
+-		.chain_id = ALC298_FIXUP_DELL1_MIC_NO_PRESENCE,
++		.chain_id = ALC298_FIXUP_DELL_AIO_MIC_NO_PRESENCE,
+ 	},
+ 	[ALC256_FIXUP_DELL_INSPIRON_7559_SUBWOOFER] = {
+ 		.type = HDA_FIXUP_PINS,
+@@ -5638,6 +5639,15 @@ enum {
+ 		.chained = true,
+ 		.chain_id = ALC233_FIXUP_ASUS_MIC_NO_PRESENCE
+ 	},
++	[ALC298_FIXUP_DELL_AIO_MIC_NO_PRESENCE] = {
++		.type = HDA_FIXUP_PINS,
++		.v.pins = (const struct hda_pintbl[]) {
++			{ 0x18, 0x01a1913c }, /* use as headset mic, without its own jack detect */
++			{ }
++		},
++		.chained = true,
++		.chain_id = ALC269_FIXUP_HEADSET_MODE
++	},
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+-- 
+1.9.1
