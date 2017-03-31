@@ -1,18 +1,18 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: usb-audio: Fake also USB device id when
-	alias is given
-Date: Fri, 31 Mar 2017 11:26:20 +0200
-Message-ID: <20170331092620.21980-1-tiwai@suse.de>
+From: Jurgen Kramer <gtmkramer@xs4all.nl>
+Subject: Re: [PATCH] ALSA: usb-audio: Fake also USB device id
+ when alias is given
+Date: Fri, 31 Mar 2017 13:06:18 +0200
+Message-ID: <1490958378.6952.3.camel@xs4all.nl>
+References: <20170331092620.21980-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 7BA4D2669DD
- for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2017 11:26:22 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id F1A66AB46
- for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2017 09:26:21 +0000 (UTC)
+Received: from lb1-smtp-cloud2.xs4all.net (lb1-smtp-cloud2.xs4all.net
+ [194.109.24.21])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3475D26691F
+ for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2017 13:06:22 +0200 (CEST)
+In-Reply-To: <20170331092620.21980-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Recently snd-usb-audio driver received a new option, quirk_alias, to
-allow user to apply the existing quirk for a different device.  This
-works for many quirks as is, but some still need more tune-ups:
-namely, some quirks check the USB vendor/device IDs in various places,
-thus it doesn't work as long as the ID is different from the expected
-one.
-
-With this patch, the driver stores the aliased USB ID, so that these
-rest quirks per device ID are applied.  The transition to use the
-cached USB ID was already done in the past, so what we needed now is
-only to overwrite chip->usb_id.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/card.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index f36cb068dad3..6640277a725b 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -332,6 +332,7 @@ static int snd_usb_audio_dev_free(struct snd_device *device)
- static int snd_usb_audio_create(struct usb_interface *intf,
- 				struct usb_device *dev, int idx,
- 				const struct snd_usb_audio_quirk *quirk,
-+				unsigned int usb_id,
- 				struct snd_usb_audio **rchip)
- {
- 	struct snd_card *card;
-@@ -381,8 +382,7 @@ static int snd_usb_audio_create(struct usb_interface *intf,
- 	atomic_set(&chip->usage_count, 0);
- 	atomic_set(&chip->shutdown, 0);
- 
--	chip->usb_id = USB_ID(le16_to_cpu(dev->descriptor.idVendor),
--			      le16_to_cpu(dev->descriptor.idProduct));
-+	chip->usb_id = usb_id;
- 	INIT_LIST_HEAD(&chip->pcm_list);
- 	INIT_LIST_HEAD(&chip->ep_list);
- 	INIT_LIST_HEAD(&chip->midi_list);
-@@ -569,7 +569,7 @@ static int usb_audio_probe(struct usb_interface *intf,
- 			    (vid[i] == -1 || vid[i] == USB_ID_VENDOR(id)) &&
- 			    (pid[i] == -1 || pid[i] == USB_ID_PRODUCT(id))) {
- 				err = snd_usb_audio_create(intf, dev, i, quirk,
--							   &chip);
-+							   id, &chip);
- 				if (err < 0)
- 					goto __error;
- 				chip->pm_intf = intf;
--- 
-2.11.1
+SGkgVGFrYXNoaSwKCk9uIEZyaSwgMjAxNy0wMy0zMSBhdCAxMToyNiArMDIwMCwgVGFrYXNoaSBJ
+d2FpIHdyb3RlOgo+IFJlY2VudGx5IHNuZC11c2ItYXVkaW8gZHJpdmVyIHJlY2VpdmVkIGEgbmV3
+IG9wdGlvbiwgcXVpcmtfYWxpYXMsIHRvCj4gYWxsb3cgdXNlciB0byBhcHBseSB0aGUgZXhpc3Rp
+bmcgcXVpcmsgZm9yIGEgZGlmZmVyZW50IGRldmljZS7CoMKgVGhpcwo+IHdvcmtzIGZvciBtYW55
+IHF1aXJrcyBhcyBpcywgYnV0IHNvbWUgc3RpbGwgbmVlZCBtb3JlIHR1bmUtdXBzOgo+IG5hbWVs
+eSwgc29tZSBxdWlya3MgY2hlY2sgdGhlIFVTQiB2ZW5kb3IvZGV2aWNlIElEcyBpbiB2YXJpb3Vz
+Cj4gcGxhY2VzLAo+IHRodXMgaXQgZG9lc24ndCB3b3JrIGFzIGxvbmcgYXMgdGhlIElEIGlzIGRp
+ZmZlcmVudCBmcm9tIHRoZSBleHBlY3RlZAo+IG9uZS4KPiAKPiBXaXRoIHRoaXMgcGF0Y2gsIHRo
+ZSBkcml2ZXIgc3RvcmVzIHRoZSBhbGlhc2VkIFVTQiBJRCwgc28gdGhhdCB0aGVzZQo+IHJlc3Qg
+cXVpcmtzIHBlciBkZXZpY2UgSUQgYXJlIGFwcGxpZWQuwqDCoFRoZSB0cmFuc2l0aW9uIHRvIHVz
+ZSB0aGUKPiBjYWNoZWQgVVNCIElEIHdhcyBhbHJlYWR5IGRvbmUgaW4gdGhlIHBhc3QsIHNvIHdo
+YXQgd2UgbmVlZGVkIG5vdyBpcwo+IG9ubHkgdG8gb3ZlcndyaXRlIGNoaXAtPnVzYl9pZC4KPiAK
+ClNvdW5kcyBpbnRlcmVzdGluZy4gV291bGQgdGhpcyB3b3JrIGZvcgpzbmRfdXNiX2ludGVyZmFj
+ZV9kc2RfZm9ybWF0X3F1aXJrcygpID8KClJlZ2FyZHMsCkp1cmdlbgoKCj4gU2lnbmVkLW9mZi1i
+eTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgo+IC0tLQo+IMKgc291bmQvdXNiL2NhcmQu
+YyB8IDYgKysrLS0tCj4gwqAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAzIGRlbGV0
+aW9ucygtKQo+IAo+IGRpZmYgLS1naXQgYS9zb3VuZC91c2IvY2FyZC5jIGIvc291bmQvdXNiL2Nh
+cmQuYwo+IGluZGV4IGYzNmNiMDY4ZGFkMy4uNjY0MDI3N2E3MjViIDEwMDY0NAo+IC0tLSBhL3Nv
+dW5kL3VzYi9jYXJkLmMKPiArKysgYi9zb3VuZC91c2IvY2FyZC5jCj4gQEAgLTMzMiw2ICszMzIs
+NyBAQCBzdGF0aWMgaW50IHNuZF91c2JfYXVkaW9fZGV2X2ZyZWUoc3RydWN0Cj4gc25kX2Rldmlj
+ZSAqZGV2aWNlKQo+IMKgc3RhdGljIGludCBzbmRfdXNiX2F1ZGlvX2NyZWF0ZShzdHJ1Y3QgdXNi
+X2ludGVyZmFjZSAqaW50ZiwKPiDCoAkJCQlzdHJ1Y3QgdXNiX2RldmljZSAqZGV2LCBpbnQgaWR4
+LAo+IMKgCQkJCWNvbnN0IHN0cnVjdCBzbmRfdXNiX2F1ZGlvX3F1aXJrCj4gKnF1aXJrLAo+ICsJ
+CQkJdW5zaWduZWQgaW50IHVzYl9pZCwKPiDCoAkJCQlzdHJ1Y3Qgc25kX3VzYl9hdWRpbyAqKnJj
+aGlwKQo+IMKgewo+IMKgCXN0cnVjdCBzbmRfY2FyZCAqY2FyZDsKPiBAQCAtMzgxLDggKzM4Miw3
+IEBAIHN0YXRpYyBpbnQgc25kX3VzYl9hdWRpb19jcmVhdGUoc3RydWN0Cj4gdXNiX2ludGVyZmFj
+ZSAqaW50ZiwKPiDCoAlhdG9taWNfc2V0KCZjaGlwLT51c2FnZV9jb3VudCwgMCk7Cj4gwqAJYXRv
+bWljX3NldCgmY2hpcC0+c2h1dGRvd24sIDApOwo+IMKgCj4gLQljaGlwLT51c2JfaWQgPSBVU0Jf
+SUQobGUxNl90b19jcHUoZGV2LT5kZXNjcmlwdG9yLmlkVmVuZG9yKSwKPiAtCQkJwqDCoMKgwqDC
+oMKgbGUxNl90b19jcHUoZGV2LQo+ID5kZXNjcmlwdG9yLmlkUHJvZHVjdCkpOwo+ICsJY2hpcC0+
+dXNiX2lkID0gdXNiX2lkOwo+IMKgCUlOSVRfTElTVF9IRUFEKCZjaGlwLT5wY21fbGlzdCk7Cj4g
+wqAJSU5JVF9MSVNUX0hFQUQoJmNoaXAtPmVwX2xpc3QpOwo+IMKgCUlOSVRfTElTVF9IRUFEKCZj
+aGlwLT5taWRpX2xpc3QpOwo+IEBAIC01NjksNyArNTY5LDcgQEAgc3RhdGljIGludCB1c2JfYXVk
+aW9fcHJvYmUoc3RydWN0IHVzYl9pbnRlcmZhY2UKPiAqaW50ZiwKPiDCoAkJCcKgwqDCoMKgKHZp
+ZFtpXSA9PSAtMSB8fCB2aWRbaV0gPT0KPiBVU0JfSURfVkVORE9SKGlkKSkgJiYKPiDCoAkJCcKg
+wqDCoMKgKHBpZFtpXSA9PSAtMSB8fCBwaWRbaV0gPT0KPiBVU0JfSURfUFJPRFVDVChpZCkpKSB7
+Cj4gwqAJCQkJZXJyID0gc25kX3VzYl9hdWRpb19jcmVhdGUoaW50ZiwKPiBkZXYsIGksIHF1aXJr
+LAo+IC0JCQkJCQkJwqDCoMKgJmNoaXApOwo+ICsJCQkJCQkJwqDCoMKgaWQsCj4gJmNoaXApOwo+
+IMKgCQkJCWlmIChlcnIgPCAwKQo+IMKgCQkJCQlnb3RvIF9fZXJyb3I7Cj4gwqAJCQkJY2hpcC0+
+cG1faW50ZiA9IGludGY7Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
+ZXZlbAo=
