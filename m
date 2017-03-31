@@ -1,191 +1,98 @@
-From: Ryan Lee <ryans.lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org>
-Subject: Re: [PATCH v3] ASoC: Add support for Maxim Integrated MAX98927 Amplifier
-Date: Thu, 30 Mar 2017 18:18:40 -0700
-Message-ID: <CAN4-ojkra_iMUVUjFZM50XT6kdpk_SwoW=9tj0+m781+Qs9Kqw@mail.gmail.com>
-References: <1490748828-31701-1-git-send-email-ryans.lee@maximintegrated.com> <20170329142304.qovnyqd6izackny2@sirena.org.uk>
+From: "Yang, Libin" <libin.yang@intel.com>
+Subject: Re: Problems with the DP MST audio support patchset
+Date: Fri, 31 Mar 2017 01:27:08 +0000
+Message-ID: <96A12704CE18D347B625EE2D4A099D19524854BD@SHSMSX103.ccr.corp.intel.com>
+References: <6800ee6e-31c2-b5eb-fbb2-6826d8c66dc9@pa-w.de>
+ <bceb4859-6dc9-b7a8-4d3a-81ac2a1fa907@pa-w.de>
+ <96A12704CE18D347B625EE2D4A099D19524850F3@SHSMSX103.ccr.corp.intel.com>
+ <63a71394-1cd4-e3e3-7364-37c2da90c791@pa-w.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20170329142304.qovnyqd6izackny2-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org, nh6z-fFIq/eER6g8@public.gmane.org, KCHSU0-KrzQf0k3Iz9BDgjK7y7TUQ@public.gmane.org, Axel Lin <axel.lin-8E1dMatC8ynQT0dZR+AlfA@public.gmane.org>, romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org, Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, oder_chiou-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Dylan Reid <dgreid-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 91BDB266BCE
+ for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2017 03:27:12 +0200 (CEST)
+In-Reply-To: <63a71394-1cd4-e3e3-7364-37c2da90c791@pa-w.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pascal Wichmann <pascal.wichmann@pa-w.de>, Libin Yang <libin.yang@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 29, 2017 at 7:23 AM, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
-> On Wed, Mar 29, 2017 at 09:53:48AM +0900, Ryan Lee wrote:
->
->> +     case SND_SOC_DAIFMT_CBS_CFM:
->> +             mode = MAX98927_PCM_MASTER_MODE_HYBRID;
->> +     default:
->> +             dev_err(codec->dev, "DAI clock mode unsupported");
->
-> Either we don't support _CBS_CFM or there's a missing break there.
+Hi Pascal,
 
-This was removed since CVS_CFM is not supported.
+>-----Original Message-----
+>From: Pascal Wichmann [mailto:pascal.wichmann@pa-w.de]
+>Sent: Friday, March 31, 2017 12:36 AM
+>To: Yang, Libin <libin.yang@intel.com>; Libin Yang
+><libin.yang@linux.intel.com>; alsa-devel@alsa-project.org
+>Subject: Re: [alsa-devel] Problems with the DP MST audio support patchset
+>
+>-----BEGIN PGP SIGNED MESSAGE-----
+>Hash: SHA256
+>
+>Hi,
+>
+>> Do you mean the issue is caused by the patches
+>> 1480992519-108079-1-git-send-email-libin.yang@intel.com?
+>I don't know whether the issues are caused directly by the specific patches;
+>without them, digital audio does not work at all in my setup. Using analog
+>audio however does not have the problems mentioned in my first email.
+>
+>> I can't see which patches are included you mentioned in the link.
+>I am building my kernel from drm-tip. The relevant patches enabling DP M ST
+>audio seem to be "ALSA: hda - add DP mst verb support" [0] as well as
+>"ALSA: hda - add DP MST audio support" [1].
+>
+>> Do you know if the DP MST audio mode is used in your case?
+>I think it is used; at least dp/hdmi audio does not work at all without building
+>against drm-tip. (the outputs are all stated as unplugged and unavailable in
+>pavucontrol for example) Is there any way to know for sure?
 
->
->> +     switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
->> +     case SND_SOC_DAIFMT_I2S:
->> +             max98927->iface |= SND_SOC_DAIFMT_I2S;
->> +
->> +     break;
->
-> Please use the kernel coding style as you do in the rest of this
-> function.
+Get it. Basically, 5.1 audio should work. What format are you using for
+testing the 5.1 audio?
 
-Modified as requested.
-
->
->> +     int reg = MAX98927_R0022_PCM_CLK_SETUP;
->> +     int mask = MAX98927_PCM_CLK_SETUP_BSEL_MASK;
->
->> +     regmap_update_bits(max98927->regmap, reg, mask, value);
->
-> reg and mask have exactly one user (as you'd expect), just use the
-> constants directly here to make things clearer.
-
-Removed reg and mask.
-
->
->> +     switch (snd_pcm_format_width(params_format(params))) {
->> +     case 16:
->> +             chan_sz = MAX98927_PCM_MODE_CFG_CHANSZ_16;
->> +             max98927->ch_size = 16;
->
-> You could just assign ch_size directly.
-
-Sorry I don't fully understand this.
-Anyway 'ch_size' will be directly updated from snd_pcm_format_width
-information after modification.
+Regards,
+Libin
 
 >
->> +     /* sampling rate configuration */
->> +     switch (params_rate(params)) {
->> +     case 8000:
->> +             sampling_rate |= MAX98927_PCM_SR_SET1_SR_8000;
+>Regards,
+>Pascal
 >
-> sampling_rate is only ever set to a real value in this switch statement,
-> you're not oring with anything else so you can just use an assignment
-> which would be a lot clearer (it's not obvious what else might go in
-> there) and the initial assignment to 0 for this and chan_sz can only
-> mask errors.
-
-Removed 'oring'.
-
+>[0]
+>https://cgit.freedesktop.org/drm-tip/commit/?id=13800f397ee3b4996f316b9c
+>aa8482cb90edef0d
+>[1]
+>https://cgit.freedesktop.org/drm-tip/commit/?id=9152085defb6426ce8f9989c
+>a27e4450daefbd89
+>-----BEGIN PGP SIGNATURE-----
 >
->> +     /* set sampling rate of IV */
->> +     if (max98927->interleave_mode &&
->> +             sampling_rate > MAX98927_PCM_SR_SET1_SR_16000)
->> +             regmap_update_bits(max98927->regmap,
->
-> Please use the kernel coding style, indent the second line of the if
-> with the ( so that it doesn't look like part of the conditional code.
-
-Modified as requested.
-
->
->> +     switch (reg) {
->> +     case MAX98927_R0001_INT_RAW1 ... MAX98927_R0028_ICC_RX_EN_B:
->
->
->> +             return true;
->> +     }
->> +     return false;
->
-> It'd be clearer to put the return false in the switch statement like the
-> return true, and also consistent with the _volatile_reg() function.
-
-Modified as requested.
-
->
->> +static const char * const max98927_speaker_source_text[] = {
->> +     "i2s", "reserved", "tone", "pdm"
->> +};
->
-> This looks like it should be a DAPM control.
-
-Removed this and added it to 'dai_set_format' function.
-
->
->> +static const char * const max98927_monomix_output_text[] = {
->> +     "ch_0", "ch_1", "ch_1_2_div"
->> +};
->
-> Similarly here.
-
-Removed this since it was already added to DAPM control.
-
->
->> +     SOC_SINGLE_TLV("Digital Gain", MAX98927_R0036_AMP_VOL_CTRL,
->> +             0, (1<<MAX98927_AMP_VOL_WIDTH)-1, 0,
->> +             max98927_digital_tlv),
->
-> All volume controls should end with Volume as per control-names.rst.
-
-Modified as requested.
-
->
->> +     SOC_SINGLE("Amp DSP Enable", MAX98927_R0052_BROWNOUT_EN,
->> +             MAX98927_BROWNOUT_DSP_SHIFT, 1, 0),
->
-> All on/off switches should end with Switch as per control-names.rst.
-
-Modified as requested.
-
->
->> +static int max98927_probe(struct snd_soc_codec *codec)
->> +{
->
->> +       /* Check Revision ID */
->> +       ret = regmap_read(max98927->regmap,
->> +               MAX98927_R01FF_REV_ID, &reg);
->
-> Basic device identification and setup should be done at the chip level
-> probe not at the CODEC level so that if there are problems we fail as
-> early as possible and so that diagnostic information is available to
-> users as soon as possible, even if there's no sound card for the device
-> in the system.
-
-Moved to i2c_probe function.
-
->
->> +     /* Set inital volume (+13dB) */
->
-> As with all other CODEC drivers you should leave the hardware defaults
-> alone, what makes sense for your system may not make sense for other
-> systems and the hardware defaults are a fixed thing.
-
-We recommend to use static +13dB gain when our speaker protection
-algorithm is running on DSP. It is not hardware default but mostly
-+13dB is being used as default.
-
->
->> +     /* Boost Output Voltage & Current limit */
->> +     regmap_write(max98927->regmap,
->> +             MAX98927_R0040_BOOST_CTRL0,
->> +             0x1C);
->> +     regmap_write(max98927->regmap,
->> +             MAX98927_R0042_BOOST_CTRL1,
->> +             0x3E);
->
-> This should be system specific, these values might be unsafe in some
-> systems.
-
-Same as above, most user will use maximum voltage & current limit
-value to take advantage of 10V boost amplifier.
-I added one more control to change the current limit value.
-
->
->> +err:
->> +     if (max98927)
->> +             devm_kfree(&i2c->dev, max98927);
->
-> There is no need to explicitly free devm_ allocated memory, that's the
-> point of devm.
-
-Removed the code.
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>iQIzBAEBCAAdFiEE/gJ8Tpn0OtJz8hxD6+YIa34W/zYFAljdM90ACgkQ6+YIa34W
+>/zZk8A//YmadcSwYQTJIJKHJREjGSITGPx6wQYA8dix2EvP0frhnL5LEAfzCUD0b
+>05H9cc+kBG3z6dIs6yytX6TFtKlqnE/ka1D80+ZYiMf/RTYpowJWXogoPF8iVW68
+>MTaUtM5/CGhFF/e1V7AKDX36r5eVKYwKNUIb1vXE+nU6WbuzNrQn/vgwtIboC
+>Xsj
+>AQVC9RT7sRHnNVNq+WD4NYNSKfTJasnhbGo1+X3eTjY5vcWb/5H3ysaayW9W
+>qnkI
+>W3jYdoQmWCDZC14dKGnNZJ5J1WlF03qh95bQTJB7CDl66Nqqck621MbSzLp3+
+>2xv
+>0eliZLcdumLhzu6wjTKcqXsyhejhRYYR25AfKGvB8zbujKnHZOSWO1T5QgJKOVHY
+>oAQAgivpmNppGuNBmFKOWDnB5pec+kx3YDo9TnTUhPfXs04vGV0nnzugt9iu9
+>STq
+>kzhu5fTmRfNK6uImcL4lo8JKmFu8Ws60kO0OcuUh8xd0dFy1vNF4qA0cZZywBG
+>p+
+>YSsTzKhljHiq2aV1CpG2xMIom1YR38agTVWbL1aeGZf3FZUhD1+G9aLB1Lz6dmf
+>g
+>lLlne94HGnvgGoJkTx7BR6MRmUDDb4E8sdnx/yGtJ8ILKImAMJBURHfdcv3wp+G
+>C
+>oihf+BjIdV7BSDFMBxW/UeEM616rmNOGbG7zWxXoH6ZTWB50CwA=
+>=8Sl2
+>-----END PGP SIGNATURE-----
