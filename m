@@ -1,15 +1,14 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 14/14] ALSA: fireface: add support for Fireface
-	400
-Date: Fri, 31 Mar 2017 22:06:12 +0900
-Message-ID: <20170331130612.18331-15-o-takashi@sakamocchi.jp>
+Subject: [PATCH 05/14] ALSA: fireface: add transaction support
+Date: Fri, 31 Mar 2017 22:06:03 +0900
+Message-ID: <20170331130612.18331-6-o-takashi@sakamocchi.jp>
 References: <20170331130612.18331-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 6B60C267239
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 3D08E267230
  for <alsa-devel@alsa-project.org>; Fri, 31 Mar 2017 15:06:25 +0200 (CEST)
 In-Reply-To: <20170331130612.18331-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,495 +24,449 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Fireface 400 is a second model of RME Fireface series, released in 2006.
-This commit adds support for this model.
+As long as investigating Fireface 400, MIDI messages are transferred by
+asynchronous communication over IEEE 1394 bus.
 
-This model supports 8 analog channels, 2 S/PDIF channels and 8 ADAT
-channels in both of tx/rx packet. The number of ADAT channels differs
-depending on each mode of sampling transmission frequency.
+Fireface 400 receives MIDI messages by write transactions to two addresses;
+0x'0000'0801'8000 and 0x'0000'0801'9000. Each of two seems to correspond to
+MIDI port 1 and 2.
 
-$ python2 linux-firewire-utils/src/crpp < /sys/bus/firewire/devices/fw1/config_rom
-               ROM header and bus information block
-               -----------------------------------------------------------------
-400  04107768  bus_info_length 4, crc_length 16, crc 30568 (should be 61311)
-404  31333934  bus_name "1394"
-408  20009002  irmc 0, cmc 0, isc 1, bmc 0, cyc_clk_acc 0, max_rec 9 (1024)
-40c  000a3501  company_id 000a35     |
-410  1bd0862a  device_id 011bd0862a  | EUI-64 000a35011bd0862a
+Fireface 400 transfers MIDI messages by write transactions to certain
+addresses which configured by drivers. The drivers can decide upper 4 byte
+of the addresses by write transactions to 0x'0000'0801'03f4. For the rest
+part of the address, drivers can select from below options:
+ * 0x'0000'0000
+ * 0x'0000'0080
+ * 0x'0000'0100
+ * 0x'0000'0180
 
-               root directory
-               -----------------------------------------------------------------
-414  000485ec  directory_length 4, crc 34284
-418  03000a35  vendor
-41c  0c0083c0  node capabilities per IEEE 1394
-420  8d000006  --> eui-64 leaf at 438
-424  d1000001  --> unit directory at 428
+Selected options are represented in register 0x'0000'0801'051c as bit
+flags. Due to this mechanism, drivers are restricted to use addresses on
+'Memory space' of IEEE 1222, even if transactions to the address have
+some side effects.
 
-               unit directory at 428
-               -----------------------------------------------------------------
-428  000314c4  directory_length 3, crc 5316
-42c  12000a35  specifier id
-430  13000002  version
-434  17101800  model
+This commit adds transaction support for MIDI messaging, based on my
+assumption that the similar mechanism is used on the other protocols. To
+receive asynchronous transactions, the driver allocates a range of address
+in 'Memory space'. I apply a strategy to use 0x'0000'0000 as lower 4 byte
+of the address. When getting failure from Linux FireWire subsystem, this
+driver retries to allocate addresses.
 
-               eui-64 leaf at 438
-               -----------------------------------------------------------------
-438  000261a8  leaf_length 2, crc 25000
-43c  000a3501  company_id 000a35     |
-440  1bd0862a  device_id 011bd0862a  | EUI-64 000a35011bd0862a
+Unfortunately, read transaction to address 0x'0000'0801'051c returns zero
+always, however write transactions have effects to the other features such
+as status of sampling clock. For this reason, this commit delegates a task
+to configure this register to user space applications. The applications
+should set 3rd bit in LSB in little endian order.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/Kconfig                      |   1 +
- sound/firewire/fireface/Makefile            |   2 +-
- sound/firewire/fireface/ff-protocol-ff400.c | 371 ++++++++++++++++++++++++++++
- sound/firewire/fireface/ff.c                |  21 ++
- sound/firewire/fireface/ff.h                |   2 +
- 5 files changed, 396 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/fireface/ff-protocol-ff400.c
+ sound/firewire/fireface/Makefile         |   2 +-
+ sound/firewire/fireface/ff-transaction.c | 295 +++++++++++++++++++++++++++++++
+ sound/firewire/fireface/ff.c             |   9 +
+ sound/firewire/fireface/ff.h             |  23 +++
+ 4 files changed, 328 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/fireface/ff-transaction.c
 
-diff --git a/sound/firewire/Kconfig b/sound/firewire/Kconfig
-index 70f02ee..529d9f4 100644
---- a/sound/firewire/Kconfig
-+++ b/sound/firewire/Kconfig
-@@ -158,5 +158,6 @@ config SND_FIREFACE
- 	select SND_HWDEP
- 	help
- 	 Say Y here to include support for RME fireface series.
-+	  * Fireface 400
- 
- endif # SND_FIREWIRE
 diff --git a/sound/firewire/fireface/Makefile b/sound/firewire/fireface/Makefile
-index 8d6c612..8f80728 100644
+index 2c64ef6..864aacc 100644
 --- a/sound/firewire/fireface/Makefile
 +++ b/sound/firewire/fireface/Makefile
-@@ -1,3 +1,3 @@
- snd-fireface-objs := ff.o ff-transaction.o ff-midi.o ff-proc.o amdtp-ff.o \
--		     ff-stream.o ff-pcm.o ff-hwdep.o
-+		     ff-stream.o ff-pcm.o ff-hwdep.o ff-protocol-ff400.o
+@@ -1,2 +1,2 @@
+-snd-fireface-objs := ff.o
++snd-fireface-objs := ff.o ff-transaction.o
  obj-$(CONFIG_SND_FIREFACE) += snd-fireface.o
-diff --git a/sound/firewire/fireface/ff-protocol-ff400.c b/sound/firewire/fireface/ff-protocol-ff400.c
+diff --git a/sound/firewire/fireface/ff-transaction.c b/sound/firewire/fireface/ff-transaction.c
 new file mode 100644
-index 0000000..fcec6de
+index 0000000..d1b098f
 --- /dev/null
-+++ b/sound/firewire/fireface/ff-protocol-ff400.c
-@@ -0,0 +1,371 @@
++++ b/sound/firewire/fireface/ff-transaction.c
+@@ -0,0 +1,295 @@
 +/*
-+ * ff-protocol-ff400.c - a part of driver for RME Fireface series
++ * ff-transaction.c - a part of driver for RME Fireface series
 + *
 + * Copyright (c) 2015-2017 Takashi Sakamoto
 + *
 + * Licensed under the terms of the GNU General Public License, version 2.
 + */
 +
-+#include <linux/delay.h>
 +#include "ff.h"
 +
-+#define FF400_STF		0x000080100500ull
-+#define FF400_RX_PACKET_FORMAT	0x000080100504ull
-+#define FF400_ISOC_COMM_START	0x000080100508ull
-+#define FF400_TX_PACKET_FORMAT	0x00008010050cull
-+#define FF400_ISOC_COMM_STOP	0x000080100510ull
-+#define FF400_SYNC_STATUS	0x0000801c0000ull
-+#define FF400_FETCH_PCM_FRAMES	0x0000801c0000ull	/* For block request. */
-+#define FF400_CLOCK_CONFIG	0x0000801c0004ull
-+
-+#define FF400_MIDI_HIGH_ADDR	0x0000801003f4ull
-+#define FF400_MIDI_RX_PORT_0	0x000080180000ull
-+#define FF400_MIDI_RX_PORT_1	0x000080190000ull
-+
-+static int ff400_get_clock(struct snd_ff *ff, unsigned int *rate,
-+			   enum snd_ff_clock_src *src)
++static void finish_transmit_midi_msg(struct snd_ff *ff, unsigned int port,
++				     int rcode)
 +{
-+	__le32 reg;
-+	u32 data;
-+	int err;
++	struct snd_rawmidi_substream *substream =
++				ACCESS_ONCE(ff->rx_midi_substreams[port]);
 +
-+	err = snd_fw_transaction(ff->unit, TCODE_READ_QUADLET_REQUEST,
-+				 FF400_SYNC_STATUS, &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return err;
-+	data = le32_to_cpu(reg);
-+
-+	/* Calculate sampling rate. */
-+	switch ((data >> 1) & 0x03) {
-+	case 0x01:
-+		*rate = 32000;
-+		break;
-+	case 0x00:
-+		*rate = 44100;
-+		break;
-+	case 0x03:
-+		*rate = 48000;
-+		break;
-+	case 0x02:
-+	default:
-+		return -EIO;
++	if (rcode_is_permanent_error(rcode)) {
++		ff->rx_midi_error[port] = true;
++		return;
 +	}
 +
-+	if (data & 0x08)
-+		*rate *= 2;
-+	else if (data & 0x10)
-+		*rate *= 4;
++	if (rcode != RCODE_COMPLETE) {
++		/* Transfer the message again, immediately. */
++		ff->next_ktime[port] = ktime_set(0, 0);
++		schedule_work(&ff->rx_midi_work[port]);
++		return;
++	}
 +
-+	/* Calculate source of clock. */
-+	if (data & 0x01) {
-+		*src = SND_FF_CLOCK_SRC_INTERNAL;
++	snd_rawmidi_transmit_ack(substream, ff->rx_bytes[port]);
++	ff->rx_bytes[port] = 0;
++
++	if (!snd_rawmidi_transmit_empty(substream))
++		schedule_work(&ff->rx_midi_work[port]);
++}
++
++static void finish_transmit_midi0_msg(struct fw_card *card, int rcode,
++				      void *data, size_t length,
++				      void *callback_data)
++{
++	struct snd_ff *ff =
++		container_of(callback_data, struct snd_ff, transactions[0]);
++	finish_transmit_midi_msg(ff, 0, rcode);
++}
++
++static void finish_transmit_midi1_msg(struct fw_card *card, int rcode,
++				      void *data, size_t length,
++				      void *callback_data)
++{
++	struct snd_ff *ff =
++		container_of(callback_data, struct snd_ff, transactions[1]);
++	finish_transmit_midi_msg(ff, 1, rcode);
++}
++
++static inline void fill_midi_buf(struct snd_ff *ff, unsigned int port,
++				 unsigned int index, u8 byte)
++{
++	ff->msg_buf[port][index] = cpu_to_le32(byte);
++}
++
++static void transmit_midi_msg(struct snd_ff *ff, unsigned int port)
++{
++	struct snd_rawmidi_substream *substream =
++			ACCESS_ONCE(ff->rx_midi_substreams[port]);
++	u8 *buf = (u8 *)ff->msg_buf[port];
++	int i, len;
++
++	struct fw_device *fw_dev = fw_parent_device(ff->unit);
++	unsigned long long addr;
++	int generation;
++	fw_transaction_callback_t callback;
++
++	if (substream == NULL || snd_rawmidi_transmit_empty(substream))
++		return;
++
++	if (ff->rx_bytes[port] > 0 || ff->rx_midi_error[port])
++		return;
++
++	/* Do it in next chance. */
++	if (ktime_after(ff->next_ktime[port], ktime_get())) {
++		schedule_work(&ff->rx_midi_work[port]);
++		return;
++	}
++
++	len = snd_rawmidi_transmit_peek(substream, buf,
++					SND_FF_MAXIMIM_MIDI_QUADS);
++	if (len <= 0)
++		return;
++
++	for (i = len - 1; i >= 0; i--)
++		fill_midi_buf(ff, port, i, buf[i]);
++
++	if (port == 0) {
++		addr = ff->spec->protocol->midi_rx_port_0_reg;
++		callback = finish_transmit_midi0_msg;
 +	} else {
-+		/* TODO: 0x00, 0x01, 0x02, 0x06, 0x07? */
-+		switch ((data >> 10) & 0x07) {
-+		case 0x03:
-+			*src = SND_FF_CLOCK_SRC_SPDIF;
-+			break;
-+		case 0x04:
-+			*src = SND_FF_CLOCK_SRC_WORD;
-+			break;
-+		case 0x05:
-+			*src = SND_FF_CLOCK_SRC_LTC;
-+			break;
-+		case 0x00:
-+		default:
-+			*src = SND_FF_CLOCK_SRC_ADAT;
-+			break;
++		addr = ff->spec->protocol->midi_rx_port_1_reg;
++		callback = finish_transmit_midi1_msg;
++	}
++
++	/* Set interval to next transaction. */
++	ff->next_ktime[port] = ktime_add_ns(ktime_get(),
++					    len * 8 * NSEC_PER_SEC / 31250);
++	ff->rx_bytes[port] = len;
++
++	/*
++	 * In Linux FireWire core, when generation is updated with memory
++	 * barrier, node id has already been updated. In this module, After
++	 * this smp_rmb(), load/store instructions to memory are completed.
++	 * Thus, both of generation and node id are available with recent
++	 * values. This is a light-serialization solution to handle bus reset
++	 * events on IEEE 1394 bus.
++	 */
++	generation = fw_dev->generation;
++	smp_rmb();
++	fw_send_request(fw_dev->card, &ff->transactions[port],
++			TCODE_WRITE_BLOCK_REQUEST,
++			fw_dev->node_id, generation, fw_dev->max_speed,
++			addr, &ff->msg_buf[port], len * 4,
++			callback, &ff->transactions[port]);
++}
++
++static void transmit_midi0_msg(struct work_struct *work)
++{
++	struct snd_ff *ff = container_of(work, struct snd_ff, rx_midi_work[0]);
++
++	transmit_midi_msg(ff, 0);
++}
++
++static void transmit_midi1_msg(struct work_struct *work)
++{
++	struct snd_ff *ff = container_of(work, struct snd_ff, rx_midi_work[1]);
++
++	transmit_midi_msg(ff, 1);
++}
++
++static void handle_midi_msg(struct fw_card *card, struct fw_request *request,
++			    int tcode, int destination, int source,
++			    int generation, unsigned long long offset,
++			    void *data, size_t length, void *callback_data)
++{
++	struct snd_ff *ff = callback_data;
++	__le32 *buf = data;
++	u32 quad;
++	u8 byte;
++	unsigned int index;
++	struct snd_rawmidi_substream *substream;
++	int i;
++
++	fw_send_response(card, request, RCODE_COMPLETE);
++
++	for (i = 0; i < length / 4; i++) {
++		quad = le32_to_cpu(buf[i]);
++
++		/* Message in first port. */
++		/*
++		 * This value may represent the index of this unit when the same
++		 * units are on the same IEEE 1394 bus. This driver doesn't use
++		 * it.
++		 */
++		index = (quad >> 8) & 0xff;
++		if (index > 0) {
++			substream = ACCESS_ONCE(ff->tx_midi_substreams[0]);
++			if (substream != NULL) {
++				byte = quad & 0xff;
++				snd_rawmidi_receive(substream, &byte, 1);
++			}
++		}
++
++		/* Message in second port. */
++		index = (quad >> 24) & 0xff;
++		if (index > 0) {
++			substream = ACCESS_ONCE(ff->tx_midi_substreams[1]);
++			if (substream != NULL) {
++				byte = (quad >> 16) & 0xff;
++				snd_rawmidi_receive(substream, &byte, 1);
++			}
 +		}
 +	}
++}
++
++static int allocate_own_address(struct snd_ff *ff, int i)
++{
++	struct fw_address_region midi_msg_region;
++	int err;
++
++	ff->async_handler.length = SND_FF_MAXIMIM_MIDI_QUADS * 4;
++	ff->async_handler.address_callback = handle_midi_msg;
++	ff->async_handler.callback_data = ff;
++
++	midi_msg_region.start = 0x000100000000ull * i;
++	midi_msg_region.end = midi_msg_region.start + ff->async_handler.length;
++
++	err = fw_core_add_address_handler(&ff->async_handler, &midi_msg_region);
++	if (err >= 0) {
++		/* Controllers are allowed to register this region. */
++		if (ff->async_handler.offset & 0x0000ffffffff) {
++			fw_core_remove_address_handler(&ff->async_handler);
++			err = -EAGAIN;
++		}
++	}
++
++	return err;
++}
++
++/*
++ * The configuration to start asynchronous transactions for MIDI messages is in
++ * 0x'0000'8010'051c. This register includes the other options, thus this driver
++ * doesn't touch it and leaves the decision to userspace. The userspace MUST add
++ * 0x04000000 to write transactions to the register to receive any MIDI
++ * messages.
++ *
++ * Here, I just describe MIDI-related offsets of the register, in little-endian
++ * order.
++ *
++ * Controllers are allowed to register higher 4 bytes of address to receive
++ * the transactions. The register is 0x'0000'8010'03f4. On the other hand, the
++ * controllers are not allowed to register lower 4 bytes of the address. They
++ * are forced to select from 4 options by writing corresponding bits to
++ * 0x'0000'8010'051c.
++ *
++ * The 3rd-6th bits in MSB of this register are used to indicate lower 4 bytes
++ * of address to which the device transferrs the transactions.
++ *  - 6th: 0x'....'....'0000'0180
++ *  - 5th: 0x'....'....'0000'0100
++ *  - 4th: 0x'....'....'0000'0080
++ *  - 3rd: 0x'....'....'0000'0000
++ *
++ * This driver configure 0x'....'....'0000'0000 for units to receive MIDI
++ * messages. 3rd bit of the register should be configured, however this driver
++ * deligates this task to user space applications due to a restriction that
++ * this register is write-only and the other bits have own effects.
++ *
++ * The 1st and 2nd bits in LSB of this register are used to cancel transferring
++ * asynchronous transactions. These two bits have the same effect.
++ *  - 1st/2nd: cancel transferring
++ */
++int snd_ff_transaction_reregister(struct snd_ff *ff)
++{
++	struct fw_card *fw_card = fw_parent_device(ff->unit)->card;
++	u32 addr;
++	__le32 reg;
++
++	/*
++	 * Controllers are allowed to register its node ID and upper 2 byte of
++	 * local address to listen asynchronous transactions.
++	 */
++	addr = (fw_card->node_id << 16) | (ff->async_handler.offset >> 32);
++	reg = cpu_to_le32(addr);
++	return snd_fw_transaction(ff->unit, TCODE_WRITE_QUADLET_REQUEST,
++				  ff->spec->protocol->midi_high_addr_reg,
++				  &reg, sizeof(reg), 0);
++}
++
++int snd_ff_transaction_register(struct snd_ff *ff)
++{
++	int i, err;
++
++	/*
++	 * Allocate in Memory Space of IEC 13213, but lower 4 byte in LSB should
++	 * be zero due to device specification.
++	 */
++	for (i = 0; i < 0xffff; i++) {
++		err = allocate_own_address(ff, i);
++		if (err != -EBUSY && err != -EAGAIN)
++			break;
++	}
++	if (err < 0)
++		return err;
++
++	err = snd_ff_transaction_reregister(ff);
++	if (err < 0)
++		return err;
++
++	INIT_WORK(&ff->rx_midi_work[0], transmit_midi0_msg);
++	INIT_WORK(&ff->rx_midi_work[1], transmit_midi1_msg);
 +
 +	return 0;
 +}
 +
-+static int ff400_begin_session(struct snd_ff *ff, unsigned int rate)
-+{
-+	__le32 reg;
-+	int i, err;
-+
-+	/* Check whether the given value is supported or not. */
-+	for (i = 0; i < CIP_SFC_COUNT; i++) {
-+		if (amdtp_rate_table[i] == rate)
-+			break;
-+	}
-+	if (i == CIP_SFC_COUNT)
-+		return -EINVAL;
-+
-+	/* Set the number of data blocks transferred in a second. */
-+	reg = cpu_to_le32(rate);
-+	err = snd_fw_transaction(ff->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 FF400_STF, &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return err;
-+
-+	msleep(100);
-+
-+	/*
-+	 * Set isochronous channel and the number of quadlets of received
-+	 * packets.
-+	 */
-+	reg = cpu_to_le32(((ff->rx_stream.data_block_quadlets << 3) << 8) |
-+			  ff->rx_resources.channel);
-+	err = snd_fw_transaction(ff->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 FF400_RX_PACKET_FORMAT, &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return err;
-+
-+	/*
-+	 * Set isochronous channel and the number of quadlets of transmitted
-+	 * packet.
-+	 */
-+	/* TODO: investigate the purpose of this 0x80. */
-+	reg = cpu_to_le32((0x80 << 24) |
-+			  (ff->tx_resources.channel << 5) |
-+			  (ff->tx_stream.data_block_quadlets));
-+	err = snd_fw_transaction(ff->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 FF400_TX_PACKET_FORMAT, &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return err;
-+
-+	/* Allow to transmit packets. */
-+	reg = cpu_to_le32(0x00000001);
-+	return snd_fw_transaction(ff->unit, TCODE_WRITE_QUADLET_REQUEST,
-+				 FF400_ISOC_COMM_START, &reg, sizeof(reg), 0);
-+}
-+
-+static void ff400_finish_session(struct snd_ff *ff)
++void snd_ff_transaction_unregister(struct snd_ff *ff)
 +{
 +	__le32 reg;
 +
-+	reg = cpu_to_le32(0x80000000);
++	if (ff->async_handler.callback_data == NULL)
++		return;
++	ff->async_handler.callback_data = NULL;
++
++	/* Release higher 4 bytes of address. */
++	reg = cpu_to_le32(0x00000000);
 +	snd_fw_transaction(ff->unit, TCODE_WRITE_QUADLET_REQUEST,
-+			   FF400_ISOC_COMM_STOP, &reg, sizeof(reg), 0);
++			   ff->spec->protocol->midi_high_addr_reg,
++			   &reg, sizeof(reg), 0);
++
++	fw_core_remove_address_handler(&ff->async_handler);
 +}
-+
-+static int ff400_switch_fetching_mode(struct snd_ff *ff, bool enable)
-+{
-+	__le32 *reg;
-+	int i;
-+
-+	reg = kzalloc(sizeof(__le32) * 18, GFP_KERNEL);
-+	if (reg == NULL)
-+		return -ENOMEM;
-+
-+	if (enable) {
-+		/*
-+		 * Each quadlet is corresponding to data channels in a data
-+		 * blocks in reverse order. Precisely, quadlets for available
-+		 * data channels should be enabled. Here, I take second best
-+		 * to fetch PCM frames from all of data channels regardless of
-+		 * stf.
-+		 */
-+		for (i = 0; i < 18; ++i)
-+			reg[i] = cpu_to_le32(0x00000001);
-+	}
-+
-+	return snd_fw_transaction(ff->unit, TCODE_WRITE_BLOCK_REQUEST,
-+				  FF400_FETCH_PCM_FRAMES, reg,
-+				  sizeof(__le32) * 18, 0);
-+}
-+
-+static void ff400_dump_sync_status(struct snd_ff *ff,
-+				   struct snd_info_buffer *buffer)
-+{
-+	__le32 reg;
-+	u32 data;
-+	int err;
-+
-+	err = snd_fw_transaction(ff->unit, TCODE_READ_QUADLET_REQUEST,
-+				 FF400_SYNC_STATUS, &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return;
-+
-+	data = le32_to_cpu(reg);
-+
-+	snd_iprintf(buffer, "External source detection:\n");
-+
-+	snd_iprintf(buffer, "Word Clock:");
-+	if ((data >> 24) & 0x20) {
-+		if ((data >> 24) & 0x40)
-+			snd_iprintf(buffer, "sync\n");
-+		else
-+			snd_iprintf(buffer, "lock\n");
-+	} else {
-+		snd_iprintf(buffer, "none\n");
-+	}
-+
-+	snd_iprintf(buffer, "S/PDIF:");
-+	if ((data >> 16) & 0x10) {
-+		if ((data >> 16) & 0x04)
-+			snd_iprintf(buffer, "sync\n");
-+		else
-+			snd_iprintf(buffer, "lock\n");
-+	} else {
-+		snd_iprintf(buffer, "none\n");
-+	}
-+
-+	snd_iprintf(buffer, "ADAT:");
-+	if ((data >> 8) & 0x04) {
-+		if ((data >> 8) & 0x10)
-+			snd_iprintf(buffer, "sync\n");
-+		else
-+			snd_iprintf(buffer, "lock\n");
-+	} else {
-+		snd_iprintf(buffer, "none\n");
-+	}
-+
-+	snd_iprintf(buffer, "\nUsed external source:\n");
-+
-+	if (((data >> 22) & 0x07) == 0x07) {
-+		snd_iprintf(buffer, "None\n");
-+	} else {
-+		switch ((data >> 22) & 0x07) {
-+		case 0x00:
-+			snd_iprintf(buffer, "ADAT:");
-+			break;
-+		case 0x03:
-+			snd_iprintf(buffer, "S/PDIF:");
-+			break;
-+		case 0x04:
-+			snd_iprintf(buffer, "Word:");
-+			break;
-+		case 0x07:
-+			snd_iprintf(buffer, "Nothing:");
-+			break;
-+		case 0x01:
-+		case 0x02:
-+		case 0x05:
-+		case 0x06:
-+		default:
-+			snd_iprintf(buffer, "unknown:");
-+			break;
-+		}
-+
-+		if ((data >> 25) & 0x07) {
-+			switch ((data >> 25) & 0x07) {
-+			case 0x01:
-+				snd_iprintf(buffer, "32000\n");
-+				break;
-+			case 0x02:
-+				snd_iprintf(buffer, "44100\n");
-+				break;
-+			case 0x03:
-+				snd_iprintf(buffer, "48000\n");
-+				break;
-+			case 0x04:
-+				snd_iprintf(buffer, "64000\n");
-+				break;
-+			case 0x05:
-+				snd_iprintf(buffer, "88200\n");
-+				break;
-+			case 0x06:
-+				snd_iprintf(buffer, "96000\n");
-+				break;
-+			case 0x07:
-+				snd_iprintf(buffer, "128000\n");
-+				break;
-+			case 0x08:
-+				snd_iprintf(buffer, "176400\n");
-+				break;
-+			case 0x09:
-+				snd_iprintf(buffer, "192000\n");
-+				break;
-+			case 0x00:
-+				snd_iprintf(buffer, "unknown\n");
-+				break;
-+			}
-+		}
-+	}
-+
-+	snd_iprintf(buffer, "Multiplied:");
-+	snd_iprintf(buffer, "%d\n", (data & 0x3ff) * 250);
-+}
-+
-+static void ff400_dump_clock_config(struct snd_ff *ff,
-+				    struct snd_info_buffer *buffer)
-+{
-+	__le32 reg;
-+	u32 data;
-+	unsigned int rate;
-+	const char *src;
-+	int err;
-+
-+	err = snd_fw_transaction(ff->unit, TCODE_READ_BLOCK_REQUEST,
-+				 FF400_CLOCK_CONFIG, &reg, sizeof(reg), 0);
-+	if (err < 0)
-+		return;
-+
-+	data = le32_to_cpu(reg);
-+
-+	snd_iprintf(buffer, "Output S/PDIF format: %s (Emphasis: %s)\n",
-+		    (data & 0x20) ? "Professional" : "Consumer",
-+		    (data & 0x40) ? "on" : "off");
-+
-+	snd_iprintf(buffer, "Optical output interface format: %s\n",
-+		    ((data >> 8) & 0x01) ? "S/PDIF" : "ADAT");
-+
-+	snd_iprintf(buffer, "Word output single speed: %s\n",
-+		    ((data >> 8) & 0x20) ? "on" : "off");
-+
-+	snd_iprintf(buffer, "S/PDIF input interface: %s\n",
-+		    ((data >> 8) & 0x02) ? "Optical" : "Coaxial");
-+
-+	switch ((data >> 1) & 0x03) {
-+	case 0x01:
-+		rate = 32000;
-+		break;
-+	case 0x00:
-+		rate = 44100;
-+		break;
-+	case 0x03:
-+		rate = 48000;
-+		break;
-+	case 0x02:
-+	default:
-+		return;
-+	}
-+
-+	if (data & 0x08)
-+		rate *= 2;
-+	else if (data & 0x10)
-+		rate *= 4;
-+
-+	snd_iprintf(buffer, "Sampling rate: %d\n", rate);
-+
-+	if (data & 0x01) {
-+		src = "Internal";
-+	} else {
-+		switch ((data >> 10) & 0x07) {
-+		case 0x00:
-+			src = "ADAT";
-+			break;
-+		case 0x03:
-+			src = "S/PDIF";
-+			break;
-+		case 0x04:
-+			src = "Word";
-+			break;
-+		case 0x05:
-+			src = "LTC";
-+			break;
-+		default:
-+			return;
-+		}
-+	}
-+
-+	snd_iprintf(buffer, "Sync to clock source: %s\n", src);
-+}
-+
-+struct snd_ff_protocol snd_ff_protocol_ff400 = {
-+	.get_clock		= ff400_get_clock,
-+	.begin_session		= ff400_begin_session,
-+	.finish_session		= ff400_finish_session,
-+	.switch_fetching_mode	= ff400_switch_fetching_mode,
-+
-+	.dump_sync_status	= ff400_dump_sync_status,
-+	.dump_clock_config	= ff400_dump_clock_config,
-+
-+	.midi_high_addr_reg	= FF400_MIDI_HIGH_ADDR,
-+	.midi_rx_port_0_reg	= FF400_MIDI_RX_PORT_0,
-+	.midi_rx_port_1_reg	= FF400_MIDI_RX_PORT_1,
-+};
 diff --git a/sound/firewire/fireface/ff.c b/sound/firewire/fireface/ff.c
-index f57b434..eee7c8e 100644
+index 5c2bd92..4db630f 100644
 --- a/sound/firewire/fireface/ff.c
 +++ b/sound/firewire/fireface/ff.c
-@@ -157,7 +157,28 @@ static void snd_ff_remove(struct fw_unit *unit)
- 	}
+@@ -29,6 +29,8 @@ static void name_card(struct snd_ff *ff)
+ 
+ static void ff_free(struct snd_ff *ff)
+ {
++	snd_ff_transaction_unregister(ff);
++
+ 	fw_unit_put(ff->unit);
+ 
+ 	mutex_destroy(&ff->mutex);
+@@ -53,6 +55,10 @@ static void do_registration(struct work_struct *work)
+ 	if (err < 0)
+ 		return;
+ 
++	err = snd_ff_transaction_register(ff);
++	if (err < 0)
++		goto error;
++
+ 	name_card(ff);
+ 
+ 	err = snd_card_register(ff->card);
+@@ -65,6 +71,7 @@ static void do_registration(struct work_struct *work)
+ 
+ 	return;
+ error:
++	snd_ff_transaction_unregister(ff);
+ 	snd_card_free(ff->card);
+ 	dev_info(&ff->unit->device,
+ 		 "Sound card registration failed: %d\n", err);
+@@ -101,6 +108,8 @@ static void snd_ff_update(struct fw_unit *unit)
+ 	/* Postpone a workqueue for deferred registration. */
+ 	if (!ff->registered)
+ 		snd_fw_schedule_registration(unit, &ff->dwork);
++
++	snd_ff_transaction_reregister(ff);
  }
  
-+static struct snd_ff_spec spec_ff400 = {
-+	.name = "Fireface400",
-+	.pcm_capture_channels = {18, 14, 10},
-+	.pcm_playback_channels = {18, 14, 10},
-+	.midi_in_ports = 2,
-+	.midi_out_ports = 2,
-+	.protocol = &snd_ff_protocol_ff400,
-+};
-+
- static const struct ieee1394_device_id snd_ff_id_table[] = {
-+	/* Fireface 400 */
-+	{
-+		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
-+				  IEEE1394_MATCH_SPECIFIER_ID |
-+				  IEEE1394_MATCH_VERSION |
-+				  IEEE1394_MATCH_MODEL_ID,
-+		.vendor_id	= OUI_RME,
-+		.specifier_id	= 0x000a35,
-+		.version	= 0x000002,
-+		.model_id	= 0x101800,
-+		.driver_data	= (kernel_ulong_t)&spec_ff400,
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(ieee1394, snd_ff_id_table);
+ static void snd_ff_remove(struct fw_unit *unit)
 diff --git a/sound/firewire/fireface/ff.h b/sound/firewire/fireface/ff.h
-index a143b5a..3cb812a 100644
+index 7be0ea4..bac2e58 100644
 --- a/sound/firewire/fireface/ff.h
 +++ b/sound/firewire/fireface/ff.h
-@@ -112,6 +112,8 @@ struct snd_ff_protocol {
+@@ -20,11 +20,16 @@
+ 
+ #include <sound/core.h>
+ #include <sound/info.h>
++#include <sound/rawmidi.h>
+ 
+ #include "../lib.h"
+ 
+ #define SND_FF_STREAM_MODES		3
+ 
++#define SND_FF_MAXIMIM_MIDI_QUADS	9
++#define SND_FF_IN_MIDI_PORTS		2
++#define SND_FF_OUT_MIDI_PORTS		2
++
+ struct snd_ff_protocol;
+ struct snd_ff_spec {
+ 	const char *const name;
+@@ -47,6 +52,20 @@ struct snd_ff {
+ 	struct delayed_work dwork;
+ 
+ 	const struct snd_ff_spec *spec;
++
++	/* To handle MIDI tx. */
++	struct snd_rawmidi_substream *tx_midi_substreams[SND_FF_IN_MIDI_PORTS];
++	struct fw_address_handler async_handler;
++
++	/* TO handle MIDI rx. */
++	struct snd_rawmidi_substream *rx_midi_substreams[SND_FF_OUT_MIDI_PORTS];
++	u8 running_status[SND_FF_OUT_MIDI_PORTS];
++	__le32 msg_buf[SND_FF_OUT_MIDI_PORTS][SND_FF_MAXIMIM_MIDI_QUADS];
++	struct work_struct rx_midi_work[SND_FF_OUT_MIDI_PORTS];
++	struct fw_transaction transactions[SND_FF_OUT_MIDI_PORTS];
++	ktime_t next_ktime[SND_FF_OUT_MIDI_PORTS];
++	bool rx_midi_error[SND_FF_OUT_MIDI_PORTS];
++	unsigned int rx_bytes[SND_FF_OUT_MIDI_PORTS];
+ };
+ 
+ enum snd_ff_clock_src {
+@@ -75,4 +94,8 @@ struct snd_ff_protocol {
  	u64 midi_rx_port_1_reg;
  };
  
-+extern struct snd_ff_protocol snd_ff_protocol_ff400;
++int snd_ff_transaction_register(struct snd_ff *ff);
++int snd_ff_transaction_reregister(struct snd_ff *ff);
++void snd_ff_transaction_unregister(struct snd_ff *ff);
 +
- int snd_ff_transaction_register(struct snd_ff *ff);
- int snd_ff_transaction_reregister(struct snd_ff *ff);
- void snd_ff_transaction_unregister(struct snd_ff *ff);
+ #endif
 -- 
 2.9.3
