@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/4] ALSA: firewire-digi00x: handle all MIDI
-	messages on streaming packets
-Date: Sun,  2 Apr 2017 23:48:25 +0900
-Message-ID: <20170402144827.32497-3-o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/4] ALSA: firewire-digi00x: add support for
+	console models of Digi00x series
+Date: Sun,  2 Apr 2017 23:48:24 +0900
+Message-ID: <20170402144827.32497-2-o-takashi@sakamocchi.jp>
 References: <20170402144827.32497-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 2667126696B
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 21AE026686A
  for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2017 16:48:32 +0200 (CEST)
 In-Reply-To: <20170402144827.32497-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,143 +25,116 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-At a commit 9dc5d31cdceb ("ALSA: firewire-digi00x: handle MIDI messages in
-isochronous packets"), a functionality to handle MIDI messages on
-isochronous packet was supported. But this includes some of my
-misunderstanding. This commit is to fix them.
+Digi00x series includes two types of unit; rack and console. As long as
+reading information on config rom of Digi 002 console, 'MODEL_ID' field
+has a different value from the one on Digi 002 rack.
 
-For digi00x series, first data channel of data blocks in rx/tx packet
-includes MIDI messages. The data channel has 0x80 in 8 bit of its MSB,
-however it's against IEC 61883-6. Unique data format is applied:
- - Upper 4 bits of LSB represent port number.
-  - 0x0: port 1.
-  - 0x2: port 2.
-  - 0xe: console port.
- - Lower 4 bits of LSB represent the number of included MIDI message bytes;
-   0x0/0x1/0x2.
- - Two bytes of middle of this data channel have MIDI bytes.
+We've already got a test report from users with Digi 003 rack. We can
+assume that console type and rack type has different value in the field.
 
-Especially, MIDI messages from/to console surface are also transferred by
-isochronous packets, as well as physical MIDI ports.
+This commit adds a device entry for console type. For following commits,
+this commit also adds a member to 'struct snd_digi00x' to identify console
+type.
+
+$ cd linux-firewire-utils/src
+$ python2 ./crpp < /sys/bus/firewire/devices/fw1/config_rom
+               ROM header and bus information block
+               -----------------------------------------------------------------
+400  0404f9d0  bus_info_length 4, crc_length 4, crc 63952
+404  31333934  bus_name "1394"
+408  60647002  irmc 0, cmc 1, isc 1, bmc 0, cyc_clk_acc 100, max_rec 7 (256)
+40c  00a07e00  company_id 00a07e     |
+410  00a30000  device_id 0000a30000  | EUI-64 00a07e0000a30000
+
+               root directory
+               -----------------------------------------------------------------
+414  00058a39  directory_length 5, crc 35385
+418  0c0043a0  node capabilities
+41c  04000001  hardware version
+420  0300a07e  vendor
+424  81000007  --> descriptor leaf at 440
+428  d1000001  --> unit directory at 42c
+
+               unit directory at 42c
+               -----------------------------------------------------------------
+42c  00046674  directory_length 4, crc 26228
+430  120000a3  specifier id
+434  13000001  version
+438  17000001  model
+43c  81000007  --> descriptor leaf at 458
+
+               descriptor leaf at 440
+               -----------------------------------------------------------------
+440  00055913  leaf_length 5, crc 22803
+444  000050f2  descriptor_type 00, specifier_ID 50f2
+448  80000000
+44c  44696769
+450  64657369
+454  676e0000
+
+               descriptor leaf at 458
+               -----------------------------------------------------------------
+458  0004a6fd  leaf_length 4, crc 42749
+45c  00000000  textual descriptor
+460  00000000  minimal ASCII
+464  44696769  "Digi"
+468  20303032  " 002"
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/digi00x/amdtp-dot.c | 55 +++++++++++++++++++++++++-------------
- 1 file changed, 37 insertions(+), 18 deletions(-)
+ sound/firewire/digi00x/digi00x.c | 13 +++++++++++--
+ sound/firewire/digi00x/digi00x.h |  1 +
+ 2 files changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/sound/firewire/digi00x/amdtp-dot.c b/sound/firewire/digi00x/amdtp-dot.c
-index b3cffd0..a468854 100644
---- a/sound/firewire/digi00x/amdtp-dot.c
-+++ b/sound/firewire/digi00x/amdtp-dot.c
-@@ -28,6 +28,9 @@
-  */
- #define MAX_MIDI_RX_BLOCKS	8
+diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
+index cc4776c..1f5e1d2 100644
+--- a/sound/firewire/digi00x/digi00x.c
++++ b/sound/firewire/digi00x/digi00x.c
+@@ -13,7 +13,8 @@ MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
+ MODULE_LICENSE("GPL v2");
  
-+/* 3 = MAX(DOT_MIDI_IN_PORTS, DOT_MIDI_OUT_PORTS) + 1. */
-+#define MAX_MIDI_PORTS		3
-+
- /*
-  * The double-oh-three algorithm was discovered by Robin Gareus and Damien
-  * Zammit in 2012, with reverse-engineering for Digi 003 Rack.
-@@ -42,10 +45,8 @@ struct amdtp_dot {
- 	unsigned int pcm_channels;
- 	struct dot_state state;
+ #define VENDOR_DIGIDESIGN	0x00a07e
+-#define MODEL_DIGI00X		0x000002
++#define MODEL_CONSOLE		0x000001
++#define MODEL_RACK		0x000002
  
--	unsigned int midi_ports;
--	/* 2 = MAX(DOT_MIDI_IN_PORTS, DOT_MIDI_OUT_PORTS) */
--	struct snd_rawmidi_substream *midi[2];
--	int midi_fifo_used[2];
-+	struct snd_rawmidi_substream *midi[MAX_MIDI_PORTS];
-+	int midi_fifo_used[MAX_MIDI_PORTS];
- 	int midi_fifo_limit;
- 
- 	void (*transfer_samples)(struct amdtp_stream *s,
-@@ -124,8 +125,8 @@ int amdtp_dot_set_parameters(struct amdtp_stream *s, unsigned int rate,
- 		return -EBUSY;
- 
- 	/*
--	 * A first data channel is for MIDI conformant data channel, the rest is
--	 * Multi Bit Linear Audio data channel.
-+	 * A first data channel is for MIDI messages, the rest is Multi Bit
-+	 * Linear Audio data channel.
- 	 */
- 	err = amdtp_stream_set_parameters(s, rate, pcm_channels + 1);
- 	if (err < 0)
-@@ -135,11 +136,6 @@ int amdtp_dot_set_parameters(struct amdtp_stream *s, unsigned int rate,
- 
- 	p->pcm_channels = pcm_channels;
- 
--	if (s->direction == AMDTP_IN_STREAM)
--		p->midi_ports = DOT_MIDI_IN_PORTS;
--	else
--		p->midi_ports = DOT_MIDI_OUT_PORTS;
--
- 	/*
- 	 * We do not know the actual MIDI FIFO size of most devices.  Just
- 	 * assume two bytes, i.e., one byte can be received over the bus while
-@@ -281,13 +277,25 @@ static void write_midi_messages(struct amdtp_stream *s, __be32 *buffer,
- 		b = (u8 *)&buffer[0];
- 
- 		len = 0;
--		if (port < p->midi_ports &&
-+		if (port < MAX_MIDI_PORTS &&
- 		    midi_ratelimit_per_packet(s, port) &&
- 		    p->midi[port] != NULL)
- 			len = snd_rawmidi_transmit(p->midi[port], b + 1, 2);
- 
- 		if (len > 0) {
--			b[3] = (0x10 << port) | len;
-+			/*
-+			 * Upper 4 bits of LSB represent port number.
-+			 * - 0000b: physical MIDI port 1.
-+			 * - 0010b: physical MIDI port 2.
-+			 * - 1110b: console MIDI port.
-+			 */
-+			if (port == 2)
-+				b[3] = 0xe0;
-+			else if (port == 1)
-+				b[3] = 0x20;
-+			else
-+				b[3] = 0x00;
-+			b[3] |= len;
- 			midi_use_bytes(s, port, len);
- 		} else {
- 			b[1] = 0;
-@@ -309,11 +317,22 @@ static void read_midi_messages(struct amdtp_stream *s, __be32 *buffer,
- 
- 	for (f = 0; f < data_blocks; f++) {
- 		b = (u8 *)&buffer[0];
--		port = b[3] >> 4;
--		len = b[3] & 0x0f;
- 
--		if (port < p->midi_ports && p->midi[port] && len > 0)
--			snd_rawmidi_receive(p->midi[port], b + 1, len);
-+		len = b[3] & 0x0f;
-+		if (len > 0) {
-+			/*
-+			 * Upper 4 bits of LSB represent port number.
-+			 * - 0000b: physical MIDI port 1. Use port 0.
-+			 * - 1110b: console MIDI port. Use port 2.
-+			 */
-+			if (b[3] >> 4 > 0)
-+				port = 2;
-+			else
-+				port = 0;
-+
-+			if (port < MAX_MIDI_PORTS && p->midi[port])
-+				snd_rawmidi_receive(p->midi[port], b + 1, len);
-+		}
- 
- 		buffer += s->data_block_quadlets;
- 	}
-@@ -364,7 +383,7 @@ void amdtp_dot_midi_trigger(struct amdtp_stream *s, unsigned int port,
+ static int name_card(struct snd_dg00x *dg00x)
  {
- 	struct amdtp_dot *p = s->protocol;
+@@ -129,6 +130,8 @@ static int snd_dg00x_probe(struct fw_unit *unit,
+ 	spin_lock_init(&dg00x->lock);
+ 	init_waitqueue_head(&dg00x->hwdep_wait);
  
--	if (port < p->midi_ports)
-+	if (port < MAX_MIDI_PORTS)
- 		ACCESS_ONCE(p->midi[port]) = midi;
- }
++	dg00x->is_console = entry->model_id == MODEL_CONSOLE;
++
+ 	/* Allocate and register this sound card later. */
+ 	INIT_DEFERRABLE_WORK(&dg00x->dwork, do_registration);
+ 	snd_fw_schedule_registration(unit, &dg00x->dwork);
+@@ -183,7 +186,13 @@ static const struct ieee1394_device_id snd_dg00x_id_table[] = {
+ 		.match_flags = IEEE1394_MATCH_VENDOR_ID |
+ 			       IEEE1394_MATCH_MODEL_ID,
+ 		.vendor_id = VENDOR_DIGIDESIGN,
+-		.model_id = MODEL_DIGI00X,
++		.model_id = MODEL_CONSOLE,
++	},
++	{
++		.match_flags = IEEE1394_MATCH_VENDOR_ID |
++			       IEEE1394_MATCH_MODEL_ID,
++		.vendor_id = VENDOR_DIGIDESIGN,
++		.model_id = MODEL_RACK,
+ 	},
+ 	{}
+ };
+diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
+index 9dc761b..4aefe45d 100644
+--- a/sound/firewire/digi00x/digi00x.h
++++ b/sound/firewire/digi00x/digi00x.h
+@@ -61,6 +61,7 @@ struct snd_dg00x {
+ 	/* For asynchronous MIDI controls. */
+ 	struct snd_rawmidi_substream *in_control;
+ 	struct snd_fw_async_midi_port out_control;
++	bool is_console;
+ };
  
+ #define DG00X_ADDR_BASE		0xffffe0000000ull
 -- 
 2.9.3
