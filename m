@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/4] ALSA: firewire-digi00x: add support for
-	console models of Digi00x series
-Date: Sun,  2 Apr 2017 23:48:24 +0900
-Message-ID: <20170402144827.32497-2-o-takashi@sakamocchi.jp>
+Subject: [PATCH 4/4] ALSA: firewire-digi00x: remove transaction
+	handler for unknown purpose
+Date: Sun,  2 Apr 2017 23:48:27 +0900
+Message-ID: <20170402144827.32497-5-o-takashi@sakamocchi.jp>
 References: <20170402144827.32497-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 21AE026686A
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 243A6266884
  for <alsa-devel@alsa-project.org>; Sun,  2 Apr 2017 16:48:32 +0200 (CEST)
 In-Reply-To: <20170402144827.32497-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,116 +25,180 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Digi00x series includes two types of unit; rack and console. As long as
-reading information on config rom of Digi 002 console, 'MODEL_ID' field
-has a different value from the one on Digi 002 rack.
+For digi00x series, asynchronous transaction is not used to transfer MIDI
+messages to/from control surface. One of transction handlers in my previous
+work loses its practical meaning.
 
-We've already got a test report from users with Digi 003 rack. We can
-assume that console type and rack type has different value in the field.
-
-This commit adds a device entry for console type. For following commits,
-this commit also adds a member to 'struct snd_digi00x' to identify console
-type.
-
-$ cd linux-firewire-utils/src
-$ python2 ./crpp < /sys/bus/firewire/devices/fw1/config_rom
-               ROM header and bus information block
-               -----------------------------------------------------------------
-400  0404f9d0  bus_info_length 4, crc_length 4, crc 63952
-404  31333934  bus_name "1394"
-408  60647002  irmc 0, cmc 1, isc 1, bmc 0, cyc_clk_acc 100, max_rec 7 (256)
-40c  00a07e00  company_id 00a07e     |
-410  00a30000  device_id 0000a30000  | EUI-64 00a07e0000a30000
-
-               root directory
-               -----------------------------------------------------------------
-414  00058a39  directory_length 5, crc 35385
-418  0c0043a0  node capabilities
-41c  04000001  hardware version
-420  0300a07e  vendor
-424  81000007  --> descriptor leaf at 440
-428  d1000001  --> unit directory at 42c
-
-               unit directory at 42c
-               -----------------------------------------------------------------
-42c  00046674  directory_length 4, crc 26228
-430  120000a3  specifier id
-434  13000001  version
-438  17000001  model
-43c  81000007  --> descriptor leaf at 458
-
-               descriptor leaf at 440
-               -----------------------------------------------------------------
-440  00055913  leaf_length 5, crc 22803
-444  000050f2  descriptor_type 00, specifier_ID 50f2
-448  80000000
-44c  44696769
-450  64657369
-454  676e0000
-
-               descriptor leaf at 458
-               -----------------------------------------------------------------
-458  0004a6fd  leaf_length 4, crc 42749
-45c  00000000  textual descriptor
-460  00000000  minimal ASCII
-464  44696769  "Digi"
-468  20303032  " 002"
+This commit removes the handler. I note that unit of console type
+transfers 0x00001000 to registered address of host space when switching
+to 'standalone' mode. Then the unit generates bus reset.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/digi00x/digi00x.c | 13 +++++++++++--
- sound/firewire/digi00x/digi00x.h |  1 +
- 2 files changed, 12 insertions(+), 2 deletions(-)
+ sound/firewire/digi00x/digi00x-transaction.c | 88 +++++-----------------------
+ sound/firewire/digi00x/digi00x.h             |  6 +-
+ 2 files changed, 17 insertions(+), 77 deletions(-)
 
-diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
-index cc4776c..1f5e1d2 100644
---- a/sound/firewire/digi00x/digi00x.c
-+++ b/sound/firewire/digi00x/digi00x.c
-@@ -13,7 +13,8 @@ MODULE_AUTHOR("Takashi Sakamoto <o-takashi@sakamocchi.jp>");
- MODULE_LICENSE("GPL v2");
+diff --git a/sound/firewire/digi00x/digi00x-transaction.c b/sound/firewire/digi00x/digi00x-transaction.c
+index 735d356..af9bc85 100644
+--- a/sound/firewire/digi00x/digi00x-transaction.c
++++ b/sound/firewire/digi00x/digi00x-transaction.c
+@@ -9,40 +9,6 @@
+ #include <sound/asound.h>
+ #include "digi00x.h"
  
- #define VENDOR_DIGIDESIGN	0x00a07e
--#define MODEL_DIGI00X		0x000002
-+#define MODEL_CONSOLE		0x000001
-+#define MODEL_RACK		0x000002
- 
- static int name_card(struct snd_dg00x *dg00x)
+-static int fill_midi_message(struct snd_rawmidi_substream *substream, u8 *buf)
+-{
+-	int bytes;
+-
+-	buf[0] = 0x80;
+-	bytes = snd_rawmidi_transmit_peek(substream, buf + 1, 2);
+-	if (bytes >= 0)
+-		buf[3] = 0xc0 | bytes;
+-
+-	return bytes;
+-}
+-
+-static void handle_midi_control(struct snd_dg00x *dg00x, __be32 *buf,
+-				unsigned int length)
+-{
+-	struct snd_rawmidi_substream *substream;
+-	unsigned int i;
+-	unsigned int len;
+-	u8 *b;
+-
+-	substream = ACCESS_ONCE(dg00x->in_control);
+-	if (substream == NULL)
+-		return;
+-
+-	length /= 4;
+-
+-	for (i = 0; i < length; i++) {
+-		b = (u8 *)&buf[i];
+-		len = b[3] & 0xf;
+-		if (len > 0)
+-			snd_rawmidi_receive(dg00x->in_control, b + 1, len);
+-	}
+-}
+-
+ static void handle_unknown_message(struct snd_dg00x *dg00x,
+ 				   unsigned long long offset, __be32 *buf)
  {
-@@ -129,6 +130,8 @@ static int snd_dg00x_probe(struct fw_unit *unit,
- 	spin_lock_init(&dg00x->lock);
- 	init_waitqueue_head(&dg00x->hwdep_wait);
+@@ -63,39 +29,36 @@ static void handle_message(struct fw_card *card, struct fw_request *request,
+ 	struct snd_dg00x *dg00x = callback_data;
+ 	__be32 *buf = (__be32 *)data;
  
-+	dg00x->is_console = entry->model_id == MODEL_CONSOLE;
++	fw_send_response(card, request, RCODE_COMPLETE);
 +
- 	/* Allocate and register this sound card later. */
- 	INIT_DEFERRABLE_WORK(&dg00x->dwork, do_registration);
- 	snd_fw_schedule_registration(unit, &dg00x->dwork);
-@@ -183,7 +186,13 @@ static const struct ieee1394_device_id snd_dg00x_id_table[] = {
- 		.match_flags = IEEE1394_MATCH_VENDOR_ID |
- 			       IEEE1394_MATCH_MODEL_ID,
- 		.vendor_id = VENDOR_DIGIDESIGN,
--		.model_id = MODEL_DIGI00X,
-+		.model_id = MODEL_CONSOLE,
-+	},
-+	{
-+		.match_flags = IEEE1394_MATCH_VENDOR_ID |
-+			       IEEE1394_MATCH_MODEL_ID,
-+		.vendor_id = VENDOR_DIGIDESIGN,
-+		.model_id = MODEL_RACK,
- 	},
- 	{}
- };
+ 	if (offset == dg00x->async_handler.offset)
+ 		handle_unknown_message(dg00x, offset, buf);
+-	else if (offset == dg00x->async_handler.offset + 4)
+-		handle_midi_control(dg00x, buf, length);
+-
+-	fw_send_response(card, request, RCODE_COMPLETE);
+ }
+ 
+ int snd_dg00x_transaction_reregister(struct snd_dg00x *dg00x)
+ {
+ 	struct fw_device *device = fw_parent_device(dg00x->unit);
+ 	__be32 data[2];
+-	int err;
+ 
+ 	/* Unknown. 4bytes. */
+ 	data[0] = cpu_to_be32((device->card->node_id << 16) |
+ 			      (dg00x->async_handler.offset >> 32));
+ 	data[1] = cpu_to_be32(dg00x->async_handler.offset);
+-	err = snd_fw_transaction(dg00x->unit, TCODE_WRITE_BLOCK_REQUEST,
+-				 DG00X_ADDR_BASE + DG00X_OFFSET_MESSAGE_ADDR,
+-				 &data, sizeof(data), 0);
+-	if (err < 0)
+-		return err;
+-
+-	/* Asynchronous transactions for MIDI control message. */
+-	data[0] = cpu_to_be32((device->card->node_id << 16) |
+-			      (dg00x->async_handler.offset >> 32));
+-	data[1] = cpu_to_be32(dg00x->async_handler.offset + 4);
+ 	return snd_fw_transaction(dg00x->unit, TCODE_WRITE_BLOCK_REQUEST,
+-				  DG00X_ADDR_BASE + DG00X_OFFSET_MIDI_CTL_ADDR,
++				  DG00X_ADDR_BASE + DG00X_OFFSET_MESSAGE_ADDR,
+ 				  &data, sizeof(data), 0);
+ }
+ 
++void snd_dg00x_transaction_unregister(struct snd_dg00x *dg00x)
++{
++	if (dg00x->async_handler.callback_data == NULL)
++		return;
++
++	fw_core_remove_address_handler(&dg00x->async_handler);
++
++	dg00x->async_handler.callback_data = NULL;
++}
++
+ int snd_dg00x_transaction_register(struct snd_dg00x *dg00x)
+ {
+ 	static const struct fw_address_region resp_register_region = {
+@@ -104,7 +67,7 @@ int snd_dg00x_transaction_register(struct snd_dg00x *dg00x)
+ 	};
+ 	int err;
+ 
+-	dg00x->async_handler.length = 12;
++	dg00x->async_handler.length = 4;
+ 	dg00x->async_handler.address_callback = handle_message;
+ 	dg00x->async_handler.callback_data = dg00x;
+ 
+@@ -115,28 +78,7 @@ int snd_dg00x_transaction_register(struct snd_dg00x *dg00x)
+ 
+ 	err = snd_dg00x_transaction_reregister(dg00x);
+ 	if (err < 0)
+-		goto error;
+-
+-	err = snd_fw_async_midi_port_init(&dg00x->out_control, dg00x->unit,
+-					  DG00X_ADDR_BASE + DG00X_OFFSET_MMC,
+-					  4, fill_midi_message);
+-	if (err < 0)
+-		goto error;
++		snd_dg00x_transaction_unregister(dg00x);
+ 
+ 	return err;
+-error:
+-	fw_core_remove_address_handler(&dg00x->async_handler);
+-	dg00x->async_handler.callback_data = NULL;
+-	return err;
+-}
+-
+-void snd_dg00x_transaction_unregister(struct snd_dg00x *dg00x)
+-{
+-	if (dg00x->async_handler.callback_data == NULL)
+-		return;
+-
+-	snd_fw_async_midi_port_destroy(&dg00x->out_control);
+-	fw_core_remove_address_handler(&dg00x->async_handler);
+-
+-	dg00x->async_handler.callback_data = NULL;
+ }
 diff --git a/sound/firewire/digi00x/digi00x.h b/sound/firewire/digi00x/digi00x.h
-index 9dc761b..4aefe45d 100644
+index 4aefe45d..1275a50 100644
 --- a/sound/firewire/digi00x/digi00x.h
 +++ b/sound/firewire/digi00x/digi00x.h
-@@ -61,6 +61,7 @@ struct snd_dg00x {
- 	/* For asynchronous MIDI controls. */
- 	struct snd_rawmidi_substream *in_control;
- 	struct snd_fw_async_midi_port out_control;
-+	bool is_console;
+@@ -58,9 +58,7 @@ struct snd_dg00x {
+ 	struct fw_address_handler async_handler;
+ 	u32 msg;
+ 
+-	/* For asynchronous MIDI controls. */
+-	struct snd_rawmidi_substream *in_control;
+-	struct snd_fw_async_midi_port out_control;
++	/* Console models have additional MIDI ports for control surface. */
+ 	bool is_console;
  };
  
- #define DG00X_ADDR_BASE		0xffffe0000000ull
+@@ -68,7 +66,7 @@ struct snd_dg00x {
+ 
+ #define DG00X_OFFSET_STREAMING_STATE	0x0000
+ #define DG00X_OFFSET_STREAMING_SET	0x0004
+-#define DG00X_OFFSET_MIDI_CTL_ADDR	0x0008
++/* unknown but address in host space	0x0008 */
+ /* For LSB of the address		0x000c */
+ /* unknown				0x0010 */
+ #define DG00X_OFFSET_MESSAGE_ADDR	0x0014
 -- 
 2.9.3
