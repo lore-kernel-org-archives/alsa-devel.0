@@ -1,15 +1,22 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: firewire-lib/bebob/oxfw: improve
-	response evaluation for AV/C commands
-Date: Mon,  3 Apr 2017 21:13:55 +0900
-Message-ID: <20170403121355.19627-1-o-takashi@sakamocchi.jp>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Subject: Re: [PATCH v2 2/2] ASoC: wm8960: Let wm8960 driver
+ configure its bit clock and frame clock
+Date: Mon, 3 Apr 2017 16:16:23 +0300
+Message-ID: <CAEnQRZD0LuUiULNrv6RJQsr8ZZE+v2-qNC1Za9vXk5+TtB0dOw@mail.gmail.com>
+References: <1420615905-4078-1-git-send-email-zidan.wang@freescale.com>
+ <1420615905-4078-2-git-send-email-zidan.wang@freescale.com>
+ <20150114192703.GH3043@sirena.org.uk> <20150115133439.GA29323@b50113>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 9318B266CFE
- for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2017 14:14:02 +0200 (CEST)
+Received: from mail-it0-f66.google.com (mail-it0-f66.google.com
+ [209.85.214.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 186D92669D7
+ for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2017 15:16:24 +0200 (CEST)
+Received: by mail-it0-f66.google.com with SMTP id e75so8090960itd.1
+ for <alsa-devel@alsa-project.org>; Mon, 03 Apr 2017 06:16:24 -0700 (PDT)
+In-Reply-To: <20150115133439.GA29323@b50113>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,187 +26,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: Zidan Wang <b50113@freescale.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Zidan Wang <zidan.wang@freescale.com>, tiwai@suse.de, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, shengjiu.wang@nxp.com, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, viorel.suman@nxp.com, mihai.serban@nxp.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-In ALSA firewire stack, some AV/C commands are supported, including
-vendor's extensions. Drivers includes response parser of each command,
-according to its requirements, while the parser is written with loose
-fashion in two points; error check and length check. This doesn't cause
-any issues such as kernel corruption, but should be improved.
+On Thu, Jan 15, 2015 at 3:34 PM, Zidan Wang <b50113@freescale.com> wrote:
+> On Wed, Jan 14, 2015 at 07:27:03PM +0000, Mark Brown wrote:
+>> On Wed, Jan 07, 2015 at 03:31:45PM +0800, Zidan Wang wrote:
+>>
+>> > +   for (i = 0; i < ARRAY_SIZE(dac_divs); ++i) {
+>> > +           if (wm8960->sysclk == lrclk * dac_divs[i]) {
+>> > +                   for (j = 0; j < ARRAY_SIZE(bclk_divs); ++j) {
+>> > +                           if (wm8960->sysclk ==  wm8960->bclk *
+>> > +                                           bclk_divs[j] / 10) {
+>> > +                                   goto config_clock;
+>> > +                           }
+>> > +                   }
+>> > +           }
+>> > +   }
+>> > +
+>> > +   dev_err(codec->dev, "Unsupported sysclk %d\n", wm8960->sysclk);
+>> > +   return;
+>>
+>> It's a bit awkward using the goto like this.  A more common way of
+>> writing this is to change the above block to be
+>>
+>>       if (i == ARRAY_SIZE(dac_divs))
+>>               /* return error */
+>>
+>> rather than skipping over the error.  Otherwise this looks good.
+>
+> Hi Mark,
+>
+> I found it can't generate bclk for S20_3LE data format.
+>
+> For 2 channel S20_3LE data format:
+>
+> bclk = fs * 20 * 2
+> Sysclk = BCLKDIV * bclk = BCLKDIV * fs * 40
+> Sysclk = DACDIV * fs * 256
+>
+> BCLKDIV/DACDIV = 256/40 = 32/5
+>
+> But BCLKDIV/DACDIV can't be 32/5. So I want to support tdm slot.
+>
+> bclk = fs * slot_width * slots * channal.
+>
+> Do you think it make sense, or any other ideas?
 
-This commit modifies evaluations of return value on each parsers.
+Reviving this question after two years :).
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/bebob/bebob_command.c | 30 ++++++++++++++++++++++--------
- sound/firewire/fcp.c                 | 12 +++++++++---
- sound/firewire/oxfw/oxfw-command.c   | 12 +++++++++---
- 3 files changed, 40 insertions(+), 14 deletions(-)
+After "ASoC: codec: wm8960: Relax bit clock computation" patch
 
-diff --git a/sound/firewire/bebob/bebob_command.c b/sound/firewire/bebob/bebob_command.c
-index 9402cc1..f9b4225 100644
---- a/sound/firewire/bebob/bebob_command.c
-+++ b/sound/firewire/bebob/bebob_command.c
-@@ -31,13 +31,15 @@ int avc_audio_set_selector(struct fw_unit *unit, unsigned int subunit_id,
- 	err = fcp_avc_transaction(unit, buf, 12, buf, 12,
- 				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) |
- 				  BIT(6) | BIT(7) | BIT(8));
--	if (err > 0 && err < 9)
-+	if (err < 0)
-+		;
-+	else if (err < 9)
- 		err = -EIO;
- 	else if (buf[0] == 0x08) /* NOT IMPLEMENTED */
- 		err = -ENOSYS;
- 	else if (buf[0] == 0x0a) /* REJECTED */
- 		err = -EINVAL;
--	else if (err > 0)
-+	else
- 		err = 0;
- 
- 	kfree(buf);
-@@ -67,7 +69,9 @@ int avc_audio_get_selector(struct fw_unit *unit, unsigned int subunit_id,
- 	err = fcp_avc_transaction(unit, buf, 12, buf, 12,
- 				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) |
- 				  BIT(6) | BIT(8));
--	if (err > 0 && err < 9)
-+	if (err < 0)
-+		;
-+	else if (err < 9)
- 		err = -EIO;
- 	else if (buf[0] == 0x08) /* NOT IMPLEMENTED */
- 		err = -ENOSYS;
-@@ -120,7 +124,9 @@ int avc_bridgeco_get_plug_type(struct fw_unit *unit,
- 	err = fcp_avc_transaction(unit, buf, 12, buf, 12,
- 				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) |
- 				  BIT(6) | BIT(7) | BIT(9));
--	if ((err >= 0) && (err < 8))
-+	if (err < 0)
-+		;
-+	else if (err < 11)
- 		err = -EIO;
- 	else if (buf[0] == 0x08) /* NOT IMPLEMENTED */
- 		err = -ENOSYS;
-@@ -150,7 +156,9 @@ int avc_bridgeco_get_plug_ch_pos(struct fw_unit *unit,
- 	err = fcp_avc_transaction(unit, buf, 12, buf, 256,
- 				  BIT(1) | BIT(2) | BIT(3) | BIT(4) |
- 				  BIT(5) | BIT(6) | BIT(7) | BIT(9));
--	if ((err >= 0) && (err < 8))
-+	if (err < 0)
-+		;
-+	else if (err < 11)
- 		err = -EIO;
- 	else if (buf[0] == 0x08) /* NOT IMPLEMENTED */
- 		err = -ENOSYS;
-@@ -187,7 +195,9 @@ int avc_bridgeco_get_plug_section_type(struct fw_unit *unit,
- 	err = fcp_avc_transaction(unit, buf, 12, buf, 12,
- 				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) |
- 				  BIT(6) | BIT(7) | BIT(9) | BIT(10));
--	if ((err >= 0) && (err < 8))
-+	if (err < 0)
-+		;
-+	else if (err < 12)
- 		err = -EIO;
- 	else if (buf[0] == 0x08) /* NOT IMPLEMENTED */
- 		err = -ENOSYS;
-@@ -221,7 +231,9 @@ int avc_bridgeco_get_plug_input(struct fw_unit *unit,
- 	err = fcp_avc_transaction(unit, buf, 16, buf, 16,
- 				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) |
- 				  BIT(6) | BIT(7));
--	if ((err >= 0) && (err < 8))
-+	if (err < 0)
-+		;
-+	else if (err < 16)
- 		err = -EIO;
- 	else if (buf[0] == 0x08) /* NOT IMPLEMENTED */
- 		err = -ENOSYS;
-@@ -260,7 +272,9 @@ int avc_bridgeco_get_plug_strm_fmt(struct fw_unit *unit,
- 	err = fcp_avc_transaction(unit, buf, 12, buf, *len,
- 				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) |
- 				  BIT(6) | BIT(7) | BIT(10));
--	if ((err >= 0) && (err < 12))
-+	if (err < 0)
-+		;
-+	else if (err < 12)
- 		err = -EIO;
- 	else if (buf[0] == 0x08)        /* NOT IMPLEMENTED */
- 		err = -ENOSYS;
-diff --git a/sound/firewire/fcp.c b/sound/firewire/fcp.c
-index cce1976..61dda82 100644
---- a/sound/firewire/fcp.c
-+++ b/sound/firewire/fcp.c
-@@ -63,7 +63,9 @@ int avc_general_set_sig_fmt(struct fw_unit *unit, unsigned int rate,
- 	/* do transaction and check buf[1-5] are the same against command */
- 	err = fcp_avc_transaction(unit, buf, 8, buf, 8,
- 				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5));
--	if (err >= 0 && err < 8)
-+	if (err < 0)
-+		;
-+	else if (err < 8)
- 		err = -EIO;
- 	else if (buf[0] == 0x08) /* NOT IMPLEMENTED */
- 		err = -ENOSYS;
-@@ -106,7 +108,9 @@ int avc_general_get_sig_fmt(struct fw_unit *unit, unsigned int *rate,
- 	/* do transaction and check buf[1-4] are the same against command */
- 	err = fcp_avc_transaction(unit, buf, 8, buf, 8,
- 				  BIT(1) | BIT(2) | BIT(3) | BIT(4));
--	if (err >= 0 && err < 8)
-+	if (err < 0)
-+		;
-+	else if (err < 8)
- 		err = -EIO;
- 	else if (buf[0] == 0x08) /* NOT IMPLEMENTED */
- 		err = -ENOSYS;
-@@ -154,7 +158,9 @@ int avc_general_get_plug_info(struct fw_unit *unit, unsigned int subunit_type,
- 	buf[3] = 0xff & subfunction;
- 
- 	err = fcp_avc_transaction(unit, buf, 8, buf, 8, BIT(1) | BIT(2));
--	if (err >= 0 && err < 8)
-+	if (err < 0)
-+		;
-+	else if (err < 8)
- 		err = -EIO;
- 	else if (buf[0] == 0x08) /* NOT IMPLEMENTED */
- 		err = -ENOSYS;
-diff --git a/sound/firewire/oxfw/oxfw-command.c b/sound/firewire/oxfw/oxfw-command.c
-index 12ef325..ac3e2e3 100644
---- a/sound/firewire/oxfw/oxfw-command.c
-+++ b/sound/firewire/oxfw/oxfw-command.c
-@@ -34,7 +34,9 @@ int avc_stream_set_format(struct fw_unit *unit, enum avc_general_plug_dir dir,
- 	err = fcp_avc_transaction(unit, buf, len + 10, buf, len + 10,
- 				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) |
- 				  BIT(6) | BIT(7) | BIT(8));
--	if ((err > 0) && (err < len + 10))
-+	if (err < 0)
-+		;
-+	else if (err < len + 10)
- 		err = -EIO;
- 	else if (buf[0] == 0x08) /* NOT IMPLEMENTED */
- 		err = -ENOSYS;
-@@ -77,7 +79,9 @@ int avc_stream_get_format(struct fw_unit *unit,
- 	err = fcp_avc_transaction(unit, buf, 12, buf, *len,
- 				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5) |
- 				  BIT(6) | BIT(7));
--	if ((err > 0) && (err < 10))
-+	if (err < 0)
-+		;
-+	else if (err < 12)
- 		err = -EIO;
- 	else if (buf[0] == 0x08)	/* NOT IMPLEMENTED */
- 		err = -ENOSYS;
-@@ -139,7 +143,9 @@ int avc_general_inquiry_sig_fmt(struct fw_unit *unit, unsigned int rate,
- 	/* do transaction and check buf[1-5] are the same against command */
- 	err = fcp_avc_transaction(unit, buf, 8, buf, 8,
- 				  BIT(1) | BIT(2) | BIT(3) | BIT(4) | BIT(5));
--	if ((err > 0) && (err < 8))
-+	if (err < 0)
-+		;
-+	else if (err < 8)
- 		err = -EIO;
- 	else if (buf[0] == 0x08)	/* NOT IMPLEMENTED */
- 		err = -ENOSYS;
--- 
-2.9.3
+https://patchwork.kernel.org/patch/9636769/
+
+we can now support S20_3LE for round rates like 8000, 16000,
+32000 and 48000.
+
+But not for 11025, 22050, 441000. Do you think it's worth exploring
+"tdm slot" idea? I don't know exactly what it implies.
+
+Another idea, is to completely remove support for S20_3LE since it
+is not trivial to derive bitclk from sysclk.
+
+What do you guys think?
+
+Daniel.
