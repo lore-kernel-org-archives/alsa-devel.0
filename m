@@ -1,20 +1,21 @@
-From: Nicolin Chen <nicoleotsuka@gmail.com>
+From: Fabio Estevam <festevam@gmail.com>
 Subject: Re: [PATCH v2] ASoC: fsl_ssi: Fix channel swap on
 	playback start
-Date: Mon, 3 Apr 2017 15:36:15 -0700
-Message-ID: <20170403223614.GC21156@Asurada-Nvidia>
+Date: Mon, 3 Apr 2017 19:54:26 -0300
+Message-ID: <CAOMZO5AZm5w69033PKd+PTQARZaujO9H_n7YtQ7hnGESefvd4A@mail.gmail.com>
 References: <1491058131-31366-1-git-send-email-festevam@gmail.com>
+ <20170403223614.GC21156@Asurada-Nvidia>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f65.google.com (mail-pg0-f65.google.com [74.125.83.65])
- by alsa0.perex.cz (Postfix) with ESMTP id A5587266972
- for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2017 00:36:11 +0200 (CEST)
-Received: by mail-pg0-f65.google.com with SMTP id 81so32711504pgh.3
- for <alsa-devel@alsa-project.org>; Mon, 03 Apr 2017 15:36:11 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1491058131-31366-1-git-send-email-festevam@gmail.com>
+Received: from mail-oi0-f65.google.com (mail-oi0-f65.google.com
+ [209.85.218.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id BEC3C266972
+ for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2017 00:54:28 +0200 (CEST)
+Received: by mail-oi0-f65.google.com with SMTP id d2so14840234oig.2
+ for <alsa-devel@alsa-project.org>; Mon, 03 Apr 2017 15:54:28 -0700 (PDT)
+In-Reply-To: <20170403223614.GC21156@Asurada-Nvidia>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,39 +25,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>
-Cc: alsa-devel@alsa-project.org, arnaud.mouiche@invoxia.com, timur@tabi.org, caleb@crome.org, broonie@kernel.org, max.krummenacher@toradex.com, Fabio Estevam <fabio.estevam@nxp.com>, kernel@pengutronix.de
+To: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Arnaud Mouiche <arnaud.mouiche@invoxia.com>, Timur Tabi <timur@tabi.org>, Caleb Crome <caleb@crome.org>, Mark Brown <broonie@kernel.org>, Max Krummenacher <max.krummenacher@toradex.com>, Fabio Estevam <fabio.estevam@nxp.com>, Sascha Hauer <kernel@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Fabio,
+Hi Nicolin,
 
-On Sat, Apr 01, 2017 at 11:48:51AM -0300, Fabio Estevam wrote:
+On Mon, Apr 3, 2017 at 7:36 PM, Nicolin Chen <nicoleotsuka@gmail.com> wrote:
 
-> ENGcm06222: SSI:Transmission does not take place in bit length early
-> frame sync configuration
-[...]
-> @@ -575,7 +575,9 @@ static void fsl_ssi_config(struct fsl_ssi_private *ssi_private, bool enable,
->  					"Timeout waiting TX FIFO filling\n");
->  			}
->  		}
-> -		regmap_update_bits(regs, CCSR_SSI_SCR, vals->scr, vals->scr);
-> +		regmap_update_bits(regs, CCSR_SSI_SCR,
-> +			CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_TE | CCSR_SSI_SCR_RE,
-> +			CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_TE | CCSR_SSI_SCR_RE);
+> My extra concern for this change is that ENGcm06222 suggests to
+> set TE and SSIEN together. However, we are still not setting the
+> SSIEN and TE together -- SSIEN is set already before this line
+> in the "ssi_private->use_dma && (vals->scr & CCSR_SSI_SCR_TE)".
+>
+> On the other hand, ENGcm06222 doesn't mention anything related
+> to the RE bit. Although ENGcm06474 suggests to set TE and RE
+> together, yet it's for another bug (when TE is set after RE, the
+> TX channels might be swapped.)
 
-My extra concern for this change is that ENGcm06222 suggests to
-set TE and SSIEN together. However, we are still not setting the
-SSIEN and TE together -- SSIEN is set already before this line
-in the "ssi_private->use_dma && (vals->scr & CCSR_SSI_SCR_TE)".
+The idea for this patch came from commit f8fdf5375e2005 ("ASoC:
+fsl-ssi: add SSIEN errata work around").
 
-On the other hand, ENGcm06222 doesn't mention anything related
-to the RE bit. Although ENGcm06474 suggests to set TE and RE
-together, yet it's for another bug (when TE is set after RE, the
-TX channels might be swapped.)
+In this commit SSIEN, TE and RE are written at the same time as a
+workaround to ENGcm06222 and ENGcm06532
+from the MX35 errata document. The workaround was only applied to AC97
+context (not sure why?).
 
-Then, the test case: aplay swap_test.wav& sleep 1; killall aplay
+ENGcm06222 is about "SSI:Transmission does not take place in bit
+length early frame sync configuration"
 
-It doesn't involve RE at all. So I don't get why setting RE and
-TE together after setting SSIEN (three bits are not set together
-here.) could solve the channel swapping problem for a test case
-which has never involved RE at all. Am I missing something?
+As we use bit length frame sync in I2S mode, I thought this could
+impact us and when I try the patch  it does not swap anymore on this
+simple usecase:
+aplay swap_test.wav& sleep 1; killall aplay
+
+Seems to cause other issues though as reported by Caleb and Arnaud, so
+we need to find other way to solve this.
+
+> Then, the test case: aplay swap_test.wav& sleep 1; killall aplay
+>
+> It doesn't involve RE at all. So I don't get why setting RE and
+> TE together after setting SSIEN (three bits are not set together
+> here.) could solve the channel swapping problem for a test case
+> which has never involved RE at all. Am I missing something?
+
+Your understanding is correct. In my usecase there is no audio capture
+involved at all, just stereo audio playback.
+
+The only explanation I can give is the same one from commit
+f8fdf5375e2005 ("ASoC: fsl-ssi: add SSIEN errata work around").
+
+Do you have access to any imx board with SSI?
