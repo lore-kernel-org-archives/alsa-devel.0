@@ -1,15 +1,15 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: twl6040: Add control for HS and HF mono
-	to stereo selection
-Date: Mon, 3 Apr 2017 13:12:39 +0300
-Message-ID: <20170403101239.2721-1-peter.ujfalusi@ti.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: oxfw: fix regression to handle Stanton
+	SCS.1m/1d
+Date: Mon,  3 Apr 2017 21:13:40 +0900
+Message-ID: <20170403121340.19521-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F36A2669D7
- for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2017 12:11:58 +0200 (CEST)
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 4E16C2669D7
+ for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2017 14:13:44 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,38 +19,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, "# 4 . 7+" <stable@vger.kernel.org>, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-The new controls will give user the ability to route the left PDM channel
-data to the right headset/handsfree DAC.
-HS mono to stereo switch: PDM channel 1 (or mono) data to both HS DAC.
-HF mono to stereo switch: PDM channel 3 data to both HF DAC.
+At a commit 6c29230e2a5f ("ALSA: oxfw: delayed registration of sound
+card"), ALSA oxfw driver fails to handle SCS.1m/1d, due to -EBUSY at a call
+of snd_card_register(). The cause is that the driver manages to register
+two rawmidi instances with the same device number 0. This is a regression
+introduced since kernel 4.7.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+This commit fixes the regression, by fixing up device property after
+discovering stream formats.
+
+Fixes: 6c29230e2a5f ("ALSA: oxfw: delayed registration of sound card")
+Cc: <stable@vger.kernel.org> # 4.7+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/soc/codecs/twl6040.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/firewire/oxfw/oxfw.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 748036e851ea..2b6ad09e0886 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -606,6 +606,14 @@ static const struct snd_kcontrol_new twl6040_snd_controls[] = {
- 		twl6040_headset_power_get_enum,
- 		twl6040_headset_power_put_enum),
+diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
+index 74d7fb6..413ab63 100644
+--- a/sound/firewire/oxfw/oxfw.c
++++ b/sound/firewire/oxfw/oxfw.c
+@@ -227,11 +227,11 @@ static void do_registration(struct work_struct *work)
+ 	if (err < 0)
+ 		goto error;
  
-+	/* Left HS PDM data routed to Right HSDAC */
-+	SOC_SINGLE("Headset Mono to Stereo Playback Switch",
-+		TWL6040_REG_HSRCTL, 7, 1, 0),
-+
-+	/* Left HF PDM data routed to Right HFDAC */
-+	SOC_SINGLE("Handsfree Mono to Stereo Playback Switch",
-+		TWL6040_REG_HFRCTL, 5, 1, 0),
-+
- 	SOC_ENUM_EXT("PLL Selection", twl6040_power_mode_enum,
- 		twl6040_pll_get_enum, twl6040_pll_put_enum),
- };
+-	err = detect_quirks(oxfw);
++	err = snd_oxfw_stream_discover(oxfw);
+ 	if (err < 0)
+ 		goto error;
+ 
+-	err = snd_oxfw_stream_discover(oxfw);
++	err = detect_quirks(oxfw);
+ 	if (err < 0)
+ 		goto error;
+ 
 -- 
-2.12.2
+2.9.3
