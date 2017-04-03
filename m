@@ -1,66 +1,105 @@
-From: Ryan Lee <ryans.lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org>
-Subject: Re: [PATCH v4] ASoC: Add support for Maxim Integrated MAX98927 Amplifier
-Date: Mon, 3 Apr 2017 10:24:38 -0700
-Message-ID: <CAN4-ojkdnzp59zMVj8fQj0NBAW-AdNvMt-YhvOMjBnMLv30-rA@mail.gmail.com>
-References: <1490922994-19294-1-git-send-email-ryans.lee@maximintegrated.com> <20170403163053.u6b3yadkfyh4z7h5@rob-hp-laptop>
+From: Caleb Crome <caleb@crome.org>
+Subject: Re: [PATCH v2] ASoC: fsl_ssi: Fix channel swap on
+	playback start
+Date: Mon, 3 Apr 2017 13:32:42 -0700
+Message-ID: <CAG5mAdyg9jbNcGi6kNLf5s1wk7HkchM5-MjVVJNuATU07HtrUQ@mail.gmail.com>
+References: <1491058131-31366-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20170403163053.u6b3yadkfyh4z7h5@rob-hp-laptop>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, mark.rutland-5wv7dgnIgG8@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, Arnd Bergmann <arnd-r2nGTMty4D4@public.gmane.org>, ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org, bardliao-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org, nh6z-fFIq/eER6g8@public.gmane.org, KCHSU0-KrzQf0k3Iz9BDgjK7y7TUQ@public.gmane.org, Axel Lin <axel.lin-8E1dMatC8ynQT0dZR+AlfA@public.gmane.org>, romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org, Srinivas Kandagatla <srinivas.kandagatla-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, oder_chiou-Rasf1IRRPZFBDgjK7y7TUQ@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Dylan Reid <dgreid-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vk0-f67.google.com (mail-vk0-f67.google.com
+ [209.85.213.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 69E40266972
+ for <alsa-devel@alsa-project.org>; Mon,  3 Apr 2017 22:33:03 +0200 (CEST)
+Received: by mail-vk0-f67.google.com with SMTP id z204so19958494vkd.2
+ for <alsa-devel@alsa-project.org>; Mon, 03 Apr 2017 13:33:03 -0700 (PDT)
+In-Reply-To: <1491058131-31366-1-git-send-email-festevam@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <festevam@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Arnaud Mouiche <arnaud.mouiche@invoxia.com>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, max.krummenacher@toradex.com, Fabio Estevam <fabio.estevam@nxp.com>, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 3, 2017 at 9:30 AM, Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
-> On Fri, Mar 31, 2017 at 10:16:34AM +0900, Ryan Lee wrote:
->> Signed-off-by: Ryan Lee <ryans.lee-zxKO94PEStzToO697jQleEEOCMrvLtNR@public.gmane.org>
->> ---
->>
->> Changes since v4:
->>       * Removed support for SND_SOC_DAIFMT_CBS_CFM.
->>       * Fixed coding style for indention.
->>       * Removed variables if it has only one user.
->>       * Assigned ch_size directly.
->>       * Removed oring.
->>       * Put the return false in the switch statement.
->>       * Removed 'Monomix Output' and 'Speaker Source' controls.
->>       * Modified control names per control-names.rst.
->>       * Moved Revision ID check code to i2c_probe function.
->>       * Added 'Current Limit' control.
->>       * Removed 'devm__kfree' function.
->>
->> Changes since v3:
->>       * Combined MAX98926 and MAX98927 binding. Kept existing property name.
+On Sat, Apr 1, 2017 at 7:48 AM, Fabio Estevam <festevam@gmail.com> wrote:
 >
-> This looks fine, but:
+> From: Fabio Estevam <fabio.estevam@nxp.com>
 >
->> Changes since v2:
->>       * Removed local register read/write function to avoid duplication of ASoC core function.
->>
->>  .../devicetree/bindings/sound/max98925.txt         |  22 -
->>  .../devicetree/bindings/sound/max98926.txt         |  32 -
->>  .../devicetree/bindings/sound/max9892x.txt         |  41 +
->>  sound/soc/codecs/Kconfig                           |   5 +
->>  sound/soc/codecs/Makefile                          |   2 +
->>  sound/soc/codecs/max98927.c                        | 841 +++++++++++++++++++++
->>  sound/soc/codecs/max98927.h                        | 272 +++++++
->>  7 files changed, 1161 insertions(+), 54 deletions(-)
->>  delete mode 100644 Documentation/devicetree/bindings/sound/max98925.txt
->>  delete mode 100644 Documentation/devicetree/bindings/sound/max98926.txt
->>  create mode 100755 Documentation/devicetree/bindings/sound/max9892x.txt
->>  mode change 100644 => 100755 sound/soc/codecs/Kconfig
->>  mode change 100644 => 100755 sound/soc/codecs/Makefile
->>  create mode 100755 sound/soc/codecs/max98927.c
->>  create mode 100755 sound/soc/codecs/max98927.h
+> Commit f8fdf5375e2005f2 ("ASoC: fsl-ssi: add SSIEN errata work around")
+> implemented  the workaround for the following erratum found on i.MX35
+> errata document:
 >
-> These should all be 644 mode.
+> ENGcm06222: SSI:Transmission does not take place in bit length early
+> frame sync configuration
+>
+> and also for ENGcm06222 from the same document.
+>
+> However it has been only applied for AC97 mode. Apply it to I2S mode
+> as well so that it can fix audio channel swap during playback start.
+>
+> The channel swap can be noticed in about 10% of the times an audio track
+> starts.
+>
+> With the recommended workaround in place no more channel swap
+> happened after running audio start/stop sequence in more than
+> 2000 times.
+>
+> Tested on a mx6dl-wandboard.
+>
+> Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+> ---
+> Changes since v1:
+> - Do not impact  61fcf10a0ee44763e0 ("ASoC: fsl_ssi: Fix channel slipping in
+> Playback at startup")
+>
+>  sound/soc/fsl/fsl_ssi.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+> index 17f92b8..549b2a5 100644
+> --- a/sound/soc/fsl/fsl_ssi.c
+> +++ b/sound/soc/fsl/fsl_ssi.c
+> @@ -575,7 +575,9 @@ static void fsl_ssi_config(struct fsl_ssi_private *ssi_private, bool enable,
+>                                         "Timeout waiting TX FIFO filling\n");
+>                         }
+>                 }
+> -               regmap_update_bits(regs, CCSR_SSI_SCR, vals->scr, vals->scr);
+> +               regmap_update_bits(regs, CCSR_SSI_SCR,
+> +                       CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_TE | CCSR_SSI_SCR_RE,
+> +                       CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_TE | CCSR_SSI_SCR_RE);
+>         }
+>  }
+>
+> --
+> 2.7.4
+>
 
-I've changed the mode to 644. Thank you.
+This patch definitely breaks the i.mx6 channel alignment.  In fact it
+breaks it so that the channels are never aligned properly.
 
->
-> Rob
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+My test setup is as follows:
+* Get vanilla kernel, tag v4.11-rc5
+* apply a couple patches to allow AUD4 on the wandboard external
+connectors (and disable internal audio)
+* Test results:  v4.11-rc5 works flawlessly using Arnaud's atest
+program.  No channel slips, no issues at all.
+* Apply this patch, recompile, build.
+* Channel alignment fails.  The channels never get aligned properly.
+
+Am I right that the *only* change is this one-liner, and ignore the
+previous non V2 version of this patch?
+> -               regmap_update_bits(regs, CCSR_SSI_SCR, vals->scr, vals->scr);
+> +               regmap_update_bits(regs, CCSR_SSI_SCR,
+> +                       CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_TE | CCSR_SSI_SCR_RE,
+> +                       CCSR_SSI_SCR_SSIEN | CCSR_SSI_SCR_TE | CCSR_SSI_SCR_RE);
+
+See you,
+
+-Caleb
