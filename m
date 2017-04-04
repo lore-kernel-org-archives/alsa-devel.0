@@ -1,74 +1,80 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [PATCH 2/2] ASoC: codec: wm8960: Relax bit clock computation when using PLL
-Date: Tue, 4 Apr 2017 19:45:14 +0300
-Message-ID: <1491324314-27067-3-git-send-email-daniel.baluta@nxp.com>
-References: <1491324314-27067-1-git-send-email-daniel.baluta@nxp.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH v2] ASoC: fsl_ssi: Fix channel swap on
+	playback start
+Date: Tue, 4 Apr 2017 14:12:33 -0300
+Message-ID: <CAOMZO5A8AExfYR+JuBaLAQsRNUs3Og13PGv9ychD7j4rwMhx2A@mail.gmail.com>
+References: <1491058131-31366-1-git-send-email-festevam@gmail.com>
+ <CAG5mAdyg9jbNcGi6kNLf5s1wk7HkchM5-MjVVJNuATU07HtrUQ@mail.gmail.com>
+ <CAOMZO5BiRrRurJUsLb_pgSEw+ByZSSg6b3sRz17tKUXT1wRaSw@mail.gmail.com>
+ <CAG5mAdyjWDaijQHFzKc3v3F0A_2BsBByxXygeits5NfFiQTSpA@mail.gmail.com>
+ <CAOMZO5DzNqKdOHOb_SXQwzEDfD1B4yQVjYxYaHhFHzWNUSE-ig@mail.gmail.com>
+ <CAG5mAdzKuWHMQLiDOzabdp9Xxs1z5sYNdkt17kGge-4wop5nFA@mail.gmail.com>
+ <e5c3ee01-e807-e74d-f90f-2c207a74e539@invoxia.com>
+ <CAOMZO5Ahe7fYxZH28J7B0wDFmRc1J2aJv6qoktHoKo15s4b9uQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1491324314-27067-1-git-send-email-daniel.baluta@nxp.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, ckeepax@opensource.wolfsonmicro.com, shengjiu.wang@nxp.com, viorel.suman@nxp.com, mihai.serban@nxp.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f44.google.com (mail-oi0-f44.google.com
+ [209.85.218.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24FE6266834
+ for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2017 19:12:35 +0200 (CEST)
+Received: by mail-oi0-f44.google.com with SMTP id b187so170810127oif.0
+ for <alsa-devel@alsa-project.org>; Tue, 04 Apr 2017 10:12:35 -0700 (PDT)
+In-Reply-To: <CAOMZO5Ahe7fYxZH28J7B0wDFmRc1J2aJv6qoktHoKo15s4b9uQ@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Sascha Hauer <kernel@pengutronix.de>, Timur Tabi <timur@tabi.org>, Caleb Crome <caleb@crome.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Max Krummenacher <max.krummenacher@toradex.com>, Fabio Estevam <fabio.estevam@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-Bitclk is derived from sysclk using bclk_divs.
-Sysclk can be derived in two ways:
-	(1) directly from MLCK
-	(2) MCLK via PLL
+On Tue, Apr 4, 2017 at 8:38 AM, Fabio Estevam <festevam@gmail.com> wrote:
 
-Commit 3c01b9ee2ab9d0d ("ASoC: codec: wm8960: Relax bit clock computation")
-relaxed bitclk computation when sysclk is directly derived from MCLK.
+> I have the following SSI1 values (with the original 4.1-rc5 + pictrl patch):
+>
+> # cat /sys/kernel/debug/regmap/2028000.ssi/registers
+> 00: 00000200
+> 04: 00000000
+> 10: 0000105b
 
-Lets do the same thing when sysclk is derived via PLL.
+Bits 6-5 (I2S_MODE) of register SCR are 10 of register SCR, which
+means I2S slave mode.
 
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
----
- sound/soc/codecs/wm8960.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+The MX6 Reference Manual states:
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 36c8454..e8cb764 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -679,6 +679,10 @@ int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
-  *		- freq_out    = sysclk * sysclk_divs
-  *		- 10 * sysclk = bclk * bclk_divs
-  *
-+ *	If we cannot find an exact match for (sysclk, lrclk, bclk)
-+ *	triplet, we relax the bclk such that bclk is chosen as the
-+ *	closest available frequency greater than expected bclk.
-+ *
-  * @codec: codec structure
-  * @freq_in: input frequency used to derive freq out via PLL
-  * @sysclk_idx: sysclk_divs index for found sysclk
-@@ -696,11 +700,12 @@ int wm8960_configure_pll(struct snd_soc_codec *codec, int freq_in,
- {
- 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
- 	int sysclk, bclk, lrclk, freq_out;
--	int diff, best_freq_out;
-+	int diff, closest, best_freq_out;
- 	int i, j, k;
- 
- 	bclk = wm8960->bclk;
- 	lrclk = wm8960->lrclk;
-+	closest = freq_in;
- 
- 	*bclk_idx = -1;
- 
-@@ -723,6 +728,13 @@ int wm8960_configure_pll(struct snd_soc_codec *codec, int freq_in,
- 					best_freq_out = freq_out;
- 					break;
- 				}
-+				if (diff > 0 && closest > diff) {
-+					*sysclk_idx = i;
-+					*dac_idx = j;
-+					*bclk_idx = k;
-+					closest = diff;
-+					best_freq_out = freq_out;
-+				}
- 			}
- 		}
- 	}
--- 
-2.7.4
+"In I2S slave mode(SSI_SCR[6:5]=10), the following settings are
+internally overridden by
+the hardware:
+
+Normal mode is selected (SSI_SCR[3]=0)
+Tx frame sync length set to one-bit-long-frame (SSI_STCR[1]=1)
+Rx frame sync length set to one-bit-long-frame (SSI_SRCR[1]=1)"
+
+so I tried not to use the the one-bit-long-frame (since ENGcm06222 is
+about bit length frame sync) override and changed it to I2S normal
+mode instead:
+
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -973,7 +973,7 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
+                        ssi_private->i2s_mode |= CCSR_SSI_SCR_I2S_MODE_MASTER;
+                        break;
+                case SND_SOC_DAIFMT_CBM_CFM:
+-                       ssi_private->i2s_mode |= CCSR_SSI_SCR_I2S_MODE_SLAVE;
++                       ssi_private->i2s_mode |= CCSR_SSI_SCR_I2S_MODE_NORMAL;
+                        break;
+                default:
+                        return -EINVAL;
+
+and I do not get the channel swap anymore.
+
+In what cases could we safely switch to I2S normal mode?
+
+Thanks
