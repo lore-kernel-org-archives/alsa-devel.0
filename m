@@ -1,25 +1,16 @@
-From: Rabit <home.rabits@gmail.com>
-Subject: Re: ESI Maya22 init issues
-Date: Tue, 4 Apr 2017 07:51:56 -0700
-Message-ID: <cc44b204-0c51-2fcd-af63-8d293b4e48dc@gmail.com>
-References: <dfc845be-f35e-6203-45c7-f429e57a4ee5@gmail.com>
- <494c517c-ca42-2b51-cb77-7fcb7f553494@gmail.com>
+From: Daniel Baluta <daniel.baluta@nxp.com>
+Subject: [PATCH 0/2] ASoC: codec: wm8960: Relax bit clock
+	computation when using PLL
+Date: Tue, 4 Apr 2017 19:45:12 +0300
+Message-ID: <1491324314-27067-1-git-send-email-daniel.baluta@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f49.google.com (mail-wm0-f49.google.com [74.125.82.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 47EC9266872
- for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2017 16:52:00 +0200 (CEST)
-Received: by mail-wm0-f49.google.com with SMTP id x124so30328376wmf.0
- for <alsa-devel@alsa-project.org>; Tue, 04 Apr 2017 07:52:00 -0700 (PDT)
-Received: from [192.168.21.100] (c-50-185-219-138.hsd1.ca.comcast.net.
- [50.185.219.138])
- by smtp.googlemail.com with ESMTPSA id 186sm18793817wml.2.2017.04.04.07.51.58
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 04 Apr 2017 07:51:59 -0700 (PDT)
-In-Reply-To: <494c517c-ca42-2b51-cb77-7fcb7f553494@gmail.com>
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com
+ (mail-ve1eur01on0054.outbound.protection.outlook.com [104.47.1.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 27A6B26683C
+ for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2017 18:45:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,26 +21,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: lgirdwood@gmail.com, shengjiu.wang@nxp.com, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, tiwai@suse.com, broonie@kernel.org, viorel.suman@nxp.com, mihai.serban@nxp.com, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi, Guys
+This is a follow up of commit 3c01b9ee2ab ("ASoC: codec: wm8960: Relax bit clock computation")
+where we relaxed bitclk when sysclk was derived from MCLK.
 
-Anyone please could help me with it?
+Now, we do the same thing for sysclk derived using PLL.
 
-Best regards
+Daniel Baluta (2):
+  ASoC: codec: wm9860: Refactor PLL out freq search
+  ASoC: codec: wm8960: Relax bit clock computation when using PLL
 
-On 03/24/2017 10:34 PM, Rabit wrote:
-> Hi AlsaDevs,
->
-> Seems like something wrong with maya22 usb initialization.
->
-> I'm trying to use my control application after lin init (fail) and win
-> init (working): https://github.com/rabits/esi-maya22-linux - it's
-> working fine on ubuntu 14.04 ~yr ago, when I'm done this app, but now
-> it's broken...
->
-> Could you please help me with figuring out what's wrong? I can attach
-> required info and try another ubuntu versions.
->
-> Attached alsainfo. Also can provide pcapng with init process for lin & win.
->
+ sound/soc/codecs/wm8960.c | 105 +++++++++++++++++++++++++++++++++-------------
+ 1 file changed, 76 insertions(+), 29 deletions(-)
+
+-- 
+2.7.4
