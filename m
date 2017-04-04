@@ -1,18 +1,18 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Playback formats;
- does aplay pad S16_LE, or does the hardware?
-Date: Tue, 4 Apr 2017 11:11:36 +0200
-Message-ID: <c284a660-840d-46a3-014f-9225c4f4fdca@ladisch.de>
-References: <CALAeOVNZWTOeAXB+4neM+xPb=63egoaSJiaZaZ5e3izi81ND8w@mail.gmail.com>
+Subject: Re: mono/stereo translation & number of frames per
+ period
+Date: Tue, 4 Apr 2017 11:18:13 +0200
+Message-ID: <b8bbf9c0-74ee-45b7-c5c2-2fc33ac44934@ladisch.de>
+References: <c803630b-965e-40fa-be7b-e16c8682431f@me.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from webclient5.webclient5.de (webclient5.webclient5.de
  [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id F19C62668F6
- for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2017 11:11:38 +0200 (CEST)
-In-Reply-To: <CALAeOVNZWTOeAXB+4neM+xPb=63egoaSJiaZaZ5e3izi81ND8w@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D7A562668F6
+ for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2017 11:18:14 +0200 (CEST)
+In-Reply-To: <c803630b-965e-40fa-be7b-e16c8682431f@me.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,37 +22,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Nertney <rob@rob-otics.com>, alsa-devel@alsa-project.org
+To: Paul Stone <metabagel@icloud.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Rob Nertney wrote:
-> I can successfully play 32b@32KHz and 32b@16KHz to my I2S DAC.
->
-> I can also, with the same settings as 32b@16KHz, play 16b@32KHz, but I
-> don't think this is the way ALSA wants its data....
->
-> I've learned that hw_params is responsible for describing only what the
-> hardware is supposed to be capable of.
+Paul Stone wrote:
+> I thought that simply by reporting that my driver only supports two
+> channels, that I could simply utilize a mixer or that ALSA would
+> automatically support sending and receiving monaural data to/from my
+> stereo-only driver. Ultimately, I wasn't able to make it work. Is this
+> a mode of operation that ALSA supports, or does ALSA require the
+> driver to support single-channel operation in order to send/receive
+> monaural data?
 
-The hw_params values describe the format of the samples in memory.
-(If alsa-lib does format conversion, the application and the driver see
-different hw_params values.)
+The driver should report only those sample formats that the hardware
+actually supports.
 
-What the hardware does with the samples after the DMA controller has
-read them from memory is of no concern to the ALSA framework.
+The ALSA library can do automatic sample rate/format conversions (with
+the "default" or "plughw" devices).  However, this does not work if you
+bypass it with the "hw" device.
 
-> Does this mean the hardware needs to find a way to pad 0's on lower
-> quality data for any given rate?
+> It appears that ALSA looks at the minimum period size and
+> decides to send that much audio data for playback.
 
-If the hardware is capable of that, then the driver can support 16-bit
-samples.  (I don't know of any I=B2S controller that cannot do that.)
+No; it tells you how large the buffer is, and your driver programs the
+hardware to play from that buffer.  The application is responsible for
+keeping the buffer filled.
 
-> For example, when I play 32b @32 KHz, everything works. If I play 16b@32K=
-Hz,
-> I shouldn't change any output clocks, but will also present the data on a
-> 32bit data bus as 16bits padded with 0?
+Periods are where your hardware raises interrupts, to report progress.
 
-Which bus?  The memory bus, or the I=B2S bus?
+> The minimum period size is in bytes
+
+The fields in the snd_pcm_hw structure are for commonly-used constraints.
+But you can put other constraints on the period size, if you need to.
+
+But do you actually need it?  (Does your hardware support mono?)
 
 
 Regards,
