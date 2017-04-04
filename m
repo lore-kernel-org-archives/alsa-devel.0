@@ -1,27 +1,16 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH v2] ASoC: fsl_ssi: Fix channel swap on
-	playback start
-Date: Tue, 4 Apr 2017 14:12:33 -0300
-Message-ID: <CAOMZO5A8AExfYR+JuBaLAQsRNUs3Og13PGv9ychD7j4rwMhx2A@mail.gmail.com>
-References: <1491058131-31366-1-git-send-email-festevam@gmail.com>
- <CAG5mAdyg9jbNcGi6kNLf5s1wk7HkchM5-MjVVJNuATU07HtrUQ@mail.gmail.com>
- <CAOMZO5BiRrRurJUsLb_pgSEw+ByZSSg6b3sRz17tKUXT1wRaSw@mail.gmail.com>
- <CAG5mAdyjWDaijQHFzKc3v3F0A_2BsBByxXygeits5NfFiQTSpA@mail.gmail.com>
- <CAOMZO5DzNqKdOHOb_SXQwzEDfD1B4yQVjYxYaHhFHzWNUSE-ig@mail.gmail.com>
- <CAG5mAdzKuWHMQLiDOzabdp9Xxs1z5sYNdkt17kGge-4wop5nFA@mail.gmail.com>
- <e5c3ee01-e807-e74d-f90f-2c207a74e539@invoxia.com>
- <CAOMZO5Ahe7fYxZH28J7B0wDFmRc1J2aJv6qoktHoKo15s4b9uQ@mail.gmail.com>
+From: Javier Martinez Canillas <javier@osg.samsung.com>
+Subject: [PATCH] ASoC: max9867: export OF device ID as module
+	aliases
+Date: Tue,  4 Apr 2017 13:19:39 -0400
+Message-ID: <20170404171939.3950-1-javier@osg.samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f44.google.com (mail-oi0-f44.google.com
- [209.85.218.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 24FE6266834
- for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2017 19:12:35 +0200 (CEST)
-Received: by mail-oi0-f44.google.com with SMTP id b187so170810127oif.0
- for <alsa-devel@alsa-project.org>; Tue, 04 Apr 2017 10:12:35 -0700 (PDT)
-In-Reply-To: <CAOMZO5Ahe7fYxZH28J7B0wDFmRc1J2aJv6qoktHoKo15s4b9uQ@mail.gmail.com>
+Received: from osg.samsung.com
+ (ec2-52-27-115-49.us-west-2.compute.amazonaws.com [52.27.115.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 96536266834
+ for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2017 19:19:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,50 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Sascha Hauer <kernel@pengutronix.de>, Timur Tabi <timur@tabi.org>, Caleb Crome <caleb@crome.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Max Krummenacher <max.krummenacher@toradex.com>, Fabio Estevam <fabio.estevam@nxp.com>
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Takashi Iwai <tiwai@suse.com>, Javier Martinez Canillas <javier@osg.samsung.com>, Mark Brown <broonie@kernel.org>, Enric Balletbo i Serra <enric.balletbo@collabora.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 4, 2017 at 8:38 AM, Fabio Estevam <festevam@gmail.com> wrote:
+The I2C core always reports a MODALIAS of the form i2c:<foo> even if the
+device was registered via OF, this means that exporting the OF device ID
+table device aliases in the module is not needed. But in order to change
+how the core reports modaliases to user-space, it's better to export it.
 
-> I have the following SSI1 values (with the original 4.1-rc5 + pictrl patch):
->
-> # cat /sys/kernel/debug/regmap/2028000.ssi/registers
-> 00: 00000200
-> 04: 00000000
-> 10: 0000105b
+While there, move the MODULE_DEVICE_TABLE(i2c, max9867_i2c_id) just next
+to the I2C device table declaration, for consistency with other drivers.
 
-Bits 6-5 (I2S_MODE) of register SCR are 10 of register SCR, which
-means I2S slave mode.
+Before this patch:
 
-The MX6 Reference Manual states:
+$ modinfo sound/soc/codecs/snd-soc-max9867.ko | grep alias
+alias:          i2c:max9867
 
-"In I2S slave mode(SSI_SCR[6:5]=10), the following settings are
-internally overridden by
-the hardware:
+After this patch:
 
-Normal mode is selected (SSI_SCR[3]=0)
-Tx frame sync length set to one-bit-long-frame (SSI_STCR[1]=1)
-Rx frame sync length set to one-bit-long-frame (SSI_SRCR[1]=1)"
+$ modinfo sound/soc/codecs/snd-soc-max9867.ko | grep alias
+alias:          i2c:max9867
+alias:          of:N*T*Cmaxim,max9867C*
+alias:          of:N*T*Cmaxim,max9867
 
-so I tried not to use the the one-bit-long-frame (since ENGcm06222 is
-about bit length frame sync) override and changed it to I2S normal
-mode instead:
+Signed-off-by: Javier Martinez Canillas <javier@osg.samsung.com>
+---
 
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -973,7 +973,7 @@ static int _fsl_ssi_set_dai_fmt(struct device *dev,
-                        ssi_private->i2s_mode |= CCSR_SSI_SCR_I2S_MODE_MASTER;
-                        break;
-                case SND_SOC_DAIFMT_CBM_CFM:
--                       ssi_private->i2s_mode |= CCSR_SSI_SCR_I2S_MODE_SLAVE;
-+                       ssi_private->i2s_mode |= CCSR_SSI_SCR_I2S_MODE_NORMAL;
-                        break;
-                default:
-                        return -EINVAL;
+ sound/soc/codecs/max9867.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-and I do not get the channel swap anymore.
-
-In what cases could we safely switch to I2S normal mode?
-
-Thanks
+diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+index 6cdf15ab46de..0247edc9c84e 100644
+--- a/sound/soc/codecs/max9867.c
++++ b/sound/soc/codecs/max9867.c
+@@ -516,13 +516,13 @@ static const struct i2c_device_id max9867_i2c_id[] = {
+ 	{ "max9867", 0 },
+ 	{ }
+ };
++MODULE_DEVICE_TABLE(i2c, max9867_i2c_id);
+ 
+ static const struct of_device_id max9867_of_match[] = {
+ 	{ .compatible = "maxim,max9867", },
+ 	{ }
+ };
+-
+-MODULE_DEVICE_TABLE(i2c, max9867_i2c_id);
++MODULE_DEVICE_TABLE(of, max9867_of_match);
+ 
+ static const struct dev_pm_ops max9867_pm_ops = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(max9867_suspend, max9867_resume)
+-- 
+2.9.3
