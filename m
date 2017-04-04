@@ -1,27 +1,25 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v2 2/2] ASoC: wm8960: Let wm8960 driver
- configure its bit clock and frame clock
-Date: Tue, 4 Apr 2017 09:55:07 +0100
-Message-ID: <20170404085507.GW6986@localhost.localdomain>
-References: <1420615905-4078-1-git-send-email-zidan.wang@freescale.com>
- <1420615905-4078-2-git-send-email-zidan.wang@freescale.com>
- <20150114192703.GH3043@sirena.org.uk>
- <20150115133439.GA29323@b50113>
- <CAEnQRZD0LuUiULNrv6RJQsr8ZZE+v2-qNC1Za9vXk5+TtB0dOw@mail.gmail.com>
- <20170403133434.GU6986@localhost.localdomain>
- <CAEnQRZA_BzqY5ywkik0-+dCXj1C7ORzjh3Fnt_AM_e=HnaOKMg@mail.gmail.com>
- <20170403135436.GV6986@localhost.localdomain>
- <CAEnQRZDoiygL+rN1sF3JnTARKWsHzjPp-PB2uK1J3dtHBCsy=A@mail.gmail.com>
+From: Arnaud Mouiche <arnaud.mouiche@invoxia.com>
+Subject: Re: [PATCH v2] ASoC: fsl_ssi: Fix channel swap on
+	playback start
+Date: Tue, 4 Apr 2017 10:59:36 +0200
+Message-ID: <e5c3ee01-e807-e74d-f90f-2c207a74e539@invoxia.com>
+References: <1491058131-31366-1-git-send-email-festevam@gmail.com>
+ <CAG5mAdyg9jbNcGi6kNLf5s1wk7HkchM5-MjVVJNuATU07HtrUQ@mail.gmail.com>
+ <CAOMZO5BiRrRurJUsLb_pgSEw+ByZSSg6b3sRz17tKUXT1wRaSw@mail.gmail.com>
+ <CAG5mAdyjWDaijQHFzKc3v3F0A_2BsBByxXygeits5NfFiQTSpA@mail.gmail.com>
+ <CAOMZO5DzNqKdOHOb_SXQwzEDfD1B4yQVjYxYaHhFHzWNUSE-ig@mail.gmail.com>
+ <CAG5mAdzKuWHMQLiDOzabdp9Xxs1z5sYNdkt17kGge-4wop5nFA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id F39D02668F6
- for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2017 10:54:05 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <CAEnQRZDoiygL+rN1sF3JnTARKWsHzjPp-PB2uK1J3dtHBCsy=A@mail.gmail.com>
+Received: from mail-wr0-f173.google.com (mail-wr0-f173.google.com
+ [209.85.128.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id B0B012668F6
+ for <alsa-devel@alsa-project.org>; Tue,  4 Apr 2017 10:59:38 +0200 (CEST)
+Received: by mail-wr0-f173.google.com with SMTP id t20so26312339wra.1
+ for <alsa-devel@alsa-project.org>; Tue, 04 Apr 2017 01:59:38 -0700 (PDT)
+In-Reply-To: <CAG5mAdzKuWHMQLiDOzabdp9Xxs1z5sYNdkt17kGge-4wop5nFA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,43 +29,111 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Baluta <daniel.baluta@gmail.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, tiwai@suse.de, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, shengjiu.wang@nxp.com, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, viorel.suman@nxp.com, mihai.serban@nxp.com
+To: Caleb Crome <caleb@crome.org>, Fabio Estevam <festevam@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Sascha Hauer <kernel@pengutronix.de>, Timur Tabi <timur@tabi.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Max Krummenacher <max.krummenacher@toradex.com>, Fabio Estevam <fabio.estevam@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 04, 2017 at 10:55:00AM +0300, Daniel Baluta wrote:
-> <Removing Zidan from thread because the address no longer exists>
-> 
-> On Mon, Apr 3, 2017 at 4:54 PM, Charles Keepax
-> <ckeepax@opensource.wolfsonmicro.com> wrote:
-> > On Mon, Apr 03, 2017 at 04:39:40PM +0300, Daniel Baluta wrote:
-> >> On Mon, Apr 3, 2017 at 4:34 PM, Charles Keepax
-> >> <ckeepax@opensource.wolfsonmicro.com> wrote:
-> > Is the problem here that the PLL part of the code is making the
-> > same assumption as the direct part of the code was, that the bclk
-> > should be exact?
-> 
-> Yes.
-> 
-> 
-> After wm8960_configure_sysclk fails to find a LRCLK, we try to use the
-> PLL.
-> 
-> Anyhow, here we don't even reach to check if the PLL can be used because
-> there is no solution for the following system:
-> 
-> freq_out = sysclk * sysclk_divs[i];
-> sysclk = lrclk * dac_divs[j];
-> sysclk == bclk * bclk_divs[k]
-> 
-> 
-> Perhaps, we can also try here to relax bitclk computation like we did for when
-> sysclk was directly derived from mclk.
+So to summarize:
 
-Exactly that is what I am saying it looks like the PLL part
-of the process still assumes it requires bclk to be an exact
-frequency if we relax that, the same way we did for the direct
-MCLK then we should be good.
+- Caleb and I don't see the issue without the patch, but we are working 
+on DSP mode @ 48K (mostly as master of the bus). But the patch break 
+none trivial "playback only" cases. platforms: imx6 quad for Caleb, 
+imx6sl for me. We are working without codec, checking the bit stream 
+generated by one SSI by recording and checking the content using another 
+SSI.
+- Fabio and Max experience the issue very easily in I2S mode, acting as 
+slave (I guess otherwise generating precise 44.1Khz would be hard), 
+connecting to a STGL5000 codec.
 
-Thanks,
-Charles
+When you are master of the bus, it is important to start EN before TE 
+for the FIFO pre-fill reasons. The samples need to be ready as soon as 
+TE starts.
+I also guess that ENGcm06222 doesn't affect us when the SSI is master 
+(since the SSI is govern only by its own timing)
+
+As slave, this is less important to start EN before TE because you have 
+little chance to receive the SYNC trigger as soon as EN+TE starts => the 
+DMA did get time to fill the FIFO.
+Yet, as slave, ENGcm06222 affect the order of channels, as experienced 
+by Fabio.
+
+So I switch on I2S mode for my SSI => SSI tests and, sadly, I didn't 
+experience issues without the patch.
+I did the test on vanilla 4.11.0-rc5.
+
+which branch/repository are Fabio using for his tests ?
+
+The way clocks are configured may explain the difference:
+Dumping /sys/kernel/debug/clk/clk_summary and checking the differences 
+can give some clues.
+In my case, I have, for the slave SSI #2, while the PCM bus is running 
+at 48khz+I2Smode+2 channels.
+
+     pll4                                  0            0 
+786432000          0 0
+        pll4_bypass                        0            0 
+786432000          0 0
+           pll4_audio                      0            0 
+786432000          0 0
+              pll4_post_div                0            0 
+786432000          0 0
+                 pll4_audio_div            0            0 
+786432000          0 0
+                    ssi2_sel               0            0 
+786432000          0 0
+                       ssi2_pred           0            0 
+196608000          0 0
+                          ssi2_podf           0 0    98304000          0 0
+                             ssi2           0 0    98304000          0 0
+
+Strangely, the 'enable_cnt' is kept equal to zero while the SSI transmit 
+frames correctly...
+Is there a patch or a branch somewhere that fix this issue ?
+
+Also, here is a dump of SSI registers.
+/var/root # cat /sys/kernel/debug/regmap/202c000.ssi/registers
+00: 00000000
+04: 00000000
+10: 0000105b
+18: 009031a3
+1c: 00000285
+20: 00000205
+24: 0004e100
+28: 00040100
+2c: 00880888
+30: 00000000
+34: 00000000
+38: 00000000
+48: fffffffc
+4c: fffffffc
+50: 00000000
+54: 00000000
+58: 00000000
+
+
+Arnaud
+
+On 04/04/2017 01:42, Caleb Crome wrote:
+> On Mon, Apr 3, 2017 at 4:40 PM, Fabio Estevam <festevam@gmail.com> wrote:
+>> Hi Caleb,
+>>
+>> On Mon, Apr 3, 2017 at 8:22 PM, Caleb Crome <caleb@crome.org> wrote:
+>>
+>>> With a vanilla kernel, it works perfectly with the pinctrl patch.
+>>> In this case, I ran a cable from the wandboard over to my computer and
+>>> recorded with audacity, using your wile true script above.
+>>> Here you can see that with 4.11-rc5 plus the pinctrl patch, there is
+>>> no channel swapping:
+>>>
+>>> http://imgur.com/od0LoJP
+>> Which wandboard type do you have? mx6solo,dl or quad?
+>>
+>> I am using  imx6dl-wandboard.
+>>
+>> I am surprised that the channel swap does not happen on your case.
+>> Maybe you need to run the test for an extended period of time?
+> Running on a quad.
+>
+>> On my case I usually get the swap in 1/10 of times. Max uses a Toradex
+>> MX6DL Colibri board and sees the swap in 3-4% of the times.
+> I'll run it for a much longer time and see what happens.
