@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: verify Sound Card normality"
-	to the asoc tree
-Date: Wed, 05 Apr 2017 18:30:20 +0100
-Message-ID: <E1cvolA-0000af-Vr@debutante>
-References: <877f32ngz0.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rt5677: Add OF device ID table" to the
+	asoc tree
+Date: Wed, 05 Apr 2017 18:30:26 +0100
+Message-ID: <E1cvolG-0000ct-Vm@debutante>
+References: <20170404192630.11408-7-javier@osg.samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BBB6D266943
- for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 19:30:33 +0200 (CEST)
-In-Reply-To: <877f32ngz0.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1894E267131
+ for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 19:30:39 +0200 (CEST)
+In-Reply-To: <20170404192630.11408-7-javier@osg.samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-Renesas <linux-renesas-soc@vger.kernel.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Lars-Peter <lars@metafoo.de>, Simon <horms@verge.net.au>
+To: Javier Martinez Canillas <javier@osg.samsung.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: verify Sound Card normality
+   ASoC: rt5677: Add OF device ID table
 
 has been applied to the asoc tree at
 
@@ -53,54 +53,65 @@ to this mail.
 Thanks,
 Mark
 
->From c12c1aad98bb75b435e79c6208b56d2018b42f8b Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 3 Apr 2017 06:31:22 +0000
-Subject: [PATCH] ASoC: soc-core: verify Sound Card normality
+>From 7b87463edf3e2c16d72eeea3d1cf3c12bb5487c6 Mon Sep 17 00:00:00 2001
+From: Javier Martinez Canillas <javier@osg.samsung.com>
+Date: Tue, 4 Apr 2017 15:26:30 -0400
+Subject: [PATCH] ASoC: rt5677: Add OF device ID table
 
-Current ALSA SoC Sound Card basically consists of CPU/Codec/Platform
-components. If system uses Kernel modules, we can disable these drivers
-by using rmmod command. In such case, we can't disable
-CPU/Codec/Platform driver without disabling Sound Card driver.
+The driver doesn't have a struct of_device_id table but supported devices
+are registered via Device Trees. This is working on the assumption that a
+I2C device registered via OF will always match a legacy I2C device ID and
+that the MODALIAS reported will always be of the form i2c:<device>.
 
-But on the other hand, we can disable these drivers by using unbind
-command. In such case, we can disable these drivers randomly.
-In this case, we can create dirty Sound Card which is missing necessary
-components.
+But this could change in the future so the correct approach is to have an
+OF device ID table if the devices are registered via OF.
 
-(1) If user disabled Sound Card first, but did nothing to other drivers,
-user can't use Sound because Sound Card is no longer exists.
-(2) If user disabled CPU/Codec/Platform driver randomly, but did nothing
-to Sound Card, user still be able to use Sound Card, because dirty Sound
-Card still exists. In this case, Sound system will be crashed if user
-started sound playback/capture. But we can't block such random unbind
-now.
+Before this patch:
 
-To avoid Sound Card crash in (2) case, we need to unregister Sound Card
-whenever CPU/Codec/Platform component were unregistered.
-This patch solves this issue.
+$ modinfo sound/soc/codecs/snd-soc-rt5677.ko | grep alias
+alias:          i2c:RT5677CE:00
+alias:          i2c:rt5676
+alias:          i2c:rt5677
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+After this patch:
+
+$ modinfo sound/soc/codecs/snd-soc-rt5677.ko | grep alias
+alias:          of:N*T*Crealtek,rt5677C*
+alias:          of:N*T*Crealtek,rt5677
+alias:          i2c:RT5677CE:00
+alias:          i2c:rt5676
+alias:          i2c:rt5677
+
+Signed-off-by: Javier Martinez Canillas <javier@osg.samsung.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/codecs/rt5677.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index f1901bb1466e..de6d5609c252 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3076,6 +3076,11 @@ static void snd_soc_component_cleanup(struct snd_soc_component *component)
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index abc802a5a479..65ac4518ad06 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -5035,6 +5035,12 @@ static const struct i2c_device_id rt5677_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, rt5677_i2c_id);
  
- static void snd_soc_component_del_unlocked(struct snd_soc_component *component)
- {
-+	struct snd_soc_card *card = component->card;
++static const struct of_device_id rt5677_of_match[] = {
++	{ .compatible = "realtek,rt5677", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, rt5677_of_match);
 +
-+	if (card)
-+		snd_soc_unregister_card(card);
-+
- 	list_del(&component->list);
- }
- 
+ static const struct acpi_gpio_params plug_det_gpio = { RT5677_GPIO_PLUG_DET, 0, false };
+ static const struct acpi_gpio_params mic_present_gpio = { RT5677_GPIO_MIC_PRESENT_L, 0, false };
+ static const struct acpi_gpio_params headphone_enable_gpio = { RT5677_GPIO_HP_AMP_SHDN_L, 0, false };
+@@ -5294,6 +5300,7 @@ static int rt5677_i2c_remove(struct i2c_client *i2c)
+ static struct i2c_driver rt5677_i2c_driver = {
+ 	.driver = {
+ 		.name = "rt5677",
++		.of_match_table = rt5677_of_match,
+ 	},
+ 	.probe = rt5677_i2c_probe,
+ 	.remove   = rt5677_i2c_remove,
 -- 
 2.11.0
