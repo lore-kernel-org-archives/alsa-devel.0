@@ -1,21 +1,21 @@
-From: simon.ho.cnxt@gmail.com
-Subject: [PATCH v2 1/2] ASoC: cx2072x: Add DT bingings
-	documentation for CX2072X CODEC
-Date: Wed,  5 Apr 2017 17:07:13 +0800
-Message-ID: <0f800bdd9d66af0a975d903018805aef5330c758.1491382907.git.simon.ho@conexant.com>
-References: <cover.1491382907.git.simon.ho@conexant.com>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: codec: wm9860: Refactor PLL out
+ freq search
+Date: Wed, 5 Apr 2017 13:02:59 +0300
+Message-ID: <CAEnQRZAFPZYHNwmsaJ_4q1S-EaathwtEp=5fCS9Huu6qoZb3Hg@mail.gmail.com>
+References: <1491324314-27067-1-git-send-email-daniel.baluta@nxp.com>
+ <1491324314-27067-2-git-send-email-daniel.baluta@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f67.google.com (mail-pg0-f67.google.com [74.125.83.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 4824D266FBF
- for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 11:07:21 +0200 (CEST)
-Received: by mail-pg0-f67.google.com with SMTP id g2so1238572pge.2
- for <alsa-devel@alsa-project.org>; Wed, 05 Apr 2017 02:07:21 -0700 (PDT)
-In-Reply-To: <cover.1491382907.git.simon.ho@conexant.com>
-In-Reply-To: <cover.1491382907.git.simon.ho@conexant.com>
-References: <cover.1491382907.git.simon.ho@conexant.com>
+Received: from mail-it0-f47.google.com (mail-it0-f47.google.com
+ [209.85.214.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 977352668F6
+ for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 12:03:01 +0200 (CEST)
+Received: by mail-it0-f47.google.com with SMTP id a140so5627209ita.0
+ for <alsa-devel@alsa-project.org>; Wed, 05 Apr 2017 03:03:01 -0700 (PDT)
+In-Reply-To: <1491324314-27067-2-git-send-email-daniel.baluta@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,61 +25,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: pierre-louis.bossart@linux.intel.com, Simon Ho <simon.ho@conexant.com>, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
+To: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, shengjiu.wang@nxp.com, patches@opensource.wolfsonmicro.com, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, viorel.suman@nxp.com, mihai.serban@nxp.com, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Simon Ho <simon.ho@conexant.com>
+On Tue, Apr 4, 2017 at 7:45 PM, Daniel Baluta <daniel.baluta@nxp.com> wrote:
+> Add a separate function for deriving (sysclk, lrclk, bclk)
+> when the clock is auto or pll.
+>
+> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
 
-Initial version of CX2072X device tree bindings document.
+Just noticed this warnings:
 
-Signed-off-by: Simon Ho <simon.ho@conexant.com>
----
- .../devicetree/bindings/sound/cx2072x.txt          | 36 ++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/cx2072x.txt
+sound/soc/codecs/wm8960.c:743:3: warning: 'best_freq_out' may be used
+uninitialized in this function [-Wmaybe-uninitialized]
+   wm8960_set_pll(codec, freq_in, best_freq_out);
+   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+sound/soc/codecs/wm8960.c:703:21: note: 'best_freq_out' was declared here
+  int diff, closest, best_freq_out;
+                     ^~~~~~~~~~~~~
+sound/soc/codecs/wm8960.c:806:46: warning: 'j' may be used
+uninitialized in this function [-Wmaybe-uninitialized]
+  snd_soc_update_bits(codec, WM8960_CLOCK1, 0x7 << 6, j << 6);
+                                            ~~^~~~
+sound/soc/codecs/wm8960.c:802:44: warning: 'i' may be used
+uninitialized in this function [-Wmaybe-uninitialized]
+  snd_soc_update_bits(codec, WM8960_CLOCK1, 3 << 1, i << 1);
 
-diff --git a/Documentation/devicetree/bindings/sound/cx2072x.txt b/Documentation/devicetree/bindings/sound/cx2072x.txt
-new file mode 100644
-index 0000000..05ddf7c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/cx2072x.txt
-@@ -0,0 +1,36 @@
-+Conexant CX20721/CX20723/CX7601 audio CODEC
-+
-+The devices support I2C only.
-+
-+Required properties:
-+
-+  - compatible : One of "cnxt,cx20721", "cnxt,cx20723", "cnxt,cx7601".
-+
-+  - reg : the I2C address of the device for I2C, it should be <0x33>
-+
-+Optional properties:
-+
-+  - clocks : phandle and clock specifier for codec MCLK.
-+  - clock-names : Clock name string for 'clocks' attribute, should be "mclk".
-+
-+CODEC output pins:
-+  "PORTA"	- Headphone
-+  "PORTG"	- Class-D output
-+  "PORTE"	- Line out
-+
-+CODEC output pins for Conexant DSP chip:
-+  "AEC REF"	- AEC reference signal
-+
-+CODEC input pins:
-+  "PORTB"	- Analog mic
-+  "PORTC"	- Digital mic
-+  "PORTD"	- Headset mic
-+
-+Example:
-+
-+codec: cx20721@33 {
-+	compatible = "cnxt,cx20721";
-+	reg = <0x33>;
-+	clocks = <&sco>;
-+	clock-names = "mclk";
-+};
--- 
-2.7.4
+
+There is no way I can end up with these variable uninitialized. Will
+look more close and resend.
+
+Thanks Charles for review.
