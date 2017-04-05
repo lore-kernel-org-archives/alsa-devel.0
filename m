@@ -1,24 +1,16 @@
-From: Max Krummenacher <max.oss.09@gmail.com>
-Subject: Re: [PATCH v2] ASoC: fsl_ssi: Fix channel swap on
-	playback start
-Date: Wed, 05 Apr 2017 16:04:30 +0200
-Message-ID: <1491401070.1810.10.camel@gmail.com>
-References: <1491058131-31366-1-git-send-email-festevam@gmail.com>
- <CAG5mAdyg9jbNcGi6kNLf5s1wk7HkchM5-MjVVJNuATU07HtrUQ@mail.gmail.com>
- <CAOMZO5BiRrRurJUsLb_pgSEw+ByZSSg6b3sRz17tKUXT1wRaSw@mail.gmail.com>
- <CAG5mAdyjWDaijQHFzKc3v3F0A_2BsBByxXygeits5NfFiQTSpA@mail.gmail.com>
- <2c31e502-4171-7426-1c24-c258a4d02c55@invoxia.com>
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Subject: [PATCH] ASoC: sgtl5000: Allow LRCLK pad drive strength
+	to be changed
+Date: Wed, 5 Apr 2017 11:32:34 -0300
+Message-ID: <1491402754-19802-1-git-send-email-fabio.estevam@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f193.google.com (mail-wr0-f193.google.com
- [209.85.128.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D592266BA4
- for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 16:04:32 +0200 (CEST)
-Received: by mail-wr0-f193.google.com with SMTP id t20so3003348wra.2
- for <alsa-devel@alsa-project.org>; Wed, 05 Apr 2017 07:04:32 -0700 (PDT)
-In-Reply-To: <2c31e502-4171-7426-1c24-c258a4d02c55@invoxia.com>
+Received: from NAM03-BY2-obe.outbound.protection.outlook.com
+ (mail-by2nam03on0074.outbound.protection.outlook.com [104.47.42.74])
+ by alsa0.perex.cz (Postfix) with ESMTP id F190D266BA4
+ for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 16:32:49 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,95 +20,108 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnaud Mouiche <arnaud.mouiche@invoxia.com>, Fabio Estevam <festevam@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Timur Tabi <timur@tabi.org>, Caleb Crome <caleb@crome.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Sascha Hauer <kernel@pengutronix.de>, Fabio Estevam <fabio.estevam@nxp.com>
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, max.krummenacher@toradex.com
 List-Id: alsa-devel@alsa-project.org
 
-(resend from my alsa-devel registered email address)
+Introduce the "lrclk-strength" property to allow LRCLK pad drive strength
+to be changed via device tree.
 
-On Wed, 2017-04-05 at 09:54 +0200, Arnaud Mouiche wrote:
-> 
-> 
-> On 04/04/2017 22:28, Fabio Estevam wrote:
-> > 
-> > 
-> > On Tue, Apr 4, 2017 at 5:09 PM, Arnaud Mouiche
-> > <arnaud.mouiche@invoxia.com> wrote:
-> > 
-> > > 
-> > > 
-> > > SCR bit 3 (NET) is also set, so you should be in network mode with a long
-> > > frame sync.
-> > > In fact, you can entirely simulate a I2S behavior using Network mode. you
-> > > should just be careful about the way everything is configured (eg. place of
-> > > samples in the stream)
-> > While debugging this issue I noticed that when I put the oscilloscope
-> > probe in the LRCLK SGTL5000 pin the swap did not occur anymore.
-> > 
-> > After removing the probe the swap occurred frequently.
-> > 
-> > So decided to change the SGTL5000 LRCLK pin strength value:
-> > 
-> > --- a/sound/soc/codecs/sgtl5000.c
-> > +++ b/sound/soc/codecs/sgtl5000.c
-> > @@ -1118,7 +1118,7 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
-> >                          SGTL5000_DAC_MUTE_RIGHT |
-> >                          SGTL5000_DAC_MUTE_LEFT);
-> > 
-> > -       snd_soc_write(codec, SGTL5000_CHIP_PAD_STRENGTH, 0x015f);
-> > +       snd_soc_write(codec, SGTL5000_CHIP_PAD_STRENGTH, 0x035f);
-> > 
-> >          snd_soc_write(codec, SGTL5000_CHIP_ANA_CTRL,
-> >                          SGTL5000_HP_ZCD_EN |
-> > 
-> > and the swap does not happen.
-> > 
-> > So it seems that no change is needed on the imx-ssi side :-)
-> Good catch. All of this makes sense.
-> The SSI surely detect a glitch at the start of the stream and takes it 
-> for a sync frame, but not followed by the expected 32x2 bits.
-> It also explain why Caleb and I are not able to reproduce, since we 
-> connect SSI internally using the audmux, leaving no place for such glitch.
-> 
-> If only Max can validate this fix...
+When running a stress playback loop test on a mx6dl wandboard channel
+swap can be noticed on about 10% of the times.
 
-Reverting the previous patch (setting TE and RE) and changing the drive
-strenght to 0x035f fixes the channel swap on the Colibri iMX6DL.
-e.g. 1000 playback starts do all have the correct channel assignment.
+While debugging this issue I noticed that when probing the SGTL5000
+LRCLK pin with the scope the swap did not happen. After removing
+the probe the swap started to happen again.
 
-Looks like having the the LRCLK a bit earlier through the increased drive
-strength changes the timing in a way that when the SSI samples that signal
-with its correct state.
-Probably the previous patch with TE and RE changes the sampling time in
-the SSI which made it work in our use case.
+After changing the LRCLK pad drive strength to the maximum value the
+issue is gone.
 
-Max
+Same fix works on a mx6dl Colibri board as well.
 
-> 
-> But what is strange is that writing TE and EN at once also avoid the 
-> issue... or it means the issue was really timing dependent.
-> 
-> Do you know which one is started first ?
-> - fsl_ssi_trigger(SNDRV_PCM_TRIGGER_START)
-> or
-> - stgl5000 PCM bus being turned on
-> 
-> We can expect that stgl5000 turns the PCM clocks first, and then SSI is 
-> turned on. Otherwise anything can happened when the codec starts its 
-> clocking.
-> 
-> Maybe we should look at the Fsync state when idle, and see how it behave 
-> during the startup. Depending of pull-up /down-down configuration of the 
-> pads, it may be leaved in a undefined state with undefined transitions 
-> when stgl5000 turns its output on...
-> 
-> Another way to definitively fix this kind of issue is to use 
-> SND_SOC_DAIFMT_CBS_CFS
-> - the codec generates the N*8*64 kHz or 44.1*64 kHz precise bitclock 
-> (something which is not flexible for the SSI who is connected to a fix 
-> PLL output clock)
-> - but the SSI generate the Sync, leaving no place for wrong detection.
-> Unfortunately, stgl5000 doesn't seem to support this mode.
-> 
-> Arnaud
-> 
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+---
+ Documentation/devicetree/bindings/sound/sgtl5000.txt |  9 +++++++++
+ sound/soc/codecs/sgtl5000.c                          | 19 ++++++++++++++++++-
+ 2 files changed, 27 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/sound/sgtl5000.txt b/Documentation/devicetree/bindings/sound/sgtl5000.txt
+index 5666da7..7a73a9d 100644
+--- a/Documentation/devicetree/bindings/sound/sgtl5000.txt
++++ b/Documentation/devicetree/bindings/sound/sgtl5000.txt
+@@ -26,6 +26,15 @@ Optional properties:
+ 	If this node is not mentioned or the value is unknown, then
+ 	the value is set to 1.25V.
+ 
++- lrclk-strength: the LRCLK pad strength. Possible values are:
++0, 1, 2 and 3 as per the table below:
++
++VDDIO		1.8V		2.5V		3.3V
++0 = 		Disable
++1 =		1.66 mA		2.87 mA		4.02  mA
++2 =		3.33 mA		5.74 mA		8.03  mA
++3 =		4.99 mA		8.61 mA		12.05 mA
++
+ Example:
+ 
+ codec: sgtl5000@0a {
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index 1589325..5a2702e 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -99,6 +99,13 @@ enum sgtl5000_micbias_resistor {
+ 	SGTL5000_MICBIAS_8K = 8,
+ };
+ 
++enum  {
++	I2S_LRCLK_STRENGTH_DISABLE,
++	I2S_LRCLK_STRENGTH_LOW,
++	I2S_LRCLK_STRENGTH_MEDIUM,
++	I2S_LRCLK_STRENGTH_HIGH,
++};
++
+ /* sgtl5000 private structure in codec */
+ struct sgtl5000_priv {
+ 	int sysclk;	/* sysclk rate */
+@@ -111,6 +118,7 @@ struct sgtl5000_priv {
+ 	int revision;
+ 	u8 micbias_resistor;
+ 	u8 micbias_voltage;
++	u8 lrclk_strength;
+ };
+ 
+ /*
+@@ -1089,6 +1097,7 @@ static int sgtl5000_enable_regulators(struct i2c_client *client)
+ static int sgtl5000_probe(struct snd_soc_codec *codec)
+ {
+ 	int ret;
++	u16 reg;
+ 	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	/* power up sgtl5000 */
+@@ -1118,7 +1127,8 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
+ 			SGTL5000_DAC_MUTE_RIGHT |
+ 			SGTL5000_DAC_MUTE_LEFT);
+ 
+-	snd_soc_write(codec, SGTL5000_CHIP_PAD_STRENGTH, 0x015f);
++	reg = ((sgtl5000->lrclk_strength) << SGTL5000_PAD_I2S_LRCLK_SHIFT | 0x5f);
++	snd_soc_write(codec, SGTL5000_CHIP_PAD_STRENGTH, reg);
+ 
+ 	snd_soc_write(codec, SGTL5000_CHIP_ANA_CTRL,
+ 			SGTL5000_HP_ZCD_EN |
+@@ -1347,6 +1357,13 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
+ 		}
+ 	}
+ 
++	sgtl5000->lrclk_strength = I2S_LRCLK_STRENGTH_LOW;
++	if (!of_property_read_u32(np, "lrclk-strength", &value)) {
++		if (value > I2S_LRCLK_STRENGTH_HIGH)
++			value = I2S_LRCLK_STRENGTH_LOW;
++		sgtl5000->lrclk_strength = value;
++	}
++
+ 	/* Ensure sgtl5000 will start with sane register values */
+ 	sgtl5000_fill_defaults(client);
+ 
+-- 
+2.7.4
