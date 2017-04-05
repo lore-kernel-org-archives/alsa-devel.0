@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ssm4567: Add OF device ID table" to the
+Subject: Applied "ASoC: wm8978: Add OF device ID table" to the
 	asoc tree
-Date: Wed, 05 Apr 2017 18:30:44 +0100
-Message-ID: <E1cvolY-0000iS-Vu@debutante>
-References: <20170404192630.11408-3-javier@osg.samsung.com>
+Date: Wed, 05 Apr 2017 18:30:36 +0100
+Message-ID: <E1cvolQ-0000ed-2N@debutante>
+References: <20170404192630.11408-6-javier@osg.samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A92A26718D
- for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 19:30:58 +0200 (CEST)
-In-Reply-To: <20170404192630.11408-3-javier@osg.samsung.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 22DB3267198
+ for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 19:30:59 +0200 (CEST)
+In-Reply-To: <20170404192630.11408-6-javier@osg.samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Javier Martinez Canillas <javier@osg.samsung.com>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Julia Lawall <Julia.Lawall@lip6.fr>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ssm4567: Add OF device ID table
+   ASoC: wm8978: Add OF device ID table
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 71c314d7ef2442cd798584a3dece8151215e1777 Mon Sep 17 00:00:00 2001
+>From 5cf015d9cb02c360582b624497b0a1716881cf28 Mon Sep 17 00:00:00 2001
 From: Javier Martinez Canillas <javier@osg.samsung.com>
-Date: Tue, 4 Apr 2017 15:26:26 -0400
-Subject: [PATCH] ASoC: ssm4567: Add OF device ID table
+Date: Tue, 4 Apr 2017 15:26:29 -0400
+Subject: [PATCH] ASoC: wm8978: Add OF device ID table
 
 The driver doesn't have a struct of_device_id table but supported devices
 are registered via Device Trees. This is working on the assumption that a
@@ -68,50 +68,43 @@ OF device ID table if the devices are registered via OF.
 
 Before this patch:
 
-$ modinfo sound/soc/codecs/snd-soc-ssm4567.ko | grep alias
-alias:          acpi*:INT343B:*
-alias:          i2c:ssm4567
+$ modinfo sound/soc/codecs/snd-soc-wm8978.ko | grep alias
+alias:          i2c:wm8978
 
 After this patch:
 
-$ modinfo sound/soc/codecs/snd-soc-ssm4567.ko | grep alias
-alias:          acpi*:INT343B:*
-alias:          of:N*T*Cadi,ssm4567C*
-alias:          of:N*T*Cadi,ssm4567
-alias:          i2c:ssm4567
+$ modinfo sound/soc/codecs/snd-soc-wm8978.ko | grep alias
+alias:          i2c:wm8978
+alias:          of:N*T*Cwlf,wm8978C*
+alias:          of:N*T*Cwlf,wm8978
 
 Signed-off-by: Javier Martinez Canillas <javier@osg.samsung.com>
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ssm4567.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/codecs/wm8978.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/codecs/ssm4567.c b/sound/soc/codecs/ssm4567.c
-index 2bb5a11c9ba1..a622623e8558 100644
---- a/sound/soc/codecs/ssm4567.c
-+++ b/sound/soc/codecs/ssm4567.c
-@@ -485,6 +485,14 @@ static const struct i2c_device_id ssm4567_i2c_ids[] = {
+diff --git a/sound/soc/codecs/wm8978.c b/sound/soc/codecs/wm8978.c
+index 90b2d418ef60..cf761e2d7546 100644
+--- a/sound/soc/codecs/wm8978.c
++++ b/sound/soc/codecs/wm8978.c
+@@ -1071,9 +1071,16 @@ static const struct i2c_device_id wm8978_i2c_id[] = {
  };
- MODULE_DEVICE_TABLE(i2c, ssm4567_i2c_ids);
+ MODULE_DEVICE_TABLE(i2c, wm8978_i2c_id);
  
-+#ifdef CONFIG_OF
-+static const struct of_device_id ssm4567_of_match[] = {
-+	{ .compatible = "adi,ssm4567", },
++static const struct of_device_id wm8978_of_match[] = {
++	{ .compatible = "wlf,wm8978", },
 +	{ }
 +};
-+MODULE_DEVICE_TABLE(of, ssm4567_of_match);
-+#endif
++MODULE_DEVICE_TABLE(of, wm8978_of_match);
 +
- #ifdef CONFIG_ACPI
- 
- static const struct acpi_device_id ssm4567_acpi_match[] = {
-@@ -498,6 +506,7 @@ MODULE_DEVICE_TABLE(acpi, ssm4567_acpi_match);
- static struct i2c_driver ssm4567_driver = {
+ static struct i2c_driver wm8978_i2c_driver = {
  	.driver = {
- 		.name = "ssm4567",
-+		.of_match_table = of_match_ptr(ssm4567_of_match),
- 		.acpi_match_table = ACPI_PTR(ssm4567_acpi_match),
+ 		.name = "wm8978",
++		.of_match_table = wm8978_of_match,
  	},
- 	.probe = ssm4567_i2c_probe,
+ 	.probe =    wm8978_i2c_probe,
+ 	.remove =   wm8978_i2c_remove,
 -- 
 2.11.0
