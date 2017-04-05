@@ -1,17 +1,16 @@
-From: David Howells <dhowells@redhat.com>
-Subject: [PATCH 37/38] Annotate hardware config module
- parameters in sound/oss/
-Date: Wed, 05 Apr 2017 18:02:15 +0100
-Message-ID: <149141173560.29162.16285381529998415889.stgit@warthog.procyon.org.uk>
-References: <149141141298.29162.5612793122429261720.stgit@warthog.procyon.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Create a general function for codec jack detection
+Date: Wed, 5 Apr 2017 18:29:14 +0100
+Message-ID: <20170405172914.nnlda2qch46xvfnt@sirena.org.uk>
+References: <ABFD875FF5FB574BA706497D987D48D701C3ED04@RTITEXTEMP.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5002720439035008146=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
- by alsa0.perex.cz (Postfix) with ESMTP id 1274C2670F9
- for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 19:02:19 +0200 (CEST)
-In-Reply-To: <149141141298.29162.5612793122429261720.stgit@warthog.procyon.org.uk>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 28A80266943
+ for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 19:29:26 +0200 (CEST)
+In-Reply-To: <ABFD875FF5FB574BA706497D987D48D701C3ED04@RTITEXTEMP.realtek.com.tw>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,323 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: gnomes@lxorguk.ukuu.org.uk, alsa-devel@alsa-project.org, gregkh@linuxfoundation.org, Andrew Veliath <andrewtv@usa.net>, Takashi Iwai <tiwai@suse.com>, dhowells@redhat.com, linux-security-module@vger.kernel.org, keyrings@vger.kernel.org, Riccardo Facchetti <fizban@tin.it>
+To: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lars@metafoo.de" <lars@metafoo.de>, "tiwai@suse.de" <tiwai@suse.de>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "xiaoxiang@pinecone.net" <xiaoxiang@pinecone.net>, "zhongan@pinecone.net" <zhongan@pinecone.net>, Flove <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-When the kernel is running in secure boot mode, we lock down the kernel to
-prevent userspace from modifying the running kernel image.  Whilst this
-includes prohibiting access to things like /dev/mem, it must also prevent
-access by means of configuring driver modules in such a way as to cause a
-device to access or modify the kernel image.
 
-To this end, annotate module_param* statements that refer to hardware
-configuration and indicate for future reference what type of parameter they
-specify.  The parameter parser in the core sees this information and can
-skip such parameters with an error message if the kernel is locked down.
-The module initialisation then runs as normal, but just sees whatever the
-default values for those parameters is.
+--===============5002720439035008146==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="getscdv4mheqsiz3"
+Content-Disposition: inline
 
-Note that we do still need to do the module initialisation because some
-drivers have viable defaults set in case parameters aren't specified and
-some drivers support automatic configuration (e.g. PNP or PCI) in addition
-to manually coded parameters.
 
-This patch annotates drivers in sound/oss/.
+--getscdv4mheqsiz3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Suggested-by: Alan Cox <gnomes@lxorguk.ukuu.org.uk>
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Jaroslav Kysela <perex@perex.cz>
-cc: Takashi Iwai <tiwai@suse.com>
-cc: Riccardo Facchetti <fizban@tin.it>
-cc: Andrew Veliath <andrewtv@usa.net>
-cc: alsa-devel@alsa-project.org
----
+On Tue, Mar 14, 2017 at 05:54:35AM +0000, Bard Liao wrote:
 
- sound/oss/ad1848.c        |    8 ++++----
- sound/oss/aedsp16.c       |   12 ++++++------
- sound/oss/mpu401.c        |    4 ++--
- sound/oss/msnd_pinnacle.c |   20 ++++++++++----------
- sound/oss/opl3.c          |    2 +-
- sound/oss/pas2_card.c     |   18 +++++++++---------
- sound/oss/pss.c           |   14 +++++++-------
- sound/oss/sb_card.c       |   10 +++++-----
- sound/oss/trix.c          |   18 +++++++++---------
- sound/oss/uart401.c       |    4 ++--
- sound/oss/uart6850.c      |    4 ++--
- sound/oss/waveartist.c    |    8 ++++----
- 12 files changed, 61 insertions(+), 61 deletions(-)
+> Below is what I am thinking the patch will look like.
 
-diff --git a/sound/oss/ad1848.c b/sound/oss/ad1848.c
-index f6156d8169d0..2421f59cf279 100644
---- a/sound/oss/ad1848.c
-+++ b/sound/oss/ad1848.c
-@@ -2805,10 +2805,10 @@ static int __initdata dma = -1;
- static int __initdata dma2 = -1;
- static int __initdata type = 0;
- 
--module_param(io, int, 0);		/* I/O for a raw AD1848 card */
--module_param(irq, int, 0);		/* IRQ to use */
--module_param(dma, int, 0);		/* First DMA channel */
--module_param(dma2, int, 0);		/* Second DMA channel */
-+module_param_hw(io, int, ioport, 0);	/* I/O for a raw AD1848 card */
-+module_param_hw(irq, int, irq, 0);	/* IRQ to use */
-+module_param_hw(dma, int, dma, 0);	/* First DMA channel */
-+module_param_hw(dma2, int, dma, 0);	/* Second DMA channel */
- module_param(type, int, 0);		/* Card type */
- module_param(deskpro_xl, bool, 0);	/* Special magic for Deskpro XL boxen */
- module_param(deskpro_m, bool, 0);	/* Special magic for Deskpro M box */
-diff --git a/sound/oss/aedsp16.c b/sound/oss/aedsp16.c
-index bb477d5c8528..f058ed6bdb69 100644
---- a/sound/oss/aedsp16.c
-+++ b/sound/oss/aedsp16.c
-@@ -1303,17 +1303,17 @@ static int __initdata mpu_irq = -1;
- static int __initdata mss_base = -1;
- static int __initdata mpu_base = -1;
- 
--module_param(io, int, 0);
-+module_param_hw(io, int, ioport, 0);
- MODULE_PARM_DESC(io, "I/O base address (0x220 0x240)");
--module_param(irq, int, 0);
-+module_param_hw(irq, int, irq, 0);
- MODULE_PARM_DESC(irq, "IRQ line (5 7 9 10 11)");
--module_param(dma, int, 0);
-+module_param_hw(dma, int, dma, 0);
- MODULE_PARM_DESC(dma, "dma line (0 1 3)");
--module_param(mpu_irq, int, 0);
-+module_param_hw(mpu_irq, int, irq, 0);
- MODULE_PARM_DESC(mpu_irq, "MPU-401 IRQ line (5 7 9 10 0)");
--module_param(mss_base, int, 0);
-+module_param_hw(mss_base, int, ioport, 0);
- MODULE_PARM_DESC(mss_base, "MSS emulation I/O base address (0x530 0xE80)");
--module_param(mpu_base, int, 0);
-+module_param_hw(mpu_base, int, ioport, 0);
- MODULE_PARM_DESC(mpu_base,"MPU-401 I/O base address (0x300 0x310 0x320 0x330)");
- MODULE_AUTHOR("Riccardo Facchetti <fizban@tin.it>");
- MODULE_DESCRIPTION("Audio Excel DSP 16 Driver Version " VERSION);
-diff --git a/sound/oss/mpu401.c b/sound/oss/mpu401.c
-index 862735005b43..20e8fa46f647 100644
---- a/sound/oss/mpu401.c
-+++ b/sound/oss/mpu401.c
-@@ -1748,8 +1748,8 @@ static struct address_info cfg;
- static int io = -1;
- static int irq = -1;
- 
--module_param(irq, int, 0);
--module_param(io, int, 0);
-+module_param_hw(irq, int, irq, 0);
-+module_param_hw(io, int, ioport, 0);
- 
- static int __init init_mpu401(void)
- {
-diff --git a/sound/oss/msnd_pinnacle.c b/sound/oss/msnd_pinnacle.c
-index f34ec01d2239..d2abc2cf3213 100644
---- a/sound/oss/msnd_pinnacle.c
-+++ b/sound/oss/msnd_pinnacle.c
-@@ -1727,22 +1727,22 @@ static int
- calibrate_signal __initdata =		CONFIG_MSND_CALSIGNAL;
- #endif /* MODULE */
- 
--module_param				(io, int, 0);
--module_param				(irq, int, 0);
--module_param				(mem, int, 0);
-+module_param_hw				(io, int, ioport, 0);
-+module_param_hw				(irq, int, irq, 0);
-+module_param_hw				(mem, int, iomem, 0);
- module_param				(write_ndelay, int, 0);
- module_param				(fifosize, int, 0);
- module_param				(calibrate_signal, int, 0);
- #ifndef MSND_CLASSIC
- module_param				(digital, bool, 0);
--module_param				(cfg, int, 0);
-+module_param_hw				(cfg, int, ioport, 0);
- module_param				(reset, int, 0);
--module_param				(mpu_io, int, 0);
--module_param				(mpu_irq, int, 0);
--module_param				(ide_io0, int, 0);
--module_param				(ide_io1, int, 0);
--module_param				(ide_irq, int, 0);
--module_param				(joystick_io, int, 0);
-+module_param_hw				(mpu_io, int, ioport, 0);
-+module_param_hw				(mpu_irq, int, irq, 0);
-+module_param_hw				(ide_io0, int, ioport, 0);
-+module_param_hw				(ide_io1, int, ioport, 0);
-+module_param_hw				(ide_irq, int, irq, 0);
-+module_param_hw				(joystick_io, int, ioport, 0);
- #endif
- 
- static int __init msnd_init(void)
-diff --git a/sound/oss/opl3.c b/sound/oss/opl3.c
-index b6d19adf8f41..f0f5b5be6314 100644
---- a/sound/oss/opl3.c
-+++ b/sound/oss/opl3.c
-@@ -1200,7 +1200,7 @@ static int me;
- 
- static int io = -1;
- 
--module_param(io, int, 0);
-+module_param_hw(io, int, ioport, 0);
- 
- static int __init init_opl3 (void)
- {
-diff --git a/sound/oss/pas2_card.c b/sound/oss/pas2_card.c
-index b07954a79536..769fca692d2a 100644
---- a/sound/oss/pas2_card.c
-+++ b/sound/oss/pas2_card.c
-@@ -383,15 +383,15 @@ static int __initdata sb_irq	= -1;
- static int __initdata sb_dma	= -1;
- static int __initdata sb_dma16	= -1;
- 
--module_param(io, int, 0);
--module_param(irq, int, 0);
--module_param(dma, int, 0);
--module_param(dma16, int, 0);
--
--module_param(sb_io, int, 0);
--module_param(sb_irq, int, 0);
--module_param(sb_dma, int, 0);
--module_param(sb_dma16, int, 0);
-+module_param_hw(io, int, ioport, 0);
-+module_param_hw(irq, int, irq, 0);
-+module_param_hw(dma, int, dma, 0);
-+module_param_hw(dma16, int, dma, 0);
-+
-+module_param_hw(sb_io, int, ioport, 0);
-+module_param_hw(sb_irq, int, irq, 0);
-+module_param_hw(sb_dma, int, dma, 0);
-+module_param_hw(sb_dma16, int, dma, 0);
- 
- module_param(joystick, bool, 0);
- module_param(symphony, bool, 0);
-diff --git a/sound/oss/pss.c b/sound/oss/pss.c
-index 81314f9e2ccb..33c3a442e162 100644
---- a/sound/oss/pss.c
-+++ b/sound/oss/pss.c
-@@ -1139,19 +1139,19 @@ static bool pss_no_sound = 0;	/* Just configure non-sound components */
- static bool pss_keep_settings  = 1;	/* Keep hardware settings at module exit */
- static char *pss_firmware = "/etc/sound/pss_synth";
- 
--module_param(pss_io, int, 0);
-+module_param_hw(pss_io, int, ioport, 0);
- MODULE_PARM_DESC(pss_io, "Set i/o base of PSS card (probably 0x220 or 0x240)");
--module_param(mss_io, int, 0);
-+module_param_hw(mss_io, int, ioport, 0);
- MODULE_PARM_DESC(mss_io, "Set WSS (audio) i/o base (0x530, 0x604, 0xE80, 0xF40, or other. Address must end in 0 or 4 and must be from 0x100 to 0xFF4)");
--module_param(mss_irq, int, 0);
-+module_param_hw(mss_irq, int, irq, 0);
- MODULE_PARM_DESC(mss_irq, "Set WSS (audio) IRQ (3, 5, 7, 9, 10, 11, 12)");
--module_param(mss_dma, int, 0);
-+module_param_hw(mss_dma, int, dma, 0);
- MODULE_PARM_DESC(mss_dma, "Set WSS (audio) DMA (0, 1, 3)");
--module_param(mpu_io, int, 0);
-+module_param_hw(mpu_io, int, ioport, 0);
- MODULE_PARM_DESC(mpu_io, "Set MIDI i/o base (0x330 or other. Address must be on 4 location boundaries and must be from 0x100 to 0xFFC)");
--module_param(mpu_irq, int, 0);
-+module_param_hw(mpu_irq, int, irq, 0);
- MODULE_PARM_DESC(mpu_irq, "Set MIDI IRQ (3, 5, 7, 9, 10, 11, 12)");
--module_param(pss_cdrom_port, int, 0);
-+module_param_hw(pss_cdrom_port, int, ioport, 0);
- MODULE_PARM_DESC(pss_cdrom_port, "Set the PSS CDROM port i/o base (0x340 or other)");
- module_param(pss_enable_joystick, bool, 0);
- MODULE_PARM_DESC(pss_enable_joystick, "Enables the PSS joystick port (1 to enable, 0 to disable)");
-diff --git a/sound/oss/sb_card.c b/sound/oss/sb_card.c
-index fb5d7250de38..2a92cfe6cfe9 100644
---- a/sound/oss/sb_card.c
-+++ b/sound/oss/sb_card.c
-@@ -61,15 +61,15 @@ static int __initdata uart401	= 0;
- static int __initdata pnp       = 0;
- #endif
- 
--module_param(io, int, 000);
-+module_param_hw(io, int, ioport, 000);
- MODULE_PARM_DESC(io,       "Soundblaster i/o base address (0x220,0x240,0x260,0x280)");
--module_param(irq, int, 000);
-+module_param_hw(irq, int, irq, 000);
- MODULE_PARM_DESC(irq,	   "IRQ (5,7,9,10)");
--module_param(dma, int, 000);
-+module_param_hw(dma, int, dma, 000);
- MODULE_PARM_DESC(dma,	   "8-bit DMA channel (0,1,3)");
--module_param(dma16, int, 000);
-+module_param_hw(dma16, int, dma, 000);
- MODULE_PARM_DESC(dma16,	   "16-bit DMA channel (5,6,7)");
--module_param(mpu_io, int, 000);
-+module_param_hw(mpu_io, int, ioport, 000);
- MODULE_PARM_DESC(mpu_io,   "MPU base address");
- module_param(type, int, 000);
- MODULE_PARM_DESC(type,	   "You can set this to specific card type (doesn't " \
-diff --git a/sound/oss/trix.c b/sound/oss/trix.c
-index 3c494dc93b93..a57bc635d758 100644
---- a/sound/oss/trix.c
-+++ b/sound/oss/trix.c
-@@ -413,15 +413,15 @@ static int __initdata sb_irq	= -1;
- static int __initdata mpu_io	= -1;
- static int __initdata mpu_irq	= -1;
- 
--module_param(io, int, 0);
--module_param(irq, int, 0);
--module_param(dma, int, 0);
--module_param(dma2, int, 0);
--module_param(sb_io, int, 0);
--module_param(sb_dma, int, 0);
--module_param(sb_irq, int, 0);
--module_param(mpu_io, int, 0);
--module_param(mpu_irq, int, 0);
-+module_param_hw(io, int, ioport, 0);
-+module_param_hw(irq, int, irq, 0);
-+module_param_hw(dma, int, dma, 0);
-+module_param_hw(dma2, int, dma, 0);
-+module_param_hw(sb_io, int, ioport, 0);
-+module_param_hw(sb_dma, int, dma, 0);
-+module_param_hw(sb_irq, int, irq, 0);
-+module_param_hw(mpu_io, int, ioport, 0);
-+module_param_hw(mpu_irq, int, irq, 0);
- module_param(joystick, bool, 0);
- 
- static int __init init_trix(void)
-diff --git a/sound/oss/uart401.c b/sound/oss/uart401.c
-index dae4d4344407..83dcc85b8688 100644
---- a/sound/oss/uart401.c
-+++ b/sound/oss/uart401.c
-@@ -429,8 +429,8 @@ static struct address_info cfg_mpu;
- static int io = -1;
- static int irq = -1;
- 
--module_param(io, int, 0444);
--module_param(irq, int, 0444);
-+module_param_hw(io, int, ioport, 0444);
-+module_param_hw(irq, int, irq, 0444);
- 
- 
- static int __init init_uart401(void)
-diff --git a/sound/oss/uart6850.c b/sound/oss/uart6850.c
-index 1079133dd6ab..eda32d7eddbd 100644
---- a/sound/oss/uart6850.c
-+++ b/sound/oss/uart6850.c
-@@ -315,8 +315,8 @@ static struct address_info cfg_mpu;
- static int __initdata io = -1;
- static int __initdata irq = -1;
- 
--module_param(io, int, 0);
--module_param(irq, int, 0);
-+module_param_hw(io, int, ioport, 0);
-+module_param_hw(irq, int, irq, 0);
- 
- static int __init init_uart6850(void)
- {
-diff --git a/sound/oss/waveartist.c b/sound/oss/waveartist.c
-index 0b8d0de87273..4f0c3a232e41 100644
---- a/sound/oss/waveartist.c
-+++ b/sound/oss/waveartist.c
-@@ -2036,8 +2036,8 @@ __setup("waveartist=", setup_waveartist);
- #endif
- 
- MODULE_DESCRIPTION("Rockwell WaveArtist RWA-010 sound driver");
--module_param(io, int, 0);		/* IO base */
--module_param(irq, int, 0);		/* IRQ */
--module_param(dma, int, 0);		/* DMA */
--module_param(dma2, int, 0);		/* DMA2 */
-+module_param_hw(io, int, ioport, 0);		/* IO base */
-+module_param_hw(irq, int, irq, 0);		/* IRQ */
-+module_param_hw(dma, int, dma, 0);		/* DMA */
-+module_param_hw(dma2, int, dma, 0);		/* DMA2 */
- MODULE_LICENSE("GPL");
+It's better to just write the patch for something like this and present
+it as such rather than ask to send the patch - it makes things a lot
+easier to handle.
+
+> +int snd_soc_codec_set_jack(struct snd_soc_codec *codec,
+> +                          struct snd_soc_jack *jack);
+
+We have enough things that have no meaningful configuration to make this
+useful I think so OK.
+
+--getscdv4mheqsiz3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljlKWoACgkQJNaLcl1U
+h9D5Uwf/eSoGD0Lw7kMPOdqueO3e3wc2mCGTgk61mhe8DwDXNVnJIe2akUjapz8e
+bJs9yHGS8ANTR8XdLXqhgo5eoys1Zm6VGCQ4CDEL+zreK/57dNb55LEbf5GKQ+lR
+yeLmvLwZlxnf+G/FFDOgGKok1pN+1Hs2CvIjS3z6T/lwrUJlT+DDJ49AAXW1kVdw
+PN3pGNd0ruuaInzwR+cdKl1ktvci72pdZ6K/bu6VwRALal2EMlvIhHDRCV6yFW4z
+f4kUFNF9ACJe3DQvGTPOT4Ci8ISBgEK3F1Vi2JRQozA27DVmuDPydtkgGcIQNUTw
+7d6iYvlKrwVXxDBMZCGLqHYMq2rSkg==
+=nnG0
+-----END PGP SIGNATURE-----
+
+--getscdv4mheqsiz3--
+
+--===============5002720439035008146==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5002720439035008146==--
