@@ -1,5202 +1,736 @@
-From: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: [PATCH 13/16] ASoC: madera: Add common support for Cirrus Logic Madera codecs
-Date: Wed, 5 Apr 2017 11:08:01 +0100
-Message-ID: <1491386884-30689-14-git-send-email-rf@opensource.wolfsonmicro.com>
-References: <1491386884-30689-1-git-send-email-rf@opensource.wolfsonmicro.com>
+From: kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCH 2/2] ASoC: codec: wm8960: Relax bit clock
+ computation when using PLL
+Date: Wed, 5 Apr 2017 18:17:13 +0800
+Message-ID: <201704051812.RPhrgWdU%fengguang.wu@intel.com>
+References: <1491324314-27067-3-git-send-email-daniel.baluta@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1491386884-30689-1-git-send-email-rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, tglx-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org, jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org, lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: multipart/mixed; boundary="opJtzjQTFsWo+cga"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id B1FAE266FE6
+ for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 12:18:13 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1491324314-27067-3-git-send-email-daniel.baluta@nxp.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, shengjiu.wang@nxp.com, patches@opensource.wolfsonmicro.com, tiwai@suse.com, broonie@kernel.org, kbuild-all@01.org, viorel.suman@nxp.com, mihai.serban@nxp.com, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
-The Cirrus Logic Madera codecs are a family of related codecs with
-extensive digital and analogue I/O, digital mixing and routing,
-signal processing and programmable DSPs.
 
-This patch adds common support code shared by all Madera codecs.
+--opJtzjQTFsWo+cga
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Signed-off-by: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Signed-off-by: Nariman Poushin <nariman-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Signed-off-by: Nikesh Oswal <Nikesh.Oswal-UVNVL95qEvAciDkP5Hr2oA@public.gmane.org>
-Signed-off-by: Piotr Stankiewicz <piotrs-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Signed-off-by: Ajit Pandey <ajit.pandey-sjhevXS25z0S+FvcfC7Uqw@public.gmane.org>
-Signed-off-by: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Hi Daniel,
+
+[auto build test WARNING on asoc/for-next]
+[also build test WARNING on next-20170405]
+[cannot apply to v4.11-rc5]
+[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+
+url:    https://github.com/0day-ci/linux/commits/Daniel-Baluta/ASoC-codec-wm8960-Relax-bit-clock-computation-when-using-PLL/20170405-144647
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+config: i386-randconfig-s0-201714 (attached as .config)
+compiler: gcc-6 (Debian 6.2.0-3) 6.2.0 20160901
+reproduce:
+        # save the attached .config to linux build tree
+        make ARCH=i386 
+
+Note: it may well be a FALSE warning. FWIW you are at least aware of it now.
+http://gcc.gnu.org/wiki/Better_Uninitialized_Warnings
+
+All warnings (new ones prefixed by >>):
+
+   sound/soc/codecs/wm8960.c: In function 'wm8960_configure_clocking':
+>> sound/soc/codecs/wm8960.c:743:3: warning: 'best_freq_out' may be used uninitialized in this function [-Wmaybe-uninitialized]
+      wm8960_set_pll(codec, freq_in, best_freq_out);
+      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   sound/soc/codecs/wm8960.c:703:21: note: 'best_freq_out' was declared here
+     int diff, closest, best_freq_out;
+                        ^~~~~~~~~~~~~
+   sound/soc/codecs/wm8960.c:806:56: warning: 'j' may be used uninitialized in this function [-Wmaybe-uninitialized]
+     snd_soc_update_bits(codec, WM8960_CLOCK1, 0x7 << 6, j << 6);
+                                                         ~~^~~~
+   sound/soc/codecs/wm8960.c:802:54: warning: 'i' may be used uninitialized in this function [-Wmaybe-uninitialized]
+     snd_soc_update_bits(codec, WM8960_CLOCK1, 3 << 1, i << 1);
+                                                       ~~^~~~
+
+vim +/best_freq_out +743 sound/soc/codecs/wm8960.c
+
+6b662dee Daniel Baluta 2017-04-04  727  					*bclk_idx = k;
+6b662dee Daniel Baluta 2017-04-04  728  					best_freq_out = freq_out;
+6b662dee Daniel Baluta 2017-04-04  729  					break;
+6b662dee Daniel Baluta 2017-04-04  730  				}
+16c42f46 Daniel Baluta 2017-04-04  731  				if (diff > 0 && closest > diff) {
+16c42f46 Daniel Baluta 2017-04-04  732  					*sysclk_idx = i;
+16c42f46 Daniel Baluta 2017-04-04  733  					*dac_idx = j;
+16c42f46 Daniel Baluta 2017-04-04  734  					*bclk_idx = k;
+16c42f46 Daniel Baluta 2017-04-04  735  					closest = diff;
+16c42f46 Daniel Baluta 2017-04-04  736  					best_freq_out = freq_out;
+16c42f46 Daniel Baluta 2017-04-04  737  				}
+6b662dee Daniel Baluta 2017-04-04  738  			}
+6b662dee Daniel Baluta 2017-04-04  739  		}
+6b662dee Daniel Baluta 2017-04-04  740  	}
+6b662dee Daniel Baluta 2017-04-04  741  
+6b662dee Daniel Baluta 2017-04-04  742  	if (*bclk_idx != -1)
+6b662dee Daniel Baluta 2017-04-04 @743  		wm8960_set_pll(codec, freq_in, best_freq_out);
+6b662dee Daniel Baluta 2017-04-04  744  
+6b662dee Daniel Baluta 2017-04-04  745  	return *bclk_idx;
+6b662dee Daniel Baluta 2017-04-04  746  }
+3176bf2d Zidan Wang    2015-08-11  747  static int wm8960_configure_clocking(struct snd_soc_codec *codec)
+0e50b51a Zidan Wang    2015-05-12  748  {
+0e50b51a Zidan Wang    2015-05-12  749  	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
+6b662dee Daniel Baluta 2017-04-04  750  	int freq_out, freq_in;
+0e50b51a Zidan Wang    2015-05-12  751  	u16 iface1 = snd_soc_read(codec, WM8960_IFACE1);
+
+:::::: The code at line 743 was first introduced by commit
+:::::: 6b662deec0da0ad4f9dce8112d01828ed72b5a4c ASoC: codec: wm9860: Refactor PLL out freq search
+
+:::::: TO: Daniel Baluta <daniel.baluta@nxp.com>
+:::::: CC: 0day robot <fengguang.wu@intel.com>
+
 ---
- Documentation/devicetree/bindings/sound/madera.txt |   63 +
- MAINTAINERS                                        |    5 +
- include/dt-bindings/sound/madera.h                 |   18 +
- include/sound/madera-pdata.h                       |   70 +
- sound/soc/codecs/Kconfig                           |    5 +
- sound/soc/codecs/Makefile                          |    2 +
- sound/soc/codecs/madera.c                          | 4430 ++++++++++++++++++++
- sound/soc/codecs/madera.h                          |  470 +++
- 8 files changed, 5063 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/madera.txt
- create mode 100644 include/dt-bindings/sound/madera.h
- create mode 100644 include/sound/madera-pdata.h
- create mode 100644 sound/soc/codecs/madera.c
- create mode 100644 sound/soc/codecs/madera.h
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
-diff --git a/Documentation/devicetree/bindings/sound/madera.txt b/Documentation/devicetree/bindings/sound/madera.txt
-new file mode 100644
-index 0000000..59e7a66
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/madera.txt
-@@ -0,0 +1,63 @@
-+Cirrus Logic Madera class audio codecs
-+
-+This is a subnode of the parent mfd node.
-+
-+See also the core bindings for the parent MFD driver:
-+See Documentation/devicetree/bindings/mfd/madera.txt
-+
-+Required properties:
-+  - compatible :  One of the following chip-specific strings:
-+        "cirrus,cs47l35-codec"
-+        "cirrus,cs47l85-codec"
-+        "cirrus,cs47l90-codec"
-+
-+Optional properties:
-+  - cirrus,dmic-ref : DMIC bias reference for each input, one cell per input
-+    <IN1 IN2 IN3 ...>
-+    A value of 0 indicates MICVDD and is the default, other
-+    values depend on the codec - see the datasheet for the INn_DMIC_SUP field
-+
-+  - cirrus,inmode : A list of input mode settings for each input. A maximum
-+    of 16 cells, with four cells per input in the order INnAL, INnAR INnBL INnBR.
-+    For non-muxed inputs the first two cells for that input set the mode for
-+    the left and right channel and the second two cells must be 0.
-+    For muxed inputs the first two cells for that input set the mode of the
-+    left and right A inputs and the second two cells set the mode of the left
-+    and right B inputs.
-+    Valid mode values are one of the MADERA_INMODE_xxx (see
-+    include/dt-bindings/sound/madera.h). If the array is shorter than the number
-+    of inputs the unspecified inputs default to MADERA_INMODE_DIFF.
-+
-+  - cirrus,out-mono : Mono bit for each output, must contain six cells if
-+    specified. A non-zero value indicates the corresponding output is mono.
-+
-+  - cirrus,max-channels-clocked : The maximum number of channels to be clocked
-+    on each AIF, useful for I2S systems with multiple data lines being mastered.
-+    One cell for each AIF, use a value of zero for AIFs that should be handled
-+    normally.
-+
-+  - cirrus,pdm-fmt : PDM speaker data format, must contain 2 cells
-+    (OUT5 and OUT6). See the datasheet for values.
-+    The second cell is ignored for codecs that do not have OUT6.
-+
-+  - cirrus,pdm-mute : PDM speaker mute setting, must contain 2 cells
-+    (OUT5 and OUT6). See the datasheet for values.
-+    The second cell is ignored for codecs that do not have OUT6.
-+
-+Example:
-+
-+codec: cs47l35@0 {
-+	compatible = "cirrus,cs47l35";
-+
-+	codec {
-+		compatible = "cirrus,cs47l35-codec";
-+		cirrus,dmic-ref = <0 0 1 0>;
-+		cirrus,dmic-clksrc = <0 0 0 0>;
-+		cirrus,inmode = <
-+			2 2 1 1 /* IN1A digital, IN1B single-ended */
-+			0 0 0 0	/* IN2 differential */
-+		>;
-+		cirrus,out-mono = <0 0 0 0 0 0>;
-+		cirrus,max-channels-clocked = <2 0 0>;
-+	};
-+};
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0183692..b29f539 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3271,15 +3271,20 @@ F:	Documentation/devicetree/bindings/interrupt-controller/cirrus,madera.txt
- F:	Documentation/devicetree/bindings/mfd/madera.txt
- F:	Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt
- F:	Documentation/devicetree/bindings/regulator/madera*
-+F:	Documentation/devicetree/bindings/sound/madera.txt
-+F:	include/dt-bindings/sound/madera*
- F:	include/linux/irqchip/irq-madera*
- F:	include/linux/mfd/madera/*
- F:	include/linux/regulator/madera*
-+F:	include/sound/madera*
- F:	drivers/gpio/gpio-madera*
- F:	drivers/irqchip/irq-madera*
- F:	drivers/mfd/madera*
- F:	drivers/mfd/cs47l*
- F:	drivers/pinctrl/pinctrl-madera*
- F:	drivers/regulator/madera*
-+F:	sound/soc/codecs/cs47l*
-+F:	sound/soc/codecs/madera*
- 
- CLEANCACHE API
- M:	Konrad Rzeszutek Wilk <konrad.wilk-QHcLZuEGTsvQT0dZR+AlfA@public.gmane.org>
-diff --git a/include/dt-bindings/sound/madera.h b/include/dt-bindings/sound/madera.h
-new file mode 100644
-index 0000000..91896f8
---- /dev/null
-+++ b/include/dt-bindings/sound/madera.h
-@@ -0,0 +1,18 @@
-+/*
-+ * Device Tree defines for Madera codecs
-+ *
-+ * Copyright 2016-2017 Cirrus Logic
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef DT_BINDINGS_SOUND_MADERA_H
-+#define DT_BINDINGS_SOUND_MADERA_H
-+
-+#define MADERA_INMODE_DIFF	0
-+#define MADERA_INMODE_SE	1
-+#define MADERA_INMODE_DMIC	2
-+
-+#endif
-diff --git a/include/sound/madera-pdata.h b/include/sound/madera-pdata.h
-new file mode 100644
-index 0000000..5f03f83
---- /dev/null
-+++ b/include/sound/madera-pdata.h
-@@ -0,0 +1,70 @@
-+/*
-+ * Platform data for Madera codec driver
-+ *
-+ * Copyright 2016-2017 Cirrus Logic
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef MADERA_CODEC_PDATA_H
-+#define MADERA_CODEC_PDATA_H
-+
-+#include <linux/kernel.h>
-+
-+#define MADERA_MAX_INPUT		6
-+#define MADERA_MAX_MUXED_CHANNELS	4
-+#define MADERA_MAX_OUTPUT		6
-+#define MADERA_MAX_AIF			4
-+#define MADERA_MAX_PDM_SPK		2
-+#define MADERA_MAX_DSP			7
-+
-+struct madera_codec_pdata {
-+	/**
-+	 * Maximum number of channels that clocks will be generated for,
-+	 * useful for systems where an I2S bus with multiple data
-+	 * lines is mastered.
-+	 */
-+	u32 max_channels_clocked[MADERA_MAX_AIF];
-+
-+	/**
-+	 * DMIC bias reference for each input
-+	 * A value of 0 indicates MICVDD and is the default, other values
-+	 * depend on the codec - see the datasheet for the INn_DMIC_SUP field
-+	 */
-+	u32 dmic_ref[MADERA_MAX_INPUT];
-+
-+	/**
-+	 * Mode of input structures
-+	 * One of the MADERA_INMODE_xxx values
-+	 * Two-dimensional array [input_number][channel number]
-+	 * Four slots per input in the order:
-+	 * [n][0]=INnAL [n][1]=INnAR [n][2]=INnBL [n][3]=INnBR
-+	 */
-+	u32 inmode[MADERA_MAX_INPUT][MADERA_MAX_MUXED_CHANNELS];
-+
-+	/**
-+	 * Output mono mode control
-+	 * For each output set the value to TRUE to indicate that
-+	 * the output is mono
-+	 * [0]=OUT1, [1]=OUT2, ...
-+	 */
-+	bool out_mono[MADERA_MAX_OUTPUT];
-+
-+	/**
-+	 * PDM mute control settings.
-+	 * See the PDM_SPKn_CTRL_1 register in the datasheet for the
-+	 * meaning of the values.
-+	 */
-+	u32 pdm_mute[MADERA_MAX_PDM_SPK];
-+
-+	/**
-+	 * PDM speaker format
-+	 * See the PDM_SPKn_FMT field in the datasheet for the
-+	 * meaning of the values
-+	 */
-+	u32 pdm_fmt[MADERA_MAX_PDM_SPK];
-+};
-+
-+#endif
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 70decab..753b0f1 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -246,10 +246,12 @@ config SND_SOC_WM_HUBS
- config SND_SOC_WM_ADSP
- 	tristate
- 	select SND_SOC_COMPRESS
-+	default y if SND_SOC_MADERA=y
- 	default y if SND_SOC_CS47L24=y
- 	default y if SND_SOC_WM5102=y
- 	default y if SND_SOC_WM5110=y
- 	default y if SND_SOC_WM2200=y
-+	default m if SND_SOC_MADERA=m
- 	default m if SND_SOC_CS47L24=m
- 	default m if SND_SOC_WM5102=m
- 	default m if SND_SOC_WM5110=m
-@@ -576,6 +578,9 @@ config SND_SOC_ISABELLE
- config SND_SOC_LM49453
- 	tristate
- 
-+config SND_SOC_MADERA
-+	tristate
-+
- config SND_SOC_MAX98088
-        tristate
- 
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index bbef31e..641cf66 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -77,6 +77,7 @@ snd-soc-jz4740-codec-objs := jz4740.o
- snd-soc-l3-objs := l3.o
- snd-soc-lm4857-objs := lm4857.o
- snd-soc-lm49453-objs := lm49453.o
-+snd-soc-madera-objs := madera.o
- snd-soc-max9768-objs := max9768.o
- snd-soc-max98088-objs := max98088.o
- snd-soc-max98090-objs := max98090.o
-@@ -310,6 +311,7 @@ obj-$(CONFIG_SND_SOC_JZ4740_CODEC)	+= snd-soc-jz4740-codec.o
- obj-$(CONFIG_SND_SOC_L3)	+= snd-soc-l3.o
- obj-$(CONFIG_SND_SOC_LM4857)	+= snd-soc-lm4857.o
- obj-$(CONFIG_SND_SOC_LM49453)   += snd-soc-lm49453.o
-+obj-$(CONFIG_SND_SOC_MADERA)	+= snd-soc-madera.o
- obj-$(CONFIG_SND_SOC_MAX9768)	+= snd-soc-max9768.o
- obj-$(CONFIG_SND_SOC_MAX98088)	+= snd-soc-max98088.o
- obj-$(CONFIG_SND_SOC_MAX98090)	+= snd-soc-max98090.o
-diff --git a/sound/soc/codecs/madera.c b/sound/soc/codecs/madera.c
-new file mode 100644
-index 0000000..6f205bf
---- /dev/null
-+++ b/sound/soc/codecs/madera.c
-@@ -0,0 +1,4430 @@
-+/*
-+ * madera.c - Cirrus Logic Madera class codecs common support
-+ *
-+ * Copyright 2015-2017 Cirrus Logic
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/gcd.h>
-+#include <linux/module.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/slab.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/tlv.h>
-+
-+#include <linux/mfd/madera/core.h>
-+#include <linux/mfd/madera/registers.h>
-+#include <linux/mfd/madera/pdata.h>
-+#include <sound/madera-pdata.h>
-+
-+#include <dt-bindings/sound/madera.h>
-+
-+#include "madera.h"
-+
-+#define MADERA_AIF_BCLK_CTRL			0x00
-+#define MADERA_AIF_TX_PIN_CTRL			0x01
-+#define MADERA_AIF_RX_PIN_CTRL			0x02
-+#define MADERA_AIF_RATE_CTRL			0x03
-+#define MADERA_AIF_FORMAT			0x04
-+#define MADERA_AIF_RX_BCLK_RATE			0x06
-+#define MADERA_AIF_FRAME_CTRL_1			0x07
-+#define MADERA_AIF_FRAME_CTRL_2			0x08
-+#define MADERA_AIF_FRAME_CTRL_3			0x09
-+#define MADERA_AIF_FRAME_CTRL_4			0x0A
-+#define MADERA_AIF_FRAME_CTRL_5			0x0B
-+#define MADERA_AIF_FRAME_CTRL_6			0x0C
-+#define MADERA_AIF_FRAME_CTRL_7			0x0D
-+#define MADERA_AIF_FRAME_CTRL_8			0x0E
-+#define MADERA_AIF_FRAME_CTRL_9			0x0F
-+#define MADERA_AIF_FRAME_CTRL_10		0x10
-+#define MADERA_AIF_FRAME_CTRL_11		0x11
-+#define MADERA_AIF_FRAME_CTRL_12		0x12
-+#define MADERA_AIF_FRAME_CTRL_13		0x13
-+#define MADERA_AIF_FRAME_CTRL_14		0x14
-+#define MADERA_AIF_FRAME_CTRL_15		0x15
-+#define MADERA_AIF_FRAME_CTRL_16		0x16
-+#define MADERA_AIF_FRAME_CTRL_17		0x17
-+#define MADERA_AIF_FRAME_CTRL_18		0x18
-+#define MADERA_AIF_TX_ENABLES			0x19
-+#define MADERA_AIF_RX_ENABLES			0x1A
-+#define MADERA_AIF_FORCE_WRITE			0x1B
-+
-+#define MADERA_DSP_CONFIG_1_OFFS		0x00
-+#define MADERA_DSP_CONFIG_2_OFFS		0x02
-+
-+#define MADERA_DSP_CLK_SEL_MASK			0x70000
-+#define MADERA_DSP_CLK_SEL_SHIFT		16
-+
-+#define MADERA_DSP_RATE_MASK			0x7800
-+#define MADERA_DSP_RATE_SHIFT			11
-+
-+#define MADERA_SYSCLK_6MHZ			0
-+#define MADERA_SYSCLK_12MHZ			1
-+#define MADERA_SYSCLK_24MHZ			2
-+#define MADERA_SYSCLK_49MHZ			3
-+#define MADERA_SYSCLK_98MHZ			4
-+
-+#define MADERA_DSPCLK_9MHZ			0
-+#define MADERA_DSPCLK_18MHZ			1
-+#define MADERA_DSPCLK_36MHZ			2
-+#define MADERA_DSPCLK_73MHZ			3
-+#define MADERA_DSPCLK_147MHZ			4
-+
-+#define MADERA_FLL_VCO_CORNER			141900000
-+#define MADERA_FLL_MAX_FREF			13500000
-+#define MADERA_FLL_MAX_N			1023
-+#define MADERA_FLL_MIN_FOUT			90000000
-+#define MADERA_FLL_MAX_FOUT			100000000
-+#define MADERA_FLL_MAX_FRATIO			16
-+#define MADERA_FLL_MAX_REFDIV			8
-+#define MADERA_FLL_OUTDIV			3
-+#define MADERA_FLL_VCO_MULT			3
-+#define MADERA_FLLAO_MAX_FREF			12288000
-+#define MADERA_FLLAO_MIN_N			4
-+#define MADERA_FLLAO_MAX_N			1023
-+#define MADERA_FLLAO_MAX_FBDIV			254
-+
-+#define MADERA_FLL_SYNCHRONISER_OFFS		0x10
-+#define CS47L35_FLL_SYNCHRONISER_OFFS		0xE
-+#define MADERA_FLL_CONTROL_1_OFFS		0x1
-+#define MADERA_FLL_CONTROL_2_OFFS		0x2
-+#define MADERA_FLL_CONTROL_3_OFFS		0x3
-+#define MADERA_FLL_CONTROL_4_OFFS		0x4
-+#define MADERA_FLL_CONTROL_5_OFFS		0x5
-+#define MADERA_FLL_CONTROL_6_OFFS		0x6
-+#define MADERA_FLL_LOOP_FILTER_TEST_1_OFFS	0x7
-+#define MADERA_FLL_NCO_TEST_0_OFFS		0x8
-+#define MADERA_FLL_CONTROL_7_OFFS		0x9
-+#define MADERA_FLL_EFS_2_OFFS			0xA
-+#define MADERA_FLL_SYNCHRONISER_1_OFFS		0x1
-+#define MADERA_FLL_SYNCHRONISER_2_OFFS		0x2
-+#define MADERA_FLL_SYNCHRONISER_3_OFFS		0x3
-+#define MADERA_FLL_SYNCHRONISER_4_OFFS		0x4
-+#define MADERA_FLL_SYNCHRONISER_5_OFFS		0x5
-+#define MADERA_FLL_SYNCHRONISER_6_OFFS		0x6
-+#define MADERA_FLL_SYNCHRONISER_7_OFFS		0x7
-+#define MADERA_FLL_SPREAD_SPECTRUM_OFFS		0x9
-+#define MADERA_FLL_GPIO_CLOCK_OFFS		0xA
-+
-+#define MADERA_FLLAO_CONTROL_1_OFFS		0x1
-+#define MADERA_FLLAO_CONTROL_2_OFFS		0x2
-+#define MADERA_FLLAO_CONTROL_3_OFFS		0x3
-+#define MADERA_FLLAO_CONTROL_4_OFFS		0x4
-+#define MADERA_FLLAO_CONTROL_5_OFFS		0x5
-+#define MADERA_FLLAO_CONTROL_6_OFFS		0x6
-+#define MADERA_FLLAO_CONTROL_7_OFFS		0x8
-+#define MADERA_FLLAO_CONTROL_8_OFFS		0xA
-+#define MADERA_FLLAO_CONTROL_9_OFFS		0xB
-+#define MADERA_FLLAO_CONTROL_10_OFFS		0xC
-+#define MADERA_FLLAO_CONTROL_11_OFFS		0xD
-+
-+#define MADERA_FMT_DSP_MODE_A			0
-+#define MADERA_FMT_DSP_MODE_B			1
-+#define MADERA_FMT_I2S_MODE			2
-+#define MADERA_FMT_LEFT_JUSTIFIED_MODE		3
-+
-+#define madera_fll_err(_fll, fmt, ...) \
-+	dev_err(_fll->madera->dev, "FLL%d: " fmt, _fll->id, ##__VA_ARGS__)
-+#define madera_fll_warn(_fll, fmt, ...) \
-+	dev_warn(_fll->madera->dev, "FLL%d: " fmt, _fll->id, ##__VA_ARGS__)
-+#define madera_fll_dbg(_fll, fmt, ...) \
-+	dev_dbg(_fll->madera->dev, "FLL%d: " fmt, _fll->id, ##__VA_ARGS__)
-+
-+#define madera_aif_err(_dai, fmt, ...) \
-+	dev_err(_dai->dev, "AIF%d: " fmt, _dai->id, ##__VA_ARGS__)
-+#define madera_aif_warn(_dai, fmt, ...) \
-+	dev_warn(_dai->dev, "AIF%d: " fmt, _dai->id, ##__VA_ARGS__)
-+#define madera_aif_dbg(_dai, fmt, ...) \
-+	dev_dbg(_dai->dev, "AIF%d: " fmt, _dai->id, ##__VA_ARGS__)
-+
-+static const int madera_dsp_bus_error_irqs[MADERA_MAX_ADSP] = {
-+	MADERA_IRQ_DSP1_BUS_ERROR,
-+	MADERA_IRQ_DSP2_BUS_ERROR,
-+	MADERA_IRQ_DSP3_BUS_ERROR,
-+	MADERA_IRQ_DSP4_BUS_ERROR,
-+	MADERA_IRQ_DSP5_BUS_ERROR,
-+	MADERA_IRQ_DSP6_BUS_ERROR,
-+	MADERA_IRQ_DSP7_BUS_ERROR,
-+};
-+
-+void madera_spin_sysclk(struct madera_priv *priv)
-+{
-+	struct madera *madera = priv->madera;
-+	unsigned int val;
-+	int ret, i;
-+
-+	/* Skip this if the chip is down */
-+	if (pm_runtime_suspended(madera->dev))
-+		return;
-+
-+	/*
-+	 * Just read a register a few times to ensure the internal
-+	 * oscillator sends out a few clocks.
-+	 */
-+	for (i = 0; i < 4; i++) {
-+		ret = regmap_read(madera->regmap, MADERA_SOFTWARE_RESET, &val);
-+		if (ret)
-+			dev_err(madera->dev,
-+				"%s Failed to read register: %d (%d)\n",
-+				__func__, ret, i);
-+	}
-+
-+	udelay(300);
-+}
-+EXPORT_SYMBOL_GPL(madera_spin_sysclk);
-+
-+int madera_sysclk_ev(struct snd_soc_dapm_widget *w,
-+		     struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct madera_priv *priv = snd_soc_codec_get_drvdata(codec);
-+
-+	madera_spin_sysclk(priv);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(madera_sysclk_ev);
-+
-+static int madera_check_speaker_overheat(struct madera *madera,
-+					 bool *warn, bool *shutdown)
-+{
-+	unsigned int val;
-+	int ret;
-+
-+	ret = regmap_read(madera->regmap, MADERA_IRQ1_RAW_STATUS_15, &val);
-+	if (ret) {
-+		dev_err(madera->dev, "Failed to read thermal status: %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	*warn = val & MADERA_SPK_OVERHEAT_WARN_STS1;
-+	*shutdown = val & MADERA_SPK_OVERHEAT_STS1;
-+
-+	return 0;
-+}
-+
-+int madera_spk_ev(struct snd_soc_dapm_widget *w,
-+		  struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct madera *madera = dev_get_drvdata(codec->dev->parent);
-+	bool warn, shutdown;
-+	int ret;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		ret = madera_check_speaker_overheat(madera, &warn, &shutdown);
-+		if (ret)
-+			return ret;
-+
-+		if (shutdown) {
-+			dev_crit(madera->dev,
-+				 "Speaker not enabled due to temperature\n");
-+			return -EBUSY;
-+		}
-+
-+		regmap_update_bits(madera->regmap,
-+				   MADERA_OUTPUT_ENABLES_1,
-+				   1 << w->shift, 1 << w->shift);
-+		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		regmap_update_bits(madera->regmap,
-+				   MADERA_OUTPUT_ENABLES_1,
-+				   1 << w->shift, 0);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(madera_spk_ev);
-+
-+static irqreturn_t madera_thermal_warn(int irq, void *data)
-+{
-+	struct madera *madera = data;
-+	bool warn, shutdown;
-+	int ret;
-+
-+	ret = madera_check_speaker_overheat(madera, &warn, &shutdown);
-+	if (ret)
-+		shutdown = true; /* for safety attempt to shutdown on error */
-+
-+	if (shutdown) {
-+		dev_crit(madera->dev, "Thermal shutdown\n");
-+		ret = regmap_update_bits(madera->regmap,
-+					 MADERA_OUTPUT_ENABLES_1,
-+					 MADERA_OUT4L_ENA |
-+					 MADERA_OUT4R_ENA, 0);
-+		if (ret != 0)
-+			dev_crit(madera->dev,
-+				 "Failed to disable speaker outputs: %d\n",
-+				 ret);
-+	} else if (warn) {
-+		dev_crit(madera->dev, "Thermal warning\n");
-+	}
-+
-+	return IRQ_HANDLED;
-+}
-+
-+int madera_init_overheat(struct madera_priv *priv)
-+{
-+	struct madera *madera = priv->madera;
-+	int ret;
-+
-+	ret = madera_request_irq(madera, MADERA_IRQ_SPK_OVERHEAT_WARN,
-+				 "Thermal warning", madera_thermal_warn,
-+				 madera);
-+	if (ret)
-+		dev_warn(madera->dev,
-+			"Failed to get thermal warning IRQ: %d\n", ret);
-+
-+	ret = madera_request_irq(madera, MADERA_IRQ_SPK_OVERHEAT,
-+				 "Thermal shutdown", madera_thermal_warn,
-+				 madera);
-+	if (ret)
-+		dev_warn(madera->dev,
-+			"Failed to get thermal shutdown IRQ: %d\n", ret);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(madera_init_overheat);
-+
-+int madera_free_overheat(struct madera_priv *priv)
-+{
-+	struct madera *madera = priv->madera;
-+
-+	madera_free_irq(madera, MADERA_IRQ_SPK_OVERHEAT_WARN, madera);
-+	madera_free_irq(madera, MADERA_IRQ_SPK_OVERHEAT, madera);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(madera_free_overheat);
-+
-+static int madera_get_variable_u32_array(struct madera_priv *priv,
-+					 const char *propname,
-+					 u32 *dest,
-+					 int n_max,
-+					 int multiple)
-+{
-+	int n, ret;
-+
-+	n = device_property_read_u32_array(priv->dev, propname, NULL, 0);
-+	if (n == -EINVAL) {
-+		return 0;	/* missing, ignore */
-+	} else if (n < 0) {
-+		dev_warn(priv->madera->dev, "%s malformed (%d)\n",
-+			 propname, n);
-+		return ret;
-+	} else if ((n % multiple) != 0) {
-+		dev_warn(priv->madera->dev, "%s not a multiple of %d entries\n",
-+			 propname, multiple);
-+		return -EINVAL;
-+	}
-+
-+	if (n > n_max)
-+		n = n_max;
-+
-+	ret = device_property_read_u32_array(priv->dev, propname, dest, n);
-+
-+	if (ret < 0)
-+		return ret;
-+	else
-+		return n;
-+}
-+
-+static void madera_prop_get_inmode(struct madera_priv *priv)
-+{
-+	struct madera *madera = priv->madera;
-+	u32 tmp[MADERA_MAX_INPUT * MADERA_MAX_MUXED_CHANNELS];
-+	int n, i, in_idx, ch_idx;
-+
-+	BUILD_BUG_ON(ARRAY_SIZE(madera->pdata.codec.inmode) != MADERA_MAX_INPUT);
-+	BUILD_BUG_ON(ARRAY_SIZE(madera->pdata.codec.inmode[0]) !=
-+		     MADERA_MAX_MUXED_CHANNELS);
-+
-+	n = madera_get_variable_u32_array(priv,
-+					  "cirrus,inmode",
-+					  tmp,
-+					  ARRAY_SIZE(tmp),
-+					  MADERA_MAX_MUXED_CHANNELS);
-+	if (n < 0)
-+		return;
-+
-+	in_idx = 0;
-+	ch_idx = 0;
-+	for (i = 0; i < n; ++i) {
-+		madera->pdata.codec.inmode[in_idx][ch_idx] = tmp[i];
-+
-+		if (++ch_idx == MADERA_MAX_MUXED_CHANNELS) {
-+			ch_idx = 0;
-+			++in_idx;
-+		}
-+	}
-+}
-+
-+static void madera_prop_get_pdata(struct madera_priv *priv)
-+{
-+	struct madera *madera = priv->madera;
-+	struct madera_codec_pdata *pdata = &madera->pdata.codec;
-+	u32 out_mono[ARRAY_SIZE(pdata->out_mono)];
-+	int i, ret;
-+
-+	ret = madera_get_variable_u32_array(priv,
-+					"cirrus,max-channels-clocked",
-+					pdata->max_channels_clocked,
-+					ARRAY_SIZE(pdata->max_channels_clocked),
-+					1);
-+	if (ret < 0)
-+		return;
-+
-+	madera_prop_get_inmode(priv);
-+
-+	memset(&out_mono, 0, sizeof(out_mono));
-+	ret = device_property_read_u32_array(priv->dev,
-+					     "cirrus,out-mono",
-+					     out_mono,
-+					     ARRAY_SIZE(out_mono));
-+	if (ret == 0)
-+		for (i = 0; i < ARRAY_SIZE(out_mono); ++i)
-+			pdata->out_mono[i] = !!out_mono[i];
-+
-+	madera_get_variable_u32_array(priv,
-+				      "cirrus,pdm-fmt",
-+				      pdata->pdm_fmt,
-+				      ARRAY_SIZE(pdata->pdm_fmt),
-+				      1);
-+
-+	madera_get_variable_u32_array(priv,
-+				      "cirrus,pdm-mute",
-+				      pdata->pdm_mute,
-+				      ARRAY_SIZE(pdata->pdm_mute),
-+				      1);
-+
-+	madera_get_variable_u32_array(priv,
-+				      "cirrus,dmic-ref",
-+				       pdata->dmic_ref,
-+				       ARRAY_SIZE(pdata->dmic_ref),
-+				       1);
-+}
-+
-+int madera_core_init(struct madera_priv *priv)
-+{
-+	BUILD_BUG_ON(ARRAY_SIZE(madera_mixer_texts) != MADERA_NUM_MIXER_INPUTS);
-+	BUILD_BUG_ON(ARRAY_SIZE(madera_mixer_values) != MADERA_NUM_MIXER_INPUTS);
-+	BUILD_BUG_ON(madera_sample_rate_text[MADERA_SAMPLE_RATE_ENUM_SIZE - 1]
-+		     == NULL);
-+	BUILD_BUG_ON(madera_sample_rate_val[MADERA_SAMPLE_RATE_ENUM_SIZE - 1]
-+		     == 0);
-+
-+	if (!dev_get_platdata(priv->madera->dev))
-+		madera_prop_get_pdata(priv);
-+
-+	mutex_init(&priv->rate_lock);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(madera_core_init);
-+
-+int madera_core_destroy(struct madera_priv *priv)
-+{
-+	mutex_destroy(&priv->rate_lock);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(madera_core_destroy);
-+
-+static void madera_debug_dump_domain_groups(const struct madera_priv *priv)
-+{
-+	struct madera *madera = priv->madera;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(priv->domain_group_ref); ++i)
-+		dev_dbg(madera->dev, "domain_grp_ref[%d]=%d\n", i,
-+			priv->domain_group_ref[i]);
-+}
-+
-+int madera_domain_clk_ev(struct snd_soc_dapm_widget *w,
-+			 struct snd_kcontrol *kcontrol,
-+			 int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct madera_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	int dom_grp = w->shift;
-+
-+	if (dom_grp >= ARRAY_SIZE(priv->domain_group_ref)) {
-+		WARN(true, "%s dom_grp exceeds array size\n", __func__);
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * We can't rely on the DAPM mutex for locking because we need a lock
-+	 * that can safely be called in hw_params
-+	 */
-+	mutex_lock(&priv->rate_lock);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		dev_dbg(priv->madera->dev, "Inc ref on domain group %d\n",
-+			dom_grp);
-+		++priv->domain_group_ref[dom_grp];
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		dev_dbg(priv->madera->dev, "Dec ref on domain group %d\n",
-+			dom_grp);
-+		--priv->domain_group_ref[dom_grp];
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	madera_debug_dump_domain_groups(priv);
-+
-+	mutex_unlock(&priv->rate_lock);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(madera_domain_clk_ev);
-+
-+int madera_out1_demux_put(struct snd_kcontrol *kcontrol,
-+			  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_kcontrol_codec(kcontrol);
-+	struct snd_soc_dapm_context *dapm =
-+		snd_soc_dapm_kcontrol_dapm(kcontrol);
-+	struct madera *madera = dev_get_drvdata(codec->dev->parent);
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	unsigned int ep_sel, mux, change;
-+	int ret, demux_change_ret;
-+	bool out_mono, restore_out = true;
-+
-+	if (ucontrol->value.enumerated.item[0] > e->items - 1)
-+		return -EINVAL;
-+
-+	mux = ucontrol->value.enumerated.item[0];
-+	ep_sel = mux << MADERA_EP_SEL_SHIFT;
-+
-+	snd_soc_dapm_mutex_lock(dapm);
-+
-+	change = snd_soc_test_bits(codec, MADERA_OUTPUT_ENABLES_1,
-+				   MADERA_EP_SEL_MASK, ep_sel);
-+	if (!change)
-+		goto end;
-+
-+	/* EP_SEL should not be modified while HP or EP driver is enabled */
-+	ret = regmap_update_bits(madera->regmap,
-+				 MADERA_OUTPUT_ENABLES_1,
-+				 MADERA_OUT1L_ENA |
-+				 MADERA_OUT1R_ENA, 0);
-+	if (ret)
-+		dev_warn(madera->dev, "Failed to disable outputs: %d\n", ret);
-+
-+	usleep_range(2000, 3000); /* wait for wseq to complete */
-+
-+	/*
-+	 * if HP detection clamp is applied while switching to HPOUT
-+	 * OUT1 should remain disabled and EDRE should be set to manual
-+	 */
-+	if (!ep_sel &&
-+	    (madera->out_clamp[0] || madera->out_shorted[0]))
-+		restore_out = false;
-+
-+	/* change demux setting */
-+	demux_change_ret = regmap_update_bits(madera->regmap,
-+					      MADERA_OUTPUT_ENABLES_1,
-+					      MADERA_EP_SEL_MASK, ep_sel);
-+	if (demux_change_ret) {
-+		dev_err(madera->dev, "Failed to set OUT1 demux: %d\n",
-+			demux_change_ret);
-+	} else {
-+		/* apply correct setting for mono mode */
-+		if (!ep_sel && !madera->pdata.codec.out_mono[0])
-+			out_mono = false; /* stereo HP */
-+		else
-+			out_mono = true; /* EP or mono HP */
-+
-+		ret = madera_set_output_mode(codec, 1, out_mono);
-+		if (ret)
-+			dev_warn(madera->dev,
-+				 "Failed to set output mode: %d\n", ret);
-+	}
-+
-+	/* restore output state if allowed */
-+	if (restore_out) {
-+		ret = regmap_update_bits(madera->regmap,
-+					 MADERA_OUTPUT_ENABLES_1,
-+					 MADERA_OUT1L_ENA |
-+					 MADERA_OUT1R_ENA,
-+					 madera->hp_ena);
-+		if (ret)
-+			dev_warn(madera->dev,
-+				 "Failed to restore earpiece outputs: %d\n",
-+				 ret);
-+		else if (madera->hp_ena)
-+			msleep(34); /* wait for enable wseq */
-+		else
-+			usleep_range(2000, 3000); /* wait for disable wseq */
-+	}
-+
-+end:
-+	snd_soc_dapm_mutex_unlock(dapm);
-+
-+	return snd_soc_dapm_mux_update_power(dapm, kcontrol, mux, e, NULL);
-+}
-+EXPORT_SYMBOL_GPL(madera_out1_demux_put);
-+
-+
-+static int madera_inmux_put(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_kcontrol_codec(kcontrol);
-+	struct snd_soc_dapm_context *dapm =
-+		snd_soc_dapm_kcontrol_dapm(kcontrol);
-+	struct madera *madera = dev_get_drvdata(codec->dev->parent);
-+	struct soc_enum *e = (struct soc_enum *) kcontrol->private_value;
-+	unsigned int mux, src_val, src_mask, gang_reg, dmode_reg, dmode_val;
-+	unsigned int inmode_a, inmode_gang, inmode;
-+	bool changed = false;
-+	int ret;
-+
-+	mux = ucontrol->value.enumerated.item[0];
-+	if (mux > 1)
-+		return -EINVAL;
-+
-+	src_val = mux << e->shift_l;
-+	src_mask = e->mask << e->shift_l;
-+
-+	switch (e->reg) {
-+	case MADERA_ADC_DIGITAL_VOLUME_1L:
-+		inmode_a = madera->pdata.codec.inmode[0][0];
-+		inmode = madera->pdata.codec.inmode[0][2 * mux];
-+		inmode_gang = madera->pdata.codec.inmode[0][1 + (2 * mux)];
-+		gang_reg = MADERA_ADC_DIGITAL_VOLUME_1R;
-+		dmode_reg = MADERA_IN1L_CONTROL;
-+		break;
-+	case MADERA_ADC_DIGITAL_VOLUME_1R:
-+		inmode_a = madera->pdata.codec.inmode[0][0];
-+		inmode = madera->pdata.codec.inmode[0][1 + (2 * mux)];
-+		inmode_gang = madera->pdata.codec.inmode[0][2 * mux];
-+		gang_reg = MADERA_ADC_DIGITAL_VOLUME_1L;
-+		dmode_reg = MADERA_IN1L_CONTROL;
-+		break;
-+	case MADERA_ADC_DIGITAL_VOLUME_2L:
-+		inmode_a = madera->pdata.codec.inmode[1][0];
-+		inmode = madera->pdata.codec.inmode[1][2 * mux];
-+		inmode_gang = madera->pdata.codec.inmode[1][1 + (2 * mux)];
-+		gang_reg = MADERA_ADC_DIGITAL_VOLUME_2R;
-+		dmode_reg = MADERA_IN2L_CONTROL;
-+		break;
-+	case MADERA_ADC_DIGITAL_VOLUME_2R:
-+		inmode_a = madera->pdata.codec.inmode[1][0];
-+		inmode = madera->pdata.codec.inmode[1][1 + (2 * mux)];
-+		inmode_gang = madera->pdata.codec.inmode[1][2 * mux];
-+		gang_reg = MADERA_ADC_DIGITAL_VOLUME_2L;
-+		dmode_reg = MADERA_IN2L_CONTROL;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	/* SE mask and shift is same for all channels */
-+	src_mask |= MADERA_IN1L_SRC_SE_MASK;
-+	if (inmode & MADERA_INMODE_SE)
-+		src_val |= 1 << MADERA_IN1L_SRC_SE_SHIFT;
-+
-+	dev_dbg(madera->dev,
-+		"mux=%u reg=0x%x inmode_a=0x%x inmode=0x%x mask=0x%x val=0x%x\n",
-+		mux, e->reg, inmode_a, inmode, src_mask, src_val);
-+
-+	ret = snd_soc_component_update_bits(dapm->component,
-+					    e->reg,
-+					    src_mask,
-+					    src_val);
-+	if (ret < 0)
-+		return ret;
-+	else if (ret)
-+		changed = true;
-+
-+	/* if the A input is digital we must switch both channels together */
-+	if (inmode_a == MADERA_INMODE_DMIC) {
-+		switch (madera->type) {
-+		case CS47L85:
-+		case WM1840:
-+			if (e->reg == MADERA_ADC_DIGITAL_VOLUME_1L)
-+				goto out;	/* not ganged */
-+			break;
-+		case CS47L90:
-+		case CS47L91:
-+			if (e->reg == MADERA_ADC_DIGITAL_VOLUME_2L)
-+				goto out;	/* not ganged */
-+			break;
-+		default:
-+			break;
-+		}
-+
-+		/* ganged channels can have different analogue modes */
-+		if (inmode_gang & MADERA_INMODE_SE)
-+			src_val |= 1 << MADERA_IN1L_SRC_SE_SHIFT;
-+		else
-+			src_val &= ~(1 << MADERA_IN1L_SRC_SE_SHIFT);
-+
-+		if (mux)
-+			dmode_val = 0; /* B always analogue */
-+		else
-+			dmode_val = 1 << MADERA_IN1_MODE_SHIFT; /* DMIC */
-+
-+		dev_dbg(madera->dev,
-+			"gang_reg=0x%x inmode_gang=0x%x gang_val=0x%x dmode_val=0x%x\n",
-+			gang_reg, inmode_gang, src_val, dmode_val);
-+
-+		ret = snd_soc_component_update_bits(dapm->component,
-+						    gang_reg,
-+						    src_mask,
-+						    src_val);
-+		if (ret < 0)
-+			return ret;
-+		else if (ret)
-+			changed = true;
-+
-+		ret = snd_soc_component_update_bits(dapm->component,
-+						    dmode_reg,
-+						    MADERA_IN1_MODE_MASK,
-+						    dmode_val);
-+	}
-+
-+out:
-+	if (changed)
-+		return snd_soc_dapm_mux_update_power(dapm, kcontrol,
-+						     mux, e, NULL);
-+	else
-+		return 0;
-+}
-+
-+static const char * const madera_inmux_texts[] = {
-+	"A",
-+	"B",
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(madera_in1muxl_enum,
-+			    MADERA_ADC_DIGITAL_VOLUME_1L,
-+			    MADERA_IN1L_SRC_SHIFT,
-+			    madera_inmux_texts);
-+
-+static SOC_ENUM_SINGLE_DECL(madera_in1muxr_enum,
-+			    MADERA_ADC_DIGITAL_VOLUME_1R,
-+			    MADERA_IN1R_SRC_SHIFT,
-+			    madera_inmux_texts);
-+
-+static SOC_ENUM_SINGLE_DECL(madera_in2muxl_enum,
-+			    MADERA_ADC_DIGITAL_VOLUME_2L,
-+			    MADERA_IN2L_SRC_SHIFT,
-+			    madera_inmux_texts);
-+
-+static SOC_ENUM_SINGLE_DECL(madera_in2muxr_enum,
-+			    MADERA_ADC_DIGITAL_VOLUME_2R,
-+			    MADERA_IN2R_SRC_SHIFT,
-+			    madera_inmux_texts);
-+
-+const struct snd_kcontrol_new madera_inmux[] = {
-+	SOC_DAPM_ENUM_EXT("IN1L Mux", madera_in1muxl_enum,
-+			  snd_soc_dapm_get_enum_double, madera_inmux_put),
-+	SOC_DAPM_ENUM_EXT("IN1R Mux", madera_in1muxr_enum,
-+			  snd_soc_dapm_get_enum_double, madera_inmux_put),
-+	SOC_DAPM_ENUM_EXT("IN2L Mux", madera_in2muxl_enum,
-+			  snd_soc_dapm_get_enum_double, madera_inmux_put),
-+	SOC_DAPM_ENUM_EXT("IN2R Mux", madera_in2muxr_enum,
-+			  snd_soc_dapm_get_enum_double, madera_inmux_put),
-+};
-+EXPORT_SYMBOL_GPL(madera_inmux);
-+
-+static bool madera_can_change_grp_rate(const struct madera_priv *priv,
-+				       unsigned int reg)
-+{
-+	int count;
-+
-+	switch (reg) {
-+	case MADERA_FX_CTRL1:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_FX];
-+		break;
-+	case MADERA_ASRC1_RATE1:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_ASRC1_RATE_1];
-+		break;
-+	case MADERA_ASRC1_RATE2:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_ASRC1_RATE_2];
-+		break;
-+	case MADERA_ASRC2_RATE1:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_ASRC2_RATE_1];
-+		break;
-+	case MADERA_ASRC2_RATE2:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_ASRC2_RATE_2];
-+		break;
-+	case MADERA_ISRC_1_CTRL_1:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_ISRC1_INT];
-+		break;
-+	case MADERA_ISRC_1_CTRL_2:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_ISRC1_DEC];
-+		break;
-+	case MADERA_ISRC_2_CTRL_1:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_ISRC2_INT];
-+		break;
-+	case MADERA_ISRC_2_CTRL_2:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_ISRC2_DEC];
-+		break;
-+	case MADERA_ISRC_3_CTRL_1:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_ISRC3_INT];
-+		break;
-+	case MADERA_ISRC_3_CTRL_2:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_ISRC3_DEC];
-+		break;
-+	case MADERA_ISRC_4_CTRL_1:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_ISRC4_INT];
-+		break;
-+	case MADERA_ISRC_4_CTRL_2:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_ISRC4_DEC];
-+		break;
-+	case MADERA_OUTPUT_RATE_1:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_OUT];
-+		break;
-+	case MADERA_SPD1_TX_CONTROL:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_SPD];
-+		break;
-+	case MADERA_DSP1_CONFIG_1:
-+	case MADERA_DSP1_CONFIG_2:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_DSP1];
-+		break;
-+	case MADERA_DSP2_CONFIG_1:
-+	case MADERA_DSP2_CONFIG_2:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_DSP2];
-+		break;
-+	case MADERA_DSP3_CONFIG_1:
-+	case MADERA_DSP3_CONFIG_2:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_DSP3];
-+		break;
-+	case MADERA_DSP4_CONFIG_1:
-+	case MADERA_DSP4_CONFIG_2:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_DSP4];
-+		break;
-+	case MADERA_DSP5_CONFIG_1:
-+	case MADERA_DSP5_CONFIG_2:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_DSP5];
-+		break;
-+	case MADERA_DSP6_CONFIG_1:
-+	case MADERA_DSP6_CONFIG_2:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_DSP6];
-+		break;
-+	case MADERA_DSP7_CONFIG_1:
-+	case MADERA_DSP7_CONFIG_2:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_DSP7];
-+		break;
-+	case MADERA_AIF1_RATE_CTRL:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_AIF1];
-+		break;
-+	case MADERA_AIF2_RATE_CTRL:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_AIF2];
-+		break;
-+	case MADERA_AIF3_RATE_CTRL:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_AIF3];
-+		break;
-+	case MADERA_AIF4_RATE_CTRL:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_AIF4];
-+		break;
-+	case MADERA_SLIMBUS_RATES_1:
-+	case MADERA_SLIMBUS_RATES_2:
-+	case MADERA_SLIMBUS_RATES_3:
-+	case MADERA_SLIMBUS_RATES_4:
-+	case MADERA_SLIMBUS_RATES_5:
-+	case MADERA_SLIMBUS_RATES_6:
-+	case MADERA_SLIMBUS_RATES_7:
-+	case MADERA_SLIMBUS_RATES_8:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_SLIMBUS];
-+		break;
-+	case MADERA_PWM_DRIVE_1:
-+		count = priv->domain_group_ref[MADERA_DOM_GRP_PWM];
-+		break;
-+	default:
-+		return false;
-+	}
-+
-+	dev_dbg(priv->madera->dev, "Rate reg 0x%x group ref %d\n", reg, count);
-+
-+	if (count)
-+		return false;
-+	else
-+		return true;
-+}
-+
-+int madera_adsp_rate_get(struct snd_kcontrol *kcontrol,
-+			 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct madera_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	unsigned int cached_rate;
-+	const int adsp_num = e->shift_l;
-+	int item;
-+
-+	mutex_lock(&priv->rate_lock);
-+	cached_rate = priv->adsp_rate_cache[adsp_num];
-+	mutex_unlock(&priv->rate_lock);
-+
-+	item = snd_soc_enum_val_to_item(e, cached_rate);
-+	ucontrol->value.enumerated.item[0] = item;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(madera_adsp_rate_get);
-+
-+int madera_adsp_rate_put(struct snd_kcontrol *kcontrol,
-+			 struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct madera_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	const int adsp_num = e->shift_l;
-+	const unsigned int item = ucontrol->value.enumerated.item[0];
-+	int ret;
-+
-+	if (item >= e->items)
-+		return -EINVAL;
-+
-+	/*
-+	 * We don't directly write the rate register here but we want to
-+	 * maintain consistent behaviour that rate domains cannot be changed
-+	 * while in use since this is a hardware requirement
-+	 */
-+	mutex_lock(&priv->rate_lock);
-+
-+	if (!madera_can_change_grp_rate(priv, priv->adsp[adsp_num].base)) {
-+		dev_warn(priv->madera->dev,
-+			 "Cannot change '%s' while in use by active audio paths\n",
-+			 kcontrol->id.name);
-+		ret = -EBUSY;
-+	} else {
-+		/* Volatile register so defer until the codec is powered up */
-+		priv->adsp_rate_cache[adsp_num] = e->values[item];
-+		ret = 0;
-+	}
-+
-+	mutex_unlock(&priv->rate_lock);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(madera_adsp_rate_put);
-+
-+static const struct soc_enum madera_adsp_rate_enum[] = {
-+	SOC_VALUE_ENUM_SINGLE(SND_SOC_NOPM, 0, 0xf, MADERA_RATE_ENUM_SIZE,
-+			      madera_rate_text, madera_rate_val),
-+	SOC_VALUE_ENUM_SINGLE(SND_SOC_NOPM, 1, 0xf, MADERA_RATE_ENUM_SIZE,
-+			      madera_rate_text, madera_rate_val),
-+	SOC_VALUE_ENUM_SINGLE(SND_SOC_NOPM, 2, 0xf, MADERA_RATE_ENUM_SIZE,
-+			      madera_rate_text, madera_rate_val),
-+	SOC_VALUE_ENUM_SINGLE(SND_SOC_NOPM, 3, 0xf, MADERA_RATE_ENUM_SIZE,
-+			      madera_rate_text, madera_rate_val),
-+	SOC_VALUE_ENUM_SINGLE(SND_SOC_NOPM, 4, 0xf, MADERA_RATE_ENUM_SIZE,
-+			      madera_rate_text, madera_rate_val),
-+	SOC_VALUE_ENUM_SINGLE(SND_SOC_NOPM, 5, 0xf, MADERA_RATE_ENUM_SIZE,
-+			      madera_rate_text, madera_rate_val),
-+	SOC_VALUE_ENUM_SINGLE(SND_SOC_NOPM, 6, 0xf, MADERA_RATE_ENUM_SIZE,
-+			      madera_rate_text, madera_rate_val),
-+};
-+
-+const struct snd_kcontrol_new madera_adsp_rate_controls[] = {
-+	SOC_ENUM_EXT("DSP1 Rate", madera_adsp_rate_enum[0],
-+		     madera_adsp_rate_get, madera_adsp_rate_put),
-+	SOC_ENUM_EXT("DSP2 Rate", madera_adsp_rate_enum[1],
-+		     madera_adsp_rate_get, madera_adsp_rate_put),
-+	SOC_ENUM_EXT("DSP3 Rate", madera_adsp_rate_enum[2],
-+		     madera_adsp_rate_get, madera_adsp_rate_put),
-+	SOC_ENUM_EXT("DSP4 Rate", madera_adsp_rate_enum[3],
-+		     madera_adsp_rate_get, madera_adsp_rate_put),
-+	SOC_ENUM_EXT("DSP5 Rate", madera_adsp_rate_enum[4],
-+		     madera_adsp_rate_get, madera_adsp_rate_put),
-+	SOC_ENUM_EXT("DSP6 Rate", madera_adsp_rate_enum[5],
-+		     madera_adsp_rate_get, madera_adsp_rate_put),
-+	SOC_ENUM_EXT("DSP7 Rate", madera_adsp_rate_enum[6],
-+		     madera_adsp_rate_get, madera_adsp_rate_put),
-+};
-+EXPORT_SYMBOL_GPL(madera_adsp_rate_controls);
-+
-+static int madera_write_adsp_clk_setting(struct madera_priv *priv,
-+					 struct wm_adsp *dsp,
-+					 unsigned int freq)
-+{
-+	unsigned int val;
-+	unsigned int mask = MADERA_DSP_RATE_MASK;
-+	int ret;
-+
-+	/*
-+	 * Take snapshot of rate. There will always be a race condition
-+	 * between this code and setting the rate control. Wrapping the entire
-+	 * function in the lock won't change that so don't bother
-+	 */
-+	mutex_lock(&priv->rate_lock);
-+	val = priv->adsp_rate_cache[dsp->num - 1] << MADERA_DSP_RATE_SHIFT;
-+	mutex_unlock(&priv->rate_lock);
-+
-+	switch (priv->madera->type) {
-+	case CS47L35:
-+	case CS47L85:
-+	case WM1840:
-+		/* use legacy frequency registers */
-+		mask |= MADERA_DSP_CLK_SEL_MASK;
-+		val |= (freq << MADERA_DSP_CLK_SEL_SHIFT);
-+		break;
-+	default:
-+		/* Configure exact dsp frequency */
-+		dev_dbg(priv->madera->dev, "Set DSP frequency to 0x%x\n", freq);
-+
-+		ret = regmap_write(dsp->regmap,
-+				   dsp->base + MADERA_DSP_CONFIG_2_OFFS, freq);
-+		if (ret)
-+			goto err;
-+		break;
-+	}
-+
-+	ret = regmap_update_bits(dsp->regmap,
-+				 dsp->base + MADERA_DSP_CONFIG_1_OFFS,
-+				 mask, val);
-+
-+	dev_dbg(priv->madera->dev, "Set DSP clocking to 0x%x\n", val);
-+
-+	return 0;
-+
-+err:
-+	dev_err(dsp->dev, "Failed to set DSP%d clock: %d\n", dsp->num, ret);
-+
-+	return ret;
-+}
-+
-+int madera_set_adsp_clk(struct madera_priv *priv, int dsp_num,
-+			unsigned int freq)
-+{
-+	struct wm_adsp *dsp = &priv->adsp[dsp_num];
-+	struct madera *madera = priv->madera;
-+	unsigned int cur, new;
-+	int ret;
-+
-+	/*
-+	 * This is called at a higher DAPM priority than the mux widgets so
-+	 * the muxes are still off at this point and it's safe to change
-+	 * the rate domain control
-+	 */
-+
-+	ret = regmap_read(dsp->regmap,  dsp->base, &cur);
-+	if (ret) {
-+		dev_err(madera->dev,
-+			"Failed to read current DSP rate: %d\n", ret);
-+		return ret;
-+	}
-+
-+	cur &= MADERA_DSP_RATE_MASK;
-+
-+	mutex_lock(&priv->rate_lock);
-+	new = priv->adsp_rate_cache[dsp->num - 1] << MADERA_DSP_RATE_SHIFT;
-+	mutex_unlock(&priv->rate_lock);
-+
-+	if (new == cur) {
-+		dev_dbg(madera->dev, "DSP rate not changed\n");
-+		return madera_write_adsp_clk_setting(priv, dsp, freq);
-+	} else {
-+		dev_dbg(madera->dev, "DSP rate changed\n");
-+
-+		/* The write must be guarded by a number of SYSCLK cycles */
-+		madera_spin_sysclk(priv);
-+		ret = madera_write_adsp_clk_setting(priv, dsp, freq);
-+		madera_spin_sysclk(priv);
-+		return ret;
-+	}
-+}
-+EXPORT_SYMBOL_GPL(madera_set_adsp_clk);
-+
-+int madera_rate_put(struct snd_kcontrol *kcontrol,
-+		    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct snd_soc_dapm_context *dapm =
-+		snd_soc_dapm_kcontrol_dapm(kcontrol);
-+	struct madera_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	unsigned int item = ucontrol->value.enumerated.item[0];
-+	unsigned int val;
-+	int ret;
-+
-+	if (item >= e->items)
-+		return -EINVAL;
-+
-+	/*
-+	 * Prevent the domain powering up while we're checking whether it's
-+	 * safe to change rate domain
-+	 */
-+	mutex_lock(&priv->rate_lock);
-+
-+	ret = snd_soc_component_read(dapm->component, e->reg, &val);
-+	if (ret < 0) {
-+		dev_warn(priv->madera->dev, "Failed to read 0x%x (%d)\n",
-+			 e->reg, ret);
-+		goto out;
-+	}
-+	val >>= e->shift_l;
-+	val &= e->mask;
-+	if (snd_soc_enum_item_to_val(e, item) == val) {
-+		ret = 0;
-+		goto out;
-+	}
-+
-+	if (!madera_can_change_grp_rate(priv, e->reg)) {
-+		dev_warn(priv->madera->dev,
-+			 "Cannot change '%s' while in use by active audio paths\n",
-+			 kcontrol->id.name);
-+		ret = -EBUSY;
-+	} else {
-+		/* The write must be guarded by a number of SYSCLK cycles */
-+		madera_spin_sysclk(priv);
-+		ret = snd_soc_put_enum_double(kcontrol, ucontrol);
-+		madera_spin_sysclk(priv);
-+	}
-+out:
-+	mutex_unlock(&priv->rate_lock);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(madera_rate_put);
-+
-+static void madera_configure_input_mode(struct madera *madera)
-+{
-+	unsigned int dig_mode, ana_mode_l, ana_mode_r;
-+	int max_analogue_inputs, i;
-+
-+	switch (madera->type) {
-+	case CS47L35:
-+		max_analogue_inputs = 2;
-+		break;
-+	case CS47L85:
-+	case WM1840:
-+		max_analogue_inputs = 3;
-+		break;
-+	default:
-+		max_analogue_inputs = 2;
-+		break;
-+	}
-+
-+	/*
-+	 * Initialize input modes from the A settings. For muxed inputs the
-+	 * B settings will be applied if the mux is changed
-+	 */
-+	for (i = 0; i < max_analogue_inputs; i++) {
-+		dev_dbg(madera->dev, "IN%d mode %u:%u:%u:%u\n", i + 1,
-+			madera->pdata.codec.inmode[i][0],
-+			madera->pdata.codec.inmode[i][1],
-+			madera->pdata.codec.inmode[i][2],
-+			madera->pdata.codec.inmode[i][3]);
-+
-+		dig_mode = madera->pdata.codec.dmic_ref[i] <<
-+			   MADERA_IN1_DMIC_SUP_SHIFT;
-+
-+		switch (madera->pdata.codec.inmode[i][0]) {
-+		case MADERA_INMODE_DIFF:
-+			ana_mode_l = 0;
-+			break;
-+		case MADERA_INMODE_SE:
-+			ana_mode_l = 1 << MADERA_IN1L_SRC_SE_SHIFT;
-+			break;
-+		case MADERA_INMODE_DMIC:
-+			ana_mode_l = 0;
-+			dig_mode |= 1 << MADERA_IN1_MODE_SHIFT;
-+			break;
-+		default:
-+			dev_warn(madera->dev,
-+				 "IN%dAL Illegal inmode %u ignored\n",
-+				 i + 1, madera->pdata.codec.inmode[i][0]);
-+			continue;
-+		}
-+
-+		switch (madera->pdata.codec.inmode[i][1]) {
-+		case MADERA_INMODE_DIFF:
-+		case MADERA_INMODE_DMIC:
-+			ana_mode_r = 0;
-+			break;
-+		case MADERA_INMODE_SE:
-+			ana_mode_r = 1 << MADERA_IN1R_SRC_SE_SHIFT;
-+			break;
-+		default:
-+			dev_warn(madera->dev,
-+				 "IN%dAR Illegal inmode %u ignored\n",
-+				 i + 1, madera->pdata.codec.inmode[i][1]);
-+			continue;
-+		}
-+
-+		dev_dbg(madera->dev,
-+			"IN%dA DMIC mode=0x%x Analogue mode=0x%x,0x%x\n",
-+			i + 1, dig_mode, ana_mode_l, ana_mode_r);
-+
-+		regmap_update_bits(madera->regmap,
-+				   MADERA_IN1L_CONTROL + (i * 8),
-+				   MADERA_IN1_DMIC_SUP_MASK |
-+				   MADERA_IN1_MODE_MASK,
-+				   dig_mode);
-+
-+		regmap_update_bits(madera->regmap,
-+				   MADERA_ADC_DIGITAL_VOLUME_1L + (i * 8),
-+				   MADERA_IN1L_SRC_SE_MASK, ana_mode_l);
-+
-+		regmap_update_bits(madera->regmap,
-+				   MADERA_ADC_DIGITAL_VOLUME_1R + (i * 8),
-+				   MADERA_IN1R_SRC_SE_MASK, ana_mode_r);
-+	}
-+}
-+
-+int madera_init_inputs(struct snd_soc_codec *codec,
-+		       const char * const *dmic_inputs, int n_dmic_inputs,
-+		       const char * const *dmic_refs, int n_dmic_refs)
-+{
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-+	struct madera_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct madera *madera = priv->madera;
-+	unsigned int ref;
-+	int i, ret;
-+	struct snd_soc_dapm_route routes[2];
-+
-+	memset(&routes, 0, sizeof(routes));
-+
-+	madera_configure_input_mode(madera);
-+
-+	for (i = 0; i < n_dmic_inputs / 2; ++i) {
-+		ref = madera->pdata.codec.dmic_ref[i];
-+		if (ref >= n_dmic_refs) {
-+			dev_err(madera->dev,
-+				"Illegal DMIC ref %u for IN%d\n", ref, i);
-+			return -EINVAL;
-+		}
-+
-+		routes[0].source = dmic_refs[ref];
-+		routes[1].source = dmic_refs[ref];
-+		routes[0].sink = dmic_inputs[i * 2];
-+		routes[1].sink = dmic_inputs[(i * 2) + 1];
-+
-+		ret = snd_soc_dapm_add_routes(dapm, routes, 2);
-+		if (ret)
-+			dev_warn(madera->dev,
-+				 "Failed to add routes for %s->(%s,%s) (%d)\n",
-+				 routes[0].source,
-+				 routes[0].sink,
-+				 routes[1].sink,
-+				 ret);
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(madera_init_inputs);
-+
-+static const struct snd_soc_dapm_route madera_mono_routes[] = {
-+	{ "OUT1R", NULL, "OUT1L" },
-+	{ "OUT2R", NULL, "OUT2L" },
-+	{ "OUT3R", NULL, "OUT3L" },
-+	{ "OUT4R", NULL, "OUT4L" },
-+	{ "OUT5R", NULL, "OUT5L" },
-+	{ "OUT6R", NULL, "OUT6L" },
-+};
-+
-+int madera_init_outputs(struct snd_soc_codec *codec, int n_mono_routes)
-+{
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-+	struct madera_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct madera *madera = priv->madera;
-+	const struct madera_codec_pdata *pdata = &madera->pdata.codec;
-+	unsigned int val;
-+	int i;
-+
-+	if (n_mono_routes > MADERA_MAX_OUTPUT) {
-+		dev_warn(madera->dev,
-+			 "Requested %d mono outputs, using maximum allowed %d\n",
-+			 n_mono_routes, MADERA_MAX_OUTPUT);
-+		n_mono_routes = MADERA_MAX_OUTPUT;
-+	}
-+
-+	for (i = 0; i < n_mono_routes; i++) {
-+		/* Default is 0 so noop with defaults */
-+		if (pdata->out_mono[i]) {
-+			val = MADERA_OUT1_MONO;
-+			snd_soc_dapm_add_routes(dapm,
-+						&madera_mono_routes[i], 1);
-+		} else {
-+			val = 0;
-+		}
-+
-+		regmap_update_bits(madera->regmap,
-+				   MADERA_OUTPUT_PATH_CONFIG_1L + (i * 8),
-+				   MADERA_OUT1_MONO, val);
-+
-+		dev_dbg(madera->dev, "OUT%d mono=0x%x\n", i + 1, val);
-+	}
-+
-+	for (i = 0; i < MADERA_MAX_PDM_SPK; i++) {
-+		dev_dbg(madera->dev, "PDM%d fmt=0x%x mute=0x%x\n", i + 1,
-+			pdata->pdm_fmt[i], pdata->pdm_mute[i]);
-+
-+		if (pdata->pdm_mute[i])
-+			regmap_update_bits(madera->regmap,
-+					   MADERA_PDM_SPK1_CTRL_1 + (i * 2),
-+					   MADERA_SPK1_MUTE_ENDIAN_MASK |
-+					   MADERA_SPK1_MUTE_SEQ1_MASK,
-+					   pdata->pdm_mute[i]);
-+
-+		if (pdata->pdm_fmt[i])
-+			regmap_update_bits(madera->regmap,
-+					   MADERA_PDM_SPK1_CTRL_2 + (i * 2),
-+					   MADERA_SPK1_FMT_MASK,
-+					   pdata->pdm_fmt[i]);
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(madera_init_outputs);
-+
-+int madera_init_bus_error_irq(struct madera_priv *priv, int dsp_num,
-+			      irq_handler_t handler)
-+{
-+	struct madera *madera = priv->madera;
-+	int ret;
-+
-+	ret = madera_request_irq(madera,
-+				 madera_dsp_bus_error_irqs[dsp_num],
-+				 "ADSP2 bus error",
-+				 handler,
-+				 &priv->adsp[dsp_num]);
-+	if (ret)
-+		dev_err(madera->dev,
-+			"Failed to request DSP Lock region IRQ: %d\n", ret);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(madera_init_bus_error_irq);
-+
-+void madera_destroy_bus_error_irq(struct madera_priv *priv, int dsp_num)
-+{
-+	struct madera *madera = priv->madera;
-+
-+	madera_free_irq(madera,
-+			madera_dsp_bus_error_irqs[dsp_num],
-+			&priv->adsp[dsp_num]);
-+}
-+EXPORT_SYMBOL_GPL(madera_destroy_bus_error_irq);
-+
-+const char * const madera_mixer_texts[] = {
-+	"None",
-+	"Tone Generator 1",
-+	"Tone Generator 2",
-+	"Haptics",
-+	"AEC1",
-+	"AEC2",
-+	"Mic Mute Mixer",
-+	"Noise Generator",
-+	"IN1L",
-+	"IN1R",
-+	"IN2L",
-+	"IN2R",
-+	"IN3L",
-+	"IN3R",
-+	"IN4L",
-+	"IN4R",
-+	"IN5L",
-+	"IN5R",
-+	"IN6L",
-+	"IN6R",
-+	"AIF1RX1",
-+	"AIF1RX2",
-+	"AIF1RX3",
-+	"AIF1RX4",
-+	"AIF1RX5",
-+	"AIF1RX6",
-+	"AIF1RX7",
-+	"AIF1RX8",
-+	"AIF2RX1",
-+	"AIF2RX2",
-+	"AIF2RX3",
-+	"AIF2RX4",
-+	"AIF2RX5",
-+	"AIF2RX6",
-+	"AIF2RX7",
-+	"AIF2RX8",
-+	"AIF3RX1",
-+	"AIF3RX2",
-+	"AIF4RX1",
-+	"AIF4RX2",
-+	"SLIMRX1",
-+	"SLIMRX2",
-+	"SLIMRX3",
-+	"SLIMRX4",
-+	"SLIMRX5",
-+	"SLIMRX6",
-+	"SLIMRX7",
-+	"SLIMRX8",
-+	"EQ1",
-+	"EQ2",
-+	"EQ3",
-+	"EQ4",
-+	"DRC1L",
-+	"DRC1R",
-+	"DRC2L",
-+	"DRC2R",
-+	"LHPF1",
-+	"LHPF2",
-+	"LHPF3",
-+	"LHPF4",
-+	"DSP1.1",
-+	"DSP1.2",
-+	"DSP1.3",
-+	"DSP1.4",
-+	"DSP1.5",
-+	"DSP1.6",
-+	"DSP2.1",
-+	"DSP2.2",
-+	"DSP2.3",
-+	"DSP2.4",
-+	"DSP2.5",
-+	"DSP2.6",
-+	"DSP3.1",
-+	"DSP3.2",
-+	"DSP3.3",
-+	"DSP3.4",
-+	"DSP3.5",
-+	"DSP3.6",
-+	"DSP4.1",
-+	"DSP4.2",
-+	"DSP4.3",
-+	"DSP4.4",
-+	"DSP4.5",
-+	"DSP4.6",
-+	"DSP5.1",
-+	"DSP5.2",
-+	"DSP5.3",
-+	"DSP5.4",
-+	"DSP5.5",
-+	"DSP5.6",
-+	"DSP6.1",
-+	"DSP6.2",
-+	"DSP6.3",
-+	"DSP6.4",
-+	"DSP6.5",
-+	"DSP6.6",
-+	"DSP7.1",
-+	"DSP7.2",
-+	"DSP7.3",
-+	"DSP7.4",
-+	"DSP7.5",
-+	"DSP7.6",
-+	"ASRC1IN1L",
-+	"ASRC1IN1R",
-+	"ASRC1IN2L",
-+	"ASRC1IN2R",
-+	"ASRC2IN1L",
-+	"ASRC2IN1R",
-+	"ASRC2IN2L",
-+	"ASRC2IN2R",
-+	"ISRC1INT1",
-+	"ISRC1INT2",
-+	"ISRC1INT3",
-+	"ISRC1INT4",
-+	"ISRC1DEC1",
-+	"ISRC1DEC2",
-+	"ISRC1DEC3",
-+	"ISRC1DEC4",
-+	"ISRC2INT1",
-+	"ISRC2INT2",
-+	"ISRC2INT3",
-+	"ISRC2INT4",
-+	"ISRC2DEC1",
-+	"ISRC2DEC2",
-+	"ISRC2DEC3",
-+	"ISRC2DEC4",
-+	"ISRC3INT1",
-+	"ISRC3INT2",
-+	"ISRC3INT3",
-+	"ISRC3INT4",
-+	"ISRC3DEC1",
-+	"ISRC3DEC2",
-+	"ISRC3DEC3",
-+	"ISRC3DEC4",
-+	"ISRC4INT1",
-+	"ISRC4INT2",
-+	"ISRC4DEC1",
-+	"ISRC4DEC2",
-+	"DFC1",
-+	"DFC2",
-+	"DFC3",
-+	"DFC4",
-+	"DFC5",
-+	"DFC6",
-+	"DFC7",
-+	"DFC8",
-+};
-+EXPORT_SYMBOL_GPL(madera_mixer_texts);
-+
-+unsigned int madera_mixer_values[] = {
-+	0x00,	/* None */
-+	0x04,	/* Tone Generator 1 */
-+	0x05,	/* Tone Generator 2 */
-+	0x06,	/* Haptics */
-+	0x08,	/* AEC */
-+	0x09,	/* AEC2 */
-+	0x0c,	/* Noise mixer */
-+	0x0d,	/* Comfort noise */
-+	0x10,	/* IN1L */
-+	0x11,
-+	0x12,
-+	0x13,
-+	0x14,
-+	0x15,
-+	0x16,
-+	0x17,
-+	0x18,
-+	0x19,
-+	0x1A,
-+	0x1B,
-+	0x20,	/* AIF1RX1 */
-+	0x21,
-+	0x22,
-+	0x23,
-+	0x24,
-+	0x25,
-+	0x26,
-+	0x27,
-+	0x28,	/* AIF2RX1 */
-+	0x29,
-+	0x2a,
-+	0x2b,
-+	0x2c,
-+	0x2d,
-+	0x2e,
-+	0x2f,
-+	0x30,	/* AIF3RX1 */
-+	0x31,
-+	0x34,	/* AIF4RX1 */
-+	0x35,
-+	0x38,	/* SLIMRX1 */
-+	0x39,
-+	0x3a,
-+	0x3b,
-+	0x3c,
-+	0x3d,
-+	0x3e,
-+	0x3f,
-+	0x50,	/* EQ1 */
-+	0x51,
-+	0x52,
-+	0x53,
-+	0x58,	/* DRC1L */
-+	0x59,
-+	0x5a,
-+	0x5b,
-+	0x60,	/* LHPF1 */
-+	0x61,
-+	0x62,
-+	0x63,
-+	0x68,	/* DSP1.1 */
-+	0x69,
-+	0x6a,
-+	0x6b,
-+	0x6c,
-+	0x6d,
-+	0x70,	/* DSP2.1 */
-+	0x71,
-+	0x72,
-+	0x73,
-+	0x74,
-+	0x75,
-+	0x78,	/* DSP3.1 */
-+	0x79,
-+	0x7a,
-+	0x7b,
-+	0x7c,
-+	0x7d,
-+	0x80,	/* DSP4.1 */
-+	0x81,
-+	0x82,
-+	0x83,
-+	0x84,
-+	0x85,
-+	0x88,	/* DSP5.1 */
-+	0x89,
-+	0x8a,
-+	0x8b,
-+	0x8c,
-+	0x8d,
-+	0xc0,	/* DSP6.1 */
-+	0xc1,
-+	0xc2,
-+	0xc3,
-+	0xc4,
-+	0xc5,
-+	0xc8,	/* DSP7.1 */
-+	0xc9,
-+	0xca,
-+	0xcb,
-+	0xcc,
-+	0xcd,
-+	0x90,	/* ASRC1IN1L */
-+	0x91,
-+	0x92,
-+	0x93,
-+	0x94,	/* ASRC2IN1L */
-+	0x95,
-+	0x96,
-+	0x97,
-+	0xa0,	/* ISRC1INT1 */
-+	0xa1,
-+	0xa2,
-+	0xa3,
-+	0xa4,	/* ISRC1DEC1 */
-+	0xa5,
-+	0xa6,
-+	0xa7,
-+	0xa8,	/* ISRC2DEC1 */
-+	0xa9,
-+	0xaa,
-+	0xab,
-+	0xac,	/* ISRC2INT1 */
-+	0xad,
-+	0xae,
-+	0xaf,
-+	0xb0,	/* ISRC3DEC1 */
-+	0xb1,
-+	0xb2,
-+	0xb3,
-+	0xb4,	/* ISRC3INT1 */
-+	0xb5,
-+	0xb6,
-+	0xb7,
-+	0xb8,	/* ISRC4INT1 */
-+	0xb9,
-+	0xbc,	/* ISRC4DEC1 */
-+	0xbd,
-+	0xf8,	/* DFC1 */
-+	0xf9,
-+	0xfa,
-+	0xfb,
-+	0xfc,
-+	0xfd,
-+	0xfe,
-+	0xff,	/* DFC8 */
-+};
-+EXPORT_SYMBOL_GPL(madera_mixer_values);
-+
-+const DECLARE_TLV_DB_SCALE(madera_ana_tlv, 0, 100, 0);
-+EXPORT_SYMBOL_GPL(madera_ana_tlv);
-+
-+const DECLARE_TLV_DB_SCALE(madera_eq_tlv, -1200, 100, 0);
-+EXPORT_SYMBOL_GPL(madera_eq_tlv);
-+
-+const DECLARE_TLV_DB_SCALE(madera_digital_tlv, -6400, 50, 0);
-+EXPORT_SYMBOL_GPL(madera_digital_tlv);
-+
-+const DECLARE_TLV_DB_SCALE(madera_noise_tlv, -13200, 600, 0);
-+EXPORT_SYMBOL_GPL(madera_noise_tlv);
-+
-+const DECLARE_TLV_DB_SCALE(madera_ng_tlv, -12000, 600, 0);
-+EXPORT_SYMBOL_GPL(madera_ng_tlv);
-+
-+const DECLARE_TLV_DB_SCALE(madera_mixer_tlv, -3200, 100, 0);
-+EXPORT_SYMBOL_GPL(madera_mixer_tlv);
-+
-+const char * const madera_sample_rate_text[MADERA_SAMPLE_RATE_ENUM_SIZE] = {
-+	"12kHz", "24kHz", "48kHz", "96kHz", "192kHz", "384kHz",
-+	"11.025kHz", "22.05kHz", "44.1kHz", "88.2kHz", "176.4kHz", "352.8kHz",
-+	"4kHz", "8kHz", "16kHz", "32kHz",
-+};
-+EXPORT_SYMBOL_GPL(madera_sample_rate_text);
-+
-+const unsigned int madera_sample_rate_val[MADERA_SAMPLE_RATE_ENUM_SIZE] = {
-+	0x01, 0x02, 0x03, 0x04, 0x05, 0x06,
-+	0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E,
-+	0x10, 0x11, 0x12, 0x13,
-+};
-+EXPORT_SYMBOL_GPL(madera_sample_rate_val);
-+
-+const char *madera_sample_rate_val_to_name(unsigned int rate_val)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(madera_sample_rate_val); ++i) {
-+		if (madera_sample_rate_val[i] == rate_val)
-+			return madera_sample_rate_text[i];
-+	}
-+
-+	return "Illegal";
-+}
-+EXPORT_SYMBOL_GPL(madera_sample_rate_val_to_name);
-+
-+const struct soc_enum madera_sample_rate[] = {
-+	SOC_VALUE_ENUM_SINGLE(MADERA_SAMPLE_RATE_2,
-+			      MADERA_SAMPLE_RATE_2_SHIFT, 0x1f,
-+			      MADERA_SAMPLE_RATE_ENUM_SIZE,
-+			      madera_sample_rate_text,
-+			      madera_sample_rate_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_SAMPLE_RATE_3,
-+			      MADERA_SAMPLE_RATE_3_SHIFT, 0x1f,
-+			      MADERA_SAMPLE_RATE_ENUM_SIZE,
-+			      madera_sample_rate_text,
-+			      madera_sample_rate_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_ASYNC_SAMPLE_RATE_2,
-+			      MADERA_ASYNC_SAMPLE_RATE_2_SHIFT, 0x1f,
-+			      MADERA_SAMPLE_RATE_ENUM_SIZE,
-+			      madera_sample_rate_text,
-+			      madera_sample_rate_val),
-+
-+};
-+EXPORT_SYMBOL_GPL(madera_sample_rate);
-+
-+const char * const madera_rate_text[MADERA_RATE_ENUM_SIZE] = {
-+	"SYNCCLK rate 1", "SYNCCLK rate 2", "SYNCCLK rate 3",
-+	"ASYNCCLK rate 1", "ASYNCCLK rate 2",
-+};
-+EXPORT_SYMBOL_GPL(madera_rate_text);
-+
-+const unsigned int madera_rate_val[MADERA_RATE_ENUM_SIZE] = {
-+	0x0, 0x1, 0x2, 0x8, 0x9,
-+};
-+EXPORT_SYMBOL_GPL(madera_rate_val);
-+
-+const char * const madera_dfc_width_text[MADERA_DFC_WIDTH_ENUM_SIZE] = {
-+	"8bit", "16bit", "20bit", "24bit", "32bit",
-+};
-+EXPORT_SYMBOL_GPL(madera_dfc_width_text);
-+
-+const unsigned int madera_dfc_width_val[MADERA_DFC_WIDTH_ENUM_SIZE] = {
-+	7, 15, 19, 23, 31,
-+};
-+EXPORT_SYMBOL_GPL(madera_dfc_width_val);
-+
-+const char * const madera_dfc_type_text[MADERA_DFC_TYPE_ENUM_SIZE] = {
-+	"Fixed", "Unsigned Fixed", "Single Precision Floating",
-+	"Half Precision Floating", "Arm Alternative Floating",
-+};
-+EXPORT_SYMBOL_GPL(madera_dfc_type_text);
-+
-+const unsigned int madera_dfc_type_val[MADERA_DFC_TYPE_ENUM_SIZE] = {
-+	0, 1, 2, 4, 5,
-+};
-+EXPORT_SYMBOL_GPL(madera_dfc_type_val);
-+
-+const struct soc_enum madera_dfc_width[] = {
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC1_RX,
-+			      MADERA_DFC1_RX_DATA_WIDTH_SHIFT,
-+			      MADERA_DFC1_RX_DATA_WIDTH_MASK >>
-+			      MADERA_DFC1_RX_DATA_WIDTH_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_width_text),
-+			      madera_dfc_width_text,
-+			      madera_dfc_width_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC1_TX,
-+			      MADERA_DFC1_TX_DATA_WIDTH_SHIFT,
-+			      MADERA_DFC1_TX_DATA_WIDTH_MASK >>
-+			      MADERA_DFC1_TX_DATA_WIDTH_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_width_text),
-+			      madera_dfc_width_text,
-+			      madera_dfc_width_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC2_RX,
-+			      MADERA_DFC1_RX_DATA_WIDTH_SHIFT,
-+			      MADERA_DFC1_RX_DATA_WIDTH_MASK >>
-+			      MADERA_DFC1_RX_DATA_WIDTH_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_width_text),
-+			      madera_dfc_width_text,
-+			      madera_dfc_width_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC2_TX,
-+			      MADERA_DFC1_TX_DATA_WIDTH_SHIFT,
-+			      MADERA_DFC1_TX_DATA_WIDTH_MASK >>
-+			      MADERA_DFC1_TX_DATA_WIDTH_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_width_text),
-+			      madera_dfc_width_text,
-+			      madera_dfc_width_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC3_RX,
-+			      MADERA_DFC1_RX_DATA_WIDTH_SHIFT,
-+			      MADERA_DFC1_RX_DATA_WIDTH_MASK >>
-+			      MADERA_DFC1_RX_DATA_WIDTH_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_width_text),
-+			      madera_dfc_width_text,
-+			      madera_dfc_width_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC3_TX,
-+			      MADERA_DFC1_TX_DATA_WIDTH_SHIFT,
-+			      MADERA_DFC1_TX_DATA_WIDTH_MASK >>
-+			      MADERA_DFC1_TX_DATA_WIDTH_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_width_text),
-+			      madera_dfc_width_text,
-+			      madera_dfc_width_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC4_RX,
-+			      MADERA_DFC1_RX_DATA_WIDTH_SHIFT,
-+			      MADERA_DFC1_RX_DATA_WIDTH_MASK >>
-+			      MADERA_DFC1_RX_DATA_WIDTH_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_width_text),
-+			      madera_dfc_width_text,
-+			      madera_dfc_width_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC4_TX,
-+			      MADERA_DFC1_TX_DATA_WIDTH_SHIFT,
-+			      MADERA_DFC1_TX_DATA_WIDTH_MASK >>
-+			      MADERA_DFC1_TX_DATA_WIDTH_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_width_text),
-+			      madera_dfc_width_text,
-+			      madera_dfc_width_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC5_RX,
-+			      MADERA_DFC1_RX_DATA_WIDTH_SHIFT,
-+			      MADERA_DFC1_RX_DATA_WIDTH_MASK >>
-+			      MADERA_DFC1_RX_DATA_WIDTH_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_width_text),
-+			      madera_dfc_width_text,
-+			      madera_dfc_width_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC5_TX,
-+			      MADERA_DFC1_TX_DATA_WIDTH_SHIFT,
-+			      MADERA_DFC1_TX_DATA_WIDTH_MASK >>
-+			      MADERA_DFC1_TX_DATA_WIDTH_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_width_text),
-+			      madera_dfc_width_text,
-+			      madera_dfc_width_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC6_RX,
-+			      MADERA_DFC1_RX_DATA_WIDTH_SHIFT,
-+			      MADERA_DFC1_RX_DATA_WIDTH_MASK >>
-+			      MADERA_DFC1_RX_DATA_WIDTH_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_width_text),
-+			      madera_dfc_width_text,
-+			      madera_dfc_width_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC6_TX,
-+			      MADERA_DFC1_TX_DATA_WIDTH_SHIFT,
-+			      MADERA_DFC1_TX_DATA_WIDTH_MASK >>
-+			      MADERA_DFC1_TX_DATA_WIDTH_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_width_text),
-+			      madera_dfc_width_text,
-+			      madera_dfc_width_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC7_RX,
-+			      MADERA_DFC1_RX_DATA_WIDTH_SHIFT,
-+			      MADERA_DFC1_RX_DATA_WIDTH_MASK >>
-+			      MADERA_DFC1_RX_DATA_WIDTH_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_width_text),
-+			      madera_dfc_width_text,
-+			      madera_dfc_width_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC7_TX,
-+			      MADERA_DFC1_TX_DATA_WIDTH_SHIFT,
-+			      MADERA_DFC1_TX_DATA_WIDTH_MASK >>
-+			      MADERA_DFC1_TX_DATA_WIDTH_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_width_text),
-+			      madera_dfc_width_text,
-+			      madera_dfc_width_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC8_RX,
-+			      MADERA_DFC1_RX_DATA_WIDTH_SHIFT,
-+			      MADERA_DFC1_RX_DATA_WIDTH_MASK >>
-+			      MADERA_DFC1_RX_DATA_WIDTH_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_width_text),
-+			      madera_dfc_width_text,
-+			      madera_dfc_width_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC8_TX,
-+			      MADERA_DFC1_TX_DATA_WIDTH_SHIFT,
-+			      MADERA_DFC1_TX_DATA_WIDTH_MASK >>
-+			      MADERA_DFC1_TX_DATA_WIDTH_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_width_text),
-+			      madera_dfc_width_text,
-+			      madera_dfc_width_val),
-+};
-+EXPORT_SYMBOL_GPL(madera_dfc_width);
-+
-+const struct soc_enum madera_dfc_type[] = {
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC1_RX,
-+			      MADERA_DFC1_RX_DATA_TYPE_SHIFT,
-+			      MADERA_DFC1_RX_DATA_TYPE_MASK >>
-+			      MADERA_DFC1_RX_DATA_TYPE_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_type_text),
-+			      madera_dfc_type_text,
-+			      madera_dfc_type_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC1_TX,
-+			      MADERA_DFC1_TX_DATA_TYPE_SHIFT,
-+			      MADERA_DFC1_TX_DATA_TYPE_MASK >>
-+			      MADERA_DFC1_TX_DATA_TYPE_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_type_text),
-+			      madera_dfc_type_text,
-+			      madera_dfc_type_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC2_RX,
-+			      MADERA_DFC1_RX_DATA_TYPE_SHIFT,
-+			      MADERA_DFC1_RX_DATA_TYPE_MASK >>
-+			      MADERA_DFC1_RX_DATA_TYPE_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_type_text),
-+			      madera_dfc_type_text,
-+			      madera_dfc_type_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC2_TX,
-+			      MADERA_DFC1_TX_DATA_TYPE_SHIFT,
-+			      MADERA_DFC1_TX_DATA_TYPE_MASK >>
-+			      MADERA_DFC1_TX_DATA_TYPE_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_type_text),
-+			      madera_dfc_type_text,
-+			      madera_dfc_type_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC3_RX,
-+			      MADERA_DFC1_RX_DATA_TYPE_SHIFT,
-+			      MADERA_DFC1_RX_DATA_TYPE_MASK >>
-+			      MADERA_DFC1_RX_DATA_TYPE_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_type_text),
-+			      madera_dfc_type_text,
-+			      madera_dfc_type_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC3_TX,
-+			      MADERA_DFC1_TX_DATA_TYPE_SHIFT,
-+			      MADERA_DFC1_TX_DATA_TYPE_MASK >>
-+			      MADERA_DFC1_TX_DATA_TYPE_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_type_text),
-+			      madera_dfc_type_text,
-+			      madera_dfc_type_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC4_RX,
-+			      MADERA_DFC1_RX_DATA_TYPE_SHIFT,
-+			      MADERA_DFC1_RX_DATA_TYPE_MASK >>
-+			      MADERA_DFC1_RX_DATA_TYPE_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_type_text),
-+			      madera_dfc_type_text,
-+			      madera_dfc_type_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC4_TX,
-+			      MADERA_DFC1_TX_DATA_TYPE_SHIFT,
-+			      MADERA_DFC1_TX_DATA_TYPE_MASK >>
-+			      MADERA_DFC1_TX_DATA_TYPE_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_type_text),
-+			      madera_dfc_type_text,
-+			      madera_dfc_type_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC5_RX,
-+			      MADERA_DFC1_RX_DATA_TYPE_SHIFT,
-+			      MADERA_DFC1_RX_DATA_TYPE_MASK >>
-+			      MADERA_DFC1_RX_DATA_TYPE_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_type_text),
-+			      madera_dfc_type_text,
-+			      madera_dfc_type_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC5_TX,
-+			      MADERA_DFC1_TX_DATA_TYPE_SHIFT,
-+			      MADERA_DFC1_TX_DATA_TYPE_MASK >>
-+			      MADERA_DFC1_TX_DATA_TYPE_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_type_text),
-+			      madera_dfc_type_text,
-+			      madera_dfc_type_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC6_RX,
-+			      MADERA_DFC1_RX_DATA_TYPE_SHIFT,
-+			      MADERA_DFC1_RX_DATA_TYPE_MASK >>
-+			      MADERA_DFC1_RX_DATA_TYPE_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_type_text),
-+			      madera_dfc_type_text,
-+			      madera_dfc_type_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC6_TX,
-+			      MADERA_DFC1_TX_DATA_TYPE_SHIFT,
-+			      MADERA_DFC1_TX_DATA_TYPE_MASK >>
-+			      MADERA_DFC1_TX_DATA_TYPE_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_type_text),
-+			      madera_dfc_type_text,
-+			      madera_dfc_type_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC7_RX,
-+			      MADERA_DFC1_RX_DATA_TYPE_SHIFT,
-+			      MADERA_DFC1_RX_DATA_TYPE_MASK >>
-+			      MADERA_DFC1_RX_DATA_TYPE_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_type_text),
-+			      madera_dfc_type_text,
-+			      madera_dfc_type_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC7_TX,
-+			      MADERA_DFC1_TX_DATA_TYPE_SHIFT,
-+			      MADERA_DFC1_TX_DATA_TYPE_MASK >>
-+			      MADERA_DFC1_TX_DATA_TYPE_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_type_text),
-+			      madera_dfc_type_text,
-+			      madera_dfc_type_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC8_RX,
-+			      MADERA_DFC1_RX_DATA_TYPE_SHIFT,
-+			      MADERA_DFC1_RX_DATA_TYPE_MASK >>
-+			      MADERA_DFC1_RX_DATA_TYPE_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_type_text),
-+			      madera_dfc_type_text,
-+			      madera_dfc_type_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DFC8_TX,
-+			      MADERA_DFC1_TX_DATA_TYPE_SHIFT,
-+			      MADERA_DFC1_TX_DATA_TYPE_MASK >>
-+			      MADERA_DFC1_TX_DATA_TYPE_SHIFT,
-+			      ARRAY_SIZE(madera_dfc_type_text),
-+			      madera_dfc_type_text,
-+			      madera_dfc_type_val),
-+};
-+EXPORT_SYMBOL_GPL(madera_dfc_type);
-+
-+const struct soc_enum madera_isrc_fsh[] = {
-+	SOC_VALUE_ENUM_SINGLE(MADERA_ISRC_1_CTRL_1,
-+			      MADERA_ISRC1_FSH_SHIFT, 0xf,
-+			      MADERA_RATE_ENUM_SIZE,
-+			      madera_rate_text, madera_rate_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_ISRC_2_CTRL_1,
-+			      MADERA_ISRC2_FSH_SHIFT, 0xf,
-+			      MADERA_RATE_ENUM_SIZE,
-+			      madera_rate_text, madera_rate_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_ISRC_3_CTRL_1,
-+			      MADERA_ISRC3_FSH_SHIFT, 0xf,
-+			      MADERA_RATE_ENUM_SIZE,
-+			      madera_rate_text, madera_rate_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_ISRC_4_CTRL_1,
-+			      MADERA_ISRC4_FSH_SHIFT, 0xf,
-+			      MADERA_RATE_ENUM_SIZE,
-+			      madera_rate_text, madera_rate_val),
-+
-+};
-+EXPORT_SYMBOL_GPL(madera_isrc_fsh);
-+
-+const struct soc_enum madera_isrc_fsl[] = {
-+	SOC_VALUE_ENUM_SINGLE(MADERA_ISRC_1_CTRL_2,
-+			      MADERA_ISRC1_FSL_SHIFT, 0xf,
-+			      MADERA_RATE_ENUM_SIZE,
-+			      madera_rate_text, madera_rate_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_ISRC_2_CTRL_2,
-+			      MADERA_ISRC2_FSL_SHIFT, 0xf,
-+			      MADERA_RATE_ENUM_SIZE,
-+			      madera_rate_text, madera_rate_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_ISRC_3_CTRL_2,
-+			      MADERA_ISRC3_FSL_SHIFT, 0xf,
-+			      MADERA_RATE_ENUM_SIZE,
-+			      madera_rate_text, madera_rate_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_ISRC_4_CTRL_2,
-+			      MADERA_ISRC4_FSL_SHIFT, 0xf,
-+			      MADERA_RATE_ENUM_SIZE,
-+			      madera_rate_text, madera_rate_val),
-+
-+};
-+EXPORT_SYMBOL_GPL(madera_isrc_fsl);
-+
-+const struct soc_enum madera_asrc1_rate[] = {
-+	SOC_VALUE_ENUM_SINGLE(MADERA_ASRC1_RATE1,
-+			      MADERA_ASRC1_RATE1_SHIFT, 0xf,
-+			      MADERA_SYNC_RATE_ENUM_SIZE,
-+			      madera_rate_text, madera_rate_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_ASRC1_RATE2,
-+			      MADERA_ASRC1_RATE1_SHIFT, 0xf,
-+			      MADERA_ASYNC_RATE_ENUM_SIZE,
-+			      madera_rate_text + MADERA_SYNC_RATE_ENUM_SIZE,
-+			      madera_rate_val + MADERA_SYNC_RATE_ENUM_SIZE),
-+
-+};
-+EXPORT_SYMBOL_GPL(madera_asrc1_rate);
-+
-+const struct soc_enum madera_asrc2_rate[] = {
-+	SOC_VALUE_ENUM_SINGLE(MADERA_ASRC2_RATE1,
-+			      MADERA_ASRC2_RATE1_SHIFT, 0xf,
-+			      MADERA_SYNC_RATE_ENUM_SIZE,
-+			      madera_rate_text, madera_rate_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_ASRC2_RATE2,
-+			      MADERA_ASRC2_RATE2_SHIFT, 0xf,
-+			      MADERA_ASYNC_RATE_ENUM_SIZE,
-+			      madera_rate_text + MADERA_SYNC_RATE_ENUM_SIZE,
-+			      madera_rate_val + MADERA_SYNC_RATE_ENUM_SIZE),
-+
-+};
-+EXPORT_SYMBOL_GPL(madera_asrc2_rate);
-+
-+static const char * const madera_vol_ramp_text[] = {
-+	"0ms/6dB", "0.5ms/6dB", "1ms/6dB", "2ms/6dB", "4ms/6dB", "8ms/6dB",
-+	"15ms/6dB", "30ms/6dB",
-+};
-+
-+SOC_ENUM_SINGLE_DECL(madera_in_vd_ramp,
-+		     MADERA_INPUT_VOLUME_RAMP,
-+		     MADERA_IN_VD_RAMP_SHIFT,
-+		     madera_vol_ramp_text);
-+EXPORT_SYMBOL_GPL(madera_in_vd_ramp);
-+
-+SOC_ENUM_SINGLE_DECL(madera_in_vi_ramp,
-+		     MADERA_INPUT_VOLUME_RAMP,
-+		     MADERA_IN_VI_RAMP_SHIFT,
-+		     madera_vol_ramp_text);
-+EXPORT_SYMBOL_GPL(madera_in_vi_ramp);
-+
-+SOC_ENUM_SINGLE_DECL(madera_out_vd_ramp,
-+		     MADERA_OUTPUT_VOLUME_RAMP,
-+		     MADERA_OUT_VD_RAMP_SHIFT,
-+		     madera_vol_ramp_text);
-+EXPORT_SYMBOL_GPL(madera_out_vd_ramp);
-+
-+SOC_ENUM_SINGLE_DECL(madera_out_vi_ramp,
-+		     MADERA_OUTPUT_VOLUME_RAMP,
-+		     MADERA_OUT_VI_RAMP_SHIFT,
-+		     madera_vol_ramp_text);
-+EXPORT_SYMBOL_GPL(madera_out_vi_ramp);
-+
-+static const char * const madera_lhpf_mode_text[] = {
-+	"Low-pass", "High-pass"
-+};
-+
-+SOC_ENUM_SINGLE_DECL(madera_lhpf1_mode,
-+		     MADERA_HPLPF1_1,
-+		     MADERA_LHPF1_MODE_SHIFT,
-+		     madera_lhpf_mode_text);
-+EXPORT_SYMBOL_GPL(madera_lhpf1_mode);
-+
-+SOC_ENUM_SINGLE_DECL(madera_lhpf2_mode,
-+		     MADERA_HPLPF2_1,
-+		     MADERA_LHPF2_MODE_SHIFT,
-+		     madera_lhpf_mode_text);
-+EXPORT_SYMBOL_GPL(madera_lhpf2_mode);
-+
-+SOC_ENUM_SINGLE_DECL(madera_lhpf3_mode,
-+		     MADERA_HPLPF3_1,
-+		     MADERA_LHPF3_MODE_SHIFT,
-+		     madera_lhpf_mode_text);
-+EXPORT_SYMBOL_GPL(madera_lhpf3_mode);
-+
-+SOC_ENUM_SINGLE_DECL(madera_lhpf4_mode,
-+		     MADERA_HPLPF4_1,
-+		     MADERA_LHPF4_MODE_SHIFT,
-+		     madera_lhpf_mode_text);
-+EXPORT_SYMBOL_GPL(madera_lhpf4_mode);
-+
-+static const char * const madera_ng_hold_text[] = {
-+	"30ms", "120ms", "250ms", "500ms",
-+};
-+
-+SOC_ENUM_SINGLE_DECL(madera_ng_hold,
-+		     MADERA_NOISE_GATE_CONTROL,
-+		     MADERA_NGATE_HOLD_SHIFT,
-+		     madera_ng_hold_text);
-+EXPORT_SYMBOL_GPL(madera_ng_hold);
-+
-+static const char * const madera_in_hpf_cut_text[] = {
-+	"2.5Hz", "5Hz", "10Hz", "20Hz", "40Hz"
-+};
-+
-+SOC_ENUM_SINGLE_DECL(madera_in_hpf_cut_enum,
-+		     MADERA_HPF_CONTROL,
-+		     MADERA_IN_HPF_CUT_SHIFT,
-+		     madera_in_hpf_cut_text);
-+EXPORT_SYMBOL_GPL(madera_in_hpf_cut_enum);
-+
-+static const char * const madera_in_dmic_osr_text[MADERA_OSR_ENUM_SIZE] = {
-+	"384kHz", "768kHz", "1.536MHz", "3.072MHz", "6.144MHz",
-+};
-+
-+static const unsigned int madera_in_dmic_osr_val[MADERA_OSR_ENUM_SIZE] = {
-+	2, 3, 4, 5, 6,
-+};
-+
-+const struct soc_enum madera_in_dmic_osr[] = {
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DMIC1L_CONTROL, MADERA_IN1_OSR_SHIFT,
-+			      0x7, MADERA_OSR_ENUM_SIZE,
-+			      madera_in_dmic_osr_text, madera_in_dmic_osr_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DMIC2L_CONTROL, MADERA_IN2_OSR_SHIFT,
-+			      0x7, MADERA_OSR_ENUM_SIZE,
-+			      madera_in_dmic_osr_text, madera_in_dmic_osr_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DMIC3L_CONTROL, MADERA_IN3_OSR_SHIFT,
-+			      0x7, MADERA_OSR_ENUM_SIZE,
-+			      madera_in_dmic_osr_text, madera_in_dmic_osr_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DMIC4L_CONTROL, MADERA_IN4_OSR_SHIFT,
-+			      0x7, MADERA_OSR_ENUM_SIZE,
-+			      madera_in_dmic_osr_text, madera_in_dmic_osr_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DMIC5L_CONTROL, MADERA_IN5_OSR_SHIFT,
-+			      0x7, MADERA_OSR_ENUM_SIZE,
-+			      madera_in_dmic_osr_text, madera_in_dmic_osr_val),
-+	SOC_VALUE_ENUM_SINGLE(MADERA_DMIC6L_CONTROL, MADERA_IN6_OSR_SHIFT,
-+			      0x7, MADERA_OSR_ENUM_SIZE,
-+			      madera_in_dmic_osr_text, madera_in_dmic_osr_val),
-+};
-+EXPORT_SYMBOL_GPL(madera_in_dmic_osr);
-+
-+static const char * const madera_anc_input_src_text[] = {
-+	"None", "IN1", "IN2", "IN3", "IN4", "IN5", "IN6",
-+};
-+
-+static const char * const madera_anc_channel_src_text[] = {
-+	"None", "Left", "Right", "Combine",
-+};
-+
-+const struct soc_enum madera_anc_input_src[] = {
-+	SOC_ENUM_SINGLE(MADERA_ANC_SRC,
-+			MADERA_IN_RXANCL_SEL_SHIFT,
-+			ARRAY_SIZE(madera_anc_input_src_text),
-+			madera_anc_input_src_text),
-+	SOC_ENUM_SINGLE(MADERA_FCL_ADC_REFORMATTER_CONTROL,
-+			MADERA_FCL_MIC_MODE_SEL,
-+			ARRAY_SIZE(madera_anc_channel_src_text),
-+			madera_anc_channel_src_text),
-+	SOC_ENUM_SINGLE(MADERA_ANC_SRC,
-+			MADERA_IN_RXANCR_SEL_SHIFT,
-+			ARRAY_SIZE(madera_anc_input_src_text),
-+			madera_anc_input_src_text),
-+	SOC_ENUM_SINGLE(MADERA_FCR_ADC_REFORMATTER_CONTROL,
-+			MADERA_FCR_MIC_MODE_SEL,
-+			ARRAY_SIZE(madera_anc_channel_src_text),
-+			madera_anc_channel_src_text),
-+};
-+EXPORT_SYMBOL_GPL(madera_anc_input_src);
-+
-+static const char * const madera_anc_ng_texts[] = {
-+	"None", "Internal", "External",
-+};
-+
-+SOC_ENUM_SINGLE_DECL(madera_anc_ng_enum, SND_SOC_NOPM, 0, madera_anc_ng_texts);
-+EXPORT_SYMBOL_GPL(madera_anc_ng_enum);
-+
-+static const char * const madera_out_anc_src_text[] = {
-+	"None", "RXANCL", "RXANCR",
-+};
-+
-+const struct soc_enum madera_output_anc_src[] = {
-+	SOC_ENUM_SINGLE(MADERA_OUTPUT_PATH_CONFIG_1L,
-+			MADERA_OUT1L_ANC_SRC_SHIFT,
-+			ARRAY_SIZE(madera_out_anc_src_text),
-+			madera_out_anc_src_text),
-+	SOC_ENUM_SINGLE(MADERA_OUTPUT_PATH_CONFIG_1R,
-+			MADERA_OUT1R_ANC_SRC_SHIFT,
-+			ARRAY_SIZE(madera_out_anc_src_text),
-+			madera_out_anc_src_text),
-+	SOC_ENUM_SINGLE(MADERA_OUTPUT_PATH_CONFIG_2L,
-+			MADERA_OUT2L_ANC_SRC_SHIFT,
-+			ARRAY_SIZE(madera_out_anc_src_text),
-+			madera_out_anc_src_text),
-+	SOC_ENUM_SINGLE(MADERA_OUTPUT_PATH_CONFIG_2R,
-+			MADERA_OUT2R_ANC_SRC_SHIFT,
-+			ARRAY_SIZE(madera_out_anc_src_text),
-+			madera_out_anc_src_text),
-+	SOC_ENUM_SINGLE(MADERA_OUTPUT_PATH_CONFIG_3L,
-+			MADERA_OUT3L_ANC_SRC_SHIFT,
-+			ARRAY_SIZE(madera_out_anc_src_text),
-+			madera_out_anc_src_text),
-+	SOC_ENUM_SINGLE(MADERA_OUTPUT_PATH_CONFIG_3R,
-+			MADERA_OUT3R_ANC_SRC_SHIFT,
-+			ARRAY_SIZE(madera_out_anc_src_text),
-+			madera_out_anc_src_text),
-+	SOC_ENUM_SINGLE(MADERA_OUTPUT_PATH_CONFIG_4L,
-+			MADERA_OUT4L_ANC_SRC_SHIFT,
-+			ARRAY_SIZE(madera_out_anc_src_text),
-+			madera_out_anc_src_text),
-+	SOC_ENUM_SINGLE(MADERA_OUTPUT_PATH_CONFIG_4R,
-+			MADERA_OUT4R_ANC_SRC_SHIFT,
-+			ARRAY_SIZE(madera_out_anc_src_text),
-+			madera_out_anc_src_text),
-+	SOC_ENUM_SINGLE(MADERA_OUTPUT_PATH_CONFIG_5L,
-+			MADERA_OUT5L_ANC_SRC_SHIFT,
-+			ARRAY_SIZE(madera_out_anc_src_text),
-+			madera_out_anc_src_text),
-+	SOC_ENUM_SINGLE(MADERA_OUTPUT_PATH_CONFIG_5R,
-+			MADERA_OUT5R_ANC_SRC_SHIFT,
-+			ARRAY_SIZE(madera_out_anc_src_text),
-+			madera_out_anc_src_text),
-+	SOC_ENUM_SINGLE(MADERA_OUTPUT_PATH_CONFIG_6L,
-+			MADERA_OUT6L_ANC_SRC_SHIFT,
-+			ARRAY_SIZE(madera_out_anc_src_text),
-+			madera_out_anc_src_text),
-+	SOC_ENUM_SINGLE(MADERA_OUTPUT_PATH_CONFIG_6R,
-+			MADERA_OUT6R_ANC_SRC_SHIFT,
-+			ARRAY_SIZE(madera_out_anc_src_text),
-+			madera_out_anc_src_text),
-+};
-+EXPORT_SYMBOL_GPL(madera_output_anc_src);
-+
-+int madera_dfc_put(struct snd_kcontrol *kcontrol,
-+		   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-+	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-+	unsigned int reg = e->reg;
-+	unsigned int val;
-+	int ret = 0;
-+
-+	reg = ((reg / 6) * 6) - 2;
-+
-+	snd_soc_dapm_mutex_lock(dapm);
-+
-+	val = snd_soc_read(codec, reg);
-+	if (val & MADERA_DFC1_ENA) {
-+		ret = -EBUSY;
-+		dev_err(codec->dev, "Can't change mode on an active DFC\n");
-+		goto exit;
-+	}
-+
-+	ret = snd_soc_put_enum_double(kcontrol, ucontrol);
-+exit:
-+	snd_soc_dapm_mutex_unlock(dapm);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(madera_dfc_put);
-+
-+int madera_lp_mode_put(struct snd_kcontrol *kcontrol,
-+		       struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-+	unsigned int reg, mask;
-+	int ret;
-+
-+	snd_soc_dapm_mutex_lock(dapm);
-+
-+	/* Cannot change lp mode on an active input */
-+	reg = snd_soc_read(codec, MADERA_INPUT_ENABLES);
-+	mask = (mc->reg - MADERA_ADC_DIGITAL_VOLUME_1L) / 4;
-+	mask ^= 0x1; /* Flip bottom bit for channel order */
-+
-+	if ((reg) & (1 << mask)) {
-+		ret = -EBUSY;
-+		dev_err(codec->dev,
-+			"Can't change lp mode on an active input\n");
-+		goto exit;
-+	}
-+
-+	ret = snd_soc_put_volsw(kcontrol, ucontrol);
-+
-+exit:
-+	snd_soc_dapm_mutex_unlock(dapm);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(madera_lp_mode_put);
-+
-+const struct snd_kcontrol_new madera_dsp_trigger_output_mux[] = {
-+	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0),
-+	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0),
-+	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0),
-+	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0),
-+	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0),
-+	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0),
-+	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0),
-+};
-+EXPORT_SYMBOL_GPL(madera_dsp_trigger_output_mux);
-+
-+const struct snd_kcontrol_new madera_drc_activity_output_mux[] = {
-+	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0),
-+	SOC_DAPM_SINGLE("Switch", SND_SOC_NOPM, 0, 1, 0),
-+};
-+EXPORT_SYMBOL_GPL(madera_drc_activity_output_mux);
-+
-+static void madera_in_set_vu(struct madera_priv *priv, bool enable)
-+{
-+	unsigned int val;
-+	int i, ret;
-+
-+	if (enable)
-+		val = MADERA_IN_VU;
-+	else
-+		val = 0;
-+
-+	for (i = 0; i < priv->num_inputs; i++) {
-+		ret = regmap_update_bits(priv->madera->regmap,
-+				    MADERA_ADC_DIGITAL_VOLUME_1L + (i * 4),
-+				    MADERA_IN_VU, val);
-+		if (ret)
-+			dev_warn(priv->madera->dev,
-+				 "Failed to modify VU bits: %d\n", ret);
-+	}
-+}
-+
-+int madera_in_ev(struct snd_soc_dapm_widget *w, struct snd_kcontrol *kcontrol,
-+		 int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct madera_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	unsigned int reg;
-+
-+	if (w->shift % 2)
-+		reg = MADERA_ADC_DIGITAL_VOLUME_1L + ((w->shift / 2) * 8);
-+	else
-+		reg = MADERA_ADC_DIGITAL_VOLUME_1R + ((w->shift / 2) * 8);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		priv->in_pending++;
-+		break;
-+	case SND_SOC_DAPM_POST_PMU:
-+		priv->in_pending--;
-+		snd_soc_update_bits(codec, reg, MADERA_IN1L_MUTE, 0);
-+
-+		/* If this is the last input pending then allow VU */
-+		if (priv->in_pending == 0) {
-+			usleep_range(1000, 3000);
-+			madera_in_set_vu(priv, true);
-+		}
-+		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		snd_soc_update_bits(codec, reg,
-+				    MADERA_IN1L_MUTE | MADERA_IN_VU,
-+				    MADERA_IN1L_MUTE | MADERA_IN_VU);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		/* Disable volume updates if no inputs are enabled */
-+		reg = snd_soc_read(codec, MADERA_INPUT_ENABLES);
-+		if (reg == 0)
-+			madera_in_set_vu(priv, false);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(madera_in_ev);
-+
-+int madera_dre_put(struct snd_kcontrol *kcontrol,
-+		   struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-+	int ret;
-+
-+	snd_soc_dapm_mutex_lock(dapm);
-+
-+	ret = snd_soc_put_volsw(kcontrol, ucontrol);
-+
-+	snd_soc_dapm_mutex_unlock(dapm);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(madera_dre_put);
-+
-+int madera_out_ev(struct snd_soc_dapm_widget *w,
-+		  struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct madera_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct madera *madera = priv->madera;
-+	int out_up_delay;
-+
-+	switch (madera->type) {
-+	case CS47L90:
-+	case CS47L91:
-+		out_up_delay = 6;
-+		break;
-+	default:
-+		out_up_delay = 17;
-+		break;
-+	}
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		switch (w->shift) {
-+		case MADERA_OUT1L_ENA_SHIFT:
-+		case MADERA_OUT1R_ENA_SHIFT:
-+		case MADERA_OUT2L_ENA_SHIFT:
-+		case MADERA_OUT2R_ENA_SHIFT:
-+		case MADERA_OUT3L_ENA_SHIFT:
-+		case MADERA_OUT3R_ENA_SHIFT:
-+			priv->out_up_pending++;
-+			priv->out_up_delay += out_up_delay;
-+			break;
-+		default:
-+			break;
-+		}
-+		break;
-+
-+	case SND_SOC_DAPM_POST_PMU:
-+		switch (w->shift) {
-+		case MADERA_OUT1L_ENA_SHIFT:
-+		case MADERA_OUT1R_ENA_SHIFT:
-+		case MADERA_OUT2L_ENA_SHIFT:
-+		case MADERA_OUT2R_ENA_SHIFT:
-+		case MADERA_OUT3L_ENA_SHIFT:
-+		case MADERA_OUT3R_ENA_SHIFT:
-+			priv->out_up_pending--;
-+			if (!priv->out_up_pending) {
-+				msleep(priv->out_up_delay);
-+				priv->out_up_delay = 0;
-+			}
-+			break;
-+
-+		default:
-+			break;
-+		}
-+		break;
-+
-+	case SND_SOC_DAPM_PRE_PMD:
-+		switch (w->shift) {
-+		case MADERA_OUT1L_ENA_SHIFT:
-+		case MADERA_OUT1R_ENA_SHIFT:
-+		case MADERA_OUT2L_ENA_SHIFT:
-+		case MADERA_OUT2R_ENA_SHIFT:
-+		case MADERA_OUT3L_ENA_SHIFT:
-+		case MADERA_OUT3R_ENA_SHIFT:
-+			priv->out_down_pending++;
-+			priv->out_down_delay++;
-+			break;
-+		default:
-+			break;
-+		}
-+		break;
-+
-+	case SND_SOC_DAPM_POST_PMD:
-+		switch (w->shift) {
-+		case MADERA_OUT1L_ENA_SHIFT:
-+		case MADERA_OUT1R_ENA_SHIFT:
-+		case MADERA_OUT2L_ENA_SHIFT:
-+		case MADERA_OUT2R_ENA_SHIFT:
-+		case MADERA_OUT3L_ENA_SHIFT:
-+		case MADERA_OUT3R_ENA_SHIFT:
-+			priv->out_down_pending--;
-+			if (!priv->out_down_pending) {
-+				msleep(priv->out_down_delay);
-+				priv->out_down_delay = 0;
-+			}
-+			break;
-+		default:
-+			break;
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(madera_out_ev);
-+
-+int madera_hp_ev(struct snd_soc_dapm_widget *w,
-+		 struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	struct madera_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct madera *madera = priv->madera;
-+	unsigned int mask = 1 << w->shift;
-+	unsigned int out_num = w->shift / 2;
-+	unsigned int val;
-+	unsigned int ep_sel = 0;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		val = mask;
-+		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		val = 0;
-+		break;
-+	case SND_SOC_DAPM_PRE_PMU:
-+	case SND_SOC_DAPM_POST_PMD:
-+		return madera_out_ev(w, kcontrol, event);
-+	default:
-+		return 0;
-+	}
-+
-+	/* Store the desired state for the HP outputs */
-+	madera->hp_ena &= ~mask;
-+	madera->hp_ena |= val;
-+
-+	/* if OUT1 is routed to EPOUT, ignore HP clamp and impedance */
-+	regmap_read(madera->regmap, MADERA_OUTPUT_ENABLES_1, &ep_sel);
-+	ep_sel &= MADERA_EP_SEL_MASK;
-+
-+	/* Force off if HPDET clamp is active for this output */
-+	if (!ep_sel &&
-+	    (madera->out_clamp[out_num] || madera->out_shorted[out_num]))
-+		val = 0;
-+
-+	regmap_update_bits(madera->regmap, MADERA_OUTPUT_ENABLES_1, mask, val);
-+
-+	return madera_out_ev(w, kcontrol, event);
-+}
-+EXPORT_SYMBOL_GPL(madera_hp_ev);
-+
-+int madera_anc_ev(struct snd_soc_dapm_widget *w, struct snd_kcontrol *kcontrol,
-+		  int event)
-+{
-+	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
-+	unsigned int val;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		val = 1 << w->shift;
-+		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		val = 1 << (w->shift + 1);
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	snd_soc_write(codec, MADERA_CLOCK_CONTROL, val);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(madera_anc_ev);
-+
-+static const unsigned int madera_opclk_ref_48k_rates[] = {
-+	6144000,
-+	12288000,
-+	24576000,
-+	49152000,
-+};
-+
-+static const unsigned int madera_opclk_ref_44k1_rates[] = {
-+	5644800,
-+	11289600,
-+	22579200,
-+	45158400,
-+};
-+
-+static int madera_set_opclk(struct snd_soc_codec *codec, unsigned int clk,
-+			    unsigned int freq)
-+{
-+	struct madera_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	unsigned int reg;
-+	const unsigned int *rates;
-+	int ref, div, refclk;
-+
-+	BUILD_BUG_ON(ARRAY_SIZE(madera_opclk_ref_48k_rates) !=
-+		     ARRAY_SIZE(madera_opclk_ref_44k1_rates));
-+
-+	switch (clk) {
-+	case MADERA_CLK_OPCLK:
-+		reg = MADERA_OUTPUT_SYSTEM_CLOCK;
-+		refclk = priv->sysclk;
-+		break;
-+	case MADERA_CLK_ASYNC_OPCLK:
-+		reg = MADERA_OUTPUT_ASYNC_CLOCK;
-+		refclk = priv->asyncclk;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	if (refclk % 4000)
-+		rates = madera_opclk_ref_44k1_rates;
-+	else
-+		rates = madera_opclk_ref_48k_rates;
-+
-+	for (ref = 0; ref < ARRAY_SIZE(madera_opclk_ref_48k_rates); ++ref) {
-+		if (rates[ref] > refclk)
-+			continue;
-+
-+		div = 2;
-+		while ((rates[ref] / div >= freq) && (div <= 30)) {
-+			if (rates[ref] / div == freq) {
-+				dev_dbg(codec->dev, "Configured %dHz OPCLK\n",
-+					freq);
-+				snd_soc_update_bits(codec, reg,
-+						    MADERA_OPCLK_DIV_MASK |
-+						    MADERA_OPCLK_SEL_MASK,
-+						    (div <<
-+						     MADERA_OPCLK_DIV_SHIFT) |
-+						    ref);
-+				return 0;
-+			}
-+			div += 2;
-+		}
-+	}
-+
-+	dev_err(codec->dev, "Unable to generate %dHz OPCLK\n", freq);
-+
-+	return -EINVAL;
-+}
-+
-+static int madera_get_sysclk_setting(unsigned int freq)
-+{
-+	switch (freq) {
-+	case 0:
-+	case 5644800:
-+	case 6144000:
-+		return 0;
-+	case 11289600:
-+	case 12288000:
-+		return MADERA_SYSCLK_12MHZ << MADERA_SYSCLK_FREQ_SHIFT;
-+	case 22579200:
-+	case 24576000:
-+		return MADERA_SYSCLK_24MHZ << MADERA_SYSCLK_FREQ_SHIFT;
-+	case 45158400:
-+	case 49152000:
-+		return MADERA_SYSCLK_49MHZ << MADERA_SYSCLK_FREQ_SHIFT;
-+	case 90316800:
-+	case 98304000:
-+		return MADERA_SYSCLK_98MHZ << MADERA_SYSCLK_FREQ_SHIFT;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+int madera_get_legacy_dspclk_setting(struct madera *madera, unsigned int freq)
-+{
-+	switch (freq) {
-+	case 0:
-+		return 0;
-+	case 45158400:
-+	case 49152000:
-+		switch (madera->type) {
-+		case CS47L85:
-+		case WM1840:
-+			if (madera->rev < 3)
-+				return -EINVAL;
-+			else
-+				return MADERA_SYSCLK_49MHZ <<
-+				       MADERA_SYSCLK_FREQ_SHIFT;
-+		default:
-+			return -EINVAL;
-+		}
-+	case 135475200:
-+	case 147456000:
-+		return MADERA_DSPCLK_147MHZ << MADERA_DSP_CLK_FREQ_LEGACY_SHIFT;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+EXPORT_SYMBOL_GPL(madera_get_legacy_dspclk_setting);
-+
-+static int madera_get_dspclk_setting(struct madera *madera,
-+				     unsigned int freq,
-+				     unsigned int *clock_2_val)
-+{
-+	switch (madera->type) {
-+	case CS47L35:
-+	case CS47L85:
-+	case WM1840:
-+		*clock_2_val = 0; /* don't use MADERA_DSP_CLOCK_2 */
-+		return madera_get_legacy_dspclk_setting(madera, freq);
-+	default:
-+		if (freq > 150000000)
-+			return -EINVAL;
-+
-+		/* Use new exact frequency control */
-+		*clock_2_val = freq / 15625; /* freq * (2^6) / (10^6) */
-+		return 0;
-+	}
-+}
-+
-+int madera_set_sysclk(struct snd_soc_codec *codec, int clk_id,
-+		      int source, unsigned int freq, int dir)
-+{
-+	struct madera_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct madera *madera = priv->madera;
-+	char *name;
-+	unsigned int reg, clock_2_val = 0;
-+	unsigned int mask = MADERA_SYSCLK_FREQ_MASK | MADERA_SYSCLK_SRC_MASK;
-+	unsigned int val = source << MADERA_SYSCLK_SRC_SHIFT;
-+	int clk_freq_sel, *clk;
-+	int ret = 0;
-+
-+	switch (clk_id) {
-+	case MADERA_CLK_SYSCLK_1:
-+		name = "SYSCLK";
-+		reg = MADERA_SYSTEM_CLOCK_1;
-+		clk = &priv->sysclk;
-+		clk_freq_sel = madera_get_sysclk_setting(freq);
-+		mask |= MADERA_SYSCLK_FRAC;
-+		break;
-+	case MADERA_CLK_ASYNCCLK_1:
-+		name = "ASYNCCLK";
-+		reg = MADERA_ASYNC_CLOCK_1;
-+		clk = &priv->asyncclk;
-+		clk_freq_sel = madera_get_sysclk_setting(freq);
-+		break;
-+	case MADERA_CLK_OPCLK:
-+	case MADERA_CLK_ASYNC_OPCLK:
-+		return madera_set_opclk(codec, clk_id, freq);
-+	case MADERA_CLK_DSPCLK:
-+		name = "DSPCLK";
-+		reg = MADERA_DSP_CLOCK_1;
-+		clk = &priv->dspclk;
-+		clk_freq_sel = madera_get_dspclk_setting(madera, freq,
-+							 &clock_2_val);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	if (clk_freq_sel < 0) {
-+		dev_err(madera->dev,
-+			"Failed to get clk setting for %dHZ\n", freq);
-+		return clk_freq_sel;
-+	}
-+
-+	*clk = freq;
-+
-+	if (freq == 0) {
-+		dev_dbg(madera->dev, "%s cleared\n", name);
-+		return 0;
-+	}
-+
-+	val |= clk_freq_sel;
-+
-+	if (clock_2_val) {
-+		ret = regmap_write(madera->regmap, MADERA_DSP_CLOCK_2,
-+				   clock_2_val);
-+		if (ret) {
-+			dev_err(madera->dev,
-+				"Failed to write DSP_CONFIG2: %d\n", ret);
-+			return ret;
-+		}
-+
-+		/*
-+		 * We're using the frequency setting in MADERA_DSP_CLOCK_2 so
-+		 * don't change the frequency select bits in MADERA_DSP_CLOCK_1
-+		 */
-+		mask = MADERA_SYSCLK_SRC_MASK;
-+	}
-+
-+	if (freq % 6144000)
-+		val |= MADERA_SYSCLK_FRAC;
-+
-+	dev_dbg(madera->dev, "%s set to %uHz", name, freq);
-+
-+	return regmap_update_bits(madera->regmap, reg, mask, val);
-+}
-+EXPORT_SYMBOL_GPL(madera_set_sysclk);
-+
-+static int madera_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct madera_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct madera *madera = priv->madera;
-+	int lrclk, bclk, mode, base;
-+
-+	base = dai->driver->base;
-+
-+	lrclk = 0;
-+	bclk = 0;
-+
-+	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-+	case SND_SOC_DAIFMT_DSP_A:
-+		mode = MADERA_FMT_DSP_MODE_A;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_B:
-+		if ((fmt & SND_SOC_DAIFMT_MASTER_MASK)
-+				!= SND_SOC_DAIFMT_CBM_CFM) {
-+			madera_aif_err(dai, "DSP_B not valid in slave mode\n");
-+			return -EINVAL;
-+		}
-+		mode = MADERA_FMT_DSP_MODE_B;
-+		break;
-+	case SND_SOC_DAIFMT_I2S:
-+		mode = MADERA_FMT_I2S_MODE;
-+		break;
-+	case SND_SOC_DAIFMT_LEFT_J:
-+		if ((fmt & SND_SOC_DAIFMT_MASTER_MASK)
-+				!= SND_SOC_DAIFMT_CBM_CFM) {
-+			madera_aif_err(dai, "LEFT_J not valid in slave mode\n");
-+			return -EINVAL;
-+		}
-+		mode = MADERA_FMT_LEFT_JUSTIFIED_MODE;
-+		break;
-+	default:
-+		madera_aif_err(dai, "Unsupported DAI format %d\n",
-+			       fmt & SND_SOC_DAIFMT_FORMAT_MASK);
-+		return -EINVAL;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		break;
-+	case SND_SOC_DAIFMT_CBS_CFM:
-+		lrclk |= MADERA_AIF1TX_LRCLK_MSTR;
-+		break;
-+	case SND_SOC_DAIFMT_CBM_CFS:
-+		bclk |= MADERA_AIF1_BCLK_MSTR;
-+		break;
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+		bclk |= MADERA_AIF1_BCLK_MSTR;
-+		lrclk |= MADERA_AIF1TX_LRCLK_MSTR;
-+		break;
-+	default:
-+		madera_aif_err(dai, "Unsupported master mode %d\n",
-+			       fmt & SND_SOC_DAIFMT_MASTER_MASK);
-+		return -EINVAL;
-+	}
-+
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+		break;
-+	case SND_SOC_DAIFMT_IB_IF:
-+		bclk |= MADERA_AIF1_BCLK_INV;
-+		lrclk |= MADERA_AIF1TX_LRCLK_INV;
-+		break;
-+	case SND_SOC_DAIFMT_IB_NF:
-+		bclk |= MADERA_AIF1_BCLK_INV;
-+		break;
-+	case SND_SOC_DAIFMT_NB_IF:
-+		lrclk |= MADERA_AIF1TX_LRCLK_INV;
-+		break;
-+	default:
-+		madera_aif_err(dai, "Unsupported invert mode %d\n",
-+			       fmt & SND_SOC_DAIFMT_INV_MASK);
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(madera->regmap, base + MADERA_AIF_BCLK_CTRL,
-+			   MADERA_AIF1_BCLK_INV | MADERA_AIF1_BCLK_MSTR,
-+			   bclk);
-+	regmap_update_bits(madera->regmap, base + MADERA_AIF_TX_PIN_CTRL,
-+			   MADERA_AIF1TX_LRCLK_INV | MADERA_AIF1TX_LRCLK_MSTR,
-+			   lrclk);
-+	regmap_update_bits(madera->regmap,
-+			   base + MADERA_AIF_RX_PIN_CTRL,
-+			   MADERA_AIF1RX_LRCLK_INV | MADERA_AIF1RX_LRCLK_MSTR,
-+			   lrclk);
-+	regmap_update_bits(madera->regmap, base + MADERA_AIF_FORMAT,
-+			   MADERA_AIF1_FMT_MASK, mode);
-+
-+	return 0;
-+}
-+
-+static const int madera_48k_bclk_rates[] = {
-+	-1,
-+	48000,
-+	64000,
-+	96000,
-+	128000,
-+	192000,
-+	256000,
-+	384000,
-+	512000,
-+	768000,
-+	1024000,
-+	1536000,
-+	2048000,
-+	3072000,
-+	4096000,
-+	6144000,
-+	8192000,
-+	12288000,
-+	24576000,
-+};
-+
-+static const int madera_44k1_bclk_rates[] = {
-+	-1,
-+	44100,
-+	58800,
-+	88200,
-+	117600,
-+	177640,
-+	235200,
-+	352800,
-+	470400,
-+	705600,
-+	940800,
-+	1411200,
-+	1881600,
-+	2822400,
-+	3763200,
-+	5644800,
-+	7526400,
-+	11289600,
-+	22579200,
-+};
-+
-+static const unsigned int madera_sr_vals[] = {
-+	0,
-+	12000,
-+	24000,
-+	48000,
-+	96000,
-+	192000,
-+	384000,
-+	768000,
-+	0,
-+	11025,
-+	22050,
-+	44100,
-+	88200,
-+	176400,
-+	352800,
-+	705600,
-+	4000,
-+	8000,
-+	16000,
-+	32000,
-+	64000,
-+	128000,
-+	256000,
-+	512000,
-+};
-+
-+#define MADERA_48K_RATE_MASK	0x0F003E
-+#define MADERA_44K1_RATE_MASK	0x003E00
-+#define MADERA_RATE_MASK	(MADERA_48K_RATE_MASK | MADERA_44K1_RATE_MASK)
-+
-+static const struct snd_pcm_hw_constraint_list madera_constraint = {
-+	.count	= ARRAY_SIZE(madera_sr_vals),
-+	.list	= madera_sr_vals,
-+};
-+
-+static int madera_startup(struct snd_pcm_substream *substream,
-+			  struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct madera_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct madera_dai_priv *dai_priv = &priv->dai[dai->id - 1];
-+	unsigned int base_rate;
-+
-+	if (!substream->runtime)
-+		return 0;
-+
-+	switch (dai_priv->clk) {
-+	case MADERA_CLK_SYSCLK_1:
-+	case MADERA_CLK_SYSCLK_2:
-+	case MADERA_CLK_SYSCLK_3:
-+		base_rate = priv->sysclk;
-+		break;
-+	case MADERA_CLK_ASYNCCLK_1:
-+	case MADERA_CLK_ASYNCCLK_2:
-+		base_rate = priv->asyncclk;
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	if (base_rate == 0)
-+		dai_priv->constraint.mask = MADERA_RATE_MASK;
-+	else if (base_rate % 4000)
-+		dai_priv->constraint.mask = MADERA_44K1_RATE_MASK;
-+	else
-+		dai_priv->constraint.mask = MADERA_48K_RATE_MASK;
-+
-+	return snd_pcm_hw_constraint_list(substream->runtime, 0,
-+					  SNDRV_PCM_HW_PARAM_RATE,
-+					  &dai_priv->constraint);
-+}
-+
-+static int madera_hw_params_rate(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *params,
-+				 struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct madera_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct madera_dai_priv *dai_priv = &priv->dai[dai->id - 1];
-+	int base = dai->driver->base;
-+	int ret = 0;
-+	int i, sr_val;
-+	unsigned int cur, tar;
-+	bool change_rate_domain = false;
-+
-+	for (i = 0; i < ARRAY_SIZE(madera_sr_vals); i++)
-+		if (madera_sr_vals[i] == params_rate(params))
-+			break;
-+
-+	if (i == ARRAY_SIZE(madera_sr_vals)) {
-+		madera_aif_err(dai, "Unsupported sample rate %dHz\n",
-+				params_rate(params));
-+		return -EINVAL;
-+	}
-+	sr_val = i;
-+
-+	if (base) {
-+		switch (dai_priv->clk) {
-+		case MADERA_CLK_SYSCLK_1:
-+			tar = 0 << MADERA_AIF1_RATE_SHIFT;
-+			break;
-+		case MADERA_CLK_SYSCLK_2:
-+			tar = 1 << MADERA_AIF1_RATE_SHIFT;
-+			break;
-+		case MADERA_CLK_SYSCLK_3:
-+			tar = 2 << MADERA_AIF1_RATE_SHIFT;
-+			break;
-+		case MADERA_CLK_ASYNCCLK_1:
-+			tar = 8 << MADERA_AIF1_RATE_SHIFT;
-+			break;
-+		case MADERA_CLK_ASYNCCLK_2:
-+			tar = 9 << MADERA_AIF1_RATE_SHIFT;
-+			break;
-+		default:
-+			madera_aif_err(dai, "Illegal clock id %d\n",
-+				       dai_priv->clk);
-+			return -EINVAL;
-+		}
-+
-+		ret = regmap_read(priv->madera->regmap,
-+				  base + MADERA_AIF_RATE_CTRL, &cur);
-+		if (ret != 0) {
-+			madera_aif_err(dai, "Failed to check rate: %d\n", ret);
-+			return ret;
-+		}
-+
-+		if ((cur & MADERA_AIF1_RATE_MASK) !=
-+		    (tar & MADERA_AIF1_RATE_MASK)) {
-+			change_rate_domain = true;
-+
-+			mutex_lock(&priv->rate_lock);
-+
-+			if (!madera_can_change_grp_rate(priv,
-+						base + MADERA_AIF_RATE_CTRL)) {
-+				madera_aif_warn(dai,
-+						"Cannot change rate while active\n");
-+				ret = -EBUSY;
-+				goto out;
-+			}
-+
-+			/* Guard the rate change with SYSCLK cycles */
-+			madera_spin_sysclk(priv);
-+		}
-+	}
-+
-+	switch (dai_priv->clk) {
-+	case MADERA_CLK_SYSCLK_1:
-+		snd_soc_update_bits(codec, MADERA_SAMPLE_RATE_1,
-+				    MADERA_SAMPLE_RATE_1_MASK, sr_val);
-+		if (base)
-+			snd_soc_update_bits(codec, base + MADERA_AIF_RATE_CTRL,
-+					    MADERA_AIF1_RATE_MASK,
-+					    0 << MADERA_AIF1_RATE_SHIFT);
-+		break;
-+	case MADERA_CLK_SYSCLK_2:
-+		snd_soc_update_bits(codec, MADERA_SAMPLE_RATE_2,
-+				    MADERA_SAMPLE_RATE_2_MASK, sr_val);
-+		if (base)
-+			snd_soc_update_bits(codec, base + MADERA_AIF_RATE_CTRL,
-+					    MADERA_AIF1_RATE_MASK,
-+					    1 << MADERA_AIF1_RATE_SHIFT);
-+		break;
-+	case MADERA_CLK_SYSCLK_3:
-+		snd_soc_update_bits(codec, MADERA_SAMPLE_RATE_3,
-+				    MADERA_SAMPLE_RATE_3_MASK, sr_val);
-+		if (base)
-+			snd_soc_update_bits(codec, base + MADERA_AIF_RATE_CTRL,
-+					    MADERA_AIF1_RATE_MASK,
-+					    2 << MADERA_AIF1_RATE_SHIFT);
-+		break;
-+	case MADERA_CLK_ASYNCCLK_1:
-+		snd_soc_update_bits(codec, MADERA_ASYNC_SAMPLE_RATE_1,
-+				    MADERA_ASYNC_SAMPLE_RATE_1_MASK, sr_val);
-+		if (base)
-+			snd_soc_update_bits(codec, base + MADERA_AIF_RATE_CTRL,
-+					    MADERA_AIF1_RATE_MASK,
-+					    8 << MADERA_AIF1_RATE_SHIFT);
-+		break;
-+	case MADERA_CLK_ASYNCCLK_2:
-+		snd_soc_update_bits(codec, MADERA_ASYNC_SAMPLE_RATE_2,
-+				    MADERA_ASYNC_SAMPLE_RATE_2_MASK, sr_val);
-+		if (base)
-+			snd_soc_update_bits(codec, base + MADERA_AIF_RATE_CTRL,
-+					    MADERA_AIF1_RATE_MASK,
-+					    9 << MADERA_AIF1_RATE_SHIFT);
-+		break;
-+	default:
-+		madera_aif_err(dai, "Invalid clock %d\n", dai_priv->clk);
-+		ret = -EINVAL;
-+	}
-+
-+out:
-+	if (change_rate_domain) {
-+		madera_spin_sysclk(priv);
-+		mutex_unlock(&priv->rate_lock);
-+	}
-+
-+	return ret;
-+}
-+
-+static bool madera_aif_cfg_changed(struct snd_soc_codec *codec,
-+				   int base, int bclk, int lrclk, int frame)
-+{
-+	int val;
-+
-+	val = snd_soc_read(codec, base + MADERA_AIF_BCLK_CTRL);
-+	if (bclk != (val & MADERA_AIF1_BCLK_FREQ_MASK))
-+		return true;
-+
-+	val = snd_soc_read(codec, base + MADERA_AIF_RX_BCLK_RATE);
-+	if (lrclk != (val & MADERA_AIF1RX_BCPF_MASK))
-+		return true;
-+
-+	val = snd_soc_read(codec, base + MADERA_AIF_FRAME_CTRL_1);
-+	if (frame != (val & (MADERA_AIF1TX_WL_MASK |
-+			     MADERA_AIF1TX_SLOT_LEN_MASK)))
-+		return true;
-+
-+	return false;
-+}
-+
-+static int madera_hw_params(struct snd_pcm_substream *substream,
-+			    struct snd_pcm_hw_params *params,
-+			    struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct madera_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct madera *madera = priv->madera;
-+	int base = dai->driver->base;
-+	const int *rates;
-+	int i, ret, val;
-+	unsigned int channels = params_channels(params);
-+	unsigned int chan_limit =
-+			madera->pdata.codec.max_channels_clocked[dai->id - 1];
-+	int tdm_width = priv->tdm_width[dai->id - 1];
-+	int tdm_slots = priv->tdm_slots[dai->id - 1];
-+	int bclk, lrclk, wl, frame, bclk_target, num_rates;
-+	bool reconfig;
-+	unsigned int aif_tx_state = 0, aif_rx_state = 0;
-+
-+	if (params_rate(params) % 4000) {
-+		rates = &madera_44k1_bclk_rates[0];
-+		num_rates = ARRAY_SIZE(madera_44k1_bclk_rates);
-+	} else {
-+		rates = &madera_48k_bclk_rates[0];
-+		num_rates = ARRAY_SIZE(madera_48k_bclk_rates);
-+	}
-+
-+	wl = snd_pcm_format_width(params_format(params));
-+
-+	if (tdm_slots) {
-+		madera_aif_dbg(dai, "Configuring for %d %d bit TDM slots\n",
-+				tdm_slots, tdm_width);
-+		bclk_target = tdm_slots * tdm_width * params_rate(params);
-+		channels = tdm_slots;
-+	} else {
-+		bclk_target = snd_soc_params_to_bclk(params);
-+		tdm_width = wl;
-+	}
-+
-+	if (chan_limit && chan_limit < channels) {
-+		madera_aif_dbg(dai, "Limiting to %d channels\n", chan_limit);
-+		bclk_target /= channels;
-+		bclk_target *= chan_limit;
-+	}
-+
-+	/* Force multiple of 2 channels for I2S mode */
-+	val = snd_soc_read(codec, base + MADERA_AIF_FORMAT);
-+	val &= MADERA_AIF1_FMT_MASK;
-+	if ((channels & 1) && (val == MADERA_FMT_I2S_MODE)) {
-+		madera_aif_dbg(dai, "Forcing stereo mode\n");
-+		bclk_target /= channels;
-+		bclk_target *= channels + 1;
-+	}
-+
-+	for (i = 0; i < num_rates; i++) {
-+		if (rates[i] >= bclk_target &&
-+		    rates[i] % params_rate(params) == 0) {
-+			bclk = i;
-+			break;
-+		}
-+	}
-+
-+	if (i == num_rates) {
-+		madera_aif_err(dai, "Unsupported sample rate %dHz\n",
-+				params_rate(params));
-+		return -EINVAL;
-+	}
-+
-+	lrclk = rates[bclk] / params_rate(params);
-+
-+	madera_aif_dbg(dai, "BCLK %dHz LRCLK %dHz\n",
-+			rates[bclk], rates[bclk] / lrclk);
-+
-+	frame = wl << MADERA_AIF1TX_WL_SHIFT | tdm_width;
-+
-+	reconfig = madera_aif_cfg_changed(codec, base, bclk, lrclk, frame);
-+
-+	if (reconfig) {
-+		/* Save AIF TX/RX state */
-+		aif_tx_state = snd_soc_read(codec,
-+					    base + MADERA_AIF_TX_ENABLES);
-+		aif_rx_state = snd_soc_read(codec,
-+					    base + MADERA_AIF_RX_ENABLES);
-+		/* Disable AIF TX/RX before reconfiguring it */
-+		regmap_update_bits(madera->regmap,
-+				   base + MADERA_AIF_TX_ENABLES, 0xff, 0x0);
-+		regmap_update_bits(madera->regmap,
-+				   base + MADERA_AIF_RX_ENABLES, 0xff, 0x0);
-+	}
-+
-+	ret = madera_hw_params_rate(substream, params, dai);
-+	if (ret != 0)
-+		goto restore_aif;
-+
-+	if (reconfig) {
-+		regmap_update_bits(madera->regmap,
-+				   base + MADERA_AIF_BCLK_CTRL,
-+				   MADERA_AIF1_BCLK_FREQ_MASK, bclk);
-+		regmap_update_bits(madera->regmap,
-+				   base + MADERA_AIF_RX_BCLK_RATE,
-+				   MADERA_AIF1RX_BCPF_MASK, lrclk);
-+		regmap_update_bits(madera->regmap,
-+				   base + MADERA_AIF_FRAME_CTRL_1,
-+				   MADERA_AIF1TX_WL_MASK |
-+				   MADERA_AIF1TX_SLOT_LEN_MASK, frame);
-+		regmap_update_bits(madera->regmap,
-+				   base + MADERA_AIF_FRAME_CTRL_2,
-+				   MADERA_AIF1RX_WL_MASK |
-+				   MADERA_AIF1RX_SLOT_LEN_MASK, frame);
-+	}
-+
-+restore_aif:
-+	if (reconfig) {
-+		/* Restore AIF TX/RX state */
-+		regmap_update_bits(madera->regmap,
-+				   base + MADERA_AIF_TX_ENABLES,
-+				   0xff, aif_tx_state);
-+		regmap_update_bits(madera->regmap,
-+				   base + MADERA_AIF_RX_ENABLES,
-+				   0xff, aif_rx_state);
-+	}
-+
-+	return ret;
-+}
-+
-+static int madera_is_syncclk(int clk_id)
-+{
-+	switch (clk_id) {
-+	case MADERA_CLK_SYSCLK_1:
-+	case MADERA_CLK_SYSCLK_2:
-+	case MADERA_CLK_SYSCLK_3:
-+		return 1;
-+	case MADERA_CLK_ASYNCCLK_1:
-+	case MADERA_CLK_ASYNCCLK_2:
-+		return 0;
-+	default:
-+		return -EINVAL;
-+	}
-+}
-+
-+static int madera_dai_set_sysclk(struct snd_soc_dai *dai,
-+				 int clk_id, unsigned int freq, int dir)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-+	struct madera_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct madera_dai_priv *dai_priv = &priv->dai[dai->id - 1];
-+	struct snd_soc_dapm_route routes[2];
-+	int is_sync;
-+
-+	is_sync = madera_is_syncclk(clk_id);
-+	if (is_sync < 0) {
-+		dev_err(codec->dev, "Illegal DAI clock id %d\n", clk_id);
-+		return is_sync;
-+	}
-+
-+	if (is_sync == madera_is_syncclk(dai_priv->clk))
-+		return 0;
-+
-+	if (dai->active) {
-+		dev_err(codec->dev, "Can't change clock on active DAI %d\n",
-+			dai->id);
-+		return -EBUSY;
-+	}
-+
-+	dev_dbg(codec->dev, "Setting AIF%d to %s\n", dai->id,
-+		is_sync ? "SYSCLK" : "ASYNCCLK");
-+
-+	/*
-+	 * A connection to SYSCLK is always required, we only add and remove
-+	 * a connection to ASYNCCLK
-+	 */
-+	memset(&routes, 0, sizeof(routes));
-+	routes[0].sink = dai->driver->capture.stream_name;
-+	routes[1].sink = dai->driver->playback.stream_name;
-+	routes[0].source = "ASYNCCLK";
-+	routes[1].source = "ASYNCCLK";
-+
-+	if (is_sync)
-+		snd_soc_dapm_del_routes(dapm, routes, ARRAY_SIZE(routes));
-+	else
-+		snd_soc_dapm_add_routes(dapm, routes, ARRAY_SIZE(routes));
-+
-+	dai_priv->clk = clk_id;
-+
-+	return snd_soc_dapm_sync(dapm);
-+}
-+
-+static int madera_set_tristate(struct snd_soc_dai *dai, int tristate)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	int base = dai->driver->base;
-+	unsigned int reg;
-+	int ret;
-+
-+	if (tristate)
-+		reg = MADERA_AIF1_TRI;
-+	else
-+		reg = 0;
-+
-+	ret = snd_soc_update_bits(codec, base + MADERA_AIF_RATE_CTRL,
-+				  MADERA_AIF1_TRI, reg);
-+	if (ret < 0)
-+		return ret;
-+	else
-+		return 0;
-+}
-+
-+static void madera_set_channels_to_mask(struct snd_soc_dai *dai,
-+					unsigned int base,
-+					int channels, unsigned int mask)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct madera_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	struct madera *madera = priv->madera;
-+	int slot, i;
-+
-+	for (i = 0; i < channels; ++i) {
-+		slot = ffs(mask) - 1;
-+		if (slot < 0)
-+			return;
-+
-+		regmap_write(madera->regmap, base + i, slot);
-+
-+		mask &= ~(1 << slot);
-+	}
-+
-+	if (mask)
-+		madera_aif_warn(dai, "Too many channels in TDM mask\n");
-+}
-+
-+static int madera_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
-+			       unsigned int rx_mask, int slots, int slot_width)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct madera_priv *priv = snd_soc_codec_get_drvdata(codec);
-+	int base = dai->driver->base;
-+	int rx_max_chan = dai->driver->playback.channels_max;
-+	int tx_max_chan = dai->driver->capture.channels_max;
-+
-+	/* Only support TDM for the physical AIFs */
-+	if (dai->id > MADERA_MAX_AIF)
-+		return -ENOTSUPP;
-+
-+	if (slots == 0) {
-+		tx_mask = (1 << tx_max_chan) - 1;
-+		rx_mask = (1 << rx_max_chan) - 1;
-+	}
-+
-+	madera_set_channels_to_mask(dai, base + MADERA_AIF_FRAME_CTRL_3,
-+				    tx_max_chan, tx_mask);
-+	madera_set_channels_to_mask(dai, base + MADERA_AIF_FRAME_CTRL_11,
-+				    rx_max_chan, rx_mask);
-+
-+	priv->tdm_width[dai->id - 1] = slot_width;
-+	priv->tdm_slots[dai->id - 1] = slots;
-+
-+	return 0;
-+}
-+
-+const struct snd_soc_dai_ops madera_dai_ops = {
-+	.startup = madera_startup,
-+	.set_fmt = madera_set_fmt,
-+	.set_tdm_slot = madera_set_tdm_slot,
-+	.hw_params = madera_hw_params,
-+	.set_sysclk = madera_dai_set_sysclk,
-+	.set_tristate = madera_set_tristate,
-+};
-+EXPORT_SYMBOL_GPL(madera_dai_ops);
-+
-+const struct snd_soc_dai_ops madera_simple_dai_ops = {
-+	.startup = madera_startup,
-+	.hw_params = madera_hw_params_rate,
-+	.set_sysclk = madera_dai_set_sysclk,
-+};
-+EXPORT_SYMBOL_GPL(madera_simple_dai_ops);
-+
-+int madera_init_dai(struct madera_priv *priv, int id)
-+{
-+	struct madera_dai_priv *dai_priv = &priv->dai[id];
-+
-+	dai_priv->clk = MADERA_CLK_SYSCLK_1;
-+	dai_priv->constraint = madera_constraint;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(madera_init_dai);
-+
-+static const struct {
-+	unsigned int min;
-+	unsigned int max;
-+	u16 fratio;
-+	int ratio;
-+} fll_sync_fratios[] = {
-+	{       0,    64000, 4, 16 },
-+	{   64000,   128000, 3,  8 },
-+	{  128000,   256000, 2,  4 },
-+	{  256000,  1000000, 1,  2 },
-+	{ 1000000, 13500000, 0,  1 },
-+};
-+
-+static const unsigned int pseudo_fref_max[MADERA_FLL_MAX_FRATIO] = {
-+	13500000,
-+	 6144000,
-+	 6144000,
-+	 3072000,
-+	 3072000,
-+	 2822400,
-+	 2822400,
-+	 1536000,
-+	 1536000,
-+	 1536000,
-+	 1536000,
-+	 1536000,
-+	 1536000,
-+	 1536000,
-+	 1536000,
-+	  768000,
-+};
-+
-+struct madera_fll_gains {
-+	unsigned int min;
-+	unsigned int max;
-+	int gain;		/* main gain */
-+	int alt_gain;		/* alternate integer gain */
-+};
-+
-+static const struct madera_fll_gains madera_fll_sync_gains[] = {
-+	{       0,   256000, 0, -1 },
-+	{  256000,  1000000, 2, -1 },
-+	{ 1000000, 13500000, 4, -1 },
-+};
-+
-+static const struct madera_fll_gains madera_fll_main_gains[] = {
-+	{       0,   100000, 0, 2 },
-+	{  100000,   375000, 2, 2 },
-+	{  375000,   768000, 3, 2 },
-+	{  768001,  1500000, 3, 3 },
-+	{ 1500000,  6000000, 4, 3 },
-+	{ 6000000, 13500000, 5, 3 },
-+};
-+
-+static int madera_find_sync_fratio(unsigned int fref, int *fratio)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(fll_sync_fratios); i++) {
-+		if (fll_sync_fratios[i].min <= fref &&
-+		    fref <= fll_sync_fratios[i].max) {
-+			if (fratio)
-+				*fratio = fll_sync_fratios[i].fratio;
-+
-+			return fll_sync_fratios[i].ratio;
-+		}
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static int madera_find_main_fratio(unsigned int fref, unsigned int fout,
-+				   int *fratio)
-+{
-+	int ratio = 1;
-+
-+	while ((fout / (ratio * fref)) > MADERA_FLL_MAX_N)
-+		ratio++;
-+
-+	if (fratio)
-+		*fratio = ratio - 1;
-+
-+	return ratio;
-+}
-+
-+static int madera_find_fratio(struct madera_fll *fll, unsigned int fref,
-+			      bool sync, int *fratio)
-+{
-+	switch (fll->madera->type) {
-+	case CS47L35:
-+		switch (fll->madera->rev) {
-+		case 0:
-+			/* rev A0 uses sync calculation for both loops */
-+			return madera_find_sync_fratio(fref, fratio);
-+		default:
-+			if (sync)
-+				return madera_find_sync_fratio(fref, fratio);
-+			else
-+				return madera_find_main_fratio(fref,
-+							       fll->fout,
-+							       fratio);
-+		}
-+		break;
-+	case CS47L85:
-+	case WM1840:
-+		/* these use the same calculation for main and sync loops */
-+		return madera_find_sync_fratio(fref, fratio);
-+	default:
-+		if (sync)
-+			return madera_find_sync_fratio(fref, fratio);
-+		else
-+			return madera_find_main_fratio(fref, fll->fout, fratio);
-+	}
-+}
-+
-+static int madera_calc_fratio(struct madera_fll *fll,
-+			      struct madera_fll_cfg *cfg,
-+			      unsigned int fref, bool sync)
-+{
-+	int init_ratio, ratio;
-+	int refdiv, div;
-+
-+	/* fref must be <=13.5MHz, find initial refdiv */
-+	div = 1;
-+	cfg->refdiv = 0;
-+	while (fref > MADERA_FLL_MAX_FREF) {
-+		div *= 2;
-+		fref /= 2;
-+		cfg->refdiv++;
-+
-+		if (div > MADERA_FLL_MAX_REFDIV)
-+			return -EINVAL;
-+	}
-+
-+	/* Find an appropriate FLL_FRATIO */
-+	init_ratio = madera_find_fratio(fll, fref, sync, &cfg->fratio);
-+	if (init_ratio < 0) {
-+		madera_fll_err(fll, "Unable to find FRATIO for fref=%uHz\n",
-+				fref);
-+		return init_ratio;
-+	}
-+
-+	if (!sync)
-+		cfg->fratio = init_ratio - 1;
-+
-+	switch (fll->madera->type) {
-+	case CS47L35:
-+		switch (fll->madera->rev) {
-+		case 0:
-+			if (sync)
-+				return init_ratio;
-+			break;
-+		default:
-+			return init_ratio;
-+		}
-+		break;
-+	case CS47L85:
-+	case WM1840:
-+		if (sync)
-+			return init_ratio;
-+		break;
-+	default:
-+		return init_ratio;
-+	}
-+
-+	/*
-+	 * For CS47L35 rev A0, CS47L85 and WM1840 adjust FRATIO/refdiv to avoid
-+	 * integer mode if possible
-+	 */
-+	refdiv = cfg->refdiv;
-+
-+	while (div <= MADERA_FLL_MAX_REFDIV) {
-+		/*
-+		 * start from init_ratio because this may already give a
-+		 * fractional N.K
-+		 */
-+		for (ratio = init_ratio; ratio > 0; ratio--) {
-+			if (fll->fout % (ratio * fref)) {
-+				cfg->refdiv = refdiv;
-+				cfg->fratio = ratio - 1;
-+				return ratio;
-+			}
-+		}
-+
-+		for (ratio = init_ratio + 1; ratio <= MADERA_FLL_MAX_FRATIO;
-+		     ratio++) {
-+			if ((MADERA_FLL_VCO_CORNER / 2) /
-+			    (MADERA_FLL_VCO_MULT * ratio) < fref)
-+				break;
-+
-+			if (fref > pseudo_fref_max[ratio - 1])
-+				break;
-+
-+			if (fll->fout % (ratio * fref)) {
-+				cfg->refdiv = refdiv;
-+				cfg->fratio = ratio - 1;
-+				return ratio;
-+			}
-+		}
-+
-+		div *= 2;
-+		fref /= 2;
-+		refdiv++;
-+		init_ratio = madera_find_fratio(fll, fref, sync, NULL);
-+	}
-+
-+	madera_fll_warn(fll, "Falling back to integer mode operation\n");
-+
-+	return cfg->fratio + 1;
-+}
-+
-+static int madera_find_fll_gain(struct madera_fll *fll,
-+				struct madera_fll_cfg *cfg,
-+				unsigned int fref,
-+				const struct madera_fll_gains *gains,
-+				int n_gains)
-+{
-+	int i;
-+
-+	for (i = 0; i < n_gains; i++) {
-+		if (gains[i].min <= fref && fref <= gains[i].max) {
-+			cfg->gain = gains[i].gain;
-+			cfg->alt_gain = gains[i].alt_gain;
-+			return 0;
-+		}
-+	}
-+
-+	madera_fll_err(fll, "Unable to find gain for fref=%uHz\n", fref);
-+
-+	return -EINVAL;
-+}
-+
-+static int madera_calc_fll(struct madera_fll *fll,
-+			   struct madera_fll_cfg *cfg,
-+			   unsigned int fref, bool sync)
-+{
-+	unsigned int gcd_fll;
-+	const struct madera_fll_gains *gains;
-+	int n_gains;
-+	int ratio, ret;
-+
-+	madera_fll_dbg(fll, "fref=%u Fout=%u fvco=%u\n",
-+			fref, fll->fout, fll->fout * MADERA_FLL_VCO_MULT);
-+
-+	/* Find an appropriate FLL_FRATIO and refdiv */
-+	ratio = madera_calc_fratio(fll, cfg, fref, sync);
-+	if (ratio < 0)
-+		return ratio;
-+
-+	/* Apply the division for our remaining calculations */
-+	fref = fref / (1 << cfg->refdiv);
-+
-+	cfg->n = fll->fout / (ratio * fref);
-+
-+	if (fll->fout % (ratio * fref)) {
-+		gcd_fll = gcd(fll->fout, ratio * fref);
-+		madera_fll_dbg(fll, "GCD=%u\n", gcd_fll);
-+
-+		cfg->theta = (fll->fout - (cfg->n * ratio * fref))
-+			/ gcd_fll;
-+		cfg->lambda = (ratio * fref) / gcd_fll;
-+	} else {
-+		cfg->theta = 0;
-+		cfg->lambda = 0;
-+	}
-+
-+	/*
-+	 * Round down to 16bit range with cost of accuracy lost.
-+	 * Denominator must be bigger than numerator so we only
-+	 * take care of it.
-+	 */
-+	while (cfg->lambda >= (1 << 16)) {
-+		cfg->theta >>= 1;
-+		cfg->lambda >>= 1;
-+	}
-+
-+	switch (fll->madera->type) {
-+	case CS47L35:
-+		switch (fll->madera->rev) {
-+		case 0:
-+			/* Rev A0 uses the sync gains for both loops */
-+			gains = madera_fll_sync_gains;
-+			n_gains = ARRAY_SIZE(madera_fll_sync_gains);
-+			break;
-+		default:
-+			if (sync) {
-+				gains = madera_fll_sync_gains;
-+				n_gains = ARRAY_SIZE(madera_fll_sync_gains);
-+			} else {
-+				gains = madera_fll_main_gains;
-+				n_gains = ARRAY_SIZE(madera_fll_main_gains);
-+			}
-+			break;
-+		}
-+		break;
-+	case CS47L85:
-+	case WM1840:
-+		/* These use the sync gains for both loops */
-+		gains = madera_fll_sync_gains;
-+		n_gains = ARRAY_SIZE(madera_fll_sync_gains);
-+		break;
-+	default:
-+		if (sync) {
-+			gains = madera_fll_sync_gains;
-+			n_gains = ARRAY_SIZE(madera_fll_sync_gains);
-+		} else {
-+			gains = madera_fll_main_gains;
-+			n_gains = ARRAY_SIZE(madera_fll_main_gains);
-+		}
-+		break;
-+	}
-+
-+	ret = madera_find_fll_gain(fll, cfg, fref, gains, n_gains);
-+	if (ret)
-+		return ret;
-+
-+	madera_fll_dbg(fll, "N=%d THETA=%d LAMBDA=%d\n",
-+			cfg->n, cfg->theta, cfg->lambda);
-+	madera_fll_dbg(fll, "FRATIO=0x%x(%d) REFCLK_DIV=0x%x(%d)\n",
-+			cfg->fratio, ratio, cfg->refdiv, 1 << cfg->refdiv);
-+	madera_fll_dbg(fll, "GAIN=0x%x(%d)\n", cfg->gain, 1 << cfg->gain);
-+
-+	return 0;
-+
-+}
-+
-+static bool madera_write_fll(struct madera *madera, unsigned int base,
-+			     struct madera_fll_cfg *cfg, int source,
-+			     bool sync, int gain)
-+{
-+	bool change, fll_change;
-+
-+	fll_change = false;
-+	regmap_update_bits_check(madera->regmap,
-+				 base + MADERA_FLL_CONTROL_3_OFFS,
-+				 MADERA_FLL1_THETA_MASK,
-+				 cfg->theta, &change);
-+	fll_change |= change;
-+	regmap_update_bits_check(madera->regmap,
-+				 base + MADERA_FLL_CONTROL_4_OFFS,
-+				 MADERA_FLL1_LAMBDA_MASK,
-+				 cfg->lambda, &change);
-+	fll_change |= change;
-+	regmap_update_bits_check(madera->regmap,
-+				 base + MADERA_FLL_CONTROL_5_OFFS,
-+				 MADERA_FLL1_FRATIO_MASK,
-+				 cfg->fratio << MADERA_FLL1_FRATIO_SHIFT,
-+				 &change);
-+	fll_change |= change;
-+	regmap_update_bits_check(madera->regmap,
-+				 base + MADERA_FLL_CONTROL_6_OFFS,
-+				 MADERA_FLL1_REFCLK_DIV_MASK |
-+				 MADERA_FLL1_REFCLK_SRC_MASK,
-+				 cfg->refdiv << MADERA_FLL1_REFCLK_DIV_SHIFT |
-+				 source << MADERA_FLL1_REFCLK_SRC_SHIFT,
-+				 &change);
-+	fll_change |= change;
-+
-+	if (sync) {
-+		regmap_update_bits_check(madera->regmap,
-+					 base + MADERA_FLL_SYNCHRONISER_7_OFFS,
-+					 MADERA_FLL1_GAIN_MASK,
-+					 gain << MADERA_FLL1_GAIN_SHIFT,
-+					 &change);
-+		fll_change |= change;
-+	} else {
-+		regmap_update_bits_check(madera->regmap,
-+					 base + MADERA_FLL_CONTROL_7_OFFS,
-+					 MADERA_FLL1_GAIN_MASK,
-+					 gain << MADERA_FLL1_GAIN_SHIFT,
-+					 &change);
-+		fll_change |= change;
-+	}
-+
-+	regmap_update_bits_check(madera->regmap,
-+				 base + MADERA_FLL_CONTROL_2_OFFS,
-+				 MADERA_FLL1_CTRL_UPD | MADERA_FLL1_N_MASK,
-+				 MADERA_FLL1_CTRL_UPD | cfg->n, &change);
-+	fll_change |= change;
-+
-+	return fll_change;
-+}
-+
-+static int madera_is_enabled_fll(struct madera_fll *fll, int base)
-+{
-+	struct madera *madera = fll->madera;
-+	unsigned int reg;
-+	int ret;
-+
-+	ret = regmap_read(madera->regmap,
-+			  base + MADERA_FLL_CONTROL_1_OFFS, &reg);
-+	if (ret != 0) {
-+		madera_fll_err(fll, "Failed to read current state: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return reg & MADERA_FLL1_ENA;
-+}
-+
-+static int madera_wait_for_fll(struct madera_fll *fll, bool requested)
-+{
-+	struct madera *madera = fll->madera;
-+	unsigned int val = 0;
-+	bool status;
-+	int i;
-+
-+	madera_fll_dbg(fll, "Waiting for FLL...\n");
-+
-+	for (i = 0; i < 30; i++) {
-+		regmap_read(madera->regmap, MADERA_IRQ1_RAW_STATUS_2, &val);
-+		status = val & (MADERA_FLL1_LOCK_STS1 << (fll->id - 1));
-+		if (status == requested)
-+			return 0;
-+
-+		switch (i) {
-+		case 0 ... 5:
-+			usleep_range(75, 125);
-+			break;
-+		case 11 ... 20:
-+			usleep_range(750, 1250);
-+			break;
-+		default:
-+			msleep(20);
-+			break;
-+		}
-+	}
-+
-+	madera_fll_warn(fll, "Timed out waiting for lock\n");
-+
-+	return -ETIMEDOUT;
-+}
-+
-+static bool madera_set_fll_phase_integrator(struct madera_fll *fll,
-+					    struct madera_fll_cfg *ref_cfg,
-+					    bool sync)
-+{
-+	unsigned int val;
-+	bool reg_change;
-+
-+	if (!sync && (ref_cfg->theta == 0))
-+		val = (1 << MADERA_FLL1_PHASE_ENA_SHIFT) |
-+			(2 << MADERA_FLL1_PHASE_GAIN_SHIFT);
-+	else
-+		val = 2 << MADERA_FLL1_PHASE_GAIN_SHIFT;
-+
-+	regmap_update_bits_check(fll->madera->regmap,
-+				 fll->base + MADERA_FLL_EFS_2_OFFS,
-+				 MADERA_FLL1_PHASE_ENA_MASK |
-+				 MADERA_FLL1_PHASE_GAIN_MASK,
-+				 val,
-+				 &reg_change);
-+
-+	return reg_change;
-+}
-+
-+static void madera_disable_fll(struct madera_fll *fll)
-+{
-+	struct madera *madera = fll->madera;
-+	unsigned int sync_reg_base;
-+	bool change;
-+
-+	switch (madera->type) {
-+	case CS47L35:
-+		sync_reg_base = fll->base + CS47L35_FLL_SYNCHRONISER_OFFS;
-+		break;
-+	default:
-+		sync_reg_base = fll->base + MADERA_FLL_SYNCHRONISER_OFFS;
-+		break;
-+	}
-+
-+	madera_fll_dbg(fll, "Disabling FLL\n");
-+
-+	regmap_update_bits(madera->regmap,
-+			   fll->base + MADERA_FLL_CONTROL_1_OFFS,
-+			   MADERA_FLL1_FREERUN, MADERA_FLL1_FREERUN);
-+	regmap_update_bits_check(madera->regmap,
-+				 fll->base + MADERA_FLL_CONTROL_1_OFFS,
-+				 MADERA_FLL1_ENA, 0, &change);
-+	regmap_update_bits(madera->regmap,
-+			   sync_reg_base + MADERA_FLL_SYNCHRONISER_1_OFFS,
-+			   MADERA_FLL1_SYNC_ENA, 0);
-+	regmap_update_bits(madera->regmap,
-+			   fll->base + MADERA_FLL_CONTROL_1_OFFS,
-+			   MADERA_FLL1_FREERUN, 0);
-+
-+	madera_wait_for_fll(fll, false);
-+
-+	if (change)
-+		pm_runtime_put_autosuspend(madera->dev);
-+}
-+
-+static int madera_enable_fll(struct madera_fll *fll)
-+{
-+	struct madera *madera = fll->madera;
-+	bool have_sync = false;
-+	int already_enabled = madera_is_enabled_fll(fll, fll->base);
-+	int sync_enabled;
-+	struct madera_fll_cfg cfg;
-+	unsigned int sync_reg_base;
-+	int gain, ret;
-+	bool fll_change = false;
-+
-+	if (already_enabled < 0)
-+		return already_enabled;	/* error getting current state */
-+
-+	if ((fll->ref_src < 0) || (fll->ref_freq == 0)) {
-+		madera_fll_err(fll, "No REFCLK\n");
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	madera_fll_dbg(fll, "Enabling FLL, initially %s\n",
-+			already_enabled ? "enabled" : "disabled");
-+
-+	if ((fll->fout < MADERA_FLL_MIN_FOUT) ||
-+	    (fll->fout > MADERA_FLL_MAX_FOUT)) {
-+		madera_fll_err(fll, "invalid fout %uHz\n", fll->fout);
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	switch (madera->type) {
-+	case CS47L35:
-+		sync_reg_base = fll->base + CS47L35_FLL_SYNCHRONISER_OFFS;
-+		break;
-+	default:
-+		sync_reg_base = fll->base + MADERA_FLL_SYNCHRONISER_OFFS;
-+		break;
-+	}
-+
-+	sync_enabled = madera_is_enabled_fll(fll, sync_reg_base);
-+	if (sync_enabled < 0)
-+		return sync_enabled;
-+
-+	if (already_enabled) {
-+		/* Facilitate smooth refclk across the transition */
-+		regmap_update_bits(fll->madera->regmap,
-+				   fll->base + MADERA_FLL_CONTROL_1_OFFS,
-+				   MADERA_FLL1_FREERUN,
-+				   MADERA_FLL1_FREERUN);
-+		udelay(32);
-+		regmap_update_bits(fll->madera->regmap,
-+				   fll->base + MADERA_FLL_CONTROL_7_OFFS,
-+				   MADERA_FLL1_GAIN_MASK, 0);
-+	}
-+
-+	/* Apply SYNCCLK setting */
-+	if (fll->sync_src >= 0) {
-+		ret = madera_calc_fll(fll, &cfg, fll->sync_freq, true);
-+		if (ret < 0)
-+			goto err;
-+
-+		fll_change |= madera_write_fll(madera, sync_reg_base,
-+						&cfg, fll->sync_src,
-+						true, cfg.gain);
-+		have_sync = true;
-+	}
-+
-+	if (already_enabled && !!sync_enabled != have_sync)
-+		madera_fll_warn(fll, "Synchroniser changed on active FLL\n");
-+
-+	/* Apply REFCLK setting */
-+	ret = madera_calc_fll(fll, &cfg, fll->ref_freq, false);
-+	if (ret < 0)
-+		goto err;
-+
-+	/* Ref path hardcodes lambda to 65536 when sync is on */
-+	if (have_sync && cfg.lambda)
-+		cfg.theta = (cfg.theta * (1 << 16)) / cfg.lambda;
-+
-+	switch (fll->madera->type) {
-+	case CS47L35:
-+		switch (fll->madera->rev) {
-+		case 0:
-+			break;
-+		default:
-+			fll_change |=
-+				madera_set_fll_phase_integrator(fll, &cfg,
-+								have_sync);
-+			break;
-+		}
-+		gain = cfg.gain;
-+		break;
-+	case CS47L85:
-+	case WM1840:
-+		gain = cfg.gain;
-+		break;
-+	default:
-+		fll_change |= madera_set_fll_phase_integrator(fll, &cfg,
-+							      have_sync);
-+		if (!have_sync && (cfg.theta == 0))
-+			gain = cfg.alt_gain;
-+		else
-+			gain = cfg.gain;
-+		break;
-+	}
-+
-+	fll_change |= madera_write_fll(madera, fll->base,
-+				      &cfg, fll->ref_src,
-+				      false, gain);
-+
-+	/*
-+	 * Increase the bandwidth if we're not using a low frequency
-+	 * sync source.
-+	 */
-+	if (have_sync && fll->sync_freq > 100000)
-+		regmap_update_bits(madera->regmap,
-+				sync_reg_base + MADERA_FLL_SYNCHRONISER_7_OFFS,
-+				MADERA_FLL1_SYNC_DFSAT_MASK, 0);
-+	else
-+		regmap_update_bits(madera->regmap,
-+				sync_reg_base + MADERA_FLL_SYNCHRONISER_7_OFFS,
-+				MADERA_FLL1_SYNC_DFSAT_MASK,
-+				MADERA_FLL1_SYNC_DFSAT);
-+
-+	if (!already_enabled)
-+		pm_runtime_get_sync(madera->dev);
-+
-+	if (have_sync)
-+		regmap_update_bits(madera->regmap,
-+				sync_reg_base + MADERA_FLL_SYNCHRONISER_1_OFFS,
-+				MADERA_FLL1_SYNC_ENA,
-+				MADERA_FLL1_SYNC_ENA);
-+	regmap_update_bits(madera->regmap,
-+			   fll->base + MADERA_FLL_CONTROL_1_OFFS,
-+			   MADERA_FLL1_ENA, MADERA_FLL1_ENA);
-+
-+	if (already_enabled)
-+		regmap_update_bits(madera->regmap,
-+				   fll->base + MADERA_FLL_CONTROL_1_OFFS,
-+				   MADERA_FLL1_FREERUN, 0);
-+
-+	if (fll_change || !already_enabled)
-+		madera_wait_for_fll(fll, true);
-+
-+	return 0;
-+
-+err:
-+	 /* In case of error don't leave the FLL running with an old config */
-+	madera_disable_fll(fll);
-+
-+	return ret;
-+}
-+
-+static int madera_apply_fll(struct madera_fll *fll)
-+{
-+	if (fll->fout) {
-+		return madera_enable_fll(fll);
-+	} else {
-+		madera_disable_fll(fll);
-+		return 0;
-+	}
-+}
-+
-+int madera_set_fll_syncclk(struct madera_fll *fll, int source,
-+			   unsigned int fref, unsigned int fout)
-+{
-+	/*
-+	 * fout is ignored, since the synchronizer is an optional extra
-+	 * constraint on the Fout generated from REFCLK, so the Fout is
-+	 * set when configuring REFCLK
-+	 */
-+
-+	if (fll->sync_src == source && fll->sync_freq == fref)
-+		return 0;
-+
-+	fll->sync_src = source;
-+	fll->sync_freq = fref;
-+
-+	return madera_apply_fll(fll);
-+}
-+EXPORT_SYMBOL_GPL(madera_set_fll_syncclk);
-+
-+int madera_set_fll_refclk(struct madera_fll *fll, int source,
-+			  unsigned int fref, unsigned int fout)
-+{
-+	int ret;
-+
-+	if (fll->ref_src == source &&
-+	    fll->ref_freq == fref && fll->fout == fout)
-+		return 0;
-+
-+	/*
-+	 * Changes of fout on an enabled FLL aren't allowed except when
-+	 * setting fout==0 to disable the FLL
-+	 */
-+	if (fout && (fout != fll->fout)) {
-+		ret = madera_is_enabled_fll(fll, fll->base);
-+		if (ret < 0)
-+			return ret;
-+
-+		if (ret) {
-+			madera_fll_err(fll, "Can't change Fout on active FLL\n");
-+			return -EBUSY;
-+		}
-+	}
-+
-+	fll->ref_src = source;
-+	fll->ref_freq = fref;
-+	fll->fout = fout;
-+
-+	return madera_apply_fll(fll);
-+}
-+EXPORT_SYMBOL_GPL(madera_set_fll_refclk);
-+
-+int madera_init_fll(struct madera *madera, int id, int base,
-+		    struct madera_fll *fll)
-+{
-+	fll->id = id;
-+	fll->base = base;
-+	fll->madera = madera;
-+	fll->ref_src = MADERA_FLL_SRC_NONE;
-+	fll->sync_src = MADERA_FLL_SRC_NONE;
-+
-+	regmap_update_bits(madera->regmap,
-+			   fll->base + MADERA_FLL_CONTROL_1_OFFS,
-+			   MADERA_FLL1_FREERUN, 0);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(madera_init_fll);
-+
-+static const struct reg_sequence madera_fll_ao_32K_49M_patch[] = {
-+	{ MADERA_FLLAO_CONTROL_2,  0x02EE },
-+	{ MADERA_FLLAO_CONTROL_3,  0x0000 },
-+	{ MADERA_FLLAO_CONTROL_4,  0x0001 },
-+	{ MADERA_FLLAO_CONTROL_5,  0x0002 },
-+	{ MADERA_FLLAO_CONTROL_6,  0x8001 },
-+	{ MADERA_FLLAO_CONTROL_7,  0x0004 },
-+	{ MADERA_FLLAO_CONTROL_8,  0x0077 },
-+	{ MADERA_FLLAO_CONTROL_10, 0x06D8 },
-+	{ MADERA_FLLAO_CONTROL_11, 0x0085 },
-+	{ MADERA_FLLAO_CONTROL_2,  0x82EE },
-+};
-+
-+static const struct reg_sequence madera_fll_ao_32K_45M_patch[] = {
-+	{ MADERA_FLLAO_CONTROL_2,  0x02B1 },
-+	{ MADERA_FLLAO_CONTROL_3,  0x0001 },
-+	{ MADERA_FLLAO_CONTROL_4,  0x0010 },
-+	{ MADERA_FLLAO_CONTROL_5,  0x0002 },
-+	{ MADERA_FLLAO_CONTROL_6,  0x8001 },
-+	{ MADERA_FLLAO_CONTROL_7,  0x0004 },
-+	{ MADERA_FLLAO_CONTROL_8,  0x0077 },
-+	{ MADERA_FLLAO_CONTROL_10, 0x06D8 },
-+	{ MADERA_FLLAO_CONTROL_11, 0x0005 },
-+	{ MADERA_FLLAO_CONTROL_2,  0x82B1 },
-+};
-+
-+struct madera_fllao_patch {
-+	unsigned int fin;
-+	unsigned int fout;
-+	const struct reg_sequence *patch;
-+	unsigned int patch_size;
-+};
-+
-+static const struct madera_fllao_patch madera_fllao_settings[] = {
-+	{
-+		.fin = 32768,
-+		.fout = 49152000,
-+		.patch = madera_fll_ao_32K_49M_patch,
-+		.patch_size = ARRAY_SIZE(madera_fll_ao_32K_49M_patch),
-+
-+	},
-+	{
-+		.fin = 32768,
-+		.fout = 45158400,
-+		.patch = madera_fll_ao_32K_45M_patch,
-+		.patch_size = ARRAY_SIZE(madera_fll_ao_32K_45M_patch),
-+	},
-+};
-+
-+static int madera_enable_fll_ao(struct madera_fll *fll,
-+				const struct reg_sequence *patch,
-+				unsigned int patch_size)
-+{
-+	struct madera *madera = fll->madera;
-+	int already_enabled = madera_is_enabled_fll(fll, fll->base);
-+	unsigned int val;
-+	int i;
-+
-+	if (already_enabled < 0)
-+		return already_enabled;
-+
-+	if (!already_enabled)
-+		pm_runtime_get_sync(madera->dev);
-+
-+	madera_fll_dbg(fll, "Enabling FLL_AO, initially %s\n",
-+			already_enabled ? "enabled" : "disabled");
-+
-+	/* FLL_AO_HOLD must be set before configuring any registers */
-+	regmap_update_bits(fll->madera->regmap,
-+			   fll->base + MADERA_FLLAO_CONTROL_1_OFFS,
-+			   MADERA_FLL_AO_HOLD, MADERA_FLL_AO_HOLD);
-+
-+	for (i = 0; i < patch_size; i++) {
-+		val = patch[i].def;
-+
-+		/* modify the patch to apply fll->ref_src as input clock */
-+		if (patch[i].reg == MADERA_FLLAO_CONTROL_6) {
-+			val &= ~MADERA_FLL_AO_REFCLK_SRC_MASK;
-+			val |= (fll->ref_src << MADERA_FLL_AO_REFCLK_SRC_SHIFT)
-+				& MADERA_FLL_AO_REFCLK_SRC_MASK;
-+		}
-+
-+		regmap_write(madera->regmap, patch[i].reg, val);
-+	}
-+
-+	regmap_update_bits(madera->regmap,
-+			   fll->base + MADERA_FLLAO_CONTROL_1_OFFS,
-+			   MADERA_FLL_AO_ENA, MADERA_FLL_AO_ENA);
-+
-+	/* Release the hold so that fll_ao locks to external frequency */
-+	regmap_update_bits(madera->regmap,
-+			   fll->base + MADERA_FLLAO_CONTROL_1_OFFS,
-+			   MADERA_FLL_AO_HOLD, 0);
-+
-+	if (!already_enabled)
-+		madera_wait_for_fll(fll, true);
-+
-+	return 0;
-+}
-+
-+static int madera_disable_fll_ao(struct madera_fll *fll)
-+{
-+	struct madera *madera = fll->madera;
-+	bool change;
-+
-+	madera_fll_dbg(fll, "Disabling FLL_AO\n");
-+
-+	regmap_update_bits(madera->regmap,
-+			   fll->base + MADERA_FLLAO_CONTROL_1_OFFS,
-+			   MADERA_FLL_AO_HOLD, MADERA_FLL_AO_HOLD);
-+	regmap_update_bits_check(madera->regmap,
-+				 fll->base + MADERA_FLLAO_CONTROL_1_OFFS,
-+				 MADERA_FLL_AO_ENA, 0, &change);
-+
-+	madera_wait_for_fll(fll, false);
-+
-+	/*
-+	 * ctrl_up gates the writes to all fll_ao register, setting it to 0
-+	 * here ensures that after a runtime suspend/resume cycle when one
-+	 * enables the fllao then ctrl_up is the last bit that is configured
-+	 * by the fllao enable code rather than the cache sync operation which
-+	 * would have updated it much earlier before writing out all fllao
-+	 * registers
-+	 */
-+	regmap_update_bits(madera->regmap,
-+			   fll->base + MADERA_FLLAO_CONTROL_2_OFFS,
-+			   MADERA_FLL_AO_CTRL_UPD_MASK, 0);
-+
-+	if (change)
-+		pm_runtime_put_autosuspend(madera->dev);
-+
-+	return 0;
-+}
-+
-+int madera_set_fll_ao_refclk(struct madera_fll *fll, int source,
-+			     unsigned int fin, unsigned int fout)
-+{
-+	int ret = 0;
-+	const struct reg_sequence *patch = NULL;
-+	int patch_size = 0;
-+	unsigned int i;
-+
-+	if (fll->ref_src == source &&
-+	    fll->ref_freq == fin && fll->fout == fout)
-+		return 0;
-+
-+	madera_fll_dbg(fll, "Change FLL_AO refclk to fin=%u fout=%u source=%d\n",
-+			fin, fout, source);
-+
-+	if (fout && (fll->ref_freq != fin || fll->fout != fout)) {
-+		for (i = 0; i < ARRAY_SIZE(madera_fllao_settings); i++) {
-+			if (madera_fllao_settings[i].fin == fin &&
-+			    madera_fllao_settings[i].fout == fout)
-+				break;
-+		}
-+
-+		if (i == ARRAY_SIZE(madera_fllao_settings)) {
-+			madera_fll_err(fll,
-+					"No matching configuration for FLL_AO\n");
-+			return -EINVAL;
-+		}
-+
-+		patch = madera_fllao_settings[i].patch;
-+		patch_size = madera_fllao_settings[i].patch_size;
-+	}
-+
-+	fll->ref_src = source;
-+	fll->ref_freq = fin;
-+	fll->fout = fout;
-+
-+	if (fout)
-+		ret = madera_enable_fll_ao(fll, patch, patch_size);
-+	else
-+		madera_disable_fll_ao(fll);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(madera_set_fll_ao_refclk);
-+
-+/**
-+ * madera_set_output_mode - Set the mode of the specified output
-+ *
-+ * @codec: Device to configure
-+ * @output: Output number
-+ * @diff: True to set the output to differential mode
-+ *
-+ * Some systems use external analogue switches to connect more
-+ * analogue devices to the CODEC than are supported by the device.  In
-+ * some systems this requires changing the switched output from single
-+ * ended to differential mode dynamically at runtime, an operation
-+ * supported using this function.
-+ *
-+ * Most systems have a single static configuration and should use
-+ * platform data instead.
-+ */
-+int madera_set_output_mode(struct snd_soc_codec *codec, int output, bool diff)
-+{
-+	unsigned int reg, val;
-+	int ret;
-+
-+	if (output < 1 || output > MADERA_MAX_OUTPUT)
-+		return -EINVAL;
-+
-+	reg = MADERA_OUTPUT_PATH_CONFIG_1L + (output - 1) * 8;
-+
-+	if (diff)
-+		val = MADERA_OUT1_MONO;
-+	else
-+		val = 0;
-+
-+	ret = snd_soc_update_bits(codec, reg, MADERA_OUT1_MONO, val);
-+	if (ret < 0)
-+		return ret;
-+	else
-+		return 0;
-+}
-+EXPORT_SYMBOL_GPL(madera_set_output_mode);
-+
-+static bool madera_eq_filter_unstable(bool mode, __be16 _a, __be16 _b)
-+{
-+	s16 a = be16_to_cpu(_a);
-+	s16 b = be16_to_cpu(_b);
-+
-+	if (!mode) {
-+		return abs(a) >= 4096;
-+	} else {
-+		if (abs(b) >= 4096)
-+			return true;
-+
-+		return (abs((a << 16) / (4096 - b)) >= 4096 << 4);
-+	}
-+}
-+
-+int madera_eq_coeff_put(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct madera *madera = dev_get_drvdata(codec->dev->parent);
-+	struct soc_bytes *params = (void *)kcontrol->private_value;
-+	unsigned int val;
-+	__be16 *data;
-+	int len;
-+	int ret;
-+
-+	len = params->num_regs * regmap_get_val_bytes(madera->regmap);
-+
-+	data = kmemdup(ucontrol->value.bytes.data, len, GFP_KERNEL | GFP_DMA);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	data[0] &= cpu_to_be16(MADERA_EQ1_B1_MODE);
-+
-+	if (madera_eq_filter_unstable(!!data[0], data[1], data[2]) ||
-+	    madera_eq_filter_unstable(true, data[4], data[5]) ||
-+	    madera_eq_filter_unstable(true, data[8], data[9]) ||
-+	    madera_eq_filter_unstable(true, data[12], data[13]) ||
-+	    madera_eq_filter_unstable(false, data[16], data[17])) {
-+		dev_err(madera->dev, "Rejecting unstable EQ coefficients\n");
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	ret = regmap_read(madera->regmap, params->base, &val);
-+	if (ret != 0)
-+		goto out;
-+
-+	val &= ~MADERA_EQ1_B1_MODE;
-+	data[0] |= cpu_to_be16(val);
-+
-+	ret = regmap_raw_write(madera->regmap, params->base, data, len);
-+
-+out:
-+	kfree(data);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(madera_eq_coeff_put);
-+
-+int madera_lhpf_coeff_put(struct snd_kcontrol *kcontrol,
-+			  struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_soc_kcontrol_codec(kcontrol);
-+	struct madera *madera = dev_get_drvdata(codec->dev->parent);
-+	__be16 *data = (__be16 *)ucontrol->value.bytes.data;
-+	s16 val = be16_to_cpu(*data);
-+
-+	if (abs(val) >= 4096) {
-+		dev_err(madera->dev, "Rejecting unstable LHPF coefficients\n");
-+		return -EINVAL;
-+	}
-+
-+	return snd_soc_bytes_put(kcontrol, ucontrol);
-+}
-+EXPORT_SYMBOL_GPL(madera_lhpf_coeff_put);
-+
-+MODULE_DESCRIPTION("ASoC Cirrus Logic Madera codec support");
-+MODULE_AUTHOR("Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>");
-+MODULE_AUTHOR("Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>");
-+MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/codecs/madera.h b/sound/soc/codecs/madera.h
-new file mode 100644
-index 0000000..58f203b
---- /dev/null
-+++ b/sound/soc/codecs/madera.h
-@@ -0,0 +1,470 @@
-+/*
-+ * madera.h - Cirrus Logic Madera class codecs common support
-+ *
-+ * Copyright 2015-2017 Cirrus Logic
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef ASOC_MADERA_H
-+#define ASOC_MADERA_H
-+
-+#include <linux/completion.h>
-+
-+#include <sound/soc.h>
-+#include <sound/madera-pdata.h>
-+
-+#include "wm_adsp.h"
-+
-+#define MADERA_FLL1_REFCLK		1
-+#define MADERA_FLL2_REFCLK		2
-+#define MADERA_FLL3_REFCLK		3
-+#define MADERA_FLLAO_REFCLK		4
-+#define MADERA_FLL1_SYNCCLK		5
-+#define MADERA_FLL2_SYNCCLK		6
-+#define MADERA_FLL3_SYNCCLK		7
-+#define MADERA_FLLAO_SYNCCLK		8
-+
-+#define MADERA_FLL_SRC_NONE		-1
-+#define MADERA_FLL_SRC_MCLK1		0
-+#define MADERA_FLL_SRC_MCLK2		1
-+#define MADERA_FLL_SRC_SLIMCLK		3
-+#define MADERA_FLL_SRC_FLL1		4
-+#define MADERA_FLL_SRC_FLL2		5
-+#define MADERA_FLL_SRC_AIF1BCLK		8
-+#define MADERA_FLL_SRC_AIF2BCLK		9
-+#define MADERA_FLL_SRC_AIF3BCLK		10
-+#define MADERA_FLL_SRC_AIF4BCLK		11
-+#define MADERA_FLL_SRC_AIF1LRCLK	12
-+#define MADERA_FLL_SRC_AIF2LRCLK	13
-+#define MADERA_FLL_SRC_AIF3LRCLK	14
-+#define MADERA_FLL_SRC_AIF4LRCLK	15
-+
-+#define MADERA_CLK_SYSCLK_1		1
-+#define MADERA_CLK_ASYNCCLK_1		2
-+#define MADERA_CLK_OPCLK		3
-+#define MADERA_CLK_ASYNC_OPCLK		4
-+#define MADERA_CLK_SYSCLK_2		5
-+#define MADERA_CLK_SYSCLK_3		6
-+#define MADERA_CLK_ASYNCCLK_2		7
-+#define MADERA_CLK_DSPCLK		8
-+
-+#define MADERA_CLK_SRC_MCLK1		0x0
-+#define MADERA_CLK_SRC_MCLK2		0x1
-+#define MADERA_CLK_SRC_FLL1		0x4
-+#define MADERA_CLK_SRC_FLL2		0x5
-+#define MADERA_CLK_SRC_FLL3		0x6
-+#define MADERA_CLK_SRC_FLLAO_HI		0x7
-+#define MADERA_CLK_SRC_FLL1_DIV6	0x7
-+#define MADERA_CLK_SRC_AIF1BCLK		0x8
-+#define MADERA_CLK_SRC_AIF2BCLK		0x9
-+#define MADERA_CLK_SRC_AIF3BCLK		0xA
-+#define MADERA_CLK_SRC_AIF4BCLK		0xB
-+#define MADERA_CLK_SRC_FLLAO		0xF
-+
-+#define MADERA_MIXER_VOL_MASK		0x00FE
-+#define MADERA_MIXER_VOL_SHIFT		1
-+#define MADERA_MIXER_VOL_WIDTH		7
-+
-+#define MADERA_DOM_GRP_FX		0
-+#define MADERA_DOM_GRP_ASRC1_RATE_1	1
-+#define MADERA_DOM_GRP_ASRC1_RATE_2	2
-+#define MADERA_DOM_GRP_ASRC2_RATE_1	3
-+#define MADERA_DOM_GRP_ASRC2_RATE_2	4
-+#define MADERA_DOM_GRP_ISRC1_DEC	5
-+#define MADERA_DOM_GRP_ISRC1_INT	6
-+#define MADERA_DOM_GRP_ISRC2_DEC	7
-+#define MADERA_DOM_GRP_ISRC2_INT	8
-+#define MADERA_DOM_GRP_ISRC3_DEC	9
-+#define MADERA_DOM_GRP_ISRC3_INT	10
-+#define MADERA_DOM_GRP_ISRC4_DEC	11
-+#define MADERA_DOM_GRP_ISRC4_INT	12
-+#define MADERA_DOM_GRP_OUT		13
-+#define MADERA_DOM_GRP_SPD		14
-+#define MADERA_DOM_GRP_DSP1		15
-+#define MADERA_DOM_GRP_DSP2		16
-+#define MADERA_DOM_GRP_DSP3		17
-+#define MADERA_DOM_GRP_DSP4		18
-+#define MADERA_DOM_GRP_DSP5		19
-+#define MADERA_DOM_GRP_DSP6		20
-+#define MADERA_DOM_GRP_DSP7		21
-+#define MADERA_DOM_GRP_AIF1		22
-+#define MADERA_DOM_GRP_AIF2		23
-+#define MADERA_DOM_GRP_AIF3		24
-+#define MADERA_DOM_GRP_AIF4		25
-+#define MADERA_DOM_GRP_SLIMBUS		26
-+#define MADERA_DOM_GRP_PWM		27
-+#define MADERA_DOM_GRP_DFC		28
-+#define MADERA_N_DOM_GRPS		29
-+
-+#define MADERA_MAX_DAI			11
-+#define MADERA_MAX_ADSP			7
-+
-+#define MADERA_NUM_MIXER_INPUTS		146
-+
-+struct madera;
-+struct wm_adsp;
-+
-+struct madera_voice_trigger_info {
-+	/** Which core triggered, 1-based (1 = DSP1, ...) */
-+	int core_num;
-+};
-+
-+struct madera_dai_priv {
-+	int clk;
-+	struct snd_pcm_hw_constraint_list constraint;
-+};
-+
-+struct madera_priv {
-+	struct wm_adsp adsp[MADERA_MAX_ADSP];
-+	struct madera *madera;
-+	struct device *dev;
-+	int sysclk;
-+	int asyncclk;
-+	int dspclk;
-+	struct madera_dai_priv dai[MADERA_MAX_DAI];
-+
-+	int num_inputs;
-+
-+	unsigned int in_pending;
-+
-+	unsigned int out_up_pending;
-+	unsigned int out_up_delay;
-+	unsigned int out_down_pending;
-+	unsigned int out_down_delay;
-+
-+	unsigned int adsp_rate_cache[MADERA_MAX_ADSP];
-+
-+	struct mutex rate_lock;
-+
-+	int tdm_width[MADERA_MAX_AIF];
-+	int tdm_slots[MADERA_MAX_AIF];
-+
-+	int domain_group_ref[MADERA_N_DOM_GRPS];
-+};
-+
-+struct madera_fll_cfg {
-+	int n;
-+	unsigned int theta;
-+	unsigned int lambda;
-+	int refdiv;
-+	int fratio;
-+	int gain;
-+	int alt_gain;
-+};
-+
-+struct madera_fll {
-+	struct madera *madera;
-+	int id;
-+	unsigned int base;
-+
-+	unsigned int fout;
-+
-+	int sync_src;
-+	unsigned int sync_freq;
-+
-+	int ref_src;
-+	unsigned int ref_freq;
-+	struct madera_fll_cfg ref_cfg;
-+};
-+
-+struct madera_enum {
-+	struct soc_enum mixer_enum;
-+	int val;
-+};
-+
-+extern const unsigned int madera_ana_tlv[];
-+extern const unsigned int madera_eq_tlv[];
-+extern const unsigned int madera_digital_tlv[];
-+extern const unsigned int madera_noise_tlv[];
-+extern const unsigned int madera_ng_tlv[];
-+
-+extern const unsigned int madera_mixer_tlv[];
-+extern const char * const madera_mixer_texts[MADERA_NUM_MIXER_INPUTS];
-+extern unsigned int madera_mixer_values[MADERA_NUM_MIXER_INPUTS];
-+
-+#define MADERA_GAINMUX_CONTROLS(name, base) \
-+	SOC_SINGLE_RANGE_TLV(name " Input Volume", base + 1,		\
-+			     MADERA_MIXER_VOL_SHIFT, 0x20, 0x50, 0,	\
-+			     madera_mixer_tlv)
-+
-+#define MADERA_MIXER_CONTROLS(name, base) \
-+	SOC_SINGLE_RANGE_TLV(name " Input 1 Volume", base + 1,		\
-+			     MADERA_MIXER_VOL_SHIFT, 0x20, 0x50, 0,	\
-+			     madera_mixer_tlv),			\
-+	SOC_SINGLE_RANGE_TLV(name " Input 2 Volume", base + 3,		\
-+			     MADERA_MIXER_VOL_SHIFT, 0x20, 0x50, 0,	\
-+			     madera_mixer_tlv),			\
-+	SOC_SINGLE_RANGE_TLV(name " Input 3 Volume", base + 5,		\
-+			     MADERA_MIXER_VOL_SHIFT, 0x20, 0x50, 0,	\
-+			     madera_mixer_tlv),			\
-+	SOC_SINGLE_RANGE_TLV(name " Input 4 Volume", base + 7,		\
-+			     MADERA_MIXER_VOL_SHIFT, 0x20, 0x50, 0,	\
-+			     madera_mixer_tlv)
-+
-+#define MADERA_MUX_ENUM_DECL(name, reg) \
-+	SOC_VALUE_ENUM_SINGLE_AUTODISABLE_DECL( \
-+		name, reg, 0, 0xff, madera_mixer_texts, madera_mixer_values)
-+
-+#define MADERA_MUX_CTL_DECL(name) \
-+	const struct snd_kcontrol_new name##_mux =	\
-+		SOC_DAPM_ENUM("Route", name##_enum)
-+
-+#define MADERA_MUX_ENUMS(name, base_reg) \
-+	static MADERA_MUX_ENUM_DECL(name##_enum, base_reg);	\
-+	static MADERA_MUX_CTL_DECL(name)
-+
-+#define MADERA_MIXER_ENUMS(name, base_reg) \
-+	MADERA_MUX_ENUMS(name##_in1, base_reg);     \
-+	MADERA_MUX_ENUMS(name##_in2, base_reg + 2); \
-+	MADERA_MUX_ENUMS(name##_in3, base_reg + 4); \
-+	MADERA_MUX_ENUMS(name##_in4, base_reg + 6)
-+
-+#define MADERA_DSP_AUX_ENUMS(name, base_reg) \
-+	MADERA_MUX_ENUMS(name##_aux1, base_reg);	\
-+	MADERA_MUX_ENUMS(name##_aux2, base_reg + 8);	\
-+	MADERA_MUX_ENUMS(name##_aux3, base_reg + 16);	\
-+	MADERA_MUX_ENUMS(name##_aux4, base_reg + 24);	\
-+	MADERA_MUX_ENUMS(name##_aux5, base_reg + 32);	\
-+	MADERA_MUX_ENUMS(name##_aux6, base_reg + 40)
-+
-+#define MADERA_MUX(name, ctrl) \
-+	SND_SOC_DAPM_MUX(name, SND_SOC_NOPM, 0, 0, ctrl)
-+
-+#define MADERA_MUX_WIDGETS(name, name_str) \
-+	MADERA_MUX(name_str " Input 1", &name##_mux)
-+
-+#define MADERA_MIXER_WIDGETS(name, name_str)	\
-+	MADERA_MUX(name_str " Input 1", &name##_in1_mux), \
-+	MADERA_MUX(name_str " Input 2", &name##_in2_mux), \
-+	MADERA_MUX(name_str " Input 3", &name##_in3_mux), \
-+	MADERA_MUX(name_str " Input 4", &name##_in4_mux), \
-+	SND_SOC_DAPM_MIXER(name_str " Mixer", SND_SOC_NOPM, 0, 0, NULL, 0)
-+
-+#define MADERA_DSP_WIDGETS(name, name_str)			\
-+	MADERA_MIXER_WIDGETS(name##L, name_str "L"),		\
-+	MADERA_MIXER_WIDGETS(name##R, name_str "R"),		\
-+	MADERA_MUX(name_str " Aux 1", &name##_aux1_mux),	\
-+	MADERA_MUX(name_str " Aux 2", &name##_aux2_mux),	\
-+	MADERA_MUX(name_str " Aux 3", &name##_aux3_mux),	\
-+	MADERA_MUX(name_str " Aux 4", &name##_aux4_mux),	\
-+	MADERA_MUX(name_str " Aux 5", &name##_aux5_mux),	\
-+	MADERA_MUX(name_str " Aux 6", &name##_aux6_mux)
-+
-+#define MADERA_MUX_ROUTES(widget, name) \
-+	{ widget, NULL, name " Input 1" }, \
-+	MADERA_MIXER_INPUT_ROUTES(name " Input 1")
-+
-+#define MADERA_MIXER_ROUTES(widget, name)		\
-+	{ widget, NULL, name " Mixer" },		\
-+	{ name " Mixer", NULL, name " Input 1" },	\
-+	{ name " Mixer", NULL, name " Input 2" },	\
-+	{ name " Mixer", NULL, name " Input 3" },	\
-+	{ name " Mixer", NULL, name " Input 4" },	\
-+	MADERA_MIXER_INPUT_ROUTES(name " Input 1"),	\
-+	MADERA_MIXER_INPUT_ROUTES(name " Input 2"),	\
-+	MADERA_MIXER_INPUT_ROUTES(name " Input 3"),	\
-+	MADERA_MIXER_INPUT_ROUTES(name " Input 4")
-+
-+#define MADERA_DSP_ROUTES(name)				\
-+	{ name, NULL, name " Preloader"},		\
-+	{ name " Preloader", NULL, "SYSCLK"},		\
-+	{ name " Preloader", NULL, "DSPCLK"},		\
-+	{ name, NULL, name " Aux 1" },			\
-+	{ name, NULL, name " Aux 2" },			\
-+	{ name, NULL, name " Aux 3" },			\
-+	{ name, NULL, name " Aux 4" },			\
-+	{ name, NULL, name " Aux 5" },			\
-+	{ name, NULL, name " Aux 6" },			\
-+	MADERA_MIXER_INPUT_ROUTES(name " Aux 1"),	\
-+	MADERA_MIXER_INPUT_ROUTES(name " Aux 2"),	\
-+	MADERA_MIXER_INPUT_ROUTES(name " Aux 3"),	\
-+	MADERA_MIXER_INPUT_ROUTES(name " Aux 4"),	\
-+	MADERA_MIXER_INPUT_ROUTES(name " Aux 5"),	\
-+	MADERA_MIXER_INPUT_ROUTES(name " Aux 6"),	\
-+	MADERA_MIXER_ROUTES(name, name "L"),		\
-+	MADERA_MIXER_ROUTES(name, name "R")
-+
-+#define MADERA_SAMPLE_RATE_CONTROL(name, domain) \
-+	SOC_ENUM(name, madera_sample_rate[(domain) - 2])
-+
-+#define MADERA_RATE_ENUM(xname, xenum) \
-+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname,\
-+	.info = snd_soc_info_enum_double, \
-+	.get = snd_soc_get_enum_double, .put = madera_rate_put, \
-+	.private_value = (unsigned long)&xenum }
-+
-+#define MADERA_EQ_CONTROL(xname, xbase)				\
-+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname,	\
-+	.info = snd_soc_bytes_info, .get = snd_soc_bytes_get,	\
-+	.put = madera_eq_coeff_put, .private_value =		\
-+	((unsigned long)&(struct soc_bytes) { .base = xbase,	\
-+	 .num_regs = 20, .mask = ~MADERA_EQ1_B1_MODE }) }
-+
-+#define MADERA_LHPF_CONTROL(xname, xbase)			\
-+{	.iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname,	\
-+	.info = snd_soc_bytes_info, .get = snd_soc_bytes_get,	\
-+	.put = madera_lhpf_coeff_put, .private_value =		\
-+	((unsigned long)&(struct soc_bytes) { .base = xbase,	\
-+	 .num_regs = 1 }) }
-+
-+#define MADERA_RATES SNDRV_PCM_RATE_KNOT
-+
-+#define MADERA_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | \
-+			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S32_LE)
-+
-+#define MADERA_OSR_ENUM_SIZE		5
-+#define MADERA_SYNC_RATE_ENUM_SIZE	3
-+#define MADERA_ASYNC_RATE_ENUM_SIZE	2
-+#define MADERA_RATE_ENUM_SIZE \
-+		(MADERA_SYNC_RATE_ENUM_SIZE + MADERA_ASYNC_RATE_ENUM_SIZE)
-+#define MADERA_SAMPLE_RATE_ENUM_SIZE	16
-+#define MADERA_DFC_TYPE_ENUM_SIZE	5
-+#define MADERA_DFC_WIDTH_ENUM_SIZE	5
-+
-+extern const struct snd_soc_dai_ops madera_dai_ops;
-+extern const struct snd_soc_dai_ops madera_simple_dai_ops;
-+
-+extern const struct snd_kcontrol_new madera_inmux[];
-+
-+extern const char * const madera_rate_text[MADERA_RATE_ENUM_SIZE];
-+extern const unsigned int madera_rate_val[MADERA_RATE_ENUM_SIZE];
-+extern const char * const madera_sample_rate_text[MADERA_SAMPLE_RATE_ENUM_SIZE];
-+extern const unsigned int madera_sample_rate_val[MADERA_SAMPLE_RATE_ENUM_SIZE];
-+extern const char * const madera_dfc_width_text[MADERA_DFC_WIDTH_ENUM_SIZE];
-+extern const unsigned int madera_dfc_width_val[MADERA_DFC_WIDTH_ENUM_SIZE];
-+extern const char * const madera_dfc_type_text[MADERA_DFC_TYPE_ENUM_SIZE];
-+extern const unsigned int madera_dfc_type_val[MADERA_DFC_TYPE_ENUM_SIZE];
-+
-+extern const struct soc_enum madera_sample_rate[];
-+extern const struct soc_enum madera_isrc_fsl[];
-+extern const struct soc_enum madera_isrc_fsh[];
-+extern const struct soc_enum madera_asrc1_rate[];
-+extern const struct soc_enum madera_asrc2_rate[];
-+extern const struct soc_enum madera_dfc_width[];
-+extern const struct soc_enum madera_dfc_type[];
-+extern const struct soc_enum madera_spdif_rate;
-+
-+extern const struct soc_enum madera_in_vi_ramp;
-+extern const struct soc_enum madera_in_vd_ramp;
-+
-+extern const struct soc_enum madera_out_vi_ramp;
-+extern const struct soc_enum madera_out_vd_ramp;
-+
-+extern const struct soc_enum madera_lhpf1_mode;
-+extern const struct soc_enum madera_lhpf2_mode;
-+extern const struct soc_enum madera_lhpf3_mode;
-+extern const struct soc_enum madera_lhpf4_mode;
-+
-+extern const struct soc_enum madera_ng_hold;
-+extern const struct soc_enum madera_in_hpf_cut_enum;
-+extern const struct soc_enum madera_in_dmic_osr[];
-+
-+extern const struct soc_enum madera_output_anc_src[];
-+extern const struct soc_enum madera_anc_input_src[];
-+extern const struct soc_enum madera_anc_ng_enum;
-+
-+extern const struct snd_kcontrol_new madera_dsp_trigger_output_mux[];
-+extern const struct snd_kcontrol_new madera_drc_activity_output_mux[];
-+
-+extern const struct snd_kcontrol_new madera_adsp_rate_controls[];
-+
-+const char *madera_sample_rate_val_to_name(unsigned int rate_val);
-+
-+int madera_dfc_put(struct snd_kcontrol *kcontrol,
-+		   struct snd_ctl_elem_value *ucontrol);
-+
-+int madera_lp_mode_put(struct snd_kcontrol *kcontrol,
-+		       struct snd_ctl_elem_value *ucontrol);
-+
-+int madera_out1_demux_put(struct snd_kcontrol *kcontrol,
-+			  struct snd_ctl_elem_value *ucontrol);
-+
-+int madera_dre_put(struct snd_kcontrol *kcontrol,
-+		   struct snd_ctl_elem_value *ucontrol);
-+
-+int madera_rate_put(struct snd_kcontrol *kcontrol,
-+		    struct snd_ctl_elem_value *ucontrol);
-+
-+int madera_eq_coeff_put(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_value *ucontrol);
-+int madera_lhpf_coeff_put(struct snd_kcontrol *kcontrol,
-+			  struct snd_ctl_elem_value *ucontrol);
-+
-+int madera_sysclk_ev(struct snd_soc_dapm_widget *w,
-+		     struct snd_kcontrol *kcontrol, int event);
-+int madera_spk_ev(struct snd_soc_dapm_widget *w,
-+		  struct snd_kcontrol *kcontrol, int event);
-+int madera_in_ev(struct snd_soc_dapm_widget *w,
-+		 struct snd_kcontrol *kcontrol, int event);
-+int madera_out_ev(struct snd_soc_dapm_widget *w,
-+		  struct snd_kcontrol *kcontrol, int event);
-+int madera_hp_ev(struct snd_soc_dapm_widget *w,
-+		 struct snd_kcontrol *kcontrol, int event);
-+int madera_anc_ev(struct snd_soc_dapm_widget *w,
-+		  struct snd_kcontrol *kcontrol, int event);
-+int madera_domain_clk_ev(struct snd_soc_dapm_widget *w,
-+			 struct snd_kcontrol *kcontrol,
-+			 int event);
-+
-+int madera_adsp_rate_info(struct snd_kcontrol *kcontrol,
-+			  struct snd_ctl_elem_info *uinfo);
-+int madera_adsp_rate_get(struct snd_kcontrol *kcontrol,
-+			 struct snd_ctl_elem_value *ucontrol);
-+int madera_adsp_rate_put(struct snd_kcontrol *kcontrol,
-+			 struct snd_ctl_elem_value *ucontrol);
-+int madera_set_adsp_clk(struct madera_priv *priv, int dsp_num,
-+			unsigned int freq);
-+
-+int madera_set_sysclk(struct snd_soc_codec *codec, int clk_id, int source,
-+		      unsigned int freq, int dir);
-+int madera_get_legacy_dspclk_setting(struct madera *madera, unsigned int freq);
-+void madera_spin_sysclk(struct madera_priv *priv);
-+
-+int madera_init_fll(struct madera *madera, int id, int base,
-+		    struct madera_fll *fll);
-+int madera_set_fll_refclk(struct madera_fll *fll, int source,
-+			  unsigned int Fref, unsigned int Fout);
-+int madera_set_fll_syncclk(struct madera_fll *fll, int source,
-+			   unsigned int Fref, unsigned int Fout);
-+int madera_set_fll_ao_refclk(struct madera_fll *fll, int source,
-+			     unsigned int fin, unsigned int fout);
-+
-+int madera_core_init(struct madera_priv *priv);
-+int madera_core_destroy(struct madera_priv *priv);
-+int madera_init_overheat(struct madera_priv *priv);
-+int madera_free_overheat(struct madera_priv *priv);
-+int madera_init_inputs(struct snd_soc_codec *codec,
-+		       const char * const *dmic_inputs,
-+		       int n_dmic_inputs,
-+		       const char * const *dmic_refs,
-+		       int n_dmic_refs);
-+int madera_init_outputs(struct snd_soc_codec *codec, int n_mono_routes);
-+int madera_init_bus_error_irq(struct madera_priv *priv, int dsp_num,
-+			      irq_handler_t handler);
-+void madera_destroy_bus_error_irq(struct madera_priv *priv, int dsp_num);
-+
-+int madera_init_dai(struct madera_priv *priv, int dai);
-+
-+int madera_set_output_mode(struct snd_soc_codec *codec, int output, bool diff);
-+
-+/* Following functions are for use by machine drivers */
-+static inline int madera_register_notifier(struct snd_soc_codec *codec,
-+					   struct notifier_block *nb)
-+{
-+	struct madera *madera = dev_get_drvdata(codec->dev->parent);
-+
-+	return blocking_notifier_chain_register(&madera->notifier, nb);
-+}
-+
-+static inline int madera_unregister_notifier(struct snd_soc_codec *codec,
-+					     struct notifier_block *nb)
-+{
-+	struct madera *madera = dev_get_drvdata(codec->dev->parent);
-+
-+	return blocking_notifier_chain_unregister(&madera->notifier, nb);
-+}
-+
-+#endif
--- 
-1.9.1
+--opJtzjQTFsWo+cga
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+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
+rvwPdCbc0gwMAgA=
+
+--opJtzjQTFsWo+cga
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--opJtzjQTFsWo+cga--
