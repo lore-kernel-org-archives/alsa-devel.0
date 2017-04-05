@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8978: Add OF device ID table" to the
-	asoc tree
-Date: Wed, 05 Apr 2017 18:30:36 +0100
-Message-ID: <E1cvolQ-0000ed-2N@debutante>
-References: <20170404192630.11408-6-javier@osg.samsung.com>
+Subject: Applied "ASoC: cs53l30: Set .of_match_table to OF
+	device ID table" to the asoc tree
+Date: Wed, 05 Apr 2017 18:30:54 +0100
+Message-ID: <E1cvoli-0000lu-4r@debutante>
+References: <20170404185930.1437-1-javier@osg.samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 22DB3267198
- for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 19:30:59 +0200 (CEST)
-In-Reply-To: <20170404192630.11408-6-javier@osg.samsung.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2ADF626716B
+ for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 19:31:04 +0200 (CEST)
+In-Reply-To: <20170404185930.1437-1-javier@osg.samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Javier Martinez Canillas <javier@osg.samsung.com>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Julia Lawall <Julia.Lawall@lip6.fr>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: Brian Austin <brian.austin@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8978: Add OF device ID table
+   ASoC: cs53l30: Set .of_match_table to OF device ID table
 
 has been applied to the asoc tree at
 
@@ -53,58 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From 5cf015d9cb02c360582b624497b0a1716881cf28 Mon Sep 17 00:00:00 2001
+>From 13023ff3b3372543e4197b4b57d378350780fe96 Mon Sep 17 00:00:00 2001
 From: Javier Martinez Canillas <javier@osg.samsung.com>
-Date: Tue, 4 Apr 2017 15:26:29 -0400
-Subject: [PATCH] ASoC: wm8978: Add OF device ID table
+Date: Tue, 4 Apr 2017 14:59:30 -0400
+Subject: [PATCH] ASoC: cs53l30: Set .of_match_table to OF device ID table
 
-The driver doesn't have a struct of_device_id table but supported devices
-are registered via Device Trees. This is working on the assumption that a
-I2C device registered via OF will always match a legacy I2C device ID and
-that the MODALIAS reported will always be of the form i2c:<device>.
-
-But this could change in the future so the correct approach is to have an
-OF device ID table if the devices are registered via OF.
-
-Before this patch:
-
-$ modinfo sound/soc/codecs/snd-soc-wm8978.ko | grep alias
-alias:          i2c:wm8978
-
-After this patch:
-
-$ modinfo sound/soc/codecs/snd-soc-wm8978.ko | grep alias
-alias:          i2c:wm8978
-alias:          of:N*T*Cwlf,wm8978C*
-alias:          of:N*T*Cwlf,wm8978
+The driver has an OF device ID table but the struct i2c_driver
+.of_match_table field is not set.
 
 Signed-off-by: Javier Martinez Canillas <javier@osg.samsung.com>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8978.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/codecs/cs53l30.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/wm8978.c b/sound/soc/codecs/wm8978.c
-index 90b2d418ef60..cf761e2d7546 100644
---- a/sound/soc/codecs/wm8978.c
-+++ b/sound/soc/codecs/wm8978.c
-@@ -1071,9 +1071,16 @@ static const struct i2c_device_id wm8978_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, wm8978_i2c_id);
- 
-+static const struct of_device_id wm8978_of_match[] = {
-+	{ .compatible = "wlf,wm8978", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, wm8978_of_match);
-+
- static struct i2c_driver wm8978_i2c_driver = {
+diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
+index cb47fb595ff4..1e0d5973b758 100644
+--- a/sound/soc/codecs/cs53l30.c
++++ b/sound/soc/codecs/cs53l30.c
+@@ -1130,6 +1130,7 @@ MODULE_DEVICE_TABLE(i2c, cs53l30_id);
+ static struct i2c_driver cs53l30_i2c_driver = {
  	.driver = {
- 		.name = "wm8978",
-+		.of_match_table = wm8978_of_match,
+ 		.name = "cs53l30",
++		.of_match_table = cs53l30_of_match,
+ 		.pm = &cs53l30_runtime_pm,
  	},
- 	.probe =    wm8978_i2c_probe,
- 	.remove =   wm8978_i2c_remove,
+ 	.id_table = cs53l30_id,
 -- 
 2.11.0
