@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max9867: export OF device ID as module aliases" to the asoc tree
-Date: Wed, 05 Apr 2017 18:30:57 +0100
-Message-ID: <E1cvoll-0000nn-3P@debutante>
-References: <20170404171939.3950-1-javier@osg.samsung.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170404171939.3950-1-javier@osg.samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Javier Martinez Canillas <javier@osg.samsung.com>
-Cc: Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>, Enric Balletbo i Serra <enric.balletbo@collabora.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: twl6040: Add control for HS and HF mono
+	to stereo selection" to the asoc tree
+Date: Wed, 05 Apr 2017 18:31:07 +0100
+Message-ID: <E1cvolv-0000sL-KQ@debutante>
+References: <20170403101239.2721-1-peter.ujfalusi@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id CEEB526718D
+ for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 19:31:16 +0200 (CEST)
+In-Reply-To: <20170403101239.2721-1-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max9867: export OF device ID as module aliases
+   ASoC: twl6040: Add control for HS and HF mono to stereo selection
 
 has been applied to the asoc tree at
 
@@ -37,56 +53,41 @@ to this mail.
 Thanks,
 Mark
 
->From 56af0e4cd27c402691d0da8aa4a5233944085b44 Mon Sep 17 00:00:00 2001
-From: Javier Martinez Canillas <javier@osg.samsung.com>
-Date: Tue, 4 Apr 2017 13:19:39 -0400
-Subject: [PATCH] ASoC: max9867: export OF device ID as module aliases
+>From 0636e8b380418bda5b52bb06c8ae285028de3793 Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Mon, 3 Apr 2017 13:12:39 +0300
+Subject: [PATCH] ASoC: twl6040: Add control for HS and HF mono to stereo
+ selection
 
-The I2C core always reports a MODALIAS of the form i2c:<foo> even if the
-device was registered via OF, this means that exporting the OF device ID
-table device aliases in the module is not needed. But in order to change
-how the core reports modaliases to user-space, it's better to export it.
+The new controls will give user the ability to route the left PDM channel
+data to the right headset/handsfree DAC.
+HS mono to stereo switch: PDM channel 1 (or mono) data to both HS DAC.
+HF mono to stereo switch: PDM channel 3 data to both HF DAC.
 
-While there, move the MODULE_DEVICE_TABLE(i2c, max9867_i2c_id) just next
-to the I2C device table declaration, for consistency with other drivers.
-
-Before this patch:
-
-$ modinfo sound/soc/codecs/snd-soc-max9867.ko | grep alias
-alias:          i2c:max9867
-
-After this patch:
-
-$ modinfo sound/soc/codecs/snd-soc-max9867.ko | grep alias
-alias:          i2c:max9867
-alias:          of:N*T*Cmaxim,max9867C*
-alias:          of:N*T*Cmaxim,max9867
-
-Signed-off-by: Javier Martinez Canillas <javier@osg.samsung.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max9867.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/twl6040.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
-index 42e2e407e287..3a3d5bebc24e 100644
---- a/sound/soc/codecs/max9867.c
-+++ b/sound/soc/codecs/max9867.c
-@@ -517,13 +517,13 @@ static const struct i2c_device_id max9867_i2c_id[] = {
- 	{ "max9867", 0 },
- 	{ }
- };
-+MODULE_DEVICE_TABLE(i2c, max9867_i2c_id);
+diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
+index 748036e851ea..2b6ad09e0886 100644
+--- a/sound/soc/codecs/twl6040.c
++++ b/sound/soc/codecs/twl6040.c
+@@ -606,6 +606,14 @@ static const struct snd_kcontrol_new twl6040_snd_controls[] = {
+ 		twl6040_headset_power_get_enum,
+ 		twl6040_headset_power_put_enum),
  
- static const struct of_device_id max9867_of_match[] = {
- 	{ .compatible = "maxim,max9867", },
- 	{ }
++	/* Left HS PDM data routed to Right HSDAC */
++	SOC_SINGLE("Headset Mono to Stereo Playback Switch",
++		TWL6040_REG_HSRCTL, 7, 1, 0),
++
++	/* Left HF PDM data routed to Right HFDAC */
++	SOC_SINGLE("Handsfree Mono to Stereo Playback Switch",
++		TWL6040_REG_HFRCTL, 5, 1, 0),
++
+ 	SOC_ENUM_EXT("PLL Selection", twl6040_power_mode_enum,
+ 		twl6040_pll_get_enum, twl6040_pll_put_enum),
  };
--
--MODULE_DEVICE_TABLE(i2c, max9867_i2c_id);
-+MODULE_DEVICE_TABLE(of, max9867_of_match);
- 
- static const struct dev_pm_ops max9867_pm_ops = {
- 	SET_SYSTEM_SLEEP_PM_OPS(max9867_suspend, max9867_resume)
 -- 
 2.11.0
