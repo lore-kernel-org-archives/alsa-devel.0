@@ -1,16 +1,20 @@
-From: Fabio Estevam <fabio.estevam@nxp.com>
-Subject: [PATCH] ASoC: sgtl5000: Allow LRCLK pad drive strength
-	to be changed
-Date: Wed, 5 Apr 2017 11:32:34 -0300
-Message-ID: <1491402754-19802-1-git-send-email-fabio.estevam@nxp.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v4 2/2] ASoC: Add support for Conexant
+ CX2092X DSP
+Date: Wed, 5 Apr 2017 16:17:04 +0100
+Message-ID: <20170405151704.GA3412@localhost.localdomain>
+References: <cover.1491387037.git.simon.ho@conexant.com>
+ <9c6e21ff6c43779601014b8a7f5bb108b5a88e99.1491387037.git.simon.ho@conexant.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM03-BY2-obe.outbound.protection.outlook.com
- (mail-by2nam03on0074.outbound.protection.outlook.com [104.47.42.74])
- by alsa0.perex.cz (Postfix) with ESMTP id F190D266BA4
- for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 16:32:49 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id F2FFF266BA4
+ for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 17:16:02 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <9c6e21ff6c43779601014b8a7f5bb108b5a88e99.1491387037.git.simon.ho@conexant.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,108 +24,71 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, max.krummenacher@toradex.com
+To: simon.ho.cnxt@gmail.com
+Cc: alsa-devel@alsa-project.org, Simon Ho <simon.ho@conexant.com>, tiwai@suse.com, lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Introduce the "lrclk-strength" property to allow LRCLK pad drive strength
-to be changed via device tree.
+On Wed, Apr 05, 2017 at 06:27:13PM +0800, simon.ho.cnxt@gmail.com wrote:
+> From: Simon Ho <simon.ho@conexant.com>
+> 
+> Initial commit of Conexant CX20921/CX20924 I2S Audio DSP driver
+> 
+> The CX2092X devices are designed for virtual assisant application need to
+> be always open, listening for users to summon it. There is no any power
+> saving mode support on this device. The processed voice data will be sent
+> to automatic speech recognition (ASR) application for further processing.
+> 
+> Signed-off-by: Simon Ho <simon.ho@conexant.com>
+> ---
 
-When running a stress playback loop test on a mx6dl wandboard channel
-swap can be noticed on about 10% of the times.
+Just a couple of very minor points.
 
-While debugging this issue I noticed that when probing the SGTL5000
-LRCLK pin with the scope the swap did not happen. After removing
-the probe the swap started to happen again.
+> +static int cx2092x_sendcmd(struct snd_soc_codec *codec,
+> +			   struct cx2092x_cmd *cmd)
+> +{
+> +	struct cx2092x_priv *cx2092x = snd_soc_codec_get_drvdata(codec);
+> +	int ret = 0;
+> +	int num_32b_words = cmd->num_32b_words;
+> +	unsigned long time_out;
+> +	u32 *i2c_data = (u32 *)cmd;
+> +	int size = num_32b_words + 2;
+> +
+> +	/* calculate how many WORD that will be wrote to device*/
+> +	cmd->num_32b_words = cmd->command_id & CX2092X_CMD_GET(0) ?
+> +			     CX2092X_CMD_SIZE : num_32b_words;
+> +
+> +	/* write all command data except fo frist 4 bytes*/
+> +	ret = regmap_bulk_write(cx2092x->regmap, 4, &i2c_data[1], size - 1);
+> +	if (ret < 0) {
+> +		dev_err(cx2092x->dev, "Failed to write command data\n");
+> +		goto LEAVE;
 
-After changing the LRCLK pad drive strength to the maximum value the
-issue is gone.
+All caps for a label is a bit unusual probably would be more
+normal kernel style to make this lower case.
 
-Same fix works on a mx6dl Colibri board as well.
+> +	}
+> +
+> +	/* write first 4 bytes command data*/
+> +	ret = regmap_bulk_write(cx2092x->regmap, 0, i2c_data, 1);
+> +	if (ret < 0) {
+> +		dev_err(cx2092x->dev, "Failed to write command\n");
+> +		goto LEAVE;
+> +	}
+> +
+> +	/* continuously read the first bytes data from device until
+> +	 * either timeout or the flag 'reply' is set.
+> +	 */
+> +	time_out = msecs_to_jiffies(2000);
+> +	time_out += jiffies;
+> +	do {
+> +		regmap_bulk_read(cx2092x->regmap, 0, &i2c_data[0], 1);
+> +		if (cmd->reply == 1)
+> +			break;
+> +		mdelay(10);
 
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
----
- Documentation/devicetree/bindings/sound/sgtl5000.txt |  9 +++++++++
- sound/soc/codecs/sgtl5000.c                          | 19 ++++++++++++++++++-
- 2 files changed, 27 insertions(+), 1 deletion(-)
+Do you really want to use mdelay's, they are busy wait loops
+so thrash the processor, a usleep_range or an msleep might be a
+more friendly.
 
-diff --git a/Documentation/devicetree/bindings/sound/sgtl5000.txt b/Documentation/devicetree/bindings/sound/sgtl5000.txt
-index 5666da7..7a73a9d 100644
---- a/Documentation/devicetree/bindings/sound/sgtl5000.txt
-+++ b/Documentation/devicetree/bindings/sound/sgtl5000.txt
-@@ -26,6 +26,15 @@ Optional properties:
- 	If this node is not mentioned or the value is unknown, then
- 	the value is set to 1.25V.
- 
-+- lrclk-strength: the LRCLK pad strength. Possible values are:
-+0, 1, 2 and 3 as per the table below:
-+
-+VDDIO		1.8V		2.5V		3.3V
-+0 = 		Disable
-+1 =		1.66 mA		2.87 mA		4.02  mA
-+2 =		3.33 mA		5.74 mA		8.03  mA
-+3 =		4.99 mA		8.61 mA		12.05 mA
-+
- Example:
- 
- codec: sgtl5000@0a {
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 1589325..5a2702e 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -99,6 +99,13 @@ enum sgtl5000_micbias_resistor {
- 	SGTL5000_MICBIAS_8K = 8,
- };
- 
-+enum  {
-+	I2S_LRCLK_STRENGTH_DISABLE,
-+	I2S_LRCLK_STRENGTH_LOW,
-+	I2S_LRCLK_STRENGTH_MEDIUM,
-+	I2S_LRCLK_STRENGTH_HIGH,
-+};
-+
- /* sgtl5000 private structure in codec */
- struct sgtl5000_priv {
- 	int sysclk;	/* sysclk rate */
-@@ -111,6 +118,7 @@ struct sgtl5000_priv {
- 	int revision;
- 	u8 micbias_resistor;
- 	u8 micbias_voltage;
-+	u8 lrclk_strength;
- };
- 
- /*
-@@ -1089,6 +1097,7 @@ static int sgtl5000_enable_regulators(struct i2c_client *client)
- static int sgtl5000_probe(struct snd_soc_codec *codec)
- {
- 	int ret;
-+	u16 reg;
- 	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
- 
- 	/* power up sgtl5000 */
-@@ -1118,7 +1127,8 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
- 			SGTL5000_DAC_MUTE_RIGHT |
- 			SGTL5000_DAC_MUTE_LEFT);
- 
--	snd_soc_write(codec, SGTL5000_CHIP_PAD_STRENGTH, 0x015f);
-+	reg = ((sgtl5000->lrclk_strength) << SGTL5000_PAD_I2S_LRCLK_SHIFT | 0x5f);
-+	snd_soc_write(codec, SGTL5000_CHIP_PAD_STRENGTH, reg);
- 
- 	snd_soc_write(codec, SGTL5000_CHIP_ANA_CTRL,
- 			SGTL5000_HP_ZCD_EN |
-@@ -1347,6 +1357,13 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
- 		}
- 	}
- 
-+	sgtl5000->lrclk_strength = I2S_LRCLK_STRENGTH_LOW;
-+	if (!of_property_read_u32(np, "lrclk-strength", &value)) {
-+		if (value > I2S_LRCLK_STRENGTH_HIGH)
-+			value = I2S_LRCLK_STRENGTH_LOW;
-+		sgtl5000->lrclk_strength = value;
-+	}
-+
- 	/* Ensure sgtl5000 will start with sane register values */
- 	sgtl5000_fill_defaults(client);
- 
--- 
-2.7.4
+Thanks,
+Charles
