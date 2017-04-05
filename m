@@ -1,15 +1,17 @@
-From: Fabio Estevam <fabio.estevam@nxp.com>
-Subject: [PATCH 1/2] ASoC: fsl_ssi: Remove an outdated comment
-Date: Wed, 5 Apr 2017 13:40:10 -0300
-Message-ID: <1491410411-6053-1-git-send-email-fabio.estevam@nxp.com>
+From: David Howells <dhowells@redhat.com>
+Subject: [PATCH 35/38] Annotate hardware config module
+ parameters in sound/drivers/
+Date: Wed, 05 Apr 2017 18:01:59 +0100
+Message-ID: <149141171975.29162.18186172352089656358.stgit@warthog.procyon.org.uk>
+References: <149141141298.29162.5612793122429261720.stgit@warthog.procyon.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM03-CO1-obe.outbound.protection.outlook.com
- (mail-co1nam03on0063.outbound.protection.outlook.com [104.47.40.63])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B31E266943
- for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 18:40:22 +0200 (CEST)
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB9D6266943
+ for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 19:02:03 +0200 (CEST)
+In-Reply-To: <149141141298.29162.5612793122429261720.stgit@warthog.procyon.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,39 +21,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, timur@tabi.org
+To: linux-kernel@vger.kernel.org
+Cc: gnomes@lxorguk.ukuu.org.uk, alsa-devel@alsa-project.org, gregkh@linuxfoundation.org, Takashi Iwai <tiwai@suse.com>, dhowells@redhat.com, linux-security-module@vger.kernel.org, keyrings@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The comment for the FSLSSI_I2S_RATES definition states that the
-driver currently only supports I2S slave mode, which is no longer
-correct.
+When the kernel is running in secure boot mode, we lock down the kernel to
+prevent userspace from modifying the running kernel image.  Whilst this
+includes prohibiting access to things like /dev/mem, it must also prevent
+access by means of configuring driver modules in such a way as to cause a
+device to access or modify the kernel image.
 
-Remove such outdated comment.
+To this end, annotate module_param* statements that refer to hardware
+configuration and indicate for future reference what type of parameter they
+specify.  The parameter parser in the core sees this information and can
+skip such parameters with an error message if the kernel is locked down.
+The module initialisation then runs as normal, but just sees whatever the
+default values for those parameters is.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+Note that we do still need to do the module initialisation because some
+drivers have viable defaults set in case parameters aren't specified and
+some drivers support automatic configuration (e.g. PNP or PCI) in addition
+to manually coded parameters.
+
+This patch annotates drivers in sound/drivers/.
+
+Suggested-by: Alan Cox <gnomes@lxorguk.ukuu.org.uk>
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Jaroslav Kysela <perex@perex.cz>
+cc: Takashi Iwai <tiwai@suse.com>
+cc: alsa-devel@alsa-project.org
 ---
- sound/soc/fsl/fsl_ssi.c | 8 --------
- 1 file changed, 8 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index fde08660..b450d8d 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -54,14 +54,6 @@
- #include "fsl_ssi.h"
- #include "imx-pcm.h"
- 
--/**
-- * FSLSSI_I2S_RATES: sample rates supported by the I2S
-- *
-- * This driver currently only supports the SSI running in I2S slave mode,
-- * which means the codec determines the sample rate.  Therefore, we tell
-- * ALSA that we support all rates and let the codec driver decide what rates
-- * are really supported.
-- */
- #define FSLSSI_I2S_RATES SNDRV_PCM_RATE_CONTINUOUS
- 
- /**
--- 
-2.7.4
+ sound/drivers/mpu401/mpu401.c |    4 ++--
+ sound/drivers/mtpav.c         |    4 ++--
+ sound/drivers/serial-u16550.c |    4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/sound/drivers/mpu401/mpu401.c b/sound/drivers/mpu401/mpu401.c
+index fed7e7e2177b..9b86e00d7d95 100644
+--- a/sound/drivers/mpu401/mpu401.c
++++ b/sound/drivers/mpu401/mpu401.c
+@@ -53,9 +53,9 @@ MODULE_PARM_DESC(enable, "Enable MPU-401 device.");
+ module_param_array(pnp, bool, NULL, 0444);
+ MODULE_PARM_DESC(pnp, "PnP detection for MPU-401 device.");
+ #endif
+-module_param_array(port, long, NULL, 0444);
++module_param_hw_array(port, long, ioport, NULL, 0444);
+ MODULE_PARM_DESC(port, "Port # for MPU-401 device.");
+-module_param_array(irq, int, NULL, 0444);
++module_param_hw_array(irq, int, irq, NULL, 0444);
+ MODULE_PARM_DESC(irq, "IRQ # for MPU-401 device.");
+ module_param_array(uart_enter, bool, NULL, 0444);
+ MODULE_PARM_DESC(uart_enter, "Issue UART_ENTER command at open.");
+diff --git a/sound/drivers/mtpav.c b/sound/drivers/mtpav.c
+index 00b31f92c504..0f6392001e30 100644
+--- a/sound/drivers/mtpav.c
++++ b/sound/drivers/mtpav.c
+@@ -86,9 +86,9 @@ module_param(index, int, 0444);
+ MODULE_PARM_DESC(index, "Index value for MotuMTPAV MIDI.");
+ module_param(id, charp, 0444);
+ MODULE_PARM_DESC(id, "ID string for MotuMTPAV MIDI.");
+-module_param(port, long, 0444);
++module_param_hw(port, long, ioport, 0444);
+ MODULE_PARM_DESC(port, "Parallel port # for MotuMTPAV MIDI.");
+-module_param(irq, int, 0444);
++module_param_hw(irq, int, irq, 0444);
+ MODULE_PARM_DESC(irq, "Parallel IRQ # for MotuMTPAV MIDI.");
+ module_param(hwports, int, 0444);
+ MODULE_PARM_DESC(hwports, "Hardware ports # for MotuMTPAV MIDI.");
+diff --git a/sound/drivers/serial-u16550.c b/sound/drivers/serial-u16550.c
+index 60d51ac4ccfe..88e66ea0306d 100644
+--- a/sound/drivers/serial-u16550.c
++++ b/sound/drivers/serial-u16550.c
+@@ -84,9 +84,9 @@ module_param_array(id, charp, NULL, 0444);
+ MODULE_PARM_DESC(id, "ID string for Serial MIDI.");
+ module_param_array(enable, bool, NULL, 0444);
+ MODULE_PARM_DESC(enable, "Enable UART16550A chip.");
+-module_param_array(port, long, NULL, 0444);
++module_param_hw_array(port, long, ioport, NULL, 0444);
+ MODULE_PARM_DESC(port, "Port # for UART16550A chip.");
+-module_param_array(irq, int, NULL, 0444);
++module_param_hw_array(irq, int, irq, NULL, 0444);
+ MODULE_PARM_DESC(irq, "IRQ # for UART16550A chip.");
+ module_param_array(speed, int, NULL, 0444);
+ MODULE_PARM_DESC(speed, "Speed in bauds.");
