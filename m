@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: twl6040: Add control for HS and HF mono
-	to stereo selection" to the asoc tree
-Date: Wed, 05 Apr 2017 18:31:07 +0100
-Message-ID: <E1cvolv-0000sL-KQ@debutante>
-References: <20170403101239.2721-1-peter.ujfalusi@ti.com>
+From: Max Krummenacher <max.oss.09@gmail.com>
+Subject: Re: [PATCH] ASoC: sgtl5000: Allow LRCLK pad drive
+ strength to be changed
+Date: Wed, 05 Apr 2017 19:38:47 +0200
+Message-ID: <1491413927.1810.14.camel@gmail.com>
+References: <1491402754-19802-1-git-send-email-fabio.estevam@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CEEB526718D
- for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 19:31:16 +0200 (CEST)
-In-Reply-To: <20170403101239.2721-1-peter.ujfalusi@ti.com>
+Received: from mail-wr0-f194.google.com (mail-wr0-f194.google.com
+ [209.85.128.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id F3FA5266943
+ for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 19:38:49 +0200 (CEST)
+Received: by mail-wr0-f194.google.com with SMTP id k6so4652820wre.3
+ for <alsa-devel@alsa-project.org>; Wed, 05 Apr 2017 10:38:49 -0700 (PDT)
+In-Reply-To: <1491402754-19802-1-git-send-email-fabio.estevam@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,72 +24,83 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Fabio Estevam <fabio.estevam@nxp.com>, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: twl6040: Add control for HS and HF mono to stereo selection
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 0636e8b380418bda5b52bb06c8ae285028de3793 Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Mon, 3 Apr 2017 13:12:39 +0300
-Subject: [PATCH] ASoC: twl6040: Add control for HS and HF mono to stereo
- selection
-
-The new controls will give user the ability to route the left PDM channel
-data to the right headset/handsfree DAC.
-HS mono to stereo switch: PDM channel 1 (or mono) data to both HS DAC.
-HF mono to stereo switch: PDM channel 3 data to both HF DAC.
-
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/twl6040.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/sound/soc/codecs/twl6040.c b/sound/soc/codecs/twl6040.c
-index 748036e851ea..2b6ad09e0886 100644
---- a/sound/soc/codecs/twl6040.c
-+++ b/sound/soc/codecs/twl6040.c
-@@ -606,6 +606,14 @@ static const struct snd_kcontrol_new twl6040_snd_controls[] = {
- 		twl6040_headset_power_get_enum,
- 		twl6040_headset_power_put_enum),
- 
-+	/* Left HS PDM data routed to Right HSDAC */
-+	SOC_SINGLE("Headset Mono to Stereo Playback Switch",
-+		TWL6040_REG_HSRCTL, 7, 1, 0),
-+
-+	/* Left HF PDM data routed to Right HFDAC */
-+	SOC_SINGLE("Handsfree Mono to Stereo Playback Switch",
-+		TWL6040_REG_HFRCTL, 5, 1, 0),
-+
- 	SOC_ENUM_EXT("PLL Selection", twl6040_power_mode_enum,
- 		twl6040_pll_get_enum, twl6040_pll_put_enum),
- };
--- 
-2.11.0
+T24gV2VkLCAyMDE3LTA0LTA1IGF0IDExOjMyIC0wMzAwLCBGYWJpbyBFc3RldmFtIHdyb3RlOgo+
+IEludHJvZHVjZSB0aGUgImxyY2xrLXN0cmVuZ3RoIiBwcm9wZXJ0eSB0byBhbGxvdyBMUkNMSyBw
+YWQgZHJpdmUgc3RyZW5ndGgKPiB0byBiZSBjaGFuZ2VkIHZpYSBkZXZpY2UgdHJlZS4KPiAKPiBX
+aGVuIHJ1bm5pbmcgYSBzdHJlc3MgcGxheWJhY2sgbG9vcCB0ZXN0IG9uIGEgbXg2ZGwgd2FuZGJv
+YXJkIGNoYW5uZWwKPiBzd2FwIGNhbiBiZSBub3RpY2VkIG9uIGFib3V0IDEwJSBvZiB0aGUgdGlt
+ZXMuCj4gCj4gV2hpbGUgZGVidWdnaW5nIHRoaXMgaXNzdWUgSSBub3RpY2VkIHRoYXQgd2hlbiBw
+cm9iaW5nIHRoZSBTR1RMNTAwMAo+IExSQ0xLIHBpbiB3aXRoIHRoZSBzY29wZSB0aGUgc3dhcCBk
+aWQgbm90IGhhcHBlbi4gQWZ0ZXIgcmVtb3ZpbmcKPiB0aGUgcHJvYmUgdGhlIHN3YXAgc3RhcnRl
+ZCB0byBoYXBwZW4gYWdhaW4uCj4gCj4gQWZ0ZXIgY2hhbmdpbmcgdGhlIExSQ0xLIHBhZCBkcml2
+ZSBzdHJlbmd0aCB0byB0aGUgbWF4aW11bSB2YWx1ZSB0aGUKPiBpc3N1ZSBpcyBnb25lLgo+IAo+
+IFNhbWUgZml4IHdvcmtzIG9uIGEgbXg2ZGwgQ29saWJyaSBib2FyZCBhcyB3ZWxsLgo+IAo+IFNp
+Z25lZC1vZmYtYnk6IEZhYmlvIEVzdGV2YW0gPGZhYmlvLmVzdGV2YW1AbnhwLmNvbT4KCkhpCgpJ
+IGNvdWxkIHJlcHJvZHVjZSB0aGUgY2hhbm5lbCBzd2FwIGlzc3VlIG9uIGEgQ29saWJyaSBpTVg2
+IER1YWwKd2l0aCBhIGkuTVggNkR1YWxMaXRlLiBXaXRob3V0IHRoZSBwYXRjaCBJIHNlZSBjaGFu
+bmVsIHN3YXAgaW4KYWJvdXQgMyUgb2YgcGxheWJhY2sgc3RhcnRzLiBUaGUgcGF0Y2ggZml4ZXMg
+dGhlIGlzc3VlIHdpdGggdGhlCmZvbGxvd2luZyBjaGFuZ2UgdG8gdGhlIHNndGw1MDAwIGRldmlj
+ZS10cmVlIG5vZGU6CmRpZmYgLS1naXQgYS9hcmNoL2FybS9ib290L2R0cy9pbXg2cWRsLWNvbGli
+cmkuZHRzaSBiL2FyY2gvYXJtL2Jvb3QvZHRzL2lteDZxZGwtY29saWJyaS5kdHNpCmluZGV4IGU2
+ZmFhNjUuLjgwZWNlMDMgMTAwNjQ0Ci0tLSBhL2FyY2gvYXJtL2Jvb3QvZHRzL2lteDZxZGwtY29s
+aWJyaS5kdHNpCisrKyBiL2FyY2gvYXJtL2Jvb3QvZHRzL2lteDZxZGwtY29saWJyaS5kdHNpCkBA
+IC0yNTMsNiArMjUzLDcgQEAKwqAJCWNvbXBhdGlibGUgPSAiZnNsLHNndGw1MDAwIjsKwqAJCXJl
+ZyA9IDwweDBhPjsKwqAJCWNsb2NrcyA9IDwmY2xrcyBJTVg2UURMX0NMS19DS08+OworCQlscmNs
+ay1zdHJlbmd0aCA9IDwweDM+OwrCoAkJVkREQS1zdXBwbHkgPSA8JnJlZ18ycDV2PjsKwqAJCVZE
+RElPLXN1cHBseSA9IDwmcmVnXzNwM3Y+OwrCoAl9OwoKClRlc3RlZC1ieTogTWF4IEtydW1tZW5h
+Y2hlciA8bWF4LmtydW1tZW5hY2hlciBhdCB0b3JhZGV4LmNvbT4KCk1heAoKPiAtLS0KPiAgRG9j
+dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3NndGw1MDAwLnR4dCB8ICA5ICsr
+KysrKysrKwo+ICBzb3VuZC9zb2MvY29kZWNzL3NndGw1MDAwLmMgICAgICAgICAgICAgICAgICAg
+ICAgICAgIHwgMTkgKysrKysrKysrKysrKysrKysrLQo+ICAyIGZpbGVzIGNoYW5nZWQsIDI3IGlu
+c2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKPiAKPiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlv
+bi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3NndGw1MDAwLnR4dCBiL0RvY3VtZW50YXRpb24v
+ZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9zZ3RsNTAwMC50eHQKPiBpbmRleCA1NjY2ZGE3Li43
+YTczYTlkIDEwMDY0NAo+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9z
+b3VuZC9zZ3RsNTAwMC50eHQKPiArKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
+Z3Mvc291bmQvc2d0bDUwMDAudHh0Cj4gQEAgLTI2LDYgKzI2LDE1IEBAIE9wdGlvbmFsIHByb3Bl
+cnRpZXM6Cj4gIAlJZiB0aGlzIG5vZGUgaXMgbm90IG1lbnRpb25lZCBvciB0aGUgdmFsdWUgaXMg
+dW5rbm93biwgdGhlbgo+ICAJdGhlIHZhbHVlIGlzIHNldCB0byAxLjI1Vi4KPiAgCj4gKy0gbHJj
+bGstc3RyZW5ndGg6IHRoZSBMUkNMSyBwYWQgc3RyZW5ndGguIFBvc3NpYmxlIHZhbHVlcyBhcmU6
+Cj4gKzAsIDEsIDIgYW5kIDMgYXMgcGVyIHRoZSB0YWJsZSBiZWxvdzoKPiArCj4gK1ZERElPCQkx
+LjhWCQkyLjVWCQkzLjNWCj4gKzAgPSAJCURpc2FibGUKPiArMSA9CQkxLjY2IG1BCQkyLjg3IG1B
+CQk0LjAyICBtQQo+ICsyID0JCTMuMzMgbUEJCTUuNzQgbUEJCTguMDMgIG1BCj4gKzMgPQkJNC45
+OSBtQQkJOC42MSBtQQkJMTIuMDUgbUEKPiArCj4gIEV4YW1wbGU6Cj4gIAo+ICBjb2RlYzogc2d0
+bDUwMDBAMGEgewo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3NndGw1MDAwLmMgYi9z
+b3VuZC9zb2MvY29kZWNzL3NndGw1MDAwLmMKPiBpbmRleCAxNTg5MzI1Li41YTI3MDJlIDEwMDY0
+NAo+IC0tLSBhL3NvdW5kL3NvYy9jb2RlY3Mvc2d0bDUwMDAuYwo+ICsrKyBiL3NvdW5kL3NvYy9j
+b2RlY3Mvc2d0bDUwMDAuYwo+IEBAIC05OSw2ICs5OSwxMyBAQCBlbnVtIHNndGw1MDAwX21pY2Jp
+YXNfcmVzaXN0b3Igewo+ICAJU0dUTDUwMDBfTUlDQklBU184SyA9IDgsCj4gIH07Cj4gIAo+ICtl
+bnVtICB7Cj4gKwlJMlNfTFJDTEtfU1RSRU5HVEhfRElTQUJMRSwKPiArCUkyU19MUkNMS19TVFJF
+TkdUSF9MT1csCj4gKwlJMlNfTFJDTEtfU1RSRU5HVEhfTUVESVVNLAo+ICsJSTJTX0xSQ0xLX1NU
+UkVOR1RIX0hJR0gsCj4gK307Cj4gKwo+ICAvKiBzZ3RsNTAwMCBwcml2YXRlIHN0cnVjdHVyZSBp
+biBjb2RlYyAqLwo+ICBzdHJ1Y3Qgc2d0bDUwMDBfcHJpdiB7Cj4gIAlpbnQgc3lzY2xrOwkvKiBz
+eXNjbGsgcmF0ZSAqLwo+IEBAIC0xMTEsNiArMTE4LDcgQEAgc3RydWN0IHNndGw1MDAwX3ByaXYg
+ewo+ICAJaW50IHJldmlzaW9uOwo+ICAJdTggbWljYmlhc19yZXNpc3RvcjsKPiAgCXU4IG1pY2Jp
+YXNfdm9sdGFnZTsKPiArCXU4IGxyY2xrX3N0cmVuZ3RoOwo+ICB9Owo+ICAKPiAgLyoKPiBAQCAt
+MTA4OSw2ICsxMDk3LDcgQEAgc3RhdGljIGludCBzZ3RsNTAwMF9lbmFibGVfcmVndWxhdG9ycyhz
+dHJ1Y3QgaTJjX2NsaWVudCAqY2xpZW50KQo+ICBzdGF0aWMgaW50IHNndGw1MDAwX3Byb2JlKHN0
+cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYykKPiAgewo+ICAJaW50IHJldDsKPiArCXUxNiByZWc7
+Cj4gIAlzdHJ1Y3Qgc2d0bDUwMDBfcHJpdiAqc2d0bDUwMDAgPSBzbmRfc29jX2NvZGVjX2dldF9k
+cnZkYXRhKGNvZGVjKTsKPiAgCj4gIAkvKiBwb3dlciB1cCBzZ3RsNTAwMCAqLwo+IEBAIC0xMTE4
+LDcgKzExMjcsOCBAQCBzdGF0aWMgaW50IHNndGw1MDAwX3Byb2JlKHN0cnVjdCBzbmRfc29jX2Nv
+ZGVjICpjb2RlYykKPiAgCQkJU0dUTDUwMDBfREFDX01VVEVfUklHSFQgfAo+ICAJCQlTR1RMNTAw
+MF9EQUNfTVVURV9MRUZUKTsKPiAgCj4gLQlzbmRfc29jX3dyaXRlKGNvZGVjLCBTR1RMNTAwMF9D
+SElQX1BBRF9TVFJFTkdUSCwgMHgwMTVmKTsKPiArCXJlZyA9ICgoc2d0bDUwMDAtPmxyY2xrX3N0
+cmVuZ3RoKSA8PCBTR1RMNTAwMF9QQURfSTJTX0xSQ0xLX1NISUZUIHwgMHg1Zik7Cj4gKwlzbmRf
+c29jX3dyaXRlKGNvZGVjLCBTR1RMNTAwMF9DSElQX1BBRF9TVFJFTkdUSCwgcmVnKTsKPiAgCj4g
+IAlzbmRfc29jX3dyaXRlKGNvZGVjLCBTR1RMNTAwMF9DSElQX0FOQV9DVFJMLAo+ICAJCQlTR1RM
+NTAwMF9IUF9aQ0RfRU4gfAo+IEBAIC0xMzQ3LDYgKzEzNTcsMTMgQEAgc3RhdGljIGludCBzZ3Rs
+NTAwMF9pMmNfcHJvYmUoc3RydWN0IGkyY19jbGllbnQgKmNsaWVudCwKPiAgCQl9Cj4gIAl9Cj4g
+IAo+ICsJc2d0bDUwMDAtPmxyY2xrX3N0cmVuZ3RoID0gSTJTX0xSQ0xLX1NUUkVOR1RIX0xPVzsK
+PiArCWlmICghb2ZfcHJvcGVydHlfcmVhZF91MzIobnAsICJscmNsay1zdHJlbmd0aCIsICZ2YWx1
+ZSkpIHsKPiArCQlpZiAodmFsdWUgPiBJMlNfTFJDTEtfU1RSRU5HVEhfSElHSCkKPiArCQkJdmFs
+dWUgPSBJMlNfTFJDTEtfU1RSRU5HVEhfTE9XOwo+ICsJCXNndGw1MDAwLT5scmNsa19zdHJlbmd0
+aCA9IHZhbHVlOwo+ICsJfQo+ICsKPiAgCS8qIEVuc3VyZSBzZ3RsNTAwMCB3aWxsIHN0YXJ0IHdp
+dGggc2FuZSByZWdpc3RlciB2YWx1ZXMgKi8KPiAgCXNndGw1MDAwX2ZpbGxfZGVmYXVsdHMoY2xp
+ZW50KTsKPiAgCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
+Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
