@@ -1,18 +1,18 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [PATCH v2 2/2] ASoC: codec: wm8960: Relax bit clock
-	computation when using PLL
-Date: Wed, 5 Apr 2017 16:26:38 +0300
-Message-ID: <1491398798-27829-3-git-send-email-daniel.baluta@nxp.com>
-References: <1491398798-27829-1-git-send-email-daniel.baluta@nxp.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 06/16] regulator: madera-ldo1: LDO1 driver
+ for Cirrus Logic Madera codecs
+Date: Wed, 5 Apr 2017 14:28:44 +0100
+Message-ID: <20170405132844.h4itieglcbzyl3jf@sirena.org.uk>
+References: <1491386884-30689-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <1491386884-30689-7-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4685258558027622994=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR03-DB5-obe.outbound.protection.outlook.com
- (mail-eopbgr40068.outbound.protection.outlook.com [40.107.4.68])
- by alsa0.perex.cz (Postfix) with ESMTP id D831D267022
- for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 15:26:57 +0200 (CEST)
-In-Reply-To: <1491398798-27829-1-git-send-email-daniel.baluta@nxp.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 905A026705F
+ for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 15:29:03 +0200 (CEST)
+In-Reply-To: <1491386884-30689-7-git-send-email-rf@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,69 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: lgirdwood@gmail.com, shengjiu.wang@nxp.com, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, tiwai@suse.com, broonie@kernel.org, viorel.suman@nxp.com, mihai.serban@nxp.com, ckeepax@opensource.wolfsonmicro.com
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: gnurou@gmail.com, alsa-devel@alsa-project.org, jason@lakedaemon.net, devicetree@vger.kernel.org, linus.walleij@linaro.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, robh+dt@kernel.org, tglx@linutronix.de, lee.jones@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-Bitclk is derived from sysclk using bclk_divs.
-Sysclk can be derived in two ways:
-	(1) directly from MLCK
-	(2) MCLK via PLL
 
-Commit 3c01b9ee2ab9d0d ("ASoC: codec: wm8960: Relax bit clock
-computation")
-relaxed bitclk computation when sysclk is directly derived from MCLK.
+--===============4685258558027622994==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="74azknti32ogp66j"
+Content-Disposition: inline
 
-Lets do the same thing when sysclk is derived via PLL.
 
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm8960.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+--74azknti32ogp66j
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index 1c973f0..8ab9fa2 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -679,6 +679,10 @@ int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
-  *		- freq_out    = sysclk * sysclk_divs
-  *		- 10 * sysclk = bclk * bclk_divs
-  *
-+ *	If we cannot find an exact match for (sysclk, lrclk, bclk)
-+ *	triplet, we relax the bclk such that bclk is chosen as the
-+ *	closest available frequency greater than expected bclk.
-+ *
-  * @codec: codec structure
-  * @freq_in: input frequency used to derive freq out via PLL
-  * @sysclk_idx: sysclk_divs index for found sysclk
-@@ -696,11 +700,12 @@ int wm8960_configure_pll(struct snd_soc_codec *codec, int freq_in,
- {
- 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
- 	int sysclk, bclk, lrclk, freq_out;
--	int diff, best_freq_out = 0;
-+	int diff, closest, best_freq_out = 0;
- 	int i, j, k;
- 
- 	bclk = wm8960->bclk;
- 	lrclk = wm8960->lrclk;
-+	closest = freq_in;
- 
- 	*bclk_idx = *dac_idx = *sysclk_idx = -1;
- 
-@@ -723,6 +728,13 @@ int wm8960_configure_pll(struct snd_soc_codec *codec, int freq_in,
- 					best_freq_out = freq_out;
- 					break;
- 				}
-+				if (diff > 0 && closest > diff) {
-+					*sysclk_idx = i;
-+					*dac_idx = j;
-+					*bclk_idx = k;
-+					closest = diff;
-+					best_freq_out = freq_out;
-+				}
- 			}
- 			if (k != ARRAY_SIZE(bclk_divs))
- 				break;
--- 
-2.7.4
+On Wed, Apr 05, 2017 at 11:07:54AM +0100, Richard Fitzgerald wrote:
+> This patch adds a driver for the internal LDO1 regulator on
+> some Cirrus Logic Madera class codecs.
+
+There appear to be only data differences to the existing arizona driver,
+is it possible to share the code?
+
+--74azknti32ogp66j
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljk8QsACgkQJNaLcl1U
+h9BnIQf8DygzO0mcDjqy6rkrjC8MGwrU0WVKZ4V5WpVIaDO62AnyWNPh8coFdO5I
+vLjZrMAWJtdx4Uo8eh3LC2sukQAvRiZ0jFnvWTPhbSGu2loOHupiYDxZmzIjpOg5
+OyH7ALWVlVmORa7V+QL+RbZnyanfiSvEMSJNPLTpTA7aOqPfYB3b4IF38QF/hoY0
+bFmrwtspZY75JMfugmAYhbWzPz9ED9IPUlENdy6nWef/AFWSehtMwmgH/Y992r4t
+5MCBxZ2Pvr6UBj5M9YKdQpGqbXsUgOsKpLumIehFwZCwbVIXfXYu56W3l3L+615O
+10hGYHzV+bWNQdyqAM2t18tInkJIUQ==
+=YIZp
+-----END PGP SIGNATURE-----
+
+--74azknti32ogp66j--
+
+--===============4685258558027622994==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4685258558027622994==--
