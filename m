@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoc: rt5645: Add OF device ID table" to the
+Subject: Applied "ASoC: ssm4567: Add OF device ID table" to the
 	asoc tree
-Date: Wed, 05 Apr 2017 18:30:48 +0100
-Message-ID: <E1cvolc-0000k1-25@debutante>
-References: <20170404192630.11408-2-javier@osg.samsung.com>
+Date: Wed, 05 Apr 2017 18:30:44 +0100
+Message-ID: <E1cvolY-0000iS-Vu@debutante>
+References: <20170404192630.11408-3-javier@osg.samsung.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id EF5BB267111
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A92A26718D
  for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 19:30:58 +0200 (CEST)
-In-Reply-To: <20170404192630.11408-2-javier@osg.samsung.com>
+In-Reply-To: <20170404192630.11408-3-javier@osg.samsung.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Javier Martinez Canillas <javier@osg.samsung.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoc: rt5645: Add OF device ID table
+   ASoC: ssm4567: Add OF device ID table
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 9ba2da5f5d18daaa365ab5426b05e16f1d114786 Mon Sep 17 00:00:00 2001
+>From 71c314d7ef2442cd798584a3dece8151215e1777 Mon Sep 17 00:00:00 2001
 From: Javier Martinez Canillas <javier@osg.samsung.com>
-Date: Tue, 4 Apr 2017 15:26:25 -0400
-Subject: [PATCH] ASoc: rt5645: Add OF device ID table
+Date: Tue, 4 Apr 2017 15:26:26 -0400
+Subject: [PATCH] ASoC: ssm4567: Add OF device ID table
 
 The driver doesn't have a struct of_device_id table but supported devices
 are registered via Device Trees. This is working on the assumption that a
@@ -68,63 +68,50 @@ OF device ID table if the devices are registered via OF.
 
 Before this patch:
 
-$ modinfo sound/soc/codecs/snd-soc-rt5645.ko | grep alias
-alias:          acpi*:10EC3270:*
-alias:          acpi*:10EC5640:*
-alias:          acpi*:10EC5650:*
-alias:          acpi*:10EC5648:*
-alias:          acpi*:10EC5645:*
-alias:          i2c:rt5650
-alias:          i2c:rt5645
+$ modinfo sound/soc/codecs/snd-soc-ssm4567.ko | grep alias
+alias:          acpi*:INT343B:*
+alias:          i2c:ssm4567
 
 After this patch:
 
-$ modinfo sound/soc/codecs/snd-soc-rt5645.ko | grep alias
-alias:          of:N*T*Crealtek,rt5650C*
-alias:          of:N*T*Crealtek,rt5650
-alias:          of:N*T*Crealtek,rt5645C*
-alias:          of:N*T*Crealtek,rt5645
-alias:          acpi*:10EC3270:*
-alias:          acpi*:10EC5640:*
-alias:          acpi*:10EC5650:*
-alias:          acpi*:10EC5648:*
-alias:          acpi*:10EC5645:*
-alias:          i2c:rt5650
-alias:          i2c:rt5645
+$ modinfo sound/soc/codecs/snd-soc-ssm4567.ko | grep alias
+alias:          acpi*:INT343B:*
+alias:          of:N*T*Cadi,ssm4567C*
+alias:          of:N*T*Cadi,ssm4567
+alias:          i2c:ssm4567
 
 Signed-off-by: Javier Martinez Canillas <javier@osg.samsung.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/soc/codecs/ssm4567.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 10c2a564a715..f8550ef2261b 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3542,6 +3542,15 @@ static const struct i2c_device_id rt5645_i2c_id[] = {
+diff --git a/sound/soc/codecs/ssm4567.c b/sound/soc/codecs/ssm4567.c
+index 2bb5a11c9ba1..a622623e8558 100644
+--- a/sound/soc/codecs/ssm4567.c
++++ b/sound/soc/codecs/ssm4567.c
+@@ -485,6 +485,14 @@ static const struct i2c_device_id ssm4567_i2c_ids[] = {
  };
- MODULE_DEVICE_TABLE(i2c, rt5645_i2c_id);
+ MODULE_DEVICE_TABLE(i2c, ssm4567_i2c_ids);
  
 +#ifdef CONFIG_OF
-+static const struct of_device_id rt5645_of_match[] = {
-+	{ .compatible = "realtek,rt5645", },
-+	{ .compatible = "realtek,rt5650", },
++static const struct of_device_id ssm4567_of_match[] = {
++	{ .compatible = "adi,ssm4567", },
 +	{ }
 +};
-+MODULE_DEVICE_TABLE(of, rt5645_of_match);
++MODULE_DEVICE_TABLE(of, ssm4567_of_match);
 +#endif
 +
  #ifdef CONFIG_ACPI
- static const struct acpi_device_id rt5645_acpi_match[] = {
- 	{ "10EC5645", 0 },
-@@ -3901,6 +3910,7 @@ static void rt5645_i2c_shutdown(struct i2c_client *i2c)
- static struct i2c_driver rt5645_i2c_driver = {
+ 
+ static const struct acpi_device_id ssm4567_acpi_match[] = {
+@@ -498,6 +506,7 @@ MODULE_DEVICE_TABLE(acpi, ssm4567_acpi_match);
+ static struct i2c_driver ssm4567_driver = {
  	.driver = {
- 		.name = "rt5645",
-+		.of_match_table = of_match_ptr(rt5645_of_match),
- 		.acpi_match_table = ACPI_PTR(rt5645_acpi_match),
+ 		.name = "ssm4567",
++		.of_match_table = of_match_ptr(ssm4567_of_match),
+ 		.acpi_match_table = ACPI_PTR(ssm4567_acpi_match),
  	},
- 	.probe = rt5645_i2c_probe,
+ 	.probe = ssm4567_i2c_probe,
 -- 
 2.11.0
