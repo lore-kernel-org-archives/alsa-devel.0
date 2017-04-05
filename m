@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs53l30: Set .of_match_table to OF
-	device ID table" to the asoc tree
-Date: Wed, 05 Apr 2017 18:30:54 +0100
-Message-ID: <E1cvoli-0000lu-4r@debutante>
-References: <20170404185930.1437-1-javier@osg.samsung.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2ADF626716B
- for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 19:31:04 +0200 (CEST)
-In-Reply-To: <20170404185930.1437-1-javier@osg.samsung.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: Applied "ASoC: max9867: export OF device ID as module aliases" to the asoc tree
+Date: Wed, 05 Apr 2017 18:30:57 +0100
+Message-ID: <E1cvoll-0000nn-3P@debutante>
+References: <20170404171939.3950-1-javier@osg.samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170404171939.3950-1-javier@osg.samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Javier Martinez Canillas <javier@osg.samsung.com>
-Cc: Brian Austin <brian.austin@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Paul Handrigan <Paul.Handrigan@cirrus.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+Cc: Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vinod.koul@intel.com>, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>, Enric Balletbo i Serra <enric.balletbo@collabora.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs53l30: Set .of_match_table to OF device ID table
+   ASoC: max9867: export OF device ID as module aliases
 
 has been applied to the asoc tree at
 
@@ -53,31 +37,56 @@ to this mail.
 Thanks,
 Mark
 
->From 13023ff3b3372543e4197b4b57d378350780fe96 Mon Sep 17 00:00:00 2001
+>From 56af0e4cd27c402691d0da8aa4a5233944085b44 Mon Sep 17 00:00:00 2001
 From: Javier Martinez Canillas <javier@osg.samsung.com>
-Date: Tue, 4 Apr 2017 14:59:30 -0400
-Subject: [PATCH] ASoC: cs53l30: Set .of_match_table to OF device ID table
+Date: Tue, 4 Apr 2017 13:19:39 -0400
+Subject: [PATCH] ASoC: max9867: export OF device ID as module aliases
 
-The driver has an OF device ID table but the struct i2c_driver
-.of_match_table field is not set.
+The I2C core always reports a MODALIAS of the form i2c:<foo> even if the
+device was registered via OF, this means that exporting the OF device ID
+table device aliases in the module is not needed. But in order to change
+how the core reports modaliases to user-space, it's better to export it.
+
+While there, move the MODULE_DEVICE_TABLE(i2c, max9867_i2c_id) just next
+to the I2C device table declaration, for consistency with other drivers.
+
+Before this patch:
+
+$ modinfo sound/soc/codecs/snd-soc-max9867.ko | grep alias
+alias:          i2c:max9867
+
+After this patch:
+
+$ modinfo sound/soc/codecs/snd-soc-max9867.ko | grep alias
+alias:          i2c:max9867
+alias:          of:N*T*Cmaxim,max9867C*
+alias:          of:N*T*Cmaxim,max9867
 
 Signed-off-by: Javier Martinez Canillas <javier@osg.samsung.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs53l30.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/max9867.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
-index cb47fb595ff4..1e0d5973b758 100644
---- a/sound/soc/codecs/cs53l30.c
-+++ b/sound/soc/codecs/cs53l30.c
-@@ -1130,6 +1130,7 @@ MODULE_DEVICE_TABLE(i2c, cs53l30_id);
- static struct i2c_driver cs53l30_i2c_driver = {
- 	.driver = {
- 		.name = "cs53l30",
-+		.of_match_table = cs53l30_of_match,
- 		.pm = &cs53l30_runtime_pm,
- 	},
- 	.id_table = cs53l30_id,
+diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+index 42e2e407e287..3a3d5bebc24e 100644
+--- a/sound/soc/codecs/max9867.c
++++ b/sound/soc/codecs/max9867.c
+@@ -517,13 +517,13 @@ static const struct i2c_device_id max9867_i2c_id[] = {
+ 	{ "max9867", 0 },
+ 	{ }
+ };
++MODULE_DEVICE_TABLE(i2c, max9867_i2c_id);
+ 
+ static const struct of_device_id max9867_of_match[] = {
+ 	{ .compatible = "maxim,max9867", },
+ 	{ }
+ };
+-
+-MODULE_DEVICE_TABLE(i2c, max9867_i2c_id);
++MODULE_DEVICE_TABLE(of, max9867_of_match);
+ 
+ static const struct dev_pm_ops max9867_pm_ops = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(max9867_suspend, max9867_resume)
 -- 
 2.11.0
