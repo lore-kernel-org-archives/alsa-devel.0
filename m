@@ -1,8 +1,8 @@
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH 06/16] regulator: madera-ldo1: LDO1 driver for
-	Cirrus Logic Madera codecs
-Date: Wed, 5 Apr 2017 11:07:54 +0100
-Message-ID: <1491386884-30689-7-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: [PATCH 07/16] regulator: madera-micsupp: Mic supply
+	for Cirrus Logic Madera codecs
+Date: Wed, 5 Apr 2017 11:07:55 +0100
+Message-ID: <1491386884-30689-8-git-send-email-rf@opensource.wolfsonmicro.com>
 References: <1491386884-30689-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 08A47266FEB
- for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 12:08:09 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 83EAA266FF3
+ for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 12:08:10 +0200 (CEST)
 In-Reply-To: <1491386884-30689-1-git-send-email-rf@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,43 +26,38 @@ To: linus.walleij@linaro.org, gnurou@gmail.com, robh+dt@kernel.org, tglx@linutro
 Cc: linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds a driver for the internal LDO1 regulator on
-some Cirrus Logic Madera class codecs.
+The adds a driver for the microphone supply regulator on Cirrus Logic
+Madera class codecs.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- .../devicetree/bindings/regulator/madera-ldo1.txt  |  29 +++
- MAINTAINERS                                        |   3 +
+ .../bindings/regulator/madera-micsupp.txt          |  27 +++
  drivers/regulator/Kconfig                          |   8 +
  drivers/regulator/Makefile                         |   1 +
- drivers/regulator/madera-ldo1.c                    | 198 +++++++++++++++++++++
- include/linux/regulator/madera-ldo1.h              |  24 +++
- 6 files changed, 263 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/regulator/madera-ldo1.txt
- create mode 100644 drivers/regulator/madera-ldo1.c
- create mode 100644 include/linux/regulator/madera-ldo1.h
+ drivers/regulator/madera-micsupp.c                 | 260 +++++++++++++++++++++
+ include/linux/regulator/madera-micsupp.h           |  21 ++
+ 5 files changed, 317 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/regulator/madera-micsupp.txt
+ create mode 100644 drivers/regulator/madera-micsupp.c
+ create mode 100644 include/linux/regulator/madera-micsupp.h
 
-diff --git a/Documentation/devicetree/bindings/regulator/madera-ldo1.txt b/Documentation/devicetree/bindings/regulator/madera-ldo1.txt
+diff --git a/Documentation/devicetree/bindings/regulator/madera-micsupp.txt b/Documentation/devicetree/bindings/regulator/madera-micsupp.txt
 new file mode 100644
-index 0000000..688f21d
+index 0000000..08aec7f
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/regulator/madera-ldo1.txt
-@@ -0,0 +1,29 @@
-+Cirrus Logic Madera class audio codecs LDO1 regulator driver
++++ b/Documentation/devicetree/bindings/regulator/madera-micsupp.txt
+@@ -0,0 +1,27 @@
++Cirrus Logic Madera class audio codecs mic supply regulator driver
 +
-+Only required if you are using the codec internal LDO1 regulator.
++Only required if the codec has an internal mic supply regulator.
 +This is a subnode of the parent mfd node.
 +
 +See also the core bindings for the parent MFD driver:
 +See Documentation/devicetree/bindings/mfd/madera.txt
 +
 +Required properties:
-+  - compatible :  must be "cirrus,madera-ldo1"
-+  - LDOVDD-supply : Power supply for the LDO1 regulator.
-+
-+  - enable-gpio	: GPIO to use to enable/disable the regulator.
-+    As defined in bindings/gpio.txt.
++  - compatible :  must be "cirrus,madera-micsupp"
 +
 +Optional subnodes:
 +  Standard regulator bindings as described in bindings/regulator/regulator.txt
@@ -72,68 +67,53 @@ index 0000000..688f21d
 +codec: cs47l85@0 {
 +	compatible = "cirrus,cs47l85";
 +
-+	ldo1 {
-+		compatible = "cirrus,madera-ldo1";
-+		LDOVDD-supply = <&pmic_vdd1>;
-+		enable-gpio = <&gpio 0>;
++	micvdd {
++		compatible = "cirrus,madera-micsupp";
++		regulator-min-microvolt = <900000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-allow-bypass = <1>;
 +	};
 +};
-diff --git a/MAINTAINERS b/MAINTAINERS
-index d28e53f..1207c9c 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3267,9 +3267,12 @@ T:	git https://github.com/CirrusLogic/linux-drivers.git
- W:	https://github.com/CirrusLogic/linux-drivers/wiki
- S:	Supported
- F:	Documentation/devicetree/bindings/mfd/madera.txt
-+F:	Documentation/devicetree/bindings/regulator/madera*
- F:	include/linux/mfd/madera/*
-+F:	include/linux/regulator/madera*
- F:	drivers/mfd/madera*
- F:	drivers/mfd/cs47l*
-+F:	drivers/regulator/madera*
- 
- CLEANCACHE API
- M:	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
++
 diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index be06eb2..c96d9a6 100644
+index c96d9a6..4f4b531 100644
 --- a/drivers/regulator/Kconfig
 +++ b/drivers/regulator/Kconfig
-@@ -368,6 +368,14 @@ config REGULATOR_LTC3676
- 	  This enables support for the LTC3676
- 	  8-output regulators controlled via I2C.
+@@ -376,6 +376,14 @@ config REGULATOR_MADERA_LDO1
+ 	  to supply DCVDD you must include this driver. If you are using an
+ 	  external DCVDD regulator you do not need this driver.
  
-+config REGULATOR_MADERA_LDO1
-+	tristate "Cirrus Logic Madera codecs LDO1 regulator"
++config REGULATOR_MADERA_MICSUPP
++	tristate "Cirrus Logic Madera codecs mic supply regulator"
 +	depends on MFD_MADERA
++	depends on SND_SOC
 +	help
-+	  If you want to use the internal LDO1 regulator on CS47L85 and WM1840
-+	  to supply DCVDD you must include this driver. If you are using an
-+	  external DCVDD regulator you do not need this driver.
++	  Support for the microphone supply regulator on Cirrus Logic
++	  Madera class codecs
 +
  config REGULATOR_MAX14577
  	tristate "Maxim 14577/77836 regulator"
  	depends on MFD_MAX14577
 diff --git a/drivers/regulator/Makefile b/drivers/regulator/Makefile
-index ef7725e..2db3592 100644
+index 2db3592..28cdf6e 100644
 --- a/drivers/regulator/Makefile
 +++ b/drivers/regulator/Makefile
-@@ -49,6 +49,7 @@ obj-$(CONFIG_REGULATOR_LP8788) += lp8788-ldo.o
- obj-$(CONFIG_REGULATOR_LP8755) += lp8755.o
+@@ -50,6 +50,7 @@ obj-$(CONFIG_REGULATOR_LP8755) += lp8755.o
  obj-$(CONFIG_REGULATOR_LTC3589) += ltc3589.o
  obj-$(CONFIG_REGULATOR_LTC3676) += ltc3676.o
-+obj-$(CONFIG_REGULATOR_MADERA_LDO1) += madera-ldo1.o
+ obj-$(CONFIG_REGULATOR_MADERA_LDO1) += madera-ldo1.o
++obj-$(CONFIG_REGULATOR_MADERA_MICSUPP) += madera-micsupp.o
  obj-$(CONFIG_REGULATOR_MAX14577) += max14577-regulator.o
  obj-$(CONFIG_REGULATOR_MAX1586) += max1586.o
  obj-$(CONFIG_REGULATOR_MAX77620) += max77620-regulator.o
-diff --git a/drivers/regulator/madera-ldo1.c b/drivers/regulator/madera-ldo1.c
+diff --git a/drivers/regulator/madera-micsupp.c b/drivers/regulator/madera-micsupp.c
 new file mode 100644
-index 0000000..6504d6f
+index 0000000..ac8bcbd
 --- /dev/null
-+++ b/drivers/regulator/madera-ldo1.c
-@@ -0,0 +1,198 @@
++++ b/drivers/regulator/madera-micsupp.c
+@@ -0,0 +1,260 @@
 +/*
-+ * madera-ldo1.c  --  Driver for the LDO1 regulator on Madera codecs
++ * madera-micsupp.c  --  Driver for the mic supply regulator on Madera codecs
 + *
 + * Copyright 2015-2017 Cirrus Logic
 + *
@@ -142,202 +122,264 @@ index 0000000..6504d6f
 + * published by the Free Software Foundation.
 + */
 +
++#include <linux/delay.h>
 +#include <linux/device.h>
 +#include <linux/err.h>
-+#include <linux/gpio.h>
 +#include <linux/module.h>
 +#include <linux/of.h>
-+#include <linux/of_gpio.h>
 +#include <linux/platform_device.h>
 +#include <linux/regulator/driver.h>
 +#include <linux/regulator/machine.h>
 +#include <linux/regulator/of_regulator.h>
++#include <linux/workqueue.h>
++#include <sound/soc.h>
 +
-+#include <linux/regulator/madera-ldo1.h>
++#include <linux/regulator/madera-micsupp.h>
 +
 +#include <linux/mfd/madera/core.h>
 +#include <linux/mfd/madera/pdata.h>
 +#include <linux/mfd/madera/registers.h>
 +
-+struct madera_ldo1 {
++struct madera_micsupp {
 +	struct regulator_dev *regulator;
++	struct madera *madera;
 +
 +	struct regulator_consumer_supply supply;
 +	struct regulator_init_data init_data;
++
++	struct work_struct check_cp_work;
 +};
 +
-+static const struct regulator_ops madera_ldo1_ops = {
-+	.list_voltage = regulator_list_voltage_linear,
-+	.map_voltage = regulator_map_voltage_linear,
++static void madera_micsupp_check_cp(struct work_struct *work)
++{
++	struct madera_micsupp *micsupp =
++		container_of(work, struct madera_micsupp, check_cp_work);
++	struct snd_soc_dapm_context *dapm = micsupp->madera->dapm;
++	struct snd_soc_component *component = snd_soc_dapm_to_component(dapm);
++	struct madera *madera = micsupp->madera;
++	struct regmap *regmap = madera->regmap;
++	unsigned int reg;
++	int ret;
++
++	if (dapm) {
++		ret = regmap_read(regmap, MADERA_MIC_CHARGE_PUMP_1, &reg);
++		if (ret) {
++			dev_err(madera->dev,
++				"Failed to read CP state: %d\n", ret);
++			return;
++		}
++
++		reg &= MADERA_CPMIC_ENA | MADERA_CPMIC_BYPASS;
++		if (reg == MADERA_CPMIC_ENA)
++			snd_soc_component_force_enable_pin(component,
++							   "MICSUPP");
++		else
++			snd_soc_component_disable_pin(component, "MICSUPP");
++
++		snd_soc_dapm_sync(dapm);
++	}
++}
++
++static int madera_micsupp_enable(struct regulator_dev *rdev)
++{
++	struct madera_micsupp *micsupp = rdev_get_drvdata(rdev);
++	int ret;
++
++	ret = regulator_enable_regmap(rdev);
++	if (ret == 0)
++		schedule_work(&micsupp->check_cp_work);
++
++	return ret;
++}
++
++static int madera_micsupp_disable(struct regulator_dev *rdev)
++{
++	struct madera_micsupp *micsupp = rdev_get_drvdata(rdev);
++	int ret;
++
++	ret = regulator_disable_regmap(rdev);
++	if (ret == 0)
++		schedule_work(&micsupp->check_cp_work);
++
++	return ret;
++}
++
++static int madera_micsupp_set_bypass(struct regulator_dev *rdev, bool ena)
++{
++	struct madera_micsupp *micsupp = rdev_get_drvdata(rdev);
++	int ret;
++
++	ret = regulator_set_bypass_regmap(rdev, ena);
++	if (ret == 0)
++		schedule_work(&micsupp->check_cp_work);
++
++	return ret;
++}
++
++static const struct regulator_ops madera_micsupp_ops = {
++	.enable = madera_micsupp_enable,
++	.disable = madera_micsupp_disable,
++	.is_enabled = regulator_is_enabled_regmap,
++
++	.list_voltage = regulator_list_voltage_linear_range,
++	.map_voltage = regulator_map_voltage_linear_range,
++
 +	.get_voltage_sel = regulator_get_voltage_sel_regmap,
 +	.set_voltage_sel = regulator_set_voltage_sel_regmap,
++
++	.get_bypass = regulator_get_bypass_regmap,
++	.set_bypass = madera_micsupp_set_bypass,
 +};
 +
-+static const struct regulator_desc madera_ldo1 = {
-+	.name = "LDO1",
-+	.supply_name = "LDOVDD",
-+	.type = REGULATOR_VOLTAGE,
-+	.ops = &madera_ldo1_ops,
++static const struct regulator_linear_range madera_micsupp_ranges[] = {
++	REGULATOR_LINEAR_RANGE(900000,  0,    0x14, 25000),
++	REGULATOR_LINEAR_RANGE(1500000, 0x15, 0x27, 100000),
++};
 +
-+	.vsel_reg = MADERA_LDO1_CONTROL_1,
-+	.vsel_mask = MADERA_LDO1_VSEL_MASK,
-+	.min_uV = 900000,
-+	.uV_step = 25000,
-+	.n_voltages = 13,
++static const struct regulator_desc madera_micsupp = {
++	.name = "MICVDD",
++	.supply_name = "CPVDD1",
++	.type = REGULATOR_VOLTAGE,
++	.n_voltages = 40,
++	.ops = &madera_micsupp_ops,
++
++	.vsel_reg = MADERA_LDO2_CONTROL_1,
++	.vsel_mask = MADERA_LDO2_VSEL_MASK,
++	.enable_reg = MADERA_MIC_CHARGE_PUMP_1,
++	.enable_mask = MADERA_CPMIC_ENA,
++	.bypass_reg = MADERA_MIC_CHARGE_PUMP_1,
++	.bypass_mask = MADERA_CPMIC_BYPASS,
++
++	.linear_ranges = madera_micsupp_ranges,
++	.n_linear_ranges = ARRAY_SIZE(madera_micsupp_ranges),
++
 +	.enable_time = 3000,
 +
 +	.owner = THIS_MODULE,
 +};
 +
-+static const struct regulator_init_data madera_ldo1_default = {
++static const struct regulator_init_data madera_micsupp_default = {
 +	.constraints = {
-+		.min_uV = 1200000,
-+		.max_uV = 1200000,
-+		.valid_ops_mask = REGULATOR_CHANGE_STATUS,
++		.valid_ops_mask = REGULATOR_CHANGE_STATUS |
++				REGULATOR_CHANGE_VOLTAGE |
++				REGULATOR_CHANGE_BYPASS,
++		.min_uV = 900000,
++		.max_uV = 3300000,
 +	},
++
 +	.num_consumer_supplies = 1,
 +};
 +
-+static int madera_ldo1_of_get_pdata(struct madera *madera,
-+				    struct regulator_config *config,
-+				    const struct regulator_desc *desc)
++static int madera_micsupp_of_get_pdata(struct madera *madera,
++					struct regulator_config *config,
++					const struct regulator_desc *desc)
 +{
 +	struct madera_pdata *pdata = &madera->pdata;
-+	struct madera_ldo1 *ldo1 = config->driver_data;
-+	struct device_node *dcvdd_node;
++	struct madera_micsupp *micsupp = config->driver_data;
 +	struct regulator_init_data *init_data;
 +
-+	dcvdd_node = of_parse_phandle(madera->dev->of_node, "DCVDD-supply", 0);
++	init_data = of_get_regulator_init_data(config->dev, config->of_node,
++						desc);
 +
-+	init_data = of_get_regulator_init_data(config->dev,
-+					       config->dev->of_node,
-+					       desc);
 +	if (init_data) {
-+		init_data->consumer_supplies = &ldo1->supply;
++		init_data->consumer_supplies = &micsupp->supply;
 +		init_data->num_consumer_supplies = 1;
-+		pdata->ldo1.init_data = init_data;
-+
-+		/* Check whether we're supplying the codec's DCVDD */
-+		if (dcvdd_node && dcvdd_node != config->dev->of_node)
-+			madera->internal_dcvdd = false;
-+	} else if (dcvdd_node) {
-+		madera->internal_dcvdd = false;
-+	}
-+
-+	of_node_put(dcvdd_node);
-+
-+	if (madera->internal_dcvdd) {
-+		pdata->ldo1.ldoena = of_get_named_gpio(madera->dev->of_node,
-+						       "enable-gpio", 0);
-+		if (pdata->ldo1.ldoena < 0)
-+			if (pdata->ldo1.ldoena != -ENOENT)
-+				dev_warn(madera->dev,
-+					 "Malformed enable-gpio ignored: %d\n",
-+					 pdata->ldo1.ldoena);
++		pdata->micsupp.init_data = init_data;
 +	}
 +
 +	return 0;
 +}
 +
-+static int madera_ldo1_probe(struct platform_device *pdev)
++static int madera_micsupp_probe(struct platform_device *pdev)
 +{
 +	struct madera *madera = dev_get_drvdata(pdev->dev.parent);
 +	const struct regulator_desc *desc;
 +	struct regulator_config config = { };
-+	struct madera_ldo1 *ldo1;
++	struct madera_micsupp *micsupp;
 +	int ret;
 +
-+	madera->internal_dcvdd = true;
-+
-+	ldo1 = devm_kzalloc(&pdev->dev, sizeof(*ldo1), GFP_KERNEL);
-+	if (!ldo1)
++	micsupp = devm_kzalloc(&pdev->dev, sizeof(*micsupp), GFP_KERNEL);
++	if (!micsupp)
 +		return -ENOMEM;
++
++	micsupp->madera = madera;
++	INIT_WORK(&micsupp->check_cp_work, madera_micsupp_check_cp);
 +
 +	/*
 +	 * Since the chip usually supplies itself we provide some
 +	 * default init_data for it.  This will be overridden with
 +	 * platform data if provided.
 +	 */
-+	desc = &madera_ldo1;
-+	ldo1->init_data = madera_ldo1_default;
++	desc = &madera_micsupp;
++	micsupp->init_data = madera_micsupp_default;
 +
-+	ldo1->init_data.consumer_supplies = &ldo1->supply;
-+	ldo1->supply.supply = "DCVDD";
-+	ldo1->supply.dev_name = dev_name(madera->dev);
++	micsupp->init_data.consumer_supplies = &micsupp->supply;
++	micsupp->supply.supply = "MICVDD";
++	micsupp->supply.dev_name = dev_name(madera->dev);
 +
-+	config.dev = &pdev->dev;
++	config.dev = madera->dev;
 +	config.of_node = config.dev->of_node;
-+	config.driver_data = ldo1;
++	config.driver_data = micsupp;
 +	config.regmap = madera->regmap;
-+
-+	/* pdata defaults to 0 if not explicitly set. Convert to invalid. */
-+	if (madera->pdata.ldo1.ldoena == 0)
-+		madera->pdata.ldo1.ldoena = -EINVAL;
 +
 +	if (IS_ENABLED(CONFIG_OF)) {
 +		if (!dev_get_platdata(madera->dev)) {
-+			ret = madera_ldo1_of_get_pdata(madera, &config, desc);
++			ret = madera_micsupp_of_get_pdata(madera, &config,
++							  desc);
 +			if (ret < 0)
 +				return ret;
 +		}
 +	}
 +
-+	if (madera->pdata.ldo1.init_data)
-+		ldo1->init_data = *madera->pdata.ldo1.init_data;
++	if (madera->pdata.micsupp.init_data)
++		config.init_data = madera->pdata.micsupp.init_data;
++	else
++		config.init_data = &micsupp->init_data;
 +
-+	if (gpio_is_valid(madera->pdata.ldo1.ldoena)) {
-+		config.ena_gpio = madera->pdata.ldo1.ldoena;
-+		config.ena_gpio_initialized = true;
-+	} else {
-+		dev_warn(madera->dev,
-+			 "Running without LDOENA is not recommended\n");
-+	}
-+	config.ena_gpio_flags = GPIOF_OUT_INIT_LOW;
-+	config.init_data = &ldo1->init_data;
++	/* Default to regulated mode, in case bypass is not in constraints */
++	regmap_update_bits(madera->regmap, MADERA_MIC_CHARGE_PUMP_1,
++			   MADERA_CPMIC_BYPASS, 0);
 +
-+	/*
-+	 * LDO1 can only be used to supply DCVDD so if it has no
-+	 * consumers then DCVDD is supplied externally.
-+	 */
-+	if (config.init_data->num_consumer_supplies == 0)
-+		madera->internal_dcvdd = false;
-+
-+	ldo1->regulator = devm_regulator_register(&pdev->dev, desc, &config);
++	micsupp->regulator = devm_regulator_register(&pdev->dev, desc,
++						     &config);
 +
 +	of_node_put(config.of_node);
 +
-+	if (IS_ERR(ldo1->regulator)) {
-+		ret = PTR_ERR(ldo1->regulator);
-+		dev_err(madera->dev, "Failed to register LDO1 supply: %d\n",
++	if (IS_ERR(micsupp->regulator)) {
++		ret = PTR_ERR(micsupp->regulator);
++		dev_err(madera->dev, "Failed to register mic supply: %d\n",
 +			ret);
 +		return ret;
 +	}
 +
++	platform_set_drvdata(pdev, micsupp);
++
 +	return 0;
 +}
 +
-+static struct platform_driver madera_ldo1_driver = {
-+	.probe = madera_ldo1_probe,
++static struct platform_driver madera_micsupp_driver = {
++	.probe = madera_micsupp_probe,
 +	.driver		= {
-+		.name	= "madera-ldo1",
++		.name	= "madera-micsupp",
 +	},
 +};
 +
-+module_platform_driver(madera_ldo1_driver);
++module_platform_driver(madera_micsupp_driver);
 +
-+MODULE_DESCRIPTION("Madera LDO1 driver");
++/* Module information */
++MODULE_DESCRIPTION("Madera microphone supply driver");
 +MODULE_AUTHOR("Charles Keepax <ckeepax@opensource.wolfsonmicro.com>");
 +MODULE_AUTHOR("Richard Fitzgerald <rf@opensource.wolfsonmicro.com>");
 +MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:madera-ldo1");
-diff --git a/include/linux/regulator/madera-ldo1.h b/include/linux/regulator/madera-ldo1.h
++MODULE_ALIAS("platform:madera-micsupp");
+diff --git a/include/linux/regulator/madera-micsupp.h b/include/linux/regulator/madera-micsupp.h
 new file mode 100644
-index 0000000..9435021
+index 0000000..9913bc6
 --- /dev/null
-+++ b/include/linux/regulator/madera-ldo1.h
-@@ -0,0 +1,24 @@
++++ b/include/linux/regulator/madera-micsupp.h
+@@ -0,0 +1,21 @@
 +/*
-+ * Platform data for Madera codecs LDO1 regulator
++ * Platform data for Madera codecs MICSUPP regulator
 + *
 + * Copyright 2016-2017 Cirrus Logic
 + *
@@ -346,16 +388,13 @@ index 0000000..9435021
 + * published by the Free Software Foundation.
 + */
 +
-+#ifndef MADERA_LDO1_H
-+#define MADERA_LDO1_H
++#ifndef MADERA_MICSUPP_H
++#define MADERA_MICSUPP_H
 +
 +struct regulator_init_data;
 +
-+struct madera_ldo1_pdata {
-+	/** GPIO controlling LODENA, if any */
-+	int ldoena;
-+
-+	/** Regulator configuration for LDO1 */
++struct madera_micsupp_pdata {
++	/** Regulator configuration for MICSUPP */
 +	const struct regulator_init_data *init_data;
 +};
 +
