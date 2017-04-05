@@ -1,20 +1,18 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH v2 2/2] ASoC: fsl_ssi: Use the tolower()
-	function
-Date: Wed,  5 Apr 2017 16:02:26 -0300
-Message-ID: <1491418946-10585-2-git-send-email-festevam@gmail.com>
-References: <1491418946-10585-1-git-send-email-festevam@gmail.com>
+Subject: [PATCH v2 1/2] ASoC: fsl_ssi: Remove an outdated
+	comment
+Date: Wed,  5 Apr 2017 16:02:25 -0300
+Message-ID: <1491418946-10585-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-qk0-f193.google.com (mail-qk0-f193.google.com
  [209.85.220.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E403C266C13
- for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 21:02:42 +0200 (CEST)
-Received: by mail-qk0-f193.google.com with SMTP id p22so2938634qka.0
- for <alsa-devel@alsa-project.org>; Wed, 05 Apr 2017 12:02:42 -0700 (PDT)
-In-Reply-To: <1491418946-10585-1-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0AE0A266943
+ for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 21:02:41 +0200 (CEST)
+Received: by mail-qk0-f193.google.com with SMTP id k139so2942978qke.2
+ for <alsa-devel@alsa-project.org>; Wed, 05 Apr 2017 12:02:41 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,46 +28,36 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Fabio Estevam <fabio.estevam@nxp.com>
 
-Code can be simplified by using the standard tolower() funtion.
+The comment for the FSLSSI_I2S_RATES definition states that the
+driver currently only supports I2S slave mode, which is no longer
+correct.
+
+Remove such outdated comment.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 ---
 Changes since v1:
-- None
+- Only remove the outdated part of the comment
 
- sound/soc/fsl/fsl_ssi.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index e0639e17..baf26fc 100644
+index fde08660..e0639e17 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -35,6 +35,7 @@
- #include <linux/module.h>
- #include <linux/interrupt.h>
- #include <linux/clk.h>
-+#include <linux/ctype.h>
- #include <linux/device.h>
- #include <linux/delay.h>
- #include <linux/slab.h>
-@@ -1323,14 +1324,10 @@ static struct snd_ac97_bus_ops fsl_ssi_ac97_ops = {
+@@ -57,10 +57,8 @@
+ /**
+  * FSLSSI_I2S_RATES: sample rates supported by the I2S
+  *
+- * This driver currently only supports the SSI running in I2S slave mode,
+- * which means the codec determines the sample rate.  Therefore, we tell
+- * ALSA that we support all rates and let the codec driver decide what rates
+- * are really supported.
++ * Tell ALSA that we support all rates and let the codec driver decide what
++ * rates are really supported.
   */
- static void make_lowercase(char *s)
- {
--	char *p = s;
--	char c;
--
--	while ((c = *p)) {
--		if ((c >= 'A') && (c <= 'Z'))
--			*p = c + ('a' - 'A');
--		p++;
--	}
-+	if (!s)
-+		return;
-+	for (; *s; s++)
-+		*s = tolower(*s);
- }
+ #define FSLSSI_I2S_RATES SNDRV_PCM_RATE_CONTINUOUS
  
- static int fsl_ssi_imx_probe(struct platform_device *pdev,
 -- 
 2.7.4
