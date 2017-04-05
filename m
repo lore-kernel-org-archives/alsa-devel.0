@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5677: Add OF device ID table" to the
-	asoc tree
-Date: Wed, 05 Apr 2017 18:30:26 +0100
-Message-ID: <E1cvolG-0000ct-Vm@debutante>
-References: <20170404192630.11408-7-javier@osg.samsung.com>
+Subject: Applied "ASoC: codec: wm9860: Refactor PLL out freq
+	search" to the asoc tree
+Date: Wed, 05 Apr 2017 18:30:23 +0100
+Message-ID: <E1cvolD-0000bp-Vj@debutante>
+References: <1491324314-27067-2-git-send-email-daniel.baluta@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1894E267131
- for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 19:30:39 +0200 (CEST)
-In-Reply-To: <20170404192630.11408-7-javier@osg.samsung.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 338A4267131
+ for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 19:30:42 +0200 (CEST)
+In-Reply-To: <1491324314-27067-2-git-send-email-daniel.baluta@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Javier Martinez Canillas <javier@osg.samsung.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
+To: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: alsa-devel@alsa-project.org, shengjiu.wang@nxp.com, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, broonie@kernel.org, viorel.suman@nxp.com, tiwai@suse.com, mihai.serban@nxp.com, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5677: Add OF device ID table
+   ASoC: codec: wm9860: Refactor PLL out freq search
 
 has been applied to the asoc tree at
 
@@ -53,65 +53,142 @@ to this mail.
 Thanks,
 Mark
 
->From 7b87463edf3e2c16d72eeea3d1cf3c12bb5487c6 Mon Sep 17 00:00:00 2001
-From: Javier Martinez Canillas <javier@osg.samsung.com>
-Date: Tue, 4 Apr 2017 15:26:30 -0400
-Subject: [PATCH] ASoC: rt5677: Add OF device ID table
+>From 84fdc00d519ffdf8ae6e34d7841bcc6f38928953 Mon Sep 17 00:00:00 2001
+From: Daniel Baluta <daniel.baluta@nxp.com>
+Date: Tue, 4 Apr 2017 19:45:13 +0300
+Subject: [PATCH] ASoC: codec: wm9860: Refactor PLL out freq search
 
-The driver doesn't have a struct of_device_id table but supported devices
-are registered via Device Trees. This is working on the assumption that a
-I2C device registered via OF will always match a legacy I2C device ID and
-that the MODALIAS reported will always be of the form i2c:<device>.
+Add a separate function for deriving (sysclk, lrclk, bclk)
+when the clock is auto or pll.
 
-But this could change in the future so the correct approach is to have an
-OF device ID table if the devices are registered via OF.
-
-Before this patch:
-
-$ modinfo sound/soc/codecs/snd-soc-rt5677.ko | grep alias
-alias:          i2c:RT5677CE:00
-alias:          i2c:rt5676
-alias:          i2c:rt5677
-
-After this patch:
-
-$ modinfo sound/soc/codecs/snd-soc-rt5677.ko | grep alias
-alias:          of:N*T*Crealtek,rt5677C*
-alias:          of:N*T*Crealtek,rt5677
-alias:          i2c:RT5677CE:00
-alias:          i2c:rt5676
-alias:          i2c:rt5677
-
-Signed-off-by: Javier Martinez Canillas <javier@osg.samsung.com>
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5677.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/codecs/wm8960.c | 93 ++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 64 insertions(+), 29 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index abc802a5a479..65ac4518ad06 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -5035,6 +5035,12 @@ static const struct i2c_device_id rt5677_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, rt5677_i2c_id);
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index ce159f13e7a4..36c84549da23 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -672,10 +672,70 @@ int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
+ 	return *bclk_idx;
+ }
  
-+static const struct of_device_id rt5677_of_match[] = {
-+	{ .compatible = "realtek,rt5677", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, rt5677_of_match);
++/**
++ * wm8960_configure_pll - checks if there is a PLL out frequency available
++ *	The PLL out frequency must be chosen such that:
++ *		- sysclk      = lrclk * dac_divs
++ *		- freq_out    = sysclk * sysclk_divs
++ *		- 10 * sysclk = bclk * bclk_divs
++ *
++ * @codec: codec structure
++ * @freq_in: input frequency used to derive freq out via PLL
++ * @sysclk_idx: sysclk_divs index for found sysclk
++ * @dac_idx: dac_divs index for found lrclk
++ * @bclk_idx: bclk_divs index for found bclk
++ *
++ * Returns:
++ *  -1, in case no PLL frequency out available was found
++ * >=0, in case we could derive bclk, lrclk, sysclk from PLL out using
++ *      (@sysclk_idx, @dac_idx, @bclk_idx) dividers
++ */
++static
++int wm8960_configure_pll(struct snd_soc_codec *codec, int freq_in,
++			 int *sysclk_idx, int *dac_idx, int *bclk_idx)
++{
++	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
++	int sysclk, bclk, lrclk, freq_out;
++	int diff, best_freq_out;
++	int i, j, k;
 +
- static const struct acpi_gpio_params plug_det_gpio = { RT5677_GPIO_PLUG_DET, 0, false };
- static const struct acpi_gpio_params mic_present_gpio = { RT5677_GPIO_MIC_PRESENT_L, 0, false };
- static const struct acpi_gpio_params headphone_enable_gpio = { RT5677_GPIO_HP_AMP_SHDN_L, 0, false };
-@@ -5294,6 +5300,7 @@ static int rt5677_i2c_remove(struct i2c_client *i2c)
- static struct i2c_driver rt5677_i2c_driver = {
- 	.driver = {
- 		.name = "rt5677",
-+		.of_match_table = rt5677_of_match,
- 	},
- 	.probe = rt5677_i2c_probe,
- 	.remove   = rt5677_i2c_remove,
++	bclk = wm8960->bclk;
++	lrclk = wm8960->lrclk;
++
++	*bclk_idx = -1;
++
++	for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
++		if (sysclk_divs[i] == -1)
++			continue;
++		for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {
++			sysclk = lrclk * dac_divs[j];
++			freq_out = sysclk * sysclk_divs[i];
++
++			for (k = 0; k < ARRAY_SIZE(bclk_divs); ++k) {
++				if (!is_pll_freq_available(freq_in, freq_out))
++					continue;
++
++				diff = sysclk - bclk * bclk_divs[k] / 10;
++				if (diff == 0) {
++					*sysclk_idx = i;
++					*dac_idx = j;
++					*bclk_idx = k;
++					best_freq_out = freq_out;
++					break;
++				}
++			}
++		}
++	}
++
++	if (*bclk_idx != -1)
++		wm8960_set_pll(codec, freq_in, best_freq_out);
++
++	return *bclk_idx;
++}
+ static int wm8960_configure_clocking(struct snd_soc_codec *codec)
+ {
+ 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
+-	int sysclk, bclk, lrclk, freq_out, freq_in;
++	int freq_out, freq_in;
+ 	u16 iface1 = snd_soc_read(codec, WM8960_IFACE1);
+ 	int i, j, k;
+ 	int ret;
+@@ -692,8 +752,6 @@ static int wm8960_configure_clocking(struct snd_soc_codec *codec)
+ 	}
+ 
+ 	freq_in = wm8960->freq_in;
+-	bclk = wm8960->bclk;
+-	lrclk = wm8960->lrclk;
+ 	/*
+ 	 * If it's sysclk auto mode, check if the MCLK can provide sysclk or
+ 	 * not. If MCLK can provide sysclk, using MCLK to provide sysclk
+@@ -720,33 +778,10 @@ static int wm8960_configure_clocking(struct snd_soc_codec *codec)
+ 			return -EINVAL;
+ 		}
+ 	}
+-	/* get a available pll out frequency and set pll */
+-	for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
+-		if (sysclk_divs[i] == -1)
+-			continue;
+-		for (j = 0; j < ARRAY_SIZE(dac_divs); ++j) {
+-			sysclk = lrclk * dac_divs[j];
+-			freq_out = sysclk * sysclk_divs[i];
+-
+-			for (k = 0; k < ARRAY_SIZE(bclk_divs); ++k) {
+-				if (sysclk == bclk * bclk_divs[k] / 10 &&
+-				    is_pll_freq_available(freq_in, freq_out)) {
+-					wm8960_set_pll(codec,
+-						       freq_in, freq_out);
+-					break;
+-				} else {
+-					continue;
+-				}
+-			}
+-			if (k != ARRAY_SIZE(bclk_divs))
+-				break;
+-		}
+-		if (j != ARRAY_SIZE(dac_divs))
+-			break;
+-	}
+ 
+-	if (i == ARRAY_SIZE(sysclk_divs)) {
+-		dev_err(codec->dev, "failed to configure clock\n");
++	ret = wm8960_configure_pll(codec, freq_in, &i, &j, &k);
++	if (ret < 0) {
++		dev_err(codec->dev, "failed to configure clock via PLL\n");
+ 		return -EINVAL;
+ 	}
+ 
 -- 
 2.11.0
