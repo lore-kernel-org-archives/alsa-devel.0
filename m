@@ -1,20 +1,16 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 2/2] ASoC: codec: wm8960: Relax bit clock
- computation when using PLL
-Date: Wed, 5 Apr 2017 10:02:03 +0100
-Message-ID: <20170405090203.GA6986@localhost.localdomain>
-References: <1491324314-27067-1-git-send-email-daniel.baluta@nxp.com>
- <1491324314-27067-3-git-send-email-daniel.baluta@nxp.com>
+From: simon.ho.cnxt@gmail.com
+Subject: [PATCH v2 0/2] ASoC: add support for CX2072X CODEC
+Date: Wed,  5 Apr 2017 17:07:12 +0800
+Message-ID: <cover.1491382907.git.simon.ho@conexant.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id D4A0F266FA5
- for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 11:00:59 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1491324314-27067-3-git-send-email-daniel.baluta@nxp.com>
+Received: from mail-pg0-f65.google.com (mail-pg0-f65.google.com [74.125.83.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6049C266FA1
+ for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 11:07:19 +0200 (CEST)
+Received: by mail-pg0-f65.google.com with SMTP id o123so1250821pga.1
+ for <alsa-devel@alsa-project.org>; Wed, 05 Apr 2017 02:07:19 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,25 +20,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Baluta <daniel.baluta@nxp.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, shengjiu.wang@nxp.com, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, tiwai@suse.com, broonie@kernel.org, viorel.suman@nxp.com, mihai.serban@nxp.com
+To: alsa-devel@alsa-project.org
+Cc: pierre-louis.bossart@linux.intel.com, Simon Ho <simon.ho@conexant.com>, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 04, 2017 at 07:45:14PM +0300, Daniel Baluta wrote:
-> Bitclk is derived from sysclk using bclk_divs.
-> Sysclk can be derived in two ways:
-> 	(1) directly from MLCK
-> 	(2) MCLK via PLL
-> 
-> Commit 3c01b9ee2ab9d0d ("ASoC: codec: wm8960: Relax bit clock computation")
-> relaxed bitclk computation when sysclk is directly derived from MCLK.
-> 
-> Lets do the same thing when sysclk is derived via PLL.
-> 
-> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-> ---
+From: Simon Ho <simon.ho@conexant.com>
 
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Hi Takashi, Mark
+
+I corrected the driver based on your input as below. Please help review the
+code.
+
+Mark:
+ - Corrected the coding style.
+ - EQ/DRC settings can be configured from userspace via mixer controls.
+ - Wrongly cast void pointers.
+ - Print I2C error code.
+ - Use memcmp() to check if the new EQ value is different. 
+ - Removed unused TDM code.
+ - Removed noisy "out of memory" message.
+ - Corrected ACPI and I2C match table.
+ - Removed unnessary CONFIG_ACPI define.
+
+Takashi: 
+ - Fixed printf int argument.
+ - Fixed unexpected error code at no MCLK fallback.
 
 Thanks,
-Charles
+
+Simon
+
+Simon Ho (2):
+  ASoC: cx2072x: Add DT bingings documentation for CX2072X CODEC
+  ASoC: add support for Conexant CX2072X CODEC
+
+ .../devicetree/bindings/sound/cx2072x.txt          |   36 +
+ sound/soc/codecs/Kconfig                           |    5 +
+ sound/soc/codecs/Makefile                          |    2 +
+ sound/soc/codecs/cx2072x.c                         | 2253 ++++++++++++++++++++
+ sound/soc/codecs/cx2072x.h                         |  319 +++
+ 5 files changed, 2615 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/cx2072x.txt
+ create mode 100644 sound/soc/codecs/cx2072x.c
+ create mode 100644 sound/soc/codecs/cx2072x.h
+
+-- 
+2.7.4
