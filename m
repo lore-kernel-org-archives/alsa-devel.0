@@ -1,16 +1,15 @@
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH 09/16] pinctrl: madera: Add driver for Cirrus
-	Logic Madera codecs
-Date: Wed, 5 Apr 2017 11:07:57 +0100
-Message-ID: <1491386884-30689-10-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: [PATCH 11/16] ASoC: wm_adsp: Add support for ADSP2V2
+Date: Wed, 5 Apr 2017 11:07:59 +0100
+Message-ID: <1491386884-30689-12-git-send-email-rf@opensource.wolfsonmicro.com>
 References: <1491386884-30689-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 7632E26701A
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id D5B1F26701C
  for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 12:08:12 +0200 (CEST)
 In-Reply-To: <1491386884-30689-1-git-send-email-rf@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,1301 +25,297 @@ To: linus.walleij@linaro.org, gnurou@gmail.com, robh+dt@kernel.org, tglx@linutro
 Cc: linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-These codecs have a variable number of I/O lines each of which
-is individually selectable to a wide range of possible functions.
-
-The functionality is slightly different from the traditional muxed
-GPIO since most of the functions can be mapped to any pin (and even
-the same function to multiple pins). Most pins have a dedicated
-"alternate" function that is only available on that pin. The
-alternate functions are usually a group of signals, though it is
-not always necessary to enable the full group, depending on the
-alternate function and how it is to be used. The mapping between
-alternate functions and GPIO pins varies between codecs depending
-on the number of alternate functions and available pins.
+Adds support for ADSP2V2 cores. Primary differences are that
+they use a 32-bit register map compared to the 16-bit register
+map of ADSP2V1, and there are some changes to clocking control.
 
 Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- .../bindings/pinctrl/cirrus,madera-pinctrl.txt     |  103 ++
- MAINTAINERS                                        |    2 +
- drivers/pinctrl/Kconfig                            |   22 +
- drivers/pinctrl/Makefile                           |    1 +
- drivers/pinctrl/pinctrl-madera.c                   | 1092 ++++++++++++++++++++
- 5 files changed, 1220 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt
- create mode 100644 drivers/pinctrl/pinctrl-madera.c
+ sound/soc/codecs/wm_adsp.c | 187 ++++++++++++++++++++++++++++++++++-----------
+ sound/soc/codecs/wm_adsp.h |   1 +
+ 2 files changed, 145 insertions(+), 43 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt b/Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt
-new file mode 100644
-index 0000000..e9e20e6
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt
-@@ -0,0 +1,103 @@
-+Cirrus Logic Madera class audio codecs pinctrl driver
-+
-+The Cirrus Logic Madera codecs provide a number of GPIO functions for
-+interfacing to external hardware and to provide logic outputs to other devices.
-+Certain groups of GPIO pins also have an alternate function, normally as an
-+audio interface.
-+
-+The set of available GPIOs, functions and alternate function groups differs
-+between codecs so refer to the datasheet for the codec for further information
-+on what is supported on that device.
-+
-+The root node for this driver must be a subnode of the parent MFD driver node.
-+It contains one subnode that is a container for an arbitrary number of subnodes
-+to configure each pin or function group.
-+
-+See also
-+  the core bindings for the parent MFD driver:
-+    Documentation/devicetree/bindings/mfd/madera.txt
-+
-+  the generic pinmix bindings:
-+    Documentation/devicetree/bindings/pinctrl/pinctrl-bindings.txt
-+
-+Required properties of parent mfd node:
-+  - pinctrl-names : must be "defaults"
-+  - pinctrl-0 : a phandle to the node containing the configuration subnodes
-+
-+Required properties of pinctrl subnode:
-+  - compatible : must be "cirrus,madera-pinctrl"
-+
-+Required properties of configuration subnodes:
-+  - groups : name of one pin group to configure. One of:
-+	aif1, aif2, aif3, aif4, mif1, mif2, mif3, pdmspk1, pdmspk2,
-+	dmic4, dmic5, dmic6,
-+	gpio1, gpio2, ..., gpio40
-+    The gpioN groups select the single pin of this name for configuration
-+
-+Optional properties of configuration subnodes:
-+  Any configuration option not explicitly listed in the dts will be left at
-+  chip default setting.
-+
-+  - function : name of function to assign to this group. One of:
-+	aif1, aif2, aif3, aif4, mif1, mif2, mif3, pdmspk1, pdmspk2,
-+	dmic3, dmic4, dmic5, dmic6,
-+	io, dsp-gpio, irq1, irq2,
-+	fll1-clk, fll1-lock, fll2-clk, fll2-lock, fll3-clk, fll3-lock,
-+	fllao-clk, fllao-lock,
-+	opclk, opclk-async, pwm1, pwm2, spdif,
-+	asrc1-in1-lock, asrc1-in2-lock, asrc2-in1-lock, asrc2-in2-lock,
-+	spkl-short-circuit, spkr-short-circuit, spk-shutdown,
-+	spk-overheat-shutdown, spk-overheat-warn,
-+	timer1-sts, timer2-sts, timer3-sts, timer4-sts, timer5-sts, timer6-sts,
-+	timer7-sts, timer8-sts,
-+	log1-fifo-ne, log2-fifo-ne, log3-fifo-ne, log4-fifo-ne, log5-fifo-ne,
-+	log6-fifo-ne, log7-fifo-ne, log8-fifo-ne,
-+
-+  - bias-disable : disable pull-up and pull-down
-+  - bias-bus-hold : enable buskeeper
-+  - bias-pull-up : output is pulled-up
-+  - bias-pull-down : output is pulled-down
-+  - drive-push-pull : CMOS output
-+  - drive-open-drain : open-drain output
-+  - drive-strength : drive strength in mA. Valid values are 4 or 8
-+  - input-schmitt-enable : enable schmitt-trigger mode
-+  - input-schmitt-disable : disable schmitt-trigger mode
-+  - input-debounce : A value of 0 disables debounce, a value !=0 enables
-+	debounce
-+  - output-low : set the pin to output mode with low level
-+  - output-high : set the pin to output mode with high level
-+
-+Example:
-+
-+codec: cs47l85@0 {
-+	compatible = "cirrus,cs47l85";
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cs47l85_gpio_defaults>;
-+
-+
-+	pinctrl {
-+		compatible = "cirrus,madera-pinctrl";
-+
-+		cs47l85_gpio_defaults: defaults {
-+			aif1 {
-+				groups = "aif1";
-+				function = "aif1";
-+				bias-bus-hold;
-+			};
-+
-+			aif2 {
-+				groups = "aif2";
-+				function = "aif2";
-+				bias-bus-hold;
-+			};
-+
-+			opclk {
-+				groups = "gpio1";
-+				function = "opclk";
-+				bias-pull-up;
-+				drive-strength = <8>;
-+			};
-+		};
-+	};
-+};
-diff --git a/MAINTAINERS b/MAINTAINERS
-index a06701f..85af1f9 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3268,6 +3268,7 @@ W:	https://github.com/CirrusLogic/linux-drivers/wiki
- S:	Supported
- F:	Documentation/devicetree/bindings/interrupt-controller/cirrus,madera.txt
- F:	Documentation/devicetree/bindings/mfd/madera.txt
-+F:	Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt
- F:	Documentation/devicetree/bindings/regulator/madera*
- F:	include/linux/irqchip/irq-madera*
- F:	include/linux/mfd/madera/*
-@@ -3275,6 +3276,7 @@ F:	include/linux/regulator/madera*
- F:	drivers/irqchip/irq-madera*
- F:	drivers/mfd/madera*
- F:	drivers/mfd/cs47l*
-+F:	drivers/pinctrl/pinctrl-madera*
- F:	drivers/regulator/madera*
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index bbdb72f..a9acf22 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -112,17 +112,22 @@
+ #define ADSP1_CLK_SEL_SHIFT                    0  /* CLK_SEL_ENA */
+ #define ADSP1_CLK_SEL_WIDTH                    3  /* CLK_SEL_ENA */
  
- CLEANCACHE API
-diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
-index 8f8c2af..483afe5 100644
---- a/drivers/pinctrl/Kconfig
-+++ b/drivers/pinctrl/Kconfig
-@@ -109,6 +109,28 @@ config PINCTRL_DA850_PUPD
- 	  Driver for TI DA850/OMAP-L138/AM18XX pinconf. Used to control
- 	  pullup/pulldown pin groups.
+-#define ADSP2_CONTROL        0x0
+-#define ADSP2_CLOCKING       0x1
+-#define ADSP2_STATUS1        0x4
+-#define ADSP2_WDMA_CONFIG_1 0x30
+-#define ADSP2_WDMA_CONFIG_2 0x31
+-#define ADSP2_RDMA_CONFIG_1 0x34
+-
+-#define ADSP2_SCRATCH0        0x40
+-#define ADSP2_SCRATCH1        0x41
+-#define ADSP2_SCRATCH2        0x42
+-#define ADSP2_SCRATCH3        0x43
++#define ADSP2_CONTROL                     0x0
++#define ADSP2_CLOCKING                    0x1
++#define ADSP2V2_CLOCKING                  0x2
++#define ADSP2_STATUS1                     0x4
++#define ADSP2_WDMA_CONFIG_1               0x30
++#define ADSP2_WDMA_CONFIG_2               0x31
++#define ADSP2V2_WDMA_CONFIG_2             0x32
++#define ADSP2_RDMA_CONFIG_1               0x34
++
++#define ADSP2_SCRATCH0                    0x40
++#define ADSP2_SCRATCH1                    0x41
++#define ADSP2_SCRATCH2                    0x42
++#define ADSP2_SCRATCH3                    0x43
++
++#define ADSP2V2_SCRATCH0_1                0x40
++#define ADSP2V2_SCRATCH2_3                0x42
  
-+config PINCTRL_MADERA
-+	bool
-+	default y if MFD_MADERA=y
-+
-+config PINCTRL_CS47L35
-+	bool
-+	default y if MFD_CS47L35=y
-+	select PINMUX
-+	select GENERIC_PINCONF
-+
-+config PINCTRL_CS47L85
-+	bool
-+	default y if MFD_CS47L85=y
-+	select PINMUX
-+	select GENERIC_PINCONF
-+
-+config PINCTRL_CS47L90
-+	bool
-+	default y if MFD_CS47L90=y
-+	select PINMUX
-+	select GENERIC_PINCONF
-+
- config PINCTRL_DIGICOLOR
- 	bool
- 	depends on OF && (ARCH_DIGICOLOR || COMPILE_TEST)
-diff --git a/drivers/pinctrl/Makefile b/drivers/pinctrl/Makefile
-index a251f43..6e6919c 100644
---- a/drivers/pinctrl/Makefile
-+++ b/drivers/pinctrl/Makefile
-@@ -17,6 +17,7 @@ obj-$(CONFIG_PINCTRL_AMD)	+= pinctrl-amd.o
- obj-$(CONFIG_PINCTRL_DA850_PUPD) += pinctrl-da850-pupd.o
- obj-$(CONFIG_PINCTRL_DIGICOLOR)	+= pinctrl-digicolor.o
- obj-$(CONFIG_PINCTRL_FALCON)	+= pinctrl-falcon.o
-+obj-$(CONFIG_PINCTRL_MADERA)	+= pinctrl-madera.o
- obj-$(CONFIG_PINCTRL_MAX77620)	+= pinctrl-max77620.o
- obj-$(CONFIG_PINCTRL_MESON)	+= meson/
- obj-$(CONFIG_PINCTRL_OXNAS)	+= pinctrl-oxnas.o
-diff --git a/drivers/pinctrl/pinctrl-madera.c b/drivers/pinctrl/pinctrl-madera.c
-new file mode 100644
-index 0000000..2cf6021
---- /dev/null
-+++ b/drivers/pinctrl/pinctrl-madera.c
-@@ -0,0 +1,1092 @@
-+/*
-+ * Pinctrl for Cirrus Logic Madera codecs
-+ *
-+ * Copyright 2016-2017 Cirrus Logic
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
+ /*
+  * ADSP2 Control
+@@ -153,6 +158,17 @@
+ #define ADSP2_CLK_SEL_WIDTH                    3  /* CLK_SEL_ENA */
+ 
+ /*
++ * ADSP2V2 clocking
 + */
++#define ADSP2V2_CLK_SEL_MASK             0x70000  /* CLK_SEL_ENA */
++#define ADSP2V2_CLK_SEL_SHIFT                 16  /* CLK_SEL_ENA */
++#define ADSP2V2_CLK_SEL_WIDTH                  3  /* CLK_SEL_ENA */
 +
-+#include <linux/err.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+#include <linux/pinctrl/pinctrl.h>
-+#include <linux/pinctrl/pinmux.h>
-+#include <linux/pinctrl/pinconf.h>
-+#include <linux/pinctrl/pinconf-generic.h>
-+
-+#include <linux/mfd/madera/core.h>
-+#include <linux/mfd/madera/registers.h>
-+
-+#include "pinctrl-utils.h"
++#define ADSP2V2_RATE_MASK                 0x7800  /* DSP_RATE */
++#define ADSP2V2_RATE_SHIFT                    11  /* DSP_RATE */
++#define ADSP2V2_RATE_WIDTH                     4  /* DSP_RATE */
 +
 +/*
-+ * Pins are named after their GPIO number
-+ * NOTE: IDs are zero-indexed for coding convenience
-+ */
-+static const struct pinctrl_pin_desc madera_pins[] = {
-+	PINCTRL_PIN(0, "gpio1"),
-+	PINCTRL_PIN(1, "gpio2"),
-+	PINCTRL_PIN(2, "gpio3"),
-+	PINCTRL_PIN(3, "gpio4"),
-+	PINCTRL_PIN(4, "gpio5"),
-+	PINCTRL_PIN(5, "gpio6"),
-+	PINCTRL_PIN(6, "gpio7"),
-+	PINCTRL_PIN(7, "gpio8"),
-+	PINCTRL_PIN(8, "gpio9"),
-+	PINCTRL_PIN(9, "gpio10"),
-+	PINCTRL_PIN(10, "gpio11"),
-+	PINCTRL_PIN(11, "gpio12"),
-+	PINCTRL_PIN(12, "gpio13"),
-+	PINCTRL_PIN(13, "gpio14"),
-+	PINCTRL_PIN(14, "gpio15"),
-+	PINCTRL_PIN(15, "gpio16"),
-+	PINCTRL_PIN(16, "gpio17"),
-+	PINCTRL_PIN(17, "gpio18"),
-+	PINCTRL_PIN(18, "gpio19"),
-+	PINCTRL_PIN(19, "gpio20"),
-+	PINCTRL_PIN(20, "gpio21"),
-+	PINCTRL_PIN(21, "gpio22"),
-+	PINCTRL_PIN(22, "gpio23"),
-+	PINCTRL_PIN(23, "gpio24"),
-+	PINCTRL_PIN(24, "gpio25"),
-+	PINCTRL_PIN(25, "gpio26"),
-+	PINCTRL_PIN(26, "gpio27"),
-+	PINCTRL_PIN(27, "gpio28"),
-+	PINCTRL_PIN(28, "gpio29"),
-+	PINCTRL_PIN(29, "gpio30"),
-+	PINCTRL_PIN(30, "gpio31"),
-+	PINCTRL_PIN(31, "gpio32"),
-+	PINCTRL_PIN(32, "gpio33"),
-+	PINCTRL_PIN(33, "gpio34"),
-+	PINCTRL_PIN(34, "gpio35"),
-+	PINCTRL_PIN(35, "gpio36"),
-+	PINCTRL_PIN(36, "gpio37"),
-+	PINCTRL_PIN(37, "gpio38"),
-+	PINCTRL_PIN(38, "gpio39"),
-+	PINCTRL_PIN(39, "gpio40"),
-+};
-+
-+/*
-+ * All single-pin functions can be mapped to any GPIO, however pinmux applies
-+ * functions to pin groups and only those groups declared as supporting that
-+ * function. To make this work we must put each pin in its own dummy group so
-+ * that the functions can be described as applying to all pins.
-+ * Since these do not correspond to anything in the actual hardware - they are
-+ * merely an adaptation to pinctrl's view of the world - we use the same name
-+ * as the pin to avoid confusion when comparing with datasheet instructions
-+ */
-+static const char * const madera_pin_single_group_names[] = {
-+	"gpio1",  "gpio2",  "gpio3",  "gpio4",  "gpio5",  "gpio6",  "gpio7",
-+	"gpio8",  "gpio9",  "gpio10", "gpio11", "gpio12", "gpio13", "gpio14",
-+	"gpio15", "gpio16", "gpio17", "gpio18", "gpio19", "gpio20", "gpio21",
-+	"gpio22", "gpio23", "gpio24", "gpio25", "gpio26", "gpio27", "gpio28",
-+	"gpio29", "gpio30", "gpio31", "gpio32", "gpio33", "gpio34", "gpio35",
-+	"gpio36", "gpio37", "gpio38", "gpio39", "gpio40",
-+};
-+
-+/* set of pin numbers for single-pin groups, zero-indexed */
-+static const unsigned int madera_pin_single_group_pins[] = {
-+	  0,  1,  2,  3,  4,  5,  6,
-+	  7,  8,  9, 10, 11, 12, 13,
-+	 14, 15, 16, 17, 18, 19, 20,
-+	 21, 22, 23, 24, 25, 26, 27,
-+	 28, 29, 30, 31, 32, 33, 34,
-+	 35, 36, 37, 38, 39,
-+};
-+
-+static const char * const madera_aif1_group_names[] = { "aif1" };
-+static const char * const madera_aif2_group_names[] = { "aif2" };
-+static const char * const madera_aif3_group_names[] = { "aif3" };
-+static const char * const madera_aif4_group_names[] = { "aif4" };
-+static const char * const madera_mif1_group_names[] = { "mif1" };
-+static const char * const madera_mif2_group_names[] = { "mif2" };
-+static const char * const madera_mif3_group_names[] = { "mif3" };
-+static const char * const madera_dmic3_group_names[] = { "dmic3" };
-+static const char * const madera_dmic4_group_names[] = { "dmic4" };
-+static const char * const madera_dmic5_group_names[] = { "dmic5" };
-+static const char * const madera_dmic6_group_names[] = { "dmic6" };
-+static const char * const madera_spk1_group_names[] = { "pdmspk1" };
-+static const char * const madera_spk2_group_names[] = { "pdmspk2" };
-+
-+/*
-+ * alt-functions always apply to a single pin group, other functions always
-+ * apply to all pins
-+ */
-+static const struct {
-+	const char *name;
-+	const char * const *group_names;
-+	u32 func;
-+} madera_mux_funcs[] = {
-+	{
-+		.name = "aif1",
-+		.group_names = madera_aif1_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "aif2",
-+		.group_names = madera_aif2_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "aif3",
-+		.group_names = madera_aif3_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "aif4",
-+		.group_names = madera_aif4_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "mif1",
-+		.group_names = madera_mif1_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "mif2",
-+		.group_names = madera_mif2_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "mif3",
-+		.group_names = madera_mif3_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "dmic3",
-+		.group_names = madera_dmic3_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "dmic4",
-+		.group_names = madera_dmic4_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "dmic5",
-+		.group_names = madera_dmic5_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "dmic6",
-+		.group_names = madera_dmic6_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "pdmspk1",
-+		.group_names = madera_spk1_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "pdmspk2",
-+		.group_names = madera_spk2_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "io",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x001
-+	},
-+	{
-+		.name = "dsp-gpio",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x002
-+	},
-+	{
-+		.name = "irq1",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x003
-+	},
-+	{
-+		.name = "irq2",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x004
-+	},
-+	{
-+		.name = "fll1-clk",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x010
-+	},
-+	{
-+		.name = "fll2-clk",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x011
-+	},
-+	{
-+		.name = "fll3-clk",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x012
-+	},
-+	{
-+		.name = "fllao-clk",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x013
-+	},
-+	{
-+		.name = "fll1-lock",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x018
-+	},
-+	{
-+		.name = "fll2-lock",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x019
-+	},
-+	{
-+		.name = "fll3-lock",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x01a
-+	},
-+	{
-+		.name = "fllao-lock",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x01b
-+	},
-+	{
-+		.name = "opclk",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x040
-+	},
-+	{
-+		.name = "opclk-async",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x041
-+	},
-+	{
-+		.name = "pwm1",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x048
-+	},
-+	{
-+		.name = "pwm2",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x049
-+	},
-+	{
-+		.name = "spdif",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x04c
-+	},
-+	{
-+		.name = "asrc1-in1-lock",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x088
-+	},
-+	{
-+		.name = "asrc1-in2-lock",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x089
-+	},
-+	{
-+		.name = "asrc2-in1-lock",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x08a
-+	},
-+	{
-+		.name = "asrc2-in2-lock",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x08b
-+	},
-+	{
-+		.name = "spkl-short-circuit",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x0b6
-+	},
-+	{
-+		.name = "spkr-short-circuit",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x0b7
-+	},
-+	{
-+		.name = "spk-shutdown",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x0e0
-+	},
-+	{
-+		.name = "spk-overheat-shutdown",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x0e1
-+	},
-+	{
-+		.name = "spk-overheat-warn",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x0e2
-+	},
-+	{
-+		.name = "timer1-sts",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x140
-+	},
-+	{
-+		.name = "timer2-sts",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x141
-+	},
-+	{
-+		.name = "timer3-sts",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x142
-+	},
-+	{
-+		.name = "timer4-sts",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x143
-+	},
-+	{
-+		.name = "timer5-sts",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x144
-+	},
-+	{
-+		.name = "timer6-sts",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x145
-+	},
-+	{
-+		.name = "timer7-sts",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x146
-+	},
-+	{
-+		.name = "timer8-sts",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x147
-+	},
-+	{
-+		.name = "log1-fifo-ne",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x150
-+	},
-+	{
-+		.name = "log2-fifo-ne",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x151
-+	},
-+	{
-+		.name = "log3-fifo-ne",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x152
-+	},
-+	{
-+		.name = "log4-fifo-ne",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x153
-+	},
-+	{
-+		.name = "log5-fifo-ne",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x154
-+	},
-+	{
-+		.name = "log6-fifo-ne",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x155
-+	},
-+	{
-+		.name = "log7-fifo-ne",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x156
-+	},
-+	{
-+		.name = "log8-fifo-ne",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x157
-+	},
-+};
-+
-+struct madera_pin_groups {
-+	const char *name;
-+	const unsigned int *pins;
-+	unsigned int n_pins;
-+};
-+
-+struct madera_pin_chip {
-+	unsigned int n_pins;
-+
-+	const struct madera_pin_groups *pin_groups;
-+	unsigned int n_pin_groups;
-+};
-+
-+struct madera_pin_private {
-+	struct madera *madera;
-+
-+	const struct madera_pin_chip *chip; /* chip-specific groups */
-+
-+	struct device *dev;
-+	struct pinctrl_dev *pctl;
-+};
-+
-+/*
-+ * Chip-specific configs
-+ * The alt func groups available differ between codecs. Since these are the
-+ * most commonly used functions we place these at the lower function indexes
-+ * for convenience, and the less commonly used gpio functions at higher indexes
-+ *
-+ * To stay consistent with the datasheet the function names are the same as
-+ * the group names for that function's pins
-+ */
-+#ifdef CONFIG_PINCTRL_CS47L35
-+/* Note - all 1 less than in datasheet because these are zero-indexed */
-+static const unsigned int cs47l35_aif3_pins[] = { 0, 1, 2, 3 };
-+static const unsigned int cs47l35_spk_pins[] = { 4, 5 };
-+static const unsigned int cs47l35_aif1_pins[] = { 7, 8, 9, 10 };
-+static const unsigned int cs47l35_aif2_pins[] = { 11, 12, 13, 14 };
-+static const unsigned int cs47l35_mif1_pins[] = { 6, 15 };
-+
-+static const struct madera_pin_groups cs47l35_pin_groups[] = {
-+	{ "aif1", cs47l35_aif1_pins, ARRAY_SIZE(cs47l35_aif1_pins) },
-+	{ "aif2", cs47l35_aif2_pins, ARRAY_SIZE(cs47l35_aif2_pins) },
-+	{ "aif3", cs47l35_aif3_pins, ARRAY_SIZE(cs47l35_aif3_pins) },
-+	{ "mif1", cs47l35_mif1_pins, ARRAY_SIZE(cs47l35_mif1_pins) },
-+	{ "pdmspk1", cs47l35_spk_pins, ARRAY_SIZE(cs47l35_spk_pins) },
-+};
-+
-+const struct madera_pin_chip cs47l35_pin_chip = {
-+	.n_pins = CS47L35_NUM_GPIOS,
-+	.pin_groups = cs47l35_pin_groups,
-+	.n_pin_groups = ARRAY_SIZE(cs47l35_pin_groups),
-+};
-+#endif
-+
-+#ifdef CONFIG_PINCTRL_CS47L85
-+/* Note - all 1 less than in datasheet because these are zero-indexed */
-+static const unsigned int cs47l85_mif1_pins[] = { 8, 9 };
-+static const unsigned int cs47l85_mif2_pins[] = { 10, 11 };
-+static const unsigned int cs47l85_mif3_pins[] = { 12, 13 };
-+static const unsigned int cs47l85_aif1_pins[] = { 14, 15, 16, 17 };
-+static const unsigned int cs47l85_aif2_pins[] = { 18, 19, 20, 21 };
-+static const unsigned int cs47l85_aif3_pins[] = { 22, 23, 24, 25 };
-+static const unsigned int cs47l85_aif4_pins[] = { 26, 27, 28, 29 };
-+static const unsigned int cs47l85_dmic4_pins[] = { 30, 31 };
-+static const unsigned int cs47l85_dmic5_pins[] = { 32, 33 };
-+static const unsigned int cs47l85_dmic6_pins[] = { 34, 35 };
-+static const unsigned int cs47l85_spk1_pins[] = { 36, 38 };
-+static const unsigned int cs47l85_spk2_pins[] = { 37, 39 };
-+
-+static const struct madera_pin_groups cs47l85_pin_groups[] = {
-+	{ "aif1", cs47l85_aif1_pins, ARRAY_SIZE(cs47l85_aif1_pins) },
-+	{ "aif2", cs47l85_aif2_pins, ARRAY_SIZE(cs47l85_aif2_pins) },
-+	{ "aif3", cs47l85_aif3_pins, ARRAY_SIZE(cs47l85_aif3_pins) },
-+	{ "aif4", cs47l85_aif4_pins, ARRAY_SIZE(cs47l85_aif4_pins) },
-+	{ "mif1", cs47l85_mif1_pins, ARRAY_SIZE(cs47l85_mif1_pins) },
-+	{ "mif2", cs47l85_mif2_pins, ARRAY_SIZE(cs47l85_mif2_pins) },
-+	{ "mif3", cs47l85_mif3_pins, ARRAY_SIZE(cs47l85_mif3_pins) },
-+	{ "dmic4", cs47l85_dmic4_pins, ARRAY_SIZE(cs47l85_dmic4_pins) },
-+	{ "dmic5", cs47l85_dmic5_pins, ARRAY_SIZE(cs47l85_dmic5_pins) },
-+	{ "dmic6", cs47l85_dmic6_pins, ARRAY_SIZE(cs47l85_dmic6_pins) },
-+	{ "pdmspk1", cs47l85_spk1_pins, ARRAY_SIZE(cs47l85_spk1_pins) },
-+	{ "pdmspk2", cs47l85_spk2_pins, ARRAY_SIZE(cs47l85_spk2_pins) },
-+};
-+
-+const struct madera_pin_chip cs47l85_pin_chip = {
-+	.n_pins = CS47L85_NUM_GPIOS,
-+	.pin_groups = cs47l85_pin_groups,
-+	.n_pin_groups = ARRAY_SIZE(cs47l85_pin_groups),
-+};
-+#endif
-+
-+#ifdef CONFIG_PINCTRL_CS47L90
-+/* Note - all 1 less than in datasheet because these are zero-indexed */
-+static const unsigned int cs47l90_mif1_pins[] = { 8, 9 };
-+static const unsigned int cs47l90_mif2_pins[] = { 10, 11 };
-+static const unsigned int cs47l90_mif3_pins[] = { 12, 13 };
-+static const unsigned int cs47l90_aif1_pins[] = { 14, 15, 16, 17 };
-+static const unsigned int cs47l90_aif2_pins[] = { 18, 19, 20, 21 };
-+static const unsigned int cs47l90_aif3_pins[] = { 22, 23, 24, 25 };
-+static const unsigned int cs47l90_aif4_pins[] = { 26, 27, 28, 29 };
-+static const unsigned int cs47l90_dmic4_pins[] = { 30, 31 };
-+static const unsigned int cs47l90_dmic5_pins[] = { 32, 33 };
-+static const unsigned int cs47l90_dmic3_pins[] = { 34, 35 };
-+static const unsigned int cs47l90_spk1_pins[] = { 36, 37 };
-+
-+static const struct madera_pin_groups cs47l90_pin_groups[] = {
-+	{ "aif1", cs47l90_aif1_pins, ARRAY_SIZE(cs47l90_aif1_pins) },
-+	{ "aif2", cs47l90_aif2_pins, ARRAY_SIZE(cs47l90_aif2_pins) },
-+	{ "aif3", cs47l90_aif3_pins, ARRAY_SIZE(cs47l90_aif3_pins) },
-+	{ "aif4", cs47l90_aif4_pins, ARRAY_SIZE(cs47l90_aif4_pins) },
-+	{ "mif1", cs47l90_mif1_pins, ARRAY_SIZE(cs47l90_mif1_pins) },
-+	{ "mif2", cs47l90_mif2_pins, ARRAY_SIZE(cs47l90_mif2_pins) },
-+	{ "mif3", cs47l90_mif3_pins, ARRAY_SIZE(cs47l90_mif3_pins) },
-+	{ "dmic3", cs47l90_dmic3_pins, ARRAY_SIZE(cs47l90_dmic3_pins) },
-+	{ "dmic4", cs47l90_dmic4_pins, ARRAY_SIZE(cs47l90_dmic4_pins) },
-+	{ "dmic5", cs47l90_dmic5_pins, ARRAY_SIZE(cs47l90_dmic5_pins) },
-+	{ "pdmspk1", cs47l90_spk1_pins, ARRAY_SIZE(cs47l90_spk1_pins) },
-+};
-+
-+const struct madera_pin_chip cs47l90_pin_chip = {
-+	.n_pins = CS47L90_NUM_GPIOS,
-+	.pin_groups = cs47l90_pin_groups,
-+	.n_pin_groups = ARRAY_SIZE(cs47l90_pin_groups),
-+};
-+#endif
-+
-+static int madera_get_groups_count(struct pinctrl_dev *pctldev)
+  * ADSP2 Status 1
+  */
+ #define ADSP2_RAM_RDY                     0x0001
+@@ -683,6 +699,9 @@ static int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
+ 	SOC_ENUM_SINGLE(0, 1, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
+ 	SOC_ENUM_SINGLE(0, 2, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
+ 	SOC_ENUM_SINGLE(0, 3, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
++	SOC_ENUM_SINGLE(0, 4, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
++	SOC_ENUM_SINGLE(0, 5, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
++	SOC_ENUM_SINGLE(0, 6, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
+ };
+ 
+ const struct snd_kcontrol_new wm_adsp_fw_controls[] = {
+@@ -694,6 +713,12 @@ static int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
+ 		     wm_adsp_fw_get, wm_adsp_fw_put),
+ 	SOC_ENUM_EXT("DSP4 Firmware", wm_adsp_fw_enum[3],
+ 		     wm_adsp_fw_get, wm_adsp_fw_put),
++	SOC_ENUM_EXT("DSP5 Firmware", wm_adsp_fw_enum[4],
++		     wm_adsp_fw_get, wm_adsp_fw_put),
++	SOC_ENUM_EXT("DSP6 Firmware", wm_adsp_fw_enum[5],
++		     wm_adsp_fw_get, wm_adsp_fw_put),
++	SOC_ENUM_EXT("DSP7 Firmware", wm_adsp_fw_enum[6],
++		     wm_adsp_fw_get, wm_adsp_fw_put),
+ };
+ EXPORT_SYMBOL_GPL(wm_adsp_fw_controls);
+ 
+@@ -750,6 +775,29 @@ static void wm_adsp2_show_fw_status(struct wm_adsp *dsp)
+ 		 be16_to_cpu(scratch[3]));
+ }
+ 
++static void wm_adsp2v2_show_fw_status(struct wm_adsp *dsp)
 +{
-+	struct madera_pin_private *priv = pinctrl_dev_get_drvdata(pctldev);
-+
-+	/* Number of alt function groups plus number of single-pin groups */
-+	return priv->chip->n_pin_groups + priv->chip->n_pins;
-+}
-+
-+static const char *madera_get_group_name(struct pinctrl_dev *pctldev,
-+					 unsigned int selector)
-+{
-+	struct madera_pin_private *priv = pinctrl_dev_get_drvdata(pctldev);
-+
-+	if (selector < priv->chip->n_pin_groups) {
-+		return priv->chip->pin_groups[selector].name;
-+	} else {
-+		selector -= priv->chip->n_pin_groups;
-+		return madera_pin_single_group_names[selector];
-+	}
-+}
-+
-+static int madera_get_group_pins(struct pinctrl_dev *pctldev,
-+				 unsigned int selector,
-+				 const unsigned int **pins,
-+				 unsigned int *num_pins)
-+{
-+	struct madera_pin_private *priv = pinctrl_dev_get_drvdata(pctldev);
-+
-+	if (selector < priv->chip->n_pin_groups) {
-+		*pins = priv->chip->pin_groups[selector].pins;
-+		*num_pins = priv->chip->pin_groups[selector].n_pins;
-+	} else {
-+		/* return the dummy group for a single pin */
-+		selector -= priv->chip->n_pin_groups;
-+		*pins = &madera_pin_single_group_pins[selector];
-+		*num_pins = 1;
-+	}
-+	return 0;
-+}
-+
-+static void madera_pin_dbg_show(struct pinctrl_dev *pctldev,
-+				struct seq_file *s,
-+				unsigned int offset)
-+{
-+	seq_puts(s, " madera-pinctrl");
-+}
-+
-+
-+static const struct pinctrl_ops madera_pin_group_ops = {
-+	.get_groups_count = madera_get_groups_count,
-+	.get_group_name = madera_get_group_name,
-+	.get_group_pins = madera_get_group_pins,
-+	.pin_dbg_show = madera_pin_dbg_show,
-+	.dt_node_to_map = pinconf_generic_dt_node_to_map_all,
-+	.dt_free_map = pinctrl_utils_free_map,
-+};
-+
-+static int madera_mux_get_funcs_count(struct pinctrl_dev *pctldev)
-+{
-+	return ARRAY_SIZE(madera_mux_funcs);
-+}
-+
-+static const char *madera_mux_get_func_name(struct pinctrl_dev *pctldev,
-+					    unsigned int selector)
-+{
-+	return madera_mux_funcs[selector].name;
-+}
-+
-+static int madera_mux_get_groups(struct pinctrl_dev *pctldev,
-+				 unsigned int selector,
-+				 const char * const **groups,
-+				 unsigned int * const num_groups)
-+{
-+	struct madera_pin_private *priv = pinctrl_dev_get_drvdata(pctldev);
-+
-+	*groups = madera_mux_funcs[selector].group_names;
-+
-+	if (madera_mux_funcs[selector].func == 0) {
-+		/* alt func always maps to a single group */
-+		*num_groups = 1;
-+	} else {
-+		/* other funcs map to all available gpio pins */
-+		*num_groups = priv->chip->n_pins;
-+	}
-+
-+	return 0;
-+}
-+
-+static int madera_mux_set_mux(struct pinctrl_dev *pctldev,
-+			      unsigned int selector,
-+			      unsigned int group)
-+{
-+	struct madera_pin_private *priv = pinctrl_dev_get_drvdata(pctldev);
-+	struct madera *madera = priv->madera;
-+	const struct madera_pin_groups *pin_group = priv->chip->pin_groups;
-+	unsigned int n_chip_groups = priv->chip->n_pin_groups;
-+	const char *func_name = madera_mux_funcs[selector].name;
-+	unsigned int reg;
-+	int i, ret;
-+
-+	dev_dbg(priv->dev, "%s selecting %u (%s) for group %u (%s)\n",
-+		__func__, selector, func_name, group,
-+		madera_get_group_name(pctldev, group));
-+
-+	if (madera_mux_funcs[selector].func == 0) {
-+		/* alt func pin assignments are codec-specific */
-+		for (i = 0; i < n_chip_groups; ++i) {
-+			if (strcmp(func_name, pin_group->name) == 0)
-+				break;
-+
-+			++pin_group;
-+		}
-+
-+		if (i == n_chip_groups)
-+			return -EINVAL;
-+
-+		for (i = 0; i < pin_group->n_pins; ++i) {
-+			reg = MADERA_GPIO1_CTRL_1 + (2 * pin_group->pins[i]);
-+
-+			dev_dbg(priv->dev, "%s setting 0x%x func bits to 0\n",
-+				__func__, reg);
-+
-+			ret = regmap_update_bits(madera->regmap, reg, 0x1ff, 0);
-+			if (ret)
-+				break;
-+
-+		}
-+	} else {
-+		/*
-+		 * for other funcs the group will be the gpio number and will
-+		 * be offset by the number of chip-specific functions at the
-+		 * start of the group list
-+		 */
-+		group -= n_chip_groups;
-+		reg = MADERA_GPIO1_CTRL_1 + (2 * group);
-+
-+		dev_dbg(priv->dev, "%s setting 0x%x func bits to 0x%x\n",
-+			__func__, reg, madera_mux_funcs[selector].func);
-+
-+		ret = regmap_update_bits(madera->regmap,
-+					 reg,
-+					 0x1ff,
-+					 madera_mux_funcs[selector].func);
-+	}
-+
-+	if (ret)
-+		dev_err(priv->dev, "Failed to write to 0x%x (%d)\n",
-+			reg, ret);
-+
-+	return ret;
-+}
-+
-+static const struct pinmux_ops madera_pin_mux_ops = {
-+	.get_functions_count = madera_mux_get_funcs_count,
-+	.get_function_name = madera_mux_get_func_name,
-+	.get_function_groups = madera_mux_get_groups,
-+	.set_mux = madera_mux_set_mux,
-+};
-+
-+static unsigned int madera_pin_unmake_drv_str(struct madera_pin_private *priv,
-+					      u16 regval)
-+{
-+	regval = (regval & MADERA_GP1_DRV_STR_MASK) >> MADERA_GP1_DRV_STR_SHIFT;
-+
-+	switch (priv->madera->type) {
-+	case CS47L35:
-+	case CS47L85:
-+	case CS47L90:
-+	case WM1840:
-+		switch (regval) {
-+		case 0:
-+			return 4;
-+		case 2:
-+			return 8;
-+		default:
-+			return 0;
-+		}
-+
-+	default:
-+		switch (regval) {
-+		case 0:
-+			return 4;
-+		case 1:
-+			return 8;
-+		case 2:
-+			return 12;
-+		case 3:
-+			return 16;
-+		default:
-+			return 0;
-+		}
-+	}
-+}
-+
-+static int madera_pin_conf_get(struct pinctrl_dev *pctldev, unsigned int pin,
-+			       unsigned long *config)
-+{
-+	struct madera_pin_private *priv = pinctrl_dev_get_drvdata(pctldev);
-+	unsigned int param = pinconf_to_config_param(*config);
-+	unsigned int result = 0;
-+	u16 conf[2];
++	u32 scratch[2];
 +	int ret;
 +
-+	ret = regmap_bulk_read(priv->madera->regmap,
-+			       MADERA_GPIO1_CTRL_1 + (2 * pin),
-+			       conf, 2);
++	ret = regmap_raw_read(dsp->regmap, dsp->base + ADSP2V2_SCRATCH0_1,
++			      scratch, sizeof(scratch));
++
 +	if (ret) {
-+		dev_err(priv->dev, "Failed to read GP%d conf (%d)\n",
-+			pin + 1, ret);
-+		return ret;
++		adsp_err(dsp, "Failed to read SCRATCH regs: %d\n", ret);
++		return;
 +	}
 +
-+	switch (param) {
-+	case PIN_CONFIG_BIAS_BUS_HOLD:
-+		conf[1] &= MADERA_GP1_PU_MASK | MADERA_GP1_PD_MASK;
-+		if (conf[1] == (MADERA_GP1_PU | MADERA_GP1_PD))
-+			result = 1;
-+		break;
-+	case PIN_CONFIG_BIAS_DISABLE:
-+		conf[1] &= MADERA_GP1_PU_MASK | MADERA_GP1_PD_MASK;
-+		if (!conf[1])
-+			result = 1;
-+		break;
-+	case PIN_CONFIG_BIAS_PULL_DOWN:
-+		conf[1] &= MADERA_GP1_PU_MASK | MADERA_GP1_PD_MASK;
-+		if (conf[1] == MADERA_GP1_PD_MASK)
-+			result = 1;
-+		break;
-+	case PIN_CONFIG_BIAS_PULL_UP:
-+		conf[1] &= MADERA_GP1_PU_MASK | MADERA_GP1_PD_MASK;
-+		if (conf[1] == MADERA_GP1_PU_MASK)
-+			result = 1;
-+		break;
-+	case PIN_CONFIG_DRIVE_OPEN_DRAIN:
-+		if (conf[0] & MADERA_GP1_OP_CFG_MASK)
-+			result = 1;
-+		break;
-+	case PIN_CONFIG_DRIVE_PUSH_PULL:
-+		if (!(conf[0] & MADERA_GP1_OP_CFG_MASK))
-+			result = 1;
-+		break;
-+	case PIN_CONFIG_DRIVE_STRENGTH:
-+		result = madera_pin_unmake_drv_str(priv, conf[1]);
-+		break;
-+	case PIN_CONFIG_INPUT_DEBOUNCE:
-+		if (conf[0] & MADERA_GP1_DB_MASK)
-+			result = 1;
-+		break;
-+	case PIN_CONFIG_INPUT_ENABLE:
-+		if (conf[0] & MADERA_GP1_DIR_MASK)
-+			result = 1;
-+		break;
-+	case PIN_CONFIG_INPUT_SCHMITT:
-+	case PIN_CONFIG_INPUT_SCHMITT_ENABLE:
-+		if (conf[0] & MADERA_GP1_IP_CFG_MASK)
-+			result = 1;
-+		break;
-+	case PIN_CONFIG_OUTPUT:
-+		if ((conf[1] & MADERA_GP1_DIR_MASK) &&
-+		    (conf[0] & MADERA_GP1_LVL_MASK))
-+			result = 1;
++	scratch[0] = be32_to_cpu(scratch[0]);
++	scratch[1] = be32_to_cpu(scratch[1]);
++
++	adsp_dbg(dsp, "FW SCRATCH 0:0x%x 1:0x%x 2:0x%x 3:0x%x\n",
++		 scratch[0] & 0xFFFF,
++		 scratch[0] >> 16,
++		 scratch[1] & 0xFFFF,
++		 scratch[1] >> 16);
++}
++
+ static inline struct wm_coeff_ctl *bytes_ext_to_ctl(struct soc_bytes_ext *ext)
+ {
+ 	return container_of(ext, struct wm_coeff_ctl, bytes_ext);
+@@ -2435,10 +2483,17 @@ static int wm_adsp2_ena(struct wm_adsp *dsp)
+ 	unsigned int val;
+ 	int ret, count;
+ 
+-	ret = regmap_update_bits_async(dsp->regmap, dsp->base + ADSP2_CONTROL,
+-				       ADSP2_SYS_ENA, ADSP2_SYS_ENA);
+-	if (ret != 0)
+-		return ret;
++	switch (dsp->rev) {
++	case 0:
++		ret = regmap_update_bits_async(dsp->regmap,
++					       dsp->base + ADSP2_CONTROL,
++					       ADSP2_SYS_ENA, ADSP2_SYS_ENA);
++		if (ret != 0)
++			return ret;
 +		break;
 +	default:
 +		break;
 +	}
-+
-+	*config = pinconf_to_config_packed(param, result);
-+
-+	return 0;
-+}
-+
-+static u16 madera_pin_make_drv_str(struct madera_pin_private *priv,
-+				      unsigned int milliamps)
-+{
-+	switch (priv->madera->type) {
-+	case CS47L35:
-+	case CS47L85:
-+	case CS47L90:
-+	case WM1840:
-+		switch (milliamps) {
-+		case 4:
-+			return 0;
-+		case 8:
-+			return 2 << MADERA_GP1_DRV_STR_SHIFT;
-+		default:
-+			break;
-+		}
+ 
+ 	/* Wait for the RAM to start, should be near instantaneous */
+ 	for (count = 0; count < 10; ++count) {
+@@ -2497,11 +2552,17 @@ static void wm_adsp2_boot_work(struct work_struct *work)
+ 	if (ret != 0)
+ 		goto err_ena;
+ 
+-	/* Turn DSP back off until we are ready to run */
+-	ret = regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
+-				 ADSP2_SYS_ENA, 0);
+-	if (ret != 0)
+-		goto err_ena;
++	switch (dsp->rev) {
++	case 0:
++		/* Turn DSP back off until we are ready to run */
++		ret = regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
++					 ADSP2_SYS_ENA, 0);
++		if (ret != 0)
++			goto err_ena;
 +		break;
-+
-+	default:
-+		switch (milliamps) {
-+		case 4:
-+			return 0;
-+		case 8:
-+			return 1 << MADERA_GP1_DRV_STR_SHIFT;
-+		case 12:
-+			return 2 << MADERA_GP1_DRV_STR_SHIFT;
-+		case 16:
-+			return 3 << MADERA_GP1_DRV_STR_SHIFT;
-+		default:
-+			break;
-+		}
-+		break;
-+	}
-+
-+	dev_warn(priv->dev, "%u mA not a valid drive strength", milliamps);
-+
-+	return 0;
-+}
-+
-+static int madera_pin_conf_set(struct pinctrl_dev *pctldev, unsigned int pin,
-+			       unsigned long *configs, unsigned int num_configs)
-+{
-+	struct madera_pin_private *priv = pinctrl_dev_get_drvdata(pctldev);
-+	u16 conf[2] = {0, 0};
-+	u16 mask[2] = {0, 0};
-+	unsigned int reg = MADERA_GPIO1_CTRL_1 + (2 * pin);
-+	unsigned int val;
-+	int ret;
-+
-+	while (num_configs) {
-+		dev_dbg(priv->dev, "%s config 0x%lx\n", __func__, *configs);
-+
-+		switch (pinconf_to_config_param(*configs)) {
-+		case PIN_CONFIG_BIAS_BUS_HOLD:
-+			mask[1] |= MADERA_GP1_PU_MASK | MADERA_GP1_PD_MASK;
-+			conf[1] |= MADERA_GP1_PU | MADERA_GP1_PD;
-+			break;
-+		case PIN_CONFIG_BIAS_DISABLE:
-+			mask[1] |= MADERA_GP1_PU_MASK | MADERA_GP1_PD_MASK;
-+			conf[1] &= ~(MADERA_GP1_PU | MADERA_GP1_PD);
-+			break;
-+		case PIN_CONFIG_BIAS_PULL_DOWN:
-+			mask[1] |= MADERA_GP1_PU_MASK | MADERA_GP1_PD_MASK;
-+			conf[1] |= MADERA_GP1_PD;
-+			conf[1] &= ~MADERA_GP1_PU;
-+			break;
-+		case PIN_CONFIG_BIAS_PULL_UP:
-+			mask[1] |= MADERA_GP1_PU_MASK | MADERA_GP1_PD_MASK;
-+			conf[1] |= MADERA_GP1_PU;
-+			conf[1] &= ~MADERA_GP1_PD;
-+			break;
-+		case PIN_CONFIG_DRIVE_OPEN_DRAIN:
-+			mask[0] |= MADERA_GP1_OP_CFG_MASK;
-+			conf[0] |= MADERA_GP1_OP_CFG;
-+			break;
-+		case PIN_CONFIG_DRIVE_PUSH_PULL:
-+			mask[0] |= MADERA_GP1_OP_CFG_MASK;
-+			conf[0] &= ~MADERA_GP1_OP_CFG;
-+			break;
-+		case PIN_CONFIG_DRIVE_STRENGTH:
-+			val = pinconf_to_config_argument(*configs);
-+			mask[1] |= MADERA_GP1_DRV_STR_MASK;
-+			conf[1] &= ~MADERA_GP1_DRV_STR_MASK;
-+			conf[1] |= madera_pin_make_drv_str(priv, val);
-+			break;
-+		case PIN_CONFIG_INPUT_DEBOUNCE:
-+			mask[0] |= MADERA_GP1_DB_MASK;
-+
-+			/*
-+			 * we can't configure debounce time per-pin so value
-+			 * is just a flag
-+			 */
-+			val = pinconf_to_config_argument(*configs);
-+			if (val)
-+				conf[0] |= MADERA_GP1_DB;
-+			else
-+				conf[0] &= ~MADERA_GP1_DB;
-+			break;
-+		case PIN_CONFIG_INPUT_ENABLE:
-+			val = pinconf_to_config_argument(*configs);
-+			mask[1] |= MADERA_GP1_DIR_MASK;
-+			if (val)
-+				conf[1] |= MADERA_GP1_DIR;
-+			else
-+				conf[1] &= ~MADERA_GP1_DIR;
-+			break;
-+		case PIN_CONFIG_INPUT_SCHMITT:
-+			val = pinconf_to_config_argument(*configs);
-+			mask[0] |= MADERA_GP1_IP_CFG;
-+			if (val)
-+				conf[0] |= MADERA_GP1_IP_CFG;
-+			else
-+				conf[0] &= ~MADERA_GP1_IP_CFG;
-+
-+			mask[1] |= MADERA_GP1_DIR_MASK;
-+			conf[1] |= MADERA_GP1_DIR;
-+			break;
-+		case PIN_CONFIG_INPUT_SCHMITT_ENABLE:
-+			mask[0] |= MADERA_GP1_IP_CFG;
-+			conf[0] |= MADERA_GP1_IP_CFG;
-+			mask[1] |= MADERA_GP1_DIR_MASK;
-+			conf[1] |= MADERA_GP1_DIR;
-+			break;
-+		case PIN_CONFIG_OUTPUT:
-+			val = pinconf_to_config_argument(*configs);
-+			mask[0] |= MADERA_GP1_LVL_MASK;
-+			if (val)
-+				conf[0] |= MADERA_GP1_LVL;
-+			else
-+				conf[0] &= ~MADERA_GP1_LVL;
-+
-+			mask[1] |= MADERA_GP1_DIR_MASK;
-+			conf[1] &= ~MADERA_GP1_DIR;
-+			break;
-+		default:
-+			break;
-+		}
-+
-+		++configs;
-+		--num_configs;
-+	}
-+
-+	dev_dbg(priv->dev,
-+		"%s gpio%d 0x%x:0x%x 0x%x:0x%x\n",
-+		__func__, pin + 1, reg, conf[0], reg + 1, conf[1]);
-+
-+	ret = regmap_update_bits(priv->madera->regmap, reg, mask[0], conf[0]);
-+	if (ret)
-+		goto err;
-+
-+	++reg;
-+	ret = regmap_update_bits(priv->madera->regmap, reg, mask[1], conf[1]);
-+	if (ret)
-+		goto err;
-+
-+	return 0;
-+
-+err:
-+	dev_err(priv->dev,
-+		"Failed to write GPIO%d conf (%d) reg 0x%x\n",
-+		pin + 1, ret, reg);
-+
-+	return ret;
-+}
-+
-+static int madera_pin_conf_group_set(struct pinctrl_dev *pctldev,
-+				     unsigned int selector,
-+				     unsigned long *configs,
-+				     unsigned int num_configs)
-+{
-+	struct madera_pin_private *priv = pinctrl_dev_get_drvdata(pctldev);
-+	const struct madera_pin_groups *pin_group;
-+	unsigned int n_groups = priv->chip->n_pin_groups;
-+	int i, ret;
-+
-+	dev_dbg(priv->dev, "%s setting group %s\n", __func__,
-+		madera_get_group_name(pctldev, selector));
-+
-+	if (selector >= n_groups) {
-+		/* group is a single pin, convert to pin number and set */
-+		return madera_pin_conf_set(pctldev,
-+					   selector - n_groups,
-+					   configs,
-+					   num_configs);
-+	} else {
-+		pin_group = &priv->chip->pin_groups[selector];
-+
-+		for (i = 0; i < pin_group->n_pins; ++i) {
-+			ret = madera_pin_conf_set(pctldev,
-+						  pin_group->pins[i],
-+						  configs,
-+						  num_configs);
-+			if (ret)
-+				return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct pinconf_ops madera_pin_conf_ops = {
-+	.pin_config_get = madera_pin_conf_get,
-+	.pin_config_set = madera_pin_conf_set,
-+	.pin_config_group_set = madera_pin_conf_group_set,
-+
-+};
-+
-+static struct pinctrl_desc madera_pin_desc = {
-+	.name = "madera-pinctrl",
-+	.pins = madera_pins,
-+	.pctlops = &madera_pin_group_ops,
-+	.pmxops = &madera_pin_mux_ops,
-+	.confops = &madera_pin_conf_ops,
-+	.owner = THIS_MODULE,
-+};
-+
-+static int madera_pin_probe(struct platform_device *pdev)
-+{
-+	struct madera *madera = dev_get_drvdata(pdev->dev.parent);
-+	const struct madera_pdata *pdata = dev_get_platdata(madera->dev);
-+	struct madera_pin_private *priv;
-+	int ret;
-+
-+	BUILD_BUG_ON(ARRAY_SIZE(madera_pin_single_group_names) !=
-+		     ARRAY_SIZE(madera_pin_single_group_pins));
-+
-+	dev_dbg(&pdev->dev, "%s\n", __func__);
-+
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->dev = &pdev->dev;
-+	priv->madera = madera;
-+	pdev->dev.of_node = madera->dev->of_node;
-+
-+	switch (madera->type) {
-+#ifdef CONFIG_PINCTRL_CS47L35
-+	case CS47L35:
-+		priv->chip = &cs47l35_pin_chip;
-+		break;
-+#endif
-+#ifdef CONFIG_PINCTRL_CS47L85
-+	case CS47L85:
-+	case WM1840:
-+		priv->chip = &cs47l85_pin_chip;
-+		break;
-+#endif
-+#ifdef CONFIG_PINCTRL_CS47L90
-+	case CS47L90:
-+	case CS47L91:
-+		priv->chip = &cs47l90_pin_chip;
-+		break;
-+#endif
 +	default:
 +		break;
 +	}
-+
-+	if (!priv->chip)
-+		return -ENODEV;
-+
-+	madera_pin_desc.npins = priv->chip->n_pins;
-+
-+	priv->pctl = devm_pinctrl_register(&pdev->dev, &madera_pin_desc, priv);
-+	if (IS_ERR(priv->pctl)) {
-+		ret = PTR_ERR(priv->pctl);
-+		dev_err(priv->dev, "Failed pinctrl register (%d)\n", ret);
-+		return ret;
+ 
+ 	dsp->booted = true;
+ 
+@@ -2523,12 +2584,21 @@ static void wm_adsp2_set_dspclk(struct wm_adsp *dsp, unsigned int freq)
+ {
+ 	int ret;
+ 
+-	ret = regmap_update_bits_async(dsp->regmap,
+-				       dsp->base + ADSP2_CLOCKING,
+-				       ADSP2_CLK_SEL_MASK,
+-				       freq << ADSP2_CLK_SEL_SHIFT);
+-	if (ret != 0)
+-		adsp_err(dsp, "Failed to set clock rate: %d\n", ret);
++	switch (dsp->rev) {
++	case 0:
++		ret = regmap_update_bits_async(dsp->regmap,
++					       dsp->base + ADSP2_CLOCKING,
++					       ADSP2_CLK_SEL_MASK,
++					       freq << ADSP2_CLK_SEL_SHIFT);
++		if (ret) {
++			adsp_err(dsp, "Failed to set clock rate: %d\n", ret);
++			return;
++		}
++		break;
++	default:
++		/* clock is handled by parent codec driver */
++		break;
 +	}
+ }
+ 
+ int wm_adsp2_preloader_get(struct snd_kcontrol *kcontrol,
+@@ -2664,22 +2734,46 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 		wm_adsp_signal_event_controls(dsp, WM_ADSP_FW_EVENT_SHUTDOWN);
+ 
+ 		/* Log firmware state, it can be useful for analysis */
+-		wm_adsp2_show_fw_status(dsp);
++		switch (dsp->rev) {
++		case 0:
++			wm_adsp2_show_fw_status(dsp);
++			break;
++		default:
++			wm_adsp2v2_show_fw_status(dsp);
++			break;
++		}
+ 
+ 		mutex_lock(&dsp->pwr_lock);
+ 
+ 		dsp->running = false;
+ 
+-		regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
++		regmap_update_bits(dsp->regmap,
++				   dsp->base + ADSP2_CONTROL,
+ 				   ADSP2_CORE_ENA | ADSP2_START, 0);
+ 
+ 		/* Make sure DMAs are quiesced */
+-		regmap_write(dsp->regmap, dsp->base + ADSP2_RDMA_CONFIG_1, 0);
+-		regmap_write(dsp->regmap, dsp->base + ADSP2_WDMA_CONFIG_1, 0);
+-		regmap_write(dsp->regmap, dsp->base + ADSP2_WDMA_CONFIG_2, 0);
+-
+-		regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
+-				   ADSP2_SYS_ENA, 0);
++		switch (dsp->rev) {
++		case 0:
++			regmap_write(dsp->regmap,
++				     dsp->base + ADSP2_RDMA_CONFIG_1, 0);
++			regmap_write(dsp->regmap,
++				     dsp->base + ADSP2_WDMA_CONFIG_1, 0);
++			regmap_write(dsp->regmap,
++				     dsp->base + ADSP2_WDMA_CONFIG_2, 0);
 +
-+	if (pdata) {
-+		ret = pinctrl_register_mappings(pdata->gpio_configs,
-+						pdata->n_gpio_configs);
-+		dev_err(priv->dev, "Failed to register pdata mappings (%d)\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	dev_dbg(priv->dev, "pinctrl registered\n");
-+
-+	return 0;
-+}
-+
-+static struct platform_driver madera_pin_driver = {
-+	.probe = madera_pin_probe,
-+	.driver = {
-+		.name = "madera-pinctrl",
-+	},
-+};
-+
-+module_platform_driver(madera_pin_driver);
-+
-+MODULE_DESCRIPTION("Madera pinctrl driver");
-+MODULE_AUTHOR("Richard Fitzgerald <rf@opensource.wolfsonmicro.com>");
-+MODULE_LICENSE("GPL v2");
++			regmap_update_bits(dsp->regmap,
++					   dsp->base + ADSP2_CONTROL,
++					   ADSP2_SYS_ENA, 0);
++			break;
++		default:
++			regmap_write(dsp->regmap,
++				     dsp->base + ADSP2_RDMA_CONFIG_1, 0);
++			regmap_write(dsp->regmap,
++				     dsp->base + ADSP2_WDMA_CONFIG_1, 0);
++			regmap_write(dsp->regmap,
++				     dsp->base + ADSP2V2_WDMA_CONFIG_2, 0);
++			break;
++		}
+ 
+ 		if (wm_adsp_fw[dsp->fw].num_caps != 0)
+ 			wm_adsp_buffer_free(dsp);
+@@ -2732,15 +2826,22 @@ int wm_adsp2_init(struct wm_adsp *dsp)
+ {
+ 	int ret;
+ 
+-	/*
+-	 * Disable the DSP memory by default when in reset for a small
+-	 * power saving.
+-	 */
+-	ret = regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
+-				 ADSP2_MEM_ENA, 0);
+-	if (ret != 0) {
+-		adsp_err(dsp, "Failed to clear memory retention: %d\n", ret);
+-		return ret;
++	switch (dsp->rev) {
++	case 0:
++		/*
++		 * Disable the DSP memory by default when in reset for a small
++		 * power saving.
++		 */
++		ret = regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
++					 ADSP2_MEM_ENA, 0);
++		if (ret) {
++			adsp_err(dsp,
++				 "Failed to clear memory retention: %d\n", ret);
++			return ret;
++		}
++		break;
++	default:
++		break;
+ 	}
+ 
+ 	INIT_LIST_HEAD(&dsp->alg_regions);
+diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
+index 3706b11..997227f 100644
+--- a/sound/soc/codecs/wm_adsp.h
++++ b/sound/soc/codecs/wm_adsp.h
+@@ -40,6 +40,7 @@ struct wm_adsp_alg_region {
+ 
+ struct wm_adsp {
+ 	const char *part;
++	int rev;
+ 	int num;
+ 	int type;
+ 	struct device *dev;
 -- 
 1.9.1
