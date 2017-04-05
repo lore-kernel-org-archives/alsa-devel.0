@@ -1,7 +1,8 @@
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH 11/16] ASoC: wm_adsp: Add support for ADSP2V2
-Date: Wed, 5 Apr 2017 11:07:59 +0100
-Message-ID: <1491386884-30689-12-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: [PATCH 12/16] ASoC: wm_adsp: add support for DSP
+	region lock
+Date: Wed, 5 Apr 2017 11:08:00 +0100
+Message-ID: <1491386884-30689-13-git-send-email-rf@opensource.wolfsonmicro.com>
 References: <1491386884-30689-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -9,7 +10,7 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
  [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id D5B1F26701C
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B50A26701D
  for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 12:08:12 +0200 (CEST)
 In-Reply-To: <1491386884-30689-1-git-send-email-rf@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,297 +26,243 @@ To: linus.walleij@linaro.org, gnurou@gmail.com, robh+dt@kernel.org, tglx@linutro
 Cc: linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Adds support for ADSP2V2 cores. Primary differences are that
-they use a 32-bit register map compared to the 16-bit register
-map of ADSP2V1, and there are some changes to clocking control.
+From: Mayuresh Kulkarni <mkulkarni@opensource.wolfsonmicro.com>
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Newer ADSP2V2 codecs include a memory protection unit that can
+be set to trap illegal accesses. When enabling an ADSPV2 core we
+must configure the memory region traps so that the firmware can
+access its own memory.
+
+Signed-off-by: Mayuresh Kulkarni <mkulkarni@opensource.wolfsonmicro.com>
+Signed-off-by: Nikesh Oswal <Nikesh.Oswal@wolfsonmicro.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm_adsp.c | 187 ++++++++++++++++++++++++++++++++++-----------
- sound/soc/codecs/wm_adsp.h |   1 +
- 2 files changed, 145 insertions(+), 43 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 137 +++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/wm_adsp.h |  23 ++++++++
+ 2 files changed, 160 insertions(+)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index bbdb72f..a9acf22 100644
+index a9acf22..20695b6 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -112,17 +112,22 @@
- #define ADSP1_CLK_SEL_SHIFT                    0  /* CLK_SEL_ENA */
- #define ADSP1_CLK_SEL_WIDTH                    3  /* CLK_SEL_ENA */
+@@ -176,6 +176,37 @@
+ #define ADSP2_RAM_RDY_SHIFT                    0
+ #define ADSP2_RAM_RDY_WIDTH                    1
  
--#define ADSP2_CONTROL        0x0
--#define ADSP2_CLOCKING       0x1
--#define ADSP2_STATUS1        0x4
--#define ADSP2_WDMA_CONFIG_1 0x30
--#define ADSP2_WDMA_CONFIG_2 0x31
--#define ADSP2_RDMA_CONFIG_1 0x34
--
--#define ADSP2_SCRATCH0        0x40
--#define ADSP2_SCRATCH1        0x41
--#define ADSP2_SCRATCH2        0x42
--#define ADSP2_SCRATCH3        0x43
-+#define ADSP2_CONTROL                     0x0
-+#define ADSP2_CLOCKING                    0x1
-+#define ADSP2V2_CLOCKING                  0x2
-+#define ADSP2_STATUS1                     0x4
-+#define ADSP2_WDMA_CONFIG_1               0x30
-+#define ADSP2_WDMA_CONFIG_2               0x31
-+#define ADSP2V2_WDMA_CONFIG_2             0x32
-+#define ADSP2_RDMA_CONFIG_1               0x34
-+
-+#define ADSP2_SCRATCH0                    0x40
-+#define ADSP2_SCRATCH1                    0x41
-+#define ADSP2_SCRATCH2                    0x42
-+#define ADSP2_SCRATCH3                    0x43
-+
-+#define ADSP2V2_SCRATCH0_1                0x40
-+#define ADSP2V2_SCRATCH2_3                0x42
- 
- /*
-  * ADSP2 Control
-@@ -153,6 +158,17 @@
- #define ADSP2_CLK_SEL_WIDTH                    3  /* CLK_SEL_ENA */
- 
- /*
-+ * ADSP2V2 clocking
-+ */
-+#define ADSP2V2_CLK_SEL_MASK             0x70000  /* CLK_SEL_ENA */
-+#define ADSP2V2_CLK_SEL_SHIFT                 16  /* CLK_SEL_ENA */
-+#define ADSP2V2_CLK_SEL_WIDTH                  3  /* CLK_SEL_ENA */
-+
-+#define ADSP2V2_RATE_MASK                 0x7800  /* DSP_RATE */
-+#define ADSP2V2_RATE_SHIFT                    11  /* DSP_RATE */
-+#define ADSP2V2_RATE_WIDTH                     4  /* DSP_RATE */
-+
 +/*
-  * ADSP2 Status 1
-  */
- #define ADSP2_RAM_RDY                     0x0001
-@@ -683,6 +699,9 @@ static int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
- 	SOC_ENUM_SINGLE(0, 1, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
- 	SOC_ENUM_SINGLE(0, 2, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
- 	SOC_ENUM_SINGLE(0, 3, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
-+	SOC_ENUM_SINGLE(0, 4, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
-+	SOC_ENUM_SINGLE(0, 5, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
-+	SOC_ENUM_SINGLE(0, 6, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
- };
++ * ADSP2 Lock support
++ */
++#define ADSP2_LOCK_CODE_0                    0x5555
++#define ADSP2_LOCK_CODE_1                    0xAAAA
++
++#define ADSP2_WATCHDOG                       0x0A
++#define ADSP2_BUS_ERR_ADDR                   0x52
++#define ADSP2_REGION_LOCK_STATUS             0x64
++#define ADSP2_LOCK_REGION_1_LOCK_REGION_0    0x66
++#define ADSP2_LOCK_REGION_3_LOCK_REGION_2    0x68
++#define ADSP2_LOCK_REGION_5_LOCK_REGION_4    0x6A
++#define ADSP2_LOCK_REGION_7_LOCK_REGION_6    0x6C
++#define ADSP2_LOCK_REGION_9_LOCK_REGION_8    0x6E
++#define ADSP2_LOCK_REGION_CTRL               0x7A
++#define ADSP2_PMEM_ERR_ADDR_XMEM_ERR_ADDR    0x7C
++
++#define ADSP2_REGION_LOCK_ERR_MASK           0x8000
++#define ADSP2_SLAVE_ERR_MASK                 0x4000
++#define ADSP2_WDT_TIMEOUT_STS_MASK           0x2000
++#define ADSP2_CTRL_ERR_PAUSE_ENA             0x0002
++#define ADSP2_CTRL_ERR_EINT                  0x0001
++
++#define ADSP2_BUS_ERR_ADDR_MASK              0x00FFFFFF
++#define ADSP2_XMEM_ERR_ADDR_MASK             0x0000FFFF
++#define ADSP2_PMEM_ERR_ADDR_MASK             0x7FFF0000
++#define ADSP2_PMEM_ERR_ADDR_SHIFT            16
++#define ADSP2_WDT_ENA_MASK                   0xFFFFFFFD
++
++#define ADSP2_LOCK_REGION_SHIFT              16
++
+ #define ADSP_MAX_STD_CTRL_SIZE               512
  
- const struct snd_kcontrol_new wm_adsp_fw_controls[] = {
-@@ -694,6 +713,12 @@ static int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
- 		     wm_adsp_fw_get, wm_adsp_fw_put),
- 	SOC_ENUM_EXT("DSP4 Firmware", wm_adsp_fw_enum[3],
- 		     wm_adsp_fw_get, wm_adsp_fw_put),
-+	SOC_ENUM_EXT("DSP5 Firmware", wm_adsp_fw_enum[4],
-+		     wm_adsp_fw_get, wm_adsp_fw_put),
-+	SOC_ENUM_EXT("DSP6 Firmware", wm_adsp_fw_enum[5],
-+		     wm_adsp_fw_get, wm_adsp_fw_put),
-+	SOC_ENUM_EXT("DSP7 Firmware", wm_adsp_fw_enum[6],
-+		     wm_adsp_fw_get, wm_adsp_fw_put),
- };
- EXPORT_SYMBOL_GPL(wm_adsp_fw_controls);
- 
-@@ -750,6 +775,29 @@ static void wm_adsp2_show_fw_status(struct wm_adsp *dsp)
- 		 be16_to_cpu(scratch[3]));
+ #define WM_ADSP_ACKED_CTL_TIMEOUT_MS         100
+@@ -2638,6 +2669,18 @@ int wm_adsp2_preloader_put(struct snd_kcontrol *kcontrol,
  }
+ EXPORT_SYMBOL_GPL(wm_adsp2_preloader_put);
  
-+static void wm_adsp2v2_show_fw_status(struct wm_adsp *dsp)
++static void wm_adsp_stop_watchdog(struct wm_adsp *dsp)
 +{
-+	u32 scratch[2];
-+	int ret;
-+
-+	ret = regmap_raw_read(dsp->regmap, dsp->base + ADSP2V2_SCRATCH0_1,
-+			      scratch, sizeof(scratch));
-+
-+	if (ret) {
-+		adsp_err(dsp, "Failed to read SCRATCH regs: %d\n", ret);
++	switch (dsp->rev) {
++	case 0:
++	case 1:
 +		return;
++	default:
++		regmap_update_bits(dsp->regmap, dsp->base + ADSP2_WATCHDOG,
++				   ADSP2_WDT_ENA_MASK, 0);
 +	}
-+
-+	scratch[0] = be32_to_cpu(scratch[0]);
-+	scratch[1] = be32_to_cpu(scratch[1]);
-+
-+	adsp_dbg(dsp, "FW SCRATCH 0:0x%x 1:0x%x 2:0x%x 3:0x%x\n",
-+		 scratch[0] & 0xFFFF,
-+		 scratch[0] >> 16,
-+		 scratch[1] & 0xFFFF,
-+		 scratch[1] >> 16);
 +}
 +
- static inline struct wm_coeff_ctl *bytes_ext_to_ctl(struct soc_bytes_ext *ext)
- {
- 	return container_of(ext, struct wm_coeff_ctl, bytes_ext);
-@@ -2435,10 +2483,17 @@ static int wm_adsp2_ena(struct wm_adsp *dsp)
- 	unsigned int val;
- 	int ret, count;
+ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *kcontrol, int event,
+ 			 unsigned int freq)
+@@ -2710,6 +2753,8 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 		if (ret != 0)
+ 			goto err;
  
--	ret = regmap_update_bits_async(dsp->regmap, dsp->base + ADSP2_CONTROL,
--				       ADSP2_SYS_ENA, ADSP2_SYS_ENA);
--	if (ret != 0)
--		return ret;
-+	switch (dsp->rev) {
-+	case 0:
-+		ret = regmap_update_bits_async(dsp->regmap,
-+					       dsp->base + ADSP2_CONTROL,
-+					       ADSP2_SYS_ENA, ADSP2_SYS_ENA);
-+		if (ret != 0)
-+			return ret;
-+		break;
-+	default:
-+		break;
-+	}
- 
- 	/* Wait for the RAM to start, should be near instantaneous */
- 	for (count = 0; count < 10; ++count) {
-@@ -2497,11 +2552,17 @@ static void wm_adsp2_boot_work(struct work_struct *work)
- 	if (ret != 0)
- 		goto err_ena;
- 
--	/* Turn DSP back off until we are ready to run */
--	ret = regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
--				 ADSP2_SYS_ENA, 0);
--	if (ret != 0)
--		goto err_ena;
-+	switch (dsp->rev) {
-+	case 0:
-+		/* Turn DSP back off until we are ready to run */
-+		ret = regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
-+					 ADSP2_SYS_ENA, 0);
-+		if (ret != 0)
-+			goto err_ena;
-+		break;
-+	default:
-+		break;
-+	}
- 
- 	dsp->booted = true;
- 
-@@ -2523,12 +2584,21 @@ static void wm_adsp2_set_dspclk(struct wm_adsp *dsp, unsigned int freq)
- {
- 	int ret;
- 
--	ret = regmap_update_bits_async(dsp->regmap,
--				       dsp->base + ADSP2_CLOCKING,
--				       ADSP2_CLK_SEL_MASK,
--				       freq << ADSP2_CLK_SEL_SHIFT);
--	if (ret != 0)
--		adsp_err(dsp, "Failed to set clock rate: %d\n", ret);
-+	switch (dsp->rev) {
-+	case 0:
-+		ret = regmap_update_bits_async(dsp->regmap,
-+					       dsp->base + ADSP2_CLOCKING,
-+					       ADSP2_CLK_SEL_MASK,
-+					       freq << ADSP2_CLK_SEL_SHIFT);
-+		if (ret) {
-+			adsp_err(dsp, "Failed to set clock rate: %d\n", ret);
-+			return;
-+		}
-+		break;
-+	default:
-+		/* clock is handled by parent codec driver */
-+		break;
-+	}
- }
- 
- int wm_adsp2_preloader_get(struct snd_kcontrol *kcontrol,
-@@ -2664,22 +2734,46 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
++		wm_adsp2_lock(dsp, dsp->lock_regions);
++
+ 		ret = regmap_update_bits(dsp->regmap,
+ 					 dsp->base + ADSP2_CONTROL,
+ 					 ADSP2_CORE_ENA | ADSP2_START,
+@@ -2733,6 +2778,8 @@ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 		/* Tell the firmware to cleanup */
  		wm_adsp_signal_event_controls(dsp, WM_ADSP_FW_EVENT_SHUTDOWN);
  
- 		/* Log firmware state, it can be useful for analysis */
--		wm_adsp2_show_fw_status(dsp);
-+		switch (dsp->rev) {
-+		case 0:
-+			wm_adsp2_show_fw_status(dsp);
-+			break;
-+		default:
-+			wm_adsp2v2_show_fw_status(dsp);
-+			break;
-+		}
- 
- 		mutex_lock(&dsp->pwr_lock);
- 
- 		dsp->running = false;
- 
--		regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
-+		regmap_update_bits(dsp->regmap,
-+				   dsp->base + ADSP2_CONTROL,
- 				   ADSP2_CORE_ENA | ADSP2_START, 0);
- 
- 		/* Make sure DMAs are quiesced */
--		regmap_write(dsp->regmap, dsp->base + ADSP2_RDMA_CONFIG_1, 0);
--		regmap_write(dsp->regmap, dsp->base + ADSP2_WDMA_CONFIG_1, 0);
--		regmap_write(dsp->regmap, dsp->base + ADSP2_WDMA_CONFIG_2, 0);
--
--		regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
--				   ADSP2_SYS_ENA, 0);
-+		switch (dsp->rev) {
-+		case 0:
-+			regmap_write(dsp->regmap,
-+				     dsp->base + ADSP2_RDMA_CONFIG_1, 0);
-+			regmap_write(dsp->regmap,
-+				     dsp->base + ADSP2_WDMA_CONFIG_1, 0);
-+			regmap_write(dsp->regmap,
-+				     dsp->base + ADSP2_WDMA_CONFIG_2, 0);
++		wm_adsp_stop_watchdog(dsp);
 +
-+			regmap_update_bits(dsp->regmap,
-+					   dsp->base + ADSP2_CONTROL,
-+					   ADSP2_SYS_ENA, 0);
-+			break;
-+		default:
-+			regmap_write(dsp->regmap,
-+				     dsp->base + ADSP2_RDMA_CONFIG_1, 0);
-+			regmap_write(dsp->regmap,
-+				     dsp->base + ADSP2_WDMA_CONFIG_1, 0);
-+			regmap_write(dsp->regmap,
-+				     dsp->base + ADSP2V2_WDMA_CONFIG_2, 0);
-+			break;
+ 		/* Log firmware state, it can be useful for analysis */
+ 		switch (dsp->rev) {
+ 		case 0:
+@@ -3624,4 +3671,94 @@ int wm_adsp_compr_copy(struct snd_compr_stream *stream, char __user *buf,
+ }
+ EXPORT_SYMBOL_GPL(wm_adsp_compr_copy);
+ 
++int wm_adsp2_lock(struct wm_adsp *dsp, unsigned int lock_regions)
++{
++	struct regmap *regmap = dsp->regmap;
++	unsigned int code0, code1, lock_reg;
++
++	if (!(lock_regions & WM_ADSP2_REGION_ALL))
++		return 0;
++
++	lock_regions &= WM_ADSP2_REGION_ALL;
++	lock_reg = dsp->base + ADSP2_LOCK_REGION_1_LOCK_REGION_0;
++
++	while (lock_regions) {
++		code0 = code1 = 0;
++		if (lock_regions & BIT(0)) {
++			code0 = ADSP2_LOCK_CODE_0;
++			code1 = ADSP2_LOCK_CODE_1;
 +		}
- 
- 		if (wm_adsp_fw[dsp->fw].num_caps != 0)
- 			wm_adsp_buffer_free(dsp);
-@@ -2732,15 +2826,22 @@ int wm_adsp2_init(struct wm_adsp *dsp)
- {
- 	int ret;
- 
--	/*
--	 * Disable the DSP memory by default when in reset for a small
--	 * power saving.
--	 */
--	ret = regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
--				 ADSP2_MEM_ENA, 0);
--	if (ret != 0) {
--		adsp_err(dsp, "Failed to clear memory retention: %d\n", ret);
--		return ret;
-+	switch (dsp->rev) {
-+	case 0:
-+		/*
-+		 * Disable the DSP memory by default when in reset for a small
-+		 * power saving.
-+		 */
-+		ret = regmap_update_bits(dsp->regmap, dsp->base + ADSP2_CONTROL,
-+					 ADSP2_MEM_ENA, 0);
++		if (lock_regions & BIT(1)) {
++			code0 |= ADSP2_LOCK_CODE_0 << ADSP2_LOCK_REGION_SHIFT;
++			code1 |= ADSP2_LOCK_CODE_1 << ADSP2_LOCK_REGION_SHIFT;
++		}
++		regmap_write(regmap, lock_reg, code0);
++		regmap_write(regmap, lock_reg, code1);
++		lock_regions >>= 2;
++		lock_reg += 2;
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(wm_adsp2_lock);
++
++irqreturn_t wm_adsp2_bus_error(struct wm_adsp *dsp)
++{
++	unsigned int val;
++	struct regmap *regmap = dsp->regmap;
++	int ret = 0;
++
++	ret = regmap_read(regmap, dsp->base + ADSP2_LOCK_REGION_CTRL, &val);
++	if (ret) {
++		adsp_err(dsp,
++			"Failed to read Region Lock Ctrl register: %d\n", ret);
++		return IRQ_HANDLED;
++	}
++
++	if (val & ADSP2_WDT_TIMEOUT_STS_MASK) {
++		adsp_err(dsp, "watchdog timeout error\n");
++		wm_adsp_stop_watchdog(dsp);
++	}
++
++	if (val & (ADSP2_SLAVE_ERR_MASK | ADSP2_REGION_LOCK_ERR_MASK)) {
++		if (val & ADSP2_SLAVE_ERR_MASK)
++			adsp_err(dsp, "bus error: slave error\n");
++		else
++			adsp_err(dsp, "bus error: region lock error\n");
++
++		ret = regmap_read(regmap, dsp->base + ADSP2_BUS_ERR_ADDR, &val);
 +		if (ret) {
 +			adsp_err(dsp,
-+				 "Failed to clear memory retention: %d\n", ret);
-+			return ret;
++				 "Failed to read Bus Err Addr register: %d\n",
++				 ret);
++			return IRQ_HANDLED;
 +		}
-+		break;
-+	default:
-+		break;
- 	}
- 
- 	INIT_LIST_HEAD(&dsp->alg_regions);
++
++		adsp_err(dsp, "bus error address = 0x%x\n",
++			 val & ADSP2_BUS_ERR_ADDR_MASK);
++
++		ret = regmap_read(regmap,
++				  dsp->base + ADSP2_PMEM_ERR_ADDR_XMEM_ERR_ADDR,
++				  &val);
++		if (ret) {
++			adsp_err(dsp,
++				 "Failed to read Pmem Xmem Err Addr register: %d\n",
++				 ret);
++			return IRQ_HANDLED;
++		}
++
++		adsp_err(dsp, "xmem error address = 0x%x\n",
++			 val & ADSP2_XMEM_ERR_ADDR_MASK);
++		adsp_err(dsp, "pmem error address = 0x%x\n",
++			 (val & ADSP2_PMEM_ERR_ADDR_MASK) >>
++			 ADSP2_PMEM_ERR_ADDR_SHIFT);
++	}
++
++	regmap_update_bits(regmap, dsp->base + ADSP2_LOCK_REGION_CTRL,
++			   ADSP2_CTRL_ERR_EINT, ADSP2_CTRL_ERR_EINT);
++
++	return IRQ_HANDLED;
++}
++EXPORT_SYMBOL_GPL(wm_adsp2_bus_error);
++
+ MODULE_LICENSE("GPL v2");
 diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index 3706b11..997227f 100644
+index 997227f..41cc11c 100644
 --- a/sound/soc/codecs/wm_adsp.h
 +++ b/sound/soc/codecs/wm_adsp.h
-@@ -40,6 +40,7 @@ struct wm_adsp_alg_region {
+@@ -23,6 +23,23 @@
+ #define WM_ADSP_COMPR_OK                 0
+ #define WM_ADSP_COMPR_VOICE_TRIGGER      1
  
- struct wm_adsp {
- 	const char *part;
-+	int rev;
- 	int num;
++#define WM_ADSP2_REGION_0 BIT(0)
++#define WM_ADSP2_REGION_1 BIT(1)
++#define WM_ADSP2_REGION_2 BIT(2)
++#define WM_ADSP2_REGION_3 BIT(3)
++#define WM_ADSP2_REGION_4 BIT(4)
++#define WM_ADSP2_REGION_5 BIT(5)
++#define WM_ADSP2_REGION_6 BIT(6)
++#define WM_ADSP2_REGION_7 BIT(7)
++#define WM_ADSP2_REGION_8 BIT(8)
++#define WM_ADSP2_REGION_9 BIT(9)
++#define WM_ADSP2_REGION_1_9 (WM_ADSP2_REGION_1 | \
++		WM_ADSP2_REGION_2 | WM_ADSP2_REGION_3 | \
++		WM_ADSP2_REGION_4 | WM_ADSP2_REGION_5 | \
++		WM_ADSP2_REGION_6 | WM_ADSP2_REGION_7 | \
++		WM_ADSP2_REGION_8 | WM_ADSP2_REGION_9)
++#define WM_ADSP2_REGION_ALL (WM_ADSP2_REGION_0 | WM_ADSP2_REGION_1_9)
++
+ struct wm_adsp_region {
  	int type;
- 	struct device *dev;
+ 	unsigned int base;
+@@ -76,6 +93,8 @@ struct wm_adsp {
+ 
+ 	struct mutex pwr_lock;
+ 
++	unsigned int lock_regions;
++
+ #ifdef CONFIG_DEBUG_FS
+ 	struct dentry *debugfs_root;
+ 	char *wmfw_file_name;
+@@ -114,6 +133,10 @@ int wm_adsp1_event(struct snd_soc_dapm_widget *w,
+ int wm_adsp2_early_event(struct snd_soc_dapm_widget *w,
+ 			 struct snd_kcontrol *kcontrol, int event,
+ 			 unsigned int freq);
++
++int wm_adsp2_lock(struct wm_adsp *adsp, unsigned int regions);
++irqreturn_t wm_adsp2_bus_error(struct wm_adsp *adsp);
++
+ int wm_adsp2_event(struct snd_soc_dapm_widget *w,
+ 		   struct snd_kcontrol *kcontrol, int event);
+ 
 -- 
 1.9.1
