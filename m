@@ -1,20 +1,17 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH v4 2/2] ASoC: Add support for Conexant
- CX2092X DSP
-Date: Wed, 5 Apr 2017 16:17:04 +0100
-Message-ID: <20170405151704.GA3412@localhost.localdomain>
-References: <cover.1491387037.git.simon.ho@conexant.com>
- <9c6e21ff6c43779601014b8a7f5bb108b5a88e99.1491387037.git.simon.ho@conexant.com>
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Subject: [PATCH 2/2] ASoC: fsl_ssi: Use the tolower() function
+Date: Wed, 5 Apr 2017 13:40:11 -0300
+Message-ID: <1491410411-6053-2-git-send-email-fabio.estevam@nxp.com>
+References: <1491410411-6053-1-git-send-email-fabio.estevam@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id F2FFF266BA4
- for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 17:16:02 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <9c6e21ff6c43779601014b8a7f5bb108b5a88e99.1491387037.git.simon.ho@conexant.com>
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com
+ (mail-cys01nam02on0081.outbound.protection.outlook.com [104.47.37.81])
+ by alsa0.perex.cz (Postfix) with ESMTP id BF458266BA4
+ for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 18:40:24 +0200 (CEST)
+In-Reply-To: <1491410411-6053-1-git-send-email-fabio.estevam@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,71 +21,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: simon.ho.cnxt@gmail.com
-Cc: alsa-devel@alsa-project.org, Simon Ho <simon.ho@conexant.com>, tiwai@suse.com, lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com, broonie@kernel.org
+To: broonie@kernel.org
+Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 05, 2017 at 06:27:13PM +0800, simon.ho.cnxt@gmail.com wrote:
-> From: Simon Ho <simon.ho@conexant.com>
-> 
-> Initial commit of Conexant CX20921/CX20924 I2S Audio DSP driver
-> 
-> The CX2092X devices are designed for virtual assisant application need to
-> be always open, listening for users to summon it. There is no any power
-> saving mode support on this device. The processed voice data will be sent
-> to automatic speech recognition (ASR) application for further processing.
-> 
-> Signed-off-by: Simon Ho <simon.ho@conexant.com>
-> ---
+Code can be simplified by using the standard tolower() funtion.
 
-Just a couple of very minor points.
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+---
+ sound/soc/fsl/fsl_ssi.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-> +static int cx2092x_sendcmd(struct snd_soc_codec *codec,
-> +			   struct cx2092x_cmd *cmd)
-> +{
-> +	struct cx2092x_priv *cx2092x = snd_soc_codec_get_drvdata(codec);
-> +	int ret = 0;
-> +	int num_32b_words = cmd->num_32b_words;
-> +	unsigned long time_out;
-> +	u32 *i2c_data = (u32 *)cmd;
-> +	int size = num_32b_words + 2;
-> +
-> +	/* calculate how many WORD that will be wrote to device*/
-> +	cmd->num_32b_words = cmd->command_id & CX2092X_CMD_GET(0) ?
-> +			     CX2092X_CMD_SIZE : num_32b_words;
-> +
-> +	/* write all command data except fo frist 4 bytes*/
-> +	ret = regmap_bulk_write(cx2092x->regmap, 4, &i2c_data[1], size - 1);
-> +	if (ret < 0) {
-> +		dev_err(cx2092x->dev, "Failed to write command data\n");
-> +		goto LEAVE;
-
-All caps for a label is a bit unusual probably would be more
-normal kernel style to make this lower case.
-
-> +	}
-> +
-> +	/* write first 4 bytes command data*/
-> +	ret = regmap_bulk_write(cx2092x->regmap, 0, i2c_data, 1);
-> +	if (ret < 0) {
-> +		dev_err(cx2092x->dev, "Failed to write command\n");
-> +		goto LEAVE;
-> +	}
-> +
-> +	/* continuously read the first bytes data from device until
-> +	 * either timeout or the flag 'reply' is set.
-> +	 */
-> +	time_out = msecs_to_jiffies(2000);
-> +	time_out += jiffies;
-> +	do {
-> +		regmap_bulk_read(cx2092x->regmap, 0, &i2c_data[0], 1);
-> +		if (cmd->reply == 1)
-> +			break;
-> +		mdelay(10);
-
-Do you really want to use mdelay's, they are busy wait loops
-so thrash the processor, a usleep_range or an msleep might be a
-more friendly.
-
-Thanks,
-Charles
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index b450d8d..4981493 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -35,6 +35,7 @@
+ #include <linux/module.h>
+ #include <linux/interrupt.h>
+ #include <linux/clk.h>
++#include <linux/ctype.h>
+ #include <linux/device.h>
+ #include <linux/delay.h>
+ #include <linux/slab.h>
+@@ -1317,14 +1318,10 @@ static struct snd_ac97_bus_ops fsl_ssi_ac97_ops = {
+  */
+ static void make_lowercase(char *s)
+ {
+-	char *p = s;
+-	char c;
+-
+-	while ((c = *p)) {
+-		if ((c >= 'A') && (c <= 'Z'))
+-			*p = c + ('a' - 'A');
+-		p++;
+-	}
++	if (!s)
++		return;
++	for (; *s; s++)
++		*s = tolower(*s);
+ }
+ 
+ static int fsl_ssi_imx_probe(struct platform_device *pdev,
+-- 
+2.7.4
