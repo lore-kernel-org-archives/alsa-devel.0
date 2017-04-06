@@ -1,45 +1,71 @@
-From: Leo Yan <leo.yan@linaro.org>
-Subject: Re: [PATCH 4/5] vfio: platform: Convert to use devm_*()
-Date: Thu, 6 Apr 2017 22:17:31 +0800
-Message-ID: <20170406141731.GA27245@leoy-linaro>
-References: <1490539314-9681-1-git-send-email-leo.yan@linaro.org>
- <1490539314-9681-5-git-send-email-leo.yan@linaro.org>
- <10625a88-3d6d-de52-8299-3ba0031317f8@redhat.com>
+From: olivier moysan <olivier.moysan@st.com>
+Subject: [PATCH 0/2] ASoC: stm32: Add I2S driver
+Date: Thu, 6 Apr 2017 17:40:34 +0200
+Message-ID: <1491493236-2574-1-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-input-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <10625a88-3d6d-de52-8299-3ba0031317f8@redhat.com>
-Sender: linux-input-owner@vger.kernel.org
-To: Auger Eric <eric.auger@redhat.com>
-Cc: Russell King <linux@armlinux.org.uk>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Alessandro Zummo <a.zummo@towertech.it>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Linus Walleij <linus.walleij@linaro.org>, Baptiste Reynal <b.reynal@virtualopensystems.com>, Alex Williamson <alex.williamson@redhat.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, rtc-linux@googlegroups.com, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3885526680F
+ for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2017 17:40:41 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, robh@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, olivier.moysan@st.com
+Cc: arnaud.pouliquen@st.com, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Apr 02, 2017 at 04:45:28PM +0200, Auger Eric wrote:
-> Hi Leo,
-> 
-> On 26/03/2017 16:41, Leo Yan wrote:
-> > Convert driver to use devm_*() APIs so rely on driver model core layer
-> > to manage resources. This eliminates error path boilerplate and makes
-> > code neat.
-> > 
-> > This patch also renames amba_id structure, the old code used some code
-> > which directly copied from other driver.
-> > 
-> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> Looks good to me
-> Reviewed-by: Eric Auger <eric.auger@redhat.com>
+This patch-set handles the SPI/I2S IP on STM32 platforms.
 
-Thanks for reviewing, Eric.
+It applies to STM32 platforms implementing version 2 of SPI/I2S IP like STM32H7 series.
 
-> May be interesting to go further converting as well the vfio-platform
-> driver but this can be done later on.
+The SPI/I2S block is a serial peripheral interface (SPI), 
+which can also be configured to work on I2S/PCM mode.
+ASoC STM32 I2S driver only supports this I2S/PCM mode.
 
-Looked a bit for vfio-platform driver and I'm not sure if need some
-converting within function vfio_platform_probe_common(). So I'd like
-to leave this to who really understand the subsystem :)
+The I2S/PCM interface can either support full duplex or half-duplex communication
+(transmitter or receiver only).
 
-[...]
+I2S driver exhibits 3 DAIs corresponding to a playback, capture or full duplex PCM device.
+When the interface is configured as full duplex, the related PCM device must be opened twice. 
+The PCM streams are started when both playback and capture devices are opened.
+The relevant DAI can be selected through Device Tree using sound-dai-cells parameter.
 
-Thanks,
-Leo Yan
+The I2S/PCM interface supports four audio standards:
+I2S Philips standard, MSB justified standard, LSB justified standard, PCM standard
+PCM standard is declined in two versions, PCM short and long,
+according frame synchronization duration.
+
+These standards can be mapped to ASoC standards as follows:
+	- I2S: i2s
+	- MSB justified standard: left_j
+	- LSB justified standard: right_j
+	- PCM short: dsp_a
+PCM long format is not exposed as it does not match supported ASoC standards.
+
+olivier moysan (2):
+  dt-bindings: Document STM32 I2S bindings
+  ASoC: stm32: Add I2S driver
+
+ .../devicetree/bindings/sound/st,stm32h7-i2s.txt   |   71 ++
+ sound/soc/Kconfig                                  |    1 +
+ sound/soc/Makefile                                 |    1 +
+ sound/soc/stm/Kconfig                              |    8 +
+ sound/soc/stm/Makefile                             |    2 +
+ sound/soc/stm/stm32_i2s.c                          | 1069 ++++++++++++++++++++
+ 6 files changed, 1152 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/st,stm32h7-i2s.txt
+ create mode 100644 sound/soc/stm/Kconfig
+ create mode 100644 sound/soc/stm/Makefile
+ create mode 100644 sound/soc/stm/stm32_i2s.c
+
+-- 
+1.9.1
