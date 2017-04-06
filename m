@@ -1,49 +1,88 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] ASoC: rsnd: control kctrl items acceptance
- anytime/runtime
-Date: Thu, 6 Apr 2017 11:48:17 +0100
-Message-ID: <20170406104817.ozzx4ooek5cepvul@sirena.org.uk>
-References: <87wpay3svc.wl%kuninori.morimoto.gx@renesas.com>
- <87shlm3srx.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="saqineivkzdjtyxg"
+Subject: Applied "ASoC: rsnd: tidyup src->convert_rate reset timing" to the asoc tree
+Date: Thu, 06 Apr 2017 11:48:56 +0100
+Message-ID: <E1cw4yG-0004QS-2a@debutante>
+References: <87vaqi3stx.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87shlm3srx.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87vaqi3stx.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Cc: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---saqineivkzdjtyxg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   ASoC: rsnd: tidyup src->convert_rate reset timing
 
-On Thu, Apr 06, 2017 at 07:25:48AM +0000, Kuninori Morimoto wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->=20
-> Current SRC/DVC/CTU adds kctrl for each device, but
-> some of them shouldn't set *before* playback/capture.
-> This patch control it more clearly
+has been applied to the asoc tree at
 
-Why is there this restriction for these controls - what are they doing?
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
---saqineivkzdjtyxg
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
------BEGIN PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljmHPAACgkQJNaLcl1U
-h9C1Wwf/Qi+g6Y2umEw+gCTCojsyI9Q+yqWWHq/N39FFmRv4nhxufXspCjIpJTaU
-MpCA87JDGK7khyxkNCgAiqM9JJ3QX4AltMNcg/vgxXOmSCdRqtL7t3tmu7g0k+2Z
-X6CHup4+SsfGPr1pjQICvNIN+cHDXFA870UzKem9BJVXDC08eHxdnrRnL8qt95gs
-YEUQld8kaJk5zBfZ/ghMt+NKePNku1iFZwh81PxXy8ANT19YSVs1YKMB7lAfwxoh
-LSADFGPrWMJCfSFB13187ND9mSLiY6Di4T1RN7bdPQ4I7az/F9UvbIkNcA9iSDBH
-FQCRCQgzCuVoAJvFKreJIN9oai7oNg==
-=FHn0
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---saqineivkzdjtyxg--
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From fc99d23f6d3ec6b17772915114018444393e0ad1 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 6 Apr 2017 07:24:36 +0000
+Subject: [PATCH] ASoC: rsnd: tidyup src->convert_rate reset timing
+
+Current src->convert_rate will be set on .hw_param, and
+be reset on .quit timing.
+But, .hw_param will not be called again if user did Ctrl-Z + fg.
+It should be reset on initial of .hw_param to keep its value.
+Here, ctu.c already do this.
+This patch solves this issue, other wise, MIXed sound will be
+strange if user did like below.
+
+	> aplay -D plughw:0,0 sound_44100.wav &
+	> aplay -D plughw:0,1 sound_96000.wav
+	> Ctrl-Z
+	> fg # 96kHz will be played as 44.1kHz
+
+Reported-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/src.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
+index 42db48db09ba..20b5b2ec625e 100644
+--- a/sound/soc/sh/rcar/src.c
++++ b/sound/soc/sh/rcar/src.c
+@@ -167,6 +167,7 @@ static int rsnd_src_hw_params(struct rsnd_mod *mod,
+ 	 *	dpcm_fe_dai_hw_params()
+ 	 *	dpcm_be_dai_hw_params()
+ 	 */
++	src->convert_rate = 0;
+ 	if (fe->dai_link->dynamic) {
+ 		int stream = substream->stream;
+ 		struct snd_soc_dpcm *dpcm;
+@@ -414,8 +415,6 @@ static int rsnd_src_quit(struct rsnd_mod *mod,
+ 
+ 	rsnd_mod_power_off(mod);
+ 
+-	src->convert_rate = 0;
+-
+ 	/* reset sync convert_rate */
+ 	src->sync.val = 0;
+ 
+-- 
+2.11.0
