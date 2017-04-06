@@ -1,18 +1,18 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: cs35l35: Improve power down time" to the asoc tree
-Date: Thu, 06 Apr 2017 19:55:17 +0100
-Message-ID: <E1cwCYv-0001k5-Hq@debutante>
-References: <1491483134-28079-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1491483134-28079-1-git-send-email-ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.orgbrian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: codec: wm8960: Stop when a matching PLL freq is found" to the asoc tree
+Date: Thu, 06 Apr 2017 19:55:20 +0100
+Message-ID: <E1cwCYy-0001lq-GL@debutante>
+References: <1491479514-24862-2-git-send-email-daniel.baluta@nxp.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1491479514-24862-2-git-send-email-daniel.baluta@nxp.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, lgirdwood@gmail.com, shengjiu.wang@nxp.com, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, tiwai@suse.combroonie@kernel.org, viorel.suman@nxp.com, mihai.serban@nxp.com, ckeepax@opensource.wolfsonmicro.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs35l35: Improve power down time
+   ASoC: codec: wm8960: Stop when a matching PLL freq is found
 
 has been applied to the asoc tree at
 
@@ -37,67 +37,36 @@ to this mail.
 Thanks,
 Mark
 
->From 2c84afb52ebea59e9862fcb8234126b7ae1d1960 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Date: Thu, 6 Apr 2017 13:52:12 +0100
-Subject: [PATCH] ASoC: cs35l35: Improve power down time
+>From 303e8954af8daa087e4f42788672d280337071ab Mon Sep 17 00:00:00 2001
+From: Daniel Baluta <daniel.baluta@nxp.com>
+Date: Thu, 6 Apr 2017 14:51:53 +0300
+Subject: [PATCH] ASoC: codec: wm8960: Stop when a matching PLL freq is found
 
-Shorten the time it takes to power down the amp by disabling the volume
-ramp whilst doing the final shutdown. The driver has already muted the
-amplifier at this stage so doing the volume ramp serves no purpose.
+When a matching PLL freq is found, searching continues even this is
+not necessary. The problem was introduced with the following refactoring
+commit 84fdc00d519ffd ("ASoC: codec: wm9860: Refactor PLL out freq search)
 
-Signed-off-by: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Acked-by: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs35l35.c | 8 ++++++++
- sound/soc/codecs/cs35l35.h | 3 +++
- 2 files changed, 11 insertions(+)
+ sound/soc/codecs/wm8960.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
-index 9688274f7c90..1db07a6296a4 100644
---- a/sound/soc/codecs/cs35l35.c
-+++ b/sound/soc/codecs/cs35l35.c
-@@ -187,6 +187,10 @@ static int cs35l35_sdin_event(struct snd_soc_dapm_widget *w,
- 		regmap_update_bits(cs35l35->regmap, CS35L35_PWRCTL1,
- 					  CS35L35_PDN_ALL_MASK, 1);
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index 36c84549da23..ace69da97cb8 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -724,7 +724,11 @@ int wm8960_configure_pll(struct snd_soc_codec *codec, int freq_in,
+ 					break;
+ 				}
+ 			}
++			if (k != ARRAY_SIZE(bclk_divs))
++				break;
+ 		}
++		if (j != ARRAY_SIZE(dac_divs))
++			break;
+ 	}
  
-+		/* Already muted, so disable volume ramp for faster shutdown */
-+		regmap_update_bits(cs35l35->regmap, CS35L35_AMP_DIG_VOL_CTL,
-+				   CS35L35_AMP_DIGSFT_MASK, 0);
-+
- 		reinit_completion(&cs35l35->pdn_done);
- 
- 		ret = wait_for_completion_timeout(&cs35l35->pdn_done,
-@@ -199,6 +203,10 @@ static int cs35l35_sdin_event(struct snd_soc_dapm_widget *w,
- 		regmap_update_bits(cs35l35->regmap, CS35L35_CLK_CTL1,
- 					CS35L35_MCLK_DIS_MASK,
- 					1 << CS35L35_MCLK_DIS_SHIFT);
-+
-+		regmap_update_bits(cs35l35->regmap, CS35L35_AMP_DIG_VOL_CTL,
-+				   CS35L35_AMP_DIGSFT_MASK,
-+				   1 << CS35L35_AMP_DIGSFT_SHIFT);
- 		break;
- 	default:
- 		dev_err(codec->dev, "Invalid event = 0x%x\n", event);
-diff --git a/sound/soc/codecs/cs35l35.h b/sound/soc/codecs/cs35l35.h
-index 156d2f0e6fd8..54e9ac536b20 100644
---- a/sound/soc/codecs/cs35l35.h
-+++ b/sound/soc/codecs/cs35l35.h
-@@ -190,6 +190,9 @@
- #define CS35L35_AMP_GAIN_ZC_MASK	0x10
- #define CS35L35_AMP_GAIN_ZC_SHIFT	4
- 
-+#define CS35L35_AMP_DIGSFT_MASK		0x02
-+#define CS35L35_AMP_DIGSFT_SHIFT	1
-+
- /* CS35L35_SP_FMT_CTL3 */
- #define CS35L35_SP_I2S_DRV_MASK		0x03
- #define CS35L35_SP_I2S_DRV_SHIFT	0
+ 	if (*bclk_idx != -1)
 -- 
 2.11.0
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
