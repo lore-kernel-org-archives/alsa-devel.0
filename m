@@ -1,79 +1,77 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [PATCH 2/2] ASoC: codec: wm8960: Relax bit clock computation when using PLL
-Date: Thu, 6 Apr 2017 14:51:54 +0300
-Message-ID: <1491479514-24862-3-git-send-email-daniel.baluta@nxp.com>
-References: <1491479514-24862-1-git-send-email-daniel.baluta@nxp.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH 1/3] ASoC: cs35l35: Improve power down time
+Date: Thu, 6 Apr 2017 13:52:12 +0100
+Message-ID: <1491483134-28079-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1491479514-24862-1-git-send-email-daniel.baluta@nxp.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, ckeepax@opensource.wolfsonmicro.com, shengjiu.wang@nxp.com, viorel.suman@nxp.com, mihai.serban@nxp.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id AEB0B267283
+ for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2017 14:51:12 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, brian.austin@cirrus.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Bitclk is derived from sysclk using bclk_divs.
-Sysclk can be derived in two ways:
-	(1) directly from MLCK
-	(2) MCLK via PLL
+Shorten the time it takes to power down the amp by disabling the volume
+ramp whilst doing the final shutdown. The driver has already muted the
+amplifier at this stage so doing the volume ramp serves no purpose.
 
-Commit 3c01b9ee2ab9d0d ("ASoC: codec: wm8960: Relax bit clock
-computation")
-relaxed bitclk computation when sysclk is directly derived from MCLK.
-
-Lets do the same thing when sysclk is derived via PLL.
-
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
- sound/soc/codecs/wm8960.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ sound/soc/codecs/cs35l35.c | 8 ++++++++
+ sound/soc/codecs/cs35l35.h | 3 +++
+ 2 files changed, 11 insertions(+)
 
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index ace69da..8ab9fa2 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -679,6 +679,10 @@ int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
-  *		- freq_out    = sysclk * sysclk_divs
-  *		- 10 * sysclk = bclk * bclk_divs
-  *
-+ *	If we cannot find an exact match for (sysclk, lrclk, bclk)
-+ *	triplet, we relax the bclk such that bclk is chosen as the
-+ *	closest available frequency greater than expected bclk.
-+ *
-  * @codec: codec structure
-  * @freq_in: input frequency used to derive freq out via PLL
-  * @sysclk_idx: sysclk_divs index for found sysclk
-@@ -696,13 +700,14 @@ int wm8960_configure_pll(struct snd_soc_codec *codec, int freq_in,
- {
- 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
- 	int sysclk, bclk, lrclk, freq_out;
--	int diff, best_freq_out;
-+	int diff, closest, best_freq_out = 0;
- 	int i, j, k;
+diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
+index 9688274..1db07a6 100644
+--- a/sound/soc/codecs/cs35l35.c
++++ b/sound/soc/codecs/cs35l35.c
+@@ -187,6 +187,10 @@ static int cs35l35_sdin_event(struct snd_soc_dapm_widget *w,
+ 		regmap_update_bits(cs35l35->regmap, CS35L35_PWRCTL1,
+ 					  CS35L35_PDN_ALL_MASK, 1);
  
- 	bclk = wm8960->bclk;
- 	lrclk = wm8960->lrclk;
-+	closest = freq_in;
++		/* Already muted, so disable volume ramp for faster shutdown */
++		regmap_update_bits(cs35l35->regmap, CS35L35_AMP_DIG_VOL_CTL,
++				   CS35L35_AMP_DIGSFT_MASK, 0);
++
+ 		reinit_completion(&cs35l35->pdn_done);
  
--	*bclk_idx = -1;
-+	*bclk_idx = *dac_idx = *sysclk_idx = -1;
+ 		ret = wait_for_completion_timeout(&cs35l35->pdn_done,
+@@ -199,6 +203,10 @@ static int cs35l35_sdin_event(struct snd_soc_dapm_widget *w,
+ 		regmap_update_bits(cs35l35->regmap, CS35L35_CLK_CTL1,
+ 					CS35L35_MCLK_DIS_MASK,
+ 					1 << CS35L35_MCLK_DIS_SHIFT);
++
++		regmap_update_bits(cs35l35->regmap, CS35L35_AMP_DIG_VOL_CTL,
++				   CS35L35_AMP_DIGSFT_MASK,
++				   1 << CS35L35_AMP_DIGSFT_SHIFT);
+ 		break;
+ 	default:
+ 		dev_err(codec->dev, "Invalid event = 0x%x\n", event);
+diff --git a/sound/soc/codecs/cs35l35.h b/sound/soc/codecs/cs35l35.h
+index 156d2f0..54e9ac5 100644
+--- a/sound/soc/codecs/cs35l35.h
++++ b/sound/soc/codecs/cs35l35.h
+@@ -190,6 +190,9 @@
+ #define CS35L35_AMP_GAIN_ZC_MASK	0x10
+ #define CS35L35_AMP_GAIN_ZC_SHIFT	4
  
- 	for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
- 		if (sysclk_divs[i] == -1)
-@@ -723,6 +728,13 @@ int wm8960_configure_pll(struct snd_soc_codec *codec, int freq_in,
- 					best_freq_out = freq_out;
- 					break;
- 				}
-+				if (diff > 0 && closest > diff) {
-+					*sysclk_idx = i;
-+					*dac_idx = j;
-+					*bclk_idx = k;
-+					closest = diff;
-+					best_freq_out = freq_out;
-+				}
- 			}
- 			if (k != ARRAY_SIZE(bclk_divs))
- 				break;
++#define CS35L35_AMP_DIGSFT_MASK		0x02
++#define CS35L35_AMP_DIGSFT_SHIFT	1
++
+ /* CS35L35_SP_FMT_CTL3 */
+ #define CS35L35_SP_I2S_DRV_MASK		0x03
+ #define CS35L35_SP_I2S_DRV_SHIFT	0
 -- 
-2.7.4
+2.1.4
