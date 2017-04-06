@@ -1,22 +1,15 @@
-From: Simon Ho <simon.ho.cnxt@gmail.com>
-Subject: Re: [PATCH v4 2/2] ASoC: Add support for Conexant
- CX2092X DSP
-Date: Thu, 6 Apr 2017 09:32:36 +0800
-Message-ID: <20170406013236.GA3818@GMAIL.COM>
-References: <cover.1491387037.git.simon.ho@conexant.com>
- <9c6e21ff6c43779601014b8a7f5bb108b5a88e99.1491387037.git.simon.ho@conexant.com>
- <20170405151704.GA3412@localhost.localdomain>
+From: libin.yang@intel.com
+Subject: [PATCH 1/2 v2] ALSA: hda - add more ML register
+	definitions
+Date: Thu,  6 Apr 2017 19:18:20 +0800
+Message-ID: <1491477501-12379-1-git-send-email-libin.yang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f68.google.com (mail-pg0-f68.google.com [74.125.83.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 410E1266C0C
- for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2017 03:32:42 +0200 (CEST)
-Received: by mail-pg0-f68.google.com with SMTP id g2so4751304pge.2
- for <alsa-devel@alsa-project.org>; Wed, 05 Apr 2017 18:32:41 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20170405151704.GA3412@localhost.localdomain>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 48165266943
+ for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2017 04:04:42 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,75 +19,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, Simon Ho <simon.ho@conexant.com>, tiwai@suse.com, lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com, broonie@kernel.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: libin.yang@intel.com, mengdong.lin@intel.com, infernix@infernix.net, rakesh.a.ughreja@intel.com, jeeja.kp@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 05, 2017 at 04:17:04PM +0100, Charles Keepax wrote:
-> On Wed, Apr 05, 2017 at 06:27:13PM +0800, simon.ho.cnxt@gmail.com wrote:
-> > From: Simon Ho <simon.ho@conexant.com>
-> > 
-> > Initial commit of Conexant CX20921/CX20924 I2S Audio DSP driver
-> > 
-> > The CX2092X devices are designed for virtual assisant application need to
-> > be always open, listening for users to summon it. There is no any power
-> > saving mode support on this device. The processed voice data will be sent
-> > to automatic speech recognition (ASR) application for further processing.
-> > 
-> > Signed-off-by: Simon Ho <simon.ho@conexant.com>
-> > ---
-> 
-> Just a couple of very minor points.
-> 
+From: Libin Yang <libin.yang@intel.com>
 
-Thank you for your useful comments, I will fix them.
+This patch refines the definition of AZX_MLCTL_SPA and AZX_MLCTL_CPA
+and add more definitions of ML registers
 
-> > +static int cx2092x_sendcmd(struct snd_soc_codec *codec,
-> > +			   struct cx2092x_cmd *cmd)
-> > +{
-> > +	struct cx2092x_priv *cx2092x = snd_soc_codec_get_drvdata(codec);
-> > +	int ret = 0;
-> > +	int num_32b_words = cmd->num_32b_words;
-> > +	unsigned long time_out;
-> > +	u32 *i2c_data = (u32 *)cmd;
-> > +	int size = num_32b_words + 2;
-> > +
-> > +	/* calculate how many WORD that will be wrote to device*/
-> > +	cmd->num_32b_words = cmd->command_id & CX2092X_CMD_GET(0) ?
-> > +			     CX2092X_CMD_SIZE : num_32b_words;
-> > +
-> > +	/* write all command data except fo frist 4 bytes*/
-> > +	ret = regmap_bulk_write(cx2092x->regmap, 4, &i2c_data[1], size - 1);
-> > +	if (ret < 0) {
-> > +		dev_err(cx2092x->dev, "Failed to write command data\n");
-> > +		goto LEAVE;
-> 
-> All caps for a label is a bit unusual probably would be more
-> normal kernel style to make this lower case.
-> 
-> > +	}
-> > +
-> > +	/* write first 4 bytes command data*/
-> > +	ret = regmap_bulk_write(cx2092x->regmap, 0, i2c_data, 1);
-> > +	if (ret < 0) {
-> > +		dev_err(cx2092x->dev, "Failed to write command\n");
-> > +		goto LEAVE;
-> > +	}
-> > +
-> > +	/* continuously read the first bytes data from device until
-> > +	 * either timeout or the flag 'reply' is set.
-> > +	 */
-> > +	time_out = msecs_to_jiffies(2000);
-> > +	time_out += jiffies;
-> > +	do {
-> > +		regmap_bulk_read(cx2092x->regmap, 0, &i2c_data[0], 1);
-> > +		if (cmd->reply == 1)
-> > +			break;
-> > +		mdelay(10);
-> 
-> Do you really want to use mdelay's, they are busy wait loops
-> so thrash the processor, a usleep_range or an msleep might be a
-> more friendly.
-> 
-> Thanks,
-> Charles
+Signed-off-by: Libin Yang <libin.yang@intel.com>
+---
+ include/sound/hda_register.h        | 8 +++++---
+ sound/hda/ext/hdac_ext_controller.c | 6 +++---
+ 2 files changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/include/sound/hda_register.h b/include/sound/hda_register.h
+index 0013063..8df12e4 100644
+--- a/include/sound/hda_register.h
++++ b/include/sound/hda_register.h
+@@ -243,9 +243,11 @@ enum { SDI0, SDI1, SDI2, SDI3, SDO0, SDO1, SDO2, SDO3 };
+ #define AZX_REG_ML_LOUTPAY		0x20
+ #define AZX_REG_ML_LINPAY		0x30
+ 
+-#define AZX_MLCTL_SPA			(1<<16)
+-#define AZX_MLCTL_CPA			23
+-
++#define ML_LCTL_SCF_MASK			0xF
++#define AZX_MLCTL_SPA				(0x1 << 16)
++#define AZX_MLCTL_CPA				(0x1 << 23)
++#define AZX_MLCTL_SPA_SHIFT			16
++#define AZX_MLCTL_CPA_SHIFT			23
+ 
+ /* registers for DMA Resume Capability Structure */
+ #define AZX_DRSM_CAP_ID			0x5
+diff --git a/sound/hda/ext/hdac_ext_controller.c b/sound/hda/ext/hdac_ext_controller.c
+index 2614691..84f3b81 100644
+--- a/sound/hda/ext/hdac_ext_controller.c
++++ b/sound/hda/ext/hdac_ext_controller.c
+@@ -171,7 +171,7 @@ static int check_hdac_link_power_active(struct hdac_ext_link *link, bool enable)
+ {
+ 	int timeout;
+ 	u32 val;
+-	int mask = (1 << AZX_MLCTL_CPA);
++	int mask = (1 << AZX_MLCTL_CPA_SHIFT);
+ 
+ 	udelay(3);
+ 	timeout = 150;
+@@ -179,10 +179,10 @@ static int check_hdac_link_power_active(struct hdac_ext_link *link, bool enable)
+ 	do {
+ 		val = readl(link->ml_addr + AZX_REG_ML_LCTL);
+ 		if (enable) {
+-			if (((val & mask) >> AZX_MLCTL_CPA))
++			if (((val & mask) >> AZX_MLCTL_CPA_SHIFT))
+ 				return 0;
+ 		} else {
+-			if (!((val & mask) >> AZX_MLCTL_CPA))
++			if (!((val & mask) >> AZX_MLCTL_CPA_SHIFT))
+ 				return 0;
+ 		}
+ 		udelay(3);
+-- 
+2.7.4
