@@ -1,82 +1,272 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 07/16] regulator: madera-micsupp: Mic
- supply for Cirrus Logic Madera codecs
-Date: Thu, 6 Apr 2017 11:57:44 +0100
-Message-ID: <20170406105744.f5qpmmi2pjvc7n2z@sirena.org.uk>
-References: <1491386884-30689-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <1491386884-30689-8-git-send-email-rf@opensource.wolfsonmicro.com>
- <20170405134054.kz3j56vza4pqki75@sirena.org.uk>
- <1491400437.4096.5.camel@rf-debian.wolfsonmicro.main>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6717022043634860279=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F358B267283
- for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2017 12:57:59 +0200 (CEST)
-In-Reply-To: <1491400437.4096.5.camel@rf-debian.wolfsonmicro.main>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: gnurou@gmail.com, alsa-devel@alsa-project.org, jason@lakedaemon.net, devicetree@vger.kernel.org, linus.walleij@linaro.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, robh+dt@kernel.org, tglx@linutronix.de, lee.jones@linaro.org
+Subject: Applied "ASoC: rsnd: merge rsnd_kctrl_new_m/s/e into rsnd_kctrl_new()" to the asoc tree
+Date: Thu, 06 Apr 2017 11:58:22 +0100
+Message-ID: <E1cw57O-0004uX-QL@debutante>
+References: <87tw623ssy.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87tw623ssy.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============6717022043634860279==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="5wfkgd3jlpzi3vd7"
-Content-Disposition: inline
+   ASoC: rsnd: merge rsnd_kctrl_new_m/s/e into rsnd_kctrl_new()
 
+has been applied to the asoc tree at
 
---5wfkgd3jlpzi3vd7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Apr 05, 2017 at 02:53:57PM +0100, Richard Fitzgerald wrote:
-> On Wed, 2017-04-05 at 14:40 +0100, Mark Brown wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > Again, this appears to have only data and minor code style changes
-> > relative to the existing arizona driver - is there no opportunity for
-> > code sharing here?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> I'll have a look at how it would work out.
-> My thought was that these two regulator drivers are so small it wasn't
-> worth creating an entanglement between arizona and madera for so little
-> code.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-It's a fairly small amount of code but it's an extremely high proportion
-of the code in the driver and doing something a bit unusual, not just
-boilerplate.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---5wfkgd3jlpzi3vd7
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+>From 32973dcf71ebee8806a6ee552665c5fad6857e16 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 6 Apr 2017 07:25:13 +0000
+Subject: [PATCH] ASoC: rsnd: merge rsnd_kctrl_new_m/s/e into rsnd_kctrl_new()
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljmHycACgkQJNaLcl1U
-h9DhaAf+MgOeQ1O1F7YETxiO6bPPXlueOsp5OuXiyDXFjzO/9ekNHkmsjxrSQvpT
-8dcJVUx8lEHEvBB5zDs608/EobDSl+TKPT6Ud1O2ouczXHFxj627/6+bU8s9avNi
-V593V8cSNP9/9qzB60+iBOsLRvtICY2YPGmIuftVBI1bJFIDbxzMZvYApY1+q99Q
-KZiUuGM2VRlHPfDQhHODX1dlN8HNtVzMHmN1ldE1u2Catl3VAus9Cjo62g69tCkM
-7KuHk3plxKPLdZD/lej8/OW1GB1qy/gS03Ui4eRgOJJz4jBGDzty4zQP1myiIXW2
-MevGyBfDke4KCZNx3kQ7V6Y4AgTRBg==
-=/bkc
------END PGP SIGNATURE-----
+Current rsnd driver is using rsnd_kctrl_new_m/s/e function,
+but the differences are very few.
+This patch merge these rsnd_kctrl_new_m/s/e into rsnd_kctrl_new
 
---5wfkgd3jlpzi3vd7--
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/core.c | 96 +++++++++++++++++-------------------------------
+ sound/soc/sh/rcar/dvc.c  |  8 ++--
+ sound/soc/sh/rcar/rsnd.h | 50 ++++++++++++-------------
+ 3 files changed, 62 insertions(+), 92 deletions(-)
 
---===============6717022043634860279==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6717022043634860279==--
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 35c96e4bbd64..f8eb9d3d1949 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1000,13 +1000,30 @@ static int rsnd_kctrl_put(struct snd_kcontrol *kctrl,
+ 	return change;
+ }
+ 
+-static int __rsnd_kctrl_new(struct rsnd_mod *mod,
+-			    struct rsnd_dai_stream *io,
+-			    struct snd_soc_pcm_runtime *rtd,
+-			    const unsigned char *name,
+-			    struct rsnd_kctrl_cfg *cfg,
+-			    void (*update)(struct rsnd_dai_stream *io,
+-					   struct rsnd_mod *mod))
++struct rsnd_kctrl_cfg *rsnd_kctrl_init_m(struct rsnd_kctrl_cfg_m *cfg)
++{
++	cfg->cfg.val = cfg->val;
++
++	return &cfg->cfg;
++}
++
++struct rsnd_kctrl_cfg *rsnd_kctrl_init_s(struct rsnd_kctrl_cfg_s *cfg)
++{
++	cfg->cfg.val = &cfg->val;
++
++	return &cfg->cfg;
++}
++
++int rsnd_kctrl_new(struct rsnd_mod *mod,
++		   struct rsnd_dai_stream *io,
++		   struct snd_soc_pcm_runtime *rtd,
++		   const unsigned char *name,
++		   void (*update)(struct rsnd_dai_stream *io,
++				  struct rsnd_mod *mod),
++		   struct rsnd_kctrl_cfg *cfg,
++		   const char * const *texts,
++		   int size,
++		   u32 max)
+ {
+ 	struct snd_card *card = rtd->card->snd_card;
+ 	struct snd_kcontrol *kctrl;
+@@ -1021,6 +1038,9 @@ static int __rsnd_kctrl_new(struct rsnd_mod *mod,
+ 	};
+ 	int ret;
+ 
++	if (size > RSND_MAX_CHANNELS)
++		return -EINVAL;
++
+ 	kctrl = snd_ctl_new1(&knew, mod);
+ 	if (!kctrl)
+ 		return -ENOMEM;
+@@ -1029,65 +1049,17 @@ static int __rsnd_kctrl_new(struct rsnd_mod *mod,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	cfg->update = update;
+-	cfg->card = card;
+-	cfg->kctrl = kctrl;
+-	cfg->io = io;
++	cfg->texts	= texts;
++	cfg->max	= max;
++	cfg->size	= size;
++	cfg->update	= update;
++	cfg->card	= card;
++	cfg->kctrl	= kctrl;
++	cfg->io		= io;
+ 
+ 	return 0;
+ }
+ 
+-int rsnd_kctrl_new_m(struct rsnd_mod *mod,
+-		     struct rsnd_dai_stream *io,
+-		     struct snd_soc_pcm_runtime *rtd,
+-		     const unsigned char *name,
+-		     void (*update)(struct rsnd_dai_stream *io,
+-				    struct rsnd_mod *mod),
+-		     struct rsnd_kctrl_cfg_m *_cfg,
+-		     int ch_size,
+-		     u32 max)
+-{
+-	if (ch_size > RSND_MAX_CHANNELS)
+-		return -EINVAL;
+-
+-	_cfg->cfg.max	= max;
+-	_cfg->cfg.size	= ch_size;
+-	_cfg->cfg.val	= _cfg->val;
+-	return __rsnd_kctrl_new(mod, io, rtd, name, &_cfg->cfg, update);
+-}
+-
+-int rsnd_kctrl_new_s(struct rsnd_mod *mod,
+-		     struct rsnd_dai_stream *io,
+-		     struct snd_soc_pcm_runtime *rtd,
+-		     const unsigned char *name,
+-		     void (*update)(struct rsnd_dai_stream *io,
+-				    struct rsnd_mod *mod),
+-		     struct rsnd_kctrl_cfg_s *_cfg,
+-		     u32 max)
+-{
+-	_cfg->cfg.max	= max;
+-	_cfg->cfg.size	= 1;
+-	_cfg->cfg.val	= &_cfg->val;
+-	return __rsnd_kctrl_new(mod, io, rtd, name, &_cfg->cfg, update);
+-}
+-
+-int rsnd_kctrl_new_e(struct rsnd_mod *mod,
+-		     struct rsnd_dai_stream *io,
+-		     struct snd_soc_pcm_runtime *rtd,
+-		     const unsigned char *name,
+-		     struct rsnd_kctrl_cfg_s *_cfg,
+-		     void (*update)(struct rsnd_dai_stream *io,
+-				    struct rsnd_mod *mod),
+-		     const char * const *texts,
+-		     u32 max)
+-{
+-	_cfg->cfg.max	= max;
+-	_cfg->cfg.size	= 1;
+-	_cfg->cfg.val	= &_cfg->val;
+-	_cfg->cfg.texts	= texts;
+-	return __rsnd_kctrl_new(mod, io, rtd, name, &_cfg->cfg, update);
+-}
+-
+ /*
+  *		snd_soc_platform
+  */
+diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
+index 994fdb7d0034..463de8360985 100644
+--- a/sound/soc/sh/rcar/dvc.c
++++ b/sound/soc/sh/rcar/dvc.c
+@@ -285,18 +285,18 @@ static int rsnd_dvc_pcm_new(struct rsnd_mod *mod,
+ 	ret = rsnd_kctrl_new_e(mod, io, rtd,
+ 			is_play ?
+ 			"DVC Out Ramp Up Rate" : "DVC In Ramp Up Rate",
+-			&dvc->rup,
+ 			rsnd_dvc_volume_update,
+-			dvc_ramp_rate, ARRAY_SIZE(dvc_ramp_rate));
++			&dvc->rup,
++			dvc_ramp_rate);
+ 	if (ret < 0)
+ 		return ret;
+ 
+ 	ret = rsnd_kctrl_new_e(mod, io, rtd,
+ 			is_play ?
+ 			"DVC Out Ramp Down Rate" : "DVC In Ramp Down Rate",
+-			&dvc->rdown,
+ 			rsnd_dvc_volume_update,
+-			dvc_ramp_rate, ARRAY_SIZE(dvc_ramp_rate));
++			&dvc->rdown,
++			dvc_ramp_rate);
+ 
+ 	if (ret < 0)
+ 		return ret;
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 81ef3f18834a..3dc9e06f5943 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -611,32 +611,30 @@ struct rsnd_kctrl_cfg_s {
+ 	u32 val;
+ };
+ 
+-int rsnd_kctrl_new_m(struct rsnd_mod *mod,
+-		     struct rsnd_dai_stream *io,
+-		     struct snd_soc_pcm_runtime *rtd,
+-		     const unsigned char *name,
+-		     void (*update)(struct rsnd_dai_stream *io,
+-				    struct rsnd_mod *mod),
+-		     struct rsnd_kctrl_cfg_m *_cfg,
+-		     int ch_size,
+-		     u32 max);
+-int rsnd_kctrl_new_s(struct rsnd_mod *mod,
+-		     struct rsnd_dai_stream *io,
+-		     struct snd_soc_pcm_runtime *rtd,
+-		     const unsigned char *name,
+-		     void (*update)(struct rsnd_dai_stream *io,
+-				    struct rsnd_mod *mod),
+-		     struct rsnd_kctrl_cfg_s *_cfg,
+-		     u32 max);
+-int rsnd_kctrl_new_e(struct rsnd_mod *mod,
+-		     struct rsnd_dai_stream *io,
+-		     struct snd_soc_pcm_runtime *rtd,
+-		     const unsigned char *name,
+-		     struct rsnd_kctrl_cfg_s *_cfg,
+-		     void (*update)(struct rsnd_dai_stream *io,
+-				    struct rsnd_mod *mod),
+-		     const char * const *texts,
+-		     u32 max);
++struct rsnd_kctrl_cfg *rsnd_kctrl_init_m(struct rsnd_kctrl_cfg_m *cfg);
++struct rsnd_kctrl_cfg *rsnd_kctrl_init_s(struct rsnd_kctrl_cfg_s *cfg);
++int rsnd_kctrl_new(struct rsnd_mod *mod,
++		   struct rsnd_dai_stream *io,
++		   struct snd_soc_pcm_runtime *rtd,
++		   const unsigned char *name,
++		   void (*update)(struct rsnd_dai_stream *io,
++				  struct rsnd_mod *mod),
++		   struct rsnd_kctrl_cfg *cfg,
++		   const char * const *texts,
++		   int size,
++		   u32 max);
++
++#define rsnd_kctrl_new_m(mod, io, rtd, name, update, cfg, size, max) \
++	rsnd_kctrl_new(mod, io, rtd, name, update, rsnd_kctrl_init_m(cfg), \
++		       NULL, size, max)
++
++#define rsnd_kctrl_new_s(mod, io, rtd, name, update, cfg, max)	\
++	rsnd_kctrl_new(mod, io, rtd, name, update, rsnd_kctrl_init_s(cfg), \
++		       NULL, 1, max)
++
++#define rsnd_kctrl_new_e(mod, io, rtd, name, update, cfg, texts)	\
++	rsnd_kctrl_new(mod, io, rtd, name, update, rsnd_kctrl_init_s(cfg), \
++		       texts, 1, ARRAY_SIZE(texts))
+ 
+ /*
+  *	R-Car SSI
+-- 
+2.11.0
