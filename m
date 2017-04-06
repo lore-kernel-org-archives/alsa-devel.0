@@ -1,44 +1,37 @@
-From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: [PATCH 3/3] ASoC: cs35l35: Add DT binding to specify usage of an external boost supply
-Date: Thu, 6 Apr 2017 13:52:14 +0100
-Message-ID: <1491483134-28079-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Brian Austin <brian.austin@cirrus.com>
+Subject: Re: [PATCH 1/3] ASoC: cs35l35: Improve power down time
+Date: Thu, 6 Apr 2017 09:12:18 -0500
+Message-ID: <737e98d4-2937-4a92-a967-aff80a4ba71b@EX3.ad.cirrus.com>
 References: <1491483134-28079-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1491483134-28079-1-git-send-email-ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id A40BB267283
+ for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2017 16:07:52 +0200 (CEST)
+In-Reply-To: <1491483134-28079-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, brian.austin@cirrus.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com, robh+dt@kernel.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add a device tree binding to let the driver know that the amplifier is
-configured to use an external boost supply.
+On Thu, 6 Apr 2017, Charles Keepax wrote:
 
-Signed-off-by: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
----
- Documentation/devicetree/bindings/sound/cs35l35.txt | 4 ++++
- 1 file changed, 4 insertions(+)
+> Shorten the time it takes to power down the amp by disabling the volume
+> ramp whilst doing the final shutdown. The driver has already muted the
+> amplifier at this stage so doing the volume ramp serves no purpose.
+> 
+> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+For the series
 
-diff --git a/Documentation/devicetree/bindings/sound/cs35l35.txt b/Documentation/devicetree/bindings/sound/cs35l35.txt
-index 958f0ea..457d176 100644
---- a/Documentation/devicetree/bindings/sound/cs35l35.txt
-+++ b/Documentation/devicetree/bindings/sound/cs35l35.txt
-@@ -33,6 +33,10 @@ Optional properties:
-   - cirrus,shared-boost : Boolean to enable ClassH tracking of Advisory Signal
-   if 2 Devices share Boost BST_CTL
- 
-+  - cirrus,external-boost : Boolean to specify the device is using an external
-+  boost supply, note that sharing a boost from another cs35l35 would constitute
-+  using an external supply for the slave device
-+
-   - cirrus,sp-drv-strength : Value for setting the Serial Port drive strength
-   Table 3-10 of the datasheet lists drive-strength specifications
-   0 = 1x (Default)
--- 
-2.1.4
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Acked-by: Brian Austin <brian.austin@cirrus.com>
