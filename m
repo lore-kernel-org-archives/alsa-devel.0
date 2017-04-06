@@ -1,37 +1,45 @@
-From: Brian Austin <brian.austin@cirrus.com>
-Subject: Re: [PATCH 1/3] ASoC: cs35l35: Improve power down time
-Date: Thu, 6 Apr 2017 09:12:18 -0500
-Message-ID: <737e98d4-2937-4a92-a967-aff80a4ba71b@EX3.ad.cirrus.com>
-References: <1491483134-28079-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Leo Yan <leo.yan@linaro.org>
+Subject: Re: [PATCH 4/5] vfio: platform: Convert to use devm_*()
+Date: Thu, 6 Apr 2017 22:17:31 +0800
+Message-ID: <20170406141731.GA27245@leoy-linaro>
+References: <1490539314-9681-1-git-send-email-leo.yan@linaro.org>
+ <1490539314-9681-5-git-send-email-leo.yan@linaro.org>
+ <10625a88-3d6d-de52-8299-3ba0031317f8@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id A40BB267283
- for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2017 16:07:52 +0200 (CEST)
-In-Reply-To: <1491483134-28079-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, brian.austin@cirrus.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com, robh+dt@kernel.org, broonie@kernel.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-input-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <10625a88-3d6d-de52-8299-3ba0031317f8@redhat.com>
+Sender: linux-input-owner@vger.kernel.org
+To: Auger Eric <eric.auger@redhat.com>
+Cc: Russell King <linux@armlinux.org.uk>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Alessandro Zummo <a.zummo@towertech.it>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Linus Walleij <linus.walleij@linaro.org>, Baptiste Reynal <b.reynal@virtualopensystems.com>, Alex Williamson <alex.williamson@redhat.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, rtc-linux@googlegroups.com, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 6 Apr 2017, Charles Keepax wrote:
-
-> Shorten the time it takes to power down the amp by disabling the volume
-> ramp whilst doing the final shutdown. The driver has already muted the
-> amplifier at this stage so doing the volume ramp serves no purpose.
+On Sun, Apr 02, 2017 at 04:45:28PM +0200, Auger Eric wrote:
+> Hi Leo,
 > 
-> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-For the series
+> On 26/03/2017 16:41, Leo Yan wrote:
+> > Convert driver to use devm_*() APIs so rely on driver model core layer
+> > to manage resources. This eliminates error path boilerplate and makes
+> > code neat.
+> > 
+> > This patch also renames amba_id structure, the old code used some code
+> > which directly copied from other driver.
+> > 
+> > Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> Looks good to me
+> Reviewed-by: Eric Auger <eric.auger@redhat.com>
 
-Acked-by: Brian Austin <brian.austin@cirrus.com>
+Thanks for reviewing, Eric.
+
+> May be interesting to go further converting as well the vfio-platform
+> driver but this can be done later on.
+
+Looked a bit for vfio-platform driver and I'm not sure if need some
+converting within function vfio_platform_probe_common(). So I'd like
+to leave this to who really understand the subsystem :)
+
+[...]
+
+Thanks,
+Leo Yan
