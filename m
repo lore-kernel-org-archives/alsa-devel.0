@@ -1,24 +1,16 @@
-From: =?UTF-8?Q?Kevin_Bloch_=28n=c3=a9_Field=29?= <kevinjamesfield@gmail.com>
-Subject: external mic not recognized on Acer Aspire E 15
-	(E5-573-55U8)
-Date: Wed, 5 Apr 2017 18:36:27 +0200
-Message-ID: <b8a16db9-5e81-9ff7-9ddf-a1a11e45acde@gmail.com>
+From: =?utf-8?B?0KHQsNC80L7RhdC40L0g0JDQu9C10LrRgdCw0L3QtNGAINCS0LDQu9C10L0=?=
+ =?utf-8?B?0YLQuNC90L7QstC40Yc=?= <a.samokhin@greatcircus.ru>
+Subject: ALSA, SB1240 (Sound Blaster HD USB DAC) - need help :(
+Date: Thu, 6 Apr 2017 08:55:16 +0000
+Message-ID: <6de8361d9685475cbac8ff17e50ed33e@GMCEX01.gmc.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f173.google.com (mail-wr0-f173.google.com
- [209.85.128.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 537FE26693C
- for <alsa-devel@alsa-project.org>; Wed,  5 Apr 2017 18:36:30 +0200 (CEST)
-Received: by mail-wr0-f173.google.com with SMTP id w43so21566767wrb.0
- for <alsa-devel@alsa-project.org>; Wed, 05 Apr 2017 09:36:30 -0700 (PDT)
-Received: from [192.168.178.87] (adsl-84-226-54-166.adslplus.ch.
- [84.226.54.166])
- by smtp.googlemail.com with ESMTPSA id g23sm22978888wme.8.2017.04.05.09.36.28
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Wed, 05 Apr 2017 09:36:28 -0700 (PDT)
+Received: from mail.greatcircus.ru (mex.greatcircus.ru [194.85.21.140])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0639C266909
+ for <alsa-devel@alsa-project.org>; Thu,  6 Apr 2017 10:55:40 +0200 (CEST)
+Content-Language: ru-RU
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,31 +20,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: "tiwai@suse.de" <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi wonderful ALSA devs,
-
-Wondering if you could help me out.  I inherited this laptop and put 
-Linux Mint 18.1 on it, and would really appreciate it if there were some 
-way to eventually get an external mic working on it, because the 
-internal one is naturally pretty noisy, which makes it hard to use this 
-machine for professional meetings.
-
-Hopefully it's not against list policy to simply link elsewhere: the 
-details are all available at 
-http://unix.stackexchange.com/questions/355552/external-headset-mic-not-listed-in-linux-mint-18-1-64-bit-on-acer-aspire-e-15 
-.  I tried getting into patching the drivers myself, but I didn't make 
-it too far.
-
-BTW I would just report a bug with the bug tracker, but the Bug Tracker 
-link in the sidebar of 
-http://www.alsa-project.org/main/index.php/Main_Page leads to 
-https://bugtrack.alsa-project.org/alsa-bug which gives a Not Found error 
-page.
-
-Anyway please let me know what I can do to help facilitate by getting 
-further info from my machine here.
-
-Thanks very much,
-Kev
+SGksDQoNCknigJltIHRyeWluZyBhZGRpbmcgc3VwcG9ydCBmb3IgQ3JlYXRpdmUgU0IxMjQwKFNv
+dW5kIEJsYXN0ZXIgSEQsIFVTQiBEQUMpLi4NClBsYXllciBWb2x1bWUgY29udHJvbCBpcyB3b3Jr
+aW5nIGxpa2UgYSBjaGFybSwgYnV0Li4g4oCcQ2FwdHVyZeKAnSBpbnRlcmZhY2UgKE1pYywgTGlu
+ZSwgUGhvbm9ncmFwaCkg4oCTIG5vdCB3b3JraW5nIGF0IGFsbC4NCg0KQ2FuIHlvdSBoZWxwIG1l
+IHRvIGFkZCBzdXBwb3J0IGZvciB0aGlzIGNhcmQ/DQoNCknigJltIHRyeWluZyB0byBzbmlmZiBV
+U0IgdHJhZmZpYyBiZXR3ZWVuIFVTQiBEQUMgJiBXaW5kb3dzIERyaXZlcih3aXRoIFdpcmVzaGFy
+ayB1c2JkdW1wKS4NCkJ1dC4uIEkgbmVlZCBtb3JlIHRoZW9yeSwgdG8gZG8gaXQuLg0KSSBjYW5u
+b3QgZ2V0IHdvcmsgYW55IGNhcHR1cmluZyBpbnRlcmZhY2Ug4pi5DQoNCg0KSeKAmXQgbXkgZW52
+aXJvbm1lbnQ6DQoNCiMgdW5hbWUgLWENCkxpbnV4IGtlcm5lbCA0LjkuMjAgIzEgU01QIFdlZCBB
+cHIgNSAxODo0MjozNyBNU0sgMjAxNyB4ODZfNjQgR05VL0xpbnV4DQojIGNhdCAvZXRjL2dyb3Vw
+DQphdWRpbzp4OjYzOnJvb3QNCg0KIyBkbWVzZw0KKioqKioqKioqKioqKioqDQpbICAgIDEuNjcw
+NzQ1XSB1c2IgMS0xLjE6IE5ldyBVU0IgZGV2aWNlIGZvdW5kLCBpZFZlbmRvcj0wNDFlLCBpZFBy
+b2R1Y3Q9MzIzMg0KWyAgICAxLjY3MDc0OF0gdXNiIDEtMS4xOiBOZXcgVVNCIGRldmljZSBzdHJp
+bmdzOiBNZnI9MSwgUHJvZHVjdD0yLCBTZXJpYWxOdW1iZXI9Mw0KWyAgICAxLjY3MDc1MF0gdXNi
+IDEtMS4xOiBQcm9kdWN0OiBVU0IgU291bmQgQmxhc3RlciBIRA0KWyAgICAxLjY3MDc1Ml0gdXNi
+IDEtMS4xOiBNYW51ZmFjdHVyZXI6IENyZWF0aXZlIFRlY2hub2xvZ3kNClsgICAgMS42NzA3NTNd
+IHVzYiAxLTEuMTogU2VyaWFsTnVtYmVyOiAwMDAwMDNJSQ0KWyAgICAxLjY3MzQzNV0gaW5wdXQ6
+IENyZWF0aXZlIFRlY2hub2xvZ3kgVVNCIFNvdW5kIEJsYXN0ZXIgSEQgYXMgL2RldmljZXMvcGNp
+MDAwMDowMC8wMDAwOjAwOjFhLjAvdXNiMS8xLTEvMS0xLjEvMS0xLjE6MS41LzAwMDM6MDQxRToz
+MjMyLjAwMDEvaW5wdXQvaW5wdXQ2DQoqKioqKioqKioqKioqKioNCg0KIyBscyAtbGEgL2Rldi9z
+bmQvDQp0b3RhbCAwDQpkcnd4ci14ci14ICAgIDQgcm9vdCAgICAgcm9vdCAgICAgICAgICAgMjIw
+IEFwciAgNSAyMTozMyAuDQpkcnd4ci14ci14ICAgMTUgcm9vdCAgICAgcm9vdCAgICAgICAgICAz
+MzYwIEFwciAgNSAyMTozNCAuLg0KZHJ3eHIteHIteCAgICAyIHJvb3QgICAgIHJvb3QgICAgICAg
+ICAgICA2MCBBcHIgIDUgMjE6MzMgYnktaWQNCmRyd3hyLXhyLXggICAgMiByb290ICAgICByb290
+ICAgICAgICAgICAgNjAgQXByICA1IDIxOjMzIGJ5LXBhdGgNCmNydy1ydy0tLS0gICAgMSByb290
+ICAgICBhdWRpbyAgICAgMTE2LCAgIDIgQXByICA1IDIxOjMzIGNvbnRyb2xDMA0KY3J3LXJ3LS0t
+LSAgICAxIHJvb3QgICAgIGF1ZGlvICAgICAxMTYsICAgNCBBcHIgIDUgMjE6MzMgcGNtQzBEMGMN
+CmNydy1ydy0tLS0gICAgMSByb290ICAgICBhdWRpbyAgICAgMTE2LCAgIDMgQXByICA1IDIxOjM0
+IHBjbUMwRDBwDQpjcnctcnctLS0tICAgIDEgcm9vdCAgICAgYXVkaW8gICAgIDExNiwgICA2IEFw
+ciAgNSAyMjo1NyBwY21DMEQxYw0KY3J3LXJ3LS0tLSAgICAxIHJvb3QgICAgIGF1ZGlvICAgICAx
+MTYsICAgNSBBcHIgIDUgMjE6MzMgcGNtQzBEMXANCmNydy1ydy0tLS0gICAgMSByb290ICAgICBh
+dWRpbyAgICAgMTE2LCAgIDcgQXByICA1IDIxOjMzIHBjbUMwRDJwDQpjcnctcnctLS0tICAgIDEg
+cm9vdCAgICAgYXVkaW8gICAgIDExNiwgIDMzIEFwciAgNSAyMTozMyB0aW1lcg0KDQojIGFtaXhl
+ciBpbmZvDQpDYXJkIGRlZmF1bHQgJ0hEJy8nQ3JlYXRpdmUgVGVjaG5vbG9neSBVU0IgU291bmQg
+Qmxhc3RlciBIRCBhdCB1c2ItMDAwMDowMDoxYS4wLTEuMSwgZnVsbCBzcGVlZCcNCiAgTWl4ZXIg
+bmFtZSAgICA6ICdVU0IgTWl4ZXInDQogIENvbXBvbmVudHMgICAgOiAnVVNCMDQxZTozMjMyJw0K
+ICBDb250cm9scyAgICAgIDogOA0KICBTaW1wbGUgY3RybHMgIDogMg0KDQojIGFtaXhlciBjb250
+ZW50cw0KbnVtaWQ9NixpZmFjZT1NSVhFUixuYW1lPSdQQ00gUGxheWJhY2sgU3dpdGNoJw0KICA7
+IHR5cGU9Qk9PTEVBTixhY2Nlc3M9cnctLS0tLS0sdmFsdWVzPTENCiAgOiB2YWx1ZXM9b24NCm51
+bWlkPTcsaWZhY2U9TUlYRVIsbmFtZT0nUENNIFBsYXliYWNrIFZvbHVtZScNCiAgOyB0eXBlPUlO
+VEVHRVIsYWNjZXNzPXJ3LS0tUi0tLHZhbHVlcz0yLG1pbj0wLG1heD0xMjgsc3RlcD0wDQogIDog
+dmFsdWVzPTEyOCwxMjgNCiAgfCBkQm1pbm1heC1taW49LTY0LjAwZEIsbWF4PTAuMDBkQg0KbnVt
+aWQ9OCxpZmFjZT1NSVhFUixuYW1lPSdQQ00gQ2FwdHVyZSBTb3VyY2UnDQogIDsgdHlwZT1FTlVN
+RVJBVEVELGFjY2Vzcz1ydy0tLS0tLSx2YWx1ZXM9MSxpdGVtcz0zDQogIDsgSXRlbSAjMCAnTWlj
+Jw0KICA7IEl0ZW0gIzEgJ0xpbmUnDQogIDsgSXRlbSAjMiAnUGhvbm9ncmFwaCcNCiAgOiB2YWx1
+ZXM9MQ0KbnVtaWQ9NCxpZmFjZT1QQ00sbmFtZT0nQ2FwdHVyZSBDaGFubmVsIE1hcCcNCiAgOyB0
+eXBlPUlOVEVHRVIsYWNjZXNzPXItLS0tUi0tLHZhbHVlcz0yLG1pbj0wLG1heD0zNixzdGVwPTAN
+CiAgOiB2YWx1ZXM9MCwwDQogIHwgY29udGFpbmVyDQogICAgfCBjaG1hcC1maXhlZD1GTCxGUg0K
+DQpudW1pZD0xLGlmYWNlPVBDTSxuYW1lPSdQbGF5YmFjayBDaGFubmVsIE1hcCcNCiAgOyB0eXBl
+PUlOVEVHRVIsYWNjZXNzPXItLS0tUi0tLHZhbHVlcz0yLG1pbj0wLG1heD0zNixzdGVwPTANCiAg
+OiB2YWx1ZXM9Myw0DQogIHwgY29udGFpbmVyDQogICAgfCBjaG1hcC1maXhlZD1GTCxGUg0KDQpu
+dW1pZD01LGlmYWNlPVBDTSxuYW1lPSdDYXB0dXJlIENoYW5uZWwgTWFwJyxkZXZpY2U9MQ0KICA7
+IHR5cGU9SU5URUdFUixhY2Nlc3M9ci0tLS1SLS0sdmFsdWVzPTIsbWluPTAsbWF4PTM2LHN0ZXA9
+MA0KICA6IHZhbHVlcz0wLDANCiAgfCBjb250YWluZXINCiAgICB8IGNobWFwLWZpeGVkPUZMLEZS
+DQoNCm51bWlkPTIsaWZhY2U9UENNLG5hbWU9J1BsYXliYWNrIENoYW5uZWwgTWFwJyxkZXZpY2U9
+MQ0KICA7IHR5cGU9SU5URUdFUixhY2Nlc3M9ci0tLS1SLS0sdmFsdWVzPTIsbWluPTAsbWF4PTM2
+LHN0ZXA9MA0KICA6IHZhbHVlcz0wLDANCiAgfCBjb250YWluZXINCiAgICB8IGNobWFwLWZpeGVk
+PUZMLEZSDQoNCm51bWlkPTMsaWZhY2U9UENNLG5hbWU9J1BsYXliYWNrIENoYW5uZWwgTWFwJyxk
+ZXZpY2U9Mg0KICA7IHR5cGU9SU5URUdFUixhY2Nlc3M9ci0tLS1SLS0sdmFsdWVzPTIsbWluPTAs
+bWF4PTM2LHN0ZXA9MA0KICA6IHZhbHVlcz0wLDANCiAgfCBjb250YWluZXINCiAgICB8IGNobWFw
+LWZpeGVkPUZMLEZSDQoNCg0KDQrQoSDRg9Cy0LDQttC10L3QuNC10LwsDQrQkNC70LXQutGB0LDQ
+vdC00YAg0KHQsNC80L7RhdC40L0NCg0K0JfQsNC80LXRgdGC0LjRgtC10LvRjCDQvdCw0YfQsNC7
+0YzQvdC40LrQsCDQvtGC0LTQtdC70LANCtCe0YLQtNC10Lsg0LjQvdGE0L7RgNC80LDRhtC40L7Q
+vdC90YvRhSDRgtC10YXQvdC+0LvQvtCz0LjQuSDQuCDQutC+0LzQv9GM0Y7RgtC10YDQvdC+0LPQ
+viDQvtCx0LXRgdC/0LXRh9C10L3QuNGPDQrQpNCT0KPQnyDCq9CR0L7Qu9GM0YjQvtC5INCc0L7R
+gdC60L7QstGB0LrQuNC5INGG0LjRgNC6wrsNCg0KRW1haWw6IGEuc2Ftb2toaW5AZ3JlYXRjaXJj
+dXMucnU8bWFpbHRvOmEuc2Ftb2toaW5AZ3JlYXRjaXJjdXMucnU+ICwgaXRAZ3JlYXRjaXJjdXMu
+cnU8bWFpbHRvOml0QGdyZWF0Y2lyY3VzLnJ1Pg0KVGVsOiArNyAoNDk1KSA5MzAtMjItMjUsINCy
+0L0uIDIwMDINCk1vYjogKzcgKDkwMykgMjk2LTc3LTk4DQoNCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
