@@ -1,130 +1,65 @@
 From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH 10/16] gpio: madera: Support Cirrus Logic Madera class codecs
-Date: Fri, 7 Apr 2017 11:11:45 +0200
-Message-ID: <CACRpkdatoJOg1U218Q-NteRdz6B+w_yr1PWvnfa1P1EgGm7zug@mail.gmail.com>
-References: <1491386884-30689-1-git-send-email-rf@opensource.wolfsonmicro.com> <1491386884-30689-11-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH 01/16] mfd: madera: Add register definitions for Cirrus
+ Logic Madera codecs
+Date: Fri, 7 Apr 2017 11:12:53 +0200
+Message-ID: <CACRpkdZLfL+dxMN-uaRp57u4yW4cLfLFoZVkNWFZL4eECOyR1A@mail.gmail.com>
+References: <1491386884-30689-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <1491386884-30689-2-git-send-email-rf@opensource.wolfsonmicro.com>
+ <CACRpkdaYzPSVqqhbi2Zop7J9vzCqZZiN=9pAEw1vcWy_ove9Tg@mail.gmail.com>
+ <CACRpkdY=cOhw59O8EE6J82aq897YKZkLsmUzeEnzkC5jtT6yyA@mail.gmail.com> <20170407084823.GB3412@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Return-path: <linux-gpio-owner@vger.kernel.org>
-In-Reply-To: <1491386884-30689-11-git-send-email-rf@opensource.wolfsonmicro.com>
+In-Reply-To: <20170407084823.GB3412@localhost.localdomain>
 Sender: linux-gpio-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: Alexandre Courbot <gnurou@gmail.com>, Rob Herring <robh+dt@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "open list:WOLFSON MICROELECTRONICS DRIVERS" <patches@opensource.wolfsonmicro.com>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Alexandre Courbot <gnurou@gmail.com>, Rob Herring <robh+dt@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "open list:WOLFSON MICROELECTRONICS DRIVERS" <patches@opensource.wolfsonmicro.com>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 5, 2017 at 12:07 PM, Richard Fitzgerald
-<rf@opensource.wolfsonmicro.com> wrote:
+On Fri, Apr 7, 2017 at 10:48 AM, Charles Keepax
+<ckeepax@opensource.wolfsonmicro.com> wrote:
+> On Fri, Apr 07, 2017 at 10:30:12AM +0200, Linus Walleij wrote:
+>> On Fri, Apr 7, 2017 at 10:27 AM, Linus Walleij <linus.walleij@linaro.org> wrote:
+>> > On Wed, Apr 5, 2017 at 12:07 PM, Richard Fitzgerald
+>> > <rf@opensource.wolfsonmicro.com> wrote:
+>> >
+>> >> This patch adds a header file of register definitions for Cirrus
+>> >> Logic "Madera" class codecs. These codecs are all based off a common
+>> >> set of hardware IP so have a common register map (with a few minor
+>> >> device-to-device variations). These are complex devices with a large
+>> >> mber of features and so have a correspondingly large register set.
+>> >> The registers.h file has been auto-generated from the hardware register
+>> >> definitions, stripped down to only registers we need to access from
+>> >> the driver.
+>> >>
+>> >> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+>> >
+>> > This:
+>> >  include/linux/mfd/madera/registers.h | 8832 ++++++++++++++++++++++++++++++++++
+>> >
+>> > Get included in all subdrivers I suppose?
+>> >
+>> > So you are broadcasting 8800+ lines into every subdriver across the
+>> > entire kernel.
+>> >
+>> > Just the time spent in the preprocessor parsing this will affect compilation
+>> > time.
+>>
+>> Or maybe this is a necessary sacrifice to get the regmap cache
+>> centralized in MFD. I don't know. I feel stupid.
+>>
+>> I guess I should focus on "my" subsystems...
+>>
+>
+> This only gets included in files that are part of this driver, it
+> shouldn't affect compilation time for anyone not building the
+> madera driver and even then it should only affect compilation
+> times for the 10 or so C files that make up the driver. Also I
+> don't really see any other way to specify the registers for the
+> device.
 
-> This adds support for the GPIOs on Cirrus Logic Madera class codecs.
-
-A bit terse commit message, could you elaborate a bit on their
-specifics?
-
->  .../devicetree/bindings/gpio/gpio-madera.txt       |  24 +++
-
-Again should probably be a separate patch. Again, I don't care much
-as long as the DT people are happy.
-
-> +++ b/Documentation/devicetree/bindings/gpio/gpio-madera.txt
-> @@ -0,0 +1,24 @@
-> +Cirrus Logic Madera class audio codecs gpio driver
-> +
-> +This is a subnode of the parent mfd node.
-> +
-> +See also the core bindings for the parent MFD driver:
-> +See Documentation/devicetree/bindings/mfd/madera.txt
-> +
-> +Required properties:
-> +  - compatible : must be "cirrus,madera-gpio"
-> +  - gpio-controller : Indicates this device is a GPIO controller.
-> +  - #gpio-cells : Must be 2. The first cell is the pin number. The second cell
-> +    is reserved for future use and must be zero
-> +
-> +Example:
-> +
-> +codec: cs47l85@0 {
-> +       compatible = "cirrus,cs47l85";
-> +
-> +       gpio {
-> +               compatible = "cirrus,madera-gpio";
-> +               gpio-controller;
-> +               #gpio-cells = <2>;
-> +       }
-
-Maybe you want to use the gpio-line-names = ; property in the example
-to show how nice it is to name the lines?
-
-> +config GPIO_MADERA
-> +       tristate "Cirrus Logic Madera class codecs"
-> +       depends on MFD_MADERA
-> +       help
-> +         Support for GPIOs on Cirrus Logic Madera class codecs.
-
-I wonder if you should not depend on the pin controller instead.
-It seems closer and also likely to act as a back-end for the
-GPIOs.
-
-> +static int madera_gpio_get(struct gpio_chip *chip, unsigned int offset)
-> +{
-> +       struct madera_gpio *madera_gpio = gpiochip_get_data(chip);
-> +       struct madera *madera = madera_gpio->madera;
-> +       unsigned int val;
-> +       int ret;
-> +
-> +       ret = regmap_read(madera->regmap,
-> +                         MADERA_GPIO1_CTRL_1 + (2 * offset), &val);
-> +       if (ret < 0)
-> +               return ret;
-> +
-> +       if (val & MADERA_GP1_LVL_MASK)
-> +               return 1;
-> +       else
-> +               return 0;
-
-Just do this:
-
-return !!(val & MADERA_GP1_LVL_MASK);
-
-> +static struct gpio_chip template_chip = {
-> +       .label                  = "madera",
-> +       .owner                  = THIS_MODULE,
-> +       .direction_input        = madera_gpio_direction_in,
-> +       .get                    = madera_gpio_get,
-> +       .direction_output       = madera_gpio_direction_out,
-> +       .set                    = madera_gpio_set,
-> +       .can_sleep              = true,
-> +};
-
-- Implement .get_direction()
-
-Also consider implementing:
-
-- request/free/set_config looking like this:
-
-.request = gpiochip_generic_request,
-.free = gpiochip_generic_free,
-.set_config = gpiochip_generic_config,
-
-If you also implement the corresponding
-.pin_config_set in struct pinconf_ops and
-.gpio_request_enable() and .gpio_disable_free()
-in struct pinmux_ops, you get a pin control back-end
-that will mux in the pins to GPIO mode if they are wrong
-set, and also set up debounce and/or open drain for the
-GPIO line using the standard GPIO callbacks with pin
-control as a back-end.
-
-If you also specify "strict" in struct pinmux_ops you block
-the collisions between users of GPIO and other functions
-in the pin control driver.
-
-(Please go back and look at your pin control driver
-for this.)
-
-Example driver using pin control as GPIO back-end:
-drivers/pinctrl/intel/pinctrl-intel.c
-
-Other than this it looks fine.
+No when using regmap cache this seems necessary.
+I was just wrong.
 
 Yours,
 Linus Walleij
