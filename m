@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v5 2/2] ASoC: Add support for Conexant
- CX2092X DSP
-Date: Fri, 7 Apr 2017 12:37:37 +0100
-Message-ID: <20170407113737.wp676mcrpeqwno72@sirena.org.uk>
-References: <cover.1491446448.git.simon.ho@conexant.com>
- <1e118d265847bf96722b8898ee11891c047558c6.1491446448.git.simon.ho@conexant.com>
+From: Daniel Baluta <daniel.baluta@nxp.com>
+Subject: [PATCH] aplay: Fix error message when writing captured
+	data
+Date: Fri, 7 Apr 2017 15:14:40 +0300
+Message-ID: <1491567280-20273-1-git-send-email-daniel.baluta@nxp.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3817169439011766151=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 64A992664EB
- for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2017 13:37:50 +0200 (CEST)
-In-Reply-To: <1e118d265847bf96722b8898ee11891c047558c6.1491446448.git.simon.ho@conexant.com>
+Received: from EUR01-DB5-obe.outbound.protection.outlook.com
+ (mail-db5eur01on0041.outbound.protection.outlook.com [104.47.2.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id A3D0C2673B7
+ for <alsa-devel@alsa-project.org>; Fri,  7 Apr 2017 14:14:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,76 +20,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: simon.ho.cnxt@gmail.com
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, Simon Ho <simon.ho@conexant.com>, tiwai@suse.com, lgirdwood@gmail.com, ckeepax@opensource.wolfsonmicro.com
+To: tiwai@suse.de
+Cc: mihai.serban@nxp.com, alsa-devel@alsa-project.org, broonie@kernel.org, shengjiu.wang@nxp.com, viorel.suman@nxp.com
 List-Id: alsa-devel@alsa-project.org
 
+Write can return less then requested bytes, but we treat
+this as an error.
 
---===============3817169439011766151==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="zjsjps34g27zdpjq"
-Content-Disposition: inline
+Anyhow, errno is not updated in this case and we can end
+up with a confusing error message.
 
+For example, when there is no room to write data into the
+output file we receive:
 
---zjsjps34g27zdpjq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+$ arecord -d 2000 -c 2 -r 192000 -f S16_LE -Dplughw:0,0 audio.wav
+Recording WAVE '/mnt/msc/audio.wav' : Signed 16 bit Little Endian, Rate
+192000 Hz, Stereo
+audio.wav: No such file or directory
 
-On Thu, Apr 06, 2017 at 11:04:34AM +0800, simon.ho.cnxt@gmail.com wrote:
-> From: Simon Ho <simon.ho@conexant.com>
->=20
-> Initial commit of Conexant CX20921/CX20924 I2S Audio DSP driver
->=20
-> The CX2092X devices are designed for virtual assisant application need to
-> be always open, listening for users to summon it. There is no any power
-> saving mode support on this device. The processed voice data will be sent
-> to automatic speech recognition (ASR) application for further processing.
+Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+---
+ aplay/aplay.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This is still fundamentally just passing undocumented commands straight
-through to the device (presumably to a firmware flashed onto the device
-since there's not even a firmware download happening) without any
-substantial integration with the rest of the system.  That still doesn't
-really feel like a Linux driver at all, it seems more like it's just
-punching a hole through the Linux driver stack for proprietary software
-to do its thing.  I'm also not clear how this can even implement always
-on speech recognition, there seems to be no interrupt support which I'd
-have thought would be a requirement.
-
-There are other vendors with voice processing features, the drivers for
-all these devices should be presenting interfaces that look similar to
-each other.  What those drivers doing treaming the speech data to the
-host via a normal PCM which blocks while there's no speech data, that is
-much better integrated than this.
-
-You really need to address this, a big part of how Linux has got to
-where it is today is that it doesn't just have custom interfaces for
-each device but instead generalizes things so that we share good
-practice and features between devices and users can write Linux
-applications rather than vendor specific applications.
-
---zjsjps34g27zdpjq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljnegEACgkQJNaLcl1U
-h9Asywf9H4FtpVhmuPPxKqajnmwQM/fNibQh3axBNcNca77gzQWJofUWEMg5EIOA
-DjV7ATbU8iDKhIiiShDekykkwa2XbJv9JO9rLbBtjTuffdyQMTPolmlQk8S2AF0Y
-huqzxfc4ehMPm/26QGt3rj8eba9+JLrwNO5eutcYVD1OARMg/7AfpkUcjPAs3cBA
-LPfrpO7fV57FV4so5nu066ZCwBHUYgXjjyQj5ajg7pUeV2j/q7ILKhp0z3JaGNi0
-3fL7jjy+uiD1CoiQkpGDJsfL1C19Xk+EiPSpe4dvnCx3bqJ1NFQoigghugyzs6+r
-QK2PTiGBvuUHH9Nl3M7doh329FQddw==
-=nEDw
------END PGP SIGNATURE-----
-
---zjsjps34g27zdpjq--
-
---===============3817169439011766151==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3817169439011766151==--
+diff --git a/aplay/aplay.c b/aplay/aplay.c
+index ee480f2..9547d1b 100644
+--- a/aplay/aplay.c
++++ b/aplay/aplay.c
+@@ -3079,7 +3079,7 @@ static void capture(char *orig_name)
+ 				break;
+ 			}
+ 			if (write(fd, audiobuf, c) != c) {
+-				perror(name);
++				fprintf(stderr, "Couldn't write all data to %s\n", name);
+ 				in_aborting = 1;
+ 				break;
+ 			}
+-- 
+2.7.4
