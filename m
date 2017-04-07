@@ -1,191 +1,152 @@
 From: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: Re: [PATCH 09/16] pinctrl: madera: Add driver for Cirrus Logic
- Madera codecs
-Date: Fri, 7 Apr 2017 10:43:04 +0100
-Message-ID: <1491558184.4096.35.camel@rf-debian.wolfsonmicro.main>
+Subject: Re: [PATCH 10/16] gpio: madera: Support Cirrus Logic Madera class
+ codecs
+Date: Fri, 7 Apr 2017 10:54:29 +0100
+Message-ID: <1491558869.4096.43.camel@rf-debian.wolfsonmicro.main>
 References: <1491386884-30689-1-git-send-email-rf@opensource.wolfsonmicro.com>
-         <1491386884-30689-10-git-send-email-rf@opensource.wolfsonmicro.com>
-         <CACRpkdZK3QXu4t2jud0-LPDj0LDVruAm33N4Lazjk44C3ndwwQ@mail.gmail.com>
+         <1491386884-30689-11-git-send-email-rf@opensource.wolfsonmicro.com>
+         <CACRpkdatoJOg1U218Q-NteRdz6B+w_yr1PWvnfa1P1EgGm7zug@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <CACRpkdZK3QXu4t2jud0-LPDj0LDVruAm33N4Lazjk44C3ndwwQ-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+In-Reply-To: <CACRpkdatoJOg1U218Q-NteRdz6B+w_yr1PWvnfa1P1EgGm7zug-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 Cc: Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Thomas Gleixner <tglx-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org>, Jason Cooper <jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "open list:WOLFSON MICROELECTRONICS DRIVERS" <patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, "linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2017-04-07 at 10:54 +0200, Linus Walleij wrote:
+On Fri, 2017-04-07 at 11:11 +0200, Linus Walleij wrote:
 > On Wed, Apr 5, 2017 at 12:07 PM, Richard Fitzgerald
 > <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org> wrote:
 > 
-> > These codecs have a variable number of I/O lines each of which
-> > is individually selectable to a wide range of possible functions.
-> >
-> > The functionality is slightly different from the traditional muxed
-> > GPIO since most of the functions can be mapped to any pin (and even
-> > the same function to multiple pins). Most pins have a dedicated
-> > "alternate" function that is only available on that pin. The
-> > alternate functions are usually a group of signals, though it is
-> > not always necessary to enable the full group, depending on the
-> > alternate function and how it is to be used. The mapping between
-> > alternate functions and GPIO pins varies between codecs depending
-> > on the number of alternate functions and available pins.
-> >
-> > Signed-off-by: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+> > This adds support for the GPIOs on Cirrus Logic Madera class codecs.
 > 
-> >  .../bindings/pinctrl/cirrus,madera-pinctrl.txt     |  103 ++
+> A bit terse commit message, could you elaborate a bit on their
+> specifics?
 > 
-> This should ideally be split into its own patch but I don't care
-> much if the DT people are happy.
+
+Sure.
+
+> >  .../devicetree/bindings/gpio/gpio-madera.txt       |  24 +++
 > 
-> > +See also
-> > +  the core bindings for the parent MFD driver:
-> > +    Documentation/devicetree/bindings/mfd/madera.txt
+> Again should probably be a separate patch. Again, I don't care much
+> as long as the DT people are happy.
+> 
+> > +++ b/Documentation/devicetree/bindings/gpio/gpio-madera.txt
+> > @@ -0,0 +1,24 @@
+> > +Cirrus Logic Madera class audio codecs gpio driver
 > > +
-> > +  the generic pinmix bindings:
-> > +    Documentation/devicetree/bindings/pinctrl/pinctrl-bindings.txt
+> > +This is a subnode of the parent mfd node.
+> > +
+> > +See also the core bindings for the parent MFD driver:
+> > +See Documentation/devicetree/bindings/mfd/madera.txt
+> > +
+> > +Required properties:
+> > +  - compatible : must be "cirrus,madera-gpio"
+> > +  - gpio-controller : Indicates this device is a GPIO controller.
+> > +  - #gpio-cells : Must be 2. The first cell is the pin number. The second cell
+> > +    is reserved for future use and must be zero
+> > +
+> > +Example:
+> > +
+> > +codec: cs47l85@0 {
+> > +       compatible = "cirrus,cs47l85";
+> > +
+> > +       gpio {
+> > +               compatible = "cirrus,madera-gpio";
+> > +               gpio-controller;
+> > +               #gpio-cells = <2>;
+> > +       }
 > 
-> Nice.
-> 
-> > +Required properties of parent mfd node:
-> > +  - pinctrl-names : must be "defaults"
-> 
-> Do you mean "default"
-
-Yes. I'll fix that.
-
-> 
-> Apart from this the bindings and example look very good to
-> me, good job! I like it when people "just get it" with pin control
-> and that is where we need to be with this subsystem.
-> 
-> > +config PINCTRL_MADERA
-> > +       bool
-> > +       default y if MFD_MADERA=y
-> 
-
-There was something special to do with the way dependencies are
-processed, but I can't remember right now what that was. I'd have to
-take another look at this to see if this "default y" pattern is still
-necessary for this driver.
-
-> Isn't it even proper for MFD_MADERA to explicitly
-> select this driver. I see it hard how the chip would even
-> work without this. (Maybe it already does select it but then
-> default y is not necessary.)
-> > +config PINCTRL_CS47L35
-> > +       bool
-> > +       default y if MFD_CS47L35=y
-> 
-> Similar comment for the subdrivers.
-> 
-> > @@ -17,6 +17,7 @@ obj-$(CONFIG_PINCTRL_AMD)     += pinctrl-amd.o
-> >  obj-$(CONFIG_PINCTRL_DA850_PUPD) += pinctrl-da850-pupd.o
-> >  obj-$(CONFIG_PINCTRL_DIGICOLOR)        += pinctrl-digicolor.o
-> >  obj-$(CONFIG_PINCTRL_FALCON)   += pinctrl-falcon.o
-> > +obj-$(CONFIG_PINCTRL_MADERA)   += pinctrl-madera.o
-> 
-> Is it all in one file... despite all the Kconfig symbols... hm.
-> I guess we can create drivers/pinctrl/cirrus the day we need more
-> space.
+> Maybe you want to use the gpio-line-names = ; property in the example
+> to show how nice it is to name the lines?
 > 
 
-I have no objection to moving the source into pinctrl/cirrus
+I'll take a look at that.
 
-> > +/*
-> > + * Pins are named after their GPIO number
+> > +config GPIO_MADERA
+> > +       tristate "Cirrus Logic Madera class codecs"
+> > +       depends on MFD_MADERA
+> > +       help
+> > +         Support for GPIOs on Cirrus Logic Madera class codecs.
 > 
-> So don't they have real names? Like the pin name on the underside of
-> the chip? That is what this naming convention is actually for.
+> I wonder if you should not depend on the pin controller instead.
+> It seems closer and also likely to act as a back-end for the
+> GPIOs.
+> 
+> > +static int madera_gpio_get(struct gpio_chip *chip, unsigned int offset)
+> > +{
+> > +       struct madera_gpio *madera_gpio = gpiochip_get_data(chip);
+> > +       struct madera *madera = madera_gpio->madera;
+> > +       unsigned int val;
+> > +       int ret;
+> > +
+> > +       ret = regmap_read(madera->regmap,
+> > +                         MADERA_GPIO1_CTRL_1 + (2 * offset), &val);
+> > +       if (ret < 0)
+> > +               return ret;
+> > +
+> > +       if (val & MADERA_GP1_LVL_MASK)
+> > +               return 1;
+> > +       else
+> > +               return 0;
+> 
+> Just do this:
+> 
+> return !!(val & MADERA_GP1_LVL_MASK);
 > 
 
-Those are real names. Each pin is dual labelled with a "GPIOn" name and
-also its alternate function (if it has one). The mapping of alternate
-functions to GPIO pins isn't 1:1 across codecs. The GPIOn name is
-consistent across codecs. If your pinctrl config is needing to refer to
-the pin name, instead of the alternate function group, it can only be to
-use it as a GPIO so the GPIO name is more relevant. This is what I was
-trying to imply in my comment but using fewer words.
+Ok. Personally I like the clarity of the more verbose version rather
+than the !! but I can change it.
 
-> > +/*
-> > + * All single-pin functions can be mapped to any GPIO, however pinmux applies
-> > + * functions to pin groups and only those groups declared as supporting that
-> > + * function. To make this work we must put each pin in its own dummy group so
-> > + * that the functions can be described as applying to all pins.
-> > + * Since these do not correspond to anything in the actual hardware - they are
-> > + * merely an adaptation to pinctrl's view of the world - we use the same name
-> > + * as the pin to avoid confusion when comparing with datasheet instructions
-> > + */
-> > +static const char * const madera_pin_single_group_names[] = {
-> > +       "gpio1",  "gpio2",  "gpio3",  "gpio4",  "gpio5",  "gpio6",  "gpio7",
-> > +       "gpio8",  "gpio9",  "gpio10", "gpio11", "gpio12", "gpio13", "gpio14",
-> > +       "gpio15", "gpio16", "gpio17", "gpio18", "gpio19", "gpio20", "gpio21",
-> > +       "gpio22", "gpio23", "gpio24", "gpio25", "gpio26", "gpio27", "gpio28",
-> > +       "gpio29", "gpio30", "gpio31", "gpio32", "gpio33", "gpio34", "gpio35",
-> > +       "gpio36", "gpio37", "gpio38", "gpio39", "gpio40",
+> > +static struct gpio_chip template_chip = {
+> > +       .label                  = "madera",
+> > +       .owner                  = THIS_MODULE,
+> > +       .direction_input        = madera_gpio_direction_in,
+> > +       .get                    = madera_gpio_get,
+> > +       .direction_output       = madera_gpio_direction_out,
+> > +       .set                    = madera_gpio_set,
+> > +       .can_sleep              = true,
 > > +};
 > 
-> If they are called "gpioN" in the datasheet I guess it is all right.
-> That is how e.g. the Qualcomm driver is done.
-> 
-> > +#ifdef CONFIG_PINCTRL_CS47L85
-> 
-> So this makes me feel maybe we should create drivers/pinctrl/cirrus
-> and split this driver into subdrivers per chip like others do.
-> 
-> The coding style document does say that ifdefs are ugly.
-> 
-> Would you consider splitting it up?
+> - Implement .get_direction()
 > 
 
-I can do that.
+Ok
 
-> > +static void madera_pin_dbg_show(struct pinctrl_dev *pctldev,
-> > +                               struct seq_file *s,
-> > +                               unsigned int offset)
-> > +{
-> > +       seq_puts(s, " madera-pinctrl");
-> > +}
+
+> Also consider implementing:
 > 
-> I don't think the pinctrl debugfs callback is compulsory.
-> It would be nice if this added some actual useful information
-> about the pin.
+> - request/free/set_config looking like this:
+> 
+> .request = gpiochip_generic_request,
+> .free = gpiochip_generic_free,
+> .set_config = gpiochip_generic_config,
+> 
+> If you also implement the corresponding
+> .pin_config_set in struct pinconf_ops and
+> .gpio_request_enable() and .gpio_disable_free()
+> in struct pinmux_ops, you get a pin control back-end
+> that will mux in the pins to GPIO mode if they are wrong
+> set, and also set up debounce and/or open drain for the
+> GPIO line using the standard GPIO callbacks with pin
+> control as a back-end.
+> 
+> If you also specify "strict" in struct pinmux_ops you block
+> the collisions between users of GPIO and other functions
+> in the pin control driver.
+> 
+> (Please go back and look at your pin control driver
+> for this.)
 > 
 
-Yes, I'll add some info
+I'll take a look at these things.
 
+> Example driver using pin control as GPIO back-end:
+> drivers/pinctrl/intel/pinctrl-intel.c
 > 
-> > +               case PIN_CONFIG_DRIVE_OPEN_DRAIN:
-> > +                       mask[0] |= MADERA_GP1_OP_CFG_MASK;
-> > +                       conf[0] |= MADERA_GP1_OP_CFG;
-> > +                       break;
-> > +               case PIN_CONFIG_DRIVE_PUSH_PULL:
-> > +                       mask[0] |= MADERA_GP1_OP_CFG_MASK;
-> > +                       conf[0] &= ~MADERA_GP1_OP_CFG;
-> > +                       break;
-> 
-> This will be possible to reuse from a GPIO driver as back-end, nice!
-> 
-> 
-> > +               case PIN_CONFIG_INPUT_DEBOUNCE:
-> > +                       mask[0] |= MADERA_GP1_DB_MASK;
-> > +
-> > +                       /*
-> > +                        * we can't configure debounce time per-pin so value
-> > +                        * is just a flag
-> > +                        */
-> > +                       val = pinconf_to_config_argument(*configs);
-> > +                       if (val)
-> > +                               conf[0] |= MADERA_GP1_DB;
-> > +                       else
-> > +                               conf[0] &= ~MADERA_GP1_DB;
-> > +                       break;
-> 
-> This too.
-> 
-> Overall it looks very nice.
+> Other than this it looks fine.
 > 
 > Yours,
 > Linus Walleij
