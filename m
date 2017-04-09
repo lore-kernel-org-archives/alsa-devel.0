@@ -1,17 +1,24 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/3] ALSA: firewire_lib: add tracepoints for
-	packets without CIP headers
-Date: Sun,  9 Apr 2017 21:33:27 +0900
-Message-ID: <20170409123329.12079-2-o-takashi@sakamocchi.jp>
-References: <20170409123329.12079-1-o-takashi@sakamocchi.jp>
+From: Michael Trimarchi <michael@amarulasolutions.com>
+Subject: Device start to Play Native DSD in SoC framwork (WAS
+ Re: DSD native format on SoC)
+Date: Sun, 9 Apr 2017 21:06:09 +0200
+Message-ID: <20170409190607.GA4518@panicking>
+References: <2e1612da-b0cd-9468-a723-63d57ed6c775@melcoinc.co.jp>
+ <4d015652-e002-b4f1-49f3-71829b725ab7@melcoinc.co.jp>
+ <20170318111410.GA4442@panicking>
+ <CAOf5uw=SkgOfnJsK3s=aA0CWLsLvRB=zU9eMjVf7q29K4CfDHw@mail.gmail.com>
+ <81dd5734-b69d-577b-9013-9df4166e730c@melcoinc.co.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 22D16266A4B
- for <alsa-devel@alsa-project.org>; Sun,  9 Apr 2017 14:33:34 +0200 (CEST)
-In-Reply-To: <20170409123329.12079-1-o-takashi@sakamocchi.jp>
+Received: from mail-wm0-f48.google.com (mail-wm0-f48.google.com [74.125.82.48])
+ by alsa0.perex.cz (Postfix) with ESMTP id DD4C826683C
+ for <alsa-devel@alsa-project.org>; Sun,  9 Apr 2017 21:06:12 +0200 (CEST)
+Received: by mail-wm0-f48.google.com with SMTP id o81so24233566wmb.1
+ for <alsa-devel@alsa-project.org>; Sun, 09 Apr 2017 12:06:12 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <81dd5734-b69d-577b-9013-9df4166e730c@melcoinc.co.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,150 +28,330 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: Naoki Matsumoto <n-matsumoto@melcoinc.co.jp>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Angelo Adamo <adamo.a60@gmail.com>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <zonque@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Unique protocol is used for RME Fireface series. In this protocol,
-payload format for isochronous packet is not compliant to CIP in
-IEC 61883-1/6. The packet includes data blocks just with data channels,
-without headers and any metadata.
+Hi all
 
-In previous commits, ALSA IEC 61883-1/6 engine supports this protocol.
-However, tracepoints are not supported yet, unlike implementation for
-IEC 61883-1/6 protocol. This commit adds support of tracepoints for
-the protocol.
+On Wed, Mar 22, 2017 at 11:43:24AM +0900, Naoki Matsumoto wrote:
+> Hello
+> 
+> On 2017/03/21 20:29, Michael Nazzareno Trimarchi wrote:
+> >Hi
+> >
+> >
+> >On Sat, Mar 18, 2017 at 12:14 PM, Michael Trimarchi
+> ><michael@amarulasolutions.com> wrote:
+> >>Hi all
+> >>
+> >>On Mon, Mar 13, 2017 at 05:42:43PM +0900, Naoki Matsumoto wrote:
+> >>>Retry send because alsa-dev ML doesn't delivery yet.
+> >>>
+> >>>-------- Original Message --------
+> >>>From: Naoki Matsumoto
+> >>>Sent: Monday, Mar 13, 2017 10:39 AM GMT+0900
+> >>>To: michael@amarulasolutions.com
+> >>>Cc: alsa-devel@alsa-project.org
+> >>>Subject: DSD native format on SoC
+> >>>
+> >>>Hello
+> >>>
+> >>>I know only xmos-native-dsd(DSD_U32_BE).
+> >>>I'll share what I know.
+> >>>I know information about DSD only fragmentally...
+> >>>
+> >>
+> >>Problem here is SoC subsytem for me
+> >>
+> >>https://github.com/zonque/alsa-dsd-player.git
+> >>
+> >>Cannot set sample format tyring U16_LE DSD. I have changed a bit the core
+> >>and some components but seems that does not go in.
+> >>
+> >>Any idea?
+> >
+> >
+> >After dig a bit more with strace and fix a typo here, look like that
+> >available formats are not pass up to the alsa lib. So alsa lib fail
+> >without even try to go there when it sets format. Can someone suggest
+> >how to debug in a good way this scenario?
+> >
+> >Michael
+> 
+> Could you check this function?
+> This function is show up available formats list.
+> Could you create small program that support format checker?
+> 
+> show_available_sample_formats(snd_pcm_hw_params_t* params)@aplay.c
+> http://git.alsa-project.org/?p=alsa-utils.git;a=blob;f=aplay/aplay.c;h=ee480f29b760fb65fd6c5670d79899538b6497d6;hb=1314abd2d61877a92e5289452dee308e98dab0c1#l1178
+> 
+> and one more.
+> if you have decoded sound file, you can try playback using aplay(1)
+> e,g) aplay -D "hw:0,0" -f DSD_U16_LE -r $(rate_num) -c2 dsd.raw
+> 
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/amdtp-stream-trace.h | 88 +++++++++++++++++++++++++++++++++++++
- sound/firewire/amdtp-stream.c       |  8 ++++
- 2 files changed, 96 insertions(+)
+I think that we have the device playing DSD over I2S. I will post playing music session soon
+using mpd ;)
 
-diff --git a/sound/firewire/amdtp-stream-trace.h b/sound/firewire/amdtp-stream-trace.h
-index 850b36e..ea0d486 100644
---- a/sound/firewire/amdtp-stream-trace.h
-+++ b/sound/firewire/amdtp-stream-trace.h
-@@ -101,6 +101,94 @@ TRACE_EVENT(out_packet,
- 		__entry->index)
- );
- 
-+TRACE_EVENT(in_packet_without_header,
-+	TP_PROTO(const struct amdtp_stream *s, u32 cycles, unsigned int payload_quadlets, unsigned int data_blocks, unsigned int index),
-+	TP_ARGS(s, cycles, payload_quadlets, data_blocks, index),
-+	TP_STRUCT__entry(
-+		__field(unsigned int, second)
-+		__field(unsigned int, cycle)
-+		__field(int, channel)
-+		__field(int, src)
-+		__field(int, dest)
-+		__field(unsigned int, payload_quadlets)
-+		__field(unsigned int, data_blocks)
-+		__field(unsigned int, data_block_counter)
-+		__field(unsigned int, packet_index)
-+		__field(unsigned int, irq)
-+		__field(unsigned int, index)
-+	),
-+	TP_fast_assign(
-+		__entry->second = cycles / CYCLES_PER_SECOND;
-+		__entry->cycle = cycles % CYCLES_PER_SECOND;
-+		__entry->channel = s->context->channel;
-+		__entry->src = fw_parent_device(s->unit)->node_id;
-+		__entry->dest = fw_parent_device(s->unit)->card->node_id;
-+		__entry->payload_quadlets = payload_quadlets;
-+		__entry->data_blocks = data_blocks,
-+		__entry->data_block_counter = s->data_block_counter,
-+		__entry->packet_index = s->packet_index;
-+		__entry->irq = !!in_interrupt();
-+		__entry->index = index;
-+	),
-+	TP_printk(
-+		"%02u %04u %04x %04x %02d %03u %3u %3u %02u %01u %02u",
-+		__entry->second,
-+		__entry->cycle,
-+		__entry->src,
-+		__entry->dest,
-+		__entry->channel,
-+		__entry->payload_quadlets,
-+		__entry->data_blocks,
-+		__entry->data_block_counter,
-+		__entry->packet_index,
-+		__entry->irq,
-+		__entry->index)
-+);
-+
-+TRACE_EVENT(out_packet_without_header,
-+	TP_PROTO(const struct amdtp_stream *s, u32 cycles, unsigned int payload_length, unsigned int data_blocks, unsigned int index),
-+	TP_ARGS(s, cycles, payload_length, data_blocks, index),
-+	TP_STRUCT__entry(
-+		__field(unsigned int, second)
-+		__field(unsigned int, cycle)
-+		__field(int, channel)
-+		__field(int, src)
-+		__field(int, dest)
-+		__field(unsigned int, payload_quadlets)
-+		__field(unsigned int, data_blocks)
-+		__field(unsigned int, data_block_counter)
-+		__field(unsigned int, packet_index)
-+		__field(unsigned int, irq)
-+		__field(unsigned int, index)
-+	),
-+	TP_fast_assign(
-+		__entry->second = cycles / CYCLES_PER_SECOND;
-+		__entry->cycle = cycles % CYCLES_PER_SECOND;
-+		__entry->channel = s->context->channel;
-+		__entry->src = fw_parent_device(s->unit)->card->node_id;
-+		__entry->dest = fw_parent_device(s->unit)->node_id;
-+		__entry->payload_quadlets = payload_length / 4;
-+		__entry->data_blocks = data_blocks,
-+		__entry->data_blocks = s->data_block_counter,
-+		__entry->packet_index = s->packet_index;
-+		__entry->irq = !!in_interrupt();
-+		__entry->index = index;
-+	),
-+	TP_printk(
-+		"%02u %04u %04x %04x %02d %03u %02u %03u %02u %01u %02u",
-+		__entry->second,
-+		__entry->cycle,
-+		__entry->src,
-+		__entry->dest,
-+		__entry->channel,
-+		__entry->payload_quadlets,
-+		__entry->data_blocks,
-+		__entry->data_block_counter,
-+		__entry->packet_index,
-+		__entry->irq,
-+		__entry->index)
-+);
-+
- #endif
- 
- #undef TRACE_INCLUDE_PATH
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index a03b37b..f6af8e6 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -479,6 +479,10 @@ static int handle_out_packet_without_header(struct amdtp_stream *s,
- 	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
- 
- 	payload_length = data_blocks * 4 * s->data_block_quadlets;
-+
-+	trace_out_packet_without_header(s, cycle, payload_length, data_blocks,
-+					index);
-+
- 	if (queue_out_packet(s, payload_length) < 0)
- 		return -EIO;
- 
-@@ -617,6 +621,10 @@ static int handle_in_packet_without_header(struct amdtp_stream *s,
- 
- 	buffer = s->buffer.packets[s->packet_index].buffer;
- 	data_blocks = payload_quadlets / s->data_block_quadlets;
-+
-+	trace_in_packet_without_header(s, cycle, payload_quadlets, data_blocks,
-+				       index);
-+
- 	pcm_frames = s->process_data_blocks(s, buffer, data_blocks, NULL);
- 	s->data_block_counter = (s->data_block_counter + data_blocks) & 0xff;
- 
+Michael
+
+> Naoki
+> By the way.
+> I feel good so you received this mail.
+> My posts doesn't appear at alsa-lib ML.
+> I am sad and worried.
+> 
+> 
+> >>
+> >>diff --git a/sound/soc/codecs/pcm179x.c b/sound/soc/codecs/pcm179x.c
+> >>index cc34b16..0dea529 100644
+> >>--- a/sound/soc/codecs/pcm179x.c
+> >>+++ b/sound/soc/codecs/pcm179x.c
+> >>@@ -89,18 +89,19 @@ static int pcm179x_startup(struct snd_pcm_substream *substream,
+> >> {
+> >>        struct snd_soc_codec *codec = dai->codec;
+> >>        struct pcm179x_private *priv = snd_soc_codec_get_drvdata(codec);
+> >>-       u64 formats = PCM1792A_FORMATS;
+> >>+       u64 formats = PCM1795_FORMATS;
+> >>
+> >>        switch (priv->codec_model) {
+> >>-       case PCM1795:
+> >>-               formats = PCM1795_FORMATS;
+> >>+       case PCM1792A:
+> >>+               formats = PCM1792A_FORMATS;
+> >>                break;
+> >>        default:
+> >>                break;
+> >>        }
+> >>
+> >>-       snd_pcm_hw_constraint_mask64(substream->runtime,
+> >>-                                    SNDRV_PCM_HW_PARAM_FORMAT, formats);
+> >>+       if (formats != PCM1795_FORMATS)
+> >>+               snd_pcm_hw_constraint_mask64(substream->runtime,
+> >>+                                            SNDRV_PCM_HW_PARAM_FORMAT, formats);
+> >>
+> >>        msleep(50);
+> >>        return 0;
+> >>@@ -227,7 +228,7 @@ static struct snd_soc_dai_driver pcm179x_dai = {
+> >>                .rates = SNDRV_PCM_RATE_CONTINUOUS,
+> >>                .rate_min = 10000,
+> >>                .rate_max = 200000,
+> >>-               .formats = PCM179X_FORMATS, },
+> >>+               .formats = PCM1795_FORMATS, },
+> >>        .ops = &pcm179x_dai_ops,
+> >> };
+> >>
+> >>@@ -252,9 +253,9 @@ static struct snd_soc_codec_driver soc_codec_dev_pcm179x = {
+> >> };
+> >>
+> >> const struct of_device_id pcm179x_of_match[] = {
+> >>-       { .compatible = "ti,pcm1792a", },
+> >>-       { .compatible = "ti,pcm1795", .data = (void *)PCM1795, },
+> >>-       { .compatible = "ti,pcm1796", },
+> >>+       { .compatible = "ti,pcm1792a", .data = (void *)PCM1792A },
+> >>+       { .compatible = "ti,pcm1795", },
+> >>+       { .compatible = "ti,pcm1796", .data = (void *)PCM1792A },
+> >>        { }
+> >> };
+> >> MODULE_DEVICE_TABLE(of, pcm179x_of_match);
+> >>diff --git a/sound/soc/codecs/pcm179x.h b/sound/soc/codecs/pcm179x.h
+> >>index 4c00047..0665ec8 100644
+> >>--- a/sound/soc/codecs/pcm179x.h
+> >>+++ b/sound/soc/codecs/pcm179x.h
+> >>@@ -22,7 +22,8 @@
+> >>
+> >> #define PCM1792A_FORMATS (SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S16_LE)
+> >>
+> >>-#define PCM1795_FORMATS (SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S24_LE)
+> >>+#define PCM1795_FORMATS (SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S24_LE | \
+> >>+                        SNDRV_PCM_FMTBIT_DSD_U16_LE)
+> >>
+> >> extern const struct regmap_config pcm179x_regmap_config;
+> >> extern const struct of_device_id pcm179x_of_match[];
+> >>diff --git a/sound/soc/rockchip/Kconfig b/sound/soc/rockchip/Kconfig
+> >>index c55cbfa..d3afa89 100644
+> >>--- a/sound/soc/rockchip/Kconfig
+> >>+++ b/sound/soc/rockchip/Kconfig
+> >>@@ -55,7 +55,7 @@ config SND_SOC_ROCHCHIP_DACMAX
+> >>        tristate "SoC Audio support for DACMAX boards using a pcm1792 codec"
+> >>        depends on SND_SOC_ROCKCHIP && SPI && GPIOLIB
+> >>        select SND_SOC_ROCKCHIP_I2S
+> >>-       select SND_SOC_PCM179X
+> >>+       select SND_SOC_PCM179X_SPI
+> >>        help
+> >>          Say Y or M here if you want to add support for SoC audio on Dacmax
+> >>          boards using the pcm1792a codec.
+> >>diff --git a/sound/soc/rockchip/dacmax.c b/sound/soc/rockchip/dacmax.c
+> >>index fb302a8..fa79549 100644
+> >>--- a/sound/soc/rockchip/dacmax.c
+> >>+++ b/sound/soc/rockchip/dacmax.c
+> >>@@ -22,6 +22,7 @@
+> >>  *
+> >>  */
+> >>
+> >>+#define DEBUG
+> >> #include <linux/module.h>
+> >> #include <linux/of.h>
+> >> #include <linux/of_gpio.h>
+> >>@@ -39,6 +40,7 @@
+> >> #define CLK1   (1 << 1)
+> >> #define CLK0   (1 << 2)
+> >> #define W32    (1 << 3)
+> >>+#define DSD_EN (1 << 4)
+> >>
+> >> #define DAI_NAME_SIZE  32
+> >>
+> >>@@ -52,6 +54,7 @@ struct dacmax_data {
+> >>        int clk_1;
+> >>        int clk_2;
+> >>        int w32;
+> >>+       int dsd_enable;
+> >> };
+> >>
+> >> static const struct snd_soc_dapm_widget dacmax_dapm_widgets[] = {
+> >>@@ -78,6 +81,10 @@ static void dacmax_change_freq(struct dacmax_data *data, u8 mask)
+> >>        gpio_set_value(data->w32, value);
+> >>        pr_debug("%s: BITSXWORD(%d)\n", __func__, value);
+> >>
+> >>+       value = (mask & DSD_EN) ? 1 : 0;
+> >>+       gpio_set_value(data->dsd_enable, value);
+> >>+       pr_debug("%s: DSD ENABLE (%d)\n", __func__, value);
+> >>+
+> >>        mdelay(20);
+> >> }
+> >>
+> >>@@ -91,6 +98,7 @@ static int dacmax_ext_clock_update(struct dacmax_data *data,
+> >>                params_format(params));
+> >>
+> >>        switch (params_format(params)) {
+> >>+       case SNDRV_PCM_FORMAT_DSD_U16_LE:
+> >>        case SNDRV_PCM_FORMAT_S16_LE:
+> >>                break;
+> >>        case SNDRV_PCM_FORMAT_S24_LE:
+> >>@@ -103,6 +111,8 @@ static int dacmax_ext_clock_update(struct dacmax_data *data,
+> >>        }
+> >>
+> >>        switch (params_rate(params)) {
+> >>+       case 2822400:
+> >>+               mask |= DSD_EN;
+> >>        case 44100:
+> >>                break;
+> >>        case 48000:
+> >>@@ -251,6 +261,7 @@ static int dacmax_probe(struct platform_device *pdev)
+> >>        data->clk_1 = clk_1;
+> >>        data->clk_2 = clk_2;
+> >>        data->w32 = w32;
+> >>+       data->dsd_enable = dsd_enable;
+> >>
+> >>        ret = devm_snd_soc_register_card(&pdev->dev, &data->card);
+> >>        if (ret) {
+> >>diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+> >>index 68fea0a..67fd6ec 100644
+> >>--- a/sound/soc/rockchip/rockchip_i2s.c
+> >>+++ b/sound/soc/rockchip/rockchip_i2s.c
+> >>@@ -302,6 +302,7 @@ static int rockchip_i2s_hw_params(struct snd_pcm_substream *substream,
+> >>        case SNDRV_PCM_FORMAT_S8:
+> >>                val |= I2S_TXCR_VDW(8);
+> >>                break;
+> >>+       case SNDRV_PCM_FORMAT_DSD_U16_LE:
+> >>        case SNDRV_PCM_FORMAT_S16_LE:
+> >>                val |= I2S_TXCR_VDW(16);
+> >>                break;
+> >>@@ -457,7 +458,8 @@ static struct snd_soc_dai_driver rockchip_i2s_dai = {
+> >>                            SNDRV_PCM_FMTBIT_S16_LE |
+> >>                            SNDRV_PCM_FMTBIT_S20_3LE |
+> >>                            SNDRV_PCM_FMTBIT_S24_LE |
+> >>-                           SNDRV_PCM_FMTBIT_S32_LE),
+> >>+                           SNDRV_PCM_FMTBIT_S32_LE |
+> >>+                           SNDRV_PCM_FMTBIT_DSD_U16_LE),
+> >>        },
+> >>        .capture = {
+> >>                .stream_name = "Capture",
+> >>diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> >>index a1305f8..1ae0aea 100644
+> >>--- a/sound/soc/soc-core.c
+> >>+++ b/sound/soc/soc-core.c
+> >>@@ -2980,6 +2980,7 @@ static u64 codec_format_map[] = {
+> >>        SNDRV_PCM_FMTBIT_U18_3LE | SNDRV_PCM_FMTBIT_U18_3BE,
+> >>        SNDRV_PCM_FMTBIT_FLOAT_LE | SNDRV_PCM_FMTBIT_FLOAT_BE,
+> >>        SNDRV_PCM_FMTBIT_FLOAT64_LE | SNDRV_PCM_FMTBIT_FLOAT64_BE,
+> >>+       SNDRV_PCM_FORMAT_DSD_U16_LE | SNDRV_PCM_FORMAT_DSD_U16_BE,
+> >>        SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_LE
+> >>        | SNDRV_PCM_FMTBIT_IEC958_SUBFRAME_BE,
+> >> };
+> >>>on Wed, 8 Mar 2017 08:21:23 +0100, Michael Nazzareno Trimarchi wrote:
+> >>>DSD is a continuous stream of bits that flows over two separate
+> >>>channels, left and right, synchronized by a clock, while I2S is a
+> >>>single data wire and an additional wire that states if the incoming
+> >>>sample refers to the left channel or the right channel. There is no
+> >>>way to get DSD data other than a circuit which decode DSD streams
+> >>>coming directly from a conventional source, like, for examples, a
+> >>>SACD.
+> >>>
+> >>>The Volta dac has an internal decoding circuitry that still employs
+> >>>the I2S standard as a usual 44100Hz/16 bits, but sourcing the shift
+> >>>clock at twice the DSD standard frequency of 2.8224MHz, since it has
+> >>>to split two the16 bits words received on a single wire into the two
+> >>>DSD channels, as the standard wants.
+> >>>
+> >>>When DSD is enabled, the control signal PCD/DSD must be high, CK3..CK0
+> >>>must be all low. The I2S interface works as a standard 44100Hz/16 bit
+> >>>and the DSD streaming must be packed into 16 bits lenght words
+> >>>left/right as per LRCK logic. The BCLK frequency supplied from the
+> >>>interface is 5644800Hz in case of DSD and 11289600 for DSD2.
+> >>>I don't know your device.
+> >>>but I've understood that it's device layer implantation topic.
+> >>>I think that your sound device need to support SND_PCM_FORMAT_DSD_*.
+> >>>
+> >>>Refer:enum snd_pcm_format_t
+> >>>http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html
+> >>>
+> >>>If you use xmos-natvie-dsd, the implement is linux.git/sound/usb/quirks.c
+> >>>
+> >>>Can you explain how now DSD can be pass to audio card? The idea is to
+> >>>declare it on the audio card and then configure it as a PCM card but I
+> >>>don't know how data are suppose to arrive from alsa userspace.
+> >>>I know DSD playback on sound device that xmos.
+> >>>Have you checked this page?
+> >>>https://github.com/lintweaker/xmos-native-dsd
+> >>>
+> >>>As alsa-lib
+> >>>1. snd_pcm_open
+> >>>e.g, USB sound device. In your case, soc internal sound device
+> >>>2. snd_ocm_hw_params_set_format
+> >>>e.g, SND_PCM_FORMAT_DSD_U32_BE
+> >>>3. snd_pcm_writei
+> >>>
+> >>>Other elements
+> >>>* DSD decoder(e.g,dsf/dsdiff)
+> >>>* Player
+> >>>if you use xmos-native-dsd(DSD_U32_BE) device, we can use MPD Ver0.20.2+
+> >>>I don't know other DSD pcm_formats.
+> >>>
+> >>>Just information. It may be wrong.
+> >>>Thank you
+> >>>
+> >>>
+> >>>--
+> >>>**********************************************
+> >>>Naoki MATSUMOTO
+> >>>Email:n-matsumoto@melcoinc.co.jp
+> >>>Tel  :050-5830-8916
+> >>>**********************************************
+> >>
+> >>--
+> >>| Michael Nazzareno Trimarchi                     Amarula Solutions BV |
+> >>| COO  -  Founder                                      Cruquiuskade 47 |
+> >>| +31(0)851119172                                 Amsterdam 1018 AM NL |
+> >>|                  [`as] http://www.amarulasolutions.com               |
+> >
+> >
+> >
+> 
+
 -- 
-2.9.3
+| Michael Nazzareno Trimarchi                     Amarula Solutions BV |
+| COO  -  Founder                                      Cruquiuskade 47 |
+| +31(0)851119172                                 Amsterdam 1018 AM NL |
+|                  [`as] http://www.amarulasolutions.com               |
