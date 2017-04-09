@@ -1,15 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 0/3] ALSA: firewire-lib/firewire-motu: add
-	tracepoints for IEC 61883-1/6 variants
-Date: Sun,  9 Apr 2017 21:33:26 +0900
-Message-ID: <20170409123329.12079-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/3] ALSA: firewire-motu: add tracepoints for
+	SPH in IEC 61883-1 fashion
+Date: Sun,  9 Apr 2017 21:33:28 +0900
+Message-ID: <20170409123329.12079-3-o-takashi@sakamocchi.jp>
+References: <20170409123329.12079-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 2407B266ADE
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 252BA266AFA
  for <alsa-devel@alsa-project.org>; Sun,  9 Apr 2017 14:33:34 +0200 (CEST)
+In-Reply-To: <20170409123329.12079-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,121 +25,174 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Unique protocol is used for MOTU FireWire series. In this protocol,
+data block format is not compliant to AM824 in IEC 61883-1/6. Each of
+the data block consists of 24 bit data chunks, except for a first
+quadlet. The quadlet is used for source packet header (SPH) described
+in IEC 61883-1.
 
-ALSA IEC 61883-1/6 engine already supports some tracepoints to probe events
-for a part of parameters about incoming/outgoing packets. The main purpose
-of the tracepoints to assists users/developers for further work to the
-engine. For example, users can gather the parameters and developers use it
-to investigate quirks of actual units. Actually, as I reported [0], some
-drivers in ALSA firewire stack seems to have timestamping issue which have
-never resolved by any Free Software [1], and further investigation is
-required for users/developers to improves the engine.
+The sequence of SPH seems to represent presentation timestamp
+corresponding to included data. Developers have experienced that invalid
+sequence brings disorder of units in the series.
 
-My recent works add support for some variants of IEC 61883-1/6. Existent
-tracepoints are unavailable for a part of the variants. Furthermore,
-in a part of the variants, presentation timestamp is transferred by
-a different way against IEC 61883-1/6. It's better to trace packet
-parameters for the variants, as well as for compliant protocols to
-IEC 61883-1/6.
+Unfortunately, current implementation of ALSA IEC 61883-1/6 engine and
+firewire-motu driver brings periodical noises to the units at sampling
+transmission frequency based on 44.1 kHz. The engine generates the SPH with
+even interval and this mechanism seems not to be suitable to the units.
+Further work is required for this issue and infrastructure is preferable
+to assist the work.
 
-This patchset adds some tracepoints for the purpose, mainly for RME
-Fireface series and MOTU FireWire series. Below code/command is a sample to
-work with perf(1) for tracepoints on ALSA driver for MOTU FireWire series,
-added at third patch. The final command outputs contents of data chunks for
-message from units. Please install or build perf command with python 2
-support, in advance.
+This commit adds tracepoints for the purpose. In the tracepoints, events
+are probed to gather the SPHs from each data blocks.
 
-$ cat ./motu.py
-import os
-import sys
-
-sys.path.append(os.environ['PERF_EXEC_PATH'] + \
-    '/scripts/python/Perf-Trace-Util/lib/Perf/Trace')
-
-from perf_trace_context import *
-from Core import *
-
-# For a case that several MOTU FireWire units on the same bus.
-cycles = {}
-
-def snd_firewire_lib__in_packet(name, context, cpu, secs, nsecs,
-                                pid, comm, callchain,
-                                second, cycle, channel, src, dest,
-                                cip_header0, cip_header1, payload_quadlets,
-                                packet_index, irq, index):
-    global cycles
-
-    if src not in cycles:
-        cycles[src] = {}
-    cycles[src]['sec'] = second
-    cycles[src]['cycle'] = cycle
-
-def snd_firewire_motu__in_data_block_message(name, context, cpu, secs, nsecs,
-                                             pid, comm, callchain,
-                                             src, dst, data_blocks, messages):
-    global cycles
-
-    if src not in cycles:
-        return
-
-    print('{0} sec {1} cycle'.format(cycles[src]['sec'], cycles[src]['cycle']))
-    for i in range(data_blocks):
-        offset = i * 8
-        msg = messages[offset:offset + 8]
-        print('    {0}: {1[5]:02x}{1[4]:02x}{1[3]:02x}{1[2]:02x}{1[1]:02x}{1[0]:02x}'.format(i, msg))
-$ ~/linux.git/tools/perf/perf record -a -e snd_firewire_motu:in_data_block_message -e snd_firewire_lib:in_packet
-^C
-$ PERF_EXEC_PATH=~/linux.git/tools/perf/ ~/linux.git/tools/perf/perf script -s ./motu.py
-...
-7 sec 7999 cycle
-    0: 000000805854
-    1: 0000008050fc
-    2: 0000808050a4
-    3: 00003f80504c
-    4: 0000008048f4
-    5: 00000080489c
-    6: 000080804844
-    7: 00003f8040ec
-0 sec 0 cycle
-0 sec 1 cycle
-    0: 000000804094
-    1: 0000008050fc
-    2: 0000808050a4
-    3: 00003f80504c
-    4: 0000008048f4
-    5: 00000080489c
-    6: 000080804844
-    7: 00003f8058ac
-0 sec 2 cycle
-    0: 000000805854
-    1: 0000008050fc
-    2: 0000808050a4
-    3: 00003f80504c
-    4: 0000008048f4
-    5: 00000080605c
-    6: 000080806004
-    7: 00003f8058ac
-...
-
-[0] [alsa-devel] Dice packet sequence quirk and ALSA firewire stack in Linux 4.6
-http://mailman.alsa-project.org/pipermail/alsa-devel/2016-May/107715.html
-[1] This is not resolved in FFADO, user space library to drive the units, too.
-Some workarounds are applied to the library, but it can not work well depending
-on units and protocols.
-
-Takashi Sakamoto (3):
-  ALSA: firewire_lib: add tracepoints for packets without CIP headers
-  ALSA: firewire-motu: add tracepoints for SPH in IEC 61883-1 fashion
-  ALSA: firewire-motu: add tracepoints for messages for unique protocol
-
- sound/firewire/amdtp-stream-trace.h    |  88 +++++++++++++++++++++++
- sound/firewire/amdtp-stream.c          |   8 +++
- sound/firewire/motu/Makefile           |   2 +
- sound/firewire/motu/amdtp-motu-trace.h | 123 +++++++++++++++++++++++++++++++++
- sound/firewire/motu/amdtp-motu.c       |  37 ++++++++++
- 5 files changed, 258 insertions(+)
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/motu/Makefile           |  2 +
+ sound/firewire/motu/amdtp-motu-trace.h | 73 ++++++++++++++++++++++++++++++++++
+ sound/firewire/motu/amdtp-motu.c       | 20 ++++++++++
+ 3 files changed, 95 insertions(+)
  create mode 100644 sound/firewire/motu/amdtp-motu-trace.h
 
+diff --git a/sound/firewire/motu/Makefile b/sound/firewire/motu/Makefile
+index ae84ae6..728f586 100644
+--- a/sound/firewire/motu/Makefile
++++ b/sound/firewire/motu/Makefile
+@@ -1,3 +1,5 @@
++CFLAGS_amdtp-motu.o	:= -I$(src)
++
+ snd-firewire-motu-objs := motu.o amdtp-motu.o motu-transaction.o motu-stream.o \
+ 			  motu-proc.o motu-pcm.o motu-midi.o motu-hwdep.o \
+ 			  motu-protocol-v2.o motu-protocol-v3.o
+diff --git a/sound/firewire/motu/amdtp-motu-trace.h b/sound/firewire/motu/amdtp-motu-trace.h
+new file mode 100644
+index 0000000..5862bf9
+--- /dev/null
++++ b/sound/firewire/motu/amdtp-motu-trace.h
+@@ -0,0 +1,73 @@
++/*
++ * amdtp-motu-trace.h - tracepoint definitions to dump a part of packet data
++ *
++ * Copyright (c) 2017 Takashi Sakamoto
++ * Licensed under the terms of the GNU General Public License, version 2.
++ */
++
++#undef TRACE_SYSTEM
++#define TRACE_SYSTEM		snd_firewire_motu
++
++#if !defined(_SND_FIREWIRE_MOTU_TRACE_H) || defined(TRACE_HEADER_MULTI_READ)
++#define _SND_FIREWIRE_MOTU_TRACE_H
++
++#include <linux/tracepoint.h>
++
++static void copy_sph(u32 *frame, __be32 *buffer, unsigned int data_blocks,
++		     unsigned int data_block_quadlets);
++
++TRACE_EVENT(in_data_block_sph,
++	TP_PROTO(struct amdtp_stream *s, unsigned int data_blocks, __be32 *buffer),
++	TP_ARGS(s, data_blocks, buffer),
++	TP_STRUCT__entry(
++		__field(int, src)
++		__field(int, dst)
++		__field(unsigned int, data_blocks)
++		__dynamic_array(u32, tstamps, data_blocks)
++	),
++	TP_fast_assign(
++		__entry->src = fw_parent_device(s->unit)->node_id;
++		__entry->dst = fw_parent_device(s->unit)->card->node_id;
++		__entry->data_blocks = data_blocks;
++		copy_sph(__get_dynamic_array(tstamps), buffer, data_blocks, s->data_block_quadlets);
++	),
++	TP_printk(
++		"%04x %04x %u %s",
++		__entry->src,
++		__entry->dst,
++		__entry->data_blocks,
++		__print_array(__get_dynamic_array(tstamps), __entry->data_blocks, 4)
++	)
++);
++
++TRACE_EVENT(out_data_block_sph,
++	TP_PROTO(struct amdtp_stream *s, unsigned int data_blocks, __be32 *buffer),
++	TP_ARGS(s, data_blocks, buffer),
++	TP_STRUCT__entry(
++		__field(int, src)
++		__field(int, dst)
++		__field(unsigned int, data_blocks)
++		__dynamic_array(u32, tstamps, data_blocks)
++	),
++	TP_fast_assign(
++		__entry->src = fw_parent_device(s->unit)->card->node_id;
++		__entry->dst = fw_parent_device(s->unit)->node_id;
++		__entry->data_blocks = data_blocks;
++		copy_sph(__get_dynamic_array(tstamps), buffer, data_blocks, s->data_block_quadlets);
++	),
++	TP_printk(
++		"%04x %04x %u %s",
++		__entry->src,
++		__entry->dst,
++		__entry->data_blocks,
++		__print_array(__get_dynamic_array(tstamps), __entry->data_blocks, 4)
++	)
++);
++
++#endif
++
++#undef TRACE_INCLUDE_PATH
++#define TRACE_INCLUDE_PATH	.
++#undef TRACE_INCLUDE_FILE
++#define TRACE_INCLUDE_FILE	amdtp-motu-trace
++#include <trace/define_trace.h>
+diff --git a/sound/firewire/motu/amdtp-motu.c b/sound/firewire/motu/amdtp-motu.c
+index 08bd176..2c77e8b 100644
+--- a/sound/firewire/motu/amdtp-motu.c
++++ b/sound/firewire/motu/amdtp-motu.c
+@@ -10,6 +10,9 @@
+ #include <sound/pcm.h>
+ #include "motu.h"
+ 
++#define CREATE_TRACE_POINTS
++#include "amdtp-motu-trace.h"
++
+ #define CIP_FMT_MOTU		0x02
+ #define CIP_FMT_MOTU_TX_V3	0x22
+ #define MOTU_FDF_AM824		0x22
+@@ -264,6 +267,19 @@ static void read_midi_messages(struct amdtp_stream *s, __be32 *buffer,
+ 	}
+ }
+ 
++/* For tracepoints. */
++static void copy_sph(u32 *frames, __be32 *buffer, unsigned int data_blocks,
++		     unsigned int data_block_quadlets)
++{
++	unsigned int i;
++
++	for (i = 0; i < data_blocks; ++i) {
++		*frames = be32_to_cpu(*buffer);
++		buffer += data_block_quadlets;
++		frames++;
++	}
++}
++
+ static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
+ 				__be32 *buffer, unsigned int data_blocks,
+ 				unsigned int *syt)
+@@ -271,6 +287,8 @@ static unsigned int process_tx_data_blocks(struct amdtp_stream *s,
+ 	struct amdtp_motu *p = s->protocol;
+ 	struct snd_pcm_substream *pcm;
+ 
++	trace_in_data_block_sph(s, data_blocks, buffer);
++
+ 	if (p->midi_ports)
+ 		read_midi_messages(s, buffer, data_blocks);
+ 
+@@ -346,6 +364,8 @@ static unsigned int process_rx_data_blocks(struct amdtp_stream *s,
+ 
+ 	write_sph(s, buffer, data_blocks);
+ 
++	trace_out_data_block_sph(s, data_blocks, buffer);
++
+ 	return data_blocks;
+ }
+ 
 -- 
 2.9.3
