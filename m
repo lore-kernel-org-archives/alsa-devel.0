@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_ssi: Remove FSLSSI_I2S_RATES
-	definition" to the asoc tree
-Date: Mon, 10 Apr 2017 19:42:50 +0100
-Message-ID: <E1cxeH4-0003rQ-5z@debutante>
-References: <1491421446-13799-1-git-send-email-festevam@gmail.com>
+Subject: Applied "ASoC: fsl_ssi: Use the tolower() function" to
+	the asoc tree
+Date: Mon, 10 Apr 2017 19:42:47 +0100
+Message-ID: <E1cxeH1-0003qX-7h@debutante>
+References: <1491410411-6053-2-git-send-email-fabio.estevam@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 995B2266CAF
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F2FA266BA4
  for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2017 20:43:00 +0200 (CEST)
-In-Reply-To: <1491421446-13799-1-git-send-email-festevam@gmail.com>
+In-Reply-To: <1491410411-6053-2-git-send-email-fabio.estevam@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_ssi: Remove FSLSSI_I2S_RATES definition
+   ASoC: fsl_ssi: Use the tolower() function
 
 has been applied to the asoc tree at
 
@@ -53,62 +53,50 @@ to this mail.
 Thanks,
 Mark
 
->From 580556774ad33adf427765d560f95f66cb01c295 Mon Sep 17 00:00:00 2001
+>From c6682fedee47e3914af366f876728b3f77ba0272 Mon Sep 17 00:00:00 2001
 From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Wed, 5 Apr 2017 16:44:05 -0300
-Subject: [PATCH] ASoC: fsl_ssi: Remove FSLSSI_I2S_RATES definition
+Date: Wed, 5 Apr 2017 16:44:06 -0300
+Subject: [PATCH] ASoC: fsl_ssi: Use the tolower() function
 
-The comment for the FSLSSI_I2S_RATES definition states that the
-driver currently only supports I2S slave mode, which is no longer
-correct.
-
-As FSLSSI_I2S_RATES is the same as the standard SNDRV_PCM_RATE_CONTINUOUS,
-just remove its definition and its comments to make the code simpler.
+Code can be simplified by using the standard tolower() funtion.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 Acked-by: Timur Tabi <timur@tabi.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 14 ++------------
- 1 file changed, 2 insertions(+), 12 deletions(-)
+ sound/soc/fsl/fsl_ssi.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 50349437d961..184a47360f84 100644
+index 184a47360f84..549a598d030e 100644
 --- a/sound/soc/fsl/fsl_ssi.c
 +++ b/sound/soc/fsl/fsl_ssi.c
-@@ -55,16 +55,6 @@
- #include "imx-pcm.h"
- 
- /**
-- * FSLSSI_I2S_RATES: sample rates supported by the I2S
-- *
-- * This driver currently only supports the SSI running in I2S slave mode,
-- * which means the codec determines the sample rate.  Therefore, we tell
-- * ALSA that we support all rates and let the codec driver decide what rates
-- * are really supported.
-- */
--#define FSLSSI_I2S_RATES SNDRV_PCM_RATE_CONTINUOUS
+@@ -35,6 +35,7 @@
+ #include <linux/module.h>
+ #include <linux/interrupt.h>
+ #include <linux/clk.h>
++#include <linux/ctype.h>
+ #include <linux/device.h>
+ #include <linux/delay.h>
+ #include <linux/slab.h>
+@@ -1320,14 +1321,10 @@ static struct snd_ac97_bus_ops fsl_ssi_ac97_ops = {
+  */
+ static void make_lowercase(char *s)
+ {
+-	char *p = s;
+-	char c;
 -
--/**
-  * FSLSSI_I2S_FORMATS: audio formats supported by the SSI
-  *
-  * The SSI has a limitation in that the samples must be in the same byte
-@@ -1217,14 +1207,14 @@ static struct snd_soc_dai_driver fsl_ssi_dai_template = {
- 		.stream_name = "CPU-Playback",
- 		.channels_min = 1,
- 		.channels_max = 32,
--		.rates = FSLSSI_I2S_RATES,
-+		.rates = SNDRV_PCM_RATE_CONTINUOUS,
- 		.formats = FSLSSI_I2S_FORMATS,
- 	},
- 	.capture = {
- 		.stream_name = "CPU-Capture",
- 		.channels_min = 1,
- 		.channels_max = 32,
--		.rates = FSLSSI_I2S_RATES,
-+		.rates = SNDRV_PCM_RATE_CONTINUOUS,
- 		.formats = FSLSSI_I2S_FORMATS,
- 	},
- 	.ops = &fsl_ssi_dai_ops,
+-	while ((c = *p)) {
+-		if ((c >= 'A') && (c <= 'Z'))
+-			*p = c + ('a' - 'A');
+-		p++;
+-	}
++	if (!s)
++		return;
++	for (; *s; s++)
++		*s = tolower(*s);
+ }
+ 
+ static int fsl_ssi_imx_probe(struct platform_device *pdev,
 -- 
 2.11.0
