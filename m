@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sgtl5000: Allow LRCLK pad drive
-	strength to be changed" to the asoc tree
-Date: Mon, 10 Apr 2017 20:22:33 +0100
-Message-ID: <E1cxetV-0005jz-Rw@debutante>
-References: <1491402754-19802-1-git-send-email-fabio.estevam@nxp.com>
+Subject: Applied "ASoC: jack: add snd_soc_codec_set_jack" to
+	the asoc tree
+Date: Mon, 10 Apr 2017 20:22:36 +0100
+Message-ID: <E1cxetY-0005l4-QH@debutante>
+References: <1491535601-23808-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id BC9CD266C13
- for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2017 21:22:47 +0200 (CEST)
-In-Reply-To: <1491402754-19802-1-git-send-email-fabio.estevam@nxp.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CA3BC266CCC
+ for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2017 21:22:54 +0200 (CEST)
+In-Reply-To: <1491535601-23808-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@nxp.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, max.krummenacher@toradex.com
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, xiaoxiang@pinecone.net, zhongan@pinecone.net, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sgtl5000: Allow LRCLK pad drive strength to be changed
+   ASoC: jack: add snd_soc_codec_set_jack
 
 has been applied to the asoc tree at
 
@@ -53,111 +53,76 @@ to this mail.
 Thanks,
 Mark
 
->From 570c70a60f53ca737ead4e5966c446bf0d39fac9 Mon Sep 17 00:00:00 2001
-From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Wed, 5 Apr 2017 11:32:34 -0300
-Subject: [PATCH] ASoC: sgtl5000: Allow LRCLK pad drive strength to be changed
+>From d7344010d183ad62d1ababca3beb9553cf5e1546 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Fri, 7 Apr 2017 11:26:41 +0800
+Subject: [PATCH] ASoC: jack: add snd_soc_codec_set_jack
 
-Introduce the "lrclk-strength" property to allow LRCLK pad drive strength
-to be changed via device tree.
+There are many codecs with the capability of jack detection. Usually,
+we create a jack on machine driver but there is no common function for
+machine driver to deliver the jack pointer to codec driver.
+snd_soc_codec_set_jack can be used for delivering the jack pointer to
+codec driver and enable the jack detection function. To make it work,
+codec driver need to define a callback function to receive the jack
+pointer and do all necessary procedure for enabling jack detection.
 
-When running a stress playback loop test on a mx6dl wandboard channel
-swap can be noticed on about 10% of the times.
-
-While debugging this issue I noticed that when probing the SGTL5000
-LRCLK pin with the scope the swap did not happen. After removing
-the probe the swap started to happen again.
-
-After changing the LRCLK pad drive strength to the maximum value the
-issue is gone.
-
-Same fix works on a mx6dl Colibri board as well.
-
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
-Tested-by: Max Krummenacher <max.krummenacher@toradex.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/sgtl5000.txt |  9 +++++++++
- sound/soc/codecs/sgtl5000.c                          | 19 ++++++++++++++++++-
- 2 files changed, 27 insertions(+), 1 deletion(-)
+ include/sound/soc.h  |  4 ++++
+ sound/soc/soc-jack.c | 18 ++++++++++++++++++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/sgtl5000.txt b/Documentation/devicetree/bindings/sound/sgtl5000.txt
-index 5666da7b8605..7a73a9d62015 100644
---- a/Documentation/devicetree/bindings/sound/sgtl5000.txt
-+++ b/Documentation/devicetree/bindings/sound/sgtl5000.txt
-@@ -26,6 +26,15 @@ Optional properties:
- 	If this node is not mentioned or the value is unknown, then
- 	the value is set to 1.25V.
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 1d20abec4995..a6d589c340df 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -434,6 +434,8 @@ int snd_soc_codec_set_sysclk(struct snd_soc_codec *codec, int clk_id,
+ 			     int source, unsigned int freq, int dir);
+ int snd_soc_codec_set_pll(struct snd_soc_codec *codec, int pll_id, int source,
+ 			  unsigned int freq_in, unsigned int freq_out);
++int snd_soc_codec_set_jack(struct snd_soc_codec *codec,
++			   struct snd_soc_jack *jack, void *data);
  
-+- lrclk-strength: the LRCLK pad strength. Possible values are:
-+0, 1, 2 and 3 as per the table below:
+ int snd_soc_register_card(struct snd_soc_card *card);
+ int snd_soc_unregister_card(struct snd_soc_card *card);
+@@ -908,6 +910,8 @@ struct snd_soc_codec_driver {
+ 			  int clk_id, int source, unsigned int freq, int dir);
+ 	int (*set_pll)(struct snd_soc_codec *codec, int pll_id, int source,
+ 		unsigned int freq_in, unsigned int freq_out);
++	int (*set_jack)(struct snd_soc_codec *codec,
++			struct snd_soc_jack *jack,  void *data);
+ 
+ 	/* codec IO */
+ 	struct regmap *(*get_regmap)(struct device *);
+diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
+index a03dcbb94baf..7daf21fee355 100644
+--- a/sound/soc/soc-jack.c
++++ b/sound/soc/soc-jack.c
+@@ -23,6 +23,24 @@
+ #include <trace/events/asoc.h>
+ 
+ /**
++ * snd_soc_codec_set_jack - configure codec jack.
++ * @codec: CODEC
++ * @jack: structure to use for the jack
++ * @data: can be used if codec driver need extra data for configuring jack
++ *
++ * Configures and enables jack detection function.
++ */
++int snd_soc_codec_set_jack(struct snd_soc_codec *codec,
++	struct snd_soc_jack *jack, void *data)
++{
++	if (codec->driver->set_jack)
++		return codec->driver->set_jack(codec, jack, data);
++	else
++		return -EINVAL;
++}
++EXPORT_SYMBOL_GPL(snd_soc_codec_set_jack);
 +
-+VDDIO		1.8V		2.5V		3.3V
-+0 = 		Disable
-+1 =		1.66 mA		2.87 mA		4.02  mA
-+2 =		3.33 mA		5.74 mA		8.03  mA
-+3 =		4.99 mA		8.61 mA		12.05 mA
-+
- Example:
- 
- codec: sgtl5000@0a {
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 1589325855bc..5a2702edeb77 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -99,6 +99,13 @@ enum sgtl5000_micbias_resistor {
- 	SGTL5000_MICBIAS_8K = 8,
- };
- 
-+enum  {
-+	I2S_LRCLK_STRENGTH_DISABLE,
-+	I2S_LRCLK_STRENGTH_LOW,
-+	I2S_LRCLK_STRENGTH_MEDIUM,
-+	I2S_LRCLK_STRENGTH_HIGH,
-+};
-+
- /* sgtl5000 private structure in codec */
- struct sgtl5000_priv {
- 	int sysclk;	/* sysclk rate */
-@@ -111,6 +118,7 @@ struct sgtl5000_priv {
- 	int revision;
- 	u8 micbias_resistor;
- 	u8 micbias_voltage;
-+	u8 lrclk_strength;
- };
- 
- /*
-@@ -1089,6 +1097,7 @@ static int sgtl5000_enable_regulators(struct i2c_client *client)
- static int sgtl5000_probe(struct snd_soc_codec *codec)
- {
- 	int ret;
-+	u16 reg;
- 	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
- 
- 	/* power up sgtl5000 */
-@@ -1118,7 +1127,8 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
- 			SGTL5000_DAC_MUTE_RIGHT |
- 			SGTL5000_DAC_MUTE_LEFT);
- 
--	snd_soc_write(codec, SGTL5000_CHIP_PAD_STRENGTH, 0x015f);
-+	reg = ((sgtl5000->lrclk_strength) << SGTL5000_PAD_I2S_LRCLK_SHIFT | 0x5f);
-+	snd_soc_write(codec, SGTL5000_CHIP_PAD_STRENGTH, reg);
- 
- 	snd_soc_write(codec, SGTL5000_CHIP_ANA_CTRL,
- 			SGTL5000_HP_ZCD_EN |
-@@ -1347,6 +1357,13 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
- 		}
- 	}
- 
-+	sgtl5000->lrclk_strength = I2S_LRCLK_STRENGTH_LOW;
-+	if (!of_property_read_u32(np, "lrclk-strength", &value)) {
-+		if (value > I2S_LRCLK_STRENGTH_HIGH)
-+			value = I2S_LRCLK_STRENGTH_LOW;
-+		sgtl5000->lrclk_strength = value;
-+	}
-+
- 	/* Ensure sgtl5000 will start with sane register values */
- 	sgtl5000_fill_defaults(client);
- 
++/**
+  * snd_soc_card_jack_new - Create a new jack
+  * @card:  ASoC card
+  * @id:    an identifying string for this jack
 -- 
 2.11.0
