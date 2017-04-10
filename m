@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_ssi: Use the tolower() function" to
-	the asoc tree
-Date: Mon, 10 Apr 2017 19:42:47 +0100
-Message-ID: <E1cxeH1-0003qX-7h@debutante>
-References: <1491410411-6053-2-git-send-email-fabio.estevam@nxp.com>
+Subject: Applied "ASoC: sgtl5000: Allow LRCLK pad drive
+	strength to be changed" to the asoc tree
+Date: Mon, 10 Apr 2017 20:22:33 +0100
+Message-ID: <E1cxetV-0005jz-Rw@debutante>
+References: <1491402754-19802-1-git-send-email-fabio.estevam@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F2FA266BA4
- for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2017 20:43:00 +0200 (CEST)
-In-Reply-To: <1491410411-6053-2-git-send-email-fabio.estevam@nxp.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BC9CD266C13
+ for <alsa-devel@alsa-project.org>; Mon, 10 Apr 2017 21:22:47 +0200 (CEST)
+In-Reply-To: <1491402754-19802-1-git-send-email-fabio.estevam@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Fabio Estevam <fabio.estevam@nxp.com>
-Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, broonie@kernel.org, timur@tabi.org
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, max.krummenacher@toradex.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_ssi: Use the tolower() function
+   ASoC: sgtl5000: Allow LRCLK pad drive strength to be changed
 
 has been applied to the asoc tree at
 
@@ -53,50 +53,111 @@ to this mail.
 Thanks,
 Mark
 
->From c6682fedee47e3914af366f876728b3f77ba0272 Mon Sep 17 00:00:00 2001
+>From 570c70a60f53ca737ead4e5966c446bf0d39fac9 Mon Sep 17 00:00:00 2001
 From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Wed, 5 Apr 2017 16:44:06 -0300
-Subject: [PATCH] ASoC: fsl_ssi: Use the tolower() function
+Date: Wed, 5 Apr 2017 11:32:34 -0300
+Subject: [PATCH] ASoC: sgtl5000: Allow LRCLK pad drive strength to be changed
 
-Code can be simplified by using the standard tolower() funtion.
+Introduce the "lrclk-strength" property to allow LRCLK pad drive strength
+to be changed via device tree.
+
+When running a stress playback loop test on a mx6dl wandboard channel
+swap can be noticed on about 10% of the times.
+
+While debugging this issue I noticed that when probing the SGTL5000
+LRCLK pin with the scope the swap did not happen. After removing
+the probe the swap started to happen again.
+
+After changing the LRCLK pad drive strength to the maximum value the
+issue is gone.
+
+Same fix works on a mx6dl Colibri board as well.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
-Acked-by: Timur Tabi <timur@tabi.org>
+Tested-by: Max Krummenacher <max.krummenacher@toradex.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ Documentation/devicetree/bindings/sound/sgtl5000.txt |  9 +++++++++
+ sound/soc/codecs/sgtl5000.c                          | 19 ++++++++++++++++++-
+ 2 files changed, 27 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 184a47360f84..549a598d030e 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -35,6 +35,7 @@
- #include <linux/module.h>
- #include <linux/interrupt.h>
- #include <linux/clk.h>
-+#include <linux/ctype.h>
- #include <linux/device.h>
- #include <linux/delay.h>
- #include <linux/slab.h>
-@@ -1320,14 +1321,10 @@ static struct snd_ac97_bus_ops fsl_ssi_ac97_ops = {
-  */
- static void make_lowercase(char *s)
- {
--	char *p = s;
--	char c;
--
--	while ((c = *p)) {
--		if ((c >= 'A') && (c <= 'Z'))
--			*p = c + ('a' - 'A');
--		p++;
--	}
-+	if (!s)
-+		return;
-+	for (; *s; s++)
-+		*s = tolower(*s);
- }
+diff --git a/Documentation/devicetree/bindings/sound/sgtl5000.txt b/Documentation/devicetree/bindings/sound/sgtl5000.txt
+index 5666da7b8605..7a73a9d62015 100644
+--- a/Documentation/devicetree/bindings/sound/sgtl5000.txt
++++ b/Documentation/devicetree/bindings/sound/sgtl5000.txt
+@@ -26,6 +26,15 @@ Optional properties:
+ 	If this node is not mentioned or the value is unknown, then
+ 	the value is set to 1.25V.
  
- static int fsl_ssi_imx_probe(struct platform_device *pdev,
++- lrclk-strength: the LRCLK pad strength. Possible values are:
++0, 1, 2 and 3 as per the table below:
++
++VDDIO		1.8V		2.5V		3.3V
++0 = 		Disable
++1 =		1.66 mA		2.87 mA		4.02  mA
++2 =		3.33 mA		5.74 mA		8.03  mA
++3 =		4.99 mA		8.61 mA		12.05 mA
++
+ Example:
+ 
+ codec: sgtl5000@0a {
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index 1589325855bc..5a2702edeb77 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -99,6 +99,13 @@ enum sgtl5000_micbias_resistor {
+ 	SGTL5000_MICBIAS_8K = 8,
+ };
+ 
++enum  {
++	I2S_LRCLK_STRENGTH_DISABLE,
++	I2S_LRCLK_STRENGTH_LOW,
++	I2S_LRCLK_STRENGTH_MEDIUM,
++	I2S_LRCLK_STRENGTH_HIGH,
++};
++
+ /* sgtl5000 private structure in codec */
+ struct sgtl5000_priv {
+ 	int sysclk;	/* sysclk rate */
+@@ -111,6 +118,7 @@ struct sgtl5000_priv {
+ 	int revision;
+ 	u8 micbias_resistor;
+ 	u8 micbias_voltage;
++	u8 lrclk_strength;
+ };
+ 
+ /*
+@@ -1089,6 +1097,7 @@ static int sgtl5000_enable_regulators(struct i2c_client *client)
+ static int sgtl5000_probe(struct snd_soc_codec *codec)
+ {
+ 	int ret;
++	u16 reg;
+ 	struct sgtl5000_priv *sgtl5000 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	/* power up sgtl5000 */
+@@ -1118,7 +1127,8 @@ static int sgtl5000_probe(struct snd_soc_codec *codec)
+ 			SGTL5000_DAC_MUTE_RIGHT |
+ 			SGTL5000_DAC_MUTE_LEFT);
+ 
+-	snd_soc_write(codec, SGTL5000_CHIP_PAD_STRENGTH, 0x015f);
++	reg = ((sgtl5000->lrclk_strength) << SGTL5000_PAD_I2S_LRCLK_SHIFT | 0x5f);
++	snd_soc_write(codec, SGTL5000_CHIP_PAD_STRENGTH, reg);
+ 
+ 	snd_soc_write(codec, SGTL5000_CHIP_ANA_CTRL,
+ 			SGTL5000_HP_ZCD_EN |
+@@ -1347,6 +1357,13 @@ static int sgtl5000_i2c_probe(struct i2c_client *client,
+ 		}
+ 	}
+ 
++	sgtl5000->lrclk_strength = I2S_LRCLK_STRENGTH_LOW;
++	if (!of_property_read_u32(np, "lrclk-strength", &value)) {
++		if (value > I2S_LRCLK_STRENGTH_HIGH)
++			value = I2S_LRCLK_STRENGTH_LOW;
++		sgtl5000->lrclk_strength = value;
++	}
++
+ 	/* Ensure sgtl5000 will start with sane register values */
+ 	sgtl5000_fill_defaults(client);
+ 
 -- 
 2.11.0
