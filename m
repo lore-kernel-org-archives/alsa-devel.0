@@ -1,60 +1,68 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/2] dt-bindings: Document STM32 I2S bindings
-Date: Tue, 11 Apr 2017 15:32:50 +0100
-Message-ID: <20170411143250.3r7ys3rjshtxgaee@sirena.org.uk>
+From: Olivier MOYSAN <olivier.moysan@st.com>
+Subject: Re: [PATCH 1/2] dt-bindings: Document STM32 I2S
+	bindings
+Date: Tue, 11 Apr 2017 15:44:52 +0000
+Message-ID: <73caede5-ea6f-8b2b-2270-227f7ef31823@st.com>
 References: <1491493236-2574-1-git-send-email-olivier.moysan@st.com>
  <1491493236-2574-2-git-send-email-olivier.moysan@st.com>
  <20170410194832.iivnkyejtywbe2c7@rob-hp-laptop>
+ <20170411143250.3r7ys3rjshtxgaee@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="xf4hkaj5rntmryw7"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20170410194832.iivnkyejtywbe2c7@rob-hp-laptop>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alexandre.torgue-qxv4g6HH51o@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org, benjamin.gaignard-qxv4g6HH51o@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 632352666E1
+ for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2017 17:44:56 +0200 (CEST)
+In-Reply-To: <20170411143250.3r7ys3rjshtxgaee@sirena.org.uk>
+Content-Language: en-US
+Content-ID: <BD738E8F3DD83B42AF9D82A2C38AEDCE@st.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alexandre TORGUE <alexandre.torgue@st.com>, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Benjamin GAIGNARD <benjamin.gaignard@st.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hello Rob, Mark
 
---xf4hkaj5rntmryw7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks for your review.
+Please find my comments below.
 
-On Mon, Apr 10, 2017 at 02:48:32PM -0500, Rob Herring wrote:
-> On Thu, Apr 06, 2017 at 05:40:35PM +0200, olivier moysan wrote:
+On 04/11/2017 04:32 PM, Mark Brown wrote:
+> On Mon, Apr 10, 2017 at 02:48:32PM -0500, Rob Herring wrote:
+>> On Thu, Apr 06, 2017 at 05:40:35PM +0200, olivier moysan wrote:
+>
+>>> +Required properties:
+>>> +  - compatible: Must be "st,stm32h7-i2s"
+>>> +  - #sound-dai-cells: Must be 1. (one parameter)
+>>> +    This parameter allows to specify CPU DAI index in soundcard CPU dai link.
+>>> +	index 0: playback DAI
+>>> +	index 1: capture DAI
+>>> +	index 2: full duplex DAI
+>
+>> Is this still needed for graph-card?
+>
+> The graph card is blocked on your review...  I'm also not clear how
+> without something like this we'd be able to identify a specific DAI
+> within a device if we don't have a way of identifying them.
+>
+Yes, it seems that audio graph card does not allow to select a specific 
+DAI. This will probably be necessary.
 
-> > +Required properties:
-> > +  - compatible: Must be "st,stm32h7-i2s"
-> > +  - #sound-dai-cells: Must be 1. (one parameter)
-> > +    This parameter allows to specify CPU DAI index in soundcard CPU dai link.
-> > +	index 0: playback DAI
-> > +	index 1: capture DAI
-> > +	index 2: full duplex DAI
+However, regarding STM32 I2S driver, I'm wondering if selecting DAI
+is the best way to configure interface as tx, rx or fd.
+Maybe, it is more relevant to configure DAI according to DMA
+configuration from I2S node.
+This would moreover avoid to allocate 2 dmas channels when not
+necessary (tx or rx only).
+If you agree with this, I will implement this change in a v2.
 
-> Is this still needed for graph-card?
-
-The graph card is blocked on your review...  I'm also not clear how
-without something like this we'd be able to identify a specific DAI
-within a device if we don't have a way of identifying them.
-
---xf4hkaj5rntmryw7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljs6REACgkQJNaLcl1U
-h9DvSwf/SV5fjMks9E8EZVSVPm1PW4Dz7TAWARzaXB0ilz1afkWEHBpLMWrhVey5
-IVsgFpoIfLvukv75HdYpSE2dK61unHag+SyiO1DhrBA93gphwDYFP8b46ttOSCwE
-U/z+aSosVbTFMcEb5MdWzmo5TTDLadhRhgR3GN0YCCvjFzJi5lCJJYYhUa5exgaL
-PrOBFT3aJ78clhMbq41WGPoYX9nUy8/121JZxGMyIMqjIn0Hmsgxe0qXJA9eo5Eo
-2yXIpjNBDLYxAewi9K8dUtk+k6jGgBdksKPeT3W4prmlenSlew2pv2HM6cpfDUzV
-nIeAr5VSJSmUy+VrjCk6metO5t6B8g==
-=+XnT
------END PGP SIGNATURE-----
-
---xf4hkaj5rntmryw7--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+BRs
+olivier
