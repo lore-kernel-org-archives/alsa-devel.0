@@ -1,15 +1,15 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: firewire-lib: cache maximum length of
-	payload to reduce function calls
-Date: Tue, 11 Apr 2017 20:33:18 +0900
-Message-ID: <20170411113318.10977-1-o-takashi@sakamocchi.jp>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt5665: move rt5665_set_jack_detect to
+	.set_jack
+Date: Tue, 11 Apr 2017 20:07:47 +0800
+Message-ID: <1491912467-19241-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id D15B6266718
- for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2017 13:33:23 +0200 (CEST)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id E118D2666E1
+ for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2017 14:08:34 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,75 +19,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, xiaoxiang@pinecone.net, zhongan@pinecone.net, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-During packet streaming, maximum length of payload for isochronous packet
-is invariable, therefore no need to recalculate. Current ALSA IEC 61883-1/6
-engine calls a function to calculate it 8,000 or more times per second
-for incoming packet processing.
+Now, we can use .set_jack callback function on codec level. So we
+don't need export rt5665_set_jack_detect.
 
-This commit adds a member to have maximum length of payload into 'struct
-amdtp_stream', to reduces the function calls. At first callback from
-isochronous context, the length is calculated and stored for later
-processing.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 ---
- sound/firewire/amdtp-stream.c | 9 +++++----
- sound/firewire/amdtp-stream.h | 1 +
- 2 files changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/codecs/rt5665.c | 6 +++---
+ sound/soc/codecs/rt5665.h | 2 --
+ 2 files changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index f6af8e6..9e6f54f 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -412,8 +412,7 @@ static inline int queue_out_packet(struct amdtp_stream *s,
- 
- static inline int queue_in_packet(struct amdtp_stream *s)
- {
--	return queue_packet(s, IN_PACKET_HEADER_SIZE,
--			    amdtp_stream_get_max_payload(s));
-+	return queue_packet(s, IN_PACKET_HEADER_SIZE, s->max_payload_length);
+diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
+index 42bb5fd..8cd2230 100644
+--- a/sound/soc/codecs/rt5665.c
++++ b/sound/soc/codecs/rt5665.c
+@@ -1260,8 +1260,8 @@ static void rt5665_jd_check_handler(struct work_struct *work)
+ 	}
  }
  
- static int handle_out_packet(struct amdtp_stream *s,
-@@ -713,12 +712,12 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
- 	cycle = decrement_cycle_count(cycle, packets);
+-int rt5665_set_jack_detect(struct snd_soc_codec *codec,
+-	struct snd_soc_jack *hs_jack)
++static int rt5665_set_jack_detect(struct snd_soc_codec *codec,
++	struct snd_soc_jack *hs_jack, void *data)
+ {
+ 	struct rt5665_priv *rt5665 = snd_soc_codec_get_drvdata(codec);
  
- 	/* For buffer-over-run prevention. */
--	max_payload_length = amdtp_stream_get_max_payload(s);
-+	max_payload_length = s->max_payload_length;
+@@ -1288,7 +1288,6 @@ int rt5665_set_jack_detect(struct snd_soc_codec *codec,
  
- 	for (i = 0; i < packets; i++) {
- 		cycle = increment_cycle_count(cycle, 1);
+ 	return 0;
+ }
+-EXPORT_SYMBOL_GPL(rt5665_set_jack_detect);
  
--		/* The number of quadlets in this packet */
-+		/* The number of bytes in this packet */
- 		payload_length =
- 			(be32_to_cpu(headers[i]) >> ISO_DATA_LENGTH_SHIFT);
- 		if (payload_length > max_payload_length) {
-@@ -751,6 +750,8 @@ static void amdtp_stream_first_callback(struct fw_iso_context *context,
- 	u32 cycle;
- 	unsigned int packets;
+ static void rt5665_jack_detect_handler(struct work_struct *work)
+ {
+@@ -4567,6 +4566,7 @@ static struct snd_soc_codec_driver soc_codec_dev_rt5665 = {
+ 	},
+ 	.set_sysclk = rt5665_set_codec_sysclk,
+ 	.set_pll = rt5665_set_codec_pll,
++	.set_jack = rt5665_set_jack_detect,
+ };
  
-+	s->max_payload_length = amdtp_stream_get_max_payload(s);
-+
- 	/*
- 	 * For in-stream, first packet has come.
- 	 * For out-stream, prepared to transmit first packet
-diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-index 2bd4de4..7e88317 100644
---- a/sound/firewire/amdtp-stream.h
-+++ b/sound/firewire/amdtp-stream.h
-@@ -110,6 +110,7 @@ struct amdtp_stream {
- 	int (*handle_packet)(struct amdtp_stream *s,
- 			unsigned int payload_quadlets, unsigned int cycle,
- 			unsigned int index);
-+	unsigned int max_payload_length;
  
- 	/* For CIP headers. */
- 	unsigned int source_node_id_field;
+diff --git a/sound/soc/codecs/rt5665.h b/sound/soc/codecs/rt5665.h
+index a30f5e6..1db5c6a 100644
+--- a/sound/soc/codecs/rt5665.h
++++ b/sound/soc/codecs/rt5665.h
+@@ -1984,7 +1984,5 @@ enum {
+ 
+ int rt5665_sel_asrc_clk_src(struct snd_soc_codec *codec,
+ 		unsigned int filter_mask, unsigned int clk_src);
+-int rt5665_set_jack_detect(struct snd_soc_codec *codec,
+-	struct snd_soc_jack *hs_jack);
+ 
+ #endif /* __RT5665_H__ */
 -- 
-2.9.3
+2.7.4
