@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tas2552: Return the real error code" to
-	the asoc tree
-Date: Tue, 11 Apr 2017 19:37:26 +0100
-Message-ID: <E1cy0fO-00047k-Mt@debutante>
-References: <1491918122-15253-1-git-send-email-fabio.estevam@nxp.com>
+Subject: Applied "ASoC: topology: Fix to store enum text
+	values" to the asoc tree
+Date: Tue, 11 Apr 2017 19:37:29 +0100
+Message-ID: <E1cy0fR-00048u-OO@debutante>
+References: <1491896182-14199-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D28D92666E1
- for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2017 20:37:38 +0200 (CEST)
-In-Reply-To: <1491918122-15253-1-git-send-email-fabio.estevam@nxp.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CC9A266D8D
+ for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2017 20:37:44 +0200 (CEST)
+In-Reply-To: <1491896182-14199-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@nxp.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, dmurphy@ti.com
+To: Mousumi Jana <mousumix.jana@intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, tiwai@suse.de, Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>, lgirdwood@gmail.com, "Kranthikumar, , GudishaX" <gudishax.kranthikumar@intel.com>, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tas2552: Return the real error code
+   ASoC: topology: Fix to store enum text values
 
 has been applied to the asoc tree at
 
@@ -53,32 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From 6f2daf82fa1e92fcc10ec34a1d0ffe85a00bf794 Mon Sep 17 00:00:00 2001
-From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Tue, 11 Apr 2017 10:42:02 -0300
-Subject: [PATCH] ASoC: tas2552: Return the real error code
+>From b6e38b2944f1153199becefb14ae3ee01778863e Mon Sep 17 00:00:00 2001
+From: Mousumi Jana <mousumix.jana@intel.com>
+Date: Tue, 11 Apr 2017 13:06:22 +0530
+Subject: [PATCH] ASoC: topology: Fix to store enum text values
 
-In the case of error in tas2552_codec_probe() we should better
-propagate the real error code instead of always returning '-EIO'.
+Add missing enum texts store in soc_enum.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+Signed-off-by: Mousumi Jana <mousumix.jana@intel.com>
+Signed-off-by: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
+Signed-off-by: Kranthikumar, GudishaX <gudishax.kranthikumar@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tas2552.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/soc-topology.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
-index baf455e8c2f7..fd5251e98eca 100644
---- a/sound/soc/codecs/tas2552.c
-+++ b/sound/soc/codecs/tas2552.c
-@@ -611,7 +611,7 @@ static int tas2552_codec_probe(struct snd_soc_codec *codec)
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 65670b2b408c..8e3df8ba9b68 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -934,6 +934,7 @@ static int soc_tplg_denum_create_texts(struct soc_enum *se,
+ 		}
+ 	}
  
- 	regulator_bulk_disable(ARRAY_SIZE(tas2552->supplies),
- 					tas2552->supplies);
--	return -EIO;
-+	return ret;
- }
++	se->texts = (const char * const *)se->dobj.control.dtexts;
+ 	return 0;
  
- static int tas2552_codec_remove(struct snd_soc_codec *codec)
+ err:
 -- 
 2.11.0
