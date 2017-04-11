@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hisilicon: Use
-	devm_snd_soc_register_component" to the asoc tree
-Date: Tue, 11 Apr 2017 21:42:03 +0100
-Message-ID: <E1cy2bz-0007zu-Pt@debutante>
+Subject: Applied "ASoC: hisilicon: Add error returns even for
+	cases that shouldn't happen." to the asoc tree
+Date: Tue, 11 Apr 2017 21:42:07 +0100
+Message-ID: <E1cy2c3-00081Z-W7@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CA1F6266DCC
- for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2017 22:42:11 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 58066266DD5
+ for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2017 22:42:15 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: hisilicon: Use devm_snd_soc_register_component
+   ASoC: hisilicon: Add error returns even for cases that shouldn't happen.
 
 has been applied to the asoc tree at
 
@@ -52,57 +52,40 @@ to this mail.
 Thanks,
 Mark
 
->From e6d56d21bdcfd8968c1859bc1892608acad3e6d8 Mon Sep 17 00:00:00 2001
+>From da13d7462b013ab58129fe20bfb3acb3aa73e07e Mon Sep 17 00:00:00 2001
 From: John Stultz <john.stultz@linaro.org>
-Date: Tue, 11 Apr 2017 12:15:18 -0700
-Subject: [PATCH] ASoC: hisilicon: Use devm_snd_soc_register_component
+Date: Tue, 11 Apr 2017 12:15:16 -0700
+Subject: [PATCH] ASoC: hisilicon: Add error returns even for cases that
+ shouldn't happen.
 
-Per feedback from Mark Brown, this patch updates the hi6210-i2s
-driver to use devm_snd_soc_register_component which simplifies
-the logic a bit.
+This patch addresses feedback from Mark Brown, adding a few
+extra error returns in cases that shouldn't happen
 
 Signed-off-by: John Stultz <john.stultz@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/hisilicon/hi6210-i2s.c | 18 ++----------------
- 1 file changed, 2 insertions(+), 16 deletions(-)
+ sound/soc/hisilicon/hi6210-i2s.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/sound/soc/hisilicon/hi6210-i2s.c b/sound/soc/hisilicon/hi6210-i2s.c
-index 27553dca7cc6..45163e5202f5 100644
+index 45691b70060c..1909bfc6950a 100644
 --- a/sound/soc/hisilicon/hi6210-i2s.c
 +++ b/sound/soc/hisilicon/hi6210-i2s.c
-@@ -591,22 +591,9 @@ static int hi6210_i2s_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
+@@ -395,6 +395,7 @@ static int hi6210_i2s_hw_params(struct snd_pcm_substream *substream,
+ 		break;
+ 	default:
+ 		WARN_ONCE(1, "Invalid i2s->fmt MASTER_MASK. This shouldn't happen\n");
++		return -EINVAL;
+ 	}
  
--	ret = snd_soc_register_component(&pdev->dev, &hi6210_i2s_i2s_comp,
-+	ret = devm_snd_soc_register_component(&pdev->dev, &hi6210_i2s_i2s_comp,
- 					 &i2s->dai, 1);
--	if (ret) {
--		dev_err(&pdev->dev, "Failed to register dai\n");
--		return ret;
--	}
--
--	return 0;
--}
--
--static int hi6210_i2s_remove(struct platform_device *pdev)
--{
--	snd_soc_unregister_component(&pdev->dev);
--	dev_set_drvdata(&pdev->dev, NULL);
--
--	return 0;
-+	return ret;
- }
+ 	switch (i2s->format & SND_SOC_DAIFMT_FORMAT_MASK) {
+@@ -409,6 +410,7 @@ static int hi6210_i2s_hw_params(struct snd_pcm_substream *substream,
+ 		break;
+ 	default:
+ 		WARN_ONCE(1, "Invalid i2s->fmt FORMAT_MASK. This shouldn't happen\n");
++		return -EINVAL;
+ 	}
  
- static const struct of_device_id hi6210_i2s_dt_ids[] = {
-@@ -618,7 +605,6 @@ MODULE_DEVICE_TABLE(of, hi6210_i2s_dt_ids);
- 
- static struct platform_driver hi6210_i2s_driver = {
- 	.probe = hi6210_i2s_probe,
--	.remove = hi6210_i2s_remove,
- 	.driver = {
- 		.name = "hi6210_i2s",
- 		.of_match_table = hi6210_i2s_dt_ids,
+ 	val = hi6210_read_reg(i2s, HII2S_I2S_CFG);
 -- 
 2.11.0
