@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Improve hi6210-i2s DT bindings" to the
-	asoc tree
-Date: Tue, 11 Apr 2017 19:37:32 +0100
-Message-ID: <E1cy0fU-00049g-CF@debutante>
+Subject: Applied "ASoC: tas2552: Return the real error code" to
+	the asoc tree
+Date: Tue, 11 Apr 2017 19:37:26 +0100
+Message-ID: <E1cy0fO-00047k-Mt@debutante>
+References: <1491918122-15253-1-git-send-email-fabio.estevam@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3458B26680F
- for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2017 20:37:40 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id D28D92666E1
+ for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2017 20:37:38 +0200 (CEST)
+In-Reply-To: <1491918122-15253-1-git-send-email-fabio.estevam@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Stultz <john.stultz@linaro.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, dmurphy@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Improve hi6210-i2s DT bindings
+   ASoC: tas2552: Return the real error code
 
 has been applied to the asoc tree at
 
@@ -52,46 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From 86666c083a4eacb798754f2485bbecfedc9fc7d7 Mon Sep 17 00:00:00 2001
-From: John Stultz <john.stultz@linaro.org>
-Date: Mon, 10 Apr 2017 12:35:11 -0700
-Subject: [PATCH] ASoC: Improve hi6210-i2s DT bindings
+>From 6f2daf82fa1e92fcc10ec34a1d0ffe85a00bf794 Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Date: Tue, 11 Apr 2017 10:42:02 -0300
+Subject: [PATCH] ASoC: tas2552: Return the real error code
 
-This patch improves the previously submitted hi6210-i2s DT
-binding, adding extra details to how the multi-dai index
-value maps to the potential interfaces.
-(Currently just index 0 -> the S2 interface, as there is
-only one supported, but in the future other interfaces may
-be enabled.)
+In the case of error in tas2552_codec_probe() we should better
+propagate the real error code instead of always returning '-EIO'.
 
-Signed-off-by: John Stultz <john.stultz@linaro.org>
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/hisilicon,hi6210-i2s.txt | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/codecs/tas2552.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/hisilicon,hi6210-i2s.txt b/Documentation/devicetree/bindings/sound/hisilicon,hi6210-i2s.txt
-index 680bb03577ef..7a296784eb37 100644
---- a/Documentation/devicetree/bindings/sound/hisilicon,hi6210-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/hisilicon,hi6210-i2s.txt
-@@ -17,6 +17,10 @@ Required properties:
- - dma-names: should be "tx" and "rx"
- - hisilicon,sysctrl-syscon: phandle to sysctrl syscon
- - #sound-dai-cells: Should be set to 1 (for multi-dai)
-+   - The dai cell indexes reference the following interfaces:
-+       0: S2 interface
-+       (Currently that is the only one available, but more may be
-+        supported in the future)
+diff --git a/sound/soc/codecs/tas2552.c b/sound/soc/codecs/tas2552.c
+index baf455e8c2f7..fd5251e98eca 100644
+--- a/sound/soc/codecs/tas2552.c
++++ b/sound/soc/codecs/tas2552.c
+@@ -611,7 +611,7 @@ static int tas2552_codec_probe(struct snd_soc_codec *codec)
  
- Example for the hi6210 i2s controller:
+ 	regulator_bulk_disable(ARRAY_SIZE(tas2552->supplies),
+ 					tas2552->supplies);
+-	return -EIO;
++	return ret;
+ }
  
-@@ -32,3 +36,7 @@ i2s0: i2s@f7118000{
- 	hisilicon,sysctrl-syscon = <&sys_ctrl>;
- 	#sound-dai-cells = <1>;
- };
-+
-+Then when referencing the i2s controller:
-+	sound-dai = <&i2s0 0>; /* index 0 => S2 interface */
-+
+ static int tas2552_codec_remove(struct snd_soc_codec *codec)
 -- 
 2.11.0
