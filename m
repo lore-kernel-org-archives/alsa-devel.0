@@ -1,22 +1,14 @@
-From: Olivier MOYSAN <olivier.moysan@st.com>
-Subject: Re: [PATCH 1/2] dt-bindings: Document STM32 I2S
-	bindings
-Date: Tue, 11 Apr 2017 15:44:52 +0000
-Message-ID: <73caede5-ea6f-8b2b-2270-227f7ef31823@st.com>
-References: <1491493236-2574-1-git-send-email-olivier.moysan@st.com>
- <1491493236-2574-2-git-send-email-olivier.moysan@st.com>
- <20170410194832.iivnkyejtywbe2c7@rob-hp-laptop>
- <20170411143250.3r7ys3rjshtxgaee@sirena.org.uk>
+From: olivier moysan <olivier.moysan@st.com>
+Subject: [PATCH v4 0/2] Add STM32 SAI support
+Date: Tue, 11 Apr 2017 17:47:24 +0200
+Message-ID: <1491925646-29113-1-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 632352666E1
- for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2017 17:44:56 +0200 (CEST)
-In-Reply-To: <20170411143250.3r7ys3rjshtxgaee@sirena.org.uk>
-Content-Language: en-US
-Content-ID: <BD738E8F3DD83B42AF9D82A2C38AEDCE@st.com>
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id E2E192666E1
+ for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2017 17:47:31 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,43 +18,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alexandre TORGUE <alexandre.torgue@st.com>, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Benjamin GAIGNARD <benjamin.gaignard@st.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, robh@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com
+Cc: arnaud.pouliquen@st.com, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello Rob, Mark
+This patch-set handles the Serial Audio Interface (SAI) IP on STM32 platforms.
 
-Thanks for your review.
-Please find my comments below.
+The SAI IP is composed of two Sub-block A and B. (see the figure below)
+Each sub-block makes use of individual and shared resources.
 
-On 04/11/2017 04:32 PM, Mark Brown wrote:
-> On Mon, Apr 10, 2017 at 02:48:32PM -0500, Rob Herring wrote:
->> On Thu, Apr 06, 2017 at 05:40:35PM +0200, olivier moysan wrote:
->
->>> +Required properties:
->>> +  - compatible: Must be "st,stm32h7-i2s"
->>> +  - #sound-dai-cells: Must be 1. (one parameter)
->>> +    This parameter allows to specify CPU DAI index in soundcard CPU dai link.
->>> +	index 0: playback DAI
->>> +	index 1: capture DAI
->>> +	index 2: full duplex DAI
->
->> Is this still needed for graph-card?
->
-> The graph card is blocked on your review...  I'm also not clear how
-> without something like this we'd be able to identify a specific DAI
-> within a device if we don't have a way of identifying them.
->
-Yes, it seems that audio graph card does not allow to select a specific 
-DAI. This will probably be necessary.
+Shared resources:
+	- Reset line. Reset common and sub-block registers.
+	- Bus interface clocks. This clock is not exposed in device
+	as it it managed by clock driver, according to kernel clocks gating.
+	- Common register. SAI IP exhibits a common configuration register
+	to manage synchronization modes. NB: These modes are not yet implemented
+	in this version of the SAI driver.
+	- Interrupt. Sub-blocks have their own interrupt status registers but they 
+	share the same interrupt line.
 
-However, regarding STM32 I2S driver, I'm wondering if selecting DAI
-is the best way to configure interface as tx, rx or fd.
-Maybe, it is more relevant to configure DAI according to DMA
-configuration from I2S node.
-This would moreover avoid to allocate 2 dmas channels when not
-necessary (tx or rx only).
-If you agree with this, I will implement this change in a v2.
+Individual resources:
+	- Register set
+	- DMA request line.
+	- Communication interface. 
+	Each sub-block has its own GPIOs and associated bus lines.
+	- Kernel clock. 
+	Each sub-block has its own dedicated clock for its communication interface.
 
-BRs
-olivier
+To reflect this architecture Sub-block A and B are handled by 2 child devices.
+Sub-block A and B devices can be configured independently either as transmitter
+or receiver. A PCM device is associated to each sub-block.
+
+A sub-block has to select the appropriated parent clock at runtime, 
+depending on the audio stream sampling rate to be played or captured.
+Two parent clocks must be provided to support sampling rates multiples
+of 8 kHz or 11.025kHz.
+
+ Interface clock  +--------------------------------+
++---------------> | SAI IP                         |
+ Reset            |     +-----------------+        |
++---------------> |     |common registers |        |
+                  |     +-----------------+        |
+                  |                                |
+                  |    +----------------------+    |
+                  |    | Sub-block A          |    |
+ Kernel clock A   |    |                      |    | Bus A
++--------------------> | +----------------+   +---------------->
+                  |    | |A registers     |   |    |
+                  |    | +----------------+   |    |
+                  |    +----------------------+    |
+                  |                                |
+                  |    +----------------------+    |
+                  |    | Sub-block B          |    |
+ Kernel clock B   |    |                      |    | Bus B
++--------------------> | +----------------+   +----------------->
+                  |    | |B registers     |   |    |
+                  |    | +----------------+   |    |
+                  |    +----------------------+    |
+                  |                                |
+                  +--------------------------------+
+
+v3 -> v4
+	Apply minor changes from Peter review
+
+olivier moysan (2):
+  ASoC: stm32: add bindings for SAI
+  ASoC: stm32: add SAI driver
+
+ .../devicetree/bindings/sound/st,stm32-sai.txt     |  89 +++
+ sound/soc/Kconfig                                  |   1 +
+ sound/soc/Makefile                                 |   1 +
+ sound/soc/stm/Kconfig                              |   8 +
+ sound/soc/stm/Makefile                             |   6 +
+ sound/soc/stm/stm32_sai.c                          | 115 +++
+ sound/soc/stm/stm32_sai.h                          | 199 +++++
+ sound/soc/stm/stm32_sai_sub.c                      | 881 +++++++++++++++++++++
+ 8 files changed, 1300 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-sai.txt
+ create mode 100644 sound/soc/stm/Kconfig
+ create mode 100644 sound/soc/stm/Makefile
+ create mode 100644 sound/soc/stm/stm32_sai.c
+ create mode 100644 sound/soc/stm/stm32_sai.h
+ create mode 100644 sound/soc/stm/stm32_sai_sub.c
+
+-- 
+1.9.1
