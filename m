@@ -1,21 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: Document STM32 I2S
-	bindings
-Date: Tue, 11 Apr 2017 22:10:40 +0100
-Message-ID: <20170411211040.htrcedus3c57fbed@sirena.org.uk>
-References: <1491493236-2574-1-git-send-email-olivier.moysan@st.com>
- <1491493236-2574-2-git-send-email-olivier.moysan@st.com>
- <20170410194832.iivnkyejtywbe2c7@rob-hp-laptop>
- <20170411143250.3r7ys3rjshtxgaee@sirena.org.uk>
- <73caede5-ea6f-8b2b-2270-227f7ef31823@st.com>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: [PATCH 2/3] ALSA: hda: Add Geminilake vendor nid
+Date: Wed, 12 Apr 2017 09:53:59 +0530
+Message-ID: <1491971040-6039-2-git-send-email-subhransu.s.prusty@intel.com>
+References: <1491971040-6039-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9130808511986004486=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C755B26684C
- for <alsa-devel@alsa-project.org>; Tue, 11 Apr 2017 23:10:57 +0200 (CEST)
-In-Reply-To: <73caede5-ea6f-8b2b-2270-227f7ef31823@st.com>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id CC5DE266E00
+ for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2017 06:36:46 +0200 (CEST)
+In-Reply-To: <1491971040-6039-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,63 +20,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Olivier MOYSAN <olivier.moysan@st.com>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alexandre TORGUE <alexandre.torgue@st.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Benjamin GAIGNARD <benjamin.gaignard@st.com>
+To: alsa-devel@alsa-project.org
+Cc: Ander Conselvan De Oliveira <ander.conselvan.de.oliveira@intel.com>, tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+From: Ander Conselvan De Oliveira <ander.conselvan.de.oliveira@intel.com>
 
---===============9130808511986004486==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="jh2nlyaixolfggcy"
-Content-Disposition: inline
+Separate out the Geminilake platform init and add vendor nid for it.
 
+Fixes: 126cfa2f5e15 ("ALSA: hda: Add Geminilake HDMI codec ID")
+Signed-off-by: Ander Conselvan De Oliveira <ander.conselvan.de.oliveira@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Cc: Senthilnathan Veppur <senthilnathanx.veppur@intel.com>
+Cc: Vinod Koul <vinod.koul@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_hdmi.c | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
 
---jh2nlyaixolfggcy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Apr 11, 2017 at 03:44:52PM +0000, Olivier MOYSAN wrote:
-
-> However, regarding STM32 I2S driver, I'm wondering if selecting DAI
-> is the best way to configure interface as tx, rx or fd.
-
-Why do you even need to configure this?
-
-> Maybe, it is more relevant to configure DAI according to DMA
-> configuration from I2S node.
-> This would moreover avoid to allocate 2 dmas channels when not
-> necessary (tx or rx only).
-> If you agree with this, I will implement this change in a v2.
-
-That sounds wrong, I'd expect this wiring to be done statically as part
-of the .dtsi for the SoC (or just grabbed as needed at runtime if
-things are flexbile enough) rather than being a configuration thing done
-per board...  I had thought that this was configuration reflecting
-different ways of taping out the IP with different feature sets, is that
-not the case?
-
---jh2nlyaixolfggcy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljtRk8ACgkQJNaLcl1U
-h9CLDgf+M9DhYHfCGvepGUI42xmKuQfThWXEWGEqG3AWvay34FVJhdQzfBMwcYT3
-/3OFaOyDM5EkfISPUZo0ZKpPqE6QHg5jlgodFbZD1rwX8kOl1FaFVDFq3k7d5d5/
-5Y444c5D4/sfkUH9O3nANvyl2cBfYPys0UwzCU4S/+Nw/XvehvSF0mMOsz3a5dkh
-CCdCWTjjcqOjQUDEnf2Enx866l+62vBbBWdYww23ijpgx6SUhRrsejDewuVEhUDb
-jkBsF4dAp5675V2serc57020YmNRiM+Fu431FhJk7NGFocc7gFId3eksr0QRfQYg
-mMPeywRQFdTFFdWEQfdfRMuCOWXeeA==
-=C5cB
------END PGP SIGNATURE-----
-
---jh2nlyaixolfggcy--
-
---===============9130808511986004486==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9130808511986004486==--
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index 7413fff06d70..843f5fe1dfb5 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2373,6 +2373,7 @@ static void intel_haswell_fixup_connect_list(struct hda_codec *codec,
+ }
+ 
+ #define INTEL_VENDOR_NID 0x08
++#define INTEL_GLK_VENDOR_NID 0x0B
+ #define INTEL_GET_VENDOR_VERB 0xf81
+ #define INTEL_SET_VENDOR_VERB 0x781
+ #define INTEL_EN_DP12			0x02 /* enable DP 1.2 features */
+@@ -2562,6 +2563,27 @@ static int patch_i915_hsw_hdmi(struct hda_codec *codec)
+ 	return intel_haswell_common_init(codec);
+ }
+ 
++static int patch_i915_glk_hdmi(struct hda_codec *codec)
++{
++	struct hdmi_spec *spec;
++	int err;
++
++	/* HSW+ requires i915 binding */
++	if (!codec->bus->core.audio_component) {
++		codec_info(codec, "No i915 binding for Intel HDMI/DP codec\n");
++		return -ENODEV;
++	}
++
++	err = alloc_generic_hdmi(codec);
++	if (err < 0)
++		return err;
++
++	spec = codec->spec;
++	spec->vendor_nid = INTEL_GLK_VENDOR_NID;
++
++	return intel_haswell_common_init(codec);
++}
++
+ /* Intel Baytrail and Braswell; with eld notifier */
+ static int patch_i915_byt_hdmi(struct hda_codec *codec)
+ {
+@@ -3814,7 +3836,7 @@ static int patch_via_hdmi(struct hda_codec *codec)
+ HDA_CODEC_ENTRY(0x80862809, "Skylake HDMI",	patch_i915_hsw_hdmi),
+ HDA_CODEC_ENTRY(0x8086280a, "Broxton HDMI",	patch_i915_hsw_hdmi),
+ HDA_CODEC_ENTRY(0x8086280b, "Kabylake HDMI",	patch_i915_hsw_hdmi),
+-HDA_CODEC_ENTRY(0x8086280d, "Geminilake HDMI",	patch_i915_hsw_hdmi),
++HDA_CODEC_ENTRY(0x8086280d, "Geminilake HDMI",	patch_i915_glk_hdmi),
+ HDA_CODEC_ENTRY(0x80862880, "CedarTrail HDMI",	patch_generic_hdmi),
+ HDA_CODEC_ENTRY(0x80862882, "Valleyview2 HDMI",	patch_i915_byt_hdmi),
+ HDA_CODEC_ENTRY(0x80862883, "Braswell HDMI",	patch_i915_byt_hdmi),
+-- 
+1.9.1
