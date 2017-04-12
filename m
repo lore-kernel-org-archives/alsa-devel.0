@@ -1,108 +1,66 @@
-From: Simon Ho <simon.ho.cnxt@gmail.com>
-Subject: Re: [PATCH v2 2/2] ASoC: add support for Conexant
- CX2072X CODEC
-Date: Wed, 12 Apr 2017 18:31:37 +0800
-Message-ID: <20170412103137.GB11582@GMAIL.COM>
-References: <cover.1491382907.git.simon.ho@conexant.com>
- <5b7e78fef2c8e299d39ebaa560d81d66e619e7eb.1491382907.git.simon.ho@conexant.com>
- <s5hwpart6iu.wl-tiwai@suse.de> <s5hbms22n7z.wl-tiwai@suse.de>
- <s5h1ssy2hv6.wl-tiwai@suse.de>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 1/2] dt-bindings: Document STM32 I2S bindings
+Date: Wed, 12 Apr 2017 12:32:51 +0100
+Message-ID: <20170412113251.nfyk5sw6c5pnpmwr@sirena.org.uk>
+References: <1491493236-2574-1-git-send-email-olivier.moysan@st.com>
+ <1491493236-2574-2-git-send-email-olivier.moysan@st.com>
+ <20170410194832.iivnkyejtywbe2c7@rob-hp-laptop>
+ <20170411143250.3r7ys3rjshtxgaee@sirena.org.uk>
+ <73caede5-ea6f-8b2b-2270-227f7ef31823@st.com>
+ <20170411211040.htrcedus3c57fbed@sirena.org.uk>
+ <86a179ad-7961-18f7-8050-25e0e584c77d@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f65.google.com (mail-pg0-f65.google.com [74.125.83.65])
- by alsa0.perex.cz (Postfix) with ESMTP id AEF1426648D
- for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2017 12:31:42 +0200 (CEST)
-Received: by mail-pg0-f65.google.com with SMTP id 79so4496945pgf.0
- for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2017 03:31:42 -0700 (PDT)
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="6ximvfxq4qysdbn7"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <s5h1ssy2hv6.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, Simon Ho <simon.ho@conexant.com>, lgirdwood@gmail.com, broonie@kernel.org
+In-Reply-To: <86a179ad-7961-18f7-8050-25e0e584c77d-qxv4g6HH51o@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Olivier MOYSAN <olivier.moysan-qxv4g6HH51o@public.gmane.org>
+Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "perex-/Fr2/VpizcU@public.gmane.org" <perex-/Fr2/VpizcU@public.gmane.org>, "tiwai-IBi9RG/b67k@public.gmane.org" <tiwai-IBi9RG/b67k@public.gmane.org>, "mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre TORGUE <alexandre.torgue-qxv4g6HH51o@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "mark.rutland-5wv7dgnIgG8@public.gmane.org" <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Arnaud POULIQUEN <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Benjamin GAIGNARD <benjamin.gaignard-qxv4g6HH51o@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Apr 12, 2017 at 09:41:01AM +0200, Takashi Iwai wrote:
-> On Wed, 12 Apr 2017 07:45:20 +0200,
-> Takashi Iwai wrote:
-> > 
-> > On Tue, 11 Apr 2017 15:31:37 +0200,
-> > Takashi Iwai wrote:
-> > > 
-> > > On Wed, 05 Apr 2017 11:07:14 +0200,
-> > > <simon.ho.cnxt@gmail.com> wrote:
-> > > > 
-> > > > --- /dev/null
-> > > > +++ b/sound/soc/codecs/cx2072x.c
-> > > > +/**
-> > > > + * cx2072x_enable_detect - Enable CX2072X jack detection
-> > > > + * @codec : pointer variable to codec having information related to codec
-> > > > + *
-> > > > + */
-> > > > +int cx2072x_enable_detect(struct snd_soc_codec *codec)
-> > > > +{
-> > > .....
-> > > > +}
-> > > > +EXPORT_SYMBOL_GPL(cx2072x_enable_detect);
-> > > > +
-> > > > +/*
-> > > > + * cx2072x_get_jack_state: Return current jack state.
-> > > > + * @codec : pointer variable to codec having information related to codec
-> > > > + *
-> > > > + */
-> > > > +int cx2072x_get_jack_state(struct snd_soc_codec *codec)
-> > > > +{
-> > > ....
-> > > > +}
-> > > > +EXPORT_SYMBOL_GPL(cx2072x_get_jack_state);
-> > > > --- /dev/null
-> > > > +++ b/sound/soc/codecs/cx2072x.h
-> > > ....
-> > > > +enum cx2072x_jack_types {
-> > > > +	CX_JACK_NONE = 0x0000,
-> > > > +	CX_JACK_HEADPHONE = 0x0001,
-> > > > +	CX_JACK_APPLE_HEADSET = 0x0002,
-> > > > +	CX_JACK_NOKIE_HEADSET = 0x0003,
-> > > > +};
-> > > > +
-> > > > +int cx2072x_hs_jack_report(struct snd_soc_codec *codec);
-> > > 
-> > > This function is nowhere defined.  And the new jack functions
-> > > cx2072x_enable_detect() and cx2072x_get_jack_state() are not declared
-> > > here, either.
-> > 
-> > Also, some DAPM entries are missing / wrong, obviously.
-> 
-> ... and yet another missing ones, the powers for some pins aren't
-> hooked.
-> 
-> 
-> Takashi
-> 
 
-You are right, thanks for caching that. 
+--6ximvfxq4qysdbn7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Simon
+On Wed, Apr 12, 2017 at 08:30:31AM +0000, Olivier MOYSAN wrote:
+> On 04/11/2017 11:10 PM, Mark Brown wrote:
 
-> --- a/sound/soc/codecs/cx2072x.c
-> +++ b/sound/soc/codecs/cx2072x.c
-> @@ -1737,6 +1737,10 @@ static const struct snd_soc_dapm_route cx2072x_intercon[] = {
->  	{"Out AIF", NULL, "I2S ADC2R"},
->  	{"Out AIF", NULL, "AFG Power"},
->  	{"AEC REF", NULL, "Out AIF"},
-> +	{"PortB In En", NULL, "PortB Power"},
-> +	{"PortC In En", NULL, "PortC Power"},
-> +	{"PortD In En", NULL, "PortD Power"},
-> +	{"PortE In En", NULL, "PortE Power"},
->  };
->  
->  static void cx2072x_sw_reset(struct cx2072x_priv *cx2072x)
+> > That sounds wrong, I'd expect this wiring to be done statically as part
+> > of the .dtsi for the SoC (or just grabbed as needed at runtime if
+> > things are flexbile enough) rather than being a configuration thing done
+> > per board...  I had thought that this was configuration reflecting
+> > different ways of taping out the IP with different feature sets, is that
+> > not the case?
+
+> This configuration is board dependent. The IP may be used as rx, tx or=20
+> fd depending on board. So I think it can make sense to have a DMA=20
+> configuration linked to board, and to set IP mode accordingly.
+
+It is totally normal to just not use one direction in a given system, we
+don't normally need to do anything special to handle things.  I'm a bit
+confused as to what's different here and needs configuring?
+
+--6ximvfxq4qysdbn7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljuEGIACgkQJNaLcl1U
+h9BYhAf/V3/RzbH8OBgoke2AwV7ao3JnjAcUJrFULd/Pca1N4JRTwDU7FExysT00
+EfRNADMZmjf3MhEAD1BsUJ3oR+ps3HaieMZIIy4c8bVurLAIGNnlt/T/TWck6aDq
+JbuGIWDjOrp+9s2vzEMZnEute062A9fsXXYL/gOC18JPRrg0JvlHraKzuF2QSXku
+ZhBkJX2TG/v6bLx2/8Qq1Y4W2zwGnOavTgKHkHOrUCyCpHKDjbF4gYr76yPfUej9
+K4T6tnnvORnwBZRr3efc0ub2H1jYz1PGrS1zvCPWYo8vnuMJskU177xep0H2tQ3V
+3BFOuTt8MVL153MS+mNkWzQemLSCkQ==
+=+jfQ
+-----END PGP SIGNATURE-----
+
+--6ximvfxq4qysdbn7--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
