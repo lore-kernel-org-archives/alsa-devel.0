@@ -1,17 +1,16 @@
-From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH] ALSA: line6: constify snd_kcontrol_new
-	structures
-Date: Wed, 12 Apr 2017 18:40:47 +0530
-Message-ID: <1492002647-11016-1-git-send-email-bhumirks@gmail.com>
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Subject: [PATCH 1/2] ASoC: fsl ssi doc: Move 'fsl,
+	ssi-asynchronous' to the optional section
+Date: Wed, 12 Apr 2017 10:20:35 -0300
+Message-ID: <1492003236-29690-1-git-send-email-fabio.estevam@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f65.google.com (mail-pg0-f65.google.com [74.125.83.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 173482665D5
- for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2017 15:10:55 +0200 (CEST)
-Received: by mail-pg0-f65.google.com with SMTP id o123so5268866pga.1
- for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2017 06:10:55 -0700 (PDT)
+Received: from NAM01-SN1-obe.outbound.protection.outlook.com
+ (mail-sn1nam01on0053.outbound.protection.outlook.com [104.47.32.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6609D2665D5
+ for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2017 15:20:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,79 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: julia.lawall@lip6.fr, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Bhumika Goyal <bhumirks@gmail.com>
+To: broonie@kernel.org
+Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
-Declare snd_kcontrol_new strcutures as const as they are only passed as
-an argument to the function snd_ctl_new1. This argument is of type const,
-so snd_kcontrol_new structures having this property can be made const too.
-Done using Coccinelle:
+Property 'fsl,ssi-asynchronous' is optional, so move it to the optional
+section of the document.
 
-@r disable optional_qualifier@
-identifier x;
-position p;
-@@
-static struct snd_kcontrol_new x@p={...};
-
-@ok@
-identifier r.x;
-position p;
-@@
-snd_ctl_new1(&x@p,...)
-
-@bad@
-position p != {r.p,ok.p};
-identifier r.x;
-@@
-x@p
-
-@depends on !bad disable optional_qualifier@
-identifier r.x;
-@@
-+const
-struct snd_kcontrol_new x;
-
-Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 ---
- sound/usb/line6/pod.c      | 2 +-
- sound/usb/line6/toneport.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/sound/fsl,ssi.txt | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/sound/usb/line6/pod.c b/sound/usb/line6/pod.c
-index 17aa616..358224c 100644
---- a/sound/usb/line6/pod.c
-+++ b/sound/usb/line6/pod.c
-@@ -380,7 +380,7 @@ static int snd_pod_control_monitor_put(struct snd_kcontrol *kcontrol,
- }
+diff --git a/Documentation/devicetree/bindings/sound/fsl,ssi.txt b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
+index 5b76be4..1d292d7 100644
+--- a/Documentation/devicetree/bindings/sound/fsl,ssi.txt
++++ b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
+@@ -28,16 +28,6 @@ Required properties:
+                     by SOC design.  See the notes below.
+ - fsl,fifo-depth:   The number of elements in the transmit and receive FIFOs.
+                     This number is the maximum allowed value for SFCSR[TFWM0].
+-- fsl,ssi-asynchronous:
+-                    If specified, the SSI is to be programmed in asynchronous
+-                    mode.  In this mode, pins SRCK, STCK, SRFS, and STFS must
+-                    all be connected to valid signals.  In synchronous mode,
+-                    SRCK and SRFS are ignored.  Asynchronous mode allows
+-                    playback and capture to use different sample sizes and
+-                    sample rates.  Some drivers may require that SRCK and STCK
+-                    be connected together, and SRFS and STFS be connected
+-                    together.  This would still allow different sample sizes,
+-                    but not different sample rates.
+  - clocks:          "ipg" - Required clock for the SSI unit
+                     "baud" - Required clock for SSI master mode. Otherwise this
+ 		      clock is not used
+@@ -61,6 +51,16 @@ Optional properties:
+ - fsl,mode:         The operating mode for the AC97 interface only.
+                     "ac97-slave" - AC97 mode, SSI is clock slave
+                     "ac97-master" - AC97 mode, SSI is clock master
++- fsl,ssi-asynchronous:
++                    If specified, the SSI is to be programmed in asynchronous
++                    mode.  In this mode, pins SRCK, STCK, SRFS, and STFS must
++                    all be connected to valid signals.  In synchronous mode,
++                    SRCK and SRFS are ignored.  Asynchronous mode allows
++                    playback and capture to use different sample sizes and
++                    sample rates.  Some drivers may require that SRCK and STCK
++                    be connected together, and SRFS and STFS be connected
++                    together.  This would still allow different sample sizes,
++                    but not different sample rates.
  
- /* control definition */
--static struct snd_kcontrol_new pod_control_monitor = {
-+static const struct snd_kcontrol_new pod_control_monitor = {
- 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	.name = "Monitor Playback Volume",
- 	.index = 0,
-diff --git a/sound/usb/line6/toneport.c b/sound/usb/line6/toneport.c
-index 8e22f43..ba7975c 100644
---- a/sound/usb/line6/toneport.c
-+++ b/sound/usb/line6/toneport.c
-@@ -250,7 +250,7 @@ static void toneport_start_pcm(unsigned long arg)
- }
- 
- /* control definition */
--static struct snd_kcontrol_new toneport_control_monitor = {
-+static const struct snd_kcontrol_new toneport_control_monitor = {
- 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	.name = "Monitor Playback Volume",
- 	.index = 0,
-@@ -261,7 +261,7 @@ static struct snd_kcontrol_new toneport_control_monitor = {
- };
- 
- /* source selector definition */
--static struct snd_kcontrol_new toneport_control_source = {
-+static const struct snd_kcontrol_new toneport_control_source = {
- 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	.name = "PCM Capture Source",
- 	.index = 0,
+ Child 'codec' node required properties:
+ - compatible:       Compatible list, contains the name of the codec
 -- 
 2.7.4
