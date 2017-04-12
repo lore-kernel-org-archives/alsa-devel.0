@@ -1,10 +1,27 @@
 From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH] ALSA: usb-audio: constify snd_kcontrol_new structures
-Date: Wed, 12 Apr 2017 18:38:06 +0530
-Message-ID: <1492002486-9021-1-git-send-email-bhumirks@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: julia.lawall@lip6.fr, clemens@ladisch.de, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ALSA: line6: constify snd_kcontrol_new
+	structures
+Date: Wed, 12 Apr 2017 18:40:47 +0530
+Message-ID: <1492002647-11016-1-git-send-email-bhumirks@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pg0-f65.google.com (mail-pg0-f65.google.com [74.125.83.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 173482665D5
+ for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2017 15:10:55 +0200 (CEST)
+Received: by mail-pg0-f65.google.com with SMTP id o123so5268866pga.1
+ for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2017 06:10:55 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: julia.lawall@lip6.fr, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 Cc: Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
@@ -39,53 +56,44 @@ struct snd_kcontrol_new x;
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- sound/usb/midi.c  | 2 +-
- sound/usb/mixer.c | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/usb/line6/pod.c      | 2 +-
+ sound/usb/line6/toneport.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/usb/midi.c b/sound/usb/midi.c
-index 6e763bc..a35f414 100644
---- a/sound/usb/midi.c
-+++ b/sound/usb/midi.c
-@@ -1922,7 +1922,7 @@ static int roland_load_put(struct snd_kcontrol *kcontrol,
- 	return changed;
+diff --git a/sound/usb/line6/pod.c b/sound/usb/line6/pod.c
+index 17aa616..358224c 100644
+--- a/sound/usb/line6/pod.c
++++ b/sound/usb/line6/pod.c
+@@ -380,7 +380,7 @@ static int snd_pod_control_monitor_put(struct snd_kcontrol *kcontrol,
  }
  
--static struct snd_kcontrol_new roland_load_ctl = {
-+static const struct snd_kcontrol_new roland_load_ctl = {
+ /* control definition */
+-static struct snd_kcontrol_new pod_control_monitor = {
++static const struct snd_kcontrol_new pod_control_monitor = {
  	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	.name = "MIDI Input Mode",
- 	.info = roland_load_info,
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 4703cae..082736c 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1172,7 +1172,7 @@ static struct snd_kcontrol_new usb_feature_unit_ctl = {
+ 	.name = "Monitor Playback Volume",
+ 	.index = 0,
+diff --git a/sound/usb/line6/toneport.c b/sound/usb/line6/toneport.c
+index 8e22f43..ba7975c 100644
+--- a/sound/usb/line6/toneport.c
++++ b/sound/usb/line6/toneport.c
+@@ -250,7 +250,7 @@ static void toneport_start_pcm(unsigned long arg)
+ }
+ 
+ /* control definition */
+-static struct snd_kcontrol_new toneport_control_monitor = {
++static const struct snd_kcontrol_new toneport_control_monitor = {
+ 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 	.name = "Monitor Playback Volume",
+ 	.index = 0,
+@@ -261,7 +261,7 @@ static struct snd_kcontrol_new toneport_control_monitor = {
  };
  
- /* the read-only variant */
--static struct snd_kcontrol_new usb_feature_unit_ctl_ro = {
-+static const struct snd_kcontrol_new usb_feature_unit_ctl_ro = {
+ /* source selector definition */
+-static struct snd_kcontrol_new toneport_control_source = {
++static const struct snd_kcontrol_new toneport_control_source = {
  	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	.name = "", /* will be filled later manually */
- 	.info = mixer_ctl_feature_info,
-@@ -1745,7 +1745,7 @@ static int mixer_ctl_procunit_put(struct snd_kcontrol *kcontrol,
- }
- 
- /* alsa control interface for processing/extension unit */
--static struct snd_kcontrol_new mixer_procunit_ctl = {
-+static const struct snd_kcontrol_new mixer_procunit_ctl = {
- 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	.name = "", /* will be filled later */
- 	.info = mixer_ctl_feature_info,
-@@ -2033,7 +2033,7 @@ static int mixer_ctl_selector_put(struct snd_kcontrol *kcontrol,
- }
- 
- /* alsa control interface for selector unit */
--static struct snd_kcontrol_new mixer_selectunit_ctl = {
-+static const struct snd_kcontrol_new mixer_selectunit_ctl = {
- 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	.name = "", /* will be filled later */
- 	.info = mixer_ctl_selector_info,
+ 	.name = "PCM Capture Source",
+ 	.index = 0,
 -- 
 2.7.4
