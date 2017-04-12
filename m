@@ -1,70 +1,91 @@
-From: Olivier MOYSAN <olivier.moysan@st.com>
-Subject: Re: [PATCH 1/2] dt-bindings: Document STM32 I2S
-	bindings
-Date: Wed, 12 Apr 2017 12:58:16 +0000
-Message-ID: <d886a9c7-ca46-f37a-0e82-6ed8d7a4e052@st.com>
-References: <1491493236-2574-1-git-send-email-olivier.moysan@st.com>
- <1491493236-2574-2-git-send-email-olivier.moysan@st.com>
- <20170410194832.iivnkyejtywbe2c7@rob-hp-laptop>
- <20170411143250.3r7ys3rjshtxgaee@sirena.org.uk>
- <73caede5-ea6f-8b2b-2270-227f7ef31823@st.com>
- <20170411211040.htrcedus3c57fbed@sirena.org.uk>
- <86a179ad-7961-18f7-8050-25e0e584c77d@st.com>
- <20170412113251.nfyk5sw6c5pnpmwr@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id A28C42665D5
- for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2017 14:58:20 +0200 (CEST)
-In-Reply-To: <20170412113251.nfyk5sw6c5pnpmwr@sirena.org.uk>
-Content-Language: en-US
-Content-ID: <6F10239CB1489B46B734FA9E915A79F3@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alexandre TORGUE <alexandre.torgue@st.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Benjamin GAIGNARD <benjamin.gaignard@st.com>
+From: Bhumika Goyal <bhumirks@gmail.com>
+Subject: [PATCH] ALSA: usb-audio: constify snd_kcontrol_new structures
+Date: Wed, 12 Apr 2017 18:38:06 +0530
+Message-ID: <1492002486-9021-1-git-send-email-bhumirks@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: julia.lawall@lip6.fr, clemens@ladisch.de, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Mark,
+Declare snd_kcontrol_new strcutures as const as they are only passed as
+an argument to the function snd_ctl_new1. This argument is of type const,
+so snd_kcontrol_new structures having this property can be made const too.
+Done using Coccinelle:
 
-On 04/12/2017 01:32 PM, Mark Brown wrote:
-> On Wed, Apr 12, 2017 at 08:30:31AM +0000, Olivier MOYSAN wrote:
->> On 04/11/2017 11:10 PM, Mark Brown wrote:
->
->>> That sounds wrong, I'd expect this wiring to be done statically as part
->>> of the .dtsi for the SoC (or just grabbed as needed at runtime if
->>> things are flexbile enough) rather than being a configuration thing done
->>> per board...  I had thought that this was configuration reflecting
->>> different ways of taping out the IP with different feature sets, is that
->>> not the case?
->
->> This configuration is board dependent. The IP may be used as rx, tx or
->> fd depending on board. So I think it can make sense to have a DMA
->> configuration linked to board, and to set IP mode accordingly.
->
-> It is totally normal to just not use one direction in a given system, we
-> don't normally need to do anything special to handle things.  I'm a bit
-> confused as to what's different here and needs configuring?
->
+@r disable optional_qualifier@
+identifier x;
+position p;
+@@
+static struct snd_kcontrol_new x@p={...};
 
-The IP does not provide an audio channel configured either as rx or tx.
-I agree, that in such case, the cpu driver does not generally need
-to worry about direction and there is nothing special required to handle it.
+@ok@
+identifier r.x;
+position p;
+@@
+snd_ctl_new1(&x@p,...)
 
-Here the IP provides 2 channels, 1 tx and 1 rx,  which may be active or 
-not. The driver has to know which channel is used, and if both channels
-have to be managed. The affected registers depend on selected channel. 
-Moreover specific processing has to be performed if both channels are used.
+@bad@
+position p != {r.p,ok.p};
+identifier r.x;
+@@
+x@p
 
-BRs
-olivier
+@depends on !bad disable optional_qualifier@
+identifier r.x;
+@@
++const
+struct snd_kcontrol_new x;
+
+Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+---
+ sound/usb/midi.c  | 2 +-
+ sound/usb/mixer.c | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/sound/usb/midi.c b/sound/usb/midi.c
+index 6e763bc..a35f414 100644
+--- a/sound/usb/midi.c
++++ b/sound/usb/midi.c
+@@ -1922,7 +1922,7 @@ static int roland_load_put(struct snd_kcontrol *kcontrol,
+ 	return changed;
+ }
+ 
+-static struct snd_kcontrol_new roland_load_ctl = {
++static const struct snd_kcontrol_new roland_load_ctl = {
+ 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 	.name = "MIDI Input Mode",
+ 	.info = roland_load_info,
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 4703cae..082736c 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -1172,7 +1172,7 @@ static struct snd_kcontrol_new usb_feature_unit_ctl = {
+ };
+ 
+ /* the read-only variant */
+-static struct snd_kcontrol_new usb_feature_unit_ctl_ro = {
++static const struct snd_kcontrol_new usb_feature_unit_ctl_ro = {
+ 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 	.name = "", /* will be filled later manually */
+ 	.info = mixer_ctl_feature_info,
+@@ -1745,7 +1745,7 @@ static int mixer_ctl_procunit_put(struct snd_kcontrol *kcontrol,
+ }
+ 
+ /* alsa control interface for processing/extension unit */
+-static struct snd_kcontrol_new mixer_procunit_ctl = {
++static const struct snd_kcontrol_new mixer_procunit_ctl = {
+ 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 	.name = "", /* will be filled later */
+ 	.info = mixer_ctl_feature_info,
+@@ -2033,7 +2033,7 @@ static int mixer_ctl_selector_put(struct snd_kcontrol *kcontrol,
+ }
+ 
+ /* alsa control interface for selector unit */
+-static struct snd_kcontrol_new mixer_selectunit_ctl = {
++static const struct snd_kcontrol_new mixer_selectunit_ctl = {
+ 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 	.name = "", /* will be filled later */
+ 	.info = mixer_ctl_selector_info,
+-- 
+2.7.4
