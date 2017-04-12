@@ -1,85 +1,100 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 1/2] dt-bindings: Document STM32 I2S bindings
-Date: Wed, 12 Apr 2017 16:38:31 +0100
-Message-ID: <20170412153831.r2urwvfseipfsrsi@sirena.org.uk>
-References: <1491493236-2574-1-git-send-email-olivier.moysan@st.com>
- <1491493236-2574-2-git-send-email-olivier.moysan@st.com>
- <20170410194832.iivnkyejtywbe2c7@rob-hp-laptop>
- <20170411143250.3r7ys3rjshtxgaee@sirena.org.uk>
- <73caede5-ea6f-8b2b-2270-227f7ef31823@st.com>
- <20170411211040.htrcedus3c57fbed@sirena.org.uk>
- <86a179ad-7961-18f7-8050-25e0e584c77d@st.com>
- <20170412113251.nfyk5sw6c5pnpmwr@sirena.org.uk>
- <d886a9c7-ca46-f37a-0e82-6ed8d7a4e052@st.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: fsl_esai: Remove unneeded definition"
+	to the asoc tree
+Date: Wed, 12 Apr 2017 17:00:22 +0100
+Message-ID: <E1cyKgw-00062x-Fs@debutante>
+References: <1492000641-27838-1-git-send-email-fabio.estevam@nxp.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="okqjiama34qumvis"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <d886a9c7-ca46-f37a-0e82-6ed8d7a4e052-qxv4g6HH51o@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Olivier MOYSAN <olivier.moysan-qxv4g6HH51o@public.gmane.org>
-Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "perex-/Fr2/VpizcU@public.gmane.org" <perex-/Fr2/VpizcU@public.gmane.org>, "tiwai-IBi9RG/b67k@public.gmane.org" <tiwai-IBi9RG/b67k@public.gmane.org>, "mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre TORGUE <alexandre.torgue-qxv4g6HH51o@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "mark.rutland-5wv7dgnIgG8@public.gmane.org" <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Arnaud POULIQUEN <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Benjamin GAIGNARD <benjamin.gaignard-qxv4g6HH51o@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 581F1266FA9
+ for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2017 18:00:34 +0200 (CEST)
+In-Reply-To: <1492000641-27838-1-git-send-email-fabio.estevam@nxp.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, broonie@kernel.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---okqjiama34qumvis
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   ASoC: fsl_esai: Remove unneeded definition
 
-On Wed, Apr 12, 2017 at 12:58:16PM +0000, Olivier MOYSAN wrote:
-> On 04/12/2017 01:32 PM, Mark Brown wrote:
+has been applied to the asoc tree at
 
-> > It is totally normal to just not use one direction in a given system, we
-> > don't normally need to do anything special to handle things.  I'm a bit
-> > confused as to what's different here and needs configuring?
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> The IP does not provide an audio channel configured either as rx or tx.
-> I agree, that in such case, the cpu driver does not generally need
-> to worry about direction and there is nothing special required to handle =
-it.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-No, that's not what I'm saying - such hardware would be extremely
-unusual.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Here the IP provides 2 channels, 1 tx and 1 rx,  which may be active or=
-=20
-> not. The driver has to know which channel is used, and if both channels
-> have to be managed. The affected registers depend on selected channel.=20
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-This sounds like essentially every audio controller out there.  The
-overwhelming majority of controllers do exactly as you describe and have
-both directions in the same IP, this really doesn't seem at all unusual.
-Off the top of my head I can only think of one SoC family which combines
-multiple IPs to do bidirectional audio (though I didn't check).
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-It really feels like there is something different here and I'm just
-missing it.
+Thanks,
+Mark
 
-> Moreover specific processing has to be performed if both channels are use=
-d.
+>From f2a3ee01259ef33ffe4caa0875afe25c15938a14 Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Date: Wed, 12 Apr 2017 09:37:21 -0300
+Subject: [PATCH] ASoC: fsl_esai: Remove unneeded definition
 
-Given that this case has to be supported anyway I'd be more inclined to
-ask the question the other way around TBH.
+There is no need for defining FSL_ESAI_RATES locally as the standard
+SNDRV_PCM_RATE_8000_192000 definition can be used instead.
 
---okqjiama34qumvis
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/fsl/fsl_esai.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljuSfYACgkQJNaLcl1U
-h9BIYQf8DbaZhiVW3Tp/9AENsa/ntqfUnXdyokr8O9CNPL5ifBeRhJ9/kMNYX8D+
-GWP9kO93yXpwthXlXqNWtNErv1BlZrw78dzyPNR+QhNw052QcSIgG+k5/7iKjT6T
-bLw9AfIriDcE4kPNKzN4w0YpFqwJjhAMcsaIjnBYob/Su9uYfLnqEXniJqo4ebDZ
-tsx8GAaeJ2TFbgxnW5RBrpstCENYdc8oNaPmRaK423bcbRXFWmA6IXwN8Il0EetH
-TWvGE/c3pftOZF7M6Vj7Xtni/2aH62Ra8DE0jnhYtJ9VXRoos02FoipHsAe92rJN
-rYNEPDNl3nzJPm3r6a1O2FnVtJPQVA==
-=yXLf
------END PGP SIGNATURE-----
-
---okqjiama34qumvis--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index 38bfd46f4ad8..809a069d490b 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -19,7 +19,6 @@
+ #include "fsl_esai.h"
+ #include "imx-pcm.h"
+ 
+-#define FSL_ESAI_RATES		SNDRV_PCM_RATE_8000_192000
+ #define FSL_ESAI_FORMATS	(SNDRV_PCM_FMTBIT_S8 | \
+ 				SNDRV_PCM_FMTBIT_S16_LE | \
+ 				SNDRV_PCM_FMTBIT_S20_3LE | \
+@@ -647,14 +646,14 @@ static struct snd_soc_dai_driver fsl_esai_dai = {
+ 		.stream_name = "CPU-Playback",
+ 		.channels_min = 1,
+ 		.channels_max = 12,
+-		.rates = FSL_ESAI_RATES,
++		.rates = SNDRV_PCM_RATE_8000_192000,
+ 		.formats = FSL_ESAI_FORMATS,
+ 	},
+ 	.capture = {
+ 		.stream_name = "CPU-Capture",
+ 		.channels_min = 1,
+ 		.channels_max = 8,
+-		.rates = FSL_ESAI_RATES,
++		.rates = SNDRV_PCM_RATE_8000_192000,
+ 		.formats = FSL_ESAI_FORMATS,
+ 	},
+ 	.ops = &fsl_esai_dai_ops,
+-- 
+2.11.0
