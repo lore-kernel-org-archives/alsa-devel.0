@@ -1,96 +1,85 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH v2 0/3] ucm-conf: Add intel UCM conf files
- to alsa-ucm-conf repo
-Date: Wed, 12 Apr 2017 16:26:44 +0100
-Message-ID: <1492010804.3482.194.camel@loki>
-References: <cover.1490064444.git.fuweix.tang@intel.com>
- <1492008657.3482.184.camel@loki> <s5hziflr7v2.wl-tiwai@suse.de>
- <2b4ff3d8-52f0-ecc1-bd27-70562636fad4@perex.cz>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 1/2] dt-bindings: Document STM32 I2S bindings
+Date: Wed, 12 Apr 2017 16:38:31 +0100
+Message-ID: <20170412153831.r2urwvfseipfsrsi@sirena.org.uk>
+References: <1491493236-2574-1-git-send-email-olivier.moysan@st.com>
+ <1491493236-2574-2-git-send-email-olivier.moysan@st.com>
+ <20170410194832.iivnkyejtywbe2c7@rob-hp-laptop>
+ <20170411143250.3r7ys3rjshtxgaee@sirena.org.uk>
+ <73caede5-ea6f-8b2b-2270-227f7ef31823@st.com>
+ <20170411211040.htrcedus3c57fbed@sirena.org.uk>
+ <86a179ad-7961-18f7-8050-25e0e584c77d@st.com>
+ <20170412113251.nfyk5sw6c5pnpmwr@sirena.org.uk>
+ <d886a9c7-ca46-f37a-0e82-6ed8d7a4e052@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 9E9B5266FA9
- for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2017 17:26:53 +0200 (CEST)
-In-Reply-To: <2b4ff3d8-52f0-ecc1-bd27-70562636fad4@perex.cz>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, mengdong.lin@intel.com, alsa-devel@alsa-project.org, fuweix.tang@intel.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="okqjiama34qumvis"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <d886a9c7-ca46-f37a-0e82-6ed8d7a4e052-qxv4g6HH51o@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Olivier MOYSAN <olivier.moysan-qxv4g6HH51o@public.gmane.org>
+Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "perex-/Fr2/VpizcU@public.gmane.org" <perex-/Fr2/VpizcU@public.gmane.org>, "tiwai-IBi9RG/b67k@public.gmane.org" <tiwai-IBi9RG/b67k@public.gmane.org>, "mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Alexandre TORGUE <alexandre.torgue-qxv4g6HH51o@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "mark.rutland-5wv7dgnIgG8@public.gmane.org" <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org" <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Arnaud POULIQUEN <arnaud.pouliquen-qxv4g6HH51o@public.gmane.org>, Benjamin GAIGNARD <benjamin.gaignard-qxv4g6HH51o@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2017-04-12 at 17:10 +0200, Jaroslav Kysela wrote:
-> Dne 12.4.2017 v 16:57 Takashi Iwai napsal(a):
-> > On Wed, 12 Apr 2017 16:50:57 +0200,
-> > Liam Girdwood wrote:
-> >>
-> >> On Wed, 2017-04-12 at 16:54 +0800, fuweix.tang@intel.com wrote:
-> >>> From: Fuwei Tang <fuweix.tang@intel.com>
-> >>>
-> >>> Add the intel UCM configs to a dedicated UCM conf repo and release them using
-> >>> the BSD license.
-> >>
-> >> We are still missing the LICENSE/COPYING file. We need to add it the top
-> >> directory level so it's clear to users. 
-> >>
-> >>> The other non intel UCM files can be moved over when there is agreement with the
-> >>> file authors, but in the mean time they will stay in alsa-lib.
-> >>> The configs are moved from alsa-lib repo. The original authorship and commit
-> >>> message of all config files will be reserved.
-> >>>
-> >>
-> >> Takashi, how do you want to manage the move ? We could add the files to
-> >> the new repo first and then only delete them in alsa-lib after the next
-> >> alsa-lib release ? This would give time for distros to pick up the new
-> >> conf package. I'm easy on whatever works best here.
-> > 
-> > We really need a consensus before dealing with such patches.
-> > It's just a copy / move of some files to another repo, so a patch is
-> > just a waste of bandwidth.
-> > 
-> > If the only question is about the license, why can't we put another
-> > license to UCM profiles in the repo, while keeping LGPL for others as
-> > is?  You can declare it in README or maybe better in another text file
-> > to explaining about the licenses in the repository.
-> > 
-> > I'm asking it because, possibly, UCM syntax may be extended in future,
-> > and then there is mismatch with UCM profile and parser.  By providing
-> > in a single repo, at least, we can avoid the mismatch in the source
-> > level.
-> > 
-> > Other than that, I myself have no objection to factor out to another
-> > repo.  But, as previously mentioned, it's rather a request to
-> > Jaroslav, who maintains the repositories in alsa-project.org.
-> 
-> I'm ready to do anything we settle. There's another option - keep ucm
-> config files in alsa-lib and publish/mirror them also in the separate
-> repository (assuming that there are other frameworks which may use them
-> - like on android). And I agree with the point that the UCM files may
-> have different licence than other files in alsa-lib, because they are
-> not a direct part of the executable binary.
-> 
 
-OK, that would be fine with me. Having the mirror would make sense. How
-would you propose we work the mirror ?
+--okqjiama34qumvis
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fwiw, we are also considering adding a tool that converts UCM to/from
-Parameter Framework XML (used on IA Android) and tinyHAL from Cirrus.
-This would give us a generic configuration repo that could be deployed
-on Android, Chrome and Linux and somewhere that the codec vendors could
-send common codec configuration sequences (now that UCM supports C like
-include/define concepts).
+On Wed, Apr 12, 2017 at 12:58:16PM +0000, Olivier MOYSAN wrote:
+> On 04/12/2017 01:32 PM, Mark Brown wrote:
 
-Thanks
+> > It is totally normal to just not use one direction in a given system, we
+> > don't normally need to do anything special to handle things.  I'm a bit
+> > confused as to what's different here and needs configuring?
 
-Liam
+> The IP does not provide an audio channel configured either as rx or tx.
+> I agree, that in such case, the cpu driver does not generally need
+> to worry about direction and there is nothing special required to handle =
+it.
 
-> 					Jaroslav
-> 
+No, that's not what I'm saying - such hardware would be extremely
+unusual.
+
+> Here the IP provides 2 channels, 1 tx and 1 rx,  which may be active or=
+=20
+> not. The driver has to know which channel is used, and if both channels
+> have to be managed. The affected registers depend on selected channel.=20
+
+This sounds like essentially every audio controller out there.  The
+overwhelming majority of controllers do exactly as you describe and have
+both directions in the same IP, this really doesn't seem at all unusual.
+Off the top of my head I can only think of one SoC family which combines
+multiple IPs to do bidirectional audio (though I didn't check).
+
+It really feels like there is something different here and I'm just
+missing it.
+
+> Moreover specific processing has to be performed if both channels are use=
+d.
+
+Given that this case has to be supported anyway I'd be more inclined to
+ask the question the other way around TBH.
+
+--okqjiama34qumvis
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAljuSfYACgkQJNaLcl1U
+h9BIYQf8DbaZhiVW3Tp/9AENsa/ntqfUnXdyokr8O9CNPL5ifBeRhJ9/kMNYX8D+
+GWP9kO93yXpwthXlXqNWtNErv1BlZrw78dzyPNR+QhNw052QcSIgG+k5/7iKjT6T
+bLw9AfIriDcE4kPNKzN4w0YpFqwJjhAMcsaIjnBYob/Su9uYfLnqEXniJqo4ebDZ
+tsx8GAaeJ2TFbgxnW5RBrpstCENYdc8oNaPmRaK423bcbRXFWmA6IXwN8Il0EetH
+TWvGE/c3pftOZF7M6Vj7Xtni/2aH62Ra8DE0jnhYtJ9VXRoos02FoipHsAe92rJN
+rYNEPDNl3nzJPm3r6a1O2FnVtJPQVA==
+=yXLf
+-----END PGP SIGNATURE-----
+
+--okqjiama34qumvis--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
