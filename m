@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl ssi doc: Move optional properties
-	to the correct section" to the asoc tree
-Date: Wed, 12 Apr 2017 17:00:25 +0100
-Message-ID: <E1cyKgz-000643-Ir@debutante>
-References: <1492003920-30038-1-git-send-email-fabio.estevam@nxp.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/8] ALSA: firewire-lib/firewire-tascam:
+	localize async midi port
+Date: Thu, 13 Apr 2017 14:15:19 +0900
+Message-ID: <20170413051527.21396-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C921266FF0
- for <alsa-devel@alsa-project.org>; Wed, 12 Apr 2017 18:00:38 +0200 (CEST)
-In-Reply-To: <1492003920-30038-1-git-send-email-fabio.estevam@nxp.com>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 6DF1F266A76
+ for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2017 07:15:32 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,109 +19,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@nxp.com>
-Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, broonie@kernel.org, timur@tabi.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi,
 
-   ASoC: fsl ssi doc: Move optional properties to the correct section
+At a development period for Linux v4.4, firewire-lib module got an
+abstraction of asynchronous transaction for transmission of MIDI message.
+I did this with an assumption that this is required for Digi00x series, as
+well as TASCAM FireWire series. However, my recent work reveal it's
+actually not[0].
 
-has been applied to the asoc tree at
+This patchset localizes the abstraction just for TASCAM FireWire series.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+[0] [alsa-devel] [PATCH 0/4] ALSA: firewire-digi00x: integration to support console models
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-April/119397.html
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Takashi Sakamoto (8):
+  firewire-lib/firewire-tascam: localize async midi port
+  firewire-tascam: remove callback function from async midi port
+  firewire-tascam: send fixed-length transaction for async midi port
+  firewire-tascam: use the same address for asynchronous transaction for
+    MIDI message
+  firewire-tascam: use fixed-length array for message cache to async
+    midi port
+  firewire-tascam: initialize parameters at open of rawmidi character
+    devices
+  firewire-tascam: move message parameters for async midi port
+  firewire-tascam: support drain callback for MIDI playback substream
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+ sound/firewire/lib.c                       | 141 ----------------------------
+ sound/firewire/lib.h                       |  54 -----------
+ sound/firewire/tascam/tascam-midi.c        |  13 ++-
+ sound/firewire/tascam/tascam-transaction.c | 142 ++++++++++++++++++++++++-----
+ sound/firewire/tascam/tascam.h             |  39 +++++++-
+ 5 files changed, 162 insertions(+), 227 deletions(-)
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 23aaf4ced39de2353e2204c8397418ebb771143a Mon Sep 17 00:00:00 2001
-From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Wed, 12 Apr 2017 10:32:00 -0300
-Subject: [PATCH] ASoC: fsl ssi doc: Move optional properties to the correct
- section
-
-Properties 'fsl,ssi-asynchronous', 'fsl,playback-dma' and 'fsl,capture-dma'
-are optional, so move them under the optional section of the document.
-
-While at it mention that 'fsl,playback-dma' and 'fsl,capture-dma'
-only apply to Power Architecture.
-
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
-Acked-by: Timur Tabi <timur@tabi.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- .../devicetree/bindings/sound/fsl,ssi.txt          | 34 ++++++++++++----------
- 1 file changed, 18 insertions(+), 16 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/fsl,ssi.txt b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
-index 5b76be45d18b..d415888e1316 100644
---- a/Documentation/devicetree/bindings/sound/fsl,ssi.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl,ssi.txt
-@@ -20,24 +20,8 @@ Required properties:
-                     have.
- - interrupt-parent: The phandle for the interrupt controller that
-                     services interrupts for this device.
--- fsl,playback-dma: Phandle to a node for the DMA channel to use for
--                    playback of audio.  This is typically dictated by SOC
--                    design.  See the notes below.
--- fsl,capture-dma:  Phandle to a node for the DMA channel to use for
--                    capture (recording) of audio.  This is typically dictated
--                    by SOC design.  See the notes below.
- - fsl,fifo-depth:   The number of elements in the transmit and receive FIFOs.
-                     This number is the maximum allowed value for SFCSR[TFWM0].
--- fsl,ssi-asynchronous:
--                    If specified, the SSI is to be programmed in asynchronous
--                    mode.  In this mode, pins SRCK, STCK, SRFS, and STFS must
--                    all be connected to valid signals.  In synchronous mode,
--                    SRCK and SRFS are ignored.  Asynchronous mode allows
--                    playback and capture to use different sample sizes and
--                    sample rates.  Some drivers may require that SRCK and STCK
--                    be connected together, and SRFS and STFS be connected
--                    together.  This would still allow different sample sizes,
--                    but not different sample rates.
-  - clocks:          "ipg" - Required clock for the SSI unit
-                     "baud" - Required clock for SSI master mode. Otherwise this
- 		      clock is not used
-@@ -61,6 +45,24 @@ Optional properties:
- - fsl,mode:         The operating mode for the AC97 interface only.
-                     "ac97-slave" - AC97 mode, SSI is clock slave
-                     "ac97-master" - AC97 mode, SSI is clock master
-+- fsl,ssi-asynchronous:
-+                    If specified, the SSI is to be programmed in asynchronous
-+                    mode.  In this mode, pins SRCK, STCK, SRFS, and STFS must
-+                    all be connected to valid signals.  In synchronous mode,
-+                    SRCK and SRFS are ignored.  Asynchronous mode allows
-+                    playback and capture to use different sample sizes and
-+                    sample rates.  Some drivers may require that SRCK and STCK
-+                    be connected together, and SRFS and STFS be connected
-+                    together.  This would still allow different sample sizes,
-+                    but not different sample rates.
-+- fsl,playback-dma: Phandle to a node for the DMA channel to use for
-+                    playback of audio.  This is typically dictated by SOC
-+                    design.  See the notes below.
-+                    Only used on Power Architecture.
-+- fsl,capture-dma:  Phandle to a node for the DMA channel to use for
-+                    capture (recording) of audio.  This is typically dictated
-+                    by SOC design.  See the notes below.
-+                    Only used on Power Architecture.
- 
- Child 'codec' node required properties:
- - compatible:       Compatible list, contains the name of the codec
 -- 
-2.11.0
+2.9.3
