@@ -1,206 +1,114 @@
-From: fuweix.tang@intel.com
-Subject: [PATCH] topology: Allow a data section to contain
-	multiple tuples objects
-Date: Thu, 13 Apr 2017 14:58:34 +0800
-Message-ID: <1492066714-10828-1-git-send-email-fuweix.tang@intel.com>
+From: Olivier MOYSAN <olivier.moysan@st.com>
+Subject: Re: [PATCH 1/2] dt-bindings: Document STM32 I2S bindings
+Date: Thu, 13 Apr 2017 08:01:34 +0000
+Message-ID: <a87748e4-21e7-f65a-5be1-fe4f60bdfbef@st.com>
+References: <1491493236-2574-1-git-send-email-olivier.moysan@st.com>
+ <1491493236-2574-2-git-send-email-olivier.moysan@st.com>
+ <20170410194832.iivnkyejtywbe2c7@rob-hp-laptop>
+ <20170411143250.3r7ys3rjshtxgaee@sirena.org.uk>
+ <73caede5-ea6f-8b2b-2270-227f7ef31823@st.com>
+ <20170411211040.htrcedus3c57fbed@sirena.org.uk>
+ <86a179ad-7961-18f7-8050-25e0e584c77d@st.com>
+ <20170412113251.nfyk5sw6c5pnpmwr@sirena.org.uk>
+ <d886a9c7-ca46-f37a-0e82-6ed8d7a4e052@st.com>
+ <20170412153831.r2urwvfseipfsrsi@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 7195326705B
- for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2017 08:58:37 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, Mengdong Lin <mengdong.lin@linux.intel.com>, Fuwei Tang <fuweix.tang@intel.com>, mengdong.lin@intel.com
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20170412153831.r2urwvfseipfsrsi@sirena.org.uk>
+Content-Language: en-US
+Content-ID: <61595464C201CA45AB5F85AA62B5B662@st.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alexandre TORGUE <alexandre.torgue@st.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Benjamin GAIGNARD <benjamin.gaignard@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Hello Mark,
 
-It's easy to use a vendor tuples object to define a C structure instance.
-And a data section can include multiple vendor tuples objects.
+On 04/12/2017 05:38 PM, Mark Brown wrote:
+> On Wed, Apr 12, 2017 at 12:58:16PM +0000, Olivier MOYSAN wrote:
+>> On 04/12/2017 01:32 PM, Mark Brown wrote:
+>
+>>> It is totally normal to just not use one direction in a given system, we
+>>> don't normally need to do anything special to handle things.  I'm a bit
+>>> confused as to what's different here and needs configuring?
+>
+>> The IP does not provide an audio channel configured either as rx or tx.
+>> I agree, that in such case, the cpu driver does not generally need
+>> to worry about direction and there is nothing special required to handle it.
+>
+> No, that's not what I'm saying - such hardware would be extremely
+> unusual.
+>
+>> Here the IP provides 2 channels, 1 tx and 1 rx,  which may be active or
+>> not. The driver has to know which channel is used, and if both channels
+>> have to be managed. The affected registers depend on selected channel.
+>
+> This sounds like essentially every audio controller out there.  The
+> overwhelming majority of controllers do exactly as you describe and have
+> both directions in the same IP, this really doesn't seem at all unusual.
+> Off the top of my head I can only think of one SoC family which combines
+> multiple IPs to do bidirectional audio (though I didn't check).
+>
+> It really feels like there is something different here and I'm just
+> missing it.
+>
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
-Signed-off-by: Fuwei Tang <fuweix.tang@intel.com>
----
- include/topology.h  | 14 ++++++++++
- src/topology/data.c | 78 ++++++++++++++++++++++++++++++++++++++++-------------
- 2 files changed, 74 insertions(+), 18 deletions(-)
+Yes, I think I need to give more details on design choices.
 
-diff --git a/include/topology.h b/include/topology.h
-index 1bebe1e..ccb3a00 100644
---- a/include/topology.h
-+++ b/include/topology.h
-@@ -214,6 +214,20 @@ extern "C" {
-  * The keyword tuples is to define vendor specific tuples. Please refer to
-  * section Vendor Tokens and Vendor tuples.
-  *
-+ * It's easy to use a vendor tuples object to define a C structure instance.
-+ * And a data section can include multiple vendor tuples objects:
-+ *
-+ * <pre>
-+ * SectionData."data element name" {
-+ *	index "1"	#Index number
-+ *	tuples [
-+ *		"id of the 1st vendor tuples section"
-+ *		"id of the 2nd vendor tuples section"
-+ *		...
-+ *	]
-+ * };
-+ * </pre>
-+ *
-  * <h5>How to define an element with private data</h5>
-  * An element can refer to a single data section or multiple data
-  * sections.
-diff --git a/src/topology/data.c b/src/topology/data.c
-index 61882b8..bd90df9 100644
---- a/src/topology/data.c
-+++ b/src/topology/data.c
-@@ -408,7 +408,7 @@ static unsigned int get_tuple_size(int type)
- 	}
- }
- 
--/* fill a data element's private buffer with its tuples */
-+/* Add a tuples object to the private buffer of its parent data element */
- static int copy_tuples(struct tplg_elem *elem,
- 	struct tplg_vendor_tuples *tuples, struct tplg_vendor_tokens *tokens)
- {
-@@ -423,12 +423,9 @@ static int copy_tuples(struct tplg_elem *elem,
- 	unsigned int i, j;
- 	int token_val;
- 
--	if (priv) {
--		SNDERR("error: %s has more data than tuples\n", elem->id);
--		return -EINVAL;
--	}
-+	size = priv ? priv->size : 0; /* original private data size */
- 
--	size = 0;
-+	/* scan each tuples set (one set per type) */
- 	for (i = 0; i < tuples->num_sets ; i++) {
- 		tuple_set = tuples->set[i];
- 		set_size = sizeof(struct snd_soc_tplg_vendor_array)
-@@ -448,7 +445,7 @@ static int copy_tuples(struct tplg_elem *elem,
- 			return -ENOMEM;
- 
- 		off = priv->size;
--		priv->size = size;
-+		priv->size = size; /* update private data size */
- 
- 		array = (struct snd_soc_tplg_vendor_array *)(priv->data + off);
- 		array->size = set_size;
-@@ -495,6 +492,7 @@ static int build_tuples(snd_tplg_t *tplg, struct tplg_elem *elem)
- 	struct tplg_ref *ref;
- 	struct list_head *base, *pos;
- 	struct tplg_elem *tuples, *tokens;
-+	int err;
- 
- 	base = &elem->ref_list;
- 	list_for_each(pos, base) {
-@@ -504,23 +502,27 @@ static int build_tuples(snd_tplg_t *tplg, struct tplg_elem *elem)
- 		if (!ref->id || ref->type != SND_TPLG_TYPE_TUPLE)
- 			continue;
- 
--		tplg_dbg("look up tuples %s\n", ref->id);
-+		tplg_dbg("tuples '%s' used by data '%s'\n", ref->id, elem->id);
- 
- 		if (!ref->elem)
- 			ref->elem = tplg_elem_lookup(&tplg->tuple_list,
- 				ref->id, SND_TPLG_TYPE_TUPLE, elem->index);
- 		tuples = ref->elem;
--		if (!tuples)
-+		if (!tuples) {
-+			SNDERR("error: cannot find tuples %s\n", ref->id);
- 			return -EINVAL;
-+		}
- 
--		tplg_dbg("found tuples %s\n", tuples->id);
- 		tokens = get_tokens(tplg, tuples);
--		if (!tokens)
-+		if (!tokens) {
-+			SNDERR("error: cannot find token for %s\n", ref->id);
- 			return -EINVAL;
-+		}
- 
--		tplg_dbg("found tokens %s\n", tokens->id);
--		/* a data object can only have one tuples object */
--		return copy_tuples(elem, tuples->tuples, tokens->tokens);
-+		/* a data object can have multiple tuples objects */
-+		err = copy_tuples(elem, tuples->tuples, tokens->tokens);
-+		if (err < 0)
-+			return err;
- 	}
- 
- 	return 0;
-@@ -689,6 +691,47 @@ static int parse_tuple_sets(snd_config_t *cfg,
- 	return 0;
- }
- 
-+/* Parse tuples references for a data element, either a single tuples section
-+ * or a list of tuples sections.
-+ */
-+static int parse_tuples_refs(snd_config_t *cfg,
-+	struct tplg_elem *elem)
-+{
-+	snd_config_type_t  type;
-+	snd_config_iterator_t i, next;
-+	snd_config_t *n;
-+	const char *val = NULL;
-+
-+	type = snd_config_get_type(cfg);
-+
-+	/* refer to a single tuples section */
-+	if (type == SND_CONFIG_TYPE_STRING) {
-+		if (snd_config_get_string(cfg, &val) < 0)
-+			return -EINVAL;
-+		tplg_dbg("\ttuples: %s\n", val);
-+		return tplg_ref_add(elem, SND_TPLG_TYPE_TUPLE, val);
-+	}
-+
-+	if (type != SND_CONFIG_TYPE_COMPOUND) {
-+		SNDERR("error: compound type expected for %s", elem->id);
-+		return -EINVAL;
-+	}
-+
-+	/* refer to a list of data sections */
-+	snd_config_for_each(i, next, cfg) {
-+		const char *val;
-+
-+		n = snd_config_iterator_entry(i);
-+		if (snd_config_get_string(n, &val) < 0)
-+			continue;
-+
-+		tplg_dbg("\ttuples: %s\n", val);
-+		tplg_ref_add(elem, SND_TPLG_TYPE_TUPLE, val);
-+	}
-+
-+	return 0;
-+}
-+
- /* Parse private data references for the element, either a single data section
-  * or a list of data sections.
-  */
-@@ -1002,10 +1045,9 @@ int tplg_parse_data(snd_tplg_t *tplg, snd_config_t *cfg,
- 		}
- 
- 		if (strcmp(id, "tuples") == 0) {
--			if (snd_config_get_string(n, &val) < 0)
--				return -EINVAL;
--			tplg_dbg(" Data: %s\n", val);
--			tplg_ref_add(elem, SND_TPLG_TYPE_TUPLE, val);
-+			err = parse_tuples_refs(n, elem);
-+			if (err < 0)
-+				return err;
- 			continue;
- 		}
- 
--- 
-2.7.4
+The IP provides 2 channels.
+I can see mainly 3 solutions to link dais to these channels:
+
+1) 2 static dais NOT exclusive
+	- dai tx
+	- dai rx
+The IP exhibits a mode register, where you select mode TX, RX or FD.
+There are 2 two options to manage this register.
+option 1:
+	start first channel with mode RX or TX
+	when second channel is started, mode has to be changed to FD.
+	Transfers have to be stopped before changing configuration
+	registers, so this leads to cuts in audio stream.
+option 2:
+	start a first channel with mode FD.
+	In this case, we may have unpredictable behavior for the stream
+	which is not already started. probably underrun/overrun.
+So, this solution rises problem for full-duplex management.
+
+2) 3 static dais exclusive
+	- dai tx
+	- dai rx
+	- dai rx-tx (fd)
+This is the current implementation.
+The choice of the dai is done at probe time. It is provided by DT 
+through sound-dai parameter.
+When dai fd is selected, after starting first stream, we assume that
+second stream will be started. In this case we wait for second stream
+to be available before enabling IP and starting transfers.
+
+3) 1 dynamic dai
+	- dai rx or tx or fd (according to dma conf in IP node)
+Here the driver exposes only a single dai constructed from dma 
+configuration provided by IP DT node.
+This allows to get ride of sound-dai parameter.
+This was my suggestion after Rob comments on DT bindings.
+
+Hope this will help clarifying design constraints.
+
+>> Moreover specific processing has to be performed if both channels are used.
+>
+> Given that this case has to be supported anyway I'd be more inclined to
+> ask the question the other way around TBH.
+>
+
+Best regards
+olivier
