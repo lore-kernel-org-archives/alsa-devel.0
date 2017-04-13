@@ -1,16 +1,16 @@
 From: fuweix.tang@intel.com
-Subject: [PATCH 2/4] topology: Remove code parsing index value
-	in paring each object
-Date: Thu, 13 Apr 2017 14:52:45 +0800
-Message-ID: <48a65d737ca229024dbb3d317e6a96f72263c917.1492065639.git.fuweix.tang@intel.com>
+Subject: [PATCH 4/4] topology: Group elements with the same
+	index value into a block
+Date: Thu, 13 Apr 2017 14:52:47 +0800
+Message-ID: <1a5aaddf0d9c7937d3ebdecedc23c3eb65ff81ef.1492065639.git.fuweix.tang@intel.com>
 References: <cover.1492065639.git.fuweix.tang@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id E732D266AE4
- for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2017 08:53:00 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 94CA0266AD7
+ for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2017 08:53:03 +0200 (CEST)
 In-Reply-To: <cover.1492065639.git.fuweix.tang@intel.com>
 In-Reply-To: <cover.1492065639.git.fuweix.tang@intel.com>
 References: <cover.1492065639.git.fuweix.tang@intel.com>
@@ -29,178 +29,128 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Fuwei Tang <fuweix.tang@intel.com>
 
-We insert a new element into the object list based on its index value, so we parse
-index value in "tplg_elem_new_common" before insert it, and then remove code
-parsing index value in parsing each object.
+Topology objects(widgets,controls) with different index value should be grouped
+into different blocks and the block headers contain the index value.
 
 Signed-off-by: Fuwei Tang <fuweix.tang@intel.com>
 Reviewed-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 ---
- src/topology/ctl.c  | 27 ---------------------------
- src/topology/dapm.c |  9 ---------
- src/topology/data.c |  9 ---------
- src/topology/pcm.c  | 36 ------------------------------------
- 4 files changed, 81 deletions(-)
+ src/topology/builder.c | 94 +++++++++++++++++++++++++++-----------------------
+ 1 file changed, 51 insertions(+), 43 deletions(-)
 
-diff --git a/src/topology/ctl.c b/src/topology/ctl.c
-index 1da3d18..1b160a2 100644
---- a/src/topology/ctl.c
-+++ b/src/topology/ctl.c
-@@ -397,15 +397,6 @@ int tplg_parse_control_bytes(snd_tplg_t *tplg,
- 		if (id[0] == '#')
- 			continue;
+diff --git a/src/topology/builder.c b/src/topology/builder.c
+index dcd9e2a..ca5cbe1 100644
+--- a/src/topology/builder.c
++++ b/src/topology/builder.c
+@@ -86,58 +86,66 @@ static int write_block_header(snd_tplg_t *tplg, unsigned int type,
+ static int write_elem_block(snd_tplg_t *tplg,
+ 	struct list_head *base, int size, int tplg_type, const char *obj_name)
+ {
+-	struct list_head *pos;
+-	struct tplg_elem *elem;
+-	int ret, wsize = 0, count = 0, vendor_type;
++	struct list_head *pos, *sub_pos, *sub_base;
++	struct tplg_elem *elem, *elem_next;
++	int ret, wsize = 0, total_size = 0, count = 0, block_size = 0;
  
--		if (strcmp(id, "index") == 0) {
--			if (snd_config_get_string(n, &val) < 0)
--				return -EINVAL;
+-	/* count number of elements */
+-	list_for_each(pos, base)
+-		count++;
+-	if (!count)
+-		return 0;
 -
--			elem->index = atoi(val);
--			tplg_dbg("\t%s: %d\n", id, elem->index);
--			continue;
--		}
+-	/* write the header for this block */
+-	elem = list_entry(base->next, struct tplg_elem, list);
+-	vendor_type = elem->vendor_type;
 -
- 		if (strcmp(id, "base") == 0) {
- 			if (snd_config_get_string(n, &val) < 0)
- 				return -EINVAL;
-@@ -538,15 +529,6 @@ int tplg_parse_control_enum(snd_tplg_t *tplg, snd_config_t *cfg,
- 		if (id[0] == '#')
- 			continue;
+-	ret = write_block_header(tplg, tplg_type, vendor_type,
+-		tplg->version, 0, size, count);
+-	if (ret < 0) {
+-		SNDERR("error: failed to write %s block %d\n",
+-			obj_name, ret);
+-		return ret;
+-	}
+-
+-	/* write each elem to block */
++	sub_base = base;
+ 	list_for_each(pos, base) {
+-
++		/* find elems with the same index to make a block */
+ 		elem = list_entry(pos, struct tplg_elem, list);
++		elem_next = list_entry(pos->next, struct tplg_elem, list);
++		block_size += elem->size;
++		count++;
  
--		if (strcmp(id, "index") == 0) {
--			if (snd_config_get_string(n, &val) < 0)
--				return -EINVAL;
--
--			elem->index = atoi(val);
--			tplg_dbg("\t%s: %d\n", id, elem->index);
+-		/* compound elems have already been copied to other elems */
+-		if (elem->compound_elem)
 -			continue;
--		}
 -
- 		if (strcmp(id, "texts") == 0) {
- 			if (snd_config_get_string(n, &val) < 0)
- 				return -EINVAL;
-@@ -648,15 +630,6 @@ int tplg_parse_control_mixer(snd_tplg_t *tplg,
- 		if (id[0] == '#')
- 			continue;
- 
--		if (strcmp(id, "index") == 0) {
--			if (snd_config_get_string(n, &val) < 0)
--				return -EINVAL;
+-		if (elem->type != SND_TPLG_TYPE_DAPM_GRAPH)
+-			verbose(tplg, " %s '%s': write %d bytes\n",
+-				obj_name, elem->id, elem->size);
+-		else
+-			verbose(tplg, " %s '%s': write %d bytes\n",
+-				obj_name, elem->route->source, elem->size);
 -
--			elem->index = atoi(val);
--			tplg_dbg("\t%s: %d\n", id, elem->index);
--			continue;
--		}
--
- 		if (strcmp(id, "channel") == 0) {
- 			if (mc->num_channels >= SND_SOC_TPLG_MAX_CHAN) {
- 				SNDERR("error: too many channels %s\n",
-diff --git a/src/topology/dapm.c b/src/topology/dapm.c
-index eef72bb..ba5d9fe 100644
---- a/src/topology/dapm.c
-+++ b/src/topology/dapm.c
-@@ -483,15 +483,6 @@ int tplg_parse_dapm_widget(snd_tplg_t *tplg,
- 		if (id[0] == '#')
- 			continue;
- 
--		if (strcmp(id, "index") == 0) {
--			if (snd_config_get_string(n, &val) < 0)
--				return -EINVAL;
--
--			elem->index = atoi(val);
--			tplg_dbg("\t%s: %d\n", id, elem->index);
--			continue;
--		}
--
- 		if (strcmp(id, "type") == 0) {
- 			if (snd_config_get_string(n, &val) < 0)
- 				return -EINVAL;
-diff --git a/src/topology/data.c b/src/topology/data.c
-index e2aa38c..7b92cea 100644
---- a/src/topology/data.c
-+++ b/src/topology/data.c
-@@ -1009,15 +1009,6 @@ int tplg_parse_data(snd_tplg_t *tplg, snd_config_t *cfg,
- 			continue;
+-		count = write(tplg->out_fd, elem->obj, elem->size);
+-		if (count < 0) {
+-			SNDERR("error: failed to write %s %d\n",
+-				obj_name, ret);
+-			return ret;
++		if ((pos->next == base) || (elem_next->index != elem->index)) {
++			/* write header for the block */
++			ret = write_block_header(tplg, tplg_type, elem->vendor_type,
++				tplg->version, elem->index, block_size, count);
++			if (ret < 0) {
++				SNDERR("error: failed to write %s block %d\n",
++					obj_name, ret);
++				return ret;
++			}
++
++			/* write elems for the block */
++			list_for_each(sub_pos, sub_base) {
++				elem = list_entry(sub_pos, struct tplg_elem, list);
++				/* compound elems have already been copied to other elems */
++				if (elem->compound_elem)
++					continue;
++
++				if (elem->type != SND_TPLG_TYPE_DAPM_GRAPH)
++					verbose(tplg, " %s '%s': write %d bytes\n",
++						obj_name, elem->id, elem->size);
++				else
++					verbose(tplg, " %s '%s': write %d bytes\n",
++						obj_name, elem->route->source, elem->size);
++
++				wsize = write(tplg->out_fd, elem->obj, elem->size);
++				if (wsize < 0) {
++					SNDERR("error: failed to write %s %d\n",
++						obj_name, ret);
++					return ret;
++				}
++
++				total_size += wsize;
++				/* get to the end of sub list */
++				if (sub_pos == pos)
++					break;
++			}
++			/* the last elem of the current sub list as the head of 
++			next sub list*/
++			sub_base = pos;
++			count = 0;
++			block_size = 0;
  		}
+-
+-		wsize += count;
+ 	}
  
--		if (strcmp(id, "index") == 0) {
--			if (snd_config_get_string(n, &val) < 0)
--				return -EINVAL;
--
--			elem->index = atoi(val);
--			tplg_dbg("\t%s: %d\n", id, elem->index);
--			continue;
--		}
--
- 		if (strcmp(id, "type") == 0) {
- 			if (snd_config_get_string(n, &val) < 0)
- 				return -EINVAL;
-diff --git a/src/topology/pcm.c b/src/topology/pcm.c
-index 5568d57..ed50c9c 100644
---- a/src/topology/pcm.c
-+++ b/src/topology/pcm.c
-@@ -554,15 +554,6 @@ int tplg_parse_pcm(snd_tplg_t *tplg,
- 		if (id[0] == '#')
- 			continue;
+ 	/* make sure we have written the correct size */
+-	if (wsize != size) {
++	if (total_size != size) {
+ 		SNDERR("error: size mismatch. Expected %d wrote %d\n",
+-			size, wsize);
++			size, total_size);
+ 		return -EIO;
+ 	}
  
--		if (strcmp(id, "index") == 0) {
--			if (snd_config_get_string(n, &val) < 0)
--				return -EINVAL;
--
--			elem->index = atoi(val);
--			tplg_dbg("\t%s: %d\n", id, elem->index);
--			continue;
--		}
--
- 		if (strcmp(id, "id") == 0) {
- 			if (snd_config_get_string(n, &val) < 0)
- 				return -EINVAL;
-@@ -654,15 +645,6 @@ int tplg_parse_dai(snd_tplg_t *tplg,
- 		if (id[0] == '#')
- 			continue;
- 
--		if (strcmp(id, "index") == 0) {
--			if (snd_config_get_string(n, &val) < 0)
--				return -EINVAL;
--
--			elem->index = atoi(val);
--			tplg_dbg("\t%s: %d\n", id, elem->index);
--			continue;
--		}
--
- 		if (strcmp(id, "id") == 0) {
- 			if (snd_config_get_string(n, &val) < 0)
- 				return -EINVAL;
-@@ -804,15 +786,6 @@ int tplg_parse_link(snd_tplg_t *tplg,
- 		if (id[0] == '#')
- 			continue;
- 
--		if (strcmp(id, "index") == 0) {
--			if (snd_config_get_string(n, &val) < 0)
--				return -EINVAL;
--
--			elem->index = atoi(val);
--			tplg_dbg("\t%s: %d\n", id, elem->index);
--			continue;
--		}
--
- 		if (strcmp(id, "id") == 0) {
- 			if (snd_config_get_string(n, &val) < 0)
- 				return -EINVAL;
-@@ -918,15 +891,6 @@ int tplg_parse_cc(snd_tplg_t *tplg,
- 		if (id[0] == '#')
- 			continue;
- 
--		if (strcmp(id, "index") == 0) {
--			if (snd_config_get_string(n, &val) < 0)
--				return -EINVAL;
--
--			elem->index = atoi(val);
--			tplg_dbg("\t%s: %d\n", id, elem->index);
--			continue;
--		}
--
- 		if (strcmp(id, "id") == 0) {
- 			if (snd_config_get_string(n, &val) < 0)
- 				return -EINVAL;
 -- 
 2.7.4
