@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 8/8] firewire-tascam: support drain callback
-	for MIDI playback substream
-Date: Thu, 13 Apr 2017 14:15:27 +0900
-Message-ID: <20170413051527.21396-9-o-takashi@sakamocchi.jp>
+Subject: [PATCH 6/8] firewire-tascam: initialize parameters at
+	open of rawmidi character devices
+Date: Thu, 13 Apr 2017 14:15:25 +0900
+Message-ID: <20170413051527.21396-7-o-takashi@sakamocchi.jp>
 References: <20170413051527.21396-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id E54C3266A89
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id E9D76266A9B
  for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2017 07:15:35 +0200 (CEST)
 In-Reply-To: <20170413051527.21396-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,48 +25,84 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-ALSA driver for TASCAM FireWire series transfers MIDI messages in system
-workqueue. In current design of the driver, applications should wait for
-sequence of transmission when they close ALSA rawmidi character devices.
-However, when considering design of rawmidi interface, it's preferable
-to wait in drain ioctl.
+In current design of ALSA driver for TASCAM FireWire series, initialization
+of members in asymc midi port structure is done at device probing. Some of
+the members should be initialized every time to use rawmidi devices because
+they're changed in sequence of transmission for MIDI messages.
 
-This commit adds support for the drain ioctl to wait for the end of
-the transmission.
+This commit adds a new function to initialize them. Invariant parameters
+during object lifetime are kept as is.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/tascam/tascam-midi.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/firewire/tascam/tascam-midi.c        |  2 ++
+ sound/firewire/tascam/tascam-transaction.c | 16 ++++------------
+ sound/firewire/tascam/tascam.h             |  3 +--
+ 3 files changed, 7 insertions(+), 14 deletions(-)
 
 diff --git a/sound/firewire/tascam/tascam-midi.c b/sound/firewire/tascam/tascam-midi.c
-index 760f72a..4a741570 100644
+index df4f95d..901df81 100644
 --- a/sound/firewire/tascam/tascam-midi.c
 +++ b/sound/firewire/tascam/tascam-midi.c
-@@ -31,11 +31,14 @@ static int midi_capture_close(struct snd_rawmidi_substream *substream)
- 
- static int midi_playback_close(struct snd_rawmidi_substream *substream)
+@@ -18,6 +18,8 @@ static int midi_playback_open(struct snd_rawmidi_substream *substream)
  {
-+	return 0;
-+}
-+
-+static void midi_playback_drain(struct snd_rawmidi_substream *substream)
-+{
  	struct snd_tscm *tscm = substream->rmidi->private_data;
  
- 	snd_fw_async_midi_port_finish(&tscm->out_ports[substream->number]);
++	snd_fw_async_midi_port_init(&tscm->out_ports[substream->number]);
++
+ 	/* Initialize internal status. */
+ 	tscm->running_status[substream->number] = 0;
+ 	tscm->on_sysex[substream->number] = 0;
+diff --git a/sound/firewire/tascam/tascam-transaction.c b/sound/firewire/tascam/tascam-transaction.c
+index 248afe6..a248a4a 100644
+--- a/sound/firewire/tascam/tascam-transaction.c
++++ b/sound/firewire/tascam/tascam-transaction.c
+@@ -236,17 +236,10 @@ static void midi_port_work(struct work_struct *work)
+ 			port);
+ }
+ 
+-int snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port,
+-		struct fw_unit *unit)
++void snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port)
+ {
+-	port->parent = fw_parent_device(unit);
+ 	port->idling = true;
+-	port->next_ktime = 0;
+ 	port->error = false;
+-
+-	INIT_WORK(&port->work, midi_port_work);
 -
 -	return 0;
  }
  
- static void midi_capture_trigger(struct snd_rawmidi_substream *substrm, int up)
-@@ -77,6 +80,7 @@ int snd_tscm_create_midi_devices(struct snd_tscm *tscm)
- 	static const struct snd_rawmidi_ops playback_ops = {
- 		.open		= midi_playback_open,
- 		.close		= midi_playback_close,
-+		.drain		= midi_playback_drain,
- 		.trigger	= midi_playback_trigger,
- 	};
- 	struct snd_rawmidi *rmidi;
+ static void handle_midi_tx(struct fw_card *card, struct fw_request *request,
+@@ -324,10 +317,9 @@ int snd_tscm_transaction_register(struct snd_tscm *tscm)
+ 		goto error;
+ 
+ 	for (i = 0; i < TSCM_MIDI_OUT_PORT_MAX; i++) {
+-		err = snd_fw_async_midi_port_init(
+-				&tscm->out_ports[i], tscm->unit);
+-		if (err < 0)
+-			goto error;
++		tscm->out_ports[i].parent = fw_parent_device(tscm->unit);
++		tscm->out_ports[i].next_ktime = 0;
++		INIT_WORK(&tscm->out_ports[i].work, midi_port_work);
+ 	}
+ 
+ 	return err;
+diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
+index 05884ae..a5bbe02 100644
+--- a/sound/firewire/tascam/tascam.h
++++ b/sound/firewire/tascam/tascam.h
+@@ -146,8 +146,7 @@ void snd_tscm_stream_lock_changed(struct snd_tscm *tscm);
+ int snd_tscm_stream_lock_try(struct snd_tscm *tscm);
+ void snd_tscm_stream_lock_release(struct snd_tscm *tscm);
+ 
+-int snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port,
+-		struct fw_unit *unit);
++void snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port);
+ 
+ static inline void
+ snd_fw_async_midi_port_run(struct snd_fw_async_midi_port *port,
 -- 
 2.9.3
