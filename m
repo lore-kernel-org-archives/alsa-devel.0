@@ -1,16 +1,16 @@
-From: Julia Lawall <julia.lawall@lip6.fr>
-Subject: Re: [PATCH 2/8] firewire-tascam: remove callback
- function from async midi port (fwd)
-Date: Thu, 13 Apr 2017 17:10:34 +0200 (CEST)
-Message-ID: <alpine.DEB.2.20.1704131709270.3342@hadrien>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: cs35l35: Allow user to configure IMON
+	SCALE
+Date: Thu, 13 Apr 2017 16:52:09 +0100
+Message-ID: <1492098729-30491-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail2-relais-roc.national.inria.fr
- (mail2-relais-roc.national.inria.fr [192.134.164.83])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C4552670A1
- for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2017 17:10:35 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id C08C52670B8
+ for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2017 17:50:56 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,77 +20,158 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, kbuild-all@01.org, ffado-devel@lists.sf.net
+To: broonie@kernel.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, brian.austin@cirrus.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On the chip the IMON signal is a full 24-bits however normally only
+some of the bits will be sent over the bus. The chip provides a field
+to select which bits of the IMON will be sent back, this is the only
+feedback signal that has this feature.
 
-I haven't checked on the type, but it may be worth looking into (line
-201).
+Add an additional entry to the cirrus,imon device tree property to
+allow the IMON scale parameter to be passed.
 
-julia
-
----------- Forwarded message ----------
-Date: Thu, 13 Apr 2017 18:20:17 +0800
-From: kbuild test robot <fengguang.wu@intel.com>
-To: kbuild@01.org
-Cc: Julia Lawall <julia.lawall@lip6.fr>
-Subject: Re: [alsa-devel] [PATCH 2/8] firewire-tascam: remove callback function
-    from async midi port
-
-In-Reply-To: <20170413051527.21396-3-o-takashi@sakamocchi.jp>
-
-Hi Takashi,
-
-[auto build test WARNING on sound/for-next]
-[also build test WARNING on v4.11-rc6 next-20170413]
-[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
-
-url:    https://github.com/0day-ci/linux/commits/Takashi-Sakamoto/ALSA-firewire-lib-firewire-tascam-localize-async-midi-port/20170413-154647
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
-:::::: branch date: 3 hours ago
-:::::: commit date: 3 hours ago
-
->> sound/firewire/tascam/tascam-transaction.c:201:5-24: WARNING: Unsigned expression compared with zero: port -> consume_bytes <= 0
-
-git remote add linux-review https://github.com/0day-ci/linux
-git remote update linux-review
-git checkout b866eaa9a02893e6383eb5177c11078a16af4e80
-vim +201 sound/firewire/tascam/tascam-transaction.c
-
-741f7c77a Takashi Sakamoto 2017-04-13  185  	/* Nothing to do. */
-741f7c77a Takashi Sakamoto 2017-04-13  186  	if (substream == NULL || snd_rawmidi_transmit_empty(substream))
-741f7c77a Takashi Sakamoto 2017-04-13  187  		return;
-741f7c77a Takashi Sakamoto 2017-04-13  188
-741f7c77a Takashi Sakamoto 2017-04-13  189  	/* Do it in next chance. */
-741f7c77a Takashi Sakamoto 2017-04-13  190  	if (ktime_after(port->next_ktime, ktime_get())) {
-741f7c77a Takashi Sakamoto 2017-04-13  191  		schedule_work(&port->work);
-741f7c77a Takashi Sakamoto 2017-04-13  192  		return;
-741f7c77a Takashi Sakamoto 2017-04-13  193  	}
-741f7c77a Takashi Sakamoto 2017-04-13  194
-741f7c77a Takashi Sakamoto 2017-04-13  195  	/*
-741f7c77a Takashi Sakamoto 2017-04-13  196  	 * Fill the buffer. The callee must use snd_rawmidi_transmit_peek().
-741f7c77a Takashi Sakamoto 2017-04-13  197  	 * Later, snd_rawmidi_transmit_ack() is called.
-741f7c77a Takashi Sakamoto 2017-04-13  198  	 */
-741f7c77a Takashi Sakamoto 2017-04-13  199  	memset(port->buf, 0, port->len);
-b866eaa9a Takashi Sakamoto 2017-04-13  200  	port->consume_bytes = fill_message(substream, port->buf);
-741f7c77a Takashi Sakamoto 2017-04-13 @201  	if (port->consume_bytes <= 0) {
-741f7c77a Takashi Sakamoto 2017-04-13  202  		/* Do it in next chance, immediately. */
-741f7c77a Takashi Sakamoto 2017-04-13  203  		if (port->consume_bytes == 0) {
-741f7c77a Takashi Sakamoto 2017-04-13  204  			port->next_ktime = 0;
-741f7c77a Takashi Sakamoto 2017-04-13  205  			schedule_work(&port->work);
-741f7c77a Takashi Sakamoto 2017-04-13  206  		} else {
-741f7c77a Takashi Sakamoto 2017-04-13  207  			/* Fatal error. */
-741f7c77a Takashi Sakamoto 2017-04-13  208  			port->error = true;
-741f7c77a Takashi Sakamoto 2017-04-13  209  		}
-
-:::::: The code at line 201 was first introduced by commit
-:::::: 741f7c77a1a15d04ebafcce4e079cfe1cfb612ff firewire-lib/firewire-tascam: localize async midi port
-
-:::::: TO: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-:::::: CC: 0day robot <fengguang.wu@intel.com>
-
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 ---
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+
+I realise this is changing the binding slightly, but thought
+we might be able to sneak it before cs35l35 ships as it hasn't
+shipped in a kernel yet.  However, it would be relatively simple
+(although makes the code a little messier) to support both the 3
+and 4 entry versions of the binding if people prefer?
+
+Thanks,
+Charles
+
+ .../devicetree/bindings/sound/cs35l35.txt          |  4 ++--
+ include/sound/cs35l35.h                            |  1 +
+ sound/soc/codecs/cs35l35.c                         | 22 +++++++++++++++-------
+ sound/soc/codecs/cs35l35.h                         |  3 +++
+ 4 files changed, 21 insertions(+), 9 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/sound/cs35l35.txt b/Documentation/devicetree/bindings/sound/cs35l35.txt
+index 457d176..016b768 100644
+--- a/Documentation/devicetree/bindings/sound/cs35l35.txt
++++ b/Documentation/devicetree/bindings/sound/cs35l35.txt
+@@ -118,8 +118,8 @@ Optional Monitor Signal Format sub-node:
+   Sections 7.44 - 7.53 lists values for the depth, location, and frame
+   for each monitoring signal.
+ 
+-  - cirrus,imon : 3 8 bit values to set the depth, location, and frame
+-  of the IMON monitor signal.
++  - cirrus,imon : 4 8 bit values to set the depth, location, frame and ADC
++  scale of the IMON monitor signal.
+ 
+   - cirrus,vmon : 3 8 bit values to set the depth, location, and frame
+   of the VMON monitor signal.
+diff --git a/include/sound/cs35l35.h b/include/sound/cs35l35.h
+index 88744bb..29da899 100644
+--- a/include/sound/cs35l35.h
++++ b/include/sound/cs35l35.h
+@@ -57,6 +57,7 @@ struct monitor_cfg {
+ 	u8 imon_dpth;
+ 	u8 imon_loc;
+ 	u8 imon_frm;
++	u8 imon_scale;
+ 	u8 vmon_dpth;
+ 	u8 vmon_loc;
+ 	u8 vmon_frm;
+diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
+index 6ecb7dd..88c48e2 100644
+--- a/sound/soc/codecs/cs35l35.c
++++ b/sound/soc/codecs/cs35l35.c
+@@ -918,6 +918,11 @@ static int cs35l35_codec_probe(struct snd_soc_codec *codec)
+ 					CS35L35_MON_FRM_MASK,
+ 					monitor_config->imon_frm <<
+ 					CS35L35_MON_FRM_SHIFT);
++			regmap_update_bits(cs35l35->regmap,
++					CS35L35_IMON_SCALE_CTL,
++					CS35L35_IMON_SCALE_MASK,
++					monitor_config->imon_scale <<
++					CS35L35_IMON_SCALE_SHIFT);
+ 		}
+ 		if (monitor_config->vpmon_specs) {
+ 			regmap_update_bits(cs35l35->regmap,
+@@ -1161,7 +1166,9 @@ static int cs35l35_handle_of_data(struct i2c_client *i2c_client,
+ 	struct classh_cfg *classh_config = &pdata->classh_algo;
+ 	struct monitor_cfg *monitor_config = &pdata->mon_cfg;
+ 	unsigned int val32 = 0;
+-	u8 monitor_array[3];
++	u8 monitor_array[4];
++	const int imon_array_size = ARRAY_SIZE(monitor_array);
++	const int mon_array_size = imon_array_size - 1;
+ 	int ret = 0;
+ 
+ 	if (!np)
+@@ -1302,15 +1309,16 @@ static int cs35l35_handle_of_data(struct i2c_client *i2c_client,
+ 	monitor_config->is_present = signal_format ? true : false;
+ 	if (monitor_config->is_present) {
+ 		ret = of_property_read_u8_array(signal_format, "cirrus,imon",
+-				   monitor_array, ARRAY_SIZE(monitor_array));
++						monitor_array, imon_array_size);
+ 		if (!ret) {
+ 			monitor_config->imon_specs = true;
+ 			monitor_config->imon_dpth = monitor_array[0];
+ 			monitor_config->imon_loc = monitor_array[1];
+ 			monitor_config->imon_frm = monitor_array[2];
++			monitor_config->imon_scale = monitor_array[3];
+ 		}
+ 		ret = of_property_read_u8_array(signal_format, "cirrus,vmon",
+-				   monitor_array, ARRAY_SIZE(monitor_array));
++						monitor_array, mon_array_size);
+ 		if (!ret) {
+ 			monitor_config->vmon_specs = true;
+ 			monitor_config->vmon_dpth = monitor_array[0];
+@@ -1318,7 +1326,7 @@ static int cs35l35_handle_of_data(struct i2c_client *i2c_client,
+ 			monitor_config->vmon_frm = monitor_array[2];
+ 		}
+ 		ret = of_property_read_u8_array(signal_format, "cirrus,vpmon",
+-				   monitor_array, ARRAY_SIZE(monitor_array));
++						monitor_array, mon_array_size);
+ 		if (!ret) {
+ 			monitor_config->vpmon_specs = true;
+ 			monitor_config->vpmon_dpth = monitor_array[0];
+@@ -1326,7 +1334,7 @@ static int cs35l35_handle_of_data(struct i2c_client *i2c_client,
+ 			monitor_config->vpmon_frm = monitor_array[2];
+ 		}
+ 		ret = of_property_read_u8_array(signal_format, "cirrus,vbstmon",
+-				   monitor_array, ARRAY_SIZE(monitor_array));
++						monitor_array, mon_array_size);
+ 		if (!ret) {
+ 			monitor_config->vbstmon_specs = true;
+ 			monitor_config->vbstmon_dpth = monitor_array[0];
+@@ -1334,7 +1342,7 @@ static int cs35l35_handle_of_data(struct i2c_client *i2c_client,
+ 			monitor_config->vbstmon_frm = monitor_array[2];
+ 		}
+ 		ret = of_property_read_u8_array(signal_format, "cirrus,vpbrstat",
+-				   monitor_array, ARRAY_SIZE(monitor_array));
++						monitor_array, mon_array_size);
+ 		if (!ret) {
+ 			monitor_config->vpbrstat_specs = true;
+ 			monitor_config->vpbrstat_dpth = monitor_array[0];
+@@ -1342,7 +1350,7 @@ static int cs35l35_handle_of_data(struct i2c_client *i2c_client,
+ 			monitor_config->vpbrstat_frm = monitor_array[2];
+ 		}
+ 		ret = of_property_read_u8_array(signal_format, "cirrus,zerofill",
+-				   monitor_array, ARRAY_SIZE(monitor_array));
++						monitor_array, mon_array_size);
+ 		if (!ret) {
+ 			monitor_config->zerofill_specs = true;
+ 			monitor_config->zerofill_dpth = monitor_array[0];
+diff --git a/sound/soc/codecs/cs35l35.h b/sound/soc/codecs/cs35l35.h
+index 54e9ac5..5a6e43a 100644
+--- a/sound/soc/codecs/cs35l35.h
++++ b/sound/soc/codecs/cs35l35.h
+@@ -148,6 +148,9 @@
+ #define CS35L35_MON_FRM_MASK		0x80
+ #define CS35L35_MON_FRM_SHIFT		7
+ 
++#define CS35L35_IMON_SCALE_MASK		0xF8
++#define CS35L35_IMON_SCALE_SHIFT	3
++
+ #define CS35L35_MS_MASK			0x80
+ #define CS35L35_MS_SHIFT		7
+ #define CS35L35_SPMODE_MASK		0x40
+-- 
+2.1.4
