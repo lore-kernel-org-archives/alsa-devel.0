@@ -1,43 +1,54 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: firewire-lib: fix inappropriate assignment between signed/unsigned type
-Date: Fri, 14 Apr 2017 12:43:01 +0900
-Message-ID: <20170414034301.7310-1-o-takashi@sakamocchi.jp>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net, "# 4 . 4+" <stable@vger.kernel.org>
+Subject: [PATCH] ALSA: usb-line6: constify snd_kcontrol_new
+	strucutre array
+Date: Fri, 14 Apr 2017 13:13:50 +0900
+Message-ID: <20170414041350.9514-1-o-takashi@sakamocchi.jp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 8583B266707
+ for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2017 06:13:54 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de, dev@andree.sk
+Cc: alsa-devel@alsa-project.org, Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-An abstraction of asynchronous transaction for transmission of MIDI
-messages was introduced in Linux v4.4. Each driver can utilize this
-abstraction to transfer MIDI messages via fixed-length payload of
-transaction to a certain unit address. Filling payload of the transaction
-is done by callback. In this callback, each driver can return negative
-error code, however current implementation assigns the return value to
-unsigned variable.
+In kernel APIs of ALSA control interface, drivers can create a control
+element set by a call of snd_ctl_new1() with a template. This template
+is known to have const qualifier in general cases.
 
-This commit changes type of the variable to fix the bug.
+This commit adds the qualifier to template array, for safer program and
+runtime. Application of this change moves the symbol from .data section
+to .rodata section.
 
-Reported-by: Julia Lawall <Julia.Lawall@lip6.fr>
-Cc: <stable@vger.kernel.org> # 4.4+
-Fixes: 585d7cba5e1f ("ALSA: firewire-lib: add helper functions for asynchronous transactions to transfer MIDI messages")
+Cc: Bhumika Goyal <bhumirks@gmail.com>
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/lib.h | 2 +-
+ sound/usb/line6/pcm.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/firewire/lib.h b/sound/firewire/lib.h
-index f676931..c3768cd 100644
---- a/sound/firewire/lib.h
-+++ b/sound/firewire/lib.h
-@@ -45,7 +45,7 @@ struct snd_fw_async_midi_port {
+diff --git a/sound/usb/line6/pcm.c b/sound/usb/line6/pcm.c
+index fab53f5..b3854f8 100644
+--- a/sound/usb/line6/pcm.c
++++ b/sound/usb/line6/pcm.c
+@@ -430,7 +430,7 @@ static int snd_line6_control_playback_put(struct snd_kcontrol *kcontrol,
+ }
  
- 	struct snd_rawmidi_substream *substream;
- 	snd_fw_async_midi_port_fill fill;
--	unsigned int consume_bytes;
-+	int consume_bytes;
- };
- 
- int snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port,
+ /* control definition */
+-static struct snd_kcontrol_new line6_controls[] = {
++static const struct snd_kcontrol_new line6_controls[] = {
+ 	{
+ 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 		.name = "PCM Playback Volume",
 -- 
 2.9.3
