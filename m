@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v2 5/8] ALSA: firewire-tascam: use fixed-length
-	array for message cache to async midi port
-Date: Fri, 14 Apr 2017 16:46:29 +0900
-Message-ID: <20170414074632.13453-6-o-takashi@sakamocchi.jp>
+Subject: [PATCH v2 6/8] ALSA: firewire-tascam: initialize
+	parameters at open of rawmidi character devices
+Date: Fri, 14 Apr 2017 16:46:30 +0900
+Message-ID: <20170414074632.13453-7-o-takashi@sakamocchi.jp>
 References: <20170414074632.13453-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id ADE0026717C
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id AE59526717D
  for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2017 09:46:39 +0200 (CEST)
 In-Reply-To: <20170414074632.13453-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,93 +25,84 @@ To: tiwai@suse.de, dev@andree.sk
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-ALSA driver for TASCAM FireWire series internally allocates 4 byte buffer
-for asynchronous transaction to transfer MIDI messages. However, the buffer
-can be allocated with memory object of parent structure.
+In current design of ALSA driver for TASCAM FireWire series, initialization
+of members in asymc midi port structure is done at device probing. Some of
+the members should be initialized every time to use rawmidi devices because
+they're changed in sequence of transmission for MIDI messages.
 
-This commit adds 4 byte array as a member of the structure and obsoletes
-the redundant allocation. This is deallocated with memory object of parent
-structure.
+This commit adds a new function to initialize them. Invariant parameters
+during object lifetime are kept as is.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/tascam/tascam-transaction.c | 15 ---------------
- sound/firewire/tascam/tascam.h             |  4 ++--
- 2 files changed, 2 insertions(+), 17 deletions(-)
+ sound/firewire/tascam/tascam-midi.c        |  2 ++
+ sound/firewire/tascam/tascam-transaction.c | 16 ++++------------
+ sound/firewire/tascam/tascam.h             |  3 +--
+ 3 files changed, 7 insertions(+), 14 deletions(-)
 
+diff --git a/sound/firewire/tascam/tascam-midi.c b/sound/firewire/tascam/tascam-midi.c
+index df4f95d..901df81 100644
+--- a/sound/firewire/tascam/tascam-midi.c
++++ b/sound/firewire/tascam/tascam-midi.c
+@@ -18,6 +18,8 @@ static int midi_playback_open(struct snd_rawmidi_substream *substream)
+ {
+ 	struct snd_tscm *tscm = substream->rmidi->private_data;
+ 
++	snd_fw_async_midi_port_init(&tscm->out_ports[substream->number]);
++
+ 	/* Initialize internal status. */
+ 	tscm->running_status[substream->number] = 0;
+ 	tscm->on_sysex[substream->number] = 0;
 diff --git a/sound/firewire/tascam/tascam-transaction.c b/sound/firewire/tascam/tascam-transaction.c
-index 4e362b83..248afe6 100644
+index 248afe6..a248a4a 100644
 --- a/sound/firewire/tascam/tascam-transaction.c
 +++ b/sound/firewire/tascam/tascam-transaction.c
-@@ -239,10 +239,6 @@ static void midi_port_work(struct work_struct *work)
- int snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port,
- 		struct fw_unit *unit)
+@@ -236,17 +236,10 @@ static void midi_port_work(struct work_struct *work)
+ 			port);
+ }
+ 
+-int snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port,
+-		struct fw_unit *unit)
++void snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port)
  {
--	port->buf = kzalloc(4, GFP_KERNEL);
--	if (port->buf == NULL)
--		return -ENOMEM;
--
- 	port->parent = fw_parent_device(unit);
+-	port->parent = fw_parent_device(unit);
  	port->idling = true;
- 	port->next_ktime = 0;
-@@ -253,13 +249,6 @@ int snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port,
- 	return 0;
+-	port->next_ktime = 0;
+ 	port->error = false;
+-
+-	INIT_WORK(&port->work, midi_port_work);
+-
+-	return 0;
  }
  
--void snd_fw_async_midi_port_destroy(struct snd_fw_async_midi_port *port)
--{
--	snd_fw_async_midi_port_finish(port);
--	cancel_work_sync(&port->work);
--	kfree(port->buf);
--}
--
  static void handle_midi_tx(struct fw_card *card, struct fw_request *request,
- 			   int tcode, int destination, int source,
- 			   int generation, unsigned long long offset,
-@@ -389,7 +378,6 @@ int snd_tscm_transaction_reregister(struct snd_tscm *tscm)
- void snd_tscm_transaction_unregister(struct snd_tscm *tscm)
- {
- 	__be32 reg;
--	unsigned int i;
+@@ -324,10 +317,9 @@ int snd_tscm_transaction_register(struct snd_tscm *tscm)
+ 		goto error;
  
- 	if (tscm->async_handler.callback_data == NULL)
- 		return;
-@@ -416,7 +404,4 @@ void snd_tscm_transaction_unregister(struct snd_tscm *tscm)
+ 	for (i = 0; i < TSCM_MIDI_OUT_PORT_MAX; i++) {
+-		err = snd_fw_async_midi_port_init(
+-				&tscm->out_ports[i], tscm->unit);
+-		if (err < 0)
+-			goto error;
++		tscm->out_ports[i].parent = fw_parent_device(tscm->unit);
++		tscm->out_ports[i].next_ktime = 0;
++		INIT_WORK(&tscm->out_ports[i].work, midi_port_work);
+ 	}
  
- 	fw_core_remove_address_handler(&tscm->async_handler);
- 	tscm->async_handler.callback_data = NULL;
--
--	for (i = 0; i < TSCM_MIDI_OUT_PORT_MAX; i++)
--		snd_fw_async_midi_port_destroy(&tscm->out_ports[i]);
- }
+ 	return err;
 diff --git a/sound/firewire/tascam/tascam.h b/sound/firewire/tascam/tascam.h
-index de0aefe..fdf352b 100644
+index fdf352b..37ec201 100644
 --- a/sound/firewire/tascam/tascam.h
 +++ b/sound/firewire/tascam/tascam.h
-@@ -54,7 +54,7 @@ struct snd_fw_async_midi_port {
+@@ -146,8 +146,7 @@ void snd_tscm_stream_lock_changed(struct snd_tscm *tscm);
+ int snd_tscm_stream_lock_try(struct snd_tscm *tscm);
+ void snd_tscm_stream_lock_release(struct snd_tscm *tscm);
  
- 	struct fw_transaction transaction;
- 
--	u8 *buf;
-+	u8 buf[4];
- 
- 	struct snd_rawmidi_substream *substream;
- 	int consume_bytes;
-@@ -148,7 +148,6 @@ void snd_tscm_stream_lock_release(struct snd_tscm *tscm);
- 
- int snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port,
- 		struct fw_unit *unit);
--void snd_fw_async_midi_port_destroy(struct snd_fw_async_midi_port *port);
+-int snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port,
+-		struct fw_unit *unit);
++void snd_fw_async_midi_port_init(struct snd_fw_async_midi_port *port);
  
  static inline void
  snd_fw_async_midi_port_run(struct snd_fw_async_midi_port *port,
-@@ -164,6 +163,7 @@ static inline void
- snd_fw_async_midi_port_finish(struct snd_fw_async_midi_port *port)
- {
- 	port->substream = NULL;
-+	cancel_work_sync(&port->work);
- 	port->error = false;
- }
- 
 -- 
 2.9.3
