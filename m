@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514: Avoid relying on uninitialized "val" value" to the asoc tree
-Date: Fri, 14 Apr 2017 18:11:58 +0100
-Message-ID: <E1cz4lK-0005ZO-IB@debutante>
-References: <20170414164033.11681-2-dianders@chromium.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170414164033.11681-2-dianders@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: Applied "ASoC: rt5514: Mark rt5514_i2c_driver as
+	static" to the asoc tree
+Date: Fri, 14 Apr 2017 18:12:01 +0100
+Message-ID: <E1cz4lN-0005aL-Ij@debutante>
+References: <20170414164033.11681-1-dianders@chromium.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7E7B92671F3
+ for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2017 19:12:13 +0200 (CEST)
+In-Reply-To: <20170414164033.11681-1-dianders@chromium.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Douglas Anderson <dianders@chromium.org>
-Cc: Mark Brown <broonie@kernel.org>, bardliao@realtek.com, oder_chiou@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.combroonie@kernel.orgalsa-devel@alsa-project.org
+Cc: oder_chiou@realtek.com, alsa-devel@alsa-project.org, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, broonie@kernel.org, bardliao@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5514: Avoid relying on uninitialized "val" value
+   ASoC: rt5514: Mark rt5514_i2c_driver as static
 
 has been applied to the asoc tree at
 
@@ -37,47 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From 0a78b248c3324fbbba49f74e2c93e0f436583788 Mon Sep 17 00:00:00 2001
+>From d0c02e14e48be94dd312ff6edffab9f9e6acd480 Mon Sep 17 00:00:00 2001
 From: Douglas Anderson <dianders@chromium.org>
-Date: Fri, 14 Apr 2017 09:40:31 -0700
-Subject: [PATCH] ASoC: rt5514: Avoid relying on uninitialized "val" value
+Date: Fri, 14 Apr 2017 09:40:30 -0700
+Subject: [PATCH] ASoC: rt5514: Mark rt5514_i2c_driver as static
 
-In rt5514_i2c_probe() if the regmap_read(RT5514_VENDOR_ID2) fails then
-"val" may be left as uninitialized.  Current code relies on "val" not
-being RT5514_DEVICE_ID, but that's potentially unsafe.
-
-Let's check for errors from regmap_read() and also explicitly init the
-value do we're not passing a possibly uninitialized int to printk.
+There's no reason for rt5514_i2c_driver to be non-static.
 
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5514.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/rt5514.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
-index 481e77763fe4..969a05620e04 100644
+index b281a46d769d..481e77763fe4 100644
 --- a/sound/soc/codecs/rt5514.c
 +++ b/sound/soc/codecs/rt5514.c
-@@ -1090,7 +1090,7 @@ static int rt5514_i2c_probe(struct i2c_client *i2c,
- 	struct rt5514_platform_data *pdata = dev_get_platdata(&i2c->dev);
- 	struct rt5514_priv *rt5514;
- 	int ret;
--	unsigned int val;
-+	unsigned int val = ~0;
+@@ -1149,7 +1149,7 @@ static int rt5514_i2c_remove(struct i2c_client *i2c)
+ 	return 0;
+ }
  
- 	rt5514 = devm_kzalloc(&i2c->dev, sizeof(struct rt5514_priv),
- 				GFP_KERNEL);
-@@ -1120,8 +1120,8 @@ static int rt5514_i2c_probe(struct i2c_client *i2c,
- 		return ret;
- 	}
- 
--	regmap_read(rt5514->regmap, RT5514_VENDOR_ID2, &val);
--	if (val != RT5514_DEVICE_ID) {
-+	ret = regmap_read(rt5514->regmap, RT5514_VENDOR_ID2, &val);
-+	if (ret || val != RT5514_DEVICE_ID) {
- 		dev_err(&i2c->dev,
- 			"Device with ID register %x is not rt5514\n", val);
- 		return -ENODEV;
+-struct i2c_driver rt5514_i2c_driver = {
++static struct i2c_driver rt5514_i2c_driver = {
+ 	.driver = {
+ 		.name = "rt5514",
+ 		.of_match_table = of_match_ptr(rt5514_of_match),
 -- 
 2.11.0
