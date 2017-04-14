@@ -1,61 +1,52 @@
-From: Laszlo Papp <lpapp@archlinux.us>
+From: Arun Raghavan <arun@arunraghavan.net>
 Subject: Re: Internal Speaker problem
-Date: Fri, 14 Apr 2017 07:44:46 +0100
-Message-ID: <CAOMwXhMS0ibwR=3FZO1N0gw2usUFctwXni6XTBgiRJcPCvx+Xw@mail.gmail.com>
+Date: Fri, 14 Apr 2017 12:28:56 +0530
+Message-ID: <1492153136.3277984.944427856.58D400C3@webmail.messagingengine.com>
+References: <CAOMwXhMS0ibwR=3FZO1N0gw2usUFctwXni6XTBgiRJcPCvx+Xw@mail.gmail.com>
+Reply-To: General PulseAudio Discussion
+ <pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f174.google.com (mail-io0-f174.google.com
- [209.85.223.174])
- by alsa0.perex.cz (Postfix) with ESMTP id EAA28266707
- for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2017 08:44:48 +0200 (CEST)
-Received: by mail-io0-f174.google.com with SMTP id k87so83280871ioi.0
- for <alsa-devel@alsa-project.org>; Thu, 13 Apr 2017 23:44:48 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: arun@arunraghavan.net
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
+In-Reply-To: <CAOMwXhMS0ibwR=3FZO1N0gw2usUFctwXni6XTBgiRJcPCvx+Xw@mail.gmail.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
+Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
+To: Laszlo Papp <lpapp@archlinux.us>, alsa-devel@alsa-project.org
+Cc: PulseAudio Discussion <pulseaudio-discuss@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-Guys, seriously, no one willing to help with a completely broken setup?!
-
-It works fine on Windows, so I would really like to get it working on
-Linux, too.
-
-On Mon, Mar 27, 2017 at 8:29 AM, Laszlo Papp <lpapp@kde.org> wrote:
-
-> I am sorry about flooding with my emails. I just thought that I would
-> amend some information that I forgot to mention in my original email.
->
-> The same laptop and internal speaker work ok on Windows 10. Also, the
-> setup used to work about 1-2 months ago. I cannot remember what exactly
-> broke, perhaps a system upgrade. If it matters, I am using Archlinux.
->
-> On Mon, Mar 27, 2017 at 8:27 AM, Laszlo Papp <lpapp@kde.org> wrote:
->
->> Dear Alsa Developers,
->>
->> My internal speaker in the Lenovo Thinkpad T510 laptop stopped working.
->> Normally, it would provide either no sound or just for a couple of seconds
->> and then it would go off.
->>
->> I do not have auto-mute enabled. I checked it with alsamixer that it is
->> disabled.
->>
->> My ALSA information is located at http://www.alsa-project.org/db
->> /?f=87547de5ff55e44e360aa2382d4e5d3b7bbed091
->>
->> Do you know how I could fix this?
->>
->> Ys, L.
->>
->>
->
+TG9vcGluZyBpbiB0aGUgUEEgbWFpbGluZyBsaXN0IGluIGNhc2Ugc29tZW9uZSBoYXMgaWRlYXMu
+CgpPbiBGcmksIDE0IEFwciAyMDE3LCBhdCAxMjoxNCBQTSwgTGFzemxvIFBhcHAgd3JvdGU6Cj4g
+R3V5cywgc2VyaW91c2x5LCBubyBvbmUgd2lsbGluZyB0byBoZWxwIHdpdGggYSBjb21wbGV0ZWx5
+IGJyb2tlbiBzZXR1cD8hCj4gCj4gSXQgd29ya3MgZmluZSBvbiBXaW5kb3dzLCBzbyBJIHdvdWxk
+IHJlYWxseSBsaWtlIHRvIGdldCBpdCB3b3JraW5nIG9uCj4gTGludXgsIHRvby4KPiAKPiBPbiBN
+b24sIE1hciAyNywgMjAxNyBhdCA4OjI5IEFNLCBMYXN6bG8gUGFwcCA8bHBhcHBAa2RlLm9yZz4g
+d3JvdGU6Cj4gCj4gPiBJIGFtIHNvcnJ5IGFib3V0IGZsb29kaW5nIHdpdGggbXkgZW1haWxzLiBJ
+IGp1c3QgdGhvdWdodCB0aGF0IEkgd291bGQKPiA+IGFtZW5kIHNvbWUgaW5mb3JtYXRpb24gdGhh
+dCBJIGZvcmdvdCB0byBtZW50aW9uIGluIG15IG9yaWdpbmFsIGVtYWlsLgo+ID4KPiA+IFRoZSBz
+YW1lIGxhcHRvcCBhbmQgaW50ZXJuYWwgc3BlYWtlciB3b3JrIG9rIG9uIFdpbmRvd3MgMTAuIEFs
+c28sIHRoZQo+ID4gc2V0dXAgdXNlZCB0byB3b3JrIGFib3V0IDEtMiBtb250aHMgYWdvLiBJIGNh
+bm5vdCByZW1lbWJlciB3aGF0IGV4YWN0bHkKPiA+IGJyb2tlLCBwZXJoYXBzIGEgc3lzdGVtIHVw
+Z3JhZGUuIElmIGl0IG1hdHRlcnMsIEkgYW0gdXNpbmcgQXJjaGxpbnV4Lgo+ID4KPiA+IE9uIE1v
+biwgTWFyIDI3LCAyMDE3IGF0IDg6MjcgQU0sIExhc3psbyBQYXBwIDxscGFwcEBrZGUub3JnPiB3
+cm90ZToKPiA+Cj4gPj4gRGVhciBBbHNhIERldmVsb3BlcnMsCj4gPj4KPiA+PiBNeSBpbnRlcm5h
+bCBzcGVha2VyIGluIHRoZSBMZW5vdm8gVGhpbmtwYWQgVDUxMCBsYXB0b3Agc3RvcHBlZCB3b3Jr
+aW5nLgo+ID4+IE5vcm1hbGx5LCBpdCB3b3VsZCBwcm92aWRlIGVpdGhlciBubyBzb3VuZCBvciBq
+dXN0IGZvciBhIGNvdXBsZSBvZiBzZWNvbmRzCj4gPj4gYW5kIHRoZW4gaXQgd291bGQgZ28gb2Zm
+Lgo+ID4+Cj4gPj4gSSBkbyBub3QgaGF2ZSBhdXRvLW11dGUgZW5hYmxlZC4gSSBjaGVja2VkIGl0
+IHdpdGggYWxzYW1peGVyIHRoYXQgaXQgaXMKPiA+PiBkaXNhYmxlZC4KPiA+Pgo+ID4+IE15IEFM
+U0EgaW5mb3JtYXRpb24gaXMgbG9jYXRlZCBhdCBodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcv
+ZGIKPiA+PiAvP2Y9ODc1NDdkZTVmZjU1ZTQ0ZTM2MGFhMjM4MmQ0ZTVkM2I3YmJlZDA5MQo+ID4+
+Cj4gPj4gRG8geW91IGtub3cgaG93IEkgY291bGQgZml4IHRoaXM/Cj4gPj4KPiA+PiBZcywgTC4K
+PiA+Pgo+ID4+Cj4gPgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpwdWxzZWF1ZGlvLWRpc2N1c3MgbWFpbGluZyBsaXN0CnB1bHNlYXVkaW8tZGlzY3Vzc0Bs
+aXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9wdWxzZWF1ZGlvLWRpc2N1c3MK
