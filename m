@@ -1,141 +1,97 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v4 1/2] ASoC: stm32: add bindings for SAI
-Date: Thu, 13 Apr 2017 15:45:44 -0500
-Message-ID: <20170413204544.sq6i43s7naeoh3zj@rob-hp-laptop>
-References: <1491925646-29113-1-git-send-email-olivier.moysan@st.com>
- <1491925646-29113-2-git-send-email-olivier.moysan@st.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 2/8] firewire-tascam: remove callback
+ function from async midi port (fwd)
+Date: Fri, 14 Apr 2017 09:41:46 +0900
+Message-ID: <8208ef3c-f262-9173-a94b-9da1efc36ff6@sakamocchi.jp>
+References: <alpine.DEB.2.20.1704131709270.3342@hadrien>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1491925646-29113-2-git-send-email-olivier.moysan-qxv4g6HH51o@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
-Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alexandre.torgue-qxv4g6HH51o@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-F5mvAk5X5gdBDgjK7y7TUQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org, benjamin.gaignard-qxv4g6HH51o@public.gmane.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 2EAA82670EE
+ for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2017 02:41:55 +0200 (CEST)
+In-Reply-To: <alpine.DEB.2.20.1704131709270.3342@hadrien>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Julia Lawall <julia.lawall@lip6.fr>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, clemens@ladisch.de, kbuild-all@01.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 11, 2017 at 05:47:25PM +0200, olivier moysan wrote:
-> This patch adds documentation of device tree bindings for the
-> STM32 SAI ASoC driver.
-> 
-> Signed-off-by: olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
-> ---
->  .../devicetree/bindings/sound/st,stm32-sai.txt     | 89 ++++++++++++++++++++++
->  1 file changed, 89 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-sai.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.txt b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
-> new file mode 100644
-> index 0000000..c59a3d7
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
-> @@ -0,0 +1,89 @@
-> +STMicroelectronics STM32 Serial Audio Interface (SAI).
-> +
-> +The SAI interface (Serial Audio Interface) offers a wide set of audio protocols
-> +as I2S standards, LSB or MSB-justified, PCM/DSP, TDM, and AC'97.
-> +The SAI contains two independent audio sub-blocks. Each sub-block has
-> +its own clock generator and I/O lines controller.
-> +
-> +Required properties:
-> +  - compatible: Should be "st,stm32f4-sai"
-> +  - reg: Base address and size of SAI common register set.
-> +  - clocks: Must contain phandle and clock specifier pairs for each entry
-> +	in clock-names.
-> +  - clock-names: Must contain "x8k" and "x11k"
-> +	"x8k": SAI parent clock for sampling rates multiple of 8kHz.
-> +	"x11k": SAI parent clock for sampling rates multiple of 11.025kHz.
-> +  - interrupts: cpu DAI interrupt line shared by SAI sub-blocks
-> +
-> +Optional properties:
-> +  - resets: Reference to a reset controller asserting the SAI
-> +
-> +SAI subnodes:
-> +Two subnodes corresponding to SAI sub-block instances A et B can be defined.
-> +Subnode can be omitted for unsused sub-block.
-> +
-> +SAI subnodes required properties:
-> +  - compatible: Should be "st,stm32-sai-sub-a" or "st,stm32-sai-sub-b"
-> +	for SAI sub-block A or B respectively.
-> +  - reg: Base address and size of SAI sub-block register set.
-> +  - clocks: Must contain one phandle and clock specifier pair
-> +	for sai_ck which feeds the internal clock generator.
-> +  - clock-names: Must contain "sai_ck".
-> +  - dmas: see Documentation/devicetree/bindings/dma/stm32-dma.txt
-> +  - dma-names: identifier string for each DMA request line
-> +	"tx": if sai sub-block is configured as playback DAI
-> +	"rx": if sai sub-block is configured as capture DAI
-> +  - pinctrl-names: should contain only value "default"
-> +  - pinctrl-0: see Documentation/devicetree/bindings/pinctrl/pinctrl-stm32.txt
-> +
-> +Example:
-> +sound_card {
-> +	compatible = "audio-graph-card";
-> +	dais = <&sai1b_port>;
-> +};
-> +
-> +sai1: sai1@40015800 {
-> +	compatible = "st,stm32f4-sai";
-> +	#address-cells = <1>;
-> +	#size-cells = <1>;
-> +	ranges;
-
-It's preferred if this is not empty and it limited to the address range 
-needed.
-
-> +	reg = <0x40015800 0x4>;
-> +	clocks = <&rcc 1 CLK_SAIQ_PDIV>, <&rcc 1 CLK_I2SQ_PDIV>;
-> +	clock-names = "x8k", "x11k";
-> +	interrupts = <87>;
-> +
-> +	sai1b: audio-controller@40015824 {
-> +		#sound-dai-cells = <0>;
-> +		compatible = "st,stm32-sai-sub-b";
-> +		reg = <0x40015824 0x1C>;
-> +		clocks = <&rcc 1 CLK_SAI2>;
-> +		clock-names = "sai_ck";
-> +		dmas = <&dma2 5 0 0x400 0x0>;
-> +		dma-names = "tx";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_sai1b>;
-> +
-> +		ports {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			sai1b_port: port@0 {
-
-Need to document how many ports and endpoints.
-
-> +				reg = <0>;
-
-For a single port, you don't need a reg prop.
-
-> +				cpu_endpoint: endpoint {
-> +					remote-endpoint = <&codec_endpoint>;
-> +					audio-graph-card,format = "i2s";
-> +					audio-graph-card,bitclock-master = <&codec_endpoint>;
-> +					audio-graph-card,frame-master = <&codec_endpoint>;
-
-The prefix is gone now.
-
-> +				};
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +audio-codec {
-> +	codec_port: port {
-> +		codec_endpoint: endpoint {
-> +			remote-endpoint = <&cpu_endpoint>;
-> +		};
-> +	};
-> +};
-> -- 
-> 1.9.1
-> 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+SGkgSnVsaWEsCgpPbiAyMDE35bm0MDTmnIgxNOaXpSAwMDoxMCwgSnVsaWEgTGF3YWxsIHdyb3Rl
+Ogo+IEhlbGxvLAo+IAo+IEkgaGF2ZW4ndCBjaGVja2VkIG9uIHRoZSB0eXBlLCBidXQgaXQgbWF5
+IGJlIHdvcnRoIGxvb2tpbmcgaW50byAobGluZQo+IDIwMSkuCj4gCj4ganVsaWEKClRoZSBidWcg
+d2FzIGludHJvZHVjZWQgdG8gdjQuNCwgYXQgNTg1ZDdjYmE1ZTFmLiBJJ2xsIHBvc3QgZml4IHNv
+b24uCgpUaGlzIHBhdGNoc2V0IHNob3VsZCBiZSBvbiB0aGUgZml4LiBJJ2xsIHBvc3Qgc2Vjb25k
+IHZlcnNpb24sIHRvby4KCgpUaGFua3MKClRha2FzaGkgU2FrYW1vdG8KCj4gLS0tLS0tLS0tLSBG
+b3J3YXJkZWQgbWVzc2FnZSAtLS0tLS0tLS0tCj4gRGF0ZTogVGh1LCAxMyBBcHIgMjAxNyAxODoy
+MDoxNyArMDgwMAo+IEZyb206IGtidWlsZCB0ZXN0IHJvYm90IDxmZW5nZ3Vhbmcud3VAaW50ZWwu
+Y29tPgo+IFRvOiBrYnVpbGRAMDEub3JnCj4gQ2M6IEp1bGlhIExhd2FsbCA8anVsaWEubGF3YWxs
+QGxpcDYuZnI+Cj4gU3ViamVjdDogUmU6IFthbHNhLWRldmVsXSBbUEFUQ0ggMi84XSBmaXJld2ly
+ZS10YXNjYW06IHJlbW92ZSBjYWxsYmFjayBmdW5jdGlvbgo+ICAgICBmcm9tIGFzeW5jIG1pZGkg
+cG9ydAo+IAo+IEluLVJlcGx5LVRvOiA8MjAxNzA0MTMwNTE1MjcuMjEzOTYtMy1vLXRha2FzaGlA
+c2FrYW1vY2NoaS5qcD4KPiAKPiBIaSBUYWthc2hpLAo+IAo+IFthdXRvIGJ1aWxkIHRlc3QgV0FS
+TklORyBvbiBzb3VuZC9mb3ItbmV4dF0KPiBbYWxzbyBidWlsZCB0ZXN0IFdBUk5JTkcgb24gdjQu
+MTEtcmM2IG5leHQtMjAxNzA0MTNdCj4gW2lmIHlvdXIgcGF0Y2ggaXMgYXBwbGllZCB0byB0aGUg
+d3JvbmcgZ2l0IHRyZWUsIHBsZWFzZSBkcm9wIHVzIGEgbm90ZSB0byBoZWxwIGltcHJvdmUgdGhl
+IHN5c3RlbV0KPiAKPiB1cmw6ICAgIGh0dHBzOi8vZ2l0aHViLmNvbS8wZGF5LWNpL2xpbnV4L2Nv
+bW1pdHMvVGFrYXNoaS1TYWthbW90by9BTFNBLWZpcmV3aXJlLWxpYi1maXJld2lyZS10YXNjYW0t
+bG9jYWxpemUtYXN5bmMtbWlkaS1wb3J0LzIwMTcwNDEzLTE1NDY0Nwo+IGJhc2U6ICAgaHR0cHM6
+Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdGl3YWkvc291bmQuZ2l0
+IGZvci1uZXh0Cj4gOjo6Ojo6IGJyYW5jaCBkYXRlOiAzIGhvdXJzIGFnbwo+IDo6Ojo6OiBjb21t
+aXQgZGF0ZTogMyBob3VycyBhZ28KPiAKPj4+IHNvdW5kL2ZpcmV3aXJlL3Rhc2NhbS90YXNjYW0t
+dHJhbnNhY3Rpb24uYzoyMDE6NS0yNDogV0FSTklORzogVW5zaWduZWQgZXhwcmVzc2lvbiBjb21w
+YXJlZCB3aXRoIHplcm86IHBvcnQgLT4gY29uc3VtZV9ieXRlcyA8PSAwCj4gCj4gZ2l0IHJlbW90
+ZSBhZGQgbGludXgtcmV2aWV3IGh0dHBzOi8vZ2l0aHViLmNvbS8wZGF5LWNpL2xpbnV4Cj4gZ2l0
+IHJlbW90ZSB1cGRhdGUgbGludXgtcmV2aWV3Cj4gZ2l0IGNoZWNrb3V0IGI4NjZlYWE5YTAyODkz
+ZTYzODNlYjUxNzdjMTEwNzhhMTZhZjRlODAKPiB2aW0gKzIwMSBzb3VuZC9maXJld2lyZS90YXNj
+YW0vdGFzY2FtLXRyYW5zYWN0aW9uLmMKPiAKPiA3NDFmN2M3N2EgVGFrYXNoaSBTYWthbW90byAy
+MDE3LTA0LTEzICAxODUgIAkvKiBOb3RoaW5nIHRvIGRvLiAqLwo+IDc0MWY3Yzc3YSBUYWthc2hp
+IFNha2Ftb3RvIDIwMTctMDQtMTMgIDE4NiAgCWlmIChzdWJzdHJlYW0gPT0gTlVMTCB8fCBzbmRf
+cmF3bWlkaV90cmFuc21pdF9lbXB0eShzdWJzdHJlYW0pKQo+IDc0MWY3Yzc3YSBUYWthc2hpIFNh
+a2Ftb3RvIDIwMTctMDQtMTMgIDE4NyAgCQlyZXR1cm47Cj4gNzQxZjdjNzdhIFRha2FzaGkgU2Fr
+YW1vdG8gMjAxNy0wNC0xMyAgMTg4Cj4gNzQxZjdjNzdhIFRha2FzaGkgU2FrYW1vdG8gMjAxNy0w
+NC0xMyAgMTg5ICAJLyogRG8gaXQgaW4gbmV4dCBjaGFuY2UuICovCj4gNzQxZjdjNzdhIFRha2Fz
+aGkgU2FrYW1vdG8gMjAxNy0wNC0xMyAgMTkwICAJaWYgKGt0aW1lX2FmdGVyKHBvcnQtPm5leHRf
+a3RpbWUsIGt0aW1lX2dldCgpKSkgewo+IDc0MWY3Yzc3YSBUYWthc2hpIFNha2Ftb3RvIDIwMTct
+MDQtMTMgIDE5MSAgCQlzY2hlZHVsZV93b3JrKCZwb3J0LT53b3JrKTsKPiA3NDFmN2M3N2EgVGFr
+YXNoaSBTYWthbW90byAyMDE3LTA0LTEzICAxOTIgIAkJcmV0dXJuOwo+IDc0MWY3Yzc3YSBUYWth
+c2hpIFNha2Ftb3RvIDIwMTctMDQtMTMgIDE5MyAgCX0KPiA3NDFmN2M3N2EgVGFrYXNoaSBTYWth
+bW90byAyMDE3LTA0LTEzICAxOTQKPiA3NDFmN2M3N2EgVGFrYXNoaSBTYWthbW90byAyMDE3LTA0
+LTEzICAxOTUgIAkvKgo+IDc0MWY3Yzc3YSBUYWthc2hpIFNha2Ftb3RvIDIwMTctMDQtMTMgIDE5
+NiAgCSAqIEZpbGwgdGhlIGJ1ZmZlci4gVGhlIGNhbGxlZSBtdXN0IHVzZSBzbmRfcmF3bWlkaV90
+cmFuc21pdF9wZWVrKCkuCj4gNzQxZjdjNzdhIFRha2FzaGkgU2FrYW1vdG8gMjAxNy0wNC0xMyAg
+MTk3ICAJICogTGF0ZXIsIHNuZF9yYXdtaWRpX3RyYW5zbWl0X2FjaygpIGlzIGNhbGxlZC4KPiA3
+NDFmN2M3N2EgVGFrYXNoaSBTYWthbW90byAyMDE3LTA0LTEzICAxOTggIAkgKi8KPiA3NDFmN2M3
+N2EgVGFrYXNoaSBTYWthbW90byAyMDE3LTA0LTEzICAxOTkgIAltZW1zZXQocG9ydC0+YnVmLCAw
+LCBwb3J0LT5sZW4pOwo+IGI4NjZlYWE5YSBUYWthc2hpIFNha2Ftb3RvIDIwMTctMDQtMTMgIDIw
+MCAgCXBvcnQtPmNvbnN1bWVfYnl0ZXMgPSBmaWxsX21lc3NhZ2Uoc3Vic3RyZWFtLCBwb3J0LT5i
+dWYpOwo+IDc0MWY3Yzc3YSBUYWthc2hpIFNha2Ftb3RvIDIwMTctMDQtMTMgQDIwMSAgCWlmIChw
+b3J0LT5jb25zdW1lX2J5dGVzIDw9IDApIHsKPiA3NDFmN2M3N2EgVGFrYXNoaSBTYWthbW90byAy
+MDE3LTA0LTEzICAyMDIgIAkJLyogRG8gaXQgaW4gbmV4dCBjaGFuY2UsIGltbWVkaWF0ZWx5LiAq
+Lwo+IDc0MWY3Yzc3YSBUYWthc2hpIFNha2Ftb3RvIDIwMTctMDQtMTMgIDIwMyAgCQlpZiAocG9y
+dC0+Y29uc3VtZV9ieXRlcyA9PSAwKSB7Cj4gNzQxZjdjNzdhIFRha2FzaGkgU2FrYW1vdG8gMjAx
+Ny0wNC0xMyAgMjA0ICAJCQlwb3J0LT5uZXh0X2t0aW1lID0gMDsKPiA3NDFmN2M3N2EgVGFrYXNo
+aSBTYWthbW90byAyMDE3LTA0LTEzICAyMDUgIAkJCXNjaGVkdWxlX3dvcmsoJnBvcnQtPndvcmsp
+Owo+IDc0MWY3Yzc3YSBUYWthc2hpIFNha2Ftb3RvIDIwMTctMDQtMTMgIDIwNiAgCQl9IGVsc2Ug
+ewo+IDc0MWY3Yzc3YSBUYWthc2hpIFNha2Ftb3RvIDIwMTctMDQtMTMgIDIwNyAgCQkJLyogRmF0
+YWwgZXJyb3IuICovCj4gNzQxZjdjNzdhIFRha2FzaGkgU2FrYW1vdG8gMjAxNy0wNC0xMyAgMjA4
+ICAJCQlwb3J0LT5lcnJvciA9IHRydWU7Cj4gNzQxZjdjNzdhIFRha2FzaGkgU2FrYW1vdG8gMjAx
+Ny0wNC0xMyAgMjA5ICAJCX0KPiAKPiA6Ojo6OjogVGhlIGNvZGUgYXQgbGluZSAyMDEgd2FzIGZp
+cnN0IGludHJvZHVjZWQgYnkgY29tbWl0Cj4gOjo6Ojo6IDc0MWY3Yzc3YTFhMTVkMDRlYmFmY2Nl
+NGUwNzljZmUxY2ZiNjEyZmYgZmlyZXdpcmUtbGliL2ZpcmV3aXJlLXRhc2NhbTogbG9jYWxpemUg
+YXN5bmMgbWlkaSBwb3J0Cj4gCj4gOjo6Ojo6IFRPOiBUYWthc2hpIFNha2Ftb3RvIDxvLXRha2Fz
+aGlAc2FrYW1vY2NoaS5qcD4KPiA6Ojo6OjogQ0M6IDBkYXkgcm9ib3QgPGZlbmdndWFuZy53dUBp
+bnRlbC5jb20+Cj4gCj4gLS0tCj4gMC1EQVkga2VybmVsIHRlc3QgaW5mcmFzdHJ1Y3R1cmUgICAg
+ICAgICAgICAgICAgT3BlbiBTb3VyY2UgVGVjaG5vbG9neSBDZW50ZXIKPiBodHRwczovL2xpc3Rz
+LjAxLm9yZy9waXBlcm1haWwva2J1aWxkLWFsbCAgICAgICAgICAgICAgICAgICBJbnRlbCBDb3Jw
+b3JhdGlvbgo+IApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
+cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
