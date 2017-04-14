@@ -1,27 +1,16 @@
-From: Laszlo Papp <lpapp@kde.org>
-Subject: Re: Internal Speaker problem
-Date: Fri, 14 Apr 2017 19:02:12 +0100
-Message-ID: <CAOMwXhN+_Y5D+-Dzk88FStmiuFPX0RHkSTaYMo4QT8cHbjPxkg@mail.gmail.com>
-References: <CAOMwXhMS0ibwR=3FZO1N0gw2usUFctwXni6XTBgiRJcPCvx+Xw@mail.gmail.com>
- <s5hlgr3zbb6.wl-tiwai@suse.de>
- <CAOMwXhPs7yx7frp9LnJnteriN8OepBSzazDt8xy1wEp0w=YZ4Q@mail.gmail.com>
- <s5hfuhbz3xa.wl-tiwai@suse.de>
- <CAOMwXhPRsXnCGzVvnKmOi-zNqw+V3N522JZYUDaCP7iX7mfBaA@mail.gmail.com>
- <s5ha87jyxer.wl-tiwai@suse.de>
- <CAOMwXhPyGOHhKWJB7QkGKkzhUUYqyKLme137kjymfY+QNaOeuQ@mail.gmail.com>
- <s5hwpanx9q6.wl-tiwai@suse.de>
- <CAOMwXhOv6fau_M8g=Q0ga2O-j6twHRawpaV2+xpJ=9nLJZ9HWQ@mail.gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] ASoC: Intel: Skylake: Fix a couple user after
+	free bugs
+Date: Fri, 14 Apr 2017 22:11:20 +0300
+Message-ID: <20170414191120.GA30875@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f176.google.com (mail-io0-f176.google.com
- [209.85.223.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 059AA267212
- for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2017 20:02:13 +0200 (CEST)
-Received: by mail-io0-f176.google.com with SMTP id k87so96844069ioi.0
- for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2017 11:02:13 -0700 (PDT)
-In-Reply-To: <CAOMwXhOv6fau_M8g=Q0ga2O-j6twHRawpaV2+xpJ=9nLJZ9HWQ@mail.gmail.com>
+Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24C7F267212
+ for <alsa-devel@alsa-project.org>; Fri, 14 Apr 2017 21:11:39 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,17 +20,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, arun@arunraghavan.net
+To: Liam Girdwood <lgirdwood@gmail.com>, Jeeja KP <jeeja.kp@intel.com>
+Cc: alsa-devel@alsa-project.org, Dharageswari R <dharageswari.r@intel.com>, Vinod Koul <vinod.koul@intel.com>, Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, G Kranthi <gudishax.kranthikumar@intel.com>, Mark Brown <broonie@kernel.org>, Hardik T Shah <hardik.t.shah@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Right, so I am so sorry about misleading you.
+We need to use the _safe() version of list_for_each_entry() here because
+of the kfree(modules).
 
-It turns out that I could reproduce the issue even on Windows. I just had
-to try that harder than I thought.
+Fixes: b8c722ddd548 ("ASoC: Intel: Skylake: Add support for deferred DSP module bind")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Before checking whether I could get a cooler, do you think it would be
-worthwhile changing the BIOS firmware and/or cleaning up the dust
-internally after disassemblying it carefully?
-
-Thank you for all your help.
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 600faad19bd4..d43d1976dd3b 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1323,10 +1323,10 @@ int skl_platform_unregister(struct device *dev)
+ {
+ 	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
+ 	struct skl *skl = ebus_to_skl(ebus);
+-	struct skl_module_deferred_bind *modules;
++	struct skl_module_deferred_bind *modules, *tmp;
+ 
+ 	if (!list_empty(&skl->bind_list)) {
+-		list_for_each_entry(modules, &skl->bind_list, node) {
++		list_for_each_entry_safe(modules, tmp, &skl->bind_list, node) {
+ 			list_del(&modules->node);
+ 			kfree(modules);
+ 		}
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 74b3acf3bb07..aea7917e791c 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -1091,7 +1091,7 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
+ 	struct skl_module_cfg *src_module = NULL, *dst_module;
+ 	struct skl_sst *ctx = skl->skl_sst;
+ 	struct skl_pipe *s_pipe = mconfig->pipe;
+-	struct skl_module_deferred_bind *modules;
++	struct skl_module_deferred_bind *modules, *tmp;
+ 
+ 	if (s_pipe->state == SKL_PIPE_INVALID)
+ 		return -EINVAL;
+@@ -1105,7 +1105,7 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
+ 
+ 		src_module = w_module->w->priv;
+ 
+-		list_for_each_entry(modules, &skl->bind_list, node) {
++		list_for_each_entry_safe(modules, tmp, &skl->bind_list, node) {
+ 			/*
+ 			 * When the destination module is deleted, Unbind the
+ 			 * modules from deferred bind list.
