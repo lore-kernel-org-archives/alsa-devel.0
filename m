@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs35l35: Correct some register
-	defaults" to the asoc tree
-Date: Tue, 18 Apr 2017 18:59:50 +0100
-Message-ID: <E1d0XPq-00079F-2F@debutante>
-References: <1492536772-10066-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: codecs: rt5670: add Thinkpad Tablet 10
+	quirk" to the asoc tree
+Date: Tue, 18 Apr 2017 19:00:04 +0100
+Message-ID: <E1d0XQ4-0007BT-EV@debutante>
+References: <20170417150408.20935-3-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 918A0266DA1
- for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2017 20:00:01 +0200 (CEST)
-In-Reply-To: <1492536772-10066-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8790E266DBE
+ for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2017 20:00:18 +0200 (CEST)
+In-Reply-To: <20170417150408.20935-3-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: brian.austin@cirrus.com, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, broonie@kernel.org
+To: Nicole Faerber <nicole.faerber@id3p.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs35l35: Correct some register defaults
+   ASoC: codecs: rt5670: add Thinkpad Tablet 10 quirk
 
 has been applied to the asoc tree at
 
@@ -53,53 +53,70 @@ to this mail.
 Thanks,
 Mark
 
->From fbeea237af65c6dceca00886aba30839bc986fd7 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Tue, 18 Apr 2017 18:32:52 +0100
-Subject: [PATCH] ASoC: cs35l35: Correct some register defaults
+>From 67e03ff3f32ffeb8f425d80627f3054b60bac0b7 Mon Sep 17 00:00:00 2001
+From: Nicole Faerber <nicole.faerber@id3p.com>
+Date: Mon, 17 Apr 2017 10:04:08 -0500
+Subject: [PATCH] ASoC: codecs: rt5670: add Thinkpad Tablet 10 quirk
 
-Correct some minor errors in the register defaults.
+The Thinkpad Tablet tablet has a similar audio setup as the Intel Braswell
+platform.
+A quirk is needed to detect the platform and setup the platform data
+properly:
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Acked-by: Brian Austin <brian.austin@cirrus.com>
+Manufacturer: LENOVO
+        Product Name: 20C1CTO1WW
+        Version: ThinkPad 10
+
+Manufacturer: LENOVO
+	Product Name: 20C3001VHH
+	Version: ThinkPad 10
+
+Manufacturer: LENOVO
+	Product Name: 20C10024GE
+	Version: ThinkPad Tablet B
+
+Manufacturer: LENOVO
+    	Product Name: 20359
+    	Version: Lenovo Miix 2 10
+
+Signed-off-by: Nicole Faerber <nicole.faerber@id3p.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs35l35.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/rt5670.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
-index 6ecb7ddae9cf..dc6591adc96d 100644
---- a/sound/soc/codecs/cs35l35.c
-+++ b/sound/soc/codecs/cs35l35.c
-@@ -50,7 +50,7 @@ static const struct reg_default cs35l35_reg[] = {
- 	{CS35L35_PWRCTL2,		0x11},
- 	{CS35L35_PWRCTL3,		0x00},
- 	{CS35L35_CLK_CTL1,		0x04},
--	{CS35L35_CLK_CTL2,		0x10},
-+	{CS35L35_CLK_CTL2,		0x12},
- 	{CS35L35_CLK_CTL3,		0xCF},
- 	{CS35L35_SP_FMT_CTL1,		0x20},
- 	{CS35L35_SP_FMT_CTL2,		0x00},
-@@ -70,7 +70,7 @@ static const struct reg_default cs35l35_reg[] = {
- 	{CS35L35_BST_RAMP_CTL,		0x85},
- 	{CS35L35_BST_CONV_COEF_1,	0x24},
- 	{CS35L35_BST_CONV_COEF_2,	0x24},
--	{CS35L35_BST_CONV_SLOPE_COMP,	0x47},
-+	{CS35L35_BST_CONV_SLOPE_COMP,	0x4E},
- 	{CS35L35_BST_CONV_SW_FREQ,	0x04},
- 	{CS35L35_CLASS_H_CTL,		0x0B},
- 	{CS35L35_CLASS_H_HEADRM_CTL,	0x0B},
-@@ -78,9 +78,9 @@ static const struct reg_default cs35l35_reg[] = {
- 	{CS35L35_CLASS_H_FET_DRIVE_CTL, 0x41},
- 	{CS35L35_CLASS_H_VP_CTL,	0xC5},
- 	{CS35L35_VPBR_CTL,		0x0A},
--	{CS35L35_VPBR_VOL_CTL,		0x09},
-+	{CS35L35_VPBR_VOL_CTL,		0x90},
- 	{CS35L35_VPBR_TIMING_CTL,	0x6A},
--	{CS35L35_VPBR_MODE_VOL_CTL,	0x40},
-+	{CS35L35_VPBR_MODE_VOL_CTL,	0x00},
- 	{CS35L35_SPKR_MON_CTL,		0xC0},
- 	{CS35L35_IMON_SCALE_CTL,	0x30},
- 	{CS35L35_AUDIN_RXLOC_CTL,	0x00},
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index 17d20b99f041..e27c5a4a0a15 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -2835,6 +2835,27 @@ static const struct dmi_system_id dmi_platform_intel_braswell[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Wyse 3040"),
+ 		},
+ 	},
++	{
++		.ident = "Lenovo Thinkpad Tablet 10",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad 10"),
++		},
++	},
++	{
++		.ident = "Lenovo Thinkpad Tablet 10",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad Tablet B"),
++		},
++	},
++	{
++		.ident = "Lenovo Thinkpad Tablet 10",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo Miix 2 10"),
++		},
++	},
+ 	{}
+ };
+ 
 -- 
 2.11.0
