@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: rt5670: add Thinkpad Tablet 10
-	quirk" to the asoc tree
-Date: Tue, 18 Apr 2017 19:00:04 +0100
-Message-ID: <E1d0XQ4-0007BT-EV@debutante>
-References: <20170417150408.20935-3-pierre-louis.bossart@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 8790E266DBE
- for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2017 20:00:18 +0200 (CEST)
-In-Reply-To: <20170417150408.20935-3-pierre-louis.bossart@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Nicole Faerber <nicole.faerber@id3p.com>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: topology: use j for internal loop counter" to the asoc tree
+Date: Tue, 18 Apr 2017 19:00:01 +0100
+Message-ID: <E1d0XQ1-0007AX-G3@debutante>
+References: <20170415174954.90707-1-colin.king@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170415174954.90707-1-colin.king@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codecs: rt5670: add Thinkpad Tablet 10 quirk
+   ASoC: topology: use j for internal loop counter
 
 has been applied to the asoc tree at
 
@@ -53,70 +37,39 @@ to this mail.
 Thanks,
 Mark
 
->From 67e03ff3f32ffeb8f425d80627f3054b60bac0b7 Mon Sep 17 00:00:00 2001
-From: Nicole Faerber <nicole.faerber@id3p.com>
-Date: Mon, 17 Apr 2017 10:04:08 -0500
-Subject: [PATCH] ASoC: codecs: rt5670: add Thinkpad Tablet 10 quirk
+>From d7766aa57ab0084498add21ddbf99547116f6b71 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Sat, 15 Apr 2017 18:49:54 +0100
+Subject: [PATCH] ASoC: topology: use j for internal loop counter
 
-The Thinkpad Tablet tablet has a similar audio setup as the Intel Braswell
-platform.
-A quirk is needed to detect the platform and setup the platform data
-properly:
+Currently variable i is being for 2 nested for loops. Fix this by
+using integer loop counter j for the inside for loop.
 
-Manufacturer: LENOVO
-        Product Name: 20C1CTO1WW
-        Version: ThinkPad 10
-
-Manufacturer: LENOVO
-	Product Name: 20C3001VHH
-	Version: ThinkPad 10
-
-Manufacturer: LENOVO
-	Product Name: 20C10024GE
-	Version: ThinkPad Tablet B
-
-Manufacturer: LENOVO
-    	Product Name: 20359
-    	Version: Lenovo Miix 2 10
-
-Signed-off-by: Nicole Faerber <nicole.faerber@id3p.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5670.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ sound/soc/soc-topology.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index 17d20b99f041..e27c5a4a0a15 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -2835,6 +2835,27 @@ static const struct dmi_system_id dmi_platform_intel_braswell[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "Wyse 3040"),
- 		},
- 	},
-+	{
-+		.ident = "Lenovo Thinkpad Tablet 10",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad 10"),
-+		},
-+	},
-+	{
-+		.ident = "Lenovo Thinkpad Tablet 10",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad Tablet B"),
-+		},
-+	},
-+	{
-+		.ident = "Lenovo Thinkpad Tablet 10",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo Miix 2 10"),
-+		},
-+	},
- 	{}
- };
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 8e3df8ba9b68..3a5818829e6c 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -495,12 +495,13 @@ static void remove_widget(struct snd_soc_component *comp,
+ 			struct snd_kcontrol *kcontrol = w->kcontrols[i];
+ 			struct soc_enum *se =
+ 				(struct soc_enum *)kcontrol->private_value;
++			int j;
  
+ 			snd_ctl_remove(card, kcontrol);
+ 
+ 			kfree(se->dobj.control.dvalues);
+-			for (i = 0; i < se->items; i++)
+-				kfree(se->dobj.control.dtexts[i]);
++			for (j = 0; j < se->items; j++)
++				kfree(se->dobj.control.dtexts[j]);
+ 
+ 			kfree(se);
+ 		}
 -- 
 2.11.0
