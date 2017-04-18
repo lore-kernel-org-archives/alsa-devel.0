@@ -1,52 +1,52 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dwc: disallow building designware_pcm as a module
-Date: Tue, 18 Apr 2017 16:18:34 +0100
-Message-ID: <20170418151834.c7e5fivmgn73sbwd@sirena.org.uk>
+From: Lubomir Rintel <lkundrak@v3.sk>
+Subject: Re: [PATCH] ASoC: dwc: disallow building
+	designware_pcm as a module
+Date: Tue, 18 Apr 2017 18:13:30 +0200
+Message-ID: <1492532010.28092.12.camel@v3.sk>
 References: <20170418105954.23368-1-lkundrak@v3.sk>
+ <20170418151834.c7e5fivmgn73sbwd@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="mpolbius4llls74t"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20170418105954.23368-1-lkundrak@v3.sk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lubomir Rintel <lkundrak@v3.sk>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jose Abreu <Jose.Abreu@synopsys.com>, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from shell.v3.sk (shell.v3.sk [92.60.52.57])
+ by alsa0.perex.cz (Postfix) with ESMTP id 34126266A99
+ for <alsa-devel@alsa-project.org>; Tue, 18 Apr 2017 18:13:35 +0200 (CEST)
+In-Reply-To: <20170418151834.c7e5fivmgn73sbwd@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Jose Abreu <Jose.Abreu@synopsys.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
-
---mpolbius4llls74t
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Apr 18, 2017 at 12:59:54PM +0200, Lubomir Rintel wrote:
-> It makes not sense: the whether the PIO PCM extension is used is
-> hardcoded to the designware_i2s driver and designware_pcm doesn't
-> have any module metadata, causing a kernel taint:
->=20
->   [   44.287000] designware_pcm: module license 'unspecified' taints kern=
-el.
->=20
-> Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
-
-This is not a a good approach, there is no technical reason to force the
-driver to be built in.  If you need a license tag in the module then add
-that.
-
---mpolbius4llls74t
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlj2LkYACgkQJNaLcl1U
-h9ANCAf9GJEMGaA6We3/Hy7xhnglT5bB7IaUeLWcox8MWq8e7nhw2kKWhdeqzo58
-Nx1sE6pE7JahLVsHoT6Jow1+7hLK/fKWIfTVcQjTEJcdpQtU25x+yz0CDIKF7dVb
-K0l1iUof74bb8GjHbVde+RrBQM9PgvncQ6N8vI6NCNvjq0U7JZf2cvFGOFxcfSlG
-HJPXpsEk/kUdiClQPFkYCg7hf67kX6e2rqsYmESFNdR1X/RHPjat3POaArkfWysz
-dD1cTT89yoqk7DLGAj/NW/+0+eJt1dhgJwDqTQ4qeX9VNCX/W/n08oR6MfCkst6B
-VuhyrX34Sniy+aWnSDEFC7EO5hNiVA==
-=hhYk
------END PGP SIGNATURE-----
-
---mpolbius4llls74t--
+T24gVHVlLCAyMDE3LTA0LTE4IGF0IDE2OjE4ICswMTAwLCBNYXJrIEJyb3duIHdyb3RlOgo+IE9u
+IFR1ZSwgQXByIDE4LCAyMDE3IGF0IDEyOjU5OjU0UE0gKzAyMDAsIEx1Ym9taXIgUmludGVsIHdy
+b3RlOgo+ID4gSXQgbWFrZXMgbm90IHNlbnNlOiB0aGUgd2hldGhlciB0aGUgUElPIFBDTSBleHRl
+bnNpb24gaXMgdXNlZCBpcwo+ID4gaGFyZGNvZGVkIHRvIHRoZSBkZXNpZ253YXJlX2kycyBkcml2
+ZXIgYW5kIGRlc2lnbndhcmVfcGNtIGRvZXNuJ3QKPiA+IGhhdmUgYW55IG1vZHVsZSBtZXRhZGF0
+YSwgY2F1c2luZyBhIGtlcm5lbCB0YWludDoKPiA+IAo+ID4gwqAgW8KgwqDCoDQ0LjI4NzAwMF0g
+ZGVzaWdud2FyZV9wY206IG1vZHVsZSBsaWNlbnNlICd1bnNwZWNpZmllZCcgdGFpbnRzIGtlcm5l
+bC4KPiA+IAo+ID4gU2lnbmVkLW9mZi1ieTogTHVib21pciBSaW50ZWwgPGxrdW5kcmFrQHYzLnNr
+Pgo+IAo+IFRoaXMgaXMgbm90IGEgYSBnb29kIGFwcHJvYWNoLCB0aGVyZSBpcyBubyB0ZWNobmlj
+YWwgcmVhc29uIHRvIGZvcmNlIHRoZQo+IGRyaXZlciB0byBiZSBidWlsdCBpbi7CoMKgSWYgeW91
+IG5lZWQgYSBsaWNlbnNlIHRhZyBpbiB0aGUgbW9kdWxlIHRoZW4gYWRkCj4gdGhhdC4KCkkgZG9u
+J3QgdGhpbmsgZGVzaWdud2FyZV9wY20gaXMgYSBzZXBhcmF0ZSBkcml2ZXIuIEl0IGxvb2tzIHRp
+Z2h0bHkKY291cGxlZCB3aXRoIGRlc2lnbndhcmVfaTJzOiB5b3UgY2FuIGVpdGhlciBkaXNhYmxl
+IGRlc2lnbndhcmVfcGNtCmFsdG9nZXRoZXIgYXQgYnVpbGQgdGltZSBvciBhbHdheXMgbG9hZCBp
+dCB0b2dldGhlciB3aXRoCmRlc2lnbndhcmVfaTJzLgoKU2VlIHNvdW5kL3NvYy9kd2MvbG9jYWwu
+aDoKCiAgI2lmIElTX0VOQUJMRUQoQ09ORklHX1NORF9ERVNJR05XQVJFX1BDTSkKICB2b2lkIGR3
+X3BjbV9wdXNoX3R4KHN0cnVjdCBkd19pMnNfZGV2ICpkZXYpOwogIGludCBkd19wY21fcmVnaXN0
+ZXIoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldik7CiAgI2Vsc2UKICB2b2lkIGR3X3BjbV9w
+dXNoX3R4KHN0cnVjdCBkd19pMnNfZGV2ICpkZXYpIHsgfQogIGludCBkd19wY21fcmVnaXN0ZXIo
+c3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKICB7CiAgwqDCoMKgwqDCoMKgwqDCoHJldHVy
+biAtRUlOVkFMOwogIH0KICAjZW5kaWYKCkx1Ym8KX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbHNhLWRldmVsCg==
