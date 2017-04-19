@@ -1,19 +1,18 @@
-From: Colin Ian King <colin.king@canonical.com>
-Subject: Re: [PATCH] ASoC: Intel: Skylake: fix dereference
- before NULL check on ebus
-Date: Wed, 19 Apr 2017 14:34:33 +0100
-Message-ID: <fa93c146-cb7b-cefa-75d3-6507c63200c5@canonical.com>
-References: <20170419121613.12353-1-colin.king@canonical.com>
- <20170419133249.ac3sdmn7kqjbxaii@mwanda>
+From: jeronimo@borque.com.ar
+Subject: [resend][PATCH] ALSA: hda - Add HP ZBook 15u G3
+	Conexant CX20724 GPIO mute leds
+Date: Wed, 19 Apr 2017 12:09:50 -0300
+Message-ID: <20170419150950.4276-1-jeronimo@borque.com.ar>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 85505266A4B
- for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2017 15:34:37 +0200 (CEST)
-In-Reply-To: <20170419133249.ac3sdmn7kqjbxaii@mwanda>
+Received: from mail-qk0-f193.google.com (mail-qk0-f193.google.com
+ [209.85.220.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 43F62266A4B
+ for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2017 17:11:08 +0200 (CEST)
+Received: by mail-qk0-f193.google.com with SMTP id p68so3738196qke.1
+ for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2017 08:11:08 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,32 +22,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: alsa-devel@alsa-project.org, Dharageswari R <dharageswari.r@intel.com>, Vinod Koul <vinod.koul@intel.com>, Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>, Jayachandran B <jayachandran.b@intel.com>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, linux-kernel@vger.kernel.org, Yong Zhi <yong.zhi@intel.com>
+To: tiwai@suse.de, perex@perex.cz, alsa-devel@alsa-project.org
+Cc: =?UTF-8?q?Jer=C3=B3nimo=20Borque?= <jeronimo@borque.com.ar>
 List-Id: alsa-devel@alsa-project.org
 
-On 19/04/17 14:32, Dan Carpenter wrote:
-> On Wed, Apr 19, 2017 at 01:16:13PM +0100, Colin King wrote:
->> From: Colin Ian King <colin.king@canonical.com>
->>
->> ebus is being NULL checked however it is being dereferenced
->> earlier on the assignment bus = ebus_to_hbus(ebus).  Fix this
->> by moving the assignment to after the NULL check on ebus to
->> avoid a NULL pointer dereference error.
->>
-> 
-> ebus_to_hbus() doesn't dereference "ebus" it just uses it for pointer
-> math.
-> 
-> #define ebus_to_hbus(ebus)      (&(ebus)->bus)
-> 
-> If you pass a NULL to there, it returns an offset starting from NULL but
-> it doesn't Oops.
-
-Doh, brown paper bag moment for me.
-
-> 
-> regards,
-> dan carpenter
-> 
-> 
+RnJvbTogSmVyw7NuaW1vIEJvcnF1ZSA8amVyb25pbW9AYm9ycXVlLmNvbS5hcj4KClRoZSBIUCBa
+Qm9vayAxNXUgRzMgaGFzIGEgQ29uZXhhbnQgQ1gyMDcyNCB3aXRoIG11dGUgbGVkIG9uIEdQSU8x
+IGFuZCBtaWMgbXV0ZSBsZWQgb24gR1BJTzIuCkFkZGluZyBDWFRfRklYVVBfTVVURV9MRURfR1BJ
+TyBpbnNwaXJlZCBvbiBwYXRjaF9yZWFsdGVrJ3Mgb25lLgoKU2lnbmVkLW9mZi1ieTogSmVyw7Nu
+aW1vIEJvcnF1ZSA8amVyb25pbW9AYm9ycXVlLmNvbS5hcj4KCi0tLQogc291bmQvcGNpL2hkYS9w
+YXRjaF9jb25leGFudC5jIHwgODEgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrCiAxIGZpbGUgY2hhbmdlZCwgODEgaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBhL3Nv
+dW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhhbnQuYyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfY29uZXhh
+bnQuYwppbmRleCA2OTI2NmI4Li5lODI1MzczIDEwMDY0NAotLS0gYS9zb3VuZC9wY2kvaGRhL3Bh
+dGNoX2NvbmV4YW50LmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9jb25leGFudC5jCkBAIC01
+Miw2ICs1MiwxMiBAQCBzdHJ1Y3QgY29uZXhhbnRfc3BlYyB7CiAJYm9vbCBkY19lbmFibGU7CiAJ
+dW5zaWduZWQgaW50IGRjX2lucHV0X2JpYXM7IC8qIG9mZnNldCBpbnRvIG9scGNfeG9fZGNfYmlh
+cyAqLwogCXN0cnVjdCBuaWRfcGF0aCAqZGNfbW9kZV9wYXRoOworCisJaW50IG11dGVfbGVkX3Bv
+bGFyaXR5OworCXVuc2lnbmVkIGludCBncGlvX2xlZDsKKwl1bnNpZ25lZCBpbnQgZ3Bpb19tdXRl
+X2xlZF9tYXNrOworCXVuc2lnbmVkIGludCBncGlvX21pY19sZWRfbWFzazsKKwogfTsKIAogCkBA
+IC0yNjQsNiArMjcwLDcgQEAgZW51bSB7CiAJQ1hUX0ZJWFVQX0hQX0RPQ0ssCiAJQ1hUX0ZJWFVQ
+X0hQX1NQRUNUUkUsCiAJQ1hUX0ZJWFVQX0hQX0dBVEVfTUlDLAorCUNYVF9GSVhVUF9NVVRFX0xF
+RF9HUElPLAogfTsKIAogLyogZm9yIGhkYV9maXh1cF90aGlua3BhZF9hY3BpKCkgKi8KQEAgLTY0
+Niw2ICs2NTMsNzQgQEAgc3RhdGljIHZvaWQgY3h0X2ZpeHVwX2hwX2dhdGVfbWljX2phY2soc3Ry
+dWN0IGhkYV9jb2RlYyAqY29kZWMsCiAJCXNuZF9oZGFfamFja19zZXRfZ2F0aW5nX2phY2soY29k
+ZWMsIDB4MTksIDB4MTYpOwogfQogCisvKiB1cGRhdGUgTEVEIHN0YXR1cyB2aWEgR1BJTyAqLwor
+c3RhdGljIHZvaWQgY3h0X3VwZGF0ZV9ncGlvX2xlZChzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywg
+dW5zaWduZWQgaW50IG1hc2ssCisJCQkJYm9vbCBlbmFibGVkKQoreworCXN0cnVjdCBjb25leGFu
+dF9zcGVjICpzcGVjID0gY29kZWMtPnNwZWM7CisJdW5zaWduZWQgaW50IG9sZHZhbCA9IHNwZWMt
+PmdwaW9fbGVkOworCisJaWYgKHNwZWMtPm11dGVfbGVkX3BvbGFyaXR5KQorCQllbmFibGVkID0g
+IWVuYWJsZWQ7CisKKwlpZiAoZW5hYmxlZCkKKwkJc3BlYy0+Z3Bpb19sZWQgJj0gfm1hc2s7CisJ
+ZWxzZQorCQlzcGVjLT5ncGlvX2xlZCB8PSBtYXNrOworCWlmIChzcGVjLT5ncGlvX2xlZCAhPSBv
+bGR2YWwpCisJCXNuZF9oZGFfY29kZWNfd3JpdGUoY29kZWMsIDB4MDEsIDAsIEFDX1ZFUkJfU0VU
+X0dQSU9fREFUQSwKKwkJCQkgICAgc3BlYy0+Z3Bpb19sZWQpOworfQorCisvKiB0dXJuIG9uL29m
+ZiBtdXRlIExFRCB2aWEgR1BJTyBwZXIgdm1hc3RlciBob29rICovCitzdGF0aWMgdm9pZCBjeHRf
+Zml4dXBfZ3Bpb19tdXRlX2hvb2sodm9pZCAqcHJpdmF0ZV9kYXRhLCBpbnQgZW5hYmxlZCkKK3sK
+KwlzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYyA9IHByaXZhdGVfZGF0YTsKKwlzdHJ1Y3QgY29uZXhh
+bnRfc3BlYyAqc3BlYyA9IGNvZGVjLT5zcGVjOworCisJY3h0X3VwZGF0ZV9ncGlvX2xlZChjb2Rl
+Yywgc3BlYy0+Z3Bpb19tdXRlX2xlZF9tYXNrLCBlbmFibGVkKTsKK30KKworLyogdHVybiBvbi9v
+ZmYgbWljLW11dGUgTEVEIHZpYSBHUElPIHBlciBjYXB0dXJlIGhvb2sgKi8KK3N0YXRpYyB2b2lk
+IGN4dF9maXh1cF9ncGlvX21pY19tdXRlX2hvb2soc3RydWN0IGhkYV9jb2RlYyAqY29kZWMsCisJ
+CQkJCSBzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJvbCwKKwkJCQkJIHN0cnVjdCBzbmRfY3Rs
+X2VsZW1fdmFsdWUgKnVjb250cm9sKQoreworCXN0cnVjdCBjb25leGFudF9zcGVjICpzcGVjID0g
+Y29kZWMtPnNwZWM7CisKKwlpZiAodWNvbnRyb2wpCisJCWN4dF91cGRhdGVfZ3Bpb19sZWQoY29k
+ZWMsIHNwZWMtPmdwaW9fbWljX2xlZF9tYXNrLAorCQkJCSAgICB1Y29udHJvbC0+dmFsdWUuaW50
+ZWdlci52YWx1ZVswXSB8fAorCQkJCSAgICB1Y29udHJvbC0+dmFsdWUuaW50ZWdlci52YWx1ZVsx
+XSk7Cit9CisKKworc3RhdGljIHZvaWQgY3h0X2ZpeHVwX211dGVfbGVkX2dwaW8oc3RydWN0IGhk
+YV9jb2RlYyAqY29kZWMsCisJCQkJY29uc3Qgc3RydWN0IGhkYV9maXh1cCAqZml4LCBpbnQgYWN0
+aW9uKQoreworCXN0cnVjdCBjb25leGFudF9zcGVjICpzcGVjID0gY29kZWMtPnNwZWM7CisJc3Rh
+dGljIGNvbnN0IHN0cnVjdCBoZGFfdmVyYiBncGlvX2luaXRbXSA9IHsKKwkJeyAweDAxLCBBQ19W
+RVJCX1NFVF9HUElPX01BU0ssIDB4MDMgfSwKKwkJeyAweDAxLCBBQ19WRVJCX1NFVF9HUElPX0RJ
+UkVDVElPTiwgMHgwMyB9LAorCQl7fQorCX07CisJY29kZWNfaW5mbyhjb2RlYywgImFjdGlvbjog
+JWQgZ3Bpb19sZWQ6ICVkXG4iLCBhY3Rpb24sIHNwZWMtPmdwaW9fbGVkKTsKKworCWlmIChhY3Rp
+b24gPT0gSERBX0ZJWFVQX0FDVF9QUkVfUFJPQkUpIHsKKwkJc3BlYy0+Z2VuLnZtYXN0ZXJfbXV0
+ZS5ob29rID0gY3h0X2ZpeHVwX2dwaW9fbXV0ZV9ob29rOworCQlzcGVjLT5nZW4uY2FwX3N5bmNf
+aG9vayA9IGN4dF9maXh1cF9ncGlvX21pY19tdXRlX2hvb2s7CisJCXNwZWMtPmdwaW9fbGVkID0g
+MDsKKwkJc3BlYy0+bXV0ZV9sZWRfcG9sYXJpdHkgPSAwOworCQlzcGVjLT5ncGlvX211dGVfbGVk
+X21hc2sgPSAweDAxOworCQlzcGVjLT5ncGlvX21pY19sZWRfbWFzayA9IDB4MDI7CisJfQorCXNu
+ZF9oZGFfYWRkX3ZlcmJzKGNvZGVjLCBncGlvX2luaXQpOworCWlmIChzcGVjLT5ncGlvX2xlZCkK
+KwkJc25kX2hkYV9jb2RlY193cml0ZShjb2RlYywgMHgwMSwgMCwgQUNfVkVSQl9TRVRfR1BJT19E
+QVRBLAorCQkJCSAgICBzcGVjLT5ncGlvX2xlZCk7Cit9CisKKwogLyogVGhpbmtQYWQgWDIwMCAm
+IGNvIHdpdGggY3h0NTA1MSAqLwogc3RhdGljIGNvbnN0IHN0cnVjdCBoZGFfcGludGJsIGN4dF9w
+aW5jZmdfbGVub3ZvX3gyMDBbXSA9IHsKIAl7IDB4MTYsIDB4MDQyMTQwZmYgfSwgLyogSFAgKHNl
+cSMgb3ZlcnJpZGRlbikgKi8KQEAgLTc5OSw2ICs4NzQsMTAgQEAgc3RhdGljIGNvbnN0IHN0cnVj
+dCBoZGFfZml4dXAgY3h0X2ZpeHVwc1tdID0gewogCQkudHlwZSA9IEhEQV9GSVhVUF9GVU5DLAog
+CQkudi5mdW5jID0gY3h0X2ZpeHVwX2hwX2dhdGVfbWljX2phY2ssCiAJfSwKKwlbQ1hUX0ZJWFVQ
+X01VVEVfTEVEX0dQSU9dID0geworCQkudHlwZSA9IEhEQV9GSVhVUF9GVU5DLAorCQkudi5mdW5j
+ID0gY3h0X2ZpeHVwX211dGVfbGVkX2dwaW8sCisJfSwKIH07CiAKIHN0YXRpYyBjb25zdCBzdHJ1
+Y3Qgc25kX3BjaV9xdWlyayBjeHQ1MDQ1X2ZpeHVwc1tdID0gewpAQCAtODUxLDYgKzkzMCw3IEBA
+IHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3BjaV9xdWlyayBjeHQ1MDY2X2ZpeHVwc1tdID0gewog
+CVNORF9QQ0lfUVVJUksoMHgxMDNjLCAweDgwNzksICJIUCBFbGl0ZUJvb2sgODQwIEczIiwgQ1hU
+X0ZJWFVQX0hQX0RPQ0spLAogCVNORF9QQ0lfUVVJUksoMHgxMDNjLCAweDgxNzQsICJIUCBTcGVj
+dHJlIHgzNjAiLCBDWFRfRklYVVBfSFBfU1BFQ1RSRSksCiAJU05EX1BDSV9RVUlSSygweDEwM2Ms
+IDB4ODExNSwgIkhQIFoxIEdlbjMiLCBDWFRfRklYVVBfSFBfR0FURV9NSUMpLAorCVNORF9QQ0lf
+UVVJUksoMHgxMDNjLCAweDgxNGYsICJIUCBaQm9vayAxNXUgRzMiLCBDWFRfRklYVVBfTVVURV9M
+RURfR1BJTyksCiAJU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MTM4ZCwgIkFzdXMiLCBDWFRfRklY
+VVBfSEVBRFBIT05FX01JQ19QSU4pLAogCVNORF9QQ0lfUVVJUksoMHgxNTJkLCAweDA4MzMsICJP
+TFBDIFhPLTEuNSIsIENYVF9GSVhVUF9PTFBDX1hPKSwKIAlTTkRfUENJX1FVSVJLKDB4MTdhYSwg
+MHgyMGYyLCAiTGVub3ZvIFQ0MDAiLCBDWFRfUElOQ0ZHX0xFTk9WT19UUDQxMCksCkBAIC04ODIs
+NiArOTYyLDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBoZGFfbW9kZWxfZml4dXAgY3h0NTA2Nl9m
+aXh1cF9tb2RlbHNbXSA9IHsKIAl7IC5pZCA9IENYVF9GSVhVUF9PTFBDX1hPLCAubmFtZSA9ICJv
+bHBjLXhvIiB9LAogCXsgLmlkID0gQ1hUX0ZJWFVQX01VVEVfTEVEX0VBUEQsIC5uYW1lID0gIm11
+dGUtbGVkLWVhcGQiIH0sCiAJeyAuaWQgPSBDWFRfRklYVVBfSFBfRE9DSywgLm5hbWUgPSAiaHAt
+ZG9jayIgfSwKKwl7IC5pZCA9IENYVF9GSVhVUF9NVVRFX0xFRF9HUElPLCAubmFtZSA9ICJtdXRl
+LWxlZC1ncGlvIiB9LAogCXt9CiB9OwogCi0tIAoyLjkuMwoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
