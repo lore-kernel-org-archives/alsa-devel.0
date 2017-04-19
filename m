@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ak4613: use snd_soc_update_bits() to avoid Reserve bit on I/O CTRL" to the asoc tree
-Date: Wed, 19 Apr 2017 17:33:22 +0100
-Message-ID: <E1d0sXi-0001RK-WB@debutante>
-References: <877f2hkzcp.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: rsnd_mod_make_sure() is not under DEBUG" to the asoc tree
+Date: Wed, 19 Apr 2017 17:33:19 +0100
+Message-ID: <E1d0sXf-0001QG-5c@debutante>
+References: <8760i1kzb8.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <877f2hkzcp.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <8760i1kzb8.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ak4613: use snd_soc_update_bits() to avoid Reserve bit on I/O CTRL
+   ASoC: rsnd: rsnd_mod_make_sure() is not under DEBUG
 
 has been applied to the asoc tree at
 
@@ -37,45 +37,55 @@ to this mail.
 Thanks,
 Mark
 
->From 4898b61e40d62ca1652af40935dbbb5d2e5fd93d Mon Sep 17 00:00:00 2001
+>From 9ca5e57d78446c8bd42adff3dcae693703f91d9c Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 19 Apr 2017 00:40:38 +0000
-Subject: [PATCH] ASoC: ak4613: use snd_soc_update_bits() to avoid Reserve bit
- on I/O CTRL
+Date: Wed, 19 Apr 2017 00:41:24 +0000
+Subject: [PATCH] ASoC: rsnd: rsnd_mod_make_sure() is not under DEBUG
+
+rsnd_mod_make_sure() will be used any situation,
+thus, under DEBUG is not realistic.
+This patch move it to non DEBUG area
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak4613.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ sound/soc/sh/rcar/core.c | 2 --
+ sound/soc/sh/rcar/rsnd.h | 2 +-
+ 2 files changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/ak4613.c b/sound/soc/codecs/ak4613.c
-index e819dd8c82fd..b2dfddead227 100644
---- a/sound/soc/codecs/ak4613.c
-+++ b/sound/soc/codecs/ak4613.c
-@@ -75,6 +75,12 @@
- #define DFS_DOUBLE_SPEED	(1 << 2)
- #define DFS_QUAD_SPEED		(2 << 2)
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index f8eb9d3d1949..1744015408c3 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -110,7 +110,6 @@ MODULE_DEVICE_TABLE(of, rsnd_of_match);
+ /*
+  *	rsnd_mod functions
+  */
+-#ifdef DEBUG
+ void rsnd_mod_make_sure(struct rsnd_mod *mod, enum rsnd_mod_type type)
+ {
+ 	if (mod->type != type) {
+@@ -121,7 +120,6 @@ void rsnd_mod_make_sure(struct rsnd_mod *mod, enum rsnd_mod_type type)
+ 			 rsnd_mod_name(mod), rsnd_mod_id(mod));
+ 	}
+ }
+-#endif
  
-+/* ICTRL */
-+#define ICTRL_MASK	(0x3)
-+
-+/* OCTRL */
-+#define OCTRL_MASK	(0x3F)
-+
- struct ak4613_formats {
- 	unsigned int width;
- 	unsigned int fmt;
-@@ -365,8 +371,8 @@ static int ak4613_dai_hw_params(struct snd_pcm_substream *substream,
- 	snd_soc_update_bits(codec, CTRL1, FMT_MASK, fmt_ctrl);
- 	snd_soc_update_bits(codec, CTRL2, DFS_MASK, ctrl2);
+ char *rsnd_mod_name(struct rsnd_mod *mod)
+ {
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 3dc9e06f5943..dbf4163427e8 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -727,8 +727,8 @@ void rsnd_cmd_remove(struct rsnd_priv *priv);
+ int rsnd_cmd_attach(struct rsnd_dai_stream *io, int id);
+ struct rsnd_mod *rsnd_cmd_mod_get(struct rsnd_priv *priv, int id);
  
--	snd_soc_write(codec, ICTRL, priv->ic);
--	snd_soc_write(codec, OCTRL, priv->oc);
-+	snd_soc_update_bits(codec, ICTRL, ICTRL_MASK, priv->ic);
-+	snd_soc_update_bits(codec, OCTRL, OCTRL_MASK, priv->oc);
- 
- hw_params_end:
- 	if (ret < 0)
+-#ifdef DEBUG
+ void rsnd_mod_make_sure(struct rsnd_mod *mod, enum rsnd_mod_type type);
++#ifdef DEBUG
+ #define rsnd_mod_confirm_ssi(mssi)	rsnd_mod_make_sure(mssi, RSND_MOD_SSI)
+ #define rsnd_mod_confirm_src(msrc)	rsnd_mod_make_sure(msrc, RSND_MOD_SRC)
+ #define rsnd_mod_confirm_dvc(mdvc)	rsnd_mod_make_sure(mdvc, RSND_MOD_DVC)
 -- 
 2.11.0
