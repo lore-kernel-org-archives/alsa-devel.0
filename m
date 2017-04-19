@@ -1,50 +1,166 @@
-From: Lubomir Rintel <lkundrak@v3.sk>
-Subject: Re: [PATCH] ASoC: dwc: disallow building
-	designware_pcm as a module
-Date: Wed, 19 Apr 2017 18:14:21 +0200
-Message-ID: <1492618461.28092.18.camel@v3.sk>
-References: <20170418105954.23368-1-lkundrak@v3.sk>
- <20170418151834.c7e5fivmgn73sbwd@sirena.org.uk>
- <1492532010.28092.12.camel@v3.sk>
- <20170418171519.csiftftd434psyn5@sirena.org.uk>
- <2e39b000-bf25-6447-b53b-047401041f4e@synopsys.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from shell.v3.sk (shell.v3.sk [92.60.52.57])
- by alsa0.perex.cz (Postfix) with ESMTP id B73E9266ADE
- for <alsa-devel@alsa-project.org>; Wed, 19 Apr 2017 18:14:26 +0200 (CEST)
-In-Reply-To: <2e39b000-bf25-6447-b53b-047401041f4e@synopsys.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jose Abreu <Jose.Abreu@synopsys.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rsnd: enable clock-frequency for both 44.1kHz/48kHz" to the asoc tree
+Date: Wed, 19 Apr 2017 17:33:13 +0100
+Message-ID: <E1d0sXZ-0001Or-VH@debutante>
+References: <874lxlkz3r.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <874lxlkz3r.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>hiroyuki.yokoyama.vx@renesas.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAyMDE3LTA0LTE5IGF0IDE3OjEyICswMTAwLCBKb3NlIEFicmV1IHdyb3RlOgo+IEhp
-IEx1Ym9taXIsCj4gCj4gCj4gT24gMTgtMDQtMjAxNyAxODoxNSwgTWFyayBCcm93biB3cm90ZToK
-PiA+IE9uIFR1ZSwgQXByIDE4LCAyMDE3IGF0IDA2OjEzOjMwUE0gKzAyMDAsIEx1Ym9taXIgUmlu
-dGVsIHdyb3RlOgo+ID4gCj4gPiA+IEkgZG9uJ3QgdGhpbmsgZGVzaWdud2FyZV9wY20gaXMgYSBz
-ZXBhcmF0ZSBkcml2ZXIuIEl0IGxvb2tzCj4gPiA+IHRpZ2h0bHkKPiA+ID4gY291cGxlZCB3aXRo
-IGRlc2lnbndhcmVfaTJzOiB5b3UgY2FuIGVpdGhlciBkaXNhYmxlCj4gPiA+IGRlc2lnbndhcmVf
-cGNtCj4gPiA+IGFsdG9nZXRoZXIgYXQgYnVpbGQgdGltZSBvciBhbHdheXMgbG9hZCBpdCB0b2dl
-dGhlciB3aXRoCj4gPiA+IGRlc2lnbndhcmVfaTJzLgo+ID4gCj4gPiBZZXMsIHRoZXkncmUgY2xv
-c2VseSBjb3VwbGVkIGJ1dCB3ZSBtaWdodCBzdGlsbCB3YW50IHRoZW0gYm90aCBhcyBhCj4gPiBt
-b2R1bGUuCj4gCj4gVGhhbmtzIGZvciB0aGUgcGF0Y2ggYnV0IEkgYWdyZWUgd2l0aCBNYXJrLgo+
-IAo+IEZvciB0aGUgcmVjb3JkIHlvdSBjYW4gYWRkICJNT0RVTEVfTElDRU5TRSjigJxEdWFsIE1J
-VC9HUEzigJ0pIi4KClNvcnJ5IGlmIEknbSBtaXNzaW5nIHNvbWV0aGluZzsgYnV0IEkgc3RpbGwg
-ZmFpbCB0byB1bmRlcnN0YW5kIHdoeSBpcwp0aGF0IGEgZ29vZCBpZGVhLgoKV2hhdCBpcyB0aGUg
-cG9pbnQgb2YgaGF2aW5nIGEgcGFpciBvZiBtb2R1bGVzIHRoYXQgZGVwZW5kIG9uIGVhY2ggb3Ro
-ZXIKYW5kIGNhbiBvbmx5IGJlIGxvYWRlZCB0b2dldGhlcj8KCj4gQmVzdCByZWdhcmRzLAo+IEpv
-c2UgTWlndWVsIEFicmV1CgpMdWJvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+The patch
+
+   ASoC: rsnd: enable clock-frequency for both 44.1kHz/48kHz
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 25165f79adc76b812bfb4d8f2ab120aafb28d0e6 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 19 Apr 2017 00:45:52 +0000
+Subject: [PATCH] ASoC: rsnd: enable clock-frequency for both 44.1kHz/48kHz
+
+Current clock-frequency allows only 1 clock, but ADG can
+handle both 44.1kHz/48kHz base clocks. This patch enables these.
+
+On Salvator-X board, AUDIO_CLKOUT which is generated by ADG
+is connected to ak4613 MCKI, and it should be synchronized with
+LRCK. Thus, we need both 44.1kHz/48kHz base clock-frequency.
+Otherwise, either one sounds strange in high frequency sound.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/adg.c | 39 ++++++++++++++++++++++++++-------------
+ 1 file changed, 26 insertions(+), 13 deletions(-)
+
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index 214a9ce90bb4..96fef91b480c 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -43,6 +43,7 @@ struct rsnd_adg {
+ };
+ 
+ #define LRCLK_ASYNC	(1 << 0)
++#define AUDIO_OUT_48	(1 << 1)
+ #define adg_mode_flags(adg)	(adg->flags)
+ 
+ #define for_each_rsnd_clk(pos, adg, i)		\
+@@ -364,7 +365,10 @@ int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *ssi_mod, unsigned int rate)
+ 
+ 	rsnd_adg_set_ssi_clk(ssi_mod, data);
+ 
+-	if (!(adg_mode_flags(adg) & LRCLK_ASYNC)) {
++	if (adg_mode_flags(adg) & LRCLK_ASYNC) {
++		if (adg_mode_flags(adg) & AUDIO_OUT_48)
++			ckr = 0x80000000;
++	} else {
+ 		if (0 == (rate % 8000))
+ 			ckr = 0x80000000;
+ 	}
+@@ -427,11 +431,14 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
+ 	struct clk *clk;
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 	struct device_node *np = dev->of_node;
++	struct property *prop;
+ 	u32 ckr, rbgx, rbga, rbgb;
+-	u32 rate, req_rate = 0, div;
++	u32 rate, div;
++#define REQ_SIZE 2
++	u32 req_rate[REQ_SIZE] = {};
+ 	uint32_t count = 0;
+ 	unsigned long req_48kHz_rate, req_441kHz_rate;
+-	int i;
++	int i, req_size;
+ 	const char *parent_clk_name = NULL;
+ 	static const char * const clkout_name[] = {
+ 		[CLKOUT]  = "audio_clkout",
+@@ -452,13 +459,18 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
+ 	 * ADG supports BRRA/BRRB output only
+ 	 * this means all clkout0/1/2/3 will be same rate
+ 	 */
+-	of_property_read_u32(np, "clock-frequency", &req_rate);
++	prop = of_find_property(np, "clock-frequency", NULL);;
++	req_size = prop->length / sizeof(u32);
++
++	of_property_read_u32_array(np, "clock-frequency", req_rate, req_size);
+ 	req_48kHz_rate = 0;
+ 	req_441kHz_rate = 0;
+-	if (0 == (req_rate % 44100))
+-		req_441kHz_rate = req_rate;
+-	if (0 == (req_rate % 48000))
+-		req_48kHz_rate = req_rate;
++	for (i = 0; i < req_size; i++) {
++		if (0 == (req_rate[i] % 44100))
++			req_441kHz_rate = req_rate[i];
++		if (0 == (req_rate[i] % 48000))
++			req_48kHz_rate = req_rate[i];
++	}
+ 
+ 	/*
+ 	 * This driver is assuming that AUDIO_CLKA/AUDIO_CLKB/AUDIO_CLKC
+@@ -505,10 +517,8 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
+ 				rbgb = rbgx;
+ 				adg->rbgb_rate_for_48khz = rate / div;
+ 				ckr |= brg_table[i] << 16;
+-				if (req_48kHz_rate) {
++				if (req_48kHz_rate)
+ 					parent_clk_name = __clk_get_name(clk);
+-					ckr |= 0x80000000;
+-				}
+ 			}
+ 		}
+ 	}
+@@ -523,7 +533,7 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
+ 	 */
+ 	if (!count) {
+ 		clk = clk_register_fixed_rate(dev, clkout_name[CLKOUT],
+-					      parent_clk_name, 0, req_rate);
++					      parent_clk_name, 0, req_rate[0]);
+ 		if (!IS_ERR(clk)) {
+ 			adg->clkout[CLKOUT] = clk;
+ 			of_clk_add_provider(np, of_clk_src_simple_get, clk);
+@@ -536,7 +546,7 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
+ 		for (i = 0; i < CLKOUTMAX; i++) {
+ 			clk = clk_register_fixed_rate(dev, clkout_name[i],
+ 						      parent_clk_name, 0,
+-						      req_rate);
++						      req_rate[0]);
+ 			adg->clkout[i] = ERR_PTR(-ENOENT);
+ 			if (!IS_ERR(clk))
+ 				adg->clkout[i] = clk;
+@@ -551,6 +561,9 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
+ 	adg->rbga = rbga;
+ 	adg->rbgb = rbgb;
+ 
++	if (req_rate[0] % 48000 == 0)
++		adg->flags = AUDIO_OUT_48;
++
+ 	for_each_rsnd_clkout(clk, adg, i)
+ 		dev_dbg(dev, "clkout %d : %p : %ld\n", i, clk, clk_get_rate(clk));
+ 	dev_dbg(dev, "BRGCKR = 0x%08x, BRRA/BRRB = 0x%x/0x%x\n",
+-- 
+2.11.0
