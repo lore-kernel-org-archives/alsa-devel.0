@@ -1,81 +1,126 @@
-From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v1 8/8] ACPI: Use recently introduced uuid_le_cmp_p{p}() helpers
-Date: Fri, 21 Apr 2017 23:22:31 +0200
-Message-ID: <7721821.2dV0yqi2RQ@aspire.rjw.lan>
-References: <20170421144645.45189-1-andriy.shevchenko@linux.intel.com> <20170421144645.45189-8-andriy.shevchenko@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <20170421144645.45189-8-andriy.shevchenko@linux.intel.com>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Mika Westerberg <mika.westerberg@linux.intel.com>, alsa-devel@alsa-project.org, linux-input@vger.kernel.org, kvm@vger.kernel.org, devel@linuxdriverproject.org, linux-efi@vger.kernel.org, linux-acpi@vger.kernel.org, Borislav Petkov <bp@suse.de>
+From: =?windows-1252?Q?Ren=E9_Rebe?= <rene@exactcode.de>
+Subject: Re: HDA Intel ALC889A optical optical spdif in
+Date: Sat, 22 Apr 2017 00:04:50 +0200
+Message-ID: <6FF6B7F4-9C39-4E3C-BB79-D47507DE6C11@exactcode.de>
+References: <4D425EDE-3FF5-4895-B469-58977B887FAC@exactcode.de>
+ <C4DF4DD1-F0E9-4537-B68E-6635FD8902E6@exactcode.de>
+ <55213C5F-29CA-49C6-AE16-283BAE9534DF@exactcode.de>
+ <s5ho9vpmygb.wl-tiwai@suse.de>
+ <0F0E6DC8-D7B8-4EF9-BD47-8AAC124E3665@exactcode.de>
+Mime-Version: 1.0 (Mac OS X Mail 7.3 \(1878.6\))
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx.exactcode.de (mx.exactcode.de [144.76.154.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id E73F226727F
+ for <alsa-devel@alsa-project.org>; Sat, 22 Apr 2017 00:05:01 +0200 (CEST)
+In-Reply-To: <0F0E6DC8-D7B8-4EF9-BD47-8AAC124E3665@exactcode.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Friday, April 21, 2017 05:46:45 PM Andy Shevchenko wrote:
-> Recently introduced helpers take pointers to uuid_{be|le} instead of
-> reference.
-> 
-> Using them makes code less ugly.
-> 
-> Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/acpi/acpi_extlog.c | 2 +-
->  drivers/acpi/apei/ghes.c   | 8 ++++----
->  2 files changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/acpi/acpi_extlog.c b/drivers/acpi/acpi_extlog.c
-> index 502ea4dc2080..45e299aefda7 100644
-> --- a/drivers/acpi/acpi_extlog.c
-> +++ b/drivers/acpi/acpi_extlog.c
-> @@ -169,7 +169,7 @@ static int extlog_print(struct notifier_block *nb, unsigned long val,
->  	if (gdata->validation_bits & CPER_SEC_VALID_FRU_TEXT)
->  		fru_text = gdata->fru_text;
->  	sec_type = (uuid_le *)gdata->section_type;
-> -	if (!uuid_le_cmp(*sec_type, CPER_SEC_PLATFORM_MEM)) {
-> +	if (!uuid_le_cmp_p(sec_type, CPER_SEC_PLATFORM_MEM)) {
->  		struct cper_sec_mem_err *mem = (void *)(gdata + 1);
->  		if (gdata->error_data_length >= sizeof(*mem))
->  			trace_extlog_mem_event(mem, err_seq, fru_id, fru_text,
+Hi,
+On Apr 21, 2017, at 22:29, Ren=E9 Rebe <rene@exactcode.de> wrote:
 
-ACK for this one.
+> Hi,
+> =
 
-> diff --git a/drivers/acpi/apei/ghes.c b/drivers/acpi/apei/ghes.c
-> index d0855c09f32f..f2a7ee26d45f 100644
-> --- a/drivers/acpi/apei/ghes.c
-> +++ b/drivers/acpi/apei/ghes.c
-> @@ -431,12 +431,13 @@ static void ghes_do_proc(struct ghes *ghes,
->  {
->  	int sev, sec_sev;
->  	struct acpi_hest_generic_data *gdata;
-> +	uuid_le *sec_type;
->  
->  	sev = ghes_severity(estatus->error_severity);
->  	apei_estatus_for_each_section(estatus, gdata) {
-> +		sec_type = (uuid_le *)gdata->section_type;
->  		sec_sev = ghes_severity(gdata->error_severity);
-> -		if (!uuid_le_cmp(*(uuid_le *)gdata->section_type,
-> -				 CPER_SEC_PLATFORM_MEM)) {
-> +		if (!uuid_le_cmp_p(sec_type, CPER_SEC_PLATFORM_MEM)) {
->  			struct cper_sec_mem_err *mem_err;
->  			mem_err = (struct cper_sec_mem_err *)(gdata+1);
->  			ghes_edac_report_mem_error(ghes, sev, mem_err);
-> @@ -445,8 +446,7 @@ static void ghes_do_proc(struct ghes *ghes,
->  			ghes_handle_memory_failure(gdata, sev);
->  		}
->  #ifdef CONFIG_ACPI_APEI_PCIEAER
-> -		else if (!uuid_le_cmp(*(uuid_le *)gdata->section_type,
-> -				      CPER_SEC_PCIE)) {
-> +		else if (!uuid_le_cmp_p(sec_type, CPER_SEC_PCIE)) {
->  			struct cper_sec_pcie *pcie_err;
->  			pcie_err = (struct cper_sec_pcie *)(gdata+1);
->  			if (sev == GHES_SEV_RECOVERABLE &&
-> 
+> On Apr 21, 2017, at 20:01, Takashi Iwai <tiwai@suse.de> wrote:
+> =
 
-But this one is for Boris.
+>> On Fri, 21 Apr 2017 19:22:16 +0200,
+>> Ren=E9 Rebe wrote:
+>>> =
 
-Thanks,
-Rafael
+>>> On Apr 21, 2017, at 18:37, Ren=E9 Rebe <rene@exactcode.de> wrote:
+>>> =
 
+>>>> Hello again,
+>>>> =
+
+>>>> so I checked the MacBook schematics and it looks like the optical inpu=
+t should be directly connected to pin 47 (GPIO3/SPDIFIN)
+>>>> =
+
+>>>> Maybe EAPD get=92s accidentally / wrongly enabled? - Maybe someone can=
+ point me how to double check this in ALSA?
+>>> =
+
+>>> I the meantime I finally figured out how this debug verb setting should=
+ work via:
+>>> =
+
+>>> # hda-verb /dev/snd/hwC0D0 0x14 0x70C 0
+>>> nid =3D 0x14, verb =3D 0x70c, param =3D 0x0
+>>> value =3D 0x0
+>>> # hda-verb /dev/snd/hwC0D0 0x15 0x70C 0
+>>> nid =3D 0x15, verb =3D 0x70c, param =3D 0x0
+>>> value =3D 0x0
+>>> =
+
+>>> which made no difference either, and the ALC889 spec reads =93when pin
+>>> widget  SPDIF-IN is not connected via the programming configuration
+>>> register.=94
+>>> =
+
+>>> Could that be a missing bit?
+>>> =
+
+>>> Any pointer or verbs I should poke welcome :-/
+>> =
+
+>> Well, from the codec POV, the SPDIF in is straightly connected from
+>> the pin to the audio in widget, so there should be no special thing
+>> there.  The possibly missing setup is the vendor-specific things, and
+>> Apple has been implementing the stuff always in a wild manner,
+>> e.g. doing via VREF, GPIO or whatever.
+> =
+
+> Did you check anything in this proc file codec setup I posted?
+> =
+
+> As far as I can see on schematics for the MacBook (e.g.. google returned
+> a APPLE_M42C_FA522_Macbook.pdf) the optical module RX output
+> seems to be =93directly" attached to the codec=92s spdif-in pin.
+> =
+
+> Yet on both, the MacBook as well on the MacBook Pro
+> I found no way to get any digital input captured. The same setup
+> works when booted in macOS, as well as when I plug
+> in my digital audio source into my aging maudio delta 1010,
+> with Linux, which, however, I do not want to continuously use for
+> this setup, =85
+> =
+
+> It=92s a pity, I don=92t think there are so many other laptops with
+> optical input :-/
+
+For the MacBook Pro I googled the i/o board schematics
+(820-2273 LIO.pdf) - unfortunately some lines are crippled / strange
+rectangles. However, it most likely spdif-in is directly connected like in
+the MacBook. The schematic calls the codec a ALC885 instead of the
+ALC889A as indicated by ALSA, =85  And the schematic labels the
+codec spdif innput pin SPDIFI/EAPD/MIDI-I/DMIC-R. However,
+the public ALC885 spec has a footnote =93MIDI function is not
+supported as pins 46 and 48 are assigned as S/PDIF IO=94 and for the
+DMIC: =93pin 47 can be configured to support a secondary digital mic
+input (DMIC-R). It is supported via a customized Realtek driver=94
+
+It is not getting better, =85
+
+	:-/
+
+-- =
+
+ ExactCODE GmbH, Lietzenburger Str. 42, DE-10789 Berlin
+ http://exactcode.com | http://exactscan.com | http://ocrkit.com | http://t=
+2-project.org | http://rene.rebe.de
