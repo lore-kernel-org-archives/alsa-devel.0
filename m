@@ -1,21 +1,17 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 1/2] ASoC: codec: wm9860: avoid
-	maybe-uninitialized warning
-Date: Fri, 21 Apr 2017 16:46:04 +0200
-Message-ID: <CAK8P3a3GD-S1-szw5tw1R8eSS0AXL_hwJm+d-KF4XuKtYGf-VQ@mail.gmail.com>
-References: <1492780055-4892-1-git-send-email-daniel.baluta@nxp.com>
- <1492780055-4892-2-git-send-email-daniel.baluta@nxp.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 3/8] HID: intel_ish-hid: Use recently
+	introduced uuid_le_cmp_p{p}()
+Date: Fri, 21 Apr 2017 17:46:40 +0300
+Message-ID: <20170421144645.45189-3-andriy.shevchenko@linux.intel.com>
+References: <20170421144645.45189-1-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f51.google.com (mail-oi0-f51.google.com
- [209.85.218.51])
- by alsa0.perex.cz (Postfix) with ESMTP id D7B26266F52
- for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2017 16:46:05 +0200 (CEST)
-Received: by mail-oi0-f51.google.com with SMTP id y11so65944969oie.0
- for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2017 07:46:05 -0700 (PDT)
-In-Reply-To: <1492780055-4892-2-git-send-email-daniel.baluta@nxp.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F903266F52
+ for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2017 16:47:04 +0200 (CEST)
+In-Reply-To: <20170421144645.45189-1-andriy.shevchenko@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,32 +21,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Baluta <daniel.baluta@nxp.com>
-Cc: alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, patches@opensource.wolfsonmicro.com, tiwai@suse.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+To: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Mika Westerberg <mika.westerberg@linux.intel.com>, alsa-devel@alsa-project.org, linux-input@vger.kernel.org, kvm@vger.kernel.org, devel@linuxdriverproject.org, linux-efi@vger.kernel.org, linux-acpi@vger.kernel.org
+Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 21, 2017 at 3:07 PM, Daniel Baluta <daniel.baluta@nxp.com> wrote:
-> The new PLL configuration code triggers a harmless warning:
->
-> sound/soc/codecs/wm8960.c: In function 'wm8960_configure_clocking':
-> sound/soc/codecs/wm8960.c:735:3: error: 'best_freq_out' may be used
-> uninitialized in this function [-Werror=maybe-uninitialized]
->    wm8960_set_pll(codec, freq_in, best_freq_out);
->    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> sound/soc/codecs/wm8960.c:699:12: note: 'best_freq_out' was declared
-> here
->
-> Fixes: 84fdc00d519f ("ASoC: codec: wm9860: Refactor PLL out freq search")
-> Fixes: 303e8954af8d ("ASoC: codec: wm8960: Stop when a matching PLL freq is found")
-> Suggested-by: Arnd Bergmann <arnd@arndb.de>
-> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-> ---
-> Arnd,
->
-> I agree that your code was more both humans and gcc anyhow
-> for consistency with wm8960_configure_sysclk function I preferred
-> to keep the "if(..) break" statements.
+Recently introduced helpers take pointers to uuid_{be|le} instead of
+reference.
 
-How about changing both functions the same way then?
+Using them makes code less ugly.
 
-      Arnd
+Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/hid/intel-ish-hid/ishtp/bus.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/hid/intel-ish-hid/ishtp/bus.c b/drivers/hid/intel-ish-hid/ishtp/bus.c
+index 5f382fedc2ab..165e21b7ee9f 100644
+--- a/drivers/hid/intel-ish-hid/ishtp/bus.c
++++ b/drivers/hid/intel-ish-hid/ishtp/bus.c
+@@ -138,8 +138,7 @@ int ishtp_fw_cl_by_uuid(struct ishtp_device *dev, const uuid_le *uuid)
+ 	int i, res = -ENOENT;
+ 
+ 	for (i = 0; i < dev->fw_clients_num; ++i) {
+-		if (uuid_le_cmp(*uuid, dev->fw_clients[i].props.protocol_name)
+-				== 0) {
++		if (!uuid_le_cmp_p(uuid, dev->fw_clients[i].props.protocol_name)) {
+ 			res = i;
+ 			break;
+ 		}
+-- 
+2.11.0
