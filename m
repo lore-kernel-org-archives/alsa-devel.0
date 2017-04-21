@@ -1,28 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_asrc_dma: use correct direction enum type" to the
- asoc tree
-Date: Fri, 21 Apr 2017 18:28:30 +0100
-Message-ID: <E1d1cMA-0001vD-Sz@debutante>
-References: <20170115124331.3546-1-nicolas.iooss_linux@m4x.org>
-Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-In-Reply-To: <20170115124331.3546-1-nicolas.iooss_linux@m4x.org>
-List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
-List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
-List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
-List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
-List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
- <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
-Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
-Sender: "Linuxppc-dev"
- <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
-To: Stefan Agner <stefan@agner.ch>
-Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Timur Tabi <timur@tabi.org>, linux-kernel@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, Nicolas Iooss <nicolas.iooss_linux@m4x.org>, linuxppc-dev@lists.ozlabs.org
+Subject: Applied "ASoC: rsnd: Fix possible NULL pointer
+	dereference" to the asoc tree
+Date: Fri, 21 Apr 2017 18:28:39 +0100
+Message-ID: <E1d1cMJ-0001yt-DS@debutante>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6511A267283
+ for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2017 19:28:46 +0200 (CEST)
+In-Reply-To: 
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Marek Vasut <marek.vasut+renesas@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_asrc_dma: use correct direction enum type
+   ASoC: rsnd: Fix possible NULL pointer dereference
 
 has been applied to the asoc tree at
 
@@ -47,34 +52,95 @@ to this mail.
 Thanks,
 Mark
 
->From 24dbd9edb668e2376ce871199f5ee4fd59c62276 Mon Sep 17 00:00:00 2001
-From: Stefan Agner <stefan@agner.ch>
-Date: Wed, 19 Apr 2017 23:36:07 -0700
-Subject: [PATCH] ASoC: fsl_asrc_dma: use correct direction enum type
+>From e8dffe6c2004278c588b3bb441a3dbe998a3f2e4 Mon Sep 17 00:00:00 2001
+From: Marek Vasut <marek.vasut+renesas@gmail.com>
+Date: Fri, 21 Apr 2017 00:41:20 +0000
+Subject: [PATCH] ASoC: rsnd: Fix possible NULL pointer dereference
 
-The direction argument is of type enum dma_transfer_direction, and
-not enum dma_data_direction. The enumeration values are the same
-so this did not had an effect in practise.
+25165f79adc76b812bfb4d8f2ab120aafb28d0e6
+("ASoC: rsnd: enable clock-frequency for both 44.1kHz/48kHz")
+supports both 44.1kHz/48kHz clock-frequency settings for ADG
+which will be used for AUDIO_OLKOUTn.
+But some board doesn't need it, thus, it is not mandatory.
 
-Signed-off-by: Stefan Agner <stefan@agner.ch>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+But, above patch didn't care about the case of "clock-frequency" DT
+property was not present.
+This patch ignores ADG settings if AUDIO_OLKOUTn was not used.
+
+Signed-off-by: Marek Vasut <marek.vasut+renesas@gmail.com>
+[Kuninori: tidyup not to break non AUDIO_OLKOUTn case]
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_asrc_dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sh/rcar/adg.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
-index dc30d780f874..282d841840b1 100644
---- a/sound/soc/fsl/fsl_asrc_dma.c
-+++ b/sound/soc/fsl/fsl_asrc_dma.c
-@@ -76,7 +76,7 @@ static int fsl_asrc_dma_prepare_and_submit(struct snd_pcm_substream *substream)
- 			pair->dma_chan[!dir], runtime->dma_addr,
- 			snd_pcm_lib_buffer_bytes(substream),
- 			snd_pcm_lib_period_bytes(substream),
--			dir == OUT ? DMA_TO_DEVICE : DMA_FROM_DEVICE, flags);
-+			dir == OUT ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM, flags);
- 	if (!pair->desc[!dir]) {
- 		dev_err(dev, "failed to prepare slave DMA for Front-End\n");
- 		return -ENOMEM;
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index faa1a4f09766..66203d107a11 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -453,13 +453,18 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
+ 		[CLKI] = 0x2,
+ 	};
+ 
+-	of_property_read_u32(np, "#clock-cells", &count);
++	ckr = 0;
++	rbga = 2; /* default 1/6 */
++	rbgb = 2; /* default 1/6 */
+ 
+ 	/*
+ 	 * ADG supports BRRA/BRRB output only
+ 	 * this means all clkout0/1/2/3 will be same rate
+ 	 */
+ 	prop = of_find_property(np, "clock-frequency", NULL);
++	if (!prop)
++		goto rsnd_adg_get_clkout_end;
++
+ 	req_size = prop->length / sizeof(u32);
+ 
+ 	of_property_read_u32_array(np, "clock-frequency", req_rate, req_size);
+@@ -472,6 +477,9 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
+ 			req_48kHz_rate = req_rate[i];
+ 	}
+ 
++	if (req_rate[0] % 48000 == 0)
++		adg->flags = AUDIO_OUT_48;
++
+ 	/*
+ 	 * This driver is assuming that AUDIO_CLKA/AUDIO_CLKB/AUDIO_CLKC
+ 	 * have 44.1kHz or 48kHz base clocks for now.
+@@ -481,9 +489,6 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
+ 	 *	rsnd_adg_ssi_clk_try_start()
+ 	 *	rsnd_ssi_master_clk_start()
+ 	 */
+-	ckr = 0;
+-	rbga = 2; /* default 1/6 */
+-	rbgb = 2; /* default 1/6 */
+ 	adg->rbga_rate_for_441khz	= 0;
+ 	adg->rbgb_rate_for_48khz	= 0;
+ 	for_each_rsnd_clk(clk, adg, i) {
+@@ -528,6 +533,7 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
+ 	 * this means all clkout0/1/2/3 will be * same rate
+ 	 */
+ 
++	of_property_read_u32(np, "#clock-cells", &count);
+ 	/*
+ 	 * for clkout
+ 	 */
+@@ -557,13 +563,11 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
+ 				    &adg->onecell);
+ 	}
+ 
++rsnd_adg_get_clkout_end:
+ 	adg->ckr = ckr;
+ 	adg->rbga = rbga;
+ 	adg->rbgb = rbgb;
+ 
+-	if (req_rate[0] % 48000 == 0)
+-		adg->flags = AUDIO_OUT_48;
+-
+ 	for_each_rsnd_clkout(clk, adg, i)
+ 		dev_dbg(dev, "clkout %d : %p : %ld\n", i, clk, clk_get_rate(clk));
+ 	dev_dbg(dev, "BRGCKR = 0x%08x, BRRA/BRRB = 0x%x/0x%x\n",
 -- 
 2.11.0
