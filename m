@@ -1,17 +1,19 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: bytcr_rt5640: Allow quirk set via
- module option
-Date: Fri, 21 Apr 2017 15:28:05 -0500
-Message-ID: <5ead5593-62c6-21cd-f0da-3b807013aa85@linux.intel.com>
-References: <20170421201544.28156-1-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+From: =?windows-1252?Q?Ren=E9_Rebe?= <rene@exactcode.de>
+Subject: Re: HDA Intel ALC889A optical optical spdif in
+Date: Fri, 21 Apr 2017 22:29:44 +0200
+Message-ID: <0F0E6DC8-D7B8-4EF9-BD47-8AAC124E3665@exactcode.de>
+References: <4D425EDE-3FF5-4895-B469-58977B887FAC@exactcode.de>
+ <C4DF4DD1-F0E9-4537-B68E-6635FD8902E6@exactcode.de>
+ <55213C5F-29CA-49C6-AE16-283BAE9534DF@exactcode.de>
+ <s5ho9vpmygb.wl-tiwai@suse.de>
+Mime-Version: 1.0 (Mac OS X Mail 7.3 \(1878.6\))
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 3EAA826727F
- for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2017 22:28:07 +0200 (CEST)
-In-Reply-To: <20170421201544.28156-1-tiwai@suse.de>
+Received: from mx.exactcode.de (mx.exactcode.de [144.76.154.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 17AC126727F
+ for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2017 22:29:58 +0200 (CEST)
+In-Reply-To: <s5ho9vpmygb.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,74 +23,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
+On Apr 21, 2017, at 20:01, Takashi Iwai <tiwai@suse.de> wrote:
 
-On 04/21/2017 03:15 PM, Takashi Iwai wrote:
-> The bytcr-rt5640 driver has a few quirk setups depending on the board,
-> where the quirk value is set by DMI matching.  When you have a new
-> device to add the support, you often experience to try the different
-> quirk by trial-and-error.  Or, you may have a development model that
-> still has no proper DMI string.  In either case, you'd need to compile
-> the driver at each time.
->
-> This patch introduces a module option to override the quirk value on
-> the fly.  User can boot like snd-soc-sst-bytcr-rt5640.quirk=0x4004 to
-> override the default value without recompilation.  It's a raw value,
-> so user needs to check the source code for the meaning of each bit.
-I am doing similar things at the moment, I folded IN1 and IN3 quirks 
-together and was about to add a control to force 
-single-ended/differential mics. The use of a parameter is not bad, we 
-could stick it in a modprobe file and avoid writing more code.
+> On Fri, 21 Apr 2017 19:22:16 +0200,
+> Ren=E9 Rebe wrote:
+>> =
 
-That said, unless I am missing something, the problem with this 
-parameter is that it will be overwritten by
-DMI quirks or the settings detected by the driver, see e.g. this code.
+>> On Apr 21, 2017, at 18:37, Ren=E9 Rebe <rene@exactcode.de> wrote:
+>> =
 
-         /* change defaults for Baytrail-CR capture */
-         byt_rt5640_quirk |= BYT_RT5640_IN1_MAP;
-         byt_rt5640_quirk |= BYT_RT5640_DIFF_MIC;
-     } else {
-         byt_rt5640_quirk |= (BYT_RT5640_DMIC1_MAP |
-                 BYT_RT5640_DMIC_EN);
-     }
+>>> Hello again,
+>>> =
 
-     /* check quirks before creating card */
-     dmi_check_system(byt_rt5640_quirk_table);
-     log_quirks(&pdev->dev);
+>>> so I checked the MacBook schematics and it looks like the optical input=
+ should be directly connected to pin 47 (GPIO3/SPDIFIN)
+>>> =
 
-We may need a second variable to force the .quirk parameter to be used 
-as is and avoid applying changes done at run-time.
+>>> Maybe EAPD get=92s accidentally / wrongly enabled? - Maybe someone can =
+point me how to double check this in ALSA?
+>> =
 
->
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->   sound/soc/intel/boards/bytcr_rt5640.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-> index 5c7219fb3aa8..b848cbf575a1 100644
-> --- a/sound/soc/intel/boards/bytcr_rt5640.c
-> +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-> @@ -19,6 +19,7 @@
->   
->   #include <linux/init.h>
->   #include <linux/module.h>
-> +#include <linux/moduleparam.h>
->   #include <linux/platform_device.h>
->   #include <linux/acpi.h>
->   #include <linux/device.h>
-> @@ -57,7 +58,9 @@ struct byt_rt5640_private {
->   	struct clk *mclk;
->   };
->   
-> -static unsigned long byt_rt5640_quirk = BYT_RT5640_MCLK_EN;
-> +static unsigned int byt_rt5640_quirk = BYT_RT5640_MCLK_EN;
-> +module_param_named(quirk, byt_rt5640_quirk, int, 0444);
-> +MODULE_PARM_DESC(quirk, "Board-specific quirk override");
->   
->   static void log_quirks(struct device *dev)
->   {
+>> I the meantime I finally figured out how this debug verb setting should =
+work via:
+>> =
+
+>> # hda-verb /dev/snd/hwC0D0 0x14 0x70C 0
+>> nid =3D 0x14, verb =3D 0x70c, param =3D 0x0
+>> value =3D 0x0
+>> # hda-verb /dev/snd/hwC0D0 0x15 0x70C 0
+>> nid =3D 0x15, verb =3D 0x70c, param =3D 0x0
+>> value =3D 0x0
+>> =
+
+>> which made no difference either, and the ALC889 spec reads =93when pin
+>> widget  SPDIF-IN is not connected via the programming configuration
+>> register.=94
+>> =
+
+>> Could that be a missing bit?
+>> =
+
+>> Any pointer or verbs I should poke welcome :-/
+> =
+
+> Well, from the codec POV, the SPDIF in is straightly connected from
+> the pin to the audio in widget, so there should be no special thing
+> there.  The possibly missing setup is the vendor-specific things, and
+> Apple has been implementing the stuff always in a wild manner,
+> e.g. doing via VREF, GPIO or whatever.
+
+Did you check anything in this proc file codec setup I posted?
+
+As far as I can see on schematics for the MacBook (e.g.. google returned
+a APPLE_M42C_FA522_Macbook.pdf) the optical module RX output
+seems to be =93directly" attached to the codec=92s spdif-in pin.
+
+Yet on both, the MacBook as well on the MacBook Pro
+I found no way to get any digital input captured. The same setup
+works when booted in macOS, as well as when I plug
+in my digital audio source into my aging maudio delta 1010,
+with Linux, which, however, I do not want to continuously use for
+this setup, =85
+
+It=92s a pity, I don=92t think there are so many other laptops with
+optical input :-/
+
+	Ren=E9
+
+-- =
+
+ ExactCODE GmbH, Lietzenburger Str. 42, DE-10789 Berlin
+ http://exactcode.com | http://exactscan.com | http://ocrkit.com | http://t=
+2-project.org | http://rene.rebe.de
