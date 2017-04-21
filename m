@@ -1,116 +1,59 @@
-From: Marek Vasut <marek.vasut@gmail.com>
-Subject: Re: [PATCH v2] ASoC: rsnd: Fix possible NULL pointer dereference
-Date: Fri, 21 Apr 2017 02:49:44 +0200
-Message-ID: <c4b08e6e-4ce1-92c8-d9e7-42e35c945a59@gmail.com>
-References: <87k26ewq8c.wl%kuninori.morimoto.gx@renesas.com>
+From: Ryder Lee <ryder.lee@mediatek.com>
+Subject: Re: [PATCH] ASoC: mediatek: add I2C dependency for
+	CS42XX8
+Date: Fri, 21 Apr 2017 10:10:38 +0800
+Message-ID: <1492740638.23218.0.camel@mtkswgap22>
+References: <20170420081541.658178-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87k26ewq8c.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Marek Vasut <marek.vasut+renesas@gmail.com>, Geert Uytterhoeven <geert+renesas@glider.be>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, linux-renesas-soc@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id F241D267064
+ for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2017 04:10:47 +0200 (CEST)
+In-Reply-To: <20170420081541.658178-1-arnd@arndb.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Koro Chen <koro.chen@mediatek.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Garlic Tseng <garlic.tseng@mediatek.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, Philipp Zabel <p.zabel@pengutronix.de>, PC Liao <pc.liao@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04/21/2017 02:41 AM, Kuninori Morimoto wrote:
+On Thu, 2017-04-20 at 10:15 +0200, Arnd Bergmann wrote:
+> We should not select drivers that depend on I2C when that is disabled,
+> as it results in a build error:
 > 
-> From: Marek Vasut <marek.vasut+renesas@gmail.com>
+> warning: (SND_SOC_MT2701_WM8960) selects SND_SOC_WM8960 which has unmet direct dependencies (SOUND && !M68K && !UML && SND && SND_SOC && I2C)
+> sound/soc/codecs/wm8960.c:1469:1: error: data definition has no type or storage class [-Werror]
+> sound/soc/codecs/wm8960.c:1469:1: error: type defaults to 'int' in declaration of 'module_i2c_driver' [-Werror=implicit-int]
 > 
-> 25165f79adc76b812bfb4d8f2ab120aafb28d0e6
-> ("ASoC: rsnd: enable clock-frequency for both 44.1kHz/48kHz")
-> supports both 44.1kHz/48kHz clock-frequency settings for ADG
-> which will be used for AUDIO_OLKOUTn.
-> But some board doesn't need it, thus, it is not mandatory.
-> 
-> But, above patch didn't care about the case of "clock-frequency" DT
-> property was not present.
-> This patch ignores ADG settings if AUDIO_OLKOUTn was not used.
-> 
-> Signed-off-by: Marek Vasut <marek.vasut+renesas@gmail.com>
-> [Kuninori: tidyup not to break non AUDIO_OLKOUTn case]
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> Fixes: 8625c1dbd876 ("ASoC: mediatek: Add mt2701-wm8960 machine driver")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
+>  sound/soc/mediatek/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
->> Marek
-> 
-> I think this patch solves your issue
-
-Yep, looks OK, thanks !
-
->  sound/soc/sh/rcar/adg.c | 18 +++++++++++-------
->  1 file changed, 11 insertions(+), 7 deletions(-)
-> 
-> diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
-> index 96fef91..277774c 100644
-> --- a/sound/soc/sh/rcar/adg.c
-> +++ b/sound/soc/sh/rcar/adg.c
-> @@ -453,13 +453,18 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
->  		[CLKI] = 0x2,
->  	};
+> diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
+> index c6f39040f71f..5c68797f36c4 100644
+> --- a/sound/soc/mediatek/Kconfig
+> +++ b/sound/soc/mediatek/Kconfig
+> @@ -24,7 +24,7 @@ config SND_SOC_MT2701_CS42448
 >  
-> -	of_property_read_u32(np, "#clock-cells", &count);
-> +	ckr = 0;
-> +	rbga = 2; /* default 1/6 */
-> +	rbgb = 2; /* default 1/6 */
->  
->  	/*
->  	 * ADG supports BRRA/BRRB output only
->  	 * this means all clkout0/1/2/3 will be same rate
->  	 */
->  	prop = of_find_property(np, "clock-frequency", NULL);;
-> +	if (!prop)
-> +		goto rsnd_adg_get_clkout_end;
-> +
->  	req_size = prop->length / sizeof(u32);
->  
->  	of_property_read_u32_array(np, "clock-frequency", req_rate, req_size);
-> @@ -472,6 +477,9 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
->  			req_48kHz_rate = req_rate[i];
->  	}
->  
-> +	if (req_rate[0] % 48000 == 0)
-> +		adg->flags = AUDIO_OUT_48;
-> +
->  	/*
->  	 * This driver is assuming that AUDIO_CLKA/AUDIO_CLKB/AUDIO_CLKC
->  	 * have 44.1kHz or 48kHz base clocks for now.
-> @@ -481,9 +489,6 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
->  	 *	rsnd_adg_ssi_clk_try_start()
->  	 *	rsnd_ssi_master_clk_start()
->  	 */
-> -	ckr = 0;
-> -	rbga = 2; /* default 1/6 */
-> -	rbgb = 2; /* default 1/6 */
->  	adg->rbga_rate_for_441khz	= 0;
->  	adg->rbgb_rate_for_48khz	= 0;
->  	for_each_rsnd_clk(clk, adg, i) {
-> @@ -528,6 +533,7 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
->  	 * this means all clkout0/1/2/3 will be * same rate
->  	 */
->  
-> +	of_property_read_u32(np, "#clock-cells", &count);
->  	/*
->  	 * for clkout
->  	 */
-> @@ -557,13 +563,11 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
->  				    &adg->onecell);
->  	}
->  
-> +rsnd_adg_get_clkout_end:
->  	adg->ckr = ckr;
->  	adg->rbga = rbga;
->  	adg->rbgb = rbgb;
->  
-> -	if (req_rate[0] % 48000 == 0)
-> -		adg->flags = AUDIO_OUT_48;
-> -
->  	for_each_rsnd_clkout(clk, adg, i)
->  		dev_dbg(dev, "clkout %d : %p : %ld\n", i, clk, clk_get_rate(clk));
->  	dev_dbg(dev, "BRGCKR = 0x%08x, BRRA/BRRB = 0x%x/0x%x\n",
-> 
+>  config SND_SOC_MT2701_WM8960
+>  	tristate "ASoc Audio driver for MT2701 with WM8960 codec"
+> -	depends on SND_SOC_MT2701
+> +	depends on SND_SOC_MT2701 && I2C
+>  	select SND_SOC_WM8960
+>  	help
+>  	  This adds ASoC driver for Mediatek MT2701 boards
 
 
--- 
-Best regards,
-Marek Vasut
+Acked-by: Ryder Lee <ryder.lee@mediatek.com>
+
+Thanks
