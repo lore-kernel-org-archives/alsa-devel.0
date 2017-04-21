@@ -1,30 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: add I2C dependency for CS42XX8" to the asoc
- tree
-Date: Fri, 21 Apr 2017 18:28:33 +0100
-Message-ID: <E1d1cMD-0001wP-SQ@debutante>
-References: <20170420081541.658178-1-arnd@arndb.de>
+Subject: Applied "ASoC: Intel: Skylake: Fix a couple user after
+	free bugs" to the asoc tree
+Date: Fri, 21 Apr 2017 18:28:27 +0100
+Message-ID: <E1d1cM7-0001u9-Ty@debutante>
+References: <20170414191120.GA30875@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20170420081541.658178-1-arnd@arndb.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Koro Chen <koro.chen@mediatek.com>, Ryder Lee <ryder.lee@mediatek.com>, alsa-devel@alsa-project.org, Garlic Tseng <garlic.tseng@mediatek.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, Philipp Zabel <p.zabel@pengutronix.de>, PC Liao <pc.liao@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6684A267284
+ for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2017 19:28:47 +0200 (CEST)
+In-Reply-To: <20170414191120.GA30875@mwanda>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: alsa-devel@alsa-project.org, Dharageswari R <dharageswari.r@intel.com>, Vinod Koul <vinod.koul@intel.com>, Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, G Kranthi <gudishax.kranthikumar@intel.com>, Mark Brown <broonie@kernel.org>, Hardik T Shah <hardik.t.shah@intel.com>, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: add I2C dependency for CS42XX8
+   ASoC: Intel: Skylake: Fix a couple user after free bugs
 
 has been applied to the asoc tree at
 
@@ -49,38 +53,60 @@ to this mail.
 Thanks,
 Mark
 
->From 362c59436c143edbcdd4cc2ee0e9856eb6a93bc4 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 20 Apr 2017 10:15:20 +0200
-Subject: [PATCH] ASoC: mediatek: add I2C dependency for CS42XX8
+>From 550b349af0f0e33fedb252aca8dc144299aca308 Mon Sep 17 00:00:00 2001
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Fri, 14 Apr 2017 22:11:20 +0300
+Subject: [PATCH] ASoC: Intel: Skylake: Fix a couple user after free bugs
 
-We should not select drivers that depend on I2C when that is disabled,
-as it results in a build error:
+We need to use the _safe() version of list_for_each_entry() here because
+of the kfree(modules).
 
-warning: (SND_SOC_MT2701_WM8960) selects SND_SOC_WM8960 which has unmet direct dependencies (SOUND && !M68K && !UML && SND && SND_SOC && I2C)
-sound/soc/codecs/wm8960.c:1469:1: error: data definition has no type or storage class [-Werror]
-sound/soc/codecs/wm8960.c:1469:1: error: type defaults to 'int' in declaration of 'module_i2c_driver' [-Werror=implicit-int]
-
-Fixes: 8625c1dbd876 ("ASoC: mediatek: Add mt2701-wm8960 machine driver")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Ryder Lee <ryder.lee@mediatek.com>
+Fixes: b8c722ddd548 ("ASoC: Intel: Skylake: Add support for deferred DSP module bind")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-pcm.c      | 4 ++--
+ sound/soc/intel/skylake/skl-topology.c | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/mediatek/Kconfig b/sound/soc/mediatek/Kconfig
-index c6f39040f71f..5c68797f36c4 100644
---- a/sound/soc/mediatek/Kconfig
-+++ b/sound/soc/mediatek/Kconfig
-@@ -24,7 +24,7 @@ config SND_SOC_MT2701_CS42448
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 600faad19bd4..d43d1976dd3b 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -1323,10 +1323,10 @@ int skl_platform_unregister(struct device *dev)
+ {
+ 	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
+ 	struct skl *skl = ebus_to_skl(ebus);
+-	struct skl_module_deferred_bind *modules;
++	struct skl_module_deferred_bind *modules, *tmp;
  
- config SND_SOC_MT2701_WM8960
- 	tristate "ASoc Audio driver for MT2701 with WM8960 codec"
--	depends on SND_SOC_MT2701
-+	depends on SND_SOC_MT2701 && I2C
- 	select SND_SOC_WM8960
- 	help
- 	  This adds ASoC driver for Mediatek MT2701 boards
+ 	if (!list_empty(&skl->bind_list)) {
+-		list_for_each_entry(modules, &skl->bind_list, node) {
++		list_for_each_entry_safe(modules, tmp, &skl->bind_list, node) {
+ 			list_del(&modules->node);
+ 			kfree(modules);
+ 		}
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 7f285176a074..0e459d3eb17a 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -1091,7 +1091,7 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
+ 	struct skl_module_cfg *src_module = NULL, *dst_module;
+ 	struct skl_sst *ctx = skl->skl_sst;
+ 	struct skl_pipe *s_pipe = mconfig->pipe;
+-	struct skl_module_deferred_bind *modules;
++	struct skl_module_deferred_bind *modules, *tmp;
+ 
+ 	if (s_pipe->state == SKL_PIPE_INVALID)
+ 		return -EINVAL;
+@@ -1105,7 +1105,7 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
+ 
+ 		src_module = w_module->w->priv;
+ 
+-		list_for_each_entry(modules, &skl->bind_list, node) {
++		list_for_each_entry_safe(modules, tmp, &skl->bind_list, node) {
+ 			/*
+ 			 * When the destination module is deleted, Unbind the
+ 			 * modules from deferred bind list.
 -- 
 2.11.0
