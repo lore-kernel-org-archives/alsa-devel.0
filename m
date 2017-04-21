@@ -1,15 +1,26 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Fix headset microphone detection
-	for ASUS N551 and N751
-Date: Fri, 21 Apr 2017 09:01:02 +0200
-Message-ID: <20170421070102.27467-1-tiwai@suse.de>
+From: Jose Abreu <Jose.Abreu@synopsys.com>
+Subject: Re: [PATCH] ASoC: dwc: disallow building
+ designware_pcm as a module
+Date: Fri, 21 Apr 2017 11:34:00 +0100
+Message-ID: <376c5933-9321-5399-74c7-6fd4943fab3d@synopsys.com>
+References: <20170418105954.23368-1-lkundrak@v3.sk>
+ <20170418151834.c7e5fivmgn73sbwd@sirena.org.uk>
+ <1492532010.28092.12.camel@v3.sk>
+ <20170418171519.csiftftd434psyn5@sirena.org.uk>
+ <2e39b000-bf25-6447-b53b-047401041f4e@synopsys.com>
+ <1492618461.28092.18.camel@v3.sk>
+ <03a3fbbb-7221-f4ee-5b1b-8fff518ea82c@synopsys.com>
+ <20170420194646.qcpu7w3acjyfmeu5@sirena.org.uk>
+ <s5h37d2su8h.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id D1767266954
- for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2017 09:01:06 +0200 (CEST)
+Received: from smtprelay.synopsys.com (smtprelay2.synopsys.com
+ [198.182.60.111])
+ by alsa0.perex.cz (Postfix) with ESMTP id E29A02669BD
+ for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2017 12:34:08 +0200 (CEST)
+In-Reply-To: <s5h37d2su8h.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,62 +30,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mikhail Paulyshka <me@mixaill.tk>
+To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Cc: Jose Abreu <Jose.Abreu@synopsys.com>, Lubomir Rintel <lkundrak@v3.sk>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mikhail Paulyshka <me@mixaill.tk>
+Hi,
 
-Headset microphone does not work out of the box on ASUS Nx51
-laptops. This patch fixes it.
 
-Patch tested on Asus N551 laptop. Asus N751 part is not tested, but
-according to [1] this laptop uses the same audiosystem.
+On 20-04-2017 21:24, Takashi Iwai wrote:
+> So, I think Lubomir's change is right.  But the patch subject and
+> description should be rephrased.
+>
+> One thing I don't like is the rename of the file.  But in this
+> particular case, it's unavoidable unless we rename the module name.
+>
 
-1. https://bugzilla.kernel.org/show_bug.cgi?id=117781
+Maybe rename to "dwc-i2s.c" and "dwc-pcm.c" (as the folder is
+called "dwc") and let the module still be called "designware-i2s"?
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=195437
-Signed-off-by: Mikhail Paulyshka <me@mixaill.tk>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+> BTW, we should drop the superfluous EXPORT_SYMBOL*(), too.
+>
+>
+>
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 9371f1a95b33..05a26fba5ef2 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6815,6 +6815,7 @@ enum {
- 	ALC668_FIXUP_DELL_DISABLE_AAMIX,
- 	ALC668_FIXUP_DELL_XPS13,
- 	ALC662_FIXUP_ASUS_Nx50,
-+	ALC668_FIXUP_ASUS_Nx51_HEADSET_MODE,
- 	ALC668_FIXUP_ASUS_Nx51,
- 	ALC891_FIXUP_HEADSET_MODE,
- 	ALC891_FIXUP_DELL_MIC_NO_PRESENCE,
-@@ -7068,14 +7069,21 @@ static const struct hda_fixup alc662_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC662_FIXUP_BASS_1A
- 	},
-+	[ALC668_FIXUP_ASUS_Nx51_HEADSET_MODE] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_headset_mode_alc668,
-+		.chain_id = ALC662_FIXUP_BASS_CHMAP
-+	},
- 	[ALC668_FIXUP_ASUS_Nx51] = {
- 		.type = HDA_FIXUP_PINS,
- 		.v.pins = (const struct hda_pintbl[]) {
--			{0x1a, 0x90170151}, /* bass speaker */
-+			{ 0x19, 0x03a1913d }, /* use as headphone mic, without its own jack detect */
-+			{ 0x1a, 0x90170151 }, /* bass speaker */
-+			{ 0x1b, 0x03a1113c }, /* use as headset mic, without its own jack detect */
- 			{}
- 		},
- 		.chained = true,
--		.chain_id = ALC662_FIXUP_BASS_CHMAP,
-+		.chain_id = ALC668_FIXUP_ASUS_Nx51_HEADSET_MODE,
- 	},
- 	[ALC891_FIXUP_HEADSET_MODE] = {
- 		.type = HDA_FIXUP_FUNC,
--- 
-2.11.1
+Lubomir, could you please remove the EXPORT_SYMBOL, change the
+commit message and resend?
+
+Best regards,
+Jose Miguel Abreu
