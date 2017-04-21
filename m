@@ -1,94 +1,557 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH RFC 7/7] ARM: dts: samsung: Switch to dedicated Odroid sound
- card binding
-Date: Fri, 21 Apr 2017 19:19:51 +0200
-Message-ID: <1492795191-31298-8-git-send-email-s.nawrocki@samsung.com>
-References: <1492795191-31298-1-git-send-email-s.nawrocki@samsung.com>
- <CGME20170421172053epcas1p26cbba167969b1bffb48e3b7e6f5c3604@epcas1p2.samsung.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-reply-to: <1492795191-31298-1-git-send-email-s.nawrocki@samsung.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org
-Cc: javier@osg.samsung.com, b.zolnierkie@samsung.com, sw0312.kim@samsung.com, krzk@kernel.org, cw00.choi@samsung.com, broonie@kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>, robh+dt@kernel.org
+From: =?windows-1252?Q?Ren=E9_Rebe?= <rene@exactcode.de>
+Subject: Re: HDA Intel ALC889A optical optical spdif in
+Date: Fri, 21 Apr 2017 19:22:16 +0200
+Message-ID: <55213C5F-29CA-49C6-AE16-283BAE9534DF@exactcode.de>
+References: <4D425EDE-3FF5-4895-B469-58977B887FAC@exactcode.de>
+ <C4DF4DD1-F0E9-4537-B68E-6635FD8902E6@exactcode.de>
+Mime-Version: 1.0 (Mac OS X Mail 7.3 \(1878.6\))
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx.exactcode.de (mx.exactcode.de [144.76.154.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6FB78267398
+ for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2017 19:22:24 +0200 (CEST)
+Received: from [90.187.5.221] (helo=exactcode.com)
+ by mx.exactcode.de with esmtp (Exim 4.82)
+ (envelope-from <rene@exactcode.de>) id 1d1cGg-0004YG-VB
+ for alsa-devel@alsa-project.org; Fri, 21 Apr 2017 17:22:51 +0000
+Received: from retina ([192.168.2.174])
+ by exactcode.com with esmtpsa (TLSv1:AES128-SHA:128) (Exim 4.54)
+ id 1d1cGG-0001xG-2s
+ for alsa-devel@alsa-project.org; Fri, 21 Apr 2017 17:22:30 +0000
+In-Reply-To: <C4DF4DD1-F0E9-4537-B68E-6635FD8902E6@exactcode.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIG5ldyBzb3VuZCBjYXJkIERUIGJpbmRpbmcgaXMgdXNlZCBmb3IgT2Ryb2lkIFhVMyBpbiBv
-cmRlcgp0byBwcm9wZXJseSBzdXBwb3J0IHRoZSBIRE1JIGF1ZGlvIHBhdGguCkNsb2NrcyBjb25m
-aWd1cmF0aW9uIGlzIGNoYW5nZWQgc28gdGhlIEkyUyBjb250cm9sbGVyIGlzIG5vdyB0aGUgYml0
-CmFuZCB0aGUgZnJhbWUgY2xvY2sgbWFzdGVyIHdpdGggRVBMTCBhcyB0aGUgcm9vdCBjbG9jayBz
-b3VyY2UuCgpTaWduZWQtb2ZmLWJ5OiBTeWx3ZXN0ZXIgTmF3cm9ja2kgPHMubmF3cm9ja2lAc2Ft
-c3VuZy5jb20+Ci0tLQogYXJjaC9hcm0vYm9vdC9kdHMvZXh5bm9zNC5kdHNpICAgICAgICAgICAg
-ICAgICAgICB8ICAxICsKIGFyY2gvYXJtL2Jvb3QvZHRzL2V4eW5vczU0MjAuZHRzaSAgICAgICAg
-ICAgICAgICAgfCAgMSArCiBhcmNoL2FybS9ib290L2R0cy9leHlub3M1NDIyLW9kcm9pZHh1My1h
-dWRpby5kdHNpIHwgNTkgKysrKysrKysrKysrKysrKysrLS0tLS0KIDMgZmlsZXMgY2hhbmdlZCwg
-NDggaW5zZXJ0aW9ucygrKSwgMTMgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvYXJjaC9hcm0v
-Ym9vdC9kdHMvZXh5bm9zNC5kdHNpIGIvYXJjaC9hcm0vYm9vdC9kdHMvZXh5bm9zNC5kdHNpCmlu
-ZGV4IDE4ZGVmMWMuLmYzZGNiN2YgMTAwNjQ0Ci0tLSBhL2FyY2gvYXJtL2Jvb3QvZHRzL2V4eW5v
-czQuZHRzaQorKysgYi9hcmNoL2FybS9ib290L2R0cy9leHlub3M0LmR0c2kKQEAgLTc2MSw2ICs3
-NjEsNyBAQAogCQlwaHkgPSA8JmhkbWlfaTJjX3BoeT47CiAJCXBvd2VyLWRvbWFpbnMgPSA8JnBk
-X3R2PjsKIAkJc2Ftc3VuZyxzeXNjb24tcGhhbmRsZSA9IDwmcG11X3N5c3RlbV9jb250cm9sbGVy
-PjsKKwkJI3NvdW5kLWRhaS1jZWxscyA9IDwwPjsKIAkJc3RhdHVzID0gImRpc2FibGVkIjsKIAl9
-OwogCmRpZmYgLS1naXQgYS9hcmNoL2FybS9ib290L2R0cy9leHlub3M1NDIwLmR0c2kgYi9hcmNo
-L2FybS9ib290L2R0cy9leHlub3M1NDIwLmR0c2kKaW5kZXggN2RjOWRjOC4uYzdkMjliNiAxMDA2
-NDQKLS0tIGEvYXJjaC9hcm0vYm9vdC9kdHMvZXh5bm9zNTQyMC5kdHNpCisrKyBiL2FyY2gvYXJt
-L2Jvb3QvZHRzL2V4eW5vczU0MjAuZHRzaQpAQCAtNjE4LDYgKzYxOCw3IEBACiAJCQlzYW1zdW5n
-LHN5c2Nvbi1waGFuZGxlID0gPCZwbXVfc3lzdGVtX2NvbnRyb2xsZXI+OwogCQkJc3RhdHVzID0g
-ImRpc2FibGVkIjsKIAkJCXBvd2VyLWRvbWFpbnMgPSA8JmRpc3BfcGQ+OworCQkJI3NvdW5kLWRh
-aS1jZWxscyA9IDwwPjsKIAkJfTsKIAogCQloZG1pcGh5OiBoZG1pcGh5QDE0NUQwMDAwIHsKZGlm
-ZiAtLWdpdCBhL2FyY2gvYXJtL2Jvb3QvZHRzL2V4eW5vczU0MjItb2Ryb2lkeHUzLWF1ZGlvLmR0
-c2kgYi9hcmNoL2FybS9ib290L2R0cy9leHlub3M1NDIyLW9kcm9pZHh1My1hdWRpby5kdHNpCmlu
-ZGV4IDk0OTM5MjMuLjg0NzAzZjcgMTAwNjQ0Ci0tLSBhL2FyY2gvYXJtL2Jvb3QvZHRzL2V4eW5v
-czU0MjItb2Ryb2lkeHUzLWF1ZGlvLmR0c2kKKysrIGIvYXJjaC9hcm0vYm9vdC9kdHMvZXh5bm9z
-NTQyMi1vZHJvaWR4dTMtYXVkaW8uZHRzaQpAQCAtMTEsMTUgKzExLDE3IEBACiAgKiBwdWJsaXNo
-ZWQgYnkgdGhlIEZyZWUgU29mdHdhcmUgRm91bmRhdGlvbi4KICovCiAKKyNpbmNsdWRlIDxkdC1i
-aW5kaW5ncy9zb3VuZC9zYW1zdW5nLWkycy5oPgorCiAvIHsKIAlzb3VuZDogc291bmQgewotCQlj
-b21wYXRpYmxlID0gInNpbXBsZS1hdWRpby1jYXJkIjsKKwkJY29tcGF0aWJsZSA9ICJzYW1zdW5n
-LG9kcm9pZC14dTMtYXVkaW8iOworCQltb2RlbCA9ICJPZHJvaWQtWFUzIjsKIAotCQlzaW1wbGUt
-YXVkaW8tY2FyZCxuYW1lID0gIk9kcm9pZC1YVTMiOwotCQlzaW1wbGUtYXVkaW8tY2FyZCx3aWRn
-ZXRzID0KKwkJc2Ftc3VuZyxhdWRpby13aWRnZXRzID0KIAkJCSJIZWFkcGhvbmUiLCAiSGVhZHBo
-b25lIEphY2siLAogCQkJIlNwZWFrZXJzIiwgIlNwZWFrZXJzIjsKLQkJc2ltcGxlLWF1ZGlvLWNh
-cmQscm91dGluZyA9CisJCXNhbXN1bmcsYXVkaW8tcm91dGluZyA9CiAJCQkiSGVhZHBob25lIEph
-Y2siLCAiSFBMIiwKIAkJCSJIZWFkcGhvbmUgSmFjayIsICJIUFIiLAogCQkJIkhlYWRwaG9uZSBK
-YWNrIiwgIk1JQ0JJQVMiLApAQCAtMjcsMjIgKzI5LDUxIEBACiAJCQkiU3BlYWtlcnMiLCAiU1BL
-TCIsCiAJCQkiU3BlYWtlcnMiLCAiU1BLUiI7CiAKLQkJc2ltcGxlLWF1ZGlvLWNhcmQsZm9ybWF0
-ID0gImkycyI7Ci0JCXNpbXBsZS1hdWRpby1jYXJkLGJpdGNsb2NrLW1hc3RlciA9IDwmbGluazBf
-Y29kZWM+OwotCQlzaW1wbGUtYXVkaW8tY2FyZCxmcmFtZS1tYXN0ZXIgPSA8JmxpbmswX2NvZGVj
-PjsKKwkJY2xvY2tzID0gPCZjbG9jayBDTEtfRk9VVF9FUExMPiwgPCZpMnMwIENMS19JMlNfUkNM
-S19TUkM+OworCQljbG9jay1uYW1lcyA9ICJlcGxsIiwgImkyc19yY2xrIjsKIAotCQlzaW1wbGUt
-YXVkaW8tY2FyZCxjcHUgeworCQljcHUgewogCQkJc291bmQtZGFpID0gPCZpMnMwIDA+OwotCQkJ
-c3lzdGVtLWNsb2NrLWZyZXF1ZW5jeSA9IDwxOTIwMDAwMD47CiAJCX07Ci0KLQkJbGluazBfY29k
-ZWM6IHNpbXBsZS1hdWRpby1jYXJkLGNvZGVjIHsKLQkJCXNvdW5kLWRhaSA9IDwmbWF4OTgwOTA+
-OwotCQkJY2xvY2tzID0gPCZpMnMwIENMS19JMlNfQ0RDTEs+OworCQljb2RlYyB7CisJCQlzb3Vu
-ZC1kYWkgPSA8JmhkbWk+LCA8Jm1heDk4MDkwPjsKIAkJfTsKIAl9OwogfTsKIAorJmNsb2NrX2F1
-ZHNzIHsKKwlhc3NpZ25lZC1jbG9ja3MgPSA8JmNsb2NrX2F1ZHNzIEVYWU5PU19ET1VUX1NSUD4s
-CisJCQkgIDwmY2xvY2sgQ0xLX0ZPVVRfRVBMTD47CisJYXNzaWduZWQtY2xvY2stcmF0ZXMgPSA8
-KDE5NjYwODAwMCAvIDI1Nik+LAorCQkJICAgICAgIDwxOTY2MDgwMDA+OworfTsKKworJnNvdW5k
-IHsKKwlhc3NpZ25lZC1jbG9ja3MgPSA8JmNsb2NrIENMS19NT1VUX0VQTEw+LAorCQkJPCZjbG9j
-ayBDTEtfTU9VVF9NQVVfRVBMTD4sCisJCQk8JmNsb2NrIENMS19NT1VUX1VTRVJfTUFVX0VQTEw+
-LAorCQkJPCZjbG9ja19hdWRzcyBFWFlOT1NfTU9VVF9BVURTUz4sCisJCQk8JmNsb2NrX2F1ZHNz
-IEVYWU5PU19NT1VUX0kyUz4sCisJCQk8JmNsb2NrX2F1ZHNzIEVYWU5PU19ET1VUX1NSUD4sCisJ
-CQk8JmNsb2NrX2F1ZHNzIEVYWU5PU19ET1VUX0FVRF9CVVM+LAorCQkJPCZjbG9ja19hdWRzcyBF
-WFlOT1NfRE9VVF9JMlM+OworCisJYXNzaWduZWQtY2xvY2stcGFyZW50cyA9IDwmY2xvY2sgQ0xL
-X0ZPVVRfRVBMTD4sCisJCQk8JmNsb2NrIENMS19NT1VUX0VQTEw+LAorCQkJPCZjbG9jayBDTEtf
-TU9VVF9NQVVfRVBMTD4sCisJCQk8JmNsb2NrIENMS19NQVVfRVBMTD4sCisJCQk8JmNsb2NrX2F1
-ZHNzIEVYWU5PU19NT1VUX0FVRFNTPjsKKworCWFzc2lnbmVkLWNsb2NrLXJhdGVzID0gPDA+LAor
-CQkJPDA+LAorCQkJPDA+LAorCQkJPDA+LAorCQkJPDA+LAorCQkJPDE5NjYwODAwMD4sCisJCQk8
-KDE5NjYwODAwMCAvIDIpPiwKKwkJCTwxOTY2MDgwMDA+OworfTsKKwogJmhzaTJjXzUgewogCXN0
-YXR1cyA9ICJva2F5IjsKIAltYXg5ODA5MDogbWF4OTgwOTBAMTAgewpAQCAtNTgsNCArODksNiBA
-QAogCiAmaTJzMCB7CiAJc3RhdHVzID0gIm9rYXkiOworCWFzc2lnbmVkLWNsb2NrcyA9IDwmaTJz
-MCBDTEtfSTJTX1JDTEtfU1JDPjsKKwlhc3NpZ25lZC1jbG9jay1wYXJlbnRzID0gPCZjbG9ja19h
-dWRzcyBFWFlOT1NfU0NMS19JMlM+OwogfTsKLS0gCjEuOS4xCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1k
-ZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcv
-bWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+On Apr 21, 2017, at 18:37, Ren=E9 Rebe <rene@exactcode.de> wrote:
+
+> Hello again,
+> =
+
+> so I checked the MacBook schematics and it looks like the optical input s=
+hould be directly connected to pin 47 (GPIO3/SPDIFIN)
+> =
+
+> Maybe EAPD get=92s accidentally / wrongly enabled? - Maybe someone can po=
+int me how to double check this in ALSA?
+
+I the meantime I finally figured out how this debug verb setting should wor=
+k via:
+
+# hda-verb /dev/snd/hwC0D0 0x14 0x70C 0
+nid =3D 0x14, verb =3D 0x70c, param =3D 0x0
+value =3D 0x0
+# hda-verb /dev/snd/hwC0D0 0x15 0x70C 0
+nid =3D 0x15, verb =3D 0x70c, param =3D 0x0
+value =3D 0x0
+
+which made no difference either, and the ALC889 spec reads =93when pin
+widget  SPDIF-IN is not connected via the programming configuration
+register.=94
+
+Could that be a missing bit?
+
+Any pointer or verbs I should poke welcome :-/
+
+	Ren=E9
+
+> For the record - I try to record:
+> # arecord -D iec958 -f dat -c 2 > rec.wav
+> Recording WAVE 'stdin' : Signed 16 bit Little Endian, Rate 48000 Hz, Ster=
+eo
+> =
+
+> but only get zeros:
+> =
+
+> # hexdump  rec.wav =
+
+> 0000000 4952 4646 0024 8000 4157 4556 6d66 2074
+> 0000010 0010 0000 0001 0002 bb80 0000 ee00 0002
+> 0000020 0004 0010 6164 6174 0000 8000 0000 0000
+> 0000030 0000 0000 0000 0000 0000 0000 0000 0000
+> *
+> 0304020 0000 0000 0000 0000 0000 0000          =
+
+> 030402c
+> =
+
+> As far as I can see the right sub-device is running:
+> =
+
+> # cat /proc/asound/card0/pcm1c/info =
+
+> card: 0
+> device: 1
+> subdevice: 0
+> stream: CAPTURE
+> id: ALC889A Digital
+> name: ALC889A Digital
+> subname: subdevice #0
+> class: 0
+> subclass: 0
+> subdevices_count: 1
+> subdevices_avail: 0
+> bash-4.2# cat /proc/asound/card0/pcm1c/sub0/status =
+
+> state: RUNNING
+> owner_pid   : 25617
+> trigger_time: 2735.340360836
+> tstamp      : 0.000000000
+> delay       : 3415
+> avail       : 3415
+> avail_max   : 4095
+> -----
+> hw_ptr      : 2047320
+> appl_ptr    : 2043905
+> =
+
+> =
+
+> # cat /proc/asound/card0/codec#0 =
+
+> Codec: Realtek ALC889A
+> Address: 0
+> AFG Function Id: 0x1 (unsol 1)
+> Vendor Id: 0x10ec0885
+> Subsystem Id: 0x106b2c00
+> Revision Id: 0x100103
+> No Modem Function Group found
+> Default PCM:
+>    rates [0x560]: 44100 48000 96000 192000
+>    bits [0xe]: 16 20 24
+>    formats [0x1]: PCM
+> Default Amp-In caps: N/A
+> Default Amp-Out caps: N/A
+> State of AFG node 0x01:
+>  Power states:  D0 D1 D2 D3
+>  Power: setting=3DD0, actual=3DD0
+> GPIO: io=3D2, o=3D0, i=3D0, unsolicited=3D1, wake=3D0
+>  IO[0]: enable=3D1, dir=3D1, wake=3D0, sticky=3D0, data=3D1, unsol=3D0
+>  IO[1]: enable=3D0, dir=3D0, wake=3D0, sticky=3D0, data=3D0, unsol=3D0
+> Node 0x02 [Audio Output] wcaps 0x11: Stereo
+>  Device: name=3D"ALC889A Analog", type=3D"Audio", device=3D0
+>  Converter: stream=3D0, channel=3D0
+>  PCM:
+>    rates [0x560]: 44100 48000 96000 192000
+>    bits [0xe]: 16 20 24
+>    formats [0x1]: PCM
+> Node 0x03 [Audio Output] wcaps 0x11: Stereo
+>  Converter: stream=3D0, channel=3D0
+>  PCM:
+>    rates [0x560]: 44100 48000 96000 192000
+>    bits [0xe]: 16 20 24
+>    formats [0x1]: PCM
+> Node 0x04 [Audio Output] wcaps 0x11: Stereo
+>  Converter: stream=3D0, channel=3D0
+>  PCM:
+>    rates [0x560]: 44100 48000 96000 192000
+>    bits [0xe]: 16 20 24
+>    formats [0x1]: PCM
+> Node 0x05 [Audio Output] wcaps 0x11: Stereo
+>  Converter: stream=3D0, channel=3D0
+>  PCM:
+>    rates [0x560]: 44100 48000 96000 192000
+>    bits [0xe]: 16 20 24
+>    formats [0x1]: PCM
+> Node 0x06 [Audio Output] wcaps 0x211: Stereo Digital
+>  Control: name=3D"IEC958 Playback Con Mask", index=3D0, device=3D0
+>  Control: name=3D"IEC958 Playback Pro Mask", index=3D0, device=3D0
+>  Control: name=3D"IEC958 Playback Default", index=3D0, device=3D0
+>  Control: name=3D"IEC958 Playback Switch", index=3D0, device=3D0
+>  Control: name=3D"IEC958 Default PCM Playback Switch", index=3D0, device=
+=3D0
+>  Device: name=3D"ALC889A Digital", type=3D"SPDIF", device=3D1
+>  Converter: stream=3D0, channel=3D0
+>  Digital: Enabled
+>  Digital category: 0x0
+>  IEC Coding Type: 0x0
+>  PCM:
+>    rates [0x5e0]: 44100 48000 88200 96000 192000
+>    bits [0x1e]: 16 20 24 32
+>    formats [0x1]: PCM
+> Node 0x07 [Audio Input] wcaps 0x10011b: Stereo Amp-In
+>  Control: name=3D"Capture Volume", index=3D0, device=3D0
+>    ControlAmp: chs=3D3, dir=3DIn, idx=3D0, ofs=3D0
+>  Control: name=3D"Capture Switch", index=3D0, device=3D0
+>    ControlAmp: chs=3D3, dir=3DIn, idx=3D0, ofs=3D0
+>  Device: name=3D"ALC889A Analog", type=3D"Audio", device=3D0
+>  Amp-In caps: ofs=3D0x10, nsteps=3D0x2e, stepsize=3D0x03, mute=3D1
+>  Amp-In vals:  [0x10 0x10]
+>  Converter: stream=3D0, channel=3D0
+>  SDI-Select: 0
+>  PCM:
+>    rates [0x560]: 44100 48000 96000 192000
+>    bits [0xe]: 16 20 24
+>    formats [0x1]: PCM
+>  Connection: 1
+>     0x24
+> Node 0x08 [Audio Input] wcaps 0x10011b: Stereo Amp-In
+>  Control: name=3D"Capture Volume", index=3D1, device=3D0
+>    ControlAmp: chs=3D3, dir=3DIn, idx=3D0, ofs=3D0
+>  Control: name=3D"Capture Switch", index=3D1, device=3D0
+>    ControlAmp: chs=3D3, dir=3DIn, idx=3D0, ofs=3D0
+>  Device: name=3D"ALC889A Alt Analog", type=3D"Audio", device=3D2
+>  Amp-In caps: ofs=3D0x10, nsteps=3D0x2e, stepsize=3D0x03, mute=3D1
+>  Amp-In vals:  [0x90 0x90]
+>  Converter: stream=3D0, channel=3D0
+>  SDI-Select: 0
+>  PCM:
+>    rates [0x560]: 44100 48000 96000 192000
+>    bits [0xe]: 16 20 24
+>    formats [0x1]: PCM
+>  Connection: 1
+>     0x23
+> Node 0x09 [Audio Input] wcaps 0x10011b: Stereo Amp-In
+>  Control: name=3D"Capture Volume", index=3D2, device=3D0
+>    ControlAmp: chs=3D3, dir=3DIn, idx=3D0, ofs=3D0
+>  Control: name=3D"Capture Switch", index=3D2, device=3D0
+>    ControlAmp: chs=3D3, dir=3DIn, idx=3D0, ofs=3D0
+>  Amp-In caps: ofs=3D0x10, nsteps=3D0x2e, stepsize=3D0x03, mute=3D1
+>  Amp-In vals:  [0x90 0x90]
+>  Converter: stream=3D0, channel=3D0
+>  SDI-Select: 0
+>  PCM:
+>    rates [0x560]: 44100 48000 96000 192000
+>    bits [0xe]: 16 20 24
+>    formats [0x1]: PCM
+>  Connection: 1
+>     0x22
+> Node 0x0a [Audio Input] wcaps 0x100391: Stereo Digital
+>  Control: name=3D"IEC958 Capture Switch", index=3D0, device=3D0
+>  Control: name=3D"IEC958 Capture Default", index=3D0, device=3D0
+>  Device: name=3D"ALC889A Digital", type=3D"SPDIF", device=3D1
+>  Converter: stream=3D1, channel=3D0
+>  SDI-Select: 0
+>  Digital: Enabled
+>  Digital category: 0x0
+>  IEC Coding Type: 0x0
+>  PCM:
+>    rates [0x560]: 44100 48000 96000 192000
+>    bits [0x1e]: 16 20 24 32
+>    formats [0x1]: PCM
+>  Unsolicited: tag=3D00, enabled=3D0
+>  Connection: 1
+>     0x1f
+> Node 0x0b [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+>  Control: name=3D"Mic Playback Volume", index=3D0, device=3D0
+>    ControlAmp: chs=3D3, dir=3DIn, idx=3D0, ofs=3D0
+>  Control: name=3D"Mic Playback Switch", index=3D0, device=3D0
+>    ControlAmp: chs=3D3, dir=3DIn, idx=3D0, ofs=3D0
+>  Control: name=3D"Line Playback Volume", index=3D0, device=3D0
+>    ControlAmp: chs=3D3, dir=3DIn, idx=3D2, ofs=3D0
+>  Control: name=3D"Line Playback Switch", index=3D0, device=3D0
+>    ControlAmp: chs=3D3, dir=3DIn, idx=3D2, ofs=3D0
+>  Amp-In caps: ofs=3D0x17, nsteps=3D0x1f, stepsize=3D0x05, mute=3D1
+>  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80=
+] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
+>  Connection: 10
+>     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17
+> Node 0x0c [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+>  Control: name=3D"Headphone Playback Volume", index=3D0, device=3D0
+>    ControlAmp: chs=3D3, dir=3DOut, idx=3D0, ofs=3D0
+>  Amp-In caps: ofs=3D0x00, nsteps=3D0x00, stepsize=3D0x00, mute=3D1
+>  Amp-In vals:  [0x00 0x00] [0x80 0x80]
+>  Amp-Out caps: ofs=3D0x40, nsteps=3D0x40, stepsize=3D0x03, mute=3D0
+>  Amp-Out vals:  [0x34 0x34]
+>  Connection: 2
+>     0x02 0x0b
+> Node 0x0d [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+>  Control: name=3D"Speaker Playback Volume", index=3D0, device=3D0
+>    ControlAmp: chs=3D3, dir=3DOut, idx=3D0, ofs=3D0
+>  Amp-In caps: ofs=3D0x00, nsteps=3D0x00, stepsize=3D0x00, mute=3D1
+>  Amp-In vals:  [0x00 0x00] [0x80 0x80]
+>  Amp-Out caps: ofs=3D0x40, nsteps=3D0x40, stepsize=3D0x03, mute=3D0
+>  Amp-Out vals:  [0x34 0x34]
+>  Connection: 2
+>     0x03 0x0b
+> Node 0x0e [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+>  Amp-In caps: ofs=3D0x00, nsteps=3D0x00, stepsize=3D0x00, mute=3D1
+>  Amp-In vals:  [0x00 0x00] [0x80 0x80]
+>  Amp-Out caps: ofs=3D0x40, nsteps=3D0x40, stepsize=3D0x03, mute=3D0
+>  Amp-Out vals:  [0x40 0x40]
+>  Connection: 2
+>     0x04 0x0b
+> Node 0x0f [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+>  Amp-In caps: ofs=3D0x00, nsteps=3D0x00, stepsize=3D0x00, mute=3D1
+>  Amp-In vals:  [0x00 0x00] [0x80 0x80]
+>  Amp-Out caps: ofs=3D0x40, nsteps=3D0x40, stepsize=3D0x03, mute=3D0
+>  Amp-Out vals:  [0x40 0x40]
+>  Connection: 2
+>     0x05 0x0b
+> Node 0x10 [Vendor Defined Widget] wcaps 0xf00000: Mono
+> Node 0x11 [Vendor Defined Widget] wcaps 0xf00000: Mono
+> Node 0x12 [Vendor Defined Widget] wcaps 0xf00000: Mono
+> Node 0x13 [Vendor Defined Widget] wcaps 0xf00000: Mono
+> Node 0x14 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+>  Control: name=3D"Speaker Playback Switch", index=3D0, device=3D0
+>    ControlAmp: chs=3D3, dir=3DOut, idx=3D0, ofs=3D0
+>  Amp-In caps: ofs=3D0x00, nsteps=3D0x03, stepsize=3D0x27, mute=3D0
+>  Amp-In vals:  [0x00 0x00]
+>  Amp-Out caps: ofs=3D0x00, nsteps=3D0x00, stepsize=3D0x00, mute=3D1
+>  Amp-Out vals:  [0x00 0x00]
+>  Pincap 0x0000373c: IN OUT HP Detect
+>    Vref caps: HIZ 50 GRD 80 100
+>  Pin Default 0x90100140: [Fixed] Speaker at Int N/A
+>    Conn =3D Unknown, Color =3D Unknown
+>    DefAssociation =3D 0x4, Sequence =3D 0x0
+>    Misc =3D NO_PRESENCE
+>  Pin-ctls: 0x40: OUT VREF_HIZ
+>  Unsolicited: tag=3D00, enabled=3D0
+>  Connection: 5
+>     0x0c 0x0d* 0x0e 0x0f 0x26
+> Node 0x15 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+>  Control: name=3D"Headphone Playback Switch", index=3D0, device=3D0
+>    ControlAmp: chs=3D3, dir=3DOut, idx=3D0, ofs=3D0
+>  Amp-In caps: ofs=3D0x00, nsteps=3D0x03, stepsize=3D0x27, mute=3D0
+>  Amp-In vals:  [0x00 0x00]
+>  Amp-Out caps: ofs=3D0x00, nsteps=3D0x00, stepsize=3D0x00, mute=3D1
+>  Amp-Out vals:  [0x00 0x00]
+>  Pincap 0x0000373c: IN OUT HP Detect
+>    Vref caps: HIZ 50 GRD 80 100
+>  Pin Default 0x012b4050: [Jack] HP Out at Ext Rear
+>    Conn =3D Comb, Color =3D Green
+>    DefAssociation =3D 0x5, Sequence =3D 0x0
+>  Pin-ctls: 0xc4: OUT HP VREF_80
+>  Unsolicited: tag=3D01, enabled=3D1
+>  Connection: 5
+>     0x0c* 0x0d 0x0e 0x0f 0x26
+> Node 0x16 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+>  Amp-In caps: ofs=3D0x00, nsteps=3D0x03, stepsize=3D0x27, mute=3D0
+>  Amp-In vals:  [0x00 0x00]
+>  Amp-Out caps: ofs=3D0x00, nsteps=3D0x00, stepsize=3D0x00, mute=3D1
+>  Amp-Out vals:  [0x80 0x80]
+>  Pincap 0x0000003c: IN OUT HP Detect
+>  Pin Default 0x400000f0: [N/A] Line Out at Ext N/A
+>    Conn =3D Unknown, Color =3D Unknown
+>    DefAssociation =3D 0xf, Sequence =3D 0x0
+>  Pin-ctls: 0x20: IN
+>  Unsolicited: tag=3D00, enabled=3D0
+>  Connection: 5
+>     0x0c 0x0d 0x0e* 0x0f 0x26
+> Node 0x17 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+>  Amp-In caps: ofs=3D0x00, nsteps=3D0x03, stepsize=3D0x27, mute=3D0
+>  Amp-In vals:  [0x00 0x00]
+>  Amp-Out caps: ofs=3D0x00, nsteps=3D0x00, stepsize=3D0x00, mute=3D1
+>  Amp-Out vals:  [0x80 0x80]
+>  Pincap 0x0000003c: IN OUT HP Detect
+>  Pin Default 0x400000f0: [N/A] Line Out at Ext N/A
+>    Conn =3D Unknown, Color =3D Unknown
+>    DefAssociation =3D 0xf, Sequence =3D 0x0
+>  Pin-ctls: 0x20: IN
+>  Unsolicited: tag=3D00, enabled=3D0
+>  Connection: 5
+>     0x0c 0x0d 0x0e 0x0f* 0x26
+> Node 0x18 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+>  Control: name=3D"Mic Boost Volume", index=3D0, device=3D0
+>    ControlAmp: chs=3D3, dir=3DIn, idx=3D0, ofs=3D0
+>  Amp-In caps: ofs=3D0x00, nsteps=3D0x03, stepsize=3D0x27, mute=3D0
+>  Amp-In vals:  [0x00 0x00]
+>  Amp-Out caps: ofs=3D0x00, nsteps=3D0x00, stepsize=3D0x00, mute=3D1
+>  Amp-Out vals:  [0x80 0x80]
+>  Pincap 0x0000373c: IN OUT HP Detect
+>    Vref caps: HIZ 50 GRD 80 100
+>  Pin Default 0x90a00110: [Fixed] Mic at Int N/A
+>    Conn =3D Unknown, Color =3D Unknown
+>    DefAssociation =3D 0x1, Sequence =3D 0x0
+>    Misc =3D NO_PRESENCE
+>  Pin-ctls: 0x24: IN VREF_80
+>  Unsolicited: tag=3D00, enabled=3D0
+>  Connection: 5
+>     0x0c* 0x0d 0x0e 0x0f 0x26
+> Node 0x19 [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+>  Amp-In caps: ofs=3D0x00, nsteps=3D0x03, stepsize=3D0x27, mute=3D0
+>  Amp-In vals:  [0x00 0x00]
+>  Amp-Out caps: ofs=3D0x00, nsteps=3D0x00, stepsize=3D0x00, mute=3D1
+>  Amp-Out vals:  [0x80 0x80]
+>  Pincap 0x0000373c: IN OUT HP Detect
+>    Vref caps: HIZ 50 GRD 80 100
+>  Pin Default 0x400000f0: [N/A] Line Out at Ext N/A
+>    Conn =3D Unknown, Color =3D Unknown
+>    DefAssociation =3D 0xf, Sequence =3D 0x0
+>  Pin-ctls: 0x20: IN VREF_HIZ
+>  Unsolicited: tag=3D00, enabled=3D0
+>  Connection: 5
+>     0x0c* 0x0d 0x0e 0x0f 0x26
+> Node 0x1a [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+>  Control: name=3D"Line Boost Volume", index=3D0, device=3D0
+>    ControlAmp: chs=3D3, dir=3DIn, idx=3D0, ofs=3D0
+>  Amp-In caps: ofs=3D0x00, nsteps=3D0x03, stepsize=3D0x27, mute=3D0
+>  Amp-In vals:  [0x00 0x00]
+>  Amp-Out caps: ofs=3D0x00, nsteps=3D0x00, stepsize=3D0x00, mute=3D1
+>  Amp-Out vals:  [0x80 0x80]
+>  Pincap 0x0000373c: IN OUT HP Detect
+>    Vref caps: HIZ 50 GRD 80 100
+>  Pin Default 0x018b3020: [Jack] Line In at Ext Rear
+>    Conn =3D Comb, Color =3D Blue
+>    DefAssociation =3D 0x2, Sequence =3D 0x0
+>  Pin-ctls: 0x20: IN VREF_HIZ
+>  Unsolicited: tag=3D03, enabled=3D1
+>  Connection: 5
+>     0x0c* 0x0d 0x0e 0x0f 0x26
+> Node 0x1b [Pin Complex] wcaps 0x40018f: Stereo Amp-In Amp-Out
+>  Amp-In caps: ofs=3D0x00, nsteps=3D0x03, stepsize=3D0x27, mute=3D0
+>  Amp-In vals:  [0x00 0x00]
+>  Amp-Out caps: ofs=3D0x00, nsteps=3D0x00, stepsize=3D0x00, mute=3D1
+>  Amp-Out vals:  [0x80 0x80]
+>  Pincap 0x0000373c: IN OUT HP Detect
+>    Vref caps: HIZ 50 GRD 80 100
+>  Pin Default 0x400000f0: [N/A] Line Out at Ext N/A
+>    Conn =3D Unknown, Color =3D Unknown
+>    DefAssociation =3D 0xf, Sequence =3D 0x0
+>  Pin-ctls: 0x20: IN VREF_HIZ
+>  Unsolicited: tag=3D00, enabled=3D0
+>  Connection: 5
+>     0x0c* 0x0d 0x0e 0x0f 0x26
+> Node 0x1c [Pin Complex] wcaps 0x400001: Stereo
+>  Pincap 0x00000020: IN
+>  Pin Default 0x400000f0: [N/A] Line Out at Ext N/A
+>    Conn =3D Unknown, Color =3D Unknown
+>    DefAssociation =3D 0xf, Sequence =3D 0x0
+>  Pin-ctls: 0x20: IN
+> Node 0x1d [Pin Complex] wcaps 0x400000: Mono
+>  Pincap 0x00000020: IN
+>  Pin Default 0x400000f0: [N/A] Line Out at Ext N/A
+>    Conn =3D Unknown, Color =3D Unknown
+>    DefAssociation =3D 0xf, Sequence =3D 0x0
+>  Pin-ctls: 0x20: IN
+> Node 0x1e [Pin Complex] wcaps 0x400300: Mono Digital
+>  Pincap 0x00000010: OUT
+>  Pin Default 0x014be060: [Jack] SPDIF Out at Ext Rear
+>    Conn =3D Comb, Color =3D White
+>    DefAssociation =3D 0x6, Sequence =3D 0x0
+>  Pin-ctls: 0x40: OUT
+>  Connection: 1
+>     0x06
+> Node 0x1f [Pin Complex] wcaps 0x400200: Mono Digital
+>  Pincap 0x00000020: IN
+>  Pin Default 0x01cbe030: [Jack] SPDIF In at Ext Rear
+>    Conn =3D Comb, Color =3D White
+>    DefAssociation =3D 0x3, Sequence =3D 0x0
+>  Pin-ctls: 0x20: IN
+> Node 0x20 [Vendor Defined Widget] wcaps 0xf00040: Mono
+>  Processing caps: benign=3D0, ncoeff=3D17
+> Node 0x21 [Volume Knob Widget] wcaps 0x600080: Mono
+>  Volume-Knob: delta=3D0, steps=3D32, direct=3D0, val=3D63
+>  Unsolicited: tag=3D00, enabled=3D0
+>  Connection: 0
+> Node 0x22 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+>  Amp-In caps: ofs=3D0x00, nsteps=3D0x00, stepsize=3D0x00, mute=3D1
+>  Amp-In vals:  [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80=
+] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
+>  Connection: 11
+>     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b
+> Node 0x23 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+>  Amp-In caps: ofs=3D0x00, nsteps=3D0x00, stepsize=3D0x00, mute=3D1
+>  Amp-In vals:  [0x80 0x80] [0x80 0x80] [0x00 0x00] [0x80 0x80] [0x80 0x80=
+] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
+>  Connection: 11
+>     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b
+> Node 0x24 [Audio Mixer] wcaps 0x20010b: Stereo Amp-In
+>  Amp-In caps: ofs=3D0x00, nsteps=3D0x00, stepsize=3D0x00, mute=3D1
+>  Amp-In vals:  [0x00 0x00] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80=
+] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80] [0x80 0x80]
+>  Connection: 11
+>     0x18 0x19 0x1a 0x1b 0x1c 0x1d 0x14 0x15 0x16 0x17 0x0b
+> Node 0x25 [Audio Output] wcaps 0x11: Stereo
+>  Converter: stream=3D0, channel=3D0
+>  PCM:
+>    rates [0x560]: 44100 48000 96000 192000
+>    bits [0xe]: 16 20 24
+>    formats [0x1]: PCM
+> Node 0x26 [Audio Mixer] wcaps 0x20010f: Stereo Amp-In Amp-Out
+>  Amp-In caps: ofs=3D0x00, nsteps=3D0x00, stepsize=3D0x00, mute=3D1
+>  Amp-In vals:  [0x00 0x00] [0x80 0x80]
+>  Amp-Out caps: ofs=3D0x40, nsteps=3D0x40, stepsize=3D0x03, mute=3D0
+>  Amp-Out vals:  [0x40 0x40]
+>  Connection: 2
+>     0x25 0x0b
+> =
+
+> On Apr 5, 2017, at 0:02, Ren=E9 Rebe <rene@exactcode.de> wrote:
+> =
+
+>> Hi,
+>> =
+
+>> recently I wanted to connect my low noise mic pre-amp via optical spdif =
+to a spare "10 year=94 old MacBook or MacBookPro.
+>> Those indeed have a optical input in the 3.5mm headphone jack. On macOS =
+this also works and works as expected.
+>> =
+
+>> On Linux, however, no matter what I do I only get zeros when recording t=
+he -D iec958.
+>> =
+
+>> In /proc I see 3 capture sub-devices, where the 2nd is labeled:
+>> =
+
+>> # cat /proc/asound/card0/pcm1c/info =
+
+>> ...
+>> id: ALC889A Digital
+>> name: ALC889A Digital
+>> ...
+>> =
+
+>> The behavior is the same on booth the MacBook as well as the MacBook Pro=
+ with either of those PCI devices:
+>> =
+
+>> 00:1b.0 Audio device: Intel Corporation 82801G (ICH7 Family) High Defini=
+tion Audio Controller (rev 02)
+>> 00:1b.0 Audio device: Intel Corporation 82801H (ICH8 Family) HD Audio Co=
+ntroller (rev 03)
+>> =
+
+>> I have the feeling there could be some auto sensing be involved, as in t=
+he macOS system preferences I see the input switching from Mic to Optical I=
+nput as soon as I plugin in an active fibre.
+>> =
+
+>> As I=92m not familiar with this Intel HD stuff, any hint how to start an=
+alyzing and poking this mystery would be highly appreciated.
+>> =
+
+>> Best regards,
+>> 	Ren=E9
+>> =
+
+>> -- =
+
+>> ExactCODE GmbH, Lietzenburger Str. 42, DE-10789 Berlin
+>> http://exactcode.com | http://exactscan.com | http://ocrkit.com | http:/=
+/t2-project.org | http://rene.rebe.de
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> =
+
+> -- =
+
+> ExactCODE GmbH, Lietzenburger Str. 42, DE-10789 Berlin
+> http://exactcode.com | http://exactscan.com | http://ocrkit.com | http://=
+t2-project.org | http://rene.rebe.de
+> =
+
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+-- =
+
+ ExactCODE GmbH, Lietzenburger Str. 42, DE-10789 Berlin
+ http://exactcode.com | http://exactscan.com | http://ocrkit.com | http://t=
+2-project.org | http://rene.rebe.de
