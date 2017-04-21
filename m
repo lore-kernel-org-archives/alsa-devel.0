@@ -1,18 +1,29 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Uninitialized variable
-	in probe_codec()" to the asoc tree
-Date: Fri, 21 Apr 2017 18:28:36 +0100
-Message-ID: <E1d1cMG-0001xn-QD@debutante>
-References: <20170420101702.nlq3537xumrseu26@mwanda>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: Applied "ASoC: Add Odroid sound DT bindings
+ documentation" to the asoc tree
+Date: Fri, 21 Apr 2017 19:31:42 +0200
+Message-ID: <CAJKOXPebDt030tcdBGya4Wpm8HCvMqyM7qJzDvibmvnMttH-FA@mail.gmail.com>
+References: <1492795191-31298-6-git-send-email-s.nawrocki@samsung.com>
+ <E1d1cLy-0001qc-PC@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 32F4A26731F
- for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2017 19:29:06 +0200 (CEST)
-In-Reply-To: <20170420101702.nlq3537xumrseu26@mwanda>
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id A404A2671FB
+ for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2017 19:33:00 +0200 (CEST)
+Received: from mail.kernel.org (localhost [127.0.0.1])
+ by mail.kernel.org (Postfix) with ESMTP id 26A5F2020F
+ for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2017 17:32:59 +0000 (UTC)
+Received: from mail-io0-f171.google.com (mail-io0-f171.google.com
+ [209.85.223.171])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id B9A4A2015A
+ for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2017 17:32:57 +0000 (UTC)
+Received: by mail-io0-f171.google.com with SMTP id p80so9104836iop.3
+ for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2017 10:32:57 -0700 (PDT)
+In-Reply-To: <E1d1cLy-0001qc-PC@debutante>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,65 +33,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: alsa-devel@alsa-project.org, Dharageswari R <dharageswari.r@intel.com>, Lukas Wunner <lukas@wunner.de>, Vinod Koul <vinod.koul@intel.com>, Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>, Jayachandran B <jayachandran.b@intel.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, Yong Zhi <yong.zhi@intel.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, jy0922.shim@samsung.com, =?UTF-8?B?QmFydMWCb21pZWogxbtvxYJuaWVya2lld2ljeg==?= <b.zolnierkie@samsung.com>, Seung Woo Kim <sw0312.kim@samsung.com>, dri-devel@lists.freedesktop.org, Inki Dae <inki.dae@samsung.com>, Javier Martinez Canillas <javier@osg.samsung.com>, robh+dt@kernel.org, Sylwester Nawrocki <s.nawrocki@samsung.com>, Chanwoo Choi <cw00.choi@samsung.com>, linux-clk@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Fri, Apr 21, 2017 at 7:28 PM, Mark Brown <broonie@kernel.org> wrote:
+> The patch
+>
+>    ASoC: Add Odroid sound DT bindings documentation
+>
+> has been applied to the asoc tree at
+>
+>    git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
+>
+> All being well this means that it will be integrated into the linux-next
+> tree (usually sometime in the next 24 hours) and sent to Linus during
+> the next merge window (or sooner if it is a bug fix), however if
+> problems are discovered then the patch may be dropped or reverted.
+>
+> You may get further e-mails resulting from automated or manual testing
+> and review of the tree, please engage with people reporting problems and
+> send followup patches addressing any issues that are reported if needed.
+>
+> If any updates are required or you are submitting further changes they
+> should be sent as incremental updates against current git, existing
+> patches will not be replaced.
+>
+> Please add any relevant lists and maintainers to the CCs when replying
+> to this mail.
+>
+> Thanks,
+> Mark
+>
+> From 92c9f05ebc7290e638c7b1b85288918c4fc65d4e Mon Sep 17 00:00:00 2001
+> From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> Date: Fri, 21 Apr 2017 19:19:49 +0200
+> Subject: [PATCH] ASoC: Add Odroid sound DT bindings documentation
+>
+> This patch adds DT binding documentation for Odroid XU3/4
+> sound subsystem.
+>
+> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> ---
+>  .../devicetree/bindings/sound/samsung,odroid.txt   | 57 ++++++++++++++++++++++
+>  1 file changed, 57 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/samsung,odroid.txt
 
-   ASoC: Intel: Skylake: Uninitialized variable in probe_codec()
 
-has been applied to the asoc tree at
+Hi Mark,
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Although Sylwester is known of writing good quality code and can be
+trusted but he posted it just 9 minutes ago. Isn't it a little bit too
+fast to apply? I just finished reading cover letter but didn't manage
+to start looking at the rest. :)
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From e6a33532affd14c12688c0e9b2e773e8b2550f3b Mon Sep 17 00:00:00 2001
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Thu, 20 Apr 2017 13:17:02 +0300
-Subject: [PATCH] ASoC: Intel: Skylake: Uninitialized variable in probe_codec()
-
-My static checker complains that if snd_hdac_bus_get_response() returns
--EIO then "res" is uninitialized.  Fix this by initializing it to -1 so
-that the error is handled correctly.
-
-Fixes: d8c2dab8381d ("ASoC: Intel: Add Skylake HDA audio driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/skylake/skl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 0c57d4eaae3a..6df3b317a476 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -512,7 +512,7 @@ static int probe_codec(struct hdac_ext_bus *ebus, int addr)
- 	struct hdac_bus *bus = ebus_to_hbus(ebus);
- 	unsigned int cmd = (addr << 28) | (AC_NODE_ROOT << 20) |
- 		(AC_VERB_PARAMETERS << 8) | AC_PAR_VENDOR_ID;
--	unsigned int res;
-+	unsigned int res = -1;
- 
- 	mutex_lock(&bus->cmd_mutex);
- 	snd_hdac_bus_send_cmd(bus, cmd);
--- 
-2.11.0
+Best regards,
+Krzysztof
