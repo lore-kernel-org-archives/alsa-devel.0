@@ -1,34 +1,28 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix a couple user after
-	free bugs" to the asoc tree
-Date: Fri, 21 Apr 2017 18:28:27 +0100
-Message-ID: <E1d1cM7-0001u9-Ty@debutante>
-References: <20170414191120.GA30875@mwanda>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6684A267284
- for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2017 19:28:47 +0200 (CEST)
-In-Reply-To: <20170414191120.GA30875@mwanda>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: alsa-devel@alsa-project.org, Dharageswari R <dharageswari.r@intel.com>, Vinod Koul <vinod.koul@intel.com>, Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, G Kranthi <gudishax.kranthikumar@intel.com>, Mark Brown <broonie@kernel.org>, Hardik T Shah <hardik.t.shah@intel.com>, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: Applied "ASoC: fsl_asrc_dma: use correct direction enum type" to the
+ asoc tree
+Date: Fri, 21 Apr 2017 18:28:30 +0100
+Message-ID: <E1d1cMA-0001vD-Sz@debutante>
+References: <20170115124331.3546-1-nicolas.iooss_linux@m4x.org>
+Return-path: <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+In-Reply-To: <20170115124331.3546-1-nicolas.iooss_linux@m4x.org>
+List-Unsubscribe: <https://lists.ozlabs.org/options/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=unsubscribe>
+List-Archive: <http://lists.ozlabs.org/pipermail/linuxppc-dev/>
+List-Post: <mailto:linuxppc-dev@lists.ozlabs.org>
+List-Help: <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=help>
+List-Subscribe: <https://lists.ozlabs.org/listinfo/linuxppc-dev>,
+ <mailto:linuxppc-dev-request@lists.ozlabs.org?subject=subscribe>
+Errors-To: linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org
+Sender: "Linuxppc-dev"
+ <linuxppc-dev-bounces+glppe-linuxppc-embedded-2=m.gmane.org@lists.ozlabs.org>
+To: Stefan Agner <stefan@agner.ch>
+Cc: alsa-devel@alsa-project.org, Xiubo Li <Xiubo.Lee@gmail.com>, Timur Tabi <timur@tabi.org>, linux-kernel@vger.kernel.org, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, Nicolas Iooss <nicolas.iooss_linux@m4x.org>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix a couple user after free bugs
+   ASoC: fsl_asrc_dma: use correct direction enum type
 
 has been applied to the asoc tree at
 
@@ -53,60 +47,34 @@ to this mail.
 Thanks,
 Mark
 
->From 550b349af0f0e33fedb252aca8dc144299aca308 Mon Sep 17 00:00:00 2001
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Fri, 14 Apr 2017 22:11:20 +0300
-Subject: [PATCH] ASoC: Intel: Skylake: Fix a couple user after free bugs
+>From 24dbd9edb668e2376ce871199f5ee4fd59c62276 Mon Sep 17 00:00:00 2001
+From: Stefan Agner <stefan@agner.ch>
+Date: Wed, 19 Apr 2017 23:36:07 -0700
+Subject: [PATCH] ASoC: fsl_asrc_dma: use correct direction enum type
 
-We need to use the _safe() version of list_for_each_entry() here because
-of the kfree(modules).
+The direction argument is of type enum dma_transfer_direction, and
+not enum dma_data_direction. The enumeration values are the same
+so this did not had an effect in practise.
 
-Fixes: b8c722ddd548 ("ASoC: Intel: Skylake: Add support for deferred DSP module bind")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c      | 4 ++--
- sound/soc/intel/skylake/skl-topology.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/fsl/fsl_asrc_dma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 600faad19bd4..d43d1976dd3b 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -1323,10 +1323,10 @@ int skl_platform_unregister(struct device *dev)
- {
- 	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
- 	struct skl *skl = ebus_to_skl(ebus);
--	struct skl_module_deferred_bind *modules;
-+	struct skl_module_deferred_bind *modules, *tmp;
- 
- 	if (!list_empty(&skl->bind_list)) {
--		list_for_each_entry(modules, &skl->bind_list, node) {
-+		list_for_each_entry_safe(modules, tmp, &skl->bind_list, node) {
- 			list_del(&modules->node);
- 			kfree(modules);
- 		}
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 7f285176a074..0e459d3eb17a 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -1091,7 +1091,7 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
- 	struct skl_module_cfg *src_module = NULL, *dst_module;
- 	struct skl_sst *ctx = skl->skl_sst;
- 	struct skl_pipe *s_pipe = mconfig->pipe;
--	struct skl_module_deferred_bind *modules;
-+	struct skl_module_deferred_bind *modules, *tmp;
- 
- 	if (s_pipe->state == SKL_PIPE_INVALID)
- 		return -EINVAL;
-@@ -1105,7 +1105,7 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
- 
- 		src_module = w_module->w->priv;
- 
--		list_for_each_entry(modules, &skl->bind_list, node) {
-+		list_for_each_entry_safe(modules, tmp, &skl->bind_list, node) {
- 			/*
- 			 * When the destination module is deleted, Unbind the
- 			 * modules from deferred bind list.
+diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
+index dc30d780f874..282d841840b1 100644
+--- a/sound/soc/fsl/fsl_asrc_dma.c
++++ b/sound/soc/fsl/fsl_asrc_dma.c
+@@ -76,7 +76,7 @@ static int fsl_asrc_dma_prepare_and_submit(struct snd_pcm_substream *substream)
+ 			pair->dma_chan[!dir], runtime->dma_addr,
+ 			snd_pcm_lib_buffer_bytes(substream),
+ 			snd_pcm_lib_period_bytes(substream),
+-			dir == OUT ? DMA_TO_DEVICE : DMA_FROM_DEVICE, flags);
++			dir == OUT ? DMA_MEM_TO_DEV : DMA_DEV_TO_MEM, flags);
+ 	if (!pair->desc[!dir]) {
+ 		dev_err(dev, "failed to prepare slave DMA for Front-End\n");
+ 		return -ENOMEM;
 -- 
 2.11.0
