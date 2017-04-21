@@ -1,15 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [alsa-lib][PATCH 0/3] hwdep: update included headers
-	with UAPI headers in recent kernel
-Date: Sat, 22 Apr 2017 00:08:17 +0900
-Message-ID: <20170421150820.18199-1-o-takashi@sakamocchi.jp>
+Subject: [alsa-lib][PATCH 1/3] hwdep: add Line6 USB series
+	support
+Date: Sat, 22 Apr 2017 00:08:18 +0900
+Message-ID: <20170421150820.18199-2-o-takashi@sakamocchi.jp>
+References: <20170421150820.18199-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 3F4E5267101
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 4206A267112
  for <alsa-devel@alsa-project.org>; Fri, 21 Apr 2017 17:08:25 +0200 (CEST)
+In-Reply-To: <20170421150820.18199-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,27 +25,50 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Drivers for Line6 USB series was firstly added to staging directory at
+development period of v2.6.30 kernel. At v4.9 kernel development, they
+were moved to sound directory. The drivers include HwDep interface, while
+header in user space library has never been updated for an entry
+corresponding to the drivers.
 
-In this subsystem, interfaces between kernel/userspace are described in
-UAPI headers of kernel source. User space library (alsa-lib) includes
-this header as its code base. When developers update UAPI headers in
-development cycle of kernel, corresponding headers in alsa-lib should be
-updated.
+This commit adds the entry.
 
-The purpose of this patchset is to catch up recent UAPI header for
-userspace library. There're missing changes added at v4.7, v4.9 and v4.12
-development period.
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ include/hwdep.h        | 3 ++-
+ include/sound/asound.h | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-Takashi Sakamoto (3):
-  hwdep: add Line6 USB series support
-  hwdep: add support for MOTU FireWire series and RME Fireface series
-  timer: obsolete legacy rtctimer instance
-
- include/hwdep.h        | 5 ++++-
- include/sound/asound.h | 7 +++++--
- include/timer.h        | 2 +-
- 3 files changed, 10 insertions(+), 4 deletions(-)
-
+diff --git a/include/hwdep.h b/include/hwdep.h
+index 2fe78cd..e09703c 100644
+--- a/include/hwdep.h
++++ b/include/hwdep.h
+@@ -76,8 +76,9 @@ typedef enum _snd_hwdep_iface {
+ 	SND_HWDEP_IFACE_FW_OXFW,	/**< Oxford OXFW970/971 based device */
+ 	SND_HWDEP_IFACE_FW_DIGI00X,	/* Digidesign Digi 002/003 family */
+ 	SND_HWDEP_IFACE_FW_TASCAM,	/* TASCAM FireWire series */
++	SND_HWDEP_IFACE_LINE6,		/* Line6 USB processors */
+ 
+-	SND_HWDEP_IFACE_LAST = SND_HWDEP_IFACE_FW_TASCAM	/**< last known hwdep interface */
++	SND_HWDEP_IFACE_LAST = SND_HWDEP_IFACE_LINE6,	/**< last known hwdep interface */
+ } snd_hwdep_iface_t;
+ 
+ /** open for reading */
+diff --git a/include/sound/asound.h b/include/sound/asound.h
+index 67bf49d..344a3ea 100644
+--- a/include/sound/asound.h
++++ b/include/sound/asound.h
+@@ -106,9 +106,10 @@ enum {
+ 	SNDRV_HWDEP_IFACE_FW_OXFW,	/* Oxford OXFW970/971 based device */
+ 	SNDRV_HWDEP_IFACE_FW_DIGI00X,	/* Digidesign Digi 002/003 family */
+ 	SNDRV_HWDEP_IFACE_FW_TASCAM,	/* TASCAM FireWire series */
++	SNDRV_HWDEP_IFACE_LINE6,	/* Line6 USB processors */
+ 
+ 	/* Don't forget to change the following: */
+-	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_TASCAM
++	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_LINE6,
+ };
+ 
+ struct snd_hwdep_info {
 -- 
 2.9.3
