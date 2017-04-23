@@ -1,20 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/4] ALSA: hda - A new flag to enforce prefix
-	to each pin
-Date: Sun, 23 Apr 2017 21:00:22 +0200
-Message-ID: <20170423190025.28911-2-tiwai@suse.de>
-References: <20170423190025.28911-1-tiwai@suse.de>
+Subject: [PATCH 0/4] Workarounds for HD-audio dual codecs
+Date: Sun, 23 Apr 2017 21:00:21 +0200
+Message-ID: <20170423190025.28911-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id A668F266AB2
+ by alsa0.perex.cz (Postfix) with ESMTP id A8F06266ABC
  for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2017 21:00:32 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 9B939AAC7
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 9B91BAAB9
  for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2017 19:00:32 +0000 (UTC)
-In-Reply-To: <20170423190025.28911-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,65 +24,40 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a preliminary patch for a smooth multi-codec support, and it
-introduces a new flag, force_pin_prefix, to struct hda_codec.
-This flag is used to force to add the pin location prefix to each
-input pin.  For example, when there is only one microphone pin,
-usually the auto-parser assigns the string "Mic".  With this flag on,
-it'll be like "Front Mic".  Also, the creation of "Master" or "PCM"
-playback volume for a single pin is suppressed, too.
+Hi,
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=195305
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_auto_parser.c | 1 +
- sound/pci/hda/hda_codec.h       | 1 +
- sound/pci/hda/hda_generic.c     | 2 ++
- 3 files changed, 4 insertions(+)
+recently the hardware vendors tend to put multiple codecs for the
+onboard audio, and it causes a problem with the current HD-audio
+auto-parser, as it supposes only a single codec.  With the multiple
+codecs, some existing features are hard to implement, such as the
+vmaster or the stream switching because basically the multiple codecs
+mean to deal with multiple individual streams.
 
-diff --git a/sound/pci/hda/hda_auto_parser.c b/sound/pci/hda/hda_auto_parser.c
-index a03cf68d0bcd..d3ea73171a3d 100644
---- a/sound/pci/hda/hda_auto_parser.c
-+++ b/sound/pci/hda/hda_auto_parser.c
-@@ -580,6 +580,7 @@ const char *hda_get_autocfg_input_label(struct hda_codec *codec,
- 		has_multiple_pins = 1;
- 	if (has_multiple_pins && type == AUTO_PIN_MIC)
- 		has_multiple_pins &= check_mic_location_need(codec, cfg, input);
-+	has_multiple_pins |= codec->force_pin_prefix;
- 	return hda_get_input_pin_label(codec, &cfg->inputs[input],
- 				       cfg->inputs[input].pin,
- 				       has_multiple_pins);
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index f17f25245e52..d6fb2d5d01a7 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -256,6 +256,7 @@ struct hda_codec {
- 	unsigned int dump_coef:1; /* dump processing coefs in codec proc file */
- 	unsigned int power_save_node:1; /* advanced PM for each widget */
- 	unsigned int auto_runtime_pm:1; /* enable automatic codec runtime pm */
-+	unsigned int force_pin_prefix:1; /* Add location prefix */
- #ifdef CONFIG_PM
- 	unsigned long power_on_acct;
- 	unsigned long power_off_acct;
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index e7c8f4f076d5..443832870a44 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -1125,6 +1125,7 @@ static const char *get_line_out_pfx(struct hda_codec *codec, int ch,
- 
- 	*index = 0;
- 	if (cfg->line_outs == 1 && !spec->multi_ios &&
-+	    !codec->force_pin_prefix &&
- 	    !cfg->hp_outs && !cfg->speaker_outs)
- 		return spec->vmaster_mute.hook ? "PCM" : "Master";
- 
-@@ -1132,6 +1133,7 @@ static const char *get_line_out_pfx(struct hda_codec *codec, int ch,
- 	 * use it master (or "PCM" if a vmaster hook is present)
- 	 */
- 	if (spec->multiout.num_dacs == 1 && !spec->mixer_nid &&
-+	    !codec->force_pin_prefix &&
- 	    !spec->multiout.hp_out_nid[0] && !spec->multiout.extra_out_nid[0])
- 		return spec->vmaster_mute.hook ? "PCM" : "Master";
- 
+In this patchset, some workarounds are implemented to make the
+multiple codecs more or less working.  In this mode, the single master
+control or auto-mute/mic switching are disabled, and multiple PCM
+streams are created depending on the I/O.  These differences have to
+be handled via UCM, and for providing the unique setup, the card
+longname is overridden in the quirk.
+
+
+Takashi
+
+===
+
+Takashi Iwai (4):
+  ALSA: hda - A new flag to enforce prefix to each pin
+  ALSA: hda - Allow to enable/disable vmaster build explicitly
+  ALSA: hda - Support Gigabyte Gaming board with dual Realtek codecs
+  ALSA: hda - Use a helper function for renaming kctl names
+
+ Documentation/sound/hd-audio/notes.rst |  2 +
+ sound/pci/hda/hda_auto_parser.c        |  1 +
+ sound/pci/hda/hda_codec.h              |  1 +
+ sound/pci/hda/hda_generic.c            |  9 ++++-
+ sound/pci/hda/hda_generic.h            |  1 +
+ sound/pci/hda/patch_realtek.c          | 72 ++++++++++++++++++++++++++++++----
+ 6 files changed, 77 insertions(+), 9 deletions(-)
+
 -- 
 2.11.1
