@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/4] ALSA: hda - Allow to enable/disable
-	vmaster build explicitly
-Date: Sun, 23 Apr 2017 21:00:23 +0200
-Message-ID: <20170423190025.28911-3-tiwai@suse.de>
+Subject: [PATCH 3/4] ALSA: hda - Support Gigabyte Gaming board
+	with dual Realtek codecs
+Date: Sun, 23 Apr 2017 21:00:24 +0200
+Message-ID: <20170423190025.28911-4-tiwai@suse.de>
 References: <20170423190025.28911-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id A7AE8266ABB
+ by alsa0.perex.cz (Postfix) with ESMTP id A3931266A9B
  for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2017 21:00:32 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 9FDF0AB46
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 9DC11AB07
  for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2017 19:00:32 +0000 (UTC)
 In-Reply-To: <20170423190025.28911-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,74 +27,118 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Another preliminary patch for the dual-codec support: since the
-support of vmaster over multiple codecs is difficult, simply disable
-it by a new flag to hda_codec struct.  A new user hint is added as
-well for consistency.
+This patch adds some workarounds to make Gigabyte GA-AX370 Gaming 5
+board working without the conflicts of kctls, etc.  In general, the
+dual codec configs result in the conflicts of the following stuff:
+- Master controls
+- Capture controls
+- Analog loopback controls
+In addition, the auto-mute and the auto-mic can't work well among
+multiple codecs.
 
+The current "solution" is to disable all these features, and use UCM
+for a better PulseAudio management.  For a dedicated UCM profile, the
+patch overrides the card longname so that the system an get a unique
+profile path.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=195305
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- Documentation/sound/hd-audio/notes.rst | 2 ++
- sound/pci/hda/hda_generic.c            | 7 +++++--
- sound/pci/hda/hda_generic.h            | 1 +
- 3 files changed, 8 insertions(+), 2 deletions(-)
+ sound/pci/hda/patch_realtek.c | 61 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 61 insertions(+)
 
-diff --git a/Documentation/sound/hd-audio/notes.rst b/Documentation/sound/hd-audio/notes.rst
-index 9eeb9b468706..f59c3cdbfaf4 100644
---- a/Documentation/sound/hd-audio/notes.rst
-+++ b/Documentation/sound/hd-audio/notes.rst
-@@ -494,6 +494,8 @@ add_hp_mic (bool)
- hp_mic_detect (bool)
-     enable/disable the hp/mic shared input for a single built-in mic
-     case; default true
-+vmaster (bool)
-+    enable/disable the virtual Master control; default true
- mixer_nid (int)
-     specifies the widget NID of the analog-loopback mixer
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 9371f1a95b33..e81cf83d2afd 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -1800,6 +1800,7 @@ enum {
+ 	ALC882_FIXUP_NO_PRIMARY_HP,
+ 	ALC887_FIXUP_ASUS_BASS,
+ 	ALC887_FIXUP_BASS_CHMAP,
++	ALC1220_FIXUP_GB_DUAL_CODECS,
+ };
  
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 443832870a44..2842c82363c0 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -196,6 +196,9 @@ static void parse_user_hints(struct hda_codec *codec)
- 	val = snd_hda_get_bool_hint(codec, "hp_mic_detect");
- 	if (val >= 0)
- 		spec->suppress_hp_mic_detect = !val;
-+	val = snd_hda_get_bool_hint(codec, "vmaster");
-+	if (val >= 0)
-+		spec->suppress_vmaster = !val;
+ static void alc889_fixup_coef(struct hda_codec *codec,
+@@ -1962,6 +1963,61 @@ static void alc882_fixup_no_primary_hp(struct hda_codec *codec,
+ static void alc_fixup_bass_chmap(struct hda_codec *codec,
+ 				 const struct hda_fixup *fix, int action);
  
- 	if (!snd_hda_get_int_hint(codec, "mixer_nid", &val))
- 		spec->mixer_nid = val;
-@@ -5033,7 +5036,7 @@ int snd_hda_gen_build_controls(struct hda_codec *codec)
- 	}
++/* For dual-codec configuration, we need to disable some features to avoid
++ * conflicts of kctls and PCM streams
++ */
++static void alc_fixup_dual_codecs(struct hda_codec *codec,
++				  const struct hda_fixup *fix, int action)
++{
++	struct alc_spec *spec = codec->spec;
++
++	if (action != HDA_FIXUP_ACT_PRE_PROBE)
++		return;
++	/* disable vmaster */
++	spec->gen.suppress_vmaster = 1;
++	/* auto-mute and auto-mic switch don't work with multiple codecs */
++	spec->gen.suppress_auto_mute = 1;
++	spec->gen.suppress_auto_mic = 1;
++	/* disable aamix as well */
++	spec->gen.mixer_nid = 0;
++	/* add location prefix to avoid conflicts */
++	codec->force_pin_prefix = 1;
++}
++
++static void rename_ctl(struct hda_codec *codec, const char *oldname,
++		       const char *newname)
++{
++	struct snd_kcontrol *kctl;
++
++	kctl = snd_hda_find_mixer_ctl(codec, oldname);
++	if (kctl)
++		strcpy(kctl->id.name, newname);
++}
++
++static void alc1220_fixup_gb_dual_codecs(struct hda_codec *codec,
++					 const struct hda_fixup *fix,
++					 int action)
++{
++	alc_fixup_dual_codecs(codec, fix, action);
++	switch (action) {
++	case HDA_FIXUP_ACT_PRE_PROBE:
++		/* override card longname to provide a unique UCM profile */
++		strcpy(codec->card->longname, "HDAudio-Gigabyte-ALC1220DualCodecs");
++		break;
++	case HDA_FIXUP_ACT_BUILD:
++		/* rename Capture controls depending on the codec */
++		rename_ctl(codec, "Capture Volume",
++			   codec->addr == 0 ?
++			   "Rear-Panel Capture Volume" :
++			   "Front-Panel Capture Volume");
++		rename_ctl(codec, "Capture Switch",
++			   codec->addr == 0 ?
++			   "Rear-Panel Capture Switch" :
++			   "Front-Panel Capture Switch");
++		break;
++	}
++}
++
+ static const struct hda_fixup alc882_fixups[] = {
+ 	[ALC882_FIXUP_ABIT_AW9D_MAX] = {
+ 		.type = HDA_FIXUP_PINS,
+@@ -2198,6 +2254,10 @@ static const struct hda_fixup alc882_fixups[] = {
+ 		.type = HDA_FIXUP_FUNC,
+ 		.v.func = alc_fixup_bass_chmap,
+ 	},
++	[ALC1220_FIXUP_GB_DUAL_CODECS] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc1220_fixup_gb_dual_codecs,
++	},
+ };
  
- 	/* if we have no master control, let's create it */
--	if (!spec->no_analog &&
-+	if (!spec->no_analog && !spec->suppress_vmaster &&
- 	    !snd_hda_find_mixer_ctl(codec, "Master Playback Volume")) {
- 		err = snd_hda_add_vmaster(codec, "Master Playback Volume",
- 					  spec->vmaster_tlv, slave_pfxs,
-@@ -5041,7 +5044,7 @@ int snd_hda_gen_build_controls(struct hda_codec *codec)
- 		if (err < 0)
- 			return err;
- 	}
--	if (!spec->no_analog &&
-+	if (!spec->no_analog && !spec->suppress_vmaster &&
- 	    !snd_hda_find_mixer_ctl(codec, "Master Playback Switch")) {
- 		err = __snd_hda_add_vmaster(codec, "Master Playback Switch",
- 					    NULL, slave_pfxs,
-diff --git a/sound/pci/hda/hda_generic.h b/sound/pci/hda/hda_generic.h
-index f66fc7e25e07..61772317de46 100644
---- a/sound/pci/hda/hda_generic.h
-+++ b/sound/pci/hda/hda_generic.h
-@@ -229,6 +229,7 @@ struct hda_gen_spec {
- 	unsigned int add_jack_modes:1; /* add i/o jack mode enum ctls */
- 	unsigned int power_down_unused:1; /* power down unused widgets */
- 	unsigned int dac_min_mute:1; /* minimal = mute for DACs */
-+	unsigned int suppress_vmaster:1; /* don't create vmaster kctls */
- 
- 	/* other internal flags */
- 	unsigned int no_analog:1; /* digital I/O only */
+ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+@@ -2267,6 +2327,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1462, 0x7350, "MSI-7350", ALC889_FIXUP_CD),
+ 	SND_PCI_QUIRK_VENDOR(0x1462, "MSI", ALC882_FIXUP_GPIO3),
+ 	SND_PCI_QUIRK(0x1458, 0xa002, "Gigabyte EP45-DS3/Z87X-UD3H", ALC889_FIXUP_FRONT_HP_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1458, 0xa0b8, "Gigabyte AZ370-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
+ 	SND_PCI_QUIRK(0x147b, 0x107a, "Abit AW9D-MAX", ALC882_FIXUP_ABIT_AW9D_MAX),
+ 	SND_PCI_QUIRK_VENDOR(0x1558, "Clevo laptop", ALC882_FIXUP_EAPD),
+ 	SND_PCI_QUIRK(0x161f, 0x2054, "Medion laptop", ALC883_FIXUP_EAPD),
 -- 
 2.11.1
