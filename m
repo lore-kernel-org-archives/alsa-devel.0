@@ -1,144 +1,34 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/4] ALSA: hda - Support Gigabyte Gaming board
-	with dual Realtek codecs
-Date: Sun, 23 Apr 2017 21:00:24 +0200
-Message-ID: <20170423190025.28911-4-tiwai@suse.de>
-References: <20170423190025.28911-1-tiwai@suse.de>
+From: "Winkler, Tomas" <tomas.winkler-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH v1 1/8] lib/uuid: Introduce uuid_{be|le}_cmp_p{p}()
+ helpers
+Date: Sun, 23 Apr 2017 20:20:33 +0000
+Message-ID: <1492975128.3570.2.camel@intel.com>
+References: <20170421144645.45189-1-andriy.shevchenko@linux.intel.com>
+         <5B8DA87D05A7694D9FA63FD143655C1B543E8399@hasmsx108.ger.corp.intel.com>
+         <CAHp75VeTgdE=OiRNS6JrH3M-rF+jpPVgmd4G+n321=vhVE4XiA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id A3931266A9B
- for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2017 21:00:32 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 9DC11AB07
- for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2017 19:00:32 +0000 (UTC)
-In-Reply-To: <20170423190025.28911-1-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-efi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <CAHp75VeTgdE=OiRNS6JrH3M-rF+jpPVgmd4G+n321=vhVE4XiA-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Content-Language: en-US
+Content-ID: <5D6A48AB91F1A947BA5214B76B765CAE-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+Sender: linux-efi-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: "andy.shevchenko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <andy.shevchenko-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: "kvm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <kvm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "alex.williamson-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org" <alex.williamson-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, "Koul, Vinod" <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, "devel-tBiZLqfeLfOHmIFyCCdPziST3g8Odh+X@public.gmane.org" <devel-tBiZLqfeLfOHmIFyCCdPziST3g8Odh+X@public.gmane.org>, "kwankhede-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org" <kwankhede-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>, "kys-0li6OtcxBFHby3iVrkZq2A@public.gmane.org" <kys-0li6OtcxBFHby3iVrkZq2A@public.gmane.org>, "ard.biesheuvel-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org" <ard.biesheuvel-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, "matt-mF/unelCI9GS6iBeEJttW/XRex20P6io@public.gmane.org" <matt-mF/unelCI9GS6iBeEJttW/XRex20P6io@public.gmane.org>, "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org" <akpm-de/tnXTf+JLsfHDXvbKv3WD2FQJk+8+b@public.gmane.org>, "rjw-LthD3rsA81gm4RdzfppkhA@public.gmane.org" <rjw-LthD3rsA81gm4RdzfppkhA@public.gmane.org>, "sthemmin-0li6OtcxBFHby3iVrkZq2A@public.gmane.org" <sthemmin-0li6OtcxBFHby3iVrkZq2A@public.gmane.org>, "srinivas.pandruvada-VuQAYsv1563Yd54FQh9/CA@public.gmane.org" <srinivas.pandruvada-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, "mika.westerberg-VuQAYsv1563Yd54FQh9/CA@public.gmane.org" <mik>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds some workarounds to make Gigabyte GA-AX370 Gaming 5
-board working without the conflicts of kctls, etc.  In general, the
-dual codec configs result in the conflicts of the following stuff:
-- Master controls
-- Capture controls
-- Analog loopback controls
-In addition, the auto-mute and the auto-mic can't work well among
-multiple codecs.
-
-The current "solution" is to disable all these features, and use UCM
-for a better PulseAudio management.  For a dedicated UCM profile, the
-patch overrides the card longname so that the system an get a unique
-profile path.
-
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=195305
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 61 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
-
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 9371f1a95b33..e81cf83d2afd 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -1800,6 +1800,7 @@ enum {
- 	ALC882_FIXUP_NO_PRIMARY_HP,
- 	ALC887_FIXUP_ASUS_BASS,
- 	ALC887_FIXUP_BASS_CHMAP,
-+	ALC1220_FIXUP_GB_DUAL_CODECS,
- };
- 
- static void alc889_fixup_coef(struct hda_codec *codec,
-@@ -1962,6 +1963,61 @@ static void alc882_fixup_no_primary_hp(struct hda_codec *codec,
- static void alc_fixup_bass_chmap(struct hda_codec *codec,
- 				 const struct hda_fixup *fix, int action);
- 
-+/* For dual-codec configuration, we need to disable some features to avoid
-+ * conflicts of kctls and PCM streams
-+ */
-+static void alc_fixup_dual_codecs(struct hda_codec *codec,
-+				  const struct hda_fixup *fix, int action)
-+{
-+	struct alc_spec *spec = codec->spec;
-+
-+	if (action != HDA_FIXUP_ACT_PRE_PROBE)
-+		return;
-+	/* disable vmaster */
-+	spec->gen.suppress_vmaster = 1;
-+	/* auto-mute and auto-mic switch don't work with multiple codecs */
-+	spec->gen.suppress_auto_mute = 1;
-+	spec->gen.suppress_auto_mic = 1;
-+	/* disable aamix as well */
-+	spec->gen.mixer_nid = 0;
-+	/* add location prefix to avoid conflicts */
-+	codec->force_pin_prefix = 1;
-+}
-+
-+static void rename_ctl(struct hda_codec *codec, const char *oldname,
-+		       const char *newname)
-+{
-+	struct snd_kcontrol *kctl;
-+
-+	kctl = snd_hda_find_mixer_ctl(codec, oldname);
-+	if (kctl)
-+		strcpy(kctl->id.name, newname);
-+}
-+
-+static void alc1220_fixup_gb_dual_codecs(struct hda_codec *codec,
-+					 const struct hda_fixup *fix,
-+					 int action)
-+{
-+	alc_fixup_dual_codecs(codec, fix, action);
-+	switch (action) {
-+	case HDA_FIXUP_ACT_PRE_PROBE:
-+		/* override card longname to provide a unique UCM profile */
-+		strcpy(codec->card->longname, "HDAudio-Gigabyte-ALC1220DualCodecs");
-+		break;
-+	case HDA_FIXUP_ACT_BUILD:
-+		/* rename Capture controls depending on the codec */
-+		rename_ctl(codec, "Capture Volume",
-+			   codec->addr == 0 ?
-+			   "Rear-Panel Capture Volume" :
-+			   "Front-Panel Capture Volume");
-+		rename_ctl(codec, "Capture Switch",
-+			   codec->addr == 0 ?
-+			   "Rear-Panel Capture Switch" :
-+			   "Front-Panel Capture Switch");
-+		break;
-+	}
-+}
-+
- static const struct hda_fixup alc882_fixups[] = {
- 	[ALC882_FIXUP_ABIT_AW9D_MAX] = {
- 		.type = HDA_FIXUP_PINS,
-@@ -2198,6 +2254,10 @@ static const struct hda_fixup alc882_fixups[] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc_fixup_bass_chmap,
- 	},
-+	[ALC1220_FIXUP_GB_DUAL_CODECS] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc1220_fixup_gb_dual_codecs,
-+	},
- };
- 
- static const struct snd_pci_quirk alc882_fixup_tbl[] = {
-@@ -2267,6 +2327,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x1462, 0x7350, "MSI-7350", ALC889_FIXUP_CD),
- 	SND_PCI_QUIRK_VENDOR(0x1462, "MSI", ALC882_FIXUP_GPIO3),
- 	SND_PCI_QUIRK(0x1458, 0xa002, "Gigabyte EP45-DS3/Z87X-UD3H", ALC889_FIXUP_FRONT_HP_NO_PRESENCE),
-+	SND_PCI_QUIRK(0x1458, 0xa0b8, "Gigabyte AZ370-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
- 	SND_PCI_QUIRK(0x147b, 0x107a, "Abit AW9D-MAX", ALC882_FIXUP_ABIT_AW9D_MAX),
- 	SND_PCI_QUIRK_VENDOR(0x1558, "Clevo laptop", ALC882_FIXUP_EAPD),
- 	SND_PCI_QUIRK(0x161f, 0x2054, "Medion laptop", ALC883_FIXUP_EAPD),
--- 
-2.11.1
+T24gU3VuLCAyMDE3LTA0LTIzIGF0IDE1OjQyICswMzAwLCBBbmR5IFNoZXZjaGVua28gd3JvdGU6
+DQo+IE9uIFN1biwgQXByIDIzLCAyMDE3IGF0IDE6MjkgUE0sIFdpbmtsZXIsIFRvbWFzIDx0b21h
+cy53aW5rbGVyQGludGVsLg0KPiBjb20+IHdyb3RlOg0KPiA+ID4gTmV3IGhlbHBlcnMgdGFrZSBw
+b2ludGVycyB0byB1dWlkX3tiZXxsZX0gYXMgcGFyYW1ldGVycy4NCj4gPiA+IA0KPiA+ID4gV2hl
+biB1c2luZyB0aGVtIG9uIGEgcmF3IGRhdGEgd2UgZG9uJ3QgbmVlZCB0byBkbyBhbiB1Z2x5DQo+
+ID4gPiBkZXJlZmVyZW5jZSBhbmQsDQo+ID4gPiBpbiBzb21lIGNhc2VzLCBhIHR5cGUgY2FzdGlu
+Zy4NCj4gPiBJIHRoaW5rIHRoaXMgZ29pbmcgb3ZlcmJvYXJkLCB0aGUgX3BwIHR5cGVzwqDCoGFy
+ZSBqdXN0IGVub3VnaC4NCj4gDQo+IEkgbG9va2VkIGF0IGV4aXN0aW5nIHVzZXJzIGFuZCB0aGVy
+ZSBhcmUgY2FzZXMgbGlrZQ0KPiAjZGVmaW5lIFhYWF9VVUlEIFVVSURfLi4uKGEsIGIsIGMsIC4u
+LikNCj4gDQo+IHV1aWRfLipfY21wKHZhbHVlLCBYWFhfVVVJRCkNCj4gDQo+IEZvciBfcHAgdmFy
+aWFudCBpZiB3b3VsZCBiZSBfY21wX3BwKHZhbHVlLCAmWFhYX1VVSUQpIHdoaWNoIGlzDQo+IHNs
+aWdodGx5IHdvcnNlIHRoYW4gZm9yIF9wIHZhcmlhbnQuDQoNCg0KTWF5YmUgaXQncyB3b3J0aCB0
+byBhY3R1YWxseSByZXBsYWNlIHRoZSBkZWZpbmVzIHdpdGggdmFyaWFibGVzIHRoYW4gdG8NCmNy
+ZWF0ZSBhbiBpbnRlcmZhY2Ugd2l0aCBhbGwgdGhlIHBlcm11dGF0aW9ucy4NCg0KVG9tYXMNCg==
