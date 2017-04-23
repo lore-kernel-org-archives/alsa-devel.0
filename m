@@ -1,81 +1,72 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v3] ASoC: bytcr_rt5640: Allow quirk set via
-	module option
-Date: Sun, 23 Apr 2017 09:22:56 +0200
-Message-ID: <20170423072256.26750-1-tiwai@suse.de>
+From: "Winkler, Tomas" <tomas.winkler@intel.com>
+Subject: RE: [PATCH v1 1/8] lib/uuid: Introduce uuid_{be|le}_cmp_p{p}()
+ helpers
+Date: Sun, 23 Apr 2017 10:29:14 +0000
+Message-ID: <5B8DA87D05A7694D9FA63FD143655C1B543E8399@hasmsx108.ger.corp.intel.com>
+References: <20170421144645.45189-1-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 2FB4E26664F
- for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2017 09:22:58 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-acpi-owner@vger.kernel.org>
+In-Reply-To: <20170421144645.45189-1-andriy.shevchenko@linux.intel.com>
+Content-Language: en-US
+Sender: linux-acpi-owner@vger.kernel.org
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Andrew Morton <akpm@linux-foundation.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>, Mika Westerberg <mika.westerberg@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>, "kvm@vger.kernel.org" <kvm@vger.kernel.org>, "devel@linuxdriverproject.org" <devel@linuxdriverproject.org>, "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>, "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "Koul, Vinod" <vinod.koul@intel.com>, Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>, Benjamin Tissoires <benjamin.tissoires@redhat.com>, Kirti Wankhede <kwankhede@nvidia.com>, Alex Williamson <alex.williamson@redhat.com>, "K. Y. Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>, Stephen Hemminger <sthemmin@microsoft.com>, Matt Fleming <matt@codeblueprint.co.uk>, Ard Biesheuvel <ard.biesheuvel@linaro.org>, "Rafael J. Wysocki" <rjw@rjwysocki.net>
 List-Id: alsa-devel@alsa-project.org
 
-The bytcr-rt5640 driver has a few quirk setups depending on the board,
-where the quirk value is set by DMI matching.  When you have a new
-device to add the support, you often experience to try the different
-quirk by trial-and-error.  Or, you may have a development model that
-still has no proper DMI string.  In either case, you'd need to compile
-the driver at each time.
+> New helpers take pointers to uuid_{be|le} as parameters.
+> 
+> When using them on a raw data we don't need to do an ugly dereference and,
+> in some cases, a type casting.
+> 
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Vinod Koul <vinod.koul@intel.com>
+> Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+> Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> Cc: Kirti Wankhede <kwankhede@nvidia.com>
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Cc: "K. Y. Srinivasan" <kys@microsoft.com>
+> Cc: Haiyang Zhang <haiyangz@microsoft.com>
+> Cc: Stephen Hemminger <sthemmin@microsoft.com>
+> Cc: Tomas Winkler <tomas.winkler@intel.com>
+> Cc: Matt Fleming <matt@codeblueprint.co.uk>
+> Cc: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+> Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  include/linux/uuid.h | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+> 
+> diff --git a/include/linux/uuid.h b/include/linux/uuid.h index
+> 4dff73a89758..45312cb5ac65 100644
+> --- a/include/linux/uuid.h
+> +++ b/include/linux/uuid.h
+> @@ -58,6 +58,26 @@ static inline int uuid_be_cmp(const uuid_be u1, const
+> uuid_be u2)
+>  	return memcmp(&u1, &u2, sizeof(uuid_be));  }
+> 
+> +static inline int uuid_le_cmp_p(const uuid_le *pu1, const uuid_le u2) {
+> +	return memcmp(pu1, &u2, sizeof(uuid_le)); }
+> +
+> +static inline int uuid_be_cmp_p(const uuid_be *pu1, const uuid_be u2) {
+> +	return memcmp(pu1, &u2, sizeof(uuid_be)); }
+> +
+> +static inline int uuid_le_cmp_pp(const uuid_le *pu1, const uuid_le
+> +*pu2) {
+> +	return memcmp(pu1, pu2, sizeof(uuid_le)); }
+> +
+> +static inline int uuid_be_cmp_pp(const uuid_be *pu1, const uuid_be
+> +*pu2) {
+> +	return memcmp(pu1, pu2, sizeof(uuid_be)); }
+> +
+>  void generate_random_uuid(unsigned char uuid[16]);
+> 
+>  extern void uuid_le_gen(uuid_le *u);
 
-This patch introduces a module option to override the quirk value on
-the fly.  User can boot like snd-soc-sst-bytcr-rt5640.quirk=0x4004 to
-override the default value without recompilation.  It's a raw value,
-so user needs to check the source code for the meaning of each bit.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
-v1->v2: override the quirk value completely
-v2->v3: print the override information
-
- sound/soc/intel/boards/bytcr_rt5640.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 5c7219fb3aa8..0ac32788f216 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -19,6 +19,7 @@
- 
- #include <linux/init.h>
- #include <linux/module.h>
-+#include <linux/moduleparam.h>
- #include <linux/platform_device.h>
- #include <linux/acpi.h>
- #include <linux/device.h>
-@@ -58,6 +59,9 @@ struct byt_rt5640_private {
- };
- 
- static unsigned long byt_rt5640_quirk = BYT_RT5640_MCLK_EN;
-+static unsigned int quirk_override;
-+module_param_named(quirk, quirk_override, int, 0444);
-+MODULE_PARM_DESC(quirk, "Board-specific quirk override");
- 
- static void log_quirks(struct device *dev)
- {
-@@ -806,6 +810,11 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 
- 	/* check quirks before creating card */
- 	dmi_check_system(byt_rt5640_quirk_table);
-+	if (quirk_override) {
-+		dev_info(&pdev->dev, "Overriding quirk %0x => 0x%x\n",
-+			 (unsigned int)byt_rt5640_quirk, quirk_override);
-+		byt_rt5640_quirk = quirk_override;
-+	}
- 	log_quirks(&pdev->dev);
- 
- 	if ((byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) ||
--- 
-2.11.1
+I think this going overboard, the _pp types  are just enough. 
+Tomas
