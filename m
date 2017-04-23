@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4/4] ALSA: hda - Use a helper function for
-	renaming kctl names
-Date: Sun, 23 Apr 2017 21:00:25 +0200
-Message-ID: <20170423190025.28911-5-tiwai@suse.de>
+Subject: [PATCH 1/4] ALSA: hda - A new flag to enforce prefix
+	to each pin
+Date: Sun, 23 Apr 2017 21:00:22 +0200
+Message-ID: <20170423190025.28911-2-tiwai@suse.de>
 References: <20170423190025.28911-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id A5418266A9D
+ by alsa0.perex.cz (Postfix) with ESMTP id A668F266AB2
  for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2017 21:00:32 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id A48F8AB5F
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 9B939AAC7
  for <alsa-devel@alsa-project.org>; Sun, 23 Apr 2017 19:00:32 +0000 (UTC)
 In-Reply-To: <20170423190025.28911-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,39 +27,65 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a preliminary patch for a smooth multi-codec support, and it
+introduces a new flag, force_pin_prefix, to struct hda_codec.
+This flag is used to force to add the pin location prefix to each
+input pin.  For example, when there is only one microphone pin,
+usually the auto-parser assigns the string "Mic".  With this flag on,
+it'll be like "Front Mic".  Also, the creation of "Master" or "PCM"
+playback volume for a single pin is suppressed, too.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=195305
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_realtek.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ sound/pci/hda/hda_auto_parser.c | 1 +
+ sound/pci/hda/hda_codec.h       | 1 +
+ sound/pci/hda/hda_generic.c     | 2 ++
+ 3 files changed, 4 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index e81cf83d2afd..57eeefd36f19 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -4724,7 +4724,6 @@ static void alc282_fixup_asus_tx300(struct hda_codec *codec,
- 		{ 0x1b, 0x21114000 }, /* dock speaker pin */
- 		{}
- 	};
--	struct snd_kcontrol *kctl;
+diff --git a/sound/pci/hda/hda_auto_parser.c b/sound/pci/hda/hda_auto_parser.c
+index a03cf68d0bcd..d3ea73171a3d 100644
+--- a/sound/pci/hda/hda_auto_parser.c
++++ b/sound/pci/hda/hda_auto_parser.c
+@@ -580,6 +580,7 @@ const char *hda_get_autocfg_input_label(struct hda_codec *codec,
+ 		has_multiple_pins = 1;
+ 	if (has_multiple_pins && type == AUTO_PIN_MIC)
+ 		has_multiple_pins &= check_mic_location_need(codec, cfg, input);
++	has_multiple_pins |= codec->force_pin_prefix;
+ 	return hda_get_input_pin_label(codec, &cfg->inputs[input],
+ 				       cfg->inputs[input].pin,
+ 				       has_multiple_pins);
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index f17f25245e52..d6fb2d5d01a7 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -256,6 +256,7 @@ struct hda_codec {
+ 	unsigned int dump_coef:1; /* dump processing coefs in codec proc file */
+ 	unsigned int power_save_node:1; /* advanced PM for each widget */
+ 	unsigned int auto_runtime_pm:1; /* enable automatic codec runtime pm */
++	unsigned int force_pin_prefix:1; /* Add location prefix */
+ #ifdef CONFIG_PM
+ 	unsigned long power_on_acct;
+ 	unsigned long power_off_acct;
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index e7c8f4f076d5..443832870a44 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -1125,6 +1125,7 @@ static const char *get_line_out_pfx(struct hda_codec *codec, int ch,
  
- 	switch (action) {
- 	case HDA_FIXUP_ACT_PRE_PROBE:
-@@ -4739,12 +4738,10 @@ static void alc282_fixup_asus_tx300(struct hda_codec *codec,
- 		/* this is a bit tricky; give more sane names for the main
- 		 * (tablet) speaker and the dock speaker, respectively
- 		 */
--		kctl = snd_hda_find_mixer_ctl(codec, "Speaker Playback Switch");
--		if (kctl)
--			strcpy(kctl->id.name, "Dock Speaker Playback Switch");
--		kctl = snd_hda_find_mixer_ctl(codec, "Bass Speaker Playback Switch");
--		if (kctl)
--			strcpy(kctl->id.name, "Speaker Playback Switch");
-+		rename_ctl(codec, "Speaker Playback Switch",
-+			   "Dock Speaker Playback Switch");
-+		rename_ctl(codec, "Bass Speaker Playback Switch",
-+			   "Speaker Playback Switch");
- 		break;
- 	}
- }
+ 	*index = 0;
+ 	if (cfg->line_outs == 1 && !spec->multi_ios &&
++	    !codec->force_pin_prefix &&
+ 	    !cfg->hp_outs && !cfg->speaker_outs)
+ 		return spec->vmaster_mute.hook ? "PCM" : "Master";
+ 
+@@ -1132,6 +1133,7 @@ static const char *get_line_out_pfx(struct hda_codec *codec, int ch,
+ 	 * use it master (or "PCM" if a vmaster hook is present)
+ 	 */
+ 	if (spec->multiout.num_dacs == 1 && !spec->mixer_nid &&
++	    !codec->force_pin_prefix &&
+ 	    !spec->multiout.hp_out_nid[0] && !spec->multiout.extra_out_nid[0])
+ 		return spec->vmaster_mute.hook ? "PCM" : "Master";
+ 
 -- 
 2.11.1
