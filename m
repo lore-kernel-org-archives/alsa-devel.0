@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Provide a dummy wrapper of
-	snd_soc_set_dmi_name()" to the asoc tree
-Date: Mon, 24 Apr 2017 19:20:56 +0100
-Message-ID: <E1d2ibY-0000jT-21@debutante>
-References: <20170421155525.15012-1-tiwai@suse.de>
+Subject: Applied "ASoC: imx-wm8962: Remove global variables" to
+	the asoc tree
+Date: Mon, 24 Apr 2017 19:20:59 +0100
+Message-ID: <E1d2ibb-0000kM-4f@debutante>
+References: <1492989633-19909-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E36202674C9
- for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 20:21:05 +0200 (CEST)
-In-Reply-To: <20170421155525.15012-1-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id D58C22674CA
+ for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 20:21:12 +0200 (CEST)
+In-Reply-To: <1492989633-19909-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
+To: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, broonie@kernel.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Provide a dummy wrapper of snd_soc_set_dmi_name()
+   ASoC: imx-wm8962: Remove global variables
 
 has been applied to the asoc tree at
 
@@ -53,61 +53,115 @@ to this mail.
 Thanks,
 Mark
 
->From 1f5a4535db41bd2bb8d1a15f098cb2921d6c1317 Mon Sep 17 00:00:00 2001
-From: Takashi Iwai <tiwai@suse.de>
-Date: Mon, 24 Apr 2017 08:54:41 +0200
-Subject: [PATCH] ASoC: Provide a dummy wrapper of snd_soc_set_dmi_name()
+>From 8f7206d69ab8c8fb8620566338d54c4b9b80477a Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Date: Sun, 23 Apr 2017 20:20:33 -0300
+Subject: [PATCH] ASoC: imx-wm8962: Remove global variables
 
-For systems without DMI, it makes no sense to have the code.
+Currently the following variables are global:
+- card_priv, sample_rate and sample_format
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+,which is not a good idea as it prevents the usage of multiple
+instances.
+
+Make sample_rate and sample_format part of the imx_priv structure
+and allocate imx_priv via the standard devm_kzalloc() mechanism
+inside the probe function.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h  | 8 ++++++++
- sound/soc/soc-core.c | 2 ++
- 2 files changed, 10 insertions(+)
+ sound/soc/fsl/imx-wm8962.c | 31 +++++++++++++++++++------------
+ 1 file changed, 19 insertions(+), 12 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index cdfb55f7aede..915c06cb2b32 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -497,7 +497,15 @@ void snd_soc_runtime_deactivate(struct snd_soc_pcm_runtime *rtd, int stream);
- int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
- 	unsigned int dai_fmt);
+diff --git a/sound/soc/fsl/imx-wm8962.c b/sound/soc/fsl/imx-wm8962.c
+index 52659faa2eb9..206b898e554c 100644
+--- a/sound/soc/fsl/imx-wm8962.c
++++ b/sound/soc/fsl/imx-wm8962.c
+@@ -38,8 +38,9 @@ struct imx_wm8962_data {
  
-+#ifdef CONFIG_DMI
- int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour);
-+#else
-+static inline int snd_soc_set_dmi_name(struct snd_soc_card *card,
-+				       const char *flavour)
-+{
-+	return 0;
-+}
-+#endif
+ struct imx_priv {
+ 	struct platform_device *pdev;
++	int sample_rate;
++	snd_pcm_format_t sample_format;
+ };
+-static struct imx_priv card_priv;
  
- /* Utility functions to get clock rates from various things */
- int snd_soc_calc_frame_size(int sample_size, int channels, int tdm_slots);
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 6dca408faae3..52f6d9c28df9 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1918,6 +1918,7 @@ int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
- EXPORT_SYMBOL_GPL(snd_soc_runtime_set_dai_fmt);
+ static const struct snd_soc_dapm_widget imx_wm8962_dapm_widgets[] = {
+ 	SND_SOC_DAPM_HP("Headphone Jack", NULL),
+@@ -48,14 +49,14 @@ static const struct snd_soc_dapm_widget imx_wm8962_dapm_widgets[] = {
+ 	SND_SOC_DAPM_MIC("DMIC", NULL),
+ };
  
+-static int sample_rate = 44100;
+-static snd_pcm_format_t sample_format = SNDRV_PCM_FORMAT_S16_LE;
+-
+ static int imx_hifi_hw_params(struct snd_pcm_substream *substream,
+ 		struct snd_pcm_hw_params *params)
+ {
+-	sample_rate = params_rate(params);
+-	sample_format = params_format(params);
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct imx_priv *priv = snd_soc_card_get_drvdata(rtd->card);
++
++	priv->sample_rate = params_rate(params);
++	priv->sample_format = params_format(params);
  
-+#ifdef CONFIG_DMI
- /* Trim special characters, and replace '-' with '_' since '-' is used to
-  * separate different DMI fields in the card long name. Only number and
-  * alphabet characters and a few separator characters are kept.
-@@ -2049,6 +2050,7 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
  	return 0;
  }
- EXPORT_SYMBOL_GPL(snd_soc_set_dmi_name);
-+#endif /* CONFIG_DMI */
- 
- static int snd_soc_instantiate_card(struct snd_soc_card *card)
+@@ -70,7 +71,7 @@ static int imx_wm8962_set_bias_level(struct snd_soc_card *card,
  {
+ 	struct snd_soc_pcm_runtime *rtd;
+ 	struct snd_soc_dai *codec_dai;
+-	struct imx_priv *priv = &card_priv;
++	struct imx_priv *priv = snd_soc_card_get_drvdata(card);
+ 	struct imx_wm8962_data *data = snd_soc_card_get_drvdata(card);
+ 	struct device *dev = &priv->pdev->dev;
+ 	unsigned int pll_out;
+@@ -84,10 +85,10 @@ static int imx_wm8962_set_bias_level(struct snd_soc_card *card,
+ 	switch (level) {
+ 	case SND_SOC_BIAS_PREPARE:
+ 		if (dapm->bias_level == SND_SOC_BIAS_STANDBY) {
+-			if (sample_format == SNDRV_PCM_FORMAT_S24_LE)
+-				pll_out = sample_rate * 384;
++			if (priv->sample_format == SNDRV_PCM_FORMAT_S24_LE)
++				pll_out = priv->sample_rate * 384;
+ 			else
+-				pll_out = sample_rate * 256;
++				pll_out = priv->sample_rate * 256;
+ 
+ 			ret = snd_soc_dai_set_pll(codec_dai, WM8962_FLL,
+ 					WM8962_FLL_MCLK, data->clk_frequency,
+@@ -139,7 +140,7 @@ static int imx_wm8962_late_probe(struct snd_soc_card *card)
+ {
+ 	struct snd_soc_pcm_runtime *rtd;
+ 	struct snd_soc_dai *codec_dai;
+-	struct imx_priv *priv = &card_priv;
++	struct imx_priv *priv = snd_soc_card_get_drvdata(card);
+ 	struct imx_wm8962_data *data = snd_soc_card_get_drvdata(card);
+ 	struct device *dev = &priv->pdev->dev;
+ 	int ret;
+@@ -159,14 +160,20 @@ static int imx_wm8962_probe(struct platform_device *pdev)
+ 	struct device_node *np = pdev->dev.of_node;
+ 	struct device_node *ssi_np, *codec_np;
+ 	struct platform_device *ssi_pdev;
+-	struct imx_priv *priv = &card_priv;
+ 	struct i2c_client *codec_dev;
+ 	struct imx_wm8962_data *data;
++	struct imx_priv *priv;
+ 	struct clk *codec_clk;
+ 	int int_port, ext_port;
+ 	int ret;
+ 
++	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
+ 	priv->pdev = pdev;
++	priv->sample_rate = 44100;
++	priv->sample_format = SNDRV_PCM_FORMAT_S16_LE;
+ 
+ 	ret = of_property_read_u32(np, "mux-int-port", &int_port);
+ 	if (ret) {
 -- 
 2.11.0
