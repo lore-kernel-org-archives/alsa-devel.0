@@ -1,15 +1,17 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH] ASoC: bytcr_rt5640: log quirk configuration
-	errors
-Date: Mon, 24 Apr 2017 16:34:33 -0500
-Message-ID: <20170424213433.21962-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: intel: Fix PM and non-atomic crash
+	in bytcr drivers
+Date: Mon, 24 Apr 2017 16:39:47 -0500
+Message-ID: <14ce353a-5dd5-76bc-d98b-d0d3e8b4e757@linux.intel.com>
+References: <20170424120955.15519-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 4A356266AF7
- for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 23:34:48 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 19546266AF7
+ for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 23:39:49 +0200 (CEST)
+In-Reply-To: <20170424120955.15519-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,152 +21,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Cc: Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Now that quirks can be overridden with a module parameter,
-log errors so that non-sensical quirks introduced by mistake
-are identified.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/intel/boards/bytcr_rt5640.c | 100 +++++++++++++++++++++++++---------
- 1 file changed, 75 insertions(+), 25 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index b1f0ccb..44ec96a 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -57,6 +57,7 @@ enum {
- struct byt_rt5640_private {
- 	struct clk *mclk;
- };
-+static bool is_bytcr;
- 
- static unsigned long byt_rt5640_quirk = BYT_RT5640_MCLK_EN;
- static unsigned int quirk_override;
-@@ -65,30 +66,79 @@ MODULE_PARM_DESC(quirk, "Board-specific quirk override");
- 
- static void log_quirks(struct device *dev)
- {
--	if (BYT_RT5640_MAP(byt_rt5640_quirk) == BYT_RT5640_DMIC1_MAP)
--		dev_info(dev, "quirk DMIC1_MAP enabled");
--	if (BYT_RT5640_MAP(byt_rt5640_quirk) == BYT_RT5640_DMIC2_MAP)
--		dev_info(dev, "quirk DMIC2_MAP enabled");
--	if (BYT_RT5640_MAP(byt_rt5640_quirk) == BYT_RT5640_IN1_MAP)
--		dev_info(dev, "quirk IN1_MAP enabled");
--	if (BYT_RT5640_MAP(byt_rt5640_quirk) == BYT_RT5640_IN3_MAP)
--		dev_info(dev, "quirk IN3_MAP enabled");
--	if (byt_rt5640_quirk & BYT_RT5640_DMIC_EN)
--		dev_info(dev, "quirk DMIC enabled");
-+	int map;
-+	bool has_dmic = false;
-+	bool has_mclk = false;
-+	bool has_ssp0 = false;
-+	bool has_ssp0_aif1 = false;
-+	bool has_ssp0_aif2 = false;
-+	bool has_ssp2_aif2 = false;
-+
-+	map = BYT_RT5640_MAP(byt_rt5640_quirk);
-+	switch (map) {
-+	case BYT_RT5640_DMIC1_MAP:
-+		dev_info(dev, "quirk DMIC1_MAP enabled\n");
-+		has_dmic = true;
-+		break;
-+	case BYT_RT5640_DMIC2_MAP:
-+		dev_info(dev, "quirk DMIC2_MAP enabled\n");
-+		has_dmic = true;
-+		break;
-+	case BYT_RT5640_IN1_MAP:
-+		dev_info(dev, "quirk IN1_MAP enabled\n");
-+		break;
-+	case BYT_RT5640_IN3_MAP:
-+		dev_info(dev, "quirk IN3_MAP enabled\n");
-+		break;
-+	default:
-+		dev_err(dev, "quirk map 0x%x is not supported, microphone input will not work\n", map);
-+		break;
-+	}
-+	if (byt_rt5640_quirk & BYT_RT5640_DMIC_EN) {
-+		if (has_dmic)
-+			dev_info(dev, "quirk DMIC enabled\n");
-+		else
-+			dev_err(dev, "quirk DMIC enabled but no DMIC input set, will be ignored\n");
-+	}
- 	if (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER)
--		dev_info(dev, "quirk MONO_SPEAKER enabled");
--	if (byt_rt5640_quirk & BYT_RT5640_DIFF_MIC)
--		dev_info(dev, "quirk DIFF_MIC enabled");
--	if (byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2)
--		dev_info(dev, "quirk SSP2_AIF2 enabled");
--	if (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1)
--		dev_info(dev, "quirk SSP0_AIF1 enabled");
--	if (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)
--		dev_info(dev, "quirk SSP0_AIF2 enabled");
--	if (byt_rt5640_quirk & BYT_RT5640_MCLK_EN)
--		dev_info(dev, "quirk MCLK_EN enabled");
--	if (byt_rt5640_quirk & BYT_RT5640_MCLK_25MHZ)
--		dev_info(dev, "quirk MCLK_25MHZ enabled");
-+		dev_info(dev, "quirk MONO_SPEAKER enabled\n");
-+	if (byt_rt5640_quirk & BYT_RT5640_DIFF_MIC) {
-+		if (!has_dmic)
-+			dev_info(dev, "quirk DIFF_MIC enabled\n");
-+		else
-+			dev_info(dev, "quirk DIFF_MIC enabled but DMIC input selected, will be ignored\n");
-+	}
-+	if (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) {
-+		dev_info(dev, "quirk SSP0_AIF1 enabled\n");
-+		has_ssp0 = true;
-+		has_ssp0_aif1 = true;
-+	}
-+	if (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2) {
-+		dev_info(dev, "quirk SSP0_AIF2 enabled\n");
-+		has_ssp0 = true;
-+		has_ssp0_aif2 = true;
-+	}
-+	if (byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) {
-+		dev_info(dev, "quirk SSP2_AIF2 enabled\n");
-+		has_ssp2_aif2 = true;
-+	}
-+	if (is_bytcr && !has_ssp0)
-+		dev_err(dev, "Invalid routing, bytcr detected but no SSP0-based quirk, audio cannot work with SSP2 on bytcr\n");
-+	if (has_ssp0_aif1 && has_ssp0_aif2)
-+		dev_err(dev, "Invalid routing, SSP0 cannot be connected to both AIF1 and AIF2\n");
-+	if (has_ssp0 && has_ssp2_aif2)
-+		dev_err(dev, "Invalid routing, cannot have both SSP0 and SSP2 connected to codec\n");
-+
-+	if (byt_rt5640_quirk & BYT_RT5640_MCLK_EN) {
-+		dev_info(dev, "quirk MCLK_EN enabled\n");
-+		has_mclk = true;
-+	}
-+	if (byt_rt5640_quirk & BYT_RT5640_MCLK_25MHZ) {
-+		if (has_mclk)
-+			dev_info(dev, "quirk MCLK_25MHZ enabled\n");
-+		else
-+			dev_err(dev, "quirk MCLK_25MHZ enabled but quirk MCLK not selected, will be ignored\n");
-+	}
- }
- 
- 
-@@ -132,7 +182,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
- 			ret = clk_prepare_enable(priv->mclk);
- 			if (ret < 0) {
- 				dev_err(card->dev,
--					"could not configure MCLK state");
-+					"could not configure MCLK state\n");
- 				return ret;
- 			}
- 		}
-@@ -714,8 +764,8 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	int i;
- 	int dai_index;
- 	struct byt_rt5640_private *priv;
--	bool is_bytcr = false;
- 
-+	is_bytcr = false;
- 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_ATOMIC);
- 	if (!priv)
- 		return -ENOMEM;
--- 
-2.9.3
+On 04/24/2017 07:09 AM, Takashi Iwai wrote:
+> The FE setups of Intel SST bytcr_rt5640 and bytcr_rt5651 drivers carry
+> the ignore_suspend flag, and this prevents the suspend/resume working
+> properly while the stream is running, since SST core code has the
+> check of the running streams and returns -EBUSY.  Drop these
+> superfluous flags for fixing the behavior.
+>
+> Also, the bytcr_rt5640 driver lacks of nonatomic flag in some FE
+> definitions, which leads to the kernel Oops at suspend/resume like:
+This patch also fixes the known bug that reboot had to be forced on some 
+BYT platforms with a manual restart when the audio driver was enabled.
+Thanks Takashi!
+
+>
+>    BUG: scheduling while atomic: systemd-sleep/3144/0x00000003
+>    Call Trace:
+>     dump_stack+0x5c/0x7a
+>     __schedule_bug+0x55/0x70
+>     __schedule+0x63c/0x8c0
+>     schedule+0x3d/0x90
+>     schedule_timeout+0x16b/0x320
+>     ? del_timer_sync+0x50/0x50
+>     ? sst_wait_timeout+0xa9/0x170 [snd_intel_sst_core]
+>     ? sst_wait_timeout+0xa9/0x170 [snd_intel_sst_core]
+>     ? remove_wait_queue+0x60/0x60
+>     ? sst_prepare_and_post_msg+0x275/0x960 [snd_intel_sst_core]
+>     ? sst_pause_stream+0x9b/0x110 [snd_intel_sst_core]
+>     ....
+>
+> This patch addresses these appropriately, too.
+>
+> Cc: <stable@vger.kernel.org> # v4.1+
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>   sound/soc/intel/boards/bytcr_rt5640.c | 4 ++--
+>   sound/soc/intel/boards/bytcr_rt5651.c | 2 --
+>   2 files changed, 2 insertions(+), 4 deletions(-)
+>
+> diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+> index 5c7219fb3aa8..9e2a3404a836 100644
+> --- a/sound/soc/intel/boards/bytcr_rt5640.c
+> +++ b/sound/soc/intel/boards/bytcr_rt5640.c
+> @@ -621,7 +621,7 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
+>   		.codec_dai_name = "snd-soc-dummy-dai",
+>   		.codec_name = "snd-soc-dummy",
+>   		.platform_name = "sst-mfld-platform",
+> -		.ignore_suspend = 1,
+> +		.nonatomic = true,
+>   		.dynamic = 1,
+>   		.dpcm_playback = 1,
+>   		.dpcm_capture = 1,
+> @@ -634,7 +634,6 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
+>   		.codec_dai_name = "snd-soc-dummy-dai",
+>   		.codec_name = "snd-soc-dummy",
+>   		.platform_name = "sst-mfld-platform",
+> -		.ignore_suspend = 1,
+>   		.nonatomic = true,
+>   		.dynamic = 1,
+>   		.dpcm_playback = 1,
+> @@ -661,6 +660,7 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
+>   						| SND_SOC_DAIFMT_CBS_CFS,
+>   		.be_hw_params_fixup = byt_rt5640_codec_fixup,
+>   		.ignore_suspend = 1,
+> +		.nonatomic = true,
+>   		.dpcm_playback = 1,
+>   		.dpcm_capture = 1,
+>   		.init = byt_rt5640_init,
+> diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+> index 3186f015939f..8164bec63bf1 100644
+> --- a/sound/soc/intel/boards/bytcr_rt5651.c
+> +++ b/sound/soc/intel/boards/bytcr_rt5651.c
+> @@ -235,7 +235,6 @@ static struct snd_soc_dai_link byt_rt5651_dais[] = {
+>   		.codec_dai_name = "snd-soc-dummy-dai",
+>   		.codec_name = "snd-soc-dummy",
+>   		.platform_name = "sst-mfld-platform",
+> -		.ignore_suspend = 1,
+>   		.nonatomic = true,
+>   		.dynamic = 1,
+>   		.dpcm_playback = 1,
+> @@ -249,7 +248,6 @@ static struct snd_soc_dai_link byt_rt5651_dais[] = {
+>   		.codec_dai_name = "snd-soc-dummy-dai",
+>   		.codec_name = "snd-soc-dummy",
+>   		.platform_name = "sst-mfld-platform",
+> -		.ignore_suspend = 1,
+>   		.nonatomic = true,
+>   		.dynamic = 1,
+>   		.dpcm_playback = 1,
