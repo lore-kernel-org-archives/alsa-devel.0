@@ -1,18 +1,22 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASoC: intel: Fix PM and non-atomic crash
-	in bytcr drivers
-Date: Mon, 24 Apr 2017 18:27:17 +0530
-Message-ID: <20170424125717.GR6263@localhost>
-References: <20170424120955.15519-1-tiwai@suse.de>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: codec: wm9860: avoid
+ maybe-uninitialized warning
+Date: Mon, 24 Apr 2017 16:15:33 +0300
+Message-ID: <CAEnQRZCHgahg=Vem_rrbZWzVM7KJi1B_Q3NAKr_sxXA5K0-AEw@mail.gmail.com>
+References: <1492780055-4892-1-git-send-email-daniel.baluta@nxp.com>
+ <1492780055-4892-2-git-send-email-daniel.baluta@nxp.com>
+ <CAK8P3a3GD-S1-szw5tw1R8eSS0AXL_hwJm+d-KF4XuKtYGf-VQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D0AF266D82
- for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 14:55:31 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20170424120955.15519-1-tiwai@suse.de>
+Received: from mail-io0-f195.google.com (mail-io0-f195.google.com
+ [209.85.223.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id C5061266D58
+ for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 15:15:35 +0200 (CEST)
+Received: by mail-io0-f195.google.com with SMTP id k87so49047709ioi.0
+ for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 06:15:35 -0700 (PDT)
+In-Reply-To: <CAK8P3a3GD-S1-szw5tw1R8eSS0AXL_hwJm+d-KF4XuKtYGf-VQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,38 +26,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Daniel Baluta <daniel.baluta@nxp.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 24, 2017 at 02:09:55PM +0200, Takashi Iwai wrote:
-> The FE setups of Intel SST bytcr_rt5640 and bytcr_rt5651 drivers carry
-> the ignore_suspend flag, and this prevents the suspend/resume working
-> properly while the stream is running, since SST core code has the
-> check of the running streams and returns -EBUSY.  Drop these
-> superfluous flags for fixing the behavior.
-> 
-> Also, the bytcr_rt5640 driver lacks of nonatomic flag in some FE
-> definitions, which leads to the kernel Oops at suspend/resume like:
-> 
->   BUG: scheduling while atomic: systemd-sleep/3144/0x00000003
->   Call Trace:
->    dump_stack+0x5c/0x7a
->    __schedule_bug+0x55/0x70
->    __schedule+0x63c/0x8c0
->    schedule+0x3d/0x90
->    schedule_timeout+0x16b/0x320
->    ? del_timer_sync+0x50/0x50
->    ? sst_wait_timeout+0xa9/0x170 [snd_intel_sst_core]
->    ? sst_wait_timeout+0xa9/0x170 [snd_intel_sst_core]
->    ? remove_wait_queue+0x60/0x60
->    ? sst_prepare_and_post_msg+0x275/0x960 [snd_intel_sst_core]
->    ? sst_pause_stream+0x9b/0x110 [snd_intel_sst_core]
->    ....
-> 
-> This patch addresses these appropriately, too.
-
-Acked-by: Vinod Koul <vinod.koul@intel.com>
-
--- 
-~Vinod
+T24gRnJpLCBBcHIgMjEsIDIwMTcgYXQgNTo0NiBQTSwgQXJuZCBCZXJnbWFubiA8YXJuZEBhcm5k
+Yi5kZT4gd3JvdGU6Cj4gT24gRnJpLCBBcHIgMjEsIDIwMTcgYXQgMzowNyBQTSwgRGFuaWVsIEJh
+bHV0YSA8ZGFuaWVsLmJhbHV0YUBueHAuY29tPiB3cm90ZToKPj4gVGhlIG5ldyBQTEwgY29uZmln
+dXJhdGlvbiBjb2RlIHRyaWdnZXJzIGEgaGFybWxlc3Mgd2FybmluZzoKPj4KPj4gc291bmQvc29j
+L2NvZGVjcy93bTg5NjAuYzogSW4gZnVuY3Rpb24gJ3dtODk2MF9jb25maWd1cmVfY2xvY2tpbmcn
+Ogo+PiBzb3VuZC9zb2MvY29kZWNzL3dtODk2MC5jOjczNTozOiBlcnJvcjogJ2Jlc3RfZnJlcV9v
+dXQnIG1heSBiZSB1c2VkCj4+IHVuaW5pdGlhbGl6ZWQgaW4gdGhpcyBmdW5jdGlvbiBbLVdlcnJv
+cj1tYXliZS11bmluaXRpYWxpemVkXQo+PiAgICB3bTg5NjBfc2V0X3BsbChjb2RlYywgZnJlcV9p
+biwgYmVzdF9mcmVxX291dCk7Cj4+ICAgIF5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
+fn5+fn5+fn5+fn5+fgo+PiBzb3VuZC9zb2MvY29kZWNzL3dtODk2MC5jOjY5OToxMjogbm90ZTog
+J2Jlc3RfZnJlcV9vdXQnIHdhcyBkZWNsYXJlZAo+PiBoZXJlCj4+Cj4+IEZpeGVzOiA4NGZkYzAw
+ZDUxOWYgKCJBU29DOiBjb2RlYzogd205ODYwOiBSZWZhY3RvciBQTEwgb3V0IGZyZXEgc2VhcmNo
+IikKPj4gRml4ZXM6IDMwM2U4OTU0YWY4ZCAoIkFTb0M6IGNvZGVjOiB3bTg5NjA6IFN0b3Agd2hl
+biBhIG1hdGNoaW5nIFBMTCBmcmVxIGlzIGZvdW5kIikKPj4gU3VnZ2VzdGVkLWJ5OiBBcm5kIEJl
+cmdtYW5uIDxhcm5kQGFybmRiLmRlPgo+PiBTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgQmFsdXRhIDxk
+YW5pZWwuYmFsdXRhQG54cC5jb20+Cj4+IC0tLQo+PiBBcm5kLAo+Pgo+PiBJIGFncmVlIHRoYXQg
+eW91ciBjb2RlIHdhcyBtb3JlIGJvdGggaHVtYW5zIGFuZCBnY2MgYW55aG93Cj4+IGZvciBjb25z
+aXN0ZW5jeSB3aXRoIHdtODk2MF9jb25maWd1cmVfc3lzY2xrIGZ1bmN0aW9uIEkgcHJlZmVycmVk
+Cj4+IHRvIGtlZXAgdGhlICJpZiguLikgYnJlYWsiIHN0YXRlbWVudHMuCj4KPiBIb3cgYWJvdXQg
+Y2hhbmdpbmcgYm90aCBmdW5jdGlvbnMgdGhlIHNhbWUgd2F5IHRoZW4/CgpJJ3ZlIHRyaWVkIGJ1
+dCBJIGNvdWxkbid0IGZpbmQgYW55IHNvbHV0aW9uLiBGb3IgY2xhcml0eSBoZXJlIGlzIGhvdwp0
+aGUgY29kZSBhY3R1YWxseSBsb29rcyBsaWtlLgoKVGhlIGdpdCBkaWZmIGlzIGEgbGl0dGxlIGJp
+dCBtaXNsZWFkaW5nLiBIZXJlIGlzIGhvdyB3bTg5NjBfY29uZmlndXJlX3BsbCBjb2RlCmxvb2tz
+IGxpa2U6CgpodHRwczovL3Bhc3RlYmluLmNvbS9uYUdkVk5RegoKc3RhdGljCmludCB3bTg5NjBf
+Y29uZmlndXJlX3BsbChzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMsIGludCBmcmVxX2luLArC
+uyAgICAgICDCuyAgICAgICDCuyAgICAgICAgaW50ICpzeXNjbGtfaWR4LCBpbnQgKmRhY19pZHgs
+IGludCAqYmNsa19pZHgpCnsKwrsgICAgICAgc3RydWN0IHdtODk2MF9wcml2ICp3bTg5NjAgPSBz
+bmRfc29jX2NvZGVjX2dldF9kcnZkYXRhKGNvZGVjKTsKwrsgICAgICAgaW50IHN5c2NsaywgYmNs
+aywgbHJjbGssIGZyZXFfb3V0OwrCuyAgICAgICBpbnQgZGlmZiwgY2xvc2VzdCwgYmVzdF9mcmVx
+X291dDsKwrsgICAgICAgaW50IGksIGosIGs7CgrCuyAgICAgICBiY2xrID0gd204OTYwLT5iY2xr
+OwrCuyAgICAgICBscmNsayA9IHdtODk2MC0+bHJjbGs7CsK7ICAgICAgIGNsb3Nlc3QgPSBmcmVx
+X2luOwoKwrsgICAgICAgYmVzdF9mcmVxX291dCA9IC1FSU5WQUw7CsK7ICAgICAgICpzeXNjbGtf
+aWR4ID0gKmRhY19pZHggPSAqYmNsa19pZHggPSAtMTsKCsK7ICAgICAgIGZvciAoaSA9IDA7IGkg
+PCBBUlJBWV9TSVpFKHN5c2Nsa19kaXZzKTsgKytpKSB7CsK7ICAgICAgIMK7ICAgICAgIGlmIChz
+eXNjbGtfZGl2c1tpXSA9PSAtMSkKwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgY29udGludWU7
+CsK7ICAgICAgIMK7ICAgICAgIGZvciAoaiA9IDA7IGogPCBBUlJBWV9TSVpFKGRhY19kaXZzKTsg
+KytqKSB7CsK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIHN5c2NsayA9IGxyY2xrICogZGFjX2Rp
+dnNbal07CsK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIGZyZXFfb3V0ID0gc3lzY2xrICogc3lz
+Y2xrX2RpdnNbaV07CgrCuyAgICAgICDCuyAgICAgICDCuyAgICAgICBmb3IgKGsgPSAwOyBrIDwg
+QVJSQVlfU0laRShiY2xrX2RpdnMpOyArK2spIHsKwrsgICAgICAgwrsgICAgICAgwrsgICAgICAg
+wrsgICAgICAgaWYgKCFpc19wbGxfZnJlcV9hdmFpbGFibGUoZnJlcV9pbiwgZnJlcV9vdXQpKQrC
+uyAgICAgICDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICBjb250aW51ZTsKCsK7
+ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIGRpZmYgPSBzeXNjbGsgLSBiY2xrICog
+YmNsa19kaXZzW2tdIC8gMTA7CsK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIGlm
+IChkaWZmID09IDApIHsKwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgwrsgICAg
+ICAgKnN5c2Nsa19pZHggPSBpOwrCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDC
+uyAgICAgICAqZGFjX2lkeCA9IGo7CsK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAg
+IMK7ICAgICAgICpiY2xrX2lkeCA9IGs7CsK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAg
+ICAgIMK7ICAgICAgIGJlc3RfZnJlcV9vdXQgPSBmcmVxX291dDsKwrsgICAgICAgwrsgICAgICAg
+wrsgICAgICAgwrsgICAgICAgwrsgICAgICAgYnJlYWs7CsK7ICAgICAgIMK7ICAgICAgIMK7ICAg
+ICAgIMK7ICAgICAgIH0KwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgaWYgKGRp
+ZmYgPiAwICYmIGNsb3Nlc3QgPiBkaWZmKSB7CsK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7
+ICAgICAgIMK7ICAgICAgICpzeXNjbGtfaWR4ID0gaTsKwrsgICAgICAgwrsgICAgICAgwrsgICAg
+ICAgwrsgICAgICAgwrsgICAgICAgKmRhY19pZHggPSBqOwrCuyAgICAgICDCuyAgICAgICDCuyAg
+ICAgICDCuyAgICAgICDCuyAgICAgICAqYmNsa19pZHggPSBrOwrCuyAgICAgICDCuyAgICAgICDC
+uyAgICAgICDCuyAgICAgICDCuyAgICAgICBjbG9zZXN0ID0gZGlmZjsKwrsgICAgICAgwrsgICAg
+ICAgwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgYmVzdF9mcmVxX291dCA9IGZyZXFfb3V0OwrC
+uyAgICAgICDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICB9CsK7ICAgICAgIMK7ICAgICAgIMK7
+ICAgICAgIH0KwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgaWYgKGsgIT0gQVJSQVlfU0laRShi
+Y2xrX2RpdnMpKQrCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICBicmVhazsKwrsg
+ICAgICAgwrsgICAgICAgfQrCuyAgICAgICDCuyAgICAgICBpZiAoaiAhPSBBUlJBWV9TSVpFKGRh
+Y19kaXZzKSkKwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgYnJlYWs7CsK7ICAgICAgIH0KCsK7
+ICAgICAgIHJldHVybiBiZXN0X2ZyZXFfb3V0Owp9CgpJbiBteSBvcGluaW9uIHRoaXMgaXMgYSBj
+b21waWxlciBmYWxzZSBwb3NpdGl2ZS4gQW55IGNsdWUgb24gaG93IHRvIHJld29yayB0aGlzCndv
+dWxkIGJlIHdlbGNvbWVkIDopLiBJIGNvdWxkbid0IGZpbmQgYW55IGRlY2VudCBzb2x1dGlvbi4K
+CkRhbmllbC4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
