@@ -1,77 +1,80 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 2/2] ASoC: Call snd_soc_set_dmi_name()
-	unconditionally
-Date: Mon, 24 Apr 2017 10:17:45 +0530
-Message-ID: <20170424044745.GE6263@localhost>
-References: <20170421155525.15012-1-tiwai@suse.de>
- <20170421155525.15012-2-tiwai@suse.de>
+Subject: Re: [PATCH v1 2/8] ASoC: Intel: Skylake: Use recently introduced
+ uuid_le_cmp_p{p}()
+Date: Mon, 24 Apr 2017 10:21:05 +0530
+Message-ID: <20170424045105.GF6263@localhost>
+References: <20170421144645.45189-1-andriy.shevchenko@linux.intel.com>
+ <20170421144645.45189-2-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 827AA266C6A
- for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 06:46:01 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-acpi-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20170421155525.15012-2-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20170421144645.45189-2-andriy.shevchenko@linux.intel.com>
+Sender: linux-acpi-owner@vger.kernel.org
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Mika Westerberg <mika.westerberg@linux.intel.com>, alsa-devel@alsa-project.org, linux-input@vger.kernel.org, kvm@vger.kernel.org, devel@linuxdriverproject.org, linux-efi@vger.kernel.org, linux-acpi@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 21, 2017 at 05:55:25PM +0200, Takashi Iwai wrote:
-> Since recently UCM can pick up a configuration specific to the board
-> via card longname field, and we introduced a helper function
-> snd_soc_set_dmi_name() for that.  So far, it was used only in one
-> place (sound/soc/intel/boards/broadwell.c), but it should be more
-> widely applied.
+On Fri, Apr 21, 2017 at 05:46:39PM +0300, Andy Shevchenko wrote:
+> Recently introduced helpers take pointers to uuid_{be|le} instead of
+> reference.
+
+Are they in linus's tree, if not it introduces dependency, so we might want
+to defer after merge window
+
 > 
-> This patch puts a big hammer for that: it lets snd_soc_register_card()
-> calling snd_soc_set_dmi_name() unconditionally, so that all x86
-> devices get the better longname string.  This would have no impact for
-> other systems without DMI support, as snd_soc_set_dmi_name() is no-op
-> on them.
+> Using them makes code less ugly.
+
+How so..?
+
 > 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Cc: Vinod Koul <vinod.koul@intel.com>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
->  sound/soc/intel/boards/broadwell.c | 3 ---
->  sound/soc/soc-core.c               | 3 +++
+>  sound/soc/intel/skylake/skl-pcm.c       | 2 +-
+>  sound/soc/intel/skylake/skl-sst-utils.c | 4 ++--
 >  2 files changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/sound/soc/intel/boards/broadwell.c b/sound/soc/intel/boards/broadwell.c
-> index faf865bb1765..6dcbbcefc25b 100644
-> --- a/sound/soc/intel/boards/broadwell.c
-> +++ b/sound/soc/intel/boards/broadwell.c
-> @@ -269,9 +269,6 @@ static struct snd_soc_card broadwell_rt286 = {
->  static int broadwell_audio_probe(struct platform_device *pdev)
->  {
->  	broadwell_rt286.dev = &pdev->dev;
-> -
-> -	snd_soc_set_dmi_name(&broadwell_rt286, NULL);
-> -
->  	return devm_snd_soc_register_card(&pdev->dev, &broadwell_rt286);
->  }
+> diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+> index 600faad19bd4..4bf171985872 100644
+> --- a/sound/soc/intel/skylake/skl-pcm.c
+> +++ b/sound/soc/intel/skylake/skl-pcm.c
+> @@ -1207,7 +1207,7 @@ static int skl_get_module_info(struct skl *skl, struct skl_module_cfg *mconfig)
+>  	}
 >  
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index aac73ff8a92a..6536eccdafae 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -2192,6 +2192,9 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
->  		snd_soc_dapm_add_routes(&card->dapm, card->of_dapm_routes,
->  					card->num_of_dapm_routes);
+>  	list_for_each_entry(module, &ctx->uuid_list, list) {
+> -		if (uuid_le_cmp(*uuid_mod, module->uuid) == 0) {
+> +		if (uuid_le_cmp_p(uuid_mod, module->uuid) == 0) {
+>  			mconfig->id.module_id = module->id;
+>  			mconfig->is_loadable = module->is_loadable;
+>  			return 0;
+> diff --git a/sound/soc/intel/skylake/skl-sst-utils.c b/sound/soc/intel/skylake/skl-sst-utils.c
+> index 6d5bff04bf65..67288580c743 100644
+> --- a/sound/soc/intel/skylake/skl-sst-utils.c
+> +++ b/sound/soc/intel/skylake/skl-sst-utils.c
+> @@ -189,7 +189,7 @@ int skl_get_pvt_id(struct skl_sst *ctx, uuid_le *uuid_mod, int instance_id)
+>  	int pvt_id;
 >  
-> +	/* try to set some sane longname if DMI is available */
-> +	snd_soc_set_dmi_name(card);
-
-This is missing NULL as second arg.
+>  	list_for_each_entry(module, &ctx->uuid_list, list) {
+> -		if (uuid_le_cmp(*uuid_mod, module->uuid) == 0) {
+> +		if (uuid_le_cmp_p(uuid_mod, module->uuid) == 0) {
+>  
+>  			pvt_id = skl_pvtid_128(module);
+>  			if (pvt_id >= 0) {
+> @@ -218,7 +218,7 @@ int skl_put_pvt_id(struct skl_sst *ctx, uuid_le *uuid_mod, int *pvt_id)
+>  	struct uuid_module *module;
+>  
+>  	list_for_each_entry(module, &ctx->uuid_list, list) {
+> -		if (uuid_le_cmp(*uuid_mod, module->uuid) == 0) {
+> +		if (uuid_le_cmp_p(uuid_mod, module->uuid) == 0) {
+>  
+>  			if (*pvt_id != 0)
+>  				i = (*pvt_id) / 64;
+> -- 
+> 2.11.0
+> 
 
 -- 
 ~Vinod
