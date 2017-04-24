@@ -1,139 +1,122 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 1/2] ASoC: codec: wm9860: avoid
- maybe-uninitialized warning
-Date: Mon, 24 Apr 2017 17:27:25 +0200
-Message-ID: <CAK8P3a20+0sa0cZKoMu0SoqYtVMzJZumGzDpwEaSMJw_zbckfg@mail.gmail.com>
-References: <1492780055-4892-1-git-send-email-daniel.baluta@nxp.com>
- <1492780055-4892-2-git-send-email-daniel.baluta@nxp.com>
- <CAK8P3a3GD-S1-szw5tw1R8eSS0AXL_hwJm+d-KF4XuKtYGf-VQ@mail.gmail.com>
- <CAEnQRZCHgahg=Vem_rrbZWzVM7KJi1B_Q3NAKr_sxXA5K0-AEw@mail.gmail.com>
+From: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Subject: Re: [PATCH 3/3] sound: ASoC: tegra: Select tegra30 i2s and ahub for
+ tegra124 SoC
+Date: Mon, 24 Apr 2017 09:35:21 -0600
+Message-ID: <fe76985c-ef66-9870-a616-203b54a93777@wwwdotorg.org>
+References: <20170418151159.31843-1-contact@paulk.fr>
+ <d18b57d3-a44f-e44b-9bd5-526993dc91e4@wwwdotorg.org>
+ <1492533513.3504.2.camel@paulk.fr>
+ <41ef55f7-8f17-4ca3-4757-bfefb1fe8321@wwwdotorg.org>
+ <1493046446.943.7.camel@paulk.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f66.google.com (mail-it0-f66.google.com
- [209.85.214.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 48600266D58
- for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 17:27:26 +0200 (CEST)
-Received: by mail-it0-f66.google.com with SMTP id z67so17963830itb.0
- for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 08:27:26 -0700 (PDT)
-In-Reply-To: <CAEnQRZCHgahg=Vem_rrbZWzVM7KJi1B_Q3NAKr_sxXA5K0-AEw@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Baluta <daniel.baluta@gmail.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Daniel Baluta <daniel.baluta@nxp.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1493046446.943.7.camel-W9ppeneeCTY@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Paul Kocialkowski <contact-W9ppeneeCTY@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Marcel Ziswiler <marcel.ziswiler-2KBjVHiyJgBBDgjK7y7TUQ@public.gmane.org>, Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBBcHIgMjQsIDIwMTcgYXQgMzoxNSBQTSwgRGFuaWVsIEJhbHV0YSA8ZGFuaWVsLmJh
-bHV0YUBnbWFpbC5jb20+IHdyb3RlOgo+IE9uIEZyaSwgQXByIDIxLCAyMDE3IGF0IDU6NDYgUE0s
-IEFybmQgQmVyZ21hbm4gPGFybmRAYXJuZGIuZGU+IHdyb3RlOgo+PiBPbiBGcmksIEFwciAyMSwg
-MjAxNyBhdCAzOjA3IFBNLCBEYW5pZWwgQmFsdXRhIDxkYW5pZWwuYmFsdXRhQG54cC5jb20+IHdy
-b3RlOgo+Pj4gVGhlIG5ldyBQTEwgY29uZmlndXJhdGlvbiBjb2RlIHRyaWdnZXJzIGEgaGFybWxl
-c3Mgd2FybmluZzoKPj4+Cj4+PiBzb3VuZC9zb2MvY29kZWNzL3dtODk2MC5jOiBJbiBmdW5jdGlv
-biAnd204OTYwX2NvbmZpZ3VyZV9jbG9ja2luZyc6Cj4+PiBzb3VuZC9zb2MvY29kZWNzL3dtODk2
-MC5jOjczNTozOiBlcnJvcjogJ2Jlc3RfZnJlcV9vdXQnIG1heSBiZSB1c2VkCj4+PiB1bmluaXRp
-YWxpemVkIGluIHRoaXMgZnVuY3Rpb24gWy1XZXJyb3I9bWF5YmUtdW5pbml0aWFsaXplZF0KPj4+
-ICAgIHdtODk2MF9zZXRfcGxsKGNvZGVjLCBmcmVxX2luLCBiZXN0X2ZyZXFfb3V0KTsKPj4+ICAg
-IF5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fgo+Pj4gc291bmQv
-c29jL2NvZGVjcy93bTg5NjAuYzo2OTk6MTI6IG5vdGU6ICdiZXN0X2ZyZXFfb3V0JyB3YXMgZGVj
-bGFyZWQKPj4+IGhlcmUKPj4+Cj4+PiBGaXhlczogODRmZGMwMGQ1MTlmICgiQVNvQzogY29kZWM6
-IHdtOTg2MDogUmVmYWN0b3IgUExMIG91dCBmcmVxIHNlYXJjaCIpCj4+PiBGaXhlczogMzAzZTg5
-NTRhZjhkICgiQVNvQzogY29kZWM6IHdtODk2MDogU3RvcCB3aGVuIGEgbWF0Y2hpbmcgUExMIGZy
-ZXEgaXMgZm91bmQiKQo+Pj4gU3VnZ2VzdGVkLWJ5OiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRi
-LmRlPgo+Pj4gU2lnbmVkLW9mZi1ieTogRGFuaWVsIEJhbHV0YSA8ZGFuaWVsLmJhbHV0YUBueHAu
-Y29tPgo+Pj4gLS0tCj4+PiBBcm5kLAo+Pj4KPj4+IEkgYWdyZWUgdGhhdCB5b3VyIGNvZGUgd2Fz
-IG1vcmUgYm90aCBodW1hbnMgYW5kIGdjYyBhbnlob3cKPj4+IGZvciBjb25zaXN0ZW5jeSB3aXRo
-IHdtODk2MF9jb25maWd1cmVfc3lzY2xrIGZ1bmN0aW9uIEkgcHJlZmVycmVkCj4+PiB0byBrZWVw
-IHRoZSAiaWYoLi4pIGJyZWFrIiBzdGF0ZW1lbnRzLgo+Pgo+PiBIb3cgYWJvdXQgY2hhbmdpbmcg
-Ym90aCBmdW5jdGlvbnMgdGhlIHNhbWUgd2F5IHRoZW4/Cj4KPiBJJ3ZlIHRyaWVkIGJ1dCBJIGNv
-dWxkbid0IGZpbmQgYW55IHNvbHV0aW9uLiBGb3IgY2xhcml0eSBoZXJlIGlzIGhvdwo+IHRoZSBj
-b2RlIGFjdHVhbGx5IGxvb2tzIGxpa2UuCj4KPiBUaGUgZ2l0IGRpZmYgaXMgYSBsaXR0bGUgYml0
-IG1pc2xlYWRpbmcuIEhlcmUgaXMgaG93IHdtODk2MF9jb25maWd1cmVfcGxsIGNvZGUKPiBsb29r
-cyBsaWtlOgo+Cj4gaHR0cHM6Ly9wYXN0ZWJpbi5jb20vbmFHZFZOUXoKPgo+IHN0YXRpYwo+IGlu
-dCB3bTg5NjBfY29uZmlndXJlX3BsbChzdHJ1Y3Qgc25kX3NvY19jb2RlYyAqY29kZWMsIGludCBm
-cmVxX2luLAo+IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgICBpbnQgKnN5c2Nsa19pZHgsIGlu
-dCAqZGFjX2lkeCwgaW50ICpiY2xrX2lkeCkKPiB7Cj4gwrsgICAgICAgc3RydWN0IHdtODk2MF9w
-cml2ICp3bTg5NjAgPSBzbmRfc29jX2NvZGVjX2dldF9kcnZkYXRhKGNvZGVjKTsKPiDCuyAgICAg
-ICBpbnQgc3lzY2xrLCBiY2xrLCBscmNsaywgZnJlcV9vdXQ7Cj4gwrsgICAgICAgaW50IGRpZmYs
-IGNsb3Nlc3QsIGJlc3RfZnJlcV9vdXQ7Cj4gwrsgICAgICAgaW50IGksIGosIGs7Cj4KPiDCuyAg
-ICAgICBiY2xrID0gd204OTYwLT5iY2xrOwo+IMK7ICAgICAgIGxyY2xrID0gd204OTYwLT5scmNs
-azsKPiDCuyAgICAgICBjbG9zZXN0ID0gZnJlcV9pbjsKPgo+IMK7ICAgICAgIGJlc3RfZnJlcV9v
-dXQgPSAtRUlOVkFMOwo+IMK7ICAgICAgICpzeXNjbGtfaWR4ID0gKmRhY19pZHggPSAqYmNsa19p
-ZHggPSAtMTsKPgo+IMK7ICAgICAgIGZvciAoaSA9IDA7IGkgPCBBUlJBWV9TSVpFKHN5c2Nsa19k
-aXZzKTsgKytpKSB7Cj4gwrsgICAgICAgwrsgICAgICAgaWYgKHN5c2Nsa19kaXZzW2ldID09IC0x
-KQo+IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIGNvbnRpbnVlOwo+IMK7ICAgICAgIMK7ICAg
-ICAgIGZvciAoaiA9IDA7IGogPCBBUlJBWV9TSVpFKGRhY19kaXZzKTsgKytqKSB7Cj4gwrsgICAg
-ICAgwrsgICAgICAgwrsgICAgICAgc3lzY2xrID0gbHJjbGsgKiBkYWNfZGl2c1tqXTsKPiDCuyAg
-ICAgICDCuyAgICAgICDCuyAgICAgICBmcmVxX291dCA9IHN5c2NsayAqIHN5c2Nsa19kaXZzW2ld
-Owo+Cj4gwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgZm9yIChrID0gMDsgayA8IEFSUkFZX1NJ
-WkUoYmNsa19kaXZzKTsgKytrKSB7Cj4gwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgwrsgICAg
-ICAgaWYgKCFpc19wbGxfZnJlcV9hdmFpbGFibGUoZnJlcV9pbiwgZnJlcV9vdXQpKQo+IMK7ICAg
-ICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIGNvbnRpbnVlOwo+Cj4gwrsg
-ICAgICAgwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgZGlmZiA9IHN5c2NsayAtIGJjbGsgKiBi
-Y2xrX2RpdnNba10gLyAxMDsKPiDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICBp
-ZiAoZGlmZiA9PSAwKSB7Cj4gwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgwrsg
-ICAgICAgKnN5c2Nsa19pZHggPSBpOwo+IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAg
-ICAgIMK7ICAgICAgICpkYWNfaWR4ID0gajsKPiDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDC
-uyAgICAgICDCuyAgICAgICAqYmNsa19pZHggPSBrOwo+IMK7ICAgICAgIMK7ICAgICAgIMK7ICAg
-ICAgIMK7ICAgICAgIMK7ICAgICAgIGJlc3RfZnJlcV9vdXQgPSBmcmVxX291dDsKPiDCuyAgICAg
-ICDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICBicmVhazsKPiDCuyAgICAgICDC
-uyAgICAgICDCuyAgICAgICDCuyAgICAgICB9Cj4gwrsgICAgICAgwrsgICAgICAgwrsgICAgICAg
-wrsgICAgICAgaWYgKGRpZmYgPiAwICYmIGNsb3Nlc3QgPiBkaWZmKSB7Cj4gwrsgICAgICAgwrsg
-ICAgICAgwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgKnN5c2Nsa19pZHggPSBpOwo+IMK7ICAg
-ICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgICpkYWNfaWR4ID0gajsKPiDC
-uyAgICAgICDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICAqYmNsa19pZHggPSBr
-Owo+IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIGNsb3Nlc3Qg
-PSBkaWZmOwo+IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIGJl
-c3RfZnJlcV9vdXQgPSBmcmVxX291dDsKPiDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDCuyAg
-ICAgICB9Cj4gwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgfQo+IMK7ICAgICAgIMK7ICAgICAg
-IMK7ICAgICAgIGlmIChrICE9IEFSUkFZX1NJWkUoYmNsa19kaXZzKSkKPiDCuyAgICAgICDCuyAg
-ICAgICDCuyAgICAgICDCuyAgICAgICBicmVhazsKPiDCuyAgICAgICDCuyAgICAgICB9Cj4gwrsg
-ICAgICAgwrsgICAgICAgaWYgKGogIT0gQVJSQVlfU0laRShkYWNfZGl2cykpCj4gwrsgICAgICAg
-wrsgICAgICAgwrsgICAgICAgYnJlYWs7Cj4gwrsgICAgICAgfQo+Cj4gwrsgICAgICAgcmV0dXJu
-IGJlc3RfZnJlcV9vdXQ7Cj4gfQo+Cj4gSW4gbXkgb3BpbmlvbiB0aGlzIGlzIGEgY29tcGlsZXIg
-ZmFsc2UgcG9zaXRpdmUuIEFueSBjbHVlIG9uIGhvdyB0byByZXdvcmsgdGhpcwo+IHdvdWxkIGJl
-IHdlbGNvbWVkIDopLiBJIGNvdWxkbid0IGZpbmQgYW55IGRlY2VudCBzb2x1dGlvbi4KCkFjdHVh
-bGx5IEkgdGhpbmsgaW4gdGhpcyBjYXNlIHRoZSBjb21waWxlciBpcyBzdXBwb3NlZCB0byB3YXJu
-IGlmCmJlc3RfZnJlcV9vdXQgaXMgbm90IGluaXRpYWxpemVkLCBhcyB3ZSB3b3VsZCBuZXZlciBz
-ZXQgaXQKaW4gY2FzZSBpc19wbGxfZnJlcV9hdmFpbGFibGUoKSByZXR1cm5zIGZhbHNlIGZvciBh
-bGwgaW5wdXRzIG9yCnN5c2Nsa19kaXZzW10gaXMgLTEgZm9yIGFsbCBmaWVsZHMuCgpJJ2QgbGVh
-dmUgdGhlIGluaXRpYWxpemF0aW9uIHRoZW4sIGFuZCBvbmx5IHJlcGxhY2UgdGhlIGJyZWFrcwp3
-aXRoIGEgZ290byAobm90IHRlc3RlZCk6Cgo+IMK7ICAgICAgIGZvciAoaSA9IDA7IGkgPCBBUlJB
-WV9TSVpFKHN5c2Nsa19kaXZzKTsgKytpKSB7Cj4gwrsgICAgICAgwrsgICAgICAgaWYgKHN5c2Ns
-a19kaXZzW2ldID09IC0xKQo+IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIGNvbnRpbnVlOwo+
-IMK7ICAgICAgIMK7ICAgICAgIGZvciAoaiA9IDA7IGogPCBBUlJBWV9TSVpFKGRhY19kaXZzKTsg
-KytqKSB7Cj4gwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgc3lzY2xrID0gbHJjbGsgKiBkYWNf
-ZGl2c1tqXTsKPiDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICBmcmVxX291dCA9IHN5c2NsayAq
-IHN5c2Nsa19kaXZzW2ldOwo+Cj4gwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgZm9yIChrID0g
-MDsgayA8IEFSUkFZX1NJWkUoYmNsa19kaXZzKTsgKytrKSB7Cj4gwrsgICAgICAgwrsgICAgICAg
-wrsgICAgICAgwrsgICAgICAgaWYgKCFpc19wbGxfZnJlcV9hdmFpbGFibGUoZnJlcV9pbiwgZnJl
-cV9vdXQpKQo+IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIGNv
-bnRpbnVlOwo+Cj4gwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgZGlmZiA9IHN5
-c2NsayAtIGJjbGsgKiBiY2xrX2RpdnNba10gLyAxMDsKPiDCuyAgICAgICDCuyAgICAgICDCuyAg
-ICAgICDCuyAgICAgICBpZiAoZGlmZiA9PSAwKSB7Cj4gwrsgICAgICAgwrsgICAgICAgwrsgICAg
-ICAgwrsgICAgICAgwrsgICAgICAgKnN5c2Nsa19pZHggPSBpOwo+IMK7ICAgICAgIMK7ICAgICAg
-IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgICpkYWNfaWR4ID0gajsKPiDCuyAgICAgICDCuyAg
-ICAgICDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICAqYmNsa19pZHggPSBrOwo+IMK7ICAgICAg
-IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIGJlc3RfZnJlcV9vdXQgPSBmcmVx
-X291dDsKPiDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICBnb3Rv
-IG91dDsKPiDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICB9Cj4gwrsgICAgICAg
-wrsgICAgICAgwrsgICAgICAgwrsgICAgICAgaWYgKGRpZmYgPiAwICYmIGNsb3Nlc3QgPiBkaWZm
-KSB7Cj4gwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgKnN5c2Ns
-a19pZHggPSBpOwo+IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAg
-ICpkYWNfaWR4ID0gajsKPiDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDCuyAg
-ICAgICAqYmNsa19pZHggPSBrOwo+IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAg
-IMK7ICAgICAgIGNsb3Nlc3QgPSBkaWZmOwo+IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7
-ICAgICAgIMK7ICAgICAgIGJlc3RfZnJlcV9vdXQgPSBmcmVxX291dDsKPiDCuyAgICAgICDCuyAg
-ICAgICDCuyAgICAgICDCuyAgICAgICB9Cj4gwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgfQo+
-IMK7ICAgICAgIMK7ICAgICAgIH0KPiDCuyAgICAgICB9Cj5vdXQ6Cj4gwrsgICAgICAgcmV0dXJu
-IGJlc3RfZnJlcV9vdXQ7Cj4gfQoKCiAgICAgIEFybmQKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 04/24/2017 09:07 AM, Paul Kocialkowski wrote:
+> Le mercredi 19 avril 2017 à 16:00 -0600, Stephen Warren a écrit :
+>> On 04/18/2017 10:38 AM, Paul Kocialkowski wrote:
+>>> Le mardi 18 avril 2017 à 10:15 -0600, Stephen Warren a écrit :
+>>>> On 04/18/2017 09:11 AM, Paul Kocialkowski wrote:
+>>>>> This selects the tegra30 i2s and ahub controllers for the tegra124 SoC.
+>>>>> These are needed when building without ARCH_TEGRA_3x_SOC set.
+>>>>> diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
+>>>>> index efbe8d4c019e..bcd18d2cf7a7 100644
+>>>>> --- a/sound/soc/tegra/Kconfig
+>>>>> +++ b/sound/soc/tegra/Kconfig
+>>>>> @@ -46,7 +46,7 @@ config SND_SOC_TEGRA20_SPDIF
+>>>>>
+>>>>>  config SND_SOC_TEGRA30_AHUB
+>>>>>  	tristate
+>>>>> -	depends on SND_SOC_TEGRA && ARCH_TEGRA_3x_SOC
+>>>>> +	depends on SND_SOC_TEGRA && (ARCH_TEGRA_3x_SOC ||
+>>>>> ARCH_TEGRA_124_SOC)
+>>>>
+>>>> Is this really a compile-time dependency?
+>>>
+>>> From a quick look at the code, I doubt this is really a build dependency.
+>>>
+>>>> If so, don't we need to add T210 and T186 entries into that || condition
+>>>> too,
+>>>> since we could be building a kernel with just T210/T186 support and no
+>>>> T124
+>>>> support?
+>>>
+>>> In the spirit of this patch, adding entries for other tegra platforms would
+>>> make
+>>> sense. Would you prefer that we leave out the dependency from
+>>> SND_SOC_TEGRA30_*
+>>> and only select the right I2S driver to use in each codec driver?
+>>>
+>>> If not, we'd have to list all relevant platforms both in the I2S/AHUB
+>>> drivers
+>>> and in each codec's rules (which is not necessarily and issue, but there's
+>>> no
+>>> need to have artificial platform dependencies).
+>>>
+>>> What do you think?
+>>
+>> I think we should just remove most of these "depends on" since they're
+>> mostly set up to reflect runtime requirements rather than build time
+>> requirements. The only points I'd make are:
+>
+> I definitely agree we should do that for all the codec Kconfig options.
+>
+>> 1)
+>>
+>> Everything should "depends on SND_SOC_TEGRA" simply so the options don't
+>> show up and clutter menuconfig menus unless SND_SOC_TEGRA is enabled.
+>
+> Agreed.
+>
+>> 2)
+>>
+>> SND_SOC_TEGRA30_I2S does need the Tegra30 AHUB driver in order to
+>> compile/link, since it directly calls functions in that driver. This is
+>> already handled by SND_SOC_TEGRA30_I2S doing "select SND_SOC_TEGRA30_AHUB".
+>
+> Agreed.
+>
+>> 3)
+>>
+>> The machine drivers all do e.g. "select SND_SOC_TEGRA30_I2S if
+>> ARCH_TEGRA_3x_SOC". This was an attempt to make the machine drivers only
+>> pull in the relevant drivers for the SoC(s) being compiled for. I'm not
+>> sure this still makes sense; this won't work on kernels that only
+>> support T124/T210/T186 since ARCH_TEGRA_3x_SOC isn't enabled then.
+>> Should we just remove all those and make sure the defconfigs are updated
+>> to make sure the relevant I2S/AHUB/SPDIF/AC97 drivers are explicitly
+>> enabled? Perhaps we should default all the I2S/AHUB/SPDIF/AC97 to y
+>> (which will only apply if SND_SOC_TEGRA is enabled)?
+>
+> I think it would be easier for everyone to just auto-select the machine drivers
+> automatically based on the architecture (so we could have the list of
+> ARCH_TEGRA_*_SOC here) when SND_SOC_TEGRA is selected.
+
+I don't think selecting the machine drivers is the correct approach, 
+since then they can't be disabled.
+
+Making certain machine drivers "default y if ARCH_TEGRA_nn_SOC" would 
+address that, but still isn't very scalable since we need to go back and 
+edit the Kconfig every time we define a new SoC, in order to add that 
+SoC into the default statement.
+
+> Not only does this preserve existing configs (including external ones that
+> aren't part of the kernel tree), it also clearly maps which machine driver to
+> use for which SoC instead of having users do it by hand.
+
+The machine drivers aren't terribly tied to SoCs by design; most of them 
+would work on pretty much any SoC. They're only tied to SoCs as a 
+side-effect of a machine driver being tied to a certain CODEC, and 
+certain CODECS just by chance are only used (so far) on specific boards, 
+which have specific SoCs.
+
+> I'm also opposed to auto-selecting them all, because I don't really like the
+> idea of auto-including things that might not be needed.
+>
+> Would that be agreeable?
