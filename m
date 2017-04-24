@@ -1,17 +1,19 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v3] ASoC: bytcr_rt5640: Allow quirk set via
- module option
-Date: Mon, 24 Apr 2017 09:03:32 -0500
-Message-ID: <15d83ed1-330d-b87e-45af-46da60d9eb10@linux.intel.com>
-References: <20170423072256.26750-1-tiwai@suse.de>
+Subject: Re: PM issue with Intel SST Atom driver
+Date: Mon, 24 Apr 2017 09:22:38 -0500
+Message-ID: <d4e73746-40f7-8929-bdc4-5bf54aef982d@linux.intel.com>
+References: <s5hpog5dgh8.wl-tiwai@suse.de> <20170424050144.GG6263@localhost>
+ <s5ho9vmjmyv.wl-tiwai@suse.de> <s5hpog2b2o2.wl-tiwai@suse.de>
+ <20170424091213.GO6263@localhost> <s5hh91eb0oc.wl-tiwai@suse.de>
+ <20170424095244.GP6263@localhost> <s5hefwib075.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id AEBCB266D58
- for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 16:03:48 +0200 (CEST)
-In-Reply-To: <20170423072256.26750-1-tiwai@suse.de>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id EC675266D58
+ for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 16:22:40 +0200 (CEST)
+In-Reply-To: <s5hefwib075.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,70 +23,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>, Vinod Koul <vinod.koul@intel.com>
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 4/23/17 2:22 AM, Takashi Iwai wrote:
-> The bytcr-rt5640 driver has a few quirk setups depending on the board,
-> where the quirk value is set by DMI matching.  When you have a new
-> device to add the support, you often experience to try the different
-> quirk by trial-and-error.  Or, you may have a development model that
-> still has no proper DMI string.  In either case, you'd need to compile
-> the driver at each time.
+On 4/24/17 4:54 AM, Takashi Iwai wrote:
+> On Mon, 24 Apr 2017 11:52:44 +0200,
+> Vinod Koul wrote:
+>>
+>> On Mon, Apr 24, 2017 at 11:43:47AM +0200, Takashi Iwai wrote:
+>>> On Mon, 24 Apr 2017 11:12:14 +0200,
+>>> Vinod Koul wrote:
+>>>>
+>>>> On Mon, Apr 24, 2017 at 11:00:45AM +0200, Takashi Iwai wrote:
+>>>>
+>>>>> Removing ignore_suspend makes the PM succeeds.  But it hits some other
+>>>>> ugly kernel bugs.
+>>>>
+>>>> Okay have you marked .nonatomic = true for the machine DAIs?
+>>>
+>>> Ah that's it.  The patch below seems fixing the PM and the nonatomic
+>>> problems.  I'm not sure about the nonatomic flag for the compress
+>>> stream, though.
+>>
+>> Well we dont have upstream decoders so it wont be used in this case.
+>>
+>>> Also I fiddled only with FE.  Do we need the same flags for BE?  The
+>>> others don't look setting like that, so I left so.
+>>
+>> I dont remember if BE needs or not FE should suffice.
 >
-> This patch introduces a module option to override the quirk value on
-> the fly.  User can boot like snd-soc-sst-bytcr-rt5640.quirk=0x4004 to
-> override the default value without recompilation.  It's a raw value,
-> so user needs to check the source code for the meaning of each bit.
+> OK then I leave it as is.
 >
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
-> v1->v2: override the quirk value completely
-> v2->v3: print the override information
->
->  sound/soc/intel/boards/bytcr_rt5640.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-> index 5c7219fb3aa8..0ac32788f216 100644
-> --- a/sound/soc/intel/boards/bytcr_rt5640.c
-> +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-> @@ -19,6 +19,7 @@
->
->  #include <linux/init.h>
->  #include <linux/module.h>
-> +#include <linux/moduleparam.h>
->  #include <linux/platform_device.h>
->  #include <linux/acpi.h>
->  #include <linux/device.h>
-> @@ -58,6 +59,9 @@ struct byt_rt5640_private {
->  };
->
->  static unsigned long byt_rt5640_quirk = BYT_RT5640_MCLK_EN;
-> +static unsigned int quirk_override;
-> +module_param_named(quirk, quirk_override, int, 0444);
-> +MODULE_PARM_DESC(quirk, "Board-specific quirk override");
->
->  static void log_quirks(struct device *dev)
->  {
-> @@ -806,6 +810,11 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
->
->  	/* check quirks before creating card */
->  	dmi_check_system(byt_rt5640_quirk_table);
-> +	if (quirk_override) {
-> +		dev_info(&pdev->dev, "Overriding quirk %0x => 0x%x\n",
-> +			 (unsigned int)byt_rt5640_quirk, quirk_override);
+> When I submit the fix, I should put Cc to stable, and wonder which
+> version we assure the nonatomic ops in SST driver.  Did the code base
+> support nonatomic ops from the beginning?
 
-I was talking about a more complete message that would e.g check if 
-MCLK_EN is set when MCLK_25MHZ is set, etc.
-I'll add a follow-up patch, for now
+can we take this opportunity to align all drivers?
+The .nonatomic=true is set in all drivers for the BE, except for 
+cht_bsw_max98090_ti.c
+It's either needed for all or not needed for all...
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-> +		byt_rt5640_quirk = quirk_override;
-> +	}
->  	log_quirks(&pdev->dev);
 >
->  	if ((byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) ||
+>
+> thanks,
+>
+> Takashi
+>
+>>
+>>>
+>>>
+>>> thanks,
+>>>
+>>> Takashi
+>>>
+>>> ---
+>>>  sound/soc/intel/boards/bytcr_rt5640.c |    4 ++--
+>>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> --- a/sound/soc/intel/boards/bytcr_rt5640.c
+>>> +++ b/sound/soc/intel/boards/bytcr_rt5640.c
+>>> @@ -646,7 +646,7 @@ static struct snd_soc_dai_link byt_rt564
+>>>  		.codec_dai_name = "snd-soc-dummy-dai",
+>>>  		.codec_name = "snd-soc-dummy",
+>>>  		.platform_name = "sst-mfld-platform",
+>>> -		.ignore_suspend = 1,
+>>> +		.nonatomic = true,
+>>>  		.dynamic = 1,
+>>>  		.dpcm_playback = 1,
+>>>  		.dpcm_capture = 1,
+>>> @@ -659,7 +659,6 @@ static struct snd_soc_dai_link byt_rt564
+>>>  		.codec_dai_name = "snd-soc-dummy-dai",
+>>>  		.codec_name = "snd-soc-dummy",
+>>>  		.platform_name = "sst-mfld-platform",
+>>> -		.ignore_suspend = 1,
+>>>  		.nonatomic = true,
+>>>  		.dynamic = 1,
+>>>  		.dpcm_playback = 1,
+>>> @@ -672,6 +671,7 @@ static struct snd_soc_dai_link byt_rt564
+>>>  		.codec_dai_name = "snd-soc-dummy-dai",
+>>>  		.codec_name = "snd-soc-dummy",
+>>>  		.platform_name = "sst-mfld-platform",
+>>> +		.nonatomic = true,
+>>>  	},
+>>>  		/* back ends */
+>>>  	{
+>>
+>> --
+>> ~Vinod
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 >
