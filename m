@@ -1,288 +1,174 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH v2 12/18] gpio: madera: Support Cirrus Logic Madera class codecs
-Date: Mon, 24 Apr 2017 17:08:38 +0100
-Message-ID: <1493050124-5970-13-git-send-email-rf@opensource.wolfsonmicro.com>
+From: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: [PATCH v2 07/18] regulator: arizona-micsupp: Add support for Cirrus Logic Madera codecs
+Date: Mon, 24 Apr 2017 17:08:33 +0100
+Message-ID: <1493050124-5970-8-git-send-email-rf@opensource.wolfsonmicro.com>
 References: <1493050124-5970-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <linux-gpio-owner@vger.kernel.org>
-In-Reply-To: <1493050124-5970-1-git-send-email-rf@opensource.wolfsonmicro.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: lee.jones@linaro.org, broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, robh+dt@kernel.org, tglx@linutronix.de, jason@lakedaemon.net
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1493050124-5970-1-git-send-email-rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, tglx-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org, jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-This adds support for the GPIOs on Cirrus Logic Madera class codecs.
-Any pins not used for special functions (see the pinctrl driver) can be
-used as general single-bit input or output lines. The number of available
-GPIOs varies between codecs.
+This adds a new driver identity "madera-micsupp" and probe function
+so that this driver can be used to control the micsupp regulator on
+Cirrus Logic Madera codecs.
 
-Signed-off-by: Nariman Poushin <nariman@opensource.wolfsonmicro.com>
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
 ---
-Changes from V1:
-- dt bindings moved to a separate patch
-- dependent on pinctrl driver instead of parent MFD
-- added get_direction function
-- added .request / .free / .set_config to work with pinctrl driver
-- register range with pinctrl driver
+Replaces the madera-specific driver from V1 patchset
 
- MAINTAINERS                |   2 +
- drivers/gpio/Kconfig       |   6 ++
- drivers/gpio/Makefile      |   1 +
- drivers/gpio/gpio-madera.c | 196 +++++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 205 insertions(+)
- create mode 100644 drivers/gpio/gpio-madera.c
+ .../bindings/regulator/arizona-regulator.txt       |  3 +-
+ drivers/regulator/Kconfig                          |  7 ++-
+ drivers/regulator/arizona-micsupp.c                | 71 +++++++++++++++++++++-
+ 3 files changed, 76 insertions(+), 5 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 3e42a03..66c5263 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3304,10 +3304,12 @@ L:	patches@opensource.wolfsonmicro.com
- T:	git https://github.com/CirrusLogic/linux-drivers.git
- W:	https://github.com/CirrusLogic/linux-drivers/wiki
- S:	Supported
-+F:	Documentation/devicetree/bindings/gpio/gpio-madera.txt
- F:	Documentation/devicetree/bindings/mfd/madera.txt
- F:	Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt
- F:	include/linux/irqchip/irq-madera*
- F:	include/linux/mfd/madera/*
-+F:	drivers/gpio/gpio-madera*
- F:	drivers/irqchip/irq-madera*
- F:	drivers/mfd/madera*
- F:	drivers/mfd/cs47l*
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index 05e8fbf..9488abe 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -941,6 +941,12 @@ config GPIO_LP873X
- 	  This driver can also be built as a module. If so, the module will be
-           called gpio-lp873x.
+diff --git a/Documentation/devicetree/bindings/regulator/arizona-regulator.txt b/Documentation/devicetree/bindings/regulator/arizona-regulator.txt
+index 443564d..91b00f9 100644
+--- a/Documentation/devicetree/bindings/regulator/arizona-regulator.txt
++++ b/Documentation/devicetree/bindings/regulator/arizona-regulator.txt
+@@ -5,7 +5,8 @@ of analogue I/O.
  
-+config GPIO_MADERA
-+	bool "Cirrus Logic Madera class codecs"
-+	depends on PINCTRL_MADERA
-+	help
-+	  Support for GPIOs on Cirrus Logic Madera class codecs.
-+
- config GPIO_MAX77620
- 	tristate "GPIO support for PMIC MAX77620 and MAX20024"
- 	depends on MFD_MAX77620
-diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
-index 095598e..d4b6c30 100644
---- a/drivers/gpio/Makefile
-+++ b/drivers/gpio/Makefile
-@@ -66,6 +66,7 @@ obj-$(CONFIG_GPIO_LPC18XX)	+= gpio-lpc18xx.o
- obj-$(CONFIG_ARCH_LPC32XX)	+= gpio-lpc32xx.o
- obj-$(CONFIG_GPIO_LP873X)	+= gpio-lp873x.o
- obj-$(CONFIG_GPIO_LYNXPOINT)	+= gpio-lynxpoint.o
-+obj-$(CONFIG_GPIO_MADERA)	+= gpio-madera.o
- obj-$(CONFIG_GPIO_MAX730X)	+= gpio-max730x.o
- obj-$(CONFIG_GPIO_MAX7300)	+= gpio-max7300.o
- obj-$(CONFIG_GPIO_MAX7301)	+= gpio-max7301.o
-diff --git a/drivers/gpio/gpio-madera.c b/drivers/gpio/gpio-madera.c
-new file mode 100644
-index 0000000..37ac706
---- /dev/null
-+++ b/drivers/gpio/gpio-madera.c
-@@ -0,0 +1,196 @@
-+/*
-+ * GPIO support for Cirrus Logic Madera codecs
-+ *
-+ * Copyright 2015-2017 Cirrus Logic
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/gpio.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+
+ This document lists regulator specific bindings, see the primary binding
+ document:
+-  ../mfd/arizona.txt
++  For Wolfson Arizona codecs: ../mfd/arizona.txt
++  For Cirrus Logic Madera codecs: ../mfd/madera.txt
+ 
+ Optional properties:
+   - wlf,ldoena : GPIO specifier for the GPIO controlling LDOENA
+diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
+index 8647538..05e6aae 100644
+--- a/drivers/regulator/Kconfig
++++ b/drivers/regulator/Kconfig
+@@ -134,11 +134,12 @@ config REGULATOR_ARIZONA_LDO1
+ 	  devices.
+ 
+ config REGULATOR_ARIZONA_MICSUPP
+-	tristate "Wolfson Arizona class devices MICSUPP"
+-	depends on MFD_ARIZONA
++	tristate "Cirrus Madera and Wolfson Arizona class devices MICSUPP"
++	depends on MFD_ARIZONA || MFD_MADERA
+ 	depends on SND_SOC
+ 	help
+-	  Support for the MICSUPP regulators found on Wolfson Arizona class
++	  Support for the MICSUPP regulators found on Cirrus Logic Madera codecs
++	  and Wolfson Arizona codecs
+ 	  devices.
+ 
+ config REGULATOR_AS3711
+diff --git a/drivers/regulator/arizona-micsupp.c b/drivers/regulator/arizona-micsupp.c
+index 120de94..36bf73c 100644
+--- a/drivers/regulator/arizona-micsupp.c
++++ b/drivers/regulator/arizona-micsupp.c
+@@ -30,6 +30,10 @@
+ #include <linux/mfd/arizona/pdata.h>
+ #include <linux/mfd/arizona/registers.h>
+ 
 +#include <linux/mfd/madera/core.h>
 +#include <linux/mfd/madera/pdata.h>
 +#include <linux/mfd/madera/registers.h>
 +
-+struct madera_gpio {
-+	struct madera *madera;
-+	struct gpio_chip gpio_chip;
+ #include <linux/regulator/arizona-micsupp.h>
+ 
+ struct arizona_micsupp {
+@@ -205,6 +209,28 @@ static int arizona_micsupp_set_bypass(struct regulator_dev *rdev, bool ena)
+ 	.num_consumer_supplies = 1,
+ };
+ 
++static const struct regulator_desc madera_micsupp = {
++	.name = "MICVDD",
++	.supply_name = "CPVDD1",
++	.type = REGULATOR_VOLTAGE,
++	.n_voltages = 40,
++	.ops = &arizona_micsupp_ops,
++
++	.vsel_reg = MADERA_LDO2_CONTROL_1,
++	.vsel_mask = MADERA_LDO2_VSEL_MASK,
++	.enable_reg = MADERA_MIC_CHARGE_PUMP_1,
++	.enable_mask = MADERA_CPMIC_ENA,
++	.bypass_reg = MADERA_MIC_CHARGE_PUMP_1,
++	.bypass_mask = MADERA_CPMIC_BYPASS,
++
++	.linear_ranges = arizona_micsupp_ext_ranges,
++	.n_linear_ranges = ARRAY_SIZE(arizona_micsupp_ext_ranges),
++
++	.enable_time = 3000,
++
++	.owner = THIS_MODULE,
 +};
 +
-+static int madera_gpio_get_direction(struct gpio_chip *chip,
-+				     unsigned int offset)
-+{
-+	struct madera_gpio *madera_gpio = gpiochip_get_data(chip);
-+	struct madera *madera = madera_gpio->madera;
-+	unsigned int val;
-+	int ret;
-+
-+	ret = regmap_read(madera->regmap,
-+			  MADERA_GPIO1_CTRL_2 + (2 * offset), &val);
-+	if (ret < 0)
-+		return ret;
-+
-+	return (val & MADERA_GP1_DIR_MASK) >> MADERA_GP1_DIR_SHIFT;
-+}
-+
-+static int madera_gpio_direction_in(struct gpio_chip *chip, unsigned int offset)
-+{
-+	struct madera_gpio *madera_gpio = gpiochip_get_data(chip);
-+	struct madera *madera = madera_gpio->madera;
-+
-+	return regmap_update_bits(madera->regmap,
-+				  MADERA_GPIO1_CTRL_2 + (2 * offset),
-+				  MADERA_GP1_DIR_MASK, MADERA_GP1_DIR);
-+}
-+
-+static int madera_gpio_get(struct gpio_chip *chip, unsigned int offset)
-+{
-+	struct madera_gpio *madera_gpio = gpiochip_get_data(chip);
-+	struct madera *madera = madera_gpio->madera;
-+	unsigned int val;
-+	int ret;
-+
-+	ret = regmap_read(madera->regmap,
-+			  MADERA_GPIO1_CTRL_1 + (2 * offset), &val);
-+	if (ret < 0)
-+		return ret;
-+
-+	return !!(val & MADERA_GP1_LVL_MASK);
-+}
-+
-+static int madera_gpio_direction_out(struct gpio_chip *chip,
-+				     unsigned int offset, int value)
-+{
-+	struct madera_gpio *madera_gpio = gpiochip_get_data(chip);
-+	struct madera *madera = madera_gpio->madera;
-+	unsigned int regval;
-+	int ret;
-+
-+	if (value)
-+		regval = MADERA_GP1_LVL;
-+	else
-+		regval = 0;
-+
-+	ret = regmap_update_bits(madera->regmap,
-+				 MADERA_GPIO1_CTRL_2 + (2 * offset),
-+				 MADERA_GP1_DIR_MASK, 0);
-+	if (ret < 0)
-+		return ret;
-+
-+	return regmap_update_bits(madera->regmap,
-+				  MADERA_GPIO1_CTRL_1 + (2 * offset),
-+				  MADERA_GP1_LVL_MASK, regval);
-+}
-+
-+static void madera_gpio_set(struct gpio_chip *chip, unsigned int offset,
-+			    int value)
-+{
-+	struct madera_gpio *madera_gpio = gpiochip_get_data(chip);
-+	struct madera *madera = madera_gpio->madera;
-+	unsigned int regval;
-+	int ret;
-+
-+	if (value)
-+		regval = MADERA_GP1_LVL;
-+	else
-+		regval = 0;
-+
-+	ret = regmap_update_bits(madera->regmap,
-+				 MADERA_GPIO1_CTRL_1 + (2 * offset),
-+				 MADERA_GP1_LVL_MASK, regval);
-+	if (ret)
-+		dev_warn(madera->dev, "Failed to write to 0x%x (%d)\n",
-+			 MADERA_GPIO1_CTRL_1 + (2 * offset), ret);
-+}
-+
-+static struct gpio_chip template_chip = {
-+	.label			= "madera",
-+	.owner			= THIS_MODULE,
-+	.request		= gpiochip_generic_request,
-+	.free			= gpiochip_generic_free,
-+	.get_direction		= madera_gpio_get_direction,
-+	.direction_input	= madera_gpio_direction_in,
-+	.get			= madera_gpio_get,
-+	.direction_output	= madera_gpio_direction_out,
-+	.set			= madera_gpio_set,
-+	.set_config		= gpiochip_generic_config,
-+	.can_sleep		= true,
-+};
-+
-+static int madera_gpio_probe(struct platform_device *pdev)
+ static int arizona_micsupp_of_get_pdata(struct arizona_micsupp_pdata *pdata,
+ 					struct regulator_config *config,
+ 					const struct regulator_desc *desc)
+@@ -321,6 +347,24 @@ static int arizona_micsupp_probe(struct platform_device *pdev)
+ 					   &arizona->pdata.micvdd);
+ }
+ 
++static int madera_micsupp_probe(struct platform_device *pdev)
 +{
 +	struct madera *madera = dev_get_drvdata(pdev->dev.parent);
-+	struct madera_pdata *pdata = dev_get_platdata(madera->dev);
-+	struct madera_gpio *madera_gpio;
-+	int ret;
++	struct arizona_micsupp *micsupp;
 +
-+	madera_gpio = devm_kzalloc(&pdev->dev, sizeof(*madera_gpio),
-+				   GFP_KERNEL);
-+	if (!madera_gpio)
++	micsupp = devm_kzalloc(&pdev->dev, sizeof(*micsupp), GFP_KERNEL);
++	if (!micsupp)
 +		return -ENOMEM;
 +
-+	madera_gpio->madera = madera;
-+	madera_gpio->gpio_chip = template_chip;
-+	madera_gpio->gpio_chip.parent = &pdev->dev;
++	micsupp->regmap = madera->regmap;
++	micsupp->dapm = &madera->dapm;
++	micsupp->dev = madera->dev;
++	micsupp->init_data = arizona_micsupp_ext_default;
 +
-+	if (IS_ENABLED(CONFIG_OF_GPIO))
-+		madera_gpio->gpio_chip.of_node = pdev->dev.of_node;
-+
-+	switch (madera->type) {
-+	case CS47L35:
-+		madera_gpio->gpio_chip.ngpio = CS47L35_NUM_GPIOS;
-+		break;
-+	case CS47L85:
-+	case WM1840:
-+		madera_gpio->gpio_chip.ngpio = CS47L85_NUM_GPIOS;
-+		break;
-+	case CS47L90:
-+	case CS47L91:
-+		madera_gpio->gpio_chip.ngpio = CS47L90_NUM_GPIOS;
-+		break;
-+	default:
-+		dev_err(&pdev->dev, "Unknown chip variant %d\n", madera->type);
-+		return -EINVAL;
-+	}
-+
-+	if (pdata && pdata->gpio_base)
-+		madera_gpio->gpio_chip.base = pdata->gpio_base;
-+	else
-+		madera_gpio->gpio_chip.base = -1;
-+
-+	ret = devm_gpiochip_add_data(&pdev->dev, &madera_gpio->gpio_chip,
-+				     madera_gpio);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "Could not register gpiochip, %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = gpiochip_add_pin_range(&madera_gpio->gpio_chip, "madera-pinctrl",
-+				     0, 0, madera_gpio->gpio_chip.ngpio);
-+	if (ret) {
-+		dev_warn(&pdev->dev, "Failed to add pin range (%d)\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
++	return arizona_micsupp_common_init(pdev, micsupp, &madera_micsupp,
++					   &madera->pdata.micvdd);
 +}
 +
-+static struct platform_driver madera_gpio_driver = {
-+	.driver.name	= "madera-gpio",
-+	.driver.owner	= THIS_MODULE,
-+	.probe		= madera_gpio_probe,
+ static struct platform_driver arizona_micsupp_driver = {
+ 	.probe = arizona_micsupp_probe,
+ 	.driver		= {
+@@ -328,10 +372,35 @@ static int arizona_micsupp_probe(struct platform_device *pdev)
+ 	},
+ };
+ 
+-module_platform_driver(arizona_micsupp_driver);
++static struct platform_driver madera_micsupp_driver = {
++	.probe = madera_micsupp_probe,
++	.driver		= {
++		.name	= "madera-micsupp",
++	},
 +};
 +
-+module_platform_driver(madera_gpio_driver);
++static struct platform_driver * const arizona_micsupp_drivers[] = {
++	&arizona_micsupp_driver,
++	&madera_micsupp_driver,
++};
 +
-+MODULE_DESCRIPTION("GPIO interface for Madera codecs");
-+MODULE_AUTHOR("Nariman Poushin <nariman@opensource.wolfsonmicro.com>");
-+MODULE_AUTHOR("Richard Fitzgerald <rf@opensource.wolfsonmicro.com>");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:madera-gpio");
++static int __init arizona_micsupp_init(void)
++{
++	return platform_register_drivers(arizona_micsupp_drivers,
++					 ARRAY_SIZE(arizona_micsupp_drivers));
++}
++module_init(arizona_micsupp_init);
++
++static void __exit arizona_micsupp_exit(void)
++{
++	platform_unregister_drivers(arizona_micsupp_drivers,
++				    ARRAY_SIZE(arizona_micsupp_drivers));
++}
++module_exit(arizona_micsupp_exit);
+ 
+ /* Module information */
+ MODULE_AUTHOR("Mark Brown <broonie-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>");
+ MODULE_DESCRIPTION("Arizona microphone supply driver");
+ MODULE_LICENSE("GPL");
+ MODULE_ALIAS("platform:arizona-micsupp");
++MODULE_ALIAS("platform:madera-micsupp");
 -- 
 1.9.1
 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
