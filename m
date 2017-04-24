@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Call snd_soc_set_dmi_name()
-	unconditionally" to the asoc tree
-Date: Mon, 24 Apr 2017 19:20:52 +0100
-Message-ID: <E1d2ibU-0000iP-Tk@debutante>
-References: <20170424065442.13490-3-tiwai@suse.de>
+Subject: Applied "ASoC: Provide a dummy wrapper of
+	snd_soc_set_dmi_name()" to the asoc tree
+Date: Mon, 24 Apr 2017 19:20:56 +0100
+Message-ID: <E1d2ibY-0000jT-21@debutante>
+References: <20170421155525.15012-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B7D882674C6
- for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 20:21:03 +0200 (CEST)
-In-Reply-To: <20170424065442.13490-3-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id E36202674C9
+ for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 20:21:05 +0200 (CEST)
+In-Reply-To: <20170421155525.15012-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Call snd_soc_set_dmi_name() unconditionally
+   ASoC: Provide a dummy wrapper of snd_soc_set_dmi_name()
 
 has been applied to the asoc tree at
 
@@ -53,59 +53,61 @@ to this mail.
 Thanks,
 Mark
 
->From 861886d338f7dd802be972e770a695bba62f397a Mon Sep 17 00:00:00 2001
+>From 1f5a4535db41bd2bb8d1a15f098cb2921d6c1317 Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Mon, 24 Apr 2017 08:54:42 +0200
-Subject: [PATCH] ASoC: Call snd_soc_set_dmi_name() unconditionally
+Date: Mon, 24 Apr 2017 08:54:41 +0200
+Subject: [PATCH] ASoC: Provide a dummy wrapper of snd_soc_set_dmi_name()
 
-Since recently UCM can pick up a configuration specific to the board
-via card longname field, and we introduced a helper function
-snd_soc_set_dmi_name() for that.  So far, it was used only in one
-place (sound/soc/intel/boards/broadwell.c), but it should be more
-widely applied.
-
-This patch puts a big hammer for that: it lets snd_soc_register_card()
-calling snd_soc_set_dmi_name() unconditionally, so that all x86
-devices get the better longname string.  This would have no impact for
-other systems without DMI support, as snd_soc_set_dmi_name() is no-op
-on them.
+For systems without DMI, it makes no sense to have the code.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Acked-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/broadwell.c | 3 ---
- sound/soc/soc-core.c               | 3 +++
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ include/sound/soc.h  | 8 ++++++++
+ sound/soc/soc-core.c | 2 ++
+ 2 files changed, 10 insertions(+)
 
-diff --git a/sound/soc/intel/boards/broadwell.c b/sound/soc/intel/boards/broadwell.c
-index faf865bb1765..6dcbbcefc25b 100644
---- a/sound/soc/intel/boards/broadwell.c
-+++ b/sound/soc/intel/boards/broadwell.c
-@@ -269,9 +269,6 @@ static struct snd_soc_card broadwell_rt286 = {
- static int broadwell_audio_probe(struct platform_device *pdev)
- {
- 	broadwell_rt286.dev = &pdev->dev;
--
--	snd_soc_set_dmi_name(&broadwell_rt286, NULL);
--
- 	return devm_snd_soc_register_card(&pdev->dev, &broadwell_rt286);
- }
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index cdfb55f7aede..915c06cb2b32 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -497,7 +497,15 @@ void snd_soc_runtime_deactivate(struct snd_soc_pcm_runtime *rtd, int stream);
+ int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
+ 	unsigned int dai_fmt);
  
++#ifdef CONFIG_DMI
+ int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour);
++#else
++static inline int snd_soc_set_dmi_name(struct snd_soc_card *card,
++				       const char *flavour)
++{
++	return 0;
++}
++#endif
+ 
+ /* Utility functions to get clock rates from various things */
+ int snd_soc_calc_frame_size(int sample_size, int channels, int tdm_slots);
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 52f6d9c28df9..05c4d9564b0b 100644
+index 6dca408faae3..52f6d9c28df9 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -2192,6 +2192,9 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- 		snd_soc_dapm_add_routes(&card->dapm, card->of_dapm_routes,
- 					card->num_of_dapm_routes);
+@@ -1918,6 +1918,7 @@ int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
+ EXPORT_SYMBOL_GPL(snd_soc_runtime_set_dai_fmt);
  
-+	/* try to set some sane longname if DMI is available */
-+	snd_soc_set_dmi_name(card, NULL);
-+
- 	snprintf(card->snd_card->shortname, sizeof(card->snd_card->shortname),
- 		 "%s", card->name);
- 	snprintf(card->snd_card->longname, sizeof(card->snd_card->longname),
+ 
++#ifdef CONFIG_DMI
+ /* Trim special characters, and replace '-' with '_' since '-' is used to
+  * separate different DMI fields in the card long name. Only number and
+  * alphabet characters and a few separator characters are kept.
+@@ -2049,6 +2050,7 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_set_dmi_name);
++#endif /* CONFIG_DMI */
+ 
+ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ {
 -- 
 2.11.0
