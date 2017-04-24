@@ -1,143 +1,574 @@
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH v2 00/18] Add support for Cirrus Logic
-	CS47L35/L85/L90/L91 codecs
-Date: Mon, 24 Apr 2017 17:08:26 +0100
-Message-ID: <1493050124-5970-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: [PATCH v2 09/18] irqchip: Add driver for Cirrus Logic Madera codecs
+Date: Mon, 24 Apr 2017 17:08:35 +0100
+Message-ID: <1493050124-5970-10-git-send-email-rf@opensource.wolfsonmicro.com>
+References: <1493050124-5970-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id BC202266AFA
- for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 18:08:48 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-gpio-owner@vger.kernel.org>
+In-Reply-To: <1493050124-5970-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Sender: linux-gpio-owner@vger.kernel.org
 To: lee.jones@linaro.org, broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, robh+dt@kernel.org, tglx@linutronix.de, jason@lakedaemon.net
-Cc: linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The Cirrus Logic CS47L35, CS47L85, CS47L90/91 codecs are complex audio SoC
-devices. In addition to the core audio capability they have onboard GPIO,
-regulators, DSPs and interrupt controller and a large register map space
-accessed over SPI or I2C. This family of codecs is based around common IP
-blocks and they are managed by a set of common drivers referred to as "Madera".
+The Cirrus Logic Madera codecs (Cirrus Logic CS47L35/85/90/91 and WM1840)
+are highly complex devices containing up to 7 programmable DSPs and many
+other internal sources of interrupts plus a number of GPIOs that can be
+used as interrupt inputs. The large number (>150) of internal interrupt
+sources are managed by an on-board interrupt controller.
 
-Summary of main changes since V1:
-- dt bindings moved to separate patches
-- pdata struct descriptions fixed to be kerneldoc format
-- now re-uses the arizona micsupp and ldo1 regulators
-- various fixes and improvements to the pinctrl driver
-- gpio driver can now interoperate with the pinctrl driver
-- some changes to the way Kconfig options are selected
+This driver provides the handling for the interrupt controller. As the
+codec is accessed via regmap, we can make use of the generic IRQ
+functionality from regmap to do most of the work. Only around half of
+the possible interrupt source are currently of interest from the driver
+so only this subset is defined. Others can be added in future if needed.
 
-Richard Fitzgerald (18):
-  mfd: madera: Add register definitions for Cirrus Logic Madera codecs
-  mfd: madera: Add common support for Cirrus Logic Madera codecs
-  dt-bindings: mfd: Add bindings for Cirrus Logic Madera codecs
-  mfd: madera: Register map tables for Cirrus Logic CS47L35
-  mfd: madera: Register map tables for Cirrus Logic CS47L85
-  mfd: madera: Register map tables for Cirrus Logic CS47L90/91
-  regulator: arizona-micsupp: Add support for Cirrus Logic Madera codecs
-  regulator: arizona-ldo1: Add support for Cirrus Logic Madera codecs
-  irqchip: Add driver for Cirrus Logic Madera codecs
-  pinctrl: madera: Add driver for Cirrus Logic Madera codecs
-  dt-bindings: pinctrl: Add bindings for Cirrus Logic Madera codecs
-  gpio: madera: Support Cirrus Logic Madera class codecs
-  dt-bindings: gpio: Add bindings for GPIO on Cirrus Logic Madera codecs
-  ASoC: madera: Add common support for Cirrus Logic Madera codecs
-  dt-bindings: sound: Add bindings for Cirrus Logic Madera codecs
-  ASoC: cs47l35: Add codec driver for Cirrus Logic CS47L35
-  ASoC: cs47l85: Add codec driver for Cirrus Logic CS47L85
-  ASoC: cs47l90: Add codec driver for Cirrus Logic CS47L90
+The KConfig options are not user-configurable because this driver is
+mandatory so is automatically included when the parent MFD driver is
+selected.
 
- .../devicetree/bindings/gpio/gpio-madera.txt       |   27 +
- Documentation/devicetree/bindings/mfd/madera.txt   |   96 +
- .../bindings/pinctrl/cirrus,madera-pinctrl.txt     |  102 +
- .../bindings/regulator/arizona-regulator.txt       |    3 +-
- Documentation/devicetree/bindings/sound/madera.txt |   66 +
- MAINTAINERS                                        |   24 +
- drivers/gpio/Kconfig                               |    6 +
- drivers/gpio/Makefile                              |    1 +
- drivers/gpio/gpio-madera.c                         |  196 +
- drivers/irqchip/Kconfig                            |    3 +
- drivers/irqchip/Makefile                           |    1 +
- drivers/irqchip/irq-madera.c                       |  349 +
- drivers/mfd/Kconfig                                |   50 +
- drivers/mfd/Makefile                               |   13 +
- drivers/mfd/cs47l35-tables.c                       | 1688 ++++
- drivers/mfd/cs47l85-tables.c                       | 3169 +++++++
- drivers/mfd/cs47l90-tables.c                       | 2830 +++++++
- drivers/mfd/madera-core.c                          |  635 ++
- drivers/mfd/madera-i2c.c                           |  131 +
- drivers/mfd/madera-spi.c                           |  132 +
- drivers/mfd/madera.h                               |   52 +
- drivers/pinctrl/Kconfig                            |    1 +
- drivers/pinctrl/Makefile                           |    1 +
- drivers/pinctrl/cirrus/Kconfig                     |   15 +
- drivers/pinctrl/cirrus/Makefile                    |   11 +
- drivers/pinctrl/cirrus/pinctrl-cs47l35.c           |   46 +
- drivers/pinctrl/cirrus/pinctrl-cs47l85.c           |   60 +
- drivers/pinctrl/cirrus/pinctrl-cs47l90.c           |   58 +
- drivers/pinctrl/cirrus/pinctrl-madera.c            | 1106 +++
- drivers/pinctrl/cirrus/pinctrl-madera.h            |   40 +
- drivers/regulator/Kconfig                          |   15 +-
- drivers/regulator/arizona-ldo1.c                   |   82 +-
- drivers/regulator/arizona-micsupp.c                |   71 +-
- include/dt-bindings/sound/madera.h                 |   18 +
- include/linux/irqchip/irq-madera-pdata.h           |   19 +
- include/linux/irqchip/irq-madera.h                 |   96 +
- include/linux/mfd/madera/core.h                    |  180 +
- include/linux/mfd/madera/pdata.h                   |   61 +
- include/linux/mfd/madera/registers.h               | 8832 ++++++++++++++++++++
- include/sound/madera-pdata.h                       |   58 +
- sound/soc/codecs/Kconfig                           |   23 +
- sound/soc/codecs/Makefile                          |    8 +
- sound/soc/codecs/cs47l35.c                         | 1747 ++++
- sound/soc/codecs/cs47l85.c                         | 2706 ++++++
- sound/soc/codecs/cs47l90.c                         | 2645 ++++++
- sound/soc/codecs/madera.c                          | 4430 ++++++++++
- sound/soc/codecs/madera.h                          |  470 ++
- 47 files changed, 32363 insertions(+), 10 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/gpio/gpio-madera.txt
- create mode 100644 Documentation/devicetree/bindings/mfd/madera.txt
- create mode 100644 Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt
- create mode 100644 Documentation/devicetree/bindings/sound/madera.txt
- create mode 100644 drivers/gpio/gpio-madera.c
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+Changes since V1:
+- Removed dt bindings, squashed them into the parent MFD
+- MFD now selects this driver so the "default y if" formula is removed from
+  the Kconfig
+
+ MAINTAINERS                              |   2 +
+ drivers/irqchip/Kconfig                  |   3 +
+ drivers/irqchip/Makefile                 |   1 +
+ drivers/irqchip/irq-madera.c             | 349 +++++++++++++++++++++++++++++++
+ include/linux/irqchip/irq-madera-pdata.h |  19 ++
+ include/linux/irqchip/irq-madera.h       |  96 +++++++++
+ 6 files changed, 470 insertions(+)
  create mode 100644 drivers/irqchip/irq-madera.c
- create mode 100644 drivers/mfd/cs47l35-tables.c
- create mode 100644 drivers/mfd/cs47l85-tables.c
- create mode 100644 drivers/mfd/cs47l90-tables.c
- create mode 100644 drivers/mfd/madera-core.c
- create mode 100644 drivers/mfd/madera-i2c.c
- create mode 100644 drivers/mfd/madera-spi.c
- create mode 100644 drivers/mfd/madera.h
- create mode 100644 drivers/pinctrl/cirrus/Kconfig
- create mode 100644 drivers/pinctrl/cirrus/Makefile
- create mode 100644 drivers/pinctrl/cirrus/pinctrl-cs47l35.c
- create mode 100644 drivers/pinctrl/cirrus/pinctrl-cs47l85.c
- create mode 100644 drivers/pinctrl/cirrus/pinctrl-cs47l90.c
- create mode 100644 drivers/pinctrl/cirrus/pinctrl-madera.c
- create mode 100644 drivers/pinctrl/cirrus/pinctrl-madera.h
- create mode 100644 include/dt-bindings/sound/madera.h
  create mode 100644 include/linux/irqchip/irq-madera-pdata.h
  create mode 100644 include/linux/irqchip/irq-madera.h
- create mode 100644 include/linux/mfd/madera/core.h
- create mode 100644 include/linux/mfd/madera/pdata.h
- create mode 100644 include/linux/mfd/madera/registers.h
- create mode 100644 include/sound/madera-pdata.h
- create mode 100644 sound/soc/codecs/cs47l35.c
- create mode 100644 sound/soc/codecs/cs47l85.c
- create mode 100644 sound/soc/codecs/cs47l90.c
- create mode 100644 sound/soc/codecs/madera.c
- create mode 100644 sound/soc/codecs/madera.h
 
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 4a01a2a..6e8eec6 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3305,7 +3305,9 @@ T:	git https://github.com/CirrusLogic/linux-drivers.git
+ W:	https://github.com/CirrusLogic/linux-drivers/wiki
+ S:	Supported
+ F:	Documentation/devicetree/bindings/mfd/madera.txt
++F:	include/linux/irqchip/irq-madera*
+ F:	include/linux/mfd/madera/*
++F:	drivers/irqchip/irq-madera*
+ F:	drivers/mfd/madera*
+ F:	drivers/mfd/cs47l*
+ 
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index 478f8ac..64350da 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -131,6 +131,9 @@ config IMGPDC_IRQ
+ 	select GENERIC_IRQ_CHIP
+ 	select IRQ_DOMAIN
+ 
++config MADERA_IRQ
++	bool
++
+ config IRQ_MIPS_CPU
+ 	bool
+ 	select GENERIC_IRQ_CHIP
+diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
+index b64c59b..a884ca8 100644
+--- a/drivers/irqchip/Makefile
++++ b/drivers/irqchip/Makefile
+@@ -16,6 +16,7 @@ obj-$(CONFIG_ARCH_S3C24XX)		+= irq-s3c24xx.o
+ obj-$(CONFIG_DW_APB_ICTL)		+= irq-dw-apb-ictl.o
+ obj-$(CONFIG_METAG)			+= irq-metag-ext.o
+ obj-$(CONFIG_METAG_PERFCOUNTER_IRQS)	+= irq-metag.o
++obj-$(CONFIG_MADERA_IRQ)		+= irq-madera.o
+ obj-$(CONFIG_CLPS711X_IRQCHIP)		+= irq-clps711x.o
+ obj-$(CONFIG_OR1K_PIC)			+= irq-or1k-pic.o
+ obj-$(CONFIG_ORION_IRQCHIP)		+= irq-orion.o
+diff --git a/drivers/irqchip/irq-madera.c b/drivers/irqchip/irq-madera.c
+new file mode 100644
+index 0000000..461cbb9
+--- /dev/null
++++ b/drivers/irqchip/irq-madera.c
+@@ -0,0 +1,349 @@
++/*
++ * Interrupt support for Cirrus Logic Madera codecs
++ *
++ * Copyright 2016-2017 Cirrus Logic
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/module.h>
++#include <linux/gpio.h>
++#include <linux/interrupt.h>
++#include <linux/irq.h>
++#include <linux/irqdomain.h>
++#include <linux/pm_runtime.h>
++#include <linux/regmap.h>
++#include <linux/slab.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
++#include <linux/of_gpio.h>
++#include <linux/of_irq.h>
++#include <linux/irqchip/irq-madera.h>
++#include <linux/irqchip/irq-madera-pdata.h>
++#include <linux/mfd/madera/core.h>
++#include <linux/mfd/madera/pdata.h>
++#include <linux/mfd/madera/registers.h>
++
++struct madera_irq_priv {
++	struct device *dev;
++	int irq;
++	struct regmap_irq_chip_data *irq_data;
++	struct madera *madera;
++};
++
++static const struct regmap_irq madera_irqs[MADERA_NUM_IRQ] = {
++	[MADERA_IRQ_FLL1_LOCK] =  { .reg_offset = 0,
++				    .mask = MADERA_FLL1_LOCK_EINT1 },
++	[MADERA_IRQ_FLL2_LOCK] =  { .reg_offset = 0,
++				    .mask = MADERA_FLL2_LOCK_EINT1 },
++	[MADERA_IRQ_FLL3_LOCK] =  { .reg_offset = 0,
++				    .mask = MADERA_FLL3_LOCK_EINT1 },
++	[MADERA_IRQ_FLLAO_LOCK] = { .reg_offset = 0,
++				    .mask = MADERA_FLLAO_LOCK_EINT1 },
++
++	[MADERA_IRQ_MICDET1] = { .reg_offset = 4,
++				 .mask = MADERA_MICDET1_EINT1 },
++	[MADERA_IRQ_MICDET2] = { .reg_offset = 4,
++				 .mask = MADERA_MICDET2_EINT1 },
++	[MADERA_IRQ_HPDET] =   { .reg_offset = 4,
++				 .mask = MADERA_HPDET_EINT1 },
++
++	[MADERA_IRQ_MICD_CLAMP_RISE] = { .reg_offset = 5,
++					 .mask = MADERA_MICD_CLAMP_RISE_EINT1 },
++	[MADERA_IRQ_MICD_CLAMP_FALL] = { .reg_offset = 5,
++					 .mask = MADERA_MICD_CLAMP_FALL_EINT1 },
++	[MADERA_IRQ_JD1_FALL] =	       { .reg_offset = 5,
++					 .mask = MADERA_JD1_FALL_EINT1 },
++	[MADERA_IRQ_JD1_RISE] =	       { .reg_offset = 5,
++					 .mask = MADERA_JD1_RISE_EINT1 },
++
++	[MADERA_IRQ_ASRC2_IN1_LOCK] = { .reg_offset = 7,
++					.mask = MADERA_ASRC2_IN1_LOCK_EINT1 },
++	[MADERA_IRQ_ASRC2_IN2_LOCK] = { .reg_offset = 7,
++					.mask = MADERA_ASRC2_IN2_LOCK_EINT1 },
++	[MADERA_IRQ_ASRC1_IN1_LOCK] = { .reg_offset = 7,
++					.mask = MADERA_ASRC1_IN1_LOCK_EINT1 },
++	[MADERA_IRQ_ASRC1_IN2_LOCK] = { .reg_offset = 7,
++					.mask = MADERA_ASRC1_IN2_LOCK_EINT1 },
++
++	[MADERA_IRQ_DRC2_SIG_DET] = { .reg_offset = 7,
++				      .mask = MADERA_DRC2_SIG_DET_EINT1 },
++	[MADERA_IRQ_DRC1_SIG_DET] = { .reg_offset = 7,
++				      .mask = MADERA_DRC1_SIG_DET_EINT1 },
++
++	[MADERA_IRQ_DSP_IRQ1] = { .reg_offset = 9,
++				  .mask = MADERA_DSP_IRQ1_EINT1 },
++	[MADERA_IRQ_DSP_IRQ2] = { .reg_offset = 9,
++				  .mask = MADERA_DSP_IRQ2_EINT1 },
++	[MADERA_IRQ_DSP_IRQ3] = { .reg_offset = 9,
++				  .mask = MADERA_DSP_IRQ3_EINT1 },
++	[MADERA_IRQ_DSP_IRQ4] = { .reg_offset = 9,
++				  .mask = MADERA_DSP_IRQ4_EINT1 },
++	[MADERA_IRQ_DSP_IRQ5] = { .reg_offset = 9,
++				  .mask = MADERA_DSP_IRQ5_EINT1 },
++	[MADERA_IRQ_DSP_IRQ6] = { .reg_offset = 9,
++				  .mask = MADERA_DSP_IRQ6_EINT1 },
++	[MADERA_IRQ_DSP_IRQ7] = { .reg_offset = 9,
++				  .mask = MADERA_DSP_IRQ7_EINT1 },
++	[MADERA_IRQ_DSP_IRQ8] = { .reg_offset = 9,
++				  .mask = MADERA_DSP_IRQ8_EINT1 },
++	[MADERA_IRQ_DSP_IRQ9] = { .reg_offset = 9,
++				  .mask = MADERA_DSP_IRQ9_EINT1 },
++	[MADERA_IRQ_DSP_IRQ10] = { .reg_offset = 9,
++				   .mask = MADERA_DSP_IRQ10_EINT1 },
++	[MADERA_IRQ_DSP_IRQ11] = { .reg_offset = 9,
++				   .mask = MADERA_DSP_IRQ11_EINT1 },
++	[MADERA_IRQ_DSP_IRQ12] = { .reg_offset = 9,
++				   .mask = MADERA_DSP_IRQ12_EINT1 },
++	[MADERA_IRQ_DSP_IRQ13] = { .reg_offset = 9,
++				   .mask = MADERA_DSP_IRQ13_EINT1 },
++	[MADERA_IRQ_DSP_IRQ14] = { .reg_offset = 9,
++				   .mask = MADERA_DSP_IRQ14_EINT1 },
++	[MADERA_IRQ_DSP_IRQ15] = { .reg_offset = 9,
++				   .mask = MADERA_DSP_IRQ15_EINT1 },
++	[MADERA_IRQ_DSP_IRQ16] = { .reg_offset = 9,
++				   .mask = MADERA_DSP_IRQ16_EINT1 },
++
++	[MADERA_IRQ_HP3R_SC] = { .reg_offset = 10,
++				.mask = MADERA_HP3R_SC_EINT1 },
++	[MADERA_IRQ_HP3L_SC] = { .reg_offset = 10,
++				.mask = MADERA_HP3L_SC_EINT1 },
++	[MADERA_IRQ_HP2R_SC] = { .reg_offset = 10,
++				.mask = MADERA_HP2R_SC_EINT1 },
++	[MADERA_IRQ_HP2L_SC] = { .reg_offset = 10,
++				.mask = MADERA_HP2L_SC_EINT1 },
++	[MADERA_IRQ_HP1R_SC] = { .reg_offset = 10,
++				.mask = MADERA_HP1R_SC_EINT1 },
++	[MADERA_IRQ_HP1L_SC] = { .reg_offset = 10,
++				.mask = MADERA_HP1L_SC_EINT1 },
++
++	[MADERA_IRQ_SPK_OVERHEAT_WARN] = { .reg_offset = 13,
++				.mask = MADERA_SPK_OVERHEAT_WARN_EINT1 },
++	[MADERA_IRQ_SPK_OVERHEAT] = { .reg_offset = 13,
++				.mask = MADERA_SPK_SHUTDOWN_EINT1 },
++
++	[MADERA_IRQ_DSP1_BUS_ERROR] = { .reg_offset = 31,
++					.mask = MADERA_ADSP_ERROR_STATUS_DSP1 },
++	[MADERA_IRQ_DSP2_BUS_ERROR] = { .reg_offset = 31,
++					.mask = MADERA_ADSP_ERROR_STATUS_DSP2 },
++	[MADERA_IRQ_DSP3_BUS_ERROR] = { .reg_offset = 31,
++					.mask = MADERA_ADSP_ERROR_STATUS_DSP3 },
++	[MADERA_IRQ_DSP4_BUS_ERROR] = { .reg_offset = 31,
++					.mask = MADERA_ADSP_ERROR_STATUS_DSP4 },
++	[MADERA_IRQ_DSP5_BUS_ERROR] = { .reg_offset = 31,
++					.mask = MADERA_ADSP_ERROR_STATUS_DSP5 },
++	[MADERA_IRQ_DSP6_BUS_ERROR] = { .reg_offset = 31,
++					.mask = MADERA_ADSP_ERROR_STATUS_DSP6 },
++	[MADERA_IRQ_DSP7_BUS_ERROR] = { .reg_offset = 31,
++					.mask = MADERA_ADSP_ERROR_STATUS_DSP7 },
++};
++
++static const struct regmap_irq_chip madera_irq = {
++	.name = "madera IRQ",
++	.status_base = MADERA_IRQ1_STATUS_2,
++	.mask_base = MADERA_IRQ1_MASK_2,
++	.ack_base = MADERA_IRQ1_STATUS_2,
++	.runtime_pm = true, /* codec must be resumed to read IRQ status */
++	.num_regs = 32,
++	.irqs = madera_irqs,
++	.num_irqs = ARRAY_SIZE(madera_irqs),
++};
++
++static int madera_map_irq(struct madera *madera, int irq)
++{
++	struct madera_irq_priv *priv = dev_get_drvdata(madera->irq_dev);
++
++	if (irq < 0)
++		return irq;
++
++	if (!madera->irq_dev)
++		return -ENOENT;
++
++	return regmap_irq_get_virq(priv->irq_data, irq);
++}
++
++int madera_request_irq(struct madera *madera, int irq, const char *name,
++			irq_handler_t handler, void *data)
++{
++	irq = madera_map_irq(madera, irq);
++
++	if (irq < 0)
++		return irq;
++
++	return request_threaded_irq(irq, NULL, handler, IRQF_ONESHOT, name,
++				    data);
++
++}
++EXPORT_SYMBOL_GPL(madera_request_irq);
++
++void madera_free_irq(struct madera *madera, int irq, void *data)
++{
++	irq = madera_map_irq(madera, irq);
++
++	if (irq < 0)
++		return;
++
++	free_irq(irq, data);
++}
++EXPORT_SYMBOL_GPL(madera_free_irq);
++
++int madera_set_irq_wake(struct madera *madera, int irq, int on)
++{
++	irq = madera_map_irq(madera, irq);
++
++	if (irq < 0)
++		return irq;
++
++	return irq_set_irq_wake(irq, on);
++}
++EXPORT_SYMBOL_GPL(madera_set_irq_wake);
++
++#ifdef CONFIG_PM_SLEEP
++static int madera_suspend_noirq(struct device *dev)
++{
++	struct madera_irq_priv *priv = dev_get_drvdata(dev);
++
++	dev_dbg(priv->dev, "No IRQ suspend, reenabling IRQ\n");
++
++	enable_irq(priv->irq);
++
++	return 0;
++}
++
++static int madera_suspend(struct device *dev)
++{
++	struct madera_irq_priv *priv = dev_get_drvdata(dev);
++
++	dev_dbg(priv->dev, "Suspend, disabling IRQ\n");
++
++	disable_irq(priv->irq);
++
++	return 0;
++}
++
++static int madera_resume_noirq(struct device *dev)
++{
++	struct madera_irq_priv *priv = dev_get_drvdata(dev);
++
++	dev_dbg(priv->dev, "No IRQ resume, disabling IRQ\n");
++
++	disable_irq(priv->irq);
++
++	return 0;
++}
++
++static int madera_resume(struct device *dev)
++{
++	struct madera_irq_priv *priv = dev_get_drvdata(dev);
++
++	dev_dbg(priv->dev, "Resume, reenabling IRQ\n");
++
++	enable_irq(priv->irq);
++
++	return 0;
++}
++#endif
++
++static const struct dev_pm_ops madera_irq_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(madera_suspend, madera_resume)
++	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(madera_suspend_noirq,
++				      madera_resume_noirq)
++};
++
++static int madera_irq_probe(struct platform_device *pdev)
++{
++	struct madera *madera = dev_get_drvdata(pdev->dev.parent);
++	struct madera_irq_priv *priv;
++	struct irq_data *irq_data;
++	unsigned int irq_flags = madera->pdata.irqchip.irq_flags;
++	int ret;
++
++	dev_dbg(&pdev->dev, "probe\n");
++
++	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	priv->dev = &pdev->dev;
++	priv->madera = madera;
++	priv->irq = madera->irq;
++
++	/* Read the flags from the interrupt controller if not specified */
++	if (!irq_flags) {
++		irq_data = irq_get_irq_data(priv->irq);
++		if (!irq_data) {
++			dev_err(priv->dev, "Invalid IRQ: %d\n", priv->irq);
++			return -EINVAL;
++		}
++
++		irq_flags = irqd_get_trigger_type(irq_data);
++		if (irq_flags == IRQ_TYPE_NONE)
++			irq_flags = IRQF_TRIGGER_LOW; /* Device default */
++	}
++
++	if (irq_flags & (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING)) {
++		dev_err(priv->dev,
++			"Host interrupt not level-triggered\n");
++		return -EINVAL;
++	}
++
++	if (irq_flags & IRQF_TRIGGER_HIGH) {
++		ret = regmap_update_bits(madera->regmap, MADERA_IRQ1_CTRL,
++					 MADERA_IRQ_POL_MASK, 0);
++		if (ret) {
++			dev_err(priv->dev,
++				"Failed to set IRQ polarity: %d\n", ret);
++			return ret;
++		}
++	}
++
++	/*
++	 * NOTE: regmap registers this against the OF node of the parent of
++	 * the regmap - that is, against the mfd driver
++	 */
++	ret = regmap_add_irq_chip(madera->regmap, priv->irq, IRQF_ONESHOT, 0,
++				  &madera_irq, &priv->irq_data);
++	if (ret) {
++		dev_err(priv->dev, "add_irq_chip failed: %d\n", ret);
++		return ret;
++	}
++
++	platform_set_drvdata(pdev, priv);
++	madera->irq_dev = priv->dev;
++
++	return 0;
++}
++
++static int madera_irq_remove(struct platform_device *pdev)
++{
++	struct madera_irq_priv *priv = platform_get_drvdata(pdev);
++
++	/*
++	 * The IRQ is disabled by the parent MFD driver before
++	 * it starts cleaning up all child drivers
++	 */
++
++	priv->madera->irq_dev = NULL;
++
++	regmap_del_irq_chip(priv->irq, priv->irq_data);
++	free_irq(priv->irq, priv);
++
++	return 0;
++}
++
++static struct platform_driver madera_irq_driver = {
++	.probe = madera_irq_probe,
++	.remove = madera_irq_remove,
++	.driver = {
++		.name	= "madera-irq",
++		.pm = &madera_irq_pm_ops,
++	}
++};
++
++module_platform_driver(madera_irq_driver);
++
++MODULE_DESCRIPTION("Madera IRQ driver");
++MODULE_AUTHOR("Richard Fitzgerald <rf@opensource.wolfsonmicro.com>");
++MODULE_LICENSE("GPL v2");
+diff --git a/include/linux/irqchip/irq-madera-pdata.h b/include/linux/irqchip/irq-madera-pdata.h
+new file mode 100644
+index 0000000..5928e81
+--- /dev/null
++++ b/include/linux/irqchip/irq-madera-pdata.h
+@@ -0,0 +1,19 @@
++/*
++ * Platform data for Cirrus Logic Madera codecs irqchip driver
++ *
++ * Copyright 2016 Cirrus Logic
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef IRQCHIP_MADERA_PDATA_H
++#define IRQCHIP_MADERA_PDATA_H
++
++struct madera_irqchip_pdata {
++	/** Mode for primary IRQ (defaults to active low) */
++	unsigned int irq_flags;
++};
++
++#endif
+diff --git a/include/linux/irqchip/irq-madera.h b/include/linux/irqchip/irq-madera.h
+new file mode 100644
+index 0000000..72dc5e6
+--- /dev/null
++++ b/include/linux/irqchip/irq-madera.h
+@@ -0,0 +1,96 @@
++/*
++ * Interrupt support for Cirrus Logic Madera codecs
++ *
++ * Copyright 2016-2017 Cirrus Logic
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef IRQCHIP_MADERA_H
++#define IRQCHIP_MADERA_H
++
++#define MADERA_IRQ_FLL1_LOCK		0
++#define MADERA_IRQ_FLL2_LOCK		1
++#define MADERA_IRQ_FLL3_LOCK		2
++#define MADERA_IRQ_FLLAO_LOCK		3
++#define MADERA_IRQ_CLK_SYS_ERR		4
++#define MADERA_IRQ_CLK_ASYNC_ERR	5
++#define MADERA_IRQ_CLK_DSP_ERR		6
++#define MADERA_IRQ_HPDET		7
++#define MADERA_IRQ_MICDET1		8
++#define MADERA_IRQ_MICDET2		9
++#define MADERA_IRQ_JD1_RISE		10
++#define MADERA_IRQ_JD1_FALL		11
++#define MADERA_IRQ_JD2_RISE		12
++#define MADERA_IRQ_JD2_FALL		13
++#define MADERA_IRQ_MICD_CLAMP_RISE	14
++#define MADERA_IRQ_MICD_CLAMP_FALL	15
++#define MADERA_IRQ_DRC2_SIG_DET		16
++#define MADERA_IRQ_DRC1_SIG_DET		17
++#define MADERA_IRQ_ASRC1_IN1_LOCK	18
++#define MADERA_IRQ_ASRC1_IN2_LOCK	19
++#define MADERA_IRQ_ASRC2_IN1_LOCK	20
++#define MADERA_IRQ_ASRC2_IN2_LOCK	21
++#define MADERA_IRQ_DSP_IRQ1		22
++#define MADERA_IRQ_DSP_IRQ2		23
++#define MADERA_IRQ_DSP_IRQ3		24
++#define MADERA_IRQ_DSP_IRQ4		25
++#define MADERA_IRQ_DSP_IRQ5		26
++#define MADERA_IRQ_DSP_IRQ6		27
++#define MADERA_IRQ_DSP_IRQ7		28
++#define MADERA_IRQ_DSP_IRQ8		29
++#define MADERA_IRQ_DSP_IRQ9		30
++#define MADERA_IRQ_DSP_IRQ10		31
++#define MADERA_IRQ_DSP_IRQ11		32
++#define MADERA_IRQ_DSP_IRQ12		33
++#define MADERA_IRQ_DSP_IRQ13		34
++#define MADERA_IRQ_DSP_IRQ14		35
++#define MADERA_IRQ_DSP_IRQ15		36
++#define MADERA_IRQ_DSP_IRQ16		37
++#define MADERA_IRQ_HP1L_SC		38
++#define MADERA_IRQ_HP1R_SC		39
++#define MADERA_IRQ_HP2L_SC		40
++#define MADERA_IRQ_HP2R_SC		41
++#define MADERA_IRQ_HP3L_SC		42
++#define MADERA_IRQ_HP3R_SC		43
++#define MADERA_IRQ_SPKOUTL_SC		44
++#define MADERA_IRQ_SPKOUTR_SC		45
++#define MADERA_IRQ_HP1L_ENABLE_DONE	46
++#define MADERA_IRQ_HP1R_ENABLE_DONE	47
++#define MADERA_IRQ_HP2L_ENABLE_DONE	48
++#define MADERA_IRQ_HP2R_ENABLE_DONE	49
++#define MADERA_IRQ_HP3L_ENABLE_DONE	50
++#define MADERA_IRQ_HP3R_ENABLE_DONE	51
++#define MADERA_IRQ_SPKOUTL_ENABLE_DONE	52
++#define MADERA_IRQ_SPKOUTR_ENABLE_DONE	53
++#define MADERA_IRQ_SPK_SHUTDOWN		54
++#define MADERA_IRQ_SPK_OVERHEAT		55
++#define MADERA_IRQ_SPK_OVERHEAT_WARN	56
++#define MADERA_IRQ_GPIO1		57
++#define MADERA_IRQ_GPIO2		58
++#define MADERA_IRQ_GPIO3		59
++#define MADERA_IRQ_GPIO4		60
++#define MADERA_IRQ_GPIO5		61
++#define MADERA_IRQ_GPIO6		62
++#define MADERA_IRQ_GPIO7		63
++#define MADERA_IRQ_GPIO8		64
++#define MADERA_IRQ_DSP1_BUS_ERROR	65
++#define MADERA_IRQ_DSP2_BUS_ERROR	66
++#define MADERA_IRQ_DSP3_BUS_ERROR	67
++#define MADERA_IRQ_DSP4_BUS_ERROR	68
++#define MADERA_IRQ_DSP5_BUS_ERROR	69
++#define MADERA_IRQ_DSP6_BUS_ERROR	70
++#define MADERA_IRQ_DSP7_BUS_ERROR	71
++
++#define MADERA_NUM_IRQ			72
++
++struct madera;
++
++int madera_request_irq(struct madera *madera, int irq, const char *name,
++		       irq_handler_t handler, void *data);
++void madera_free_irq(struct madera *madera, int irq, void *data);
++int madera_set_irq_wake(struct madera *madera, int irq, int on);
++
++#endif
 -- 
 1.9.1
+
