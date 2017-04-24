@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: Fix PM and non-atomic crash in bytcr drivers" to the asoc tree
-Date: Mon, 24 Apr 2017 19:20:42 +0100
-Message-ID: <E1d2ibK-0000f3-Md@debutante>
-References: <20170424120955.15519-1-tiwai@suse.de>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20170424120955.15519-1-tiwai@suse.de>
-Sender: stable-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgMark Brown <broonie@kernel.org>Vinod Koul <vinod.koul@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: wm5100: fix spelling mistake: "micropone" -> "microphone"" to the asoc tree
+Date: Mon, 24 Apr 2017 19:20:45 +0100
+Message-ID: <E1d2ibN-0000gR-Nt@debutante>
+References: <20170422122842.8282-1-colin.king@canonical.com>
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+In-Reply-To: <20170422122842.8282-1-colin.king@canonical.com>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Julia Lawall <Julia.Lawall@lip6.fr>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>Linus Walleij <linus.walleij@linaro.org>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: Fix PM and non-atomic crash in bytcr drivers
+   ASoC: wm5100: fix spelling mistake: "micropone" -> "microphone"
 
 has been applied to the asoc tree at
 
@@ -37,94 +37,35 @@ to this mail.
 Thanks,
 Mark
 
->From 22ae4057173ebf48020d5a713242bd9de9e64b46 Mon Sep 17 00:00:00 2001
-From: Takashi Iwai <tiwai@suse.de>
-Date: Mon, 24 Apr 2017 14:09:55 +0200
-Subject: [PATCH] ASoC: intel: Fix PM and non-atomic crash in bytcr drivers
+>From fd9f069d876d6a96eb0f731b1e293145352d5f4f Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Sat, 22 Apr 2017 13:28:42 +0100
+Subject: [PATCH] ASoC: wm5100: fix spelling mistake: "micropone" ->
+ "microphone"
 
-The FE setups of Intel SST bytcr_rt5640 and bytcr_rt5651 drivers carry
-the ignore_suspend flag, and this prevents the suspend/resume working
-properly while the stream is running, since SST core code has the
-check of the running streams and returns -EBUSY.  Drop these
-superfluous flags for fixing the behavior.
+Trivial fix to spelling mistake in dev_err message
 
-Also, the bytcr_rt5640 driver lacks of nonatomic flag in some FE
-definitions, which leads to the kernel Oops at suspend/resume like:
-
-  BUG: scheduling while atomic: systemd-sleep/3144/0x00000003
-  Call Trace:
-   dump_stack+0x5c/0x7a
-   __schedule_bug+0x55/0x70
-   __schedule+0x63c/0x8c0
-   schedule+0x3d/0x90
-   schedule_timeout+0x16b/0x320
-   ? del_timer_sync+0x50/0x50
-   ? sst_wait_timeout+0xa9/0x170 [snd_intel_sst_core]
-   ? sst_wait_timeout+0xa9/0x170 [snd_intel_sst_core]
-   ? remove_wait_queue+0x60/0x60
-   ? sst_prepare_and_post_msg+0x275/0x960 [snd_intel_sst_core]
-   ? sst_pause_stream+0x9b/0x110 [snd_intel_sst_core]
-   ....
-
-This patch addresses these appropriately, too.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: <stable@vger.kernel.org> # v4.1+
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 4 ++--
- sound/soc/intel/boards/bytcr_rt5651.c | 2 --
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/codecs/wm5100.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 0ac32788f216..b1f0ccb64a6a 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -625,7 +625,7 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
- 		.codec_dai_name = "snd-soc-dummy-dai",
- 		.codec_name = "snd-soc-dummy",
- 		.platform_name = "sst-mfld-platform",
--		.ignore_suspend = 1,
-+		.nonatomic = true,
- 		.dynamic = 1,
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1,
-@@ -638,7 +638,6 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
- 		.codec_dai_name = "snd-soc-dummy-dai",
- 		.codec_name = "snd-soc-dummy",
- 		.platform_name = "sst-mfld-platform",
--		.ignore_suspend = 1,
- 		.nonatomic = true,
- 		.dynamic = 1,
- 		.dpcm_playback = 1,
-@@ -665,6 +664,7 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
- 						| SND_SOC_DAIFMT_CBS_CFS,
- 		.be_hw_params_fixup = byt_rt5640_codec_fixup,
- 		.ignore_suspend = 1,
-+		.nonatomic = true,
- 		.dpcm_playback = 1,
- 		.dpcm_capture = 1,
- 		.init = byt_rt5640_init,
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 3186f015939f..8164bec63bf1 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -235,7 +235,6 @@ static struct snd_soc_dai_link byt_rt5651_dais[] = {
- 		.codec_dai_name = "snd-soc-dummy-dai",
- 		.codec_name = "snd-soc-dummy",
- 		.platform_name = "sst-mfld-platform",
--		.ignore_suspend = 1,
- 		.nonatomic = true,
- 		.dynamic = 1,
- 		.dpcm_playback = 1,
-@@ -249,7 +248,6 @@ static struct snd_soc_dai_link byt_rt5651_dais[] = {
- 		.codec_dai_name = "snd-soc-dummy-dai",
- 		.codec_name = "snd-soc-dummy",
- 		.platform_name = "sst-mfld-platform",
--		.ignore_suspend = 1,
- 		.nonatomic = true,
- 		.dynamic = 1,
- 		.dpcm_playback = 1,
+diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
+index 560575000cc5..138a84efdd54 100644
+--- a/sound/soc/codecs/wm5100.c
++++ b/sound/soc/codecs/wm5100.c
+@@ -2014,7 +2014,7 @@ static void wm5100_micd_irq(struct wm5100_priv *wm5100)
+ 
+ 	ret = regmap_read(wm5100->regmap, WM5100_MIC_DETECT_3, &val);
+ 	if (ret != 0) {
+-		dev_err(wm5100->dev, "Failed to read micropone status: %d\n",
++		dev_err(wm5100->dev, "Failed to read microphone status: %d\n",
+ 			ret);
+ 		return;
+ 	}
 -- 
 2.11.0
+
