@@ -1,71 +1,91 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm5100: fix spelling mistake: "micropone" -> "microphone"" to the asoc tree
-Date: Mon, 24 Apr 2017 19:20:45 +0100
-Message-ID: <E1d2ibN-0000gR-Nt@debutante>
-References: <20170422122842.8282-1-colin.king@canonical.com>
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <20170422122842.8282-1-colin.king@canonical.com>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Julia Lawall <Julia.Lawall@lip6.fr>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>Linus Walleij <linus.walleij@linaro.org>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: PM issue with Intel SST Atom driver
+Date: Mon, 24 Apr 2017 21:57:38 +0530
+Message-ID: <20170424162738.GU6263@localhost>
+References: <s5hpog5dgh8.wl-tiwai@suse.de> <20170424050144.GG6263@localhost>
+ <s5ho9vmjmyv.wl-tiwai@suse.de> <s5hpog2b2o2.wl-tiwai@suse.de>
+ <20170424091213.GO6263@localhost> <s5hh91eb0oc.wl-tiwai@suse.de>
+ <20170424095244.GP6263@localhost> <s5hefwib075.wl-tiwai@suse.de>
+ <d4e73746-40f7-8929-bdc4-5bf54aef982d@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id A7943266DED
+ for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 18:25:53 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <d4e73746-40f7-8929-bdc4-5bf54aef982d@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Mon, Apr 24, 2017 at 09:22:38AM -0500, Pierre-Louis Bossart wrote:
+> On 4/24/17 4:54 AM, Takashi Iwai wrote:
+> >On Mon, 24 Apr 2017 11:52:44 +0200,
+> >Vinod Koul wrote:
+> >>
+> >>On Mon, Apr 24, 2017 at 11:43:47AM +0200, Takashi Iwai wrote:
+> >>>On Mon, 24 Apr 2017 11:12:14 +0200,
+> >>>Vinod Koul wrote:
+> >>>>
+> >>>>On Mon, Apr 24, 2017 at 11:00:45AM +0200, Takashi Iwai wrote:
+> >>>>
+> >>>>>Removing ignore_suspend makes the PM succeeds.  But it hits some other
+> >>>>>ugly kernel bugs.
+> >>>>
+> >>>>Okay have you marked .nonatomic = true for the machine DAIs?
+> >>>
+> >>>Ah that's it.  The patch below seems fixing the PM and the nonatomic
+> >>>problems.  I'm not sure about the nonatomic flag for the compress
+> >>>stream, though.
+> >>
+> >>Well we dont have upstream decoders so it wont be used in this case.
+> >>
+> >>>Also I fiddled only with FE.  Do we need the same flags for BE?  The
+> >>>others don't look setting like that, so I left so.
+> >>
+> >>I dont remember if BE needs or not FE should suffice.
+> >
+> >OK then I leave it as is.
+> >
+> >When I submit the fix, I should put Cc to stable, and wonder which
+> >version we assure the nonatomic ops in SST driver.  Did the code base
+> >support nonatomic ops from the beginning?
+> 
+> can we take this opportunity to align all drivers?
+> The .nonatomic=true is set in all drivers for the BE, except for
+> cht_bsw_max98090_ti.c
 
-   ASoC: wm5100: fix spelling mistake: "micropone" -> "microphone"
+??
 
-has been applied to the asoc tree at
+$ grep nonatomic sound/soc/intel/boards/cht_bsw_max98090_ti.c
+                .nonatomic = true,
+                .nonatomic = true,
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> It's either needed for all or not needed for all...
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+For the record it is must have for all of the drivers :)
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+$ grep -L nonatomic sound/soc/intel/boards/*.c
+sound/soc/intel/boards/bdw-rt5677.c
+sound/soc/intel/boards/broadwell.c
+sound/soc/intel/boards/byt-max98090.c
+sound/soc/intel/boards/byt-rt5640.c
+sound/soc/intel/boards/haswell.c
+sound/soc/intel/boards/mfld_machine.c
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+So we should add the remaining one byt-max98090.c as Takashi fixed
+byt-rt5640.c one. I will send the patch for this one.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From fd9f069d876d6a96eb0f731b1e293145352d5f4f Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Sat, 22 Apr 2017 13:28:42 +0100
-Subject: [PATCH] ASoC: wm5100: fix spelling mistake: "micropone" ->
- "microphone"
-
-Trivial fix to spelling mistake in dev_err message
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/wm5100.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
-index 560575000cc5..138a84efdd54 100644
---- a/sound/soc/codecs/wm5100.c
-+++ b/sound/soc/codecs/wm5100.c
-@@ -2014,7 +2014,7 @@ static void wm5100_micd_irq(struct wm5100_priv *wm5100)
- 
- 	ret = regmap_read(wm5100->regmap, WM5100_MIC_DETECT_3, &val);
- 	if (ret != 0) {
--		dev_err(wm5100->dev, "Failed to read micropone status: %d\n",
-+		dev_err(wm5100->dev, "Failed to read microphone status: %d\n",
- 			ret);
- 		return;
- 	}
 -- 
-2.11.0
-
+~Vinod
