@@ -1,84 +1,55 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: PM issue with Intel SST Atom driver
-Date: Mon, 24 Apr 2017 16:32:29 +0530
-Message-ID: <20170424110228.GQ6263@localhost>
-References: <s5hpog5dgh8.wl-tiwai@suse.de> <20170424050144.GG6263@localhost>
- <s5ho9vmjmyv.wl-tiwai@suse.de> <s5hpog2b2o2.wl-tiwai@suse.de>
- <20170424091213.GO6263@localhost> <s5hh91eb0oc.wl-tiwai@suse.de>
- <20170424095244.GP6263@localhost> <s5hefwib075.wl-tiwai@suse.de>
+From: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Subject: Re: [PATCH RFC 1/7] clk: samsung: Add enable/disable operation for
+ PLL36XX clocks
+Date: Mon, 24 Apr 2017 13:12:22 +0200
+Message-ID: <017b3ec8-c185-c29a-2944-12f519b461fe@samsung.com>
+References: <1492795191-31298-1-git-send-email-s.nawrocki@samsung.com>
+ <CGME20170421172016epcas5p342c16e1219c1205a44a84eaa770ad5ac@epcas5p3.samsung.com>
+ <1492795191-31298-2-git-send-email-s.nawrocki@samsung.com>
+ <20170422152236.tbf4iuoadqrvoc2n@kozik-lap>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 1FB0C2669CD
- for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 13:00:47 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hefwib075.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-reply-to: <20170422152236.tbf4iuoadqrvoc2n@kozik-lap>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, javier@osg.samsung.com, b.zolnierkie@samsung.com, sw0312.kim@samsung.com, dri-devel@lists.freedesktop.org, cw00.choi@samsung.com, broonie@kernel.org, robh+dt@kernel.org, linux-clk@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 24, 2017 at 11:54:06AM +0200, Takashi Iwai wrote:
-> On Mon, 24 Apr 2017 11:52:44 +0200,
-> Vinod Koul wrote:
-> > 
-> > On Mon, Apr 24, 2017 at 11:43:47AM +0200, Takashi Iwai wrote:
-> > > On Mon, 24 Apr 2017 11:12:14 +0200,
-> > > Vinod Koul wrote:
-> > > > 
-> > > > On Mon, Apr 24, 2017 at 11:00:45AM +0200, Takashi Iwai wrote:
-> > > >  
-> > > > > Removing ignore_suspend makes the PM succeeds.  But it hits some other
-> > > > > ugly kernel bugs.
-> > > > 
-> > > > Okay have you marked .nonatomic = true for the machine DAIs?
-> > > 
-> > > Ah that's it.  The patch below seems fixing the PM and the nonatomic
-> > > problems.  I'm not sure about the nonatomic flag for the compress
-> > > stream, though.
-> > 
-> > Well we dont have upstream decoders so it wont be used in this case.
-> > 
-> > > Also I fiddled only with FE.  Do we need the same flags for BE?  The
-> > > others don't look setting like that, so I left so.
-> > 
-> > I dont remember if BE needs or not FE should suffice.
-> 
-> OK then I leave it as is.
-> 
-> When I submit the fix, I should put Cc to stable, and wonder which
-> version we assure the nonatomic ops in SST driver.  Did the code base
-> support nonatomic ops from the beginning?
-
-4.1 onwards.
-
-The PM was supported thru below commit which went into 4.1.  The nonatomic
-was always a requirement for us due to nature of IPC. Non atomic support
-went into 3.18 so 4.1 onwards would make sense :)
-
-commit 4a8448d4289d7210053a43f9f21e42929beb159b
-Author: Vinod Koul <vinod.koul@intel.com>
-Date:   Tue Feb 24 11:39:44 2015 +0530
-
-    ASoC: Intel: add pm support in sst ipc driver
-
-    This adds support for system pm support. We need to save the dsp memory
-    which gets lost on suspend and restore that on resume
-
-    Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-    Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-    Signed-off-by: Mark Brown <broonie@kernel.org>
-
-Thanks
--- 
-~Vinod
+T24gMDQvMjIvMjAxNyAwNToyMiBQTSwgS3J6eXN6dG9mIEtvemxvd3NraSB3cm90ZToKWy4uLl0K
+Pj4gK3N0YXRpYyB2b2lkIHNhbXN1bmdfcGxsM3h4eF9kaXNhYmxlKHN0cnVjdCBjbGtfaHcgKmh3
+KQo+PiArewo+PiArCXN0cnVjdCBzYW1zdW5nX2Nsa19wbGwgKnBsbCA9IHRvX2Nsa19wbGwoaHcp
+Owo+PiArCXUzMiB0bXA7Cj4+ICsKPj4gKwl0bXAgPSByZWFkbF9yZWxheGVkKHBsbC0+Y29uX3Jl
+Zyk7Cj4+ICsJdG1wIHw9IEJJVChwbGwtPmVuYWJsZV9vZmZzKTsKPgo+IEkgdGhpbmsgeW91IG1l
+YW50IGhlcmU6Cj4gCXRtcCAmPSB+QklUKCkKClllcywgSSBtZXNzZWQgaXQgdXAgd2hpbGUgY29w
+eS9wYXN0aW5nIGZyb20gc2Ftc3VuZ19wbGwzeHh4X2VuYWJsZSgpLgoKPj4gKwl3cml0ZWxfcmVs
+YXhlZCh0bXAsIHBsbC0+Y29uX3JlZyk7Cj4+ICt9Cgo+PiAgc3RhdGljIHVuc2lnbmVkIGxvbmcg
+c2Ftc3VuZ19wbGwzNnh4X3JlY2FsY19yYXRlKHN0cnVjdCBjbGtfaHcgKmh3LAo+PiAgCQkJCXVu
+c2lnbmVkIGxvbmcgcGFyZW50X3JhdGUpCj4+IEBAIC0zNTQsMTAgKzM1OSwxMiBAQCBzdGF0aWMg
+aW50IHNhbXN1bmdfcGxsMzZ4eF9zZXRfcmF0ZShzdHJ1Y3QgY2xrX2h3ICpodywgdW5zaWduZWQg
+bG9uZyBkcmF0ZSwKPj4gIAl3cml0ZWxfcmVsYXhlZChwbGxfY29uMSwgcGxsLT5jb25fcmVnICsg
+NCk7Cj4+Cj4+ICAJLyogd2FpdF9sb2NrX3RpbWUgKi8KPj4gLQlkbyB7Cj4+IC0JCWNwdV9yZWxh
+eCgpOwo+PiAtCQl0bXAgPSByZWFkbF9yZWxheGVkKHBsbC0+Y29uX3JlZyk7Cj4+IC0JfSB3aGls
+ZSAoISh0bXAgJiAoMSA8PCBQTEwzNlhYX0xPQ0tfU1RBVF9TSElGVCkpKTsKCkkgd2lsbCBhZGQg
+YSBjb21tZW50IGhlcmUgbGlrZToKLyogV2FpdCB1bnRpbCB0aGUgUExMIGlzIGxvY2tlZCBpZiBp
+dCBpcyBlbmFibGVkLiAqLwoKPj4gKwlpZiAocGxsX2NvbjAgJiBCSVQocGxsLT5lbmFibGVfb2Zm
+cykpIHsKPgo+IFdoeSB0aGlzIGFkZGl0aW9uYWwgaWYoKSBpcyBuZWVkZWQ/CgpUaGUgUExMIHdp
+bGwgbmV2ZXIgdHJhbnNpdGlvbiB0byBhIGxvY2tlZCBzdGF0ZSBpZiBpdCBpcyBkaXNhYmxlZCwg
+d2l0aG91dAp0aGlzIHRlc3Qgd2Ugd291bGQgZW5kIHVwIHdpdGggYW4gaW5kZWZpbml0ZSBsb29w
+IGJlbG93LgoKPj4gKwkJZG8gewo+PiArCQkJY3B1X3JlbGF4KCk7Cj4+ICsJCQl0bXAgPSByZWFk
+bF9yZWxheGVkKHBsbC0+Y29uX3JlZyk7Cj4+ICsJCX0gd2hpbGUgKCEodG1wICYgQklUKFBMTDM2
+WFhfTE9DS19TVEFUX1NISUZUKSkpOwo+Cj4gVG8gYmUgY29uc2lzdGVudDoKPiBCSVQocGxsLT5s
+b2NrX29mZnMpPwoKWWVzLCBmaXhlZC4KClRoYW5rcyBmb3IgeW91ciByZXZpZXchCgotLQpSZWdh
+cmRzLApTeWx3ZXN0ZXIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Au
+b3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRl
+dmVsCg==
