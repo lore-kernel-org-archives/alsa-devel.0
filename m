@@ -1,32 +1,15 @@
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Subject: Re: [PATCH RFC 1/7] clk: samsung: Add enable/disable
- operation for PLL36XX clocks
-Date: Mon, 24 Apr 2017 13:18:44 +0200
-Message-ID: <CAJKOXPdKRzC+f4mLCPhHKNuGS4=K-9CC_AKor0Etfu7Bxp-+iw@mail.gmail.com>
-References: <1492795191-31298-1-git-send-email-s.nawrocki@samsung.com>
- <CGME20170421172016epcas5p342c16e1219c1205a44a84eaa770ad5ac@epcas5p3.samsung.com>
- <1492795191-31298-2-git-send-email-s.nawrocki@samsung.com>
- <20170422152236.tbf4iuoadqrvoc2n@kozik-lap>
- <017b3ec8-c185-c29a-2944-12f519b461fe@samsung.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Status of ALSA firewire stack at Linux v4.12
+	development period
+Date: Mon, 24 Apr 2017 21:04:48 +0900
+Message-ID: <431ad421-fa5f-6cd7-0315-63b79c68ab8a@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.136])
- by alsa0.perex.cz (Postfix) with ESMTP id D198A266D58
- for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 13:18:49 +0200 (CEST)
-Received: from mail.kernel.org (localhost [127.0.0.1])
- by mail.kernel.org (Postfix) with ESMTP id D428E200E5
- for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 11:18:47 +0000 (UTC)
-Received: from mail-it0-f54.google.com (mail-it0-f54.google.com
- [209.85.214.54])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id E18F820160
- for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 11:18:46 +0000 (UTC)
-Received: by mail-it0-f54.google.com with SMTP id 70so53847626ita.0
- for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 04:18:46 -0700 (PDT)
-In-Reply-To: <017b3ec8-c185-c29a-2944-12f519b461fe@samsung.com>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 8714E266D63
+ for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 14:04:55 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -36,39 +19,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, jy0922.shim@samsung.com, Javier Martinez Canillas <javier@osg.samsung.com>, =?UTF-8?B?QmFydMWCb21pZWogxbtvxYJuaWVya2lld2ljeg==?= <b.zolnierkie@samsung.com>, Seung Woo Kim <sw0312.kim@samsung.com>, dri-devel@lists.freedesktop.org, Inki Dae <inki.dae@samsung.com>, Chanwoo Choi <cw00.choi@samsung.com>, broonie@kernel.org, robh+dt@kernel.org, linux-clk@vger.kernel.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ffado-devel@lists.sf.net, linux1394-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 24, 2017 at 1:12 PM, Sylwester Nawrocki
-<s.nawrocki@samsung.com> wrote:
-> On 04/22/2017 05:22 PM, Krzysztof Kozlowski wrote:
->>> @@ -354,10 +359,12 @@ static int samsung_pll36xx_set_rate(struct clk_hw
->>> *hw, unsigned long drate,
->>>         writel_relaxed(pll_con1, pll->con_reg + 4);
->>>
->>>         /* wait_lock_time */
->>> -       do {
->>> -               cpu_relax();
->>> -               tmp = readl_relaxed(pll->con_reg);
->>> -       } while (!(tmp & (1 << PLL36XX_LOCK_STAT_SHIFT)));
->
->
-> I will add a comment here like:
-> /* Wait until the PLL is locked if it is enabled. */
->
->>> +       if (pll_con0 & BIT(pll->enable_offs)) {
->>
->>
->> Why this additional if() is needed?
->
->
-> The PLL will never transition to a locked state if it is disabled, without
-> this test we would end up with an indefinite loop below.
+Hi,
 
-Hmmm... shouldn't this be split from this change? Or maybe this is
-needed only because you added enable/disable for pl36xx and previously
-this was not existing?
+We are now in the last week of development period for Linux v4.12. All 
+of my patches were already merged into 'for-next' branch on
+maintainer's repository. This is a digest for the subject.
 
-Best regards,
-Krzysztof
+## New drivers
+Two drivers were newly added to sound subsystem:
+  * A driver for MOTU FireWire series (snd-firewire-motu)
+   * 
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-March/119055.html
+  * A driver for RME Fireface series (snd-fireface)
+   * 
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-March/119360.html
+
+Although both drivers support a part of units on each series, I won't
+work for the other units by my self anymore. I wish users are going to
+work for enhancement of support for more units.
+
+## Changes for existent drivers
+Additionally, below drivers were widely changed:
+  * A driver for Digidesign Digi00x series (snd-firewire-dg00x)
+   * 
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-April/119397.html
+  * A driver for TASCAM FireWire series (snd-firewire-tascam)
+   * 
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-April/119748.html
+
+Purpose of the changes is mainly for maintenance. Especially, digi00x
+driver now got a proper support for its console models. Correspondingly,
+some feature of firewire-lib move to firewire-tascam driver.
+
+## Additional Tracepoints
+Furthermore, ALSA firewire stack newly supports additional tracepoints:
+  * snd_firewire_lib subsystem
+   * in_packet_without_header/out_packet_without_header
+  * snd_firewire_motu subsystem
+   * in_data_block_sph/out_data_block_sph
+   * in_data_block_message/out_data_block_mesasge
+
+These tracepoints are available to debug behaviours of drivers newly
+added in this development period. Of cource, below tracepoints are still
+available for existent drivers:
+
+  * snd_firewire_lib subsystem
+   * in_packet/out_packet
+
+These tracepoints are available via tracefs or perf_event_open(2). 
+Please refer to proper documentation.
+
+## Known issues
+As known issues of IEC 61883-1/6 engine on ALSA firewire stack, the
+engine takes target units to generate sound with periodical short
+noise. This can be observed except for units based on BeBoB or
+Fireface series, and this can not be observed every time of packet
+streaming.
+
+The tracepoints declare that the cause does _not_ come from packet
+queueing timing and throughput of the amount of data blocks. Thus, It
+comes from protocol implementation itself. When consider about a fact
+that this depends on the timing to start packet streaming, the cause is
+that each unit has a strong demand about sequence of the number of data
+blocks in a packet. It might tight on actual isochronous cycle and the
+other time clock somehow.
+
+Additionally, as I have reported, some of units based on Dice don't
+transfer/receive exactly the same number of total data block as sampling
+transmission frequency. In detail, seee:
+http://mailman.alsa-project.org/pipermail/alsa-devel/2016-May/107715.html
+
+## Useful stuffs
+For Linux kernel 4.4 or later, backported code is available in my github
+repository:
+https://github.com/takaswie/snd-firewire-improve
+
+Drivers in ALSA firewire stack support ALSA HwDep interface. There's a
+sample implementation for user space; libhinawa:
+https://github.com/takaswie/libhinawa
+
+In detail, please refer to documentation of the library.
+
+Some functionalities of supported units are controllable by tools in
+hinawa-utils. This is a sample application of the libhinawa with GOject
+Introspection support:
+https://github.com/takaswie/hinawa-utils
+
+Currently, they're maintained to assist my work for ALSA firewire stack.
+Although it can not satisfy all demands from usual users, I'm welcome to
+receive PRs to integrate the tools.
+
+$ git diff --shortstat v4.11-rc1.. sound/firewire/
+  43 files changed, 5791 insertions(+), 502 deletions(-)
+
+
+Regards
+
+Takashi Sakamoto
