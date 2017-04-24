@@ -1,21 +1,15 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: PM issue with Intel SST Atom driver
-Date: Mon, 24 Apr 2017 14:01:44 -0500
-Message-ID: <a6b14b38-3e0e-1e81-2418-f058d6310906@linux.intel.com>
-References: <s5hpog5dgh8.wl-tiwai@suse.de> <20170424050144.GG6263@localhost>
- <s5ho9vmjmyv.wl-tiwai@suse.de> <s5hpog2b2o2.wl-tiwai@suse.de>
- <20170424091213.GO6263@localhost> <s5hh91eb0oc.wl-tiwai@suse.de>
- <20170424095244.GP6263@localhost> <s5hefwib075.wl-tiwai@suse.de>
- <d4e73746-40f7-8929-bdc4-5bf54aef982d@linux.intel.com>
- <20170424162738.GU6263@localhost>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ASoC: bytcr_rt5640: Fix a typo and quirk
+	parameter type
+Date: Mon, 24 Apr 2017 23:34:30 +0200
+Message-ID: <20170424213430.24835-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F7522673CC
- for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 21:02:06 +0200 (CEST)
-In-Reply-To: <20170424162738.GU6263@localhost>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A4E6266AF7
+ for <alsa-devel@alsa-project.org>; Mon, 24 Apr 2017 23:34:34 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,77 +19,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 4/24/17 11:27 AM, Vinod Koul wrote:
-> On Mon, Apr 24, 2017 at 09:22:38AM -0500, Pierre-Louis Bossart wrote:
->> On 4/24/17 4:54 AM, Takashi Iwai wrote:
->>> On Mon, 24 Apr 2017 11:52:44 +0200,
->>> Vinod Koul wrote:
->>>>
->>>> On Mon, Apr 24, 2017 at 11:43:47AM +0200, Takashi Iwai wrote:
->>>>> On Mon, 24 Apr 2017 11:12:14 +0200,
->>>>> Vinod Koul wrote:
->>>>>>
->>>>>> On Mon, Apr 24, 2017 at 11:00:45AM +0200, Takashi Iwai wrote:
->>>>>>
->>>>>>> Removing ignore_suspend makes the PM succeeds.  But it hits some other
->>>>>>> ugly kernel bugs.
->>>>>>
->>>>>> Okay have you marked .nonatomic = true for the machine DAIs?
->>>>>
->>>>> Ah that's it.  The patch below seems fixing the PM and the nonatomic
->>>>> problems.  I'm not sure about the nonatomic flag for the compress
->>>>> stream, though.
->>>>
->>>> Well we dont have upstream decoders so it wont be used in this case.
->>>>
->>>>> Also I fiddled only with FE.  Do we need the same flags for BE?  The
->>>>> others don't look setting like that, so I left so.
->>>>
->>>> I dont remember if BE needs or not FE should suffice.
->>>
->>> OK then I leave it as is.
->>>
->>> When I submit the fix, I should put Cc to stable, and wonder which
->>> version we assure the nonatomic ops in SST driver.  Did the code base
->>> support nonatomic ops from the beginning?
->>
->> can we take this opportunity to align all drivers?
->> The .nonatomic=true is set in all drivers for the BE, except for
->> cht_bsw_max98090_ti.c
->
-> ??
->
-> $ grep nonatomic sound/soc/intel/boards/cht_bsw_max98090_ti.c
->                 .nonatomic = true,
->                 .nonatomic = true,
+The previous patch for adding the quirk module option had a typo in
+its info print, which results in a weird output.  Also, the parameter
+type should be rather unsigned int instead of signed int.
 
-Yes, the .nonatomic is set for the two PCM frontends but not for the 
-SSP2 backend.
+Fixes: 9f2cf73ed65b ("ASoC: bytcr_rt5640: Allow quirk set via module option")
+Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/soc/intel/boards/bytcr_rt5640.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
->
->> It's either needed for all or not needed for all...
->
-> For the record it is must have for all of the drivers :)
->
-> $ grep -L nonatomic sound/soc/intel/boards/*.c
-> sound/soc/intel/boards/bdw-rt5677.c
-> sound/soc/intel/boards/broadwell.c
-> sound/soc/intel/boards/byt-max98090.c
-> sound/soc/intel/boards/byt-rt5640.c
-> sound/soc/intel/boards/haswell.c
-> sound/soc/intel/boards/mfld_machine.c
->
-> So we should add the remaining one byt-max98090.c as Takashi fixed
-> byt-rt5640.c one. I will send the patch for this one.
-
-Takashi fixed the bytcr-rt5640 driver, I am not sure we should touch the 
-old byt- driver since they are not using the same firmware and they are 
-not enabled by default. Same for broadwell, different driver, different 
-problems.
-
-I was also also talking about drivers that have .nonatomic field set but 
-not everywhere consistently.
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 0ac32788f216..5ca09cadf39f 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -60,7 +60,7 @@ struct byt_rt5640_private {
+ 
+ static unsigned long byt_rt5640_quirk = BYT_RT5640_MCLK_EN;
+ static unsigned int quirk_override;
+-module_param_named(quirk, quirk_override, int, 0444);
++module_param_named(quirk, quirk_override, uint, 0444);
+ MODULE_PARM_DESC(quirk, "Board-specific quirk override");
+ 
+ static void log_quirks(struct device *dev)
+@@ -811,7 +811,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 	/* check quirks before creating card */
+ 	dmi_check_system(byt_rt5640_quirk_table);
+ 	if (quirk_override) {
+-		dev_info(&pdev->dev, "Overriding quirk %0x => 0x%x\n",
++		dev_info(&pdev->dev, "Overriding quirk 0x%x => 0x%x\n",
+ 			 (unsigned int)byt_rt5640_quirk, quirk_override);
+ 		byt_rt5640_quirk = quirk_override;
+ 	}
+-- 
+2.11.1
