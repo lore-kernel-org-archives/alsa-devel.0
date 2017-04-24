@@ -1,22 +1,22 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH v2 05/18] mfd: madera: Register map tables for Cirrus Logic CS47L85
-Date: Mon, 24 Apr 2017 17:08:31 +0100
-Message-ID: <1493050124-5970-6-git-send-email-rf@opensource.wolfsonmicro.com>
+From: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Subject: [PATCH v2 06/18] mfd: madera: Register map tables for Cirrus Logic CS47L90/91
+Date: Mon, 24 Apr 2017 17:08:32 +0100
+Message-ID: <1493050124-5970-7-git-send-email-rf@opensource.wolfsonmicro.com>
 References: <1493050124-5970-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Return-path: <linux-gpio-owner@vger.kernel.org>
-In-Reply-To: <1493050124-5970-1-git-send-email-rf@opensource.wolfsonmicro.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: lee.jones@linaro.org, broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, robh+dt@kernel.org, tglx@linutronix.de, jason@lakedaemon.net
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1493050124-5970-1-git-send-email-rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, tglx-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org, jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Regmap configuration tables for Cirrus Logic CS47L85 codecs.
+Regmap configuration tables for Cirrus Logic CS47L90 and CS47L91 codecs.
 
-Signed-off-by: Nariman Poushin <nariman@opensource.wolfsonmicro.com>
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Nikesh Oswal <nikesh-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Signed-off-by: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Signed-off-by: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
 ---
 Changes since V1:
 - select PINCTRL build option from here instead of having PINCTRL
@@ -24,54 +24,54 @@ Changes since V1:
 
  drivers/mfd/Kconfig          |    7 +
  drivers/mfd/Makefile         |    3 +
- drivers/mfd/cs47l85-tables.c | 3169 ++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 3179 insertions(+)
- create mode 100644 drivers/mfd/cs47l85-tables.c
+ drivers/mfd/cs47l90-tables.c | 2830 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 2840 insertions(+)
+ create mode 100644 drivers/mfd/cs47l90-tables.c
 
 diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index 918b2a2..bfcafc2 100644
+index bfcafc2..34b9480 100644
 --- a/drivers/mfd/Kconfig
 +++ b/drivers/mfd/Kconfig
-@@ -239,6 +239,13 @@ config MFD_CS47L35
+@@ -246,6 +246,13 @@ config MFD_CS47L85
  	help
- 	  Support for Cirrus Logic CS47L35 Smart Codec
+ 	  Support for Cirrus Logic CS47L85 Smart Codec
  
-+config MFD_CS47L85
-+	bool "Cirrus Logic CS47L85"
-+	select PINCTRL_CS47L85
++config MFD_CS47L90
++	bool "Cirrus Logic CS47L90/91"
++	select PINCTRL_CS47L90
 +	depends on MFD_MADERA
 +	help
-+	  Support for Cirrus Logic CS47L85 Smart Codec
++	  Support for Cirrus Logic CS47L90 and CS47L91 Smart Codecs
 +
  config MFD_ASIC3
  	bool "Compaq ASIC3"
  	depends on GPIOLIB && ARM
 diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index 5cd0b72..e522774 100644
+index e522774..57ea34e 100644
 --- a/drivers/mfd/Makefile
 +++ b/drivers/mfd/Makefile
-@@ -76,6 +76,9 @@ obj-$(CONFIG_MFD_MADERA)	+= madera-core.o
- ifeq ($(CONFIG_MFD_CS47L35),y)
- obj-$(CONFIG_MFD_MADERA)	+= cs47l35-tables.o
+@@ -79,6 +79,9 @@ endif
+ ifeq ($(CONFIG_MFD_CS47L85),y)
+ obj-$(CONFIG_MFD_MADERA)	+= cs47l85-tables.o
  endif
-+ifeq ($(CONFIG_MFD_CS47L85),y)
-+obj-$(CONFIG_MFD_MADERA)	+= cs47l85-tables.o
++ifeq ($(CONFIG_MFD_CS47L90),y)
++obj-$(CONFIG_MFD_MADERA)	+= cs47l90-tables.o
 +endif
  obj-$(CONFIG_MFD_MADERA_I2C)	+= madera-i2c.o
  obj-$(CONFIG_MFD_MADERA_SPI)	+= madera-spi.o
  
-diff --git a/drivers/mfd/cs47l85-tables.c b/drivers/mfd/cs47l85-tables.c
+diff --git a/drivers/mfd/cs47l90-tables.c b/drivers/mfd/cs47l90-tables.c
 new file mode 100644
-index 0000000..92512d5
+index 0000000..52ce50f
 --- /dev/null
-+++ b/drivers/mfd/cs47l85-tables.c
-@@ -0,0 +1,3169 @@
++++ b/drivers/mfd/cs47l90-tables.c
+@@ -0,0 +1,2830 @@
 +/*
-+ * Regmap tables for CS47L85 codec
++ * Regmap tables for CS47L90 codec
 + *
 + * Copyright 2015-2016 Cirrus Logic
 + *
-+ * Author: Nariman Poushin <nariman@opensource.wolfsonmicro.com>
++ * Author: Nikesh Oswal <nikesh-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
 + *
 + * This program is free software; you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License version 2 as
@@ -87,344 +87,61 @@ index 0000000..92512d5
 +
 +#include "madera.h"
 +
-+static const struct reg_sequence cs47l85_reva_16_patch[] = {
-+	{ 0x80,  0x0003 },
-+	{ 0x213, 0x03E4 },
-+	{ 0x177, 0x0281 },
-+	{ 0x197, 0x0281 },
-+	{ 0x1B7, 0x0281 },
-+	{ 0x4B1, 0x010A },
-+	{ 0x4CF, 0x0933 },
-+	{ 0x36C, 0x011B },
-+	{ 0x4B8, 0x1120 },
-+	{ 0x4A0, 0x3280 },
-+	{ 0x4A1, 0x3200 },
-+	{ 0x4A2, 0x3200 },
-+	{ 0x441, 0xC050 },
-+	{ 0x4A4, 0x000B },
-+	{ 0x4A5, 0x000B },
-+	{ 0x4A6, 0x000B },
-+	{ 0x4E2, 0x1E1D },
-+	{ 0x4E3, 0x1E1D },
-+	{ 0x4E4, 0x1E1D },
-+	{ 0x293, 0x0080 },
-+	{ 0x17D, 0x0303 },
-+	{ 0x19D, 0x0303 },
-+	{ 0x27E, 0x0000 },
-+	{ 0x80,  0x0000 },
-+	{ 0x80,  0x0000 },
-+	{ 0x448, 0x003f },
++static const struct reg_sequence cs47l90_reva_16_patch[] = {
++	{ 0x8A,   0x5555 },
++	{ 0x8A,   0xAAAA },
++	{ 0x4CF,  0x0700 },
++	{ 0x171,  0x0003 },
++	{ 0x101,  0x0444 },
++	{ 0x159,  0x0002 },
++	{ 0x120,  0x0444 },
++	{ 0x1D1,  0x0004 },
++	{ 0x1E0,  0xC084 },
++	{ 0x159,  0x0000 },
++	{ 0x120,  0x0404 },
++	{ 0x101,  0x0404 },
++	{ 0x171,  0x0002 },
++	{ 0x17A,  0x2906 },
++	{ 0x19A,  0x2906 },
++	{ 0x441,  0xC750 },
++	{ 0x340,  0x0001 },
++	{ 0x112,  0x0405 },
++	{ 0x124,  0x0C49 },
++	{ 0x1300, 0x050E },
++	{ 0x1302, 0x0101 },
++	{ 0x1380, 0x0425 },
++	{ 0x1381, 0xF6D8 },
++	{ 0x1382, 0x0632 },
++	{ 0x1383, 0xFEC8 },
++	{ 0x1390, 0x042F },
++	{ 0x1391, 0xF6CA },
++	{ 0x1392, 0x0637 },
++	{ 0x1393, 0xFEC8 },
++	{ 0x281,  0x0000 },
++	{ 0x282,  0x0000 },
++	{ 0x4EA,  0x0100 },
++	{ 0x8A,   0xCCCC },
++	{ 0x8A,   0x3333 },
 +};
 +
-+static const struct reg_sequence cs47l85_revc_16_patch[] = {
-+	{ 0x27E, 0x0000 },
-+	{ 0x2C2, 0x0005 },
-+	{ 0x448, 0x003f },
-+};
-+
-+static const struct reg_sequence cs47l85_reva_32_patch[] = {
-+	{ 0x3000, 0xC2253632 },
-+	{ 0x3002, 0xC2300001 },
-+	{ 0x3004, 0x8225100E },
-+	{ 0x3006, 0x22251803 },
-+	{ 0x3008, 0x82310B00 },
-+	{ 0x300A, 0xE231023B },
-+	{ 0x300C, 0x02313B01 },
-+	{ 0x300E, 0x62300000 },
-+	{ 0x3010, 0xE2314288 },
-+	{ 0x3012, 0x02310B00 },
-+	{ 0x3014, 0x02310B00 },
-+	{ 0x3016, 0x04050100 },
-+	{ 0x3018, 0x42310C02 },
-+	{ 0x301A, 0xE2310227 },
-+	{ 0x301C, 0x02313B01 },
-+	{ 0x301E, 0xE2314266 },
-+	{ 0x3020, 0xE2315294 },
-+	{ 0x3022, 0x02310B00 },
-+	{ 0x3024, 0x02310B00 },
-+	{ 0x3026, 0x02251100 },
-+	{ 0x3028, 0x02251401 },
-+	{ 0x302A, 0x02250200 },
-+	{ 0x302C, 0x02251001 },
-+	{ 0x302E, 0x02250200 },
-+	{ 0x3030, 0xE2310266 },
-+	{ 0x3032, 0x82314B15 },
-+	{ 0x3034, 0x82310B15 },
-+	{ 0x3036, 0xE2315294 },
-+	{ 0x3038, 0x02310B00 },
-+	{ 0x303A, 0x8225160D },
-+	{ 0x303C, 0x0225F501 },
-+	{ 0x303E, 0x8225061C },
-+	{ 0x3040, 0x02251000 },
-+	{ 0x3042, 0x04051101 },
-+	{ 0x3044, 0x02251800 },
-+	{ 0x3046, 0x42251203 },
-+	{ 0x3048, 0x02251101 },
-+	{ 0x304A, 0xC2251300 },
-+	{ 0x304C, 0x2225FB02 },
-+	{ 0x3050, 0xC2263632 },
-+	{ 0x3052, 0xC2300001 },
-+	{ 0x3054, 0x8226100E },
-+	{ 0x3056, 0x22261803 },
-+	{ 0x3058, 0x82310B02 },
-+	{ 0x305A, 0xE231023B },
-+	{ 0x305C, 0x02313B01 },
-+	{ 0x305E, 0x62300000 },
-+	{ 0x3060, 0xE2314288 },
-+	{ 0x3062, 0x02310B00 },
-+	{ 0x3064, 0x02310B00 },
-+	{ 0x3066, 0x04050000 },
-+	{ 0x3068, 0x42310C03 },
-+	{ 0x306A, 0xE2310227 },
-+	{ 0x306C, 0x02313B01 },
-+	{ 0x306E, 0xE2314266 },
-+	{ 0x3070, 0xE2315294 },
-+	{ 0x3072, 0x02310B00 },
-+	{ 0x3074, 0x02310B00 },
-+	{ 0x3076, 0x02261100 },
-+	{ 0x3078, 0x02261401 },
-+	{ 0x307A, 0x02260200 },
-+	{ 0x307C, 0x02261001 },
-+	{ 0x307E, 0x02260200 },
-+	{ 0x3080, 0xE2310266 },
-+	{ 0x3082, 0x82314B17 },
-+	{ 0x3084, 0x82310B17 },
-+	{ 0x3086, 0xE2315294 },
-+	{ 0x3088, 0x02310B00 },
-+	{ 0x308A, 0x8226160D },
-+	{ 0x308C, 0x0226F501 },
-+	{ 0x308E, 0x8226061C },
-+	{ 0x3090, 0x02261000 },
-+	{ 0x3092, 0x04051101 },
-+	{ 0x3094, 0x02261800 },
-+	{ 0x3096, 0x42261203 },
-+	{ 0x3098, 0x02261101 },
-+	{ 0x309A, 0xC2261300 },
-+	{ 0x309C, 0x2226FB02 },
-+	{ 0x309E, 0x0000F000 },
-+	{ 0x30A0, 0xC2273632 },
-+	{ 0x30A2, 0xC2400001 },
-+	{ 0x30A4, 0x8227100E },
-+	{ 0x30A6, 0x22271803 },
-+	{ 0x30A8, 0x82410B00 },
-+	{ 0x30AA, 0xE241023B },
-+	{ 0x30AC, 0x02413B01 },
-+	{ 0x30AE, 0x62400000 },
-+	{ 0x30B0, 0xE2414288 },
-+	{ 0x30B2, 0x02410B00 },
-+	{ 0x30B4, 0x02410B00 },
-+	{ 0x30B6, 0x04050300 },
-+	{ 0x30B8, 0x42410C02 },
-+	{ 0x30BA, 0xE2410227 },
-+	{ 0x30BC, 0x02413B01 },
-+	{ 0x30BE, 0xE2414266 },
-+	{ 0x30C0, 0xE2415294 },
-+	{ 0x30C2, 0x02410B00 },
-+	{ 0x30C4, 0x02410B00 },
-+	{ 0x30C6, 0x02271100 },
-+	{ 0x30C8, 0x02271401 },
-+	{ 0x30CA, 0x02270200 },
-+	{ 0x30CC, 0x02271001 },
-+	{ 0x30CE, 0x02270200 },
-+	{ 0x30D0, 0xE2410266 },
-+	{ 0x30D2, 0x82414B15 },
-+	{ 0x30D4, 0x82410B15 },
-+	{ 0x30D6, 0xE2415294 },
-+	{ 0x30D8, 0x02410B00 },
-+	{ 0x30DA, 0x8227160D },
-+	{ 0x30DC, 0x0227F501 },
-+	{ 0x30DE, 0x8227061C },
-+	{ 0x30E0, 0x02271000 },
-+	{ 0x30E2, 0x04051101 },
-+	{ 0x30E4, 0x02271800 },
-+	{ 0x30E6, 0x42271203 },
-+	{ 0x30E8, 0x02271101 },
-+	{ 0x30EA, 0xC2271300 },
-+	{ 0x30EC, 0x2227FB02 },
-+	{ 0x30F0, 0xC2283632 },
-+	{ 0x30F2, 0xC2400001 },
-+	{ 0x30F4, 0x8228100E },
-+	{ 0x30F6, 0x22281803 },
-+	{ 0x30F8, 0x82410B02 },
-+	{ 0x30FA, 0xE241023B },
-+	{ 0x30FC, 0x02413B01 },
-+	{ 0x30FE, 0x62400000 },
-+	{ 0x3100, 0xE2414288 },
-+	{ 0x3102, 0x02410B00 },
-+	{ 0x3104, 0x02410B00 },
-+	{ 0x3106, 0x04050200 },
-+	{ 0x3108, 0x42410C03 },
-+	{ 0x310A, 0xE2410227 },
-+	{ 0x310C, 0x02413B01 },
-+	{ 0x310E, 0xE2414266 },
-+	{ 0x3110, 0xE2415294 },
-+	{ 0x3112, 0x02410B00 },
-+	{ 0x3114, 0x02410B00 },
-+	{ 0x3116, 0x02281100 },
-+	{ 0x3118, 0x02281401 },
-+	{ 0x311A, 0x02280200 },
-+	{ 0x311C, 0x02281001 },
-+	{ 0x311E, 0x02280200 },
-+	{ 0x3120, 0xE2410266 },
-+	{ 0x3122, 0x82414B17 },
-+	{ 0x3124, 0x82410B17 },
-+	{ 0x3126, 0xE2415294 },
-+	{ 0x3128, 0x02410B00 },
-+	{ 0x312A, 0x8228160D },
-+	{ 0x312C, 0x0228F501 },
-+	{ 0x312E, 0x8228061C },
-+	{ 0x3130, 0x02281000 },
-+	{ 0x3132, 0x04051101 },
-+	{ 0x3134, 0x02281800 },
-+	{ 0x3136, 0x42281203 },
-+	{ 0x3138, 0x02281101 },
-+	{ 0x313A, 0xC2281300 },
-+	{ 0x313C, 0x2228FB02 },
-+	{ 0x3140, 0xC2293632 },
-+	{ 0x3142, 0xC2500001 },
-+	{ 0x3144, 0x8229100E },
-+	{ 0x3146, 0x22291803 },
-+	{ 0x3148, 0x82510B00 },
-+	{ 0x314A, 0xE251023B },
-+	{ 0x314C, 0x02513B01 },
-+	{ 0x314E, 0x62500000 },
-+	{ 0x3150, 0xE2514288 },
-+	{ 0x3152, 0x02510B00 },
-+	{ 0x3154, 0x02510B00 },
-+	{ 0x3156, 0x04050500 },
-+	{ 0x3158, 0x42510C02 },
-+	{ 0x315A, 0xE2510227 },
-+	{ 0x315C, 0x02513B01 },
-+	{ 0x315E, 0xE2514266 },
-+	{ 0x3160, 0xE2515294 },
-+	{ 0x3162, 0x02510B00 },
-+	{ 0x3164, 0x02510B00 },
-+	{ 0x3166, 0x02291100 },
-+	{ 0x3168, 0x02291401 },
-+	{ 0x316A, 0x02290200 },
-+	{ 0x316C, 0x02291001 },
-+	{ 0x316E, 0x02290200 },
-+	{ 0x3170, 0xE2510266 },
-+	{ 0x3172, 0x82514B15 },
-+	{ 0x3174, 0x82510B15 },
-+	{ 0x3176, 0xE2515294 },
-+	{ 0x3178, 0x02510B00 },
-+	{ 0x317A, 0x8229160D },
-+	{ 0x317C, 0x0229F501 },
-+	{ 0x317E, 0x8229061C },
-+	{ 0x3180, 0x02291000 },
-+	{ 0x3182, 0x04051101 },
-+	{ 0x3184, 0x02291800 },
-+	{ 0x3186, 0x42291203 },
-+	{ 0x3188, 0x02291101 },
-+	{ 0x318A, 0xC2291300 },
-+	{ 0x318C, 0x2229FB02 },
-+	{ 0x3190, 0xC22A3632 },
-+	{ 0x3192, 0xC2500001 },
-+	{ 0x3194, 0x822A100E },
-+	{ 0x3196, 0x222A1803 },
-+	{ 0x3198, 0x82510B02 },
-+	{ 0x319A, 0xE251023B },
-+	{ 0x319C, 0x02513B01 },
-+	{ 0x319E, 0x62500000 },
-+	{ 0x31A0, 0xE2514288 },
-+	{ 0x31A2, 0x02510B00 },
-+	{ 0x31A4, 0x02510B00 },
-+	{ 0x31A6, 0x04050400 },
-+	{ 0x31A8, 0x42510C03 },
-+	{ 0x31AA, 0xE2510227 },
-+	{ 0x31AC, 0x02513B01 },
-+	{ 0x31AE, 0xE2514266 },
-+	{ 0x31B0, 0xE2515294 },
-+	{ 0x31B2, 0x02510B00 },
-+	{ 0x31B4, 0x02510B00 },
-+	{ 0x31B6, 0x022A1100 },
-+	{ 0x31B8, 0x022A1401 },
-+	{ 0x31BA, 0x022A0200 },
-+	{ 0x31BC, 0x022A1001 },
-+	{ 0x31BE, 0x022A0200 },
-+	{ 0x31C0, 0xE2510266 },
-+	{ 0x31C2, 0x82514B17 },
-+	{ 0x31C4, 0x82510B17 },
-+	{ 0x31C6, 0xE2515294 },
-+	{ 0x31C8, 0x02510B00 },
-+	{ 0x31CA, 0x822A160D },
-+	{ 0x31CC, 0x022AF501 },
-+	{ 0x31CE, 0x822A061C },
-+	{ 0x31D0, 0x022A1000 },
-+	{ 0x31D2, 0x04051101 },
-+	{ 0x31D4, 0x022A1800 },
-+	{ 0x31D6, 0x422A1203 },
-+	{ 0x31D8, 0x022A1101 },
-+	{ 0x31DA, 0xC22A1300 },
-+	{ 0x31DC, 0x222AFB02 },
-+};
-+
-+static const struct reg_sequence cs47l85_revc_32_patch[] = {
-+	{ 0x3380, 0xE4103066 },
-+	{ 0x3382, 0xE4103070 },
-+	{ 0x3384, 0xE4103078 },
-+	{ 0x3386, 0xE4103080 },
-+	{ 0x3388, 0xE410F080 },
-+	{ 0x338A, 0xE4143066 },
-+	{ 0x338C, 0xE4143070 },
-+	{ 0x338E, 0xE4143078 },
-+	{ 0x3390, 0xE4143080 },
-+	{ 0x3392, 0xE414F080 },
-+	{ 0x3394, 0xE4103078 },
-+	{ 0x3396, 0xE4103070 },
-+	{ 0x3398, 0xE4103066 },
-+	{ 0x339A, 0xE410F056 },
-+	{ 0x339C, 0xE4143078 },
-+	{ 0x339E, 0xE4143070 },
-+	{ 0x33A0, 0xE4143066 },
-+	{ 0x33A2, 0xE414F056 },
-+};
-+
-+int cs47l85_patch(struct madera *madera)
++int cs47l90_patch(struct madera *madera)
 +{
-+	int ret = 0;
-+	const struct reg_sequence *patch16;
-+	const struct reg_sequence *patch32;
-+	unsigned int num16, num32;
++	int ret;
 +
-+	switch (madera->rev) {
-+	case 0:
-+	case 1:
-+		patch16 = cs47l85_reva_16_patch;
-+		num16 = ARRAY_SIZE(cs47l85_reva_16_patch);
-+
-+		patch32 = cs47l85_reva_32_patch;
-+		num32 = ARRAY_SIZE(cs47l85_reva_32_patch);
-+		break;
-+	default:
-+		patch16 = cs47l85_revc_16_patch;
-+		num16 = ARRAY_SIZE(cs47l85_revc_16_patch);
-+
-+		patch32 = cs47l85_revc_32_patch;
-+		num32 = ARRAY_SIZE(cs47l85_revc_32_patch);
-+		break;
-+	}
-+
-+	ret = regmap_register_patch(madera->regmap, patch16, num16);
++	ret = regmap_register_patch(madera->regmap,
++				    cs47l90_reva_16_patch,
++				    ARRAY_SIZE(cs47l90_reva_16_patch));
 +	if (ret < 0) {
 +		dev_err(madera->dev,
 +			"Error in applying 16-bit patch: %d\n", ret);
 +		return ret;
 +	}
 +
-+	ret = regmap_register_patch(madera->regmap_32bit, patch32, num32);
-+	if (ret < 0) {
-+		dev_err(madera->dev,
-+			"Error in applying 32-bit patch: %d\n", ret);
-+		return ret;
-+	}
-+
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(cs47l85_patch);
++EXPORT_SYMBOL_GPL(cs47l90_patch);
 +
-+static const struct reg_default cs47l85_reg_default[] = {
++static const struct reg_default cs47l90_reg_default[] = {
 +	{ 0x00000020, 0x0000 }, /* R32 (0x20) - Tone Generator 1 */
 +	{ 0x00000021, 0x1000 }, /* R33 (0x21) - Tone Generator 2 */
 +	{ 0x00000022, 0x0000 }, /* R34 (0x22) - Tone Generator 3 */
@@ -437,8 +154,8 @@ index 0000000..92512d5
 +	{ 0x00000062, 0x01ff }, /* R98 (0x62) - Sample Rate Sequence Select 2 */
 +	{ 0x00000063, 0x01ff }, /* R99 (0x63) - Sample Rate Sequence Select 3 */
 +	{ 0x00000064, 0x01ff }, /* R100 (0x64) - Sample Rate Sequence Select 4 */
-+	{ 0x00000066, 0x01ff }, /* R102 (0x66) - Always On Triggers Sequence Select 1*/
-+	{ 0x00000067, 0x01ff }, /* R103 (0x67) - Always On Triggers Sequence Select 2*/
++	{ 0x00000066, 0x01ff }, /* R102 (0x66) - Always On Triggers Sequence Select 1 */
++	{ 0x00000067, 0x01ff }, /* R103 (0x67) - Always On Triggers Sequence Select 2 */
 +	{ 0x00000090, 0x0000 }, /* R144 (0x90) - Haptics Control 1 */
 +	{ 0x00000091, 0x7fff }, /* R145 (0x91) - Haptics Control 2 */
 +	{ 0x00000092, 0x0000 }, /* R146 (0x92) - Haptics phase 1 intensity */
@@ -453,10 +170,10 @@ index 0000000..92512d5
 +	{ 0x00000102, 0x0011 }, /* R258 (0x102) - Sample rate 1 */
 +	{ 0x00000103, 0x0011 }, /* R259 (0x103) - Sample rate 2 */
 +	{ 0x00000104, 0x0011 }, /* R260 (0x104) - Sample rate 3 */
-+	{ 0x00000112, 0x0305 }, /* R274 (0x112) - Async clock 1 */
++	{ 0x00000112, 0x0405 }, /* R274 (0x112) - Async clock 1 */
 +	{ 0x00000113, 0x0011 }, /* R275 (0x113) - Async sample rate 1 */
 +	{ 0x00000114, 0x0011 }, /* R276 (0x114) - Async sample rate 2 */
-+	{ 0x00000120, 0x0305 }, /* R288 (0x120) - DSP Clock 1 */
++	{ 0x00000120, 0x0404 }, /* R288 (0x120) - DSP Clock 1 */
 +	{ 0x00000122, 0x0000 }, /* R290 (0x122) - DSP Clock 2 */
 +	{ 0x00000149, 0x0000 }, /* R329 (0x149) - Output system clock */
 +	{ 0x0000014a, 0x0000 }, /* R330 (0x14a) - Output async clock */
@@ -473,6 +190,7 @@ index 0000000..92512d5
 +	{ 0x00000176, 0x0000 }, /* R374 (0x176) - FLL1 Control 6 */
 +	{ 0x00000177, 0x0281 }, /* R375 (0x177) - FLL1 Loop Filter Test 1 */
 +	{ 0x00000179, 0x0000 }, /* R377 (0x179) - FLL1 Control 7 */
++	{ 0x0000017a, 0x2906 }, /* R377 (0x17a) - FLL1 Efs 2 */
 +	{ 0x00000181, 0x0000 }, /* R385 (0x181) - FLL1 Synchroniser 1 */
 +	{ 0x00000182, 0x0000 }, /* R386 (0x182) - FLL1 Synchroniser 2 */
 +	{ 0x00000183, 0x0000 }, /* R387 (0x183) - FLL1 Synchroniser 3 */
@@ -481,7 +199,7 @@ index 0000000..92512d5
 +	{ 0x00000186, 0x0000 }, /* R390 (0x186) - FLL1 Synchroniser 6 */
 +	{ 0x00000187, 0x0001 }, /* R391 (0x187) - FLL1 Synchroniser 7 */
 +	{ 0x00000189, 0x0000 }, /* R393 (0x189) - FLL1 Spread Spectrum */
-+	{ 0x0000018a, 0x000c }, /* R394 (0x18a) - FLL1 GPIO Clock */
++	{ 0x0000018a, 0x0004 }, /* R394 (0x18a) - FLL1 GPIO Clock */
 +	{ 0x00000191, 0x0002 }, /* R401 (0x191) - FLL2 Control 1 */
 +	{ 0x00000192, 0x0008 }, /* R402 (0x192) - FLL2 Control 2 */
 +	{ 0x00000193, 0x0018 }, /* R403 (0x193) - FLL2 Control 3 */
@@ -490,6 +208,7 @@ index 0000000..92512d5
 +	{ 0x00000196, 0x0000 }, /* R406 (0x196) - FLL2 Control 6 */
 +	{ 0x00000197, 0x0281 }, /* R407 (0x197) - FLL2 Loop Filter Test 1 */
 +	{ 0x00000199, 0x0000 }, /* R409 (0x199) - FLL2 Control 7 */
++	{ 0x0000019a, 0x2906 }, /* R410 (0x19a) - FLL2 Efs 2 */
 +	{ 0x000001a1, 0x0000 }, /* R417 (0x1a1) - FLL2 Synchroniser 1 */
 +	{ 0x000001a2, 0x0000 }, /* R418 (0x1a2) - FLL2 Synchroniser 2 */
 +	{ 0x000001a3, 0x0000 }, /* R419 (0x1a3) - FLL2 Synchroniser 3 */
@@ -498,95 +217,102 @@ index 0000000..92512d5
 +	{ 0x000001a6, 0x0000 }, /* R422 (0x1a6) - FLL2 Synchroniser 6 */
 +	{ 0x000001a7, 0x0001 }, /* R423 (0x1a7) - FLL2 Synchroniser 7 */
 +	{ 0x000001a9, 0x0000 }, /* R425 (0x1a9) - FLL2 Spread Spectrum */
-+	{ 0x000001aa, 0x000c }, /* R426 (0x1aa) - FLL2 GPIO Clock */
-+	{ 0x000001b1, 0x0002 }, /* R433 (0x1b1) - FLL3 Control 1 */
-+	{ 0x000001b2, 0x0008 }, /* R434 (0x1b2) - FLL3 Control 2 */
-+	{ 0x000001b3, 0x0018 }, /* R435 (0x1b3) - FLL3 Control 3 */
-+	{ 0x000001b4, 0x007d }, /* R436 (0x1b4) - FLL3 Control 4 */
-+	{ 0x000001b5, 0x0000 }, /* R437 (0x1b5) - FLL3 Control 5 */
-+	{ 0x000001b6, 0x0000 }, /* R438 (0x1b6) - FLL3 Control 6 */
-+	{ 0x000001b7, 0x0281 }, /* R439 (0x1b7) - FLL3 Loop Filter Test 1 */
-+	{ 0x000001b9, 0x0000 }, /* R441 (0x1b9) - FLL3 Control 7 */
-+	{ 0x000001c1, 0x0000 }, /* R449 (0x1c1) - FLL3 Synchroniser 1 */
-+	{ 0x000001c2, 0x0000 }, /* R450 (0x1c2) - FLL3 Synchroniser 2 */
-+	{ 0x000001c3, 0x0000 }, /* R451 (0x1c3) - FLL3 Synchroniser 3 */
-+	{ 0x000001c4, 0x0000 }, /* R452 (0x1c4) - FLL3 Synchroniser 4 */
-+	{ 0x000001c5, 0x0000 }, /* R453 (0x1c5) - FLL3 Synchroniser 5 */
-+	{ 0x000001c6, 0x0000 }, /* R454 (0x1c6) - FLL3 Synchroniser 6 */
-+	{ 0x000001c7, 0x0001 }, /* R455 (0x1c7) - FLL3 Synchroniser 7 */
-+	{ 0x000001c9, 0x0000 }, /* R457 (0x1c9) - FLL3 Spread Spectrum */
-+	{ 0x000001ca, 0x000C }, /* R458 (0x1ca) - FLL3 GPIO Clock */
++	{ 0x000001aa, 0x0004 }, /* R426 (0x1aa) - FLL2 GPIO Clock */
++	{ 0x000001d1, 0x0004 }, /* R465 (0x1d1) - FLLAO_CONTROL_1 */
++	{ 0x000001d2, 0x0004 }, /* R466 (0x1d2) - FLLAO_CONTROL_2 */
++	{ 0x000001d3, 0x0000 }, /* R467 (0x1d3) - FLLAO_CONTROL_3 */
++	{ 0x000001d4, 0x0000 }, /* R468 (0x1d4) - FLLAO_CONTROL_4 */
++	{ 0x000001d5, 0x0001 }, /* R469 (0x1d5) - FLLAO_CONTROL_5 */
++	{ 0x000001d6, 0x8004 }, /* R470 (0x1d6) - FLLAO_CONTROL_6 */
++	{ 0x000001d8, 0x0000 }, /* R472 (0x1d8) - FLLAO_CONTROL_7 */
++	{ 0x000001da, 0x0070 }, /* R474 (0x1da) - FLLAO_CONTROL_8 */
++	{ 0x000001db, 0x0000 }, /* R475 (0x1db) - FLLAO_CONTROL_9 */
++	{ 0x000001dc, 0x06da }, /* R476 (0x1dc) - FLLAO_CONTROL_10 */
++	{ 0x000001dd, 0x0011 }, /* R477 (0x1dd) - FLLAO_CONTROL_11 */
 +	{ 0x00000200, 0x0006 }, /* R512 (0x200) - Mic Charge Pump 1 */
-+	{ 0x0000020b, 0x0400 }, /* R523 (0x20B) - HP Charge Pump 8 */
-+	{ 0x00000210, 0x0184 }, /* R528 (0x210) - LDO1 Control 1 */
 +	{ 0x00000213, 0x03e4 }, /* R531 (0x213) - LDO2 Control 1 */
 +	{ 0x00000218, 0x00e6 }, /* R536 (0x218) - Mic Bias Ctrl 1 */
 +	{ 0x00000219, 0x00e6 }, /* R537 (0x219) - Mic Bias Ctrl 2 */
-+	{ 0x0000021a, 0x00e6 }, /* R538 (0x21a) - Mic Bias Ctrl 3 */
-+	{ 0x0000021b, 0x00e6 }, /* R539 (0x21b) - Mic Bias Ctrl 4 */
++	{ 0x0000021c, 0x2222 }, /* R540 (0x21c) - Mic Bias Ctrl 5 */
++	{ 0x0000021e, 0x2222 }, /* R542 (0x21e) - Mic Bias Ctrl 6 */
 +	{ 0x0000027e, 0x0000 }, /* R638 (0x27e) - EDRE HP stereo control */
-+	{ 0x00000293, 0x0000 }, /* R659 (0x293) - Accessory Detect Mode 1 */
++	{ 0x00000293, 0x0080 }, /* R659 (0x293) - Accessory Detect Mode 1 */
++	{ 0x00000299, 0x0000 }, /* R665 (0x299) - Headphone Detect 0 */
 +	{ 0x0000029b, 0x0000 }, /* R667 (0x29b) - Headphone Detect 1 */
-+	{ 0x000002a3, 0x1102 }, /* R675 (0x2a3) - Mic Detect Control 1 */
-+	{ 0x000002a4, 0x009f }, /* R676 (0x2a4) - Mic Detect Control 2 */
-+	{ 0x000002a6, 0x3737 }, /* R678 (0x2a6) - Mic Detect Level 1 */
-+	{ 0x000002a7, 0x2c37 }, /* R679 (0x2a7) - Mic Detect Level 2 */
-+	{ 0x000002a8, 0x1422 }, /* R680 (0x2a8) - Mic Detect Level 3 */
-+	{ 0x000002a9, 0x030a }, /* R681 (0x2a9) - Mic Detect Level 4 */
++	{ 0x000002a2, 0x0010 }, /* R674 (0x2a2) - Mic Detect 1 Control 0 */
++	{ 0x000002a3, 0x1102 }, /* R675 (0x2a3) - Mic Detect 1 Control 1 */
++	{ 0x000002a4, 0x009f }, /* R676 (0x2a4) - Mic Detect 1 Control 2 */
++	{ 0x000002a6, 0x3d3d }, /* R678 (0x2a6) - Mic Detect 1 Level 1 */
++	{ 0x000002a7, 0x3d3d }, /* R679 (0x2a7) - Mic Detect 1 Level 2 */
++	{ 0x000002a8, 0x333d }, /* R680 (0x2a8) - Mic Detect 1 Level 3 */
++	{ 0x000002a9, 0x202d }, /* R681 (0x2a9) - Mic Detect 1 Level 4 */
++	{ 0x000002b2, 0x0010 }, /* R690 (0x2b2) - Mic Detect 2 Control 0 */
++	{ 0x000002b3, 0x1102 }, /* R691 (0x2b3) - Mic Detect 2 Control 1 */
++	{ 0x000002b4, 0x009f }, /* R692 (0x2b4) - Mic Detect 2 Control 2 */
++	{ 0x000002b6, 0x3d3d }, /* R694 (0x2b6) - Mic Detect 2 Level 1 */
++	{ 0x000002b7, 0x3d3d }, /* R695 (0x2b7) - Mic Detect 2 Level 2 */
++	{ 0x000002b8, 0x333d }, /* R696 (0x2b8) - Mic Detect 2 Level 3 */
++	{ 0x000002b9, 0x202d }, /* R697 (0x2b9) - Mic Detect 2 Level 4 */
 +	{ 0x000002c6, 0x0010 }, /* R710 (0x2c6) - Mic Clamp control */
 +	{ 0x000002c8, 0x0000 }, /* R712 (0x2c8) - GP switch 1 */
 +	{ 0x000002d3, 0x0000 }, /* R723 (0x2d3) - Jack detect analogue */
 +	{ 0x00000300, 0x0000 }, /* R768 (0x300) - Input Enables */
-+	{ 0x00000308, 0x0000 }, /* R776 (0x308) - Input Rate */
++	{ 0x00000308, 0x0400 }, /* R776 (0x308) - Input Rate */
 +	{ 0x00000309, 0x0022 }, /* R777 (0x309) - Input Volume Ramp */
-+	{ 0x0000030c, 0x0002 }, /* R780 (0x30c) - HPF Control */
++	{ 0x0000030c, 0x0002 }, /* R780 (0x30C) - HPF Control */
 +	{ 0x00000310, 0x0080 }, /* R784 (0x310) - IN1L Control */
 +	{ 0x00000311, 0x0180 }, /* R785 (0x311) - ADC Digital Volume 1L */
 +	{ 0x00000312, 0x0500 }, /* R786 (0x312) - DMIC1L Control */
++	{ 0x00000313, 0x0000 }, /* R787 (0x313) - IN1L Rate Control */
 +	{ 0x00000314, 0x0080 }, /* R788 (0x314) - IN1R Control */
 +	{ 0x00000315, 0x0180 }, /* R789 (0x315) - ADC Digital Volume 1R */
 +	{ 0x00000316, 0x0000 }, /* R790 (0x316) - DMIC1R Control */
++	{ 0x00000317, 0x0000 }, /* R791 (0x317) - IN1R Rate Control */
 +	{ 0x00000318, 0x0080 }, /* R792 (0x318) - IN2L Control */
 +	{ 0x00000319, 0x0180 }, /* R793 (0x319) - ADC Digital Volume 2L */
 +	{ 0x0000031a, 0x0500 }, /* R794 (0x31a) - DMIC2L Control */
++	{ 0x0000031b, 0x0000 }, /* R795 (0x31b) - IN2L Rate Control */
 +	{ 0x0000031c, 0x0080 }, /* R796 (0x31c) - IN2R Control */
 +	{ 0x0000031d, 0x0180 }, /* R797 (0x31d) - ADC Digital Volume 2R */
 +	{ 0x0000031e, 0x0000 }, /* R798 (0x31e) - DMIC2R Control */
-+	{ 0x00000320, 0x0080 }, /* R800 (0x320) - IN3L Control */
++	{ 0x0000031f, 0x0000 }, /* R799 (0x31f) - IN2R Rate Control */
++	{ 0x00000320, 0x0000 }, /* R800 (0x320) - IN3L Control */
 +	{ 0x00000321, 0x0180 }, /* R801 (0x321) - ADC Digital Volume 3L */
 +	{ 0x00000322, 0x0500 }, /* R802 (0x322) - DMIC3L Control */
-+	{ 0x00000324, 0x0080 }, /* R804 (0x324) - IN3R Control */
++	{ 0x00000323, 0x0000 }, /* R803 (0x323) - IN3L Rate Control */
++	{ 0x00000324, 0x0000 }, /* R804 (0x324) - IN3R Control */
 +	{ 0x00000325, 0x0180 }, /* R805 (0x325) - ADC Digital Volume 3R */
 +	{ 0x00000326, 0x0000 }, /* R806 (0x326) - DMIC3R Control */
++	{ 0x00000327, 0x0000 }, /* R807 (0x327) - IN3R Rate Control */
 +	{ 0x00000328, 0x0000 }, /* R808 (0x328) - IN4 Control */
 +	{ 0x00000329, 0x0180 }, /* R809 (0x329) - ADC Digital Volume 4L */
 +	{ 0x0000032a, 0x0500 }, /* R810 (0x32a) - DMIC4L Control */
++	{ 0x0000032b, 0x0000 }, /* R811 (0x32b) - IN4L Rate Control */
 +	{ 0x0000032c, 0x0000 }, /* R812 (0x32c) - IN4R Control */
 +	{ 0x0000032d, 0x0180 }, /* R813 (0x32d) - ADC Digital Volume 4R */
 +	{ 0x0000032e, 0x0000 }, /* R814 (0x32e) - DMIC4R Control */
++	{ 0x0000032f, 0x0000 }, /* R815 (0x32f) - IN4R Rate Control */
 +	{ 0x00000330, 0x0000 }, /* R816 (0x330) - IN5L Control */
 +	{ 0x00000331, 0x0180 }, /* R817 (0x331) - ADC Digital Volume 5L */
 +	{ 0x00000332, 0x0500 }, /* R818 (0x332) - DMIC5L Control */
++	{ 0x00000333, 0x0000 }, /* R819 (0x333) - IN5L Rate Control */
 +	{ 0x00000334, 0x0000 }, /* R820 (0x334) - IN5R Control */
 +	{ 0x00000335, 0x0180 }, /* R821 (0x335) - ADC Digital Volume 5R */
 +	{ 0x00000336, 0x0000 }, /* R822 (0x336) - DMIC5R Control */
-+	{ 0x00000338, 0x0000 }, /* R824 (0x338) - IN6L Control */
-+	{ 0x00000339, 0x0180 }, /* R825 (0x339) - ADC Digital Volume 6L */
-+	{ 0x0000033a, 0x0500 }, /* R826 (0x33a) - DMIC6L Control */
-+	{ 0x0000033c, 0x0000 }, /* R828 (0x33c) - IN6R Control */
-+	{ 0x0000033d, 0x0180 }, /* R829 (0x33d) - ADC Digital Volume 6R */
-+	{ 0x0000033e, 0x0000 }, /* R830 (0x33e) - DMIC6R Control */
++	{ 0x00000337, 0x0000 }, /* R823 (0x337) - IN5R Rate Control */
 +	{ 0x00000400, 0x0000 }, /* R1024 (0x400) - Output Enables 1 */
 +	{ 0x00000408, 0x0000 }, /* R1032 (0x408) - Output Rate 1 */
 +	{ 0x00000409, 0x0022 }, /* R1033 (0x409) - Output Volume Ramp */
 +	{ 0x00000410, 0x0080 }, /* R1040 (0x410) - Output Path Config 1L */
 +	{ 0x00000411, 0x0180 }, /* R1041 (0x411) - DAC Digital Volume 1L */
++	{ 0x00000412, 0x0000 }, /* R1042 (0x412) - Output Path Config 1 */
 +	{ 0x00000413, 0x0001 }, /* R1043 (0x413) - Noise Gate Select 1L */
 +	{ 0x00000414, 0x0080 }, /* R1044 (0x414) - Output Path Config 1R */
 +	{ 0x00000415, 0x0180 }, /* R1045 (0x415) - DAC Digital Volume 1R */
 +	{ 0x00000417, 0x0002 }, /* R1047 (0x417) - Noise Gate Select 1R */
 +	{ 0x00000418, 0x0080 }, /* R1048 (0x418) - Output Path Config 2L */
 +	{ 0x00000419, 0x0180 }, /* R1049 (0x419) - DAC Digital Volume 2L */
++	{ 0x0000041a, 0x0002 }, /* R1050 (0x41a) - Output Path Config 2 */
 +	{ 0x0000041b, 0x0004 }, /* R1051 (0x41b) - Noise Gate Select 2L */
 +	{ 0x0000041c, 0x0080 }, /* R1052 (0x41c) - Output Path Config 2R */
 +	{ 0x0000041d, 0x0180 }, /* R1053 (0x41d) - DAC Digital Volume 2R */
@@ -597,39 +323,21 @@ index 0000000..92512d5
 +	{ 0x00000424, 0x0080 }, /* R1060 (0x424) - Output Path Config 3R */
 +	{ 0x00000425, 0x0180 }, /* R1061 (0x425) - DAC Digital Volume 3R */
 +	{ 0x00000427, 0x0020 }, /* R1063 (0x427) - Noise Gate Select 3R */
-+	{ 0x00000428, 0x0000 }, /* R1064 (0x428) - Output Path Config 4L */
-+	{ 0x00000429, 0x0180 }, /* R1065 (0x429) - DAC Digital Volume 4L */
-+	{ 0x0000042b, 0x0040 }, /* R1067 (0x42b) - Noise Gate Select 4L */
-+	{ 0x0000042c, 0x0000 }, /* R1068 (0x42c) - Output Path Config 4R */
-+	{ 0x0000042d, 0x0180 }, /* R1069 (0x42d) - DAC Digital Volume 4R */
-+	{ 0x0000042f, 0x0080 }, /* R1071 (0x42f) - Noise Gate Select 4R */
 +	{ 0x00000430, 0x0000 }, /* R1072 (0x430) - Output Path Config 5L */
 +	{ 0x00000431, 0x0180 }, /* R1073 (0x431) - DAC Digital Volume 5L */
 +	{ 0x00000433, 0x0100 }, /* R1075 (0x433) - Noise Gate Select 5L */
 +	{ 0x00000434, 0x0000 }, /* R1076 (0x434) - Output Path Config 5R */
 +	{ 0x00000435, 0x0180 }, /* R1077 (0x435) - DAC Digital Volume 5R */
 +	{ 0x00000437, 0x0200 }, /* R1079 (0x437) - Noise Gate Select 5R */
-+	{ 0x00000438, 0x0000 }, /* R1080 (0x438) - Output Path Config 6L */
-+	{ 0x00000439, 0x0180 }, /* R1081 (0x439) - DAC Digital Volume 6L */
-+	{ 0x0000043b, 0x0400 }, /* R1083 (0x43b) - Noise Gate Select 6L */
-+	{ 0x0000043c, 0x0000 }, /* R1084 (0x43c) - Output Path Config 6R */
-+	{ 0x0000043d, 0x0180 }, /* R1085 (0x43d) - DAC Digital Volume 6R */
-+	{ 0x0000043f, 0x0800 }, /* R1087 (0x43f) - Noise Gate Select 6R */
 +	{ 0x00000440, 0x003f }, /* R1088 (0x440) - DRE Enable */
-+	{ 0x00000448, 0x003f }, /* R1096 (0x448) - EDRE Enable */
-+	{ 0x0000044a, 0x0000 }, /* R1098 (0x44a) - EDRE Manual */
++	{ 0x00000448, 0x003f }, /* R1096 (0x448) - eDRE Enable */
 +	{ 0x00000450, 0x0000 }, /* R1104 (0x450) - DAC AEC Control 1 */
-+	{ 0x00000451, 0x0000 }, /* R1105 (0x451) - DAC AEC Control 2 */
 +	{ 0x00000458, 0x0000 }, /* R1112 (0x458) - Noise Gate Control */
 +	{ 0x00000490, 0x0069 }, /* R1168 (0x490) - PDM SPK1 CTRL 1 */
 +	{ 0x00000491, 0x0000 }, /* R1169 (0x491) - PDM SPK1 CTRL 2 */
-+	{ 0x00000492, 0x0069 }, /* R1170 (0x492) - PDM SPK2 CTRL 1 */
-+	{ 0x00000493, 0x0000 }, /* R1171 (0x493) - PDM SPK2 CTRL 2 */
-+	{ 0x000004a0, 0x3210 }, /* R1184 (0x4a0) - HP1 Short Circuit Ctrl */
-+	{ 0x000004a1, 0x3200 }, /* R1185 (0x4a1) - HP2 Short Circuit Ctrl */
-+	{ 0x000004a2, 0x3200 }, /* R1186 (0x4a2) - HP3 Short Circuit Ctrl */
-+	{ 0x000004a8, 0x7020 }, /* R1192 (0x4a8) - HP Test Ctrl 5 */
-+	{ 0x000004a9, 0x7020 }, /* R1193 (0x4a9) - HP Test Ctrl 6 */
++	{ 0x000004a0, 0x3080 }, /* R1184 (0x4a0) - HP1 Short Circuit Ctrl */
++	{ 0x000004a1, 0x3000 }, /* R1185 (0x4a1) - HP2 Short Circuit Ctrl */
++	{ 0x000004a2, 0x3000 }, /* R1186 (0x4a2) - HP3 Short Circuit Ctrl */
 +	{ 0x00000500, 0x000c }, /* R1280 (0x500) - AIF1 BCLK Ctrl */
 +	{ 0x00000501, 0x0000 }, /* R1281 (0x501) - AIF1 Tx Pin Ctrl */
 +	{ 0x00000502, 0x0000 }, /* R1282 (0x502) - AIF1 Rx Pin Ctrl */
@@ -786,22 +494,6 @@ index 0000000..92512d5
 +	{ 0x000006ad, 0x0080 }, /* R1709 (0x6ad) - OUT3RMIX Input 3 Volume */
 +	{ 0x000006ae, 0x0000 }, /* R1710 (0x6ae) - OUT3RMIX Input 4 Source */
 +	{ 0x000006af, 0x0080 }, /* R1711 (0x6af) - OUT3RMIX Input 4 Volume */
-+	{ 0x000006b0, 0x0000 }, /* R1712 (0x6b0) - OUT4LMIX Input 1 Source */
-+	{ 0x000006b1, 0x0080 }, /* R1713 (0x6b1) - OUT4LMIX Input 1 Volume */
-+	{ 0x000006b2, 0x0000 }, /* R1714 (0x6b2) - OUT4LMIX Input 2 Source */
-+	{ 0x000006b3, 0x0080 }, /* R1715 (0x6b3) - OUT4LMIX Input 2 Volume */
-+	{ 0x000006b4, 0x0000 }, /* R1716 (0x6b4) - OUT4LMIX Input 3 Source */
-+	{ 0x000006b5, 0x0080 }, /* R1717 (0x6b5) - OUT4LMIX Input 3 Volume */
-+	{ 0x000006b6, 0x0000 }, /* R1718 (0x6b6) - OUT4LMIX Input 4 Source */
-+	{ 0x000006b7, 0x0080 }, /* R1719 (0x6b7) - OUT4LMIX Input 4 Volume */
-+	{ 0x000006b8, 0x0000 }, /* R1720 (0x6b8) - OUT4RMIX Input 1 Source */
-+	{ 0x000006b9, 0x0080 }, /* R1721 (0x6b9) - OUT4RMIX Input 1 Volume */
-+	{ 0x000006ba, 0x0000 }, /* R1722 (0x6ba) - OUT4RMIX Input 2 Source */
-+	{ 0x000006bb, 0x0080 }, /* R1723 (0x6bb) - OUT4RMIX Input 2 Volume */
-+	{ 0x000006bc, 0x0000 }, /* R1724 (0x6bc) - OUT4RMIX Input 3 Source */
-+	{ 0x000006bd, 0x0080 }, /* R1725 (0x6bd) - OUT4RMIX Input 3 Volume */
-+	{ 0x000006be, 0x0000 }, /* R1726 (0x6be) - OUT4RMIX Input 4 Source */
-+	{ 0x000006bf, 0x0080 }, /* R1727 (0x6bf) - OUT4RMIX Input 4 Volume */
 +	{ 0x000006c0, 0x0000 }, /* R1728 (0x6c0) - OUT5LMIX Input 1 Source */
 +	{ 0x000006c1, 0x0080 }, /* R1729 (0x6c1) - OUT5LMIX Input 1 Volume */
 +	{ 0x000006c2, 0x0000 }, /* R1730 (0x6c2) - OUT5LMIX Input 2 Source */
@@ -818,22 +510,6 @@ index 0000000..92512d5
 +	{ 0x000006cd, 0x0080 }, /* R1741 (0x6cd) - OUT5RMIX Input 3 Volume */
 +	{ 0x000006ce, 0x0000 }, /* R1742 (0x6ce) - OUT5RMIX Input 4 Source */
 +	{ 0x000006cf, 0x0080 }, /* R1743 (0x6cf) - OUT5RMIX Input 4 Volume */
-+	{ 0x000006d0, 0x0000 }, /* R1744 (0x6d0) - OUT6LMIX Input 1 Source */
-+	{ 0x000006d1, 0x0080 }, /* R1745 (0x6d1) - OUT6LMIX Input 1 Volume */
-+	{ 0x000006d2, 0x0000 }, /* R1746 (0x6d2) - OUT6LMIX Input 2 Source */
-+	{ 0x000006d3, 0x0080 }, /* R1747 (0x6d3) - OUT6LMIX Input 2 Volume */
-+	{ 0x000006d4, 0x0000 }, /* R1748 (0x6d4) - OUT6LMIX Input 3 Source */
-+	{ 0x000006d5, 0x0080 }, /* R1749 (0x6d5) - OUT6LMIX Input 3 Volume */
-+	{ 0x000006d6, 0x0000 }, /* R1750 (0x6d6) - OUT6LMIX Input 4 Source */
-+	{ 0x000006d7, 0x0080 }, /* R1751 (0x6d7) - OUT6LMIX Input 4 Volume */
-+	{ 0x000006d8, 0x0000 }, /* R1752 (0x6d8) - OUT6RMIX Input 1 Source */
-+	{ 0x000006d9, 0x0080 }, /* R1753 (0x6d9) - OUT6RMIX Input 1 Volume */
-+	{ 0x000006da, 0x0000 }, /* R1754 (0x6da) - OUT6RMIX Input 2 Source */
-+	{ 0x000006db, 0x0080 }, /* R1755 (0x6db) - OUT6RMIX Input 2 Volume */
-+	{ 0x000006dc, 0x0000 }, /* R1756 (0x6dc) - OUT6RMIX Input 3 Source */
-+	{ 0x000006dd, 0x0080 }, /* R1757 (0x6dd) - OUT6RMIX Input 3 Volume */
-+	{ 0x000006de, 0x0000 }, /* R1758 (0x6de) - OUT6RMIX Input 4 Source */
-+	{ 0x000006df, 0x0080 }, /* R1759 (0x6df) - OUT6RMIX Input 4 Volume */
 +	{ 0x00000700, 0x0000 }, /* R1792 (0x700) - AIF1TX1MIX Input 1 Source */
 +	{ 0x00000701, 0x0080 }, /* R1793 (0x701) - AIF1TX1MIX Input 1 Volume */
 +	{ 0x00000702, 0x0000 }, /* R1794 (0x702) - AIF1TX1MIX Input 2 Source */
@@ -1344,7 +1020,15 @@ index 0000000..92512d5
 +	{ 0x00000c68, 0x0000 }, /* R3176 (0xc68) - DSP7AUX4MIX Input 1 Source */
 +	{ 0x00000c70, 0x0000 }, /* R3184 (0xc70) - DSP7AUX5MIX Input 1 Source */
 +	{ 0x00000c78, 0x0000 }, /* R3192 (0xc78) - DSP7AUX6MIX Input 1 Source */
-+	{ 0x00000e00, 0x0000 }, /* R3584 (0xe00) - FX Ctrl1 */
++	{ 0x00000dc0, 0x0000 }, /* R3520 (0xdc0) - DFC1MIX Input 1 Source */
++	{ 0x00000dc8, 0x0000 }, /* R3528 (0xdc8) - DFC2MIX Input 1 Source */
++	{ 0x00000dd0, 0x0000 }, /* R3536 (0xdd0) - DFC3MIX Input 1 Source */
++	{ 0x00000dd8, 0x0000 }, /* R3544 (0xdd8) - DFC4MIX Input 1 Source */
++	{ 0x00000de0, 0x0000 }, /* R3552 (0xde0) - DFC5MIX Input 1 Source */
++	{ 0x00000de8, 0x0000 }, /* R3560 (0xde8) - DFC6MIX Input 1 Source */
++	{ 0x00000df0, 0x0000 }, /* R3568 (0xdf0) - DFC7MIX Input 1 Source */
++	{ 0x00000df8, 0x0000 }, /* R3576 (0xdf8) - DFC8MIX Input 1 Source */
++	{ 0x00000e00, 0x0000 }, /* R3584 (0xe00) - FX_Ctrl1 */
 +	{ 0x00000e10, 0x6318 }, /* R3600 (0xe10) - EQ1_1 */
 +	{ 0x00000e11, 0x6300 }, /* R3601 (0xe11) - EQ1_2 */
 +	{ 0x00000e12, 0x0fc8 }, /* R3602 (0xe12) - EQ1_3 */
@@ -1434,11 +1118,11 @@ index 0000000..92512d5
 +	{ 0x00000e82, 0x0018 }, /* R3714 (0xe82) - DRC1 ctrl3 */
 +	{ 0x00000e83, 0x0000 }, /* R3715 (0xe83) - DRC1 ctrl4 */
 +	{ 0x00000e84, 0x0000 }, /* R3716 (0xe84) - DRC1 ctrl5 */
-+	{ 0x00000e88, 0x0933 }, /* R3720 (0xe88) - DRC2 ctrl1 */
-+	{ 0x00000e89, 0x0018 }, /* R3721 (0xe89) - DRC2 ctrl2 */
-+	{ 0x00000e8a, 0x0000 }, /* R3722 (0xe8a) - DRC2 ctrl3 */
++	{ 0x00000e88, 0x0018 }, /* R3720 (0xe88) - DRC2 ctrl1 */
++	{ 0x00000e89, 0x0933 }, /* R3721 (0xe89) - DRC2 ctrl2 */
++	{ 0x00000e8a, 0x0018 }, /* R3722 (0xe8a) - DRC2 ctrl3 */
 +	{ 0x00000e8b, 0x0000 }, /* R3723 (0xe8b) - DRC2 ctrl4 */
-+	{ 0x00000e8c, 0x0040 }, /* R3724 (0xe8c) - DRC2 ctrl5 */
++	{ 0x00000e8c, 0x0000 }, /* R3724 (0xe8c) - DRC2 ctrl5 */
 +	{ 0x00000ec0, 0x0000 }, /* R3776 (0xec0) - HPLPF1_1 */
 +	{ 0x00000ec1, 0x0000 }, /* R3777 (0xec1) - HPLPF1_2 */
 +	{ 0x00000ec4, 0x0000 }, /* R3780 (0xec4) - HPLPF2_1 */
@@ -1646,16 +1330,16 @@ index 0000000..92512d5
 +	{ 0x00000fc3, 0x0000 }, /* R4035 (0xfc3) - ANC Coefficient */
 +	{ 0x00000fc4, 0x0000 }, /* R4036 (0xfc4) - ANC Coefficient */
 +	{ 0x00000fc5, 0x0000 }, /* R4037 (0xfc5) - ANC Coefficient */
-+	{ 0x00001300, 0x0000 }, /* R4864 (0x1300) - DAC Comp 1 */
-+	{ 0x00001302, 0x0000 }, /* R4866 (0x1302) - DAC Comp 2 */
-+	{ 0x00001380, 0x0000 }, /* R4992 (0x1380) - FRF Coefficient 1L 1 */
-+	{ 0x00001381, 0x0000 }, /* R4993 (0x1381) - FRF Coefficient 1L 2 */
-+	{ 0x00001382, 0x0000 }, /* R4994 (0x1382) - FRF Coefficient 1L 3 */
-+	{ 0x00001383, 0x0000 }, /* R4995 (0x1383) - FRF Coefficient 1L 4 */
-+	{ 0x00001390, 0x0000 }, /* R5008 (0x1390) - FRF Coefficient 1R 1 */
-+	{ 0x00001391, 0x0000 }, /* R5009 (0x1391) - FRF Coefficient 1R 2 */
-+	{ 0x00001392, 0x0000 }, /* R5010 (0x1392) - FRF Coefficient 1R 3 */
-+	{ 0x00001393, 0x0000 }, /* R5011 (0x1393) - FRF Coefficient 1R 4 */
++	{ 0x00001300, 0x050E }, /* R4864 (0x1300) - DAC Comp 1 */
++	{ 0x00001302, 0x0101 }, /* R4866 (0x1302) - DAC Comp 2 */
++	{ 0x00001380, 0x0425 }, /* R4992 (0x1380) - FRF Coefficient 1L 1 */
++	{ 0x00001381, 0xF6D8 }, /* R4993 (0x1381) - FRF Coefficient 1L 2 */
++	{ 0x00001382, 0x0632 }, /* R4994 (0x1382) - FRF Coefficient 1L 3 */
++	{ 0x00001383, 0xFEC8 }, /* R4995 (0x1383) - FRF Coefficient 1L 4 */
++	{ 0x00001390, 0x042F }, /* R5008 (0x1390) - FRF Coefficient 1R 1 */
++	{ 0x00001391, 0xF6CA }, /* R5009 (0x1391) - FRF Coefficient 1R 2 */
++	{ 0x00001392, 0x0637 }, /* R5010 (0x1392) - FRF Coefficient 1R 3 */
++	{ 0x00001393, 0xFEC8 }, /* R5011 (0x1393) - FRF Coefficient 1R 4 */
 +	{ 0x000013a0, 0x0000 }, /* R5024 (0x13a0) - FRF Coefficient 2L 1 */
 +	{ 0x000013a1, 0x0000 }, /* R5025 (0x13a1) - FRF Coefficient 2L 2 */
 +	{ 0x000013a2, 0x0000 }, /* R5026 (0x13a2) - FRF Coefficient 2L 3 */
@@ -1672,14 +1356,6 @@ index 0000000..92512d5
 +	{ 0x000013d1, 0x0000 }, /* R5073 (0x13d1) - FRF Coefficient 3R 2 */
 +	{ 0x000013d2, 0x0000 }, /* R5074 (0x13d2) - FRF Coefficient 3R 3 */
 +	{ 0x000013d3, 0x0000 }, /* R5075 (0x13d3) - FRF Coefficient 3R 4 */
-+	{ 0x000013e0, 0x0000 }, /* R5088 (0x13e0) - FRF Coefficient 4L 1 */
-+	{ 0x000013e1, 0x0000 }, /* R5089 (0x13e1) - FRF Coefficient 4L 2 */
-+	{ 0x000013e2, 0x0000 }, /* R5090 (0x13e2) - FRF Coefficient 4L 3 */
-+	{ 0x000013e3, 0x0000 }, /* R5091 (0x13e3) - FRF Coefficient 4L 4 */
-+	{ 0x000013f0, 0x0000 }, /* R5104 (0x13f0) - FRF Coefficient 4R 1 */
-+	{ 0x000013f1, 0x0000 }, /* R5105 (0x13f1) - FRF Coefficient 4R 2 */
-+	{ 0x000013f2, 0x0000 }, /* R5106 (0x13f2) - FRF Coefficient 4R 3 */
-+	{ 0x000013f3, 0x0000 }, /* R5107 (0x13f3) - FRF Coefficient 4R 4 */
 +	{ 0x00001400, 0x0000 }, /* R5120 (0x1400) - FRF Coefficient 5L 1 */
 +	{ 0x00001401, 0x0000 }, /* R5121 (0x1401) - FRF Coefficient 5L 2 */
 +	{ 0x00001402, 0x0000 }, /* R5122 (0x1402) - FRF Coefficient 5L 3 */
@@ -1688,94 +1364,106 @@ index 0000000..92512d5
 +	{ 0x00001411, 0x0000 }, /* R5137 (0x1411) - FRF Coefficient 5R 2 */
 +	{ 0x00001412, 0x0000 }, /* R5138 (0x1412) - FRF Coefficient 5R 3 */
 +	{ 0x00001413, 0x0000 }, /* R5139 (0x1413) - FRF Coefficient 5R 4 */
-+	{ 0x00001420, 0x0000 }, /* R5152 (0x1420) - FRF Coefficient 6L 1 */
-+	{ 0x00001421, 0x0000 }, /* R5153 (0x1421) - FRF Coefficient 6L 2 */
-+	{ 0x00001422, 0x0000 }, /* R5154 (0x1422) - FRF Coefficient 6L 3 */
-+	{ 0x00001423, 0x0000 }, /* R5155 (0x1423) - FRF Coefficient 6L 4 */
-+	{ 0x00001430, 0x0000 }, /* R5168 (0x1430) - FRF Coefficient 6R 1 */
-+	{ 0x00001431, 0x0000 }, /* R5169 (0x1431) - FRF Coefficient 6R 2 */
-+	{ 0x00001432, 0x0000 }, /* R5170 (0x1432) - FRF Coefficient 6R 3 */
-+	{ 0x00001433, 0x0000 }, /* R5171 (0x1433) - FRF Coefficient 6R 4 */
++	{ 0x00001480, 0x0000 }, /* R5248 (0x1480) - DFC1_CTRL */
++	{ 0x00001482, 0x1f00 }, /* R5250 (0x1482) - DFC1_RX */
++	{ 0x00001484, 0x1f00 }, /* R5252 (0x1486) - DFC1_TX */
++	{ 0x00001486, 0x0000 }, /* R5254 (0x1486) - DFC2_CTRL */
++	{ 0x00001488, 0x1f00 }, /* R5256 (0x1488) - DFC2_RX */
++	{ 0x0000148a, 0x1f00 }, /* R5258 (0x148a) - DFC2_TX */
++	{ 0x0000148c, 0x0000 }, /* R5260 (0x148c) - DFC3_CTRL */
++	{ 0x0000148e, 0x1f00 }, /* R5262 (0x148e) - DFC3_RX */
++	{ 0x00001490, 0x1f00 }, /* R5264 (0x1490) - DFC3_TX */
++	{ 0x00001492, 0x0000 }, /* R5266 (0x1492) - DFC4_CTRL */
++	{ 0x00001494, 0x1f00 }, /* R5268 (0x1494) - DFC4_RX */
++	{ 0x00001496, 0x1f00 }, /* R5270 (0x1496) - DFC4_TX */
++	{ 0x00001498, 0x0000 }, /* R5272 (0x1498) - DFC5_CTRL */
++	{ 0x0000149a, 0x1f00 }, /* R5274 (0x149a) - DFC5_RX */
++	{ 0x0000149c, 0x1f00 }, /* R5276 (0x149c) - DFC5_TX */
++	{ 0x0000149e, 0x0000 }, /* R5278 (0x149e) - DFC6_CTRL */
++	{ 0x000014a0, 0x1f00 }, /* R5280 (0x14a0) - DFC6_RX */
++	{ 0x000014a2, 0x1f00 }, /* R5282 (0x14a2) - DFC6_TX */
++	{ 0x000014a4, 0x0000 }, /* R5284 (0x14a4) - DFC7_CTRL */
++	{ 0x000014a6, 0x1f00 }, /* R5286 (0x14a6) - DFC7_RX */
++	{ 0x000014a8, 0x1f00 }, /* R5288 (0x14a8) - DFC7_TX */
++	{ 0x000014aa, 0x0000 }, /* R5290 (0x14aa) - DFC8_CTRL */
++	{ 0x000014ac, 0x1f00 }, /* R5292 (0x14ac) - DFC8_RX */
++	{ 0x000014ae, 0x1f00 }, /* R5294 (0x14ae) - DFC8_TX */
 +	{ 0x00001700, 0x2001 }, /* R5888 (0x1700) - GPIO1 Control 1 */
-+	{ 0x00001701, 0xe000 }, /* R5889 (0x1701) - GPIO1 Control 2 */
++	{ 0x00001701, 0xf000 }, /* R5889 (0x1701) - GPIO1 Control 2 */
 +	{ 0x00001702, 0x2001 }, /* R5890 (0x1702) - GPIO2 Control 1 */
-+	{ 0x00001703, 0xe000 }, /* R5891 (0x1703) - GPIO2 Control 2 */
++	{ 0x00001703, 0xf000 }, /* R5891 (0x1702) - GPIO2 Control 2 */
 +	{ 0x00001704, 0x2001 }, /* R5892 (0x1704) - GPIO3 Control 1 */
-+	{ 0x00001705, 0xe000 }, /* R5893 (0x1705) - GPIO3 Control 2 */
++	{ 0x00001705, 0xf000 }, /* R5893 (0x1705) - GPIO3 Control 2 */
 +	{ 0x00001706, 0x2001 }, /* R5894 (0x1706) - GPIO4 Control 1 */
-+	{ 0x00001707, 0xe000 }, /* R5895 (0x1707) - GPIO4 Control 2 */
++	{ 0x00001707, 0xf000 }, /* R5895 (0x1707) - GPIO4 Control 2 */
 +	{ 0x00001708, 0x2001 }, /* R5896 (0x1708) - GPIO5 Control 1 */
-+	{ 0x00001709, 0xe000 }, /* R5897 (0x1709) - GPIO5 Control 2 */
++	{ 0x00001709, 0xf000 }, /* R5897 (0x1709) - GPIO5 Control 2 */
 +	{ 0x0000170a, 0x2001 }, /* R5898 (0x170a) - GPIO6 Control 1 */
-+	{ 0x0000170b, 0xe000 }, /* R5899 (0x170b) - GPIO6 Control 2 */
++	{ 0x0000170b, 0xf000 }, /* R5899 (0x170b) - GPIO6 Control 2 */
 +	{ 0x0000170c, 0x2001 }, /* R5900 (0x170c) - GPIO7 Control 1 */
-+	{ 0x0000170d, 0xe000 }, /* R5901 (0x170d) - GPIO7 Control 2 */
++	{ 0x0000170d, 0xf000 }, /* R5901 (0x170d) - GPIO7 Control 2 */
 +	{ 0x0000170e, 0x2001 }, /* R5902 (0x170e) - GPIO8 Control 1 */
-+	{ 0x0000170f, 0xe000 }, /* R5903 (0x170f) - GPIO8 Control 2 */
++	{ 0x0000170f, 0xf000 }, /* R5903 (0x170f) - GPIO8 Control 2 */
 +	{ 0x00001710, 0x2001 }, /* R5904 (0x1710) - GPIO9 Control 1 */
-+	{ 0x00001711, 0xe000 }, /* R5905 (0x1711) - GPIO9 Control 2 */
++	{ 0x00001711, 0xf000 }, /* R5905 (0x1711) - GPIO9 Control 2 */
 +	{ 0x00001712, 0x2001 }, /* R5906 (0x1712) - GPIO10 Control 1 */
-+	{ 0x00001713, 0xe000 }, /* R5907 (0x1713) - GPIO10 Control 2 */
++	{ 0x00001713, 0xf000 }, /* R5907 (0x1713) - GPIO10 Control 2 */
 +	{ 0x00001714, 0x2001 }, /* R5908 (0x1714) - GPIO11 Control 1 */
-+	{ 0x00001715, 0xe000 }, /* R5909 (0x1715) - GPIO11 Control 2 */
++	{ 0x00001715, 0xf000 }, /* R5909 (0x1715) - GPIO11 Control 2 */
 +	{ 0x00001716, 0x2001 }, /* R5910 (0x1716) - GPIO12 Control 1 */
-+	{ 0x00001717, 0xe000 }, /* R5911 (0x1717) - GPIO12 Control 2 */
++	{ 0x00001717, 0xf000 }, /* R5911 (0x1717) - GPIO12 Control 2 */
 +	{ 0x00001718, 0x2001 }, /* R5912 (0x1718) - GPIO13 Control 1 */
-+	{ 0x00001719, 0xE000 }, /* R5913 (0x1719) - GPIO13 Control 2 */
++	{ 0x00001719, 0xf000 }, /* R5913 (0x1719) - GPIO13 Control 2 */
 +	{ 0x0000171a, 0x2001 }, /* R5914 (0x171a) - GPIO14 Control 1 */
-+	{ 0x0000171b, 0xE000 }, /* R5915 (0x171b) - GPIO14 Control 2 */
++	{ 0x0000171b, 0xf000 }, /* R5915 (0x171b) - GPIO14 Control 2 */
 +	{ 0x0000171c, 0x2001 }, /* R5916 (0x171c) - GPIO15 Control 1 */
-+	{ 0x0000171d, 0xE000 }, /* R5917 (0x171d) - GPIO15 Control 2 */
++	{ 0x0000171d, 0xf000 }, /* R5917 (0x171d) - GPIO15 Control 2 */
 +	{ 0x0000171e, 0x2001 }, /* R5918 (0x171e) - GPIO16 Control 1 */
-+	{ 0x0000171f, 0xE000 }, /* R5919 (0x171f) - GPIO16 Control 2 */
++	{ 0x0000171f, 0xf000 }, /* R5919 (0x171f) - GPIO16 Control 2 */
 +	{ 0x00001720, 0x2001 }, /* R5920 (0x1720) - GPIO17 Control 1 */
-+	{ 0x00001721, 0xe000 }, /* R5921 (0x1721) - GPIO17 Control 2 */
++	{ 0x00001721, 0xf000 }, /* R5921 (0x1721) - GPIO17 Control 2 */
 +	{ 0x00001722, 0x2001 }, /* R5922 (0x1722) - GPIO18 Control 1 */
-+	{ 0x00001723, 0xe000 }, /* R5923 (0x1723) - GPIO18 Control 2 */
++	{ 0x00001723, 0xf000 }, /* R5923 (0x1723) - GPIO18 Control 2 */
 +	{ 0x00001724, 0x2001 }, /* R5924 (0x1724) - GPIO19 Control 1 */
-+	{ 0x00001725, 0xe000 }, /* R5925 (0x1725) - GPIO19 Control 2 */
++	{ 0x00001725, 0xf000 }, /* R5925 (0x1725) - GPIO19 Control 2 */
 +	{ 0x00001726, 0x2001 }, /* R5926 (0x1726) - GPIO20 Control 1 */
-+	{ 0x00001727, 0xe000 }, /* R5927 (0x1727) - GPIO20 Control 2 */
++	{ 0x00001727, 0xf000 }, /* R5927 (0x1727) - GPIO20 Control 2 */
 +	{ 0x00001728, 0x2001 }, /* R5928 (0x1728) - GPIO21 Control 1 */
-+	{ 0x00001729, 0xe000 }, /* R5929 (0x1729) - GPIO21 Control 2 */
++	{ 0x00001729, 0xf000 }, /* R5929 (0x1729) - GPIO21 Control 2 */
 +	{ 0x0000172a, 0x2001 }, /* R5930 (0x172a) - GPIO22 Control 1 */
-+	{ 0x0000172b, 0xe000 }, /* R5931 (0x172b) - GPIO22 Control 2 */
++	{ 0x0000172b, 0xf000 }, /* R5931 (0x172b) - GPIO22 Control 2 */
 +	{ 0x0000172c, 0x2001 }, /* R5932 (0x172c) - GPIO23 Control 1 */
-+	{ 0x0000172d, 0xe000 }, /* R5933 (0x172d) - GPIO23 Control 2 */
++	{ 0x0000172d, 0xf000 }, /* R5933 (0x172d) - GPIO23 Control 2 */
 +	{ 0x0000172e, 0x2001 }, /* R5934 (0x172e) - GPIO24 Control 1 */
-+	{ 0x0000172f, 0xe000 }, /* R5935 (0x172f) - GPIO24 Control 2 */
++	{ 0x0000172f, 0xf000 }, /* R5935 (0x172f) - GPIO24 Control 2 */
 +	{ 0x00001730, 0x2001 }, /* R5936 (0x1730) - GPIO25 Control 1 */
-+	{ 0x00001731, 0xe000 }, /* R5937 (0x1731) - GPIO25 Control 2 */
++	{ 0x00001731, 0xf000 }, /* R5937 (0x1731) - GPIO25 Control 2 */
 +	{ 0x00001732, 0x2001 }, /* R5938 (0x1732) - GPIO26 Control 1 */
-+	{ 0x00001733, 0xe000 }, /* R5939 (0x1733) - GPIO26 Control 2 */
++	{ 0x00001733, 0xf000 }, /* R5939 (0x1733) - GPIO26 Control 2 */
 +	{ 0x00001734, 0x2001 }, /* R5940 (0x1734) - GPIO27 Control 1 */
-+	{ 0x00001735, 0xe000 }, /* R5941 (0x1735) - GPIO27 Control 2 */
++	{ 0x00001735, 0xf000 }, /* R5941 (0x1735) - GPIO27 Control 2 */
 +	{ 0x00001736, 0x2001 }, /* R5942 (0x1736) - GPIO28 Control 1 */
-+	{ 0x00001737, 0xe000 }, /* R5943 (0x1737) - GPIO28 Control 2 */
++	{ 0x00001737, 0xf000 }, /* R5943 (0x1737) - GPIO28 Control 2 */
 +	{ 0x00001738, 0x2001 }, /* R5944 (0x1738) - GPIO29 Control 1 */
-+	{ 0x00001739, 0xe000 }, /* R5945 (0x1739) - GPIO29 Control 2 */
++	{ 0x00001739, 0xf000 }, /* R5945 (0x1739) - GPIO29 Control 2 */
 +	{ 0x0000173a, 0x2001 }, /* R5946 (0x173a) - GPIO30 Control 1 */
-+	{ 0x0000173b, 0xe000 }, /* R5947 (0x173b) - GPIO30 Control 2 */
++	{ 0x0000173b, 0xf000 }, /* R5947 (0x173b) - GPIO30 Control 2 */
 +	{ 0x0000173c, 0x2001 }, /* R5948 (0x173c) - GPIO31 Control 1 */
-+	{ 0x0000173d, 0xe000 }, /* R5949 (0x173d) - GPIO31 Control 2 */
++	{ 0x0000173d, 0xf000 }, /* R5949 (0x173d) - GPIO31 Control 2 */
 +	{ 0x0000173e, 0x2001 }, /* R5950 (0x173e) - GPIO32 Control 1 */
-+	{ 0x0000173f, 0xe000 }, /* R5951 (0x173f) - GPIO32 Control 2 */
++	{ 0x0000173f, 0xf000 }, /* R5951 (0x173f) - GPIO32 Control 2 */
 +	{ 0x00001740, 0x2001 }, /* R5952 (0x1740) - GPIO33 Control 1 */
-+	{ 0x00001741, 0xe000 }, /* R5953 (0x1741) - GPIO33 Control 2 */
++	{ 0x00001741, 0xf000 }, /* R5953 (0x1741) - GPIO33 Control 2 */
 +	{ 0x00001742, 0x2001 }, /* R5954 (0x1742) - GPIO34 Control 1 */
-+	{ 0x00001743, 0xe000 }, /* R5955 (0x1743) - GPIO34 Control 2 */
++	{ 0x00001743, 0xf000 }, /* R5955 (0x1743) - GPIO34 Control 2 */
 +	{ 0x00001744, 0x2001 }, /* R5956 (0x1744) - GPIO35 Control 1 */
-+	{ 0x00001745, 0xe000 }, /* R5957 (0x1745) - GPIO35 Control 2 */
++	{ 0x00001745, 0xf000 }, /* R5957 (0x1745) - GPIO35 Control 2 */
 +	{ 0x00001746, 0x2001 }, /* R5958 (0x1746) - GPIO36 Control 1 */
-+	{ 0x00001747, 0xe000 }, /* R5959 (0x1747) - GPIO36 Control 2 */
++	{ 0x00001747, 0xf000 }, /* R5959 (0x1747) - GPIO36 Control 2 */
 +	{ 0x00001748, 0x2001 }, /* R5960 (0x1748) - GPIO37 Control 1 */
-+	{ 0x00001749, 0xe000 }, /* R5961 (0x1749) - GPIO37 Control 2 */
++	{ 0x00001749, 0xf000 }, /* R5961 (0x1749) - GPIO37 Control 2 */
 +	{ 0x0000174a, 0x2001 }, /* R5962 (0x174a) - GPIO38 Control 1 */
-+	{ 0x0000174b, 0xe000 }, /* R5963 (0x174b) - GPIO38 Control 2 */
-+	{ 0x0000174c, 0x2001 }, /* R5964 (0x174c) - GPIO39 Control 1 */
-+	{ 0x0000174d, 0xe000 }, /* R5965 (0x174d) - GPIO39 Control 2 */
-+	{ 0x0000174e, 0x2001 }, /* R5966 (0x174e) - GPIO40 Control 1 */
-+	{ 0x0000174f, 0xe000 }, /* R5967 (0x174f) - GPIO40 Control 2 */
++	{ 0x0000174b, 0xf000 }, /* R5963 (0x174b) - GPIO38 Control 2 */
 +	{ 0x00001840, 0xffff }, /* R6208 (0x1840) - IRQ1 Mask 1 */
 +	{ 0x00001841, 0xffff }, /* R6209 (0x1841) - IRQ1 Mask 2 */
 +	{ 0x00001842, 0xffff }, /* R6210 (0x1842) - IRQ1 Mask 3 */
@@ -1813,12 +1501,12 @@ index 0000000..92512d5
 +	{ 0x00001a80, 0x4400 }, /* R6784 (0x1a80) - IRQ1 CTRL */
 +};
 +
-+static bool cs47l85_is_adsp_memory(unsigned int reg)
++static bool cs47l90_is_adsp_memory(unsigned int reg)
 +{
 +	switch (reg) {
-+	case 0x080000 ... 0x085ffe:
-+	case 0x0a0000 ... 0x0a7ffe:
-+	case 0x0c0000 ... 0x0c1ffe:
++	case 0x080000 ... 0x088ffe:
++	case 0x0a0000 ... 0x0a9ffe:
++	case 0x0c0000 ... 0x0c3ffe:
 +	case 0x0e0000 ... 0x0e1ffe:
 +	case 0x100000 ... 0x10effe:
 +	case 0x120000 ... 0x12bffe:
@@ -1831,20 +1519,20 @@ index 0000000..92512d5
 +	case 0x1c0000 ... 0x1cbffe:
 +	case 0x1e0000 ... 0x1e1ffe:
 +	case 0x200000 ... 0x208ffe:
-+	case 0x220000 ... 0x231ffe:
-+	case 0x240000 ... 0x24bffe:
++	case 0x220000 ... 0x229ffe:
++	case 0x240000 ... 0x243ffe:
 +	case 0x260000 ... 0x261ffe:
 +	case 0x280000 ... 0x288ffe:
 +	case 0x2a0000 ... 0x2a9ffe:
 +	case 0x2c0000 ... 0x2c3ffe:
 +	case 0x2e0000 ... 0x2e1ffe:
-+	case 0x300000 ... 0x305ffe:
++	case 0x300000 ... 0x308ffe:
 +	case 0x320000 ... 0x333ffe:
-+	case 0x340000 ... 0x34bffe:
++	case 0x340000 ... 0x353ffe:
 +	case 0x360000 ... 0x361ffe:
 +	case 0x380000 ... 0x388ffe:
-+	case 0x3a0000 ... 0x3a7ffe:
-+	case 0x3c0000 ... 0x3c1ffe:
++	case 0x3a0000 ... 0x3b3ffe:
++	case 0x3c0000 ... 0x3d3ffe:
 +	case 0x3e0000 ... 0x3e1ffe:
 +		return true;
 +	default:
@@ -1852,7 +1540,7 @@ index 0000000..92512d5
 +	}
 +}
 +
-+static bool cs47l85_16bit_readable_register(struct device *dev,
++static bool cs47l90_16bit_readable_register(struct device *dev,
 +					    unsigned int reg)
 +{
 +	switch (reg) {
@@ -1914,6 +1602,7 @@ index 0000000..92512d5
 +	case MADERA_FLL1_CONTROL_5:
 +	case MADERA_FLL1_CONTROL_6:
 +	case MADERA_FLL1_CONTROL_7:
++	case MADERA_FLL1_EFS_2:
 +	case MADERA_FLL1_LOOP_FILTER_TEST_1:
 +	case MADERA_FLL1_SYNCHRONISER_1:
 +	case MADERA_FLL1_SYNCHRONISER_2:
@@ -1931,6 +1620,7 @@ index 0000000..92512d5
 +	case MADERA_FLL2_CONTROL_5:
 +	case MADERA_FLL2_CONTROL_6:
 +	case MADERA_FLL2_CONTROL_7:
++	case MADERA_FLL2_EFS_2:
 +	case MADERA_FLL2_LOOP_FILTER_TEST_1:
 +	case MADERA_FLL2_SYNCHRONISER_1:
 +	case MADERA_FLL2_SYNCHRONISER_2:
@@ -1941,46 +1631,38 @@ index 0000000..92512d5
 +	case MADERA_FLL2_SYNCHRONISER_7:
 +	case MADERA_FLL2_SPREAD_SPECTRUM:
 +	case MADERA_FLL2_GPIO_CLOCK:
-+	case MADERA_FLL3_CONTROL_1:
-+	case MADERA_FLL3_CONTROL_2:
-+	case MADERA_FLL3_CONTROL_3:
-+	case MADERA_FLL3_CONTROL_4:
-+	case MADERA_FLL3_CONTROL_5:
-+	case MADERA_FLL3_CONTROL_6:
-+	case MADERA_FLL3_CONTROL_7:
-+	case MADERA_FLL3_LOOP_FILTER_TEST_1:
-+	case MADERA_FLL3_SYNCHRONISER_1:
-+	case MADERA_FLL3_SYNCHRONISER_2:
-+	case MADERA_FLL3_SYNCHRONISER_3:
-+	case MADERA_FLL3_SYNCHRONISER_4:
-+	case MADERA_FLL3_SYNCHRONISER_5:
-+	case MADERA_FLL3_SYNCHRONISER_6:
-+	case MADERA_FLL3_SYNCHRONISER_7:
-+	case MADERA_FLL3_SPREAD_SPECTRUM:
-+	case MADERA_FLL3_GPIO_CLOCK:
++	case MADERA_FLLAO_CONTROL_1:
++	case MADERA_FLLAO_CONTROL_2:
++	case MADERA_FLLAO_CONTROL_3:
++	case MADERA_FLLAO_CONTROL_4:
++	case MADERA_FLLAO_CONTROL_5:
++	case MADERA_FLLAO_CONTROL_6:
++	case MADERA_FLLAO_CONTROL_7:
++	case MADERA_FLLAO_CONTROL_8:
++	case MADERA_FLLAO_CONTROL_9:
++	case MADERA_FLLAO_CONTROL_10:
++	case MADERA_FLLAO_CONTROL_11:
 +	case MADERA_MIC_CHARGE_PUMP_1:
-+	case MADERA_HP_CHARGE_PUMP_8:
-+	case MADERA_LDO1_CONTROL_1:
 +	case MADERA_LDO2_CONTROL_1:
 +	case MADERA_MIC_BIAS_CTRL_1:
 +	case MADERA_MIC_BIAS_CTRL_2:
-+	case MADERA_MIC_BIAS_CTRL_3:
-+	case MADERA_MIC_BIAS_CTRL_4:
++	case MADERA_MIC_BIAS_CTRL_5:
++	case MADERA_MIC_BIAS_CTRL_6:
 +	case MADERA_HP_CTRL_1L:
 +	case MADERA_HP_CTRL_1R:
 +	case MADERA_HP_CTRL_2L:
 +	case MADERA_HP_CTRL_2R:
 +	case MADERA_HP_CTRL_3L:
 +	case MADERA_HP_CTRL_3R:
-+	case MADERA_DCS_HP1L_CONTROL:
-+	case MADERA_DCS_HP1R_CONTROL:
 +	case MADERA_EDRE_HP_STEREO_CONTROL:
 +	case MADERA_ACCESSORY_DETECT_MODE_1:
++	case MADERA_HEADPHONE_DETECT_0:
 +	case MADERA_HEADPHONE_DETECT_1:
 +	case MADERA_HEADPHONE_DETECT_2:
 +	case MADERA_HEADPHONE_DETECT_3:
 +	case MADERA_HEADPHONE_DETECT_5:
 +	case MADERA_MICD_CLAMP_CONTROL:
++	case MADERA_MIC_DETECT_1_CONTROL_0:
 +	case MADERA_MIC_DETECT_1_CONTROL_1:
 +	case MADERA_MIC_DETECT_1_CONTROL_2:
 +	case MADERA_MIC_DETECT_1_CONTROL_3:
@@ -1989,6 +1671,15 @@ index 0000000..92512d5
 +	case MADERA_MIC_DETECT_1_LEVEL_3:
 +	case MADERA_MIC_DETECT_1_LEVEL_4:
 +	case MADERA_MIC_DETECT_1_CONTROL_4:
++	case MADERA_MIC_DETECT_2_CONTROL_0:
++	case MADERA_MIC_DETECT_2_CONTROL_1:
++	case MADERA_MIC_DETECT_2_CONTROL_2:
++	case MADERA_MIC_DETECT_2_CONTROL_3:
++	case MADERA_MIC_DETECT_2_LEVEL_1:
++	case MADERA_MIC_DETECT_2_LEVEL_2:
++	case MADERA_MIC_DETECT_2_LEVEL_3:
++	case MADERA_MIC_DETECT_2_LEVEL_4:
++	case MADERA_MIC_DETECT_2_CONTROL_4:
 +	case MADERA_GP_SWITCH_1:
 +	case MADERA_JACK_DETECT_ANALOGUE:
 +	case MADERA_INPUT_ENABLES:
@@ -1999,39 +1690,43 @@ index 0000000..92512d5
 +	case MADERA_IN1L_CONTROL:
 +	case MADERA_ADC_DIGITAL_VOLUME_1L:
 +	case MADERA_DMIC1L_CONTROL:
++	case MADERA_IN1L_RATE_CONTROL:
 +	case MADERA_IN1R_CONTROL:
 +	case MADERA_ADC_DIGITAL_VOLUME_1R:
 +	case MADERA_DMIC1R_CONTROL:
++	case MADERA_IN1R_RATE_CONTROL:
 +	case MADERA_IN2L_CONTROL:
 +	case MADERA_ADC_DIGITAL_VOLUME_2L:
 +	case MADERA_DMIC2L_CONTROL:
++	case MADERA_IN2L_RATE_CONTROL:
 +	case MADERA_IN2R_CONTROL:
 +	case MADERA_ADC_DIGITAL_VOLUME_2R:
 +	case MADERA_DMIC2R_CONTROL:
++	case MADERA_IN2R_RATE_CONTROL:
 +	case MADERA_IN3L_CONTROL:
 +	case MADERA_ADC_DIGITAL_VOLUME_3L:
 +	case MADERA_DMIC3L_CONTROL:
++	case MADERA_IN3L_RATE_CONTROL:
 +	case MADERA_IN3R_CONTROL:
 +	case MADERA_ADC_DIGITAL_VOLUME_3R:
 +	case MADERA_DMIC3R_CONTROL:
++	case MADERA_IN3R_RATE_CONTROL:
 +	case MADERA_IN4L_CONTROL:
 +	case MADERA_ADC_DIGITAL_VOLUME_4L:
 +	case MADERA_DMIC4L_CONTROL:
++	case MADERA_IN4L_RATE_CONTROL:
 +	case MADERA_IN4R_CONTROL:
 +	case MADERA_ADC_DIGITAL_VOLUME_4R:
 +	case MADERA_DMIC4R_CONTROL:
++	case MADERA_IN4R_RATE_CONTROL:
 +	case MADERA_IN5L_CONTROL:
 +	case MADERA_ADC_DIGITAL_VOLUME_5L:
 +	case MADERA_DMIC5L_CONTROL:
++	case MADERA_IN5L_RATE_CONTROL:
 +	case MADERA_IN5R_CONTROL:
 +	case MADERA_ADC_DIGITAL_VOLUME_5R:
 +	case MADERA_DMIC5R_CONTROL:
-+	case MADERA_IN6L_CONTROL:
-+	case MADERA_ADC_DIGITAL_VOLUME_6L:
-+	case MADERA_DMIC6L_CONTROL:
-+	case MADERA_IN6R_CONTROL:
-+	case MADERA_ADC_DIGITAL_VOLUME_6R:
-+	case MADERA_DMIC6R_CONTROL:
++	case MADERA_IN5R_RATE_CONTROL:
 +	case MADERA_OUTPUT_ENABLES_1:
 +	case MADERA_OUTPUT_STATUS_1:
 +	case MADERA_RAW_OUTPUT_STATUS_1:
@@ -2039,12 +1734,14 @@ index 0000000..92512d5
 +	case MADERA_OUTPUT_VOLUME_RAMP:
 +	case MADERA_OUTPUT_PATH_CONFIG_1L:
 +	case MADERA_DAC_DIGITAL_VOLUME_1L:
++	case MADERA_OUTPUT_PATH_CONFIG_1:
 +	case MADERA_NOISE_GATE_SELECT_1L:
 +	case MADERA_OUTPUT_PATH_CONFIG_1R:
 +	case MADERA_DAC_DIGITAL_VOLUME_1R:
 +	case MADERA_NOISE_GATE_SELECT_1R:
 +	case MADERA_OUTPUT_PATH_CONFIG_2L:
 +	case MADERA_DAC_DIGITAL_VOLUME_2L:
++	case MADERA_OUTPUT_PATH_CONFIG_2:
 +	case MADERA_NOISE_GATE_SELECT_2L:
 +	case MADERA_OUTPUT_PATH_CONFIG_2R:
 +	case MADERA_DAC_DIGITAL_VOLUME_2R:
@@ -2055,39 +1752,21 @@ index 0000000..92512d5
 +	case MADERA_OUTPUT_PATH_CONFIG_3R:
 +	case MADERA_DAC_DIGITAL_VOLUME_3R:
 +	case MADERA_NOISE_GATE_SELECT_3R:
-+	case MADERA_OUTPUT_PATH_CONFIG_4L:
-+	case MADERA_DAC_DIGITAL_VOLUME_4L:
-+	case MADERA_NOISE_GATE_SELECT_4L:
-+	case MADERA_OUTPUT_PATH_CONFIG_4R:
-+	case MADERA_DAC_DIGITAL_VOLUME_4R:
-+	case MADERA_NOISE_GATE_SELECT_4R:
 +	case MADERA_OUTPUT_PATH_CONFIG_5L:
 +	case MADERA_DAC_DIGITAL_VOLUME_5L:
 +	case MADERA_NOISE_GATE_SELECT_5L:
 +	case MADERA_OUTPUT_PATH_CONFIG_5R:
 +	case MADERA_DAC_DIGITAL_VOLUME_5R:
 +	case MADERA_NOISE_GATE_SELECT_5R:
-+	case MADERA_OUTPUT_PATH_CONFIG_6L:
-+	case MADERA_DAC_DIGITAL_VOLUME_6L:
-+	case MADERA_NOISE_GATE_SELECT_6L:
-+	case MADERA_OUTPUT_PATH_CONFIG_6R:
-+	case MADERA_DAC_DIGITAL_VOLUME_6R:
-+	case MADERA_NOISE_GATE_SELECT_6R:
 +	case MADERA_DRE_ENABLE:
 +	case MADERA_EDRE_ENABLE:
-+	case MADERA_EDRE_MANUAL:
 +	case MADERA_DAC_AEC_CONTROL_1:
-+	case MADERA_DAC_AEC_CONTROL_2:
 +	case MADERA_NOISE_GATE_CONTROL:
 +	case MADERA_PDM_SPK1_CTRL_1:
 +	case MADERA_PDM_SPK1_CTRL_2:
-+	case MADERA_PDM_SPK2_CTRL_1:
-+	case MADERA_PDM_SPK2_CTRL_2:
 +	case MADERA_HP1_SHORT_CIRCUIT_CTRL:
 +	case MADERA_HP2_SHORT_CIRCUIT_CTRL:
 +	case MADERA_HP3_SHORT_CIRCUIT_CTRL:
-+	case MADERA_HP_TEST_CTRL_5:
-+	case MADERA_HP_TEST_CTRL_6:
 +	case MADERA_AIF1_BCLK_CTRL:
 +	case MADERA_AIF1_TX_PIN_CTRL:
 +	case MADERA_AIF1_RX_PIN_CTRL:
@@ -2249,22 +1928,6 @@ index 0000000..92512d5
 +	case MADERA_OUT3RMIX_INPUT_3_VOLUME:
 +	case MADERA_OUT3RMIX_INPUT_4_SOURCE:
 +	case MADERA_OUT3RMIX_INPUT_4_VOLUME:
-+	case MADERA_OUT4LMIX_INPUT_1_SOURCE:
-+	case MADERA_OUT4LMIX_INPUT_1_VOLUME:
-+	case MADERA_OUT4LMIX_INPUT_2_SOURCE:
-+	case MADERA_OUT4LMIX_INPUT_2_VOLUME:
-+	case MADERA_OUT4LMIX_INPUT_3_SOURCE:
-+	case MADERA_OUT4LMIX_INPUT_3_VOLUME:
-+	case MADERA_OUT4LMIX_INPUT_4_SOURCE:
-+	case MADERA_OUT4LMIX_INPUT_4_VOLUME:
-+	case MADERA_OUT4RMIX_INPUT_1_SOURCE:
-+	case MADERA_OUT4RMIX_INPUT_1_VOLUME:
-+	case MADERA_OUT4RMIX_INPUT_2_SOURCE:
-+	case MADERA_OUT4RMIX_INPUT_2_VOLUME:
-+	case MADERA_OUT4RMIX_INPUT_3_SOURCE:
-+	case MADERA_OUT4RMIX_INPUT_3_VOLUME:
-+	case MADERA_OUT4RMIX_INPUT_4_SOURCE:
-+	case MADERA_OUT4RMIX_INPUT_4_VOLUME:
 +	case MADERA_OUT5LMIX_INPUT_1_SOURCE:
 +	case MADERA_OUT5LMIX_INPUT_1_VOLUME:
 +	case MADERA_OUT5LMIX_INPUT_2_SOURCE:
@@ -2281,22 +1944,6 @@ index 0000000..92512d5
 +	case MADERA_OUT5RMIX_INPUT_3_VOLUME:
 +	case MADERA_OUT5RMIX_INPUT_4_SOURCE:
 +	case MADERA_OUT5RMIX_INPUT_4_VOLUME:
-+	case MADERA_OUT6LMIX_INPUT_1_SOURCE:
-+	case MADERA_OUT6LMIX_INPUT_1_VOLUME:
-+	case MADERA_OUT6LMIX_INPUT_2_SOURCE:
-+	case MADERA_OUT6LMIX_INPUT_2_VOLUME:
-+	case MADERA_OUT6LMIX_INPUT_3_SOURCE:
-+	case MADERA_OUT6LMIX_INPUT_3_VOLUME:
-+	case MADERA_OUT6LMIX_INPUT_4_SOURCE:
-+	case MADERA_OUT6LMIX_INPUT_4_VOLUME:
-+	case MADERA_OUT6RMIX_INPUT_1_SOURCE:
-+	case MADERA_OUT6RMIX_INPUT_1_VOLUME:
-+	case MADERA_OUT6RMIX_INPUT_2_SOURCE:
-+	case MADERA_OUT6RMIX_INPUT_2_VOLUME:
-+	case MADERA_OUT6RMIX_INPUT_3_SOURCE:
-+	case MADERA_OUT6RMIX_INPUT_3_VOLUME:
-+	case MADERA_OUT6RMIX_INPUT_4_SOURCE:
-+	case MADERA_OUT6RMIX_INPUT_4_VOLUME:
 +	case MADERA_AIF1TX1MIX_INPUT_1_SOURCE:
 +	case MADERA_AIF1TX1MIX_INPUT_1_VOLUME:
 +	case MADERA_AIF1TX1MIX_INPUT_2_SOURCE:
@@ -2807,6 +2454,14 @@ index 0000000..92512d5
 +	case MADERA_DSP7AUX4MIX_INPUT_1_SOURCE:
 +	case MADERA_DSP7AUX5MIX_INPUT_1_SOURCE:
 +	case MADERA_DSP7AUX6MIX_INPUT_1_SOURCE:
++	case MADERA_DFC1MIX_INPUT_1_SOURCE:
++	case MADERA_DFC2MIX_INPUT_1_SOURCE:
++	case MADERA_DFC3MIX_INPUT_1_SOURCE:
++	case MADERA_DFC4MIX_INPUT_1_SOURCE:
++	case MADERA_DFC5MIX_INPUT_1_SOURCE:
++	case MADERA_DFC6MIX_INPUT_1_SOURCE:
++	case MADERA_DFC7MIX_INPUT_1_SOURCE:
++	case MADERA_DFC8MIX_INPUT_1_SOURCE:
 +	case MADERA_FX_CTRL1:
 +	case MADERA_FX_CTRL2:
 +	case MADERA_EQ1_1:
@@ -2967,14 +2622,6 @@ index 0000000..92512d5
 +	case MADERA_FRF_COEFFICIENT_3R_2:
 +	case MADERA_FRF_COEFFICIENT_3R_3:
 +	case MADERA_FRF_COEFFICIENT_3R_4:
-+	case MADERA_FRF_COEFFICIENT_4L_1:
-+	case MADERA_FRF_COEFFICIENT_4L_2:
-+	case MADERA_FRF_COEFFICIENT_4L_3:
-+	case MADERA_FRF_COEFFICIENT_4L_4:
-+	case MADERA_FRF_COEFFICIENT_4R_1:
-+	case MADERA_FRF_COEFFICIENT_4R_2:
-+	case MADERA_FRF_COEFFICIENT_4R_3:
-+	case MADERA_FRF_COEFFICIENT_4R_4:
 +	case MADERA_FRF_COEFFICIENT_5L_1:
 +	case MADERA_FRF_COEFFICIENT_5L_2:
 +	case MADERA_FRF_COEFFICIENT_5L_3:
@@ -2983,14 +2630,31 @@ index 0000000..92512d5
 +	case MADERA_FRF_COEFFICIENT_5R_2:
 +	case MADERA_FRF_COEFFICIENT_5R_3:
 +	case MADERA_FRF_COEFFICIENT_5R_4:
-+	case MADERA_FRF_COEFFICIENT_6L_1:
-+	case MADERA_FRF_COEFFICIENT_6L_2:
-+	case MADERA_FRF_COEFFICIENT_6L_3:
-+	case MADERA_FRF_COEFFICIENT_6L_4:
-+	case MADERA_FRF_COEFFICIENT_6R_1:
-+	case MADERA_FRF_COEFFICIENT_6R_2:
-+	case MADERA_FRF_COEFFICIENT_6R_3:
-+	case MADERA_FRF_COEFFICIENT_6R_4:
++	case MADERA_DFC1_CTRL:
++	case MADERA_DFC1_RX:
++	case MADERA_DFC1_TX:
++	case MADERA_DFC2_CTRL:
++	case MADERA_DFC2_RX:
++	case MADERA_DFC2_TX:
++	case MADERA_DFC3_CTRL:
++	case MADERA_DFC3_RX:
++	case MADERA_DFC3_TX:
++	case MADERA_DFC4_CTRL:
++	case MADERA_DFC4_RX:
++	case MADERA_DFC4_TX:
++	case MADERA_DFC5_CTRL:
++	case MADERA_DFC5_RX:
++	case MADERA_DFC5_TX:
++	case MADERA_DFC6_CTRL:
++	case MADERA_DFC6_RX:
++	case MADERA_DFC6_TX:
++	case MADERA_DFC7_CTRL:
++	case MADERA_DFC7_RX:
++	case MADERA_DFC7_TX:
++	case MADERA_DFC8_CTRL:
++	case MADERA_DFC8_RX:
++	case MADERA_DFC8_TX:
++	case MADERA_DFC_STATUS:
 +	case MADERA_GPIO1_CTRL_1:
 +	case MADERA_GPIO1_CTRL_2:
 +	case MADERA_GPIO2_CTRL_1:
@@ -3067,10 +2731,6 @@ index 0000000..92512d5
 +	case MADERA_GPIO37_CTRL_2:
 +	case MADERA_GPIO38_CTRL_1:
 +	case MADERA_GPIO38_CTRL_2:
-+	case MADERA_GPIO39_CTRL_1:
-+	case MADERA_GPIO39_CTRL_2:
-+	case MADERA_GPIO40_CTRL_1:
-+	case MADERA_GPIO40_CTRL_2:
 +	case MADERA_IRQ1_STATUS_1 ... MADERA_IRQ1_STATUS_33:
 +	case MADERA_IRQ1_MASK_1 ... MADERA_IRQ1_MASK_33:
 +	case MADERA_IRQ1_RAW_STATUS_1 ... MADERA_IRQ1_RAW_STATUS_33:
@@ -3082,7 +2742,7 @@ index 0000000..92512d5
 +	}
 +}
 +
-+static bool cs47l85_16bit_volatile_register(struct device *dev,
++static bool cs47l90_16bit_volatile_register(struct device *dev,
 +					    unsigned int reg)
 +{
 +	switch (reg) {
@@ -3103,10 +2763,10 @@ index 0000000..92512d5
 +	case MADERA_HP_CTRL_2R:
 +	case MADERA_HP_CTRL_3L:
 +	case MADERA_HP_CTRL_3R:
-+	case MADERA_DCS_HP1L_CONTROL:
-+	case MADERA_DCS_HP1R_CONTROL:
 +	case MADERA_MIC_DETECT_1_CONTROL_3:
 +	case MADERA_MIC_DETECT_1_CONTROL_4:
++	case MADERA_MIC_DETECT_2_CONTROL_3:
++	case MADERA_MIC_DETECT_2_CONTROL_4:
 +	case MADERA_HEADPHONE_DETECT_2:
 +	case MADERA_HEADPHONE_DETECT_3:
 +	case MADERA_HEADPHONE_DETECT_5:
@@ -3122,7 +2782,8 @@ index 0000000..92512d5
 +	case MADERA_ASRC2_STATUS:
 +	case MADERA_ASRC1_STATUS:
 +	case MADERA_CLOCK_CONTROL:
-+	case MADERA_IRQ1_STATUS_1 ...MADERA_IRQ1_STATUS_33:
++	case MADERA_DFC_STATUS:
++	case MADERA_IRQ1_STATUS_1 ... MADERA_IRQ1_STATUS_33:
 +	case MADERA_IRQ1_RAW_STATUS_1 ... MADERA_IRQ1_RAW_STATUS_33:
 +		return true;
 +	default:
@@ -3130,81 +2791,81 @@ index 0000000..92512d5
 +	}
 +}
 +
-+static bool cs47l85_32bit_readable_register(struct device *dev,
++static bool cs47l90_32bit_readable_register(struct device *dev,
 +					    unsigned int reg)
 +{
 +	switch (reg) {
 +	case MADERA_WSEQ_SEQUENCE_1 ... MADERA_WSEQ_SEQUENCE_508:
-+	case CS47L85_OTP_HPDET_CAL_1 ... CS47L85_OTP_HPDET_CAL_2:
-+	case MADERA_DSP1_CONFIG_1 ... MADERA_DSP1_SCRATCH_2:
-+	case MADERA_DSP2_CONFIG_1 ... MADERA_DSP2_SCRATCH_2:
-+	case MADERA_DSP3_CONFIG_1 ... MADERA_DSP3_SCRATCH_2:
-+	case MADERA_DSP4_CONFIG_1 ... MADERA_DSP4_SCRATCH_2:
-+	case MADERA_DSP5_CONFIG_1 ... MADERA_DSP5_SCRATCH_2:
-+	case MADERA_DSP6_CONFIG_1 ... MADERA_DSP6_SCRATCH_2:
-+	case MADERA_DSP7_CONFIG_1 ... MADERA_DSP7_SCRATCH_2:
++	case MADERA_OTP_HPDET_CAL_1 ... MADERA_OTP_HPDET_CAL_2:
++	case MADERA_DSP1_CONFIG_1 ... MADERA_DSP1_PMEM_ERR_ADDR___XMEM_ERR_ADDR:
++	case MADERA_DSP2_CONFIG_1 ... MADERA_DSP2_PMEM_ERR_ADDR___XMEM_ERR_ADDR:
++	case MADERA_DSP3_CONFIG_1 ... MADERA_DSP3_PMEM_ERR_ADDR___XMEM_ERR_ADDR:
++	case MADERA_DSP4_CONFIG_1 ... MADERA_DSP4_PMEM_ERR_ADDR___XMEM_ERR_ADDR:
++	case MADERA_DSP5_CONFIG_1 ... MADERA_DSP5_PMEM_ERR_ADDR___XMEM_ERR_ADDR:
++	case MADERA_DSP6_CONFIG_1 ... MADERA_DSP6_PMEM_ERR_ADDR___XMEM_ERR_ADDR:
++	case MADERA_DSP7_CONFIG_1 ... MADERA_DSP7_PMEM_ERR_ADDR___XMEM_ERR_ADDR:
 +		return true;
 +	default:
-+		return cs47l85_is_adsp_memory(reg);
++		return cs47l90_is_adsp_memory(reg);
 +	}
 +}
 +
-+static bool cs47l85_32bit_volatile_register(struct device *dev,
++static bool cs47l90_32bit_volatile_register(struct device *dev,
 +					    unsigned int reg)
 +{
 +	switch (reg) {
 +	case MADERA_WSEQ_SEQUENCE_1 ... MADERA_WSEQ_SEQUENCE_508:
-+	case CS47L85_OTP_HPDET_CAL_1 ... CS47L85_OTP_HPDET_CAL_2:
-+	case MADERA_DSP1_CONFIG_1 ... MADERA_DSP1_SCRATCH_2:
-+	case MADERA_DSP2_CONFIG_1 ... MADERA_DSP2_SCRATCH_2:
-+	case MADERA_DSP3_CONFIG_1 ... MADERA_DSP3_SCRATCH_2:
-+	case MADERA_DSP4_CONFIG_1 ... MADERA_DSP4_SCRATCH_2:
-+	case MADERA_DSP5_CONFIG_1 ... MADERA_DSP5_SCRATCH_2:
-+	case MADERA_DSP6_CONFIG_1 ... MADERA_DSP6_SCRATCH_2:
-+	case MADERA_DSP7_CONFIG_1 ... MADERA_DSP7_SCRATCH_2:
++	case MADERA_OTP_HPDET_CAL_1 ... MADERA_OTP_HPDET_CAL_2:
++	case MADERA_DSP1_CONFIG_1 ... MADERA_DSP1_PMEM_ERR_ADDR___XMEM_ERR_ADDR:
++	case MADERA_DSP2_CONFIG_1 ... MADERA_DSP2_PMEM_ERR_ADDR___XMEM_ERR_ADDR:
++	case MADERA_DSP3_CONFIG_1 ... MADERA_DSP3_PMEM_ERR_ADDR___XMEM_ERR_ADDR:
++	case MADERA_DSP4_CONFIG_1 ... MADERA_DSP4_PMEM_ERR_ADDR___XMEM_ERR_ADDR:
++	case MADERA_DSP5_CONFIG_1 ... MADERA_DSP5_PMEM_ERR_ADDR___XMEM_ERR_ADDR:
++	case MADERA_DSP6_CONFIG_1 ... MADERA_DSP6_PMEM_ERR_ADDR___XMEM_ERR_ADDR:
++	case MADERA_DSP7_CONFIG_1 ... MADERA_DSP7_PMEM_ERR_ADDR___XMEM_ERR_ADDR:
 +		return true;
 +	default:
-+		return cs47l85_is_adsp_memory(reg);
++		return cs47l90_is_adsp_memory(reg);
 +	}
 +}
 +
-+const struct regmap_config cs47l85_16bit_spi_regmap = {
-+	.name = "cs47l85_16bit",
++const struct regmap_config cs47l90_16bit_spi_regmap = {
++	.name = "cs47l90_16bit",
 +	.reg_bits = 32,
 +	.pad_bits = 16,
 +	.val_bits = 16,
 +	.reg_format_endian = REGMAP_ENDIAN_BIG,
 +	.val_format_endian = REGMAP_ENDIAN_BIG,
 +
-+	.max_register = 0x2fff,
-+	.readable_reg = cs47l85_16bit_readable_register,
-+	.volatile_reg = cs47l85_16bit_volatile_register,
++	.max_register = MADERA_INTERRUPT_RAW_STATUS_1,
++	.readable_reg = cs47l90_16bit_readable_register,
++	.volatile_reg = cs47l90_16bit_volatile_register,
 +
 +	.cache_type = REGCACHE_RBTREE,
-+	.reg_defaults = cs47l85_reg_default,
-+	.num_reg_defaults = ARRAY_SIZE(cs47l85_reg_default),
++	.reg_defaults = cs47l90_reg_default,
++	.num_reg_defaults = ARRAY_SIZE(cs47l90_reg_default),
 +};
-+EXPORT_SYMBOL_GPL(cs47l85_16bit_spi_regmap);
++EXPORT_SYMBOL_GPL(cs47l90_16bit_spi_regmap);
 +
-+const struct regmap_config cs47l85_16bit_i2c_regmap = {
-+	.name = "cs47l85_16bit",
++const struct regmap_config cs47l90_16bit_i2c_regmap = {
++	.name = "cs47l90_16bit",
 +	.reg_bits = 32,
 +	.val_bits = 16,
 +	.reg_format_endian = REGMAP_ENDIAN_BIG,
 +	.val_format_endian = REGMAP_ENDIAN_BIG,
 +
-+	.max_register = 0x2fff,
-+	.readable_reg = cs47l85_16bit_readable_register,
-+	.volatile_reg = cs47l85_16bit_volatile_register,
++	.max_register = MADERA_INTERRUPT_RAW_STATUS_1,
++	.readable_reg = cs47l90_16bit_readable_register,
++	.volatile_reg = cs47l90_16bit_volatile_register,
 +
 +	.cache_type = REGCACHE_RBTREE,
-+	.reg_defaults = cs47l85_reg_default,
-+	.num_reg_defaults = ARRAY_SIZE(cs47l85_reg_default),
++	.reg_defaults = cs47l90_reg_default,
++	.num_reg_defaults = ARRAY_SIZE(cs47l90_reg_default),
 +};
-+EXPORT_SYMBOL_GPL(cs47l85_16bit_i2c_regmap);
++EXPORT_SYMBOL_GPL(cs47l90_16bit_i2c_regmap);
 +
-+const struct regmap_config cs47l85_32bit_spi_regmap = {
-+	.name = "cs47l85_32bit",
++const struct regmap_config cs47l90_32bit_spi_regmap = {
++	.name = "cs47l90_32bit",
 +	.reg_bits = 32,
 +	.reg_stride = 2,
 +	.pad_bits = 16,
@@ -3212,29 +2873,33 @@ index 0000000..92512d5
 +	.reg_format_endian = REGMAP_ENDIAN_BIG,
 +	.val_format_endian = REGMAP_ENDIAN_BIG,
 +
-+	.max_register = MADERA_DSP7_SCRATCH_2,
-+	.readable_reg = cs47l85_32bit_readable_register,
-+	.volatile_reg = cs47l85_32bit_volatile_register,
++	.max_register = MADERA_DSP7_PMEM_ERR_ADDR___XMEM_ERR_ADDR,
++	.readable_reg = cs47l90_32bit_readable_register,
++	.volatile_reg = cs47l90_32bit_volatile_register,
 +
 +	.cache_type = REGCACHE_RBTREE,
 +};
-+EXPORT_SYMBOL_GPL(cs47l85_32bit_spi_regmap);
++EXPORT_SYMBOL_GPL(cs47l90_32bit_spi_regmap);
 +
-+const struct regmap_config cs47l85_32bit_i2c_regmap = {
-+	.name = "cs47l85_32bit",
++const struct regmap_config cs47l90_32bit_i2c_regmap = {
++	.name = "cs47l90_32bit",
 +	.reg_bits = 32,
 +	.reg_stride = 2,
 +	.val_bits = 32,
 +	.reg_format_endian = REGMAP_ENDIAN_BIG,
 +	.val_format_endian = REGMAP_ENDIAN_BIG,
 +
-+	.max_register = MADERA_DSP7_SCRATCH_2,
-+	.readable_reg = cs47l85_32bit_readable_register,
-+	.volatile_reg = cs47l85_32bit_volatile_register,
++	.max_register = MADERA_DSP7_PMEM_ERR_ADDR___XMEM_ERR_ADDR,
++	.readable_reg = cs47l90_32bit_readable_register,
++	.volatile_reg = cs47l90_32bit_volatile_register,
 +
 +	.cache_type = REGCACHE_RBTREE,
 +};
-+EXPORT_SYMBOL_GPL(cs47l85_32bit_i2c_regmap);
++EXPORT_SYMBOL_GPL(cs47l90_32bit_i2c_regmap);
 -- 
 1.9.1
 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
