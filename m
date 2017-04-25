@@ -1,18 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH -next] ASoC: Intel: Skylake: Fix to use
- list_for_each_safe() when delete items
-Date: Tue, 25 Apr 2017 09:30:35 +0530
-Message-ID: <20170425040035.GY6263@localhost>
-References: <20170425032817.21959-1-weiyj.lk@gmail.com>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: [PATCH v2 0/6] ASoC: Intel: Skylake: Add loadable
+	module support for Kabylake
+Date: Tue, 25 Apr 2017 12:18:18 +0530
+Message-ID: <1493102904-12624-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id A33DE26664F
- for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2017 05:58:56 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20170425032817.21959-1-weiyj.lk@gmail.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 40E492669D8
+ for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2017 09:01:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,73 +19,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Wei Yongjun <weiyj.lk@gmail.com>
-Cc: alsa-devel@alsa-project.org, Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, G Kranthi <gudishax.kranthikumar@intel.com>, Mark Brown <broonie@kernel.org>, Wei Yongjun <weiyongjun1@huawei.com>, Hardik T Shah <hardik.t.shah@intel.com>, Jeeja KP <jeeja.kp@intel.com>, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 25, 2017 at 03:28:17AM +0000, Wei Yongjun wrote:
-> From: Wei Yongjun <weiyongjun1@huawei.com>
-> 
-> Since we will remove items off the list using list_del() we need
-> to use a safe version of the list_for_each() macro aptly named
-> list_for_each_safe().
+KBL module load is a bit different than rest as Library manifest
+containing module information is required to be loaded first before
+loading module.
 
-ah yes, god catch
+So common changes are moved to helpers and arguments are modified as a
+pre-work for adding module loading support.
 
-> This is detected by Coccinelle semantic patch.
+Also, separate dsp_fw_ops is registered and load library for kabylake is
+added to use code loader dma for library and module load.
 
-It is a good practice to include the script you used, do you mind adding
-that in the log?
+changes in v2:
+	- Few minor fixes in comments
+	- Fixed the cover letter subject
 
-> 
-> Fixes: b8c722ddd548 ("ASoC: Intel: Skylake: Add support for deferred
-> DSP module bind")
-> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-> ---
->  sound/soc/intel/skylake/skl-pcm.c | 4 ++--
->  sound/soc/intel/skylake/skl-topology.c | 4 ++--
->  2 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-> index 600faad..d43d197 100644
-> --- a/sound/soc/intel/skylake/skl-pcm.c
-> +++ b/sound/soc/intel/skylake/skl-pcm.c
-> @@ -1323,10 +1323,10 @@ int skl_platform_unregister(struct device *dev)
->  {
->  	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
->  	struct skl *skl = ebus_to_skl(ebus);
-> -	struct skl_module_deferred_bind *modules;
-> +	struct skl_module_deferred_bind *modules, *tmp;
->  
->  	if (!list_empty(&skl->bind_list)) {
-> -		list_for_each_entry(modules, &skl->bind_list, node) {
-> +		list_for_each_entry_safe(modules, tmp, &skl->bind_list, node) {
->  			list_del(&modules->node);
->  			kfree(modules);
->  		}
-> diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-> index 74b3acf..aea7917 100644
-> --- a/sound/soc/intel/skylake/skl-topology.c
-> +++ b/sound/soc/intel/skylake/skl-topology.c
-> @@ -1091,7 +1091,7 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
->  	struct skl_module_cfg *src_module = NULL, *dst_module;
->  	struct skl_sst *ctx = skl->skl_sst;
->  	struct skl_pipe *s_pipe = mconfig->pipe;
-> -	struct skl_module_deferred_bind *modules;
-> +	struct skl_module_deferred_bind *modules, *tmp;
->  
->  	if (s_pipe->state == SKL_PIPE_INVALID)
->  		return -EINVAL;
-> @@ -1105,7 +1105,7 @@ static int skl_tplg_mixer_dapm_post_pmd_event(struct snd_soc_dapm_widget *w,
->  
->  		src_module = w_module->w->priv;
->  
-> -		list_for_each_entry(modules, &skl->bind_list, node) {
-> +		list_for_each_entry_safe(modules, tmp, &skl->bind_list, node) {
->  			/*
->  			 * When the destination module is deleted, Unbind the
->  			 * modules from deferred bind list.
-> 
+G Kranthi (2):
+  ASoC: Intel: Skylake: Move sst common initialization to a helper
+    function
+  ASoC: Intel: Skylake: Modify arguments to reuse module transfer
+    function
+
+Sodhi, VunnyX (1):
+  ASoC: Intel: Skylake: Add loadable module support on KBL platform
+
+Subhransu S. Prusty (3):
+  ASoC: Intel: Skylake: Commonize library load
+  ASoC: Intel: Skylake: Register dsp_fw_ops for kabylake
+  ASoC: Intel: Skylake: Modify load_lib_ipc arguments for a nowait
+    version
+
+ sound/soc/intel/skylake/bxt-sst.c       |  68 +++--------------
+ sound/soc/intel/skylake/skl-messages.c  |   2 +-
+ sound/soc/intel/skylake/skl-sst-dsp.h   |  13 +++-
+ sound/soc/intel/skylake/skl-sst-ipc.c   |  10 ++-
+ sound/soc/intel/skylake/skl-sst-ipc.h   |   2 +-
+ sound/soc/intel/skylake/skl-sst-utils.c |  80 ++++++++++++++++++++
+ sound/soc/intel/skylake/skl-sst.c       | 125 ++++++++++++++++++++++++--------
+ 7 files changed, 208 insertions(+), 92 deletions(-)
 
 -- 
-~Vinod
+1.9.1
