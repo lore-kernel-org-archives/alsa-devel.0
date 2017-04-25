@@ -1,21 +1,24 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v2 13/18] dt-bindings: gpio: Add bindings
- for GPIO on Cirrus Logic Madera codecs
-Date: Tue, 25 Apr 2017 11:42:52 +0200
-Message-ID: <CACRpkdYnvfDfuyr6Jha7zFQbU9dRN8BqpgHUvGe4fyxeMgKSeQ@mail.gmail.com>
-References: <1493050124-5970-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <1493050124-5970-14-git-send-email-rf@opensource.wolfsonmicro.com>
+From: Daniel Baluta <daniel.baluta@gmail.com>
+Subject: Re: [PATCH 1/2] ASoC: codec: wm9860: avoid
+ maybe-uninitialized warning
+Date: Tue, 25 Apr 2017 13:17:47 +0300
+Message-ID: <CAEnQRZCp6Xxpo+x2eRtM2wKTO_YXYZ84YAk12LTmijDjyuJQ2w@mail.gmail.com>
+References: <1492780055-4892-1-git-send-email-daniel.baluta@nxp.com>
+ <1492780055-4892-2-git-send-email-daniel.baluta@nxp.com>
+ <CAK8P3a3GD-S1-szw5tw1R8eSS0AXL_hwJm+d-KF4XuKtYGf-VQ@mail.gmail.com>
+ <CAEnQRZCHgahg=Vem_rrbZWzVM7KJi1B_Q3NAKr_sxXA5K0-AEw@mail.gmail.com>
+ <CAK8P3a20+0sa0cZKoMu0SoqYtVMzJZumGzDpwEaSMJw_zbckfg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f181.google.com (mail-io0-f181.google.com
- [209.85.223.181])
- by alsa0.perex.cz (Postfix) with ESMTP id B12F9266F35
- for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2017 11:42:54 +0200 (CEST)
-Received: by mail-io0-f181.google.com with SMTP id k87so212983268ioi.0
- for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2017 02:42:54 -0700 (PDT)
-In-Reply-To: <1493050124-5970-14-git-send-email-rf@opensource.wolfsonmicro.com>
+Received: from mail-it0-f65.google.com (mail-it0-f65.google.com
+ [209.85.214.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id EEE1B2667E7
+ for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2017 12:17:49 +0200 (CEST)
+Received: by mail-it0-f65.google.com with SMTP id x188so20264897itb.3
+ for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2017 03:17:49 -0700 (PDT)
+In-Reply-To: <CAK8P3a20+0sa0cZKoMu0SoqYtVMzJZumGzDpwEaSMJw_zbckfg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,27 +28,117 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: Alexandre Courbot <gnurou@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jason Cooper <jason@lakedaemon.net>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "open list:WOLFSON MICROELECTRONICS DRIVERS" <patches@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Lee Jones <lee.jones@linaro.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Daniel Baluta <daniel.baluta@nxp.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 24, 2017 at 6:08 PM, Richard Fitzgerald
-<rf@opensource.wolfsonmicro.com> wrote:
-
-> The Cirrus Logic Madera codecs have a range of GPIO pins that can be
-> used as single-bit logic input or output. These are presented as a
-> standard GPIO binding.
->
-> The second cell in a GPIO binding is currently reserved for future use
-> as chip-specific flags.
->
-> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-> ---
-> Changes from V1:
-> - moved out of main gpio patch into a separate patch
-> - added gpio-line-names as an optional property
-
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-
-Yours,
-Linus Walleij
+T24gTW9uLCBBcHIgMjQsIDIwMTcgYXQgNjoyNyBQTSwgQXJuZCBCZXJnbWFubiA8YXJuZEBhcm5k
+Yi5kZT4gd3JvdGU6Cj4gT24gTW9uLCBBcHIgMjQsIDIwMTcgYXQgMzoxNSBQTSwgRGFuaWVsIEJh
+bHV0YSA8ZGFuaWVsLmJhbHV0YUBnbWFpbC5jb20+IHdyb3RlOgo+PiBPbiBGcmksIEFwciAyMSwg
+MjAxNyBhdCA1OjQ2IFBNLCBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRlPiB3cm90ZToKPj4+
+IE9uIEZyaSwgQXByIDIxLCAyMDE3IGF0IDM6MDcgUE0sIERhbmllbCBCYWx1dGEgPGRhbmllbC5i
+YWx1dGFAbnhwLmNvbT4gd3JvdGU6Cj4+Pj4gVGhlIG5ldyBQTEwgY29uZmlndXJhdGlvbiBjb2Rl
+IHRyaWdnZXJzIGEgaGFybWxlc3Mgd2FybmluZzoKPj4+Pgo+Pj4+IHNvdW5kL3NvYy9jb2RlY3Mv
+d204OTYwLmM6IEluIGZ1bmN0aW9uICd3bTg5NjBfY29uZmlndXJlX2Nsb2NraW5nJzoKPj4+PiBz
+b3VuZC9zb2MvY29kZWNzL3dtODk2MC5jOjczNTozOiBlcnJvcjogJ2Jlc3RfZnJlcV9vdXQnIG1h
+eSBiZSB1c2VkCj4+Pj4gdW5pbml0aWFsaXplZCBpbiB0aGlzIGZ1bmN0aW9uIFstV2Vycm9yPW1h
+eWJlLXVuaW5pdGlhbGl6ZWRdCj4+Pj4gICAgd204OTYwX3NldF9wbGwoY29kZWMsIGZyZXFfaW4s
+IGJlc3RfZnJlcV9vdXQpOwo+Pj4+ICAgIF5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+
+fn5+fn5+fn5+fn5+fgo+Pj4+IHNvdW5kL3NvYy9jb2RlY3Mvd204OTYwLmM6Njk5OjEyOiBub3Rl
+OiAnYmVzdF9mcmVxX291dCcgd2FzIGRlY2xhcmVkCj4+Pj4gaGVyZQo+Pj4+Cj4+Pj4gRml4ZXM6
+IDg0ZmRjMDBkNTE5ZiAoIkFTb0M6IGNvZGVjOiB3bTk4NjA6IFJlZmFjdG9yIFBMTCBvdXQgZnJl
+cSBzZWFyY2giKQo+Pj4+IEZpeGVzOiAzMDNlODk1NGFmOGQgKCJBU29DOiBjb2RlYzogd204OTYw
+OiBTdG9wIHdoZW4gYSBtYXRjaGluZyBQTEwgZnJlcSBpcyBmb3VuZCIpCj4+Pj4gU3VnZ2VzdGVk
+LWJ5OiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRlPgo+Pj4+IFNpZ25lZC1vZmYtYnk6IERh
+bmllbCBCYWx1dGEgPGRhbmllbC5iYWx1dGFAbnhwLmNvbT4KPj4+PiAtLS0KPj4+PiBBcm5kLAo+
+Pj4+Cj4+Pj4gSSBhZ3JlZSB0aGF0IHlvdXIgY29kZSB3YXMgbW9yZSBib3RoIGh1bWFucyBhbmQg
+Z2NjIGFueWhvdwo+Pj4+IGZvciBjb25zaXN0ZW5jeSB3aXRoIHdtODk2MF9jb25maWd1cmVfc3lz
+Y2xrIGZ1bmN0aW9uIEkgcHJlZmVycmVkCj4+Pj4gdG8ga2VlcCB0aGUgImlmKC4uKSBicmVhayIg
+c3RhdGVtZW50cy4KPj4+Cj4+PiBIb3cgYWJvdXQgY2hhbmdpbmcgYm90aCBmdW5jdGlvbnMgdGhl
+IHNhbWUgd2F5IHRoZW4/Cj4+Cj4+IEkndmUgdHJpZWQgYnV0IEkgY291bGRuJ3QgZmluZCBhbnkg
+c29sdXRpb24uIEZvciBjbGFyaXR5IGhlcmUgaXMgaG93Cj4+IHRoZSBjb2RlIGFjdHVhbGx5IGxv
+b2tzIGxpa2UuCj4+Cj4+IFRoZSBnaXQgZGlmZiBpcyBhIGxpdHRsZSBiaXQgbWlzbGVhZGluZy4g
+SGVyZSBpcyBob3cgd204OTYwX2NvbmZpZ3VyZV9wbGwgY29kZQo+PiBsb29rcyBsaWtlOgo+Pgo+
+PiBodHRwczovL3Bhc3RlYmluLmNvbS9uYUdkVk5Rego+Pgo+PiBzdGF0aWMKPj4gaW50IHdtODk2
+MF9jb25maWd1cmVfcGxsKHN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYywgaW50IGZyZXFfaW4s
+Cj4+IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgICBpbnQgKnN5c2Nsa19pZHgsIGludCAqZGFj
+X2lkeCwgaW50ICpiY2xrX2lkeCkKPj4gewo+PiDCuyAgICAgICBzdHJ1Y3Qgd204OTYwX3ByaXYg
+KndtODk2MCA9IHNuZF9zb2NfY29kZWNfZ2V0X2RydmRhdGEoY29kZWMpOwo+PiDCuyAgICAgICBp
+bnQgc3lzY2xrLCBiY2xrLCBscmNsaywgZnJlcV9vdXQ7Cj4+IMK7ICAgICAgIGludCBkaWZmLCBj
+bG9zZXN0LCBiZXN0X2ZyZXFfb3V0Owo+PiDCuyAgICAgICBpbnQgaSwgaiwgazsKPj4KPj4gwrsg
+ICAgICAgYmNsayA9IHdtODk2MC0+YmNsazsKPj4gwrsgICAgICAgbHJjbGsgPSB3bTg5NjAtPmxy
+Y2xrOwo+PiDCuyAgICAgICBjbG9zZXN0ID0gZnJlcV9pbjsKPj4KPj4gwrsgICAgICAgYmVzdF9m
+cmVxX291dCA9IC1FSU5WQUw7Cj4+IMK7ICAgICAgICpzeXNjbGtfaWR4ID0gKmRhY19pZHggPSAq
+YmNsa19pZHggPSAtMTsKPj4KPj4gwrsgICAgICAgZm9yIChpID0gMDsgaSA8IEFSUkFZX1NJWkUo
+c3lzY2xrX2RpdnMpOyArK2kpIHsKPj4gwrsgICAgICAgwrsgICAgICAgaWYgKHN5c2Nsa19kaXZz
+W2ldID09IC0xKQo+PiDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICBjb250aW51ZTsKPj4gwrsg
+ICAgICAgwrsgICAgICAgZm9yIChqID0gMDsgaiA8IEFSUkFZX1NJWkUoZGFjX2RpdnMpOyArK2op
+IHsKPj4gwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgc3lzY2xrID0gbHJjbGsgKiBkYWNfZGl2
+c1tqXTsKPj4gwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgZnJlcV9vdXQgPSBzeXNjbGsgKiBz
+eXNjbGtfZGl2c1tpXTsKPj4KPj4gwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgZm9yIChrID0g
+MDsgayA8IEFSUkFZX1NJWkUoYmNsa19kaXZzKTsgKytrKSB7Cj4+IMK7ICAgICAgIMK7ICAgICAg
+IMK7ICAgICAgIMK7ICAgICAgIGlmICghaXNfcGxsX2ZyZXFfYXZhaWxhYmxlKGZyZXFfaW4sIGZy
+ZXFfb3V0KSkKPj4gwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgwrsgICAgICAg
+Y29udGludWU7Cj4+Cj4+IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIGRpZmYg
+PSBzeXNjbGsgLSBiY2xrICogYmNsa19kaXZzW2tdIC8gMTA7Cj4+IMK7ICAgICAgIMK7ICAgICAg
+IMK7ICAgICAgIMK7ICAgICAgIGlmIChkaWZmID09IDApIHsKPj4gwrsgICAgICAgwrsgICAgICAg
+wrsgICAgICAgwrsgICAgICAgwrsgICAgICAgKnN5c2Nsa19pZHggPSBpOwo+PiDCuyAgICAgICDC
+uyAgICAgICDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICAqZGFjX2lkeCA9IGo7Cj4+IMK7ICAg
+ICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgICpiY2xrX2lkeCA9IGs7Cj4+
+IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIGJlc3RfZnJlcV9v
+dXQgPSBmcmVxX291dDsKPj4gwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgwrsg
+ICAgICAgYnJlYWs7Cj4+IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIH0KPj4g
+wrsgICAgICAgwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgaWYgKGRpZmYgPiAwICYmIGNsb3Nl
+c3QgPiBkaWZmKSB7Cj4+IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAg
+ICAgICpzeXNjbGtfaWR4ID0gaTsKPj4gwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgwrsgICAg
+ICAgwrsgICAgICAgKmRhY19pZHggPSBqOwo+PiDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDC
+uyAgICAgICDCuyAgICAgICAqYmNsa19pZHggPSBrOwo+PiDCuyAgICAgICDCuyAgICAgICDCuyAg
+ICAgICDCuyAgICAgICDCuyAgICAgICBjbG9zZXN0ID0gZGlmZjsKPj4gwrsgICAgICAgwrsgICAg
+ICAgwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgYmVzdF9mcmVxX291dCA9IGZyZXFfb3V0Owo+
+PiDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICB9Cj4+IMK7ICAgICAgIMK7ICAg
+ICAgIMK7ICAgICAgIH0KPj4gwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgaWYgKGsgIT0gQVJS
+QVlfU0laRShiY2xrX2RpdnMpKQo+PiDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDCuyAgICAg
+ICBicmVhazsKPj4gwrsgICAgICAgwrsgICAgICAgfQo+PiDCuyAgICAgICDCuyAgICAgICBpZiAo
+aiAhPSBBUlJBWV9TSVpFKGRhY19kaXZzKSkKPj4gwrsgICAgICAgwrsgICAgICAgwrsgICAgICAg
+YnJlYWs7Cj4+IMK7ICAgICAgIH0KPj4KPj4gwrsgICAgICAgcmV0dXJuIGJlc3RfZnJlcV9vdXQ7
+Cj4+IH0KPj4KPj4gSW4gbXkgb3BpbmlvbiB0aGlzIGlzIGEgY29tcGlsZXIgZmFsc2UgcG9zaXRp
+dmUuIEFueSBjbHVlIG9uIGhvdyB0byByZXdvcmsgdGhpcwo+PiB3b3VsZCBiZSB3ZWxjb21lZCA6
+KS4gSSBjb3VsZG4ndCBmaW5kIGFueSBkZWNlbnQgc29sdXRpb24uCj4KPiBBY3R1YWxseSBJIHRo
+aW5rIGluIHRoaXMgY2FzZSB0aGUgY29tcGlsZXIgaXMgc3VwcG9zZWQgdG8gd2FybiBpZgo+IGJl
+c3RfZnJlcV9vdXQgaXMgbm90IGluaXRpYWxpemVkLCBhcyB3ZSB3b3VsZCBuZXZlciBzZXQgaXQK
+PiBpbiBjYXNlIGlzX3BsbF9mcmVxX2F2YWlsYWJsZSgpIHJldHVybnMgZmFsc2UgZm9yIGFsbCBp
+bnB1dHMgb3IKPiBzeXNjbGtfZGl2c1tdIGlzIC0xIGZvciBhbGwgZmllbGRzLgo+IEknZCBsZWF2
+ZSB0aGUgaW5pdGlhbGl6YXRpb24gdGhlbiwgYW5kIG9ubHkgcmVwbGFjZSB0aGUgYnJlYWtzCj4g
+d2l0aCBhIGdvdG8gKG5vdCB0ZXN0ZWQpOgo+Cj4+IMK7ICAgICAgIGZvciAoaSA9IDA7IGkgPCBB
+UlJBWV9TSVpFKHN5c2Nsa19kaXZzKTsgKytpKSB7Cj4+IMK7ICAgICAgIMK7ICAgICAgIGlmIChz
+eXNjbGtfZGl2c1tpXSA9PSAtMSkKPj4gwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgY29udGlu
+dWU7Cj4+IMK7ICAgICAgIMK7ICAgICAgIGZvciAoaiA9IDA7IGogPCBBUlJBWV9TSVpFKGRhY19k
+aXZzKTsgKytqKSB7Cj4+IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIHN5c2NsayA9IGxyY2xr
+ICogZGFjX2RpdnNbal07Cj4+IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIGZyZXFfb3V0ID0g
+c3lzY2xrICogc3lzY2xrX2RpdnNbaV07Cj4+Cj4+IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAg
+IGZvciAoayA9IDA7IGsgPCBBUlJBWV9TSVpFKGJjbGtfZGl2cyk7ICsraykgewo+PiDCuyAgICAg
+ICDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICBpZiAoIWlzX3BsbF9mcmVxX2F2YWlsYWJsZShm
+cmVxX2luLCBmcmVxX291dCkpCj4+IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAg
+IMK7ICAgICAgIGNvbnRpbnVlOwo+Pgo+PiDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDCuyAg
+ICAgICBkaWZmID0gc3lzY2xrIC0gYmNsayAqIGJjbGtfZGl2c1trXSAvIDEwOwo+PiDCuyAgICAg
+ICDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICBpZiAoZGlmZiA9PSAwKSB7Cj4+IMK7ICAgICAg
+IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgICpzeXNjbGtfaWR4ID0gaTsKPj4g
+wrsgICAgICAgwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgKmRhY19pZHggPSBq
+Owo+PiDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICAqYmNsa19p
+ZHggPSBrOwo+PiDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICBi
+ZXN0X2ZyZXFfb3V0ID0gZnJlcV9vdXQ7Cj4+IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7
+ICAgICAgIMK7ICAgICAgIGdvdG8gb3V0Owo+PiDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDC
+uyAgICAgICB9Cj4+IMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIGlmIChkaWZm
+ID4gMCAmJiBjbG9zZXN0ID4gZGlmZikgewo+PiDCuyAgICAgICDCuyAgICAgICDCuyAgICAgICDC
+uyAgICAgICDCuyAgICAgICAqc3lzY2xrX2lkeCA9IGk7Cj4+IMK7ICAgICAgIMK7ICAgICAgIMK7
+ICAgICAgIMK7ICAgICAgIMK7ICAgICAgICpkYWNfaWR4ID0gajsKPj4gwrsgICAgICAgwrsgICAg
+ICAgwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgKmJjbGtfaWR4ID0gazsKPj4gwrsgICAgICAg
+wrsgICAgICAgwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgY2xvc2VzdCA9IGRpZmY7Cj4+IMK7
+ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIMK7ICAgICAgIGJlc3RfZnJlcV9vdXQg
+PSBmcmVxX291dDsKPj4gwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgwrsgICAgICAgfQo+PiDC
+uyAgICAgICDCuyAgICAgICDCuyAgICAgICB9Cj4+IMK7ICAgICAgIMK7ICAgICAgIH0KPj4gwrsg
+ICAgICAgfQo+Pm91dDoKPj4gwrsgICAgICAgcmV0dXJuIGJlc3RfZnJlcV9vdXQ7Cj4+IH0KClN1
+cmUsIHRoaXMgbG9va3MgcmVhc29uYWJsZS4gSSB3aWxsIHNlbmQgdjIuCgpEYW5pZWwuCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
