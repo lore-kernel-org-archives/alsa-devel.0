@@ -1,134 +1,174 @@
-From: "weiyongjun (A)" <weiyongjun1@huawei.com>
-Subject: RE: [PATCH -next] ASoC: Intel: Skylake: Fix to use
- list_for_each_safe() when delete items
-Date: Tue, 25 Apr 2017 07:57:57 +0000
-Message-ID: <6AADFAC011213A4C87B956458587ADB47BD834@SZXEMI508-MBX.china.huawei.com>
-References: <20170425032817.21959-1-weiyj.lk@gmail.com>
- <20170425040035.GY6263@localhost>
+From: Kailang <kailang@realtek.com>
+Subject: Re: Lenovo two codecs machine workaround
+Date: Tue, 25 Apr 2017 09:30:50 +0000
+Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A183ECEBB@RTITMBSV02.realtek.com.tw>
+References: <6FAB7C47BCF00940BB0999A99BE3547A17A4C72A@RTITMBSV09.realtek.com.tw>
+ <s5hfujn8y3q.wl-tiwai@suse.de>	<s5ho9y9yv75.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A17A4DCB9@RTITMBSV09.realtek.com.tw>
+ <6FAB7C47BCF00940BB0999A99BE3547A17A4DCE6@RTITMBSV09.realtek.com.tw>
+ <6FAB7C47BCF00940BB0999A99BE3547A17A4DDE5@RTITMBSV09.realtek.com.tw>
+ <CAH5Jhw-ZjKEKP19fR1F6fnL09SLuQom84xsH_2s-m5=tqAvrAw@mail.gmail.com>
+ <6FAB7C47BCF00940BB0999A99BE3547A17A4E8DF@RTITMBSV09.realtek.com.tw>
+ <s5hh92ol9sr.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A17A4EB0F@RTITMBSV09.realtek.com.tw>
+ <s5hfui4rtpe.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A17A4ED53@RTITMBSV09.realtek.com.tw>
+ <s5ha88bf9r6.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A17A53D58@RTITMBSV09.realtek.com.tw>
+ <s5hinmc6983.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A17A53EED@RTITMBSV09.realtek.com.tw>
+ <s5hh91wwe48.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A183EC985@RTITMBSV02.realtek.com.tw>
+ <s5h1sspsnwg.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A183ECADD@RTITMBSV02.realtek.com.tw>
+ <s5hr30no3gq.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A183ECAF5@RTITMBSV02.realtek.com.tw>
+ <s5ha87am94v.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A183ECDAF@RTITMBSV02.realtek.com.tw>
+ <s5hinlujmeu.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A183ECDFB@RTITMBSV02.realtek.com.tw>
+ <s5hr30ib39a.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A183ECE10@RTITMBSV02.realtek.com.tw>
+ <s5hinlub0rp.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A183ECEA8@RTITMBSV02.realtek.com.tw>
+ <s5hd1c0hoct.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="Windows-1252"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170425040035.GY6263@localhost>
-Content-Language: zh-CN
-Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod Koul <vinod.koul@intel.com>, Wei Yongjun <weiyj.lk@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>, G Kranthi <gudishax.kranthikumar@intel.com>, Hardik T Shah <hardik.t.shah@intel.com>, Jeeja KP <jeeja.kp@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed;
+ boundary="_002_6FAB7C47BCF00940BB0999A99BE3547A183ECEBBRTITMBSV02realt_"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 95D9D266EF9
+ for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2017 11:31:02 +0200 (CEST)
+In-Reply-To: <s5hd1c0hoct.wl-tiwai@suse.de>
+Content-Language: zh-TW
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+--_002_6FAB7C47BCF00940BB0999A99BE3547A183ECEBBRTITMBSV02realt_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
+=20
+Attach again.
+C.c. to alsa-devel.
+
+This patch is dual codecs workarround code for Lenovo platform.
 
 > -----Original Message-----
-> From: Vinod Koul [mailto:vinod.koul@intel.com]
-> Sent: Tuesday, April 25, 2017 12:01 PM
-> To: Wei Yongjun <weiyj.lk@gmail.com>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>; Mark Brown
-> <broonie@kernel.org>; Jaroslav Kysela <perex@perex.cz>; Takashi Iwai
-> <tiwai@suse.com>; Pardha Saradhi K
-> <pardha.saradhi.kesapragada@intel.com>; G Kranthi
-> <gudishax.kranthikumar@intel.com>; Hardik T Shah
-> <hardik.t.shah@intel.com>; Jeeja KP <jeeja.kp@intel.com>; weiyongjun (A)
-> <weiyongjun1@huawei.com>; alsa-devel@alsa-project.org; linux-
-> kernel@vger.kernel.org
-> Subject: Re: [PATCH -next] ASoC: Intel: Skylake: Fix to use
-> list_for_each_safe() when delete items
-> 
-> On Tue, Apr 25, 2017 at 03:28:17AM +0000, Wei Yongjun wrote:
-> > From: Wei Yongjun <weiyongjun1@huawei.com>
-> >
-> > Since we will remove items off the list using list_del() we need
-> > to use a safe version of the list_for_each() macro aptly named
-> > list_for_each_safe().
-> 
-> ah yes, god catch
-> 
-> > This is detected by Coccinelle semantic patch.
-> 
-> It is a good practice to include the script you used, do you mind adding
-> that in the log?
-> 
+> From: Takashi Iwai [mailto:tiwai@suse.de]=20
+> Sent: Tuesday, April 25, 2017 4:40 PM
+> To: Kailang
+> Subject: Re: Lenovo two codecs machine workaround
+>=20
+> On Tue, 25 Apr 2017 10:35:24 +0200,
+> Kailang wrote:
+> >=20
+> >=20
+> > Attach is the support patch for Lenovo dual codecs.
+>=20
+> Looks good.  Could you submit to alsa-devel ML?
+>=20
+>=20
+> thanks,
+>=20
+> Takashi
+>=20
+> ------Please consider the environment before printing this e-mail.
+> =
 
-Sure. 
+--_002_6FAB7C47BCF00940BB0999A99BE3547A183ECEBBRTITMBSV02realt_
+Content-Type: application/octet-stream; name="0001-Lenovo-dual-codecs.patch"
+Content-Description: 0001-Lenovo-dual-codecs.patch
+Content-Disposition: attachment; filename="0001-Lenovo-dual-codecs.patch";
+	size=3918; creation-date="Tue, 25 Apr 2017 08:34:26 GMT";
+	modification-date="Tue, 25 Apr 2017 08:33:06 GMT"
+Content-Transfer-Encoding: base64
 
-@@
-iterator name list_for_each;
-expression E;
-expression pos, head;
-identifier l;
-@@
-*  list_for_each(pos, head)
-{
-...
-*  \(list_del\|list_del_init\|list_move\|list_move_tail\)(pos, ...);
-... when != \(goto l; \| break; \| return E; \| return;\)
-}
+RnJvbSAxNjZmZjg1OTZjZWY5ZmYzODA0MDY1M2Q0YjlmM2FjMWYyZTZkNDhiIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
+dGU6IFR1ZSwgMjUgQXByIDIwMTcgMTY6MTc6NDAgKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
+OiBoZGEvcmVhbHRlayAtIEFkZCBEdWFsIENvZGVjcyBzdXBwb3J0IGZvciBMZW5vdm8KIFA1MjAv
+NDIwCgpMZW5vdm8gUDUyMC80MjAgYnVpbGQgd2l0aCB0d28gY29kZWNzLgpBTEMyMzMgZm9yIGZy
+b250IHBhbmVsLgpBTEM2NjIgZm9yIHJlYXIgcGFuZWwuClRoaXMgcGF0Y2ggd2lsbCByZW5hbWUg
+Y2FwdHVyZSBuYW1lIGZvciBzbG92ZSBjb25mbGljdHMuCkFuZCBjcmVhdGUgYSBjYXJkIGxvbmdu
+YW1lIGZvciBVQ00gcHJvZmlsZS4KClNpZ25lZC1vZmYtYnk6IEthaWxhbmcgWWFuZyA8a2FpbGFu
+Z0ByZWFsdGVrLmNvbT4KCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsu
+YyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCmluZGV4IDkzODQ2YmYuLjU4ZGY0NDAg
+MTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCisrKyBiL3NvdW5kL3Bj
+aS9oZGEvcGF0Y2hfcmVhbHRlay5jCkBAIC00ODI0LDYgKzQ4MjQsMzAgQEAgc3RhdGljIHZvaWQg
+YWxjMjgwX2ZpeHVwX2hwXzk0ODBtKHN0cnVjdCBoZGFfY29kZWMgKmNvZGVjLAogCX0KIH0KIAor
+c3RhdGljIHZvaWQgYWxjMjMzX2FsYzY2Ml9maXh1cF9sZW5vdm9fZHVhbF9jb2RlY3Moc3RydWN0
+IGhkYV9jb2RlYyAqY29kZWMsCisJCQkJCSBjb25zdCBzdHJ1Y3QgaGRhX2ZpeHVwICpmaXgsCisJ
+CQkJCSBpbnQgYWN0aW9uKQoreworCWFsY19maXh1cF9kdWFsX2NvZGVjcyhjb2RlYywgZml4LCBh
+Y3Rpb24pOworCXN3aXRjaCAoYWN0aW9uKSB7CisJY2FzZSBIREFfRklYVVBfQUNUX1BSRV9QUk9C
+RToKKwkJLyogb3ZlcnJpZGUgY2FyZCBsb25nbmFtZSB0byBwcm92aWRlIGEgdW5pcXVlIFVDTSBw
+cm9maWxlICovCisJCXN0cmNweShjb2RlYy0+Y2FyZC0+bG9uZ25hbWUsICJIREF1ZGlvLUxlbm92
+by1EdWFsQ29kZWNzIik7CisJCWJyZWFrOworCWNhc2UgSERBX0ZJWFVQX0FDVF9CVUlMRDoKKwkJ
+LyogcmVuYW1lIENhcHR1cmUgY29udHJvbHMgZGVwZW5kaW5nIG9uIHRoZSBjb2RlYyAqLworCQly
+ZW5hbWVfY3RsKGNvZGVjLCAiQ2FwdHVyZSBWb2x1bWUiLAorCQkJICAgY29kZWMtPmFkZHIgPT0g
+MCA/CisJCQkgICAiUmVhci1QYW5lbCBDYXB0dXJlIFZvbHVtZSIgOgorCQkJICAgIkZyb250LVBh
+bmVsIENhcHR1cmUgVm9sdW1lIik7CisJCXJlbmFtZV9jdGwoY29kZWMsICJDYXB0dXJlIFN3aXRj
+aCIsCisJCQkgICBjb2RlYy0+YWRkciA9PSAwID8KKwkJCSAgICJSZWFyLVBhbmVsIENhcHR1cmUg
+U3dpdGNoIiA6CisJCQkgICAiRnJvbnQtUGFuZWwgQ2FwdHVyZSBTd2l0Y2giKTsKKwkJYnJlYWs7
+CisJfQorfQorCiAvKiBmb3IgaGRhX2ZpeHVwX3RoaW5rcGFkX2FjcGkoKSAqLwogI2luY2x1ZGUg
+InRoaW5rcGFkX2hlbHBlci5jIgogCkBAIC00OTM3LDYgKzQ5NjEsNyBAQCBlbnVtIHsKIAlBTEMy
+NTZfRklYVVBfQVNVU19BSU9fR1BJTzIsCiAJQUxDMjMzX0ZJWFVQX0FTVVNfTUlDX05PX1BSRVNF
+TkNFLAogCUFMQzIzM19GSVhVUF9FQVBEX0NPRUZfQU5EX01JQ19OT19QUkVTRU5DRSwKKwlBTEMy
+MzNfRklYVVBfTEVOT1ZPX01VTFRJX0NPREVDUywKIH07CiAKIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
+aGRhX2ZpeHVwIGFsYzI2OV9maXh1cHNbXSA9IHsKQEAgLTU3MDYsNiArNTczMSwxMCBAQCBzdGF0
+aWMgY29uc3Qgc3RydWN0IGhkYV9maXh1cCBhbGMyNjlfZml4dXBzW10gPSB7CiAJCS5jaGFpbmVk
+ID0gdHJ1ZSwKIAkJLmNoYWluX2lkID0gQUxDMjMzX0ZJWFVQX0FTVVNfTUlDX05PX1BSRVNFTkNF
+CiAJfSwKKwlbQUxDMjMzX0ZJWFVQX0xFTk9WT19NVUxUSV9DT0RFQ1NdID0geworCQkudHlwZSA9
+IEhEQV9GSVhVUF9GVU5DLAorCQkudi5mdW5jID0gYWxjMjMzX2FsYzY2Ml9maXh1cF9sZW5vdm9f
+ZHVhbF9jb2RlY3MsCisJfSwKIH07CiAKIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3BjaV9xdWly
+ayBhbGMyNjlfZml4dXBfdGJsW10gPSB7CkBAIC01ODYwLDYgKzU4ODksNyBAQCBzdGF0aWMgY29u
+c3Qgc3RydWN0IHNuZF9wY2lfcXVpcmsgYWxjMjY5X2ZpeHVwX3RibFtdID0gewogCVNORF9QQ0lf
+UVVJUksoMHgxNDRkLCAweGM3NDAsICJTYW1zdW5nIEF0aXYgYm9vayA4IChOUDg3MFo1RykiLCBB
+TEMyNjlfRklYVVBfQVRJVl9CT09LXzgpLAogCVNORF9QQ0lfUVVJUksoMHgxNDU4LCAweGZhNTMs
+ICJHaWdhYnl0ZSBCWEJULTI4MDciLCBBTEMyODNfRklYVVBfSEVBRFNFVF9NSUMpLAogCVNORF9Q
+Q0lfUVVJUksoMHgxNDYyLCAweGIxMjAsICJNU0kgQ3ViaSBNUy1CMTIwIiwgQUxDMjgzX0ZJWFVQ
+X0hFQURTRVRfTUlDKSwKKwlTTkRfUENJX1FVSVJLKDB4MTdhYSwgMHgxMDM2LCAiTGVub3ZvIFA1
+MjAiLCBBTEMyMzNfRklYVVBfTEVOT1ZPX01VTFRJX0NPREVDUyksCiAJU05EX1BDSV9RVUlSSygw
+eDE3YWEsIDB4MjBmMiwgIlRoaW5rcGFkIFNMNDEwLzUxMCIsIEFMQzI2OV9GSVhVUF9TS1VfSUdO
+T1JFKSwKIAlTTkRfUENJX1FVSVJLKDB4MTdhYSwgMHgyMTVlLCAiVGhpbmtwYWQgTDUxMiIsIEFM
+QzI2OV9GSVhVUF9TS1VfSUdOT1JFKSwKIAlTTkRfUENJX1FVSVJLKDB4MTdhYSwgMHgyMWI4LCAi
+VGhpbmtwYWQgRWRnZSAxNCIsIEFMQzI2OV9GSVhVUF9TS1VfSUdOT1JFKSwKQEAgLTY4ODEsNiAr
+NjkxMSw3IEBAIGVudW0gewogCUFMQzg5Ml9GSVhVUF9BU1JPQ0tfTU9CTywKIAlBTEM2NjJfRklY
+VVBfVVNJX0ZVTkMsCiAJQUxDNjYyX0ZJWFVQX1VTSV9IRUFEU0VUX01PREUsCisJQUxDNjYyX0ZJ
+WFVQX0xFTk9WT19NVUxUSV9DT0RFQ1MsCiB9OwogCiBzdGF0aWMgY29uc3Qgc3RydWN0IGhkYV9m
+aXh1cCBhbGM2NjJfZml4dXBzW10gPSB7CkBAIC03MTg2LDYgKzcyMTcsMTAgQEAgc3RhdGljIGNv
+bnN0IHN0cnVjdCBoZGFfZml4dXAgYWxjNjYyX2ZpeHVwc1tdID0gewogCQkuY2hhaW5lZCA9IHRy
+dWUsCiAJCS5jaGFpbl9pZCA9IEFMQzY2Ml9GSVhVUF9VU0lfRlVOQwogCX0sCisJW0FMQzY2Ml9G
+SVhVUF9MRU5PVk9fTVVMVElfQ09ERUNTXSA9IHsKKwkJLnR5cGUgPSBIREFfRklYVVBfRlVOQywK
+KwkJLnYuZnVuYyA9IGFsYzIzM19hbGM2NjJfZml4dXBfbGVub3ZvX2R1YWxfY29kZWNzLAorCX0s
+CiB9OwogCiBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9wY2lfcXVpcmsgYWxjNjYyX2ZpeHVwX3Ri
+bFtdID0gewpAQCAtNzIyMyw2ICs3MjU4LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfcGNp
+X3F1aXJrIGFsYzY2Ml9maXh1cF90YmxbXSA9IHsKIAlTTkRfUENJX1FVSVJLKDB4MTA1YiwgMHgw
+Y2Q2LCAiRm94Y29ubiIsIEFMQzY2Ml9GSVhVUF9BU1VTX01PREUyKSwKIAlTTkRfUENJX1FVSVJL
+KDB4MTQ0ZCwgMHhjMDUxLCAiU2Ftc3VuZyBSNzIwIiwgQUxDNjYyX0ZJWFVQX0lERUFQQUQpLAog
+CVNORF9QQ0lfUVVJUksoMHgxNGNkLCAweDUwMDMsICJVU0kiLCBBTEM2NjJfRklYVVBfVVNJX0hF
+QURTRVRfTU9ERSksCisJU05EX1BDSV9RVUlSSygweDE3YWEsIDB4MTAzNiwgIkxlbm92byBQNTIw
+IiwgQUxDNjYyX0ZJWFVQX0xFTk9WT19NVUxUSV9DT0RFQ1MpLAogCVNORF9QQ0lfUVVJUksoMHgx
+N2FhLCAweDM4YWYsICJMZW5vdm8gSWRlYXBhZCBZNTUwUCIsIEFMQzY2Ml9GSVhVUF9JREVBUEFE
+KSwKIAlTTkRfUENJX1FVSVJLKDB4MTdhYSwgMHgzYTBkLCAiTGVub3ZvIElkZWFwYWQgWTU1MCIs
+IEFMQzY2Ml9GSVhVUF9JREVBUEFEKSwKIAlTTkRfUENJX1FVSVJLKDB4MTg0OSwgMHg1ODkyLCAi
+QVNSb2NrIEIxNTBNIiwgQUxDODkyX0ZJWFVQX0FTUk9DS19NT0JPKSwK
 
-@@
-expression E;
-expression pos, head, ep;
-identifier list;
-identifier l;
-@@
-*  list_for_each(pos, head)
-{
-...
-* ep = list_entry(pos, ..., list);
-...
-*  \(list_del\|list_del_init\|list_move\|list_move_tail\)(&ep->list, ...);
-... when != \(goto l; \| break; \| return E; \| return;\)
-}
+--_002_6FAB7C47BCF00940BB0999A99BE3547A183ECEBBRTITMBSV02realt_
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-@@
-iterator name list_for_each_prev;
-expression E;
-expression pos, head;
-identifier l;
-@@
-*  list_for_each_prev(pos, head)
-{
-...
-*  \(list_del\|list_del_init\)(pos);
-... when != \(goto l; \| break; \| return E; \| return;\)
-}
 
-@@
-iterator name list_for_each_entry;
-expression E;
-expression pos, head;
-identifier l, member;
-@@
-
-*  list_for_each_entry(pos, head, member)
-{
-...
-*  \(list_del\|list_del_init\)(&pos->member);
-... when != \(goto l; \| break; \| return E; \| return;\)
-}
-
-@@
-iterator name list_for_each_entry_from;
-expression E;
-expression pos, head;
-identifier l, member;
-@@
-
-*  list_for_each_entry_from(pos, head, member)
-{
-...
-*  \(list_del\|list_del_init\)(&pos->member);
-... when != \(goto l; \| break; \| return E; \| return;\)
-}
-
-@@
-iterator name list_for_each_entry_reverse;
-expression E;
-expression pos, head;
-identifier l, member;
-@@
-
-*  list_for_each_entry_reverse(pos, head, member)
-{
-...
-*  \(list_del\|list_del_init\)(&pos->member);
-... when != \(goto l; \| break; \| return E; \| return;\)
-}
+--_002_6FAB7C47BCF00940BB0999A99BE3547A183ECEBBRTITMBSV02realt_--
