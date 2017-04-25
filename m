@@ -1,174 +1,134 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v2 6/6] ASoC: Intel: Skylake: Add loadable
-	module support on KBL platform
-Date: Tue, 25 Apr 2017 12:18:24 +0530
-Message-ID: <1493102904-12624-7-git-send-email-subhransu.s.prusty@intel.com>
-References: <1493102904-12624-1-git-send-email-subhransu.s.prusty@intel.com>
+From: "weiyongjun (A)" <weiyongjun1@huawei.com>
+Subject: RE: [PATCH -next] ASoC: Intel: Skylake: Fix to use
+ list_for_each_safe() when delete items
+Date: Tue, 25 Apr 2017 07:57:57 +0000
+Message-ID: <6AADFAC011213A4C87B956458587ADB47BD834@SZXEMI508-MBX.china.huawei.com>
+References: <20170425032817.21959-1-weiyj.lk@gmail.com>
+ <20170425040035.GY6263@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A719266A7A
- for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2017 09:01:46 +0200 (CEST)
-In-Reply-To: <1493102904-12624-1-git-send-email-subhransu.s.prusty@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, lgirdwood@gmail.com, G Kranthi <gudishax.kranthikumar@intel.com>, patches.audio@intel.com, broonie@kernel.org, "Sodhi, VunnyX" <vunnyx.sodhi@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170425040035.GY6263@localhost>
+Content-Language: zh-CN
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vinod Koul <vinod.koul@intel.com>, Wei Yongjun <weiyj.lk@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>, G Kranthi <gudishax.kranthikumar@intel.com>, Hardik T Shah <hardik.t.shah@intel.com>, Jeeja KP <jeeja.kp@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: "Sodhi, VunnyX" <vunnyx.sodhi@intel.com>
 
-Kabylake platform expects modules in a library manifest. After loading
-base firmware library manifest is loaded using load library IPC. This is
-followed by module load using load multiple modules IPC.
 
-Signed-off-by: Sodhi, VunnyX <vunnyx.sodhi@intel.com>
-Signed-off-by: G Kranthi <gudishax.kranthikumar@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
----
- sound/soc/intel/skylake/skl-sst-ipc.c |  2 ++
- sound/soc/intel/skylake/skl-sst.c     | 64 +++++++++++++++++++++++++++++++----
- 2 files changed, 60 insertions(+), 6 deletions(-)
+> -----Original Message-----
+> From: Vinod Koul [mailto:vinod.koul@intel.com]
+> Sent: Tuesday, April 25, 2017 12:01 PM
+> To: Wei Yongjun <weiyj.lk@gmail.com>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>; Mark Brown
+> <broonie@kernel.org>; Jaroslav Kysela <perex@perex.cz>; Takashi Iwai
+> <tiwai@suse.com>; Pardha Saradhi K
+> <pardha.saradhi.kesapragada@intel.com>; G Kranthi
+> <gudishax.kranthikumar@intel.com>; Hardik T Shah
+> <hardik.t.shah@intel.com>; Jeeja KP <jeeja.kp@intel.com>; weiyongjun (A)
+> <weiyongjun1@huawei.com>; alsa-devel@alsa-project.org; linux-
+> kernel@vger.kernel.org
+> Subject: Re: [PATCH -next] ASoC: Intel: Skylake: Fix to use
+> list_for_each_safe() when delete items
+> 
+> On Tue, Apr 25, 2017 at 03:28:17AM +0000, Wei Yongjun wrote:
+> > From: Wei Yongjun <weiyongjun1@huawei.com>
+> >
+> > Since we will remove items off the list using list_del() we need
+> > to use a safe version of the list_for_each() macro aptly named
+> > list_for_each_safe().
+> 
+> ah yes, god catch
+> 
+> > This is detected by Coccinelle semantic patch.
+> 
+> It is a good practice to include the script you used, do you mind adding
+> that in the log?
+> 
 
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
-index c0226dd59445..3679d6c61cbf 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.c
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.c
-@@ -427,6 +427,7 @@ static void skl_ipc_process_reply(struct sst_generic_ipc *ipc,
- 		sst_dsp_inbox_read(ipc->dsp, msg->rx_data, msg->rx_size);
- 		switch (IPC_GLB_NOTIFY_MSG_TYPE(header.primary)) {
- 		case IPC_GLB_LOAD_MULTIPLE_MODS:
-+		case IPC_GLB_LOAD_LIBRARY:
- 			skl->mod_load_complete = true;
- 			skl->mod_load_status = true;
- 			wake_up(&skl->mod_load_wait);
-@@ -443,6 +444,7 @@ static void skl_ipc_process_reply(struct sst_generic_ipc *ipc,
- 			ipc->dsp->fw_ops.get_fw_errcode(ipc->dsp));
- 		switch (IPC_GLB_NOTIFY_MSG_TYPE(header.primary)) {
- 		case IPC_GLB_LOAD_MULTIPLE_MODS:
-+		case IPC_GLB_LOAD_LIBRARY:
- 			skl->mod_load_complete = true;
- 			skl->mod_load_status = false;
- 			wake_up(&skl->mod_load_wait);
-diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
-index 20968e5ec86d..155e456b7a3a 100644
---- a/sound/soc/intel/skylake/skl-sst.c
-+++ b/sound/soc/intel/skylake/skl-sst.c
-@@ -179,6 +179,18 @@ static int skl_set_dsp_D0(struct sst_dsp *ctx, unsigned int core_id)
- 			dev_err(ctx->dev, "unable to load firmware\n");
- 			return ret;
- 		}
-+
-+		/* load libs as they are also lost on D3 */
-+		if (skl->lib_count > 1) {
-+			ret = ctx->fw_ops.load_library(ctx, skl->lib_info,
-+							skl->lib_count);
-+			if (ret < 0) {
-+				dev_err(ctx->dev, "reload libs failed: %d\n",
-+						ret);
-+				return ret;
-+			}
-+
-+		}
- 	}
- 
- 	/*
-@@ -204,7 +216,7 @@ static int skl_set_dsp_D0(struct sst_dsp *ctx, unsigned int core_id)
- 
- 	skl->cores.state[core_id] = SKL_DSP_RUNNING;
- 
--	return ret;
-+	return 0;
- }
- 
- static int skl_set_dsp_D3(struct sst_dsp *ctx, unsigned int core_id)
-@@ -335,12 +347,16 @@ static int skl_transfer_module(struct sst_dsp *ctx, const void *data,
- 	if (bytes_left < 0)
- 		return bytes_left;
- 
--	if (is_module) { /* load module */
-+	/* check is_module flag to load module or library */
-+	if (is_module)
- 		ret = skl_ipc_load_modules(&skl->ipc, SKL_NUM_MODULES, &mod_id);
--		if (ret < 0) {
--			dev_err(ctx->dev, "Failed to Load module: %d\n", ret);
--			goto out;
--		}
-+	else
-+		ret = skl_sst_ipc_load_library(&skl->ipc, 0, table_id, false);
-+
-+	if (ret < 0) {
-+		dev_err(ctx->dev, "Failed to Load %s with err %d\n",
-+				is_module ? "module" : "lib", ret);
-+		goto out;
- 	}
- 
- 	/*
-@@ -373,6 +389,32 @@ static int skl_transfer_module(struct sst_dsp *ctx, const void *data,
- 	return ret;
- }
- 
-+static int
-+kbl_load_library(struct sst_dsp *ctx, struct skl_lib_info *linfo, int lib_count)
-+{
-+	struct skl_sst *skl = ctx->thread_context;
-+	struct firmware stripped_fw;
-+	int ret, i;
-+
-+	/* library indices start from 1 to N. 0 represents base FW */
-+	for (i = 1; i < lib_count; i++) {
-+		ret = skl_prepare_lib_load(skl, &skl->lib_info[i], &stripped_fw,
-+					SKL_ADSP_FW_BIN_HDR_OFFSET, i);
-+		if (ret < 0)
-+			goto load_library_failed;
-+		ret = skl_transfer_module(ctx, stripped_fw.data,
-+				stripped_fw.size, 0, i, false);
-+		if (ret < 0)
-+			goto load_library_failed;
-+	}
-+
-+	return 0;
-+
-+load_library_failed:
-+	skl_release_library(linfo, lib_count);
-+	return ret;
-+}
-+
- static int skl_load_module(struct sst_dsp *ctx, u16 mod_id, u8 *guid)
- {
- 	struct skl_module_table *module_entry = NULL;
-@@ -475,6 +517,7 @@ static void skl_clear_module_table(struct sst_dsp *ctx)
- 	.set_state_D3 = skl_set_dsp_D3,
- 	.load_fw = skl_load_base_firmware,
- 	.get_fw_errcode = skl_get_errorcode,
-+	.load_library = kbl_load_library,
- 	.load_mod = skl_load_module,
- 	.unload_mod = skl_unload_module,
- };
-@@ -554,6 +597,15 @@ int skl_sst_init_fw(struct device *dev, struct skl_sst *ctx)
- 	}
- 
- 	skl_dsp_init_core_state(sst);
-+
-+	if (ctx->lib_count > 1) {
-+		ret = sst->fw_ops.load_library(sst, ctx->lib_info,
-+						ctx->lib_count);
-+		if (ret < 0) {
-+			dev_err(dev, "Load Library failed : %x\n", ret);
-+			return ret;
-+		}
-+	}
- 	ctx->is_first_boot = false;
- 
- 	return 0;
--- 
-1.9.1
+Sure. 
+
+@@
+iterator name list_for_each;
+expression E;
+expression pos, head;
+identifier l;
+@@
+*  list_for_each(pos, head)
+{
+...
+*  \(list_del\|list_del_init\|list_move\|list_move_tail\)(pos, ...);
+... when != \(goto l; \| break; \| return E; \| return;\)
+}
+
+@@
+expression E;
+expression pos, head, ep;
+identifier list;
+identifier l;
+@@
+*  list_for_each(pos, head)
+{
+...
+* ep = list_entry(pos, ..., list);
+...
+*  \(list_del\|list_del_init\|list_move\|list_move_tail\)(&ep->list, ...);
+... when != \(goto l; \| break; \| return E; \| return;\)
+}
+
+@@
+iterator name list_for_each_prev;
+expression E;
+expression pos, head;
+identifier l;
+@@
+*  list_for_each_prev(pos, head)
+{
+...
+*  \(list_del\|list_del_init\)(pos);
+... when != \(goto l; \| break; \| return E; \| return;\)
+}
+
+@@
+iterator name list_for_each_entry;
+expression E;
+expression pos, head;
+identifier l, member;
+@@
+
+*  list_for_each_entry(pos, head, member)
+{
+...
+*  \(list_del\|list_del_init\)(&pos->member);
+... when != \(goto l; \| break; \| return E; \| return;\)
+}
+
+@@
+iterator name list_for_each_entry_from;
+expression E;
+expression pos, head;
+identifier l, member;
+@@
+
+*  list_for_each_entry_from(pos, head, member)
+{
+...
+*  \(list_del\|list_del_init\)(&pos->member);
+... when != \(goto l; \| break; \| return E; \| return;\)
+}
+
+@@
+iterator name list_for_each_entry_reverse;
+expression E;
+expression pos, head;
+identifier l, member;
+@@
+
+*  list_for_each_entry_reverse(pos, head, member)
+{
+...
+*  \(list_del\|list_del_init\)(&pos->member);
+... when != \(goto l; \| break; \| return E; \| return;\)
+}
