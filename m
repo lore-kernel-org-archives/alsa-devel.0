@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: bytcr_rt5640: Fix a typo and quirk
-	parameter type" to the asoc tree
-Date: Tue, 25 Apr 2017 16:45:46 +0100
-Message-ID: <E1d32ew-0001iN-7g@debutante>
-References: <20170424213430.24835-1-tiwai@suse.de>
+Subject: Applied "ASoC: bytcr_rt5640: log quirk configuration
+	errors" to the asoc tree
+Date: Tue, 25 Apr 2017 16:45:43 +0100
+Message-ID: <E1d32et-0001gu-8c@debutante>
+References: <20170424213433.21962-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F0597266F9D
- for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2017 17:46:04 +0200 (CEST)
-In-Reply-To: <20170424213430.24835-1-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id E783F266FD1
+ for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2017 17:46:05 +0200 (CEST)
+In-Reply-To: <20170424213433.21962-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: bytcr_rt5640: Fix a typo and quirk parameter type
+   ASoC: bytcr_rt5640: log quirk configuration errors
 
 has been applied to the asoc tree at
 
@@ -53,44 +53,154 @@ to this mail.
 Thanks,
 Mark
 
->From 0b2c9f88b94cd40f6a27641f0bac02a7ba185e39 Mon Sep 17 00:00:00 2001
-From: Takashi Iwai <tiwai@suse.de>
-Date: Mon, 24 Apr 2017 23:34:30 +0200
-Subject: [PATCH] ASoC: bytcr_rt5640: Fix a typo and quirk parameter type
+>From cb67d7651676e8c8f2e40587ef591da057806c57 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Mon, 24 Apr 2017 16:34:33 -0500
+Subject: [PATCH] ASoC: bytcr_rt5640: log quirk configuration errors
 
-The previous patch for adding the quirk module option had a typo in
-its info print, which results in a weird output.  Also, the parameter
-type should be rather unsigned int instead of signed int.
+Now that quirks can be overridden with a module parameter,
+log errors so that non-sensical quirks introduced by mistake
+are identified.
 
-Fixes: 9f2cf73ed65b ("ASoC: bytcr_rt5640: Allow quirk set via module option")
-Reported-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 100 +++++++++++++++++++++++++---------
+ 1 file changed, 75 insertions(+), 25 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 0ac32788f216..5ca09cadf39f 100644
+index 5ca09cadf39f..f063368edef9 100644
 --- a/sound/soc/intel/boards/bytcr_rt5640.c
 +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -60,7 +60,7 @@ struct byt_rt5640_private {
+@@ -57,6 +57,7 @@ enum {
+ struct byt_rt5640_private {
+ 	struct clk *mclk;
+ };
++static bool is_bytcr;
  
  static unsigned long byt_rt5640_quirk = BYT_RT5640_MCLK_EN;
  static unsigned int quirk_override;
--module_param_named(quirk, quirk_override, int, 0444);
-+module_param_named(quirk, quirk_override, uint, 0444);
- MODULE_PARM_DESC(quirk, "Board-specific quirk override");
+@@ -65,30 +66,79 @@ MODULE_PARM_DESC(quirk, "Board-specific quirk override");
  
  static void log_quirks(struct device *dev)
-@@ -811,7 +811,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 	/* check quirks before creating card */
- 	dmi_check_system(byt_rt5640_quirk_table);
- 	if (quirk_override) {
--		dev_info(&pdev->dev, "Overriding quirk %0x => 0x%x\n",
-+		dev_info(&pdev->dev, "Overriding quirk 0x%x => 0x%x\n",
- 			 (unsigned int)byt_rt5640_quirk, quirk_override);
- 		byt_rt5640_quirk = quirk_override;
- 	}
+ {
+-	if (BYT_RT5640_MAP(byt_rt5640_quirk) == BYT_RT5640_DMIC1_MAP)
+-		dev_info(dev, "quirk DMIC1_MAP enabled");
+-	if (BYT_RT5640_MAP(byt_rt5640_quirk) == BYT_RT5640_DMIC2_MAP)
+-		dev_info(dev, "quirk DMIC2_MAP enabled");
+-	if (BYT_RT5640_MAP(byt_rt5640_quirk) == BYT_RT5640_IN1_MAP)
+-		dev_info(dev, "quirk IN1_MAP enabled");
+-	if (BYT_RT5640_MAP(byt_rt5640_quirk) == BYT_RT5640_IN3_MAP)
+-		dev_info(dev, "quirk IN3_MAP enabled");
+-	if (byt_rt5640_quirk & BYT_RT5640_DMIC_EN)
+-		dev_info(dev, "quirk DMIC enabled");
++	int map;
++	bool has_dmic = false;
++	bool has_mclk = false;
++	bool has_ssp0 = false;
++	bool has_ssp0_aif1 = false;
++	bool has_ssp0_aif2 = false;
++	bool has_ssp2_aif2 = false;
++
++	map = BYT_RT5640_MAP(byt_rt5640_quirk);
++	switch (map) {
++	case BYT_RT5640_DMIC1_MAP:
++		dev_info(dev, "quirk DMIC1_MAP enabled\n");
++		has_dmic = true;
++		break;
++	case BYT_RT5640_DMIC2_MAP:
++		dev_info(dev, "quirk DMIC2_MAP enabled\n");
++		has_dmic = true;
++		break;
++	case BYT_RT5640_IN1_MAP:
++		dev_info(dev, "quirk IN1_MAP enabled\n");
++		break;
++	case BYT_RT5640_IN3_MAP:
++		dev_info(dev, "quirk IN3_MAP enabled\n");
++		break;
++	default:
++		dev_err(dev, "quirk map 0x%x is not supported, microphone input will not work\n", map);
++		break;
++	}
++	if (byt_rt5640_quirk & BYT_RT5640_DMIC_EN) {
++		if (has_dmic)
++			dev_info(dev, "quirk DMIC enabled\n");
++		else
++			dev_err(dev, "quirk DMIC enabled but no DMIC input set, will be ignored\n");
++	}
+ 	if (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER)
+-		dev_info(dev, "quirk MONO_SPEAKER enabled");
+-	if (byt_rt5640_quirk & BYT_RT5640_DIFF_MIC)
+-		dev_info(dev, "quirk DIFF_MIC enabled");
+-	if (byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2)
+-		dev_info(dev, "quirk SSP2_AIF2 enabled");
+-	if (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1)
+-		dev_info(dev, "quirk SSP0_AIF1 enabled");
+-	if (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)
+-		dev_info(dev, "quirk SSP0_AIF2 enabled");
+-	if (byt_rt5640_quirk & BYT_RT5640_MCLK_EN)
+-		dev_info(dev, "quirk MCLK_EN enabled");
+-	if (byt_rt5640_quirk & BYT_RT5640_MCLK_25MHZ)
+-		dev_info(dev, "quirk MCLK_25MHZ enabled");
++		dev_info(dev, "quirk MONO_SPEAKER enabled\n");
++	if (byt_rt5640_quirk & BYT_RT5640_DIFF_MIC) {
++		if (!has_dmic)
++			dev_info(dev, "quirk DIFF_MIC enabled\n");
++		else
++			dev_info(dev, "quirk DIFF_MIC enabled but DMIC input selected, will be ignored\n");
++	}
++	if (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) {
++		dev_info(dev, "quirk SSP0_AIF1 enabled\n");
++		has_ssp0 = true;
++		has_ssp0_aif1 = true;
++	}
++	if (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2) {
++		dev_info(dev, "quirk SSP0_AIF2 enabled\n");
++		has_ssp0 = true;
++		has_ssp0_aif2 = true;
++	}
++	if (byt_rt5640_quirk & BYT_RT5640_SSP2_AIF2) {
++		dev_info(dev, "quirk SSP2_AIF2 enabled\n");
++		has_ssp2_aif2 = true;
++	}
++	if (is_bytcr && !has_ssp0)
++		dev_err(dev, "Invalid routing, bytcr detected but no SSP0-based quirk, audio cannot work with SSP2 on bytcr\n");
++	if (has_ssp0_aif1 && has_ssp0_aif2)
++		dev_err(dev, "Invalid routing, SSP0 cannot be connected to both AIF1 and AIF2\n");
++	if (has_ssp0 && has_ssp2_aif2)
++		dev_err(dev, "Invalid routing, cannot have both SSP0 and SSP2 connected to codec\n");
++
++	if (byt_rt5640_quirk & BYT_RT5640_MCLK_EN) {
++		dev_info(dev, "quirk MCLK_EN enabled\n");
++		has_mclk = true;
++	}
++	if (byt_rt5640_quirk & BYT_RT5640_MCLK_25MHZ) {
++		if (has_mclk)
++			dev_info(dev, "quirk MCLK_25MHZ enabled\n");
++		else
++			dev_err(dev, "quirk MCLK_25MHZ enabled but quirk MCLK not selected, will be ignored\n");
++	}
+ }
+ 
+ 
+@@ -132,7 +182,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 			ret = clk_prepare_enable(priv->mclk);
+ 			if (ret < 0) {
+ 				dev_err(card->dev,
+-					"could not configure MCLK state");
++					"could not configure MCLK state\n");
+ 				return ret;
+ 			}
+ 		}
+@@ -714,8 +764,8 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 	int i;
+ 	int dai_index;
+ 	struct byt_rt5640_private *priv;
+-	bool is_bytcr = false;
+ 
++	is_bytcr = false;
+ 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_ATOMIC);
+ 	if (!priv)
+ 		return -ENOMEM;
 -- 
 2.11.0
