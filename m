@@ -1,19 +1,21 @@
-From: "Feilmeier Daniel (Ask De)" <feilmeierd@askgroup.de>
-Subject: ALSA / Soundcard latency
-Date: Tue, 25 Apr 2017 07:00:40 +0000
-Message-ID: <DBXPR06MB286900FD1B5EEF225F3A3B1C71E0@DBXPR06MB286.eurprd06.prod.outlook.com>
+From: George Makdessi <george@gdis.se>
+Subject: new codec tda1543
+Date: Tue, 25 Apr 2017 19:05:43 +0000
+Message-ID: <E7739485E9662B49B106BDE88BAB14C5018B118B7D@GDis-mail.gdis.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from askmail01.askgroup.it (askmail01.askgroup.it [89.96.89.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 38BA72668A2
- for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2017 09:00:44 +0200 (CEST)
-Received: from itsrvmail106.askgroup.it ([10.100.101.50]) by
- askmail01.askgroup.it with ESMTP id lpcoPidRb2T6N1i6 (version=TLSv1
- cipher=ECDHE-RSA-AES256-SHA bits=256 verify=NO) for
- <alsa-devel@alsa-project.org>; Tue, 25 Apr 2017 09:00:43 +0200 (CEST)
-Content-Language: en-US
+Received: from ch-p-mailout03.sth.basefarm.net
+ (ch-sth2-lb01-mailout-snat1.sth.basefarm.net [164.40.177.83])
+ by alsa0.perex.cz (Postfix) with ESMTP id 544CA266F9D
+ for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2017 21:13:59 +0200 (CEST)
+Received: from c83-248-145-189.bredband.comhem.se ([83.248.145.189]:44215
+ helo=GDis-mail.gdis.se)
+ by ch-p-mailout03.sth.basefarm.net with esmtps (TLSv1:AES128-SHA:128)
+ (Exim 4.84) (envelope-from <george@gdis.se>) id 1d35u8-000Gof-B1
+ for alsa-devel@alsa-project.org; Tue, 25 Apr 2017 21:13:43 +0200
+Content-Language: sv-SE
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,66 +28,90 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Commit 9f79c0289fa4b02544c6a51c789c84edd6a479fc ("audio: add support for philips tda1543 dac chip") new simple driver for the old well known philips tda1543 dac chip.
+
+
 Hello,
 
-My company is a supplier of car manufacturers. We develop and produce digit=
-al audio amplifiers.
+We would like to contribute with an audio codec file for the well known Philips TDA1543 dac chip. We have already made a PR for Raspbian with Raspberry Pi specific driver that is well suited together with this codec. We have already got OK confirmation for our PR request and we just need to upstream this codec to finalize the system for our new commersial dac module for Raspberyy PI.
+https://github.com/McDaisy/linux-1/commit/9f79c0289fa4b02544c6a51c789c84edd6a479fc
+
+Thanks!
+
+BR
+George
 
 
 
-We would like to build our test setup for echo order cancelation
 
-routines for our audio amplifiers with a
+The code:
 
-real- time Linux and ALSA.
-
-
-
-We have very strong requirements regarding the maximum latency from
-
-audio input via line in to audio output. We would like to achieve a
-
-maximum latency < 1ms. The alsaloop example mentions a latency of 1 ms
-
-which is on our test setup with the latest rt kernel from This M=E4chler
-
-not working due to broken pipe errors. Is 1 ms feasible with a standard PC ?
-
-Currently we still don=B4t know what the lowest possible latency using
-
-ALSA is. We tried different soundcards and found out that they have an
-
-internal FIFO, which seems to be one of the limiting factors. The min.
-
-latency we can achieve is currently 5,6 ms, but this is still to high.
-
-Is there any possibility to switch this FIFO off via ALSA ? Is it possible =
-at
-
-all to achieve such low latency values ?
+/*
+ * Driver for the tda1543 codec
+ *
+ * Author:    Georgios F <georgios@gdis.se>
+ *                Copyright 2017
+ *                based on code by Florian Meier <florian.meier@koalo.de>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ */
 
 
+#include <linux/init.h>
+#include <linux/module.h>
+#include <linux/platform_device.h>
+#include <sound/soc.h>
 
-Kind regards,
+static struct snd_soc_dai_driver tda1543_dai = {
+    .name = "tda1543-hifi",
+    .playback = {
+        .channels_min = 2,
+        .channels_max = 2,
+        .rates = SNDRV_PCM_RATE_8000_192000,
+        .formats = SNDRV_PCM_FMTBIT_S16_LE |
+               SNDRV_PCM_FMTBIT_S24_LE
+    },
+};
 
+static struct snd_soc_codec_driver soc_codec_dev_tda1543;
 
-___________________________________________________________________________=
-________
+static int tda1543_probe(struct platform_device *pdev)
+{
+    return snd_soc_register_codec(&pdev->dev, &soc_codec_dev_tda1543,
+            &tda1543_dai, 1);
+}
 
-Feilmeier Daniel
+static int tda1543_remove(struct platform_device *pdev)
+{
+    snd_soc_unregister_codec(&pdev->dev);
+    return 0;
+}
 
-R&D Software Electronics
+static const struct of_device_id tda1543_of_match[] = {
+    { .compatible = "ti,tda1543", },
+    { }
+};
+MODULE_DEVICE_TABLE(of, tda1543_of_match);
 
-Tel.:  +49-9962-2003-629
-Fax.:  +49-9962-2003-79
-E-Mail: FeilmeierD@askgroup.de<mailto:FeilmeierD@askgroup.de>
+static struct platform_driver tda1543_codec_driver = {
+    .probe         = tda1543_probe,
+    .remove     = tda1543_remove,
+    .driver        = {
+        .name    = "tda1543-codec",
+        .owner    = THIS_MODULE,
+        .of_match_table = of_match_ptr(tda1543_of_match),
+    },
+};
 
+module_platform_driver(tda1543_codec_driver);
 
-ASK Industries GmbH
-Hauptstrasse 73
-D-94559 Niederwinkling
-
-HRG Straubing  HRB 10703
-Geschaeftsfuehrer: Ruggero Marchetti   Franz Maier   Juergen Pledl
-___________________________________________________________________________=
-________
+MODULE_AUTHOR("Georgios F <georgios@gdis.se>");
+MODULE_DESCRIPTION("ASoC tda1543 codec driver");
+MODULE_LICENSE("GPL v2");
