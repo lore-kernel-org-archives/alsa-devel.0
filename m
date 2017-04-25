@@ -1,49 +1,63 @@
 From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v2 11/18] dt-bindings: pinctrl: Add
- bindings for Cirrus Logic Madera codecs
-Date: Tue, 25 Apr 2017 11:35:02 +0200
-Message-ID: <CACRpkdZrSr6Ws+r3JAz22C0GJ65i_R+o3uUKVYpiPqYF0igZBg@mail.gmail.com>
-References: <1493050124-5970-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <1493050124-5970-12-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v2 10/18] pinctrl: madera: Add driver for Cirrus Logic
+ Madera codecs
+Date: Tue, 25 Apr 2017 11:41:59 +0200
+Message-ID: <CACRpkdYtuu4mFf9bjz-z_kNhbgmuw7TQdQqBc66iWfFP5wp_fw@mail.gmail.com>
+References: <1493050124-5970-1-git-send-email-rf@opensource.wolfsonmicro.com> <1493050124-5970-11-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f175.google.com (mail-io0-f175.google.com
- [209.85.223.175])
- by alsa0.perex.cz (Postfix) with ESMTP id BD126266EF2
- for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2017 11:35:04 +0200 (CEST)
-Received: by mail-io0-f175.google.com with SMTP id k87so212884809ioi.0
- for <alsa-devel@alsa-project.org>; Tue, 25 Apr 2017 02:35:04 -0700 (PDT)
-In-Reply-To: <1493050124-5970-12-git-send-email-rf@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-gpio-owner@vger.kernel.org>
+In-Reply-To: <1493050124-5970-11-git-send-email-rf@opensource.wolfsonmicro.com>
+Sender: linux-gpio-owner@vger.kernel.org
 To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: Alexandre Courbot <gnurou@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Jason Cooper <jason@lakedaemon.net>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "open list:WOLFSON MICROELECTRONICS DRIVERS" <patches@opensource.wolfsonmicro.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Lee Jones <lee.jones@linaro.org>
+Cc: Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, Alexandre Courbot <gnurou@gmail.com>, Rob Herring <robh+dt@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "open list:WOLFSON MICROELECTRONICS DRIVERS" <patches@opensource.wolfsonmicro.com>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 On Mon, Apr 24, 2017 at 6:08 PM, Richard Fitzgerald
 <rf@opensource.wolfsonmicro.com> wrote:
 
-> This is the binding description of the pinctrl driver for Cirru Logic
-> Madera codecs. The binding uses the generic pinctrl binding so  the main
-> purpose here is to describe the device-specific names for groups and
-> functions.
+> These codecs have a variable number of I/O lines each of which
+> is individually selectable to a wide range of possible functions.
+>
+> The functionality is slightly different from the traditional muxed
+> GPIO since most of the functions can be mapped to any pin (and even
+> the same function to multiple pins). Most pins have a dedicated
+> "alternate" function that is only available on that pin. The
+> alternate functions are usually a group of signals, though it is
+> not always necessary to enable the full group, depending on the
+> alternate function and how it is to be used. The mapping between
+> alternate functions and GPIO pins varies between codecs depending
+> on the number of alternate functions and available pins.
+>
+> Note on the Kconfig options:
+> The formula "default y if..." is used for PINCTRL_MADERA so that its
+> select options will be processed, allowing us to group selects for
+> pinctrl into the pinctrl Kconfig where they logically belong instead
+> of accumulating under the parent MFD Kconfig.
 >
 > Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-> ---
-> Changes since V1:
-> - split out from main pinctrl patch into a separate patch
-> - fixed typo in pinctrl-names property description
+(...)
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Changes since V1:
+
+This is starting to look good!
+
+In fact, kind of finished. Except:
+
+> +       if (pdata) {
+> +               ret = pinctrl_register_mappings(pdata->gpio_configs,
+> +                                               pdata->n_gpio_configs);
+> +               if (ret) {
+> +                       dev_err(priv->dev,
+> +                               "Failed to register pdata mappings (%d)\n",
+> +                               ret);
+> +                       return ret;
+> +               }
+> +       }
+
+What is this? It looks like boardfile support which we do not like to
+encourage. Why are the mappings not exclusively set up from
+device tree or similar?
 
 Yours,
 Linus Walleij
