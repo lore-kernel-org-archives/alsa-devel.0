@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Commonize library load"
-	to the asoc tree
-Date: Wed, 26 Apr 2017 15:49:21 +0100
-Message-ID: <E1d3OFt-0000T0-0g@finisterre>
-References: <1492786693-24167-3-git-send-email-subhransu.s.prusty@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Move sst common
+	initialization to a helper function" to the asoc tree
+Date: Wed, 26 Apr 2017 15:49:29 +0100
+Message-ID: <E1d3OG1-0000U0-E2@finisterre>
+References: <1492786693-24167-2-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CE9B5267475
- for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2017 16:49:38 +0200 (CEST)
-In-Reply-To: <1492786693-24167-3-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E2F36267478
+ for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2017 16:49:45 +0200 (CEST)
+In-Reply-To: <1492786693-24167-2-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
+To: G Kranthi <gudishax.kranthikumar@intel.com>
 Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, lgirdwood@gmail.com, patches.audio@intel.com, tiwai@suse.de, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Commonize library load
+   ASoC: Intel: Skylake: Move sst common initialization to a helper function
 
 has been applied to the asoc tree at
 
@@ -52,178 +53,205 @@ to this mail.
 Thanks,
 Mark
 
->From ebe8907687c052b36839b5f9ed09005db4fbe83c Mon Sep 17 00:00:00 2001
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Date: Tue, 25 Apr 2017 12:18:20 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Commonize library load
+>From 9fe9c71192832a1c63fb94120cb6c2541aca694f Mon Sep 17 00:00:00 2001
+From: G Kranthi <gudishax.kranthikumar@intel.com>
+Date: Tue, 25 Apr 2017 12:18:19 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Move sst common initialization to a
+ helper function
 
-request firmware, strip extended manifest and release library changes
-are common to kabylake and APL.
+Some skl sst context are not dependent of platform and initializing them
+independently for each platform can lead to errors. So optimize by
+moving them to a helper function and platform specific init code can
+call this.
 
-So move these common code to utils to be reused in later patches for
-kabylake library load.
-
+Signed-off-by: G Kranthi <gudishax.kranthikumar@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/bxt-sst.c       | 38 ++++-------------------------
- sound/soc/intel/skylake/skl-sst-dsp.h   |  7 +++++-
- sound/soc/intel/skylake/skl-sst-utils.c | 43 +++++++++++++++++++++++++++++++++
- 3 files changed, 54 insertions(+), 34 deletions(-)
+ sound/soc/intel/skylake/bxt-sst.c       | 28 +++++--------------------
+ sound/soc/intel/skylake/skl-sst-dsp.h   |  3 +++
+ sound/soc/intel/skylake/skl-sst-utils.c | 37 +++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-sst.c       | 32 ++++++----------------------
+ 4 files changed, 51 insertions(+), 49 deletions(-)
 
 diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-index 2bf6ebe29f50..d26545ee3e58 100644
+index 268bdaec8042..2bf6ebe29f50 100644
 --- a/sound/soc/intel/skylake/bxt-sst.c
 +++ b/sound/soc/intel/skylake/bxt-sst.c
-@@ -53,18 +53,6 @@ static unsigned int bxt_get_errorcode(struct sst_dsp *ctx)
- 	 return sst_dsp_shim_read(ctx, BXT_ADSP_ERROR_CODE);
+@@ -590,23 +590,14 @@ int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 	struct sst_dsp *sst;
+ 	int ret;
+ 
+-	skl = devm_kzalloc(dev, sizeof(*skl), GFP_KERNEL);
+-	if (skl == NULL)
+-		return -ENOMEM;
+-
+-	skl->dev = dev;
+-	skl_dev.thread_context = skl;
+-	INIT_LIST_HEAD(&skl->uuid_list);
+-
+-	skl->dsp = skl_dsp_ctx_init(dev, &skl_dev, irq);
+-	if (!skl->dsp) {
+-		dev_err(skl->dev, "skl_dsp_ctx_init failed\n");
+-		return -ENODEV;
++	ret = skl_sst_ctx_init(dev, irq, fw_name, dsp_ops, dsp, &skl_dev);
++	if (ret < 0) {
++		dev_err(skl->dev, "%s: no device\n", __func__);
++		return ret;
+ 	}
+ 
++	skl = *dsp;
+ 	sst = skl->dsp;
+-	sst->fw_name = fw_name;
+-	sst->dsp_ops = dsp_ops;
+ 	sst->fw_ops = bxt_fw_ops;
+ 	sst->addr.lpe = mmio_base;
+ 	sst->addr.shim = mmio_base;
+@@ -614,24 +605,15 @@ int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 	sst_dsp_mailbox_init(sst, (BXT_ADSP_SRAM0_BASE + SKL_ADSP_W0_STAT_SZ),
+ 			SKL_ADSP_W0_UP_SZ, BXT_ADSP_SRAM1_BASE, SKL_ADSP_W1_SZ);
+ 
+-	INIT_LIST_HEAD(&sst->module_list);
+-	ret = skl_ipc_init(dev, skl);
+-	if (ret)
+-		return ret;
+-
+ 	/* set the D0i3 check */
+ 	skl->ipc.ops.check_dsp_lp_on = skl_ipc_check_D0i0;
+ 
+ 	skl->cores.count = 2;
+ 	skl->boot_complete = false;
+ 	init_waitqueue_head(&skl->boot_wait);
+-	skl->is_first_boot = true;
+ 	INIT_DELAYED_WORK(&skl->d0i3.work, bxt_set_dsp_D0i3);
+ 	skl->d0i3.state = SKL_DSP_D0I3_NONE;
+ 
+-	if (dsp)
+-		*dsp = skl;
+-
+ 	return 0;
  }
- 
--static void sst_bxt_release_library(struct skl_lib_info *linfo, int lib_count)
--{
--	int i;
--
--	for (i = 1; i < lib_count; i++) {
--		if (linfo[i].fw) {
--			release_firmware(linfo[i].fw);
--			linfo[i].fw = NULL;
--		}
--	}
--}
--
- static int
- bxt_load_library(struct sst_dsp *ctx, struct skl_lib_info *linfo, int lib_count)
- {
-@@ -75,26 +63,10 @@ bxt_load_library(struct sst_dsp *ctx, struct skl_lib_info *linfo, int lib_count)
- 
- 	/* library indices start from 1 to N. 0 represents base FW */
- 	for (i = 1; i < lib_count; i++) {
--		if (linfo[i].fw == NULL) {
--			ret = request_firmware(&linfo[i].fw, linfo[i].name,
--						ctx->dev);
--			if (ret < 0) {
--				dev_err(ctx->dev, "Request lib %s failed:%d\n",
--					linfo[i].name, ret);
--				goto load_library_failed;
--			}
--		}
--
--		if (skl->is_first_boot) {
--			ret = snd_skl_parse_uuids(ctx, linfo[i].fw,
-+		ret = skl_prepare_lib_load(skl, &skl->lib_info[i], &stripped_fw,
- 					BXT_ADSP_FW_BIN_HDR_OFFSET, i);
--			if (ret < 0)
--				goto load_library_failed;
--		}
--
--		stripped_fw.data = linfo[i].fw->data;
--		stripped_fw.size = linfo[i].fw->size;
--		skl_dsp_strip_extended_manifest(&stripped_fw);
-+		if (ret < 0)
-+			goto load_library_failed;
- 
- 		stream_tag = ctx->dsp_ops.prepare(ctx->dev, 0x40,
- 					stripped_fw.size, &dmab);
-@@ -121,7 +93,7 @@ bxt_load_library(struct sst_dsp *ctx, struct skl_lib_info *linfo, int lib_count)
- 	return ret;
- 
- load_library_failed:
--	sst_bxt_release_library(linfo, lib_count);
-+	skl_release_library(linfo, lib_count);
- 	return ret;
- }
- 
-@@ -648,7 +620,7 @@ EXPORT_SYMBOL_GPL(bxt_sst_init_fw);
- void bxt_sst_dsp_cleanup(struct device *dev, struct skl_sst *ctx)
- {
- 
--	sst_bxt_release_library(ctx->lib_info, ctx->lib_count);
-+	skl_release_library(ctx->lib_info, ctx->lib_count);
- 	if (ctx->dsp->fw)
- 		release_firmware(ctx->dsp->fw);
- 	skl_freeup_uuid_list(ctx);
+ EXPORT_SYMBOL_GPL(bxt_sst_dsp_init);
 diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
-index c1f95e23933d..6d9aed23d5cd 100644
+index 7229a12b4c94..c1f95e23933d 100644
 --- a/sound/soc/intel/skylake/skl-sst-dsp.h
 +++ b/sound/soc/intel/skylake/skl-sst-dsp.h
-@@ -18,6 +18,7 @@
+@@ -247,5 +247,8 @@ void skl_freeup_uuid_list(struct skl_sst *ctx);
  
- #include <linux/interrupt.h>
- #include <linux/uuid.h>
-+#include <linux/firmware.h>
- #include <sound/memalloc.h>
- #include "skl-sst-cldma.h"
- 
-@@ -145,7 +146,7 @@ struct skl_dsp_fw_ops {
- 	int (*load_fw)(struct sst_dsp  *ctx);
- 	/* FW module parser/loader */
- 	int (*load_library)(struct sst_dsp *ctx,
--		struct skl_lib_info *linfo, int count);
-+		struct skl_lib_info *linfo, int lib_count);
- 	int (*parse_fw)(struct sst_dsp *ctx);
- 	int (*set_state_D0)(struct sst_dsp *ctx, unsigned int core_id);
- 	int (*set_state_D3)(struct sst_dsp *ctx, unsigned int core_id);
-@@ -250,5 +251,9 @@ void skl_dsp_enable_notification(struct skl_sst *ctx, bool enable);
- int skl_sst_ctx_init(struct device *dev, int irq, const char *fw_name,
- 		struct skl_dsp_loader_ops dsp_ops, struct skl_sst **dsp,
- 		struct sst_dsp_device *skl_dev);
-+int skl_prepare_lib_load(struct skl_sst *skl, struct skl_lib_info *linfo,
-+			struct firmware *stripped_fw,
-+			unsigned int hdr_offset, int index);
-+void skl_release_library(struct skl_lib_info *linfo, int lib_count);
+ int skl_dsp_strip_extended_manifest(struct firmware *fw);
+ void skl_dsp_enable_notification(struct skl_sst *ctx, bool enable);
++int skl_sst_ctx_init(struct device *dev, int irq, const char *fw_name,
++		struct skl_dsp_loader_ops dsp_ops, struct skl_sst **dsp,
++		struct sst_dsp_device *skl_dev);
  
  #endif /*__SKL_SST_DSP_H__*/
 diff --git a/sound/soc/intel/skylake/skl-sst-utils.c b/sound/soc/intel/skylake/skl-sst-utils.c
-index a72152123c3c..81ee251881b4 100644
+index 6d5bff04bf65..a72152123c3c 100644
 --- a/sound/soc/intel/skylake/skl-sst-utils.c
 +++ b/sound/soc/intel/skylake/skl-sst-utils.c
-@@ -398,3 +398,46 @@ int skl_sst_ctx_init(struct device *dev, int irq, const char *fw_name,
+@@ -361,3 +361,40 @@ int skl_dsp_strip_extended_manifest(struct firmware *fw)
  
- 	return ret;
+ 	return 0;
  }
 +
-+int skl_prepare_lib_load(struct skl_sst *skl, struct skl_lib_info *linfo,
-+		struct firmware *stripped_fw,
-+		unsigned int hdr_offset, int index)
++int skl_sst_ctx_init(struct device *dev, int irq, const char *fw_name,
++	struct skl_dsp_loader_ops dsp_ops, struct skl_sst **dsp,
++	struct sst_dsp_device *skl_dev)
 +{
++	struct skl_sst *skl;
++	struct sst_dsp *sst;
 +	int ret;
-+	struct sst_dsp *dsp = skl->dsp;
 +
-+	if (linfo->fw == NULL) {
-+		ret = request_firmware(&linfo->fw, linfo->name,
-+					skl->dev);
-+		if (ret < 0) {
-+			dev_err(skl->dev, "Request lib %s failed:%d\n",
-+				linfo->name, ret);
-+			return ret;
-+		}
++	skl = devm_kzalloc(dev, sizeof(*skl), GFP_KERNEL);
++	if (skl == NULL)
++		return -ENOMEM;
++
++	skl->dev = dev;
++	skl_dev->thread_context = skl;
++	INIT_LIST_HEAD(&skl->uuid_list);
++	skl->dsp = skl_dsp_ctx_init(dev, skl_dev, irq);
++	if (!skl->dsp) {
++		dev_err(skl->dev, "%s: no device\n", __func__);
++		return -ENODEV;
 +	}
 +
-+	if (skl->is_first_boot) {
-+		ret = snd_skl_parse_uuids(dsp, linfo->fw, hdr_offset, index);
-+		if (ret < 0)
-+			return ret;
-+	}
++	sst = skl->dsp;
++	sst->fw_name = fw_name;
++	sst->dsp_ops = dsp_ops;
++	init_waitqueue_head(&skl->mod_load_wait);
++	INIT_LIST_HEAD(&sst->module_list);
++	ret = skl_ipc_init(dev, skl);
++	if (ret)
++		return ret;
 +
-+	stripped_fw->data = linfo->fw->data;
-+	stripped_fw->size = linfo->fw->size;
-+	skl_dsp_strip_extended_manifest(stripped_fw);
++	skl->is_first_boot = true;
++	if (dsp)
++		*dsp = skl;
 +
++	return ret;
++}
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index 539529729e3f..4fdd503a837c 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -330,7 +330,6 @@ static int skl_transfer_module(struct sst_dsp *ctx, const void *data,
+ 	int ret, bytes_left, curr_pos;
+ 	struct skl_sst *skl = ctx->thread_context;
+ 	skl->mod_load_complete = false;
+-	init_waitqueue_head(&skl->mod_load_wait);
+ 
+ 	bytes_left = ctx->cl_dev.ops.cl_copy_to_dmabuf(ctx, data, size, false);
+ 	if (bytes_left < 0)
+@@ -489,43 +488,24 @@ int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 	struct sst_dsp *sst;
+ 	int ret;
+ 
+-	skl = devm_kzalloc(dev, sizeof(*skl), GFP_KERNEL);
+-	if (skl == NULL)
+-		return -ENOMEM;
+-
+-	skl->dev = dev;
+-	skl_dev.thread_context = skl;
+-	INIT_LIST_HEAD(&skl->uuid_list);
+-
+-	skl->dsp = skl_dsp_ctx_init(dev, &skl_dev, irq);
+-	if (!skl->dsp) {
+-		dev_err(skl->dev, "%s: no device\n", __func__);
+-		return -ENODEV;
++	ret = skl_sst_ctx_init(dev, irq, fw_name, dsp_ops, dsp, &skl_dev);
++	if (ret < 0) {
++		dev_err(dev, "%s: no device\n", __func__);
++		return ret;
+ 	}
+ 
++	skl = *dsp;
+ 	sst = skl->dsp;
+-
+-	sst->fw_name = fw_name;
+ 	sst->addr.lpe = mmio_base;
+ 	sst->addr.shim = mmio_base;
+ 	sst_dsp_mailbox_init(sst, (SKL_ADSP_SRAM0_BASE + SKL_ADSP_W0_STAT_SZ),
+ 			SKL_ADSP_W0_UP_SZ, SKL_ADSP_SRAM1_BASE, SKL_ADSP_W1_SZ);
+ 
+-	INIT_LIST_HEAD(&sst->module_list);
+-	sst->dsp_ops = dsp_ops;
+ 	sst->fw_ops = skl_fw_ops;
+ 
+-	ret = skl_ipc_init(dev, skl);
+-	if (ret)
+-		return ret;
+-
+ 	skl->cores.count = 2;
+-	skl->is_first_boot = true;
+-
+-	if (dsp)
+-		*dsp = skl;
+ 
+-	return ret;
 +	return 0;
-+}
-+
-+void skl_release_library(struct skl_lib_info *linfo, int lib_count)
-+{
-+	int i;
-+
-+	/* library indices start from 1 to N. 0 represents base FW */
-+	for (i = 1; i < lib_count; i++) {
-+		if (linfo[i].fw) {
-+			release_firmware(linfo[i].fw);
-+			linfo[i].fw = NULL;
-+		}
-+	}
-+}
+ }
+ EXPORT_SYMBOL_GPL(skl_sst_dsp_init);
+ 
 -- 
 2.11.0
