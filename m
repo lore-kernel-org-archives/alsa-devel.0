@@ -1,57 +1,48 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH 2/2] ASoC: rsnd: add missing clocks/clock-names on Document
-Date: Wed, 26 Apr 2017 09:46:21 +0200
-Message-ID: <CAMuHMdXkSXMFj5qv2iSpSupUTTEeqjfwRQuy=n3KNx862hsz3w@mail.gmail.com>
-References: <8760hrsyca.wl%kuninori.morimoto.gx@renesas.com> <8737cvsyah.wl%kuninori.morimoto.gx@renesas.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: ALSA / Soundcard latency
+Date: Wed, 26 Apr 2017 12:47:52 +0200
+Message-ID: <f279577c-548b-0141-17a9-e09e5a839634@ladisch.de>
+References: <DBXPR06MB286900FD1B5EEF225F3A3B1C71E0@DBXPR06MB286.eurprd06.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <8737cvsyah.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from webclient5.webclient5.de (webclient5.webclient5.de
+ [136.243.32.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id DA16E2670B0
+ for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2017 12:47:56 +0200 (CEST)
+Received: from [10.1.2.4] (unknown [94.101.37.79])
+ by webclient5.webclient5.de (Postfix) with ESMTPSA id 933D45580F5B
+ for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2017 12:47:55 +0200 (CEST)
+In-Reply-To: <DBXPR06MB286900FD1B5EEF225F3A3B1C71E0@DBXPR06MB286.eurprd06.prod.outlook.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Morimoto-san,
+Feilmeier Daniel (Ask De) wrote:
+> We have very strong requirements regarding the maximum latency from
+> audio input via line in to audio output. We would like to achieve a
+> maximum latency < 1ms. The alsaloop example mentions a latency of 1 ms
+> which is on our test setup
 
-On Wed, Apr 26, 2017 at 4:26 AM, Kuninori Morimoto
-<kuninori.morimoto.gx@renesas.com> wrote:
-> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
->
-> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+What hardware?  USB and FireWire have long packet queues.
 
-Thanks for doing this!
+> We tried different soundcards and found out that they have an
+> internal FIFO, which seems to be one of the limiting factors.
 
-> ---
->  Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-> index 3332910..13cb21d5 100644
-> --- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-> +++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-> @@ -368,6 +368,10 @@ Required properties:
->                                   see below for detail.
->  - #sound-dai-cells             : it must be 0 if your system is using single DAI
->                                   it must be 1 if your system is using multi  DAI
-> +- clocks                       : References to SSI/SRC/MIX/CTU/DVC/AUDIO_CLK clocks.
-> +- clock-names                  : List of necessary clock names.
-> +                                 "ssi-all", "ssi.X", "src.X", "mix.X", "ctu.X",
-> +                                 "dvc.X", "clk_a", "clk_b", "clk_c", "clk_i"
+What are the numbers?
 
-Are all clock mandatory?
-r8a7778.dtsi doesn't have "ssi-all" and the mix, ctu, and dvc clocks.
-r8a7793.dtsi doesn't have the mix and ctu clocks.
+What settings did you use for alsaloop?
 
-Thanks again!
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Regards,
+Clemens
