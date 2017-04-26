@@ -1,100 +1,131 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: [PATCH v2 2/2] ASoC: codec: wm8960: Relax bit clock
-	computation when using PLL
-Date: Wed, 26 Apr 2017 16:09:52 +0300
-Message-ID: <1493212192-7930-3-git-send-email-daniel.baluta@nxp.com>
-References: <1493212192-7930-1-git-send-email-daniel.baluta@nxp.com>
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Subject: Re: [PATCH 03/11] drm/i915: Stop pretending to
+ mask/unmask LPE audio interrupts
+Date: Wed, 26 Apr 2017 16:27:25 +0300
+Message-ID: <20170426132725.GR30290@intel.com>
+References: <20170425202730.1384-1-ville.syrjala@linux.intel.com>
+ <20170425202730.1384-4-ville.syrjala@linux.intel.com>
+ <dc9c020f-4305-a955-f1ca-88302ee5e80d@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM01-BN3-obe.outbound.protection.outlook.com
- (mail-bn3nam01on0064.outbound.protection.outlook.com [104.47.33.64])
- by alsa0.perex.cz (Postfix) with ESMTP id C7C552673CD
- for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2017 15:10:10 +0200 (CEST)
-In-Reply-To: <1493212192-7930-1-git-send-email-daniel.baluta@nxp.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, tiwai@suse.com, ckeepax@opensource.wolfsonmicro.com, arnd@arndb.de, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Daniel Baluta <daniel.baluta@nxp.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <dc9c020f-4305-a955-f1ca-88302ee5e80d@linux.intel.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Bitclk is derived from sysclk using bclk_divs.
-Sysclk can be derived in two ways:
-	(1) directly from MLCK
-	(2) MCLK via PLL
-
-Commit 3c01b9ee2ab9d0d ("ASoC: codec: wm8960: Relax bit clock
-computation")
-relaxed bitclk computation when sysclk is directly derived from MCLK.
-
-Lets do the same thing when sysclk is derived via PLL.
-
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
----
-Changes since v2:
-	* rebase after changes in first patch in the series
-
- sound/soc/codecs/wm8960.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index d899623..9ed4557 100644
---- a/sound/soc/codecs/wm8960.c
-+++ b/sound/soc/codecs/wm8960.c
-@@ -679,6 +679,10 @@ int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
-  *		- freq_out    = sysclk * sysclk_divs
-  *		- 10 * sysclk = bclk * bclk_divs
-  *
-+ * 	If we cannot find an exact match for (sysclk, lrclk, bclk)
-+ * 	triplet, we relax the bclk such that bclk is chosen as the
-+ * 	closest available frequency greater than expected bclk.
-+ *
-  * @codec: codec structure
-  * @freq_in: input frequency used to derive freq out via PLL
-  * @sysclk_idx: sysclk_divs index for found sysclk
-@@ -696,12 +700,14 @@ int wm8960_configure_pll(struct snd_soc_codec *codec, int freq_in,
- {
- 	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
- 	int sysclk, bclk, lrclk, freq_out;
--	int diff;
-+	int diff, closest, best_freq_out;
- 	int i, j, k;
- 
- 	bclk = wm8960->bclk;
- 	lrclk = wm8960->lrclk;
-+	closest = freq_in;
- 
-+	best_freq_out = -EINVAL;
- 	*sysclk_idx = *dac_idx = *bclk_idx = -1;
- 
- 	for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
-@@ -722,10 +728,18 @@ int wm8960_configure_pll(struct snd_soc_codec *codec, int freq_in,
- 					*bclk_idx = k;
- 					return freq_out;
- 				}
-+				if (diff > 0 && closest > diff) {
-+					*sysclk_idx = i;
-+					*dac_idx = j;
-+					*bclk_idx = k;
-+					closest = diff;
-+					best_freq_out = freq_out;
-+				}
- 			}
- 		}
- 	}
--	return -EINVAL;
-+
-+	return best_freq_out;
- }
- static int wm8960_configure_clocking(struct snd_soc_codec *codec)
- {
--- 
-2.7.4
+T24gVHVlLCBBcHIgMjUsIDIwMTcgYXQgMDc6Mjc6MzJQTSAtMDUwMCwgUGllcnJlLUxvdWlzIEJv
+c3NhcnQgd3JvdGU6Cj4gT24gNC8yNS8xNyAzOjI3IFBNLCB2aWxsZS5zeXJqYWxhQGxpbnV4Lmlu
+dGVsLmNvbSB3cm90ZToKPiA+IEZyb206IFZpbGxlIFN5cmrDpGzDpCA8dmlsbGUuc3lyamFsYUBs
+aW51eC5pbnRlbC5jb20+Cj4gPgo+ID4gdmx2X2Rpc3BsYXlfaXJxX3Bvc3RpbnN0YWxsKCkgZW5h
+YmxlcyB0aGUgTFBFIGF1ZGlvIGludGVycnVwdHMKPiA+IHJlZ2FyZGxlc3Mgb2Ygd2hldGhlciB0
+aGUgTFBFIGF1ZGlvIGlycSBjaGlwIGhhcyBtYXNrZWQvdW5tYXNrZWQKPiA+IHRoZW0uIEFsc28g
+dGhlIGlycWNoaXAgbWFza2luZy91bm1hc2tpbmcgZG9lc24ndCBjb25zaWRlciB0aGUgc3RhdGUK
+PiA+IG9mIHRoZSBkaXNwbGF5IHBvd2VyIHdlbGwgb3IgdGhlIGRldmljZSwgYW5kIGhlbmNlIGp1
+c3QgbGVhZHMgdG8KPiA+IGRtZXNnIHNwZXcgd2hlbiBpdCB0cmllcyB0byBhY2Nlc3MgdGhlIGhh
+cmR3YXJlIHdoaWxlIGl0J3MgcG93ZXJlZAo+ID4gZG93bi4KPiA+Cj4gPiBJZiB0aGUgY3VycmVu
+dCB3YXkgd29ya3MsIHRoZW4gd2UgZG9uJ3QgbmVlZCB0byBkbyBhbnl0aGluZyBpbiB0aGUKPiA+
+IG1hc2svdW5tYXNrIGhvb2tzLiBJZiBpdCBkb2Vzbid0IHdvcmssIHdlbGwsIHRoZW4gd2UnZCBu
+ZWVkIHRvIHByb3Blcmx5Cj4gPiB0cmFjayB3aGV0aGVyIHRoZSBpcnFjaGlwIGhhcyBtYXNrZWQv
+dW5tYXNrZWQgdGhlIGludGVycnVwdHMgd2hlbgo+ID4gd2UgZW5hYmxlIGRpc3BsYXkgaW50ZXJy
+dXB0cy4gQW5kIHRoZSBtYXNrL3VubWFzayBob29rcyB3b3VsZCBuZWVkCj4gPiB0byBjaGVjayB3
+aGV0aGVyIGRpc3BsYXkgaW50ZXJydXB0cyBhcmUgZXZlbiBlbmFibGVkIGJlZm9yZSBmcm9iYmlu
+Zwo+ID4gd2l0aCBoZSByZWdpc3RlcnMuCj4gPgo+ID4gU28gbGV0J3MganVzdCBhc3N1bWUgdGhl
+IGN1cnJlbnQgd2F5IHdvcmtzIGFuZCBuZXV0ZXIgdGhlIG1hc2svdW5tYXNrCj4gPiBob29rcy4g
+QWxzbyBjbGVhbiB1cCB2bHZfZGlzcGxheV9pcnFfcG9zdGluc3RhbGwoKSBhIGJpdCBhbmQgc3Rv
+cAo+ID4gaXQgZnJvbSB0cnlpbmcgdG8gdW5tYXNrL2VuYWJsZSB0aGUgTFBFIEMgaW50ZXJydXB0
+IG9uIFZMViBzaW5jZSBpdAo+ID4gZG9lc24ndCBleGlzdC4KPiAKPiBObyBvYmplY3Rpb25zLCBJ
+IGFzc3VtZWQgdGhhdCB3ZSBkaWQgd2FudCB0byB1cGRhdGUgVkxWX0lNUiBhbmQgVkxWX0lJUiAK
+PiBpbiB0aGUgbWFzay91bm1hc2ssIHRoYXQgd2FzIHRoZSBpbml0aWFsIHJlY29tbWVuZGF0aW9u
+IElJUkMKPiAKPiBUaGVyZSB3YXMgYWxzbyBhIGNvbW1lbnQgd2hlcmUgd2UgcmVtb3ZlZCBhbGwg
+dGVzdHMgaW4gCj4gdmx2X2Rpc3BsYXlfaXJxX3Bvc3RpbnN0YWxsOgo+IAo+ICA+PiArCQlpZiAo
+SVNfTFBFX0FVRElPX0VOQUJMRUQoZGV2X3ByaXYpKQo+ICA+PiArCQkJaWYgKElTX0xQRV9BVURJ
+T19JUlFfVkFMSUQoZGV2X3ByaXYpKQo+ICA+Cj4gID5JIHRoaW5rIGJvdGggb2YgdGhlc2UgY2hl
+Y2tzIGNhbiBiZSByZW1vdmVkLiBXZSB3b24ndCB1bm1hc2sgdGhlCj4gID5pbnRlcnJ1cHRzIHVu
+bGVzcyBscGUgaXMgZW5hYmxlZCwgc28gdGhlIElJUiBiaXRzIHdpbGwgbmV2ZXIgYmUgc2V0IGlu
+Cj4gID50aGF0IGNhc2UuCgpIbW0uIFJpZ2h0LCBzbyBJIGd1ZXNzIHRoZSBpZGVhIG9yaWdpbmFs
+bHkgd2FzIHRvIGp1c3QgZW5hYmxlIHRoZQpMUEUgaW50ZXJydXB0cyBpbiBJRVIsIGJ1dCBsZWF2
+ZSB0aGVtIG1hc2tlZCBpbiBJTVIgdW50aWwgdGhlCmlycWNoaXAgdW5tYXNrcyB0aGVtLiBCdXQg
+dGhlIGNvZGUgd2Fzbid0IGFjdHVhbGx5IGRvaW5nIHRoYXQKYmVjYXVzZSBpdCB3YXMgYXBwZW5k
+aW5nIHRoZSBiaXRzIHRvICdlbmFibGVfbWFzaycgYmVmb3JlIGl0CmFzc2lnbmVkIHRoZSB2YWx1
+ZSB0byBpcnFfbWFzay4gSGVuY2UgdGhlIGludGVycnVwdHMgd2VyZSBhbHdheXMKZW5hYmxlZCBh
+bmQgdW5tYXNrZWQuCgo+IAo+IAo+IAo+IAo+ID4KPiA+IENjOiBUYWthc2hpIEl3YWkgPHRpd2Fp
+QHN1c2UuZGU+Cj4gPiBDYzogUGllcnJlLUxvdWlzIEJvc3NhcnQgPHBpZXJyZS1sb3Vpcy5ib3Nz
+YXJ0QGxpbnV4LmludGVsLmNvbT4KPiA+IFNpZ25lZC1vZmYtYnk6IFZpbGxlIFN5cmrDpGzDpCA8
+dmlsbGUuc3lyamFsYUBsaW51eC5pbnRlbC5jb20+Cj4gPiAtLS0KPiA+ICBkcml2ZXJzL2dwdS9k
+cm0vaTkxNS9pOTE1X2lycS5jICAgICAgICB8IDE1ICsrKysrKy0tLS0tLS0tCj4gPiAgZHJpdmVy
+cy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBlX2F1ZGlvLmMgfCAzNiAtLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tCj4gPiAgMiBmaWxlcyBjaGFuZ2VkLCA2IGluc2VydGlvbnMoKyksIDQ1
+IGRlbGV0aW9ucygtKQo+ID4KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkxNS9p
+OTE1X2lycS5jIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9pcnEuYwo+ID4gaW5kZXggZmQ5
+N2ZlMDBjZDBkLi4xOTBmNmFhNWQxNWUgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0v
+aTkxNS9pOTE1X2lycS5jCj4gPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X2lycS5j
+Cj4gPiBAQCAtMjk1Myw3ICsyOTUzLDYgQEAgc3RhdGljIHZvaWQgdmx2X2Rpc3BsYXlfaXJxX3Bv
+c3RpbnN0YWxsKHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdikKPiA+ICAJdTMyIHBp
+cGVzdGF0X21hc2s7Cj4gPiAgCXUzMiBlbmFibGVfbWFzazsKPiA+ICAJZW51bSBwaXBlIHBpcGU7
+Cj4gPiAtCXUzMiB2YWw7Cj4gPgo+ID4gIAlwaXBlc3RhdF9tYXNrID0gUExBTkVfRkxJUF9ET05F
+X0lOVF9TVEFUVVNfVkxWIHwKPiA+ICAJCQlQSVBFX0NSQ19ET05FX0lOVEVSUlVQVF9TVEFUVVM7
+Cj4gPiBAQCAtMjk2NCwxOCArMjk2MywxNiBAQCBzdGF0aWMgdm9pZCB2bHZfZGlzcGxheV9pcnFf
+cG9zdGluc3RhbGwoc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2KQo+ID4KPiA+ICAJ
+ZW5hYmxlX21hc2sgPSBJOTE1X0RJU1BMQVlfUE9SVF9JTlRFUlJVUFQgfAo+ID4gIAkJSTkxNV9E
+SVNQTEFZX1BJUEVfQV9FVkVOVF9JTlRFUlJVUFQgfAo+ID4gLQkJSTkxNV9ESVNQTEFZX1BJUEVf
+Ql9FVkVOVF9JTlRFUlJVUFQ7Cj4gPiArCQlJOTE1X0RJU1BMQVlfUElQRV9CX0VWRU5UX0lOVEVS
+UlVQVCB8Cj4gPiArCQlJOTE1X0xQRV9QSVBFX0FfSU5URVJSVVBUIHwKPiA+ICsJCUk5MTVfTFBF
+X1BJUEVfQl9JTlRFUlJVUFQ7Cj4gPiArCj4gPiAgCWlmIChJU19DSEVSUllWSUVXKGRldl9wcml2
+KSkKPiA+IC0JCWVuYWJsZV9tYXNrIHw9IEk5MTVfRElTUExBWV9QSVBFX0NfRVZFTlRfSU5URVJS
+VVBUOwo+ID4gKwkJZW5hYmxlX21hc2sgfD0gSTkxNV9ESVNQTEFZX1BJUEVfQ19FVkVOVF9JTlRF
+UlJVUFQgfAo+ID4gKwkJCUk5MTVfTFBFX1BJUEVfQ19JTlRFUlJVUFQ7Cj4gPgo+ID4gIAlXQVJO
+X09OKGRldl9wcml2LT5pcnFfbWFzayAhPSB+MCk7Cj4gPgo+ID4gLQl2YWwgPSAoSTkxNV9MUEVf
+UElQRV9BX0lOVEVSUlVQVCB8Cj4gPiAtCQlJOTE1X0xQRV9QSVBFX0JfSU5URVJSVVBUIHwKPiA+
+IC0JCUk5MTVfTFBFX1BJUEVfQ19JTlRFUlJVUFQpOwo+ID4gLQo+ID4gLQllbmFibGVfbWFzayB8
+PSB2YWw7Cj4gPiAtCj4gPiAgCWRldl9wcml2LT5pcnFfbWFzayA9IH5lbmFibGVfbWFzazsKPiA+
+Cj4gPiAgCUdFTjVfSVJRX0lOSVQoVkxWXywgZGV2X3ByaXYtPmlycV9tYXNrLCBlbmFibGVfbWFz
+ayk7Cj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBlX2F1ZGlv
+LmMgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9scGVfYXVkaW8uYwo+ID4gaW5kZXggNjY4
+ZjAwNDgwZDk3Li4yOTJmZWRmMzBiMDAgMTAwNjQ0Cj4gPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0v
+aTkxNS9pbnRlbF9scGVfYXVkaW8uYwo+ID4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50
+ZWxfbHBlX2F1ZGlvLmMKPiA+IEBAIC0xNDksNDQgKzE0OSwxMCBAQCBzdGF0aWMgdm9pZCBscGVf
+YXVkaW9fcGxhdGRldl9kZXN0cm95KHN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdikK
+PiA+Cj4gPiAgc3RhdGljIHZvaWQgbHBlX2F1ZGlvX2lycV91bm1hc2soc3RydWN0IGlycV9kYXRh
+ICpkKQo+ID4gIHsKPiA+IC0Jc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2ID0gZC0+
+Y2hpcF9kYXRhOwo+ID4gLQl1bnNpZ25lZCBsb25nIGlycWZsYWdzOwo+ID4gLQl1MzIgdmFsID0g
+KEk5MTVfTFBFX1BJUEVfQV9JTlRFUlJVUFQgfAo+ID4gLQkJSTkxNV9MUEVfUElQRV9CX0lOVEVS
+UlVQVCk7Cj4gPiAtCj4gPiAtCWlmIChJU19DSEVSUllWSUVXKGRldl9wcml2KSkKPiA+IC0JCXZh
+bCB8PSBJOTE1X0xQRV9QSVBFX0NfSU5URVJSVVBUOwo+ID4gLQo+ID4gLQlzcGluX2xvY2tfaXJx
+c2F2ZSgmZGV2X3ByaXYtPmlycV9sb2NrLCBpcnFmbGFncyk7Cj4gPiAtCj4gPiAtCWRldl9wcml2
+LT5pcnFfbWFzayAmPSB+dmFsOwo+ID4gLQlJOTE1X1dSSVRFKFZMVl9JSVIsIHZhbCk7Cj4gPiAt
+CUk5MTVfV1JJVEUoVkxWX0lJUiwgdmFsKTsKPiA+IC0JSTkxNV9XUklURShWTFZfSU1SLCBkZXZf
+cHJpdi0+aXJxX21hc2spOwo+ID4gLQlQT1NUSU5HX1JFQUQoVkxWX0lNUik7Cj4gPiAtCj4gPiAt
+CXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmRldl9wcml2LT5pcnFfbG9jaywgaXJxZmxhZ3MpOwo+
+ID4gIH0KPiA+Cj4gPiAgc3RhdGljIHZvaWQgbHBlX2F1ZGlvX2lycV9tYXNrKHN0cnVjdCBpcnFf
+ZGF0YSAqZCkKPiA+ICB7Cj4gPiAtCXN0cnVjdCBkcm1faTkxNV9wcml2YXRlICpkZXZfcHJpdiA9
+IGQtPmNoaXBfZGF0YTsKPiA+IC0JdW5zaWduZWQgbG9uZyBpcnFmbGFnczsKPiA+IC0JdTMyIHZh
+bCA9IChJOTE1X0xQRV9QSVBFX0FfSU5URVJSVVBUIHwKPiA+IC0JCUk5MTVfTFBFX1BJUEVfQl9J
+TlRFUlJVUFQpOwo+ID4gLQo+ID4gLQlpZiAoSVNfQ0hFUlJZVklFVyhkZXZfcHJpdikpCj4gPiAt
+CQl2YWwgfD0gSTkxNV9MUEVfUElQRV9DX0lOVEVSUlVQVDsKPiA+IC0KPiA+IC0Jc3Bpbl9sb2Nr
+X2lycXNhdmUoJmRldl9wcml2LT5pcnFfbG9jaywgaXJxZmxhZ3MpOwo+ID4gLQo+ID4gLQlkZXZf
+cHJpdi0+aXJxX21hc2sgfD0gdmFsOwo+ID4gLQlJOTE1X1dSSVRFKFZMVl9JTVIsIGRldl9wcml2
+LT5pcnFfbWFzayk7Cj4gPiAtCUk5MTVfV1JJVEUoVkxWX0lJUiwgdmFsKTsKPiA+IC0JSTkxNV9X
+UklURShWTFZfSUlSLCB2YWwpOwo+ID4gLQlQT1NUSU5HX1JFQUQoVkxWX0lJUik7Cj4gPiAtCj4g
+PiAtCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmRldl9wcml2LT5pcnFfbG9jaywgaXJxZmxhZ3Mp
+Owo+ID4gIH0KPiA+Cj4gPiAgc3RhdGljIHN0cnVjdCBpcnFfY2hpcCBscGVfYXVkaW9faXJxY2hp
+cCA9IHsKPiA+IEBAIC0zMzAsOCArMjk2LDYgQEAgdm9pZCBpbnRlbF9scGVfYXVkaW9fdGVhcmRv
+d24oc3RydWN0IGRybV9pOTE1X3ByaXZhdGUgKmRldl9wcml2KQo+ID4KPiA+ICAJZGVzYyA9IGly
+cV90b19kZXNjKGRldl9wcml2LT5scGVfYXVkaW8uaXJxKTsKPiA+Cj4gPiAtCWxwZV9hdWRpb19p
+cnFfbWFzaygmZGVzYy0+aXJxX2RhdGEpOwo+ID4gLQo+ID4gIAlscGVfYXVkaW9fcGxhdGRldl9k
+ZXN0cm95KGRldl9wcml2KTsKPiA+Cj4gPiAgCWlycV9mcmVlX2Rlc2MoZGV2X3ByaXYtPmxwZV9h
+dWRpby5pcnEpOwo+ID4KCi0tIApWaWxsZSBTeXJqw6Rsw6QKSW50ZWwgT1RDCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxp
+c3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNr
+dG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
