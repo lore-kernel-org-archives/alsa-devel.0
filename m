@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Modify load_lib_ipc
-	arguments for a nowait version" to the asoc tree
-Date: Wed, 26 Apr 2017 15:48:53 +0100
-Message-ID: <E1d3OFR-0000Ou-7U@finisterre>
-References: <1492786693-24167-6-git-send-email-subhransu.s.prusty@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Register dsp_fw_ops for
+	kabylake" to the asoc tree
+Date: Wed, 26 Apr 2017 15:49:04 +0100
+Message-ID: <E1d3OFc-0000R1-QX@finisterre>
+References: <1492786693-24167-5-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3D6C6267407
- for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2017 16:49:08 +0200 (CEST)
-In-Reply-To: <1492786693-24167-6-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2FC56267445
+ for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2017 16:49:22 +0200 (CEST)
+In-Reply-To: <1492786693-24167-5-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Modify load_lib_ipc arguments for a nowait version
+   ASoC: Intel: Skylake: Register dsp_fw_ops for kabylake
 
 has been applied to the asoc tree at
 
@@ -52,76 +52,98 @@ to this mail.
 Thanks,
 Mark
 
->From 100e7f396ddf9abd76d5ec93f689be00187512f9 Mon Sep 17 00:00:00 2001
+>From 89b0d8a5bae91cb8ef23b1834c97d1db367f2db6 Mon Sep 17 00:00:00 2001
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Date: Tue, 25 Apr 2017 12:18:23 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Modify load_lib_ipc arguments for a
- nowait version
+Date: Tue, 25 Apr 2017 12:18:22 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Register dsp_fw_ops for kabylake
 
-Kabylake uses code loader dma and wait on notification instead of ipc
-reply for load library ipc status. So modify the argument of
-skl_sst_ipc_load_library to check on flag to wait for ipc reply.
+For audio kabylake is same as skylake except the module load approach.
+This patch registers different dsp_fw_ops for kabylake and next patch
+adds the module load support for kabylake.
 
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/bxt-sst.c     | 2 +-
- sound/soc/intel/skylake/skl-sst-ipc.c | 8 ++++++--
- sound/soc/intel/skylake/skl-sst-ipc.h | 2 +-
- 3 files changed, 8 insertions(+), 4 deletions(-)
+ sound/soc/intel/skylake/skl-messages.c |  2 +-
+ sound/soc/intel/skylake/skl-sst-dsp.h  |  3 +++
+ sound/soc/intel/skylake/skl-sst.c      | 30 ++++++++++++++++++++++++++++++
+ 3 files changed, 34 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-index d26545ee3e58..fde4bc0f35b0 100644
---- a/sound/soc/intel/skylake/bxt-sst.c
-+++ b/sound/soc/intel/skylake/bxt-sst.c
-@@ -81,7 +81,7 @@ bxt_load_library(struct sst_dsp *ctx, struct skl_lib_info *linfo, int lib_count)
- 		memcpy(dmab.area, stripped_fw.data, stripped_fw.size);
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index 09730dd8e6a3..ab1adc0c9cc3 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -209,7 +209,7 @@ static const struct skl_dsp_ops dsp_ops[] = {
+ 	{
+ 		.id = 0x9d71,
+ 		.loader_ops = skl_get_loader_ops,
+-		.init = skl_sst_dsp_init,
++		.init = kbl_sst_dsp_init,
+ 		.init_fw = skl_sst_init_fw,
+ 		.cleanup = skl_sst_dsp_cleanup
+ 	},
+diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
+index 6d9aed23d5cd..eba20d37ba8c 100644
+--- a/sound/soc/intel/skylake/skl-sst-dsp.h
++++ b/sound/soc/intel/skylake/skl-sst-dsp.h
+@@ -230,6 +230,9 @@ int skl_dsp_boot(struct sst_dsp *ctx);
+ int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 		const char *fw_name, struct skl_dsp_loader_ops dsp_ops,
+ 		struct skl_sst **dsp);
++int kbl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
++		const char *fw_name, struct skl_dsp_loader_ops dsp_ops,
++		struct skl_sst **dsp);
+ int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 		const char *fw_name, struct skl_dsp_loader_ops dsp_ops,
+ 		struct skl_sst **dsp);
+diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
+index b4c3b5c63115..20968e5ec86d 100644
+--- a/sound/soc/intel/skylake/skl-sst.c
++++ b/sound/soc/intel/skylake/skl-sst.c
+@@ -470,6 +470,15 @@ static struct skl_dsp_fw_ops skl_fw_ops = {
+ 	.unload_mod = skl_unload_module,
+ };
  
- 		ctx->dsp_ops.trigger(ctx->dev, true, stream_tag);
--		ret = skl_sst_ipc_load_library(&skl->ipc, dma_id, i);
-+		ret = skl_sst_ipc_load_library(&skl->ipc, dma_id, i, true);
- 		if (ret < 0)
- 			dev_err(ctx->dev, "IPC Load Lib for %s fail: %d\n",
- 					linfo[i].name, ret);
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
-index e90fe2c0bf2c..7147eddc6d3c 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.c
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.c
-@@ -971,7 +971,7 @@ int skl_ipc_get_large_config(struct sst_generic_ipc *ipc,
- EXPORT_SYMBOL_GPL(skl_ipc_get_large_config);
++static struct skl_dsp_fw_ops kbl_fw_ops = {
++	.set_state_D0 = skl_set_dsp_D0,
++	.set_state_D3 = skl_set_dsp_D3,
++	.load_fw = skl_load_base_firmware,
++	.get_fw_errcode = skl_get_errorcode,
++	.load_mod = skl_load_module,
++	.unload_mod = skl_unload_module,
++};
++
+ static struct sst_ops skl_ops = {
+ 	.irq_handler = skl_dsp_sst_interrupt,
+ 	.write = sst_shim32_write,
+@@ -512,6 +521,27 @@ int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ }
+ EXPORT_SYMBOL_GPL(skl_sst_dsp_init);
  
- int skl_sst_ipc_load_library(struct sst_generic_ipc *ipc,
--				u8 dma_id, u8 table_id)
-+				u8 dma_id, u8 table_id, bool wait)
++int kbl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
++		const char *fw_name, struct skl_dsp_loader_ops dsp_ops,
++		struct skl_sst **dsp)
++{
++	struct sst_dsp *sst;
++	int ret;
++
++	ret = skl_sst_dsp_init(dev, mmio_base, irq, fw_name, dsp_ops, dsp);
++	if (ret < 0) {
++		dev_err(dev, "%s: Init failed %d\n", __func__, ret);
++		return ret;
++	}
++
++	sst = (*dsp)->dsp;
++	sst->fw_ops = kbl_fw_ops;
++
++	return 0;
++
++}
++EXPORT_SYMBOL_GPL(kbl_sst_dsp_init);
++
+ int skl_sst_init_fw(struct device *dev, struct skl_sst *ctx)
  {
- 	struct skl_ipc_header header = {0};
- 	u64 *ipc_header = (u64 *)(&header);
-@@ -983,7 +983,11 @@ int skl_sst_ipc_load_library(struct sst_generic_ipc *ipc,
- 	header.primary |= IPC_MOD_INSTANCE_ID(table_id);
- 	header.primary |= IPC_MOD_ID(dma_id);
- 
--	ret = sst_ipc_tx_message_wait(ipc, *ipc_header, NULL, 0, NULL, 0);
-+	if (wait)
-+		ret = sst_ipc_tx_message_wait(ipc, *ipc_header,
-+					NULL, 0, NULL, 0);
-+	else
-+		ret = sst_ipc_tx_message_nowait(ipc, *ipc_header, NULL, 0);
- 
- 	if (ret < 0)
- 		dev_err(ipc->dev, "ipc: load lib failed\n");
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.h b/sound/soc/intel/skylake/skl-sst-ipc.h
-index 4abf98c0e00e..e057da2713c6 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.h
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.h
-@@ -197,7 +197,7 @@ int skl_ipc_get_large_config(struct sst_generic_ipc *ipc,
- 		struct skl_ipc_large_config_msg *msg, u32 *param);
- 
- int skl_sst_ipc_load_library(struct sst_generic_ipc *ipc,
--			u8 dma_id, u8 table_id);
-+			u8 dma_id, u8 table_id, bool wait);
- 
- int skl_ipc_set_d0ix(struct sst_generic_ipc *ipc,
- 		struct skl_ipc_d0ix_msg *msg);
+ 	int ret;
 -- 
 2.11.0
