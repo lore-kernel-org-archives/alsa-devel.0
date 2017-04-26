@@ -1,122 +1,82 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: Document STM32 I2S
-	bindings
-Date: Wed, 26 Apr 2017 17:15:53 +0100
-Message-ID: <20170426161553.oc5pozga53ttypyq@sirena.org.uk>
-References: <1491493236-2574-2-git-send-email-olivier.moysan@st.com>
- <20170410194832.iivnkyejtywbe2c7@rob-hp-laptop>
- <20170411143250.3r7ys3rjshtxgaee@sirena.org.uk>
- <73caede5-ea6f-8b2b-2270-227f7ef31823@st.com>
- <20170411211040.htrcedus3c57fbed@sirena.org.uk>
- <86a179ad-7961-18f7-8050-25e0e584c77d@st.com>
- <20170412113251.nfyk5sw6c5pnpmwr@sirena.org.uk>
- <d886a9c7-ca46-f37a-0e82-6ed8d7a4e052@st.com>
- <20170412153831.r2urwvfseipfsrsi@sirena.org.uk>
- <a87748e4-21e7-f65a-5be1-fe4f60bdfbef@st.com>
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Subject: Re: [PATCH 00/11] drm/i915: LPE audio runtime PM and
+	multipipe
+Date: Wed, 26 Apr 2017 22:59:39 +0300
+Message-ID: <20170426195939.GK30290@intel.com>
+References: <20170425202730.1384-1-ville.syrjala@linux.intel.com>
+ <s5hpofzfwz5.wl-tiwai@suse.de> <20170426133853.GT30290@intel.com>
+ <s5hlgqn5lhb.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1456554500716935055=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id AD186266F52
- for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2017 18:16:21 +0200 (CEST)
-In-Reply-To: <a87748e4-21e7-f65a-5be1-fe4f60bdfbef@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Olivier MOYSAN <olivier.moysan@st.com>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alexandre TORGUE <alexandre.torgue@st.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Benjamin GAIGNARD <benjamin.gaignard@st.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <s5hlgqn5lhb.wl-tiwai@suse.de>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============1456554500716935055==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="toa7pdq5ixzqyj6l"
-Content-Disposition: inline
-
-
---toa7pdq5ixzqyj6l
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Apr 13, 2017 at 08:01:34AM +0000, Olivier MOYSAN wrote:
-
-> 1) 2 static dais NOT exclusive
-> 	- dai tx
-> 	- dai rx
-> The IP exhibits a mode register, where you select mode TX, RX or FD.
-> There are 2 two options to manage this register.
-> option 1:
-> 	start first channel with mode RX or TX
-> 	when second channel is started, mode has to be changed to FD.
-> 	Transfers have to be stopped before changing configuration
-> 	registers, so this leads to cuts in audio stream.
-> option 2:
-> 	start a first channel with mode FD.
-> 	In this case, we may have unpredictable behavior for the stream
-> 	which is not already started. probably underrun/overrun.
-> So, this solution rises problem for full-duplex management.
-
-> 2) 3 static dais exclusive
-> 	- dai tx
-> 	- dai rx
-> 	- dai rx-tx (fd)
-> This is the current implementation.
-> The choice of the dai is done at probe time. It is provided by DT=20
-> through sound-dai parameter.
-> When dai fd is selected, after starting first stream, we assume that
-> second stream will be started. In this case we wait for second stream
-> to be available before enabling IP and starting transfers.
-
-> 3) 1 dynamic dai
-> 	- dai rx or tx or fd (according to dma conf in IP node)
-> Here the driver exposes only a single dai constructed from dma=20
-> configuration provided by IP DT node.
-> This allows to get ride of sound-dai parameter.
-
-None of these options reflect how normal I2S controllers present
-themselves in DT.  To repeat, you should present a single bidirectional
-DAI for the single physical bidirectional I2S controller that your
-hardware has.
-
-If it's not possible to figure out a way to make the controller support
-simultaneous playback and record with the two started independently then
-the driver should just return an error if userspace tries to start the
-second direction up.  This will severely limit the utility of the driver
-as Linux generally treats playback and record independently but that's
-going to apply just as much with any of the options involving multiple
-DAIs or configuration in DT.  You might be able to do something with
-feeding it dummy data I guess?
-
---toa7pdq5ixzqyj6l
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlkAx7YACgkQJNaLcl1U
-h9A1cQf/VXtlIKW0hItVncIXsEGn0P/dyJAwN6Lu1QYmjS4kPsCiasZArHpx33D4
-vAEDMsQtGOYqcb1kUWb/fUk1Eq13uEL0/SGGkmI2OSb6faufj9YBzSap28YUPYjw
-qzavGg17gdQKofKU1Y2BTckpkRs4h22ZjAOqWCA2O+pxUh0JTKomD2NdjDI81Rax
-nRrSUjwVrd7UKMFNPlQj+cOgFwF7bj1y68GNuroi0tjZM8p/F3CYz7w2GshgEWKl
-UVfzBfUcO+SQUF22TUy7cYivX71tFH2TjCIljMBL5i2/i6HzhHg8XUfHj1cK7NYG
-XdsCxin9h4lZOcTl9CC6xZsHSNt0/A==
-=Vof3
------END PGP SIGNATURE-----
-
---toa7pdq5ixzqyj6l--
-
---===============1456554500716935055==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1456554500716935055==--
+T24gV2VkLCBBcHIgMjYsIDIwMTcgYXQgMDM6NDc6NDRQTSArMDIwMCwgVGFrYXNoaSBJd2FpIHdy
+b3RlOgo+IE9uIFdlZCwgMjYgQXByIDIwMTcgMTU6Mzg6NTMgKzAyMDAsCj4gVmlsbGUgU3lyasOk
+bMOkIHdyb3RlOgo+ID4gCj4gPiBPbiBXZWQsIEFwciAyNiwgMjAxNyBhdCAwOToyOToxOEFNICsw
+MjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gPiA+IE9uIFR1ZSwgMjUgQXByIDIwMTcgMjI6Mjc6
+MTkgKzAyMDAsCj4gPiA+IHZpbGxlLnN5cmphbGFAbGludXguaW50ZWwuY29tIHdyb3RlOgo+ID4g
+PiA+IAo+ID4gPiA+IEZyb206IFZpbGxlIFN5cmrDpGzDpCA8dmlsbGUuc3lyamFsYUBsaW51eC5p
+bnRlbC5jb20+Cj4gPiA+ID4gCj4gPiA+ID4gSSB3YXMgd29uZGVyaW5nIHdoeSBteSBWTFYgbm8g
+bG9uZ2VyIHJ1bnRpbWUgc3VzcGVuZGVkLCBhbmQgYWZ0ZXIgc29tZQo+ID4gPiA+IHRoaW5raW5n
+IEkgZGVjaWRlZCBpdCBoYWQgdG8gYmUgdGhlIExQRSBhdWRpbyBwcmV2ZW50aW5nIGl0LiBUdXJu
+cyBvdXQKPiA+ID4gPiBJIHdhcyByaWdodCwgc28gaGVyZSdzIG15IGF0dGVtcHQgYXQgZml4aW5n
+IGl0Lgo+ID4gPiA+IAo+ID4gPiA+IEFuZCB3aGlsZSBsb29raW5nIGF0IHRoZSBjb2RlIEkgY291
+bGRuJ3QgaGVscCBidXQgbm90aWNlIHRoYXQgaXQKPiA+ID4gPiBjb3VsZG4ndCBhY3R1YWxseSBo
+YW5kbGUgbXVsdGlwbGUgcGlwZXMgcGxheWluZyBiYWNrIGF1ZGlvIGF0IHRoZQo+ID4gPiA+IHNh
+bWUgdGltZS4gQW5kIGV2ZW4gaGF2aW5nIG11bHRpcGxlIGRpc3BsYXlzIGFjdGl2ZSBldmVuIGlm
+IG9ubHkKPiA+ID4gPiBvbmUgd2FzIHBsYXlpbmcgYXVkaW8gd2FzIHByb2JhYmx5IGEgcmVjaXBl
+IGZvciBmYWlsdXJlLiBTbyBJCj4gPiA+ID4gdHJpZWQgdG8gZml4IHRoYXQgYnkgcmVnaXN0ZXJp
+bmcgYSBzZXBhcmF0ZSBQQ00gZGV2aWNlIGZvciBlYWNoCj4gPiA+ID4gcGlwZS4KPiA+ID4gPiAK
+PiA+ID4gPiBOb3RlIHRoYXQgdGhlIHBhdGNoIHN1YmplY3RzIG1heSBub3QgcmVmbGVjdCB0aGUg
+c3Vic3lzdGVtCj4gPiA+ID4gdmVyeSB3ZWxsIHNpbmNlIG1vc3Qgb2YgdGhlc2Ugc3RyYWRkbGUg
+dGhlIGJvcmRlciBiZXR3ZWVuIGRybQo+ID4gPiA+IGFuZCBhbHNhLiBJIHRoaW5rIEkganVzdCBz
+bGFwcGVkIG9uIGRybS9pOTE1IHRvIG1vc3Qgd2hlcmUKPiA+ID4gPiB0aGVyZSB3YXMgbm8gY2xl
+YXIgd2lubmVyLgo+ID4gPiAKPiA+ID4gQSBuaWNlIHBhdGNoc2V0LCB0aGFua3MgZm9yIHdvcmtp
+bmcgb24gaXQhCj4gPiA+IAo+ID4gPiBPbmUgc2xpZ2h0IGNvbmNlcm4gKG90aGVyIHRoYW4gdGhl
+IGphY2sgaXNzdWUgUGllcnJlIHJlcG9ydGVkKSBpcyB0aGUKPiA+ID4gaW5jb21wYXRpYmxlIGJl
+aGF2aW9yIGZyb20gdGhlIGN1cnJlbnQgdmVyc2lvbi4gIFdpdGggdGhlIHBpcGUtYmFzZWQKPiA+
+ID4gbXVsdGlwbGUgc3RyZWFtcywgdXNlciB3b3VsZCBuZWVkIHRvIGNob29zZSBhbm90aGVyIG9u
+ZSBldmVuIGlmIHRoZQo+ID4gPiBkZXZpY2UgaGFzIGEgc2luZ2xlIEhETUkgb3V0cHV0LCB3aGlj
+aCBpcyBwcmV0dHkgY29tbW9uIG9uIEJZVC9DSFYKPiA+ID4gdGFibGV0cy4KPiA+ID4gCj4gPiA+
+IE1heWJlIGl0J3Mgbm8gYmlnIHByb2JsZW0gYXMgdGhlIHVzZXJzIGFyZSBzdGlsbCBsaW1pdGVk
+IGF0IHRoZQo+ID4gPiBtb21lbnQuICBPciwgd2UgbWF5IG5lZWQgdG8gaGFuZGxlIGEgYml0IGRp
+ZmZlcmVudGx5LCBlLmcuIGFzc2lnbmluZwo+ID4gPiB0aGUgUENNIHN0cmVhbSBkeW5hbWljYWxs
+eSBwZXIgaG90cGx1Zy4KPiA+IAo+ID4gWWVhaCwgSSB0aWVkIHRoZSBQQ00gZGV2aWNlIHRvIHRo
+ZSBwaXBlIHRvIG1hdGNoIHRoZSBoYXJkd2FyZS4gQnV0IHdlCj4gPiBjb3VsZCBjZXJ0YWlubHkg
+cmVnaXN0ZXIgdGhlIFBDTSBkZXZpY2UgcGVyIHBvcnQsIGFuZCB0aGVuIGRvIGEgCj4gPiBwaXBl
+PC0+cG9ydCBtYXBwaW5nIHNvbWV3aGVyZSB0byBtYWtlIGl0IGFsbCB3b3JrIG91dC4gT25lIHNs
+aWdodAo+ID4gY29tcGxpY2F0aW9uIGlzIHRoYXQgbm90IGFsbCBwb3J0cyBhcmUgbmVjZXNzYXJp
+bHkgcHJlc2VudCBzbyB3ZQo+ID4gbWlnaHQgaGF2ZSBlZy4ganVzdCBwb3J0IEIgYW5kIHBvcnQg
+RCwgYnV0IG5vIHBvcnQgQy4gTm90IHN1cmUgaWYKPiA+IGl0IHdvdWxkIGJlIGEgYmFkIHRoaW5n
+IHRvIHJlZ2lzdGVyIGEgUENNIGRldmljZSBldmVuIGZvciB0aGUKPiA+IG1pc3NpbmcgcG9ydHMg
+YW55d2F5Pwo+ID4gCj4gPiBJIGRvbid0IHJlY2FsbCB3aGljaCB3YXkgSERBIHdvcmtzLiBEZXZp
+Y2UgcGVyIHBvcnQgSSBndWVzcz8gV2VsbCwKPiA+IGZvciBEUCBTU1QvSERNSS4gQnV0IGZvciBE
+UCBNU1QgSSBwcmVzdW1lIGl0J3MgZGV2aWNlIHBlciBzdHJlYW0KPiA+IChpZS4gcGlwZSkgZXZl
+biB3aXRoIEhEQS4KPiAKPiBIRC1hdWRpbyBjcmVhdGVzIHRoZSBQQ00gZGV2aWNlIHBlciBIRC1h
+dWRpbyB3aWRnZXQgcmVwcmVzZW50YXRpb24sCj4gYW5kIHRoZXkgY29ycmVzcG9uZCB0byBwb3J0
+cywgYXMgaXQgc2VlbXMuICBGb3IgTVNULCB0aGUgc2l0dWF0aW9uIGlzCj4gbW9yZSBjb21wbGV4
+LCBhbmQgd2UgYXNzaWduIHRoZSBQQ00gc3RyZWFtIGR5bmFtaWNhbGx5LiAgSXQncyBmb3IKPiBr
+ZWVwaW5nIHRoZSBiZWhhdmlvciAobW9yZSBvciBsZXNzKSBjb25zaXN0ZW50IHdpdGggbm9uLU1T
+VC4KCk9LLCBJIGhhY2tlZCB0b2dldGhlciBzb21ldGhpbmcgdGhhdCBzZWVtcyB0byB3b3JrLiBJ
+J2xsIHN0aWxsIG5lZWQKdG8gc3F1YXNoIGl0IHdpdGggdGhlIGVhcmxpZXIgcGF0Y2gsIGJ1dCBp
+biBjYXNlIHlvdSB3YW50IHRvIHNlZSB3aGF0CnRoZSByZWxhdGl2ZSBjaGFuZ2VzIGxvb2sgbGlr
+ZSBJIHB1c2hlZCBpdCB0bwpnaXQ6Ly9naXRodWIuY29tL3ZzeXJqYWxhL2xpbnV4LmdpdCBscGVf
+YXVkaW9fbXVsdGlwaXBlCgotLSAKVmlsbGUgU3lyasOkbMOkCkludGVsIE9UQwpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBs
+aXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVz
+a3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
