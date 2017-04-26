@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Register dsp_fw_ops for
-	kabylake" to the asoc tree
-Date: Wed, 26 Apr 2017 15:49:04 +0100
-Message-ID: <E1d3OFc-0000R1-QX@finisterre>
-References: <1492786693-24167-5-git-send-email-subhransu.s.prusty@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Modify arguments to
+	reuse module transfer function" to the asoc tree
+Date: Wed, 26 Apr 2017 15:49:14 +0100
+Message-ID: <E1d3OFm-0000S3-G7@finisterre>
+References: <1493102904-12624-4-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2FC56267445
- for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2017 16:49:22 +0200 (CEST)
-In-Reply-To: <1492786693-24167-5-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B54A2670DB
+ for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2017 16:49:31 +0200 (CEST)
+In-Reply-To: <1493102904-12624-4-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
+To: G Kranthi <gudishax.kranthikumar@intel.com>
 Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, lgirdwood@gmail.com, patches.audio@intel.com, tiwai@suse.de, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Register dsp_fw_ops for kabylake
+   ASoC: Intel: Skylake: Modify arguments to reuse module transfer function
 
 has been applied to the asoc tree at
 
@@ -52,98 +53,64 @@ to this mail.
 Thanks,
 Mark
 
->From 89b0d8a5bae91cb8ef23b1834c97d1db367f2db6 Mon Sep 17 00:00:00 2001
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Date: Tue, 25 Apr 2017 12:18:22 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Register dsp_fw_ops for kabylake
+>From 4e0277d226b578be99cf8899fd1442bf11873d12 Mon Sep 17 00:00:00 2001
+From: G Kranthi <gudishax.kranthikumar@intel.com>
+Date: Tue, 25 Apr 2017 12:18:21 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Modify arguments to reuse module
+ transfer function
 
-For audio kabylake is same as skylake except the module load approach.
-This patch registers different dsp_fw_ops for kabylake and next patch
-adds the module load support for kabylake.
+Kabylake also uses code loader dma for module load and library load.
+skl_transfer_module can be reused. Modify the arguments to include
+library index to be passed to lib load ipc and module/lib check to use
+correct ipc for lib/module load.
 
+Signed-off-by: G Kranthi <gudishax.kranthikumar@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-messages.c |  2 +-
- sound/soc/intel/skylake/skl-sst-dsp.h  |  3 +++
- sound/soc/intel/skylake/skl-sst.c      | 30 ++++++++++++++++++++++++++++++
- 3 files changed, 34 insertions(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-sst.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 09730dd8e6a3..ab1adc0c9cc3 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -209,7 +209,7 @@ static const struct skl_dsp_ops dsp_ops[] = {
- 	{
- 		.id = 0x9d71,
- 		.loader_ops = skl_get_loader_ops,
--		.init = skl_sst_dsp_init,
-+		.init = kbl_sst_dsp_init,
- 		.init_fw = skl_sst_init_fw,
- 		.cleanup = skl_sst_dsp_cleanup
- 	},
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
-index 6d9aed23d5cd..eba20d37ba8c 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.h
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.h
-@@ -230,6 +230,9 @@ int skl_dsp_boot(struct sst_dsp *ctx);
- int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
- 		const char *fw_name, struct skl_dsp_loader_ops dsp_ops,
- 		struct skl_sst **dsp);
-+int kbl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
-+		const char *fw_name, struct skl_dsp_loader_ops dsp_ops,
-+		struct skl_sst **dsp);
- int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
- 		const char *fw_name, struct skl_dsp_loader_ops dsp_ops,
- 		struct skl_sst **dsp);
 diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
-index b4c3b5c63115..20968e5ec86d 100644
+index 4fdd503a837c..b4c3b5c63115 100644
 --- a/sound/soc/intel/skylake/skl-sst.c
 +++ b/sound/soc/intel/skylake/skl-sst.c
-@@ -470,6 +470,15 @@ static struct skl_dsp_fw_ops skl_fw_ops = {
- 	.unload_mod = skl_unload_module,
- };
- 
-+static struct skl_dsp_fw_ops kbl_fw_ops = {
-+	.set_state_D0 = skl_set_dsp_D0,
-+	.set_state_D3 = skl_set_dsp_D3,
-+	.load_fw = skl_load_base_firmware,
-+	.get_fw_errcode = skl_get_errorcode,
-+	.load_mod = skl_load_module,
-+	.unload_mod = skl_unload_module,
-+};
-+
- static struct sst_ops skl_ops = {
- 	.irq_handler = skl_dsp_sst_interrupt,
- 	.write = sst_shim32_write,
-@@ -512,6 +521,27 @@ int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+@@ -325,7 +325,7 @@ static struct skl_module_table *skl_module_get_from_id(
  }
- EXPORT_SYMBOL_GPL(skl_sst_dsp_init);
  
-+int kbl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
-+		const char *fw_name, struct skl_dsp_loader_ops dsp_ops,
-+		struct skl_sst **dsp)
-+{
-+	struct sst_dsp *sst;
-+	int ret;
-+
-+	ret = skl_sst_dsp_init(dev, mmio_base, irq, fw_name, dsp_ops, dsp);
-+	if (ret < 0) {
-+		dev_err(dev, "%s: Init failed %d\n", __func__, ret);
-+		return ret;
-+	}
-+
-+	sst = (*dsp)->dsp;
-+	sst->fw_ops = kbl_fw_ops;
-+
-+	return 0;
-+
-+}
-+EXPORT_SYMBOL_GPL(kbl_sst_dsp_init);
-+
- int skl_sst_init_fw(struct device *dev, struct skl_sst *ctx)
+ static int skl_transfer_module(struct sst_dsp *ctx, const void *data,
+-				u32 size, u16 mod_id)
++			u32 size, u16 mod_id, u8 table_id, bool is_module)
  {
- 	int ret;
+ 	int ret, bytes_left, curr_pos;
+ 	struct skl_sst *skl = ctx->thread_context;
+@@ -335,10 +335,12 @@ static int skl_transfer_module(struct sst_dsp *ctx, const void *data,
+ 	if (bytes_left < 0)
+ 		return bytes_left;
+ 
+-	ret = skl_ipc_load_modules(&skl->ipc, SKL_NUM_MODULES, &mod_id);
+-	if (ret < 0) {
+-		dev_err(ctx->dev, "Failed to Load module: %d\n", ret);
+-		goto out;
++	if (is_module) { /* load module */
++		ret = skl_ipc_load_modules(&skl->ipc, SKL_NUM_MODULES, &mod_id);
++		if (ret < 0) {
++			dev_err(ctx->dev, "Failed to Load module: %d\n", ret);
++			goto out;
++		}
+ 	}
+ 
+ 	/*
+@@ -393,7 +395,8 @@ static int skl_load_module(struct sst_dsp *ctx, u16 mod_id, u8 *guid)
+ 
+ 	if (!module_entry->usage_cnt) {
+ 		ret = skl_transfer_module(ctx, module_entry->mod_info->fw->data,
+-				module_entry->mod_info->fw->size, mod_id);
++				module_entry->mod_info->fw->size,
++				mod_id, 0, true);
+ 		if (ret < 0) {
+ 			dev_err(ctx->dev, "Failed to Load module\n");
+ 			return ret;
 -- 
 2.11.0
