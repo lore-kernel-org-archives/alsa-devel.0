@@ -1,18 +1,15 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: [PATCH 3/3] ASoC: simple-scu-card: Use devm_kcalloc()
- in asoc_simple_card_probe()
-Date: Wed, 26 Apr 2017 15:06:58 +0200
-Message-ID: <5ccce752-8b67-ca22-0883-3a3628458fb6@users.sourceforge.net>
-References: <8b5e37d1-17c5-4551-801f-ca7939d5efd7@users.sourceforge.net>
+From: Daniel Baluta <daniel.baluta@nxp.com>
+Subject: [PATCH v2 0/2] Relax bitclk computation when using PLL
+Date: Wed, 26 Apr 2017 16:09:50 +0300
+Message-ID: <1493212192-7930-1-git-send-email-daniel.baluta@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.17.12])
- by alsa0.perex.cz (Postfix) with ESMTP id B8D18266FEC
- for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2017 15:07:09 +0200 (CEST)
-In-Reply-To: <8b5e37d1-17c5-4551-801f-ca7939d5efd7@users.sourceforge.net>
-Content-Language: en-GB
+Received: from NAM03-DM3-obe.outbound.protection.outlook.com
+ (mail-dm3nam03on0083.outbound.protection.outlook.com [104.47.41.83])
+ by alsa0.perex.cz (Postfix) with ESMTP id 81A7B266FEC
+ for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2017 15:10:03 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,39 +19,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Nikita Yushchenko <nikita.yoush@cogentembedded.com>, Takashi Iwai <tiwai@suse.com>
-Cc: kernel-janitors@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+To: broonie@kernel.org, tiwai@suse.com, ckeepax@opensource.wolfsonmicro.com, arnd@arndb.de, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, Daniel Baluta <daniel.baluta@nxp.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Markus Elfring <elfring@users.sourceforge.net>
-Date: Wed, 26 Apr 2017 14:40:40 +0200
+Using strict bitclk requirements we cannot support all promised
+rates and formats. For this reason we relax bitclk computation
+by choosing the best available bitclk.
 
-Multiplications for the size determination of memory allocations
-indicated that array data structures should be processed.
-Thus use the corresponding function "devm_kcalloc".
+First patch in the series is based on Arnd's patch:
 
-This issue was detected by using the Coccinelle software.
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-April/119899.html
 
-Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
----
- sound/soc/generic/simple-scu-card.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Second one does the actual bitclk relaxation.
 
-diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
-index dcbcab230d1b..530a7aa387c5 100644
---- a/sound/soc/generic/simple-scu-card.c
-+++ b/sound/soc/generic/simple-scu-card.c
-@@ -270,9 +270,8 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	num = of_get_child_count(np);
--
--	dai_props = devm_kzalloc(dev, sizeof(*dai_props) * num, GFP_KERNEL);
--	dai_link  = devm_kzalloc(dev, sizeof(*dai_link)  * num, GFP_KERNEL);
-+	dai_props = devm_kcalloc(dev, num, sizeof(*dai_props), GFP_KERNEL);
-+	dai_link  = devm_kcalloc(dev, num, sizeof(*dai_link), GFP_KERNEL);
- 	if (!dai_props || !dai_link)
- 		return -ENOMEM;
- 
+Daniel Baluta (2):
+  ASoC: codec: wm9860: avoid maybe-uninitialized warning
+  ASoC: codec: wm8960: Relax bit clock computation when using PLL
+
+ sound/soc/codecs/wm8960.c | 36 +++++++++++++++++++++---------------
+ 1 file changed, 21 insertions(+), 15 deletions(-)
+
 -- 
-2.12.2
+2.7.4
