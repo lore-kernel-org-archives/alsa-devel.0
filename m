@@ -1,34 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Move sst common
-	initialization to a helper function" to the asoc tree
-Date: Wed, 26 Apr 2017 15:49:29 +0100
-Message-ID: <E1d3OG1-0000U0-E2@finisterre>
-References: <1492786693-24167-2-git-send-email-subhransu.s.prusty@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E2F36267478
- for <alsa-devel@alsa-project.org>; Wed, 26 Apr 2017 16:49:45 +0200 (CEST)
-In-Reply-To: <1492786693-24167-2-git-send-email-subhransu.s.prusty@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: G Kranthi <gudishax.kranthikumar@intel.com>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, lgirdwood@gmail.com, patches.audio@intel.com, tiwai@suse.de, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: stm32: add bindings for SAI" to the asoc tree
+Date: Wed, 26 Apr 2017 16:50:33 +0100
+Message-ID: <E1d3PD7-0002Rd-JM@finisterre>
+References: <1491837596-2924-2-git-send-email-olivier.moysan@st.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1491837596-2924-2-git-send-email-olivier.moysan-qxv4g6HH51o@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.orgbroonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alexandre.torgue-qxv4g6HH51o@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-F5mvAk5X5gdBDgjK7y7TUQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, olivier.moysan-qxv4g6HH51o@public.gmane.org, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org, benjamin.gaignard-qxv4g6HH51o@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Move sst common initialization to a helper function
+   ASoC: stm32: add bindings for SAI
 
 has been applied to the asoc tree at
 
@@ -53,205 +36,120 @@ to this mail.
 Thanks,
 Mark
 
->From 9fe9c71192832a1c63fb94120cb6c2541aca694f Mon Sep 17 00:00:00 2001
-From: G Kranthi <gudishax.kranthikumar@intel.com>
-Date: Tue, 25 Apr 2017 12:18:19 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Move sst common initialization to a
- helper function
+>From b45c4f117b002a902e8b9f52eaf542e3e82c36a8 Mon Sep 17 00:00:00 2001
+From: olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
+Date: Mon, 10 Apr 2017 17:19:55 +0200
+Subject: [PATCH] ASoC: stm32: add bindings for SAI
 
-Some skl sst context are not dependent of platform and initializing them
-independently for each platform can lead to errors. So optimize by
-moving them to a helper function and platform specific init code can
-call this.
+This patch adds documentation of device tree bindings for the
+STM32 SAI ASoC driver.
 
-Signed-off-by: G Kranthi <gudishax.kranthikumar@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/intel/skylake/bxt-sst.c       | 28 +++++--------------------
- sound/soc/intel/skylake/skl-sst-dsp.h   |  3 +++
- sound/soc/intel/skylake/skl-sst-utils.c | 37 +++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-sst.c       | 32 ++++++----------------------
- 4 files changed, 51 insertions(+), 49 deletions(-)
+ .../devicetree/bindings/sound/st,stm32-sai.txt     | 89 ++++++++++++++++++++++
+ 1 file changed, 89 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-sai.txt
 
-diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-index 268bdaec8042..2bf6ebe29f50 100644
---- a/sound/soc/intel/skylake/bxt-sst.c
-+++ b/sound/soc/intel/skylake/bxt-sst.c
-@@ -590,23 +590,14 @@ int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
- 	struct sst_dsp *sst;
- 	int ret;
- 
--	skl = devm_kzalloc(dev, sizeof(*skl), GFP_KERNEL);
--	if (skl == NULL)
--		return -ENOMEM;
--
--	skl->dev = dev;
--	skl_dev.thread_context = skl;
--	INIT_LIST_HEAD(&skl->uuid_list);
--
--	skl->dsp = skl_dsp_ctx_init(dev, &skl_dev, irq);
--	if (!skl->dsp) {
--		dev_err(skl->dev, "skl_dsp_ctx_init failed\n");
--		return -ENODEV;
-+	ret = skl_sst_ctx_init(dev, irq, fw_name, dsp_ops, dsp, &skl_dev);
-+	if (ret < 0) {
-+		dev_err(skl->dev, "%s: no device\n", __func__);
-+		return ret;
- 	}
- 
-+	skl = *dsp;
- 	sst = skl->dsp;
--	sst->fw_name = fw_name;
--	sst->dsp_ops = dsp_ops;
- 	sst->fw_ops = bxt_fw_ops;
- 	sst->addr.lpe = mmio_base;
- 	sst->addr.shim = mmio_base;
-@@ -614,24 +605,15 @@ int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
- 	sst_dsp_mailbox_init(sst, (BXT_ADSP_SRAM0_BASE + SKL_ADSP_W0_STAT_SZ),
- 			SKL_ADSP_W0_UP_SZ, BXT_ADSP_SRAM1_BASE, SKL_ADSP_W1_SZ);
- 
--	INIT_LIST_HEAD(&sst->module_list);
--	ret = skl_ipc_init(dev, skl);
--	if (ret)
--		return ret;
--
- 	/* set the D0i3 check */
- 	skl->ipc.ops.check_dsp_lp_on = skl_ipc_check_D0i0;
- 
- 	skl->cores.count = 2;
- 	skl->boot_complete = false;
- 	init_waitqueue_head(&skl->boot_wait);
--	skl->is_first_boot = true;
- 	INIT_DELAYED_WORK(&skl->d0i3.work, bxt_set_dsp_D0i3);
- 	skl->d0i3.state = SKL_DSP_D0I3_NONE;
- 
--	if (dsp)
--		*dsp = skl;
--
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(bxt_sst_dsp_init);
-diff --git a/sound/soc/intel/skylake/skl-sst-dsp.h b/sound/soc/intel/skylake/skl-sst-dsp.h
-index 7229a12b4c94..c1f95e23933d 100644
---- a/sound/soc/intel/skylake/skl-sst-dsp.h
-+++ b/sound/soc/intel/skylake/skl-sst-dsp.h
-@@ -247,5 +247,8 @@ void skl_freeup_uuid_list(struct skl_sst *ctx);
- 
- int skl_dsp_strip_extended_manifest(struct firmware *fw);
- void skl_dsp_enable_notification(struct skl_sst *ctx, bool enable);
-+int skl_sst_ctx_init(struct device *dev, int irq, const char *fw_name,
-+		struct skl_dsp_loader_ops dsp_ops, struct skl_sst **dsp,
-+		struct sst_dsp_device *skl_dev);
- 
- #endif /*__SKL_SST_DSP_H__*/
-diff --git a/sound/soc/intel/skylake/skl-sst-utils.c b/sound/soc/intel/skylake/skl-sst-utils.c
-index 6d5bff04bf65..a72152123c3c 100644
---- a/sound/soc/intel/skylake/skl-sst-utils.c
-+++ b/sound/soc/intel/skylake/skl-sst-utils.c
-@@ -361,3 +361,40 @@ int skl_dsp_strip_extended_manifest(struct firmware *fw)
- 
- 	return 0;
- }
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.txt b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
+new file mode 100644
+index 000000000000..c59a3d779e06
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
+@@ -0,0 +1,89 @@
++STMicroelectronics STM32 Serial Audio Interface (SAI).
 +
-+int skl_sst_ctx_init(struct device *dev, int irq, const char *fw_name,
-+	struct skl_dsp_loader_ops dsp_ops, struct skl_sst **dsp,
-+	struct sst_dsp_device *skl_dev)
-+{
-+	struct skl_sst *skl;
-+	struct sst_dsp *sst;
-+	int ret;
++The SAI interface (Serial Audio Interface) offers a wide set of audio protocols
++as I2S standards, LSB or MSB-justified, PCM/DSP, TDM, and AC'97.
++The SAI contains two independent audio sub-blocks. Each sub-block has
++its own clock generator and I/O lines controller.
 +
-+	skl = devm_kzalloc(dev, sizeof(*skl), GFP_KERNEL);
-+	if (skl == NULL)
-+		return -ENOMEM;
++Required properties:
++  - compatible: Should be "st,stm32f4-sai"
++  - reg: Base address and size of SAI common register set.
++  - clocks: Must contain phandle and clock specifier pairs for each entry
++	in clock-names.
++  - clock-names: Must contain "x8k" and "x11k"
++	"x8k": SAI parent clock for sampling rates multiple of 8kHz.
++	"x11k": SAI parent clock for sampling rates multiple of 11.025kHz.
++  - interrupts: cpu DAI interrupt line shared by SAI sub-blocks
 +
-+	skl->dev = dev;
-+	skl_dev->thread_context = skl;
-+	INIT_LIST_HEAD(&skl->uuid_list);
-+	skl->dsp = skl_dsp_ctx_init(dev, skl_dev, irq);
-+	if (!skl->dsp) {
-+		dev_err(skl->dev, "%s: no device\n", __func__);
-+		return -ENODEV;
-+	}
++Optional properties:
++  - resets: Reference to a reset controller asserting the SAI
 +
-+	sst = skl->dsp;
-+	sst->fw_name = fw_name;
-+	sst->dsp_ops = dsp_ops;
-+	init_waitqueue_head(&skl->mod_load_wait);
-+	INIT_LIST_HEAD(&sst->module_list);
-+	ret = skl_ipc_init(dev, skl);
-+	if (ret)
-+		return ret;
++SAI subnodes:
++Two subnodes corresponding to SAI sub-block instances A et B can be defined.
++Subnode can be omitted for unsused sub-block.
 +
-+	skl->is_first_boot = true;
-+	if (dsp)
-+		*dsp = skl;
++SAI subnodes required properties:
++  - compatible: Should be "st,stm32-sai-sub-a" or "st,stm32-sai-sub-b"
++	for SAI sub-block A or B respectively.
++  - reg: Base address and size of SAI sub-block register set.
++  - clocks: Must contain one phandle and clock specifier pair
++	for sai_ck which feeds the internal clock generator.
++  - clock-names: Must contain "sai_ck".
++  - dmas: see Documentation/devicetree/bindings/dma/stm32-dma.txt
++  - dma-names: identifier string for each DMA request line
++	"tx": if sai sub-block is configured as playback DAI
++	"rx": if sai sub-block is configured as capture DAI
++  - pinctrl-names: should contain only value "default"
++  - pinctrl-0: see Documentation/devicetree/bindings/pinctrl/pinctrl-stm32.txt
 +
-+	return ret;
-+}
-diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
-index 539529729e3f..4fdd503a837c 100644
---- a/sound/soc/intel/skylake/skl-sst.c
-+++ b/sound/soc/intel/skylake/skl-sst.c
-@@ -330,7 +330,6 @@ static int skl_transfer_module(struct sst_dsp *ctx, const void *data,
- 	int ret, bytes_left, curr_pos;
- 	struct skl_sst *skl = ctx->thread_context;
- 	skl->mod_load_complete = false;
--	init_waitqueue_head(&skl->mod_load_wait);
- 
- 	bytes_left = ctx->cl_dev.ops.cl_copy_to_dmabuf(ctx, data, size, false);
- 	if (bytes_left < 0)
-@@ -489,43 +488,24 @@ int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
- 	struct sst_dsp *sst;
- 	int ret;
- 
--	skl = devm_kzalloc(dev, sizeof(*skl), GFP_KERNEL);
--	if (skl == NULL)
--		return -ENOMEM;
--
--	skl->dev = dev;
--	skl_dev.thread_context = skl;
--	INIT_LIST_HEAD(&skl->uuid_list);
--
--	skl->dsp = skl_dsp_ctx_init(dev, &skl_dev, irq);
--	if (!skl->dsp) {
--		dev_err(skl->dev, "%s: no device\n", __func__);
--		return -ENODEV;
-+	ret = skl_sst_ctx_init(dev, irq, fw_name, dsp_ops, dsp, &skl_dev);
-+	if (ret < 0) {
-+		dev_err(dev, "%s: no device\n", __func__);
-+		return ret;
- 	}
- 
-+	skl = *dsp;
- 	sst = skl->dsp;
--
--	sst->fw_name = fw_name;
- 	sst->addr.lpe = mmio_base;
- 	sst->addr.shim = mmio_base;
- 	sst_dsp_mailbox_init(sst, (SKL_ADSP_SRAM0_BASE + SKL_ADSP_W0_STAT_SZ),
- 			SKL_ADSP_W0_UP_SZ, SKL_ADSP_SRAM1_BASE, SKL_ADSP_W1_SZ);
- 
--	INIT_LIST_HEAD(&sst->module_list);
--	sst->dsp_ops = dsp_ops;
- 	sst->fw_ops = skl_fw_ops;
- 
--	ret = skl_ipc_init(dev, skl);
--	if (ret)
--		return ret;
--
- 	skl->cores.count = 2;
--	skl->is_first_boot = true;
--
--	if (dsp)
--		*dsp = skl;
- 
--	return ret;
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(skl_sst_dsp_init);
- 
++Example:
++sound_card {
++	compatible = "audio-graph-card";
++	dais = <&sai1b_port>;
++};
++
++sai1: sai1@40015800 {
++	compatible = "st,stm32f4-sai";
++	#address-cells = <1>;
++	#size-cells = <1>;
++	ranges;
++	reg = <0x40015800 0x4>;
++	clocks = <&rcc 1 CLK_SAIQ_PDIV>, <&rcc 1 CLK_I2SQ_PDIV>;
++	clock-names = "x8k", "x11k";
++	interrupts = <87>;
++
++	sai1b: audio-controller@40015824 {
++		#sound-dai-cells = <0>;
++		compatible = "st,stm32-sai-sub-b";
++		reg = <0x40015824 0x1C>;
++		clocks = <&rcc 1 CLK_SAI2>;
++		clock-names = "sai_ck";
++		dmas = <&dma2 5 0 0x400 0x0>;
++		dma-names = "tx";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_sai1b>;
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			sai1b_port: port@0 {
++				reg = <0>;
++				cpu_endpoint: endpoint {
++					remote-endpoint = <&codec_endpoint>;
++					audio-graph-card,format = "i2s";
++					audio-graph-card,bitclock-master = <&codec_endpoint>;
++					audio-graph-card,frame-master = <&codec_endpoint>;
++				};
++			};
++		};
++	};
++};
++
++audio-codec {
++	codec_port: port {
++		codec_endpoint: endpoint {
++			remote-endpoint = <&cpu_endpoint>;
++		};
++	};
++};
 -- 
 2.11.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
