@@ -1,35 +1,54 @@
-From: Borislav Petkov <bp@suse.de>
-Subject: Re: [PATCH v1 8/8] ACPI: Use recently introduced uuid_le_cmp_p{p}()
- helpers
-Date: Thu, 27 Apr 2017 17:00:19 +0200
-Message-ID: <20170427150019.4r6so75xhk72xdgp@pd.tnic>
-References: <20170421144645.45189-1-andriy.shevchenko@linux.intel.com>
- <20170421144645.45189-8-andriy.shevchenko@linux.intel.com>
- <7721821.2dV0yqi2RQ@aspire.rjw.lan>
- <20170427124631.3fycg2jbs4ffhi45@pd.tnic>
- <1493298596.24567.233.camel@linux.intel.com>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ASoC: Intel: Skylake: use dev in dev_err
+	rather than skl pointer
+Date: Thu, 27 Apr 2017 16:13:15 +0100
+Message-ID: <20170427151315.19731-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-input-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1493298596.24567.233.camel@linux.intel.com>
-Sender: linux-input-owner@vger.kernel.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, Lukas Wunner <lukas@wunner.de>, Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Mika Westerberg <mika.westerberg@linux.intel.com>, alsa-devel@alsa-project.org, linux-input@vger.kernel.org, kvm@vger.kernel.org, devel@linuxdriverproject.org, linux-efi@vger.kernel.org, linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB48F2671F3
+ for <alsa-devel@alsa-project.org>; Thu, 27 Apr 2017 17:13:29 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Jayachandran B <jayachandran.b@intel.com>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>, Colin Ian King <colin.king@canonical.com>, Ramesh Babu <ramesh.babu@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, G Kranthi <gudishax.kranthikumar@intel.com>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 27, 2017 at 04:09:56PM +0300, Andy Shevchenko wrote:
-> Lukas pointed to this:
-> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=68725
+From: Colin Ian King <colin.king@canonical.com>
 
-Yap, the same thing.
+The dev_err message is dereferencing an uininitialized skl pointer
+which should be avoided. Don't use skl, use dev instead.
 
-Thanks.
+Detected by CoverityScan, CID#1432042 ("Uninitialized pointer read")
 
+Fixes: 9fe9c71192832 ("ASoC: Intel: Skylake: Move sst common initialization to a helper function")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/intel/skylake/bxt-sst.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
+index fde4bc0f35b0..f5e7dbb1ba39 100644
+--- a/sound/soc/intel/skylake/bxt-sst.c
++++ b/sound/soc/intel/skylake/bxt-sst.c
+@@ -564,7 +564,7 @@ int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+ 
+ 	ret = skl_sst_ctx_init(dev, irq, fw_name, dsp_ops, dsp, &skl_dev);
+ 	if (ret < 0) {
+-		dev_err(skl->dev, "%s: no device\n", __func__);
++		dev_err(dev, "%s: no device\n", __func__);
+ 		return ret;
+ 	}
+ 
 -- 
-Regards/Gruss,
-    Boris.
-
-SUSE Linux GmbH, GF: Felix Imendörffer, Jane Smithard, Graham Norton, HRB 21284 (AG Nürnberg)
--- 
+2.11.0
