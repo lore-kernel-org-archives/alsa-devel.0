@@ -1,97 +1,61 @@
-From: Olivier MOYSAN <olivier.moysan@st.com>
-Subject: Re: [PATCH 1/2] dt-bindings: Document STM32 I2S
-	bindings
-Date: Thu, 27 Apr 2017 15:57:51 +0000
-Message-ID: <7005b06f-457c-90f4-bdf1-bed75c565063@st.com>
-References: <1491493236-2574-2-git-send-email-olivier.moysan@st.com>
- <20170410194832.iivnkyejtywbe2c7@rob-hp-laptop>
- <20170411143250.3r7ys3rjshtxgaee@sirena.org.uk>
- <73caede5-ea6f-8b2b-2270-227f7ef31823@st.com>
- <20170411211040.htrcedus3c57fbed@sirena.org.uk>
- <86a179ad-7961-18f7-8050-25e0e584c77d@st.com>
- <20170412113251.nfyk5sw6c5pnpmwr@sirena.org.uk>
- <d886a9c7-ca46-f37a-0e82-6ed8d7a4e052@st.com>
- <20170412153831.r2urwvfseipfsrsi@sirena.org.uk>
- <a87748e4-21e7-f65a-5be1-fe4f60bdfbef@st.com>
- <20170426161553.oc5pozga53ttypyq@sirena.org.uk>
+From: ville.syrjala@linux.intel.com
+Subject: [PATCH v2 00/11] drm/i915: LPE audio runtime PM and
+	multipipe (v2)
+Date: Thu, 27 Apr 2017 19:02:19 +0300
+Message-ID: <20170427160231.13337-1-ville.syrjala@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 302EC2671F3
- for <alsa-devel@alsa-project.org>; Thu, 27 Apr 2017 17:57:55 +0200 (CEST)
-In-Reply-To: <20170426161553.oc5pozga53ttypyq@sirena.org.uk>
-Content-Language: en-US
-Content-ID: <B1BE832AE22B1047A525FF9178AE3688@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alexandre TORGUE <alexandre.torgue@st.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, Benjamin GAIGNARD <benjamin.gaignard@st.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: intel-gfx@lists.freedesktop.org
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Mark,
-
-On 04/26/2017 06:15 PM, Mark Brown wrote:
-> On Thu, Apr 13, 2017 at 08:01:34AM +0000, Olivier MOYSAN wrote:
->
->> 1) 2 static dais NOT exclusive
->> 	- dai tx
->> 	- dai rx
->> The IP exhibits a mode register, where you select mode TX, RX or FD.
->> There are 2 two options to manage this register.
->> option 1:
->> 	start first channel with mode RX or TX
->> 	when second channel is started, mode has to be changed to FD.
->> 	Transfers have to be stopped before changing configuration
->> 	registers, so this leads to cuts in audio stream.
->> option 2:
->> 	start a first channel with mode FD.
->> 	In this case, we may have unpredictable behavior for the stream
->> 	which is not already started. probably underrun/overrun.
->> So, this solution rises problem for full-duplex management.
->
->> 2) 3 static dais exclusive
->> 	- dai tx
->> 	- dai rx
->> 	- dai rx-tx (fd)
->> This is the current implementation.
->> The choice of the dai is done at probe time. It is provided by DT
->> through sound-dai parameter.
->> When dai fd is selected, after starting first stream, we assume that
->> second stream will be started. In this case we wait for second stream
->> to be available before enabling IP and starting transfers.
->
->> 3) 1 dynamic dai
->> 	- dai rx or tx or fd (according to dma conf in IP node)
->> Here the driver exposes only a single dai constructed from dma
->> configuration provided by IP DT node.
->> This allows to get ride of sound-dai parameter.
->
-> None of these options reflect how normal I2S controllers present
-> themselves in DT.  To repeat, you should present a single bidirectional
-> DAI for the single physical bidirectional I2S controller that your
-> hardware has.
->
-> If it's not possible to figure out a way to make the controller support
-> simultaneous playback and record with the two started independently then
-> the driver should just return an error if userspace tries to start the
-> second direction up.  This will severely limit the utility of the driver
-> as Linux generally treats playback and record independently but that's
-> going to apply just as much with any of the options involving multiple
-> DAIs or configuration in DT.  You might be able to do something with
-> feeding it dummy data I guess?
->
-
-Ok. I will implement a single bidirectional DAI in v2.
-
-Best regards
-Olivier
+RnJvbTogVmlsbGUgU3lyasOkbMOkIDx2aWxsZS5zeXJqYWxhQGxpbnV4LmludGVsLmNvbT4KCk9r
+YXksIGhlcmUncyB0aGUgc2Vjb25kIGF0dGVtcHQgYXQgZ2V0dGluZyBtdWx0aXBsZSBwaXBlcyBw
+bGF5aW5nIGJhY2sKYXVkaW8gb24gdGhlIFZMVi9DSFYgSERNSSBMUEUgYXVkaW8gZGV2aWNlLiBU
+aGUgbWFpbiBjaGFuZ2UgZnJvbSB2MSBpcwp0aGF0IG5vdyB0aGUgUENNIGRldmljZXMgYXJlIGFz
+c29jaWF0ZWQgd2l0aCBwb3J0cyBpbnN0ZWFkIG9mIHBpcGVzLApzbyB0aGUgYXVkaW8gZnJvbSBv
+bmUgZGV2aWNlIGFsd2F5cyBnZXRzIG91dHB1dCBvbiB0aGUgc2FtZSBkaXNwbGF5LgoKSSd2ZSBh
+bHNvIHRhY2tlZCBvbiB0aGUgYWxzYS1saWIgY29uZiB1cGRhdGUuIE5vIGNsdWUgd2hldGhlciBp
+dCdzCnJlYWxseSBjb3JyZWN0IG9yIG5vdCAodGhlIGNvbmZpZyBsYW5ndWFnZSBpc24ndCBhIGNs
+b3NlIGZyaWVuZApvZiBtaW5lKS4KCkJUVyBJIGRpZCBub3RpY2UgdGhhdCB3aXRoIExQRSBhdWRp
+byBhbGwgdGhlIGNvbnRyb2xzIHNheSBpZmFjZT1QQ00sCndoZXJlYXMgb24gSERBIGEgYnVuY2gg
+b2YgdGhlbSBzYXkgaWZhY2U9TUlYRVIuIE5vIGlkZWEgaWYgdGhhdCdzCk9LIG9yIG5vdCwganVz
+dCBzb21ldGhpbmcgSSBzcG90dGVkIHdoZW4gSSB3YXMgY29tcGFyaW5nIHRoZSByZXN1bHRzCndp
+dGggSERBLgoKRW50aXJlIHNlcmllcyBhdmFpbGFibGUgaGVyZToKZ2l0Oi8vZ2l0aHViLmNvbS92
+c3lyamFsYS9saW51eC5naXQgbHBlX2F1ZGlvX211bHRpcGlwZV8yCgpDYzogVGFrYXNoaSBJd2Fp
+IDx0aXdhaUBzdXNlLmRlPgpDYzogUGllcnJlLUxvdWlzIEJvc3NhcnQgPHBpZXJyZS1sb3Vpcy5i
+b3NzYXJ0QGxpbnV4LmludGVsLmNvbT4KClZpbGxlIFN5cmrDpGzDpCAoMTEpOgogIGRybS9pOTE1
+OiBGaXggcnVudGltZSBQTSBmb3IgTFBFIGF1ZGlvCiAgQUxTQTogeDg2OiBDbGVhciB0aGUgcGRh
+dGEubm90aWZ5X2xwZV9hdWRpbyBwb2ludGVyIGJlZm9yZSB0ZWFyZG93bgogIGRybS9pOTE1OiBT
+dG9wIHByZXRlbmRpbmcgdG8gbWFzay91bm1hc2sgTFBFIGF1ZGlvIGludGVycnVwdHMKICBkcm0v
+aTkxNTogUmVtb3ZlIHRoZSB1bnVzZWQgcGVuZGluZ19ub3RpZnkgZnJvbSBMUEUgcGxhdGZvcm0g
+ZGF0YQogIGRybS9pOTE1OiBSZXBsYWNlIHRtZHNfY2xvY2tfc3BlZWQgYW5kIGxpbmtfcmF0ZSB3
+aXRoIGp1c3QgbHNfY2xvY2sKICBkcm0vaTkxNTogUmVtb3ZlIGhkbWlfY29ubmVjdGVkIGZyb20g
+TFBFIGF1ZGlvIHBkYXRhCiAgZHJtL2k5MTU6IFJlb3JnYW5pemUgaW50ZWxfbHBlX2F1ZGlvX25v
+dGlmeSgpIGFyZ3VtZW50cwogIGRybS9pOTE1OiBDbGVhbiB1cCB0aGUgTFBFIGF1ZGlvIHBsYXRm
+b3JtIGRhdGEKICBBTFNBOiB4ODY6IFByZXBhcmUgTFBFIGF1ZGlvIGN0bHMgZm9yIG11bHRpcGxl
+IFBDTXMKICBBTFNBOiB4ODY6IFNwbGl0IHNuZF9pbnRlbGhhZCBpbnRvIGNhcmQgYW5kIFBDTSBz
+cGVjaWZpYyBzdHJ1Y3R1cmVzCiAgQUxTQTogeDg2OiBSZWdpc3RlciBtdWx0aXBsZSBQQ00gZGV2
+aWNlcyBmb3IgdGhlIExQRSBhdWRpbyBjYXJkCgogZHJpdmVycy9ncHUvZHJtL2k5MTUvaTkxNV9k
+cnYuaCAgICAgICAgfCAgIDQgKy0KIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2k5MTVfaXJxLmMgICAg
+ICAgIHwgIDE1ICstCiBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hdWRpby5jICAgICB8ICAx
+OSArLQogZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBlX2F1ZGlvLmMgfCAgOTkgKysrKy0t
+LS0tLQogaW5jbHVkZS9kcm0vaW50ZWxfbHBlX2F1ZGlvLmggICAgICAgICAgfCAgMjIgKy0tCiBz
+b3VuZC94ODYvaW50ZWxfaGRtaV9hdWRpby5jICAgICAgICAgICB8IDMyOCArKysrKysrKysrKysr
+KysrKysrKy0tLS0tLS0tLS0tLS0KIHNvdW5kL3g4Ni9pbnRlbF9oZG1pX2F1ZGlvLmggICAgICAg
+ICAgIHwgIDIwICstCiA3IGZpbGVzIGNoYW5nZWQsIDI3MSBpbnNlcnRpb25zKCspLCAyMzYgZGVs
+ZXRpb25zKC0pCgotLSAKMi4xMC4yCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVl
+ZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9pbnRlbC1nZngK
