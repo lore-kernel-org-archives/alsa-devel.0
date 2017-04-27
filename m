@@ -1,17 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ASoC: Intel: Skylake: use dev in dev_err
- rather than skl pointer
-Date: Fri, 28 Apr 2017 07:38:03 +0900
-Message-ID: <d89d9ed2-1526-a3fe-054a-f73be8528e5e@sakamocchi.jp>
-References: <20170427151315.19731-1-colin.king@canonical.com>
+Subject: Re: [PATCH 1/3] ASoC: Intel: Skylake: Fix
+	uninitialized pointer usage
+Date: Fri, 28 Apr 2017 07:46:27 +0900
+Message-ID: <e9ad51bf-2292-3cde-beca-4dd76cfe235b@sakamocchi.jp>
+References: <1493275882-27708-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 055A9266C0A
- for <alsa-devel@alsa-project.org>; Fri, 28 Apr 2017 00:38:05 +0200 (CEST)
-In-Reply-To: <20170427151315.19731-1-colin.king@canonical.com>
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id A31CC266C0A
+ for <alsa-devel@alsa-project.org>; Fri, 28 Apr 2017 00:46:30 +0200 (CEST)
+In-Reply-To: <1493275882-27708-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,26 +21,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Colin King <colin.king@canonical.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Jayachandran B <jayachandran.b@intel.com>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>, Ramesh Babu <ramesh.babu@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, G Kranthi <gudishax.kranthikumar@intel.com>, alsa-devel@alsa-project.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Dan Carpenter <dan.carpenter@oracle.com>, Colin King <colin.king@canonical.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Apr 28 2017 00:13, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Apr 27 2017 15:51, Vinod Koul wrote:
+> Due to recent code move, one instance dev_err() was passed a wrong
+> uninitialized pointer for the device, so fix it.
 > 
-> The dev_err message is dereferencing an uininitialized skl pointer
-> which should be avoided. Don't use skl, use dev instead.
+> sound/soc/intel/skylake/bxt-sst.c: In function 'bxt_sst_dsp_init':
+> sound/soc/intel/skylake/bxt-sst.c:567:14: warning: 'skl' may be used uninitialized in this function [-Wmaybe-uninitialized]
+>    dev_err(skl->dev, "%s: no device\n", __func__);
+>               ^
 > 
-> Detected by CoverityScan, CID#1432042 ("Uninitialized pointer read")
-> 
-> Fixes: 9fe9c71192832 ("ASoC: Intel: Skylake: Move sst common initialization to a helper function")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> Fixes: 9fe9c7119283 ("ASoC: Intel: Skylake: Move sst common initialization to a helper function")
+> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 > ---
 >  sound/soc/intel/skylake/bxt-sst.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+
+Dan and Colin were also going to fix this apparent bug. It's nice to add
+their contribution, I think.
+
+Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
+Suggested-by: Colin King <colin.king@canonical.com>
+
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-April/120225.html
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-April/120242.html
+
 > diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
 > index fde4bc0f35b0..f5e7dbb1ba39 100644
 > --- a/sound/soc/intel/skylake/bxt-sst.c
@@ -53,13 +64,6 @@ On Apr 28 2017 00:13, Colin King wrote:
 > +		dev_err(dev, "%s: no device\n", __func__);
 >  		return ret;
 >  	}
-
-Thanks for posting this patch, however Vinod already posted the same
-fix. Please wait for merging it and verify again:
-
-[alsa-devel] [PATCH 1/3] ASoC: Intel: Skylake: Fix uninitialized pointer
-usage
-http://mailman.alsa-project.org/pipermail/alsa-devel/2017-April/120214.html
 
 
 Regards
