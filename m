@@ -1,50 +1,91 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ASoC: Intel: Skylake: fix uninitialized pointer use
-Date: Thu, 27 Apr 2017 20:13:04 +0900
-Message-ID: <7732b5a1-965d-7056-f4ef-ff4b58ae15f7@sakamocchi.jp>
-References: <20170427110014.2316664-1-arnd@arndb.de>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 1/2] ASoC: codec: wm9860: avoid
+	maybe-uninitialized warning
+Date: Thu, 27 Apr 2017 13:53:42 +0200
+Message-ID: <CAK8P3a2=+iAFqDo0gNccZH=wAw3uNXCMXAMORunHd9xgJ+UbjQ@mail.gmail.com>
+References: <1493212192-7930-1-git-send-email-daniel.baluta@nxp.com>
+ <1493212192-7930-2-git-send-email-daniel.baluta@nxp.com>
+ <CAK8P3a1ZGTyjhAzy4h2D10+-dFNi6o_qe0pY9Wx5wYXZK6ObDw@mail.gmail.com>
+ <1493290972.18400.40.camel@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170427110014.2316664-1-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Jayachandran B <jayachandran.b@intel.com>, linux-kernel@vger.kernel.org, Ramesh Babu <ramesh.babu@intel.com>, G Kranthi <gudishax.kranthikumar@intel.com>, Senthilnathan Veppur <senthilnathanx.veppur@intel.com>, Jeeja KP <jeeja.kp@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f67.google.com (mail-oi0-f67.google.com
+ [209.85.218.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id A9935266483
+ for <alsa-devel@alsa-project.org>; Thu, 27 Apr 2017 13:53:44 +0200 (CEST)
+Received: by mail-oi0-f67.google.com with SMTP id a3so6562060oii.3
+ for <alsa-devel@alsa-project.org>; Thu, 27 Apr 2017 04:53:44 -0700 (PDT)
+In-Reply-To: <1493290972.18400.40.camel@nxp.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "patches@opensource.wolfsonmicro.com" <patches@opensource.wolfsonmicro.com>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "ckeepax@opensource.wolfsonmicro.com" <ckeepax@opensource.wolfsonmicro.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Apr 27 2017 19:59, Arnd Bergmann wrote:
-> The error handling in bxt_sst_dsp_init() got changed in a way that
-> it now derefences an uninitialized pointer when printing a warning
-> about the device not being found:
+On Thu, Apr 27, 2017 at 1:02 PM, Daniel Baluta <daniel.baluta@nxp.com> wrote:
+> On Jo, 2017-04-27 at 12:07 +0200, Arnd Bergmann wrote:
+>> On Wed, Apr 26, 2017 at 3:09 PM, Daniel Baluta <daniel.baluta@nxp.com
+>> > wrote:
+>> >
+>> > The new PLL configuration code triggers a harmless warning:
+>> >
+>> > sound/soc/codecs/wm8960.c: In function 'wm8960_configure_clocking':
+>> > sound/soc/codecs/wm8960.c:735:3: error: 'best_freq_out' may be used
+>> > uninitialized in this function [-Werror=maybe-uninitialized]
+>> >    wm8960_set_pll(codec, freq_in, best_freq_out);
+>> >    ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> > sound/soc/codecs/wm8960.c:699:12: note: 'best_freq_out' was
+>> > declared
+>> > here
+>> >
+>> > Fix this by reworking the code such that:
+>> >
+>> > 1) When there is no PLL freq available return -EINVAL and make
+>> > sure *bclk_idx, *dac_idx, *sysclk_idx are initialized with
+>> > invalid values.
+>> >
+>> > 2) When there is a PLL freq available initialize *bclk_idx,
+>> > *dac_idx and *sysclk_idx with correct values and immediately
+>> > return the freq available.
+>> >
+>> > Fixes: 84fdc00d519f ("ASoC: codec: wm9860: Refactor PLL out freq
+>> > search")
+>> > Fixes: 303e8954af8d ("ASoC: codec: wm8960: Stop when a matching PLL
+>> > freq is found")
+>> > Suggested-by: Arnd Bergmann <arnd@arndb.de>
+>> > Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+>> Looks good to me. Let me know if you need me to test this more
+>> thoroughly
+>> with randconfig builds, otherwise I'll assume it's fine and it will
+>> get tested once
+>> it shows up in linux-next.
+>>
+>> Acked-by: Arnd Bergmann <arnd@arndb.de>
+>>
 >
-> sound/soc/intel/skylake/bxt-sst.c: In function 'bxt_sst_dsp_init':
-> sound/soc/intel/skylake/bxt-sst.c:567:14: error: 'skl' may be used uninitialized in this function [-Werror=maybe-uninitialized]
+> Hi Arnd,
 >
-> As we do have a valid device pointer available at the call site,
-> let's use that instead.
+> Thanks for doing this. I wouldn't expect randconfigs builds to show
+> other issues.
 >
-> Fixes: 9fe9c7119283 ("ASoC: Intel: Skylake: Move sst common initialization to a helper function")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  sound/soc/intel/skylake/bxt-sst.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-
-> diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
-> index fde4bc0f35b0..f5e7dbb1ba39 100644
-> --- a/sound/soc/intel/skylake/bxt-sst.c
-> +++ b/sound/soc/intel/skylake/bxt-sst.c
-> @@ -564,7 +564,7 @@ int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
+> Anyhow, would like to see if with your compiler there are no warnings
+> for the second patch of the series:
 >
->  	ret = skl_sst_ctx_init(dev, irq, fw_name, dsp_ops, dsp, &skl_dev);
->  	if (ret < 0) {
-> -		dev_err(skl->dev, "%s: no device\n", __func__);
-> +		dev_err(dev, "%s: no device\n", __func__);
->  		return ret;
->  	}
+> http://mailman.alsa-project.org/pipermail/alsa-devel/2017-April/120177.html
 
-Regards
+I've applied both patches to my randconfig tree now. The configuration
+that first showed the problem works fine now, but with -Wmaybe-uninitialized
+warnings I try to do additional randconfig tests as sometimes the warnings
+come back depending on some other inlining decisions or optimization
+flags.
 
-Takashi Sakamoto
+         Arnd
