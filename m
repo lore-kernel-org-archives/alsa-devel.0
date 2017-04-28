@@ -1,20 +1,15 @@
-From: SF Markus Elfring <elfring@users.sourceforge.net>
-Subject: Re: [PATCH 1/3] ASoC: simple-card: Use devm_kcalloc()
- in asoc_simple_card_parse_aux_devs()
-Date: Fri, 28 Apr 2017 12:48:15 +0200
-Message-ID: <49bbbcac-f970-bbb9-c66b-c9c25229cc6a@users.sourceforge.net>
-References: <8b5e37d1-17c5-4551-801f-ca7939d5efd7@users.sourceforge.net>
- <8c8c6979-0368-9ef5-2e10-57199f0bc03e@users.sourceforge.net>
- <20170428085735.i7xpxph24t5v5f5q@piout.net>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [bug report] ASoC: sti: Add CPU DAI driver for playback
+Date: Fri, 28 Apr 2017 14:28:41 +0300
+Message-ID: <20170428112841.ictuhyfhzwvcmlhv@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.web.de (mout.web.de [212.227.15.14])
- by alsa0.perex.cz (Postfix) with ESMTP id 900EB266860
- for <alsa-devel@alsa-project.org>; Fri, 28 Apr 2017 12:48:35 +0200 (CEST)
-In-Reply-To: <20170428085735.i7xpxph24t5v5f5q@piout.net>
-Content-Language: en-GB
+Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4989C266860
+ for <alsa-devel@alsa-project.org>; Fri, 28 Apr 2017 13:28:52 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,28 +19,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Cc: Nikita Yushchenko <nikita.yoush@cogentembedded.com>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, LKML <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+To: arnaud.pouliquen@st.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Pj4gQEAgLTMzNCw4ICszMzQsOCBAQCBzdGF0aWMgaW50IGFzb2Nfc2ltcGxlX2NhcmRfcGFyc2Vf
-YXV4X2RldnMoc3RydWN0IGRldmljZV9ub2RlICpub2RlLAo+PiAgCWlmIChuIDw9IDApCj4+ICAJ
-CXJldHVybiAtRUlOVkFMOwo+PiAgCj4+IC0JY2FyZC0+YXV4X2RldiA9IGRldm1fa3phbGxvYyhk
-ZXYsCj4+IC0JCQluICogc2l6ZW9mKCpjYXJkLT5hdXhfZGV2KSwgR0ZQX0tFUk5FTCk7Cj4+ICsJ
-Y2FyZC0+YXV4X2RldiA9IGRldm1fa2NhbGxvYyhkZXYsIG4sIHNpemVvZigqY2FyZC0+YXV4X2Rl
-diksCj4+ICsJCQkJICAgICBHRlBfS0VSTkVMKTsKPiAKPiBEbyB5b3UgcmVhbGl6ZSB0aGF0IHRo
-aXMgY2hhbmdlIGhhcyBhYnNvbHV0ZWx5IG5vIHZhbHVlCgpXZSBjYW4gaGF2ZSBkaWZmZXJlbnQg
-c29mdHdhcmUgZGV2ZWxvcG1lbnQgb3BpbmlvbnMgYWJvdXQgc3VjaCBhIHNvdXJjZSBjb2RlIGFk
-anVzdG1lbnQuCkRvZXMgaXQgaW1wcm92ZSB0aGUgaW5kZW50YXRpb24gZm9yIHRoZSBwYXJhbWV0
-ZXJzIHdoaWNoIGFyZSBwYXNzZWQgdG8gdGhpcyBmdW5jdGlvbiBjYWxsPwoKCj4gYW5kIGp1c3Qg
-bWFrZXMgdGhlIGNvZGUgc2xvd2VyIChvbmUgbW9yZSB0ZXN0IGluIHRoZSBhbGxvY2F0aW9uIHBh
-dGgpPwoKRG8gd2Ugc3R1bWJsZSBvbiBhIHRhcmdldCBjb25mbGljdCBmb3IgdGhlIHNob3duIGlt
-cGxlbWVudGF0aW9uIGRldGFpbD8KCkRvZXMgdGhlIHByZXZpb3VzIHNpemUgY2FsY3VsYXRpb24g
-Y29udGFpbiB0aGUgZ2VuZXJhbCBwb3NzaWJpbGl0eSBmb3IKYW4gaW50ZWdlciBvdmVyZmxvdz8K
-aHR0cHM6Ly9jd2UubWl0cmUub3JnL2RhdGEvZGVmaW5pdGlvbnMvMTkwLmh0bWwKClRoZSB2YWx1
-ZSBmb3IgdGhlIHZhcmlhYmxlIOKAnGxlbuKAnSAoYW5kIGFsc28g4oCcbuKAnSkgbWlnaHQgYmUg
-c21hbGwgZW5vdWdoIHNvIHRoYXQKdGhlIGNvbXB1dGVkIHZhbHVlIHdpbGwgdXN1YWxseSBub3Qg
-ZXhjZWVkIHRoZSBkYXRhIHR5cGUgbGltaXQgaW4gdGhpcyB1c2UgY2FzZS4KClJlZ2FyZHMsCk1h
-cmt1cwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
-LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hello Arnaud Pouliquen,
+
+The patch 76c2145ded6b: "ASoC: sti: Add CPU DAI driver for playback"
+from Jun 22, 2015, leads to the following static checker warning:
+
+    sound/soc/sti/uniperif_player.c:1077 uni_player_init()
+    warn: unused return: ret = PTR_ERR()
+
+sound/soc/sti/uniperif_player.c
+  1047  int uni_player_init(struct platform_device *pdev,
+  1048                      struct uniperif *player)
+  1049  {
+  1050          int ret = 0;
+  1051  
+  1052          player->dev = &pdev->dev;
+  1053          player->state = UNIPERIF_STATE_STOPPED;
+  1054          player->dai_ops = &uni_player_dai_ops;
+  1055  
+  1056          /* Get PCM_CLK_SEL & PCMP_VALID_SEL from audio-glue-ctrl SoC reg */
+  1057          ret = uni_player_parse_dt_audio_glue(pdev, player);
+  1058  
+  1059          if (ret < 0) {
+  1060                  dev_err(player->dev, "Failed to parse DeviceTree\n");
+  1061                  return ret;
+  1062          }
+  1063  
+  1064          /* Underflow recovery is only supported on later ip revisions */
+  1065          if (player->ver >= SND_ST_UNIPERIF_VERSION_UNI_PLR_TOP_1_0)
+  1066                  player->underflow_enabled = 1;
+  1067  
+  1068          if (UNIPERIF_TYPE_IS_TDM(player))
+  1069                  player->hw = &uni_tdm_hw;
+  1070          else
+  1071                  player->hw = &uni_player_pcm_hw;
+  1072  
+  1073          /* Get uniperif resource */
+  1074          player->clk = of_clk_get(pdev->dev.of_node, 0);
+  1075          if (IS_ERR(player->clk)) {
+  1076                  dev_err(player->dev, "Failed to get clock\n");
+  1077                  ret = PTR_ERR(player->clk);
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+This should probably be "return PTR_ERR(player->clk);?  Can we run
+without a clk?
+
+  1078          }
+  1079  
+  1080          /* Select the frequency synthesizer clock */
+  1081          if (player->clk_sel) {
+  1082                  ret = regmap_field_write(player->clk_sel, 1);
+  1083                  if (ret) {
+  1084                          dev_err(player->dev,
+  1085                                  "%s: Failed to select freq synth clock\n",
+  1086                                  __func__);
+  1087                          return ret;
+  1088                  }
+  1089          }
+
+regards,
+dan carpenter
