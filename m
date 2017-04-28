@@ -1,60 +1,107 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: snd_soc_set_dmi_name will use
- DMI_SYS_VENDOR if available
-Date: Fri, 28 Apr 2017 11:40:16 -0500
-Message-ID: <79ac7c54-7952-56dc-05f8-5f5a81c38e09@linux.intel.com>
-References: <1493396387-15884-1-git-send-email-mengdong.lin@linux.intel.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH RFC 5/7] ASoC: Add Odroid sound DT bindings documentation
+Date: Fri, 28 Apr 2017 12:03:36 -0500
+Message-ID: <20170428170335.7zoovrcs6v22x3lz@rob-hp-laptop>
+References: <1492795191-31298-1-git-send-email-s.nawrocki@samsung.com>
+ <CGME20170421172040epcas5p2ee7191a899c52ea3f077837dc2e865ca@epcas5p2.samsung.com>
+ <1492795191-31298-6-git-send-email-s.nawrocki@samsung.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id ADD09266A53
- for <alsa-devel@alsa-project.org>; Fri, 28 Apr 2017 18:40:19 +0200 (CEST)
-In-Reply-To: <1493396387-15884-1-git-send-email-mengdong.lin@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: mengdong.lin@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, pierre-louis.bossart@intel.com, mengdong.lin@intel.com
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-samsung-soc-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1492795191-31298-6-git-send-email-s.nawrocki@samsung.com>
+Sender: linux-samsung-soc-owner@vger.kernel.org
+To: Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, inki.dae@samsung.com, sw0312.kim@samsung.com, cw00.choi@samsung.com, javier@osg.samsung.com, krzk@kernel.org, jy0922.shim@samsung.com, broonie@kernel.org, b.zolnierkie@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
-On 4/28/17 11:19 AM, mengdong.lin@linux.intel.com wrote:
-> From: Mengdong Lin <mengdong.lin@linux.intel.com>
->
-> This fix is based on Daniel Drake's suggestion: most x86 machines have a
-> meaningfull DMI_SYS_VENDOR rather than DMI_BOARD_VENDOR.
->
-> So snd_soc_set_dmi_name will try to get vendor name from DMI_SYS_VENDOR
-> at first, and if that's null, then use DMI_BOARD_VENDOR.
->
-> Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
->
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index 525f2f3..45f0a34 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -1974,7 +1974,9 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
->  		return 0; /* long name already set by driver or from DMI */
->
->  	/* make up dmi long name as: vendor.product.version.board */
-> -	vendor = dmi_get_system_info(DMI_BOARD_VENDOR);
-> +	vendor = dmi_get_system_info(DMI_SYS_VENDOR);
-> +	if (!vendor)
-> +		vendor = dmi_get_system_info(DMI_BOARD_VENDOR);
+On Fri, Apr 21, 2017 at 07:19:49PM +0200, Sylwester Nawrocki wrote:
+> This patch adds DT binding documentation for Odroid XU3/4
+> sound subsystem.
+> 
+> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> ---
+>  .../devicetree/bindings/sound/samsung,odroid.txt   | 57 ++++++++++++++++++++++
+>  1 file changed, 57 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/samsung,odroid.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/samsung,odroid.txt b/Documentation/devicetree/bindings/sound/samsung,odroid.txt
+> new file mode 100644
+> index 0000000..c1ac70c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/samsung,odroid.txt
+> @@ -0,0 +1,57 @@
+> +Samsung Exynos Odroid XU3/XU4 audio complex with MAX98090 codec
+> +
+> +Required properties:
+> +
+> + - compatible - "samsung,odroidxu3-audio" - for Odroid XU3 board,
+> +		"samsung,odroidxu4-audio" - for Odroid XU4 board
+> + - model - the user-visible name of this sound complex
 
-We should also test all of vendor.product.version.board fields for "(To 
-be filled by OEM)" and "Default String" and limit each field to 20 
-characters if you want to stick with 80 total (or a smarter rule that 
-does not truncate a field if there was room saved by the others)
+ASoC will support "label" soon (see graph support). Use that instead.
 
->  	if (!vendor) {
->  		dev_warn(card->dev, "ASoC: no DMI vendor name!\n");
->  		return 0;
->
+> + - 'cpu' subnode with a 'sound-dai' property containing the phandle of the I2S
+> +    controller
+> + - 'codec' subnode with a 'sound-dai' property containing list of phandles
+> +    to the CODEC nodes, first entry must be corresponding to the MAX98090
+> +    CODEC and the second entry must be the phandle of the HDMI IP block node
+
+These are not properties, so move them to a sub-node section.
+
+> + - clocks - should contain entries matching clock names in the clock-names
+> +    property
+> + - clock-names - should contain following entries:
+> +    - "epll" - indicating the EPLL output clock
+> +    - "i2s_rclk" - indicating the RCLK (root) clock of the I2S0 controller
+
+At least the 2nd one should be in the i2s node. This node isn't really a 
+h/w block, so it shouldn't have clocks IMO.
+
+> + - samsung,audio-widgets - this property specifies off-codec audio elements
+> +   like headphones or speakers, for details see widgets.txt
+> + - samsung,audio-routing - a list of the connections between audio
+> +   components;  each entry is a pair of strings, the first being the
+> +   connection's sink, the second being the connection's source;
+> +   valid names for sources and sinks are the MAX98090's pins (as
+> +   documented in its binding), and the jacks on the board
+> +
+> +   For Odroid X2:
+> +     "Headphone Jack", "Mic Jack", "DMIC"
+> +
+> +   For Odroid U3, XU3:
+> +     "Headphone Jack", "Speakers"
+> +
+> +   For Odroid XU4:
+> +     no entries
+> +
+> +Example:
+> +
+> +sound {
+> +	compatible = "samsung,odroidxu3-audio";
+
+> +	samsung,cpu-dai = <&i2s0>;
+> +	samsung,codec-dai = <&max98090>;
+
+Not documented. Nor needed?
+
+> +	model = "Odroid-XU3";
+> +	samsung,audio-routing =
+> +		"Headphone Jack", "HPL",
+> +		"Headphone Jack", "HPR",
+> +		"IN1", "Mic Jack",
+> +		"Mic Jack", "MICBIAS";
+> +
+> +	clocks = <&clock CLK_FOUT_EPLL>, <&i2s0 CLK_I2S_RCLK_SRC>;
+> +	clock-names = "epll", "sclk_i2s";
+> +
+> +	cpu {
+> +		sound-dai = <&i2s0 0>;
+> +	};
+> +	codec {
+> +		sound-dai = <&hdmi>, <&max98090>;
+> +	};
+> +};
+> -- 
+> 1.9.1
+> 
