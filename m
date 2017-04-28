@@ -1,18 +1,22 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [PATCH] ASoC: sti: Fix error handling if
-	of_clk_get() fails
-Date: Fri, 28 Apr 2017 15:45:51 +0200
-Message-ID: <27a6c24a-de05-0911-2095-107795d7d506@st.com>
-References: <20170428132210.jvjrltku25sepivw@mwanda>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: Re: snd_soc_set_dmi_name - Shouldn't it use SYS_VENDOR?
+Date: Fri, 28 Apr 2017 15:02:33 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F88250258C@SHSMSX103.ccr.corp.intel.com>
+References: <CAD8Lp454-BRKu7GZxpbO+4qgFfSTF0DviUcaUDtgNOVrzb2jLw@mail.gmail.com>
+ <5aa36e3b-49f9-d7f6-df58-18dcfcda08e5@linux.intel.com>
+ <CAD8Lp44uqQW9+V_ZgB4LLXa8WFb+=CX8hT8PmWbZEGFhZGTvBw@mail.gmail.com>
+ <7dbec345-e058-18ca-b4b3-e071fbc08fb0@linux.intel.com>
+ <CAD8Lp47u3ERC_pn4ScJ6DQZ9HOuDcUZ0zM4fEQ99c3EVzP_YXA@mail.gmail.com>
+ <1493375701.2540.53.camel@loki>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id E083F266A53
- for <alsa-devel@alsa-project.org>; Fri, 28 Apr 2017 15:45:54 +0200 (CEST)
-In-Reply-To: <20170428132210.jvjrltku25sepivw@mwanda>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 78624266A53
+ for <alsa-devel@alsa-project.org>; Fri, 28 Apr 2017 17:02:48 +0200 (CEST)
+In-Reply-To: <1493375701.2540.53.camel@loki>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,36 +26,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Wei Yongjun <weiyongjun1@huawei.com>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Daniel Drake <drake@endlessm.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Dan,
-
-Acked-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
-
-Thanks!
-
-Arnaud
-
-On 04/28/2017 03:22 PM, Dan Carpenter wrote:
-> We intended to return here.  The current code has a static checker
-> warning because we set "ret" but don't use it.
-> 
-> Fixes: 76c2145ded6b ("ASoC: sti: Add CPU DAI driver for playback")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> 
-> diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
-> index d7e8dd46d2cc..d8b6936e544e 100644
-> --- a/sound/soc/sti/uniperif_player.c
-> +++ b/sound/soc/sti/uniperif_player.c
-> @@ -1074,7 +1074,7 @@ int uni_player_init(struct platform_device *pdev,
->  	player->clk = of_clk_get(pdev->dev.of_node, 0);
->  	if (IS_ERR(player->clk)) {
->  		dev_err(player->dev, "Failed to get clock\n");
-> -		ret = PTR_ERR(player->clk);
-> +		return PTR_ERR(player->clk);
->  	}
->  
->  	/* Select the frequency synthesizer clock */
-> 
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBMaWFtIEdpcmR3b29kIFttYWls
+dG86bGlhbS5yLmdpcmR3b29kQGxpbnV4LmludGVsLmNvbV0NCj4gU2VudDogRnJpZGF5LCBBcHJp
+bCAyOCwgMjAxNyA2OjM1IFBNDQo+IFRvOiBEYW5pZWwgRHJha2UgPGRyYWtlQGVuZGxlc3NtLmNv
+bT4NCj4gQ2M6IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IDxwaWVycmUtbG91aXMuYm9zc2FydEBsaW51
+eC5pbnRlbC5jb20+OyBhbHNhLQ0KPiBkZXZlbEBhbHNhLXByb2plY3Qub3JnOyBMaW4sIE1lbmdk
+b25nIDxtZW5nZG9uZy5saW5AaW50ZWwuY29tPg0KPiBTdWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxd
+IHNuZF9zb2Nfc2V0X2RtaV9uYW1lIC0gU2hvdWxkbid0IGl0IHVzZQ0KPiBTWVNfVkVORE9SPw0K
+PiANCj4gT24gVGh1LCAyMDE3LTA0LTI3IGF0IDE1OjAyIC0wNjAwLCBEYW5pZWwgRHJha2Ugd3Jv
+dGU6DQo+ID4gT24gVGh1LCBBcHIgMjcsIDIwMTcgYXQgMjozMiBQTSwgUGllcnJlLUxvdWlzIEJv
+c3NhcnQNCj4gPiA8cGllcnJlLWxvdWlzLmJvc3NhcnRAbGludXguaW50ZWwuY29tPiB3cm90ZToN
+Cj4gPiA+IFdoaWxlIGluIGdlbmVyYWwgRE1JX1NZU19WRU5ET1IgaXMgY29tbW9ubHkgdXNlZCwg
+dGhlcmUgYXJlDQo+ID4gPiBleGNlcHRpb25zIHRvIHRoZSBydWxlLCBzdWNoIGFzIHRoZSB2ZXJ5
+IG1hY2hpbmUgSSBhbSB3b3JraW5nIG9uIGF0DQo+ID4gPiB0aGUgbW9tZW50IHdoaWNoIGRvZXMg
+aGF2ZSBhbnkgdXNlZnVsIERNSV9TWVNfVkVORE9SIGluZm9ybWF0aW9uDQo+ID4gPiAoc2VlIGJl
+bG93KSBNZW5nZG9uZyBtYXkgYmUgYWJsZSB0byBjb21tZW50IG9uIHdoeSB3ZSB0b29rIHRoaXMN
+Cj4gZGlyZWN0aW9uLg0KPiA+DQo+IA0KPiBJIHRoaW5rIGl0IHdhcyBwcm9iYWJseSBkdWUgdG8g
+b3VyIGxpbWl0ZWQgbnVtYmVyIG9mIHRlc3QgbWFjaGluZXMgYWxsDQo+IHJlcG9ydGluZyBiZXR0
+ZXIgaW5mbyB2aWEgRE1JX0JPQVJEX1ZFTkRPUi4NCj4gDQo+ID4gSW4gYSBETUkgZGF0YWJhc2Ug
+b2YgMTEzIFBDIG1vZGVscyB0aGF0IHdlIGhhdmUgd29ya2VkIHdpdGggaGVyZToNCj4gPg0KPiA+
+IDExMiBoYXZlIGNvcnJlY3QvbWVhbmluZ2Z1bCBzeXNfdmVuZG9yLCAxIGlzIHVzZWxlc3MgKFRv
+IGJlIGZpbGxlZCBieQ0KPiA+IE9FTSkNCj4gPiAxMDYgaGF2ZSBjb3JyZWN0IGJvYXJkX3ZlbmRv
+ciwgNyBoYXZlIGluY29ycmVjdCBvciB1c2VsZXNzIHZhbHVlcw0KPiA+DQo+ID4gQW5kIGF3a3dh
+cmRseSB0aGUgb25lIHN5c3RlbSB0aGF0IEknZCBsaWtlIHRvIG1hdGNoIGluIFVDTSBydWxlcyBo
+ZXJlDQo+ID4gaGFzIGNvcnJlY3Qgc3lzX3ZlbmRvciBidXQgYmFkIGJvYXJkX3ZlbmRvci4NCj4g
+Pg0KPiANCj4gU28gZ2l2ZW4geW91ciBsYXJnZXIgZGF0YWJhc2UgaXMgc2hvd2luZyBiZXR0ZXIg
+cmVzdWx0cyBmb3IgRE1JX1NZU19WRU5ET1INCj4gaXQgbWF5IGJlIGJlc3QgdG8gdHJ5IHRoaXMg
+Zmlyc3QgYW5kIGlmIHRoYXQncyBOVUxMIHRoZW4gdXNlDQo+IERNSV9CT0FSRF9WRU5ET1IuDQoN
+ClllcywgaXTigJlzIGJldHRlciB0byBvbmx5IHVzZSBvbmUgbmFtZS4gT3RoZXJ3aXNlLCBpdCdz
+IHBvc3NpYmxlIHRvIGV4Y2VlZCA4MCBjaGFyYWN0ZXJzIGxpbWl0IGZvciB0aGUgY2FyZCBsb25n
+IG5hbWUgc2luY2Ugc29tZXRpbWVzIERNSSBmaWVsZHMgY2FuIGJlIGxvbmcuDQoNCj4gDQo+IFdv
+dWxkIHlvdSBjYXJlIHRvIHN1Ym1pdCBhIHBhdGNoID8gb3IgTWVuZ2RvbmcgPyAgU29ycnksIEkg
+d29udCBiZSBhYmxlIHRvDQo+IGdldCB0byB0aGlzIGZvciBhIHdlZWsgZHVlIHRvIHNvbWUgdHJh
+dmVsLg0KPiANCg0KSSB3aWxsIGZpeCB0aGlzIGVhcmx5IG5leHQgd2VlayBhZnRlciBkb3VibGUg
+Y2hlY2tpbmcgbXkgbWFjaGluZXMgb24gaGFuZC4gIA0KRGFuaWVsJ3MgZGF0YWJhc2UgaXMgbXVj
+aCBsYXJnZXIgdGhhbiBteSB0ZXN0IHNldCBhbmQgc28gd2UgbmVlZCB0byBzdXBwb3J0IDotKQ0K
+DQpUaGFua3MNCk1lbmdkb25nDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
+dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
+c2EtZGV2ZWwK
