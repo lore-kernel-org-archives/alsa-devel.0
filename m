@@ -1,54 +1,81 @@
-From: Viktor Radnai <viktor.radnai@gmail.com>
-Subject: Patch for Digidesign Mbox 2 (set sample rate)
-Date: Fri, 28 Apr 2017 21:36:09 +0100
-Message-ID: <CANx-tGgQ59u==FL-yAvR6QRZWZp7LNgU4Qaf6EQ45Ae8t-=VWw@mail.gmail.com>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v3 1/2] ASoC: stm32: add bindings for SAI
+Date: Fri, 28 Apr 2017 15:53:58 -0500
+Message-ID: <20170428205358.fxjqaki44xqim4ta@rob-hp-laptop>
+References: <1491837596-2924-1-git-send-email-olivier.moysan@st.com>
+ <1491837596-2924-2-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f172.google.com (mail-io0-f172.google.com
- [209.85.223.172])
- by alsa0.perex.cz (Postfix) with ESMTP id B52A22674A8
- for <alsa-devel@alsa-project.org>; Fri, 28 Apr 2017 22:36:11 +0200 (CEST)
-Received: by mail-io0-f172.google.com with SMTP id p80so77121881iop.3
- for <alsa-devel@alsa-project.org>; Fri, 28 Apr 2017 13:36:11 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1491837596-2924-2-git-send-email-olivier.moysan-qxv4g6HH51o@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alexandre.torgue-qxv4g6HH51o@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-F5mvAk5X5gdBDgjK7y7TUQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org, benjamin.gaignard-qxv4g6HH51o@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi there,
+On Mon, Apr 10, 2017 at 05:19:55PM +0200, olivier moysan wrote:
+> This patch adds documentation of device tree bindings for the
+> STM32 SAI ASoC driver.
+> 
+> Signed-off-by: olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
+> ---
+>  .../devicetree/bindings/sound/st,stm32-sai.txt     | 89 ++++++++++++++++++++++
+>  1 file changed, 89 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-sai.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.txt b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
+> new file mode 100644
+> index 0000000..c59a3d7
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
+> @@ -0,0 +1,89 @@
+> +STMicroelectronics STM32 Serial Audio Interface (SAI).
 
-I have recently bought a Digidesign Mbox 2 Mini and found the lack of
-support for 44100Hz sample rate in the driver limiting (the sample rate was
-hard-set to 48000Hz by the original author even though the device supports
-it, because he couldn't get the frame rate switching to work reliably).
+[...]
 
-I had a go at hacking the driver and came up with the following patch which
-appears to work on the MBox 2 Mini:
-https://pastebin.com/kzzTDj9T
+> +	sai1b: audio-controller@40015824 {
+> +		#sound-dai-cells = <0>;
+> +		compatible = "st,stm32-sai-sub-b";
+> +		reg = <0x40015824 0x1C>;
+> +		clocks = <&rcc 1 CLK_SAI2>;
+> +		clock-names = "sai_ck";
+> +		dmas = <&dma2 5 0 0x400 0x0>;
+> +		dma-names = "tx";
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&pinctrl_sai1b>;
+> +
+> +		ports {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +
+> +			sai1b_port: port@0 {
+> +				reg = <0>;
+> +				cpu_endpoint: endpoint {
+> +					remote-endpoint = <&codec_endpoint>;
+> +					audio-graph-card,format = "i2s";
+> +					audio-graph-card,bitclock-master = <&codec_endpoint>;
+> +					audio-graph-card,frame-master = <&codec_endpoint>;
 
-I have built and tested this with Linux 4.8.15 without any realtime
-patches. I am planning to pick up a "full size" Mbox 2 as well, in the
-meantime if anyone on the list owns one I would appreciate if you could
-test this and let me know the result. There is a possibility that it will
-not work without the "magic" init sequence that I have removed because it
-does not look like it's needed on the Mini. Although I would be a bit
-surprised because the two devices are apparently identical to the point
-that the Mini allows the use of it's physically nonexistent features.
+These property names are wrong.
 
-Once someone could confirm that this works, I would like to get it merged.
-This is my first attempt at submitting a patch for any Linux device driver
-so please let me know if I need to do anything else :)
-
-Cheers,
-Vik
--- 
-My other sig is hilarious
+> +				};
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +audio-codec {
+> +	codec_port: port {
+> +		codec_endpoint: endpoint {
+> +			remote-endpoint = <&cpu_endpoint>;
+> +		};
+> +	};
+> +};
+> -- 
+> 1.9.1
+> 
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
