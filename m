@@ -1,107 +1,128 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH RFC 5/7] ASoC: Add Odroid sound DT bindings documentation
-Date: Fri, 28 Apr 2017 12:03:36 -0500
-Message-ID: <20170428170335.7zoovrcs6v22x3lz@rob-hp-laptop>
-References: <1492795191-31298-1-git-send-email-s.nawrocki@samsung.com>
- <CGME20170421172040epcas5p2ee7191a899c52ea3f077837dc2e865ca@epcas5p2.samsung.com>
- <1492795191-31298-6-git-send-email-s.nawrocki@samsung.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v2 00/11] drm/i915: LPE audio
+ runtime PM and multipipe (v2)
+Date: Fri, 28 Apr 2017 12:10:31 -0500
+Message-ID: <e3de14cf-e480-02d0-c98e-a7a1d9cb4fbf@linux.intel.com>
+References: <20170427160231.13337-1-ville.syrjala@linux.intel.com>
+ <s5h8tmkzzy6.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1492795191-31298-6-git-send-email-s.nawrocki@samsung.com>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Cc: linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, inki.dae@samsung.com, sw0312.kim@samsung.com, cw00.choi@samsung.com, javier@osg.samsung.com, krzk@kernel.org, jy0922.shim@samsung.com, broonie@kernel.org, b.zolnierkie@samsung.com
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5h8tmkzzy6.wl-tiwai@suse.de>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>, ville.syrjala@linux.intel.com
+Cc: intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 21, 2017 at 07:19:49PM +0200, Sylwester Nawrocki wrote:
-> This patch adds DT binding documentation for Odroid XU3/4
-> sound subsystem.
-> 
-> Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> ---
->  .../devicetree/bindings/sound/samsung,odroid.txt   | 57 ++++++++++++++++++++++
->  1 file changed, 57 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/samsung,odroid.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/samsung,odroid.txt b/Documentation/devicetree/bindings/sound/samsung,odroid.txt
-> new file mode 100644
-> index 0000000..c1ac70c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/samsung,odroid.txt
-> @@ -0,0 +1,57 @@
-> +Samsung Exynos Odroid XU3/XU4 audio complex with MAX98090 codec
-> +
-> +Required properties:
-> +
-> + - compatible - "samsung,odroidxu3-audio" - for Odroid XU3 board,
-> +		"samsung,odroidxu4-audio" - for Odroid XU4 board
-> + - model - the user-visible name of this sound complex
-
-ASoC will support "label" soon (see graph support). Use that instead.
-
-> + - 'cpu' subnode with a 'sound-dai' property containing the phandle of the I2S
-> +    controller
-> + - 'codec' subnode with a 'sound-dai' property containing list of phandles
-> +    to the CODEC nodes, first entry must be corresponding to the MAX98090
-> +    CODEC and the second entry must be the phandle of the HDMI IP block node
-
-These are not properties, so move them to a sub-node section.
-
-> + - clocks - should contain entries matching clock names in the clock-names
-> +    property
-> + - clock-names - should contain following entries:
-> +    - "epll" - indicating the EPLL output clock
-> +    - "i2s_rclk" - indicating the RCLK (root) clock of the I2S0 controller
-
-At least the 2nd one should be in the i2s node. This node isn't really a 
-h/w block, so it shouldn't have clocks IMO.
-
-> + - samsung,audio-widgets - this property specifies off-codec audio elements
-> +   like headphones or speakers, for details see widgets.txt
-> + - samsung,audio-routing - a list of the connections between audio
-> +   components;  each entry is a pair of strings, the first being the
-> +   connection's sink, the second being the connection's source;
-> +   valid names for sources and sinks are the MAX98090's pins (as
-> +   documented in its binding), and the jacks on the board
-> +
-> +   For Odroid X2:
-> +     "Headphone Jack", "Mic Jack", "DMIC"
-> +
-> +   For Odroid U3, XU3:
-> +     "Headphone Jack", "Speakers"
-> +
-> +   For Odroid XU4:
-> +     no entries
-> +
-> +Example:
-> +
-> +sound {
-> +	compatible = "samsung,odroidxu3-audio";
-
-> +	samsung,cpu-dai = <&i2s0>;
-> +	samsung,codec-dai = <&max98090>;
-
-Not documented. Nor needed?
-
-> +	model = "Odroid-XU3";
-> +	samsung,audio-routing =
-> +		"Headphone Jack", "HPL",
-> +		"Headphone Jack", "HPR",
-> +		"IN1", "Mic Jack",
-> +		"Mic Jack", "MICBIAS";
-> +
-> +	clocks = <&clock CLK_FOUT_EPLL>, <&i2s0 CLK_I2S_RCLK_SRC>;
-> +	clock-names = "epll", "sclk_i2s";
-> +
-> +	cpu {
-> +		sound-dai = <&i2s0 0>;
-> +	};
-> +	codec {
-> +		sound-dai = <&hdmi>, <&max98090>;
-> +	};
-> +};
-> -- 
-> 1.9.1
-> 
+CgpPbiAwNC8yOC8yMDE3IDAzOjQxIEFNLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gVGh1LCAy
+NyBBcHIgMjAxNyAxODowMjoxOSArMDIwMCwKPiB2aWxsZS5zeXJqYWxhQGxpbnV4LmludGVsLmNv
+bSB3cm90ZToKPj4gRnJvbTogVmlsbGUgU3lyasOkbMOkIDx2aWxsZS5zeXJqYWxhQGxpbnV4Lmlu
+dGVsLmNvbT4KPj4KPj4gT2theSwgaGVyZSdzIHRoZSBzZWNvbmQgYXR0ZW1wdCBhdCBnZXR0aW5n
+IG11bHRpcGxlIHBpcGVzIHBsYXlpbmcgYmFjawo+PiBhdWRpbyBvbiB0aGUgVkxWL0NIViBIRE1J
+IExQRSBhdWRpbyBkZXZpY2UuIFRoZSBtYWluIGNoYW5nZSBmcm9tIHYxIGlzCj4+IHRoYXQgbm93
+IHRoZSBQQ00gZGV2aWNlcyBhcmUgYXNzb2NpYXRlZCB3aXRoIHBvcnRzIGluc3RlYWQgb2YgcGlw
+ZXMsCj4+IHNvIHRoZSBhdWRpbyBmcm9tIG9uZSBkZXZpY2UgYWx3YXlzIGdldHMgb3V0cHV0IG9u
+IHRoZSBzYW1lIGRpc3BsYXkuCj4+Cj4+IEkndmUgYWxzbyB0YWNrZWQgb24gdGhlIGFsc2EtbGli
+IGNvbmYgdXBkYXRlLiBObyBjbHVlIHdoZXRoZXIgaXQncwo+PiByZWFsbHkgY29ycmVjdCBvciBu
+b3QgKHRoZSBjb25maWcgbGFuZ3VhZ2UgaXNuJ3QgYSBjbG9zZSBmcmllbmQKPj4gb2YgbWluZSku
+Cj4+Cj4+IEJUVyBJIGRpZCBub3RpY2UgdGhhdCB3aXRoIExQRSBhdWRpbyBhbGwgdGhlIGNvbnRy
+b2xzIHNheSBpZmFjZT1QQ00sCj4+IHdoZXJlYXMgb24gSERBIGEgYnVuY2ggb2YgdGhlbSBzYXkg
+aWZhY2U9TUlYRVIuIE5vIGlkZWEgaWYgdGhhdCdzCj4+IE9LIG9yIG5vdCwganVzdCBzb21ldGhp
+bmcgSSBzcG90dGVkIHdoZW4gSSB3YXMgY29tcGFyaW5nIHRoZSByZXN1bHRzCj4+IHdpdGggSERB
+Lgo+IFdlIGdlbmVyYWxseSBhY2NlcHQgYm90aCBpZmFjZSB0eXBlcyBmb3IgSUVDOTU4IHN0dWZm
+LCBzaW5jZQo+IGhpc3RvcmljYWxseSBtYW55IGRyaXZlcnMgaGF2ZSBhbHJlYWR5IG1peGVkIHRo
+ZW0gdXAuICBTbyBpdCdzIG5vCj4gcHJvYmxlbSA6KQo+Cj4KPj4gRW50aXJlIHNlcmllcyBhdmFp
+bGFibGUgaGVyZToKPj4gZ2l0Oi8vZ2l0aHViLmNvbS92c3lyamFsYS9saW51eC5naXQgbHBlX2F1
+ZGlvX211bHRpcGlwZV8yCj4+Cj4+IENjOiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+Cj4+
+IENjOiBQaWVycmUtTG91aXMgQm9zc2FydCA8cGllcnJlLWxvdWlzLmJvc3NhcnRAbGludXguaW50
+ZWwuY29tPgo+IEFsbCBsb29rIGdvb2QsIGFuZCBmZWVsIGZyZWUgdG8gdGFrZSBteSByZXZpZXdl
+ZC1ieSB0YWcKPiAgICBSZXZpZXdlZC1ieTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgo+
+Cj4gQXMgc2FpZCBwcmV2aW91c2x5LCBteSBvbmx5IHNsaWdodCBjb25jZXJuIGlzIHRoZSBjb21w
+YXRpYmlsaXR5Lgo+IEJ1dCwgaW4gdGhlIGN1cnJlbnQgc2l0dWF0aW9uIHdpdGggUHVsc2VBdWRp
+bywgb25seSBmZXcgcGVvcGxlIHdvdWxkCj4gdXNlIHRoaXMgZHJpdmVyLCBzbyBpdCBzaG91bGRu
+J3QgYmUgc28gYmlnIGltcGFjdCwgSSBzdXBwb3NlLgo+Cj4gQlRXLCB3aGljaCBwb3J0IGlzIHVz
+ZWQgaW4gZ2VuZXJhbCBvbiBCWVQvQ0hUPwo+Cj4gT2gsIGFsc28sIEkgc3VwcG9zZSB5b3Ugd2Fu
+dCB0byBjYXJyeSB0aGVzZSBvdmVyIGk5MTUgdHJlZT8KPiBJIGRvbid0IG1pbmQgZWl0aGVyIHdh
+eSwgSSBjYW4gdGFrZSB0aGVtIHRocm91Z2ggc291bmQgdHJlZSBpZgo+IHByZWZlcnJlZCwgdG9v
+LgpJIHNlZSBmcmVxdWVudCBvb3BzIG9uIHN0YXJ0dXAgd2l0aCB0aGlzIGxwZV9hdWRpb19tdWx0
+aXBpcGVfMiBicmFuY2ggCndpdGggbXkgQ0hUIGRldmljZSBub3QgYm9vdGluZyBvciBubyBIRE1J
+IGF1ZGlvIGRldmljZSBjcmVhdGVkLgpOb3Qgc3VyZSBpZiB0aGVzZSBpc3N1ZXMgYXJlIGR1ZSB0
+byB0aGUgbmV3IHBhdGNoZXMgb3IgdG8gdGhlIHJlc3Qgb2YgCnRoZSBkcm0gY29kZT8KClsgICAg
+NS41MjkwMjNdIEJVRzogdW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwgTlVMTCBwb2ludGVyIGRlcmVm
+ZXJlbmNlIAphdCAgICAgICAgICAgKG51bGwpClsgICAgNS41MjkxNDNdIElQOiBoZG1pX2xwZV9h
+dWRpb19wcm9iZSsweDQwZi8weDY1MCBbc25kX2hkbWlfbHBlX2F1ZGlvXQpbICAgIDUuNTI5MjAy
+XSBQR0QgMAoKWyAgICA1LjUyOTI0Ml0gT29wczogMDAwMCBbIzFdIFNNUApbICAgIDUuNTI5Mjc0
+XSBNb2R1bGVzIGxpbmtlZCBpbjogc25kX3NvY19zc3RfYXRvbV9oaWZpMl9wbGF0Zm9ybSAKc25k
+X3NvY19zc3RfbWF0Y2ggc25kX3NvY19jb3JlIHNuZF9jb21wcmVzcyBscGNfaWNoIHNuZF9zZXEg
+CnNuZF9zZXFfZGV2aWNlIHNocGNocCBzbmRfaGRtaV9scGVfYXVkaW8oKykgc25kX3BjbSBzbmRf
+dGltZXIgZHdfZG1hYyAKc25kIHNvdW5kY29yZSBpMmNfZGVzaWdud2FyZV9wbGF0Zm9ybSgrKSBp
+MmNfZGVzaWdud2FyZV9jb3JlIApzcGlfcHhhMnh4X3BsYXRmb3JtIGFjcGlfcGFkIG1hY19oaWQg
+bmZzZCBhdXRoX3JwY2dzcyBuZnNfYWNsIGxvY2tkIApncmFjZSBzdW5ycGMgaXBfdGFibGVzIHhf
+dGFibGVzIGhpZF9nZW5lcmljIG1tY19ibG9jayBpMmNfaGlkIHVzYmhpZCBoaWQgCmF1dG9mczQK
+WyAgICA1LjUyOTYwNV0gQ1BVOiAyIFBJRDogNTEyIENvbW06IHN5c3RlbWQtdWRldmQgTm90IHRh
+aW50ZWQgCjQuMTEuMC1yYzgtdGVzdCsgIzExClsgICAgNS41Mjk2NzFdIEhhcmR3YXJlIG5hbWU6
+IFpPVEFDIFhYWFhYWC9DaGVycnkgVHJhaWwgRkZELCBCSU9TIDUuMTEgCjA5LzI4LzIwMTYKWyAg
+ICA1LjUyOTczNl0gdGFzazogZmZmZjg4MDA3NDg1Yjc4MCB0YXNrLnN0YWNrOiBmZmZmYzkwMDAw
+YmZjMDAwClsgICAgNS41Mjk3OTNdIFJJUDogMDAxMDpoZG1pX2xwZV9hdWRpb19wcm9iZSsweDQw
+Zi8weDY1MCAKW3NuZF9oZG1pX2xwZV9hdWRpb10KWyAgICA1LjUyOTg1NV0gUlNQOiAwMDE4OmZm
+ZmZjOTAwMDBiZmZhZjAgRUZMQUdTOiAwMDAxMDI0NgpbICAgIDUuNTI5OTA0XSBSQVg6IDAwMDAw
+MDAwMDAwMDAwMDAgUkJYOiBmZmZmODgwMDc5MjA5ODk4IFJDWDogCmZmZmY4ODAwNzkyMGYwNzgK
+WyAgICA1LjUyOTk2N10gUkRYOiAwMDAwMDAwMDAwMDAwMDE0IFJTSTogZmZmZmM5MDAwMGJmZmIy
+OCBSREk6IAowMDAwMDAwMDAwMDAwMDAyClsgICAgNS41MzAwMzFdIFJCUDogZmZmZmM5MDAwMGJm
+ZmI3MCBSMDg6IDAwMDAwMDAwMDAwMDAwMDEgUjA5OiAKMDAwMDAwMDAwMDAwMDAwMApbICAgIDUu
+NTMwMDk0XSBSMTA6IGZmZmY4ODAwNzQ0MWJmMDAgUjExOiBmZmZmYzkwMDAwYmZmYjM2IFIxMjog
+CmZmZmY4ODAwNzkyMGVmMjAKWyAgICA1LjUzMDE1OV0gUjEzOiBmZmZmODgwMDc5MjBlZjQ4IFIx
+NDogMDAwMDAwMDAwMDAwNTY4OCBSMTU6IAowMDAwMDAwMDAwMDAwMDQ3ClsgICAgNS41MzAyMjVd
+IEZTOiAgMDAwMDdmNjI3Yzk4ODY0MCgwMDAwKSBHUzpmZmZmODgwMDdiMzAwMDAwKDAwMDApIApr
+bmxHUzowMDAwMDAwMDAwMDAwMDAwClsgICAgNS41MzAyOTldIENTOiAgMDAxMCBEUzogMDAwMCBF
+UzogMDAwMCBDUjA6IDAwMDAwMDAwODAwNTAwMzMKWyAgICA1LjUzMDM1Ml0gQ1IyOiAwMDAwMDAw
+MDAwMDAwMDAwIENSMzogMDAwMDAwMDA3OGNiODAwMCBDUjQ6IAowMDAwMDAwMDAwMTAwNmUwClsg
+ICAgNS41MzA0MTZdIENhbGwgVHJhY2U6ClsgICAgNS41MzA0NTJdICBwbGF0Zm9ybV9kcnZfcHJv
+YmUrMHgzYi8weGEwClsgICAgNS41MzA0OTRdICBkcml2ZXJfcHJvYmVfZGV2aWNlKzB4MmJiLzB4
+NDYwClsgICAgNS41MzA1MzhdICBfX2RyaXZlcl9hdHRhY2grMHhkZi8weGYwClsgICAgNS41MzA1
+NzZdICA/IGRyaXZlcl9wcm9iZV9kZXZpY2UrMHg0NjAvMHg0NjAKWyAgICA1LjUzMDYyMF0gIGJ1
+c19mb3JfZWFjaF9kZXYrMHg2MC8weGEwClsgICAgNS41MzA2NThdICBkcml2ZXJfYXR0YWNoKzB4
+MWUvMHgyMApbICAgIDUuNTMwNjkzXSAgYnVzX2FkZF9kcml2ZXIrMHgxNzAvMHgyNzAKWyAgICA1
+LjUzMDczMV0gIGRyaXZlcl9yZWdpc3RlcisweDYwLzB4ZTAKWyAgICA1LjUzMDc2OV0gID8gMHhm
+ZmZmZmZmZmEwMWNiMDAwClsgICAgNS41MzA4MDNdICBfX3BsYXRmb3JtX2RyaXZlcl9yZWdpc3Rl
+cisweDM2LzB4NDAKWyAgICA1LjUzMDg1MV0gIGhkbWlfbHBlX2F1ZGlvX2RyaXZlcl9pbml0KzB4
+MTcvMHgxMDAwIFtzbmRfaGRtaV9scGVfYXVkaW9dClsgICAgNS41MzA5MTVdICBkb19vbmVfaW5p
+dGNhbGwrMHg0My8weDE4MApbICAgIDUuNTMwOTU2XSAgPyBfX3Z1bm1hcCsweDgxLzB4ZDAKWyAg
+ICA1LjUzMDk5MV0gID8ga2ZyZWUrMHgxNGMvMHgxNjAKWyAgICA1LjUzMTAyNF0gID8ga21lbV9j
+YWNoZV9hbGxvY190cmFjZSsweDM4LzB4MTUwClsgICAgNS41MzEwNzBdICBkb19pbml0X21vZHVs
+ZSsweDVmLzB4MWY4ClsgICAgNS41MzExMDhdICBsb2FkX21vZHVsZSsweDI3MWUvMHgyYmQwClsg
+ICAgNS41MzExNDddICA/IGtlcm5lbF9yZWFkX2ZpbGUrMHgxYTMvMHgxYzAKWyAgICA1LjUzMTE4
+OF0gIFNZU0NfZmluaXRfbW9kdWxlKzB4YmMvMHhmMApbICAgIDUuNTMxMjI2XSAgPyBTWVNDX2Zp
+bml0X21vZHVsZSsweGJjLzB4ZjAKWyAgICA1LjUzMTI2N10gIFN5U19maW5pdF9tb2R1bGUrMHhl
+LzB4MTAKWyAgICA1LjUzMTMwNV0gIGRvX3N5c2NhbGxfNjQrMHg2ZS8weDE4MApbICAgIDUuNTMx
+MzQ1XSAgZW50cnlfU1lTQ0FMTDY0X3Nsb3dfcGF0aCsweDI1LzB4MjUKWyAgICA1LjUzMTM4OV0g
+UklQOiAwMDMzOjB4N2Y2MjdiNWZiYmY5ClsgICAgNS41MzE0MjRdIFJTUDogMDAyYjowMDAwN2Zm
+ZTA1M2VlZTY4IEVGTEFHUzogMDAwMDAyNDYgT1JJR19SQVg6IAowMDAwMDAwMDAwMDAwMTM5Clsg
+ICAgNS41MzE0OTNdIFJBWDogZmZmZmZmZmZmZmZmZmZkYSBSQlg6IDAwMDA1NWQ2Yzc0NWI2OTAg
+UkNYOiAKMDAwMDdmNjI3YjVmYmJmOQpbICAgIDUuNTMxNTU4XSBSRFg6IDAwMDAwMDAwMDAwMDAw
+MDAgUlNJOiAwMDAwN2Y2MjdjMTM0OTk1IFJESTogCjAwMDAwMDAwMDAwMDAwMDcKWyAgICA1LjUz
+MTYyMl0gUkJQOiAwMDAwN2Y2MjdjMTM0OTk1IFIwODogMDAwMDAwMDAwMDAwMDAwMCBSMDk6IAow
+MDAwN2ZmZTA1M2VlZjgwClsgICAgNS41MzE2ODddIFIxMDogMDAwMDAwMDAwMDAwMDAwNyBSMTE6
+IDAwMDAwMDAwMDAwMDAyNDYgUjEyOiAKMDAwMDAwMDAwMDAwMDAwMApbICAgIDUuNTMxNzUxXSBS
+MTM6IDAwMDA1NWQ2Yzc0NTlhZTAgUjE0OiAwMDAwMDAwMDAwMDIwMDAwIFIxNTogCjAwMDA1NWQ2
+Yzc0NWI2OTAKWyAgICA1LjUzMTgxNl0gQ29kZTogNDggOGIgNDUgYjAgOGIgNDggMTggZTggZTAg
+Y2IgMjIgZTEgNDkgOGIgNDQgMjQgMjggCjRhIDhkIDhjIDMzIDU4IDAxIDAwIDAwIDQ4IDhkIDc1
+IGI4IDQ1IDMxIGM5IDQxIGI4IDAxIDAwIDAwIDAwIGJhIDE0IDAwIAowMCAwMCA8NDg+IDhiIDM4
+IGU4IGE5IDJhIGZmIGZmIDg1IGMwIDBmIDg4IDA5IDAxIDAwIDAwIDQ5IDhiIDg0IDI0IDU4Clsg
+ICAgNS41MzIwMjZdIFJJUDogaGRtaV9scGVfYXVkaW9fcHJvYmUrMHg0MGYvMHg2NTAgCltzbmRf
+aGRtaV9scGVfYXVkaW9dIFJTUDogZmZmZmM5MDAwMGJmZmFmMApbICAgIDUuNTMyMTAxXSBDUjI6
+IDAwMDAwMDAwMDAwMDAwMDAKWyAgICA1LjUzMjE2OF0gLS0tWyBlbmQgdHJhY2UgZTgzMmU5N2Yw
+ZTc0NDcwMCBdLS0tClsgICAgNS41MzQ4MzBdIGkyYyBpMmMtODogaTJjIHJlYWQgZmFpbGVkClsg
+ICAgNS41NTQzOTVdIGkyYyBpMmMtODogaTJjIHJlYWQgZmFpbGVkCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0Cklu
+dGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
