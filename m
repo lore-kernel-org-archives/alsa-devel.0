@@ -1,22 +1,15 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: Re: snd_soc_set_dmi_name - Shouldn't it use SYS_VENDOR?
-Date: Fri, 28 Apr 2017 15:02:33 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F88250258C@SHSMSX103.ccr.corp.intel.com>
-References: <CAD8Lp454-BRKu7GZxpbO+4qgFfSTF0DviUcaUDtgNOVrzb2jLw@mail.gmail.com>
- <5aa36e3b-49f9-d7f6-df58-18dcfcda08e5@linux.intel.com>
- <CAD8Lp44uqQW9+V_ZgB4LLXa8WFb+=CX8hT8PmWbZEGFhZGTvBw@mail.gmail.com>
- <7dbec345-e058-18ca-b4b3-e071fbc08fb0@linux.intel.com>
- <CAD8Lp47u3ERC_pn4ScJ6DQZ9HOuDcUZ0zM4fEQ99c3EVzP_YXA@mail.gmail.com>
- <1493375701.2540.53.camel@loki>
+From: mengdong.lin@linux.intel.com
+Subject: [PATCH] ASoC: snd_soc_set_dmi_name will use
+	DMI_SYS_VENDOR if available
+Date: Sat, 29 Apr 2017 00:19:47 +0800
+Message-ID: <1493396387-15884-1-git-send-email-mengdong.lin@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 78624266A53
- for <alsa-devel@alsa-project.org>; Fri, 28 Apr 2017 17:02:48 +0200 (CEST)
-In-Reply-To: <1493375701.2540.53.camel@loki>
-Content-Language: en-US
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id B3EA8266A53
+ for <alsa-devel@alsa-project.org>; Fri, 28 Apr 2017 18:14:34 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,46 +19,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Daniel Drake <drake@endlessm.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: alsa-devel@alsa-project.org, broonie@kernel.org
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, Mengdong Lin <mengdong.lin@linux.intel.com>, mengdong.lin@intel.com, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBMaWFtIEdpcmR3b29kIFttYWls
-dG86bGlhbS5yLmdpcmR3b29kQGxpbnV4LmludGVsLmNvbV0NCj4gU2VudDogRnJpZGF5LCBBcHJp
-bCAyOCwgMjAxNyA2OjM1IFBNDQo+IFRvOiBEYW5pZWwgRHJha2UgPGRyYWtlQGVuZGxlc3NtLmNv
-bT4NCj4gQ2M6IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IDxwaWVycmUtbG91aXMuYm9zc2FydEBsaW51
-eC5pbnRlbC5jb20+OyBhbHNhLQ0KPiBkZXZlbEBhbHNhLXByb2plY3Qub3JnOyBMaW4sIE1lbmdk
-b25nIDxtZW5nZG9uZy5saW5AaW50ZWwuY29tPg0KPiBTdWJqZWN0OiBSZTogW2Fsc2EtZGV2ZWxd
-IHNuZF9zb2Nfc2V0X2RtaV9uYW1lIC0gU2hvdWxkbid0IGl0IHVzZQ0KPiBTWVNfVkVORE9SPw0K
-PiANCj4gT24gVGh1LCAyMDE3LTA0LTI3IGF0IDE1OjAyIC0wNjAwLCBEYW5pZWwgRHJha2Ugd3Jv
-dGU6DQo+ID4gT24gVGh1LCBBcHIgMjcsIDIwMTcgYXQgMjozMiBQTSwgUGllcnJlLUxvdWlzIEJv
-c3NhcnQNCj4gPiA8cGllcnJlLWxvdWlzLmJvc3NhcnRAbGludXguaW50ZWwuY29tPiB3cm90ZToN
-Cj4gPiA+IFdoaWxlIGluIGdlbmVyYWwgRE1JX1NZU19WRU5ET1IgaXMgY29tbW9ubHkgdXNlZCwg
-dGhlcmUgYXJlDQo+ID4gPiBleGNlcHRpb25zIHRvIHRoZSBydWxlLCBzdWNoIGFzIHRoZSB2ZXJ5
-IG1hY2hpbmUgSSBhbSB3b3JraW5nIG9uIGF0DQo+ID4gPiB0aGUgbW9tZW50IHdoaWNoIGRvZXMg
-aGF2ZSBhbnkgdXNlZnVsIERNSV9TWVNfVkVORE9SIGluZm9ybWF0aW9uDQo+ID4gPiAoc2VlIGJl
-bG93KSBNZW5nZG9uZyBtYXkgYmUgYWJsZSB0byBjb21tZW50IG9uIHdoeSB3ZSB0b29rIHRoaXMN
-Cj4gZGlyZWN0aW9uLg0KPiA+DQo+IA0KPiBJIHRoaW5rIGl0IHdhcyBwcm9iYWJseSBkdWUgdG8g
-b3VyIGxpbWl0ZWQgbnVtYmVyIG9mIHRlc3QgbWFjaGluZXMgYWxsDQo+IHJlcG9ydGluZyBiZXR0
-ZXIgaW5mbyB2aWEgRE1JX0JPQVJEX1ZFTkRPUi4NCj4gDQo+ID4gSW4gYSBETUkgZGF0YWJhc2Ug
-b2YgMTEzIFBDIG1vZGVscyB0aGF0IHdlIGhhdmUgd29ya2VkIHdpdGggaGVyZToNCj4gPg0KPiA+
-IDExMiBoYXZlIGNvcnJlY3QvbWVhbmluZ2Z1bCBzeXNfdmVuZG9yLCAxIGlzIHVzZWxlc3MgKFRv
-IGJlIGZpbGxlZCBieQ0KPiA+IE9FTSkNCj4gPiAxMDYgaGF2ZSBjb3JyZWN0IGJvYXJkX3ZlbmRv
-ciwgNyBoYXZlIGluY29ycmVjdCBvciB1c2VsZXNzIHZhbHVlcw0KPiA+DQo+ID4gQW5kIGF3a3dh
-cmRseSB0aGUgb25lIHN5c3RlbSB0aGF0IEknZCBsaWtlIHRvIG1hdGNoIGluIFVDTSBydWxlcyBo
-ZXJlDQo+ID4gaGFzIGNvcnJlY3Qgc3lzX3ZlbmRvciBidXQgYmFkIGJvYXJkX3ZlbmRvci4NCj4g
-Pg0KPiANCj4gU28gZ2l2ZW4geW91ciBsYXJnZXIgZGF0YWJhc2UgaXMgc2hvd2luZyBiZXR0ZXIg
-cmVzdWx0cyBmb3IgRE1JX1NZU19WRU5ET1INCj4gaXQgbWF5IGJlIGJlc3QgdG8gdHJ5IHRoaXMg
-Zmlyc3QgYW5kIGlmIHRoYXQncyBOVUxMIHRoZW4gdXNlDQo+IERNSV9CT0FSRF9WRU5ET1IuDQoN
-ClllcywgaXTigJlzIGJldHRlciB0byBvbmx5IHVzZSBvbmUgbmFtZS4gT3RoZXJ3aXNlLCBpdCdz
-IHBvc3NpYmxlIHRvIGV4Y2VlZCA4MCBjaGFyYWN0ZXJzIGxpbWl0IGZvciB0aGUgY2FyZCBsb25n
-IG5hbWUgc2luY2Ugc29tZXRpbWVzIERNSSBmaWVsZHMgY2FuIGJlIGxvbmcuDQoNCj4gDQo+IFdv
-dWxkIHlvdSBjYXJlIHRvIHN1Ym1pdCBhIHBhdGNoID8gb3IgTWVuZ2RvbmcgPyAgU29ycnksIEkg
-d29udCBiZSBhYmxlIHRvDQo+IGdldCB0byB0aGlzIGZvciBhIHdlZWsgZHVlIHRvIHNvbWUgdHJh
-dmVsLg0KPiANCg0KSSB3aWxsIGZpeCB0aGlzIGVhcmx5IG5leHQgd2VlayBhZnRlciBkb3VibGUg
-Y2hlY2tpbmcgbXkgbWFjaGluZXMgb24gaGFuZC4gIA0KRGFuaWVsJ3MgZGF0YWJhc2UgaXMgbXVj
-aCBsYXJnZXIgdGhhbiBteSB0ZXN0IHNldCBhbmQgc28gd2UgbmVlZCB0byBzdXBwb3J0IDotKQ0K
-DQpUaGFua3MNCk1lbmdkb25nDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+
+This fix is based on Daniel Drake's suggestion: most x86 machines have a
+meaningfull DMI_SYS_VENDOR rather than DMI_BOARD_VENDOR.
+
+So snd_soc_set_dmi_name will try to get vendor name from DMI_SYS_VENDOR
+at first, and if that's null, then use DMI_BOARD_VENDOR.
+
+Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 525f2f3..45f0a34 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1974,7 +1974,9 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
+ 		return 0; /* long name already set by driver or from DMI */
+ 
+ 	/* make up dmi long name as: vendor.product.version.board */
+-	vendor = dmi_get_system_info(DMI_BOARD_VENDOR);
++	vendor = dmi_get_system_info(DMI_SYS_VENDOR);
++	if (!vendor)
++		vendor = dmi_get_system_info(DMI_BOARD_VENDOR);
+ 	if (!vendor) {
+ 		dev_warn(card->dev, "ASoC: no DMI vendor name!\n");
+ 		return 0;
+-- 
+2.5.0
