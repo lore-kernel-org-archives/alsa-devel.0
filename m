@@ -1,81 +1,41 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v3 1/2] ASoC: stm32: add bindings for SAI
-Date: Fri, 28 Apr 2017 15:53:58 -0500
-Message-ID: <20170428205358.fxjqaki44xqim4ta@rob-hp-laptop>
-References: <1491837596-2924-1-git-send-email-olivier.moysan@st.com>
- <1491837596-2924-2-git-send-email-olivier.moysan@st.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1491837596-2924-2-git-send-email-olivier.moysan-qxv4g6HH51o@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
-Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alexandre.torgue-qxv4g6HH51o@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-F5mvAk5X5gdBDgjK7y7TUQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org, benjamin.gaignard-qxv4g6HH51o@public.gmane.org
+From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Subject: [PATCH] ASoC: cs4271: configure reset GPIO as output
+Date: Sat, 29 Apr 2017 12:19:33 +0200
+Message-ID: <20170429101933.9694-1-alexander.sverdlin@gmail.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+Cc: Alexander Sverdlin <alexander.sverdlin@gmail.com>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, "# 4 . 6+" <stable@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 10, 2017 at 05:19:55PM +0200, olivier moysan wrote:
-> This patch adds documentation of device tree bindings for the
-> STM32 SAI ASoC driver.
-> 
-> Signed-off-by: olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
-> ---
->  .../devicetree/bindings/sound/st,stm32-sai.txt     | 89 ++++++++++++++++++++++
->  1 file changed, 89 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-sai.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.txt b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
-> new file mode 100644
-> index 0000000..c59a3d7
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
-> @@ -0,0 +1,89 @@
-> +STMicroelectronics STM32 Serial Audio Interface (SAI).
+During reset "refactoring" the output configuration was lost.
+This commit repairs sound on EDB93XX boards.
 
-[...]
+Fixes: 9a397f4 ("ASoC: cs4271: add regulator consumer support")
+Cc: Brian Austin <brian.austin@cirrus.com>
+Cc: Paul Handrigan <Paul.Handrigan@cirrus.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+Cc: <stable@vger.kernel.org> # 4.6+
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+---
+ sound/soc/codecs/cs4271.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +	sai1b: audio-controller@40015824 {
-> +		#sound-dai-cells = <0>;
-> +		compatible = "st,stm32-sai-sub-b";
-> +		reg = <0x40015824 0x1C>;
-> +		clocks = <&rcc 1 CLK_SAI2>;
-> +		clock-names = "sai_ck";
-> +		dmas = <&dma2 5 0 0x400 0x0>;
-> +		dma-names = "tx";
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_sai1b>;
-> +
-> +		ports {
-> +			#address-cells = <1>;
-> +			#size-cells = <0>;
-> +
-> +			sai1b_port: port@0 {
-> +				reg = <0>;
-> +				cpu_endpoint: endpoint {
-> +					remote-endpoint = <&codec_endpoint>;
-> +					audio-graph-card,format = "i2s";
-> +					audio-graph-card,bitclock-master = <&codec_endpoint>;
-> +					audio-graph-card,frame-master = <&codec_endpoint>;
-
-These property names are wrong.
-
-> +				};
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +audio-codec {
-> +	codec_port: port {
-> +		codec_endpoint: endpoint {
-> +			remote-endpoint = <&cpu_endpoint>;
-> +		};
-> +	};
-> +};
-> -- 
-> 1.9.1
-> 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+index 8c0f3b8..e78b5f0 100644
+--- a/sound/soc/codecs/cs4271.c
++++ b/sound/soc/codecs/cs4271.c
+@@ -498,7 +498,7 @@ static int cs4271_reset(struct snd_soc_codec *codec)
+ 	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	if (gpio_is_valid(cs4271->gpio_nreset)) {
+-		gpio_set_value(cs4271->gpio_nreset, 0);
++		gpio_direction_output(cs4271->gpio_nreset, 0);
+ 		mdelay(1);
+ 		gpio_set_value(cs4271->gpio_nreset, 1);
+ 		mdelay(1);
+-- 
+2.10.2
