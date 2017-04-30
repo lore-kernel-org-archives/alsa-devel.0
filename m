@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Return negative error
-	code" to the asoc tree
-Date: Sun, 30 Apr 2017 21:58:11 +0900
-Message-ID: <E1d4oQV-00041q-0t@finisterre>
-References: <1493275882-27708-3-git-send-email-vinod.koul@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 883F9266BEF
- for <alsa-devel@alsa-project.org>; Sun, 30 Apr 2017 14:58:20 +0200 (CEST)
-In-Reply-To: <1493275882-27708-3-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, patches.audio@intel.com
+Subject: Applied "ASoC: dwc: Disallow building designware_pcm as a module" to the asoc tree
+Date: Sun, 30 Apr 2017 21:58:31 +0900
+Message-ID: <E1d4oQp-00046F-9k@finisterre>
+References: <97eea73556a8d12afb66df9bc1f1d8510345098d.1493373039.git.joabreu@synopsys.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <97eea73556a8d12afb66df9bc1f1d8510345098d.1493373039.git.joabreu@synopsys.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jose Abreu <Jose.Abreu@synopsys.com>
+Cc: Lubomir Rintel <lkundrak@v3.sk>, Jose Abreu <joabreu@synopsys.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org, Carlos Palminha <CARLOS.PALMINHA@synopsys.com>Lubomir Rintel <lkundrak@v3.sk>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Return negative error code
+   ASoC: dwc: Disallow building designware_pcm as a module
 
 has been applied to the asoc tree at
 
@@ -53,52 +37,101 @@ to this mail.
 Thanks,
 Mark
 
->From 081dc8ab46df85382658822e951ea79be87382b0 Mon Sep 17 00:00:00 2001
-From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Date: Thu, 27 Apr 2017 12:21:22 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Return negative error code
+>From c9afc1834e8132783772d73007706d3ae3848483 Mon Sep 17 00:00:00 2001
+From: Jose Abreu <Jose.Abreu@synopsys.com>
+Date: Fri, 28 Apr 2017 10:55:25 +0100
+Subject: [PATCH] ASoC: dwc: Disallow building designware_pcm as a module
 
-skl_tplg_add_pipe() returned EEXIST instead of negative EEXIST, so fix that
-and handle the return value as well.
+Designware PCM is an extension to Designware I2S and they are dependent
+on each other. For this reason, make Designware PCM a boolean which will
+compile with Desigwnare I2S module. The name of the module is not changed
+but the name of the files need to be changed.
 
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Also, without this commit we get errors when probbing designware_i2s module
+because of unspecified license:
+
+designware_pcm: module license 'unspecified' taints kernel.
+Disabling lock debugging due to kernel taint
+designware_pcm: Unknown symbol __rcu_read_lock (err 0)
+designware_pcm: Unknown symbol devm_snd_soc_register_platform (err 0)
+designware_pcm: Unknown symbol synchronize_rcu (err 0)
+designware_pcm: Unknown symbol __rcu_read_unlock (err 0)
+designware_pcm: Unknown symbol snd_soc_set_runtime_hwparams (err 0)
+
+So, this is really needed as a fix.
+
+Fixes: 79361b2b98b7 ("ASoC: dwc: Add PIO PCM extension")
+Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+Signed-off-by: Jose Abreu <joabreu@synopsys.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ sound/soc/dwc/Kconfig                         | 4 ++--
+ sound/soc/dwc/Makefile                        | 6 +++---
+ sound/soc/dwc/{designware_i2s.c => dwc-i2s.c} | 0
+ sound/soc/dwc/{designware_pcm.c => dwc-pcm.c} | 3 ---
+ 4 files changed, 5 insertions(+), 8 deletions(-)
+ rename sound/soc/dwc/{designware_i2s.c => dwc-i2s.c} (100%)
+ rename sound/soc/dwc/{designware_pcm.c => dwc-pcm.c} (98%)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 0e459d3eb17a..29f68713a231 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -1711,7 +1711,7 @@ static int skl_tplg_add_pipe(struct device *dev,
- 	list_for_each_entry(ppl, &skl->ppl_list, node) {
- 		if (ppl->pipe->ppl_id == tkn_elem->value) {
- 			mconfig->pipe = ppl->pipe;
--			return EEXIST;
-+			return -EEXIST;
- 		}
- 	}
+diff --git a/sound/soc/dwc/Kconfig b/sound/soc/dwc/Kconfig
+index c297efe43861..c6fd95fa5ca6 100644
+--- a/sound/soc/dwc/Kconfig
++++ b/sound/soc/dwc/Kconfig
+@@ -8,10 +8,10 @@ config SND_DESIGNWARE_I2S
+ 	 maximum of 8 channels each for play and record.
  
-@@ -2003,11 +2003,13 @@ static int skl_tplg_get_token(struct device *dev,
- 		ret = skl_tplg_add_pipe(dev,
- 				mconfig, skl, tkn_elem);
+ config SND_DESIGNWARE_PCM
+-	tristate "PCM PIO extension for I2S driver"
++	bool "PCM PIO extension for I2S driver"
+ 	depends on SND_DESIGNWARE_I2S
+ 	help
+-	 Say Y, M or N if you want to add a custom ALSA extension that registers
++	 Say Y or N if you want to add a custom ALSA extension that registers
+ 	 a PCM and uses PIO to transfer data.
  
--		if (ret < 0)
-+		if (ret < 0) {
-+			if (ret == -EEXIST) {
-+				is_pipe_exists = 1;
-+				break;
-+			}
- 			return is_pipe_exists;
--
--		if (ret == EEXIST)
--			is_pipe_exists = 1;
-+		}
+ 	 This functionality is specially suited for I2S devices that don't have
+diff --git a/sound/soc/dwc/Makefile b/sound/soc/dwc/Makefile
+index 38f1ca31c5fa..3e24c0ff95fb 100644
+--- a/sound/soc/dwc/Makefile
++++ b/sound/soc/dwc/Makefile
+@@ -1,5 +1,5 @@
+ # SYNOPSYS Platform Support
+ obj-$(CONFIG_SND_DESIGNWARE_I2S) += designware_i2s.o
+-ifdef CONFIG_SND_DESIGNWARE_PCM
+-obj-$(CONFIG_SND_DESIGNWARE_I2S) += designware_pcm.o
+-endif
++
++designware_i2s-y := dwc-i2s.o
++designware_i2s-$(CONFIG_SND_DESIGNWARE_PCM) += dwc-pcm.o
+diff --git a/sound/soc/dwc/designware_i2s.c b/sound/soc/dwc/dwc-i2s.c
+similarity index 100%
+rename from sound/soc/dwc/designware_i2s.c
+rename to sound/soc/dwc/dwc-i2s.c
+diff --git a/sound/soc/dwc/designware_pcm.c b/sound/soc/dwc/dwc-pcm.c
+similarity index 98%
+rename from sound/soc/dwc/designware_pcm.c
+rename to sound/soc/dwc/dwc-pcm.c
+index 459ec861e6b6..406fd867117b 100644
+--- a/sound/soc/dwc/designware_pcm.c
++++ b/sound/soc/dwc/dwc-pcm.c
+@@ -129,13 +129,11 @@ void dw_pcm_push_tx(struct dw_i2s_dev *dev)
+ {
+ 	dw_pcm_transfer(dev, true);
+ }
+-EXPORT_SYMBOL_GPL(dw_pcm_push_tx);
  
- 		break;
+ void dw_pcm_pop_rx(struct dw_i2s_dev *dev)
+ {
+ 	dw_pcm_transfer(dev, false);
+ }
+-EXPORT_SYMBOL_GPL(dw_pcm_pop_rx);
  
+ static int dw_pcm_open(struct snd_pcm_substream *substream)
+ {
+@@ -281,4 +279,3 @@ int dw_pcm_register(struct platform_device *pdev)
+ {
+ 	return devm_snd_soc_register_platform(&pdev->dev, &dw_pcm_platform);
+ }
+-EXPORT_SYMBOL_GPL(dw_pcm_register);
 -- 
 2.11.0
