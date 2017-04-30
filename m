@@ -1,34 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nau8824: leave Class D gain at chip
-	default" to the asoc tree
-Date: Sun, 30 Apr 2017 21:58:04 +0900
-Message-ID: <E1d4oQO-0003zp-FF@finisterre>
-References: <1493263370-23040-1-git-send-email-KCHSU0@nuvoton.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 3B99A2664EB
- for <alsa-devel@alsa-project.org>; Sun, 30 Apr 2017 14:58:12 +0200 (CEST)
-In-Reply-To: <1493263370-23040-1-git-send-email-KCHSU0@nuvoton.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <supercraig0719@gmail.com>
-Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com
+Subject: Applied "ASoC: cs4271: configure reset GPIO as output" to the asoc tree
+Date: Sun, 30 Apr 2017 21:58:27 +0900
+Message-ID: <E1d4oQl-00045I-Q5@finisterre>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: 
+Sender: stable-owner@vger.kernel.org
+To: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>, stable@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: nau8824: leave Class D gain at chip default
+   ASoC: cs4271: configure reset GPIO as output
 
 has been applied to the asoc tree at
 
@@ -53,37 +36,34 @@ to this mail.
 Thanks,
 Mark
 
->From c869ce5aaf8f470c8cf32638e7cd498f57118fa5 Mon Sep 17 00:00:00 2001
-From: John Hsu <supercraig0719@gmail.com>
-Date: Thu, 27 Apr 2017 11:22:50 +0800
-Subject: [PATCH] ASoC: nau8824: leave Class D gain at chip default
+>From 49b2e27ab9f66b0a22c21980ad8118a4038324ae Mon Sep 17 00:00:00 2001
+From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Date: Sat, 29 Apr 2017 12:19:33 +0200
+Subject: [PATCH] ASoC: cs4271: configure reset GPIO as output
 
-Remove initial configuration of Class D gain for 1R and 2L.
-Leave them at the chip default.
+During reset "refactoring" the output configuration was lost.
+This commit repairs sound on EDB93XX boards.
 
-Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
-Signed-off-by: John Hsu <supercraig0719@gmail.com>
+Fixes: 9a397f4 ("ASoC: cs4271: add regulator consumer support")
+Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: <stable@vger.kernel.org> # 4.6+
 ---
- sound/soc/codecs/nau8824.c | 6 ------
- 1 file changed, 6 deletions(-)
+ sound/soc/codecs/cs4271.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
-index cd358be027dd..cca974d26136 100644
---- a/sound/soc/codecs/nau8824.c
-+++ b/sound/soc/codecs/nau8824.c
-@@ -1626,12 +1626,6 @@ static void nau8824_init_regs(struct nau8824 *nau8824)
- 	regmap_update_bits(regmap, NAU8824_REG_DAC_FILTER_CTRL_1,
- 		NAU8824_DAC_CICCLP_OFF | NAU8824_DAC_OVERSAMPLE_MASK,
- 		NAU8824_DAC_CICCLP_OFF | NAU8824_DAC_OVERSAMPLE_64);
--	/* Class D gain 9db for 1R and 2L */
--	regmap_update_bits(regmap, NAU8824_REG_CLASSD_GAIN_1,
--		NAU8824_CLASSD_GAIN_1R_MASK,
--		(0xa << NAU8824_CLASSD_GAIN_1R_SFT));
--	regmap_update_bits(regmap, NAU8824_REG_CLASSD_GAIN_2,
--		NAU8824_CLASSD_GAIN_2L_MASK, 0xa);
- 	/* DAC clock delay 2ns, VREF */
- 	regmap_update_bits(regmap, NAU8824_REG_RDAC,
- 		NAU8824_RDAC_CLK_DELAY_MASK | NAU8824_RDAC_VREF_MASK,
+diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+index 8c0f3b89b5bc..e78b5f055f25 100644
+--- a/sound/soc/codecs/cs4271.c
++++ b/sound/soc/codecs/cs4271.c
+@@ -498,7 +498,7 @@ static int cs4271_reset(struct snd_soc_codec *codec)
+ 	struct cs4271_private *cs4271 = snd_soc_codec_get_drvdata(codec);
+ 
+ 	if (gpio_is_valid(cs4271->gpio_nreset)) {
+-		gpio_set_value(cs4271->gpio_nreset, 0);
++		gpio_direction_output(cs4271->gpio_nreset, 0);
+ 		mdelay(1);
+ 		gpio_set_value(cs4271->gpio_nreset, 1);
+ 		mdelay(1);
 -- 
 2.11.0
