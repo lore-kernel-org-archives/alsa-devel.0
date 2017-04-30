@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix unused variable
-	warning" to the asoc tree
-Date: Sun, 30 Apr 2017 21:58:16 +0900
-Message-ID: <E1d4oQa-00042f-7d@finisterre>
-References: <1493275882-27708-2-git-send-email-vinod.koul@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: fix uninitialized
+	pointer use" to the asoc tree
+Date: Sun, 30 Apr 2017 21:58:20 +0900
+Message-ID: <E1d4oQe-00043W-EM@finisterre>
+References: <1493275882-27708-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4745627877807569585=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9808F266BEB
- for <alsa-devel@alsa-project.org>; Sun, 30 Apr 2017 14:58:24 +0200 (CEST)
-In-Reply-To: <1493275882-27708-2-git-send-email-vinod.koul@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B3F7266C57
+ for <alsa-devel@alsa-project.org>; Sun, 30 Apr 2017 14:58:33 +0200 (CEST)
+In-Reply-To: <1493275882-27708-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,16 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Vinod Koul <vinod.koul@intel.com>
 List-Id: alsa-devel@alsa-project.org
-
---===============4745627877807569585==
-Content-Type: text/plain
 
 The patch
 
-   ASoC: Intel: Skylake: Fix unused variable warning
+   ASoC: Intel: Skylake: fix uninitialized pointer use
 
 has been applied to the asoc tree at
 
@@ -55,56 +53,41 @@ to this mail.
 Thanks,
 Mark
 
->From 9ed4aefe6f5f7e1dfe6abe8b15cfc8c48963b6c0 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Thu, 27 Apr 2017 12:21:21 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix unused variable warning
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From 351d74e4d7eacaab2ed0092b855355d5e2907117 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Thu, 27 Apr 2017 12:59:58 +0200
+Subject: [PATCH] ASoC: Intel: Skylake: fix uninitialized pointer use
 
-With compiler option W=1, we have one more warning in the driver for
-'set but unused variable', so remove the unused variable to fix it.
+The error handling in bxt_sst_dsp_init() got changed in a way that
+it now derefences an uninitialized pointer when printing a warning
+about the device not being found:
 
-sound/soc/intel/skylake/skl-pcm.c: In function ‘skl_platform_open’:
-sound/soc/intel/skylake/skl-pcm.c:954:26: warning: variable ‘runtime’ set but not used [-Wunused-but-set-variable]
-  struct snd_pcm_runtime *runtime;
+sound/soc/intel/skylake/bxt-sst.c: In function 'bxt_sst_dsp_init':
+sound/soc/intel/skylake/bxt-sst.c:567:14: error: 'skl' may be used uninitialized in this function [-Werror=maybe-uninitialized]
 
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+As we do have a valid device pointer available at the call site,
+let's use that instead.
+
+Fixes: 9fe9c7119283 ("ASoC: Intel: Skylake: Move sst common initialization to a helper function")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/intel/skylake/bxt-sst.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index d43d1976dd3b..e91bbcffc856 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -951,14 +951,12 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
+diff --git a/sound/soc/intel/skylake/bxt-sst.c b/sound/soc/intel/skylake/bxt-sst.c
+index fde4bc0f35b0..f5e7dbb1ba39 100644
+--- a/sound/soc/intel/skylake/bxt-sst.c
++++ b/sound/soc/intel/skylake/bxt-sst.c
+@@ -564,7 +564,7 @@ int bxt_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
  
- static int skl_platform_open(struct snd_pcm_substream *substream)
- {
--	struct snd_pcm_runtime *runtime;
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai_link *dai_link = rtd->dai_link;
+ 	ret = skl_sst_ctx_init(dev, irq, fw_name, dsp_ops, dsp, &skl_dev);
+ 	if (ret < 0) {
+-		dev_err(skl->dev, "%s: no device\n", __func__);
++		dev_err(dev, "%s: no device\n", __func__);
+ 		return ret;
+ 	}
  
- 	dev_dbg(rtd->cpu_dai->dev, "In %s:%s\n", __func__,
- 					dai_link->cpu_dai_name);
- 
--	runtime = substream->runtime;
- 	snd_soc_set_runtime_hwparams(substream, &azx_pcm_hw);
- 
- 	return 0;
 -- 
 2.11.0
-
-
---===============4745627877807569585==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4745627877807569585==--
