@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codec: wm8960: Relax bit clock
-	computation when using PLL" to the asoc tree
-Date: Sun, 30 Apr 2017 22:15:24 +0900
-Message-ID: <E1d4ohA-00054i-Pg@finisterre>
-References: <1493212192-7930-3-git-send-email-daniel.baluta@nxp.com>
+Subject: Applied "ASoC: codec: wm9860: avoid
+	maybe-uninitialized warning" to the asoc tree
+Date: Sun, 30 Apr 2017 22:15:28 +0900
+Message-ID: <E1d4ohE-00055i-Cr@finisterre>
+References: <1493212192-7930-2-git-send-email-daniel.baluta@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 451A72664EB
+ by alsa0.perex.cz (Postfix) with ESMTP id 74A83266BC1
  for <alsa-devel@alsa-project.org>; Sun, 30 Apr 2017 15:15:41 +0200 (CEST)
-In-Reply-To: <1493212192-7930-3-git-send-email-daniel.baluta@nxp.com>
+In-Reply-To: <1493212192-7930-2-git-send-email-daniel.baluta@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codec: wm8960: Relax bit clock computation when using PLL
+   ASoC: codec: wm9860: avoid maybe-uninitialized warning
 
 has been applied to the asoc tree at
 
@@ -53,79 +53,109 @@ to this mail.
 Thanks,
 Mark
 
->From 82bab88910ee358305a2f31ab30dad59f1b6421c Mon Sep 17 00:00:00 2001
+>From 66772eda0edbfbbbe7767a6b5d07e09dae84403d Mon Sep 17 00:00:00 2001
 From: Daniel Baluta <daniel.baluta@nxp.com>
-Date: Wed, 26 Apr 2017 16:09:52 +0300
-Subject: [PATCH] ASoC: codec: wm8960: Relax bit clock computation when using
- PLL
+Date: Wed, 26 Apr 2017 16:09:51 +0300
+Subject: [PATCH] ASoC: codec: wm9860: avoid maybe-uninitialized warning
 
-Bitclk is derived from sysclk using bclk_divs.
-Sysclk can be derived in two ways:
-	(1) directly from MLCK
-	(2) MCLK via PLL
+The new PLL configuration code triggers a harmless warning:
 
-Commit 3c01b9ee2ab9d0d ("ASoC: codec: wm8960: Relax bit clock
-computation")
-relaxed bitclk computation when sysclk is directly derived from MCLK.
+sound/soc/codecs/wm8960.c: In function 'wm8960_configure_clocking':
+sound/soc/codecs/wm8960.c:735:3: error: 'best_freq_out' may be used
+uninitialized in this function [-Werror=maybe-uninitialized]
+   wm8960_set_pll(codec, freq_in, best_freq_out);
+   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+sound/soc/codecs/wm8960.c:699:12: note: 'best_freq_out' was declared
+here
 
-Lets do the same thing when sysclk is derived via PLL.
+Fix this by reworking the code such that:
 
+1) When there is no PLL freq available return -EINVAL and make
+sure *bclk_idx, *dac_idx, *sysclk_idx are initialized with
+invalid values.
+
+2) When there is a PLL freq available initialize *bclk_idx,
+*dac_idx and *sysclk_idx with correct values and immediately
+return the freq available.
+
+Fixes: 84fdc00d519f ("ASoC: codec: wm9860: Refactor PLL out freq search")
+Fixes: 303e8954af8d ("ASoC: codec: wm8960: Stop when a matching PLL freq is found")
+Suggested-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8960.c | 18 ++++++++++++++++--
- 1 file changed, 16 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm8960.c | 26 +++++++++-----------------
+ 1 file changed, 9 insertions(+), 17 deletions(-)
 
 diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
-index d899623fb101..9ed455700954 100644
+index ace69da97cb8..d899623fb101 100644
 --- a/sound/soc/codecs/wm8960.c
 +++ b/sound/soc/codecs/wm8960.c
-@@ -679,6 +679,10 @@ int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
-  *		- freq_out    = sysclk * sysclk_divs
-  *		- 10 * sysclk = bclk * bclk_divs
+@@ -686,7 +686,7 @@ int wm8960_configure_sysclk(struct wm8960_priv *wm8960, int mclk,
+  * @bclk_idx: bclk_divs index for found bclk
   *
-+ * 	If we cannot find an exact match for (sysclk, lrclk, bclk)
-+ * 	triplet, we relax the bclk such that bclk is chosen as the
-+ * 	closest available frequency greater than expected bclk.
-+ *
-  * @codec: codec structure
-  * @freq_in: input frequency used to derive freq out via PLL
-  * @sysclk_idx: sysclk_divs index for found sysclk
-@@ -696,12 +700,14 @@ int wm8960_configure_pll(struct snd_soc_codec *codec, int freq_in,
+  * Returns:
+- *  -1, in case no PLL frequency out available was found
++ * < 0, in case no PLL frequency out available was found
+  * >=0, in case we could derive bclk, lrclk, sysclk from PLL out using
+  *      (@sysclk_idx, @dac_idx, @bclk_idx) dividers
+  */
+@@ -696,13 +696,13 @@ int wm8960_configure_pll(struct snd_soc_codec *codec, int freq_in,
  {
  	struct wm8960_priv *wm8960 = snd_soc_codec_get_drvdata(codec);
  	int sysclk, bclk, lrclk, freq_out;
--	int diff;
-+	int diff, closest, best_freq_out;
+-	int diff, best_freq_out;
++	int diff;
  	int i, j, k;
  
  	bclk = wm8960->bclk;
  	lrclk = wm8960->lrclk;
-+	closest = freq_in;
  
-+	best_freq_out = -EINVAL;
- 	*sysclk_idx = *dac_idx = *bclk_idx = -1;
+-	*bclk_idx = -1;
++	*sysclk_idx = *dac_idx = *bclk_idx = -1;
  
  	for (i = 0; i < ARRAY_SIZE(sysclk_divs); ++i) {
-@@ -722,10 +728,18 @@ int wm8960_configure_pll(struct snd_soc_codec *codec, int freq_in,
+ 		if (sysclk_divs[i] == -1)
+@@ -720,21 +720,12 @@ int wm8960_configure_pll(struct snd_soc_codec *codec, int freq_in,
+ 					*sysclk_idx = i;
+ 					*dac_idx = j;
  					*bclk_idx = k;
- 					return freq_out;
+-					best_freq_out = freq_out;
+-					break;
++					return freq_out;
  				}
-+				if (diff > 0 && closest > diff) {
-+					*sysclk_idx = i;
-+					*dac_idx = j;
-+					*bclk_idx = k;
-+					closest = diff;
-+					best_freq_out = freq_out;
-+				}
  			}
+-			if (k != ARRAY_SIZE(bclk_divs))
+-				break;
  		}
+-		if (j != ARRAY_SIZE(dac_divs))
+-			break;
  	}
--	return -EINVAL;
-+
-+	return best_freq_out;
+-
+-	if (*bclk_idx != -1)
+-		wm8960_set_pll(codec, freq_in, best_freq_out);
+-
+-	return *bclk_idx;
++	return -EINVAL;
  }
  static int wm8960_configure_clocking(struct snd_soc_codec *codec)
  {
+@@ -783,11 +774,12 @@ static int wm8960_configure_clocking(struct snd_soc_codec *codec)
+ 		}
+ 	}
+ 
+-	ret = wm8960_configure_pll(codec, freq_in, &i, &j, &k);
+-	if (ret < 0) {
++	freq_out = wm8960_configure_pll(codec, freq_in, &i, &j, &k);
++	if (freq_out < 0) {
+ 		dev_err(codec->dev, "failed to configure clock via PLL\n");
+-		return -EINVAL;
++		return freq_out;
+ 	}
++	wm8960_set_pll(codec, freq_in, freq_out);
+ 
+ configure_clock:
+ 	/* configure sysclk clock */
 -- 
 2.11.0
