@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sti: Fix error handling if of_clk_get() fails" to the asoc tree
-Date: Sun, 30 Apr 2017 21:58:24 +0900
-Message-ID: <E1d4oQi-00044Z-E9@finisterre>
-References: <20170428132210.jvjrltku25sepivw@mwanda>
-Return-path: <kernel-janitors-owner@vger.kernel.org>
-In-Reply-To: <20170428132210.jvjrltku25sepivw@mwanda>
-Sender: kernel-janitors-owner@vger.kernel.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Arnaud POULIQUEN <arnaud.pouliquen@st.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Arnaud Pouliquen <arnaud.pouliquen@st.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.orgArnaud Pouliquen <arnaud.pouliquen@st.com>, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>, Wei Yongjun <weiyongjun1@huawei.com>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: Intel: Skylake: Return negative error
+	code" to the asoc tree
+Date: Sun, 30 Apr 2017 21:58:11 +0900
+Message-ID: <E1d4oQV-00041q-0t@finisterre>
+References: <1493275882-27708-3-git-send-email-vinod.koul@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 883F9266BEF
+ for <alsa-devel@alsa-project.org>; Sun, 30 Apr 2017 14:58:20 +0200 (CEST)
+In-Reply-To: <1493275882-27708-3-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sti: Fix error handling if of_clk_get() fails
+   ASoC: Intel: Skylake: Return negative error code
 
 has been applied to the asoc tree at
 
@@ -37,35 +53,52 @@ to this mail.
 Thanks,
 Mark
 
->From 65ed0a8d1f24abd79be149253025de8949321900 Mon Sep 17 00:00:00 2001
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Fri, 28 Apr 2017 16:22:10 +0300
-Subject: [PATCH] ASoC: sti: Fix error handling if of_clk_get() fails
+>From 081dc8ab46df85382658822e951ea79be87382b0 Mon Sep 17 00:00:00 2001
+From: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Date: Thu, 27 Apr 2017 12:21:22 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Return negative error code
 
-We intended to return here.  The current code has a static checker
-warning because we set "ret" but don't use it.
+skl_tplg_add_pipe() returned EEXIST instead of negative EEXIST, so fix that
+and handle the return value as well.
 
-Fixes: 76c2145ded6b ("ASoC: sti: Add CPU DAI driver for playback")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sti/uniperif_player.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/skylake/skl-topology.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/sti/uniperif_player.c b/sound/soc/sti/uniperif_player.c
-index d7e8dd46d2cc..d8b6936e544e 100644
---- a/sound/soc/sti/uniperif_player.c
-+++ b/sound/soc/sti/uniperif_player.c
-@@ -1074,7 +1074,7 @@ int uni_player_init(struct platform_device *pdev,
- 	player->clk = of_clk_get(pdev->dev.of_node, 0);
- 	if (IS_ERR(player->clk)) {
- 		dev_err(player->dev, "Failed to get clock\n");
--		ret = PTR_ERR(player->clk);
-+		return PTR_ERR(player->clk);
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 0e459d3eb17a..29f68713a231 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -1711,7 +1711,7 @@ static int skl_tplg_add_pipe(struct device *dev,
+ 	list_for_each_entry(ppl, &skl->ppl_list, node) {
+ 		if (ppl->pipe->ppl_id == tkn_elem->value) {
+ 			mconfig->pipe = ppl->pipe;
+-			return EEXIST;
++			return -EEXIST;
+ 		}
  	}
  
- 	/* Select the frequency synthesizer clock */
+@@ -2003,11 +2003,13 @@ static int skl_tplg_get_token(struct device *dev,
+ 		ret = skl_tplg_add_pipe(dev,
+ 				mconfig, skl, tkn_elem);
+ 
+-		if (ret < 0)
++		if (ret < 0) {
++			if (ret == -EEXIST) {
++				is_pipe_exists = 1;
++				break;
++			}
+ 			return is_pipe_exists;
+-
+-		if (ret == EEXIST)
+-			is_pipe_exists = 1;
++		}
+ 
+ 		break;
+ 
 -- 
 2.11.0
-
