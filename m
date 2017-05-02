@@ -1,63 +1,58 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/4] ASoC: codecs: da7213: fix invalid usage of bitwise operation in loop condition
-Date: Tue,  2 May 2017 22:33:00 +0900
-Message-ID: <20170502133303.19622-2-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/4] ASoC: codecs: msm8916: fix invalid cast to bool type
+Date: Tue,  2 May 2017 22:33:01 +0900
+Message-ID: <20170502133303.19622-3-o-takashi@sakamocchi.jp>
 References: <20170502133303.19622-1-o-takashi@sakamocchi.jp>
 Return-path: <stable-owner@vger.kernel.org>
 In-Reply-To: <20170502133303.19622-1-o-takashi@sakamocchi.jp>
 Sender: stable-owner@vger.kernel.org
 To: tiwai@suse.de, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, "# 4 . 4+" <stable@vger.kernel.org>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc: alsa-devel@alsa-project.org, "# 4 . 10+" <stable@vger.kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-AND bitwise operation is used for retry counter and lock status, however in
-this case, it's invalid as condition statement.
+A function snd_soc_update_bits() is an application of
+regmap_update_bits_base(). This function takes some arguments for bitmask
+and new value, thus the arguments should be a type which has width.
+However bool is used to variable for the argument. This brings truncation
+and results in invalid operation.
 
-This commit fixes this bug with simpler representation. This bug is
-detected by sparse with below warning:
+This commit fixes this bug by using unsigned int type, instead of bool.
+This bug is detected by sparse:
 
-sound/soc/codecs/da7213.c:775:57: warning: dubious: x & !y
+smsm8916-wcd-analog.c:809:43: warning: odd constant _Bool cast (40 becomes 1)
+smsm8916-wcd-analog.c:814:43: warning: odd constant _Bool cast (40 becomes 1)
 
-Fixes: d575b0b0f01a ("ASoC: da7213: Add checking of SRM lock status before enabling DAI")
-Cc: <stable@vger.kernel.org> # 4.4+
-Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Fixes: 585e881e5b9e ("ASoC: codecs: Add msm8916-wcd analog codec")
+Cc: <stable@vger.kernel.org> # 4.10+
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/soc/codecs/da7213.c | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
+ sound/soc/codecs/msm8916-wcd-analog.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
-index 6dd7578..11d257c 100644
---- a/sound/soc/codecs/da7213.c
-+++ b/sound/soc/codecs/da7213.c
-@@ -737,7 +737,6 @@ static int da7213_dai_event(struct snd_soc_dapm_widget *w,
- 	struct da7213_priv *da7213 = snd_soc_codec_get_drvdata(codec);
- 	u8 pll_ctrl, pll_status;
- 	int i = 0;
--	bool srm_lock = false;
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index d8e8590..a788029 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -223,8 +223,8 @@ struct pm8916_wcd_analog_priv {
+ 	u16 codec_version;
+ 	struct clk *mclk;
+ 	struct regulator_bulk_data supplies[ARRAY_SIZE(supply_names)];
+-	bool micbias1_cap_mode;
+-	bool micbias2_cap_mode;
++	unsigned int micbias1_cap_mode;
++	unsigned int micbias2_cap_mode;
+ };
  
+ static const char *const adc2_mux_text[] = { "ZERO", "INP2", "INP3" };
+@@ -285,7 +285,7 @@ static void pm8916_wcd_analog_micbias_enable(struct snd_soc_codec *codec)
+ 
+ static int pm8916_wcd_analog_enable_micbias_ext(struct snd_soc_codec
+ 						 *codec, int event,
+-						 int reg, u32 cap_mode)
++						 int reg, unsigned int cap_mode)
+ {
  	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
-@@ -766,15 +765,12 @@ static int da7213_dai_event(struct snd_soc_dapm_widget *w,
- 		/* Check SRM has locked */
- 		do {
- 			pll_status = snd_soc_read(codec, DA7213_PLL_STATUS);
--			if (pll_status & DA7219_PLL_SRM_LOCK) {
--				srm_lock = true;
--			} else {
--				++i;
--				msleep(50);
--			}
--		} while ((i < DA7213_SRM_CHECK_RETRIES) & (!srm_lock));
-+			if (pll_status & DA7219_PLL_SRM_LOCK)
-+				break;
-+			msleep(50);
-+		} while (++i < DA7213_SRM_CHECK_RETRIES);
- 
--		if (!srm_lock)
-+		if (i >= DA7213_SRM_CHECK_RETRIES)
- 			dev_warn(codec->dev, "SRM failed to lock\n");
- 
- 		return 0;
+ 	case SND_SOC_DAPM_POST_PMU:
 -- 
 2.9.3
