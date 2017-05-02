@@ -1,58 +1,58 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/4] ASoC: codecs: msm8916: fix invalid cast to bool type
-Date: Tue,  2 May 2017 22:33:01 +0900
-Message-ID: <20170502133303.19622-3-o-takashi@sakamocchi.jp>
+Subject: [PATCH 4/4] ASoC: intel: atom: localize variable
+	without external linkage
+Date: Tue,  2 May 2017 22:33:03 +0900
+Message-ID: <20170502133303.19622-5-o-takashi@sakamocchi.jp>
 References: <20170502133303.19622-1-o-takashi@sakamocchi.jp>
-Return-path: <stable-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 4970E266B98
+ for <alsa-devel@alsa-project.org>; Tue,  2 May 2017 15:33:08 +0200 (CEST)
 In-Reply-To: <20170502133303.19622-1-o-takashi@sakamocchi.jp>
-Sender: stable-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: tiwai@suse.de, broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, "# 4 . 10+" <stable@vger.kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Sebastien Guiriec <sebastien.guiriec@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-A function snd_soc_update_bits() is an application of
-regmap_update_bits_base(). This function takes some arguments for bitmask
-and new value, thus the arguments should be a type which has width.
-However bool is used to variable for the argument. This brings truncation
-and results in invalid operation.
+A driver for Intel SST driver for old atom platform includes a variable
+which has no external linkage. These functions should have static
+qualifier.
 
-This commit fixes this bug by using unsigned int type, instead of bool.
-This bug is detected by sparse:
+This commit adds the qualifier to localize the variable. This issue is
+detected by sparse:
 
-smsm8916-wcd-analog.c:809:43: warning: odd constant _Bool cast (40 becomes 1)
-smsm8916-wcd-analog.c:814:43: warning: odd constant _Bool cast (40 becomes 1)
+sst.c:261:1: warning: symbol 'dev_attr_firmware_version' was not declared. Should it be static?
 
-Fixes: 585e881e5b9e ("ASoC: codecs: Add msm8916-wcd analog codec")
-Cc: <stable@vger.kernel.org> # 4.10+
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Sebastien Guiriec <sebastien.guiriec@intel.com>
+Cc: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/soc/codecs/msm8916-wcd-analog.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/atom/sst/sst.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
-index d8e8590..a788029 100644
---- a/sound/soc/codecs/msm8916-wcd-analog.c
-+++ b/sound/soc/codecs/msm8916-wcd-analog.c
-@@ -223,8 +223,8 @@ struct pm8916_wcd_analog_priv {
- 	u16 codec_version;
- 	struct clk *mclk;
- 	struct regulator_bulk_data supplies[ARRAY_SIZE(supply_names)];
--	bool micbias1_cap_mode;
--	bool micbias2_cap_mode;
-+	unsigned int micbias1_cap_mode;
-+	unsigned int micbias2_cap_mode;
- };
+diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
+index f9ba713..d97556a 100644
+--- a/sound/soc/intel/atom/sst/sst.c
++++ b/sound/soc/intel/atom/sst/sst.c
+@@ -258,7 +258,7 @@ static ssize_t firmware_version_show(struct device *dev,
  
- static const char *const adc2_mux_text[] = { "ZERO", "INP2", "INP3" };
-@@ -285,7 +285,7 @@ static void pm8916_wcd_analog_micbias_enable(struct snd_soc_codec *codec)
+ }
  
- static int pm8916_wcd_analog_enable_micbias_ext(struct snd_soc_codec
- 						 *codec, int event,
--						 int reg, u32 cap_mode)
-+						 int reg, unsigned int cap_mode)
- {
- 	switch (event) {
- 	case SND_SOC_DAPM_POST_PMU:
+-DEVICE_ATTR_RO(firmware_version);
++static DEVICE_ATTR_RO(firmware_version);
+ 
+ static const struct attribute *sst_fw_version_attrs[] = {
+ 	&dev_attr_firmware_version.attr,
 -- 
 2.9.3
