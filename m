@@ -1,62 +1,53 @@
-From: Thierry Escande <thierry.escande@collabora.com>
-Subject: [PATCH 2/2] ASoC: ts3a227e: add acpi table
-Date: Tue,  2 May 2017 12:11:09 +0200
-Message-ID: <1493719869-16100-3-git-send-email-thierry.escande@collabora.com>
-References: <1493719869-16100-1-git-send-email-thierry.escande@collabora.com>
+From: Mengdong Lin <mengdong.lin@linux.intel.com>
+Subject: Re: snd_soc_set_dmi_name - Shouldn't it use SYS_VENDOR?
+Date: Tue, 2 May 2017 18:19:32 +0800
+Message-ID: <59085D34.2070604@linux.intel.com>
+References: <CAD8Lp454-BRKu7GZxpbO+4qgFfSTF0DviUcaUDtgNOVrzb2jLw@mail.gmail.com>
+ <5aa36e3b-49f9-d7f6-df58-18dcfcda08e5@linux.intel.com>
+ <CAD8Lp44uqQW9+V_ZgB4LLXa8WFb+=CX8hT8PmWbZEGFhZGTvBw@mail.gmail.com>
+ <7dbec345-e058-18ca-b4b3-e071fbc08fb0@linux.intel.com>
+ <CAD8Lp47u3ERC_pn4ScJ6DQZ9HOuDcUZ0zM4fEQ99c3EVzP_YXA@mail.gmail.com>
+ <1493375701.2540.53.camel@loki>
+ <F46914AEC2663F4A9BB62374E5EEF8F88250258C@SHSMSX103.ccr.corp.intel.com>
+ <F46914AEC2663F4A9BB62374E5EEF8F882502622@SHSMSX103.ccr.corp.intel.com>
+ <CAD8Lp46A9oDMTabXuMPutMtP5Fkbgc4HXVwtNj2dbrrSDe+bUA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset = "utf-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1493719869-16100-1-git-send-email-thierry.escande@collabora.com>
-Content-Transfert-Encoding: 8bit
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id E2D2A2669CC
+ for <alsa-devel@alsa-project.org>; Tue,  2 May 2017 12:13:26 +0200 (CEST)
+In-Reply-To: <CAD8Lp46A9oDMTabXuMPutMtP5Fkbgc4HXVwtNj2dbrrSDe+bUA@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Drake <drake@endlessm.com>, "Lin, Mengdong" <mengdong.lin@intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: "Fang, Yang A" <yang.a.fang@intel.com>
 
-This patch adds the acpi match table for the ts3a227e audio accessory
-detection device. This enables headset features like jack plug/unplug
-notifications, mic presence, and button pressed events.
+On 04/29/2017 11:27 PM, Daniel Drake wrote:
+> Hi,
+>
+> On Fri, Apr 28, 2017 at 10:21 AM, Lin, Mengdong <mengdong.lin@intel.com> wrote:
+>> I just submitted a patch to fix this http://mailman.alsa-project.org/pipermail/alsa-devel/2017-April/120271.html
+>> It passed building and I will test it next Tuesday. 3 Intel machines may have null DMI_SYS_VENDOR.
+>
+> Thanks! I tested the patch on my platform here, and it is working
+> correctly, I now get the expected vendor name appearing in the string.
+>
+> Daniel
+> _______________________________________________
 
-Signed-off-by: Fang, Yang A <yang.a.fang@intel.com>
-Signed-off-by: Thierry Escande <thierry.escande@collabora.com>
----
- sound/soc/codecs/ts3a227e.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Many thanks for testing on your platforms!  It also works on my 
+platforms today.
 
-diff --git a/sound/soc/codecs/ts3a227e.c b/sound/soc/codecs/ts3a227e.c
-index 4356843..738e04b 100644
---- a/sound/soc/codecs/ts3a227e.c
-+++ b/sound/soc/codecs/ts3a227e.c
-@@ -15,6 +15,7 @@
- #include <linux/module.h>
- #include <linux/of_gpio.h>
- #include <linux/regmap.h>
-+#include <linux/acpi.h>
- 
- #include <sound/core.h>
- #include <sound/jack.h>
-@@ -374,11 +375,20 @@ static const struct of_device_id ts3a227e_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, ts3a227e_of_match);
- 
-+#ifdef CONFIG_ACPI
-+static struct acpi_device_id ts3a227e_acpi_match[] = {
-+	{ "104C227E", 0 },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(acpi, ts3a227e_acpi_match);
-+#endif
-+
- static struct i2c_driver ts3a227e_driver = {
- 	.driver = {
- 		.name = "ts3a227e",
- 		.pm = &ts3a227e_pm,
- 		.of_match_table = of_match_ptr(ts3a227e_of_match),
-+		.acpi_match_table = ACPI_PTR(ts3a227e_acpi_match),
- 	},
- 	.probe = ts3a227e_i2c_probe,
- 	.id_table = ts3a227e_i2c_ids,
--- 
-2.7.4
+Regards
+Mengdong
