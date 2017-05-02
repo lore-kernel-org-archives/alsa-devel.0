@@ -1,188 +1,130 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v2 00/11] drm/i915: LPE audio
- runtime PM and multipipe (v2)
-Date: Mon, 1 May 2017 20:29:10 -0500
-Message-ID: <2f180ba2-4214-97b2-8a25-6f968561eb9c@linux.intel.com>
-References: <20170427160231.13337-1-ville.syrjala@linux.intel.com>
- <s5h8tmkzzy6.wl-tiwai@suse.de>
- <e3de14cf-e480-02d0-c98e-a7a1d9cb4fbf@linux.intel.com>
- <20170428193745.GA12629@intel.com>
+From: John Hsu <supercraig0719@gmail.com>
+Subject: [PATCH] ASoC: nau8824: TDM support
+Date: Tue,  2 May 2017 09:42:58 +0800
+Message-ID: <1493689378-13662-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20170428193745.GA12629@intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pg0-f65.google.com (mail-pg0-f65.google.com [74.125.83.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB64A26691F
+ for <alsa-devel@alsa-project.org>; Tue,  2 May 2017 03:43:11 +0200 (CEST)
+Received: by mail-pg0-f65.google.com with SMTP id v1so18494466pgv.3
+ for <alsa-devel@alsa-project.org>; Mon, 01 May 2017 18:43:11 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com, John Hsu <supercraig0719@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAwNC8yOC8yMDE3IDAyOjM3IFBNLCBWaWxsZSBTeXJqw6Rsw6Qgd3JvdGU6Cj4gT24gRnJp
-LCBBcHIgMjgsIDIwMTcgYXQgMTI6MTA6MzFQTSAtMDUwMCwgUGllcnJlLUxvdWlzIEJvc3NhcnQg
-d3JvdGU6Cj4+Cj4+IE9uIDA0LzI4LzIwMTcgMDM6NDEgQU0sIFRha2FzaGkgSXdhaSB3cm90ZToK
-Pj4+IE9uIFRodSwgMjcgQXByIDIwMTcgMTg6MDI6MTkgKzAyMDAsCj4+PiB2aWxsZS5zeXJqYWxh
-QGxpbnV4LmludGVsLmNvbSB3cm90ZToKPj4+PiBGcm9tOiBWaWxsZSBTeXJqw6Rsw6QgPHZpbGxl
-LnN5cmphbGFAbGludXguaW50ZWwuY29tPgo+Pj4+Cj4+Pj4gT2theSwgaGVyZSdzIHRoZSBzZWNv
-bmQgYXR0ZW1wdCBhdCBnZXR0aW5nIG11bHRpcGxlIHBpcGVzIHBsYXlpbmcgYmFjawo+Pj4+IGF1
-ZGlvIG9uIHRoZSBWTFYvQ0hWIEhETUkgTFBFIGF1ZGlvIGRldmljZS4gVGhlIG1haW4gY2hhbmdl
-IGZyb20gdjEgaXMKPj4+PiB0aGF0IG5vdyB0aGUgUENNIGRldmljZXMgYXJlIGFzc29jaWF0ZWQg
-d2l0aCBwb3J0cyBpbnN0ZWFkIG9mIHBpcGVzLAo+Pj4+IHNvIHRoZSBhdWRpbyBmcm9tIG9uZSBk
-ZXZpY2UgYWx3YXlzIGdldHMgb3V0cHV0IG9uIHRoZSBzYW1lIGRpc3BsYXkuCj4+Pj4KPj4+PiBJ
-J3ZlIGFsc28gdGFja2VkIG9uIHRoZSBhbHNhLWxpYiBjb25mIHVwZGF0ZS4gTm8gY2x1ZSB3aGV0
-aGVyIGl0J3MKPj4+PiByZWFsbHkgY29ycmVjdCBvciBub3QgKHRoZSBjb25maWcgbGFuZ3VhZ2Ug
-aXNuJ3QgYSBjbG9zZSBmcmllbmQKPj4+PiBvZiBtaW5lKS4KPj4+Pgo+Pj4+IEJUVyBJIGRpZCBu
-b3RpY2UgdGhhdCB3aXRoIExQRSBhdWRpbyBhbGwgdGhlIGNvbnRyb2xzIHNheSBpZmFjZT1QQ00s
-Cj4+Pj4gd2hlcmVhcyBvbiBIREEgYSBidW5jaCBvZiB0aGVtIHNheSBpZmFjZT1NSVhFUi4gTm8g
-aWRlYSBpZiB0aGF0J3MKPj4+PiBPSyBvciBub3QsIGp1c3Qgc29tZXRoaW5nIEkgc3BvdHRlZCB3
-aGVuIEkgd2FzIGNvbXBhcmluZyB0aGUgcmVzdWx0cwo+Pj4+IHdpdGggSERBLgo+Pj4gV2UgZ2Vu
-ZXJhbGx5IGFjY2VwdCBib3RoIGlmYWNlIHR5cGVzIGZvciBJRUM5NTggc3R1ZmYsIHNpbmNlCj4+
-PiBoaXN0b3JpY2FsbHkgbWFueSBkcml2ZXJzIGhhdmUgYWxyZWFkeSBtaXhlZCB0aGVtIHVwLiAg
-U28gaXQncyBubwo+Pj4gcHJvYmxlbSA6KQo+Pj4KPj4+Cj4+Pj4gRW50aXJlIHNlcmllcyBhdmFp
-bGFibGUgaGVyZToKPj4+PiBnaXQ6Ly9naXRodWIuY29tL3ZzeXJqYWxhL2xpbnV4LmdpdCBscGVf
-YXVkaW9fbXVsdGlwaXBlXzIKPj4+Pgo+Pj4+IENjOiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2Uu
-ZGU+Cj4+Pj4gQ2M6IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IDxwaWVycmUtbG91aXMuYm9zc2FydEBs
-aW51eC5pbnRlbC5jb20+Cj4+PiBBbGwgbG9vayBnb29kLCBhbmQgZmVlbCBmcmVlIHRvIHRha2Ug
-bXkgcmV2aWV3ZWQtYnkgdGFnCj4+PiAgICAgUmV2aWV3ZWQtYnk6IFRha2FzaGkgSXdhaSA8dGl3
-YWlAc3VzZS5kZT4KPj4+Cj4+PiBBcyBzYWlkIHByZXZpb3VzbHksIG15IG9ubHkgc2xpZ2h0IGNv
-bmNlcm4gaXMgdGhlIGNvbXBhdGliaWxpdHkuCj4+PiBCdXQsIGluIHRoZSBjdXJyZW50IHNpdHVh
-dGlvbiB3aXRoIFB1bHNlQXVkaW8sIG9ubHkgZmV3IHBlb3BsZSB3b3VsZAo+Pj4gdXNlIHRoaXMg
-ZHJpdmVyLCBzbyBpdCBzaG91bGRuJ3QgYmUgc28gYmlnIGltcGFjdCwgSSBzdXBwb3NlLgo+Pj4K
-Pj4+IEJUVywgd2hpY2ggcG9ydCBpcyB1c2VkIGluIGdlbmVyYWwgb24gQllUL0NIVD8KPj4+Cj4+
-PiBPaCwgYWxzbywgSSBzdXBwb3NlIHlvdSB3YW50IHRvIGNhcnJ5IHRoZXNlIG92ZXIgaTkxNSB0
-cmVlPwo+Pj4gSSBkb24ndCBtaW5kIGVpdGhlciB3YXksIEkgY2FuIHRha2UgdGhlbSB0aHJvdWdo
-IHNvdW5kIHRyZWUgaWYKPj4+IHByZWZlcnJlZCwgdG9vLgo+PiBJIHNlZSBmcmVxdWVudCBvb3Bz
-IG9uIHN0YXJ0dXAgd2l0aCB0aGlzIGxwZV9hdWRpb19tdWx0aXBpcGVfMiBicmFuY2gKPj4gd2l0
-aCBteSBDSFQgZGV2aWNlIG5vdCBib290aW5nIG9yIG5vIEhETUkgYXVkaW8gZGV2aWNlIGNyZWF0
-ZWQuCj4+IE5vdCBzdXJlIGlmIHRoZXNlIGlzc3VlcyBhcmUgZHVlIHRvIHRoZSBuZXcgcGF0Y2hl
-cyBvciB0byB0aGUgcmVzdCBvZgo+PiB0aGUgZHJtIGNvZGU/Cj4+Cj4+IFsgICAgNS41MjkwMjNd
-IEJVRzogdW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwgTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlCj4+
-IGF0ICAgICAgICAgICAobnVsbCkKPj4gWyAgICA1LjUyOTE0M10gSVA6IGhkbWlfbHBlX2F1ZGlv
-X3Byb2JlKzB4NDBmLzB4NjUwIFtzbmRfaGRtaV9scGVfYXVkaW9dCj4+IFsgICAgNS41MjkyMDJd
-IFBHRCAwCj4+Cj4+IFsgICAgNS41MjkyNDJdIE9vcHM6IDAwMDAgWyMxXSBTTVAKPj4gWyAgICA1
-LjUyOTI3NF0gTW9kdWxlcyBsaW5rZWQgaW46IHNuZF9zb2Nfc3N0X2F0b21faGlmaTJfcGxhdGZv
-cm0KPj4gc25kX3NvY19zc3RfbWF0Y2ggc25kX3NvY19jb3JlIHNuZF9jb21wcmVzcyBscGNfaWNo
-IHNuZF9zZXEKPj4gc25kX3NlcV9kZXZpY2Ugc2hwY2hwIHNuZF9oZG1pX2xwZV9hdWRpbygrKSBz
-bmRfcGNtIHNuZF90aW1lciBkd19kbWFjCj4+IHNuZCBzb3VuZGNvcmUgaTJjX2Rlc2lnbndhcmVf
-cGxhdGZvcm0oKykgaTJjX2Rlc2lnbndhcmVfY29yZQo+PiBzcGlfcHhhMnh4X3BsYXRmb3JtIGFj
-cGlfcGFkIG1hY19oaWQgbmZzZCBhdXRoX3JwY2dzcyBuZnNfYWNsIGxvY2tkCj4+IGdyYWNlIHN1
-bnJwYyBpcF90YWJsZXMgeF90YWJsZXMgaGlkX2dlbmVyaWMgbW1jX2Jsb2NrIGkyY19oaWQgdXNi
-aGlkIGhpZAo+PiBhdXRvZnM0Cj4+IFsgICAgNS41Mjk2MDVdIENQVTogMiBQSUQ6IDUxMiBDb21t
-OiBzeXN0ZW1kLXVkZXZkIE5vdCB0YWludGVkCj4+IDQuMTEuMC1yYzgtdGVzdCsgIzExCj4+IFsg
-ICAgNS41Mjk2NzFdIEhhcmR3YXJlIG5hbWU6IFpPVEFDIFhYWFhYWC9DaGVycnkgVHJhaWwgRkZE
-LCBCSU9TIDUuMTEKPj4gMDkvMjgvMjAxNgo+PiBbICAgIDUuNTI5NzM2XSB0YXNrOiBmZmZmODgw
-MDc0ODViNzgwIHRhc2suc3RhY2s6IGZmZmZjOTAwMDBiZmMwMDAKPj4gWyAgICA1LjUyOTc5M10g
-UklQOiAwMDEwOmhkbWlfbHBlX2F1ZGlvX3Byb2JlKzB4NDBmLzB4NjUwCj4+IFtzbmRfaGRtaV9s
-cGVfYXVkaW9dCj4+IFsgICAgNS41Mjk4NTVdIFJTUDogMDAxODpmZmZmYzkwMDAwYmZmYWYwIEVG
-TEFHUzogMDAwMTAyNDYKPj4gWyAgICA1LjUyOTkwNF0gUkFYOiAwMDAwMDAwMDAwMDAwMDAwIFJC
-WDogZmZmZjg4MDA3OTIwOTg5OCBSQ1g6Cj4+IGZmZmY4ODAwNzkyMGYwNzgKPj4gWyAgICA1LjUy
-OTk2N10gUkRYOiAwMDAwMDAwMDAwMDAwMDE0IFJTSTogZmZmZmM5MDAwMGJmZmIyOCBSREk6Cj4+
-IDAwMDAwMDAwMDAwMDAwMDIKPj4gWyAgICA1LjUzMDAzMV0gUkJQOiBmZmZmYzkwMDAwYmZmYjcw
-IFIwODogMDAwMDAwMDAwMDAwMDAwMSBSMDk6Cj4+IDAwMDAwMDAwMDAwMDAwMDAKPj4gWyAgICA1
-LjUzMDA5NF0gUjEwOiBmZmZmODgwMDc0NDFiZjAwIFIxMTogZmZmZmM5MDAwMGJmZmIzNiBSMTI6
-Cj4+IGZmZmY4ODAwNzkyMGVmMjAKPj4gWyAgICA1LjUzMDE1OV0gUjEzOiBmZmZmODgwMDc5MjBl
-ZjQ4IFIxNDogMDAwMDAwMDAwMDAwNTY4OCBSMTU6Cj4+IDAwMDAwMDAwMDAwMDAwNDcKPj4gWyAg
-ICA1LjUzMDIyNV0gRlM6ICAwMDAwN2Y2MjdjOTg4NjQwKDAwMDApIEdTOmZmZmY4ODAwN2IzMDAw
-MDAoMDAwMCkKPj4ga25sR1M6MDAwMDAwMDAwMDAwMDAwMAo+PiBbICAgIDUuNTMwMjk5XSBDUzog
-IDAwMTAgRFM6IDAwMDAgRVM6IDAwMDAgQ1IwOiAwMDAwMDAwMDgwMDUwMDMzCj4+IFsgICAgNS41
-MzAzNTJdIENSMjogMDAwMDAwMDAwMDAwMDAwMCBDUjM6IDAwMDAwMDAwNzhjYjgwMDAgQ1I0Ogo+
-PiAwMDAwMDAwMDAwMTAwNmUwCj4+IFsgICAgNS41MzA0MTZdIENhbGwgVHJhY2U6Cj4+IFsgICAg
-NS41MzA0NTJdICBwbGF0Zm9ybV9kcnZfcHJvYmUrMHgzYi8weGEwCj4+IFsgICAgNS41MzA0OTRd
-ICBkcml2ZXJfcHJvYmVfZGV2aWNlKzB4MmJiLzB4NDYwCj4+IFsgICAgNS41MzA1MzhdICBfX2Ry
-aXZlcl9hdHRhY2grMHhkZi8weGYwCj4+IFsgICAgNS41MzA1NzZdICA/IGRyaXZlcl9wcm9iZV9k
-ZXZpY2UrMHg0NjAvMHg0NjAKPj4gWyAgICA1LjUzMDYyMF0gIGJ1c19mb3JfZWFjaF9kZXYrMHg2
-MC8weGEwCj4+IFsgICAgNS41MzA2NThdICBkcml2ZXJfYXR0YWNoKzB4MWUvMHgyMAo+PiBbICAg
-IDUuNTMwNjkzXSAgYnVzX2FkZF9kcml2ZXIrMHgxNzAvMHgyNzAKPj4gWyAgICA1LjUzMDczMV0g
-IGRyaXZlcl9yZWdpc3RlcisweDYwLzB4ZTAKPj4gWyAgICA1LjUzMDc2OV0gID8gMHhmZmZmZmZm
-ZmEwMWNiMDAwCj4+IFsgICAgNS41MzA4MDNdICBfX3BsYXRmb3JtX2RyaXZlcl9yZWdpc3Rlcisw
-eDM2LzB4NDAKPj4gWyAgICA1LjUzMDg1MV0gIGhkbWlfbHBlX2F1ZGlvX2RyaXZlcl9pbml0KzB4
-MTcvMHgxMDAwIFtzbmRfaGRtaV9scGVfYXVkaW9dCj4+IFsgICAgNS41MzA5MTVdICBkb19vbmVf
-aW5pdGNhbGwrMHg0My8weDE4MAo+PiBbICAgIDUuNTMwOTU2XSAgPyBfX3Z1bm1hcCsweDgxLzB4
-ZDAKPj4gWyAgICA1LjUzMDk5MV0gID8ga2ZyZWUrMHgxNGMvMHgxNjAKPj4gWyAgICA1LjUzMTAy
-NF0gID8ga21lbV9jYWNoZV9hbGxvY190cmFjZSsweDM4LzB4MTUwCj4+IFsgICAgNS41MzEwNzBd
-ICBkb19pbml0X21vZHVsZSsweDVmLzB4MWY4Cj4+IFsgICAgNS41MzExMDhdICBsb2FkX21vZHVs
-ZSsweDI3MWUvMHgyYmQwCj4+IFsgICAgNS41MzExNDddICA/IGtlcm5lbF9yZWFkX2ZpbGUrMHgx
-YTMvMHgxYzAKPj4gWyAgICA1LjUzMTE4OF0gIFNZU0NfZmluaXRfbW9kdWxlKzB4YmMvMHhmMAo+
-PiBbICAgIDUuNTMxMjI2XSAgPyBTWVNDX2Zpbml0X21vZHVsZSsweGJjLzB4ZjAKPj4gWyAgICA1
-LjUzMTI2N10gIFN5U19maW5pdF9tb2R1bGUrMHhlLzB4MTAKPj4gWyAgICA1LjUzMTMwNV0gIGRv
-X3N5c2NhbGxfNjQrMHg2ZS8weDE4MAo+PiBbICAgIDUuNTMxMzQ1XSAgZW50cnlfU1lTQ0FMTDY0
-X3Nsb3dfcGF0aCsweDI1LzB4MjUKPj4gWyAgICA1LjUzMTM4OV0gUklQOiAwMDMzOjB4N2Y2Mjdi
-NWZiYmY5Cj4+IFsgICAgNS41MzE0MjRdIFJTUDogMDAyYjowMDAwN2ZmZTA1M2VlZTY4IEVGTEFH
-UzogMDAwMDAyNDYgT1JJR19SQVg6Cj4+IDAwMDAwMDAwMDAwMDAxMzkKPj4gWyAgICA1LjUzMTQ5
-M10gUkFYOiBmZmZmZmZmZmZmZmZmZmRhIFJCWDogMDAwMDU1ZDZjNzQ1YjY5MCBSQ1g6Cj4+IDAw
-MDA3ZjYyN2I1ZmJiZjkKPj4gWyAgICA1LjUzMTU1OF0gUkRYOiAwMDAwMDAwMDAwMDAwMDAwIFJT
-STogMDAwMDdmNjI3YzEzNDk5NSBSREk6Cj4+IDAwMDAwMDAwMDAwMDAwMDcKPj4gWyAgICA1LjUz
-MTYyMl0gUkJQOiAwMDAwN2Y2MjdjMTM0OTk1IFIwODogMDAwMDAwMDAwMDAwMDAwMCBSMDk6Cj4+
-IDAwMDA3ZmZlMDUzZWVmODAKPj4gWyAgICA1LjUzMTY4N10gUjEwOiAwMDAwMDAwMDAwMDAwMDA3
-IFIxMTogMDAwMDAwMDAwMDAwMDI0NiBSMTI6Cj4+IDAwMDAwMDAwMDAwMDAwMDAKPj4gWyAgICA1
-LjUzMTc1MV0gUjEzOiAwMDAwNTVkNmM3NDU5YWUwIFIxNDogMDAwMDAwMDAwMDAyMDAwMCBSMTU6
-Cj4+IDAwMDA1NWQ2Yzc0NWI2OTAKPj4gWyAgICA1LjUzMTgxNl0gQ29kZTogNDggOGIgNDUgYjAg
-OGIgNDggMTggZTggZTAgY2IgMjIgZTEgNDkgOGIgNDQgMjQgMjgKPj4gNGEgOGQgOGMgMzMgNTgg
-MDEgMDAgMDAgNDggOGQgNzUgYjggNDUgMzEgYzkgNDEgYjggMDEgMDAgMDAgMDAgYmEgMTQgMDAK
-Pj4gMDAgMDAgPDQ4PiA4YiAzOCBlOCBhOSAyYSBmZiBmZiA4NSBjMCAwZiA4OCAwOSAwMSAwMCAw
-MCA0OSA4YiA4NCAyNCA1OAo+IERpc2Fzc2VtYmxpbmcgdGhhdCBJIGdldDoKPgo+ICAgIDQwMDVh
-MDogICAgICAgNDggOGIgNDUgYjAgICAgICAgICAgICAgbW92ICAgIC0weDUwKCVyYnApLCVyYXgK
-PiAgICA0MDA1YTQ6ICAgICAgIDhiIDQ4IDE4ICAgICAgICAgICAgICAgIG1vdiAgICAweDE4KCVy
-YXgpLCVlY3gKPiAgICA0MDA1YTc6ICAgICAgIGU4IGUwIGNiIDIyIGUxICAgICAgICAgIGNhbGxx
-ICBmZmZmZmZmZmUxNjJkMThjIDxfZW5kKzB4ZmZmZmZmZmZlMTAyYzE0Yz4KPiAgICA0MDA1YWM6
-ICAgICAgIDQ5IDhiIDQ0IDI0IDI4ICAgICAgICAgIG1vdiAgICAweDI4KCVyMTIpLCVyYXgKPiAg
-ICA0MDA1YjE6ICAgICAgIDRhIDhkIDhjIDMzIDU4IDAxIDAwICAgIGxlYSAgICAweDE1OCglcmJ4
-LCVyMTQsMSksJXJjeAo+ICAgIDQwMDViODogICAgICAgMDAKPiAgICA0MDA1Yjk6ICAgICAgIDQ4
-IDhkIDc1IGI4ICAgICAgICAgICAgIGxlYSAgICAtMHg0OCglcmJwKSwlcnNpCj4gICAgNDAwNWJk
-OiAgICAgICA0NSAzMSBjOSAgICAgICAgICAgICAgICB4b3IgICAgJXI5ZCwlcjlkCj4gICAgNDAw
-NWMwOiAgICAgICA0MSBiOCAwMSAwMCAwMCAwMCAgICAgICBtb3YgICAgJDB4MSwlcjhkCj4gICAg
-NDAwNWM2OiAgICAgICBiYSAxNCAwMCAwMCAwMCAgICAgICAgICBtb3YgICAgJDB4MTQsJWVkeAo+
-ICAgIDQwMDVjYjogICAgICAgNDggOGIgMzggICAgICAgICAgICAgICAgbW92ICAgICglcmF4KSwl
-cmRpCj4gICAgNDAwNWNlOiAgICAgICBlOCBhOSAyYSBmZiBmZiAgICAgICAgICBjYWxscSAgM2Yz
-MDdjIDxfaW5pdC0weGQzMmM+Cj4gICAgNDAwNWQzOiAgICAgICA4NSBjMCAgICAgICAgICAgICAg
-ICAgICB0ZXN0ICAgJWVheCwlZWF4Cj4gICAgNDAwNWQ1OiAgICAgICAwZiA4OCAwOSAwMSAwMCAw
-MCAgICAgICBqcyAgICAgNDAwNmU0IDxfX0dOVV9FSF9GUkFNRV9IRFIrMHgxMDA+Cj4gICAgNDAw
-NWRiOiAgICAgICA0OSAgICAgICAgICAgICAgICAgICAgICByZXguV0IKPiAgICA0MDA1ZGM6ICAg
-ICAgIDhiICAgICAgICAgICAgICAgICAgICAgIC5ieXRlIDB4OGIKPiAgICA0MDA1ZGQ6ICAgICAg
-IDg0IDI0IDU4ICAgICAgICAgICAgICAgIHRlc3QgICAlYWgsKCVyYXgsJXJieCwyKQo+Cj4gQ29t
-cGFyaW5nIHRoYXQgd2l0aCB0aGUgZGlzYXNzZW1ibHkgZnJvbSBteSBidWlsZCwgdGhhdAo+IGZp
-cnN0IGNhbGwgbG9va3MgbGlrZSB0aGUgc25wcmludGYoKSBhbmQgdGhlIHNlY29uZCBvbmUgd291
-bGQKPiB0aGVuIGJlIHNuZF9qYWNrX25ldygpLiBTbyBpdCBzZWVtcyB0byBibG93IGluIHRoZQo+
-IGN0eC0+Y2FyZF9jdHgtPmNhcmQgZGVyZWZlcmVuY2UuIEJ1dCBJIGRvbid0IHJlYWxseSBzZWUg
-aG93Cj4gYSBOVUxMIHBvaW50ZXIgY291bGQgc25lYWsgaW4gdGhlcmUuCgpUaGVyZSB3YXMgYW4g
-c3RhbmRhcmQgUE9SVF9CIG9mZi1ieS1vbmUgZXJyb3Igd2hpY2ggcmVzdWx0ZWQgaW4gbWVtb3J5
-IApjb3JydXB0aW9uLiB0aGUgcGF0Y2ggYmVsb3cgc2VlbXMgdG8gZml4IHRoZSBwcm9ibGVtLCBJ
-IGNhbiBnZXQgdGhlIHNhbWUgCmZ1bmN0aW9uYWxpdHkgYXMgYmVmb3JlIHdpdGggY29uY3VycmVu
-dCBwbGF5YmFjayBvbiBIRE1JIGFuZCBEUCwgYW5kIHRoZSAKamFjayB2YWx1ZXMgYXJlIGNvcnJl
-Y3RseSBzZXQuCgpkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBlX2F1
-ZGlvLmMgCmIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBlX2F1ZGlvLmMKaW5kZXggZmE3
-MjhlZC4uM2JmNjUyOCAxMDA2NDQKLS0tIGEvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBl
-X2F1ZGlvLmMKKysrIGIvZHJpdmVycy9ncHUvZHJtL2k5MTUvaW50ZWxfbHBlX2F1ZGlvLmMKQEAg
-LTMzMiw3ICszMzIsNyBAQCB2b2lkIGludGVsX2xwZV9hdWRpb19ub3RpZnkoc3RydWN0IGRybV9p
-OTE1X3ByaXZhdGUgCipkZXZfcHJpdiwKICAgICAgICAgICAgICAgICByZXR1cm47CgogICAgICAg
-ICBwZGF0YSA9IGRldl9nZXRfcGxhdGRhdGEoJmRldl9wcml2LT5scGVfYXVkaW8ucGxhdGRldi0+
-ZGV2KTsKLSAgICAgICBwcGRhdGEgPSAmcGRhdGEtPnBvcnRbcG9ydF07CisgICAgICAgcHBkYXRh
-ID0gJnBkYXRhLT5wb3J0W3BvcnQgLSBQT1JUX0JdOwoKICAgICAgICAgc3Bpbl9sb2NrX2lycXNh
-dmUoJnBkYXRhLT5scGVfYXVkaW9fc2xvY2ssIGlycWZsYWdzKTsKCkBAIC0zNTksNyArMzU5LDcg
-QEAgdm9pZCBpbnRlbF9scGVfYXVkaW9fbm90aWZ5KHN0cnVjdCBkcm1faTkxNV9wcml2YXRlIAoq
-ZGV2X3ByaXYsCiAgICAgICAgIH0KCiAgICAgICAgIGlmIChwZGF0YS0+bm90aWZ5X2F1ZGlvX2xw
-ZSkKLSBwZGF0YS0+bm90aWZ5X2F1ZGlvX2xwZShkZXZfcHJpdi0+bHBlX2F1ZGlvLnBsYXRkZXYs
-IHBvcnQpOworIHBkYXRhLT5ub3RpZnlfYXVkaW9fbHBlKGRldl9wcml2LT5scGVfYXVkaW8ucGxh
-dGRldiwgcG9ydCAtIFBPUlRfQik7CgogICAgICAgICBzcGluX3VubG9ja19pcnFyZXN0b3JlKCZw
-ZGF0YS0+bHBlX2F1ZGlvX3Nsb2NrLCBpcnFmbGFncyk7CiAgfQpkaWZmIC0tZ2l0IGEvc291bmQv
-eDg2L2ludGVsX2hkbWlfYXVkaW8uYyBiL3NvdW5kL3g4Ni9pbnRlbF9oZG1pX2F1ZGlvLmMKaW5k
-ZXggOTA5MzkxZC4uMDE1MzQzOSAxMDA2NDQKLS0tIGEvc291bmQveDg2L2ludGVsX2hkbWlfYXVk
-aW8uYworKysgYi9zb3VuZC94ODYvaW50ZWxfaGRtaV9hdWRpby5jCkBAIC0xNTc5LDcgKzE1Nzks
-NyBAQCBzdGF0aWMgaXJxcmV0dXJuX3QgCmRpc3BsYXlfcGlwZV9pbnRlcnJ1cHRfaGFuZGxlcihp
-bnQgaXJxLCB2b2lkICpkZXZfaWQpCiAgc3RhdGljIHZvaWQgbm90aWZ5X2F1ZGlvX2xwZShzdHJ1
-Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2LCBpbnQgcG9ydCkKICB7CiAgICAgICAgIHN0cnVjdCBz
-bmRfaW50ZWxoYWRfY2FyZCAqY2FyZF9jdHggPSBwbGF0Zm9ybV9nZXRfZHJ2ZGF0YShwZGV2KTsK
-LSAgICAgICBzdHJ1Y3Qgc25kX2ludGVsaGFkICpjdHggPSAmY2FyZF9jdHgtPnBjbV9jdHhbcG9y
-dF07CisgICAgICAgc3RydWN0IHNuZF9pbnRlbGhhZCAqY3R4ID0gJmNhcmRfY3R4LT5wY21fY3R4
-W3BvcnRdOyAvKiB3YXJuaW5nOiAKb2Zmc2V0IHdpdGggLVBPUlRfQiAqLwoKICAgICAgICAgc2No
-ZWR1bGVfd29yaygmY3R4LT5oZG1pX2F1ZGlvX3dxKTsKICB9CgoKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50
-ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+Support TDM format for NAU88L24.
+
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+Signed-off-by: John Hsu <supercraig0719@gmail.com>
+---
+ sound/soc/codecs/nau8824.c | 52 ++++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/nau8824.h | 12 +++++++++++
+ 2 files changed, 64 insertions(+)
+
+diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
+index cca974d..3a309b1 100644
+--- a/sound/soc/codecs/nau8824.c
++++ b/sound/soc/codecs/nau8824.c
+@@ -1125,6 +1125,57 @@ static int nau8824_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ }
+ 
+ /**
++ * nau8824_set_tdm_slot - configure DAI TDM.
++ * @dai: DAI
++ * @tx_mask: Bitmask representing active TX slots. Ex.
++ *                 0xf for normal 4 channel TDM.
++ *                 0xf0 for shifted 4 channel TDM
++ * @rx_mask: Bitmask [0:1] representing active DACR RX slots.
++ *                 Bitmask [2:3] representing active DACL RX slots.
++ *                 00=CH0,01=CH1,10=CH2,11=CH3. Ex.
++ *                 0xf for DACL/R selecting TDM CH3.
++ *                 0xf0 for DACL/R selecting shifted TDM CH3.
++ * @slots: Number of slots in use.
++ * @slot_width: Width in bits for each slot.
++ *
++ * Configures a DAI for TDM operation. Only support 4 slots TDM.
++ */
++static int nau8824_set_tdm_slot(struct snd_soc_dai *dai,
++	unsigned int tx_mask, unsigned int rx_mask, int slots, int slot_width)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct nau8824 *nau8824 = snd_soc_codec_get_drvdata(codec);
++	unsigned int tslot_l = 0, ctrl_val = 0;
++
++	if (slots > 4 || ((tx_mask & 0xf0) && (tx_mask & 0xf)) ||
++		((rx_mask & 0xf0) && (rx_mask & 0xf)) ||
++		((rx_mask & 0xf0) && (tx_mask & 0xf)) ||
++		((rx_mask & 0xf) && (tx_mask & 0xf0)))
++		return -EINVAL;
++
++	ctrl_val |= (NAU8824_TDM_MODE | NAU8824_TDM_OFFSET_EN);
++	if (tx_mask & 0xf0) {
++		tslot_l = 4 * slot_width;
++		ctrl_val |= (tx_mask >> 4);
++	} else {
++		ctrl_val |= tx_mask;
++	}
++	if (rx_mask & 0xf0)
++		ctrl_val |= ((rx_mask >> 4) << NAU8824_TDM_DACR_RX_SFT);
++	else
++		ctrl_val |= (rx_mask << NAU8824_TDM_DACR_RX_SFT);
++
++	regmap_update_bits(nau8824->regmap, NAU8824_REG_TDM_CTRL,
++		NAU8824_TDM_MODE | NAU8824_TDM_OFFSET_EN |
++		NAU8824_TDM_DACL_RX_MASK | NAU8824_TDM_DACR_RX_MASK |
++		NAU8824_TDM_TX_MASK, ctrl_val);
++	regmap_update_bits(nau8824->regmap, NAU8824_REG_PORT0_LEFT_TIME_SLOT,
++		NAU8824_TSLOT_L_MASK, tslot_l);
++
++	return 0;
++}
++
++/**
+  * nau8824_calc_fll_param - Calculate FLL parameters.
+  * @fll_in: external clock provided to codec.
+  * @fs: sampling rate.
+@@ -1440,6 +1491,7 @@ static struct snd_soc_codec_driver nau8824_codec_driver = {
+ static const struct snd_soc_dai_ops nau8824_dai_ops = {
+ 	.hw_params = nau8824_hw_params,
+ 	.set_fmt = nau8824_set_fmt,
++	.set_tdm_slot = nau8824_set_tdm_slot,
+ };
+ 
+ #define NAU8824_RATES SNDRV_PCM_RATE_8000_192000
+diff --git a/sound/soc/codecs/nau8824.h b/sound/soc/codecs/nau8824.h
+index 87ac9a3..21eae24 100644
+--- a/sound/soc/codecs/nau8824.h
++++ b/sound/soc/codecs/nau8824.h
+@@ -258,6 +258,18 @@
+ #define NAU8824_I2S_MS_SLAVE		(0 << NAU8824_I2S_MS_SFT)
+ #define NAU8824_I2S_BLK_DIV_MASK	0x7
+ 
++/* PORT0_LEFT_TIME_SLOT (0x1E) */
++#define NAU8824_TSLOT_L_MASK	0x3ff
++
++/* TDM_CTRL (0x20) */
++#define NAU8824_TDM_MODE		(0x1 << 15)
++#define NAU8824_TDM_OFFSET_EN		(0x1 << 14)
++#define NAU8824_TDM_DACL_RX_SFT	6
++#define NAU8824_TDM_DACL_RX_MASK	(0x3 << NAU8824_TDM_DACL_RX_SFT)
++#define NAU8824_TDM_DACR_RX_SFT	4
++#define NAU8824_TDM_DACR_RX_MASK	(0x3 << NAU8824_TDM_DACR_RX_SFT)
++#define NAU8824_TDM_TX_MASK		0xf
++
+ /* ADC_FILTER_CTRL (0x24) */
+ #define NAU8824_ADC_SYNC_DOWN_MASK	0x3
+ #define NAU8824_ADC_SYNC_DOWN_32	0
+-- 
+2.6.4
