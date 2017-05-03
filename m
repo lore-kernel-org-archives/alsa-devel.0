@@ -1,331 +1,320 @@
-From: Seraphime Kirkovski <kirkseraph@gmail.com>
-Subject: [PATCH] sound: core: move exports next to corresponding symbols
-Date: Tue,  2 May 2017 23:58:34 +0200
-Message-ID: <20170502215834.19455-1-kirkseraph@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 2/2] conf: Allow dynamic top-level config
+	directory
+Date: Wed,  3 May 2017 10:01:18 +0200
+Message-ID: <20170503080118.11735-2-tiwai@suse.de>
+References: <20170503080118.11735-1-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 320FA266860
+ for <alsa-devel@alsa-project.org>; Wed,  3 May 2017 10:01:25 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id DBEC2AAB1
+ for <alsa-devel@alsa-project.org>; Wed,  3 May 2017 08:01:24 +0000 (UTC)
+In-Reply-To: <20170503080118.11735-1-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: perex@perex.cz, tiwai@suse.com, o-takashi@sakamocchi.jp, linux-kernel@vger.kernel.org, Seraphime Kirkovski <kirkseraph@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-With this patch all files in sound/core export symbols next to
-their definition, as the kernel coding style mandates.
+Currently the top-level config directory is specified only via
+configure script option, and is fixed after that.  It's inconvenient
+when the library is moved to another base directory, or if you want to
+use a library code (e.g. with $LD_PRELOAD) with the incompatible
+config setups.
 
-Signed-off-by: Seraphime Kirkovski <kirkseraph@gmail.com>
+This patch allows user to override the top-level config path via the
+environment varialbe, $ALSA_CONFIG_DIR.  For that, a new helper
+function, snd_config_topdir(), was introduced, and the codes referring
+to the top config dir have been modified to handle it dynamically.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/memalloc.c           | 14 ++++----------
- sound/core/seq/seq_midi_emul.c  |  9 ++++-----
- sound/core/seq/seq_midi_event.c | 21 ++++++++-------------
- sound/core/timer.c              | 27 +++++++++++++--------------
- 4 files changed, 29 insertions(+), 42 deletions(-)
+ include/conf.h            |  2 ++
+ src/alisp/alisp.c         |  2 +-
+ src/conf.c                | 66 ++++++++++++++++++++++++++++++++---------------
+ src/confmisc.c            |  2 +-
+ src/mixer/simple_abst.c   |  8 ++++--
+ src/topology/data.c       |  7 +++--
+ src/topology/tplg_local.h |  1 -
+ src/ucm/parser.c          | 26 +++++++++++++------
+ src/ucm/ucm_local.h       |  1 -
+ 9 files changed, 78 insertions(+), 37 deletions(-)
 
-diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
-index f05cb6a8cbe0..207de142ee3d 100644
---- a/sound/core/memalloc.c
-+++ b/sound/core/memalloc.c
-@@ -54,6 +54,7 @@ void *snd_malloc_pages(size_t size, gfp_t gfp_flags)
- 	pg = get_order(size);
- 	return (void *) __get_free_pages(gfp_flags, pg);
- }
-+EXPORT_SYMBOL(snd_malloc_pages);
+diff --git a/include/conf.h b/include/conf.h
+index 5d293d583fbb..efb1176b8b7f 100644
+--- a/include/conf.h
++++ b/include/conf.h
+@@ -84,6 +84,8 @@ typedef struct _snd_config_update snd_config_update_t;
  
+ extern snd_config_t *snd_config;
+ 
++const char *snd_config_topdir(void);
++
+ int snd_config_top(snd_config_t **config);
+ 
+ int snd_config_load(snd_config_t *config, snd_input_t *in);
+diff --git a/src/alisp/alisp.c b/src/alisp/alisp.c
+index 3c61bb1754c3..4ed4ad1ed02d 100644
+--- a/src/alisp/alisp.c
++++ b/src/alisp/alisp.c
+@@ -2399,7 +2399,7 @@ struct alisp_object * F_path(struct alisp_instance *instance, struct alisp_objec
+ 	}
+ 	if (!strcmp(p1->value.s, "data")) {
+ 		delete_tree(instance, p1);
+-		return new_string(instance, ALSA_CONFIG_DIR);
++		return new_string(instance, snd_config_topdir());
+ 	}
+ 	delete_tree(instance, p1);
+ 	return &alsa_lisp_nil;
+diff --git a/src/conf.c b/src/conf.c
+index fbd90ac277ca..2b52b44e9144 100644
+--- a/src/conf.c
++++ b/src/conf.c
+@@ -555,6 +555,37 @@ static void free_include_paths(struct filedesc *fd)
+ 	}
+ }
+ 
++/**
++ * \brief Returns the default top-level config directory
++ * \return The top-level config directory path string
++ *
++ * This function returns the string of the top-level config directory path.
++ * If the path is specified via the environment variable \c ALSA_CONFIG_DIR
++ * and the value is a valid path, it returns this value.  If unspecified, it
++ * returns the default value, "/usr/share/alsa".
++ */
++const char *snd_config_topdir(void)
++{
++	static char *topdir;
++
++	if (!topdir) {
++		topdir = getenv("ALSA_CONFIG_DIR");
++		if (!topdir || *topdir != '/' || strlen(topdir) >= PATH_MAX)
++			topdir = ALSA_CONFIG_DIR;
++	}
++	return topdir;
++}
++
++static char *_snd_config_path(const char *name)
++{
++	const char *root = snd_config_topdir();
++	char *path = malloc(strlen(root) + strlen(name) + 2);
++	if (!path)
++		return NULL;
++	sprintf(path, "%s/%s", root, name);
++	return path;
++}
++
+ /*
+  * Search and open a file, and creates a new input object reading from the file.
+  * param inputp - The functions puts the pointer to the new input object
+@@ -589,7 +620,7 @@ static int input_stdio_open(snd_input_t **inputp, const char *file,
+ 		return err;
+ 
+ 	/* search file in top configuration directory /usr/share/alsa */
+-	snprintf(full_path, PATH_MAX, "%s/%s", ALSA_CONFIG_DIR, file);
++	snprintf(full_path, PATH_MAX, "%s/%s", snd_config_topdir(), file);
+ 	err = snd_input_stdio_open(inputp, full_path, "r");
+ 	if (err == 0)
+ 		goto out;
+@@ -750,16 +781,10 @@ static int get_char_skip_comments(input_t *input)
+ 
+ 			if (!strncmp(str, "searchdir:", 10)) {
+ 				/* directory to search included files */
+-				char *tmp;
+-
+-				tmp = malloc(strlen(ALSA_CONFIG_DIR) + 1
+-					     + strlen(str + 10) + 1);
+-				if (tmp == NULL) {
+-					free(str);
+-					return -ENOMEM;
+-				}
+-				sprintf(tmp, ALSA_CONFIG_DIR "/%s", str + 10);
++				char *tmp = _snd_config_path(str + 10);
+ 				free(str);
++				if (tmp == NULL)
++					return -ENOMEM;
+ 				str = tmp;
+ 
+ 				dirp = opendir(str);
+@@ -781,13 +806,10 @@ static int get_char_skip_comments(input_t *input)
+ 
+ 			if (!strncmp(str, "confdir:", 8)) {
+ 				/* file in the specified directory */
+-				char *tmp = malloc(strlen(ALSA_CONFIG_DIR) + 1 + strlen(str + 8) + 1);
+-				if (tmp == NULL) {
+-					free(str);
+-					return -ENOMEM;
+-				}
+-				sprintf(tmp, ALSA_CONFIG_DIR "/%s", str + 8);
++				char *tmp = _snd_config_path(str + 8);
+ 				free(str);
++				if (tmp == NULL)
++					return -ENOMEM;
+ 				str = tmp;
+ 				err = snd_input_stdio_open(&in, str, "r");
+ 			} else { /* absolute or relative file path */
+@@ -3408,9 +3430,6 @@ int snd_config_search_alias_hooks(snd_config_t *config,
+ /** The name of the environment variable containing the files list for #snd_config_update. */
+ #define ALSA_CONFIG_PATH_VAR "ALSA_CONFIG_PATH"
+ 
+-/** The name of the default files used by #snd_config_update. */
+-#define ALSA_CONFIG_PATH_DEFAULT ALSA_CONFIG_DIR "/alsa.conf"
+-
  /**
-  * snd_free_pages - release the pages
-@@ -71,6 +72,7 @@ void snd_free_pages(void *ptr, size_t size)
- 	pg = get_order(size);
- 	free_pages((unsigned long) ptr, pg);
- }
-+EXPORT_SYMBOL(snd_free_pages);
- 
- /*
-  *
-@@ -217,6 +219,7 @@ int snd_dma_alloc_pages(int type, struct device *device, size_t size,
- 	dmab->bytes = size;
- 	return 0;
- }
-+EXPORT_SYMBOL(snd_dma_alloc_pages);
- 
- /**
-  * snd_dma_alloc_pages_fallback - allocate the buffer area according to the given type with fallback
-@@ -254,7 +257,7 @@ int snd_dma_alloc_pages_fallback(int type, struct device *device, size_t size,
- 		return -ENOMEM;
- 	return 0;
- }
--
-+EXPORT_SYMBOL(snd_dma_alloc_pages_fallback);
- 
- /**
-  * snd_dma_free_pages - release the allocated buffer
-@@ -287,13 +290,4 @@ void snd_dma_free_pages(struct snd_dma_buffer *dmab)
- 		pr_err("snd-malloc: invalid device type %d\n", dmab->dev.type);
+  * \ingroup Config
+  * \brief Configuration top-level node (the global configuration).
+@@ -3869,8 +3888,13 @@ int snd_config_update_r(snd_config_t **_top, snd_config_update_t **_update, cons
+ 	configs = cfgs;
+ 	if (!configs) {
+ 		configs = getenv(ALSA_CONFIG_PATH_VAR);
+-		if (!configs || !*configs)
+-			configs = ALSA_CONFIG_PATH_DEFAULT;
++		if (!configs || !*configs) {
++			const char *topdir = snd_config_topdir();
++			char *s = alloca(strlen(topdir) +
++					 strlen("alsa.conf") + 2);
++			sprintf(s, "%s/alsa.conf", topdir);
++			configs = s;
++		}
  	}
+ 	for (k = 0, c = configs; (l = strcspn(c, ": ")) > 0; ) {
+ 		c += l;
+diff --git a/src/confmisc.c b/src/confmisc.c
+index a985f1434dd9..d5b934b62cb6 100644
+--- a/src/confmisc.c
++++ b/src/confmisc.c
+@@ -588,7 +588,7 @@ int snd_func_datadir(snd_config_t **dst, snd_config_t *root ATTRIBUTE_UNUSED,
+ 	err = snd_config_get_id(src, &id);
+ 	if (err < 0)
+ 		return err;
+-	return snd_config_imake_string(dst, id, ALSA_CONFIG_DIR);
++	return snd_config_imake_string(dst, id, snd_config_topdir());
  }
--
--/*
-- * exports
-- */
--EXPORT_SYMBOL(snd_dma_alloc_pages);
--EXPORT_SYMBOL(snd_dma_alloc_pages_fallback);
- EXPORT_SYMBOL(snd_dma_free_pages);
--
--EXPORT_SYMBOL(snd_malloc_pages);
--EXPORT_SYMBOL(snd_free_pages);
-diff --git a/sound/core/seq/seq_midi_emul.c b/sound/core/seq/seq_midi_emul.c
-index 7ba937399ac7..9e2912e3e80f 100644
---- a/sound/core/seq/seq_midi_emul.c
-+++ b/sound/core/seq/seq_midi_emul.c
-@@ -236,6 +236,7 @@ snd_midi_process_event(struct snd_midi_op *ops,
- 		break;
+ #ifndef DOC_HIDDEN
+ SND_DLSYM_BUILD_VERSION(snd_func_datadir, SND_CONFIG_DLSYM_VERSION_EVALUATE);
+diff --git a/src/mixer/simple_abst.c b/src/mixer/simple_abst.c
+index 5297472a6d26..477c73ff7a1e 100644
+--- a/src/mixer/simple_abst.c
++++ b/src/mixer/simple_abst.c
+@@ -299,8 +299,12 @@ int snd_mixer_simple_basic_register(snd_mixer_t *mixer,
+ 	snd_mixer_class_set_private(class, priv);
+ 	snd_mixer_class_set_private_free(class, private_free);
+ 	file = getenv("ALSA_MIXER_SIMPLE");
+-	if (!file)
+-		file = ALSA_CONFIG_DIR "/smixer.conf";
++	if (!file) {
++		const char *topdir = snd_config_topdir();
++		char *s = alloca(strlen(topdir) + strlen("smixer.conf") + 2);
++		sprintf(s, "%s/smixer.conf", topdir);
++		file = s;
++	}
+ 	err = snd_config_top(&top);
+ 	if (err >= 0) {
+ 		err = snd_input_stdio_open(&input, file, "r");
+diff --git a/src/topology/data.c b/src/topology/data.c
+index 36060eb1bf97..5b83b9fc22e1 100644
+--- a/src/topology/data.c
++++ b/src/topology/data.c
+@@ -76,8 +76,11 @@ static int tplg_parse_data_file(snd_config_t *cfg, struct tplg_elem *elem)
+ 		return -EINVAL;
+ 
+ 	/* prepend alsa config directory to path */
+-	snprintf(filename, sizeof(filename), "%s/%s",
+-		env ? env : ALSA_TPLG_DIR, value);
++	if (env)
++		snprintf(filename, sizeof(filename), "%s/%s", env, value);
++	else
++		snprintf(filename, sizeof(filename), "%s/topology/%s",
++			 snd_config_topdir(), value);
+ 
+ 	fp = fopen(filename, "r");
+ 	if (fp == NULL) {
+diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
+index eb7eac5b2305..42e3201db41b 100644
+--- a/src/topology/tplg_local.h
++++ b/src/topology/tplg_local.h
+@@ -31,7 +31,6 @@
+ 
+ #define MAX_FILE		256
+ #define TPLG_MAX_PRIV_SIZE	(1024 * 128)
+-#define ALSA_TPLG_DIR	ALSA_CONFIG_DIR "/topology"
+ 
+ /** The name of the environment variable containing the tplg directory */
+ #define ALSA_CONFIG_TPLG_VAR "ALSA_CONFIG_TPLG"
+diff --git a/src/ucm/parser.c b/src/ucm/parser.c
+index b79b92dbf7b1..8aa7099483ed 100644
+--- a/src/ucm/parser.c
++++ b/src/ucm/parser.c
+@@ -1082,9 +1082,12 @@ static int parse_verb_file(snd_use_case_mgr_t *uc_mgr,
  	}
- }
-+EXPORT_SYMBOL(snd_midi_process_event);
  
- 
- /*
-@@ -409,6 +410,7 @@ snd_midi_channel_set_clear(struct snd_midi_channel_set *chset)
- 			chan->drum_channel = 0;
+ 	/* open Verb file for reading */
+-	snprintf(filename, sizeof(filename), "%s/%s/%s",
+-		env ? env : ALSA_USE_CASE_DIR,
+-		uc_mgr->card_name, file);
++	if (env)
++		snprintf(filename, sizeof(filename), "%s/%s/%s",
++			 env, uc_mgr->card_name, file);
++	else
++		snprintf(filename, sizeof(filename), "%s/ucm/%s/%s",
++			 snd_config_topdir(), uc_mgr->card_name, file);
+ 	filename[sizeof(filename)-1] = '\0';
+ 	
+ 	err = uc_mgr_config_load(filename, &cfg);
+@@ -1404,9 +1407,13 @@ static int load_master_config(const char *card_name, snd_config_t **cfg)
+ 		return -EINVAL;
  	}
- }
-+EXPORT_SYMBOL(snd_midi_channel_set_clear);
  
- /*
-  * Process a rpn message.
-@@ -701,6 +703,7 @@ struct snd_midi_channel_set *snd_midi_channel_alloc_set(int n)
- 	}
- 	return chset;
- }
-+EXPORT_SYMBOL(snd_midi_channel_alloc_set);
+-	snprintf(filename, sizeof(filename)-1,
+-		"%s/%s/%s.conf", env ? env : ALSA_USE_CASE_DIR,
+-		card_name, card_name);
++	if (env)
++		snprintf(filename, sizeof(filename)-1,
++			 "%s/%s/%s.conf", env, card_name, card_name);
++	else
++		snprintf(filename, sizeof(filename)-1,
++			 "%s/ucm/%s/%s.conf", snd_config_topdir(),
++			 card_name, card_name);
+ 	filename[MAX_FILE-1] = '\0';
  
- /*
-  * Reset the midi controllers on a particular channel to default values.
-@@ -724,6 +727,7 @@ void snd_midi_channel_free_set(struct snd_midi_channel_set *chset)
- 	kfree(chset->channels);
- 	kfree(chset);
- }
-+EXPORT_SYMBOL(snd_midi_channel_free_set);
+ 	err = uc_mgr_config_load(filename, cfg);
+@@ -1514,8 +1521,11 @@ int uc_mgr_scan_master_configs(const char **_list[])
+ 	ssize_t ss;
+ 	struct dirent **namelist;
  
- static int __init alsa_seq_midi_emul_init(void)
- {
-@@ -736,8 +740,3 @@ static void __exit alsa_seq_midi_emul_exit(void)
+-	snprintf(filename, sizeof(filename)-1,
+-		"%s", env ? env : ALSA_USE_CASE_DIR);
++	if (env)
++		snprintf(filename, sizeof(filename)-1, "%s", env);
++	else
++		snprintf(filename, sizeof(filename)-1, "%s/ucm",
++			 snd_config_topdir());
+ 	filename[MAX_FILE-1] = '\0';
  
- module_init(alsa_seq_midi_emul_init)
- module_exit(alsa_seq_midi_emul_exit)
--
--EXPORT_SYMBOL(snd_midi_process_event);
--EXPORT_SYMBOL(snd_midi_channel_set_clear);
--EXPORT_SYMBOL(snd_midi_channel_alloc_set);
--EXPORT_SYMBOL(snd_midi_channel_free_set);
-diff --git a/sound/core/seq/seq_midi_event.c b/sound/core/seq/seq_midi_event.c
-index 37db7ba492a6..90bbbdbeba03 100644
---- a/sound/core/seq/seq_midi_event.c
-+++ b/sound/core/seq/seq_midi_event.c
-@@ -134,6 +134,7 @@ int snd_midi_event_new(int bufsize, struct snd_midi_event **rdev)
- 	*rdev = dev;
- 	return 0;
- }
-+EXPORT_SYMBOL(snd_midi_event_new);
+ #if defined(_GNU_SOURCE) && !defined(__NetBSD__) && !defined(__FreeBSD__) && !defined(__sun)
+diff --git a/src/ucm/ucm_local.h b/src/ucm/ucm_local.h
+index 299a5b96dba5..e5f59cea721f 100644
+--- a/src/ucm/ucm_local.h
++++ b/src/ucm/ucm_local.h
+@@ -42,7 +42,6 @@
  
- void snd_midi_event_free(struct snd_midi_event *dev)
- {
-@@ -142,6 +143,7 @@ void snd_midi_event_free(struct snd_midi_event *dev)
- 		kfree(dev);
- 	}
- }
-+EXPORT_SYMBOL(snd_midi_event_free);
+ #define MAX_FILE		256
+ #define MAX_CARD_LONG_NAME	80
+-#define ALSA_USE_CASE_DIR	ALSA_CONFIG_DIR "/ucm"
  
- /*
-  * initialize record
-@@ -161,6 +163,7 @@ void snd_midi_event_reset_encode(struct snd_midi_event *dev)
- 	reset_encode(dev);
- 	spin_unlock_irqrestore(&dev->lock, flags);
- }
-+EXPORT_SYMBOL(snd_midi_event_reset_encode);
- 
- void snd_midi_event_reset_decode(struct snd_midi_event *dev)
- {
-@@ -170,6 +173,7 @@ void snd_midi_event_reset_decode(struct snd_midi_event *dev)
- 	dev->lastcmd = 0xff;
- 	spin_unlock_irqrestore(&dev->lock, flags);
- }
-+EXPORT_SYMBOL(snd_midi_event_reset_decode);
- 
- #if 0
- void snd_midi_event_init(struct snd_midi_event *dev)
-@@ -183,6 +187,7 @@ void snd_midi_event_no_status(struct snd_midi_event *dev, int on)
- {
- 	dev->nostat = on ? 1 : 0;
- }
-+EXPORT_SYMBOL(snd_midi_event_no_status);
- 
- /*
-  * resize buffer
-@@ -232,6 +237,7 @@ long snd_midi_event_encode(struct snd_midi_event *dev, unsigned char *buf, long
- 
- 	return result;
- }
-+EXPORT_SYMBOL(snd_midi_event_encode);
- 
- /*
-  *  read one byte and encode to sequencer event:
-@@ -307,6 +313,7 @@ int snd_midi_event_encode_byte(struct snd_midi_event *dev, int c,
- 	spin_unlock_irqrestore(&dev->lock, flags);
- 	return rc;
- }
-+EXPORT_SYMBOL(snd_midi_event_encode_byte);
- 
- /* encode note event */
- static void note_event(struct snd_midi_event *dev, struct snd_seq_event *ev)
-@@ -408,6 +415,7 @@ long snd_midi_event_decode(struct snd_midi_event *dev, unsigned char *buf, long
- 		return qlen;
- 	}
- }
-+EXPORT_SYMBOL(snd_midi_event_decode);
- 
- 
- /* decode note event */
-@@ -524,19 +532,6 @@ static int extra_decode_xrpn(struct snd_midi_event *dev, unsigned char *buf,
- 	return idx;
- }
- 
--/*
-- *  exports
-- */
-- 
--EXPORT_SYMBOL(snd_midi_event_new);
--EXPORT_SYMBOL(snd_midi_event_free);
--EXPORT_SYMBOL(snd_midi_event_reset_encode);
--EXPORT_SYMBOL(snd_midi_event_reset_decode);
--EXPORT_SYMBOL(snd_midi_event_no_status);
--EXPORT_SYMBOL(snd_midi_event_encode);
--EXPORT_SYMBOL(snd_midi_event_encode_byte);
--EXPORT_SYMBOL(snd_midi_event_decode);
--
- static int __init alsa_seq_midi_event_init(void)
- {
- 	return 0;
-diff --git a/sound/core/timer.c b/sound/core/timer.c
-index 6d4fbc439246..f7fb15790d0a 100644
---- a/sound/core/timer.c
-+++ b/sound/core/timer.c
-@@ -319,6 +319,7 @@ int snd_timer_open(struct snd_timer_instance **ti,
- 	*ti = timeri;
- 	return 0;
- }
-+EXPORT_SYMBOL(snd_timer_open);
- 
- /*
-  * close a timer instance
-@@ -384,6 +385,7 @@ int snd_timer_close(struct snd_timer_instance *timeri)
- 	mutex_unlock(&register_mutex);
- 	return 0;
- }
-+EXPORT_SYMBOL(snd_timer_close);
- 
- unsigned long snd_timer_resolution(struct snd_timer_instance *timeri)
- {
-@@ -398,6 +400,7 @@ unsigned long snd_timer_resolution(struct snd_timer_instance *timeri)
- 	}
- 	return 0;
- }
-+EXPORT_SYMBOL(snd_timer_resolution);
- 
- static void snd_timer_notify1(struct snd_timer_instance *ti, int event)
- {
-@@ -589,6 +592,7 @@ int snd_timer_start(struct snd_timer_instance *timeri, unsigned int ticks)
- 	else
- 		return snd_timer_start1(timeri, true, ticks);
- }
-+EXPORT_SYMBOL(snd_timer_start);
- 
- /*
-  * stop the timer instance.
-@@ -602,6 +606,7 @@ int snd_timer_stop(struct snd_timer_instance *timeri)
- 	else
- 		return snd_timer_stop1(timeri, true);
- }
-+EXPORT_SYMBOL(snd_timer_stop);
- 
- /*
-  * start again..  the tick is kept.
-@@ -617,6 +622,7 @@ int snd_timer_continue(struct snd_timer_instance *timeri)
- 	else
- 		return snd_timer_start1(timeri, false, 0);
- }
-+EXPORT_SYMBOL(snd_timer_continue);
- 
- /*
-  * pause.. remember the ticks left
-@@ -628,6 +634,7 @@ int snd_timer_pause(struct snd_timer_instance * timeri)
- 	else
- 		return snd_timer_stop1(timeri, false);
- }
-+EXPORT_SYMBOL(snd_timer_pause);
- 
- /*
-  * reschedule the timer
-@@ -809,6 +816,7 @@ void snd_timer_interrupt(struct snd_timer * timer, unsigned long ticks_left)
- 	if (use_tasklet)
- 		tasklet_schedule(&timer->task_queue);
- }
-+EXPORT_SYMBOL(snd_timer_interrupt);
- 
- /*
- 
-@@ -859,6 +867,7 @@ int snd_timer_new(struct snd_card *card, char *id, struct snd_timer_id *tid,
- 		*rtimer = timer;
- 	return 0;
- }
-+EXPORT_SYMBOL(snd_timer_new);
- 
- static int snd_timer_free(struct snd_timer *timer)
- {
-@@ -978,6 +987,7 @@ void snd_timer_notify(struct snd_timer *timer, int event, struct timespec *tstam
- 	}
- 	spin_unlock_irqrestore(&timer->lock, flags);
- }
-+EXPORT_SYMBOL(snd_timer_notify);
- 
- /*
-  * exported functions for global timers
-@@ -993,11 +1003,13 @@ int snd_timer_global_new(char *id, int device, struct snd_timer **rtimer)
- 	tid.subdevice = 0;
- 	return snd_timer_new(NULL, id, &tid, rtimer);
- }
-+EXPORT_SYMBOL(snd_timer_global_new);
- 
- int snd_timer_global_free(struct snd_timer *timer)
- {
- 	return snd_timer_free(timer);
- }
-+EXPORT_SYMBOL(snd_timer_global_free);
- 
- int snd_timer_global_register(struct snd_timer *timer)
- {
-@@ -1007,6 +1019,7 @@ int snd_timer_global_register(struct snd_timer *timer)
- 	dev.device_data = timer;
- 	return snd_timer_dev_register(&dev);
- }
-+EXPORT_SYMBOL(snd_timer_global_register);
- 
- /*
-  *  System timer
-@@ -2119,17 +2132,3 @@ static void __exit alsa_timer_exit(void)
- 
- module_init(alsa_timer_init)
- module_exit(alsa_timer_exit)
--
--EXPORT_SYMBOL(snd_timer_open);
--EXPORT_SYMBOL(snd_timer_close);
--EXPORT_SYMBOL(snd_timer_resolution);
--EXPORT_SYMBOL(snd_timer_start);
--EXPORT_SYMBOL(snd_timer_stop);
--EXPORT_SYMBOL(snd_timer_continue);
--EXPORT_SYMBOL(snd_timer_pause);
--EXPORT_SYMBOL(snd_timer_new);
--EXPORT_SYMBOL(snd_timer_notify);
--EXPORT_SYMBOL(snd_timer_global_new);
--EXPORT_SYMBOL(snd_timer_global_free);
--EXPORT_SYMBOL(snd_timer_global_register);
--EXPORT_SYMBOL(snd_timer_interrupt);
+ #define SEQUENCE_ELEMENT_TYPE_CDEV	1
+ #define SEQUENCE_ELEMENT_TYPE_CSET	2
 -- 
-2.11.0
+2.12.2
