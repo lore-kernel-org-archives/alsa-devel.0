@@ -1,52 +1,52 @@
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: [PATCH] ASoC: da7218: Fix incorrect usage of bitwise
- '&' operator for SRM check
-Date: Wed, 3 May 2017 14:54:06 +0100
-Message-ID: <20170503135406.5EA1E3FB6C@swsrvapps-01.diasemi.com>
+From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?=
+        <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: [PATCH 0/2] ASoC: sunxi: Add ADC support for A33
+Date: Wed,  3 May 2017 15:56:15 +0200
+Message-ID: <20170503135617.25193-1-mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
- [195.245.231.140])
- by alsa0.perex.cz (Postfix) with ESMTP id E779F2667FE
- for <alsa-devel@alsa-project.org>; Wed,  3 May 2017 15:54:09 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-In the SRM lock check section of code the '&' bitwise operator is
-used as part of checking lock status. Functionally the code works
-as intended, but the conditional statement is a boolean comparison
-so should really use '&&' logical operator instead. This commit
-rectifies this discrepancy.
+Hello everyone,
 
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
----
- sound/soc/codecs/da7218.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This is a first version of a serie to add ADC support
+for Sun8i-A33.
+Based on asoc/for-next branch, last commit:
+20d5c84bef067b7e804a163e2abca16c47125bad.
 
-diff --git a/sound/soc/codecs/da7218.c b/sound/soc/codecs/da7218.c
-index d256ebf..6e1940e 100644
---- a/sound/soc/codecs/da7218.c
-+++ b/sound/soc/codecs/da7218.c
-@@ -1457,7 +1457,7 @@ static int da7218_dai_event(struct snd_soc_dapm_widget *w,
- 				++i;
- 				msleep(DA7218_SRM_CHECK_DELAY);
- 			}
--		} while ((i < DA7218_SRM_CHECK_TRIES) & (!success));
-+		} while ((i < DA7218_SRM_CHECK_TRIES) && (!success));
- 
- 		if (!success)
- 			dev_warn(codec->dev, "SRM failed to lock\n");
+The first patch adds the support of ADC and microphones in the digital
+part (driver sun8i-codec).
+The second one adds the route between analog (sun8i-codec-analog) and
+digital (sun8i-codec) parts to have a functional ADC route on Sun8i-A33
+device tree.
+
+Tested on Allwinner R16 Parrot board with microphone 1 (external) and
+microphone 2 (headset).
+
+I am not sure about the bias handling so if you have any comments on it,
+do not hesitate.
+
+Thank you in advance!
+
+Best regards,
+
+Mylène Josserand (2):
+  ASoC: sun8i-codec: Add ADC support for a33
+  ARM: dts: sun8i: Add ADC routing
+
+ arch/arm/boot/dts/sun8i-a33.dtsi | 10 ++++-
+ sound/soc/sunxi/sun8i-codec.c    | 80 +++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 87 insertions(+), 3 deletions(-)
+
 -- 
-1.9.1
+2.11.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
