@@ -1,106 +1,73 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 2/2] ASoC: Intel: Skylake: Fix typo for
-	token d0i3 caps
-Date: Wed, 3 May 2017 19:46:21 +0900
-Message-ID: <efae9470-97e5-183e-d226-9488b1b309da@sakamocchi.jp>
-References: <1493806055-28046-1-git-send-email-subhransu.s.prusty@intel.com>
- <1493806055-28046-2-git-send-email-subhransu.s.prusty@intel.com>
- <7f493fb0-99d2-4de8-1cf3-24ae3324b783@sakamocchi.jp>
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Subject: Re: [PATCH v2 00/11] drm/i915: LPE audio runtime PM and
+ multipipe (v2)
+Date: Wed, 3 May 2017 16:39:06 +0300
+Message-ID: <20170503133906.GG12629@intel.com>
+References: <20170427160231.13337-1-ville.syrjala@linux.intel.com>
+ <s5h8tmkzzy6.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 8D1532667FE
- for <alsa-devel@alsa-project.org>; Wed,  3 May 2017 12:46:24 +0200 (CEST)
-In-Reply-To: <7f493fb0-99d2-4de8-1cf3-24ae3324b783@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, lgirdwood@gmail.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+Content-Disposition: inline
+In-Reply-To: <s5h8tmkzzy6.wl-tiwai@suse.de>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On May 3 2017 19:38, Takashi Sakamoto wrote:
-> On May 3 2017 19:07, Subhransu S. Prusty wrote:
->> Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
->> ---
->>  include/uapi/sound/snd_sst_tokens.h    | 4 ++--
->>  sound/soc/intel/skylake/skl-topology.c | 2 +-
->>  2 files changed, 3 insertions(+), 3 deletions(-)
->>
->> diff --git a/include/uapi/sound/snd_sst_tokens.h b/include/uapi/sound/snd_sst_tokens.h
->> index 93392bedcc58..685149dda66b 100644
->> --- a/include/uapi/sound/snd_sst_tokens.h
->> +++ b/include/uapi/sound/snd_sst_tokens.h
->> @@ -213,8 +213,8 @@ enum SKL_TKNS {
->>  	SKL_TKN_U32_LIB_COUNT,
->>  	SKL_TKN_STR_LIB_NAME,
->>  	SKL_TKN_U32_PMODE,
->> -	SKL_TKL_U32_D0I3_CAPS,
->> -	SKL_TKN_MAX = SKL_TKL_U32_D0I3_CAPS,
->> +	SKL_TKN_U32_D0I3_CAPS,
->> +	SKL_TKN_MAX = SKL_TKN_U32_D0I3_CAPS,
->>  };
->>  
->>  #endif
->> diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
->> index 3a99712e44a8..b28199a5348c 100644
->> --- a/sound/soc/intel/skylake/skl-topology.c
->> +++ b/sound/soc/intel/skylake/skl-topology.c
->> @@ -1995,7 +1995,7 @@ static int skl_tplg_get_token(struct device *dev,
->>  		mconfig->converter = tkn_elem->value;
->>  		break;
->>  
->> -	case SKL_TKL_U32_D0I3_CAPS:
->> +	case SKL_TKN_U32_D0I3_CAPS:
->>  		mconfig->d0i3_caps = tkn_elem->value;
->>  		break;
-> 
-> $ git annotate include/uapi/sound/snd_sst_tokens.h
-> 8a0cb2360ddb9   (Vinod Koul     2016-11-03 17:07:18 +0530       215)
-> SKL_TKN_U32_PMODE,
-> 6bd9dcf339ebb   (Vinod Koul     2016-11-03 17:07:19 +0530       216)
-> SKL_TKL_U32_D0I3_CAPS,
-> 6bd9dcf339ebb   (Vinod Koul     2016-11-03 17:07:19 +0530       217)
-> SKL_TKN_MAX = SKL_TKL_U32_D0I3_CAPS,
-> 15f0d4f531d84   (Shreyas NC     2016-08-12 12:29:50 +0530       218)};
-> $ git name-rev --tags 6bd9dcf339ebb
-> 6bd9dcf339ebb tags/sound-4.10-rc1~3^2~15^2~17
-> 
-> The typo was already included in Linux kernel v4.10 and exposed to
-> userland. In general of kernel development, it's the worst idea to
-> change it, because it can break userland.
-
-Instead of rename, it's better for you to keep the typo and add the
-correct entry with the same value, like:
-
-$ git diff
-diff --git a/include/uapi/sound/snd_sst_tokens.h
-b/include/uapi/sound/snd_sst_tokens.h
-index 93392bedcc58..b7cc95d04928 100644
---- a/include/uapi/sound/snd_sst_tokens.h
-+++ b/include/uapi/sound/snd_sst_tokens.h
-@@ -213,8 +213,9 @@ enum SKL_TKNS {
-        SKL_TKN_U32_LIB_COUNT,
-        SKL_TKN_STR_LIB_NAME,
-        SKL_TKN_U32_PMODE,
--       SKL_TKL_U32_D0I3_CAPS,
--       SKL_TKN_MAX = SKL_TKL_U32_D0I3_CAPS,
-+       SKL_TKL_U32_D0I3_CAPS,  /* Typo, added at v4.10. */
-+       SKL_TKN_U32_D0I3_CAPS = SKN_TKL_U32_D0I3_CAPS,
-+       SKL_TKN_MAX = SKL_TKN_U32_D0I3_CAPS,
- };
-
- #endif
-
-
-Regards
-
-Takashi Sakamoto
+T24gRnJpLCBBcHIgMjgsIDIwMTcgYXQgMTA6NDE6MzdBTSArMDIwMCwgVGFrYXNoaSBJd2FpIHdy
+b3RlOgo+IE9uIFRodSwgMjcgQXByIDIwMTcgMTg6MDI6MTkgKzAyMDAsCj4gdmlsbGUuc3lyamFs
+YUBsaW51eC5pbnRlbC5jb20gd3JvdGU6Cj4gPiAKPiA+IEZyb206IFZpbGxlIFN5cmrDpGzDpCA8
+dmlsbGUuc3lyamFsYUBsaW51eC5pbnRlbC5jb20+Cj4gPiAKPiA+IE9rYXksIGhlcmUncyB0aGUg
+c2Vjb25kIGF0dGVtcHQgYXQgZ2V0dGluZyBtdWx0aXBsZSBwaXBlcyBwbGF5aW5nIGJhY2sKPiA+
+IGF1ZGlvIG9uIHRoZSBWTFYvQ0hWIEhETUkgTFBFIGF1ZGlvIGRldmljZS4gVGhlIG1haW4gY2hh
+bmdlIGZyb20gdjEgaXMKPiA+IHRoYXQgbm93IHRoZSBQQ00gZGV2aWNlcyBhcmUgYXNzb2NpYXRl
+ZCB3aXRoIHBvcnRzIGluc3RlYWQgb2YgcGlwZXMsCj4gPiBzbyB0aGUgYXVkaW8gZnJvbSBvbmUg
+ZGV2aWNlIGFsd2F5cyBnZXRzIG91dHB1dCBvbiB0aGUgc2FtZSBkaXNwbGF5Lgo+ID4gCj4gPiBJ
+J3ZlIGFsc28gdGFja2VkIG9uIHRoZSBhbHNhLWxpYiBjb25mIHVwZGF0ZS4gTm8gY2x1ZSB3aGV0
+aGVyIGl0J3MKPiA+IHJlYWxseSBjb3JyZWN0IG9yIG5vdCAodGhlIGNvbmZpZyBsYW5ndWFnZSBp
+c24ndCBhIGNsb3NlIGZyaWVuZAo+ID4gb2YgbWluZSkuCj4gPiAKPiA+IEJUVyBJIGRpZCBub3Rp
+Y2UgdGhhdCB3aXRoIExQRSBhdWRpbyBhbGwgdGhlIGNvbnRyb2xzIHNheSBpZmFjZT1QQ00sCj4g
+PiB3aGVyZWFzIG9uIEhEQSBhIGJ1bmNoIG9mIHRoZW0gc2F5IGlmYWNlPU1JWEVSLiBObyBpZGVh
+IGlmIHRoYXQncwo+ID4gT0sgb3Igbm90LCBqdXN0IHNvbWV0aGluZyBJIHNwb3R0ZWQgd2hlbiBJ
+IHdhcyBjb21wYXJpbmcgdGhlIHJlc3VsdHMKPiA+IHdpdGggSERBLgo+IAo+IFdlIGdlbmVyYWxs
+eSBhY2NlcHQgYm90aCBpZmFjZSB0eXBlcyBmb3IgSUVDOTU4IHN0dWZmLCBzaW5jZQo+IGhpc3Rv
+cmljYWxseSBtYW55IGRyaXZlcnMgaGF2ZSBhbHJlYWR5IG1peGVkIHRoZW0gdXAuICBTbyBpdCdz
+IG5vCj4gcHJvYmxlbSA6KQo+IAo+IAo+ID4gRW50aXJlIHNlcmllcyBhdmFpbGFibGUgaGVyZToK
+PiA+IGdpdDovL2dpdGh1Yi5jb20vdnN5cmphbGEvbGludXguZ2l0IGxwZV9hdWRpb19tdWx0aXBp
+cGVfMgo+ID4gCj4gPiBDYzogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgo+ID4gQ2M6IFBp
+ZXJyZS1Mb3VpcyBCb3NzYXJ0IDxwaWVycmUtbG91aXMuYm9zc2FydEBsaW51eC5pbnRlbC5jb20+
+Cj4gCj4gQWxsIGxvb2sgZ29vZCwgYW5kIGZlZWwgZnJlZSB0byB0YWtlIG15IHJldmlld2VkLWJ5
+IHRhZwo+ICAgUmV2aWV3ZWQtYnk6IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4KClRoYW5r
+cy4KCj4gCj4gQXMgc2FpZCBwcmV2aW91c2x5LCBteSBvbmx5IHNsaWdodCBjb25jZXJuIGlzIHRo
+ZSBjb21wYXRpYmlsaXR5Lgo+IEJ1dCwgaW4gdGhlIGN1cnJlbnQgc2l0dWF0aW9uIHdpdGggUHVs
+c2VBdWRpbywgb25seSBmZXcgcGVvcGxlIHdvdWxkCj4gdXNlIHRoaXMgZHJpdmVyLCBzbyBpdCBz
+aG91bGRuJ3QgYmUgc28gYmlnIGltcGFjdCwgSSBzdXBwb3NlLgoKV2hhdCB3aWxsIGJyZWFrPyBP
+ciB5b3UgbWVhbiB0aGUgYWxzYS1saWIgdnMuIGtlcm5lbCBkaWZmZXJlbmNlCnVudGlsIHRoZXkg
+c3luYyB1cD8gSSBkb24ndCB1c2UgcHVsc2UgbXlzZWxmIHNvIEkgZG9uJ3Qga25vdyByZWFsbHkK
+d2hhdCBpdCB3YW50cy4KCj4gCj4gQlRXLCB3aGljaCBwb3J0IGlzIHVzZWQgaW4gZ2VuZXJhbCBv
+biBCWVQvQ0hUPwoKVGhlcmUncyBubyBjbGVhciBydWxlIEkgdGhpbmsuIEJ1dCBJIHN1cHBvc2Ug
+bW9zdCBtYW51ZmFjdHVyZXJzCmZvbGxvdyBzb21lIHJlZmVyZW5jZSBkZXNpZ24sIHNvIHRoZXJl
+IGNvdWxkIGJlIHNvbWUgbGF5b3V0cwp0aGF0IGFyZSBtb3JlIGNvbW1vbiB0aGFuIG90aGVyLiBI
+YXZpbmcgSERNSSBvbiBwb3J0IEQgb24gQ0hWCmlzIGEgZmFpcmx5IGNvbW1vbiBkZXNpZ24gSSd2
+ZSBzZWVuLiBBbmQgSSB0aGluayBhbGwgdGhlCnByZS1wcm9kdWN0aW9uIFJWUCBib2FyZHMgaGFk
+IGVEUCBvbiBwb3J0IEMsIHNvIHRoYXQgY291bGQgYWxzbwpiZSBob3cgcHJvZHVjdGlvbiBib2Fy
+ZHMgdGVuZCB0byBiZSB3aXJlZCB1cC4KCj4gT2gsIGFsc28sIEkgc3VwcG9zZSB5b3Ugd2FudCB0
+byBjYXJyeSB0aGVzZSBvdmVyIGk5MTUgdHJlZT8KPiBJIGRvbid0IG1pbmQgZWl0aGVyIHdheSwg
+SSBjYW4gdGFrZSB0aGVtIHRocm91Z2ggc291bmQgdHJlZSBpZgo+IHByZWZlcnJlZCwgdG9vLgoK
+Q29vbC4gSSBqdXN0IHB1c2hlZCB0aGUgbG90IHRvIGRybS1pbnRlbC1uZXh0LXF1ZXVlZC4gSSdt
+CnRoaW5raW5nIGdvaW5nIHZpYSBkaW5xIG1pZ2h0IGF2b2lkIHNvbWUgY29uZmxpY3RzIGxhdGVy
+IG9uCmlmIHdlIGVuZCB1cCBjaHVybmluZyB0aGUgY29kZSBzb21lIG1vcmUuIEFuZCB3ZSBkbyBs
+aWtlIHRvCmNodXJuIDspCgotLSAKVmlsbGUgU3lyasOkbMOkCkludGVsIE9UQwpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBs
+aXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVz
+a3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
