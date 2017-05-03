@@ -1,199 +1,55 @@
-From: =?UTF-8?q?Myl=C3=A8ne=20Josserand?=
-        <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Subject: [PATCH 1/2] ASoC: sun8i-codec: Add ADC support for a33
-Date: Wed,  3 May 2017 15:56:16 +0200
-Message-ID: <20170503135617.25193-2-mylene.josserand@free-electrons.com>
+From: Mylene Josserand <mylene.josserand@free-electrons.com>
+Subject: Re: [PATCH 0/2] ASoC: sunxi: Add ADC support for A33
+Date: Wed, 3 May 2017 16:02:54 +0200
+Message-ID: <66e3f902-e24c-459a-56fb-2106d1f054b9@free-electrons.com>
 References: <20170503135617.25193-1-mylene.josserand@free-electrons.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20170503135617.25193-1-mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8BA8D2667FE
+ for <alsa-devel@alsa-project.org>; Wed,  3 May 2017 16:02:55 +0200 (CEST)
+In-Reply-To: <20170503135617.25193-1-mylene.josserand@free-electrons.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, maxime.ripard@free-electrons.com, wens@csie.org, robh+dt@kernel.org, mark.rutland@arm.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Add ADC support for the sun8i-codec driver.
-
-This driver uses all the microphones widgets and routes provided by the
-analog part (sun8i-codec-analog).
-Some digital configurations are needed by creating new ADC widgets
-and routes.
-
-Signed-off-by: Mylène Josserand <mylene.josserand-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
----
- sound/soc/sunxi/sun8i-codec.c | 80 +++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 78 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-index 5723c3404f6b..b4938b06acec 100644
---- a/sound/soc/sunxi/sun8i-codec.c
-+++ b/sound/soc/sunxi/sun8i-codec.c
-@@ -37,9 +37,11 @@
- #define SUN8I_SYSCLK_CTL_SYSCLK_SRC			0
- #define SUN8I_MOD_CLK_ENA				0x010
- #define SUN8I_MOD_CLK_ENA_AIF1				15
-+#define SUN8I_MOD_CLK_ENA_ADC				3
- #define SUN8I_MOD_CLK_ENA_DAC				2
- #define SUN8I_MOD_RST_CTL				0x014
- #define SUN8I_MOD_RST_CTL_AIF1				15
-+#define SUN8I_MOD_RST_CTL_ADC				3
- #define SUN8I_MOD_RST_CTL_DAC				2
- #define SUN8I_SYS_SR_CTRL				0x018
- #define SUN8I_SYS_SR_CTRL_AIF1_FS			12
-@@ -54,9 +56,25 @@
- #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ		4
- #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_16		(1 << 4)
- #define SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT		2
-+#define SUN8I_AIF1_ADCDAT_CTRL				0x044
-+#define SUN8I_AIF1_ADCDAT_CTRL_AIF1_DA0L_ENA		15
-+#define SUN8I_AIF1_ADCDAT_CTRL_AIF1_DA0R_ENA		14
- #define SUN8I_AIF1_DACDAT_CTRL				0x048
- #define SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0L_ENA		15
- #define SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0R_ENA		14
-+#define SUN8I_AIF1_MXR_SRC				0x04c
-+#define SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_AIF1DA0L	15
-+#define SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_AIF2DACL	14
-+#define SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_ADCL		13
-+#define SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_AIF2DACR	12
-+#define SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF1DA0R	11
-+#define SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF2DACR	10
-+#define SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_ADCR		9
-+#define SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF2DACL	8
-+#define SUN8I_ADC_DIG_CTRL				0x100
-+#define SUN8I_ADC_DIG_CTRL_ENDA			15
-+#define SUN8I_ADC_DIG_CTRL_ADOUT_DTS			2
-+#define SUN8I_ADC_DIG_CTRL_ADOUT_DLY			1
- #define SUN8I_DAC_DIG_CTRL				0x120
- #define SUN8I_DAC_DIG_CTRL_ENDA			15
- #define SUN8I_DAC_MXR_SRC				0x130
-@@ -276,10 +294,28 @@ static const struct snd_kcontrol_new sun8i_dac_mixer_controls[] = {
- 			SUN8I_DAC_MXR_SRC_DACR_MXR_SRC_ADCR, 1, 0),
- };
- 
-+static const struct snd_kcontrol_new sun8i_input_mixer_controls[] = {
-+	SOC_DAPM_DOUBLE("AIF1 Slot 0 Digital ADC Capture Switch",
-+			SUN8I_AIF1_MXR_SRC,
-+			SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_AIF1DA0L,
-+			SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF1DA0R, 1, 0),
-+	SOC_DAPM_DOUBLE("AIF2 Digital ADC Capture Switch", SUN8I_AIF1_MXR_SRC,
-+			SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_AIF2DACL,
-+			SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF2DACR, 1, 0),
-+	SOC_DAPM_DOUBLE("AIF1 Data Digital ADC Capture Switch", SUN8I_AIF1_MXR_SRC,
-+			SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_ADCL,
-+			SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_ADCR, 1, 0),
-+	SOC_DAPM_DOUBLE("AIF2 Inv Digital ADC Capture Switch", SUN8I_AIF1_MXR_SRC,
-+			SUN8I_AIF1_MXR_SRC_AD0L_MXL_SRC_AIF2DACR,
-+			SUN8I_AIF1_MXR_SRC_AD0R_MXR_SRC_AIF2DACL, 1, 0),
-+};
-+
- static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
--	/* Digital parts of the DACs */
-+	/* Digital parts of the DACs and ADC */
- 	SND_SOC_DAPM_SUPPLY("DAC", SUN8I_DAC_DIG_CTRL, SUN8I_DAC_DIG_CTRL_ENDA,
- 			    0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("ADC", SUN8I_ADC_DIG_CTRL, SUN8I_ADC_DIG_CTRL_ENDA,
-+			    0, NULL, 0),
- 
- 	/* Analog DAC AIF */
- 	SND_SOC_DAPM_AIF_IN("AIF1 Slot 0 Left", "Playback", 0,
-@@ -289,17 +325,31 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
- 			    SUN8I_AIF1_DACDAT_CTRL,
- 			    SUN8I_AIF1_DACDAT_CTRL_AIF1_DA0R_ENA, 0),
- 
--	/* DAC Mixers */
-+	/* Analog ADC AIF */
-+	SND_SOC_DAPM_AIF_IN("AIF1 Slot 0 Left ADC", "Capture", 0,
-+			    SUN8I_AIF1_ADCDAT_CTRL,
-+			    SUN8I_AIF1_ADCDAT_CTRL_AIF1_DA0L_ENA, 0),
-+	SND_SOC_DAPM_AIF_IN("AIF1 Slot 0 Right ADC", "Capture", 0,
-+			    SUN8I_AIF1_ADCDAT_CTRL,
-+			    SUN8I_AIF1_ADCDAT_CTRL_AIF1_DA0R_ENA, 0),
-+
-+	/* DAC and ADC Mixers */
- 	SOC_MIXER_ARRAY("Left Digital DAC Mixer", SND_SOC_NOPM, 0, 0,
- 			sun8i_dac_mixer_controls),
- 	SOC_MIXER_ARRAY("Right Digital DAC Mixer", SND_SOC_NOPM, 0, 0,
- 			sun8i_dac_mixer_controls),
-+	SOC_MIXER_ARRAY("Left Digital ADC Mixer", SND_SOC_NOPM, 0, 0,
-+			sun8i_input_mixer_controls),
-+	SOC_MIXER_ARRAY("Right Digital ADC Mixer", SND_SOC_NOPM, 0, 0,
-+			sun8i_input_mixer_controls),
- 
- 	/* Clocks */
- 	SND_SOC_DAPM_SUPPLY("MODCLK AFI1", SUN8I_MOD_CLK_ENA,
- 			    SUN8I_MOD_CLK_ENA_AIF1, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("MODCLK DAC", SUN8I_MOD_CLK_ENA,
- 			    SUN8I_MOD_CLK_ENA_DAC, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("MODCLK ADC", SUN8I_MOD_CLK_ENA,
-+			    SUN8I_MOD_CLK_ENA_ADC, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("AIF1", SUN8I_SYSCLK_CTL,
- 			    SUN8I_SYSCLK_CTL_AIF1CLK_ENA, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("SYSCLK", SUN8I_SYSCLK_CTL,
-@@ -316,6 +366,12 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
- 			    SUN8I_MOD_RST_CTL_AIF1, 0, NULL, 0),
- 	SND_SOC_DAPM_SUPPLY("RST DAC", SUN8I_MOD_RST_CTL,
- 			    SUN8I_MOD_RST_CTL_DAC, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("RST ADC", SUN8I_MOD_RST_CTL,
-+			    SUN8I_MOD_RST_CTL_ADC, 0, NULL, 0),
-+
-+	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-+	SND_SOC_DAPM_MIC("Mic", NULL),
-+
- };
- 
- static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
-@@ -325,11 +381,16 @@ static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
- 	{ "RST AIF1", NULL, "AIF1 PLL" },
- 	{ "MODCLK AFI1", NULL, "RST AIF1" },
- 	{ "DAC", NULL, "MODCLK AFI1" },
-+	{ "ADC", NULL, "MODCLK AFI1" },
- 
- 	{ "RST DAC", NULL, "SYSCLK" },
- 	{ "MODCLK DAC", NULL, "RST DAC" },
- 	{ "DAC", NULL, "MODCLK DAC" },
- 
-+	{ "RST ADC", NULL, "SYSCLK" },
-+	{ "MODCLK ADC", NULL, "RST ADC" },
-+	{ "ADC", NULL, "MODCLK ADC" },
-+
- 	/* DAC Routes */
- 	{ "AIF1 Slot 0 Right", NULL, "DAC" },
- 	{ "AIF1 Slot 0 Left", NULL, "DAC" },
-@@ -339,6 +400,12 @@ static const struct snd_soc_dapm_route sun8i_codec_dapm_routes[] = {
- 	  "AIF1 Slot 0 Left"},
- 	{ "Right Digital DAC Mixer", "AIF1 Slot 0 Digital DAC Playback Switch",
- 	  "AIF1 Slot 0 Right"},
-+
-+	/* ADC routes */
-+	{ "Left Digital ADC Mixer", "AIF1 Data Digital ADC Capture Switch",
-+	  "AIF1 Slot 0 Left ADC" },
-+	{ "Right Digital ADC Mixer", "AIF1 Data Digital ADC Capture Switch",
-+	  "AIF1 Slot 0 Right ADC" },
- };
- 
- static struct snd_soc_dai_ops sun8i_codec_dai_ops = {
-@@ -356,6 +423,15 @@ static struct snd_soc_dai_driver sun8i_codec_dai = {
- 		.rates = SNDRV_PCM_RATE_8000_192000,
- 		.formats = SNDRV_PCM_FMTBIT_S16_LE,
- 	},
-+	/* capture capabilities */
-+	.capture = {
-+		.stream_name = "Capture",
-+		.channels_min = 1,
-+		.channels_max = 2,
-+		.rates = SNDRV_PCM_RATE_8000_192000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.sig_bits = 24,
-+	},
- 	/* pcm operations */
- 	.ops = &sun8i_codec_dai_ops,
- };
--- 
-2.11.0
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+SGVsbG8sCgpPbiAwMy8wNS8yMDE3IDE1OjU2LCBNeWzDqG5lIEpvc3NlcmFuZCB3cm90ZToKPiBI
+ZWxsbyBldmVyeW9uZSwKPgo+IFRoaXMgaXMgYSBmaXJzdCB2ZXJzaW9uIG9mIGEgc2VyaWUgdG8g
+YWRkIEFEQyBzdXBwb3J0Cj4gZm9yIFN1bjhpLUEzMy4KPiBCYXNlZCBvbiBhc29jL2Zvci1uZXh0
+IGJyYW5jaCwgbGFzdCBjb21taXQ6Cj4gMjBkNWM4NGJlZjA2N2I3ZTgwNGExNjNlMmFiY2ExNmM0
+NzEyNWJhZC4KPgo+IFRoZSBmaXJzdCBwYXRjaCBhZGRzIHRoZSBzdXBwb3J0IG9mIEFEQyBhbmQg
+bWljcm9waG9uZXMgaW4gdGhlIGRpZ2l0YWwKPiBwYXJ0IChkcml2ZXIgc3VuOGktY29kZWMpLgo+
+IFRoZSBzZWNvbmQgb25lIGFkZHMgdGhlIHJvdXRlIGJldHdlZW4gYW5hbG9nIChzdW44aS1jb2Rl
+Yy1hbmFsb2cpIGFuZAo+IGRpZ2l0YWwgKHN1bjhpLWNvZGVjKSBwYXJ0cyB0byBoYXZlIGEgZnVu
+Y3Rpb25hbCBBREMgcm91dGUgb24gU3VuOGktQTMzCj4gZGV2aWNlIHRyZWUuCj4KPiBUZXN0ZWQg
+b24gQWxsd2lubmVyIFIxNiBQYXJyb3QgYm9hcmQgd2l0aCBtaWNyb3Bob25lIDEgKGV4dGVybmFs
+KSBhbmQKPiBtaWNyb3Bob25lIDIgKGhlYWRzZXQpLgoKSSBmb3Jnb3QgdG8gYWRkIGluIG15IGNv
+dmVyLWxldHRlciBhbWl4ZXIgY29tbWFuZHMgdXNlZCB0byB0ZXN0IGl0OgoKYW1peGVyIHNldCAn
+QUlGMSBEYXRhIERpZ2l0YWwgQURDJyBjYXAKYW1peGVyIHNldCAnTWljMScgY2FwCm9yCmFtaXhl
+ciBzZXQgJ01pYzInIGNhcAoKYW5kLCBqdXN0IGluIGNhc2UsIHRoZSBjb21tYW5kcyB0byBlbmFi
+bGUgb3V0cHV0L0RBQzoKCmFtaXhlciBzZXQgJ0hlYWRwaG9uZScgNTAlCmFtaXhlciBzZXQgJ0hl
+YWRwaG9uZScgb24KYW1peGVyIHNldCAnREFDJyBvbgphbWl4ZXIgc2V0ICdBSUYxIFNsb3QgMCBE
+aWdpdGFsIERBQycgb24KCgo+IEkgYW0gbm90IHN1cmUgYWJvdXQgdGhlIGJpYXMgaGFuZGxpbmcg
+c28gaWYgeW91IGhhdmUgYW55IGNvbW1lbnRzIG9uIGl0LAo+IGRvIG5vdCBoZXNpdGF0ZS4KPgo+
+IFRoYW5rIHlvdSBpbiBhZHZhbmNlIQo+Cj4gQmVzdCByZWdhcmRzLAo+Cj4gTXlsw6huZSBKb3Nz
+ZXJhbmQgKDIpOgo+ICAgQVNvQzogc3VuOGktY29kZWM6IEFkZCBBREMgc3VwcG9ydCBmb3IgYTMz
+Cj4gICBBUk06IGR0czogc3VuOGk6IEFkZCBBREMgcm91dGluZwo+Cj4gIGFyY2gvYXJtL2Jvb3Qv
+ZHRzL3N1bjhpLWEzMy5kdHNpIHwgMTAgKysrKy0KPiAgc291bmQvc29jL3N1bnhpL3N1bjhpLWNv
+ZGVjLmMgICAgfCA4MCArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKystCj4g
+IDIgZmlsZXMgY2hhbmdlZCwgODcgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKPgoKQmVz
+dCByZWdhcmRzLAoKLS0gCk15bMOobmUgSm9zc2VyYW5kLCBGcmVlIEVsZWN0cm9ucwpFbWJlZGRl
+ZCBMaW51eCBhbmQgS2VybmVsIGVuZ2luZWVyaW5nCmh0dHA6Ly9mcmVlLWVsZWN0cm9ucy5jb20K
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
