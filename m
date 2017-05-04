@@ -1,56 +1,97 @@
-From: Jani Nikula <jani.nikula@linux.intel.com>
-Subject: Re: [PATCH v1] ACPI: Switch to use generic UUID API
-Date: Thu, 04 May 2017 12:37:27 +0300
-Message-ID: <87d1bpotd4.fsf@intel.com>
-References: <20170504092151.88646-1-andriy.shevchenko@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20170504092151.88646-1-andriy.shevchenko@linux.intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: linux-acpi@vger.kernel.org, tpmdd-devel@lists.sourceforge.net, intel-gfx@lists.freedesktop.org, nouveau@lists.freedesktop.org, linux-input@vger.kernel.org, iommu@lists.linux-foundation.org, linux-mmc@vger.kernel.org, netdev@vger.kernel.org, linux-pci@vger.kernel.org, linux-usb@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Felipe Balbi <balbi@kernel.org>, Borislav Petkov <bp@suse.de>, Mathias Nyman <mathias.nyman@intel.com>, Yisen Zhuang <yisen.zhuang@huawei.com>, Joerg Roedel <joro@8bytes.org>, Amir Goldstein <amir73il@gmail.com>, "Rafael J . Wysocki" <rjw@rjwysocki.net>, Adrian Hunter <adrian.hunter@intel.com>, Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Benjamin Tissoires <benjamin.tissoires@redhat.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, Ben Skeggs <bskeggs@redhat.com>, Mark Brown <broonie@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Dan Williams <dan.j.williams@intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Mika Westerberg <mika.westerberg@linux.intel.com>, Zhang Rui <rui.zhang@intel.com>
+From: Chris Wilson <chris@chris-wilson.co.uk>
+Subject: [PATCH] ALSA: hda: Use loop counter for hdac_wait_for_cmd_dmas() timeout
+Date: Thu,  4 May 2017 11:18:29 +0100
+Message-ID: <20170504101829.28325-1-chris@chris-wilson.co.uk>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: intel-gfx@lists.freedesktop.org, Chris Wilson <chris@chris-wilson.co.uk>, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Takashi Iwai <tiwai@suse.de>, "# v4 . 7+" <stable@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCAwNCBNYXkgMjAxNywgQW5keSBTaGV2Y2hlbmtvIDxhbmRyaXkuc2hldmNoZW5rb0Bs
-aW51eC5pbnRlbC5jb20+IHdyb3RlOgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaTkx
-NS9pbnRlbF9hY3BpLmMgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9hY3BpLmMKPiBpbmRl
-eCBlYjYzOGExZTY5ZDIuLjcyYmZlNmNlYWRmOCAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL2dwdS9k
-cm0vaTkxNS9pbnRlbF9hY3BpLmMKPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vaTkxNS9pbnRlbF9h
-Y3BpLmMKPiBAQCAtMTUsMTMgKzE1LDkgQEAgc3RhdGljIHN0cnVjdCBpbnRlbF9kc21fcHJpdiB7
-Cj4gIAlhY3BpX2hhbmRsZSBkaGFuZGxlOwo+ICB9IGludGVsX2RzbV9wcml2Owo+ICAKPiAtc3Rh
-dGljIGNvbnN0IHU4IGludGVsX2RzbV9ndWlkW10gPSB7Cj4gLQkweGQzLCAweDczLCAweGQ4LCAw
-eDdlLAo+IC0JMHhkMCwgMHhjMiwKPiAtCTB4NGYsIDB4NGUsCj4gLQkweGE4LCAweDU0LAo+IC0J
-MHgwZiwgMHgxMywgMHgxNywgMHhiMCwgMHgxYywgMHgyYwo+IC19Owo+ICtzdGF0aWMgY29uc3Qg
-dXVpZF9sZSBpbnRlbF9kc21fZ3VpZCA9Cj4gKwlVVUlEX0xFKDB4N2VkODczZDMsIDB4YzJkMCwg
-MHg0ZTRmLAo+ICsJCTB4YTgsIDB4NTQsIDB4MGYsIDB4MTMsIDB4MTcsIDB4YjAsIDB4MWMsIDB4
-MmMpOwo+ICAKPiAgc3RhdGljIGNoYXIgKmludGVsX2RzbV9wb3J0X25hbWUodTggaWQpCj4gIHsK
-PiBAQCAtODAsNyArNzYsNyBAQCBzdGF0aWMgdm9pZCBpbnRlbF9kc21fcGxhdGZvcm1fbXV4X2lu
-Zm8odm9pZCkKPiAgCWludCBpOwo+ICAJdW5pb24gYWNwaV9vYmplY3QgKnBrZywgKmNvbm5lY3Rv
-cl9jb3VudDsKPiAgCj4gLQlwa2cgPSBhY3BpX2V2YWx1YXRlX2RzbV90eXBlZChpbnRlbF9kc21f
-cHJpdi5kaGFuZGxlLCBpbnRlbF9kc21fZ3VpZCwKPiArCXBrZyA9IGFjcGlfZXZhbHVhdGVfZHNt
-X3R5cGVkKGludGVsX2RzbV9wcml2LmRoYW5kbGUsICZpbnRlbF9kc21fZ3VpZCwKPiAgCQkJSU5U
-RUxfRFNNX1JFVklTSU9OX0lELCBJTlRFTF9EU01fRk5fUExBVEZPUk1fTVVYX0lORk8sCj4gIAkJ
-CU5VTEwsIEFDUElfVFlQRV9QQUNLQUdFKTsKPiAgCWlmICghcGtnKSB7Cj4gQEAgLTExOCw3ICsx
-MTQsNyBAQCBzdGF0aWMgYm9vbCBpbnRlbF9kc21fcGNpX3Byb2JlKHN0cnVjdCBwY2lfZGV2ICpw
-ZGV2KQo+ICAJaWYgKCFkaGFuZGxlKQo+ICAJCXJldHVybiBmYWxzZTsKPiAgCj4gLQlpZiAoIWFj
-cGlfY2hlY2tfZHNtKGRoYW5kbGUsIGludGVsX2RzbV9ndWlkLCBJTlRFTF9EU01fUkVWSVNJT05f
-SUQsCj4gKwlpZiAoIWFjcGlfY2hlY2tfZHNtKGRoYW5kbGUsICZpbnRlbF9kc21fZ3VpZCwgSU5U
-RUxfRFNNX1JFVklTSU9OX0lELAo+ICAJCQkgICAgMSA8PCBJTlRFTF9EU01fRk5fUExBVEZPUk1f
-TVVYX0lORk8pKSB7Cj4gIAkJRFJNX0RFQlVHX0tNUygibm8gX0RTTSBtZXRob2QgZm9yIGludGVs
-IGRldmljZVxuIik7Cj4gIAkJcmV0dXJuIGZhbHNlOwoKVGhlIGRybS9pOTE1IGh1bmsgYWJvdmUg
-aXMKClJldmlld2VkLWJ5OiBKYW5pIE5pa3VsYSA8amFuaS5uaWt1bGFAaW50ZWwuY29tPgoKYW5k
-IGFja2VkIGZvciBtZXJnaW5nIHZpYSB3aGljaGV2ZXIgdHJlZSBpcyBzdWl0YWJsZS4KCgpCUiwK
-SmFuaS4KCi0tIApKYW5pIE5pa3VsYSwgSW50ZWwgT3BlbiBTb3VyY2UgVGVjaG5vbG9neSBDZW50
-ZXIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwt
-Z2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8v
-bGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+hdac_wait_for_cmd_dmas() uses a jiffie timeout to ensure that we do not
+wait forever for stuck hardware. However, it is called from an
+irq-disabled context which prevents jiffie from advancing and so the
+loop doesn't terminate if the hardware fails. This can then cause NMI
+watchdog warnings, such as:
+
+    NMI watchdog: Watchdog detected hard LOCKUP on cpu 3
+    Modules linked in: snd_hda_intel i915 vgem snd_hda_codec_hdmi x86_pkg_temp_thermal intel_powerclamp coretemp crct10dif_pclmul crc32_pclmul snd_hda_codec_realtek snd_hda_codec_generic ghash_clmulni_intel e1000e snd_hda_codec snd_hwdep snd_hda_core snd_pcm ptp mei_me prime_numbers pps_core mei lpc_ich i2c_hid i2c_designware_platform i2c_designware_core [last unloaded: i915]
+    irq event stamp: 13366
+    hardirqs last  enabled at (13365): [<ffffffff81891a87>] _raw_spin_unlock_irq+0x27/0x50
+    hardirqs last disabled at (13366): [<ffffffff818918d2>] _raw_spin_lock_irq+0x12/0x50
+    softirqs last  enabled at (12744): [<ffffffff81085c79>] __do_softirq+0x1d9/0x4c0
+    softirqs last disabled at (12721): [<ffffffff810860d9>] irq_exit+0xa9/0xc0
+    CPU: 3 PID: 10443 Comm: kworker/u8:11 Tainted: G     U          4.11.0-rc4-CI-CI_DRM_319+ #1
+    Hardware name:                  /NUC5i5RYB, BIOS RYBDWi35.86A.0362.2017.0118.0940 01/18/2017
+    Workqueue: events_unbound async_run_entry_fn
+    task: ffff88024cd32740 task.stack: ffffc9000162c000
+    RIP: 0010:preempt_count_add+0xe/0xc0
+    RSP: 0018:ffffc9000162fbd8 EFLAGS: 00000082
+    RAX: 0000000080000001 RBX: 0000000704b96558 RCX: 0000000000000002
+    RDX: 0000000000000000 RSI: ffffffff81c74f2d RDI: 0000000000000001
+    RBP: ffffc9000162fc08 R08: 00000000bbcc90cc R09: 23c7b07100000000
+    R10: ffffffff827901a8 R11: ffff88024cd32740 R12: 0000000704b92baa
+    R13: 0000000000003ea0 R14: 0000000000000003 R15: ffffffffa00061f0
+    FS:  0000000000000000(0000) GS:ffff880256d80000(0000) knlGS:0000000000000000
+    CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+    CR2: 00007f90f84a5144 CR3: 0000000003e0f000 CR4: 00000000003406e0
+    Call Trace:
+     ? delay_tsc+0x3d/0xc0
+     __delay+0xa/0x10
+     __const_udelay+0x31/0x40
+     snd_hdac_bus_stop_cmd_io+0x96/0xe0 [snd_hda_core]
+     ? azx_dev_disconnect+0x20/0x20 [snd_hda_intel]
+     snd_hdac_bus_stop_chip+0xb1/0x100 [snd_hda_core]
+     azx_stop_chip+0x9/0x10 [snd_hda_codec]
+     azx_suspend+0x72/0x220 [snd_hda_intel]
+     pci_pm_suspend+0x71/0x140
+     dpm_run_callback+0x6f/0x330
+     ? pci_pm_freeze+0xe0/0xe0
+     __device_suspend+0xf9/0x370
+     ? dpm_watchdog_set+0x60/0x60
+     async_suspend+0x1a/0x90
+     async_run_entry_fn+0x34/0x160
+     process_one_work+0x1f4/0x6d0
+     ? process_one_work+0x16e/0x6d0
+     worker_thread+0x49/0x4a0
+     kthread+0x107/0x140
+     ? process_one_work+0x6d0/0x6d0
+     ? kthread_create_on_node+0x40/0x40
+     ret_from_fork+0x2e/0x40
+
+Fixes: 38b19ed7f81e ("ALSA: hda: fix to wait for RIRB & CORB DMA to set")
+Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=100419
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Jeeja KP <jeeja.kp@intel.com>
+Cc: Vinod Koul <vinod.koul@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: <stable@vger.kernel.org> # v4.7+
+---
+ sound/hda/hdac_controller.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
+index ee08c389b4d6..7f8806b03982 100644
+--- a/sound/hda/hdac_controller.c
++++ b/sound/hda/hdac_controller.c
+@@ -85,14 +85,14 @@ static void hdac_wait_for_cmd_dmas(struct hdac_bus *bus)
+ {
+ 	unsigned long timeout;
+ 
+-	timeout = jiffies + msecs_to_jiffies(100);
++	timeout = 100 * 100; /* 100ms */
+ 	while ((snd_hdac_chip_readb(bus, RIRBCTL) & AZX_RBCTL_DMA_EN)
+-		&& time_before(jiffies, timeout))
++	       && timeout--)
+ 		udelay(10);
+ 
+-	timeout = jiffies + msecs_to_jiffies(100);
++	timeout = 100 * 100; /* 100ms */
+ 	while ((snd_hdac_chip_readb(bus, CORBCTL) & AZX_CORBCTL_RUN)
+-		&& time_before(jiffies, timeout))
++	       && timeout--)
+ 		udelay(10);
+ }
+ 
+-- 
+2.11.0
