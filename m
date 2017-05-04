@@ -1,21 +1,15 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: Re: [PATCH 2/2] ASoC: Intel: Skylake: Fix typo for
-	token d0i3 caps
-Date: Thu, 4 May 2017 09:16:59 +0530
-Message-ID: <20170504034658.GC19898@subhransu-desktop>
-References: <1493806055-28046-1-git-send-email-subhransu.s.prusty@intel.com>
- <1493806055-28046-2-git-send-email-subhransu.s.prusty@intel.com>
- <7f493fb0-99d2-4de8-1cf3-24ae3324b783@sakamocchi.jp>
- <efae9470-97e5-183e-d226-9488b1b309da@sakamocchi.jp>
+Subject: [PATCH v2 1/2] ASoC: Intel: Skylake: Move i915
+	registration to worker thread
+Date: Thu,  4 May 2017 14:09:10 +0530
+Message-ID: <1493887151-508-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 781D0266C31
- for <alsa-devel@alsa-project.org>; Thu,  4 May 2017 06:00:25 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <efae9470-97e5-183e-d226-9488b1b309da@sakamocchi.jp>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id A0F1A26684C
+ for <alsa-devel@alsa-project.org>; Thu,  4 May 2017 10:52:51 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,93 +19,308 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, "Sodhi, VunnyX" <vunnyx.sodhi@intel.com>, Vinod Koul <vinod.koul@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 03, 2017 at 07:46:21PM +0900, Takashi Sakamoto wrote:
-> On May 3 2017 19:38, Takashi Sakamoto wrote:
-> > On May 3 2017 19:07, Subhransu S. Prusty wrote:
-> >> Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-> >> ---
-> >>  include/uapi/sound/snd_sst_tokens.h    | 4 ++--
-> >>  sound/soc/intel/skylake/skl-topology.c | 2 +-
-> >>  2 files changed, 3 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/include/uapi/sound/snd_sst_tokens.h b/include/uapi/sound/snd_sst_tokens.h
-> >> index 93392bedcc58..685149dda66b 100644
-> >> --- a/include/uapi/sound/snd_sst_tokens.h
-> >> +++ b/include/uapi/sound/snd_sst_tokens.h
-> >> @@ -213,8 +213,8 @@ enum SKL_TKNS {
-> >>  	SKL_TKN_U32_LIB_COUNT,
-> >>  	SKL_TKN_STR_LIB_NAME,
-> >>  	SKL_TKN_U32_PMODE,
-> >> -	SKL_TKL_U32_D0I3_CAPS,
-> >> -	SKL_TKN_MAX = SKL_TKL_U32_D0I3_CAPS,
-> >> +	SKL_TKN_U32_D0I3_CAPS,
-> >> +	SKL_TKN_MAX = SKL_TKN_U32_D0I3_CAPS,
-> >>  };
-> >>  
-> >>  #endif
-> >> diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-> >> index 3a99712e44a8..b28199a5348c 100644
-> >> --- a/sound/soc/intel/skylake/skl-topology.c
-> >> +++ b/sound/soc/intel/skylake/skl-topology.c
-> >> @@ -1995,7 +1995,7 @@ static int skl_tplg_get_token(struct device *dev,
-> >>  		mconfig->converter = tkn_elem->value;
-> >>  		break;
-> >>  
-> >> -	case SKL_TKL_U32_D0I3_CAPS:
-> >> +	case SKL_TKN_U32_D0I3_CAPS:
-> >>  		mconfig->d0i3_caps = tkn_elem->value;
-> >>  		break;
-> > 
-> > $ git annotate include/uapi/sound/snd_sst_tokens.h
-> > 8a0cb2360ddb9   (Vinod Koul     2016-11-03 17:07:18 +0530       215)
-> > SKL_TKN_U32_PMODE,
-> > 6bd9dcf339ebb   (Vinod Koul     2016-11-03 17:07:19 +0530       216)
-> > SKL_TKL_U32_D0I3_CAPS,
-> > 6bd9dcf339ebb   (Vinod Koul     2016-11-03 17:07:19 +0530       217)
-> > SKL_TKN_MAX = SKL_TKL_U32_D0I3_CAPS,
-> > 15f0d4f531d84   (Shreyas NC     2016-08-12 12:29:50 +0530       218)};
-> > $ git name-rev --tags 6bd9dcf339ebb
-> > 6bd9dcf339ebb tags/sound-4.10-rc1~3^2~15^2~17
-> > 
-> > The typo was already included in Linux kernel v4.10 and exposed to
-> > userland. In general of kernel development, it's the worst idea to
-> > change it, because it can break userland.
-> 
-> Instead of rename, it's better for you to keep the typo and add the
-> correct entry with the same value, like:
-> 
-> $ git diff
-> diff --git a/include/uapi/sound/snd_sst_tokens.h
-> b/include/uapi/sound/snd_sst_tokens.h
-> index 93392bedcc58..b7cc95d04928 100644
-> --- a/include/uapi/sound/snd_sst_tokens.h
-> +++ b/include/uapi/sound/snd_sst_tokens.h
-> @@ -213,8 +213,9 @@ enum SKL_TKNS {
->         SKL_TKN_U32_LIB_COUNT,
->         SKL_TKN_STR_LIB_NAME,
->         SKL_TKN_U32_PMODE,
-> -       SKL_TKL_U32_D0I3_CAPS,
-> -       SKL_TKN_MAX = SKL_TKL_U32_D0I3_CAPS,
-> +       SKL_TKL_U32_D0I3_CAPS,  /* Typo, added at v4.10. */
-> +       SKL_TKN_U32_D0I3_CAPS = SKN_TKL_U32_D0I3_CAPS,
-Hi Takashi,
+From: Vinod Koul <vinod.koul@intel.com>
 
-Thanks for the suggestion. I will resubmit the patch with the change.
+The i915 component framework expects the caller to be invoking
+snd_hdac_i915_init() from a thread context. Otherwise it results in
+lockups on drm side.
 
-Regards,
-Subhransu
-> +       SKL_TKN_MAX = SKL_TKN_U32_D0I3_CAPS,
->  };
-> 
->  #endif
-> 
-> 
-> Regards
-> 
-> Takashi Sakamoto
+So move the registering of component interface and probing of codecs on
+this bus to a worker thread.
 
+init_failed in skl structure is not used currently, so renamed to
+init_done and used to track the initialization done in worker thread.
+
+Reported-by: Imre Deak <imre.deak@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Sodhi, VunnyX <vunnyx.sodhi@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+---
+v1->v2
+   - no change
+
+ sound/soc/intel/skylake/skl.c | 162 +++++++++++++++++++++++-------------------
+ sound/soc/intel/skylake/skl.h |   4 +-
+ 2 files changed, 91 insertions(+), 75 deletions(-)
+
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 6df3b317a476..4c9b5781282b 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -410,7 +410,7 @@ static int skl_free(struct hdac_ext_bus *ebus)
+ 	struct skl *skl  = ebus_to_skl(ebus);
+ 	struct hdac_bus *bus = ebus_to_hbus(ebus);
+ 
+-	skl->init_failed = 1; /* to be sure */
++	skl->init_done = 0; /* to be sure */
+ 
+ 	snd_hdac_ext_stop_streams(ebus);
+ 
+@@ -428,8 +428,10 @@ static int skl_free(struct hdac_ext_bus *ebus)
+ 
+ 	snd_hdac_ext_bus_exit(ebus);
+ 
++	cancel_work_sync(&skl->probe_work);
+ 	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
+ 		snd_hdac_i915_exit(&ebus->bus);
++
+ 	return 0;
+ }
+ 
+@@ -566,6 +568,84 @@ static int skl_codec_create(struct hdac_ext_bus *ebus)
+ 	.get_response = snd_hdac_bus_get_response,
+ };
+ 
++static int skl_i915_init(struct hdac_bus *bus)
++{
++	int err;
++
++	/*
++	 * The HDMI codec is in GPU so we need to ensure that it is powered
++	 * up and ready for probe
++	 */
++	err = snd_hdac_i915_init(bus);
++	if (err < 0)
++		return err;
++
++	err = snd_hdac_display_power(bus, true);
++	if (err < 0)
++		dev_err(bus->dev, "Cannot turn on display power on i915\n");
++
++	return err;
++}
++
++static void skl_probe_work(struct work_struct *work)
++{
++	struct skl *skl = container_of(work, struct skl, probe_work);
++	struct hdac_ext_bus *ebus = &skl->ebus;
++	struct hdac_bus *bus = ebus_to_hbus(ebus);
++	struct hdac_ext_link *hlink = NULL;
++	int err;
++
++	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
++		err = skl_i915_init(bus);
++		if (err < 0)
++			return;
++	}
++
++	err = skl_init_chip(bus, true);
++	if (err < 0) {
++		dev_err(bus->dev, "Init chip failed with err: %d\n", err);
++		goto out_err;
++	}
++
++	/* codec detection */
++	if (!bus->codec_mask)
++		dev_info(bus->dev, "no hda codecs found!\n");
++
++	/* create codec instances */
++	err = skl_codec_create(ebus);
++	if (err < 0)
++		goto out_err;
++
++	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
++		err = snd_hdac_display_power(bus, false);
++		if (err < 0) {
++			dev_err(bus->dev, "Cannot turn off display power on i915\n");
++			return;
++		}
++	}
++
++	/* register platform dai and controls */
++	err = skl_platform_register(bus->dev);
++	if (err < 0)
++		return;
++	/*
++	 * we are done probing so decrement link counts
++	 */
++	list_for_each_entry(hlink, &ebus->hlink_list, list)
++		snd_hdac_ext_bus_link_put(ebus, hlink);
++
++	/* configure PM */
++	pm_runtime_put_noidle(bus->dev);
++	pm_runtime_allow(bus->dev);
++	skl->init_done = 1;
++
++	return;
++
++out_err:
++	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
++		err = snd_hdac_display_power(bus, false);
++}
++
+ /*
+  * constructor
+  */
+@@ -593,6 +673,7 @@ static int skl_create(struct pci_dev *pci,
+ 	snd_hdac_ext_bus_init(ebus, &pci->dev, &bus_core_ops, io_ops);
+ 	ebus->bus.use_posbuf = 1;
+ 	skl->pci = pci;
++	INIT_WORK(&skl->probe_work, skl_probe_work);
+ 
+ 	ebus->bus.bdl_pos_adj = 0;
+ 
+@@ -601,27 +682,6 @@ static int skl_create(struct pci_dev *pci,
+ 	return 0;
+ }
+ 
+-static int skl_i915_init(struct hdac_bus *bus)
+-{
+-	int err;
+-
+-	/*
+-	 * The HDMI codec is in GPU so we need to ensure that it is powered
+-	 * up and ready for probe
+-	 */
+-	err = snd_hdac_i915_init(bus);
+-	if (err < 0)
+-		return err;
+-
+-	err = snd_hdac_display_power(bus, true);
+-	if (err < 0) {
+-		dev_err(bus->dev, "Cannot turn on display power on i915\n");
+-		return err;
+-	}
+-
+-	return err;
+-}
+-
+ static int skl_first_init(struct hdac_ext_bus *ebus)
+ {
+ 	struct skl *skl = ebus_to_skl(ebus);
+@@ -684,20 +744,7 @@ static int skl_first_init(struct hdac_ext_bus *ebus)
+ 	/* initialize chip */
+ 	skl_init_pci(skl);
+ 
+-	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
+-		err = skl_i915_init(bus);
+-		if (err < 0)
+-			return err;
+-	}
+-
+-	skl_init_chip(bus, true);
+-
+-	/* codec detection */
+-	if (!bus->codec_mask) {
+-		dev_info(bus->dev, "no hda codecs found!\n");
+-	}
+-
+-	return 0;
++	return skl_init_chip(bus, true);
+ }
+ 
+ static int skl_probe(struct pci_dev *pci,
+@@ -706,7 +753,6 @@ static int skl_probe(struct pci_dev *pci,
+ 	struct skl *skl;
+ 	struct hdac_ext_bus *ebus = NULL;
+ 	struct hdac_bus *bus = NULL;
+-	struct hdac_ext_link *hlink = NULL;
+ 	int err;
+ 
+ 	/* we use ext core ops, so provide NULL for ops here */
+@@ -729,7 +775,7 @@ static int skl_probe(struct pci_dev *pci,
+ 
+ 	if (skl->nhlt == NULL) {
+ 		err = -ENODEV;
+-		goto out_display_power_off;
++		goto out_free;
+ 	}
+ 
+ 	err = skl_nhlt_create_sysfs(skl);
+@@ -760,56 +806,24 @@ static int skl_probe(struct pci_dev *pci,
+ 	if (bus->mlcap)
+ 		snd_hdac_ext_bus_get_ml_capabilities(ebus);
+ 
++	snd_hdac_bus_stop_chip(bus);
++
+ 	/* create device for soc dmic */
+ 	err = skl_dmic_device_register(skl);
+ 	if (err < 0)
+ 		goto out_dsp_free;
+ 
+-	/* register platform dai and controls */
+-	err = skl_platform_register(bus->dev);
+-	if (err < 0)
+-		goto out_dmic_free;
+-
+-	/* create codec instances */
+-	err = skl_codec_create(ebus);
+-	if (err < 0)
+-		goto out_unregister;
+-
+-	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
+-		err = snd_hdac_display_power(bus, false);
+-		if (err < 0) {
+-			dev_err(bus->dev, "Cannot turn off display power on i915\n");
+-			return err;
+-		}
+-	}
+-
+-	/*
+-	 * we are done probling so decrement link counts
+-	 */
+-	list_for_each_entry(hlink, &ebus->hlink_list, list)
+-		snd_hdac_ext_bus_link_put(ebus, hlink);
+-
+-	/* configure PM */
+-	pm_runtime_put_noidle(bus->dev);
+-	pm_runtime_allow(bus->dev);
++	schedule_work(&skl->probe_work);
+ 
+ 	return 0;
+ 
+-out_unregister:
+-	skl_platform_unregister(bus->dev);
+-out_dmic_free:
+-	skl_dmic_device_unregister(skl);
+ out_dsp_free:
+ 	skl_free_dsp(skl);
+ out_mach_free:
+ 	skl_machine_device_unregister(skl);
+ out_nhlt_free:
+ 	skl_nhlt_free(skl->nhlt);
+-out_display_power_off:
+-	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
+-		snd_hdac_display_power(bus, false);
+ out_free:
+-	skl->init_failed = 1;
+ 	skl_free(ebus);
+ 
+ 	return err;
+@@ -828,7 +842,7 @@ static void skl_shutdown(struct pci_dev *pci)
+ 
+ 	skl = ebus_to_skl(ebus);
+ 
+-	if (skl->init_failed)
++	if (!skl->init_done)
+ 		return;
+ 
+ 	snd_hdac_ext_stop_streams(ebus);
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index 5b3fa4b91691..c1968a06174a 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -67,7 +67,7 @@ struct skl {
+ 	struct hdac_ext_bus ebus;
+ 	struct pci_dev *pci;
+ 
+-	unsigned int init_failed:1; /* delayed init failed */
++	unsigned int init_done:1; /* delayed init status */
+ 	struct platform_device *dmic_dev;
+ 	struct platform_device *i2s_dev;
+ 	struct snd_soc_platform *platform;
+@@ -85,6 +85,8 @@ struct skl {
+ 	const struct firmware *tplg;
+ 
+ 	int supend_active;
++
++	struct work_struct probe_work;
+ };
+ 
+ #define skl_to_ebus(s)	(&(s)->ebus)
 -- 
+1.9.1
