@@ -1,91 +1,53 @@
-From: Chris Wilson <chris@chris-wilson.co.uk>
-Subject: Re: [PATCH] ALSA: hda: Use loop counter for hdac_wait_for_cmd_dmas()
- timeout
-Date: Thu, 4 May 2017 11:42:04 +0100
-Message-ID: <20170504104204.GA24019@nuc-i3427.alporthouse.com>
-References: <20170504101829.28325-1-chris@chris-wilson.co.uk>
- <s5h60hgq5pl.wl-tiwai@suse.de>
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Subject: Re: [PATCH v1] ACPI: Switch to use generic UUID API
+Date: Thu, 4 May 2017 15:14:46 +0300
+Message-ID: <20170504121446.GA26032@kuha.fi.intel.com>
+References: <20170504092151.88646-1-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <stable-owner@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
 Content-Disposition: inline
-In-Reply-To: <s5h60hgq5pl.wl-tiwai@suse.de>
-Sender: stable-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, Jeeja KP <jeeja.kp@intel.com>, Vinod Koul <vinod.koul@intel.com>, "# v4 . 7+" <stable@vger.kernel.org>
+In-Reply-To: <20170504092151.88646-1-andriy.shevchenko@linux.intel.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-pci@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>, Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, Adrian Hunter <adrian.hunter@intel.com>, Benjamin Tissoires <benjamin.tissoires@redhat.com>, Joerg Roedel <joro@8bytes.org>, linux-acpi@vger.kernel.org, tpmdd-devel@lists.sourceforge.net, Ben Skeggs <bskeggs@redhat.com>, nouveau@lists.freedesktop.org, linux-mmc@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>, Borislav Petkov <bp@suse.de>, Yisen Zhuang <yisen.zhuang@huawei.com>, Mathias Nyman <mathias.nyman@intel.com>, intel-gfx@lists.freedesktop.org, linux-input@vger.kernel.org, Mark Brown <broonie@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Dan Williams <dan.j.williams@intel.com>, Mika Westerberg <mika.westerberg@linux.intel.com>, Felipe Balbi <balbi@kernel.org>, netdev@vger.kernel.or
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 04, 2017 at 12:25:26PM +0200, Takashi Iwai wrote:
-> On Thu, 04 May 2017 12:18:29 +0200,
-> Chris Wilson wrote:
-> > 
-> > hdac_wait_for_cmd_dmas() uses a jiffie timeout to ensure that we do not
-> > wait forever for stuck hardware. However, it is called from an
-> > irq-disabled context which prevents jiffie from advancing and so the
-> > loop doesn't terminate if the hardware fails. This can then cause NMI
-> > watchdog warnings, such as:
-> > 
-> >     NMI watchdog: Watchdog detected hard LOCKUP on cpu 3
-> >     Modules linked in: snd_hda_intel i915 vgem snd_hda_codec_hdmi x86_pkg_temp_thermal intel_powerclamp coretemp crct10dif_pclmul crc32_pclmul snd_hda_codec_realtek snd_hda_codec_generic ghash_clmulni_intel e1000e snd_hda_codec snd_hwdep snd_hda_core snd_pcm ptp mei_me prime_numbers pps_core mei lpc_ich i2c_hid i2c_designware_platform i2c_designware_core [last unloaded: i915]
-> >     irq event stamp: 13366
-> >     hardirqs last  enabled at (13365): [<ffffffff81891a87>] _raw_spin_unlock_irq+0x27/0x50
-> >     hardirqs last disabled at (13366): [<ffffffff818918d2>] _raw_spin_lock_irq+0x12/0x50
-> >     softirqs last  enabled at (12744): [<ffffffff81085c79>] __do_softirq+0x1d9/0x4c0
-> >     softirqs last disabled at (12721): [<ffffffff810860d9>] irq_exit+0xa9/0xc0
-> >     CPU: 3 PID: 10443 Comm: kworker/u8:11 Tainted: G     U          4.11.0-rc4-CI-CI_DRM_319+ #1
-> >     Hardware name:                  /NUC5i5RYB, BIOS RYBDWi35.86A.0362.2017.0118.0940 01/18/2017
-> >     Workqueue: events_unbound async_run_entry_fn
-> >     task: ffff88024cd32740 task.stack: ffffc9000162c000
-> >     RIP: 0010:preempt_count_add+0xe/0xc0
-> >     RSP: 0018:ffffc9000162fbd8 EFLAGS: 00000082
-> >     RAX: 0000000080000001 RBX: 0000000704b96558 RCX: 0000000000000002
-> >     RDX: 0000000000000000 RSI: ffffffff81c74f2d RDI: 0000000000000001
-> >     RBP: ffffc9000162fc08 R08: 00000000bbcc90cc R09: 23c7b07100000000
-> >     R10: ffffffff827901a8 R11: ffff88024cd32740 R12: 0000000704b92baa
-> >     R13: 0000000000003ea0 R14: 0000000000000003 R15: ffffffffa00061f0
-> >     FS:  0000000000000000(0000) GS:ffff880256d80000(0000) knlGS:0000000000000000
-> >     CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >     CR2: 00007f90f84a5144 CR3: 0000000003e0f000 CR4: 00000000003406e0
-> >     Call Trace:
-> >      ? delay_tsc+0x3d/0xc0
-> >      __delay+0xa/0x10
-> >      __const_udelay+0x31/0x40
-> >      snd_hdac_bus_stop_cmd_io+0x96/0xe0 [snd_hda_core]
-> >      ? azx_dev_disconnect+0x20/0x20 [snd_hda_intel]
-> >      snd_hdac_bus_stop_chip+0xb1/0x100 [snd_hda_core]
-> >      azx_stop_chip+0x9/0x10 [snd_hda_codec]
-> >      azx_suspend+0x72/0x220 [snd_hda_intel]
-> >      pci_pm_suspend+0x71/0x140
-> >      dpm_run_callback+0x6f/0x330
-> >      ? pci_pm_freeze+0xe0/0xe0
-> >      __device_suspend+0xf9/0x370
-> >      ? dpm_watchdog_set+0x60/0x60
-> >      async_suspend+0x1a/0x90
-> >      async_run_entry_fn+0x34/0x160
-> >      process_one_work+0x1f4/0x6d0
-> >      ? process_one_work+0x16e/0x6d0
-> >      worker_thread+0x49/0x4a0
-> >      kthread+0x107/0x140
-> >      ? process_one_work+0x6d0/0x6d0
-> >      ? kthread_create_on_node+0x40/0x40
-> >      ret_from_fork+0x2e/0x40
-> > 
-> > Fixes: 38b19ed7f81e ("ALSA: hda: fix to wait for RIRB & CORB DMA to set")
-> > Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=100419
-> > Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-> > Cc: Jeeja KP <jeeja.kp@intel.com>
-> > Cc: Vinod Koul <vinod.koul@intel.com>
-> > Cc: Takashi Iwai <tiwai@suse.de>
-> > Cc: <stable@vger.kernel.org> # v4.7+
-> 
-> Any reason to submit a different fix from what's attached in the
-> bugzilla you mentioned?
-
-Because I didn't see it when Marta complained on irc and suggested
-reverting 38b19ed7f81e. There's no advantage either way, but even after
-fixing the timeout detection we are still left with the issue that the
-hw is stuck and suffer a 200ms suspend delay. :|
--Chris
-
--- 
-Chris Wilson, Intel Open Source Technology Centre
+T24gVGh1LCBNYXkgMDQsIDIwMTcgYXQgMTI6MjE6NTFQTSArMDMwMCwgQW5keSBTaGV2Y2hlbmtv
+IHdyb3RlOgo+IGFjcGlfZXZhbHVhdGVfZHNtKCkgYW5kIGZyaWVuZHMgdGFrZSBhIHBvaW50ZXIg
+dG8gYSByYXcgYnVmZmVyIG9mIDE2Cj4gYnl0ZXMuIEluc3RlYWQgd2UgY29udmVydCB0aGVtIHRv
+IHVzZSB1dWlkX2xlIHR5cGUuIEF0IHRoZSBzYW1lIHRpbWUgd2UKPiBjb252ZXJ0IGN1cnJlbnQg
+dXNlcnMuCj4gCj4gYWNwaV9zdHJfdG9fdXVpZCgpIGJlY29tZXMgdXNlbGVzcyBhZnRlciB0aGUg
+Y29udmVyc2lvbiBhbmQgaXQncyBzYWZlIHRvCj4gZ2V0IHJpZCBvZiBpdC4KPiAKPiBUaGUgY29u
+dmVyc2lvbiBmaXhlcyBhIHBvdGVudGlhbCBidWcgaW4gaW50MzQweF90aGVybWFsIGFzIHdlbGwg
+c2luY2UKPiB3ZSBoYXZlIHRvIHVzZSBtZW1jbXAoKSBvbiBiaW5hcnkgZGF0YS4KPiAKPiBDYzog
+UmFmYWVsIEouIFd5c29ja2kgPHJqd0Byand5c29ja2kubmV0Pgo+IENjOiBNaWthIFdlc3RlcmJl
+cmcgPG1pa2Eud2VzdGVyYmVyZ0BsaW51eC5pbnRlbC5jb20+Cj4gQ2M6IEJvcmlzbGF2IFBldGtv
+diA8YnBAc3VzZS5kZT4KPiBDYzogRGFuIFdpbGxpYW1zIDxkYW4uai53aWxsaWFtc0BpbnRlbC5j
+b20+Cj4gQ2M6IEFtaXIgR29sZHN0ZWluIDxhbWlyNzNpbEBnbWFpbC5jb20+Cj4gQ2M6IEphcmtr
+byBTYWtraW5lbiA8amFya2tvLnNha2tpbmVuQGxpbnV4LmludGVsLmNvbT4KPiBDYzogSmFuaSBO
+aWt1bGEgPGphbmkubmlrdWxhQGxpbnV4LmludGVsLmNvbT4KPiBDYzogQmVuIFNrZWdncyA8YnNr
+ZWdnc0ByZWRoYXQuY29tPgo+IENjOiBCZW5qYW1pbiBUaXNzb2lyZXMgPGJlbmphbWluLnRpc3Nv
+aXJlc0ByZWRoYXQuY29tPgo+IENjOiBKb2VyZyBSb2VkZWwgPGpvcm9AOGJ5dGVzLm9yZz4KPiBD
+YzogQWRyaWFuIEh1bnRlciA8YWRyaWFuLmh1bnRlckBpbnRlbC5jb20+Cj4gQ2M6IFlpc2VuIFpo
+dWFuZyA8eWlzZW4uemh1YW5nQGh1YXdlaS5jb20+Cj4gQ2M6IEJqb3JuIEhlbGdhYXMgPGJoZWxn
+YWFzQGdvb2dsZS5jb20+Cj4gQ2M6IFpoYW5nIFJ1aSA8cnVpLnpoYW5nQGludGVsLmNvbT4KPiBD
+YzogRmVsaXBlIEJhbGJpIDxiYWxiaUBrZXJuZWwub3JnPgo+IENjOiBNYXRoaWFzIE55bWFuIDxt
+YXRoaWFzLm55bWFuQGludGVsLmNvbT4KPiBDYzogSGVpa2tpIEtyb2dlcnVzIDxoZWlra2kua3Jv
+Z2VydXNAbGludXguaW50ZWwuY29tPgo+IENjOiBMaWFtIEdpcmR3b29kIDxsZ2lyZHdvb2RAZ21h
+aWwuY29tPgo+IENjOiBNYXJrIEJyb3duIDxicm9vbmllQGtlcm5lbC5vcmc+Cj4gU2lnbmVkLW9m
+Zi1ieTogQW5keSBTaGV2Y2hlbmtvIDxhbmRyaXkuc2hldmNoZW5rb0BsaW51eC5pbnRlbC5jb20+
+CgpPSyBieSBtZSwgRldJVzoKClJldmlld2VkLWJ5OiBIZWlra2kgS3JvZ2VydXMgPGhlaWtraS5r
+cm9nZXJ1c0BsaW51eC5pbnRlbC5jb20+CgoKVGhhbmtzLAoKLS0gCmhlaWtraQpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBs
+aXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVz
+a3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
