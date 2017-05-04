@@ -1,16 +1,21 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ASoC: hdmi-codec: fix spelling mistake:
-	"plalform" -> "platform"
-Date: Thu,  4 May 2017 00:03:16 +0100
-Message-ID: <20170503230316.10562-1-colin.king@canonical.com>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: Re: [PATCH 2/2] ASoC: Intel: Skylake: Fix typo for
+	token d0i3 caps
+Date: Thu, 4 May 2017 09:16:59 +0530
+Message-ID: <20170504034658.GC19898@subhransu-desktop>
+References: <1493806055-28046-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1493806055-28046-2-git-send-email-subhransu.s.prusty@intel.com>
+ <7f493fb0-99d2-4de8-1cf3-24ae3324b783@sakamocchi.jp>
+ <efae9470-97e5-183e-d226-9488b1b309da@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 11DEF266AD9
- for <alsa-devel@alsa-project.org>; Thu,  4 May 2017 01:03:29 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 781D0266C31
+ for <alsa-devel@alsa-project.org>; Thu,  4 May 2017 06:00:25 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <efae9470-97e5-183e-d226-9488b1b309da@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,31 +25,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Vincent Abriou <vincent.abriou@st.com>, Jon Medhurst <tixy@linaro.org>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Wed, May 03, 2017 at 07:46:21PM +0900, Takashi Sakamoto wrote:
+> On May 3 2017 19:38, Takashi Sakamoto wrote:
+> > On May 3 2017 19:07, Subhransu S. Prusty wrote:
+> >> Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+> >> ---
+> >>  include/uapi/sound/snd_sst_tokens.h    | 4 ++--
+> >>  sound/soc/intel/skylake/skl-topology.c | 2 +-
+> >>  2 files changed, 3 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/include/uapi/sound/snd_sst_tokens.h b/include/uapi/sound/snd_sst_tokens.h
+> >> index 93392bedcc58..685149dda66b 100644
+> >> --- a/include/uapi/sound/snd_sst_tokens.h
+> >> +++ b/include/uapi/sound/snd_sst_tokens.h
+> >> @@ -213,8 +213,8 @@ enum SKL_TKNS {
+> >>  	SKL_TKN_U32_LIB_COUNT,
+> >>  	SKL_TKN_STR_LIB_NAME,
+> >>  	SKL_TKN_U32_PMODE,
+> >> -	SKL_TKL_U32_D0I3_CAPS,
+> >> -	SKL_TKN_MAX = SKL_TKL_U32_D0I3_CAPS,
+> >> +	SKL_TKN_U32_D0I3_CAPS,
+> >> +	SKL_TKN_MAX = SKL_TKN_U32_D0I3_CAPS,
+> >>  };
+> >>  
+> >>  #endif
+> >> diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+> >> index 3a99712e44a8..b28199a5348c 100644
+> >> --- a/sound/soc/intel/skylake/skl-topology.c
+> >> +++ b/sound/soc/intel/skylake/skl-topology.c
+> >> @@ -1995,7 +1995,7 @@ static int skl_tplg_get_token(struct device *dev,
+> >>  		mconfig->converter = tkn_elem->value;
+> >>  		break;
+> >>  
+> >> -	case SKL_TKL_U32_D0I3_CAPS:
+> >> +	case SKL_TKN_U32_D0I3_CAPS:
+> >>  		mconfig->d0i3_caps = tkn_elem->value;
+> >>  		break;
+> > 
+> > $ git annotate include/uapi/sound/snd_sst_tokens.h
+> > 8a0cb2360ddb9   (Vinod Koul     2016-11-03 17:07:18 +0530       215)
+> > SKL_TKN_U32_PMODE,
+> > 6bd9dcf339ebb   (Vinod Koul     2016-11-03 17:07:19 +0530       216)
+> > SKL_TKL_U32_D0I3_CAPS,
+> > 6bd9dcf339ebb   (Vinod Koul     2016-11-03 17:07:19 +0530       217)
+> > SKL_TKN_MAX = SKL_TKL_U32_D0I3_CAPS,
+> > 15f0d4f531d84   (Shreyas NC     2016-08-12 12:29:50 +0530       218)};
+> > $ git name-rev --tags 6bd9dcf339ebb
+> > 6bd9dcf339ebb tags/sound-4.10-rc1~3^2~15^2~17
+> > 
+> > The typo was already included in Linux kernel v4.10 and exposed to
+> > userland. In general of kernel development, it's the worst idea to
+> > change it, because it can break userland.
+> 
+> Instead of rename, it's better for you to keep the typo and add the
+> correct entry with the same value, like:
+> 
+> $ git diff
+> diff --git a/include/uapi/sound/snd_sst_tokens.h
+> b/include/uapi/sound/snd_sst_tokens.h
+> index 93392bedcc58..b7cc95d04928 100644
+> --- a/include/uapi/sound/snd_sst_tokens.h
+> +++ b/include/uapi/sound/snd_sst_tokens.h
+> @@ -213,8 +213,9 @@ enum SKL_TKNS {
+>         SKL_TKN_U32_LIB_COUNT,
+>         SKL_TKN_STR_LIB_NAME,
+>         SKL_TKN_U32_PMODE,
+> -       SKL_TKL_U32_D0I3_CAPS,
+> -       SKL_TKN_MAX = SKL_TKL_U32_D0I3_CAPS,
+> +       SKL_TKL_U32_D0I3_CAPS,  /* Typo, added at v4.10. */
+> +       SKL_TKN_U32_D0I3_CAPS = SKN_TKL_U32_D0I3_CAPS,
+Hi Takashi,
 
-trivial fix to spelling mistake in dev_err message.
+Thanks for the suggestion. I will resubmit the patch with the change.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/codecs/hdmi-codec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Regards,
+Subhransu
+> +       SKL_TKN_MAX = SKL_TKN_U32_D0I3_CAPS,
+>  };
+> 
+>  #endif
+> 
+> 
+> Regards
+> 
+> Takashi Sakamoto
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 8c5ae1fc23a9..a8a81fda4da8 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -779,7 +779,7 @@ static int hdmi_codec_probe(struct platform_device *pdev)
- 	dev_dbg(dev, "%s()\n", __func__);
- 
- 	if (!hcd) {
--		dev_err(dev, "%s: No plalform data\n", __func__);
-+		dev_err(dev, "%s: No platform data\n", __func__);
- 		return -EINVAL;
- 	}
- 
 -- 
-2.11.0
