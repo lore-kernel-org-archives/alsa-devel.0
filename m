@@ -1,88 +1,118 @@
-From: fuweix.tang@intel.com
-Subject: [PATCH] topology: Fix issue in parsing routes when
-	generating topology binary
-Date: Fri,  5 May 2017 14:52:02 +0800
-Message-ID: <1493967122-13036-1-git-send-email-fuweix.tang@intel.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Subject: Re: [PATCH v1] ACPI: Switch to use generic UUID API
+Date: Fri, 5 May 2017 10:06:06 +0300
+Message-ID: <CAOQ4uxjha8_2_HwgdgBN=G-vNytAW5Gk155E9z8OWyFiGNEZVw@mail.gmail.com>
+References: <20170504092151.88646-1-andriy.shevchenko@linux.intel.com> <CAPcyv4jzD0MEBRNTwTokVzgdDWas682ArUjRAGT1hp=QRE8Pjg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id A1EF626664F
- for <alsa-devel@alsa-project.org>; Fri,  5 May 2017 08:52:02 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, Fuwei Tang <fuweix.tang@intel.com>, mengdong.lin@intel.com
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-acpi-owner@vger.kernel.org>
+In-Reply-To: <CAPcyv4jzD0MEBRNTwTokVzgdDWas682ArUjRAGT1hp=QRE8Pjg@mail.gmail.com>
+Sender: linux-acpi-owner@vger.kernel.org
+To: Dan Williams <dan.j.williams@intel.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Linux ACPI <linux-acpi@vger.kernel.org>, tpmdd-devel@lists.sourceforge.net, intel-gfx@lists.freedesktop.org, nouveau@lists.freedesktop.org, linux-input@vger.kernel.org, iommu@lists.linux-foundation.org, linux-mmc@vger.kernel.org, Netdev <netdev@vger.kernel.org>, linux-pci@vger.kernel.org, USB list <linux-usb@vger.kernel.org>, alsa-devel@alsa-project.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Rafael J . Wysocki" <rjw@rjwysocki.net>, Mika Westerberg <mika.westerberg@linux.intel.com>, Borislav Petkov <bp@suse.de>, Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, Jani Nikula <jani.nikula@linux.intel.com>, Ben Skeggs <bskeggs@redhat.com>, Benjamin Tissoires <benjamin.tissoires@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Fuwei Tang <fuweix.tang@intel.com>
+On Fri, May 5, 2017 at 9:20 AM, Dan Williams <dan.j.williams@intel.com> wrote:
+> On Thu, May 4, 2017 at 2:21 AM, Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+>> acpi_evaluate_dsm() and friends take a pointer to a raw buffer of 16
+>> bytes. Instead we convert them to use uuid_le type. At the same time we
+>> convert current users.
+>>
+>> acpi_str_to_uuid() becomes useless after the conversion and it's safe to
+>> get rid of it.
+>>
+>> The conversion fixes a potential bug in int340x_thermal as well since
+>> we have to use memcmp() on binary data.
+>>
+>> Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
+>> Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
+>> Cc: Borislav Petkov <bp@suse.de>
+>> Cc: Dan Williams <dan.j.williams@intel.com>
+>> Cc: Amir Goldstein <amir73il@gmail.com>
+>> Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+>> Cc: Jani Nikula <jani.nikula@linux.intel.com>
+>> Cc: Ben Skeggs <bskeggs@redhat.com>
+>> Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+>> Cc: Joerg Roedel <joro@8bytes.org>
+>> Cc: Adrian Hunter <adrian.hunter@intel.com>
+>> Cc: Yisen Zhuang <yisen.zhuang@huawei.com>
+>> Cc: Bjorn Helgaas <bhelgaas@google.com>
+>> Cc: Zhang Rui <rui.zhang@intel.com>
+>> Cc: Felipe Balbi <balbi@kernel.org>
+>> Cc: Mathias Nyman <mathias.nyman@intel.com>
+>> Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+>> Cc: Liam Girdwood <lgirdwood@gmail.com>
+>> Cc: Mark Brown <broonie@kernel.org>
+>> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> [..]
+>> diff --git a/drivers/acpi/nfit/core.c b/drivers/acpi/nfit/core.c
+>> index 0f7982a1caaf..bd3e45ede056 100644
+>> --- a/drivers/acpi/nfit/core.c
+>> +++ b/drivers/acpi/nfit/core.c
+>> @@ -74,11 +74,11 @@ struct nfit_table_prev {
+>>         struct list_head flushes;
+>>  };
+>>
+>> -static u8 nfit_uuid[NFIT_UUID_MAX][16];
+>> +static uuid_le nfit_uuid[NFIT_UUID_MAX];
+>>
+>> -const u8 *to_nfit_uuid(enum nfit_uuids id)
+>> +const uuid_le *to_nfit_uuid(enum nfit_uuids id)
+>>  {
+>> -       return nfit_uuid[id];
+>> +       return &nfit_uuid[id];
+>>  }
+>>  EXPORT_SYMBOL(to_nfit_uuid);
+>>
+>> @@ -207,7 +207,7 @@ int acpi_nfit_ctl(struct nvdimm_bus_descriptor *nd_desc, struct nvdimm *nvdimm,
+>>         u32 offset, fw_status = 0;
+>>         acpi_handle handle;
+>>         unsigned int func;
+>> -       const u8 *uuid;
+>> +       const uuid_le *uuid;
+>>         int rc, i;
+>>
+>>         func = cmd;
+>> @@ -394,7 +394,7 @@ int nfit_spa_type(struct acpi_nfit_system_address *spa)
+>>         int i;
+>>
+>>         for (i = 0; i < NFIT_UUID_MAX; i++)
+>> -               if (memcmp(to_nfit_uuid(i), spa->range_guid, 16) == 0)
+>> +               if (!uuid_le_cmp_pp(to_nfit_uuid(i), (uuid_le *)spa->range_guid))
+>
+> What is _cmp_pp? Why not _compare?
+>
 
-We missed parsing the index value, which is used as a use case indicator, when
-processing the route objects.
+I second that.
 
-This patch fixes the bug.
+Andy,
 
-Signed-off-by: Fuwei Tang <fuweix.tang@intel.com>
-Tested-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
----
- src/topology/dapm.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+I much rather that you sort out uuid helpers in a way that will
+satisfy the filesystem
+needs (just provide the helpers don't need to convert filesystems code).
 
-diff --git a/src/topology/dapm.c b/src/topology/dapm.c
-index 13aa1c4..2fa387f 100644
---- a/src/topology/dapm.c
-+++ b/src/topology/dapm.c
-@@ -381,7 +381,7 @@ done:
- }
- 
- 
--static int tplg_parse_routes(snd_tplg_t *tplg, snd_config_t *cfg)
-+static int tplg_parse_routes(snd_tplg_t *tplg, snd_config_t *cfg, int index)
- {
- 	snd_config_iterator_t i, next;
- 	snd_config_t *n;
-@@ -399,7 +399,7 @@ static int tplg_parse_routes(snd_tplg_t *tplg, snd_config_t *cfg)
- 		elem = tplg_elem_new_route(tplg);
- 		if (!elem)
- 			return -ENOMEM;
--
-+		elem->index = index;
- 		line = elem->route;
- 
- 		err = tplg_parse_line(val, line);
-@@ -419,7 +419,8 @@ int tplg_parse_dapm_graph(snd_tplg_t *tplg, snd_config_t *cfg,
- 	snd_config_iterator_t i, next;
- 	snd_config_t *n;
- 	int err;
--	const char *graph_id;
-+	const char *graph_id, *val = NULL;
-+	int index;
- 
- 	if (snd_config_get_type(cfg) != SND_CONFIG_TYPE_COMPOUND) {
- 		SNDERR("error: compound is expected for dapm graph definition\n");
-@@ -436,8 +437,14 @@ int tplg_parse_dapm_graph(snd_tplg_t *tplg, snd_config_t *cfg,
- 			continue;
- 		}
- 
-+		if (strcmp(id, "index") == 0) {
-+			if (snd_config_get_string(n, &val) < 0)
-+				return NULL;
-+			index = atoi(val);
-+		}
-+
- 		if (strcmp(id, "lines") == 0) {
--			err = tplg_parse_routes(tplg, n);
-+			err = tplg_parse_routes(tplg, n, index);
- 			if (err < 0) {
- 				SNDERR("error: failed to parse dapm graph %s\n",
- 					graph_id);
--- 
-2.7.4
+The only reason I took a swing at hoisting the xfs uuid helpers is
+because it didn't
+seem like your proposal was going to be posted soon or wasn't going to satisfy
+the filesystems use case.
+
+My opinion now, is that your suggestion is probably much closer to the real deal
+than mine.
+
+IMO, you should acknowledge that the common use case for filesystems is
+to handle an opaque char[16] which most likely holds a uuid_be and you
+should provide 'neutral' helpers to satisfy this use case.
+
+The simplest would be to typedef uuid_t to struct uuid_be and to name 'neutral'
+helpers' uuid_cmp/uuid_copy(uuid_t *, uuid_t *), similar to my proposal.
+
+I think with this semantic change, our proposals can reach common grounds
+and satisfy a wider group of users (i.e. filesystem developers).
+
+Christoph also suggested a similar treatment to typedef guid_t to
+struct uuid_le.
+I don't know the use cases enough to comment on that.
+
+Cheers,
+Amir.
