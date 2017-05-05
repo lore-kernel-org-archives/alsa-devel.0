@@ -1,63 +1,111 @@
-From: Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>
-Subject: Re: [PATCH v1] ACPI: Switch to use generic UUID API
-Date: Fri, 5 May 2017 09:30:35 +0200
-Message-ID: <20170505073035.GA3112@lst.de>
-References: <20170504092151.88646-1-andriy.shevchenko@linux.intel.com>
-	<CAPcyv4jzD0MEBRNTwTokVzgdDWas682ArUjRAGT1hp=QRE8Pjg@mail.gmail.com>
-	<CAOQ4uxjha8_2_HwgdgBN=G-vNytAW5Gk155E9z8OWyFiGNEZVw@mail.gmail.com>
+From: "Tang, FuweiX" <fuweix.tang@intel.com>
+Subject: Re: [PATCH] topology: Fix issue in parsing routes when
+ generating topology binary
+Date: Fri, 5 May 2017 07:35:08 +0000
+Message-ID: <4EA7469CB35F3E469BD19CD7FB228ACB950C8E@CDSMSX101.ccr.corp.intel.com>
+References: <1493967122-13036-1-git-send-email-fuweix.tang@intel.com>
+ <s5ha86rbwa4.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxjha8_2_HwgdgBN=G-vNytAW5Gk155E9z8OWyFiGNEZVw-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
-List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
-List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
-Sender: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-To: Amir Goldstein <amir73il-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heikki Krogerus <heikki.krogerus-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-pci-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jarkko Sakkinen <jarkko.sakkinen-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Adrian Hunter <adrian.hunter-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Benjamin Tissoires <benjamin.tissoires-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>, Linux ACPI <linux-acpi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, tpmdd-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, Ben Skeggs <bskeggs-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, nouveau-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, linux-mmc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Zhang Rui <rui.zhang-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Borislav Petkov <bp-l3A5Bk7waGM@public.gmane.org>, Yisen Zhuang <yisen.zhuang-hv44wF8Li93QT0dZR+AlfA@public.gmane.org>, Mathias Nyman <mathias.nyman-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, intel-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, linux-input-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jani Nikula <jani.nikula-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Bjorn Helgaas <bhelgaas-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Dan Williams <dan.j.williams-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Andy Shevchenko <andriy.shevchenk>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7FD7226687D
+ for <alsa-devel@alsa-project.org>; Fri,  5 May 2017 09:35:25 +0200 (CEST)
+In-Reply-To: <s5ha86rbwa4.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "liam.r.girdwood@linux.intel.com" <liam.r.girdwood@linux.intel.com>, "Lin,
+ Mengdong" <mengdong.lin@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 05, 2017 at 10:06:06AM +0300, Amir Goldstein wrote:
-> I much rather that you sort out uuid helpers in a way that will
-> satisfy the filesystem
-> needs (just provide the helpers don't need to convert filesystems code).
-
-Yeah.
-
-> IMO, you should acknowledge that the common use case for filesystems is
-> to handle an opaque char[16] which most likely holds a uuid_be and you
-> should provide 'neutral' helpers to satisfy this use case.
+> -----Original Message-----
+> From: Takashi Iwai [mailto:tiwai@suse.de]
+> Sent: Friday, May 5, 2017 3:25 PM
+> To: Tang, FuweiX <fuweix.tang@intel.com>
+> Cc: alsa-devel@alsa-project.org; liam.r.girdwood@linux.intel.com; Lin,
+> Mengdong <mengdong.lin@intel.com>
+> Subject: Re: [PATCH] topology: Fix issue in parsing routes when generating
+> topology binary
 > 
-> The simplest would be to typedef uuid_t to struct uuid_be and to name 'neutral'
-> helpers' uuid_cmp/uuid_copy(uuid_t *, uuid_t *), similar to my proposal.
+> On Fri, 05 May 2017 08:52:02 +0200,
+> fuweix.tang@intel.com wrote:
+> >
+> > From: Fuwei Tang <fuweix.tang@intel.com>
+> >
+> > We missed parsing the index value, which is used as a use case
+> > indicator, when processing the route objects.
+> >
+> > This patch fixes the bug.
+> >
+> > Signed-off-by: Fuwei Tang <fuweix.tang@intel.com>
+> > Tested-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+> > ---
+> >  src/topology/dapm.c | 15 +++++++++++----
+> >  1 file changed, 11 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/src/topology/dapm.c b/src/topology/dapm.c index
+> > 13aa1c4..2fa387f 100644
+> > --- a/src/topology/dapm.c
+> > +++ b/src/topology/dapm.c
+> > @@ -381,7 +381,7 @@ done:
+> >  }
+> >
+> >
+> > -static int tplg_parse_routes(snd_tplg_t *tplg, snd_config_t *cfg)
+> > +static int tplg_parse_routes(snd_tplg_t *tplg, snd_config_t *cfg, int
+> > +index)
+> >  {
+> >  	snd_config_iterator_t i, next;
+> >  	snd_config_t *n;
+> > @@ -399,7 +399,7 @@ static int tplg_parse_routes(snd_tplg_t *tplg,
+> snd_config_t *cfg)
+> >  		elem = tplg_elem_new_route(tplg);
+> >  		if (!elem)
+> >  			return -ENOMEM;
+> > -
+> > +		elem->index = index;
+> >  		line = elem->route;
+> >
+> >  		err = tplg_parse_line(val, line);
+> > @@ -419,7 +419,8 @@ int tplg_parse_dapm_graph(snd_tplg_t *tplg,
+> snd_config_t *cfg,
+> >  	snd_config_iterator_t i, next;
+> >  	snd_config_t *n;
+> >  	int err;
+> > -	const char *graph_id;
+> > +	const char *graph_id, *val = NULL;
+> > +	int index;
+> >
+> >  	if (snd_config_get_type(cfg) != SND_CONFIG_TYPE_COMPOUND) {
+> >  		SNDERR("error: compound is expected for dapm graph
+> definition\n");
+> > @@ -436,8 +437,14 @@ int tplg_parse_dapm_graph(snd_tplg_t *tplg,
+> snd_config_t *cfg,
+> >  			continue;
+> >  		}
+> >
+> > +		if (strcmp(id, "index") == 0) {
+> > +			if (snd_config_get_string(n, &val) < 0)
+> > +				return NULL;
+> 
+> This function should return an error code.
 
-It's not jut neutral, it's the right thing to to.  The Apollo / DCE
-uuids (later also specified in RFC 4122) are big endian, so we should
-use the name there.
+I'm sorry about that, I will do so.
 
-> Christoph also suggested a similar treatment to typedef guid_t to
-> struct uuid_le.
+Thanks
+Fuwei
 
-Exactly.  The whole idea of "little endian UUIDs" comes from the
-Wintel world, and if you look at the relevant specs they are almost
-exclusively referred to as GUIDs.
 
-The magic XFS and AFS types for specific interpretations of one of
-the RFC4122 formats don't really help, but I'll just send a patch
-to kill them off for XFS ASAP to at least get that out, and we
-probably should revert at least
-
-"afs: Move UUID struct to linux/uuid.h"
-
-That moved the AFS mess to common code as a start, and then
-also clean up the way we generate random UUIDs, where we currently
-have le helper, a be helper and then also generate_random_uuid
-just to confuse the heck out of people.  With no description of
-either of them.
+> 
+> 
+> Takashi
