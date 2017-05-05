@@ -1,72 +1,88 @@
-From: Dan Williams <dan.j.williams@intel.com>
-Subject: Re: [PATCH v1] ACPI: Switch to use generic UUID API
-Date: Thu, 4 May 2017 23:20:08 -0700
-Message-ID: <CAPcyv4jzD0MEBRNTwTokVzgdDWas682ArUjRAGT1hp=QRE8Pjg@mail.gmail.com>
-References: <20170504092151.88646-1-andriy.shevchenko@linux.intel.com>
+From: fuweix.tang@intel.com
+Subject: [PATCH] topology: Fix issue in parsing routes when
+	generating topology binary
+Date: Fri,  5 May 2017 14:52:02 +0800
+Message-ID: <1493967122-13036-1-git-send-email-fuweix.tang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20170504092151.88646-1-andriy.shevchenko@linux.intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Heikki Krogerus <heikki.krogerus@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-pci@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>, Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, Adrian Hunter <adrian.hunter@intel.com>, Benjamin Tissoires <benjamin.tissoires@redhat.com>, Joerg Roedel <joro@8bytes.org>, Linux ACPI <linux-acpi@vger.kernel.org>, tpmdd-devel@lists.sourceforge.net, Ben Skeggs <bskeggs@redhat.com>, nouveau@lists.freedesktop.org, linux-mmc@vger.kernel.org, Zhang Rui <rui.zhang@intel.com>, Borislav Petkov <bp@suse.de>, Yisen Zhuang <yisen.zhuang@huawei.com>, Mathias Nyman <mathias.nyman@intel.com>, intel-gfx@lists.freedesktop.org, linux-input@vger.kernel.org, Mark Brown <broonie@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Mika Westerberg <mika.westerberg@linux.intel.com>, Felipe Balbi <balbi@kernel.or>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id A1EF626664F
+ for <alsa-devel@alsa-project.org>; Fri,  5 May 2017 08:52:02 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, Fuwei Tang <fuweix.tang@intel.com>, mengdong.lin@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBNYXkgNCwgMjAxNyBhdCAyOjIxIEFNLCBBbmR5IFNoZXZjaGVua28KPGFuZHJpeS5z
-aGV2Y2hlbmtvQGxpbnV4LmludGVsLmNvbT4gd3JvdGU6Cj4gYWNwaV9ldmFsdWF0ZV9kc20oKSBh
-bmQgZnJpZW5kcyB0YWtlIGEgcG9pbnRlciB0byBhIHJhdyBidWZmZXIgb2YgMTYKPiBieXRlcy4g
-SW5zdGVhZCB3ZSBjb252ZXJ0IHRoZW0gdG8gdXNlIHV1aWRfbGUgdHlwZS4gQXQgdGhlIHNhbWUg
-dGltZSB3ZQo+IGNvbnZlcnQgY3VycmVudCB1c2Vycy4KPgo+IGFjcGlfc3RyX3RvX3V1aWQoKSBi
-ZWNvbWVzIHVzZWxlc3MgYWZ0ZXIgdGhlIGNvbnZlcnNpb24gYW5kIGl0J3Mgc2FmZSB0bwo+IGdl
-dCByaWQgb2YgaXQuCj4KPiBUaGUgY29udmVyc2lvbiBmaXhlcyBhIHBvdGVudGlhbCBidWcgaW4g
-aW50MzQweF90aGVybWFsIGFzIHdlbGwgc2luY2UKPiB3ZSBoYXZlIHRvIHVzZSBtZW1jbXAoKSBv
-biBiaW5hcnkgZGF0YS4KPgo+IENjOiBSYWZhZWwgSi4gV3lzb2NraSA8cmp3QHJqd3lzb2NraS5u
-ZXQ+Cj4gQ2M6IE1pa2EgV2VzdGVyYmVyZyA8bWlrYS53ZXN0ZXJiZXJnQGxpbnV4LmludGVsLmNv
-bT4KPiBDYzogQm9yaXNsYXYgUGV0a292IDxicEBzdXNlLmRlPgo+IENjOiBEYW4gV2lsbGlhbXMg
-PGRhbi5qLndpbGxpYW1zQGludGVsLmNvbT4KPiBDYzogQW1pciBHb2xkc3RlaW4gPGFtaXI3M2ls
-QGdtYWlsLmNvbT4KPiBDYzogSmFya2tvIFNha2tpbmVuIDxqYXJra28uc2Fra2luZW5AbGludXgu
-aW50ZWwuY29tPgo+IENjOiBKYW5pIE5pa3VsYSA8amFuaS5uaWt1bGFAbGludXguaW50ZWwuY29t
-Pgo+IENjOiBCZW4gU2tlZ2dzIDxic2tlZ2dzQHJlZGhhdC5jb20+Cj4gQ2M6IEJlbmphbWluIFRp
-c3NvaXJlcyA8YmVuamFtaW4udGlzc29pcmVzQHJlZGhhdC5jb20+Cj4gQ2M6IEpvZXJnIFJvZWRl
-bCA8am9yb0A4Ynl0ZXMub3JnPgo+IENjOiBBZHJpYW4gSHVudGVyIDxhZHJpYW4uaHVudGVyQGlu
-dGVsLmNvbT4KPiBDYzogWWlzZW4gWmh1YW5nIDx5aXNlbi56aHVhbmdAaHVhd2VpLmNvbT4KPiBD
-YzogQmpvcm4gSGVsZ2FhcyA8YmhlbGdhYXNAZ29vZ2xlLmNvbT4KPiBDYzogWmhhbmcgUnVpIDxy
-dWkuemhhbmdAaW50ZWwuY29tPgo+IENjOiBGZWxpcGUgQmFsYmkgPGJhbGJpQGtlcm5lbC5vcmc+
-Cj4gQ2M6IE1hdGhpYXMgTnltYW4gPG1hdGhpYXMubnltYW5AaW50ZWwuY29tPgo+IENjOiBIZWlr
-a2kgS3JvZ2VydXMgPGhlaWtraS5rcm9nZXJ1c0BsaW51eC5pbnRlbC5jb20+Cj4gQ2M6IExpYW0g
-R2lyZHdvb2QgPGxnaXJkd29vZEBnbWFpbC5jb20+Cj4gQ2M6IE1hcmsgQnJvd24gPGJyb29uaWVA
-a2VybmVsLm9yZz4KPiBTaWduZWQtb2ZmLWJ5OiBBbmR5IFNoZXZjaGVua28gPGFuZHJpeS5zaGV2
-Y2hlbmtvQGxpbnV4LmludGVsLmNvbT4KWy4uXQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2FjcGkv
-bmZpdC9jb3JlLmMgYi9kcml2ZXJzL2FjcGkvbmZpdC9jb3JlLmMKPiBpbmRleCAwZjc5ODJhMWNh
-YWYuLmJkM2U0NWVkZTA1NiAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL2FjcGkvbmZpdC9jb3JlLmMK
-PiArKysgYi9kcml2ZXJzL2FjcGkvbmZpdC9jb3JlLmMKPiBAQCAtNzQsMTEgKzc0LDExIEBAIHN0
-cnVjdCBuZml0X3RhYmxlX3ByZXYgewo+ICAgICAgICAgc3RydWN0IGxpc3RfaGVhZCBmbHVzaGVz
-Owo+ICB9Owo+Cj4gLXN0YXRpYyB1OCBuZml0X3V1aWRbTkZJVF9VVUlEX01BWF1bMTZdOwo+ICtz
-dGF0aWMgdXVpZF9sZSBuZml0X3V1aWRbTkZJVF9VVUlEX01BWF07Cj4KPiAtY29uc3QgdTggKnRv
-X25maXRfdXVpZChlbnVtIG5maXRfdXVpZHMgaWQpCj4gK2NvbnN0IHV1aWRfbGUgKnRvX25maXRf
-dXVpZChlbnVtIG5maXRfdXVpZHMgaWQpCj4gIHsKPiAtICAgICAgIHJldHVybiBuZml0X3V1aWRb
-aWRdOwo+ICsgICAgICAgcmV0dXJuICZuZml0X3V1aWRbaWRdOwo+ICB9Cj4gIEVYUE9SVF9TWU1C
-T0wodG9fbmZpdF91dWlkKTsKPgo+IEBAIC0yMDcsNyArMjA3LDcgQEAgaW50IGFjcGlfbmZpdF9j
-dGwoc3RydWN0IG52ZGltbV9idXNfZGVzY3JpcHRvciAqbmRfZGVzYywgc3RydWN0IG52ZGltbSAq
-bnZkaW1tLAo+ICAgICAgICAgdTMyIG9mZnNldCwgZndfc3RhdHVzID0gMDsKPiAgICAgICAgIGFj
-cGlfaGFuZGxlIGhhbmRsZTsKPiAgICAgICAgIHVuc2lnbmVkIGludCBmdW5jOwo+IC0gICAgICAg
-Y29uc3QgdTggKnV1aWQ7Cj4gKyAgICAgICBjb25zdCB1dWlkX2xlICp1dWlkOwo+ICAgICAgICAg
-aW50IHJjLCBpOwo+Cj4gICAgICAgICBmdW5jID0gY21kOwo+IEBAIC0zOTQsNyArMzk0LDcgQEAg
-aW50IG5maXRfc3BhX3R5cGUoc3RydWN0IGFjcGlfbmZpdF9zeXN0ZW1fYWRkcmVzcyAqc3BhKQo+
-ICAgICAgICAgaW50IGk7Cj4KPiAgICAgICAgIGZvciAoaSA9IDA7IGkgPCBORklUX1VVSURfTUFY
-OyBpKyspCj4gLSAgICAgICAgICAgICAgIGlmIChtZW1jbXAodG9fbmZpdF91dWlkKGkpLCBzcGEt
-PnJhbmdlX2d1aWQsIDE2KSA9PSAwKQo+ICsgICAgICAgICAgICAgICBpZiAoIXV1aWRfbGVfY21w
-X3BwKHRvX25maXRfdXVpZChpKSwgKHV1aWRfbGUgKilzcGEtPnJhbmdlX2d1aWQpKQoKV2hhdCBp
-cyBfY21wX3BwPyBXaHkgbm90IF9jb21wYXJlPwoKT3RoZXIgdGhhbiB0aGF0LCBsb29rcyBvayB0
-byBtZS4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KSW50
-ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBz
-Oi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+From: Fuwei Tang <fuweix.tang@intel.com>
+
+We missed parsing the index value, which is used as a use case indicator, when
+processing the route objects.
+
+This patch fixes the bug.
+
+Signed-off-by: Fuwei Tang <fuweix.tang@intel.com>
+Tested-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+---
+ src/topology/dapm.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/src/topology/dapm.c b/src/topology/dapm.c
+index 13aa1c4..2fa387f 100644
+--- a/src/topology/dapm.c
++++ b/src/topology/dapm.c
+@@ -381,7 +381,7 @@ done:
+ }
+ 
+ 
+-static int tplg_parse_routes(snd_tplg_t *tplg, snd_config_t *cfg)
++static int tplg_parse_routes(snd_tplg_t *tplg, snd_config_t *cfg, int index)
+ {
+ 	snd_config_iterator_t i, next;
+ 	snd_config_t *n;
+@@ -399,7 +399,7 @@ static int tplg_parse_routes(snd_tplg_t *tplg, snd_config_t *cfg)
+ 		elem = tplg_elem_new_route(tplg);
+ 		if (!elem)
+ 			return -ENOMEM;
+-
++		elem->index = index;
+ 		line = elem->route;
+ 
+ 		err = tplg_parse_line(val, line);
+@@ -419,7 +419,8 @@ int tplg_parse_dapm_graph(snd_tplg_t *tplg, snd_config_t *cfg,
+ 	snd_config_iterator_t i, next;
+ 	snd_config_t *n;
+ 	int err;
+-	const char *graph_id;
++	const char *graph_id, *val = NULL;
++	int index;
+ 
+ 	if (snd_config_get_type(cfg) != SND_CONFIG_TYPE_COMPOUND) {
+ 		SNDERR("error: compound is expected for dapm graph definition\n");
+@@ -436,8 +437,14 @@ int tplg_parse_dapm_graph(snd_tplg_t *tplg, snd_config_t *cfg,
+ 			continue;
+ 		}
+ 
++		if (strcmp(id, "index") == 0) {
++			if (snd_config_get_string(n, &val) < 0)
++				return NULL;
++			index = atoi(val);
++		}
++
+ 		if (strcmp(id, "lines") == 0) {
+-			err = tplg_parse_routes(tplg, n);
++			err = tplg_parse_routes(tplg, n, index);
+ 			if (err < 0) {
+ 				SNDERR("error: failed to parse dapm graph %s\n",
+ 					graph_id);
+-- 
+2.7.4
