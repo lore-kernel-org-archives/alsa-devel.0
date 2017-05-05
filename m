@@ -1,38 +1,130 @@
-From: Amir Goldstein <amir73il@gmail.com>
-Subject: Re: [PATCH v1] ACPI: Switch to use generic UUID API
-Date: Fri, 5 May 2017 13:02:21 +0300
-Message-ID: <CAOQ4uxg6+_0KRMkMyupFJDtXrTqxx8vOz3=ZyEuj8BakvfuEJQ@mail.gmail.com>
-References: <20170504092151.88646-1-andriy.shevchenko@linux.intel.com>
- <CAPcyv4jzD0MEBRNTwTokVzgdDWas682ArUjRAGT1hp=QRE8Pjg@mail.gmail.com>
- <CAOQ4uxjha8_2_HwgdgBN=G-vNytAW5Gk155E9z8OWyFiGNEZVw@mail.gmail.com>
- <1493976265.30052.21.camel@linux.intel.com> <CAOQ4uxjErce01+xyDnM=nCJS+avQ4g6hQVvH3fVotj7Ws2moCQ@mail.gmail.com>
- <20170505095739.GB6762@lst.de>
+From: Thierry Escande <thierry.escande@collabora.com>
+Subject: Re: [alsa-devel] [PATCH 1/2] ASoc: cht_bsw_max98090_ti: Fix jack
+ initialization
+Date: Fri, 5 May 2017 14:37:20 +0200
+Message-ID: <987e2725-5242-c9d0-8063-452d9c893600@collabora.com>
+References: <1493719869-16100-1-git-send-email-thierry.escande@collabora.com>
+ <1493719869-16100-2-git-send-email-thierry.escande@collabora.com>
+ <4d672855-bb4a-088e-250b-b0fecfd8bb68@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Return-path: <linux-pci-owner@vger.kernel.org>
-In-Reply-To: <20170505095739.GB6762@lst.de>
-Sender: linux-pci-owner@vger.kernel.org
-To: Christoph Hellwig <hch@lst.de>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Dan Williams <dan.j.williams@intel.com>, Linux ACPI <linux-acpi@vger.kernel.org>, tpmdd-devel@lists.sourceforge.net, intel-gfx@lists.freedesktop.org, nouveau@lists.freedesktop.org, linux-input@vger.kernel.org, iommu@lists.linux-foundation.org, linux-mmc@vger.kernel.org, Netdev <netdev@vger.kernel.org>, linux-pci@vger.kernel.org, USB list <linux-usb@vger.kernel.org>, alsa-devel@alsa-project.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Rafael J . Wysocki" <rjw@rjwysocki.net>, Mika Westerberg <mika.westerberg@linux.intel.com>, Borislav Petkov <bp@suse.de>, Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, Jani Nikula <jani.nikula@linux.intel.com>, Ben Skeggs <bskeggs@redhat.com>, Benj
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <4d672855-bb4a-088e-250b-b0fecfd8bb68@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 5, 2017 at 12:57 PM, Christoph Hellwig <hch@lst.de> wrote:
-> On Fri, May 05, 2017 at 12:50:31PM +0300, Amir Goldstein wrote:
->> To complete the picture for folks not cc'ed on my patches,
->> xfs use case suggests there is also justification for the additional helpers:
+Hi,
+
+On 04/05/2017 19:01, Pierre-Louis Bossart wrote:
+> On 05/02/2017 05:11 AM, Thierry Escande wrote:
+>
+>> If the ts3a227e audio accessory detection hardware is present and its
+>> driver probed, the jack needs to be created before enabling jack
+>> detection in the ts3a227e driver. With this patch, the jack is
+>> instantiated in the max98090 headset init function if the ts3a227e is
+>> present. This fixes a null pointer dereference as the jack detection
+>> enabling function in the ts3a driver was called before the jack is
+>> created.
+> is this in any way related to
+> https://bugzilla.kernel.org/show_bug.cgi?id=151521
+> " Sound not working on Acer Chromebook R11 (CYAN) braswell / cherryview
+> / cherry trail"
+>
+> I provided a similar patch and didn't see any followup.
+> https://bugzilla.kernel.org/attachment.cgi?id=254867
+> Thanks
+> -Pierre
+
+That's the exact same issue.
+
+I fixed it by creating the jack in the aux_dev .init() function since 
+it's how this is done in the rockchip max98090 driver.
+
+Regards,
+  Thierry
+
+>
 >>
->> uuid_is_null() / uuid_equal()
->> guid_is_null() / guid_equal()
+>> Signed-off-by: Thierry Escande <thierry.escande@collabora.com>
+>> ---
+>>   sound/soc/intel/boards/cht_bsw_max98090_ti.c | 50
+>> +++++++++++++++++-----------
+>>   1 file changed, 30 insertions(+), 20 deletions(-)
+>>
+>> diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+>> b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+>> index 742bc0d..f17e474 100644
+>> --- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+>> +++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+>> @@ -128,30 +128,21 @@ static int cht_codec_init(struct
+>> snd_soc_pcm_runtime *runtime)
+>>       struct cht_mc_private *ctx =
+>> snd_soc_card_get_drvdata(runtime->card);
+>>       struct snd_soc_jack *jack = &ctx->jack;
+>>   -    /**
+>> -    * TI supports 4 butons headset detection
+>> -    * KEY_MEDIA
+>> -    * KEY_VOICECOMMAND
+>> -    * KEY_VOLUMEUP
+>> -    * KEY_VOLUMEDOWN
+>> -    */
+>> -    if (ctx->ts3a227e_present)
+>> -        jack_type = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
+>> -                    SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+>> -                    SND_JACK_BTN_2 | SND_JACK_BTN_3;
+>> -    else
+>> -        jack_type = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE;
+>> +    if (ctx->ts3a227e_present) {
+>> +        /*
+>> +         * The jack has already been created in the
+>> +         * cht_max98090_headset_init() function.
+>> +         */
+>> +        snd_soc_jack_notifier_register(jack, &cht_jack_nb);
+>> +        return 0;
+>> +    }
+>> +
+>> +    jack_type = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE;
+>>         ret = snd_soc_card_jack_new(runtime->card, "Headset Jack",
+>>                       jack_type, jack, NULL, 0);
+>> -
+>> -    if (ret) {
+>> +    if (ret)
+>>           dev_err(runtime->dev, "Headset Jack creation failed %d\n",
+>> ret);
+>> -        return ret;
+>> -    }
+>> -
+>> -    if (ctx->ts3a227e_present)
+>> -        snd_soc_jack_notifier_register(jack, &cht_jack_nb);
+>>         return ret;
+>>   }
+>> @@ -200,6 +191,25 @@ static int cht_max98090_headset_init(struct
+>> snd_soc_component *component)
+>>   {
+>>       struct snd_soc_card *card = component->card;
+>>       struct cht_mc_private *ctx = snd_soc_card_get_drvdata(card);
+>> +    struct snd_soc_jack *jack = &ctx->jack;
+>> +    int jack_type;
+>> +    int ret;
+>> +
+>> +    /*
+>> +     * TI supports 4 butons headset detection
+>> +     * KEY_MEDIA
+>> +     * KEY_VOICECOMMAND
+>> +     * KEY_VOLUMEUP
+>> +     * KEY_VOLUMEDOWN
+>> +     */
+>> +    jack_type = SND_JACK_HEADPHONE | SND_JACK_MICROPHONE |
+>> +            SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+>> +            SND_JACK_BTN_2 | SND_JACK_BTN_3;
+>> +
+>> +    ret = snd_soc_card_jack_new(card, "Headset Jack", jack_type,
+>> +                    jack, NULL, 0);
+>> +    if (ret)
+>> +        return ret;
+>>         return ts3a227e_enable_jack_detect(component, &ctx->jack);
+>>   }
 >
-> The is_null is useful and I bet we'll find other instances. I'm
-> not sure _equals really adds much value over the existing _cmp
-> helpers, but on the other hand they are so trivial that we might as
-> well add them.
-
-Exactly. The fact that not only xfs used the same helper name
-(drivers/md/md.c) suggests that it useful.
-
->
-> The other thing XFS has is uuid_copy.
-
-Andy already listed uuid_copy.
