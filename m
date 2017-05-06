@@ -1,18 +1,17 @@
-From: Jens Rottmann <JRottm@yahoo.com>
-Subject: Re: [PATCH] streamline TLV320AIC23 drivers
-Date: Sat, 6 May 2017 00:39:20 +0200
-Message-ID: <0ea2a5f8-8af0-598d-ad49-23501176efbb@yahoo.com>
-References: <b4127646-565b-ab16-0a8f-1fd6c263389e@ADLINKtech.com>
- <20170428171115.6zc5nhspvkkgevs7@rob-hp-laptop>
+From: =?UTF-8?Q?Joel_Wir=C4=81mu_Pauling?= <joel@aenertia.net>
+Subject: Novation - Focursrite Scarlet 6i6 Gen 2 Support request
+Date: Sun, 7 May 2017 10:51:40 +1200
+Message-ID: <CAKiAkGT0MPypVPR6sXwzoHx=cuoj8dBfj+r67D_q5sDtkTk_+Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from nm34-vm5.bullet.mail.ne1.yahoo.com
- (nm34-vm5.bullet.mail.ne1.yahoo.com [98.138.229.85])
- by alsa0.perex.cz (Postfix) with ESMTP id E5848266BD1
- for <alsa-devel@alsa-project.org>; Sat,  6 May 2017 00:42:13 +0200 (CEST)
-In-Reply-To: <20170428171115.6zc5nhspvkkgevs7@rob-hp-laptop>
+Received: from mail-lf0-f43.google.com (mail-lf0-f43.google.com
+ [209.85.215.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9911D26691A
+ for <alsa-devel@alsa-project.org>; Sun,  7 May 2017 00:52:01 +0200 (CEST)
+Received: by mail-lf0-f43.google.com with SMTP id j1so18453331lfh.2
+ for <alsa-devel@alsa-project.org>; Sat, 06 May 2017 15:52:01 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,62 +21,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Rob,
-sorry for the delay.
+Hi all,
 
-> On Fri, Apr 21, 2017 at 09:22:02PM +0200, Jens Rottmann wrote:
->> - Remove Eukrea naming, i.MX is from Freescale, TLV320AIC23 is from TI,
->>   driver was written by Eukrea, but it's DT capable, so it's not exclusive:
->>   - Kconfig option title
->>   - 'model' option
->>   - driver 'compatible' string
->> [...]
->> CONFIG variable and files have not been renamed, though, so no need to
->> change old defconfigs.
+I have been attempting to build up as much information as possible on the
+2nd gen 6i6  in the hopes someone on the mailing list will be able to find
+a quick fix.
 
-On 04/28/2017 19:11, Rob Herring answered:
-> Perhaps change the filename. [...]
+The device is usable under linux only as a 2ch output device in it's
+current state using snd_usb_audio . And only if you have set Hardware mixer
+routing from the Proprietary Focus-rite app in Mac OSX or Windows first.
 
-I wanted to avoid the churn, but ok. In that case:
+The following link contains various USB Capture dumps doing different
+things with the DAC in various sates. There appears to be something odd
+with the way it enumerates sub devices on the USB port so attempts to
+pass-through to a Win10 VM via KVM fail. I think I can probably get this
+working if I pass the underlying PCI root device controlling the USB hub in
+it's entirety but haven't been able to do this yet.
 
-Do you want me to change all indentifiers inside driver, too?
-eukrea_tlv320_probe() --> imx_tlv320aic23_probe()
+It also looks like there is a firmware load event happening somewhere.
 
-Do you want me to also rename the CONFIG var?
-CONFIG_SND_SOC_EUKREA_TLV320 --> CONFIG_SND_SOC_IMX_TLV320
-I'd adapt in-tree defconfigs, but would unavoidably break
-out-of-tree defconfigs...
+I am hoping the lsusb and the wireshark USB pcap dumps at the link might be
+of use to someone more familiar with alsa.
 
->> -  - fsl,mux-int-port	: The internal port of the i.MX audio muxer (AUDMUX).
->> +  - mux-int-port	: The internal port of the i.MX audio muxer (AUDMUX).
->> +  - fsl,mux-int-port	: Dito, deprecated.
->> -  - fsl,mux-ext-port	: The external port of the i.MX audio muxer.
->> +  - mux-ext-port	: The external port of the i.MX audio muxer.
->> +  - fsl,mux-ext-port	: Dito, deprecated.
+Any help or requests for more information gladly accepted.
 
-> Is this used elsewhere? This is FSL specific, so you should keep the
-> prefix.
+I am away for the next week - but will try and get a successful init dump
+out of a windows laptop and add to the repository of dumps.
 
-.../sound/soc/fsl$ egrep 'property.*mux-(int|ext)-port' *
-eukrea-tlv320.c: ret = of_property_read_u32(np, "fsl,mux-int-port", &int_port);
-eukrea-tlv320.c: ret = of_property_read_u32(np, "fsl,mux-ext-port", &ext_port);
-fsl-asoc-card.c: ret = of_property_read_u32(np, "mux-int-port", &int_port);
-fsl-asoc-card.c: ret = of_property_read_u32(np, "mux-ext-port", &ext_port);
-imx-es8328.c:    ret = of_property_read_u32(np, "mux-int-port", &int_port);
-imx-es8328.c:    ret = of_property_read_u32(np, "mux-ext-port", &ext_port);
-imx-sgtl5000.c:  ret = of_property_read_u32(np, "mux-int-port", &int_port);
-imx-sgtl5000.c:  ret = of_property_read_u32(np, "mux-ext-port", &ext_port);
-imx-wm8962.c:    ret = of_property_read_u32(np, "mux-int-port", &int_port);
-imx-wm8962.c:    ret = of_property_read_u32(np, "mux-ext-port", &ext_port);
+https://drive.google.com/drive/folders/0Bw2fu74VAaO5bksyUEhMZDBtUE0?usp=sharing
 
-All drivers use mux-int|ext-port without prefix, tlv320 is the only
-odd driver out, that's why I did this streamlining patch in the 1st place.
 
-I would rather not have to change all other drivers to match the tlv320 one.
+Kind regards
 
-Thanks,
-Jens
+-Joel
+New Zealand
+http://linkedin.com/in/aenertia
