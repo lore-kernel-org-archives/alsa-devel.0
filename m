@@ -1,23 +1,22 @@
-From: Paul Kocialkowski <contact@paulk.fr>
-Subject: Re: [PATCH 3/3] sound: ASoC: tegra: Select tegra30 i2s
- and ahub for tegra124 SoC
-Date: Sun, 07 May 2017 20:12:28 +0200
-Message-ID: <1494180748.13734.6.camel@paulk.fr>
-References: <20170418151159.31843-1-contact@paulk.fr>
- <d18b57d3-a44f-e44b-9bd5-526993dc91e4@wwwdotorg.org>
- <1492533513.3504.2.camel@paulk.fr>
- <41ef55f7-8f17-4ca3-4757-bfefb1fe8321@wwwdotorg.org>
- <1493046446.943.7.camel@paulk.fr>
- <fe76985c-ef66-9870-a616-203b54a93777@wwwdotorg.org>
- <1493059277.1111.1.camel@paulk.fr>
- <a29c4253-48de-7e61-dbc2-b90d68cfa696@wwwdotorg.org>
+From: =?UTF-8?Q?J=c3=b6rn_Nettingsmeier?= <nettings@stackingdwarves.net>
+Subject: BUG/Oops triggered by zita-a2j on snd-aloop with
+	4.10.13
+Date: Sun, 7 May 2017 23:22:04 +0200
+Message-ID: <d909c157-95a2-368e-37c1-e3088633daa6@stackingdwarves.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8363465738705693743=="
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gagarine.paulk.fr (gagarine.paulk.fr [109.190.93.129])
- by alsa0.perex.cz (Postfix) with ESMTP id C2038266483
- for <alsa-devel@alsa-project.org>; Sun,  7 May 2017 20:12:42 +0200 (CEST)
-In-Reply-To: <a29c4253-48de-7e61-dbc2-b90d68cfa696@wwwdotorg.org>
+Received: from mail.stackingdwarves.net (evil.stackingdwarves.net
+ [188.40.12.36]) by alsa0.perex.cz (Postfix) with ESMTP id 31A24266483
+ for <alsa-devel@alsa-project.org>; Sun,  7 May 2017 23:22:05 +0200 (CEST)
+Received: from hoppetosse.villakunterbunt.netz (ip56531bb7.direct-adsl.nl
+ [86.83.27.183])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (Client did not present a certificate)
+ by mail.stackingdwarves.net (Postfix) with ESMTPSA id C95B36168C
+ for <alsa-devel@alsa-project.org>; Wed,  3 May 2017 02:51:48 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,271 +26,108 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>, Thierry Reding <thierry.reding@gmail.com>
-Cc: Alexandre Courbot <gnurou@gmail.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, linux-tegra@vger.kernel.org, Rob Herring <robh@kernel.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============8363465738705693743==
-Content-Type: multipart/signed; micalg="pgp-sha256";
-	protocol="application/pgp-signature"; boundary="=-468egk1DGeUk7/kMocwL"
-
-
---=-468egk1DGeUk7/kMocwL
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-Le mardi 25 avril 2017 =C3=A0 10:57 -0600, Stephen Warren a =C3=A9crit=C2=
-=A0:
-> On 04/24/2017 12:41 PM, Paul Kocialkowski wrote:
-> > Le lundi 24 avril 2017 =C3=A0 09:35 -0600, Stephen Warren a =C3=A9crit =
-:
-> > > On 04/24/2017 09:07 AM, Paul Kocialkowski wrote:
-> > > > Le mercredi 19 avril 2017 =C3=A0 16:00 -0600, Stephen Warren a =C3=
-=A9crit :
-> > > > > On 04/18/2017 10:38 AM, Paul Kocialkowski wrote:
-> > > > > > Le mardi 18 avril 2017 =C3=A0 10:15 -0600, Stephen Warren a =C3=
-=A9crit :
-> > > > > > > On 04/18/2017 09:11 AM, Paul Kocialkowski wrote:
-> > > > > > > > This selects the tegra30 i2s and ahub controllers for the
-> > > > > > > > tegra124
-> > > > > > > > SoC.
-> > > > > > > > These are needed when building without ARCH_TEGRA_3x_SOC se=
-t.
-> > > > > > > > diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kcon=
-fig
-> > > > > > > > index efbe8d4c019e..bcd18d2cf7a7 100644
-> > > > > > > > --- a/sound/soc/tegra/Kconfig
-> > > > > > > > +++ b/sound/soc/tegra/Kconfig
-> > > > > > > > @@ -46,7 +46,7 @@ config SND_SOC_TEGRA20_SPDIF
-> > > > > > > >=20
-> > > > > > > > =C2=A0config SND_SOC_TEGRA30_AHUB
-> > > > > > > > =C2=A0	tristate
-> > > > > > > > -	depends on SND_SOC_TEGRA && ARCH_TEGRA_3x_SOC
-> > > > > > > > +	depends on SND_SOC_TEGRA && (ARCH_TEGRA_3x_SOC ||
-> > > > > > > > ARCH_TEGRA_124_SOC)
-> > > > > > >=20
-> > > > > > > Is this really a compile-time dependency?
-> > > > > >=20
-> > > > > > From a quick look at the code, I doubt this is really a build
-> > > > > > dependency.
-> > > > > >=20
-> > > > > > > If so, don't we need to add T210 and T186 entries into that |=
-|
-> > > > > > > condition
-> > > > > > > too,
-> > > > > > > since we could be building a kernel with just T210/T186 suppo=
-rt
-> > > > > > > and no
-> > > > > > > T124
-> > > > > > > support?
-> > > > > >=20
-> > > > > > In the spirit of this patch, adding entries for other tegra
-> > > > > > platforms
-> > > > > > would
-> > > > > > make
-> > > > > > sense. Would you prefer that we leave out the dependency from
-> > > > > > SND_SOC_TEGRA30_*
-> > > > > > and only select the right I2S driver to use in each codec drive=
-r?
-> > > > > >=20
-> > > > > > If not, we'd have to list all relevant platforms both in the
-> > > > > > I2S/AHUB
-> > > > > > drivers
-> > > > > > and in each codec's rules (which is not necessarily and issue, =
-but
-> > > > > > there's
-> > > > > > no
-> > > > > > need to have artificial platform dependencies).
-> > > > > >=20
-> > > > > > What do you think?
-> > > > >=20
-> > > > > I think we should just remove most of these "depends on" since th=
-ey're
-> > > > > mostly set up to reflect runtime requirements rather than build t=
-ime
-> > > > > requirements. The only points I'd make are:
-> > > >=20
-> > > > I definitely agree we should do that for all the codec Kconfig opti=
-ons.
-> > > >=20
-> > > > > 1)
-> > > > >=20
-> > > > > Everything should "depends on SND_SOC_TEGRA" simply so the option=
-s
-> > > > > don't
-> > > > > show up and clutter menuconfig menus unless SND_SOC_TEGRA is enab=
-led.
-> > > >=20
-> > > > Agreed.
-> > > >=20
-> > > > > 2)
-> > > > >=20
-> > > > > SND_SOC_TEGRA30_I2S does need the Tegra30 AHUB driver in order to
-> > > > > compile/link, since it directly calls functions in that driver. T=
-his
-> > > > > is
-> > > > > already handled by SND_SOC_TEGRA30_I2S doing "select
-> > > > > SND_SOC_TEGRA30_AHUB".
-> > > >=20
-> > > > Agreed.
-> > > >=20
-> > > > > 3)
-> > > > >=20
-> > > > > The machine drivers all do e.g. "select SND_SOC_TEGRA30_I2S if
-> > > > > ARCH_TEGRA_3x_SOC". This was an attempt to make the machine drive=
-rs
-> > > > > only
-> > > > > pull in the relevant drivers for the SoC(s) being compiled for. I=
-'m
-> > > > > not
-> > > > > sure this still makes sense; this won't work on kernels that only
-> > > > > support T124/T210/T186 since ARCH_TEGRA_3x_SOC isn't enabled then=
-.
-> > > > > Should we just remove all those and make sure the defconfigs are
-> > > > > updated
-> > > > > to make sure the relevant I2S/AHUB/SPDIF/AC97 drivers are explici=
-tly
-> > > > > enabled? Perhaps we should default all the I2S/AHUB/SPDIF/AC97 to=
- y
-> > > > > (which will only apply if SND_SOC_TEGRA is enabled)?
-> > > >=20
-> > > > I think it would be easier for everyone to just auto-select the mac=
-hine
-> > > > drivers
-> > > > automatically based on the architecture (so we could have the list =
-of
-> > > > ARCH_TEGRA_*_SOC here) when SND_SOC_TEGRA is selected.
-> > >=20
-> > > I don't think selecting the machine drivers is the correct approach,
-> > > since then they can't be disabled.
-> > >=20
-> > > Making certain machine drivers "default y if ARCH_TEGRA_nn_SOC" would
-> > > address that,
-> >=20
-> > That's right, my mistake. Let's take that as the solution I'm backing t=
-hen.
-> >=20
-> > > =C2=A0but still isn't very scalable since we need to go back and
-> > > edit the Kconfig every time we define a new SoC, in order to add that
-> > > SoC into the default statement.
-> >=20
-> > Well, that's what platform bringup is all about, isn't it? I think it m=
-akes
-> > a
-> > lot more sense to have to add a new platform once (and it's not like on=
-e
-> > will
-> > forget to look at the sound part when adding a new platform) rather tha=
-n
-> > requiring users to hand-pick the option.
->=20
-> Personally I'd expect all the Tegra machine drivers to be enabled in the=
-=C2=A0
-> upstream defconfig files all the time, such that we don't need to make=C2=
-=A0
-> the Kconfig options default y, nor have users manually turn the relevant=
-=C2=A0
-> options on, at all.
-
-I think I was previously mistaken about what the machine drivers are, so I =
-got a
-good occasion to find out about them an learn something new. Thanks!
-
-Agreed regarding the machine drivers, they should indeed all be enabled in =
-the
-defconfig by default.
-
-> > > > Not only does this preserve existing configs (including external on=
-es
-> > > > that
-> > > > aren't part of the kernel tree), it also clearly maps which machine
-> > > > driver
-> > > > to use for which SoC instead of having users do it by hand.
-> > >=20
-> > > The machine drivers aren't terribly tied to SoCs by design; most of t=
-hem
-> > > would work on pretty much any SoC. They're only tied to SoCs as a
-> > > side-effect of a machine driver being tied to a certain CODEC, and
-> > > certain CODECS just by chance are only used (so far) on specific boar=
-ds,
-> > > which have specific SoCs.
-> >=20
-> > I'm a bit confused: aren't the machine driver (i2s/ahub/spdif/ac97) tie=
-d to
-> > specific hardware blocks that are found in specific SoCs and not in oth=
-ers?
-> > I
-> > can see these blocks haven't evolved much across generations, but they'=
-re
-> > still
-> > either part of a specific SoC or not, aren't they?
-> >=20
-> > The compatible strings in the common SoC dts seem to indicate that only=
- one
-> > of
-> > these blocks is found at a time.
->=20
-> There are SoC-specific drivers for the components (Tegra20 I2S, Tegra30=
-=C2=A0
-> I2S, etc.), but the *machine* drivers generally don't know anything=C2=A0
-> about that. DT instantiates the correct component drivers for the SoC,=C2=
-=A0
-> and the machine driver just uses whatever it's linked to without caring=
-=C2=A0
-> too-much/at-all about whether it's hooked to a Tegra20 I2S or a Tegra30=
-=C2=A0
-> I2S device.
-
-That makes sense now. Regarding the SoC-specific components, would you agre=
-e
-with auto-selecting those based on ARCH_TEGRA_xx_SOC so that only the requi=
-red
-drivers are pulled-in? Otherwise, I'm also fine with explicitely enabling t=
-hem
-in the defconfig at this point.
-
-Cheers,
-
---=20
-Paul Kocialkowski, developer of free digital technology and hardware suppor=
-t
-
-Website: https://www.paulk.fr/
-Coding blog: https://code.paulk.fr/
-Git repositories: https://git.paulk.fr/ https://git.code.paulk.fr/
---=-468egk1DGeUk7/kMocwL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEAbcMXZQMtj1fphLChP3B6o/ulQwFAlkPY4wACgkQhP3B6o/u
-lQyZxQ/+L1rNyYrkU+AcBgOljgAcziHjreJ/5Rxn3Njn6yCwraSgdcIYV2ufjlao
-jY7sKfkytd17PBmUAhFUCUc9dDXtN5F7t3ubnanIrgGGZQxzbOIX/py/vQl06qLZ
-mQi+JNdQckKKltsUndY9Dc50SMWpxajjbYO5TE9lwRb33N6kYJoprqDxFWaCnXDE
-f2Zyu7RLWOhPZpzpWwswcZ1eVcd7ZCQDIh6t6LxVB79yySF3Ez8tPZdzWZxwqnAd
-8E3piJB02x6VFEuBo0YixRgYAl+OJVnNdl5mvM7/SR/2oQT2DlozhWjEA4QC41pN
-aYV7ruHPTKuRgL6tB2PhdJQjZJHNtsma7zqeYINFpAqB5+ZQ51b7soE+8e1UWve8
-5P2qLfOkjXmdywU396wYuix4xc9y2J56xFtilD7ExC/3/jTf5VtXhoJn/ZnSS18Z
-Ae7rdjvI3fG80EnEOPvLth9aMMKhGyjXo0Et8A/28TVorjo4EeCMpaGG2ogyYbhI
-JYUMB0eZorkYCadP5h28qOCUO1lsGbYjld3xz2qCsn9oaSyV/OvRUxYqWyJPPFqj
-TwmSE3rPORVqm86YpLowNmLSWMbxldZQyDFPRm3p2iJ93JIeewhoOyGSzsXNt1Us
-hhOV5eSRoUVVyNeNvOnnp9GcfSagu6a1IFgBLpSoFdnf2GWyQi8=
-=I6e4
------END PGP SIGNATURE-----
-
---=-468egk1DGeUk7/kMocwL--
-
-
---===============8363465738705693743==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8363465738705693743==--
+SGkgKiwKCgpvcGVuU1VTRSBUdW1ibGV3ZWVkIHdpdGgga2VybmVsCkxpbnV4IGhvcHBldG9zc2Uu
+dmlsbGFrdW50ZXJidW50Lm5ldHogNC4xMC4xMy0xLWRlZmF1bHQgIzEgU01QIFBSRUVNUFQgClRo
+dSBBcHIgMjcgMTI6MjM6MzEgVVRDIDIwMTcgKGU1ZDExY2UpIHg4Nl82NCB4ODZfNjQgeDg2XzY0
+IEdOVS9MaW51eAoKamFja2QgcnVubmluZyBvbiBhIGhkc3BtIE1BRElmYWNlLCBJIHRyeSB0byBh
+ZGQgYSB6aXRhLWEyaiBjbGllbnQgd2l0aAp6aXRhLWEyaiAtdiAgLWQgaHc6amFja2JyaWRnZSwx
+LDEKKCJqYWNrYnJpZGdlIiBpcyBhIHNuZC1hbG9vcCBkZXZpY2UpCgpuZXR0aW5nc0Bob3BwZXRv
+c3NlOn4+IGFwbGF5IC1sCioqKiogTGlzdCBvZiBQTEFZQkFDSyBIYXJkd2FyZSBEZXZpY2VzICoq
+KioKY2FyZCAwOiBQQ0ggW0hEQSBJbnRlbCBQQ0hdLCBkZXZpY2UgMDogQUxDMjY5VkMgQW5hbG9n
+IFtBTEMyNjlWQyBBbmFsb2ddCiAgIFN1YmRldmljZXM6IDEvMQogICBTdWJkZXZpY2UgIzA6IHN1
+YmRldmljZSAjMApjYXJkIDA6IFBDSCBbSERBIEludGVsIFBDSF0sIGRldmljZSAzOiBIRE1JIDAg
+W0hETUkgMF0KICAgU3ViZGV2aWNlczogMS8xCiAgIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMw
+CmNhcmQgMDogUENIIFtIREEgSW50ZWwgUENIXSwgZGV2aWNlIDc6IEhETUkgMSBbSERNSSAxXQog
+ICBTdWJkZXZpY2VzOiAxLzEKICAgU3ViZGV2aWNlICMwOiBzdWJkZXZpY2UgIzAKY2FyZCAwOiBQ
+Q0ggW0hEQSBJbnRlbCBQQ0hdLCBkZXZpY2UgODogSERNSSAyIFtIRE1JIDJdCiAgIFN1YmRldmlj
+ZXM6IDEvMQogICBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMApjYXJkIDI6IG1hMmNoYm94WFQg
+W1JNRSBNQURJZmFjZV0sIGRldmljZSAwOiBSTUUgTUFESWZhY2UgW1JNRSBNQURJZmFjZV0KICAg
+U3ViZGV2aWNlczogMC8xCiAgIFN1YmRldmljZSAjMDogc3ViZGV2aWNlICMwCmNhcmQgNDogamFj
+a2JyaWRnZSBbTG9vcGJhY2tdLCBkZXZpY2UgMDogTG9vcGJhY2sgUENNIFtMb29wYmFjayBQQ01d
+CiAgIFN1YmRldmljZXM6IDIvMgogICBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMAogICBTdWJk
+ZXZpY2UgIzE6IHN1YmRldmljZSAjMQpjYXJkIDQ6IGphY2ticmlkZ2UgW0xvb3BiYWNrXSwgZGV2
+aWNlIDE6IExvb3BiYWNrIFBDTSBbTG9vcGJhY2sgUENNXQogICBTdWJkZXZpY2VzOiAyLzIKICAg
+U3ViZGV2aWNlICMwOiBzdWJkZXZpY2UgIzAKICAgU3ViZGV2aWNlICMxOiBzdWJkZXZpY2UgIzEK
+CgpbIDE0MTYuNjMzOTM5XSBCVUc6IHVuYWJsZSB0byBoYW5kbGUga2VybmVsIHBhZ2luZyByZXF1
+ZXN0IGF0IApmZmZmOWNhYzAzYjUxMDAwClsgMTQxNi42MzQwNDZdIElQOiBzbmRfcGNtX2Zvcm1h
+dF9zZXRfc2lsZW5jZSsweGVhLzB4MTAwIFtzbmRfcGNtXQpbIDE0MTYuNjM0MDkyXSBQR0QgMTdm
+YzlkMDY3ClsgMTQxNi42MzQwOTNdIFBVRCAxN2ZjOWUwNjcKWyAxNDE2LjYzNDExN10gUE1EIDE4
+MzE0YjA2NwpbIDE0MTYuNjM0MTM5XSBQVEUgMAoKWyAxNDE2LjYzNDE5NF0gT29wczogMDAwMiBb
+IzFdIFBSRUVNUFQgU01QClsgMTQxNi42MzQyMjZdIE1vZHVsZXMgbGlua2VkIGluOiBzbmRfaHJ0
+aW1lciBzbmRfc2VxX21pZGkgCnNuZF9zZXFfbWlkaV9ldmVudCBzbmRfc2VxX2R1bW15IHNuZF9z
+ZXEgY2NtIGZ1c2UgYWZfcGFja2V0IG5mX2xvZ19pcHY2IAp4dF9jb21tZW50IG5mX2xvZ19pcHY0
+IG5mX2xvZ19jb21tb24geHRfTE9HIHh0X2xpbWl0IHV2Y3ZpZGVvIAp2aWRlb2J1ZjJfdm1hbGxv
+YyB2aWRlb2J1ZjJfbWVtb3BzIHZpZGVvYnVmMl92NGwyIHZpZGVvYnVmMl9jb3JlIAp2aWRlb2Rl
+diBuZm5ldGxpbmtfY3RoZWxwZXIgbmZuZXRsaW5rIGlwNnRfUkVKRUNUIG5mX3JlamVjdF9pcHY2
+IApuZl9jb25udHJhY2tfaXB2NiBuZl9kZWZyYWdfaXB2NiBpcHRfUkVKRUNUIG5mX3JlamVjdF9p
+cHY0IHh0X3BrdHR5cGUgCnh0X3RjcHVkcCBpcHRhYmxlX2ZpbHRlciBpcDZ0YWJsZV9tYW5nbGUg
+bmZfY29ubnRyYWNrX25ldGJpb3NfbnMgCm5mX2Nvbm50cmFja19icm9hZGNhc3QgbmZfY29ubnRy
+YWNrX2lwdjQgbmZfZGVmcmFnX2lwdjQgaXBfdGFibGVzIAp4dF9jb25udHJhY2sgbmZfY29ubnRy
+YWNrIGlwNnRhYmxlX2ZpbHRlciBpcDZfdGFibGVzIHhfdGFibGVzIG1zciAKc25kX2hkYV9jb2Rl
+Y19oZG1pIHNuZF9oZGFfY29kZWNfcmVhbHRlayBzbmRfaGRhX2NvZGVjX2dlbmVyaWMgCmludGVs
+X3JhcGwgeDg2X3BrZ190ZW1wX3RoZXJtYWwgaW50ZWxfcG93ZXJjbGFtcCBjb3JldGVtcCBrdm1f
+aW50ZWwga3ZtIAppcnFieXBhc3MgY3JjdDEwZGlmX3BjbG11bCBjcmMzMl9wY2xtdWwgbWVpX3dk
+dCBpVENPX3dkdCAKaVRDT192ZW5kb3Jfc3VwcG9ydCBhcmM0IGdoYXNoX2NsbXVsbmlfaW50ZWwK
+WyAxNDE2LjYzNDgzOF0gIHBjYmMgaXdsZHZtIG1hYzgwMjExIGFlc25pX2ludGVsIGFlc194ODZf
+NjQgaXdsd2lmaSAKY3J5cHRvX3NpbWQgZ2x1ZV9oZWxwZXIgY3J5cHRkIHNuZF9oZGFfaW50ZWwg
+ZTEwMDBlIHNuZF9oZHNwbSAKc25kX2hkYV9jb2RlYyBjZmc4MDIxMSB0aGlua3BhZF9hY3BpIHB0
+cCBscGNfaWNoIHNuZF9yYXdtaWRpIGFjIHJma2lsbCAKam95ZGV2IG1laV9tZSBzbmRfc2VxX2Rl
+dmljZSBzbmRfaGRhX2NvcmUgcGNzcGtyIGJhdHRlcnkgaTJjX2k4MDEgCm1mZF9jb3JlIHBwc19j
+b3JlIG1laSBzbmRfaHdkZXAgc2hwY2hwIGZqZXMgdGhlcm1hbCB3bWkgdHBtX3RpcyAKdHBtX3Rp
+c19jb3JlIHRwbSBzbmRfYWxvb3Agc25kX3BjbSBzbmRfdGltZXIgc25kIHNvdW5kY29yZSBidHJm
+cyB4b3IgCnJhaWQ2X3BxIGNyYzMyY19pbnRlbCBpOTE1IHNlcmlvX3JhdyBpMmNfYWxnb19iaXQg
+ZHJtX2ttc19oZWxwZXIgCnN5c2NvcHlhcmVhIHN5c2ZpbGxyZWN0IHN5c2ltZ2JsdCBmYl9zeXNf
+Zm9wcyB4aGNpX3BjaSBlaGNpX3BjaSB4aGNpX2hjZCAKZWhjaV9oY2Qgc2RoY2lfcGNpIHNkaGNp
+IG1tY19jb3JlIGRybSB1c2Jjb3JlIHZpZGVvIGJ1dHRvbiBzZwpbIDE0MTYuNjM1MjU1XSBDUFU6
+IDAgUElEOiAzMzg3IENvbW06IHppdGEtYTJqIE5vdCB0YWludGVkIAo0LjEwLjEzLTEtZGVmYXVs
+dCAjMQpbIDE0MTYuNjM1MzEyXSBIYXJkd2FyZSBuYW1lOiBMRU5PVk8gMjMyNVVSNy8yMzI1VVI3
+LCBCSU9TIEcyRVRBMldXIAooMi42MiApIDA5LzEyLzIwMTQKWyAxNDE2LjYzNTM3OF0gdGFzazog
+ZmZmZjhkNjc1N2MxNjBjMCB0YXNrLnN0YWNrOiBmZmZmOWNhYzAzYjc0MDAwClsgMTQxNi42MzU0
+NDRdIFJJUDogMDAxMDpzbmRfcGNtX2Zvcm1hdF9zZXRfc2lsZW5jZSsweGVhLzB4MTAwIFtzbmRf
+cGNtXQpbIDE0MTYuNjM1NDk0XSBSU1A6IDAwMTg6ZmZmZjljYWMwM2I3N2Q1MCBFRkxBR1M6IDAw
+MDEwMjgyClsgMTQxNi42MzU1MzZdIFJBWDogMDAwMDAwMDAwMDAwMDAwMCBSQlg6IGZmZmY4ZDY3
+ZDRmM2Y3ODAgUkNYOiAKMDAwMDAwMDAwMDAwMDBhYwpbIDE0MTYuNjM1NTkxXSBSRFg6IGZmZmY5
+Y2FjMDNiNjEwMDAgUlNJOiBmZmZmOWNhYzAzYjUxMDA0IFJESTogCmZmZmZmZmZmYzAxZTI5MGMK
+WyAxNDE2LjYzNTY0Nl0gUkJQOiBmZmZmOGQ2N2E0ZDkzODAwIFIwODogZmZmZmZmZmZjMDFlMjkw
+OCBSMDk6IAowMDAwN2ZiNGExNzkzNTAwClsgMTQxNi42MzU3MDFdIFIxMDogMDAyMjgwMzFhZTRl
+NGNiOSBSMTE6IGZmZmY4ZDY3NTdjMTYwYzAgUjEyOiAKMDAwMDAwMDAwMDAwMDA4MApbIDE0MTYu
+NjM1NzU1XSBSMTM6IGZmZmY4ZDY3NzFhNWZiODAgUjE0OiBmZmZmOGQ2N2Q1MDk2ODAwIFIxNTog
+CjAwMDAwMDAwMDA1ZGMwMDAKWyAxNDE2LjYzNTgxM10gRlM6ICAwMDAwN2ZiNGEyZmFhNzAwKDAw
+MDApIEdTOmZmZmY4ZDY3ZGUyMDAwMDAoMDAwMCkgCmtubEdTOjAwMDAwMDAwMDAwMDAwMDAKWyAx
+NDE2LjYzNTg3NV0gQ1M6ICAwMDEwIERTOiAwMDAwIEVTOiAwMDAwIENSMDogMDAwMDAwMDA4MDA1
+MDAzMwpbIDE0MTYuNjM1OTI0XSBDUjI6IGZmZmY5Y2FjMDNiNTEwMDAgQ1IzOiAwMDAwMDAwMTk4
+YjU2MDAwIENSNDogCjAwMDAwMDAwMDAxNDA2ZjAKWyAxNDE2LjYzNjAwMV0gQ2FsbCBUcmFjZToK
+WyAxNDE2LjYzNjA1NF0gIGxvb3BiYWNrX3ByZXBhcmUrMHgyZDYvMHgyZjAgW3NuZF9hbG9vcF0K
+WyAxNDE2LjYzNjExMF0gIHNuZF9wY21fZG9fcHJlcGFyZSsweDEzLzB4MzAgW3NuZF9wY21dClsg
+MTQxNi42MzYxNThdICBzbmRfcGNtX2FjdGlvbl9zaW5nbGUrMHgyYS8weDcwIFtzbmRfcGNtXQpb
+IDE0MTYuNjM2MjA3XSAgPyBzbmRfcGNtX2FjdGlvbl9zaW5nbGUrMHg1ZC8weDcwIFtzbmRfcGNt
+XQpbIDE0MTYuNjM2MjU1XSAgc25kX3BjbV9hY3Rpb25fbm9uYXRvbWljKzB4NjEvMHg3MCBbc25k
+X3BjbV0KWyAxNDE2LjYzNjMwOF0gIHNuZF9wY21fY29tbW9uX2lvY3RsMSsweDZkOC8weGM2MCBb
+c25kX3BjbV0KWyAxNDE2LjYzNjM1N10gID8gX193YWtlX3VwKzB4MzQvMHg1MApbIDE0MTYuNjM2
+Mzg4XSAgPyB0dHlfd3JpdGUrMHgyMjgvMHgyYjAKWyAxNDE2LjYzNjQyNF0gIHNuZF9wY21fY2Fw
+dHVyZV9pb2N0bDErMHgxMTcvMHgyODAgW3NuZF9wY21dClsgMTQxNi42MzY0NzRdICA/IF9fdmZz
+X3dyaXRlKzB4MjMvMHgxNDAKWyAxNDE2LjYzNjUxMF0gIHNuZF9wY21fY2FwdHVyZV9pb2N0bCsw
+eDJhLzB4MzAgW3NuZF9wY21dClsgMTQxNi42MzY1NTVdICBkb192ZnNfaW9jdGwrMHg4Zi8weDVk
+MApbIDE0MTYuNjM2NTg5XSAgPyBfX2ZnZXQrMHg3MC8weGMwClsgMTQxNi42MzY2MTZdICBTeVNf
+aW9jdGwrMHg3NC8weDgwClsgMTQxNi42MzY2NTFdICBlbnRyeV9TWVNDQUxMXzY0X2Zhc3RwYXRo
+KzB4MWUvMHhhZApbIDE0MTYuNjM2Njg4XSBDb2RlOiAwMyA0OCAwMSBmMiAwZiBiNyAwNyA0OCA4
+MyBjNiAwMyA2NiA4OSA0NiBmZCAwZiBiNiAKNDcgMDIgODggNDYgZmYgNDggMzkgZDYgNzUgZTkg
+ZWIgOWEgOGQgNDIgZmYgNDggOGQgNTQgODYgMDQgOGIgMDcgNDggODMgCmM2IDA0IDw4OT4gNDYg
+ZmMgNDggMzkgZDYgNzUgZjIgZWIgODIgNjYgMmUgMGYgMWYgODQgMDAgMDAgMDAgMDAgMDAgNjYK
+WyAxNDE2LjYzOTIwM10gUklQOiBzbmRfcGNtX2Zvcm1hdF9zZXRfc2lsZW5jZSsweGVhLzB4MTAw
+IFtzbmRfcGNtXSBSU1A6IApmZmZmOWNhYzAzYjc3ZDUwClsgMTQxNi42NDE1OTRdIENSMjogZmZm
+ZjljYWMwM2I1MTAwMApbIDE0MTYuNjQ4MjE3XSAtLS1bIGVuZCB0cmFjZSA5ZWM3OTc1MTQzZmY1
+NWYyIF0tLS0KCgpUaGlzIGlzIHJlcHJvZHVjaWJsZSwgbm90IGV2ZXJ5IHRpbWUsIGJ1dCBpdCdz
+IHRoZSB0aGlyZCB0aW1lIGluIDQgaG91cnMgCnRoYXQgdGhpcyBoYXMgaGFwcGVuZWQuCgpJZiBJ
+IGNhbiBhc3Npc3QgaW4gZGVidWdnaW5nIHRoaXMgYnkgcnVubmluZyBmdXJ0aGVyIHRlc3RzIG9y
+IHByb3ZpZGluZyAKbW9yZSBkYXRhLCBwbGVhc2UgbGV0IG1lIGtub3cuCgoKQmVzdCwKCkrDtnJu
+CgoKLS0gCkrDtnJuIE5ldHRpbmdzbWVpZXIKRGUgUmlqcGdyYWNodCA4LCAxMDU1VlIgQW1zdGVy
+ZGFtLCBOZWRlcmxhbmQKVGVsLiArNDkgMTc3IDc5Mzc0ODcKCk1laXN0ZXIgZsO8ciBWZXJhbnN0
+YWx0dW5nc3RlY2huaWsgKELDvGhuZS9TdHVkaW8pLCBUb25tZWlzdGVyIFZEVApodHRwOi8vc3Rh
+Y2tpbmdkd2FydmVzLm5ldApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
+cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
