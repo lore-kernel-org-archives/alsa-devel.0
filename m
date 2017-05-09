@@ -1,43 +1,44 @@
-From: Mathias Nyman <mathias.nyman@linux.intel.com>
-Subject: Re: [PATCH v1] ACPI: Switch to use generic UUID API
-Date: Tue, 9 May 2017 11:22:55 +0300
-Message-ID: <59117C5F.1080007@linux.intel.com>
-References: <20170504092151.88646-1-andriy.shevchenko@linux.intel.com>
+From: Sergio Villar Senin <svillar@igalia.com>
+Subject: Re: Headphones not detected when using Dell Dock WD15
+Date: Tue, 09 May 2017 10:32:19 +0200
+Message-ID: <1494318739.2669.35.camel@igalia.com>
+References: <1494236073.2669.21.camel@igalia.com>
+ <s5h8tm68sk6.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20170504092151.88646-1-andriy.shevchenko@linux.intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, linux-acpi@vger.kernel.org, tpmdd-devel@lists.sourceforge.net, intel-gfx@lists.freedesktop.org, nouveau@lists.freedesktop.org, linux-input@vger.kernel.org, iommu@lists.linux-foundation.org, linux-mmc@vger.kernel.org, netdev@vger.kernel.org, linux-pci@vger.kernel.org, linux-usb@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Felipe Balbi <balbi@kernel.org>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, Mathias Nyman <mathias.nyman@intel.com>, Yisen Zhuang <yisen.zhuang@huawei.com>, Joerg Roedel <joro@8bytes.org>, Amir Goldstein <amir73il@gmail.com>, "Rafael J . Wysocki" <rjw@rjwysocki.net>, Adrian Hunter <adrian.hunter@intel.com>, Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Benjamin Tissoires <benjamin.tissoires@redhat.com>, Mark Brown <broonie@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Dan Williams <dan.j.williams@intel.com>, Borislav Petkov <bp@suse.de>, Mika Westerberg <mika.westerberg@linux.intel.com>, Zhang Rui <rui.zhang@intel.com>, Ben Skeggs <bskeggs@redhat.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from fanzine.igalia.com (fanzine.igalia.com [91.117.99.155])
+ by alsa0.perex.cz (Postfix) with ESMTP id 11FDC26691F
+ for <alsa-devel@alsa-project.org>; Tue,  9 May 2017 10:32:21 +0200 (CEST)
+In-Reply-To: <s5h8tm68sk6.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvdXNiL2hvc3QveGhjaS1wY2kuYyBiL2RyaXZlcnMvdXNi
-L2hvc3QveGhjaS1wY2kuYwo+IGluZGV4IDdiODY1MDhhYzhjZi4uOTNiNGYwZGU5NDE4IDEwMDY0
-NAo+IC0tLSBhL2RyaXZlcnMvdXNiL2hvc3QveGhjaS1wY2kuYwo+ICsrKyBiL2RyaXZlcnMvdXNi
-L2hvc3QveGhjaS1wY2kuYwo+IEBAIC0yMTAsMTMgKzIxMCwxMiBAQCBzdGF0aWMgdm9pZCB4aGNp
-X3BjaV9xdWlya3Moc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3QgeGhjaV9oY2QgKnhoY2kpCj4g
-ICAjaWZkZWYgQ09ORklHX0FDUEkKPiAgIHN0YXRpYyB2b2lkIHhoY2lfcG1lX2FjcGlfcnRkM19l
-bmFibGUoc3RydWN0IHBjaV9kZXYgKmRldikKPiAgIHsKPiAtCXN0YXRpYyBjb25zdCB1OCBpbnRl
-bF9kc21fdXVpZFtdID0gewo+IC0JCTB4YjcsIDB4MGMsIDB4MzQsIDB4YWMsCTB4MDEsIDB4ZTks
-IDB4YmYsIDB4NDUsCj4gLQkJMHhiNywgMHhlNiwgMHgyYiwgMHgzNCwgMHhlYywgMHg5MywgMHgx
-ZSwgMHgyMywKPiAtCX07Cj4gKwlzdGF0aWMgY29uc3QgdXVpZF9sZSBpbnRlbF9kc21fdXVpZCA9
-Cj4gKwkJVVVJRF9MRSgweGFjMzQwY2I3LCAweGU5MDEsIDB4NDViZiwKPiArCQkJMHhiNywgMHhl
-NiwgMHgyYiwgMHgzNCwgMHhlYywgMHg5MywgMHgxZSwgMHgyMyk7Cj4gICAJdW5pb24gYWNwaV9v
-YmplY3QgKm9iajsKPgo+IC0Jb2JqID0gYWNwaV9ldmFsdWF0ZV9kc20oQUNQSV9IQU5ETEUoJmRl
-di0+ZGV2KSwgaW50ZWxfZHNtX3V1aWQsIDMsIDEsCj4gKwlvYmogPSBhY3BpX2V2YWx1YXRlX2Rz
-bShBQ1BJX0hBTkRMRSgmZGV2LT5kZXYpLCAmaW50ZWxfZHNtX3V1aWQsIDMsIDEsCj4gICAJCQkJ
-TlVMTCk7Cj4gICAJQUNQSV9GUkVFKG9iaik7Cj4gICB9CgpGb3IgdGhlIHhoY2kgcGFydCBhYm92
-ZToKCkFja2VkLWJ5OiBNYXRoaWFzIE55bWFuIDxtYXRoaWFzLm55bWFuQGxpbnV4LmludGVsLmNv
-bT4KCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpJbnRl
-bC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6
-Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRlbC1nZngK
+TyBNYXIsIDA5LTA1LTIwMTcgw6FzIDA4OjE1ICswMjAwLCBUYWthc2hpIEl3YWkgZXNjcmliaXU6
+Cj4gT24gTW9uLCAwOCBNYXkgMjAxNyAxMTozNDozMyArMDIwMCwKPiBTZXJnaW8gVmlsbGFyIFNl
+bmluIHdyb3RlOgo+ID4gCj4gPiBIaSwKPiA+IAo+ID4gSSByZXBvcnRlZCB0aGlzIGJ1ZyB0byBw
+dWxzZWF1ZGlvWzFdIGJ1dCBhZnRlciBzb21lIGludmVzdGlnYXRpb24KPiA+IGl0Cj4gPiBsb29r
+cyBsaWtlIHRoZSBhbHNhIG1peGVyIGlzIG5vdCB3b3JraW5nIGZvciB0aGUgZG9jay4KPiA+IAo+
+ID4gSSdsbCBiZSBoYXBweSB0byBwcm92aWRlIGFueSBhZGRpdGlvbmFsIGluZm8gd2hpY2ggbWln
+aHQgYmUKPiA+IHJlcXVpcmVkCj4gPiAoYXR0YWNoaW5nIGFsc2EtaW5mby5zaCBCVFcpLiBQbGVh
+c2UgYWRkIG1lIHRvIHRoZSBDYyBhcyBJIGFtIG5vdAo+ID4gc3Vic2NyaWJlZCB0byB0aGlzIGxp
+c3QKPiAKPiBEaWQgeW91IHRyeSB0byB1cGRhdGUgdGhlIGRvY2sgQklPUz8KPiBUaGUgb2xkIEJJ
+T1Mgb24gc29tZSBEZWxsIGRvY2tzIGhhZCBhIGZldyBrbm93biBpc3N1ZXMuCgpJIHRyaWVkIHdp
+dGggYSB2aXJ0dWFsIG1hY2hpbmUgYnV0IHRoZSBmaXJtd2FyZSB1cGRhdGUgcHJvZ3JhbSBjcmFz
+aGVzCmZvciBzb21lIHJlYXNvbi4gQW55d2F5IHRoZSBkb2NrIHNlZW1zIHRvIGJlIHdvcmtpbmcg
+ZmluZSBiZWNhdXNlIHRoZQpXaW5kb3dzIHZpcnR1YWwgbWFjaGluZSBwcm9wZXJseSBkZXRlY3Rz
+IHRoZSBoZWFkcGhvbmVzIHdoZW4gcGx1Z2dlZAppbi4KCkJSCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
