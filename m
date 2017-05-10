@@ -1,51 +1,89 @@
-From: ojab <ojab@ojab.ru>
-Subject: `alsatplg` miscompiles UUID in ASoC topology
-Date: Tue, 9 May 2017 19:32:03 +0000
-Message-ID: <a4e761b7-420c-47e4-dd01-15becdbdb3ab@ojab.ru>
+From: Zhang Rui <rui.zhang@intel.com>
+Subject: Re: [PATCH v1] ACPI: Switch to use generic UUID API
+Date: Wed, 10 May 2017 09:20:51 +0800
+Message-ID: <1494379251.2129.15.camel@intel.com>
+References: <20170504092151.88646-1-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f42.google.com (mail-lf0-f42.google.com
- [209.85.215.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 12F09266872
- for <alsa-devel@alsa-project.org>; Tue,  9 May 2017 21:32:07 +0200 (CEST)
-Received: by mail-lf0-f42.google.com with SMTP id h4so8155335lfj.3
- for <alsa-devel@alsa-project.org>; Tue, 09 May 2017 12:32:07 -0700 (PDT)
-Received: from localhost.localdomain ([195.91.239.8])
- by smtp.gmail.com with ESMTPSA id h13sm152810ljh.5.2017.05.09.12.32.05
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 09 May 2017 12:32:06 -0700 (PDT)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-acpi-owner@vger.kernel.org>
+In-Reply-To: <20170504092151.88646-1-andriy.shevchenko@linux.intel.com>
+Sender: linux-acpi-owner@vger.kernel.org
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, linux-acpi@vger.kernel.org, tpmdd-devel@lists.sourceforge.net, intel-gfx@lists.freedesktop.org, nouveau@lists.freedesktop.org, linux-input@vger.kernel.org, iommu@lists.linux-foundation.org, linux-mmc@vger.kernel.org, netdev@vger.kernel.org, linux-pci@vger.kernel.org, linux-usb@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: "Rafael J . Wysocki" <rjw@rjwysocki.net>, Mika Westerberg <mika.westerberg@linux.intel.com>, Borislav Petkov <bp@suse.de>, Dan Williams <dan.j.williams@intel.com>, Amir Goldstein <amir73il@gmail.com>, Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, Jani Nikula <jani.nikula@linux.intel.com>, Ben Skeggs <bskeggs@redhat.com>, Benjamin Tissoires <benjamin.tissoires@redhat.com>, Joerg Roedel <joro@8bytes.org>, Adrian Hunter <adrian.hunter@intel.com>, Yisen Zhuang <yisen.zhuang@huawei.com>, Bjorn Helgaas <bhelgaas@google.com>, Felipe Balbi <balbi@kernel.org>, Mathias Nyman <mathias.nyman@intel.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Oh hai!
+On Thu, 2017-05-04 at 12:21 +0300, Andy Shevchenko wrote:
+> acpi_evaluate_dsm() and friends take a pointer to a raw buffer of 16
+> bytes. Instead we convert them to use uuid_le type. At the same time
+> we
+> convert current users.
+> 
+> acpi_str_to_uuid() becomes useless after the conversion and it's safe
+> to
+> get rid of it.
+> 
+> The conversion fixes a potential bug in int340x_thermal as well since
+> we have to use memcmp() on binary data.
+> 
+> Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
+> Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
+> Cc: Borislav Petkov <bp@suse.de>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Amir Goldstein <amir73il@gmail.com>
+> Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> Cc: Jani Nikula <jani.nikula@linux.intel.com>
+> Cc: Ben Skeggs <bskeggs@redhat.com>
+> Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Yisen Zhuang <yisen.zhuang@huawei.com>
+> Cc: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Zhang Rui <rui.zhang@intel.com>
+> Cc: Felipe Balbi <balbi@kernel.org>
+> Cc: Mathias Nyman <mathias.nyman@intel.com>
+> Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Cc: Liam Girdwood <lgirdwood@gmail.com>
+> Cc: Mark Brown <broonie@kernel.org>
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+> 
+> diff --git a/drivers/thermal/int340x_thermal/int3400_thermal.c
+> b/drivers/thermal/int340x_thermal/int3400_thermal.c
+> index 9413c4abf0b9..c0eb3bb19b23 100644
+> --- a/drivers/thermal/int340x_thermal/int3400_thermal.c
+> +++ b/drivers/thermal/int340x_thermal/int3400_thermal.c
+> @@ -23,7 +23,7 @@ enum int3400_thermal_uuid {
+>  	INT3400_THERMAL_MAXIMUM_UUID,
+>  };
+>  
+> -static u8 *int3400_thermal_uuids[INT3400_THERMAL_MAXIMUM_UUID] = {
+> +static const char
+> *int3400_thermal_uuids[INT3400_THERMAL_MAXIMUM_UUID] = {
+>  	"42A441D6-AE6A-462b-A84B-4A8CE79027D3",
+>  	"3A95C389-E4B8-4629-A526-C52C88626BAE",
+>  	"97C68AE7-15FA-499c-B8C9-5DA81D606E0A",
+> @@ -141,10 +141,10 @@ static int int3400_thermal_get_uuids(struct
+> int3400_thermal_priv *priv)
+>  		}
+>  
+>  		for (j = 0; j < INT3400_THERMAL_MAXIMUM_UUID; j++) {
+> -			u8 uuid[16];
+> +			uuid_le u;
+>  
+> -			acpi_str_to_uuid(int3400_thermal_uuids[j],
+> uuid);
+> -			if (!strncmp(uuid, objb->buffer.pointer,
+> 16)) {
+> +			uuid_le_to_bin(int3400_thermal_uuids[j],
+> &u);
+> +			if (!uuid_le_cmp(*(uuid_le *)objb-
+> >buffer.pointer), u) {
+>  				priv->uuid_bitmap |= (1 << j);
+>  				break;
+>  			}
+thanks for the fix.
 
-I'm trying to get sound from my HP Chromebook 13 with proper linux and 
-right now messing with ASoC topology: ChromeOS contains topology file 
-that can't be loaded on up-to-date upstream kernel, so I've wrote a 
-parser that converts dfw_sst.bin back to topology.conf that can be 
-processed by `alsatplg`.
+Acked-by: Zhang Rui <rui.zhang@intel.com>
 
-AFAICS alsatplg miscompiles at least UUID field in the private data: for 
-example `alsatplg -c /usr/share/alsa/topology/sklrt286/skl_i2s.conf -o 
-tplg.bin` produces the file with no UUID in `strings tplg.bin` output 
-and my parser shows that there is nonsense (mostly zeroes) where UUID 
-should be (reproducible with both alsa-{lib,utils}-1.13 and current git 
-master).
-
-Is it a bug or I'm doing something wrong?
-
--- 
-//wbr ojab
+-rui
