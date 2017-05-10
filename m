@@ -1,212 +1,193 @@
-From: olivier moysan <olivier.moysan@st.com>
-Subject: [PATCH v2 3/3] ASoC: stm32: Add full duplex support to
-	i2s
-Date: Wed, 10 May 2017 15:35:19 +0200
-Message-ID: <1494423319-15063-4-git-send-email-olivier.moysan@st.com>
-References: <1494423319-15063-1-git-send-email-olivier.moysan@st.com>
+From: Thomas Gleixner <tglx-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org>
+Subject: Re: [PATCH v2 09/18] irqchip: Add driver for Cirrus Logic Madera
+ codecs
+Date: Wed, 10 May 2017 17:03:46 +0200 (CEST)
+Message-ID: <alpine.DEB.2.20.1705101634390.1979@nanos>
+References: <1493050124-5970-1-git-send-email-rf@opensource.wolfsonmicro.com> <1493050124-5970-10-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 38D44266E07
- for <alsa-devel@alsa-project.org>; Wed, 10 May 2017 15:36:10 +0200 (CEST)
-In-Reply-To: <1494423319-15063-1-git-send-email-olivier.moysan@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, robh@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com
-Cc: arnaud.pouliquen@st.com, benjamin.gaignard@st.com
+Content-Type: text/plain; charset=US-ASCII
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1493050124-5970-10-git-send-email-rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Jason Cooper <jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, LKML <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Marc Zyngier <marc.zyngier-5wv7dgnIgG8@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch allows to use i2s interface either as single
-audio path (rx or tx), or bidirectional audio path.
-This patch is added separately, as the driver does not
-follow recommended use of the interface, to support this
-configuration.
+On Mon, 24 Apr 2017, Richard Fitzgerald wrote:
+> +
+> +struct madera_irq_priv {
+> +	struct device *dev;
+> +	int irq;
+> +	struct regmap_irq_chip_data *irq_data;
+> +	struct madera *madera;
 
-Signed-off-by: olivier moysan <olivier.moysan@st.com>
----
- sound/soc/stm/stm32_i2s.c | 88 +++++++++++++++++++++++++----------------------
- 1 file changed, 47 insertions(+), 41 deletions(-)
+Please write your struct definitions in a tabular fashion:
 
-diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-index 22152a1..a8e03c5 100644
---- a/sound/soc/stm/stm32_i2s.c
-+++ b/sound/soc/stm/stm32_i2s.c
-@@ -489,7 +489,6 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
- 	struct stm32_i2s_data *i2s = snd_soc_dai_get_drvdata(cpu_dai);
- 	int format = params_width(params);
- 	u32 cfgr, cfgr_mask, cfg1, cfg1_mask;
--	bool playback_flg = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
- 	unsigned int fthlv;
- 	int ret;
- 
-@@ -515,19 +514,13 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
- 	}
- 
- 	if (STM32_I2S_IS_SLAVE(i2s)) {
--		if (playback_flg)
--			cfgr |= I2S_CGFR_I2SCFG_SET(I2S_I2SMOD_TX_SLAVE);
--		else
--			cfgr |= I2S_CGFR_I2SCFG_SET(I2S_I2SMOD_RX_SLAVE);
-+		cfgr |= I2S_CGFR_I2SCFG_SET(I2S_I2SMOD_FD_SLAVE);
- 
- 		/* As data length is either 16 or 32 bits, fixch always set */
- 		cfgr |= I2S_CGFR_FIXCH;
- 		cfgr_mask |= I2S_CGFR_FIXCH;
- 	} else {
--		if (playback_flg)
--			cfgr |= I2S_CGFR_I2SCFG_SET(I2S_I2SMOD_TX_MASTER);
--		else
--			cfgr |= I2S_CGFR_I2SCFG_SET(I2S_I2SMOD_RX_MASTER);
-+		cfgr |= I2S_CGFR_I2SCFG_SET(I2S_I2SMOD_FD_MASTER);
- 	}
- 	cfgr_mask |= I2S_CGFR_I2SCFG_MASK;
- 
-@@ -536,9 +529,7 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
- 	if (ret < 0)
- 		return ret;
- 
--	cfg1 = I2S_CFG1_RXDMAEN;
--	if (playback_flg)
--		cfg1 = I2S_CFG1_TXDMAEN;
-+	cfg1 = I2S_CFG1_RXDMAEN | I2S_CFG1_TXDMAEN;
- 	cfg1_mask = cfg1;
- 
- 	fthlv = STM32_I2S_FIFO_SIZE * I2S_FIFO_TH_ONE_QUARTER / 4;
-@@ -553,32 +544,15 @@ static int stm32_i2s_startup(struct snd_pcm_substream *substream,
- 			     struct snd_soc_dai *cpu_dai)
- {
- 	struct stm32_i2s_data *i2s = snd_soc_dai_get_drvdata(cpu_dai);
--	int ret, ier;
- 
- 	i2s->substream = substream;
- 
- 	spin_lock(&i2s->lock_fd);
--	if (i2s->refcount) {
--		dev_err(cpu_dai->dev, "%s stream already started\n",
--			(substream->stream == SNDRV_PCM_STREAM_PLAYBACK ?
--			"Capture" : "Playback"));
--		spin_unlock(&i2s->lock_fd);
--		return -EBUSY;
--	}
--	i2s->refcount = 1;
-+	i2s->refcount++;
- 	spin_unlock(&i2s->lock_fd);
- 
--	ret = regmap_update_bits(i2s->regmap, STM32_I2S_IFCR_REG,
--				 I2S_IFCR_MASK, I2S_IFCR_MASK);
--	if (ret < 0)
--		return ret;
--
--	/* Enable ITs */
--	ier = I2S_IER_OVRIE | I2S_IER_UDRIE;
--	if (STM32_I2S_IS_SLAVE(i2s))
--		ier |= I2S_IER_TIFREIE;
--
--	return regmap_update_bits(i2s->regmap, STM32_I2S_IER_REG, ier, ier);
-+	return regmap_update_bits(i2s->regmap, STM32_I2S_IFCR_REG,
-+				  I2S_IFCR_MASK, I2S_IFCR_MASK);
- }
- 
- static int stm32_i2s_hw_params(struct snd_pcm_substream *substream,
-@@ -605,9 +579,11 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- {
- 	struct stm32_i2s_data *i2s = snd_soc_dai_get_drvdata(cpu_dai);
- 	bool playback_flg = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
--	u32 cfg1_mask;
-+	u32 cfg1_mask, ier;
- 	int ret;
- 
-+	spin_lock(&i2s->lock_fd);
-+
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_RESUME:
-@@ -628,10 +604,45 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 			dev_err(cpu_dai->dev, "Error %d starting I2S\n", ret);
- 			return ret;
- 		}
-+
-+		regmap_update_bits(i2s->regmap, STM32_I2S_IFCR_REG,
-+				   I2S_IFCR_MASK, I2S_IFCR_MASK);
-+
-+		if (playback_flg) {
-+			ier = I2S_IER_UDRIE;
-+		} else {
-+			ier = I2S_IER_OVRIE;
-+
-+			if (i2s->refcount == 1) {
-+				/* dummy write to trigger capture */
-+				ret = regmap_write(i2s->regmap,
-+						   STM32_I2S_TXDR_REG, 0);
-+				if (ret)
-+					return ret;
-+			}
-+		}
-+
-+		if (STM32_I2S_IS_SLAVE(i2s))
-+			ier |= I2S_IER_TIFREIE;
-+
-+		regmap_update_bits(i2s->regmap, STM32_I2S_IER_REG, ier, ier);
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		if (playback_flg)
-+			regmap_update_bits(i2s->regmap, STM32_I2S_IER_REG,
-+					   I2S_IER_UDRIE,
-+					   (unsigned int)~I2S_IER_UDRIE);
-+		else
-+			regmap_update_bits(i2s->regmap, STM32_I2S_IER_REG,
-+					   I2S_IER_OVRIE,
-+					   (unsigned int)~I2S_IER_OVRIE);
-+
-+		i2s->refcount--;
-+		if (i2s->refcount)
-+			break;
-+
- 		dev_dbg(cpu_dai->dev, "stop I2S\n");
- 
- 		ret = regmap_update_bits(i2s->regmap, STM32_I2S_CR1_REG,
-@@ -641,10 +652,7 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 			return ret;
- 		}
- 
--		cfg1_mask = I2S_CFG1_RXDMAEN;
--		if (playback_flg)
--			cfg1_mask = I2S_CFG1_TXDMAEN;
--
-+		cfg1_mask = I2S_CFG1_RXDMAEN | I2S_CFG1_TXDMAEN;
- 		regmap_update_bits(i2s->regmap, STM32_I2S_CFG1_REG,
- 				   cfg1_mask, 0);
- 		break;
-@@ -652,6 +660,8 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 		return -EINVAL;
- 	}
- 
-+	spin_unlock(&i2s->lock_fd);
-+
- 	return 0;
- }
- 
-@@ -662,10 +672,6 @@ static void stm32_i2s_shutdown(struct snd_pcm_substream *substream,
- 
- 	i2s->substream = NULL;
- 
--	spin_lock(&i2s->lock_fd);
--	i2s->refcount = 0;
--	spin_unlock(&i2s->lock_fd);
--
- 	regmap_update_bits(i2s->regmap, STM32_I2S_CGFR_REG,
- 			   I2S_CGFR_MCKOE, (unsigned int)~I2S_CGFR_MCKOE);
- }
--- 
-1.9.1
+struct madera_irq_priv {
+	struct device			*dev;
+	int				irq;
+	struct regmap_irq_chip_data	*irq_data;
+	struct madera			*madera;
+
+> +};
+> +
+> +static const struct regmap_irq madera_irqs[MADERA_NUM_IRQ] = {
+> +	[MADERA_IRQ_FLL1_LOCK] =  { .reg_offset = 0,
+> +				    .mask = MADERA_FLL1_LOCK_EINT1 },
+> +	[MADERA_IRQ_FLL2_LOCK] =  { .reg_offset = 0,
+> +				    .mask = MADERA_FLL2_LOCK_EINT1 },
+> +	[MADERA_IRQ_FLL3_LOCK] =  { .reg_offset = 0,
+> +				    .mask = MADERA_FLL3_LOCK_EINT1 },
+> +	[MADERA_IRQ_FLLAO_LOCK] = { .reg_offset = 0,
+> +				    .mask = MADERA_FLLAO_LOCK_EINT1 },
+> +
+> +	[MADERA_IRQ_MICDET1] = { .reg_offset = 4,
+> +				 .mask = MADERA_MICDET1_EINT1 },
+> +	[MADERA_IRQ_MICDET2] = { .reg_offset = 4,
+> +				 .mask = MADERA_MICDET2_EINT1 },
+> +	[MADERA_IRQ_HPDET] =   { .reg_offset = 4,
+> +				 .mask = MADERA_HPDET_EINT1 },
+> +
+> +	[MADERA_IRQ_MICD_CLAMP_RISE] = { .reg_offset = 5,
+> +					 .mask = MADERA_MICD_CLAMP_RISE_EINT1 },
+
+This is hard to read, makes my eyes hurt and takes way too many lines.
+
+#define REGMAP_IRQ(_irq, _off, _mask)                    	\
+        [MADERA_IRQ_##_irq] = { .reg_offset = (_off),	 	\
+			    	.mask = MADERA_##_irq_EINT1) }
+
+static const struct regmap_irq madera_irqs[MADERA_NUM_IRQ] = {
+	REGMAP_IRQ(FLL1_LOCK,		0),
+	REGMAP_IRQ(FLL2_LOCK,		0),
+	....
+	REGMAP_IRQ(MICD_CLAMP_RISE,	5),
+
+Hmm?
+
+> +
+> +static const struct regmap_irq_chip madera_irq = {
+> +	.name = "madera IRQ",
+
+Again. Tabluar fashion, please.
+
+> +	.status_base = MADERA_IRQ1_STATUS_2,
+> +	.mask_base = MADERA_IRQ1_MASK_2,
+> +	.ack_base = MADERA_IRQ1_STATUS_2,
+> +	.runtime_pm = true, /* codec must be resumed to read IRQ status */
+
+Please do not use tail comments. Aside of that this comment is superfluous.
+
+> +	.num_regs = 32,
+> +	.irqs = madera_irqs,
+> +	.num_irqs = ARRAY_SIZE(madera_irqs),
+> +};
+> +
+> +static int madera_map_irq(struct madera *madera, int irq)
+> +{
+> +	struct madera_irq_priv *priv = dev_get_drvdata(madera->irq_dev);
+> +
+> +	if (irq < 0)
+> +		return irq;
+
+Why would irq be < 0 ?
+
+> +
+> +	if (!madera->irq_dev)
+> +		return -ENOENT;
+> +
+> +	return regmap_irq_get_virq(priv->irq_data, irq);
+> +}
+
+> +static int madera_irq_probe(struct platform_device *pdev)
+> +{
+> +	struct madera *madera = dev_get_drvdata(pdev->dev.parent);
+> +	struct madera_irq_priv *priv;
+> +	struct irq_data *irq_data;
+> +	unsigned int irq_flags = madera->pdata.irqchip.irq_flags;
+> +	int ret;
+> +
+> +	dev_dbg(&pdev->dev, "probe\n");
+> +
+> +	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	priv->dev = &pdev->dev;
+> +	priv->madera = madera;
+> +	priv->irq = madera->irq;
+> +
+> +	/* Read the flags from the interrupt controller if not specified */
+> +	if (!irq_flags) {
+> +		irq_data = irq_get_irq_data(priv->irq);
+> +		if (!irq_data) {
+> +			dev_err(priv->dev, "Invalid IRQ: %d\n", priv->irq);
+> +			return -EINVAL;
+> +		}
+> +
+> +		irq_flags = irqd_get_trigger_type(irq_data);
+> +		if (irq_flags == IRQ_TYPE_NONE)
+> +			irq_flags = IRQF_TRIGGER_LOW; /* Device default */
+
+Please do not use tail comments. They are horrible to parse and disturb the
+reading flow.
+
+> +	}
+> +
+> +	if (irq_flags & (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING)) {
+> +		dev_err(priv->dev,
+> +			"Host interrupt not level-triggered\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (irq_flags & IRQF_TRIGGER_HIGH) {
+> +		ret = regmap_update_bits(madera->regmap, MADERA_IRQ1_CTRL,
+> +					 MADERA_IRQ_POL_MASK, 0);
+> +		if (ret) {
+> +			dev_err(priv->dev,
+> +				"Failed to set IRQ polarity: %d\n", ret);
+> +			return ret;
+> +		}
+> +	}
+
+What makes sure that the hardware is NOT set to TRIGGER_HIGH when you want
+to have TRIGGER_LOW?
+
+> +static struct platform_driver madera_irq_driver = {
+> +	.probe = madera_irq_probe,
+
+Tabular layout please
+
+> +	.remove = madera_irq_remove,
+> +	.driver = {
+> +		.name	= "madera-irq",
+> +		.pm = &madera_irq_pm_ops,
+> +	}
+> +};
+> +
+
+Pointless newline
+
+> +module_platform_driver(madera_irq_driver);
+> +
+
+> --- /dev/null
+> +++ b/include/linux/irqchip/irq-madera-pdata.h
+> @@ -0,0 +1,19 @@
+> +
+> +struct madera_irqchip_pdata {
+> +	/** Mode for primary IRQ (defaults to active low) */
+
+If you want to document your structs, then please use proper kerneldoc
+style.
+
+> +	unsigned int irq_flags;
+> +};
+
+Thanks,
+
+	tglx
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
