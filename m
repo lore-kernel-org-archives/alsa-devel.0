@@ -1,89 +1,87 @@
-From: Zhang Rui <rui.zhang@intel.com>
-Subject: Re: [PATCH v1] ACPI: Switch to use generic UUID API
-Date: Wed, 10 May 2017 09:20:51 +0800
-Message-ID: <1494379251.2129.15.camel@intel.com>
-References: <20170504092151.88646-1-andriy.shevchenko@linux.intel.com>
+From: jeeja.kp@intel.com
+Subject: [PATCH] ALSA: hda: Fix cpu lockup when stopping the
+	cmd dmas
+Date: Wed, 10 May 2017 11:51:58 +0530
+Message-ID: <1494397318-26143-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-acpi-owner@vger.kernel.org>
-In-Reply-To: <20170504092151.88646-1-andriy.shevchenko@linux.intel.com>
-Sender: linux-acpi-owner@vger.kernel.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, linux-acpi@vger.kernel.org, tpmdd-devel@lists.sourceforge.net, intel-gfx@lists.freedesktop.org, nouveau@lists.freedesktop.org, linux-input@vger.kernel.org, iommu@lists.linux-foundation.org, linux-mmc@vger.kernel.org, netdev@vger.kernel.org, linux-pci@vger.kernel.org, linux-usb@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: "Rafael J . Wysocki" <rjw@rjwysocki.net>, Mika Westerberg <mika.westerberg@linux.intel.com>, Borislav Petkov <bp@suse.de>, Dan Williams <dan.j.williams@intel.com>, Amir Goldstein <amir73il@gmail.com>, Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, Jani Nikula <jani.nikula@linux.intel.com>, Ben Skeggs <bskeggs@redhat.com>, Benjamin Tissoires <benjamin.tissoires@redhat.com>, Joerg Roedel <joro@8bytes.org>, Adrian Hunter <adrian.hunter@intel.com>, Yisen Zhuang <yisen.zhuang@huawei.com>, Bjorn Helgaas <bhelgaas@google.com>, Felipe Balbi <balbi@kernel.org>, Mathias Nyman <mathias.nyman@intel.com>, Heikki Krogerus <heikki.krogerus@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9433266DB8
+ for <alsa-devel@alsa-project.org>; Wed, 10 May 2017 08:08:37 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2017-05-04 at 12:21 +0300, Andy Shevchenko wrote:
-> acpi_evaluate_dsm() and friends take a pointer to a raw buffer of 16
-> bytes. Instead we convert them to use uuid_le type. At the same time
-> we
-> convert current users.
-> 
-> acpi_str_to_uuid() becomes useless after the conversion and it's safe
-> to
-> get rid of it.
-> 
-> The conversion fixes a potential bug in int340x_thermal as well since
-> we have to use memcmp() on binary data.
-> 
-> Cc: Rafael J. Wysocki <rjw@rjwysocki.net>
-> Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
-> Cc: Borislav Petkov <bp@suse.de>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Amir Goldstein <amir73il@gmail.com>
-> Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> Cc: Jani Nikula <jani.nikula@linux.intel.com>
-> Cc: Ben Skeggs <bskeggs@redhat.com>
-> Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> Cc: Yisen Zhuang <yisen.zhuang@huawei.com>
-> Cc: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Zhang Rui <rui.zhang@intel.com>
-> Cc: Felipe Balbi <balbi@kernel.org>
-> Cc: Mathias Nyman <mathias.nyman@intel.com>
-> Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Cc: Liam Girdwood <lgirdwood@gmail.com>
-> Cc: Mark Brown <broonie@kernel.org>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
-> 
-> diff --git a/drivers/thermal/int340x_thermal/int3400_thermal.c
-> b/drivers/thermal/int340x_thermal/int3400_thermal.c
-> index 9413c4abf0b9..c0eb3bb19b23 100644
-> --- a/drivers/thermal/int340x_thermal/int3400_thermal.c
-> +++ b/drivers/thermal/int340x_thermal/int3400_thermal.c
-> @@ -23,7 +23,7 @@ enum int3400_thermal_uuid {
->  	INT3400_THERMAL_MAXIMUM_UUID,
->  };
->  
-> -static u8 *int3400_thermal_uuids[INT3400_THERMAL_MAXIMUM_UUID] = {
-> +static const char
-> *int3400_thermal_uuids[INT3400_THERMAL_MAXIMUM_UUID] = {
->  	"42A441D6-AE6A-462b-A84B-4A8CE79027D3",
->  	"3A95C389-E4B8-4629-A526-C52C88626BAE",
->  	"97C68AE7-15FA-499c-B8C9-5DA81D606E0A",
-> @@ -141,10 +141,10 @@ static int int3400_thermal_get_uuids(struct
-> int3400_thermal_priv *priv)
->  		}
->  
->  		for (j = 0; j < INT3400_THERMAL_MAXIMUM_UUID; j++) {
-> -			u8 uuid[16];
-> +			uuid_le u;
->  
-> -			acpi_str_to_uuid(int3400_thermal_uuids[j],
-> uuid);
-> -			if (!strncmp(uuid, objb->buffer.pointer,
-> 16)) {
-> +			uuid_le_to_bin(int3400_thermal_uuids[j],
-> &u);
-> +			if (!uuid_le_cmp(*(uuid_le *)objb-
-> >buffer.pointer), u) {
->  				priv->uuid_bitmap |= (1 << j);
->  				break;
->  			}
-thanks for the fix.
+From: Jeeja KP <jeeja.kp@intel.com>
 
-Acked-by: Zhang Rui <rui.zhang@intel.com>
+Using jiffies in hdac_wait_for_cmd_dmas() to determine when to time out
+when interrupts are off (snd_hdac_bus_stop_cmd_io()/spin_lock_irq())
+causes hard lockup so unlock while waiting using jiffies.
 
--rui
+---<-snip->---
+<0>[ 1211.603046] NMI watchdog: Watchdog detected hard LOCKUP on cpu 3
+<4>[ 1211.603047] Modules linked in: snd_hda_intel i915 vgem
+<4>[ 1211.603053] irq event stamp: 13366
+<4>[ 1211.603053] hardirqs last  enabled at (13365):
+...
+<4>[ 1211.603059] Call Trace:
+<4>[ 1211.603059]  ? delay_tsc+0x3d/0xc0
+<4>[ 1211.603059]  __delay+0xa/0x10
+<4>[ 1211.603060]  __const_udelay+0x31/0x40
+<4>[ 1211.603060]  snd_hdac_bus_stop_cmd_io+0x96/0xe0 [snd_hda_core]
+<4>[ 1211.603060]  ? azx_dev_disconnect+0x20/0x20 [snd_hda_intel]
+<4>[ 1211.603061]  snd_hdac_bus_stop_chip+0xb1/0x100 [snd_hda_core]
+<4>[ 1211.603061]  azx_stop_chip+0x9/0x10 [snd_hda_codec]
+<4>[ 1211.603061]  azx_suspend+0x72/0x220 [snd_hda_intel]
+<4>[ 1211.603061]  pci_pm_suspend+0x71/0x140
+<4>[ 1211.603062]  dpm_run_callback+0x6f/0x330
+<4>[ 1211.603062]  ? pci_pm_freeze+0xe0/0xe0
+<4>[ 1211.603062]  __device_suspend+0xf9/0x370
+<4>[ 1211.603062]  ? dpm_watchdog_set+0x60/0x60
+<4>[ 1211.603063]  async_suspend+0x1a/0x90
+<4>[ 1211.603063]  async_run_entry_fn+0x34/0x160
+<4>[ 1211.603063]  process_one_work+0x1f4/0x6d0
+<4>[ 1211.603063]  ? process_one_work+0x16e/0x6d0
+<4>[ 1211.603064]  worker_thread+0x49/0x4a0
+<4>[ 1211.603064]  kthread+0x107/0x140
+<4>[ 1211.603064]  ? process_one_work+0x6d0/0x6d0
+<4>[ 1211.603065]  ? kthread_create_on_node+0x40/0x40
+<4>[ 1211.603065]  ret_from_fork+0x2e/0x40
+
+Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=100419
+Reported-by: Marta Lofstedt <marta.lofstedt@intel.com>
+Suggested-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+---
+ sound/hda/hdac_controller.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
+index 6f1e99c..0f703372 100644
+--- a/sound/hda/hdac_controller.c
++++ b/sound/hda/hdac_controller.c
+@@ -106,7 +106,11 @@ void snd_hdac_bus_stop_cmd_io(struct hdac_bus *bus)
+ 	/* disable ringbuffer DMAs */
+ 	snd_hdac_chip_writeb(bus, RIRBCTL, 0);
+ 	snd_hdac_chip_writeb(bus, CORBCTL, 0);
++	spin_unlock_irq(&bus->reg_lock);
++
+ 	hdac_wait_for_cmd_dmas(bus);
++
++	spin_lock_irq(&bus->reg_lock);
+ 	/* disable unsolicited responses */
+ 	snd_hdac_chip_updatel(bus, GCTL, AZX_GCTL_UNSOL, 0);
+ 	spin_unlock_irq(&bus->reg_lock);
+-- 
+2.5.0
