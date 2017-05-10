@@ -1,27 +1,15 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: WM5102 - Help to make baytrail machine driver work
-Date: Wed, 10 May 2017 09:21:23 +0100
-Message-ID: <20170510082123.GK1594@localhost.localdomain>
-References: <CAJcYhpa8OrxyFxL1L4VQJL=WSEhrKhvfcdLeUj40Hb=N2kDUUQ@mail.gmail.com>
- <20160513114136.GM1646@localhost.localdomain>
- <CAJcYhpYJcTE0qBwYAHtGF9tbNCKXAVaLP3RnS5CF5=Z1LBijmA@mail.gmail.com>
- <20160515101308.GN1646@localhost.localdomain>
- <CAJcYhpaFiDrMYmbS1cUWL=ix-L2crjnNekpCXjjdHVThwp2Xag@mail.gmail.com>
- <20170508082422.GJ1594@localhost.localdomain>
- <CAJcYhpb0amzyug01nN3TUWBFSgGWfZcfOVfMgV01rxgTnbNnHg@mail.gmail.com>
- <7c35cd21-35a4-726d-71b5-1ef9f096fbee@linux.intel.com>
- <CAJcYhpb9yOJjDwG6ZGEYFQTiLXtkHNgmVkmF2ssQp6QPOX0ueA@mail.gmail.com>
- <6615d589-9124-5f71-0d6d-e634caf2fdaa@linux.intel.com>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: [PATCH] conf: topology: Fix index mismatch for skl and
+	bxt
+Date: Wed, 10 May 2017 13:46:53 +0530
+Message-ID: <1494404213-2086-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id DBE5F2667E7
- for <alsa-devel@alsa-project.org>; Wed, 10 May 2017 10:20:09 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <6615d589-9124-5f71-0d6d-e634caf2fdaa@linux.intel.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A1E82667E7
+ for <alsa-devel@alsa-project.org>; Wed, 10 May 2017 10:30:32 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,54 +19,518 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: vinod.koul@intel.com, mika.westerberg@linux.intel.com, alsa-devel@alsa-project.org, broonie@opensource.wolfsonmicro.com, Paulo Sergio <pstglia@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 09, 2017 at 09:57:14AM -0500, Pierre-Louis Bossart wrote:
-> On 5/9/17 9:45 AM, Paulo Sergio wrote:
-> >>>>How are you setting up the I2S? As in which side is master, what
-> >>>>format are you using? Also do you see any over/underflow error,
-> >>>>does the system complain with "Error playing sample".
-> >>>
-> >>>
-> >>>The only part where I2S is explicity used on machine driver is this
-> >>>setting on backend DAI (SSP0-Codec)
-> >>>
-> >>>dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
-> >>>| SND_SOC_DAIFMT_CBS_CFS,
-> >>>
-> >>>And after setting the routes using routes mentioned on [3], I have no
-> >>>errors, but no sound
-> >>>
-> >>>Note: Based on Lenovo code, I concluded this device uses ssp0, so I'm
-> >>>using a fw file "fw_sst_0f28_ssp0.bin" posted another thread.
-> >>>Could use the hacks used on kernel 4.11, but as I'm still testing with
-> >>>kernel 4.4, using this fw would make things easier
-> >>
-> >>
-> >>nope. I don't know how many issues we've fixed since 4.4 but it's not a
-> >>matter of just swapping out one firmware with another. You'll have better
-> >>luck with plain vanilla 4.11 + regular firmware and restarting modifying one
-> >>of the latest machine drivers.
-> >
-> >Ok, I'll use 4.11 and post the results later
-> >
-> >Should I have any special care about I2S other than setting the format
-> >um backend DAI?
-> >Some module should be loaded?
-> 
-> Things to look for
-> - SSP routing: has to be SSP0 on baytrail-CR
-> - number of slots: 2 or 4. if 4 then use DSP mode
-> - DAI format
-> - MCLK
-> 
-> If I can get my hands on a WM5102 eval board I might be able to help with a
-> MinnowMax board.
+The topology index in the conf is set to 1, where the driver expects index
+set to 0. Fix the inconsistency.
 
-If you really want one I can ask about see if we can send you one
-over?
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+---
+ src/conf/topology/bxtrt298/bxt_i2s.conf | 62 ++++++++++++++++-----------------
+ src/conf/topology/sklrt286/skl_i2s.conf | 56 ++++++++++++++---------------
+ 2 files changed, 59 insertions(+), 59 deletions(-)
 
-Thanks,
-Charles
+diff --git a/src/conf/topology/bxtrt298/bxt_i2s.conf b/src/conf/topology/bxtrt298/bxt_i2s.conf
+index 3b7a54e3a323..6b38f4f3c5ae 100644
+--- a/src/conf/topology/bxtrt298/bxt_i2s.conf
++++ b/src/conf/topology/bxtrt298/bxt_i2s.conf
+@@ -2924,7 +2924,7 @@ SectionData."lib_data" {
+ 
+ 
+ SectionControlMixer."media0_in mi Switch" {
+-	index"1"
++	index"0"
+ 	invert "false"
+ 	max "1"
+ 	min"0"
+@@ -2944,7 +2944,7 @@ SectionControlMixer."media0_in mi Switch" {
+ 	}
+ }
+ SectionControlMixer."dmic01_hifi_in mi Switch" {
+-	index"1"
++	index"0"
+ 	invert "false"
+ 	max "1"
+ 	min"0"
+@@ -2964,7 +2964,7 @@ SectionControlMixer."dmic01_hifi_in mi Switch" {
+ 	}
+ }
+ SectionControlMixer."codec0_in mi Switch" {
+-	index"1"
++	index"0"
+ 	invert "false"
+ 	max "1"
+ 	min"0"
+@@ -2986,7 +2986,7 @@ SectionControlMixer."codec0_in mi Switch" {
+ 
+ 
+ SectionWidget."media0_in cpr 0" {
+-	index"1"
++	index"0"
+ 	type"mixer"
+ 	no_pm "true"
+ 	event_type "3"
+@@ -2998,7 +2998,7 @@ SectionWidget."media0_in cpr 0" {
+ 	]
+ }
+ SectionWidget."media0_in mi" {
+-	index"1"
++	index"0"
+ 	type"pga"
+ 	no_pm "true"
+ 	event_type "4"
+@@ -3011,7 +3011,7 @@ SectionWidget."media0_in mi" {
+ 	]
+ }
+ SectionWidget."codec0_in cpr 1" {
+-	index"1"
++	index"0"
+ 	type"mixer"
+ 	no_pm "true"
+ 	event_type "3"
+@@ -3023,7 +3023,7 @@ SectionWidget."codec0_in cpr 1" {
+ 	]
+ }
+ SectionWidget."codec0_in mi" {
+-	index"1"
++	index"0"
+ 	type"pga"
+ 	no_pm "true"
+ 	event_type "4"
+@@ -3036,12 +3036,12 @@ SectionWidget."codec0_in mi" {
+ 	]
+ }
+ SectionWidget."codec0_in" {
+-	index"1"
++	index"0"
+ 	type"aif_in"
+ 	no_pm "true"
+ }
+ SectionWidget."codec0_out mo" {
+-	index"1"
++	index"0"
+ 	type"mixer"
+ 	no_pm "true"
+ 	event_type "1"
+@@ -3059,7 +3059,7 @@ SectionWidget."codec0_out mo" {
+ 	]
+ }
+ SectionWidget."codec0_out cpr 2" {
+-	index"1"
++	index"0"
+ 	type"pga"
+ 	no_pm "true"
+ 	event_type "4"
+@@ -3070,12 +3070,12 @@ SectionWidget."codec0_out cpr 2" {
+ 	]
+ }
+ SectionWidget."codec0_out" {
+-	index"1"
++	index"0"
+ 	type"aif_out"
+ 	no_pm "true"
+ }
+ SectionWidget."media0_out mo" {
+-	index"1"
++	index"0"
+ 	type"mixer"
+ 	no_pm "true"
+ 	event_type "1"
+@@ -3093,7 +3093,7 @@ SectionWidget."media0_out mo" {
+ 	]
+ }
+ SectionWidget."media0_out cpr 3" {
+-	index"1"
++	index"0"
+ 	type"pga"
+ 	no_pm "true"
+ 	event_type "4"
+@@ -3104,7 +3104,7 @@ SectionWidget."media0_out cpr 3" {
+ 	]
+ }
+ SectionWidget."dmic01_hifi_in cpr 4" {
+-	index"1"
++	index"0"
+ 	type"mixer"
+ 	no_pm "true"
+ 	event_type "3"
+@@ -3116,7 +3116,7 @@ SectionWidget."dmic01_hifi_in cpr 4" {
+ 	]
+ }
+ SectionWidget."dmic01_hifi_in mi" {
+-	index"1"
++	index"0"
+ 	type"pga"
+ 	no_pm "true"
+ 	event_type "4"
+@@ -3129,12 +3129,12 @@ SectionWidget."dmic01_hifi_in mi" {
+ 	]
+ }
+ SectionWidget."dmic01_hifi" {
+-	index"1"
++	index"0"
+ 	type"aif_in"
+ 	no_pm "true"
+ }
+ SectionWidget."codec1_out mo" {
+-	index"1"
++	index"0"
+ 	type"mixer"
+ 	no_pm "true"
+ 	event_type "1"
+@@ -3152,7 +3152,7 @@ SectionWidget."codec1_out mo" {
+ 	]
+ }
+ SectionWidget."codec1_out cpr 5" {
+-	index"1"
++	index"0"
+ 	type"pga"
+ 	no_pm "true"
+ 	event_type "4"
+@@ -3163,12 +3163,12 @@ SectionWidget."codec1_out cpr 5" {
+ 	]
+ }
+ SectionWidget."codec1_out" {
+-	index"1"
++	index"0"
+ 	type"aif_out"
+ 	no_pm "true"
+ }
+ SectionWidget."hdmi1_pt_out cpr 6" {
+-	index"1"
++	index"0"
+ 	type"mixer"
+ 	no_pm "true"
+ 	event_type "3"
+@@ -3180,7 +3180,7 @@ SectionWidget."hdmi1_pt_out cpr 6" {
+ 	]
+ }
+ SectionWidget."hdmi1_pt_out cpr 7" {
+-	index"1"
++	index"0"
+ 	type"pga"
+ 	no_pm "true"
+ 	event_type "4"
+@@ -3191,12 +3191,12 @@ SectionWidget."hdmi1_pt_out cpr 7" {
+ 	]
+ }
+ SectionWidget."iDisp1_out" {
+-	index"1"
++	index"0"
+ 	type"aif_out"
+ 	no_pm "true"
+ }
+ SectionWidget."hdmi2_pt_out cpr 8" {
+-	index"1"
++	index"0"
+ 	type"mixer"
+ 	no_pm "true"
+ 	event_type "3"
+@@ -3208,7 +3208,7 @@ SectionWidget."hdmi2_pt_out cpr 8" {
+ 	]
+ }
+ SectionWidget."hdmi2_pt_out cpr 9" {
+-	index"1"
++	index"0"
+ 	type"pga"
+ 	no_pm "true"
+ 	event_type "4"
+@@ -3219,12 +3219,12 @@ SectionWidget."hdmi2_pt_out cpr 9" {
+ 	]
+ }
+ SectionWidget."iDisp2_out" {
+-	index"1"
++	index"0"
+ 	type"aif_out"
+ 	no_pm "true"
+ }
+ SectionWidget."hdmi3_pt_out cpr 10" {
+-	index"1"
++	index"0"
+ 	type"mixer"
+ 	no_pm "true"
+ 	event_type "3"
+@@ -3236,7 +3236,7 @@ SectionWidget."hdmi3_pt_out cpr 10" {
+ 	]
+ }
+ SectionWidget."hdmi3_pt_out cpr 11" {
+-	index"1"
++	index"0"
+ 	type"pga"
+ 	no_pm "true"
+ 	event_type "4"
+@@ -3247,12 +3247,12 @@ SectionWidget."hdmi3_pt_out cpr 11" {
+ 	]
+ }
+ SectionWidget."iDisp3_out" {
+-	index"1"
++	index"0"
+ 	type"aif_out"
+ 	no_pm "true"
+ }
+ SectionWidget."mch_cap_in cpr 12" {
+-	index"1"
++	index"0"
+ 	type"mixer"
+ 	no_pm "true"
+ 	event_type "3"
+@@ -3264,7 +3264,7 @@ SectionWidget."mch_cap_in cpr 12" {
+ 	]
+ }
+ SectionWidget."mch_cap_in cpr 13" {
+-	index"1"
++	index"0"
+ 	type"pga"
+ 	no_pm "true"
+ 	event_type "4"
+@@ -3283,7 +3283,7 @@ SectionManifest."lib_data" {
+ }
+ 
+ SectionGraph."Pipeline 1 Graph" {
+-	index"1"
++	index"0"
+ 	lines [
+ 		"media0_in mi, , media0_in cpr 0"
+ 		"media0_in cpr 0, , System Playback"
+diff --git a/src/conf/topology/sklrt286/skl_i2s.conf b/src/conf/topology/sklrt286/skl_i2s.conf
+index bb1fe4f8435f..fbf041bfd0cf 100644
+--- a/src/conf/topology/sklrt286/skl_i2s.conf
++++ b/src/conf/topology/sklrt286/skl_i2s.conf
+@@ -2604,7 +2604,7 @@ SectionData."hdmi3_pt_out cpr 12" {
+ 
+ 
+ SectionControlMixer."media0_in mi Switch" {
+-	index"1"
++	index"0"
+ 	invert "false"
+ 	max "1"
+ 	min"0"
+@@ -2624,7 +2624,7 @@ SectionControlMixer."media0_in mi Switch" {
+ 	}
+ }
+ SectionControlMixer."codec0_in mi Switch" {
+-	index"1"
++	index"0"
+ 	invert "false"
+ 	max "1"
+ 	min"0"
+@@ -2644,7 +2644,7 @@ SectionControlMixer."codec0_in mi Switch" {
+ 	}
+ }
+ SectionControlMixer."dmic01_hifi_in mi Switch" {
+-	index"1"
++	index"0"
+ 	invert "false"
+ 	max "1"
+ 	min"0"
+@@ -2666,7 +2666,7 @@ SectionControlMixer."dmic01_hifi_in mi Switch" {
+ 
+ 
+ SectionWidget."media0_in cpr 0" {
+-	index"1"
++	index"0"
+ 	type"mixer"
+ 	no_pm "true"
+ 	event_type "3"
+@@ -2678,7 +2678,7 @@ SectionWidget."media0_in cpr 0" {
+ 	]
+ }
+ SectionWidget."media0_in mi" {
+-	index"1"
++	index"0"
+ 	type"pga"
+ 	no_pm "true"
+ 	event_type "4"
+@@ -2691,7 +2691,7 @@ SectionWidget."media0_in mi" {
+ 	]
+ }
+ SectionWidget."media0_out mo" {
+-	index"1"
++	index"0"
+ 	type"mixer"
+ 	no_pm "true"
+ 	event_type "1"
+@@ -2709,7 +2709,7 @@ SectionWidget."media0_out mo" {
+ 	]
+ }
+ SectionWidget."media0_out cpr 6" {
+-	index"1"
++	index"0"
+ 	type"pga"
+ 	no_pm "true"
+ 	event_type "4"
+@@ -2720,7 +2720,7 @@ SectionWidget."media0_out cpr 6" {
+ 	]
+ }
+ SectionWidget."codec0_out mo" {
+-	index"1"
++	index"0"
+ 	type"mixer"
+ 	no_pm "true"
+ 	event_type "1"
+@@ -2738,7 +2738,7 @@ SectionWidget."codec0_out mo" {
+ 	]
+ }
+ SectionWidget."codec0_out cpr 4" {
+-	index"1"
++	index"0"
+ 	type"pga"
+ 	no_pm "true"
+ 	event_type "4"
+@@ -2749,12 +2749,12 @@ SectionWidget."codec0_out cpr 4" {
+ 	]
+ }
+ SectionWidget."codec0_out" {
+-	index"1"
++	index"0"
+ 	type"aif_out"
+ 	no_pm "true"
+ }
+ SectionWidget."codec1_out mo" {
+-	index"1"
++	index"0"
+ 	type"mixer"
+ 	no_pm "true"
+ 	event_type "1"
+@@ -2772,7 +2772,7 @@ SectionWidget."codec1_out mo" {
+ 	]
+ }
+ SectionWidget."codec1_out cpr 5" {
+-	index"1"
++	index"0"
+ 	type"pga"
+ 	no_pm "true"
+ 	event_type "4"
+@@ -2783,12 +2783,12 @@ SectionWidget."codec1_out cpr 5" {
+ 	]
+ }
+ SectionWidget."codec1_out" {
+-	index"1"
++	index"0"
+ 	type"aif_out"
+ 	no_pm "true"
+ }
+ SectionWidget."codec0_in cpr 1" {
+-	index"1"
++	index"0"
+ 	type"mixer"
+ 	no_pm "true"
+ 	event_type "3"
+@@ -2800,7 +2800,7 @@ SectionWidget."codec0_in cpr 1" {
+ 	]
+ }
+ SectionWidget."codec0_in mi" {
+-	index"1"
++	index"0"
+ 	type"pga"
+ 	no_pm "true"
+ 	event_type "4"
+@@ -2813,12 +2813,12 @@ SectionWidget."codec0_in mi" {
+ 	]
+ }
+ SectionWidget."codec0_in" {
+-	index"1"
++	index"0"
+ 	type"aif_in"
+ 	no_pm "true"
+ }
+ SectionWidget."dmic01_hifi_in cpr 3" {
+-	index"1"
++	index"0"
+ 	type"mixer"
+ 	no_pm "true"
+ 	event_type "3"
+@@ -2830,7 +2830,7 @@ SectionWidget."dmic01_hifi_in cpr 3" {
+ 	]
+ }
+ SectionWidget."dmic01_hifi_in mi" {
+-	index"1"
++	index"0"
+ 	type"pga"
+ 	no_pm "true"
+ 	event_type "4"
+@@ -2843,12 +2843,12 @@ SectionWidget."dmic01_hifi_in mi" {
+ 	]
+ }
+ SectionWidget."dmic01_hifi" {
+-	index"1"
++	index"0"
+ 	type"aif_in"
+ 	no_pm "true"
+ }
+ SectionWidget."hdmi1_pt_out cpr 7" {
+-	index"1"
++	index"0"
+ 	type"mixer"
+ 	no_pm "true"
+ 	event_type "3"
+@@ -2860,7 +2860,7 @@ SectionWidget."hdmi1_pt_out cpr 7" {
+ 	]
+ }
+ SectionWidget."hdmi1_pt_out cpr 8" {
+-	index"1"
++	index"0"
+ 	type"pga"
+ 	no_pm "true"
+ 	event_type "4"
+@@ -2871,12 +2871,12 @@ SectionWidget."hdmi1_pt_out cpr 8" {
+ 	]
+ }
+ SectionWidget."iDisp1_out" {
+-	index"1"
++	index"0"
+ 	type"aif_out"
+ 	no_pm "true"
+ }
+ SectionWidget."hdmi2_pt_out cpr 9" {
+-	index"1"
++	index"0"
+ 	type"mixer"
+ 	no_pm "true"
+ 	event_type "3"
+@@ -2888,7 +2888,7 @@ SectionWidget."hdmi2_pt_out cpr 9" {
+ 	]
+ }
+ SectionWidget."hdmi2_pt_out cpr 10" {
+-	index"1"
++	index"0"
+ 	type"pga"
+ 	no_pm "true"
+ 	event_type "4"
+@@ -2899,12 +2899,12 @@ SectionWidget."hdmi2_pt_out cpr 10" {
+ 	]
+ }
+ SectionWidget."iDisp2_out" {
+-	index"1"
++	index"0"
+ 	type"aif_out"
+ 	no_pm "true"
+ }
+ SectionWidget."hdmi3_pt_out cpr 11" {
+-	index"1"
++	index"0"
+ 	type"mixer"
+ 	no_pm "true"
+ 	event_type "3"
+@@ -2916,7 +2916,7 @@ SectionWidget."hdmi3_pt_out cpr 11" {
+ 	]
+ }
+ SectionWidget."hdmi3_pt_out cpr 12" {
+-	index"1"
++	index"0"
+ 	type"pga"
+ 	no_pm "true"
+ 	event_type "4"
+@@ -2927,7 +2927,7 @@ SectionWidget."hdmi3_pt_out cpr 12" {
+ 	]
+ }
+ SectionGraph."Pipeline 1 Graph" {
+-	index"1"
++	index"0"
+ 	lines [
+ 		"media0_in mi, , media0_in cpr 0"
+ 		"media0_in cpr 0, , System Playback"
+-- 
+1.9.1
