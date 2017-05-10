@@ -1,15 +1,18 @@
-From: jeeja.kp@intel.com
-Subject: [PATCH] ALSA: hda: Fix cpu lockup when stopping the
-	cmd dmas
-Date: Wed, 10 May 2017 11:51:58 +0530
-Message-ID: <1494397318-26143-1-git-send-email-jeeja.kp@intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] ALSA: hda: Fix cpu lockup when stopping
+	the cmd dmas
+Date: Wed, 10 May 2017 11:47:31 +0530
+Message-ID: <20170510061731.GA6263@localhost>
+References: <1494397318-26143-1-git-send-email-jeeja.kp@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id D9433266DB8
- for <alsa-devel@alsa-project.org>; Wed, 10 May 2017 08:08:37 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id F24DA266DB8
+ for <alsa-devel@alsa-project.org>; Wed, 10 May 2017 08:15:30 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1494397318-26143-1-git-send-email-jeeja.kp@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,69 +22,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, liam.r.girdwood@intel.com, Jeeja KP <jeeja.kp@intel.com>
+To: jeeja.kp@intel.com
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Jeeja KP <jeeja.kp@intel.com>
+On Wed, May 10, 2017 at 11:51:58AM +0530, jeeja.kp@intel.com wrote:
+> From: Jeeja KP <jeeja.kp@intel.com>
+> 
+> Using jiffies in hdac_wait_for_cmd_dmas() to determine when to time out
+> when interrupts are off (snd_hdac_bus_stop_cmd_io()/spin_lock_irq())
+> causes hard lockup so unlock while waiting using jiffies.
+> 
+> ---<-snip->---
+> <0>[ 1211.603046] NMI watchdog: Watchdog detected hard LOCKUP on cpu 3
+> <4>[ 1211.603047] Modules linked in: snd_hda_intel i915 vgem
+> <4>[ 1211.603053] irq event stamp: 13366
+> <4>[ 1211.603053] hardirqs last  enabled at (13365):
+> ...
+> <4>[ 1211.603059] Call Trace:
+> <4>[ 1211.603059]  ? delay_tsc+0x3d/0xc0
+> <4>[ 1211.603059]  __delay+0xa/0x10
+> <4>[ 1211.603060]  __const_udelay+0x31/0x40
+> <4>[ 1211.603060]  snd_hdac_bus_stop_cmd_io+0x96/0xe0 [snd_hda_core]
+> <4>[ 1211.603060]  ? azx_dev_disconnect+0x20/0x20 [snd_hda_intel]
+> <4>[ 1211.603061]  snd_hdac_bus_stop_chip+0xb1/0x100 [snd_hda_core]
+> <4>[ 1211.603061]  azx_stop_chip+0x9/0x10 [snd_hda_codec]
+> <4>[ 1211.603061]  azx_suspend+0x72/0x220 [snd_hda_intel]
+> <4>[ 1211.603061]  pci_pm_suspend+0x71/0x140
+> <4>[ 1211.603062]  dpm_run_callback+0x6f/0x330
+> <4>[ 1211.603062]  ? pci_pm_freeze+0xe0/0xe0
+> <4>[ 1211.603062]  __device_suspend+0xf9/0x370
+> <4>[ 1211.603062]  ? dpm_watchdog_set+0x60/0x60
+> <4>[ 1211.603063]  async_suspend+0x1a/0x90
+> <4>[ 1211.603063]  async_run_entry_fn+0x34/0x160
+> <4>[ 1211.603063]  process_one_work+0x1f4/0x6d0
+> <4>[ 1211.603063]  ? process_one_work+0x16e/0x6d0
+> <4>[ 1211.603064]  worker_thread+0x49/0x4a0
+> <4>[ 1211.603064]  kthread+0x107/0x140
+> <4>[ 1211.603064]  ? process_one_work+0x6d0/0x6d0
+> <4>[ 1211.603065]  ? kthread_create_on_node+0x40/0x40
+> <4>[ 1211.603065]  ret_from_fork+0x2e/0x40
+> 
+> Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=100419
+> Reported-by: Marta Lofstedt <marta.lofstedt@intel.com>
+> Suggested-by: Takashi Iwai <tiwai@suse.de>
+> Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
 
-Using jiffies in hdac_wait_for_cmd_dmas() to determine when to time out
-when interrupts are off (snd_hdac_bus_stop_cmd_io()/spin_lock_irq())
-causes hard lockup so unlock while waiting using jiffies.
+Fixes: 38b19ed7f81ec ("ALSA: hda: fix to wait for RIRB & CORB DMA to set")
+CC: stable <stable@vger.kernel.org> # 4.7
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 
----<-snip->---
-<0>[ 1211.603046] NMI watchdog: Watchdog detected hard LOCKUP on cpu 3
-<4>[ 1211.603047] Modules linked in: snd_hda_intel i915 vgem
-<4>[ 1211.603053] irq event stamp: 13366
-<4>[ 1211.603053] hardirqs last  enabled at (13365):
-...
-<4>[ 1211.603059] Call Trace:
-<4>[ 1211.603059]  ? delay_tsc+0x3d/0xc0
-<4>[ 1211.603059]  __delay+0xa/0x10
-<4>[ 1211.603060]  __const_udelay+0x31/0x40
-<4>[ 1211.603060]  snd_hdac_bus_stop_cmd_io+0x96/0xe0 [snd_hda_core]
-<4>[ 1211.603060]  ? azx_dev_disconnect+0x20/0x20 [snd_hda_intel]
-<4>[ 1211.603061]  snd_hdac_bus_stop_chip+0xb1/0x100 [snd_hda_core]
-<4>[ 1211.603061]  azx_stop_chip+0x9/0x10 [snd_hda_codec]
-<4>[ 1211.603061]  azx_suspend+0x72/0x220 [snd_hda_intel]
-<4>[ 1211.603061]  pci_pm_suspend+0x71/0x140
-<4>[ 1211.603062]  dpm_run_callback+0x6f/0x330
-<4>[ 1211.603062]  ? pci_pm_freeze+0xe0/0xe0
-<4>[ 1211.603062]  __device_suspend+0xf9/0x370
-<4>[ 1211.603062]  ? dpm_watchdog_set+0x60/0x60
-<4>[ 1211.603063]  async_suspend+0x1a/0x90
-<4>[ 1211.603063]  async_run_entry_fn+0x34/0x160
-<4>[ 1211.603063]  process_one_work+0x1f4/0x6d0
-<4>[ 1211.603063]  ? process_one_work+0x16e/0x6d0
-<4>[ 1211.603064]  worker_thread+0x49/0x4a0
-<4>[ 1211.603064]  kthread+0x107/0x140
-<4>[ 1211.603064]  ? process_one_work+0x6d0/0x6d0
-<4>[ 1211.603065]  ? kthread_create_on_node+0x40/0x40
-<4>[ 1211.603065]  ret_from_fork+0x2e/0x40
+> ---
+>  sound/hda/hdac_controller.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
+> index 6f1e99c..0f703372 100644
+> --- a/sound/hda/hdac_controller.c
+> +++ b/sound/hda/hdac_controller.c
+> @@ -106,7 +106,11 @@ void snd_hdac_bus_stop_cmd_io(struct hdac_bus *bus)
+>  	/* disable ringbuffer DMAs */
+>  	snd_hdac_chip_writeb(bus, RIRBCTL, 0);
+>  	snd_hdac_chip_writeb(bus, CORBCTL, 0);
+> +	spin_unlock_irq(&bus->reg_lock);
+> +
+>  	hdac_wait_for_cmd_dmas(bus);
+> +
+> +	spin_lock_irq(&bus->reg_lock);
+>  	/* disable unsolicited responses */
+>  	snd_hdac_chip_updatel(bus, GCTL, AZX_GCTL_UNSOL, 0);
+>  	spin_unlock_irq(&bus->reg_lock);
+> -- 
+> 2.5.0
+> 
 
-Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=100419
-Reported-by: Marta Lofstedt <marta.lofstedt@intel.com>
-Suggested-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
----
- sound/hda/hdac_controller.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
-index 6f1e99c..0f703372 100644
---- a/sound/hda/hdac_controller.c
-+++ b/sound/hda/hdac_controller.c
-@@ -106,7 +106,11 @@ void snd_hdac_bus_stop_cmd_io(struct hdac_bus *bus)
- 	/* disable ringbuffer DMAs */
- 	snd_hdac_chip_writeb(bus, RIRBCTL, 0);
- 	snd_hdac_chip_writeb(bus, CORBCTL, 0);
-+	spin_unlock_irq(&bus->reg_lock);
-+
- 	hdac_wait_for_cmd_dmas(bus);
-+
-+	spin_lock_irq(&bus->reg_lock);
- 	/* disable unsolicited responses */
- 	snd_hdac_chip_updatel(bus, GCTL, AZX_GCTL_UNSOL, 0);
- 	spin_unlock_irq(&bus->reg_lock);
 -- 
-2.5.0
+~Vinod
