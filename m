@@ -1,193 +1,446 @@
-From: Thomas Gleixner <tglx-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org>
-Subject: Re: [PATCH v2 09/18] irqchip: Add driver for Cirrus Logic Madera
- codecs
-Date: Wed, 10 May 2017 17:03:46 +0200 (CEST)
-Message-ID: <alpine.DEB.2.20.1705101634390.1979@nanos>
-References: <1493050124-5970-1-git-send-email-rf@opensource.wolfsonmicro.com> <1493050124-5970-10-git-send-email-rf@opensource.wolfsonmicro.com>
+From: Daniel Drake <drake@endlessm.com>
+Subject: [PATCH 2/2] ASoC: Intel: add machine driver for
+	BYT/CHT + ES8316
+Date: Wed, 10 May 2017 12:16:49 -0600
+Message-ID: <20170510181649.14580-2-drake@endlessm.com>
+References: <20170510181649.14580-1-drake@endlessm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1493050124-5970-10-git-send-email-rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, Jason Cooper <jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, LKML <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Marc Zyngier <marc.zyngier-5wv7dgnIgG8@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ua0-f177.google.com (mail-ua0-f177.google.com
+ [209.85.217.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 28FCE266B2C
+ for <alsa-devel@alsa-project.org>; Wed, 10 May 2017 20:17:29 +0200 (CEST)
+Received: by mail-ua0-f177.google.com with SMTP id e28so4678949uah.0
+ for <alsa-devel@alsa-project.org>; Wed, 10 May 2017 11:17:29 -0700 (PDT)
+In-Reply-To: <20170510181649.14580-1-drake@endlessm.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: lgirdwood@gmail.com, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linux@endlessm.com, pierre-louis.bossart@linux.intel.com, yangxiaohua@everest-semi.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 24 Apr 2017, Richard Fitzgerald wrote:
-> +
-> +struct madera_irq_priv {
-> +	struct device *dev;
-> +	int irq;
-> +	struct regmap_irq_chip_data *irq_data;
-> +	struct madera *madera;
+Add new machine driver, tested with Weibu F3C MiniPC.
 
-Please write your struct definitions in a tabular fashion:
+Based heavily on code provided by David Yang @ Everest, and other
+machine drivers in the same directory.
 
-struct madera_irq_priv {
-	struct device			*dev;
-	int				irq;
-	struct regmap_irq_chip_data	*irq_data;
-	struct madera			*madera;
+Signed-off-by: Daniel Drake <drake@endlessm.com>
+---
+ sound/soc/intel/Kconfig                |  12 ++
+ sound/soc/intel/atom/sst/sst_acpi.c    |   2 +
+ sound/soc/intel/boards/Makefile        |   2 +
+ sound/soc/intel/boards/bytcht_es8316.c | 338 +++++++++++++++++++++++++++++++++
+ 4 files changed, 354 insertions(+)
+ create mode 100644 sound/soc/intel/boards/bytcht_es8316.c
 
-> +};
-> +
-> +static const struct regmap_irq madera_irqs[MADERA_NUM_IRQ] = {
-> +	[MADERA_IRQ_FLL1_LOCK] =  { .reg_offset = 0,
-> +				    .mask = MADERA_FLL1_LOCK_EINT1 },
-> +	[MADERA_IRQ_FLL2_LOCK] =  { .reg_offset = 0,
-> +				    .mask = MADERA_FLL2_LOCK_EINT1 },
-> +	[MADERA_IRQ_FLL3_LOCK] =  { .reg_offset = 0,
-> +				    .mask = MADERA_FLL3_LOCK_EINT1 },
-> +	[MADERA_IRQ_FLLAO_LOCK] = { .reg_offset = 0,
-> +				    .mask = MADERA_FLLAO_LOCK_EINT1 },
-> +
-> +	[MADERA_IRQ_MICDET1] = { .reg_offset = 4,
-> +				 .mask = MADERA_MICDET1_EINT1 },
-> +	[MADERA_IRQ_MICDET2] = { .reg_offset = 4,
-> +				 .mask = MADERA_MICDET2_EINT1 },
-> +	[MADERA_IRQ_HPDET] =   { .reg_offset = 4,
-> +				 .mask = MADERA_HPDET_EINT1 },
-> +
-> +	[MADERA_IRQ_MICD_CLAMP_RISE] = { .reg_offset = 5,
-> +					 .mask = MADERA_MICD_CLAMP_RISE_EINT1 },
-
-This is hard to read, makes my eyes hurt and takes way too many lines.
-
-#define REGMAP_IRQ(_irq, _off, _mask)                    	\
-        [MADERA_IRQ_##_irq] = { .reg_offset = (_off),	 	\
-			    	.mask = MADERA_##_irq_EINT1) }
-
-static const struct regmap_irq madera_irqs[MADERA_NUM_IRQ] = {
-	REGMAP_IRQ(FLL1_LOCK,		0),
-	REGMAP_IRQ(FLL2_LOCK,		0),
-	....
-	REGMAP_IRQ(MICD_CLAMP_RISE,	5),
-
-Hmm?
-
-> +
-> +static const struct regmap_irq_chip madera_irq = {
-> +	.name = "madera IRQ",
-
-Again. Tabluar fashion, please.
-
-> +	.status_base = MADERA_IRQ1_STATUS_2,
-> +	.mask_base = MADERA_IRQ1_MASK_2,
-> +	.ack_base = MADERA_IRQ1_STATUS_2,
-> +	.runtime_pm = true, /* codec must be resumed to read IRQ status */
-
-Please do not use tail comments. Aside of that this comment is superfluous.
-
-> +	.num_regs = 32,
-> +	.irqs = madera_irqs,
-> +	.num_irqs = ARRAY_SIZE(madera_irqs),
-> +};
-> +
-> +static int madera_map_irq(struct madera *madera, int irq)
-> +{
-> +	struct madera_irq_priv *priv = dev_get_drvdata(madera->irq_dev);
-> +
-> +	if (irq < 0)
-> +		return irq;
-
-Why would irq be < 0 ?
-
-> +
-> +	if (!madera->irq_dev)
-> +		return -ENOENT;
-> +
-> +	return regmap_irq_get_virq(priv->irq_data, irq);
-> +}
-
-> +static int madera_irq_probe(struct platform_device *pdev)
-> +{
-> +	struct madera *madera = dev_get_drvdata(pdev->dev.parent);
-> +	struct madera_irq_priv *priv;
-> +	struct irq_data *irq_data;
-> +	unsigned int irq_flags = madera->pdata.irqchip.irq_flags;
-> +	int ret;
-> +
-> +	dev_dbg(&pdev->dev, "probe\n");
-> +
-> +	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	priv->dev = &pdev->dev;
-> +	priv->madera = madera;
-> +	priv->irq = madera->irq;
-> +
-> +	/* Read the flags from the interrupt controller if not specified */
-> +	if (!irq_flags) {
-> +		irq_data = irq_get_irq_data(priv->irq);
-> +		if (!irq_data) {
-> +			dev_err(priv->dev, "Invalid IRQ: %d\n", priv->irq);
-> +			return -EINVAL;
-> +		}
-> +
-> +		irq_flags = irqd_get_trigger_type(irq_data);
-> +		if (irq_flags == IRQ_TYPE_NONE)
-> +			irq_flags = IRQF_TRIGGER_LOW; /* Device default */
-
-Please do not use tail comments. They are horrible to parse and disturb the
-reading flow.
-
-> +	}
-> +
-> +	if (irq_flags & (IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING)) {
-> +		dev_err(priv->dev,
-> +			"Host interrupt not level-triggered\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (irq_flags & IRQF_TRIGGER_HIGH) {
-> +		ret = regmap_update_bits(madera->regmap, MADERA_IRQ1_CTRL,
-> +					 MADERA_IRQ_POL_MASK, 0);
-> +		if (ret) {
-> +			dev_err(priv->dev,
-> +				"Failed to set IRQ polarity: %d\n", ret);
-> +			return ret;
-> +		}
-> +	}
-
-What makes sure that the hardware is NOT set to TRIGGER_HIGH when you want
-to have TRIGGER_LOW?
-
-> +static struct platform_driver madera_irq_driver = {
-> +	.probe = madera_irq_probe,
-
-Tabular layout please
-
-> +	.remove = madera_irq_remove,
-> +	.driver = {
-> +		.name	= "madera-irq",
-> +		.pm = &madera_irq_pm_ops,
-> +	}
-> +};
-> +
-
-Pointless newline
-
-> +module_platform_driver(madera_irq_driver);
-> +
-
-> --- /dev/null
-> +++ b/include/linux/irqchip/irq-madera-pdata.h
-> @@ -0,0 +1,19 @@
-> +
-> +struct madera_irqchip_pdata {
-> +	/** Mode for primary IRQ (defaults to active low) */
-
-If you want to document your structs, then please use proper kerneldoc
-style.
-
-> +	unsigned int irq_flags;
-> +};
-
-Thanks,
-
-	tglx
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index 67968ef3bbda..013f056c6c12 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -214,6 +214,18 @@ config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
+ 	  platforms with DA7212/7213 audio codec.
+ 	  If unsure select "N".
+ 
++config SND_SOC_INTEL_BYT_CHT_ES8316_MACH
++	tristate "ASoC Audio driver for Intel Baytrail & Cherrytrail with ES8316 codec"
++	depends on X86_INTEL_LPSS && I2C && ACPI
++	select SND_SOC_ES8316
++	select SND_SST_ATOM_HIFI2_PLATFORM
++	select SND_SST_IPC_ACPI
++	select SND_SOC_INTEL_SST_MATCH if ACPI
++	help
++	  This adds support for ASoC machine driver for Intel(R) Baytrail &
++	  Cherrytrail platforms with ES8316 audio codec.
++	  If unsure select "N".
++
+ config SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail & Cherrytrail platform with no codec (MinnowBoard MAX, Up)"
+ 	depends on X86_INTEL_LPSS && I2C && ACPI
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index dd250b8b26f2..e0b7346cbb16 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -533,6 +533,8 @@ static struct sst_acpi_mach sst_acpi_chv[] = {
+ 						&chv_platform_data },
+ 	{"DLGS7213", "bytcht_da7213", "intel/fw_sst_22a8.bin", "bytcht_da7213", NULL,
+ 						&chv_platform_data },
++	{"ESSX8316", "bytcht_es8316", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
++						&chv_platform_data },
+ 	/* some CHT-T platforms rely on RT5640, use Baytrail machine driver */
+ 	{"10EC5640", "bytcr_rt5640", "intel/fw_sst_22a8.bin", "bytcr_rt5640", cht_quirk,
+ 						&chv_platform_data },
+diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
+index 56896e09445d..0cca726d249b 100644
+--- a/sound/soc/intel/boards/Makefile
++++ b/sound/soc/intel/boards/Makefile
+@@ -11,6 +11,7 @@ snd-soc-sst-cht-bsw-rt5672-objs := cht_bsw_rt5672.o
+ snd-soc-sst-cht-bsw-rt5645-objs := cht_bsw_rt5645.o
+ snd-soc-sst-cht-bsw-max98090_ti-objs := cht_bsw_max98090_ti.o
+ snd-soc-sst-byt-cht-da7213-objs := bytcht_da7213.o
++snd-soc-sst-byt-cht-es8316-objs := bytcht_es8316.o
+ snd-soc-sst-byt-cht-nocodec-objs := bytcht_nocodec.o
+ snd-soc-skl_rt286-objs := skl_rt286.o
+ snd-skl_nau88l25_max98357a-objs := skl_nau88l25_max98357a.o
+@@ -29,6 +30,7 @@ obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_RT5672_MACH) += snd-soc-sst-cht-bsw-rt5672.o
+ obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_RT5645_MACH) += snd-soc-sst-cht-bsw-rt5645.o
+ obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH) += snd-soc-sst-cht-bsw-max98090_ti.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_DA7213_MACH) += snd-soc-sst-byt-cht-da7213.o
++obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_ES8316_MACH) += snd-soc-sst-byt-cht-es8316.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH) += snd-soc-sst-byt-cht-nocodec.o
+ obj-$(CONFIG_SND_SOC_INTEL_SKL_RT286_MACH) += snd-soc-skl_rt286.o
+ obj-$(CONFIG_SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH) += snd-skl_nau88l25_max98357a.o
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+new file mode 100644
+index 000000000000..5e94e0befa34
+--- /dev/null
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -0,0 +1,338 @@
++/*
++ *  bytbyt_cht_es8316.c - ASoc Machine driver for Intel Baytrail/Cherrytrail
++ *                    platforms with Everest ES8316 SoC
++ *
++ *  Copyright (C) 2017 Endless Mobile, Inc.
++ *  Authors: David Yang <yangxiaohua@everest-semi.com>,
++ *           Daniel Drake <drake@endlessm.com>
++ *
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ */
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/device.h>
++#include <linux/slab.h>
++#include <asm/platform_sst_audio.h>
++#include <linux/clk.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include "../atom/sst-atom-controls.h"
++#include "../common/sst-acpi.h"
++#include "../common/sst-dsp.h"
++
++struct byt_cht_es8316_private {
++	struct clk *mclk;
++};
++
++#define CODEC_DAI1	"ES8316 HiFi"
++
++static inline struct snd_soc_dai *get_codec_dai(struct snd_soc_card *card)
++{
++	struct snd_soc_pcm_runtime *rtd;
++
++	list_for_each_entry(rtd, &card->rtd_list, list) {
++		if (!strncmp(rtd->codec_dai->name, CODEC_DAI1,
++			     strlen(CODEC_DAI1)))
++			return rtd->codec_dai;
++	}
++	return NULL;
++}
++
++static int platform_clock_control(struct snd_soc_dapm_widget *w,
++				  struct snd_kcontrol *k, int event)
++{
++	struct snd_soc_dapm_context *dapm = w->dapm;
++	struct snd_soc_card *card = dapm->card;
++	struct snd_soc_dai *codec_dai = get_codec_dai(card);
++	struct byt_cht_es8316_private *priv = snd_soc_card_get_drvdata(card);
++
++	if (!codec_dai) {
++		dev_err(card->dev,
++			"Codec dai not found; Unable to set platform clock\n");
++		return -EIO;
++	}
++
++	if (SND_SOC_DAPM_EVENT_ON(event)) {
++		int ret = clk_prepare_enable(priv->mclk);
++
++		if (ret < 0) {
++			dev_err(card->dev,
++				"could not configure MCLK state");
++			return ret;
++		}
++	} else {
++		clk_disable_unprepare(priv->mclk);
++	}
++
++	return 0;
++}
++
++static const struct snd_soc_dapm_widget byt_cht_es8316_widgets[] = {
++	SND_SOC_DAPM_HP("Headphone", NULL),
++	SND_SOC_DAPM_MIC("Microphone 1", NULL),
++	SND_SOC_DAPM_MIC("Microphone 2", NULL),
++	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
++			    platform_clock_control, SND_SOC_DAPM_PRE_PMU |
++			    SND_SOC_DAPM_POST_PMD),
++};
++
++static const struct snd_soc_dapm_route byt_cht_es8316_audio_map[] = {
++	{"MIC1", NULL, "Microphone 1"},
++	{"MIC2", NULL, "Microphone 2"},
++
++	{"Headphone", NULL, "HPOL"},
++	{"Headphone", NULL, "HPOR"},
++
++	{"Playback", NULL, "ssp2 Tx"},
++	{"ssp2 Tx", NULL, "codec_out0"},
++	{"ssp2 Tx", NULL, "codec_out1"},
++	{"codec_in0", NULL, "ssp2 Rx" },
++	{"codec_in1", NULL, "ssp2 Rx" },
++	{"ssp2 Rx", NULL, "Capture"},
++
++	{"Headphone", NULL, "Platform Clock"},
++	{"Microphone 1", NULL, "Platform Clock"},
++	{"Microphone 2", NULL, "Platform Clock"},
++};
++
++static const struct snd_kcontrol_new byt_cht_es8316_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Headphone"),
++	SOC_DAPM_PIN_SWITCH("Microphone 1"),
++	SOC_DAPM_PIN_SWITCH("Microphone 2"),
++};
++
++static int byt_cht_es8316_aif1_hw_params(struct snd_pcm_substream *substream,
++					 struct snd_pcm_hw_params *params)
++
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	int ret;
++
++	ret = snd_soc_dai_set_sysclk(codec_dai, 0, 19200000, SND_SOC_CLOCK_IN);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set codec clock %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int byt_cht_es8316_init(struct snd_soc_pcm_runtime *runtime)
++{
++	struct snd_soc_card *card = runtime->card;
++	struct byt_cht_es8316_private *priv = snd_soc_card_get_drvdata(card);
++	int ret;
++
++	card->dapm.idle_bias_off = true;
++
++	/*
++	 * The firmware might enable the clock at boot (this information
++	 * may or may not be reflected in the enable clock register).
++	 * To change the rate we must disable the clock first to cover these
++	 * cases. Due to common clock framework restrictions that do not allow
++	 * to disable a clock that has not been enabled, we need to enable
++	 * the clock first.
++	 */
++	ret = clk_prepare_enable(priv->mclk);
++	if (!ret)
++		clk_disable_unprepare(priv->mclk);
++
++	ret = clk_set_rate(priv->mclk, 19200000);
++	if (ret)
++		dev_err(card->dev, "unable to set MCLK rate\n");
++
++	return 0;
++}
++
++static const struct snd_soc_pcm_stream byt_cht_es8316_dai_params = {
++	.formats = SNDRV_PCM_FMTBIT_S24_LE,
++	.rate_min = 48000,
++	.rate_max = 48000,
++	.channels_min = 2,
++	.channels_max = 2,
++};
++
++static int byt_cht_es8316_codec_fixup(struct snd_soc_pcm_runtime *rtd,
++			    struct snd_pcm_hw_params *params)
++{
++	struct snd_interval *rate = hw_param_interval(params,
++			SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels = hw_param_interval(params,
++						SNDRV_PCM_HW_PARAM_CHANNELS);
++	int ret;
++
++	/* The DSP will covert the FE rate to 48k, stereo */
++	rate->min = rate->max = 48000;
++	channels->min = channels->max = 2;
++
++	/* set SSP2 to 24-bit */
++	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
++
++	/*
++	 * Default mode for SSP configuration is TDM 4 slot, override config
++	 * with explicit setting to I2S 2ch 24-bit. The word length is set with
++	 * dai_set_tdm_slot() since there is no other API exposed
++	 */
++	ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
++				SND_SOC_DAIFMT_I2S     |
++				SND_SOC_DAIFMT_NB_NF   |
++				SND_SOC_DAIFMT_CBS_CFS
++		);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
++		return ret;
++	}
++
++	ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2, 24);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set I2S config, err %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int byt_cht_es8316_aif1_startup(struct snd_pcm_substream *substream)
++{
++	return snd_pcm_hw_constraint_single(substream->runtime,
++			SNDRV_PCM_HW_PARAM_RATE, 48000);
++}
++
++static const struct snd_soc_ops byt_cht_es8316_aif1_ops = {
++	.startup = byt_cht_es8316_aif1_startup,
++};
++
++static const struct snd_soc_ops byt_cht_es8316_be_ssp2_ops = {
++	.hw_params = byt_cht_es8316_aif1_hw_params,
++};
++
++static struct snd_soc_dai_link byt_cht_es8316_dais[] = {
++	[MERR_DPCM_AUDIO] = {
++		.name = "Audio Port",
++		.stream_name = "Audio",
++		.cpu_dai_name = "media-cpu-dai",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.codec_name = "snd-soc-dummy",
++		.platform_name = "sst-mfld-platform",
++		.nonatomic = true,
++		.dynamic = 1,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		.ops = &byt_cht_es8316_aif1_ops,
++	},
++
++	[MERR_DPCM_DEEP_BUFFER] = {
++		.name = "Deep-Buffer Audio Port",
++		.stream_name = "Deep-Buffer Audio",
++		.cpu_dai_name = "deepbuffer-cpu-dai",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.codec_name = "snd-soc-dummy",
++		.platform_name = "sst-mfld-platform",
++		.nonatomic = true,
++		.dynamic = 1,
++		.dpcm_playback = 1,
++		.ops = &byt_cht_es8316_aif1_ops,
++	},
++
++	[MERR_DPCM_COMPR] = {
++		.name = "Compressed Port",
++		.stream_name = "Compress",
++		.cpu_dai_name = "compress-cpu-dai",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.codec_name = "snd-soc-dummy",
++		.platform_name = "sst-mfld-platform",
++	},
++
++		/* back ends */
++	{
++		.name = "SSP2-Codec",
++		.id = 1,
++		.cpu_dai_name = "ssp2-port",
++		.platform_name = "sst-mfld-platform",
++		.no_pcm = 1,
++		.codec_dai_name = "ES8316 HiFi",
++		.codec_name = "i2c-ESSX8316:00",
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
++						| SND_SOC_DAIFMT_CBS_CFS,
++		.be_hw_params_fixup = byt_cht_es8316_codec_fixup,
++		.nonatomic = true,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		.init = byt_cht_es8316_init,
++		.ops = &byt_cht_es8316_be_ssp2_ops,
++	},
++};
++
++
++/* SoC card */
++static struct snd_soc_card byt_cht_es8316_card = {
++	.name = "bytcht-es8316",
++	.owner = THIS_MODULE,
++	.dai_link = byt_cht_es8316_dais,
++	.num_links = ARRAY_SIZE(byt_cht_es8316_dais),
++	.dapm_widgets = byt_cht_es8316_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(byt_cht_es8316_widgets),
++	.dapm_routes = byt_cht_es8316_audio_map,
++	.num_dapm_routes = ARRAY_SIZE(byt_cht_es8316_audio_map),
++	.controls = byt_cht_es8316_controls,
++	.num_controls = ARRAY_SIZE(byt_cht_es8316_controls),
++	.fully_routed = true,
++};
++
++static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
++{
++	int ret = 0;
++	struct byt_cht_es8316_private *priv;
++
++	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_ATOMIC);
++	if (!priv)
++		return -ENOMEM;
++
++	/* register the soc card */
++	byt_cht_es8316_card.dev = &pdev->dev;
++	snd_soc_card_set_drvdata(&byt_cht_es8316_card, priv);
++
++	priv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
++	if (IS_ERR(priv->mclk)) {
++		ret = PTR_ERR(priv->mclk);
++		dev_err(&pdev->dev,
++			"Failed to get MCLK from pmc_plt_clk_3: %d\n",
++			ret);
++		return ret;
++	}
++
++	ret = devm_snd_soc_register_card(&pdev->dev, &byt_cht_es8316_card);
++	if (ret) {
++		dev_err(&pdev->dev, "snd_soc_register_card failed %d\n", ret);
++		return ret;
++	}
++	platform_set_drvdata(pdev, &byt_cht_es8316_card);
++	return ret;
++}
++
++static struct platform_driver snd_byt_cht_es8316_mc_driver = {
++	.driver = {
++		.name = "bytcht_es8316",
++	},
++	.probe = snd_byt_cht_es8316_mc_probe,
++};
++
++module_platform_driver(snd_byt_cht_es8316_mc_driver);
++MODULE_DESCRIPTION("ASoC Intel(R) Baytrail/Cherrytrail Machine driver");
++MODULE_AUTHOR("David Yang <yangxiaohua@everest-semi.com>");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:bytcht_es8316");
+-- 
+2.11.0
