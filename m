@@ -1,20 +1,21 @@
-From: Daniel Drake <drake@endlessm.com>
-Subject: Re: [PATCH 1/2] ASoC: add es8316 codec driver
-Date: Wed, 10 May 2017 13:18:20 -0600
-Message-ID: <CAD8Lp47DsghwLrdn3izM63BCqn56=esdNeKV6L4NU9tdRhNPQg@mail.gmail.com>
-References: <20170510181649.14580-1-drake@endlessm.com>
- <eb6e6ef4-6022-6d93-a743-051af4826147@linux.intel.com>
+From: Viktor Radnai <viktor.radnai@gmail.com>
+Subject: Re: Patch for Digidesign Mbox 2 (set sample rate)
+Date: Thu, 11 May 2017 00:25:05 +0100
+Message-ID: <CANx-tGjVQP1HxaiyxB5dwdJewPksN015oCgmq9dp+rj7kpuTOA@mail.gmail.com>
+References: <CANx-tGgQ59u==FL-yAvR6QRZWZp7LNgU4Qaf6EQ45Ae8t-=VWw@mail.gmail.com>
+ <s5h1ss6s0t9.wl-tiwai@suse.de>
+ <CANx-tGi4TaZUzgnuLN_CGe9SFAnfok=z1Pd1x-RYAePWzzX6mQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-oi0-f50.google.com (mail-oi0-f50.google.com
  [209.85.218.50])
- by alsa0.perex.cz (Postfix) with ESMTP id C3170266B21
- for <alsa-devel@alsa-project.org>; Wed, 10 May 2017 21:18:22 +0200 (CEST)
-Received: by mail-oi0-f50.google.com with SMTP id w10so6226533oif.0
- for <alsa-devel@alsa-project.org>; Wed, 10 May 2017 12:18:22 -0700 (PDT)
-In-Reply-To: <eb6e6ef4-6022-6d93-a743-051af4826147@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A8F6266B21
+ for <alsa-devel@alsa-project.org>; Thu, 11 May 2017 01:25:07 +0200 (CEST)
+Received: by mail-oi0-f50.google.com with SMTP id b204so12301304oii.1
+ for <alsa-devel@alsa-project.org>; Wed, 10 May 2017 16:25:07 -0700 (PDT)
+In-Reply-To: <CANx-tGi4TaZUzgnuLN_CGe9SFAnfok=z1Pd1x-RYAePWzzX6mQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,22 +25,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Linux Upstreaming Team <linux@endlessm.com>, Liam Girdwood <lgirdwood@gmail.com>, yangxiaohua <yangxiaohua@everest-semi.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Damien Zammit <damien@zamaudio.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 10, 2017 at 12:49 PM, Pierre-Louis Bossart
-<pierre-louis.bossart@linux.intel.com> wrote:
-> If the copyright is held by Everest Semiconductor and David Yang is also
-> from Everest Semiconductor, then a signoff from Everest looks very much
-> required?
+Hi again,
 
-The original patches from David do now have his sign-off:
-https://bugzilla.kernel.org/show_bug.cgi?id=189261#c57
+I have bought an Mbox 2 and tested playback at both 44.1 and 48kHz using
+Jackd, and 44.1kHz using PulseAudio. It appeared to work without problems
+(it played without any dropouts and at the correct speed / pitch). I
+haven't tested recording or done more rigorous testing on the Mbox yet as
+it only arrived today (I did test recording with the Mini though).
 
-But I have now rearranged things quite a bit. What is the norm here,
-can I just copy over the sign off from before, or do we need to
-request explicit permission again from David?
+Have you got a proper list of things to test before merging the patch or
+should I try to make it up myself?
 
-Thanks
-Daniel
+Cheers,
+Vik
+
+On 6 May 2017 at 09:03, Viktor Radnai <viktor.radnai@gmail.com> wrote:
+
+> Hi Takashi,
+>
+> Thanks, I have also reached out to Damien and he just got back to me.
+> Unfortunately he no longer has the device and is quite busy with other
+> things.
+>
+> I am going to buy an Mbox 2 and test this myself. You can expect results
+> within two weeks, hopefully sooner.
+>
+> In the meantime if anyone on the list has this device I would really
+> appreciate if you could test it.
+>
+> Cheers,
+> Vik
+>
+> On 3 May 2017 at 11:16, Takashi Iwai <tiwai@suse.de> wrote:
+>
+>> On Fri, 28 Apr 2017 22:36:09 +0200,
+>> Viktor Radnai wrote:
+>> >
+>> > Hi there,
+>> >
+>> > I have recently bought a Digidesign Mbox 2 Mini and found the lack of
+>> > support for 44100Hz sample rate in the driver limiting (the sample rate
+>> was
+>> > hard-set to 48000Hz by the original author even though the device
+>> supports
+>> > it, because he couldn't get the frame rate switching to work reliably).
+>> >
+>> > I had a go at hacking the driver and came up with the following patch
+>> which
+>> > appears to work on the MBox 2 Mini:
+>> > https://pastebin.com/kzzTDj9T
+>> >
+>> > I have built and tested this with Linux 4.8.15 without any realtime
+>> > patches. I am planning to pick up a "full size" Mbox 2 as well, in the
+>> > meantime if anyone on the list owns one I would appreciate if you could
+>> > test this and let me know the result. There is a possibility that it
+>> will
+>> > not work without the "magic" init sequence that I have removed because
+>> it
+>> > does not look like it's needed on the Mini. Although I would be a bit
+>> > surprised because the two devices are apparently identical to the point
+>> > that the Mini allows the use of it's physically nonexistent features.
+>> >
+>> > Once someone could confirm that this works, I would like to get it
+>> merged.
+>> > This is my first attempt at submitting a patch for any Linux device
+>> driver
+>> > so please let me know if I need to do anything else :)
+>>
+>> At least it'd be better to the original author in the loop.
+>> Damien, could you take a look if you still have the device?
+>>
+>>
+>> thanks,
+>>
+>> Takashi
+>>
+>
+>
+>
+> --
+> My other sig is hilarious
+>
+
+
+
+-- 
+My other sig is hilarious
