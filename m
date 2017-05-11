@@ -1,117 +1,84 @@
-From: Viktor Radnai <viktor.radnai@gmail.com>
-Subject: Re: Patch for Digidesign Mbox 2 (set sample rate)
-Date: Thu, 11 May 2017 00:25:05 +0100
-Message-ID: <CANx-tGjVQP1HxaiyxB5dwdJewPksN015oCgmq9dp+rj7kpuTOA@mail.gmail.com>
-References: <CANx-tGgQ59u==FL-yAvR6QRZWZp7LNgU4Qaf6EQ45Ae8t-=VWw@mail.gmail.com>
- <s5h1ss6s0t9.wl-tiwai@suse.de>
- <CANx-tGi4TaZUzgnuLN_CGe9SFAnfok=z1Pd1x-RYAePWzzX6mQ@mail.gmail.com>
+From: Julia Lawall <julia.lawall-L2FTfq7BK8M@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v2 3/3] ASoC: stm32: Add full duplex support
+ to i2s (fwd)
+Date: Thu, 11 May 2017 10:13:53 +0800 (SGT)
+Message-ID: <alpine.DEB.2.20.1705111012050.3585@hadrien>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f50.google.com (mail-oi0-f50.google.com
- [209.85.218.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 7A8F6266B21
- for <alsa-devel@alsa-project.org>; Thu, 11 May 2017 01:25:07 +0200 (CEST)
-Received: by mail-oi0-f50.google.com with SMTP id b204so12301304oii.1
- for <alsa-devel@alsa-project.org>; Wed, 10 May 2017 16:25:07 -0700 (PDT)
-In-Reply-To: <CANx-tGi4TaZUzgnuLN_CGe9SFAnfok=z1Pd1x-RYAePWzzX6mQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Damien Zammit <damien@zamaudio.com>
+Content-Type: text/plain; charset=US-ASCII
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alexandre.torgue-qxv4g6HH51o@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-F5mvAk5X5gdBDgjK7y7TUQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org, benjamin.gaignard-qxv4g6HH51o@public.gmane.org, kbuild-all-JC7UmRfGjtg@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi again,
+Please check whether the lock taken on line 585 should be freed on line
+598.  The report also mentions line 652, although that is not shown.
 
-I have bought an Mbox 2 and tested playback at both 44.1 and 48kHz using
-Jackd, and 44.1kHz using PulseAudio. It appeared to work without problems
-(it played without any dropouts and at the correct speed / pitch). I
-haven't tested recording or done more rigorous testing on the Mbox yet as
-it only arrived today (I did test recording with the Mini though).
+julia
 
-Have you got a proper list of things to test before merging the patch or
-should I try to make it up myself?
+---------- Forwarded message ----------
+Date: Thu, 11 May 2017 09:49:21 +0800
+From: kbuild test robot <fengguang.wu-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+To: kbuild-JC7UmRfGjtg@public.gmane.org
+Cc: Julia Lawall <julia.lawall-L2FTfq7BK8M@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH v2 3/3] ASoC: stm32: Add full duplex support to
+     i2s
 
-Cheers,
-Vik
+Hi olivier,
 
-On 6 May 2017 at 09:03, Viktor Radnai <viktor.radnai@gmail.com> wrote:
+[auto build test WARNING on asoc/for-next]
+[also build test WARNING on next-20170510]
+[cannot apply to v4.11]
+[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
 
-> Hi Takashi,
->
-> Thanks, I have also reached out to Damien and he just got back to me.
-> Unfortunately he no longer has the device and is quite busy with other
-> things.
->
-> I am going to buy an Mbox 2 and test this myself. You can expect results
-> within two weeks, hopefully sooner.
->
-> In the meantime if anyone on the list has this device I would really
-> appreciate if you could test it.
->
-> Cheers,
-> Vik
->
-> On 3 May 2017 at 11:16, Takashi Iwai <tiwai@suse.de> wrote:
->
->> On Fri, 28 Apr 2017 22:36:09 +0200,
->> Viktor Radnai wrote:
->> >
->> > Hi there,
->> >
->> > I have recently bought a Digidesign Mbox 2 Mini and found the lack of
->> > support for 44100Hz sample rate in the driver limiting (the sample rate
->> was
->> > hard-set to 48000Hz by the original author even though the device
->> supports
->> > it, because he couldn't get the frame rate switching to work reliably).
->> >
->> > I had a go at hacking the driver and came up with the following patch
->> which
->> > appears to work on the MBox 2 Mini:
->> > https://pastebin.com/kzzTDj9T
->> >
->> > I have built and tested this with Linux 4.8.15 without any realtime
->> > patches. I am planning to pick up a "full size" Mbox 2 as well, in the
->> > meantime if anyone on the list owns one I would appreciate if you could
->> > test this and let me know the result. There is a possibility that it
->> will
->> > not work without the "magic" init sequence that I have removed because
->> it
->> > does not look like it's needed on the Mini. Although I would be a bit
->> > surprised because the two devices are apparently identical to the point
->> > that the Mini allows the use of it's physically nonexistent features.
->> >
->> > Once someone could confirm that this works, I would like to get it
->> merged.
->> > This is my first attempt at submitting a patch for any Linux device
->> driver
->> > so please let me know if I need to do anything else :)
->>
->> At least it'd be better to the original author in the loop.
->> Damien, could you take a look if you still have the device?
->>
->>
->> thanks,
->>
->> Takashi
->>
->
->
->
-> --
-> My other sig is hilarious
->
+url:    https://github.com/0day-ci/linux/commits/olivier-moysan/Add-I2S-driver/20170511-075335
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+:::::: branch date: 2 hours ago
+:::::: commit date: 2 hours ago
 
+>> sound/soc/stm/stm32_i2s.c:598:3-9: preceding lock on line 585
+>> sound/soc/stm/stm32_i2s.c:598:3-9: preceding lock on line 585
+   sound/soc/stm/stm32_i2s.c:652:3-9: preceding lock on line 585
 
+git remote add linux-review https://github.com/0day-ci/linux
+git remote update linux-review
+git checkout 9f5663c4aa8961bf2a547683af787e606503376e
+vim +598 sound/soc/stm/stm32_i2s.c
 
--- 
-My other sig is hilarious
+1ebd36ae olivier moysan 2017-05-10  579  {
+1ebd36ae olivier moysan 2017-05-10  580  	struct stm32_i2s_data *i2s = snd_soc_dai_get_drvdata(cpu_dai);
+1ebd36ae olivier moysan 2017-05-10  581  	bool playback_flg = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
+9f5663c4 olivier moysan 2017-05-10  582  	u32 cfg1_mask, ier;
+1ebd36ae olivier moysan 2017-05-10  583  	int ret;
+1ebd36ae olivier moysan 2017-05-10  584
+9f5663c4 olivier moysan 2017-05-10 @585  	spin_lock(&i2s->lock_fd);
+9f5663c4 olivier moysan 2017-05-10  586
+1ebd36ae olivier moysan 2017-05-10  587  	switch (cmd) {
+1ebd36ae olivier moysan 2017-05-10  588  	case SNDRV_PCM_TRIGGER_START:
+1ebd36ae olivier moysan 2017-05-10  589  	case SNDRV_PCM_TRIGGER_RESUME:
+1ebd36ae olivier moysan 2017-05-10  590  	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+1ebd36ae olivier moysan 2017-05-10  591  		/* Enable i2s */
+1ebd36ae olivier moysan 2017-05-10  592  		dev_dbg(cpu_dai->dev, "start I2S\n");
+1ebd36ae olivier moysan 2017-05-10  593
+1ebd36ae olivier moysan 2017-05-10  594  		ret = regmap_update_bits(i2s->regmap, STM32_I2S_CR1_REG,
+1ebd36ae olivier moysan 2017-05-10  595  					 I2S_CR1_SPE, I2S_CR1_SPE);
+1ebd36ae olivier moysan 2017-05-10  596  		if (ret < 0) {
+1ebd36ae olivier moysan 2017-05-10  597  			dev_err(cpu_dai->dev, "Error %d enabling I2S\n", ret);
+1ebd36ae olivier moysan 2017-05-10 @598  			return ret;
+1ebd36ae olivier moysan 2017-05-10  599  		}
+1ebd36ae olivier moysan 2017-05-10  600
+1ebd36ae olivier moysan 2017-05-10  601  		ret = regmap_update_bits(i2s->regmap, STM32_I2S_CR1_REG,
+
+:::::: The code at line 598 was first introduced by commit
+:::::: 1ebd36ae636af5c130a9df4d9a921e4ed984a6e9 ASoC: stm32: Add I2S driver
+
+:::::: TO: olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
+:::::: CC: 0day robot <fengguang.wu-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>
+
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
