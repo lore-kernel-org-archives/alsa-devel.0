@@ -1,203 +1,75 @@
-From: olivier moysan <olivier.moysan@st.com>
-Subject: [PATCH v3 3/3] ASoC: stm32: Add full duplex support to
-	i2s
-Date: Thu, 11 May 2017 11:45:04 +0200
-Message-ID: <1494495904-18898-4-git-send-email-olivier.moysan@st.com>
-References: <1494495904-18898-1-git-send-email-olivier.moysan@st.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: future of sounds/oss
+Date: Thu, 11 May 2017 19:01:45 +0900
+Message-ID: <7f6490a7-b39f-1294-8c5f-14d6161d28c6@sakamocchi.jp>
+References: <20170511082133.GA20304@lst.de> <s5hh90rhjbc.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 8399F266F03
- for <alsa-devel@alsa-project.org>; Thu, 11 May 2017 11:45:48 +0200 (CEST)
-In-Reply-To: <1494495904-18898-1-git-send-email-olivier.moysan@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, robh@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com
-Cc: arnaud.pouliquen@st.com, benjamin.gaignard@st.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hh90rhjbc.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, Christoph Hellwig <hch@lst.de>
+Cc: linux-kernel@vger.kernel.org, Linus Torvalds <torvalds@linuxfoundation.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch allows to use i2s interface either as single
-audio path (rx or tx), or bidirectional audio path.
-This patch is added separately, as the driver does not
-follow recommended use of the interface, to support this
-configuration.
+Hi,
 
-Signed-off-by: olivier moysan <olivier.moysan@st.com>
----
- sound/soc/stm/stm32_i2s.c | 87 +++++++++++++++++++++++++----------------------
- 1 file changed, 46 insertions(+), 41 deletions(-)
+On May 11 2017 17:46, Takashi Iwai wrote:
+> On Thu, 11 May 2017 10:21:33 +0200,
+> Christoph Hellwig wrote:
+>>
+>> Ho Jaroslav, hi Takashi,
+>>
+>> do you know who still uses the sound/oss drivers and why?  I've
+>> recently been looking into getting rid of set_fs for using
+>> copy_{from,to}_user and friends on kernel pointers, and the sound
+>> code is a big abuser, both ALSA and the legacy OSS code.
+>
+> Yeah, I also started looking at it after reading the LWN article.
+> The removal of set_fs() in ALSA part was already finished, and I'm
+> currently brushing up the patches.  It'll be in 4.13 at latest.
 
-diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
-index 22152a1..8052629 100644
---- a/sound/soc/stm/stm32_i2s.c
-+++ b/sound/soc/stm/stm32_i2s.c
-@@ -489,7 +489,6 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
- 	struct stm32_i2s_data *i2s = snd_soc_dai_get_drvdata(cpu_dai);
- 	int format = params_width(params);
- 	u32 cfgr, cfgr_mask, cfg1, cfg1_mask;
--	bool playback_flg = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
- 	unsigned int fthlv;
- 	int ret;
- 
-@@ -515,19 +514,13 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
- 	}
- 
- 	if (STM32_I2S_IS_SLAVE(i2s)) {
--		if (playback_flg)
--			cfgr |= I2S_CGFR_I2SCFG_SET(I2S_I2SMOD_TX_SLAVE);
--		else
--			cfgr |= I2S_CGFR_I2SCFG_SET(I2S_I2SMOD_RX_SLAVE);
-+		cfgr |= I2S_CGFR_I2SCFG_SET(I2S_I2SMOD_FD_SLAVE);
- 
- 		/* As data length is either 16 or 32 bits, fixch always set */
- 		cfgr |= I2S_CGFR_FIXCH;
- 		cfgr_mask |= I2S_CGFR_FIXCH;
- 	} else {
--		if (playback_flg)
--			cfgr |= I2S_CGFR_I2SCFG_SET(I2S_I2SMOD_TX_MASTER);
--		else
--			cfgr |= I2S_CGFR_I2SCFG_SET(I2S_I2SMOD_RX_MASTER);
-+		cfgr |= I2S_CGFR_I2SCFG_SET(I2S_I2SMOD_FD_MASTER);
- 	}
- 	cfgr_mask |= I2S_CGFR_I2SCFG_MASK;
- 
-@@ -536,9 +529,7 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
- 	if (ret < 0)
- 		return ret;
- 
--	cfg1 = I2S_CFG1_RXDMAEN;
--	if (playback_flg)
--		cfg1 = I2S_CFG1_TXDMAEN;
-+	cfg1 = I2S_CFG1_RXDMAEN | I2S_CFG1_TXDMAEN;
- 	cfg1_mask = cfg1;
- 
- 	fthlv = STM32_I2S_FIFO_SIZE * I2S_FIFO_TH_ONE_QUARTER / 4;
-@@ -553,32 +544,15 @@ static int stm32_i2s_startup(struct snd_pcm_substream *substream,
- 			     struct snd_soc_dai *cpu_dai)
- {
- 	struct stm32_i2s_data *i2s = snd_soc_dai_get_drvdata(cpu_dai);
--	int ret, ier;
- 
- 	i2s->substream = substream;
- 
- 	spin_lock(&i2s->lock_fd);
--	if (i2s->refcount) {
--		dev_err(cpu_dai->dev, "%s stream already started\n",
--			(substream->stream == SNDRV_PCM_STREAM_PLAYBACK ?
--			"Capture" : "Playback"));
--		spin_unlock(&i2s->lock_fd);
--		return -EBUSY;
--	}
--	i2s->refcount = 1;
-+	i2s->refcount++;
- 	spin_unlock(&i2s->lock_fd);
- 
--	ret = regmap_update_bits(i2s->regmap, STM32_I2S_IFCR_REG,
--				 I2S_IFCR_MASK, I2S_IFCR_MASK);
--	if (ret < 0)
--		return ret;
--
--	/* Enable ITs */
--	ier = I2S_IER_OVRIE | I2S_IER_UDRIE;
--	if (STM32_I2S_IS_SLAVE(i2s))
--		ier |= I2S_IER_TIFREIE;
--
--	return regmap_update_bits(i2s->regmap, STM32_I2S_IER_REG, ier, ier);
-+	return regmap_update_bits(i2s->regmap, STM32_I2S_IFCR_REG,
-+				  I2S_IFCR_MASK, I2S_IFCR_MASK);
- }
- 
- static int stm32_i2s_hw_params(struct snd_pcm_substream *substream,
-@@ -605,7 +579,7 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- {
- 	struct stm32_i2s_data *i2s = snd_soc_dai_get_drvdata(cpu_dai);
- 	bool playback_flg = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
--	u32 cfg1_mask;
-+	u32 cfg1_mask, ier;
- 	int ret;
- 
- 	switch (cmd) {
-@@ -628,10 +602,48 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 			dev_err(cpu_dai->dev, "Error %d starting I2S\n", ret);
- 			return ret;
- 		}
-+
-+		regmap_update_bits(i2s->regmap, STM32_I2S_IFCR_REG,
-+				   I2S_IFCR_MASK, I2S_IFCR_MASK);
-+
-+		if (playback_flg) {
-+			ier = I2S_IER_UDRIE;
-+		} else {
-+			ier = I2S_IER_OVRIE;
-+
-+			spin_lock(&i2s->lock_fd);
-+			if (i2s->refcount == 1)
-+				/* dummy write to trigger capture */
-+				regmap_write(i2s->regmap,
-+					     STM32_I2S_TXDR_REG, 0);
-+			spin_unlock(&i2s->lock_fd);
-+		}
-+
-+		if (STM32_I2S_IS_SLAVE(i2s))
-+			ier |= I2S_IER_TIFREIE;
-+
-+		regmap_update_bits(i2s->regmap, STM32_I2S_IER_REG, ier, ier);
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
- 	case SNDRV_PCM_TRIGGER_SUSPEND:
- 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		if (playback_flg)
-+			regmap_update_bits(i2s->regmap, STM32_I2S_IER_REG,
-+					   I2S_IER_UDRIE,
-+					   (unsigned int)~I2S_IER_UDRIE);
-+		else
-+			regmap_update_bits(i2s->regmap, STM32_I2S_IER_REG,
-+					   I2S_IER_OVRIE,
-+					   (unsigned int)~I2S_IER_OVRIE);
-+
-+		spin_lock(&i2s->lock_fd);
-+		i2s->refcount--;
-+		if (i2s->refcount) {
-+			spin_unlock(&i2s->lock_fd);
-+			break;
-+		}
-+		spin_unlock(&i2s->lock_fd);
-+
- 		dev_dbg(cpu_dai->dev, "stop I2S\n");
- 
- 		ret = regmap_update_bits(i2s->regmap, STM32_I2S_CR1_REG,
-@@ -641,10 +653,7 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 			return ret;
- 		}
- 
--		cfg1_mask = I2S_CFG1_RXDMAEN;
--		if (playback_flg)
--			cfg1_mask = I2S_CFG1_TXDMAEN;
--
-+		cfg1_mask = I2S_CFG1_RXDMAEN | I2S_CFG1_TXDMAEN;
- 		regmap_update_bits(i2s->regmap, STM32_I2S_CFG1_REG,
- 				   cfg1_mask, 0);
- 		break;
-@@ -662,10 +671,6 @@ static void stm32_i2s_shutdown(struct snd_pcm_substream *substream,
- 
- 	i2s->substream = NULL;
- 
--	spin_lock(&i2s->lock_fd);
--	i2s->refcount = 0;
--	spin_unlock(&i2s->lock_fd);
--
- 	regmap_update_bits(i2s->regmap, STM32_I2S_CGFR_REG,
- 			   I2S_CGFR_MCKOE, (unsigned int)~I2S_CGFR_MCKOE);
- }
--- 
-1.9.1
+Eventually, I'm also working for it[1]. I'm willing to review your 
+changes, so please add me into CC list when you post patches.
+
+Instead, In this development cycle, I'll post my patches for tracepoints 
+for PCM parameter handling and misc refactoring[2]. (I've already done 
+most of the work.)
+
+> But the set_fs() usage in OSS code is hard to get rid of, due to the
+> in-kernel ioctl calls, and I really don't want to touch such dusty
+> codes, either.  So I wanted to post the very same question, but you
+> were faster :)
+>
+>> But looking at the OSS code it's pretty grotty, and also appears
+>> to be pretty much unmaintained except for global cleanups.  Is there
+>> any chance we could look into getting rid of it over the next few
+>> merge windows or are there people that rely on it?
+>
+> I don't think there are any active users.  The only slight concern is
+> that there are a few ancient devices that are supported only by some
+> OSS drivers.  But these are over decades, and very unlikely alive.
+>
+> That said, I'd love to drop that legacy stuff; or maybe as a
+> soft-landing, begin with disabling the build of sound/oss in Kconfig.
+>
+> The latter can be done even for 4.12, if Linus doesn't mind.
+
+I think we don't need to care of drivers implemented with Open Sound 
+System. In my understanding, stuffs in 'sound/core/oss/*' give Open 
+Sound System compatibility layer for Open Sound System applications. In 
+short, it gives a way for the applications to use drivers in ALSA by 
+Open Sound System interfaces. Even if this layer is missing, the 
+applications are still available with Open Sound System Proxy Daemon[3] 
+with FUSE/CURE assistances. I believe we can get rid of them without any 
+actual disadvantages.
+
+[1] https://github.com/takaswie/sound/tree/topic/segment-in-pcm
+[2] https://github.com/takaswie/sound/tree/topic/trace+refactor
+[3] https://github.com/libfuse/osspd
+
+
+Regards
+
+Takashi Sakamoto
