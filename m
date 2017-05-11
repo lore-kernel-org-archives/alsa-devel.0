@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH RFC 10/26] ALSA: pcm: Introduce copy_silence
-	PCM ops
-Date: Thu, 11 May 2017 23:09:09 +0200
-Message-ID: <20170511210925.18208-11-tiwai@suse.de>
+Subject: [PATCH RFC 11/26] ALSA: Update document about
+	copy_silence PCM ops
+Date: Thu, 11 May 2017 23:09:10 +0200
+Message-ID: <20170511210925.18208-12-tiwai@suse.de>
 References: <20170511210925.18208-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id EB29C266FED
+ by alsa0.perex.cz (Postfix) with ESMTP id E9F68266FEA
  for <alsa-devel@alsa-project.org>; Thu, 11 May 2017 23:09:31 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 8CDA8AEC8
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 864D7AEC5
  for <alsa-devel@alsa-project.org>; Thu, 11 May 2017 21:09:30 +0000 (UTC)
 In-Reply-To: <20170511210925.18208-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,209 +27,180 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-For supporting the explicit in-kernel copy, and also for reducing the
-redundant codes for both copy and silence callbacks, a new ops,
-copy_silence is introduced in this patch.  This is supposed to serve
-for both copy and silence.  The silence operation is distinguished by
-NULL buffer passed (required only in playback direction).
-
-Also, the callback receives a new flag, in_kernel, which indicates
-that the callback gets called for copying the data from/to the kernel
-buffer instead of the user-space buffer.  The in_kernel flag will be
-used mainly in PCM OSS code for the on-the-fly conversion.
-Currently, only in_kernel=false is passed.
-
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/pcm.h  |  3 +++
- sound/core/pcm_lib.c | 74 +++++++++++++++++++++++++++++++++++++++++-----------
- sound/soc/soc-pcm.c  |  1 +
- 3 files changed, 63 insertions(+), 15 deletions(-)
+ .../sound/kernel-api/writing-an-alsa-driver.rst    | 110 ++++++++++++---------
+ 1 file changed, 63 insertions(+), 47 deletions(-)
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 361749e60799..065ea81904b0 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -83,6 +83,9 @@ struct snd_pcm_ops {
- 		    void __user *buf, snd_pcm_uframes_t count);
- 	int (*silence)(struct snd_pcm_substream *substream, int channel, 
- 		       snd_pcm_uframes_t pos, snd_pcm_uframes_t count);
-+	int (*copy_silence)(struct snd_pcm_substream *substream, int channel,
-+			    snd_pcm_uframes_t pos, void __user *buf,
-+			    snd_pcm_uframes_t count, bool in_kernel);
- 	struct page *(*page)(struct snd_pcm_substream *substream,
- 			     unsigned long offset);
- 	int (*mmap)(struct snd_pcm_substream *substream, struct vm_area_struct *vma);
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 5088d4b8db22..ed2002bfea6a 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -55,6 +55,8 @@ void snd_pcm_playback_silence(struct snd_pcm_substream *substream, snd_pcm_ufram
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	snd_pcm_uframes_t frames, ofs, transfer;
-+	char *hwbuf;
-+	int err;
+diff --git a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+index 95c5443eff38..ebaf8b1e0079 100644
+--- a/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
++++ b/Documentation/sound/kernel-api/writing-an-alsa-driver.rst
+@@ -2080,18 +2080,18 @@ sleeping poll threads, etc.
  
- 	if (runtime->silence_size < runtime->boundary) {
- 		snd_pcm_sframes_t noise_dist, n;
-@@ -109,27 +111,35 @@ void snd_pcm_playback_silence(struct snd_pcm_substream *substream, snd_pcm_ufram
- 		transfer = ofs + frames > runtime->buffer_size ? runtime->buffer_size - ofs : frames;
- 		if (runtime->access == SNDRV_PCM_ACCESS_RW_INTERLEAVED ||
- 		    runtime->access == SNDRV_PCM_ACCESS_MMAP_INTERLEAVED) {
--			if (substream->ops->silence) {
--				int err;
-+			if (substream->ops->copy_silence) {
-+				err = substream->ops->copy_silence(substream,
-+					-1, ofs, NULL, transfer, false);
-+				snd_BUG_ON(err < 0);
-+			} else if (substream->ops->silence) {
- 				err = substream->ops->silence(substream, -1, ofs, transfer);
- 				snd_BUG_ON(err < 0);
- 			} else {
--				char *hwbuf = runtime->dma_area + frames_to_bytes(runtime, ofs);
-+				hwbuf = runtime->dma_area + frames_to_bytes(runtime, ofs);
- 				snd_pcm_format_set_silence(runtime->format, hwbuf, transfer * runtime->channels);
- 			}
- 		} else {
- 			unsigned int c;
- 			unsigned int channels = runtime->channels;
--			if (substream->ops->silence) {
-+			if (substream->ops->copy_silence) {
-+				for (c = 0; c < channels; ++c) {
-+					err = substream->ops->copy_silence(substream,
-+						c, ofs, NULL, transfer, false);
-+					snd_BUG_ON(err < 0);
-+				}
-+			} else if (substream->ops->silence) {
- 				for (c = 0; c < channels; ++c) {
--					int err;
- 					err = substream->ops->silence(substream, c, ofs, transfer);
- 					snd_BUG_ON(err < 0);
- 				}
- 			} else {
- 				size_t dma_csize = runtime->dma_bytes / channels;
- 				for (c = 0; c < channels; ++c) {
--					char *hwbuf = runtime->dma_area + (c * dma_csize) + samples_to_bytes(runtime, ofs);
-+					hwbuf = runtime->dma_area + (c * dma_csize) + samples_to_bytes(runtime, ofs);
- 					snd_pcm_format_set_silence(runtime->format, hwbuf, transfer);
- 				}
- 			}
-@@ -1993,7 +2003,12 @@ static int snd_pcm_lib_write_transfer(struct snd_pcm_substream *substream,
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	int err;
- 	char __user *buf = (char __user *) data + frames_to_bytes(runtime, off);
--	if (substream->ops->copy) {
-+	if (substream->ops->copy_silence) {
-+		err = substream->ops->copy_silence(substream, -1, hwoff, buf,
-+						   frames, false);
-+		if (err < 0)
-+			return err;
-+	} else if (substream->ops->copy) {
- 		if ((err = substream->ops->copy(substream, -1, hwoff, buf, frames)) < 0)
- 			return err;
- 	} else {
-@@ -2117,7 +2132,8 @@ static int pcm_sanity_check(struct snd_pcm_substream *substream)
- 	if (PCM_RUNTIME_CHECK(substream))
- 		return -ENXIO;
- 	runtime = substream->runtime;
--	if (snd_BUG_ON(!substream->ops->copy && !runtime->dma_area))
-+	if (snd_BUG_ON(!substream->ops->copy_silence && !substream->ops->copy
-+		       && !runtime->dma_area))
- 		return -EINVAL;
- 	if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
- 		return -EBADFD;
-@@ -2154,8 +2170,21 @@ static int snd_pcm_lib_writev_transfer(struct snd_pcm_substream *substream,
- 	int err;
- 	void __user **bufs = (void __user **)data;
- 	int channels = runtime->channels;
-+	char __user *buf;
- 	int c;
--	if (substream->ops->copy) {
-+
-+	if (substream->ops->copy_silence) {
-+		for (c = 0; c < channels; ++c, ++bufs) {
-+			if (!*bufs)
-+				buf = NULL;
-+			else
-+				buf = *bufs + samples_to_bytes(runtime, off);
-+			err = substream->ops->copy_silence(substream, c, hwoff,
-+							   buf, frames, false);
-+			if (err < 0)
-+				return err;
-+		}
-+	} else if (substream->ops->copy) {
- 		if (snd_BUG_ON(!substream->ops->silence))
- 			return -EINVAL;
- 		for (c = 0; c < channels; ++c, ++bufs) {
-@@ -2163,7 +2192,7 @@ static int snd_pcm_lib_writev_transfer(struct snd_pcm_substream *substream,
- 				if ((err = substream->ops->silence(substream, c, hwoff, frames)) < 0)
- 					return err;
- 			} else {
--				char __user *buf = *bufs + samples_to_bytes(runtime, off);
-+				buf = *bufs + samples_to_bytes(runtime, off);
- 				if ((err = substream->ops->copy(substream, c, hwoff, buf, frames)) < 0)
- 					return err;
- 			}
-@@ -2215,7 +2244,12 @@ static int snd_pcm_lib_read_transfer(struct snd_pcm_substream *substream,
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	int err;
- 	char __user *buf = (char __user *) data + frames_to_bytes(runtime, off);
--	if (substream->ops->copy) {
-+	if (substream->ops->copy_silence) {
-+		err = substream->ops->copy_silence(substream, -1, hwoff, buf,
-+						   frames, false);
-+		if (err < 0)
-+			return err;
-+	} else if (substream->ops->copy) {
- 		if ((err = substream->ops->copy(substream, -1, hwoff, buf, frames)) < 0)
- 			return err;
- 	} else {
-@@ -2363,10 +2397,22 @@ static int snd_pcm_lib_readv_transfer(struct snd_pcm_substream *substream,
- 	int err;
- 	void __user **bufs = (void __user **)data;
- 	int channels = runtime->channels;
-+	char __user *buf;
-+	char *hwbuf;
- 	int c;
--	if (substream->ops->copy) {
-+
-+	if (substream->ops->copy_silence) {
-+		for (c = 0; c < channels; ++c, ++bufs) {
-+			if (!*bufs)
-+				continue;
-+			buf = *bufs + samples_to_bytes(runtime, off);
-+			err = substream->ops->copy_silence(substream, c, hwoff,
-+							   buf, frames, false);
-+			if (err < 0)
-+				return err;
-+		}
-+	} else if (substream->ops->copy) {
- 		for (c = 0; c < channels; ++c, ++bufs) {
--			char __user *buf;
- 			if (*bufs == NULL)
- 				continue;
- 			buf = *bufs + samples_to_bytes(runtime, off);
-@@ -2376,8 +2422,6 @@ static int snd_pcm_lib_readv_transfer(struct snd_pcm_substream *substream,
- 	} else {
- 		snd_pcm_uframes_t dma_csize = runtime->dma_bytes / channels;
- 		for (c = 0; c < channels; ++c, ++bufs) {
--			char *hwbuf;
--			char __user *buf;
- 			if (*bufs == NULL)
- 				continue;
+ This callback is also atomic as default.
  
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index efc5831f205d..3cfb9aa1203b 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2743,6 +2743,7 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+-copy and silence callbacks
+-~~~~~~~~~~~~~~~~~~~~~~~~~~
++copy_silence callback
++~~~~~~~~~~~~~~~~~~~~~
  
- 	if (platform->driver->ops) {
- 		rtd->ops.ack		= platform->driver->ops->ack;
-+		rtd->ops.copy_silence	= platform->driver->ops->copy_silence;
- 		rtd->ops.copy		= platform->driver->ops->copy;
- 		rtd->ops.silence	= platform->driver->ops->silence;
- 		rtd->ops.page		= platform->driver->ops->page;
+-These callbacks are not mandatory, and can be omitted in most cases.
+-These callbacks are used when the hardware buffer cannot be in the
++This callback is not mandatory, and can be omitted in most cases.
++This callback is used when the hardware buffer cannot be in the
+ normal memory space. Some chips have their own buffer on the hardware
+ which is not mappable. In such a case, you have to transfer the data
+ manually from the memory buffer to the hardware buffer. Or, if the
+ buffer is non-contiguous on both physical and virtual memory spaces,
+ these callbacks must be defined, too.
+ 
+-If these two callbacks are defined, copy and set-silence operations
++If this callback is defined, copy and set-silence operations
+ are done by them. The detailed will be described in the later section
+ `Buffer and Memory Management`_.
+ 
+@@ -3545,30 +3545,34 @@ Another case is when the chip uses a PCI memory-map region for the
+ buffer instead of the host memory. In this case, mmap is available only
+ on certain architectures like the Intel one. In non-mmap mode, the data
+ cannot be transferred as in the normal way. Thus you need to define the
+-``copy`` and ``silence`` callbacks as well, as in the cases above. The
++``copy_silence`` callback as well, as in the cases above. The
+ examples are found in ``rme32.c`` and ``rme96.c``.
+ 
+-The implementation of the ``copy`` and ``silence`` callbacks depends
++The implementation of the ``copy_silence`` callback depends
+ upon whether the hardware supports interleaved or non-interleaved
+-samples. The ``copy`` callback is defined like below, a bit
++samples. The ``copy_silence`` callback is defined like below, a bit
+ differently depending whether the direction is playback or capture:
+ 
+ ::
+ 
+   static int playback_copy(struct snd_pcm_substream *substream, int channel,
+-               snd_pcm_uframes_t pos, void *src, snd_pcm_uframes_t count);
++               snd_pcm_uframes_t pos, void __user *src,
++	       snd_pcm_uframes_t count, bool in_kernel);
+   static int capture_copy(struct snd_pcm_substream *substream, int channel,
+-               snd_pcm_uframes_t pos, void *dst, snd_pcm_uframes_t count);
++               snd_pcm_uframes_t pos, void __user *dst,
++	       snd_pcm_uframes_t count, bool in_kernel);
+ 
+ In the case of interleaved samples, the second argument (``channel``) is
+-not used. The third argument (``pos``) points the current position
+-offset in frames.
++not used, and -1 is passed. The third argument (``pos``) points the
++current position offset in frames.
+ 
+ The meaning of the fourth argument is different between playback and
+ capture. For playback, it holds the source data pointer, and for
+ capture, it's the destination data pointer.
+ 
+-The last argument is the number of frames to be copied.
++The fifth argument is the number of frames to be copied.
++And the last argument indicates whether the passed buffer pointer is in
++user-space or in kernel-space.  The copy operation depends on this.
+ 
+ What you have to do in this callback is again different between playback
+ and capture directions. In the playback case, you copy the given amount
+@@ -3578,52 +3582,64 @@ way, the copy would be like:
+ 
+ ::
+ 
+-  my_memcpy(my_buffer + frames_to_bytes(runtime, pos), src,
+-            frames_to_bytes(runtime, count));
+-
+-For the capture direction, you copy the given amount of data (``count``)
+-at the specified offset (``pos``) on the hardware buffer to the
+-specified pointer (``dst``).
+-
+-::
++  if (!src)
++          my_memset(my_buffer + frames_to_bytes(runtime, pos), 0,
++                    frames_to_bytes(runtime, count));
++  else if (in_kernel)
++          memcpy_toio(my_buffer + frames_to_bytes(runtime, pos),
++                      (void *)src, frames_to_bytes(runtime, count));
++  else if (copy_from_user_toio(my_buffer + frames_to_bytes(runtime, pos),
++                               src, frames_to_bytes(runtime, count)))
++          return -EFAULT;
++  return 0;
+ 
+-  my_memcpy(dst, my_buffer + frames_to_bytes(runtime, pos),
+-            frames_to_bytes(runtime, count));
++Here we prepared three different memory operations operations.
+ 
+-Note that both the position and the amount of data are given in frames.
++The first one, with the NULL ``src`` pointer, is for silencing the
++buffer. In this case, we clear the samples for the given position and
++portion.
+ 
+-In the case of non-interleaved samples, the implementation will be a bit
+-more complicated.
++The second one, with ``in_kernel`` check, is for the in-kernel memory
++copying.  In this case, the given buffer pointer (``src``) is a kernel
++pointer despite of being declared with ``__user`` prefix.  When this
++flag is set, you have to copy the memory from the kernel space.
++Typically, a simple :c:func:`memcpy()` or :c:func`memcpy_toio()` can
++be used.  Note the explicit cast at the function call there to drop
++``__user`` prefix.
+ 
+-You need to check the channel argument, and if it's -1, copy the whole
+-channels. Otherwise, you have to copy only the specified channel. Please
+-check ``isa/gus/gus_pcm.c`` as an example.
++The last one is the usual operation, to copy from the user-space
++buffer to the hardware buffer.
+ 
+-The ``silence`` callback is also implemented in a similar way
++For the capture direction, you copy the given amount of data (``count``)
++at the specified offset (``pos``) on the hardware buffer to the
++specified pointer (``dst``).
+ 
+ ::
+ 
+-  static int silence(struct snd_pcm_substream *substream, int channel,
+-                     snd_pcm_uframes_t pos, snd_pcm_uframes_t count);
+-
+-The meanings of arguments are the same as in the ``copy`` callback,
+-although there is no ``src/dst`` argument. In the case of interleaved
+-samples, the channel argument has no meaning, as well as on ``copy``
+-callback.
++  if (in_kernel)
++          memcpy_fromio((void *)dst,
++	          my_buffer + frames_to_bytes(runtime, pos),
++                  frames_to_bytes(runtime, count));
++  else if (copy_to_user_fromio(dst,
++                  my_buffer + frames_to_bytes(runtime, pos),
++                  frames_to_bytes(runtime, count)))
++          return -EFAULT;
++  return 0;
+ 
+-The role of ``silence`` callback is to set the given amount
+-(``count``) of silence data at the specified offset (``pos``) on the
+-hardware buffer. Suppose that the data format is signed (that is, the
+-silent-data is 0), and the implementation using a memset-like function
+-would be like: 
++A clear difference from the playback is that there is no silencing
++mode.  For the capture direction, ``dst`` is always non-NULL.
+ 
+-::
++Other than that, the two memory operations are similar, but just in
++different direction.  And, note that both the position and the amount
++of data are given in frames.
+ 
+-  my_memcpy(my_buffer + frames_to_bytes(runtime, pos), 0,
+-            frames_to_bytes(runtime, count));
++In the case of non-interleaved samples, the implementation will be a bit
++more complicated.  First off, the operation depends on ``channel``
++argument.  When -1 is passed there, copy the whole channels.
++Otherwise, copy only the specified channel.
+ 
+-In the case of non-interleaved samples, again, the implementation
+-becomes a bit more complicated. See, for example, ``isa/gus/gus_pcm.c``.
++As an implementation example, please take a look at the code in
++``sound/isa/gus/gus_pcm.c``.
+ 
+ Non-Contiguous Buffers
+ ----------------------
 -- 
 2.12.2
