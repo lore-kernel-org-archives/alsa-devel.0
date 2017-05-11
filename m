@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH RFC 20/26] ALSA: gus: Convert to copy_silence
-	ops
-Date: Thu, 11 May 2017 23:09:19 +0200
-Message-ID: <20170511210925.18208-21-tiwai@suse.de>
+Subject: [PATCH RFC 24/26] [media] solo6x10: Convert to
+	copy_silence ops
+Date: Thu, 11 May 2017 23:09:23 +0200
+Message-ID: <20170511210925.18208-25-tiwai@suse.de>
 References: <20170511210925.18208-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id D36A2266FFD
- for <alsa-devel@alsa-project.org>; Thu, 11 May 2017 23:09:32 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id A6062AEDD
+ by alsa0.perex.cz (Postfix) with ESMTP id 02578266FFE
+ for <alsa-devel@alsa-project.org>; Thu, 11 May 2017 23:09:33 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id BD655AEEC
  for <alsa-devel@alsa-project.org>; Thu, 11 May 2017 21:09:30 +0000 (UTC)
 In-Reply-To: <20170511210925.18208-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -28,87 +28,49 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Replace the copy and the silence ops with the new merged ops.
-The conversion is straightforward with standard helper functions.
+It's a capture stream, thus no silence is needed.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/isa/gus/gus_pcm.c | 43 +++++++++----------------------------------
- 1 file changed, 9 insertions(+), 34 deletions(-)
+ drivers/media/pci/solo6x10/solo6x10-g723.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/sound/isa/gus/gus_pcm.c b/sound/isa/gus/gus_pcm.c
-index 06505999155f..c58d26295543 100644
---- a/sound/isa/gus/gus_pcm.c
-+++ b/sound/isa/gus/gus_pcm.c
-@@ -359,7 +359,8 @@ static int snd_gf1_pcm_playback_copy(struct snd_pcm_substream *substream,
- 				     int voice,
- 				     snd_pcm_uframes_t pos,
- 				     void __user *src,
--				     snd_pcm_uframes_t count)
-+				     snd_pcm_uframes_t count,
-+				     bool in_kernel)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct gus_pcm_private *pcmp = runtime->private_data;
-@@ -371,7 +372,12 @@ static int snd_gf1_pcm_playback_copy(struct snd_pcm_substream *substream,
- 		return -EIO;
- 	if (snd_BUG_ON(bpos + len > pcmp->dma_size))
- 		return -EIO;
--	if (copy_from_user(runtime->dma_area + bpos, src, len))
-+	if (!src)
-+		snd_pcm_format_set_silence(runtime->format,
-+					   runtime->dma_area + bpos, count);
-+	else if (in_kernel)
-+		memcpy(runtime->dma_area + bpos, (void *)src, len);
-+	else if (copy_from_user(runtime->dma_area + bpos, src, len))
- 		return -EFAULT;
- 	if (snd_gf1_pcm_use_dma && len > 32) {
- 		return snd_gf1_pcm_block_change(substream, bpos, pcmp->memory + bpos, len);
-@@ -387,36 +393,6 @@ static int snd_gf1_pcm_playback_copy(struct snd_pcm_substream *substream,
- 	return 0;
- }
+diff --git a/drivers/media/pci/solo6x10/solo6x10-g723.c b/drivers/media/pci/solo6x10/solo6x10-g723.c
+index 36e93540bb49..9bc4142481d8 100644
+--- a/drivers/media/pci/solo6x10/solo6x10-g723.c
++++ b/drivers/media/pci/solo6x10/solo6x10-g723.c
+@@ -225,7 +225,7 @@ static snd_pcm_uframes_t snd_solo_pcm_pointer(struct snd_pcm_substream *ss)
  
--static int snd_gf1_pcm_playback_silence(struct snd_pcm_substream *substream,
--					int voice,
--					snd_pcm_uframes_t pos,
--					snd_pcm_uframes_t count)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct gus_pcm_private *pcmp = runtime->private_data;
--	unsigned int bpos, len;
--	
--	bpos = samples_to_bytes(runtime, pos) + (voice * (pcmp->dma_size / 2));
--	len = samples_to_bytes(runtime, count);
--	if (snd_BUG_ON(bpos > pcmp->dma_size))
--		return -EIO;
--	if (snd_BUG_ON(bpos + len > pcmp->dma_size))
--		return -EIO;
--	snd_pcm_format_set_silence(runtime->format, runtime->dma_area + bpos, count);
--	if (snd_gf1_pcm_use_dma && len > 32) {
--		return snd_gf1_pcm_block_change(substream, bpos, pcmp->memory + bpos, len);
--	} else {
--		struct snd_gus_card *gus = pcmp->gus;
--		int err, w16, invert;
--
--		w16 = (snd_pcm_format_width(runtime->format) == 16);
--		invert = snd_pcm_format_unsigned(runtime->format);
--		if ((err = snd_gf1_pcm_poke_block(gus, runtime->dma_area + bpos, pcmp->memory + bpos, len, w16, invert)) < 0)
--			return err;
--	}
--	return 0;
--}
--
- static int snd_gf1_pcm_playback_hw_params(struct snd_pcm_substream *substream,
- 					  struct snd_pcm_hw_params *hw_params)
+ static int snd_solo_pcm_copy(struct snd_pcm_substream *ss, int channel,
+ 			     snd_pcm_uframes_t pos, void __user *dst,
+-			     snd_pcm_uframes_t count)
++			     snd_pcm_uframes_t count, bool in_kernel)
  {
-@@ -836,8 +812,7 @@ static struct snd_pcm_ops snd_gf1_pcm_playback_ops = {
- 	.prepare =	snd_gf1_pcm_playback_prepare,
- 	.trigger =	snd_gf1_pcm_playback_trigger,
- 	.pointer =	snd_gf1_pcm_playback_pointer,
--	.copy =		snd_gf1_pcm_playback_copy,
--	.silence =	snd_gf1_pcm_playback_silence,
-+	.copy_silence =	snd_gf1_pcm_playback_copy,
+ 	struct solo_snd_pcm *solo_pcm = snd_pcm_substream_chip(ss);
+ 	struct solo_dev *solo_dev = solo_pcm->solo_dev;
+@@ -242,10 +242,11 @@ static int snd_solo_pcm_copy(struct snd_pcm_substream *ss, int channel,
+ 		if (err)
+ 			return err;
+ 
+-		err = copy_to_user(dst + (i * G723_PERIOD_BYTES),
++		if (in_kernel)
++			memcpy((void *)dst + (i * G723_PERIOD_BYTES),
++			       solo_pcm->g723_buf, G723_PERIOD_BYTES);
++		else if (copy_to_user(dst + (i * G723_PERIOD_BYTES),
+ 				   solo_pcm->g723_buf, G723_PERIOD_BYTES);
+-
+-		if (err)
+ 			return -EFAULT;
+ 	}
+ 
+@@ -261,7 +262,7 @@ static const struct snd_pcm_ops snd_solo_pcm_ops = {
+ 	.prepare = snd_solo_pcm_prepare,
+ 	.trigger = snd_solo_pcm_trigger,
+ 	.pointer = snd_solo_pcm_pointer,
+-	.copy = snd_solo_pcm_copy,
++	.copy_silence = snd_solo_pcm_copy,
  };
  
- static struct snd_pcm_ops snd_gf1_pcm_capture_ops = {
+ static int snd_solo_capture_volume_info(struct snd_kcontrol *kcontrol,
 -- 
 2.12.2
