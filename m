@@ -1,17 +1,19 @@
 From: Johan Hovold <johan@kernel.org>
-Subject: [PATCH v2 0/3] ALSA: USB-descriptor endianness fixes
-Date: Fri, 12 May 2017 14:34:36 +0200
-Message-ID: <20170512123439.14994-1-johan@kernel.org>
+Subject: [PATCH v2 2/3] ALSA: us122l: clean up US144 handling
+Date: Fri, 12 May 2017 14:34:38 +0200
+Message-ID: <20170512123439.14994-3-johan@kernel.org>
+References: <20170512123439.14994-1-johan@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-lf0-f66.google.com (mail-lf0-f66.google.com
  [209.85.215.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 650D4266A38
- for <alsa-devel@alsa-project.org>; Fri, 12 May 2017 14:34:57 +0200 (CEST)
-Received: by mail-lf0-f66.google.com with SMTP id 99so57316lfu.2
- for <alsa-devel@alsa-project.org>; Fri, 12 May 2017 05:34:57 -0700 (PDT)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5DD27266A38
+ for <alsa-devel@alsa-project.org>; Fri, 12 May 2017 14:34:58 +0200 (CEST)
+Received: by mail-lf0-f66.google.com with SMTP id h4so57079lfj.3
+ for <alsa-devel@alsa-project.org>; Fri, 12 May 2017 05:34:58 -0700 (PDT)
+In-Reply-To: <20170512123439.14994-1-johan@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,32 +27,159 @@ To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
 Cc: alsa-devel@alsa-project.org, Johan Hovold <johan@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-These patches add missing endianness conversions when accessing the USB
-device-descriptor fields. In the process, clean up the us122l driver
-which had product-id conditionals sprinkled throughout.
+Use the device-id table and a private flag to determine the device type
+(US122 or US144) rather than spreading product-id conditionals
+throughout the driver.
 
-The final patch enables compile testing for us122l which currently
-depends on x86 but compiles just fine for arm.
+This USB driver currently depends on X86 (why?), but we should still add
+the missing endianness conversions when accessing the USB
+device-descriptor fields.
 
-Note that these patches have only been compile tested.
+Compile-tested only.
 
-Johan
-
-
-v2
- - enable compile testing rather than drop the us122l x86-dependency
-
-
-Johan Hovold (3):
-  ALSA: usb-audio: fix Amanero Combo384 quirk on big-endian hosts
-  ALSA: us122l: clean up US144 handling
-  ALSA: us122l: enable compile testing
-
- sound/usb/Kconfig        |  2 +-
- sound/usb/quirks.c       |  2 +-
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
  sound/usb/usx2y/us122l.c | 36 ++++++++++++++++++------------------
  sound/usb/usx2y/us122l.h |  2 ++
- 4 files changed, 22 insertions(+), 20 deletions(-)
+ 2 files changed, 20 insertions(+), 18 deletions(-)
 
+diff --git a/sound/usb/usx2y/us122l.c b/sound/usb/usx2y/us122l.c
+index e118bdca983d..a33e31b2fc2f 100644
+--- a/sound/usb/usx2y/us122l.c
++++ b/sound/usb/usx2y/us122l.c
+@@ -46,8 +46,10 @@ MODULE_PARM_DESC(id, "ID string for "NAME_ALLCAPS".");
+ module_param_array(enable, bool, NULL, 0444);
+ MODULE_PARM_DESC(enable, "Enable "NAME_ALLCAPS".");
+ 
+-static int snd_us122l_card_used[SNDRV_CARDS];
++/* driver_info flags */
++#define US122L_FLAG_US144	BIT(0)
+ 
++static int snd_us122l_card_used[SNDRV_CARDS];
+ 
+ static int us122l_create_usbmidi(struct snd_card *card)
+ {
+@@ -198,8 +200,7 @@ static int usb_stream_hwdep_open(struct snd_hwdep *hw, struct file *file)
+ 	if (!us122l->first)
+ 		us122l->first = file;
+ 
+-	if (us122l->dev->descriptor.idProduct == USB_ID_US144 ||
+-	    us122l->dev->descriptor.idProduct == USB_ID_US144MKII) {
++	if (us122l->is_us144) {
+ 		iface = usb_ifnum_to_if(us122l->dev, 0);
+ 		usb_autopm_get_interface(iface);
+ 	}
+@@ -214,8 +215,7 @@ static int usb_stream_hwdep_release(struct snd_hwdep *hw, struct file *file)
+ 	struct usb_interface *iface;
+ 	snd_printdd(KERN_DEBUG "%p %p\n", hw, file);
+ 
+-	if (us122l->dev->descriptor.idProduct == USB_ID_US144 ||
+-	    us122l->dev->descriptor.idProduct == USB_ID_US144MKII) {
++	if (us122l->is_us144) {
+ 		iface = usb_ifnum_to_if(us122l->dev, 0);
+ 		usb_autopm_put_interface(iface);
+ 	}
+@@ -483,8 +483,7 @@ static bool us122l_create_card(struct snd_card *card)
+ 	int err;
+ 	struct us122l *us122l = US122L(card);
+ 
+-	if (us122l->dev->descriptor.idProduct == USB_ID_US144 ||
+-	    us122l->dev->descriptor.idProduct == USB_ID_US144MKII) {
++	if (us122l->is_us144) {
+ 		err = usb_set_interface(us122l->dev, 0, 1);
+ 		if (err) {
+ 			snd_printk(KERN_ERR "usb_set_interface error \n");
+@@ -503,8 +502,7 @@ static bool us122l_create_card(struct snd_card *card)
+ 	if (!us122l_start(us122l, 44100, 256))
+ 		return false;
+ 
+-	if (us122l->dev->descriptor.idProduct == USB_ID_US144 ||
+-	    us122l->dev->descriptor.idProduct == USB_ID_US144MKII)
++	if (us122l->is_us144)
+ 		err = us144_create_usbmidi(card);
+ 	else
+ 		err = us122l_create_usbmidi(card);
+@@ -536,7 +534,8 @@ static void snd_us122l_free(struct snd_card *card)
+ 
+ static int usx2y_create_card(struct usb_device *device,
+ 			     struct usb_interface *intf,
+-			     struct snd_card **cardp)
++			     struct snd_card **cardp,
++			     unsigned long flags)
+ {
+ 	int		dev;
+ 	struct snd_card *card;
+@@ -556,6 +555,7 @@ static int usx2y_create_card(struct usb_device *device,
+ 	US122L(card)->dev = device;
+ 	mutex_init(&US122L(card)->mutex);
+ 	init_waitqueue_head(&US122L(card)->sk.sleep);
++	US122L(card)->is_us144 = flags & US122L_FLAG_US144;
+ 	INIT_LIST_HEAD(&US122L(card)->midi_list);
+ 	strcpy(card->driver, "USB "NAME_ALLCAPS"");
+ 	sprintf(card->shortname, "TASCAM "NAME_ALLCAPS"");
+@@ -579,7 +579,7 @@ static int us122l_usb_probe(struct usb_interface *intf,
+ 	struct snd_card *card;
+ 	int err;
+ 
+-	err = usx2y_create_card(device, intf, &card);
++	err = usx2y_create_card(device, intf, &card, device_id->driver_info);
+ 	if (err < 0)
+ 		return err;
+ 
+@@ -607,9 +607,8 @@ static int snd_us122l_probe(struct usb_interface *intf,
+ 	struct snd_card *card;
+ 	int err;
+ 
+-	if ((device->descriptor.idProduct == USB_ID_US144 ||
+-	     device->descriptor.idProduct == USB_ID_US144MKII)
+-		&& device->speed == USB_SPEED_HIGH) {
++	if (id->driver_info & US122L_FLAG_US144 &&
++			device->speed == USB_SPEED_HIGH) {
+ 		snd_printk(KERN_ERR "disable ehci-hcd to run US-144 \n");
+ 		return -ENODEV;
+ 	}
+@@ -703,8 +702,7 @@ static int snd_us122l_resume(struct usb_interface *intf)
+ 
+ 	mutex_lock(&us122l->mutex);
+ 	/* needed, doesn't restart without: */
+-	if (us122l->dev->descriptor.idProduct == USB_ID_US144 ||
+-	    us122l->dev->descriptor.idProduct == USB_ID_US144MKII) {
++	if (us122l->is_us144) {
+ 		err = usb_set_interface(us122l->dev, 0, 1);
+ 		if (err) {
+ 			snd_printk(KERN_ERR "usb_set_interface error \n");
+@@ -747,7 +745,8 @@ static struct usb_device_id snd_us122l_usb_id_table[] = {
+ 	{	/* US-144 only works at USB1.1! Disable module ehci-hcd. */
+ 		.match_flags =	USB_DEVICE_ID_MATCH_DEVICE,
+ 		.idVendor =	0x0644,
+-		.idProduct =	USB_ID_US144
++		.idProduct =	USB_ID_US144,
++		.driver_info =	US122L_FLAG_US144
+ 	},
+ 	{
+ 		.match_flags =	USB_DEVICE_ID_MATCH_DEVICE,
+@@ -757,7 +756,8 @@ static struct usb_device_id snd_us122l_usb_id_table[] = {
+ 	{
+ 		.match_flags =	USB_DEVICE_ID_MATCH_DEVICE,
+ 		.idVendor =	0x0644,
+-		.idProduct =	USB_ID_US144MKII
++		.idProduct =	USB_ID_US144MKII,
++		.driver_info =	US122L_FLAG_US144
+ 	},
+ 	{ /* terminator */ }
+ };
+diff --git a/sound/usb/usx2y/us122l.h b/sound/usb/usx2y/us122l.h
+index f263b3f96c86..3e2a2d0041ee 100644
+--- a/sound/usb/usx2y/us122l.h
++++ b/sound/usb/usx2y/us122l.h
+@@ -16,6 +16,8 @@ struct us122l {
+ 	struct list_head	midi_list;
+ 
+ 	atomic_t		mmap_count;
++
++	bool			is_us144;
+ };
+ 
+ 
 -- 
 2.13.0
