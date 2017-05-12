@@ -1,109 +1,70 @@
-From: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Subject: [PATCH v3 3/3] arm: dts: Add support for ES8323 to the Firefly-RK3288
-Date: Fri, 12 May 2017 15:22:27 +0200
-Message-ID: <20170512132227.24916-12-romain.perier@collabora.com>
-References: <20170512132227.24916-1-romain.perier@collabora.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20170512132227.24916-1-romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Heiko Stuebner <heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org>
-Cc: linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Ian Campbell <ijc+devicetree-KcIKpvwj1kUDXYZnReoRVg@public.gmane.org>, Pawel Moll <pawel.moll-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Kumar Gala <galak-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org>, linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Subject: [PATCH 15/36] docs-rst: add sound book to pdf output
+Date: Fri, 12 May 2017 10:59:58 -0300
+Message-ID: <f51999a8fef46ac85d41ba523a73cde7c169e588.1494596071.git.mchehab@s-opensource.com>
+References: <cover.1494596071.git.mchehab@s-opensource.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from osg.samsung.com
+ (ec2-52-27-115-49.us-west-2.compute.amazonaws.com [52.27.115.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E6CB26719A
+ for <alsa-devel@alsa-project.org>; Fri, 12 May 2017 16:00:29 +0200 (CEST)
+In-Reply-To: <cover.1494596071.git.mchehab@s-opensource.com>
+In-Reply-To: <cover.1494596071.git.mchehab@s-opensource.com>
+References: <cover.1494596071.git.mchehab@s-opensource.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: linux-kernel@vger.kernel.org, Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc: alsa-devel@alsa-project.org, Jonathan Corbet <corbet@lwn.net>, Takashi Iwai <tiwai@suse.com>, Mauro Carvalho Chehab <mchehab@s-opensource.com>, Mauro Carvalho Chehab <mchehab@infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds the DT definition of the es8388 i2c device found at
-address 0x10. It also adds the definition for connecting the Rockchip
-I2S to the es8323 analog output.
+The sound subsystem book was added without the bits required to
+generate PDF output. Add them.
 
-Signed-off-by: Romain Perier <romain.perier-ZGY8ohtN/8qB+jHODAdFcQ@public.gmane.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
 ---
+ Documentation/conf.py       |  2 ++
+ Documentation/sound/conf.py | 10 ++++++++++
+ 2 files changed, 12 insertions(+)
+ create mode 100644 Documentation/sound/conf.py
 
-Changes in v3:
-- Renamed sound_i2s to sound-i2s
-- Re-ordered properties in the right order
-- Splitted headphone into phone_ctl and hp_det
-
-Changes in v2:
-- Add the pinctrl headphone, that was previously in conflict with otp pins
-- Renamed sound_es8323 to sound_i2s
-- Added the property rockchip,routing
-
- arch/arm/boot/dts/rk3288-firefly.dtsi | 38 +++++++++++++++++++++++++++++++++++
- 1 file changed, 38 insertions(+)
-
-diff --git a/arch/arm/boot/dts/rk3288-firefly.dtsi b/arch/arm/boot/dts/rk3288-firefly.dtsi
-index 10793ac18599..f80b17f0d1bf 100644
---- a/arch/arm/boot/dts/rk3288-firefly.dtsi
-+++ b/arch/arm/boot/dts/rk3288-firefly.dtsi
-@@ -103,6 +103,19 @@
- 		};
- 	};
+diff --git a/Documentation/conf.py b/Documentation/conf.py
+index 1d461f0c1cd0..bca751960dec 100644
+--- a/Documentation/conf.py
++++ b/Documentation/conf.py
+@@ -371,6 +371,8 @@ latex_documents = [
+      'The kernel development community', 'manual'),
+     ('security/index', 'security.tex', 'The kernel security subsystem manual',
+      'The kernel development community', 'manual'),
++    ('sound/index', 'sound.tex', 'Linux Sound Subsystem Documentation',
++     'The kernel development community', 'manual'),
+ ]
  
-+	sound-i2s {
-+		compatible = "rockchip,rk3288-hdmi-analog";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&phone_ctl>, <&hp_det>;
-+		rockchip,audio-codec = <&es8323>;
-+		rockchip,hp-det-gpios = <&gpio7 15 GPIO_ACTIVE_HIGH>;
-+		rockchip,hp-en-gpios = <&gpio0 10 GPIO_ACTIVE_HIGH>;
-+		rockchip,i2s-controller = <&i2s>;
-+		rockchip,model = "I2S";
-+		rockchip,routing = "Analog", "LOUT2",
-+				   "Analog", "ROUT2";
-+	};
+ # The name of an image file (relative to this directory) to place at the top of
+diff --git a/Documentation/sound/conf.py b/Documentation/sound/conf.py
+new file mode 100644
+index 000000000000..3f1fc5e74e7b
+--- /dev/null
++++ b/Documentation/sound/conf.py
+@@ -0,0 +1,10 @@
++# -*- coding: utf-8; mode: python -*-
 +
- 	vbat_wl: vcc_sys: vsys-regulator {
- 		compatible = "regulator-fixed";
- 		regulator-name = "vcc_sys";
-@@ -371,6 +384,17 @@
- 
- &i2c2 {
- 	status = "okay";
++project = "Linux Sound Subsystem Documentation"
 +
-+	es8323: es8323@10 {
-+		compatible = "everest,es8323", "everest,es8328";
-+		reg = <0x10>;
-+		AVDD-supply = <&vcca_33>;
-+		DVDD-supply = <&vcca_33>;
-+		HPVDD-supply = <&vcca_33>;
-+		PVDD-supply = <&vcca_33>;
-+		clocks = <&cru SCLK_I2S0_OUT>;
-+		clock-names = "i2s_clk_out";
-+	};
- };
- 
- &i2c4 {
-@@ -381,6 +405,10 @@
- 	status = "okay";
- };
- 
-+&i2s {
-+	status = "okay";
-+};
++tags.add("subproject")
 +
- &io_domains {
- 	status = "okay";
- 
-@@ -483,6 +511,16 @@
- 		};
- 	};
- 
-+	headphone {
-+		hp_det: hp-det {
-+			rockchip,pins = <7 15 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+
-+		phone_ctl: phone-ctl {
-+			rockchip,pins = <0 10 RK_FUNC_GPIO &pcfg_pull_up>;
-+		};
-+	};
-+
- 	usb_host {
- 		host_vbus_drv: host-vbus-drv {
- 			rockchip,pins = <0 14 RK_FUNC_GPIO &pcfg_pull_none>;
++latex_documents = [
++    ('index', 'sound.tex', project,
++     'The kernel development community', 'manual'),
++]
 -- 
-2.11.0
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+2.9.3
