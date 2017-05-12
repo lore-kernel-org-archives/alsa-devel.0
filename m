@@ -1,20 +1,20 @@
-From: Johan Hovold <johan@kernel.org>
-Subject: Re: [PATCH 0/3] ALSA: USB-descriptor endianess fixes
-Date: Fri, 12 May 2017 14:16:33 +0200
-Message-ID: <20170512121633.GR30445@localhost>
-References: <20170512102821.2630-1-johan@kernel.org>
- <s5h37cafhmv.wl-tiwai@suse.de>
+From: Tanu Kaskinen <tanuk@iki.fi>
+Subject: Re: Headphones not detected when using Dell Dock WD15
+Date: Fri, 12 May 2017 15:29:03 +0300
+Message-ID: <1494592143.3128.3.camel@iki.fi>
+References: <1494236073.2669.21.camel@igalia.com>
+ <s5h8tm68sk6.wl-tiwai@suse.de> <1494318739.2669.35.camel@igalia.com>
+ <s5hmvam77f6.wl-tiwai@suse.de> <1494319976.2669.45.camel@igalia.com>
+ <s5hfuge76b8.wl-tiwai@suse.de> <1494589183.3128.1.camel@iki.fi>
+ <s5hzieie0uz.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 06EFC266A38
- for <alsa-devel@alsa-project.org>; Fri, 12 May 2017 14:16:39 +0200 (CEST)
-Received: by mail-wm0-f68.google.com with SMTP id y10so13572717wmh.0
- for <alsa-devel@alsa-project.org>; Fri, 12 May 2017 05:16:39 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <s5h37cafhmv.wl-tiwai@suse.de>
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com
+ [66.111.4.28]) by alsa0.perex.cz (Postfix) with ESMTP id 5699F266A38
+ for <alsa-devel@alsa-project.org>; Fri, 12 May 2017 14:29:05 +0200 (CEST)
+In-Reply-To: <s5hzieie0uz.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,26 +25,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Johan Hovold <johan@kernel.org>
+Cc: Sergio Villar Senin <svillar@igalia.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 12, 2017 at 01:18:16PM +0200, Takashi Iwai wrote:
-> On Fri, 12 May 2017 12:28:18 +0200,
-> Johan Hovold wrote:
-> > 
-> > These patches add missing endianness conversions when accessing the USB
-> > device-descriptor fields. In the process, clean up the us122l driver
-> > which had product-id conditionals sprinkled throughout.
-> > 
-> > The final patch drops the Kconfig dependency on x86 since it's a USB
-> > driver that compiles just fine on non-x86. Perhaps this should be a
-> > (X86 || COMPILE_TEST) dependency instead in case there are external
-> > dependencies that warrants this limitation.
-> 
-> Yeah, I vaguely remember that the driver is specific to x86 because of
-> its particular usage of mmap.  Maybe some other architectures may
-> match, but not all.  So, X86 || COMPILE_TEST would be more sensible.
-
-Thanks for clarifying. I'll respin in a v2.
-
-Johan
+T24gRnJpLCAyMDE3LTA1LTEyIGF0IDE0OjA1ICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
+T24gRnJpLCAxMiBNYXkgMjAxNyAxMzozOTo0MyArMDIwMCwKPiBUYW51IEthc2tpbmVuIHdyb3Rl
+Ogo+ID4gCj4gPiBPbiBUdWUsIDIwMTctMDUtMDkgYXQgMTE6MDAgKzAyMDAsIFRha2FzaGkgSXdh
+aSB3cm90ZToKPiA+ID4gT24gVHVlLCAwOSBNYXkgMjAxNyAxMDo1Mjo1NiArMDIwMCwKPiA+ID4g
+U2VyZ2lvIFZpbGxhciBTZW5pbiB3cm90ZToKPiA+ID4gPiAKPiA+ID4gPiBPIE1hciwgMDktMDUt
+MjAxNyDDoXMgMTA6MzcgKzAyMDAsIFRha2FzaGkgSXdhaSBlc2NyaWJpdToKPiA+ID4gPiA+IE9u
+IFR1ZSwgMDkgTWF5IDIwMTcgMTA6MzI6MTkgKzAyMDAsCj4gPiA+ID4gPiBTZXJnaW8gVmlsbGFy
+IFNlbmluIHdyb3RlOgo+ID4gPiA+ID4gPiAKPiA+ID4gPiA+ID4gTyBNYXIsIDA5LTA1LTIwMTcg
+w6FzIDA4OjE1ICswMjAwLCBUYWthc2hpIEl3YWkgZXNjcmliaXU6Cj4gPiA+ID4gPiA+ID4gT24g
+TW9uLCAwOCBNYXkgMjAxNyAxMTozNDozMyArMDIwMCwKPiA+ID4gPiA+ID4gPiBTZXJnaW8gVmls
+bGFyIFNlbmluIHdyb3RlOgo+ID4gPiA+ID4gPiA+ID4gCj4gPiA+ID4gPiA+ID4gPiBIaSwKPiA+
+ID4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiA+ID4gSSByZXBvcnRlZCB0aGlzIGJ1ZyB0byBwdWxz
+ZWF1ZGlvWzFdIGJ1dCBhZnRlciBzb21lCj4gPiA+ID4gPiA+ID4gPiBpbnZlc3RpZ2F0aW9uCj4g
+PiA+ID4gPiA+ID4gPiBpdAo+ID4gPiA+ID4gPiA+ID4gbG9va3MgbGlrZSB0aGUgYWxzYSBtaXhl
+ciBpcyBub3Qgd29ya2luZyBmb3IgdGhlIGRvY2suCj4gPiA+ID4gPiA+ID4gPiAKPiA+ID4gPiA+
+ID4gPiA+IEknbGwgYmUgaGFwcHkgdG8gcHJvdmlkZSBhbnkgYWRkaXRpb25hbCBpbmZvIHdoaWNo
+IG1pZ2h0IGJlCj4gPiA+ID4gPiA+ID4gPiByZXF1aXJlZAo+ID4gPiA+ID4gPiA+ID4gKGF0dGFj
+aGluZyBhbHNhLWluZm8uc2ggQlRXKS4gUGxlYXNlIGFkZCBtZSB0byB0aGUgQ2MgYXMgSSBhbQo+
+ID4gPiA+ID4gPiA+ID4gbm90Cj4gPiA+ID4gPiA+ID4gPiBzdWJzY3JpYmVkIHRvIHRoaXMgbGlz
+dAo+ID4gPiA+ID4gPiA+IAo+ID4gPiA+ID4gPiA+IERpZCB5b3UgdHJ5IHRvIHVwZGF0ZSB0aGUg
+ZG9jayBCSU9TPwo+ID4gPiA+ID4gPiA+IFRoZSBvbGQgQklPUyBvbiBzb21lIERlbGwgZG9ja3Mg
+aGFkIGEgZmV3IGtub3duIGlzc3Vlcy4KPiA+ID4gPiA+ID4gCj4gPiA+ID4gPiA+IEkgdHJpZWQg
+d2l0aCBhIHZpcnR1YWwgbWFjaGluZSBidXQgdGhlIGZpcm13YXJlIHVwZGF0ZSBwcm9ncmFtCj4g
+PiA+ID4gPiA+IGNyYXNoZXMKPiA+ID4gPiA+ID4gZm9yIHNvbWUgcmVhc29uLiBBbnl3YXkgdGhl
+IGRvY2sgc2VlbXMgdG8gYmUgd29ya2luZyBmaW5lIGJlY2F1c2UKPiA+ID4gPiA+ID4gdGhlCj4g
+PiA+ID4gPiA+IFdpbmRvd3MgdmlydHVhbCBtYWNoaW5lIHByb3Blcmx5IGRldGVjdHMgdGhlIGhl
+YWRwaG9uZXMgd2hlbgo+ID4gPiA+ID4gPiBwbHVnZ2VkCj4gPiA+ID4gPiA+IGluLgo+ID4gPiA+
+ID4gCj4gPiA+ID4gPiBXZWxsLCBpdCdzIGEgVVNCLWF1ZGlvIGRldmljZSBhbmQgaXQgZG9lc24n
+dCBnaXZlIHRoZSBqYWNrIGRldGVjdGlvbgo+ID4gPiA+ID4gY29udHJvbCBsaWtlIEhELWF1ZGlv
+Lgo+ID4gPiA+IAo+ID4gPiA+IE5vdCBzdXJlIGFib3V0IHRoZSBuZXh0IHN0ZXAuIERvIHlvdSBu
+ZWVkIGFkZGl0aW9uYWwgaW5mb3JtYXRpb24gdG8KPiA+ID4gPiBzb2x2ZSB0aGUgaXNzdWU/IEFy
+ZSB5b3Ugc2F5aW5nIHRoYXQgaXQncyBhIEhXIGlzc3VlIGFuZCB0aGF0IGFsc2EgaXMKPiA+ID4g
+PiBub3QgZ29pbmcgdG8gcHJvdmlkZSBhbnkgZml4PyBJJ20gYSBiaXQgY29uZnVzZWQuCj4gPiA+
+IAo+ID4gPiBJbiBnZW5lcmFsIExpbnV4IFVTQi1hdWRpbyBkcml2ZXIgZG9lc24ndCBwcm92aWRl
+IHRoZSBqYWNrIGRldGVjdGlvbgo+ID4gPiBjb250cm9sLiAgSWYgYW55LCBpdCdzIHZlbmRvci1z
+cGVjaWZpYy4KPiA+IAo+ID4gVGhlIHByb2JsZW0gaXMgbm90IGp1c3QgdGhhdCBqYWNrIGRldGVj
+dGlvbiBkb2Vzbid0IHdvcmssIHRoZSBwcm9ibGVtCj4gPiBpcyB0aGF0IHRoZSBtaXhlciBkb2Vz
+bid0IHdvcmsgYXQgYWxsOgo+ID4gCj4gPiAkIGFtaXhlciAtYzEKPiA+IGFtaXhlcjogTWl4ZXIg
+aHc6MSBsb2FkIGVycm9yOiBJbnZhbGlkIGFyZ3VtZW50Cj4gCj4gRGlkIHlvdSB0cnkgdG8gdXBn
+cmFkZSB0aGUgZmlybXdhcmU/ICBBdCBsZWFzdCB0aGF0IGtpbmQgb2YgZXJyb3IKPiBjb3VsZCBi
+ZSBzb2x2ZWQgYnkgdGhlIG5ld2VyIGZpcm13YXJlLgoKQWNjb3JkaW5nIHRvIFNlcmdpbydzIGVh
+cmxpZXIgbWFpbCwgdGhlIGZpcm13YXJlIGhhcyBub3QgYmVlbgpzdWNjZXNzZnVsbHkgdXBkYXRl
+ZCwgc28gSSBndWVzcyBhdCB0aGlzIHBvaW50IHdlIGNhbiBibGFtZSB0aGUKZmlybXdhcmUuCgo+
+ID4gSSB3b3VsZCBleHBlY3QgdGhlIFVTQi1hdWRpbyBkcml2ZXIgdG8gcHJvdmlkZSBhIG1peGVy
+IGNvbnRyb2wgZm9yCj4gPiBjaG9vc2luZyB0aGUgcm91dGluZywgdW5sZXNzIHRoYXQncyBpbXBs
+ZW1lbnRlZCBpbiBzb21lIG5vbi1zdGFuZGFyZAo+ID4gd2F5IHRvby4gQXMgaXQgc3RhbmRzLCBQ
+dWxzZUF1ZGlvIGhhcyBubyBjb250cm9sIG92ZXIgdGhlIHJvdXRpbmcsIHNvCj4gPiB0aGUgaGVh
+ZHBob25lIG91dHB1dCBhcHBhcmVudGx5IGNhbid0IGJlIHVzZWQgYXQgYWxsLgo+IAo+IEhybSBp
+dCdzIG5vdCBjbGVhciB0byBtZS4gIFRoZSByb3V0aW5nIGFtb25nIHdoaWNoPwoKQWZ0ZXIgSSBz
+ZW50IG15IHByZXZpb3VzIG1haWwsIEkgcmVhbGl6ZWQgdGhhdCBJJ3ZlIGJlZW4gYXNzdW1pbmcg
+dGhhdApvbmx5IHRoZSByZWFyIG91dHB1dCAoc3BlYWtlcnMpIG9mIHRoZSBkb2NrIHdvcmtzLCBh
+bmQgdGhlIGZyb250IG91dHB1dAooaGVhZHBob25lcykgZG9lc24ndCwgYnV0IFNlcmdpbyBuZXZl
+ciBhY3R1YWxseSBzYWlkIHRoYXQuIFNvIEkgd2FzCnRhbGtpbmcgYWJvdXQgcm91dGluZyBiZXR3
+ZWVuIHRoZSByZWFyIGFuZCBmcm9udCBvdXRwdXRzLCBidXQgbm93IEknbQpub3Qgc3VyZSBpZiB0
+aGF0J3MgdGhlIHByb2JsZW0gYWZ0ZXIgYWxsLgoKLS0gClRhbnUKCmh0dHBzOi8vd3d3LnBhdHJl
+b24uY29tL3RhbnVrCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
+dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
+bAo=
