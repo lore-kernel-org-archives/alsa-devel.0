@@ -1,119 +1,131 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v3 1/3] dt-bindings: Document STM32 I2S bindings
-Date: Fri, 12 May 2017 19:17:53 -0500
-Message-ID: <20170513001753.hygunrcjqejpbwl6@rob-hp-laptop>
-References: <1494495904-18898-1-git-send-email-olivier.moysan@st.com>
- <1494495904-18898-2-git-send-email-olivier.moysan@st.com>
+From: Paulo Sergio <pstglia@gmail.com>
+Subject: Re: WM5102 - Help to make baytrail machine driver work
+Date: Sat, 13 May 2017 02:11:31 -0300
+Message-ID: <CAJcYhpatsrYyC0CRu-0quA0=NYOObMC2nro5sDE-2ssTTu83rA@mail.gmail.com>
+References: <CAJcYhpZU-6_AO_Gye1VttuvOP0Z2=wLuWGCOP7tBWc6DsuLU1g@mail.gmail.com>
+ <20160505091122.GE1646@localhost.localdomain>
+ <CAJcYhpbdr-3qBSdaLX-=MCSGX7VC0XGz6tKbzJ3K3RHeGMhs7g@mail.gmail.com>
+ <CAJcYhpZ1NRUa_7nu5kT6yJ_NTbDxRtK5Uy0H1fxMBEHhvA1fxw@mail.gmail.com>
+ <20160509142210.GH1646@localhost.localdomain>
+ <CAJcYhpa8OrxyFxL1L4VQJL=WSEhrKhvfcdLeUj40Hb=N2kDUUQ@mail.gmail.com>
+ <20160513114136.GM1646@localhost.localdomain>
+ <CAJcYhpYJcTE0qBwYAHtGF9tbNCKXAVaLP3RnS5CF5=Z1LBijmA@mail.gmail.com>
+ <20160515101308.GN1646@localhost.localdomain>
+ <CAJcYhpaFiDrMYmbS1cUWL=ix-L2crjnNekpCXjjdHVThwp2Xag@mail.gmail.com>
+ <20170508082422.GJ1594@localhost.localdomain>
+ <CAJcYhpb0amzyug01nN3TUWBFSgGWfZcfOVfMgV01rxgTnbNnHg@mail.gmail.com>
+ <7c35cd21-35a4-726d-71b5-1ef9f096fbee@linux.intel.com>
+ <CAJcYhpb9yOJjDwG6ZGEYFQTiLXtkHNgmVkmF2ssQp6QPOX0ueA@mail.gmail.com>
+ <6615d589-9124-5f71-0d6d-e634caf2fdaa@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1494495904-18898-2-git-send-email-olivier.moysan-qxv4g6HH51o@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
-Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alexandre.torgue-qxv4g6HH51o@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-F5mvAk5X5gdBDgjK7y7TUQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org, benjamin.gaignard-qxv4g6HH51o@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pf0-f174.google.com (mail-pf0-f174.google.com
+ [209.85.192.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6321B266943
+ for <alsa-devel@alsa-project.org>; Sat, 13 May 2017 07:11:35 +0200 (CEST)
+Received: by mail-pf0-f174.google.com with SMTP id n23so34113689pfb.2
+ for <alsa-devel@alsa-project.org>; Fri, 12 May 2017 22:11:35 -0700 (PDT)
+In-Reply-To: <6615d589-9124-5f71-0d6d-e634caf2fdaa@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, broonie@opensource.wolfsonmicro.com, Android-x86 development <android-x86-devel@googlegroups.com>, Chih-Wei Huang <cwhuang@android-x86.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, mika.westerberg@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 11, 2017 at 11:45:02AM +0200, olivier moysan wrote:
-> Add documentation of device tree bindings for STM32 SPI/I2S.
-> 
-> Signed-off-by: olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
-> ---
->  .../devicetree/bindings/sound/st,stm32-i2s.txt     | 68 ++++++++++++++++++++++
->  1 file changed, 68 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-i2s.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/st,stm32-i2s.txt b/Documentation/devicetree/bindings/sound/st,stm32-i2s.txt
-> new file mode 100644
-> index 0000000..67b854a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/st,stm32-i2s.txt
-> @@ -0,0 +1,68 @@
-> +STMicroelectronics STM32 SPI/I2S Controller
-> +
-> +The SPI/I2S block supports I2S/PCM protocols when configured on I2S mode.
-> +Only some SPI instances support I2S.
-> +
-> +Required properties:
-> +  - compatible: Must be "st,stm32h7-i2s"
-> +  - reg: Offset and length of the device's register set.
-> +  - interrupts: Must contain the interrupt line id.
-> +  - clocks: Must contain phandle and clock specifier pairs for each entry
-> +	in clock-names.
-> +  - clock-names: Must contain "i2sclk", "pclk", "x8k" and "x11k".
-> +	"i2sclk": clock which feeds the internal clock generator
-> +	"pclk": clock which feeds the peripheral bus interface
-> +	"x8k": I2S parent clock for sampling rates multiple of 8kHz.
-> +	"x11k": I2S parent clock for sampling rates multiple of 11.025kHz.
-> +  - dmas: DMA specifiers for tx and rx dma.
-> +    See Documentation/devicetree/bindings/dma/stm32-dma.txt.
-> +  - dma-names: Identifier for each DMA request line. Must be "tx" and "rx".
-> +  - pinctrl-names: should contain only value "default"
-> +  - pinctrl-0: see Documentation/devicetree/bindings/pinctrl/pinctrl-stm32.txt
-> +
-> +Optional properties:
-> +  - resets: Reference to a reset controller asserting the reset controller
-> +
-> +The device node should contain one 'port' child node with one child 'endpoint'
-> +node, according to the bindings defined in Documentation/devicetree/bindings/
-> +graph.txt.
-> +
-> +Example:
-> +sound_card {
-> +	compatible = "audio-graph-card";
-> +	dais = <&i2s2_port 0>;
+Hi everybody
 
-What is the 0 representing?
+>>>> Note: Based on Lenovo code, I concluded this device uses ssp0, so I'm
+>>>> using a fw file "fw_sst_0f28_ssp0.bin" posted another thread.
+>>>> Could use the hacks used on kernel 4.11, but as I'm still testing with
+>>>> kernel 4.4, using this fw would make things easier
+>>>
+>>>
+>>>
+>>> nope. I don't know how many issues we've fixed since 4.4 but it's not a
+>>> matter of just swapping out one firmware with another. You'll have better
+>>> luck with plain vanilla 4.11 + regular firmware and restarting modifying
+>>> one
+>>> of the latest machine drivers.
+>>
+>>
+>> Ok, I'll use 4.11 and post the results later
+>>
+>> Should I have any special care about I2S other than setting the format
+>> um backend DAI?
+>> Some module should be loaded?
+>
+>
+> Things to look for
+> - SSP routing: has to be SSP0 on baytrail-CR
+> - number of slots: 2 or 4. if 4 then use DSP mode
+> - DAI format
+> - MCLK
 
-> +};
-> +
-> +i2s2: audio-controller@40003800 {
-> +	compatible = "st,stm32h7-i2s";
-> +	#sound-dai-cells = <0>;
+Hi, I'd like to share a feedback:
 
-Should be dropped.
+I switched to kernel 4.11, applied some previous changes (made with
+kernel 4.4) and started a new machine driver using bytcr_rt5640 as
+base.
 
-> +	reg = <0x40003800 0x400>;
-> +	interrupts = <36>;
-> +	clocks = <&rcc PCLK1>, <&rcc SPI2_CK>, <&rcc PLL1_Q>, <&rcc PLL2_P>;
-> +	clock-names = "pclk", "i2sclk",  "x8k", "x11k";
-> +	dmas = <&dmamux2 2 39 0x400 0x1>,
-> +           <&dmamux2 3 40 0x400 0x1>;
-> +	dma-names = "rx", "tx";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_i2s2>;
-> +
-> +	i2s2_port: port@0 {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
+After some adjustments and a temp fix (see remarks bellow) I was able
+to route sound using headphones
+Routing to speaker doesn't give any audio (Lenovo code seems to uses
+GPIO to power/enable speakers on probe before setting routes...)
 
-This shouldn't even compile. You don't need these because because you 
-have no reg property in the endpoint. 
+Remarks:
 
-You have a unit-address here w/o a reg property. You don't need a reg 
-prop because you only have 1 port.
+* setting pll/fll using snd_soc_dai_set_pll didn't work. I had to map
+the codec member from snd_soc_dai struct and use
+   snd_soc_codec_set_pll instead (used the same constants used on
+Lenovo source code)
 
-> +
-> +		cpu_endpoint: endpoint {
-> +			remote-endpoint = <&codec_endpoint>;
-> +			format = "i2s";
-> +			bitclock-master = <&codec_endpoint>;
-> +			frame-master = <&codec_endpoint>;
-> +		};
-> +	};
-> +};
-> +
-> +audio-codec {
-> +		codec_port: port@0 {
-> +			codec_endpoint: endpoint {
-> +				remote-endpoint = <&cpu_endpoint>;
-> +		};
-> +	};
-> +};
-> -- 
-> 1.9.1
-> 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+ - Had also to set sysclk to  codecs, not only to dai's using
+snd_soc_codec_set_sysclk
+
+* This device (Lenovo Yoga 2 1051F) is a bytcr device. However bios
+status returned by iosf_mbi_read is
+    1000000001000000000000101000000 (bits 26:27 disabled).
+   Had to force  bytcr flag to be true  in order to apply correct MCLK
+frequency (25Mhz) and use SSP0
+
+* Used commands from rt5640 UCM file, removing 5640 specifics and
+using Wolfson ones (thanks to Charles for point this out previously):
+cset name='HPOUT1L Input 1' AIF1RX1
+cset name='HPOUT1R Input 1' AIF1RX2
+cset name='HPOUT1 Digital Switch' on
+
+
+cset name='Headphone Switch'  on
+
+* Used some patches to enable wm5102 ACPI detection (credits to
+Christian Hartmann)
+
+* Added a voltage supplier needed to wm5102 (added to arizona-ldo
+directly - Lenovo and rpi register a platform with these)
+* hardcoded ldoena, reset and irq_gpio on arizona-core (tried to get
+those from gpio, but they didn't give me the correct values. Lack of
+knowledge... )
+
+* The codec chip uses SPI, not IC2 like 5640 (don't know if this is
+relevant for machine driver code)
+
+I've pushed these to github  in case you want to check it [A]
+
+Also, this is the Android-x86 testing image generated with these changes [B]
+
+Many thanks for the support!
+
+Regards,
+Pstglia
+
+[A] - https://github.com/pstglia/linux/tree/lenovo_yoga2_returns-4.11
+[B] - https://drive.google.com/file/d/0BxO6THtB865fQ3VhRUZoc1BMNkE/view?usp=sharing
