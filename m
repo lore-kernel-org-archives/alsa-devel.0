@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH RFC 10/21] ALSA: pcm: constify function local
-	and read-only table
-Date: Sun, 14 May 2017 17:57:45 +0900
-Message-ID: <20170514085756.22382-11-o-takashi@sakamocchi.jp>
+Subject: [PATCH RFC 13/21] ALSA: pcm: use helper functions to
+	check whether parameters are determined
+Date: Sun, 14 May 2017 17:57:48 +0900
+Message-ID: <20170514085756.22382-14-o-takashi@sakamocchi.jp>
 References: <20170514085756.22382-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 7A82A266A53
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id C6FE9266BC9
  for <alsa-devel@alsa-project.org>; Sun, 14 May 2017 10:58:04 +0200 (CEST)
 In-Reply-To: <20170514085756.22382-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,39 +25,32 @@ To: clemens@ladisch.de, tiwai@suse.de, lars@metafoo.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In a function snd_pcm_hw_params_choose(), target parameters are arranged
-into a table. Though each entry of this table is read-only, they don't
-have const qualifier.
+A commit 8bea869c5e56 ("ALSA: PCM midlevel: improve fifo_size handling")
+allows drivers to implement calculation of fifo size in parameter
+structure. This calculation runs only when two of the other parameters
+have single value.
 
-This commit adds the qualifier.
+In ALSA PCM core, there're some helper functions for the case. This commit
+applies the functions instead of value comparison.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/pcm_lib.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/core/pcm_native.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 5088d4b..0ab6f86 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -1733,7 +1733,7 @@ EXPORT_SYMBOL(snd_pcm_hw_param_last);
- int snd_pcm_hw_params_choose(struct snd_pcm_substream *pcm,
- 			     struct snd_pcm_hw_params *params)
- {
--	static int vars[] = {
-+	static const int vars[] = {
- 		SNDRV_PCM_HW_PARAM_ACCESS,
- 		SNDRV_PCM_HW_PARAM_FORMAT,
- 		SNDRV_PCM_HW_PARAM_SUBFORMAT,
-@@ -1744,7 +1744,8 @@ int snd_pcm_hw_params_choose(struct snd_pcm_substream *pcm,
- 		SNDRV_PCM_HW_PARAM_TICK_TIME,
- 		-1
- 	};
--	int err, *v;
-+	const int *v;
-+	int err;
- 
- 	for (v = vars; *v != -1; v++) {
- 		if (*v != SNDRV_PCM_HW_PARAM_BUFFER_SIZE)
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 47af1a8..028d6a5 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -512,8 +512,7 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
+ 	if (!params->fifo_size) {
+ 		m = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+ 		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
+-		if (snd_mask_min(m) == snd_mask_max(m) &&
+-                    snd_interval_min(i) == snd_interval_max(i)) {
++		if (snd_mask_single(m) && snd_interval_single(i)) {
+ 			changed = substream->ops->ioctl(substream,
+ 					SNDRV_PCM_IOCTL1_FIFO_SIZE, params);
+ 			if (changed < 0)
 -- 
 2.9.3
