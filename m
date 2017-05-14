@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH RFC 18/21] ALSA: pcm: calculate
-	non-mask/non-interval parameters always when possible
-Date: Sun, 14 May 2017 17:57:53 +0900
-Message-ID: <20170514085756.22382-19-o-takashi@sakamocchi.jp>
+Subject: [PATCH RFC 16/21] ALSA: pcm/oss: refer to parameters
+	instead of copying to reduce usage of kernel stack
+Date: Sun, 14 May 2017 17:57:51 +0900
+Message-ID: <20170514085756.22382-17-o-takashi@sakamocchi.jp>
 References: <20170514085756.22382-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 656E9266BCA
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 1BFAA266BCF
  for <alsa-devel@alsa-project.org>; Sun, 14 May 2017 10:58:06 +0200 (CEST)
 In-Reply-To: <20170514085756.22382-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,139 +25,115 @@ To: clemens@ladisch.de, tiwai@suse.de, lars@metafoo.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-A structure for parameters of PCM runtime has parameters which are
-not classified as mask/interval type. They are decided only when
-corresponding normal parameters have unique values.
- * struct snd_pcm_hw_params.msbits
- * struct snd_pcm_hw_params.rate_num
- * struct snd_pcm_hw_params.rate_den
- * struct snd_pcm_hw_params.fifo_size
+Some functions in compatibility layer for Open Sound System interface has
+local variable to copy some parameters in runtime of PCM substream, while
+this can be replaced with reference of pointers to parameter itself. This
+brings an advantage to reduce usage of kernel stack.
 
-Current implementation of hw_params ioctl sometimes doesn't decide these
-parameters even if corresponding parameters are fixed, because these
-parameters are evaluated before a call of snd_pcm_hw_params_choose().
-
-This commit adds a helper function to process the parameters and call it
-in proper positions.
+This commit applies this idea.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/pcm_native.c | 71 ++++++++++++++++++++++++++++++-------------------
- 1 file changed, 44 insertions(+), 27 deletions(-)
+ sound/core/oss/pcm_oss.c    | 16 ++++++++--------
+ sound/core/oss/pcm_plugin.c |  5 +++--
+ sound/core/oss/pcm_plugin.h |  2 +-
+ 3 files changed, 12 insertions(+), 11 deletions(-)
 
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 00d5aff..2875895 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -456,12 +456,45 @@ static int constrain_params_by_rules(struct snd_pcm_substream *substream,
- 	return 0;
- }
+diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
+index 2a47351..e306f05 100644
+--- a/sound/core/oss/pcm_oss.c
++++ b/sound/core/oss/pcm_oss.c
+@@ -848,7 +848,7 @@ static int snd_pcm_oss_change_params(struct snd_pcm_substream *substream,
+ 	int direct;
+ 	snd_pcm_format_t format, sformat;
+ 	int n;
+-	struct snd_mask sformat_mask;
++	const struct snd_mask *sformat_mask;
+ 	struct snd_mask mask;
  
--int snd_pcm_hw_refine(struct snd_pcm_substream *substream, 
-+static int fixup_unreferenced_params(struct snd_pcm_substream *substream,
-+				     struct snd_pcm_hw_params *params)
-+{
-+	const struct snd_mask *m;
-+	const struct snd_interval *i;
-+	int err;
-+
-+	if (!params->msbits) {
-+		i = hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_SAMPLE_BITS);
-+		if (snd_interval_single(i))
-+			params->msbits = snd_interval_value(i);
-+	}
-+
-+	if (!params->rate_den) {
-+		i = hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
-+		if (snd_interval_single(i)) {
-+			params->rate_num = snd_interval_value(i);
-+			params->rate_den = 1;
-+		}
-+	}
-+
-+	if (!params->fifo_size) {
-+		m = hw_param_mask_c(params, SNDRV_PCM_HW_PARAM_FORMAT);
-+		i = hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+		if (snd_mask_single(m) && snd_interval_single(i)) {
-+			err = substream->ops->ioctl(substream,
-+					SNDRV_PCM_IOCTL1_FIFO_SIZE, params);
-+			if (err < 0)
-+				return err;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
- 		      struct snd_pcm_hw_params *params)
- {
- 	struct snd_pcm_hardware *hw;
--	struct snd_mask *m = NULL;
--	struct snd_interval *i = NULL;
- 	struct snd_pcm_hw_constraints *constrs;
- 	int changed;
+ 	if (trylock) {
+@@ -891,18 +891,18 @@ static int snd_pcm_oss_change_params(struct snd_pcm_substream *substream,
  
-@@ -487,20 +520,6 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
- 	if (changed < 0)
- 		return changed;
+ 	format = snd_pcm_oss_format_from(runtime->oss.format);
  
--	if (!params->msbits) {
--		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_SAMPLE_BITS);
--		if (snd_interval_single(i))
--			params->msbits = snd_interval_value(i);
--	}
--
--	if (!params->rate_den) {
--		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
--		if (snd_interval_single(i)) {
--			params->rate_num = snd_interval_value(i);
--			params->rate_den = 1;
--		}
--	}
--
- 	hw = &substream->runtime->hw;
- 	if (!params->info) {
- 		params->info = hw->info & ~(SNDRV_PCM_INFO_FIFO_IN_FRAMES |
-@@ -509,17 +528,9 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
- 			params->info &= ~(SNDRV_PCM_INFO_MMAP |
- 					  SNDRV_PCM_INFO_MMAP_VALID);
- 	}
--	if (!params->fifo_size) {
--		m = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
--		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
--		if (snd_mask_single(m) && snd_interval_single(i)) {
--			changed = substream->ops->ioctl(substream,
--					SNDRV_PCM_IOCTL1_FIFO_SIZE, params);
--			if (changed < 0)
--				return changed;
--		}
--	}
-+
- 	params->rmask = 0;
-+
- 	return 0;
- }
+-	sformat_mask = *hw_param_mask(sparams, SNDRV_PCM_HW_PARAM_FORMAT);
++	sformat_mask = hw_param_mask_c(sparams, SNDRV_PCM_HW_PARAM_FORMAT);
+ 	if (direct)
+ 		sformat = format;
+ 	else
+-		sformat = snd_pcm_plug_slave_format(format, &sformat_mask);
++		sformat = snd_pcm_plug_slave_format(format, sformat_mask);
  
-@@ -600,6 +611,8 @@ static int snd_pcm_hw_refine_user(struct snd_pcm_substream *substream,
- 		return PTR_ERR(params);
+ 	if ((__force int)sformat < 0 ||
+-	    !snd_mask_test(&sformat_mask, (__force int)sformat)) {
++	    !snd_mask_test(sformat_mask, (__force int)sformat)) {
+ 		for (sformat = (__force snd_pcm_format_t)0;
+ 		     (__force int)sformat <= (__force int)SNDRV_PCM_FORMAT_LAST;
+ 		     sformat = (__force snd_pcm_format_t)((__force int)sformat + 1)) {
+-			if (snd_mask_test(&sformat_mask, (__force int)sformat) &&
++			if (snd_mask_test(sformat_mask, (__force int)sformat) &&
+ 			    snd_pcm_oss_format_to(sformat) >= 0)
+ 				break;
+ 		}
+@@ -1780,7 +1780,7 @@ static int snd_pcm_oss_get_formats(struct snd_pcm_oss_file *pcm_oss_file)
+ 	int direct;
+ 	struct snd_pcm_hw_params *params;
+ 	unsigned int formats = 0;
+-	struct snd_mask format_mask;
++	const struct snd_mask *format_mask;
+ 	int fmt;
  
+ 	if ((err = snd_pcm_oss_get_active_substream(pcm_oss_file, &substream)) < 0)
+@@ -1802,12 +1802,12 @@ static int snd_pcm_oss_get_formats(struct snd_pcm_oss_file *pcm_oss_file)
+ 		return -ENOMEM;
+ 	_snd_pcm_hw_params_any(params);
  	err = snd_pcm_hw_refine(substream, params);
-+	if (err >= 0)
-+		err = fixup_unreferenced_params(substream, params);
- 	if (copy_to_user(_params, params, sizeof(*params))) {
- 		if (!err)
- 			err = -EFAULT;
-@@ -679,6 +692,10 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
+-	format_mask = *hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT); 
++	format_mask = hw_param_mask_c(params, SNDRV_PCM_HW_PARAM_FORMAT);
+ 	kfree(params);
  	if (err < 0)
- 		goto _error;
+ 		return err;
+ 	for (fmt = 0; fmt < 32; ++fmt) {
+-		if (snd_mask_test(&format_mask, fmt)) {
++		if (snd_mask_test(format_mask, fmt)) {
+ 			int f = snd_pcm_oss_format_to(fmt);
+ 			if (f >= 0)
+ 				formats |= f;
+diff --git a/sound/core/oss/pcm_plugin.c b/sound/core/oss/pcm_plugin.c
+index 727ac44..cadc937 100644
+--- a/sound/core/oss/pcm_plugin.c
++++ b/sound/core/oss/pcm_plugin.c
+@@ -266,7 +266,8 @@ snd_pcm_sframes_t snd_pcm_plug_slave_size(struct snd_pcm_substream *plug, snd_pc
+ 	return frames;
+ }
  
-+	err = fixup_unreferenced_params(substream, params);
-+	if (err < 0)
-+		goto _error;
-+
- 	if (substream->ops->hw_params != NULL) {
- 		err = substream->ops->hw_params(substream, params);
- 		if (err < 0)
+-static int snd_pcm_plug_formats(struct snd_mask *mask, snd_pcm_format_t format)
++static int snd_pcm_plug_formats(const struct snd_mask *mask,
++				snd_pcm_format_t format)
+ {
+ 	struct snd_mask formats = *mask;
+ 	u64 linfmts = (SNDRV_PCM_FMTBIT_U8 | SNDRV_PCM_FMTBIT_S8 |
+@@ -309,7 +310,7 @@ static snd_pcm_format_t preferred_formats[] = {
+ };
+ 
+ snd_pcm_format_t snd_pcm_plug_slave_format(snd_pcm_format_t format,
+-					   struct snd_mask *format_mask)
++					   const struct snd_mask *format_mask)
+ {
+ 	int i;
+ 
+diff --git a/sound/core/oss/pcm_plugin.h b/sound/core/oss/pcm_plugin.h
+index a5035c2..38e2c14 100644
+--- a/sound/core/oss/pcm_plugin.h
++++ b/sound/core/oss/pcm_plugin.h
+@@ -126,7 +126,7 @@ int snd_pcm_plug_format_plugins(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *slave_params);
+ 
+ snd_pcm_format_t snd_pcm_plug_slave_format(snd_pcm_format_t format,
+-					   struct snd_mask *format_mask);
++					   const struct snd_mask *format_mask);
+ 
+ int snd_pcm_plugin_append(struct snd_pcm_plugin *plugin);
+ 
 -- 
 2.9.3
