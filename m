@@ -1,38 +1,50 @@
-From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-Subject: [PATCH 10/13] sound: fix the comments that refers to kernel-doc
-Date: Sun, 14 May 2017 12:38:44 -0300
-Message-ID: <3514c2b81341c160bf6753cb47fa2346f3b5a0e7.1494775891.git.mchehab@s-opensource.com>
-References: <cover.1494775891.git.mchehab@s-opensource.com>
-Return-path: <linux-doc-owner@vger.kernel.org>
-In-Reply-To: <cover.1494775891.git.mchehab@s-opensource.com>
-In-Reply-To: <cover.1494775891.git.mchehab@s-opensource.com>
-References: <cover.1494775891.git.mchehab@s-opensource.com>
-Sender: linux-doc-owner@vger.kernel.org
-To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc: Mauro Carvalho Chehab <mchehab@s-opensource.com>, Mauro Carvalho Chehab <mchehab@infradead.org>, linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ASoC: hdmi-codec: fix spelling mistake:
+	"deteced" -> "detected"
+Date: Sun, 14 May 2017 17:53:21 +0100
+Message-ID: <20170514165321.6615-1-colin.king@canonical.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 32AC8266CF6
+ for <alsa-devel@alsa-project.org>; Sun, 14 May 2017 18:53:35 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Vincent Abriou <vincent.abriou@st.com>, Jon Medhurst <tixy@linaro.org>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The markup inside the #if 0 comment actually refers to a
-kernel-doc markup. As we're getting rid of DocBook update it.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Trivial fix to spelling mistake in dev_err message
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- include/sound/pcm.h | 2 +-
+ sound/soc/codecs/hdmi-codec.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 361749e60799..bbf97d4c4c17 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -1054,7 +1054,7 @@ int snd_pcm_format_unsigned(snd_pcm_format_t format);
- int snd_pcm_format_linear(snd_pcm_format_t format);
- int snd_pcm_format_little_endian(snd_pcm_format_t format);
- int snd_pcm_format_big_endian(snd_pcm_format_t format);
--#if 0 /* just for DocBook */
-+#if 0 /* just for kernel-doc */
- /**
-  * snd_pcm_format_cpu_endian - Check the PCM format is CPU-endian
-  * @format: the format to check
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 8c5ae1fc23a9..a3f15149afcf 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -819,7 +819,7 @@ static int hdmi_codec_probe(struct platform_device *pdev)
+ 	mutex_unlock(&hdmi_mutex);
+ 
+ 	if (hd->cnt >= ARRAY_SIZE(hdmi_dai_name)) {
+-		dev_err(dev, "too many hdmi codec are deteced\n");
++		dev_err(dev, "too many hdmi codec are detected\n");
+ 		return -EINVAL;
+ 	}
+ 
 -- 
-2.9.3
-
+2.11.0
