@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH RFC 17/21] ALSA: pcm: check type of parameter
-	in added rule
-Date: Sun, 14 May 2017 17:57:52 +0900
-Message-ID: <20170514085756.22382-18-o-takashi@sakamocchi.jp>
+Subject: [PATCH RFC 20/21] ALSA: pcm: return error immediately
+	for parameters refinement
+Date: Sun, 14 May 2017 17:57:55 +0900
+Message-ID: <20170514085756.22382-21-o-takashi@sakamocchi.jp>
 References: <20170514085756.22382-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 63A0A2668AC
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 20358266BD4
  for <alsa-devel@alsa-project.org>; Sun, 14 May 2017 10:58:06 +0200 (CEST)
 In-Reply-To: <20170514085756.22382-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,68 +25,70 @@ To: clemens@ladisch.de, tiwai@suse.de, lars@metafoo.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Drivers can register rule of PCM parameters by a call of
-snd_pcm_hw_rule_add(). The rule includes a target parameter and dependent
-parameters. Basically, these parameters are the ones classified as mask or
-interval type. Although the helper function should check the variables, it
-actually doesn't. This brings extra check in rule application.
+When refining mask/interval parameters, helper functions can return error
+code. This error is not handled immediately, thus there're useless
+processing.
 
-This commit adds argument checker to the helper function. Unfortunately,
-snd_pcm_hw_constraint_msbits() pass -1 as its parameter type. This is
-because it's for non-mask/non-interval parameter. However, similar
-helper functions, i.e. snd_pcm_hw_constraint_ratdens(), uses the same
-value for target/dependent parameter. We can use
-SNDRV_PCM_HW_PARAM_SAMPLE_BITS for the parameter.
+This commit handles the error immediately.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/pcm_lib.c    | 13 +++++++++----
- sound/core/pcm_native.c |  2 +-
- 2 files changed, 10 insertions(+), 5 deletions(-)
+ sound/core/pcm_native.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 9659fa6..f699245 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -1146,6 +1146,10 @@ int snd_pcm_hw_rule_add(struct snd_pcm_runtime *runtime, unsigned int cond,
- 	struct snd_pcm_hw_rule *c;
- 	unsigned int k;
- 	va_list args;
-+
-+	if (!hw_is_mask(var) && !hw_is_interval(var))
-+		return -EINVAL;
-+
- 	va_start(args, dep);
- 	if (constrs->rules_num >= constrs->rules_all) {
- 		struct snd_pcm_hw_rule *new;
-@@ -1448,10 +1452,11 @@ int snd_pcm_hw_constraint_msbits(struct snd_pcm_runtime *runtime,
- 				 unsigned int msbits)
- {
- 	unsigned long l = (msbits << 16) | width;
--	return snd_pcm_hw_rule_add(runtime, cond, -1,
--				    snd_pcm_hw_rule_msbits,
--				    (void*) l,
--				    SNDRV_PCM_HW_PARAM_SAMPLE_BITS, -1);
-+	return snd_pcm_hw_rule_add(runtime, cond,
-+				   SNDRV_PCM_HW_PARAM_SAMPLE_BITS,
-+				   snd_pcm_hw_rule_msbits,
-+				   (void *) l,
-+				   SNDRV_PCM_HW_PARAM_SAMPLE_BITS, -1);
- }
- 
- EXPORT_SYMBOL(snd_pcm_hw_constraint_msbits);
 diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index ad71eb2..00d5aff 100644
+index 92ab8b2..05230f4 100644
 --- a/sound/core/pcm_native.c
 +++ b/sound/core/pcm_native.c
-@@ -438,7 +438,7 @@ static int constrain_params_by_rules(struct snd_pcm_substream *substream,
- 		 * in user space by returned bits, then preparing for next
- 		 * iteration.
- 		 */
--		if (changed && r->var >= 0) {
-+		if (changed) {
- 			params->cmask |= (1 << r->var);
+@@ -288,11 +288,13 @@ static int constrain_mask_params(struct snd_pcm_substream *substream,
+ 
+ 		trace_hw_params_mask(substream, k, -1, &old_mask, m);
+ 
++		if (changed < 0)
++			return changed;
++
++
+ 		/* Set corresponding flag so that applications get it. */
+ 		if (changed)
+ 			params->cmask |= 1 << k;
+-		if (changed < 0)
+-			return changed;
+ 	}
+ 
+ 	return 0;
+@@ -326,11 +328,12 @@ static int constrain_interval_params(struct snd_pcm_substream *substream,
+ 
+ 		trace_hw_params_interval(substream, k, -1, &old_interval, i);
+ 
++		if (changed < 0)
++			return changed;
++
+ 		/* Set corresponding flag so that applications get it. */
+ 		if (changed)
+ 			params->cmask |= 1 << k;
+-		if (changed < 0)
+-			return changed;
+ 	}
+ 
+ 	return 0;
+@@ -431,6 +434,9 @@ static int constrain_params_by_rules(struct snd_pcm_substream *substream,
+ 						 hw_param_interval(params, r->var));
+ 		}
+ 
++		if (changed < 0)
++			return changed;
++
+ 		rstamps[k] = stamp;
+ 
+ 		/*
+@@ -443,8 +449,6 @@ static int constrain_params_by_rules(struct snd_pcm_substream *substream,
  			vstamps[r->var] = stamp;
  			again = true;
+ 		}
+-		if (changed < 0)
+-			return changed;
+ 
+ 		stamp++;
+ 	}
 -- 
 2.9.3
