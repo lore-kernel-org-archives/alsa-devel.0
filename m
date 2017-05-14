@@ -1,66 +1,84 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 15/18] dt-bindings: sound: Add bindings for Cirrus
- Logic Madera codecs
-Date: Sun, 14 May 2017 19:04:03 +0900
-Message-ID: <20170514100403.nocjlb77q5r3nvo2@sirena.org.uk>
-References: <1493050124-5970-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <1493050124-5970-16-git-send-email-rf@opensource.wolfsonmicro.com>
- <20170425155257.s6m4wgrzxxsxcggo@sirena.org.uk>
- <1493137664.4826.75.camel@rf-debian.wolfsonmicro.main>
+Subject: Re: [PATCH 1/2] ASoC: add es8316 codec driver
+Date: Sun, 14 May 2017 18:36:02 +0900
+Message-ID: <20170514093602.fzvy44vdej3ukyym@sirena.org.uk>
+References: <20170510181649.14580-1-drake@endlessm.com>
+ <eb6e6ef4-6022-6d93-a743-051af4826147@linux.intel.com>
+ <CAD8Lp47DsghwLrdn3izM63BCqn56=esdNeKV6L4NU9tdRhNPQg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="cza46krmerc4eir5"
-Return-path: <linux-gpio-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1493137664.4826.75.camel@rf-debian.wolfsonmicro.main>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: lee.jones@linaro.org, linus.walleij@linaro.org, gnurou@gmail.com, robh+dt@kernel.org, tglx@linutronix.de, jason@lakedaemon.net, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============2924470675244638646=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 745F8266DCE
+ for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 09:56:29 +0200 (CEST)
+In-Reply-To: <CAD8Lp47DsghwLrdn3izM63BCqn56=esdNeKV6L4NU9tdRhNPQg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Drake <drake@endlessm.com>
+Cc: alsa-devel@alsa-project.org, Linux Upstreaming Team <linux@endlessm.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, yangxiaohua <yangxiaohua@everest-semi.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---cza46krmerc4eir5
+--===============2924470675244638646==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="3kzeihatjib4gxnr"
+Content-Disposition: inline
+
+
+--3kzeihatjib4gxnr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Apr 25, 2017 at 05:27:44PM +0100, Richard Fitzgerald wrote:
-> On Tue, 2017-04-25 at 16:52 +0100, Mark Brown wrote:
+On Wed, May 10, 2017 at 01:18:20PM -0600, Daniel Drake wrote:
+> On Wed, May 10, 2017 at 12:49 PM, Pierre-Louis Bossart
+> <pierre-louis.bossart@linux.intel.com> wrote:
 
-> > > +Required properties:
-> > > +  - compatible : One of the following chip-specific strings:
-> > > +        "cirrus,cs47l35-codec"
-> > > +        "cirrus,cs47l85-codec"
-> > > +        "cirrus,cs47l90-codec"
+> > If the copyright is held by Everest Semiconductor and David Yang is also
+> > from Everest Semiconductor, then a signoff from Everest looks very much
+> > required?
 
-> > You shouldn't have compatible strings for subfunctions of a MFD unless
-> > these represent meaningful reusable IPs that can exist separately from
-> > the parent chip, that's clearly not the case here.  All you're doing
-> > here is encoding Linux internal abstractions which aren't OS neutral and
-> > might change in future (for example clocking might move more into the
-> > clock API).
+> The original patches from David do now have his sign-off:
+> https://bugzilla.kernel.org/show_bug.cgi?id=189261#c57
 
-> While that's nice, the of_node doesn't get populated if there isn't a
-> compatible string. And people don't like workarounds for the missing
-> of_node.
+> But I have now rearranged things quite a bit. What is the norm here,
+> can I just copy over the sign off from before, or do we need to
+> request explicit permission again from David?
 
-What workarounds are you referring to?  Why would this need any kind of
-workaround, there is no requirement for magic broken nodes like this in
-the subsystem and if there is we should fix that rather than bodge the
-ABI.
+I'm not going to look at patches that don't have signoffs, sorry.
+Please see SubmittingPatches for details of what a signoff means and how
+to handle them.  Without knowing how closely what you've done resembles
+what you're basing it on it's hard to be sure.
 
---cza46krmerc4eir5
+--3kzeihatjib4gxnr
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlkYK5IACgkQJNaLcl1U
-h9DG+Qf+MXO0kmiz04BZDxWrTzENEIBa0GMVAU39Xh5Kfnbf49VfGU7sb2DuAsv7
-AC2U9wLbIU+Anp5msmrw1LwLym1andkGKHhJu7TKx9QvlVZCkakVUQa3Trac8PGA
-8oFljIE1yossxLtxxz2wa3fIRkRyFIehXMZvxvGL74Y1tpPhU2mFfn6vgzUAMohH
-51As5HEODdIxqrH+PdNgJOPF472UqQsrj2aLrgjThjskeMBoprsr7x1mpvIZTXPY
-AOIzFYeSr4tWORWoMrXYFoiQcrlDh6oWhxcOUTthHOdaUjjAv/ehHzs4rLF966CT
-jDvebOibp9h2ir7DTcavUnGqiVZn3w==
-=hpjz
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlkYJQIACgkQJNaLcl1U
+h9AG+Qf/TJRwdSwhfGgTTct89lswG1l7MEtm+C0gR7ULXabM2K2O8ka1XgvGIwtK
+/ttXq8xf34nwTOw77ZRaqI3rqfuDR2lLhyHyqfDAXdaSwXSh1B1SYCijf+m+4e+n
+ErqiW3Pa+VEk9zQYXjhIkLFvxKS9cfYXAVTMDW8pRR1GBzPrj9ePPRJEQ4yNYfcD
+SLVvRsxj3L/51pJika7rUo6s90WPZj8GiOnIwHp9Gra1YHpHeTz2hfkBdF31T2mk
+vl7xYIg14eB1ShqPBL9pd+yESTDFAdn9aJ99OheLyrhi09f7wY3E41yTPRBB5SLh
+E2fThNINLIeRkkNm1ZU1PbCfHidQ1g==
+=yjhO
 -----END PGP SIGNATURE-----
 
---cza46krmerc4eir5--
+--3kzeihatjib4gxnr--
+
+--===============2924470675244638646==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2924470675244638646==--
