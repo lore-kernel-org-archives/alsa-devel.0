@@ -1,17 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH RFC 01/21] ALSA: pcm: add a helper function to
-	constrain mask-type parameters
-Date: Sun, 14 May 2017 17:57:36 +0900
-Message-ID: <20170514085756.22382-2-o-takashi@sakamocchi.jp>
-References: <20170514085756.22382-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH RFC 00/21] ALSA: pcm: add tracepoints for PCM
+	params operation
+Date: Sun, 14 May 2017 17:57:35 +0900
+Message-ID: <20170514085756.22382-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 1BB9226693C
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 17E32266851
  for <alsa-devel@alsa-project.org>; Sun, 14 May 2017 10:58:01 +0200 (CEST)
-In-Reply-To: <20170514085756.22382-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,90 +23,63 @@ To: clemens@ladisch.de, tiwai@suse.de, lars@metafoo.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Application of constraints to mask-type parameters for PCM substream is
-done in a call of snd_pcm_hw_refine(), while the function includes much
-codes and is not enough friendly to readers.
+Hi,
 
-This commit splits the codes to a separated function so that readers can
-get it easily. I leave desicion into compilers to merge the function into
-its callee.
+In the last Audio Mini Conference held with Linux Plumber conference 2016[1], I mentioned about tracepoints for PCM params operation. This patchset is for the idea.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/core/pcm_native.c | 52 +++++++++++++++++++++++++++++++------------------
- 1 file changed, 33 insertions(+), 19 deletions(-)
+In ALSA PCM interface, applications can get hardware capability by ioctl(2) with SNDRV_PCM_IOCTL_HW_REFINE/SNDRV_PCM_IOCT_HW_PARAMS in a shape of 'struct snd_pcm_hw_params'. In kernel side, relevant processing is somewhat complicated and developers sometimes have hard time to debug drivers for PCM constraints and rules.
 
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 13dec5e..e5135e6 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -278,27 +278,12 @@ static const char * const snd_pcm_hw_param_names[] = {
- };
- #endif
- 
--int snd_pcm_hw_refine(struct snd_pcm_substream *substream, 
--		      struct snd_pcm_hw_params *params)
-+static int constrain_mask_params(struct snd_pcm_hw_constraints *constrs,
-+				 struct snd_pcm_hw_params *params)
- {
-+	struct snd_mask *m;
- 	unsigned int k;
--	struct snd_pcm_hardware *hw;
--	struct snd_interval *i = NULL;
--	struct snd_mask *m = NULL;
--	struct snd_pcm_hw_constraints *constrs = &substream->runtime->hw_constraints;
--	unsigned int rstamps[constrs->rules_num];
--	unsigned int vstamps[SNDRV_PCM_HW_PARAM_LAST_INTERVAL + 1];
--	unsigned int stamp = 2;
--	int changed, again;
--
--	params->info = 0;
--	params->fifo_size = 0;
--	if (params->rmask & (1 << SNDRV_PCM_HW_PARAM_SAMPLE_BITS))
--		params->msbits = 0;
--	if (params->rmask & (1 << SNDRV_PCM_HW_PARAM_RATE)) {
--		params->rate_num = 0;
--		params->rate_den = 0;
--	}
-+	int changed;
- 
- 	for (k = SNDRV_PCM_HW_PARAM_FIRST_MASK; k <= SNDRV_PCM_HW_PARAM_LAST_MASK; k++) {
- 		m = hw_param_mask(params, k);
-@@ -320,6 +305,35 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
- 			return changed;
- 	}
- 
-+	return 0;
-+}
-+
-+int snd_pcm_hw_refine(struct snd_pcm_substream *substream, 
-+		      struct snd_pcm_hw_params *params)
-+{
-+	unsigned int k;
-+	struct snd_pcm_hardware *hw;
-+	struct snd_mask *m = NULL;
-+	struct snd_interval *i = NULL;
-+	struct snd_pcm_hw_constraints *constrs = &substream->runtime->hw_constraints;
-+	unsigned int rstamps[constrs->rules_num];
-+	unsigned int vstamps[SNDRV_PCM_HW_PARAM_LAST_INTERVAL + 1];
-+	unsigned int stamp = 2;
-+	int changed, again;
-+
-+	params->info = 0;
-+	params->fifo_size = 0;
-+	if (params->rmask & (1 << SNDRV_PCM_HW_PARAM_SAMPLE_BITS))
-+		params->msbits = 0;
-+	if (params->rmask & (1 << SNDRV_PCM_HW_PARAM_RATE)) {
-+		params->rate_num = 0;
-+		params->rate_den = 0;
-+	}
-+
-+	changed = constrain_mask_params(constrs, params);
-+	if (changed < 0)
-+		return changed;
-+
- 	for (k = SNDRV_PCM_HW_PARAM_FIRST_INTERVAL; k <= SNDRV_PCM_HW_PARAM_LAST_INTERVAL; k++) {
- 		i = hw_param_interval(params, k);
- 		if (snd_interval_empty(i))
+This patchset adds tracepoints for hw_params operations. When CONFIG_SND_DEBUG is enabled, you can see 'trace_hw_params_mask/trace_hw_params_interval' events of 'snd_pcm' subsystem. When applications execute ioctl(2) with SNDRV_PCM_IOCTL_HW_REFINE/SNDRV_PCM_IOCTL_HW_PARAMS, these events are probed. Developers can get how many PCM rules are added into runtime of PCM substream and which rule changed which parameters.
+
+This patchset also includes some improvements. The last three commits brings small changes to kernel/userspace interface for error handling.
+
+I'm happy to receive your comment for this patchset. For your information, low level application of SNDRV_PCM_IOCTL_HW_REFINE operation is available in my github repository[2].
+
+
+[1] You can see minutes.
+http://mailman.alsa-project.org/pipermail/alsa-devel/2016-November/114279.html
+[2] refine-pcm-param.c
+https://github.com/takaswie/alsa-ioctl-test
+
+Takashi Sakamoto (21):
+  ALSA: pcm: add a helper function to constrain mask-type parameters
+  ALSA: pcm: add a helper function to constrain interval-type parameters
+  ALSA: pcm: add a helper function to apply parameter rules
+  ALSA: pcm: tracepoints for refining PCM parameters
+  ALSA: pcm: enable parameter tracepoints at CONFIG_SND_DEBUG only
+  ALSA: pcm: use goto statement instead of while statement to reduce
+    indentation
+  ALSA: pcm: remove function local variable with alternative evaluation
+  ALSA: pcm: adaption of code formatting
+  ALSA: pcm: add comment about application of rule to PCM parameters
+  ALSA: pcm: constify function local and read-only table
+  ALSA: pcm: localize snd_pcm_hw_params_choose()
+  ALSA: pcm: add tracepoints for selection process of hardware
+    parameters at SNDRV_PCM_IOCTL_HW_PARAMS
+  ALSA: pcm: use helper functions to check whether parameters are
+    determined
+  ALSA: pcm: use helper function to refer parameter as read-only
+  ALSA: pcm: add const qualifier for read-only table for sampling rate
+  ALSA: pcm/oss: refer to parameters instead of copying to reduce usage
+    of kernel stack
+  ALSA: pcm: check type of parameter in added rule
+  ALSA: pcm: calculate non-mask/non-interval parameters always when
+    possible
+  ALSA: pcm: move fixup of info flag after selecting single parameters
+  ALSA: pcm: return error immediately for parameters refinement
+  ALSA: pcm: return error immediately at refine ioctl
+
+ include/sound/pcm.h           |   1 -
+ sound/core/Makefile           |   1 +
+ sound/core/oss/pcm_oss.c      |  20 +-
+ sound/core/oss/pcm_plugin.c   |   5 +-
+ sound/core/oss/pcm_plugin.h   |   2 +-
+ sound/core/pcm_drm_eld.c      |   8 +-
+ sound/core/pcm_lib.c          |  55 +----
+ sound/core/pcm_native.c       | 485 ++++++++++++++++++++++++++++--------------
+ sound/core/pcm_params_trace.h | 142 +++++++++++++
+ 9 files changed, 494 insertions(+), 225 deletions(-)
+ create mode 100644 sound/core/pcm_params_trace.h
+
 -- 
 2.9.3
