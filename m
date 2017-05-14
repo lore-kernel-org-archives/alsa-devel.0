@@ -1,42 +1,51 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: codec: wm9860: avoid maybe-uninitialized warning
-Date: Sun, 14 May 2017 19:05:24 +0900
-Message-ID: <20170514100524.7rxtz7v3omjwonzv@sirena.org.uk>
-References: <20170419170449.2965453-1-arnd@arndb.de>
+Subject: Re: [PATCH 2/4] ASoC: codecs: msm8916: fix invalid cast to bool type
+Date: Sun, 14 May 2017 18:59:45 +0900
+Message-ID: <20170514095945.7oefv6767yiz5nzz@sirena.org.uk>
+References: <20170502133303.19622-1-o-takashi@sakamocchi.jp>
+ <20170502133303.19622-3-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="hteqfnvwvobitfyp"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+        protocol="application/pgp-signature"; boundary="2em25zaefu6bhjoo"
+Return-path: <stable-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20170419170449.2965453-1-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Daniel Baluta <daniel.baluta@nxp.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20170502133303.19622-3-o-takashi@sakamocchi.jp>
+Sender: stable-owner@vger.kernel.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, "# 4 . 10+" <stable@vger.kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---hteqfnvwvobitfyp
+--2em25zaefu6bhjoo
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Apr 19, 2017 at 07:04:20PM +0200, Arnd Bergmann wrote:
-> The new PLL configuration code triggers a harmless warning:
+On Tue, May 02, 2017 at 10:33:01PM +0900, Takashi Sakamoto wrote:
 
-This doens't apply against current code, please check and resend.
+> This commit fixes this bug by using unsigned int type, instead of bool.
+> This bug is detected by sparse:
 
---hteqfnvwvobitfyp
+> smsm8916-wcd-analog.c:809:43: warning: odd constant _Bool cast (40 becomes 1)
+> smsm8916-wcd-analog.c:814:43: warning: odd constant _Bool cast (40 becomes 1)
+
+This looks like a bug in sparse - the use of integers in a boolean
+context is totally valid and especially the fact that it is claiming
+there is a cast when clearly there is no cast is an obvious red flag, at
+the very least the message it reports is bogus.
+
+--2em25zaefu6bhjoo
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlkYK+MACgkQJNaLcl1U
-h9D7ewf/f+H3NEKn/Un8+9OdaqUQN++JCIHMJrjlGxzAbJhP3E/LY7KVoRgb2ovt
-5Hyc3Tb7hZUxonS/6Mp0UAvhViaMtV45+nJAax0nEKmbzaGMsMprrKDePzcZ5TjH
-0Jvkpp5O7rKWCNrjGKqNC3hyWSvJ0nSg0YGSbVcCPafYaB22vqLHITYVfRok6iVc
-9fI49cnYSLmk30Vx8c492wpMfFWpHV+gYpjpf/9rrE/pWIwlP8JZb4iHxnShuRBC
-hs18BkYBiomkOD8N5Rv7lVvgTeRH7OfS0zbcb2NgeuD2RdOiQWYBgZPiZf9xIjxn
-FL9JhFvUHWyQDXym/KDCOk5MzvLG4w==
-=sKdm
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlkYKpAACgkQJNaLcl1U
+h9AA6Qf/VG3NCbOY+arCaF6N+sRPXahxmRKnVMbq52i/F59qb0en7BP6wfUVfHbz
+SIZId6dPAlT0ECD4E8L5nK3JK71O3siNDwfxXn71FW8ViscvR2v7MtWiPZ6B8dP3
+8SF1BHs0ogksGG2aCL7P7ZHzAQYsMMoYbGah7DBQ1NzQFL+nJ6q4lWJjvDt5l22P
+0pfkLqrf/x6dlQ2gTXZMuByT86aYQsJ/Mnk3UThZBcxljcf7vYCQpGQUVc/KkkyS
+6t/cUlo4Uitw9Ny2ka0yaOYzdC+X6nOGdFnQXst8rT6GC1VQAgUhtjTQ/BDhlYci
+b/Kgg0gxI4oRChGWlVGM74Y1hE+PFg==
+=WeRf
 -----END PGP SIGNATURE-----
 
---hteqfnvwvobitfyp--
+--2em25zaefu6bhjoo--
