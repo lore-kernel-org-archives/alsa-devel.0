@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH RFC 07/21] ALSA: pcm: remove function local
-	variable with alternative evaluation
-Date: Sun, 14 May 2017 17:57:42 +0900
-Message-ID: <20170514085756.22382-8-o-takashi@sakamocchi.jp>
+Subject: [PATCH RFC 01/21] ALSA: pcm: add a helper function to
+	constrain mask-type parameters
+Date: Sun, 14 May 2017 17:57:36 +0900
+Message-ID: <20170514085756.22382-2-o-takashi@sakamocchi.jp>
 References: <20170514085756.22382-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 7A128266947
- for <alsa-devel@alsa-project.org>; Sun, 14 May 2017 10:58:04 +0200 (CEST)
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 1BB9226693C
+ for <alsa-devel@alsa-project.org>; Sun, 14 May 2017 10:58:01 +0200 (CEST)
 In-Reply-To: <20170514085756.22382-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,40 +25,90 @@ To: clemens@ladisch.de, tiwai@suse.de, lars@metafoo.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-A local variable is used to judge whether a parameter should be handled
-due to reverse dependency of the other rules. However, this can be
-obsoleted by check of a sentinel in dependency array.
+Application of constraints to mask-type parameters for PCM substream is
+done in a call of snd_pcm_hw_refine(), while the function includes much
+codes and is not enough friendly to readers.
 
-This commit removes the local variable and check the sentinel to reduce
-stack usage.
+This commit splits the codes to a separated function so that readers can
+get it easily. I leave desicion into compilers to merge the function into
+its callee.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/pcm_native.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ sound/core/pcm_native.c | 52 +++++++++++++++++++++++++++++++------------------
+ 1 file changed, 33 insertions(+), 19 deletions(-)
 
 diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 4de9498..39ead67 100644
+index 13dec5e..e5135e6 100644
 --- a/sound/core/pcm_native.c
 +++ b/sound/core/pcm_native.c
-@@ -351,16 +351,13 @@ static int constrain_params_by_rules(struct snd_pcm_substream *substream,
- 	for (k = 0; k < constrs->rules_num; k++) {
- 		struct snd_pcm_hw_rule *r = &constrs->rules[k];
- 		unsigned int d;
--		int doit = 0;
- 		if (r->cond && !(r->cond & params->flags))
- 			continue;
- 		for (d = 0; r->deps[d] >= 0; d++) {
--			if (vstamps[r->deps[d]] > rstamps[k]) {
--				doit = 1;
-+			if (vstamps[r->deps[d]] > rstamps[k])
- 				break;
--			}
- 		}
--		if (!doit)
-+		if (r->deps[d] < 0)
- 			continue;
+@@ -278,27 +278,12 @@ static const char * const snd_pcm_hw_param_names[] = {
+ };
+ #endif
  
- 		/* Keep old parameter to trace. */
+-int snd_pcm_hw_refine(struct snd_pcm_substream *substream, 
+-		      struct snd_pcm_hw_params *params)
++static int constrain_mask_params(struct snd_pcm_hw_constraints *constrs,
++				 struct snd_pcm_hw_params *params)
+ {
++	struct snd_mask *m;
+ 	unsigned int k;
+-	struct snd_pcm_hardware *hw;
+-	struct snd_interval *i = NULL;
+-	struct snd_mask *m = NULL;
+-	struct snd_pcm_hw_constraints *constrs = &substream->runtime->hw_constraints;
+-	unsigned int rstamps[constrs->rules_num];
+-	unsigned int vstamps[SNDRV_PCM_HW_PARAM_LAST_INTERVAL + 1];
+-	unsigned int stamp = 2;
+-	int changed, again;
+-
+-	params->info = 0;
+-	params->fifo_size = 0;
+-	if (params->rmask & (1 << SNDRV_PCM_HW_PARAM_SAMPLE_BITS))
+-		params->msbits = 0;
+-	if (params->rmask & (1 << SNDRV_PCM_HW_PARAM_RATE)) {
+-		params->rate_num = 0;
+-		params->rate_den = 0;
+-	}
++	int changed;
+ 
+ 	for (k = SNDRV_PCM_HW_PARAM_FIRST_MASK; k <= SNDRV_PCM_HW_PARAM_LAST_MASK; k++) {
+ 		m = hw_param_mask(params, k);
+@@ -320,6 +305,35 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
+ 			return changed;
+ 	}
+ 
++	return 0;
++}
++
++int snd_pcm_hw_refine(struct snd_pcm_substream *substream, 
++		      struct snd_pcm_hw_params *params)
++{
++	unsigned int k;
++	struct snd_pcm_hardware *hw;
++	struct snd_mask *m = NULL;
++	struct snd_interval *i = NULL;
++	struct snd_pcm_hw_constraints *constrs = &substream->runtime->hw_constraints;
++	unsigned int rstamps[constrs->rules_num];
++	unsigned int vstamps[SNDRV_PCM_HW_PARAM_LAST_INTERVAL + 1];
++	unsigned int stamp = 2;
++	int changed, again;
++
++	params->info = 0;
++	params->fifo_size = 0;
++	if (params->rmask & (1 << SNDRV_PCM_HW_PARAM_SAMPLE_BITS))
++		params->msbits = 0;
++	if (params->rmask & (1 << SNDRV_PCM_HW_PARAM_RATE)) {
++		params->rate_num = 0;
++		params->rate_den = 0;
++	}
++
++	changed = constrain_mask_params(constrs, params);
++	if (changed < 0)
++		return changed;
++
+ 	for (k = SNDRV_PCM_HW_PARAM_FIRST_INTERVAL; k <= SNDRV_PCM_HW_PARAM_LAST_INTERVAL; k++) {
+ 		i = hw_param_interval(params, k);
+ 		if (snd_interval_empty(i))
 -- 
 2.9.3
