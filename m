@@ -1,19 +1,16 @@
-From: =?UTF-8?B?Sm/Dq2wgS3LDpGhlbWFubg==?= <weedlight@gmail.com>
-Subject: Re: HDA cs8409 codec support
-Date: Sun, 14 May 2017 03:52:00 +0200
-Message-ID: <CANr2zYghQ30oL4CUxubN-yZcAZsMq-bORkeX6RxT6TwNTy38kg@mail.gmail.com>
-References: <CANr2zYhMbCAJo4CbtmHGGa-PPVMr9xNq7Hm=qT=6thA59Na_ww@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH RFC 00/26] Kill set_fs() in ALSA codes
+Date: Sun, 14 May 2017 17:23:01 +0900
+Message-ID: <e0af170c-8a8b-254a-e4fc-1bca373938ae@sakamocchi.jp>
+References: <20170511210925.18208-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk0-f45.google.com (mail-vk0-f45.google.com
- [209.85.213.45])
- by alsa0.perex.cz (Postfix) with ESMTP id F31EE2668AC
- for <alsa-devel@alsa-project.org>; Sun, 14 May 2017 03:52:02 +0200 (CEST)
-Received: by mail-vk0-f45.google.com with SMTP id x71so33438985vkd.0
- for <alsa-devel@alsa-project.org>; Sat, 13 May 2017 18:52:02 -0700 (PDT)
-In-Reply-To: <CANr2zYhMbCAJo4CbtmHGGa-PPVMr9xNq7Hm=qT=6thA59Na_ww@mail.gmail.com>
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 867742665D5
+ for <alsa-devel@alsa-project.org>; Sun, 14 May 2017 10:23:08 +0200 (CEST)
+In-Reply-To: <20170511210925.18208-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,27 +20,154 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkKCkkgd291bGQgbGlrZSB0byBrbm93IGhvdyBHUElPIHdvcmtzIHdpdGhpbiB0aGUga2VybmVs
-IGFuZCBob3cgaXQKaW5lcmZhY2VzIHdpdGggbXkgSERBIHNvdW5kY2FyZC4gVGhlIHNwZWNpZmlj
-YXRpb24gaGFzIGdvb2QKZGV0YWlscyBhYm91dCB2ZXJicy4gQnV0IEdQSU8gaXMgbm90IGRlc2Ny
-aWJlZCB2ZXJ5IGdvb2QuCgpCZXN0cywKSm/Dq2wKCgpPbiBTdW4sIE1heSAxNCwgMjAxNyBhdCAy
-OjE2IEFNLCBKb8OrbCBLcsOkaGVtYW5uIDx3ZWVkbGlnaHRAZ21haWwuY29tPiB3cm90ZToKPiBI
-aSBhbGwKPgo+IEZpcnN0IG9mIGFsbCwgSSBhbSBuZXcgdG8ga2VybmVsIHByb2dyYW1taW5nIGFu
-ZCBhbiBvdGhlciBhdHRlbXB0Cj4gYWxyZWFkeSBmYWlsZWQgdG8gZG8gc28uCj4KPiBIb3dldmVy
-IEkgZ290IGZhbWlsaWFyIHdpdGggdGhlIEludGVsIEhEQSBDb2RlYyBzcGVjaWZpY2F0aW9uLiBT
-byBJCj4gZGlkIGEgc3RhcnQgc2NyaXB0IHRvIGxvZyBkbWVzZyBhbmQgbWl4ZXIgY29udHJvbHMg
-b2YgZGlmZmVyZW50Cj4gY29uZmlndXJhdGlvbnMuCj4KPiBCdXQgSSBhbSBub3Qgc3VyZSBpZiBJ
-IGdvdCBhIGZ1bmN0aW9uYWwga2VybmVsIGRyaXZlciBzZXR1cCB0byB0ZXN0Cj4gdGhpbmdzLiBJ
-dCBzZWVtcyB0aGVyZSBpcyBzb21ldGhpbmcgd3JvbmcuCj4KPiBUaGUgY29kZWMgaGFzIDggR1BJ
-T3MgYW5kIGZpcnN0IEkgZGlkbid0IHNldCBhbnkgbWFzayB3aXRoaW4gdGhlCj4ga2VybmVsLiBO
-b3csIEkganVzdCBjb21waWxlIGEga2VybmVsIHNldCBpdCB0byAweGZmLgo+Cj4gQW55IGhlbHAg
-aXMgYXBwcmVjaWF0ZWQuIEZpbmFsbHkgaGVyZSBpcyBteSB3b3JrOgo+Cj4gaHR0cHM6Ly9naXRo
-dWIuY29tL2pvZWxrcmFlaGVtYW5uL2hkYS10b29sLwo+Cj4gTm90ZTogSSBoYXZlIHRyaWVkIHRv
-IHN1YnNjcmliZSB1c2luZyBhIGRpZmZlcmVudCBlbWFpbCBhZGRyZXNzIGJ1dAo+IGRpZG4ndCBn
-ZXQgYXBwcm92ZWQgbWVzc2FnZS4KPgo+IFRoYW5rIHlvdSwKPiBKb8OrbApfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi,
+
+On May 12 2017 06:08, Takashi Iwai wrote:
+> this is a slightly lengthy patchset, basically targeted for 4.13, thus
+> it's still in RFC.  The main purpose of this patchset is to get rid of
+> get_fs() / set_fs() usages in ALSA codes.
+>
+> The patchset starts from a patch that looks fairly irrelevant with the
+> goal (the conversion of HD-audio bind-mute code), but it's a step for
+> the long trail.  The biggest change in the patchset is the conversion
+> of copy & silence PCM ops into the new copy_silence ops.  It helped
+> for reducing the code size and for handling the in-kernel buffer
+> copies.
+>
+> The current patches are found in topic/kill-set_fs branch of my
+> sound.git tree.
+>
+>
+> thanks,
+>
+> Takashi
+>
+> ===
+>
+> Takashi Iwai (26):
+>   ALSA: hda - Simplify bound-beep mute control for ALC268
+>   ALSA: hda - Move bind-mixer switch codes to generic parser
+>   ALSA: hda - Remove the generic bind ctl helpers
+>   ALSA: hda - Remove the use of set_fs()
+>   ALSA: hda - Fix a typo in comment
+>   ALSA: hda - Remove superfluous header inclusions
+
+Patch 01-06 look good to me, and they can be applied regardless of the 
+rest as a refactoring of PCI HDA driver. I have had concern about usage 
+of TLV feature with the set_fs() for a bit time. I note that patch 06 
+includes a fixup to a commit 59ed1eade1d6 ("ALSA: hda - Move codec 
+suspend/resume to codec driver").
+
+>   ALSA: opl3: Kill unused set_fs()
+
+This is also good to me. These lines were forgot to remove at a commit 
+224a033252bb ("[ALSA] opl3 - Use hwdep for patch loading").
+
+>   ALSA: emu10k1: Get rid of set_fs() usage
+
+Looks good to me, but I'm not so good for emu10k1 driver and its hwdep 
+functionality. I think existent code is basically designed to run on 
+process contexts of the hwdep ioctl and not expected on device probing.
+
+>   ALSA: pcm: Remove set_fs() in PCM core code
+>   ALSA: pcm: Introduce copy_silence PCM ops
+>   ALSA: Update document about copy_silence PCM ops
+>   ALSA: dummy: Convert to copy_silence ops
+>   ALSA: es1938: Convert to copy_silence ops
+>   ALSA: korg1212: Convert to copy_silence ops
+>   ALSA: nm256: Convert to copy_silence ops
+>   ALSA: rme32: Convert to copy_silence ops
+>   ALSA: rme96: Convert to copy_silence ops
+>   ALSA: rme9652: Convert to copy_silence ops
+>   ALSA: hdsp: Convert to copy_silence ops
+>   ALSA: gus: Convert to copy_silence ops
+>   ALSA: sb: Convert to copy_silence ops
+>   ALSA: sh: Convert to copy_silence ops
+>   ASoC: blackfin: Convert to copy_silence ops
+>   [media] solo6x10: Convert to copy_silence ops
+>   ALSA: pcm: Drop the old copy and silence ops
+>   ALSA: pcm: Kill set_fs() usage in OSS layer and USB gadget
+
+I prefer the idea to unify 'struct snd_pcm_ops.copy' and 'struct 
+snd_pcm_ops.silence', but we should consider better name for it so that 
+developers can easily get its intension; e.g. just naming 'copy_frames'.
+
+About the way to copy PCM frames between several regions, I have a 
+concern about disadvantage due to adding extra branching because the 
+write/read operations repeatedly during runtime of PCM substream for 
+devices which doesn't support memory mapping of DMA-dedicated buffer.
+
+When letting me assume 'proxy' driver such ad OSS compatibility layer 
+and UAC1 gadget driver (as a peripheral), below diagram show copy 
+operation of PCM frames between memory regions. I also illustrate an use 
+case for applications.
+
+applications
+(__user *)    <-----+
+                     v
+                  usual driver
+                  (__kernel */__iomem *) <-----> hardware
+proxy drivers       ^
+(__kernel *)  <-----+
+
+The case to handle data for the proxy drivers is not general use cases 
+in ALSA PCM core and drivers. On the other hand, this patchset adds 
+extra branching in runtime of PCM substream. Additionally, increase of 
+codes in each function is not good in an aspect of hit rate of i-cache. 
+Even if practically these codes are used for minor drivers which doesn't 
+support memory mapping of DMA-dedicated buffer to user processes, it's 
+better to care of such efficiencies somehow in a point of applications. 
+Furthermore, such efficiency is good to the proxy drivers because 
+currently they don't utilize 'struct snd_pcm_runtime.dma_area' directly. 
+(If allowing the proxy drivers to have full PCM functionality, the other 
+ioctl commands should be available via snd_pcm_kernel_ioctl().)
+
+This is a callgraph for relevant functions:
+
+(sound/core/pcm_lib.c)
+snd_pcm_lib_read()
+snd_pcm_lib_readv()
+->snd_pcm_lib_read1()
+   ->snd_pcm_lib_read_transfer()
+     ->struct snd_pcm_ops.copy()
+     ->copy_to_user()
+   ->snd_pcm_lib_readv_transfer()
+     for(**bufs)
+     ->struct snd_pcm_ops.copy()
+     ->copy_to_user()
+
+(sound/core/pcm_lib.c)
+snd_pcm_lib_write()
+snd_pcm_lib_writev()
+->snd_pcm_lib_write1()
+   ->snd_pcm_lib_write_transfer()
+     ->struct snd_pcm_ops.copy()
+     ->copy_from_user()
+   ->snd_pcm_lib_writev_transfer()
+     for(**bufs)
+     ->struct snd_pcm_ops.copy()
+     ->copy_from_user()
+
+Some helper functions can be assumed to perform copy operation between 
+below three cases:
+  - struct snd_pcm_ops.copy()
+  - between __kernel * and __user *
+  - between __kernel * and __kernel *
+
+When adding a member for a callback function into 'struct 
+snd_pcm_runtime' and assigning one of the helper functions in a call of 
+HW_PARAMS or PREPARE, then call it from each call of the exported 
+functions, needless branching can be removed in runtime of PCM substream.
+
+In the above reasons, I think it better to apply refactoring at first, 
+then get rid of set_fs() fro the 'proxy' drivers. All of ALSA drivers 
+can potentially get some merit from the refactoring because the drivers 
+support simple READ_FRAME/WRITE_FRAME ioctl commands as a default.
+
+
+Regards
+
+Takashi Sakamoto
