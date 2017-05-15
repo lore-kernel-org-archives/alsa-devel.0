@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514: Add more width and channels
-	support in the TDM mode" to the asoc tree
-Date: Mon, 15 May 2017 17:02:04 +0900
-Message-ID: <E1dAAxA-0002Kj-16@finisterre>
-References: <1493692976-7167-1-git-send-email-oder_chiou@realtek.com>
+Subject: Applied "ASoC: nau8824: TDM support" to the asoc tree
+Date: Mon, 15 May 2017 17:02:08 +0900
+Message-ID: <E1dAAxE-0002Lm-Uy@finisterre>
+References: <1493689378-13662-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9026126684C
- for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 10:02:14 +0200 (CEST)
-In-Reply-To: <1493692976-7167-1-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A382266DCF
+ for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 10:02:18 +0200 (CEST)
+In-Reply-To: <1493689378-13662-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, lgirdwood@gmail.com, albertchen@realtek.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+To: John Hsu <supercraig0719@gmail.com>
+Cc: alsa-devel@alsa-project.org, WTLI@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5514: Add more width and channels support in the TDM mode
+   ASoC: nau8824: TDM support
 
 has been applied to the asoc tree at
 
@@ -53,101 +52,113 @@ to this mail.
 Thanks,
 Mark
 
->From d60bc8d6c6d7e5f9765852b0be57de639ba65808 Mon Sep 17 00:00:00 2001
-From: Oder Chiou <oder_chiou@realtek.com>
-Date: Tue, 2 May 2017 10:42:56 +0800
-Subject: [PATCH] ASoC: rt5514: Add more width and channels support in the TDM
- mode
+>From fa1014302791a1e436387e93a90f38717d7f9b03 Mon Sep 17 00:00:00 2001
+From: John Hsu <supercraig0719@gmail.com>
+Date: Tue, 2 May 2017 09:42:58 +0800
+Subject: [PATCH] ASoC: nau8824: TDM support
 
-This patch adds more width and channels support in the TDM mode.
+Support TDM format for NAU88L24.
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+Signed-off-by: John Hsu <supercraig0719@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5514.c | 23 +++++++++++++++++++++--
- sound/soc/codecs/rt5514.h |  6 ++++++
- 2 files changed, 27 insertions(+), 2 deletions(-)
+ sound/soc/codecs/nau8824.c | 52 ++++++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/codecs/nau8824.h | 12 +++++++++++
+ 2 files changed, 64 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
-index f91221b1ddf0..ff97360c03db 100644
---- a/sound/soc/codecs/rt5514.c
-+++ b/sound/soc/codecs/rt5514.c
-@@ -906,9 +906,23 @@ static int rt5514_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 	if (rx_mask || tx_mask)
- 		val |= RT5514_TDM_MODE;
- 
--	if (slots == 4)
-+	switch (slots) {
-+	case 4:
- 		val |= RT5514_TDMSLOT_SEL_RX_4CH | RT5514_TDMSLOT_SEL_TX_4CH;
-+		break;
-+
-+	case 6:
-+		val |= RT5514_TDMSLOT_SEL_RX_6CH | RT5514_TDMSLOT_SEL_TX_6CH;
-+		break;
-+
-+	case 8:
-+		val |= RT5514_TDMSLOT_SEL_RX_8CH | RT5514_TDMSLOT_SEL_TX_8CH;
-+		break;
- 
-+	case 2:
-+	default:
-+		break;
-+	}
- 
- 	switch (slot_width) {
- 	case 20:
-@@ -919,6 +933,10 @@ static int rt5514_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 		val |= RT5514_CH_LEN_RX_24 | RT5514_CH_LEN_TX_24;
- 		break;
- 
-+	case 25:
-+		val |= RT5514_TDM_MODE2;
-+		break;
-+
- 	case 32:
- 		val |= RT5514_CH_LEN_RX_32 | RT5514_CH_LEN_TX_32;
- 		break;
-@@ -930,7 +948,8 @@ static int rt5514_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 
- 	regmap_update_bits(rt5514->regmap, RT5514_I2S_CTRL1, RT5514_TDM_MODE |
- 		RT5514_TDMSLOT_SEL_RX_MASK | RT5514_TDMSLOT_SEL_TX_MASK |
--		RT5514_CH_LEN_RX_MASK | RT5514_CH_LEN_TX_MASK, val);
-+		RT5514_CH_LEN_RX_MASK | RT5514_CH_LEN_TX_MASK |
-+		RT5514_TDM_MODE2, val);
- 
- 	return 0;
+diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
+index cca974d26136..3a309b18035e 100644
+--- a/sound/soc/codecs/nau8824.c
++++ b/sound/soc/codecs/nau8824.c
+@@ -1125,6 +1125,57 @@ static int nau8824_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
  }
-diff --git a/sound/soc/codecs/rt5514.h b/sound/soc/codecs/rt5514.h
-index 5d343fb6d125..02bc212a86d9 100644
---- a/sound/soc/codecs/rt5514.h
-+++ b/sound/soc/codecs/rt5514.h
-@@ -117,6 +117,8 @@
- #define RT5514_POW_ADCFEDL_BIT			0
  
- /* RT5514_I2S_CTRL1 (0x2010) */
-+#define RT5514_TDM_MODE2			(0x1 << 30)
-+#define RT5514_TDM_MODE2_SFT			30
- #define RT5514_TDM_MODE				(0x1 << 28)
- #define RT5514_TDM_MODE_SFT			28
- #define RT5514_I2S_LR_MASK			(0x1 << 26)
-@@ -136,6 +138,8 @@
- #define RT5514_TDMSLOT_SEL_RX_MASK		(0x3 << 10)
- #define RT5514_TDMSLOT_SEL_RX_SFT		10
- #define RT5514_TDMSLOT_SEL_RX_4CH		(0x1 << 10)
-+#define RT5514_TDMSLOT_SEL_RX_6CH		(0x2 << 10)
-+#define RT5514_TDMSLOT_SEL_RX_8CH		(0x3 << 10)
- #define RT5514_CH_LEN_RX_MASK			(0x3 << 8)
- #define RT5514_CH_LEN_RX_SFT			8
- #define RT5514_CH_LEN_RX_16			(0x0 << 8)
-@@ -145,6 +149,8 @@
- #define RT5514_TDMSLOT_SEL_TX_MASK		(0x3 << 6)
- #define RT5514_TDMSLOT_SEL_TX_SFT		6
- #define RT5514_TDMSLOT_SEL_TX_4CH		(0x1 << 6)
-+#define RT5514_TDMSLOT_SEL_TX_6CH		(0x2 << 6)
-+#define RT5514_TDMSLOT_SEL_TX_8CH		(0x3 << 6)
- #define RT5514_CH_LEN_TX_MASK			(0x3 << 4)
- #define RT5514_CH_LEN_TX_SFT			4
- #define RT5514_CH_LEN_TX_16			(0x0 << 4)
+ /**
++ * nau8824_set_tdm_slot - configure DAI TDM.
++ * @dai: DAI
++ * @tx_mask: Bitmask representing active TX slots. Ex.
++ *                 0xf for normal 4 channel TDM.
++ *                 0xf0 for shifted 4 channel TDM
++ * @rx_mask: Bitmask [0:1] representing active DACR RX slots.
++ *                 Bitmask [2:3] representing active DACL RX slots.
++ *                 00=CH0,01=CH1,10=CH2,11=CH3. Ex.
++ *                 0xf for DACL/R selecting TDM CH3.
++ *                 0xf0 for DACL/R selecting shifted TDM CH3.
++ * @slots: Number of slots in use.
++ * @slot_width: Width in bits for each slot.
++ *
++ * Configures a DAI for TDM operation. Only support 4 slots TDM.
++ */
++static int nau8824_set_tdm_slot(struct snd_soc_dai *dai,
++	unsigned int tx_mask, unsigned int rx_mask, int slots, int slot_width)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct nau8824 *nau8824 = snd_soc_codec_get_drvdata(codec);
++	unsigned int tslot_l = 0, ctrl_val = 0;
++
++	if (slots > 4 || ((tx_mask & 0xf0) && (tx_mask & 0xf)) ||
++		((rx_mask & 0xf0) && (rx_mask & 0xf)) ||
++		((rx_mask & 0xf0) && (tx_mask & 0xf)) ||
++		((rx_mask & 0xf) && (tx_mask & 0xf0)))
++		return -EINVAL;
++
++	ctrl_val |= (NAU8824_TDM_MODE | NAU8824_TDM_OFFSET_EN);
++	if (tx_mask & 0xf0) {
++		tslot_l = 4 * slot_width;
++		ctrl_val |= (tx_mask >> 4);
++	} else {
++		ctrl_val |= tx_mask;
++	}
++	if (rx_mask & 0xf0)
++		ctrl_val |= ((rx_mask >> 4) << NAU8824_TDM_DACR_RX_SFT);
++	else
++		ctrl_val |= (rx_mask << NAU8824_TDM_DACR_RX_SFT);
++
++	regmap_update_bits(nau8824->regmap, NAU8824_REG_TDM_CTRL,
++		NAU8824_TDM_MODE | NAU8824_TDM_OFFSET_EN |
++		NAU8824_TDM_DACL_RX_MASK | NAU8824_TDM_DACR_RX_MASK |
++		NAU8824_TDM_TX_MASK, ctrl_val);
++	regmap_update_bits(nau8824->regmap, NAU8824_REG_PORT0_LEFT_TIME_SLOT,
++		NAU8824_TSLOT_L_MASK, tslot_l);
++
++	return 0;
++}
++
++/**
+  * nau8824_calc_fll_param - Calculate FLL parameters.
+  * @fll_in: external clock provided to codec.
+  * @fs: sampling rate.
+@@ -1440,6 +1491,7 @@ static struct snd_soc_codec_driver nau8824_codec_driver = {
+ static const struct snd_soc_dai_ops nau8824_dai_ops = {
+ 	.hw_params = nau8824_hw_params,
+ 	.set_fmt = nau8824_set_fmt,
++	.set_tdm_slot = nau8824_set_tdm_slot,
+ };
+ 
+ #define NAU8824_RATES SNDRV_PCM_RATE_8000_192000
+diff --git a/sound/soc/codecs/nau8824.h b/sound/soc/codecs/nau8824.h
+index 87ac9a382aed..21eae2431c83 100644
+--- a/sound/soc/codecs/nau8824.h
++++ b/sound/soc/codecs/nau8824.h
+@@ -258,6 +258,18 @@
+ #define NAU8824_I2S_MS_SLAVE		(0 << NAU8824_I2S_MS_SFT)
+ #define NAU8824_I2S_BLK_DIV_MASK	0x7
+ 
++/* PORT0_LEFT_TIME_SLOT (0x1E) */
++#define NAU8824_TSLOT_L_MASK	0x3ff
++
++/* TDM_CTRL (0x20) */
++#define NAU8824_TDM_MODE		(0x1 << 15)
++#define NAU8824_TDM_OFFSET_EN		(0x1 << 14)
++#define NAU8824_TDM_DACL_RX_SFT	6
++#define NAU8824_TDM_DACL_RX_MASK	(0x3 << NAU8824_TDM_DACL_RX_SFT)
++#define NAU8824_TDM_DACR_RX_SFT	4
++#define NAU8824_TDM_DACR_RX_MASK	(0x3 << NAU8824_TDM_DACR_RX_SFT)
++#define NAU8824_TDM_TX_MASK		0xf
++
+ /* ADC_FILTER_CTRL (0x24) */
+ #define NAU8824_ADC_SYNC_DOWN_MASK	0x3
+ #define NAU8824_ADC_SYNC_DOWN_32	0
 -- 
 2.11.0
