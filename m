@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "rt286: add Thinkpad Helix 2 to force_combo_jack_table" to the asoc tree
-Date: Mon, 15 May 2017 17:03:01 +0900
-Message-ID: <E1dAAy5-0002Sr-2s@finisterre>
-References: <20170503173414.GA28670@localhost.localdomain>
+Subject: Applied "ASoC: da7213: Fix incorrect usage of bitwise '&' operator for SRM check" to the asoc tree
+Date: Mon, 15 May 2017 17:02:49 +0900
+Message-ID: <E1dAAxt-0002Rk-GB@finisterre>
+References: <20170503151553.AC3FE3FB6C@swsrvapps-01.diasemi.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170503173414.GA28670@localhost.localdomain>
+In-Reply-To: <20170503151553.AC3FE3FB6C@swsrvapps-01.diasemi.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Yifeng Li <tomli@tomli.me>
-Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, oder_chiou@realtek.com, jinliangx.wang@intel.com, yang.jie@linux.intel.com, linux-kernel@vger.kernel.org, stable@vger.kernel.orgbroonie@kernel.org, bardliao@realtek.comalsa-devel@alsa-project.org
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Support Opensource <support.opensource@diasemi.com>, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   rt286: add Thinkpad Helix 2 to force_combo_jack_table
+   ASoC: da7213: Fix incorrect usage of bitwise '&' operator for SRM check
 
 has been applied to the asoc tree at
 
@@ -37,53 +37,36 @@ to this mail.
 Thanks,
 Mark
 
->From fe0dfd6358a17c79bd7d6996af7512ba452a7059 Mon Sep 17 00:00:00 2001
-From: Yifeng Li <tomli@tomli.me>
-Date: Thu, 4 May 2017 01:34:14 +0800
-Subject: [PATCH] rt286: add Thinkpad Helix 2 to force_combo_jack_table
+>From 14f814fbedd749992476bb365b454b2170b3b225 Mon Sep 17 00:00:00 2001
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Date: Wed, 3 May 2017 16:15:53 +0100
+Subject: [PATCH] ASoC: da7213: Fix incorrect usage of bitwise '&' operator for
+ SRM check
 
-Thinkpad Helix 2 is a tablet PC, the audio is powered by Core M
-broadwell-audio and rt286 codec. For all versions of Linux kernel,
-the stereo output doesn't work properly when earphones are plugged
-in, the sound was coming out from both channels even if the audio
-contains only the left or right channel. Furthermore, if a music
-recorded in stereo is played, the two channels cancle out each other
-out, as a result, no voice but only distorted background music can be
-heard, like a sound card with builtin a Karaoke sount effect.
+In the SRM lock check section of code the '&' bitwise operator is
+used as part of checking lock status. Functionally the code works
+as intended, but the conditional statement is a boolean comparison
+so should really use '&&' logical operator instead. This commit
+rectifies this discrepancy.
 
-Apparently this tablet uses a combo jack with polarity incorrectly
-set by rt286 driver. This patch adds DMI information of Thinkpad Helix 2
-to force_combo_jack_table[] and the issue is resolved. The microphone
-input doesn't work regardless to the presence of this patch and still
-needs help from other developers to investigate.
-
-This is my first patch to LKML directly, sorry for CC-ing too many
-people here.
-
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=93841
-Signed-off-by: Yifeng Li <tomli@tomli.me>
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt286.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/codecs/da7213.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 9c365a7f758d..7899a2cdeb42 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -1108,6 +1108,13 @@ static const struct dmi_system_id force_combo_jack_table[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "Kabylake Client platform")
- 		}
- 	},
-+	{
-+		.ident = "Thinkpad Helix 2nd",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-+			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad Helix 2nd")
-+		}
-+	},
+diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
+index 6dd7578f0bb8..024d83fa6a7f 100644
+--- a/sound/soc/codecs/da7213.c
++++ b/sound/soc/codecs/da7213.c
+@@ -772,7 +772,7 @@ static int da7213_dai_event(struct snd_soc_dapm_widget *w,
+ 				++i;
+ 				msleep(50);
+ 			}
+-		} while ((i < DA7213_SRM_CHECK_RETRIES) & (!srm_lock));
++		} while ((i < DA7213_SRM_CHECK_RETRIES) && (!srm_lock));
  
- 	{ }
- };
+ 		if (!srm_lock)
+ 			dev_warn(codec->dev, "SRM failed to lock\n");
 -- 
 2.11.0
