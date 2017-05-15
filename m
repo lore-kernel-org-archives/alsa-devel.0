@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: sst: fix spelling mistake: "allocationf" -> "allocation"" to the asoc tree
-Date: Mon, 15 May 2017 17:02:14 +0900
-Message-ID: <E1dAAxK-0002Mt-5m@finisterre>
-References: <20170510102940.18786-1-colin.king@canonical.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170510102940.18786-1-colin.king@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Julia Lawall <Julia.Lawall@lip6.fr>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: rt5665: add ADC STO2 ASRC support" to
+	the asoc tree
+Date: Mon, 15 May 2017 17:01:59 +0900
+Message-ID: <E1dAAx5-0002Ji-0j@finisterre>
+References: <1493694039-7816-1-git-send-email-bardliao@realtek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4DE6B26727C
+ for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 10:02:26 +0200 (CEST)
+In-Reply-To: <1493694039-7816-1-git-send-email-bardliao@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, xiaoxiang@pinecone.net, zhongan@pinecone.net, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: sst: fix spelling mistake: "allocationf" -> "allocation"
+   ASoC: rt5665: add ADC STO2 ASRC support
 
 has been applied to the asoc tree at
 
@@ -37,33 +53,39 @@ to this mail.
 Thanks,
 Mark
 
->From 3c0a98c595d87b9c961bafa755c2c0f3c031249c Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Wed, 10 May 2017 11:29:40 +0100
-Subject: [PATCH] ASoC: Intel: sst: fix spelling mistake: "allocationf" ->
- "allocation"
+>From 30b7d88de034a2b5c4f20c0cd05c792d9b619d70 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Tue, 2 May 2017 11:00:39 +0800
+Subject: [PATCH] ASoC: rt5665: add ADC STO2 ASRC support
 
-Trivial fix to spelling mistake in dev_err message. Also replace "fail"
-with "failure".
+"ADC Stereo2 Filter" is with ASRC supported.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst-mfld-platform-pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/rt5665.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/intel/atom/sst-mfld-platform-pcm.c b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-index 21cac1c8dd4c..b082b31023d5 100644
---- a/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-+++ b/sound/soc/intel/atom/sst-mfld-platform-pcm.c
-@@ -690,7 +690,7 @@ static int sst_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 			snd_dma_continuous_data(GFP_DMA),
- 			SST_MIN_BUFFER, SST_MAX_BUFFER);
- 		if (retval) {
--			dev_err(rtd->dev, "dma buffer allocationf fail\n");
-+			dev_err(rtd->dev, "dma buffer allocation failure\n");
- 			return retval;
- 		}
- 	}
+diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
+index 14b0cf89edf5..26bf157ca293 100644
+--- a/sound/soc/codecs/rt5665.c
++++ b/sound/soc/codecs/rt5665.c
+@@ -2684,6 +2684,8 @@ static const struct snd_soc_dapm_widget rt5665_dapm_widgets[] = {
+ 		RT5665_DAC_MONO_R_ASRC_SFT, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY_S("ADC STO1 ASRC", 1, RT5665_ASRC_1,
+ 		RT5665_ADC_STO1_ASRC_SFT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY_S("ADC STO2 ASRC", 1, RT5665_ASRC_1,
++		RT5665_ADC_STO2_ASRC_SFT, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY_S("ADC Mono L ASRC", 1, RT5665_ASRC_1,
+ 		RT5665_ADC_MONO_L_ASRC_SFT, 0, NULL, 0),
+ 	SND_SOC_DAPM_SUPPLY_S("ADC Mono R ASRC", 1, RT5665_ASRC_1,
+@@ -3227,6 +3229,7 @@ static const struct snd_soc_dapm_route rt5665_dapm_routes[] = {
+ 
+ 	/*ASRC*/
+ 	{"ADC Stereo1 Filter", NULL, "ADC STO1 ASRC", is_using_asrc},
++	{"ADC Stereo2 Filter", NULL, "ADC STO2 ASRC", is_using_asrc},
+ 	{"ADC Mono Left Filter", NULL, "ADC Mono L ASRC", is_using_asrc},
+ 	{"ADC Mono Right Filter", NULL, "ADC Mono R ASRC", is_using_asrc},
+ 	{"DAC Mono Left Filter", NULL, "DAC Mono L ASRC", is_using_asrc},
 -- 
 2.11.0
