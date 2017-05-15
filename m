@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5665: fix gcc-7 warning" to the asoc tree
-Date: Mon, 15 May 2017 17:03:46 +0900
-Message-ID: <E1dAAyo-0002Wl-ST@finisterre>
-References: <20170511114512.2865725-2-arnd@arndb.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170511114512.2865725-2-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Axel Lin <axel.lin@ingics.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Bard Liao <bardliao@realtek.com>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: Intel: Skylake: Fix typo for token d0i3
+	caps" to the asoc tree
+Date: Mon, 15 May 2017 17:03:06 +0900
+Message-ID: <E1dAAyA-0002Tm-El@finisterre>
+References: <1493887151-508-2-git-send-email-subhransu.s.prusty@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7063026728F
+ for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 10:03:17 +0200 (CEST)
+In-Reply-To: <1493887151-508-2-git-send-email-subhransu.s.prusty@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, lgirdwood@gmail.com, patches.audio@intel.com, tiwai@suse.de, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5665: fix gcc-7 warning
+   ASoC: Intel: Skylake: Fix typo for token d0i3 caps
 
 has been applied to the asoc tree at
 
@@ -37,567 +52,47 @@ to this mail.
 Thanks,
 Mark
 
->From 27a655c4bd8d9851c0f2ef9ec0d3793d068acbe9 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 11 May 2017 13:44:39 +0200
-Subject: [PATCH] ASoC: rt5665: fix gcc-7 warning
+>From c0116be3d191393928d39791d203a4495d77b66c Mon Sep 17 00:00:00 2001
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Date: Thu, 4 May 2017 14:09:11 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix typo for token d0i3 caps
 
-gcc-7 warns that there is a duplicate 'const' specifier in some
-variables that are declared using the SOC_ENUM_SINGLE_DECL macro:
-
-sound/soc/codecs/rt5665.c:915:14: error: duplicate 'const' declaration specifier [-Werror=duplicate-decl-specifier]
- static const SOC_ENUM_SINGLE_DECL(rt5665_if1_1_01_adc_enum,
-sound/soc/codecs/rt5665.c:918:14: error: duplicate 'const' declaration specifier [-Werror=duplicate-decl-specifier]
- static const SOC_ENUM_SINGLE_DECL(rt5665_if1_1_23_adc_enum,
-sound/soc/codecs/rt5665.c:921:14: error: duplicate 'const' declaration specifier [-Werror=duplicate-decl-specifier]
- static const SOC_ENUM_SINGLE_DECL(rt5665_if1_1_45_adc_enum,
-sound/soc/codecs/rt5665.c:924:14: error: duplicate 'const' declaration specifier [-Werror=duplicate-decl-specifier]
- static const SOC_ENUM_SINGLE_DECL(rt5665_if1_1_67_adc_enum,
-...
-
-This removes one to fix the 68 warnings in this file
-
-Fixes: 33ada14a26c8 ("ASoC: add rt5665 codec driver")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5665.c | 136 +++++++++++++++++++++++-----------------------
- 1 file changed, 68 insertions(+), 68 deletions(-)
+ include/uapi/sound/snd_sst_tokens.h    | 5 +++--
+ sound/soc/intel/skylake/skl-topology.c | 2 +-
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
-index 8cd22307f5b6..14b0cf89edf5 100644
---- a/sound/soc/codecs/rt5665.c
-+++ b/sound/soc/codecs/rt5665.c
-@@ -912,46 +912,46 @@ static const char * const rt5665_data_select[] = {
- 	"L/R", "R/L", "L/L", "R/R"
+diff --git a/include/uapi/sound/snd_sst_tokens.h b/include/uapi/sound/snd_sst_tokens.h
+index 93392bedcc58..89b82f6256ad 100644
+--- a/include/uapi/sound/snd_sst_tokens.h
++++ b/include/uapi/sound/snd_sst_tokens.h
+@@ -213,8 +213,9 @@ enum SKL_TKNS {
+ 	SKL_TKN_U32_LIB_COUNT,
+ 	SKL_TKN_STR_LIB_NAME,
+ 	SKL_TKN_U32_PMODE,
+-	SKL_TKL_U32_D0I3_CAPS,
+-	SKL_TKN_MAX = SKL_TKL_U32_D0I3_CAPS,
++	SKL_TKL_U32_D0I3_CAPS, /* Typo added at v4.10 */
++	SKL_TKN_U32_D0I3_CAPS = SKL_TKL_U32_D0I3_CAPS,
++	SKL_TKN_MAX = SKL_TKN_U32_D0I3_CAPS,
  };
  
--static const SOC_ENUM_SINGLE_DECL(rt5665_if1_1_01_adc_enum,
-+static SOC_ENUM_SINGLE_DECL(rt5665_if1_1_01_adc_enum,
- 	RT5665_TDM_CTRL_2, RT5665_I2S1_1_DS_ADC_SLOT01_SFT, rt5665_data_select);
- 
--static const SOC_ENUM_SINGLE_DECL(rt5665_if1_1_23_adc_enum,
-+static SOC_ENUM_SINGLE_DECL(rt5665_if1_1_23_adc_enum,
- 	RT5665_TDM_CTRL_2, RT5665_I2S1_1_DS_ADC_SLOT23_SFT, rt5665_data_select);
- 
--static const SOC_ENUM_SINGLE_DECL(rt5665_if1_1_45_adc_enum,
-+static SOC_ENUM_SINGLE_DECL(rt5665_if1_1_45_adc_enum,
- 	RT5665_TDM_CTRL_2, RT5665_I2S1_1_DS_ADC_SLOT45_SFT, rt5665_data_select);
- 
--static const SOC_ENUM_SINGLE_DECL(rt5665_if1_1_67_adc_enum,
-+static SOC_ENUM_SINGLE_DECL(rt5665_if1_1_67_adc_enum,
- 	RT5665_TDM_CTRL_2, RT5665_I2S1_1_DS_ADC_SLOT67_SFT, rt5665_data_select);
- 
--static const SOC_ENUM_SINGLE_DECL(rt5665_if1_2_01_adc_enum,
-+static SOC_ENUM_SINGLE_DECL(rt5665_if1_2_01_adc_enum,
- 	RT5665_TDM_CTRL_2, RT5665_I2S1_2_DS_ADC_SLOT01_SFT, rt5665_data_select);
- 
--static const SOC_ENUM_SINGLE_DECL(rt5665_if1_2_23_adc_enum,
-+static SOC_ENUM_SINGLE_DECL(rt5665_if1_2_23_adc_enum,
- 	RT5665_TDM_CTRL_2, RT5665_I2S1_2_DS_ADC_SLOT23_SFT, rt5665_data_select);
- 
--static const SOC_ENUM_SINGLE_DECL(rt5665_if1_2_45_adc_enum,
-+static SOC_ENUM_SINGLE_DECL(rt5665_if1_2_45_adc_enum,
- 	RT5665_TDM_CTRL_2, RT5665_I2S1_2_DS_ADC_SLOT45_SFT, rt5665_data_select);
- 
--static const SOC_ENUM_SINGLE_DECL(rt5665_if1_2_67_adc_enum,
-+static SOC_ENUM_SINGLE_DECL(rt5665_if1_2_67_adc_enum,
- 	RT5665_TDM_CTRL_2, RT5665_I2S1_2_DS_ADC_SLOT67_SFT, rt5665_data_select);
- 
--static const SOC_ENUM_SINGLE_DECL(rt5665_if2_1_dac_enum,
-+static SOC_ENUM_SINGLE_DECL(rt5665_if2_1_dac_enum,
- 	RT5665_DIG_INF2_DATA, RT5665_IF2_1_DAC_SEL_SFT, rt5665_data_select);
- 
--static const SOC_ENUM_SINGLE_DECL(rt5665_if2_1_adc_enum,
-+static SOC_ENUM_SINGLE_DECL(rt5665_if2_1_adc_enum,
- 	RT5665_DIG_INF2_DATA, RT5665_IF2_1_ADC_SEL_SFT, rt5665_data_select);
- 
--static const SOC_ENUM_SINGLE_DECL(rt5665_if2_2_dac_enum,
-+static SOC_ENUM_SINGLE_DECL(rt5665_if2_2_dac_enum,
- 	RT5665_DIG_INF2_DATA, RT5665_IF2_2_DAC_SEL_SFT, rt5665_data_select);
- 
--static const SOC_ENUM_SINGLE_DECL(rt5665_if2_2_adc_enum,
-+static SOC_ENUM_SINGLE_DECL(rt5665_if2_2_adc_enum,
- 	RT5665_DIG_INF2_DATA, RT5665_IF2_2_ADC_SEL_SFT, rt5665_data_select);
- 
--static const SOC_ENUM_SINGLE_DECL(rt5665_if3_dac_enum,
-+static SOC_ENUM_SINGLE_DECL(rt5665_if3_dac_enum,
- 	RT5665_DIG_INF3_DATA, RT5665_IF3_DAC_SEL_SFT, rt5665_data_select);
- 
--static const SOC_ENUM_SINGLE_DECL(rt5665_if3_adc_enum,
-+static SOC_ENUM_SINGLE_DECL(rt5665_if3_adc_enum,
- 	RT5665_DIG_INF3_DATA, RT5665_IF3_ADC_SEL_SFT, rt5665_data_select);
- 
- static const struct snd_kcontrol_new rt5665_if1_1_01_adc_swap_mux =
-@@ -1819,14 +1819,14 @@ static const char * const rt5665_dac2_src[] = {
- 	"IF1 DAC2", "IF2_1 DAC", "IF2_2 DAC", "IF3 DAC", "Mono ADC MIX"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_dac_l2_enum, RT5665_DAC2_CTRL,
- 	RT5665_DAC_L2_SEL_SFT, rt5665_dac2_src);
- 
- static const struct snd_kcontrol_new rt5665_dac_l2_mux =
- 	SOC_DAPM_ENUM("Digital DAC L2 Source", rt5665_dac_l2_enum);
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_dac_r2_enum, RT5665_DAC2_CTRL,
- 	RT5665_DAC_R2_SEL_SFT, rt5665_dac2_src);
- 
-@@ -1839,14 +1839,14 @@ static const char * const rt5665_dac3_src[] = {
- 	"IF1 DAC2", "IF2_1 DAC", "IF2_2 DAC", "IF3 DAC", "STO2 ADC MIX"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_dac_l3_enum, RT5665_DAC3_CTRL,
- 	RT5665_DAC_L3_SEL_SFT, rt5665_dac3_src);
- 
- static const struct snd_kcontrol_new rt5665_dac_l3_mux =
- 	SOC_DAPM_ENUM("Digital DAC L3 Source", rt5665_dac_l3_enum);
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_dac_r3_enum, RT5665_DAC3_CTRL,
- 	RT5665_DAC_R3_SEL_SFT, rt5665_dac3_src);
- 
-@@ -1859,14 +1859,14 @@ static const char * const rt5665_sto1_adc1_src[] = {
- 	"DD Mux", "ADC"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_sto1_adc1l_enum, RT5665_STO1_ADC_MIXER,
- 	RT5665_STO1_ADC1L_SRC_SFT, rt5665_sto1_adc1_src);
- 
- static const struct snd_kcontrol_new rt5665_sto1_adc1l_mux =
- 	SOC_DAPM_ENUM("Stereo1 ADC1L Source", rt5665_sto1_adc1l_enum);
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_sto1_adc1r_enum, RT5665_STO1_ADC_MIXER,
- 	RT5665_STO1_ADC1R_SRC_SFT, rt5665_sto1_adc1_src);
- 
-@@ -1879,14 +1879,14 @@ static const char * const rt5665_sto1_adc_src[] = {
- 	"ADC1 L", "ADC1 R", "ADC2 L", "ADC2 R"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_sto1_adcl_enum, RT5665_STO1_ADC_MIXER,
- 	RT5665_STO1_ADCL_SRC_SFT, rt5665_sto1_adc_src);
- 
- static const struct snd_kcontrol_new rt5665_sto1_adcl_mux =
- 	SOC_DAPM_ENUM("Stereo1 ADCL Source", rt5665_sto1_adcl_enum);
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_sto1_adcr_enum, RT5665_STO1_ADC_MIXER,
- 	RT5665_STO1_ADCR_SRC_SFT, rt5665_sto1_adc_src);
- 
-@@ -1899,14 +1899,14 @@ static const char * const rt5665_sto1_adc2_src[] = {
- 	"DAC MIX", "DMIC"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_sto1_adc2l_enum, RT5665_STO1_ADC_MIXER,
- 	RT5665_STO1_ADC2L_SRC_SFT, rt5665_sto1_adc2_src);
- 
- static const struct snd_kcontrol_new rt5665_sto1_adc2l_mux =
- 	SOC_DAPM_ENUM("Stereo1 ADC2L Source", rt5665_sto1_adc2l_enum);
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_sto1_adc2r_enum, RT5665_STO1_ADC_MIXER,
- 	RT5665_STO1_ADC2R_SRC_SFT, rt5665_sto1_adc2_src);
- 
-@@ -1919,7 +1919,7 @@ static const char * const rt5665_sto1_dmic_src[] = {
- 	"DMIC1", "DMIC2"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_sto1_dmic_enum, RT5665_STO1_ADC_MIXER,
- 	RT5665_STO1_DMIC_SRC_SFT, rt5665_sto1_dmic_src);
- 
-@@ -1931,7 +1931,7 @@ static const char * const rt5665_sto1_dd_l_src[] = {
- 	"STO2 DAC", "MONO DAC"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_sto1_dd_l_enum, RT5665_STO1_ADC_MIXER,
- 	RT5665_STO1_DD_L_SRC_SFT, rt5665_sto1_dd_l_src);
- 
-@@ -1943,7 +1943,7 @@ static const char * const rt5665_sto1_dd_r_src[] = {
- 	"STO2 DAC", "MONO DAC", "AEC REF"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_sto1_dd_r_enum, RT5665_STO1_ADC_MIXER,
- 	RT5665_STO1_DD_R_SRC_SFT, rt5665_sto1_dd_r_src);
- 
-@@ -1956,7 +1956,7 @@ static const char * const rt5665_mono_adc_l2_src[] = {
- 	"DAC MIXL", "DMIC"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_mono_adc_l2_enum, RT5665_MONO_ADC_MIXER,
- 	RT5665_MONO_ADC_L2_SRC_SFT, rt5665_mono_adc_l2_src);
- 
-@@ -1970,7 +1970,7 @@ static const char * const rt5665_mono_adc_l1_src[] = {
- 	"DD Mux", "ADC"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_mono_adc_l1_enum, RT5665_MONO_ADC_MIXER,
- 	RT5665_MONO_ADC_L1_SRC_SFT, rt5665_mono_adc_l1_src);
- 
-@@ -1982,14 +1982,14 @@ static const char * const rt5665_mono_dd_src[] = {
- 	"STO2 DAC", "MONO DAC"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_mono_dd_l_enum, RT5665_MONO_ADC_MIXER,
- 	RT5665_MONO_DD_L_SRC_SFT, rt5665_mono_dd_src);
- 
- static const struct snd_kcontrol_new rt5665_mono_dd_l_mux =
- 	SOC_DAPM_ENUM("Mono DD L Source", rt5665_mono_dd_l_enum);
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_mono_dd_r_enum, RT5665_MONO_ADC_MIXER,
- 	RT5665_MONO_DD_R_SRC_SFT, rt5665_mono_dd_src);
- 
-@@ -2002,14 +2002,14 @@ static const char * const rt5665_mono_adc_src[] = {
- 	"ADC1 L", "ADC1 R", "ADC2 L", "ADC2 R"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_mono_adc_l_enum, RT5665_MONO_ADC_MIXER,
- 	RT5665_MONO_ADC_L_SRC_SFT, rt5665_mono_adc_src);
- 
- static const struct snd_kcontrol_new rt5665_mono_adc_l_mux =
- 	SOC_DAPM_ENUM("Mono ADC L Source", rt5665_mono_adc_l_enum);
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_mono_adcr_enum, RT5665_MONO_ADC_MIXER,
- 	RT5665_MONO_ADC_R_SRC_SFT, rt5665_mono_adc_src);
- 
-@@ -2022,7 +2022,7 @@ static const char * const rt5665_mono_dmic_l_src[] = {
- 	"DMIC1 L", "DMIC2 L"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_mono_dmic_l_enum, RT5665_MONO_ADC_MIXER,
- 	RT5665_MONO_DMIC_L_SRC_SFT, rt5665_mono_dmic_l_src);
- 
-@@ -2035,7 +2035,7 @@ static const char * const rt5665_mono_adc_r2_src[] = {
- 	"DAC MIXR", "DMIC"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_mono_adc_r2_enum, RT5665_MONO_ADC_MIXER,
- 	RT5665_MONO_ADC_R2_SRC_SFT, rt5665_mono_adc_r2_src);
- 
-@@ -2048,7 +2048,7 @@ static const char * const rt5665_mono_adc_r1_src[] = {
- 	"DD Mux", "ADC"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_mono_adc_r1_enum, RT5665_MONO_ADC_MIXER,
- 	RT5665_MONO_ADC_R1_SRC_SFT, rt5665_mono_adc_r1_src);
- 
-@@ -2061,7 +2061,7 @@ static const char * const rt5665_mono_dmic_r_src[] = {
- 	"DMIC1 R", "DMIC2 R"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_mono_dmic_r_enum, RT5665_MONO_ADC_MIXER,
- 	RT5665_MONO_DMIC_R_SRC_SFT, rt5665_mono_dmic_r_src);
- 
-@@ -2075,14 +2075,14 @@ static const char * const rt5665_sto2_adc1_src[] = {
- 	"DD Mux", "ADC"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_sto2_adc1l_enum, RT5665_STO2_ADC_MIXER,
- 	RT5665_STO2_ADC1L_SRC_SFT, rt5665_sto2_adc1_src);
- 
- static const struct snd_kcontrol_new rt5665_sto2_adc1l_mux =
- 	SOC_DAPM_ENUM("Stereo2 ADC1L Source", rt5665_sto2_adc1l_enum);
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_sto2_adc1r_enum, RT5665_STO2_ADC_MIXER,
- 	RT5665_STO2_ADC1R_SRC_SFT, rt5665_sto2_adc1_src);
- 
-@@ -2095,14 +2095,14 @@ static const char * const rt5665_sto2_adc_src[] = {
- 	"ADC1 L", "ADC1 R", "ADC2 L"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_sto2_adcl_enum, RT5665_STO2_ADC_MIXER,
- 	RT5665_STO2_ADCL_SRC_SFT, rt5665_sto2_adc_src);
- 
- static const struct snd_kcontrol_new rt5665_sto2_adcl_mux =
- 	SOC_DAPM_ENUM("Stereo2 ADCL Source", rt5665_sto2_adcl_enum);
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_sto2_adcr_enum, RT5665_STO2_ADC_MIXER,
- 	RT5665_STO2_ADCR_SRC_SFT, rt5665_sto2_adc_src);
- 
-@@ -2115,14 +2115,14 @@ static const char * const rt5665_sto2_adc2_src[] = {
- 	"DAC MIX", "DMIC"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_sto2_adc2l_enum, RT5665_STO2_ADC_MIXER,
- 	RT5665_STO2_ADC2L_SRC_SFT, rt5665_sto2_adc2_src);
- 
- static const struct snd_kcontrol_new rt5665_sto2_adc2l_mux =
- 	SOC_DAPM_ENUM("Stereo2 ADC2L Source", rt5665_sto2_adc2l_enum);
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_sto2_adc2r_enum, RT5665_STO2_ADC_MIXER,
- 	RT5665_STO2_ADC2R_SRC_SFT, rt5665_sto2_adc2_src);
- 
-@@ -2135,7 +2135,7 @@ static const char * const rt5665_sto2_dmic_src[] = {
- 	"DMIC1", "DMIC2"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_sto2_dmic_enum, RT5665_STO2_ADC_MIXER,
- 	RT5665_STO2_DMIC_SRC_SFT, rt5665_sto2_dmic_src);
- 
-@@ -2147,7 +2147,7 @@ static const char * const rt5665_sto2_dd_l_src[] = {
- 	"STO2 DAC", "MONO DAC"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_sto2_dd_l_enum, RT5665_STO2_ADC_MIXER,
- 	RT5665_STO2_DD_L_SRC_SFT, rt5665_sto2_dd_l_src);
- 
-@@ -2159,7 +2159,7 @@ static const char * const rt5665_sto2_dd_r_src[] = {
- 	"STO2 DAC", "MONO DAC"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_sto2_dd_r_enum, RT5665_STO2_ADC_MIXER,
- 	RT5665_STO2_DD_R_SRC_SFT, rt5665_sto2_dd_r_src);
- 
-@@ -2172,14 +2172,14 @@ static const char * const rt5665_dac1_src[] = {
- 	"IF1 DAC1", "IF2_1 DAC", "IF2_2 DAC", "IF3 DAC"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_dac_r1_enum, RT5665_AD_DA_MIXER,
- 	RT5665_DAC1_R_SEL_SFT, rt5665_dac1_src);
- 
- static const struct snd_kcontrol_new rt5665_dac_r1_mux =
- 	SOC_DAPM_ENUM("DAC R1 Source", rt5665_dac_r1_enum);
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_dac_l1_enum, RT5665_AD_DA_MIXER,
- 	RT5665_DAC1_L_SEL_SFT, rt5665_dac1_src);
- 
-@@ -2192,14 +2192,14 @@ static const char * const rt5665_dig_dac_mix_src[] = {
- 	"Stereo1 DAC Mixer", "Stereo2 DAC Mixer", "Mono DAC Mixer"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_dig_dac_mixl_enum, RT5665_A_DAC1_MUX,
- 	RT5665_DAC_MIX_L_SFT, rt5665_dig_dac_mix_src);
- 
- static const struct snd_kcontrol_new rt5665_dig_dac_mixl_mux =
- 	SOC_DAPM_ENUM("DAC Digital Mixer L Source", rt5665_dig_dac_mixl_enum);
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_dig_dac_mixr_enum, RT5665_A_DAC1_MUX,
- 	RT5665_DAC_MIX_R_SFT, rt5665_dig_dac_mix_src);
- 
-@@ -2212,14 +2212,14 @@ static const char * const rt5665_alg_dac1_src[] = {
- 	"Stereo1 DAC Mixer", "DAC1", "DMIC1"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_alg_dac_l1_enum, RT5665_A_DAC1_MUX,
- 	RT5665_A_DACL1_SFT, rt5665_alg_dac1_src);
- 
- static const struct snd_kcontrol_new rt5665_alg_dac_l1_mux =
- 	SOC_DAPM_ENUM("Analog DAC L1 Source", rt5665_alg_dac_l1_enum);
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_alg_dac_r1_enum, RT5665_A_DAC1_MUX,
- 	RT5665_A_DACR1_SFT, rt5665_alg_dac1_src);
- 
-@@ -2232,14 +2232,14 @@ static const char * const rt5665_alg_dac2_src[] = {
- 	"Mono DAC Mixer", "DAC2"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_alg_dac_l2_enum, RT5665_A_DAC2_MUX,
- 	RT5665_A_DACL2_SFT, rt5665_alg_dac2_src);
- 
- static const struct snd_kcontrol_new rt5665_alg_dac_l2_mux =
- 	SOC_DAPM_ENUM("Analog DAC L2 Source", rt5665_alg_dac_l2_enum);
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_alg_dac_r2_enum, RT5665_A_DAC2_MUX,
- 	RT5665_A_DACR2_SFT, rt5665_alg_dac2_src);
- 
-@@ -2253,7 +2253,7 @@ static const char * const rt5665_if2_1_adc_in_src[] = {
- 	"IF1 DAC2", "IF2_2 DAC", "IF3 DAC", "DAC1 MIX"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_if2_1_adc_in_enum, RT5665_DIG_INF2_DATA,
- 	RT5665_IF2_1_ADC_IN_SFT, rt5665_if2_1_adc_in_src);
- 
-@@ -2266,7 +2266,7 @@ static const char * const rt5665_if2_2_adc_in_src[] = {
- 	"IF1 DAC2", "IF2_1 DAC", "IF3 DAC", "DAC1 MIX"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_if2_2_adc_in_enum, RT5665_DIG_INF2_DATA,
- 	RT5665_IF2_2_ADC_IN_SFT, rt5665_if2_2_adc_in_src);
- 
-@@ -2280,7 +2280,7 @@ static const char * const rt5665_if3_adc_in_src[] = {
- 	"IF1 DAC2", "IF2_1 DAC", "IF2_2 DAC", "DAC1 MIX"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_if3_adc_in_enum, RT5665_DIG_INF3_DATA,
- 	RT5665_IF3_ADC_IN_SFT, rt5665_if3_adc_in_src);
- 
-@@ -2293,14 +2293,14 @@ static const char * const rt5665_pdm_src[] = {
- 	"Stereo1 DAC", "Stereo2 DAC", "Mono DAC"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_pdm_l_enum, RT5665_PDM_OUT_CTRL,
- 	RT5665_PDM1_L_SFT, rt5665_pdm_src);
- 
- static const struct snd_kcontrol_new rt5665_pdm_l_mux =
- 	SOC_DAPM_ENUM("PDM L Source", rt5665_pdm_l_enum);
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_pdm_r_enum, RT5665_PDM_OUT_CTRL,
- 	RT5665_PDM1_R_SFT, rt5665_pdm_src);
- 
-@@ -2314,7 +2314,7 @@ static const char * const rt5665_if1_1_adc1_data_src[] = {
- 	"STO1 ADC", "IF2_1 DAC",
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_if1_1_adc1_data_enum, RT5665_TDM_CTRL_3,
- 	RT5665_IF1_ADC1_SEL_SFT, rt5665_if1_1_adc1_data_src);
- 
-@@ -2326,7 +2326,7 @@ static const char * const rt5665_if1_1_adc2_data_src[] = {
- 	"STO2 ADC", "IF2_2 DAC",
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_if1_1_adc2_data_enum, RT5665_TDM_CTRL_3,
- 	RT5665_IF1_ADC2_SEL_SFT, rt5665_if1_1_adc2_data_src);
- 
-@@ -2338,7 +2338,7 @@ static const char * const rt5665_if1_1_adc3_data_src[] = {
- 	"MONO ADC", "IF3 DAC",
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_if1_1_adc3_data_enum, RT5665_TDM_CTRL_3,
- 	RT5665_IF1_ADC3_SEL_SFT, rt5665_if1_1_adc3_data_src);
- 
-@@ -2350,7 +2350,7 @@ static const char * const rt5665_if1_2_adc1_data_src[] = {
- 	"STO1 ADC", "IF1 DAC",
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_if1_2_adc1_data_enum, RT5665_TDM_CTRL_4,
- 	RT5665_IF1_ADC1_SEL_SFT, rt5665_if1_2_adc1_data_src);
- 
-@@ -2362,7 +2362,7 @@ static const char * const rt5665_if1_2_adc2_data_src[] = {
- 	"STO2 ADC", "IF2_1 DAC",
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_if1_2_adc2_data_enum, RT5665_TDM_CTRL_4,
- 	RT5665_IF1_ADC2_SEL_SFT, rt5665_if1_2_adc2_data_src);
- 
-@@ -2374,7 +2374,7 @@ static const char * const rt5665_if1_2_adc3_data_src[] = {
- 	"MONO ADC", "IF2_2 DAC",
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_if1_2_adc3_data_enum, RT5665_TDM_CTRL_4,
- 	RT5665_IF1_ADC3_SEL_SFT, rt5665_if1_2_adc3_data_src);
- 
-@@ -2386,7 +2386,7 @@ static const char * const rt5665_if1_2_adc4_data_src[] = {
- 	"DAC1", "IF3 DAC",
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_if1_2_adc4_data_enum, RT5665_TDM_CTRL_4,
- 	RT5665_IF1_ADC4_SEL_SFT, rt5665_if1_2_adc4_data_src);
- 
-@@ -2401,14 +2401,14 @@ static const char * const rt5665_tdm_adc_data_src[] = {
- 	"4123", "4132", "4213", "4231", "4312", "4321"
- };
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_tdm1_adc_data_enum, RT5665_TDM_CTRL_3,
- 	RT5665_TDM_ADC_SEL_SFT, rt5665_tdm_adc_data_src);
- 
- static const struct snd_kcontrol_new rt5665_tdm1_adc_mux =
- 	SOC_DAPM_ENUM("TDM1 ADC Mux", rt5665_tdm1_adc_data_enum);
- 
--static const SOC_ENUM_SINGLE_DECL(
-+static SOC_ENUM_SINGLE_DECL(
- 	rt5665_tdm2_adc_data_enum, RT5665_TDM_CTRL_4,
- 	RT5665_TDM_ADC_SEL_SFT, rt5665_tdm_adc_data_src);
+ #endif
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 3a99712e44a8..b28199a5348c 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -1995,7 +1995,7 @@ static int skl_tplg_get_token(struct device *dev,
+ 		mconfig->converter = tkn_elem->value;
+ 		break;
+ 
+-	case SKL_TKL_U32_D0I3_CAPS:
++	case SKL_TKN_U32_D0I3_CAPS:
+ 		mconfig->d0i3_caps = tkn_elem->value;
+ 		break;
  
 -- 
 2.11.0
