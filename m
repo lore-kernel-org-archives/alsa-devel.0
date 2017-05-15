@@ -1,18 +1,14 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v3 0/7] ASoC: Intel: kabylake: Adds
- rt5663+max98927 machine driver
-Date: Mon, 15 May 2017 16:24:47 +0530
-Message-ID: <20170515105446.GB15061@localhost>
-References: <1494835937-22068-1-git-send-email-naveen.m@intel.com>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH] ASoC: rt5514: Add ACPI match ID
+Date: Mon, 15 May 2017 19:02:07 +0800
+Message-ID: <1494846127-9008-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 64584266851
- for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 12:52:41 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1494835937-22068-1-git-send-email-naveen.m@intel.com>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9AA5A266851
+ for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 13:02:17 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,23 +18,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Naveen M <naveen.m@intel.com>
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, pierre-louis.bossart@intel.com
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, Hsin-Yu Chao <hychao@chromium.org>, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 15, 2017 at 01:42:10PM +0530, Naveen M wrote:
-> Add support for multiple codecs in acpi matching of sst library using
-> machine quirk for robust mach driver selection.
-> Add kabylake machine driver & corresponding driver entry in machine table
-> for following codecs:
->  1. rt5663 for headset configured to ssp1.
->  2. max98927 for speakers configured to ssp0.
-> Changes in V2: Convert all machine data to C99 style.
-> Changes in V3: Split machine data for respective drivers 
+This patch adds the ACPI match ID for rt5514 codec.
 
-Looks good to me:
+Signed-off-by: Hsin-Yu Chao <hychao@chromium.org>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5514.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Acked-by: Vinod Koul <vinod.koul@intel.com>
-
+diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
+index 6856b8c..1b6796c 100644
+--- a/sound/soc/codecs/rt5514.c
++++ b/sound/soc/codecs/rt5514.c
+@@ -9,6 +9,7 @@
+  * published by the Free Software Foundation.
+  */
+ 
++#include <linux/acpi.h>
+ #include <linux/fs.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+@@ -1095,6 +1096,14 @@ static const struct of_device_id rt5514_of_match[] = {
+ MODULE_DEVICE_TABLE(of, rt5514_of_match);
+ #endif
+ 
++#ifdef CONFIG_ACPI
++static struct acpi_device_id rt5514_acpi_match[] = {
++	{ "10EC5514", 0},
++	{},
++};
++MODULE_DEVICE_TABLE(acpi, rt5514_acpi_match);
++#endif
++
+ static int rt5514_parse_dt(struct rt5514_priv *rt5514, struct device *dev)
+ {
+ 	device_property_read_u32(dev, "realtek,dmic-init-delay-ms",
+@@ -1198,6 +1207,7 @@ static const struct dev_pm_ops rt5514_i2_pm_ops = {
+ static struct i2c_driver rt5514_i2c_driver = {
+ 	.driver = {
+ 		.name = "rt5514",
++		.acpi_match_table = ACPI_PTR(rt5514_acpi_match),
+ 		.of_match_table = of_match_ptr(rt5514_of_match),
+ 		.pm = &rt5514_i2_pm_ops,
+ 	},
 -- 
-~Vinod
+2.7.4
