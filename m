@@ -1,33 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tlv320dac31xx: Fix mistype in
-	tlv320dac31xx codec" to the asoc tree
-Date: Mon, 15 May 2017 17:02:23 +0900
-Message-ID: <E1dAAxT-0002O6-Tf@finisterre>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E2001267276
- for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 10:02:32 +0200 (CEST)
-In-Reply-To: 
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Tomas Vilda <tomas.vilda@gmail.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: Applied "rt286: add Thinkpad Helix 2 to force_combo_jack_table" to the asoc tree
+Date: Mon, 15 May 2017 17:03:01 +0900
+Message-ID: <E1dAAy5-0002Sr-2s@finisterre>
+References: <20170503173414.GA28670@localhost.localdomain>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170503173414.GA28670@localhost.localdomain>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Yifeng Li <tomli@tomli.me>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, oder_chiou@realtek.com, jinliangx.wang@intel.com, yang.jie@linux.intel.com, linux-kernel@vger.kernel.org, stable@vger.kernel.orgbroonie@kernel.org, bardliao@realtek.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tlv320dac31xx: Fix mistype in tlv320dac31xx codec
+   rt286: add Thinkpad Helix 2 to force_combo_jack_table
 
 has been applied to the asoc tree at
 
@@ -52,29 +37,53 @@ to this mail.
 Thanks,
 Mark
 
->From 51827c41c9ce07293b094691673e6ec23dfdc5e8 Mon Sep 17 00:00:00 2001
-From: Tomas Vilda <tomas.vilda@gmail.com>
-Date: Sat, 13 May 2017 00:29:37 +0300
-Subject: [PATCH] ASoC: tlv320dac31xx: Fix mistype in tlv320dac31xx codec
+>From fe0dfd6358a17c79bd7d6996af7512ba452a7059 Mon Sep 17 00:00:00 2001
+From: Yifeng Li <tomli@tomli.me>
+Date: Thu, 4 May 2017 01:34:14 +0800
+Subject: [PATCH] rt286: add Thinkpad Helix 2 to force_combo_jack_table
 
-Signed-off-by: Tomas Vilda <tomas.vilda@gmail.com>
+Thinkpad Helix 2 is a tablet PC, the audio is powered by Core M
+broadwell-audio and rt286 codec. For all versions of Linux kernel,
+the stereo output doesn't work properly when earphones are plugged
+in, the sound was coming out from both channels even if the audio
+contains only the left or right channel. Furthermore, if a music
+recorded in stereo is played, the two channels cancle out each other
+out, as a result, no voice but only distorted background music can be
+heard, like a sound card with builtin a Karaoke sount effect.
+
+Apparently this tablet uses a combo jack with polarity incorrectly
+set by rt286 driver. This patch adds DMI information of Thinkpad Helix 2
+to force_combo_jack_table[] and the issue is resolved. The microphone
+input doesn't work regardless to the presence of this patch and still
+needs help from other developers to investigate.
+
+This is my first patch to LKML directly, sorry for CC-ing too many
+people here.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=93841
+Signed-off-by: Yifeng Li <tomli@tomli.me>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tlv320aic31xx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/rt286.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index f8a90ba8cd71..d7d03c92cb8a 100644
---- a/sound/soc/codecs/tlv320aic31xx.c
-+++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -1210,7 +1210,7 @@ static const struct snd_soc_dai_ops aic31xx_dai_ops = {
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index 9c365a7f758d..7899a2cdeb42 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -1108,6 +1108,13 @@ static const struct dmi_system_id force_combo_jack_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "Kabylake Client platform")
+ 		}
+ 	},
++	{
++		.ident = "Thinkpad Helix 2nd",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad Helix 2nd")
++		}
++	},
  
- static struct snd_soc_dai_driver dac31xx_dai_driver[] = {
- 	{
--		.name = "tlv32dac31xx-hifi",
-+		.name = "tlv320dac31xx-hifi",
- 		.playback = {
- 			.stream_name	 = "Playback",
- 			.channels_min	 = 2,
+ 	{ }
+ };
 -- 
 2.11.0
