@@ -1,58 +1,54 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 1/2] ALSA: firewire-tascam: Fix infinite loop in
- snd_tscm_stream_get_rate()
-Date: Mon, 15 May 2017 23:40:12 +0900
-Message-ID: <6d8977cb-05c9-b237-2f2d-8b0ab8077bc6@sakamocchi.jp>
-References: <1494836350-28790-1-git-send-email-geert@linux-m68k.org>
- <fab2c28e-4ed2-8995-d11e-a843195103b2@sakamocchi.jp>
- <CAMuHMdXOkx3XcqH3LS--5Z9Gbfdftgvrbsz8MhH-4k3rqSmxRw@mail.gmail.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v2 2/2] dmaengine: dw: Remove AVR32 bits
+ from the driver
+Date: Mon, 15 May 2017 20:19:40 +0530
+Message-ID: <20170515144939.GC15061@localhost>
+References: <20170509161837.48301-1-andriy.shevchenko@linux.intel.com>
+ <20170509161837.48301-3-andriy.shevchenko@linux.intel.com>
+ <20170514130457.GK6263@localhost>
+ <1494837791.6967.44.camel@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAMuHMdXOkx3XcqH3LS--5Z9Gbfdftgvrbsz8MhH-4k3rqSmxRw@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Arnd Bergmann <arnd@arndb.de>, Clemens Ladisch <clemens@ladisch.de>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id D9EFB266E0E
+ for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 16:47:34 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1494837791.6967.44.camel@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, alsa-devel@alsa-project.org, Nicolas Ferre <nicolas.ferre@atmel.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, dmaengine@vger.kernel.org, Haavard Skinnemoen <hskinnemoen@gmail.com>, Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>, Hans-Christian Noren Egtvedt <egtvedt@samfundet.no>
 List-Id: alsa-devel@alsa-project.org
 
-On May 15 2017 23:22, Geert Uytterhoeven wrote:
->>> diff --git a/sound/firewire/tascam/tascam-stream.c
->>> b/sound/firewire/tascam/tascam-stream.c
->>> index f1657a4e0621ef49..e433b92ac6904db5 100644
->>> --- a/sound/firewire/tascam/tascam-stream.c
->>> +++ b/sound/firewire/tascam/tascam-stream.c
->>> @@ -84,7 +84,7 @@ int snd_tscm_stream_get_rate(struct snd_tscm *tscm,
->>> unsigned int *rate)
->>>         unsigned int trials = 0;
->>>         int err;
->>>
->>> -       while (data == 0x0 || trials++ < 5) {
->>> +       while (data == 0x0 && trials++ < 5) {
->>>                 err = get_clock(tscm, &data);
->>>                 if (err < 0)
->>>                         return err;
->>
->> Yep. It looks a bug.
->>
->> ...However, removal of the bug causes issue that the driver fails to start a
->> pair of capture/playback PCM substream when application requests them mostly
->> the same time, like jackd process.
->>
->> I think I did apply the bug as a makeshift workaround, then forgot itself
->> when developing the driver... I'd like to have a bit time for further
->> investigation, then post my fix in this development period.
->
-> Probably you need a small delay in the loop?
-> Why else do you #include <linux/delay.h>? ;-)
+On Mon, May 15, 2017 at 11:43:11AM +0300, Andy Shevchenko wrote:
+> On Sun, 2017-05-14 at 18:34 +0530, Vinod Koul wrote:
+> > On Tue, May 09, 2017 at 07:18:37PM +0300, Andy Shevchenko wrote:
+> > > AVR32 is gone. Now it's time to clean up the driver by removing
+> > > leftovers that was used by AVR32 related code.
+> > 
+> > Since the cover didn't mention any dependency, I went ahead and
+> > applied this
+> > now
+> > 
+> 
+> Sorry, I forgot to mention that it's supposed to go via either tree,
+> though together. Since first we remove users of non-standard DMA
+> callbacks.
 
-I know PDI1394L40 (link layer) has quirks inconvenient to us. 
-Furthermore, the behaviour of on-board FPGAs with unique firmwares are 
-in black boxes to me.
+Okay dropped it, anyway the kbuild complained due to dependency
 
-I prefer deliberate approach for this kind of work, reverse engineering.
+SO if you want this to be merged thru sound tree:
 
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 
-Regards
-
-Takashi Sakamoto
+-- 
+~Vinod
