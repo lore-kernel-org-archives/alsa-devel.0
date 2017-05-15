@@ -1,17 +1,19 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/2] ALSA: Use IS_ENABLED() in common headers
-Date: Mon, 15 May 2017 11:32:54 +0200
-Message-ID: <20170515093255.21132-1-tiwai@suse.de>
+Subject: [PATCH 2/2] ALSA: cmi8238: Use IS_ENABLED()
+Date: Mon, 15 May 2017 11:32:55 +0200
+Message-ID: <20170515093255.21132-2-tiwai@suse.de>
+References: <20170515093255.21132-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 5A670266587
+ by alsa0.perex.cz (Postfix) with ESMTP id F40DE2673AE
  for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 11:32:58 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id EC8EFAAB2
- for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 09:32:57 +0000 (UTC)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id CCB59AC0D
+ for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 09:32:58 +0000 (UTC)
+In-Reply-To: <20170515093255.21132-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,154 +26,26 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Simplify the ifdef conditions with IS_ENABLED() macro in the common
-sound headers.  No functional changes.
+Simplify the ifdef conditions with IS_ENABLED() macro.
+No functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/core.h      |  6 +++---
- include/sound/mixer_oss.h |  2 +-
- include/sound/opl3.h      |  4 ++--
- include/sound/pcm.h       | 10 +++++-----
- include/sound/rawmidi.h   |  4 ++--
- 5 files changed, 13 insertions(+), 13 deletions(-)
+ sound/isa/cmi8328.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/sound/core.h b/include/sound/core.h
-index f7d8c10c4c45..55385588eefa 100644
---- a/include/sound/core.h
-+++ b/include/sound/core.h
-@@ -142,7 +142,7 @@ struct snd_card {
- 	wait_queue_head_t power_sleep;
- #endif
+diff --git a/sound/isa/cmi8328.c b/sound/isa/cmi8328.c
+index 8e1756c3b9bb..d09e456107ad 100644
+--- a/sound/isa/cmi8328.c
++++ b/sound/isa/cmi8328.c
+@@ -26,7 +26,7 @@ MODULE_AUTHOR("Ondrej Zary <linux@rainbow-software.org>");
+ MODULE_DESCRIPTION("C-Media CMI8328");
+ MODULE_LICENSE("GPL");
  
--#if defined(CONFIG_SND_MIXER_OSS) || defined(CONFIG_SND_MIXER_OSS_MODULE)
-+#if IS_ENABLED(CONFIG_SND_MIXER_OSS)
- 	struct snd_mixer_oss *mixer_oss;
- 	int mixer_oss_change_count;
- #endif
-@@ -243,7 +243,7 @@ int copy_from_user_toio(volatile void __iomem *dst, const void __user *src, size
- 
- extern struct snd_card *snd_cards[SNDRV_CARDS];
- int snd_card_locked(int card);
--#if defined(CONFIG_SND_MIXER_OSS) || defined(CONFIG_SND_MIXER_OSS_MODULE)
-+#if IS_ENABLED(CONFIG_SND_MIXER_OSS)
- #define SND_MIXER_OSS_NOTIFY_REGISTER	0
- #define SND_MIXER_OSS_NOTIFY_DISCONNECT	1
- #define SND_MIXER_OSS_NOTIFY_FREE	2
-@@ -394,7 +394,7 @@ static inline void snd_printdd(const char *format, ...) {}
- #define SNDRV_OSS_VERSION         ((3<<16)|(8<<8)|(1<<4)|(0))	/* 3.8.1a */
- 
- /* for easier backward-porting */
 -#if defined(CONFIG_GAMEPORT) || defined(CONFIG_GAMEPORT_MODULE)
 +#if IS_ENABLED(CONFIG_GAMEPORT)
- #define gameport_set_dev_parent(gp,xdev) ((gp)->dev.parent = (xdev))
- #define gameport_set_port_data(gp,r) ((gp)->port_data = (r))
- #define gameport_get_port_data(gp) (gp)->port_data
-diff --git a/include/sound/mixer_oss.h b/include/sound/mixer_oss.h
-index 13cb0b430a1b..930da10fb65b 100644
---- a/include/sound/mixer_oss.h
-+++ b/include/sound/mixer_oss.h
-@@ -22,7 +22,7 @@
-  *
-  */
- 
--#if defined(CONFIG_SND_MIXER_OSS) || defined(CONFIG_SND_MIXER_OSS_MODULE)
-+#if IS_ENABLED(CONFIG_SND_MIXER_OSS)
- 
- #define SNDRV_OSS_MAX_MIXERS	32
- 
-diff --git a/include/sound/opl3.h b/include/sound/opl3.h
-index 6ba670707831..5a87641c6ae4 100644
---- a/include/sound/opl3.h
-+++ b/include/sound/opl3.h
-@@ -321,7 +321,7 @@ struct snd_opl3 {
- 	unsigned char fm_mode;		/* OPL mode, see SNDRV_DM_FM_MODE_XXX */
- 	unsigned char rhythm;		/* percussion mode flag */
- 	unsigned char max_voices;	/* max number of voices */
--#if defined(CONFIG_SND_SEQUENCER) || defined(CONFIG_SND_SEQUENCER_MODULE)
-+#if IS_ENABLED(CONFIG_SND_SEQUENCER)
- #define SNDRV_OPL3_MODE_SYNTH 0		/* OSS - voices allocated by application */
- #define SNDRV_OPL3_MODE_SEQ 1		/* ALSA - driver handles voice allocation */
- 	int synth_mode;			/* synth mode */
-@@ -374,7 +374,7 @@ int snd_opl3_release(struct snd_hwdep * hw, struct file *file);
- 
- void snd_opl3_reset(struct snd_opl3 * opl3);
- 
--#if defined(CONFIG_SND_SEQUENCER) || defined(CONFIG_SND_SEQUENCER_MODULE)
-+#if IS_ENABLED(CONFIG_SND_SEQUENCER)
- long snd_opl3_write(struct snd_hwdep *hw, const char __user *buf, long count,
- 		    loff_t *offset);
- int snd_opl3_load_patch(struct snd_opl3 *opl3,
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index eb16912d6046..3f084486868f 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -34,7 +34,7 @@
- #define snd_pcm_substream_chip(substream) ((substream)->private_data)
- #define snd_pcm_chip(pcm) ((pcm)->private_data)
- 
--#if defined(CONFIG_SND_PCM_OSS) || defined(CONFIG_SND_PCM_OSS_MODULE)
-+#if IS_ENABLED(CONFIG_SND_PCM_OSS)
- #include <sound/pcm_oss.h>
+ #define SUPPORT_JOYSTICK 1
  #endif
  
-@@ -418,7 +418,7 @@ struct snd_pcm_runtime {
- 	struct snd_pcm_audio_tstamp_report audio_tstamp_report;
- 	struct timespec driver_tstamp;
- 
--#if defined(CONFIG_SND_PCM_OSS) || defined(CONFIG_SND_PCM_OSS_MODULE)
-+#if IS_ENABLED(CONFIG_SND_PCM_OSS)
- 	/* -- OSS things -- */
- 	struct snd_pcm_oss_runtime oss;
- #endif
-@@ -464,7 +464,7 @@ struct snd_pcm_substream {
- 	unsigned int f_flags;
- 	void (*pcm_release)(struct snd_pcm_substream *);
- 	struct pid *pid;
--#if defined(CONFIG_SND_PCM_OSS) || defined(CONFIG_SND_PCM_OSS_MODULE)
-+#if IS_ENABLED(CONFIG_SND_PCM_OSS)
- 	/* -- OSS things -- */
- 	struct snd_pcm_oss_substream oss;
- #endif
-@@ -494,7 +494,7 @@ struct snd_pcm_str {
- 	unsigned int substream_count;
- 	unsigned int substream_opened;
- 	struct snd_pcm_substream *substream;
--#if defined(CONFIG_SND_PCM_OSS) || defined(CONFIG_SND_PCM_OSS_MODULE)
-+#if IS_ENABLED(CONFIG_SND_PCM_OSS)
- 	/* -- OSS things -- */
- 	struct snd_pcm_oss_stream oss;
- #endif
-@@ -526,7 +526,7 @@ struct snd_pcm {
- 	void (*private_free) (struct snd_pcm *pcm);
- 	bool internal; /* pcm is for internal use only */
- 	bool nonatomic; /* whole PCM operations are in non-atomic context */
--#if defined(CONFIG_SND_PCM_OSS) || defined(CONFIG_SND_PCM_OSS_MODULE)
-+#if IS_ENABLED(CONFIG_SND_PCM_OSS)
- 	struct snd_pcm_oss oss;
- #endif
- };
-diff --git a/include/sound/rawmidi.h b/include/sound/rawmidi.h
-index 492a3ca7f17b..6665cb29e1a2 100644
---- a/include/sound/rawmidi.h
-+++ b/include/sound/rawmidi.h
-@@ -30,7 +30,7 @@
- #include <linux/workqueue.h>
- #include <linux/device.h>
- 
--#if defined(CONFIG_SND_SEQUENCER) || defined(CONFIG_SND_SEQUENCER_MODULE)
-+#if IS_ENABLED(CONFIG_SND_SEQUENCER)
- #include <sound/seq_device.h>
- #endif
- 
-@@ -144,7 +144,7 @@ struct snd_rawmidi {
- 
- 	struct snd_info_entry *proc_entry;
- 
--#if defined(CONFIG_SND_SEQUENCER) || defined(CONFIG_SND_SEQUENCER_MODULE)
-+#if IS_ENABLED(CONFIG_SND_SEQUENCER)
- 	struct snd_seq_device *seq_dev;
- #endif
- };
 -- 
 2.12.2
