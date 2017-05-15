@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7213: Fix incorrect usage of bitwise '&' operator for SRM check" to the asoc tree
-Date: Mon, 15 May 2017 17:02:49 +0900
-Message-ID: <E1dAAxt-0002Rk-GB@finisterre>
-References: <20170503151553.AC3FE3FB6C@swsrvapps-01.diasemi.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170503151553.AC3FE3FB6C@swsrvapps-01.diasemi.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Support Opensource <support.opensource@diasemi.com>, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: intel: atom: localize variable without
+	external linkage" to the asoc tree
+Date: Mon, 15 May 2017 17:02:27 +0900
+Message-ID: <E1dAAxY-0002P1-09@finisterre>
+References: <20170502133303.19622-5-o-takashi@sakamocchi.jp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9062C2672B1
+ for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 10:02:38 +0200 (CEST)
+In-Reply-To: <20170502133303.19622-5-o-takashi@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: Vinod Koul <vinod.koul@intel.com>, tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, Sebastien Guiriec <sebastien.guiriec@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7213: Fix incorrect usage of bitwise '&' operator for SRM check
+   ASoC: intel: atom: localize variable without external linkage
 
 has been applied to the asoc tree at
 
@@ -37,36 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From 14f814fbedd749992476bb365b454b2170b3b225 Mon Sep 17 00:00:00 2001
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date: Wed, 3 May 2017 16:15:53 +0100
-Subject: [PATCH] ASoC: da7213: Fix incorrect usage of bitwise '&' operator for
- SRM check
+>From 65db85fba1df213ff80d6f3cbafee244c58f6ec3 Mon Sep 17 00:00:00 2001
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Date: Tue, 2 May 2017 22:33:03 +0900
+Subject: [PATCH] ASoC: intel: atom: localize variable without external linkage
 
-In the SRM lock check section of code the '&' bitwise operator is
-used as part of checking lock status. Functionally the code works
-as intended, but the conditional statement is a boolean comparison
-so should really use '&&' logical operator instead. This commit
-rectifies this discrepancy.
+A driver for Intel SST driver for old atom platform includes a variable
+which has no external linkage. These functions should have static
+qualifier.
 
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+This commit adds the qualifier to localize the variable. This issue is
+detected by sparse:
+
+sst.c:261:1: warning: symbol 'dev_attr_firmware_version' was not declared. Should it be static?
+
+Cc: Sebastien Guiriec <sebastien.guiriec@intel.com>
+Cc: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7213.c | 2 +-
+ sound/soc/intel/atom/sst/sst.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
-index 6dd7578f0bb8..024d83fa6a7f 100644
---- a/sound/soc/codecs/da7213.c
-+++ b/sound/soc/codecs/da7213.c
-@@ -772,7 +772,7 @@ static int da7213_dai_event(struct snd_soc_dapm_widget *w,
- 				++i;
- 				msleep(50);
- 			}
--		} while ((i < DA7213_SRM_CHECK_RETRIES) & (!srm_lock));
-+		} while ((i < DA7213_SRM_CHECK_RETRIES) && (!srm_lock));
+diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
+index f9ba71315e33..d97556a3772c 100644
+--- a/sound/soc/intel/atom/sst/sst.c
++++ b/sound/soc/intel/atom/sst/sst.c
+@@ -258,7 +258,7 @@ static ssize_t firmware_version_show(struct device *dev,
  
- 		if (!srm_lock)
- 			dev_warn(codec->dev, "SRM failed to lock\n");
+ }
+ 
+-DEVICE_ATTR_RO(firmware_version);
++static DEVICE_ATTR_RO(firmware_version);
+ 
+ static const struct attribute *sst_fw_version_attrs[] = {
+ 	&dev_attr_firmware_version.attr,
 -- 
 2.11.0
