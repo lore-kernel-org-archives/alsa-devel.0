@@ -1,20 +1,18 @@
-From: Naveen M <naveen.m@intel.com>
-Subject: Re: [PATCH v2 1/6] ASoC: Intel: Convert all machine
-	data to C99 style
-Date: Mon, 15 May 2017 11:07:42 +0530
-Message-ID: <29598.9106911749$1505300774@news.gmane.org>
-References: <1494505944-31378-1-git-send-email-naveen.m@intel.com>
- <1494505944-31378-2-git-send-email-naveen.m@intel.com>
- <20170515052022.GA15061@localhost>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
+Return-Path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
  by alsa0.perex.cz (Postfix) with ESMTP id 276D4266D52
  for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 07:37:38 +0200 (CEST)
+Date: Mon, 15 May 2017 11:07:42 +0530
+From: Naveen M <naveen.m@intel.com>
+Message-ID: <20170515053742.GA11811@nm-B85M-D3Hnaveen.m@intel.com>
+References: <1494505944-31378-1-git-send-email-naveen.m@intel.com>
+ <1494505944-31378-2-git-send-email-naveen.m@intel.com>
+ <20170515052022.GA15061@localhost>
+MIME-Version: 1.0
 Content-Disposition: inline
 In-Reply-To: <20170515052022.GA15061@localhost>
+Subject: Re: [alsa-devel] [PATCH v2 1/6] ASoC: Intel: Convert all machine
+	data to C99 style
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,11 +20,13 @@ List-Post: <mailto:alsa-devel@alsa-project.org>
 List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
 List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Vinod Koul <vinod.koul@intel.com>
 Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, pierre-louis.bossart@intel.com
-List-Id: alsa-devel@alsa-project.org
+List-ID: <alsa-devel@alsa-project.org>
 
 On Mon, May 15, 2017 at 10:50:23AM +0530, Vinod Koul wrote:
 > On Thu, May 11, 2017 at 06:02:19PM +0530, Naveen M wrote:
@@ -389,3 +389,7 @@ Sure, will be fixed with V3.
 > ~Vinod
 
 -- 
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@alsa-project.org
+http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
