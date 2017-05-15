@@ -1,19 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/3] ALSA: cs4281: Fix the leftover comment
-Date: Mon, 15 May 2017 11:33:38 +0200
-Message-ID: <20170515093338.21220-3-tiwai@suse.de>
-References: <20170515093338.21220-1-tiwai@suse.de>
+Subject: [PATCH 1/3] ALSA: opl4: Use IS_REACHABLE()
+Date: Mon, 15 May 2017 11:33:36 +0200
+Message-ID: <20170515093338.21220-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 24B112673C9
- for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 11:33:43 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5422C2673DA
+ for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 11:33:41 +0200 (CEST)
 Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 03E31AC04
- for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 09:33:43 +0000 (UTC)
-In-Reply-To: <20170515093338.21220-1-tiwai@suse.de>
+ by mx1.suse.de (Postfix) with ESMTP id E71F9AC08
+ for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 09:33:40 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,26 +24,50 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The comment at endif line was forgotten to be corrected when the
-condition was converted to IS_REACHABLE().  Fix it, too.
+Rewrite the complex ifdef condition with IS_REACHABLE().
+The ifdef in opl4_local.h was without defined(MODLE) check, but this
+is likely the oversight.  Use IS_REACHABLE() here as well.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/cs4281.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/drivers/opl4/opl4_lib.c   | 4 ++--
+ sound/drivers/opl4/opl4_local.h | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/pci/cs4281.c b/sound/pci/cs4281.c
-index f870697aca67..ee7ba4b0b47b 100644
---- a/sound/pci/cs4281.c
-+++ b/sound/pci/cs4281.c
-@@ -1296,7 +1296,7 @@ static void snd_cs4281_free_gameport(struct cs4281 *chip)
- #else
- static inline int snd_cs4281_create_gameport(struct cs4281 *chip) { return -ENOSYS; }
- static inline void snd_cs4281_free_gameport(struct cs4281 *chip) { }
--#endif /* CONFIG_GAMEPORT || (MODULE && CONFIG_GAMEPORT_MODULE) */
-+#endif /* IS_REACHABLE(CONFIG_GAMEPORT) */
+diff --git a/sound/drivers/opl4/opl4_lib.c b/sound/drivers/opl4/opl4_lib.c
+index 89c7aa04b3bc..240656e54400 100644
+--- a/sound/drivers/opl4/opl4_lib.c
++++ b/sound/drivers/opl4/opl4_lib.c
+@@ -153,7 +153,7 @@ static int snd_opl4_detect(struct snd_opl4 *opl4)
+ 	return 0;
+ }
  
- static int snd_cs4281_free(struct cs4281 *chip)
+-#if defined(CONFIG_SND_SEQUENCER) || (defined(MODULE) && defined(CONFIG_SND_SEQUENCER_MODULE))
++#if IS_REACHABLE(CONFIG_SND_SEQUENCER)
+ static void snd_opl4_seq_dev_free(struct snd_seq_device *seq_dev)
  {
+ 	struct snd_opl4 *opl4 = seq_dev->private_data;
+@@ -249,7 +249,7 @@ int snd_opl4_create(struct snd_card *card,
+ 	snd_opl4_create_mixer(opl4);
+ 	snd_opl4_create_proc(opl4);
+ 
+-#if defined(CONFIG_SND_SEQUENCER) || (defined(MODULE) && defined(CONFIG_SND_SEQUENCER_MODULE))
++#if IS_REACHABLE(CONFIG_SND_SEQUENCER)
+ 	opl4->seq_client = -1;
+ 	if (opl4->hardware < OPL3_HW_OPL4_ML)
+ 		snd_opl4_create_seq_dev(opl4, seq_device);
+diff --git a/sound/drivers/opl4/opl4_local.h b/sound/drivers/opl4/opl4_local.h
+index 9a41bdebce6b..d5bac93f8245 100644
+--- a/sound/drivers/opl4/opl4_local.h
++++ b/sound/drivers/opl4/opl4_local.h
+@@ -184,7 +184,7 @@ struct snd_opl4 {
+ #endif
+ 	struct mutex access_mutex;
+ 
+-#if defined(CONFIG_SND_SEQUENCER) || defined(CONFIG_SND_SEQUENCER_MODULE)
++#if IS_REACHABLE(CONFIG_SND_SEQUENCER)
+ 	int used;
+ 
+ 	int seq_dev_num;
 -- 
 2.12.2
