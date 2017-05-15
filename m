@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: atom: localize variable without
-	external linkage" to the asoc tree
-Date: Mon, 15 May 2017 17:02:27 +0900
-Message-ID: <E1dAAxY-0002P1-09@finisterre>
-References: <20170502133303.19622-5-o-takashi@sakamocchi.jp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9062C2672B1
- for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 10:02:38 +0200 (CEST)
-In-Reply-To: <20170502133303.19622-5-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: Vinod Koul <vinod.koul@intel.com>, tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, Sebastien Guiriec <sebastien.guiriec@intel.com>
+Subject: Applied "ASoC: ak4613: disable asymmetric audio interface format" to the asoc tree
+Date: Mon, 15 May 2017 17:03:42 +0900
+Message-ID: <E1dAAyl-0002Vo-06@finisterre>
+References: <87o9v4ccid.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87o9v4ccid.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: atom: localize variable without external linkage
+   ASoC: ak4613: disable asymmetric audio interface format
 
 has been applied to the asoc tree at
 
@@ -53,40 +37,83 @@ to this mail.
 Thanks,
 Mark
 
->From 65db85fba1df213ff80d6f3cbafee244c58f6ec3 Mon Sep 17 00:00:00 2001
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Tue, 2 May 2017 22:33:03 +0900
-Subject: [PATCH] ASoC: intel: atom: localize variable without external linkage
+>From ec185f95401e36f398b39706705f10d7fe7ff058 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 8 May 2017 02:28:13 +0000
+Subject: [PATCH] ASoC: ak4613: disable asymmetric audio interface format
 
-A driver for Intel SST driver for old atom platform includes a variable
-which has no external linkage. These functions should have static
-qualifier.
+Asymmetric audio interface formats exist in ak4613 by same
+register settings.
 
-This commit adds the qualifier to localize the variable. This issue is
-detected by sparse:
+	Capture		Playback
+	24bit LEFT_J	16bit RIGHT_J
+	24bit LEFT_J	20bit RIGHT_J
+	24bit LEFT_J	24bit RIGHT_J
+	24bit LEFT_J	24bit LEFT_J
+	24bit I2S	24bit I2S
 
-sst.c:261:1: warning: symbol 'dev_attr_firmware_version' was not declared. Should it be static?
+These asymmetric formats makes driver / behavior difficult.
+It is not HW limitation, but SW limitation. To makes code reading
+easy, this patch removes asymmetric format support.
 
-Cc: Sebastien Guiriec <sebastien.guiriec@intel.com>
-Cc: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst/sst.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/ak4613.c | 18 ++++--------------
+ 1 file changed, 4 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
-index f9ba71315e33..d97556a3772c 100644
---- a/sound/soc/intel/atom/sst/sst.c
-+++ b/sound/soc/intel/atom/sst/sst.c
-@@ -258,7 +258,7 @@ static ssize_t firmware_version_show(struct device *dev,
+diff --git a/sound/soc/codecs/ak4613.c b/sound/soc/codecs/ak4613.c
+index b2dfddead227..557ac16d43e2 100644
+--- a/sound/soc/codecs/ak4613.c
++++ b/sound/soc/codecs/ak4613.c
+@@ -139,9 +139,7 @@ static const struct reg_default ak4613_reg[] = {
+ #define AUDIO_IFACE(b, fmt) { b, SND_SOC_DAIFMT_##fmt }
+ static const struct ak4613_interface ak4613_iface[] = {
+ 	/* capture */				/* playback */
+-	[0] = {	AUDIO_IFACE(24, LEFT_J),	AUDIO_IFACE(16, RIGHT_J) },
+-	[1] = {	AUDIO_IFACE(24, LEFT_J),	AUDIO_IFACE(20, RIGHT_J) },
+-	[2] = {	AUDIO_IFACE(24, LEFT_J),	AUDIO_IFACE(24, RIGHT_J) },
++	/* [0] - [2] are not supported */
+ 	[3] = {	AUDIO_IFACE(24, LEFT_J),	AUDIO_IFACE(24, LEFT_J) },
+ 	[4] = {	AUDIO_IFACE(24, I2S),		AUDIO_IFACE(24, I2S) },
+ };
+@@ -262,11 +260,9 @@ static int ak4613_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	fmt &= SND_SOC_DAIFMT_FORMAT_MASK;
  
+ 	switch (fmt) {
+-	case SND_SOC_DAIFMT_RIGHT_J:
+ 	case SND_SOC_DAIFMT_LEFT_J:
+ 	case SND_SOC_DAIFMT_I2S:
+ 		priv->fmt = fmt;
+-
+ 		break;
+ 	default:
+ 		return -EINVAL;
+@@ -286,13 +282,8 @@ static bool ak4613_dai_fmt_matching(const struct ak4613_interface *iface,
+ 	if (fmts->fmt != fmt)
+ 		return false;
+ 
+-	if (fmt == SND_SOC_DAIFMT_RIGHT_J) {
+-		if (fmts->width != width)
+-			return false;
+-	} else {
+-		if (fmts->width < width)
+-			return false;
+-	}
++	if (fmts->width != width)
++		return false;
+ 
+ 	return true;
  }
+@@ -420,8 +411,7 @@ static const struct snd_soc_dai_ops ak4613_dai_ops = {
+ 				 SNDRV_PCM_RATE_96000  |\
+ 				 SNDRV_PCM_RATE_176400 |\
+ 				 SNDRV_PCM_RATE_192000)
+-#define AK4613_PCM_FMTBIT	(SNDRV_PCM_FMTBIT_S16_LE |\
+-				 SNDRV_PCM_FMTBIT_S24_LE)
++#define AK4613_PCM_FMTBIT	(SNDRV_PCM_FMTBIT_S24_LE)
  
--DEVICE_ATTR_RO(firmware_version);
-+static DEVICE_ATTR_RO(firmware_version);
- 
- static const struct attribute *sst_fw_version_attrs[] = {
- 	&dev_attr_firmware_version.attr,
+ static struct snd_soc_dai_driver ak4613_dai = {
+ 	.name = "ak4613-hifi",
 -- 
 2.11.0
