@@ -1,67 +1,52 @@
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] ASoC: rt5665: Fix uninitialized warning in
-	rt5665_i2s_pin_event()
-Date: Mon, 15 May 2017 10:33:59 +0200
-Message-ID: <1494837239-2479-1-git-send-email-geert@linux-m68k.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [195.130.137.89])
- by alsa0.perex.cz (Postfix) with ESMTP id 15AEC26684C
- for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 10:34:03 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, Geert Uytterhoeven <geert@linux-m68k.org>, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+From: Quentin Schulz <quentin.schulz@free-electrons.com>
+Subject: [PATCH] ASoC: atmel-classd: sync regcache when resuming
+Date: Mon, 15 May 2017 10:36:17 +0200
+Message-ID: <20170515083617.16742-1-quentin.schulz@free-electrons.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: nicolas.ferre@microchip.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: Quentin Schulz <quentin.schulz@free-electrons.com>, alexandre.belloni@free-electrons.com, thomas.petazzoni@free-electrons.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-V2l0aCBnY2MgNC4xLjI6CgogICAgc291bmQvc29jL2NvZGVjcy9ydDU2NjUuYzogSW4gZnVuY3Rp
-b24g4oCYcnQ1NjY1X2kyc19waW5fZXZlbnTigJk6CiAgICBzb3VuZC9zb2MvY29kZWNzL3J0NTY2
-NS5jOjI2MTA6IHdhcm5pbmc6IOKAmG1hc2sx4oCZIG1heSBiZSB1c2VkIHVuaW5pdGlhbGl6ZWQg
-aW4gdGhpcyBmdW5jdGlvbgogICAgc291bmQvc29jL2NvZGVjcy9ydDU2NjUuYzoyNjEwOiB3YXJu
-aW5nOiDigJh2YWwy4oCZIG1heSBiZSB1c2VkIHVuaW5pdGlhbGl6ZWQgaW4gdGhpcyBmdW5jdGlv
-bgogICAgc291bmQvc29jL2NvZGVjcy9ydDU2NjUuYzoyNjEwOiB3YXJuaW5nOiDigJh2YWwx4oCZ
-IG1heSBiZSB1c2VkIHVuaW5pdGlhbGl6ZWQgaW4gdGhpcyBmdW5jdGlvbgoKVGhlIGZpcnN0IG9u
-ZSBpcyBjdXJyZW50bHkgYSBmYWxzZSBwb3NpdGl2ZSwgYXMgcnQ1NjY1X2kyc19waW5fZXZlbnQo
-KQppcyBuZXZlciBjYWxsZWQgd2l0aCBzbmRfc29jX2RhcG1fd2lkZ2V0LnNoaWZ0IHNldCB0byBh
-IHZhbHVlIG5vdApoYW5kbGVkIGJ5IHRoZSBzd2l0Y2goKSBzdGF0ZW1lbnQuICBCdXQgdGhhdCBt
-YXkgY2hhbmdlLCBzbwpwcmVpbml0aWFsaXplIG1hc2sxIHRvIGZpeCB0aGlzLCBsaWtlIGlzIGFs
-cmVhZHkgZG9uZSBmb3IgbWFzazIuCgpUaGUgbGFzdCB0d28gYXJlIGZhbHNlLXBvc2l0aXZlcywg
-dGhlIGNvbXBpbGVyIGlzIGp1c3Qgbm90IHNtYXJ0IGVub3VnaAp0byBub3RpY2UgdGhlIG1hc2sg
-YW5kIHZhbCB2YXJpYWJsZXMgYXJlIGFsd2F5cyB1c2VkIHRvZ2V0aGVyLgoKRml4ZXM6IDliNWQz
-ODY1YjNiNDEwZDIgKCJBU29DOiBydDU2NjU6IHNldCBpMnMgcGluIHNoYXJlIGNvbmZpZ3VyYXRp
-b24iKQpTaWduZWQtb2ZmLWJ5OiBHZWVydCBVeXR0ZXJob2V2ZW4gPGdlZXJ0QGxpbnV4LW02OGsu
-b3JnPgotLS0KIHNvdW5kL3NvYy9jb2RlY3MvcnQ1NjY1LmMgfCAxMCArKysrKysrLS0tCiAxIGZp
-bGUgY2hhbmdlZCwgNyBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBh
-L3NvdW5kL3NvYy9jb2RlY3MvcnQ1NjY1LmMgYi9zb3VuZC9zb2MvY29kZWNzL3J0NTY2NS5jCmlu
-ZGV4IDhjZDIyMzA3ZjViNmU2YWIuLjVlNDJmNGVlNTFiYTViMjAgMTAwNjQ0Ci0tLSBhL3NvdW5k
-L3NvYy9jb2RlY3MvcnQ1NjY1LmMKKysrIGIvc291bmQvc29jL2NvZGVjcy9ydDU2NjUuYwpAQCAt
-MjYwNyw3ICsyNjA3LDcgQEAgc3RhdGljIGludCBydDU2NjVfaTJzX3Bpbl9ldmVudChzdHJ1Y3Qg
-c25kX3NvY19kYXBtX3dpZGdldCAqdywKIAlzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJvbCwg
-aW50IGV2ZW50KQogewogCXN0cnVjdCBzbmRfc29jX2NvZGVjICpjb2RlYyA9IHNuZF9zb2NfZGFw
-bV90b19jb2RlYyh3LT5kYXBtKTsKLQl1bnNpZ25lZCBpbnQgdmFsMSwgdmFsMiwgbWFzazEsIG1h
-c2syID0gMDsKKwl1bnNpZ25lZCBpbnQgdmFsMSwgdmFsMiwgbWFzazEgPSAwLCBtYXNrMiA9IDA7
-CiAKIAlzd2l0Y2ggKHctPnNoaWZ0KSB7CiAJY2FzZSBSVDU2NjVfUFdSX0kyUzJfMV9CSVQ6CkBA
-IC0yNjM1LDEzICsyNjM1LDE3IEBAIHN0YXRpYyBpbnQgcnQ1NjY1X2kyc19waW5fZXZlbnQoc3Ry
-dWN0IHNuZF9zb2NfZGFwbV93aWRnZXQgKncsCiAJfQogCXN3aXRjaCAoZXZlbnQpIHsKIAljYXNl
-IFNORF9TT0NfREFQTV9QUkVfUE1VOgotCQlzbmRfc29jX3VwZGF0ZV9iaXRzKGNvZGVjLCBSVDU2
-NjVfR1BJT19DVFJMXzEsIG1hc2sxLCB2YWwxKTsKKwkJaWYgKG1hc2sxKQorCQkJc25kX3NvY191
-cGRhdGVfYml0cyhjb2RlYywgUlQ1NjY1X0dQSU9fQ1RSTF8xLAorCQkJCQkgICAgbWFzazEsIHZh
-bDEpOwogCQlpZiAobWFzazIpCiAJCQlzbmRfc29jX3VwZGF0ZV9iaXRzKGNvZGVjLCBSVDU2NjVf
-R1BJT19DVFJMXzIsCiAJCQkJCSAgICBtYXNrMiwgdmFsMik7CiAJCWJyZWFrOwogCWNhc2UgU05E
-X1NPQ19EQVBNX1BPU1RfUE1EOgotCQlzbmRfc29jX3VwZGF0ZV9iaXRzKGNvZGVjLCBSVDU2NjVf
-R1BJT19DVFJMXzEsIG1hc2sxLCAwKTsKKwkJaWYgKG1hc2sxKQorCQkJc25kX3NvY191cGRhdGVf
-Yml0cyhjb2RlYywgUlQ1NjY1X0dQSU9fQ1RSTF8xLAorCQkJCQkgICAgbWFzazEsIDApOwogCQlp
-ZiAobWFzazIpCiAJCQlzbmRfc29jX3VwZGF0ZV9iaXRzKGNvZGVjLCBSVDU2NjVfR1BJT19DVFJM
-XzIsCiAJCQkJCSAgICBtYXNrMiwgMCk7Ci0tIAoyLjcuNAoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+The PM functions used in this driver are the ones defined in
+sounc/soc/soc-core.c.
+
+When suspending (using snd_soc_suspend), the regcache is marked dirty
+but is never synced on resume.
+
+Sync regcache on resume of Atmel ClassD device.
+
+Signed-off-by: Quentin Schulz <quentin.schulz@free-electrons.com>
+---
+ sound/soc/atmel/atmel-classd.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
+index 7ae46c2647d4..b7ef8c59b49a 100644
+--- a/sound/soc/atmel/atmel-classd.c
++++ b/sound/soc/atmel/atmel-classd.c
+@@ -301,6 +301,14 @@ static int atmel_classd_codec_probe(struct snd_soc_codec *codec)
+ 	return 0;
+ }
+ 
++static int atmel_classd_codec_resume(struct snd_soc_codec *codec)
++{
++	struct snd_soc_card *card = snd_soc_codec_get_drvdata(codec);
++	struct atmel_classd *dd = snd_soc_card_get_drvdata(card);
++
++	return regcache_sync(dd->regmap);
++}
++
+ static struct regmap *atmel_classd_codec_get_remap(struct device *dev)
+ {
+ 	return dev_get_regmap(dev, NULL);
+@@ -308,6 +316,7 @@ static struct regmap *atmel_classd_codec_get_remap(struct device *dev)
+ 
+ static struct snd_soc_codec_driver soc_codec_dev_classd = {
+ 	.probe		= atmel_classd_codec_probe,
++	.resume		= atmel_classd_codec_resume,
+ 	.get_regmap	= atmel_classd_codec_get_remap,
+ 	.component_driver = {
+ 		.controls		= atmel_classd_snd_controls,
+-- 
+2.11.0
