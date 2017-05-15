@@ -1,59 +1,86 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 1/2] ALSA: firewire-tascam: Fix infinite
- loop in snd_tscm_stream_get_rate()
-Date: Mon, 15 May 2017 23:07:28 +0900
-Message-ID: <fab2c28e-4ed2-8995-d11e-a843195103b2@sakamocchi.jp>
-References: <1494836350-28790-1-git-send-email-geert@linux-m68k.org>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: Re: [PATCH 1/2] ALSA: firewire-tascam: Fix infinite loop in snd_tscm_stream_get_rate()
+Date: Mon, 15 May 2017 16:22:50 +0200
+Message-ID: <CAMuHMdXOkx3XcqH3LS--5Z9Gbfdftgvrbsz8MhH-4k3rqSmxRw@mail.gmail.com>
+References: <1494836350-28790-1-git-send-email-geert@linux-m68k.org> <fab2c28e-4ed2-8995-d11e-a843195103b2@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id AF662266E15
- for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 16:07:34 +0200 (CEST)
-In-Reply-To: <1494836350-28790-1-git-send-email-geert@linux-m68k.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <fab2c28e-4ed2-8995-d11e-a843195103b2@sakamocchi.jp>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiBNYXkgMTUgMjAxNyAxNzoxOSwgR2VlcnQgVXl0dGVyaG9ldmVuIHdyb3RlOgo+IE9i
-dmlvdXNseSB0aGUgaW50ZW50aW9uIHdhcyB0byBwdXQgYSBsaW1pdCBvbiB0aGUgbWF4aW11bSBu
-dW1iZXIgb2YKPiBvcGVyYXRpb25zLiAgSG93ZXZlciwgZm9yIHRoaXMgdG8gd29yaywgdGhlIGNo
-ZWNrIHNob3VsZCBiZQo+ICImJiB0cmlhbHMrKyA8IDUiLCBub3QgInx8IHRyaWFscysrIDwgNSIu
-Cj4KPiBGaXhlczogMzVlZmE1YzQ4OWRlNjNhOSAoIkFMU0E6IGZpcmV3aXJlLXRhc2NhbTogYWRk
-IHN0cmVhbWluZyBmdW5jdGlvbmFsaXR5IikKPiBTaWduZWQtb2ZmLWJ5OiBHZWVydCBVeXR0ZXJo
-b2V2ZW4gPGdlZXJ0QGxpbnV4LW02OGsub3JnPgo+IC0tLQo+IENvbXBpbGUtdGVzdGVkIG9ubHku
-Cj4KPiBUcmlnZ2VyZWQgYnkgYSBmYWxzZS1wb3NpdGl2ZSB3YXJuaW5nIGZyb20gZ2NjLTQuMS4y
-Ogo+Cj4gICAgIHdhcm5pbmc6IOKAmGVycuKAmSBtYXkgYmUgdXNlZCB1bmluaXRpYWxpemVkIGlu
-IHRoaXMgZnVuY3Rpb24KPiAtLS0KPiAgc291bmQvZmlyZXdpcmUvdGFzY2FtL3Rhc2NhbS1zdHJl
-YW0uYyB8IDIgKy0KPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9u
-KC0pCj4KPiBkaWZmIC0tZ2l0IGEvc291bmQvZmlyZXdpcmUvdGFzY2FtL3Rhc2NhbS1zdHJlYW0u
-YyBiL3NvdW5kL2ZpcmV3aXJlL3Rhc2NhbS90YXNjYW0tc3RyZWFtLmMKPiBpbmRleCBmMTY1N2E0
-ZTA2MjFlZjQ5Li5lNDMzYjkyYWM2OTA0ZGI1IDEwMDY0NAo+IC0tLSBhL3NvdW5kL2ZpcmV3aXJl
-L3Rhc2NhbS90YXNjYW0tc3RyZWFtLmMKPiArKysgYi9zb3VuZC9maXJld2lyZS90YXNjYW0vdGFz
-Y2FtLXN0cmVhbS5jCj4gQEAgLTg0LDcgKzg0LDcgQEAgaW50IHNuZF90c2NtX3N0cmVhbV9nZXRf
-cmF0ZShzdHJ1Y3Qgc25kX3RzY20gKnRzY20sIHVuc2lnbmVkIGludCAqcmF0ZSkKPiAgCXVuc2ln
-bmVkIGludCB0cmlhbHMgPSAwOwo+ICAJaW50IGVycjsKPgo+IC0Jd2hpbGUgKGRhdGEgPT0gMHgw
-IHx8IHRyaWFscysrIDwgNSkgewo+ICsJd2hpbGUgKGRhdGEgPT0gMHgwICYmIHRyaWFscysrIDwg
-NSkgewo+ICAJCWVyciA9IGdldF9jbG9jayh0c2NtLCAmZGF0YSk7Cj4gIAkJaWYgKGVyciA8IDAp
-Cj4gIAkJCXJldHVybiBlcnI7CgpZZXAuIEl0IGxvb2tzIGEgYnVnLgoKLi4uSG93ZXZlciwgcmVt
-b3ZhbCBvZiB0aGUgYnVnIGNhdXNlcyBpc3N1ZSB0aGF0IHRoZSBkcml2ZXIgZmFpbHMgdG8gCnN0
-YXJ0IGEgcGFpciBvZiBjYXB0dXJlL3BsYXliYWNrIFBDTSBzdWJzdHJlYW0gd2hlbiBhcHBsaWNh
-dGlvbiByZXF1ZXN0cyAKdGhlbSBtb3N0bHkgdGhlIHNhbWUgdGltZSwgbGlrZSBqYWNrZCBwcm9j
-ZXNzLgoKSSB0aGluayBJIGRpZCBhcHBseSB0aGUgYnVnIGFzIGEgbWFrZXNoaWZ0IHdvcmthcm91
-bmQsIHRoZW4gZm9yZ290IAppdHNlbGYgd2hlbiBkZXZlbG9waW5nIHRoZSBkcml2ZXIuLi4gSSdk
-IGxpa2UgdG8gaGF2ZSBhIGJpdCB0aW1lIGZvciAKZnVydGhlciBpbnZlc3RpZ2F0aW9uLCB0aGVu
-IHBvc3QgbXkgZml4IGluIHRoaXMgZGV2ZWxvcG1lbnQgcGVyaW9kLgoKUGxlYXNlIGxldCBtZSBr
-ZWVwIHRoaXMgcGF0Y2ggcGVuZGluZy4KCgpUaGFua3MKClRha2FzaGkgU2FrYW1vdG8KX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hi Sakamoto-san,
+
+On Mon, May 15, 2017 at 4:07 PM, Takashi Sakamoto
+<o-takashi@sakamocchi.jp> wrote:
+> On May 15 2017 17:19, Geert Uytterhoeven wrote:
+>> Obviously the intention was to put a limit on the maximum number of
+>> operations.  However, for this to work, the check should be
+>> "&& trials++ < 5", not "|| trials++ < 5".
+>>
+>> Fixes: 35efa5c489de63a9 ("ALSA: firewire-tascam: add streaming
+>> functionality")
+>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>> ---
+>> Compile-tested only.
+>>
+>> Triggered by a false-positive warning from gcc-4.1.2:
+>>
+>>     warning: =E2=80=98err=E2=80=99 may be used uninitialized in this fun=
+ction
+>> ---
+>>  sound/firewire/tascam/tascam-stream.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/sound/firewire/tascam/tascam-stream.c
+>> b/sound/firewire/tascam/tascam-stream.c
+>> index f1657a4e0621ef49..e433b92ac6904db5 100644
+>> --- a/sound/firewire/tascam/tascam-stream.c
+>> +++ b/sound/firewire/tascam/tascam-stream.c
+>> @@ -84,7 +84,7 @@ int snd_tscm_stream_get_rate(struct snd_tscm *tscm,
+>> unsigned int *rate)
+>>         unsigned int trials =3D 0;
+>>         int err;
+>>
+>> -       while (data =3D=3D 0x0 || trials++ < 5) {
+>> +       while (data =3D=3D 0x0 && trials++ < 5) {
+>>                 err =3D get_clock(tscm, &data);
+>>                 if (err < 0)
+>>                         return err;
+>
+> Yep. It looks a bug.
+>
+> ...However, removal of the bug causes issue that the driver fails to star=
+t a
+> pair of capture/playback PCM substream when application requests them mos=
+tly
+> the same time, like jackd process.
+>
+> I think I did apply the bug as a makeshift workaround, then forgot itself
+> when developing the driver... I'd like to have a bit time for further
+> investigation, then post my fix in this development period.
+
+Probably you need a small delay in the loop?
+Why else do you #include <linux/delay.h>? ;-)
+
+> Please let me keep this patch pending.
+
+OK.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+.org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
