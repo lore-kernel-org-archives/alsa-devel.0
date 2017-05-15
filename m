@@ -1,24 +1,59 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] ASoC: codec: wm9860: avoid maybe-uninitialized warning
-Date: Mon, 15 May 2017 16:03:37 +0200
-Message-ID: <CAK8P3a0-1e7EnjP508MMyVNRj6kb2hL+06GUu=rUueARPYRr0g@mail.gmail.com>
-References: <20170419170449.2965453-1-arnd@arndb.de> <20170514100524.7rxtz7v3omjwonzv@sirena.org.uk>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 1/2] ALSA: firewire-tascam: Fix infinite
+ loop in snd_tscm_stream_get_rate()
+Date: Mon, 15 May 2017 23:07:28 +0900
+Message-ID: <fab2c28e-4ed2-8995-d11e-a843195103b2@sakamocchi.jp>
+References: <1494836350-28790-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170514100524.7rxtz7v3omjwonzv@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Daniel Baluta <daniel.baluta@nxp.com>, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id AF662266E15
+ for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 16:07:34 +0200 (CEST)
+In-Reply-To: <1494836350-28790-1-git-send-email-geert@linux-m68k.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, May 14, 2017 at 12:05 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Wed, Apr 19, 2017 at 07:04:20PM +0200, Arnd Bergmann wrote:
->> The new PLL configuration code triggers a harmless warning:
->
-> This doens't apply against current code, please check and resend.
-
-I can confirm that you have already merged Daniel's updated version,
-and that this addresses the problem.
-
-       Arnd
+SGksCgpPbiBNYXkgMTUgMjAxNyAxNzoxOSwgR2VlcnQgVXl0dGVyaG9ldmVuIHdyb3RlOgo+IE9i
+dmlvdXNseSB0aGUgaW50ZW50aW9uIHdhcyB0byBwdXQgYSBsaW1pdCBvbiB0aGUgbWF4aW11bSBu
+dW1iZXIgb2YKPiBvcGVyYXRpb25zLiAgSG93ZXZlciwgZm9yIHRoaXMgdG8gd29yaywgdGhlIGNo
+ZWNrIHNob3VsZCBiZQo+ICImJiB0cmlhbHMrKyA8IDUiLCBub3QgInx8IHRyaWFscysrIDwgNSIu
+Cj4KPiBGaXhlczogMzVlZmE1YzQ4OWRlNjNhOSAoIkFMU0E6IGZpcmV3aXJlLXRhc2NhbTogYWRk
+IHN0cmVhbWluZyBmdW5jdGlvbmFsaXR5IikKPiBTaWduZWQtb2ZmLWJ5OiBHZWVydCBVeXR0ZXJo
+b2V2ZW4gPGdlZXJ0QGxpbnV4LW02OGsub3JnPgo+IC0tLQo+IENvbXBpbGUtdGVzdGVkIG9ubHku
+Cj4KPiBUcmlnZ2VyZWQgYnkgYSBmYWxzZS1wb3NpdGl2ZSB3YXJuaW5nIGZyb20gZ2NjLTQuMS4y
+Ogo+Cj4gICAgIHdhcm5pbmc6IOKAmGVycuKAmSBtYXkgYmUgdXNlZCB1bmluaXRpYWxpemVkIGlu
+IHRoaXMgZnVuY3Rpb24KPiAtLS0KPiAgc291bmQvZmlyZXdpcmUvdGFzY2FtL3Rhc2NhbS1zdHJl
+YW0uYyB8IDIgKy0KPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRlbGV0aW9u
+KC0pCj4KPiBkaWZmIC0tZ2l0IGEvc291bmQvZmlyZXdpcmUvdGFzY2FtL3Rhc2NhbS1zdHJlYW0u
+YyBiL3NvdW5kL2ZpcmV3aXJlL3Rhc2NhbS90YXNjYW0tc3RyZWFtLmMKPiBpbmRleCBmMTY1N2E0
+ZTA2MjFlZjQ5Li5lNDMzYjkyYWM2OTA0ZGI1IDEwMDY0NAo+IC0tLSBhL3NvdW5kL2ZpcmV3aXJl
+L3Rhc2NhbS90YXNjYW0tc3RyZWFtLmMKPiArKysgYi9zb3VuZC9maXJld2lyZS90YXNjYW0vdGFz
+Y2FtLXN0cmVhbS5jCj4gQEAgLTg0LDcgKzg0LDcgQEAgaW50IHNuZF90c2NtX3N0cmVhbV9nZXRf
+cmF0ZShzdHJ1Y3Qgc25kX3RzY20gKnRzY20sIHVuc2lnbmVkIGludCAqcmF0ZSkKPiAgCXVuc2ln
+bmVkIGludCB0cmlhbHMgPSAwOwo+ICAJaW50IGVycjsKPgo+IC0Jd2hpbGUgKGRhdGEgPT0gMHgw
+IHx8IHRyaWFscysrIDwgNSkgewo+ICsJd2hpbGUgKGRhdGEgPT0gMHgwICYmIHRyaWFscysrIDwg
+NSkgewo+ICAJCWVyciA9IGdldF9jbG9jayh0c2NtLCAmZGF0YSk7Cj4gIAkJaWYgKGVyciA8IDAp
+Cj4gIAkJCXJldHVybiBlcnI7CgpZZXAuIEl0IGxvb2tzIGEgYnVnLgoKLi4uSG93ZXZlciwgcmVt
+b3ZhbCBvZiB0aGUgYnVnIGNhdXNlcyBpc3N1ZSB0aGF0IHRoZSBkcml2ZXIgZmFpbHMgdG8gCnN0
+YXJ0IGEgcGFpciBvZiBjYXB0dXJlL3BsYXliYWNrIFBDTSBzdWJzdHJlYW0gd2hlbiBhcHBsaWNh
+dGlvbiByZXF1ZXN0cyAKdGhlbSBtb3N0bHkgdGhlIHNhbWUgdGltZSwgbGlrZSBqYWNrZCBwcm9j
+ZXNzLgoKSSB0aGluayBJIGRpZCBhcHBseSB0aGUgYnVnIGFzIGEgbWFrZXNoaWZ0IHdvcmthcm91
+bmQsIHRoZW4gZm9yZ290IAppdHNlbGYgd2hlbiBkZXZlbG9waW5nIHRoZSBkcml2ZXIuLi4gSSdk
+IGxpa2UgdG8gaGF2ZSBhIGJpdCB0aW1lIGZvciAKZnVydGhlciBpbnZlc3RpZ2F0aW9uLCB0aGVu
+IHBvc3QgbXkgZml4IGluIHRoaXMgZGV2ZWxvcG1lbnQgcGVyaW9kLgoKUGxlYXNlIGxldCBtZSBr
+ZWVwIHRoaXMgcGF0Y2ggcGVuZGluZy4KCgpUaGFua3MKClRha2FzaGkgU2FrYW1vdG8KX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
