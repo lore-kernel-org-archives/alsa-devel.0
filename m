@@ -1,17 +1,18 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH 3/3] ASoC: Intel: Skylake: Support for multiple
-	data blocks
-Date: Mon, 15 May 2017 19:44:31 +0530
-Message-ID: <1494857671-19257-3-git-send-email-subhransu.s.prusty@intel.com>
-References: <1494857671-19257-1-git-send-email-subhransu.s.prusty@intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH RFC 00/21] ALSA: pcm: add tracepoints for
+ PCM params operation
+Date: Mon, 15 May 2017 23:29:47 +0900
+Message-ID: <bba04aee-5a88-ca35-3a05-41b23c738604@sakamocchi.jp>
+References: <20170514085756.22382-1-o-takashi@sakamocchi.jp>
+ <s5hvap2bjeh.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id EA02026743D
- for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 16:28:41 +0200 (CEST)
-In-Reply-To: <1494857671-19257-1-git-send-email-subhransu.s.prusty@intel.com>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 8DDA8267449
+ for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 16:29:51 +0200 (CEST)
+In-Reply-To: <s5hvap2bjeh.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,76 +22,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Shreyas NC <shreyas.nc@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, lars@metafoo.de, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-From: Shreyas NC <shreyas.nc@intel.com>
+On May 15 2017 17:42, Takashi Iwai wrote:
+> On Sun, 14 May 2017 10:57:35 +0200,
+> Takashi Sakamoto wrote:
+>>
+>> Hi,
+>>
+>> In the last Audio Mini Conference held with Linux Plumber conference 2016[1], I mentioned about tracepoints for PCM params operation. This patchset is for the idea.
+>>
+>> In ALSA PCM interface, applications can get hardware capability by ioctl(2) with SNDRV_PCM_IOCTL_HW_REFINE/SNDRV_PCM_IOCT_HW_PARAMS in a shape of 'struct snd_pcm_hw_params'. In kernel side, relevant processing is somewhat complicated and developers sometimes have hard time to debug drivers for PCM constraints and rules.
+>>
+>> This patchset adds tracepoints for hw_params operations. When CONFIG_SND_DEBUG is enabled, you can see 'trace_hw_params_mask/trace_hw_params_interval' events of 'snd_pcm' subsystem. When applications execute ioctl(2) with SNDRV_PCM_IOCTL_HW_REFINE/SNDRV_PCM_IOCTL_HW_PARAMS, these events are probed. Developers can get how many PCM rules are added into runtime of PCM substream and which rule changed which parameters.
+>>
+>> This patchset also includes some improvements. The last three commits brings small changes to kernel/userspace interface for error handling.
+>>
+>> I'm happy to receive your comment for this patchset. For your information, low level application of SNDRV_PCM_IOCTL_HW_REFINE operation is available in my github repository[2].
+>
+> The patches look good through a quick glance.
+> The only concern I have is the function regression, since there are
+> lots of code rewrites.  How did you test?
 
-Module init params are additional data block in the module private data.
-Skylake driver doesn't yet have support to parse multiple data blocks if
-it appears in private data. Add support for parsing of multiple data
-blocks and module init params.
+Currently, I did four things:
 
-Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
----
- sound/soc/intel/skylake/skl-topology.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+1. understand logic to process parameters, constraints and rules
+2. add the tracepoints as early as the patchset
+3. confirm that probed events include the same data commit by commit
+4. do the above with refine-pcm-params.c and got valid results
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 43ca39d61559..b687ae455a61 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -2070,6 +2070,16 @@ static int skl_tplg_get_token(struct device *dev,
- 
- 		break;
- 
-+	case SKL_TKN_U32_CAPS_SET_PARAMS:
-+		mconfig->formats_config.set_params =
-+				tkn_elem->value;
-+		break;
-+
-+	case SKL_TKN_U32_CAPS_PARAMS_ID:
-+		mconfig->formats_config.param_id =
-+				tkn_elem->value;
-+		break;
-+
- 	case SKL_TKN_U32_PROC_DOMAIN:
- 		mconfig->domain =
- 			tkn_elem->value;
-@@ -2147,7 +2157,7 @@ static int skl_tplg_get_tokens(struct device *dev,
- 		tuple_size += tkn_count * sizeof(*tkn_elem);
- 	}
- 
--	return 0;
-+	return off;
- }
- 
- /*
-@@ -2198,10 +2208,11 @@ static int skl_tplg_get_pvt_data(struct snd_soc_tplg_dapm_widget *tplg_w,
- 	num_blocks = ret;
- 
- 	off += array->size;
--	array = (struct snd_soc_tplg_vendor_array *)(tplg_w->priv.data + off);
--
- 	/* Read the BLOCK_TYPE and BLOCK_SIZE descriptor */
- 	while (num_blocks > 0) {
-+		array = (struct snd_soc_tplg_vendor_array *)
-+				(tplg_w->priv.data + off);
-+
- 		ret = skl_tplg_get_desc_blocks(dev, array);
- 
- 		if (ret < 0)
-@@ -2237,7 +2248,9 @@ static int skl_tplg_get_pvt_data(struct snd_soc_tplg_dapm_widget *tplg_w,
- 				memcpy(mconfig->formats_config.caps, data,
- 					mconfig->formats_config.caps_size);
- 			--num_blocks;
-+			ret = mconfig->formats_config.caps_size;
- 		}
-+		off += ret;
- 	}
- 
- 	return 0;
--- 
-1.9.1
+For the above, I use ALSA Fireweorks/OXFW driver and supported devices, 
+which I know correct behaviour.
+
+
+Thanks
+
+Takashi Sakamoto
