@@ -1,18 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: pcm: Build pcm notifier code
-	conditionally
-Date: Mon, 15 May 2017 11:29:59 +0200
-Message-ID: <20170515092959.20549-1-tiwai@suse.de>
+Subject: [PATCH] ASoC: atmel: Use IS_ENABLED()
+Date: Mon, 15 May 2017 11:32:01 +0200
+Message-ID: <20170515093201.20813-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 9632F2673F4
- for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 11:30:01 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 52469AB9F
- for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 09:30:01 +0000 (UTC)
+ by alsa0.perex.cz (Postfix) with ESMTP id 60F9A266587
+ for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 11:32:08 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,149 +18,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Nicolas Ferre <nicolas.ferre@microchip.com>
 List-Id: alsa-devel@alsa-project.org
 
-The PCM notifier code is used only by OSS emulation layer, so we can
-build it conditionally for reducing the size.
+Simplify the ifdef conditions with IS_ENABLED() macro.
+No functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/pcm.h | 15 ++++++++-------
- sound/core/pcm.c    | 33 ++++++++++++++++++++-------------
- 2 files changed, 28 insertions(+), 20 deletions(-)
+ sound/soc/atmel/atmel-pcm.h | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 361749e60799..eb16912d6046 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -531,13 +531,6 @@ struct snd_pcm {
+diff --git a/sound/soc/atmel/atmel-pcm.h b/sound/soc/atmel/atmel-pcm.h
+index 6eaf081cad50..4b27aed40a51 100644
+--- a/sound/soc/atmel/atmel-pcm.h
++++ b/sound/soc/atmel/atmel-pcm.h
+@@ -83,8 +83,7 @@ struct atmel_pcm_dma_params {
+ #define ssc_readx(base, reg)            (__raw_readl((base) + (reg)))
+ #define ssc_writex(base, reg, value)    __raw_writel((value), (base) + (reg))
+ 
+-#if defined(CONFIG_SND_ATMEL_SOC_PDC) || \
+-	defined(CONFIG_SND_ATMEL_SOC_PDC_MODULE)
++#if IS_ENABLED(CONFIG_SND_ATMEL_SOC_PDC)
+ int atmel_pcm_pdc_platform_register(struct device *dev);
+ void atmel_pcm_pdc_platform_unregister(struct device *dev);
+ #else
+@@ -97,8 +96,7 @@ static inline void atmel_pcm_pdc_platform_unregister(struct device *dev)
+ }
  #endif
- };
  
--struct snd_pcm_notify {
--	int (*n_register) (struct snd_pcm * pcm);
--	int (*n_disconnect) (struct snd_pcm * pcm);
--	int (*n_unregister) (struct snd_pcm * pcm);
--	struct list_head list;
--};
--
- /*
-  *  Registering
-  */
-@@ -552,7 +545,15 @@ int snd_pcm_new_internal(struct snd_card *card, const char *id, int device,
- 		struct snd_pcm **rpcm);
- int snd_pcm_new_stream(struct snd_pcm *pcm, int stream, int substream_count);
- 
-+#if IS_ENABLED(CONFIG_SND_PCM_OSS)
-+struct snd_pcm_notify {
-+	int (*n_register) (struct snd_pcm * pcm);
-+	int (*n_disconnect) (struct snd_pcm * pcm);
-+	int (*n_unregister) (struct snd_pcm * pcm);
-+	struct list_head list;
-+};
- int snd_pcm_notify(struct snd_pcm_notify *notify, int nfree);
-+#endif
- 
- /*
-  *  Native I/O
-diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index 8e980aa678d0..24acbfb5c531 100644
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -36,8 +36,10 @@ MODULE_DESCRIPTION("Midlevel PCM code for ALSA.");
- MODULE_LICENSE("GPL");
- 
- static LIST_HEAD(snd_pcm_devices);
--static LIST_HEAD(snd_pcm_notify_list);
- static DEFINE_MUTEX(register_mutex);
-+#if IS_ENABLED(CONFIG_SND_PCM_OSS)
-+static LIST_HEAD(snd_pcm_notify_list);
-+#endif
- 
- static int snd_pcm_free(struct snd_pcm *pcm);
- static int snd_pcm_dev_free(struct snd_device *device);
-@@ -884,16 +886,23 @@ static void snd_pcm_free_stream(struct snd_pcm_str * pstr)
- 		put_device(&pstr->dev);
- }
- 
-+#if IS_ENABLED(CONFIG_SND_PCM_OSS)
-+#define pcm_call_notify(pcm, call)					\
-+	do {								\
-+		struct snd_pcm_notify *_notify;				\
-+		list_for_each_entry(_notify, &snd_pcm_notify_list, list) \
-+			_notify->call(pcm);				\
-+	} while (0)
-+#else
-+#define pcm_call_notify(pcm, call) /* NOP */
-+#endif
-+
- static int snd_pcm_free(struct snd_pcm *pcm)
- {
--	struct snd_pcm_notify *notify;
--
- 	if (!pcm)
- 		return 0;
--	if (!pcm->internal) {
--		list_for_each_entry(notify, &snd_pcm_notify_list, list)
--			notify->n_unregister(pcm);
--	}
-+	if (!pcm->internal)
-+		pcm_call_notify(pcm, n_unregister);
- 	if (pcm->private_free)
- 		pcm->private_free(pcm);
- 	snd_pcm_lib_preallocate_free_for_all(pcm);
-@@ -1069,7 +1078,6 @@ static int snd_pcm_dev_register(struct snd_device *device)
- {
- 	int cidx, err;
- 	struct snd_pcm_substream *substream;
--	struct snd_pcm_notify *notify;
- 	struct snd_pcm *pcm;
- 
- 	if (snd_BUG_ON(!device || !device->device_data))
-@@ -1107,8 +1115,7 @@ static int snd_pcm_dev_register(struct snd_device *device)
- 			snd_pcm_timer_init(substream);
- 	}
- 
--	list_for_each_entry(notify, &snd_pcm_notify_list, list)
--		notify->n_register(pcm);
-+	pcm_call_notify(pcm, n_register);
- 
-  unlock:
- 	mutex_unlock(&register_mutex);
-@@ -1118,7 +1125,6 @@ static int snd_pcm_dev_register(struct snd_device *device)
- static int snd_pcm_dev_disconnect(struct snd_device *device)
- {
- 	struct snd_pcm *pcm = device->device_data;
--	struct snd_pcm_notify *notify;
- 	struct snd_pcm_substream *substream;
- 	int cidx;
- 
-@@ -1138,8 +1144,7 @@ static int snd_pcm_dev_disconnect(struct snd_device *device)
- 		}
- 	}
- 	if (!pcm->internal) {
--		list_for_each_entry(notify, &snd_pcm_notify_list, list)
--			notify->n_disconnect(pcm);
-+		pcm_call_notify(pcm, n_disconnect);
- 	}
- 	for (cidx = 0; cidx < 2; cidx++) {
- 		if (!pcm->internal)
-@@ -1151,6 +1156,7 @@ static int snd_pcm_dev_disconnect(struct snd_device *device)
- 	return 0;
- }
- 
-+#if IS_ENABLED(CONFIG_SND_PCM_OSS)
- /**
-  * snd_pcm_notify - Add/remove the notify list
-  * @notify: PCM notify list
-@@ -1183,6 +1189,7 @@ int snd_pcm_notify(struct snd_pcm_notify *notify, int nfree)
- 	return 0;
- }
- EXPORT_SYMBOL(snd_pcm_notify);
-+#endif /* CONFIG_SND_PCM_OSS */
- 
- #ifdef CONFIG_SND_PROC_FS
- /*
+-#if defined(CONFIG_SND_ATMEL_SOC_DMA) || \
+-	defined(CONFIG_SND_ATMEL_SOC_DMA_MODULE)
++#if IS_ENABLED(CONFIG_SND_ATMEL_SOC_DMA)
+ int atmel_pcm_dma_platform_register(struct device *dev);
+ void atmel_pcm_dma_platform_unregister(struct device *dev);
+ #else
 -- 
 2.12.2
