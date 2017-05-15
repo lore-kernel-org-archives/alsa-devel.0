@@ -1,79 +1,136 @@
-From: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Subject: Re: [PATCH] ASoC: atmel-classd: sync regcache when
-	resuming
-Date: Mon, 15 May 2017 11:46:23 +0200
-Message-ID: <20170515094623.sumkphak4g3cuj3j@piout.net>
-References: <20170515083617.16742-1-quentin.schulz@free-electrons.com>
+From: Niklas =?iso-8859-1?Q?S=F6derlund?=
+        <niklas.soderlund@ragnatech.se>
+Subject: Re: [PATCH v2] ASoC: rsnd: tidyup Sampling rate convert example on
+ Document
+Date: Mon, 15 May 2017 12:03:15 +0200
+Message-ID: <20170515100315.GL31437@bigcity.dyn.berto.se>
+References: <87y3tyh7cj.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.free-electrons.com (mail.free-electrons.com [62.4.15.54])
- by alsa0.perex.cz (Postfix) with ESMTP id F1707266587
- for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 11:46:33 +0200 (CEST)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20170515083617.16742-1-quentin.schulz@free-electrons.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Quentin Schulz <quentin.schulz@free-electrons.com>
-Cc: thomas.petazzoni@free-electrons.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, nicolas.ferre@microchip.com, tiwai@suse.com, broonie@kernel.org
+In-Reply-To: <87y3tyh7cj.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 15/05/2017 at 10:36:17 +0200, Quentin Schulz wrote:
-> The PM functions used in this driver are the ones defined in
-> sounc/soc/soc-core.c.
-> 
-> When suspending (using snd_soc_suspend), the regcache is marked dirty
-> but is never synced on resume.
-> 
-> Sync regcache on resume of Atmel ClassD device.
-> 
-> Signed-off-by: Quentin Schulz <quentin.schulz@free-electrons.com>
-Acked-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Hi Morimoto-san,
 
-> ---
->  sound/soc/atmel/atmel-classd.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
+On 2017-05-15 08:11:21 +0000, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > 
-> diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
-> index 7ae46c2647d4..b7ef8c59b49a 100644
-> --- a/sound/soc/atmel/atmel-classd.c
-> +++ b/sound/soc/atmel/atmel-classd.c
-> @@ -301,6 +301,14 @@ static int atmel_classd_codec_probe(struct snd_soc_codec *codec)
->  	return 0;
->  }
+> "renesas,rsrc-card" is exchanged to "simple-scu-audio-card".
+> Let's update Document
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+> v1 -> v2
+> 
+>  - simple-scu-card -> simple-scu-audio-card on git log
+
+Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+
+> 
+>  .../devicetree/bindings/sound/renesas,rsnd.txt     | 30 +++++++++++-----------
+>  1 file changed, 15 insertions(+), 15 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+> index 15a7316..3332910 100644
+> --- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+> +++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+> @@ -83,11 +83,11 @@ SRC can convert [xx]Hz to [yy]Hz. Then, it has below 2 modes
+>  **     Asynchronous mode
+>  ------------------
 >  
-> +static int atmel_classd_codec_resume(struct snd_soc_codec *codec)
-> +{
-> +	struct snd_soc_card *card = snd_soc_codec_get_drvdata(codec);
-> +	struct atmel_classd *dd = snd_soc_card_get_drvdata(card);
-> +
-> +	return regcache_sync(dd->regmap);
-> +}
-> +
->  static struct regmap *atmel_classd_codec_get_remap(struct device *dev)
->  {
->  	return dev_get_regmap(dev, NULL);
-> @@ -308,6 +316,7 @@ static struct regmap *atmel_classd_codec_get_remap(struct device *dev)
+> -You need to use "renesas,rsrc-card" sound card for it.
+> +You need to use "simple-scu-audio-card" sound card for it.
+>  example)
 >  
->  static struct snd_soc_codec_driver soc_codec_dev_classd = {
->  	.probe		= atmel_classd_codec_probe,
-> +	.resume		= atmel_classd_codec_resume,
->  	.get_regmap	= atmel_classd_codec_get_remap,
->  	.component_driver = {
->  		.controls		= atmel_classd_snd_controls,
+>  	sound {
+> -		compatible = "renesas,rsrc-card";
+> +		compatible = "simple-scu-audio-card";
+>  		...
+>  		/*
+>  		 * SRC Asynchronous mode setting
+> @@ -97,12 +97,12 @@ example)
+>  		 * Inputed 48kHz data will be converted to
+>  		 * system specified Hz
+>  		 */
+> -		convert-rate = <48000>;
+> +		simple-audio-card,convert-rate = <48000>;
+>  		...
+> -		cpu {
+> +		simple-audio-card,cpu {
+>  			sound-dai = <&rcar_sound>;
+>  		};
+> -		codec {
+> +		simple-audio-card,codec {
+>  			...
+>  		};
+>  	};
+> @@ -141,23 +141,23 @@ For more detail information, see below
+>  	${LINUX}/sound/soc/sh/rcar/ctu.c
+>  	 - comment of header
+>  
+> -You need to use "renesas,rsrc-card" sound card for it.
+> +You need to use "simple-scu-audio-card" sound card for it.
+>  example)
+>  
+>  	sound {
+> -		compatible = "renesas,rsrc-card";
+> +		compatible = "simple-scu-audio-card";
+>  		...
+>  		/*
+>  		 * CTU setting
+>  		 * All input data will be converted to 2ch
+>  		 * as output data
+>  		 */
+> -		convert-channels = <2>;
+> +		simple-audio-card,convert-channels = <2>;
+>  		...
+> -		cpu {
+> +		simple-audio-card,cpu {
+>  			sound-dai = <&rcar_sound>;
+>  		};
+> -		codec {
+> +		simple-audio-card,codec {
+>  			...
+>  		};
+>  	};
+> @@ -190,22 +190,22 @@ and these sounds will be merged by MIX.
+>  	aplay -D plughw:0,0 xxxx.wav &
+>  	aplay -D plughw:0,1 yyyy.wav
+>  
+> -You need to use "renesas,rsrc-card" sound card for it.
+> +You need to use "simple-scu-audio-card" sound card for it.
+>  Ex)
+>  	[MEM] -> [SRC1] -> [CTU02] -+-> [MIX0] -> [DVC0] -> [SSI0]
+>  	                            |
+>  	[MEM] -> [SRC2] -> [CTU03] -+
+>  
+>  	sound {
+> -		compatible = "renesas,rsrc-card";
+> +		compatible = "simple-scu-audio-card";
+>  		...
+> -		cpu@0 {
+> +		simple-audio-card,cpu@0 {
+>  			sound-dai = <&rcar_sound 0>;
+>  		};
+> -		cpu@1 {
+> +		simple-audio-card,cpu@1 {
+>  			sound-dai = <&rcar_sound 1>;
+>  		};
+> -		codec {
+> +		simple-audio-card,codec {
+>  			...
+>  		};
+>  	};
 > -- 
-> 2.11.0
+> 1.9.1
 > 
 
 -- 
-Alexandre Belloni, Free Electrons
-Embedded Linux and Kernel engineering
-http://free-electrons.com
+Regards,
+Niklas Söderlund
