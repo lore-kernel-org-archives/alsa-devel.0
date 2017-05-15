@@ -1,385 +1,133 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2 1/6] ASoC: Intel: Convert all machine
-	data to C99 style
-Date: Mon, 15 May 2017 10:50:23 +0530
-Message-ID: <20170515052022.GA15061@localhost>
-References: <1494505944-31378-1-git-send-email-naveen.m@intel.com>
- <1494505944-31378-2-git-send-email-naveen.m@intel.com>
+From: Niklas =?iso-8859-1?Q?S=F6derlund?=
+        <niklas.soderlund@ragnatech.se>
+Subject: Re: [PATCH] ASoC: rsnd: tidyup Sampling rate convert example on
+ Document
+Date: Mon, 15 May 2017 09:43:48 +0200
+Message-ID: <20170515074347.GK31437@bigcity.dyn.berto.se>
+References: <87o9uuj346.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 31C3F266D52
- for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 07:18:17 +0200 (CEST)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1494505944-31378-2-git-send-email-naveen.m@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Naveen M <naveen.m@intel.com>
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, pierre-louis.bossart@intel.com
+In-Reply-To: <87o9uuj346.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, linux-renesas-soc@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 11, 2017 at 06:02:19PM +0530, Naveen M wrote:
-> C99 style struct initialization helps in readability as well as
-> initialization of variables not specified as NULL.
+Hi Morimoto-san,
+
+On 2017-05-15 01:59:51 +0000, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > 
-> Signed-off-by: Naveen M <naveen.m@intel.com>
-> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+> "renesas,rsrc-card" is exchanged to "simple-scu-card".
+> Let's update Document
 
-this needs:
+You state "simple-scu-audio-card" in the patch not "simple-scu-card", is 
+this intentional or a typo?
 
-Suggested-by: Takashi Iwai <tiwai@suse.de>
-
+> 
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 > ---
->  sound/soc/intel/atom/sst/sst_acpi.c | 209 ++++++++++++++++++++++++++++--------
->  sound/soc/intel/skylake/skl.c       |  60 +++++++++--
-
-Series looks good to me, but I feel we should split these two to separate
-patches as they touch two different drivers.
-
->  2 files changed, 211 insertions(+), 58 deletions(-)
+>  .../devicetree/bindings/sound/renesas,rsnd.txt     | 30 +++++++++++-----------
+>  1 file changed, 15 insertions(+), 15 deletions(-)
 > 
-> diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-> index dd250b8..193c4d7 100644
-> --- a/sound/soc/intel/atom/sst/sst_acpi.c
-> +++ b/sound/soc/intel/atom/sst/sst_acpi.c
-> @@ -453,12 +453,20 @@ static int byt_thinkpad10_quirk_cb(const struct dmi_system_id *id)
+> diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+> index 15a7316..3332910 100644
+> --- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+> +++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+> @@ -83,11 +83,11 @@ SRC can convert [xx]Hz to [yy]Hz. Then, it has below 2 modes
+>  **     Asynchronous mode
+>  ------------------
 >  
+> -You need to use "renesas,rsrc-card" sound card for it.
+> +You need to use "simple-scu-audio-card" sound card for it.
+>  example)
 >  
->  static struct sst_acpi_mach cht_surface_mach = {
-> -	"10EC5640", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
-> -								&chv_platform_data };
-> +	.id = "10EC5640",
-> +	.drv_name = "cht-bsw-rt5645",
-> +	.fw_filename = "intel/fw_sst_22a8.bin",
-> +	.board = "cht-bsw",
-> +	.pdata = &chv_platform_data,
-> +};
+>  	sound {
+> -		compatible = "renesas,rsrc-card";
+> +		compatible = "simple-scu-audio-card";
+>  		...
+>  		/*
+>  		 * SRC Asynchronous mode setting
+> @@ -97,12 +97,12 @@ example)
+>  		 * Inputed 48kHz data will be converted to
+>  		 * system specified Hz
+>  		 */
+> -		convert-rate = <48000>;
+> +		simple-audio-card,convert-rate = <48000>;
+>  		...
+> -		cpu {
+> +		simple-audio-card,cpu {
+>  			sound-dai = <&rcar_sound>;
+>  		};
+> -		codec {
+> +		simple-audio-card,codec {
+>  			...
+>  		};
+>  	};
+> @@ -141,23 +141,23 @@ For more detail information, see below
+>  	${LINUX}/sound/soc/sh/rcar/ctu.c
+>  	 - comment of header
 >  
->  static struct sst_acpi_mach byt_thinkpad_10 = {
-> -	"10EC5640", "cht-bsw-rt5672", "intel/fw_sst_0f28.bin", "cht-bsw", NULL,
-> -	                                                        &byt_rvp_platform_data };
-> +	.id = "10EC5640",
-> +	.drv_name = "cht-bsw-rt5672",
-> +	.fw_filename = "intel/fw_sst_0f28.bin",
-> +	.board = "cht-bsw",
-> +	.pdata = &byt_rvp_platform_data,
-> +};
+> -You need to use "renesas,rsrc-card" sound card for it.
+> +You need to use "simple-scu-audio-card" sound card for it.
+>  example)
 >  
->  static struct sst_acpi_mach *cht_quirk(void *arg)
->  {
-> @@ -486,68 +494,175 @@ static struct sst_acpi_mach *byt_quirk(void *arg)
+>  	sound {
+> -		compatible = "renesas,rsrc-card";
+> +		compatible = "simple-scu-audio-card";
+>  		...
+>  		/*
+>  		 * CTU setting
+>  		 * All input data will be converted to 2ch
+>  		 * as output data
+>  		 */
+> -		convert-channels = <2>;
+> +		simple-audio-card,convert-channels = <2>;
+>  		...
+> -		cpu {
+> +		simple-audio-card,cpu {
+>  			sound-dai = <&rcar_sound>;
+>  		};
+> -		codec {
+> +		simple-audio-card,codec {
+>  			...
+>  		};
+>  	};
+> @@ -190,22 +190,22 @@ and these sounds will be merged by MIX.
+>  	aplay -D plughw:0,0 xxxx.wav &
+>  	aplay -D plughw:0,1 yyyy.wav
 >  
+> -You need to use "renesas,rsrc-card" sound card for it.
+> +You need to use "simple-scu-audio-card" sound card for it.
+>  Ex)
+>  	[MEM] -> [SRC1] -> [CTU02] -+-> [MIX0] -> [DVC0] -> [SSI0]
+>  	                            |
+>  	[MEM] -> [SRC2] -> [CTU03] -+
 >  
->  static struct sst_acpi_mach sst_acpi_bytcr[] = {
-> -	{"10EC5640", "bytcr_rt5640", "intel/fw_sst_0f28.bin", "bytcr_rt5640", byt_quirk,
-> -						&byt_rvp_platform_data },
-> -	{"10EC5642", "bytcr_rt5640", "intel/fw_sst_0f28.bin", "bytcr_rt5640", NULL,
-> -						&byt_rvp_platform_data },
-> -	{"INTCCFFD", "bytcr_rt5640", "intel/fw_sst_0f28.bin", "bytcr_rt5640", NULL,
-> -						&byt_rvp_platform_data },
-> -	{"10EC5651", "bytcr_rt5651", "intel/fw_sst_0f28.bin", "bytcr_rt5651", NULL,
-> -						&byt_rvp_platform_data },
-> -	{"DLGS7212", "bytcht_da7213", "intel/fw_sst_0f28.bin", "bytcht_da7213", NULL,
-> -						&byt_rvp_platform_data },
-> -	{"DLGS7213", "bytcht_da7213", "intel/fw_sst_0f28.bin", "bytcht_da7213", NULL,
-> -						&byt_rvp_platform_data },
-> +	{
-> +		.id = "10EC5640",
-> +		.drv_name = "bytcr_rt5640",
-> +		.fw_filename = "intel/fw_sst_0f28.bin",
-> +		.board = "bytcr_rt5640",
-> +		.machine_quirk = byt_quirk,
-> +		.pdata = &byt_rvp_platform_data,
-> +	},
-> +	{
-> +		.id = "10EC5642",
-> +		.drv_name = "bytcr_rt5640",
-> +		.fw_filename = "intel/fw_sst_0f28.bin",
-> +		.board = "bytcr_rt5640",
-> +		.pdata = &byt_rvp_platform_data
-> +	},
-> +	{
-> +		.id = "INTCCFFD",
-> +		.drv_name = "bytcr_rt5640",
-> +		.fw_filename = "intel/fw_sst_0f28.bin",
-> +		.board = "bytcr_rt5640",
-> +		.pdata = &byt_rvp_platform_data
-> +	},
-> +	{
-> +		.id = "10EC5651",
-> +		.drv_name = "bytcr_rt5651",
-> +		.fw_filename = "intel/fw_sst_0f28.bin",
-> +		.board = "bytcr_rt5651",
-> +		.pdata = &byt_rvp_platform_data
-> +	},
-> +	{
-> +		.id = "DLGS7212",
-> +		.drv_name = "bytcht_da7213",
-> +		.fw_filename = "intel/fw_sst_0f28.bin",
-> +		.board = "bytcht_da7213",
-> +		.pdata = &byt_rvp_platform_data
-> +	},
-> +	{
-> +		.id = "DLGS7213",
-> +		.drv_name = "bytcht_da7213",
-> +		.fw_filename = "intel/fw_sst_0f28.bin",
-> +		.board = "bytcht_da7213",
-> +		.pdata = &byt_rvp_platform_data
-> +	},
->  	/* some Baytrail platforms rely on RT5645, use CHT machine driver */
-> -	{"10EC5645", "cht-bsw-rt5645", "intel/fw_sst_0f28.bin", "cht-bsw", NULL,
-> -						&byt_rvp_platform_data },
-> -	{"10EC5648", "cht-bsw-rt5645", "intel/fw_sst_0f28.bin", "cht-bsw", NULL,
-> -						&byt_rvp_platform_data },
-> +	{
-> +		.id = "10EC5645",
-> +		.drv_name = "cht-bsw-rt5645",
-> +		.fw_filename = "intel/fw_sst_0f28.bin",
-> +		.board = "cht-bsw",
-> +		.pdata = &byt_rvp_platform_data
-> +	},
-> +	{
-> +		.id = "10EC5648",
-> +		.drv_name = "cht-bsw-rt5645",
-> +		.fw_filename = "intel/fw_sst_0f28.bin",
-> +		.board = "cht-bsw",
-> +		.pdata = &byt_rvp_platform_data
-> +	},
->  #if IS_ENABLED(CONFIG_SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH)
->  	/*
->  	 * This is always last in the table so that it is selected only when
->  	 * enabled explicitly and there is no codec-related information in SSDT
->  	 */
-> -	{"80860F28", "bytcht_nocodec", "intel/fw_sst_0f28.bin", "bytcht_nocodec", NULL,
-> -						&byt_rvp_platform_data },
-> +	{
-> +		.id = "80860F28",
-> +		.drv_name = "bytcht_nocodec",
-> +		.fw_filename = "intel/fw_sst_0f28.bin",
-> +		.board = "bytcht_nocodec",
-> +		.pdata = &byt_rvp_platform_data
-> +	},
->  #endif
->  	{},
->  };
->  
->  /* Cherryview-based platforms: CherryTrail and Braswell */
->  static struct sst_acpi_mach sst_acpi_chv[] = {
-> -	{"10EC5670", "cht-bsw-rt5672", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
-> -						&chv_platform_data },
-> -	{"10EC5672", "cht-bsw-rt5672", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
-> -						&chv_platform_data },
-> -	{"10EC5645", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
-> -						&chv_platform_data },
-> -	{"10EC5650", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
-> -						&chv_platform_data },
-> -	{"10EC3270", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
-> -						&chv_platform_data },
-> -
-> -	{"193C9890", "cht-bsw-max98090", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
-> -						&chv_platform_data },
-> -	{"DLGS7212", "bytcht_da7213", "intel/fw_sst_22a8.bin", "bytcht_da7213", NULL,
-> -						&chv_platform_data },
-> -	{"DLGS7213", "bytcht_da7213", "intel/fw_sst_22a8.bin", "bytcht_da7213", NULL,
-> -						&chv_platform_data },
-> +	{
-> +		.id = "10EC5670",
-> +		.drv_name = "cht-bsw-rt5672",
-> +		.fw_filename = "intel/fw_sst_22a8.bin",
-> +		.board = "cht-bsw",
-> +		.pdata = &chv_platform_data
-> +	},
-> +	{
-> +		.id = "10EC5672",
-> +		.drv_name = "cht-bsw-rt5672",
-> +		.fw_filename = "intel/fw_sst_22a8.bin",
-> +		.board = "cht-bsw",
-> +		.pdata = &chv_platform_data
-> +	},
-> +	{
-> +		.id = "10EC5645",
-> +		.drv_name = "cht-bsw-rt5645",
-> +		.fw_filename = "intel/fw_sst_22a8.bin",
-> +		.board = "cht-bsw",
-> +		.pdata = &chv_platform_data
-> +	},
-> +	{
-> +		.id = "10EC5650",
-> +		.drv_name = "cht-bsw-rt5645",
-> +		.fw_filename = "intel/fw_sst_22a8.bin",
-> +		.board = "cht-bsw",
-> +		.pdata = &chv_platform_data
-> +	},
-> +	{
-> +		.id = "10EC3270",
-> +		.drv_name = "cht-bsw-rt5645",
-> +		.fw_filename = "intel/fw_sst_22a8.bin",
-> +		.board = "cht-bsw",
-> +		.pdata = &chv_platform_data
-> +	},
-> +
-> +	{
-> +		.id = "193C9890",
-> +		.drv_name = "cht-bsw-max98090",
-> +		.fw_filename = "intel/fw_sst_22a8.bin",
-> +		.board = "cht-bsw",
-> +		.pdata = &chv_platform_data
-> +	},
-> +	{
-> +		.id = "DLGS7212",
-> +		.drv_name = "bytcht_da7213",
-> +		.fw_filename = "intel/fw_sst_22a8.bin",
-> +		.board = "bytcht_da7213",
-> +		.pdata = &chv_platform_data
-> +	},
-> +	{
-> +		.id = "DLGS7213",
-> +		.drv_name = "bytcht_da7213",
-> +		.fw_filename = "intel/fw_sst_22a8.bin",
-> +		.board = "bytcht_da7213",
-> +		.pdata = &chv_platform_data
-> +	},
->  	/* some CHT-T platforms rely on RT5640, use Baytrail machine driver */
-> -	{"10EC5640", "bytcr_rt5640", "intel/fw_sst_22a8.bin", "bytcr_rt5640", cht_quirk,
-> -						&chv_platform_data },
-> -	{"10EC3276", "bytcr_rt5640", "intel/fw_sst_22a8.bin", "bytcr_rt5640", NULL,
-> -						&chv_platform_data },
-> +	{
-> +		.id = "10EC5640",
-> +		.drv_name = "bytcr_rt5640",
-> +		.fw_filename = "intel/fw_sst_22a8.bin",
-> +		.board = "bytcr_rt5640",
-> +		.machine_quirk = cht_quirk,
-> +		.pdata = &chv_platform_data
-> +	},
-> +	{
-> +		.id = "10EC3276",
-> +		.drv_name = "bytcr_rt5640",
-> +		.fw_filename = "intel/fw_sst_22a8.bin",
-> +		.board = "bytcr_rt5640",
-> +		.pdata = &chv_platform_data
-> +	},
->  	/* some CHT-T platforms rely on RT5651, use Baytrail machine driver */
-> -	{"10EC5651", "bytcr_rt5651", "intel/fw_sst_22a8.bin", "bytcr_rt5651", NULL,
-> -						&chv_platform_data },
-> +	{
-> +		.id = "10EC5651",
-> +		.drv_name = "bytcr_rt5651",
-> +		.fw_filename = "intel/fw_sst_22a8.bin",
-> +		.board = "bytcr_rt5651",
-> +		.pdata = &chv_platform_data
-> +	},
->  #if IS_ENABLED(CONFIG_SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH)
->  	/*
->  	 * This is always last in the table so that it is selected only when
->  	 * enabled explicitly and there is no codec-related information in SSDT
->  	 */
-> -	{"808622A8", "bytcht_nocodec", "intel/fw_sst_22a8.bin", "bytcht_nocodec", NULL,
-> -						&chv_platform_data },
-> +	{
-> +		.id = "808622A8",
-> +		.drv_name = "bytcht_nocodec",
-> +		.fw_filename = "intel/fw_sst_22a8.bin",
-> +		.board = "bytcht_nocodec",
-> +		.pdata = &chv_platform_data
-> +	},
->  #endif
->  	{},
->  };
-> diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-> index 6df3b31..22a7e39 100644
-> --- a/sound/soc/intel/skylake/skl.c
-> +++ b/sound/soc/intel/skylake/skl.c
-> @@ -863,28 +863,66 @@ static void skl_remove(struct pci_dev *pci)
->  }
->  
->  static struct sst_acpi_mach sst_skl_devdata[] = {
-> -	{ "INT343A", "skl_alc286s_i2s", "intel/dsp_fw_release.bin", NULL, NULL, NULL },
-> -	{ "INT343B", "skl_n88l25_s4567", "intel/dsp_fw_release.bin",
-> -				NULL, NULL, &skl_dmic_data },
-> -	{ "MX98357A", "skl_n88l25_m98357a", "intel/dsp_fw_release.bin",
-> -				NULL, NULL, &skl_dmic_data },
-> +	{
-> +		.id = "INT343A",
-> +		.drv_name = "skl_alc286s_i2s",
-> +		.fw_filename = "intel/dsp_fw_release.bin",
-> +	},
-> +	{
-> +		.id = "INT343B",
-> +		.drv_name = "skl_n88l25_s4567",
-> +		.fw_filename = "intel/dsp_fw_release.bin",
-> +		.pdata = &skl_dmic_data
-> +	},
-> +	{
-> +		.id = "MX98357A",
-> +		.drv_name = "skl_n88l25_m98357a",
-> +		.fw_filename = "intel/dsp_fw_release.bin",
-> +		.pdata = &skl_dmic_data
-> +	},
->  	{}
->  };
->  
->  static struct sst_acpi_mach sst_bxtp_devdata[] = {
-> -	{ "INT343A", "bxt_alc298s_i2s", "intel/dsp_fw_bxtn.bin", NULL, NULL, NULL },
-> -	{ "DLGS7219", "bxt_da7219_max98357a_i2s", "intel/dsp_fw_bxtn.bin", NULL, NULL, NULL },
-> +	{
-> +		.id = "INT343A",
-> +		.drv_name = "bxt_alc298s_i2s",
-> +		.fw_filename = "intel/dsp_fw_bxtn.bin",
-> +	},
-> +	{
-> +		.id = "DLGS7219",
-> +		.drv_name = "bxt_da7219_max98357a_i2s",
-> +		.fw_filename = "intel/dsp_fw_bxtn.bin",
-> +	},
->  };
->  
->  static struct sst_acpi_mach sst_kbl_devdata[] = {
-> -	{ "INT343A", "kbl_alc286s_i2s", "intel/dsp_fw_kbl.bin", NULL, NULL, NULL },
-> -	{ "INT343B", "kbl_n88l25_s4567", "intel/dsp_fw_kbl.bin", NULL, NULL, &skl_dmic_data },
-> -	{ "MX98357A", "kbl_n88l25_m98357a", "intel/dsp_fw_kbl.bin", NULL, NULL, &skl_dmic_data },
-> +	{
-> +		.id = "INT343A",
-> +		.drv_name = "kbl_alc286s_i2s",
-> +		.fw_filename = "intel/dsp_fw_kbl.bin",
-> +	},
-> +	{
-> +		.id = "INT343B",
-> +		.drv_name = "kbl_n88l25_s4567",
-> +		.fw_filename = "intel/dsp_fw_kbl.bin",
-> +		.pdata = &skl_dmic_data
-> +	},
-> +	{
-> +		.id = "MX98357A",
-> +		.drv_name = "kbl_n88l25_m98357a",
-> +		.fw_filename = "intel/dsp_fw_kbl.bin",
-> +		.pdata = &skl_dmic_data
-> +	},
->  	{}
->  };
->  
->  static struct sst_acpi_mach sst_glk_devdata[] = {
-> -	{ "INT343A", "glk_alc298s_i2s", "intel/dsp_fw_glk.bin", NULL, NULL, NULL },
-> +	{
-> +		.id = "INT343A",
-> +		.drv_name = "glk_alc298s_i2s",
-> +		.fw_filename = "intel/dsp_fw_glk.bin",
-> +	},
->  };
->  
->  /* PCI IDs */
+>  	sound {
+> -		compatible = "renesas,rsrc-card";
+> +		compatible = "simple-scu-audio-card";
+>  		...
+> -		cpu@0 {
+> +		simple-audio-card,cpu@0 {
+>  			sound-dai = <&rcar_sound 0>;
+>  		};
+> -		cpu@1 {
+> +		simple-audio-card,cpu@1 {
+>  			sound-dai = <&rcar_sound 1>;
+>  		};
+> -		codec {
+> +		simple-audio-card,codec {
+>  			...
+>  		};
+>  	};
 > -- 
 > 1.9.1
 > 
 
 -- 
-~Vinod
+Regards,
+Niklas Söderlund
