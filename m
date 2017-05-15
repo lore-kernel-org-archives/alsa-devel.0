@@ -1,18 +1,18 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 1/3] ALSA: opl4: Use IS_REACHABLE()
-Date: Mon, 15 May 2017 12:20:34 +0200
-Message-ID: <30ee4fcf-3d76-6f72-6187-f51c73c4aad8@ladisch.de>
-References: <20170515093338.21220-1-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: utils: Add DT support
+Date: Mon, 15 May 2017 11:21:31 +0100
+Message-ID: <20170515102131.4o4jm6bcoayavgjj@sirena.org.uk>
+References: <1493712508-27919-1-git-send-email-vishalthanki@gmail.com>
+ <20170514095651.jbk2fkea6th24yay@sirena.org.uk>
+ <CAC3a_SCJU_pxNhJOyXdW8x8Eeso8bVV38PkfRL+cRzd+rOoO7Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8286395007147588643=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.179])
- by alsa0.perex.cz (Postfix) with ESMTP id BA46D266851
- for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 12:20:36 +0200 (CEST)
-In-Reply-To: <20170515093338.21220-1-tiwai@suse.de>
-Content-Language: en-US
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7926A266851
+ for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 12:21:46 +0200 (CEST)
+In-Reply-To: <CAC3a_SCJU_pxNhJOyXdW8x8Eeso8bVV38PkfRL+cRzd+rOoO7Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,56 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Vishal Thanki <vishalthanki@gmail.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.com, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Rewrite the complex ifdef condition with IS_REACHABLE().
-> The ifdef in opl4_local.h was without defined(MODLE) check, but this
-> is likely the oversight.  Use IS_REACHABLE() here as well.
->
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 
-Acked-by: Clemens Ladisch <clemens@ladisch.de>
+--===============8286395007147588643==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="wuiqepywcn73e7gz"
+Content-Disposition: inline
 
-> ---
->  sound/drivers/opl4/opl4_lib.c   | 4 ++--
->  sound/drivers/opl4/opl4_local.h | 2 +-
->  2 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/sound/drivers/opl4/opl4_lib.c b/sound/drivers/opl4/opl4_lib.c
-> index 89c7aa04b3bc..240656e54400 100644
-> --- a/sound/drivers/opl4/opl4_lib.c
-> +++ b/sound/drivers/opl4/opl4_lib.c
-> @@ -153,7 +153,7 @@ static int snd_opl4_detect(struct snd_opl4 *opl4)
->  	return 0;
->  }
->
-> -#if defined(CONFIG_SND_SEQUENCER) || (defined(MODULE) && defined(CONFIG_SND_SEQUENCER_MODULE))
-> +#if IS_REACHABLE(CONFIG_SND_SEQUENCER)
->  static void snd_opl4_seq_dev_free(struct snd_seq_device *seq_dev)
->  {
->  	struct snd_opl4 *opl4 = seq_dev->private_data;
-> @@ -249,7 +249,7 @@ int snd_opl4_create(struct snd_card *card,
->  	snd_opl4_create_mixer(opl4);
->  	snd_opl4_create_proc(opl4);
->
-> -#if defined(CONFIG_SND_SEQUENCER) || (defined(MODULE) && defined(CONFIG_SND_SEQUENCER_MODULE))
-> +#if IS_REACHABLE(CONFIG_SND_SEQUENCER)
->  	opl4->seq_client = -1;
->  	if (opl4->hardware < OPL3_HW_OPL4_ML)
->  		snd_opl4_create_seq_dev(opl4, seq_device);
-> diff --git a/sound/drivers/opl4/opl4_local.h b/sound/drivers/opl4/opl4_local.h
-> index 9a41bdebce6b..d5bac93f8245 100644
-> --- a/sound/drivers/opl4/opl4_local.h
-> +++ b/sound/drivers/opl4/opl4_local.h
-> @@ -184,7 +184,7 @@ struct snd_opl4 {
->  #endif
->  	struct mutex access_mutex;
->
-> -#if defined(CONFIG_SND_SEQUENCER) || defined(CONFIG_SND_SEQUENCER_MODULE)
-> +#if IS_REACHABLE(CONFIG_SND_SEQUENCER)
->  	int used;
->
->  	int seq_dev_num;
+
+--wuiqepywcn73e7gz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, May 15, 2017 at 10:41:43AM +0200, Vishal Thanki wrote:
+
+> Thanks for you comments. Actually in our custom hardware, the codec is
+> not accessible/visible from kernel directly, rather additional MCU
+> controls and configures it. However MCU needs the I2S clocks and data
+> from kernel. So I am using I2S platform driver from Linux just to
+> configure I2S clocks, and registering a dummy codec driver to DAI link
+> in DT, so that codec can be instantiated and clocks can be enabled
+> from user-space ALSA utils while accessing this dummy codec. Please
+> suggest if there is any better way to achieve this kind of
+> configuration.
+
+You should be representing the I2S control offered by the MCU as a CODEC
+driver.  Even if there's no changes ever made there must be some
+constraints.
+
+--wuiqepywcn73e7gz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlkZgSoACgkQJNaLcl1U
+h9DWKgf+JDbg3ngfRNV/ImUsAR9VmcV/yaqLKHT5ZkKlENwW9dyLd8LxJ+540Zvw
+tKJQDsLuwxyzfipW0qaoi+SzYUqBzLkRLQW4pvd062rokctBBkaS4DeWfM3jihSB
+EYWwyOp4k8MUOJ+zdNRBtSWJN9nDbs+BuCfOYFMUx9Pi7zjH3O0UiuXpjI+RZNz2
+LdhHrLw5UUHpz4E2xugKqAcD/7jgchs2xqukDoA+CJhcRJz36RFS30QU/KGJu0MM
+QRRiVSIoJIb1RurPS9Z7t7+UkJynFit9LFt4S4cGfNTJCq/RBly+CShuD6EzCNnJ
+8Yy5u6hiTYcZy+BI1jCER5UNo699bg==
+=ntI6
+-----END PGP SIGNATURE-----
+
+--wuiqepywcn73e7gz--
+
+--===============8286395007147588643==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8286395007147588643==--
