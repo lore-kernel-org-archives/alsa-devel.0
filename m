@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hisilicon: localize functions without
-	external linkage" to the asoc tree
-Date: Mon, 15 May 2017 17:02:34 +0900
-Message-ID: <E1dAAxe-0002Ps-B4@finisterre>
-References: <20170502133303.19622-4-o-takashi@sakamocchi.jp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 18BA42672B4
- for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 10:02:43 +0200 (CEST)
-In-Reply-To: <20170502133303.19622-4-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org, John Stultz <john.stultz@linaro.org>, Andy Green <andy.green@linaro.org>
+Subject: Applied "ASoC: rt5514: fix gcc-7 warning" to the asoc tree
+Date: Mon, 15 May 2017 17:03:50 +0900
+Message-ID: <E1dAAys-0002Xg-E5@finisterre>
+References: <20170511114512.2865725-1-arnd@arndb.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170511114512.2865725-1-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Douglas Anderson <dianders@chromium.org>, linux-kernel@vger.kernel.org, Bard Liao <bardliao@realtek.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: hisilicon: localize functions without external linkage
+   ASoC: rt5514: fix gcc-7 warning
 
 has been applied to the asoc tree at
 
@@ -53,63 +37,48 @@ to this mail.
 Thanks,
 Mark
 
->From 2a54e845f6e5069666e1749bd952abdc0413910d Mon Sep 17 00:00:00 2001
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Date: Tue, 2 May 2017 22:33:02 +0900
-Subject: [PATCH] ASoC: hisilicon: localize functions without external linkage
+>From 03ba791df98d15d07ea74075122af71e35c7611c Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Thu, 11 May 2017 13:44:38 +0200
+Subject: [PATCH] ASoC: rt5514: fix gcc-7 warning
 
-A driver for hi6210 sound interface on hi6220 boards includes some
-functions which has no external linkage. These functions should have
-static qualifier.
+gcc-7 warns that there is a duplicate 'const' specifier in some
+variables that are declared using the SOC_ENUM_SINGLE_DECL macro:
 
-This commit adds the qualifier to localize the functions. This issue is
-detected by sparse:
+sound/soc/codecs/rt5514.c:398:14: error: duplicate 'const' declaration specifier [-Werror=duplicate-decl-specifier]
+ static const SOC_ENUM_SINGLE_DECL(
+sound/soc/codecs/rt5514.c:405:14: error: duplicate 'const' declaration specifier [-Werror=duplicate-decl-specifier]
+ static const SOC_ENUM_SINGLE_DECL(
 
-hi6210-i2s.c:100:5: warning: symbol 'hi6210_i2s_startup' was not declared. Should it be static?
-hi6210-i2s.c:178:6: warning: symbol 'hi6210_i2s_shutdown' was not declared. Should it be static?
-hi6210-i2s.c:527:27: warning: symbol 'hi6210_i2s_dai_init' was not declared. Should it be static?
+This removes one to fix the warning.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Fixes: 4a6180ea7399 ("ASoC: rt5514: add rt5514 codec driver")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/hisilicon/hi6210-i2s.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ sound/soc/codecs/rt5514.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/hisilicon/hi6210-i2s.c b/sound/soc/hisilicon/hi6210-i2s.c
-index 45163e5202f5..b193d3beb253 100644
---- a/sound/soc/hisilicon/hi6210-i2s.c
-+++ b/sound/soc/hisilicon/hi6210-i2s.c
-@@ -97,8 +97,8 @@ static inline u32 hi6210_read_reg(struct hi6210_i2s *i2s, int reg)
- 	return readl(i2s->base + reg);
- }
- 
--int hi6210_i2s_startup(struct snd_pcm_substream *substream,
--		     struct snd_soc_dai *cpu_dai)
-+static int hi6210_i2s_startup(struct snd_pcm_substream *substream,
-+			      struct snd_soc_dai *cpu_dai)
- {
- 	struct hi6210_i2s *i2s = dev_get_drvdata(cpu_dai->dev);
- 	int ret, n;
-@@ -175,8 +175,9 @@ int hi6210_i2s_startup(struct snd_pcm_substream *substream,
- 
- 	return 0;
- }
--void hi6210_i2s_shutdown(struct snd_pcm_substream *substream,
--		       struct snd_soc_dai *cpu_dai)
-+
-+static void hi6210_i2s_shutdown(struct snd_pcm_substream *substream,
-+				struct snd_soc_dai *cpu_dai)
- {
- 	struct hi6210_i2s *i2s = dev_get_drvdata(cpu_dai->dev);
- 	int n;
-@@ -524,7 +525,7 @@ static struct snd_soc_dai_ops hi6210_i2s_dai_ops = {
- 	.shutdown	= hi6210_i2s_shutdown,
+diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
+index f91221b1ddf0..28ab9e2bb051 100644
+--- a/sound/soc/codecs/rt5514.c
++++ b/sound/soc/codecs/rt5514.c
+@@ -395,14 +395,14 @@ static const char * const rt5514_dmic_src[] = {
+ 	"DMIC1", "DMIC2"
  };
  
--struct snd_soc_dai_driver hi6210_i2s_dai_init = {
-+static const struct snd_soc_dai_driver hi6210_i2s_dai_init = {
- 	.probe		= hi6210_i2s_dai_probe,
- 	.playback = {
- 		.channels_min = 2,
+-static const SOC_ENUM_SINGLE_DECL(
++static SOC_ENUM_SINGLE_DECL(
+ 	rt5514_stereo1_dmic_enum, RT5514_DIG_SOURCE_CTRL,
+ 	RT5514_AD0_DMIC_INPUT_SEL_SFT, rt5514_dmic_src);
+ 
+ static const struct snd_kcontrol_new rt5514_sto1_dmic_mux =
+ 	SOC_DAPM_ENUM("Stereo1 DMIC Source", rt5514_stereo1_dmic_enum);
+ 
+-static const SOC_ENUM_SINGLE_DECL(
++static SOC_ENUM_SINGLE_DECL(
+ 	rt5514_stereo2_dmic_enum, RT5514_DIG_SOURCE_CTRL,
+ 	RT5514_AD1_DMIC_INPUT_SEL_SFT, rt5514_dmic_src);
+ 
 -- 
 2.11.0
