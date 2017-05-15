@@ -1,31 +1,17 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: WM5102 - Help to make baytrail machine driver work
-Date: Mon, 15 May 2017 07:44:48 -0500
-Message-ID: <bdaae069-fc68-af1d-8e40-a3e0654fa4cc@linux.intel.com>
-References: <CAJcYhpZU-6_AO_Gye1VttuvOP0Z2=wLuWGCOP7tBWc6DsuLU1g@mail.gmail.com>
- <20160505091122.GE1646@localhost.localdomain>
- <CAJcYhpbdr-3qBSdaLX-=MCSGX7VC0XGz6tKbzJ3K3RHeGMhs7g@mail.gmail.com>
- <CAJcYhpZ1NRUa_7nu5kT6yJ_NTbDxRtK5Uy0H1fxMBEHhvA1fxw@mail.gmail.com>
- <20160509142210.GH1646@localhost.localdomain>
- <CAJcYhpa8OrxyFxL1L4VQJL=WSEhrKhvfcdLeUj40Hb=N2kDUUQ@mail.gmail.com>
- <20160513114136.GM1646@localhost.localdomain>
- <CAJcYhpYJcTE0qBwYAHtGF9tbNCKXAVaLP3RnS5CF5=Z1LBijmA@mail.gmail.com>
- <20160515101308.GN1646@localhost.localdomain>
- <CAJcYhpaFiDrMYmbS1cUWL=ix-L2crjnNekpCXjjdHVThwp2Xag@mail.gmail.com>
- <20170508082422.GJ1594@localhost.localdomain>
- <CAJcYhpb0amzyug01nN3TUWBFSgGWfZcfOVfMgV01rxgTnbNnHg@mail.gmail.com>
- <7c35cd21-35a4-726d-71b5-1ef9f096fbee@linux.intel.com>
- <CAJcYhpb9yOJjDwG6ZGEYFQTiLXtkHNgmVkmF2ssQp6QPOX0ueA@mail.gmail.com>
- <6615d589-9124-5f71-0d6d-e634caf2fdaa@linux.intel.com>
- <CAJcYhpatsrYyC0CRu-0quA0=NYOObMC2nro5sDE-2ssTTu83rA@mail.gmail.com>
+From: Nicolas Ferre <nicolas.ferre@microchip.com>
+Subject: Re: [PATCH] ASoC: atmel: Use IS_ENABLED()
+Date: Mon, 15 May 2017 14:58:15 +0200
+Message-ID: <5742d70d-92a3-3e3c-634d-c30894f52be8@microchip.com>
+References: <20170515093201.20813-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 1D5CA266851
- for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 14:44:43 +0200 (CEST)
-In-Reply-To: <CAJcYhpatsrYyC0CRu-0quA0=NYOObMC2nro5sDE-2ssTTu83rA@mail.gmail.com>
+Received: from esa2.microchip.iphmx.com (esa2.microchip.iphmx.com
+ [68.232.149.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id DDAFB266851
+ for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 14:57:59 +0200 (CEST)
+In-Reply-To: <20170515093201.20813-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,17 +21,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Paulo Sergio <pstglia@gmail.com>
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, broonie@opensource.wolfsonmicro.com, Android-x86 development <android-x86-devel@googlegroups.com>, Chih-Wei Huang <cwhuang@android-x86.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, mika.westerberg@linux.intel.com
+To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 5/13/17 12:11 AM, Paulo Sergio wrote:
-> * This device (Lenovo Yoga 2 1051F) is a bytcr device. However bios
-> status returned by iosf_mbi_read is
->     1000000001000000000000101000000 (bits 26:27 disabled).
->    Had to force  bytcr flag to be true  in order to apply correct MCLK
-> frequency (25Mhz) and use SSP0
+Le 15/05/2017 =E0 11:32, Takashi Iwai a =E9crit :
+> Simplify the ifdef conditions with IS_ENABLED() macro.
+> No functional changes.
+> =
 
-Are you sure it's Baytrail-CR? where does this information come from?
-Those fields are tied to which PMIC is used and it would be extremely 
-surprising to have a disconnect.
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+
+Thanks
+
+> ---
+>  sound/soc/atmel/atmel-pcm.h | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> =
+
+> diff --git a/sound/soc/atmel/atmel-pcm.h b/sound/soc/atmel/atmel-pcm.h
+> index 6eaf081cad50..4b27aed40a51 100644
+> --- a/sound/soc/atmel/atmel-pcm.h
+> +++ b/sound/soc/atmel/atmel-pcm.h
+> @@ -83,8 +83,7 @@ struct atmel_pcm_dma_params {
+>  #define ssc_readx(base, reg)            (__raw_readl((base) + (reg)))
+>  #define ssc_writex(base, reg, value)    __raw_writel((value), (base) + (=
+reg))
+>  =
+
+> -#if defined(CONFIG_SND_ATMEL_SOC_PDC) || \
+> -	defined(CONFIG_SND_ATMEL_SOC_PDC_MODULE)
+> +#if IS_ENABLED(CONFIG_SND_ATMEL_SOC_PDC)
+>  int atmel_pcm_pdc_platform_register(struct device *dev);
+>  void atmel_pcm_pdc_platform_unregister(struct device *dev);
+>  #else
+> @@ -97,8 +96,7 @@ static inline void atmel_pcm_pdc_platform_unregister(st=
+ruct device *dev)
+>  }
+>  #endif
+>  =
+
+> -#if defined(CONFIG_SND_ATMEL_SOC_DMA) || \
+> -	defined(CONFIG_SND_ATMEL_SOC_DMA_MODULE)
+> +#if IS_ENABLED(CONFIG_SND_ATMEL_SOC_DMA)
+>  int atmel_pcm_dma_platform_register(struct device *dev);
+>  void atmel_pcm_dma_platform_unregister(struct device *dev);
+>  #else
+> =
+
+
+
+-- =
+
+Nicolas Ferre
