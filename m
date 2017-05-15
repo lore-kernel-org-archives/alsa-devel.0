@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Move i915 registration
-	to worker thread" to the asoc tree
-Date: Mon, 15 May 2017 17:03:34 +0900
-Message-ID: <E1dAAyc-0002Uz-9J@finisterre>
-References: <1493806055-28046-1-git-send-email-subhransu.s.prusty@intel.com>
+Subject: Applied "ASoC: davinci-mcasp: Support for one channel
+	(mono) audio" to the asoc tree
+Date: Mon, 15 May 2017 17:03:54 +0900
+Message-ID: <E1dAAyw-0002YV-Bj@finisterre>
+References: <20170511065822.7604-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DFE1A267373
- for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 10:03:48 +0200 (CEST)
-In-Reply-To: <1493806055-28046-1-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id F33B9267399
+ for <alsa-devel@alsa-project.org>; Mon, 15 May 2017 10:04:02 +0200 (CEST)
+In-Reply-To: <20170511065822.7604-1-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,14 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Imre Deak <imre.deak@intel.com>, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, "Sodhi,
- VunnyX" <vunnyx.sodhi@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, misael.lopez@ti.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Move i915 registration to worker thread
+   ASoC: davinci-mcasp: Support for one channel (mono) audio
 
 has been applied to the asoc tree at
 
@@ -54,305 +53,73 @@ to this mail.
 Thanks,
 Mark
 
->From ab1b732d53c18f26f51cad49371be3244fe67504 Mon Sep 17 00:00:00 2001
-From: Vinod Koul <vinod.koul@intel.com>
-Date: Thu, 4 May 2017 14:09:10 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Move i915 registration to worker thread
+>From e4798d26548b264be6604b45e4281244e96c9a09 Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Thu, 11 May 2017 09:58:22 +0300
+Subject: [PATCH] ASoC: davinci-mcasp: Support for one channel (mono) audio
 
-The i915 component framework expects the caller to be invoking
-snd_hdac_i915_init() from a thread context. Otherwise it results in
-lockups on drm side.
+Mono audio can be achieved by configuring McASP to transmit/receive only
+during one timeslot. McASP will still going to generate clocks for the
+other slot(s), but will only use the single slot to transmit/receive.
 
-So move the registering of component interface and probing of codecs on
-this bus to a worker thread.
-
-init_failed in skl structure is not used currently, so renamed to
-init_done and used to track the initialization done in worker thread.
-
-Reported-by: Imre Deak <imre.deak@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Sodhi, VunnyX <vunnyx.sodhi@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl.c | 162 +++++++++++++++++++++++-------------------
- sound/soc/intel/skylake/skl.h |   4 +-
- 2 files changed, 91 insertions(+), 75 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 6df3b317a476..4c9b5781282b 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -410,7 +410,7 @@ static int skl_free(struct hdac_ext_bus *ebus)
- 	struct skl *skl  = ebus_to_skl(ebus);
- 	struct hdac_bus *bus = ebus_to_hbus(ebus);
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 3c5a9804d3f5..56ec1d301ac2 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -629,7 +629,7 @@ static int davinci_mcasp_ch_constraint(struct davinci_mcasp *mcasp, int stream,
+ 	if (mcasp->tdm_mask[stream])
+ 		slots = hweight32(mcasp->tdm_mask[stream]);
  
--	skl->init_failed = 1; /* to be sure */
-+	skl->init_done = 0; /* to be sure */
+-	for (i = 2; i <= slots; i++)
++	for (i = 1; i <= slots; i++)
+ 		list[count++] = i;
  
- 	snd_hdac_ext_stop_streams(ebus);
+ 	for (i = 2; i <= serializers; i++)
+@@ -1297,7 +1297,7 @@ static int davinci_mcasp_startup(struct snd_pcm_substream *substream,
  
-@@ -428,8 +428,10 @@ static int skl_free(struct hdac_ext_bus *ebus)
+ 	snd_pcm_hw_constraint_minmax(substream->runtime,
+ 				     SNDRV_PCM_HW_PARAM_CHANNELS,
+-				     2, max_channels);
++				     0, max_channels);
  
- 	snd_hdac_ext_bus_exit(ebus);
+ 	snd_pcm_hw_constraint_list(substream->runtime,
+ 				   0, SNDRV_PCM_HW_PARAM_CHANNELS,
+@@ -1459,13 +1459,13 @@ static struct snd_soc_dai_driver davinci_mcasp_dai[] = {
+ 		.suspend	= davinci_mcasp_suspend,
+ 		.resume		= davinci_mcasp_resume,
+ 		.playback	= {
+-			.channels_min	= 2,
++			.channels_min	= 1,
+ 			.channels_max	= 32 * 16,
+ 			.rates 		= DAVINCI_MCASP_RATES,
+ 			.formats	= DAVINCI_MCASP_PCM_FMTS,
+ 		},
+ 		.capture 	= {
+-			.channels_min 	= 2,
++			.channels_min 	= 1,
+ 			.channels_max	= 32 * 16,
+ 			.rates 		= DAVINCI_MCASP_RATES,
+ 			.formats	= DAVINCI_MCASP_PCM_FMTS,
+@@ -1971,12 +1971,12 @@ static int davinci_mcasp_probe(struct platform_device *pdev)
+ 	 */
+ 	mcasp->chconstr[SNDRV_PCM_STREAM_PLAYBACK].list =
+ 		devm_kzalloc(mcasp->dev, sizeof(unsigned int) *
+-			     (32 + mcasp->num_serializer - 2),
++			     (32 + mcasp->num_serializer - 1),
+ 			     GFP_KERNEL);
  
-+	cancel_work_sync(&skl->probe_work);
- 	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
- 		snd_hdac_i915_exit(&ebus->bus);
-+
- 	return 0;
- }
+ 	mcasp->chconstr[SNDRV_PCM_STREAM_CAPTURE].list =
+ 		devm_kzalloc(mcasp->dev, sizeof(unsigned int) *
+-			     (32 + mcasp->num_serializer - 2),
++			     (32 + mcasp->num_serializer - 1),
+ 			     GFP_KERNEL);
  
-@@ -566,6 +568,84 @@ static const struct hdac_bus_ops bus_core_ops = {
- 	.get_response = snd_hdac_bus_get_response,
- };
- 
-+static int skl_i915_init(struct hdac_bus *bus)
-+{
-+	int err;
-+
-+	/*
-+	 * The HDMI codec is in GPU so we need to ensure that it is powered
-+	 * up and ready for probe
-+	 */
-+	err = snd_hdac_i915_init(bus);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_hdac_display_power(bus, true);
-+	if (err < 0)
-+		dev_err(bus->dev, "Cannot turn on display power on i915\n");
-+
-+	return err;
-+}
-+
-+static void skl_probe_work(struct work_struct *work)
-+{
-+	struct skl *skl = container_of(work, struct skl, probe_work);
-+	struct hdac_ext_bus *ebus = &skl->ebus;
-+	struct hdac_bus *bus = ebus_to_hbus(ebus);
-+	struct hdac_ext_link *hlink = NULL;
-+	int err;
-+
-+	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
-+		err = skl_i915_init(bus);
-+		if (err < 0)
-+			return;
-+	}
-+
-+	err = skl_init_chip(bus, true);
-+	if (err < 0) {
-+		dev_err(bus->dev, "Init chip failed with err: %d\n", err);
-+		goto out_err;
-+	}
-+
-+	/* codec detection */
-+	if (!bus->codec_mask)
-+		dev_info(bus->dev, "no hda codecs found!\n");
-+
-+	/* create codec instances */
-+	err = skl_codec_create(ebus);
-+	if (err < 0)
-+		goto out_err;
-+
-+	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
-+		err = snd_hdac_display_power(bus, false);
-+		if (err < 0) {
-+			dev_err(bus->dev, "Cannot turn off display power on i915\n");
-+			return;
-+		}
-+	}
-+
-+	/* register platform dai and controls */
-+	err = skl_platform_register(bus->dev);
-+	if (err < 0)
-+		return;
-+	/*
-+	 * we are done probing so decrement link counts
-+	 */
-+	list_for_each_entry(hlink, &ebus->hlink_list, list)
-+		snd_hdac_ext_bus_link_put(ebus, hlink);
-+
-+	/* configure PM */
-+	pm_runtime_put_noidle(bus->dev);
-+	pm_runtime_allow(bus->dev);
-+	skl->init_done = 1;
-+
-+	return;
-+
-+out_err:
-+	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
-+		err = snd_hdac_display_power(bus, false);
-+}
-+
- /*
-  * constructor
-  */
-@@ -593,6 +673,7 @@ static int skl_create(struct pci_dev *pci,
- 	snd_hdac_ext_bus_init(ebus, &pci->dev, &bus_core_ops, io_ops);
- 	ebus->bus.use_posbuf = 1;
- 	skl->pci = pci;
-+	INIT_WORK(&skl->probe_work, skl_probe_work);
- 
- 	ebus->bus.bdl_pos_adj = 0;
- 
-@@ -601,27 +682,6 @@ static int skl_create(struct pci_dev *pci,
- 	return 0;
- }
- 
--static int skl_i915_init(struct hdac_bus *bus)
--{
--	int err;
--
--	/*
--	 * The HDMI codec is in GPU so we need to ensure that it is powered
--	 * up and ready for probe
--	 */
--	err = snd_hdac_i915_init(bus);
--	if (err < 0)
--		return err;
--
--	err = snd_hdac_display_power(bus, true);
--	if (err < 0) {
--		dev_err(bus->dev, "Cannot turn on display power on i915\n");
--		return err;
--	}
--
--	return err;
--}
--
- static int skl_first_init(struct hdac_ext_bus *ebus)
- {
- 	struct skl *skl = ebus_to_skl(ebus);
-@@ -684,20 +744,7 @@ static int skl_first_init(struct hdac_ext_bus *ebus)
- 	/* initialize chip */
- 	skl_init_pci(skl);
- 
--	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
--		err = skl_i915_init(bus);
--		if (err < 0)
--			return err;
--	}
--
--	skl_init_chip(bus, true);
--
--	/* codec detection */
--	if (!bus->codec_mask) {
--		dev_info(bus->dev, "no hda codecs found!\n");
--	}
--
--	return 0;
-+	return skl_init_chip(bus, true);
- }
- 
- static int skl_probe(struct pci_dev *pci,
-@@ -706,7 +753,6 @@ static int skl_probe(struct pci_dev *pci,
- 	struct skl *skl;
- 	struct hdac_ext_bus *ebus = NULL;
- 	struct hdac_bus *bus = NULL;
--	struct hdac_ext_link *hlink = NULL;
- 	int err;
- 
- 	/* we use ext core ops, so provide NULL for ops here */
-@@ -729,7 +775,7 @@ static int skl_probe(struct pci_dev *pci,
- 
- 	if (skl->nhlt == NULL) {
- 		err = -ENODEV;
--		goto out_display_power_off;
-+		goto out_free;
- 	}
- 
- 	err = skl_nhlt_create_sysfs(skl);
-@@ -760,56 +806,24 @@ static int skl_probe(struct pci_dev *pci,
- 	if (bus->mlcap)
- 		snd_hdac_ext_bus_get_ml_capabilities(ebus);
- 
-+	snd_hdac_bus_stop_chip(bus);
-+
- 	/* create device for soc dmic */
- 	err = skl_dmic_device_register(skl);
- 	if (err < 0)
- 		goto out_dsp_free;
- 
--	/* register platform dai and controls */
--	err = skl_platform_register(bus->dev);
--	if (err < 0)
--		goto out_dmic_free;
--
--	/* create codec instances */
--	err = skl_codec_create(ebus);
--	if (err < 0)
--		goto out_unregister;
--
--	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
--		err = snd_hdac_display_power(bus, false);
--		if (err < 0) {
--			dev_err(bus->dev, "Cannot turn off display power on i915\n");
--			return err;
--		}
--	}
--
--	/*
--	 * we are done probling so decrement link counts
--	 */
--	list_for_each_entry(hlink, &ebus->hlink_list, list)
--		snd_hdac_ext_bus_link_put(ebus, hlink);
--
--	/* configure PM */
--	pm_runtime_put_noidle(bus->dev);
--	pm_runtime_allow(bus->dev);
-+	schedule_work(&skl->probe_work);
- 
- 	return 0;
- 
--out_unregister:
--	skl_platform_unregister(bus->dev);
--out_dmic_free:
--	skl_dmic_device_unregister(skl);
- out_dsp_free:
- 	skl_free_dsp(skl);
- out_mach_free:
- 	skl_machine_device_unregister(skl);
- out_nhlt_free:
- 	skl_nhlt_free(skl->nhlt);
--out_display_power_off:
--	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI))
--		snd_hdac_display_power(bus, false);
- out_free:
--	skl->init_failed = 1;
- 	skl_free(ebus);
- 
- 	return err;
-@@ -828,7 +842,7 @@ static void skl_shutdown(struct pci_dev *pci)
- 
- 	skl = ebus_to_skl(ebus);
- 
--	if (skl->init_failed)
-+	if (!skl->init_done)
- 		return;
- 
- 	snd_hdac_ext_stop_streams(ebus);
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index a454f6035f3e..2a630fcb7f08 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -46,7 +46,7 @@ struct skl {
- 	struct hdac_ext_bus ebus;
- 	struct pci_dev *pci;
- 
--	unsigned int init_failed:1; /* delayed init failed */
-+	unsigned int init_done:1; /* delayed init status */
- 	struct platform_device *dmic_dev;
- 	struct platform_device *i2s_dev;
- 	struct snd_soc_platform *platform;
-@@ -64,6 +64,8 @@ struct skl {
- 	const struct firmware *tplg;
- 
- 	int supend_active;
-+
-+	struct work_struct probe_work;
- };
- 
- #define skl_to_ebus(s)	(&(s)->ebus)
+ 	if (!mcasp->chconstr[SNDRV_PCM_STREAM_PLAYBACK].list ||
 -- 
 2.11.0
