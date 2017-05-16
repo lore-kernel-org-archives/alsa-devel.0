@@ -1,20 +1,19 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH RFC 00/21] ALSA: pcm: add tracepoints for
- PCM params operation
-Date: Tue, 16 May 2017 20:54:36 +0900
-Message-ID: <f4b95103-2f69-1efa-a87a-1da99137bd59@sakamocchi.jp>
-References: <20170514085756.22382-1-o-takashi@sakamocchi.jp>
- <s5hvap2bjeh.wl-tiwai@suse.de>
- <bba04aee-5a88-ca35-3a05-41b23c738604@sakamocchi.jp>
- <s5hvap289za.wl-tiwai@suse.de>
+From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+Subject: [PATCH v2 15/53] docs-rst: add sound book to pdf output
+Date: Tue, 16 May 2017 09:16:07 -0300
+Message-ID: <f3377977aa06ecb2558466293a711e2c21bdad3c.1494935649.git.mchehab@s-opensource.com>
+References: <cover.1494935649.git.mchehab@s-opensource.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 4E346266F0F
- for <alsa-devel@alsa-project.org>; Tue, 16 May 2017 13:54:39 +0200 (CEST)
-In-Reply-To: <s5hvap289za.wl-tiwai@suse.de>
+Received: from osg.samsung.com
+ (ec2-52-27-115-49.us-west-2.compute.amazonaws.com [52.27.115.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id 21BE8266587
+ for <alsa-devel@alsa-project.org>; Tue, 16 May 2017 14:17:07 +0200 (CEST)
+In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
+In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
+References: <cover.1494935649.git.mchehab@s-opensource.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,55 +23,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, lars@metafoo.de, clemens@ladisch.de
+To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, alsa-devel@alsa-project.org, Jonathan Corbet <corbet@lwn.net>, Richard Weinberger <richard@nod.at>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Mauro Carvalho Chehab <mchehab@infradead.org>, Mauro Carvalho Chehab <mchehab@s-opensource.com>, Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>, Brian Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On May 15 2017 23:34, Takashi Iwai wrote:
-> On Mon, 15 May 2017 16:29:47 +0200,
-> Takashi Sakamoto wrote:
->>
->> On May 15 2017 17:42, Takashi Iwai wrote:
->>> On Sun, 14 May 2017 10:57:35 +0200,
->>> Takashi Sakamoto wrote:
->>>>
->>>> Hi,
->>>>
->>>> In the last Audio Mini Conference held with Linux Plumber conference 2016[1], I mentioned about tracepoints for PCM params operation. This patchset is for the idea.
->>>>
->>>> In ALSA PCM interface, applications can get hardware capability by ioctl(2) with SNDRV_PCM_IOCTL_HW_REFINE/SNDRV_PCM_IOCT_HW_PARAMS in a shape of 'struct snd_pcm_hw_params'. In kernel side, relevant processing is somewhat complicated and developers sometimes have hard time to debug drivers for PCM constraints and rules.
->>>>
->>>> This patchset adds tracepoints for hw_params operations. When CONFIG_SND_DEBUG is enabled, you can see 'trace_hw_params_mask/trace_hw_params_interval' events of 'snd_pcm' subsystem. When applications execute ioctl(2) with SNDRV_PCM_IOCTL_HW_REFINE/SNDRV_PCM_IOCTL_HW_PARAMS, these events are probed. Developers can get how many PCM rules are added into runtime of PCM substream and which rule changed which parameters.
->>>>
->>>> This patchset also includes some improvements. The last three commits brings small changes to kernel/userspace interface for error handling.
->>>>
->>>> I'm happy to receive your comment for this patchset. For your information, low level application of SNDRV_PCM_IOCTL_HW_REFINE operation is available in my github repository[2].
->>>
->>> The patches look good through a quick glance.
->>> The only concern I have is the function regression, since there are
->>> lots of code rewrites.  How did you test?
->>
->> Currently, I did four things:
->>
->> 1. understand logic to process parameters, constraints and rules
->> 2. add the tracepoints as early as the patchset
->> 3. confirm that probed events include the same data commit by commit
->> 4. do the above with refine-pcm-params.c and got valid results
->>
->> For the above, I use ALSA Fireweorks/OXFW driver and supported
->> devices, which I know correct behaviour.
->
-> Maybe we can have some test set using dummy driver, too?
+The sound subsystem book was added without the bits required to
+generate PDF output. Add them.
 
-Yep, it's preferable when this change influences all of ALSA PCM 
-applications. But actually it's perhaps a hard work to me within the 
-rest of my private time in this development period... Anyway, do my best 
-for it.
+Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
+---
+ Documentation/conf.py       |  2 ++
+ Documentation/sound/conf.py | 10 ++++++++++
+ 2 files changed, 12 insertions(+)
+ create mode 100644 Documentation/sound/conf.py
 
-At present, I'll post some patches from this patchset, which include 
-subtle changes, at first.
-
-
-Thanks
-
-Takashi Sakamoto
+diff --git a/Documentation/conf.py b/Documentation/conf.py
+index 1d461f0c1cd0..bca751960dec 100644
+--- a/Documentation/conf.py
++++ b/Documentation/conf.py
+@@ -371,6 +371,8 @@ latex_documents = [
+      'The kernel development community', 'manual'),
+     ('security/index', 'security.tex', 'The kernel security subsystem manual',
+      'The kernel development community', 'manual'),
++    ('sound/index', 'sound.tex', 'Linux Sound Subsystem Documentation',
++     'The kernel development community', 'manual'),
+ ]
+ 
+ # The name of an image file (relative to this directory) to place at the top of
+diff --git a/Documentation/sound/conf.py b/Documentation/sound/conf.py
+new file mode 100644
+index 000000000000..3f1fc5e74e7b
+--- /dev/null
++++ b/Documentation/sound/conf.py
+@@ -0,0 +1,10 @@
++# -*- coding: utf-8; mode: python -*-
++
++project = "Linux Sound Subsystem Documentation"
++
++tags.add("subproject")
++
++latex_documents = [
++    ('index', 'sound.tex', project,
++     'The kernel development community', 'manual'),
++]
+-- 
+2.9.3
