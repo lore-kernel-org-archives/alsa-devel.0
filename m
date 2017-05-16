@@ -1,19 +1,19 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/6] ALSA: hda - Remove the generic bind ctl
-	helpers
-Date: Tue, 16 May 2017 09:23:47 +0200
-Message-ID: <20170516072350.25070-4-tiwai@suse.de>
+Subject: [PATCH 2/6] ALSA: hda - Move bind-mixer switch codes
+	to generic parser
+Date: Tue, 16 May 2017 09:23:46 +0200
+Message-ID: <20170516072350.25070-3-tiwai@suse.de>
 References: <20170516072350.25070-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A3A0266847
- for <alsa-devel@alsa-project.org>; Tue, 16 May 2017 09:23:52 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 2A04DABB1
- for <alsa-devel@alsa-project.org>; Tue, 16 May 2017 07:23:52 +0000 (UTC)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B67F267480
+ for <alsa-devel@alsa-project.org>; Tue, 16 May 2017 09:23:55 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 205A0AAF2
+ for <alsa-devel@alsa-project.org>; Tue, 16 May 2017 07:23:55 +0000 (UTC)
 In-Reply-To: <20170516072350.25070-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,204 +27,195 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Now all the users of this workaround code is gone, and we can finally
-remove the legacy codes from the core HD-audio module.
+The generic parser is the only user of the bind-mixer controls, so we
+can move the code there and clean up the core helper.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_codec.c | 124 ----------------------------------------------
- sound/pci/hda/hda_local.h |  44 ----------------
- 2 files changed, 168 deletions(-)
+ sound/pci/hda/hda_codec.c   | 66 ---------------------------------------------
+ sound/pci/hda/hda_generic.c | 46 +++++++++++++++++++++++++++++--
+ sound/pci/hda/hda_local.h   | 17 ------------
+ 3 files changed, 44 insertions(+), 85 deletions(-)
 
 diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 29f243679a21..187a9c717fb5 100644
+index 70bb365a08d2..29f243679a21 100644
 --- a/sound/pci/hda/hda_codec.c
 +++ b/sound/pci/hda/hda_codec.c
-@@ -2117,130 +2117,6 @@ int snd_hda_mixer_amp_switch_put(struct snd_kcontrol *kcontrol,
+@@ -2117,72 +2117,6 @@ int snd_hda_mixer_amp_switch_put(struct snd_kcontrol *kcontrol,
  }
  EXPORT_SYMBOL_GPL(snd_hda_mixer_amp_switch_put);
  
--/**
-- * snd_hda_mixer_bind_ctls_info - Info callback for a generic bound control
-- * @kcontrol: referred ctl element
-- * @uinfo: pointer to get/store the data
+-/*
+- * bound volume controls
 - *
-- * The control element is supposed to have the private_value field
-- * set up via HDA_BIND_VOL() or HDA_BIND_SW() macros.
+- * bind multiple volumes (# indices, from 0)
 - */
--int snd_hda_mixer_bind_ctls_info(struct snd_kcontrol *kcontrol,
--				 struct snd_ctl_elem_info *uinfo)
--{
--	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
--	struct hda_bind_ctls *c;
--	int err;
 -
--	mutex_lock(&codec->control_mutex);
--	c = (struct hda_bind_ctls *)kcontrol->private_value;
--	kcontrol->private_value = *c->values;
--	err = c->ops->info(kcontrol, uinfo);
--	kcontrol->private_value = (long)c;
--	mutex_unlock(&codec->control_mutex);
--	return err;
--}
--EXPORT_SYMBOL_GPL(snd_hda_mixer_bind_ctls_info);
+-#define AMP_VAL_IDX_SHIFT	19
+-#define AMP_VAL_IDX_MASK	(0x0f<<19)
 -
 -/**
-- * snd_hda_mixer_bind_ctls_get - Get callback for a generic bound control
+- * snd_hda_mixer_bind_switch_get - Get callback for a bound volume control
 - * @kcontrol: ctl element
 - * @ucontrol: pointer to get/store the data
 - *
 - * The control element is supposed to have the private_value field
-- * set up via HDA_BIND_VOL() or HDA_BIND_SW() macros.
+- * set up via HDA_BIND_MUTE*() macros.
 - */
--int snd_hda_mixer_bind_ctls_get(struct snd_kcontrol *kcontrol,
--				struct snd_ctl_elem_value *ucontrol)
+-int snd_hda_mixer_bind_switch_get(struct snd_kcontrol *kcontrol,
+-				  struct snd_ctl_elem_value *ucontrol)
 -{
 -	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
--	struct hda_bind_ctls *c;
+-	unsigned long pval;
 -	int err;
 -
 -	mutex_lock(&codec->control_mutex);
--	c = (struct hda_bind_ctls *)kcontrol->private_value;
--	kcontrol->private_value = *c->values;
--	err = c->ops->get(kcontrol, ucontrol);
--	kcontrol->private_value = (long)c;
+-	pval = kcontrol->private_value;
+-	kcontrol->private_value = pval & ~AMP_VAL_IDX_MASK; /* index 0 */
+-	err = snd_hda_mixer_amp_switch_get(kcontrol, ucontrol);
+-	kcontrol->private_value = pval;
 -	mutex_unlock(&codec->control_mutex);
 -	return err;
 -}
--EXPORT_SYMBOL_GPL(snd_hda_mixer_bind_ctls_get);
+-EXPORT_SYMBOL_GPL(snd_hda_mixer_bind_switch_get);
 -
 -/**
-- * snd_hda_mixer_bind_ctls_put - Put callback for a generic bound control
+- * snd_hda_mixer_bind_switch_put - Put callback for a bound volume control
 - * @kcontrol: ctl element
 - * @ucontrol: pointer to get/store the data
 - *
 - * The control element is supposed to have the private_value field
-- * set up via HDA_BIND_VOL() or HDA_BIND_SW() macros.
+- * set up via HDA_BIND_MUTE*() macros.
 - */
--int snd_hda_mixer_bind_ctls_put(struct snd_kcontrol *kcontrol,
--				struct snd_ctl_elem_value *ucontrol)
+-int snd_hda_mixer_bind_switch_put(struct snd_kcontrol *kcontrol,
+-				  struct snd_ctl_elem_value *ucontrol)
 -{
 -	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
--	struct hda_bind_ctls *c;
--	unsigned long *vals;
--	int err = 0, change = 0;
+-	unsigned long pval;
+-	int i, indices, err = 0, change = 0;
 -
 -	mutex_lock(&codec->control_mutex);
--	c = (struct hda_bind_ctls *)kcontrol->private_value;
--	for (vals = c->values; *vals; vals++) {
--		kcontrol->private_value = *vals;
--		err = c->ops->put(kcontrol, ucontrol);
+-	pval = kcontrol->private_value;
+-	indices = (pval & AMP_VAL_IDX_MASK) >> AMP_VAL_IDX_SHIFT;
+-	for (i = 0; i < indices; i++) {
+-		kcontrol->private_value = (pval & ~AMP_VAL_IDX_MASK) |
+-			(i << AMP_VAL_IDX_SHIFT);
+-		err = snd_hda_mixer_amp_switch_put(kcontrol, ucontrol);
 -		if (err < 0)
 -			break;
 -		change |= err;
 -	}
--	kcontrol->private_value = (long)c;
+-	kcontrol->private_value = pval;
 -	mutex_unlock(&codec->control_mutex);
 -	return err < 0 ? err : change;
 -}
--EXPORT_SYMBOL_GPL(snd_hda_mixer_bind_ctls_put);
+-EXPORT_SYMBOL_GPL(snd_hda_mixer_bind_switch_put);
 -
--/**
-- * snd_hda_mixer_bind_tlv - TLV callback for a generic bound control
-- * @kcontrol: ctl element
-- * @op_flag: operation flag
-- * @size: byte size of input TLV
-- * @tlv: TLV data
-- *
-- * The control element is supposed to have the private_value field
-- * set up via HDA_BIND_VOL() macro.
-- */
--int snd_hda_mixer_bind_tlv(struct snd_kcontrol *kcontrol, int op_flag,
--			   unsigned int size, unsigned int __user *tlv)
--{
--	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
--	struct hda_bind_ctls *c;
--	int err;
--
--	mutex_lock(&codec->control_mutex);
--	c = (struct hda_bind_ctls *)kcontrol->private_value;
--	kcontrol->private_value = *c->values;
--	err = c->ops->tlv(kcontrol, op_flag, size, tlv);
--	kcontrol->private_value = (long)c;
--	mutex_unlock(&codec->control_mutex);
--	return err;
--}
--EXPORT_SYMBOL_GPL(snd_hda_mixer_bind_tlv);
--
--struct hda_ctl_ops snd_hda_bind_vol = {
--	.info = snd_hda_mixer_amp_volume_info,
--	.get = snd_hda_mixer_amp_volume_get,
--	.put = snd_hda_mixer_amp_volume_put,
--	.tlv = snd_hda_mixer_amp_tlv
--};
--EXPORT_SYMBOL_GPL(snd_hda_bind_vol);
--
--struct hda_ctl_ops snd_hda_bind_sw = {
--	.info = snd_hda_mixer_amp_switch_info,
--	.get = snd_hda_mixer_amp_switch_get,
--	.put = snd_hda_mixer_amp_switch_put,
--	.tlv = snd_hda_mixer_amp_tlv
--};
--EXPORT_SYMBOL_GPL(snd_hda_bind_sw);
--
- /*
-  * SPDIF out controls
-  */
+ /**
+  * snd_hda_mixer_bind_ctls_info - Info callback for a generic bound control
+  * @kcontrol: referred ctl element
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index 2842c82363c0..557ecfcad158 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -948,6 +948,8 @@ static void resume_path_from_idx(struct hda_codec *codec, int path_idx)
+ 
+ static int hda_gen_mixer_mute_put(struct snd_kcontrol *kcontrol,
+ 				  struct snd_ctl_elem_value *ucontrol);
++static int hda_gen_bind_mute_get(struct snd_kcontrol *kcontrol,
++				 struct snd_ctl_elem_value *ucontrol);
+ static int hda_gen_bind_mute_put(struct snd_kcontrol *kcontrol,
+ 				 struct snd_ctl_elem_value *ucontrol);
+ 
+@@ -970,7 +972,7 @@ static const struct snd_kcontrol_new control_templates[] = {
+ 	{
+ 		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 		.info = snd_hda_mixer_amp_switch_info,
+-		.get = snd_hda_mixer_bind_switch_get,
++		.get = hda_gen_bind_mute_get,
+ 		.put = hda_gen_bind_mute_put, /* replaced */
+ 		.private_value = HDA_COMPOSE_AMP_VAL(0, 3, 0, 0),
+ 	},
+@@ -1101,11 +1103,51 @@ static int hda_gen_mixer_mute_put(struct snd_kcontrol *kcontrol,
+ 	return snd_hda_mixer_amp_switch_put(kcontrol, ucontrol);
+ }
+ 
++/*
++ * Bound mute controls
++ */
++#define AMP_VAL_IDX_SHIFT	19
++#define AMP_VAL_IDX_MASK	(0x0f<<19)
++
++static int hda_gen_bind_mute_get(struct snd_kcontrol *kcontrol,
++				 struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	unsigned long pval;
++	int err;
++
++	mutex_lock(&codec->control_mutex);
++	pval = kcontrol->private_value;
++	kcontrol->private_value = pval & ~AMP_VAL_IDX_MASK; /* index 0 */
++	err = snd_hda_mixer_amp_switch_get(kcontrol, ucontrol);
++	kcontrol->private_value = pval;
++	mutex_unlock(&codec->control_mutex);
++	return err;
++}
++
+ static int hda_gen_bind_mute_put(struct snd_kcontrol *kcontrol,
+ 				 struct snd_ctl_elem_value *ucontrol)
+ {
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	unsigned long pval;
++	int i, indices, err = 0, change = 0;
++
+ 	sync_auto_mute_bits(kcontrol, ucontrol);
+-	return snd_hda_mixer_bind_switch_put(kcontrol, ucontrol);
++
++	mutex_lock(&codec->control_mutex);
++	pval = kcontrol->private_value;
++	indices = (pval & AMP_VAL_IDX_MASK) >> AMP_VAL_IDX_SHIFT;
++	for (i = 0; i < indices; i++) {
++		kcontrol->private_value = (pval & ~AMP_VAL_IDX_MASK) |
++			(i << AMP_VAL_IDX_SHIFT);
++		err = snd_hda_mixer_amp_switch_put(kcontrol, ucontrol);
++		if (err < 0)
++			break;
++		change |= err;
++	}
++	kcontrol->private_value = pval;
++	mutex_unlock(&codec->control_mutex);
++	return err < 0 ? err : change;
+ }
+ 
+ /* any ctl assigned to the path with the given index? */
 diff --git a/sound/pci/hda/hda_local.h b/sound/pci/hda/hda_local.h
-index b73339199a8b..5b5c324c99b9 100644
+index d0e066e4c985..b73339199a8b 100644
 --- a/sound/pci/hda/hda_local.h
 +++ b/sound/pci/hda/hda_local.h
-@@ -178,50 +178,6 @@ void snd_hda_sync_vmaster_hook(struct hda_vmaster_mute_hook *hook);
+@@ -178,23 +178,6 @@ void snd_hda_sync_vmaster_hook(struct hda_vmaster_mute_hook *hook);
  #define HDA_AMP_UNMUTE	0x00
  #define HDA_AMP_VOLMASK	0x7f
  
--/* more generic bound controls */
--struct hda_ctl_ops {
--	snd_kcontrol_info_t *info;
--	snd_kcontrol_get_t *get;
--	snd_kcontrol_put_t *put;
--	snd_kcontrol_tlv_rw_t *tlv;
--};
+-/* mono switch binding multiple inputs */
+-#define HDA_BIND_MUTE_MONO(xname, nid, channel, indices, direction) \
+-	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, .name = xname, .index = 0,  \
+-	  .info = snd_hda_mixer_amp_switch_info, \
+-	  .get = snd_hda_mixer_bind_switch_get, \
+-	  .put = snd_hda_mixer_bind_switch_put, \
+-	  .private_value = HDA_COMPOSE_AMP_VAL(nid, channel, indices, direction) }
 -
--extern struct hda_ctl_ops snd_hda_bind_vol;	/* for bind-volume with TLV */
--extern struct hda_ctl_ops snd_hda_bind_sw;	/* for bind-switch */
+-/* stereo switch binding multiple inputs */
+-#define HDA_BIND_MUTE(xname,nid,indices,dir) \
+-	HDA_BIND_MUTE_MONO(xname,nid,3,indices,dir)
 -
--struct hda_bind_ctls {
--	struct hda_ctl_ops *ops;
--	unsigned long values[];
--};
+-int snd_hda_mixer_bind_switch_get(struct snd_kcontrol *kcontrol,
+-				  struct snd_ctl_elem_value *ucontrol);
+-int snd_hda_mixer_bind_switch_put(struct snd_kcontrol *kcontrol,
+-				  struct snd_ctl_elem_value *ucontrol);
 -
--int snd_hda_mixer_bind_ctls_info(struct snd_kcontrol *kcontrol,
--				 struct snd_ctl_elem_info *uinfo);
--int snd_hda_mixer_bind_ctls_get(struct snd_kcontrol *kcontrol,
--				struct snd_ctl_elem_value *ucontrol);
--int snd_hda_mixer_bind_ctls_put(struct snd_kcontrol *kcontrol,
--				struct snd_ctl_elem_value *ucontrol);
--int snd_hda_mixer_bind_tlv(struct snd_kcontrol *kcontrol, int op_flag,
--			   unsigned int size, unsigned int __user *tlv);
--
--#define HDA_BIND_VOL(xname, bindrec) \
--	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
--	  .name = xname, \
--	  .access = SNDRV_CTL_ELEM_ACCESS_READWRITE |\
--			  SNDRV_CTL_ELEM_ACCESS_TLV_READ |\
--			  SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK,\
--	  .info = snd_hda_mixer_bind_ctls_info,\
--	  .get =  snd_hda_mixer_bind_ctls_get,\
--	  .put = snd_hda_mixer_bind_ctls_put,\
--	  .tlv = { .c = snd_hda_mixer_bind_tlv },\
--	  .private_value = (long) (bindrec) }
--#define HDA_BIND_SW(xname, bindrec) \
--	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER,\
--	  .name = xname, \
--	  .info = snd_hda_mixer_bind_ctls_info,\
--	  .get =  snd_hda_mixer_bind_ctls_get,\
--	  .put = snd_hda_mixer_bind_ctls_put,\
--	  .private_value = (long) (bindrec) }
--
- /*
-  * SPDIF I/O
-  */
+ /* more generic bound controls */
+ struct hda_ctl_ops {
+ 	snd_kcontrol_info_t *info;
 -- 
 2.12.2
