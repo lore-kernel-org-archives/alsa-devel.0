@@ -1,14 +1,17 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH 0/3] ALSA: Add rewind disable support
-Date: Tue, 16 May 2017 06:31:55 +0530
-Message-ID: <1494896518-23399-1-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH 1/3] ALSA: core: let low-level driver or
+	userspace disable rewinds
+Date: Tue, 16 May 2017 06:31:56 +0530
+Message-ID: <1494896518-23399-2-git-send-email-subhransu.s.prusty@intel.com>
+References: <1494896518-23399-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 1F4BE266B38
- for <alsa-devel@alsa-project.org>; Tue, 16 May 2017 03:15:49 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F7A0266E43
+ for <alsa-devel@alsa-project.org>; Tue, 16 May 2017 03:15:50 +0200 (CEST)
+In-Reply-To: <1494896518-23399-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,39 +22,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
+Cc: tiwai@suse.de, lgirdwood@gmail.com, Ramesh Babu <ramesh.babu@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Rewinds can be disabled when data written in ring buffer will never be
-validated. This allows for new HDaudio SPIB DMA functionality(allow fetch
-up to the application pointer, no rewind supported). Skylake driver
-changes using SPIB will be posted once the core changes are merged.
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-Based on discussion on community, .ack callback is extended with new
-attribute argument, to allow fetch up to the application pointer. Also
-drop the mmap of status and control if SPIB functionality is reported by
-driver.  There may be some slight performance downside, but it's likely
-very small.
+Add new hw_params flag to explicitly tell driver that rewinds will never
+be used. This can be used by low-level driver to optimize DMA operations
+and reduce power consumption. Use this flag only when data written in
+ring buffer will never be invalidated, e.g. any update of appl_ptr is
+final.
 
-Verified the changes with tinyalsa and alsa-lib, with both mmap and
-without mmap support and it works fine.
+Note that the update of appl_ptr include both a read/write data
+operation as well as snd_pcm_forward() whose behavior is not modified.
 
-Pierre-Louis Bossart (3):
-  ALSA: core: let low-level driver or userspace disable rewinds
-  ALSA: core: modify .ack callback to take arguments for updating appl
-    ptr
-  ALSA: pcm: conditionally avoid mmap of control data
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+---
+ include/sound/pcm.h         | 1 +
+ include/uapi/sound/asound.h | 1 +
+ sound/core/pcm_native.c     | 8 ++++++++
+ 3 files changed, 10 insertions(+)
 
- include/sound/pcm-indirect.h  |  4 ++--
- include/sound/pcm.h           |  9 +++++++-
- include/uapi/sound/asound.h   |  2 ++
- sound/core/pcm_lib.c          |  6 ++++--
- sound/core/pcm_native.c       | 49 ++++++++++++++++++++++++++++++++++++++++++-
- sound/mips/hal2.c             | 14 ++++++++++---
- sound/pci/cs46xx/cs46xx_lib.c | 18 ++++++++++++----
- sound/pci/emu10k1/emupcm.c    |  8 +++++--
- sound/pci/rme32.c             | 15 ++++++++++---
- 9 files changed, 107 insertions(+), 18 deletions(-)
-
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 361749e60799..a2682c5f5b72 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -368,6 +368,7 @@ struct snd_pcm_runtime {
+ 	unsigned int rate_num;
+ 	unsigned int rate_den;
+ 	unsigned int no_period_wakeup: 1;
++	unsigned int no_rewinds:1;
+ 
+ 	/* -- SW params -- */
+ 	int tstamp_mode;		/* mmap timestamp is updated */
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index fd41697cb4d3..c697ff90450d 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -365,6 +365,7 @@ struct snd_pcm_info {
+ #define SNDRV_PCM_HW_PARAMS_NORESAMPLE	(1<<0)	/* avoid rate resampling */
+ #define SNDRV_PCM_HW_PARAMS_EXPORT_BUFFER	(1<<1)	/* export buffer */
+ #define SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP	(1<<2)	/* disable period wakeups */
++#define SNDRV_PCM_HW_PARAMS_NO_REWINDS	        (1<<3)	/* disable rewinds */
+ 
+ struct snd_interval {
+ 	unsigned int min, max;
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 13dec5ec93f2..35dd4ca93f84 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -566,6 +566,8 @@ static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	runtime->no_period_wakeup =
+ 			(params->info & SNDRV_PCM_INFO_NO_PERIOD_WAKEUP) &&
+ 			(params->flags & SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP);
++	runtime->no_rewinds =
++		(params->flags & SNDRV_PCM_HW_PARAMS_NO_REWINDS) ? 1 : 0;
+ 
+ 	bits = snd_pcm_format_physical_width(runtime->format);
+ 	runtime->sample_bits = bits;
+@@ -2439,6 +2441,9 @@ static snd_pcm_sframes_t snd_pcm_playback_rewind(struct snd_pcm_substream *subst
+ 	if (frames == 0)
+ 		return 0;
+ 
++	if (runtime->no_rewinds)
++		return 0;
++
+ 	snd_pcm_stream_lock_irq(substream);
+ 	switch (runtime->status->state) {
+ 	case SNDRV_PCM_STATE_PREPARED:
+@@ -2487,6 +2492,9 @@ static snd_pcm_sframes_t snd_pcm_capture_rewind(struct snd_pcm_substream *substr
+ 	if (frames == 0)
+ 		return 0;
+ 
++	if (runtime->no_rewinds)
++		return 0;
++
+ 	snd_pcm_stream_lock_irq(substream);
+ 	switch (runtime->status->state) {
+ 	case SNDRV_PCM_STATE_PREPARED:
 -- 
 1.9.1
