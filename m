@@ -1,17 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: pcm: constify function local and
-	read-only table
-Date: Wed, 17 May 2017 08:48:18 +0900
-Message-ID: <20170516234820.14728-2-o-takashi@sakamocchi.jp>
-References: <20170516234820.14728-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: pcm: add const qualifier for read-only
+	table for sampling rate
+Date: Wed, 17 May 2017 08:48:17 +0900
+Message-ID: <20170516234820.14728-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 7E141266F5B
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 801B2266F78
  for <alsa-devel@alsa-project.org>; Wed, 17 May 2017 01:48:25 +0200 (CEST)
-In-Reply-To: <20170516234820.14728-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,39 +23,33 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In a function snd_pcm_hw_params_choose(), target parameters are arranged
-into a table. Though each entry of this table is read-only, they don't
-have const qualifier.
+There's a read-only table for each sampling rate, while it doesn't have
+const qualifier and can be modified.
 
-This commit adds the qualifier.
+This commit add the qualifier. As a result, a symbol for the table
+moves from .data section to .rodata.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/pcm_lib.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/core/pcm_native.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index af439e5..ab4b1d1 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -1734,7 +1734,7 @@ EXPORT_SYMBOL(snd_pcm_hw_param_last);
- int snd_pcm_hw_params_choose(struct snd_pcm_substream *pcm,
- 			     struct snd_pcm_hw_params *params)
- {
--	static int vars[] = {
-+	static const int vars[] = {
- 		SNDRV_PCM_HW_PARAM_ACCESS,
- 		SNDRV_PCM_HW_PARAM_FORMAT,
- 		SNDRV_PCM_HW_PARAM_SUBFORMAT,
-@@ -1745,7 +1745,8 @@ int snd_pcm_hw_params_choose(struct snd_pcm_substream *pcm,
- 		SNDRV_PCM_HW_PARAM_TICK_TIME,
- 		-1
- 	};
--	int err, *v;
-+	const int *v;
-+	int err;
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index d873f90..f3a3580 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -1987,8 +1987,10 @@ static int snd_pcm_hw_rule_sample_bits(struct snd_pcm_hw_params *params,
+ #error "Change this table"
+ #endif
  
- 	for (v = vars; *v != -1; v++) {
- 		if (*v != SNDRV_PCM_HW_PARAM_BUFFER_SIZE)
+-static unsigned int rates[] = { 5512, 8000, 11025, 16000, 22050, 32000, 44100,
+-                                 48000, 64000, 88200, 96000, 176400, 192000 };
++static const unsigned int rates[] = {
++	5512, 8000, 11025, 16000, 22050, 32000, 44100,
++	48000, 64000, 88200, 96000, 176400, 192000
++};
+ 
+ const struct snd_pcm_hw_constraint_list snd_pcm_known_rates = {
+ 	.count = ARRAY_SIZE(rates),
 -- 
 2.9.3
