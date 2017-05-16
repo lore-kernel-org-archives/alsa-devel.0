@@ -1,36 +1,48 @@
-From: Greg KH <greg-U8xfFu+wG4EAvxtiuMwx3w@public.gmane.org>
-Subject: Re: Distorted audio from microphone (Logitech C310)
-Date: Tue, 16 May 2017 07:58:43 +0200
-Message-ID: <20170516055843.GB25379@kroah.com>
-References: <f1f024c9-114d-4e4d-994a-1971b10e3f0a@wp.pl>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 1/3] ASoC: Intel: Skylake: Fix IPC rx_list
+	corruption
+Date: Tue, 16 May 2017 11:41:11 +0530
+Message-ID: <20170516061111.GI15061@localhost>
+References: <1494857671-19257-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B065267480
+ for <alsa-devel@alsa-project.org>; Tue, 16 May 2017 08:09:05 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <f1f024c9-114d-4e4d-994a-1971b10e3f0a-5tc4TXWwyLM@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Domker_ <domker2-5tc4TXWwyLM@public.gmane.org>
-Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+In-Reply-To: <1494857671-19257-1-git-send-email-subhransu.s.prusty@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 15, 2017 at 03:29:09PM +0200, Domker_ wrote:
-> My webcam Logitech C310 have a distored microphone audio on kernel 4.10.15-1
-> and 4.11.0-1. (on 4.9.27-1 and the older ones is fine).
-> The distortion effect is as if I spoke very, very fast (like a damn Mickey
-> Mouse)
+On Mon, May 15, 2017 at 07:44:29PM +0530, Subhransu S. Prusty wrote:
+> From: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
 > 
-> I checked and the bug occurs on both computers I have. (with the same
-> camera/different sound cards, hardware and different Linux distributions)
-> The bug always occurs when running a system with a kernel newer than 4.9.x.
+> In SKL+ platforms, all IPC commands are serialised, i.e. the driver sends
+> a new IPC to DSP, only after receiving a reply from the firmware for the
+> current IPC.
 > 
-> The camera has two internal microphones.
-> Secound kernel 4.11.0-1 (x86_64) compiled from kernel.org!
+> Hence it seems apparent that there is only a single modifier of the IPC RX
+> List. However, during an IPC timeout case in a multithreaded environment,
+> there is a possibility of the list element being deleted two times if not
+> properly protected.
 > 
-> (tested under Linux Arch and Linux Manjaro)
+> So, use spin lock save/restore to prevent rx_list corruption.
 
-Hm, maybe the Linux sound developers can help out here (added to cc:)
+Looks good, all three:
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Acked-by: Vinod Koul <vinod.koul@intel.com>
+
+-- 
+~Vinod
