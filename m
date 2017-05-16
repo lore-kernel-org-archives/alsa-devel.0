@@ -1,16 +1,16 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH 2/3] ALSA: core: modify .ack callback to take
-	arguments for updating appl ptr
-Date: Tue, 16 May 2017 06:31:57 +0530
-Message-ID: <1494896518-23399-3-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH 3/3] ALSA: pcm: conditionally avoid mmap of
+	control data
+Date: Tue, 16 May 2017 06:31:58 +0530
+Message-ID: <1494896518-23399-4-git-send-email-subhransu.s.prusty@intel.com>
 References: <1494896518-23399-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 7CCD3266E4A
- for <alsa-devel@alsa-project.org>; Tue, 16 May 2017 03:15:53 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 428FA266E50
+ for <alsa-devel@alsa-project.org>; Tue, 16 May 2017 03:15:57 +0200 (CEST)
 In-Reply-To: <1494896518-23399-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,350 +22,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, lgirdwood@gmail.com, Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, lgirdwood@gmail.com, Ramesh Babu <ramesh.babu@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, patches.audio@intel.com, broonie@kernel.org, Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-When appl_ptr is updated let low-level driver know, e.g.  to let the
-low-level driver/hardware pre-fetch data opportunistically.
+In case of mmap, by default alsa-lib mmaps both control and status data.
 
-The existing .ack callback is extended with new attribute argument, to
-support this capability. Legacy driver subscribe to SND_PCM_ACK_LEGACY and
-doesn't process ack if it is not set. SND_PCM_ACK_APP_PTR can be used to
-process the application ptr update in the driver like in the skylake
-driver which can use this to inform position of appl pointer to host DMA
-controller. The skylake driver to process the SND_PCM_ACK_APP_PTR will be
-submitted with a separate patch set.
+If driver subscribes for application pointer update, driver needs to get
+notification whenever appl ptr changes. With the above case driver won't
+get appl ptr notifications.
 
-In the ALSA core, this capability is independent from the NO_REWIND
-hardware flag. The low-level driver may however tie both options and only
-use the updated appl_ptr when rewinds are disabled due to hardware
-limitations.
+This patch check on a hw info flag and returns error when user land asks
+for mmaping control & status data, thus forcing user to issue
+IOCTL_SYNC_PTR.
 
+Suggested-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
 Signed-off-by: Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 ---
- include/sound/pcm-indirect.h  |  4 ++--
- include/sound/pcm.h           |  8 +++++++-
- sound/core/pcm_lib.c          |  6 ++++--
- sound/core/pcm_native.c       | 24 +++++++++++++++++++++++-
- sound/mips/hal2.c             | 14 +++++++++++---
- sound/pci/cs46xx/cs46xx_lib.c | 18 ++++++++++++++----
- sound/pci/emu10k1/emupcm.c    |  8 ++++++--
- sound/pci/rme32.c             | 15 ++++++++++++---
- 8 files changed, 79 insertions(+), 18 deletions(-)
+ include/uapi/sound/asound.h |  1 +
+ sound/core/pcm_native.c     | 17 +++++++++++++++++
+ 2 files changed, 18 insertions(+)
 
-diff --git a/include/sound/pcm-indirect.h b/include/sound/pcm-indirect.h
-index 1df7acaaa535..2f647ff970fb 100644
---- a/include/sound/pcm-indirect.h
-+++ b/include/sound/pcm-indirect.h
-@@ -101,7 +101,7 @@ typedef void (*snd_pcm_indirect_copy_t)(struct snd_pcm_substream *substream,
- 	if (rec->sw_io >= rec->sw_buffer_size)
- 		rec->sw_io -= rec->sw_buffer_size;
- 	if (substream->ops->ack)
--		substream->ops->ack(substream);
-+		substream->ops->ack(substream, SND_PCM_ACK_LEGACY);
- 	return bytes_to_frames(substream->runtime, rec->sw_io);
- }
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index c697ff90450d..dea7d89b41ca 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -284,6 +284,7 @@ enum {
+ #define SNDRV_PCM_INFO_HAS_LINK_ABSOLUTE_ATIME     0x02000000  /* report absolute hardware link audio time, not reset on startup */
+ #define SNDRV_PCM_INFO_HAS_LINK_ESTIMATED_ATIME    0x04000000  /* report estimated link audio time */
+ #define SNDRV_PCM_INFO_HAS_LINK_SYNCHRONIZED_ATIME 0x08000000  /* report synchronized audio/system time */
++#define SNDRV_PCM_INFO_NO_STATUS_MMAP	0x10000000	/* status and control mmap not supported */
  
-@@ -170,7 +170,7 @@ typedef void (*snd_pcm_indirect_copy_t)(struct snd_pcm_substream *substream,
- 	if (rec->sw_io >= rec->sw_buffer_size)
- 		rec->sw_io -= rec->sw_buffer_size;
- 	if (substream->ops->ack)
--		substream->ops->ack(substream);
-+		substream->ops->ack(substream, SND_PCM_ACK_LEGACY);
- 	return bytes_to_frames(substream->runtime, rec->sw_io);
- }
- 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index a2682c5f5b72..0151552342f9 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -63,6 +63,12 @@ struct snd_pcm_hardware {
- struct snd_pcm_audio_tstamp_config; /* definitions further down */
- struct snd_pcm_audio_tstamp_report;
- 
-+/*
-+ * Attibute to distinguish the ack for legacy code and pointer update.
-+ */
-+#define SND_PCM_ACK_LEGACY		BIT(0) /* Legacy callback */
-+#define SND_PCM_ACK_APP_PTR		BIT(1) /* Update pointer callback */
-+
- struct snd_pcm_ops {
- 	int (*open)(struct snd_pcm_substream *substream);
- 	int (*close)(struct snd_pcm_substream *substream);
-@@ -86,7 +92,7 @@ struct snd_pcm_ops {
- 	struct page *(*page)(struct snd_pcm_substream *substream,
- 			     unsigned long offset);
- 	int (*mmap)(struct snd_pcm_substream *substream, struct vm_area_struct *vma);
--	int (*ack)(struct snd_pcm_substream *substream);
-+	int (*ack)(struct snd_pcm_substream *substream, unsigned int ack_attr);
- };
- 
- /*
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 5088d4b8db22..b25af69a67da 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -2089,7 +2089,8 @@ static snd_pcm_sframes_t snd_pcm_lib_write1(struct snd_pcm_substream *substream,
- 			appl_ptr -= runtime->boundary;
- 		runtime->control->appl_ptr = appl_ptr;
- 		if (substream->ops->ack)
--			substream->ops->ack(substream);
-+			substream->ops->ack(substream, SND_PCM_ACK_LEGACY |
-+						SND_PCM_ACK_APP_PTR);
- 
- 		offset += frames;
- 		size -= frames;
-@@ -2321,7 +2322,8 @@ static snd_pcm_sframes_t snd_pcm_lib_read1(struct snd_pcm_substream *substream,
- 			appl_ptr -= runtime->boundary;
- 		runtime->control->appl_ptr = appl_ptr;
- 		if (substream->ops->ack)
--			substream->ops->ack(substream);
-+			substream->ops->ack(substream, SND_PCM_ACK_LEGACY |
-+						SND_PCM_ACK_APP_PTR);
- 
- 		offset += frames;
- 		size -= frames;
+ #define SNDRV_PCM_INFO_DRAIN_TRIGGER	0x40000000		/* internal kernel flag - trigger in drain */
+ #define SNDRV_PCM_INFO_FIFO_IN_FRAMES	0x80000000	/* internal kernel flag - FIFO size is in frames */
 diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 35dd4ca93f84..c14cdbd9ff86 100644
+index c14cdbd9ff86..2635a7d4d1fa 100644
 --- a/sound/core/pcm_native.c
 +++ b/sound/core/pcm_native.c
-@@ -2476,6 +2476,10 @@ static snd_pcm_sframes_t snd_pcm_playback_rewind(struct snd_pcm_substream *subst
- 		appl_ptr += runtime->boundary;
- 	runtime->control->appl_ptr = appl_ptr;
- 	ret = frames;
-+
-+	if (substream->ops->ack)
-+		substream->ops->ack(substream, SND_PCM_ACK_APP_PTR);
-+
-  __end:
- 	snd_pcm_stream_unlock_irq(substream);
- 	return ret;
-@@ -2527,6 +2531,10 @@ static snd_pcm_sframes_t snd_pcm_capture_rewind(struct snd_pcm_substream *substr
- 		appl_ptr += runtime->boundary;
- 	runtime->control->appl_ptr = appl_ptr;
- 	ret = frames;
-+
-+	if (substream->ops->ack)
-+		substream->ops->ack(substream, SND_PCM_ACK_APP_PTR);
-+
-  __end:
- 	snd_pcm_stream_unlock_irq(substream);
- 	return ret;
-@@ -2576,6 +2584,10 @@ static snd_pcm_sframes_t snd_pcm_playback_forward(struct snd_pcm_substream *subs
- 		appl_ptr -= runtime->boundary;
- 	runtime->control->appl_ptr = appl_ptr;
- 	ret = frames;
-+
-+	if (substream->ops->ack)
-+		substream->ops->ack(substream, SND_PCM_ACK_APP_PTR);
-+
-  __end:
- 	snd_pcm_stream_unlock_irq(substream);
- 	return ret;
-@@ -2625,6 +2637,10 @@ static snd_pcm_sframes_t snd_pcm_capture_forward(struct snd_pcm_substream *subst
- 		appl_ptr -= runtime->boundary;
- 	runtime->control->appl_ptr = appl_ptr;
- 	ret = frames;
-+
-+	if (substream->ops->ack)
-+		substream->ops->ack(substream, SND_PCM_ACK_APP_PTR);
-+
-  __end:
- 	snd_pcm_stream_unlock_irq(substream);
- 	return ret;
-@@ -2726,8 +2742,14 @@ static int snd_pcm_sync_ptr(struct snd_pcm_substream *substream,
- 			return err;
- 	}
- 	snd_pcm_stream_lock_irq(substream);
--	if (!(sync_ptr.flags & SNDRV_PCM_SYNC_PTR_APPL))
-+	if (!(sync_ptr.flags & SNDRV_PCM_SYNC_PTR_APPL)) {
-+		/* boundary wrap-around is assumed to be handled in userspace */
- 		control->appl_ptr = sync_ptr.c.control.appl_ptr;
-+
-+		/* let low-level driver know about appl_ptr change */
-+		if (substream->ops->ack)
-+			substream->ops->ack(substream, SND_PCM_ACK_APP_PTR);
-+	}
- 	else
- 		sync_ptr.c.control.appl_ptr = control->appl_ptr;
- 	if (!(sync_ptr.flags & SNDRV_PCM_SYNC_PTR_AVAIL_MIN))
-diff --git a/sound/mips/hal2.c b/sound/mips/hal2.c
-index 00fc9241d266..3740381b188a 100644
---- a/sound/mips/hal2.c
-+++ b/sound/mips/hal2.c
-@@ -577,7 +577,7 @@ static int hal2_playback_trigger(struct snd_pcm_substream *substream, int cmd)
- 	case SNDRV_PCM_TRIGGER_START:
- 		hal2->dac.pcm_indirect.hw_io = hal2->dac.buffer_dma;
- 		hal2->dac.pcm_indirect.hw_data = 0;
--		substream->ops->ack(substream);
-+		substream->ops->ack(substream, SND_PCM_ACK_LEGACY);
- 		hal2_start_dac(hal2);
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
-@@ -610,11 +610,15 @@ static void hal2_playback_transfer(struct snd_pcm_substream *substream,
+@@ -3524,21 +3524,38 @@ static int snd_pcm_mmap(struct file *file, struct vm_area_struct *area)
+ 	struct snd_pcm_file * pcm_file;
+ 	struct snd_pcm_substream *substream;	
+ 	unsigned long offset;
++	unsigned int info;
+ 	
+ 	pcm_file = file->private_data;
+ 	substream = pcm_file->substream;
+ 	if (PCM_RUNTIME_CHECK(substream))
+ 		return -ENXIO;
++	info = substream->runtime->hw.info;
  
- }
- 
--static int hal2_playback_ack(struct snd_pcm_substream *substream)
-+static int hal2_playback_ack(struct snd_pcm_substream *substream,
-+			     unsigned int ack_attr)
- {
- 	struct snd_hal2 *hal2 = snd_pcm_substream_chip(substream);
- 	struct hal2_codec *dac = &hal2->dac;
- 
-+	if (!(ack_attr & SND_PCM_ACK_LEGACY))
-+		return 0;
+ 	offset = area->vm_pgoff << PAGE_SHIFT;
+ 	switch (offset) {
+ 	case SNDRV_PCM_MMAP_OFFSET_STATUS:
+ 		if (pcm_file->no_compat_mmap)
+ 			return -ENXIO;
++		/*
++		 * force fallback to ioctl if driver doesn't support status
++		 * and control mmap.
++		 */
++		if (info & SNDRV_PCM_INFO_NO_STATUS_MMAP)
++			return -ENXIO;
 +
- 	dac->pcm_indirect.hw_queue_size = H2_BUF_SIZE / 2;
- 	snd_pcm_indirect_playback_transfer(substream,
- 					   &dac->pcm_indirect,
-@@ -702,11 +706,15 @@ static void hal2_capture_transfer(struct snd_pcm_substream *substream,
- 	memcpy(substream->runtime->dma_area + rec->sw_data, buf, bytes);
- }
- 
--static int hal2_capture_ack(struct snd_pcm_substream *substream)
-+static int hal2_capture_ack(struct snd_pcm_substream *substream,
-+			    unsigned int ack_attr)
- {
- 	struct snd_hal2 *hal2 = snd_pcm_substream_chip(substream);
- 	struct hal2_codec *adc = &hal2->adc;
- 
-+	if (!(ack_attr & SND_PCM_ACK_LEGACY))
-+		return 0;
+ 		return snd_pcm_mmap_status(substream, file, area);
+ 	case SNDRV_PCM_MMAP_OFFSET_CONTROL:
+ 		if (pcm_file->no_compat_mmap)
+ 			return -ENXIO;
 +
- 	snd_pcm_indirect_capture_transfer(substream,
- 					  &adc->pcm_indirect,
- 					  hal2_capture_transfer);
-diff --git a/sound/pci/cs46xx/cs46xx_lib.c b/sound/pci/cs46xx/cs46xx_lib.c
-index e4cf3187b4dd..877edda61e45 100644
---- a/sound/pci/cs46xx/cs46xx_lib.c
-+++ b/sound/pci/cs46xx/cs46xx_lib.c
-@@ -883,10 +883,15 @@ static void snd_cs46xx_pb_trans_copy(struct snd_pcm_substream *substream,
- 	memcpy(cpcm->hw_buf.area + rec->hw_data, runtime->dma_area + rec->sw_data, bytes);
- }
- 
--static int snd_cs46xx_playback_transfer(struct snd_pcm_substream *substream)
-+static int snd_cs46xx_playback_transfer(struct snd_pcm_substream *substream,
-+					unsigned int ack_attr)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_cs46xx_pcm * cpcm = runtime->private_data;
++		/*
++		 * force fallback to ioctl if driver doesn't support status
++		 * and control mmap.
++		 */
++		if (info & SNDRV_PCM_INFO_NO_STATUS_MMAP)
++			return -ENXIO;
 +
-+	if (!(ack_attr & SND_PCM_ACK_LEGACY))
-+		return 0;
-+
- 	snd_pcm_indirect_playback_transfer(substream, &cpcm->pcm_rec, snd_cs46xx_pb_trans_copy);
- 	return 0;
- }
-@@ -900,9 +905,14 @@ static void snd_cs46xx_cp_trans_copy(struct snd_pcm_substream *substream,
- 	       chip->capt.hw_buf.area + rec->hw_data, bytes);
- }
- 
--static int snd_cs46xx_capture_transfer(struct snd_pcm_substream *substream)
-+static int snd_cs46xx_capture_transfer(struct snd_pcm_substream *substream,
-+					       unsigned int ack_attr)
- {
- 	struct snd_cs46xx *chip = snd_pcm_substream_chip(substream);
-+
-+	if (!(ack_attr & SND_PCM_ACK_LEGACY))
-+		return 0;
-+
- 	snd_pcm_indirect_capture_transfer(substream, &chip->capt.pcm_rec, snd_cs46xx_cp_trans_copy);
- 	return 0;
- }
-@@ -981,11 +991,11 @@ static int snd_cs46xx_playback_trigger(struct snd_pcm_substream *substream,
- 			cs46xx_dsp_pcm_link(chip,cpcm->pcm_channel);
- 
- 		if (substream->runtime->periods != CS46XX_FRAGS)
--			snd_cs46xx_playback_transfer(substream);
-+			snd_cs46xx_playback_transfer(substream, SND_PCM_ACK_LEGACY);
- #else
- 		spin_lock(&chip->reg_lock);
- 		if (substream->runtime->periods != CS46XX_FRAGS)
--			snd_cs46xx_playback_transfer(substream);
-+			snd_cs46xx_playback_transfer(substream, SND_PCM_ACK_LEGACY);
- 		{ unsigned int tmp;
- 		tmp = snd_cs46xx_peek(chip, BA1_PCTL);
- 		tmp &= 0x0000ffff;
-diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
-index ef1cf530c929..74c78df6e5a8 100644
---- a/sound/pci/emu10k1/emupcm.c
-+++ b/sound/pci/emu10k1/emupcm.c
-@@ -1627,11 +1627,15 @@ static void fx8010_pb_trans_copy(struct snd_pcm_substream *substream,
- 	pcm->tram_shift = tram_shift;
- }
- 
--static int snd_emu10k1_fx8010_playback_transfer(struct snd_pcm_substream *substream)
-+static int snd_emu10k1_fx8010_playback_transfer(struct snd_pcm_substream *substream,
-+						unsigned int ack_attr)
- {
- 	struct snd_emu10k1 *emu = snd_pcm_substream_chip(substream);
- 	struct snd_emu10k1_fx8010_pcm *pcm = &emu->fx8010.pcm[substream->number];
- 
-+	if (!(ack_attr & SND_PCM_ACK_LEGACY))
-+		return 0;
-+
- 	snd_pcm_indirect_playback_transfer(substream, &pcm->pcm_rec, fx8010_pb_trans_copy);
- 	return 0;
- }
-@@ -1710,7 +1714,7 @@ static int snd_emu10k1_fx8010_playback_trigger(struct snd_pcm_substream *substre
- 		result = snd_emu10k1_fx8010_register_irq_handler(emu, snd_emu10k1_fx8010_playback_irq, pcm->gpr_running, substream, &pcm->irq);
- 		if (result < 0)
- 			goto __err;
--		snd_emu10k1_fx8010_playback_transfer(substream);	/* roll the ball */
-+		snd_emu10k1_fx8010_playback_transfer(substream, SND_PCM_ACK_LEGACY);	/* roll the ball */
- 		snd_emu10k1_ptr_write(emu, emu->gpr_base + pcm->gpr_trigger, 0, 1);
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
-diff --git a/sound/pci/rme32.c b/sound/pci/rme32.c
-index 96d15db65dfd..3fd8de5bab26 100644
---- a/sound/pci/rme32.c
-+++ b/sound/pci/rme32.c
-@@ -1092,7 +1092,7 @@ static int snd_rme32_capture_prepare(struct snd_pcm_substream *substream)
- 	if (cmd == SNDRV_PCM_TRIGGER_START && rme32->fullduplex_mode) {
- 		snd_pcm_group_for_each_entry(s, substream) {
- 			if (s == rme32->playback_substream) {
--				s->ops->ack(s);
-+				s->ops->ack(s, SND_PCM_ACK_LEGACY);
- 				break;
- 			}
- 		}
-@@ -1145,11 +1145,15 @@ static void snd_rme32_pb_trans_copy(struct snd_pcm_substream *substream,
- 		    substream->runtime->dma_area + rec->sw_data, bytes);
- }
- 
--static int snd_rme32_playback_fd_ack(struct snd_pcm_substream *substream)
-+static int snd_rme32_playback_fd_ack(struct snd_pcm_substream *substream,
-+				     unsigned int ack_attr)
- {
- 	struct rme32 *rme32 = snd_pcm_substream_chip(substream);
- 	struct snd_pcm_indirect *rec, *cprec;
- 
-+	if (!(ack_attr & SND_PCM_ACK_LEGACY))
-+		return 0;
-+
- 	rec = &rme32->playback_pcm;
- 	cprec = &rme32->capture_pcm;
- 	spin_lock(&rme32->lock);
-@@ -1171,9 +1175,14 @@ static void snd_rme32_cp_trans_copy(struct snd_pcm_substream *substream,
- 		      bytes);
- }
- 
--static int snd_rme32_capture_fd_ack(struct snd_pcm_substream *substream)
-+static int snd_rme32_capture_fd_ack(struct snd_pcm_substream *substream,
-+					unsigned int ack_attr)
- {
- 	struct rme32 *rme32 = snd_pcm_substream_chip(substream);
-+
-+	if (!(ack_attr & SND_PCM_ACK_LEGACY))
-+		return 0;
-+
- 	snd_pcm_indirect_capture_transfer(substream, &rme32->capture_pcm,
- 					  snd_rme32_cp_trans_copy);
- 	return 0;
+ 		return snd_pcm_mmap_control(substream, file, area);
+ 	default:
+ 		return snd_pcm_mmap_data(substream, file, area);
 -- 
 1.9.1
