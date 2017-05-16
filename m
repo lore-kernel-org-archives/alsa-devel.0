@@ -1,66 +1,36 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 3/3] ALSA: pcm: conditionally avoid mmap of
-	control data
-Date: Tue, 16 May 2017 14:57:30 +0900
-Message-ID: <a0f670c6-1ec5-5dbf-06bd-15f67c98bd75@sakamocchi.jp>
-References: <1494896518-23399-1-git-send-email-subhransu.s.prusty@intel.com>
- <1494896518-23399-4-git-send-email-subhransu.s.prusty@intel.com>
- <50e717b2-2a88-08d7-7560-e80a7c43540c@sakamocchi.jp>
- <s5hlgpx1hif.wl-tiwai@suse.de>
+From: Greg KH <greg-U8xfFu+wG4EAvxtiuMwx3w@public.gmane.org>
+Subject: Re: Distorted audio from microphone (Logitech C310)
+Date: Tue, 16 May 2017 07:58:43 +0200
+Message-ID: <20170516055843.GB25379@kroah.com>
+References: <f1f024c9-114d-4e4d-994a-1971b10e3f0a@wp.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 188EE267480
- for <alsa-devel@alsa-project.org>; Tue, 16 May 2017 07:57:32 +0200 (CEST)
-In-Reply-To: <s5hlgpx1hif.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, lgirdwood@gmail.com, Ramesh Babu <ramesh.babu@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, broonie@kernel.org, Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <f1f024c9-114d-4e4d-994a-1971b10e3f0a-5tc4TXWwyLM@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Domker_ <domker2-5tc4TXWwyLM@public.gmane.org>
+Cc: linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On May 16 2017 14:46, Takashi Iwai wrote:
-> In this case, the problem is that the mmap control allows the appl_ptr
-> being changed silently without interaction with the driver.  If the
-> driver requires some explicit action for changing the appl_ptr, it
-> won't work.
+On Mon, May 15, 2017 at 03:29:09PM +0200, Domker_ wrote:
+> My webcam Logitech C310 have a distored microphone audio on kernel 4.10.15-1
+> and 4.11.0-1. (on 4.9.27-1 and the older ones is fine).
+> The distortion effect is as if I spoke very, very fast (like a damn Mickey
+> Mouse)
+> 
+> I checked and the bug occurs on both computers I have. (with the same
+> camera/different sound cards, hardware and different Linux distributions)
+> The bug always occurs when running a system with a kernel newer than 4.9.x.
+> 
+> The camera has two internal microphones.
+> Secound kernel 4.11.0-1 (x86_64) compiled from kernel.org!
+> 
+> (tested under Linux Arch and Linux Manjaro)
 
-I think 'struct snd_pcm_ops.pointer' is available for this purpose, too.
+Hm, maybe the Linux sound developers can help out here (added to cc:)
 
-static snd_pcm_sframes_t snd_pcm_playback_rewind(...)
-{
-     ...
-     hw_avail = snd_pcm_playback_hw_avail(runtime);
-     (->struct snd_pcm_ops.pointer())
-     ...
-     (rewind PCM frames)
-     ...
-+   substream->ops->pointer(...);
-     (->struct snd_pcm_ops.pointer())
-     ...
-}
-
-If drivers need to handle event to update the appl_ptr, it records value 
-of the appl_ptr, then compare it to current value to get the updates.
-
-I note that the callback is done in both of process/irq contexts.
-
-On May 16 2017 14:46, Takashi Iwai wrote:
- > Worthless is a too strong word, but I agree that more clarification
- > would be more helpful.
-
-Sorry to use such strong expression. I'll care of it.
-
-
-Regards
-
-Takashi Sakamoto
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
