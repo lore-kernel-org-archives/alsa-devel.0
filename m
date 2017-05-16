@@ -1,19 +1,20 @@
-From: Mauro Carvalho Chehab <mchehab@s-opensource.com>
-Subject: [PATCH v2 15/53] docs-rst: add sound book to pdf output
-Date: Tue, 16 May 2017 09:16:07 -0300
-Message-ID: <f3377977aa06ecb2558466293a711e2c21bdad3c.1494935649.git.mchehab@s-opensource.com>
-References: <cover.1494935649.git.mchehab@s-opensource.com>
+From: =?UTF-8?B?Sm/Dq2wgS3LDpGhlbWFubg==?= <weedlight@gmail.com>
+Subject: Re: HDA cs8409 codec support
+Date: Tue, 16 May 2017 14:29:48 +0200
+Message-ID: <CANr2zYiBezEr3RtrGT5m5Bi=6R-qA-6k7mQFRbz_peoP+6Raew@mail.gmail.com>
+References: <CANr2zYhMbCAJo4CbtmHGGa-PPVMr9xNq7Hm=qT=6thA59Na_ww@mail.gmail.com>
+ <s5ho9ut1hvd.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from osg.samsung.com
- (ec2-52-27-115-49.us-west-2.compute.amazonaws.com [52.27.115.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 21BE8266587
- for <alsa-devel@alsa-project.org>; Tue, 16 May 2017 14:17:07 +0200 (CEST)
-In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
-In-Reply-To: <cover.1494935649.git.mchehab@s-opensource.com>
-References: <cover.1494935649.git.mchehab@s-opensource.com>
+Received: from mail-ua0-f177.google.com (mail-ua0-f177.google.com
+ [209.85.217.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id B0B89266587
+ for <alsa-devel@alsa-project.org>; Tue, 16 May 2017 14:29:50 +0200 (CEST)
+Received: by mail-ua0-f177.google.com with SMTP id e55so98368781uaa.2
+ for <alsa-devel@alsa-project.org>; Tue, 16 May 2017 05:29:50 -0700 (PDT)
+In-Reply-To: <s5ho9ut1hvd.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,48 +24,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, alsa-devel@alsa-project.org, Jonathan Corbet <corbet@lwn.net>, Richard Weinberger <richard@nod.at>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Mauro Carvalho Chehab <mchehab@infradead.org>, Mauro Carvalho Chehab <mchehab@s-opensource.com>, Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, Cyrille Pitchen <cyrille.pitchen@atmel.com>, Brian Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The sound subsystem book was added without the bits required to
-generate PDF output. Add them.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab@s-opensource.com>
----
- Documentation/conf.py       |  2 ++
- Documentation/sound/conf.py | 10 ++++++++++
- 2 files changed, 12 insertions(+)
- create mode 100644 Documentation/sound/conf.py
-
-diff --git a/Documentation/conf.py b/Documentation/conf.py
-index 1d461f0c1cd0..bca751960dec 100644
---- a/Documentation/conf.py
-+++ b/Documentation/conf.py
-@@ -371,6 +371,8 @@ latex_documents = [
-      'The kernel development community', 'manual'),
-     ('security/index', 'security.tex', 'The kernel security subsystem manual',
-      'The kernel development community', 'manual'),
-+    ('sound/index', 'sound.tex', 'Linux Sound Subsystem Documentation',
-+     'The kernel development community', 'manual'),
- ]
- 
- # The name of an image file (relative to this directory) to place at the top of
-diff --git a/Documentation/sound/conf.py b/Documentation/sound/conf.py
-new file mode 100644
-index 000000000000..3f1fc5e74e7b
---- /dev/null
-+++ b/Documentation/sound/conf.py
-@@ -0,0 +1,10 @@
-+# -*- coding: utf-8; mode: python -*-
-+
-+project = "Linux Sound Subsystem Documentation"
-+
-+tags.add("subproject")
-+
-+latex_documents = [
-+    ('index', 'sound.tex', project,
-+     'The kernel development community', 'manual'),
-+]
--- 
-2.9.3
+SGkgYWxsCgpGaXJzdCBJIHdhcyB3b3JraW5nIHdpdGggdGhlIGNpcnJ1cyBkYXRhc2hlZXQgb2Yg
+dGhlIHdtODg1MApjb2RlYyB0byBnZXQgYSBiZXR0ZXIgdW5kZXJzdGFuZGluZyBvZiB2ZXJicyBh
+bmQgaG93IGEgdmVuZG9yCnNwZWNpZmljIGltcGxlbWVudGF0aW9uIG1pZ2h0IGxvb2sgbGlrZS4K
+Ck5vdywgSSBhbSBzZWVraW5nIGZvciBhIHdvcmtpbmcgcGluIGNvbmZpZ3VyYXRpb24uIFRodXMg
+SSBoYXZlCmNyZWF0ZWQgYSBzeXN0ZW1kIHN0YXJ0IHNjcmlwdCB3aGljaCBkb2VzIGZvciB0aGUg
+MTcgcmVib290cyBpdApkb2VzIHRyeSBhIGRpZmZlcmVudCBmaXJtd2FyZSBjb25maWd1cmF0aW9u
+LgoKSXQgYWRqdXN0IGRpZmZlcmVudCBwaW5zIHdpdGggdGhlIGhlYWRwaG9uZSBhZGRyZXNzIGFu
+ZCBkb2VzCnRoZSBhcHByb3ByaWF0ZSBwaW4gY29tcGxleCBjb25maWd1cmUgYXMgc3VjaC4KCklu
+IHRoZSBiZWdpbm5pbmcgSSB0cmllZCB0byBjb25maWd1cmUgaHAgYW5kIHNwZWFrZXIgYXQgdGhl
+IHZlcnkKc2FtZSB0aW1lLiBBcyBhIGNvbnRpbnVlcyBjb25maWd1cmF0aW9uIGJsb2NrLiBCdXQg
+bm93IEkgdGhpbmsKaXQgaXMgZWFzaWVyIHRvIGRvIGl0IHNlcGFyYXRlbHkuCgpNeSBiaWdnZXN0
+IGlzc3VlIGlzIHRvIHVuZGVyc3RhbmQgdmVuZG9yIGNvZWZmaWNpZW50cyBhbmQgR1BJTy4KVGhl
+IGZvbGxvd2luZyB2ZW5kb3IgY29lZmZpY2llbnQgZW5hYmxlcyBwaW5zIDAsIDIgYW5kIDMuCgpz
+dGF0aWMgY29uc3Qgc3RydWN0IGhkYV92ZXJiIGNzODQwOV9jb2VmX2luaXRfdmVyYnNbXSA9IHsK
+ICB7IDB4MDEsIEFDX1ZFUkJfU0VUX1BPV0VSX1NUQVRFLCAweDAwIH0sIC8qIEFGRzogRDAgKi8K
+ICB7IDB4NDcsIEFDX1ZFUkJfU0VUX1BST0NfU1RBVEUsIDB4MSB9LAogIHsgMHg0NywgQUNfVkVS
+Ql9TRVRfQ09FRl9JTkRFWCwgMHgzIH0sCiAgeyAweDQ3LCBBQ19WRVJCX1NFVF9QUk9DX0NPRUYs
+IDB4MTQ2YSB9LAogIHsgMHg0NywgQUNfVkVSQl9TRVRfQ09FRl9JTkRFWCwgMHgwMDMzIH0sCiAg
+eyAweDQ3LCBBQ19WRVJCX1NFVF9QUk9DX0NPRUYsIDB4MDAwMSB9LAogIHsgMHg0NywgQUNfVkVS
+Ql9TRVRfQ09FRl9JTkRFWCwgMHgwMDM0IH0sCiAgeyAweDQ3LCBBQ19WRVJCX1NFVF9QUk9DX0NP
+RUYsIDB4MWMwMSB9LAogIHt9IC8qIHRlcm1pbmF0b3IgKi8KfTsKCkkgdGhpbmsgdGhlIGNvZWZm
+aWNpZW50IGluZGV4IDB4MyBpcyByZXNwb25zaWJsZSBmb3IgaXQuIFdoYXQgaXMKdGhlIGRpZmZl
+cmVuY2UgYmV0d2VlbiBlbmFibGluZyBkYXRhIHBpbnMgYnkgY29lZmZpY2llbnQgb24KdmVuZG9y
+IG5vZGUgMHg0NyBhbmQgYnkgYXBwcm9wcmlhdGUgdmVyYiBvbiBub2RlIDB4MQphdWRpbyBjb25m
+aWd1cmF0aW9uIGdyb3VwPwoKSSBkaWRuJ3QgaGF2ZSB0aGUgY2hhbmNlIHRvIHN0dWR5IHRoZSBn
+ZW5lcmljIEhEQSBkcml2ZXIuIE9uZSBvZgpteSBmYXVsdHMgd2FzIGVuYWJsaW5nIHN0cmVhbXMg
+ZHVyaW5nIGVhcmx5IGZpcm13YXJlIHBhdGNoaW5nLAp0aG91Z2h0LiBTaW5jZSB0aGUgZGF0YXNo
+ZWV0IHNheXMgaXQgc2hhbGwgYmUgdGhlIGxhc3QgY2FsbGVkIHZlcmJzCm9mIGEgY29uZmlndXJh
+dGlvbiBzZXF1ZW5jZS4KCkR1cmluZyBlYXJseSBmaXJtd2FyZSBwYXRjaGluZyBJIGNvbmZpZ3Vy
+ZWQgY2VydGFpbiBub2RlcyBhcwpzcGVha2VyIGxlZnQgYW5kIHJpZ2h0LiBCdXQgSSBhbSB1bnN1
+cmUgd2hhdCBzaGFsbCBoYXBwZW4gZHVyaW5nCmVhcmx5IGZpcm13YXJlIHBhdGNoaW5nIGFuZCB3
+aGF0IGRvZXMgdGhlIGdlbmVyaWMgZHJpdmVyLgoKSGVyZSBpcyBhIHBpZWNlIG9mIG15IHN5c3Rl
+bWQgc3RhcnQgc2NyaXB0IHdoYXQgY29uZmlndXJlcyBzcGVha2VyCmxlZnQ6CgojIHBvd2VyIEQw
+CnByaW50ZiAiMHglMDJ4IDB4NzA1IDB4MFxuIiAkbmlkID4+IC9saWIvZmlybXdhcmUvaGRhLWph
+Y2stcmV0YXNrLmZ3CiMgc2V0IHByb2Nlc3Npbmcgc3RhdGUgb24KcHJpbnRmICIweCUwMnggMHgz
+IDB4MVxuIiAkbmlkID4+IC9saWIvZmlybXdhcmUvaGRhLWphY2stcmV0YXNrLmZ3CnByaW50ZiAi
+MHglMDJ4IDB4NzA2IDB4MTBcbiIgJG5pZCA+PiAvbGliL2Zpcm13YXJlL2hkYS1qYWNrLXJldGFz
+ay5mdwpwcmludGYgIjB4JTAyeCAweDcwYyAweDJcbiIgJG5pZCA+PiAvbGliL2Zpcm13YXJlL2hk
+YS1qYWNrLXJldGFzay5mdwpwcmludGYgIjB4JTAyeCAweDc3MyAweDBcbiIgJG5pZCA+PiAvbGli
+L2Zpcm13YXJlL2hkYS1qYWNrLXJldGFzay5mdwpwcmludGYgIjB4JTAyeCAweDcwNSAweDAwXG4i
+ICRwaW4gPj4gL2xpYi9maXJtd2FyZS9oZGEtamFjay1yZXRhc2suZncKcHJpbnRmICIweCUwMngg
+MHg3MDcgMHg0NVxuIiAkcGluID4+IC9saWIvZmlybXdhcmUvaGRhLWphY2stcmV0YXNrLmZ3CnBy
+aW50ZiAiMHglMDJ4IDB4NzA4IDB4ODBcbiIgJHBpbiA+PiAvbGliL2Zpcm13YXJlL2hkYS1qYWNr
+LXJldGFzay5mdwojIEVBUEQvQlRMIGVuYWJsZQpwcmludGYgIjB4JTAyeCAweDcwYyAweDJcbiIg
+JHBpbiA+PiAvbGliL2Zpcm13YXJlL2hkYS1qYWNrLXJldGFzay5mdwpwcmludGYgIjB4JTAyeCAw
+eDcxYyAweDEwXG4iICRwaW4gPj4gL2xpYi9maXJtd2FyZS9oZGEtamFjay1yZXRhc2suZncKcHJp
+bnRmICIweCUwMnggMHg3MWQgMHgwXG4iICRwaW4gPj4gL2xpYi9maXJtd2FyZS9oZGEtamFjay1y
+ZXRhc2suZncKcHJpbnRmICIweCUwMnggMHg3MWUgMHgxN1xuIiAkcGluID4+IC9saWIvZmlybXdh
+cmUvaGRhLWphY2stcmV0YXNrLmZ3CnByaW50ZiAiMHglMDJ4IDB4NzFmIDB4NDNcbiIgJHBpbiA+
+PiAvbGliL2Zpcm13YXJlL2hkYS1qYWNrLXJldGFzay5mdwpwcmludGYgIjB4JTAyeCAweDcyNCAw
+eDNcbiIgJG5pZCA+PiAvbGliL2Zpcm13YXJlL2hkYS1qYWNrLXJldGFzay5mdwojIGVuYWJsZSBz
+dHJlYW0gMSBjaGFubmVsIDAKcHJpbnRmICIweCUwMnggMHgyIDB4NDAxMVxuIiAkbmlkID4+IC9s
+aWIvZmlybXdhcmUvaGRhLWphY2stcmV0YXNrLmZ3CgoKQmVzdHMsCkpvw6tsCgoKT24gVHVlLCBN
+YXkgMTYsIDIwMTcgYXQgNzozOCBBTSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPiB3cm90
+ZToKPiBPbiBTdW4sIDE0IE1heSAyMDE3IDAyOjE2OjE4ICswMjAwLAo+IEpvw6tsIEtyw6RoZW1h
+bm4gd3JvdGU6Cj4+Cj4+IEhpIGFsbAo+Pgo+PiBGaXJzdCBvZiBhbGwsIEkgYW0gbmV3IHRvIGtl
+cm5lbCBwcm9ncmFtbWluZyBhbmQgYW4gb3RoZXIgYXR0ZW1wdAo+PiBhbHJlYWR5IGZhaWxlZCB0
+byBkbyBzby4KPj4KPj4gSG93ZXZlciBJIGdvdCBmYW1pbGlhciB3aXRoIHRoZSBJbnRlbCBIREEg
+Q29kZWMgc3BlY2lmaWNhdGlvbi4gU28gSQo+PiBkaWQgYSBzdGFydCBzY3JpcHQgdG8gbG9nIGRt
+ZXNnIGFuZCBtaXhlciBjb250cm9scyBvZiBkaWZmZXJlbnQKPj4gY29uZmlndXJhdGlvbnMuCj4+
+Cj4+IEJ1dCBJIGFtIG5vdCBzdXJlIGlmIEkgZ290IGEgZnVuY3Rpb25hbCBrZXJuZWwgZHJpdmVy
+IHNldHVwIHRvIHRlc3QKPj4gdGhpbmdzLiBJdCBzZWVtcyB0aGVyZSBpcyBzb21ldGhpbmcgd3Jv
+bmcuCj4+Cj4+IFRoZSBjb2RlYyBoYXMgOCBHUElPcyBhbmQgZmlyc3QgSSBkaWRuJ3Qgc2V0IGFu
+eSBtYXNrIHdpdGhpbiB0aGUKPj4ga2VybmVsLiBOb3csIEkganVzdCBjb21waWxlIGEga2VybmVs
+IHNldCBpdCB0byAweGZmLgo+Pgo+PiBBbnkgaGVscCBpcyBhcHByZWNpYXRlZC4gRmluYWxseSBo
+ZXJlIGlzIG15IHdvcms6Cj4+Cj4+IGh0dHBzOi8vZ2l0aHViLmNvbS9qb2Vsa3JhZWhlbWFubi9o
+ZGEtdG9vbC8KPgo+IFdlbGwsIGZyb20geW91ciBkZXNjcmlwdGlvbiwgaXQncyBub3QgY2xlYXIg
+YXQgYWxsIHdoYXQgeW91J3ZlIHRlc3RlZAo+IG9uIHdoaWNoIG1hY2hpbmUsIHdoYXQgcmVzdWx0
+IHlvdSBnb3QsIGFuZCB3aGF0IHN0aWxsIGRvZXNuJ3Qgd29yay4KPgo+IEhvdyBhYm91dCB0byBi
+ZWdpbiB3aXRoIGV4cGxhaW5pbmcgZnJvbSB0aGF0PyAgTm90IG1hbnkgcGVvcGxlIGhhdmUKPiBj
+cnlzdGFsIGJhbGxzIGFuZCBjYW4ndCBoZWxwIHlvdSB3aXRob3V0IHRoZSBwcm9wZXIgZXhwbGFu
+YXRpb24uCj4KPgo+IFRha2FzaGkKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
+Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
+bHNhLWRldmVsCg==
