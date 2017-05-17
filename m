@@ -1,10 +1,10 @@
 From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: soc-core: enable "dai-format" on snd_soc_of_parse_daifmt()" to the asoc tree
-Date: Wed, 17 May 2017 10:53:06 +0100
-Message-ID: <E1dAvdi-00070a-N4@debutante>
-References: <87h91mxww7.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: simple-card-utils: enable "label" on asoc_simple_card_parse_card_name" to the asoc tree
+Date: Wed, 17 May 2017 10:53:00 +0100
+Message-ID: <E1dAvdc-0006zV-8R@debutante>
+References: <877f2foog1.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <87h91mxww7.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+In-Reply-To: <877f2foog1.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
 Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linux-DT <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: enable "dai-format" on snd_soc_of_parse_daifmt()
+   ASoC: simple-card-utils: enable "label" on asoc_simple_card_parse_card_name
 
 has been applied to the asoc tree at
 
@@ -37,46 +37,53 @@ to this mail.
 Thanks,
 Mark
 
->From 5711c97920377827da4bbc18233ffb08c6e3bbef Mon Sep 17 00:00:00 2001
+>From dedfaa1eedc7309252989a7defab4d565a9f481b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Date: Thu, 20 Apr 2017 01:33:24 +0000
-Subject: [PATCH] ASoC: soc-core: enable "dai-format" on
- snd_soc_of_parse_daifmt()
+Date: Thu, 20 Apr 2017 01:34:49 +0000
+Subject: [PATCH] ASoC: simple-card-utils: enable "label" on
+ asoc_simple_card_parse_card_name
 
-Current snd_soc_of_parse_daifmt() detects [prefix]format, but
-"format" was unclear in some case. This patch checks "dai-format"
-first, and try to check "[prefix]format" if "dai-format" was not
-exist.
+Current asoc_simple_card_parse_card_name() detects [prefix]name,
+but in generally, we uses "label" for user visible names.
+This patch enables it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
 Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/soc-core.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ sound/soc/generic/simple-card-utils.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index aae099c0e502..ab7a07f86ab8 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -3960,11 +3960,15 @@ unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
- 		prefix = "";
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 343b291fc372..c5ab8ad2a5ce 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -81,15 +81,21 @@ EXPORT_SYMBOL_GPL(asoc_simple_card_set_dailink_name);
+ int asoc_simple_card_parse_card_name(struct snd_soc_card *card,
+ 				     char *prefix)
+ {
+-	char prop[128];
+ 	int ret;
  
- 	/*
--	 * check "[prefix]format = xxx"
-+	 * check "dai-format = xxx"
-+	 * or    "[prefix]format = xxx"
- 	 * SND_SOC_DAIFMT_FORMAT_MASK area
- 	 */
--	snprintf(prop, sizeof(prop), "%sformat", prefix);
--	ret = of_property_read_string(np, prop, &str);
-+	ret = of_property_read_string(np, "dai-format", &str);
+-	snprintf(prop, sizeof(prop), "%sname", prefix);
++	if (!prefix)
++		prefix = "";
+ 
+ 	/* Parse the card name from DT */
+-	ret = snd_soc_of_parse_card_name(card, prop);
+-	if (ret < 0)
+-		return ret;
++	ret = snd_soc_of_parse_card_name(card, "label");
 +	if (ret < 0) {
-+		snprintf(prop, sizeof(prop), "%sformat", prefix);
-+		ret = of_property_read_string(np, prop, &str);
++		char prop[128];
++
++		snprintf(prop, sizeof(prop), "%sname", prefix);
++		ret = snd_soc_of_parse_card_name(card, prop);
++		if (ret < 0)
++			return ret;
 +	}
- 	if (ret == 0) {
- 		for (i = 0; i < ARRAY_SIZE(of_fmt_table); i++) {
- 			if (strcmp(str, of_fmt_table[i].name) == 0) {
+ 
+ 	if (!card->name && card->dai_link)
+ 		card->name = card->dai_link->name;
 -- 
 2.11.0
 
