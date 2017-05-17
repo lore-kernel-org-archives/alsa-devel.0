@@ -1,34 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: add missing clocks/clock-names on
-	Document" to the asoc tree
-Date: Wed, 17 May 2017 10:52:34 +0100
-Message-ID: <E1dAvdC-0006u0-Js@debutante>
-References: <8737cvsyah.wl%kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 74663267556
- for <alsa-devel@alsa-project.org>; Wed, 17 May 2017 11:52:44 +0200 (CEST)
-In-Reply-To: <8737cvsyah.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-Renesas <linux-renesas-soc@vger.kernel.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Simon <horms@verge.net.au>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "of-graph: export symbol of_phandle_iterator_init/next" to the asoc tree
+Date: Wed, 17 May 2017 10:53:26 +0100
+Message-ID: <E1dAve2-000758-DN@debutante>
+References: <87poh2kufc.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <87poh2kufc.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linux-DT <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: add missing clocks/clock-names on Document
+   of-graph: export symbol of_phandle_iterator_init/next
 
 has been applied to the asoc tree at
 
@@ -53,31 +37,50 @@ to this mail.
 Thanks,
 Mark
 
->From 5b3889f80a79d9b73f73e19ba9a001c2d47ab47f Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 26 Apr 2017 02:26:48 +0000
-Subject: [PATCH] ASoC: rsnd: add missing clocks/clock-names on Document
+>From 00bab23f72100a5fd8a3030f81d0af07a859ed17 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Date: Thu, 20 Apr 2017 01:31:16 +0000
+Subject: [PATCH] of-graph: export symbol of_phandle_iterator_init/next
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+of_for_each_phandle() uses of_phandle_iterator_init/next
+but it isn't exported. So kernel module complile will say
+
+ERROR: "of_phandle_iterator_init" [xxx.ko] undefined!
+ERROR: "of_phandle_iterator_next" [xxx.ko] undefined!
+
+This patch solved this issue
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/of/base.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-index 3332910a9a11..13cb21d53b8b 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-+++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-@@ -368,6 +368,10 @@ Required properties:
- 				  see below for detail.
- - #sound-dai-cells		: it must be 0 if your system is using single DAI
- 				  it must be 1 if your system is using multi  DAI
-+- clocks			: References to SSI/SRC/MIX/CTU/DVC/AUDIO_CLK clocks.
-+- clock-names			: List of necessary clock names.
-+				  "ssi-all", "ssi.X", "src.X", "mix.X", "ctu.X",
-+				  "dvc.X", "clk_a", "clk_b", "clk_c", "clk_i"
+diff --git a/drivers/of/base.c b/drivers/of/base.c
+index 28d5f53bc631..5db6aa1688e9 100644
+--- a/drivers/of/base.c
++++ b/drivers/of/base.c
+@@ -1601,6 +1601,7 @@ int of_phandle_iterator_init(struct of_phandle_iterator *it,
  
- Optional properties:
- - #clock-cells			: it must be 0 if your system has audio_clkout
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(of_phandle_iterator_init);
+ 
+ int of_phandle_iterator_next(struct of_phandle_iterator *it)
+ {
+@@ -1670,6 +1671,7 @@ int of_phandle_iterator_next(struct of_phandle_iterator *it)
+ 
+ 	return -EINVAL;
+ }
++EXPORT_SYMBOL_GPL(of_phandle_iterator_next);
+ 
+ int of_phandle_iterator_args(struct of_phandle_iterator *it,
+ 			     uint32_t *args,
 -- 
 2.11.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
