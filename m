@@ -1,9 +1,26 @@
 From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH] ALSA: ice1712: constify snd_kcontrol_new structures
-Date: Wed, 17 May 2017 17:20:46 +0530
-Message-ID: <1495021846-17254-1-git-send-email-bhumirks@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH] ALSA: cs46xx: constify snd_kcontrol_new
+	structures
+Date: Wed, 17 May 2017 17:39:03 +0530
+Message-ID: <1495022943-24898-1-git-send-email-bhumirks@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pg0-f65.google.com (mail-pg0-f65.google.com [74.125.83.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id BA7A02664EB
+ for <alsa-devel@alsa-project.org>; Wed, 17 May 2017 14:09:58 +0200 (CEST)
+Received: by mail-pg0-f65.google.com with SMTP id i63so1614272pgd.2
+ for <alsa-devel@alsa-project.org>; Wed, 17 May 2017 05:09:58 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: julia.lawall@lip6.fr, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 Cc: Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
@@ -39,53 +56,21 @@ struct snd_kcontrol_new x;
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- sound/pci/ice1712/ice1712.c | 6 +++---
- sound/pci/ice1712/ice1724.c | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/pci/cs46xx/cs46xx_lib.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/pci/ice1712/ice1712.c b/sound/pci/ice1712/ice1712.c
-index 1d8612c..6b650ab 100644
---- a/sound/pci/ice1712/ice1712.c
-+++ b/sound/pci/ice1712/ice1712.c
-@@ -1401,7 +1401,7 @@ static struct snd_kcontrol_new snd_ice1712_multi_playback_ctrls[] = {
- 	},
- };
- 
--static struct snd_kcontrol_new snd_ice1712_multi_capture_analog_switch = {
-+static const struct snd_kcontrol_new snd_ice1712_multi_capture_analog_switch = {
- 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	.name = "H/W Multi Capture Switch",
- 	.info = snd_ice1712_pro_mixer_switch_info,
-@@ -1420,7 +1420,7 @@ static const struct snd_kcontrol_new snd_ice1712_multi_capture_spdif_switch = {
- 	.count = 2,
- };
- 
--static struct snd_kcontrol_new snd_ice1712_multi_capture_analog_volume = {
-+static const struct snd_kcontrol_new snd_ice1712_multi_capture_analog_volume = {
- 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE |
- 		   SNDRV_CTL_ELEM_ACCESS_TLV_READ),
-@@ -2165,7 +2165,7 @@ static int snd_ice1712_pro_route_spdif_put(struct snd_kcontrol *kcontrol,
- 	return change;
+diff --git a/sound/pci/cs46xx/cs46xx_lib.c b/sound/pci/cs46xx/cs46xx_lib.c
+index e4cf318..00fa52e 100644
+--- a/sound/pci/cs46xx/cs46xx_lib.c
++++ b/sound/pci/cs46xx/cs46xx_lib.c
+@@ -2371,7 +2371,7 @@ static int snd_cs46xx_front_dup_put(struct snd_kcontrol *kcontrol,
+ 				    ucontrol->value.integer.value[0] ? 0 : 0x200);
  }
  
--static struct snd_kcontrol_new snd_ice1712_mixer_pro_analog_route = {
-+static const struct snd_kcontrol_new snd_ice1712_mixer_pro_analog_route = {
+-static struct snd_kcontrol_new snd_cs46xx_front_dup_ctl = {
++static const struct snd_kcontrol_new snd_cs46xx_front_dup_ctl = {
  	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	.name = "H/W Playback Route",
- 	.info = snd_ice1712_pro_route_info,
-diff --git a/sound/pci/ice1712/ice1724.c b/sound/pci/ice1712/ice1724.c
-index 9cd6e55..7851881 100644
---- a/sound/pci/ice1712/ice1724.c
-+++ b/sound/pci/ice1712/ice1724.c
-@@ -2142,7 +2142,7 @@ static int snd_vt1724_pro_route_spdif_put(struct snd_kcontrol *kcontrol,
- 					 digital_route_shift(idx));
- }
- 
--static struct snd_kcontrol_new snd_vt1724_mixer_pro_analog_route =
-+static const struct snd_kcontrol_new snd_vt1724_mixer_pro_analog_route =
- {
- 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	.name = "H/W Playback Route",
+ 	.name = "Duplicate Front",
+ 	.info = snd_mixer_boolean_info,
 -- 
 2.7.4
