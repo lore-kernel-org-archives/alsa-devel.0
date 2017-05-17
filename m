@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsi: Move inline fsi_stream_is_play() before use" to the asoc tree
-Date: Wed, 17 May 2017 10:51:43 +0100
-Message-ID: <E1dAvcN-0006iH-2K@debutante>
-References: <1494955200-1051-1-git-send-email-geert@linux-m68k.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1494955200-1051-1-git-send-email-geert@linux-m68k.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: rsnd: need to call nolock_stop if nolock_start was failed" to the asoc tree
+Date: Wed, 17 May 2017 10:52:06 +0100
+Message-ID: <E1dAvck-0006le-36@debutante>
+References: <878tlv535x.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <878tlv535x.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsi: Move inline fsi_stream_is_play() before use
+   ASoC: rsnd: need to call nolock_stop if nolock_start was failed
 
 has been applied to the asoc tree at
 
@@ -37,58 +37,46 @@ to this mail.
 Thanks,
 Mark
 
->From 3048e76c93bccf875a49025870de08aed86c4692 Mon Sep 17 00:00:00 2001
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 16 May 2017 19:20:00 +0200
-Subject: [PATCH] ASoC: fsi: Move inline fsi_stream_is_play() before use
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From 2adcea7e22d382e2becf5671e92296f79672b957 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 17 May 2017 07:59:20 +0000
+Subject: [PATCH] ASoC: rsnd: need to call nolock_stop if nolock_start was
+ failed
 
-With gcc 4.1.2:
+rsnd_dai_call() is counting the called number of start/stop functions.
+nolock_stop should be called if nolock_start was failed.
+Otherwise, nolock_start doesn't called in 2nd play.
+This patch solved this issue.
 
-    sound/soc/sh/fsi.c:304: warning: ‘fsi_stream_is_play’ declared inline after being called
-    sound/soc/sh/fsi.c:304: warning: previous declaration of ‘fsi_stream_is_play’ was here
-
-Move fsi_stream_is_play() up to fix this, removing the need for a
-forward declaration as well.
-
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Reported-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/fsi.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ sound/soc/sh/rcar/core.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
-index ead520182e26..7c4bdd82bb95 100644
---- a/sound/soc/sh/fsi.c
-+++ b/sound/soc/sh/fsi.c
-@@ -301,7 +301,12 @@ struct fsi_master {
- 	spinlock_t lock;
- };
- 
--static int fsi_stream_is_play(struct fsi_priv *fsi, struct fsi_stream *io);
-+static inline int fsi_stream_is_play(struct fsi_priv *fsi,
-+				     struct fsi_stream *io)
-+{
-+	return &fsi->playback == io;
-+}
-+
- 
- /*
-  *		basic read write function
-@@ -489,12 +494,6 @@ static void fsi_count_fifo_err(struct fsi_priv *fsi)
- /*
-  *		fsi_stream_xx() function
-  */
--static inline int fsi_stream_is_play(struct fsi_priv *fsi,
--				     struct fsi_stream *io)
--{
--	return &fsi->playback == io;
--}
--
- static inline struct fsi_stream *fsi_stream_get(struct fsi_priv *fsi,
- 					struct snd_pcm_substream *substream)
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 1744015408c3..3c47af1990cb 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -715,11 +715,16 @@ static int rsnd_soc_dai_startup(struct snd_pcm_substream *substream,
  {
+ 	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
+ 	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
++	int ret;
+ 
+ 	/*
+ 	 * call rsnd_dai_call without spinlock
+ 	 */
+-	return rsnd_dai_call(nolock_start, io, priv);
++	ret = rsnd_dai_call(nolock_start, io, priv);
++	if (ret < 0)
++		rsnd_dai_call(nolock_stop, io, priv);
++
++	return ret;
+ }
+ 
+ static void rsnd_soc_dai_shutdown(struct snd_pcm_substream *substream,
 -- 
 2.11.0
