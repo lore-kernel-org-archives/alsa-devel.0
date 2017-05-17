@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5665: Fix uninitialized warning in rt5665_i2s_pin_event()" to the asoc tree
-Date: Wed, 17 May 2017 10:53:30 +0100
-Message-ID: <E1dAve6-00076A-Fz@debutante>
-References: <1494837239-2479-1-git-send-email-geert@linux-m68k.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1494837239-2479-1-git-send-email-geert@linux-m68k.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: rsnd: add missing clocks/clock-names on
+	Document" to the asoc tree
+Date: Wed, 17 May 2017 10:52:34 +0100
+Message-ID: <E1dAvdC-0006u0-Js@debutante>
+References: <8737cvsyah.wl%kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 74663267556
+ for <alsa-devel@alsa-project.org>; Wed, 17 May 2017 11:52:44 +0200 (CEST)
+In-Reply-To: <8737cvsyah.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-Renesas <linux-renesas-soc@vger.kernel.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5665: Fix uninitialized warning in rt5665_i2s_pin_event()
+   ASoC: rsnd: add missing clocks/clock-names on Document
 
 has been applied to the asoc tree at
 
@@ -37,69 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From b98ae9ad559fea64dee5fcc8e3ba4bf936ceb5e6 Mon Sep 17 00:00:00 2001
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 15 May 2017 10:33:59 +0200
-Subject: [PATCH] ASoC: rt5665: Fix uninitialized warning in
- rt5665_i2s_pin_event()
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From 5b3889f80a79d9b73f73e19ba9a001c2d47ab47f Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 26 Apr 2017 02:26:48 +0000
+Subject: [PATCH] ASoC: rsnd: add missing clocks/clock-names on Document
 
-With gcc 4.1.2:
-
-    sound/soc/codecs/rt5665.c: In function ‘rt5665_i2s_pin_event’:
-    sound/soc/codecs/rt5665.c:2610: warning: ‘mask1’ may be used uninitialized in this function
-    sound/soc/codecs/rt5665.c:2610: warning: ‘val2’ may be used uninitialized in this function
-    sound/soc/codecs/rt5665.c:2610: warning: ‘val1’ may be used uninitialized in this function
-
-The first one is currently a false positive, as rt5665_i2s_pin_event()
-is never called with snd_soc_dapm_widget.shift set to a value not
-handled by the switch() statement.  But that may change, so
-preinitialize mask1 to fix this, like is already done for mask2.
-
-The last two are false-positives, the compiler is just not smart enough
-to notice the mask and val variables are always used together.
-
-Fixes: 9b5d3865b3b410d2 ("ASoC: rt5665: set i2s pin share configuration")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5665.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
-index 26bf157ca293..c0f36d85ee4d 100644
---- a/sound/soc/codecs/rt5665.c
-+++ b/sound/soc/codecs/rt5665.c
-@@ -2607,7 +2607,7 @@ static int rt5665_i2s_pin_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
- 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
--	unsigned int val1, val2, mask1, mask2 = 0;
-+	unsigned int val1, val2, mask1 = 0, mask2 = 0;
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+index 3332910a9a11..13cb21d53b8b 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
++++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+@@ -368,6 +368,10 @@ Required properties:
+ 				  see below for detail.
+ - #sound-dai-cells		: it must be 0 if your system is using single DAI
+ 				  it must be 1 if your system is using multi  DAI
++- clocks			: References to SSI/SRC/MIX/CTU/DVC/AUDIO_CLK clocks.
++- clock-names			: List of necessary clock names.
++				  "ssi-all", "ssi.X", "src.X", "mix.X", "ctu.X",
++				  "dvc.X", "clk_a", "clk_b", "clk_c", "clk_i"
  
- 	switch (w->shift) {
- 	case RT5665_PWR_I2S2_1_BIT:
-@@ -2635,13 +2635,17 @@ static int rt5665_i2s_pin_event(struct snd_soc_dapm_widget *w,
- 	}
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
--		snd_soc_update_bits(codec, RT5665_GPIO_CTRL_1, mask1, val1);
-+		if (mask1)
-+			snd_soc_update_bits(codec, RT5665_GPIO_CTRL_1,
-+					    mask1, val1);
- 		if (mask2)
- 			snd_soc_update_bits(codec, RT5665_GPIO_CTRL_2,
- 					    mask2, val2);
- 		break;
- 	case SND_SOC_DAPM_POST_PMD:
--		snd_soc_update_bits(codec, RT5665_GPIO_CTRL_1, mask1, 0);
-+		if (mask1)
-+			snd_soc_update_bits(codec, RT5665_GPIO_CTRL_1,
-+					    mask1, 0);
- 		if (mask2)
- 			snd_soc_update_bits(codec, RT5665_GPIO_CTRL_2,
- 					    mask2, 0);
+ Optional properties:
+ - #clock-cells			: it must be 0 if your system has audio_clkout
 -- 
 2.11.0
