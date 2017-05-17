@@ -1,147 +1,133 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: move "renesas,rsrc-card" to "simple-scu-audio-card" on Document" to the asoc tree
-Date: Wed, 17 May 2017 10:52:38 +0100
-Message-ID: <E1dAvdG-0006ut-Tt@debutante>
-References: <874lxbsyaz.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <874lxbsyaz.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Geert Uytterhoeven <geert@linux-m68k.org>alsa-devel@alsa-project.org
+From: Bhumika Goyal <bhumirks@gmail.com>
+Subject: [PATCH] ALSA: sound/isa: constify snd_kcontrol_new structures
+Date: Wed, 17 May 2017 17:08:56 +0530
+Message-ID: <1495021136-6999-1-git-send-email-bhumirks@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: julia.lawall@lip6.fr, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Declare snd_kcontrol_new structures as const as they are only passed an
+argument to the function snd_ctl_new1. This argument is of type const,
+so snd_kcontrol_new structures having this property can be made const.
+Done using Coccinelle:
 
-   ASoC: rsnd: move "renesas,rsrc-card" to "simple-scu-audio-card" on Document
+@r disable optional_qualifier@
+identifier x;
+position p;
+@@
+static struct snd_kcontrol_new x@p={...};
 
-has been applied to the asoc tree at
+@ok@
+identifier r.x;
+position p;
+@@
+snd_ctl_new1(&x@p,...)
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+@bad@
+position p != {r.p,ok.p};
+identifier r.x;
+@@
+x@p
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+@depends on !bad disable optional_qualifier@
+identifier r.x;
+@@
++const
+struct snd_kcontrol_new x;
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 0378bb966765e06fdb0e00d592a6fcfbb71afa3c Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 26 Apr 2017 02:26:30 +0000
-Subject: [PATCH] ASoC: rsnd: move "renesas,rsrc-card" to
- "simple-scu-audio-card" on Document
-
-"renesas,rsrc-card" is exchanged to "simple-scu-card".
-Let's update Document
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- .../devicetree/bindings/sound/renesas,rsnd.txt     | 30 +++++++++++-----------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+ sound/isa/gus/gus_main.c | 2 +-
+ sound/isa/gus/gus_pcm.c  | 4 ++--
+ sound/isa/sb/sb16_csp.c  | 4 ++--
+ sound/isa/sb/sb16_main.c | 2 +-
+ sound/isa/sscape.c       | 2 +-
+ 5 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-index 15a7316e4c91..3332910a9a11 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-+++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-@@ -83,11 +83,11 @@ SRC can convert [xx]Hz to [yy]Hz. Then, it has below 2 modes
- **     Asynchronous mode
- ------------------
+diff --git a/sound/isa/gus/gus_main.c b/sound/isa/gus/gus_main.c
+index 4490ee4..3cf9b13 100644
+--- a/sound/isa/gus/gus_main.c
++++ b/sound/isa/gus/gus_main.c
+@@ -82,7 +82,7 @@ static int snd_gus_joystick_put(struct snd_kcontrol *kcontrol, struct snd_ctl_el
+ 	return change;
+ }
  
--You need to use "renesas,rsrc-card" sound card for it.
-+You need to use "simple-scu-audio-card" sound card for it.
- example)
+-static struct snd_kcontrol_new snd_gus_joystick_control = {
++static const struct snd_kcontrol_new snd_gus_joystick_control = {
+ 	.iface = SNDRV_CTL_ELEM_IFACE_CARD,
+ 	.name = "Joystick Speed",
+ 	.info = snd_gus_joystick_info,
+diff --git a/sound/isa/gus/gus_pcm.c b/sound/isa/gus/gus_pcm.c
+index 0650599..33c1891 100644
+--- a/sound/isa/gus/gus_pcm.c
++++ b/sound/isa/gus/gus_pcm.c
+@@ -809,7 +809,7 @@ static int snd_gf1_pcm_volume_put(struct snd_kcontrol *kcontrol, struct snd_ctl_
+ 	return change;
+ }
  
- 	sound {
--		compatible = "renesas,rsrc-card";
-+		compatible = "simple-scu-audio-card";
- 		...
- 		/*
- 		 * SRC Asynchronous mode setting
-@@ -97,12 +97,12 @@ example)
- 		 * Inputed 48kHz data will be converted to
- 		 * system specified Hz
- 		 */
--		convert-rate = <48000>;
-+		simple-audio-card,convert-rate = <48000>;
- 		...
--		cpu {
-+		simple-audio-card,cpu {
- 			sound-dai = <&rcar_sound>;
- 		};
--		codec {
-+		simple-audio-card,codec {
- 			...
- 		};
- 	};
-@@ -141,23 +141,23 @@ For more detail information, see below
- 	${LINUX}/sound/soc/sh/rcar/ctu.c
- 	 - comment of header
+-static struct snd_kcontrol_new snd_gf1_pcm_volume_control =
++static const struct snd_kcontrol_new snd_gf1_pcm_volume_control =
+ {
+ 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 	.name = "PCM Playback Volume",
+@@ -818,7 +818,7 @@ static struct snd_kcontrol_new snd_gf1_pcm_volume_control =
+ 	.put = snd_gf1_pcm_volume_put
+ };
  
--You need to use "renesas,rsrc-card" sound card for it.
-+You need to use "simple-scu-audio-card" sound card for it.
- example)
+-static struct snd_kcontrol_new snd_gf1_pcm_volume_control1 =
++static const struct snd_kcontrol_new snd_gf1_pcm_volume_control1 =
+ {
+ 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 	.name = "GPCM Playback Volume",
+diff --git a/sound/isa/sb/sb16_csp.c b/sound/isa/sb/sb16_csp.c
+index 48da227..fa5780b 100644
+--- a/sound/isa/sb/sb16_csp.c
++++ b/sound/isa/sb/sb16_csp.c
+@@ -1029,7 +1029,7 @@ static int snd_sb_qsound_space_put(struct snd_kcontrol *kcontrol, struct snd_ctl
+ 	return change;
+ }
  
- 	sound {
--		compatible = "renesas,rsrc-card";
-+		compatible = "simple-scu-audio-card";
- 		...
- 		/*
- 		 * CTU setting
- 		 * All input data will be converted to 2ch
- 		 * as output data
- 		 */
--		convert-channels = <2>;
-+		simple-audio-card,convert-channels = <2>;
- 		...
--		cpu {
-+		simple-audio-card,cpu {
- 			sound-dai = <&rcar_sound>;
- 		};
--		codec {
-+		simple-audio-card,codec {
- 			...
- 		};
- 	};
-@@ -190,22 +190,22 @@ and these sounds will be merged by MIX.
- 	aplay -D plughw:0,0 xxxx.wav &
- 	aplay -D plughw:0,1 yyyy.wav
+-static struct snd_kcontrol_new snd_sb_qsound_switch = {
++static const struct snd_kcontrol_new snd_sb_qsound_switch = {
+ 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 	.name = "3D Control - Switch",
+ 	.info = snd_sb_qsound_switch_info,
+@@ -1037,7 +1037,7 @@ static struct snd_kcontrol_new snd_sb_qsound_switch = {
+ 	.put = snd_sb_qsound_switch_put
+ };
  
--You need to use "renesas,rsrc-card" sound card for it.
-+You need to use "simple-scu-audio-card" sound card for it.
- Ex)
- 	[MEM] -> [SRC1] -> [CTU02] -+-> [MIX0] -> [DVC0] -> [SSI0]
- 	                            |
- 	[MEM] -> [SRC2] -> [CTU03] -+
+-static struct snd_kcontrol_new snd_sb_qsound_space = {
++static const struct snd_kcontrol_new snd_sb_qsound_space = {
+ 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 	.name = "3D Control - Space",
+ 	.info = snd_sb_qsound_space_info,
+diff --git a/sound/isa/sb/sb16_main.c b/sound/isa/sb/sb16_main.c
+index 8b2d6c6..4be1350 100644
+--- a/sound/isa/sb/sb16_main.c
++++ b/sound/isa/sb/sb16_main.c
+@@ -737,7 +737,7 @@ static int snd_sb16_dma_control_put(struct snd_kcontrol *kcontrol, struct snd_ct
+ 	return change;
+ }
  
- 	sound {
--		compatible = "renesas,rsrc-card";
-+		compatible = "simple-scu-audio-card";
- 		...
--		cpu@0 {
-+		simple-audio-card,cpu@0 {
- 			sound-dai = <&rcar_sound 0>;
- 		};
--		cpu@1 {
-+		simple-audio-card,cpu@1 {
- 			sound-dai = <&rcar_sound 1>;
- 		};
--		codec {
-+		simple-audio-card,codec {
- 			...
- 		};
- 	};
+-static struct snd_kcontrol_new snd_sb16_dma_control = {
++static const struct snd_kcontrol_new snd_sb16_dma_control = {
+ 	.iface = SNDRV_CTL_ELEM_IFACE_CARD,
+ 	.name = "16-bit DMA Allocation",
+ 	.info = snd_sb16_dma_control_info,
+diff --git a/sound/isa/sscape.c b/sound/isa/sscape.c
+index 54f5758a..1cd2908 100644
+--- a/sound/isa/sscape.c
++++ b/sound/isa/sscape.c
+@@ -671,7 +671,7 @@ static int sscape_midi_put(struct snd_kcontrol *kctl,
+ 	return change;
+ }
+ 
+-static struct snd_kcontrol_new midi_mixer_ctl = {
++static const struct snd_kcontrol_new midi_mixer_ctl = {
+ 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 	.name = "MIDI",
+ 	.info = sscape_midi_info,
 -- 
-2.11.0
+2.7.4
