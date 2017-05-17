@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5665: make local symbol rt5665_i2c_driver static" to the asoc tree
-Date: Wed, 17 May 2017 10:51:51 +0100
-Message-ID: <E1dAvcV-0006jb-5X@debutante>
-References: <20170516162456.18284-1-weiyj.lk@gmail.com>
+Subject: Applied "ASoC: fsi: Move inline fsi_stream_is_play() before use" to the asoc tree
+Date: Wed, 17 May 2017 10:51:43 +0100
+Message-ID: <E1dAvcN-0006iH-2K@debutante>
+References: <1494955200-1051-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170516162456.18284-1-weiyj.lk@gmail.com>
+In-Reply-To: <1494955200-1051-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5665: make local symbol rt5665_i2c_driver static
+   ASoC: fsi: Move inline fsi_stream_is_play() before use
 
 has been applied to the asoc tree at
 
@@ -37,34 +37,58 @@ to this mail.
 Thanks,
 Mark
 
->From 18fe7869764c0b86e8ce6539bbb6e528f1d9928f Mon Sep 17 00:00:00 2001
-From: Wei Yongjun <weiyongjun1@huawei.com>
-Date: Tue, 16 May 2017 16:24:56 +0000
-Subject: [PATCH] ASoC: rt5665: make local symbol rt5665_i2c_driver static
+>From 3048e76c93bccf875a49025870de08aed86c4692 Mon Sep 17 00:00:00 2001
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 16 May 2017 19:20:00 +0200
+Subject: [PATCH] ASoC: fsi: Move inline fsi_stream_is_play() before use
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Fixes the following sparse warnings:
+With gcc 4.1.2:
 
-sound/soc/codecs/rt5665.c:4928:19: warning:
-symbol 'rt5665_i2c_driver' was not declared. Should it be static?
+    sound/soc/sh/fsi.c:304: warning: ‘fsi_stream_is_play’ declared inline after being called
+    sound/soc/sh/fsi.c:304: warning: previous declaration of ‘fsi_stream_is_play’ was here
 
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Move fsi_stream_is_play() up to fix this, removing the need for a
+forward declaration as well.
+
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5665.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sh/fsi.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
-index c0f36d85ee4d..7420010fd8e9 100644
---- a/sound/soc/codecs/rt5665.c
-+++ b/sound/soc/codecs/rt5665.c
-@@ -4929,7 +4929,7 @@ static struct acpi_device_id rt5665_acpi_match[] = {
- MODULE_DEVICE_TABLE(acpi, rt5665_acpi_match);
- #endif
+diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
+index ead520182e26..7c4bdd82bb95 100644
+--- a/sound/soc/sh/fsi.c
++++ b/sound/soc/sh/fsi.c
+@@ -301,7 +301,12 @@ struct fsi_master {
+ 	spinlock_t lock;
+ };
  
--struct i2c_driver rt5665_i2c_driver = {
-+static struct i2c_driver rt5665_i2c_driver = {
- 	.driver = {
- 		.name = "rt5665",
- 		.of_match_table = of_match_ptr(rt5665_of_match),
+-static int fsi_stream_is_play(struct fsi_priv *fsi, struct fsi_stream *io);
++static inline int fsi_stream_is_play(struct fsi_priv *fsi,
++				     struct fsi_stream *io)
++{
++	return &fsi->playback == io;
++}
++
+ 
+ /*
+  *		basic read write function
+@@ -489,12 +494,6 @@ static void fsi_count_fifo_err(struct fsi_priv *fsi)
+ /*
+  *		fsi_stream_xx() function
+  */
+-static inline int fsi_stream_is_play(struct fsi_priv *fsi,
+-				     struct fsi_stream *io)
+-{
+-	return &fsi->playback == io;
+-}
+-
+ static inline struct fsi_stream *fsi_stream_get(struct fsi_priv *fsi,
+ 					struct snd_pcm_substream *substream)
+ {
 -- 
 2.11.0
