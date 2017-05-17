@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: clkout-lr-asynchronous is AUDIO_CLKOUT related property" to the asoc tree
-Date: Wed, 17 May 2017 10:52:15 +0100
-Message-ID: <E1dAvct-0006pp-Ik@debutante>
-References: <87r2zqj35o.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87r2zqj35o.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: add audio-graph-card document" to the asoc tree
+Date: Wed, 17 May 2017 10:52:50 +0100
+Message-ID: <E1dAvdS-0006xM-Vs@debutante>
+References: <87tw6xhghs.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <87tw6xhghs.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linux-DT <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: clkout-lr-asynchronous is AUDIO_CLKOUT related property
+   ASoC: add audio-graph-card document
 
 has been applied to the asoc tree at
 
@@ -37,52 +37,155 @@ to this mail.
 Thanks,
 Mark
 
->From 9654f5eba994c8732bfdb4c3b81bc5e18d25e970 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 15 May 2017 01:58:56 +0000
-Subject: [PATCH] ASoC: rsnd: clkout-lr-asynchronous is AUDIO_CLKOUT related
- property
+>From 2d4e31de5bb2b5fbdbcd8a3bfec0eae0bd4ca409 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Date: Thu, 20 Apr 2017 01:35:41 +0000
+Subject: [PATCH] ASoC: add audio-graph-card document
 
-clkout-lr-asynchronous is AUDIO_CLKOUT related property, thus, it
-should be handled by rsnd_adg_get_clkout().
+"Audio Graph Card" = "Simple Card" + "OF-graph"
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Reviewed-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/sh/rcar/adg.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ .../devicetree/bindings/sound/audio-graph-card.txt | 124 +++++++++++++++++++++
+ 1 file changed, 124 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/audio-graph-card.txt
 
-diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
-index 66203d107a11..cb4eab0e24ce 100644
---- a/sound/soc/sh/rcar/adg.c
-+++ b/sound/soc/sh/rcar/adg.c
-@@ -480,6 +480,9 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
- 	if (req_rate[0] % 48000 == 0)
- 		adg->flags = AUDIO_OUT_48;
- 
-+	if (of_get_property(np, "clkout-lr-asynchronous", NULL))
-+		adg->flags = LRCLK_ASYNC;
+diff --git a/Documentation/devicetree/bindings/sound/audio-graph-card.txt b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
+new file mode 100644
+index 000000000000..bac4b1b1060f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
+@@ -0,0 +1,124 @@
++Audio Graph Card:
 +
- 	/*
- 	 * This driver is assuming that AUDIO_CLKA/AUDIO_CLKB/AUDIO_CLKC
- 	 * have 44.1kHz or 48kHz base clocks for now.
-@@ -578,7 +581,6 @@ int rsnd_adg_probe(struct rsnd_priv *priv)
- {
- 	struct rsnd_adg *adg;
- 	struct device *dev = rsnd_priv_to_dev(priv);
--	struct device_node *np = dev->of_node;
- 	int ret;
- 
- 	adg = devm_kzalloc(dev, sizeof(*adg), GFP_KERNEL);
-@@ -595,9 +597,6 @@ int rsnd_adg_probe(struct rsnd_priv *priv)
- 	rsnd_adg_get_clkin(priv, adg);
- 	rsnd_adg_get_clkout(priv, adg);
- 
--	if (of_get_property(np, "clkout-lr-asynchronous", NULL))
--		adg->flags = LRCLK_ASYNC;
--
- 	priv->adg = adg;
- 
- 	rsnd_adg_clk_enable(priv);
++Audio Graph Card specifies audio DAI connections of SoC <-> codec.
++It is based on common bindings for device graphs.
++see ${LINUX}/Documentation/devicetree/bindings/graph.txt
++
++Basically, Audio Graph Card property is same as Simple Card.
++see ${LINUX}/Documentation/devicetree/bindings/sound/simple-card.txt
++
++Below are same as Simple-Card.
++
++- label
++- dai-format
++- frame-master
++- bitclock-master
++- bitclock-inversion
++- frame-inversion
++- dai-tdm-slot-num
++- dai-tdm-slot-width
++- clocks / system-clock-frequency
++
++Required properties:
++
++- compatible				: "audio-graph-card";
++- dais					: list of CPU DAI port{s}
++
++Example: Single DAI case
++
++	sound_card {
++		compatible = "audio-graph-card";
++
++		dais = <&cpu_port>;
++	};
++
++	dai-controller {
++		...
++		cpu_port: port {
++			cpu_endpoint: endpoint {
++				remote-endpoint = <&codec_endpoint>;
++
++				dai-format = "left_j";
++				...
++			};
++		};
++	};
++
++	audio-codec {
++		...
++		port {
++			codec_endpoint: endpoint {
++				remote-endpoint = <&cpu_endpoint>;
++			};
++		};
++	};
++
++Example: Multi DAI case
++
++	sound-card {
++		compatible = "audio-graph-card";
++
++		label = "sound-card";
++
++		dais = <&cpu_port0
++			&cpu_port1
++			&cpu_port2>;
++	};
++
++	audio-codec@0 {
++		...
++		port {
++			codec0_endpoint: endpoint {
++				remote-endpoint = <&cpu_endpoint0>;
++			};
++		};
++	};
++
++	audio-codec@1 {
++		...
++		port {
++			codec1_endpoint: endpoint {
++				remote-endpoint = <&cpu_endpoint1>;
++			};
++		};
++	};
++
++	audio-codec@2 {
++		...
++		port {
++			codec2_endpoint: endpoint {
++				remote-endpoint = <&cpu_endpoint2>;
++			};
++		};
++	};
++
++	dai-controller {
++		...
++		ports {
++			cpu_port0: port@0 {
++				cpu_endpoint0: endpoint {
++					remote-endpoint = <&codec0_endpoint>;
++
++					dai-format = "left_j";
++					...
++				};
++			};
++			cpu_port1: port@1 {
++				cpu_endpoint1: endpoint {
++					remote-endpoint = <&codec1_endpoint>;
++
++					dai-format = "i2s";
++					...
++				};
++			};
++			cpu_port2: port@2 {
++				cpu_endpoint2: endpoint {
++					remote-endpoint = <&codec2_endpoint>;
++
++					dai-format = "i2s";
++					...
++				};
++			};
++		};
++	};
++
 -- 
 2.11.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
