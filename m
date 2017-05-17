@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514: Add ACPI match ID" to the asoc
-	tree
-Date: Wed, 17 May 2017 10:51:18 +0100
-Message-ID: <E1dAvby-0006eE-Ul@debutante>
-References: <1494846127-9008-1-git-send-email-oder_chiou@realtek.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A6DE72664EB
- for <alsa-devel@alsa-project.org>; Wed, 17 May 2017 11:51:29 +0200 (CEST)
-In-Reply-To: <1494846127-9008-1-git-send-email-oder_chiou@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, Hsin-Yu Chao <hychao@chromium.org>, flove@realtek.com
+Subject: Applied "ASoC: atmel-classd: sync regcache when resuming" to the asoc tree
+Date: Wed, 17 May 2017 10:51:12 +0100
+Message-ID: <E1dAvbs-0006dB-Po@debutante>
+References: <20170515083617.16742-1-quentin.schulz@free-electrons.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170515083617.16742-1-quentin.schulz@free-electrons.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Quentin Schulz <quentin.schulz@free-electrons.com>
+Cc: Alexandre Belloni <alexandre.belloni@free-electrons.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, Mark Brown <broonie@kernel.org>nicolas.ferre@microchip.com, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, thomas.petazzoni@free-electrons.com, alsa-devel@alsa-project.orgalexandre.belloni@free-electrons.com, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5514: Add ACPI match ID
+   ASoC: atmel-classd: sync regcache when resuming
 
 has been applied to the asoc tree at
 
@@ -53,54 +37,53 @@ to this mail.
 Thanks,
 Mark
 
->From 6d3edf866ffa7a9348cfc30d9f58270e4f8d068e Mon Sep 17 00:00:00 2001
-From: Oder Chiou <oder_chiou@realtek.com>
-Date: Mon, 15 May 2017 19:02:07 +0800
-Subject: [PATCH] ASoC: rt5514: Add ACPI match ID
+>From 61abce1312bf97eac62eef704260ce9a8f9b85f6 Mon Sep 17 00:00:00 2001
+From: Quentin Schulz <quentin.schulz@free-electrons.com>
+Date: Mon, 15 May 2017 10:36:17 +0200
+Subject: [PATCH] ASoC: atmel-classd: sync regcache when resuming
 
-This patch adds the ACPI match ID for rt5514 codec.
+The PM functions used in this driver are the ones defined in
+sounc/soc/soc-core.c.
 
-Signed-off-by: Hsin-Yu Chao <hychao@chromium.org>
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+When suspending (using snd_soc_suspend), the regcache is marked dirty
+but is never synced on resume.
+
+Sync regcache on resume of Atmel ClassD device.
+
+Signed-off-by: Quentin Schulz <quentin.schulz@free-electrons.com>
+Acked-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5514.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/soc/atmel/atmel-classd.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
-index ff97360c03db..5c30c4d64ebe 100644
---- a/sound/soc/codecs/rt5514.c
-+++ b/sound/soc/codecs/rt5514.c
-@@ -9,6 +9,7 @@
-  * published by the Free Software Foundation.
-  */
+diff --git a/sound/soc/atmel/atmel-classd.c b/sound/soc/atmel/atmel-classd.c
+index 7ae46c2647d4..b7ef8c59b49a 100644
+--- a/sound/soc/atmel/atmel-classd.c
++++ b/sound/soc/atmel/atmel-classd.c
+@@ -301,6 +301,14 @@ static int atmel_classd_codec_probe(struct snd_soc_codec *codec)
+ 	return 0;
+ }
  
-+#include <linux/acpi.h>
- #include <linux/fs.h>
- #include <linux/module.h>
- #include <linux/moduleparam.h>
-@@ -1095,6 +1096,14 @@ static const struct of_device_id rt5514_of_match[] = {
- MODULE_DEVICE_TABLE(of, rt5514_of_match);
- #endif
- 
-+#ifdef CONFIG_ACPI
-+static struct acpi_device_id rt5514_acpi_match[] = {
-+	{ "10EC5514", 0},
-+	{},
-+};
-+MODULE_DEVICE_TABLE(acpi, rt5514_acpi_match);
-+#endif
++static int atmel_classd_codec_resume(struct snd_soc_codec *codec)
++{
++	struct snd_soc_card *card = snd_soc_codec_get_drvdata(codec);
++	struct atmel_classd *dd = snd_soc_card_get_drvdata(card);
 +
- static int rt5514_parse_dt(struct rt5514_priv *rt5514, struct device *dev)
++	return regcache_sync(dd->regmap);
++}
++
+ static struct regmap *atmel_classd_codec_get_remap(struct device *dev)
  {
- 	device_property_read_u32(dev, "realtek,dmic-init-delay-ms",
-@@ -1198,6 +1207,7 @@ static const struct dev_pm_ops rt5514_i2_pm_ops = {
- static struct i2c_driver rt5514_i2c_driver = {
- 	.driver = {
- 		.name = "rt5514",
-+		.acpi_match_table = ACPI_PTR(rt5514_acpi_match),
- 		.of_match_table = of_match_ptr(rt5514_of_match),
- 		.pm = &rt5514_i2_pm_ops,
- 	},
+ 	return dev_get_regmap(dev, NULL);
+@@ -308,6 +316,7 @@ static struct regmap *atmel_classd_codec_get_remap(struct device *dev)
+ 
+ static struct snd_soc_codec_driver soc_codec_dev_classd = {
+ 	.probe		= atmel_classd_codec_probe,
++	.resume		= atmel_classd_codec_resume,
+ 	.get_regmap	= atmel_classd_codec_get_remap,
+ 	.component_driver = {
+ 		.controls		= atmel_classd_snd_controls,
 -- 
 2.11.0
