@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdmi-codec: fix spelling mistake: "deteced" -> "detected"" to the asoc tree
-Date: Wed, 17 May 2017 10:52:30 +0100
-Message-ID: <E1dAvd8-0006t2-0q@debutante>
-References: <20170514165321.6615-1-colin.king@canonical.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170514165321.6615-1-colin.king@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Vincent Abriou <vincent.abriou@st.com>, Jon Medhurst <tixy@linaro.org>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: soc-core: enable "dai-format" on snd_soc_of_parse_daifmt()" to the asoc tree
+Date: Wed, 17 May 2017 10:53:06 +0100
+Message-ID: <E1dAvdi-00070a-N4@debutante>
+References: <87h91mxww7.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <87h91mxww7.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linux-DT <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: hdmi-codec: fix spelling mistake: "deteced" -> "detected"
+   ASoC: soc-core: enable "dai-format" on snd_soc_of_parse_daifmt()
 
 has been applied to the asoc tree at
 
@@ -37,33 +37,50 @@ to this mail.
 Thanks,
 Mark
 
->From 0c343a35bfecdf26c7041781815f3b639a45d93a Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Sun, 14 May 2017 17:53:21 +0100
-Subject: [PATCH] ASoC: hdmi-codec: fix spelling mistake: "deteced" ->
- "detected"
+>From 5711c97920377827da4bbc18233ffb08c6e3bbef Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Date: Thu, 20 Apr 2017 01:33:24 +0000
+Subject: [PATCH] ASoC: soc-core: enable "dai-format" on
+ snd_soc_of_parse_daifmt()
 
-Trivial fix to spelling mistake in dev_err message
+Current snd_soc_of_parse_daifmt() detects [prefix]format, but
+"format" was unclear in some case. This patch checks "dai-format"
+first, and try to check "[prefix]format" if "dai-format" was not
+exist.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/codecs/hdmi-codec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/soc-core.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 8c5ae1fc23a9..a3f15149afcf 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -819,7 +819,7 @@ static int hdmi_codec_probe(struct platform_device *pdev)
- 	mutex_unlock(&hdmi_mutex);
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index aae099c0e502..ab7a07f86ab8 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -3960,11 +3960,15 @@ unsigned int snd_soc_of_parse_daifmt(struct device_node *np,
+ 		prefix = "";
  
- 	if (hd->cnt >= ARRAY_SIZE(hdmi_dai_name)) {
--		dev_err(dev, "too many hdmi codec are deteced\n");
-+		dev_err(dev, "too many hdmi codec are detected\n");
- 		return -EINVAL;
- 	}
- 
+ 	/*
+-	 * check "[prefix]format = xxx"
++	 * check "dai-format = xxx"
++	 * or    "[prefix]format = xxx"
+ 	 * SND_SOC_DAIFMT_FORMAT_MASK area
+ 	 */
+-	snprintf(prop, sizeof(prop), "%sformat", prefix);
+-	ret = of_property_read_string(np, prop, &str);
++	ret = of_property_read_string(np, "dai-format", &str);
++	if (ret < 0) {
++		snprintf(prop, sizeof(prop), "%sformat", prefix);
++		ret = of_property_read_string(np, prop, &str);
++	}
+ 	if (ret == 0) {
+ 		for (i = 0; i < ARRAY_SIZE(of_fmt_table); i++) {
+ 			if (strcmp(str, of_fmt_table[i].name) == 0) {
 -- 
 2.11.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
