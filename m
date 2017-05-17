@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel: Use IS_ENABLED()" to the asoc
-	tree
-Date: Wed, 17 May 2017 10:51:28 +0100
-Message-ID: <E1dAvc8-0006gT-48@debutante>
-References: <20170515093201.20813-1-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 52BA6267094
- for <alsa-devel@alsa-project.org>; Wed, 17 May 2017 11:51:42 +0200 (CEST)
-In-Reply-To: <20170515093201.20813-1-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Nicolas Ferre <nicolas.ferre@microchip.com>
+Subject: Applied "ASoC: rt5665: make local symbol rt5665_i2c_driver static" to the asoc tree
+Date: Wed, 17 May 2017 10:51:51 +0100
+Message-ID: <E1dAvcV-0006jb-5X@debutante>
+References: <20170516162456.18284-1-weiyj.lk@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170516162456.18284-1-weiyj.lk@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wei Yongjun <weiyongjun1@huawei.com>
+Cc: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel: Use IS_ENABLED()
+   ASoC: rt5665: make local symbol rt5665_i2c_driver static
 
 has been applied to the asoc tree at
 
@@ -53,45 +37,34 @@ to this mail.
 Thanks,
 Mark
 
->From cd187753dc24e269080520aae5ee753414ba9edc Mon Sep 17 00:00:00 2001
-From: Takashi Iwai <tiwai@suse.de>
-Date: Mon, 15 May 2017 11:32:01 +0200
-Subject: [PATCH] ASoC: atmel: Use IS_ENABLED()
+>From 18fe7869764c0b86e8ce6539bbb6e528f1d9928f Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Date: Tue, 16 May 2017 16:24:56 +0000
+Subject: [PATCH] ASoC: rt5665: make local symbol rt5665_i2c_driver static
 
-Simplify the ifdef conditions with IS_ENABLED() macro.
-No functional changes.
+Fixes the following sparse warnings:
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Acked-by: Alexandre Belloni <alexandre.belloni@free-electrons.com>
-Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
+sound/soc/codecs/rt5665.c:4928:19: warning:
+symbol 'rt5665_i2c_driver' was not declared. Should it be static?
+
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/atmel-pcm.h | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/codecs/rt5665.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/atmel/atmel-pcm.h b/sound/soc/atmel/atmel-pcm.h
-index 6eaf081cad50..4b27aed40a51 100644
---- a/sound/soc/atmel/atmel-pcm.h
-+++ b/sound/soc/atmel/atmel-pcm.h
-@@ -83,8 +83,7 @@ struct atmel_pcm_dma_params {
- #define ssc_readx(base, reg)            (__raw_readl((base) + (reg)))
- #define ssc_writex(base, reg, value)    __raw_writel((value), (base) + (reg))
- 
--#if defined(CONFIG_SND_ATMEL_SOC_PDC) || \
--	defined(CONFIG_SND_ATMEL_SOC_PDC_MODULE)
-+#if IS_ENABLED(CONFIG_SND_ATMEL_SOC_PDC)
- int atmel_pcm_pdc_platform_register(struct device *dev);
- void atmel_pcm_pdc_platform_unregister(struct device *dev);
- #else
-@@ -97,8 +96,7 @@ static inline void atmel_pcm_pdc_platform_unregister(struct device *dev)
- }
+diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
+index c0f36d85ee4d..7420010fd8e9 100644
+--- a/sound/soc/codecs/rt5665.c
++++ b/sound/soc/codecs/rt5665.c
+@@ -4929,7 +4929,7 @@ static struct acpi_device_id rt5665_acpi_match[] = {
+ MODULE_DEVICE_TABLE(acpi, rt5665_acpi_match);
  #endif
  
--#if defined(CONFIG_SND_ATMEL_SOC_DMA) || \
--	defined(CONFIG_SND_ATMEL_SOC_DMA_MODULE)
-+#if IS_ENABLED(CONFIG_SND_ATMEL_SOC_DMA)
- int atmel_pcm_dma_platform_register(struct device *dev);
- void atmel_pcm_dma_platform_unregister(struct device *dev);
- #else
+-struct i2c_driver rt5665_i2c_driver = {
++static struct i2c_driver rt5665_i2c_driver = {
+ 	.driver = {
+ 		.name = "rt5665",
+ 		.of_match_table = of_match_ptr(rt5665_of_match),
 -- 
 2.11.0
