@@ -1,18 +1,18 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "of-graph: export symbol of_phandle_iterator_init/next" to the asoc tree
-Date: Wed, 17 May 2017 10:53:26 +0100
-Message-ID: <E1dAve2-000758-DN@debutante>
-References: <87poh2kufc.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <87poh2kufc.wl%kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Linux-DT <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Simon <horms-/R6kz+dDXgpPR4JQBCEnsQ@public.gmane.org>alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rsnd: move "renesas,rsrc-card" to "simple-scu-audio-card" on Document" to the asoc tree
+Date: Wed, 17 May 2017 10:52:38 +0100
+Message-ID: <E1dAvdG-0006ut-Tt@debutante>
+References: <874lxbsyaz.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <874lxbsyaz.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>, Geert Uytterhoeven <geert@linux-m68k.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   of-graph: export symbol of_phandle_iterator_init/next
+   ASoC: rsnd: move "renesas,rsrc-card" to "simple-scu-audio-card" on Document
 
 has been applied to the asoc tree at
 
@@ -37,50 +37,111 @@ to this mail.
 Thanks,
 Mark
 
->From 00bab23f72100a5fd8a3030f81d0af07a859ed17 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Date: Thu, 20 Apr 2017 01:31:16 +0000
-Subject: [PATCH] of-graph: export symbol of_phandle_iterator_init/next
+>From 0378bb966765e06fdb0e00d592a6fcfbb71afa3c Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 26 Apr 2017 02:26:30 +0000
+Subject: [PATCH] ASoC: rsnd: move "renesas,rsrc-card" to
+ "simple-scu-audio-card" on Document
 
-of_for_each_phandle() uses of_phandle_iterator_init/next
-but it isn't exported. So kernel module complile will say
+"renesas,rsrc-card" is exchanged to "simple-scu-card".
+Let's update Document
 
-ERROR: "of_phandle_iterator_init" [xxx.ko] undefined!
-ERROR: "of_phandle_iterator_next" [xxx.ko] undefined!
-
-This patch solved this issue
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/of/base.c | 2 ++
- 1 file changed, 2 insertions(+)
+ .../devicetree/bindings/sound/renesas,rsnd.txt     | 30 +++++++++++-----------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/of/base.c b/drivers/of/base.c
-index 28d5f53bc631..5db6aa1688e9 100644
---- a/drivers/of/base.c
-+++ b/drivers/of/base.c
-@@ -1601,6 +1601,7 @@ int of_phandle_iterator_init(struct of_phandle_iterator *it,
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+index 15a7316e4c91..3332910a9a11 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
++++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+@@ -83,11 +83,11 @@ SRC can convert [xx]Hz to [yy]Hz. Then, it has below 2 modes
+ **     Asynchronous mode
+ ------------------
  
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(of_phandle_iterator_init);
+-You need to use "renesas,rsrc-card" sound card for it.
++You need to use "simple-scu-audio-card" sound card for it.
+ example)
  
- int of_phandle_iterator_next(struct of_phandle_iterator *it)
- {
-@@ -1670,6 +1671,7 @@ int of_phandle_iterator_next(struct of_phandle_iterator *it)
+ 	sound {
+-		compatible = "renesas,rsrc-card";
++		compatible = "simple-scu-audio-card";
+ 		...
+ 		/*
+ 		 * SRC Asynchronous mode setting
+@@ -97,12 +97,12 @@ example)
+ 		 * Inputed 48kHz data will be converted to
+ 		 * system specified Hz
+ 		 */
+-		convert-rate = <48000>;
++		simple-audio-card,convert-rate = <48000>;
+ 		...
+-		cpu {
++		simple-audio-card,cpu {
+ 			sound-dai = <&rcar_sound>;
+ 		};
+-		codec {
++		simple-audio-card,codec {
+ 			...
+ 		};
+ 	};
+@@ -141,23 +141,23 @@ For more detail information, see below
+ 	${LINUX}/sound/soc/sh/rcar/ctu.c
+ 	 - comment of header
  
- 	return -EINVAL;
- }
-+EXPORT_SYMBOL_GPL(of_phandle_iterator_next);
+-You need to use "renesas,rsrc-card" sound card for it.
++You need to use "simple-scu-audio-card" sound card for it.
+ example)
  
- int of_phandle_iterator_args(struct of_phandle_iterator *it,
- 			     uint32_t *args,
+ 	sound {
+-		compatible = "renesas,rsrc-card";
++		compatible = "simple-scu-audio-card";
+ 		...
+ 		/*
+ 		 * CTU setting
+ 		 * All input data will be converted to 2ch
+ 		 * as output data
+ 		 */
+-		convert-channels = <2>;
++		simple-audio-card,convert-channels = <2>;
+ 		...
+-		cpu {
++		simple-audio-card,cpu {
+ 			sound-dai = <&rcar_sound>;
+ 		};
+-		codec {
++		simple-audio-card,codec {
+ 			...
+ 		};
+ 	};
+@@ -190,22 +190,22 @@ and these sounds will be merged by MIX.
+ 	aplay -D plughw:0,0 xxxx.wav &
+ 	aplay -D plughw:0,1 yyyy.wav
+ 
+-You need to use "renesas,rsrc-card" sound card for it.
++You need to use "simple-scu-audio-card" sound card for it.
+ Ex)
+ 	[MEM] -> [SRC1] -> [CTU02] -+-> [MIX0] -> [DVC0] -> [SSI0]
+ 	                            |
+ 	[MEM] -> [SRC2] -> [CTU03] -+
+ 
+ 	sound {
+-		compatible = "renesas,rsrc-card";
++		compatible = "simple-scu-audio-card";
+ 		...
+-		cpu@0 {
++		simple-audio-card,cpu@0 {
+ 			sound-dai = <&rcar_sound 0>;
+ 		};
+-		cpu@1 {
++		simple-audio-card,cpu@1 {
+ 			sound-dai = <&rcar_sound 1>;
+ 		};
+-		codec {
++		simple-audio-card,codec {
+ 			...
+ 		};
+ 	};
 -- 
 2.11.0
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
