@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "of_graph: add of_graph_get_remote_endpoint()" to the asoc tree
-Date: Wed, 17 May 2017 10:53:21 +0100
-Message-ID: <E1dAvdx-00074D-At@debutante>
-References: <87d1n7xqzd.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rt5665: Fix uninitialized warning in rt5665_i2s_pin_event()" to the asoc tree
+Date: Wed, 17 May 2017 10:53:30 +0100
+Message-ID: <E1dAve6-00076A-Fz@debutante>
+References: <1494837239-2479-1-git-send-email-geert@linux-m68k.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <87d1n7xqzd.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <1494837239-2479-1-git-send-email-geert@linux-m68k.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Rob Herring <robh@kernel.org>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@linaro.org>Mark Brown <broonie@kernel.org>, Laurent <laurent.pinchart@ideasonboard.com>, Guennadi <g.liakhovetski@gmx.de>, Grant Likely <grant.likely@linaro.org>, Frank Rowand <frowand.list@gmail.com>, Linux-DT <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Linux-Kernel <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   of_graph: add of_graph_get_remote_endpoint()
+   ASoC: rt5665: Fix uninitialized warning in rt5665_i2s_pin_event()
 
 has been applied to the asoc tree at
 
@@ -37,91 +37,69 @@ to this mail.
 Thanks,
 Mark
 
->From 4c9c3d595f1bad021cc126d20879df4016801736 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 20 Apr 2017 01:31:42 +0000
-Subject: [PATCH] of_graph: add of_graph_get_remote_endpoint()
+>From b98ae9ad559fea64dee5fcc8e3ba4bf936ceb5e6 Mon Sep 17 00:00:00 2001
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Mon, 15 May 2017 10:33:59 +0200
+Subject: [PATCH] ASoC: rt5665: Fix uninitialized warning in
+ rt5665_i2s_pin_event()
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-It should use same method to get same result.
-To getting remote-endpoint node,
-let's use of_graph_get_remote_endpoint()
+With gcc 4.1.2:
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Acked-by: Rob Herring <robh@kernel.org>
+    sound/soc/codecs/rt5665.c: In function ‘rt5665_i2s_pin_event’:
+    sound/soc/codecs/rt5665.c:2610: warning: ‘mask1’ may be used uninitialized in this function
+    sound/soc/codecs/rt5665.c:2610: warning: ‘val2’ may be used uninitialized in this function
+    sound/soc/codecs/rt5665.c:2610: warning: ‘val1’ may be used uninitialized in this function
+
+The first one is currently a false positive, as rt5665_i2s_pin_event()
+is never called with snd_soc_dapm_widget.shift set to a value not
+handled by the switch() statement.  But that may change, so
+preinitialize mask1 to fix this, like is already done for mask2.
+
+The last two are false-positives, the compiler is just not smart enough
+to notice the mask and val variables are always used together.
+
+Fixes: 9b5d3865b3b410d2 ("ASoC: rt5665: set i2s pin share configuration")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/of/base.c        | 18 ++++++++++++++++--
- include/linux/of_graph.h |  8 ++++++++
- 2 files changed, 24 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5665.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/of/base.c b/drivers/of/base.c
-index 5db6aa1688e9..b169508a9b56 100644
---- a/drivers/of/base.c
-+++ b/drivers/of/base.c
-@@ -2487,6 +2487,20 @@ struct device_node *of_graph_get_endpoint_by_regs(
- EXPORT_SYMBOL(of_graph_get_endpoint_by_regs);
- 
- /**
-+ * of_graph_get_remote_endpoint() - get remote endpoint node
-+ * @node: pointer to a local endpoint device_node
-+ *
-+ * Return: Remote endpoint node associated with remote endpoint node linked
-+ *	   to @node. Use of_node_put() on it when done.
-+ */
-+struct device_node *of_graph_get_remote_endpoint(const struct device_node *node)
-+{
-+	/* Get remote endpoint node. */
-+	return of_parse_phandle(node, "remote-endpoint", 0);
-+}
-+EXPORT_SYMBOL(of_graph_get_remote_endpoint);
-+
-+/**
-  * of_graph_get_remote_port_parent() - get remote port's parent node
-  * @node: pointer to a local endpoint device_node
-  *
-@@ -2500,7 +2514,7 @@ struct device_node *of_graph_get_remote_port_parent(
- 	unsigned int depth;
- 
- 	/* Get remote endpoint node. */
--	np = of_parse_phandle(node, "remote-endpoint", 0);
-+	np = of_graph_get_remote_endpoint(node);
- 
- 	/* Walk 3 levels up only if there is 'ports' node. */
- 	for (depth = 3; depth && np; depth--) {
-@@ -2524,7 +2538,7 @@ struct device_node *of_graph_get_remote_port(const struct device_node *node)
- 	struct device_node *np;
- 
- 	/* Get remote endpoint node. */
--	np = of_parse_phandle(node, "remote-endpoint", 0);
-+	np = of_graph_get_remote_endpoint(node);
- 	if (!np)
- 		return NULL;
- 	return of_get_next_parent(np);
-diff --git a/include/linux/of_graph.h b/include/linux/of_graph.h
-index abdb02eaef06..0c9473a169dd 100644
---- a/include/linux/of_graph.h
-+++ b/include/linux/of_graph.h
-@@ -48,6 +48,8 @@ struct device_node *of_graph_get_next_endpoint(const struct device_node *parent,
- 					struct device_node *previous);
- struct device_node *of_graph_get_endpoint_by_regs(
- 		const struct device_node *parent, int port_reg, int reg);
-+struct device_node *of_graph_get_remote_endpoint(
-+					const struct device_node *node);
- struct device_node *of_graph_get_remote_port_parent(
- 					const struct device_node *node);
- struct device_node *of_graph_get_remote_port(const struct device_node *node);
-@@ -80,6 +82,12 @@ static inline struct device_node *of_graph_get_endpoint_by_regs(
- 	return NULL;
- }
- 
-+static inline struct device_node *of_graph_get_remote_endpoint(
-+					const struct device_node *node)
-+{
-+	return NULL;
-+}
-+
- static inline struct device_node *of_graph_get_remote_port_parent(
- 					const struct device_node *node)
+diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
+index 26bf157ca293..c0f36d85ee4d 100644
+--- a/sound/soc/codecs/rt5665.c
++++ b/sound/soc/codecs/rt5665.c
+@@ -2607,7 +2607,7 @@ static int rt5665_i2s_pin_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
  {
+ 	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
+-	unsigned int val1, val2, mask1, mask2 = 0;
++	unsigned int val1, val2, mask1 = 0, mask2 = 0;
+ 
+ 	switch (w->shift) {
+ 	case RT5665_PWR_I2S2_1_BIT:
+@@ -2635,13 +2635,17 @@ static int rt5665_i2s_pin_event(struct snd_soc_dapm_widget *w,
+ 	}
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+-		snd_soc_update_bits(codec, RT5665_GPIO_CTRL_1, mask1, val1);
++		if (mask1)
++			snd_soc_update_bits(codec, RT5665_GPIO_CTRL_1,
++					    mask1, val1);
+ 		if (mask2)
+ 			snd_soc_update_bits(codec, RT5665_GPIO_CTRL_2,
+ 					    mask2, val2);
+ 		break;
+ 	case SND_SOC_DAPM_POST_PMD:
+-		snd_soc_update_bits(codec, RT5665_GPIO_CTRL_1, mask1, 0);
++		if (mask1)
++			snd_soc_update_bits(codec, RT5665_GPIO_CTRL_1,
++					    mask1, 0);
+ 		if (mask2)
+ 			snd_soc_update_bits(codec, RT5665_GPIO_CTRL_2,
+ 					    mask2, 0);
 -- 
 2.11.0
