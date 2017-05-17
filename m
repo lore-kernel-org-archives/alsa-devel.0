@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: need to call nolock_stop if nolock_start was failed" to the asoc tree
-Date: Wed, 17 May 2017 10:52:06 +0100
-Message-ID: <E1dAvck-0006le-36@debutante>
-References: <878tlv535x.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: remove error pointer for adg->clkout[i]" to the asoc tree
+Date: Wed, 17 May 2017 10:52:10 +0100
+Message-ID: <E1dAvco-0006og-N0@debutante>
+References: <87pofaj34y.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <878tlv535x.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87pofaj34y.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: need to call nolock_stop if nolock_start was failed
+   ASoC: rsnd: remove error pointer for adg->clkout[i]
 
 has been applied to the asoc tree at
 
@@ -37,46 +37,34 @@ to this mail.
 Thanks,
 Mark
 
->From 2adcea7e22d382e2becf5671e92296f79672b957 Mon Sep 17 00:00:00 2001
+>From 1f6bbe64abd7dc1997fa31a9e550eadf170961d5 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 17 May 2017 07:59:20 +0000
-Subject: [PATCH] ASoC: rsnd: need to call nolock_stop if nolock_start was
- failed
+Date: Mon, 15 May 2017 01:59:22 +0000
+Subject: [PATCH] ASoC: rsnd: remove error pointer for adg->clkout[i]
 
-rsnd_dai_call() is counting the called number of start/stop functions.
-nolock_stop should be called if nolock_start was failed.
-Otherwise, nolock_start doesn't called in 2nd play.
-This patch solved this issue.
+commit d7f298197a22f11b38059f257842dac7c30a564c
+("ASoC: rcar: fixup of_clk_add_provider() usage for multi clkout")
+added adg->clkout[i] = ERR_PTR(-ENOENT),
+but, adg->clkout[i] are assumed NULL or clk pointer.
+This patch fix it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Reported-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
-Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ sound/soc/sh/rcar/adg.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 1744015408c3..3c47af1990cb 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -715,11 +715,16 @@ static int rsnd_soc_dai_startup(struct snd_pcm_substream *substream,
- {
- 	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
- 	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
-+	int ret;
- 
- 	/*
- 	 * call rsnd_dai_call without spinlock
- 	 */
--	return rsnd_dai_call(nolock_start, io, priv);
-+	ret = rsnd_dai_call(nolock_start, io, priv);
-+	if (ret < 0)
-+		rsnd_dai_call(nolock_stop, io, priv);
-+
-+	return ret;
- }
- 
- static void rsnd_soc_dai_shutdown(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index cb4eab0e24ce..36bece8621b7 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -556,7 +556,6 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
+ 			clk = clk_register_fixed_rate(dev, clkout_name[i],
+ 						      parent_clk_name, 0,
+ 						      req_rate[0]);
+-			adg->clkout[i] = ERR_PTR(-ENOENT);
+ 			if (!IS_ERR(clk))
+ 				adg->clkout[i] = clk;
+ 		}
 -- 
 2.11.0
