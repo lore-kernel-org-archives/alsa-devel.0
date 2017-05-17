@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: remove un-used OUF_SRCO/I macro" to the asoc tree
-Date: Wed, 17 May 2017 10:52:25 +0100
-Message-ID: <E1dAvd3-0006rs-Kl@debutante>
-References: <87vap2j385.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: clkout-lr-asynchronous is AUDIO_CLKOUT related property" to the asoc tree
+Date: Wed, 17 May 2017 10:52:15 +0100
+Message-ID: <E1dAvct-0006pp-Ik@debutante>
+References: <87r2zqj35o.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87vap2j385.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87r2zqj35o.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: remove un-used OUF_SRCO/I macro
+   ASoC: rsnd: clkout-lr-asynchronous is AUDIO_CLKOUT related property
 
 has been applied to the asoc tree at
 
@@ -37,31 +37,52 @@ to this mail.
 Thanks,
 Mark
 
->From a9b10dddd6d86e6004a9f310c68888229f75e041 Mon Sep 17 00:00:00 2001
+>From 9654f5eba994c8732bfdb4c3b81bc5e18d25e970 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 15 May 2017 01:57:27 +0000
-Subject: [PATCH] ASoC: rsnd: remove un-used OUF_SRCO/I macro
+Date: Mon, 15 May 2017 01:58:56 +0000
+Subject: [PATCH] ASoC: rsnd: clkout-lr-asynchronous is AUDIO_CLKOUT related
+ property
+
+clkout-lr-asynchronous is AUDIO_CLKOUT related property, thus, it
+should be handled by rsnd_adg_get_clkout().
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/src.c | 4 ----
- 1 file changed, 4 deletions(-)
+ sound/soc/sh/rcar/adg.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/src.c b/sound/soc/sh/rcar/src.c
-index 20b5b2ec625e..a8ab26d70a8b 100644
---- a/sound/soc/sh/rcar/src.c
-+++ b/sound/soc/sh/rcar/src.c
-@@ -12,10 +12,6 @@
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index 66203d107a11..cb4eab0e24ce 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -480,6 +480,9 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
+ 	if (req_rate[0] % 48000 == 0)
+ 		adg->flags = AUDIO_OUT_48;
  
- #define SRC_NAME "src"
++	if (of_get_property(np, "clkout-lr-asynchronous", NULL))
++		adg->flags = LRCLK_ASYNC;
++
+ 	/*
+ 	 * This driver is assuming that AUDIO_CLKA/AUDIO_CLKB/AUDIO_CLKC
+ 	 * have 44.1kHz or 48kHz base clocks for now.
+@@ -578,7 +581,6 @@ int rsnd_adg_probe(struct rsnd_priv *priv)
+ {
+ 	struct rsnd_adg *adg;
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+-	struct device_node *np = dev->of_node;
+ 	int ret;
  
--/* SRCx_STATUS */
--#define OUF_SRCO	((1 << 12) | (1 << 13))
--#define OUF_SRCI	((1 <<  9) | (1 <<  8))
+ 	adg = devm_kzalloc(dev, sizeof(*adg), GFP_KERNEL);
+@@ -595,9 +597,6 @@ int rsnd_adg_probe(struct rsnd_priv *priv)
+ 	rsnd_adg_get_clkin(priv, adg);
+ 	rsnd_adg_get_clkout(priv, adg);
+ 
+-	if (of_get_property(np, "clkout-lr-asynchronous", NULL))
+-		adg->flags = LRCLK_ASYNC;
 -
- /* SCU_SYSTEM_STATUS0/1 */
- #define OUF_SRC(id)	((1 << (id + 16)) | (1 << id))
+ 	priv->adg = adg;
  
+ 	rsnd_adg_clk_enable(priv);
 -- 
 2.11.0
