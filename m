@@ -1,43 +1,71 @@
-From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Subject: [PATCH 3/4] ASoC: cs35l35: Correctly handle 0 for bst_ipk
-Date: Thu, 18 May 2017 16:32:38 +0100
-Message-ID: <1495121559-1063-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-References: <1495121559-1063-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [bug report] ASoC: add audio-graph-card support
+Date: Fri, 19 May 2017 00:33:12 +0300
+Message-ID: <20170518213312.7rpntem46hmo2nbu@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1495121559-1063-1-git-send-email-ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org
-Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from userp1040.oracle.com (userp1040.oracle.com [156.151.31.81])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D2A2267236
+ for <alsa-devel@alsa-project.org>; Thu, 18 May 2017 23:33:22 +0200 (CEST)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: kuninori.morimoto.gx@renesas.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Zero is a totally valid value to specify for the bst_ipk, as such we
-should append CS35L35_VALID_PDATA to ensure that it actually makes it
-into the register value.
+Hello Kuninori Morimoto,
 
-Signed-off-by: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
----
- sound/soc/codecs/cs35l35.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+The patch 2692c1c63c29: "ASoC: add audio-graph-card support" from Apr
+20, 2017, leads to the following static checker warning:
 
-diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
-index c6eabb8..375be49 100644
---- a/sound/soc/codecs/cs35l35.c
-+++ b/sound/soc/codecs/cs35l35.c
-@@ -1269,7 +1269,7 @@ static int cs35l35_handle_of_data(struct i2c_client *i2c_client,
- 			return -EINVAL;
- 		}
- 
--		pdata->bst_ipk = (val32 - 1680) / 110;
-+		pdata->bst_ipk = ((val32 - 1680) / 110) | CS35L35_VALID_PDATA;
- 	}
- 
- 	ret = of_property_read_u32(np, "cirrus,boost-ind-nanohenry", &val32);
--- 
-2.1.4
+	sound/soc/generic/audio-graph-card.c:275 asoc_graph_card_probe()
+	info: return a literal instead of 'ret'
 
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+sound/soc/generic/audio-graph-card.c
+   268                  goto err;
+   269          }
+   270  
+   271          snd_soc_card_set_drvdata(card, priv);
+   272  
+   273          ret = devm_snd_soc_register_card(dev, card);
+   274          if (ret >= 0)
+   275                  return ret;
+
+This code is confusing.  I'm pretty sure that devm_snd_soc_register_card()
+returns zero on success or negative error codes but why are we checking
+>= 0 here?
+
+It's better to do error handling than success handling.  People often
+get a bit creative with the last condition in a function...  :/  In
+other words, it's cleaner like this:
+
+		ret = devm_snd_soc_register_card(dev, card);
+		if (ret)
+			goto err;
+
+		return 0;
+
+	err:
+		asoc_simple_card_clean_reference(card);
+
+		return ret;
+
+
+   276  err:
+   277          asoc_simple_card_clean_reference(card);
+   278  
+   279          return ret;
+   280  }
+
+regards,
+dan carpenter
