@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card: fix mic jack initialization" to the asoc tree
-Date: Fri, 19 May 2017 18:03:27 +0100
-Message-ID: <E1dBlJH-0003a2-KL@debutante>
-References: <20170515210031.9983-1-stefan@agner.ch>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170515210031.9983-1-stefan@agner.ch>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Stefan Agner <stefan@agner.ch>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, nikita.yoush@cogentembedded.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgkuninori.morimoto.gx@renesas.comalsa-devel@alsa-project.org
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: cs35l35: Add DT handling for Inductor" to the asoc tree
+Date: Fri, 19 May 2017 18:03:51 +0100
+Message-ID: <E1dBlJf-0003dn-Fr@debutante>
+References: <1495121559-1063-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1495121559-1063-2-git-send-email-ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card: fix mic jack initialization
+   ASoC: cs35l35: Add DT handling for Inductor
 
 has been applied to the asoc tree at
 
@@ -37,34 +36,38 @@ to this mail.
 Thanks,
 Mark
 
->From f746aa5e8636c83e53bbb2d988bb614f732b2b80 Mon Sep 17 00:00:00 2001
-From: Stefan Agner <stefan@agner.ch>
-Date: Mon, 15 May 2017 14:00:31 -0700
-Subject: [PATCH] ASoC: simple-card: fix mic jack initialization
+>From cff7597a46454cf0ef0de7340dfb3f6bc0855777 Mon Sep 17 00:00:00 2001
+From: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Date: Thu, 18 May 2017 16:32:37 +0100
+Subject: [PATCH] ASoC: cs35l35: Add DT handling for Inductor
 
-Initialize asoc_simple_card_init_mic with the correct struct
-asoc_simple_jack.
+Need to specify the inductor size in nH. This is a required property.
 
-Fixes: 9eac361877b3 ("ASoC: simple-card: add new asoc_simple_jack and use it")
-Signed-off-by: Stefan Agner <stefan@agner.ch>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Signed-off-by: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/generic/simple-card.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/cs35l35.txt | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 2c9dedab5184..bc136d2bd7cd 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -202,7 +202,7 @@ static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
- 	if (ret < 0)
- 		return ret;
+diff --git a/Documentation/devicetree/bindings/sound/cs35l35.txt b/Documentation/devicetree/bindings/sound/cs35l35.txt
+index 016b768bc722..77ee75c39233 100644
+--- a/Documentation/devicetree/bindings/sound/cs35l35.txt
++++ b/Documentation/devicetree/bindings/sound/cs35l35.txt
+@@ -16,6 +16,9 @@ Required properties:
+     (See Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
+     for further information relating to interrupt properties)
  
--	ret = asoc_simple_card_init_mic(rtd->card, &priv->hp_jack, PREFIX);
-+	ret = asoc_simple_card_init_mic(rtd->card, &priv->mic_jack, PREFIX);
- 	if (ret < 0)
- 		return ret;
++ - cirrus,boost-ind-nanohenry: Inductor value for boost converter. The value is
++    in nH and they can be values of 1000nH, 1200nH, 1500nH, and 2200nH.
++
+ Optional properties:
+   - reset-gpios : gpio used to reset the amplifier
  
 -- 
 2.11.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
