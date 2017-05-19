@@ -1,16 +1,20 @@
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: [PATCH] ASoC: da7213: Update driver to use
- device_property* FW functions
-Date: Fri, 19 May 2017 15:32:25 +0100
-Message-ID: <20170519143225.089823FBCD@swsrvapps-01.diasemi.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 2/3] ALSA: core: modify .ack callback to
+ take arguments for updating appl ptr
+Date: Fri, 19 May 2017 10:01:04 -0500
+Message-ID: <c2cb17f3-a37f-8e7e-eac5-0fcb0178f2bd@linux.intel.com>
+References: <1494896518-23399-1-git-send-email-subhransu.s.prusty@intel.com>
+ <1494896518-23399-3-git-send-email-subhransu.s.prusty@intel.com>
+ <0be78e8b-ebc0-9f8b-5bed-df01a791f940@sakamocchi.jp>
+ <s5h7f1dmkdf.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta3.messagelabs.com (mail1.bemta3.messagelabs.com
- [195.245.230.167])
- by alsa0.perex.cz (Postfix) with ESMTP id C56A32667A5
- for <alsa-devel@alsa-project.org>; Fri, 19 May 2017 16:32:26 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 35E9F2667A5
+ for <alsa-devel@alsa-project.org>; Fri, 19 May 2017 17:01:23 +0200 (CEST)
+In-Reply-To: <s5h7f1dmkdf.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,105 +24,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>, linux-kernel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, lgirdwood@gmail.com, Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The driver now supports ACPI based initialisation as well as DT
-and old pdata methods. However the FW data handling still uses
-DT specific calls to read firmware data (of_property*) so for
-ACPI based initialisation the FW data will only be set to default
-values. This patch updates the FW handling to use device_property*
-calls instead so that both ACPI and DT are handled as expected.
+On 5/19/17 1:27 AM, Takashi Iwai wrote:
+> On Fri, 19 May 2017 05:57:05 +0200,
+> Takashi Sakamoto wrote:
+>>
+>> Hi,
+>>
+>> On May 16 2017 10:01, Subhransu S. Prusty wrote:
+>>> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>>>
+>>> When appl_ptr is updated let low-level driver know, e.g.  to let the
+>>> low-level driver/hardware pre-fetch data opportunistically.
+>>>
+>>> The existing .ack callback is extended with new attribute argument, to
+>>> support this capability. Legacy driver subscribe to SND_PCM_ACK_LEGACY and
+>>> doesn't process ack if it is not set. SND_PCM_ACK_APP_PTR can be used to
+>>> process the application ptr update in the driver like in the skylake
+>>> driver which can use this to inform position of appl pointer to host DMA
+>>> controller. The skylake driver to process the SND_PCM_ACK_APP_PTR will be
+>>> submitted with a separate patch set.
+>>>
+>>> In the ALSA core, this capability is independent from the NO_REWIND
+>>> hardware flag. The low-level driver may however tie both options and only
+>>> use the updated appl_ptr when rewinds are disabled due to hardware
+>>> limitations.
+>>>
+>>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>>> Signed-off-by: Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>
+>>> Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+>>> ---
+>>>   include/sound/pcm-indirect.h  |  4 ++--
+>>>   include/sound/pcm.h           |  8 +++++++-
+>>>   sound/core/pcm_lib.c          |  6 ++++--
+>>>   sound/core/pcm_native.c       | 24 +++++++++++++++++++++++-
+>>>   sound/mips/hal2.c             | 14 +++++++++++---
+>>>   sound/pci/cs46xx/cs46xx_lib.c | 18 ++++++++++++++----
+>>>   sound/pci/emu10k1/emupcm.c    |  8 ++++++--
+>>>   sound/pci/rme32.c             | 15 ++++++++++++---
+>>>   8 files changed, 79 insertions(+), 18 deletions(-)
+>>
+>> I think it better to take care of
+>> 'drivers/staging/vc04_services/bcm2835-audio/bcm2835-pcm.c' as
+>> well. This is a driver for sound functionality of Raspberry PI 1/zero
+>> and some people may still get influences from this work.
+>>
+>> $ git grep -A20 'struct snd_pcm_ops' v4.12-rc1 | grep \\.ack
+>> v4.12-rc1:drivers/staging/vc04_services/bcm2835-audio/bcm2835-pcm.c-...
+>> ...
+>
+> Yep, we need to cover all codes if we really change the PCM ops.
 
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
----
- sound/soc/codecs/da7213.c | 37 +++++++++++++++++++------------------
- 1 file changed, 19 insertions(+), 18 deletions(-)
+The reason precisely why I preferred to avoid mucking with the existing 
+.ack(). we have a risk of introducing problems for legacy and staging, 
+not to mention out-of-tree.
 
-diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
-index 024d83f..c3e1189 100644
---- a/sound/soc/codecs/da7213.c
-+++ b/sound/soc/codecs/da7213.c
-@@ -13,6 +13,8 @@
-  */
- 
- #include <linux/acpi.h>
-+#include <linux/of_device.h>
-+#include <linux/property.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/i2c.h>
-@@ -1606,12 +1608,12 @@ static int da7213_set_bias_level(struct snd_soc_codec *codec,
- }
- 
- static struct da7213_platform_data
--	*da7213_of_to_pdata(struct snd_soc_codec *codec)
-+	*da7213_fw_to_pdata(struct snd_soc_codec *codec)
- {
--	struct device_node *np = codec->dev->of_node;
-+	struct device *dev = codec->dev;
- 	struct da7213_platform_data *pdata;
--	const char *of_str;
--	u32 of_val32;
-+	const char *fw_str;
-+	u32 fw_val32;
- 
- 	pdata = devm_kzalloc(codec->dev, sizeof(*pdata), GFP_KERNEL);
- 	if (!pdata) {
-@@ -1619,29 +1621,29 @@ static int da7213_set_bias_level(struct snd_soc_codec *codec,
- 		return NULL;
- 	}
- 
--	if (of_property_read_u32(np, "dlg,micbias1-lvl", &of_val32) >= 0)
--		pdata->micbias1_lvl = da7213_of_micbias_lvl(codec, of_val32);
-+	if (device_property_read_u32(dev, "dlg,micbias1-lvl", &fw_val32) >= 0)
-+		pdata->micbias1_lvl = da7213_of_micbias_lvl(codec, fw_val32);
- 	else
- 		pdata->micbias1_lvl = DA7213_MICBIAS_2_2V;
- 
--	if (of_property_read_u32(np, "dlg,micbias2-lvl", &of_val32) >= 0)
--		pdata->micbias2_lvl = da7213_of_micbias_lvl(codec, of_val32);
-+	if (device_property_read_u32(dev, "dlg,micbias2-lvl", &fw_val32) >= 0)
-+		pdata->micbias2_lvl = da7213_of_micbias_lvl(codec, fw_val32);
- 	else
- 		pdata->micbias2_lvl = DA7213_MICBIAS_2_2V;
- 
--	if (!of_property_read_string(np, "dlg,dmic-data-sel", &of_str))
--		pdata->dmic_data_sel = da7213_of_dmic_data_sel(codec, of_str);
-+	if (!device_property_read_string(dev, "dlg,dmic-data-sel", &fw_str))
-+		pdata->dmic_data_sel = da7213_of_dmic_data_sel(codec, fw_str);
- 	else
- 		pdata->dmic_data_sel = DA7213_DMIC_DATA_LRISE_RFALL;
- 
--	if (!of_property_read_string(np, "dlg,dmic-samplephase", &of_str))
-+	if (!device_property_read_string(dev, "dlg,dmic-samplephase", &fw_str))
- 		pdata->dmic_samplephase =
--			da7213_of_dmic_samplephase(codec, of_str);
-+			da7213_of_dmic_samplephase(codec, fw_str);
- 	else
- 		pdata->dmic_samplephase = DA7213_DMIC_SAMPLE_ON_CLKEDGE;
- 
--	if (of_property_read_u32(np, "dlg,dmic-clkrate", &of_val32) >= 0)
--		pdata->dmic_clk_rate = da7213_of_dmic_clkrate(codec, of_val32);
-+	if (device_property_read_u32(dev, "dlg,dmic-clkrate", &fw_val32) >= 0)
-+		pdata->dmic_clk_rate = da7213_of_dmic_clkrate(codec, fw_val32);
- 	else
- 		pdata->dmic_clk_rate = DA7213_DMIC_CLK_3_0MHZ;
- 
-@@ -1713,10 +1715,9 @@ static int da7213_probe(struct snd_soc_codec *codec)
- 			    DA7213_LINE_AMP_OE, DA7213_LINE_AMP_OE);
- 
- 	/* Handle DT/Platform data */
--	if (codec->dev->of_node)
--		da7213->pdata = da7213_of_to_pdata(codec);
--	else
--		da7213->pdata = dev_get_platdata(codec->dev);
-+	da7213->pdata = dev_get_platdata(codec->dev);
-+	if (!da7213->pdata)
-+		da7213->pdata = da7213_fw_to_pdata(codec);
- 
- 	/* Set platform data values */
- 	if (da7213->pdata) {
--- 
-1.9.1
+>
+>
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
