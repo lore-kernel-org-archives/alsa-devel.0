@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: audio-graph-card: fix spelling mistake: "missmatch" -> "mismatch"" to the asoc tree
-Date: Fri, 19 May 2017 18:04:05 +0100
-Message-ID: <E1dBlJt-0003gi-Pn@debutante>
-References: <20170518074815.10755-1-colin.king@canonical.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170518074815.10755-1-colin.king@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: audio-graph-card: tidyup return method from probe()" to the asoc tree
+Date: Fri, 19 May 2017 18:04:10 +0100
+Message-ID: <E1dBlJy-0003hl-AH@debutante>
+References: <87o9up3bwn.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87o9up3bwn.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>Dan Carpenter <dan.carpenter@oracle.com>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: audio-graph-card: fix spelling mistake: "missmatch" -> "mismatch"
+   ASoC: audio-graph-card: tidyup return method from probe()
 
 has been applied to the asoc tree at
 
@@ -37,33 +37,37 @@ to this mail.
 Thanks,
 Mark
 
->From a619f049f23be98510aa0cae774cdc553c54e0e9 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Thu, 18 May 2017 08:48:15 +0100
-Subject: [PATCH] ASoC: audio-graph-card: fix spelling mistake: "missmatch" ->
- "mismatch"
+>From ecea931350cedae8ee24abe6a65619f46a3a9c14 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 19 May 2017 00:58:00 +0000
+Subject: [PATCH] ASoC: audio-graph-card: tidyup return method from probe()
 
-Trivial fix to spelling mistake in dev_err message
+Current return method from probe() is very confusable.
+This patch tidyup it to normal return method
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/audio-graph-card.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/generic/audio-graph-card.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index f41b0393ffca..93c167a91d2d 100644
+index 07e010d38596..f41b0393ffca 100644
 --- a/sound/soc/generic/audio-graph-card.c
 +++ b/sound/soc/generic/audio-graph-card.c
-@@ -107,7 +107,7 @@ static int asoc_graph_card_dai_link_of(struct device_node *cpu_port,
- 	int ret;
+@@ -271,8 +271,10 @@ static int asoc_graph_card_probe(struct platform_device *pdev)
+ 	snd_soc_card_set_drvdata(card, priv);
  
- 	if (rcpu_ep != cpu_ep) {
--		dev_err(dev, "remote-endpoint missmatch (%s/%s/%s)\n",
-+		dev_err(dev, "remote-endpoint mismatch (%s/%s/%s)\n",
- 			cpu_ep->name, codec_ep->name, rcpu_ep->name);
- 		ret = -EINVAL;
- 		goto dai_link_of_err;
+ 	ret = devm_snd_soc_register_card(dev, card);
+-	if (ret >= 0)
+-		return ret;
++	if (ret < 0)
++		goto err;
++
++	return 0;
+ err:
+ 	asoc_simple_card_clean_reference(card);
+ 
 -- 
 2.11.0
