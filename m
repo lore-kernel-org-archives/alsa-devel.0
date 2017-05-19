@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: audio-graph-card: tidyup return method from probe()" to the asoc tree
-Date: Fri, 19 May 2017 18:04:10 +0100
-Message-ID: <E1dBlJy-0003hl-AH@debutante>
-References: <87o9up3bwn.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: simple-card: tidyup return method from probe()" to the asoc tree
+Date: Fri, 19 May 2017 18:04:21 +0100
+Message-ID: <E1dBlK9-0003js-5K@debutante>
+References: <87r2zl3bxr.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87o9up3bwn.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87r2zl3bxr.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Dan Carpenter <dan.carpenter@oracle.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>Dan Carpenter <dan.carpenter@oracle.com>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: audio-graph-card: tidyup return method from probe()
+   ASoC: simple-card: tidyup return method from probe()
 
 has been applied to the asoc tree at
 
@@ -37,10 +37,10 @@ to this mail.
 Thanks,
 Mark
 
->From ecea931350cedae8ee24abe6a65619f46a3a9c14 Mon Sep 17 00:00:00 2001
+>From c6d112e442fed7b471a7a2fcedea529622f9ec3a Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 19 May 2017 00:58:00 +0000
-Subject: [PATCH] ASoC: audio-graph-card: tidyup return method from probe()
+Date: Fri, 19 May 2017 00:57:21 +0000
+Subject: [PATCH] ASoC: simple-card: tidyup return method from probe()
 
 Current return method from probe() is very confusable.
 This patch tidyup it to normal return method
@@ -49,14 +49,14 @@ Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/audio-graph-card.c | 6 ++++--
+ sound/soc/generic/simple-card.c | 6 ++++--
  1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 07e010d38596..f41b0393ffca 100644
---- a/sound/soc/generic/audio-graph-card.c
-+++ b/sound/soc/generic/audio-graph-card.c
-@@ -271,8 +271,10 @@ static int asoc_graph_card_probe(struct platform_device *pdev)
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 2c9dedab5184..4dacaf78a0de 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -497,8 +497,10 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
  	snd_soc_card_set_drvdata(card, priv);
  
  	ret = devm_snd_soc_register_card(dev, card);
