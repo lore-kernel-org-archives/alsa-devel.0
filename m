@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: add support graph base DT phase 1" to the asoc tree
-Date: Fri, 19 May 2017 18:37:11 +0100
-Message-ID: <E1dBlpv-00052c-Vx@debutante>
-References: <87inkzot58.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87inkzot58.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: stm32: Add full duplex support to i2s" to the asoc tree
+Date: Fri, 19 May 2017 18:37:17 +0100
+Message-ID: <E1dBlq1-00054J-37@debutante>
+References: <1494495904-18898-4-git-send-email-olivier.moysan@st.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1494495904-18898-4-git-send-email-olivier.moysan-qxv4g6HH51o@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.orgbroonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alexandre.torgue-qxv4g6HH51o@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-F5mvAk5X5gdBDgjK7y7TUQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, olivier.moysan-qxv4g6HH51o@public.gmane.org, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org, benjamin.gaignard-qxv4g6HH51o@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: add support graph base DT phase 1
+   ASoC: stm32: Add full duplex support to i2s
 
 has been applied to the asoc tree at
 
@@ -37,104 +36,189 @@ to this mail.
 Thanks,
 Mark
 
->From 11d0f8ed6dc3e553b20329bc85f2a1aefb5f180f Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 18 May 2017 01:27:48 +0000
-Subject: [PATCH] ASoC: rsnd: add support graph base DT phase 1
+>From e7cc49b8adf25e7bae6acaeb37036ef8726b902c Mon Sep 17 00:00:00 2001
+From: olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
+Date: Thu, 18 May 2017 17:19:53 +0200
+Subject: [PATCH] ASoC: stm32: Add full duplex support to i2s
 
-To enable OF-graph base DT on rsnd driver, and to keep compatible
-previous normal sound card style, it need to support both
-"rcar_sound,dai" and "ports" (or "port") on DT.
+This patch allows to use i2s interface either as single
+audio path (rx or tx), or bidirectional audio path.
+This patch is added separately, as the driver does not
+follow recommended use of the interface, to support this
+configuration.
 
-This patch modify rsnd_dai_of_node() to parse
-"rcar_sound,dai" and "ports" (or "port") as phase 1. It can detect
-graph base style, but do nothing at this point.
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/sh/rcar/core.c | 39 ++++++++++++++++++++++++++++++++++++++-
- sound/soc/sh/rcar/rsnd.h |  2 +-
- 2 files changed, 39 insertions(+), 2 deletions(-)
+ sound/soc/stm/stm32_i2s.c | 87 +++++++++++++++++++++++++----------------------
+ 1 file changed, 46 insertions(+), 41 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 3c47af1990cb..72a3139b70c3 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -774,6 +774,42 @@ void rsnd_parse_connect_common(struct rsnd_dai *rdai,
- 	of_node_put(node);
- }
- 
-+static struct device_node *rsnd_dai_of_node(struct rsnd_priv *priv,
-+					    int *is_graph)
-+{
-+	struct device *dev = rsnd_priv_to_dev(priv);
-+	struct device_node *np = dev->of_node;
-+	struct device_node *dai_node;
-+	struct device_node *ret;
-+
-+	*is_graph = 0;
-+
-+	/*
-+	 * parse both previous dai (= rcar_sound,dai), and
-+	 * graph dai (= ports/port)
-+	 */
-+	dai_node = of_get_child_by_name(np, RSND_NODE_DAI);
-+	if (dai_node) {
-+		ret = dai_node;
-+		goto of_node_compatible;
-+	}
-+
-+	ret = np;
-+
-+	dai_node = of_graph_get_next_endpoint(np, NULL);
-+	if (dai_node)
-+		goto of_node_graph;
-+
-+	return NULL;
-+
-+of_node_graph:
-+	*is_graph = 1;
-+of_node_compatible:
-+	of_node_put(dai_node);
-+
-+	return ret;
-+}
-+
- static int rsnd_dai_probe(struct rsnd_priv *priv)
- {
- 	struct device_node *dai_node;
-@@ -785,9 +821,10 @@ static int rsnd_dai_probe(struct rsnd_priv *priv)
- 	struct rsnd_dai *rdai;
- 	struct device *dev = rsnd_priv_to_dev(priv);
- 	int nr, dai_i, io_i;
-+	int is_graph;
+diff --git a/sound/soc/stm/stm32_i2s.c b/sound/soc/stm/stm32_i2s.c
+index 22152a1ca733..8052629a89df 100644
+--- a/sound/soc/stm/stm32_i2s.c
++++ b/sound/soc/stm/stm32_i2s.c
+@@ -489,7 +489,6 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
+ 	struct stm32_i2s_data *i2s = snd_soc_dai_get_drvdata(cpu_dai);
+ 	int format = params_width(params);
+ 	u32 cfgr, cfgr_mask, cfg1, cfg1_mask;
+-	bool playback_flg = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
+ 	unsigned int fthlv;
  	int ret;
  
--	dai_node = rsnd_dai_of_node(priv);
-+	dai_node = rsnd_dai_of_node(priv, &is_graph);
- 	nr = of_get_child_count(dai_node);
- 	if (!nr) {
- 		ret = -EINVAL;
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index dbf4163427e8..4d8e0584b644 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -18,6 +18,7 @@
- #include <linux/list.h>
- #include <linux/module.h>
- #include <linux/of_device.h>
-+#include <linux/of_graph.h>
- #include <linux/of_irq.h>
- #include <linux/sh_dma.h>
- #include <linux/workqueue.h>
-@@ -475,7 +476,6 @@ int rsnd_dai_pointer_offset(struct rsnd_dai_stream *io, int additional);
- int rsnd_dai_connect(struct rsnd_mod *mod,
- 		     struct rsnd_dai_stream *io,
- 		     enum rsnd_mod_type type);
--#define rsnd_dai_of_node(priv) rsnd_parse_of_node(priv, RSND_NODE_DAI)
+@@ -515,19 +514,13 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
+ 	}
  
- /*
-  *	R-Car Gen1/Gen2
+ 	if (STM32_I2S_IS_SLAVE(i2s)) {
+-		if (playback_flg)
+-			cfgr |= I2S_CGFR_I2SCFG_SET(I2S_I2SMOD_TX_SLAVE);
+-		else
+-			cfgr |= I2S_CGFR_I2SCFG_SET(I2S_I2SMOD_RX_SLAVE);
++		cfgr |= I2S_CGFR_I2SCFG_SET(I2S_I2SMOD_FD_SLAVE);
+ 
+ 		/* As data length is either 16 or 32 bits, fixch always set */
+ 		cfgr |= I2S_CGFR_FIXCH;
+ 		cfgr_mask |= I2S_CGFR_FIXCH;
+ 	} else {
+-		if (playback_flg)
+-			cfgr |= I2S_CGFR_I2SCFG_SET(I2S_I2SMOD_TX_MASTER);
+-		else
+-			cfgr |= I2S_CGFR_I2SCFG_SET(I2S_I2SMOD_RX_MASTER);
++		cfgr |= I2S_CGFR_I2SCFG_SET(I2S_I2SMOD_FD_MASTER);
+ 	}
+ 	cfgr_mask |= I2S_CGFR_I2SCFG_MASK;
+ 
+@@ -536,9 +529,7 @@ static int stm32_i2s_configure(struct snd_soc_dai *cpu_dai,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	cfg1 = I2S_CFG1_RXDMAEN;
+-	if (playback_flg)
+-		cfg1 = I2S_CFG1_TXDMAEN;
++	cfg1 = I2S_CFG1_RXDMAEN | I2S_CFG1_TXDMAEN;
+ 	cfg1_mask = cfg1;
+ 
+ 	fthlv = STM32_I2S_FIFO_SIZE * I2S_FIFO_TH_ONE_QUARTER / 4;
+@@ -553,32 +544,15 @@ static int stm32_i2s_startup(struct snd_pcm_substream *substream,
+ 			     struct snd_soc_dai *cpu_dai)
+ {
+ 	struct stm32_i2s_data *i2s = snd_soc_dai_get_drvdata(cpu_dai);
+-	int ret, ier;
+ 
+ 	i2s->substream = substream;
+ 
+ 	spin_lock(&i2s->lock_fd);
+-	if (i2s->refcount) {
+-		dev_err(cpu_dai->dev, "%s stream already started\n",
+-			(substream->stream == SNDRV_PCM_STREAM_PLAYBACK ?
+-			"Capture" : "Playback"));
+-		spin_unlock(&i2s->lock_fd);
+-		return -EBUSY;
+-	}
+-	i2s->refcount = 1;
++	i2s->refcount++;
+ 	spin_unlock(&i2s->lock_fd);
+ 
+-	ret = regmap_update_bits(i2s->regmap, STM32_I2S_IFCR_REG,
+-				 I2S_IFCR_MASK, I2S_IFCR_MASK);
+-	if (ret < 0)
+-		return ret;
+-
+-	/* Enable ITs */
+-	ier = I2S_IER_OVRIE | I2S_IER_UDRIE;
+-	if (STM32_I2S_IS_SLAVE(i2s))
+-		ier |= I2S_IER_TIFREIE;
+-
+-	return regmap_update_bits(i2s->regmap, STM32_I2S_IER_REG, ier, ier);
++	return regmap_update_bits(i2s->regmap, STM32_I2S_IFCR_REG,
++				  I2S_IFCR_MASK, I2S_IFCR_MASK);
+ }
+ 
+ static int stm32_i2s_hw_params(struct snd_pcm_substream *substream,
+@@ -605,7 +579,7 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ {
+ 	struct stm32_i2s_data *i2s = snd_soc_dai_get_drvdata(cpu_dai);
+ 	bool playback_flg = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK);
+-	u32 cfg1_mask;
++	u32 cfg1_mask, ier;
+ 	int ret;
+ 
+ 	switch (cmd) {
+@@ -628,10 +602,48 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			dev_err(cpu_dai->dev, "Error %d starting I2S\n", ret);
+ 			return ret;
+ 		}
++
++		regmap_update_bits(i2s->regmap, STM32_I2S_IFCR_REG,
++				   I2S_IFCR_MASK, I2S_IFCR_MASK);
++
++		if (playback_flg) {
++			ier = I2S_IER_UDRIE;
++		} else {
++			ier = I2S_IER_OVRIE;
++
++			spin_lock(&i2s->lock_fd);
++			if (i2s->refcount == 1)
++				/* dummy write to trigger capture */
++				regmap_write(i2s->regmap,
++					     STM32_I2S_TXDR_REG, 0);
++			spin_unlock(&i2s->lock_fd);
++		}
++
++		if (STM32_I2S_IS_SLAVE(i2s))
++			ier |= I2S_IER_TIFREIE;
++
++		regmap_update_bits(i2s->regmap, STM32_I2S_IER_REG, ier, ier);
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		if (playback_flg)
++			regmap_update_bits(i2s->regmap, STM32_I2S_IER_REG,
++					   I2S_IER_UDRIE,
++					   (unsigned int)~I2S_IER_UDRIE);
++		else
++			regmap_update_bits(i2s->regmap, STM32_I2S_IER_REG,
++					   I2S_IER_OVRIE,
++					   (unsigned int)~I2S_IER_OVRIE);
++
++		spin_lock(&i2s->lock_fd);
++		i2s->refcount--;
++		if (i2s->refcount) {
++			spin_unlock(&i2s->lock_fd);
++			break;
++		}
++		spin_unlock(&i2s->lock_fd);
++
+ 		dev_dbg(cpu_dai->dev, "stop I2S\n");
+ 
+ 		ret = regmap_update_bits(i2s->regmap, STM32_I2S_CR1_REG,
+@@ -641,10 +653,7 @@ static int stm32_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			return ret;
+ 		}
+ 
+-		cfg1_mask = I2S_CFG1_RXDMAEN;
+-		if (playback_flg)
+-			cfg1_mask = I2S_CFG1_TXDMAEN;
+-
++		cfg1_mask = I2S_CFG1_RXDMAEN | I2S_CFG1_TXDMAEN;
+ 		regmap_update_bits(i2s->regmap, STM32_I2S_CFG1_REG,
+ 				   cfg1_mask, 0);
+ 		break;
+@@ -662,10 +671,6 @@ static void stm32_i2s_shutdown(struct snd_pcm_substream *substream,
+ 
+ 	i2s->substream = NULL;
+ 
+-	spin_lock(&i2s->lock_fd);
+-	i2s->refcount = 0;
+-	spin_unlock(&i2s->lock_fd);
+-
+ 	regmap_update_bits(i2s->regmap, STM32_I2S_CGFR_REG,
+ 			   I2S_CGFR_MCKOE, (unsigned int)~I2S_CGFR_MCKOE);
+ }
 -- 
 2.11.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
