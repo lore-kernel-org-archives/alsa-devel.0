@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-scu-card: tidyup return method from probe()" to the asoc tree
-Date: Fri, 19 May 2017 18:04:15 +0100
-Message-ID: <E1dBlK3-0003is-LC@debutante>
-References: <87pof53bx6.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87pof53bx6.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>Dan Carpenter <dan.carpenter@oracle.com>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: audio-graph-card: fix spelling mistake: "missmatch" -> "mismatch"" to the asoc tree
+Date: Fri, 19 May 2017 18:04:05 +0100
+Message-ID: <E1dBlJt-0003gi-Pn@debutante>
+References: <20170518074815.10755-1-colin.king@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170518074815.10755-1-colin.king@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-scu-card: tidyup return method from probe()
+   ASoC: audio-graph-card: fix spelling mistake: "missmatch" -> "mismatch"
 
 has been applied to the asoc tree at
 
@@ -37,37 +37,33 @@ to this mail.
 Thanks,
 Mark
 
->From c73df77d72de28ad72973d3c3103a5361e1440fb Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 19 May 2017 00:57:44 +0000
-Subject: [PATCH] ASoC: simple-scu-card: tidyup return method from probe()
+>From a619f049f23be98510aa0cae774cdc553c54e0e9 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Thu, 18 May 2017 08:48:15 +0100
+Subject: [PATCH] ASoC: audio-graph-card: fix spelling mistake: "missmatch" ->
+ "mismatch"
 
-Current return method from probe() is very confusable.
-This patch tidyup it to normal return method
+Trivial fix to spelling mistake in dev_err message
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-scu-card.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/generic/audio-graph-card.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
-index dcbcab230d1b..9b9b01e12149 100644
---- a/sound/soc/generic/simple-scu-card.c
-+++ b/sound/soc/generic/simple-scu-card.c
-@@ -298,8 +298,10 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 	snd_soc_card_set_drvdata(card, priv);
+diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+index f41b0393ffca..93c167a91d2d 100644
+--- a/sound/soc/generic/audio-graph-card.c
++++ b/sound/soc/generic/audio-graph-card.c
+@@ -107,7 +107,7 @@ static int asoc_graph_card_dai_link_of(struct device_node *cpu_port,
+ 	int ret;
  
- 	ret = devm_snd_soc_register_card(dev, card);
--	if (ret >= 0)
--		return ret;
-+	if (ret < 0)
-+		goto err;
-+
-+	return 0;
- err:
- 	asoc_simple_card_clean_reference(card);
- 
+ 	if (rcpu_ep != cpu_ep) {
+-		dev_err(dev, "remote-endpoint missmatch (%s/%s/%s)\n",
++		dev_err(dev, "remote-endpoint mismatch (%s/%s/%s)\n",
+ 			cpu_ep->name, codec_ep->name, rcpu_ep->name);
+ 		ret = -EINVAL;
+ 		goto dai_link_of_err;
 -- 
 2.11.0
