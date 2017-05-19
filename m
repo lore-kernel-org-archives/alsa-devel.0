@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: don't call free_irq() on Parent SSI" to the asoc tree
-Date: Fri, 19 May 2017 18:03:33 +0100
-Message-ID: <E1dBlJN-0003b0-AZ@debutante>
-References: <87d1b9y3sk.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87d1b9y3sk.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: simple-card: fix mic jack initialization" to the asoc tree
+Date: Fri, 19 May 2017 18:03:27 +0100
+Message-ID: <E1dBlJH-0003a2-KL@debutante>
+References: <20170515210031.9983-1-stefan@agner.ch>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170515210031.9983-1-stefan@agner.ch>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Stefan Agner <stefan@agner.ch>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>broonie@kernel.org, lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, nikita.yoush@cogentembedded.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgkuninori.morimoto.gx@renesas.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: don't call free_irq() on Parent SSI
+   ASoC: simple-card: fix mic jack initialization
 
 has been applied to the asoc tree at
 
@@ -37,40 +37,34 @@ to this mail.
 Thanks,
 Mark
 
->From 1f8754d4daea5f257370a52a30fcb22798c54516 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 16 May 2017 01:48:24 +0000
-Subject: [PATCH] ASoC: rsnd: don't call free_irq() on Parent SSI
+>From f746aa5e8636c83e53bbb2d988bb614f732b2b80 Mon Sep 17 00:00:00 2001
+From: Stefan Agner <stefan@agner.ch>
+Date: Mon, 15 May 2017 14:00:31 -0700
+Subject: [PATCH] ASoC: simple-card: fix mic jack initialization
 
-If SSI uses shared pin, some SSI will be used as parent SSI.
-Then, normal SSI's remove and Parent SSI's remove
-(these are same SSI) will be called when unbind or remove timing.
-In this case, free_irq() will be called twice.
-This patch solve this issue.
+Initialize asoc_simple_card_init_mic with the correct struct
+asoc_simple_jack.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
-Reported-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Fixes: 9eac361877b3 ("ASoC: simple-card: add new asoc_simple_jack and use it")
+Signed-off-by: Stefan Agner <stefan@agner.ch>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssi.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/generic/simple-card.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index e43277a5068c..c224695c1484 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -709,6 +709,11 @@ static int rsnd_ssi_dma_remove(struct rsnd_mod *mod,
- 			       struct rsnd_priv *priv)
- {
- 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
-+	struct rsnd_mod *ssi_parent_mod = rsnd_io_to_mod_ssip(io);
-+
-+	/* Do nothing for SSI parent mod */
-+	if (ssi_parent_mod == mod)
-+		return 0;
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 2c9dedab5184..bc136d2bd7cd 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -202,7 +202,7 @@ static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 	if (ret < 0)
+ 		return ret;
  
- 	/* PIO will request IRQ again */
- 	free_irq(ssi->irq, mod);
+-	ret = asoc_simple_card_init_mic(rtd->card, &priv->hp_jack, PREFIX);
++	ret = asoc_simple_card_init_mic(rtd->card, &priv->mic_jack, PREFIX);
+ 	if (ret < 0)
+ 		return ret;
+ 
 -- 
 2.11.0
