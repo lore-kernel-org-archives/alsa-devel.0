@@ -1,144 +1,141 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7213: Update driver to use device_property* FW functions" to the asoc tree
-Date: Fri, 19 May 2017 18:04:27 +0100
-Message-ID: <E1dBlKF-0003lI-WE@debutante>
-References: <20170519143225.089823FBCD@swsrvapps-01.diasemi.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170519143225.089823FBCD@swsrvapps-01.diasemi.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Re: [PATCH v2 1/2] ASoC: add es8316 codec driver
+Date: Fri, 19 May 2017 18:20:18 +0100
+Message-ID: <20170519172018.ei7dpijifrjfwoeo@sirena.org.uk>
+References: <20170516202035.27590-1-drake@endlessm.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============6674064734274697881=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id CB96D2667A5
+ for <alsa-devel@alsa-project.org>; Fri, 19 May 2017 19:20:29 +0200 (CEST)
+In-Reply-To: <20170516202035.27590-1-drake@endlessm.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Drake <drake@endlessm.com>
+Cc: alsa-devel@alsa-project.org, linux@endlessm.com, lgirdwood@gmail.com, yangxiaohua@everest-semi.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: da7213: Update driver to use device_property* FW functions
+--===============6674064734274697881==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="bszsqf45jnaj6dp5"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--bszsqf45jnaj6dp5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Tue, May 16, 2017 at 02:20:34PM -0600, Daniel Drake wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> +static const char * const alc_func_txt[] = { "Off", "On" };
+> +static const struct soc_enum alc_func =
+> +	SOC_ENUM_SINGLE(ES8316_ADC_ALC1, 6, 2, alc_func_txt);
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Use normal boolean controls for simple on/off switches, just a _SINGLE
+control with a name ending Switch.  This applies to many controls in
+this driver.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> +static const struct snd_kcontrol_new es8316_snd_controls[] = {
+> +	SOC_DOUBLE_TLV("HP Playback Volume", ES8316_CPHP_ICAL_VOL,
+> +		       4, 0, 0, 1, hpout_vol_tlv),
+> +	SOC_DOUBLE_TLV("HPMixer Gain", ES8316_HPMIX_VOL,
+> +		       0, 4, 7, 0, hpmixer_gain_tlv),
 
-Thanks,
-Mark
+All volume controls should end in Volume so that UIs know what to do
+with them.  This is also a repeated problem.
 
->From 0e54153b6685712c1e0eaa31c0c199fdce121b28 Mon Sep 17 00:00:00 2001
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date: Fri, 19 May 2017 15:32:25 +0100
-Subject: [PATCH] ASoC: da7213: Update driver to use device_property* FW
- functions
+> +static int es8316_set_bias_level(struct snd_soc_codec *codec,
+> +				 enum snd_soc_bias_level level)
+> +{
+> +	switch (level) {
+> +	case SND_SOC_BIAS_ON:
+> +		snd_soc_write(codec, ES8316_RESET, 0xC0);
 
-The driver now supports ACPI based initialisation as well as DT
-and old pdata methods. However the FW data handling still uses
-DT specific calls to read firmware data (of_property*) so for
-ACPI based initialisation the FW data will only be set to default
-values. This patch updates the FW handling to use device_property*
-calls instead so that both ACPI and DT are handled as expected.
+Writing to the reset register doens't reset the chip?
 
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/da7213.c | 37 +++++++++++++++++++------------------
- 1 file changed, 19 insertions(+), 18 deletions(-)
+> +		snd_soc_write(codec, ES8316_CPHP_OUTEN, 0x66);
+> +		snd_soc_write(codec, ES8316_DAC_PDN, 0x00);
+> +		snd_soc_write(codec, ES8316_CPHP_LDOCTL, 0x30);
+> +		snd_soc_write(codec, ES8316_CPHP_PDN2, 0x10);
+> +		snd_soc_write(codec, ES8316_CPHP_PDN1, 0x03);
+> +		snd_soc_write(codec, ES8316_HPMIX_PDN, 0x00);
+> +		snd_soc_update_bits(codec, ES8316_ADC_PDN_LINSEL, 0xc0, 0x00);
+> +		snd_soc_write(codec, ES8316_SYS_PDN, 0x00);
+> +		snd_soc_write(codec, ES8316_SYS_LP1, 0x04);
+> +		snd_soc_write(codec, ES8316_SYS_LP2, 0x0c);
 
-diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
-index 024d83fa6a7f..c3e11897f8ae 100644
---- a/sound/soc/codecs/da7213.c
-+++ b/sound/soc/codecs/da7213.c
-@@ -13,6 +13,8 @@
-  */
- 
- #include <linux/acpi.h>
-+#include <linux/of_device.h>
-+#include <linux/property.h>
- #include <linux/clk.h>
- #include <linux/delay.h>
- #include <linux/i2c.h>
-@@ -1606,12 +1608,12 @@ static enum da7213_dmic_clk_rate
- }
- 
- static struct da7213_platform_data
--	*da7213_of_to_pdata(struct snd_soc_codec *codec)
-+	*da7213_fw_to_pdata(struct snd_soc_codec *codec)
- {
--	struct device_node *np = codec->dev->of_node;
-+	struct device *dev = codec->dev;
- 	struct da7213_platform_data *pdata;
--	const char *of_str;
--	u32 of_val32;
-+	const char *fw_str;
-+	u32 fw_val32;
- 
- 	pdata = devm_kzalloc(codec->dev, sizeof(*pdata), GFP_KERNEL);
- 	if (!pdata) {
-@@ -1619,29 +1621,29 @@ static struct da7213_platform_data
- 		return NULL;
- 	}
- 
--	if (of_property_read_u32(np, "dlg,micbias1-lvl", &of_val32) >= 0)
--		pdata->micbias1_lvl = da7213_of_micbias_lvl(codec, of_val32);
-+	if (device_property_read_u32(dev, "dlg,micbias1-lvl", &fw_val32) >= 0)
-+		pdata->micbias1_lvl = da7213_of_micbias_lvl(codec, fw_val32);
- 	else
- 		pdata->micbias1_lvl = DA7213_MICBIAS_2_2V;
- 
--	if (of_property_read_u32(np, "dlg,micbias2-lvl", &of_val32) >= 0)
--		pdata->micbias2_lvl = da7213_of_micbias_lvl(codec, of_val32);
-+	if (device_property_read_u32(dev, "dlg,micbias2-lvl", &fw_val32) >= 0)
-+		pdata->micbias2_lvl = da7213_of_micbias_lvl(codec, fw_val32);
- 	else
- 		pdata->micbias2_lvl = DA7213_MICBIAS_2_2V;
- 
--	if (!of_property_read_string(np, "dlg,dmic-data-sel", &of_str))
--		pdata->dmic_data_sel = da7213_of_dmic_data_sel(codec, of_str);
-+	if (!device_property_read_string(dev, "dlg,dmic-data-sel", &fw_str))
-+		pdata->dmic_data_sel = da7213_of_dmic_data_sel(codec, fw_str);
- 	else
- 		pdata->dmic_data_sel = DA7213_DMIC_DATA_LRISE_RFALL;
- 
--	if (!of_property_read_string(np, "dlg,dmic-samplephase", &of_str))
-+	if (!device_property_read_string(dev, "dlg,dmic-samplephase", &fw_str))
- 		pdata->dmic_samplephase =
--			da7213_of_dmic_samplephase(codec, of_str);
-+			da7213_of_dmic_samplephase(codec, fw_str);
- 	else
- 		pdata->dmic_samplephase = DA7213_DMIC_SAMPLE_ON_CLKEDGE;
- 
--	if (of_property_read_u32(np, "dlg,dmic-clkrate", &of_val32) >= 0)
--		pdata->dmic_clk_rate = da7213_of_dmic_clkrate(codec, of_val32);
-+	if (device_property_read_u32(dev, "dlg,dmic-clkrate", &fw_val32) >= 0)
-+		pdata->dmic_clk_rate = da7213_of_dmic_clkrate(codec, fw_val32);
- 	else
- 		pdata->dmic_clk_rate = DA7213_DMIC_CLK_3_0MHZ;
- 
-@@ -1713,10 +1715,9 @@ static int da7213_probe(struct snd_soc_codec *codec)
- 			    DA7213_LINE_AMP_OE, DA7213_LINE_AMP_OE);
- 
- 	/* Handle DT/Platform data */
--	if (codec->dev->of_node)
--		da7213->pdata = da7213_of_to_pdata(codec);
--	else
--		da7213->pdata = dev_get_platdata(codec->dev);
-+	da7213->pdata = dev_get_platdata(codec->dev);
-+	if (!da7213->pdata)
-+		da7213->pdata = da7213_fw_to_pdata(codec);
- 
- 	/* Set platform data values */
- 	if (da7213->pdata) {
--- 
-2.11.0
+This all looks like it should be managed by DAPM.
+
+> +		break;
+> +	case SND_SOC_BIAS_PREPARE:
+> +		break;
+> +	case SND_SOC_BIAS_STANDBY:
+> +		break;
+
+Transitioning to ON should be undone when we go back down to standby.
+
+> +static int es8316_probe(struct snd_soc_codec *codec)
+
+> +	snd_soc_write(codec, ES8316_CLKMGR_CLKSEL, 0x08);
+> +	snd_soc_write(codec, ES8316_CLKMGR_ADCOSR, 0x32);
+> +	snd_soc_write(codec, ES8316_CLKMGR_ADCDIV1, 0x11);
+> +	snd_soc_write(codec, ES8316_CLKMGR_ADCDIV2, 0x00);
+> +	snd_soc_write(codec, ES8316_CLKMGR_DACDIV1, 0x11);
+> +	snd_soc_write(codec, ES8316_CLKMGR_DACDIV2, 0x00);
+> +	snd_soc_write(codec, ES8316_CLKMGR_CPDIV, 0x00);
+> +	snd_soc_write(codec, ES8316_SERDATA1, 0x04);
+> +	snd_soc_write(codec, ES8316_CLKMGR_CLKSW, 0x7f);
+> +	snd_soc_write(codec, ES8316_CAL_TYPE, 0x0F);
+> +	snd_soc_write(codec, ES8316_CAL_HPLIV, 0x90);
+> +	snd_soc_write(codec, ES8316_CAL_HPRIV, 0x90);
+> +	snd_soc_write(codec, ES8316_ADC_VOLUME, 0x00);
+
+No big undocumented magic register write sequences in probe please,
+especially not ones that look like they change the default values of
+user visible controls.  The chip should use the hardware defaults where
+possible to avoid having to decide which use cases to support in the
+driver.  Let userspace pick what works for a given system.
+
+> +static const struct i2c_device_id es8316_i2c_id[] = {
+> +	{"ESSX8316", 0 },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(i2c, es8316_i2c_id);
+
+Linux I2C device IDs are generally lower case.
+
+--bszsqf45jnaj6dp5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlkfKVEACgkQJNaLcl1U
+h9A4sgf9FM2Bjc27b34K1g2h1d6OuQmMkZICCkjaSerBqew55OvgBcFtGGeRMc2w
+UHtZvaV//Yu1K/n9WynsMwHgm8k1Xpvpy/ikItlRaHFYyvzFpTTrg+Gi8rCeUW5U
+yxB3TNjdDTwLDPVocuQ3C+tgB5BZYrCj+WT7qhEBT3Q+hkbgVHBWg5opxt3lR0VY
+3/L6jiprt2UKkz1Ws8M3aNQz+dZQ6aqIUaCd6sUiXF7NL0tuOehhg7vQXGjPHt56
+BeVyT1bU7295Hax+Qz9+29FPHp/ssAVsKBIcdjCmjrYlFhqQfG8pJ73noVxCkdJE
+u2P/Yp/tt9OvHuq/9Y0QwO5JeAueFA==
+=gK8k
+-----END PGP SIGNATURE-----
+
+--bszsqf45jnaj6dp5--
+
+--===============6674064734274697881==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6674064734274697881==--
