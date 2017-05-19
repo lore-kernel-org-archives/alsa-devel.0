@@ -1,7 +1,7 @@
 From: Ryan Lee <ryans.lee@maximintegrated.com>
-Subject: [PATCH 3/5] staging: max98927: Updated volatile register list
-Date: Thu, 18 May 2017 20:01:34 -0700
-Message-ID: <1495162894-21568-1-git-send-email-ryans.lee@maximintegrated.com>
+Subject: [PATCH 4/5] staging: max98927: Added missing \n to end of dev_err messages
+Date: Thu, 18 May 2017 20:01:53 -0700
+Message-ID: <1495162913-21616-1-git-send-email-ryans.lee@maximintegrated.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
@@ -12,25 +12,39 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
 ---
- sound/soc/codecs/max98927.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/codecs/max98927.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
-index cdee3a3..e787a03 100644
+index e787a03..9b864e2 100644
 --- a/sound/soc/codecs/max98927.c
 +++ b/sound/soc/codecs/max98927.c
-@@ -586,6 +586,12 @@ static bool max98927_volatile_reg(struct device *dev, unsigned int reg)
- {
- 	switch (reg) {
- 	case MAX98927_R0001_INT_RAW1 ... MAX98927_R0009_INT_FLAG3:
-+	case MAX98927_R004C_MEAS_ADC_CH0_READ:
-+	case MAX98927_R004D_MEAS_ADC_CH1_READ:
-+	case MAX98927_R004E_MEAS_ADC_CH2_READ:
-+	case MAX98927_R0051_BROWNOUT_STATUS:
-+	case MAX98927_R0087_ENV_TRACK_BOOST_VOUT_READ:
-+	case MAX98927_R01FF_REV_ID:
- 		return true;
+@@ -160,7 +160,7 @@ static int max98927_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 		mode = MAX98927_PCM_MASTER_MODE_MASTER;
+ 		break;
  	default:
- 		return false;
+-		dev_err(codec->dev, "DAI clock mode unsupported");
++		dev_err(codec->dev, "DAI clock mode unsupported\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -176,7 +176,7 @@ static int max98927_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 		invert = MAX98927_PCM_MODE_CFG_PCM_BCLKEDGE;
+ 		break;
+ 	default:
+-		dev_err(codec->dev, "DAI invert mode unsupported");
++		dev_err(codec->dev, "DAI invert mode unsupported\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -331,7 +331,7 @@ static int max98927_dai_hw_params(struct snd_pcm_substream *substream,
+ 		chan_sz = MAX98927_PCM_MODE_CFG_CHANSZ_32;
+ 		break;
+ 	default:
+-		dev_err(codec->dev, "format unsupported %d",
++		dev_err(codec->dev, "format unsupported %d\n",
+ 			params_format(params));
+ 		goto err;
+ 	}
 -- 
 2.7.4
