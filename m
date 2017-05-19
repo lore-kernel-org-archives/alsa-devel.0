@@ -1,17 +1,18 @@
 From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: cs35l35: Add DT handling for Inductor" to the asoc tree
-Date: Fri, 19 May 2017 18:03:51 +0100
-Message-ID: <E1dBlJf-0003dn-Fr@debutante>
-References: <1495121559-1063-2-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: cs35l35: Correctly handle 0 for bst_ipk" to the asoc tree
+Date: Fri, 19 May 2017 18:03:48 +0100
+Message-ID: <E1dBlJc-0003ch-92@debutante>
+References: <1495121559-1063-3-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1495121559-1063-2-git-send-email-ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+In-Reply-To: <1495121559-1063-3-git-send-email-ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
 Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+To: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs35l35: Add DT handling for Inductor
+   ASoC: cs35l35: Correctly handle 0 for bst_ipk
 
 has been applied to the asoc tree at
 
@@ -36,34 +37,34 @@ to this mail.
 Thanks,
 Mark
 
->From cff7597a46454cf0ef0de7340dfb3f6bc0855777 Mon Sep 17 00:00:00 2001
-From: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Date: Thu, 18 May 2017 16:32:37 +0100
-Subject: [PATCH] ASoC: cs35l35: Add DT handling for Inductor
+>From 486fb9590302f811d44fa15401e1736679d33736 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Date: Thu, 18 May 2017 16:32:38 +0100
+Subject: [PATCH] ASoC: cs35l35: Correctly handle 0 for bst_ipk
 
-Need to specify the inductor size in nH. This is a required property.
+Zero is a totally valid value to specify for the bst_ipk, as such we
+should append CS35L35_VALID_PDATA to ensure that it actually makes it
+into the register value.
 
-Signed-off-by: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
 Signed-off-by: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
 Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- Documentation/devicetree/bindings/sound/cs35l35.txt | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/codecs/cs35l35.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/cs35l35.txt b/Documentation/devicetree/bindings/sound/cs35l35.txt
-index 016b768bc722..77ee75c39233 100644
---- a/Documentation/devicetree/bindings/sound/cs35l35.txt
-+++ b/Documentation/devicetree/bindings/sound/cs35l35.txt
-@@ -16,6 +16,9 @@ Required properties:
-     (See Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
-     for further information relating to interrupt properties)
+diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
+index c6eabb8610f0..375be49b7fd0 100644
+--- a/sound/soc/codecs/cs35l35.c
++++ b/sound/soc/codecs/cs35l35.c
+@@ -1269,7 +1269,7 @@ static int cs35l35_handle_of_data(struct i2c_client *i2c_client,
+ 			return -EINVAL;
+ 		}
  
-+ - cirrus,boost-ind-nanohenry: Inductor value for boost converter. The value is
-+    in nH and they can be values of 1000nH, 1200nH, 1500nH, and 2200nH.
-+
- Optional properties:
-   - reset-gpios : gpio used to reset the amplifier
+-		pdata->bst_ipk = (val32 - 1680) / 110;
++		pdata->bst_ipk = ((val32 - 1680) / 110) | CS35L35_VALID_PDATA;
+ 	}
  
+ 	ret = of_property_read_u32(np, "cirrus,boost-ind-nanohenry", &val32);
 -- 
 2.11.0
 
