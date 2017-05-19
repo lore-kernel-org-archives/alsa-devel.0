@@ -1,17 +1,18 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: cs35l35: Add Boost Inductor Calculation" to the asoc tree
-Date: Fri, 19 May 2017 18:03:56 +0100
-Message-ID: <E1dBlJk-0003eq-RX@debutante>
-References: <1495121559-1063-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1495121559-1063-1-git-send-email-ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: simple-scu-card: cleanup documentation" to the asoc tree
+Date: Fri, 19 May 2017 18:04:01 +0100
+Message-ID: <E1dBlJp-0003fj-7l@debutante>
+References: <874lwjosdg.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <874lwjosdg.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs35l35: Add Boost Inductor Calculation
+   ASoC: simple-scu-card: cleanup documentation
 
 has been applied to the asoc tree at
 
@@ -36,164 +37,141 @@ to this mail.
 Thanks,
 Mark
 
->From b7c752d68aee9c066cb0bd2f24ee73aed64575e8 Mon Sep 17 00:00:00 2001
-From: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Date: Thu, 18 May 2017 16:32:36 +0100
-Subject: [PATCH] ASoC: cs35l35: Add Boost Inductor Calculation
+>From 55cfebfede61cedf60289a7bd20e93a1c83a39a9 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 18 May 2017 01:44:27 +0000
+Subject: [PATCH] ASoC: simple-scu-card: cleanup documentation
 
-Add the Boost Inductor parameters based off the size of the inductor
-on the HW setup
+simple-scu-card is almost same as simple-card. This is already explained
+in document. But simple-card and simple-scu-card both has same
+explanation for same property. This patch forward explantion to
+simple-card if possible to avoid duplication.
 
-Signed-off-by: Brian Austin <brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
-Signed-off-by: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+This patch also cleanup DT binding example which is not good matching
+to simple-scu-card.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/cs35l35.h    |  2 ++
- sound/soc/codecs/cs35l35.c | 82 ++++++++++++++++++++++++++++++++++++++++++++++
- sound/soc/codecs/cs35l35.h |  6 ++++
- 3 files changed, 90 insertions(+)
+ .../devicetree/bindings/sound/simple-scu-card.txt  | 65 ++++++++--------------
+ 1 file changed, 24 insertions(+), 41 deletions(-)
 
-diff --git a/include/sound/cs35l35.h b/include/sound/cs35l35.h
-index 29da899e17e4..d69cd7847afd 100644
---- a/include/sound/cs35l35.h
-+++ b/include/sound/cs35l35.h
-@@ -99,6 +99,8 @@ struct cs35l35_platform_data {
- 	bool shared_bst;
- 	/* Specifies this amp is using an external boost supply */
- 	bool ext_bst;
-+	/* Inductor Value */
-+	int boost_ind;
- 	/* ClassH Algorithm */
- 	struct classh_cfg classh_algo;
- 	/* Monitor Config */
-diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
-index f8aef5869b03..c6eabb8610f0 100644
---- a/sound/soc/codecs/cs35l35.c
-+++ b/sound/soc/codecs/cs35l35.c
-@@ -756,6 +756,76 @@ static int cs35l35_codec_set_sysclk(struct snd_soc_codec *codec,
- 	return ret;
- }
+diff --git a/Documentation/devicetree/bindings/sound/simple-scu-card.txt b/Documentation/devicetree/bindings/sound/simple-scu-card.txt
+index d6fe47ed09af..e894cef1d314 100644
+--- a/Documentation/devicetree/bindings/sound/simple-scu-card.txt
++++ b/Documentation/devicetree/bindings/sound/simple-scu-card.txt
+@@ -1,35 +1,29 @@
+-ASoC simple SCU Sound Card
++ASoC Simple SCU Sound Card
  
-+static int cs35l35_boost_inductor(struct cs35l35_private *cs35l35,
-+				  int inductor)
-+{
-+	struct regmap *regmap = cs35l35->regmap;
-+	unsigned int bst_ipk = 0;
-+
-+	/*
-+	 * Digital Boost Converter Configuration for feedback,
-+	 * ramping, switching frequency, and estimation block seeding.
-+	 */
-+
-+	regmap_update_bits(regmap, CS35L35_BST_CONV_SW_FREQ,
-+			   CS35L35_BST_CONV_SWFREQ_MASK, 0x00);
-+
-+	regmap_read(regmap, CS35L35_BST_PEAK_I, &bst_ipk);
-+	bst_ipk &= CS35L35_BST_IPK_MASK;
-+
-+	switch (inductor) {
-+	case 1000: /* 1 uH */
-+		regmap_write(regmap, CS35L35_BST_CONV_COEF_1, 0x24);
-+		regmap_write(regmap, CS35L35_BST_CONV_COEF_2, 0x24);
-+		regmap_update_bits(regmap, CS35L35_BST_CONV_SW_FREQ,
-+				   CS35L35_BST_CONV_LBST_MASK, 0x00);
-+
-+		if (bst_ipk < 0x04)
-+			regmap_write(regmap, CS35L35_BST_CONV_SLOPE_COMP, 0x1B);
-+		else
-+			regmap_write(regmap, CS35L35_BST_CONV_SLOPE_COMP, 0x4E);
-+		break;
-+	case 1200: /* 1.2 uH */
-+		regmap_write(regmap, CS35L35_BST_CONV_COEF_1, 0x20);
-+		regmap_write(regmap, CS35L35_BST_CONV_COEF_2, 0x20);
-+		regmap_update_bits(regmap, CS35L35_BST_CONV_SW_FREQ,
-+				   CS35L35_BST_CONV_LBST_MASK, 0x01);
-+
-+		if (bst_ipk < 0x04)
-+			regmap_write(regmap, CS35L35_BST_CONV_SLOPE_COMP, 0x1B);
-+		else
-+			regmap_write(regmap, CS35L35_BST_CONV_SLOPE_COMP, 0x47);
-+		break;
-+	case 1500: /* 1.5uH */
-+		regmap_write(regmap, CS35L35_BST_CONV_COEF_1, 0x20);
-+		regmap_write(regmap, CS35L35_BST_CONV_COEF_2, 0x20);
-+		regmap_update_bits(regmap, CS35L35_BST_CONV_SW_FREQ,
-+				   CS35L35_BST_CONV_LBST_MASK, 0x02);
-+
-+		if (bst_ipk < 0x04)
-+			regmap_write(regmap, CS35L35_BST_CONV_SLOPE_COMP, 0x1B);
-+		else
-+			regmap_write(regmap, CS35L35_BST_CONV_SLOPE_COMP, 0x3C);
-+		break;
-+	case 2200: /* 2.2uH */
-+		regmap_write(regmap, CS35L35_BST_CONV_COEF_1, 0x19);
-+		regmap_write(regmap, CS35L35_BST_CONV_COEF_2, 0x25);
-+		regmap_update_bits(regmap, CS35L35_BST_CONV_SW_FREQ,
-+				   CS35L35_BST_CONV_LBST_MASK, 0x03);
-+
-+		if (bst_ipk < 0x04)
-+			regmap_write(regmap, CS35L35_BST_CONV_SLOPE_COMP, 0x1B);
-+		else
-+			regmap_write(regmap, CS35L35_BST_CONV_SLOPE_COMP, 0x23);
-+		break;
-+	default:
-+		dev_err(cs35l35->dev, "Invalid Inductor Value %d uH\n",
-+			inductor);
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+
- static int cs35l35_codec_probe(struct snd_soc_codec *codec)
- {
- 	struct cs35l35_private *cs35l35 = snd_soc_codec_get_drvdata(codec);
-@@ -775,6 +845,10 @@ static int cs35l35_codec_probe(struct snd_soc_codec *codec)
- 				cs35l35->pdata.bst_ipk <<
- 				CS35L35_BST_IPK_SHIFT);
+-Simple-Card specifies audio DAI connections of SoC <-> codec.
++Simple SCU Sound Card is "Simple Sound Card" + "ALSA DPCM".
++For example, you can use this driver if you want to exchange sampling rate convert,
++Mixing, etc...
  
-+	ret = cs35l35_boost_inductor(cs35l35, cs35l35->pdata.boost_ind);
-+	if (ret)
-+		return ret;
-+
- 	if (cs35l35->pdata.gain_zc)
- 		regmap_update_bits(cs35l35->regmap, CS35L35_PROTECT_CTL,
- 				CS35L35_AMP_GAIN_ZC_MASK,
-@@ -1198,6 +1272,14 @@ static int cs35l35_handle_of_data(struct i2c_client *i2c_client,
- 		pdata->bst_ipk = (val32 - 1680) / 110;
- 	}
+ Required properties:
  
-+	ret = of_property_read_u32(np, "cirrus,boost-ind-nanohenry", &val32);
-+	if (ret >= 0) {
-+		pdata->boost_ind = val32;
-+	} else {
-+		dev_err(&i2c_client->dev, "Inductor not specified.\n");
-+		return -EINVAL;
-+	}
-+
- 	if (of_property_read_u32(np, "cirrus,sp-drv-strength", &val32) >= 0)
- 		pdata->sp_drv_str = val32;
- 	if (of_property_read_u32(np, "cirrus,sp-drv-unused", &val32) >= 0)
-diff --git a/sound/soc/codecs/cs35l35.h b/sound/soc/codecs/cs35l35.h
-index 5a6e43a87c4d..621bfef70d03 100644
---- a/sound/soc/codecs/cs35l35.h
-+++ b/sound/soc/codecs/cs35l35.h
-@@ -200,6 +200,12 @@
- #define CS35L35_SP_I2S_DRV_MASK		0x03
- #define CS35L35_SP_I2S_DRV_SHIFT	0
+ - compatible				: "simple-scu-audio-card"
+ 					  "renesas,rsrc-card"
+-
+ Optional properties:
  
-+/* Boost Converter Config */
-+#define CS35L35_BST_CONV_COEFF_MASK	0xFF
-+#define CS35L35_BST_CONV_SLOPE_MASK	0xFF
-+#define CS35L35_BST_CONV_LBST_MASK	0x03
-+#define CS35L35_BST_CONV_SWFREQ_MASK	0xF0
-+
- /* Class H Algorithm Control */
- #define CS35L35_CH_STEREO_MASK		0x40
- #define CS35L35_CH_STEREO_SHIFT		6
+-- simple-audio-card,name		: User specified audio sound card name, one string
+-					  property.
+-- simple-audio-card,cpu			: CPU   sub-node
+-- simple-audio-card,codec		: CODEC sub-node
++- simple-audio-card,name		: see simple-audio-card.txt
++- simple-audio-card,cpu			: see simple-audio-card.txt
++- simple-audio-card,codec		: see simple-audio-card.txt
+ 
+ Optional subnode properties:
+ 
+-- simple-audio-card,format		: CPU/CODEC common audio format.
+-					  "i2s", "right_j", "left_j" , "dsp_a"
+-					  "dsp_b", "ac97", "pdm", "msb", "lsb"
+-- simple-audio-card,frame-master	: Indicates dai-link frame master.
+-					  phandle to a cpu or codec subnode.
+-- simple-audio-card,bitclock-master	: Indicates dai-link bit clock master.
+-					  phandle to a cpu or codec subnode.
+-- simple-audio-card,bitclock-inversion	: bool property. Add this if the
+-					  dai-link uses bit clock inversion.
+-- simple-audio-card,frame-inversion	: bool property. Add this if the
+-					  dai-link uses frame clock inversion.
++- simple-audio-card,format		: see simple-audio-card.txt
++- simple-audio-card,frame-master	: see simple-audio-card.txt
++- simple-audio-card,bitclock-master	: see simple-audio-card.txt
++- simple-audio-card,bitclock-inversion	: see simple-audio-card.txt
++- simple-audio-card,frame-inversion	: see simple-audio-card.txt
+ - simple-audio-card,convert-rate	: platform specified sampling rate convert
+ - simple-audio-card,convert-channels	: platform specified converted channel size (2 - 8 ch)
+-- simple-audio-card,prefix		: see audio-routing
++- simple-audio-card,prefix		: see routing
+ - simple-audio-card,routing		: A list of the connections between audio components.
+ 					  Each entry is a pair of strings, the first being the connection's sink,
+ 					  the second being the connection's source. Valid names for sources.
+@@ -38,19 +32,11 @@ Optional subnode properties:
+ 
+ Required CPU/CODEC subnodes properties:
+ 
+-- sound-dai				: phandle and port of CPU/CODEC
++- sound-dai				: see simple-audio-card.txt
+ 
+ Optional CPU/CODEC subnodes properties:
+ 
+-- clocks / system-clock-frequency	: specify subnode's clock if needed.
+-					  it can be specified via "clocks" if system has
+-					  clock node (= common clock), or "system-clock-frequency"
+-					  (if system doens't support common clock)
+-					  If a clock is specified, it is
+-					  enabled with clk_prepare_enable()
+-					  in dai startup() and disabled with
+-					  clk_disable_unprepare() in dai
+-					  shutdown().
++- clocks / system-clock-frequency	: see simple-audio-card.txt
+ 
+ Example 1. Sampling Rate Covert
+ 
+@@ -59,11 +45,10 @@ sound {
+ 
+ 	simple-audio-card,name = "rsnd-ak4643";
+ 	simple-audio-card,format = "left_j";
+-	simple-audio-card,format = "left_j";
+ 	simple-audio-card,bitclock-master = <&sndcodec>;
+ 	simple-audio-card,frame-master = <&sndcodec>;
+ 
+-	simple-audio-card,convert-rate = <48000>; /* see audio_clk_a */
++	simple-audio-card,convert-rate = <48000>;
+ 
+ 	simple-audio-card,prefix = "ak4642";
+ 	simple-audio-card,routing = "ak4642 Playback", "DAI0 Playback",
+@@ -79,20 +64,18 @@ sound {
+ 	};
+ };
+ 
+-Example 2. 2 CPU 1 Codec
++Example 2. 2 CPU 1 Codec (Mixing)
+ 
+ sound {
+-	compatible = "renesas,rsrc-card";
+-
+-	card-name = "rsnd-ak4643";
+-	format = "left_j";
+-	bitclock-master = <&dpcmcpu>;
+-	frame-master = <&dpcmcpu>;
++	compatible = "simple-scu-audio-card";
+ 
+-	convert-rate = <48000>;  /* see audio_clk_a */
++	simple-audio-card,name = "rsnd-ak4643";
++	simple-audio-card,format = "left_j";
++	simple-audio-card,bitclock-master = <&dpcmcpu>;
++	simple-audio-card,frame-master = <&dpcmcpu>;
+ 
+-	audio-prefix = "ak4642";
+-	audio-routing = "ak4642 Playback", "DAI0 Playback",
++	simple-audio-card,prefix = "ak4642";
++	simple-audio-card,routing = "ak4642 Playback", "DAI0 Playback",
+ 			"ak4642 Playback", "DAI1 Playback";
+ 
+ 	dpcmcpu: cpu@0 {
 -- 
 2.11.0
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
