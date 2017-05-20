@@ -1,104 +1,71 @@
-From: Masahiro Yamada <yamada.masahiro@socionext.com>
-Subject: Re: [PATCH] ASoC: remove NULL pointer check for
-	clk_disable_unprepare
-Date: Sun, 21 May 2017 03:50:33 +0900
-Message-ID: <CAK7LNATFZjKkCtb1CQb6NdHEZAra6AqzqBW2i8QJgiLWt4eHzg@mail.gmail.com>
-References: <1495302158-30951-1-git-send-email-yamada.masahiro@socionext.com>
- <20170520180403.mqwfrcjsyukv3phr@kozik-lap>
- <CAK7LNAR22B6EHnF=JtJ+9Veq9exgW+BB_T4zLwccFP_6C3j7xA@mail.gmail.com>
+From: Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: Re: [PATCH v2 10/18] pinctrl: madera: Add driver for Cirrus Logic
+ Madera codecs
+Date: Sat, 20 May 2017 16:06:23 -0400
+Message-ID: <CAP=VYLrOdpyOzKJsG0vJwOWP5eEnxuG55naTzi-cB2DhG36=7A@mail.gmail.com>
+References: <1493050124-5970-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <1493050124-5970-11-git-send-email-rf@opensource.wolfsonmicro.com> <CACRpkdZPoZ0VK=UYsa=T7A_LXHZnULv+yKKFXCEomG+eozkfPQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from conssluserg-01.nifty.com (conssluserg-01.nifty.com
- [210.131.2.80]) by alsa0.perex.cz (Postfix) with ESMTP id BCF4526684C
- for <alsa-devel@alsa-project.org>; Sat, 20 May 2017 20:50:42 +0200 (CEST)
-Received: from mail-yw0-f173.google.com (mail-yw0-f173.google.com
- [209.85.161.173]) (authenticated)
- by conssluserg-01.nifty.com with ESMTP id v4KIoZ9h003019
- for <alsa-devel@alsa-project.org>; Sun, 21 May 2017 03:50:35 +0900
-Received: by mail-yw0-f173.google.com with SMTP id l74so46338696ywe.2
- for <alsa-devel@alsa-project.org>; Sat, 20 May 2017 11:50:35 -0700 (PDT)
-In-Reply-To: <CAK7LNAR22B6EHnF=JtJ+9Veq9exgW+BB_T4zLwccFP_6C3j7xA@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Timur Tabi <timur@tabi.org>, Support Opensource <support.opensource@diasemi.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Sangbeom Kim <sbkim73@samsung.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, patches@opensource.wolfsonmicro.com, Takashi Iwai <tiwai@suse.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Matthias Brugger <matthias.bgg@gmail.com>, Mark Brown <broonie@kernel.org>, "moderated list:ARM/Mediatek SoC support" <linux-mediatek@lists.infradead.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org, Lars-Peter Clausen <lars@metafoo.de>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CACRpkdZPoZ0VK=UYsa=T7A_LXHZnULv+yKKFXCEomG+eozkfPQ@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>, Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, Alexandre Courbot <gnurou@gmail.com>, Rob Herring <robh+dt@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "open list:WOLFSON MICROELECTRONICS DRIVERS" <patches@opensource.wolfsonmicro.com>, "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-2017-05-21 3:42 GMT+09:00 Masahiro Yamada <yamada.masahiro@socionext.com>:
-> Hi Krzysztof,
+On Fri, Apr 28, 2017 at 3:39 AM, Linus Walleij <linus.walleij@linaro.org> wrote:
+> On Mon, Apr 24, 2017 at 6:08 PM, Richard Fitzgerald
+> <rf@opensource.wolfsonmicro.com> wrote:
 >
->
-> 2017-05-21 3:04 GMT+09:00 Krzysztof Kozlowski <krzk@kernel.org>:
->> On Sun, May 21, 2017 at 02:42:38AM +0900, Masahiro Yamada wrote:
->>> After long term efforts of fixing non-common clock implementations,
->>> clk_disable() is a no-op for a NULL pointer input, and this is now
->>> tree-wide consistent.
->>>
->>> All clock consumers can safely call clk_disable(_unprepare) without
->>> NULL pointer check.
->>>
->>> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
->>> ---
->>>
->>>  sound/soc/codecs/adau17x1.c                | 3 +--
->>>  sound/soc/codecs/da7213.c                  | 3 +--
->>>  sound/soc/codecs/da7218.c                  | 3 +--
->>>  sound/soc/codecs/da7219-aad.c              | 5 ++---
->>>  sound/soc/codecs/da7219.c                  | 3 +--
->>>  sound/soc/codecs/es8328.c                  | 3 +--
->>>  sound/soc/codecs/wm8731.c                  | 3 +--
->>>  sound/soc/davinci/davinci-evm.c            | 3 +--
->>>  sound/soc/fsl/imx-audmux.c                 | 6 ++----
->>>  sound/soc/intel/boards/bytcr_rt5640.c      | 2 +-
->>>  sound/soc/intel/boards/cht_bsw_rt5645.c    | 3 +--
->>>  sound/soc/mediatek/mt8173/mt8173-afe-pcm.c | 6 ++----
->>>  sound/soc/samsung/i2s.c                    | 3 +--
->>>  13 files changed, 16 insertions(+), 30 deletions(-)
->>>
+>> These codecs have a variable number of I/O lines each of which
+>> is individually selectable to a wide range of possible functions.
 >>
->> (...)
+>> The functionality is slightly different from the traditional muxed
+>> GPIO since most of the functions can be mapped to any pin (and even
+>> the same function to multiple pins). Most pins have a dedicated
+>> "alternate" function that is only available on that pin. The
+>> alternate functions are usually a group of signals, though it is
+>> not always necessary to enable the full group, depending on the
+>> alternate function and how it is to be used. The mapping between
+>> alternate functions and GPIO pins varies between codecs depending
+>> on the number of alternate functions and available pins.
 >>
->>> diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
->>> index af3ba4d..3a06acd 100644
->>> --- a/sound/soc/samsung/i2s.c
->>> +++ b/sound/soc/samsung/i2s.c
->>> @@ -1122,8 +1122,7 @@ static int i2s_runtime_suspend(struct device *dev)
->>>       i2s->suspend_i2scon = readl(i2s->addr + I2SCON);
->>>       i2s->suspend_i2spsr = readl(i2s->addr + I2SPSR);
->>>
->>> -     if (i2s->op_clk)
->>> -             clk_disable_unprepare(i2s->op_clk);
->>> +     clk_disable_unprepare(i2s->op_clk);
->>>       clk_disable_unprepare(i2s->clk);
+>> Note on the Kconfig options:
+>> The formula "default y if..." is used for PINCTRL_MADERA so that its
+>> select options will be processed, allowing us to group selects for
+>> pinctrl into the pinctrl Kconfig where they logically belong instead
+>> of accumulating under the parent MFD Kconfig.
 >>
->> I think the check in i2s_runtime_resume() should be removed then as well
->> to keep it symmetrical. Otherwise it looks suspicious.
+>> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+>> ---
+>> Changes since V1:
+>> - dt binding moved to separate patch
+>> - moved all source into a subdirectory drivers/pinctrl/cirrus
+>> - split chip-specific tables into separate files
+>> - codec-specific build options are now selected from MFD
+>> - print useful information from madera_pin_dbg_show()
+>> - added gpio_set_direciton / gpio_request_enable / gpio_disable_free functions
+>> - added strict mode so GPIO and other functions are exclusive
+>> - replace #ifdefs with if (IS_ENABLED(...)) in probe
+>> - fixed bug reading registers in madera_pin_conf_get()
 >
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+If this hasn't been merged yet, can we get rid of all the
+MODULE / module references, since the Kconfigs are
+all bool type and hence we shouldn't need to use them.
+
+Alternatively we can do it in a follow-on patch if needed.
+
+Thanks,
+Paul.
+--
+
 >
-> Hmm, you have a point.  We will lose the symmetry.
+> I guess you will apply this through MFD, so waiting for Lee to
+> pick it up. Alternatively I can apply it after the MFD core parts
+> are upstream.
 >
-> If samsung/i2s.c is only used with the common clock framework,
-> we can omit the NULL pointer check for clk_prepare_enable()
-> because it is also a no-op for NULL clk input
-> (it returns 0).
->
-> At this moment, this is not consistent for non-common clock implementations,
-> though.
-
-
-I retract this patch.
-
-
-
--- 
-Best Regards
-Masahiro Yamada
+> Yours,
+> Linus Walleij
