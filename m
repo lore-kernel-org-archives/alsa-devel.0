@@ -1,52 +1,70 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 03/16] ALSA: dummy: Convert to copy_silence ops
-Date: Sun, 21 May 2017 22:09:37 +0200
-Message-ID: <20170521200950.4592-4-tiwai@suse.de>
-References: <20170521200950.4592-1-tiwai@suse.de>
+Subject: [PATCH 00/16] ALSA: Convert to new copy_silence PCM ops
+Date: Sun, 21 May 2017 22:09:34 +0200
+Message-ID: <20170521200950.4592-1-tiwai@suse.de>
 Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <20170521200950.4592-1-tiwai@suse.de>
 Sender: linux-media-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org
 Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Mark Brown <broonie@kernel.org>, Bluecherry Maintainers <maintainers@bluecherrydvr.com>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-It's a dummy ops, so just replacing it.
+Hi,
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/drivers/dummy.c | 13 +++----------
- 1 file changed, 3 insertions(+), 10 deletions(-)
+this is a part of the previous RFC patchset, and it's preliminary for
+eliminating set_fs() usages in the rest ALSA codes.  This patchset
+itself converts the existing copy and silence PCM ops to a new single
+copy_silence ops.  The new callback takes in_kernel flag for allowing
+in-kernel buffer copy, so that the PCM drivers can pass the buffer in
+kernel-space later directly without set_fs() hackery.
 
-diff --git a/sound/drivers/dummy.c b/sound/drivers/dummy.c
-index 172dacd925f5..68519689a9ea 100644
---- a/sound/drivers/dummy.c
-+++ b/sound/drivers/dummy.c
-@@ -645,14 +645,8 @@ static int alloc_fake_buffer(void)
- 
- static int dummy_pcm_copy(struct snd_pcm_substream *substream,
- 			  int channel, snd_pcm_uframes_t pos,
--			  void __user *dst, snd_pcm_uframes_t count)
--{
--	return 0; /* do nothing */
--}
--
--static int dummy_pcm_silence(struct snd_pcm_substream *substream,
--			     int channel, snd_pcm_uframes_t pos,
--			     snd_pcm_uframes_t count)
-+			  void __user *dst, snd_pcm_uframes_t count,
-+			  bool in_kernel)
- {
- 	return 0; /* do nothing */
- }
-@@ -683,8 +677,7 @@ static struct snd_pcm_ops dummy_pcm_ops_no_buf = {
- 	.prepare =	dummy_pcm_prepare,
- 	.trigger =	dummy_pcm_trigger,
- 	.pointer =	dummy_pcm_pointer,
--	.copy =		dummy_pcm_copy,
--	.silence =	dummy_pcm_silence,
-+	.copy_silence =	dummy_pcm_copy,
- 	.page =		dummy_pcm_page,
- };
- 
+The latest codes are found in topic/kill-set_fs branch of sound git
+tree.
+
+The media people are Cc'ed for solo6x10 changes.
+
+
+Takashi
+
+===
+
+Takashi Iwai (16):
+  ALSA: pcm: Introduce copy_silence PCM ops
+  ALSA: Update document about copy_silence PCM ops
+  ALSA: dummy: Convert to copy_silence ops
+  ALSA: es1938: Convert to copy_silence ops
+  ALSA: korg1212: Convert to copy_silence ops
+  ALSA: nm256: Convert to copy_silence ops
+  ALSA: rme32: Convert to copy_silence ops
+  ALSA: rme96: Convert to copy_silence ops
+  ALSA: rme9652: Convert to copy_silence ops
+  ALSA: hdsp: Convert to copy_silence ops
+  ALSA: gus: Convert to copy_silence ops
+  ALSA: sb: Convert to copy_silence ops
+  ALSA: sh: Convert to copy_silence ops
+  ASoC: blackfin: Convert to copy_silence ops
+  [media] solo6x10: Convert to copy_silence ops
+  ALSA: pcm: Drop the old copy and silence ops
+
+ .../sound/kernel-api/writing-an-alsa-driver.rst    | 110 ++++++++++--------
+ drivers/media/pci/solo6x10/solo6x10-g723.c         |  13 ++-
+ include/sound/pcm.h                                |   8 +-
+ sound/core/pcm_lib.c                               |  68 ++++++-----
+ sound/drivers/dummy.c                              |  13 +--
+ sound/isa/gus/gus_pcm.c                            |  43 ++-----
+ sound/isa/sb/emu8000_pcm.c                         |  99 +++++-----------
+ sound/pci/es1938.c                                 |  11 +-
+ sound/pci/korg1212/korg1212.c                      | 128 ++++++---------------
+ sound/pci/nm256/nm256.c                            |  35 +++---
+ sound/pci/rme32.c                                  |  49 ++++----
+ sound/pci/rme96.c                                  |  52 ++++-----
+ sound/pci/rme9652/hdsp.c                           |  44 ++++---
+ sound/pci/rme9652/rme9652.c                        |  46 ++++----
+ sound/sh/sh_dac_audio.c                            |  40 ++-----
+ sound/soc/blackfin/bf5xx-ac97-pcm.c                |   6 +-
+ sound/soc/blackfin/bf5xx-ac97.c                    |  18 ++-
+ sound/soc/blackfin/bf5xx-i2s-pcm.c                 |  46 +++-----
+ sound/soc/soc-pcm.c                                |   3 +-
+ 19 files changed, 340 insertions(+), 492 deletions(-)
+
 -- 
 2.13.0
