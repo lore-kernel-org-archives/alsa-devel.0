@@ -1,7 +1,7 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 10/16] ALSA: hdsp: Convert to copy_silence ops
-Date: Sun, 21 May 2017 22:09:44 +0200
-Message-ID: <20170521200950.4592-11-tiwai@suse.de>
+Subject: [PATCH 09/16] ALSA: rme9652: Convert to copy_silence ops
+Date: Sun, 21 May 2017 22:09:43 +0200
+Message-ID: <20170521200950.4592-10-tiwai@suse.de>
 References: <20170521200950.4592-1-tiwai@suse.de>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <20170521200950.4592-1-tiwai@suse.de>
@@ -15,28 +15,28 @@ The conversion is straightforward with standard helper functions.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/rme9652/hdsp.c | 44 ++++++++++++++++++++------------------------
- 1 file changed, 20 insertions(+), 24 deletions(-)
+ sound/pci/rme9652/rme9652.c | 46 ++++++++++++++++++++-------------------------
+ 1 file changed, 20 insertions(+), 26 deletions(-)
 
-diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
-index fc0face6cdc6..5325e91fc3a8 100644
---- a/sound/pci/rme9652/hdsp.c
-+++ b/sound/pci/rme9652/hdsp.c
-@@ -3913,8 +3913,10 @@ static char *hdsp_channel_buffer_location(struct hdsp *hdsp,
- 		return hdsp->playback_buffer + (mapped_channel * HDSP_CHANNEL_BUFFER_BYTES);
+diff --git a/sound/pci/rme9652/rme9652.c b/sound/pci/rme9652/rme9652.c
+index 55172c689991..ce9faa32c7ed 100644
+--- a/sound/pci/rme9652/rme9652.c
++++ b/sound/pci/rme9652/rme9652.c
+@@ -1883,8 +1883,10 @@ static char *rme9652_channel_buffer_location(struct snd_rme9652 *rme9652,
+ 	}
  }
  
--static int snd_hdsp_playback_copy(struct snd_pcm_substream *substream, int channel,
--				  snd_pcm_uframes_t pos, void __user *src, snd_pcm_uframes_t count)
-+static int snd_hdsp_playback_copy(struct snd_pcm_substream *substream,
-+				  int channel, snd_pcm_uframes_t pos,
-+				  void __user *src, snd_pcm_uframes_t count,
-+				  bool in_kernel)
+-static int snd_rme9652_playback_copy(struct snd_pcm_substream *substream, int channel,
+-				     snd_pcm_uframes_t pos, void __user *src, snd_pcm_uframes_t count)
++static int snd_rme9652_playback_copy(struct snd_pcm_substream *substream,
++				     int channel, snd_pcm_uframes_t pos,
++				     void __user *src, snd_pcm_uframes_t count,
++				     bool in_kernel)
  {
- 	struct hdsp *hdsp = snd_pcm_substream_chip(substream);
+ 	struct snd_rme9652 *rme9652 = snd_pcm_substream_chip(substream);
  	char *channel_buf;
-@@ -3925,13 +3927,19 @@ static int snd_hdsp_playback_copy(struct snd_pcm_substream *substream, int chann
- 	channel_buf = hdsp_channel_buffer_location (hdsp, substream->pstr->stream, channel);
+@@ -1897,13 +1899,19 @@ static int snd_rme9652_playback_copy(struct snd_pcm_substream *substream, int ch
+ 						       channel);
  	if (snd_BUG_ON(!channel_buf))
  		return -EIO;
 -	if (copy_from_user(channel_buf + pos * 4, src, count * 4))
@@ -50,17 +50,17 @@ index fc0face6cdc6..5325e91fc3a8 100644
 +	return 0;
  }
  
--static int snd_hdsp_capture_copy(struct snd_pcm_substream *substream, int channel,
--				 snd_pcm_uframes_t pos, void __user *dst, snd_pcm_uframes_t count)
-+static int snd_hdsp_capture_copy(struct snd_pcm_substream *substream,
-+				 int channel, snd_pcm_uframes_t pos,
-+				 void __user *dst, snd_pcm_uframes_t count,
-+				 bool in_kernel)
+-static int snd_rme9652_capture_copy(struct snd_pcm_substream *substream, int channel,
+-				    snd_pcm_uframes_t pos, void __user *dst, snd_pcm_uframes_t count)
++static int snd_rme9652_capture_copy(struct snd_pcm_substream *substream,
++				    int channel, snd_pcm_uframes_t pos,
++				    void __user *dst, snd_pcm_uframes_t count,
++				    bool in_kernel)
  {
- 	struct hdsp *hdsp = snd_pcm_substream_chip(substream);
+ 	struct snd_rme9652 *rme9652 = snd_pcm_substream_chip(substream);
  	char *channel_buf;
-@@ -3942,22 +3950,11 @@ static int snd_hdsp_capture_copy(struct snd_pcm_substream *substream, int channe
- 	channel_buf = hdsp_channel_buffer_location (hdsp, substream->pstr->stream, channel);
+@@ -1916,24 +1924,11 @@ static int snd_rme9652_capture_copy(struct snd_pcm_substream *substream, int cha
+ 						       channel);
  	if (snd_BUG_ON(!channel_buf))
  		return -EIO;
 -	if (copy_to_user(dst, channel_buf + pos * 4, count * 4))
@@ -71,13 +71,15 @@ index fc0face6cdc6..5325e91fc3a8 100644
 -	return count;
 -}
 -
--static int snd_hdsp_hw_silence(struct snd_pcm_substream *substream, int channel,
+-static int snd_rme9652_hw_silence(struct snd_pcm_substream *substream, int channel,
 -				  snd_pcm_uframes_t pos, snd_pcm_uframes_t count)
 -{
--	struct hdsp *hdsp = snd_pcm_substream_chip(substream);
+-	struct snd_rme9652 *rme9652 = snd_pcm_substream_chip(substream);
 -	char *channel_buf;
 -
--	channel_buf = hdsp_channel_buffer_location (hdsp, substream->pstr->stream, channel);
+-	channel_buf = rme9652_channel_buffer_location (rme9652,
+-						       substream->pstr->stream,
+-						       channel);
 -	if (snd_BUG_ON(!channel_buf))
 -		return -EIO;
 -	memset(channel_buf + pos * 4, 0, count * 4);
@@ -85,25 +87,25 @@ index fc0face6cdc6..5325e91fc3a8 100644
 +	return 0;
  }
  
- static int snd_hdsp_reset(struct snd_pcm_substream *substream)
-@@ -4869,8 +4866,7 @@ static const struct snd_pcm_ops snd_hdsp_playback_ops = {
- 	.prepare =	snd_hdsp_prepare,
- 	.trigger =	snd_hdsp_trigger,
- 	.pointer =	snd_hdsp_hw_pointer,
--	.copy =		snd_hdsp_playback_copy,
--	.silence =	snd_hdsp_hw_silence,
-+	.copy_silence =	snd_hdsp_playback_copy,
+ static int snd_rme9652_reset(struct snd_pcm_substream *substream)
+@@ -2376,8 +2371,7 @@ static const struct snd_pcm_ops snd_rme9652_playback_ops = {
+ 	.prepare =	snd_rme9652_prepare,
+ 	.trigger =	snd_rme9652_trigger,
+ 	.pointer =	snd_rme9652_hw_pointer,
+-	.copy =		snd_rme9652_playback_copy,
+-	.silence =	snd_rme9652_hw_silence,
++	.copy_silence =	snd_rme9652_playback_copy,
  };
  
- static const struct snd_pcm_ops snd_hdsp_capture_ops = {
-@@ -4881,7 +4877,7 @@ static const struct snd_pcm_ops snd_hdsp_capture_ops = {
- 	.prepare =	snd_hdsp_prepare,
- 	.trigger =	snd_hdsp_trigger,
- 	.pointer =	snd_hdsp_hw_pointer,
--	.copy =		snd_hdsp_capture_copy,
-+	.copy_silence =	snd_hdsp_capture_copy,
+ static const struct snd_pcm_ops snd_rme9652_capture_ops = {
+@@ -2388,7 +2382,7 @@ static const struct snd_pcm_ops snd_rme9652_capture_ops = {
+ 	.prepare =	snd_rme9652_prepare,
+ 	.trigger =	snd_rme9652_trigger,
+ 	.pointer =	snd_rme9652_hw_pointer,
+-	.copy =		snd_rme9652_capture_copy,
++	.copy_silence =	snd_rme9652_capture_copy,
  };
  
- static int snd_hdsp_create_hwdep(struct snd_card *card, struct hdsp *hdsp)
+ static int snd_rme9652_create_pcm(struct snd_card *card,
 -- 
 2.13.0
