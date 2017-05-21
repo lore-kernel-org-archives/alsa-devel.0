@@ -1,7 +1,7 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 12/16] ALSA: sb: Convert to copy_silence ops
-Date: Sun, 21 May 2017 22:09:46 +0200
-Message-ID: <20170521200950.4592-13-tiwai@suse.de>
+Subject: [PATCH 16/16] ALSA: pcm: Drop the old copy and silence ops
+Date: Sun, 21 May 2017 22:09:50 +0200
+Message-ID: <20170521200950.4592-17-tiwai@suse.de>
 References: <20170521200950.4592-1-tiwai@suse.de>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <20170521200950.4592-1-tiwai@suse.de>
@@ -10,170 +10,135 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Mark Brown <broonie@kernel.org>, Bluecherry Maintainers <maintainers@bluecherrydvr.com>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Replace the copy and the silence ops with the new merged ops.
-We could reduce the redundant silence code by that.
+Now that all users of old copy and silence ops have been converted to
+the new copy_silence ops, the old stuff can be retired and go away.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/isa/sb/emu8000_pcm.c | 99 ++++++++++++++--------------------------------
- 1 file changed, 30 insertions(+), 69 deletions(-)
+ include/sound/pcm.h  |  5 -----
+ sound/core/pcm_lib.c | 38 +-------------------------------------
+ sound/soc/soc-pcm.c  |  2 --
+ 3 files changed, 1 insertion(+), 44 deletions(-)
 
-diff --git a/sound/isa/sb/emu8000_pcm.c b/sound/isa/sb/emu8000_pcm.c
-index 32f234f494e5..fd42ae2f73b8 100644
---- a/sound/isa/sb/emu8000_pcm.c
-+++ b/sound/isa/sb/emu8000_pcm.c
-@@ -422,16 +422,28 @@ do { \
- 		return -EAGAIN;\
- } while (0)
- 
-+static inline int get_val(unsigned short *sval, unsigned short __user *buf,
-+			  bool in_kernel)
-+{
-+	if (!buf)
-+		*sval = 0;
-+	else if (in_kernel)
-+		*sval = *(unsigned short *)buf;
-+	else if (get_user(*sval, buf))
-+		return -EFAULT;
-+	return 0;
-+}
- 
- #ifdef USE_NONINTERLEAVE
- /* copy one channel block */
--static int emu8k_transfer_block(struct snd_emu8000 *emu, int offset, unsigned short *buf, int count)
-+static int emu8k_transfer_block(struct snd_emu8000 *emu, int offset,
-+				unsigned short *buf, int count, bool in_kernel)
- {
- 	EMU8000_SMALW_WRITE(emu, offset);
- 	while (count > 0) {
- 		unsigned short sval;
- 		CHECK_SCHEDULER();
--		if (get_user(sval, buf))
-+		if (get_val(&sval, buf, in_kernel))
- 			return -EFAULT;
- 		EMU8000_SMLD_WRITE(emu, sval);
- 		buf++;
-@@ -455,48 +467,18 @@ static int emu8k_pcm_copy(struct snd_pcm_substream *subs,
- 		int i, err;
- 		count /= rec->voices;
- 		for (i = 0; i < rec->voices; i++) {
--			err = emu8k_transfer_block(emu, pos + rec->loop_start[i], buf, count);
-+			err = emu8k_transfer_block(emu,
-+						   pos + rec->loop_start[i],
-+						   buf, count, in_kernel);
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index b9dd813dd885..4243c02c3f11 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -78,11 +78,6 @@ struct snd_pcm_ops {
+ 			struct timespec *system_ts, struct timespec *audio_ts,
+ 			struct snd_pcm_audio_tstamp_config *audio_tstamp_config,
+ 			struct snd_pcm_audio_tstamp_report *audio_tstamp_report);
+-	int (*copy)(struct snd_pcm_substream *substream, int channel,
+-		    snd_pcm_uframes_t pos,
+-		    void __user *buf, snd_pcm_uframes_t count);
+-	int (*silence)(struct snd_pcm_substream *substream, int channel, 
+-		       snd_pcm_uframes_t pos, snd_pcm_uframes_t count);
+ 	int (*copy_silence)(struct snd_pcm_substream *substream, int channel,
+ 			    snd_pcm_uframes_t pos, void __user *buf,
+ 			    snd_pcm_uframes_t count, bool in_kernel);
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index b720cbda017f..1c9d43fefacc 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -115,9 +115,6 @@ void snd_pcm_playback_silence(struct snd_pcm_substream *substream, snd_pcm_ufram
+ 				err = substream->ops->copy_silence(substream,
+ 					-1, ofs, NULL, transfer, false);
+ 				snd_BUG_ON(err < 0);
+-			} else if (substream->ops->silence) {
+-				err = substream->ops->silence(substream, -1, ofs, transfer);
+-				snd_BUG_ON(err < 0);
+ 			} else {
+ 				hwbuf = runtime->dma_area + frames_to_bytes(runtime, ofs);
+ 				snd_pcm_format_set_silence(runtime->format, hwbuf, transfer * runtime->channels);
+@@ -131,11 +128,6 @@ void snd_pcm_playback_silence(struct snd_pcm_substream *substream, snd_pcm_ufram
+ 						c, ofs, NULL, transfer, false);
+ 					snd_BUG_ON(err < 0);
+ 				}
+-			} else if (substream->ops->silence) {
+-				for (c = 0; c < channels; ++c) {
+-					err = substream->ops->silence(substream, c, ofs, transfer);
+-					snd_BUG_ON(err < 0);
+-				}
+ 			} else {
+ 				size_t dma_csize = runtime->dma_bytes / channels;
+ 				for (c = 0; c < channels; ++c) {
+@@ -2010,9 +2002,6 @@ static int snd_pcm_lib_write_transfer(struct snd_pcm_substream *substream,
+ 						   frames, false);
+ 		if (err < 0)
+ 			return err;
+-	} else if (substream->ops->copy) {
+-		if ((err = substream->ops->copy(substream, -1, hwoff, buf, frames)) < 0)
+-			return err;
+ 	} else {
+ 		char *hwbuf = runtime->dma_area + frames_to_bytes(runtime, hwoff);
+ 		if (copy_from_user(hwbuf, buf, frames_to_bytes(runtime, frames)))
+@@ -2134,8 +2123,7 @@ static int pcm_sanity_check(struct snd_pcm_substream *substream)
+ 	if (PCM_RUNTIME_CHECK(substream))
+ 		return -ENXIO;
+ 	runtime = substream->runtime;
+-	if (snd_BUG_ON(!substream->ops->copy_silence && !substream->ops->copy
+-		       && !runtime->dma_area))
++	if (snd_BUG_ON(!substream->ops->copy_silence && !runtime->dma_area))
+ 		return -EINVAL;
+ 	if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
+ 		return -EBADFD;
+@@ -2186,19 +2174,6 @@ static int snd_pcm_lib_writev_transfer(struct snd_pcm_substream *substream,
  			if (err < 0)
  				return err;
--			buf += count;
-+			if (buf)
-+				buf += count;
  		}
- 		return 0;
- 	} else {
--		return emu8k_transfer_block(emu, pos + rec->loop_start[voice], src, count);
--	}
--}
--
--/* make a channel block silence */
--static int emu8k_silence_block(struct snd_emu8000 *emu, int offset, int count)
--{
--	EMU8000_SMALW_WRITE(emu, offset);
--	while (count > 0) {
--		CHECK_SCHEDULER();
--		EMU8000_SMLD_WRITE(emu, 0);
--		count--;
--	}
--	return 0;
--}
--
--static int emu8k_pcm_silence(struct snd_pcm_substream *subs,
--			     int voice,
--			     snd_pcm_uframes_t pos,
--			     snd_pcm_uframes_t count)
--{
--	struct snd_emu8k_pcm *rec = subs->runtime->private_data;
--	struct snd_emu8000 *emu = rec->emu;
--
--	snd_emu8000_write_wait(emu, 1);
--	if (voice == -1 && rec->voices == 1)
--		voice = 0;
--	if (voice == -1) {
--		int err;
--		err = emu8k_silence_block(emu, pos + rec->loop_start[0], count / 2);
--		if (err < 0)
--			return err;
--		return emu8k_silence_block(emu, pos + rec->loop_start[1], count / 2);
--	} else {
--		return emu8k_silence_block(emu, pos + rec->loop_start[voice], count);
-+		return emu8k_transfer_block(emu, pos + rec->loop_start[voice],
-+					    src, count, in_kernel);
- 	}
- }
- 
-@@ -510,7 +492,8 @@ static int emu8k_pcm_copy(struct snd_pcm_substream *subs,
- 			  int voice,
- 			  snd_pcm_uframes_t pos,
- 			  void __user *src,
--			  snd_pcm_uframes_t count)
-+			  snd_pcm_uframes_t count,
-+			  bool in_kernel)
- {
- 	struct snd_emu8k_pcm *rec = subs->runtime->private_data;
- 	struct snd_emu8000 *emu = rec->emu;
-@@ -524,39 +507,18 @@ static int emu8k_pcm_copy(struct snd_pcm_substream *subs,
- 	while (count-- > 0) {
- 		unsigned short sval;
- 		CHECK_SCHEDULER();
--		if (get_user(sval, buf))
-+		if (get_val(&sval, buf, in_kernel))
- 			return -EFAULT;
- 		EMU8000_SMLD_WRITE(emu, sval);
--		buf++;
-+		if (buf)
-+			buf++;
- 		if (rec->voices > 1) {
- 			CHECK_SCHEDULER();
--			if (get_user(sval, buf))
-+			if (get_val(&sval, buf, in_kernel))
- 				return -EFAULT;
- 			EMU8000_SMRD_WRITE(emu, sval);
--			buf++;
+-	} else if (substream->ops->copy) {
+-		if (snd_BUG_ON(!substream->ops->silence))
+-			return -EINVAL;
+-		for (c = 0; c < channels; ++c, ++bufs) {
+-			if (*bufs == NULL) {
+-				if ((err = substream->ops->silence(substream, c, hwoff, frames)) < 0)
+-					return err;
+-			} else {
+-				buf = *bufs + samples_to_bytes(runtime, off);
+-				if ((err = substream->ops->copy(substream, c, hwoff, buf, frames)) < 0)
+-					return err;
+-			}
 -		}
--	}
--	return 0;
--}
--
--static int emu8k_pcm_silence(struct snd_pcm_substream *subs,
--			     int voice,
--			     snd_pcm_uframes_t pos,
--			     snd_pcm_uframes_t count)
--{
--	struct snd_emu8k_pcm *rec = subs->runtime->private_data;
--	struct snd_emu8000 *emu = rec->emu;
--
--	snd_emu8000_write_wait(emu, 1);
--	EMU8000_SMALW_WRITE(emu, rec->loop_start[0] + pos);
--	if (rec->voices > 1)
--		EMU8000_SMARW_WRITE(emu, rec->loop_start[1] + pos);
--	while (count-- > 0) {
--		CHECK_SCHEDULER();
--		EMU8000_SMLD_WRITE(emu, 0);
--		if (rec->voices > 1) {
--			CHECK_SCHEDULER();
--			EMU8000_SMRD_WRITE(emu, 0);
-+			if (buf)
-+				buf++;
+ 	} else {
+ 		/* default transfer behaviour */
+ 		size_t dma_csize = runtime->dma_bytes / channels;
+@@ -2251,9 +2226,6 @@ static int snd_pcm_lib_read_transfer(struct snd_pcm_substream *substream,
+ 						   frames, false);
+ 		if (err < 0)
+ 			return err;
+-	} else if (substream->ops->copy) {
+-		if ((err = substream->ops->copy(substream, -1, hwoff, buf, frames)) < 0)
+-			return err;
+ 	} else {
+ 		char *hwbuf = runtime->dma_area + frames_to_bytes(runtime, hwoff);
+ 		if (copy_to_user(buf, hwbuf, frames_to_bytes(runtime, frames)))
+@@ -2413,14 +2385,6 @@ static int snd_pcm_lib_readv_transfer(struct snd_pcm_substream *substream,
+ 			if (err < 0)
+ 				return err;
  		}
+-	} else if (substream->ops->copy) {
+-		for (c = 0; c < channels; ++c, ++bufs) {
+-			if (*bufs == NULL)
+-				continue;
+-			buf = *bufs + samples_to_bytes(runtime, off);
+-			if ((err = substream->ops->copy(substream, c, hwoff, buf, frames)) < 0)
+-				return err;
+-		}
+ 	} else {
+ 		snd_pcm_uframes_t dma_csize = runtime->dma_bytes / channels;
+ 		for (c = 0; c < channels; ++c, ++bufs) {
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 3cfb9aa1203b..5d58d8434971 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2744,8 +2744,6 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 	if (platform->driver->ops) {
+ 		rtd->ops.ack		= platform->driver->ops->ack;
+ 		rtd->ops.copy_silence	= platform->driver->ops->copy_silence;
+-		rtd->ops.copy		= platform->driver->ops->copy;
+-		rtd->ops.silence	= platform->driver->ops->silence;
+ 		rtd->ops.page		= platform->driver->ops->page;
+ 		rtd->ops.mmap		= platform->driver->ops->mmap;
  	}
- 	return 0;
-@@ -674,8 +636,7 @@ static struct snd_pcm_ops emu8k_pcm_ops = {
- 	.prepare =	emu8k_pcm_prepare,
- 	.trigger =	emu8k_pcm_trigger,
- 	.pointer =	emu8k_pcm_pointer,
--	.copy =		emu8k_pcm_copy,
--	.silence =	emu8k_pcm_silence,
-+	.copy_silence =	emu8k_pcm_copy,
- };
- 
- 
 -- 
 2.13.0
