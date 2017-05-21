@@ -1,185 +1,101 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 14/16] ASoC: blackfin: Convert to copy_silence ops
-Date: Sun, 21 May 2017 22:09:48 +0200
-Message-ID: <20170521200950.4592-15-tiwai@suse.de>
-References: <20170521200950.4592-1-tiwai@suse.de>
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <20170521200950.4592-1-tiwai@suse.de>
-Sender: linux-media-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Mark Brown <broonie@kernel.org>, Bluecherry Maintainers <maintainers@bluecherrydvr.com>, linux-media@vger.kernel.org
+From: Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
+Subject: [PATCH 0/3] mfd: move include files out of include/linux/i2c
+Date: Mon, 22 May 2017 00:02:07 +0200
+Message-ID: <20170521220212.1404-1-wsa@the-dreams.de>
+Reply-To: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <rtc-linux+bncBDP47C6LHEIOXHEIZECRUBCBU26K4-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Post: <https://groups.google.com/group/rtc-linux/post>, <mailto:rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:rtc-linux+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/rtc-linux
+List-Subscribe: <https://groups.google.com/group/rtc-linux/subscribe>, <mailto:rtc-linux+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+712029733259+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/rtc-linux/subscribe>
+To: linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-fbdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-input-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-omap-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-pm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-pwm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-samsung-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-watchdog-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Replace the copy and the silence ops with the new merged ops.
-The silence is performed only when CONFIG_SND_BF5XX_MMAP_SUPPORT is
-set (since copy_silence ops is set only with this config), so in
-bf5xx-ac97.c we have a bit tricky macro for a slight optimization.
+It doesn't make sense to use include/linux/i2c for client drivers which may in
+fact rather be hwmon or input or whatever devices. As a result, I want to
+deprecate include/linux/i2c for good. This series moves the include files to a
+better location, for the mfd subsystem to include/linux/mfd. Because of twl.h,
+this touches quite some subsystems, but I still think it is worth it.
 
-Note that we don't need to take in_kernel into account on this
-architecture, so the conversion is easy otherwise.
+I prefer the series to go upstream via the subsystem tree; if you prefer that I
+take it via I2C, just let me know.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/soc/blackfin/bf5xx-ac97-pcm.c |  6 ++---
- sound/soc/blackfin/bf5xx-ac97.c     | 18 ++++++++++-----
- sound/soc/blackfin/bf5xx-i2s-pcm.c  | 46 ++++++++++++-------------------------
- 3 files changed, 30 insertions(+), 40 deletions(-)
+No runtime testing because of no HW, but buildbot is happy with this series at
+least. A branch can be found here:
 
-diff --git a/sound/soc/blackfin/bf5xx-ac97-pcm.c b/sound/soc/blackfin/bf5xx-ac97-pcm.c
-index 02ad2606fa19..2fdffa7d376c 100644
---- a/sound/soc/blackfin/bf5xx-ac97-pcm.c
-+++ b/sound/soc/blackfin/bf5xx-ac97-pcm.c
-@@ -280,8 +280,8 @@ static int bf5xx_pcm_mmap(struct snd_pcm_substream *substream,
- }
- #else
- static	int bf5xx_pcm_copy(struct snd_pcm_substream *substream, int channel,
--		    snd_pcm_uframes_t pos,
--		    void __user *buf, snd_pcm_uframes_t count)
-+			   snd_pcm_uframes_t pos, void __user *buf,
-+			   snd_pcm_uframes_t count, bool in_kernel)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	unsigned int chan_mask = ac97_chan_mask[runtime->channels - 1];
-@@ -309,7 +309,7 @@ static struct snd_pcm_ops bf5xx_pcm_ac97_ops = {
- #if defined(CONFIG_SND_BF5XX_MMAP_SUPPORT)
- 	.mmap		= bf5xx_pcm_mmap,
- #else
--	.copy		= bf5xx_pcm_copy,
-+	.copy_silence	= bf5xx_pcm_copy,
- #endif
- };
- 
-diff --git a/sound/soc/blackfin/bf5xx-ac97.c b/sound/soc/blackfin/bf5xx-ac97.c
-index a040cfe29fc0..d1f11d9ecb07 100644
---- a/sound/soc/blackfin/bf5xx-ac97.c
-+++ b/sound/soc/blackfin/bf5xx-ac97.c
-@@ -43,35 +43,41 @@
- 
- static struct sport_device *ac97_sport_handle;
- 
-+#ifdef CONFIG_SND_BF5XX_MMAP_SUPPORT
-+#define GET_VAL(src)	(*src++)		/* copy only */
-+#else
-+#define GET_VAL(src)	(src ? *src++ : 0)	/* copy/silence */
-+#endif
-+
- void bf5xx_pcm_to_ac97(struct ac97_frame *dst, const __u16 *src,
- 		size_t count, unsigned int chan_mask)
- {
- 	while (count--) {
- 		dst->ac97_tag = TAG_VALID;
- 		if (chan_mask & SP_FL) {
--			dst->ac97_pcm_r = *src++;
-+			dst->ac97_pcm_r = GET_VAL(src);
- 			dst->ac97_tag |= TAG_PCM_RIGHT;
- 		}
- 		if (chan_mask & SP_FR) {
--			dst->ac97_pcm_l = *src++;
-+			dst->ac97_pcm_l = GET_VAL(src);
- 			dst->ac97_tag |= TAG_PCM_LEFT;
- 
- 		}
- #if defined(CONFIG_SND_BF5XX_MULTICHAN_SUPPORT)
- 		if (chan_mask & SP_SR) {
--			dst->ac97_sl = *src++;
-+			dst->ac97_sl = GET_VAL(src);
- 			dst->ac97_tag |= TAG_PCM_SL;
- 		}
- 		if (chan_mask & SP_SL) {
--			dst->ac97_sr = *src++;
-+			dst->ac97_sr = GET_VAL(src);
- 			dst->ac97_tag |= TAG_PCM_SR;
- 		}
- 		if (chan_mask & SP_LFE) {
--			dst->ac97_lfe = *src++;
-+			dst->ac97_lfe = GET_VAL(src);
- 			dst->ac97_tag |= TAG_PCM_LFE;
- 		}
- 		if (chan_mask & SP_FC) {
--			dst->ac97_center = *src++;
-+			dst->ac97_center = GET_VAL(src);
- 			dst->ac97_tag |= TAG_PCM_CENTER;
- 		}
- #endif
-diff --git a/sound/soc/blackfin/bf5xx-i2s-pcm.c b/sound/soc/blackfin/bf5xx-i2s-pcm.c
-index 6cba211da32e..5686c29fb058 100644
---- a/sound/soc/blackfin/bf5xx-i2s-pcm.c
-+++ b/sound/soc/blackfin/bf5xx-i2s-pcm.c
-@@ -226,7 +226,8 @@ static int bf5xx_pcm_mmap(struct snd_pcm_substream *substream,
- }
- 
- static int bf5xx_pcm_copy(struct snd_pcm_substream *substream, int channel,
--	snd_pcm_uframes_t pos, void *buf, snd_pcm_uframes_t count)
-+			  snd_pcm_uframes_t pos, void *buf,
-+			  snd_pcm_uframes_t count, bool in_kernel)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-@@ -245,8 +246,14 @@ static int bf5xx_pcm_copy(struct snd_pcm_substream *substream, int channel,
- 
- 			while (count--) {
- 				for (i = 0; i < runtime->channels; i++) {
--					memcpy(dst + dma_data->map[i] *
--						sample_size, src, sample_size);
-+					if (!buf)
-+						memset(dst + dma_data->map[i] *
-+						       sample_size, 0,
-+						       sample_size);
-+					else
-+						memcpy(dst + dma_data->map[i] *
-+						       sample_size, src,
-+						       sample_size);
- 					src += sample_size;
- 				}
- 				dst += 8 * sample_size;
-@@ -276,34 +283,12 @@ static int bf5xx_pcm_copy(struct snd_pcm_substream *substream, int channel,
- 			dst = buf;
- 		}
- 
--		memcpy(dst, src, frames_to_bytes(runtime, count));
--	}
--
--	return 0;
--}
--
--static int bf5xx_pcm_silence(struct snd_pcm_substream *substream,
--	int channel, snd_pcm_uframes_t pos, snd_pcm_uframes_t count)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	unsigned int sample_size = runtime->sample_bits / 8;
--	void *buf = runtime->dma_area;
--	struct bf5xx_i2s_pcm_data *dma_data;
--	unsigned int offset, samples;
--
--	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
--
--	if (dma_data->tdm_mode) {
--		offset = pos * 8 * sample_size;
--		samples = count * 8;
--	} else {
--		offset = frames_to_bytes(runtime, pos);
--		samples = count * runtime->channels;
-+		if (!buf)
-+			memset(dst, 0, frames_to_bytes(runtime, count));
-+		else
-+			memcpy(dst, src, frames_to_bytes(runtime, count));
- 	}
- 
--	snd_pcm_format_set_silence(runtime->format, buf + offset, samples);
--
- 	return 0;
- }
- 
-@@ -316,8 +301,7 @@ static struct snd_pcm_ops bf5xx_pcm_i2s_ops = {
- 	.trigger	= bf5xx_pcm_trigger,
- 	.pointer	= bf5xx_pcm_pointer,
- 	.mmap		= bf5xx_pcm_mmap,
--	.copy		= bf5xx_pcm_copy,
--	.silence	= bf5xx_pcm_silence,
-+	.copy_silence	= bf5xx_pcm_copy,
- };
- 
- static int bf5xx_pcm_i2s_new(struct snd_soc_pcm_runtime *rtd)
+git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/platform_data
+
+Thanks and kind regards,
+
+   Wolfram
+
+
+Wolfram Sang (3):
+  mfd: dm355evm_msp: move header file out of I2C realm
+  mfd: tps65010: move header file out of I2C realm
+  mfd: twl: move header file out of I2C realm
+
+ arch/arm/mach-omap1/board-h2-mmc.c        | 2 +-
+ arch/arm/mach-omap1/board-h2.c            | 2 +-
+ arch/arm/mach-omap1/board-h3-mmc.c        | 2 +-
+ arch/arm/mach-omap1/board-h3.c            | 2 +-
+ arch/arm/mach-omap1/board-osk.c           | 2 +-
+ arch/arm/mach-omap2/common.h              | 2 +-
+ arch/arm/mach-omap2/omap_twl.c            | 2 +-
+ arch/arm/mach-s3c24xx/mach-osiris-dvs.c   | 2 +-
+ arch/arm/mach-s3c24xx/mach-osiris.c       | 2 +-
+ drivers/gpio/gpio-twl4030.c               | 2 +-
+ drivers/iio/adc/twl4030-madc.c            | 2 +-
+ drivers/iio/adc/twl6030-gpadc.c           | 2 +-
+ drivers/input/keyboard/twl4030_keypad.c   | 2 +-
+ drivers/input/misc/dm355evm_keys.c        | 2 +-
+ drivers/input/misc/twl4030-pwrbutton.c    | 2 +-
+ drivers/input/misc/twl4030-vibra.c        | 2 +-
+ drivers/mfd/dm355evm_msp.c                | 2 +-
+ drivers/mfd/tps65010.c                    | 2 +-
+ drivers/mfd/twl-core.c                    | 6 +++---
+ drivers/mfd/twl4030-audio.c               | 2 +-
+ drivers/mfd/twl4030-irq.c                 | 2 +-
+ drivers/mfd/twl4030-power.c               | 2 +-
+ drivers/mfd/twl6030-irq.c                 | 2 +-
+ drivers/phy/phy-twl4030-usb.c             | 2 +-
+ drivers/power/supply/twl4030_charger.c    | 2 +-
+ drivers/pwm/pwm-twl-led.c                 | 2 +-
+ drivers/pwm/pwm-twl.c                     | 2 +-
+ drivers/regulator/twl-regulator.c         | 2 +-
+ drivers/regulator/twl6030-regulator.c     | 2 +-
+ drivers/rtc/rtc-dm355evm.c                | 2 +-
+ drivers/rtc/rtc-twl.c                     | 2 +-
+ drivers/usb/host/ohci-omap.c              | 2 +-
+ drivers/usb/phy/phy-isp1301-omap.c        | 2 +-
+ drivers/usb/phy/phy-twl6030-usb.c         | 2 +-
+ drivers/video/backlight/pandora_bl.c      | 2 +-
+ drivers/video/fbdev/omap/lcd_h3.c         | 2 +-
+ drivers/watchdog/twl4030_wdt.c            | 2 +-
+ include/linux/{i2c => mfd}/dm355evm_msp.h | 0
+ include/linux/{i2c => mfd}/tps65010.h     | 2 +-
+ include/linux/{i2c => mfd}/twl.h          | 0
+ sound/soc/codecs/twl4030.c                | 2 +-
+ 41 files changed, 41 insertions(+), 41 deletions(-)
+ rename include/linux/{i2c => mfd}/dm355evm_msp.h (100%)
+ rename include/linux/{i2c => mfd}/tps65010.h (99%)
+ rename include/linux/{i2c => mfd}/twl.h (100%)
+
 -- 
-2.13.0
+2.11.0
+
+-- 
+You received this message because you are subscribed to "rtc-linux".
+Membership options at http://groups.google.com/group/rtc-linux .
+Please read http://groups.google.com/group/rtc-linux/web/checklist
+before submitting a driver.
+--- 
+You received this message because you are subscribed to the Google Groups "rtc-linux" group.
+To unsubscribe from this group and stop receiving emails from it, send an email to rtc-linux+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+For more options, visit https://groups.google.com/d/optout.
