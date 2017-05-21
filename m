@@ -1,7 +1,7 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 16/16] ALSA: pcm: Drop the old copy and silence ops
-Date: Sun, 21 May 2017 22:09:50 +0200
-Message-ID: <20170521200950.4592-17-tiwai@suse.de>
+Subject: [PATCH 15/16] [media] solo6x10: Convert to copy_silence ops
+Date: Sun, 21 May 2017 22:09:49 +0200
+Message-ID: <20170521200950.4592-16-tiwai@suse.de>
 References: <20170521200950.4592-1-tiwai@suse.de>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <20170521200950.4592-1-tiwai@suse.de>
@@ -10,135 +10,51 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Mark Brown <broonie@kernel.org>, Bluecherry Maintainers <maintainers@bluecherrydvr.com>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Now that all users of old copy and silence ops have been converted to
-the new copy_silence ops, the old stuff can be retired and go away.
+Replace the copy and the silence ops with the new merged ops.
+It's a capture stream, thus no silence is needed.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/pcm.h  |  5 -----
- sound/core/pcm_lib.c | 38 +-------------------------------------
- sound/soc/soc-pcm.c  |  2 --
- 3 files changed, 1 insertion(+), 44 deletions(-)
+ drivers/media/pci/solo6x10/solo6x10-g723.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index b9dd813dd885..4243c02c3f11 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -78,11 +78,6 @@ struct snd_pcm_ops {
- 			struct timespec *system_ts, struct timespec *audio_ts,
- 			struct snd_pcm_audio_tstamp_config *audio_tstamp_config,
- 			struct snd_pcm_audio_tstamp_report *audio_tstamp_report);
--	int (*copy)(struct snd_pcm_substream *substream, int channel,
--		    snd_pcm_uframes_t pos,
--		    void __user *buf, snd_pcm_uframes_t count);
--	int (*silence)(struct snd_pcm_substream *substream, int channel, 
--		       snd_pcm_uframes_t pos, snd_pcm_uframes_t count);
- 	int (*copy_silence)(struct snd_pcm_substream *substream, int channel,
- 			    snd_pcm_uframes_t pos, void __user *buf,
- 			    snd_pcm_uframes_t count, bool in_kernel);
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index b720cbda017f..1c9d43fefacc 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -115,9 +115,6 @@ void snd_pcm_playback_silence(struct snd_pcm_substream *substream, snd_pcm_ufram
- 				err = substream->ops->copy_silence(substream,
- 					-1, ofs, NULL, transfer, false);
- 				snd_BUG_ON(err < 0);
--			} else if (substream->ops->silence) {
--				err = substream->ops->silence(substream, -1, ofs, transfer);
--				snd_BUG_ON(err < 0);
- 			} else {
- 				hwbuf = runtime->dma_area + frames_to_bytes(runtime, ofs);
- 				snd_pcm_format_set_silence(runtime->format, hwbuf, transfer * runtime->channels);
-@@ -131,11 +128,6 @@ void snd_pcm_playback_silence(struct snd_pcm_substream *substream, snd_pcm_ufram
- 						c, ofs, NULL, transfer, false);
- 					snd_BUG_ON(err < 0);
- 				}
--			} else if (substream->ops->silence) {
--				for (c = 0; c < channels; ++c) {
--					err = substream->ops->silence(substream, c, ofs, transfer);
--					snd_BUG_ON(err < 0);
--				}
- 			} else {
- 				size_t dma_csize = runtime->dma_bytes / channels;
- 				for (c = 0; c < channels; ++c) {
-@@ -2010,9 +2002,6 @@ static int snd_pcm_lib_write_transfer(struct snd_pcm_substream *substream,
- 						   frames, false);
- 		if (err < 0)
+diff --git a/drivers/media/pci/solo6x10/solo6x10-g723.c b/drivers/media/pci/solo6x10/solo6x10-g723.c
+index 36e93540bb49..e21db3efb748 100644
+--- a/drivers/media/pci/solo6x10/solo6x10-g723.c
++++ b/drivers/media/pci/solo6x10/solo6x10-g723.c
+@@ -225,7 +225,7 @@ static snd_pcm_uframes_t snd_solo_pcm_pointer(struct snd_pcm_substream *ss)
+ 
+ static int snd_solo_pcm_copy(struct snd_pcm_substream *ss, int channel,
+ 			     snd_pcm_uframes_t pos, void __user *dst,
+-			     snd_pcm_uframes_t count)
++			     snd_pcm_uframes_t count, bool in_kernel)
+ {
+ 	struct solo_snd_pcm *solo_pcm = snd_pcm_substream_chip(ss);
+ 	struct solo_dev *solo_dev = solo_pcm->solo_dev;
+@@ -242,10 +242,11 @@ static int snd_solo_pcm_copy(struct snd_pcm_substream *ss, int channel,
+ 		if (err)
  			return err;
--	} else if (substream->ops->copy) {
--		if ((err = substream->ops->copy(substream, -1, hwoff, buf, frames)) < 0)
--			return err;
- 	} else {
- 		char *hwbuf = runtime->dma_area + frames_to_bytes(runtime, hwoff);
- 		if (copy_from_user(hwbuf, buf, frames_to_bytes(runtime, frames)))
-@@ -2134,8 +2123,7 @@ static int pcm_sanity_check(struct snd_pcm_substream *substream)
- 	if (PCM_RUNTIME_CHECK(substream))
- 		return -ENXIO;
- 	runtime = substream->runtime;
--	if (snd_BUG_ON(!substream->ops->copy_silence && !substream->ops->copy
--		       && !runtime->dma_area))
-+	if (snd_BUG_ON(!substream->ops->copy_silence && !runtime->dma_area))
- 		return -EINVAL;
- 	if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
- 		return -EBADFD;
-@@ -2186,19 +2174,6 @@ static int snd_pcm_lib_writev_transfer(struct snd_pcm_substream *substream,
- 			if (err < 0)
- 				return err;
- 		}
--	} else if (substream->ops->copy) {
--		if (snd_BUG_ON(!substream->ops->silence))
--			return -EINVAL;
--		for (c = 0; c < channels; ++c, ++bufs) {
--			if (*bufs == NULL) {
--				if ((err = substream->ops->silence(substream, c, hwoff, frames)) < 0)
--					return err;
--			} else {
--				buf = *bufs + samples_to_bytes(runtime, off);
--				if ((err = substream->ops->copy(substream, c, hwoff, buf, frames)) < 0)
--					return err;
--			}
--		}
- 	} else {
- 		/* default transfer behaviour */
- 		size_t dma_csize = runtime->dma_bytes / channels;
-@@ -2251,9 +2226,6 @@ static int snd_pcm_lib_read_transfer(struct snd_pcm_substream *substream,
- 						   frames, false);
- 		if (err < 0)
- 			return err;
--	} else if (substream->ops->copy) {
--		if ((err = substream->ops->copy(substream, -1, hwoff, buf, frames)) < 0)
--			return err;
- 	} else {
- 		char *hwbuf = runtime->dma_area + frames_to_bytes(runtime, hwoff);
- 		if (copy_to_user(buf, hwbuf, frames_to_bytes(runtime, frames)))
-@@ -2413,14 +2385,6 @@ static int snd_pcm_lib_readv_transfer(struct snd_pcm_substream *substream,
- 			if (err < 0)
- 				return err;
- 		}
--	} else if (substream->ops->copy) {
--		for (c = 0; c < channels; ++c, ++bufs) {
--			if (*bufs == NULL)
--				continue;
--			buf = *bufs + samples_to_bytes(runtime, off);
--			if ((err = substream->ops->copy(substream, c, hwoff, buf, frames)) < 0)
--				return err;
--		}
- 	} else {
- 		snd_pcm_uframes_t dma_csize = runtime->dma_bytes / channels;
- 		for (c = 0; c < channels; ++c, ++bufs) {
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 3cfb9aa1203b..5d58d8434971 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2744,8 +2744,6 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
- 	if (platform->driver->ops) {
- 		rtd->ops.ack		= platform->driver->ops->ack;
- 		rtd->ops.copy_silence	= platform->driver->ops->copy_silence;
--		rtd->ops.copy		= platform->driver->ops->copy;
--		rtd->ops.silence	= platform->driver->ops->silence;
- 		rtd->ops.page		= platform->driver->ops->page;
- 		rtd->ops.mmap		= platform->driver->ops->mmap;
+ 
+-		err = copy_to_user(dst + (i * G723_PERIOD_BYTES),
+-				   solo_pcm->g723_buf, G723_PERIOD_BYTES);
+-
+-		if (err)
++		if (in_kernel)
++			memcpy((void *)dst + (i * G723_PERIOD_BYTES),
++			       solo_pcm->g723_buf, G723_PERIOD_BYTES);
++		else if (copy_to_user(dst + (i * G723_PERIOD_BYTES),
++				      solo_pcm->g723_buf, G723_PERIOD_BYTES))
+ 			return -EFAULT;
  	}
+ 
+@@ -261,7 +262,7 @@ static const struct snd_pcm_ops snd_solo_pcm_ops = {
+ 	.prepare = snd_solo_pcm_prepare,
+ 	.trigger = snd_solo_pcm_trigger,
+ 	.pointer = snd_solo_pcm_pointer,
+-	.copy = snd_solo_pcm_copy,
++	.copy_silence = snd_solo_pcm_copy,
+ };
+ 
+ static int snd_solo_capture_volume_info(struct snd_kcontrol *kcontrol,
 -- 
 2.13.0
