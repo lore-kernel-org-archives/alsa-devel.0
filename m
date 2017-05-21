@@ -1,48 +1,65 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4/7] ALSA: emu10k1: Deliver indirect-PCM transfer error
-Date: Sun, 21 May 2017 21:02:55 +0200
-Message-ID: <20170521190258.1178-5-tiwai@suse.de>
+From: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Subject: [PATCH 2/7] ALSA: mips: Deliver indirect-PCM transfer error
+Date: Sun, 21 May 2017 21:02:53 +0200
+Message-ID: <20170521190258.1178-3-tiwai@suse.de>
 References: <20170521190258.1178-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20170521190258.1178-1-tiwai@suse.de>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: alsa-devel@alsa-project.org
-Cc: Stefan Wahren <stefan.wahren@i2se.com>, Lee Jones <lee@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>, Eric Anholt <eric@anholt.net>, linux-rpi-kernel@lists.infradead.org, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, linux-arm-kernel@lists.infradead.org
+Return-path: <linux-rpi-kernel-bounces+glkr-linux-rpi-kernel=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <20170521190258.1178-1-tiwai-l3A5Bk7waGM@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-rpi-kernel>,
+ <mailto:linux-rpi-kernel-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-rpi-kernel/>
+List-Post: <mailto:linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-rpi-kernel-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-rpi-kernel>,
+ <mailto:linux-rpi-kernel-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "linux-rpi-kernel" <linux-rpi-kernel-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-rpi-kernel-bounces+glkr-linux-rpi-kernel=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: Lee Jones <lee-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Pierre-Louis Bossart <pierre-louis.bossart-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, Jaikrishna Nemallapudi <jaikrishnax.nemallapudi-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, linux-rpi-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, "Subhransu S . Prusty" <subhransu.s.prusty-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 Now that the indirect-PCM transfer helper gives back an error, we
 should return the error from ack callbacks.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
 ---
- sound/pci/emu10k1/emupcm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/mips/hal2.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
-index ef1cf530c929..bdda29f335f6 100644
---- a/sound/pci/emu10k1/emupcm.c
-+++ b/sound/pci/emu10k1/emupcm.c
-@@ -1632,8 +1632,8 @@ static int snd_emu10k1_fx8010_playback_transfer(struct snd_pcm_substream *substr
- 	struct snd_emu10k1 *emu = snd_pcm_substream_chip(substream);
- 	struct snd_emu10k1_fx8010_pcm *pcm = &emu->fx8010.pcm[substream->number];
+diff --git a/sound/mips/hal2.c b/sound/mips/hal2.c
+index 00fc9241d266..684dc4ddef41 100644
+--- a/sound/mips/hal2.c
++++ b/sound/mips/hal2.c
+@@ -616,10 +616,9 @@ static int hal2_playback_ack(struct snd_pcm_substream *substream)
+ 	struct hal2_codec *dac = &hal2->dac;
  
--	snd_pcm_indirect_playback_transfer(substream, &pcm->pcm_rec, fx8010_pb_trans_copy);
+ 	dac->pcm_indirect.hw_queue_size = H2_BUF_SIZE / 2;
+-	snd_pcm_indirect_playback_transfer(substream,
+-					   &dac->pcm_indirect,
+-					   hal2_playback_transfer);
 -	return 0;
-+	return snd_pcm_indirect_playback_transfer(substream, &pcm->pcm_rec,
-+						  fx8010_pb_trans_copy);
++	return snd_pcm_indirect_playback_transfer(substream,
++						  &dac->pcm_indirect,
++						  hal2_playback_transfer);
  }
  
- static int snd_emu10k1_fx8010_playback_hw_params(struct snd_pcm_substream *substream,
+ static int hal2_capture_open(struct snd_pcm_substream *substream)
+@@ -707,10 +706,9 @@ static int hal2_capture_ack(struct snd_pcm_substream *substream)
+ 	struct snd_hal2 *hal2 = snd_pcm_substream_chip(substream);
+ 	struct hal2_codec *adc = &hal2->adc;
+ 
+-	snd_pcm_indirect_capture_transfer(substream,
+-					  &adc->pcm_indirect,
+-					  hal2_capture_transfer);
+-	return 0;
++	return snd_pcm_indirect_capture_transfer(substream,
++						 &adc->pcm_indirect,
++						 hal2_capture_transfer);
+ }
+ 
+ static struct snd_pcm_ops hal2_playback_ops = {
 -- 
 2.13.0
