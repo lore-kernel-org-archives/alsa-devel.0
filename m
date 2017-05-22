@@ -1,18 +1,17 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: control: Simplify snd_ctl_elem_list()
-	implementation
-Date: Mon, 22 May 2017 17:52:24 +0200
-Message-ID: <20170522155224.4810-1-tiwai@suse.de>
+From: Eric Anholt <eric@anholt.net>
+Subject: Re: [PATCH 6/7] staging: bcm2835-audio: Deliver
+	indirect-PCM transfer error
+Date: Mon, 22 May 2017 09:33:19 -0700
+Message-ID: <87tw4cn968.fsf@eliezer.anholt.net>
+References: <20170521190258.1178-1-tiwai@suse.de>
+ <20170521190258.1178-7-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4206227956366900274=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 482A9266FDE
- for <alsa-devel@alsa-project.org>; Mon, 22 May 2017 17:52:26 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 71035AB5D
- for <alsa-devel@alsa-project.org>; Mon, 22 May 2017 15:52:26 +0000 (UTC)
+Received: from anholt.net (anholt.net [50.246.234.109])
+ by alsa0.perex.cz (Postfix) with ESMTP id B5CE4266FD1
+ for <alsa-devel@alsa-project.org>; Mon, 22 May 2017 18:33:24 +0200 (CEST)
+In-Reply-To: <20170521190258.1178-7-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,120 +21,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: Stefan Wahren <stefan.wahren@i2se.com>, Lee Jones <lee@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>, linux-rpi-kernel@lists.infradead.org, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch simplifies the code of snd_ctl_elem_list() in the following
-ways:
+--===============4206227956366900274==
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha512; protocol="application/pgp-signature"
 
-- Avoid a vmalloc() temporary buffer but do copy in each iteration;
-  the vmalloc buffer was introduced at the time we took the spinlock
-  for the ctl element management.
+--=-=-=
+Content-Type: text/plain
 
-- Use the standard list_for_each_entry() macro
+Takashi Iwai <tiwai@suse.de> writes:
 
-- Merge two loops into one;
-  it used to be a loop for skipping until offset becomes zero and
-  another loop to copy the data.  They can be folded into a single
-  loop easily.
+> Now that the indirect-PCM transfer helper gives back an error, we
+> should return the error from ack callbacks.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/control.c | 66 +++++++++++++++++++---------------------------------
- 1 file changed, 24 insertions(+), 42 deletions(-)
+As far as bcm2835 goes:
 
-diff --git a/sound/core/control.c b/sound/core/control.c
-index c109b82eef4b..47080da8451a 100644
---- a/sound/core/control.c
-+++ b/sound/core/control.c
-@@ -747,11 +747,11 @@ static int snd_ctl_card_info(struct snd_card *card, struct snd_ctl_file * ctl,
- static int snd_ctl_elem_list(struct snd_card *card,
- 			     struct snd_ctl_elem_list __user *_list)
- {
--	struct list_head *plist;
- 	struct snd_ctl_elem_list list;
- 	struct snd_kcontrol *kctl;
--	struct snd_ctl_elem_id *dst, *id;
-+	struct snd_ctl_elem_id id;
- 	unsigned int offset, space, jidx;
-+	int err = 0;
- 	
- 	if (copy_from_user(&list, _list, sizeof(list)))
- 		return -EFAULT;
-@@ -760,52 +760,34 @@ static int snd_ctl_elem_list(struct snd_card *card,
- 	/* try limit maximum space */
- 	if (space > 16384)
- 		return -ENOMEM;
-+	down_read(&card->controls_rwsem);
-+	list.count = card->controls_count;
-+	list.used = 0;
- 	if (space > 0) {
--		/* allocate temporary buffer for atomic operation */
--		dst = vmalloc(space * sizeof(struct snd_ctl_elem_id));
--		if (dst == NULL)
--			return -ENOMEM;
--		down_read(&card->controls_rwsem);
--		list.count = card->controls_count;
--		plist = card->controls.next;
--		while (plist != &card->controls) {
--			if (offset == 0)
--				break;
--			kctl = snd_kcontrol(plist);
--			if (offset < kctl->count)
--				break;
--			offset -= kctl->count;
--			plist = plist->next;
--		}
--		list.used = 0;
--		id = dst;
--		while (space > 0 && plist != &card->controls) {
--			kctl = snd_kcontrol(plist);
--			for (jidx = offset; space > 0 && jidx < kctl->count; jidx++) {
--				snd_ctl_build_ioff(id, kctl, jidx);
--				id++;
--				space--;
-+		list_for_each_entry(kctl, &card->controls, list) {
-+			if (offset >= kctl->count) {
-+				offset -= kctl->count;
-+				continue;
-+			}
-+			for (jidx = offset; jidx < kctl->count; jidx++) {
-+				snd_ctl_build_ioff(&id, kctl, jidx);
-+				if (copy_to_user(list.pids + list.used, &id,
-+						 sizeof(id))) {
-+					err = -EFAULT;
-+					goto out;
-+				}
- 				list.used++;
-+				if (!--space)
-+					goto out;
- 			}
--			plist = plist->next;
- 			offset = 0;
- 		}
--		up_read(&card->controls_rwsem);
--		if (list.used > 0 &&
--		    copy_to_user(list.pids, dst,
--				 list.used * sizeof(struct snd_ctl_elem_id))) {
--			vfree(dst);
--			return -EFAULT;
--		}
--		vfree(dst);
--	} else {
--		down_read(&card->controls_rwsem);
--		list.count = card->controls_count;
--		up_read(&card->controls_rwsem);
- 	}
--	if (copy_to_user(_list, &list, sizeof(list)))
--		return -EFAULT;
--	return 0;
-+ out:
-+	up_read(&card->controls_rwsem);
-+	if (!err && copy_to_user(_list, &list, sizeof(list)))
-+		err = -EFAULT;
-+	return err;
- }
- 
- static bool validate_element_member_dimension(struct snd_ctl_elem_info *info)
--- 
-2.13.0
+Acked-by: Eric Anholt <eric@anholt.net>
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE/JuuFDWp9/ZkuCBXtdYpNtH8nugFAlkjEtAACgkQtdYpNtH8
+nujCdQ/9HCIsf8UhkDEPoIab3SFtJSq6A9eUJaaOtazSuLU2LI0bp1mR4edQOpkb
+wuyI7zLBVYgfTmLv/j0PVItbYhXO5w5KCKBhNNGQfwod/6a4CB85aki6b/muGhld
+Gv6EFc0qvbUBBZpvGZm1Kw3rCop3nI7Bn4JfNXMPoSv2K1lahGJ8VHsOTpl7csaW
+BKBE2t1LmGfFa+XLH/IdQkxwpTVfU4rE2P8zvYofi89EphIPzU5oFz2B5hJ9gcxH
+CwEb3Q6ThtcErapkikFkxygfjG4UeAOFul1ZRcMgC/ETWD+NChHXMbARtjW2glaO
+XJur+MTYAyflsMFmORRFTeVyAGdult63VuEjIYSIakPfOOxcB/8IBaWQB8NQyXXK
+fX8yLF2H3G1BAkRVJPJITEhrv5hxDbcyEK8ICa+TF7DDxDincZkw7hU0ZExjWCAZ
+RMKcQWKzMyEEQzgXWqpDz4SByyumCMX9MdehGZPx5MdD/YLt37y3XT4WVfYxK4Tu
+bbaSVvCR0KXnBhAym51cETdvy4Rro8mFFEzmgEUs7mJpUYvls0Brznb3aUFqDLi/
+ukJtW1ixTLAjRRsQOKThzlqQYdc4f0h2y9hUPGUP4HClBJYsDTHhIALm6DIPG/dm
+7jHECZSYeWY8U6gMEo6yCrczPdXOO1u5W15xA5OFIR0aIcII2fo=
+=3A5C
+-----END PGP SIGNATURE-----
+--=-=-=--
+
+--===============4206227956366900274==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4206227956366900274==--
