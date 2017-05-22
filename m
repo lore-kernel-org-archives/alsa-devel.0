@@ -1,68 +1,97 @@
-From: Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>
-Subject: Re: [PATCH 3/3] mfd: twl: move header file out of I2C realm
-Date: Mon, 22 May 2017 09:25:04 +0200
-Message-ID: <20170522072504.GB21253@kroah.com>
-References: <20170521220212.1404-1-wsa@the-dreams.de>
- <20170521220212.1404-4-wsa@the-dreams.de>
-Reply-To: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <rtc-linux+bncBCUJ7YGL3QFBBXNERLEQKGQEUTFXLWQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Content-Disposition: inline
-In-Reply-To: <20170521220212.1404-4-wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
-List-Post: <https://groups.google.com/group/rtc-linux/post>, <mailto:rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:rtc-linux+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/rtc-linux
-List-Subscribe: <https://groups.google.com/group/rtc-linux/subscribe>, <mailto:rtc-linux+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+712029733259+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/rtc-linux/subscribe>
-To: Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
-Cc: linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Russell King <linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Dmitry Torokhov <dmitry.torokhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Kishon Vijay Abraham I <kishon-l0cyMroinI0@public.gmane.org>, Sebastian Reichel <sre-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Alessandro Zummo <a.zummo-BfzFCNDTiLLj+vYz1yj4TQ@public.gmane.org>, Alexandre Belloni <alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Felipe Balbi <balbi-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Daniel Thompson <daniel.thompson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Jingoo Han <jingoohan1-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Wim
+From: =?windows-1252?Q?Ren=E9_Rebe?= <rene@exactcode.de>
+Subject: Re: PowerMac 11,2 topaz digital-in
+Date: Mon, 22 May 2017 10:12:26 +0200
+Message-ID: <3458820A-6327-4DC2-8DD9-BD9C336A8723@exactcode.de>
+References: <4D425EDE-3FF5-4895-B469-58977B887FAC@exactcode.de>
+ <C4DF4DD1-F0E9-4537-B68E-6635FD8902E6@exactcode.de>
+ <55213C5F-29CA-49C6-AE16-283BAE9534DF@exactcode.de>
+ <s5ho9vpmygb.wl-tiwai@suse.de>
+ <0F0E6DC8-D7B8-4EF9-BD47-8AAC124E3665@exactcode.de>
+ <6FF6B7F4-9C39-4E3C-BB79-D47507DE6C11@exactcode.de>
+ <12E027DF-A28D-436C-97E6-6AF0E5EF699D@exactcode.de>
+ <9F610D2B-FFC7-45DC-89DD-C6ED90D00BE1@exactcode.de>
+ <1495433718.2653.2.camel@sipsolutions.net>
+Mime-Version: 1.0 (Mac OS X Mail 7.3 \(1878.6\))
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx.exactcode.de (mx.exactcode.de [144.76.154.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6ADB4265142
+ for <alsa-devel@alsa-project.org>; Mon, 22 May 2017 10:12:32 +0200 (CEST)
+In-Reply-To: <1495433718.2653.2.camel@sipsolutions.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Johannes Berg <johannes@sipsolutions.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 22, 2017 at 12:02:10AM +0200, Wolfram Sang wrote:
-> include/linux/i2c is not for client devices. Move the header file to a
-> more appropriate location.
-> 
-> Signed-off-by: Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
-> ---
->  arch/arm/mach-omap2/common.h            | 2 +-
->  arch/arm/mach-omap2/omap_twl.c          | 2 +-
->  drivers/gpio/gpio-twl4030.c             | 2 +-
->  drivers/iio/adc/twl4030-madc.c          | 2 +-
->  drivers/iio/adc/twl6030-gpadc.c         | 2 +-
->  drivers/input/keyboard/twl4030_keypad.c | 2 +-
->  drivers/input/misc/twl4030-pwrbutton.c  | 2 +-
->  drivers/input/misc/twl4030-vibra.c      | 2 +-
->  drivers/mfd/twl-core.c                  | 6 +++---
->  drivers/mfd/twl4030-audio.c             | 2 +-
->  drivers/mfd/twl4030-irq.c               | 2 +-
->  drivers/mfd/twl4030-power.c             | 2 +-
->  drivers/mfd/twl6030-irq.c               | 2 +-
->  drivers/phy/phy-twl4030-usb.c           | 2 +-
->  drivers/power/supply/twl4030_charger.c  | 2 +-
->  drivers/pwm/pwm-twl-led.c               | 2 +-
->  drivers/pwm/pwm-twl.c                   | 2 +-
->  drivers/regulator/twl-regulator.c       | 2 +-
->  drivers/regulator/twl6030-regulator.c   | 2 +-
->  drivers/rtc/rtc-twl.c                   | 2 +-
->  drivers/usb/phy/phy-twl6030-usb.c       | 2 +-
->  drivers/video/backlight/pandora_bl.c    | 2 +-
->  drivers/watchdog/twl4030_wdt.c          | 2 +-
->  include/linux/{i2c => mfd}/twl.h        | 0
->  sound/soc/codecs/twl4030.c              | 2 +-
->  25 files changed, 26 insertions(+), 26 deletions(-)
->  rename include/linux/{i2c => mfd}/twl.h (100%)
+Hi,
 
-Acked-by: Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>
+On May 22, 2017, at 8:15, Johannes Berg <johannes@sipsolutions.net> wrote:
 
--- 
-You received this message because you are subscribed to "rtc-linux".
-Membership options at http://groups.google.com/group/rtc-linux .
-Please read http://groups.google.com/group/rtc-linux/web/checklist
-before submitting a driver.
---- 
-You received this message because you are subscribed to the Google Groups "rtc-linux" group.
-To unsubscribe from this group and stop receiving emails from it, send an email to rtc-linux+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-For more options, visit https://groups.google.com/d/optout.
+> Hi,
+> =
+
+>> I noticed digital input would not show up at all on my PowerMac G5
+>> 11,2, I see this in dmesg:
+>> =
+
+>> [   15.719952] snd-aoa-fabric-layout: Using PMF GPIOs
+>> [   15.720519] snd-aoa-fabric-layout: can use this codec
+>> [   15.760567] snd-aoa-codec-onyx: attached to onyx codec via i2c
+>> [   15.760745] snd-aoa-fabric-layout: platform-onyx-codec-ref doesn't
+>> match!
+>> [   15.760748] snd-aoa: fabric didn't like codec onyx
+>> =
+
+>> and poking around a bit more I found a =93topaz=94 codec apparently some
+>> Crystal Semiconductor CS84xx =93Topaz=94 (S/PDIF digital input) showing
+>> up nowhere in the ALSA sources.
+>> =
+
+>> Am I overlooking something, or was this lost in merging? Any hint
+>> would be appreciated.
+> =
+
+> Neither, it was simply never implemented.
+> =
+
+> I believe that in the past ~11 years since this got merged I *still*
+> haven't gotten any other hardware that had optical output, so I don't
+> think I could possibly test it :)
+> =
+
+> Also, it's not as simple as output because there has to be clock
+> recovery etc. and I never could understand how alsa would handle that.
+> =
+
+> Anyway, that's all I remember. I still have the G5 powermac, but it's
+> never powered on any more (I used to still use it for big endian
+> testing, but our latest HW generation makes the PCI-E bus in the system
+> unhappy enough that it won't even boot).
+
+Ouhm, a pity. Guess that it took ~11 years for someone to notice
+is an indicator of the percentage of users using the digital in ;-)
+
+You could plug a cable from the output to the input for testing, no?
+
+As I=92m not familiar with the ALSA driver I guess I would rather spend
+a whole month or so trying to copy and paste something together, =85
+
+	Ren=E9
+
+-- =
+
+ ExactCODE GmbH, Lietzenburger Str. 42, DE-10789 Berlin
+ DE Legal: Amtsgericht Berlin (Charlottenburg) HRB 105123B, Tax-ID#: DE2516=
+02478
+ Managing Director: Ren=E9 Rebe
+ http://exactcode.com | http://exactscan.com | http://ocrkit.com | http://t=
+2-project.org | http://rene.rebe.de
