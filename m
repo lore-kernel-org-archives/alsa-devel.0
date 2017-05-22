@@ -1,49 +1,30 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/3] mfd: twl: move header file out of I2C realm
-Date: Mon, 22 May 2017 12:12:02 +0100
-Message-ID: <20170522111202.ho52rve7kwloytef@sirena.org.uk>
-References: <20170521220212.1404-1-wsa@the-dreams.de>
- <20170521220212.1404-4-wsa@the-dreams.de>
- <20170522095243.ff5uygzzrvo57jkd@sirena.org.uk>
- <20170522102812.GA1459@katana>
+From: "Austin, Brian" <Brian.Austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>
+Subject: Re: [PATCH 1/4] ASoC: cs35l35: Add Boost Inductor Calculation
+Date: Mon, 22 May 2017 13:18:43 +0000
+Message-ID: <cc56db0b-40f2-4d40-9035-b1e5c53528d1@EX4.ad.cirrus.com>
+References: <1495121559-1063-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="3cgcyz2pgijsvimy"
-Return-path: <linux-input-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20170522102812.GA1459@katana>
-Sender: linux-input-owner@vger.kernel.org
-To: Wolfram Sang <wsa@the-dreams.de>
-Cc: linux-i2c@vger.kernel.org, Tony Lindgren <tony@atomide.com>, Russell King <linux@armlinux.org.uk>, Linus Walleij <linus.walleij@linaro.org>, Alexandre Courbot <gnurou@gmail.com>, Jonathan Cameron <jic23@kernel.org>, Hartmut Knaack <knaack.h@gmx.de>, Lars-Peter Clausen <lars@metafoo.de>, Peter Meerwald-Stadler <pmeerw@pmeerw.net>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Lee Jones <lee.jones@linaro.org>, Kishon Vijay Abraham I <kishon@ti.com>, Sebastian Reichel <sre@kernel.org>, Thierry Reding <thierry.reding@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Alessandro Zummo <a.zummo@towertech.it>, Alexandre Belloni <alexandre.belloni@free-electrons.com>, Felipe Balbi <balbi@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Dani
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1495121559-1063-1-git-send-email-ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Content-Language: en-US
+Content-ID: <874E9D27F3A1D74D9750655AA1117F21-BNO7SilVNoKakBO8gow8eQ@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>, "broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: "lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org" <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "Handrigan, Paul" <Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org>, "robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org" <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, "mark.rutland-5wv7dgnIgG8@public.gmane.org" <mark.rutland-5wv7dgnIgG8@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, "patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org" <patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-
---3cgcyz2pgijsvimy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, May 22, 2017 at 12:28:12PM +0200, Wolfram Sang wrote:
-
-> If you were not CCed on the other patches, then you are likely not
-> listed as a maintainer for them?
-
-Right, but it does mean that the people who only get a subset of patches
-are missing context for how things are expected to be handled.
-Sometimes it's clear but often it isn't.
-
---3cgcyz2pgijsvimy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlkix4EACgkQJNaLcl1U
-h9AoyggAgaMjiKp5VVkDMDXvnk7mjJn0zZJkLTo8eRqXQezPfYpmF9xgddizz6aP
-amhuCFkOGq/szuZvUiqRuuZVR927HUTth5jHEI5oXJlpSzkD9GFYWKFb5DEGk7z8
-+PxlTwkovPNwkvLLRkPeYL1u3NxZoBQLflM5wU7L0F3xjIWeObAptv8O+LyUvt/A
-v6SKbNM3qYATkx0KYyJk/MoQQRJqW8D7dfzPqZ/0qNucWnI+XpQHW3zD7f1YujYn
-njy7ZP+ATutTod2ziOBAXUREZuMZCnY4xtyJvbMrUdcxlYYzqfvc5VswGE1V5Shq
-R0sjq6K15NBdpTXTAv89glr1IEeaRA==
-=Ko/9
------END PGP SIGNATURE-----
-
---3cgcyz2pgijsvimy--
+DQoNCk9uIDUvMTgvMTcsIDEwOjMyIEFNLCAiQ2hhcmxlcyBLZWVwYXgiIDxja2VlcGF4QG9wZW5z
+b3VyY2Uud29sZnNvbm1pY3JvLmNvbT4gd3JvdGU6DQoNCiAgICBGcm9tOiBCcmlhbiBBdXN0aW4g
+PGJyaWFuLmF1c3RpbkBjaXJydXMuY29tPg0KICAgIA0KICAgIEFkZCB0aGUgQm9vc3QgSW5kdWN0
+b3IgcGFyYW1ldGVycyBiYXNlZCBvZmYgdGhlIHNpemUgb2YgdGhlIGluZHVjdG9yDQogICAgb24g
+dGhlIEhXIHNldHVwDQogICAgDQogICAgU2lnbmVkLW9mZi1ieTogQnJpYW4gQXVzdGluIDxicmlh
+bi5hdXN0aW5AY2lycnVzLmNvbT4NCiAgICBTaWduZWQtb2ZmLWJ5OiBDaGFybGVzIEtlZXBheCA8
+Y2tlZXBheEBvcGVuc291cmNlLndvbGZzb25taWNyby5jb20+DQogICAgLS0tDQpGb3IgdGhlIHNl
+cmllcw0KQWNrZWQtYnk6IEJyaWFuIEF1c3RpbiA8YnJpYW4uYXVzdGluQGNpcnJ1cy5jb20+IA0K
+DQo=
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
