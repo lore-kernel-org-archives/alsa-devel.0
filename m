@@ -1,20 +1,20 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/3] ALSA: hda - Provide dual-codecs model
-	option for a few Realtek codecs
-Date: Mon, 22 May 2017 16:46:05 +0200
-Message-ID: <20170522144606.30477-2-tiwai@suse.de>
-References: <20170522144606.30477-1-tiwai@suse.de>
+From: Olivier MOYSAN <olivier.moysan@st.com>
+Subject: Re: [PATCH v4 2/3] ASoC: stm32: Add I2S driver
+Date: Mon, 22 May 2017 15:11:45 +0000
+Message-ID: <3b507e82-d8d1-c2c4-8a50-ca130382171a@st.com>
+References: <1495120793-11687-1-git-send-email-olivier.moysan@st.com>
+ <1495120793-11687-3-git-send-email-olivier.moysan@st.com>
+ <20170519173359.277lyg6fzwksqnin@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 47F32266EB0
- for <alsa-devel@alsa-project.org>; Mon, 22 May 2017 16:46:08 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id C84DFAC08
- for <alsa-devel@alsa-project.org>; Mon, 22 May 2017 14:46:07 +0000 (UTC)
-In-Reply-To: <20170522144606.30477-1-tiwai@suse.de>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 6F9F4266E84
+ for <alsa-devel@alsa-project.org>; Mon, 22 May 2017 17:11:49 +0200 (CEST)
+In-Reply-To: <20170519173359.277lyg6fzwksqnin@sirena.org.uk>
+Content-Language: en-US
+Content-ID: <9D8D9CB309872E4A9834C53F7980614B@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,45 +24,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "robh@kernel.org" <robh@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alexandre TORGUE <alexandre.torgue@st.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>, Benjamin GAIGNARD <benjamin.gaignard@st.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "kernel@stlinux.com" <kernel@stlinux.com>
 List-Id: alsa-devel@alsa-project.org
 
-Recently some laptops and mobos are equipped with the dual Realtek
-codecs that require special quirks.  For making the debugging easier,
-add the model "dual-codecs" to be passed via module option.
+Hello Mark,
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 3 +++
- 1 file changed, 3 insertions(+)
+Thanks, for applying the patches.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 3fdd5af190a4..918e45268915 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2343,6 +2343,7 @@ static const struct hda_model_fixup alc882_fixup_models[] = {
- 	{.id = ALC883_FIXUP_ACER_EAPD, .name = "acer-aspire"},
- 	{.id = ALC882_FIXUP_INV_DMIC, .name = "inv-dmic"},
- 	{.id = ALC882_FIXUP_NO_PRIMARY_HP, .name = "no-primary-hp"},
-+	{.id = ALC1220_FIXUP_GB_DUAL_CODECS, .name = "dual-codecs"},
- 	{}
- };
- 
-@@ -6015,6 +6016,7 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
- 	{.id = ALC292_FIXUP_TPT440_DOCK, .name = "tpt440-dock"},
- 	{.id = ALC292_FIXUP_TPT440, .name = "tpt440"},
- 	{.id = ALC292_FIXUP_TPT460, .name = "tpt460"},
-+	{.id = ALC233_FIXUP_LENOVO_MULTI_CODECS, .name = "dual-codecs"},
- 	{}
- };
- #define ALC225_STANDARD_PINS \
-@@ -7342,6 +7344,7 @@ static const struct hda_model_fixup alc662_fixup_models[] = {
- 	{.id = ALC662_FIXUP_ASUS_MODE8, .name = "asus-mode8"},
- 	{.id = ALC662_FIXUP_INV_DMIC, .name = "inv-dmic"},
- 	{.id = ALC668_FIXUP_DELL_MIC_NO_PRESENCE, .name = "dell-headset-multi"},
-+	{.id = ALC662_FIXUP_LENOVO_MULTI_CODECS, .name = "dual-codecs"},
- 	{}
- };
- 
--- 
-2.13.0
+On 05/19/2017 07:33 PM, Mark Brown wrote:
+> On Thu, May 18, 2017 at 05:19:52PM +0200, olivier moysan wrote:
+> 
+> This looks good so I'm going to apply it, a few things below though -
+> can you please send a followup patch for the issue with the Kconfig
+> symbol?
+> 
+>> --- a/sound/soc/stm/Kconfig
+>> +++ b/sound/soc/stm/Kconfig
+>> @@ -5,4 +5,4 @@ menuconfig SND_SOC_STM32
+>>   	select SND_SOC_GENERIC_DMAENGINE_PCM
+>>   	select REGMAP_MMIO
+>>   	help
+>> -	  Say Y if you want to enable ASoC-support for STM32
+>> +	  Say Y if you want to enable ASoC support for STM32
+> 
+> This appears to be an unrelated typo fix.
+> 
+
+ok
+
+>> diff --git a/sound/soc/stm/Makefile b/sound/soc/stm/Makefile
+>> index e466a47..8251931 100644
+>> --- a/sound/soc/stm/Makefile
+>> +++ b/sound/soc/stm/Makefile
+>> @@ -4,3 +4,7 @@ obj-$(CONFIG_SND_SOC_STM32) += snd-soc-stm32-sai-sub.o
+>>   
+>>   snd-soc-stm32-sai-objs := stm32_sai.o
+>>   obj-$(CONFIG_SND_SOC_STM32) += snd-soc-stm32-sai.o
+>> +
+>> +# I2S
+>> +snd-soc-stm32-i2s-objs := stm32_i2s.o
+>> +obj-$(CONFIG_SND_SOC_STM32) += snd-soc-stm32-i2s.o
+> 
+> Perhaps make this a separate option?  It probably makes sense to rename
+> the option for the SAI at the same time.
+> 
+
+ok, I will fix it in a new patch.
+
+>> +
+>> +	ret = clk_prepare_enable(i2s->pclk);
+>> +	if (ret) {
+>> +		dev_err(&pdev->dev, "Enable pclk failed: %d\n", ret);
+>> +		return ret;
+>> +	}
+>> +
+>> +	ret = clk_prepare_enable(i2s->i2sclk);
+>> +	if (ret) {
+>> +		dev_err(&pdev->dev, "Enable i2sclk failed: %d\n", ret);
+>> +		goto err_pclk_disable;
+>> +	}
+> 
+> It'd be nice to have runtime PM to disable these when the device is idle
+> but that's not essential.
+> 
+
+Yes, I agree.
+
+BRs
+olivier
