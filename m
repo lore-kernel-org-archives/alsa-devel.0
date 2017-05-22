@@ -1,400 +1,184 @@
-From: Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
-Subject: [PATCH 3/3] mfd: twl: move header file out of I2C realm
-Date: Mon, 22 May 2017 00:02:10 +0200
-Message-ID: <20170521220212.1404-4-wsa@the-dreams.de>
-References: <20170521220212.1404-1-wsa@the-dreams.de>
-Reply-To: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 0/7] ALSA: Fix/improve PCM ack callback
+Date: Mon, 22 May 2017 12:49:00 +0900
+Message-ID: <7685a366-5b2f-0a96-a686-c49b79975c56@sakamocchi.jp>
+References: <20170521190258.1178-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <rtc-linux+bncBDP47C6LHEIO5HEIZECRUBGGN5FQI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20170521220212.1404-1-wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
-List-Post: <https://groups.google.com/group/rtc-linux/post>, <mailto:rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:rtc-linux+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/rtc-linux
-List-Subscribe: <https://groups.google.com/group/rtc-linux/subscribe>, <mailto:rtc-linux+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+712029733259+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/rtc-linux/subscribe>
-To: linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Russell King <linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Dmitry Torokhov <dmitry.torokhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Kishon Vijay Abraham I <kishon-l0cyMroinI0@public.gmane.org>, Sebastian Reichel <sre-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Alessandro Zummo <a.zummo-BfzFCNDTiLLj+vYz1yj4TQ@public.gmane.org>, Alexandre Belloni <alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Felipe Balbi <balbi-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Daniel Thompson <daniel.thompson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Jingoo Han <jingoohan1-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Bartl
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 204D8266C7B
+ for <alsa-devel@alsa-project.org>; Mon, 22 May 2017 05:49:04 +0200 (CEST)
+In-Reply-To: <20170521190258.1178-1-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: Stefan Wahren <stefan.wahren@i2se.com>, Lee Jones <lee@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>, Eric Anholt <eric@anholt.net>, linux-rpi-kernel@lists.infradead.org, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-include/linux/i2c is not for client devices. Move the header file to a
-more appropriate location.
+Hi,
 
-Signed-off-by: Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
----
- arch/arm/mach-omap2/common.h            | 2 +-
- arch/arm/mach-omap2/omap_twl.c          | 2 +-
- drivers/gpio/gpio-twl4030.c             | 2 +-
- drivers/iio/adc/twl4030-madc.c          | 2 +-
- drivers/iio/adc/twl6030-gpadc.c         | 2 +-
- drivers/input/keyboard/twl4030_keypad.c | 2 +-
- drivers/input/misc/twl4030-pwrbutton.c  | 2 +-
- drivers/input/misc/twl4030-vibra.c      | 2 +-
- drivers/mfd/twl-core.c                  | 6 +++---
- drivers/mfd/twl4030-audio.c             | 2 +-
- drivers/mfd/twl4030-irq.c               | 2 +-
- drivers/mfd/twl4030-power.c             | 2 +-
- drivers/mfd/twl6030-irq.c               | 2 +-
- drivers/phy/phy-twl4030-usb.c           | 2 +-
- drivers/power/supply/twl4030_charger.c  | 2 +-
- drivers/pwm/pwm-twl-led.c               | 2 +-
- drivers/pwm/pwm-twl.c                   | 2 +-
- drivers/regulator/twl-regulator.c       | 2 +-
- drivers/regulator/twl6030-regulator.c   | 2 +-
- drivers/rtc/rtc-twl.c                   | 2 +-
- drivers/usb/phy/phy-twl6030-usb.c       | 2 +-
- drivers/video/backlight/pandora_bl.c    | 2 +-
- drivers/watchdog/twl4030_wdt.c          | 2 +-
- include/linux/{i2c => mfd}/twl.h        | 0
- sound/soc/codecs/twl4030.c              | 2 +-
- 25 files changed, 26 insertions(+), 26 deletions(-)
- rename include/linux/{i2c => mfd}/twl.h (100%)
+On May 22 2017 04:02, Takashi Iwai wrote:
+> Hi,
+> 
+> this is a series of patches to fix the potential bugs in PCM ack
+> callback using the pcm-indirect helper functions, and also to enhance
+> the ack callback to be called properly in all appl_ptr updates, as
+> similarly done by Pierre and Subhransu's patches.
+> 
+> The changes in the pcm-indirect helper code and its users are fairly
+> trivial, just passing the error code back.
+> 
+> ARM/R-Pi people are Cc'ed because of bcm2835-audio driver.
+> 
+> 
+> Takashi
+> 
+> ===
+> 
+> Takashi Iwai (7):
+>    ALSA: pcm: Fix negative appl_ptr handling in pcm-indirect helpers
+>    ALSA: mips: Deliver indirect-PCM transfer error
+>    ALSA: cs46xx: Deliver indirect-PCM transfer error
+>    ALSA: emu10k1: Deliver indirect-PCM transfer error
+>    ALSA: rme32: Deliver indirect-PCM transfer error
+>    staging: bcm2835-audio: Deliver indirect-PCM transfer error
+>    ALSA: pcm: Call ack() whenever appl_ptr is updated
+> 
+>   .../vc04_services/bcm2835-audio/bcm2835-pcm.c      |  5 +--
+>   include/sound/pcm-indirect.h                       | 10 ++++-
+>   sound/core/pcm_native.c                            | 46 +++++++++++++++++-----
+>   sound/mips/hal2.c                                  | 14 +++----
+>   sound/pci/cs46xx/cs46xx_lib.c                      |  8 ++--
+>   sound/pci/emu10k1/emupcm.c                         |  4 +-
+>   sound/pci/rme32.c                                  | 10 ++---
+>   7 files changed, 63 insertions(+), 34 deletions(-)
 
-diff --git a/arch/arm/mach-omap2/common.h b/arch/arm/mach-omap2/common.h
-index 8cc6338fcb1288..b5ad7fcb80ed24 100644
---- a/arch/arm/mach-omap2/common.h
-+++ b/arch/arm/mach-omap2/common.h
-@@ -29,7 +29,7 @@
- #include <linux/irq.h>
- #include <linux/delay.h>
- #include <linux/i2c.h>
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- #include <linux/i2c-omap.h>
- #include <linux/reboot.h>
- #include <linux/irqchip/irq-omap-intc.h>
-diff --git a/arch/arm/mach-omap2/omap_twl.c b/arch/arm/mach-omap2/omap_twl.c
-index 1346b3ab34a5e3..295124b248ae3f 100644
---- a/arch/arm/mach-omap2/omap_twl.c
-+++ b/arch/arm/mach-omap2/omap_twl.c
-@@ -16,7 +16,7 @@
- #include <linux/err.h>
- #include <linux/io.h>
- #include <linux/kernel.h>
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- 
- #include "soc.h"
- #include "voltage.h"
-diff --git a/drivers/gpio/gpio-twl4030.c b/drivers/gpio/gpio-twl4030.c
-index 24f388ed46d4c4..9b511df5450eb6 100644
---- a/drivers/gpio/gpio-twl4030.c
-+++ b/drivers/gpio/gpio-twl4030.c
-@@ -35,7 +35,7 @@
- #include <linux/of.h>
- #include <linux/irqdomain.h>
- 
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- 
- /*
-  * The GPIO "subchip" supports 18 GPIOs which can be configured as
-diff --git a/drivers/iio/adc/twl4030-madc.c b/drivers/iio/adc/twl4030-madc.c
-index 0c74869a540ad3..5a64eda1652061 100644
---- a/drivers/iio/adc/twl4030-madc.c
-+++ b/drivers/iio/adc/twl4030-madc.c
-@@ -35,7 +35,7 @@
- #include <linux/delay.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- #include <linux/i2c/twl4030-madc.h>
- #include <linux/module.h>
- #include <linux/stddef.h>
-diff --git a/drivers/iio/adc/twl6030-gpadc.c b/drivers/iio/adc/twl6030-gpadc.c
-index becbb0aef232b9..bc0e60b9da452e 100644
---- a/drivers/iio/adc/twl6030-gpadc.c
-+++ b/drivers/iio/adc/twl6030-gpadc.c
-@@ -33,7 +33,7 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/of_platform.h>
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- #include <linux/iio/iio.h>
- #include <linux/iio/sysfs.h>
- 
-diff --git a/drivers/input/keyboard/twl4030_keypad.c b/drivers/input/keyboard/twl4030_keypad.c
-index 39e72b3219d8a4..f9f98ef1d98e3f 100644
---- a/drivers/input/keyboard/twl4030_keypad.c
-+++ b/drivers/input/keyboard/twl4030_keypad.c
-@@ -30,7 +30,7 @@
- #include <linux/interrupt.h>
- #include <linux/input.h>
- #include <linux/platform_device.h>
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- #include <linux/slab.h>
- #include <linux/of.h>
- 
-diff --git a/drivers/input/misc/twl4030-pwrbutton.c b/drivers/input/misc/twl4030-pwrbutton.c
-index 1c13005b228fa7..b307cca1702226 100644
---- a/drivers/input/misc/twl4030-pwrbutton.c
-+++ b/drivers/input/misc/twl4030-pwrbutton.c
-@@ -27,7 +27,7 @@
- #include <linux/input.h>
- #include <linux/interrupt.h>
- #include <linux/platform_device.h>
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- 
- #define PWR_PWRON_IRQ (1 << 0)
- 
-diff --git a/drivers/input/misc/twl4030-vibra.c b/drivers/input/misc/twl4030-vibra.c
-index caa5a62c42fbe0..6c51d404874bbd 100644
---- a/drivers/input/misc/twl4030-vibra.c
-+++ b/drivers/input/misc/twl4030-vibra.c
-@@ -28,7 +28,7 @@
- #include <linux/platform_device.h>
- #include <linux/of.h>
- #include <linux/workqueue.h>
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- #include <linux/mfd/twl4030-audio.h>
- #include <linux/input.h>
- #include <linux/slab.h>
-diff --git a/drivers/mfd/twl-core.c b/drivers/mfd/twl-core.c
-index c64615dca2bd33..2a09dde4ca6efc 100644
---- a/drivers/mfd/twl-core.c
-+++ b/drivers/mfd/twl-core.c
-@@ -44,7 +44,7 @@
- #include <linux/regulator/machine.h>
- 
- #include <linux/i2c.h>
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- 
- /* Register descriptions for audio */
- #include <linux/mfd/twl4030-audio.h>
-@@ -173,7 +173,7 @@ static struct twl_private *twl_priv;
- static struct twl_mapping twl4030_map[] = {
- 	/*
- 	 * NOTE:  don't change this table without updating the
--	 * <linux/i2c/twl.h> defines for TWL4030_MODULE_*
-+	 * <linux/mfd/twl.h> defines for TWL4030_MODULE_*
- 	 * so they continue to match the order in this table.
- 	 */
- 
-@@ -344,7 +344,7 @@ static const struct regmap_config twl4030_regmap_config[4] = {
- static struct twl_mapping twl6030_map[] = {
- 	/*
- 	 * NOTE:  don't change this table without updating the
--	 * <linux/i2c/twl.h> defines for TWL4030_MODULE_*
-+	 * <linux/mfd/twl.h> defines for TWL4030_MODULE_*
- 	 * so they continue to match the order in this table.
- 	 */
- 
-diff --git a/drivers/mfd/twl4030-audio.c b/drivers/mfd/twl4030-audio.c
-index 0a1606480023f9..da16bf45fab43e 100644
---- a/drivers/mfd/twl4030-audio.c
-+++ b/drivers/mfd/twl4030-audio.c
-@@ -30,7 +30,7 @@
- #include <linux/platform_device.h>
- #include <linux/of.h>
- #include <linux/of_platform.h>
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- #include <linux/mfd/core.h>
- #include <linux/mfd/twl4030-audio.h>
- 
-diff --git a/drivers/mfd/twl4030-irq.c b/drivers/mfd/twl4030-irq.c
-index b46c0cfc27d958..86f8fd8e81e4b5 100644
---- a/drivers/mfd/twl4030-irq.c
-+++ b/drivers/mfd/twl4030-irq.c
-@@ -33,7 +33,7 @@
- #include <linux/slab.h>
- #include <linux/of.h>
- #include <linux/irqdomain.h>
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- 
- #include "twl-core.h"
- 
-diff --git a/drivers/mfd/twl4030-power.c b/drivers/mfd/twl4030-power.c
-index f4b2c29d77e330..6b36932263ba78 100644
---- a/drivers/mfd/twl4030-power.c
-+++ b/drivers/mfd/twl4030-power.c
-@@ -25,7 +25,7 @@
- 
- #include <linux/module.h>
- #include <linux/pm.h>
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- #include <linux/platform_device.h>
- #include <linux/of.h>
- #include <linux/of_device.h>
-diff --git a/drivers/mfd/twl6030-irq.c b/drivers/mfd/twl6030-irq.c
-index 53574508a613f2..e3ec8dfa9f1ec0 100644
---- a/drivers/mfd/twl6030-irq.c
-+++ b/drivers/mfd/twl6030-irq.c
-@@ -35,7 +35,7 @@
- #include <linux/interrupt.h>
- #include <linux/irq.h>
- #include <linux/kthread.h>
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- #include <linux/platform_device.h>
- #include <linux/suspend.h>
- #include <linux/of.h>
-diff --git a/drivers/phy/phy-twl4030-usb.c b/drivers/phy/phy-twl4030-usb.c
-index 2990b3965460e8..28f49902760d82 100644
---- a/drivers/phy/phy-twl4030-usb.c
-+++ b/drivers/phy/phy-twl4030-usb.c
-@@ -36,7 +36,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/usb/musb.h>
- #include <linux/usb/ulpi.h>
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- #include <linux/regulator/consumer.h>
- #include <linux/err.h>
- #include <linux/slab.h>
-diff --git a/drivers/power/supply/twl4030_charger.c b/drivers/power/supply/twl4030_charger.c
-index 2f82d0e9ec1bf7..390bfde86ae39b 100644
---- a/drivers/power/supply/twl4030_charger.c
-+++ b/drivers/power/supply/twl4030_charger.c
-@@ -18,7 +18,7 @@
- #include <linux/err.h>
- #include <linux/platform_device.h>
- #include <linux/interrupt.h>
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- #include <linux/power_supply.h>
- #include <linux/notifier.h>
- #include <linux/usb/otg.h>
-diff --git a/drivers/pwm/pwm-twl-led.c b/drivers/pwm/pwm-twl-led.c
-index 21eff991d0e355..01153622778bad 100644
---- a/drivers/pwm/pwm-twl-led.c
-+++ b/drivers/pwm/pwm-twl-led.c
-@@ -24,7 +24,7 @@
- #include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pwm.h>
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- #include <linux/slab.h>
- 
- /*
-diff --git a/drivers/pwm/pwm-twl.c b/drivers/pwm/pwm-twl.c
-index 9de617b766801b..b7a45be998153b 100644
---- a/drivers/pwm/pwm-twl.c
-+++ b/drivers/pwm/pwm-twl.c
-@@ -21,7 +21,7 @@
- #include <linux/of.h>
- #include <linux/platform_device.h>
- #include <linux/pwm.h>
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- #include <linux/slab.h>
- 
- /*
-diff --git a/drivers/regulator/twl-regulator.c b/drivers/regulator/twl-regulator.c
-index 6c9ec84121bde4..a4456db5849d06 100644
---- a/drivers/regulator/twl-regulator.c
-+++ b/drivers/regulator/twl-regulator.c
-@@ -20,7 +20,7 @@
- #include <linux/regulator/driver.h>
- #include <linux/regulator/machine.h>
- #include <linux/regulator/of_regulator.h>
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- #include <linux/delay.h>
- 
- /*
-diff --git a/drivers/regulator/twl6030-regulator.c b/drivers/regulator/twl6030-regulator.c
-index 56aada38788776..219cbd910dbf52 100644
---- a/drivers/regulator/twl6030-regulator.c
-+++ b/drivers/regulator/twl6030-regulator.c
-@@ -21,7 +21,7 @@
- #include <linux/regulator/driver.h>
- #include <linux/regulator/machine.h>
- #include <linux/regulator/of_regulator.h>
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- #include <linux/delay.h>
- 
- struct twlreg_info {
-diff --git a/drivers/rtc/rtc-twl.c b/drivers/rtc/rtc-twl.c
-index c18c39212ce680..3472e79f2b1782 100644
---- a/drivers/rtc/rtc-twl.c
-+++ b/drivers/rtc/rtc-twl.c
-@@ -31,7 +31,7 @@
- #include <linux/interrupt.h>
- #include <linux/of.h>
- 
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- 
- enum twl_class {
- 	TWL_4030 = 0,
-diff --git a/drivers/usb/phy/phy-twl6030-usb.c b/drivers/usb/phy/phy-twl6030-usb.c
-index 628b600b02b174..b5dc077ed7d3c6 100644
---- a/drivers/usb/phy/phy-twl6030-usb.c
-+++ b/drivers/usb/phy/phy-twl6030-usb.c
-@@ -28,7 +28,7 @@
- #include <linux/usb/musb.h>
- #include <linux/usb/phy_companion.h>
- #include <linux/phy/omap_usb.h>
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- #include <linux/regulator/consumer.h>
- #include <linux/err.h>
- #include <linux/slab.h>
-diff --git a/drivers/video/backlight/pandora_bl.c b/drivers/video/backlight/pandora_bl.c
-index 5d8bb8b201835d..a186bc677c7d80 100644
---- a/drivers/video/backlight/pandora_bl.c
-+++ b/drivers/video/backlight/pandora_bl.c
-@@ -16,7 +16,7 @@
- #include <linux/delay.h>
- #include <linux/fb.h>
- #include <linux/backlight.h>
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- #include <linux/err.h>
- 
- #define TWL_PWM0_ON		0x00
-diff --git a/drivers/watchdog/twl4030_wdt.c b/drivers/watchdog/twl4030_wdt.c
-index 9bf3cc0f396106..569fe85e52da75 100644
---- a/drivers/watchdog/twl4030_wdt.c
-+++ b/drivers/watchdog/twl4030_wdt.c
-@@ -24,7 +24,7 @@
- #include <linux/kernel.h>
- #include <linux/watchdog.h>
- #include <linux/platform_device.h>
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- 
- #define TWL4030_WATCHDOG_CFG_REG_OFFS	0x3
- 
-diff --git a/include/linux/i2c/twl.h b/include/linux/mfd/twl.h
-similarity index 100%
-rename from include/linux/i2c/twl.h
-rename to include/linux/mfd/twl.h
-diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
-index a2104d68169d9e..bd86a2d78c5ff2 100644
---- a/sound/soc/codecs/twl4030.c
-+++ b/sound/soc/codecs/twl4030.c
-@@ -28,7 +28,7 @@
- #include <linux/platform_device.h>
- #include <linux/of.h>
- #include <linux/of_gpio.h>
--#include <linux/i2c/twl.h>
-+#include <linux/mfd/twl.h>
- #include <linux/slab.h>
- #include <linux/gpio.h>
- #include <sound/core.h>
--- 
-2.11.0
+I mostly agree with this patchset, except for one point.
 
--- 
-You received this message because you are subscribed to "rtc-linux".
-Membership options at http://groups.google.com/group/rtc-linux .
-Please read http://groups.google.com/group/rtc-linux/web/checklist
-before submitting a driver.
---- 
-You received this message because you are subscribed to the Google Groups "rtc-linux" group.
-To unsubscribe from this group and stop receiving emails from it, send an email to rtc-linux+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
-For more options, visit https://groups.google.com/d/optout.
+The added helper function, apply_appl_ptr(), copies given data to the 
+runtime for application-side pointer, then call 'struct 
+snd_pcm_ops.ack'. We have similar code block in 'sound/core/pcm_lib.c', 
+as well. See 'snd_pcm_lib_write1()' and 'snd_pcm_lib_read1()'.
+
+In a point of code maintenance, it's better to share the function 
+between two objects; pcm_native.o and pcm_lib.o.
+
+For instance, I can propose a below patch. I expect you to squash it up 
+within one of your patches.
+
+========== 8< ----------
+
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index ab4b1d1e44ee..9d048f91bd3f 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -2010,6 +2010,12 @@ typedef int (*transfer_f)(struct 
+snd_pcm_substream *substream, unsigned int hwof
+  			  unsigned long data, unsigned int off,
+  			  snd_pcm_uframes_t size);
+
++/* This symbol is shared by several relocatable objects for the same shared
++ * object.
++ */
++int snd_pcm_apply_appl_ptr(struct snd_pcm_substream *substream,
++			  snd_pcm_uframes_t appl_ptr);
++
+  static snd_pcm_sframes_t snd_pcm_lib_write1(struct snd_pcm_substream 
+*substream,
+  					    unsigned long data,
+  					    snd_pcm_uframes_t size,
+@@ -2087,11 +2093,9 @@ static snd_pcm_sframes_t 
+snd_pcm_lib_write1(struct snd_pcm_substream *substream,
+  			break;
+  		}
+  		appl_ptr += frames;
+-		if (appl_ptr >= runtime->boundary)
+-			appl_ptr -= runtime->boundary;
+-		runtime->control->appl_ptr = appl_ptr;
+-		if (substream->ops->ack)
+-			substream->ops->ack(substream);
++		err = snd_pcm_apply_appl_ptr(substream, appl_ptr);
++		if (err < 0)
++			goto _end_unlock;
+
+  		offset += frames;
+  		size -= frames;
+@@ -2321,9 +2325,9 @@ static snd_pcm_sframes_t snd_pcm_lib_read1(struct 
+snd_pcm_substream *substream,
+  		appl_ptr += frames;
+  		if (appl_ptr >= runtime->boundary)
+  			appl_ptr -= runtime->boundary;
+-		runtime->control->appl_ptr = appl_ptr;
+-		if (substream->ops->ack)
+-			substream->ops->ack(substream);
++		err = snd_pcm_apply_appl_ptr(substream, appl_ptr);
++		if (err < 0)
++			goto _end_unlock;
+
+  		offset += frames;
+  		size -= frames;
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 7bc4a0bbad6f..0b176b35ade1 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -2456,9 +2456,11 @@ static int do_pcm_hwsync(struct snd_pcm_substream 
+*substream)
+  }
+
+  /* update to the given appl_ptr and call ack callback if needed;
+- * when an error is returned, take back to the original value
++ * when an error is returned, take back to the original value.
++ * The given argument should have valid value as application pointer on PCM
++ * buffer.
+   */
+-static int apply_appl_ptr(struct snd_pcm_substream *substream,
++int snd_pcm_apply_appl_ptr(struct snd_pcm_substream *substream,
+  			  snd_pcm_uframes_t appl_ptr)
+  {
+  	struct snd_pcm_runtime *runtime = substream->runtime;
+@@ -2492,7 +2494,7 @@ static snd_pcm_sframes_t forward_appl_ptr(struct 
+snd_pcm_substream *substream,
+  	appl_ptr = runtime->control->appl_ptr + frames;
+  	if (appl_ptr >= (snd_pcm_sframes_t)runtime->boundary)
+  		appl_ptr -= runtime->boundary;
+-	ret = apply_appl_ptr(substream, appl_ptr);
++	ret = snd_pcm_apply_appl_ptr(substream, appl_ptr);
+  	return ret < 0 ? ret : frames;
+  }
+
+@@ -2512,7 +2514,7 @@ static snd_pcm_sframes_t rewind_appl_ptr(struct 
+snd_pcm_substream *substream,
+  	appl_ptr = runtime->control->appl_ptr - frames;
+  	if (appl_ptr < 0)
+  		appl_ptr += runtime->boundary;
+-	ret = apply_appl_ptr(substream, appl_ptr);
++	ret = snd_pcm_apply_appl_ptr(substream, appl_ptr);
+  	return ret < 0 ? ret : frames;
+  }
+
+@@ -2644,7 +2646,8 @@ static int snd_pcm_sync_ptr(struct 
+snd_pcm_substream *substream,
+  	}
+  	snd_pcm_stream_lock_irq(substream);
+  	if (!(sync_ptr.flags & SNDRV_PCM_SYNC_PTR_APPL)) {
+-		err = apply_appl_ptr(substream, sync_ptr.c.control.appl_ptr);
++		err = snd_pcm_apply_appl_ptr(substream,
++					     sync_ptr.c.control.appl_ptr);
+  		if (err < 0) {
+  			snd_pcm_stream_unlock_irq(substream);
+  			return err;
+
+
+Regards
+
+Takashi Sakamoto
