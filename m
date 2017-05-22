@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: info: Use kvzalloc() for a temporary
-	write buffer
-Date: Mon, 22 May 2017 17:51:46 +0200
-Message-ID: <20170522155146.4758-1-tiwai@suse.de>
+Subject: [PATCH] ALSA: control: Simplify snd_ctl_elem_list()
+	implementation
+Date: Mon, 22 May 2017 17:52:24 +0200
+Message-ID: <20170522155224.4810-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id AC490266E84
- for <alsa-devel@alsa-project.org>; Mon, 22 May 2017 17:51:48 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 482A9266FDE
+ for <alsa-devel@alsa-project.org>; Mon, 22 May 2017 17:52:26 +0200 (CEST)
 Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 1E911AB5D
- for <alsa-devel@alsa-project.org>; Mon, 22 May 2017 15:51:48 +0000 (UTC)
+ by mx1.suse.de (Postfix) with ESMTP id 71035AB5D
+ for <alsa-devel@alsa-project.org>; Mon, 22 May 2017 15:52:26 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,45 +25,117 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-We used to use kmalloc (more exactly, krealloc()) for creating and
-growing the temporary buffer for text proc write.  It can grow up to
-16kB, and it's already a bit doubtful whether it's always safe to use
-kmalloc().  With the recent addition of kvmalloc(), we can have a
-better chance for succeed of memory allocation, so let's switch to
-that new API.
+This patch simplifies the code of snd_ctl_elem_list() in the following
+ways:
+
+- Avoid a vmalloc() temporary buffer but do copy in each iteration;
+  the vmalloc buffer was introduced at the time we took the spinlock
+  for the ctl element management.
+
+- Use the standard list_for_each_entry() macro
+
+- Merge two loops into one;
+  it used to be a loop for skipping until offset becomes zero and
+  another loop to copy the data.  They can be folded into a single
+  loop easily.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/info.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/core/control.c | 66 +++++++++++++++++++---------------------------------
+ 1 file changed, 24 insertions(+), 42 deletions(-)
 
-diff --git a/sound/core/info.c b/sound/core/info.c
-index 8ab72e0f5932..fc14ebe751d8 100644
---- a/sound/core/info.c
-+++ b/sound/core/info.c
-@@ -344,12 +344,12 @@ static ssize_t snd_info_text_entry_write(struct file *file,
+diff --git a/sound/core/control.c b/sound/core/control.c
+index c109b82eef4b..47080da8451a 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -747,11 +747,11 @@ static int snd_ctl_card_info(struct snd_card *card, struct snd_ctl_file * ctl,
+ static int snd_ctl_elem_list(struct snd_card *card,
+ 			     struct snd_ctl_elem_list __user *_list)
+ {
+-	struct list_head *plist;
+ 	struct snd_ctl_elem_list list;
+ 	struct snd_kcontrol *kctl;
+-	struct snd_ctl_elem_id *dst, *id;
++	struct snd_ctl_elem_id id;
+ 	unsigned int offset, space, jidx;
++	int err = 0;
+ 	
+ 	if (copy_from_user(&list, _list, sizeof(list)))
+ 		return -EFAULT;
+@@ -760,52 +760,34 @@ static int snd_ctl_elem_list(struct snd_card *card,
+ 	/* try limit maximum space */
+ 	if (space > 16384)
+ 		return -ENOMEM;
++	down_read(&card->controls_rwsem);
++	list.count = card->controls_count;
++	list.used = 0;
+ 	if (space > 0) {
+-		/* allocate temporary buffer for atomic operation */
+-		dst = vmalloc(space * sizeof(struct snd_ctl_elem_id));
+-		if (dst == NULL)
+-			return -ENOMEM;
+-		down_read(&card->controls_rwsem);
+-		list.count = card->controls_count;
+-		plist = card->controls.next;
+-		while (plist != &card->controls) {
+-			if (offset == 0)
+-				break;
+-			kctl = snd_kcontrol(plist);
+-			if (offset < kctl->count)
+-				break;
+-			offset -= kctl->count;
+-			plist = plist->next;
+-		}
+-		list.used = 0;
+-		id = dst;
+-		while (space > 0 && plist != &card->controls) {
+-			kctl = snd_kcontrol(plist);
+-			for (jidx = offset; space > 0 && jidx < kctl->count; jidx++) {
+-				snd_ctl_build_ioff(id, kctl, jidx);
+-				id++;
+-				space--;
++		list_for_each_entry(kctl, &card->controls, list) {
++			if (offset >= kctl->count) {
++				offset -= kctl->count;
++				continue;
++			}
++			for (jidx = offset; jidx < kctl->count; jidx++) {
++				snd_ctl_build_ioff(&id, kctl, jidx);
++				if (copy_to_user(list.pids + list.used, &id,
++						 sizeof(id))) {
++					err = -EFAULT;
++					goto out;
++				}
+ 				list.used++;
++				if (!--space)
++					goto out;
+ 			}
+-			plist = plist->next;
+ 			offset = 0;
  		}
+-		up_read(&card->controls_rwsem);
+-		if (list.used > 0 &&
+-		    copy_to_user(list.pids, dst,
+-				 list.used * sizeof(struct snd_ctl_elem_id))) {
+-			vfree(dst);
+-			return -EFAULT;
+-		}
+-		vfree(dst);
+-	} else {
+-		down_read(&card->controls_rwsem);
+-		list.count = card->controls_count;
+-		up_read(&card->controls_rwsem);
  	}
- 	if (next > buf->len) {
--		char *nbuf = krealloc(buf->buffer, PAGE_ALIGN(next),
--				      GFP_KERNEL | __GFP_ZERO);
-+		char *nbuf = kvzalloc(PAGE_ALIGN(next), GFP_KERNEL);
- 		if (!nbuf) {
- 			err = -ENOMEM;
- 			goto error;
- 		}
-+		kvfree(buf->buffer);
- 		buf->buffer = nbuf;
- 		buf->len = PAGE_ALIGN(next);
- 	}
-@@ -427,7 +427,7 @@ static int snd_info_text_entry_release(struct inode *inode, struct file *file)
- 	single_release(inode, file);
- 	kfree(data->rbuffer);
- 	if (data->wbuffer) {
--		kfree(data->wbuffer->buffer);
-+		kvfree(data->wbuffer->buffer);
- 		kfree(data->wbuffer);
- 	}
+-	if (copy_to_user(_list, &list, sizeof(list)))
+-		return -EFAULT;
+-	return 0;
++ out:
++	up_read(&card->controls_rwsem);
++	if (!err && copy_to_user(_list, &list, sizeof(list)))
++		err = -EFAULT;
++	return err;
+ }
  
+ static bool validate_element_member_dimension(struct snd_ctl_elem_info *info)
 -- 
 2.13.0
