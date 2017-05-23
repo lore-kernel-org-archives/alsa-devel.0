@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: BUG: double free of PCM structure upon module
-	removal
-Date: Tue, 23 May 2017 18:14:05 +0100
-Message-ID: <20170523171405.iyahe4zfxerd7rn7@sirena.org.uk>
-References: <87k2571px9.fsf@belgarion.home>
+From: Paul Handrigan <paul.handrigan@cirrus.com>
+Subject: Re: [PATCH] ASoC: cs4271: Remove unnecessary
+ additional variable definitio
+Date: Tue, 23 May 2017 12:22:53 -0500
+Message-ID: <683bce62-7ee6-4552-ae2f-ec5fc179b865@EX3.ad.cirrus.com>
+References: <1495551819-17040-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0264834695197220206=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DF61E267111
- for <alsa-devel@alsa-project.org>; Tue, 23 May 2017 19:14:14 +0200 (CEST)
-In-Reply-To: <87k2571px9.fsf@belgarion.home>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 67992267111
+ for <alsa-devel@alsa-project.org>; Tue, 23 May 2017 19:22:18 +0200 (CEST)
+In-Reply-To: <1495551819-17040-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +22,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: alsa-devel@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0264834695197220206==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="qr5bfslqsm3vo42l"
-Content-Disposition: inline
 
+On Tue, 23 May 2017, Charles Keepax wrote:
 
---qr5bfslqsm3vo42l
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, May 23, 2017 at 06:46:58PM +0200, Robert Jarzmik wrote:
-
-> Did you notice the same behavior on other platforms, and if not would you have a
-> hint why it happens to me ?
-
-This is the only report I've seen, sorry.  It's not ringing any bells
-immediately either - I'll have a think.
-
---qr5bfslqsm3vo42l
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlkkbdkACgkQJNaLcl1U
-h9DRUAf9Hd6YnPGHHEeZXwUI9qrYtveSqt4bW8lDM9HYPfrpKeq1WXMtbktkozMS
-jLTrmwUJw6+3IywLfqfInga/CiPgWwLUPWSeeHIymH1WsLtS0YhOPiVQ/9M5S6Ng
-enN5GUqxocFsuQD8CwUa5ehW2UlyGcSpfYxo08M5XP6TynnN70lct9jkXxfd/WAi
-VVJkQT6NnVlzc10oNEbQpaiHsh+U2N7X5ar4sQWEkLiZPPp4Ca6Z0m94kYyrF4ON
-vGnrih8rYihqBnvfJ4hxnGFcR/L/iBF3Ef79a+NHn5kvnIAFYqOabFYYLqL4cP0F
-vPl/Q07T+1iAAw9wPiunQvExDrTKhg==
-=ptjw
------END PGP SIGNATURE-----
-
---qr5bfslqsm3vo42l--
-
---===============0264834695197220206==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0264834695197220206==--
+> The function already defines a ret variable at the top and makes
+> no particular use of the shadowed definition, as such remove the
+> redundant definition.
+> 
+> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+> ---
+>  sound/soc/codecs/cs4271.c | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+> index e78b5f0..d882477 100644
+> --- a/sound/soc/codecs/cs4271.c
+> +++ b/sound/soc/codecs/cs4271.c
+> @@ -674,8 +674,6 @@ static int cs4271_common_probe(struct device *dev,
+>  		cs4271->gpio_nreset = cs4271plat->gpio_nreset;
+>  
+>  	if (gpio_is_valid(cs4271->gpio_nreset)) {
+> -		int ret;
+> -
+>  		ret = devm_gpio_request(dev, cs4271->gpio_nreset,
+>  					"CS4271 Reset");
+>  		if (ret < 0)
+>
+Acked-by: Paul Handrigan <Paul.Handrigan@cirrus.com> 
