@@ -1,115 +1,50 @@
-From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH v4 1/3] dt-bindings: Document STM32 I2S bindings
-Date: Tue, 23 May 2017 09:26:29 -0500
-Message-ID: <20170523142629.l3bcyqv7uzqsgme2@rob-hp-laptop>
-References: <1495120793-11687-1-git-send-email-olivier.moysan@st.com>
- <1495120793-11687-2-git-send-email-olivier.moysan@st.com>
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Subject: [PATCH] ASoC: cs4271: Remove unnecessary additional
+	variable definition
+Date: Tue, 23 May 2017 16:03:39 +0100
+Message-ID: <1495551819-17040-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1495120793-11687-2-git-send-email-olivier.moysan-qxv4g6HH51o@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
-Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alexandre.torgue-qxv4g6HH51o@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-F5mvAk5X5gdBDgjK7y7TUQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org, benjamin.gaignard-qxv4g6HH51o@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF52D2670FD
+ for <alsa-devel@alsa-project.org>; Tue, 23 May 2017 17:02:26 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, brian.austin@cirrus.com
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 18, 2017 at 05:19:51PM +0200, olivier moysan wrote:
-> Add documentation of device tree bindings for STM32 SPI/I2S.
-> 
-> Signed-off-by: olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
-> ---
->  .../devicetree/bindings/sound/st,stm32-i2s.txt     | 62 ++++++++++++++++++++++
->  1 file changed, 62 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-i2s.txt
+The function already defines a ret variable at the top and makes
+no particular use of the shadowed definition, as such remove the
+redundant definition.
 
-I see Mark already applied, but a few nits in the example. Please at 
-least make sure the dts files are fixed.
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+---
+ sound/soc/codecs/cs4271.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/st,stm32-i2s.txt b/Documentation/devicetree/bindings/sound/st,stm32-i2s.txt
-> new file mode 100644
-> index 0000000..4bda520
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/st,stm32-i2s.txt
-> @@ -0,0 +1,62 @@
-> +STMicroelectronics STM32 SPI/I2S Controller
-> +
-> +The SPI/I2S block supports I2S/PCM protocols when configured on I2S mode.
-> +Only some SPI instances support I2S.
-> +
-> +Required properties:
-> +  - compatible: Must be "st,stm32h7-i2s"
-> +  - reg: Offset and length of the device's register set.
-> +  - interrupts: Must contain the interrupt line id.
-> +  - clocks: Must contain phandle and clock specifier pairs for each entry
-> +	in clock-names.
-> +  - clock-names: Must contain "i2sclk", "pclk", "x8k" and "x11k".
-> +	"i2sclk": clock which feeds the internal clock generator
-> +	"pclk": clock which feeds the peripheral bus interface
-> +	"x8k": I2S parent clock for sampling rates multiple of 8kHz.
-> +	"x11k": I2S parent clock for sampling rates multiple of 11.025kHz.
-> +  - dmas: DMA specifiers for tx and rx dma.
-> +    See Documentation/devicetree/bindings/dma/stm32-dma.txt.
-> +  - dma-names: Identifier for each DMA request line. Must be "tx" and "rx".
-> +  - pinctrl-names: should contain only value "default"
-> +  - pinctrl-0: see Documentation/devicetree/bindings/pinctrl/pinctrl-stm32.txt
-> +
-> +Optional properties:
-> +  - resets: Reference to a reset controller asserting the reset controller
-> +
-> +The device node should contain one 'port' child node with one child 'endpoint'
-> +node, according to the bindings defined in Documentation/devicetree/bindings/
-> +graph.txt.
-> +
-> +Example:
-> +sound_card {
-> +	compatible = "audio-graph-card";
-> +	dais = <&i2s2_port>;
-> +};
-> +
-> +i2s2: audio-controller@40003800 {
-> +	compatible = "st,stm32h7-i2s";
-> +	reg = <0x40003800 0x400>;
-> +	interrupts = <36>;
-> +	clocks = <&rcc PCLK1>, <&rcc SPI2_CK>, <&rcc PLL1_Q>, <&rcc PLL2_P>;
-> +	clock-names = "pclk", "i2sclk",  "x8k", "x11k";
-> +	dmas = <&dmamux2 2 39 0x400 0x1>,
-> +           <&dmamux2 3 40 0x400 0x1>;
-> +	dma-names = "rx", "tx";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pinctrl_i2s2>;
-> +
-> +	i2s2_port: port@0 {
-
-Should not have a unit address here.
-
-> +		cpu_endpoint: endpoint {
-> +			remote-endpoint = <&codec_endpoint>;
-> +			format = "i2s";
-> +		};
-> +	};
-> +};
-> +
-> +audio-codec {
-> +	codec_port: port@0 {
-
-Or here.
-
-> +		codec_endpoint: endpoint {
-> +			remote-endpoint = <&cpu_endpoint>;
-> +		};
-> +	};
-> +};
-> -- 
-> 1.9.1
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
+index e78b5f0..d882477 100644
+--- a/sound/soc/codecs/cs4271.c
++++ b/sound/soc/codecs/cs4271.c
+@@ -674,8 +674,6 @@ static int cs4271_common_probe(struct device *dev,
+ 		cs4271->gpio_nreset = cs4271plat->gpio_nreset;
+ 
+ 	if (gpio_is_valid(cs4271->gpio_nreset)) {
+-		int ret;
+-
+ 		ret = devm_gpio_request(dev, cs4271->gpio_nreset,
+ 					"CS4271 Reset");
+ 		if (ret < 0)
+-- 
+2.1.4
