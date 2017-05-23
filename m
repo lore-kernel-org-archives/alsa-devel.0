@@ -1,14 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: gus: remove unused local flag
-Date: Tue, 23 May 2017 22:40:20 +0900
-Message-ID: <20170523134020.941-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: sb: remove needless evaluation in
+	implementation for copy callback
+Date: Tue, 23 May 2017 22:40:42 +0900
+Message-ID: <20170523134042.1056-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id B5AB92670DB
- for <alsa-devel@alsa-project.org>; Tue, 23 May 2017 15:40:25 +0200 (CEST)
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 006A22670F8
+ for <alsa-devel@alsa-project.org>; Tue, 23 May 2017 15:40:50 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,107 +23,71 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-ALSA driver series for devices of Gravis Ultra Sound includes local
-variable 'snd_gf1_pcm_use_dma'. Although this is a flag to change
-behaviours of local implementations for 'struct snd_pcm_ops.copy' and
-'struct snd_pcm_ops.silence', it's invariable during module lifetime.
+In design of ALSA pcm core, 'struct snd_pcm_ops.copy' is expected to
+copy PCM frames, according to frame alignment on intermediate buffer for
+userspace and dedicated buffer for data transmission. In this callback,
+value of 'channel' argument depends on the frame alignment, which drivers
+registers to runtime of PCM substream. When target devices can handle
+non-interleaved buffer, this value has positive value, otherwise negative.
 
-This commit removes this local variable and the relevant operations.
+ALSA driver for PCM component of EMU8000 chip is programmed with local
+macro to switch the frame alignment. The 'copy' operation in
+non-interleaved side has evaluation of the 'channel' argument (actually
+it's 'voice' argument). This is useless.
+
+This commit remove the evaluation.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/isa/gus/gus_pcm.c | 49 ++++++++++++++++++++++---------------------------
- 1 file changed, 22 insertions(+), 27 deletions(-)
+ sound/isa/sb/emu8000_pcm.c | 28 ++++------------------------
+ 1 file changed, 4 insertions(+), 24 deletions(-)
 
-diff --git a/sound/isa/gus/gus_pcm.c b/sound/isa/gus/gus_pcm.c
-index 33c1891f469a..0cc3f272edf1 100644
---- a/sound/isa/gus/gus_pcm.c
-+++ b/sound/isa/gus/gus_pcm.c
-@@ -61,8 +61,6 @@ struct gus_pcm_private {
- 	int final_volume;
- };
+diff --git a/sound/isa/sb/emu8000_pcm.c b/sound/isa/sb/emu8000_pcm.c
+index 32f234f494e5..bab796d75dbd 100644
+--- a/sound/isa/sb/emu8000_pcm.c
++++ b/sound/isa/sb/emu8000_pcm.c
+@@ -450,20 +450,8 @@ static int emu8k_pcm_copy(struct snd_pcm_substream *subs,
+ 	struct snd_emu8000 *emu = rec->emu;
  
--static int snd_gf1_pcm_use_dma = 1;
--
- static void snd_gf1_pcm_block_change_ack(struct snd_gus_card * gus, void *private_data)
- {
- 	struct gus_pcm_private *pcmp = private_data;
-@@ -363,7 +361,9 @@ static int snd_gf1_pcm_playback_copy(struct snd_pcm_substream *substream,
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct gus_pcm_private *pcmp = runtime->private_data;
-+	struct snd_gus_card *gus = pcmp->gus;
- 	unsigned int bpos, len;
-+	int w16, invert;
- 	
- 	bpos = samples_to_bytes(runtime, pos) + (voice * (pcmp->dma_size / 2));
- 	len = samples_to_bytes(runtime, count);
-@@ -373,18 +373,14 @@ static int snd_gf1_pcm_playback_copy(struct snd_pcm_substream *substream,
- 		return -EIO;
- 	if (copy_from_user(runtime->dma_area + bpos, src, len))
- 		return -EFAULT;
--	if (snd_gf1_pcm_use_dma && len > 32) {
--		return snd_gf1_pcm_block_change(substream, bpos, pcmp->memory + bpos, len);
+ 	snd_emu8000_write_wait(emu, 1);
+-	if (voice == -1) {
+-		unsigned short *buf = src;
+-		int i, err;
+-		count /= rec->voices;
+-		for (i = 0; i < rec->voices; i++) {
+-			err = emu8k_transfer_block(emu, pos + rec->loop_start[i], buf, count);
+-			if (err < 0)
+-				return err;
+-			buf += count;
+-		}
+-		return 0;
 -	} else {
--		struct snd_gus_card *gus = pcmp->gus;
--		int err, w16, invert;
--
--		w16 = (snd_pcm_format_width(runtime->format) == 16);
--		invert = snd_pcm_format_unsigned(runtime->format);
--		if ((err = snd_gf1_pcm_poke_block(gus, runtime->dma_area + bpos, pcmp->memory + bpos, len, w16, invert)) < 0)
--			return err;
+-		return emu8k_transfer_block(emu, pos + rec->loop_start[voice], src, count);
 -	}
--	return 0;
-+	if (len > 32)
-+		return snd_gf1_pcm_block_change(substream, bpos,
-+						pcmp->memory + bpos, len);
-+
-+	w16 = (snd_pcm_format_width(runtime->format) == 16);
-+	invert = snd_pcm_format_unsigned(runtime->format);
-+	return snd_gf1_pcm_poke_block(gus, runtime->dma_area + bpos,
-+				      pcmp->memory + bpos, len, w16, invert);
++	return emu8k_transfer_block(emu, pos + rec->loop_start[voice], src,
++				    count);
  }
  
- static int snd_gf1_pcm_playback_silence(struct snd_pcm_substream *substream,
-@@ -394,7 +390,9 @@ static int snd_gf1_pcm_playback_silence(struct snd_pcm_substream *substream,
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct gus_pcm_private *pcmp = runtime->private_data;
-+	struct snd_gus_card *gus = pcmp->gus;
- 	unsigned int bpos, len;
-+	int w16, invert;
- 	
- 	bpos = samples_to_bytes(runtime, pos) + (voice * (pcmp->dma_size / 2));
- 	len = samples_to_bytes(runtime, count);
-@@ -402,19 +400,16 @@ static int snd_gf1_pcm_playback_silence(struct snd_pcm_substream *substream,
- 		return -EIO;
- 	if (snd_BUG_ON(bpos + len > pcmp->dma_size))
- 		return -EIO;
--	snd_pcm_format_set_silence(runtime->format, runtime->dma_area + bpos, count);
--	if (snd_gf1_pcm_use_dma && len > 32) {
--		return snd_gf1_pcm_block_change(substream, bpos, pcmp->memory + bpos, len);
--	} else {
--		struct snd_gus_card *gus = pcmp->gus;
--		int err, w16, invert;
--
--		w16 = (snd_pcm_format_width(runtime->format) == 16);
--		invert = snd_pcm_format_unsigned(runtime->format);
--		if ((err = snd_gf1_pcm_poke_block(gus, runtime->dma_area + bpos, pcmp->memory + bpos, len, w16, invert)) < 0)
+ /* make a channel block silence */
+@@ -487,17 +475,9 @@ static int emu8k_pcm_silence(struct snd_pcm_substream *subs,
+ 	struct snd_emu8000 *emu = rec->emu;
+ 
+ 	snd_emu8000_write_wait(emu, 1);
+-	if (voice == -1 && rec->voices == 1)
++	if (rec->voices == 1)
+ 		voice = 0;
+-	if (voice == -1) {
+-		int err;
+-		err = emu8k_silence_block(emu, pos + rec->loop_start[0], count / 2);
+-		if (err < 0)
 -			return err;
+-		return emu8k_silence_block(emu, pos + rec->loop_start[1], count / 2);
+-	} else {
+-		return emu8k_silence_block(emu, pos + rec->loop_start[voice], count);
 -	}
--	return 0;
-+	snd_pcm_format_set_silence(runtime->format, runtime->dma_area + bpos,
-+				   count);
-+	if (len > 32)
-+		return snd_gf1_pcm_block_change(substream, bpos,
-+						pcmp->memory + bpos, len);
-+
-+	w16 = (snd_pcm_format_width(runtime->format) == 16);
-+	invert = snd_pcm_format_unsigned(runtime->format);
-+	return snd_gf1_pcm_poke_block(gus, runtime->dma_area + bpos,
-+				      pcmp->memory + bpos, len, w16, invert);
++	return emu8k_silence_block(emu, pos + rec->loop_start[voice], count);
  }
  
- static int snd_gf1_pcm_playback_hw_params(struct snd_pcm_substream *substream,
+ #else /* interleave */
 -- 
 2.11.0
