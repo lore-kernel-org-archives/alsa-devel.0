@@ -1,331 +1,432 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/4] ALSA: pcm: Provide read/write helpers for
-	in-kernel buffer transfer
-Date: Tue, 23 May 2017 08:11:54 +0200
-Message-ID: <20170523061155.1582-4-tiwai@suse.de>
-References: <20170523061155.1582-1-tiwai@suse.de>
+From: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 3/3] mfd: twl: move header file out of I2C realm
+Date: Tue, 23 May 2017 08:16:36 +0100
+Message-ID: <20170523071636.hiws54msfxpg6qkb@dell>
+References: <20170521220212.1404-1-wsa@the-dreams.de>
+ <20170521220212.1404-4-wsa@the-dreams.de>
+Reply-To: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id BD3C1267063
- for <alsa-devel@alsa-project.org>; Tue, 23 May 2017 08:12:00 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 0DC40AD45
- for <alsa-devel@alsa-project.org>; Tue, 23 May 2017 06:12:00 +0000 (UTC)
-In-Reply-To: <20170523061155.1582-1-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <rtc-linux+bncBDA7X7F2WUEBBWODR7EQKGQEGIEGCHA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Disposition: inline
+In-Reply-To: <20170521220212.1404-4-wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
+List-Post: <https://groups.google.com/group/rtc-linux/post>, <mailto:rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:rtc-linux+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/rtc-linux
+List-Subscribe: <https://groups.google.com/group/rtc-linux/subscribe>, <mailto:rtc-linux+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+712029733259+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/rtc-linux/subscribe>
+To: Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
+Cc: linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Russell King <linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Dmitry Torokhov <dmitry.torokhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Kishon Vijay Abraham I <kishon-l0cyMroinI0@public.gmane.org>, Sebastian Reichel <sre-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Alessandro Zummo <a.zummo-BfzFCNDTiLLj+vYz1yj4TQ@public.gmane.org>, Alexandre Belloni <alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Felipe Balbi <balbi-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Daniel Thompson <daniel.thompson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Jingoo Han <jingoohan1-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks to the conversion to copy_silence PCM ops, now we can copy
-from/to the kernel-space buffer directly via in_kernel parameter
-without set_fs() hack in all places.  This patch extends the existing
-helper functions for buffer copy to handle in-kernel buffer
-transfers, too.
+On Mon, 22 May 2017, Wolfram Sang wrote:
 
-Also, the similar API functions for in-kernel buffer transfer are
-provided as well.
+> include/linux/i2c is not for client devices. Move the header file to a
+> more appropriate location.
+>=20
+> Signed-off-by: Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
+> ---
+>  arch/arm/mach-omap2/common.h            | 2 +-
+>  arch/arm/mach-omap2/omap_twl.c          | 2 +-
+>  drivers/gpio/gpio-twl4030.c             | 2 +-
+>  drivers/iio/adc/twl4030-madc.c          | 2 +-
+>  drivers/iio/adc/twl6030-gpadc.c         | 2 +-
+>  drivers/input/keyboard/twl4030_keypad.c | 2 +-
+>  drivers/input/misc/twl4030-pwrbutton.c  | 2 +-
+>  drivers/input/misc/twl4030-vibra.c      | 2 +-
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/sound/pcm.h  | 50 +++++++++++++++++++++++++++----
- sound/core/pcm_lib.c | 83 ++++++++++++++++++++++++++++++++++++----------------
- 2 files changed, 102 insertions(+), 31 deletions(-)
+>  drivers/mfd/twl-core.c                  | 6 +++---
+>  drivers/mfd/twl4030-audio.c             | 2 +-
+>  drivers/mfd/twl4030-irq.c               | 2 +-
+>  drivers/mfd/twl4030-power.c             | 2 +-
+>  drivers/mfd/twl6030-irq.c               | 2 +-
 
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 339ae4f77766..1c9107af7385 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -1086,37 +1086,75 @@ void snd_pcm_playback_silence(struct snd_pcm_substream *substream, snd_pcm_ufram
- void snd_pcm_period_elapsed(struct snd_pcm_substream *substream);
- snd_pcm_sframes_t __snd_pcm_lib_write(struct snd_pcm_substream *substream,
- 				      unsigned long data, bool interleaved,
--				      snd_pcm_uframes_t size);
-+				      snd_pcm_uframes_t size, bool in_kernel);
- snd_pcm_sframes_t __snd_pcm_lib_read(struct snd_pcm_substream *substream,
- 				     unsigned long data, bool interleaved,
--				     snd_pcm_uframes_t size);
-+				     snd_pcm_uframes_t size, bool in_kernel);
- 
-+/* copy from/to user-space buffer */
- static inline snd_pcm_sframes_t
- snd_pcm_lib_write(struct snd_pcm_substream *substream,
- 		  const void __user *buf, snd_pcm_uframes_t size)
- {
--	return __snd_pcm_lib_write(substream, (unsigned long)buf, true, size);
-+	return __snd_pcm_lib_write(substream, (unsigned long)buf, true, size,
-+				   false);
- }
- 
- static inline snd_pcm_sframes_t
- snd_pcm_lib_writev(struct snd_pcm_substream *substream,
- 		   void __user **bufs, snd_pcm_uframes_t size)
- {
--	return __snd_pcm_lib_write(substream, (unsigned long)bufs, false, size);
-+	return __snd_pcm_lib_write(substream, (unsigned long)bufs, false, size,
-+				   false);
- }
- 
- static inline snd_pcm_sframes_t
- snd_pcm_lib_read(struct snd_pcm_substream *substream,
- 		 void __user *buf, snd_pcm_uframes_t size)
- {
--	return __snd_pcm_lib_read(substream, (unsigned long)buf, true, size);
-+	return __snd_pcm_lib_read(substream, (unsigned long)buf, true, size,
-+				  false);
- }
- 
- static inline snd_pcm_sframes_t
- snd_pcm_lib_readv(struct snd_pcm_substream *substream,
- 		  void __user **bufs, snd_pcm_uframes_t size)
- {
--	return __snd_pcm_lib_read(substream, (unsigned long)bufs, false, size);
-+	return __snd_pcm_lib_read(substream, (unsigned long)bufs, false, size,
-+				  false);
-+}
-+
-+/* copy from/to kernel-space buffer */
-+static inline snd_pcm_sframes_t
-+snd_pcm_kernel_write(struct snd_pcm_substream *substream,
-+		     const void *buf, snd_pcm_uframes_t size)
-+{
-+	return __snd_pcm_lib_write(substream, (unsigned long)buf, true, size,
-+				   true);
-+}
-+
-+static inline snd_pcm_sframes_t
-+snd_pcm_kernel_writev(struct snd_pcm_substream *substream,
-+		      void **bufs, snd_pcm_uframes_t size)
-+{
-+	return __snd_pcm_lib_write(substream, (unsigned long)bufs, false, size,
-+				   true);
-+}
-+
-+static inline snd_pcm_sframes_t
-+snd_pcm_kernel_read(struct snd_pcm_substream *substream,
-+		    void *buf, snd_pcm_uframes_t size)
-+{
-+	return __snd_pcm_lib_read(substream, (unsigned long)buf, true, size,
-+				  true);
-+}
-+
-+static inline snd_pcm_sframes_t
-+snd_pcm_kernel_readv(struct snd_pcm_substream *substream,
-+		     void **bufs, snd_pcm_uframes_t size)
-+{
-+	return __snd_pcm_lib_read(substream, (unsigned long)bufs, false, size,
-+				  true);
- }
- 
- extern const struct snd_pcm_hw_constraint_list snd_pcm_known_rates;
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 02a154c1908f..dfa6d13ba8bd 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -1991,7 +1991,7 @@ static int wait_for_avail(struct snd_pcm_substream *substream,
- 	
- typedef int (*transfer_f)(struct snd_pcm_substream *substream, unsigned int hwoff,
- 			  unsigned long data, unsigned int off,
--			  snd_pcm_uframes_t size);
-+			  snd_pcm_uframes_t size, bool in_kernel);
- 
- /* sanity-check for read/write methods */
- static int pcm_sanity_check(struct snd_pcm_substream *substream)
-@@ -2010,19 +2010,26 @@ static int pcm_sanity_check(struct snd_pcm_substream *substream)
- static int snd_pcm_lib_write_transfer(struct snd_pcm_substream *substream,
- 				      unsigned int hwoff,
- 				      unsigned long data, unsigned int off,
--				      snd_pcm_uframes_t frames)
-+				      snd_pcm_uframes_t frames, bool in_kernel)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	int err;
- 	char __user *buf = (char __user *) data + frames_to_bytes(runtime, off);
-+
- 	if (substream->ops->copy_silence) {
- 		err = substream->ops->copy_silence(substream, -1, hwoff, buf,
--						   frames, false);
-+						   frames, in_kernel);
- 		if (err < 0)
- 			return err;
- 	} else {
--		char *hwbuf = runtime->dma_area + frames_to_bytes(runtime, hwoff);
--		if (copy_from_user(hwbuf, buf, frames_to_bytes(runtime, frames)))
-+		char *hwbuf = runtime->dma_area +
-+			frames_to_bytes(runtime, hwoff);
-+
-+		if (in_kernel)
-+			memcpy(hwbuf, (void *)buf,
-+			       frames_to_bytes(runtime, frames));
-+		else if (copy_from_user(hwbuf, buf,
-+					frames_to_bytes(runtime, frames)))
- 			return -EFAULT;
- 	}
- 	return 0;
-@@ -2031,7 +2038,7 @@ static int snd_pcm_lib_write_transfer(struct snd_pcm_substream *substream,
- static int snd_pcm_lib_writev_transfer(struct snd_pcm_substream *substream,
- 				       unsigned int hwoff,
- 				       unsigned long data, unsigned int off,
--				       snd_pcm_uframes_t frames)
-+				       snd_pcm_uframes_t frames, bool in_kernel)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	int err;
-@@ -2047,7 +2054,8 @@ static int snd_pcm_lib_writev_transfer(struct snd_pcm_substream *substream,
- 			else
- 				buf = *bufs + samples_to_bytes(runtime, off);
- 			err = substream->ops->copy_silence(substream, c, hwoff,
--							   buf, frames, false);
-+							   buf, frames,
-+							   in_kernel);
- 			if (err < 0)
- 				return err;
- 		}
-@@ -2055,12 +2063,21 @@ static int snd_pcm_lib_writev_transfer(struct snd_pcm_substream *substream,
- 		/* default transfer behaviour */
- 		size_t dma_csize = runtime->dma_bytes / channels;
- 		for (c = 0; c < channels; ++c, ++bufs) {
--			char *hwbuf = runtime->dma_area + (c * dma_csize) + samples_to_bytes(runtime, hwoff);
--			if (*bufs == NULL) {
--				snd_pcm_format_set_silence(runtime->format, hwbuf, frames);
-+			char *hwbuf = runtime->dma_area + (c * dma_csize) +
-+				samples_to_bytes(runtime, hwoff);
-+
-+			if (!*bufs) {
-+				snd_pcm_format_set_silence(runtime->format,
-+							   hwbuf, frames);
- 			} else {
--				char __user *buf = *bufs + samples_to_bytes(runtime, off);
--				if (copy_from_user(hwbuf, buf, samples_to_bytes(runtime, frames)))
-+				char __user *buf = *bufs +
-+					samples_to_bytes(runtime, off);
-+
-+				if (in_kernel)
-+					memcpy(hwbuf, (void *)buf,
-+					       samples_to_bytes(runtime, frames));
-+				else if (copy_from_user(hwbuf, buf,
-+							samples_to_bytes(runtime, frames)))
- 					return -EFAULT;
- 			}
- 		}
-@@ -2070,7 +2087,7 @@ static int snd_pcm_lib_writev_transfer(struct snd_pcm_substream *substream,
- 
- snd_pcm_sframes_t __snd_pcm_lib_write(struct snd_pcm_substream *substream,
- 				      unsigned long data, bool interleaved,
--				      snd_pcm_uframes_t size)
-+				      snd_pcm_uframes_t size, bool in_kernel)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	snd_pcm_uframes_t xfer = 0;
-@@ -2147,7 +2164,8 @@ snd_pcm_sframes_t __snd_pcm_lib_write(struct snd_pcm_substream *substream,
- 		appl_ptr = runtime->control->appl_ptr;
- 		appl_ofs = appl_ptr % runtime->buffer_size;
- 		snd_pcm_stream_unlock_irq(substream);
--		err = transfer(substream, appl_ofs, data, offset, frames);
-+		err = transfer(substream, appl_ofs, data, offset, frames,
-+			       in_kernel);
- 		snd_pcm_stream_lock_irq(substream);
- 		if (err < 0)
- 			goto _end_unlock;
-@@ -2192,19 +2210,26 @@ EXPORT_SYMBOL(__snd_pcm_lib_write);
- static int snd_pcm_lib_read_transfer(struct snd_pcm_substream *substream, 
- 				     unsigned int hwoff,
- 				     unsigned long data, unsigned int off,
--				     snd_pcm_uframes_t frames)
-+				     snd_pcm_uframes_t frames, bool in_kernel)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	int err;
- 	char __user *buf = (char __user *) data + frames_to_bytes(runtime, off);
-+
- 	if (substream->ops->copy_silence) {
- 		err = substream->ops->copy_silence(substream, -1, hwoff, buf,
--						   frames, false);
-+						   frames, in_kernel);
- 		if (err < 0)
- 			return err;
- 	} else {
--		char *hwbuf = runtime->dma_area + frames_to_bytes(runtime, hwoff);
--		if (copy_to_user(buf, hwbuf, frames_to_bytes(runtime, frames)))
-+		char *hwbuf = runtime->dma_area +
-+			frames_to_bytes(runtime, hwoff);
-+
-+		if (in_kernel)
-+			memcpy((void *)buf, hwbuf,
-+			       frames_to_bytes(runtime, frames));
-+		else if (copy_to_user(buf, hwbuf,
-+				      frames_to_bytes(runtime, frames)))
- 			return -EFAULT;
- 	}
- 	return 0;
-@@ -2213,7 +2238,7 @@ static int snd_pcm_lib_read_transfer(struct snd_pcm_substream *substream,
- static int snd_pcm_lib_readv_transfer(struct snd_pcm_substream *substream,
- 				      unsigned int hwoff,
- 				      unsigned long data, unsigned int off,
--				      snd_pcm_uframes_t frames)
-+				      snd_pcm_uframes_t frames, bool in_kernel)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	int err;
-@@ -2229,19 +2254,26 @@ static int snd_pcm_lib_readv_transfer(struct snd_pcm_substream *substream,
- 				continue;
- 			buf = *bufs + samples_to_bytes(runtime, off);
- 			err = substream->ops->copy_silence(substream, c, hwoff,
--							   buf, frames, false);
-+							   buf, frames,
-+							   in_kernel);
- 			if (err < 0)
- 				return err;
- 		}
- 	} else {
- 		snd_pcm_uframes_t dma_csize = runtime->dma_bytes / channels;
-+
- 		for (c = 0; c < channels; ++c, ++bufs) {
--			if (*bufs == NULL)
-+			if (!*bufs)
- 				continue;
- 
--			hwbuf = runtime->dma_area + (c * dma_csize) + samples_to_bytes(runtime, hwoff);
-+			hwbuf = runtime->dma_area + (c * dma_csize) +
-+				samples_to_bytes(runtime, hwoff);
- 			buf = *bufs + samples_to_bytes(runtime, off);
--			if (copy_to_user(buf, hwbuf, samples_to_bytes(runtime, frames)))
-+			if (in_kernel)
-+				memcpy((void *)buf, hwbuf,
-+				       samples_to_bytes(runtime, frames));
-+			else if (copy_to_user(buf, hwbuf,
-+					      samples_to_bytes(runtime, frames)))
- 				return -EFAULT;
- 		}
- 	}
-@@ -2250,7 +2282,7 @@ static int snd_pcm_lib_readv_transfer(struct snd_pcm_substream *substream,
- 
- snd_pcm_sframes_t __snd_pcm_lib_read(struct snd_pcm_substream *substream,
- 				     unsigned long data, bool interleaved,
--				     snd_pcm_uframes_t size)
-+				     snd_pcm_uframes_t size, bool in_kernel)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	snd_pcm_uframes_t xfer = 0;
-@@ -2341,7 +2373,8 @@ snd_pcm_sframes_t __snd_pcm_lib_read(struct snd_pcm_substream *substream,
- 		appl_ptr = runtime->control->appl_ptr;
- 		appl_ofs = appl_ptr % runtime->buffer_size;
- 		snd_pcm_stream_unlock_irq(substream);
--		err = transfer(substream, appl_ofs, data, offset, frames);
-+		err = transfer(substream, appl_ofs, data, offset, frames,
-+			       in_kernel);
- 		snd_pcm_stream_lock_irq(substream);
- 		if (err < 0)
- 			goto _end_unlock;
--- 
-2.13.0
+For my own reference:
+  Acked-for-MFD-by: Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
+
+I guess this will be going through the MFD tree?
+
+>  drivers/phy/phy-twl4030-usb.c           | 2 +-
+>  drivers/power/supply/twl4030_charger.c  | 2 +-
+>  drivers/pwm/pwm-twl-led.c               | 2 +-
+>  drivers/pwm/pwm-twl.c                   | 2 +-
+>  drivers/regulator/twl-regulator.c       | 2 +-
+>  drivers/regulator/twl6030-regulator.c   | 2 +-
+>  drivers/rtc/rtc-twl.c                   | 2 +-
+>  drivers/usb/phy/phy-twl6030-usb.c       | 2 +-
+>  drivers/video/backlight/pandora_bl.c    | 2 +-
+>  drivers/watchdog/twl4030_wdt.c          | 2 +-
+>  include/linux/{i2c =3D> mfd}/twl.h        | 0
+>  sound/soc/codecs/twl4030.c              | 2 +-
+>  25 files changed, 26 insertions(+), 26 deletions(-)
+>  rename include/linux/{i2c =3D> mfd}/twl.h (100%)
+>=20
+> diff --git a/arch/arm/mach-omap2/common.h b/arch/arm/mach-omap2/common.h
+> index 8cc6338fcb1288..b5ad7fcb80ed24 100644
+> --- a/arch/arm/mach-omap2/common.h
+> +++ b/arch/arm/mach-omap2/common.h
+> @@ -29,7 +29,7 @@
+>  #include <linux/irq.h>
+>  #include <linux/delay.h>
+>  #include <linux/i2c.h>
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+>  #include <linux/i2c-omap.h>
+>  #include <linux/reboot.h>
+>  #include <linux/irqchip/irq-omap-intc.h>
+> diff --git a/arch/arm/mach-omap2/omap_twl.c b/arch/arm/mach-omap2/omap_tw=
+l.c
+> index 1346b3ab34a5e3..295124b248ae3f 100644
+> --- a/arch/arm/mach-omap2/omap_twl.c
+> +++ b/arch/arm/mach-omap2/omap_twl.c
+> @@ -16,7 +16,7 @@
+>  #include <linux/err.h>
+>  #include <linux/io.h>
+>  #include <linux/kernel.h>
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+> =20
+>  #include "soc.h"
+>  #include "voltage.h"
+> diff --git a/drivers/gpio/gpio-twl4030.c b/drivers/gpio/gpio-twl4030.c
+> index 24f388ed46d4c4..9b511df5450eb6 100644
+> --- a/drivers/gpio/gpio-twl4030.c
+> +++ b/drivers/gpio/gpio-twl4030.c
+> @@ -35,7 +35,7 @@
+>  #include <linux/of.h>
+>  #include <linux/irqdomain.h>
+> =20
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+> =20
+>  /*
+>   * The GPIO "subchip" supports 18 GPIOs which can be configured as
+> diff --git a/drivers/iio/adc/twl4030-madc.c b/drivers/iio/adc/twl4030-mad=
+c.c
+> index 0c74869a540ad3..5a64eda1652061 100644
+> --- a/drivers/iio/adc/twl4030-madc.c
+> +++ b/drivers/iio/adc/twl4030-madc.c
+> @@ -35,7 +35,7 @@
+>  #include <linux/delay.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/slab.h>
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+>  #include <linux/i2c/twl4030-madc.h>
+>  #include <linux/module.h>
+>  #include <linux/stddef.h>
+> diff --git a/drivers/iio/adc/twl6030-gpadc.c b/drivers/iio/adc/twl6030-gp=
+adc.c
+> index becbb0aef232b9..bc0e60b9da452e 100644
+> --- a/drivers/iio/adc/twl6030-gpadc.c
+> +++ b/drivers/iio/adc/twl6030-gpadc.c
+> @@ -33,7 +33,7 @@
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/of_platform.h>
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+>  #include <linux/iio/iio.h>
+>  #include <linux/iio/sysfs.h>
+> =20
+> diff --git a/drivers/input/keyboard/twl4030_keypad.c b/drivers/input/keyb=
+oard/twl4030_keypad.c
+> index 39e72b3219d8a4..f9f98ef1d98e3f 100644
+> --- a/drivers/input/keyboard/twl4030_keypad.c
+> +++ b/drivers/input/keyboard/twl4030_keypad.c
+> @@ -30,7 +30,7 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/input.h>
+>  #include <linux/platform_device.h>
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+>  #include <linux/slab.h>
+>  #include <linux/of.h>
+> =20
+> diff --git a/drivers/input/misc/twl4030-pwrbutton.c b/drivers/input/misc/=
+twl4030-pwrbutton.c
+> index 1c13005b228fa7..b307cca1702226 100644
+> --- a/drivers/input/misc/twl4030-pwrbutton.c
+> +++ b/drivers/input/misc/twl4030-pwrbutton.c
+> @@ -27,7 +27,7 @@
+>  #include <linux/input.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/platform_device.h>
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+> =20
+>  #define PWR_PWRON_IRQ (1 << 0)
+> =20
+> diff --git a/drivers/input/misc/twl4030-vibra.c b/drivers/input/misc/twl4=
+030-vibra.c
+> index caa5a62c42fbe0..6c51d404874bbd 100644
+> --- a/drivers/input/misc/twl4030-vibra.c
+> +++ b/drivers/input/misc/twl4030-vibra.c
+> @@ -28,7 +28,7 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/of.h>
+>  #include <linux/workqueue.h>
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+>  #include <linux/mfd/twl4030-audio.h>
+>  #include <linux/input.h>
+>  #include <linux/slab.h>
+> diff --git a/drivers/mfd/twl-core.c b/drivers/mfd/twl-core.c
+> index c64615dca2bd33..2a09dde4ca6efc 100644
+> --- a/drivers/mfd/twl-core.c
+> +++ b/drivers/mfd/twl-core.c
+> @@ -44,7 +44,7 @@
+>  #include <linux/regulator/machine.h>
+> =20
+>  #include <linux/i2c.h>
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+> =20
+>  /* Register descriptions for audio */
+>  #include <linux/mfd/twl4030-audio.h>
+> @@ -173,7 +173,7 @@ static struct twl_private *twl_priv;
+>  static struct twl_mapping twl4030_map[] =3D {
+>  	/*
+>  	 * NOTE:  don't change this table without updating the
+> -	 * <linux/i2c/twl.h> defines for TWL4030_MODULE_*
+> +	 * <linux/mfd/twl.h> defines for TWL4030_MODULE_*
+>  	 * so they continue to match the order in this table.
+>  	 */
+> =20
+> @@ -344,7 +344,7 @@ static const struct regmap_config twl4030_regmap_conf=
+ig[4] =3D {
+>  static struct twl_mapping twl6030_map[] =3D {
+>  	/*
+>  	 * NOTE:  don't change this table without updating the
+> -	 * <linux/i2c/twl.h> defines for TWL4030_MODULE_*
+> +	 * <linux/mfd/twl.h> defines for TWL4030_MODULE_*
+>  	 * so they continue to match the order in this table.
+>  	 */
+> =20
+> diff --git a/drivers/mfd/twl4030-audio.c b/drivers/mfd/twl4030-audio.c
+> index 0a1606480023f9..da16bf45fab43e 100644
+> --- a/drivers/mfd/twl4030-audio.c
+> +++ b/drivers/mfd/twl4030-audio.c
+> @@ -30,7 +30,7 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/of.h>
+>  #include <linux/of_platform.h>
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+>  #include <linux/mfd/core.h>
+>  #include <linux/mfd/twl4030-audio.h>
+> =20
+> diff --git a/drivers/mfd/twl4030-irq.c b/drivers/mfd/twl4030-irq.c
+> index b46c0cfc27d958..86f8fd8e81e4b5 100644
+> --- a/drivers/mfd/twl4030-irq.c
+> +++ b/drivers/mfd/twl4030-irq.c
+> @@ -33,7 +33,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/of.h>
+>  #include <linux/irqdomain.h>
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+> =20
+>  #include "twl-core.h"
+> =20
+> diff --git a/drivers/mfd/twl4030-power.c b/drivers/mfd/twl4030-power.c
+> index f4b2c29d77e330..6b36932263ba78 100644
+> --- a/drivers/mfd/twl4030-power.c
+> +++ b/drivers/mfd/twl4030-power.c
+> @@ -25,7 +25,7 @@
+> =20
+>  #include <linux/module.h>
+>  #include <linux/pm.h>
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/of.h>
+>  #include <linux/of_device.h>
+> diff --git a/drivers/mfd/twl6030-irq.c b/drivers/mfd/twl6030-irq.c
+> index 53574508a613f2..e3ec8dfa9f1ec0 100644
+> --- a/drivers/mfd/twl6030-irq.c
+> +++ b/drivers/mfd/twl6030-irq.c
+> @@ -35,7 +35,7 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/irq.h>
+>  #include <linux/kthread.h>
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/suspend.h>
+>  #include <linux/of.h>
+> diff --git a/drivers/phy/phy-twl4030-usb.c b/drivers/phy/phy-twl4030-usb.=
+c
+> index 2990b3965460e8..28f49902760d82 100644
+> --- a/drivers/phy/phy-twl4030-usb.c
+> +++ b/drivers/phy/phy-twl4030-usb.c
+> @@ -36,7 +36,7 @@
+>  #include <linux/pm_runtime.h>
+>  #include <linux/usb/musb.h>
+>  #include <linux/usb/ulpi.h>
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+>  #include <linux/regulator/consumer.h>
+>  #include <linux/err.h>
+>  #include <linux/slab.h>
+> diff --git a/drivers/power/supply/twl4030_charger.c b/drivers/power/suppl=
+y/twl4030_charger.c
+> index 2f82d0e9ec1bf7..390bfde86ae39b 100644
+> --- a/drivers/power/supply/twl4030_charger.c
+> +++ b/drivers/power/supply/twl4030_charger.c
+> @@ -18,7 +18,7 @@
+>  #include <linux/err.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/interrupt.h>
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+>  #include <linux/power_supply.h>
+>  #include <linux/notifier.h>
+>  #include <linux/usb/otg.h>
+> diff --git a/drivers/pwm/pwm-twl-led.c b/drivers/pwm/pwm-twl-led.c
+> index 21eff991d0e355..01153622778bad 100644
+> --- a/drivers/pwm/pwm-twl-led.c
+> +++ b/drivers/pwm/pwm-twl-led.c
+> @@ -24,7 +24,7 @@
+>  #include <linux/of.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/pwm.h>
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+>  #include <linux/slab.h>
+> =20
+>  /*
+> diff --git a/drivers/pwm/pwm-twl.c b/drivers/pwm/pwm-twl.c
+> index 9de617b766801b..b7a45be998153b 100644
+> --- a/drivers/pwm/pwm-twl.c
+> +++ b/drivers/pwm/pwm-twl.c
+> @@ -21,7 +21,7 @@
+>  #include <linux/of.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/pwm.h>
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+>  #include <linux/slab.h>
+> =20
+>  /*
+> diff --git a/drivers/regulator/twl-regulator.c b/drivers/regulator/twl-re=
+gulator.c
+> index 6c9ec84121bde4..a4456db5849d06 100644
+> --- a/drivers/regulator/twl-regulator.c
+> +++ b/drivers/regulator/twl-regulator.c
+> @@ -20,7 +20,7 @@
+>  #include <linux/regulator/driver.h>
+>  #include <linux/regulator/machine.h>
+>  #include <linux/regulator/of_regulator.h>
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+>  #include <linux/delay.h>
+> =20
+>  /*
+> diff --git a/drivers/regulator/twl6030-regulator.c b/drivers/regulator/tw=
+l6030-regulator.c
+> index 56aada38788776..219cbd910dbf52 100644
+> --- a/drivers/regulator/twl6030-regulator.c
+> +++ b/drivers/regulator/twl6030-regulator.c
+> @@ -21,7 +21,7 @@
+>  #include <linux/regulator/driver.h>
+>  #include <linux/regulator/machine.h>
+>  #include <linux/regulator/of_regulator.h>
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+>  #include <linux/delay.h>
+> =20
+>  struct twlreg_info {
+> diff --git a/drivers/rtc/rtc-twl.c b/drivers/rtc/rtc-twl.c
+> index c18c39212ce680..3472e79f2b1782 100644
+> --- a/drivers/rtc/rtc-twl.c
+> +++ b/drivers/rtc/rtc-twl.c
+> @@ -31,7 +31,7 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/of.h>
+> =20
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+> =20
+>  enum twl_class {
+>  	TWL_4030 =3D 0,
+> diff --git a/drivers/usb/phy/phy-twl6030-usb.c b/drivers/usb/phy/phy-twl6=
+030-usb.c
+> index 628b600b02b174..b5dc077ed7d3c6 100644
+> --- a/drivers/usb/phy/phy-twl6030-usb.c
+> +++ b/drivers/usb/phy/phy-twl6030-usb.c
+> @@ -28,7 +28,7 @@
+>  #include <linux/usb/musb.h>
+>  #include <linux/usb/phy_companion.h>
+>  #include <linux/phy/omap_usb.h>
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+>  #include <linux/regulator/consumer.h>
+>  #include <linux/err.h>
+>  #include <linux/slab.h>
+> diff --git a/drivers/video/backlight/pandora_bl.c b/drivers/video/backlig=
+ht/pandora_bl.c
+> index 5d8bb8b201835d..a186bc677c7d80 100644
+> --- a/drivers/video/backlight/pandora_bl.c
+> +++ b/drivers/video/backlight/pandora_bl.c
+> @@ -16,7 +16,7 @@
+>  #include <linux/delay.h>
+>  #include <linux/fb.h>
+>  #include <linux/backlight.h>
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+>  #include <linux/err.h>
+> =20
+>  #define TWL_PWM0_ON		0x00
+> diff --git a/drivers/watchdog/twl4030_wdt.c b/drivers/watchdog/twl4030_wd=
+t.c
+> index 9bf3cc0f396106..569fe85e52da75 100644
+> --- a/drivers/watchdog/twl4030_wdt.c
+> +++ b/drivers/watchdog/twl4030_wdt.c
+> @@ -24,7 +24,7 @@
+>  #include <linux/kernel.h>
+>  #include <linux/watchdog.h>
+>  #include <linux/platform_device.h>
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+> =20
+>  #define TWL4030_WATCHDOG_CFG_REG_OFFS	0x3
+> =20
+> diff --git a/include/linux/i2c/twl.h b/include/linux/mfd/twl.h
+> similarity index 100%
+> rename from include/linux/i2c/twl.h
+> rename to include/linux/mfd/twl.h
+> diff --git a/sound/soc/codecs/twl4030.c b/sound/soc/codecs/twl4030.c
+> index a2104d68169d9e..bd86a2d78c5ff2 100644
+> --- a/sound/soc/codecs/twl4030.c
+> +++ b/sound/soc/codecs/twl4030.c
+> @@ -28,7 +28,7 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/of.h>
+>  #include <linux/of_gpio.h>
+> -#include <linux/i2c/twl.h>
+> +#include <linux/mfd/twl.h>
+>  #include <linux/slab.h>
+>  #include <linux/gpio.h>
+>  #include <sound/core.h>
+
+--=20
+Lee Jones
+Linaro STMicroelectronics Landing Team Lead
+Linaro.org =E2=94=82 Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
+
+--=20
+You received this message because you are subscribed to "rtc-linux".
+Membership options at http://groups.google.com/group/rtc-linux .
+Please read http://groups.google.com/group/rtc-linux/web/checklist
+before submitting a driver.
+---=20
+You received this message because you are subscribed to the Google Groups "=
+rtc-linux" group.
+To unsubscribe from this group and stop receiving emails from it, send an e=
+mail to rtc-linux+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+For more options, visit https://groups.google.com/d/optout.
