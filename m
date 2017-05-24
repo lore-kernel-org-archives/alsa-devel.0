@@ -1,53 +1,60 @@
-From: Icenowy Zheng <icenowy-h8G6r0blFSE@public.gmane.org>
-Subject: [PATCH v3 9/9] ARM: sun8i: v3s: enable audio on Lichee
- Pi Zero Dock board
-Date: Wed, 24 May 2017 18:06:07 +0800
-Message-ID: <20170524100607.29790-10-icenowy@aosc.io>
-References: <20170524100607.29790-1-icenowy@aosc.io>
-Reply-To: icenowy-h8G6r0blFSE@public.gmane.org
+From: Julian Scheel <julian@jusst.de>
+Subject: [PATCH] ASoC: simple-card: Fix misleading error message
+Date: Wed, 24 May 2017 12:28:23 +0200
+Message-ID: <20170524102823.8253-1-julian@jusst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBDS6XAN6ZADRBAVXSXEQKGQEM5TX5AI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20170524100607.29790-1-icenowy-h8G6r0blFSE@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
-Cc: dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Icenowy Zheng <icenowy-h8G6r0blFSE@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from web01.jusst.de (jusst.de [188.40.114.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id C4C90267333
+ for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 12:29:14 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Nikita Yushchenko <nikita.yoush@cogentembedded.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Julian Scheel <julian@jusst.de>
 List-Id: alsa-devel@alsa-project.org
 
-The Lichee Pi Zero Dock board has an audio jack and an onboard MIC.
+In case cpu could not be found the error message would always refer to
+/codec/ not being found in DT. Fix this by catching the cpu node not found
+case explicitly.
 
-Enable them.
-
-Signed-off-by: Icenowy Zheng <icenowy-h8G6r0blFSE@public.gmane.org>
+Signed-off-by: Julian Scheel <julian@jusst.de>
 ---
- arch/arm/boot/dts/sun8i-v3s-licheepi-zero-dock.dts | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/generic/simple-card.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/sun8i-v3s-licheepi-zero-dock.dts b/arch/arm/boot/dts/sun8i-v3s-licheepi-zero-dock.dts
-index d1311098ea45..80f477738668 100644
---- a/arch/arm/boot/dts/sun8i-v3s-licheepi-zero-dock.dts
-+++ b/arch/arm/boot/dts/sun8i-v3s-licheepi-zero-dock.dts
-@@ -55,6 +55,15 @@
- 	};
- };
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 7ed84f811205..38d7b601546f 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -233,13 +233,19 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
+ 	snprintf(prop, sizeof(prop), "%scpu", prefix);
+ 	cpu = of_get_child_by_name(node, prop);
  
-+&codec {
-+	allwinner,audio-routing =
-+		"Headphone", "HP",
-+		"Headphone", "HPCOM",
-+		"MIC1", "Mic",
-+		"Mic",  "HBIAS";
-+	status = "okay";
-+};
++	if (!cpu) {
++		ret = -EINVAL;
++		dev_err(dev, "%s: Can't find %s DT node\n", __func__, prop);
++		goto dai_link_of_err;
++	}
 +
- &mmc1 {
- 	broken-cd;
- 	bus-width = <4>;
+ 	snprintf(prop, sizeof(prop), "%splat", prefix);
+ 	plat = of_get_child_by_name(node, prop);
+ 
+ 	snprintf(prop, sizeof(prop), "%scodec", prefix);
+ 	codec = of_get_child_by_name(node, prop);
+ 
+-	if (!cpu || !codec) {
++	if (!codec) {
+ 		ret = -EINVAL;
+ 		dev_err(dev, "%s: Can't find %s DT node\n", __func__, prop);
+ 		goto dai_link_of_err;
 -- 
 2.12.2
