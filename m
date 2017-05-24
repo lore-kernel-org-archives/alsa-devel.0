@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: SSI PIO adjust to 24bit mode" to the asoc tree
-Date: Wed, 24 May 2017 18:42:07 +0100
-Message-ID: <E1dDaIR-0002tb-Hw@debutante>
-References: <87k257oy6t.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87k257oy6t.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: Fix use-after-free at card unregistration" to the asoc tree
+Date: Wed, 24 May 2017 18:42:12 +0100
+Message-ID: <E1dDaIW-0002vA-M4@debutante>
+References: <20170524081945.29116-1-tiwai@suse.de>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20170524081945.29116-1-tiwai@suse.de>
+Sender: stable-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgMark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Robert Jarzmik <robert.jarzmik@free.fr>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: SSI PIO adjust to 24bit mode
+   ASoC: Fix use-after-free at card unregistration
 
 has been applied to the asoc tree at
 
@@ -37,50 +37,53 @@ to this mail.
 Thanks,
 Mark
 
->From 7819a942de7b993771bd9377babc80485fe7606b Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 24 May 2017 01:17:10 +0000
-Subject: [PATCH] ASoC: rsnd: SSI PIO adjust to 24bit mode
+>From 4efda5f2130da033aeedc5b3205569893b910de2 Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Wed, 24 May 2017 10:19:45 +0200
+Subject: [PATCH] ASoC: Fix use-after-free at card unregistration
 
-commit 90431eb49bff ("ASoC: rsnd: don't use PDTA bit for 24bit on SSI")
-fixups 24bit mode data alignment, but PIO was not cared.
-This patch fixes PIO mode 24bit data alignment
+soc_cleanup_card_resources() call snd_card_free() at the last of its
+procedure.  This turned out to lead to a use-after-free.
+PCM runtimes have been already removed via soc_remove_pcm_runtimes(),
+while it's dereferenced later in soc_pcm_free() called via
+snd_card_free().
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+The fix is simple: just move the snd_card_free() call to the beginning
+of the whole procedure.  This also gives another benefit: it
+guarantees that all operations have been shut down before actually
+releasing the resources, which was racy until now.
+
+Reported-and-tested-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: <stable@vger.kernel.org>
 ---
- sound/soc/sh/rcar/ssi.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ sound/soc/soc-core.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index c224695c1484..91e5c07911b4 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -550,6 +550,13 @@ static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
- 		struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
- 		u32 *buf = (u32 *)(runtime->dma_area +
- 				   rsnd_dai_pointer_offset(io, 0));
-+		int shift = 0;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index aae099c0e502..754e3ef8d7ae 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2286,6 +2286,9 @@ static int soc_cleanup_card_resources(struct snd_soc_card *card)
+ 	list_for_each_entry(rtd, &card->rtd_list, list)
+ 		flush_delayed_work(&rtd->delayed_work);
+ 
++	/* free the ALSA card at first; this syncs with pending operations */
++	snd_card_free(card->snd_card);
 +
-+		switch (runtime->sample_bits) {
-+		case 32:
-+			shift = 8;
-+			break;
-+		}
+ 	/* remove and free each DAI */
+ 	soc_remove_dai_links(card);
+ 	soc_remove_pcm_runtimes(card);
+@@ -2300,9 +2303,7 @@ static int soc_cleanup_card_resources(struct snd_soc_card *card)
+ 	if (card->remove)
+ 		card->remove(card);
  
- 		/*
- 		 * 8/16/32 data can be assesse to TDR/RDR register
-@@ -557,9 +564,9 @@ static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
- 		 * see rsnd_ssi_init()
- 		 */
- 		if (rsnd_io_is_play(io))
--			rsnd_mod_write(mod, SSITDR, *buf);
-+			rsnd_mod_write(mod, SSITDR, (*buf) << shift);
- 		else
--			*buf = rsnd_mod_read(mod, SSIRDR);
-+			*buf = (rsnd_mod_read(mod, SSIRDR) >> shift);
+-	snd_card_free(card->snd_card);
+ 	return 0;
+-
+ }
  
- 		elapsed = rsnd_dai_pointer_update(io, sizeof(*buf));
- 	}
+ /* removes a socdev */
 -- 
 2.11.0
