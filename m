@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Convert skl machine data to C99
+Subject: Applied "ASoC: Intel: Convert atom machine data to C99
 	style" to the asoc tree
-Date: Wed, 24 May 2017 18:41:36 +0100
-Message-ID: <E1dDaHw-0002lU-W5@debutante>
-References: <1494835937-22068-3-git-send-email-naveen.m@intel.com>
+Date: Wed, 24 May 2017 18:41:41 +0100
+Message-ID: <E1dDaI1-0002mV-Ks@debutante>
+References: <1494835937-22068-2-git-send-email-naveen.m@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 40638267386
- for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 19:41:51 +0200 (CEST)
-In-Reply-To: <1494835937-22068-3-git-send-email-naveen.m@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 46D39266C44
+ for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 19:41:50 +0200 (CEST)
+In-Reply-To: <1494835937-22068-2-git-send-email-naveen.m@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Convert skl machine data to C99 style
+   ASoC: Intel: Convert atom machine data to C99 style
 
 has been applied to the asoc tree at
 
@@ -52,14 +52,14 @@ to this mail.
 Thanks,
 Mark
 
->From 9bf70cd4cd9f82a5f914fbf1fa0d32eff7a5d892 Mon Sep 17 00:00:00 2001
+>From edc692e5059450350bba38446dc330a31de964f4 Mon Sep 17 00:00:00 2001
 From: Naveen M <naveen.m@intel.com>
-Date: Mon, 15 May 2017 13:42:12 +0530
-Subject: [PATCH] ASoC: Intel: Convert skl machine data to C99 style
+Date: Mon, 15 May 2017 13:42:11 +0530
+Subject: [PATCH] ASoC: Intel: Convert atom machine data to C99 style
 
 C99 style struct initialization helps in readability as well as
 initialization of variables not specified as NULL.
-Patch modifies all skl machine data.
+Patch modifies all atom machine data.
 
 Suggested-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Naveen M <naveen.m@intel.com>
@@ -67,90 +67,256 @@ Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl.c | 60 +++++++++++++++++++++++++++++++++++--------
- 1 file changed, 49 insertions(+), 11 deletions(-)
+ sound/soc/intel/atom/sst/sst_acpi.c | 209 ++++++++++++++++++++++++++++--------
+ 1 file changed, 162 insertions(+), 47 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 4c9b5781282b..a4d1121595b6 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -877,28 +877,66 @@ static void skl_remove(struct pci_dev *pci)
- }
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index dd250b8b26f2..193c4d7b35f5 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -453,12 +453,20 @@ static const struct dmi_system_id cht_table[] = {
  
- static struct sst_acpi_mach sst_skl_devdata[] = {
--	{ "INT343A", "skl_alc286s_i2s", "intel/dsp_fw_release.bin", NULL, NULL, NULL },
--	{ "INT343B", "skl_n88l25_s4567", "intel/dsp_fw_release.bin",
--				NULL, NULL, &skl_dmic_data },
--	{ "MX98357A", "skl_n88l25_m98357a", "intel/dsp_fw_release.bin",
--				NULL, NULL, &skl_dmic_data },
+ 
+ static struct sst_acpi_mach cht_surface_mach = {
+-	"10EC5640", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
+-								&chv_platform_data };
++	.id = "10EC5640",
++	.drv_name = "cht-bsw-rt5645",
++	.fw_filename = "intel/fw_sst_22a8.bin",
++	.board = "cht-bsw",
++	.pdata = &chv_platform_data,
++};
+ 
+ static struct sst_acpi_mach byt_thinkpad_10 = {
+-	"10EC5640", "cht-bsw-rt5672", "intel/fw_sst_0f28.bin", "cht-bsw", NULL,
+-	                                                        &byt_rvp_platform_data };
++	.id = "10EC5640",
++	.drv_name = "cht-bsw-rt5672",
++	.fw_filename = "intel/fw_sst_0f28.bin",
++	.board = "cht-bsw",
++	.pdata = &byt_rvp_platform_data,
++};
+ 
+ static struct sst_acpi_mach *cht_quirk(void *arg)
+ {
+@@ -486,68 +494,175 @@ static struct sst_acpi_mach *byt_quirk(void *arg)
+ 
+ 
+ static struct sst_acpi_mach sst_acpi_bytcr[] = {
+-	{"10EC5640", "bytcr_rt5640", "intel/fw_sst_0f28.bin", "bytcr_rt5640", byt_quirk,
+-						&byt_rvp_platform_data },
+-	{"10EC5642", "bytcr_rt5640", "intel/fw_sst_0f28.bin", "bytcr_rt5640", NULL,
+-						&byt_rvp_platform_data },
+-	{"INTCCFFD", "bytcr_rt5640", "intel/fw_sst_0f28.bin", "bytcr_rt5640", NULL,
+-						&byt_rvp_platform_data },
+-	{"10EC5651", "bytcr_rt5651", "intel/fw_sst_0f28.bin", "bytcr_rt5651", NULL,
+-						&byt_rvp_platform_data },
+-	{"DLGS7212", "bytcht_da7213", "intel/fw_sst_0f28.bin", "bytcht_da7213", NULL,
+-						&byt_rvp_platform_data },
+-	{"DLGS7213", "bytcht_da7213", "intel/fw_sst_0f28.bin", "bytcht_da7213", NULL,
+-						&byt_rvp_platform_data },
 +	{
-+		.id = "INT343A",
-+		.drv_name = "skl_alc286s_i2s",
-+		.fw_filename = "intel/dsp_fw_release.bin",
++		.id = "10EC5640",
++		.drv_name = "bytcr_rt5640",
++		.fw_filename = "intel/fw_sst_0f28.bin",
++		.board = "bytcr_rt5640",
++		.machine_quirk = byt_quirk,
++		.pdata = &byt_rvp_platform_data,
 +	},
 +	{
-+		.id = "INT343B",
-+		.drv_name = "skl_n88l25_s4567",
-+		.fw_filename = "intel/dsp_fw_release.bin",
-+		.pdata = &skl_dmic_data
++		.id = "10EC5642",
++		.drv_name = "bytcr_rt5640",
++		.fw_filename = "intel/fw_sst_0f28.bin",
++		.board = "bytcr_rt5640",
++		.pdata = &byt_rvp_platform_data
 +	},
 +	{
-+		.id = "MX98357A",
-+		.drv_name = "skl_n88l25_m98357a",
-+		.fw_filename = "intel/dsp_fw_release.bin",
-+		.pdata = &skl_dmic_data
++		.id = "INTCCFFD",
++		.drv_name = "bytcr_rt5640",
++		.fw_filename = "intel/fw_sst_0f28.bin",
++		.board = "bytcr_rt5640",
++		.pdata = &byt_rvp_platform_data
 +	},
- 	{}
++	{
++		.id = "10EC5651",
++		.drv_name = "bytcr_rt5651",
++		.fw_filename = "intel/fw_sst_0f28.bin",
++		.board = "bytcr_rt5651",
++		.pdata = &byt_rvp_platform_data
++	},
++	{
++		.id = "DLGS7212",
++		.drv_name = "bytcht_da7213",
++		.fw_filename = "intel/fw_sst_0f28.bin",
++		.board = "bytcht_da7213",
++		.pdata = &byt_rvp_platform_data
++	},
++	{
++		.id = "DLGS7213",
++		.drv_name = "bytcht_da7213",
++		.fw_filename = "intel/fw_sst_0f28.bin",
++		.board = "bytcht_da7213",
++		.pdata = &byt_rvp_platform_data
++	},
+ 	/* some Baytrail platforms rely on RT5645, use CHT machine driver */
+-	{"10EC5645", "cht-bsw-rt5645", "intel/fw_sst_0f28.bin", "cht-bsw", NULL,
+-						&byt_rvp_platform_data },
+-	{"10EC5648", "cht-bsw-rt5645", "intel/fw_sst_0f28.bin", "cht-bsw", NULL,
+-						&byt_rvp_platform_data },
++	{
++		.id = "10EC5645",
++		.drv_name = "cht-bsw-rt5645",
++		.fw_filename = "intel/fw_sst_0f28.bin",
++		.board = "cht-bsw",
++		.pdata = &byt_rvp_platform_data
++	},
++	{
++		.id = "10EC5648",
++		.drv_name = "cht-bsw-rt5645",
++		.fw_filename = "intel/fw_sst_0f28.bin",
++		.board = "cht-bsw",
++		.pdata = &byt_rvp_platform_data
++	},
+ #if IS_ENABLED(CONFIG_SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH)
+ 	/*
+ 	 * This is always last in the table so that it is selected only when
+ 	 * enabled explicitly and there is no codec-related information in SSDT
+ 	 */
+-	{"80860F28", "bytcht_nocodec", "intel/fw_sst_0f28.bin", "bytcht_nocodec", NULL,
+-						&byt_rvp_platform_data },
++	{
++		.id = "80860F28",
++		.drv_name = "bytcht_nocodec",
++		.fw_filename = "intel/fw_sst_0f28.bin",
++		.board = "bytcht_nocodec",
++		.pdata = &byt_rvp_platform_data
++	},
+ #endif
+ 	{},
  };
  
- static struct sst_acpi_mach sst_bxtp_devdata[] = {
--	{ "INT343A", "bxt_alc298s_i2s", "intel/dsp_fw_bxtn.bin", NULL, NULL, NULL },
--	{ "DLGS7219", "bxt_da7219_max98357a_i2s", "intel/dsp_fw_bxtn.bin", NULL, NULL, NULL },
+ /* Cherryview-based platforms: CherryTrail and Braswell */
+ static struct sst_acpi_mach sst_acpi_chv[] = {
+-	{"10EC5670", "cht-bsw-rt5672", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
+-						&chv_platform_data },
+-	{"10EC5672", "cht-bsw-rt5672", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
+-						&chv_platform_data },
+-	{"10EC5645", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
+-						&chv_platform_data },
+-	{"10EC5650", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
+-						&chv_platform_data },
+-	{"10EC3270", "cht-bsw-rt5645", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
+-						&chv_platform_data },
+-
+-	{"193C9890", "cht-bsw-max98090", "intel/fw_sst_22a8.bin", "cht-bsw", NULL,
+-						&chv_platform_data },
+-	{"DLGS7212", "bytcht_da7213", "intel/fw_sst_22a8.bin", "bytcht_da7213", NULL,
+-						&chv_platform_data },
+-	{"DLGS7213", "bytcht_da7213", "intel/fw_sst_22a8.bin", "bytcht_da7213", NULL,
+-						&chv_platform_data },
 +	{
-+		.id = "INT343A",
-+		.drv_name = "bxt_alc298s_i2s",
-+		.fw_filename = "intel/dsp_fw_bxtn.bin",
++		.id = "10EC5670",
++		.drv_name = "cht-bsw-rt5672",
++		.fw_filename = "intel/fw_sst_22a8.bin",
++		.board = "cht-bsw",
++		.pdata = &chv_platform_data
 +	},
 +	{
-+		.id = "DLGS7219",
-+		.drv_name = "bxt_da7219_max98357a_i2s",
-+		.fw_filename = "intel/dsp_fw_bxtn.bin",
++		.id = "10EC5672",
++		.drv_name = "cht-bsw-rt5672",
++		.fw_filename = "intel/fw_sst_22a8.bin",
++		.board = "cht-bsw",
++		.pdata = &chv_platform_data
 +	},
++	{
++		.id = "10EC5645",
++		.drv_name = "cht-bsw-rt5645",
++		.fw_filename = "intel/fw_sst_22a8.bin",
++		.board = "cht-bsw",
++		.pdata = &chv_platform_data
++	},
++	{
++		.id = "10EC5650",
++		.drv_name = "cht-bsw-rt5645",
++		.fw_filename = "intel/fw_sst_22a8.bin",
++		.board = "cht-bsw",
++		.pdata = &chv_platform_data
++	},
++	{
++		.id = "10EC3270",
++		.drv_name = "cht-bsw-rt5645",
++		.fw_filename = "intel/fw_sst_22a8.bin",
++		.board = "cht-bsw",
++		.pdata = &chv_platform_data
++	},
++
++	{
++		.id = "193C9890",
++		.drv_name = "cht-bsw-max98090",
++		.fw_filename = "intel/fw_sst_22a8.bin",
++		.board = "cht-bsw",
++		.pdata = &chv_platform_data
++	},
++	{
++		.id = "DLGS7212",
++		.drv_name = "bytcht_da7213",
++		.fw_filename = "intel/fw_sst_22a8.bin",
++		.board = "bytcht_da7213",
++		.pdata = &chv_platform_data
++	},
++	{
++		.id = "DLGS7213",
++		.drv_name = "bytcht_da7213",
++		.fw_filename = "intel/fw_sst_22a8.bin",
++		.board = "bytcht_da7213",
++		.pdata = &chv_platform_data
++	},
+ 	/* some CHT-T platforms rely on RT5640, use Baytrail machine driver */
+-	{"10EC5640", "bytcr_rt5640", "intel/fw_sst_22a8.bin", "bytcr_rt5640", cht_quirk,
+-						&chv_platform_data },
+-	{"10EC3276", "bytcr_rt5640", "intel/fw_sst_22a8.bin", "bytcr_rt5640", NULL,
+-						&chv_platform_data },
++	{
++		.id = "10EC5640",
++		.drv_name = "bytcr_rt5640",
++		.fw_filename = "intel/fw_sst_22a8.bin",
++		.board = "bytcr_rt5640",
++		.machine_quirk = cht_quirk,
++		.pdata = &chv_platform_data
++	},
++	{
++		.id = "10EC3276",
++		.drv_name = "bytcr_rt5640",
++		.fw_filename = "intel/fw_sst_22a8.bin",
++		.board = "bytcr_rt5640",
++		.pdata = &chv_platform_data
++	},
+ 	/* some CHT-T platforms rely on RT5651, use Baytrail machine driver */
+-	{"10EC5651", "bytcr_rt5651", "intel/fw_sst_22a8.bin", "bytcr_rt5651", NULL,
+-						&chv_platform_data },
++	{
++		.id = "10EC5651",
++		.drv_name = "bytcr_rt5651",
++		.fw_filename = "intel/fw_sst_22a8.bin",
++		.board = "bytcr_rt5651",
++		.pdata = &chv_platform_data
++	},
+ #if IS_ENABLED(CONFIG_SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH)
+ 	/*
+ 	 * This is always last in the table so that it is selected only when
+ 	 * enabled explicitly and there is no codec-related information in SSDT
+ 	 */
+-	{"808622A8", "bytcht_nocodec", "intel/fw_sst_22a8.bin", "bytcht_nocodec", NULL,
+-						&chv_platform_data },
++	{
++		.id = "808622A8",
++		.drv_name = "bytcht_nocodec",
++		.fw_filename = "intel/fw_sst_22a8.bin",
++		.board = "bytcht_nocodec",
++		.pdata = &chv_platform_data
++	},
+ #endif
+ 	{},
  };
- 
- static struct sst_acpi_mach sst_kbl_devdata[] = {
--	{ "INT343A", "kbl_alc286s_i2s", "intel/dsp_fw_kbl.bin", NULL, NULL, NULL },
--	{ "INT343B", "kbl_n88l25_s4567", "intel/dsp_fw_kbl.bin", NULL, NULL, &skl_dmic_data },
--	{ "MX98357A", "kbl_n88l25_m98357a", "intel/dsp_fw_kbl.bin", NULL, NULL, &skl_dmic_data },
-+	{
-+		.id = "INT343A",
-+		.drv_name = "kbl_alc286s_i2s",
-+		.fw_filename = "intel/dsp_fw_kbl.bin",
-+	},
-+	{
-+		.id = "INT343B",
-+		.drv_name = "kbl_n88l25_s4567",
-+		.fw_filename = "intel/dsp_fw_kbl.bin",
-+		.pdata = &skl_dmic_data
-+	},
-+	{
-+		.id = "MX98357A",
-+		.drv_name = "kbl_n88l25_m98357a",
-+		.fw_filename = "intel/dsp_fw_kbl.bin",
-+		.pdata = &skl_dmic_data
-+	},
- 	{}
- };
- 
- static struct sst_acpi_mach sst_glk_devdata[] = {
--	{ "INT343A", "glk_alc298s_i2s", "intel/dsp_fw_glk.bin", NULL, NULL, NULL },
-+	{
-+		.id = "INT343A",
-+		.drv_name = "glk_alc298s_i2s",
-+		.fw_filename = "intel/dsp_fw_glk.bin",
-+	},
- };
- 
- /* PCI IDs */
 -- 
 2.11.0
