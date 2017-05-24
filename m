@@ -1,19 +1,18 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v3 0/9] Add support for the audio codec on
-	Allwinner V3s
-Date: Wed, 24 May 2017 16:14:04 +0530
-Message-ID: <20170524104404.GB15061@localhost>
-References: <20170524100607.29790-1-icenowy@aosc.io>
- <20170524104008.GA15061@localhost>
+From: Alexander Tsoy <alexander@tsoy.me>
+Subject: [alsa-lib] bug in USB-Audio.conf
+Date: Wed, 24 May 2017 13:49:57 +0300
+Message-ID: <1495622997.2234.11.camel@tsoy.me>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id DEB21267333
- for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 12:41:51 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20170524104008.GA15061@localhost>
+Received: from puleglot.ru (puleglot.ru [78.47.112.147])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D840267333
+ for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 12:50:38 +0200 (CEST)
+Received: from [178.208.156.210] (helo=[192.168.10.130])
+ by puleglot.ru with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+ (Exim 4.89) (envelope-from <@puleglot.ru>) id 1dDTsD-0002SV-NT
+ for alsa-devel@alsa-project.org; Wed, 24 May 2017 13:50:37 +0300
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,55 +22,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Icenowy Zheng <icenowy@aosc.io>, Arnd Bergmann <arnd@arndb.de>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com, Takashi Iwai <tiwai@suse.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, dmaengine@vger.kernel.org, Maxime Ripard <maxime.ripard@free-electrons.com>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Fixed Arnd email now..
-
-On Wed, May 24, 2017 at 04:10:08PM +0530, Vinod Koul wrote:
-> On Wed, May 24, 2017 at 06:05:58PM +0800, Icenowy Zheng wrote:
-> > Allwinner V3s features a audio codec with dedicated digital and analog parts,
-> > like the ones on A23/H3, but much simpler (lack of MIC2, LINE IN and MBIAS).
-> > 
-> > Add support for it.
-> > 
-> > In order to make the codec usable, DMA support is also added in this series.
-> > 
-> > Patch 1 split out MBIAS in analog codec driver.
-> > 
-> > Patch 2 prepared a set of objects that have MIC2 and LINEIN stripped out
-> > for V3s.
-> > 
-> > Patch 3/4 adds support for V3s in analog/digital codec.
-> > 
-> > Patch 5 add the gate bit as a common quirk of sun6i-dma driver, as V3s also
-> > needs it.
-> > 
-> > Patch 6 really adds support for V3s in DMA engine.
-> > 
-> > Patch 7/8/9 adds three parts of device tree: DMA engine, codec support
-> > and enable the codec for Lichee Pi Zero dock.
-> > 
-> > Icenowy Zheng (9):
-> >   ASoC: sun8i-codec-analog: split out mbias
-> >   ASoC: sun8i-codec-analog: prepare a mixer control/widget/route set for
-> >     V3s
-> >   ASoC: sun8i-codec-analog: add support for V3s SoC
-> >   ASoC: sun4i-codec: Add support for V3s codec
-> >   dmaengine: sun6i: make gate bit in sun8i's DMA engines a common quirk
-> >   dmaengine: sun6i: support V3s SoC variant
-> >   ARM: dts: sun8i: add DMA engine in V3s DTSI
-> >   ARM: dts: sun8i: add audio codec support into V3s DTSI
-> >   ARM: sun8i: v3s: enable audio on Lichee Pi Zero Dock board
-> 
-> And why do we need the cross tree submission?? I have asked before and was
-> met with silence! [1]
-> 
-> Can you please split it up per subsystem to make it easy for everyone and
-> clearly spell out dependencies.
-> 
-> [1]: https://www.spinics.net/lists/dmaengine/msg12884.html
-
--- 
-~Vinod
+SGVsbG8hCgpJJ3ZlIG5vdGljZWQgdGhhdCB0aGVyZSBpcyBhIGJ1ZyBpbiBVU0ItQXVkaW8uY29u
+Zi4gIlVTQi0KQXVkaW8ucGNtLmRlZmF1bHQiIGRvZXNuJ3QgYWxsb3cgY3VzdG9tICJkZWZhdWx0
+IiBkZWZpbml0aW9ucywgYnV0CnRoZXJlIGlzIG9uZToKClVTQi1BdWRpby4iQXVkaW9waGlsZSBV
+U0IgKHRtKSIucGNtLmRlZmF1bHQKCk1vcmVvdmVyIHRoZXJlIGlzIGEgdHlwbyBpbiB0aGlzIGRl
+ZmluaXRpb24gaW4gZHNub29wIGFyZ3M6IERFVklDRT0xIC0+CkRFVj0xLiBTbyB3aGF0IGlzIHRo
+ZSBiZXN0IGNvdXJzZSBvZiBhY3Rpb24gaGVyZT8gV2UgY2FuIGZpeCBVU0ItCkF1ZGlvLmNvbmYg
+KEkgaGF2ZSBhIHdvcmtpbmcgcGF0Y2ggdGhhdCBJJ3ZlIHRlc3RlZCB3aXRoIGFub3RoZXIgY2Fy
+ZCkKb3IgZ2l2ZW4gdGhhdMKgQXVkaW9waGlsZSBVU0IgaXPCoGxpa2VseSBhbHJlYWR5IGluIGEg
+c2VtaS1icm9rZW4gc3RhdGUKZm9yIGEgbG9uZyB0aW1lLCBtYXkgYmUgaXQgaXMgYmV0dGVyIHRv
+IHJlbW92ZSB0aGUgZXhjbHVzaW9uIGluIHRoZQpkcml2ZXIgWzFdIGFuZCByZW1vdmUgYWxsIGRl
+ZmluaXRpb25zIGZvciB0aGlzIGNhcmQgZnJvbSBVU0ItCkF1ZGlvLmNvbmY/CgpbMV0gaHR0cHM6
+Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXgu
+Z2l0Lwpjb21taXQvP2lkPTVlZTIwYmM3OTI0NjdkN2Q2MTIxNTdlMGE5OTYyNzY1YWE5NDNiMDgK
+Ci0tIApBbGV4YW5kZXIgVHNveSA8YWxleGFuZGVyQHRzb3kubWU+Cl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
