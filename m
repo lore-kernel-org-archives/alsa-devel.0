@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun8i-codec-analog: split out mbias" to
-	the asoc tree
-Date: Wed, 24 May 2017 18:02:59 +0100
-Message-ID: <E1dDZgZ-0008S2-DO@debutante>
+Subject: Applied "ASoC: simple-card: Fix misleading error
+	message" to the asoc tree
+Date: Wed, 24 May 2017 18:03:01 +0100
+Message-ID: <E1dDZgb-0008TD-St@debutante>
+References: <20170524102823.8253-1-julian@jusst.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9152A26680F
- for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 19:03:10 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 36CF226736B
+ for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 19:03:25 +0200 (CEST)
+In-Reply-To: <20170524102823.8253-1-julian@jusst.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Icenowy Zheng <icenowy@aosc.xyz>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Julian Scheel <julian@jusst.de>
+Cc: Nikita Yushchenko <nikita.yoush@cogentembedded.com>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun8i-codec-analog: split out mbias
+   ASoC: simple-card: Fix misleading error message
 
 has been applied to the asoc tree at
 
@@ -52,101 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From b08a20f58d2efcd88bf5276e34cd4020028accb7 Mon Sep 17 00:00:00 2001
-From: Icenowy Zheng <icenowy@aosc.xyz>
-Date: Wed, 24 May 2017 18:05:59 +0800
-Subject: [PATCH] ASoC: sun8i-codec-analog: split out mbias
+>From 7ac45d1635a4cd2e99a4b11903d4a2815ca1b27b Mon Sep 17 00:00:00 2001
+From: Julian Scheel <julian@jusst.de>
+Date: Wed, 24 May 2017 12:28:23 +0200
+Subject: [PATCH] ASoC: simple-card: Fix misleading error message
 
-Allwinner V3s features an analog codec without MBIAS pin.
+In case cpu could not be found the error message would always refer to
+/codec/ not being found in DT. Fix this by catching the cpu node not found
+case explicitly.
 
-Split out this part, in order to prepare for the V3s analog codec.
-
-Signed-off-by: Icenowy Zheng <icenowy@aosc.xyz>
-Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Julian Scheel <julian@jusst.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun8i-codec-analog.c | 35 ++++++++++++++++++++++++++++++-----
- 1 file changed, 30 insertions(+), 5 deletions(-)
+ sound/soc/generic/simple-card.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sunxi/sun8i-codec-analog.c b/sound/soc/sunxi/sun8i-codec-analog.c
-index 6c17c99c2c8d..edcc3eb7cd9a 100644
---- a/sound/soc/sunxi/sun8i-codec-analog.c
-+++ b/sound/soc/sunxi/sun8i-codec-analog.c
-@@ -289,11 +289,6 @@ static const struct snd_soc_dapm_widget sun8i_codec_common_widgets[] = {
- 	/* Microphone input */
- 	SND_SOC_DAPM_INPUT("MIC1"),
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 2c9dedab5184..565d057f0d14 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -233,13 +233,19 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
+ 	snprintf(prop, sizeof(prop), "%scpu", prefix);
+ 	cpu = of_get_child_by_name(node, prop);
  
--	/* Microphone Bias */
--	SND_SOC_DAPM_SUPPLY("MBIAS", SUN8I_ADDA_MIC1G_MICBIAS_CTRL,
--			    SUN8I_ADDA_MIC1G_MICBIAS_CTRL_MMICBIASEN,
--			    0, NULL, 0),
--
- 	/* Mic input path */
- 	SND_SOC_DAPM_PGA("Mic1 Amplifier", SUN8I_ADDA_MIC1G_MICBIAS_CTRL,
- 			 SUN8I_ADDA_MIC1G_MICBIAS_CTRL_MIC1AMPEN, 0, NULL, 0),
-@@ -453,6 +448,27 @@ static int sun8i_codec_add_headphone(struct snd_soc_component *cmpnt)
- 	return 0;
- }
- 
-+/* mbias specific widget */
-+static const struct snd_soc_dapm_widget sun8i_codec_mbias_widgets[] = {
-+	SND_SOC_DAPM_SUPPLY("MBIAS", SUN8I_ADDA_MIC1G_MICBIAS_CTRL,
-+			    SUN8I_ADDA_MIC1G_MICBIAS_CTRL_MMICBIASEN,
-+			    0, NULL, 0),
-+};
-+
-+static int sun8i_codec_add_mbias(struct snd_soc_component *cmpnt)
-+{
-+	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(cmpnt);
-+	struct device *dev = cmpnt->dev;
-+	int ret;
-+
-+	ret = snd_soc_dapm_new_controls(dapm, sun8i_codec_mbias_widgets,
-+					ARRAY_SIZE(sun8i_codec_mbias_widgets));
-+	if (ret)
-+		dev_err(dev, "Failed to add MBIAS DAPM widgets: %d\n", ret);
-+
-+	return ret;
-+}
-+
- /* hmic specific widget */
- static const struct snd_soc_dapm_widget sun8i_codec_hmic_widgets[] = {
- 	SND_SOC_DAPM_SUPPLY("HBIAS", SUN8I_ADDA_MIC1G_MICBIAS_CTRL,
-@@ -679,6 +695,7 @@ struct sun8i_codec_analog_quirks {
- 	bool has_hmic;
- 	bool has_linein;
- 	bool has_lineout;
-+	bool has_mbias;
- 	bool has_mic2;
- };
- 
-@@ -686,12 +703,14 @@ static const struct sun8i_codec_analog_quirks sun8i_a23_quirks = {
- 	.has_headphone	= true,
- 	.has_hmic	= true,
- 	.has_linein	= true,
-+	.has_mbias	= true,
- 	.has_mic2	= true,
- };
- 
- static const struct sun8i_codec_analog_quirks sun8i_h3_quirks = {
- 	.has_linein	= true,
- 	.has_lineout	= true,
-+	.has_mbias	= true,
- 	.has_mic2	= true,
- };
- 
-@@ -734,6 +753,12 @@ static int sun8i_codec_analog_cmpnt_probe(struct snd_soc_component *cmpnt)
- 			return ret;
- 	}
- 
-+	if (quirks->has_mbias) {
-+		ret = sun8i_codec_add_mbias(cmpnt);
-+		if (ret)
-+			return ret;
++	if (!cpu) {
++		ret = -EINVAL;
++		dev_err(dev, "%s: Can't find %s DT node\n", __func__, prop);
++		goto dai_link_of_err;
 +	}
 +
- 	if (quirks->has_mic2) {
- 		ret = sun8i_codec_add_mic2(cmpnt);
- 		if (ret)
+ 	snprintf(prop, sizeof(prop), "%splat", prefix);
+ 	plat = of_get_child_by_name(node, prop);
+ 
+ 	snprintf(prop, sizeof(prop), "%scodec", prefix);
+ 	codec = of_get_child_by_name(node, prop);
+ 
+-	if (!cpu || !codec) {
++	if (!codec) {
+ 		ret = -EINVAL;
+ 		dev_err(dev, "%s: Can't find %s DT node\n", __func__, prop);
+ 		goto dai_link_of_err;
 -- 
 2.11.0
