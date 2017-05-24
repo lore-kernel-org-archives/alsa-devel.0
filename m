@@ -1,22 +1,19 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: BUG: double free of PCM structure upon
-	module	removal
-Date: Wed, 24 May 2017 09:58:47 +0200
-Message-ID: <87bmqi1ya0.fsf@belgarion.home>
-References: <87k2571px9.fsf@belgarion.home>
- <20170523171405.iyahe4zfxerd7rn7@sirena.org.uk>
- <s5hefvfo2z4.wl-tiwai@suse.de> <87fufu22b8.fsf@belgarion.home>
- <s5ho9uin4gv.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: control: remove entry limitation for
+	list operation
+Date: Wed, 24 May 2017 17:16:47 +0900
+Message-ID: <3da3cb6a-15d3-47cd-42d6-114cf426c03b@sakamocchi.jp>
+References: <20170524010430.1371-1-o-takashi@sakamocchi.jp>
+ <s5hpoeyn4ul.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp04.smtpout.orange.fr
- [80.12.242.126])
- by alsa0.perex.cz (Postfix) with ESMTP id 14F07265142
- for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 09:58:50 +0200 (CEST)
-In-Reply-To: <s5ho9uin4gv.wl-tiwai@suse.de> (Takashi Iwai's message of "Wed,
- 24 May 2017 08:39:28 +0200")
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 194E8265142
+ for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 10:16:50 +0200 (CEST)
+In-Reply-To: <s5hpoeyn4ul.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,27 +24,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai@suse.de> writes:
-
-> On Wed, 24 May 2017 08:31:39 +0200,
-> I see, so my patch should cure such a case.
-Indeed.
-
->> > In anyway the calls there look in a wrong order.  Basically we should
->> > start with snd_card_free() to sync with the whole operation finishes,
->> > then release everything.  Below is an untested patch to do that.
->> With you patch, the bug is gone in my first 3 tries.
->
-> I think the patch below is simpler and has the same effect.
-> If this works for you, I'll submit the proper patch.
-Yep, I just tested it.
-Feel free to add my :
-Tested-by: Robert Jarzmik <robert.jarzmik@free.fr>
-
-Thanks.
-
---
-Robert
+T24gMjAxN+W5tDA15pyIMjTml6UgMTU6MzEsIFRha2FzaGkgSXdhaSB3cm90ZToKPiBPbiBXZWQs
+IDI0IE1heSAyMDE3IDAzOjA0OjMwICswMjAwLAo+IFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4+
+Cj4+IEluIGN1cnJlbnQgaW1wbGVtZW50YXRpb24gb2YgQUxTQSBjb250cm9sIGNvcmUsIGxpc3Qg
+b3BlcmF0aW9uIGhhcwo+PiBhIGxpbWl0YXRpb24gdG8gaGFuZGxlIDE2Mzg0IGVudHJpZXMgYXQg
+b25jZS4gVGhpcyBzZWVtcyBkdWUgdG8KPj4gYWxsb2NhdGlvbiBpbiBrZXJuZWwgc3BhY2UgdG8g
+Y29weSBkYXRhIGZyb20gdXNlciBzcGFjZS4KPj4KPj4gV2l0aCBhIGNvbW1pdCA1M2U3YmY0NTI1
+ODQgKCJBTFNBOiBjb250cm9sOiBTaW1wbGlmeSBzbmRfY3RsX2VsZW1fbGlzdCgpCj4+IGltcGxl
+bWVudGF0aW9uIiksIGZvciB0aGUgb3BlcmF0aW9uLCBBTFNBIGNvbnRyb2wgY29yZSBjb3BpZXMg
+ZGF0YQo+PiBpbnRvIHVzZXIgc3BhY2UgZGlyZWN0bHkuIE5vIG5lZWQgdG8gY2FyZSBvZiBrZXJu
+ZWwgc3BhY2VzIGFueW1vcmUuCj4+Cj4+IFRoaXMgY29tbWl0IHB1cmdlcyB0aGUgbGltaXRhdGlv
+bi4KPj4gLS0tCj4gCj4gWW91IGZvcmdvdCB5b3VyIHNpZ24tb2ZmLgoKT29wcy4gSSBtaWdodCBi
+ZSB0aXJlZCBpbiB0aGlzIG1vcm5pbmcuLi4KClNpZ25lZC1vZmYtYnk6IFRha2FzaGkgU2FrYW1v
+dG8gPG8tdGFrYXNoaUBzYWthbW9jY2hpLmpwPgoKClRoYW5rcwoKVGFrYXNoaSBTYWthbW90bwpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
+IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
+YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
