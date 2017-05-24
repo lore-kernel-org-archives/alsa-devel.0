@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Support for multiple
-	data blocks" to the asoc tree
-Date: Wed, 24 May 2017 18:41:44 +0100
-Message-ID: <E1dDaI4-0002nU-TE@debutante>
-References: <1494857671-19257-3-git-send-email-subhransu.s.prusty@intel.com>
+Subject: Applied "ASoC: Intel: Convert skl machine data to C99
+	style" to the asoc tree
+Date: Wed, 24 May 2017 18:41:36 +0100
+Message-ID: <E1dDaHw-0002lU-W5@debutante>
+References: <1494835937-22068-3-git-send-email-naveen.m@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B6353267376
- for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 19:41:53 +0200 (CEST)
-In-Reply-To: <1494857671-19257-3-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 40638267386
+ for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 19:41:51 +0200 (CEST)
+In-Reply-To: <1494835937-22068-3-git-send-email-naveen.m@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shreyas NC <shreyas.nc@intel.com>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, lgirdwood@gmail.com, patches.audio@intel.com, tiwai@suse.de, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, naveen.m@intel.com, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Support for multiple data blocks
+   ASoC: Intel: Convert skl machine data to C99 style
 
 has been applied to the asoc tree at
 
@@ -53,77 +52,105 @@ to this mail.
 Thanks,
 Mark
 
->From 133e6e5c27340fe2205537373e50d43881a0f745 Mon Sep 17 00:00:00 2001
-From: Shreyas NC <shreyas.nc@intel.com>
-Date: Mon, 15 May 2017 19:44:31 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Support for multiple data blocks
+>From 9bf70cd4cd9f82a5f914fbf1fa0d32eff7a5d892 Mon Sep 17 00:00:00 2001
+From: Naveen M <naveen.m@intel.com>
+Date: Mon, 15 May 2017 13:42:12 +0530
+Subject: [PATCH] ASoC: Intel: Convert skl machine data to C99 style
 
-Module init params are additional data block in the module private data.
-Skylake driver doesn't yet have support to parse multiple data blocks if
-it appears in private data. Add support for parsing of multiple data
-blocks and module init params.
+C99 style struct initialization helps in readability as well as
+initialization of variables not specified as NULL.
+Patch modifies all skl machine data.
 
-Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Suggested-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Naveen M <naveen.m@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+ sound/soc/intel/skylake/skl.c | 60 +++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 49 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index b28199a5348c..4c3bdff092bd 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -2070,6 +2070,16 @@ static int skl_tplg_get_token(struct device *dev,
- 
- 		break;
- 
-+	case SKL_TKN_U32_CAPS_SET_PARAMS:
-+		mconfig->formats_config.set_params =
-+				tkn_elem->value;
-+		break;
-+
-+	case SKL_TKN_U32_CAPS_PARAMS_ID:
-+		mconfig->formats_config.param_id =
-+				tkn_elem->value;
-+		break;
-+
- 	case SKL_TKN_U32_PROC_DOMAIN:
- 		mconfig->domain =
- 			tkn_elem->value;
-@@ -2147,7 +2157,7 @@ static int skl_tplg_get_tokens(struct device *dev,
- 		tuple_size += tkn_count * sizeof(*tkn_elem);
- 	}
- 
--	return 0;
-+	return off;
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 4c9b5781282b..a4d1121595b6 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -877,28 +877,66 @@ static void skl_remove(struct pci_dev *pci)
  }
  
- /*
-@@ -2198,10 +2208,11 @@ static int skl_tplg_get_pvt_data(struct snd_soc_tplg_dapm_widget *tplg_w,
- 	num_blocks = ret;
+ static struct sst_acpi_mach sst_skl_devdata[] = {
+-	{ "INT343A", "skl_alc286s_i2s", "intel/dsp_fw_release.bin", NULL, NULL, NULL },
+-	{ "INT343B", "skl_n88l25_s4567", "intel/dsp_fw_release.bin",
+-				NULL, NULL, &skl_dmic_data },
+-	{ "MX98357A", "skl_n88l25_m98357a", "intel/dsp_fw_release.bin",
+-				NULL, NULL, &skl_dmic_data },
++	{
++		.id = "INT343A",
++		.drv_name = "skl_alc286s_i2s",
++		.fw_filename = "intel/dsp_fw_release.bin",
++	},
++	{
++		.id = "INT343B",
++		.drv_name = "skl_n88l25_s4567",
++		.fw_filename = "intel/dsp_fw_release.bin",
++		.pdata = &skl_dmic_data
++	},
++	{
++		.id = "MX98357A",
++		.drv_name = "skl_n88l25_m98357a",
++		.fw_filename = "intel/dsp_fw_release.bin",
++		.pdata = &skl_dmic_data
++	},
+ 	{}
+ };
  
- 	off += array->size;
--	array = (struct snd_soc_tplg_vendor_array *)(tplg_w->priv.data + off);
--
- 	/* Read the BLOCK_TYPE and BLOCK_SIZE descriptor */
- 	while (num_blocks > 0) {
-+		array = (struct snd_soc_tplg_vendor_array *)
-+				(tplg_w->priv.data + off);
-+
- 		ret = skl_tplg_get_desc_blocks(dev, array);
+ static struct sst_acpi_mach sst_bxtp_devdata[] = {
+-	{ "INT343A", "bxt_alc298s_i2s", "intel/dsp_fw_bxtn.bin", NULL, NULL, NULL },
+-	{ "DLGS7219", "bxt_da7219_max98357a_i2s", "intel/dsp_fw_bxtn.bin", NULL, NULL, NULL },
++	{
++		.id = "INT343A",
++		.drv_name = "bxt_alc298s_i2s",
++		.fw_filename = "intel/dsp_fw_bxtn.bin",
++	},
++	{
++		.id = "DLGS7219",
++		.drv_name = "bxt_da7219_max98357a_i2s",
++		.fw_filename = "intel/dsp_fw_bxtn.bin",
++	},
+ };
  
- 		if (ret < 0)
-@@ -2237,7 +2248,9 @@ static int skl_tplg_get_pvt_data(struct snd_soc_tplg_dapm_widget *tplg_w,
- 				memcpy(mconfig->formats_config.caps, data,
- 					mconfig->formats_config.caps_size);
- 			--num_blocks;
-+			ret = mconfig->formats_config.caps_size;
- 		}
-+		off += ret;
- 	}
+ static struct sst_acpi_mach sst_kbl_devdata[] = {
+-	{ "INT343A", "kbl_alc286s_i2s", "intel/dsp_fw_kbl.bin", NULL, NULL, NULL },
+-	{ "INT343B", "kbl_n88l25_s4567", "intel/dsp_fw_kbl.bin", NULL, NULL, &skl_dmic_data },
+-	{ "MX98357A", "kbl_n88l25_m98357a", "intel/dsp_fw_kbl.bin", NULL, NULL, &skl_dmic_data },
++	{
++		.id = "INT343A",
++		.drv_name = "kbl_alc286s_i2s",
++		.fw_filename = "intel/dsp_fw_kbl.bin",
++	},
++	{
++		.id = "INT343B",
++		.drv_name = "kbl_n88l25_s4567",
++		.fw_filename = "intel/dsp_fw_kbl.bin",
++		.pdata = &skl_dmic_data
++	},
++	{
++		.id = "MX98357A",
++		.drv_name = "kbl_n88l25_m98357a",
++		.fw_filename = "intel/dsp_fw_kbl.bin",
++		.pdata = &skl_dmic_data
++	},
+ 	{}
+ };
  
- 	return 0;
+ static struct sst_acpi_mach sst_glk_devdata[] = {
+-	{ "INT343A", "glk_alc298s_i2s", "intel/dsp_fw_glk.bin", NULL, NULL, NULL },
++	{
++		.id = "INT343A",
++		.drv_name = "glk_alc298s_i2s",
++		.fw_filename = "intel/dsp_fw_glk.bin",
++	},
+ };
+ 
+ /* PCI IDs */
 -- 
 2.11.0
