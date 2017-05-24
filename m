@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH RFC 07/11] ALSA: rme9652: an exsample changes
-	for drivers which support interleaved buffer
-Date: Wed, 24 May 2017 09:52:51 +0900
-Message-ID: <20170524005255.31223-8-o-takashi@sakamocchi.jp>
+Subject: [PATCH RFC 03/11] ALSA: pcm: refactoring silence
+	operation
+Date: Wed, 24 May 2017 09:52:47 +0900
+Message-ID: <20170524005255.31223-4-o-takashi@sakamocchi.jp>
 References: <20170524005255.31223-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id CC5602671AB
- for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 02:53:04 +0200 (CEST)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 629AA2671A6
+ for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 02:53:01 +0200 (CEST)
 In-Reply-To: <20170524005255.31223-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,92 +25,144 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is an example of new operation for copy_frames callback, in a case
-of drivers for interleaved frame alignment.
+In a former commit, a new alias of function prototype is added. This
+alias is good to refactoring existent codes.
+
+As a second step, this commit applies refactoring for data transmission
+of silent PCM frames. Two helper functions are added to handle in both
+cases of interleaved and non-interleaved frame alignment. They're
+independent, thus easy to read and understand.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/pci/rme9652/hdsp.c | 47 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+ sound/core/pcm_lib.c | 96 ++++++++++++++++++++++++++++++++++++----------------
+ 1 file changed, 67 insertions(+), 29 deletions(-)
 
-diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
-index fc0face6cdc6..430c6cbcb5f6 100644
---- a/sound/pci/rme9652/hdsp.c
-+++ b/sound/pci/rme9652/hdsp.c
-@@ -3930,6 +3930,31 @@ static int snd_hdsp_playback_copy(struct snd_pcm_substream *substream, int chann
- 	return count;
- }
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index db0246c94874..f06d9f4f9574 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -42,6 +42,53 @@
+ #define trace_hw_ptr_error(substream, reason)
+ #endif
  
-+static int playback_copy_frames(struct snd_pcm_substream *substream,
-+				unsigned int hwoff, unsigned long data,
-+				unsigned int off, snd_pcm_uframes_t count)
++static int writei_silence(struct snd_pcm_substream *substream,
++			  unsigned int hwoff, unsigned long data,
++			  unsigned int off, snd_pcm_uframes_t count)
 +{
-+	struct hdsp *hdsp = snd_pcm_substream_chip(substream);
 +	struct snd_pcm_runtime *runtime = substream->runtime;
-+	char __user *src = (char __user *)data;
-+	char *channel_buf;
++	char *hwbuf;
 +
-+	channel_buf = hdsp_channel_buffer_location(hdsp,
-+				substream->pstr->stream, runtime->channels);
-+	if (snd_BUG_ON(!channel_buf))
-+		return -EIO;
-+	channel_buf += hwoff * 4;
++	if (substream->ops->silence)
++		return substream->ops->silence(substream, -1, hwoff, count);
 +
-+	if (src == NULL) {
-+		memset(channel_buf, 0, count * 4);
++	hwbuf = runtime->dma_area + frames_to_bytes(runtime, hwoff);
++	snd_pcm_format_set_silence(runtime->format, hwbuf,
++				   count * runtime->channels);
++
++	return 0;
++}
++
++static int writen_silence(struct snd_pcm_substream *substream,
++			  unsigned int hwoff, unsigned long data,
++			  unsigned int off, snd_pcm_uframes_t count)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	unsigned int channels = runtime->channels;
++	snd_pcm_uframes_t dma_csize = runtime->dma_bytes / channels;
++	char *hwbuf;
++	int c;
++	int err;
++
++	if (substream->ops->silence) {
++		for (c = 0; c < channels; ++c) {
++			err = substream->ops->silence(substream, c, hwoff,
++						      count);
++			if (err < 0)
++				return err;
++		}
 +	} else {
-+		if (copy_from_user(channel_buf, src, count * 4))
-+			return -EFAULT;
++		for (c = 0; c < channels; ++c) {
++			hwbuf = runtime->dma_area + (c * dma_csize) +
++					samples_to_bytes(runtime, hwoff);
++			snd_pcm_format_set_silence(runtime->format, hwbuf,
++						   count);
++		}
 +	}
 +
 +	return 0;
 +}
 +
- static int snd_hdsp_capture_copy(struct snd_pcm_substream *substream, int channel,
- 				 snd_pcm_uframes_t pos, void __user *dst, snd_pcm_uframes_t count)
+ /*
+  * fill ring buffer with silence
+  * runtime->silence_start: starting pointer to silence area
+@@ -51,10 +98,13 @@
+  *
+  * when runtime->silence_size >= runtime->boundary - fill processed area with silence immediately
+  */
+-void snd_pcm_playback_silence(struct snd_pcm_substream *substream, snd_pcm_uframes_t new_hw_ptr)
++void snd_pcm_playback_silence(struct snd_pcm_substream *substream,
++			      snd_pcm_uframes_t new_hw_ptr)
  {
-@@ -3947,6 +3972,26 @@ static int snd_hdsp_capture_copy(struct snd_pcm_substream *substream, int channe
- 	return count;
- }
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	snd_pcm_uframes_t frames, ofs, transfer;
++	snd_pcm_copy_frames_t copy_frames;
++	int err;
  
-+static int capture_copy_frames(struct snd_pcm_substream *substream,
-+			       unsigned int hwoff, unsigned long data,
-+			       unsigned int off, snd_pcm_uframes_t count)
-+{
-+	struct hdsp *hdsp = snd_pcm_substream_chip(substream);
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	char __user *dst = (char __user *)data;
-+	char *channel_buf;
+ 	if (runtime->silence_size < runtime->boundary) {
+ 		snd_pcm_sframes_t noise_dist, n;
+@@ -104,36 +154,24 @@ void snd_pcm_playback_silence(struct snd_pcm_substream *substream, snd_pcm_ufram
+ 		return;
+ 	if (frames == 0)
+ 		return;
 +
-+	channel_buf = hdsp_channel_buffer_location(hdsp,
-+				substream->pstr->stream, runtime->channels);
-+	if (snd_BUG_ON(!channel_buf))
-+		return -EIO;
-+	channel_buf += hwoff * 4;
++	if (runtime->access == SNDRV_PCM_ACCESS_RW_INTERLEAVED ||
++	    runtime->access == SNDRV_PCM_ACCESS_MMAP_INTERLEAVED)
++		copy_frames = writei_silence;
++	else
++		copy_frames = writen_silence;
 +
-+	if (copy_to_user(dst, channel_buf + hwoff * 4, count * 4))
-+		return -EFAULT;
-+	return count;
-+}
+ 	ofs = runtime->silence_start % runtime->buffer_size;
+ 	while (frames > 0) {
+-		transfer = ofs + frames > runtime->buffer_size ? runtime->buffer_size - ofs : frames;
+-		if (runtime->access == SNDRV_PCM_ACCESS_RW_INTERLEAVED ||
+-		    runtime->access == SNDRV_PCM_ACCESS_MMAP_INTERLEAVED) {
+-			if (substream->ops->silence) {
+-				int err;
+-				err = substream->ops->silence(substream, -1, ofs, transfer);
+-				snd_BUG_ON(err < 0);
+-			} else {
+-				char *hwbuf = runtime->dma_area + frames_to_bytes(runtime, ofs);
+-				snd_pcm_format_set_silence(runtime->format, hwbuf, transfer * runtime->channels);
+-			}
+-		} else {
+-			unsigned int c;
+-			unsigned int channels = runtime->channels;
+-			if (substream->ops->silence) {
+-				for (c = 0; c < channels; ++c) {
+-					int err;
+-					err = substream->ops->silence(substream, c, ofs, transfer);
+-					snd_BUG_ON(err < 0);
+-				}
+-			} else {
+-				size_t dma_csize = runtime->dma_bytes / channels;
+-				for (c = 0; c < channels; ++c) {
+-					char *hwbuf = runtime->dma_area + (c * dma_csize) + samples_to_bytes(runtime, ofs);
+-					snd_pcm_format_set_silence(runtime->format, hwbuf, transfer);
+-				}
+-			}
+-		}
++		if (ofs + frames > runtime->buffer_size)
++			transfer = runtime->buffer_size - ofs;
++		else
++			transfer = frames;
 +
- static int snd_hdsp_hw_silence(struct snd_pcm_substream *substream, int channel,
- 				  snd_pcm_uframes_t pos, snd_pcm_uframes_t count)
- {
-@@ -4871,6 +4916,7 @@ static const struct snd_pcm_ops snd_hdsp_playback_ops = {
- 	.pointer =	snd_hdsp_hw_pointer,
- 	.copy =		snd_hdsp_playback_copy,
- 	.silence =	snd_hdsp_hw_silence,
-+	.copy_frames =	playback_copy_frames,
- };
- 
- static const struct snd_pcm_ops snd_hdsp_capture_ops = {
-@@ -4882,6 +4928,7 @@ static const struct snd_pcm_ops snd_hdsp_capture_ops = {
- 	.trigger =	snd_hdsp_trigger,
- 	.pointer =	snd_hdsp_hw_pointer,
- 	.copy =		snd_hdsp_capture_copy,
-+	.copy_frames =	capture_copy_frames,
- };
- 
- static int snd_hdsp_create_hwdep(struct snd_card *card, struct hdsp *hdsp)
++		err = copy_frames(substream, ofs, (unsigned long)NULL, 0,
++				  transfer);
++		snd_BUG_ON(err < 0);
++
+ 		runtime->silence_filled += transfer;
+ 		frames -= transfer;
+ 		ofs = 0;
 -- 
 2.11.0
