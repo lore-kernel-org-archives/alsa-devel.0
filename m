@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: sst: Remove unused function sst_restore_shim64()" to the asoc tree
-Date: Wed, 24 May 2017 18:41:57 +0100
-Message-ID: <E1dDaIH-0002qW-M4@debutante>
-References: <20170523001258.81618-1-mka@chromium.org>
+Subject: Applied "ASoC: cht_bsw_max98090_ti: Remove unused function cht_get_codec_dai()" to the asoc tree
+Date: Wed, 24 May 2017 18:42:04 +0100
+Message-ID: <E1dDaIO-0002si-IG@debutante>
+References: <20170523190509.59212-1-mka@chromium.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170523001258.81618-1-mka@chromium.org>
+In-Reply-To: <20170523190509.59212-1-mka@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Matthias Kaehlcke <mka@chromium.org>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Douglas Anderson <dianders@chromium.org>alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Yang A Fang <yang.a.fang@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Douglas Anderson <dianders@chromium.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: sst: Remove unused function sst_restore_shim64()
+   ASoC: cht_bsw_max98090_ti: Remove unused function cht_get_codec_dai()
 
 has been applied to the asoc tree at
 
@@ -37,50 +37,48 @@ to this mail.
 Thanks,
 Mark
 
->From 9a075265c6dc040e2946d21f4f9d082495bd5460 Mon Sep 17 00:00:00 2001
+>From 140385d87adce8d00864667f5132770ac5a13dac Mon Sep 17 00:00:00 2001
 From: Matthias Kaehlcke <mka@chromium.org>
-Date: Mon, 22 May 2017 17:12:58 -0700
-Subject: [PATCH] ASoC: Intel: sst: Remove unused function sst_restore_shim64()
+Date: Tue, 23 May 2017 12:05:09 -0700
+Subject: [PATCH] ASoC: cht_bsw_max98090_ti: Remove unused function
+ cht_get_codec_dai()
 
 Looks like the function has never been used since it was added by commit
-b0d94acd634a ("ASoC: Intel: mrfld - add shim save restore"). Removing it
-fixes the following warning when building with clang:
+17119a465706 ("ASoC: Intel: Add Cherrytrail & Braswell machine driver
+cht_bsw_max98090_ti"). Removing it fixes the following warning when
+building with clang:
 
-sound/soc/intel/atom/sst/sst.c:360:20: error: unused function
-    'sst_restore_shim64' [-Werror,-Wunused-function]
+sound/soc/intel/boards/cht_bsw_max98090_ti.c:42:35: error: unused
+    function 'cht_get_codec_dai' [-Werror,-Wunused-function]
 
 Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst/sst.c | 16 ----------------
- 1 file changed, 16 deletions(-)
+ sound/soc/intel/boards/cht_bsw_max98090_ti.c | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
-index d97556a3772c..2d43b8693c0c 100644
---- a/sound/soc/intel/atom/sst/sst.c
-+++ b/sound/soc/intel/atom/sst/sst.c
-@@ -397,22 +397,6 @@ static inline void sst_save_shim64(struct intel_sst_drv *ctx,
- 	spin_unlock_irqrestore(&ctx->ipc_spin_lock, irq_flags);
- }
+diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+index 742bc0d4e681..20755ecc7f9e 100644
+--- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
++++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
+@@ -39,18 +39,6 @@ struct cht_mc_private {
+ 	bool ts3a227e_present;
+ };
  
--static inline void sst_restore_shim64(struct intel_sst_drv *ctx,
--				      void __iomem *shim,
--				      struct sst_shim_regs64 *shim_regs)
+-static inline struct snd_soc_dai *cht_get_codec_dai(struct snd_soc_card *card)
 -{
--	unsigned long irq_flags;
+-	struct snd_soc_pcm_runtime *rtd;
 -
--	/*
--	 * we only need to restore IMRX for this case, rest will be
--	 * initialize by FW or driver when firmware is loaded
--	 */
--	spin_lock_irqsave(&ctx->ipc_spin_lock, irq_flags);
--	sst_shim_write64(shim, SST_IMRX, shim_regs->imrx);
--	sst_shim_write64(shim, SST_CSR, shim_regs->csr);
--	spin_unlock_irqrestore(&ctx->ipc_spin_lock, irq_flags);
+-	list_for_each_entry(rtd, &card->rtd_list, list) {
+-		if (!strncmp(rtd->codec_dai->name, CHT_CODEC_DAI,
+-			     strlen(CHT_CODEC_DAI)))
+-			return rtd->codec_dai;
+-	}
+-	return NULL;
 -}
 -
- void sst_configure_runtime_pm(struct intel_sst_drv *ctx)
- {
- 	pm_runtime_set_autosuspend_delay(ctx->dev, SST_SUSPEND_DELAY);
+ static const struct snd_soc_dapm_widget cht_dapm_widgets[] = {
+ 	SND_SOC_DAPM_HP("Headphone", NULL),
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
 -- 
 2.11.0
