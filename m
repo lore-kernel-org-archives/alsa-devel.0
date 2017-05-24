@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix IPC rx_list
-	corruption" to the asoc tree
-Date: Wed, 24 May 2017 18:41:54 +0100
-Message-ID: <E1dDaIE-0002pS-M4@debutante>
-References: <1494857671-19257-1-git-send-email-subhransu.s.prusty@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 96D0C26737B
- for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 19:42:03 +0200 (CEST)
-In-Reply-To: <1494857671-19257-1-git-send-email-subhransu.s.prusty@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, lgirdwood@gmail.com, patches.audio@intel.com, tiwai@suse.de, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: Applied "ASoC: simple-card-utils: support snd_soc_get_dai_id()" to the asoc tree
+Date: Wed, 24 May 2017 18:44:51 +0100
+Message-ID: <E1dDaL5-0003Gl-Uq@debutante>
+References: <87bmqrosla.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87bmqrosla.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Archit Taneja <architt@codeaurora.org>, Jose Abreu <joabreu@synopsys.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix IPC rx_list corruption
+   ASoC: simple-card-utils: support snd_soc_get_dai_id()
 
 has been applied to the asoc tree at
 
@@ -53,56 +37,54 @@ to this mail.
 Thanks,
 Mark
 
->From 5cd1f5c32132101955d7f0e1955249a84f9b6fd9 Mon Sep 17 00:00:00 2001
-From: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
-Date: Mon, 15 May 2017 19:44:29 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix IPC rx_list corruption
+>From 73b17f1a65c881fcf97109d77056006da2d40152 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 18 May 2017 01:39:44 +0000
+Subject: [PATCH] ASoC: simple-card-utils: support snd_soc_get_dai_id()
 
-In SKL+ platforms, all IPC commands are serialised, i.e. the driver sends
-a new IPC to DSP, only after receiving a reply from the firmware for the
-current IPC.
+ALSA SoC needs to know connected DAI ID for detecting.
+It is not a big problem if device/driver was only for sound,
+but getting DAI ID will be difficult if device includes both
+Video/Sound, like HDMI.
+To solve this issue, this patch adds new snd_soc_get_dai_id() and
+its related .of_xlate_dai_id callback on component driver.
+In below case, we can handle Sound port (= port@2) as ID = 0
+if .of_xlate_dai_id has its support.
 
-Hence it seems apparent that there is only a single modifier of the IPC RX
-List. However, during an IPC timeout case in a multithreaded environment,
-there is a possibility of the list element being deleted two times if not
-properly protected.
+	hdmi {
+		port@0 { /* VIDEO */ };
+		port@1 { /* VIDEO */ };
+		port@2 { /* SOUND */ };
+	};
 
-So, use spin lock save/restore to prevent rx_list corruption.
-
-Signed-off-by: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-sst-ipc.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/generic/simple-card-utils.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-sst-ipc.c b/sound/soc/intel/skylake/skl-sst-ipc.c
-index 58c525096a7c..498b15345b1a 100644
---- a/sound/soc/intel/skylake/skl-sst-ipc.c
-+++ b/sound/soc/intel/skylake/skl-sst-ipc.c
-@@ -413,8 +413,11 @@ static void skl_ipc_process_reply(struct sst_generic_ipc *ipc,
- 	u32 reply = header.primary & IPC_GLB_REPLY_STATUS_MASK;
- 	u64 *ipc_header = (u64 *)(&header);
- 	struct skl_sst *skl = container_of(ipc, struct skl_sst, ipc);
-+	unsigned long flags;
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 5a3d51e45938..fe726e83d0bd 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -177,9 +177,18 @@ static int asoc_simple_card_get_dai_id(struct device_node *ep)
+ 	struct device_node *node;
+ 	struct device_node *endpoint;
+ 	int i, id;
++	int ret;
++
++	ret = snd_soc_get_dai_id(ep);
++	if (ret != -ENOTSUPP)
++		return ret;
  
-+	spin_lock_irqsave(&ipc->dsp->spinlock, flags);
- 	msg = skl_ipc_reply_get_msg(ipc, *ipc_header);
-+	spin_unlock_irqrestore(&ipc->dsp->spinlock, flags);
- 	if (msg == NULL) {
- 		dev_dbg(ipc->dev, "ipc: rx list is empty\n");
- 		return;
-@@ -456,8 +459,10 @@ static void skl_ipc_process_reply(struct sst_generic_ipc *ipc,
- 		}
- 	}
+ 	node = of_graph_get_port_parent(ep);
  
-+	spin_lock_irqsave(&ipc->dsp->spinlock, flags);
- 	list_del(&msg->list);
- 	sst_ipc_tx_msg_reply_complete(ipc, msg);
-+	spin_unlock_irqrestore(&ipc->dsp->spinlock, flags);
- }
- 
- irqreturn_t skl_dsp_irq_thread_handler(int irq, void *context)
++	/*
++	 * Non HDMI sound case, counting port/endpoint on its DT
++	 * is enough. Let's count it.
++	 */
+ 	i = 0;
+ 	id = -1;
+ 	for_each_endpoint_of_node(node, endpoint) {
 -- 
 2.11.0
