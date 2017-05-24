@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cht_bsw_max98090_ti: Remove unused function cht_get_codec_dai()" to the asoc tree
-Date: Wed, 24 May 2017 18:42:04 +0100
-Message-ID: <E1dDaIO-0002si-IG@debutante>
-References: <20170523190509.59212-1-mka@chromium.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170523190509.59212-1-mka@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Matthias Kaehlcke <mka@chromium.org>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Yang A Fang <yang.a.fang@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Douglas Anderson <dianders@chromium.org>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: Move quirk to identify correct machine
+	driver" to the asoc tree
+Date: Wed, 24 May 2017 18:41:28 +0100
+Message-ID: <E1dDaHo-0002jD-Kc@debutante>
+References: <1494235140-29369-3-git-send-email-naveen.m@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5E311266D22
+ for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 19:41:36 +0200 (CEST)
+In-Reply-To: <1494235140-29369-3-git-send-email-naveen.m@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, broonie@kernel.org, naveen.m@intel.com, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cht_bsw_max98090_ti: Remove unused function cht_get_codec_dai()
+   ASoC: Move quirk to identify correct machine driver
 
 has been applied to the asoc tree at
 
@@ -37,48 +52,59 @@ to this mail.
 Thanks,
 Mark
 
->From 140385d87adce8d00864667f5132770ac5a13dac Mon Sep 17 00:00:00 2001
-From: Matthias Kaehlcke <mka@chromium.org>
-Date: Tue, 23 May 2017 12:05:09 -0700
-Subject: [PATCH] ASoC: cht_bsw_max98090_ti: Remove unused function
- cht_get_codec_dai()
+>From 7827d66946ad3af734ed46d1d68c23fa6974595c Mon Sep 17 00:00:00 2001
+From: Naveen M <naveen.m@intel.com>
+Date: Mon, 15 May 2017 13:42:14 +0530
+Subject: [PATCH] ASoC: Move quirk to identify correct machine driver
 
-Looks like the function has never been used since it was added by commit
-17119a465706 ("ASoC: Intel: Add Cherrytrail & Braswell machine driver
-cht_bsw_max98090_ti"). Removing it fixes the following warning when
-building with clang:
+sst_acpi_mach has a quirk field to handle board specific quirks.
+Patch moves quirk call to sst_acpi_find_machine() instead of calling
+it in respective driver
 
-sound/soc/intel/boards/cht_bsw_max98090_ti.c:42:35: error: unused
-    function 'cht_get_codec_dai' [-Werror,-Wunused-function]
-
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+Signed-off-by: Naveen M <naveen.m@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_max98090_ti.c | 12 ------------
- 1 file changed, 12 deletions(-)
+ sound/soc/intel/atom/sst/sst_acpi.c     |  2 --
+ sound/soc/intel/common/sst-match-acpi.c | 12 +++++++++---
+ 2 files changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_max98090_ti.c b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-index 742bc0d4e681..20755ecc7f9e 100644
---- a/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-+++ b/sound/soc/intel/boards/cht_bsw_max98090_ti.c
-@@ -39,18 +39,6 @@ struct cht_mc_private {
- 	bool ts3a227e_present;
- };
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index 193c4d7b35f5..592f6afaf2a5 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -303,8 +303,6 @@ static int sst_acpi_probe(struct platform_device *pdev)
+ 		dev_err(dev, "No matching machine driver found\n");
+ 		return -ENODEV;
+ 	}
+-	if (mach->machine_quirk)
+-		mach = mach->machine_quirk(mach);
  
--static inline struct snd_soc_dai *cht_get_codec_dai(struct snd_soc_card *card)
--{
--	struct snd_soc_pcm_runtime *rtd;
--
--	list_for_each_entry(rtd, &card->rtd_list, list) {
--		if (!strncmp(rtd->codec_dai->name, CHT_CODEC_DAI,
--			     strlen(CHT_CODEC_DAI)))
--			return rtd->codec_dai;
--	}
--	return NULL;
--}
--
- static const struct snd_soc_dapm_widget cht_dapm_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone", NULL),
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+ 	pdata = mach->pdata;
+ 
+diff --git a/sound/soc/intel/common/sst-match-acpi.c b/sound/soc/intel/common/sst-match-acpi.c
+index f4af3d144b82..88e4977578b5 100644
+--- a/sound/soc/intel/common/sst-match-acpi.c
++++ b/sound/soc/intel/common/sst-match-acpi.c
+@@ -81,9 +81,15 @@ struct sst_acpi_mach *sst_acpi_find_machine(struct sst_acpi_mach *machines)
+ {
+ 	struct sst_acpi_mach *mach;
+ 
+-	for (mach = machines; mach->id[0]; mach++)
+-		if (sst_acpi_check_hid(mach->id) == true)
+-			return mach;
++	for (mach = machines; mach->id[0]; mach++) {
++		if (sst_acpi_check_hid(mach->id) == true) {
++			if (mach->machine_quirk == NULL)
++				return mach;
++
++			if (mach->machine_quirk(mach) != NULL)
++				return mach;
++		}
++	}
+ 	return NULL;
+ }
+ EXPORT_SYMBOL_GPL(sst_acpi_find_machine);
 -- 
 2.11.0
