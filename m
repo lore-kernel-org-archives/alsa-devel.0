@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs4271: Remove unnecessary additional
-	variable definition" to the asoc tree
-Date: Wed, 24 May 2017 18:42:01 +0100
-Message-ID: <E1dDaIL-0002rf-IZ@debutante>
-References: <1495551819-17040-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E6D1F26737C
- for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 19:42:10 +0200 (CEST)
-In-Reply-To: <1495551819-17040-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: brian.austin@cirrus.com, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, lgirdwood@gmail.com, Paul.Handrigan@cirrus.com, broonie@kernel.org
+Subject: Applied "ASoC: hdmi-codec: add .get_dai_id support" to the asoc tree
+Date: Wed, 24 May 2017 18:45:45 +0100
+Message-ID: <E1dDaLx-0003Rd-Fq@debutante>
+References: <878tlvosk9.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <878tlvosk9.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Archit Taneja <architt@codeaurora.org>, Jose Abreu <joabreu@synopsys.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs4271: Remove unnecessary additional variable definition
+   ASoC: hdmi-codec: add .get_dai_id support
 
 has been applied to the asoc tree at
 
@@ -53,35 +37,85 @@ to this mail.
 Thanks,
 Mark
 
->From 177e27133ae9c9f5cbc306feaaa53d8fbc75e45f Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Date: Tue, 23 May 2017 16:03:39 +0100
-Subject: [PATCH] ASoC: cs4271: Remove unnecessary additional variable
- definition
+>From 96203fb4237bf70f0fd0fa307ca2975077db3ceb Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 18 May 2017 01:40:20 +0000
+Subject: [PATCH] ASoC: hdmi-codec: add .get_dai_id support
 
-The function already defines a ret variable at the top and makes
-no particular use of the shadowed definition, as such remove the
-redundant definition.
+ALSA SoC needs to know connected DAI ID for probing.
+It is not a big problem if device/driver was only for sound,
+but getting DAI ID will be difficult if device includes both
+Video/Sound, like HDMI.
+To solve this issue, this patch adds new .get_dai_id callback
+on hdmi_codec_ops
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Acked-by: Paul Handrigan <Paul.Handrigan@cirrus.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs4271.c | 2 --
- 1 file changed, 2 deletions(-)
+ include/sound/hdmi-codec.h    |  9 +++++++++
+ sound/soc/codecs/hdmi-codec.c | 13 +++++++++++++
+ 2 files changed, 22 insertions(+)
 
-diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
-index e78b5f055f25..d8824773dc29 100644
---- a/sound/soc/codecs/cs4271.c
-+++ b/sound/soc/codecs/cs4271.c
-@@ -674,8 +674,6 @@ static int cs4271_common_probe(struct device *dev,
- 		cs4271->gpio_nreset = cs4271plat->gpio_nreset;
+diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
+index 915c4357945c..9483c55f871b 100644
+--- a/include/sound/hdmi-codec.h
++++ b/include/sound/hdmi-codec.h
+@@ -18,9 +18,11 @@
+ #ifndef __HDMI_CODEC_H__
+ #define __HDMI_CODEC_H__
  
- 	if (gpio_is_valid(cs4271->gpio_nreset)) {
--		int ret;
--
- 		ret = devm_gpio_request(dev, cs4271->gpio_nreset,
- 					"CS4271 Reset");
- 		if (ret < 0)
++#include <linux/of_graph.h>
+ #include <linux/hdmi.h>
+ #include <drm/drm_edid.h>
+ #include <sound/asoundef.h>
++#include <sound/soc.h>
+ #include <uapi/sound/asound.h>
+ 
+ /*
+@@ -87,6 +89,13 @@ struct hdmi_codec_ops {
+ 	 */
+ 	int (*get_eld)(struct device *dev, void *data,
+ 		       uint8_t *buf, size_t len);
++
++	/*
++	 * Getting DAI ID
++	 * Optional
++	 */
++	int (*get_dai_id)(struct snd_soc_component *comment,
++			  struct device_node *endpoint);
+ };
+ 
+ /* HDMI codec initalization data */
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 8659b76b066a..6d05161b625d 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -719,6 +719,18 @@ static const struct snd_soc_dai_driver hdmi_spdif_dai = {
+ 	.pcm_new = hdmi_codec_pcm_new,
+ };
+ 
++static int hdmi_of_xlate_dai_id(struct snd_soc_component *component,
++				 struct device_node *endpoint)
++{
++	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
++	int ret = -ENOTSUPP; /* see snd_soc_get_dai_id() */
++
++	if (hcp->hcd.ops->get_dai_id)
++		ret = hcp->hcd.ops->get_dai_id(component, endpoint);
++
++	return ret;
++}
++
+ static struct snd_soc_codec_driver hdmi_codec = {
+ 	.component_driver = {
+ 		.controls		= hdmi_controls,
+@@ -727,6 +739,7 @@ static struct snd_soc_codec_driver hdmi_codec = {
+ 		.num_dapm_widgets	= ARRAY_SIZE(hdmi_widgets),
+ 		.dapm_routes		= hdmi_routes,
+ 		.num_dapm_routes	= ARRAY_SIZE(hdmi_routes),
++		.of_xlate_dai_id	= hdmi_of_xlate_dai_id,
+ 	},
+ };
+ 
 -- 
 2.11.0
