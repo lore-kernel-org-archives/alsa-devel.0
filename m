@@ -1,19 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH RFC 00/11] ALSA: pcm: introduce copy_frame
- operation and SND_PCM_PROXY_DRIVER_SUPPORT
-Date: Wed, 24 May 2017 23:19:06 +0900
-Message-ID: <957eb033-50b4-c952-59fe-e2dc347a6bde@sakamocchi.jp>
-References: <20170524005255.31223-1-o-takashi@sakamocchi.jp>
- <s5hr2zen4xj.wl-tiwai@suse.de>
+Subject: [alsa-lib][PATCH] test: add a test for list operation
+	to user-defined element sets
+Date: Wed, 24 May 2017 23:34:14 +0900
+Message-ID: <20170524143414.15888-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 9FC5B26680F
- for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 16:19:10 +0200 (CEST)
-In-Reply-To: <s5hr2zen4xj.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 6BF2226680F
+ for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 16:34:19 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,93 +19,115 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Current implementation of test for user-defined element doesn't perform
+list operation. This commit adds easy test for the operation.
 
-On May 24 2017 15:29, Takashi Iwai wrote:
-> OK, I now understand your idea.  Actually the word "proxy" was
-> misleading.  "proxy" implies the action, but PCM core can't know the
-> action the caller intended.  From PCM core POV, it's merely an
-> in-kernel buffer copy.  We don't need to invent new terms here (who is
-> the client?).
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ test/user-ctl-element-set.c | 80 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 80 insertions(+)
 
-Currently, I have no idea for the better term.
-
-Data transmission is a kind of communication, thus there's a originator. 
-I use the 'client' as the originator. Usually, userspace applications 
-are the client, however in addressed issue in-kernel OSS/UAC1 drivers 
-are the client. They perform as a proxy for their direct clients.
-
-> Apart from that, basically your idea is:
-> - Keep in-kernel buffer copy flag into substream->runtime.
-> - The ops handles both copy and silence.
-> - Move the whole transfer action to each driver instead of looping in
->    PCM core.
-> 
-> I find the first point is acceptable, from the current usage pattern,
-> as there is little chance to mix up both user-space buffer and
-> kernel-space buffer.
-
-Practically, it's rarely for clients to request copy operation for 
-source or destination on several memory spaces.
-
-> Though, another side of coin is that, by embedding in runtime, you can
-> easily overlook the in-kernel copy case, in comparison with passing
-> via the argument.  So it's not always plus.
-
-However, in current place, drivers with kernel/kernel copying is quite 
-rare. At least, they're not major ones. Features for them should be 
-selectable by configurations. In this point, such argument-oriented 
-implementation is exaggerated for the features. It's not worth to change 
-existent kernel APIs.
-
-> The second point is as same as mine.
-> 
-> The potential problem is the third point.  It'd require a larger
-> change, and it's error-prone, because you'll have to translate the
-> passed pointer in each driver to morph it to different values, either
-> the linear buffer pointer or the vector, in addition to the user-space
-> and kernel-space check.
-> 
-> In the PCM core code, we did that in that way, but it's OK since it's
-> done only there thus it's manageable.  However, forcing the complex
-> cast in each driver implementation is better to avoid.
-> 
-> How to make each driver implementing less error-prone codes -- that's
-> what we need to reconsider further.
-
-I have no objection for your view. It's natural idea for software 
-developers.
-
-Essentially, it's not better idea to produce one callback function for 
-two types of buffer access. Type casting is enough dangerous and make it 
-hard to trace arguments, but current PCM core implementation heavily 
-utilizes it. I can assume to add two callback operations to driver 
-programming API; for interleaved buffer and non-interleaved buffer.
-
-
-...but I'd like to postpone this discussion enough later (next week), 
-because we have several patches worth to be merged[1][2][3]. 
-Furthermore, patch 03-05 in this patchset are valuable as a refactoring 
-(of course need to be revised), independent of the discussion. I suggest 
-to put our priority to merging/reviewing them in this week, if you don't 
-mind. After arranging code bases with better shape, we can continue the 
-discussion with a calm mind.
-
-There's no need to jump.
-
-[1] [alsa-devel] [PATCH 0/7] ALSA: Fix/improve PCM ack callback
-http://mailman.alsa-project.org/pipermail/alsa-devel/2017-May/120886.html
-[2] [alsa-devel] [PATCH] ALSA: gus: remove unused local flag
-http://mailman.alsa-project.org/pipermail/alsa-devel/2017-May/120967.html
-[3] [alsa-devel] [PATCH] ALSA: sb: remove needless evaluation in 
-implementation for copy callback
-http://mailman.alsa-project.org/pipermail/alsa-devel/2017-May/120968.html
-
-
-Thanks
-
-Takashi Sakamoto
+diff --git a/test/user-ctl-element-set.c b/test/user-ctl-element-set.c
+index 75083d21..8635c156 100644
+--- a/test/user-ctl-element-set.c
++++ b/test/user-ctl-element-set.c
+@@ -433,6 +433,78 @@ static int check_event(struct elem_set_trial *trial, unsigned int mask,
+ 	return 0;
+ }
+ 
++static int check_elem_list(struct elem_set_trial *trial)
++{
++	snd_ctl_elem_list_t *list;
++	snd_ctl_elem_id_t *id;
++	int e;
++	unsigned int i;
++	int err;
++
++	snd_ctl_elem_list_alloca(&list);
++	snd_ctl_elem_id_alloca(&id);
++
++	err = snd_ctl_elem_list(trial->handle, list);
++	if (err < 0)
++		return err;
++
++	/* Certainly some elements are already added. */
++	if (snd_ctl_elem_list_get_count(list) == 0)
++		return -EIO;
++
++	err = snd_ctl_elem_list_alloc_space(list,
++					    snd_ctl_elem_list_get_count(list));
++	if (err < 0)
++		return err;
++
++	err = snd_ctl_elem_list(trial->handle, list);
++	if (err < 0)
++		goto end;
++
++	if (trial->element_count > snd_ctl_elem_list_get_count(list)) {
++		err = -EIO;
++		goto end;
++	}
++
++	i = 0;
++	for (e = 0; e < snd_ctl_elem_list_get_count(list); ++e) {
++		snd_ctl_elem_list_get_id(list, e, id);
++
++		if (strcmp(snd_ctl_elem_id_get_name(id),
++			   snd_ctl_elem_id_get_name(trial->id)) != 0)
++			continue;
++		if (snd_ctl_elem_id_get_interface(id) !=
++		    snd_ctl_elem_id_get_interface(trial->id))
++			continue;
++		if (snd_ctl_elem_id_get_device(id) !=
++		    snd_ctl_elem_id_get_device(trial->id))
++			continue;
++		if (snd_ctl_elem_id_get_subdevice(id) !=
++		    snd_ctl_elem_id_get_subdevice(trial->id))
++			continue;
++
++		/*
++		 * Here, I expect the list includes element ID data in numerical
++		 * order. Actually, it does.
++		 */
++		if (snd_ctl_elem_id_get_numid(id) !=
++		    snd_ctl_elem_id_get_numid(trial->id) + i)
++			continue;
++		if (snd_ctl_elem_id_get_index(id) !=
++		    snd_ctl_elem_id_get_index(trial->id) + i)
++			continue;
++
++		++i;
++	}
++
++	if (i != trial->element_count)
++		err = -EIO;
++end:
++	snd_ctl_elem_list_free_space(list);
++
++	return err;
++}
++
+ static int check_elem_set_props(struct elem_set_trial *trial)
+ {
+ 	snd_ctl_elem_id_t *id;
+@@ -701,6 +773,14 @@ int main(void)
+ 			break;
+ 		}
+ 
++		/* Check added elements are retrieved in a list. */
++		err = check_elem_list(&trial);
++		if (err < 0) {
++			printf("Fail to list each element with %s type.\n",
++			       snd_ctl_elem_type_name(trial.type));
++			break;
++		}
++
+ 		/* Check properties of each element in this element set. */
+ 		err = check_elem_set_props(&trial);
+ 		if (err < 0) {
+-- 
+2.11.0
