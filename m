@@ -1,33 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Add Kabylake RT5663+MAX98927
-	machine driver entry" to the asoc tree
-Date: Wed, 24 May 2017 18:41:13 +0100
-Message-ID: <E1dDaHZ-0002fa-1n@debutante>
-References: <1494505944-31378-7-git-send-email-naveen.m@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A00B7266BEF
- for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 19:41:29 +0200 (CEST)
-In-Reply-To: <1494505944-31378-7-git-send-email-naveen.m@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, vinod.koul@intel.com, liam.r.girdwood@linux.intel.com, tiwai@suse.de, broonie@kernel.org, naveen.m@intel.com, pierre-louis.bossart@intel.com
+Subject: Applied "ASoC: rsnd: SSI PIO adjust to 24bit mode" to the asoc tree
+Date: Wed, 24 May 2017 18:42:07 +0100
+Message-ID: <E1dDaIR-0002tb-Hw@debutante>
+References: <87k257oy6t.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87k257oy6t.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Add Kabylake RT5663+MAX98927 machine driver entry
+   ASoC: rsnd: SSI PIO adjust to 24bit mode
 
 has been applied to the asoc tree at
 
@@ -52,48 +37,50 @@ to this mail.
 Thanks,
 Mark
 
->From 0809d9871d1066634f8abae9ecfbdfadecb8cd35 Mon Sep 17 00:00:00 2001
-From: Naveen M <naveen.m@intel.com>
-Date: Mon, 15 May 2017 13:42:17 +0530
-Subject: [PATCH] ASoC: Intel: Add Kabylake RT5663+MAX98927 machine driver
- entry
+>From 7819a942de7b993771bd9377babc80485fe7606b Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 24 May 2017 01:17:10 +0000
+Subject: [PATCH] ASoC: rsnd: SSI PIO adjust to 24bit mode
 
-Adds kbl_rt5663_max98927_i2s machine driver entry into machine table
+commit 90431eb49bff ("ASoC: rsnd: don't use PDTA bit for 24bit on SSI")
+fixups 24bit mode data alignment, but PIO was not cared.
+This patch fixes PIO mode 24bit data alignment
 
-Signed-off-by: Naveen M <naveen.m@intel.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/soc/sh/rcar/ssi.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index ceb7734d74ed..4ebae850c559 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -879,6 +879,7 @@ static void skl_remove(struct pci_dev *pci)
- static struct sst_codecs skl_codecs = { 1, {"NAU88L25"} };
- static struct sst_codecs kbl_codecs = { 1, {"NAU88L25"} };
- static struct sst_codecs bxt_codecs = { 1, {"MX98357A"} };
-+static struct sst_codecs kbl_poppy_codecs = { 1, {"10EC5663"} };
- 
- static struct sst_acpi_mach sst_skl_devdata[] = {
- 	{
-@@ -942,6 +943,15 @@ static struct sst_acpi_mach sst_kbl_devdata[] = {
- 		.quirk_data = &kbl_codecs,
- 		.pdata = &skl_dmic_data
- 	},
-+	{
-+		.id = "MX98927",
-+		.drv_name = "kbl_rt5663_m98927",
-+		.fw_filename = "intel/dsp_fw_kbl.bin",
-+		.machine_quirk = sst_acpi_codec_list,
-+		.quirk_data = &kbl_poppy_codecs,
-+		.pdata = &skl_dmic_data
-+	},
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index c224695c1484..91e5c07911b4 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -550,6 +550,13 @@ static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
+ 		struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
+ 		u32 *buf = (u32 *)(runtime->dma_area +
+ 				   rsnd_dai_pointer_offset(io, 0));
++		int shift = 0;
 +
- 	{}
- };
++		switch (runtime->sample_bits) {
++		case 32:
++			shift = 8;
++			break;
++		}
  
+ 		/*
+ 		 * 8/16/32 data can be assesse to TDR/RDR register
+@@ -557,9 +564,9 @@ static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
+ 		 * see rsnd_ssi_init()
+ 		 */
+ 		if (rsnd_io_is_play(io))
+-			rsnd_mod_write(mod, SSITDR, *buf);
++			rsnd_mod_write(mod, SSITDR, (*buf) << shift);
+ 		else
+-			*buf = rsnd_mod_read(mod, SSIRDR);
++			*buf = (rsnd_mod_read(mod, SSIRDR) >> shift);
+ 
+ 		elapsed = rsnd_dai_pointer_update(io, sizeof(*buf));
+ 	}
 -- 
 2.11.0
