@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Fix type warning in sprintf" to the asoc tree
-Date: Wed, 24 May 2017 18:42:19 +0100
-Message-ID: <E1dDaId-0002ws-Ar@debutante>
-References: <1495619979-3620-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: Applied "ASoC: Intel: sst: Remove unused function sst_restore_shim64()" to the asoc tree
+Date: Wed, 24 May 2017 18:41:57 +0100
+Message-ID: <E1dDaIH-0002qW-M4@debutante>
+References: <20170523001258.81618-1-mka@chromium.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1495619979-3620-1-git-send-email-rf@opensource.wolfsonmicro.com>
+In-Reply-To: <20170523001258.81618-1-mka@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+To: Matthias Kaehlcke <mka@chromium.org>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Douglas Anderson <dianders@chromium.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Fix type warning in sprintf
+   ASoC: Intel: sst: Remove unused function sst_restore_shim64()
 
 has been applied to the asoc tree at
 
@@ -37,31 +37,50 @@ to this mail.
 Thanks,
 Mark
 
->From 6298117a5c5c5c5217b59640d6df7fe078fa7d88 Mon Sep 17 00:00:00 2001
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Date: Wed, 24 May 2017 10:59:38 +0100
-Subject: [PATCH] ASoC: wm_adsp: Fix type warning in sprintf
+>From 9a075265c6dc040e2946d21f4f9d082495bd5460 Mon Sep 17 00:00:00 2001
+From: Matthias Kaehlcke <mka@chromium.org>
+Date: Mon, 22 May 2017 17:12:58 -0700
+Subject: [PATCH] ASoC: Intel: sst: Remove unused function sst_restore_shim64()
 
-The shift member of struct soc_mixer_control is unsigned int.
+Looks like the function has never been used since it was added by commit
+b0d94acd634a ("ASoC: Intel: mrfld - add shim save restore"). Removing it
+fixes the following warning when building with clang:
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+sound/soc/intel/atom/sst/sst.c:360:20: error: unused function
+    'sst_restore_shim64' [-Werror,-Wunused-function]
+
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/atom/sst/sst.c | 16 ----------------
+ 1 file changed, 16 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 20695b691aff..a7dc76030ee4 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -2654,7 +2654,7 @@ int wm_adsp2_preloader_put(struct snd_kcontrol *kcontrol,
- 		(struct soc_mixer_control *)kcontrol->private_value;
- 	char preload[32];
+diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
+index d97556a3772c..2d43b8693c0c 100644
+--- a/sound/soc/intel/atom/sst/sst.c
++++ b/sound/soc/intel/atom/sst/sst.c
+@@ -397,22 +397,6 @@ static inline void sst_save_shim64(struct intel_sst_drv *ctx,
+ 	spin_unlock_irqrestore(&ctx->ipc_spin_lock, irq_flags);
+ }
  
--	snprintf(preload, ARRAY_SIZE(preload), "DSP%d Preload", mc->shift);
-+	snprintf(preload, ARRAY_SIZE(preload), "DSP%u Preload", mc->shift);
- 
- 	dsp->preloaded = ucontrol->value.integer.value[0];
- 
+-static inline void sst_restore_shim64(struct intel_sst_drv *ctx,
+-				      void __iomem *shim,
+-				      struct sst_shim_regs64 *shim_regs)
+-{
+-	unsigned long irq_flags;
+-
+-	/*
+-	 * we only need to restore IMRX for this case, rest will be
+-	 * initialize by FW or driver when firmware is loaded
+-	 */
+-	spin_lock_irqsave(&ctx->ipc_spin_lock, irq_flags);
+-	sst_shim_write64(shim, SST_IMRX, shim_regs->imrx);
+-	sst_shim_write64(shim, SST_CSR, shim_regs->csr);
+-	spin_unlock_irqrestore(&ctx->ipc_spin_lock, irq_flags);
+-}
+-
+ void sst_configure_runtime_pm(struct intel_sst_drv *ctx)
+ {
+ 	pm_runtime_set_autosuspend_delay(ctx->dev, SST_SUSPEND_DELAY);
 -- 
 2.11.0
