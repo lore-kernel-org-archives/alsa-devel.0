@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdmi-codec: add .get_dai_id support" to the asoc tree
-Date: Wed, 24 May 2017 18:45:45 +0100
-Message-ID: <E1dDaLx-0003Rd-Fq@debutante>
-References: <878tlvosk9.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <878tlvosk9.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Archit Taneja <architt@codeaurora.org>, Jose Abreu <joabreu@synopsys.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+Subject: Applied "MAINTAINERS: Update email address for patches
+	to Wolfson parts" to the asoc tree
+Date: Wed, 24 May 2017 18:42:10 +0100
+Message-ID: <E1dDaIU-0002uJ-5f@debutante>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 29698266CE7
+ for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 19:42:17 +0200 (CEST)
+In-Reply-To: 
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: hdmi-codec: add .get_dai_id support
+   MAINTAINERS: Update email address for patches to Wolfson parts
 
 has been applied to the asoc tree at
 
@@ -37,85 +52,33 @@ to this mail.
 Thanks,
 Mark
 
->From 96203fb4237bf70f0fd0fa307ca2975077db3ceb Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 18 May 2017 01:40:20 +0000
-Subject: [PATCH] ASoC: hdmi-codec: add .get_dai_id support
+>From 3a1672bb0186e940fc8521d19069f57690e850c2 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Wed, 24 May 2017 11:01:32 +0100
+Subject: [PATCH] MAINTAINERS: Update email address for patches to Wolfson
+ parts
 
-ALSA SoC needs to know connected DAI ID for probing.
-It is not a big problem if device/driver was only for sound,
-but getting DAI ID will be difficult if device includes both
-Video/Sound, like HDMI.
-To solve this issue, this patch adds new .get_dai_id callback
-on hdmi_codec_ops
+A somewhat overdue update of the address for sending patches on Wolfson
+parts to since our acquision a couple of years ago by Cirrus Logic.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/hdmi-codec.h    |  9 +++++++++
- sound/soc/codecs/hdmi-codec.c | 13 +++++++++++++
- 2 files changed, 22 insertions(+)
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/sound/hdmi-codec.h b/include/sound/hdmi-codec.h
-index 915c4357945c..9483c55f871b 100644
---- a/include/sound/hdmi-codec.h
-+++ b/include/sound/hdmi-codec.h
-@@ -18,9 +18,11 @@
- #ifndef __HDMI_CODEC_H__
- #define __HDMI_CODEC_H__
+diff --git a/MAINTAINERS b/MAINTAINERS
+index f7d568b8f133..517829e3bd1d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -13858,7 +13858,7 @@ S:	Odd fixes
+ F:	drivers/net/wireless/wl3501*
  
-+#include <linux/of_graph.h>
- #include <linux/hdmi.h>
- #include <drm/drm_edid.h>
- #include <sound/asoundef.h>
-+#include <sound/soc.h>
- #include <uapi/sound/asound.h>
- 
- /*
-@@ -87,6 +89,13 @@ struct hdmi_codec_ops {
- 	 */
- 	int (*get_eld)(struct device *dev, void *data,
- 		       uint8_t *buf, size_t len);
-+
-+	/*
-+	 * Getting DAI ID
-+	 * Optional
-+	 */
-+	int (*get_dai_id)(struct snd_soc_component *comment,
-+			  struct device_node *endpoint);
- };
- 
- /* HDMI codec initalization data */
-diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
-index 8659b76b066a..6d05161b625d 100644
---- a/sound/soc/codecs/hdmi-codec.c
-+++ b/sound/soc/codecs/hdmi-codec.c
-@@ -719,6 +719,18 @@ static const struct snd_soc_dai_driver hdmi_spdif_dai = {
- 	.pcm_new = hdmi_codec_pcm_new,
- };
- 
-+static int hdmi_of_xlate_dai_id(struct snd_soc_component *component,
-+				 struct device_node *endpoint)
-+{
-+	struct hdmi_codec_priv *hcp = snd_soc_component_get_drvdata(component);
-+	int ret = -ENOTSUPP; /* see snd_soc_get_dai_id() */
-+
-+	if (hcp->hcd.ops->get_dai_id)
-+		ret = hcp->hcd.ops->get_dai_id(component, endpoint);
-+
-+	return ret;
-+}
-+
- static struct snd_soc_codec_driver hdmi_codec = {
- 	.component_driver = {
- 		.controls		= hdmi_controls,
-@@ -727,6 +739,7 @@ static struct snd_soc_codec_driver hdmi_codec = {
- 		.num_dapm_widgets	= ARRAY_SIZE(hdmi_widgets),
- 		.dapm_routes		= hdmi_routes,
- 		.num_dapm_routes	= ARRAY_SIZE(hdmi_routes),
-+		.of_xlate_dai_id	= hdmi_of_xlate_dai_id,
- 	},
- };
- 
+ WOLFSON MICROELECTRONICS DRIVERS
+-L:	patches@opensource.wolfsonmicro.com
++L:	patches@opensource.cirrus.com
+ T:	git https://github.com/CirrusLogic/linux-drivers.git
+ W:	https://github.com/CirrusLogic/linux-drivers/wiki
+ S:	Supported
 -- 
 2.11.0
