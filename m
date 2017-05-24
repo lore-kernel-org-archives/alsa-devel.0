@@ -1,19 +1,14 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ALSA: control: remove entry limitation for
-	list operation
-Date: Wed, 24 May 2017 17:16:47 +0900
-Message-ID: <3da3cb6a-15d3-47cd-42d6-114cf426c03b@sakamocchi.jp>
-References: <20170524010430.1371-1-o-takashi@sakamocchi.jp>
- <s5hpoeyn4ul.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ASoC: Fix use-after-free at card unregistration
+Date: Wed, 24 May 2017 10:19:45 +0200
+Message-ID: <20170524081945.29116-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 194E8265142
- for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 10:16:50 +0200 (CEST)
-In-Reply-To: <s5hpoeyn4ul.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 90D4B265142
+ for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 10:19:48 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,23 +18,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Robert Jarzmik <robert.jarzmik@free.fr>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxN+W5tDA15pyIMjTml6UgMTU6MzEsIFRha2FzaGkgSXdhaSB3cm90ZToKPiBPbiBXZWQs
-IDI0IE1heSAyMDE3IDAzOjA0OjMwICswMjAwLAo+IFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4+
-Cj4+IEluIGN1cnJlbnQgaW1wbGVtZW50YXRpb24gb2YgQUxTQSBjb250cm9sIGNvcmUsIGxpc3Qg
-b3BlcmF0aW9uIGhhcwo+PiBhIGxpbWl0YXRpb24gdG8gaGFuZGxlIDE2Mzg0IGVudHJpZXMgYXQg
-b25jZS4gVGhpcyBzZWVtcyBkdWUgdG8KPj4gYWxsb2NhdGlvbiBpbiBrZXJuZWwgc3BhY2UgdG8g
-Y29weSBkYXRhIGZyb20gdXNlciBzcGFjZS4KPj4KPj4gV2l0aCBhIGNvbW1pdCA1M2U3YmY0NTI1
-ODQgKCJBTFNBOiBjb250cm9sOiBTaW1wbGlmeSBzbmRfY3RsX2VsZW1fbGlzdCgpCj4+IGltcGxl
-bWVudGF0aW9uIiksIGZvciB0aGUgb3BlcmF0aW9uLCBBTFNBIGNvbnRyb2wgY29yZSBjb3BpZXMg
-ZGF0YQo+PiBpbnRvIHVzZXIgc3BhY2UgZGlyZWN0bHkuIE5vIG5lZWQgdG8gY2FyZSBvZiBrZXJu
-ZWwgc3BhY2VzIGFueW1vcmUuCj4+Cj4+IFRoaXMgY29tbWl0IHB1cmdlcyB0aGUgbGltaXRhdGlv
-bi4KPj4gLS0tCj4gCj4gWW91IGZvcmdvdCB5b3VyIHNpZ24tb2ZmLgoKT29wcy4gSSBtaWdodCBi
-ZSB0aXJlZCBpbiB0aGlzIG1vcm5pbmcuLi4KClNpZ25lZC1vZmYtYnk6IFRha2FzaGkgU2FrYW1v
-dG8gPG8tdGFrYXNoaUBzYWthbW9jY2hpLmpwPgoKClRoYW5rcwoKVGFrYXNoaSBTYWthbW90bwpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
-IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
-YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+soc_cleanup_card_resources() call snd_card_free() at the last of its
+procedure.  This turned out to lead to a use-after-free.
+PCM runtimes have been already removed via soc_remove_pcm_runtimes(),
+while it's dereferenced later in soc_pcm_free() called via
+snd_card_free().
+
+The fix is simple: just move the snd_card_free() call to the beginning
+of the whole procedure.  This also gives another benefit: it
+guarantees that all operations have been shut down before actually
+releasing the resources, which was racy until now.
+
+Reported-and-tested-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/soc/soc-core.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index aae099c0e502..754e3ef8d7ae 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2286,6 +2286,9 @@ static int soc_cleanup_card_resources(struct snd_soc_card *card)
+ 	list_for_each_entry(rtd, &card->rtd_list, list)
+ 		flush_delayed_work(&rtd->delayed_work);
+ 
++	/* free the ALSA card at first; this syncs with pending operations */
++	snd_card_free(card->snd_card);
++
+ 	/* remove and free each DAI */
+ 	soc_remove_dai_links(card);
+ 	soc_remove_pcm_runtimes(card);
+@@ -2300,9 +2303,7 @@ static int soc_cleanup_card_resources(struct snd_soc_card *card)
+ 	if (card->remove)
+ 		card->remove(card);
+ 
+-	snd_card_free(card->snd_card);
+ 	return 0;
+-
+ }
+ 
+ /* removes a socdev */
+-- 
+2.13.0
