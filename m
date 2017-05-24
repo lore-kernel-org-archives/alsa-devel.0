@@ -1,13 +1,12 @@
 From: Icenowy Zheng <icenowy-h8G6r0blFSE@public.gmane.org>
-Subject: [PATCH v3 5/9] dmaengine: sun6i: make gate bit in
- sun8i's DMA engines a common quirk
-Date: Wed, 24 May 2017 18:06:03 +0800
-Message-ID: <20170524100607.29790-6-icenowy@aosc.io>
+Subject: [PATCH v3 6/9] dmaengine: sun6i: support V3s SoC variant
+Date: Wed, 24 May 2017 18:06:04 +0800
+Message-ID: <20170524100607.29790-7-icenowy@aosc.io>
 References: <20170524100607.29790-1-icenowy@aosc.io>
 Reply-To: icenowy-h8G6r0blFSE@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBDS6XAN6ZADRBTVWSXEQKGQETKKIJ4Y-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBDS6XAN6ZADRBX5WSXEQKGQEN65H5RI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 In-Reply-To: <20170524100607.29790-1-icenowy-h8G6r0blFSE@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
@@ -22,59 +21,61 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
 
-Originally we enable a special gate bit when the compatible indicates
-A23/33.
+Allwinner V3s has a DMA engine similar to the ones from A31, but with
+fewer channels and DRQs.
 
-But according to BSP sources and user manuals, more SoCs will need this
-gate bit.
-
-So make it a common quirk configured in the config struct.
+Add support for it.
 
 Signed-off-by: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
+Acked-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
 ---
 Changes in v3:
-- Stripped out the A83T gate bit set.
+- Added Chen-Yu's ACK.
 
- drivers/dma/sun6i-dma.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/dma/sun6i-dma.txt |  1 +
+ drivers/dma/sun6i-dma.c                             | 13 +++++++++++++
+ 2 files changed, 14 insertions(+)
 
+diff --git a/Documentation/devicetree/bindings/dma/sun6i-dma.txt b/Documentation/devicetree/bindings/dma/sun6i-dma.txt
+index 6b267045f522..98fbe1a5c6dd 100644
+--- a/Documentation/devicetree/bindings/dma/sun6i-dma.txt
++++ b/Documentation/devicetree/bindings/dma/sun6i-dma.txt
+@@ -9,6 +9,7 @@ Required properties:
+ 		  "allwinner,sun8i-a23-dma"
+ 		  "allwinner,sun8i-a83t-dma"
+ 		  "allwinner,sun8i-h3-dma"
++		  "allwinner,sun8i-v3s-dma"
+ - reg:		Should contain the registers base address and length
+ - interrupts:	Should contain a reference to the interrupt used by this device
+ - clocks:	Should contain a reference to the parent AHB clock
 diff --git a/drivers/dma/sun6i-dma.c b/drivers/dma/sun6i-dma.c
-index a2358780ab2c..69840cf6fe98 100644
+index 69840cf6fe98..a57eaace8e7d 100644
 --- a/drivers/dma/sun6i-dma.c
 +++ b/drivers/dma/sun6i-dma.c
-@@ -101,6 +101,11 @@ struct sun6i_dma_config {
- 	u32 nr_max_channels;
- 	u32 nr_max_requests;
- 	u32 nr_max_vchans;
-+	/*
-+	 * The hardware has a special gate bit, which is needed to
-+	 * be enabled for some SoCs with a sun6i-style DMA engine.
-+	 */
-+	bool gate_needed;
+@@ -1034,11 +1034,24 @@ static struct sun6i_dma_config sun8i_h3_dma_cfg = {
+ 	.nr_max_vchans   = 34,
  };
  
- /*
-@@ -1009,6 +1014,7 @@ static struct sun6i_dma_config sun8i_a23_dma_cfg = {
- 	.nr_max_channels = 8,
- 	.nr_max_requests = 24,
- 	.nr_max_vchans   = 37,
++/*
++ * The V3s have only 8 physical channels, a maximum DRQ port id of 23,
++ * and a total of 24 usable source and destination endpoints.
++ */
++
++static struct sun6i_dma_config sun8i_v3s_dma_cfg = {
++	.nr_max_channels = 8,
++	.nr_max_requests = 23,
++	.nr_max_vchans   = 24,
 +	.gate_needed	 = true,
++};
++
+ static const struct of_device_id sun6i_dma_match[] = {
+ 	{ .compatible = "allwinner,sun6i-a31-dma", .data = &sun6i_a31_dma_cfg },
+ 	{ .compatible = "allwinner,sun8i-a23-dma", .data = &sun8i_a23_dma_cfg },
+ 	{ .compatible = "allwinner,sun8i-a83t-dma", .data = &sun8i_a83t_dma_cfg },
+ 	{ .compatible = "allwinner,sun8i-h3-dma", .data = &sun8i_h3_dma_cfg },
++	{ .compatible = "allwinner,sun8i-v3s-dma", .data = &sun8i_v3s_dma_cfg },
+ 	{ /* sentinel */ }
  };
- 
- static struct sun6i_dma_config sun8i_a83t_dma_cfg = {
-@@ -1177,10 +1183,10 @@ static int sun6i_dma_probe(struct platform_device *pdev)
- 	/*
- 	 * sun8i variant requires us to toggle a dma gating register,
- 	 * as seen in Allwinner's SDK. This register is not documented
--	 * in the A23 user manual.
-+	 * in the A23 user manual, but documented at least in V3s user
-+	 * manual.
- 	 */
--	if (of_device_is_compatible(pdev->dev.of_node,
--				    "allwinner,sun8i-a23-dma"))
-+	if (sdc->cfg->gate_needed)
- 		writel(SUN8I_DMA_GATE_ENABLE, sdc->base + SUN8I_DMA_GATE);
- 
- 	return 0;
+ MODULE_DEVICE_TABLE(of, sun6i_dma_match);
 -- 
 2.12.2
