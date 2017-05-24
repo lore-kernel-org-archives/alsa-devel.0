@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Create a helper to search for
-	matching machine" to the asoc tree
-Date: Wed, 24 May 2017 18:41:33 +0100
-Message-ID: <E1dDaHt-0002kF-UZ@debutante>
-References: <1494235140-29369-2-git-send-email-naveen.m@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Support for multiple
+	data blocks" to the asoc tree
+Date: Wed, 24 May 2017 18:41:44 +0100
+Message-ID: <E1dDaI4-0002nU-TE@debutante>
+References: <1494857671-19257-3-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F2AD266C4D
- for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 19:41:41 +0200 (CEST)
-In-Reply-To: <1494235140-29369-2-git-send-email-naveen.m@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B6353267376
+ for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 19:41:53 +0200 (CEST)
+In-Reply-To: <1494857671-19257-3-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Harsha Priya <harshapriya.n@intel.com>, liam.r.girdwood@linux.intel.com, vinod.koul@intel.com, broonie@kernel.org, naveen.m@intel.com, pierre-louis.bossart@intel.com
+To: Shreyas NC <shreyas.nc@intel.com>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, lgirdwood@gmail.com, patches.audio@intel.com, tiwai@suse.de, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Create a helper to search for matching machine
+   ASoC: Intel: Skylake: Support for multiple data blocks
 
 has been applied to the asoc tree at
 
@@ -52,71 +53,77 @@ to this mail.
 Thanks,
 Mark
 
->From 915ae2b9f0fe0357a8f9cc53a7eb18ded03d11a4 Mon Sep 17 00:00:00 2001
-From: Naveen M <naveen.m@intel.com>
-Date: Mon, 15 May 2017 13:42:13 +0530
-Subject: [PATCH] ASoC: Intel: Create a helper to search for matching machine
+>From 133e6e5c27340fe2205537373e50d43881a0f745 Mon Sep 17 00:00:00 2001
+From: Shreyas NC <shreyas.nc@intel.com>
+Date: Mon, 15 May 2017 19:44:31 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Support for multiple data blocks
 
-Create a helper function to search for a matching machine
-based on HID. No functional change
+Module init params are additional data block in the module private data.
+Skylake driver doesn't yet have support to parse multiple data blocks if
+it appears in private data. Add support for parsing of multiple data
+blocks and module init params.
 
-Signed-off-by: Naveen M <naveen.m@intel.com>
-Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
+Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/common/sst-acpi.h       |  3 +++
- sound/soc/intel/common/sst-match-acpi.c | 19 +++++++++++++++----
- 2 files changed, 18 insertions(+), 4 deletions(-)
+ sound/soc/intel/skylake/skl-topology.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/common/sst-acpi.h b/sound/soc/intel/common/sst-acpi.h
-index 214e000667ae..3649d3b08c9e 100644
---- a/sound/soc/intel/common/sst-acpi.h
-+++ b/sound/soc/intel/common/sst-acpi.h
-@@ -43,6 +43,9 @@ static inline bool sst_acpi_find_package_from_hid(const u8 hid[ACPI_ID_LEN],
- /* acpi match */
- struct sst_acpi_mach *sst_acpi_find_machine(struct sst_acpi_mach *machines);
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index b28199a5348c..4c3bdff092bd 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -2070,6 +2070,16 @@ static int skl_tplg_get_token(struct device *dev,
  
-+/* acpi check hid */
-+bool sst_acpi_check_hid(const u8 hid[ACPI_ID_LEN]);
+ 		break;
+ 
++	case SKL_TKN_U32_CAPS_SET_PARAMS:
++		mconfig->formats_config.set_params =
++				tkn_elem->value;
++		break;
 +
- /* Descriptor for SST ASoC machine driver */
- struct sst_acpi_mach {
- 	/* ACPI ID for the matching machine driver. Audio codec for instance */
-diff --git a/sound/soc/intel/common/sst-match-acpi.c b/sound/soc/intel/common/sst-match-acpi.c
-index 1070f3ad23e5..f4af3d144b82 100644
---- a/sound/soc/intel/common/sst-match-acpi.c
-+++ b/sound/soc/intel/common/sst-match-acpi.c
-@@ -63,15 +63,26 @@ static acpi_status sst_acpi_mach_match(acpi_handle handle, u32 level,
- 	return AE_OK;
++	case SKL_TKN_U32_CAPS_PARAMS_ID:
++		mconfig->formats_config.param_id =
++				tkn_elem->value;
++		break;
++
+ 	case SKL_TKN_U32_PROC_DOMAIN:
+ 		mconfig->domain =
+ 			tkn_elem->value;
+@@ -2147,7 +2157,7 @@ static int skl_tplg_get_tokens(struct device *dev,
+ 		tuple_size += tkn_count * sizeof(*tkn_elem);
+ 	}
+ 
+-	return 0;
++	return off;
  }
  
-+bool sst_acpi_check_hid(const u8 hid[ACPI_ID_LEN])
-+{
-+	acpi_status status;
-+	bool found = false;
-+
-+	status = acpi_get_devices(hid, sst_acpi_mach_match, &found, NULL);
-+
-+	if (ACPI_FAILURE(status))
-+		return false;
-+
-+	return found;
-+}
-+EXPORT_SYMBOL_GPL(sst_acpi_check_hid);
-+
- struct sst_acpi_mach *sst_acpi_find_machine(struct sst_acpi_mach *machines)
- {
- 	struct sst_acpi_mach *mach;
--	bool found = false;
+ /*
+@@ -2198,10 +2208,11 @@ static int skl_tplg_get_pvt_data(struct snd_soc_tplg_dapm_widget *tplg_w,
+ 	num_blocks = ret;
  
- 	for (mach = machines; mach->id[0]; mach++)
--		if (ACPI_SUCCESS(acpi_get_devices(mach->id,
--						  sst_acpi_mach_match,
--						  &found, NULL)) && found)
-+		if (sst_acpi_check_hid(mach->id) == true)
- 			return mach;
- 	return NULL;
- }
+ 	off += array->size;
+-	array = (struct snd_soc_tplg_vendor_array *)(tplg_w->priv.data + off);
+-
+ 	/* Read the BLOCK_TYPE and BLOCK_SIZE descriptor */
+ 	while (num_blocks > 0) {
++		array = (struct snd_soc_tplg_vendor_array *)
++				(tplg_w->priv.data + off);
++
+ 		ret = skl_tplg_get_desc_blocks(dev, array);
+ 
+ 		if (ret < 0)
+@@ -2237,7 +2248,9 @@ static int skl_tplg_get_pvt_data(struct snd_soc_tplg_dapm_widget *tplg_w,
+ 				memcpy(mconfig->formats_config.caps, data,
+ 					mconfig->formats_config.caps_size);
+ 			--num_blocks;
++			ret = mconfig->formats_config.caps_size;
+ 		}
++		off += ret;
+ 	}
+ 
+ 	return 0;
 -- 
 2.11.0
