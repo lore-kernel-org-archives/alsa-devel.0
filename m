@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Fix use-after-free at card unregistration" to the asoc tree
-Date: Wed, 24 May 2017 18:42:12 +0100
-Message-ID: <E1dDaIW-0002vA-M4@debutante>
-References: <20170524081945.29116-1-tiwai@suse.de>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20170524081945.29116-1-tiwai@suse.de>
-Sender: stable-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgMark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Robert Jarzmik <robert.jarzmik@free.fr>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: wm_adsp: Remove unused member of struct wm_coeff_ctl_ops" to the asoc tree
+Date: Wed, 24 May 2017 18:42:16 +0100
+Message-ID: <E1dDaIa-0002w1-CC@debutante>
+References: <1495619979-3620-2-git-send-email-rf@opensource.wolfsonmicro.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1495619979-3620-2-git-send-email-rf@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Fix use-after-free at card unregistration
+   ASoC: wm_adsp: Remove unused member of struct wm_coeff_ctl_ops
 
 has been applied to the asoc tree at
 
@@ -37,53 +37,32 @@ to this mail.
 Thanks,
 Mark
 
->From 4efda5f2130da033aeedc5b3205569893b910de2 Mon Sep 17 00:00:00 2001
-From: Takashi Iwai <tiwai@suse.de>
-Date: Wed, 24 May 2017 10:19:45 +0200
-Subject: [PATCH] ASoC: Fix use-after-free at card unregistration
+>From f6db09488f58372909728cea5a7c063ebf78f386 Mon Sep 17 00:00:00 2001
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Date: Wed, 24 May 2017 10:59:39 +0100
+Subject: [PATCH] ASoC: wm_adsp: Remove unused member of struct
+ wm_coeff_ctl_ops
 
-soc_cleanup_card_resources() call snd_card_free() at the last of its
-procedure.  This turned out to lead to a use-after-free.
-PCM runtimes have been already removed via soc_remove_pcm_runtimes(),
-while it's dereferenced later in soc_pcm_free() called via
-snd_card_free().
+The xinfo member of struct wm_coeff_ctl_ops is never used.
 
-The fix is simple: just move the snd_card_free() call to the beginning
-of the whole procedure.  This also gives another benefit: it
-guarantees that all operations have been shut down before actually
-releasing the resources, which was racy until now.
-
-Reported-and-tested-by: Robert Jarzmik <robert.jarzmik@free.fr>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: <stable@vger.kernel.org>
 ---
- sound/soc/soc-core.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index aae099c0e502..754e3ef8d7ae 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2286,6 +2286,9 @@ static int soc_cleanup_card_resources(struct snd_soc_card *card)
- 	list_for_each_entry(rtd, &card->rtd_list, list)
- 		flush_delayed_work(&rtd->delayed_work);
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index a7dc76030ee4..5aff83be375c 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -482,8 +482,6 @@ struct wm_coeff_ctl_ops {
+ 		    struct snd_ctl_elem_value *ucontrol);
+ 	int (*xput)(struct snd_kcontrol *kcontrol,
+ 		    struct snd_ctl_elem_value *ucontrol);
+-	int (*xinfo)(struct snd_kcontrol *kcontrol,
+-		     struct snd_ctl_elem_info *uinfo);
+ };
  
-+	/* free the ALSA card at first; this syncs with pending operations */
-+	snd_card_free(card->snd_card);
-+
- 	/* remove and free each DAI */
- 	soc_remove_dai_links(card);
- 	soc_remove_pcm_runtimes(card);
-@@ -2300,9 +2303,7 @@ static int soc_cleanup_card_resources(struct snd_soc_card *card)
- 	if (card->remove)
- 		card->remove(card);
- 
--	snd_card_free(card->snd_card);
- 	return 0;
--
- }
- 
- /* removes a socdev */
+ struct wm_coeff_ctl {
 -- 
 2.11.0
