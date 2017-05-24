@@ -1,15 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [alsa-lib][PATCH] test: add a test for list operation
-	to user-defined element sets
-Date: Wed, 24 May 2017 23:34:14 +0900
-Message-ID: <20170524143414.15888-1-o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH] ALSA: sb: remove needless evaluation in
+ implementation for copy callback
+Date: Thu, 25 May 2017 00:01:07 +0900
+Message-ID: <12415b17-21dc-1b23-85ee-ead930607df4@sakamocchi.jp>
+References: <20170523134042.1056-1-o-takashi@sakamocchi.jp>
+ <s5h8tlnznqw.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 6BF2226680F
- for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 16:34:19 +0200 (CEST)
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id A400B26680F
+ for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 17:01:10 +0200 (CEST)
+In-Reply-To: <s5h8tlnznqw.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,115 +23,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Current implementation of test for user-defined element doesn't perform
-list operation. This commit adds easy test for the operation.
+Hi,
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- test/user-ctl-element-set.c | 80 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 80 insertions(+)
+On May 23 2017 22:49, Takashi Iwai wrote:
+> On Tue, 23 May 2017 15:40:42 +0200,
+> Takashi Sakamoto wrote:
+>>
+>> In design of ALSA pcm core, 'struct snd_pcm_ops.copy' is expected to
+>> copy PCM frames, according to frame alignment on intermediate buffer for
+>> userspace and dedicated buffer for data transmission. In this callback,
+>> value of 'channel' argument depends on the frame alignment, which drivers
+>> registers to runtime of PCM substream. When target devices can handle
+>> non-interleaved buffer, this value has positive value, otherwise negative.
+>>
+>> ALSA driver for PCM component of EMU8000 chip is programmed with local
+>> macro to switch the frame alignment. The 'copy' operation in
+>> non-interleaved side has evaluation of the 'channel' argument (actually
+>> it's 'voice' argument). This is useless.
+>>
+>> This commit remove the evaluation.
+>>
+>> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> 
+> Passing -1 to the channel was valid even for non-interleaved access.
+> It was meant to apply to all channels.
+> 
+> The call with channel = -1 itself might have been dropped meanwhile,
+> so removing it may be OK now.  But the description is confusing as if
+> it were incorrectly implemented.
 
-diff --git a/test/user-ctl-element-set.c b/test/user-ctl-element-set.c
-index 75083d21..8635c156 100644
---- a/test/user-ctl-element-set.c
-+++ b/test/user-ctl-element-set.c
-@@ -433,6 +433,78 @@ static int check_event(struct elem_set_trial *trial, unsigned int mask,
- 	return 0;
- }
- 
-+static int check_elem_list(struct elem_set_trial *trial)
-+{
-+	snd_ctl_elem_list_t *list;
-+	snd_ctl_elem_id_t *id;
-+	int e;
-+	unsigned int i;
-+	int err;
-+
-+	snd_ctl_elem_list_alloca(&list);
-+	snd_ctl_elem_id_alloca(&id);
-+
-+	err = snd_ctl_elem_list(trial->handle, list);
-+	if (err < 0)
-+		return err;
-+
-+	/* Certainly some elements are already added. */
-+	if (snd_ctl_elem_list_get_count(list) == 0)
-+		return -EIO;
-+
-+	err = snd_ctl_elem_list_alloc_space(list,
-+					    snd_ctl_elem_list_get_count(list));
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_ctl_elem_list(trial->handle, list);
-+	if (err < 0)
-+		goto end;
-+
-+	if (trial->element_count > snd_ctl_elem_list_get_count(list)) {
-+		err = -EIO;
-+		goto end;
-+	}
-+
-+	i = 0;
-+	for (e = 0; e < snd_ctl_elem_list_get_count(list); ++e) {
-+		snd_ctl_elem_list_get_id(list, e, id);
-+
-+		if (strcmp(snd_ctl_elem_id_get_name(id),
-+			   snd_ctl_elem_id_get_name(trial->id)) != 0)
-+			continue;
-+		if (snd_ctl_elem_id_get_interface(id) !=
-+		    snd_ctl_elem_id_get_interface(trial->id))
-+			continue;
-+		if (snd_ctl_elem_id_get_device(id) !=
-+		    snd_ctl_elem_id_get_device(trial->id))
-+			continue;
-+		if (snd_ctl_elem_id_get_subdevice(id) !=
-+		    snd_ctl_elem_id_get_subdevice(trial->id))
-+			continue;
-+
-+		/*
-+		 * Here, I expect the list includes element ID data in numerical
-+		 * order. Actually, it does.
-+		 */
-+		if (snd_ctl_elem_id_get_numid(id) !=
-+		    snd_ctl_elem_id_get_numid(trial->id) + i)
-+			continue;
-+		if (snd_ctl_elem_id_get_index(id) !=
-+		    snd_ctl_elem_id_get_index(trial->id) + i)
-+			continue;
-+
-+		++i;
-+	}
-+
-+	if (i != trial->element_count)
-+		err = -EIO;
-+end:
-+	snd_ctl_elem_list_free_space(list);
-+
-+	return err;
-+}
-+
- static int check_elem_set_props(struct elem_set_trial *trial)
- {
- 	snd_ctl_elem_id_t *id;
-@@ -701,6 +773,14 @@ int main(void)
- 			break;
- 		}
- 
-+		/* Check added elements are retrieved in a list. */
-+		err = check_elem_list(&trial);
-+		if (err < 0) {
-+			printf("Fail to list each element with %s type.\n",
-+			       snd_ctl_elem_type_name(trial.type));
-+			break;
-+		}
-+
- 		/* Check properties of each element in this element set. */
- 		err = check_elem_set_props(&trial);
- 		if (err < 0) {
--- 
-2.11.0
+https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/tree/Documentation/sound/kernel-api/writing-an-alsa-driver.rst#n3598
+
+ > You need to check the channel argument, and if it's -1, copy the
+ > whole channels. Otherwise, you have to copy only the specified
+ > channel.
+
+Hm. We need to correct this API documentation, because there's no codes 
+to pass negative value to the argument for vector buffer operation. I'll 
+post my proposal later.
+
+
+Thanks
+
+Takashi Sakamoto
