@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card: Fix misleading error
-	message" to the asoc tree
-Date: Wed, 24 May 2017 18:03:01 +0100
-Message-ID: <E1dDZgb-0008TD-St@debutante>
-References: <20170524102823.8253-1-julian@jusst.de>
+Subject: Re: [PATCH 5/5] drm: dw-hdmi-i2s: add .get_dai_id
+ callback for ALSA SoC
+Date: Wed, 24 May 2017 18:38:49 +0100
+Message-ID: <20170524173849.h7jkmkrwk47pn6kd@sirena.org.uk>
+References: <87efvnosnb.wl%kuninori.morimoto.gx@renesas.com>
+ <877f1fosji.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7101278665882627258=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 36CF226736B
- for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 19:03:25 +0200 (CEST)
-In-Reply-To: <20170524102823.8253-1-julian@jusst.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6D40626680F
+ for <alsa-devel@alsa-project.org>; Wed, 24 May 2017 19:39:03 +0200 (CEST)
+In-Reply-To: <877f1fosji.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,76 +22,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Julian Scheel <julian@jusst.de>
-Cc: Nikita Yushchenko <nikita.yoush@cogentembedded.com>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Jose Abreu <joabreu@synopsys.com>, Archit Taneja <architt@codeaurora.org>, Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, David Airlie <airlied@linux.ie>, Linux-ALSA <alsa-devel@alsa-project.org>, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: simple-card: Fix misleading error message
+--===============7101278665882627258==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="z7ry6pxh7hnsyemh"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--z7ry6pxh7hnsyemh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Thu, May 18, 2017 at 01:40:47AM +0000, Kuninori Morimoto wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> ALSA SoC needs to know connected DAI ID for probing.
+> It is not a big problem if device/driver was only for sound,
+> but getting DAI ID will be difficult if device includes both
+> Video/Sound, like HDMI.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+As far as I understand what's going on with the graph code this seems to
+make sense to me.  How do we want to go about handling the patch?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--z7ry6pxh7hnsyemh
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
 
->From 7ac45d1635a4cd2e99a4b11903d4a2815ca1b27b Mon Sep 17 00:00:00 2001
-From: Julian Scheel <julian@jusst.de>
-Date: Wed, 24 May 2017 12:28:23 +0200
-Subject: [PATCH] ASoC: simple-card: Fix misleading error message
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlklxSkACgkQJNaLcl1U
+h9A3owgAgubZNqzW6X14qoY2SVNqIP0Qb9kB37bIY4p4pul9sDwcYCryKenL4Orv
+jDZDtztVo4bkm0izsLgY/tKvxwvM8GQJhCRbgd3IAa3BaBTryxJCGStr8FfS2BSp
+fieT/QpLDbaEmRsK5FSmeD0+aGv0RFTxwS+DXUhAT8AAbselWnbcA7f/ajCBdjQx
+Vr0X7VGfiVlEFOADDQCy2cM2o3lySDKhwzr9dQhHwLZoh/f4ZS8QOk8v6Q/cFKn7
+cfKvIRvW2sgDsjcKVDky2pDsYCSFQxlYOszH84nlEmZsQiJljXds7R1GOUUUx+5a
+T7345ppDJvWXvG7+Qo3iSqwApXKDKw==
+=ed4A
+-----END PGP SIGNATURE-----
 
-In case cpu could not be found the error message would always refer to
-/codec/ not being found in DT. Fix this by catching the cpu node not found
-case explicitly.
+--z7ry6pxh7hnsyemh--
 
-Signed-off-by: Julian Scheel <julian@jusst.de>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/generic/simple-card.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+--===============7101278665882627258==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 2c9dedab5184..565d057f0d14 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -233,13 +233,19 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
- 	snprintf(prop, sizeof(prop), "%scpu", prefix);
- 	cpu = of_get_child_by_name(node, prop);
- 
-+	if (!cpu) {
-+		ret = -EINVAL;
-+		dev_err(dev, "%s: Can't find %s DT node\n", __func__, prop);
-+		goto dai_link_of_err;
-+	}
-+
- 	snprintf(prop, sizeof(prop), "%splat", prefix);
- 	plat = of_get_child_by_name(node, prop);
- 
- 	snprintf(prop, sizeof(prop), "%scodec", prefix);
- 	codec = of_get_child_by_name(node, prop);
- 
--	if (!cpu || !codec) {
-+	if (!codec) {
- 		ret = -EINVAL;
- 		dev_err(dev, "%s: Can't find %s DT node\n", __func__, prop);
- 		goto dai_link_of_err;
--- 
-2.11.0
+
+--===============7101278665882627258==--
