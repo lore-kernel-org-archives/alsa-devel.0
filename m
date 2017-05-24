@@ -1,36 +1,66 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH 2/2] ASoC: wm_adsp: Remove unused member of struct wm_coeff_ctl_ops
-Date: Wed, 24 May 2017 10:59:39 +0100
-Message-ID: <1495619979-3620-2-git-send-email-rf@opensource.wolfsonmicro.com>
-References: <1495619979-3620-1-git-send-email-rf@opensource.wolfsonmicro.com>
+From: Icenowy Zheng <icenowy-h8G6r0blFSE@public.gmane.org>
+Subject: [PATCH v3 0/9] Add support for the audio codec on
+ Allwinner V3s
+Date: Wed, 24 May 2017 18:05:58 +0800
+Message-ID: <20170524100607.29790-1-icenowy@aosc.io>
+Reply-To: icenowy-h8G6r0blFSE@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1495619979-3620-1-git-send-email-rf@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBDS6XAN6ZADRBI5WSXEQKGQEB4DFUWY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>
+Cc: dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Icenowy Zheng <icenowy-h8G6r0blFSE@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The xinfo member of struct wm_coeff_ctl_ops is never used.
+Allwinner V3s features a audio codec with dedicated digital and analog parts,
+like the ones on A23/H3, but much simpler (lack of MIC2, LINE IN and MBIAS).
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
----
- sound/soc/codecs/wm_adsp.c | 2 --
- 1 file changed, 2 deletions(-)
+Add support for it.
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index a7dc760..5aff83b 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -482,8 +482,6 @@ struct wm_coeff_ctl_ops {
- 		    struct snd_ctl_elem_value *ucontrol);
- 	int (*xput)(struct snd_kcontrol *kcontrol,
- 		    struct snd_ctl_elem_value *ucontrol);
--	int (*xinfo)(struct snd_kcontrol *kcontrol,
--		     struct snd_ctl_elem_info *uinfo);
- };
- 
- struct wm_coeff_ctl {
+In order to make the codec usable, DMA support is also added in this series.
+
+Patch 1 split out MBIAS in analog codec driver.
+
+Patch 2 prepared a set of objects that have MIC2 and LINEIN stripped out
+for V3s.
+
+Patch 3/4 adds support for V3s in analog/digital codec.
+
+Patch 5 add the gate bit as a common quirk of sun6i-dma driver, as V3s also
+needs it.
+
+Patch 6 really adds support for V3s in DMA engine.
+
+Patch 7/8/9 adds three parts of device tree: DMA engine, codec support
+and enable the codec for Lichee Pi Zero dock.
+
+Icenowy Zheng (9):
+  ASoC: sun8i-codec-analog: split out mbias
+  ASoC: sun8i-codec-analog: prepare a mixer control/widget/route set for
+    V3s
+  ASoC: sun8i-codec-analog: add support for V3s SoC
+  ASoC: sun4i-codec: Add support for V3s codec
+  dmaengine: sun6i: make gate bit in sun8i's DMA engines a common quirk
+  dmaengine: sun6i: support V3s SoC variant
+  ARM: dts: sun8i: add DMA engine in V3s DTSI
+  ARM: dts: sun8i: add audio codec support into V3s DTSI
+  ARM: sun8i: v3s: enable audio on Lichee Pi Zero Dock board
+
+ .../devicetree/bindings/dma/sun6i-dma.txt          |   1 +
+ .../devicetree/bindings/sound/sun4i-codec.txt      |  11 +-
+ .../bindings/sound/sun8i-codec-analog.txt          |   1 +
+ arch/arm/boot/dts/sun8i-v3s-licheepi-zero-dock.dts |   9 ++
+ arch/arm/boot/dts/sun8i-v3s.dtsi                   |  28 ++++
+ drivers/dma/sun6i-dma.c                            |  25 +++-
+ sound/soc/sunxi/sun4i-codec.c                      |  63 +++++++++
+ sound/soc/sunxi/sun8i-codec-analog.c               | 141 ++++++++++++++++++++-
+ 8 files changed, 266 insertions(+), 13 deletions(-)
+
 -- 
-1.9.1
+2.12.2
