@@ -1,14 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 06/14] ALSA: pcm: Shuffle codes
-Date: Thu, 25 May 2017 21:17:27 +0200
-Message-ID: <20170525191735.13787-7-tiwai@suse.de>
+Subject: [PATCH 12/14] usb: gadget: u_uac1: Kill set_fs() usage
+Date: Thu, 25 May 2017 21:17:33 +0200
+Message-ID: <20170525191735.13787-13-tiwai@suse.de>
 References: <20170525191735.13787-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 9EE79266D6B
+ by alsa0.perex.cz (Postfix) with ESMTP id CB001267393
  for <alsa-devel@alsa-project.org>; Thu, 25 May 2017 21:17:41 +0200 (CEST)
 In-Reply-To: <20170525191735.13787-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,268 +24,42 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-Just shuffle the codes, without any change otherwise.
+With the new API to perform the in-kernel buffer copy, we can get rid
+of set_fs() usage in this driver, finally.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/pcm_lib.c | 210 +++++++++++++++++++++++++--------------------------
- 1 file changed, 105 insertions(+), 105 deletions(-)
+ drivers/usb/gadget/function/u_uac1.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index e4f5c43b6448..5db086748515 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -1991,6 +1991,10 @@ static int wait_for_avail(struct snd_pcm_substream *substream,
- 	return err;
- }
- 	
-+typedef int (*transfer_f)(struct snd_pcm_substream *substream, unsigned int hwoff,
-+			  unsigned long data, unsigned int off,
-+			  snd_pcm_uframes_t size);
-+
- static int snd_pcm_lib_write_transfer(struct snd_pcm_substream *substream,
- 				      unsigned int hwoff,
- 				      unsigned long data, unsigned int off,
-@@ -2013,9 +2017,67 @@ static int snd_pcm_lib_write_transfer(struct snd_pcm_substream *substream,
+diff --git a/drivers/usb/gadget/function/u_uac1.c b/drivers/usb/gadget/function/u_uac1.c
+index c78c84138a28..ca88e4c0fd1e 100644
+--- a/drivers/usb/gadget/function/u_uac1.c
++++ b/drivers/usb/gadget/function/u_uac1.c
+@@ -157,7 +157,6 @@ size_t u_audio_playback(struct gaudio *card, void *buf, size_t count)
+ 	struct gaudio_snd_dev	*snd = &card->playback;
+ 	struct snd_pcm_substream *substream = snd->substream;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	mm_segment_t old_fs;
+ 	ssize_t result;
+ 	snd_pcm_sframes_t frames;
+ 
+@@ -174,15 +173,11 @@ size_t u_audio_playback(struct gaudio *card, void *buf, size_t count)
+ 	}
+ 
+ 	frames = bytes_to_frames(runtime, count);
+-	old_fs = get_fs();
+-	set_fs(KERNEL_DS);
+-	result = snd_pcm_lib_write(snd->substream, (void __user *)buf, frames);
++	result = snd_pcm_kernel_write(snd->substream, buf, frames);
+ 	if (result != frames) {
+ 		ERROR(card, "Playback error: %d\n", (int)result);
+-		set_fs(old_fs);
+ 		goto try_again;
+ 	}
+-	set_fs(old_fs);
+ 
  	return 0;
  }
-  
--typedef int (*transfer_f)(struct snd_pcm_substream *substream, unsigned int hwoff,
--			  unsigned long data, unsigned int off,
--			  snd_pcm_uframes_t size);
-+static int snd_pcm_lib_writev_transfer(struct snd_pcm_substream *substream,
-+				       unsigned int hwoff,
-+				       unsigned long data, unsigned int off,
-+				       snd_pcm_uframes_t frames)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int err;
-+	void __user **bufs = (void __user **)data;
-+	int channels = runtime->channels;
-+	char __user *buf;
-+	int c;
-+
-+	if (substream->ops->copy_user) {
-+		hwoff = samples_to_bytes(runtime, hwoff);
-+		off = samples_to_bytes(runtime, off);
-+		frames = samples_to_bytes(runtime, frames);
-+		for (c = 0; c < channels; ++c, ++bufs) {
-+			buf = *bufs + off;
-+			if (!*bufs) {
-+				if (snd_BUG_ON(!substream->ops->fill_silence))
-+					return -EINVAL;
-+				err = substream->ops->fill_silence(substream, c,
-+								   hwoff,
-+								   frames);
-+			} else {
-+				err = substream->ops->copy_user(substream, c,
-+								hwoff, buf,
-+								frames);
-+			}
-+			if (err < 0)
-+				return err;
-+		}
-+	} else {
-+		/* default transfer behaviour */
-+		size_t dma_csize = runtime->dma_bytes / channels;
-+		for (c = 0; c < channels; ++c, ++bufs) {
-+			char *hwbuf = runtime->dma_area + (c * dma_csize) + samples_to_bytes(runtime, hwoff);
-+			if (*bufs == NULL) {
-+				snd_pcm_format_set_silence(runtime->format, hwbuf, frames);
-+			} else {
-+				char __user *buf = *bufs + samples_to_bytes(runtime, off);
-+				if (copy_from_user(hwbuf, buf, samples_to_bytes(runtime, frames)))
-+					return -EFAULT;
-+			}
-+		}
-+	}
-+	return 0;
-+}
-+
-+static int pcm_sanity_check(struct snd_pcm_substream *substream)
-+{
-+	struct snd_pcm_runtime *runtime;
-+	if (PCM_RUNTIME_CHECK(substream))
-+		return -ENXIO;
-+	runtime = substream->runtime;
-+	if (snd_BUG_ON(!substream->ops->copy_user && !runtime->dma_area))
-+		return -EINVAL;
-+	if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
-+		return -EBADFD;
-+	return 0;
-+}
- 
- static int pcm_accessible_state(struct snd_pcm_runtime *runtime)
- {
-@@ -2117,19 +2179,6 @@ static snd_pcm_sframes_t snd_pcm_lib_write1(struct snd_pcm_substream *substream,
- }
- 
- /* sanity-check for read/write methods */
--static int pcm_sanity_check(struct snd_pcm_substream *substream)
--{
--	struct snd_pcm_runtime *runtime;
--	if (PCM_RUNTIME_CHECK(substream))
--		return -ENXIO;
--	runtime = substream->runtime;
--	if (snd_BUG_ON(!substream->ops->copy_user && !runtime->dma_area))
--		return -EINVAL;
--	if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
--		return -EBADFD;
--	return 0;
--}
--
- snd_pcm_sframes_t snd_pcm_lib_write(struct snd_pcm_substream *substream, const void __user *buf, snd_pcm_uframes_t size)
- {
- 	struct snd_pcm_runtime *runtime;
-@@ -2151,55 +2200,6 @@ snd_pcm_sframes_t snd_pcm_lib_write(struct snd_pcm_substream *substream, const v
- 
- EXPORT_SYMBOL(snd_pcm_lib_write);
- 
--static int snd_pcm_lib_writev_transfer(struct snd_pcm_substream *substream,
--				       unsigned int hwoff,
--				       unsigned long data, unsigned int off,
--				       snd_pcm_uframes_t frames)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	int err;
--	void __user **bufs = (void __user **)data;
--	int channels = runtime->channels;
--	char __user *buf;
--	int c;
--
--	if (substream->ops->copy_user) {
--		hwoff = samples_to_bytes(runtime, hwoff);
--		off = samples_to_bytes(runtime, off);
--		frames = samples_to_bytes(runtime, frames);
--		for (c = 0; c < channels; ++c, ++bufs) {
--			buf = *bufs + off;
--			if (!*bufs) {
--				if (snd_BUG_ON(!substream->ops->fill_silence))
--					return -EINVAL;
--				err = substream->ops->fill_silence(substream, c,
--								   hwoff,
--								   frames);
--			} else {
--				err = substream->ops->copy_user(substream, c,
--								hwoff, buf,
--								frames);
--			}
--			if (err < 0)
--				return err;
--		}
--	} else {
--		/* default transfer behaviour */
--		size_t dma_csize = runtime->dma_bytes / channels;
--		for (c = 0; c < channels; ++c, ++bufs) {
--			char *hwbuf = runtime->dma_area + (c * dma_csize) + samples_to_bytes(runtime, hwoff);
--			if (*bufs == NULL) {
--				snd_pcm_format_set_silence(runtime->format, hwbuf, frames);
--			} else {
--				char __user *buf = *bufs + samples_to_bytes(runtime, off);
--				if (copy_from_user(hwbuf, buf, samples_to_bytes(runtime, frames)))
--					return -EFAULT;
--			}
--		}
--	}
--	return 0;
--}
-- 
- snd_pcm_sframes_t snd_pcm_lib_writev(struct snd_pcm_substream *substream,
- 				     void __user **bufs,
- 				     snd_pcm_uframes_t frames)
-@@ -2244,6 +2244,46 @@ static int snd_pcm_lib_read_transfer(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
-+static int snd_pcm_lib_readv_transfer(struct snd_pcm_substream *substream,
-+				      unsigned int hwoff,
-+				      unsigned long data, unsigned int off,
-+				      snd_pcm_uframes_t frames)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	int err;
-+	void __user **bufs = (void __user **)data;
-+	int channels = runtime->channels;
-+	char __user *buf;
-+	char *hwbuf;
-+	int c;
-+
-+	if (substream->ops->copy_user) {
-+		hwoff = samples_to_bytes(runtime, hwoff);
-+		off = samples_to_bytes(runtime, off);
-+		frames = samples_to_bytes(runtime, frames);
-+		for (c = 0; c < channels; ++c, ++bufs) {
-+			if (!*bufs)
-+				continue;
-+			err = substream->ops->copy_user(substream, c, hwoff,
-+							*bufs + off, frames);
-+			if (err < 0)
-+				return err;
-+		}
-+	} else {
-+		snd_pcm_uframes_t dma_csize = runtime->dma_bytes / channels;
-+		for (c = 0; c < channels; ++c, ++bufs) {
-+			if (*bufs == NULL)
-+				continue;
-+
-+			hwbuf = runtime->dma_area + (c * dma_csize) + samples_to_bytes(runtime, hwoff);
-+			buf = *bufs + samples_to_bytes(runtime, off);
-+			if (copy_to_user(buf, hwbuf, samples_to_bytes(runtime, frames)))
-+				return -EFAULT;
-+		}
-+	}
-+	return 0;
-+}
-+
- static snd_pcm_sframes_t snd_pcm_lib_read1(struct snd_pcm_substream *substream,
- 					   unsigned long data,
- 					   snd_pcm_uframes_t size,
-@@ -2352,46 +2392,6 @@ snd_pcm_sframes_t snd_pcm_lib_read(struct snd_pcm_substream *substream, void __u
- 
- EXPORT_SYMBOL(snd_pcm_lib_read);
- 
--static int snd_pcm_lib_readv_transfer(struct snd_pcm_substream *substream,
--				      unsigned int hwoff,
--				      unsigned long data, unsigned int off,
--				      snd_pcm_uframes_t frames)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	int err;
--	void __user **bufs = (void __user **)data;
--	int channels = runtime->channels;
--	char __user *buf;
--	char *hwbuf;
--	int c;
--
--	if (substream->ops->copy_user) {
--		hwoff = samples_to_bytes(runtime, hwoff);
--		off = samples_to_bytes(runtime, off);
--		frames = samples_to_bytes(runtime, frames);
--		for (c = 0; c < channels; ++c, ++bufs) {
--			if (!*bufs)
--				continue;
--			err = substream->ops->copy_user(substream, c, hwoff,
--							*bufs + off, frames);
--			if (err < 0)
--				return err;
--		}
--	} else {
--		snd_pcm_uframes_t dma_csize = runtime->dma_bytes / channels;
--		for (c = 0; c < channels; ++c, ++bufs) {
--			if (*bufs == NULL)
--				continue;
--
--			hwbuf = runtime->dma_area + (c * dma_csize) + samples_to_bytes(runtime, hwoff);
--			buf = *bufs + samples_to_bytes(runtime, off);
--			if (copy_to_user(buf, hwbuf, samples_to_bytes(runtime, frames)))
--				return -EFAULT;
--		}
--	}
--	return 0;
--}
-- 
- snd_pcm_sframes_t snd_pcm_lib_readv(struct snd_pcm_substream *substream,
- 				    void __user **bufs,
- 				    snd_pcm_uframes_t frames)
 -- 
 2.13.0
