@@ -1,15 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 00/14] Revised patchset for PCM in-kernel copy
-	support
-Date: Thu, 25 May 2017 21:17:21 +0200
-Message-ID: <20170525191735.13787-1-tiwai@suse.de>
+Subject: [PATCH 04/14] ALSA: pcm: Drop the old copy and silence
+	ops
+Date: Thu, 25 May 2017 21:17:25 +0200
+Message-ID: <20170525191735.13787-5-tiwai@suse.de>
+References: <20170525191735.13787-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 841EB266D63
+ by alsa0.perex.cz (Postfix) with ESMTP id 7EA082668BF
  for <alsa-devel@alsa-project.org>; Thu, 25 May 2017 21:17:40 +0200 (CEST)
+In-Reply-To: <20170525191735.13787-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,51 +25,135 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Now that all users of old copy and silence ops have been converted to
+the new PCM ops, the old stuff can be retired and go away.
 
-this is a sort of RFC, a revised patchset of the previous two patches
-for killing set_fs() usages in PCM.  Instead of converting to the
-merged copy_silence ops, this adds a new copy_kernel ops instead.
-At the same time, copy/silence are changed to receive the position and
-size in bytes instead of frames.  This allows us to simplify the PCM
-core code.  As a result, a good amount of code could be removed from
-pcm_lib.c.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/sound/pcm.h  |  5 -----
+ sound/core/pcm_lib.c | 38 +-------------------------------------
+ sound/soc/soc-pcm.c  |  2 --
+ 3 files changed, 1 insertion(+), 44 deletions(-)
 
-Note that this patchset isn't complete, containing only two driver
-conversions (nm256 for interleaved and rme9652 for non-interleaved) as
-a demonstration.
-
-
-Takashi
-
-===
-
-Takashi Iwai (14):
-  ALSA: pcm: Introduce copy_user, copy_kernel and fill_silence ops
-  ALSA: nm256: Convert to new PCM copy ops
-  ALSA: rme9652: Convert to the new PCM ops
-  ALSA: pcm: Drop the old copy and silence ops
-  ALSA: pcm: Check PCM state by a common helper function
-  ALSA: pcm: Shuffle codes
-  ALSA: pcm: Call directly the common read/write helpers
-  ALSA: pcm: More unification of PCM transfer codes
-  ALSA: pcm: Unify read/write loop
-  ALSA: pcm: Simplify snd_pcm_playback_silence()
-  ALSA: pcm: Direct in-kernel read/write support
-  usb: gadget: u_uac1: Kill set_fs() usage
-  ALSA: pcm: Kill set_fs() in PCM OSS layer
-  ALSA: pcm: Build OSS writev/readv helpers conditionally
-
- drivers/usb/gadget/function/u_uac1.c |   7 +-
- include/sound/pcm.h                  |  80 ++++-
- sound/core/oss/io.c                  |   4 +-
- sound/core/oss/pcm_oss.c             |  81 +----
- sound/core/oss/pcm_plugin.h          |   6 +-
- sound/core/pcm_lib.c                 | 551 +++++++++++++----------------------
- sound/pci/nm256/nm256.c              |  57 ++--
- sound/pci/rme9652/rme9652.c          |  71 +++--
- sound/soc/soc-pcm.c                  |   5 +-
- 9 files changed, 386 insertions(+), 476 deletions(-)
-
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index a065415191d8..953ebfc83184 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -78,11 +78,6 @@ struct snd_pcm_ops {
+ 			struct timespec *system_ts, struct timespec *audio_ts,
+ 			struct snd_pcm_audio_tstamp_config *audio_tstamp_config,
+ 			struct snd_pcm_audio_tstamp_report *audio_tstamp_report);
+-	int (*copy)(struct snd_pcm_substream *substream, int channel,
+-		    snd_pcm_uframes_t pos,
+-		    void __user *buf, snd_pcm_uframes_t count);
+-	int (*silence)(struct snd_pcm_substream *substream, int channel, 
+-		       snd_pcm_uframes_t pos, snd_pcm_uframes_t count);
+ 	int (*fill_silence)(struct snd_pcm_substream *substream, int channel,
+ 			    unsigned long pos, unsigned long bytes);
+ 	int (*copy_user)(struct snd_pcm_substream *substream, int channel,
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index 9334fc2c20c8..0db8d4e0fca2 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -116,9 +116,6 @@ void snd_pcm_playback_silence(struct snd_pcm_substream *substream, snd_pcm_ufram
+ 								   frames_to_bytes(runtime, ofs),
+ 								   frames_to_bytes(runtime, transfer));
+ 				snd_BUG_ON(err < 0);
+-			} else if (substream->ops->silence) {
+-				err = substream->ops->silence(substream, -1, ofs, transfer);
+-				snd_BUG_ON(err < 0);
+ 			} else {
+ 				hwbuf = runtime->dma_area + frames_to_bytes(runtime, ofs);
+ 				snd_pcm_format_set_silence(runtime->format, hwbuf, transfer * runtime->channels);
+@@ -133,11 +130,6 @@ void snd_pcm_playback_silence(struct snd_pcm_substream *substream, snd_pcm_ufram
+ 									   samples_to_bytes(runtime, transfer));
+ 					snd_BUG_ON(err < 0);
+ 				}
+-			} else if (substream->ops->silence) {
+-				for (c = 0; c < channels; ++c) {
+-					err = substream->ops->silence(substream, c, ofs, transfer);
+-					snd_BUG_ON(err < 0);
+-				}
+ 			} else {
+ 				size_t dma_csize = runtime->dma_bytes / channels;
+ 				for (c = 0; c < channels; ++c) {
+@@ -2013,9 +2005,6 @@ static int snd_pcm_lib_write_transfer(struct snd_pcm_substream *substream,
+ 		err = substream->ops->copy_user(substream, 0, hwoff, buf, frames);
+ 		if (err < 0)
+ 			return err;
+-	} else if (substream->ops->copy) {
+-		if ((err = substream->ops->copy(substream, -1, hwoff, buf, frames)) < 0)
+-			return err;
+ 	} else {
+ 		char *hwbuf = runtime->dma_area + frames_to_bytes(runtime, hwoff);
+ 		if (copy_from_user(hwbuf, buf, frames_to_bytes(runtime, frames)))
+@@ -2137,8 +2126,7 @@ static int pcm_sanity_check(struct snd_pcm_substream *substream)
+ 	if (PCM_RUNTIME_CHECK(substream))
+ 		return -ENXIO;
+ 	runtime = substream->runtime;
+-	if (snd_BUG_ON(!substream->ops->copy_user && !substream->ops->copy
+-		       && !runtime->dma_area))
++	if (snd_BUG_ON(!substream->ops->copy_user && !runtime->dma_area))
+ 		return -EINVAL;
+ 	if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
+ 		return -EBADFD;
+@@ -2198,19 +2186,6 @@ static int snd_pcm_lib_writev_transfer(struct snd_pcm_substream *substream,
+ 			if (err < 0)
+ 				return err;
+ 		}
+-	} else if (substream->ops->copy) {
+-		if (snd_BUG_ON(!substream->ops->silence))
+-			return -EINVAL;
+-		for (c = 0; c < channels; ++c, ++bufs) {
+-			if (*bufs == NULL) {
+-				if ((err = substream->ops->silence(substream, c, hwoff, frames)) < 0)
+-					return err;
+-			} else {
+-				buf = *bufs + samples_to_bytes(runtime, off);
+-				if ((err = substream->ops->copy(substream, c, hwoff, buf, frames)) < 0)
+-					return err;
+-			}
+-		}
+ 	} else {
+ 		/* default transfer behaviour */
+ 		size_t dma_csize = runtime->dma_bytes / channels;
+@@ -2264,9 +2239,6 @@ static int snd_pcm_lib_read_transfer(struct snd_pcm_substream *substream,
+ 		err = substream->ops->copy_user(substream, 0, hwoff, buf, frames);
+ 		if (err < 0)
+ 			return err;
+-	} else if (substream->ops->copy) {
+-		if ((err = substream->ops->copy(substream, -1, hwoff, buf, frames)) < 0)
+-			return err;
+ 	} else {
+ 		char *hwbuf = runtime->dma_area + frames_to_bytes(runtime, hwoff);
+ 		if (copy_to_user(buf, hwbuf, frames_to_bytes(runtime, frames)))
+@@ -2428,14 +2400,6 @@ static int snd_pcm_lib_readv_transfer(struct snd_pcm_substream *substream,
+ 			if (err < 0)
+ 				return err;
+ 		}
+-	} else if (substream->ops->copy) {
+-		for (c = 0; c < channels; ++c, ++bufs) {
+-			if (*bufs == NULL)
+-				continue;
+-			buf = *bufs + samples_to_bytes(runtime, off);
+-			if ((err = substream->ops->copy(substream, c, hwoff, buf, frames)) < 0)
+-				return err;
+-		}
+ 	} else {
+ 		snd_pcm_uframes_t dma_csize = runtime->dma_bytes / channels;
+ 		for (c = 0; c < channels; ++c, ++bufs) {
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 8867ed9e5f56..dcc5ece08668 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2746,8 +2746,6 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 		rtd->ops.copy_user	= platform->driver->ops->copy_user;
+ 		rtd->ops.copy_kernel	= platform->driver->ops->copy_kernel;
+ 		rtd->ops.fill_silence	= platform->driver->ops->fill_silence;
+-		rtd->ops.copy		= platform->driver->ops->copy;
+-		rtd->ops.silence	= platform->driver->ops->silence;
+ 		rtd->ops.page		= platform->driver->ops->page;
+ 		rtd->ops.mmap		= platform->driver->ops->mmap;
+ 	}
 -- 
 2.13.0
