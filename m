@@ -1,15 +1,16 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 13/14] ALSA: pcm: Kill set_fs() in PCM OSS layer
-Date: Thu, 25 May 2017 21:17:34 +0200
-Message-ID: <20170525191735.13787-14-tiwai@suse.de>
+Subject: [PATCH 14/14] ALSA: pcm: Build OSS writev/readv
+	helpers conditionally
+Date: Thu, 25 May 2017 21:17:35 +0200
+Message-ID: <20170525191735.13787-15-tiwai@suse.de>
 References: <20170525191735.13787-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C2621266D63
- for <alsa-devel@alsa-project.org>; Thu, 25 May 2017 21:17:42 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id CB672267395
+ for <alsa-devel@alsa-project.org>; Thu, 25 May 2017 21:17:41 +0200 (CEST)
 In-Reply-To: <20170525191735.13787-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,140 +25,103 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-This is the last-standing one: kill the set_fs() usage in PCM OSS
-layer by replacing with the new API functions to deal with the direct
-in-kernel buffer copying.
+The snd_pcm_oss_writev3() and snd_pcm_oss_readv3() are used only in
+io.c with CONFIG_SND_PCM_OSS_PLUGINS=y.  Add an ifdef to reduce the
+build of these functions.
 
-The code to fill the silence can be replaced even to a one-liner to
-pass NULL buffer instead of the manual copying.
+Along with it, since they are called always for in-kernel copy, reduce
+the argument and call snd_pcm_kernel_writev() and *_readv() directly
+instead.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/oss/pcm_oss.c | 77 ++++++++----------------------------------------
- 1 file changed, 12 insertions(+), 65 deletions(-)
+ sound/core/oss/io.c         |  4 ++--
+ sound/core/oss/pcm_oss.c    | 12 ++++++------
+ sound/core/oss/pcm_plugin.h |  6 ++----
+ 3 files changed, 10 insertions(+), 12 deletions(-)
 
+diff --git a/sound/core/oss/io.c b/sound/core/oss/io.c
+index 6faa1d719206..d870b2d93135 100644
+--- a/sound/core/oss/io.c
++++ b/sound/core/oss/io.c
+@@ -26,9 +26,9 @@
+ #include "pcm_plugin.h"
+ 
+ #define pcm_write(plug,buf,count) snd_pcm_oss_write3(plug,buf,count,1)
+-#define pcm_writev(plug,vec,count) snd_pcm_oss_writev3(plug,vec,count,1)
++#define pcm_writev(plug,vec,count) snd_pcm_oss_writev3(plug,vec,count)
+ #define pcm_read(plug,buf,count) snd_pcm_oss_read3(plug,buf,count,1)
+-#define pcm_readv(plug,vec,count) snd_pcm_oss_readv3(plug,vec,count,1)
++#define pcm_readv(plug,vec,count) snd_pcm_oss_readv3(plug,vec,count)
+ 
+ /*
+  *  Basic io plugin
 diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
-index e306f05ce51d..2d6a825cfe88 100644
+index 2d6a825cfe88..5e1009d959a8 100644
 --- a/sound/core/oss/pcm_oss.c
 +++ b/sound/core/oss/pcm_oss.c
-@@ -67,18 +67,6 @@ static int snd_pcm_oss_get_rate(struct snd_pcm_oss_file *pcm_oss_file);
- static int snd_pcm_oss_get_channels(struct snd_pcm_oss_file *pcm_oss_file);
- static int snd_pcm_oss_get_format(struct snd_pcm_oss_file *pcm_oss_file);
+@@ -1232,7 +1232,8 @@ snd_pcm_sframes_t snd_pcm_oss_read3(struct snd_pcm_substream *substream, char *p
+ 	return ret;
+ }
  
--static inline mm_segment_t snd_enter_user(void)
--{
--	mm_segment_t fs = get_fs();
--	set_fs(get_ds());
--	return fs;
--}
--
--static inline void snd_leave_user(mm_segment_t fs)
--{
--	set_fs(fs);
--}
--
- /*
-  * helper functions to process hw_params
-  */
-@@ -1191,14 +1179,8 @@ snd_pcm_sframes_t snd_pcm_oss_write3(struct snd_pcm_substream *substream, const
+-snd_pcm_sframes_t snd_pcm_oss_writev3(struct snd_pcm_substream *substream, void **bufs, snd_pcm_uframes_t frames, int in_kernel)
++#ifdef CONFIG_SND_PCM_OSS_PLUGINS
++snd_pcm_sframes_t snd_pcm_oss_writev3(struct snd_pcm_substream *substream, void **bufs, snd_pcm_uframes_t frames)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	int ret;
+@@ -1249,8 +1250,7 @@ snd_pcm_sframes_t snd_pcm_oss_writev3(struct snd_pcm_substream *substream, void
  			if (ret < 0)
  				break;
  		}
--		if (in_kernel) {
--			mm_segment_t fs;
--			fs = snd_enter_user();
--			ret = snd_pcm_lib_write(substream, (void __force __user *)ptr, frames);
--			snd_leave_user(fs);
--		} else {
--			ret = snd_pcm_lib_write(substream, (void __force __user *)ptr, frames);
--		}
-+		ret = __snd_pcm_lib_xfer(substream, (void *)ptr, true,
-+					 frames, in_kernel);
- 		if (ret != -EPIPE && ret != -ESTRPIPE)
- 			break;
- 		/* test, if we can't store new data, because the stream */
-@@ -1234,14 +1216,8 @@ snd_pcm_sframes_t snd_pcm_oss_read3(struct snd_pcm_substream *substream, char *p
- 		ret = snd_pcm_oss_capture_position_fixup(substream, &delay);
- 		if (ret < 0)
- 			break;
--		if (in_kernel) {
--			mm_segment_t fs;
--			fs = snd_enter_user();
--			ret = snd_pcm_lib_read(substream, (void __force __user *)ptr, frames);
--			snd_leave_user(fs);
--		} else {
--			ret = snd_pcm_lib_read(substream, (void __force __user *)ptr, frames);
--		}
-+		ret = __snd_pcm_lib_xfer(substream, (void *)ptr, true,
-+					 frames, in_kernel);
- 		if (ret == -EPIPE) {
- 			if (runtime->status->state == SNDRV_PCM_STATE_DRAINING) {
- 				ret = snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_DROP, NULL);
-@@ -1273,14 +1249,8 @@ snd_pcm_sframes_t snd_pcm_oss_writev3(struct snd_pcm_substream *substream, void
- 			if (ret < 0)
- 				break;
- 		}
--		if (in_kernel) {
--			mm_segment_t fs;
--			fs = snd_enter_user();
--			ret = snd_pcm_lib_writev(substream, (void __user **)bufs, frames);
--			snd_leave_user(fs);
--		} else {
--			ret = snd_pcm_lib_writev(substream, (void __user **)bufs, frames);
--		}
-+		ret = __snd_pcm_lib_xfer(substream, bufs, false, frames,
-+					 in_kernel);
+-		ret = __snd_pcm_lib_xfer(substream, bufs, false, frames,
+-					 in_kernel);
++		ret = snd_pcm_kernel_writev(substream, bufs, frames);
  		if (ret != -EPIPE && ret != -ESTRPIPE)
  			break;
  
-@@ -1313,14 +1283,8 @@ snd_pcm_sframes_t snd_pcm_oss_readv3(struct snd_pcm_substream *substream, void *
+@@ -1262,7 +1262,7 @@ snd_pcm_sframes_t snd_pcm_oss_writev3(struct snd_pcm_substream *substream, void
+ 	return ret;
+ }
+ 	
+-snd_pcm_sframes_t snd_pcm_oss_readv3(struct snd_pcm_substream *substream, void **bufs, snd_pcm_uframes_t frames, int in_kernel)
++snd_pcm_sframes_t snd_pcm_oss_readv3(struct snd_pcm_substream *substream, void **bufs, snd_pcm_uframes_t frames)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	int ret;
+@@ -1283,13 +1283,13 @@ snd_pcm_sframes_t snd_pcm_oss_readv3(struct snd_pcm_substream *substream, void *
  			if (ret < 0)
  				break;
  		}
--		if (in_kernel) {
--			mm_segment_t fs;
--			fs = snd_enter_user();
--			ret = snd_pcm_lib_readv(substream, (void __user **)bufs, frames);
--			snd_leave_user(fs);
--		} else {
--			ret = snd_pcm_lib_readv(substream, (void __user **)bufs, frames);
--		}
-+		ret = __snd_pcm_lib_xfer(substream, bufs, false, frames,
-+					 in_kernel);
+-		ret = __snd_pcm_lib_xfer(substream, bufs, false, frames,
+-					 in_kernel);
++		ret = snd_pcm_kernel_readv(substream, bufs, frames);
  		if (ret != -EPIPE && ret != -ESTRPIPE)
  			break;
  	}
-@@ -1650,27 +1614,10 @@ static int snd_pcm_oss_sync(struct snd_pcm_oss_file *pcm_oss_file)
- 		size = runtime->control->appl_ptr % runtime->period_size;
- 		if (size > 0) {
- 			size = runtime->period_size - size;
--			if (runtime->access == SNDRV_PCM_ACCESS_RW_INTERLEAVED) {
--				size = (runtime->frame_bits * size) / 8;
--				while (size > 0) {
--					mm_segment_t fs;
--					size_t size1 = size < runtime->oss.period_bytes ? size : runtime->oss.period_bytes;
--					size -= size1;
--					size1 *= 8;
--					size1 /= runtime->sample_bits;
--					snd_pcm_format_set_silence(runtime->format,
--								   runtime->oss.buffer,
--								   size1);
--					size1 /= runtime->channels; /* frames */
--					fs = snd_enter_user();
--					snd_pcm_lib_write(substream, (void __force __user *)runtime->oss.buffer, size1);
--					snd_leave_user(fs);
--				}
--			} else if (runtime->access == SNDRV_PCM_ACCESS_RW_NONINTERLEAVED) {
--				void __user *buffers[runtime->channels];
--				memset(buffers, 0, runtime->channels * sizeof(void *));
--				snd_pcm_lib_writev(substream, buffers, size);
--			}
-+			if (runtime->access == SNDRV_PCM_ACCESS_RW_INTERLEAVED)
-+				snd_pcm_lib_write(substream, NULL, size);
-+			else if (runtime->access == SNDRV_PCM_ACCESS_RW_NONINTERLEAVED)
-+				snd_pcm_lib_writev(substream, NULL, size);
- 		}
- 		mutex_unlock(&runtime->oss.params_lock);
- 		/*
+ 	return ret;
+ }
++#endif /* CONFIG_SND_PCM_OSS_PLUGINS */
+ 
+ static ssize_t snd_pcm_oss_write2(struct snd_pcm_substream *substream, const char *buf, size_t bytes, int in_kernel)
+ {
+diff --git a/sound/core/oss/pcm_plugin.h b/sound/core/oss/pcm_plugin.h
+index 73c068abaca5..c9cd29d86efd 100644
+--- a/sound/core/oss/pcm_plugin.h
++++ b/sound/core/oss/pcm_plugin.h
+@@ -162,11 +162,9 @@ snd_pcm_sframes_t snd_pcm_oss_write3(struct snd_pcm_substream *substream,
+ snd_pcm_sframes_t snd_pcm_oss_read3(struct snd_pcm_substream *substream,
+ 				    char *ptr, snd_pcm_uframes_t size, int in_kernel);
+ snd_pcm_sframes_t snd_pcm_oss_writev3(struct snd_pcm_substream *substream,
+-				      void **bufs, snd_pcm_uframes_t frames,
+-				      int in_kernel);
++				      void **bufs, snd_pcm_uframes_t frames);
+ snd_pcm_sframes_t snd_pcm_oss_readv3(struct snd_pcm_substream *substream,
+-				     void **bufs, snd_pcm_uframes_t frames,
+-				     int in_kernel);
++				     void **bufs, snd_pcm_uframes_t frames);
+ 
+ #else
+ 
 -- 
 2.13.0
