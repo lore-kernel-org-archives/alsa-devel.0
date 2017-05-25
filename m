@@ -1,46 +1,93 @@
-From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Subject: Re: [PATCH v3 3/9] ASoC: sun8i-codec-analog: add
- support for V3s SoC
-Date: Thu, 25 May 2017 11:58:37 +0800
-Message-ID: <CAGb2v673VPeF+KOZskWnHppWSMvZSfLS5JXxxSjM9diDF7NGeg@mail.gmail.com>
-References: <20170524100607.29790-1-icenowy@aosc.io> <20170524100607.29790-4-icenowy@aosc.io>
-Reply-To: wens-jdAy2FN1RRM@public.gmane.org
+From: Michael Forney <mforney@mforney.org>
+Subject: Re: Problems with the DP MST audio support patchset
+Date: Thu, 25 May 2017 01:21:46 -0700
+Message-ID: <CAGw6cBusfo6OjNWrbsGnDLx_D=K_DQ-X8aVfQ0awgG_tf8TBMA@mail.gmail.com>
+References: <6800ee6e-31c2-b5eb-fbb2-6826d8c66dc9@pa-w.de>
+ <bceb4859-6dc9-b7a8-4d3a-81ac2a1fa907@pa-w.de>
+ <96A12704CE18D347B625EE2D4A099D19524850F3@SHSMSX103.ccr.corp.intel.com>
+ <63a71394-1cd4-e3e3-7364-37c2da90c791@pa-w.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCMILY6JWQBBBBNNTHEQKGQECMFGHVA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20170524100607.29790-4-icenowy-h8G6r0blFSE@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Icenowy Zheng <icenowy-h8G6r0blFSE@public.gmane.org>
-Cc: Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree <devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f67.google.com (mail-oi0-f67.google.com
+ [209.85.218.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 00FD4266D30
+ for <alsa-devel@alsa-project.org>; Thu, 25 May 2017 10:21:48 +0200 (CEST)
+Received: by mail-oi0-f67.google.com with SMTP id h4so36457636oib.0
+ for <alsa-devel@alsa-project.org>; Thu, 25 May 2017 01:21:48 -0700 (PDT)
+In-Reply-To: <63a71394-1cd4-e3e3-7364-37c2da90c791@pa-w.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Yang, Libin" <libin.yang@intel.com>
+Cc: Libin Yang <libin.yang@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Pascal Wichmann <pascal.wichmann@pa-w.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 24, 2017 at 6:06 PM, Icenowy Zheng <icenowy-h8G6r0blFSE@public.gmane.org> wrote:
-> From: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
+On Thu, Mar 30, 2017 at 9:35 AM, Pascal Wichmann
+<pascal.wichmann@pa-w.de> wrote:
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA256
 >
-> The V3s SoC features an analog codec with headphone support but without
-> mic2 and linein.
+> Hi,
 >
-> Add support for it.
+>> Do you mean the issue is caused by the patches
+>> 1480992519-108079-1-git-send-email-libin.yang@intel.com?
+> I don't know whether the issues are caused directly by the
+> specific patches; without them, digital audio does not work at
+> all in my setup. Using analog audio however does not have the problems
+> mentioned in my first email.
 >
-> Signed-off-by: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
+>> I can't see which patches are included you mentioned in the link.
+> I am building my kernel from drm-tip. The relevant patches enabling DP M
+> ST
+> audio seem to be "ALSA: hda - add DP mst verb support" [0] as well as
+> "ALSA: hda - add DP MST audio support" [1].
 
-Reviewed-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Hi,
 
-Mark, please hold off on applying this patch until the comments from the
-previous patch have been addressed. They should be applied in order.
+I recently updated my kernel to 4.11, and am experiencing similar
+problems as Pascal. I have a Skylake processor and DP output hooked up
+with a DP to HDMI cable to an Onkyo SR-606 receiver.
 
-> ---
->  Documentation/devicetree/bindings/sound/sun8i-codec-analog.txt | 1 +
->  sound/soc/sunxi/sun8i-codec-analog.c                           | 9 +++++++++
+I can't get audio to work at all through my receiver anymore. I tried
+both DTS and PCM audio files. I bisected it to the above mentioned
+commit 9152085defb6426ce8f9989ca27e4450daefbd89 (ALSA: hda - add DP
+MST audio support).
 
-Also, is there a preference for splitting out device tree binding
-changes from driver changes?
+>> Do you know if the DP MST audio mode is used in your case?
 
-Thanks
-ChenYu
+I don't know what DP MST is or how to tell if I'm using it. However, I
+noticed that when it does work, `aplay -L` gives me
+
+hdmi:CARD=PCH,DEV=0
+    HDA Intel PCH, HDMI 0
+    HDMI Audio Output
+hdmi:CARD=PCH,DEV=1
+    HDA Intel PCH, HDMI 1
+    HDMI Audio Output
+
+and when it doesn't, I get
+
+hdmi:CARD=PCH,DEV=0
+    HDA Intel PCH, Generic Digital
+    HDMI Audio Output
+
+> I think it is used; at least dp/hdmi audio does not work at all without
+> building against drm-tip. (the outputs are all stated as unplugged
+> and unavailable in pavucontrol for example)
+> Is there any way to know for sure?
+
+I tried building against drm-tip as well as v4.12-rc2, but observed
+the same issue. I am not using pulseaudio, but alsa directly.
+
+Any help would be appreciated.
+
+Thanks,
+Michael
