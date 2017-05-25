@@ -1,14 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 02/14] ALSA: nm256: Convert to new PCM copy ops
-Date: Thu, 25 May 2017 21:17:23 +0200
-Message-ID: <20170525191735.13787-3-tiwai@suse.de>
+Subject: [PATCH 03/14] ALSA: rme9652: Convert to the new PCM ops
+Date: Thu, 25 May 2017 21:17:24 +0200
+Message-ID: <20170525191735.13787-4-tiwai@suse.de>
 References: <20170525191735.13787-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 805C0266D49
+ by alsa0.perex.cz (Postfix) with ESMTP id 83154266D61
  for <alsa-devel@alsa-project.org>; Thu, 25 May 2017 21:17:40 +0200 (CEST)
 In-Reply-To: <20170525191735.13787-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,125 +24,144 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-Replace the copy and the silence ops with the new merged ops.
+Replace the copy and the silence ops with the new PCM ops.
 The conversion is straightforward with standard helper functions.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/nm256/nm256.c | 57 ++++++++++++++++++++++++++++++++-----------------
- 1 file changed, 37 insertions(+), 20 deletions(-)
+ sound/pci/rme9652/rme9652.c | 71 ++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 54 insertions(+), 17 deletions(-)
 
-diff --git a/sound/pci/nm256/nm256.c b/sound/pci/nm256/nm256.c
-index 103fe311e5a9..63f0985dae27 100644
---- a/sound/pci/nm256/nm256.c
-+++ b/sound/pci/nm256/nm256.c
-@@ -695,53 +695,68 @@ snd_nm256_capture_pointer(struct snd_pcm_substream *substream)
-  */
- static int
- snd_nm256_playback_silence(struct snd_pcm_substream *substream,
--			   int channel, /* not used (interleaved data) */
--			   snd_pcm_uframes_t pos,
--			   snd_pcm_uframes_t count)
-+			   int channel, unsigned long pos, unsigned long count)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct nm256_stream *s = runtime->private_data;
--	count = frames_to_bytes(runtime, count);
--	pos = frames_to_bytes(runtime, pos);
-+
- 	memset_io(s->bufptr + pos, 0, count);
- 	return 0;
+diff --git a/sound/pci/rme9652/rme9652.c b/sound/pci/rme9652/rme9652.c
+index 55172c689991..59684bf5cac0 100644
+--- a/sound/pci/rme9652/rme9652.c
++++ b/sound/pci/rme9652/rme9652.c
+@@ -1883,13 +1883,14 @@ static char *rme9652_channel_buffer_location(struct snd_rme9652 *rme9652,
+ 	}
  }
  
- static int
- snd_nm256_playback_copy(struct snd_pcm_substream *substream,
--			int channel, /* not used (interleaved data) */
--			snd_pcm_uframes_t pos,
--			void __user *src,
--			snd_pcm_uframes_t count)
-+			int channel, unsigned long pos,
-+			void __user *src, unsigned long count)
+-static int snd_rme9652_playback_copy(struct snd_pcm_substream *substream, int channel,
+-				     snd_pcm_uframes_t pos, void __user *src, snd_pcm_uframes_t count)
++static int snd_rme9652_playback_copy(struct snd_pcm_substream *substream,
++				     int channel, unsigned long pos,
++				     void __user *src, unsigned long count)
  {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct nm256_stream *s = runtime->private_data;
--	count = frames_to_bytes(runtime, count);
--	pos = frames_to_bytes(runtime, pos);
-+
- 	if (copy_from_user_toio(s->bufptr + pos, src, count))
+ 	struct snd_rme9652 *rme9652 = snd_pcm_substream_chip(substream);
+ 	char *channel_buf;
+ 
+-	if (snd_BUG_ON(pos + count > RME9652_CHANNEL_BUFFER_BYTES / 4))
++	if (snd_BUG_ON(pos + count > RME9652_CHANNEL_BUFFER_BYTES))
+ 		return -EINVAL;
+ 
+ 	channel_buf = rme9652_channel_buffer_location (rme9652,
+@@ -1897,18 +1898,35 @@ static int snd_rme9652_playback_copy(struct snd_pcm_substream *substream, int ch
+ 						       channel);
+ 	if (snd_BUG_ON(!channel_buf))
+ 		return -EIO;
+-	if (copy_from_user(channel_buf + pos * 4, src, count * 4))
++	if (copy_from_user(channel_buf + pos, src, count))
  		return -EFAULT;
- 	return 0;
+-	return count;
++	return 0;
  }
  
-+static int
-+snd_nm256_playback_copy_kernel(struct snd_pcm_substream *substream,
-+			       int channel, unsigned long pos,
-+			       void *src, unsigned long count)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct nm256_stream *s = runtime->private_data;
-+
-+	memcpy_toio(s->bufptr + pos, src, count);
+-static int snd_rme9652_capture_copy(struct snd_pcm_substream *substream, int channel,
+-				    snd_pcm_uframes_t pos, void __user *dst, snd_pcm_uframes_t count)
++static int snd_rme9652_playback_copy_kernel(struct snd_pcm_substream *substream,
++					    int channel, unsigned long pos,
++					    void *src, unsigned long count)
+ {
+ 	struct snd_rme9652 *rme9652 = snd_pcm_substream_chip(substream);
+ 	char *channel_buf;
+ 
+-	if (snd_BUG_ON(pos + count > RME9652_CHANNEL_BUFFER_BYTES / 4))
++	channel_buf = rme9652_channel_buffer_location(rme9652,
++						      substream->pstr->stream,
++						      channel);
++	if (snd_BUG_ON(!channel_buf))
++		return -EIO;
++	memcpy(channel_buf + pos, src, count);
 +	return 0;
 +}
 +
- /*
-  * copy to user
-  */
- static int
- snd_nm256_capture_copy(struct snd_pcm_substream *substream,
--		       int channel, /* not used (interleaved data) */
--		       snd_pcm_uframes_t pos,
--		       void __user *dst,
--		       snd_pcm_uframes_t count)
-+		       int channel, unsigned long pos,
-+		       void __user *dst, unsigned long count)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct nm256_stream *s = runtime->private_data;
--	count = frames_to_bytes(runtime, count);
--	pos = frames_to_bytes(runtime, pos);
++static int snd_rme9652_capture_copy(struct snd_pcm_substream *substream,
++				    int channel, unsigned long pos,
++				    void __user *dst, unsigned long count)
++{
++	struct snd_rme9652 *rme9652 = snd_pcm_substream_chip(substream);
++	char *channel_buf;
 +
- 	if (copy_to_user_fromio(dst, s->bufptr + pos, count))
++	if (snd_BUG_ON(pos + count > RME9652_CHANNEL_BUFFER_BYTES))
+ 		return -EINVAL;
+ 
+ 	channel_buf = rme9652_channel_buffer_location (rme9652,
+@@ -1916,13 +1934,30 @@ static int snd_rme9652_capture_copy(struct snd_pcm_substream *substream, int cha
+ 						       channel);
+ 	if (snd_BUG_ON(!channel_buf))
+ 		return -EIO;
+-	if (copy_to_user(dst, channel_buf + pos * 4, count * 4))
++	if (copy_to_user(dst, channel_buf + pos, count))
  		return -EFAULT;
- 	return 0;
+-	return count;
++	return 0;
  }
  
-+static int
-+snd_nm256_capture_copy_kernel(struct snd_pcm_substream *substream,
-+			      int channel, unsigned long pos,
-+			      void *dst, unsigned long count)
+-static int snd_rme9652_hw_silence(struct snd_pcm_substream *substream, int channel,
+-				  snd_pcm_uframes_t pos, snd_pcm_uframes_t count)
++static int snd_rme9652_capture_copy_kernel(struct snd_pcm_substream *substream,
++					   int channel, unsigned long pos,
++					   void *dst, unsigned long count)
 +{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct nm256_stream *s = runtime->private_data;
++	struct snd_rme9652 *rme9652 = snd_pcm_substream_chip(substream);
++	char *channel_buf;
 +
-+	memcpy_fromio(dst, s->bufptr + pos, count);
++	channel_buf = rme9652_channel_buffer_location(rme9652,
++						      substream->pstr->stream,
++						      channel);
++	if (snd_BUG_ON(!channel_buf))
++		return -EIO;
++	memcpy(dst, channel_buf + pos, count);
 +	return 0;
 +}
 +
- #endif /* !__i386__ */
++static int snd_rme9652_hw_silence(struct snd_pcm_substream *substream,
++				  int channel, unsigned long pos,
++				  unsigned long count)
+ {
+ 	struct snd_rme9652 *rme9652 = snd_pcm_substream_chip(substream);
+ 	char *channel_buf;
+@@ -1932,8 +1967,8 @@ static int snd_rme9652_hw_silence(struct snd_pcm_substream *substream, int chann
+ 						       channel);
+ 	if (snd_BUG_ON(!channel_buf))
+ 		return -EIO;
+-	memset(channel_buf + pos * 4, 0, count * 4);
+-	return count;
++	memset(channel_buf + pos, 0, count);
++	return 0;
+ }
  
+ static int snd_rme9652_reset(struct snd_pcm_substream *substream)
+@@ -2376,8 +2411,9 @@ static const struct snd_pcm_ops snd_rme9652_playback_ops = {
+ 	.prepare =	snd_rme9652_prepare,
+ 	.trigger =	snd_rme9652_trigger,
+ 	.pointer =	snd_rme9652_hw_pointer,
+-	.copy =		snd_rme9652_playback_copy,
+-	.silence =	snd_rme9652_hw_silence,
++	.copy_user =	snd_rme9652_playback_copy,
++	.copy_kernel =	snd_rme9652_playback_copy_kernel,
++	.fill_silence =	snd_rme9652_hw_silence,
+ };
  
-@@ -911,8 +926,9 @@ static const struct snd_pcm_ops snd_nm256_playback_ops = {
- 	.trigger =	snd_nm256_playback_trigger,
- 	.pointer =	snd_nm256_playback_pointer,
- #ifndef __i386__
--	.copy =		snd_nm256_playback_copy,
--	.silence =	snd_nm256_playback_silence,
-+	.copy_user =	snd_nm256_playback_copy,
-+	.copy_kernel =	snd_nm256_playback_copy_kernel,
-+	.fill_silence =	snd_nm256_playback_silence,
- #endif
- 	.mmap =		snd_pcm_lib_mmap_iomem,
+ static const struct snd_pcm_ops snd_rme9652_capture_ops = {
+@@ -2388,7 +2424,8 @@ static const struct snd_pcm_ops snd_rme9652_capture_ops = {
+ 	.prepare =	snd_rme9652_prepare,
+ 	.trigger =	snd_rme9652_trigger,
+ 	.pointer =	snd_rme9652_hw_pointer,
+-	.copy =		snd_rme9652_capture_copy,
++	.copy_user =	snd_rme9652_capture_copy,
++	.copy_kernel =	snd_rme9652_capture_copy_kernel,
  };
-@@ -926,7 +942,8 @@ static const struct snd_pcm_ops snd_nm256_capture_ops = {
- 	.trigger =	snd_nm256_capture_trigger,
- 	.pointer =	snd_nm256_capture_pointer,
- #ifndef __i386__
--	.copy =		snd_nm256_capture_copy,
-+	.copy_user =	snd_nm256_capture_copy,
-+	.copy_kernel =	snd_nm256_capture_copy_kernel,
- #endif
- 	.mmap =		snd_pcm_lib_mmap_iomem,
- };
+ 
+ static int snd_rme9652_create_pcm(struct snd_card *card,
 -- 
 2.13.0
