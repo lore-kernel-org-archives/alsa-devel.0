@@ -1,16 +1,16 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: [PATCH 1/3] ASoC: Intel: Skylake: Add mic-select
-	module type
-Date: Fri, 26 May 2017 08:50:01 +0530
-Message-ID: <1495768803-24217-2-git-send-email-vinod.koul@intel.com>
+Subject: [PATCH 3/3] ASoC: Intel: Boards: Add 4-channel DMIC
+	fixup.
+Date: Fri, 26 May 2017 08:50:03 +0530
+Message-ID: <1495768803-24217-4-git-send-email-vinod.koul@intel.com>
 References: <1495768803-24217-1-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 6D221266D49
- for <alsa-devel@alsa-project.org>; Fri, 26 May 2017 05:18:06 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id C9F6B266D49
+ for <alsa-devel@alsa-project.org>; Fri, 26 May 2017 05:18:13 +0200 (CEST)
 In-Reply-To: <1495768803-24217-1-git-send-email-vinod.koul@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,51 +27,39 @@ List-Id: alsa-devel@alsa-project.org
 
 From: "Kranthikumar, GudishaX" <gudishax.kranthikumar@intel.com>
 
-mic-select module is a DSP module, which is used to select one or more
-input channels.
-
-This patch adds mic-select module type.
+This patch adds a 4-channel dmic fixup so that DMIC copier will receive
+4 channel data and further selection will be done by mic-select module.
 
 Signed-off-by: Kranthikumar, GudishaX <gudishax.kranthikumar@intel.com>
 Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl-messages.c       | 2 ++
- sound/soc/intel/skylake/skl-tplg-interface.h | 1 +
- 2 files changed, 3 insertions(+)
+ sound/soc/intel/boards/bxt_rt298.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index ab1adc0c9cc3..5a465020ebd8 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -707,6 +707,7 @@ static u16 skl_get_module_param_size(struct skl_sst *ctx,
- 		return param_size;
+diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
+index 1a68d043c803..36ee7480e9f1 100644
+--- a/sound/soc/intel/boards/bxt_rt298.c
++++ b/sound/soc/intel/boards/bxt_rt298.c
+@@ -222,16 +222,13 @@ static int broxton_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+ {
+ 	struct snd_interval *channels = hw_param_interval(params,
+ 						SNDRV_PCM_HW_PARAM_CHANNELS);
+-	if (params_channels(params) == 2)
+-		channels->min = channels->max = 2;
+-	else
+-		channels->min = channels->max = 4;
++	channels->min = channels->max = 4;
  
- 	case SKL_MODULE_TYPE_BASE_OUTFMT:
-+	case SKL_MODULE_TYPE_MIC_SELECT:
- 	case SKL_MODULE_TYPE_KPB:
- 		return sizeof(struct skl_base_outfmt_cfg);
+ 	return 0;
+ }
  
-@@ -761,6 +762,7 @@ static int skl_set_module_format(struct skl_sst *ctx,
- 		break;
- 
- 	case SKL_MODULE_TYPE_BASE_OUTFMT:
-+	case SKL_MODULE_TYPE_MIC_SELECT:
- 	case SKL_MODULE_TYPE_KPB:
- 		skl_set_base_outfmt_format(ctx, module_config, *param_data);
- 		break;
-diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
-index 7a2febf99019..c22517bd2161 100644
---- a/sound/soc/intel/skylake/skl-tplg-interface.h
-+++ b/sound/soc/intel/skylake/skl-tplg-interface.h
-@@ -82,6 +82,7 @@ enum skl_module_type {
- 	SKL_MODULE_TYPE_ALGO,
- 	SKL_MODULE_TYPE_BASE_OUTFMT,
- 	SKL_MODULE_TYPE_KPB,
-+	SKL_MODULE_TYPE_MIC_SELECT,
+ static unsigned int channels_dmic[] = {
+-	2, 4,
++	1, 2, 3, 4,
  };
  
- enum skl_core_affinity {
+ static struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
 -- 
 1.9.1
