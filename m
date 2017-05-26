@@ -1,68 +1,113 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Fix typo in algorithm list warning message" to the asoc tree
-Date: Fri, 26 May 2017 12:41:57 +0100
-Message-ID: <E1dEDcz-0000kl-3U@debutante>
-References: <1495792027-2290-1-git-send-email-rf@opensource.wolfsonmicro.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1495792027-2290-1-git-send-email-rf@opensource.wolfsonmicro.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] pcm: dmix: Workaround for binary
+	incompatibility
+Date: Fri, 26 May 2017 14:39:16 +0200
+Message-ID: <20170526123916.19015-1-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6A5982674DB
+ for <alsa-devel@alsa-project.org>; Fri, 26 May 2017 14:39:18 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id AE421ABF7
+ for <alsa-devel@alsa-project.org>; Fri, 26 May 2017 12:39:18 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+The commit 1a9bd0f04481 ("pcm: direct: Fix for sync issue on xrun
+recover") introduced a new field "recoveries" in
+snd_pcm_direct_share_t.  Unfortunately this caused two issues:
 
-   ASoC: wm_adsp: Fix typo in algorithm list warning message
+- It changed the size of the struct which is used as the magic key
+- The struct size differs between 32bit and 64bit due to alignment
 
-has been applied to the asoc tree at
+The former brought the incompatibility with the older alsa-lib,
+e.g. when you run an app with an older alsa-lib via LD_PRELOAD, it
+doesn't work any longer.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+The latter is more serious, it disallows running 32bit apps dmix with
+64bit together.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+As a workaround, put recoveries field to the unused field
+"s.xfer_align", so that the struct is in an old form.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+This is a one-time workaround, and we may need to reconsider more
+about a breakage in future...
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 503ada8a6d00c70f5b6fe37249e9a5e2f9c9e202 Mon Sep 17 00:00:00 2001
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Date: Fri, 26 May 2017 10:47:07 +0100
-Subject: [PATCH] ASoC: wm_adsp: Fix typo in algorithm list warning message
-
-The list terminator is 0xbedead but the message warning if it
-wasn't found was showing that 0xbeadead was expected.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Reported-and-tested-by: Cheng Sun <chengsun9@gmail.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/wm_adsp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ src/pcm/pcm_direct.c | 8 ++++----
+ src/pcm/pcm_direct.h | 3 +--
+ 2 files changed, 5 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 5aff83be375c..65c059b5ffd7 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1888,7 +1888,7 @@ static void *wm_adsp_read_algs(struct wm_adsp *dsp, size_t n_algs,
+diff --git a/src/pcm/pcm_direct.c b/src/pcm/pcm_direct.c
+index 89468d3537d0..43702601b0f2 100644
+--- a/src/pcm/pcm_direct.c
++++ b/src/pcm/pcm_direct.c
+@@ -615,7 +615,7 @@ int snd_pcm_direct_slave_recover(snd_pcm_direct_t *direct)
+ 		}
+ 		return ret;
  	}
+-	direct->shmptr->recoveries++;
++	direct->shmptr->s.recoveries++;
+ 	semerr = snd_pcm_direct_semaphore_up(direct,
+ 						 DIRECT_IPC_SEM_CLIENT);
+ 	if (semerr < 0) {
+@@ -631,11 +631,11 @@ int snd_pcm_direct_slave_recover(snd_pcm_direct_t *direct)
+  */
+ int snd_pcm_direct_client_chk_xrun(snd_pcm_direct_t *direct, snd_pcm_t *pcm)
+ {
+-	if (direct->shmptr->recoveries != direct->recoveries) {
++	if (direct->shmptr->s.recoveries != direct->recoveries) {
+ 		/* no matter how many xruns we missed -
+ 		 * so don't increment but just update to actual counter
+ 		 */
+-		direct->recoveries = direct->shmptr->recoveries;
++		direct->recoveries = direct->shmptr->s.recoveries;
+ 		pcm->fast_ops->drop(pcm);
+ 		/* trigger_tstamp update is missing in drop callbacks */
+ 		gettimestamp(&direct->trigger_tstamp, pcm->tstamp_type);
+@@ -1539,7 +1539,7 @@ int snd_pcm_direct_open_secondary_client(snd_pcm_t **spcmp, snd_pcm_direct_t *dm
+ 	dmix->slave_buffer_size = spcm->buffer_size;
+ 	dmix->slave_period_size = dmix->shmptr->s.period_size;
+ 	dmix->slave_boundary = spcm->boundary;
+-	dmix->recoveries = dmix->shmptr->recoveries;
++	dmix->recoveries = dmix->shmptr->s.recoveries;
  
- 	if (be32_to_cpu(val) != 0xbedead)
--		adsp_warn(dsp, "Algorithm list end %x 0x%x != 0xbeadead\n",
-+		adsp_warn(dsp, "Algorithm list end %x 0x%x != 0xbedead\n",
- 			  pos + len, be32_to_cpu(val));
- 
- 	alg = kzalloc(len * 2, GFP_KERNEL | GFP_DMA);
+ 	ret = snd_pcm_mmap(spcm);
+ 	if (ret < 0) {
+diff --git a/src/pcm/pcm_direct.h b/src/pcm/pcm_direct.h
+index 24e85f096310..582f055a5451 100644
+--- a/src/pcm/pcm_direct.h
++++ b/src/pcm/pcm_direct.h
+@@ -66,7 +66,6 @@ typedef struct {
+ 	char socket_name[256];			/* name of communication socket */
+ 	snd_pcm_type_t type;			/* PCM type (currently only hw) */
+ 	int use_server;
+-	unsigned int recoveries;		/* no of executed recoveries on slave*/
+ 	struct {
+ 		unsigned int format;
+ 		snd_interval_t rate;
+@@ -95,7 +94,7 @@ typedef struct {
+ 		unsigned int stop_threshold;	
+ 		unsigned int silence_threshold;
+ 		unsigned int silence_size;
+-		unsigned int xfer_align; /* not used */
++		unsigned int recoveries;	/* no of executed recoveries on slave*/
+ 		unsigned long long boundary;
+ 		unsigned int info;
+ 		unsigned int msbits;
 -- 
-2.11.0
+2.13.0
