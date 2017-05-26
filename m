@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: fixup parent_clk_name of AUDIO_CLKOUTx" to the asoc tree
-Date: Fri, 26 May 2017 12:41:54 +0100
-Message-ID: <E1dEDcw-0000jt-4W@debutante>
-References: <8760gos8fq.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <8760gos8fq.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: wm_adsp: Fix typo in algorithm list warning message" to the asoc tree
+Date: Fri, 26 May 2017 12:41:57 +0100
+Message-ID: <E1dEDcz-0000kl-3U@debutante>
+References: <1495792027-2290-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1495792027-2290-1-git-send-email-rf@opensource.wolfsonmicro.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: fixup parent_clk_name of AUDIO_CLKOUTx
+   ASoC: wm_adsp: Fix typo in algorithm list warning message
 
 has been applied to the asoc tree at
 
@@ -37,45 +37,32 @@ to this mail.
 Thanks,
 Mark
 
->From e8a3ce1130134046e9da132aa4d043566df8237d Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 26 May 2017 01:44:19 +0000
-Subject: [PATCH] ASoC: rsnd: fixup parent_clk_name of AUDIO_CLKOUTx
+>From 503ada8a6d00c70f5b6fe37249e9a5e2f9c9e202 Mon Sep 17 00:00:00 2001
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Date: Fri, 26 May 2017 10:47:07 +0100
+Subject: [PATCH] ASoC: wm_adsp: Fix typo in algorithm list warning message
 
-commit 25165f79adc7 ("ASoC: rsnd: enable clock-frequency for both
-44.1kHz/48kHz") supported both 44.1kHz/48kHz for AUDIO_CLKOUTx,
-but it didn't care its parent clock name.
-This patch fixes it.
+The list terminator is 0xbedead but the message warning if it
+wasn't found was showing that 0xbeadead was expected.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/adg.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
-index 66203d107a11..d3b0dc145a56 100644
---- a/sound/soc/sh/rcar/adg.c
-+++ b/sound/soc/sh/rcar/adg.c
-@@ -507,7 +507,8 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
- 				rbga = rbgx;
- 				adg->rbga_rate_for_441khz = rate / div;
- 				ckr |= brg_table[i] << 20;
--				if (req_441kHz_rate)
-+				if (req_441kHz_rate &&
-+				    !(adg_mode_flags(adg) & AUDIO_OUT_48))
- 					parent_clk_name = __clk_get_name(clk);
- 			}
- 		}
-@@ -522,7 +523,8 @@ static void rsnd_adg_get_clkout(struct rsnd_priv *priv,
- 				rbgb = rbgx;
- 				adg->rbgb_rate_for_48khz = rate / div;
- 				ckr |= brg_table[i] << 16;
--				if (req_48kHz_rate)
-+				if (req_48kHz_rate &&
-+				    (adg_mode_flags(adg) & AUDIO_OUT_48))
- 					parent_clk_name = __clk_get_name(clk);
- 			}
- 		}
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 5aff83be375c..65c059b5ffd7 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -1888,7 +1888,7 @@ static void *wm_adsp_read_algs(struct wm_adsp *dsp, size_t n_algs,
+ 	}
+ 
+ 	if (be32_to_cpu(val) != 0xbedead)
+-		adsp_warn(dsp, "Algorithm list end %x 0x%x != 0xbeadead\n",
++		adsp_warn(dsp, "Algorithm list end %x 0x%x != 0xbedead\n",
+ 			  pos + len, be32_to_cpu(val));
+ 
+ 	alg = kzalloc(len * 2, GFP_KERNEL | GFP_DMA);
 -- 
 2.11.0
