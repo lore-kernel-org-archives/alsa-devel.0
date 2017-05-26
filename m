@@ -1,24 +1,24 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 2/3] ALSA: core: modify .ack callback to
- take arguments for updating appl ptr
-Date: Fri, 26 May 2017 13:31:16 +0530
-Message-ID: <20170526080116.GJ15061@localhost>
-References: <1494896518-23399-1-git-send-email-subhransu.s.prusty@intel.com>
- <1494896518-23399-3-git-send-email-subhransu.s.prusty@intel.com>
- <0be78e8b-ebc0-9f8b-5bed-df01a791f940@sakamocchi.jp>
- <s5h7f1dmkdf.wl-tiwai@suse.de>
- <c2cb17f3-a37f-8e7e-eac5-0fcb0178f2bd@linux.intel.com>
- <20170522052219.GT15061@localhost> <s5hefvhicod.wl-tiwai@suse.de>
- <20170526074243.GI15061@localhost> <s5hzie0hxez.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 2/2] ALSA: pcm: add arrangement for
+	applying appl_ptr
+Date: Fri, 26 May 2017 17:46:07 +0900
+Message-ID: <6d53114b-11a3-2cab-a0d0-9f7de9ca1be9@sakamocchi.jp>
+References: <20170526003047.17721-1-o-takashi@sakamocchi.jp>
+ <20170526003047.17721-3-o-takashi@sakamocchi.jp>
+ <s5ha860jf2o.wl-tiwai@suse.de>
+ <d4f82e6e-d402-cc5f-92ef-f37e67fc0682@sakamocchi.jp>
+ <s5h8tlkjeqx.wl-tiwai@suse.de>
+ <7c1610fe-0546-73b9-f8b0-d6bd65a13b29@sakamocchi.jp>
+ <s5h60gojdod.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id DDDF7266B88
- for <alsa-devel@alsa-project.org>; Fri, 26 May 2017 09:59:01 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hzie0hxez.wl-tiwai@suse.de>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id D6E93266B88
+ for <alsa-devel@alsa-project.org>; Fri, 26 May 2017 10:46:10 +0200 (CEST)
+In-Reply-To: <s5h60gojdod.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,96 +29,77 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, lgirdwood@gmail.com, Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, broonie@kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 26, 2017 at 09:47:32AM +0200, Takashi Iwai wrote:
-> On Fri, 26 May 2017 09:42:43 +0200,
-> Vinod Koul wrote:
-> > 
-> > On Mon, May 22, 2017 at 09:16:34AM +0200, Takashi Iwai wrote:
-> > > On Mon, 22 May 2017 07:22:19 +0200,
-> > > Vinod Koul wrote:
-> > > > 
-> > > > On Fri, May 19, 2017 at 10:01:04AM -0500, Pierre-Louis Bossart wrote:
-> > > > > On 5/19/17 1:27 AM, Takashi Iwai wrote:
-> > > > > >On Fri, 19 May 2017 05:57:05 +0200,
-> > > > > >Takashi Sakamoto wrote:
-> > > > > >>
-> > > > > >>Hi,
-> > > > > >>
-> > > > > >>On May 16 2017 10:01, Subhransu S. Prusty wrote:
-> > > > > >>>From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > > > > >>>
-> > > > > >>>When appl_ptr is updated let low-level driver know, e.g.  to let the
-> > > > > >>>low-level driver/hardware pre-fetch data opportunistically.
-> > > > > >>>
-> > > > > >>>The existing .ack callback is extended with new attribute argument, to
-> > > > > >>>support this capability. Legacy driver subscribe to SND_PCM_ACK_LEGACY and
-> > > > > >>>doesn't process ack if it is not set. SND_PCM_ACK_APP_PTR can be used to
-> > > > > >>>process the application ptr update in the driver like in the skylake
-> > > > > >>>driver which can use this to inform position of appl pointer to host DMA
-> > > > > >>>controller. The skylake driver to process the SND_PCM_ACK_APP_PTR will be
-> > > > > >>>submitted with a separate patch set.
-> > > > > >>>
-> > > > > >>>In the ALSA core, this capability is independent from the NO_REWIND
-> > > > > >>>hardware flag. The low-level driver may however tie both options and only
-> > > > > >>>use the updated appl_ptr when rewinds are disabled due to hardware
-> > > > > >>>limitations.
-> > > > > >>>
-> > > > > >>>Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> > > > > >>>Signed-off-by: Jaikrishna Nemallapudi <jaikrishnax.nemallapudi@intel.com>
-> > > > > >>>Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-> > > > > >>>---
-> > > > > >>>  include/sound/pcm-indirect.h  |  4 ++--
-> > > > > >>>  include/sound/pcm.h           |  8 +++++++-
-> > > > > >>>  sound/core/pcm_lib.c          |  6 ++++--
-> > > > > >>>  sound/core/pcm_native.c       | 24 +++++++++++++++++++++++-
-> > > > > >>>  sound/mips/hal2.c             | 14 +++++++++++---
-> > > > > >>>  sound/pci/cs46xx/cs46xx_lib.c | 18 ++++++++++++++----
-> > > > > >>>  sound/pci/emu10k1/emupcm.c    |  8 ++++++--
-> > > > > >>>  sound/pci/rme32.c             | 15 ++++++++++++---
-> > > > > >>>  8 files changed, 79 insertions(+), 18 deletions(-)
-> > > > > >>
-> > > > > >>I think it better to take care of
-> > > > > >>'drivers/staging/vc04_services/bcm2835-audio/bcm2835-pcm.c' as
-> > > > > >>well. This is a driver for sound functionality of Raspberry PI 1/zero
-> > > > > >>and some people may still get influences from this work.
-> > > > > >>
-> > > > > >>$ git grep -A20 'struct snd_pcm_ops' v4.12-rc1 | grep \\.ack
-> > > > > >>v4.12-rc1:drivers/staging/vc04_services/bcm2835-audio/bcm2835-pcm.c-...
-> > > > > >>...
-> > > > > >
-> > > > > >Yep, we need to cover all codes if we really change the PCM ops.
-> > > > > 
-> > > > > The reason precisely why I preferred to avoid mucking with the
-> > > > > existing .ack(). we have a risk of introducing problems for legacy
-> > > > > and staging, not to mention out-of-tree.
-> > > > 
-> > > > Patching them should be fine, and I wont mind breaking out-of tree ones,
-> > > > isn't that a good thing :)
-> > > 
-> > > Heh, that's a fun as always :)
-> > > 
-> > > Actually it's a difficult judgment when to change the API and when
-> > > not.  This case is also in the gray zone.
-> > > 
-> > > If it were only additions of some new features, I'd think of avoiding
-> > > to change the existing API.  But, when it eventually fixes the bugs in
-> > > the existing drivers, we should not be too afraid of changing it.
-> > 
-> > Then this case falls in the case where we are not changing API, right. If
-> > you agree we can post the other approach.
+On May 26 2017 16:10, Takashi Iwai wrote:
+> On Fri, 26 May 2017 08:54:27 +0200,
+> Takashi Sakamoto wrote:
+>>
+>> On May 26 2017 15:47, Takashi Iwai wrote:
+>>>>> Queued now, but will be likely declined later due to the rewrites of
+>>>>> the code.
+>>>>
+>>>> Due to your recent work under reviewing?
+>>>
+>>> Yes, the code might be changed heavily.
+>>> Don't touch a too hot spot if it were only a cleanup.
+>>
+>> I've already reviewed it but postpone my reply to this evening. (I'm
+>> in paid work now.)
+>>
+>> Your patchset looks a middle of work. It includes the lack of changes
+>> for each drivers, thus not bisect-able.
 > 
-> Actually the changes for ack have been merged yesterday; the ack gets
-> called whenever appl_ptr changes.  This *is* the right behavior, after
-> all.
+> Yes, it was mentioned so in the cover letter.
+> 
+>> I think you will re-post the
+>> full series of patches several days after reviewed. Then you have
+>> chance to rebase it to recent HEAD of your tree, don't you?
+> 
+> My patches are already ready.  I didn't post the full set just because
+> it's too much.  The patch "snippet" was shown as a demonstration.
+
+Yes, like I did in my previous patchset.
+
+> And, why do you think there is only one patchset?
+> Usually I write several different implementations and choose the best one
+> for submission.  That is, I already have a few other patchsets in my local
+> tree based on the current code base.  And even further works on PCM
+> code are pending.
+
+I can easily imagine how you progress the work, because I have some 
+topic branch in my local repository as well, for PCM core. They're also 
+ready, like yours. However, I accept changes of HEAD of remote branch. 
+HEAD tends to move regardless of my work. When posting my patchset, I 
+always work to rebase to the HEAD. This often brings me a bit work, and 
+next week I'll surely do it, but it's natural to me.
+
+Here, I don't necessarily request you to merge them promptly. I'm just 
+interested in your current situation, in short, the reason to postpone 
+this patch. In my eyes, this patch surely brings conflict to your future 
+patchset, but it has a small changes and the occurred conflict can be 
+fixed quickly. I understand that you'd like to save the time for it.
+
+> So which is easier to rebase and handle?  Which one has more
+> significant changes?  A single trivial cleanup patch, or the whole
+> several sets of patchsets?  The answer is clear to my eyes.
+
+Hm.
+
+It depends on the shape of patchset, regardless of the importance, in my 
+humble opinion.
+
+When it includes large changes, it takes longer time to review. When a 
+patchset is splitted into small parts and posted sequentially with each 
+of topics, reviewer finishes his or her work within shorter time 
+relatively. I'll post my comments to your recent work later, but here 
+your patchset looks to include refactoring, integration and more. It 
+seems takes more time to merge into HEAD and I cannot post the series of 
+my works (they depends each other) even if my patches are enough small. 
+That's my concern here.
 
 
-Thats right, so we don't need additonal arg anymore, thanks for pointing out.
-I had missed the patches.
+Regards
 
-Will respin this on top of those changes
-
--- 
-~Vinod
+Takashi Sakamoto
