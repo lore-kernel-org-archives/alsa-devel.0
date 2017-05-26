@@ -1,35 +1,79 @@
-From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH] ASoC: wm_adsp: Fix typo in algorithm list warning message
-Date: Fri, 26 May 2017 10:47:07 +0100
-Message-ID: <1495792027-2290-1-git-send-email-rf@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: simple-card-utils: remove strict limitation of bit/frame master" to the asoc tree
+Date: Fri, 26 May 2017 12:41:51 +0100
+Message-ID: <E1dEDct-0000iw-44@debutante>
+References: <8737bt1zes.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <8737bt1zes.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The list terminator is 0xbedead but the message warning if it
-wasn't found was showing that 0xbeadead was expected.
+The patch
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+   ASoC: simple-card-utils: remove strict limitation of bit/frame master
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 155b8f3aa633dbce887cded6b6b9399a3c62683e Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 25 May 2017 01:51:31 +0000
+Subject: [PATCH] ASoC: simple-card-utils: remove strict limitation of
+ bit/frame master
+
+Current asoc_simple_card_parse_daifmt is keeping backward compatibility
+for bitmaster/framemaster which didn't use phandle.
+The keep compatibility, it is checking prefix length, but it is
+too strict. let's loosen it. Otherwise, OF-graph base sound card
+which doesn't have prefix can't detect daifmt.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/generic/simple-card-utils.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 5aff83b..65c059b5 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1888,7 +1888,7 @@ static void *wm_adsp_read_algs(struct wm_adsp *dsp, size_t n_algs,
- 	}
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index fe726e83d0bd..9c7f5b91b90a 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -21,14 +21,13 @@ int asoc_simple_card_parse_daifmt(struct device *dev,
+ {
+ 	struct device_node *bitclkmaster = NULL;
+ 	struct device_node *framemaster = NULL;
+-	int prefix_len = prefix ? strlen(prefix) : 0;
+ 	unsigned int daifmt;
  
- 	if (be32_to_cpu(val) != 0xbedead)
--		adsp_warn(dsp, "Algorithm list end %x 0x%x != 0xbeadead\n",
-+		adsp_warn(dsp, "Algorithm list end %x 0x%x != 0xbedead\n",
- 			  pos + len, be32_to_cpu(val));
+ 	daifmt = snd_soc_of_parse_daifmt(node, prefix,
+ 					 &bitclkmaster, &framemaster);
+ 	daifmt &= ~SND_SOC_DAIFMT_MASTER_MASK;
  
- 	alg = kzalloc(len * 2, GFP_KERNEL | GFP_DMA);
+-	if (prefix_len && !bitclkmaster && !framemaster) {
++	if (!bitclkmaster && !framemaster) {
+ 		/*
+ 		 * No dai-link level and master setting was not found from
+ 		 * sound node level, revert back to legacy DT parsing and
 -- 
-1.9.1
+2.11.0
