@@ -1,18 +1,20 @@
-From: Douglas Anderson <dianders@chromium.org>
-Subject: [RFC PATCH] ASoC: Intel: sst: Delete sst_save_shim64();
-	saved regs are never used
-Date: Fri, 26 May 2017 09:34:24 -0700
-Message-ID: <20170526163424.2853-1-dianders@chromium.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 5/5] drm: dw-hdmi-i2s: add .get_dai_id
+ callback for ALSA SoC
+Date: Fri, 26 May 2017 18:26:07 +0100
+Message-ID: <20170526172607.ja7crucnwi42r2gz@sirena.org.uk>
+References: <87efvnosnb.wl%kuninori.morimoto.gx@renesas.com>
+ <877f1fosji.wl%kuninori.morimoto.gx@renesas.com>
+ <20170524173849.h7jkmkrwk47pn6kd@sirena.org.uk>
+ <877f1525qq.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2371302939260391532=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f178.google.com (mail-pf0-f178.google.com
- [209.85.192.178])
- by alsa0.perex.cz (Postfix) with ESMTP id 60F212668C9
- for <alsa-devel@alsa-project.org>; Fri, 26 May 2017 18:35:02 +0200 (CEST)
-Received: by mail-pf0-f178.google.com with SMTP id n23so16134344pfb.2
- for <alsa-devel@alsa-project.org>; Fri, 26 May 2017 09:35:01 -0700 (PDT)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id D20DA2668C9
+ for <alsa-devel@alsa-project.org>; Fri, 26 May 2017 19:26:22 +0200 (CEST)
+In-Reply-To: <877f1525qq.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,89 +24,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Douglas Anderson <dianders@chromium.org>, lgirdwood@gmail.com, Vinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, tiwai@suse.com, mka@chromium.org, colin.king@canonical.com, o-takashi@sakamocchi.jp, sebastien.guiriec@intel.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Jose Abreu <joabreu@synopsys.com>, Archit Taneja <architt@codeaurora.org>, Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, David Airlie <airlied@linux.ie>, Linux-ALSA <alsa-devel@alsa-project.org>, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-In commit 9a075265c6dc ("ASoC: Intel: sst: Remove unused function
-sst_restore_shim64()"), we deleted the sst_restore_shim64() since it
-was never used.  ...but a quick look at the code shows that we should
-also be able to remove the sst_save_shim64() function and the
-structure members we were storing data in.
 
-Note that the saving code (and the comments talking about how
-important it is to do the save) has been around since
-commit 336cfbb05edf ("ASoC: Intel: mrfld- add ACPI module").
+--===============2371302939260391532==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="y66syzbxz3q3gri6"
+Content-Disposition: inline
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-This problem was found only by code inspection and only compile
-tested.  Hence, RFC.
 
- sound/soc/intel/atom/sst/sst.c | 19 -------------------
- sound/soc/intel/atom/sst/sst.h |  2 --
- 2 files changed, 21 deletions(-)
+--y66syzbxz3q3gri6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
-index 2d43b8693c0c..5ee92257ca85 100644
---- a/sound/soc/intel/atom/sst/sst.c
-+++ b/sound/soc/intel/atom/sst/sst.c
-@@ -382,21 +382,6 @@ void sst_context_cleanup(struct intel_sst_drv *ctx)
- }
- EXPORT_SYMBOL_GPL(sst_context_cleanup);
- 
--static inline void sst_save_shim64(struct intel_sst_drv *ctx,
--			    void __iomem *shim,
--			    struct sst_shim_regs64 *shim_regs)
--{
--	unsigned long irq_flags;
--
--	spin_lock_irqsave(&ctx->ipc_spin_lock, irq_flags);
--
--	shim_regs->imrx = sst_shim_read64(shim, SST_IMRX);
--	shim_regs->csr = sst_shim_read64(shim, SST_CSR);
--
--
--	spin_unlock_irqrestore(&ctx->ipc_spin_lock, irq_flags);
--}
--
- void sst_configure_runtime_pm(struct intel_sst_drv *ctx)
- {
- 	pm_runtime_set_autosuspend_delay(ctx->dev, SST_SUSPEND_DELAY);
-@@ -416,8 +401,6 @@ void sst_configure_runtime_pm(struct intel_sst_drv *ctx)
- 		pm_runtime_set_active(ctx->dev);
- 	else
- 		pm_runtime_put_noidle(ctx->dev);
--
--	sst_save_shim64(ctx, ctx->shim, ctx->shim_regs64);
- }
- EXPORT_SYMBOL_GPL(sst_configure_runtime_pm);
- 
-@@ -441,8 +424,6 @@ static int intel_sst_runtime_suspend(struct device *dev)
- 	flush_workqueue(ctx->post_msg_wq);
- 
- 	ctx->ops->reset(ctx);
--	/* save the shim registers because PMC doesn't save state */
--	sst_save_shim64(ctx, ctx->shim, ctx->shim_regs64);
- 
- 	return ret;
- }
-diff --git a/sound/soc/intel/atom/sst/sst.h b/sound/soc/intel/atom/sst/sst.h
-index 5c9a51cc77aa..d8cac09e8997 100644
---- a/sound/soc/intel/atom/sst/sst.h
-+++ b/sound/soc/intel/atom/sst/sst.h
-@@ -318,12 +318,10 @@ struct sst_ipc_reg {
- };
- 
- struct sst_shim_regs64 {
--	u64 csr;
- 	u64 pisr;
- 	u64 pimr;
- 	u64 isrx;
- 	u64 isrd;
--	u64 imrx;
- 	u64 imrd;
- 	u64 ipcx;
- 	u64 ipcd;
--- 
-2.13.0.219.gdb65acc882-goog
+On Wed, May 24, 2017 at 11:34:46PM +0000, Kuninori Morimoto wrote:
+
+> > As far as I understand what's going on with the graph code this seems to
+> > make sense to me.  How do we want to go about handling the patch?
+
+> This is comment to me ? or DRM maintainer ?
+
+> If to me, any case (pickup by Mark, or by DRM maintainer) is OK for me
+
+The world in general - mainly the DRM people I guess.
+
+--y66syzbxz3q3gri6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlkoZS8ACgkQJNaLcl1U
+h9CVPQf+P1116WvsBTyPWiId2VjCMPSTTc/kubNemQ6eCR8zdVGed4LZwcIKEyXl
+aOjtdotsSFgC4BJLcpsIrJZ9QhcLEHIusnteAnFi88NombGzq1wi1k3/W/b59/CO
+03kE45hoG+Hk9QqNScPxX9cC2ldSkjx/E9IZ2zKXHQI85r3NAOsDqdPvm1GaqmYQ
+likREAu8mUrOROjw+hVxthE3Yl8zSkR1ly4PbkmSdk51y+WygdT0ToKz5NY+rzhp
+eitIePTfouocLkJhXcu5S4rnAS31fY+3E21TRq1Xklxp0zXXR6eNzKpWZTLAmuS5
+ManzxZRI0JJHo3Iw0I7OrtrBXKG6Tg==
+=vcHQ
+-----END PGP SIGNATURE-----
+
+--y66syzbxz3q3gri6--
+
+--===============2371302939260391532==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2371302939260391532==--
