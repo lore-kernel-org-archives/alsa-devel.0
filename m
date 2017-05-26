@@ -1,24 +1,29 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 2/2] ALSA: pcm: add arrangement for
-	applying appl_ptr
-Date: Fri, 26 May 2017 17:46:07 +0900
-Message-ID: <6d53114b-11a3-2cab-a0d0-9f7de9ca1be9@sakamocchi.jp>
-References: <20170526003047.17721-1-o-takashi@sakamocchi.jp>
- <20170526003047.17721-3-o-takashi@sakamocchi.jp>
- <s5ha860jf2o.wl-tiwai@suse.de>
- <d4f82e6e-d402-cc5f-92ef-f37e67fc0682@sakamocchi.jp>
- <s5h8tlkjeqx.wl-tiwai@suse.de>
- <7c1610fe-0546-73b9-f8b0-d6bd65a13b29@sakamocchi.jp>
- <s5h60gojdod.wl-tiwai@suse.de>
+From: Cheng Sun <chengsun9@gmail.com>
+Subject: Re: 1.1.4 bug report: dmix fails when using both
+ 32-bit and 64-bit clients
+Date: Fri, 26 May 2017 10:13:51 +0100
+Message-ID: <CAG6t6sN2=P9b61r+s3jKcTUUbnUNc7uwRwDrupRVAP=Wtt+Huw@mail.gmail.com>
+References: <CAG6t6sPK9ug-HDs9qRttQZueNUpszByYRJtnQcMLNkQNF4FJoQ@mail.gmail.com>
+ <s5h8tllkpwm.wl-tiwai@suse.de>
+ <CAG6t6sNzR1a+Z8AiDpkQry5XZ9c6qU3=X_Yz19eChy4V=Kbs=g@mail.gmail.com>
+ <s5h37bslwyf.wl-tiwai@suse.de>
+ <CAG6t6sO91rfqKHrkACrkiwaxt57pVywJju_Sf+PnUM=HZZ+m_A@mail.gmail.com>
+ <s5hshjskdhc.wl-tiwai@suse.de>
+ <CAG6t6sMgCPH4X4mdo=U-=UQcvO8zALizo5_siSRbCXOmWjQ50A@mail.gmail.com>
+ <s5hpoewkbqs.wl-tiwai@suse.de>
+ <CAG6t6sOWobX1+dyJ-j+CVH6tC28mjAR=zu_wNsACE80bRjV4UQ@mail.gmail.com>
+ <s5hk254k4fr.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id D6E93266B88
- for <alsa-devel@alsa-project.org>; Fri, 26 May 2017 10:46:10 +0200 (CEST)
-In-Reply-To: <s5h60gojdod.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mail-io0-f194.google.com (mail-io0-f194.google.com
+ [209.85.223.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9AA6C266B88
+ for <alsa-devel@alsa-project.org>; Fri, 26 May 2017 11:14:13 +0200 (CEST)
+Received: by mail-io0-f194.google.com with SMTP id m4so859065ioe.0
+ for <alsa-devel@alsa-project.org>; Fri, 26 May 2017 02:14:13 -0700 (PDT)
+In-Reply-To: <s5hk254k4fr.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,74 +37,122 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On May 26 2017 16:10, Takashi Iwai wrote:
-> On Fri, 26 May 2017 08:54:27 +0200,
-> Takashi Sakamoto wrote:
+On 25 May 2017 at 22:32, Takashi Iwai <tiwai@suse.de> wrote:
+> On Thu, 25 May 2017 22:17:45 +0200,
+> Cheng Sun wrote:
 >>
->> On May 26 2017 15:47, Takashi Iwai wrote:
->>>>> Queued now, but will be likely declined later due to the rewrites of
->>>>> the code.
->>>>
->>>> Due to your recent work under reviewing?
->>>
->>> Yes, the code might be changed heavily.
->>> Don't touch a too hot spot if it were only a cleanup.
+>> On 25 May 2017 at 19:55, Takashi Iwai <tiwai@suse.de> wrote:
+>> > On Thu, 25 May 2017 20:34:23 +0200,
+>> > Cheng Sun wrote:
+>> >>
+>> >> On 25 May 2017 at 19:17, Takashi Iwai <tiwai@suse.de> wrote:
+>> >> > On Thu, 25 May 2017 18:51:10 +0200,
+>> >> > Cheng Sun wrote:
+>> >> >>
+>> >> >> On 25 May 2017 at 17:31, Takashi Iwai <tiwai@suse.de> wrote:
+>> >> >> > On Thu, 25 May 2017 17:43:44 +0200,
+>> >> >> > Cheng Sun wrote:
+>> >> >> >>
+>> >> >> >> On 25 May 2017 14:49, "Takashi Iwai" <tiwai@suse.de> wrote:
+>> >> >> >> >
+>> >> >> >> > On Wed, 24 May 2017 21:13:46 +0200,
+>> >> >> >> > Cheng Sun wrote:
+>> >> >> >> > >
+>> >> >> >> > > Hi all,
+>> >> >> >> > >
+>> >> >> >> > > The following commit (released in v1.1.4) introduced an issue where a
+>> >> >> >> > > client compiled against a 32-bit (x86) compile of alsa-lib cannot use
+>> >> >> >> > > the same dmix as a client compiled against a 64-bit alsa-lib.
+>> >> >> >> > >
+>> >> >> >> > >     1a9bd0f0448106b917ae7f7bedccfcbf6ce84802
+>> >> >> >> > >
+>> >> >> >> > > The error message is:
+>> >> >> >> > >
+>> >> >> >> > >     ALSA lib pcm_dmix.c:1077:(snd_pcm_dmix_open) unable to create IPC
+>> >> >> >> > > shm instance
+>> >> >> >> > >
+>> >> >> >> > > The following forum post (not mine) describes the symptoms of the
+>> >> >> >> > > issue in more detail (although the git commit the poster specified is
+>> >> >> >> > > not correct):
+>> >> >> >> > >
+>> >> >> >> > >
+>> >> >> >> https://forums.gentoo.org/viewtopic-p-8072290.html?sid=c2fbca45102933ddf9ca7cf8b6713e56
+>> >> >> >> >
+>> >> >> >> > There is a known problem when you mix up two alsa-lib versions because
+>> >> >> >> > of the changes in dmix shmem struct.  The solution should upgrade all
+>> >> >> >> > users.
+>> >> >> >>
+>> >> >> >> (Apologies for duplicate email --accidentally sent the first reply to the
+>> >> >> >> wrong address.)
+>> >> >> >>
+>> >> >> >> Arch Linux has upgraded both its 32 and 64 bit packages to v1.1.4, and I'm
+>> >> >> >> still experiencing this problem.
+>> >> >> >>
+>> >> >> >> While bisecting the bug I linked against two compiles of the same alsa-lib
+>> >> >> >> versions each time.
+>> >> >> >>
+>> >> >> >> Let me know if I can provide any other information.
+>> >> >> >
+>> >> >> > OK, at first to see whether it's the issue of the struct size
+>> >> >> > mismatch, check the following patch.  If it is, you'll see the error
+>> >> >> > message.  To be sure, check both cases: 64bit -> 32bit, and 32bit ->
+>> >> >> > 64bit.
+>> >> >>
+>> >> >> The behaviour is different for the two cases.
+>> >> >>
+>> >> >> 1) If 64bit client is started first, then the 32bit client prints the following:
+>> >> >>
+>> >> >> magic mismatch: shmptr=a15ad4f0, expected=a15ad4ec
+>> >> >> ALSA lib pcm_dmix.c:1077:(snd_pcm_dmix_open) unable to create IPC shm instance
+>> >> >>
+>> >> >> 2) If 32bit client is started first, then the 64bit client only prints:
+>> >> >>
+>> >> >> ALSA lib pcm_dmix.c:1077:(snd_pcm_dmix_open) unable to create IPC shm instance
+>> >> >>
+>> >> >> I've added some further print statements and it turns out that this is
+>> >> >> because the "return err;" on line 115 is triggered.
+>> >> >
+>> >> > Hm, so at least the struct size difference is a problem.
+>> >> > Doese the patch below change the behavior?
+>> >>
+>> >> Your patch did not change the behaviour.
+>> >
+>> > Hmm, then it's 8 bytes alignment.
+>> >
+>> >> However, as an experiment I added "__attribute__((__packed__))" to the
+>> >> struct, which fixed the problem. So this does seem to be caused by gcc
+>> >> padding structs differently when compiling 32-bit vs 64-bit.
+>> >>
+>> >> I don't think "__attribute__((__packed__))" is necessarily the correct
+>> >> solution here though.
+>> >
+>> > OK, that's at least one way to fix.  Another way would be to put
+>> > another 4 bytes integer as a padding.  Could you give it a try, too?
+>> >
+>> >
+>> > Takashi
 >>
->> I've already reviewed it but postpone my reply to this evening. (I'm
->> in paid work now.)
->>
->> Your patchset looks a middle of work. It includes the lack of changes
->> for each drivers, thus not bisect-able.
-> 
-> Yes, it was mentioned so in the cover letter.
-> 
->> I think you will re-post the
->> full series of patches several days after reviewed. Then you have
->> chance to rebase it to recent HEAD of your tree, don't you?
-> 
-> My patches are already ready.  I didn't post the full set just because
-> it's too much.  The patch "snippet" was shown as a demonstration.
+>> The following patch works. I'm a little worried that future
+>> rearrangement/additions to the struct will cause it to break again
+>> though...
+>
+> Yes, maybe the combination of both is the better way.  That is, we
+> should add packed attribute, but OTOH we should avoid the
+> incompatibility again from 1.1.4 at least on x86-64.
+> If a padding + packed doesn't change the struct size on x86-64 from
+> the unpatched struct, we can go with it.
+>
+> Alternatively, we may move the new field into some of unused old
+> fields.  Below is an example.  This will make it backward compatible
+> with 1.1.3 and older versions.
+>
+>
+> thanks,
+>
+> Takashi
 
-Yes, like I did in my previous patchset.
+Yes, that sounds like a good idea. I can confirm that this patch works
+(32-bit, 64-bit and v1.1.3 all tested to be compatible).
 
-> And, why do you think there is only one patchset?
-> Usually I write several different implementations and choose the best one
-> for submission.  That is, I already have a few other patchsets in my local
-> tree based on the current code base.  And even further works on PCM
-> code are pending.
-
-I can easily imagine how you progress the work, because I have some 
-topic branch in my local repository as well, for PCM core. They're also 
-ready, like yours. However, I accept changes of HEAD of remote branch. 
-HEAD tends to move regardless of my work. When posting my patchset, I 
-always work to rebase to the HEAD. This often brings me a bit work, and 
-next week I'll surely do it, but it's natural to me.
-
-Here, I don't necessarily request you to merge them promptly. I'm just 
-interested in your current situation, in short, the reason to postpone 
-this patch. In my eyes, this patch surely brings conflict to your future 
-patchset, but it has a small changes and the occurred conflict can be 
-fixed quickly. I understand that you'd like to save the time for it.
-
-> So which is easier to rebase and handle?  Which one has more
-> significant changes?  A single trivial cleanup patch, or the whole
-> several sets of patchsets?  The answer is clear to my eyes.
-
-Hm.
-
-It depends on the shape of patchset, regardless of the importance, in my 
-humble opinion.
-
-When it includes large changes, it takes longer time to review. When a 
-patchset is splitted into small parts and posted sequentially with each 
-of topics, reviewer finishes his or her work within shorter time 
-relatively. I'll post my comments to your recent work later, but here 
-your patchset looks to include refactoring, integration and more. It 
-seems takes more time to merge into HEAD and I cannot post the series of 
-my works (they depends each other) even if my patches are enough small. 
-That's my concern here.
-
-
-Regards
-
-Takashi Sakamoto
+Cheers,
+Cheng
