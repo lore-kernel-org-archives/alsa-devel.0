@@ -1,57 +1,73 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 4/4] ASoC: cs35l35: Add multi-device synchronisation
-Date: Mon, 29 May 2017 14:53:06 +0100
-Message-ID: <20170529135306.ldn74fwvfa4ots6a@sirena.org.uk>
-References: <1495121559-1063-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1495121559-1063-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="d2vaxkr65qoxswv7"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <1495121559-1063-4-git-send-email-ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: audio-graph-scu-card: tidyup return method from probe()" to the asoc tree
+Date: Mon, 29 May 2017 15:02:39 +0100
+Message-ID: <E1dFLFn-0001N0-9m@finisterre>
+References: <87mva93bw4.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87mva93bw4.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>Dan Carpenter <dan.carpenter@oracle.com>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---d2vaxkr65qoxswv7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: audio-graph-scu-card: tidyup return method from probe()
 
-On Thu, May 18, 2017 at 04:32:39PM +0100, Charles Keepax wrote:
+has been applied to the asoc tree at
 
-> +	SOC_SINGLE_EXT("SYNC Audio", CS35L35_MULT_DEV_SYNCH2, 1, 1, 0,
-> +		       snd_soc_get_volsw, cs35l35_put_sync),
-> +	SOC_SINGLE_EXT("SYNC VPBR", CS35L35_MULT_DEV_SYNCH2, 2, 1, 0,
-> +		       snd_soc_get_volsw, cs35l35_put_sync),
-> +	SOC_SINGLE_EXT("SYNC OTW", CS35L35_MULT_DEV_SYNCH2, 3, 1, 0,
-> +		       snd_soc_get_volsw, cs35l35_put_sync),
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-I can't tell how this works.  It feels like this shouldn't just be being
-controlled from userspace but rather should be handled in some more
-standard fashion, or possibly as part of the platform integration but
-right now it's just some totally undocumented application managed
-controls.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
---d2vaxkr65qoxswv7
-Content-Type: application/pgp-signature; name="signature.asc"
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlksJ8EACgkQJNaLcl1U
-h9B8rgf+PyvVds5J2CnjxYc3K2vORzlaYvkQhoMxlYAfIR0I9P5qvEpu4tNZ1645
-rMcgoNYZPz6mh7MzKn0EdCnbXob//RpmW4wBGgPbDJpoKVa6do6y3qi5RghpIJDX
-nT3NYDHXI9qrWyym8BEQ0mh719tOxdkzJwXF3tc38BjZePiZDUoUwGVImt/XP9Zu
-aioNf826nO3cMd5RS5fWdTuLfwMc9y2TDoTYzBcUxfkeJpgE2WGgMmbW+Z7PsI8I
-70dVQULsT4cwgjrCIvHZ9Az+Wx+pYBz+04LDJweedWhIt27K0R/zYe5gj9YN1ELu
-zUOEX5ZmP9Lg0uETC2S9C8VcPOFuJg==
-=bEnA
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---d2vaxkr65qoxswv7--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks,
+Mark
+
+>From 1a2af56431781e7d6db746a1b7ae796443028dfa Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 19 May 2017 00:58:19 +0000
+Subject: [PATCH] ASoC: audio-graph-scu-card: tidyup return method from probe()
+
+Current return method from probe() is very confusable.
+This patch tidyup it to normal return method
+
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/generic/audio-graph-scu-card.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/generic/audio-graph-scu-card.c b/sound/soc/generic/audio-graph-scu-card.c
+index 64e8b9728580..c5c52d1f500c 100644
+--- a/sound/soc/generic/audio-graph-scu-card.c
++++ b/sound/soc/generic/audio-graph-scu-card.c
+@@ -379,8 +379,10 @@ static int asoc_graph_card_probe(struct platform_device *pdev)
+ 	snd_soc_card_set_drvdata(card, priv);
+ 
+ 	ret = devm_snd_soc_register_card(dev, card);
+-	if (ret >= 0)
+-		return ret;
++	if (ret < 0)
++		goto err;
++
++	return 0;
+ err:
+ 	asoc_simple_card_clean_reference(card);
+ 
+-- 
+2.11.0
