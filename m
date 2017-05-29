@@ -1,100 +1,75 @@
-From: Hedde Bosman <sgorpi@gmail.com>
-Subject: Re: Steinberg MIDEX8 driver attempt
-Date: Sun, 28 May 2017 23:38:56 +0200
-Message-ID: <CALgXJ_CTnsCFwZP31BzAUE3eBwqiwfwqefuXVL==8LDoXntUdg@mail.gmail.com>
-References: <CALgXJ_Dkb8A6Xks_9q7FpmFVEm=XxK6y-oSL4VAM46mOrx+ZmA@mail.gmail.com>
- <40be4d95-3b45-5138-fbbc-775c8d779c8d@ladisch.de>
- <CALgXJ_CGyDNEnK+hteujqPKSjAMWLLX_aEceig66MpWeurh=2g@mail.gmail.com>
+From: Bartlomiej Zolnierkiewicz <b.zolnierkie-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Subject: Re: [PATCH 3/3] mfd: twl: move header file out of I2C realm
+Date: Mon, 29 May 2017 11:20:33 +0200
+Message-ID: <7306372.PblijfWnMI@amdc3058>
+References: <20170521220212.1404-1-wsa@the-dreams.de>
+	<CGME20170521220224epcas2p4fbcfe69660d457b8af95ddc196c04a9b@epcas2p4.samsung.com>
+	<20170521220212.1404-4-wsa@the-dreams.de>
+Reply-To: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f173.google.com (mail-qk0-f173.google.com
- [209.85.220.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 2A6E2266C21
- for <alsa-devel@alsa-project.org>; Sun, 28 May 2017 23:38:57 +0200 (CEST)
-Received: by mail-qk0-f173.google.com with SMTP id u75so37045153qka.3
- for <alsa-devel@alsa-project.org>; Sun, 28 May 2017 14:38:57 -0700 (PDT)
-In-Reply-To: <CALgXJ_CGyDNEnK+hteujqPKSjAMWLLX_aEceig66MpWeurh=2g@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <rtc-linux+bncBDMLN5HOIYIOPT5PZECRUBAITP5LK-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-reply-to: <20170521220212.1404-4-wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
+List-Post: <https://groups.google.com/group/rtc-linux/post>, <mailto:rtc-linux-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:rtc-linux+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/rtc-linux
+List-Subscribe: <https://groups.google.com/group/rtc-linux/subscribe>, <mailto:rtc-linux+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+712029733259+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/rtc-linux/subscribe>
+To: Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
+Cc: linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Tony Lindgren <tony-4v6yS6AI5VpBDgjK7y7TUQ@public.gmane.org>, Russell King <linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org>, Linus Walleij <linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Alexandre Courbot <gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Jonathan Cameron <jic23-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hartmut Knaack <knaack.h-Mmb7MZpHnFY@public.gmane.org>, Lars-Peter Clausen <lars-Qo5EllUWu/uELgA04lAiVw@public.gmane.org>, Peter Meerwald-Stadler <pmeerw-jW+XmwGofnusTnJN9+BGXg@public.gmane.org>, Dmitry Torokhov <dmitry.torokhov-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Lee Jones <lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Kishon Vijay Abraham I <kishon-l0cyMroinI0@public.gmane.org>, Sebastian Reichel <sre-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Alessandro Zummo <a.zummo-BfzFCNDTiLLj+vYz1yj4TQ@public.gmane.org>, Alexandre Belloni <alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Felipe Balbi <balbi-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, Daniel Thompson <daniel.thompson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Jingoo Han <jingoohan1-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Wim Van Sebroeck <wim@>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, May 28, 2017 at 10:49 PM, Hedde Bosman <sgorpi@gmail.com> wrote:
-> Hi Clemens,
->
-> thanks for responding.
->
-> On Sun, May 28, 2017 at 10:16 PM, Clemens Ladisch <clemens@ladisch.de> wrote:
->> Hedde Bosman wrote:
->>> I've owned a MIDEX8 for some years now and am now attempting a driver
->>> for it. [...]
->>> it looks a bit like the standard usb midi class, but it requires some
->>> periodic (i guess timer) messages on endpoint 0x02
->>
->> Why "requires"?  What happens if you do not send them?
->
-> Without sending those, the midi in does not seem to work.
->
->>
->>> Not all (interrupt) urbs that are submitted will complete (within 25
->>> ms at least).
->>
->> And why would that be a problem?
->
-> I am not sure about the inner workings of the device. However, it
-> seems to be a timing signal, that might be used to time-stamp midi in
-> packets. I haven't been able to determine the exact impact, but did
-> notice that sometimes the midi-in stops responding. If that is
-> related, I cannot tell.
->
->>
->>> Sometimes after sending a few messages, an empty urb shows up in
->>> wireshark. However, in code, there's an if-statement that should allow
->>> only messages of length > 0 to be submitted (line 568, if (num_read >
->>> 0)).
->>
->> Try adding a check before the actual usb_submit_urb() call, but nothing
->> would protect against your code accidentally changing the
->> transfer_buffer_length of an active URB field later.
->
-> I will try and report back later.
+On Monday, May 22, 2017 12:02:10 AM Wolfram Sang wrote:
+> include/linux/i2c is not for client devices. Move the header file to a
+> more appropriate location.
+> 
+> Signed-off-by: Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>
 
-Even with such a check before usb_submit_urb, I still see an empty urb
-appear on the timing endpoint (after which the midi in doesn't work
-anymore). What seems to happen (during operations) is the following:
-1. Several midi-in urbs are queued on EP 0x82, one is requested and
-awaiting completion
-2. After some time that midi-in urb is completed (due to a CC)
-3. Another queued midi-in urb is requested (after 1.2 ms)
-4. After 0.07 ms, a spurious timing-out urb appears on EP 0x02 (the
-timing signal) with zero length data. (both are endpoint 2 but in
-different directions)
-5. Midi in stops working.
+Acked-by: Bartlomiej Zolnierkiewicz <b.zolnierkie-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
 
-This happened even after adding a spinlock on any operations on EP
-0x82 and 0x02 ... I'm lost here.
+> ---
+>  arch/arm/mach-omap2/common.h            | 2 +-
+>  arch/arm/mach-omap2/omap_twl.c          | 2 +-
+>  drivers/gpio/gpio-twl4030.c             | 2 +-
+>  drivers/iio/adc/twl4030-madc.c          | 2 +-
+>  drivers/iio/adc/twl6030-gpadc.c         | 2 +-
+>  drivers/input/keyboard/twl4030_keypad.c | 2 +-
+>  drivers/input/misc/twl4030-pwrbutton.c  | 2 +-
+>  drivers/input/misc/twl4030-vibra.c      | 2 +-
+>  drivers/mfd/twl-core.c                  | 6 +++---
+>  drivers/mfd/twl4030-audio.c             | 2 +-
+>  drivers/mfd/twl4030-irq.c               | 2 +-
+>  drivers/mfd/twl4030-power.c             | 2 +-
+>  drivers/mfd/twl6030-irq.c               | 2 +-
+>  drivers/phy/phy-twl4030-usb.c           | 2 +-
+>  drivers/power/supply/twl4030_charger.c  | 2 +-
+>  drivers/pwm/pwm-twl-led.c               | 2 +-
+>  drivers/pwm/pwm-twl.c                   | 2 +-
+>  drivers/regulator/twl-regulator.c       | 2 +-
+>  drivers/regulator/twl6030-regulator.c   | 2 +-
+>  drivers/rtc/rtc-twl.c                   | 2 +-
+>  drivers/usb/phy/phy-twl6030-usb.c       | 2 +-
+>  drivers/video/backlight/pandora_bl.c    | 2 +-
+>  drivers/watchdog/twl4030_wdt.c          | 2 +-
+>  include/linux/{i2c => mfd}/twl.h        | 0
+>  sound/soc/codecs/twl4030.c              | 2 +-
+>  25 files changed, 26 insertions(+), 26 deletions(-)
+>  rename include/linux/{i2c => mfd}/twl.h (100%)
 
->
->>
->>> Might this have to do with issue 1?
->>
->> Not unless you have mixed up input and output URBs.
->
-> afaik I did not. I am looking for better ways to debug though.
->
->>
->>
->> Regards,
->> Clemens
->
-> Regards, Hedde
+Best regards,
+--
+Bartlomiej Zolnierkiewicz
+Samsung R&D Institute Poland
+Samsung Electronics
+
+-- 
+You received this message because you are subscribed to "rtc-linux".
+Membership options at http://groups.google.com/group/rtc-linux .
+Please read http://groups.google.com/group/rtc-linux/web/checklist
+before submitting a driver.
+--- 
+You received this message because you are subscribed to the Google Groups "rtc-linux" group.
+To unsubscribe from this group and stop receiving emails from it, send an email to rtc-linux+unsubscribe-/JYPxA39Uh5TLH3MbocFF+G/Ez6ZCGd0@public.gmane.org
+For more options, visit https://groups.google.com/d/optout.
