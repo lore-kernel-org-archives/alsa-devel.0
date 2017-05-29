@@ -1,17 +1,17 @@
-From: Hedde Bosman <sgorpi@gmail.com>
-Subject: Steinberg MIDEX8 driver attempt
-Date: Fri, 26 May 2017 16:28:21 +0200
-Message-ID: <CALgXJ_CWY2_TqZWhRF+_HOCZqatY=vsCKOSKgWvnWftpNPj52A@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ALSA: declare snd_kcontrol_new structures
+	as const
+Date: Mon, 29 May 2017 14:14:27 +0100
+Message-ID: <20170529131427.mezkiwcvo2znkekz@sirena.org.uk>
+References: <1495896375-30855-1-git-send-email-bhumirks@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4329430608507852037=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f169.google.com (mail-qk0-f169.google.com
- [209.85.220.169])
- by alsa0.perex.cz (Postfix) with ESMTP id D9715266838
- for <alsa-devel@alsa-project.org>; Fri, 26 May 2017 16:28:23 +0200 (CEST)
-Received: by mail-qk0-f169.google.com with SMTP id k74so8572963qke.1
- for <alsa-devel@alsa-project.org>; Fri, 26 May 2017 07:28:23 -0700 (PDT)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4BAB2664EB
+ for <alsa-devel@alsa-project.org>; Mon, 29 May 2017 15:14:59 +0200 (CEST)
+In-Reply-To: <1495896375-30855-1-git-send-email-bhumirks@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,42 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Bhumika Goyal <bhumirks@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, clemens@ladisch.de, lgirdwood@gmail.com, tiwai@suse.com, julia.lawall@lip6.fr, johannes@sipsolutions.net, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
-Dear Alsa developers,
 
-I've owned a MIDEX8 for some years now and wanted to do something with it
-in Linux , so I started some analysis and coding. The current result can be
-found at https://github.com/sgorpi/midex8
+--===============4329430608507852037==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="cjo5vbwv4cfjepq3"
+Content-Disposition: inline
 
-it looks a bit like the standard midi class driver, but it requires some
-periodic (i guess timer) messages on endpoint 0x82. Therefore, I've took
-quite some inspiration from the sound/usb/midi.c driver.
 
-In general, it seems to work now for simple cases, but I'm having a few
-issues, that might be due to my lack of knowledge on the USB subsystem, or
-something else. In the (simplified) libusb test in the above repository, I
-do not seem to have these issues.
+--cjo5vbwv4cfjepq3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Issue 1:
-Not all (interrupt) urbs that are submitted will complete (within 25 ms at
-least). Wireshark doesn't show the packets being sent out, and the
-completeion handler never gets called for those urbs, but also no errors
-are given by usb_submit_urb. This happens mainly with the timer messages,
-and my current solution is to unlink the urbs that haven't completed within
-25ms.
-However, I feel there is something going wrong there. If I do not send urbs
-on the midi-in endpoint, I do not see any missing urbs... Do I have to
-mutex anything for a shared urb queue or so?
+On Sat, May 27, 2017 at 08:16:15PM +0530, Bhumika Goyal wrote:
+> Declare snd_kcontrol_new structures as const as they are only passed an
+> argument to the function snd_ctl_new1. This argument is of type const,
+> so snd_kcontrol_new structures having this property can be made const.
+> Done using Coccinelle:
 
-Issue 2:
-Sometimes after sending a few midi messages, an empty urb shows up in
-wireshark. However, in code, there's an if-statement that should allow only
-messages of length > 0 to be submitted (line 568, if (num_read > 0)). Might
-this have to do with issue 1?
+Acked-by: Mark Brown <broonie@kernel.org>
 
-I intend to improve on the driver some more, but if you could give me any
-advice on the above issues that would be highly appreciated.
+--cjo5vbwv4cfjepq3
+Content-Type: application/pgp-signature; name="signature.asc"
 
-With kind regards, Hedde
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlksHrIACgkQJNaLcl1U
+h9AQ6Af/SYHN10JcudGoHosgxab47NA+Ypt7AjxkfRA+CJgA1NRGvTmopRopFf26
+79SWlGmaMbSVmtZdMB3Iq2PaFWJCF5Ox1MrXkrPtv0lGxpHVWHXo/7yL61T7POB5
+8wg51DokQyzlXS/7dL/bEYDajeRUVTJEn5VanevXgv4Efa1z6BAbZtB+uy6r+wZ1
+3NWo1C/V/tQ3ziK/Bv7CSimVX3hSXninjPnFq3pvXyyiYSsg6Km/4K4HxRpU5RDj
+t1RvvmmtAGEXpneVcCTCitoIgpa34QNl2p/mqr6EDSnA25+SPJ/CGpz5BIxO6G+6
+da09+Y5lFnjAzj6fop4CUEaWswpp2g==
+=PVxq
+-----END PGP SIGNATURE-----
+
+--cjo5vbwv4cfjepq3--
+
+--===============4329430608507852037==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4329430608507852037==--
