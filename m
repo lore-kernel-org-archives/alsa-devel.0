@@ -1,25 +1,38 @@
 From: Richard Leitner <richard.leitner@skidata.com>
-Subject: Re: [PATCH] ASoC: sgtl5000: add avc enable control
-Date: Tue, 30 May 2017 13:46:26 +0200
-Message-ID: <ef96e444-e5e4-fe5d-0176-fd551b85c3e6@skidata.com>
-References: <1496142019-13533-1-git-send-email-richard.leitner@skidata.com>
- <20170530113347.xtb3u4dpt6rnu6tl@sirena.org.uk>
+Subject: [PATCH v2] ASoC: sgtl5000: add avc enable control
+Date: Tue, 30 May 2017 14:00:16 +0200
+Message-ID: <1496145616-9307-1-git-send-email-richard.leitner@skidata.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170530113347.xtb3u4dpt6rnu6tl@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, dev@g0hl1n.net
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, dev@g0hl1n.net, Richard Leitner <richard.leitner@skidata.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 05/30/2017 01:33 PM, Mark Brown wrote:
-> On Tue, May 30, 2017 at 01:00:19PM +0200, Richard Leitner wrote:
-> 
->> +
->> +	SOC_SINGLE("AVC Enable", SGTL5000_DAP_AVC_CTRL, 0, 1, 0),
-> 
-> All on/off switches should end in Switch as covered in ControlNames.txt.
+This control enables the automatic volume control (AVC) of SGTL5000
+using its DAP_AVC_CTRL register.
 
-Ok. Sorry & Thanks. I'll send a V2.
+Signed-off-by: Richard Leitner <richard.leitner@skidata.com>
+---
+CHANGES v2:
+	- added trailing "Switch" as covered in ControlNames.txt
+---
+ sound/soc/codecs/sgtl5000.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index 5a2702e..0477f2e 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -434,6 +434,8 @@ static const struct snd_kcontrol_new sgtl5000_snd_controls[] = {
+ 			0x1f, 1,
+ 			lineout_volume),
+ 	SOC_SINGLE("Lineout Playback Switch", SGTL5000_CHIP_ANA_CTRL, 8, 1, 1),
++
++	SOC_SINGLE("AVC Enable Switch", SGTL5000_DAP_AVC_CTRL, 0, 1, 0),
+ };
+ 
+ /* mute the codec used by alsa core */
+-- 
+2.1.4
