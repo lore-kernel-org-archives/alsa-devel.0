@@ -1,367 +1,51 @@
-From: plevine457@gmail.com
-Subject: [PATCH - Fix building alsa-plugins against libav-10
-	1/1] Fix building alsa-plugins against libav-10
-Date: Tue, 30 May 2017 02:00:55 -0400
-Message-ID: <592d0aa2.944e370a.89600.da6b@mx.google.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Peter Levine <plevine457@gmail.com>
+From: Manjeet Pawar <manjeet.p-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Subject: [PATCH] ALSA: Adjust structure(snd_timer_tread) members to avoid 8
+ padding bytes
+Date: Tue, 30 May 2017 11:49:08 +0530
+Message-ID: <1496125148-37895-1-git-send-email-manjeet.p@samsung.com>
+References: <CGME20170530062242epcas5p1fb7f94e02c6550a60603ce28090cc70d@epcas5p1.samsung.com>
+Content-Type: text/plain; charset="utf-8"
+Return-path: <linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: linux-api-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: perex-/Fr2/VpizcU@public.gmane.org, tiwai-l3A5Bk7waGM@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: a.sahrawat-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, lalit.mohan-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, pankaj.m-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org, Manjeet Pawar <manjeet.p-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>, Vaneet Narang <v.narang-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Peter Levine <plevine457@gmail.com>
+This patch is made to fix below CVE issue where 8 padding bytes are sent to
+user without being initialized. Structure members are adjusted to avoid 8 
+padding bytes.
 
-Signed-off-by: Peter Levine <plevine457@gmail.com>
+CVE-2016-4569/CVE-2016-4578:
+The stack object tread has a total size of 32 bytes. Its field
+event and val both contain 4 bytes padding. These 8 bytes
+padding bytes are sent to user without being initialized.
 
-diff --git a/Makefile.am b/Makefile.am
-index 69cfe0d..9195b56 100644
---- a/Makefile.am
-+++ b/Makefile.am
-@@ -9,8 +9,14 @@ if HAVE_SAMPLERATE
- SUBDIRS += rate
- endif
- if HAVE_AVCODEC
-+SUBDIRS += a52
-+if !HAVE_AVRESAMPLE
- SUBDIRS += a52 rate-lavc
- endif
-+endif
-+if HAVE_AVRESAMPLE
-+SUBDIRS += rate-lavr
-+endif
- if HAVE_MAEMO_PLUGIN
- SUBDIRS += maemo
- endif
-diff --git a/configure.ac b/configure.ac
-index f42601c..0af5ec9 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -127,6 +127,10 @@ if test $HAVE_AVCODEC = yes; then
-   if test -z "$AVCODEC_HEADER"; then
-     HAVE_AVCODEC=no
-   fi
-+  SAVE_LIBS=$LIBS
-+  LIBS="$LIBS $AVCODEC_LIBS"
-+  AC_CHECK_FUNCS([av_resample_init])
-+  LIBS=$SAVE_LIBS
-   CFLAGS="$CFLAGS_saved"
- fi
+Fix patch:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cec8f96e49d9be372fdb0c3836dcf31ec71e457e
+https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/commit/?h=for-next&id=9a47e9cff994f37f7f0dbd9ae23740d0f64f9fe6
+
+These patches does memset on structure object to initialize 8 padding bytes, which can be skipped by 
+adjusting structure members.
+
+Signed-off-by: Manjeet Pawar <manjeet.p-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+Signed-off-by: Vaneet Narang <v.narang-Sze3O3UU22JBDgjK7y7TUQ@public.gmane.org>
+---
+ include/uapi/sound/asound.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index a45be6b..820c5a0 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -789,8 +789,8 @@ enum {
  
-@@ -135,6 +139,18 @@ AC_SUBST(AVCODEC_CFLAGS)
- AC_SUBST(AVCODEC_LIBS)
- AC_SUBST(AVCODEC_HEADER)
- 
-+AC_ARG_ENABLE([avresample],
-+      AS_HELP_STRING([--disable-avresample], [Do not build plugins depending on avcodec (lavrate)]))
-+
-+if test "x$enable_avresample" != "xno"; then
-+  PKG_CHECK_MODULES(AVRESAMPLE, [libavresample libavutil], [HAVE_AVRESAMPLE=yes], [HAVE_AVRESAMPLE=no])
-+fi
-+
-+AM_CONDITIONAL(HAVE_AVRESAMPLE, test x$HAVE_AVCODEC = xyes)
-+AC_SUBST(AVRESAMPLE_CFLAGS)
-+AC_SUBST(AVRESAMPLE_LIBS)
-+AC_SUBST(AVRESAMPLE_HEADER)
-+
- AC_ARG_ENABLE([speexdsp],
-       AS_HELP_STRING([--disable-speexdsp], [Disable building of speexdsp plugin]))
- 
-@@ -217,7 +233,7 @@ AC_OUTPUT([
- 	mix/Makefile
- 	rate/Makefile
- 	a52/Makefile
--	rate-lavc/Makefile
-+	rate-lavr/Makefile
- 	maemo/Makefile
- 	doc/Makefile
- 	usb_stream/Makefile
-diff --git a/rate-lavr/Makefile.am b/rate-lavr/Makefile.am
-new file mode 100644
-index 0000000..a1dca35
---- /dev/null
-+++ b/rate-lavr/Makefile.am
-@@ -0,0 +1,22 @@
-+asound_module_rate_lavr_LTLIBRARIES = libasound_module_rate_lavr.la
-+
-+asound_module_rate_lavrdir = @ALSA_PLUGIN_DIR@
-+
-+AM_CFLAGS = -Wall -g @ALSA_CFLAGS@ @AVRESAMPLE_CFLAGS@
-+AM_LDFLAGS = -module -avoid-version -export-dynamic -no-undefined $(LDFLAGS_NOUNDEFINED)
-+
-+libasound_module_rate_lavr_la_SOURCES = rate_lavr.c
-+libasound_module_rate_lavr_la_LIBADD = @ALSA_LIBS@ @AVRESAMPLE_LIBS@
-+
-+
-+install-exec-hook:
-+	rm -f $(DESTDIR)@ALSA_PLUGIN_DIR@/libasound_module_rate_lavcrate*.so
-+	$(LN_S) libasound_module_rate_lavr.so $(DESTDIR)@ALSA_PLUGIN_DIR@/libasound_module_rate_lavcrate.so
-+	$(LN_S) libasound_module_rate_lavr.so $(DESTDIR)@ALSA_PLUGIN_DIR@/libasound_module_rate_lavcrate_higher.so
-+	$(LN_S) libasound_module_rate_lavr.so $(DESTDIR)@ALSA_PLUGIN_DIR@/libasound_module_rate_lavcrate_high.so
-+	$(LN_S) libasound_module_rate_lavr.so $(DESTDIR)@ALSA_PLUGIN_DIR@/libasound_module_rate_lavcrate_fast.so
-+	$(LN_S) libasound_module_rate_lavr.so $(DESTDIR)@ALSA_PLUGIN_DIR@/libasound_module_rate_lavcrate_faster.so
-+
-+uninstall-hook:
-+	rm -f $(DESTDIR)@ALSA_PLUGIN_DIR@/libasound_module_rate_lavcrate*.so
-+	rm -f $(DESTDIR)@ALSA_PLUGIN_DIR@/libasound_module_rate_lavr*.so
-diff --git a/rate-lavc/rate_lavcrate.c b/rate-lavr/rate_lavr.c
-similarity index 58%
-copy from rate-lavc/rate_lavcrate.c
-copy to rate-lavr/rate_lavr.c
-index 14a2198..fe3bf4b 100644
---- a/rate-lavc/rate_lavcrate.c
-+++ b/rate-lavr/rate_lavr.c
-@@ -1,9 +1,6 @@
- /*
-- * Rate converter plugin using libavcodec's resampler
-- * Copyright (c) 2007 by Nicholas Kain <njkain@gmail.com>
-- *
-- * based on rate converter that uses libsamplerate
-- * Copyright (c) 2006 by Takashi Iwai <tiwai@suse.de>
-+ * Rate converter plugin using libavresample
-+ * Copyright (c) 2014 by Anton Khirnov
-  *
-  * This library is free software; you can redistribute it and/or
-  * modify it under the terms of the GNU Lesser General Public
-@@ -19,21 +16,23 @@
- #include <stdio.h>
- #include <alsa/asoundlib.h>
- #include <alsa/pcm_rate.h>
--#include AVCODEC_HEADER
--#include "gcd.h"
-+
-+#include <libavresample/avresample.h>
-+#include <libavutil/channel_layout.h>
-+#include <libavutil/opt.h>
-+#include <libavutil/mathematics.h>
-+#include <libavutil/samplefmt.h>
-+
- 
- static int filter_size = 16;
- static int phase_shift = 10; /* auto-adjusts */
- static double cutoff = 0; /* auto-adjusts */
- 
- struct rate_src {
--	struct AVResampleContext *context;
-+	AVAudioResampleContext *avr;
-+
- 	int in_rate;
- 	int out_rate;
--	int stored;
--	int point;
--	int16_t **out;
--	int16_t **in;
- 	unsigned int channels;
+ struct snd_timer_tread {
+ 	int event;
+-	struct timespec tstamp;
+ 	unsigned int val;
++	struct timespec tstamp;
  };
  
-@@ -50,26 +49,7 @@ static snd_pcm_uframes_t output_frames(void *obj, snd_pcm_uframes_t frames)
- static void pcm_src_free(void *obj)
- {
- 	struct rate_src *rate = obj;
--	int i;
--
--	if (rate->out) {
--		for (i=0; i<rate->channels; i++) {
--			free(rate->out[i]);
--		}
--		free(rate->out);
--	}
--	if (rate->in) {
--		for (i=0; i<rate->channels; i++) {
--			free(rate->in[i]);
--		}
--		free(rate->in);
--	}
--	rate->out = rate->in = NULL;
--
--	if (rate->context) {
--		av_resample_close(rate->context);
--		rate->context = NULL;
--	}
-+	avresample_free(&rate->avr);
- }
- 
- static int pcm_src_init(void *obj, snd_pcm_rate_info_t *info)
-@@ -77,12 +57,14 @@ static int pcm_src_init(void *obj, snd_pcm_rate_info_t *info)
- 	struct rate_src *rate = obj;
- 	int i, ir, or;
- 
--	if (! rate->context || rate->channels != info->channels) {
-+	if (!rate->avr || rate->channels != info->channels) {
-+		int ret;
-+
- 		pcm_src_free(rate);
- 		rate->channels = info->channels;
- 		ir = rate->in_rate = info->in.rate;
- 		or = rate->out_rate = info->out.rate;
--		i = gcd(or, ir);
-+		i = av_gcd(or, ir);
- 		if (or > ir) {
- 			phase_shift = or/i;
- 		} else {
-@@ -93,25 +75,27 @@ static int pcm_src_init(void *obj, snd_pcm_rate_info_t *info)
- 			if (cutoff < 0.80)
- 				cutoff = 0.80;
- 		}
--		rate->context = av_resample_init(info->out.rate, info->in.rate,
--			filter_size, phase_shift,
--			(info->out.rate >= info->in.rate ? 0 : 1), cutoff);
--		if (!rate->context)
--			return -EINVAL;
--	}
- 
--	rate->out = malloc(rate->channels * sizeof(int16_t *));
--	rate->in = malloc(rate->channels * sizeof(int16_t *));
--	for (i=0; i<rate->channels; i++) {
--		rate->out[i] = calloc(info->out.period_size * 2, 
--			sizeof(int16_t));
--		rate->in[i] = calloc(info->in.period_size * 2,
--			sizeof(int16_t));
--	}
--	rate->point = info->in.period_size / 2;
--	if (!rate->out || !rate->in) {
--		pcm_src_free(rate);
--		return -ENOMEM;
-+		rate->avr = avresample_alloc_context();
-+		if (!rate->avr)
-+			return -ENOMEM;
-+
-+		av_opt_set_int(rate->avr, "in_sample_rate",     info->in.rate,  0);
-+		av_opt_set_int(rate->avr, "out_sample_rate",    info->out.rate, 0);
-+		av_opt_set_int(rate->avr, "in_sample_format",   AV_SAMPLE_FMT_S16, 0);
-+		av_opt_set_int(rate->avr, "out_sample_format",  AV_SAMPLE_FMT_S16, 0);
-+		av_opt_set_int(rate->avr, "in_channel_layout",  av_get_default_channel_layout(rate->channels), 0);
-+		av_opt_set_int(rate->avr, "out_channel_layout", av_get_default_channel_layout(rate->channels), 0);
-+
-+		av_opt_set_int(rate->avr, "filter_size",        filter_size, 0);
-+		av_opt_set_int(rate->avr, "phase_shift",        phase_shift, 0);
-+		av_opt_set_double(rate->avr, "cutoff",          cutoff,      0);
-+
-+		ret = avresample_open(rate->avr);
-+		if (ret < 0) {
-+			avresample_free(&rate->avr);
-+			return -EINVAL;
-+		}
- 	}
- 
- 	return 0;
-@@ -129,48 +113,10 @@ static int pcm_src_adjust_pitch(void *obj, snd_pcm_rate_info_t *info)
- static void pcm_src_reset(void *obj)
- {
- 	struct rate_src *rate = obj;
--	rate->stored = 0;
--}
- 
--static void deinterleave(const int16_t *src, int16_t **dst, unsigned int frames,
--	unsigned int chans, int overflow)
--{
--	int i, j;
--
--	if (chans == 1) {
--		memcpy(dst + overflow, src, frames*sizeof(int16_t));
--	} else if (chans == 2) {
--		for (j=overflow; j<(frames + overflow); j++) {
--			dst[0][j] = *(src++);
--			dst[1][j] = *(src++);
--		}
--	} else {
--		for (j=overflow; j<(frames + overflow); j++) {
--			for (i=0; i<chans; i++) {
--				dst[i][j] = *(src++);
--			}
--		}
--	}
--}
--
--static void reinterleave(int16_t **src, int16_t *dst, unsigned int frames,
--	unsigned int chans)
--{
--	int i, j;
--
--	if (chans == 1) {
--		memcpy(dst, src, frames*sizeof(int16_t));
--	} else if (chans == 2) {
--		for (j=0; j<frames; j++) {
--			*(dst++) = src[0][j];
--			*(dst++) = src[1][j];
--		}
--	} else {
--		for (j=0; j<frames; j++) {
--			for (i=0; i<chans; i++) {
--				*(dst++) = src[i][j];
--			}
--		}
-+	if (rate->avr) {
-+		avresample_close(rate->avr);
-+		avresample_open(rate->avr);
- 	}
- }
- 
-@@ -179,22 +125,13 @@ static void pcm_src_convert_s16(void *obj, int16_t *dst, unsigned int
- {
- 	struct rate_src *rate = obj;
- 	int consumed = 0, chans=rate->channels, ret=0, i;
--	int total_in = rate->stored + src_frames, new_stored;
--
--	deinterleave(src, rate->in, src_frames, chans, rate->point);
--	for (i=0; i<chans; ++i) {	
--		ret = av_resample(rate->context, rate->out[i],
--				rate->in[i]+rate->point-rate->stored, &consumed,
--				total_in, dst_frames, i == (chans - 1));
--		new_stored = total_in-consumed;
--		memmove(rate->in[i]+rate->point-new_stored,
--				rate->in[i]+rate->point-rate->stored+consumed,
--				new_stored*sizeof(int16_t));
--	}
--	av_resample_compensate(rate->context,
--			total_in-src_frames>filter_size?0:1, src_frames);
--	reinterleave(rate->out, dst, ret, chans);
--	rate->stored = total_in-consumed;
-+	int total_in = avresample_get_delay(rate->avr) + src_frames;
-+
-+	ret = avresample_convert(rate->avr, &dst, dst_frames * chans * 2, dst_frames,
-+	                         &src, src_frames * chans * 2, src_frames);
-+
-+	avresample_set_compensation(rate->avr,
-+                                    total_in - src_frames > filter_size ? 0 : 1, src_frames);
- }
- 
- static void pcm_src_close(void *obj)
-@@ -212,7 +149,7 @@ static int get_supported_rates(void *obj, unsigned int *rate_min,
- 
- static void dump(void *obj, snd_output_t *out)
- {
--	snd_output_printf(out, "Converter: liblavc\n");
-+	snd_output_printf(out, "Converter: libavr\n");
- }
- #endif
- 
-@@ -220,7 +157,6 @@ static snd_pcm_rate_ops_t pcm_src_ops = {
- 	.close = pcm_src_close,
- 	.init = pcm_src_init,
- 	.free = pcm_src_free,
--	.reset = pcm_src_reset,
- 	.adjust_pitch = pcm_src_adjust_pitch,
- 	.convert_s16 = pcm_src_convert_s16,
- 	.input_frames = input_frames,
-@@ -248,7 +184,7 @@ int pcm_src_open(unsigned int version, void **objp, snd_pcm_rate_ops_t *ops)
- 		return -ENOMEM;
- 
- 	*objp = rate;
--	rate->context = NULL;
-+	rate->avr = NULL;
- #if SND_PCM_RATE_PLUGIN_VERSION >= 0x010002
- 	if (version == 0x010001)
- 		memcpy(ops, &pcm_src_ops, sizeof(snd_pcm_rate_old_ops_t));
+ /****************************************************************************
 -- 
-2.13.0
+1.9.1
