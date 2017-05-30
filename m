@@ -1,54 +1,93 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH] ALSA: sound/core/pcm_timer.c: include
- pcm_local.h and remove some extraneous tabs
-Date: Tue, 30 May 2017 03:22:33 -0700
-Message-ID: <1496139753.2618.21.camel@perches.com>
-References: <20170530095830.31534-1-colin.king@canonical.com>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH][V2] sound/core/pcm_timer.c: include pcm_local.h and remove some extraneous tabs
+Date: Tue, 30 May 2017 11:39:45 +0100
+Message-ID: <20170530103945.32538-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtprelay.hostedemail.com (smtprelay0182.hostedemail.com
- [216.40.44.182])
- by alsa0.perex.cz (Postfix) with ESMTP id DE12B266A56
- for <alsa-devel@alsa-project.org>; Tue, 30 May 2017 12:22:48 +0200 (CEST)
-In-Reply-To: <20170530095830.31534-1-colin.king@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Colin King <colin.king@canonical.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Return-path: <kernel-janitors-owner@vger.kernel.org>
+Sender: kernel-janitors-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
 Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2017-05-30 at 10:58 +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> We need to include pcm_local.h to clean up some smatch warnings:
-> 
-> symbol 'snd_pcm_timer_done' was not declared. Should it be static?
-> symbol 'snd_pcm_timer_init' was not declared. Should it be static?
-> symbol 'snd_pcm_timer_resolution_change' was not declared. Should
->   it be static?
-> 
-> Also remove some extraneous tabs on empty lines.
+From: Colin Ian King <colin.king@canonical.com>
 
-Thanks.  trivia:
+We need to include pcm_local.h to clean up some smatch warnings:
 
-> diff --git a/sound/core/pcm_timer.c b/sound/core/pcm_timer.c
-[]
-> @@ -33,7 +35,7 @@ void snd_pcm_timer_resolution_change(struct snd_pcm_substream *substream)
->  {
->  	unsigned long rate, mult, fsize, l, post;
->  	struct snd_pcm_runtime *runtime = substream->runtime;
-> -	
-> +
->          mult = 1000000000;
->  	rate = runtime->rate;
+symbol 'snd_pcm_timer_done' was not declared. Should it be static?
+symbol 'snd_pcm_timer_init' was not declared. Should it be static?
+symbol 'snd_pcm_timer_resolution_change' was not declared. Should
+  it be static?
 
-Maybe fix the mult indentation too?
+Also remove some extraneous tabs on empty lines and replace space
+intentation with a tab.
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/core/pcm_timer.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/sound/core/pcm_timer.c b/sound/core/pcm_timer.c
+index 20ecd8f18080..11389f13de73 100644
+--- a/sound/core/pcm_timer.c
++++ b/sound/core/pcm_timer.c
+@@ -25,6 +25,8 @@
+ #include <sound/pcm.h>
+ #include <sound/timer.h>
+ 
++#include "pcm_local.h"
++
+ /*
+  *  Timer functions
+  */
+@@ -33,8 +35,8 @@ void snd_pcm_timer_resolution_change(struct snd_pcm_substream *substream)
+ {
+ 	unsigned long rate, mult, fsize, l, post;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	
+-        mult = 1000000000;
++
++	mult = 1000000000;
+ 	rate = runtime->rate;
+ 	if (snd_BUG_ON(!rate))
+ 		return;
+@@ -65,7 +67,7 @@ void snd_pcm_timer_resolution_change(struct snd_pcm_substream *substream)
+ static unsigned long snd_pcm_timer_resolution(struct snd_timer * timer)
+ {
+ 	struct snd_pcm_substream *substream;
+-	
++
+ 	substream = timer->private_data;
+ 	return substream->runtime ? substream->runtime->timer_resolution : 0;
+ }
+@@ -73,7 +75,7 @@ static unsigned long snd_pcm_timer_resolution(struct snd_timer * timer)
+ static int snd_pcm_timer_start(struct snd_timer * timer)
+ {
+ 	struct snd_pcm_substream *substream;
+-	
++
+ 	substream = snd_timer_chip(timer);
+ 	substream->timer_running = 1;
+ 	return 0;
+@@ -82,7 +84,7 @@ static int snd_pcm_timer_start(struct snd_timer * timer)
+ static int snd_pcm_timer_stop(struct snd_timer * timer)
+ {
+ 	struct snd_pcm_substream *substream;
+-	
++
+ 	substream = snd_timer_chip(timer);
+ 	substream->timer_running = 0;
+ 	return 0;
+@@ -112,7 +114,7 @@ void snd_pcm_timer_init(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_timer_id tid;
+ 	struct snd_timer *timer;
+-	
++
+ 	tid.dev_sclass = SNDRV_TIMER_SCLASS_NONE;
+ 	tid.dev_class = SNDRV_TIMER_CLASS_PCM;
+ 	tid.card = substream->pcm->card->number;
+-- 
+2.11.0
+
