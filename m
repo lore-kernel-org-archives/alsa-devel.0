@@ -1,19 +1,19 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: usb: Avoid VLA in mixer_us16x08.c
-Date: Tue, 30 May 2017 23:29:59 +0200
-Message-ID: <20170530212959.5975-2-tiwai@suse.de>
-References: <20170530212959.5975-1-tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [RFC PATCH v2] ASoC: Intel: sst: Delete
+ sst_shim_regs64; saved regs are never used
+Date: Wed, 31 May 2017 10:13:43 +0530
+Message-ID: <20170531044342.GQ15061@localhost>
+References: <20170530165130.15011-1-dianders@chromium.org>
+ <CAHp75Ve2nRf5SdFUTcAPwpYSKWvG4fyHKMJUzoVcg73NQp0xYQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 29156266A89
- for <alsa-devel@alsa-project.org>; Tue, 30 May 2017 23:30:02 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id B12A8ABF7
- for <alsa-devel@alsa-project.org>; Tue, 30 May 2017 21:30:02 +0000 (UTC)
-In-Reply-To: <20170530212959.5975-1-tiwai@suse.de>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7567D2668BF
+ for <alsa-devel@alsa-project.org>; Wed, 31 May 2017 06:41:25 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <CAHp75Ve2nRf5SdFUTcAPwpYSKWvG4fyHKMJUzoVcg73NQp0xYQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,62 +23,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Douglas Anderson <dianders@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Matthias Kaehlcke <mka@chromium.org>, naveen.m@intel.com, Colin King <colin.king@canonical.com>, =?utf-8?B?5Z2C5pys6LK05Y+y?= <o-takashi@sakamocchi.jp>, sebastien.guiriec@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This is another attempt to work around the VLA used in
-mixer_us16x08.c.  Basically the temporary array is used individually
-for two cases, and we can declare locally in each block, instead of
-hackish max() usage.
+On Tue, May 30, 2017 at 08:06:38PM +0300, Andy Shevchenko wrote:
+> On Tue, May 30, 2017 at 7:51 PM, Douglas Anderson <dianders@chromium.org> wrote:
+> > In commit 9a075265c6dc ("ASoC: Intel: sst: Remove unused function
+> > sst_restore_shim64()"), we deleted the sst_restore_shim64() since it
+> > was never used.  ...but a quick look at the code shows that we should
+> > also be able to remove the sst_save_shim64() function and the
+> > structure members we were storing data in.
+> >
+> > Once we delete sst_save_shim64() there are no longer any users of the
+> > 'sst_shim_regs64' structure.  That means we can delete it completely
+> > and also avoid allocating memory for it.  This saves a whopping 136
+> > bytes of devm allocated memory.  We also get the nice benefit of
+> > avoiding an error path in the init code.
+> >
+> > Note that the saving code that we're removing (and the comments
+> > talking about how important it is to do the save) has been around
+> > since commit 336cfbb05edf ("ASoC: Intel: mrfld- add ACPI module").
+> 
+> I like it!
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/mixer_us16x08.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 
-diff --git a/sound/usb/mixer_us16x08.c b/sound/usb/mixer_us16x08.c
-index 442d8f7998e3..26ed23b18b77 100644
---- a/sound/usb/mixer_us16x08.c
-+++ b/sound/usb/mixer_us16x08.c
-@@ -698,16 +698,18 @@ static int snd_us16x08_meter_get(struct snd_kcontrol *kcontrol,
- 	struct snd_usb_audio *chip = elem->head.mixer->chip;
- 	struct snd_us16x08_meter_store *store = elem->private_data;
- 	u8 meter_urb[64];
--	char tmp[max(sizeof(mix_init_msg1), sizeof(mix_init_msg2))];
- 
- 	switch (kcontrol->private_value) {
--	case 0:
-+	case 0: {
-+		char tmp[sizeof(mix_init_msg1)];
-+
- 		memcpy(tmp, mix_init_msg1, sizeof(mix_init_msg1));
- 		snd_us16x08_send_urb(chip, tmp, 4);
- 		snd_us16x08_recv_urb(chip, meter_urb,
- 			sizeof(meter_urb));
- 		kcontrol->private_value++;
- 		break;
-+	}
- 	case 1:
- 		snd_us16x08_recv_urb(chip, meter_urb,
- 			sizeof(meter_urb));
-@@ -718,7 +720,9 @@ static int snd_us16x08_meter_get(struct snd_kcontrol *kcontrol,
- 			sizeof(meter_urb));
- 		kcontrol->private_value++;
- 		break;
--	case 3:
-+	case 3: {
-+		char tmp[sizeof(mix_init_msg2)];
-+
- 		memcpy(tmp, mix_init_msg2, sizeof(mix_init_msg2));
- 		tmp[2] = snd_get_meter_comp_index(store);
- 		snd_us16x08_send_urb(chip, tmp, 10);
-@@ -727,6 +731,7 @@ static int snd_us16x08_meter_get(struct snd_kcontrol *kcontrol,
- 		kcontrol->private_value = 0;
- 		break;
- 	}
-+	}
- 
- 	for (set = 0; set < 6; set++)
- 		get_meter_levels_from_urb(set, store, meter_urb);
+> P.S. Perhaps there are more leftovers or dead code?
+
+Hope not :) This was due to restore not required eventually. Somehow save
+was left pending.
+
+
 -- 
-2.13.0
+~Vinod
