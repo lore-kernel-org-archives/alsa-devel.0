@@ -1,19 +1,15 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [RFC PATCH v2] ASoC: Intel: sst: Delete
- sst_shim_regs64; saved regs are never used
-Date: Wed, 31 May 2017 10:13:43 +0530
-Message-ID: <20170531044342.GQ15061@localhost>
-References: <20170530165130.15011-1-dianders@chromium.org>
- <CAHp75Ve2nRf5SdFUTcAPwpYSKWvG4fyHKMJUzoVcg73NQp0xYQ@mail.gmail.com>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: [PATCH v3 0/3] ASoC: Intel: Skylake: Add Support for
+	MIC select module
+Date: Wed, 31 May 2017 10:30:23 +0530
+Message-ID: <1496206826-28125-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 7567D2668BF
- for <alsa-devel@alsa-project.org>; Wed, 31 May 2017 06:41:25 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <CAHp75Ve2nRf5SdFUTcAPwpYSKWvG4fyHKMJUzoVcg73NQp0xYQ@mail.gmail.com>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F09E2668BF
+ for <alsa-devel@alsa-project.org>; Wed, 31 May 2017 07:14:53 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,38 +19,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Douglas Anderson <dianders@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Matthias Kaehlcke <mka@chromium.org>, naveen.m@intel.com, Colin King <colin.king@canonical.com>, =?utf-8?B?5Z2C5pys6LK05Y+y?= <o-takashi@sakamocchi.jp>, sebastien.guiriec@intel.com
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 30, 2017 at 08:06:38PM +0300, Andy Shevchenko wrote:
-> On Tue, May 30, 2017 at 7:51 PM, Douglas Anderson <dianders@chromium.org> wrote:
-> > In commit 9a075265c6dc ("ASoC: Intel: sst: Remove unused function
-> > sst_restore_shim64()"), we deleted the sst_restore_shim64() since it
-> > was never used.  ...but a quick look at the code shows that we should
-> > also be able to remove the sst_save_shim64() function and the
-> > structure members we were storing data in.
-> >
-> > Once we delete sst_save_shim64() there are no longer any users of the
-> > 'sst_shim_regs64' structure.  That means we can delete it completely
-> > and also avoid allocating memory for it.  This saves a whopping 136
-> > bytes of devm allocated memory.  We also get the nice benefit of
-> > avoiding an error path in the init code.
-> >
-> > Note that the saving code that we're removing (and the comments
-> > talking about how important it is to do the save) has been around
-> > since commit 336cfbb05edf ("ASoC: Intel: mrfld- add ACPI module").
-> 
-> I like it!
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+This series adds support in DSP to add support for MIC select module which
+allows user to select 1 to N channels from DMIC channel input.
 
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+Further it also adds support in bxt-rt298 machine for such a module.
 
-> P.S. Perhaps there are more leftovers or dead code?
+Changes in v2:
+	- check for index in array range
 
-Hope not :) This was due to restore not required eventually. Somehow save
-was left pending.
+Changes in v3:
+	- Use enumerated value instead of integer
+	- Use c99 style initialization for kcontrol ops
 
+Dharageswari R (3):
+  ASoC: Intel: Skylake: Add mic-select module type
+  ASoC: Intel: Skylake: Add enum control for mic selection
+  ASoC: Intel: Boards: Add 4-channel DMIC fixup.
+
+ sound/soc/intel/boards/bxt_rt298.c           |   7 +-
+ sound/soc/intel/skylake/skl-messages.c       |   2 +
+ sound/soc/intel/skylake/skl-topology.c       | 159 +++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-topology.h       |  20 ++++
+ sound/soc/intel/skylake/skl-tplg-interface.h |   2 +
+ 5 files changed, 185 insertions(+), 5 deletions(-)
 
 -- 
-~Vinod
+1.9.1
