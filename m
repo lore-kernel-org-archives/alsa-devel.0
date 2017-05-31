@@ -1,18 +1,15 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v2 00/27] Revised full patchset for PCM
- in-kernel copy support
-Date: Fri, 2 Jun 2017 16:13:10 +0900
-Message-ID: <922646a5-c982-603d-fb9b-21fd41323bda@sakamocchi.jp>
-References: <20170601205850.24993-1-tiwai@suse.de>
+From: guneshwor.o.singh@intel.com
+Subject: [PATCH 1/3] pcm: add support to get PCM sample rate
+	from name
+Date: Wed, 31 May 2017 19:16:44 +0530
+Message-ID: <20170531134646.9081-1-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id D3F53266FFE
- for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2017 09:13:13 +0200 (CEST)
-In-Reply-To: <20170601205850.24993-1-tiwai@suse.de>
-Content-Language: en-US
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id E2D50266991
+ for <alsa-devel@alsa-project.org>; Wed, 31 May 2017 15:46:48 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,119 +19,138 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: Felipe Balbi <balbi@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Hans Verkuil <hverkuil@xs4all.nl>, Mark Brown <broonie@kernel.org>, linux-media@vger.kernel.org
+To: alsa-devel@alsa-project.org, tiwai@suse.com
+Cc: vinod.koul@intel.com, mengdong.lin@intel.com, Guneshwor Singh <guneshwor.o.singh@intel.com>, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Jul 02 2017 05:58, Takashi Iwai wrote:
-> Hi,
-> 
-> this is a full patchset of what I sent previously, containing the all
-> changes instead of the snippet.  The main purpose of this patchset is
-> to eliminate the remaining usages of set_fs().  They are basically
-> used for in-kernel PCM data transfer, and this patch provides the new
-> API functions and replaces the hackish set_fs() calls with them.
-> 
-> Unlike the first patchset with the unified copy_silence ops, this adds
-> a new copy_kernel ops instead.  At the same time, copy/silence are
-> changed to receive the position and size in bytes instead of frames.
-> This allows us to simplify the PCM core code.  As a result, a good
-> amount of code could be removed from pcm_lib.c.
-> 
-> The difference from the previous patchset is that this is a full
-> patchset, i.e. all relevant drivers have been covered, and also some
-> small issues have been addressed, in addition, the documentation
-> update is provided, too.
-> 
-> I'm Cc'ing the media and the USB people since it touches solo6x10 and
-> usb-gadget drivers.
-> 
-> The previous ACK was dropped as each patch was rewritten again.  Sorry
-> for the doubly patch-review labours.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> ===
-> 
-> Takashi Iwai (26):
->    ALSA: pcm: Introduce copy_user, copy_kernel and fill_silence ops
+From: Guneshwor Singh <guneshwor.o.singh@intel.com>
 
-Below commits look good to me.
+Get PCM sample rate from rate name similar to snd_pcm_format_value() which
+retrieves format from format name.
 
->    ALSA: dummy: Convert to new PCM copy ops
->    ALSA: es1938: Convert to the new PCM copy ops
->    ALSA: nm256: Convert to new PCM copy ops
->    ALSA: korg1212: Convert to the new PCM ops
->    ALSA: rme32: Convert to the new PCM copy ops
->    ALSA: rme96: Convert to the new PCM ops
->    ALSA: rme9652: Convert to the new PCM ops
->    ALSA: hdsp: Convert to the new PCM ops
->    ALSA: gus: Convert to the new PCM ops
->    ALSA: sb: Convert to the new PCM ops
->    ALSA: sh: Convert to the new PCM ops
->    ASoC: blackfin: Convert to the new PCM ops
->    [media] solo6x10: Convert to the new PCM ops
->    ALSA: pcm: Drop the old copy and silence ops
->    ALSA: pcm: Check PCM state by a common helper function
->    ALSA: pcm: Shuffle codes
->    ALSA: pcm: Call directly the common read/write helpers
->    ALSA: pcm: More unification of PCM transfer codes
->    ALSA: pcm: Unify read/write loop
->    ALSA: pcm: Simplify snd_pcm_playback_silence()
->    ALSA: pcm: Direct in-kernel read/write support
->    usb: gadget: u_uac1: Kill set_fs() usage
->    ALSA: pcm: Kill set_fs() in PCM OSS layer
->    ALSA: pcm: Build OSS writev/readv helpers conditionally
->    ALSA: doc: Update copy_user, copy_kernel and fill_silence PCM ops
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+---
+ include/pcm.h | 38 ++++++++++++++++++++++++++++++++++++++
+ src/pcm/pcm.c | 37 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 75 insertions(+)
 
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-
-I did easy test with snd-hda-intel/snd-fireworks in below conditions. 
-Things work well:
-1. ALSA application (aplay/arecord) for '__user *' <-> '__kernel *' copying.
-2. loaded snd-oss-pcm and an Open Sound System application 
-(ossplay/ossrecord), for '__kernel *' <-> '__kernel *' copying.
-
-I have no devices for which drivers have the .copy_user, .copy_kernel 
-and .fill_silence, and all of my attemps to work with OTG chip for v4.12 
-fails (sigh...). My test is not comprehensive at all, however the 
-patchset is programmed with handler-oriented ways and in this point I 
-think snd-pcm works as expected.
-
-I note that patch 19 brings merge conflict to current HEAD 
-ee6f4cde4f74("Merge branch 'for-linus'"), due to my patch, 
-2c4842d3b6b3("ALSA: pcm: add local header file for snd-pcm module"). I 
-should have postponed it.. For the above test, I handy modifies the 
-history with little affections for my reviewing.
-
->   .../sound/kernel-api/writing-an-alsa-driver.rst    | 111 ++--
->   drivers/media/pci/solo6x10/solo6x10-g723.c         |  32 +-
->   drivers/usb/gadget/function/u_uac1.c               |   7 +-
->   include/sound/pcm.h                                |  80 ++-
->   sound/core/oss/io.c                                |   4 +-
->   sound/core/oss/pcm_oss.c                           |  81 +--
->   sound/core/oss/pcm_plugin.h                        |   6 +-
->   sound/core/pcm_lib.c                               | 564 ++++++++-------------
->   sound/drivers/dummy.c                              |  20 +-
->   sound/isa/gus/gus_pcm.c                            |  97 ++--
->   sound/isa/sb/emu8000_pcm.c                         | 190 ++++---
->   sound/pci/es1938.c                                 |  33 +-
->   sound/pci/korg1212/korg1212.c                      | 112 ++--
->   sound/pci/nm256/nm256.c                            |  57 ++-
->   sound/pci/rme32.c                                  |  65 ++-
->   sound/pci/rme96.c                                  |  70 ++-
->   sound/pci/rme9652/hdsp.c                           |  67 ++-
->   sound/pci/rme9652/rme9652.c                        |  71 ++-
->   sound/sh/sh_dac_audio.c                            |  54 +-
->   sound/soc/blackfin/bf5xx-ac97-pcm.c                |  27 +-
->   sound/soc/blackfin/bf5xx-i2s-pcm.c                 |  36 +-
->   sound/soc/soc-pcm.c                                |   5 +-
->   22 files changed, 977 insertions(+), 812 deletions(-)
-
-
-Regards
-
-Takashi Sakamoto
+diff --git a/include/pcm.h b/include/pcm.h
+index 0be1a321..81bc55b1 100644
+--- a/include/pcm.h
++++ b/include/pcm.h
+@@ -119,6 +119,43 @@ typedef enum _snd_pcm_access {
+ 	SND_PCM_ACCESS_LAST = SND_PCM_ACCESS_RW_NONINTERLEAVED
+ } snd_pcm_access_t;
+ 
++/** PCM sample rate */
++typedef enum _snd_pcm_rates {
++	/** Unknown */
++	SND_PCM_RATE_UNKNOWN = -1,
++	/** 5512 Hz sample rate */
++	SND_PCM_RATE_5512 = 0,
++	/** 8000 Hz sample rate */
++	SND_PCM_RATE_8000,
++	/** 11025 Hz sample rate */
++	SND_PCM_RATE_11025,
++	/** 16000 Hz sample rate */
++	SND_PCM_RATE_16000,
++	/** 22050 Hz sample rate */
++	SND_PCM_RATE_22050,
++	/** 32000 Hz sample rate */
++	SND_PCM_RATE_32000,
++	/** 44100 Hz sample rate */
++	SND_PCM_RATE_44100,
++	/** 48000 Hz sample rate */
++	SND_PCM_RATE_48000,
++	/** 64000 Hz sample rate */
++	SND_PCM_RATE_64000,
++	/** 88200 Hz sample rate */
++	SND_PCM_RATE_88200,
++	/** 96000 Hz sample rate */
++	SND_PCM_RATE_96000,
++	/** 176400 Hz sample rate */
++	SND_PCM_RATE_176400,
++	/** 192000 Hz sample rate */
++	SND_PCM_RATE_192000,
++	/** continuous range within rate_min and rate_max */
++	SND_PCM_RATE_CONTINUOUS = 30,
++	/** more continuous range */
++	SND_PCM_RATE_KNOT = 31,
++	SND_PCM_RATE_LAST = SND_PCM_RATE_KNOT,
++} snd_pcm_rates_t;
++
+ /** PCM sample format */
+ typedef enum _snd_pcm_format {
+ 	/** Unknown */
+@@ -1047,6 +1084,7 @@ const char *snd_pcm_format_description(const snd_pcm_format_t format);
+ const char *snd_pcm_subformat_name(const snd_pcm_subformat_t subformat);
+ const char *snd_pcm_subformat_description(const snd_pcm_subformat_t subformat);
+ snd_pcm_format_t snd_pcm_format_value(const char* name);
++snd_pcm_rates_t snd_pcm_rate_value(const char* name);
+ const char *snd_pcm_tstamp_mode_name(const snd_pcm_tstamp_t mode);
+ const char *snd_pcm_state_name(const snd_pcm_state_t state);
+ 
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index 200b10c2..bff1b949 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -1722,6 +1722,7 @@ static int __snd_pcm_poll_revents(snd_pcm_t *pcm, struct pollfd *pfds,
+ #define START(v) [SND_PCM_START_##v] = #v
+ #define HW_PARAM(v) [SND_PCM_HW_PARAM_##v] = #v
+ #define SW_PARAM(v) [SND_PCM_SW_PARAM_##v] = #v
++#define RATE(v) [SND_PCM_RATE_##v] = #v
+ #define FORMAT(v) [SND_PCM_FORMAT_##v] = #v
+ #define SUBFORMAT(v) [SND_PCM_SUBFORMAT_##v] = #v 
+ 
+@@ -1754,6 +1755,24 @@ static const char *const snd_pcm_access_names[] = {
+ 	ACCESS(RW_NONINTERLEAVED),
+ };
+ 
++static const char *const snd_pcm_rate_names[] = {
++	RATE(5512),
++	RATE(8000),
++	RATE(11025),
++	RATE(16000),
++	RATE(22050),
++	RATE(32000),
++	RATE(44100),
++	RATE(48000),
++	RATE(64000),
++	RATE(88200),
++	RATE(96000),
++	RATE(176400),
++	RATE(192000),
++	RATE(CONTINUOUS),
++	RATE(KNOT),
++};
++
+ static const char *const snd_pcm_format_names[] = {
+ 	FORMAT(S8),
+ 	FORMAT(U8),
+@@ -1978,6 +1997,24 @@ const char *snd_pcm_format_description(snd_pcm_format_t format)
+ }
+ 
+ /**
++ * \brief get PCM sample rate from name
++ * \param name PCM sample rate name (case insensitive)
++ * \return PCM sample rate
++ */
++snd_pcm_rates_t snd_pcm_rate_value(const char* name)
++{
++	snd_pcm_rates_t rate;
++	for (rate = 0; rate <= SND_PCM_RATE_LAST; rate++) {
++		if (snd_pcm_rate_names[rate] &&
++		    strcasecmp(name, snd_pcm_rate_names[rate]) == 0) {
++			return rate;
++		}
++	}
++
++	return SND_PCM_RATE_UNKNOWN;
++}
++
++/**
+  * \brief get PCM sample format from name
+  * \param name PCM sample format name (case insensitive)
+  * \return PCM sample format
+-- 
+2.13.0
