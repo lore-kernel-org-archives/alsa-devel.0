@@ -1,25 +1,20 @@
-From: Paul Kocialkowski <contact@paulk.fr>
-Subject: Re: [PATCH 3/3] sound: ASoC: tegra: Select tegra30 i2s
- and ahub for tegra124 SoC
-Date: Wed, 31 May 2017 18:59:08 +0200
-Message-ID: <1496249948.1774.3.camel@paulk.fr>
-References: <20170418151159.31843-1-contact@paulk.fr>
- <d18b57d3-a44f-e44b-9bd5-526993dc91e4@wwwdotorg.org>
- <1492533513.3504.2.camel@paulk.fr>
- <41ef55f7-8f17-4ca3-4757-bfefb1fe8321@wwwdotorg.org>
- <1493046446.943.7.camel@paulk.fr>
- <fe76985c-ef66-9870-a616-203b54a93777@wwwdotorg.org>
- <1493059277.1111.1.camel@paulk.fr>
- <a29c4253-48de-7e61-dbc2-b90d68cfa696@wwwdotorg.org>
- <1494180748.13734.6.camel@paulk.fr>
- <6c308e93-7dda-96e1-1be5-64d9f9da6dfe@wwwdotorg.org>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCHv2] ASoC: Add pcm9211 driver
+Date: Wed, 31 May 2017 12:16:05 -0500
+Message-ID: <20170531171605.ugtpiroui37ktxgz@rob-hp-laptop>
+References: <20170524103547.9252-1-julian@jusst.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5360596485999339581=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gagarine.paulk.fr (gagarine.paulk.fr [109.190.93.129])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F81626691F
- for <alsa-devel@alsa-project.org>; Wed, 31 May 2017 18:59:17 +0200 (CEST)
-In-Reply-To: <6c308e93-7dda-96e1-1be5-64d9f9da6dfe@wwwdotorg.org>
+Received: from mail-oi0-f65.google.com (mail-oi0-f65.google.com
+ [209.85.218.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7FDDB26691F
+ for <alsa-devel@alsa-project.org>; Wed, 31 May 2017 19:16:08 +0200 (CEST)
+Received: by mail-oi0-f65.google.com with SMTP id w138so2889949oiw.3
+ for <alsa-devel@alsa-project.org>; Wed, 31 May 2017 10:16:08 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20170524103547.9252-1-julian@jusst.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,314 +24,186 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Stephen Warren <swarren@wwwdotorg.org>, Thierry Reding <thierry.reding@gmail.com>
-Cc: Alexandre Courbot <gnurou@gmail.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, linux-tegra@vger.kernel.org, Rob Herring <robh@kernel.org>
+To: Julian Scheel <julian@jusst.de>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, quozl@laptop.org, broonie@kernel.org, ckeepax@opensource.wolfsonmicro.com
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, May 24, 2017 at 12:35:47PM +0200, Julian Scheel wrote:
+> This adds a driver for the TI PCM9211 digital audio interface
+> transceiver. The driver currently only handles the receiver aspect of
+> the chip. Some extra device-tree fields are introduced to allow
+> configuration of pin functions directly out of this driver.
+> 
+> Signed-off-by: Julian Scheel <julian@jusst.de>
+> 
+> ---
+> Changes in v2:
+> - Fix checkpatch errors (long lines, * association)
+> - Fix typos in device-tree documentation
+> - Fix group-function dt. Mask was applied on unshifted data
+> - Fix error check for int0 gpio lookup
+> - Fix ADC rate list (92->96kHz)
+> - Add support for AUXOUT as second DAI
+> 
+>  .../devicetree/bindings/sound/pcm9211.txt          |  119 ++
 
---===============5360596485999339581==
-Content-Type: multipart/signed; micalg="pgp-sha256";
-	protocol="application/pgp-signature"; boundary="=-b+UsI6PJ5ToWyrue5DXb"
+Matching the compatible for filename is preferred, so "ti,pcm9211.txt".
 
+>  MAINTAINERS                                        |    6 +
+>  include/dt-bindings/sound/pcm9211.h                |   55 +
+>  sound/soc/codecs/Kconfig                           |   10 +
+>  sound/soc/codecs/Makefile                          |    4 +
+>  sound/soc/codecs/pcm9211-i2c.c                     |   65 +
+>  sound/soc/codecs/pcm9211.c                         | 1446 ++++++++++++++++++++
+>  sound/soc/codecs/pcm9211.h                         |  206 +++
+>  8 files changed, 1911 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/pcm9211.txt
+>  create mode 100644 include/dt-bindings/sound/pcm9211.h
+>  create mode 100644 sound/soc/codecs/pcm9211-i2c.c
+>  create mode 100644 sound/soc/codecs/pcm9211.c
+>  create mode 100644 sound/soc/codecs/pcm9211.h
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/pcm9211.txt b/Documentation/devicetree/bindings/sound/pcm9211.txt
+> new file mode 100644
+> index 000000000000..df3974368125
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/pcm9211.txt
+> @@ -0,0 +1,119 @@
+> +PCM9211 audio CODEC
 
---=-b+UsI6PJ5ToWyrue5DXb
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+TI PCM9211...
 
-Hi,
+> +
+> +This device supports both I2C and SPI (configured with pin strapping
+> +on the board). The driver is currently implementing i2c only.
 
-Le lundi 08 mai 2017 =C3=A0 09:58 -0600, Stephen Warren a =C3=A9crit :
-> On 05/07/2017 12:12 PM, Paul Kocialkowski wrote:
-> > Hi,
-> >=20
-> > Le mardi 25 avril 2017 =C3=A0 10:57 -0600, Stephen Warren a =C3=A9crit =
-:
-> > > On 04/24/2017 12:41 PM, Paul Kocialkowski wrote:
-> > > > Le lundi 24 avril 2017 =C3=A0 09:35 -0600, Stephen Warren a =C3=A9c=
-rit :
-> > > > > On 04/24/2017 09:07 AM, Paul Kocialkowski wrote:
-> > > > > > Le mercredi 19 avril 2017 =C3=A0 16:00 -0600, Stephen Warren a =
-=C3=A9crit :
-> > > > > > > On 04/18/2017 10:38 AM, Paul Kocialkowski wrote:
-> > > > > > > > Le mardi 18 avril 2017 =C3=A0 10:15 -0600, Stephen Warren a=
- =C3=A9crit :
-> > > > > > > > > On 04/18/2017 09:11 AM, Paul Kocialkowski wrote:
-> > > > > > > > > > This selects the tegra30 i2s and ahub controllers for t=
-he
-> > > > > > > > > > tegra124
-> > > > > > > > > > SoC.
-> > > > > > > > > > These are needed when building without ARCH_TEGRA_3x_SO=
-C
-> > > > > > > > > > set.
-> > > > > > > > > > diff --git a/sound/soc/tegra/Kconfig
-> > > > > > > > > > b/sound/soc/tegra/Kconfig
-> > > > > > > > > > index efbe8d4c019e..bcd18d2cf7a7 100644
-> > > > > > > > > > --- a/sound/soc/tegra/Kconfig
-> > > > > > > > > > +++ b/sound/soc/tegra/Kconfig
-> > > > > > > > > > @@ -46,7 +46,7 @@ config SND_SOC_TEGRA20_SPDIF
-> > > > > > > > > >=20
-> > > > > > > > > >  config SND_SOC_TEGRA30_AHUB
-> > > > > > > > > >  	tristate
-> > > > > > > > > > -	depends on SND_SOC_TEGRA && ARCH_TEGRA_3x_SOC
-> > > > > > > > > > +	depends on SND_SOC_TEGRA && (ARCH_TEGRA_3x_SOC ||
-> > > > > > > > > > ARCH_TEGRA_124_SOC)
-> > > > > > > > >=20
-> > > > > > > > > Is this really a compile-time dependency?
-> > > > > > > >=20
-> > > > > > > > From a quick look at the code, I doubt this is really a bui=
-ld
-> > > > > > > > dependency.
-> > > > > > > >=20
-> > > > > > > > > If so, don't we need to add T210 and T186 entries into th=
-at ||
-> > > > > > > > > condition
-> > > > > > > > > too,
-> > > > > > > > > since we could be building a kernel with just T210/T186
-> > > > > > > > > support
-> > > > > > > > > and no
-> > > > > > > > > T124
-> > > > > > > > > support?
-> > > > > > > >=20
-> > > > > > > > In the spirit of this patch, adding entries for other tegra
-> > > > > > > > platforms
-> > > > > > > > would
-> > > > > > > > make
-> > > > > > > > sense. Would you prefer that we leave out the dependency fr=
-om
-> > > > > > > > SND_SOC_TEGRA30_*
-> > > > > > > > and only select the right I2S driver to use in each codec
-> > > > > > > > driver?
-> > > > > > > >=20
-> > > > > > > > If not, we'd have to list all relevant platforms both in th=
-e
-> > > > > > > > I2S/AHUB
-> > > > > > > > drivers
-> > > > > > > > and in each codec's rules (which is not necessarily and iss=
-ue,
-> > > > > > > > but
-> > > > > > > > there's
-> > > > > > > > no
-> > > > > > > > need to have artificial platform dependencies).
-> > > > > > > >=20
-> > > > > > > > What do you think?
-> > > > > > >=20
-> > > > > > > I think we should just remove most of these "depends on" sinc=
-e
-> > > > > > > they're
-> > > > > > > mostly set up to reflect runtime requirements rather than bui=
-ld
-> > > > > > > time
-> > > > > > > requirements. The only points I'd make are:
-> > > > > >=20
-> > > > > > I definitely agree we should do that for all the codec Kconfig
-> > > > > > options.
-> > > > > >=20
-> > > > > > > 1)
-> > > > > > >=20
-> > > > > > > Everything should "depends on SND_SOC_TEGRA" simply so the op=
-tions
-> > > > > > > don't
-> > > > > > > show up and clutter menuconfig menus unless SND_SOC_TEGRA is
-> > > > > > > enabled.
-> > > > > >=20
-> > > > > > Agreed.
-> > > > > >=20
-> > > > > > > 2)
-> > > > > > >=20
-> > > > > > > SND_SOC_TEGRA30_I2S does need the Tegra30 AHUB driver in orde=
-r to
-> > > > > > > compile/link, since it directly calls functions in that drive=
-r.
-> > > > > > > This
-> > > > > > > is
-> > > > > > > already handled by SND_SOC_TEGRA30_I2S doing "select
-> > > > > > > SND_SOC_TEGRA30_AHUB".
-> > > > > >=20
-> > > > > > Agreed.
-> > > > > >=20
-> > > > > > > 3)
-> > > > > > >=20
-> > > > > > > The machine drivers all do e.g. "select SND_SOC_TEGRA30_I2S i=
-f
-> > > > > > > ARCH_TEGRA_3x_SOC". This was an attempt to make the machine
-> > > > > > > drivers
-> > > > > > > only
-> > > > > > > pull in the relevant drivers for the SoC(s) being compiled fo=
-r.
-> > > > > > > I'm
-> > > > > > > not
-> > > > > > > sure this still makes sense; this won't work on kernels that =
-only
-> > > > > > > support T124/T210/T186 since ARCH_TEGRA_3x_SOC isn't enabled =
-then.
-> > > > > > > Should we just remove all those and make sure the defconfigs =
-are
-> > > > > > > updated
-> > > > > > > to make sure the relevant I2S/AHUB/SPDIF/AC97 drivers are
-> > > > > > > explicitly
-> > > > > > > enabled? Perhaps we should default all the I2S/AHUB/SPDIF/AC9=
-7 to
-> > > > > > > y
-> > > > > > > (which will only apply if SND_SOC_TEGRA is enabled)?
-> > > > > >=20
-> > > > > > I think it would be easier for everyone to just auto-select the
-> > > > > > machine
-> > > > > > drivers
-> > > > > > automatically based on the architecture (so we could have the l=
-ist
-> > > > > > of
-> > > > > > ARCH_TEGRA_*_SOC here) when SND_SOC_TEGRA is selected.
-> > > > >=20
-> > > > > I don't think selecting the machine drivers is the correct approa=
-ch,
-> > > > > since then they can't be disabled.
-> > > > >=20
-> > > > > Making certain machine drivers "default y if ARCH_TEGRA_nn_SOC" w=
-ould
-> > > > > address that,
-> > > >=20
-> > > > That's right, my mistake. Let's take that as the solution I'm backi=
-ng
-> > > > then.
-> > > >=20
-> > > > >  but still isn't very scalable since we need to go back and
-> > > > > edit the Kconfig every time we define a new SoC, in order to add =
-that
-> > > > > SoC into the default statement.
-> > > >=20
-> > > > Well, that's what platform bringup is all about, isn't it? I think =
-it
-> > > > makes
-> > > > a
-> > > > lot more sense to have to add a new platform once (and it's not lik=
-e one
-> > > > will
-> > > > forget to look at the sound part when adding a new platform) rather=
- than
-> > > > requiring users to hand-pick the option.
-> > >=20
-> > > Personally I'd expect all the Tegra machine drivers to be enabled in =
-the
-> > > upstream defconfig files all the time, such that we don't need to mak=
-e
-> > > the Kconfig options default y, nor have users manually turn the relev=
-ant
-> > > options on, at all.
-> >=20
-> > I think I was previously mistaken about what the machine drivers are, s=
-o I
-> > got a
-> > good occasion to find out about them an learn something new. Thanks!
-> >=20
-> > Agreed regarding the machine drivers, they should indeed all be enabled=
- in
-> > the
-> > defconfig by default.
-> >=20
-> > > > > > Not only does this preserve existing configs (including externa=
-l
-> > > > > > ones
-> > > > > > that
-> > > > > > aren't part of the kernel tree), it also clearly maps which mac=
-hine
-> > > > > > driver
-> > > > > > to use for which SoC instead of having users do it by hand.
-> > > > >=20
-> > > > > The machine drivers aren't terribly tied to SoCs by design; most =
-of
-> > > > > them
-> > > > > would work on pretty much any SoC. They're only tied to SoCs as a
-> > > > > side-effect of a machine driver being tied to a certain CODEC, an=
-d
-> > > > > certain CODECS just by chance are only used (so far) on specific
-> > > > > boards,
-> > > > > which have specific SoCs.
-> > > >=20
-> > > > I'm a bit confused: aren't the machine driver (i2s/ahub/spdif/ac97)=
- tied
-> > > > to
-> > > > specific hardware blocks that are found in specific SoCs and not in
-> > > > others?
-> > > > I
-> > > > can see these blocks haven't evolved much across generations, but
-> > > > they're
-> > > > still
-> > > > either part of a specific SoC or not, aren't they?
-> > > >=20
-> > > > The compatible strings in the common SoC dts seem to indicate that =
-only
-> > > > one
-> > > > of
-> > > > these blocks is found at a time.
-> > >=20
-> > > There are SoC-specific drivers for the components (Tegra20 I2S, Tegra=
-30
-> > > I2S, etc.), but the *machine* drivers generally don't know anything
-> > > about that. DT instantiates the correct component drivers for the SoC=
-,
-> > > and the machine driver just uses whatever it's linked to without cari=
-ng
-> > > too-much/at-all about whether it's hooked to a Tegra20 I2S or a Tegra=
-30
-> > > I2S device.
-> >=20
-> > That makes sense now. Regarding the SoC-specific components, would you =
-agree
-> > with auto-selecting those based on ARCH_TEGRA_xx_SOC so that only the
-> > required
-> > drivers are pulled-in? Otherwise, I'm also fine with explicitely enabli=
-ng
-> > them
-> > in the defconfig at this point.
->=20
-> I believe we don't generally "select" Kconfig options that aren't=20
-> absolutely required for basic system operation, since we don't want to=
-=20
-> select stuff that's optional. Enabling the options in defconfig seems=20
-> like the right approach, or perhaps "default y" (in which case anyone=20
-> who doesn't want them can simply turn them off).
+What the driver supports is not relevant to the binding.
 
-Understood. I guess I'll (finally) craft a patch that leaves it up to users=
- to
-enable these in the config and add them to the tegra defconfig.
+> +
+> +Required properties:
+> +
+> +  - compatible : "ti,pcm9211"
+> +
+> +  - reg : the I2C address of the device for I2C, the chip select
+> +          number for SPI.
+> +
+> +  - VCCAD-supply, VCC-supply, VDDRX-supply and AVDD-supply :
+> +    power supplies for the device, as covered in
+> +    bindings/regulator/regulator.txt
+> +
+> +Optional properties:
+> +
+> +  - clocks : A clock specifier for the clock connected to XTI. While the
+> +    device could work without it, this driver currently relies on it being
+> +    available
+> +
+> +  - clock-names : Must specify "xti" to match the requested clock.
+> +
+> +  - reset-gpios : GPIO wired to the reset pin, if not supplied a soft-reset is
+> +    used as fallback
+> +
+> +  - int0-gpios : GPIO connected to interrupt0 output of the PCM9211. The
+> +    line can be configured to any of MPO0,1 and MPIOA,B,C0-4 and error/int0.
+> +    If this is specified it is used as an interrupt to notify alsa controls
 
---=20
-Paul Kocialkowski, developer of free digital technology and hardware suppor=
-t
+alsa is a Linux detail not relevant to the binding.
 
-Website: https://www.paulk.fr/
-Coding blog: https://code.paulk.fr/
-Git repositories: https://git.paulk.fr/ https://git.code.paulk.fr/
---=-b+UsI6PJ5ToWyrue5DXb
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+> +    about changes of the incoming sampling rate on DIR (spdif) as well as NPCM
+> +    status.
 
------BEGIN PGP SIGNATURE-----
+This should use interrupts property instead.
 
-iQIzBAABCAAdFiEEAbcMXZQMtj1fphLChP3B6o/ulQwFAlku9lwACgkQhP3B6o/u
-lQwThw/+MFkfXrTfxxPlcjp17DzCPpMLaXMSmyvupkCaVxeTQf6i6dFwi/LHmDNS
-wLqY6QAXRaTrcJu/ObFboRHtPHsibIABd3Mx/Eu/V/DbRjVQCOJtwAw7tAAU7c2/
-M6kq8XHK40VsrTnr999qimA+e6C01+EdhQk88jmFBYyBovahMyLE24kLLCsKsOoD
-4kBC4tYtvQao+riB8OLCqysPQW+jZqPEVa2X8i13xCqonFyRU0h2QUtH4uT3xzX+
-IApy+QQxUi0xDlHRBYo17ipuLW+pVXl9NhE28Kupxrvj6lmU+9SGAtoi5yKhYSLh
-Ee6UcnxnqQzMhsnuk24859FM5gbPyn7HQPAGWt9ng6B9vhUP0JUMh0r42H7x5Ytj
-sNuHpnQZAkVxdJEiX9AfSfqYJrF/jKPHnSTN3gze888dC8jHU/kbob9vU0Skjgyi
-G2VLB4aGpu+TLkga8KpfzMVdLkUXBY8aciWTbrliXTMnzRh851bJ+0igWZm1/2cH
-gCrPOf+cjkp0VoIO6IxbZDQstLOFq6Ifmm0s15KC4pb9nAylJyzYGEcDjrdzwefq
-6zkAkuIriYxl7FcbkE6tBN+oruC278CE14QPnh6SpxV0WlkDrJnrm7VzoUUeGXty
-DdPb56VEWIRhXSFUfpPXKbs9xzNH/4BmF/w1b3IpmHOP+xVrfqs=
-=igHz
------END PGP SIGNATURE-----
+> +
+> +  - ti,group-function: An array with size 3 specifying function for pingroups
+> +    A, B and C. Possible values are defined in dt-bindings/sound/pcm9211.h
+> +
+> +  - ti,mpio-a-flags-gpio: An array with size 4 specifying flags out or gpio
+> +    mode per pin, when function DIR_FLAGS_GPIO is selected for group a.
+> +    Possible values are defined in dt-bindings/sound/pcm9211.h
+> +
+> +  - ti,mpio-b-flags-gpio: An array with size 4 specifying flags out or gpio
+> +    mode per pin, when function DIR_FLAGS_GPIO is selected for group b.
+> +    Possible values are defined in dt-bindings/sound/pcm9211.h
+> +
+> +  - ti,mpio-c-flags-gpio: An array with size 4 specifying flags out or gpio
+> +    mode per pin, when function DIR_FLAGS_GPIO is selected for group c.
+> +    Possible values are defined in dt-bindings/sound/pcm9211.h
+> +
+> +  - ti,mpio-a-flag: An array with size 4 specifying flag assigned per pin,
+> +    when function DIR_FLAGS_GPIO is selected for group a and pin is set to
+> +    flags mode.
+> +    Possible values are defined in dt-bindings/sound/pcm9211.h
+> +
+> +  - ti,mpio-b-flag: An array with size 4 specifying flag assigned per pin,
+> +    when function DIR_FLAGS_GPIO is selected for group b and pin is set to
+> +    flags mode.
+> +    Possible values are defined in dt-bindings/sound/pcm9211.h
+> +
+> +  - ti,mpio-c-flag: An array with size 4 specifying flag assigned per pin,
+> +    when function DIR_FLAGS_GPIO is selected for group c and pin is set to
+> +    flags mode.
+> +    Possible values are defined in dt-bindings/sound/pcm9211.h
+> +
+> +  - ti,mpo-function: An array with size 2 specifying flag assigned per mpo
+> +    pin.
+> +    Possible values are defined in dt-bindings/sound/pcm9211.h
+> +
+> +  - ti,int0-function: Selects error/int0 pin function.
+> +    Possible values are defined in dt-bindings/sound/pcm9211.h
+> +
+> +  - ti,int1-function: Selects error/int1 pin function.
+> +    Possible values are defined in dt-bindings/sound/pcm9211.h
 
---=-b+UsI6PJ5ToWyrue5DXb--
+This all looks like your own custom pinmuxing properties. We already 
+have a common binding for that.
 
+> +
+> +Examples:
+> +
+> +	pcm9211: pcm9211@43 {
+> +		compatible = "ti,pcm9211";
+> +		reg = <0x43>;
+> +
+> +		VCCAD-supply = <&reg_5v0_analog>;
+> +		VCC-supply = <&reg_3v3_pll_analog>;
+> +		VDDRX-supply = <&reg_3v3>;
+> +		DVDD-supply = <&reg_3v3>;
+> +
+> +		clocks = <&xti_clk>;
+> +		clock-names = "xti";
+> +	};
+> +
+> +
+> +	pcm9211: pcm9211@43 {
 
---===============5360596485999339581==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+audio-codec@...
 
-
---===============5360596485999339581==--
+> +		compatible = "ti,pcm9211";
+> +		reg = <0x43>;
+> +
+> +		VCCAD-supply = <&reg_5v0_analog>;
+> +		VCC-supply = <&reg_3v3_pll_analog>;
+> +		VDDRX-supply = <&reg_3v3>;
+> +		DVDD-supply = <&reg_3v3>;
+> +
+> +		clocks = <&xti_clk>;
+> +		clock-names = "xti";
+> +
+> +		reset-gpios = <&gpio1 0 GPIO_ACTIVE_HIGH>;
+> +		int-gpios = <&gpio1 0 GPIO_ACTIVE_HIGH>;
+> +
+> +		ti,group-function = /bits/ 8
+> +			<PCM9211_MPIO_A_GROUP_BIPHASE_INPUT,
+> +			PCM9211_MPIO_B_GROUP_DIR_FLAGS_GPIO,
+> +			PCM9211_MPIO_C_GROUP_AUXIN1>;
+> +		ti,mpio-b-flags-gpio = /bits/ 8
+> +			<PCM9211_MPIO_DIR_FLAGS,
+> +			PCM9211_MPIO_DIR_FLAGS,
+> +			PCM9211_MPIO_DIR_FLAGS,
+> +			PCM9211_MPIO_DIR_FLAGS>;
+> +		ti,mpio-b-flag = /bits/ 8
+> +			<PCM9211_MPIO_FLAG_INT0,
+> +			PCM9211_MPIO_FLAG_CLKST,
+> +			PCM9211_MPIO_FLAG_CLKST,
+> +			PCM9211_MPIO_FLAG_CLKST>;
+> +	};
