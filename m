@@ -1,207 +1,158 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2 06/27] ALSA: korg1212: Convert to the new PCM ops
-Date: Thu,  1 Jun 2017 22:58:29 +0200
-Message-ID: <20170601205850.24993-7-tiwai@suse.de>
+From: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Subject: [PATCH v2 09/27] ALSA: rme9652: Convert to the new PCM ops
+Date: Thu,  1 Jun 2017 22:58:32 +0200
+Message-ID: <20170601205850.24993-10-tiwai@suse.de>
 References: <20170601205850.24993-1-tiwai@suse.de>
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <20170601205850.24993-1-tiwai@suse.de>
-Sender: linux-media-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Mark Brown <broonie@kernel.org>, Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org, Felipe Balbi <balbi@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20170601205850.24993-1-tiwai-l3A5Bk7waGM@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: Takashi Sakamoto <o-takashi-sodqOivclbsO3cATojSK5Q@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Felipe Balbi <balbi-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 Replace the copy and the silence ops with the new PCM ops.
-Although we can refactor this messy code, at this time, the changes
-are kept as small as possible.  Let's clean up later.
+The conversion is straightforward with standard helper functions.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
 ---
- sound/pci/korg1212/korg1212.c | 112 ++++++++++++++++++++++++------------------
- 1 file changed, 65 insertions(+), 47 deletions(-)
+ sound/pci/rme9652/rme9652.c | 71 ++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 54 insertions(+), 17 deletions(-)
 
-diff --git a/sound/pci/korg1212/korg1212.c b/sound/pci/korg1212/korg1212.c
-index 1e25095fd144..b28fe4914d6b 100644
---- a/sound/pci/korg1212/korg1212.c
-+++ b/sound/pci/korg1212/korg1212.c
-@@ -1299,13 +1299,21 @@ static int snd_korg1212_silence(struct snd_korg1212 *korg1212, int pos, int coun
- 	return 0;
+diff --git a/sound/pci/rme9652/rme9652.c b/sound/pci/rme9652/rme9652.c
+index 55172c689991..59684bf5cac0 100644
+--- a/sound/pci/rme9652/rme9652.c
++++ b/sound/pci/rme9652/rme9652.c
+@@ -1883,13 +1883,14 @@ static char *rme9652_channel_buffer_location(struct snd_rme9652 *rme9652,
+ 	}
  }
  
--static int snd_korg1212_copy_to(struct snd_korg1212 *korg1212, void __user *dst, int pos, int count, int offset, int size)
-+static int snd_korg1212_copy_to(struct snd_pcm_substream *substream,
-+				void __user *dst, int pos, int count,
-+				bool in_kernel)
+-static int snd_rme9652_playback_copy(struct snd_pcm_substream *substream, int channel,
+-				     snd_pcm_uframes_t pos, void __user *src, snd_pcm_uframes_t count)
++static int snd_rme9652_playback_copy(struct snd_pcm_substream *substream,
++				     int channel, unsigned long pos,
++				     void __user *src, unsigned long count)
  {
--	struct KorgAudioFrame * src =  korg1212->recordDataBufsPtr[0].bufferData + pos;
--	int i, rc;
--
--	K1212_DEBUG_PRINTK_VERBOSE("K1212_DEBUG: snd_korg1212_copy_to pos=%d offset=%d size=%d\n",
--				   pos, offset, size);
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+        struct snd_korg1212 *korg1212 = snd_pcm_substream_chip(substream);
-+	struct KorgAudioFrame *src;
-+	int i, size;
-+
-+	pos = bytes_to_frames(runtime, pos);
-+	count = bytes_to_frames(runtime, count);
-+	size = korg1212->channels * 2;
-+	src = korg1212->recordDataBufsPtr[0].bufferData + pos;
-+	K1212_DEBUG_PRINTK_VERBOSE("K1212_DEBUG: snd_korg1212_copy_to pos=%d size=%d count=%d\n",
-+				   pos, size, count);
- 	if (snd_BUG_ON(pos + count > K1212_MAX_SAMPLES))
+ 	struct snd_rme9652 *rme9652 = snd_pcm_substream_chip(substream);
+ 	char *channel_buf;
+ 
+-	if (snd_BUG_ON(pos + count > RME9652_CHANNEL_BUFFER_BYTES / 4))
++	if (snd_BUG_ON(pos + count > RME9652_CHANNEL_BUFFER_BYTES))
  		return -EINVAL;
  
-@@ -1317,11 +1325,10 @@ static int snd_korg1212_copy_to(struct snd_korg1212 *korg1212, void __user *dst,
- 			return -EFAULT;
- 		}
- #endif
--		rc = copy_to_user(dst + offset, src, size);
--		if (rc) {
--			K1212_DEBUG_PRINTK("K1212_DEBUG: snd_korg1212_copy_to USER EFAULT src=%p dst=%p iter=%d\n", src, dst, i);
-+		if (in_kernel)
-+			memcpy((void *)dst, src, size);
-+		else if (copy_to_user(dst, src, size))
- 			return -EFAULT;
--		}
- 		src++;
- 		dst += size;
- 	}
-@@ -1329,13 +1336,22 @@ static int snd_korg1212_copy_to(struct snd_korg1212 *korg1212, void __user *dst,
- 	return 0;
+ 	channel_buf = rme9652_channel_buffer_location (rme9652,
+@@ -1897,18 +1898,35 @@ static int snd_rme9652_playback_copy(struct snd_pcm_substream *substream, int ch
+ 						       channel);
+ 	if (snd_BUG_ON(!channel_buf))
+ 		return -EIO;
+-	if (copy_from_user(channel_buf + pos * 4, src, count * 4))
++	if (copy_from_user(channel_buf + pos, src, count))
+ 		return -EFAULT;
+-	return count;
++	return 0;
  }
  
--static int snd_korg1212_copy_from(struct snd_korg1212 *korg1212, void __user *src, int pos, int count, int offset, int size)
-+static int snd_korg1212_copy_from(struct snd_pcm_substream *substream,
-+				  void __user *src, int pos, int count,
-+				  bool in_kernel)
+-static int snd_rme9652_capture_copy(struct snd_pcm_substream *substream, int channel,
+-				    snd_pcm_uframes_t pos, void __user *dst, snd_pcm_uframes_t count)
++static int snd_rme9652_playback_copy_kernel(struct snd_pcm_substream *substream,
++					    int channel, unsigned long pos,
++					    void *src, unsigned long count)
  {
--	struct KorgAudioFrame * dst =  korg1212->playDataBufsPtr[0].bufferData + pos;
--	int i, rc;
-+        struct snd_pcm_runtime *runtime = substream->runtime;
-+	struct snd_korg1212 *korg1212 = snd_pcm_substream_chip(substream);
-+	struct KorgAudioFrame *dst;
-+	int i, size;
+ 	struct snd_rme9652 *rme9652 = snd_pcm_substream_chip(substream);
+ 	char *channel_buf;
  
--	K1212_DEBUG_PRINTK_VERBOSE("K1212_DEBUG: snd_korg1212_copy_from pos=%d offset=%d size=%d count=%d\n",
--				   pos, offset, size, count);
-+	pos = bytes_to_frames(runtime, pos);
-+	count = bytes_to_frames(runtime, count);
-+	size = korg1212->channels * 2;
-+	dst = korg1212->playDataBufsPtr[0].bufferData + pos;
+-	if (snd_BUG_ON(pos + count > RME9652_CHANNEL_BUFFER_BYTES / 4))
++	channel_buf = rme9652_channel_buffer_location(rme9652,
++						      substream->pstr->stream,
++						      channel);
++	if (snd_BUG_ON(!channel_buf))
++		return -EIO;
++	memcpy(channel_buf + pos, src, count);
++	return 0;
++}
 +
-+	K1212_DEBUG_PRINTK_VERBOSE("K1212_DEBUG: snd_korg1212_copy_from pos=%d size=%d count=%d\n",
-+				   pos, size, count);
- 
- 	if (snd_BUG_ON(pos + count > K1212_MAX_SAMPLES))
++static int snd_rme9652_capture_copy(struct snd_pcm_substream *substream,
++				    int channel, unsigned long pos,
++				    void __user *dst, unsigned long count)
++{
++	struct snd_rme9652 *rme9652 = snd_pcm_substream_chip(substream);
++	char *channel_buf;
++
++	if (snd_BUG_ON(pos + count > RME9652_CHANNEL_BUFFER_BYTES))
  		return -EINVAL;
-@@ -1348,11 +1364,10 @@ static int snd_korg1212_copy_from(struct snd_korg1212 *korg1212, void __user *sr
- 			return -EFAULT;
- 		}
- #endif
--		rc = copy_from_user((void*) dst + offset, src, size);
--		if (rc) {
--			K1212_DEBUG_PRINTK("K1212_DEBUG: snd_korg1212_copy_from USER EFAULT src=%p dst=%p iter=%d\n", src, dst, i);
-+		if (in_kernel)
-+			memcpy((void *)dst, src, size);
-+		else if (copy_from_user(dst, src, size))
- 			return -EFAULT;
--		}
- 		dst++;
- 		src += size;
- 	}
-@@ -1640,45 +1655,46 @@ static snd_pcm_uframes_t snd_korg1212_capture_pointer(struct snd_pcm_substream *
+ 
+ 	channel_buf = rme9652_channel_buffer_location (rme9652,
+@@ -1916,13 +1934,30 @@ static int snd_rme9652_capture_copy(struct snd_pcm_substream *substream, int cha
+ 						       channel);
+ 	if (snd_BUG_ON(!channel_buf))
+ 		return -EIO;
+-	if (copy_to_user(dst, channel_buf + pos * 4, count * 4))
++	if (copy_to_user(dst, channel_buf + pos, count))
+ 		return -EFAULT;
+-	return count;
++	return 0;
  }
  
- static int snd_korg1212_playback_copy(struct snd_pcm_substream *substream,
--                        int channel, /* not used (interleaved data) */
--                        snd_pcm_uframes_t pos,
--                        void __user *src,
--                        snd_pcm_uframes_t count)
-+				      int channel, unsigned long pos,
-+				      void __user *src, unsigned long count)
- {
--        struct snd_korg1212 *korg1212 = snd_pcm_substream_chip(substream);
--
--	K1212_DEBUG_PRINTK_VERBOSE("K1212_DEBUG: snd_korg1212_playback_copy [%s] %ld %ld\n",
--				   stateName[korg1212->cardState], pos, count);
-- 
--	return snd_korg1212_copy_from(korg1212, src, pos, count, 0, korg1212->channels * 2);
-+	return snd_korg1212_copy_from(substream, src, pos, count, false);
-+}
- 
-+static int snd_korg1212_playback_copy_kernel(struct snd_pcm_substream *substream,
-+				      int channel, unsigned long pos,
-+				      void *src, unsigned long count)
+-static int snd_rme9652_hw_silence(struct snd_pcm_substream *substream, int channel,
+-				  snd_pcm_uframes_t pos, snd_pcm_uframes_t count)
++static int snd_rme9652_capture_copy_kernel(struct snd_pcm_substream *substream,
++					   int channel, unsigned long pos,
++					   void *dst, unsigned long count)
 +{
-+	return snd_korg1212_copy_from(substream, (void __user *)src,
-+				      pos, count, true);
- }
- 
- static int snd_korg1212_playback_silence(struct snd_pcm_substream *substream,
-                            int channel, /* not used (interleaved data) */
--                           snd_pcm_uframes_t pos,
--                           snd_pcm_uframes_t count)
-+                           unsigned long pos,
-+                           unsigned long count)
- {
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-         struct snd_korg1212 *korg1212 = snd_pcm_substream_chip(substream);
- 
--	K1212_DEBUG_PRINTK_VERBOSE("K1212_DEBUG: snd_korg1212_playback_silence [%s]\n",
--				   stateName[korg1212->cardState]);
--
--	return snd_korg1212_silence(korg1212, pos, count, 0, korg1212->channels * 2);
-+	return snd_korg1212_silence(korg1212, bytes_to_frames(runtime, pos),
-+				    bytes_to_frames(runtime, count),
-+				    0, korg1212->channels * 2);
- }
- 
- static int snd_korg1212_capture_copy(struct snd_pcm_substream *substream,
--                        int channel, /* not used (interleaved data) */
--                        snd_pcm_uframes_t pos,
--                        void __user *dst,
--                        snd_pcm_uframes_t count)
-+				     int channel, unsigned long pos,
-+				     void __user *dst, unsigned long count)
- {
--        struct snd_korg1212 *korg1212 = snd_pcm_substream_chip(substream);
--
--	K1212_DEBUG_PRINTK_VERBOSE("K1212_DEBUG: snd_korg1212_capture_copy [%s] %ld %ld\n",
--				   stateName[korg1212->cardState], pos, count);
-+	return snd_korg1212_copy_to(substream, dst, pos, count, false);
++	struct snd_rme9652 *rme9652 = snd_pcm_substream_chip(substream);
++	char *channel_buf;
++
++	channel_buf = rme9652_channel_buffer_location(rme9652,
++						      substream->pstr->stream,
++						      channel);
++	if (snd_BUG_ON(!channel_buf))
++		return -EIO;
++	memcpy(dst, channel_buf + pos, count);
++	return 0;
 +}
- 
--	return snd_korg1212_copy_to(korg1212, dst, pos, count, 0, korg1212->channels * 2);
-+static int snd_korg1212_capture_copy_kernel(struct snd_pcm_substream *substream,
-+				     int channel, unsigned long pos,
-+				     void *dst, unsigned long count)
-+{
-+	return snd_korg1212_copy_to(substream, (void __user *)dst,
-+				    pos, count, true);
++
++static int snd_rme9652_hw_silence(struct snd_pcm_substream *substream,
++				  int channel, unsigned long pos,
++				  unsigned long count)
+ {
+ 	struct snd_rme9652 *rme9652 = snd_pcm_substream_chip(substream);
+ 	char *channel_buf;
+@@ -1932,8 +1967,8 @@ static int snd_rme9652_hw_silence(struct snd_pcm_substream *substream, int chann
+ 						       channel);
+ 	if (snd_BUG_ON(!channel_buf))
+ 		return -EIO;
+-	memset(channel_buf + pos * 4, 0, count * 4);
+-	return count;
++	memset(channel_buf + pos, 0, count);
++	return 0;
  }
  
- static const struct snd_pcm_ops snd_korg1212_playback_ops = {
-@@ -1689,8 +1705,9 @@ static const struct snd_pcm_ops snd_korg1212_playback_ops = {
-         .prepare =	snd_korg1212_prepare,
-         .trigger =	snd_korg1212_trigger,
-         .pointer =	snd_korg1212_playback_pointer,
--        .copy =		snd_korg1212_playback_copy,
--        .silence =	snd_korg1212_playback_silence,
-+	.copy_user =	snd_korg1212_playback_copy,
-+	.copy_kernel =	snd_korg1212_playback_copy_kernel,
-+	.fill_silence =	snd_korg1212_playback_silence,
+ static int snd_rme9652_reset(struct snd_pcm_substream *substream)
+@@ -2376,8 +2411,9 @@ static const struct snd_pcm_ops snd_rme9652_playback_ops = {
+ 	.prepare =	snd_rme9652_prepare,
+ 	.trigger =	snd_rme9652_trigger,
+ 	.pointer =	snd_rme9652_hw_pointer,
+-	.copy =		snd_rme9652_playback_copy,
+-	.silence =	snd_rme9652_hw_silence,
++	.copy_user =	snd_rme9652_playback_copy,
++	.copy_kernel =	snd_rme9652_playback_copy_kernel,
++	.fill_silence =	snd_rme9652_hw_silence,
  };
  
- static const struct snd_pcm_ops snd_korg1212_capture_ops = {
-@@ -1701,7 +1718,8 @@ static const struct snd_pcm_ops snd_korg1212_capture_ops = {
- 	.prepare =	snd_korg1212_prepare,
- 	.trigger =	snd_korg1212_trigger,
- 	.pointer =	snd_korg1212_capture_pointer,
--	.copy =		snd_korg1212_capture_copy,
-+	.copy_user =	snd_korg1212_capture_copy,
-+	.copy_kernel =	snd_korg1212_capture_copy_kernel,
+ static const struct snd_pcm_ops snd_rme9652_capture_ops = {
+@@ -2388,7 +2424,8 @@ static const struct snd_pcm_ops snd_rme9652_capture_ops = {
+ 	.prepare =	snd_rme9652_prepare,
+ 	.trigger =	snd_rme9652_trigger,
+ 	.pointer =	snd_rme9652_hw_pointer,
+-	.copy =		snd_rme9652_capture_copy,
++	.copy_user =	snd_rme9652_capture_copy,
++	.copy_kernel =	snd_rme9652_capture_copy_kernel,
  };
  
- /*
+ static int snd_rme9652_create_pcm(struct snd_card *card,
 -- 
 2.13.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
