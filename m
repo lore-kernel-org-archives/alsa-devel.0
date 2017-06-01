@@ -1,63 +1,39 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Fix applying MSI dual-codec mobo
-	quirk
-Date: Thu,  1 Jun 2017 09:47:20 +0200
-Message-ID: <20170601074720.31348-1-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id D29C62668BF
- for <alsa-devel@alsa-project.org>; Thu,  1 Jun 2017 09:47:23 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 36F01AD4D
- for <alsa-devel@alsa-project.org>; Thu,  1 Jun 2017 07:47:23 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Jia-Ju Bai <baijiaju1990@163.com>
+Subject: [PATCH] oss: Fix a sleep-in-atomic bug in midi_outc
+Date: Thu,  1 Jun 2017 17:33:43 +0800
+Message-ID: <1496309623-23072-1-git-send-email-baijiaju1990@163.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jia-Ju Bai <baijiaju1990@163.com>
 List-Id: alsa-devel@alsa-project.org
 
-The previous commit [63691587f7b0: ALSA: hda - Apply dual-codec quirk
-for MSI Z270-Gaming mobo] attempted to apply the existing dual-codec
-quirk for a MSI mobo.  But it turned out that this isn't applied
-properly due to the MSI-vendor quirk before this entry.  I overlooked
-such two MSI entries just because they were put in the wrong position,
-although we have a list ordered by PCI SSID numbers.
+The driver may sleep under a spin lock, and the function call path is:
+midi_outc (acquire the lock by spin_lock_irqsave)
+  oss_broken_sleep_on
+    schedule_timeout --> may sleep
 
-This patch fixes it by rearranging the unordered entries.
+To fix it, the lock is released before oss_broken_sleep_on, and the lock 
+is acquired again after this function.
 
-Fixes: 63691587f7b0 ("ALSA: hda - Apply dual-codec quirk for MSI Z270-Gaming mobo")
-Reported-by: Rudolf Schmidt <info@rudolfschmidt.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Jia-Ju Bai <baijiaju1990@163.com>
 ---
- sound/pci/hda/patch_realtek.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/oss/sequencer.c |    2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 918e45268915..a57988d617e9 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2324,11 +2324,11 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x106b, 0x4a00, "Macbook 5,2", ALC889_FIXUP_MBA11_VREF),
+diff --git a/sound/oss/sequencer.c b/sound/oss/sequencer.c
+index f19da4b..3d95d752 100644
+--- a/sound/oss/sequencer.c
++++ b/sound/oss/sequencer.c
+@@ -1211,7 +1211,9 @@ static void midi_outc(int dev, unsigned char data)
  
- 	SND_PCI_QUIRK(0x1071, 0x8258, "Evesham Voyaeger", ALC882_FIXUP_EAPD),
--	SND_PCI_QUIRK(0x1462, 0x7350, "MSI-7350", ALC889_FIXUP_CD),
--	SND_PCI_QUIRK_VENDOR(0x1462, "MSI", ALC882_FIXUP_GPIO3),
- 	SND_PCI_QUIRK(0x1458, 0xa002, "Gigabyte EP45-DS3/Z87X-UD3H", ALC889_FIXUP_FRONT_HP_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1458, 0xa0b8, "Gigabyte AZ370-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
-+	SND_PCI_QUIRK(0x1462, 0x7350, "MSI-7350", ALC889_FIXUP_CD),
- 	SND_PCI_QUIRK(0x1462, 0xda57, "MSI Z270-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
-+	SND_PCI_QUIRK_VENDOR(0x1462, "MSI", ALC882_FIXUP_GPIO3),
- 	SND_PCI_QUIRK(0x147b, 0x107a, "Abit AW9D-MAX", ALC882_FIXUP_ABIT_AW9D_MAX),
- 	SND_PCI_QUIRK_VENDOR(0x1558, "Clevo laptop", ALC882_FIXUP_EAPD),
- 	SND_PCI_QUIRK(0x161f, 0x2054, "Medion laptop", ALC883_FIXUP_EAPD),
+ 	spin_lock_irqsave(&lock,flags);
+  	while (n && !midi_devs[dev]->outputc(dev, data)) {
++		spin_unlock_irqrestore(&lock, flags);
+ 		oss_broken_sleep_on(&seq_sleeper, HZ/25);
++		spin_lock_irqsave(&lock, flags);
+   		n--;
+   	}
+ 	spin_unlock_irqrestore(&lock,flags);
 -- 
-2.13.0
+1.7.9.5
