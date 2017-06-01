@@ -1,7 +1,7 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2 14/27] ASoC: blackfin: Convert to the new PCM ops
-Date: Thu,  1 Jun 2017 22:58:37 +0200
-Message-ID: <20170601205850.24993-15-tiwai@suse.de>
+Subject: [PATCH v2 10/27] ALSA: hdsp: Convert to the new PCM ops
+Date: Thu,  1 Jun 2017 22:58:33 +0200
+Message-ID: <20170601205850.24993-11-tiwai@suse.de>
 References: <20170601205850.24993-1-tiwai@suse.de>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <20170601205850.24993-1-tiwai@suse.de>
@@ -11,156 +11,135 @@ Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Mark Brown <broonie@kernel.org>,
 List-Id: alsa-devel@alsa-project.org
 
 Replace the copy and the silence ops with the new PCM ops.
-In AC97 and I2S-TDM mode, we need to convert back to frames, but
-otherwise the conversion is pretty straightforward.
+The conversion is straightforward with standard helper functions.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/blackfin/bf5xx-ac97-pcm.c | 27 +++++++++++++++++++--------
- sound/soc/blackfin/bf5xx-i2s-pcm.c  | 36 ++++++++++++++++++++++++------------
- 2 files changed, 43 insertions(+), 20 deletions(-)
+ sound/pci/rme9652/hdsp.c | 67 ++++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 50 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/blackfin/bf5xx-ac97-pcm.c b/sound/soc/blackfin/bf5xx-ac97-pcm.c
-index 02ad2606fa19..913e29275f4e 100644
---- a/sound/soc/blackfin/bf5xx-ac97-pcm.c
-+++ b/sound/soc/blackfin/bf5xx-ac97-pcm.c
-@@ -279,23 +279,33 @@ static int bf5xx_pcm_mmap(struct snd_pcm_substream *substream,
- 	return 0 ;
+diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
+index fc0face6cdc6..b00009644e0e 100644
+--- a/sound/pci/rme9652/hdsp.c
++++ b/sound/pci/rme9652/hdsp.c
+@@ -3913,42 +3913,73 @@ static char *hdsp_channel_buffer_location(struct hdsp *hdsp,
+ 		return hdsp->playback_buffer + (mapped_channel * HDSP_CHANNEL_BUFFER_BYTES);
  }
- #else
--static	int bf5xx_pcm_copy(struct snd_pcm_substream *substream, int channel,
--		    snd_pcm_uframes_t pos,
--		    void __user *buf, snd_pcm_uframes_t count)
-+static	int bf5xx_pcm_copy(struct snd_pcm_substream *substream,
-+			   int channel, unsigned long pos,
-+			   void *buf, unsigned long count)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	unsigned int chan_mask = ac97_chan_mask[runtime->channels - 1];
-+	struct ac97_frame *dst;
-+
- 	pr_debug("%s copy pos:0x%lx count:0x%lx\n",
- 			substream->stream ? "Capture" : "Playback", pos, count);
-+	dst = (struct ac97_frame *)runtime->dma_area +
-+		bytes_to_frames(runtime, pos);
-+	count = bytes_to_frames(runtime, count);
  
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		bf5xx_pcm_to_ac97((struct ac97_frame *)runtime->dma_area + pos,
--			(__u16 *)buf, count, chan_mask);
-+		bf5xx_pcm_to_ac97(dst, buf, count, chan_mask);
- 	else
--		bf5xx_ac97_to_pcm((struct ac97_frame *)runtime->dma_area + pos,
--			(__u16 *)buf, count);
-+		bf5xx_ac97_to_pcm(dst, buf, count);
- 	return 0;
+-static int snd_hdsp_playback_copy(struct snd_pcm_substream *substream, int channel,
+-				  snd_pcm_uframes_t pos, void __user *src, snd_pcm_uframes_t count)
++static int snd_hdsp_playback_copy(struct snd_pcm_substream *substream,
++				  int channel, unsigned long pos,
++				  void __user *src, unsigned long count)
+ {
+ 	struct hdsp *hdsp = snd_pcm_substream_chip(substream);
+ 	char *channel_buf;
+ 
+-	if (snd_BUG_ON(pos + count > HDSP_CHANNEL_BUFFER_BYTES / 4))
++	if (snd_BUG_ON(pos + count > HDSP_CHANNEL_BUFFER_BYTES))
+ 		return -EINVAL;
+ 
+ 	channel_buf = hdsp_channel_buffer_location (hdsp, substream->pstr->stream, channel);
+ 	if (snd_BUG_ON(!channel_buf))
+ 		return -EIO;
+-	if (copy_from_user(channel_buf + pos * 4, src, count * 4))
++	if (copy_from_user(channel_buf + pos, src, count))
+ 		return -EFAULT;
+-	return count;
++	return 0;
  }
-+
-+static	int bf5xx_pcm_copy_user(struct snd_pcm_substream *substream,
-+				int channel, unsigned long pos,
-+				void __user *buf, unsigned long count)
-+{
-+	return bf5xx_pcm_copy(substream, channel, pos, (void *)buf, count);
+ 
+-static int snd_hdsp_capture_copy(struct snd_pcm_substream *substream, int channel,
+-				 snd_pcm_uframes_t pos, void __user *dst, snd_pcm_uframes_t count)
++static int snd_hdsp_playback_copy_kernel(struct snd_pcm_substream *substream,
++					 int channel, unsigned long pos,
++					 void *src, unsigned long count)
+ {
+ 	struct hdsp *hdsp = snd_pcm_substream_chip(substream);
+ 	char *channel_buf;
+ 
+-	if (snd_BUG_ON(pos + count > HDSP_CHANNEL_BUFFER_BYTES / 4))
++	channel_buf = hdsp_channel_buffer_location(hdsp, substream->pstr->stream, channel);
++	if (snd_BUG_ON(!channel_buf))
++		return -EIO;
++	memcpy(channel_buf + pos, src, count);
++	return 0;
 +}
- #endif
++
++static int snd_hdsp_capture_copy(struct snd_pcm_substream *substream,
++				 int channel, unsigned long pos,
++				 void __user *dst, unsigned long count)
++{
++	struct hdsp *hdsp = snd_pcm_substream_chip(substream);
++	char *channel_buf;
++
++	if (snd_BUG_ON(pos + count > HDSP_CHANNEL_BUFFER_BYTES))
+ 		return -EINVAL;
  
- static struct snd_pcm_ops bf5xx_pcm_ac97_ops = {
-@@ -309,7 +319,8 @@ static struct snd_pcm_ops bf5xx_pcm_ac97_ops = {
- #if defined(CONFIG_SND_BF5XX_MMAP_SUPPORT)
- 	.mmap		= bf5xx_pcm_mmap,
- #else
--	.copy		= bf5xx_pcm_copy,
-+	.copy_user	= bf5xx_pcm_copy_user,
-+	.copy_kernel	= bf5xx_pcm_copy,
- #endif
- };
- 
-diff --git a/sound/soc/blackfin/bf5xx-i2s-pcm.c b/sound/soc/blackfin/bf5xx-i2s-pcm.c
-index 6cba211da32e..470d99abf6f6 100644
---- a/sound/soc/blackfin/bf5xx-i2s-pcm.c
-+++ b/sound/soc/blackfin/bf5xx-i2s-pcm.c
-@@ -225,8 +225,9 @@ static int bf5xx_pcm_mmap(struct snd_pcm_substream *substream,
- 	return 0 ;
+ 	channel_buf = hdsp_channel_buffer_location (hdsp, substream->pstr->stream, channel);
+ 	if (snd_BUG_ON(!channel_buf))
+ 		return -EIO;
+-	if (copy_to_user(dst, channel_buf + pos * 4, count * 4))
++	if (copy_to_user(dst, channel_buf + pos, count))
+ 		return -EFAULT;
+-	return count;
++	return 0;
  }
  
--static int bf5xx_pcm_copy(struct snd_pcm_substream *substream, int channel,
--	snd_pcm_uframes_t pos, void *buf, snd_pcm_uframes_t count)
-+static int bf5xx_pcm_copy(struct snd_pcm_substream *substream,
-+			  int channel, unsigned long pos,
-+			  void *buf, unsigned long count)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-@@ -238,6 +239,8 @@ static int bf5xx_pcm_copy(struct snd_pcm_substream *substream, int channel,
- 	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
- 
- 	if (dma_data->tdm_mode) {
-+		pos = bytes_to_frames(runtime, pos);
-+		count = bytes_to_frames(runtime, count);
- 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 			src = buf;
- 			dst = runtime->dma_area;
-@@ -269,21 +272,29 @@ static int bf5xx_pcm_copy(struct snd_pcm_substream *substream, int channel,
- 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 			src = buf;
- 			dst = runtime->dma_area;
--			dst += frames_to_bytes(runtime, pos);
-+			dst += pos;
- 		} else {
- 			src = runtime->dma_area;
--			src += frames_to_bytes(runtime, pos);
-+			src += pos;
- 			dst = buf;
- 		}
- 
--		memcpy(dst, src, frames_to_bytes(runtime, count));
-+		memcpy(dst, src, count);
- 	}
- 
- 	return 0;
- }
- 
-+static int bf5xx_pcm_copy_user(struct snd_pcm_substream *substream,
+-static int snd_hdsp_hw_silence(struct snd_pcm_substream *substream, int channel,
+-				  snd_pcm_uframes_t pos, snd_pcm_uframes_t count)
++static int snd_hdsp_capture_copy_kernel(struct snd_pcm_substream *substream,
++					int channel, unsigned long pos,
++					void *dst, unsigned long count)
++{
++	struct hdsp *hdsp = snd_pcm_substream_chip(substream);
++	char *channel_buf;
++
++	channel_buf = hdsp_channel_buffer_location(hdsp, substream->pstr->stream, channel);
++	if (snd_BUG_ON(!channel_buf))
++		return -EIO;
++	memcpy(dst, channel_buf + pos, count);
++	return 0;
++}
++
++static int snd_hdsp_hw_silence(struct snd_pcm_substream *substream,
 +			       int channel, unsigned long pos,
-+			       void __user *buf, unsigned long count)
-+{
-+	return bf5xx_pcm_copy(substream, channel, pos, (void *)buf, count);
-+}
-+
- static int bf5xx_pcm_silence(struct snd_pcm_substream *substream,
--	int channel, snd_pcm_uframes_t pos, snd_pcm_uframes_t count)
-+			     int channel, unsigned long pos,
-+			     unsigned long count)
++			       unsigned long count)
  {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-@@ -295,11 +306,11 @@ static int bf5xx_pcm_silence(struct snd_pcm_substream *substream,
- 	dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
+ 	struct hdsp *hdsp = snd_pcm_substream_chip(substream);
+ 	char *channel_buf;
+@@ -3956,8 +3987,8 @@ static int snd_hdsp_hw_silence(struct snd_pcm_substream *substream, int channel,
+ 	channel_buf = hdsp_channel_buffer_location (hdsp, substream->pstr->stream, channel);
+ 	if (snd_BUG_ON(!channel_buf))
+ 		return -EIO;
+-	memset(channel_buf + pos * 4, 0, count * 4);
+-	return count;
++	memset(channel_buf + pos, 0, count);
++	return 0;
+ }
  
- 	if (dma_data->tdm_mode) {
--		offset = pos * 8 * sample_size;
--		samples = count * 8;
-+		offset = bytes_to_frames(runtime, pos) * 8 * sample_size;
-+		samples = bytes_to_frames(runtime, count) * 8;
- 	} else {
--		offset = frames_to_bytes(runtime, pos);
--		samples = count * runtime->channels;
-+		offset = pos;
-+		samples = bytes_to_samples(runtime, count);
- 	}
- 
- 	snd_pcm_format_set_silence(runtime->format, buf + offset, samples);
-@@ -316,8 +327,9 @@ static struct snd_pcm_ops bf5xx_pcm_i2s_ops = {
- 	.trigger	= bf5xx_pcm_trigger,
- 	.pointer	= bf5xx_pcm_pointer,
- 	.mmap		= bf5xx_pcm_mmap,
--	.copy		= bf5xx_pcm_copy,
--	.silence	= bf5xx_pcm_silence,
-+	.copy_user	= bf5xx_pcm_copy_user,
-+	.copy_kernel	= bf5xx_pcm_copy,
-+	.fill_silence	= bf5xx_pcm_silence,
+ static int snd_hdsp_reset(struct snd_pcm_substream *substream)
+@@ -4869,8 +4900,9 @@ static const struct snd_pcm_ops snd_hdsp_playback_ops = {
+ 	.prepare =	snd_hdsp_prepare,
+ 	.trigger =	snd_hdsp_trigger,
+ 	.pointer =	snd_hdsp_hw_pointer,
+-	.copy =		snd_hdsp_playback_copy,
+-	.silence =	snd_hdsp_hw_silence,
++	.copy_user =	snd_hdsp_playback_copy,
++	.copy_kernel =	snd_hdsp_playback_copy_kernel,
++	.fill_silence =	snd_hdsp_hw_silence,
  };
  
- static int bf5xx_pcm_i2s_new(struct snd_soc_pcm_runtime *rtd)
+ static const struct snd_pcm_ops snd_hdsp_capture_ops = {
+@@ -4881,7 +4913,8 @@ static const struct snd_pcm_ops snd_hdsp_capture_ops = {
+ 	.prepare =	snd_hdsp_prepare,
+ 	.trigger =	snd_hdsp_trigger,
+ 	.pointer =	snd_hdsp_hw_pointer,
+-	.copy =		snd_hdsp_capture_copy,
++	.copy_user =	snd_hdsp_capture_copy,
++	.copy_kernel =	snd_hdsp_capture_copy_kernel,
+ };
+ 
+ static int snd_hdsp_create_hwdep(struct snd_card *card, struct hdsp *hdsp)
 -- 
 2.13.0
