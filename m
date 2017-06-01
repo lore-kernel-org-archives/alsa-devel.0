@@ -1,92 +1,104 @@
-From: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Subject: [PATCH v2 15/27] [media] solo6x10: Convert to the new PCM ops
-Date: Thu,  1 Jun 2017 22:58:38 +0200
-Message-ID: <20170601205850.24993-16-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH v2 04/27] ALSA: es1938: Convert to the new PCM
+	copy ops
+Date: Thu,  1 Jun 2017 22:58:27 +0200
+Message-ID: <20170601205850.24993-5-tiwai@suse.de>
 References: <20170601205850.24993-1-tiwai@suse.de>
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20170601205850.24993-1-tiwai-l3A5Bk7waGM@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: Takashi Sakamoto <o-takashi-sodqOivclbsO3cATojSK5Q@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Felipe Balbi <balbi-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id A3B62266CC0
+ for <alsa-devel@alsa-project.org>; Thu,  1 Jun 2017 22:59:04 +0200 (CEST)
+In-Reply-To: <20170601205850.24993-1-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Felipe Balbi <balbi@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Hans Verkuil <hverkuil@xs4all.nl>, Mark Brown <broonie@kernel.org>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Replace the copy and the silence ops with the new PCM ops.
-The device supports only 1 channel and 8bit sample, so it's always
-bytes=frames, and we need no conversion of unit in the callback.
-Also, it's a capture stream, thus no silence is needed.
+Replace the copy ops with the new copy_user and copy_kernel ops.
+It's used only for a capture stream (for some hardware workaround),
+thus we need no silence operation.
 
-Signed-off-by: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- drivers/media/pci/solo6x10/solo6x10-g723.c | 32 ++++++++++++++++++++++--------
- 1 file changed, 24 insertions(+), 8 deletions(-)
+ sound/pci/es1938.c | 33 +++++++++++++++++++++++++--------
+ 1 file changed, 25 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/media/pci/solo6x10/solo6x10-g723.c b/drivers/media/pci/solo6x10/solo6x10-g723.c
-index 36e93540bb49..3ca947092775 100644
---- a/drivers/media/pci/solo6x10/solo6x10-g723.c
-+++ b/drivers/media/pci/solo6x10/solo6x10-g723.c
-@@ -223,9 +223,9 @@ static snd_pcm_uframes_t snd_solo_pcm_pointer(struct snd_pcm_substream *ss)
- 	return idx * G723_FRAMES_PER_PAGE;
+diff --git a/sound/pci/es1938.c b/sound/pci/es1938.c
+index e8d943071a8c..a544cd52f73a 100644
+--- a/sound/pci/es1938.c
++++ b/sound/pci/es1938.c
+@@ -839,15 +839,12 @@ static snd_pcm_uframes_t snd_es1938_playback_pointer(struct snd_pcm_substream *s
  }
  
--static int snd_solo_pcm_copy(struct snd_pcm_substream *ss, int channel,
--			     snd_pcm_uframes_t pos, void __user *dst,
--			     snd_pcm_uframes_t count)
-+static int __snd_solo_pcm_copy(struct snd_pcm_substream *ss,
-+			       unsigned long pos, void *dst,
-+			       unsigned long count, bool in_kernel)
+ static int snd_es1938_capture_copy(struct snd_pcm_substream *substream,
+-				   int channel,
+-				   snd_pcm_uframes_t pos,
+-				   void __user *dst,
+-				   snd_pcm_uframes_t count)
++				   int channel, unsigned long pos,
++				   void __user *dst, unsigned long count)
  {
- 	struct solo_snd_pcm *solo_pcm = snd_pcm_substream_chip(ss);
- 	struct solo_dev *solo_dev = solo_pcm->solo_dev;
-@@ -242,16 +242,31 @@ static int snd_solo_pcm_copy(struct snd_pcm_substream *ss, int channel,
- 		if (err)
- 			return err;
- 
--		err = copy_to_user(dst + (i * G723_PERIOD_BYTES),
--				   solo_pcm->g723_buf, G723_PERIOD_BYTES);
--
--		if (err)
-+		if (in_kernel)
-+			memcpy(dst, solo_pcm->g723_buf, G723_PERIOD_BYTES);
-+		else if (copy_to_user((void __user *)dst,
-+				      solo_pcm->g723_buf, G723_PERIOD_BYTES))
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct es1938 *chip = snd_pcm_substream_chip(substream);
+-	pos <<= chip->dma1_shift;
+-	count <<= chip->dma1_shift;
++
+ 	if (snd_BUG_ON(pos + count > chip->dma1_size))
+ 		return -EINVAL;
+ 	if (pos + count < chip->dma1_size) {
+@@ -856,12 +853,31 @@ static int snd_es1938_capture_copy(struct snd_pcm_substream *substream,
+ 	} else {
+ 		if (copy_to_user(dst, runtime->dma_area + pos + 1, count - 1))
  			return -EFAULT;
-+		dst += G723_PERIOD_BYTES;
+-		if (put_user(runtime->dma_area[0], ((unsigned char __user *)dst) + count - 1))
++		if (put_user(runtime->dma_area[0],
++			     ((unsigned char __user *)dst) + count - 1))
+ 			return -EFAULT;
  	}
- 
  	return 0;
  }
  
-+static int snd_solo_pcm_copy_user(struct snd_pcm_substream *ss, int channel,
-+				  unsigned long pos, void __user *dst,
-+				  unsigned long count)
++static int snd_es1938_capture_copy_kernel(struct snd_pcm_substream *substream,
++					  int channel, unsigned long pos,
++					  void *dst, unsigned long count)
 +{
-+	return __snd_solo_pcm_copy(ss, pos, (void *)dst, count, false);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct es1938 *chip = snd_pcm_substream_chip(substream);
++
++	if (snd_BUG_ON(pos + count > chip->dma1_size))
++		return -EINVAL;
++	if (pos + count < chip->dma1_size) {
++		memcpy(dst, runtime->dma_area + pos + 1, count);
++	} else {
++		memcpy(dst, runtime->dma_area + pos + 1, count - 1);
++		runtime->dma_area[0] = *((unsigned char *)dst + count - 1);
++	}
++	return 0;
 +}
 +
-+static int snd_solo_pcm_copy_kernel(struct snd_pcm_substream *ss, int channel,
-+				    unsigned long pos, void *dst,
-+				    unsigned long count)
-+{
-+	return __snd_solo_pcm_copy(ss, pos, dst, count, true);
-+}
-+
- static const struct snd_pcm_ops snd_solo_pcm_ops = {
- 	.open = snd_solo_pcm_open,
- 	.close = snd_solo_pcm_close,
-@@ -261,7 +276,8 @@ static const struct snd_pcm_ops snd_solo_pcm_ops = {
- 	.prepare = snd_solo_pcm_prepare,
- 	.trigger = snd_solo_pcm_trigger,
- 	.pointer = snd_solo_pcm_pointer,
--	.copy = snd_solo_pcm_copy,
-+	.copy_user = snd_solo_pcm_copy_user,
-+	.copy_kernel = snd_solo_pcm_copy_kernel,
+ /*
+  * buffer management
+  */
+@@ -1012,7 +1028,8 @@ static const struct snd_pcm_ops snd_es1938_capture_ops = {
+ 	.prepare =	snd_es1938_capture_prepare,
+ 	.trigger =	snd_es1938_capture_trigger,
+ 	.pointer =	snd_es1938_capture_pointer,
+-	.copy =		snd_es1938_capture_copy,
++	.copy_user =	snd_es1938_capture_copy,
++	.copy_kernel =	snd_es1938_capture_copy_kernel,
  };
  
- static int snd_solo_capture_volume_info(struct snd_kcontrol *kcontrol,
+ static int snd_es1938_new_pcm(struct es1938 *chip, int device)
 -- 
 2.13.0
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
