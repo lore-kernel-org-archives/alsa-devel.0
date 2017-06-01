@@ -1,7 +1,7 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2 10/27] ALSA: hdsp: Convert to the new PCM ops
-Date: Thu,  1 Jun 2017 22:58:33 +0200
-Message-ID: <20170601205850.24993-11-tiwai@suse.de>
+Subject: [PATCH v2 12/27] ALSA: sb: Convert to the new PCM ops
+Date: Thu,  1 Jun 2017 22:58:35 +0200
+Message-ID: <20170601205850.24993-13-tiwai@suse.de>
 References: <20170601205850.24993-1-tiwai@suse.de>
 Return-path: <linux-media-owner@vger.kernel.org>
 In-Reply-To: <20170601205850.24993-1-tiwai@suse.de>
@@ -11,135 +11,257 @@ Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Mark Brown <broonie@kernel.org>,
 List-Id: alsa-devel@alsa-project.org
 
 Replace the copy and the silence ops with the new PCM ops.
-The conversion is straightforward with standard helper functions.
+For avoiding the code redundancy, slightly hackish macros are
+introduced.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/rme9652/hdsp.c | 67 ++++++++++++++++++++++++++++++++++++------------
- 1 file changed, 50 insertions(+), 17 deletions(-)
+ sound/isa/sb/emu8000_pcm.c | 190 ++++++++++++++++++++++++++-------------------
+ 1 file changed, 109 insertions(+), 81 deletions(-)
 
-diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
-index fc0face6cdc6..b00009644e0e 100644
---- a/sound/pci/rme9652/hdsp.c
-+++ b/sound/pci/rme9652/hdsp.c
-@@ -3913,42 +3913,73 @@ static char *hdsp_channel_buffer_location(struct hdsp *hdsp,
- 		return hdsp->playback_buffer + (mapped_channel * HDSP_CHANNEL_BUFFER_BYTES);
- }
+diff --git a/sound/isa/sb/emu8000_pcm.c b/sound/isa/sb/emu8000_pcm.c
+index c480024422af..2ee8d67871ec 100644
+--- a/sound/isa/sb/emu8000_pcm.c
++++ b/sound/isa/sb/emu8000_pcm.c
+@@ -422,121 +422,148 @@ do { \
+ 		return -EAGAIN;\
+ } while (0)
  
--static int snd_hdsp_playback_copy(struct snd_pcm_substream *substream, int channel,
--				  snd_pcm_uframes_t pos, void __user *src, snd_pcm_uframes_t count)
-+static int snd_hdsp_playback_copy(struct snd_pcm_substream *substream,
-+				  int channel, unsigned long pos,
-+				  void __user *src, unsigned long count)
++enum {
++	COPY_USER, COPY_KERNEL, FILL_SILENCE,
++};
++
++#define GET_VAL(sval, buf, mode)					\
++	do {								\
++		switch (mode) {						\
++		case FILL_SILENCE:					\
++			sval = 0;					\
++			break;						\
++		case COPY_KERNEL:					\
++			sval = *buf++;					\
++			break;						\
++		default:						\
++			if (get_user(sval, (unsigned short __user *)buf)) \
++				return -EFAULT;				\
++			buf++;						\
++			break;						\
++		}							\
++	} while (0)
+ 
+ #ifdef USE_NONINTERLEAVE
+-/* copy one channel block */
+-static int emu8k_transfer_block(struct snd_emu8000 *emu, int offset, unsigned short *buf, int count)
+-{
+-	EMU8000_SMALW_WRITE(emu, offset);
+-	while (count > 0) {
+-		unsigned short sval;
+-		CHECK_SCHEDULER();
+-		if (get_user(sval, buf))
+-			return -EFAULT;
+-		EMU8000_SMLD_WRITE(emu, sval);
+-		buf++;
+-		count--;
+-	}
+-	return 0;
+-}
+ 
++#define LOOP_WRITE(rec, offset, _buf, count, mode)		\
++	do {							\
++		struct snd_emu8000 *emu = (rec)->emu;		\
++		unsigned short *buf = (unsigned short *)(_buf); \
++		snd_emu8000_write_wait(emu, 1);			\
++		EMU8000_SMALW_WRITE(emu, offset);		\
++		while (count > 0) {				\
++			unsigned short sval;			\
++			CHECK_SCHEDULER();			\
++			GET_VAL(sval, buf, mode);		\
++			EMU8000_SMLD_WRITE(emu, sval);		\
++			count--;				\
++		}						\
++	} while (0)
++
++/* copy one channel block */
+ static int emu8k_pcm_copy(struct snd_pcm_substream *subs,
+-			  int voice,
+-			  snd_pcm_uframes_t pos,
+-			  void *src,
+-			  snd_pcm_uframes_t count)
++			  int voice, unsigned long pos,
++			  void __user *src, unsigned long count)
  {
- 	struct hdsp *hdsp = snd_pcm_substream_chip(substream);
- 	char *channel_buf;
+ 	struct snd_emu8k_pcm *rec = subs->runtime->private_data;
+-	struct snd_emu8000 *emu = rec->emu;
  
--	if (snd_BUG_ON(pos + count > HDSP_CHANNEL_BUFFER_BYTES / 4))
-+	if (snd_BUG_ON(pos + count > HDSP_CHANNEL_BUFFER_BYTES))
- 		return -EINVAL;
- 
- 	channel_buf = hdsp_channel_buffer_location (hdsp, substream->pstr->stream, channel);
- 	if (snd_BUG_ON(!channel_buf))
- 		return -EIO;
--	if (copy_from_user(channel_buf + pos * 4, src, count * 4))
-+	if (copy_from_user(channel_buf + pos, src, count))
- 		return -EFAULT;
--	return count;
+-	snd_emu8000_write_wait(emu, 1);
+-	return emu8k_transfer_block(emu, pos + rec->loop_start[voice], src,
+-				    count);
++	/* convert to word unit */
++	pos = (pos << 1) + rec->loop_start[voice];
++	count <<= 1;
++	LOOP_WRITE(rec, pos, src, count, COPY_UESR);
 +	return 0;
  }
  
--static int snd_hdsp_capture_copy(struct snd_pcm_substream *substream, int channel,
--				 snd_pcm_uframes_t pos, void __user *dst, snd_pcm_uframes_t count)
-+static int snd_hdsp_playback_copy_kernel(struct snd_pcm_substream *substream,
-+					 int channel, unsigned long pos,
-+					 void *src, unsigned long count)
+-/* make a channel block silence */
+-static int emu8k_silence_block(struct snd_emu8000 *emu, int offset, int count)
++static int emu8k_pcm_copy_kernel(struct snd_pcm_substream *subs,
++				 int voice, unsigned long pos,
++				 void *src, unsigned long count)
  {
- 	struct hdsp *hdsp = snd_pcm_substream_chip(substream);
- 	char *channel_buf;
+-	EMU8000_SMALW_WRITE(emu, offset);
+-	while (count > 0) {
+-		CHECK_SCHEDULER();
+-		EMU8000_SMLD_WRITE(emu, 0);
+-		count--;
+-	}
++	struct snd_emu8k_pcm *rec = subs->runtime->private_data;
++
++	/* convert to word unit */
++	pos = (pos << 1) + rec->loop_start[voice];
++	count <<= 1;
++	LOOP_WRITE(rec, pos, src, count, COPY_KERNEL);
+ 	return 0;
+ }
  
--	if (snd_BUG_ON(pos + count > HDSP_CHANNEL_BUFFER_BYTES / 4))
-+	channel_buf = hdsp_channel_buffer_location(hdsp, substream->pstr->stream, channel);
-+	if (snd_BUG_ON(!channel_buf))
-+		return -EIO;
-+	memcpy(channel_buf + pos, src, count);
++/* make a channel block silence */
+ static int emu8k_pcm_silence(struct snd_pcm_substream *subs,
+-			     int voice,
+-			     snd_pcm_uframes_t pos,
+-			     snd_pcm_uframes_t count)
++			     int voice, unsigned long pos, unsigned long count)
+ {
+ 	struct snd_emu8k_pcm *rec = subs->runtime->private_data;
+-	struct snd_emu8000 *emu = rec->emu;
+ 
+-	snd_emu8000_write_wait(emu, 1);
+-	return emu8k_silence_block(emu, pos + rec->loop_start[voice], count);
++	/* convert to word unit */
++	pos = (pos << 1) + rec->loop_start[voice];
++	count <<= 1;
++	LOOP_WRITE(rec, pos, NULL, count, FILL_SILENCE);
++	return 0;
+ }
+ 
+ #else /* interleave */
+ 
++#define LOOP_WRITE(rec, pos, _buf, count, mode)				\
++	do {								\
++		struct snd_emu8000 *emu = rec->emu;			\
++		unsigned short *buf = (unsigned short *)(_buf);		\
++		snd_emu8000_write_wait(emu, 1);				\
++		EMU8000_SMALW_WRITE(emu, pos + rec->loop_start[0]);	\
++		if (rec->voices > 1)					\
++			EMU8000_SMARW_WRITE(emu, pos + rec->loop_start[1]); \
++		while (count > 0) {					\
++			unsigned short sval;				\
++			CHECK_SCHEDULER();				\
++			GET_VAL(sval, buf, mode);			\
++			EMU8000_SMLD_WRITE(emu, sval);			\
++			if (rec->voices > 1) {				\
++				CHECK_SCHEDULER();			\
++				GET_VAL(sval, buf, mode);		\
++				EMU8000_SMRD_WRITE(emu, sval);		\
++			}						\
++			count--;					\
++		}							\
++	} while (0)
++
++
+ /*
+  * copy the interleaved data can be done easily by using
+  * DMA "left" and "right" channels on emu8k engine.
+  */
+ static int emu8k_pcm_copy(struct snd_pcm_substream *subs,
+-			  int voice,
+-			  snd_pcm_uframes_t pos,
+-			  void __user *src,
+-			  snd_pcm_uframes_t count)
++			  int voice, unsigned long pos,
++			  void __user *src, unsigned long count)
+ {
+ 	struct snd_emu8k_pcm *rec = subs->runtime->private_data;
+-	struct snd_emu8000 *emu = rec->emu;
+-	unsigned short __user *buf = src;
+ 
+-	snd_emu8000_write_wait(emu, 1);
+-	EMU8000_SMALW_WRITE(emu, pos + rec->loop_start[0]);
+-	if (rec->voices > 1)
+-		EMU8000_SMARW_WRITE(emu, pos + rec->loop_start[1]);
+-
+-	while (count-- > 0) {
+-		unsigned short sval;
+-		CHECK_SCHEDULER();
+-		if (get_user(sval, buf))
+-			return -EFAULT;
+-		EMU8000_SMLD_WRITE(emu, sval);
+-		buf++;
+-		if (rec->voices > 1) {
+-			CHECK_SCHEDULER();
+-			if (get_user(sval, buf))
+-				return -EFAULT;
+-			EMU8000_SMRD_WRITE(emu, sval);
+-			buf++;
+-		}
+-	}
++	/* convert to frames */
++	pos = bytes_to_frames(subs->runtime, pos);
++	count = bytes_to_frames(subs->runtime, count);
++	LOOP_WRITE(rec, pos, src, count, COPY_USER);
 +	return 0;
 +}
 +
-+static int snd_hdsp_capture_copy(struct snd_pcm_substream *substream,
-+				 int channel, unsigned long pos,
-+				 void __user *dst, unsigned long count)
++static int emu8k_pcm_copy_kernel(struct snd_pcm_substream *subs,
++				 int voice, unsigned long pos,
++				 void *src, unsigned long count)
 +{
-+	struct hdsp *hdsp = snd_pcm_substream_chip(substream);
-+	char *channel_buf;
++	struct snd_emu8k_pcm *rec = subs->runtime->private_data;
 +
-+	if (snd_BUG_ON(pos + count > HDSP_CHANNEL_BUFFER_BYTES))
- 		return -EINVAL;
- 
- 	channel_buf = hdsp_channel_buffer_location (hdsp, substream->pstr->stream, channel);
- 	if (snd_BUG_ON(!channel_buf))
- 		return -EIO;
--	if (copy_to_user(dst, channel_buf + pos * 4, count * 4))
-+	if (copy_to_user(dst, channel_buf + pos, count))
- 		return -EFAULT;
--	return count;
-+	return 0;
++	/* convert to frames */
++	pos = bytes_to_frames(subs->runtime, pos);
++	count = bytes_to_frames(subs->runtime, count);
++	LOOP_WRITE(rec, pos, src, count, COPY_KERNEL);
+ 	return 0;
  }
  
--static int snd_hdsp_hw_silence(struct snd_pcm_substream *substream, int channel,
--				  snd_pcm_uframes_t pos, snd_pcm_uframes_t count)
-+static int snd_hdsp_capture_copy_kernel(struct snd_pcm_substream *substream,
-+					int channel, unsigned long pos,
-+					void *dst, unsigned long count)
-+{
-+	struct hdsp *hdsp = snd_pcm_substream_chip(substream);
-+	char *channel_buf;
-+
-+	channel_buf = hdsp_channel_buffer_location(hdsp, substream->pstr->stream, channel);
-+	if (snd_BUG_ON(!channel_buf))
-+		return -EIO;
-+	memcpy(dst, channel_buf + pos, count);
-+	return 0;
-+}
-+
-+static int snd_hdsp_hw_silence(struct snd_pcm_substream *substream,
-+			       int channel, unsigned long pos,
-+			       unsigned long count)
+ static int emu8k_pcm_silence(struct snd_pcm_substream *subs,
+-			     int voice,
+-			     snd_pcm_uframes_t pos,
+-			     snd_pcm_uframes_t count)
++			     int voice, unsigned long pos, unsigned long count)
  {
- 	struct hdsp *hdsp = snd_pcm_substream_chip(substream);
- 	char *channel_buf;
-@@ -3956,8 +3987,8 @@ static int snd_hdsp_hw_silence(struct snd_pcm_substream *substream, int channel,
- 	channel_buf = hdsp_channel_buffer_location (hdsp, substream->pstr->stream, channel);
- 	if (snd_BUG_ON(!channel_buf))
- 		return -EIO;
--	memset(channel_buf + pos * 4, 0, count * 4);
--	return count;
-+	memset(channel_buf + pos, 0, count);
-+	return 0;
+ 	struct snd_emu8k_pcm *rec = subs->runtime->private_data;
+-	struct snd_emu8000 *emu = rec->emu;
+ 
+-	snd_emu8000_write_wait(emu, 1);
+-	EMU8000_SMALW_WRITE(emu, rec->loop_start[0] + pos);
+-	if (rec->voices > 1)
+-		EMU8000_SMARW_WRITE(emu, rec->loop_start[1] + pos);
+-	while (count-- > 0) {
+-		CHECK_SCHEDULER();
+-		EMU8000_SMLD_WRITE(emu, 0);
+-		if (rec->voices > 1) {
+-			CHECK_SCHEDULER();
+-			EMU8000_SMRD_WRITE(emu, 0);
+-		}
+-	}
++	/* convert to frames */
++	pos = bytes_to_frames(subs->runtime, pos);
++	count = bytes_to_frames(subs->runtime, count);
++	LOOP_WRITE(rec, pos, NULL, count, FILL_SILENCE);
+ 	return 0;
  }
- 
- static int snd_hdsp_reset(struct snd_pcm_substream *substream)
-@@ -4869,8 +4900,9 @@ static const struct snd_pcm_ops snd_hdsp_playback_ops = {
- 	.prepare =	snd_hdsp_prepare,
- 	.trigger =	snd_hdsp_trigger,
- 	.pointer =	snd_hdsp_hw_pointer,
--	.copy =		snd_hdsp_playback_copy,
--	.silence =	snd_hdsp_hw_silence,
-+	.copy_user =	snd_hdsp_playback_copy,
-+	.copy_kernel =	snd_hdsp_playback_copy_kernel,
-+	.fill_silence =	snd_hdsp_hw_silence,
+ #endif
+@@ -652,8 +679,9 @@ static struct snd_pcm_ops emu8k_pcm_ops = {
+ 	.prepare =	emu8k_pcm_prepare,
+ 	.trigger =	emu8k_pcm_trigger,
+ 	.pointer =	emu8k_pcm_pointer,
+-	.copy =		emu8k_pcm_copy,
+-	.silence =	emu8k_pcm_silence,
++	.copy_user =	emu8k_pcm_copy,
++	.copy_kernel =	emu8k_pcm_copy_kernel,
++	.fill_silence =	emu8k_pcm_silence,
  };
  
- static const struct snd_pcm_ops snd_hdsp_capture_ops = {
-@@ -4881,7 +4913,8 @@ static const struct snd_pcm_ops snd_hdsp_capture_ops = {
- 	.prepare =	snd_hdsp_prepare,
- 	.trigger =	snd_hdsp_trigger,
- 	.pointer =	snd_hdsp_hw_pointer,
--	.copy =		snd_hdsp_capture_copy,
-+	.copy_user =	snd_hdsp_capture_copy,
-+	.copy_kernel =	snd_hdsp_capture_copy_kernel,
- };
  
- static int snd_hdsp_create_hwdep(struct snd_card *card, struct hdsp *hdsp)
 -- 
 2.13.0
