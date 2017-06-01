@@ -1,22 +1,16 @@
-From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Subject: Re: [PATCH 4/4] ASoC: cs35l35: Add multi-device
-	synchronisation
-Date: Thu, 1 Jun 2017 12:45:21 +0100
-Message-ID: <20170601114521.GS1594@localhost.localdomain>
-References: <1495121559-1063-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1495121559-1063-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20170529135306.ldn74fwvfa4ots6a@sirena.org.uk>
- <20170530085138.GR1594@localhost.localdomain>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: cht_bsw_rt5645 mostly silent
+Date: Thu, 1 Jun 2017 09:44:59 -0700
+Message-ID: <5fb2f1ba-71d9-f9f1-dcbe-b7fae975427c@linux.intel.com>
+References: <20170601065304.GJ31785@us.netrek.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id BA0F8265142
- for <alsa-devel@alsa-project.org>; Thu,  1 Jun 2017 13:44:10 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20170530085138.GR1594@localhost.localdomain>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 414BB266C87
+ for <alsa-devel@alsa-project.org>; Thu,  1 Jun 2017 18:45:01 +0200 (CEST)
+In-Reply-To: <20170601065304.GJ31785@us.netrek.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +20,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, robh+dt@kernel.org
+To: James Cameron <quozl@laptop.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 30, 2017 at 09:51:38AM +0100, Charles Keepax wrote:
-> On Mon, May 29, 2017 at 02:53:06PM +0100, Mark Brown wrote:
-> > On Thu, May 18, 2017 at 04:32:39PM +0100, Charles Keepax wrote:
-> > 
-> > > +	SOC_SINGLE_EXT("SYNC Audio", CS35L35_MULT_DEV_SYNCH2, 1, 1, 0,
-> > > +		       snd_soc_get_volsw, cs35l35_put_sync),
-> > > +	SOC_SINGLE_EXT("SYNC VPBR", CS35L35_MULT_DEV_SYNCH2, 2, 1, 0,
-> > > +		       snd_soc_get_volsw, cs35l35_put_sync),
-> > > +	SOC_SINGLE_EXT("SYNC OTW", CS35L35_MULT_DEV_SYNCH2, 3, 1, 0,
-> > > +		       snd_soc_get_volsw, cs35l35_put_sync),
-> > 
-> > I can't tell how this works.  It feels like this shouldn't just be being
-> > controlled from userspace but rather should be handled in some more
-> > standard fashion, or possibly as part of the platform integration but
-> > right now it's just some totally undocumented application managed
-> > controls.
-> 
-> These activate the individual types of synchronisation between
-> the two stereo amps over a proprietary single wire connection
-> between the two amps. The audio option synchronises the group
-> delay between the two amps. The VPBR links the brown out on the
-> two amps and the OTW links the over temperature warning.
-> 
-> The issue is really one of it being use-case specific whether the
-> amps are being used independently or in a stereo configuration.
-> You could have only a single amp in use in which case the sync
-> features are best turned off. Or one might even have use-cases
-> with both amps where they are being used independently but at the
-> same time.
-> 
-> I guess we could potentially do those as calls from the machine
-> driver, although in some cases it might be hard to tell which
-> use-case is being used. Alternatively, one could try to actually
-> link the two amps in DAPM and control it that way although you
-> probably still want some device tree stuff to say which things
-> you want to sync and it might cause issues in any cases where you
-> had both amps up but didn't want to sync.
+On 5/31/17 11:53 PM, James Cameron wrote:
+> G'day,
+>
+> I've a laptop on my lab bench with a Realtek ALC5645 codec attached to
+> an Intel(R) Atom(TM) x5-Z8350.  Built-in speakers work properly.  Not
+> working are;
+>
+> - headphones; only ever silent playback,
+>
+> - built-in microphone; only ever silent recording,
+>
+> - headset microphone; only ever silent recording,
+>
+> - there is no response to headset jack insertion or removal,
+>
+> It has never worked.
+>
+> http://www.alsa-project.org/db/?f=f14914c88544d57f736ed6623000957c93bc4612
+> http://dev.laptop.org/~quozl/z/1dCw32.txt dmesg
+> http://dev.laptop.org/~quozl/z/1dD2qx.txt dmidecode
+> http://dev.laptop.org/~quozl/z/1dGJdK.txt dsdt.dsl
+>
+> I'm testing with 4.11.1 kernel on Ubuntu 17.04.
+>
+> I've tried latest UCM/chtrt5645/HiFi.conf c8b344c.
+>
+> I've tried using alsamixer to experiment with some of the 253 or so
+> controls.
+>
+> I don't have a datasheet.  (My previous work was with ALC5631, for
+> which I do have a datasheet, and it was very helpful!)
+>
+> Also in the box was an NTC thermistor cabled to a TRRS plug, which may
+> suggest a design with switchable decoupling capacitors.
 
-Ok turns out there is one other corner case issue here, lets drop
-this patch for now and I will try to see if I can come up with
-better solution for it.
-
-Thanks,
-Charles
+I've tested a Realtek rt5645 eval board connected to a MinnowBoard Max 
+without issues, the headset worked fine. You can look at example mixer 
+settings at https://github.com/plbossart/UCM/tree/master/chtrt5645 or
+in the attachments of https://bugzilla.kernel.org/show_bug.cgi?id=95681
