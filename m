@@ -1,7 +1,7 @@
 From: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Subject: [PATCH v2 23/27] ALSA: pcm: Direct in-kernel read/write support
-Date: Thu,  1 Jun 2017 22:58:46 +0200
-Message-ID: <20170601205850.24993-24-tiwai@suse.de>
+Subject: [PATCH v2 19/27] ALSA: pcm: Call directly the common read/write helpers
+Date: Thu,  1 Jun 2017 22:58:42 +0200
+Message-ID: <20170601205850.24993-20-tiwai@suse.de>
 References: <20170601205850.24993-1-tiwai@suse.de>
 Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 In-Reply-To: <20170601205850.24993-1-tiwai-l3A5Bk7waGM@public.gmane.org>
@@ -10,162 +10,296 @@ To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 Cc: Takashi Sakamoto <o-takashi-sodqOivclbsO3cATojSK5Q@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Felipe Balbi <balbi-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Now all materials are ready, let's allow the direct in-kernel
-read/write, i.e. a kernel-space buffer is passed for read or write,
-instead of the normal user-space buffer.  This feature is used by OSS
-layer and UAC1 driver, for example.
-
-The __snd_pcm_lib_xfer() takes in_kernel argument that indicates the
-in-kernel buffer copy.  When this flag is set, another transfer code
-is used.  It's either via copy_kernel PCM ops or the normal memcpy(),
-depending on the driver setup.
-
-As external API, snd_pcm_kernel_read(), *_write() and other variants
-are provided.
-
-That's all.  This support is really simple because of the code
-refactoring until now.
+Make snd_pcm_lib_read() and *_write() static inline functions that
+call the common helper functions directly.  This reduces a slight
+amount of codes, and at the same time, it's a preparation for the
+further cleanups / fixes.
 
 Signed-off-by: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
 ---
- include/sound/pcm.h  | 38 +++++++++++++++++++++++++++++++++-----
- sound/core/pcm_lib.c | 26 +++++++++++++++++++++++++-
- 2 files changed, 58 insertions(+), 6 deletions(-)
+ include/sound/pcm.h  |  43 +++++++++++---
+ sound/core/pcm_lib.c | 156 ++++++++++++++++++---------------------------------
+ 2 files changed, 89 insertions(+), 110 deletions(-)
 
 diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index 173c6a6ebf35..e3a7269824c7 100644
+index 953ebfc83184..cb4eff8ffd2e 100644
 --- a/include/sound/pcm.h
 +++ b/include/sound/pcm.h
-@@ -1090,34 +1090,62 @@ void snd_pcm_playback_silence(struct snd_pcm_substream *substream, snd_pcm_ufram
+@@ -1088,15 +1088,40 @@ int snd_pcm_update_state(struct snd_pcm_substream *substream,
+ int snd_pcm_update_hw_ptr(struct snd_pcm_substream *substream);
+ void snd_pcm_playback_silence(struct snd_pcm_substream *substream, snd_pcm_uframes_t new_hw_ptr);
  void snd_pcm_period_elapsed(struct snd_pcm_substream *substream);
- snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
- 				     void *buf, bool interleaved,
--				     snd_pcm_uframes_t frames);
-+				     snd_pcm_uframes_t frames, bool in_kernel);
- 
- static inline snd_pcm_sframes_t
- snd_pcm_lib_write(struct snd_pcm_substream *substream,
- 		  const void __user *buf, snd_pcm_uframes_t frames)
- {
--	return __snd_pcm_lib_xfer(substream, (void *)buf, true, frames);
-+	return __snd_pcm_lib_xfer(substream, (void *)buf, true, frames, false);
- }
- 
- static inline snd_pcm_sframes_t
- snd_pcm_lib_read(struct snd_pcm_substream *substream,
- 		 void __user *buf, snd_pcm_uframes_t frames)
- {
--	return __snd_pcm_lib_xfer(substream, (void *)buf, true, frames);
-+	return __snd_pcm_lib_xfer(substream, (void *)buf, true, frames, false);
- }
- 
- static inline snd_pcm_sframes_t
- snd_pcm_lib_writev(struct snd_pcm_substream *substream,
- 		   void __user **bufs, snd_pcm_uframes_t frames)
- {
--	return __snd_pcm_lib_xfer(substream, (void *)bufs, false, frames);
-+	return __snd_pcm_lib_xfer(substream, (void *)bufs, false, frames, false);
- }
- 
- static inline snd_pcm_sframes_t
- snd_pcm_lib_readv(struct snd_pcm_substream *substream,
- 		  void __user **bufs, snd_pcm_uframes_t frames)
- {
--	return __snd_pcm_lib_xfer(substream, (void *)bufs, false, frames);
-+	return __snd_pcm_lib_xfer(substream, (void *)bufs, false, frames, false);
+-snd_pcm_sframes_t snd_pcm_lib_write(struct snd_pcm_substream *substream,
+-				    const void __user *buf,
+-				    snd_pcm_uframes_t frames);
+-snd_pcm_sframes_t snd_pcm_lib_read(struct snd_pcm_substream *substream,
+-				   void __user *buf, snd_pcm_uframes_t frames);
+-snd_pcm_sframes_t snd_pcm_lib_writev(struct snd_pcm_substream *substream,
+-				     void __user **bufs, snd_pcm_uframes_t frames);
+-snd_pcm_sframes_t snd_pcm_lib_readv(struct snd_pcm_substream *substream,
+-				    void __user **bufs, snd_pcm_uframes_t frames);
++snd_pcm_sframes_t __snd_pcm_lib_write(struct snd_pcm_substream *substream,
++				      void *buf, bool interleaved,
++				      snd_pcm_uframes_t frames);
++snd_pcm_sframes_t __snd_pcm_lib_read(struct snd_pcm_substream *substream,
++				     void *buf, bool interleaved,
++				     snd_pcm_uframes_t frames);
++
++static inline snd_pcm_sframes_t
++snd_pcm_lib_write(struct snd_pcm_substream *substream,
++		  const void __user *buf, snd_pcm_uframes_t frames)
++{
++	return __snd_pcm_lib_write(substream, (void *)buf, true, frames);
 +}
 +
 +static inline snd_pcm_sframes_t
-+snd_pcm_kernel_write(struct snd_pcm_substream *substream,
-+		     const void *buf, snd_pcm_uframes_t frames)
++snd_pcm_lib_read(struct snd_pcm_substream *substream,
++		 void __user *buf, snd_pcm_uframes_t frames)
 +{
-+	return __snd_pcm_lib_xfer(substream, (void *)buf, true, frames, true);
++	return __snd_pcm_lib_read(substream, (void *)buf, true, frames);
 +}
 +
 +static inline snd_pcm_sframes_t
-+snd_pcm_kernel_read(struct snd_pcm_substream *substream,
-+		    void *buf, snd_pcm_uframes_t frames)
++snd_pcm_lib_writev(struct snd_pcm_substream *substream,
++		   void __user **bufs, snd_pcm_uframes_t frames)
 +{
-+	return __snd_pcm_lib_xfer(substream, buf, true, frames, true);
++	return __snd_pcm_lib_write(substream, (void *)bufs, false, frames);
 +}
 +
 +static inline snd_pcm_sframes_t
-+snd_pcm_kernel_writev(struct snd_pcm_substream *substream,
-+		      void **bufs, snd_pcm_uframes_t frames)
++snd_pcm_lib_readv(struct snd_pcm_substream *substream,
++		  void __user **bufs, snd_pcm_uframes_t frames)
 +{
-+	return __snd_pcm_lib_xfer(substream, bufs, false, frames, true);
++	return __snd_pcm_lib_read(substream, (void *)bufs, false, frames);
 +}
-+
-+static inline snd_pcm_sframes_t
-+snd_pcm_kernel_readv(struct snd_pcm_substream *substream,
-+		     void **bufs, snd_pcm_uframes_t frames)
-+{
-+	return __snd_pcm_lib_xfer(substream, bufs, false, frames, true);
- }
  
  extern const struct snd_pcm_hw_constraint_list snd_pcm_known_rates;
+ 
 diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index a592d3308474..ba08b246d153 100644
+index 1f5251cca607..1bd7244324d5 100644
 --- a/sound/core/pcm_lib.c
 +++ b/sound/core/pcm_lib.c
-@@ -1992,6 +1992,15 @@ static int default_write_copy(struct snd_pcm_substream *substream,
- 	return 0;
+@@ -1992,12 +1992,12 @@ static int wait_for_avail(struct snd_pcm_substream *substream,
+ }
+ 	
+ typedef int (*transfer_f)(struct snd_pcm_substream *substream, unsigned int hwoff,
+-			  unsigned long data, unsigned int off,
++			  void  *data, unsigned int off,
+ 			  snd_pcm_uframes_t size);
+ 
+ static int snd_pcm_lib_write_transfer(struct snd_pcm_substream *substream,
+ 				      unsigned int hwoff,
+-				      unsigned long data, unsigned int off,
++				      void *data, unsigned int off,
+ 				      snd_pcm_uframes_t frames)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+@@ -2019,7 +2019,7 @@ static int snd_pcm_lib_write_transfer(struct snd_pcm_substream *substream,
+  
+ static int snd_pcm_lib_writev_transfer(struct snd_pcm_substream *substream,
+ 				       unsigned int hwoff,
+-				       unsigned long data, unsigned int off,
++				       void *data, unsigned int off,
+ 				       snd_pcm_uframes_t frames)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+@@ -2096,21 +2096,39 @@ static int pcm_accessible_state(struct snd_pcm_runtime *runtime)
+ 	}
  }
  
-+/* default copy_kernel ops for write */
-+static int default_write_copy_kernel(struct snd_pcm_substream *substream,
-+				     int channel, unsigned long hwoff,
-+				     void *buf, unsigned long bytes)
-+{
-+	memcpy(get_dma_ptr(substream->runtime, channel, hwoff), buf, bytes);
-+	return 0;
-+}
-+
- /* fill silence instead of copy data; called as a transfer helper
-  * from __snd_pcm_lib_write() or directly from noninterleaved_copy() when
-  * a NULL buffer is passed
-@@ -2025,6 +2034,15 @@ static int default_read_copy(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
-+/* default copy_kernel ops for read */
-+static int default_read_copy_kernel(struct snd_pcm_substream *substream,
-+				    int channel, unsigned long hwoff,
-+				    void *buf, unsigned long bytes)
-+{
-+	memcpy(buf, get_dma_ptr(substream->runtime, channel, hwoff), bytes);
-+	return 0;
-+}
-+
- /* call transfer function with the converted pointers and sizes;
-  * for interleaved mode, it's one shot for all samples
-  */
-@@ -2124,7 +2142,7 @@ static int pcm_accessible_state(struct snd_pcm_runtime *runtime)
- /* the common loop for read/write data */
- snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
- 				     void *data, bool interleaved,
--				     snd_pcm_uframes_t size)
-+				     snd_pcm_uframes_t size, bool in_kernel)
+-static snd_pcm_sframes_t snd_pcm_lib_write1(struct snd_pcm_substream *substream, 
+-					    unsigned long data,
+-					    snd_pcm_uframes_t size,
+-					    int nonblock,
+-					    transfer_f transfer)
++snd_pcm_sframes_t __snd_pcm_lib_write(struct snd_pcm_substream *substream,
++				      void *data, bool interleaved,
++				      snd_pcm_uframes_t size)
  {
  	struct snd_pcm_runtime *runtime = substream->runtime;
  	snd_pcm_uframes_t xfer = 0;
-@@ -2157,6 +2175,12 @@ snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
- 			transfer = fill_silence;
- 		else
- 			return -EINVAL;
-+	} else if (in_kernel) {
-+		if (substream->ops->copy_kernel)
-+			transfer = substream->ops->copy_kernel;
-+		else
-+			transfer = is_playback ?
-+				default_write_copy_kernel : default_read_copy_kernel;
- 	} else {
- 		if (substream->ops->copy_user)
- 			transfer = (pcm_transfer_f)substream->ops->copy_user;
--- 
-2.13.0
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+ 	snd_pcm_uframes_t offset = 0;
+ 	snd_pcm_uframes_t avail;
+-	int err = 0;
++	transfer_f transfer;
++	bool nonblock;
++	int err;
++
++	err = pcm_sanity_check(substream);
++	if (err < 0)
++		return err;
++	runtime = substream->runtime;
++
++	if (interleaved) {
++		if (runtime->access != SNDRV_PCM_ACCESS_RW_INTERLEAVED &&
++		    runtime->channels > 1)
++			return -EINVAL;
++		transfer = snd_pcm_lib_write_transfer;
++	} else {
++		if (runtime->access != SNDRV_PCM_ACCESS_RW_NONINTERLEAVED)
++			return -EINVAL;
++		transfer = snd_pcm_lib_writev_transfer;
++	}
+ 
+ 	if (size == 0)
+ 		return 0;
+ 
++	nonblock = !!(substream->f_flags & O_NONBLOCK);
++
+ 	snd_pcm_stream_lock_irq(substream);
+ 	err = pcm_accessible_state(runtime);
+ 	if (err < 0)
+@@ -2178,53 +2196,11 @@ static snd_pcm_sframes_t snd_pcm_lib_write1(struct snd_pcm_substream *substream,
+ 	snd_pcm_stream_unlock_irq(substream);
+ 	return xfer > 0 ? (snd_pcm_sframes_t)xfer : err;
+ }
+-
+-snd_pcm_sframes_t snd_pcm_lib_write(struct snd_pcm_substream *substream, const void __user *buf, snd_pcm_uframes_t size)
+-{
+-	struct snd_pcm_runtime *runtime;
+-	int nonblock;
+-	int err;
+-
+-	err = pcm_sanity_check(substream);
+-	if (err < 0)
+-		return err;
+-	runtime = substream->runtime;
+-	nonblock = !!(substream->f_flags & O_NONBLOCK);
+-
+-	if (runtime->access != SNDRV_PCM_ACCESS_RW_INTERLEAVED &&
+-	    runtime->channels > 1)
+-		return -EINVAL;
+-	return snd_pcm_lib_write1(substream, (unsigned long)buf, size, nonblock,
+-				  snd_pcm_lib_write_transfer);
+-}
+-
+-EXPORT_SYMBOL(snd_pcm_lib_write);
+-
+-snd_pcm_sframes_t snd_pcm_lib_writev(struct snd_pcm_substream *substream,
+-				     void __user **bufs,
+-				     snd_pcm_uframes_t frames)
+-{
+-	struct snd_pcm_runtime *runtime;
+-	int nonblock;
+-	int err;
+-
+-	err = pcm_sanity_check(substream);
+-	if (err < 0)
+-		return err;
+-	runtime = substream->runtime;
+-	nonblock = !!(substream->f_flags & O_NONBLOCK);
+-
+-	if (runtime->access != SNDRV_PCM_ACCESS_RW_NONINTERLEAVED)
+-		return -EINVAL;
+-	return snd_pcm_lib_write1(substream, (unsigned long)bufs, frames,
+-				  nonblock, snd_pcm_lib_writev_transfer);
+-}
+-
+-EXPORT_SYMBOL(snd_pcm_lib_writev);
++EXPORT_SYMBOL(__snd_pcm_lib_write);
+ 
+ static int snd_pcm_lib_read_transfer(struct snd_pcm_substream *substream, 
+ 				     unsigned int hwoff,
+-				     unsigned long data, unsigned int off,
++				     void *data, unsigned int off,
+ 				     snd_pcm_uframes_t frames)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+@@ -2246,7 +2222,7 @@ static int snd_pcm_lib_read_transfer(struct snd_pcm_substream *substream,
+ 
+ static int snd_pcm_lib_readv_transfer(struct snd_pcm_substream *substream,
+ 				      unsigned int hwoff,
+-				      unsigned long data, unsigned int off,
++				      void *data, unsigned int off,
+ 				      snd_pcm_uframes_t frames)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+@@ -2284,21 +2260,39 @@ static int snd_pcm_lib_readv_transfer(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
+-static snd_pcm_sframes_t snd_pcm_lib_read1(struct snd_pcm_substream *substream,
+-					   unsigned long data,
+-					   snd_pcm_uframes_t size,
+-					   int nonblock,
+-					   transfer_f transfer)
++snd_pcm_sframes_t __snd_pcm_lib_read(struct snd_pcm_substream *substream,
++				     void *data, bool interleaved,
++				     snd_pcm_uframes_t size)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	snd_pcm_uframes_t xfer = 0;
+ 	snd_pcm_uframes_t offset = 0;
+ 	snd_pcm_uframes_t avail;
+-	int err = 0;
++	transfer_f transfer;
++	bool nonblock;
++	int err;
++
++	err = pcm_sanity_check(substream);
++	if (err < 0)
++		return err;
++	runtime = substream->runtime;
++
++	if (interleaved) {
++		if (runtime->access != SNDRV_PCM_ACCESS_RW_INTERLEAVED &&
++		    runtime->channels > 1)
++			return -EINVAL;
++		transfer = snd_pcm_lib_read_transfer;
++	} else {
++		if (runtime->access != SNDRV_PCM_ACCESS_RW_NONINTERLEAVED)
++			return -EINVAL;
++		transfer = snd_pcm_lib_readv_transfer;
++	}
+ 
+ 	if (size == 0)
+ 		return 0;
+ 
++	nonblock = !!(substream->f_flags & O_NONBLOCK);
++
+ 	snd_pcm_stream_lock_irq(substream);
+ 	err = pcm_accessible_state(runtime);
+ 	if (err < 0)
+@@ -2373,47 +2367,7 @@ static snd_pcm_sframes_t snd_pcm_lib_read1(struct snd_pcm_substream *substream,
+ 	snd_pcm_stream_unlock_irq(substream);
+ 	return xfer > 0 ? (snd_pcm_sframes_t)xfer : err;
+ }
+-
+-snd_pcm_sframes_t snd_pcm_lib_read(struct snd_pcm_substream *substream, void __user *buf, snd_pcm_uframes_t size)
+-{
+-	struct snd_pcm_runtime *runtime;
+-	int nonblock;
+-	int err;
+-	
+-	err = pcm_sanity_check(substream);
+-	if (err < 0)
+-		return err;
+-	runtime = substream->runtime;
+-	nonblock = !!(substream->f_flags & O_NONBLOCK);
+-	if (runtime->access != SNDRV_PCM_ACCESS_RW_INTERLEAVED)
+-		return -EINVAL;
+-	return snd_pcm_lib_read1(substream, (unsigned long)buf, size, nonblock, snd_pcm_lib_read_transfer);
+-}
+-
+-EXPORT_SYMBOL(snd_pcm_lib_read);
+-
+-snd_pcm_sframes_t snd_pcm_lib_readv(struct snd_pcm_substream *substream,
+-				    void __user **bufs,
+-				    snd_pcm_uframes_t frames)
+-{
+-	struct snd_pcm_runtime *runtime;
+-	int nonblock;
+-	int err;
+-
+-	err = pcm_sanity_check(substream);
+-	if (err < 0)
+-		return err;
+-	runtime = substream->runtime;
+-	if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
+-		return -EBADFD;
+-
+-	nonblock = !!(substream->f_flags & O_NONBLOCK);
+-	if (runtime->access != SNDRV_PCM_ACCESS_RW_NONINTERLEAVED)
+-		return -EINVAL;
+-	return snd_pcm_lib_read1(substream, (unsigned long)bufs, frames, nonblock, snd_pcm_lib_readv_transfer);
+-}
