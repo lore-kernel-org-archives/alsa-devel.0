@@ -1,63 +1,56 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Fix applying MSI dual-codec mobo
-	quirk
-Date: Thu,  1 Jun 2017 22:58:24 +0200
-Message-ID: <20170601205850.24993-2-tiwai@suse.de>
+From: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Subject: [PATCH v2 24/27] usb: gadget: u_uac1: Kill set_fs() usage
+Date: Thu,  1 Jun 2017 22:58:47 +0200
+Message-ID: <20170601205850.24993-25-tiwai@suse.de>
 References: <20170601205850.24993-1-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id A819526705A
- for <alsa-devel@alsa-project.org>; Thu,  1 Jun 2017 22:59:04 +0200 (CEST)
-In-Reply-To: <20170601205850.24993-1-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Felipe Balbi <balbi@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Hans Verkuil <hverkuil@xs4all.nl>, Mark Brown <broonie@kernel.org>, linux-media@vger.kernel.org
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20170601205850.24993-1-tiwai-l3A5Bk7waGM@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: Takashi Sakamoto <o-takashi-sodqOivclbsO3cATojSK5Q@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Felipe Balbi <balbi-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The previous commit [63691587f7b0: ALSA: hda - Apply dual-codec quirk
-for MSI Z270-Gaming mobo] attempted to apply the existing dual-codec
-quirk for a MSI mobo.  But it turned out that this isn't applied
-properly due to the MSI-vendor quirk before this entry.  I overlooked
-such two MSI entries just because they were put in the wrong position,
-although we have a list ordered by PCI SSID numbers.
+With the new API to perform the in-kernel buffer copy, we can get rid
+of set_fs() usage in this driver, finally.
 
-This patch fixes it by rearranging the unordered entries.
-
-Fixes: 63691587f7b0 ("ALSA: hda - Apply dual-codec quirk for MSI Z270-Gaming mobo")
-Reported-by: Rudolf Schmidt <info@rudolfschmidt.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
 ---
- sound/pci/hda/patch_realtek.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/function/u_uac1.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 918e45268915..a57988d617e9 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -2324,11 +2324,11 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x106b, 0x4a00, "Macbook 5,2", ALC889_FIXUP_MBA11_VREF),
+diff --git a/drivers/usb/gadget/function/u_uac1.c b/drivers/usb/gadget/function/u_uac1.c
+index c78c84138a28..ca88e4c0fd1e 100644
+--- a/drivers/usb/gadget/function/u_uac1.c
++++ b/drivers/usb/gadget/function/u_uac1.c
+@@ -157,7 +157,6 @@ size_t u_audio_playback(struct gaudio *card, void *buf, size_t count)
+ 	struct gaudio_snd_dev	*snd = &card->playback;
+ 	struct snd_pcm_substream *substream = snd->substream;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	mm_segment_t old_fs;
+ 	ssize_t result;
+ 	snd_pcm_sframes_t frames;
  
- 	SND_PCI_QUIRK(0x1071, 0x8258, "Evesham Voyaeger", ALC882_FIXUP_EAPD),
--	SND_PCI_QUIRK(0x1462, 0x7350, "MSI-7350", ALC889_FIXUP_CD),
--	SND_PCI_QUIRK_VENDOR(0x1462, "MSI", ALC882_FIXUP_GPIO3),
- 	SND_PCI_QUIRK(0x1458, 0xa002, "Gigabyte EP45-DS3/Z87X-UD3H", ALC889_FIXUP_FRONT_HP_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1458, 0xa0b8, "Gigabyte AZ370-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
-+	SND_PCI_QUIRK(0x1462, 0x7350, "MSI-7350", ALC889_FIXUP_CD),
- 	SND_PCI_QUIRK(0x1462, 0xda57, "MSI Z270-Gaming", ALC1220_FIXUP_GB_DUAL_CODECS),
-+	SND_PCI_QUIRK_VENDOR(0x1462, "MSI", ALC882_FIXUP_GPIO3),
- 	SND_PCI_QUIRK(0x147b, 0x107a, "Abit AW9D-MAX", ALC882_FIXUP_ABIT_AW9D_MAX),
- 	SND_PCI_QUIRK_VENDOR(0x1558, "Clevo laptop", ALC882_FIXUP_EAPD),
- 	SND_PCI_QUIRK(0x161f, 0x2054, "Medion laptop", ALC883_FIXUP_EAPD),
+@@ -174,15 +173,11 @@ size_t u_audio_playback(struct gaudio *card, void *buf, size_t count)
+ 	}
+ 
+ 	frames = bytes_to_frames(runtime, count);
+-	old_fs = get_fs();
+-	set_fs(KERNEL_DS);
+-	result = snd_pcm_lib_write(snd->substream, (void __user *)buf, frames);
++	result = snd_pcm_kernel_write(snd->substream, buf, frames);
+ 	if (result != frames) {
+ 		ERROR(card, "Playback error: %d\n", (int)result);
+-		set_fs(old_fs);
+ 		goto try_again;
+ 	}
+-	set_fs(old_fs);
+ 
+ 	return 0;
+ }
 -- 
 2.13.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
