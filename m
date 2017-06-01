@@ -1,101 +1,207 @@
-From: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Subject: [PATCH v2 00/27] Revised full patchset for PCM in-kernel copy support
-Date: Thu,  1 Jun 2017 22:58:23 +0200
-Message-ID: <20170601205850.24993-1-tiwai@suse.de>
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: Takashi Sakamoto <o-takashi-sodqOivclbsO3cATojSK5Q@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Felipe Balbi <balbi-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH v2 06/27] ALSA: korg1212: Convert to the new PCM ops
+Date: Thu,  1 Jun 2017 22:58:29 +0200
+Message-ID: <20170601205850.24993-7-tiwai@suse.de>
+References: <20170601205850.24993-1-tiwai@suse.de>
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <20170601205850.24993-1-tiwai@suse.de>
+Sender: linux-media-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Mark Brown <broonie@kernel.org>, Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org, Felipe Balbi <balbi@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Replace the copy and the silence ops with the new PCM ops.
+Although we can refactor this messy code, at this time, the changes
+are kept as small as possible.  Let's clean up later.
 
-this is a full patchset of what I sent previously, containing the all
-changes instead of the snippet.  The main purpose of this patchset is
-to eliminate the remaining usages of set_fs().  They are basically
-used for in-kernel PCM data transfer, and this patch provides the new
-API functions and replaces the hackish set_fs() calls with them.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/korg1212/korg1212.c | 112 ++++++++++++++++++++++++------------------
+ 1 file changed, 65 insertions(+), 47 deletions(-)
 
-Unlike the first patchset with the unified copy_silence ops, this adds
-a new copy_kernel ops instead.  At the same time, copy/silence are
-changed to receive the position and size in bytes instead of frames.
-This allows us to simplify the PCM core code.  As a result, a good
-amount of code could be removed from pcm_lib.c.
-
-The difference from the previous patchset is that this is a full
-patchset, i.e. all relevant drivers have been covered, and also some
-small issues have been addressed, in addition, the documentation
-update is provided, too.
-
-I'm Cc'ing the media and the USB people since it touches solo6x10 and
-usb-gadget drivers.
-
-The previous ACK was dropped as each patch was rewritten again.  Sorry
-for the doubly patch-review labours.
-
-
-thanks,
-
-Takashi
-
-===
-
-Takashi Iwai (26):
-  ALSA: pcm: Introduce copy_user, copy_kernel and fill_silence ops
-  ALSA: dummy: Convert to new PCM copy ops
-  ALSA: es1938: Convert to the new PCM copy ops
-  ALSA: nm256: Convert to new PCM copy ops
-  ALSA: korg1212: Convert to the new PCM ops
-  ALSA: rme32: Convert to the new PCM copy ops
-  ALSA: rme96: Convert to the new PCM ops
-  ALSA: rme9652: Convert to the new PCM ops
-  ALSA: hdsp: Convert to the new PCM ops
-  ALSA: gus: Convert to the new PCM ops
-  ALSA: sb: Convert to the new PCM ops
-  ALSA: sh: Convert to the new PCM ops
-  ASoC: blackfin: Convert to the new PCM ops
-  [media] solo6x10: Convert to the new PCM ops
-  ALSA: pcm: Drop the old copy and silence ops
-  ALSA: pcm: Check PCM state by a common helper function
-  ALSA: pcm: Shuffle codes
-  ALSA: pcm: Call directly the common read/write helpers
-  ALSA: pcm: More unification of PCM transfer codes
-  ALSA: pcm: Unify read/write loop
-  ALSA: pcm: Simplify snd_pcm_playback_silence()
-  ALSA: pcm: Direct in-kernel read/write support
-  usb: gadget: u_uac1: Kill set_fs() usage
-  ALSA: pcm: Kill set_fs() in PCM OSS layer
-  ALSA: pcm: Build OSS writev/readv helpers conditionally
-  ALSA: doc: Update copy_user, copy_kernel and fill_silence PCM ops
-
- .../sound/kernel-api/writing-an-alsa-driver.rst    | 111 ++--
- drivers/media/pci/solo6x10/solo6x10-g723.c         |  32 +-
- drivers/usb/gadget/function/u_uac1.c               |   7 +-
- include/sound/pcm.h                                |  80 ++-
- sound/core/oss/io.c                                |   4 +-
- sound/core/oss/pcm_oss.c                           |  81 +--
- sound/core/oss/pcm_plugin.h                        |   6 +-
- sound/core/pcm_lib.c                               | 564 ++++++++-------------
- sound/drivers/dummy.c                              |  20 +-
- sound/isa/gus/gus_pcm.c                            |  97 ++--
- sound/isa/sb/emu8000_pcm.c                         | 190 ++++---
- sound/pci/es1938.c                                 |  33 +-
- sound/pci/korg1212/korg1212.c                      | 112 ++--
- sound/pci/nm256/nm256.c                            |  57 ++-
- sound/pci/rme32.c                                  |  65 ++-
- sound/pci/rme96.c                                  |  70 ++-
- sound/pci/rme9652/hdsp.c                           |  67 ++-
- sound/pci/rme9652/rme9652.c                        |  71 ++-
- sound/sh/sh_dac_audio.c                            |  54 +-
- sound/soc/blackfin/bf5xx-ac97-pcm.c                |  27 +-
- sound/soc/blackfin/bf5xx-i2s-pcm.c                 |  36 +-
- sound/soc/soc-pcm.c                                |   5 +-
- 22 files changed, 977 insertions(+), 812 deletions(-)
-
+diff --git a/sound/pci/korg1212/korg1212.c b/sound/pci/korg1212/korg1212.c
+index 1e25095fd144..b28fe4914d6b 100644
+--- a/sound/pci/korg1212/korg1212.c
++++ b/sound/pci/korg1212/korg1212.c
+@@ -1299,13 +1299,21 @@ static int snd_korg1212_silence(struct snd_korg1212 *korg1212, int pos, int coun
+ 	return 0;
+ }
+ 
+-static int snd_korg1212_copy_to(struct snd_korg1212 *korg1212, void __user *dst, int pos, int count, int offset, int size)
++static int snd_korg1212_copy_to(struct snd_pcm_substream *substream,
++				void __user *dst, int pos, int count,
++				bool in_kernel)
+ {
+-	struct KorgAudioFrame * src =  korg1212->recordDataBufsPtr[0].bufferData + pos;
+-	int i, rc;
+-
+-	K1212_DEBUG_PRINTK_VERBOSE("K1212_DEBUG: snd_korg1212_copy_to pos=%d offset=%d size=%d\n",
+-				   pos, offset, size);
++	struct snd_pcm_runtime *runtime = substream->runtime;
++        struct snd_korg1212 *korg1212 = snd_pcm_substream_chip(substream);
++	struct KorgAudioFrame *src;
++	int i, size;
++
++	pos = bytes_to_frames(runtime, pos);
++	count = bytes_to_frames(runtime, count);
++	size = korg1212->channels * 2;
++	src = korg1212->recordDataBufsPtr[0].bufferData + pos;
++	K1212_DEBUG_PRINTK_VERBOSE("K1212_DEBUG: snd_korg1212_copy_to pos=%d size=%d count=%d\n",
++				   pos, size, count);
+ 	if (snd_BUG_ON(pos + count > K1212_MAX_SAMPLES))
+ 		return -EINVAL;
+ 
+@@ -1317,11 +1325,10 @@ static int snd_korg1212_copy_to(struct snd_korg1212 *korg1212, void __user *dst,
+ 			return -EFAULT;
+ 		}
+ #endif
+-		rc = copy_to_user(dst + offset, src, size);
+-		if (rc) {
+-			K1212_DEBUG_PRINTK("K1212_DEBUG: snd_korg1212_copy_to USER EFAULT src=%p dst=%p iter=%d\n", src, dst, i);
++		if (in_kernel)
++			memcpy((void *)dst, src, size);
++		else if (copy_to_user(dst, src, size))
+ 			return -EFAULT;
+-		}
+ 		src++;
+ 		dst += size;
+ 	}
+@@ -1329,13 +1336,22 @@ static int snd_korg1212_copy_to(struct snd_korg1212 *korg1212, void __user *dst,
+ 	return 0;
+ }
+ 
+-static int snd_korg1212_copy_from(struct snd_korg1212 *korg1212, void __user *src, int pos, int count, int offset, int size)
++static int snd_korg1212_copy_from(struct snd_pcm_substream *substream,
++				  void __user *src, int pos, int count,
++				  bool in_kernel)
+ {
+-	struct KorgAudioFrame * dst =  korg1212->playDataBufsPtr[0].bufferData + pos;
+-	int i, rc;
++        struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_korg1212 *korg1212 = snd_pcm_substream_chip(substream);
++	struct KorgAudioFrame *dst;
++	int i, size;
+ 
+-	K1212_DEBUG_PRINTK_VERBOSE("K1212_DEBUG: snd_korg1212_copy_from pos=%d offset=%d size=%d count=%d\n",
+-				   pos, offset, size, count);
++	pos = bytes_to_frames(runtime, pos);
++	count = bytes_to_frames(runtime, count);
++	size = korg1212->channels * 2;
++	dst = korg1212->playDataBufsPtr[0].bufferData + pos;
++
++	K1212_DEBUG_PRINTK_VERBOSE("K1212_DEBUG: snd_korg1212_copy_from pos=%d size=%d count=%d\n",
++				   pos, size, count);
+ 
+ 	if (snd_BUG_ON(pos + count > K1212_MAX_SAMPLES))
+ 		return -EINVAL;
+@@ -1348,11 +1364,10 @@ static int snd_korg1212_copy_from(struct snd_korg1212 *korg1212, void __user *sr
+ 			return -EFAULT;
+ 		}
+ #endif
+-		rc = copy_from_user((void*) dst + offset, src, size);
+-		if (rc) {
+-			K1212_DEBUG_PRINTK("K1212_DEBUG: snd_korg1212_copy_from USER EFAULT src=%p dst=%p iter=%d\n", src, dst, i);
++		if (in_kernel)
++			memcpy((void *)dst, src, size);
++		else if (copy_from_user(dst, src, size))
+ 			return -EFAULT;
+-		}
+ 		dst++;
+ 		src += size;
+ 	}
+@@ -1640,45 +1655,46 @@ static snd_pcm_uframes_t snd_korg1212_capture_pointer(struct snd_pcm_substream *
+ }
+ 
+ static int snd_korg1212_playback_copy(struct snd_pcm_substream *substream,
+-                        int channel, /* not used (interleaved data) */
+-                        snd_pcm_uframes_t pos,
+-                        void __user *src,
+-                        snd_pcm_uframes_t count)
++				      int channel, unsigned long pos,
++				      void __user *src, unsigned long count)
+ {
+-        struct snd_korg1212 *korg1212 = snd_pcm_substream_chip(substream);
+-
+-	K1212_DEBUG_PRINTK_VERBOSE("K1212_DEBUG: snd_korg1212_playback_copy [%s] %ld %ld\n",
+-				   stateName[korg1212->cardState], pos, count);
+- 
+-	return snd_korg1212_copy_from(korg1212, src, pos, count, 0, korg1212->channels * 2);
++	return snd_korg1212_copy_from(substream, src, pos, count, false);
++}
+ 
++static int snd_korg1212_playback_copy_kernel(struct snd_pcm_substream *substream,
++				      int channel, unsigned long pos,
++				      void *src, unsigned long count)
++{
++	return snd_korg1212_copy_from(substream, (void __user *)src,
++				      pos, count, true);
+ }
+ 
+ static int snd_korg1212_playback_silence(struct snd_pcm_substream *substream,
+                            int channel, /* not used (interleaved data) */
+-                           snd_pcm_uframes_t pos,
+-                           snd_pcm_uframes_t count)
++                           unsigned long pos,
++                           unsigned long count)
+ {
++	struct snd_pcm_runtime *runtime = substream->runtime;
+         struct snd_korg1212 *korg1212 = snd_pcm_substream_chip(substream);
+ 
+-	K1212_DEBUG_PRINTK_VERBOSE("K1212_DEBUG: snd_korg1212_playback_silence [%s]\n",
+-				   stateName[korg1212->cardState]);
+-
+-	return snd_korg1212_silence(korg1212, pos, count, 0, korg1212->channels * 2);
++	return snd_korg1212_silence(korg1212, bytes_to_frames(runtime, pos),
++				    bytes_to_frames(runtime, count),
++				    0, korg1212->channels * 2);
+ }
+ 
+ static int snd_korg1212_capture_copy(struct snd_pcm_substream *substream,
+-                        int channel, /* not used (interleaved data) */
+-                        snd_pcm_uframes_t pos,
+-                        void __user *dst,
+-                        snd_pcm_uframes_t count)
++				     int channel, unsigned long pos,
++				     void __user *dst, unsigned long count)
+ {
+-        struct snd_korg1212 *korg1212 = snd_pcm_substream_chip(substream);
+-
+-	K1212_DEBUG_PRINTK_VERBOSE("K1212_DEBUG: snd_korg1212_capture_copy [%s] %ld %ld\n",
+-				   stateName[korg1212->cardState], pos, count);
++	return snd_korg1212_copy_to(substream, dst, pos, count, false);
++}
+ 
+-	return snd_korg1212_copy_to(korg1212, dst, pos, count, 0, korg1212->channels * 2);
++static int snd_korg1212_capture_copy_kernel(struct snd_pcm_substream *substream,
++				     int channel, unsigned long pos,
++				     void *dst, unsigned long count)
++{
++	return snd_korg1212_copy_to(substream, (void __user *)dst,
++				    pos, count, true);
+ }
+ 
+ static const struct snd_pcm_ops snd_korg1212_playback_ops = {
+@@ -1689,8 +1705,9 @@ static const struct snd_pcm_ops snd_korg1212_playback_ops = {
+         .prepare =	snd_korg1212_prepare,
+         .trigger =	snd_korg1212_trigger,
+         .pointer =	snd_korg1212_playback_pointer,
+-        .copy =		snd_korg1212_playback_copy,
+-        .silence =	snd_korg1212_playback_silence,
++	.copy_user =	snd_korg1212_playback_copy,
++	.copy_kernel =	snd_korg1212_playback_copy_kernel,
++	.fill_silence =	snd_korg1212_playback_silence,
+ };
+ 
+ static const struct snd_pcm_ops snd_korg1212_capture_ops = {
+@@ -1701,7 +1718,8 @@ static const struct snd_pcm_ops snd_korg1212_capture_ops = {
+ 	.prepare =	snd_korg1212_prepare,
+ 	.trigger =	snd_korg1212_trigger,
+ 	.pointer =	snd_korg1212_capture_pointer,
+-	.copy =		snd_korg1212_capture_copy,
++	.copy_user =	snd_korg1212_capture_copy,
++	.copy_kernel =	snd_korg1212_capture_copy_kernel,
+ };
+ 
+ /*
 -- 
 2.13.0
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
