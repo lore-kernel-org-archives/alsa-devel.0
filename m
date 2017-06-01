@@ -1,151 +1,149 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2 07/27] ALSA: rme32: Convert to the new PCM copy ops
-Date: Thu,  1 Jun 2017 22:58:30 +0200
-Message-ID: <20170601205850.24993-8-tiwai@suse.de>
+From: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Subject: [PATCH v2 16/27] ALSA: pcm: Drop the old copy and silence ops
+Date: Thu,  1 Jun 2017 22:58:39 +0200
+Message-ID: <20170601205850.24993-17-tiwai@suse.de>
 References: <20170601205850.24993-1-tiwai@suse.de>
-Return-path: <linux-media-owner@vger.kernel.org>
-In-Reply-To: <20170601205850.24993-1-tiwai@suse.de>
-Sender: linux-media-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Mark Brown <broonie@kernel.org>, Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org, Felipe Balbi <balbi@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org
+Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20170601205850.24993-1-tiwai-l3A5Bk7waGM@public.gmane.org>
+Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Cc: Takashi Sakamoto <o-takashi-sodqOivclbsO3cATojSK5Q@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Felipe Balbi <balbi-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Replace the copy and the silence ops with the new ops.
-The conversion is straightforward with standard helper functions, and
-now we can drop the bytes <-> frames conversions in callbacks.
+Now that all users of old copy and silence ops have been converted to
+the new PCM ops, the old stuff can be retired and go away.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
 ---
- sound/pci/rme32.c | 65 ++++++++++++++++++++++++++++++++++++-------------------
- 1 file changed, 43 insertions(+), 22 deletions(-)
+ include/sound/pcm.h  |  5 -----
+ sound/core/pcm_lib.c | 38 +-------------------------------------
+ sound/soc/soc-pcm.c  |  2 --
+ 3 files changed, 1 insertion(+), 44 deletions(-)
 
-diff --git a/sound/pci/rme32.c b/sound/pci/rme32.c
-index 96d15db65dfd..ce438c62b0b3 100644
---- a/sound/pci/rme32.c
-+++ b/sound/pci/rme32.c
-@@ -254,39 +254,46 @@ static inline unsigned int snd_rme32_pcm_byteptr(struct rme32 * rme32)
- }
- 
- /* silence callback for halfduplex mode */
--static int snd_rme32_playback_silence(struct snd_pcm_substream *substream, int channel,	/* not used (interleaved data) */
--				      snd_pcm_uframes_t pos,
--				      snd_pcm_uframes_t count)
-+static int snd_rme32_playback_silence(struct snd_pcm_substream *substream,
-+				      int channel, unsigned long pos,
-+				      unsigned long count)
- {
- 	struct rme32 *rme32 = snd_pcm_substream_chip(substream);
--	count <<= rme32->playback_frlog;
--	pos <<= rme32->playback_frlog;
-+
- 	memset_io(rme32->iobase + RME32_IO_DATA_BUFFER + pos, 0, count);
- 	return 0;
- }
- 
- /* copy callback for halfduplex mode */
--static int snd_rme32_playback_copy(struct snd_pcm_substream *substream, int channel,	/* not used (interleaved data) */
--				   snd_pcm_uframes_t pos,
--				   void __user *src, snd_pcm_uframes_t count)
-+static int snd_rme32_playback_copy(struct snd_pcm_substream *substream,
-+				   int channel, unsigned long pos,
-+				   void __user *src, unsigned long count)
- {
- 	struct rme32 *rme32 = snd_pcm_substream_chip(substream);
--	count <<= rme32->playback_frlog;
--	pos <<= rme32->playback_frlog;
-+
- 	if (copy_from_user_toio(rme32->iobase + RME32_IO_DATA_BUFFER + pos,
--			    src, count))
-+				src, count))
- 		return -EFAULT;
- 	return 0;
- }
- 
-+static int snd_rme32_playback_copy_kernel(struct snd_pcm_substream *substream,
-+					  int channel, unsigned long pos,
-+					  void *src, unsigned long count)
-+{
-+	struct rme32 *rme32 = snd_pcm_substream_chip(substream);
-+
-+	memcpy_toio(rme32->iobase + RME32_IO_DATA_BUFFER + pos, src, count);
-+	return 0;
-+}
-+
- /* copy callback for halfduplex mode */
--static int snd_rme32_capture_copy(struct snd_pcm_substream *substream, int channel,	/* not used (interleaved data) */
--				  snd_pcm_uframes_t pos,
--				  void __user *dst, snd_pcm_uframes_t count)
-+static int snd_rme32_capture_copy(struct snd_pcm_substream *substream,
-+				  int channel, unsigned long pos,
-+				  void __user *dst, unsigned long count)
- {
- 	struct rme32 *rme32 = snd_pcm_substream_chip(substream);
--	count <<= rme32->capture_frlog;
--	pos <<= rme32->capture_frlog;
-+
- 	if (copy_to_user_fromio(dst,
- 			    rme32->iobase + RME32_IO_DATA_BUFFER + pos,
- 			    count))
-@@ -294,6 +301,16 @@ static int snd_rme32_capture_copy(struct snd_pcm_substream *substream, int chann
- 	return 0;
- }
- 
-+static int snd_rme32_capture_copy_kernel(struct snd_pcm_substream *substream,
-+					 int channel, unsigned long pos,
-+					 void *dst, unsigned long count)
-+{
-+	struct rme32 *rme32 = snd_pcm_substream_chip(substream);
-+
-+	memcpy_fromio(dst, rme32->iobase + RME32_IO_DATA_BUFFER + pos, count);
-+	return 0;
-+}
-+
- /*
-  * SPDIF I/O capabilities (half-duplex mode)
-  */
-@@ -1205,8 +1222,9 @@ static const struct snd_pcm_ops snd_rme32_playback_spdif_ops = {
- 	.prepare =	snd_rme32_playback_prepare,
- 	.trigger =	snd_rme32_pcm_trigger,
- 	.pointer =	snd_rme32_playback_pointer,
--	.copy =		snd_rme32_playback_copy,
--	.silence =	snd_rme32_playback_silence,
-+	.copy_user =	snd_rme32_playback_copy,
-+	.copy_kernel =	snd_rme32_playback_copy_kernel,
-+	.fill_silence =	snd_rme32_playback_silence,
- 	.mmap =		snd_pcm_lib_mmap_iomem,
- };
- 
-@@ -1219,7 +1237,8 @@ static const struct snd_pcm_ops snd_rme32_capture_spdif_ops = {
- 	.prepare =	snd_rme32_capture_prepare,
- 	.trigger =	snd_rme32_pcm_trigger,
- 	.pointer =	snd_rme32_capture_pointer,
--	.copy =		snd_rme32_capture_copy,
-+	.copy_user =	snd_rme32_capture_copy,
-+	.copy_kernel =	snd_rme32_capture_copy_kernel,
- 	.mmap =		snd_pcm_lib_mmap_iomem,
- };
- 
-@@ -1231,8 +1250,9 @@ static const struct snd_pcm_ops snd_rme32_playback_adat_ops = {
- 	.prepare =	snd_rme32_playback_prepare,
- 	.trigger =	snd_rme32_pcm_trigger,
- 	.pointer =	snd_rme32_playback_pointer,
--	.copy =		snd_rme32_playback_copy,
--	.silence =	snd_rme32_playback_silence,
-+	.copy_user =	snd_rme32_playback_copy,
-+	.copy_kernel =	snd_rme32_playback_copy_kernel,
-+	.fill_silence =	snd_rme32_playback_silence,
- 	.mmap =		snd_pcm_lib_mmap_iomem,
- };
- 
-@@ -1244,7 +1264,8 @@ static const struct snd_pcm_ops snd_rme32_capture_adat_ops = {
- 	.prepare =	snd_rme32_capture_prepare,
- 	.trigger =	snd_rme32_pcm_trigger,
- 	.pointer =	snd_rme32_capture_pointer,
--	.copy =		snd_rme32_capture_copy,
-+	.copy_user =	snd_rme32_capture_copy,
-+	.copy_kernel =	snd_rme32_capture_copy_kernel,
- 	.mmap =		snd_pcm_lib_mmap_iomem,
- };
- 
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index a065415191d8..953ebfc83184 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -78,11 +78,6 @@ struct snd_pcm_ops {
+ 			struct timespec *system_ts, struct timespec *audio_ts,
+ 			struct snd_pcm_audio_tstamp_config *audio_tstamp_config,
+ 			struct snd_pcm_audio_tstamp_report *audio_tstamp_report);
+-	int (*copy)(struct snd_pcm_substream *substream, int channel,
+-		    snd_pcm_uframes_t pos,
+-		    void __user *buf, snd_pcm_uframes_t count);
+-	int (*silence)(struct snd_pcm_substream *substream, int channel, 
+-		       snd_pcm_uframes_t pos, snd_pcm_uframes_t count);
+ 	int (*fill_silence)(struct snd_pcm_substream *substream, int channel,
+ 			    unsigned long pos, unsigned long bytes);
+ 	int (*copy_user)(struct snd_pcm_substream *substream, int channel,
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index 9334fc2c20c8..0db8d4e0fca2 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -116,9 +116,6 @@ void snd_pcm_playback_silence(struct snd_pcm_substream *substream, snd_pcm_ufram
+ 								   frames_to_bytes(runtime, ofs),
+ 								   frames_to_bytes(runtime, transfer));
+ 				snd_BUG_ON(err < 0);
+-			} else if (substream->ops->silence) {
+-				err = substream->ops->silence(substream, -1, ofs, transfer);
+-				snd_BUG_ON(err < 0);
+ 			} else {
+ 				hwbuf = runtime->dma_area + frames_to_bytes(runtime, ofs);
+ 				snd_pcm_format_set_silence(runtime->format, hwbuf, transfer * runtime->channels);
+@@ -133,11 +130,6 @@ void snd_pcm_playback_silence(struct snd_pcm_substream *substream, snd_pcm_ufram
+ 									   samples_to_bytes(runtime, transfer));
+ 					snd_BUG_ON(err < 0);
+ 				}
+-			} else if (substream->ops->silence) {
+-				for (c = 0; c < channels; ++c) {
+-					err = substream->ops->silence(substream, c, ofs, transfer);
+-					snd_BUG_ON(err < 0);
+-				}
+ 			} else {
+ 				size_t dma_csize = runtime->dma_bytes / channels;
+ 				for (c = 0; c < channels; ++c) {
+@@ -2013,9 +2005,6 @@ static int snd_pcm_lib_write_transfer(struct snd_pcm_substream *substream,
+ 		err = substream->ops->copy_user(substream, 0, hwoff, buf, frames);
+ 		if (err < 0)
+ 			return err;
+-	} else if (substream->ops->copy) {
+-		if ((err = substream->ops->copy(substream, -1, hwoff, buf, frames)) < 0)
+-			return err;
+ 	} else {
+ 		char *hwbuf = runtime->dma_area + frames_to_bytes(runtime, hwoff);
+ 		if (copy_from_user(hwbuf, buf, frames_to_bytes(runtime, frames)))
+@@ -2137,8 +2126,7 @@ static int pcm_sanity_check(struct snd_pcm_substream *substream)
+ 	if (PCM_RUNTIME_CHECK(substream))
+ 		return -ENXIO;
+ 	runtime = substream->runtime;
+-	if (snd_BUG_ON(!substream->ops->copy_user && !substream->ops->copy
+-		       && !runtime->dma_area))
++	if (snd_BUG_ON(!substream->ops->copy_user && !runtime->dma_area))
+ 		return -EINVAL;
+ 	if (runtime->status->state == SNDRV_PCM_STATE_OPEN)
+ 		return -EBADFD;
+@@ -2198,19 +2186,6 @@ static int snd_pcm_lib_writev_transfer(struct snd_pcm_substream *substream,
+ 			if (err < 0)
+ 				return err;
+ 		}
+-	} else if (substream->ops->copy) {
+-		if (snd_BUG_ON(!substream->ops->silence))
+-			return -EINVAL;
+-		for (c = 0; c < channels; ++c, ++bufs) {
+-			if (*bufs == NULL) {
+-				if ((err = substream->ops->silence(substream, c, hwoff, frames)) < 0)
+-					return err;
+-			} else {
+-				buf = *bufs + samples_to_bytes(runtime, off);
+-				if ((err = substream->ops->copy(substream, c, hwoff, buf, frames)) < 0)
+-					return err;
+-			}
+-		}
+ 	} else {
+ 		/* default transfer behaviour */
+ 		size_t dma_csize = runtime->dma_bytes / channels;
+@@ -2264,9 +2239,6 @@ static int snd_pcm_lib_read_transfer(struct snd_pcm_substream *substream,
+ 		err = substream->ops->copy_user(substream, 0, hwoff, buf, frames);
+ 		if (err < 0)
+ 			return err;
+-	} else if (substream->ops->copy) {
+-		if ((err = substream->ops->copy(substream, -1, hwoff, buf, frames)) < 0)
+-			return err;
+ 	} else {
+ 		char *hwbuf = runtime->dma_area + frames_to_bytes(runtime, hwoff);
+ 		if (copy_to_user(buf, hwbuf, frames_to_bytes(runtime, frames)))
+@@ -2428,14 +2400,6 @@ static int snd_pcm_lib_readv_transfer(struct snd_pcm_substream *substream,
+ 			if (err < 0)
+ 				return err;
+ 		}
+-	} else if (substream->ops->copy) {
+-		for (c = 0; c < channels; ++c, ++bufs) {
+-			if (*bufs == NULL)
+-				continue;
+-			buf = *bufs + samples_to_bytes(runtime, off);
+-			if ((err = substream->ops->copy(substream, c, hwoff, buf, frames)) < 0)
+-				return err;
+-		}
+ 	} else {
+ 		snd_pcm_uframes_t dma_csize = runtime->dma_bytes / channels;
+ 		for (c = 0; c < channels; ++c, ++bufs) {
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 8867ed9e5f56..dcc5ece08668 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2746,8 +2746,6 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 		rtd->ops.copy_user	= platform->driver->ops->copy_user;
+ 		rtd->ops.copy_kernel	= platform->driver->ops->copy_kernel;
+ 		rtd->ops.fill_silence	= platform->driver->ops->fill_silence;
+-		rtd->ops.copy		= platform->driver->ops->copy;
+-		rtd->ops.silence	= platform->driver->ops->silence;
+ 		rtd->ops.page		= platform->driver->ops->page;
+ 		rtd->ops.mmap		= platform->driver->ops->mmap;
+ 	}
 -- 
 2.13.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-usb" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
