@@ -1,119 +1,152 @@
-From: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Subject: [PATCH v2 13/27] ALSA: sh: Convert to the new PCM ops
-Date: Thu,  1 Jun 2017 22:58:36 +0200
-Message-ID: <20170601205850.24993-14-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH v2 08/27] ALSA: rme96: Convert to the new PCM ops
+Date: Thu,  1 Jun 2017 22:58:31 +0200
+Message-ID: <20170601205850.24993-9-tiwai@suse.de>
 References: <20170601205850.24993-1-tiwai@suse.de>
-Return-path: <linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <20170601205850.24993-1-tiwai-l3A5Bk7waGM@public.gmane.org>
-Sender: linux-usb-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
-Cc: Takashi Sakamoto <o-takashi-sodqOivclbsO3cATojSK5Q@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Hans Verkuil <hverkuil-qWit8jRvyhVmR6Xm/wNWPw@public.gmane.org>, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Felipe Balbi <balbi-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Greg Kroah-Hartman <gregkh-hQyY1W1yCW8ekmWlsbkhG0B+6BGkLq7r@public.gmane.org>, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <linux-media-owner@vger.kernel.org>
+In-Reply-To: <20170601205850.24993-1-tiwai@suse.de>
+Sender: linux-media-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Mark Brown <broonie@kernel.org>, Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org, Felipe Balbi <balbi@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 Replace the copy and the silence ops with the new PCM ops.
-Fixed also the user-space buffer copy with the proper
-copy_from_user*() variant.
+The conversion is straightforward with standard helper functions, and
+now we can drop the bytes <-> frames conversions in callbacks.
 
-Signed-off-by: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/sh/sh_dac_audio.c | 54 +++++++++++++++++++++++++++----------------------
- 1 file changed, 30 insertions(+), 24 deletions(-)
+ sound/pci/rme96.c | 70 ++++++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 44 insertions(+), 26 deletions(-)
 
-diff --git a/sound/sh/sh_dac_audio.c b/sound/sh/sh_dac_audio.c
-index 461b310c7872..c1e00ed715ee 100644
---- a/sound/sh/sh_dac_audio.c
-+++ b/sound/sh/sh_dac_audio.c
-@@ -184,23 +184,36 @@ static int snd_sh_dac_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+diff --git a/sound/pci/rme96.c b/sound/pci/rme96.c
+index 05b9da30990d..24f1349a8e1b 100644
+--- a/sound/pci/rme96.c
++++ b/sound/pci/rme96.c
+@@ -327,13 +327,10 @@ snd_rme96_capture_ptr(struct rme96 *rme96)
+ 
+ static int
+ snd_rme96_playback_silence(struct snd_pcm_substream *substream,
+-			   int channel, /* not used (interleaved data) */
+-			   snd_pcm_uframes_t pos,
+-			   snd_pcm_uframes_t count)
++			   int channel, unsigned long pos, unsigned long count)
+ {
+ 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
+-	count <<= rme96->playback_frlog;
+-	pos <<= rme96->playback_frlog;
++
+ 	memset_io(rme96->iobase + RME96_IO_PLAY_BUFFER + pos,
+ 		  0, count);
  	return 0;
+@@ -341,32 +338,49 @@ snd_rme96_playback_silence(struct snd_pcm_substream *substream,
+ 
+ static int
+ snd_rme96_playback_copy(struct snd_pcm_substream *substream,
+-			int channel, /* not used (interleaved data) */
+-			snd_pcm_uframes_t pos,
+-			void __user *src,
+-			snd_pcm_uframes_t count)
++			int channel, unsigned long pos,
++			void __user *src, unsigned long count)
+ {
+ 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
+-	count <<= rme96->playback_frlog;
+-	pos <<= rme96->playback_frlog;
+-	return copy_from_user_toio(rme96->iobase + RME96_IO_PLAY_BUFFER + pos, src,
+-				   count);
++
++	return copy_from_user_toio(rme96->iobase + RME96_IO_PLAY_BUFFER + pos,
++				   src, count);
++}
++
++static int
++snd_rme96_playback_copy_kernel(struct snd_pcm_substream *substream,
++			       int channel, unsigned long pos,
++			       void *src, unsigned long count)
++{
++	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
++
++	memcpy_toio(rme96->iobase + RME96_IO_PLAY_BUFFER + pos, src, count);
++	return 0;
  }
  
--static int snd_sh_dac_pcm_copy(struct snd_pcm_substream *substream, int channel,
--	snd_pcm_uframes_t pos, void __user *src, snd_pcm_uframes_t count)
-+static int snd_sh_dac_pcm_copy(struct snd_pcm_substream *substream,
-+			       int channel, unsigned long pos,
-+			       void __user *src, unsigned long count)
+ static int
+ snd_rme96_capture_copy(struct snd_pcm_substream *substream,
+-		       int channel, /* not used (interleaved data) */
+-		       snd_pcm_uframes_t pos,
+-		       void __user *dst,
+-		       snd_pcm_uframes_t count)
++		       int channel, unsigned long pos,
++		       void __user *dst, unsigned long count)
  {
- 	/* channel is not used (interleaved data) */
- 	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	ssize_t b_count = frames_to_bytes(runtime , count);
--	ssize_t b_pos = frames_to_bytes(runtime , pos);
- 
--	if (count < 0)
--		return -EINVAL;
-+	if (copy_from_user_toio(chip->data_buffer + pos, src, count))
-+		return -EFAULT;
-+	chip->buffer_end = chip->data_buffer + pos + count;
- 
--	if (!count)
--		return 0;
-+	if (chip->empty) {
-+		chip->empty = 0;
-+		dac_audio_start_timer(chip);
-+	}
+ 	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
+-	count <<= rme96->capture_frlog;
+-	pos <<= rme96->capture_frlog;
+-	return copy_to_user_fromio(dst, rme96->iobase + RME96_IO_REC_BUFFER + pos,
 +
++	return copy_to_user_fromio(dst,
++				   rme96->iobase + RME96_IO_REC_BUFFER + pos,
+ 				   count);
+ }
+ 
++static int
++snd_rme96_capture_copy_kernel(struct snd_pcm_substream *substream,
++			      int channel, unsigned long pos,
++			      void *dst, unsigned long count)
++{
++	struct rme96 *rme96 = snd_pcm_substream_chip(substream);
++
++	memcpy_fromio(dst, rme96->iobase + RME96_IO_REC_BUFFER + pos, count);
 +	return 0;
 +}
- 
--	memcpy_toio(chip->data_buffer + b_pos, src, b_count);
--	chip->buffer_end = chip->data_buffer + b_pos + b_count;
-+static int snd_sh_dac_pcm_copy_kernel(struct snd_pcm_substream *substream,
-+				      int channel, unsigned long pos,
-+				      void *src, unsigned long count)
-+{
-+	/* channel is not used (interleaved data) */
-+	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
-+	struct snd_pcm_runtime *runtime = substream->runtime;
 +
-+	memcpy_toio(chip->data_buffer + pos, src, count);
-+	chip->buffer_end = chip->data_buffer + pos + count;
+ /*
+  * Digital output capabilities (S/PDIF)
+  */
+@@ -1513,8 +1527,9 @@ static const struct snd_pcm_ops snd_rme96_playback_spdif_ops = {
+ 	.prepare =	snd_rme96_playback_prepare,
+ 	.trigger =	snd_rme96_playback_trigger,
+ 	.pointer =	snd_rme96_playback_pointer,
+-	.copy =		snd_rme96_playback_copy,
+-	.silence =	snd_rme96_playback_silence,
++	.copy_user =	snd_rme96_playback_copy,
++	.copy_kernel =	snd_rme96_playback_copy_kernel,
++	.fill_silence =	snd_rme96_playback_silence,
+ 	.mmap =		snd_pcm_lib_mmap_iomem,
+ };
  
- 	if (chip->empty) {
- 		chip->empty = 0;
-@@ -211,23 +224,15 @@ static int snd_sh_dac_pcm_copy(struct snd_pcm_substream *substream, int channel,
- }
+@@ -1526,7 +1541,8 @@ static const struct snd_pcm_ops snd_rme96_capture_spdif_ops = {
+ 	.prepare =	snd_rme96_capture_prepare,
+ 	.trigger =	snd_rme96_capture_trigger,
+ 	.pointer =	snd_rme96_capture_pointer,
+-	.copy =		snd_rme96_capture_copy,
++	.copy_user =	snd_rme96_capture_copy,
++	.copy_kernel =	snd_rme96_capture_copy_kernel,
+ 	.mmap =		snd_pcm_lib_mmap_iomem,
+ };
  
- static int snd_sh_dac_pcm_silence(struct snd_pcm_substream *substream,
--				  int channel, snd_pcm_uframes_t pos,
--				  snd_pcm_uframes_t count)
-+				  int channel, unsigned long pos,
-+				  unsigned long count)
- {
- 	/* channel is not used (interleaved data) */
- 	struct snd_sh_dac *chip = snd_pcm_substream_chip(substream);
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	ssize_t b_count = frames_to_bytes(runtime , count);
--	ssize_t b_pos = frames_to_bytes(runtime , pos);
--
--	if (count < 0)
--		return -EINVAL;
--
--	if (!count)
--		return 0;
+@@ -1538,8 +1554,9 @@ static const struct snd_pcm_ops snd_rme96_playback_adat_ops = {
+ 	.prepare =	snd_rme96_playback_prepare,
+ 	.trigger =	snd_rme96_playback_trigger,
+ 	.pointer =	snd_rme96_playback_pointer,
+-	.copy =		snd_rme96_playback_copy,
+-	.silence =	snd_rme96_playback_silence,
++	.copy_user =	snd_rme96_playback_copy,
++	.copy_kernel =	snd_rme96_playback_copy_kernel,
++	.fill_silence =	snd_rme96_playback_silence,
+ 	.mmap =		snd_pcm_lib_mmap_iomem,
+ };
  
--	memset_io(chip->data_buffer + b_pos, 0, b_count);
--	chip->buffer_end = chip->data_buffer + b_pos + b_count;
-+	memset_io(chip->data_buffer + pos, 0, count);
-+	chip->buffer_end = chip->data_buffer + pos + count;
- 
- 	if (chip->empty) {
- 		chip->empty = 0;
-@@ -256,8 +261,9 @@ static struct snd_pcm_ops snd_sh_dac_pcm_ops = {
- 	.prepare	= snd_sh_dac_pcm_prepare,
- 	.trigger	= snd_sh_dac_pcm_trigger,
- 	.pointer	= snd_sh_dac_pcm_pointer,
--	.copy		= snd_sh_dac_pcm_copy,
--	.silence	= snd_sh_dac_pcm_silence,
-+	.copy_user	= snd_sh_dac_pcm_copy,
-+	.copy_kernel	= snd_sh_dac_pcm_copy_kernel,
-+	.fill_silence	= snd_sh_dac_pcm_silence,
- 	.mmap		= snd_pcm_lib_mmap_iomem,
+@@ -1551,7 +1568,8 @@ static const struct snd_pcm_ops snd_rme96_capture_adat_ops = {
+ 	.prepare =	snd_rme96_capture_prepare,
+ 	.trigger =	snd_rme96_capture_trigger,
+ 	.pointer =	snd_rme96_capture_pointer,
+-	.copy =		snd_rme96_capture_copy,
++	.copy_user =	snd_rme96_capture_copy,
++	.copy_kernel =	snd_rme96_capture_copy_kernel,
+ 	.mmap =		snd_pcm_lib_mmap_iomem,
  };
  
 -- 
 2.13.0
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-usb" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
