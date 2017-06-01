@@ -1,39 +1,42 @@
-From: Jia-Ju Bai <baijiaju1990@163.com>
-Subject: [PATCH] oss: Fix a sleep-in-atomic bug in midi_outc
-Date: Thu,  1 Jun 2017 17:33:43 +0800
-Message-ID: <1496309623-23072-1-git-send-email-baijiaju1990@163.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jia-Ju Bai <baijiaju1990@163.com>
+From: Geert Uytterhoeven <geert+renesas-gXvu3+zWzMSzQB+pC5nmwQ@public.gmane.org>
+Subject: [PATCH] ASoC: rsnd: Document optional reset properties
+Date: Thu,  1 Jun 2017 12:36:15 +0200
+Message-ID: <1496313375-27892-1-git-send-email-geert+renesas@glider.be>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-renesas-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Geert Uytterhoeven <geert+renesas-gXvu3+zWzMSzQB+pC5nmwQ@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The driver may sleep under a spin lock, and the function call path is:
-midi_outc (acquire the lock by spin_lock_irqsave)
-  oss_broken_sleep_on
-    schedule_timeout --> may sleep
+Document the optional properties for describing module resets, to
+support resetting these modules on R-Car Gen2 and Gen3.
 
-To fix it, the lock is released before oss_broken_sleep_on, and the lock 
-is acquired again after this function.
+Note that the audio module has resets for the Serial Sound Interfaces
+only.
 
-Signed-off-by: Jia-Ju Bai <baijiaju1990@163.com>
+Signed-off-by: Geert Uytterhoeven <geert+renesas-gXvu3+zWzMSzQB+pC5nmwQ@public.gmane.org>
 ---
- sound/oss/sequencer.c |    2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/oss/sequencer.c b/sound/oss/sequencer.c
-index f19da4b..3d95d752 100644
---- a/sound/oss/sequencer.c
-+++ b/sound/oss/sequencer.c
-@@ -1211,7 +1211,9 @@ static void midi_outc(int dev, unsigned char data)
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+index 13cb21d53b8bdf5c..7246bb268bf9bab6 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
++++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+@@ -379,6 +379,9 @@ Optional properties:
+ - clock-frequency		: for all audio_clkout0/1/2/3
+ - clkout-lr-asynchronous	: boolean property. it indicates that audio_clkoutn
+ 				  is asynchronizes with lr-clock.
++- resets			: References to SSI resets.
++- reset-names			: List of valid reset names.
++				  "ssi-all", "ssi.X"
  
- 	spin_lock_irqsave(&lock,flags);
-  	while (n && !midi_devs[dev]->outputc(dev, data)) {
-+		spin_unlock_irqrestore(&lock, flags);
- 		oss_broken_sleep_on(&seq_sleeper, HZ/25);
-+		spin_lock_irqsave(&lock, flags);
-   		n--;
-   	}
- 	spin_unlock_irqrestore(&lock,flags);
+ SSI subnode properties:
+ - interrupts			: Should contain SSI interrupt for PIO transfer
 -- 
-1.7.9.5
+2.7.4
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
