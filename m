@@ -1,75 +1,73 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Re: [PATCH 4/4] ASoC: cs35l35: Add multi-device synchronisation
-Date: Fri, 2 Jun 2017 18:11:18 +0100
-Message-ID: <20170602171118.4jikytasxphfjosx@sirena.org.uk>
-References: <1495121559-1063-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <1495121559-1063-4-git-send-email-ckeepax@opensource.wolfsonmicro.com>
- <20170529135306.ldn74fwvfa4ots6a@sirena.org.uk>
- <20170530085138.GR1594@localhost.localdomain>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 02/27] ALSA: pcm: Introduce copy_user,
+ copy_kernel and fill_silence ops
+Date: Fri, 2 Jun 2017 18:14:28 +0100
+Message-ID: <20170602171428.6ludtml23vfpcygp@sirena.org.uk>
+References: <20170601205850.24993-1-tiwai@suse.de>
+ <20170601205850.24993-3-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="z72kcepzfbm2ydud"
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20170530085138.GR1594-bi+AKbBUZKY6gyzm1THtWbp2dZbC/Bob@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-To: Charles Keepax <ckeepax-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
-Cc: brian.austin-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, Paul.Handrigan-jGc1dHjMKG3QT0dZR+AlfA@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============7464691629443531749=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 00B8E266AF1
+ for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2017 19:14:38 +0200 (CEST)
+In-Reply-To: <20170601205850.24993-3-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Felipe Balbi <balbi@kernel.org>, alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---z72kcepzfbm2ydud
+--===============7464691629443531749==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="tkkk7d7hsv6owojv"
+Content-Disposition: inline
+
+
+--tkkk7d7hsv6owojv
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, May 30, 2017 at 09:51:38AM +0100, Charles Keepax wrote:
+On Thu, Jun 01, 2017 at 10:58:25PM +0200, Takashi Iwai wrote:
+> For supporting the explicit in-kernel copy of PCM buffer data, and
+> also for further code refactoring, three new PCM ops, copy_user,
+> copy_kernel and fill_silence, are introduced.  The old copy and
+> silence ops will be deprecated and removed later once when all callers
+> are converted.
 
-> These activate the individual types of synchronisation between
-> the two stereo amps over a proprietary single wire connection
-> between the two amps. The audio option synchronises the group
+Acked-by: Mark Brown <broonie@kernel.org>
 
-So we should at least have something that represents that single wire
-connection in DT since it might not be there and so that the kernel can
-make sure that both devices agree if they're synced or not and can
-disable the sync if it's been enabled in error (if one of the devices
-is off, you seemed to be saying that might cause problems).
-
-> delay between the two amps. The VPBR links the brown out on the
-> two amps and the OTW links the over temperature warning.
-
-It's not clear to me when it'd make sense to disable these from a system
-integration point of view.
-
-> The issue is really one of it being use-case specific whether the
-> amps are being used independently or in a stereo configuration.
-> You could have only a single amp in use in which case the sync
-> features are best turned off. Or one might even have use-cases
-> with both amps where they are being used independently but at the
-> same time.
-
-It feels like if this is going to be user controllable the UI needs to
-be pulled up a level to be something like an on/off switch for the sync
-rather than a series of magic _EXT controls on the individual CODECs.
-Even if it is magic _EXT controls having them being per device feels
-wrong.
-
---z72kcepzfbm2ydud
+--tkkk7d7hsv6owojv
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlkxnDUACgkQJNaLcl1U
-h9DwbQf/RPXNfMDWZAXSNkxfwW8jhRBIn0ZQxNxPyA1L+ch9pP8izS7H2PJUHlbL
-VGUlsfToBAMQz7NPjOdmxm5fg7VitjhGCMt25WxuPJ/c5mg0XJbB5IaoOW1AK6jx
-szU76UGb2ZgHNUohca1+YjpjqEpXkGWycfQ05xBoDLzemnKeIG0YQYPcDg9EJjVe
-EGQnwf6IXp0DCeYrdZ+a1oyx6OJck2aYmgfnG+VYX6DzV3Jtpx5On6a+aLRV07Yu
-fbrVKtfNMjETwZmkjRXzV4qwoKdneunV0blsBJnEP0QiSGuz4wkii0ATYfdPQINw
-cCvi69rIegmu66P4KjifLhW30ZqsVQ==
-=jl+k
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlkxnPQACgkQJNaLcl1U
+h9C1Ygf+Lf9E11DcpSKgUfS/g8SE5RYlcK5oYhJP/IWFBYAhWt2dgmanzHabGW4a
+mWH8IEDT+th1fC4xAempj+Ws58GQWTaEkbThITbV72fcwSL2+6hZKmbUkEm+YTIX
+axirqG88s6wlfvgKw79ImhtoFEs5mv0/gmBjq/fxaLBv1VO0xB1/yNSt4ZDng1RQ
+IG0faFsM4oJrPCbZQmCsXn35tau0mSc9ujx5MIkVi76HV2mzq08FMvlEhUKyu/Yg
+aIR+SUvOU1rKeFqzMtFvk871XYOMJISV5RbM4reNUT6zrjOSansg7i7lka6njLHx
+moxQAJgji9LvdiM157WMostMr2uFpw==
+=OwXh
 -----END PGP SIGNATURE-----
 
---z72kcepzfbm2ydud--
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--tkkk7d7hsv6owojv--
+
+--===============7464691629443531749==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7464691629443531749==--
