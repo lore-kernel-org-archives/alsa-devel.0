@@ -1,45 +1,87 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 14/27] ASoC: blackfin: Convert to the new PCM ops
-Date: Fri, 2 Jun 2017 18:14:52 +0100
-Message-ID: <20170602171452.jvfef7empzj3fx2i@sirena.org.uk>
-References: <20170601205850.24993-1-tiwai@suse.de>
- <20170601205850.24993-15-tiwai@suse.de>
+From: Jens Rottmann <JRottm-Mmb7MZpHnFY@public.gmane.org>
+Subject: Re: [PATCH] streamline TLV320AIC23 drivers
+Date: Fri, 2 Jun 2017 23:22:05 +0200
+Message-ID: <641616fb-1903-12e3-831e-4744e3ab6bfa@gmx.de>
+References: <b4127646-565b-ab16-0a8f-1fd6c263389e@ADLINKtech.com>
+ <20170428171115.6zc5nhspvkkgevs7@rob-hp-laptop>
+ <0ea2a5f8-8af0-598d-ad49-23501176efbb@yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="tdjhx3ffwhmgfcws"
-Return-path: <linux-media-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20170601205850.24993-15-tiwai@suse.de>
-Sender: linux-media-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Hans Verkuil <hverkuil@xs4all.nl>, linux-media@vger.kernel.org, Felipe Balbi <balbi@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <0ea2a5f8-8af0-598d-ad49-23501176efbb-/E1597aS9LQAvxtiuMwx3w@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Rob,
+repeatedly got no response. Assuming all my mails got blocked, so moved to yet another account. Hope I'll get through this time.
+Regards, Jens
 
---tdjhx3ffwhmgfcws
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+-------- Original Message --------
+Subject: Re: [PATCH] streamline TLV320AIC23 drivers
+Date: Sat, 6 May 2017 00:39:20 +0200
+From: Jens Rottmann <JRottm-/E1597aS9LQAvxtiuMwx3w@public.gmane.org>
+To: Rob Herring
+CC: Mark Rutland, Jaroslav Kysela, Takashi Iwai, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Liam Girdwood, Mark Brown
 
-On Thu, Jun 01, 2017 at 10:58:37PM +0200, Takashi Iwai wrote:
-> Replace the copy and the silence ops with the new PCM ops.
-> In AC97 and I2S-TDM mode, we need to convert back to frames, but
-> otherwise the conversion is pretty straightforward.
+Hi Rob,
+sorry for the delay.
 
-Acked-by: Mark Brown <broonie@kernel.org>
+> On Fri, Apr 21, 2017 at 09:22:02PM +0200, Jens Rottmann wrote:
+>> - Remove Eukrea naming, i.MX is from Freescale, TLV320AIC23 is from TI,
+>>   driver was written by Eukrea, but it's DT capable, so it's not exclusive:
+>>   - Kconfig option title
+>>   - 'model' option
+>>   - driver 'compatible' string
+>> [...]
+>> CONFIG variable and files have not been renamed, though, so no need to
+>> change old defconfigs.
 
---tdjhx3ffwhmgfcws
-Content-Type: application/pgp-signature; name="signature.asc"
+On 04/28/2017 19:11, Rob Herring answered:
+> Perhaps change the filename. [...]
 
------BEGIN PGP SIGNATURE-----
+I wanted to avoid the churn, but ok. In that case:
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlkxnQsACgkQJNaLcl1U
-h9ABJwf/TL3p/jIZ54JN6muP/+eOVAx9L3So2W7/omgSr7cZuWoioomH7jk0G3Rf
-YwNHJ5X573TXzxxgq9FYT7zrS8wBAkEqheVVlPqgQI22t1uUdc33CtTNSrGA9UUY
-QEPnNFAIDm9DSEHYd6YWzRlpMVQdlIC8cHhGweorxbdld7jGs/PvX8YN9xdS8k8J
-HOc/6TAEEEZXEQdcsqp6RxlwlsrdjJjB7gvOw3ndpldSsmS1qW2GC7K5hyATId7j
-gEkZ4iJmjOLlF4qfPvV+M/BU313gj1GVS1SgGIfoCa75nwJFEsiSSvPViufK4z0y
-0wVaKRHxSNawKgGqbRhKT6ZHp/mAUw==
-=GKa8
------END PGP SIGNATURE-----
+Do you want me to change all indentifiers inside driver, too?
+eukrea_tlv320_probe() --> imx_tlv320aic23_probe()
 
---tdjhx3ffwhmgfcws--
+Do you want me to also rename the CONFIG var?
+CONFIG_SND_SOC_EUKREA_TLV320 --> CONFIG_SND_SOC_IMX_TLV320
+I'd adapt in-tree defconfigs, but would unavoidably break
+out-of-tree defconfigs...
+
+>> -  - fsl,mux-int-port	: The internal port of the i.MX audio muxer (AUDMUX).
+>> +  - mux-int-port	: The internal port of the i.MX audio muxer (AUDMUX).
+>> +  - fsl,mux-int-port	: Dito, deprecated.
+>> -  - fsl,mux-ext-port	: The external port of the i.MX audio muxer.
+>> +  - mux-ext-port	: The external port of the i.MX audio muxer.
+>> +  - fsl,mux-ext-port	: Dito, deprecated.
+
+> Is this used elsewhere? This is FSL specific, so you should keep the
+> prefix.
+
+.../sound/soc/fsl$ egrep 'property.*mux-(int|ext)-port' *
+eukrea-tlv320.c: ret = of_property_read_u32(np, "fsl,mux-int-port", &int_port);
+eukrea-tlv320.c: ret = of_property_read_u32(np, "fsl,mux-ext-port", &ext_port);
+fsl-asoc-card.c: ret = of_property_read_u32(np, "mux-int-port", &int_port);
+fsl-asoc-card.c: ret = of_property_read_u32(np, "mux-ext-port", &ext_port);
+imx-es8328.c:    ret = of_property_read_u32(np, "mux-int-port", &int_port);
+imx-es8328.c:    ret = of_property_read_u32(np, "mux-ext-port", &ext_port);
+imx-sgtl5000.c:  ret = of_property_read_u32(np, "mux-int-port", &int_port);
+imx-sgtl5000.c:  ret = of_property_read_u32(np, "mux-ext-port", &ext_port);
+imx-wm8962.c:    ret = of_property_read_u32(np, "mux-int-port", &int_port);
+imx-wm8962.c:    ret = of_property_read_u32(np, "mux-ext-port", &ext_port);
+
+All drivers use mux-int|ext-port without prefix, tlv320 is the only
+odd driver out, that's why I did this streamlining patch in the 1st place.
+
+I would rather not have to change all other drivers to match the tlv320 one.
+
+Thanks,
+Jens
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
