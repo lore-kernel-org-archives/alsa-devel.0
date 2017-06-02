@@ -1,1460 +1,1338 @@
 From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Subject: [PATCH v3 11/17] pinctrl: madera: Add driver for
-	Cirrus Logic Madera codecs
-Date: Fri, 2 Jun 2017 16:03:04 +0100
-Message-ID: <1496415790-19164-12-git-send-email-rf@opensource.wolfsonmicro.com>
+Subject: [PATCH v3 03/17] mfd: madera: Add common support for Cirrus Logic Madera codecs
+Date: Fri, 2 Jun 2017 16:02:56 +0100
+Message-ID: <1496415790-19164-4-git-send-email-rf@opensource.wolfsonmicro.com>
 References: <1496415790-19164-1-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 363512671DF
- for <alsa-devel@alsa-project.org>; Fri,  2 Jun 2017 17:03:16 +0200 (CEST)
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1496415790-19164-1-git-send-email-rf@opensource.wolfsonmicro.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: lee.jones@linaro.org, broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, robh+dt@kernel.org, tglx@linutronix.de, jason@lakedaemon.net
-Cc: linux-gpio@vger.kernel.org, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-These codecs have a variable number of I/O lines each of which
-is individually selectable to a wide range of possible functions.
+This adds the generic core support for Cirrus Logic "Madera" class codecs.
+These are complex audio codec SoCs with a variety of digital and analogue
+I/O, onboard audio processing and DSPs, and other features.
 
-The functionality is slightly different from the traditional muxed
-GPIO since most of the functions can be mapped to any pin (and even
-the same function to multiple pins). Most pins have a dedicated
-"alternate" function that is only available on that pin. The
-alternate functions are usually a group of signals, though it is
-not always necessary to enable the full group, depending on the
-alternate function and how it is to be used. The mapping between
-alternate functions and GPIO pins varies between codecs depending
-on the number of alternate functions and available pins.
+These codecs are all based off a common set of hardware IP so can be
+supported by a core of common code (with a few minor device-to-device
+variations).
 
-Note on the Kconfig options:
-The formula "default y if..." is used for PINCTRL_MADERA so that its
-select options will be processed, allowing us to group selects for
-pinctrl into the pinctrl Kconfig where they logically belong instead
-of accumulating under the parent MFD Kconfig.
-
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Signed-off-by: Nikesh Oswal <Nikesh.Oswal@wolfsonmicro.com>
 Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
 ---
 Changes since V2:
-- Removed unused drive strength settings to tidy the code
-- Use devm_pinctrl_register_and_init() to avoid the problems with
-  pinctrl_register()
-- Replaced a couple of hardcoded masks with the defined constant
+- Removed child DT nodes and of_compatibles to make the DT flat
+- Rearranged the selects in the Kconfig
 
- MAINTAINERS                              |    2 +
- drivers/pinctrl/Kconfig                  |    1 +
- drivers/pinctrl/Makefile                 |    1 +
- drivers/pinctrl/cirrus/Kconfig           |   15 +
- drivers/pinctrl/cirrus/Makefile          |   11 +
- drivers/pinctrl/cirrus/pinctrl-cs47l35.c |   46 ++
- drivers/pinctrl/cirrus/pinctrl-cs47l85.c |   60 ++
- drivers/pinctrl/cirrus/pinctrl-cs47l90.c |   58 ++
- drivers/pinctrl/cirrus/pinctrl-madera.c  | 1074 ++++++++++++++++++++++++++++++
- drivers/pinctrl/cirrus/pinctrl-madera.h  |   40 ++
- 10 files changed, 1308 insertions(+)
- create mode 100644 drivers/pinctrl/cirrus/Kconfig
- create mode 100644 drivers/pinctrl/cirrus/Makefile
- create mode 100644 drivers/pinctrl/cirrus/pinctrl-cs47l35.c
- create mode 100644 drivers/pinctrl/cirrus/pinctrl-cs47l85.c
- create mode 100644 drivers/pinctrl/cirrus/pinctrl-cs47l90.c
- create mode 100644 drivers/pinctrl/cirrus/pinctrl-madera.c
- create mode 100644 drivers/pinctrl/cirrus/pinctrl-madera.h
+ MAINTAINERS                      |   3 +
+ drivers/mfd/Kconfig              |  25 ++
+ drivers/mfd/Makefile             |   4 +
+ drivers/mfd/madera-core.c        | 632 +++++++++++++++++++++++++++++++++++++++
+ drivers/mfd/madera-i2c.c         | 131 ++++++++
+ drivers/mfd/madera-spi.c         | 132 ++++++++
+ drivers/mfd/madera.h             |  52 ++++
+ include/linux/mfd/madera/core.h  | 180 +++++++++++
+ include/linux/mfd/madera/pdata.h |  61 ++++
+ 9 files changed, 1220 insertions(+)
+ create mode 100644 drivers/mfd/madera-core.c
+ create mode 100644 drivers/mfd/madera-i2c.c
+ create mode 100644 drivers/mfd/madera-spi.c
+ create mode 100644 drivers/mfd/madera.h
+ create mode 100644 include/linux/mfd/madera/core.h
+ create mode 100644 include/linux/mfd/madera/pdata.h
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 08f48f8..0559a56 100644
+index 4822ba4..5d2da16e 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -3315,11 +3315,13 @@ T:	git https://github.com/CirrusLogic/linux-drivers.git
+@@ -3314,7 +3314,10 @@ L:	patches@opensource.wolfsonmicro.com
+ T:	git https://github.com/CirrusLogic/linux-drivers.git
  W:	https://github.com/CirrusLogic/linux-drivers/wiki
  S:	Supported
- F:	Documentation/devicetree/bindings/mfd/madera.txt
-+F:	Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt
- F:	include/linux/irqchip/irq-madera*
++F:	Documentation/devicetree/bindings/mfd/madera.txt
  F:	include/linux/mfd/madera/*
- F:	drivers/irqchip/irq-madera*
- F:	drivers/mfd/madera*
- F:	drivers/mfd/cs47l*
-+F:	drivers/pinctrl/cirrus/*
++F:	drivers/mfd/madera*
++F:	drivers/mfd/cs47l*
  
  CLEANCACHE API
  M:	Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-diff --git a/drivers/pinctrl/Kconfig b/drivers/pinctrl/Kconfig
-index 3c3c9d9..f0575d3 100644
---- a/drivers/pinctrl/Kconfig
-+++ b/drivers/pinctrl/Kconfig
-@@ -340,6 +340,7 @@ source "drivers/pinctrl/uniphier/Kconfig"
- source "drivers/pinctrl/vt8500/Kconfig"
- source "drivers/pinctrl/mediatek/Kconfig"
- source "drivers/pinctrl/zte/Kconfig"
-+source "drivers/pinctrl/cirrus/Kconfig"
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index aedeeff..f027b9f 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -203,6 +203,31 @@ config MFD_CROS_EC_SPI
+ 	  response time cannot be guaranteed, we support ignoring
+ 	  'pre-amble' bytes before the response actually starts.
  
- config PINCTRL_XWAY
- 	bool
-diff --git a/drivers/pinctrl/Makefile b/drivers/pinctrl/Makefile
-index f6ec4bd..b6adf39 100644
---- a/drivers/pinctrl/Makefile
-+++ b/drivers/pinctrl/Makefile
-@@ -61,3 +61,4 @@ obj-$(CONFIG_PINCTRL_UNIPHIER)	+= uniphier/
- obj-$(CONFIG_ARCH_VT8500)	+= vt8500/
- obj-$(CONFIG_PINCTRL_MTK)	+= mediatek/
- obj-$(CONFIG_PINCTRL_ZX)	+= zte/
-+obj-y				+= cirrus/
-diff --git a/drivers/pinctrl/cirrus/Kconfig b/drivers/pinctrl/cirrus/Kconfig
++config MFD_MADERA
++	bool
++	select MFD_CORE
++	select REGMAP
++	select REGMAP_IRQ
++	select MADERA_IRQ
++
++config MFD_MADERA_I2C
++	bool "Cirrus Logic Madera codecs with I2C"
++	select MFD_MADERA
++	select REGMAP_I2C
++	depends on I2C
++	help
++	  Support for the Cirrus Logic Madera platform audio SoC
++	  core functionality controlled via I2C.
++
++config MFD_MADERA_SPI
++	bool "Cirrus Logic Madera codecs with SPI"
++	select MFD_MADERA
++	select REGMAP_SPI
++	depends on SPI_MASTER
++	help
++	  Support for the Cirrus Logic Madera platform audio SoC
++	  core functionality controlled via SPI.
++
+ config MFD_ASIC3
+ 	bool "Compaq ASIC3"
+ 	depends on GPIOLIB && ARM
+diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+index c16bf1e..38b1514 100644
+--- a/drivers/mfd/Makefile
++++ b/drivers/mfd/Makefile
+@@ -72,6 +72,10 @@ obj-$(CONFIG_MFD_WM8350_I2C)	+= wm8350-i2c.o
+ wm8994-objs			:= wm8994-core.o wm8994-irq.o wm8994-regmap.o
+ obj-$(CONFIG_MFD_WM8994)	+= wm8994.o
+ 
++obj-$(CONFIG_MFD_MADERA)	+= madera-core.o
++obj-$(CONFIG_MFD_MADERA_I2C)	+= madera-i2c.o
++obj-$(CONFIG_MFD_MADERA_SPI)	+= madera-spi.o
++
+ obj-$(CONFIG_TPS6105X)		+= tps6105x.o
+ obj-$(CONFIG_TPS65010)		+= tps65010.o
+ obj-$(CONFIG_TPS6507X)		+= tps6507x.o
+diff --git a/drivers/mfd/madera-core.c b/drivers/mfd/madera-core.c
 new file mode 100644
-index 0000000..093527ea
+index 0000000..a5e4cda
 --- /dev/null
-+++ b/drivers/pinctrl/cirrus/Kconfig
-@@ -0,0 +1,15 @@
-+config PINCTRL_MADERA
-+	bool
-+	select PINMUX
-+	select GENERIC_PINCONF
-+	default y if MFD_MADERA=y
-+
-+config PINCTRL_CS47L35
-+	bool
-+
-+config PINCTRL_CS47L85
-+	bool
-+
-+config PINCTRL_CS47L90
-+	bool
-+
-diff --git a/drivers/pinctrl/cirrus/Makefile b/drivers/pinctrl/cirrus/Makefile
-new file mode 100644
-index 0000000..b34473c
---- /dev/null
-+++ b/drivers/pinctrl/cirrus/Makefile
-@@ -0,0 +1,11 @@
-+# Cirrus Logic pinctrl drivers
-+obj-$(CONFIG_PINCTRL_MADERA)	+= pinctrl-madera.o
-+ifeq ($(CONFIG_PINCTRL_CS47L35),y)
-+obj-$(CONFIG_PINCTRL_MADERA)	+= pinctrl-cs47l35.o
-+endif
-+ifeq ($(CONFIG_PINCTRL_CS47L85),y)
-+obj-$(CONFIG_PINCTRL_MADERA)	+= pinctrl-cs47l85.o
-+endif
-+ifeq ($(CONFIG_PINCTRL_CS47L90),y)
-+obj-$(CONFIG_PINCTRL_MADERA)	+= pinctrl-cs47l90.o
-+endif
-diff --git a/drivers/pinctrl/cirrus/pinctrl-cs47l35.c b/drivers/pinctrl/cirrus/pinctrl-cs47l35.c
-new file mode 100644
-index 0000000..edf444a
---- /dev/null
-+++ b/drivers/pinctrl/cirrus/pinctrl-cs47l35.c
-@@ -0,0 +1,46 @@
++++ b/drivers/mfd/madera-core.c
+@@ -0,0 +1,632 @@
 +/*
-+ * Pinctrl for Cirrus Logic CS47L35
++ * Core MFD support for Cirrus Logic Madera codecs
 + *
-+ * Copyright 2016-2017 Cirrus Logic
++ * Copyright 2015-2017 Cirrus Logic
 + *
 + * This program is free software; you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License version 2 as
 + * published by the Free Software Foundation.
 + */
 +
++#include <linux/device.h>
++#include <linux/delay.h>
 +#include <linux/err.h>
++#include <linux/gpio.h>
++#include <linux/mfd/core.h>
 +#include <linux/module.h>
-+
-+#include <linux/mfd/madera/core.h>
-+
-+#include "pinctrl-madera.h"
-+
-+/*
-+ * The alt func groups are the most commonly used functions we place these at
-+ * the lower function indexes for convenience, and the less commonly used gpio
-+ * functions at higher indexes.
-+ *
-+ * To stay consistent with the datasheet the function names are the same as
-+ * the group names for that function's pins
-+ *
-+ * Note - all 1 less than in datasheet because these are zero-indexed
-+ */
-+static const unsigned int cs47l35_aif3_pins[] = { 0, 1, 2, 3 };
-+static const unsigned int cs47l35_spk_pins[] = { 4, 5 };
-+static const unsigned int cs47l35_aif1_pins[] = { 7, 8, 9, 10 };
-+static const unsigned int cs47l35_aif2_pins[] = { 11, 12, 13, 14 };
-+static const unsigned int cs47l35_mif1_pins[] = { 6, 15 };
-+
-+static const struct madera_pin_groups cs47l35_pin_groups[] = {
-+	{ "aif1", cs47l35_aif1_pins, ARRAY_SIZE(cs47l35_aif1_pins) },
-+	{ "aif2", cs47l35_aif2_pins, ARRAY_SIZE(cs47l35_aif2_pins) },
-+	{ "aif3", cs47l35_aif3_pins, ARRAY_SIZE(cs47l35_aif3_pins) },
-+	{ "mif1", cs47l35_mif1_pins, ARRAY_SIZE(cs47l35_mif1_pins) },
-+	{ "pdmspk1", cs47l35_spk_pins, ARRAY_SIZE(cs47l35_spk_pins) },
-+};
-+
-+const struct madera_pin_chip cs47l35_pin_chip = {
-+	.n_pins = CS47L35_NUM_GPIOS,
-+	.pin_groups = cs47l35_pin_groups,
-+	.n_pin_groups = ARRAY_SIZE(cs47l35_pin_groups),
-+};
-diff --git a/drivers/pinctrl/cirrus/pinctrl-cs47l85.c b/drivers/pinctrl/cirrus/pinctrl-cs47l85.c
-new file mode 100644
-index 0000000..63e34f8
---- /dev/null
-+++ b/drivers/pinctrl/cirrus/pinctrl-cs47l85.c
-@@ -0,0 +1,60 @@
-+/*
-+ * Pinctrl for Cirrus Logic CS47L85
-+ *
-+ * Copyright 2016-2017 Cirrus Logic
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/err.h>
-+#include <linux/module.h>
-+
-+#include <linux/mfd/madera/core.h>
-+
-+#include "pinctrl-madera.h"
-+
-+/*
-+ * The alt func groups are the most commonly used functions we place these at
-+ * the lower function indexes for convenience, and the less commonly used gpio
-+ * functions at higher indexes.
-+ *
-+ * To stay consistent with the datasheet the function names are the same as
-+ * the group names for that function's pins
-+ *
-+ * Note - all 1 less than in datasheet because these are zero-indexed
-+ */
-+static const unsigned int cs47l85_mif1_pins[] = { 8, 9 };
-+static const unsigned int cs47l85_mif2_pins[] = { 10, 11 };
-+static const unsigned int cs47l85_mif3_pins[] = { 12, 13 };
-+static const unsigned int cs47l85_aif1_pins[] = { 14, 15, 16, 17 };
-+static const unsigned int cs47l85_aif2_pins[] = { 18, 19, 20, 21 };
-+static const unsigned int cs47l85_aif3_pins[] = { 22, 23, 24, 25 };
-+static const unsigned int cs47l85_aif4_pins[] = { 26, 27, 28, 29 };
-+static const unsigned int cs47l85_dmic4_pins[] = { 30, 31 };
-+static const unsigned int cs47l85_dmic5_pins[] = { 32, 33 };
-+static const unsigned int cs47l85_dmic6_pins[] = { 34, 35 };
-+static const unsigned int cs47l85_spk1_pins[] = { 36, 38 };
-+static const unsigned int cs47l85_spk2_pins[] = { 37, 39 };
-+
-+static const struct madera_pin_groups cs47l85_pin_groups[] = {
-+	{ "aif1", cs47l85_aif1_pins, ARRAY_SIZE(cs47l85_aif1_pins) },
-+	{ "aif2", cs47l85_aif2_pins, ARRAY_SIZE(cs47l85_aif2_pins) },
-+	{ "aif3", cs47l85_aif3_pins, ARRAY_SIZE(cs47l85_aif3_pins) },
-+	{ "aif4", cs47l85_aif4_pins, ARRAY_SIZE(cs47l85_aif4_pins) },
-+	{ "mif1", cs47l85_mif1_pins, ARRAY_SIZE(cs47l85_mif1_pins) },
-+	{ "mif2", cs47l85_mif2_pins, ARRAY_SIZE(cs47l85_mif2_pins) },
-+	{ "mif3", cs47l85_mif3_pins, ARRAY_SIZE(cs47l85_mif3_pins) },
-+	{ "dmic4", cs47l85_dmic4_pins, ARRAY_SIZE(cs47l85_dmic4_pins) },
-+	{ "dmic5", cs47l85_dmic5_pins, ARRAY_SIZE(cs47l85_dmic5_pins) },
-+	{ "dmic6", cs47l85_dmic6_pins, ARRAY_SIZE(cs47l85_dmic6_pins) },
-+	{ "pdmspk1", cs47l85_spk1_pins, ARRAY_SIZE(cs47l85_spk1_pins) },
-+	{ "pdmspk2", cs47l85_spk2_pins, ARRAY_SIZE(cs47l85_spk2_pins) },
-+};
-+
-+const struct madera_pin_chip cs47l85_pin_chip = {
-+	.n_pins = CS47L85_NUM_GPIOS,
-+	.pin_groups = cs47l85_pin_groups,
-+	.n_pin_groups = ARRAY_SIZE(cs47l85_pin_groups),
-+};
-diff --git a/drivers/pinctrl/cirrus/pinctrl-cs47l90.c b/drivers/pinctrl/cirrus/pinctrl-cs47l90.c
-new file mode 100644
-index 0000000..a1099b3
---- /dev/null
-+++ b/drivers/pinctrl/cirrus/pinctrl-cs47l90.c
-@@ -0,0 +1,58 @@
-+/*
-+ * Pinctrl for Cirrus Logic CS47L90
-+ *
-+ * Copyright 2016-2017 Cirrus Logic
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/err.h>
-+#include <linux/module.h>
-+
-+#include <linux/mfd/madera/core.h>
-+
-+#include "pinctrl-madera.h"
-+
-+/*
-+ * The alt func groups are the most commonly used functions we place these at
-+ * the lower function indexes for convenience, and the less commonly used gpio
-+ * functions at higher indexes.
-+ *
-+ * To stay consistent with the datasheet the function names are the same as
-+ * the group names for that function's pins
-+ *
-+ * Note - all 1 less than in datasheet because these are zero-indexed
-+ */
-+static const unsigned int cs47l90_mif1_pins[] = { 8, 9 };
-+static const unsigned int cs47l90_mif2_pins[] = { 10, 11 };
-+static const unsigned int cs47l90_mif3_pins[] = { 12, 13 };
-+static const unsigned int cs47l90_aif1_pins[] = { 14, 15, 16, 17 };
-+static const unsigned int cs47l90_aif2_pins[] = { 18, 19, 20, 21 };
-+static const unsigned int cs47l90_aif3_pins[] = { 22, 23, 24, 25 };
-+static const unsigned int cs47l90_aif4_pins[] = { 26, 27, 28, 29 };
-+static const unsigned int cs47l90_dmic4_pins[] = { 30, 31 };
-+static const unsigned int cs47l90_dmic5_pins[] = { 32, 33 };
-+static const unsigned int cs47l90_dmic3_pins[] = { 34, 35 };
-+static const unsigned int cs47l90_spk1_pins[] = { 36, 37 };
-+
-+static const struct madera_pin_groups cs47l90_pin_groups[] = {
-+	{ "aif1", cs47l90_aif1_pins, ARRAY_SIZE(cs47l90_aif1_pins) },
-+	{ "aif2", cs47l90_aif2_pins, ARRAY_SIZE(cs47l90_aif2_pins) },
-+	{ "aif3", cs47l90_aif3_pins, ARRAY_SIZE(cs47l90_aif3_pins) },
-+	{ "aif4", cs47l90_aif4_pins, ARRAY_SIZE(cs47l90_aif4_pins) },
-+	{ "mif1", cs47l90_mif1_pins, ARRAY_SIZE(cs47l90_mif1_pins) },
-+	{ "mif2", cs47l90_mif2_pins, ARRAY_SIZE(cs47l90_mif2_pins) },
-+	{ "mif3", cs47l90_mif3_pins, ARRAY_SIZE(cs47l90_mif3_pins) },
-+	{ "dmic3", cs47l90_dmic3_pins, ARRAY_SIZE(cs47l90_dmic3_pins) },
-+	{ "dmic4", cs47l90_dmic4_pins, ARRAY_SIZE(cs47l90_dmic4_pins) },
-+	{ "dmic5", cs47l90_dmic5_pins, ARRAY_SIZE(cs47l90_dmic5_pins) },
-+	{ "pdmspk1", cs47l90_spk1_pins, ARRAY_SIZE(cs47l90_spk1_pins) },
-+};
-+
-+const struct madera_pin_chip cs47l90_pin_chip = {
-+	.n_pins = CS47L90_NUM_GPIOS,
-+	.pin_groups = cs47l90_pin_groups,
-+	.n_pin_groups = ARRAY_SIZE(cs47l90_pin_groups),
-+};
-diff --git a/drivers/pinctrl/cirrus/pinctrl-madera.c b/drivers/pinctrl/cirrus/pinctrl-madera.c
-new file mode 100644
-index 0000000..3cdd43d
---- /dev/null
-+++ b/drivers/pinctrl/cirrus/pinctrl-madera.c
-@@ -0,0 +1,1074 @@
-+/*
-+ * Pinctrl for Cirrus Logic Madera codecs
-+ *
-+ * Copyright 2016-2017 Cirrus Logic
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/err.h>
-+#include <linux/module.h>
++#include <linux/notifier.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
++#include <linux/of_gpio.h>
 +#include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
 +#include <linux/regmap.h>
-+#include <linux/slab.h>
-+#include <linux/pinctrl/pinctrl.h>
-+#include <linux/pinctrl/pinmux.h>
-+#include <linux/pinctrl/pinconf.h>
-+#include <linux/pinctrl/pinconf-generic.h>
++#include <linux/regulator/consumer.h>
++#include <linux/regulator/machine.h>
++#include <linux/regulator/of_regulator.h>
 +
 +#include <linux/mfd/madera/core.h>
 +#include <linux/mfd/madera/registers.h>
 +
-+#include "../pinctrl-utils.h"
++#include "madera.h"
 +
-+#include "pinctrl-madera.h"
++#define CS47L35_SILICON_ID	0x6360
++#define CS47L85_SILICON_ID	0x6338
++#define CS47L90_SILICON_ID	0x6364
 +
-+/*
-+ * Use pin GPIO names for consistency
-+ * NOTE: IDs are zero-indexed for coding convenience
-+ */
-+static const struct pinctrl_pin_desc madera_pins[] = {
-+	PINCTRL_PIN(0, "gpio1"),
-+	PINCTRL_PIN(1, "gpio2"),
-+	PINCTRL_PIN(2, "gpio3"),
-+	PINCTRL_PIN(3, "gpio4"),
-+	PINCTRL_PIN(4, "gpio5"),
-+	PINCTRL_PIN(5, "gpio6"),
-+	PINCTRL_PIN(6, "gpio7"),
-+	PINCTRL_PIN(7, "gpio8"),
-+	PINCTRL_PIN(8, "gpio9"),
-+	PINCTRL_PIN(9, "gpio10"),
-+	PINCTRL_PIN(10, "gpio11"),
-+	PINCTRL_PIN(11, "gpio12"),
-+	PINCTRL_PIN(12, "gpio13"),
-+	PINCTRL_PIN(13, "gpio14"),
-+	PINCTRL_PIN(14, "gpio15"),
-+	PINCTRL_PIN(15, "gpio16"),
-+	PINCTRL_PIN(16, "gpio17"),
-+	PINCTRL_PIN(17, "gpio18"),
-+	PINCTRL_PIN(18, "gpio19"),
-+	PINCTRL_PIN(19, "gpio20"),
-+	PINCTRL_PIN(20, "gpio21"),
-+	PINCTRL_PIN(21, "gpio22"),
-+	PINCTRL_PIN(22, "gpio23"),
-+	PINCTRL_PIN(23, "gpio24"),
-+	PINCTRL_PIN(24, "gpio25"),
-+	PINCTRL_PIN(25, "gpio26"),
-+	PINCTRL_PIN(26, "gpio27"),
-+	PINCTRL_PIN(27, "gpio28"),
-+	PINCTRL_PIN(28, "gpio29"),
-+	PINCTRL_PIN(29, "gpio30"),
-+	PINCTRL_PIN(30, "gpio31"),
-+	PINCTRL_PIN(31, "gpio32"),
-+	PINCTRL_PIN(32, "gpio33"),
-+	PINCTRL_PIN(33, "gpio34"),
-+	PINCTRL_PIN(34, "gpio35"),
-+	PINCTRL_PIN(35, "gpio36"),
-+	PINCTRL_PIN(36, "gpio37"),
-+	PINCTRL_PIN(37, "gpio38"),
-+	PINCTRL_PIN(38, "gpio39"),
-+	PINCTRL_PIN(39, "gpio40"),
++#define MADERA_32KZ_MCLK2	1
++
++static const char * const madera_core_supplies[] = {
++	"AVDD",
++	"DBVDD1",
 +};
 +
-+/*
-+ * All single-pin functions can be mapped to any GPIO, however pinmux applies
-+ * functions to pin groups and only those groups declared as supporting that
-+ * function. To make this work we must put each pin in its own dummy group so
-+ * that the functions can be described as applying to all pins.
-+ * Since these do not correspond to anything in the actual hardware - they are
-+ * merely an adaptation to pinctrl's view of the world - we use the same name
-+ * as the pin to avoid confusion when comparing with datasheet instructions
-+ */
-+static const char * const madera_pin_single_group_names[] = {
-+	"gpio1",  "gpio2",  "gpio3",  "gpio4",  "gpio5",  "gpio6",  "gpio7",
-+	"gpio8",  "gpio9",  "gpio10", "gpio11", "gpio12", "gpio13", "gpio14",
-+	"gpio15", "gpio16", "gpio17", "gpio18", "gpio19", "gpio20", "gpio21",
-+	"gpio22", "gpio23", "gpio24", "gpio25", "gpio26", "gpio27", "gpio28",
-+	"gpio29", "gpio30", "gpio31", "gpio32", "gpio33", "gpio34", "gpio35",
-+	"gpio36", "gpio37", "gpio38", "gpio39", "gpio40",
++static const struct mfd_cell madera_ldo1_devs[] = {
++	{ .name = "madera-ldo1" },
 +};
 +
-+/* set of pin numbers for single-pin groups, zero-indexed */
-+static const unsigned int madera_pin_single_group_pins[] = {
-+	  0,  1,  2,  3,  4,  5,  6,
-+	  7,  8,  9, 10, 11, 12, 13,
-+	 14, 15, 16, 17, 18, 19, 20,
-+	 21, 22, 23, 24, 25, 26, 27,
-+	 28, 29, 30, 31, 32, 33, 34,
-+	 35, 36, 37, 38, 39,
++static const char * const cs47l35_supplies[] = {
++	"MICVDD",
++	"DBVDD2",
++	"CPVDD1",
++	"CPVDD2",
++	"SPKVDD",
 +};
 +
-+static const char * const madera_aif1_group_names[] = { "aif1" };
-+static const char * const madera_aif2_group_names[] = { "aif2" };
-+static const char * const madera_aif3_group_names[] = { "aif3" };
-+static const char * const madera_aif4_group_names[] = { "aif4" };
-+static const char * const madera_mif1_group_names[] = { "mif1" };
-+static const char * const madera_mif2_group_names[] = { "mif2" };
-+static const char * const madera_mif3_group_names[] = { "mif3" };
-+static const char * const madera_dmic3_group_names[] = { "dmic3" };
-+static const char * const madera_dmic4_group_names[] = { "dmic4" };
-+static const char * const madera_dmic5_group_names[] = { "dmic5" };
-+static const char * const madera_dmic6_group_names[] = { "dmic6" };
-+static const char * const madera_spk1_group_names[] = { "pdmspk1" };
-+static const char * const madera_spk2_group_names[] = { "pdmspk2" };
-+
-+/*
-+ * alt-functions always apply to a single pin group, other functions always
-+ * apply to all pins
-+ */
-+static const struct {
-+	const char *name;
-+	const char * const *group_names;
-+	u32 func;
-+} madera_mux_funcs[] = {
++static const struct mfd_cell cs47l35_devs[] = {
++	{ .name = "madera-pinctrl", },
++	{ .name = "madera-irq", },
++	{ .name = "madera-micsupp", },
++	{ .name = "madera-gpio", },
++	{ .name = "madera-extcon", },
 +	{
-+		.name = "aif1",
-+		.group_names = madera_aif1_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "aif2",
-+		.group_names = madera_aif2_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "aif3",
-+		.group_names = madera_aif3_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "aif4",
-+		.group_names = madera_aif4_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "mif1",
-+		.group_names = madera_mif1_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "mif2",
-+		.group_names = madera_mif2_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "mif3",
-+		.group_names = madera_mif3_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "dmic3",
-+		.group_names = madera_dmic3_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "dmic4",
-+		.group_names = madera_dmic4_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "dmic5",
-+		.group_names = madera_dmic5_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "dmic6",
-+		.group_names = madera_dmic6_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "pdmspk1",
-+		.group_names = madera_spk1_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "pdmspk2",
-+		.group_names = madera_spk2_group_names,
-+		.func = 0x000
-+	},
-+	{
-+		.name = "io",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x001
-+	},
-+	{
-+		.name = "dsp-gpio",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x002
-+	},
-+	{
-+		.name = "irq1",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x003
-+	},
-+	{
-+		.name = "irq2",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x004
-+	},
-+	{
-+		.name = "fll1-clk",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x010
-+	},
-+	{
-+		.name = "fll2-clk",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x011
-+	},
-+	{
-+		.name = "fll3-clk",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x012
-+	},
-+	{
-+		.name = "fllao-clk",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x013
-+	},
-+	{
-+		.name = "fll1-lock",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x018
-+	},
-+	{
-+		.name = "fll2-lock",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x019
-+	},
-+	{
-+		.name = "fll3-lock",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x01a
-+	},
-+	{
-+		.name = "fllao-lock",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x01b
-+	},
-+	{
-+		.name = "opclk",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x040
-+	},
-+	{
-+		.name = "opclk-async",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x041
-+	},
-+	{
-+		.name = "pwm1",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x048
-+	},
-+	{
-+		.name = "pwm2",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x049
-+	},
-+	{
-+		.name = "spdif",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x04c
-+	},
-+	{
-+		.name = "asrc1-in1-lock",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x088
-+	},
-+	{
-+		.name = "asrc1-in2-lock",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x089
-+	},
-+	{
-+		.name = "asrc2-in1-lock",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x08a
-+	},
-+	{
-+		.name = "asrc2-in2-lock",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x08b
-+	},
-+	{
-+		.name = "spkl-short-circuit",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x0b6
-+	},
-+	{
-+		.name = "spkr-short-circuit",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x0b7
-+	},
-+	{
-+		.name = "spk-shutdown",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x0e0
-+	},
-+	{
-+		.name = "spk-overheat-shutdown",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x0e1
-+	},
-+	{
-+		.name = "spk-overheat-warn",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x0e2
-+	},
-+	{
-+		.name = "timer1-sts",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x140
-+	},
-+	{
-+		.name = "timer2-sts",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x141
-+	},
-+	{
-+		.name = "timer3-sts",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x142
-+	},
-+	{
-+		.name = "timer4-sts",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x143
-+	},
-+	{
-+		.name = "timer5-sts",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x144
-+	},
-+	{
-+		.name = "timer6-sts",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x145
-+	},
-+	{
-+		.name = "timer7-sts",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x146
-+	},
-+	{
-+		.name = "timer8-sts",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x147
-+	},
-+	{
-+		.name = "log1-fifo-ne",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x150
-+	},
-+	{
-+		.name = "log2-fifo-ne",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x151
-+	},
-+	{
-+		.name = "log3-fifo-ne",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x152
-+	},
-+	{
-+		.name = "log4-fifo-ne",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x153
-+	},
-+	{
-+		.name = "log5-fifo-ne",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x154
-+	},
-+	{
-+		.name = "log6-fifo-ne",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x155
-+	},
-+	{
-+		.name = "log7-fifo-ne",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x156
-+	},
-+	{
-+		.name = "log8-fifo-ne",
-+		.group_names = madera_pin_single_group_names,
-+		.func = 0x157
++		.name = "cs47l35-codec",
++		.parent_supplies = cs47l35_supplies,
++		.num_parent_supplies = ARRAY_SIZE(cs47l35_supplies),
 +	},
 +};
 +
-+static u16 madera_pin_make_drv_str(struct madera_pin_private *priv,
-+				      unsigned int milliamps)
++static const char * const cs47l85_supplies[] = {
++	"MICVDD",
++	"DBVDD2",
++	"DBVDD3",
++	"DBVDD4",
++	"CPVDD1",
++	"CPVDD2",
++	"SPKVDDL",
++	"SPKVDDR",
++};
++
++static const struct mfd_cell cs47l85_devs[] = {
++	{ .name = "madera-pinctrl", },
++	{ .name = "madera-irq", },
++	{ .name = "madera-micsupp" },
++	{ .name = "madera-gpio", },
++	{ .name = "madera-extcon", },
++	{
++		.name = "cs47l85-codec",
++		.parent_supplies = cs47l85_supplies,
++		.num_parent_supplies = ARRAY_SIZE(cs47l85_supplies),
++	},
++};
++
++static const char * const cs47l90_supplies[] = {
++	"MICVDD",
++	"DBVDD2",
++	"DBVDD3",
++	"DBVDD4",
++	"CPVDD1",
++	"CPVDD2",
++};
++
++static const struct mfd_cell cs47l90_devs[] = {
++	{ .name = "madera-pinctrl", },
++	{ .name = "madera-irq", },
++	{ .name = "madera-micsupp", },
++	{ .name = "madera-gpio", },
++	{ .name = "madera-extcon", },
++	{
++		.name = "cs47l90-codec",
++		.parent_supplies = cs47l90_supplies,
++		.num_parent_supplies = ARRAY_SIZE(cs47l90_supplies),
++	},
++};
++
++const char *madera_name_from_type(enum madera_type type)
 +{
-+	switch (milliamps) {
-+	case 4:
-+		return 0;
-+	case 8:
-+		return 2 << MADERA_GP1_DRV_STR_SHIFT;
++	switch (type) {
++	case CS47L35:
++		return "CS47L35";
++	case CS47L85:
++		return "CS47L85";
++	case CS47L90:
++		return "CS47L90";
++	case CS47L91:
++		return "CS47L91";
++	case WM1840:
++		return "WM1840";
 +	default:
-+		break;
-+	}
-+
-+	dev_warn(priv->dev, "%u mA not a valid drive strength", milliamps);
-+
-+	return 0;
-+}
-+
-+static unsigned int madera_pin_unmake_drv_str(struct madera_pin_private *priv,
-+					      u16 regval)
-+{
-+	regval = (regval & MADERA_GP1_DRV_STR_MASK) >> MADERA_GP1_DRV_STR_SHIFT;
-+
-+	switch (regval) {
-+	case 0:
-+		return 4;
-+	case 2:
-+		return 8;
-+	default:
-+		return 0;
++		return "Unknown";
 +	}
 +}
++EXPORT_SYMBOL_GPL(madera_name_from_type);
 +
-+static int madera_get_groups_count(struct pinctrl_dev *pctldev)
++#define MADERA_BOOT_POLL_MAX_INTERVAL_US  5000
++#define MADERA_BOOT_POLL_TIMEOUT_US	 25000
++
++static int madera_wait_for_boot(struct madera *madera)
 +{
-+	struct madera_pin_private *priv = pinctrl_dev_get_drvdata(pctldev);
-+
-+	/* Number of alt function groups plus number of single-pin groups */
-+	return priv->chip->n_pin_groups + priv->chip->n_pins;
-+}
-+
-+static const char *madera_get_group_name(struct pinctrl_dev *pctldev,
-+					 unsigned int selector)
-+{
-+	struct madera_pin_private *priv = pinctrl_dev_get_drvdata(pctldev);
-+
-+	if (selector < priv->chip->n_pin_groups) {
-+		return priv->chip->pin_groups[selector].name;
-+	} else {
-+		selector -= priv->chip->n_pin_groups;
-+		return madera_pin_single_group_names[selector];
-+	}
-+}
-+
-+static int madera_get_group_pins(struct pinctrl_dev *pctldev,
-+				 unsigned int selector,
-+				 const unsigned int **pins,
-+				 unsigned int *num_pins)
-+{
-+	struct madera_pin_private *priv = pinctrl_dev_get_drvdata(pctldev);
-+
-+	if (selector < priv->chip->n_pin_groups) {
-+		*pins = priv->chip->pin_groups[selector].pins;
-+		*num_pins = priv->chip->pin_groups[selector].n_pins;
-+	} else {
-+		/* return the dummy group for a single pin */
-+		selector -= priv->chip->n_pin_groups;
-+		*pins = &madera_pin_single_group_pins[selector];
-+		*num_pins = 1;
-+	}
-+	return 0;
-+}
-+
-+static void madera_pin_dbg_show_fn(struct madera_pin_private *priv,
-+				   struct seq_file *s,
-+				   unsigned int pin, unsigned int fn)
-+{
-+	const struct madera_pin_chip *chip = priv->chip;
-+	int i, g_pin;
-+
-+	if (fn != 0) {
-+		for (i = 0; i < ARRAY_SIZE(madera_mux_funcs); ++i) {
-+			if (madera_mux_funcs[i].func == fn) {
-+				seq_printf(s, " FN=%s",
-+					   madera_mux_funcs[i].name);
-+				return;
-+			}
-+		}
-+		return;	/* ignore unknown function values */
-+	}
-+
-+	/* alt function */
-+	for (i = 0; i < chip->n_pin_groups; ++i) {
-+		for (g_pin = 0; g_pin < chip->pin_groups[i].n_pins; ++g_pin) {
-+			if (chip->pin_groups[i].pins[g_pin] == pin) {
-+				seq_printf(s, " FN=%s",
-+					   chip->pin_groups[i].name);
-+				return;
-+			}
-+		}
-+	}
-+}
-+
-+static void madera_pin_dbg_show(struct pinctrl_dev *pctldev,
-+				struct seq_file *s,
-+				unsigned int pin)
-+{
-+	struct madera_pin_private *priv = pinctrl_dev_get_drvdata(pctldev);
-+	unsigned int conf[2];
-+	unsigned int reg = MADERA_GPIO1_CTRL_1 + (2 * pin);
-+	unsigned int fn;
-+	int ret;
-+
-+	ret = regmap_read(priv->madera->regmap, reg, &conf[0]);
-+	if (ret)
-+		return;
-+
-+	ret = regmap_read(priv->madera->regmap, reg + 1, &conf[1]);
-+	if (ret)
-+		return;
-+
-+	seq_printf(s, "%04x:%04x", conf[0], conf[1]);
-+
-+	fn = (conf[0] & MADERA_GP1_FN_MASK) >> MADERA_GP1_FN_SHIFT;
-+	madera_pin_dbg_show_fn(priv, s, pin, fn);
-+
-+	/* State of direction bit is only relevant if function==1 */
-+	if (fn == 1) {
-+		if (conf[1] & MADERA_GP1_DIR_MASK)
-+			seq_puts(s, " IN");
-+		else
-+			seq_puts(s, " OUT");
-+	}
-+
-+	if (conf[1] & MADERA_GP1_PU_MASK)
-+		seq_puts(s, " PU");
-+
-+	if (conf[1] & MADERA_GP1_PD_MASK)
-+		seq_puts(s, " PD");
-+
-+	if (conf[0] & MADERA_GP1_DB_MASK)
-+		seq_puts(s, " DB");
-+
-+	if (conf[0] & MADERA_GP1_OP_CFG_MASK)
-+		seq_puts(s, " OD");
-+	else
-+		seq_puts(s, " CMOS");
-+
-+	seq_printf(s, " DRV=%umA", madera_pin_unmake_drv_str(priv, conf[1]));
-+
-+	if (conf[0] & MADERA_GP1_IP_CFG_MASK)
-+		seq_puts(s, "SCHMITT");
-+}
-+
-+
-+static const struct pinctrl_ops madera_pin_group_ops = {
-+	.get_groups_count = madera_get_groups_count,
-+	.get_group_name = madera_get_group_name,
-+	.get_group_pins = madera_get_group_pins,
-+	.dt_node_to_map = pinconf_generic_dt_node_to_map_all,
-+	.dt_free_map = pinctrl_utils_free_map,
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
-+	.pin_dbg_show = madera_pin_dbg_show,
-+#endif
-+};
-+
-+static int madera_mux_get_funcs_count(struct pinctrl_dev *pctldev)
-+{
-+	return ARRAY_SIZE(madera_mux_funcs);
-+}
-+
-+static const char *madera_mux_get_func_name(struct pinctrl_dev *pctldev,
-+					    unsigned int selector)
-+{
-+	return madera_mux_funcs[selector].name;
-+}
-+
-+static int madera_mux_get_groups(struct pinctrl_dev *pctldev,
-+				 unsigned int selector,
-+				 const char * const **groups,
-+				 unsigned int * const num_groups)
-+{
-+	struct madera_pin_private *priv = pinctrl_dev_get_drvdata(pctldev);
-+
-+	*groups = madera_mux_funcs[selector].group_names;
-+
-+	if (madera_mux_funcs[selector].func == 0) {
-+		/* alt func always maps to a single group */
-+		*num_groups = 1;
-+	} else {
-+		/* other funcs map to all available gpio pins */
-+		*num_groups = priv->chip->n_pins;
-+	}
-+
-+	return 0;
-+}
-+
-+static int madera_mux_set_mux(struct pinctrl_dev *pctldev,
-+			      unsigned int selector,
-+			      unsigned int group)
-+{
-+	struct madera_pin_private *priv = pinctrl_dev_get_drvdata(pctldev);
-+	struct madera *madera = priv->madera;
-+	const struct madera_pin_groups *pin_group = priv->chip->pin_groups;
-+	unsigned int n_chip_groups = priv->chip->n_pin_groups;
-+	const char *func_name = madera_mux_funcs[selector].name;
-+	unsigned int reg;
-+	int i, ret;
-+
-+	dev_dbg(priv->dev, "%s selecting %u (%s) for group %u (%s)\n",
-+		__func__, selector, func_name, group,
-+		madera_get_group_name(pctldev, group));
-+
-+	if (madera_mux_funcs[selector].func == 0) {
-+		/* alt func pin assignments are codec-specific */
-+		for (i = 0; i < n_chip_groups; ++i) {
-+			if (strcmp(func_name, pin_group->name) == 0)
-+				break;
-+
-+			++pin_group;
-+		}
-+
-+		if (i == n_chip_groups)
-+			return -EINVAL;
-+
-+		for (i = 0; i < pin_group->n_pins; ++i) {
-+			reg = MADERA_GPIO1_CTRL_1 + (2 * pin_group->pins[i]);
-+
-+			dev_dbg(priv->dev, "%s setting 0x%x func bits to 0\n",
-+				__func__, reg);
-+
-+			ret = regmap_update_bits(madera->regmap, reg,
-+						 MADERA_GP1_FN_MASK, 0);
-+			if (ret)
-+				break;
-+
-+		}
-+	} else {
-+		/*
-+		 * for other funcs the group will be the gpio number and will
-+		 * be offset by the number of chip-specific functions at the
-+		 * start of the group list
-+		 */
-+		group -= n_chip_groups;
-+		reg = MADERA_GPIO1_CTRL_1 + (2 * group);
-+
-+		dev_dbg(priv->dev, "%s setting 0x%x func bits to 0x%x\n",
-+			__func__, reg, madera_mux_funcs[selector].func);
-+
-+		ret = regmap_update_bits(madera->regmap,
-+					 reg,
-+					 MADERA_GP1_FN_MASK,
-+					 madera_mux_funcs[selector].func);
-+	}
-+
-+	if (ret)
-+		dev_err(priv->dev, "Failed to write to 0x%x (%d)\n", reg, ret);
-+
-+	return ret;
-+}
-+
-+static int madera_gpio_set_direction(struct pinctrl_dev *pctldev,
-+				     struct pinctrl_gpio_range *range,
-+				     unsigned int offset,
-+				     bool input)
-+{
-+	struct madera_pin_private *priv = pinctrl_dev_get_drvdata(pctldev);
-+	struct madera *madera = priv->madera;
-+	unsigned int reg = MADERA_GPIO1_CTRL_2 + (2 * offset);
 +	unsigned int val;
 +	int ret;
 +
-+	if (input)
-+		val = MADERA_GP1_DIR;
-+	else
-+		val = 0;
++	/*
++	 * We can't use an interrupt as we need to runtime resume to do so,
++	 * so we poll the status bit. This won't race with the interrupt
++	 * handler because it will be blocked on runtime resume.
++	 */
++	ret = regmap_read_poll_timeout(madera->regmap,
++				       MADERA_IRQ1_RAW_STATUS_1,
++				       val,
++				       (val & MADERA_BOOT_DONE_STS1),
++				       MADERA_BOOT_POLL_MAX_INTERVAL_US,
++				       MADERA_BOOT_POLL_TIMEOUT_US);
 +
-+	ret = regmap_update_bits(madera->regmap, reg, MADERA_GP1_DIR_MASK, val);
 +	if (ret)
-+		dev_err(priv->dev, "Failed to write to 0x%x (%d)\n", reg, ret);
++		dev_err(madera->dev, "Polling BOOT_DONE_STS failed: %d\n", ret);
++
++	/*
++	 * BOOT_DONE defaults to unmasked on boot so we must ack it.
++	 * Do this unconditionally to avoid interrupt storms
++	 */
++	regmap_write(madera->regmap, MADERA_IRQ1_STATUS_1,
++		     MADERA_BOOT_DONE_EINT1);
++
++	pm_runtime_mark_last_busy(madera->dev);
 +
 +	return ret;
 +}
 +
-+static int madera_gpio_request_enable(struct pinctrl_dev *pctldev,
-+				      struct pinctrl_gpio_range *range,
-+				      unsigned int offset)
++static int madera_soft_reset(struct madera *madera)
 +{
-+	struct madera_pin_private *priv = pinctrl_dev_get_drvdata(pctldev);
-+	struct madera *madera = priv->madera;
-+	unsigned int reg = MADERA_GPIO1_CTRL_1 + (2 * offset);
 +	int ret;
 +
-+	/* put the pin into GPIO mode */
-+	ret = regmap_update_bits(madera->regmap, reg, MADERA_GP1_FN_MASK, 1);
-+	if (ret)
-+		dev_err(priv->dev, "Failed to write to 0x%x (%d)\n", reg, ret);
-+
-+	return ret;
-+}
-+
-+static void madera_gpio_disable_free(struct pinctrl_dev *pctldev,
-+				     struct pinctrl_gpio_range *range,
-+				     unsigned int offset)
-+{
-+	struct madera_pin_private *priv = pinctrl_dev_get_drvdata(pctldev);
-+	struct madera *madera = priv->madera;
-+	unsigned int reg = MADERA_GPIO1_CTRL_1 + (2 * offset);
-+	int ret;
-+
-+	/* disable GPIO by setting to GPIO IN */
-+	madera_gpio_set_direction(pctldev, range, offset, true);
-+
-+	ret = regmap_update_bits(madera->regmap, reg, MADERA_GP1_FN_MASK, 1);
-+	if (ret)
-+		dev_err(priv->dev, "Failed to write to 0x%x (%d)\n", reg, ret);
-+}
-+
-+static const struct pinmux_ops madera_pin_mux_ops = {
-+	.get_functions_count = madera_mux_get_funcs_count,
-+	.get_function_name = madera_mux_get_func_name,
-+	.get_function_groups = madera_mux_get_groups,
-+	.set_mux = madera_mux_set_mux,
-+	.gpio_request_enable = madera_gpio_request_enable,
-+	.gpio_disable_free = madera_gpio_disable_free,
-+	.gpio_set_direction = madera_gpio_set_direction,
-+	.strict = true, /* GPIO and other functions are exclusive */
-+};
-+
-+static int madera_pin_conf_get(struct pinctrl_dev *pctldev, unsigned int pin,
-+			       unsigned long *config)
-+{
-+	struct madera_pin_private *priv = pinctrl_dev_get_drvdata(pctldev);
-+	unsigned int param = pinconf_to_config_param(*config);
-+	unsigned int result = 0;
-+	unsigned int reg = MADERA_GPIO1_CTRL_1 + (2 * pin);
-+	unsigned int conf[2];
-+	int ret;
-+
-+	ret = regmap_read(priv->madera->regmap, reg, &conf[0]);
-+	if (!ret)
-+		ret = regmap_read(priv->madera->regmap, reg + 1, &conf[1]);
-+
-+	if (ret) {
-+		dev_err(priv->dev, "Failed to read GP%d conf (%d)\n",
-+			pin + 1, ret);
++	ret = regmap_write(madera->regmap, MADERA_SOFTWARE_RESET, 0);
++	if (ret != 0) {
++		dev_err(madera->dev, "Failed to soft reset device: %d\n", ret);
 +		return ret;
 +	}
 +
-+	switch (param) {
-+	case PIN_CONFIG_BIAS_BUS_HOLD:
-+		conf[1] &= MADERA_GP1_PU_MASK | MADERA_GP1_PD_MASK;
-+		if (conf[1] == (MADERA_GP1_PU | MADERA_GP1_PD))
-+			result = 1;
-+		break;
-+	case PIN_CONFIG_BIAS_DISABLE:
-+		conf[1] &= MADERA_GP1_PU_MASK | MADERA_GP1_PD_MASK;
-+		if (!conf[1])
-+			result = 1;
-+		break;
-+	case PIN_CONFIG_BIAS_PULL_DOWN:
-+		conf[1] &= MADERA_GP1_PU_MASK | MADERA_GP1_PD_MASK;
-+		if (conf[1] == MADERA_GP1_PD_MASK)
-+			result = 1;
-+		break;
-+	case PIN_CONFIG_BIAS_PULL_UP:
-+		conf[1] &= MADERA_GP1_PU_MASK | MADERA_GP1_PD_MASK;
-+		if (conf[1] == MADERA_GP1_PU_MASK)
-+			result = 1;
-+		break;
-+	case PIN_CONFIG_DRIVE_OPEN_DRAIN:
-+		if (conf[0] & MADERA_GP1_OP_CFG_MASK)
-+			result = 1;
-+		break;
-+	case PIN_CONFIG_DRIVE_PUSH_PULL:
-+		if (!(conf[0] & MADERA_GP1_OP_CFG_MASK))
-+			result = 1;
-+		break;
-+	case PIN_CONFIG_DRIVE_STRENGTH:
-+		result = madera_pin_unmake_drv_str(priv, conf[1]);
-+		break;
-+	case PIN_CONFIG_INPUT_DEBOUNCE:
-+		if (conf[0] & MADERA_GP1_DB_MASK)
-+			result = 1;
-+		break;
-+	case PIN_CONFIG_INPUT_ENABLE:
-+		if (conf[0] & MADERA_GP1_DIR_MASK)
-+			result = 1;
-+		break;
-+	case PIN_CONFIG_INPUT_SCHMITT:
-+	case PIN_CONFIG_INPUT_SCHMITT_ENABLE:
-+		if (conf[0] & MADERA_GP1_IP_CFG_MASK)
-+			result = 1;
-+		break;
-+	case PIN_CONFIG_OUTPUT:
-+		if ((conf[1] & MADERA_GP1_DIR_MASK) &&
-+		    (conf[0] & MADERA_GP1_LVL_MASK))
-+			result = 1;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	*config = pinconf_to_config_packed(param, result);
++	/* Allow time for internal clocks to startup after reset */
++	usleep_range(1000, 2000);
 +
 +	return 0;
 +}
 +
-+static int madera_pin_conf_set(struct pinctrl_dev *pctldev, unsigned int pin,
-+			       unsigned long *configs, unsigned int num_configs)
++static void madera_enable_hard_reset(struct madera *madera)
 +{
-+	struct madera_pin_private *priv = pinctrl_dev_get_drvdata(pctldev);
-+	u16 conf[2] = {0, 0};
-+	u16 mask[2] = {0, 0};
-+	unsigned int reg = MADERA_GPIO1_CTRL_1 + (2 * pin);
-+	unsigned int val;
++	if (madera->reset_gpio)
++		gpiod_set_value_cansleep(madera->reset_gpio, 0);
++}
++
++static void madera_disable_hard_reset(struct madera *madera)
++{
++	if (madera->reset_gpio) {
++		gpiod_set_value_cansleep(madera->reset_gpio, 1);
++		usleep_range(1000, 2000);
++	}
++}
++
++#ifdef CONFIG_PM
++static int madera_runtime_resume(struct device *dev)
++{
++	struct madera *madera = dev_get_drvdata(dev);
 +	int ret;
 +
-+	while (num_configs) {
-+		dev_dbg(priv->dev, "%s config 0x%lx\n", __func__, *configs);
++	dev_dbg(dev, "Leaving sleep mode\n");
 +
-+		switch (pinconf_to_config_param(*configs)) {
-+		case PIN_CONFIG_BIAS_BUS_HOLD:
-+			mask[1] |= MADERA_GP1_PU_MASK | MADERA_GP1_PD_MASK;
-+			conf[1] |= MADERA_GP1_PU | MADERA_GP1_PD;
-+			break;
-+		case PIN_CONFIG_BIAS_DISABLE:
-+			mask[1] |= MADERA_GP1_PU_MASK | MADERA_GP1_PD_MASK;
-+			conf[1] &= ~(MADERA_GP1_PU | MADERA_GP1_PD);
-+			break;
-+		case PIN_CONFIG_BIAS_PULL_DOWN:
-+			mask[1] |= MADERA_GP1_PU_MASK | MADERA_GP1_PD_MASK;
-+			conf[1] |= MADERA_GP1_PD;
-+			conf[1] &= ~MADERA_GP1_PU;
-+			break;
-+		case PIN_CONFIG_BIAS_PULL_UP:
-+			mask[1] |= MADERA_GP1_PU_MASK | MADERA_GP1_PD_MASK;
-+			conf[1] |= MADERA_GP1_PU;
-+			conf[1] &= ~MADERA_GP1_PD;
-+			break;
-+		case PIN_CONFIG_DRIVE_OPEN_DRAIN:
-+			mask[0] |= MADERA_GP1_OP_CFG_MASK;
-+			conf[0] |= MADERA_GP1_OP_CFG;
-+			break;
-+		case PIN_CONFIG_DRIVE_PUSH_PULL:
-+			mask[0] |= MADERA_GP1_OP_CFG_MASK;
-+			conf[0] &= ~MADERA_GP1_OP_CFG;
-+			break;
-+		case PIN_CONFIG_DRIVE_STRENGTH:
-+			val = pinconf_to_config_argument(*configs);
-+			mask[1] |= MADERA_GP1_DRV_STR_MASK;
-+			conf[1] &= ~MADERA_GP1_DRV_STR_MASK;
-+			conf[1] |= madera_pin_make_drv_str(priv, val);
-+			break;
-+		case PIN_CONFIG_INPUT_DEBOUNCE:
-+			mask[0] |= MADERA_GP1_DB_MASK;
-+
-+			/*
-+			 * we can't configure debounce time per-pin so value
-+			 * is just a flag
-+			 */
-+			val = pinconf_to_config_argument(*configs);
-+			if (val)
-+				conf[0] |= MADERA_GP1_DB;
-+			else
-+				conf[0] &= ~MADERA_GP1_DB;
-+			break;
-+		case PIN_CONFIG_INPUT_ENABLE:
-+			val = pinconf_to_config_argument(*configs);
-+			mask[1] |= MADERA_GP1_DIR_MASK;
-+			if (val)
-+				conf[1] |= MADERA_GP1_DIR;
-+			else
-+				conf[1] &= ~MADERA_GP1_DIR;
-+			break;
-+		case PIN_CONFIG_INPUT_SCHMITT:
-+			val = pinconf_to_config_argument(*configs);
-+			mask[0] |= MADERA_GP1_IP_CFG;
-+			if (val)
-+				conf[0] |= MADERA_GP1_IP_CFG;
-+			else
-+				conf[0] &= ~MADERA_GP1_IP_CFG;
-+
-+			mask[1] |= MADERA_GP1_DIR_MASK;
-+			conf[1] |= MADERA_GP1_DIR;
-+			break;
-+		case PIN_CONFIG_INPUT_SCHMITT_ENABLE:
-+			mask[0] |= MADERA_GP1_IP_CFG;
-+			conf[0] |= MADERA_GP1_IP_CFG;
-+			mask[1] |= MADERA_GP1_DIR_MASK;
-+			conf[1] |= MADERA_GP1_DIR;
-+			break;
-+		case PIN_CONFIG_OUTPUT:
-+			val = pinconf_to_config_argument(*configs);
-+			mask[0] |= MADERA_GP1_LVL_MASK;
-+			if (val)
-+				conf[0] |= MADERA_GP1_LVL;
-+			else
-+				conf[0] &= ~MADERA_GP1_LVL;
-+
-+			mask[1] |= MADERA_GP1_DIR_MASK;
-+			conf[1] &= ~MADERA_GP1_DIR;
-+			break;
-+		default:
-+			break;
-+		}
-+
-+		++configs;
-+		--num_configs;
++	ret = regulator_enable(madera->dcvdd);
++	if (ret) {
++		dev_err(dev, "Failed to enable DCVDD: %d\n", ret);
++		return ret;
 +	}
 +
-+	dev_dbg(priv->dev,
-+		"%s gpio%d 0x%x:0x%x 0x%x:0x%x\n",
-+		__func__, pin + 1, reg, conf[0], reg + 1, conf[1]);
++	regcache_cache_only(madera->regmap, false);
++	regcache_cache_only(madera->regmap_32bit, false);
 +
-+	ret = regmap_update_bits(priv->madera->regmap, reg, mask[0], conf[0]);
++	ret = madera_wait_for_boot(madera);
 +	if (ret)
 +		goto err;
 +
-+	++reg;
-+	ret = regmap_update_bits(priv->madera->regmap, reg, mask[1], conf[1]);
-+	if (ret)
++	ret = regcache_sync(madera->regmap);
++	if (ret) {
++		dev_err(dev, "Failed to restore 16-bit register cache\n");
 +		goto err;
++	}
++
++	ret = regcache_sync(madera->regmap_32bit);
++	if (ret) {
++		dev_err(dev, "Failed to restore 32-bit register cache\n");
++		goto err;
++	}
 +
 +	return 0;
 +
 +err:
-+	dev_err(priv->dev,
-+		"Failed to write GPIO%d conf (%d) reg 0x%x\n",
-+		pin + 1, ret, reg);
++	regcache_cache_only(madera->regmap_32bit, true);
++	regcache_cache_only(madera->regmap, true);
++	regulator_disable(madera->dcvdd);
 +
 +	return ret;
 +}
 +
-+static int madera_pin_conf_group_set(struct pinctrl_dev *pctldev,
-+				     unsigned int selector,
-+				     unsigned long *configs,
-+				     unsigned int num_configs)
++static int madera_runtime_suspend(struct device *dev)
 +{
-+	struct madera_pin_private *priv = pinctrl_dev_get_drvdata(pctldev);
-+	const struct madera_pin_groups *pin_group;
-+	unsigned int n_groups = priv->chip->n_pin_groups;
-+	int i, ret;
++	struct madera *madera = dev_get_drvdata(dev);
 +
-+	dev_dbg(priv->dev, "%s setting group %s\n", __func__,
-+		madera_get_group_name(pctldev, selector));
++	dev_dbg(madera->dev, "Entering sleep mode\n");
 +
-+	if (selector >= n_groups) {
-+		/* group is a single pin, convert to pin number and set */
-+		return madera_pin_conf_set(pctldev,
-+					   selector - n_groups,
-+					   configs,
-+					   num_configs);
-+	} else {
-+		pin_group = &priv->chip->pin_groups[selector];
++	regcache_cache_only(madera->regmap, true);
++	regcache_mark_dirty(madera->regmap);
++	regcache_cache_only(madera->regmap_32bit, true);
++	regcache_mark_dirty(madera->regmap_32bit);
 +
-+		for (i = 0; i < pin_group->n_pins; ++i) {
-+			ret = madera_pin_conf_set(pctldev,
-+						  pin_group->pins[i],
-+						  configs,
-+						  num_configs);
-+			if (ret)
-+				return ret;
-+		}
++	regulator_disable(madera->dcvdd);
++
++	return 0;
++}
++#endif
++
++const struct dev_pm_ops madera_pm_ops = {
++	SET_RUNTIME_PM_OPS(madera_runtime_suspend,
++			   madera_runtime_resume,
++			   NULL)
++};
++EXPORT_SYMBOL_GPL(madera_pm_ops);
++
++unsigned int madera_get_num_micbias(struct madera *madera)
++{
++
++	switch (madera->type) {
++	case CS47L35:
++		return 2;
++	case CS47L85:
++	case WM1840:
++		return 4;
++	case CS47L90:
++	case CS47L91:
++		return 2;
++	default:
++		dev_warn(madera->dev, "No micbias known for codec %s\n",
++			 madera_name_from_type(madera->type));
++		return 0;
 +	}
++}
++EXPORT_SYMBOL_GPL(madera_get_num_micbias);
++
++unsigned int madera_get_num_childbias(struct madera *madera,
++				      unsigned int micbias)
++{
++	/*
++	 * micbias argument reserved for future codecs that don't
++	 * have the same number of children on each micbias
++	 */
++
++	switch (madera->type) {
++	case CS47L35:
++		return 2;
++	case CS47L85:
++	case WM1840:
++		return 0;
++	case CS47L90:
++	case CS47L91:
++		return 4;
++	default:
++		dev_warn(madera->dev, "No child micbias known for codec %s\n",
++			 madera_name_from_type(madera->type));
++		return 0;
++	}
++}
++EXPORT_SYMBOL_GPL(madera_get_num_childbias);
++
++#ifdef CONFIG_OF
++const struct of_device_id madera_of_match[] = {
++	{ .compatible = "cirrus,cs47l35", .data = (void *)CS47L35 },
++	{ .compatible = "cirrus,cs47l85", .data = (void *)CS47L85 },
++	{ .compatible = "cirrus,cs47l90", .data = (void *)CS47L90 },
++	{ .compatible = "cirrus,cs47l91", .data = (void *)CS47L91 },
++	{ .compatible = "cirrus,wm1840", .data = (void *)WM1840 },
++	{},
++};
++EXPORT_SYMBOL_GPL(madera_of_match);
++
++unsigned long madera_get_type_from_of(struct device *dev)
++{
++	const struct of_device_id *id = of_match_device(madera_of_match, dev);
++
++	if (id)
++		return (unsigned long)id->data;
++	else
++		return 0;
++}
++EXPORT_SYMBOL_GPL(madera_get_type_from_of);
++#endif
++
++static int madera_get_reset_gpio(struct madera *madera)
++{
++	int ret;
++
++	/* We use 0 in pdata to indicate a GPIO has not been set */
++	if (dev_get_platdata(madera->dev) && (madera->pdata.reset > 0)) {
++		/* Start out with /RESET asserted */
++		ret = devm_gpio_request_one(madera->dev,
++					    madera->pdata.reset,
++					    GPIOF_DIR_OUT | GPIOF_INIT_LOW,
++					    "madera reset");
++		if (!ret)
++			madera->reset_gpio = gpio_to_desc(madera->pdata.reset);
++	} else {
++		madera->reset_gpio = devm_gpiod_get_optional(madera->dev,
++							     "reset",
++							     GPIOD_OUT_LOW);
++		if (IS_ERR(madera->reset_gpio))
++			ret = PTR_ERR(madera->reset_gpio);
++		else
++			ret = 0;
++	}
++
++	if (ret == -EPROBE_DEFER)
++		return ret;
++
++	if (ret) {
++		dev_err(madera->dev, "Failed to request /RESET: %d\n", ret);
++		return ret;
++	}
++
++	if (!madera->reset_gpio)
++		dev_warn(madera->dev,
++			 "Running without reset GPIO is not recommended\n");
 +
 +	return 0;
 +}
 +
-+static const struct pinconf_ops madera_pin_conf_ops = {
-+	.pin_config_get = madera_pin_conf_get,
-+	.pin_config_set = madera_pin_conf_set,
-+	.pin_config_group_set = madera_pin_conf_group_set,
-+
-+};
-+
-+static struct pinctrl_desc madera_pin_desc = {
-+	.name = "madera-pinctrl",
-+	.pins = madera_pins,
-+	.pctlops = &madera_pin_group_ops,
-+	.pmxops = &madera_pin_mux_ops,
-+	.confops = &madera_pin_conf_ops,
-+	.owner = THIS_MODULE,
-+};
-+
-+static int madera_pin_probe(struct platform_device *pdev)
++int madera_dev_init(struct madera *madera)
 +{
-+	struct madera *madera = dev_get_drvdata(pdev->dev.parent);
-+	const struct madera_pdata *pdata = dev_get_platdata(madera->dev);
-+	struct madera_pin_private *priv;
-+	int ret;
++	struct device *dev = madera->dev;
++	const char *name;
++	unsigned int hwid;
++	int (*patch_fn)(struct madera *) = NULL;
++	const struct mfd_cell *mfd_devs;
++	int n_devs = 0;
++	int i, ret;
 +
-+	BUILD_BUG_ON(ARRAY_SIZE(madera_pin_single_group_names) !=
-+		     ARRAY_SIZE(madera_pin_single_group_pins));
++	dev_set_drvdata(madera->dev, madera);
++	BLOCKING_INIT_NOTIFIER_HEAD(&madera->notifier);
 +
-+	dev_dbg(&pdev->dev, "%s\n", __func__);
++	if (dev_get_platdata(madera->dev)) {
++		memcpy(&madera->pdata, dev_get_platdata(madera->dev),
++		       sizeof(madera->pdata));
++	}
 +
-+	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
++	ret = madera_get_reset_gpio(madera);
++	if (ret)
++		return ret;
 +
-+	priv->dev = &pdev->dev;
-+	priv->madera = madera;
-+	pdev->dev.of_node = madera->dev->of_node;
++	regcache_cache_only(madera->regmap, true);
++	regcache_cache_only(madera->regmap_32bit, true);
++
++	for (i = 0; i < ARRAY_SIZE(madera_core_supplies); i++)
++		madera->core_supplies[i].supply = madera_core_supplies[i];
++
++	madera->num_core_supplies = ARRAY_SIZE(madera_core_supplies);
 +
 +	switch (madera->type) {
 +	case CS47L35:
-+		if (IS_ENABLED(CONFIG_PINCTRL_CS47L35))
-+			priv->chip = &cs47l35_pin_chip;
++	case CS47L90:
++	case CS47L91:
 +		break;
 +	case CS47L85:
 +	case WM1840:
-+		if (IS_ENABLED(CONFIG_PINCTRL_CS47L85))
-+			priv->chip = &cs47l85_pin_chip;
++		/* On these DCVDD could be supplied from the onboard LDO1 */
++		ret = mfd_add_devices(madera->dev, PLATFORM_DEVID_NONE,
++				      madera_ldo1_devs,
++				      ARRAY_SIZE(madera_ldo1_devs),
++				      NULL, 0, NULL);
++		if (ret) {
++			dev_err(dev, "Failed to add LDO1 child: %d\n", ret);
++			return ret;
++		}
 +		break;
-+	case CS47L90:
-+	case CS47L91:
-+		if (IS_ENABLED(CONFIG_PINCTRL_CS47L90))
-+			priv->chip = &cs47l90_pin_chip;
++	default:
++		dev_err(madera->dev, "Unknown device type %d\n", madera->type);
++		return -ENODEV;
++	}
++
++	ret = devm_regulator_bulk_get(dev, madera->num_core_supplies,
++				      madera->core_supplies);
++	if (ret) {
++		dev_err(dev, "Failed to request core supplies: %d\n", ret);
++		goto err_devs;
++	}
++
++	/*
++	 * Don't use devres here because the only device we have to get
++	 * against is the MFD device and DCVDD will likely be supplied by
++	 * one of its children. Meaning that the regulator will be
++	 * destroyed by the time devres calls regulator put.
++	 */
++	madera->dcvdd = regulator_get_exclusive(madera->dev, "DCVDD");
++	if (IS_ERR(madera->dcvdd)) {
++		ret = PTR_ERR(madera->dcvdd);
++		dev_err(dev, "Failed to request DCVDD: %d\n", ret);
++		goto err_devs;
++	}
++
++	ret = regulator_bulk_enable(madera->num_core_supplies,
++				    madera->core_supplies);
++	if (ret) {
++		dev_err(dev, "Failed to enable core supplies: %d\n", ret);
++		goto err_dcvdd;
++	}
++
++	ret = regulator_enable(madera->dcvdd);
++	if (ret) {
++		dev_err(dev, "Failed to enable DCVDD: %d\n", ret);
++		goto err_enable;
++	}
++
++	madera_disable_hard_reset(madera);
++
++	regcache_cache_only(madera->regmap, false);
++	regcache_cache_only(madera->regmap_32bit, false);
++
++	/*
++	 * Verify that this is a chip we know about before we
++	 * starting doing any writes to its registers
++	 */
++	ret = regmap_read(madera->regmap, MADERA_SOFTWARE_RESET, &hwid);
++	if (ret) {
++		dev_err(dev, "Failed to read ID register: %d\n", ret);
++		goto err_reset;
++	}
++
++	switch (hwid) {
++	case CS47L35_SILICON_ID:
++	case CS47L85_SILICON_ID:
++	case CS47L90_SILICON_ID:
++		break;
++	default:
++		dev_err(madera->dev, "Unknown device ID: %x\n", hwid);
++		ret = -EINVAL;
++		goto err_reset;
++	}
++
++	/* If we don't have a reset GPIO use a soft reset */
++	if (!madera->reset_gpio) {
++		ret = madera_soft_reset(madera);
++		if (ret)
++			goto err_reset;
++	}
++
++	ret = madera_wait_for_boot(madera);
++	if (ret) {
++		dev_err(madera->dev, "Device failed initial boot: %d\n", ret);
++		goto err_reset;
++	}
++
++	ret = regmap_read(madera->regmap, MADERA_HARDWARE_REVISION,
++			  &madera->rev);
++	if (ret) {
++		dev_err(dev, "Failed to read revision register: %d\n", ret);
++		goto err_reset;
++	}
++	madera->rev &= MADERA_HW_REVISION_MASK;
++
++	name = madera_name_from_type(madera->type);
++
++	switch (hwid) {
++	case CS47L35_SILICON_ID:
++		if (IS_ENABLED(CONFIG_MFD_CS47L35)) {
++			switch (madera->type) {
++			case CS47L35:
++				patch_fn = cs47l35_patch;
++				mfd_devs = cs47l35_devs;
++				n_devs = ARRAY_SIZE(cs47l35_devs);
++				break;
++			default:
++				break;
++			}
++		}
++		break;
++	case CS47L85_SILICON_ID:
++		if (IS_ENABLED(CONFIG_MFD_CS47L85)) {
++			switch (madera->type) {
++			case CS47L85:
++			case WM1840:
++				patch_fn = cs47l85_patch;
++				mfd_devs = cs47l85_devs;
++				n_devs = ARRAY_SIZE(cs47l85_devs);
++				break;
++			default:
++				break;
++			}
++		}
++		break;
++	case CS47L90_SILICON_ID:
++		if (IS_ENABLED(CONFIG_MFD_CS47L90)) {
++			switch (madera->type) {
++			case CS47L90:
++			case CS47L91:
++				patch_fn = cs47l90_patch;
++				mfd_devs = cs47l90_devs;
++				n_devs = ARRAY_SIZE(cs47l90_devs);
++				break;
++			default:
++				break;
++			}
++		}
 +		break;
 +	default:
 +		break;
 +	}
 +
-+	if (!priv->chip)
-+		return -ENODEV;
-+
-+	madera_pin_desc.npins = priv->chip->n_pins;
-+
-+	ret = devm_pinctrl_register_and_init(&pdev->dev,
-+					     &madera_pin_desc,
-+					     priv,
-+					     &priv->pctl);
-+	if (ret) {
-+		dev_err(priv->dev, "Failed pinctrl register (%d)\n", ret);
-+		return ret;
++	if (!n_devs) {
++		dev_err(madera->dev, "Device ID 0x%x not a %s\n", hwid, name);
++		ret = -ENODEV;
++		goto err_reset;
 +	}
 +
-+	/* if the configuration is provided through pdata, apply it */
-+	if (pdata) {
-+		ret = pinctrl_register_mappings(pdata->gpio_configs,
-+						pdata->n_gpio_configs);
++	dev_info(dev, "%s silicon revision %d\n", name, madera->rev);
++
++	/* Apply hardware patch */
++	if (patch_fn) {
++		ret = patch_fn(madera);
 +		if (ret) {
-+			dev_err(priv->dev,
-+				"Failed to register pdata mappings (%d)\n",
-+				ret);
-+			return ret;
++			dev_err(madera->dev, "Failed to apply patch %d\n", ret);
++			goto err_reset;
 +		}
 +	}
 +
-+	ret = pinctrl_enable(priv->pctl);
++	/* Init 32k clock sourced from MCLK2 */
++	ret = regmap_update_bits(madera->regmap,
++			MADERA_CLOCK_32K_1,
++			MADERA_CLK_32K_ENA_MASK | MADERA_CLK_32K_SRC_MASK,
++			MADERA_CLK_32K_ENA | MADERA_32KZ_MCLK2);
 +	if (ret) {
-+		dev_err(priv->dev, "Failed to enable pinctrl (%d)\n", ret);
-+		return ret;
++		dev_err(madera->dev, "Failed to init 32k clock: %d\n", ret);
++		goto err_reset;
 +	}
 +
-+	dev_dbg(priv->dev, "pinctrl probed ok\n");
++	pm_runtime_set_active(madera->dev);
++	pm_runtime_enable(madera->dev);
++	pm_runtime_set_autosuspend_delay(madera->dev, 100);
++	pm_runtime_use_autosuspend(madera->dev);
++
++	ret = mfd_add_devices(madera->dev, PLATFORM_DEVID_NONE,
++			      mfd_devs, n_devs,
++			      NULL, 0, NULL);
++	if (ret) {
++		dev_err(madera->dev, "Failed to add subdevices: %d\n", ret);
++		goto err_pm_runtime;
++	}
 +
 +	return 0;
++
++err_pm_runtime:
++	pm_runtime_disable(madera->dev);
++err_reset:
++	madera_enable_hard_reset(madera);
++	regulator_disable(madera->dcvdd);
++err_enable:
++	regulator_bulk_disable(madera->num_core_supplies,
++			       madera->core_supplies);
++err_dcvdd:
++	regulator_put(madera->dcvdd);
++err_devs:
++	mfd_remove_devices(dev);
++
++	return ret;
 +}
++EXPORT_SYMBOL_GPL(madera_dev_init);
 +
-+static struct platform_driver madera_pin_driver = {
-+	.probe = madera_pin_probe,
-+	.driver = {
-+		.name = "madera-pinctrl",
-+	},
-+};
++int madera_dev_exit(struct madera *madera)
++{
++	/* Prevent any IRQs being serviced while we clean up */
++	disable_irq(madera->irq);
 +
-+module_platform_driver(madera_pin_driver);
++	/*
++	 * DCVDD could be supplied by a child node, we must disable it before
++	 * removing the children, and prevent PM runtime from turning it back on
++	 */
++	pm_runtime_disable(madera->dev);
 +
-+MODULE_DESCRIPTION("Madera pinctrl driver");
-+MODULE_AUTHOR("Richard Fitzgerald <rf@opensource.wolfsonmicro.com>");
-+MODULE_LICENSE("GPL v2");
-diff --git a/drivers/pinctrl/cirrus/pinctrl-madera.h b/drivers/pinctrl/cirrus/pinctrl-madera.h
++	regulator_disable(madera->dcvdd);
++	regulator_put(madera->dcvdd);
++
++	mfd_remove_devices(madera->dev);
++	madera_enable_hard_reset(madera);
++
++	regulator_bulk_disable(madera->num_core_supplies,
++			       madera->core_supplies);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(madera_dev_exit);
+diff --git a/drivers/mfd/madera-i2c.c b/drivers/mfd/madera-i2c.c
 new file mode 100644
-index 0000000..7b55e22
+index 0000000..20e4cd4
 --- /dev/null
-+++ b/drivers/pinctrl/cirrus/pinctrl-madera.h
-@@ -0,0 +1,40 @@
++++ b/drivers/mfd/madera-i2c.c
+@@ -0,0 +1,131 @@
 +/*
-+ * Pinctrl for Cirrus Logic Madera codecs
++ * I2C bus interface to Cirrus Logic Madera codecs
 + *
-+ * Copyright 2016-2017 Cirrus Logic
++ * Copyright 2015-2017 Cirrus Logic
 + *
 + * This program is free software; you can redistribute it and/or modify
 + * it under the terms of the GNU General Public License version 2 as
 + * published by the Free Software Foundation.
 + */
 +
-+#ifndef PINCTRL_MADERA_H
-+#define PINCTRL_MADERA_H
++#include <linux/device.h>
++#include <linux/err.h>
++#include <linux/i2c.h>
++#include <linux/module.h>
++#include <linux/regmap.h>
++#include <linux/of.h>
 +
-+struct madera_pin_groups {
-+	const char *name;
-+	const unsigned int *pins;
-+	unsigned int n_pins;
-+};
++#include <linux/mfd/madera/core.h>
 +
-+struct madera_pin_chip {
-+	unsigned int n_pins;
++#include "madera.h"
 +
-+	const struct madera_pin_groups *pin_groups;
-+	unsigned int n_pin_groups;
-+};
-+
-+struct madera_pin_private {
++static int madera_i2c_probe(struct i2c_client *i2c,
++			    const struct i2c_device_id *id)
++{
 +	struct madera *madera;
++	const struct regmap_config *regmap_16bit_config = NULL;
++	const struct regmap_config *regmap_32bit_config = NULL;
++	unsigned long type;
++	int ret;
 +
-+	const struct madera_pin_chip *chip; /* chip-specific groups */
++	if (i2c->dev.of_node)
++		type = madera_get_type_from_of(&i2c->dev);
++	else
++		type = id->driver_data;
++
++	switch (type) {
++	case CS47L35:
++		if (IS_ENABLED(CONFIG_MFD_CS47L35)) {
++			regmap_16bit_config = &cs47l35_16bit_i2c_regmap;
++			regmap_32bit_config = &cs47l35_32bit_i2c_regmap;
++		}
++		break;
++	case CS47L85:
++	case WM1840:
++		if (IS_ENABLED(CONFIG_MFD_CS47L85)) {
++			regmap_16bit_config = &cs47l85_16bit_i2c_regmap;
++			regmap_32bit_config = &cs47l85_32bit_i2c_regmap;
++		}
++		break;
++	case CS47L90:
++	case CS47L91:
++		if (IS_ENABLED(CONFIG_MFD_CS47L90)) {
++			regmap_16bit_config = &cs47l90_16bit_i2c_regmap;
++			regmap_32bit_config = &cs47l90_32bit_i2c_regmap;
++		}
++		break;
++	default:
++		dev_err(&i2c->dev,
++			"Unknown Madera I2C device type %ld\n", type);
++		return -EINVAL;
++	}
++
++	if (!regmap_16bit_config) {
++		dev_err(&i2c->dev,
++			"Kernel does not include support for %s\n",
++			madera_name_from_type(type));
++		return -EINVAL;
++	}
++
++	madera = devm_kzalloc(&i2c->dev, sizeof(*madera), GFP_KERNEL);
++	if (!madera)
++		return -ENOMEM;
++
++	madera->regmap = devm_regmap_init_i2c(i2c, regmap_16bit_config);
++	if (IS_ERR(madera->regmap)) {
++		ret = PTR_ERR(madera->regmap);
++		dev_err(&i2c->dev,
++			"Failed to allocate 16-bit register map: %d\n",	ret);
++		return ret;
++	}
++
++	madera->regmap_32bit = devm_regmap_init_i2c(i2c, regmap_32bit_config);
++	if (IS_ERR(madera->regmap_32bit)) {
++		ret = PTR_ERR(madera->regmap_32bit);
++		dev_err(&i2c->dev,
++			"Failed to allocate 32-bit register map: %d\n", ret);
++		return ret;
++	}
++
++	madera->type = type;
++	madera->dev = &i2c->dev;
++	madera->irq = i2c->irq;
++
++	return madera_dev_init(madera);
++}
++
++static int madera_i2c_remove(struct i2c_client *i2c)
++{
++	struct madera *madera = dev_get_drvdata(&i2c->dev);
++
++	madera_dev_exit(madera);
++
++	return 0;
++}
++
++static const struct i2c_device_id madera_i2c_id[] = {
++	{ "cs47l35", CS47L35 },
++	{ "cs47l85", CS47L85 },
++	{ "cs47l90", CS47L90 },
++	{ "cs47l91", CS47L91 },
++	{ "wm1840", WM1840 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, madera_i2c_id);
++
++static struct i2c_driver madera_i2c_driver = {
++	.driver = {
++		.name	= "madera",
++		.pm	= &madera_pm_ops,
++		.of_match_table	= of_match_ptr(madera_of_match),
++	},
++	.probe		= madera_i2c_probe,
++	.remove		= madera_i2c_remove,
++	.id_table	= madera_i2c_id,
++};
++
++module_i2c_driver(madera_i2c_driver);
++
++MODULE_DESCRIPTION("Madera I2C bus interface");
++MODULE_AUTHOR("Richard Fitzgerald <rf@opensource.wolfsonmicro.com>");
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/mfd/madera-spi.c b/drivers/mfd/madera-spi.c
+new file mode 100644
+index 0000000..375bb36
+--- /dev/null
++++ b/drivers/mfd/madera-spi.c
+@@ -0,0 +1,132 @@
++/*
++ * SPI bus interface to Cirrus Logic Madera codecs
++ *
++ * Copyright 2015-2017 Cirrus Logic
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/device.h>
++#include <linux/err.h>
++#include <linux/module.h>
++#include <linux/regmap.h>
++#include <linux/of.h>
++#include <linux/spi/spi.h>
++
++#include <linux/mfd/madera/core.h>
++
++#include "madera.h"
++
++static int madera_spi_probe(struct spi_device *spi)
++{
++	const struct spi_device_id *id = spi_get_device_id(spi);
++	struct madera *madera;
++	const struct regmap_config *regmap_16bit_config = NULL;
++	const struct regmap_config *regmap_32bit_config = NULL;
++	unsigned long type;
++	int ret;
++
++	if (spi->dev.of_node)
++		type = madera_get_type_from_of(&spi->dev);
++	else
++		type = id->driver_data;
++
++	switch (type) {
++	case CS47L35:
++		if (IS_ENABLED(CONFIG_MFD_CS47L35)) {
++			regmap_16bit_config = &cs47l35_16bit_spi_regmap;
++			regmap_32bit_config = &cs47l35_32bit_spi_regmap;
++		}
++		break;
++	case CS47L85:
++	case WM1840:
++		if (IS_ENABLED(CONFIG_MFD_CS47L85)) {
++			regmap_16bit_config = &cs47l85_16bit_spi_regmap;
++			regmap_32bit_config = &cs47l85_32bit_spi_regmap;
++		}
++		break;
++	case CS47L90:
++	case CS47L91:
++		if (IS_ENABLED(CONFIG_MFD_CS47L90)) {
++			regmap_16bit_config = &cs47l90_16bit_spi_regmap;
++			regmap_32bit_config = &cs47l90_32bit_spi_regmap;
++		}
++		break;
++	default:
++		dev_err(&spi->dev,
++			"Unknown Madera SPI device type %ld\n", type);
++		return -EINVAL;
++	}
++
++	if (!regmap_16bit_config) {
++		dev_err(&spi->dev,
++			"Kernel does not include support for %s\n",
++			madera_name_from_type(type));
++		return -EINVAL;
++	}
++
++	madera = devm_kzalloc(&spi->dev, sizeof(*madera), GFP_KERNEL);
++	if (!madera)
++		return -ENOMEM;
++
++	madera->regmap = devm_regmap_init_spi(spi, regmap_16bit_config);
++	if (IS_ERR(madera->regmap)) {
++		ret = PTR_ERR(madera->regmap);
++		dev_err(&spi->dev,
++			"Failed to allocate 16-bit register map: %d\n",	ret);
++		return ret;
++	}
++
++	madera->regmap_32bit = devm_regmap_init_spi(spi, regmap_32bit_config);
++	if (IS_ERR(madera->regmap_32bit)) {
++		ret = PTR_ERR(madera->regmap_32bit);
++		dev_err(&spi->dev,
++			"Failed to allocate 32-bit register map: %d\n",	ret);
++		return ret;
++	}
++
++	madera->type = type;
++	madera->dev = &spi->dev;
++	madera->irq = spi->irq;
++
++	return madera_dev_init(madera);
++}
++
++static int madera_spi_remove(struct spi_device *spi)
++{
++	struct madera *madera = spi_get_drvdata(spi);
++
++	madera_dev_exit(madera);
++
++	return 0;
++}
++
++static const struct spi_device_id madera_spi_ids[] = {
++	{ "cs47l35", CS47L35 },
++	{ "cs47l85", CS47L85 },
++	{ "cs47l90", CS47L90 },
++	{ "cs47l91", CS47L91 },
++	{ "wm1840", WM1840 },
++	{ },
++};
++MODULE_DEVICE_TABLE(spi, madera_spi_ids);
++
++static struct spi_driver madera_spi_driver = {
++	.driver = {
++		.name	= "madera",
++		.owner	= THIS_MODULE,
++		.pm	= &madera_pm_ops,
++		.of_match_table	= of_match_ptr(madera_of_match),
++	},
++	.probe		= madera_spi_probe,
++	.remove		= madera_spi_remove,
++	.id_table	= madera_spi_ids,
++};
++
++module_spi_driver(madera_spi_driver);
++
++MODULE_DESCRIPTION("Madera SPI bus interface");
++MODULE_AUTHOR("Richard Fitzgerald <rf@opensource.wolfsonmicro.com>");
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/mfd/madera.h b/drivers/mfd/madera.h
+new file mode 100644
+index 0000000..6d1b5b8
+--- /dev/null
++++ b/drivers/mfd/madera.h
+@@ -0,0 +1,52 @@
++/*
++ * MFD internals for Cirrus Logic Madera codecs
++ *
++ * Copyright 2015-2017 Cirrus Logic
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef MADERA_MFD_H
++#define MADERA_MFD_H
++
++#include <linux/of.h>
++#include <linux/pm.h>
++
++struct madera;
++
++extern const struct dev_pm_ops madera_pm_ops;
++extern const struct of_device_id madera_of_match[];
++
++int madera_dev_init(struct madera *madera);
++int madera_dev_exit(struct madera *madera);
++
++#ifdef CONFIG_OF
++unsigned long madera_get_type_from_of(struct device *dev);
++#else
++static inline unsigned long madera_get_type_from_of(struct device *dev)
++{
++	return 0;
++}
++#endif
++
++extern const struct regmap_config cs47l35_16bit_spi_regmap;
++extern const struct regmap_config cs47l35_32bit_spi_regmap;
++extern const struct regmap_config cs47l35_16bit_i2c_regmap;
++extern const struct regmap_config cs47l35_32bit_i2c_regmap;
++int cs47l35_patch(struct madera *madera);
++
++extern const struct regmap_config cs47l85_16bit_spi_regmap;
++extern const struct regmap_config cs47l85_32bit_spi_regmap;
++extern const struct regmap_config cs47l85_16bit_i2c_regmap;
++extern const struct regmap_config cs47l85_32bit_i2c_regmap;
++int cs47l85_patch(struct madera *madera);
++
++extern const struct regmap_config cs47l90_16bit_spi_regmap;
++extern const struct regmap_config cs47l90_32bit_spi_regmap;
++extern const struct regmap_config cs47l90_16bit_i2c_regmap;
++extern const struct regmap_config cs47l90_32bit_i2c_regmap;
++int cs47l90_patch(struct madera *madera);
++
++#endif
+diff --git a/include/linux/mfd/madera/core.h b/include/linux/mfd/madera/core.h
+new file mode 100644
+index 0000000..6609e3c
+--- /dev/null
++++ b/include/linux/mfd/madera/core.h
+@@ -0,0 +1,180 @@
++/*
++ * MFD internals for Cirrus Logic Madera codecs
++ *
++ * Copyright 2015-2017 Cirrus Logic
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef MADERA_CORE_H
++#define MADERA_CORE_H
++
++#include <linux/interrupt.h>
++#include <linux/notifier.h>
++#include <linux/regmap.h>
++#include <linux/gpio/consumer.h>
++#include <linux/irqchip/irq-madera.h>
++#include <linux/mfd/madera/pdata.h>
++#include <linux/regulator/consumer.h>
++#include <sound/madera-pdata.h>
++
++enum madera_type {
++	CS47L35 = 1,
++	CS47L85 = 2,
++	CS47L90 = 3,
++	CS47L91 = 4,
++	WM1840 = 7,
++};
++
++#define MADERA_MAX_CORE_SUPPLIES	2
++#define MADERA_MAX_GPIOS		40
++
++#define CS47L35_NUM_GPIOS		16
++#define CS47L85_NUM_GPIOS		40
++#define CS47L90_NUM_GPIOS		38
++
++
++/* Notifier events */
++#define MADERA_NOTIFY_VOICE_TRIGGER	0x1
++#define MADERA_NOTIFY_HPDET		0x2
++#define MADERA_NOTIFY_MICDET		0x4
++
++/* GPIO Function Definitions */
++#define MADERA_GP_FN_ALTERNATE		0x00
++#define MADERA_GP_FN_GPIO		0x01
++#define MADERA_GP_FN_DSP_GPIO		0x02
++#define MADERA_GP_FN_IRQ1		0x03
++#define MADERA_GP_FN_IRQ2		0x04
++#define MADERA_GP_FN_FLL1_CLOCK		0x10
++#define MADERA_GP_FN_FLL2_CLOCK		0x11
++#define MADERA_GP_FN_FLL3_CLOCK		0x12
++#define MADERA_GP_FN_FLLAO_CLOCK	0x13
++#define MADERA_GP_FN_FLL1_LOCK		0x18
++#define MADERA_GP_FN_FLL2_LOCK		0x19
++#define MADERA_GP_FN_FLL3_LOCK		0x1A
++#define MADERA_GP_FN_FLLAO_LOCK		0x1B
++#define MADERA_GP_FN_OPCLK_OUT		0x40
++#define MADERA_GP_FN_OPCLK_ASYNC_OUT	0x41
++#define MADERA_GP_FN_PWM1		0x48
++#define MADERA_GP_FN_PWM2		0x49
++#define MADERA_GP_FN_SPDIF_OUT		0x4C
++#define MADERA_GP_FN_HEADPHONE_DET	0x50
++#define MADERA_GP_FN_MIC_DET		0x58
++#define MADERA_GP_FN_DRC1_SIGNAL_DETECT	0x80
++#define MADERA_GP_FN_DRC2_SIGNAL_DETECT	0x81
++#define MADERA_GP_FN_ASRC1_IN1_LOCK	0x88
++#define MADERA_GP_FN_ASRC1_IN2_LOCK	0x89
++#define MADERA_GP_FN_ASRC2_IN1_LOCK	0x8A
++#define MADERA_GP_FN_ASRC2_IN2_LOCK	0x8B
++#define MADERA_GP_FN_DSP_IRQ1		0xA0
++#define MADERA_GP_FN_DSP_IRQ2		0xA1
++#define MADERA_GP_FN_DSP_IRQ3		0xA2
++#define MADERA_GP_FN_DSP_IRQ4		0xA3
++#define MADERA_GP_FN_DSP_IRQ5		0xA4
++#define MADERA_GP_FN_DSP_IRQ6		0xA5
++#define MADERA_GP_FN_DSP_IRQ7		0xA6
++#define MADERA_GP_FN_DSP_IRQ8		0xA7
++#define MADERA_GP_FN_DSP_IRQ9		0xA8
++#define MADERA_GP_FN_DSP_IRQ10		0xA9
++#define MADERA_GP_FN_DSP_IRQ11		0xAA
++#define MADERA_GP_FN_DSP_IRQ12		0xAB
++#define MADERA_GP_FN_DSP_IRQ13		0xAC
++#define MADERA_GP_FN_DSP_IRQ14		0xAD
++#define MADERA_GP_FN_DSP_IRQ15		0xAE
++#define MADERA_GP_FN_DSP_IRQ16		0xAF
++#define MADERA_GP_FN_HPOUT1L_SC		0xB0
++#define MADERA_GP_FN_HPOUT1R_SC		0xB1
++#define MADERA_GP_FN_HPOUT2L_SC		0xB2
++#define MADERA_GP_FN_HPOUT2R_SC		0xB3
++#define MADERA_GP_FN_HPOUT3L_SC		0xB4
++#define MADERA_GP_FN_HPOUT4R_SC		0xB5
++#define MADERA_GP_FN_SPKOUTL_SC		0xB6
++#define MADERA_GP_FN_SPKOUTR_SC		0xB7
++#define MADERA_GP_FN_HPOUT1L_ENA	0xC0
++#define MADERA_GP_FN_HPOUT1R_ENA	0xC1
++#define MADERA_GP_FN_HPOUT2L_ENA	0xC2
++#define MADERA_GP_FN_HPOUT2R_ENA	0xC3
++#define MADERA_GP_FN_HPOUT3L_ENA	0xC4
++#define MADERA_GP_FN_HPOUT4R_ENA	0xC5
++#define MADERA_GP_FN_SPKOUTL_ENA	0xC6
++#define MADERA_GP_FN_SPKOUTR_ENA	0xC7
++#define MADERA_GP_FN_HPOUT1L_DIS	0xD0
++#define MADERA_GP_FN_HPOUT1R_DIS	0xD1
++#define MADERA_GP_FN_HPOUT2L_DIS	0xD2
++#define MADERA_GP_FN_HPOUT2R_DIS	0xD3
++#define MADERA_GP_FN_HPOUT3L_DIS	0xD4
++#define MADERA_GP_FN_HPOUT4R_DIS	0xD5
++#define MADERA_GP_FN_SPKOUTL_DIS	0xD6
++#define MADERA_GP_FN_SPKOUTR_DIS	0xD7
++#define MADERA_GP_FN_SPK_SHUTDOWN	0xE0
++#define MADERA_GP_FN_SPK_OVH_SHUTDOWN	0xE1
++#define MADERA_GP_FN_SPK_OVH_WARN	0xE2
++#define MADERA_GP_FN_TIMER1_STATUS	0x140
++#define MADERA_GP_FN_TIMER2_STATUS	0x141
++#define MADERA_GP_FN_TIMER3_STATUS	0x142
++#define MADERA_GP_FN_TIMER4_STATUS	0x143
++#define MADERA_GP_FN_TIMER5_STATUS	0x144
++#define MADERA_GP_FN_TIMER6_STATUS	0x145
++#define MADERA_GP_FN_TIMER7_STATUS	0x146
++#define MADERA_GP_FN_TIMER8_STATUS	0x147
++#define MADERA_GP_FN_EVENTLOG1_FIFO_STS	0x150
++#define MADERA_GP_FN_EVENTLOG2_FIFO_STS	0x151
++#define MADERA_GP_FN_EVENTLOG3_FIFO_STS	0x152
++#define MADERA_GP_FN_EVENTLOG4_FIFO_STS	0x153
++#define MADERA_GP_FN_EVENTLOG5_FIFO_STS	0x154
++#define MADERA_GP_FN_EVENTLOG6_FIFO_STS	0x155
++#define MADERA_GP_FN_EVENTLOG7_FIFO_STS	0x156
++#define MADERA_GP_FN_EVENTLOG8_FIFO_STS	0x157
++
++struct snd_soc_dapm_context;
++
++/*
++ * struct madera
++ *
++ * This should not be used by anything except child drivers of the Madera MFD
++ */
++struct madera {
++	struct regmap *regmap;
++	struct regmap *regmap_32bit;
 +
 +	struct device *dev;
-+	struct pinctrl_dev *pctl;
++
++	enum madera_type type;
++	unsigned int rev;
++
++	struct gpio_desc *reset_gpio;
++
++	int num_core_supplies;
++	struct regulator_bulk_data core_supplies[MADERA_MAX_CORE_SUPPLIES];
++	struct regulator *dcvdd;
++	bool internal_dcvdd;
++
++	struct madera_pdata pdata;
++
++	struct device *irq_dev;
++	int irq;
++
++	unsigned int out_clamp[MADERA_MAX_OUTPUT];
++	unsigned int out_shorted[MADERA_MAX_OUTPUT];
++	unsigned int hp_ena;
++
++	struct snd_soc_dapm_context *dapm;
++
++	struct blocking_notifier_head notifier;
 +};
 +
-+extern const struct madera_pin_chip cs47l35_pin_chip;
-+extern const struct madera_pin_chip cs47l85_pin_chip;
-+extern const struct madera_pin_chip cs47l90_pin_chip;
++unsigned int madera_get_num_micbias(struct madera *madera);
++unsigned int madera_get_num_childbias(struct madera *madera,
++				      unsigned int micbias);
++
++const char *madera_name_from_type(enum madera_type type);
++
++static inline int madera_call_notifiers(struct madera *madera,
++					unsigned long event,
++					void *data)
++{
++	return blocking_notifier_call_chain(&madera->notifier, event, data);
++}
++#endif
+diff --git a/include/linux/mfd/madera/pdata.h b/include/linux/mfd/madera/pdata.h
+new file mode 100644
+index 0000000..b3af47c
+--- /dev/null
++++ b/include/linux/mfd/madera/pdata.h
+@@ -0,0 +1,61 @@
++/*
++ * Platform data for Cirrus Logic Madera codecs
++ *
++ * Copyright 2015-2017 Cirrus Logic
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef MADERA_PDATA_H
++#define MADERA_PDATA_H
++
++#include <linux/kernel.h>
++#include <linux/irqchip/irq-madera-pdata.h>
++#include <linux/regulator/arizona-ldo1.h>
++#include <linux/regulator/arizona-micsupp.h>
++#include <linux/regulator/machine.h>
++#include <sound/madera-pdata.h>
++
++#define MADERA_MAX_MICBIAS		4
++#define MADERA_MAX_CHILD_MICBIAS	4
++
++#define MADERA_MAX_GPSW			2
++
++struct pinctrl_map;
++
++/**
++ * struct madera_pdata - Configuration data for Madera devices
++ *
++ * @reset:	    GPIO controlling /RESET (0 = none)
++ * @ldo1:	    Substruct of pdata for the LDO1 regulator
++ * @micvdd:	    Substruct of pdata for the MICVDD regulator
++ * @irqchip:	    Substruct of pdata for the irqchip driver
++ * @gpio_base:	    Base GPIO number
++ * @gpio_configs:   Array of GPIO configurations (See Documentation/pinctrl.txt)
++ * @n_gpio_configs: Number of entries in gpio_configs
++ * @codec:	    Substructure of pdata for the ASoC codec driver
++ *		    See include/sound/madera-pdata.h
++ * @gpsw:	    General purpose switch mode setting (See the SW1_MODE field
++ *		    in the datasheet for the available values for your codec)
++ */
++struct madera_pdata {
++	int reset;
++
++	struct arizona_ldo1_pdata ldo1;
++	struct arizona_micsupp_pdata micvdd;
++
++	struct madera_irqchip_pdata irqchip;
++
++	int gpio_base;
++
++	const struct pinctrl_map *gpio_configs;
++	int n_gpio_configs;
++
++	struct madera_codec_pdata codec;
++
++	u32 gpsw[MADERA_MAX_GPSW];
++};
 +
 +#endif
 -- 
