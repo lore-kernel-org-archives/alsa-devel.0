@@ -1,22 +1,20 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 07/17] regulator: arizona-micsupp: Add
- support for Cirrus Logic Madera codecs
-Date: Mon, 5 Jun 2017 12:10:06 -0500
-Message-ID: <20170605171006.3ppsjia2xvb22ld2@rob-hp-laptop>
-References: <1496415790-19164-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <1496415790-19164-8-git-send-email-rf@opensource.wolfsonmicro.com>
+From: Daniel Drake <drake@endlessm.com>
+Subject: [PATCH v3 2/2] ASoC: Intel: add machine driver for
+	BYT/CHT + ES8316
+Date: Mon,  5 Jun 2017 14:16:37 -0600
+Message-ID: <20170605201637.4901-2-drake@endlessm.com>
+References: <20170605201637.4901-1-drake@endlessm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f67.google.com (mail-oi0-f67.google.com
- [209.85.218.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 59146266B17
- for <alsa-devel@alsa-project.org>; Mon,  5 Jun 2017 19:10:09 +0200 (CEST)
-Received: by mail-oi0-f67.google.com with SMTP id c187so8357804oig.3
- for <alsa-devel@alsa-project.org>; Mon, 05 Jun 2017 10:10:09 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1496415790-19164-8-git-send-email-rf@opensource.wolfsonmicro.com>
+Received: from mail-ua0-f176.google.com (mail-ua0-f176.google.com
+ [209.85.217.176])
+ by alsa0.perex.cz (Postfix) with ESMTP id 769FA266C5F
+ for <alsa-devel@alsa-project.org>; Mon,  5 Jun 2017 22:16:47 +0200 (CEST)
+Received: by mail-ua0-f176.google.com with SMTP id u10so82505557uaf.1
+ for <alsa-devel@alsa-project.org>; Mon, 05 Jun 2017 13:16:47 -0700 (PDT)
+In-Reply-To: <20170605201637.4901-1-drake@endlessm.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,23 +24,405 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: gnurou@gmail.com, alsa-devel@alsa-project.org, jason@lakedaemon.net, devicetree@vger.kernel.org, linus.walleij@linaro.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, broonie@kernel.org, tglx@linutronix.de, lee.jones@linaro.org
+To: lgirdwood@gmail.com, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linux@endlessm.com, pierre-louis.bossart@linux.intel.com, yangxiaohua@everest-semi.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 02, 2017 at 04:03:00PM +0100, Richard Fitzgerald wrote:
-> This adds a new driver identity "madera-micsupp" and probe function
-> so that this driver can be used to control the micsupp regulator on
-> Cirrus Logic Madera codecs.
-> 
-> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-> ---
-> No changes since V2
-> 
->  .../bindings/regulator/arizona-regulator.txt       |  3 +-
+Add new machine driver, tested with Weibu F3C MiniPC.
 
-I already acked v2. Please add acks when posting new versions.
+Based heavily on code provided by David Yang @ Everest, and other
+machine drivers in the same directory.
 
->  drivers/regulator/Kconfig                          |  7 ++-
->  drivers/regulator/arizona-micsupp.c                | 71 +++++++++++++++++++++-
->  3 files changed, 76 insertions(+), 5 deletions(-)
+Signed-off-by: David Yang <yangxiaohua@everest-semi.com>
+[drake@endlessm.com: cleanups and modernization]
+Signed-off-by: Daniel Drake <drake@endlessm.com>
+---
+
+Notes:
+    v3:
+     - fix inverted logic when checking clk_prepare_enable result
+     - update for recent sst_acpi.c changes
+    
+    v2:
+     - add sign-off from David Yang
+     - fix bytbyt typo
+     - mention that BYT-CR/SSP0 is not supported
+     - mention which mic was tested
+     - setup clocks at init time, avoids need for platform clock control
+
+ sound/soc/intel/Kconfig                |  12 ++
+ sound/soc/intel/atom/sst/sst_acpi.c    |   7 +
+ sound/soc/intel/boards/Makefile        |   2 +
+ sound/soc/intel/boards/bytcht_es8316.c | 300 +++++++++++++++++++++++++++++++++
+ 4 files changed, 321 insertions(+)
+ create mode 100644 sound/soc/intel/boards/bytcht_es8316.c
+
+diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+index a9c50d022e73..35a6a5c55914 100644
+--- a/sound/soc/intel/Kconfig
++++ b/sound/soc/intel/Kconfig
+@@ -214,6 +214,18 @@ config SND_SOC_INTEL_BYT_CHT_DA7213_MACH
+ 	  platforms with DA7212/7213 audio codec.
+ 	  If unsure select "N".
+ 
++config SND_SOC_INTEL_BYT_CHT_ES8316_MACH
++	tristate "ASoC Audio driver for Intel Baytrail & Cherrytrail with ES8316 codec"
++	depends on X86_INTEL_LPSS && I2C && ACPI
++	select SND_SOC_ES8316
++	select SND_SST_ATOM_HIFI2_PLATFORM
++	select SND_SST_IPC_ACPI
++	select SND_SOC_INTEL_SST_MATCH if ACPI
++	help
++	  This adds support for ASoC machine driver for Intel(R) Baytrail &
++	  Cherrytrail platforms with ES8316 audio codec.
++	  If unsure select "N".
++
+ config SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH
+ 	tristate "ASoC Audio driver for Intel Baytrail & Cherrytrail platform with no codec (MinnowBoard MAX, Up)"
+ 	depends on X86_INTEL_LPSS && I2C && ACPI
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index 592f6afaf2a5..ff96d1ad3d4e 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -625,6 +625,13 @@ static struct sst_acpi_mach sst_acpi_chv[] = {
+ 		.board = "bytcht_da7213",
+ 		.pdata = &chv_platform_data
+ 	},
++	{
++		.id = "ESSX8316",
++		.drv_name = "bytcht_es8316",
++		.fw_filename = "intel/fw_sst_22a8.bin",
++		.board = "bytcht_es8316",
++		.pdata = &chv_platform_data
++	},
+ 	/* some CHT-T platforms rely on RT5640, use Baytrail machine driver */
+ 	{
+ 		.id = "10EC5640",
+diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
+index c92ebcac0222..c4e986f03ec9 100644
+--- a/sound/soc/intel/boards/Makefile
++++ b/sound/soc/intel/boards/Makefile
+@@ -11,6 +11,7 @@ snd-soc-sst-cht-bsw-rt5672-objs := cht_bsw_rt5672.o
+ snd-soc-sst-cht-bsw-rt5645-objs := cht_bsw_rt5645.o
+ snd-soc-sst-cht-bsw-max98090_ti-objs := cht_bsw_max98090_ti.o
+ snd-soc-sst-byt-cht-da7213-objs := bytcht_da7213.o
++snd-soc-sst-byt-cht-es8316-objs := bytcht_es8316.o
+ snd-soc-sst-byt-cht-nocodec-objs := bytcht_nocodec.o
+ snd-soc-kbl_rt5663_max98927-objs := kbl_rt5663_max98927.o
+ snd-soc-skl_rt286-objs := skl_rt286.o
+@@ -30,6 +31,7 @@ obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_RT5672_MACH) += snd-soc-sst-cht-bsw-rt5672.o
+ obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_RT5645_MACH) += snd-soc-sst-cht-bsw-rt5645.o
+ obj-$(CONFIG_SND_SOC_INTEL_CHT_BSW_MAX98090_TI_MACH) += snd-soc-sst-cht-bsw-max98090_ti.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_DA7213_MACH) += snd-soc-sst-byt-cht-da7213.o
++obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_ES8316_MACH) += snd-soc-sst-byt-cht-es8316.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH) += snd-soc-sst-byt-cht-nocodec.o
+ obj-$(CONFIG_SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH) += snd-soc-kbl_rt5663_max98927.o
+ obj-$(CONFIG_SND_SOC_INTEL_SKL_RT286_MACH) += snd-soc-skl_rt286.o
+diff --git a/sound/soc/intel/boards/bytcht_es8316.c b/sound/soc/intel/boards/bytcht_es8316.c
+new file mode 100644
+index 000000000000..52635462dac6
+--- /dev/null
++++ b/sound/soc/intel/boards/bytcht_es8316.c
+@@ -0,0 +1,300 @@
++/*
++ *  bytcht_es8316.c - ASoc Machine driver for Intel Baytrail/Cherrytrail
++ *                    platforms with Everest ES8316 SoC
++ *
++ *  Copyright (C) 2017 Endless Mobile, Inc.
++ *  Authors: David Yang <yangxiaohua@everest-semi.com>,
++ *           Daniel Drake <drake@endlessm.com>
++ *
++ *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; version 2 of the License.
++ *
++ *  This program is distributed in the hope that it will be useful, but
++ *  WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ *  General Public License for more details.
++ *
++ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++ */
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/device.h>
++#include <linux/slab.h>
++#include <asm/platform_sst_audio.h>
++#include <linux/clk.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include "../atom/sst-atom-controls.h"
++#include "../common/sst-acpi.h"
++#include "../common/sst-dsp.h"
++
++struct byt_cht_es8316_private {
++	struct clk *mclk;
++};
++
++#define CODEC_DAI1	"ES8316 HiFi"
++
++static inline struct snd_soc_dai *get_codec_dai(struct snd_soc_card *card)
++{
++	struct snd_soc_pcm_runtime *rtd;
++
++	list_for_each_entry(rtd, &card->rtd_list, list) {
++		if (!strncmp(rtd->codec_dai->name, CODEC_DAI1,
++			     strlen(CODEC_DAI1)))
++			return rtd->codec_dai;
++	}
++	return NULL;
++}
++
++static const struct snd_soc_dapm_widget byt_cht_es8316_widgets[] = {
++	SND_SOC_DAPM_HP("Headphone", NULL),
++
++	/*
++	 * The codec supports two analog microphone inputs. I have only
++	 * tested MIC1. A DMIC route could also potentially be added
++	 * if such functionality is found on another platform.
++	 */
++	SND_SOC_DAPM_MIC("Microphone 1", NULL),
++	SND_SOC_DAPM_MIC("Microphone 2", NULL),
++};
++
++static const struct snd_soc_dapm_route byt_cht_es8316_audio_map[] = {
++	{"MIC1", NULL, "Microphone 1"},
++	{"MIC2", NULL, "Microphone 2"},
++
++	{"Headphone", NULL, "HPOL"},
++	{"Headphone", NULL, "HPOR"},
++
++	{"Playback", NULL, "ssp2 Tx"},
++	{"ssp2 Tx", NULL, "codec_out0"},
++	{"ssp2 Tx", NULL, "codec_out1"},
++	{"codec_in0", NULL, "ssp2 Rx" },
++	{"codec_in1", NULL, "ssp2 Rx" },
++	{"ssp2 Rx", NULL, "Capture"},
++};
++
++static const struct snd_kcontrol_new byt_cht_es8316_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Headphone"),
++	SOC_DAPM_PIN_SWITCH("Microphone 1"),
++	SOC_DAPM_PIN_SWITCH("Microphone 2"),
++};
++
++static int byt_cht_es8316_init(struct snd_soc_pcm_runtime *runtime)
++{
++	struct snd_soc_card *card = runtime->card;
++	struct byt_cht_es8316_private *priv = snd_soc_card_get_drvdata(card);
++	int ret;
++
++	card->dapm.idle_bias_off = true;
++
++	/*
++	 * The firmware might enable the clock at boot (this information
++	 * may or may not be reflected in the enable clock register).
++	 * To change the rate we must disable the clock first to cover these
++	 * cases. Due to common clock framework restrictions that do not allow
++	 * to disable a clock that has not been enabled, we need to enable
++	 * the clock first.
++	 */
++	ret = clk_prepare_enable(priv->mclk);
++	if (!ret)
++		clk_disable_unprepare(priv->mclk);
++
++	ret = clk_set_rate(priv->mclk, 19200000);
++	if (ret)
++		dev_err(card->dev, "unable to set MCLK rate\n");
++
++	ret = clk_prepare_enable(priv->mclk);
++	if (ret)
++		dev_err(card->dev, "unable to enable MCLK\n");
++
++	ret = snd_soc_dai_set_sysclk(runtime->codec_dai, 0, 19200000,
++				     SND_SOC_CLOCK_IN);
++	if (ret < 0) {
++		dev_err(card->dev, "can't set codec clock %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static const struct snd_soc_pcm_stream byt_cht_es8316_dai_params = {
++	.formats = SNDRV_PCM_FMTBIT_S24_LE,
++	.rate_min = 48000,
++	.rate_max = 48000,
++	.channels_min = 2,
++	.channels_max = 2,
++};
++
++static int byt_cht_es8316_codec_fixup(struct snd_soc_pcm_runtime *rtd,
++			    struct snd_pcm_hw_params *params)
++{
++	struct snd_interval *rate = hw_param_interval(params,
++			SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels = hw_param_interval(params,
++						SNDRV_PCM_HW_PARAM_CHANNELS);
++	int ret;
++
++	/* The DSP will covert the FE rate to 48k, stereo */
++	rate->min = rate->max = 48000;
++	channels->min = channels->max = 2;
++
++	/* set SSP2 to 24-bit */
++	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
++
++	/*
++	 * Default mode for SSP configuration is TDM 4 slot, override config
++	 * with explicit setting to I2S 2ch 24-bit. The word length is set with
++	 * dai_set_tdm_slot() since there is no other API exposed
++	 */
++	ret = snd_soc_dai_set_fmt(rtd->cpu_dai,
++				SND_SOC_DAIFMT_I2S     |
++				SND_SOC_DAIFMT_NB_NF   |
++				SND_SOC_DAIFMT_CBS_CFS
++		);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set format to I2S, err %d\n", ret);
++		return ret;
++	}
++
++	ret = snd_soc_dai_set_tdm_slot(rtd->cpu_dai, 0x3, 0x3, 2, 24);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set I2S config, err %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++static int byt_cht_es8316_aif1_startup(struct snd_pcm_substream *substream)
++{
++	return snd_pcm_hw_constraint_single(substream->runtime,
++			SNDRV_PCM_HW_PARAM_RATE, 48000);
++}
++
++static const struct snd_soc_ops byt_cht_es8316_aif1_ops = {
++	.startup = byt_cht_es8316_aif1_startup,
++};
++
++static struct snd_soc_dai_link byt_cht_es8316_dais[] = {
++	[MERR_DPCM_AUDIO] = {
++		.name = "Audio Port",
++		.stream_name = "Audio",
++		.cpu_dai_name = "media-cpu-dai",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.codec_name = "snd-soc-dummy",
++		.platform_name = "sst-mfld-platform",
++		.nonatomic = true,
++		.dynamic = 1,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		.ops = &byt_cht_es8316_aif1_ops,
++	},
++
++	[MERR_DPCM_DEEP_BUFFER] = {
++		.name = "Deep-Buffer Audio Port",
++		.stream_name = "Deep-Buffer Audio",
++		.cpu_dai_name = "deepbuffer-cpu-dai",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.codec_name = "snd-soc-dummy",
++		.platform_name = "sst-mfld-platform",
++		.nonatomic = true,
++		.dynamic = 1,
++		.dpcm_playback = 1,
++		.ops = &byt_cht_es8316_aif1_ops,
++	},
++
++	[MERR_DPCM_COMPR] = {
++		.name = "Compressed Port",
++		.stream_name = "Compress",
++		.cpu_dai_name = "compress-cpu-dai",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.codec_name = "snd-soc-dummy",
++		.platform_name = "sst-mfld-platform",
++	},
++
++		/* back ends */
++	{
++		/* Only SSP2 has been tested here, so BYT-CR platforms that
++		 * require SSP0 will not work.
++		 */
++		.name = "SSP2-Codec",
++		.id = 1,
++		.cpu_dai_name = "ssp2-port",
++		.platform_name = "sst-mfld-platform",
++		.no_pcm = 1,
++		.codec_dai_name = "ES8316 HiFi",
++		.codec_name = "i2c-ESSX8316:00",
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
++						| SND_SOC_DAIFMT_CBS_CFS,
++		.be_hw_params_fixup = byt_cht_es8316_codec_fixup,
++		.nonatomic = true,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		.init = byt_cht_es8316_init,
++	},
++};
++
++
++/* SoC card */
++static struct snd_soc_card byt_cht_es8316_card = {
++	.name = "bytcht-es8316",
++	.owner = THIS_MODULE,
++	.dai_link = byt_cht_es8316_dais,
++	.num_links = ARRAY_SIZE(byt_cht_es8316_dais),
++	.dapm_widgets = byt_cht_es8316_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(byt_cht_es8316_widgets),
++	.dapm_routes = byt_cht_es8316_audio_map,
++	.num_dapm_routes = ARRAY_SIZE(byt_cht_es8316_audio_map),
++	.controls = byt_cht_es8316_controls,
++	.num_controls = ARRAY_SIZE(byt_cht_es8316_controls),
++	.fully_routed = true,
++};
++
++static int snd_byt_cht_es8316_mc_probe(struct platform_device *pdev)
++{
++	int ret = 0;
++	struct byt_cht_es8316_private *priv;
++
++	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_ATOMIC);
++	if (!priv)
++		return -ENOMEM;
++
++	/* register the soc card */
++	byt_cht_es8316_card.dev = &pdev->dev;
++	snd_soc_card_set_drvdata(&byt_cht_es8316_card, priv);
++
++	priv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
++	if (IS_ERR(priv->mclk)) {
++		ret = PTR_ERR(priv->mclk);
++		dev_err(&pdev->dev,
++			"Failed to get MCLK from pmc_plt_clk_3: %d\n",
++			ret);
++		return ret;
++	}
++
++	ret = devm_snd_soc_register_card(&pdev->dev, &byt_cht_es8316_card);
++	if (ret) {
++		dev_err(&pdev->dev, "snd_soc_register_card failed %d\n", ret);
++		return ret;
++	}
++	platform_set_drvdata(pdev, &byt_cht_es8316_card);
++	return ret;
++}
++
++static struct platform_driver snd_byt_cht_es8316_mc_driver = {
++	.driver = {
++		.name = "bytcht_es8316",
++	},
++	.probe = snd_byt_cht_es8316_mc_probe,
++};
++
++module_platform_driver(snd_byt_cht_es8316_mc_driver);
++MODULE_DESCRIPTION("ASoC Intel(R) Baytrail/Cherrytrail Machine driver");
++MODULE_AUTHOR("David Yang <yangxiaohua@everest-semi.com>");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:bytcht_es8316");
+-- 
+2.11.0
