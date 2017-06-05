@@ -1,189 +1,64 @@
-From: Icenowy Zheng <icenowy-h8G6r0blFSE@public.gmane.org>
-Subject: [PATCH v4 3/3] ASoC: sun4i-codec: Add support for V3s codec
-Date: Mon,  5 Jun 2017 21:27:22 +0800
-Message-ID: <20170605132722.6459-4-icenowy@aosc.io>
-References: <20170605132722.6459-1-icenowy@aosc.io>
-Reply-To: icenowy-h8G6r0blFSE@public.gmane.org
+From: Paulo Sergio <pstglia@gmail.com>
+Subject: Re: [PATCH] ASoC: Intel: add bytcr-wm5102 machine
+	driver
+Date: Mon, 5 Jun 2017 11:25:26 -0300
+Message-ID: <CAJcYhpbxWicEAOheSw9mdHibxQ2RPVQfZ4ncDvtQ5YEwtY=xWg@mail.gmail.com>
+References: <593313f5.3636c80a.50e05.47e9@mx.google.com>
+ <df6f715c-5f63-9403-8dd0-13dad8f62fa6@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBDS6XAN6ZADRBYVY2XEQKGQEBVQCRLI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20170605132722.6459-1-icenowy-h8G6r0blFSE@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <df6f715c-5f63-9403-8dd0-13dad8f62fa6@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: pstglia@android-x86.org, alsa-devel@alsa-project.org, patch@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
-
-The codec in the V3s is similar to the one found on the A31. One key
-difference is the analog path controls are routed through the PRCM
-block. This is supported by the sun8i-codec-analog driver, and tied
-into this codec driver with the audio card's aux_dev.
-
-In addition, the V3s does not have LINEIN, LINEOUT, MBIAS and MIC2,
-MIC3, and the FIFO related registers are like H3.
-
-Signed-off-by: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
-Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
----
-Changes in v4:
-- Added Rob's ACK.
-Changes in v3:
-- Change regmap max register.
-- Add a note for further DAP support.
-
- .../devicetree/bindings/sound/sun4i-codec.txt      | 11 ++--
- sound/soc/sunxi/sun4i-codec.c                      | 63 ++++++++++++++++++++++
- 2 files changed, 70 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/sun4i-codec.txt b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
-index 3863531d1e6d..2d4e10deb6f4 100644
---- a/Documentation/devicetree/bindings/sound/sun4i-codec.txt
-+++ b/Documentation/devicetree/bindings/sound/sun4i-codec.txt
-@@ -7,6 +7,7 @@ Required properties:
- 		- "allwinner,sun7i-a20-codec"
- 		- "allwinner,sun8i-a23-codec"
- 		- "allwinner,sun8i-h3-codec"
-+		- "allwinner,sun8i-v3s-codec"
- - reg: must contain the registers location and length
- - interrupts: must contain the codec interrupt
- - dmas: DMA channels for tx and rx dma. See the DMA client binding,
-@@ -25,6 +26,7 @@ Required properties for the following compatibles:
- 		- "allwinner,sun6i-a31-codec"
- 		- "allwinner,sun8i-a23-codec"
- 		- "allwinner,sun8i-h3-codec"
-+		- "allwinner,sun8i-v3s-codec"
- - resets: phandle to the reset control for this device
- - allwinner,audio-routing: A list of the connections between audio components.
- 			   Each entry is a pair of strings, the first being the
-@@ -34,15 +36,15 @@ Required properties for the following compatibles:
- 			   Audio pins on the SoC:
- 			   "HP"
- 			   "HPCOM"
--			   "LINEIN"
--			   "LINEOUT"	(not on sun8i-a23)
-+			   "LINEIN"	(not on sun8i-v3s)
-+			   "LINEOUT"	(not on sun8i-a23 or sun8i-v3s)
- 			   "MIC1"
--			   "MIC2"
-+			   "MIC2"	(not on sun8i-v3s)
- 			   "MIC3"	(sun6i-a31 only)
- 
- 			   Microphone biases from the SoC:
- 			   "HBIAS"
--			   "MBIAS"
-+			   "MBIAS"	(not on sun8i-v3s)
- 
- 			   Board connectors:
- 			   "Headphone"
-@@ -55,6 +57,7 @@ Required properties for the following compatibles:
- Required properties for the following compatibles:
- 		- "allwinner,sun8i-a23-codec"
- 		- "allwinner,sun8i-h3-codec"
-+		- "allwinner,sun8i-v3s-codec"
- - allwinner,codec-analog-controls: A phandle to the codec analog controls
- 				   block in the PRCM.
- 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index c3aab10fa085..150069987c0c 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -1339,6 +1339,44 @@ static struct snd_soc_card *sun8i_h3_codec_create_card(struct device *dev)
- 	return card;
- };
- 
-+static struct snd_soc_card *sun8i_v3s_codec_create_card(struct device *dev)
-+{
-+	struct snd_soc_card *card;
-+	int ret;
-+
-+	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
-+	if (!card)
-+		return ERR_PTR(-ENOMEM);
-+
-+	aux_dev.codec_of_node = of_parse_phandle(dev->of_node,
-+						 "allwinner,codec-analog-controls",
-+						 0);
-+	if (!aux_dev.codec_of_node) {
-+		dev_err(dev, "Can't find analog controls for codec.\n");
-+		return ERR_PTR(-EINVAL);
-+	};
-+
-+	card->dai_link = sun4i_codec_create_link(dev, &card->num_links);
-+	if (!card->dai_link)
-+		return ERR_PTR(-ENOMEM);
-+
-+	card->dev		= dev;
-+	card->name		= "V3s Audio Codec";
-+	card->dapm_widgets	= sun6i_codec_card_dapm_widgets;
-+	card->num_dapm_widgets	= ARRAY_SIZE(sun6i_codec_card_dapm_widgets);
-+	card->dapm_routes	= sun8i_codec_card_routes;
-+	card->num_dapm_routes	= ARRAY_SIZE(sun8i_codec_card_routes);
-+	card->aux_dev		= &aux_dev;
-+	card->num_aux_devs	= 1;
-+	card->fully_routed	= true;
-+
-+	ret = snd_soc_of_parse_audio_routing(card, "allwinner,audio-routing");
-+	if (ret)
-+		dev_warn(dev, "failed to parse audio-routing: %d\n", ret);
-+
-+	return card;
-+};
-+
- static const struct regmap_config sun4i_codec_regmap_config = {
- 	.reg_bits	= 32,
- 	.reg_stride	= 4,
-@@ -1374,6 +1412,13 @@ static const struct regmap_config sun8i_h3_codec_regmap_config = {
- 	.max_register	= SUN8I_H3_CODEC_ADC_DBG,
- };
- 
-+static const struct regmap_config sun8i_v3s_codec_regmap_config = {
-+	.reg_bits	= 32,
-+	.reg_stride	= 4,
-+	.val_bits	= 32,
-+	.max_register	= SUN8I_H3_CODEC_ADC_DBG,
-+};
-+
- struct sun4i_codec_quirks {
- 	const struct regmap_config *regmap_config;
- 	const struct snd_soc_codec_driver *codec;
-@@ -1437,6 +1482,20 @@ static const struct sun4i_codec_quirks sun8i_h3_codec_quirks = {
- 	.has_reset	= true,
- };
- 
-+static const struct sun4i_codec_quirks sun8i_v3s_codec_quirks = {
-+	.regmap_config	= &sun8i_v3s_codec_regmap_config,
-+	/*
-+	 * TODO The codec structure should be split out, like
-+	 * H3, when adding digital audio processing support.
-+	 */
-+	.codec		= &sun8i_a23_codec_codec,
-+	.create_card	= sun8i_v3s_codec_create_card,
-+	.reg_adc_fifoc	= REG_FIELD(SUN6I_CODEC_ADC_FIFOC, 0, 31),
-+	.reg_dac_txdata	= SUN8I_H3_CODEC_DAC_TXDATA,
-+	.reg_adc_rxdata	= SUN6I_CODEC_ADC_RXDATA,
-+	.has_reset	= true,
-+};
-+
- static const struct of_device_id sun4i_codec_of_match[] = {
- 	{
- 		.compatible = "allwinner,sun4i-a10-codec",
-@@ -1458,6 +1517,10 @@ static const struct of_device_id sun4i_codec_of_match[] = {
- 		.compatible = "allwinner,sun8i-h3-codec",
- 		.data = &sun8i_h3_codec_quirks,
- 	},
-+	{
-+		.compatible = "allwinner,sun8i-v3s-codec",
-+		.data = &sun8i_v3s_codec_quirks,
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, sun4i_codec_of_match);
--- 
-2.12.2
+SGkgUGllcnJlLGhvdyBhcmUgeW91PwoKPj4gK3N0YXRpYyBpbnQgaXNfYnl0X2NyKHN0cnVjdCBk
+ZXZpY2UgKmRldiwgc3RydWN0IHNzdF9hY3BpX21hY2ggKm1hY2gsIGJvb2wKPj4gKmJ5dGNyKQo+
+PiAgIHsKPj4gICAgICAgICBpbnQgc3RhdHVzID0gMDsKPj4gICArICAgICAvKiBMZW5vdm8gWW9n
+YTIgZXhjZXB0aW9uIC0gYWNwaV9pcGNfaXJxX2luZGV4IGlzIHRoZSAxc3QgaW5kZXgsCj4+ICsg
+ICAgICAgICAgYnV0IGlvc2ZfbWJpX3JlYWQgKGJpb3Nfc3RhdHVzKSByZXR1cm5zIDAgZm9yIGJp
+dHMgMjY6MjcgKi8KPj4gKyAgICAgICBpZiAoIXN0cmNtcChtYWNoLT5kcnZfbmFtZSwgImJ5dGNy
+X3dtNTEwMiIpKSB7Cj4+ICsgICAgICAgICAgICAgICAqYnl0Y3IgPSB0cnVlOwo+PiArICAgICAg
+ICAgICAgICAgcmV0dXJuIHN0YXR1czsKPj4gKyAgICAgICB9Cj4KPgo+IHdlbGwgbm8sIHRoaXMg
+aXNuJ3QgdGhlIHJpZ2h0IHdheSB0byBkbyB0aGlzLiBxdWlya3MgbmVlZCB0byBiZSBiYXNlZCBv
+bgo+IHJlYWwgaGFyZHdhcmUgaW5mb3JtYXRpb24gKGUuZy4gRE1JKSBhbmQgbm90IGEgZHJpdmVy
+IG5hbWUuCgpUaGFua3MgZm9yIHRoZSByZXZpZXcuIENvdWxkIEkgdXNlIGRtaV9tYXRjaCBmdW5j
+dGlvbiBpbnNpZGUgaXNfYnl0X2NyPwoKZ2l0IGRpZmYgSEVBRCBzb3VuZC9zb2MvaW50ZWwvYXRv
+bS9zc3Qvc3N0X2FjcGkuYwpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2ludGVsL2F0b20vc3N0L3Nz
+dF9hY3BpLmMKYi9zb3VuZC9zb2MvaW50ZWwvYXRvbS9zc3Qvc3N0X2FjcGkuYwppbmRleCBkZDI1
+MGI4Li5hOTlkNWE1IDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvaW50ZWwvYXRvbS9zc3Qvc3N0X2Fj
+cGkuYworKysgYi9zb3VuZC9zb2MvaW50ZWwvYXRvbS9zc3Qvc3N0X2FjcGkuYwpAQCAtMjQ0LDYg
+KzI0NCwxMyBAQCBzdGF0aWMgaW50IGlzX2J5dF9jcihzdHJ1Y3QgZGV2aWNlICpkZXYsIGJvb2wg
+KmJ5dGNyKQogewogICAgICAgIGludCBzdGF0dXMgPSAwOwoKKyAgICAgICAvKiBMZW5vdm8gWW9n
+YTIgZXhjZXB0aW9uIC0gYWNwaV9pcGNfaXJxX2luZGV4IGlzIHRoZSAxc3QgaW5kZXgsCisgICAg
+ICAgICAgYnV0IGlvc2ZfbWJpX3JlYWQgKGJpb3Nfc3RhdHVzKSByZXR1cm5zIDAgZm9yIGJpdHMg
+MjY6MjcgKi8KKyAgICAgICBpZiAoZG1pX21hdGNoKERNSV9TWVNfVkVORE9SLCAiTEVOT1ZPIikg
+JiYKZG1pX21hdGNoKERNSV9DSEFTU0lTX1ZFUlNJT04sICIxMDUxRiIpKSB7CisgICAgICAgICAg
+ICAgICAqYnl0Y3IgPSB0cnVlOworICAgICAgICAgICAgICAgcmV0dXJuIHN0YXR1czsKKyAgICAg
+ICB9CisKICAgICAgICBpZiAoSVNfRU5BQkxFRChDT05GSUdfSU9TRl9NQkkpKSB7Ci4uLgoKCj4K
+PiBUaGUgcmVzdCBsb29rcyBtb3JlIG9mIGxlc3Mgb2ssIGl0J3Mgbm90IGNsZWFyIHRvIG1lIGlm
+IGFsbCB0aGUgcXVpcmtzIGFyZQo+IG5lZWRlZCBhbmQgbWFrZSBzZW5zZS4KCkluc2lkZSBtYWNo
+aW5lIGRyaXZlciBjb2RlLCBJIGNhbiBjb25maXJtIHRoZXNlIGFzIG5lY2Vzc2FyeToKCi0gU1NQ
+MCB1c2FnZQotIDI1TWh6IENsb2NrCgpBYm91dCB0aGUgb3RoZXIgcXVpcmtzOiBUbyBiZSBob25l
+c3QsIGFzIEkgc3RhcnRlZCB1c2luZyBieWNyX3J0NTY0MAphcyBiYXNlLCBJIGF2b2lkZWQgdG91
+Y2hpbmcgb3RoZXIgcGFydHMgb2YgdGhlIGNvZGUuCgpJJ2xsIHVuZGVyc3RhbmQgaWYgdGhpcyBp
+cyBub3QgYWRlcXVhdGVkIHRvIGJlIHB1c2hlZCB1cHN0cmVhbS4KQmVzaWRlcywgdGhlIGNvZGVj
+IHNpZGUgY2hhbmdlcyAoYXJpem9uYS93bTUxMDIgLSBub3Qgc2VudCB3aXRoIHRoaXMKcGF0Y2gp
+CmFyZSBub3QgcmVhZHkgdG8gYmUgcHVzaGVkIGR1ZSBzb21lIGhhcmRjb2RpbmcgJiBhbiBpc3N1
+ZSB3aXRoCnJlZ3VsYXRvciBwYXJ0IChhcml6b25hLWNvZGUgd2lsbCBvbmx5IGRldGVjdGVkIGNv
+ZGVjIGNoaXAgaWYKYXJpem9uYS1sZG8xIGlzIG1hcmtlZCBhcyBidWlsdC1pbjsgYXMgYSBtb2R1
+bGUgaXQgaXMgbm90IHdvcmtpbmcpCgpSZWdhcmRzClBhdWxvIFPDqXJnaW8gVHJhdmFnbGlhIChQ
+c3RnbGlhKQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
