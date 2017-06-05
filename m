@@ -1,17 +1,17 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Paulo Sergio <pstglia@gmail.com>
 Subject: Re: [PATCH] ASoC: Intel: add bytcr-wm5102 machine
 	driver
-Date: Mon, 5 Jun 2017 11:37:50 -0500
-Message-ID: <d984fbdc-bea2-d875-c9e8-b1aeec6a666d@linux.intel.com>
+Date: Mon, 5 Jun 2017 14:01:33 -0300
+Message-ID: <CAJcYhpbvf5ZSWoHW_uUocMtf9n7998GsLrjSrARXagB+La-tvw@mail.gmail.com>
 References: <593313f5.3636c80a.50e05.47e9@mx.google.com>
  <df6f715c-5f63-9403-8dd0-13dad8f62fa6@linux.intel.com>
  <CAJcYhpbxWicEAOheSw9mdHibxQ2RPVQfZ4ncDvtQ5YEwtY=xWg@mail.gmail.com>
+ <d984fbdc-bea2-d875-c9e8-b1aeec6a666d@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <CAJcYhpbxWicEAOheSw9mdHibxQ2RPVQfZ4ncDvtQ5YEwtY=xWg@mail.gmail.com>
-Content-Language: en-US
+In-Reply-To: <d984fbdc-bea2-d875-c9e8-b1aeec6a666d@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +21,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Paulo Sergio <pstglia@gmail.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc: pstglia@android-x86.org, alsa-devel@alsa-project.org, patch@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAwNi8wNS8yMDE3IDA5OjI1IEFNLCBQYXVsbyBTZXJnaW8gd3JvdGU6Cj4gSGkgUGllcnJl
-LGhvdyBhcmUgeW91Pwo+Cj4+PiArc3RhdGljIGludCBpc19ieXRfY3Ioc3RydWN0IGRldmljZSAq
-ZGV2LCBzdHJ1Y3Qgc3N0X2FjcGlfbWFjaCAqbWFjaCwgYm9vbAo+Pj4gKmJ5dGNyKQo+Pj4gICAg
-ewo+Pj4gICAgICAgICAgaW50IHN0YXR1cyA9IDA7Cj4+PiAgICArICAgICAvKiBMZW5vdm8gWW9n
-YTIgZXhjZXB0aW9uIC0gYWNwaV9pcGNfaXJxX2luZGV4IGlzIHRoZSAxc3QgaW5kZXgsCj4+PiAr
-ICAgICAgICAgIGJ1dCBpb3NmX21iaV9yZWFkIChiaW9zX3N0YXR1cykgcmV0dXJucyAwIGZvciBi
-aXRzIDI2OjI3ICovCj4+PiArICAgICAgIGlmICghc3RyY21wKG1hY2gtPmRydl9uYW1lLCAiYnl0
-Y3Jfd201MTAyIikpIHsKPj4+ICsgICAgICAgICAgICAgICAqYnl0Y3IgPSB0cnVlOwo+Pj4gKyAg
-ICAgICAgICAgICAgIHJldHVybiBzdGF0dXM7Cj4+PiArICAgICAgIH0KPj4KPj4gd2VsbCBubywg
-dGhpcyBpc24ndCB0aGUgcmlnaHQgd2F5IHRvIGRvIHRoaXMuIHF1aXJrcyBuZWVkIHRvIGJlIGJh
-c2VkIG9uCj4+IHJlYWwgaGFyZHdhcmUgaW5mb3JtYXRpb24gKGUuZy4gRE1JKSBhbmQgbm90IGEg
-ZHJpdmVyIG5hbWUuCj4gVGhhbmtzIGZvciB0aGUgcmV2aWV3LiBDb3VsZCBJIHVzZSBkbWlfbWF0
-Y2ggZnVuY3Rpb24gaW5zaWRlIGlzX2J5dF9jcj8KClllcywgaG93ZXZlciBpdCdzIHRoZSBmaXJz
-dCB0aW1lIEkgc2VlIGEgcXVpcmsgYmFzZWQgb24gCkRNSV9DSEFTU0lTX1ZFUlNJT04uIHdlIHVz
-ZSBQUk9EVUNUIG9yIEJPQVJEIHVzdWFsbHkuCgo+Cj4gZ2l0IGRpZmYgSEVBRCBzb3VuZC9zb2Mv
-aW50ZWwvYXRvbS9zc3Qvc3N0X2FjcGkuYwo+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwv
-YXRvbS9zc3Qvc3N0X2FjcGkuYwo+IGIvc291bmQvc29jL2ludGVsL2F0b20vc3N0L3NzdF9hY3Bp
-LmMKPiBpbmRleCBkZDI1MGI4Li5hOTlkNWE1IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9pbnRl
-bC9hdG9tL3NzdC9zc3RfYWNwaS5jCj4gKysrIGIvc291bmQvc29jL2ludGVsL2F0b20vc3N0L3Nz
-dF9hY3BpLmMKPiBAQCAtMjQ0LDYgKzI0NCwxMyBAQCBzdGF0aWMgaW50IGlzX2J5dF9jcihzdHJ1
-Y3QgZGV2aWNlICpkZXYsIGJvb2wgKmJ5dGNyKQo+ICAgewo+ICAgICAgICAgIGludCBzdGF0dXMg
-PSAwOwo+Cj4gKyAgICAgICAvKiBMZW5vdm8gWW9nYTIgZXhjZXB0aW9uIC0gYWNwaV9pcGNfaXJx
-X2luZGV4IGlzIHRoZSAxc3QgaW5kZXgsCj4gKyAgICAgICAgICBidXQgaW9zZl9tYmlfcmVhZCAo
-Ymlvc19zdGF0dXMpIHJldHVybnMgMCBmb3IgYml0cyAyNjoyNyAqLwo+ICsgICAgICAgaWYgKGRt
-aV9tYXRjaChETUlfU1lTX1ZFTkRPUiwgIkxFTk9WTyIpICYmCj4gZG1pX21hdGNoKERNSV9DSEFT
-U0lTX1ZFUlNJT04sICIxMDUxRiIpKSB7Cj4gKyAgICAgICAgICAgICAgICpieXRjciA9IHRydWU7
-Cj4gKyAgICAgICAgICAgICAgIHJldHVybiBzdGF0dXM7Cj4gKyAgICAgICB9Cj4gKwo+ICAgICAg
-ICAgIGlmIChJU19FTkFCTEVEKENPTkZJR19JT1NGX01CSSkpIHsKPiAuLi4KPgo+Cj4+IFRoZSBy
-ZXN0IGxvb2tzIG1vcmUgb2YgbGVzcyBvaywgaXQncyBub3QgY2xlYXIgdG8gbWUgaWYgYWxsIHRo
-ZSBxdWlya3MgYXJlCj4+IG5lZWRlZCBhbmQgbWFrZSBzZW5zZS4KPiBJbnNpZGUgbWFjaGluZSBk
-cml2ZXIgY29kZSwgSSBjYW4gY29uZmlybSB0aGVzZSBhcyBuZWNlc3Nhcnk6Cj4KPiAtIFNTUDAg
-dXNhZ2UKPiAtIDI1TWh6IENsb2NrCj4KPiBBYm91dCB0aGUgb3RoZXIgcXVpcmtzOiBUbyBiZSBo
-b25lc3QsIGFzIEkgc3RhcnRlZCB1c2luZyBieWNyX3J0NTY0MAo+IGFzIGJhc2UsIEkgYXZvaWRl
-ZCB0b3VjaGluZyBvdGhlciBwYXJ0cyBvZiB0aGUgY29kZS4KPgo+IEknbGwgdW5kZXJzdGFuZCBp
-ZiB0aGlzIGlzIG5vdCBhZGVxdWF0ZWQgdG8gYmUgcHVzaGVkIHVwc3RyZWFtLgo+IEJlc2lkZXMs
-IHRoZSBjb2RlYyBzaWRlIGNoYW5nZXMgKGFyaXpvbmEvd201MTAyIC0gbm90IHNlbnQgd2l0aCB0
-aGlzCj4gcGF0Y2gpCj4gYXJlIG5vdCByZWFkeSB0byBiZSBwdXNoZWQgZHVlIHNvbWUgaGFyZGNv
-ZGluZyAmIGFuIGlzc3VlIHdpdGgKPiByZWd1bGF0b3IgcGFydCAoYXJpem9uYS1jb2RlIHdpbGwg
-b25seSBkZXRlY3RlZCBjb2RlYyBjaGlwIGlmCj4gYXJpem9uYS1sZG8xIGlzIG1hcmtlZCBhcyBi
-dWlsdC1pbjsgYXMgYSBtb2R1bGUgaXQgaXMgbm90IHdvcmtpbmcpCj4KPiBSZWdhcmRzCj4gUGF1
-bG8gU8OpcmdpbyBUcmF2YWdsaWEgKFBzdGdsaWEpCgpfX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVs
-QGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+>>> well no, this isn't the right way to do this. quirks need to be based on
+>>> real hardware information (e.g. DMI) and not a driver name.
+>>
+>> Thanks for the review. Could I use dmi_match function inside is_byt_cr?
+>
+>
+> Yes, however it's the first time I see a quirk based on DMI_CHASSIS_VERSION.
+> we use PRODUCT or BOARD usually.
+
+Not a problem. I can change it. I have these info available from dmi:
+
+bios_date: 08/01/2014
+bios_vendor: LENOVO
+bios_version: 01WT17WW
+board_asset_tag: NO Asset Tag
+board_name: INVALID
+board_serial: HA07YER9
+board_vendor: LENOVO
+board_version: SDK9A6N2HVWIN
+chassis_asset_tag: NO Asset Tag
+chassis_serial: HA07YER9
+chassis_type: 11
+chassis_vendor: LENOVO
+chassis_version: 1051F
+modalias: dmi:bvnLENOVO:bvr01WT17WW:bd08/01/2014:svnLENOVO:pn60073:pvr1051F:rvnLENOVO:rnINVALID:rvrSDK9A6N2HVWIN:cvnLENOVO:ct11:cvr1051F:
+product_name: 60073
+product_serial: HA07YER9
+product_uuid: 39FFE49E-1918-884A-9499-CC7705A289C9
+product_version: 1051F
+sys_vendor: LENOVO
+uevent: MODALIAS=dmi:bvnLENOVO:bvr01WT17WW:bd08/01/2014:svnLENOVO:pn60073:pvr1051F:rvnLENOVO:rnINVALID:rvrSDK9A6N2HVWIN:cvnLENOVO:ct11:cvr1051F:
