@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: sst: Delete sst_shim_regs64; saved regs are never used" to the asoc tree
-Date: Tue, 06 Jun 2017 20:05:41 +0100
-Message-ID: <E1dIJnR-00075t-PG@debutante>
-References: <20170530165130.15011-1-dianders@chromium.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170530165130.15011-1-dianders@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Douglas Anderson <dianders@chromium.org>
-Cc: Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, lgirdwood@gmail.comVinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, tiwai@suse.com, andy.shevchenko@gmail.com, mka@chromium.org, naveen.m@intel.com, colin.king@canonical.com, o-takashi@sakamocchi.jp, sebastien.guiriec@intel.comalsa-devel@alsa-project.org
+Subject: Applied "ASoC: rsnd: Document optional reset properties" to the asoc tree
+Date: Tue, 06 Jun 2017 20:05:50 +0100
+Message-ID: <E1dIJna-000796-Tu@debutante>
+References: <1496313375-27892-1-git-send-email-geert+renesas@glider.be>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <1496313375-27892-1-git-send-email-geert+renesas@glider.be>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: sst: Delete sst_shim_regs64; saved regs are never used
+   ASoC: rsnd: Document optional reset properties
 
 has been applied to the asoc tree at
 
@@ -37,156 +37,36 @@ to this mail.
 Thanks,
 Mark
 
->From 98cf2c03b467fa67df58cb52adeb85b425cabcb2 Mon Sep 17 00:00:00 2001
-From: Douglas Anderson <dianders@chromium.org>
-Date: Tue, 30 May 2017 09:51:30 -0700
-Subject: [PATCH] ASoC: Intel: sst: Delete sst_shim_regs64; saved regs are
- never used
+>From 5f440c48c5d5a11f1892819c409e183b2056e4ba Mon Sep 17 00:00:00 2001
+From: Geert Uytterhoeven <geert+renesas@glider.be>
+Date: Thu, 1 Jun 2017 12:36:15 +0200
+Subject: [PATCH] ASoC: rsnd: Document optional reset properties
 
-In commit 9a075265c6dc ("ASoC: Intel: sst: Remove unused function
-sst_restore_shim64()"), we deleted the sst_restore_shim64() since it
-was never used.  ...but a quick look at the code shows that we should
-also be able to remove the sst_save_shim64() function and the
-structure members we were storing data in.
+Document the optional properties for describing module resets, to
+support resetting these modules on R-Car Gen2 and Gen3.
 
-Once we delete sst_save_shim64() there are no longer any users of the
-'sst_shim_regs64' structure.  That means we can delete it completely
-and also avoid allocating memory for it.  This saves a whopping 136
-bytes of devm allocated memory.  We also get the nice benefit of
-avoiding an error path in the init code.
+Note that the audio module has resets for the Serial Sound Interfaces
+only.
 
-Note that the saving code that we're removing (and the comments
-talking about how important it is to do the save) has been around
-since commit 336cfbb05edf ("ASoC: Intel: mrfld- add ACPI module").
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Acked-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst/sst.c      | 19 -------------------
- sound/soc/intel/atom/sst/sst.h      | 22 ----------------------
- sound/soc/intel/atom/sst/sst_acpi.c | 14 --------------
- 3 files changed, 55 deletions(-)
+ Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
-index 2d43b8693c0c..5ee92257ca85 100644
---- a/sound/soc/intel/atom/sst/sst.c
-+++ b/sound/soc/intel/atom/sst/sst.c
-@@ -382,21 +382,6 @@ void sst_context_cleanup(struct intel_sst_drv *ctx)
- }
- EXPORT_SYMBOL_GPL(sst_context_cleanup);
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+index 13cb21d53b8b..7246bb268bf9 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
++++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+@@ -379,6 +379,9 @@ Optional properties:
+ - clock-frequency		: for all audio_clkout0/1/2/3
+ - clkout-lr-asynchronous	: boolean property. it indicates that audio_clkoutn
+ 				  is asynchronizes with lr-clock.
++- resets			: References to SSI resets.
++- reset-names			: List of valid reset names.
++				  "ssi-all", "ssi.X"
  
--static inline void sst_save_shim64(struct intel_sst_drv *ctx,
--			    void __iomem *shim,
--			    struct sst_shim_regs64 *shim_regs)
--{
--	unsigned long irq_flags;
--
--	spin_lock_irqsave(&ctx->ipc_spin_lock, irq_flags);
--
--	shim_regs->imrx = sst_shim_read64(shim, SST_IMRX);
--	shim_regs->csr = sst_shim_read64(shim, SST_CSR);
--
--
--	spin_unlock_irqrestore(&ctx->ipc_spin_lock, irq_flags);
--}
--
- void sst_configure_runtime_pm(struct intel_sst_drv *ctx)
- {
- 	pm_runtime_set_autosuspend_delay(ctx->dev, SST_SUSPEND_DELAY);
-@@ -416,8 +401,6 @@ void sst_configure_runtime_pm(struct intel_sst_drv *ctx)
- 		pm_runtime_set_active(ctx->dev);
- 	else
- 		pm_runtime_put_noidle(ctx->dev);
--
--	sst_save_shim64(ctx, ctx->shim, ctx->shim_regs64);
- }
- EXPORT_SYMBOL_GPL(sst_configure_runtime_pm);
- 
-@@ -441,8 +424,6 @@ static int intel_sst_runtime_suspend(struct device *dev)
- 	flush_workqueue(ctx->post_msg_wq);
- 
- 	ctx->ops->reset(ctx);
--	/* save the shim registers because PMC doesn't save state */
--	sst_save_shim64(ctx, ctx->shim, ctx->shim_regs64);
- 
- 	return ret;
- }
-diff --git a/sound/soc/intel/atom/sst/sst.h b/sound/soc/intel/atom/sst/sst.h
-index 5c9a51cc77aa..1693befa455a 100644
---- a/sound/soc/intel/atom/sst/sst.h
-+++ b/sound/soc/intel/atom/sst/sst.h
-@@ -317,26 +317,6 @@ struct sst_ipc_reg {
- 	int ipcd;
- };
- 
--struct sst_shim_regs64 {
--	u64 csr;
--	u64 pisr;
--	u64 pimr;
--	u64 isrx;
--	u64 isrd;
--	u64 imrx;
--	u64 imrd;
--	u64 ipcx;
--	u64 ipcd;
--	u64 isrsc;
--	u64 isrlpesc;
--	u64 imrsc;
--	u64 imrlpesc;
--	u64 ipcsc;
--	u64 ipclpesc;
--	u64 clkctl;
--	u64 csr2;
--};
--
- struct sst_fw_save {
- 	void *iram;
- 	void *dram;
-@@ -356,7 +336,6 @@ struct sst_fw_save {
-  * @dram : SST DRAM pointer
-  * @pdata : SST info passed as a part of pci platform data
-  * @shim_phy_add : SST shim phy addr
-- * @shim_regs64: Struct to save shim registers
-  * @ipc_dispatch_list : ipc messages dispatched
-  * @rx_list : to copy the process_reply/process_msg from DSP
-  * @ipc_post_msg_wq : wq to post IPC messages context
-@@ -398,7 +377,6 @@ struct intel_sst_drv {
- 	unsigned int		ddr_end;
- 	unsigned int		ddr_base;
- 	unsigned int		mailbox_recv_offset;
--	struct sst_shim_regs64	*shim_regs64;
- 	struct list_head        block_list;
- 	struct list_head	ipc_dispatch_list;
- 	struct sst_platform_info *pdata;
-diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
-index 592f6afaf2a5..cf88cd1865fb 100644
---- a/sound/soc/intel/atom/sst/sst_acpi.c
-+++ b/sound/soc/intel/atom/sst/sst_acpi.c
-@@ -358,23 +358,9 @@ static int sst_acpi_probe(struct platform_device *pdev)
- 	if (ret < 0)
- 		return ret;
- 
--	/* need to save shim registers in BYT */
--	ctx->shim_regs64 = devm_kzalloc(ctx->dev, sizeof(*ctx->shim_regs64),
--					GFP_KERNEL);
--	if (!ctx->shim_regs64) {
--		ret = -ENOMEM;
--		goto do_sst_cleanup;
--	}
--
- 	sst_configure_runtime_pm(ctx);
- 	platform_set_drvdata(pdev, ctx);
- 	return ret;
--
--do_sst_cleanup:
--	sst_context_cleanup(ctx);
--	platform_set_drvdata(pdev, NULL);
--	dev_err(ctx->dev, "failed with %d\n", ret);
--	return ret;
- }
- 
- /**
+ SSI subnode properties:
+ - interrupts			: Should contain SSI interrupt for PIO transfer
 -- 
 2.11.0
