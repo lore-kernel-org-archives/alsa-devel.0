@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Add enum control for
-	mic selection" to the asoc tree
-Date: Tue, 06 Jun 2017 20:05:32 +0100
-Message-ID: <E1dIJnI-00073e-1k@debutante>
-References: <1496206826-28125-3-git-send-email-subhransu.s.prusty@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D5315266C9A
- for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2017 21:05:42 +0200 (CEST)
-In-Reply-To: <1496206826-28125-3-git-send-email-subhransu.s.prusty@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dharageswari R <dharageswari.r@intel.com>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, lgirdwood@gmail.com, patches.audio@intel.com, tiwai@suse.de, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: Applied "ASoC: Intel: sst: Delete sst_shim_regs64; saved regs are never used" to the asoc tree
+Date: Tue, 06 Jun 2017 20:05:41 +0100
+Message-ID: <E1dIJnR-00075t-PG@debutante>
+References: <20170530165130.15011-1-dianders@chromium.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20170530165130.15011-1-dianders@chromium.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Douglas Anderson <dianders@chromium.org>
+Cc: Vinod Koul <vinod.koul@intel.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, lgirdwood@gmail.comVinod Koul <vinod.koul@intel.com>, linux-kernel@vger.kernel.org, tiwai@suse.com, andy.shevchenko@gmail.com, mka@chromium.org, naveen.m@intel.com, colin.king@canonical.com, o-takashi@sakamocchi.jp, sebastien.guiriec@intel.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Add enum control for mic selection
+   ASoC: Intel: sst: Delete sst_shim_regs64; saved regs are never used
 
 has been applied to the asoc tree at
 
@@ -53,297 +37,156 @@ to this mail.
 Thanks,
 Mark
 
->From 7a1b749b34e8238acae8a039a8f6822f4f4e2061 Mon Sep 17 00:00:00 2001
-From: Dharageswari R <dharageswari.r@intel.com>
-Date: Wed, 31 May 2017 10:30:25 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Add enum control for mic selection
+>From 98cf2c03b467fa67df58cb52adeb85b425cabcb2 Mon Sep 17 00:00:00 2001
+From: Douglas Anderson <dianders@chromium.org>
+Date: Tue, 30 May 2017 09:51:30 -0700
+Subject: [PATCH] ASoC: Intel: sst: Delete sst_shim_regs64; saved regs are
+ never used
 
-User may prefer to select data from particular mics. A mic-select module
-in DSP allows this selection.
+In commit 9a075265c6dc ("ASoC: Intel: sst: Remove unused function
+sst_restore_shim64()"), we deleted the sst_restore_shim64() since it
+was never used.  ...but a quick look at the code shows that we should
+also be able to remove the sst_save_shim64() function and the
+structure members we were storing data in.
 
-Create possible enum controls to allow user to select a combination of
-mics to capture data from. Based on the user selection, parameters are
-generated and passed to mic-select module during init.
+Once we delete sst_save_shim64() there are no longer any users of the
+'sst_shim_regs64' structure.  That means we can delete it completely
+and also avoid allocating memory for it.  This saves a whopping 136
+bytes of devm allocated memory.  We also get the nice benefit of
+avoiding an error path in the init code.
 
-Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Note that the saving code that we're removing (and the comments
+talking about how important it is to do the save) has been around
+since commit 336cfbb05edf ("ASoC: Intel: mrfld- add ACPI module").
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Acked-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c       | 159 +++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-topology.h       |  20 ++++
- sound/soc/intel/skylake/skl-tplg-interface.h |   1 +
- 3 files changed, 180 insertions(+)
+ sound/soc/intel/atom/sst/sst.c      | 19 -------------------
+ sound/soc/intel/atom/sst/sst.h      | 22 ----------------------
+ sound/soc/intel/atom/sst/sst_acpi.c | 14 --------------
+ 3 files changed, 55 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 4c3bdff092bd..212cee71d586 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -36,6 +36,19 @@
- #define SKL_IN_DIR_BIT_MASK		BIT(0)
- #define SKL_PIN_COUNT_MASK		GENMASK(7, 4)
+diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
+index 2d43b8693c0c..5ee92257ca85 100644
+--- a/sound/soc/intel/atom/sst/sst.c
++++ b/sound/soc/intel/atom/sst/sst.c
+@@ -382,21 +382,6 @@ void sst_context_cleanup(struct intel_sst_drv *ctx)
+ }
+ EXPORT_SYMBOL_GPL(sst_context_cleanup);
  
-+static const int mic_mono_list[] = {
-+0, 1, 2, 3,
-+};
-+static const int mic_stereo_list[][SKL_CH_STEREO] = {
-+{0, 1}, {0, 2}, {0, 3}, {1, 2}, {1, 3}, {2, 3},
-+};
-+static const int mic_trio_list[][SKL_CH_TRIO] = {
-+{0, 1, 2}, {0, 1, 3}, {0, 2, 3}, {1, 2, 3},
-+};
-+static const int mic_quatro_list[][SKL_CH_QUATRO] = {
-+{0, 1, 2, 3},
-+};
-+
- void skl_tplg_d0i3_get(struct skl *skl, enum d0i3_capability caps)
+-static inline void sst_save_shim64(struct intel_sst_drv *ctx,
+-			    void __iomem *shim,
+-			    struct sst_shim_regs64 *shim_regs)
+-{
+-	unsigned long irq_flags;
+-
+-	spin_lock_irqsave(&ctx->ipc_spin_lock, irq_flags);
+-
+-	shim_regs->imrx = sst_shim_read64(shim, SST_IMRX);
+-	shim_regs->csr = sst_shim_read64(shim, SST_CSR);
+-
+-
+-	spin_unlock_irqrestore(&ctx->ipc_spin_lock, irq_flags);
+-}
+-
+ void sst_configure_runtime_pm(struct intel_sst_drv *ctx)
  {
- 	struct skl_d0i3_data *d0i3 =  &skl->skl_sst->d0i3;
-@@ -1314,6 +1327,111 @@ static int skl_tplg_tlv_control_set(struct snd_kcontrol *kcontrol,
- 	return 0;
+ 	pm_runtime_set_autosuspend_delay(ctx->dev, SST_SUSPEND_DELAY);
+@@ -416,8 +401,6 @@ void sst_configure_runtime_pm(struct intel_sst_drv *ctx)
+ 		pm_runtime_set_active(ctx->dev);
+ 	else
+ 		pm_runtime_put_noidle(ctx->dev);
+-
+-	sst_save_shim64(ctx, ctx->shim, ctx->shim_regs64);
+ }
+ EXPORT_SYMBOL_GPL(sst_configure_runtime_pm);
+ 
+@@ -441,8 +424,6 @@ static int intel_sst_runtime_suspend(struct device *dev)
+ 	flush_workqueue(ctx->post_msg_wq);
+ 
+ 	ctx->ops->reset(ctx);
+-	/* save the shim registers because PMC doesn't save state */
+-	sst_save_shim64(ctx, ctx->shim, ctx->shim_regs64);
+ 
+ 	return ret;
+ }
+diff --git a/sound/soc/intel/atom/sst/sst.h b/sound/soc/intel/atom/sst/sst.h
+index 5c9a51cc77aa..1693befa455a 100644
+--- a/sound/soc/intel/atom/sst/sst.h
++++ b/sound/soc/intel/atom/sst/sst.h
+@@ -317,26 +317,6 @@ struct sst_ipc_reg {
+ 	int ipcd;
+ };
+ 
+-struct sst_shim_regs64 {
+-	u64 csr;
+-	u64 pisr;
+-	u64 pimr;
+-	u64 isrx;
+-	u64 isrd;
+-	u64 imrx;
+-	u64 imrd;
+-	u64 ipcx;
+-	u64 ipcd;
+-	u64 isrsc;
+-	u64 isrlpesc;
+-	u64 imrsc;
+-	u64 imrlpesc;
+-	u64 ipcsc;
+-	u64 ipclpesc;
+-	u64 clkctl;
+-	u64 csr2;
+-};
+-
+ struct sst_fw_save {
+ 	void *iram;
+ 	void *dram;
+@@ -356,7 +336,6 @@ struct sst_fw_save {
+  * @dram : SST DRAM pointer
+  * @pdata : SST info passed as a part of pci platform data
+  * @shim_phy_add : SST shim phy addr
+- * @shim_regs64: Struct to save shim registers
+  * @ipc_dispatch_list : ipc messages dispatched
+  * @rx_list : to copy the process_reply/process_msg from DSP
+  * @ipc_post_msg_wq : wq to post IPC messages context
+@@ -398,7 +377,6 @@ struct intel_sst_drv {
+ 	unsigned int		ddr_end;
+ 	unsigned int		ddr_base;
+ 	unsigned int		mailbox_recv_offset;
+-	struct sst_shim_regs64	*shim_regs64;
+ 	struct list_head        block_list;
+ 	struct list_head	ipc_dispatch_list;
+ 	struct sst_platform_info *pdata;
+diff --git a/sound/soc/intel/atom/sst/sst_acpi.c b/sound/soc/intel/atom/sst/sst_acpi.c
+index 592f6afaf2a5..cf88cd1865fb 100644
+--- a/sound/soc/intel/atom/sst/sst_acpi.c
++++ b/sound/soc/intel/atom/sst/sst_acpi.c
+@@ -358,23 +358,9 @@ static int sst_acpi_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	/* need to save shim registers in BYT */
+-	ctx->shim_regs64 = devm_kzalloc(ctx->dev, sizeof(*ctx->shim_regs64),
+-					GFP_KERNEL);
+-	if (!ctx->shim_regs64) {
+-		ret = -ENOMEM;
+-		goto do_sst_cleanup;
+-	}
+-
+ 	sst_configure_runtime_pm(ctx);
+ 	platform_set_drvdata(pdev, ctx);
+ 	return ret;
+-
+-do_sst_cleanup:
+-	sst_context_cleanup(ctx);
+-	platform_set_drvdata(pdev, NULL);
+-	dev_err(ctx->dev, "failed with %d\n", ret);
+-	return ret;
  }
  
-+static int skl_tplg_mic_control_get(struct snd_kcontrol *kcontrol,
-+		struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_widget *w = snd_soc_dapm_kcontrol_widget(kcontrol);
-+	struct skl_module_cfg *mconfig = w->priv;
-+	struct soc_enum *ec = (struct soc_enum *)kcontrol->private_value;
-+	u32 ch_type = *((u32 *)ec->dobj.private);
-+
-+	if (mconfig->dmic_ch_type == ch_type)
-+		ucontrol->value.enumerated.item[0] =
-+					mconfig->dmic_ch_combo_index;
-+	else
-+		ucontrol->value.enumerated.item[0] = 0;
-+
-+	return 0;
-+}
-+
-+static int skl_fill_mic_sel_params(struct skl_module_cfg *mconfig,
-+	struct skl_mic_sel_config *mic_cfg, struct device *dev)
-+{
-+	struct skl_specific_cfg *sp_cfg = &mconfig->formats_config;
-+
-+	sp_cfg->caps_size = sizeof(struct skl_mic_sel_config);
-+	sp_cfg->set_params = SKL_PARAM_SET;
-+	sp_cfg->param_id = 0x00;
-+	if (!sp_cfg->caps) {
-+		sp_cfg->caps = devm_kzalloc(dev, sp_cfg->caps_size, GFP_KERNEL);
-+		if (!sp_cfg->caps)
-+			return -ENOMEM;
-+	}
-+
-+	mic_cfg->mic_switch = SKL_MIC_SEL_SWITCH;
-+	mic_cfg->flags = 0;
-+	memcpy(sp_cfg->caps, mic_cfg, sp_cfg->caps_size);
-+
-+	return 0;
-+}
-+
-+static int skl_tplg_mic_control_set(struct snd_kcontrol *kcontrol,
-+			struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_dapm_widget *w = snd_soc_dapm_kcontrol_widget(kcontrol);
-+	struct skl_module_cfg *mconfig = w->priv;
-+	struct skl_mic_sel_config mic_cfg = {0};
-+	struct soc_enum *ec = (struct soc_enum *)kcontrol->private_value;
-+	u32 ch_type = *((u32 *)ec->dobj.private);
-+	const int *list;
-+	u8 in_ch, out_ch, index;
-+
-+	mconfig->dmic_ch_type = ch_type;
-+	mconfig->dmic_ch_combo_index = ucontrol->value.enumerated.item[0];
-+
-+	/* enum control index 0 is INVALID, so no channels to be set */
-+	if (mconfig->dmic_ch_combo_index == 0)
-+		return 0;
-+
-+	/* No valid channel selection map for index 0, so offset by 1 */
-+	index = mconfig->dmic_ch_combo_index - 1;
-+
-+	switch (ch_type) {
-+	case SKL_CH_MONO:
-+		if (mconfig->dmic_ch_combo_index > ARRAY_SIZE(mic_mono_list))
-+			return -EINVAL;
-+
-+		list = &mic_mono_list[index];
-+		break;
-+
-+	case SKL_CH_STEREO:
-+		if (mconfig->dmic_ch_combo_index > ARRAY_SIZE(mic_stereo_list))
-+			return -EINVAL;
-+
-+		list = mic_stereo_list[index];
-+		break;
-+
-+	case SKL_CH_TRIO:
-+		if (mconfig->dmic_ch_combo_index > ARRAY_SIZE(mic_trio_list))
-+			return -EINVAL;
-+
-+		list = mic_trio_list[index];
-+		break;
-+
-+	case SKL_CH_QUATRO:
-+		if (mconfig->dmic_ch_combo_index > ARRAY_SIZE(mic_quatro_list))
-+			return -EINVAL;
-+
-+		list = mic_quatro_list[index];
-+		break;
-+
-+	default:
-+		dev_err(w->dapm->dev,
-+				"Invalid channel %d for mic_select module\n",
-+				ch_type);
-+		return -EINVAL;
-+
-+	}
-+
-+	/* channel type enum map to number of chanels for that type */
-+	for (out_ch = 0; out_ch < ch_type; out_ch++) {
-+		in_ch = list[out_ch];
-+		mic_cfg.blob[out_ch][in_ch] = SKL_DEFAULT_MIC_SEL_GAIN;
-+	}
-+
-+	return skl_fill_mic_sel_params(mconfig, &mic_cfg, w->dapm->dev);
-+}
-+
- /*
-  * Fill the dma id for host and link. In case of passthrough
-  * pipeline, this will both host and link in the same
-@@ -1666,6 +1784,14 @@ static const struct snd_soc_tplg_bytes_ext_ops skl_tlv_ops[] = {
- 					skl_tplg_tlv_control_set},
- };
- 
-+static const struct snd_soc_tplg_kcontrol_ops skl_tplg_kcontrol_ops[] = {
-+	{
-+		.id = SKL_CONTROL_TYPE_MIC_SELECT,
-+		.get = skl_tplg_mic_control_get,
-+		.put = skl_tplg_mic_control_set,
-+	},
-+};
-+
- static int skl_tplg_fill_pipe_tkn(struct device *dev,
- 			struct skl_pipe *pipe, u32 tkn,
- 			u32 tkn_val)
-@@ -2390,14 +2516,34 @@ static int skl_init_algo_data(struct device *dev, struct soc_bytes_ext *be,
- 	return 0;
- }
- 
-+static int skl_init_enum_data(struct device *dev, struct soc_enum *se,
-+				struct snd_soc_tplg_enum_control *ec)
-+{
-+
-+	void *data;
-+
-+	if (ec->priv.size) {
-+		data = devm_kzalloc(dev, sizeof(ec->priv.size), GFP_KERNEL);
-+		if (!data)
-+			return -ENOMEM;
-+		memcpy(data, ec->priv.data, ec->priv.size);
-+		se->dobj.private = data;
-+	}
-+
-+	return 0;
-+
-+}
-+
- static int skl_tplg_control_load(struct snd_soc_component *cmpnt,
- 				struct snd_kcontrol_new *kctl,
- 				struct snd_soc_tplg_ctl_hdr *hdr)
- {
- 	struct soc_bytes_ext *sb;
- 	struct snd_soc_tplg_bytes_control *tplg_bc;
-+	struct snd_soc_tplg_enum_control *tplg_ec;
- 	struct hdac_ext_bus *ebus  = snd_soc_component_get_drvdata(cmpnt);
- 	struct hdac_bus *bus = ebus_to_hbus(ebus);
-+	struct soc_enum *se;
- 
- 	switch (hdr->ops.info) {
- 	case SND_SOC_TPLG_CTL_BYTES:
-@@ -2411,6 +2557,17 @@ static int skl_tplg_control_load(struct snd_soc_component *cmpnt,
- 		}
- 		break;
- 
-+	case SND_SOC_TPLG_CTL_ENUM:
-+		tplg_ec = container_of(hdr,
-+				struct snd_soc_tplg_enum_control, hdr);
-+		if (kctl->access & SNDRV_CTL_ELEM_ACCESS_READWRITE) {
-+			se = (struct soc_enum *)kctl->private_value;
-+			if (tplg_ec->priv.size)
-+				return skl_init_enum_data(bus->dev, se,
-+						tplg_ec);
-+		}
-+		break;
-+
- 	default:
- 		dev_warn(bus->dev, "Control load not supported %d:%d:%d\n",
- 			hdr->ops.get, hdr->ops.put, hdr->ops.info);
-@@ -2639,6 +2796,8 @@ static struct snd_soc_tplg_ops skl_tplg_ops  = {
- 	.control_load = skl_tplg_control_load,
- 	.bytes_ext_ops = skl_tlv_ops,
- 	.bytes_ext_ops_count = ARRAY_SIZE(skl_tlv_ops),
-+	.io_ops = skl_tplg_kcontrol_ops,
-+	.io_ops_count = ARRAY_SIZE(skl_tplg_kcontrol_ops),
- 	.manifest = skl_manifest_load,
- };
- 
-diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
-index cc64d6bdb4f6..3f51a0a00093 100644
---- a/sound/soc/intel/skylake/skl-topology.h
-+++ b/sound/soc/intel/skylake/skl-topology.h
-@@ -39,6 +39,11 @@
- #define MODULE_MAX_IN_PINS	8
- #define MODULE_MAX_OUT_PINS	8
- 
-+#define SKL_MIC_CH_SUPPORT	4
-+#define SKL_MIC_MAX_CH_SUPPORT	8
-+#define SKL_DEFAULT_MIC_SEL_GAIN	0x3FF
-+#define SKL_MIC_SEL_SWITCH	0x3
-+
- enum skl_channel_index {
- 	SKL_CHANNEL_LEFT = 0,
- 	SKL_CHANNEL_RIGHT = 1,
-@@ -309,6 +314,8 @@ struct skl_module_cfg {
- 	u8 dev_type;
- 	u8 dma_id;
- 	u8 time_slot;
-+	u8 dmic_ch_combo_index;
-+	u32 dmic_ch_type;
- 	u32 params_fixup;
- 	u32 converter;
- 	u32 vbus_id;
-@@ -342,6 +349,19 @@ struct skl_module_deferred_bind {
- 	struct list_head node;
- };
- 
-+struct skl_mic_sel_config {
-+	u16 mic_switch;
-+	u16 flags;
-+	u16 blob[SKL_MIC_MAX_CH_SUPPORT][SKL_MIC_MAX_CH_SUPPORT];
-+} __packed;
-+
-+enum skl_channel {
-+	SKL_CH_MONO = 1,
-+	SKL_CH_STEREO = 2,
-+	SKL_CH_TRIO = 3,
-+	SKL_CH_QUATRO = 4,
-+};
-+
- static inline struct skl *get_skl_ctx(struct device *dev)
- {
- 	struct hdac_ext_bus *ebus = dev_get_drvdata(dev);
-diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
-index c22517bd2161..f8d1749a2e0c 100644
---- a/sound/soc/intel/skylake/skl-tplg-interface.h
-+++ b/sound/soc/intel/skylake/skl-tplg-interface.h
-@@ -24,6 +24,7 @@
-  * SST types start at higher to avoid any overlapping in future
-  */
- #define SKL_CONTROL_TYPE_BYTE_TLV	0x100
-+#define SKL_CONTROL_TYPE_MIC_SELECT	0x102
- 
- #define HDA_SST_CFG_MAX	900 /* size of copier cfg*/
- #define MAX_IN_QUEUE 8
+ /**
 -- 
 2.11.0
