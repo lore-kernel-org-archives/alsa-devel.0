@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-scu-card: tidyup "Sampling Rate
-	Conversion"" to the asoc tree
-Date: Tue, 06 Jun 2017 20:06:23 +0100
-Message-ID: <E1dIJo7-0007Jn-Dy@debutante>
-References: <87ink9zw3d.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: remove unused rsnd_ssi_non_ops"
+	to the asoc tree
+Date: Tue, 06 Jun 2017 20:06:40 +0100
+Message-ID: <E1dIJoO-0007MQ-CM@debutante>
+References: <87inkbdq1u.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C5B2B267343
- for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2017 21:06:43 +0200 (CEST)
-In-Reply-To: <87ink9zw3d.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BFA14267359
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2017 21:06:47 +0200 (CEST)
+In-Reply-To: <87inkbdq1u.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: linux-renesas-soc@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, James Cameron <quozl@laptop.org>, Simon <horms@verge.net.au>
+Cc: linux-renesas-soc@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-scu-card: tidyup "Sampling Rate Conversion"
+   ASoC: rsnd: remove unused rsnd_ssi_non_ops
 
 has been applied to the asoc tree at
 
@@ -53,32 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From 010f21b2ba0cd546d7489ca536a156b281faa3fb Mon Sep 17 00:00:00 2001
+>From f07b38e53b71aeb62f865632d31d3f579a77ffc0 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 6 Jun 2017 02:35:43 +0000
-Subject: [PATCH] ASoC: simple-scu-card: tidyup "Sampling Rate Conversion"
+Date: Tue, 6 Jun 2017 02:34:42 +0000
+Subject: [PATCH] ASoC: rsnd: remove unused rsnd_ssi_non_ops
 
-"Sampling Rate Conversion" is better than "Sampling Rate Convert"
+rsnd_ssi_non_ops is never used. Let's remove it
 
-Reported-by: James Cameron <quozl@laptop.org>
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/simple-scu-card.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sh/rcar/ssi.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/simple-scu-card.txt b/Documentation/devicetree/bindings/sound/simple-scu-card.txt
-index e894cef1d314..327d229a51b2 100644
---- a/Documentation/devicetree/bindings/sound/simple-scu-card.txt
-+++ b/Documentation/devicetree/bindings/sound/simple-scu-card.txt
-@@ -38,7 +38,7 @@ Optional CPU/CODEC subnodes properties:
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index d0602c189736..eddd8afa0825 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -792,13 +792,6 @@ int rsnd_ssi_is_dma_mode(struct rsnd_mod *mod)
  
- - clocks / system-clock-frequency	: see simple-audio-card.txt
  
--Example 1. Sampling Rate Covert
-+Example 1. Sampling Rate Conversion
+ /*
+- *		Non SSI
+- */
+-static struct rsnd_mod_ops rsnd_ssi_non_ops = {
+-	.name	= SSI_NAME,
+-};
+-
+-/*
+  *		ssi mod function
+  */
+ static void rsnd_ssi_connect(struct rsnd_mod *mod,
+@@ -998,7 +991,6 @@ int rsnd_ssi_probe(struct rsnd_priv *priv)
+ 			goto rsnd_ssi_probe_done;
+ 		}
  
- sound {
- 	compatible = "simple-scu-audio-card";
+-		ops = &rsnd_ssi_non_ops;
+ 		if (of_property_read_bool(np, "pio-transfer"))
+ 			ops = &rsnd_ssi_pio_ops;
+ 		else
 -- 
 2.11.0
