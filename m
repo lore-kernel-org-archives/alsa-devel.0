@@ -1,18 +1,20 @@
-From: Paul Handrigan <paul.handrigan@cirrus.com>
-Subject: Re: [PATCH] ASoC: cs35l35: Add additional delay for
-	reset
-Date: Tue, 6 Jun 2017 10:18:02 -0500
-Message-ID: <1d34909c-e915-4537-b531-c2224f1145a7@EX3.ad.cirrus.com>
-References: <1496245873-9011-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: How to handle stream rates if CPU supports many
+	channels ?
+Date: Wed, 7 Jun 2017 00:22:01 +0900
+Message-ID: <39b056b5-2085-5583-d440-9fa075db04d1@sakamocchi.jp>
+References: <87tw3uymhu.wl%kuninori.morimoto.gx@renesas.com>
+ <6d1e2ca9-2a3f-ff12-28c4-c96224760913@sakamocchi.jp>
+ <874lvtzjo5.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id D3E0F266F52
- for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2017 17:17:44 +0200 (CEST)
-In-Reply-To: <1496245873-9011-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 86BD7266F15
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2017 17:22:04 +0200 (CEST)
+In-Reply-To: <874lvtzjo5.wl%kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,51 +24,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com, brian.austin@cirrus.com, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, broonie@kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On Wed, 31 May 2017, Charles Keepax wrote:
-
-> Very fast systems may violate the minimum constraints for time the reset
-> line needs to remain low, or communicate with the device too soon after
-> releasing the reset. Fix this by adding some delays in to allow the chip
-> to properly reset, also factor out the reset into a function as it is
-> likely it will be re-used in later additions to the driver.
-> 
-> Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
-> ---
->  sound/soc/codecs/cs35l35.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
-> index 375be49..f1ee184 100644
-> --- a/sound/soc/codecs/cs35l35.c
-> +++ b/sound/soc/codecs/cs35l35.c
-> @@ -162,6 +162,14 @@ static bool cs35l35_precious_register(struct device *dev, unsigned int reg)
->  	}
->  }
->  
-> +static void cs35l35_reset(struct cs35l35_private *cs35l35)
-> +{
-> +	gpiod_set_value_cansleep(cs35l35->reset_gpio, 0);
-> +	usleep_range(2000, 2100);
-> +	gpiod_set_value_cansleep(cs35l35->reset_gpio, 1);
-> +	usleep_range(1000, 1100);
-> +}
-> +
->  static int cs35l35_wait_for_pdn(struct cs35l35_private *cs35l35)
->  {
->  	int ret;
-> @@ -1536,7 +1544,7 @@ static int cs35l35_i2c_probe(struct i2c_client *i2c_client,
->  		}
->  	}
->  
-> -	gpiod_set_value_cansleep(cs35l35->reset_gpio, 1);
-> +	cs35l35_reset(cs35l35);
->  
->  	init_completion(&cs35l35->pdn_done);
->
-Acked-by: Paul Handrigan <Paul.Handrigan@cirrus.com>
+T24gMjAxN+W5tDA25pyIMDbml6UgMTY6MDQsIEt1bmlub3JpIE1vcmltb3RvIHdyb3RlOgo+PiBG
+dXJ0aGVybW9yZSwgUENNIHJ1bnRpbWUgcmVxdWlyZSBjb25zdHJhaW50cyBmb3IgY2hhbm5lbHMg
+YW5kCj4+IHJhdGVzLiBJbiBBTFNBIFNvQyBwYXJ0LCB0aGlzIGlzIGRvbmUgYnkgJ3NvY19wY21f
+aW5pdF9ydW50aW1lX2h3KCknCj4+IGluICdzb3VuZC9zb2Mvc29jLXBjbS5jJy4gWW91ciBkcml2
+ZXIgc2hvdWxkIGhhdmUgcHJvcGVyIHZhbHVlcyBpbgo+PiBkYXRhIG9mICdzdHJ1Y3Qgc25kX3Nv
+Y19wY21fc3RyZWFtJyBhcyB0aGUgY29uc3RyYWludHMuCj4+Cj4+IGBgYAo+PiAoc3RydWN0IHNu
+ZF9zb2NfZGFpX2RyaXZlci5wbGF5YmFjayBvciBjYXB0dXJlPykKPj4gc3RydWN0IHNuZF9zb2Nf
+cGNtX3N0cmVhbS5jaGFubmVsc19taW4gPSAyCj4+IHN0cnVjdCBzbmRfc29jX3BjbV9zdHJlYW0u
+Y2hhbm5lbHNfbWF4ID0gOAo+PiBzdHJ1Y3Qgc25kX3NvY19wY21fc3RyZWFtLnJhdGVfbWluID0g
+NDgwMDAKPj4gc3RydWN0IHNuZF9zb2NfcGNtX3N0cmVhbS5yYXRlX21heCA9IDE5MjAwMAo+PiBz
+dHJ1Y3Qgc25kX3NvY19wY21fc3RyZWFtLnJhdGVzID0KPj4gICAgICBTTkRSVl9QQ01fUkFURV84
+MDAwIHwgU05EUlZfUENNX1JBVEVfMTkyMDAwCj4gCj4gSGVyZSwgSSdtIG5vdCB5ZXQgMTAwJSB1
+bmRlcnN0YW5kaW5nIGFib3V0IHRoZXNlIHZhbHVlLgo+IEkgdGhpbmssIGFib3ZlIGFyZSBjb25z
+dHJhaW50cyBvZiB3aG9sZSBkcml2ZXIgKD0gaXQgc3VwcG9ydHMgYm90aCAyY2gsIDhjaCkuCgpJ
+dCdzIG5vdCBteSBpbnRlbnNpb24uIEkgZG9uJ3Qga25vdyBleGFjdGx5IHdoZXJlIHlvdSBpbXBs
+ZW1lbnQgJ3N0cnVjdCAKc25kX3NvY19wY21fc3RyZWFtJyBkYXRhIGluIHlvdXIgZHJpdmVyLiBQ
+ZXJoYXBzIGFzIGEgcGFydCBvZiAnc3RydWN0IApzbmRfc29jX2RhaV9kcml2ZXInIGRhdGEuCgo+
+IEFib3V0IHJhdGVfbWluL21heCBhbmQgcmF0ZXMuCj4gaXMgdGhpcyAicmF0ZV9taW4iIDQ4MDAw
+ICg9IG1heGltdW0gcmF0ZSBvZiBtaW4gY2FzZSA9IDhjaCkgPz8gbm90IDgwMDAgPwo+IChGb3Ig
+ZXhhbXBsZSwgaWYgMmNoIHN1cHBvcnRzIDgwMDAtMTkyMDAwLCA4Y2ggc3VwcG9ydHMgODAwMC00
+ODAwMCkKPiAKPiBBbmQgaXMgLnJhdGVzICJTTkRSVl9QQ01fUkFURV84MDAwIHwgU05EUlZfUENN
+X1JBVEVfMTkyMDAwIiA/Cj4gbm90IFNORFJWX1BDTV9SQVRFXzgwMDBfMTkyMDAwID8KCkluIG15
+IGNvZGUgc25pcHBldHMsIEkgYXNzdW1lZCB0aGF0IHRoZSBoYXJkd2FyZSBzdXBwb3J0cyBqdXN0
+IHR3byAKbW9kZXM7IDhjaC80OC4wa0h6IGFuZCAyY2gvMTkyLjBrSHouIFlvdSBjYW4gZXhwYW5k
+IHRoZSBzbmlwcGV0cyBhcyB5b3VyIApjYXNlLiBFdmVuIGlmIHVzaW5nIFNORFJWX1BDTV9SQVRF
+XzgwMDBfMTkyMDAwLCByb2xlIG9mIHRoZSAKJ2h3X3J1bGVfcmF0ZSgpJyBhbmQgdGhlICdod19y
+dWxlX2NoYW5uZWxzKCknIGlzIGludmFyaWFudC4gVGhlIGZvcm1lciAKY2hlY2tzIGNoYW5uZWxz
+IHBhcmFtZXRlcnMgYW5kIGNvbnN0cmFpbnMgcmF0ZSBwYXJhbWV0ZXIgd2l0aCB2YWxpZCAKaW50
+ZXJ2YWwuIFRoZSBsYXR0ZXIgY2hlY2tzIGFuZCBjb25zdHJhaW50cyB2aWNlIHZlcnNhIHdpdGgg
+dmFsaWQgbGlzdC4KCgpSZWdhcmRzCgpUYWthc2hpIFNha2Ftb3RvCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
