@@ -1,17 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/3] ALSA: pcm: tracepoints for refining PCM
-	parameters
-Date: Wed,  7 Jun 2017 08:46:43 +0900
-Message-ID: <20170606234645.13775-2-o-takashi@sakamocchi.jp>
-References: <20170606234645.13775-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/3] ALSA: pcm: add tracepoints for PCM params
+	refinement
+Date: Wed,  7 Jun 2017 08:46:42 +0900
+Message-ID: <20170606234645.13775-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id F398626705A
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id F0FE3267059
  for <alsa-devel@alsa-project.org>; Wed,  7 Jun 2017 01:46:50 +0200 (CEST)
-In-Reply-To: <20170606234645.13775-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,279 +23,85 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When working for devices which support configurable modes for its data
-transmission or which consists of several components, developers are
-likely to use rules of parameters of PCM substream. However, there's no
-infrastructure to assist their work.
+Hi,
 
-In old days, ALSA PCM core got a local 'RULES_DEBUG' macro to debug
-refinement of parameters for PCM substream. Although this is merely a
-makeshift. With some modifications, we get the infrastructure.
+This patchset is a part of my previous RFC and go for upstream.
+[alsa-devel] [PATCH RFC 00/21] ALSA: pcm: add tracepoints for PCM params operation
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-May/120548.html
 
-This commit is for the purpose. Refinement of mask/interval type of
-PCM parameters is probed as tracepoint events as 'hw_mask_param' and
-'hw_interval_param' on existent 'snd_pcm' subsystem.
+In ALSA PCM interface, applications can get hardware capability by ioctl(2)
+with SNDRV_PCM_IOCTL_HW_REFINE/SNDRV_PCM_IOCT_HW_PARAMS in a shape of
+'struct snd_pcm_hw_params'. In kernel side, relevant processing is somewhat
+complicated and developers sometimes have hard time to debug drivers for PCM
+constraints and rules. This patchset adds tracepoints to assist their work.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
+Changes:
+ - change print format
+ - rename events
+ - refactoring in the RFC will be done in my later work.
+
+
+This patchset adds two events; 'hw_interval_param' and 'hw_mask_param' in
+'snd_pcm' subsystem. When these events are probed, tracer outputs below
+lines:
+
+hw_interval_param: 0,0,0,0 000/023 BUFFER_SIZE 0 0 [0 4294967295] 0 1 [0 4294967295]
+hw_interval_param: 0,0,0,0 000/023 BUFFER_BYTES 0 0 [0 4294967295] 0 1 [128 65536]
+hw_interval_param: 0,0,0,0 000/023 TICK_TIME 0 0 [0 4294967295] 0 0 [0 4294967295]
+hw_mask_param:     0,0,0,0 001/023 FORMAT 00000000000000000000001000000044 00000000000000000000001000000044
+hw_interval_param: 0,0,0,0 002/023 SAMPLE_BITS 0 1 [0 4294967295] 0 1 [16 32]
+hw_interval_param: 0,0,0,0 003/023 SAMPLE_BITS 0 1 [16 32] 0 1 [16 32]
+
+The first field represents PCM character device and subdevice for probed
+runtime of PCM substream. In the above case, '/dev/snd/pcmC0D0p' and
+first subdevice are used for runtime of PCM substream.
+
+The second field represents id of each rule applied to the runtime, and
+the total number of rules added to the runtime. Basically, when the rule
+is applied to the runtime, these events are probed, but lines with id 0
+are exceptions. They're application of constraints to the runtime.
+
+The third field is name of parameter in the runtime. The rest fields
+depends on type of the parameter (mask/interval).
+
+
+In ALSA PCM core, runtimes get 22 (or 21) rules as a default. In a below
+sample, the 21st rule is added by driver (snd-soc-imx-ssi.ko). The rest is
+added by snd-pcm.ko. In detail, please see 'snd_pcm_hw_constraints_init()'
+and 'snd_pcm_hw_constraints_complete()' in 'sound/core/pcm_native.c'.
+
+hw_interval_param: 0,0,0,0 019/023 PERIOD_TIME 0 0 [0 4294967295] 0 0 (166 4095875]
+hw_interval_param: 0,0,0,0 020/023 BUFFER_TIME 0 0 [0 4294967295] 0 0 (333 4096000]
+hw_interval_param: 0,0,0,0 021/023 PERIOD_SIZE 0 1 [16 32767] 0 1 [16 32766]
+hw_interval_param: 0,0,0,0 022/023 BUFFER_BYTES 0 1 [128 65536] 0 1 [128 65536]
+hw_interval_param: 0,0,0,0 023/023 RATE 0 0 [8000 96000] 0 0 [8000 96000]
+hw_mask_param:     0,0,0,0 001/023 FORMAT 00000000000000000000001000000044 00000000000000000000001000000044
+
+
+As I noted in second patch, this patchset increases size of relocatable
+object. In general, kernel configuration for tracepoints should govern
+whether the features are enbled/disabled. However, for convenience to
+distributor, this patchset utilizes CONFIG_SND_DEBUG to switch the
+feature is enabled/disabled.
+
+$ size sound/core/pcm_native.o.before
+   text	   data	    bss	    dec	    hex	filename
+  28951	     40	      8	  28999	   7147	sound/core/pcm_native.o.before
+$ size sound/core/pcm_native.o.after
+   text	   data	    bss	    dec	    hex	filename
+  34942	   2264	      8	  37214	   915e	sound/core/pcm_native.o.after
+
+Takashi Sakamoto (3):
+  ALSA: pcm: tracepoints for refining PCM parameters
+  ALSA: pcm: enable parameter tracepoints only when CONFIG_SND_DEBUG is
+    enabled
+  ALSA: pcm: obsolete RULES_DEBUG local macro
+
  sound/core/Makefile          |   1 +
- sound/core/pcm_native.c      |  33 ++++++++++
+ sound/core/pcm_native.c      | 125 ++++++++++++++-----------------------
  sound/core/pcm_param_trace.h | 142 +++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 176 insertions(+)
+ 3 files changed, 188 insertions(+), 80 deletions(-)
  create mode 100644 sound/core/pcm_param_trace.h
 
-diff --git a/sound/core/Makefile b/sound/core/Makefile
-index e85d9dd12c2d..a8514b313a89 100644
---- a/sound/core/Makefile
-+++ b/sound/core/Makefile
-@@ -22,6 +22,7 @@ snd-pcm-$(CONFIG_SND_PCM_IEC958) += pcm_iec958.o
- 
- # for trace-points
- CFLAGS_pcm_lib.o := -I$(src)
-+CFLAGS_pcm_native.o := -I$(src)
- 
- snd-pcm-dmaengine-objs := pcm_dmaengine.o
- 
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index bf5d0f2acfb9..b98b3ccde4f0 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -39,6 +39,9 @@
- 
- #include "pcm_local.h"
- 
-+#define CREATE_TRACE_POINTS
-+#include "pcm_param_trace.h"
-+
- /*
-  *  Compatibility
-  */
-@@ -279,6 +282,9 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
- 	unsigned int stamp = 2;
- 	int changed, again;
- 
-+	struct snd_mask __maybe_unused old_mask;
-+	struct snd_interval __maybe_unused old_interval;
-+
- 	params->info = 0;
- 	params->fifo_size = 0;
- 	if (params->rmask & (1 << SNDRV_PCM_HW_PARAM_SAMPLE_BITS))
-@@ -294,6 +300,9 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
- 			return -EINVAL;
- 		if (!(params->rmask & (1 << k)))
- 			continue;
-+
-+		if (trace_hw_mask_param_enabled())
-+			old_mask = *m;
- #ifdef RULES_DEBUG
- 		pr_debug("%s = ", snd_pcm_hw_param_names[k]);
- 		pr_cont("%04x%04x%04x%04x -> ", m->bits[3], m->bits[2], m->bits[1], m->bits[0]);
-@@ -302,6 +311,8 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
- #ifdef RULES_DEBUG
- 		pr_cont("%04x%04x%04x%04x\n", m->bits[3], m->bits[2], m->bits[1], m->bits[0]);
- #endif
-+		trace_hw_mask_param(substream, k, 0, &old_mask, m);
-+
- 		if (changed)
- 			params->cmask |= 1 << k;
- 		if (changed < 0)
-@@ -314,6 +325,9 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
- 			return -EINVAL;
- 		if (!(params->rmask & (1 << k)))
- 			continue;
-+
-+		if (trace_hw_interval_param_enabled())
-+			old_interval = *i;
- #ifdef RULES_DEBUG
- 		pr_debug("%s = ", snd_pcm_hw_param_names[k]);
- 		if (i->empty)
-@@ -333,6 +347,8 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
- 			       i->openmin ? '(' : '[', i->min,
- 			       i->max, i->openmax ? ')' : ']');
- #endif
-+		trace_hw_interval_param(substream, k, 0, &old_interval, i);
-+
- 		if (changed)
- 			params->cmask |= 1 << k;
- 		if (changed < 0)
-@@ -359,6 +375,15 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
- 			}
- 			if (!doit)
- 				continue;
-+
-+			if (trace_hw_mask_param_enabled()) {
-+				if (hw_is_mask(r->var))
-+					old_mask = *hw_param_mask(params, r->var);
-+			}
-+			if (trace_hw_interval_param_enabled()) {
-+				if (hw_is_interval(r->var))
-+					old_interval = *hw_param_interval(params, r->var);
-+			}
- #ifdef RULES_DEBUG
- 			pr_debug("Rule %d [%p]: ", k, r->func);
- 			if (r->var >= 0) {
-@@ -394,6 +419,14 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
- 			}
- 			pr_cont("\n");
- #endif
-+			if (hw_is_mask(r->var)) {
-+				trace_hw_mask_param(substream, r->var, k + 1,
-+					&old_mask, hw_param_mask(params, r->var));
-+			}
-+			if (hw_is_interval(r->var)) {
-+				trace_hw_interval_param(substream, r->var, k + 1,
-+					&old_interval, hw_param_interval(params, r->var));
-+			}
- 			rstamps[k] = stamp;
- 			if (changed && r->var >= 0) {
- 				params->cmask |= (1 << r->var);
-diff --git a/sound/core/pcm_param_trace.h b/sound/core/pcm_param_trace.h
-new file mode 100644
-index 000000000000..872922326b38
---- /dev/null
-+++ b/sound/core/pcm_param_trace.h
-@@ -0,0 +1,142 @@
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM snd_pcm
-+
-+#if !defined(_PCM_PARAMS_TRACE_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define _PCM_PARAMS_TRACE_H
-+
-+#include <linux/tracepoint.h>
-+
-+#define HW_PARAM_ENTRY(param) {SNDRV_PCM_HW_PARAM_##param, #param}
-+#define hw_param_labels			\
-+	HW_PARAM_ENTRY(ACCESS),		\
-+	HW_PARAM_ENTRY(FORMAT),		\
-+	HW_PARAM_ENTRY(SUBFORMAT),	\
-+	HW_PARAM_ENTRY(SAMPLE_BITS),	\
-+	HW_PARAM_ENTRY(FRAME_BITS),	\
-+	HW_PARAM_ENTRY(CHANNELS),	\
-+	HW_PARAM_ENTRY(RATE),		\
-+	HW_PARAM_ENTRY(PERIOD_TIME),	\
-+	HW_PARAM_ENTRY(PERIOD_SIZE),	\
-+	HW_PARAM_ENTRY(PERIOD_BYTES),	\
-+	HW_PARAM_ENTRY(PERIODS),	\
-+	HW_PARAM_ENTRY(BUFFER_TIME),	\
-+	HW_PARAM_ENTRY(BUFFER_SIZE),	\
-+	HW_PARAM_ENTRY(BUFFER_BYTES),	\
-+	HW_PARAM_ENTRY(TICK_TIME)
-+
-+TRACE_EVENT(hw_mask_param,
-+	TP_PROTO(struct snd_pcm_substream *substream, snd_pcm_hw_param_t type, int index, const struct snd_mask *prev, const struct snd_mask *curr),
-+	TP_ARGS(substream, type, index, prev, curr),
-+	TP_STRUCT__entry(
-+		__field(int, card)
-+		__field(int, device)
-+		__field(int, subdevice)
-+		__field(int, direction)
-+		__field(snd_pcm_hw_param_t, type)
-+		__field(int, index)
-+		__field(int, total)
-+		__array(__u32, prev_bits, 8)
-+		__array(__u32, curr_bits, 8)
-+	),
-+	TP_fast_assign(
-+		__entry->card = substream->pcm->card->number;
-+		__entry->device = substream->pcm->device;
-+		__entry->subdevice = substream->number;
-+		__entry->direction = substream->stream;
-+		__entry->type = type;
-+		__entry->index = index;
-+		__entry->total = substream->runtime->hw_constraints.rules_num;
-+		memcpy(__entry->prev_bits, prev->bits, sizeof(__u32) * 8);
-+		memcpy(__entry->curr_bits, curr->bits, sizeof(__u32) * 8);
-+	),
-+	TP_printk("%d,%d,%d,%d %03d/%03d %s %08x%08x%08x%08x %08x%08x%08x%08x",
-+		  __entry->card,
-+		  __entry->device,
-+		  __entry->subdevice,
-+		  __entry->direction,
-+		  __entry->index,
-+		  __entry->total,
-+		  __print_symbolic(__entry->type, hw_param_labels),
-+		  __entry->prev_bits[3], __entry->prev_bits[2],
-+		  __entry->prev_bits[1], __entry->prev_bits[0],
-+		  __entry->curr_bits[3], __entry->curr_bits[2],
-+		  __entry->curr_bits[1], __entry->curr_bits[0]
-+	)
-+);
-+
-+TRACE_EVENT(hw_interval_param,
-+	TP_PROTO(struct snd_pcm_substream *substream, snd_pcm_hw_param_t type, int index, const struct snd_interval *prev, const struct snd_interval *curr),
-+	TP_ARGS(substream, type, index, prev, curr),
-+	TP_STRUCT__entry(
-+		__field(int, card)
-+		__field(int, device)
-+		__field(int, subdevice)
-+		__field(int, direction)
-+		__field(snd_pcm_hw_param_t, type)
-+		__field(int, index)
-+		__field(int, total)
-+		__field(unsigned int, prev_min)
-+		__field(unsigned int, prev_max)
-+		__field(unsigned int, prev_openmin)
-+		__field(unsigned int, prev_openmax)
-+		__field(unsigned int, prev_integer)
-+		__field(unsigned int, prev_empty)
-+		__field(unsigned int, curr_min)
-+		__field(unsigned int, curr_max)
-+		__field(unsigned int, curr_openmin)
-+		__field(unsigned int, curr_openmax)
-+		__field(unsigned int, curr_integer)
-+		__field(unsigned int, curr_empty)
-+	),
-+	TP_fast_assign(
-+		__entry->card = substream->pcm->card->number;
-+		__entry->device = substream->pcm->device;
-+		__entry->subdevice = substream->number;
-+		__entry->direction = substream->stream;
-+		__entry->type = type;
-+		__entry->index = index;
-+		__entry->total = substream->runtime->hw_constraints.rules_num;
-+		__entry->prev_min = prev->min;
-+		__entry->prev_max = prev->max;
-+		__entry->prev_openmin = prev->openmin;
-+		__entry->prev_openmax = prev->openmax;
-+		__entry->prev_integer = prev->integer;
-+		__entry->prev_empty = prev->empty;
-+		__entry->curr_min = curr->min;
-+		__entry->curr_max = curr->max;
-+		__entry->curr_openmin = curr->openmin;
-+		__entry->curr_openmax = curr->openmax;
-+		__entry->curr_integer = curr->integer;
-+		__entry->curr_empty = curr->empty;
-+	),
-+	TP_printk("%d,%d,%d,%d %03d/%03d %s %d %d %s%u %u%s %d %d %s%u %u%s",
-+		  __entry->card,
-+		  __entry->device,
-+		  __entry->subdevice,
-+		  __entry->direction,
-+		  __entry->index,
-+		  __entry->total,
-+		  __print_symbolic(__entry->type, hw_param_labels),
-+		  __entry->prev_empty,
-+		  __entry->prev_integer,
-+		  __entry->prev_openmin ? "(" : "[",
-+		  __entry->prev_min,
-+		  __entry->prev_max,
-+		  __entry->prev_openmax ? ")" : "]",
-+		  __entry->curr_empty,
-+		  __entry->curr_integer,
-+		  __entry->curr_openmin ? "(" : "[",
-+		  __entry->curr_min,
-+		  __entry->curr_max,
-+		  __entry->curr_openmax ? ")" : "]"
-+	)
-+);
-+
-+#endif /* _PCM_PARAMS_TRACE_H */
-+
-+/* This part must be outside protection */
-+#undef TRACE_INCLUDE_PATH
-+#define TRACE_INCLUDE_PATH .
-+#undef TRACE_INCLUDE_FILE
-+#define TRACE_INCLUDE_FILE pcm_param_trace
-+#include <trace/define_trace.h>
 -- 
 2.11.0
