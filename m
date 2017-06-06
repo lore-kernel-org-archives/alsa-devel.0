@@ -1,14 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 3/3] ALSA: pcm: obsolete RULES_DEBUG local macro
-Date: Wed,  7 Jun 2017 08:46:45 +0900
-Message-ID: <20170606234645.13775-4-o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/3] ALSA: pcm: enable parameter tracepoints
+	only when CONFIG_SND_DEBUG is enabled
+Date: Wed,  7 Jun 2017 08:46:44 +0900
+Message-ID: <20170606234645.13775-3-o-takashi@sakamocchi.jp>
 References: <20170606234645.13775-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 0266126705B
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id EE8D626681D
  for <alsa-devel@alsa-project.org>; Wed,  7 Jun 2017 01:46:50 +0200 (CEST)
 In-Reply-To: <20170606234645.13775-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,143 +25,38 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Added tracepoints obsoleted RULES_DEBUG local macro and relevant codes.
+In a previous commit, tracepoints are added for PCM parameter processing.
+As long as I know, this implementation increases size of relocatable
+object by 35%. For vendors who are conscious of memory footprint, it
+brings apparent disadvantage.
+
+This commit utilizes CONFIG_SND_DEBUG configuration to enable/disable the
+tracepoints.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/pcm_native.c | 89 ++++---------------------------------------------
- 1 file changed, 7 insertions(+), 82 deletions(-)
+ sound/core/pcm_native.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
 diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 2ce3c98a1418..2bde07a4a87f 100644
+index b98b3ccde4f0..2ce3c98a1418 100644
 --- a/sound/core/pcm_native.c
 +++ b/sound/core/pcm_native.c
-@@ -253,29 +253,6 @@ static bool hw_support_mmap(struct snd_pcm_substream *substream)
- 	return true;
- }
+@@ -39,8 +39,15 @@
  
--#undef RULES_DEBUG
--
--#ifdef RULES_DEBUG
--#define HW_PARAM(v) [SNDRV_PCM_HW_PARAM_##v] = #v
--static const char * const snd_pcm_hw_param_names[] = {
--	HW_PARAM(ACCESS),
--	HW_PARAM(FORMAT),
--	HW_PARAM(SUBFORMAT),
--	HW_PARAM(SAMPLE_BITS),
--	HW_PARAM(FRAME_BITS),
--	HW_PARAM(CHANNELS),
--	HW_PARAM(RATE),
--	HW_PARAM(PERIOD_TIME),
--	HW_PARAM(PERIOD_SIZE),
--	HW_PARAM(PERIOD_BYTES),
--	HW_PARAM(PERIODS),
--	HW_PARAM(BUFFER_TIME),
--	HW_PARAM(BUFFER_SIZE),
--	HW_PARAM(BUFFER_BYTES),
--	HW_PARAM(TICK_TIME),
--};
--#endif
--
- int snd_pcm_hw_refine(struct snd_pcm_substream *substream, 
- 		      struct snd_pcm_hw_params *params)
- {
-@@ -310,14 +287,9 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
+ #include "pcm_local.h"
  
- 		if (trace_hw_mask_param_enabled())
- 			old_mask = *m;
--#ifdef RULES_DEBUG
--		pr_debug("%s = ", snd_pcm_hw_param_names[k]);
--		pr_cont("%04x%04x%04x%04x -> ", m->bits[3], m->bits[2], m->bits[1], m->bits[0]);
--#endif
-+
- 		changed = snd_mask_refine(m, constrs_mask(constrs, k));
--#ifdef RULES_DEBUG
--		pr_cont("%04x%04x%04x%04x\n", m->bits[3], m->bits[2], m->bits[1], m->bits[0]);
--#endif
-+
- 		trace_hw_mask_param(substream, k, 0, &old_mask, m);
++#ifdef CONFIG_SND_DEBUG
+ #define CREATE_TRACE_POINTS
+ #include "pcm_param_trace.h"
++#else
++#define trace_hw_mask_param_enabled()		0
++#define trace_hw_interval_param_enabled()	0
++#define trace_hw_mask_param(substream, type, index, prev, curr)
++#define trace_hw_interval_param(substream, type, index, prev, curr)
++#endif
  
- 		if (changed)
-@@ -335,25 +307,9 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
- 
- 		if (trace_hw_interval_param_enabled())
- 			old_interval = *i;
--#ifdef RULES_DEBUG
--		pr_debug("%s = ", snd_pcm_hw_param_names[k]);
--		if (i->empty)
--			pr_cont("empty");
--		else
--			pr_cont("%c%u %u%c",
--			       i->openmin ? '(' : '[', i->min,
--			       i->max, i->openmax ? ')' : ']');
--		pr_cont(" -> ");
--#endif
-+
- 		changed = snd_interval_refine(i, constrs_interval(constrs, k));
--#ifdef RULES_DEBUG
--		if (i->empty)
--			pr_cont("empty\n");
--		else 
--			pr_cont("%c%u %u%c\n",
--			       i->openmin ? '(' : '[', i->min,
--			       i->max, i->openmax ? ')' : ']');
--#endif
-+
- 		trace_hw_interval_param(substream, k, 0, &old_interval, i);
- 
- 		if (changed)
-@@ -391,41 +347,9 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
- 				if (hw_is_interval(r->var))
- 					old_interval = *hw_param_interval(params, r->var);
- 			}
--#ifdef RULES_DEBUG
--			pr_debug("Rule %d [%p]: ", k, r->func);
--			if (r->var >= 0) {
--				pr_cont("%s = ", snd_pcm_hw_param_names[r->var]);
--				if (hw_is_mask(r->var)) {
--					m = hw_param_mask(params, r->var);
--					pr_cont("%x", *m->bits);
--				} else {
--					i = hw_param_interval(params, r->var);
--					if (i->empty)
--						pr_cont("empty");
--					else
--						pr_cont("%c%u %u%c",
--						       i->openmin ? '(' : '[', i->min,
--						       i->max, i->openmax ? ')' : ']');
--				}
--			}
--#endif
-+
- 			changed = r->func(params, r);
--#ifdef RULES_DEBUG
--			if (r->var >= 0) {
--				pr_cont(" -> ");
--				if (hw_is_mask(r->var))
--					pr_cont("%x", *m->bits);
--				else {
--					if (i->empty)
--						pr_cont("empty");
--					else
--						pr_cont("%c%u %u%c",
--						       i->openmin ? '(' : '[', i->min,
--						       i->max, i->openmax ? ')' : ']');
--				}
--			}
--			pr_cont("\n");
--#endif
-+
- 			if (hw_is_mask(r->var)) {
- 				trace_hw_mask_param(substream, r->var, k + 1,
- 					&old_mask, hw_param_mask(params, r->var));
-@@ -434,6 +358,7 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
- 				trace_hw_interval_param(substream, r->var, k + 1,
- 					&old_interval, hw_param_interval(params, r->var));
- 			}
-+
- 			rstamps[k] = stamp;
- 			if (changed && r->var >= 0) {
- 				params->cmask |= (1 << r->var);
+ /*
+  *  Compatibility
 -- 
 2.11.0
