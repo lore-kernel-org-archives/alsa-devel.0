@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5663: Fix the IRQ issue" to the asoc
-	tree
-Date: Tue, 06 Jun 2017 20:06:17 +0100
-Message-ID: <E1dIJo1-0007Hh-Ci@debutante>
-References: <1496732394-21460-1-git-send-email-oder_chiou@realtek.com>
+Subject: Applied "ASoC: rsnd: remove unused rsnd_dai_path_info"
+	to the asoc tree
+Date: Tue, 06 Jun 2017 20:06:28 +0100
+Message-ID: <E1dIJoC-0007L0-CB@debutante>
+References: <87k24pzw4a.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 53AFF26733B
- for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2017 21:06:26 +0200 (CEST)
-In-Reply-To: <1496732394-21460-1-git-send-email-oder_chiou@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DEF1D267222
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2017 21:06:36 +0200 (CEST)
+In-Reply-To: <87k24pzw4a.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, lgirdwood@gmail.com, albertchen@realtek.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: linux-renesas-soc@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5663: Fix the IRQ issue
+   ASoC: rsnd: remove unused rsnd_dai_path_info
 
 has been applied to the asoc tree at
 
@@ -53,47 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From af2728e4deb9f08721374f3adc06b1d3e7d133ec Mon Sep 17 00:00:00 2001
-From: Oder Chiou <oder_chiou@realtek.com>
-Date: Tue, 6 Jun 2017 14:59:54 +0800
-Subject: [PATCH] ASoC: rt5663: Fix the IRQ issue
+>From d70c34db3357cedf8735ebad0b0fa5fed7b54b35 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 6 Jun 2017 02:35:10 +0000
+Subject: [PATCH] ASoC: rsnd: remove unused rsnd_dai_path_info
 
-The patch fixed the IRQ issue.
+commit 2ea2cc86db7c ("ASoC: rsnd: remove struct rcar_snd_info")
+removed all struct rsnd_dai_path_info related code.
+This patch removes unused rsnd_dai_path_info.
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5663.c | 2 +-
- sound/soc/codecs/rt5663.h | 4 ++++
- 2 files changed, 5 insertions(+), 1 deletion(-)
+ sound/soc/sh/rcar/rsnd.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
-index a32508d7dcfd..8569e8c7d894 100644
---- a/sound/soc/codecs/rt5663.c
-+++ b/sound/soc/codecs/rt5663.c
-@@ -3141,7 +3141,7 @@ static int rt5663_i2c_probe(struct i2c_client *i2c,
- 		regmap_update_bits(rt5663->regmap, RT5663_DIG_MISC,
- 			RT5663_DIG_GATE_CTRL_MASK, RT5663_DIG_GATE_CTRL_EN);
- 		regmap_update_bits(rt5663->regmap, RT5663_AUTO_1MRC_CLK,
--			RT5663_IRQ_POW_SAV_MASK, RT5663_IRQ_POW_SAV_EN);
-+			RT5663_IRQ_MANUAL_MASK, RT5663_IRQ_MANUAL_EN);
- 		regmap_update_bits(rt5663->regmap, RT5663_IRQ_1,
- 			RT5663_EN_IRQ_JD1_MASK, RT5663_EN_IRQ_JD1_EN);
- 		regmap_update_bits(rt5663->regmap, RT5663_GPIO_1,
-diff --git a/sound/soc/codecs/rt5663.h b/sound/soc/codecs/rt5663.h
-index d77fae619f2f..4621812c94d8 100644
---- a/sound/soc/codecs/rt5663.h
-+++ b/sound/soc/codecs/rt5663.h
-@@ -590,6 +590,10 @@
- #define RT5663_IRQ_POW_SAV_JD1_SHIFT		14
- #define RT5663_IRQ_POW_SAV_JD1_DIS		(0x0 << 14)
- #define RT5663_IRQ_POW_SAV_JD1_EN		(0x1 << 14)
-+#define RT5663_IRQ_MANUAL_MASK			(0x1 << 8)
-+#define RT5663_IRQ_MANUAL_SHIFT			8
-+#define RT5663_IRQ_MANUAL_DIS			(0x0 << 8)
-+#define RT5663_IRQ_MANUAL_EN			(0x1 << 8)
- 
- /* IRQ Control 1 (0x00b6) */
- #define RT5663_EN_CB_JD_MASK			(0x1 << 3)
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 037e33ffa69d..96a567de5f14 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -421,7 +421,6 @@ struct rsnd_dai_stream {
+ 	char name[RSND_DAI_NAME_SIZE];
+ 	struct snd_pcm_substream *substream;
+ 	struct rsnd_mod *mod[RSND_MOD_MAX];
+-	struct rsnd_dai_path_info *info; /* rcar_snd.h */
+ 	struct rsnd_dai *rdai;
+ 	u32 parent_ssi_status;
+ 	int byte_pos;
 -- 
 2.11.0
