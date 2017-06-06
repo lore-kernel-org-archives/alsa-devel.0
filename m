@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card-utils: share same dev_dbg() for DAI format" to the asoc tree
-Date: Tue, 06 Jun 2017 20:06:00 +0100
-Message-ID: <E1dIJnk-0007Bf-Qu@debutante>
-References: <87d1ajdpwb.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: simple-card-utils: share same dev_dbg() for Card Name" to the asoc tree
+Date: Tue, 06 Jun 2017 20:06:05 +0100
+Message-ID: <E1dIJnp-0007CX-2F@debutante>
+References: <87efuzdpws.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87d1ajdpwb.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87efuzdpws.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card-utils: share same dev_dbg() for DAI format
+   ASoC: simple-card-utils: share same dev_dbg() for Card Name
 
 has been applied to the asoc tree at
 
@@ -37,57 +37,59 @@ to this mail.
 Thanks,
 Mark
 
->From aaad9c131b8fcdb493ed64e56cea8ea52977e091 Mon Sep 17 00:00:00 2001
+>From d4dbcb63c8bde48741468cf7c711b76ed3e7fce5 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 5 Jun 2017 04:28:12 +0000
-Subject: [PATCH] ASoC: simple-card-utils: share same dev_dbg() for DAI format
+Date: Mon, 5 Jun 2017 04:27:56 +0000
+Subject: [PATCH] ASoC: simple-card-utils: share same dev_dbg() for Card Name
 
-Let's share same debug message for DAI format
+Let's share same debug message for Card Name
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/audio-graph-card.c  | 1 -
- sound/soc/generic/simple-card-utils.c | 2 ++
- sound/soc/generic/simple-card.c       | 1 -
- 3 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/generic/audio-graph-scu-card.c | 2 --
+ sound/soc/generic/simple-card-utils.c    | 2 ++
+ sound/soc/generic/simple-scu-card.c      | 2 --
+ 3 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 93c167a91d2d..1769a39a22c4 100644
---- a/sound/soc/generic/audio-graph-card.c
-+++ b/sound/soc/generic/audio-graph-card.c
-@@ -170,7 +170,6 @@ static int asoc_graph_card_dai_link_of(struct device_node *cpu_port,
- 	dai_link->init = asoc_graph_card_dai_init;
+diff --git a/sound/soc/generic/audio-graph-scu-card.c b/sound/soc/generic/audio-graph-scu-card.c
+index c5c52d1f500c..1ce727b6bc21 100644
+--- a/sound/soc/generic/audio-graph-scu-card.c
++++ b/sound/soc/generic/audio-graph-scu-card.c
+@@ -295,8 +295,6 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
+ 	if (ret)
+ 		goto parse_of_err;
  
- 	dev_dbg(dev, "\tname : %s\n", dai_link->stream_name);
--	dev_dbg(dev, "\tformat : %04x\n", dai_link->dai_fmt);
- 	dev_dbg(dev, "\tcpu : %s / %d\n",
- 		dai_link->cpu_dai_name,
- 		cpu_dai->sysclk);
+-	dev_dbg(dev, "New card: %s\n",
+-		card->name ? card->name : "");
+ 	dev_dbg(dev, "convert_rate     %d\n", priv->convert_rate);
+ 	dev_dbg(dev, "convert_channels %d\n", priv->convert_channels);
+ 
 diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index da24ac171aec..59e770125596 100644
+index 9c7f5b91b90a..da24ac171aec 100644
 --- a/sound/soc/generic/simple-card-utils.c
 +++ b/sound/soc/generic/simple-card-utils.c
-@@ -51,6 +51,8 @@ int asoc_simple_card_parse_daifmt(struct device *dev,
+@@ -100,6 +100,8 @@ int asoc_simple_card_parse_card_name(struct snd_soc_card *card,
+ 	if (!card->name && card->dai_link)
+ 		card->name = card->dai_link->name;
  
- 	*retfmt = daifmt;
- 
-+	dev_dbg(dev, "format : %04x\n", daifmt);
++	dev_dbg(card->dev, "Card Name: %s\n", card->name ? card->name : "");
 +
  	return 0;
  }
- EXPORT_SYMBOL_GPL(asoc_simple_card_parse_daifmt);
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 4dacaf78a0de..d364f08a7182 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -302,7 +302,6 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
- 	dai_link->init = asoc_simple_card_dai_init;
+ EXPORT_SYMBOL_GPL(asoc_simple_card_parse_card_name);
+diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
+index 9b9b01e12149..5f4384f322c1 100644
+--- a/sound/soc/generic/simple-scu-card.c
++++ b/sound/soc/generic/simple-scu-card.c
+@@ -246,8 +246,6 @@ static int asoc_simple_card_parse_of(struct device_node *node,
+ 	if (ret < 0)
+ 		return ret;
  
- 	dev_dbg(dev, "\tname : %s\n", dai_link->stream_name);
--	dev_dbg(dev, "\tformat : %04x\n", dai_link->dai_fmt);
- 	dev_dbg(dev, "\tcpu : %s / %d\n",
- 		dai_link->cpu_dai_name,
- 		dai_props->cpu_dai.sysclk);
+-	dev_dbg(dev, "New card: %s\n",
+-		card->name ? card->name : "");
+ 	dev_dbg(dev, "convert_rate     %d\n", priv->convert_rate);
+ 	dev_dbg(dev, "convert_channels %d\n", priv->convert_channels);
+ 
 -- 
 2.11.0
