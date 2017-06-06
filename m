@@ -1,20 +1,14 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: How to handle stream rates if CPU supports many
-	channels ?
-Date: Wed, 7 Jun 2017 00:22:01 +0900
-Message-ID: <39b056b5-2085-5583-d440-9fa075db04d1@sakamocchi.jp>
-References: <87tw3uymhu.wl%kuninori.morimoto.gx@renesas.com>
- <6d1e2ca9-2a3f-ff12-28c4-c96224760913@sakamocchi.jp>
- <874lvtzjo5.wl%kuninori.morimoto.gx@renesas.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] ASoC fixes for v4.12
+Date: Tue, 6 Jun 2017 17:29:08 +0100
+Message-ID: <20170606162908.nfwf5nb34ewumolk@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============6262578272528434792=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 86BD7266F15
- for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2017 17:22:04 +0200 (CEST)
-In-Reply-To: <874lvtzjo5.wl%kuninori.morimoto.gx@renesas.com>
-Content-Language: en-US
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5E5A1266E84
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2017 18:29:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,40 +18,123 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxN+W5tDA25pyIMDbml6UgMTY6MDQsIEt1bmlub3JpIE1vcmltb3RvIHdyb3RlOgo+PiBG
-dXJ0aGVybW9yZSwgUENNIHJ1bnRpbWUgcmVxdWlyZSBjb25zdHJhaW50cyBmb3IgY2hhbm5lbHMg
-YW5kCj4+IHJhdGVzLiBJbiBBTFNBIFNvQyBwYXJ0LCB0aGlzIGlzIGRvbmUgYnkgJ3NvY19wY21f
-aW5pdF9ydW50aW1lX2h3KCknCj4+IGluICdzb3VuZC9zb2Mvc29jLXBjbS5jJy4gWW91ciBkcml2
-ZXIgc2hvdWxkIGhhdmUgcHJvcGVyIHZhbHVlcyBpbgo+PiBkYXRhIG9mICdzdHJ1Y3Qgc25kX3Nv
-Y19wY21fc3RyZWFtJyBhcyB0aGUgY29uc3RyYWludHMuCj4+Cj4+IGBgYAo+PiAoc3RydWN0IHNu
-ZF9zb2NfZGFpX2RyaXZlci5wbGF5YmFjayBvciBjYXB0dXJlPykKPj4gc3RydWN0IHNuZF9zb2Nf
-cGNtX3N0cmVhbS5jaGFubmVsc19taW4gPSAyCj4+IHN0cnVjdCBzbmRfc29jX3BjbV9zdHJlYW0u
-Y2hhbm5lbHNfbWF4ID0gOAo+PiBzdHJ1Y3Qgc25kX3NvY19wY21fc3RyZWFtLnJhdGVfbWluID0g
-NDgwMDAKPj4gc3RydWN0IHNuZF9zb2NfcGNtX3N0cmVhbS5yYXRlX21heCA9IDE5MjAwMAo+PiBz
-dHJ1Y3Qgc25kX3NvY19wY21fc3RyZWFtLnJhdGVzID0KPj4gICAgICBTTkRSVl9QQ01fUkFURV84
-MDAwIHwgU05EUlZfUENNX1JBVEVfMTkyMDAwCj4gCj4gSGVyZSwgSSdtIG5vdCB5ZXQgMTAwJSB1
-bmRlcnN0YW5kaW5nIGFib3V0IHRoZXNlIHZhbHVlLgo+IEkgdGhpbmssIGFib3ZlIGFyZSBjb25z
-dHJhaW50cyBvZiB3aG9sZSBkcml2ZXIgKD0gaXQgc3VwcG9ydHMgYm90aCAyY2gsIDhjaCkuCgpJ
-dCdzIG5vdCBteSBpbnRlbnNpb24uIEkgZG9uJ3Qga25vdyBleGFjdGx5IHdoZXJlIHlvdSBpbXBs
-ZW1lbnQgJ3N0cnVjdCAKc25kX3NvY19wY21fc3RyZWFtJyBkYXRhIGluIHlvdXIgZHJpdmVyLiBQ
-ZXJoYXBzIGFzIGEgcGFydCBvZiAnc3RydWN0IApzbmRfc29jX2RhaV9kcml2ZXInIGRhdGEuCgo+
-IEFib3V0IHJhdGVfbWluL21heCBhbmQgcmF0ZXMuCj4gaXMgdGhpcyAicmF0ZV9taW4iIDQ4MDAw
-ICg9IG1heGltdW0gcmF0ZSBvZiBtaW4gY2FzZSA9IDhjaCkgPz8gbm90IDgwMDAgPwo+IChGb3Ig
-ZXhhbXBsZSwgaWYgMmNoIHN1cHBvcnRzIDgwMDAtMTkyMDAwLCA4Y2ggc3VwcG9ydHMgODAwMC00
-ODAwMCkKPiAKPiBBbmQgaXMgLnJhdGVzICJTTkRSVl9QQ01fUkFURV84MDAwIHwgU05EUlZfUENN
-X1JBVEVfMTkyMDAwIiA/Cj4gbm90IFNORFJWX1BDTV9SQVRFXzgwMDBfMTkyMDAwID8KCkluIG15
-IGNvZGUgc25pcHBldHMsIEkgYXNzdW1lZCB0aGF0IHRoZSBoYXJkd2FyZSBzdXBwb3J0cyBqdXN0
-IHR3byAKbW9kZXM7IDhjaC80OC4wa0h6IGFuZCAyY2gvMTkyLjBrSHouIFlvdSBjYW4gZXhwYW5k
-IHRoZSBzbmlwcGV0cyBhcyB5b3VyIApjYXNlLiBFdmVuIGlmIHVzaW5nIFNORFJWX1BDTV9SQVRF
-XzgwMDBfMTkyMDAwLCByb2xlIG9mIHRoZSAKJ2h3X3J1bGVfcmF0ZSgpJyBhbmQgdGhlICdod19y
-dWxlX2NoYW5uZWxzKCknIGlzIGludmFyaWFudC4gVGhlIGZvcm1lciAKY2hlY2tzIGNoYW5uZWxz
-IHBhcmFtZXRlcnMgYW5kIGNvbnN0cmFpbnMgcmF0ZSBwYXJhbWV0ZXIgd2l0aCB2YWxpZCAKaW50
-ZXJ2YWwuIFRoZSBsYXR0ZXIgY2hlY2tzIGFuZCBjb25zdHJhaW50cyB2aWNlIHZlcnNhIHdpdGgg
-dmFsaWQgbGlzdC4KCgpSZWdhcmRzCgpUYWthc2hpIFNha2Ftb3RvCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+--===============6262578272528434792==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="ru6bgbxzpesrkbb2"
+Content-Disposition: inline
+
+
+--ru6bgbxzpesrkbb2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+The following changes since commit 08332893e37af6ae779367e78e444f8f9571511d:
+
+  Linux 4.12-rc2 (2017-05-21 19:30:23 -0700)
+
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git asoc-fix-v4.12-rc4
+
+for you to fetch changes up to 7327a946a3b921d60d48924d34ac99eae2fae57d:
+
+  Merge remote-tracking branch 'asoc/fix/rt286' into asoc-linus (2017-05-26 12:42:28 +0100)
+
+----------------------------------------------------------------
+ASoC: Fixes for v4.12
+
+This is the usual collection of device specific fixes, all accumilated
+since the merge window, plus one fix from Takashi for a nasty use after
+free bug that bit some things with deferred probe and an update to the
+maintainer address for the former Wolfson parts.
+
+----------------------------------------------------------------
+Adam Thomson (1):
+      ASoC: da7213: Fix incorrect usage of bitwise '&' operator for SRM check
+
+Charles Keepax (1):
+      MAINTAINERS: Update email address for patches to Wolfson parts
+
+Kuninori Morimoto (4):
+      ASoC: rsnd: don't use PDTA bit for 24bit on SSI
+      ASoC: rsnd: don't call free_irq() on Parent SSI
+      ASoC: rsnd: SSI PIO adjust to 24bit mode
+      ASoC: rsnd: fixup parent_clk_name of AUDIO_CLKOUTx
+
+Mark Brown (4):
+      Merge remote-tracking branch 'asoc/fix/intel' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/rcar' into asoc-linus
+      Merge remote-tracking branches 'asoc/fix/atmel', 'asoc/fix/cirrus', 'asoc/fix/da7213', 'asoc/fix/free' and 'asoc/fix/jack' into asoc-linus
+      Merge remote-tracking branch 'asoc/fix/rt286' into asoc-linus
+
+Pardha Saradhi K (1):
+      ASoC: Intel: Skylake: Fix IPC rx_list corruption
+
+Quentin Schulz (1):
+      ASoC: atmel-classd: sync regcache when resuming
+
+Shreyas NC (1):
+      ASoC: Intel: Skylake: Fix to parse consecutive string tkns in manifest
+
+Stefan Agner (1):
+      ASoC: simple-card: fix mic jack initialization
+
+Takashi Iwai (1):
+      ASoC: Fix use-after-free at card unregistration
+
+Vinod Koul (1):
+      ASoC: Intel: Skylake: Move i915 registration to worker thread
+
+Yifeng Li (1):
+      rt286: add Thinkpad Helix 2 to force_combo_jack_table
+
+ MAINTAINERS                            |   2 +-
+ sound/soc/atmel/atmel-classd.c         |   9 ++
+ sound/soc/codecs/da7213.c              |   2 +-
+ sound/soc/codecs/rt286.c               |   7 ++
+ sound/soc/generic/simple-card.c        |   2 +-
+ sound/soc/intel/skylake/skl-sst-ipc.c  |   5 +
+ sound/soc/intel/skylake/skl-topology.c |   2 +-
+ sound/soc/intel/skylake/skl.c          | 162 ++++++++++++++++++---------------
+ sound/soc/intel/skylake/skl.h          |   4 +-
+ sound/soc/sh/rcar/adg.c                |   6 +-
+ sound/soc/sh/rcar/cmd.c                |   1 +
+ sound/soc/sh/rcar/core.c               |  51 +++++++++++
+ sound/soc/sh/rcar/gen.c                |   1 +
+ sound/soc/sh/rcar/rsnd.h               |   2 +
+ sound/soc/sh/rcar/src.c                |  12 ++-
+ sound/soc/sh/rcar/ssi.c                |  18 +++-
+ sound/soc/sh/rcar/ssiu.c               |   3 +-
+ sound/soc/soc-core.c                   |   5 +-
+ 18 files changed, 205 insertions(+), 89 deletions(-)
+
+--ru6bgbxzpesrkbb2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlk22FMACgkQJNaLcl1U
+h9AGAggAgIU193WEjf2CS1o7XllIa41vKi4R7wJhwsCwBh+YsKrvL54MkVy9MOv0
+j3pxiXIzs1mMEFZeG4hz9MgpKXUjoazARfoh+7qRN73EGZLrHl/5SKSw5A1vQVho
+m4aWduK3g8rJjmJXAelzzNglzn+NY/IF/cbXbbeHq82+alWFrZARgk/JHN5McEWe
+N+5LljL9AUXL0cACKI1wEGJvpyKuldHF2vxxD5SRC14WXwZWSdOQmWfaJLsAXPKb
+aySISebqwlFZbIAjc+KHi53lBbdoaWGwV5jXysmEt8h7MaE1xQZ3akxhgxDcsxMj
+wDYreqktxB/kLl7rHnaSnjSNQ5cwmg==
+=VZhY
+-----END PGP SIGNATURE-----
+
+--ru6bgbxzpesrkbb2--
+
+--===============6262578272528434792==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6262578272528434792==--
