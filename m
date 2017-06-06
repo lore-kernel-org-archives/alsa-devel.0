@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: audio-graph-scu-card: add missing MIX binding example" to the asoc tree
-Date: Tue, 06 Jun 2017 20:06:20 +0100
-Message-ID: <E1dIJo4-0007Is-Dp@debutante>
-References: <87h8ztzw10.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87h8ztzw10.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: cs35l35: Add additional delay for
+	reset" to the asoc tree
+Date: Tue, 06 Jun 2017 20:05:44 +0100
+Message-ID: <E1dIJnU-00076q-R6@debutante>
+References: <1496245873-9011-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 93D3E267022
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2017 21:05:54 +0200 (CEST)
+In-Reply-To: <1496245873-9011-1-git-send-email-ckeepax@opensource.wolfsonmicro.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: brian.austin@cirrus.com, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, Paul.Handrigan@cirrus.com, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: audio-graph-scu-card: add missing MIX binding example
+   ASoC: cs35l35: Add additional delay for reset
 
 has been applied to the asoc tree at
 
@@ -37,78 +53,51 @@ to this mail.
 Thanks,
 Mark
 
->From 08862251476f899c4c4528e922df5854076b8661 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 6 Jun 2017 02:37:07 +0000
-Subject: [PATCH] ASoC: audio-graph-scu-card: add missing MIX binding example
+>From dc43f46a9b6988a40d4e11d05b8107d4546c61b9 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Date: Wed, 31 May 2017 16:51:13 +0100
+Subject: [PATCH] ASoC: cs35l35: Add additional delay for reset
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Very fast systems may violate the minimum constraints for time the reset
+line needs to remain low, or communicate with the device too soon after
+releasing the reset. Fix this by adding some delays in to allow the chip
+to properly reset, also factor out the reset into a function as it is
+likely it will be re-used in later additions to the driver.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Acked-by: Paul Handrigan <Paul.Handrigan@cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../bindings/sound/audio-graph-scu-card.txt        | 47 +++++++++++++++++++++-
- 1 file changed, 46 insertions(+), 1 deletion(-)
+ sound/soc/codecs/cs35l35.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt b/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
-index b2dd23fd2135..b63c5594bbb3 100644
---- a/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
-+++ b/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
-@@ -35,7 +35,7 @@ Required properties:
- - compatible				: "audio-graph-scu-card";
- - dais					: list of CPU DAI port{s}
+diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
+index f8aef5869b03..5ff12e4116e5 100644
+--- a/sound/soc/codecs/cs35l35.c
++++ b/sound/soc/codecs/cs35l35.c
+@@ -162,6 +162,14 @@ static bool cs35l35_precious_register(struct device *dev, unsigned int reg)
+ 	}
+ }
  
--Example
-+Example 1. Sampling Rate Conversion
++static void cs35l35_reset(struct cs35l35_private *cs35l35)
++{
++	gpiod_set_value_cansleep(cs35l35->reset_gpio, 0);
++	usleep_range(2000, 2100);
++	gpiod_set_value_cansleep(cs35l35->reset_gpio, 1);
++	usleep_range(1000, 1100);
++}
++
+ static int cs35l35_wait_for_pdn(struct cs35l35_private *cs35l35)
+ {
+ 	int ret;
+@@ -1454,7 +1462,7 @@ static int cs35l35_i2c_probe(struct i2c_client *i2c_client,
+ 		}
+ 	}
  
- 	sound_card {
- 		compatible = "audio-graph-scu-card";
-@@ -70,3 +70,48 @@ Example
- 			};
- 		};
- 	};
-+
-+Example 2. 2 CPU 1 Codec (Mixing)
-+
-+	sound_card {
-+		compatible = "audio-graph-scu-card";
-+
-+		label = "sound-card";
-+		prefix = "codec";
-+		routing = "codec Playback", "DAI0 Playback",
-+			"codec Playback", "DAI1 Playback";
-+		convert-rate = <48000>;
-+
-+		dais = <&cpu_port0
-+			&cpu_port1>;
-+	};
-+
-+	audio-codec {
-+		...
-+
-+		port {
-+			codec_endpoint: endpoint {
-+				remote-endpoint = <&cpu_endpoint0>;
-+			};
-+		};
-+	};
-+
-+	dai-controller {
-+		...
-+		ports {
-+			cpu_port0: port {
-+				cpu_endpoint0: endpoint {
-+					remote-endpoint = <&codec_endpoint>;
-+
-+					dai-format = "left_j";
-+					...
-+				};
-+			};
-+			cpu_port1: port {
-+				cpu_endpoint1: endpoint {
-+					dai-format = "left_j";
-+					...
-+				};
-+			};
-+		};
-+	};
+-	gpiod_set_value_cansleep(cs35l35->reset_gpio, 1);
++	cs35l35_reset(cs35l35);
+ 
+ 	init_completion(&cs35l35->pdn_done);
+ 
 -- 
 2.11.0
