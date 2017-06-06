@@ -1,35 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Boards: Add 4-channel DMIC
-	fixup." to the asoc tree
-Date: Tue, 06 Jun 2017 20:05:28 +0100
-Message-ID: <E1dIJnE-00072P-7X@debutante>
-References: <1495768803-24217-4-git-send-email-vinod.koul@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 04988266FEC
- for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2017 21:05:47 +0200 (CEST)
-In-Reply-To: <1495768803-24217-4-git-send-email-vinod.koul@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dharageswari R <dharageswari.r@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, "Kranthikumar,
- GudishaX" <gudishax.kranthikumar@intel.com>, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: Applied "ASoC: audio-graph-scu-card: add missing MIX binding example" to the asoc tree
+Date: Tue, 06 Jun 2017 20:06:20 +0100
+Message-ID: <E1dIJo4-0007Is-Dp@debutante>
+References: <87h8ztzw10.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87h8ztzw10.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Boards: Add 4-channel DMIC fixup.
+   ASoC: audio-graph-scu-card: add missing MIX binding example
 
 has been applied to the asoc tree at
 
@@ -54,44 +37,78 @@ to this mail.
 Thanks,
 Mark
 
->From e8883cb61aa0a91980222e5e9d114100783eb7e2 Mon Sep 17 00:00:00 2001
-From: Dharageswari R <dharageswari.r@intel.com>
-Date: Wed, 31 May 2017 10:30:26 +0530
-Subject: [PATCH] ASoC: Intel: Boards: Add 4-channel DMIC fixup.
+>From 08862251476f899c4c4528e922df5854076b8661 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 6 Jun 2017 02:37:07 +0000
+Subject: [PATCH] ASoC: audio-graph-scu-card: add missing MIX binding example
 
-This patch adds a 4-channel dmic fixup so that DMIC copier will receive
-4 channel data and further selection will be done by mic-select module.
-
-Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bxt_rt298.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ .../bindings/sound/audio-graph-scu-card.txt        | 47 +++++++++++++++++++++-
+ 1 file changed, 46 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
-index 1a68d043c803..36ee7480e9f1 100644
---- a/sound/soc/intel/boards/bxt_rt298.c
-+++ b/sound/soc/intel/boards/bxt_rt298.c
-@@ -222,16 +222,13 @@ static int broxton_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
- {
- 	struct snd_interval *channels = hw_param_interval(params,
- 						SNDRV_PCM_HW_PARAM_CHANNELS);
--	if (params_channels(params) == 2)
--		channels->min = channels->max = 2;
--	else
--		channels->min = channels->max = 4;
-+	channels->min = channels->max = 4;
+diff --git a/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt b/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
+index b2dd23fd2135..b63c5594bbb3 100644
+--- a/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
++++ b/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
+@@ -35,7 +35,7 @@ Required properties:
+ - compatible				: "audio-graph-scu-card";
+ - dais					: list of CPU DAI port{s}
  
- 	return 0;
- }
+-Example
++Example 1. Sampling Rate Conversion
  
- static unsigned int channels_dmic[] = {
--	2, 4,
-+	1, 2, 3, 4,
- };
- 
- static struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
+ 	sound_card {
+ 		compatible = "audio-graph-scu-card";
+@@ -70,3 +70,48 @@ Example
+ 			};
+ 		};
+ 	};
++
++Example 2. 2 CPU 1 Codec (Mixing)
++
++	sound_card {
++		compatible = "audio-graph-scu-card";
++
++		label = "sound-card";
++		prefix = "codec";
++		routing = "codec Playback", "DAI0 Playback",
++			"codec Playback", "DAI1 Playback";
++		convert-rate = <48000>;
++
++		dais = <&cpu_port0
++			&cpu_port1>;
++	};
++
++	audio-codec {
++		...
++
++		port {
++			codec_endpoint: endpoint {
++				remote-endpoint = <&cpu_endpoint0>;
++			};
++		};
++	};
++
++	dai-controller {
++		...
++		ports {
++			cpu_port0: port {
++				cpu_endpoint0: endpoint {
++					remote-endpoint = <&codec_endpoint>;
++
++					dai-format = "left_j";
++					...
++				};
++			};
++			cpu_port1: port {
++				cpu_endpoint1: endpoint {
++					dai-format = "left_j";
++					...
++				};
++			};
++		};
++	};
 -- 
 2.11.0
