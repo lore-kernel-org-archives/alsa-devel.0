@@ -1,28 +1,35 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: sun8i-codec-analog: add support for V3s
- SoC" to the asoc tree
-Date: Tue, 06 Jun 2017 20:06:11 +0100
-Message-ID: <E1dIJnv-0007Et-Bs@debutante>
-References: <20170524100607.29790-4-icenowy@aosc.io>
-Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: Boards: Add 4-channel DMIC
+	fixup." to the asoc tree
+Date: Tue, 06 Jun 2017 20:05:28 +0100
+Message-ID: <E1dIJnE-00072P-7X@debutante>
+References: <1495768803-24217-4-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBDQ2L75W5QGBBMX23PEQKGQEOIYAXJI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20170524100607.29790-4-icenowy-h8G6r0blFSE@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
-Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 04988266FEC
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2017 21:05:47 +0200 (CEST)
+In-Reply-To: <1495768803-24217-4-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dharageswari R <dharageswari.r@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, "Kranthikumar,
+ GudishaX" <gudishax.kranthikumar@intel.com>, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun8i-codec-analog: add support for V3s SoC
+   ASoC: Intel: Boards: Add 4-channel DMIC fixup.
 
 has been applied to the asoc tree at
 
@@ -47,63 +54,44 @@ to this mail.
 Thanks,
 Mark
 
->From 2cfeaec0ec896bc0b8aad2de28a3de4572c7e4a1 Mon Sep 17 00:00:00 2001
-From: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
-Date: Mon, 5 Jun 2017 21:27:21 +0800
-Subject: [PATCH] ASoC: sun8i-codec-analog: add support for V3s SoC
+>From e8883cb61aa0a91980222e5e9d114100783eb7e2 Mon Sep 17 00:00:00 2001
+From: Dharageswari R <dharageswari.r@intel.com>
+Date: Wed, 31 May 2017 10:30:26 +0530
+Subject: [PATCH] ASoC: Intel: Boards: Add 4-channel DMIC fixup.
 
-The V3s SoC features an analog codec with headphone support but without
-mic2 and linein.
+This patch adds a 4-channel dmic fixup so that DMIC copier will receive
+4 channel data and further selection will be done by mic-select module.
 
-Add support for it.
-
-Signed-off-by: Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>
-Reviewed-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
-Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/sun8i-codec-analog.txt | 1 +
- sound/soc/sunxi/sun8i-codec-analog.c                           | 9 +++++++++
- 2 files changed, 10 insertions(+)
+ sound/soc/intel/boards/bxt_rt298.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/sun8i-codec-analog.txt b/Documentation/devicetree/bindings/sound/sun8i-codec-analog.txt
-index 779b735781ba..1b6e7c4e50ab 100644
---- a/Documentation/devicetree/bindings/sound/sun8i-codec-analog.txt
-+++ b/Documentation/devicetree/bindings/sound/sun8i-codec-analog.txt
-@@ -4,6 +4,7 @@ Required properties:
- - compatible: must be one of the following compatibles:
- 		- "allwinner,sun8i-a23-codec-analog"
- 		- "allwinner,sun8i-h3-codec-analog"
-+		- "allwinner,sun8i-v3s-codec-analog"
+diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
+index 1a68d043c803..36ee7480e9f1 100644
+--- a/sound/soc/intel/boards/bxt_rt298.c
++++ b/sound/soc/intel/boards/bxt_rt298.c
+@@ -222,16 +222,13 @@ static int broxton_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+ {
+ 	struct snd_interval *channels = hw_param_interval(params,
+ 						SNDRV_PCM_HW_PARAM_CHANNELS);
+-	if (params_channels(params) == 2)
+-		channels->min = channels->max = 2;
+-	else
+-		channels->min = channels->max = 4;
++	channels->min = channels->max = 4;
  
- Required properties if not a sub-node of the PRCM node:
- - reg: must contain the registers location and length
-diff --git a/sound/soc/sunxi/sun8i-codec-analog.c b/sound/soc/sunxi/sun8i-codec-analog.c
-index 29c446068151..485e79f292c4 100644
---- a/sound/soc/sunxi/sun8i-codec-analog.c
-+++ b/sound/soc/sunxi/sun8i-codec-analog.c
-@@ -810,6 +810,11 @@ static int sun8i_codec_analog_add_mixer(struct snd_soc_component *cmpnt,
  	return 0;
  }
  
-+static const struct sun8i_codec_analog_quirks sun8i_v3s_quirks = {
-+	.has_headphone	= true,
-+	.has_hmic	= true,
-+};
-+
- static int sun8i_codec_analog_cmpnt_probe(struct snd_soc_component *cmpnt)
- {
- 	struct device *dev = cmpnt->dev;
-@@ -886,6 +891,10 @@ static const struct of_device_id sun8i_codec_analog_of_match[] = {
- 		.compatible = "allwinner,sun8i-h3-codec-analog",
- 		.data = &sun8i_h3_quirks,
- 	},
-+	{
-+		.compatible = "allwinner,sun8i-v3s-codec-analog",
-+		.data = &sun8i_v3s_quirks,
-+	},
- 	{}
+ static unsigned int channels_dmic[] = {
+-	2, 4,
++	1, 2, 3, 4,
  };
- MODULE_DEVICE_TABLE(of, sun8i_codec_analog_of_match);
+ 
+ static struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
 -- 
 2.11.0
