@@ -1,12 +1,14 @@
 From: Harsha Priya <harshapriya.n@intel.com>
-Subject: [PATCH 0/2] ASoC: Intel: Add Kabylake machine driver
-	for RT5663+RT5514+MAX98927
-Date: Tue,  6 Jun 2017 13:51:31 -0700
-Message-ID: <1496782293-15658-1-git-send-email-harshapriya.n@intel.com>
+Subject: [PATCH 2/2] ASoC: Intel: Add Kabylake
+	RT5663+RT5514+MAX98927 machine driver entry
+Date: Tue,  6 Jun 2017 13:51:33 -0700
+Message-ID: <1496782293-15658-3-git-send-email-harshapriya.n@intel.com>
+References: <1496782293-15658-1-git-send-email-harshapriya.n@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <1496782293-15658-1-git-send-email-harshapriya.n@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,25 +22,67 @@ To: vinod.koul@intel.com, broonie@kernel.org, patch@alsa-project.org, alsa-devel
 Cc: Harsha Priya <harshapriya.n@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch set adds a machine driver for Kabylake platform which has RT5663,
-RT5514 and MAX9827 codecs. It also adds the quirk data for the platform driver
-to load the correct machine driver. 
+Adds Kabylake rt5663_rt5514_max machine driver entry into machine table
 
-For this particular machine, 
+Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
+---
+ sound/soc/intel/skylake/skl.c | 37 +++++++++++++++++++++++++++++++++----
+ 1 file changed, 33 insertions(+), 4 deletions(-)
 
-*  the RT5663 is a headset codec connected on SSP0
-*  the RT5514 is a dmic codec connected on SSP1
-*  the MAX98987 is a speaker codec connected on SSP1
-
-Harsha Priya (2):
-  ASoC: Intel: Add Kabylake machine driver for RT5514, RT5663 and
-    MAX98927
-  ASoC: Intel: Add Kabylake RT5663+RT5514+MAX98927 machine driver entry
-
- .../soc/intel/boards/kbl_rt5663_rt5514_max98927.c  | 640 +++++++++++++++++++++
- sound/soc/intel/skylake/skl.c                      |  29 +-
- 2 files changed, 665 insertions(+), 4 deletions(-)
- create mode 100644 sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c
-
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 4ebae85..e761550 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -876,10 +876,31 @@ static void skl_remove(struct pci_dev *pci)
+ 	dev_set_drvdata(&pci->dev, NULL);
+ }
+ 
+-static struct sst_codecs skl_codecs = { 1, {"NAU88L25"} };
+-static struct sst_codecs kbl_codecs = { 1, {"NAU88L25"} };
+-static struct sst_codecs bxt_codecs = { 1, {"MX98357A"} };
+-static struct sst_codecs kbl_poppy_codecs = { 1, {"10EC5663"} };
++static struct sst_codecs skl_codecs = {
++	.num_codecs = 1,
++	.codecs = {"NAU88L25"}
++};
++
++static struct sst_codecs kbl_codecs = {
++	.num_codecs = 1,
++	.codecs = {"NAU88L25"}
++};
++
++static struct sst_codecs bxt_codecs = {
++	.num_codecs = 1,
++	.codecs = {"MX98357A"}
++};
++
++static struct sst_codecs kbl_poppy_codecs = {
++	.num_codecs = 1,
++	.codecs = {"10EC5663"}
++};
++
++static struct sst_codecs kbl_5663_5514_codecs = {
++	.num_codecs = 2,
++	.codecs = {"10EC5663", "10EC5514"}
++};
++
+ 
+ static struct sst_acpi_mach sst_skl_devdata[] = {
+ 	{
+@@ -945,6 +966,14 @@ static void skl_remove(struct pci_dev *pci)
+ 	},
+ 	{
+ 		.id = "MX98927",
++		.drv_name = "kbl_r5514_5663_max",
++		.fw_filename = "intel/dsp_fw_kbl.bin",
++		.machine_quirk = sst_acpi_codec_list,
++		.quirk_data = &kbl_5663_5514_codecs,
++		.pdata = &skl_dmic_data
++	},
++	{
++		.id = "MX98927",
+ 		.drv_name = "kbl_rt5663_m98927",
+ 		.fw_filename = "intel/dsp_fw_kbl.bin",
+ 		.machine_quirk = sst_acpi_codec_list,
 -- 
 1.9.1
