@@ -1,18 +1,14 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: How to handle stream rates if CPU supports many
-	channels ?
-Date: Tue, 6 Jun 2017 12:41:15 +0900
-Message-ID: <6d1e2ca9-2a3f-ff12-28c4-c96224760913@sakamocchi.jp>
-References: <87tw3uymhu.wl%kuninori.morimoto.gx@renesas.com>
+From: Oder Chiou <oder_chiou@realtek.com>
+Subject: [PATCH] ASoC: rt5663: Fix the IRQ issue
+Date: Tue, 6 Jun 2017 14:59:54 +0800
+Message-ID: <1496732394-21460-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 8152C266B17
- for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2017 05:41:18 +0200 (CEST)
-In-Reply-To: <87tw3uymhu.wl%kuninori.morimoto.gx@renesas.com>
-Content-Language: en-US
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3513B2668E2
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2017 09:00:16 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,65 +18,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, hychao@google.com, albertchen@realtek.com, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxN+W5tDA25pyIMDbml6UgMDk6NDgsIEt1bmlub3JpIE1vcmltb3RvIHdyb3RlOgo+IEJh
-c2ljIHVzZSBjYXNlIG9mIG15IENQVSBkcml2ZXIgaXMgMmNoIG91dHB1dCwKPiBidXQsIGl0IGNh
-biBoYW5kbGUgNmNoLCA4Y2gsIDE2Y2ggc291bmRzLgo+IEFuZCBpdCBjYW4gYmUgY2xvY2sgbWFz
-dGVyLgo+IAo+IEluIHRoaXMgY2FzZSwgZm9yIGV4YW1wbGUsIGlmIENQVSBoYXMgMTIyODgwMDAg
-c3lzdGVtIGNsb2NrCj4gYW5kIGl0IHVzZXMgMzJiaXQgZm9yIGVhY2ggMWNoIGRhdGEgKGl0IGhh
-cyBkaXZpZGVyIGluc2lkZSkuCj4gCj4gCU1heCAyY2ggc291bmQgSHogPSAxMjI4ODAwMCAvIDMy
-IC8gMiA9IDE5MjAwMEh6Cj4gCU1heCA4Y2ggc291bmQgSHogPSAxMjI4ODAwMCAvIDMyIC8gOCA9
-ICA0ODAwMEh6Cj4gCj4gSWYgbXkgdW5kZXJzdGFuZGluZyB3YXMgY29ycmVjdCwgc3RydWN0IHNu
-ZF9zb2NfcGNtX3N0cmVhbTo6cmF0ZXMKPiBpcyBuZWVkZWQgd2hlbiBzb3VuZCBkZXZpY2UgIm9w
-ZW4iIHRpbWluZwo+ICg9IHN0cnVjdCBzbmRfc29jX2RhaV9vcHM6OnN0YXJ0dXApLCBidXQsIHdl
-IGNhbiByZWNlaXZlIHVzZWQKPiBjaGFubmVscyBudW1iZXIgd2hlbiAiaHdfcGFyYW1zIiB0aW1p
-bmcgPwo+IAo+IE15IHF1ZXN0aW9uIGlzIHRoYXQgaWYgc3lzdGVtIGhhcyAxMjI4ODAwMCwgYW5k
-IGlmIGl0IGNhbgo+IHN1cHBvcnQgYm90aCAyY2ggYW5kIDhjaCwgd2hhdCBzdHJ1Y3Qgc25kX3Nv
-Y19wY21fc3RyZWFtOjpyYXRlcwo+IHNob3VsZCBoYXZlID8/Cj4gCVNORFJWX1BDTV9SQVRFXzgw
-MDBfMTkyMDAwID8KPiAJU05EUlZfUENNX1JBVEVfODAwMF80ODAwMCAgPwoKSWYgeW91ciBoYXJk
-d2FyZSBzdXBwb3J0IHRoZSB0d28gbW9kZXMgZm9yIFBDTSBmcmFtZSB0cmFuc21pc3Npb24sIHlv
-dSAKbmVlZCB0byBkZXNjcmliZSBpdCBjb3JyZWN0bHkgaW50byBydW50aW1lIG9mIFBDTSBzdWJz
-dHJlYW0gZm9yIEFMU0EgUENNIAphcHBsaWNhdGlvbi4gTm8gbWF0dGVyIHdoZXRoZXIgdGhlIGRy
-aXZlciBpcyBpbiBBTFNBIFNvQyBwYXJ0IG9yIG5vdC4KCkluIGRlc2lnbiBvZiBBTFNBIFBDTSBp
-bnRlcmZhY2UsIFBDTSBydW50aW1lIGdldCBjb25zdHJhaW50cyBhbmQgcnVsZXMgCm9mIHBhcmFt
-ZXRlcnMgd2hlbiBhcHBsaWNhdGlvbnMgZXhlY3V0ZSBvcGVuKDIpIHRvIEFMU0EgUENNIGNoYXJh
-Y3RlciAKZGV2aWNlLiBJbiB0aGlzIHRpbWluZywgZHJpdmVycyBzaG91bGQgcmVnaXN0ZXIgdGhl
-IGNvbnN0cmFpbnRzIGFuZCB0aGUgCnJ1bGVzIGluIGNhbGxiYWNrcyBvZiAnc3RydWN0IHNuZF9w
-Y21fb3BzLm9wZW4nLgoKWW91ciBDUFUgZHJpdmVyIHNob3VsZCByZWdpc3RlciB0aGVtIGluIGNh
-bGxiYWNrIG9mICdzdHJ1Y3QgCnNuZF9zb2NfZGFpLnN0YXJ0dXAoKScgaW4gYSBjYWxsZ3JhcGgg
-ZnJvbSBvcGVuKDIpLiBGb3IgZXhhbXBsZSB3aXRoIApjb2RlIHNuaXBwZXQ6CgpgYGAKc3RhdGlj
-IGludCBod19ydWxlX3JhdGUoKQp7CnVuc2lnbmVkIGludCBsaXN0WzJdCi8qIHdoZW4gdGhlIHJh
-bmdlIG9mIGNoYW5uZWxzIGluY2x1ZGUgMiwgdGhlbiAxOTIwMDAgaXMgYXZhaWxhYmxlLiAqLwov
-KiB3aGVuIHRoZSByYW5nZSBvZiBjaGFubmVscyBpbmNsdWRlIDgsIHRoZW4gNDgwMDAgaXMgYXZh
-aWxhYmxlLiAqLwpzbmRfaW50ZXJ2YWxfbGlzdChsaXN0KQp9CgpzdGF0aWMgaW50IGh3X3J1bGVf
-Y2hhbm5lbHMoKQp7CnVuc2lnbmVkIGludCBsaXN0WzJdCi8qIHdoZW4gdGhlIHJhbmdlIG9mIHJh
-dGVzIGluY2x1ZGUgNDgwMDAsIHRoZW4gOGNoIGlzIGF2YWlsYWJsZS4gKi8KLyogd2hlbiB0aGUg
-cmFuZ2Ugb2YgcmF0ZXMgaW5jbHVkZSAxOTIwMDAsIHRoZW4gMmNoIGlzIGF2YWlsYWJsZS4gKi8K
-c25kX2ludGVydmFsX2xpc3QobGlzdCkKfQoKc3RhdGljIGludCBzdGFydHVwKCkKewouLi4Kc25k
-X3BjbV9od19ydWxlX2FkZChTTkRSVl9QQ01fSFdfUEFSQU1fUkFURSwgaHdfcnVsZV9yYXRlLCAK
-U05EUlZfUENNX0hXX1BBUkFNX0NIQU5ORUxTKQpzbmRfcGNtX2h3X3J1bGVfYWRkKFNORFJWX1BD
-TV9IV19QQVJBTV9DSEFOTkVMUywgaHdfcnVsZV9jaGFubmVscywgClNORFJWX1BDTV9IV19QQVJB
-TV9SQVRFKQouLi4KfQoKc3RydWN0IHNuZF9zb2NfZGFpLnN0YXJ0dXAgPSBzdGFydHVwOwpgYGAK
-CkZ1cnRoZXJtb3JlLCBQQ00gcnVudGltZSByZXF1aXJlIGNvbnN0cmFpbnRzIGZvciBjaGFubmVs
-cyBhbmQgcmF0ZXMuIEluIApBTFNBIFNvQyBwYXJ0LCB0aGlzIGlzIGRvbmUgYnkgJ3NvY19wY21f
-aW5pdF9ydW50aW1lX2h3KCknIGluIAonc291bmQvc29jL3NvYy1wY20uYycuIFlvdXIgZHJpdmVy
-IHNob3VsZCBoYXZlIHByb3BlciB2YWx1ZXMgaW4gZGF0YSBvZiAKJ3N0cnVjdCBzbmRfc29jX3Bj
-bV9zdHJlYW0nIGFzIHRoZSBjb25zdHJhaW50cy4KCmBgYAooc3RydWN0IHNuZF9zb2NfZGFpX2Ry
-aXZlci5wbGF5YmFjayBvciBjYXB0dXJlPykKc3RydWN0IHNuZF9zb2NfcGNtX3N0cmVhbS5jaGFu
-bmVsc19taW4gPSAyCnN0cnVjdCBzbmRfc29jX3BjbV9zdHJlYW0uY2hhbm5lbHNfbWF4ID0gOApz
-dHJ1Y3Qgc25kX3NvY19wY21fc3RyZWFtLnJhdGVfbWluID0gNDgwMDAKc3RydWN0IHNuZF9zb2Nf
-cGNtX3N0cmVhbS5yYXRlX21heCA9IDE5MjAwMApzdHJ1Y3Qgc25kX3NvY19wY21fc3RyZWFtLnJh
-dGVzID0KICAgICBTTkRSVl9QQ01fUkFURV84MDAwIHwgU05EUlZfUENNX1JBVEVfMTkyMDAwCmBg
-YAoKV2hlbiBpbXBsZW1lbnQgdGhlc2UgY29ycmVjdGx5LCB1c2Vyc3BhY2UgYXBwbGljYXRpb25z
-IGNhbiBnZXQgZW5vdWdoIAppbmZvcm1hdGlvbiBhYm91dCBQQ00gc3Vic3RyZWFtIGZvciB5b3Vy
-IGhhcmR3YXJlIGJ5IGV4ZWN1dGluZyBpb2N0bCgyKSAKd2l0aCBIV19SRUZJTkUvSFdfUEFSQU1T
-LiBJZiB5b3UgbmVlZCBtb3JlIGNvbWJpbmF0aW9uIGJldHdlZW4gY2hhbm5lbHMgCmFuZCByYXRl
-cywgcGxlYXNlIGV4cGFuZCB0aGVzZSBiYXNpYyBjb2RlcyBhcyB5b3UgbGlrZS4gSWYgeW91IG5l
-ZWQgc29tZSAKZXhhbXBsZXMsIHBsZWFzZSBpbnZlc3RpZ2F0ZSBkcml2ZXJzIG91dHNpZGUgb2Yg
-QUxTQSBTb0MgcGFydC4KCgpSZWdhcmRzCgpUYWthc2hpIFNha2Ftb3RvCl9fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
-CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
-b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+The patch fixed the IRQ issue.
+
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+---
+ sound/soc/codecs/rt5663.c | 2 +-
+ sound/soc/codecs/rt5663.h | 4 ++++
+ 2 files changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
+index a32508d..8569e8c 100644
+--- a/sound/soc/codecs/rt5663.c
++++ b/sound/soc/codecs/rt5663.c
+@@ -3141,7 +3141,7 @@ static int rt5663_i2c_probe(struct i2c_client *i2c,
+ 		regmap_update_bits(rt5663->regmap, RT5663_DIG_MISC,
+ 			RT5663_DIG_GATE_CTRL_MASK, RT5663_DIG_GATE_CTRL_EN);
+ 		regmap_update_bits(rt5663->regmap, RT5663_AUTO_1MRC_CLK,
+-			RT5663_IRQ_POW_SAV_MASK, RT5663_IRQ_POW_SAV_EN);
++			RT5663_IRQ_MANUAL_MASK, RT5663_IRQ_MANUAL_EN);
+ 		regmap_update_bits(rt5663->regmap, RT5663_IRQ_1,
+ 			RT5663_EN_IRQ_JD1_MASK, RT5663_EN_IRQ_JD1_EN);
+ 		regmap_update_bits(rt5663->regmap, RT5663_GPIO_1,
+diff --git a/sound/soc/codecs/rt5663.h b/sound/soc/codecs/rt5663.h
+index d77fae6..4621812 100644
+--- a/sound/soc/codecs/rt5663.h
++++ b/sound/soc/codecs/rt5663.h
+@@ -590,6 +590,10 @@
+ #define RT5663_IRQ_POW_SAV_JD1_SHIFT		14
+ #define RT5663_IRQ_POW_SAV_JD1_DIS		(0x0 << 14)
+ #define RT5663_IRQ_POW_SAV_JD1_EN		(0x1 << 14)
++#define RT5663_IRQ_MANUAL_MASK			(0x1 << 8)
++#define RT5663_IRQ_MANUAL_SHIFT			8
++#define RT5663_IRQ_MANUAL_DIS			(0x0 << 8)
++#define RT5663_IRQ_MANUAL_EN			(0x1 << 8)
+ 
+ /* IRQ Control 1 (0x00b6) */
+ #define RT5663_EN_CB_JD_MASK			(0x1 << 3)
+-- 
+2.7.4
