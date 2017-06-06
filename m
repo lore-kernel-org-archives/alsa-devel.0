@@ -1,15 +1,17 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH v2] ASoC: topology: Fix build by declaring
-	snd_kcontrol_new and soc_dai_link.
-Date: Tue,  6 Jun 2017 15:55:04 +0100
-Message-ID: <1496760904-6427-1-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 2/4] ALSA: timer: Fix missing queue indices
+	reset at SNDRV_TIMER_IOCTL_SELECT
+Date: Tue,  6 Jun 2017 17:00:41 +0200
+Message-ID: <20170606150043.10525-3-tiwai@suse.de>
+References: <20170606150043.10525-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 6DCDA266EB0
- for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2017 16:55:17 +0200 (CEST)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 04E71266EB0
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2017 17:00:50 +0200 (CEST)
+In-Reply-To: <20170606150043.10525-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,29 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Kostya Serebryany <kcc@google.com>, Alexander Potapenko <glider@google.com>, Dmitriy Vyukov <dvyukov@google.com>, Andrey Konovalov <andreyknvl@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-Both are used within this header so need to be declared.
+snd_timer_user_tselect() reallocates the queue buffer dynamically, but
+it forgot to reset its indices.  Since the read may happen
+concurrently with ioctl and snd_timer_user_tselect() allocates the
+buffer via kmalloc(), this may lead to the leak of uninitialized
+kernel-space data, as spotted via KMSAN:
 
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+  BUG: KMSAN: use of unitialized memory in snd_timer_user_read+0x6c4/0xa10
+  CPU: 0 PID: 1037 Comm: probe Not tainted 4.11.0-rc5+ #2739
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Bochs 01/01/2011
+  Call Trace:
+   __dump_stack lib/dump_stack.c:16
+   dump_stack+0x143/0x1b0 lib/dump_stack.c:52
+   kmsan_report+0x12a/0x180 mm/kmsan/kmsan.c:1007
+   kmsan_check_memory+0xc2/0x140 mm/kmsan/kmsan.c:1086
+   copy_to_user ./arch/x86/include/asm/uaccess.h:725
+   snd_timer_user_read+0x6c4/0xa10 sound/core/timer.c:2004
+   do_loop_readv_writev fs/read_write.c:716
+   __do_readv_writev+0x94c/0x1380 fs/read_write.c:864
+   do_readv_writev fs/read_write.c:894
+   vfs_readv fs/read_write.c:908
+   do_readv+0x52a/0x5d0 fs/read_write.c:934
+   SYSC_readv+0xb6/0xd0 fs/read_write.c:1021
+   SyS_readv+0x87/0xb0 fs/read_write.c:1018
+
+This patch adds the missing reset of queue indices.  Together with the
+previous fix for the ioctl/read race, we cover the whole problem.
+
+Reported-by: Alexander Potapenko <glider@google.com>
+Tested-by: Alexander Potapenko <glider@google.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/soc-topology.h | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/core/timer.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
-index f9cc7b9271ac..7ea2794e1c6a 100644
---- a/include/sound/soc-topology.h
-+++ b/include/sound/soc-topology.h
-@@ -28,6 +28,8 @@ struct snd_soc_component;
- struct snd_soc_tplg_pcm_fe;
- struct snd_soc_dapm_context;
- struct snd_soc_card;
-+struct snd_kcontrol_new;
-+struct snd_soc_dai_link;
+diff --git a/sound/core/timer.c b/sound/core/timer.c
+index 1118bd8e2d3c..cd67d1c12cf1 100644
+--- a/sound/core/timer.c
++++ b/sound/core/timer.c
+@@ -1618,6 +1618,7 @@ static int snd_timer_user_tselect(struct file *file,
+ 	if (err < 0)
+ 		goto __err;
  
- /* object scan be loaded and unloaded in groups with identfying indexes */
- #define SND_SOC_TPLG_INDEX_ALL	0	/* ID that matches all FW objects */
++	tu->qhead = tu->qtail = tu->qused = 0;
+ 	kfree(tu->queue);
+ 	tu->queue = NULL;
+ 	kfree(tu->tqueue);
 -- 
-2.11.0
+2.13.0
