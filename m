@@ -1,18 +1,35 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card-utils: share same dev_dbg() for Dai Name" to the asoc tree
-Date: Tue, 06 Jun 2017 20:05:57 +0100
-Message-ID: <E1dIJnh-0007Ao-1c@debutante>
-References: <87bmq3dpvt.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87bmq3dpvt.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: Intel: Skylake: Add mic-select module
+	type" to the asoc tree
+Date: Tue, 06 Jun 2017 20:05:38 +0100
+Message-ID: <E1dIJnO-00074i-NK@debutante>
+References: <1495768803-24217-2-git-send-email-vinod.koul@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1145F266FEC
+ for <alsa-devel@alsa-project.org>; Tue,  6 Jun 2017 21:05:46 +0200 (CEST)
+In-Reply-To: <1495768803-24217-2-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dharageswari R <dharageswari.r@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, "Kranthikumar,
+ GudishaX" <gudishax.kranthikumar@intel.com>, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card-utils: share same dev_dbg() for Dai Name
+   ASoC: Intel: Skylake: Add mic-select module type
 
 has been applied to the asoc tree at
 
@@ -37,57 +54,56 @@ to this mail.
 Thanks,
 Mark
 
->From 4579771ebb78aa26831ee3d9617690da5198072c Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 5 Jun 2017 04:28:29 +0000
-Subject: [PATCH] ASoC: simple-card-utils: share same dev_dbg() for Dai Name
+>From db6879efb9d1d48ff9c2bd49dde05ecf757d73cf Mon Sep 17 00:00:00 2001
+From: Dharageswari R <dharageswari.r@intel.com>
+Date: Wed, 31 May 2017 10:30:24 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Add mic-select module type
 
-Let's share same debug message for DAI Name
+mic-select module is a DSP module, which is used to select one or more
+input channels.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+This patch adds mic-select module type.
+
+Signed-off-by: Dharageswari R <dharageswari.r@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/audio-graph-card.c  | 1 -
- sound/soc/generic/simple-card-utils.c | 2 ++
- sound/soc/generic/simple-card.c       | 1 -
- 3 files changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/intel/skylake/skl-messages.c       | 2 ++
+ sound/soc/intel/skylake/skl-tplg-interface.h | 1 +
+ 2 files changed, 3 insertions(+)
 
-diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 1769a39a22c4..2c3a1cc01442 100644
---- a/sound/soc/generic/audio-graph-card.c
-+++ b/sound/soc/generic/audio-graph-card.c
-@@ -169,7 +169,6 @@ static int asoc_graph_card_dai_link_of(struct device_node *cpu_port,
- 	dai_link->ops = &asoc_graph_card_ops;
- 	dai_link->init = asoc_graph_card_dai_init;
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index ab1adc0c9cc3..5a465020ebd8 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -707,6 +707,7 @@ static u16 skl_get_module_param_size(struct skl_sst *ctx,
+ 		return param_size;
  
--	dev_dbg(dev, "\tname : %s\n", dai_link->stream_name);
- 	dev_dbg(dev, "\tcpu : %s / %d\n",
- 		dai_link->cpu_dai_name,
- 		cpu_dai->sysclk);
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index 59e770125596..1f08064f65b1 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -74,6 +74,8 @@ int asoc_simple_card_set_dailink_name(struct device *dev,
+ 	case SKL_MODULE_TYPE_BASE_OUTFMT:
++	case SKL_MODULE_TYPE_MIC_SELECT:
+ 	case SKL_MODULE_TYPE_KPB:
+ 		return sizeof(struct skl_base_outfmt_cfg);
  
- 		dai_link->name		= name;
- 		dai_link->stream_name	= name;
-+
-+		dev_dbg(dev, "name : %s\n", name);
- 	}
+@@ -761,6 +762,7 @@ static int skl_set_module_format(struct skl_sst *ctx,
+ 		break;
  
- 	return ret;
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index d364f08a7182..1da0e2b068c3 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -301,7 +301,6 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
- 	dai_link->ops = &asoc_simple_card_ops;
- 	dai_link->init = asoc_simple_card_dai_init;
+ 	case SKL_MODULE_TYPE_BASE_OUTFMT:
++	case SKL_MODULE_TYPE_MIC_SELECT:
+ 	case SKL_MODULE_TYPE_KPB:
+ 		skl_set_base_outfmt_format(ctx, module_config, *param_data);
+ 		break;
+diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
+index 7a2febf99019..c22517bd2161 100644
+--- a/sound/soc/intel/skylake/skl-tplg-interface.h
++++ b/sound/soc/intel/skylake/skl-tplg-interface.h
+@@ -82,6 +82,7 @@ enum skl_module_type {
+ 	SKL_MODULE_TYPE_ALGO,
+ 	SKL_MODULE_TYPE_BASE_OUTFMT,
+ 	SKL_MODULE_TYPE_KPB,
++	SKL_MODULE_TYPE_MIC_SELECT,
+ };
  
--	dev_dbg(dev, "\tname : %s\n", dai_link->stream_name);
- 	dev_dbg(dev, "\tcpu : %s / %d\n",
- 		dai_link->cpu_dai_name,
- 		dai_props->cpu_dai.sysclk);
+ enum skl_core_affinity {
 -- 
 2.11.0
