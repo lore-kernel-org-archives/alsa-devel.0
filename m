@@ -1,18 +1,28 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card-utils: share same dev_dbg() for Card Name" to the asoc tree
-Date: Tue, 06 Jun 2017 20:06:05 +0100
-Message-ID: <E1dIJnp-0007CX-2F@debutante>
-References: <87efuzdpws.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87efuzdpws.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: sun8i-codec-analog: prepare a mixer
+ control/widget/route set for V3s" to the asoc tree
+Date: Tue, 06 Jun 2017 20:06:14 +0100
+Message-ID: <E1dIJny-0007GB-CN@debutante>
+References: <20170605132722.6459-2-icenowy@aosc.io>
+Reply-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBDQ2L75W5QGBBMX23PEQKGQEOIYAXJI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20170605132722.6459-2-icenowy-h8G6r0blFSE@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Icenowy Zheng <icenowy-h8G6r0blFSE@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card-utils: share same dev_dbg() for Card Name
+   ASoC: sun8i-codec-analog: prepare a mixer control/widget/route set for V3s
 
 has been applied to the asoc tree at
 
@@ -37,59 +47,176 @@ to this mail.
 Thanks,
 Mark
 
->From d4dbcb63c8bde48741468cf7c711b76ed3e7fce5 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 5 Jun 2017 04:27:56 +0000
-Subject: [PATCH] ASoC: simple-card-utils: share same dev_dbg() for Card Name
+>From 50aadc14cee74009c72e7d66954b15f27d45c02f Mon Sep 17 00:00:00 2001
+From: Icenowy Zheng <icenowy-h8G6r0blFSE@public.gmane.org>
+Date: Mon, 5 Jun 2017 21:27:20 +0800
+Subject: [PATCH] ASoC: sun8i-codec-analog: prepare a mixer
+ control/widget/route set for V3s
 
-Let's share same debug message for Card Name
+Allwinner V3s has an analog codec without MIC2 and Line In, which will
+need a special set of mixer controls/widgets/routes, otherwise meaningless
+controls will be exported to userspace and confuse the user.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Add the special set, and use it when the SoC has no MIC2 and Line In.
+
+Signed-off-by: Icenowy Zheng <icenowy-h8G6r0blFSE@public.gmane.org>
+Reviewed-by: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
- sound/soc/generic/audio-graph-scu-card.c | 2 --
- sound/soc/generic/simple-card-utils.c    | 2 ++
- sound/soc/generic/simple-scu-card.c      | 2 --
- 3 files changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/sunxi/sun8i-codec-analog.c | 101 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 100 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/generic/audio-graph-scu-card.c b/sound/soc/generic/audio-graph-scu-card.c
-index c5c52d1f500c..1ce727b6bc21 100644
---- a/sound/soc/generic/audio-graph-scu-card.c
-+++ b/sound/soc/generic/audio-graph-scu-card.c
-@@ -295,8 +295,6 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
- 	if (ret)
- 		goto parse_of_err;
+diff --git a/sound/soc/sunxi/sun8i-codec-analog.c b/sound/soc/sunxi/sun8i-codec-analog.c
+index edcc3eb7cd9a..29c446068151 100644
+--- a/sound/soc/sunxi/sun8i-codec-analog.c
++++ b/sound/soc/sunxi/sun8i-codec-analog.c
+@@ -219,6 +219,22 @@ static const struct snd_kcontrol_new sun8i_codec_mixer_controls[] = {
+ 			  SUN8I_ADDA_LOMIXSC_MIC2, 1, 0),
+ };
  
--	dev_dbg(dev, "New card: %s\n",
--		card->name ? card->name : "");
- 	dev_dbg(dev, "convert_rate     %d\n", priv->convert_rate);
- 	dev_dbg(dev, "convert_channels %d\n", priv->convert_channels);
- 
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index 9c7f5b91b90a..da24ac171aec 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -100,6 +100,8 @@ int asoc_simple_card_parse_card_name(struct snd_soc_card *card,
- 	if (!card->name && card->dai_link)
- 		card->name = card->dai_link->name;
- 
-+	dev_dbg(card->dev, "Card Name: %s\n", card->name ? card->name : "");
++/* mixer controls */
++static const struct snd_kcontrol_new sun8i_v3s_codec_mixer_controls[] = {
++	SOC_DAPM_DOUBLE_R("DAC Playback Switch",
++			  SUN8I_ADDA_LOMIXSC,
++			  SUN8I_ADDA_ROMIXSC,
++			  SUN8I_ADDA_LOMIXSC_DACL, 1, 0),
++	SOC_DAPM_DOUBLE_R("DAC Reversed Playback Switch",
++			  SUN8I_ADDA_LOMIXSC,
++			  SUN8I_ADDA_ROMIXSC,
++			  SUN8I_ADDA_LOMIXSC_DACR, 1, 0),
++	SOC_DAPM_DOUBLE_R("Mic1 Playback Switch",
++			  SUN8I_ADDA_LOMIXSC,
++			  SUN8I_ADDA_ROMIXSC,
++			  SUN8I_ADDA_LOMIXSC_MIC1, 1, 0),
++};
 +
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(asoc_simple_card_parse_card_name);
-diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
-index 9b9b01e12149..5f4384f322c1 100644
---- a/sound/soc/generic/simple-scu-card.c
-+++ b/sound/soc/generic/simple-scu-card.c
-@@ -246,8 +246,6 @@ static int asoc_simple_card_parse_of(struct device_node *node,
- 	if (ret < 0)
- 		return ret;
+ /* ADC mixer controls */
+ static const struct snd_kcontrol_new sun8i_codec_adc_mixer_controls[] = {
+ 	SOC_DAPM_DOUBLE_R("Mixer Capture Switch",
+@@ -243,6 +259,22 @@ static const struct snd_kcontrol_new sun8i_codec_adc_mixer_controls[] = {
+ 			  SUN8I_ADDA_LADCMIXSC_MIC2, 1, 0),
+ };
  
--	dev_dbg(dev, "New card: %s\n",
--		card->name ? card->name : "");
- 	dev_dbg(dev, "convert_rate     %d\n", priv->convert_rate);
- 	dev_dbg(dev, "convert_channels %d\n", priv->convert_channels);
++/* ADC mixer controls */
++static const struct snd_kcontrol_new sun8i_v3s_codec_adc_mixer_controls[] = {
++	SOC_DAPM_DOUBLE_R("Mixer Capture Switch",
++			  SUN8I_ADDA_LADCMIXSC,
++			  SUN8I_ADDA_RADCMIXSC,
++			  SUN8I_ADDA_LADCMIXSC_OMIXRL, 1, 0),
++	SOC_DAPM_DOUBLE_R("Mixer Reversed Capture Switch",
++			  SUN8I_ADDA_LADCMIXSC,
++			  SUN8I_ADDA_RADCMIXSC,
++			  SUN8I_ADDA_LADCMIXSC_OMIXRR, 1, 0),
++	SOC_DAPM_DOUBLE_R("Mic1 Capture Switch",
++			  SUN8I_ADDA_LADCMIXSC,
++			  SUN8I_ADDA_RADCMIXSC,
++			  SUN8I_ADDA_LADCMIXSC_MIC1, 1, 0),
++};
++
+ /* volume / mute controls */
+ static const DECLARE_TLV_DB_SCALE(sun8i_codec_out_mixer_pregain_scale,
+ 				  -450, 150, 0);
+@@ -292,8 +324,9 @@ static const struct snd_soc_dapm_widget sun8i_codec_common_widgets[] = {
+ 	/* Mic input path */
+ 	SND_SOC_DAPM_PGA("Mic1 Amplifier", SUN8I_ADDA_MIC1G_MICBIAS_CTRL,
+ 			 SUN8I_ADDA_MIC1G_MICBIAS_CTRL_MIC1AMPEN, 0, NULL, 0),
++};
  
+-	/* Mixers */
++static const struct snd_soc_dapm_widget sun8i_codec_mixer_widgets[] = {
+ 	SND_SOC_DAPM_MIXER("Left Mixer", SUN8I_ADDA_DAC_PA_SRC,
+ 			   SUN8I_ADDA_DAC_PA_SRC_LMIXEN, 0,
+ 			   sun8i_codec_mixer_controls,
+@@ -312,10 +345,31 @@ static const struct snd_soc_dapm_widget sun8i_codec_common_widgets[] = {
+ 			   ARRAY_SIZE(sun8i_codec_adc_mixer_controls)),
+ };
+ 
++static const struct snd_soc_dapm_widget sun8i_v3s_codec_mixer_widgets[] = {
++	SND_SOC_DAPM_MIXER("Left Mixer", SUN8I_ADDA_DAC_PA_SRC,
++			   SUN8I_ADDA_DAC_PA_SRC_LMIXEN, 0,
++			   sun8i_v3s_codec_mixer_controls,
++			   ARRAY_SIZE(sun8i_v3s_codec_mixer_controls)),
++	SND_SOC_DAPM_MIXER("Right Mixer", SUN8I_ADDA_DAC_PA_SRC,
++			   SUN8I_ADDA_DAC_PA_SRC_RMIXEN, 0,
++			   sun8i_v3s_codec_mixer_controls,
++			   ARRAY_SIZE(sun8i_v3s_codec_mixer_controls)),
++	SND_SOC_DAPM_MIXER("Left ADC Mixer", SUN8I_ADDA_ADC_AP_EN,
++			   SUN8I_ADDA_ADC_AP_EN_ADCLEN, 0,
++			   sun8i_v3s_codec_adc_mixer_controls,
++			   ARRAY_SIZE(sun8i_v3s_codec_adc_mixer_controls)),
++	SND_SOC_DAPM_MIXER("Right ADC Mixer", SUN8I_ADDA_ADC_AP_EN,
++			   SUN8I_ADDA_ADC_AP_EN_ADCREN, 0,
++			   sun8i_v3s_codec_adc_mixer_controls,
++			   ARRAY_SIZE(sun8i_v3s_codec_adc_mixer_controls)),
++};
++
+ static const struct snd_soc_dapm_route sun8i_codec_common_routes[] = {
+ 	/* Microphone Routes */
+ 	{ "Mic1 Amplifier", NULL, "MIC1"},
++};
+ 
++static const struct snd_soc_dapm_route sun8i_codec_mixer_routes[] = {
+ 	/* Left Mixer Routes */
+ 	{ "Left Mixer", "DAC Playback Switch", "Left DAC" },
+ 	{ "Left Mixer", "DAC Reversed Playback Switch", "Right DAC" },
+@@ -714,6 +768,48 @@ static const struct sun8i_codec_analog_quirks sun8i_h3_quirks = {
+ 	.has_mic2	= true,
+ };
+ 
++static int sun8i_codec_analog_add_mixer(struct snd_soc_component *cmpnt,
++					const struct sun8i_codec_analog_quirks *quirks)
++{
++	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(cmpnt);
++	struct device *dev = cmpnt->dev;
++	int ret;
++
++	if (!quirks->has_mic2 && !quirks->has_linein) {
++		/*
++		 * Apply the special widget set which has uses a control
++		 * without MIC2 and Line In, for SoCs without these.
++		 * TODO: not all special cases are supported now, this case
++		 * is present because it's the case of V3s.
++		 */
++		ret = snd_soc_dapm_new_controls(dapm,
++						sun8i_v3s_codec_mixer_widgets,
++						ARRAY_SIZE(sun8i_v3s_codec_mixer_widgets));
++		if (ret) {
++			dev_err(dev, "Failed to add V3s Mixer DAPM widgets: %d\n", ret);
++			return ret;
++		}
++	} else {
++		/* Apply the generic mixer widget set. */
++		ret = snd_soc_dapm_new_controls(dapm,
++						sun8i_codec_mixer_widgets,
++						ARRAY_SIZE(sun8i_codec_mixer_widgets));
++		if (ret) {
++			dev_err(dev, "Failed to add Mixer DAPM widgets: %d\n", ret);
++			return ret;
++		}
++	}
++
++	ret = snd_soc_dapm_add_routes(dapm, sun8i_codec_mixer_routes,
++				      ARRAY_SIZE(sun8i_codec_mixer_routes));
++	if (ret) {
++		dev_err(dev, "Failed to add Mixer DAPM routes: %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
+ static int sun8i_codec_analog_cmpnt_probe(struct snd_soc_component *cmpnt)
+ {
+ 	struct device *dev = cmpnt->dev;
+@@ -728,6 +824,9 @@ static int sun8i_codec_analog_cmpnt_probe(struct snd_soc_component *cmpnt)
+ 	quirks = of_device_get_match_data(dev);
+ 
+ 	/* Add controls, widgets, and routes for individual features */
++	ret = sun8i_codec_analog_add_mixer(cmpnt, quirks);
++	if (ret)
++		return ret;
+ 
+ 	if (quirks->has_headphone) {
+ 		ret = sun8i_codec_add_headphone(cmpnt);
 -- 
 2.11.0
