@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: update pointer more accurate" to the asoc tree
-Date: Wed, 07 Jun 2017 20:31:14 +0100
-Message-ID: <E1dIgfi-0003Yf-TD@debutante>
-References: <878tl44ps8.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: simple-scu-card: remove duplicate paramera from asoc_simple_card_parse_of" to the asoc tree
+Date: Wed, 07 Jun 2017 20:31:22 +0100
+Message-ID: <E1dIgfq-0003Zq-Kn@debutante>
+References: <87vao83aeo.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <878tl44ps8.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87vao83aeo.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: update pointer more accurate
+   ASoC: simple-scu-card: remove duplicate paramera from asoc_simple_card_parse_of
 
 has been applied to the asoc tree at
 
@@ -37,179 +37,46 @@ to this mail.
 Thanks,
 Mark
 
->From 07b7acb51d283d8469696c906b91f1882696a4d4 Mon Sep 17 00:00:00 2001
+>From 0d6b35212b451d4ac0c07c7b2b15b20ea763df5c Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 7 Jun 2017 00:20:01 +0000
-Subject: [PATCH] ASoC: rsnd: update pointer more accurate
-
-Current rsnd driver updates pointer when DMA transfer was finished
-in DMA transfer mode. But PulseAudio requests more accurate
-pointer update when timer mode.
-This patch consider about DMA transfer residue and update more
-accurate pointer.
+Date: Wed, 7 Jun 2017 00:37:30 +0000
+Subject: [PATCH] ASoC: simple-scu-card: remove duplicate paramera from
+ asoc_simple_card_parse_of
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c |  6 ++++--
- sound/soc/sh/rcar/dma.c  | 26 +++++++++++++++++++++++++-
- sound/soc/sh/rcar/rsnd.h |  7 +++++++
- sound/soc/sh/rcar/ssi.c  | 12 ++++++++++++
- 4 files changed, 48 insertions(+), 3 deletions(-)
+ sound/soc/generic/simple-scu-card.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 080431543141..bc12c449857a 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -968,12 +968,14 @@ static int rsnd_hw_params(struct snd_pcm_substream *substream,
- 
- static snd_pcm_uframes_t rsnd_pointer(struct snd_pcm_substream *substream)
- {
--	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_soc_dai *dai = rsnd_substream_to_dai(substream);
- 	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
- 	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
-+	snd_pcm_uframes_t pointer = 0;
-+
-+	rsnd_dai_call(pointer, io, &pointer);
- 
--	return bytes_to_frames(runtime, io->byte_pos);
-+	return pointer;
- }
- 
- static struct snd_pcm_ops rsnd_pcm_ops = {
-diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index 241cb3b08a07..05e538f4c8d5 100644
---- a/sound/soc/sh/rcar/dma.c
-+++ b/sound/soc/sh/rcar/dma.c
-@@ -25,6 +25,7 @@
- 
- struct rsnd_dmaen {
- 	struct dma_chan		*chan;
-+	dma_cookie_t		cookie;
- 	dma_addr_t		dma_buf;
- 	unsigned int		dma_len;
- 	unsigned int		dma_period;
-@@ -292,7 +293,8 @@ static int rsnd_dmaen_start(struct rsnd_mod *mod,
- 	for (i = 0; i < 2; i++)
- 		rsnd_dmaen_sync(dmaen, io, i);
- 
--	if (dmaengine_submit(desc) < 0) {
-+	dmaen->cookie = dmaengine_submit(desc);
-+	if (dmaen->cookie < 0) {
- 		dev_err(dev, "dmaengine_submit() fail\n");
- 		return -EIO;
- 	}
-@@ -348,12 +350,34 @@ static int rsnd_dmaen_attach(struct rsnd_dai_stream *io,
+diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
+index 9a251400685e..5faf5d6c48a2 100644
+--- a/sound/soc/generic/simple-scu-card.c
++++ b/sound/soc/generic/simple-scu-card.c
+@@ -192,13 +192,13 @@ static int asoc_simple_card_dai_link_of(struct device_node *np,
  	return 0;
  }
  
-+static int rsnd_dmaen_pointer(struct rsnd_mod *mod,
-+			      struct rsnd_dai_stream *io,
-+			      snd_pcm_uframes_t *pointer)
-+{
-+	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
-+	struct rsnd_dma *dma = rsnd_mod_to_dma(mod);
-+	struct rsnd_dmaen *dmaen = rsnd_dma_to_dmaen(dma);
-+	struct dma_tx_state state;
-+	enum dma_status status;
-+	unsigned int pos = 0;
-+
-+	status = dmaengine_tx_status(dmaen->chan, dmaen->cookie, &state);
-+	if (status == DMA_IN_PROGRESS || status == DMA_PAUSED) {
-+		if (state.residue > 0 && state.residue <= dmaen->dma_len)
-+			pos = dmaen->dma_len - state.residue;
-+	}
-+	*pointer = bytes_to_frames(runtime, pos);
-+
-+	return 0;
-+}
-+
- static struct rsnd_mod_ops rsnd_dmaen_ops = {
- 	.name	= "audmac",
- 	.nolock_start = rsnd_dmaen_nolock_start,
- 	.nolock_stop  = rsnd_dmaen_nolock_stop,
- 	.start	= rsnd_dmaen_start,
- 	.stop	= rsnd_dmaen_stop,
-+	.pointer= rsnd_dmaen_pointer,
- };
+-static int asoc_simple_card_parse_of(struct device_node *node,
+-				     struct simple_card_data *priv)
++static int asoc_simple_card_parse_of(struct simple_card_data *priv)
  
- /*
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 96a567de5f14..d4f89d5e6994 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -269,6 +269,9 @@ struct rsnd_mod_ops {
- 			 struct rsnd_dai_stream *io,
- 			 struct snd_pcm_substream *substream,
- 			 struct snd_pcm_hw_params *hw_params);
-+	int (*pointer)(struct rsnd_mod *mod,
-+		       struct rsnd_dai_stream *io,
-+		       snd_pcm_uframes_t *pointer);
- 	int (*fallback)(struct rsnd_mod *mod,
- 			struct rsnd_dai_stream *io,
- 			struct rsnd_priv *priv);
-@@ -306,6 +309,7 @@ struct rsnd_mod {
-  * H	0: pcm_new
-  * H	0: fallback
-  * H	0: hw_params
-+ * H	0: pointer
-  */
- #define __rsnd_mod_shift_nolock_start	0
- #define __rsnd_mod_shift_nolock_stop	0
-@@ -319,6 +323,7 @@ struct rsnd_mod {
- #define __rsnd_mod_shift_pcm_new	28 /* always called */
- #define __rsnd_mod_shift_fallback	28 /* always called */
- #define __rsnd_mod_shift_hw_params	28 /* always called */
-+#define __rsnd_mod_shift_pointer	28 /* always called */
+ {
+ 	struct device *dev = simple_priv_to_dev(priv);
+ 	struct device_node *np;
+ 	struct snd_soc_card *card = simple_priv_to_card(priv);
++	struct device_node *node = dev->of_node;
+ 	unsigned int daifmt = 0;
+ 	bool is_fe;
+ 	int ret, i;
+@@ -281,7 +281,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	card->codec_conf	= &priv->codec_conf;
+ 	card->num_configs	= 1;
  
- #define __rsnd_mod_add_probe		0
- #define __rsnd_mod_add_remove		0
-@@ -332,6 +337,7 @@ struct rsnd_mod {
- #define __rsnd_mod_add_pcm_new		0
- #define __rsnd_mod_add_fallback		0
- #define __rsnd_mod_add_hw_params	0
-+#define __rsnd_mod_add_pointer		0
- 
- #define __rsnd_mod_call_probe		0
- #define __rsnd_mod_call_remove		0
-@@ -343,6 +349,7 @@ struct rsnd_mod {
- #define __rsnd_mod_call_pcm_new		0
- #define __rsnd_mod_call_fallback	0
- #define __rsnd_mod_call_hw_params	0
-+#define __rsnd_mod_call_pointer		0
- #define __rsnd_mod_call_nolock_start	0
- #define __rsnd_mod_call_nolock_stop	1
- 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index eddd8afa0825..2363d0beeafd 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -685,6 +685,17 @@ static int rsnd_ssi_common_probe(struct rsnd_mod *mod,
- 	return ret;
- }
- 
-+static int rsnd_ssi_pointer(struct rsnd_mod *mod,
-+			    struct rsnd_dai_stream *io,
-+			    snd_pcm_uframes_t *pointer)
-+{
-+	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
-+
-+	*pointer = bytes_to_frames(runtime, io->byte_pos);
-+
-+	return 0;
-+}
-+
- static struct rsnd_mod_ops rsnd_ssi_pio_ops = {
- 	.name	= SSI_NAME,
- 	.probe	= rsnd_ssi_common_probe,
-@@ -693,6 +704,7 @@ static struct rsnd_mod_ops rsnd_ssi_pio_ops = {
- 	.start	= rsnd_ssi_start,
- 	.stop	= rsnd_ssi_stop,
- 	.irq	= rsnd_ssi_irq,
-+	.pointer= rsnd_ssi_pointer,
- 	.pcm_new = rsnd_ssi_pcm_new,
- 	.hw_params = rsnd_ssi_hw_params,
- };
+-	ret = asoc_simple_card_parse_of(np, priv);
++	ret = asoc_simple_card_parse_of(priv);
+ 	if (ret < 0) {
+ 		if (ret != -EPROBE_DEFER)
+ 			dev_err(dev, "parse error %d\n", ret);
 -- 
 2.11.0
