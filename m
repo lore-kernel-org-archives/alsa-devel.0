@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-scu-card: remove duplicate paramera from asoc_simple_card_parse_of" to the asoc tree
-Date: Wed, 07 Jun 2017 20:31:22 +0100
-Message-ID: <E1dIgfq-0003Zq-Kn@debutante>
-References: <87vao83aeo.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: hdmi-codec: remove unused ratec" to the asoc tree
+Date: Wed, 07 Jun 2017 20:31:39 +0100
+Message-ID: <E1dIgg7-0003cz-PM@debutante>
+References: <87k24o4sr3.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87vao83aeo.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87k24o4sr3.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-scu-card: remove duplicate paramera from asoc_simple_card_parse_of
+   ASoC: hdmi-codec: remove unused ratec
 
 has been applied to the asoc tree at
 
@@ -37,46 +37,31 @@ to this mail.
 Thanks,
 Mark
 
->From 0d6b35212b451d4ac0c07c7b2b15b20ea763df5c Mon Sep 17 00:00:00 2001
+>From ca3b5ad30c0b32f8d12ddb307b698ff56d56c2aa Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 7 Jun 2017 00:37:30 +0000
-Subject: [PATCH] ASoC: simple-scu-card: remove duplicate paramera from
- asoc_simple_card_parse_of
+Date: Tue, 6 Jun 2017 23:16:01 +0000
+Subject: [PATCH] ASoC: hdmi-codec: remove unused ratec
+
+struct snd_pcm_hw_constraint_list ratec is not used.
+Let's remove it
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-scu-card.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/hdmi-codec.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
-index 9a251400685e..5faf5d6c48a2 100644
---- a/sound/soc/generic/simple-scu-card.c
-+++ b/sound/soc/generic/simple-scu-card.c
-@@ -192,13 +192,13 @@ static int asoc_simple_card_dai_link_of(struct device_node *np,
- 	return 0;
- }
- 
--static int asoc_simple_card_parse_of(struct device_node *node,
--				     struct simple_card_data *priv)
-+static int asoc_simple_card_parse_of(struct simple_card_data *priv)
- 
- {
- 	struct device *dev = simple_priv_to_dev(priv);
- 	struct device_node *np;
- 	struct snd_soc_card *card = simple_priv_to_card(priv);
-+	struct device_node *node = dev->of_node;
- 	unsigned int daifmt = 0;
- 	bool is_fe;
- 	int ret, i;
-@@ -281,7 +281,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 	card->codec_conf	= &priv->codec_conf;
- 	card->num_configs	= 1;
- 
--	ret = asoc_simple_card_parse_of(np, priv);
-+	ret = asoc_simple_card_parse_of(priv);
- 	if (ret < 0) {
- 		if (ret != -EPROBE_DEFER)
- 			dev_err(dev, "parse error %d\n", ret);
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 6d05161b625d..22ed0dc88f0a 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -282,7 +282,6 @@ struct hdmi_codec_priv {
+ 	struct hdmi_codec_daifmt daifmt[2];
+ 	struct mutex current_stream_lock;
+ 	struct snd_pcm_substream *current_stream;
+-	struct snd_pcm_hw_constraint_list ratec;
+ 	uint8_t eld[MAX_ELD_BYTES];
+ 	struct snd_pcm_chmap *chmap_info;
+ 	unsigned int chmap_idx;
 -- 
 2.11.0
