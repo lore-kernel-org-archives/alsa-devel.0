@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: cleanup pointer related code" to the asoc tree
-Date: Wed, 07 Jun 2017 20:31:05 +0100
-Message-ID: <E1dIgfZ-0003Xg-W8@debutante>
-References: <877f0o4pqz.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: update pointer more accurate" to the asoc tree
+Date: Wed, 07 Jun 2017 20:31:14 +0100
+Message-ID: <E1dIgfi-0003Yf-TD@debutante>
+References: <878tl44ps8.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <877f0o4pqz.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <878tl44ps8.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: cleanup pointer related code
+   ASoC: rsnd: update pointer more accurate
 
 has been applied to the asoc tree at
 
@@ -37,248 +37,179 @@ to this mail.
 Thanks,
 Mark
 
->From a97a06c7efc1ee34f500171f1c4e9608295bb79a Mon Sep 17 00:00:00 2001
+>From 07b7acb51d283d8469696c906b91f1882696a4d4 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 7 Jun 2017 00:20:47 +0000
-Subject: [PATCH] ASoC: rsnd: cleanup pointer related code
+Date: Wed, 7 Jun 2017 00:20:01 +0000
+Subject: [PATCH] ASoC: rsnd: update pointer more accurate
 
-Current rsnd driver is sharing pointer related code between
-PIO / DMA. But, it is used only PIO mode now, no longer needed.
-This patch cleanup these.
+Current rsnd driver updates pointer when DMA transfer was finished
+in DMA transfer mode. But PulseAudio requests more accurate
+pointer update when timer mode.
+This patch consider about DMA transfer residue and update more
+accurate pointer.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 42 ------------------------------
- sound/soc/sh/rcar/dma.c  |  6 +----
- sound/soc/sh/rcar/rsnd.h |  6 -----
- sound/soc/sh/rcar/ssi.c  | 67 +++++++++++++++++++++++++++++++++++++++++++++---
- 4 files changed, 65 insertions(+), 56 deletions(-)
+ sound/soc/sh/rcar/core.c |  6 ++++--
+ sound/soc/sh/rcar/dma.c  | 26 +++++++++++++++++++++++++-
+ sound/soc/sh/rcar/rsnd.h |  7 +++++++
+ sound/soc/sh/rcar/ssi.c  | 12 ++++++++++++
+ 4 files changed, 48 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 7a8c08933503..7c68f9d4a0ed 100644
+index 080431543141..bc12c449857a 100644
 --- a/sound/soc/sh/rcar/core.c
 +++ b/sound/soc/sh/rcar/core.c
-@@ -551,40 +551,6 @@ static struct rsnd_dai *rsnd_dai_to_rdai(struct snd_soc_dai *dai)
- /*
-  *	rsnd_soc_dai functions
-  */
--int rsnd_dai_pointer_offset(struct rsnd_dai_stream *io, int additional)
--{
--	struct snd_pcm_substream *substream = io->substream;
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	int pos = io->byte_pos + additional;
--
--	pos %= (runtime->periods * io->byte_per_period);
--
--	return pos;
--}
--
--bool rsnd_dai_pointer_update(struct rsnd_dai_stream *io, int byte)
--{
--	io->byte_pos += byte;
--
--	if (io->byte_pos >= io->next_period_byte) {
--		struct snd_pcm_substream *substream = io->substream;
--		struct snd_pcm_runtime *runtime = substream->runtime;
--
--		io->period_pos++;
--		io->next_period_byte += io->byte_per_period;
--
--		if (io->period_pos >= runtime->periods) {
--			io->byte_pos = 0;
--			io->period_pos = 0;
--			io->next_period_byte = io->byte_per_period;
--		}
--
--		return true;
--	}
--
--	return false;
--}
--
- void rsnd_dai_period_elapsed(struct rsnd_dai_stream *io)
- {
- 	struct snd_pcm_substream *substream = io->substream;
-@@ -602,15 +568,7 @@ void rsnd_dai_period_elapsed(struct rsnd_dai_stream *io)
- static void rsnd_dai_stream_init(struct rsnd_dai_stream *io,
- 				struct snd_pcm_substream *substream)
+@@ -968,12 +968,14 @@ static int rsnd_hw_params(struct snd_pcm_substream *substream,
+ 
+ static snd_pcm_uframes_t rsnd_pointer(struct snd_pcm_substream *substream)
  {
 -	struct snd_pcm_runtime *runtime = substream->runtime;
--
- 	io->substream		= substream;
--	io->byte_pos		= 0;
--	io->period_pos		= 0;
--	io->byte_per_period	= runtime->period_size *
--				  runtime->channels *
--				  samples_to_bytes(runtime, 1);
--	io->next_period_byte	= io->byte_per_period;
+ 	struct snd_soc_dai *dai = rsnd_substream_to_dai(substream);
+ 	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
+ 	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
++	snd_pcm_uframes_t pointer = 0;
++
++	rsnd_dai_call(pointer, io, &pointer);
+ 
+-	return bytes_to_frames(runtime, io->byte_pos);
++	return pointer;
  }
  
- static void rsnd_dai_stream_quit(struct rsnd_dai_stream *io)
+ static struct snd_pcm_ops rsnd_pcm_ops = {
 diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index 05e538f4c8d5..60aa5e96a49f 100644
+index 241cb3b08a07..05e538f4c8d5 100644
 --- a/sound/soc/sh/rcar/dma.c
 +++ b/sound/soc/sh/rcar/dma.c
-@@ -104,10 +104,6 @@ static void __rsnd_dmaen_complete(struct rsnd_mod *mod,
- 	 * In Gen2 case, it are Audio-DMAC, and Audio-DMAC-peri-peri.
- 	 * But, Audio-DMAC-peri-peri doesn't have interrupt,
- 	 * and this driver is assuming that here.
--	 *
--	 * If Audio-DMAC-peri-peri has interrpt,
--	 * rsnd_dai_pointer_update() will be called twice,
--	 * ant it will breaks io->byte_pos
- 	 */
- 	spin_lock_irqsave(&priv->lock, flags);
+@@ -25,6 +25,7 @@
  
-@@ -122,7 +118,7 @@ static void __rsnd_dmaen_complete(struct rsnd_mod *mod,
- 		 */
- 		rsnd_dmaen_sync(dmaen, io, dmaen->dma_cnt + 2);
+ struct rsnd_dmaen {
+ 	struct dma_chan		*chan;
++	dma_cookie_t		cookie;
+ 	dma_addr_t		dma_buf;
+ 	unsigned int		dma_len;
+ 	unsigned int		dma_period;
+@@ -292,7 +293,8 @@ static int rsnd_dmaen_start(struct rsnd_mod *mod,
+ 	for (i = 0; i < 2; i++)
+ 		rsnd_dmaen_sync(dmaen, io, i);
  
--		elapsed = rsnd_dai_pointer_update(io, io->byte_per_period);
-+		elapsed = true;
- 
- 		dmaen->dma_cnt++;
+-	if (dmaengine_submit(desc) < 0) {
++	dmaen->cookie = dmaengine_submit(desc);
++	if (dmaen->cookie < 0) {
+ 		dev_err(dev, "dmaengine_submit() fail\n");
+ 		return -EIO;
  	}
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index bd8def0bc212..6de5f7ec6464 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -432,10 +432,6 @@ struct rsnd_dai_stream {
- 	struct rsnd_mod *mod[RSND_MOD_MAX];
- 	struct rsnd_dai *rdai;
- 	u32 parent_ssi_status;
--	int byte_pos;
--	int period_pos;
--	int byte_per_period;
--	int next_period_byte;
- };
- #define rsnd_io_to_mod(io, i)	((i) < RSND_MOD_MAX ? (io)->mod[(i)] : NULL)
- #define rsnd_io_to_mod_ssi(io)	rsnd_io_to_mod((io), RSND_MOD_SSI)
-@@ -480,9 +476,7 @@ struct rsnd_dai {
- 
- struct rsnd_dai *rsnd_rdai_get(struct rsnd_priv *priv, int id);
- 
--bool rsnd_dai_pointer_update(struct rsnd_dai_stream *io, int cnt);
- void rsnd_dai_period_elapsed(struct rsnd_dai_stream *io);
--int rsnd_dai_pointer_offset(struct rsnd_dai_stream *io, int additional);
- int rsnd_dai_connect(struct rsnd_mod *mod,
- 		     struct rsnd_dai_stream *io,
- 		     enum rsnd_mod_type type);
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 59ca6e3f46bc..f7df3b5e2985 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -77,6 +77,11 @@ struct rsnd_ssi {
- 	int rate;
- 	int irq;
- 	unsigned int usrcnt;
-+
-+	int byte_pos;
-+	int period_pos;
-+	int byte_per_period;
-+	int next_period_byte;
- };
- 
- /* flags */
-@@ -374,6 +379,59 @@ static void rsnd_ssi_register_setup(struct rsnd_mod *mod)
- 					ssi->cr_mode); /* without EN */
- }
- 
-+static void rsnd_ssi_pointer_init(struct rsnd_mod *mod,
-+				  struct rsnd_dai_stream *io)
-+{
-+	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
-+	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
-+
-+	ssi->byte_pos		= 0;
-+	ssi->period_pos		= 0;
-+	ssi->byte_per_period	= runtime->period_size *
-+				  runtime->channels *
-+				  samples_to_bytes(runtime, 1);
-+	ssi->next_period_byte	= ssi->byte_per_period;
-+}
-+
-+static int rsnd_ssi_pointer_offset(struct rsnd_mod *mod,
-+				   struct rsnd_dai_stream *io,
-+				   int additional)
-+{
-+	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
-+	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
-+	int pos = ssi->byte_pos + additional;
-+
-+	pos %= (runtime->periods * ssi->byte_per_period);
-+
-+	return pos;
-+}
-+
-+static bool rsnd_ssi_pointer_update(struct rsnd_mod *mod,
-+				    struct rsnd_dai_stream *io,
-+				    int byte)
-+{
-+	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
-+
-+	ssi->byte_pos += byte;
-+
-+	if (ssi->byte_pos >= ssi->next_period_byte) {
-+		struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
-+
-+		ssi->period_pos++;
-+		ssi->next_period_byte += ssi->byte_per_period;
-+
-+		if (ssi->period_pos >= runtime->periods) {
-+			ssi->byte_pos = 0;
-+			ssi->period_pos = 0;
-+			ssi->next_period_byte = ssi->byte_per_period;
-+		}
-+
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
- /*
-  *	SSI mod common functions
-  */
-@@ -387,6 +445,8 @@ static int rsnd_ssi_init(struct rsnd_mod *mod,
- 	if (!rsnd_ssi_is_run_mods(mod, io))
- 		return 0;
- 
-+	rsnd_ssi_pointer_init(mod, io);
-+
- 	ssi->usrcnt++;
- 
- 	rsnd_mod_power_on(mod);
-@@ -566,7 +626,7 @@ static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
- 	if (!is_dma && (status & DIRQ)) {
- 		struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
- 		u32 *buf = (u32 *)(runtime->dma_area +
--				   rsnd_dai_pointer_offset(io, 0));
-+				   rsnd_ssi_pointer_offset(mod, io, 0));
- 		int shift = 0;
- 
- 		switch (runtime->sample_bits) {
-@@ -585,7 +645,7 @@ static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
- 		else
- 			*buf = (rsnd_mod_read(mod, SSIRDR) >> shift);
- 
--		elapsed = rsnd_dai_pointer_update(io, sizeof(*buf));
-+		elapsed = rsnd_ssi_pointer_update(mod, io, sizeof(*buf));
- 	}
- 
- 	/* DMA only */
-@@ -696,9 +756,10 @@ static int rsnd_ssi_pointer(struct rsnd_mod *mod,
- 			    struct rsnd_dai_stream *io,
- 			    snd_pcm_uframes_t *pointer)
- {
-+	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
- 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
- 
--	*pointer = bytes_to_frames(runtime, io->byte_pos);
-+	*pointer = bytes_to_frames(runtime, ssi->byte_pos);
- 
+@@ -348,12 +350,34 @@ static int rsnd_dmaen_attach(struct rsnd_dai_stream *io,
  	return 0;
  }
+ 
++static int rsnd_dmaen_pointer(struct rsnd_mod *mod,
++			      struct rsnd_dai_stream *io,
++			      snd_pcm_uframes_t *pointer)
++{
++	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
++	struct rsnd_dma *dma = rsnd_mod_to_dma(mod);
++	struct rsnd_dmaen *dmaen = rsnd_dma_to_dmaen(dma);
++	struct dma_tx_state state;
++	enum dma_status status;
++	unsigned int pos = 0;
++
++	status = dmaengine_tx_status(dmaen->chan, dmaen->cookie, &state);
++	if (status == DMA_IN_PROGRESS || status == DMA_PAUSED) {
++		if (state.residue > 0 && state.residue <= dmaen->dma_len)
++			pos = dmaen->dma_len - state.residue;
++	}
++	*pointer = bytes_to_frames(runtime, pos);
++
++	return 0;
++}
++
+ static struct rsnd_mod_ops rsnd_dmaen_ops = {
+ 	.name	= "audmac",
+ 	.nolock_start = rsnd_dmaen_nolock_start,
+ 	.nolock_stop  = rsnd_dmaen_nolock_stop,
+ 	.start	= rsnd_dmaen_start,
+ 	.stop	= rsnd_dmaen_stop,
++	.pointer= rsnd_dmaen_pointer,
+ };
+ 
+ /*
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 96a567de5f14..d4f89d5e6994 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -269,6 +269,9 @@ struct rsnd_mod_ops {
+ 			 struct rsnd_dai_stream *io,
+ 			 struct snd_pcm_substream *substream,
+ 			 struct snd_pcm_hw_params *hw_params);
++	int (*pointer)(struct rsnd_mod *mod,
++		       struct rsnd_dai_stream *io,
++		       snd_pcm_uframes_t *pointer);
+ 	int (*fallback)(struct rsnd_mod *mod,
+ 			struct rsnd_dai_stream *io,
+ 			struct rsnd_priv *priv);
+@@ -306,6 +309,7 @@ struct rsnd_mod {
+  * H	0: pcm_new
+  * H	0: fallback
+  * H	0: hw_params
++ * H	0: pointer
+  */
+ #define __rsnd_mod_shift_nolock_start	0
+ #define __rsnd_mod_shift_nolock_stop	0
+@@ -319,6 +323,7 @@ struct rsnd_mod {
+ #define __rsnd_mod_shift_pcm_new	28 /* always called */
+ #define __rsnd_mod_shift_fallback	28 /* always called */
+ #define __rsnd_mod_shift_hw_params	28 /* always called */
++#define __rsnd_mod_shift_pointer	28 /* always called */
+ 
+ #define __rsnd_mod_add_probe		0
+ #define __rsnd_mod_add_remove		0
+@@ -332,6 +337,7 @@ struct rsnd_mod {
+ #define __rsnd_mod_add_pcm_new		0
+ #define __rsnd_mod_add_fallback		0
+ #define __rsnd_mod_add_hw_params	0
++#define __rsnd_mod_add_pointer		0
+ 
+ #define __rsnd_mod_call_probe		0
+ #define __rsnd_mod_call_remove		0
+@@ -343,6 +349,7 @@ struct rsnd_mod {
+ #define __rsnd_mod_call_pcm_new		0
+ #define __rsnd_mod_call_fallback	0
+ #define __rsnd_mod_call_hw_params	0
++#define __rsnd_mod_call_pointer		0
+ #define __rsnd_mod_call_nolock_start	0
+ #define __rsnd_mod_call_nolock_stop	1
+ 
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index eddd8afa0825..2363d0beeafd 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -685,6 +685,17 @@ static int rsnd_ssi_common_probe(struct rsnd_mod *mod,
+ 	return ret;
+ }
+ 
++static int rsnd_ssi_pointer(struct rsnd_mod *mod,
++			    struct rsnd_dai_stream *io,
++			    snd_pcm_uframes_t *pointer)
++{
++	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
++
++	*pointer = bytes_to_frames(runtime, io->byte_pos);
++
++	return 0;
++}
++
+ static struct rsnd_mod_ops rsnd_ssi_pio_ops = {
+ 	.name	= SSI_NAME,
+ 	.probe	= rsnd_ssi_common_probe,
+@@ -693,6 +704,7 @@ static struct rsnd_mod_ops rsnd_ssi_pio_ops = {
+ 	.start	= rsnd_ssi_start,
+ 	.stop	= rsnd_ssi_stop,
+ 	.irq	= rsnd_ssi_irq,
++	.pointer= rsnd_ssi_pointer,
+ 	.pcm_new = rsnd_ssi_pcm_new,
+ 	.hw_params = rsnd_ssi_hw_params,
+ };
 -- 
 2.11.0
