@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ak4613: Improve counting DAI number" to
-	the asoc tree
-Date: Wed, 07 Jun 2017 20:31:36 +0100
-Message-ID: <E1dIgg4-0003c8-Pe@debutante>
-References: <1496813940-6053-1-git-send-email-ryo.kodama.vz@renesas.com>
+Subject: Applied "ASoC: topology: Fix potential build issues
+	with undeclared structs" to the asoc tree
+Date: Wed, 07 Jun 2017 20:31:43 +0100
+Message-ID: <E1dIggB-0003dn-N6@debutante>
+References: <1496760904-6427-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 178812671DE
- for <alsa-devel@alsa-project.org>; Wed,  7 Jun 2017 21:31:43 +0200 (CEST)
-In-Reply-To: <1496813940-6053-1-git-send-email-ryo.kodama.vz@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A971E2671CA
+ for <alsa-devel@alsa-project.org>; Wed,  7 Jun 2017 21:31:50 +0200 (CEST)
+In-Reply-To: <1496760904-6427-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ryo Kodama <ryo.kodama.vz@renesas.com>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ak4613: Improve counting DAI number
+   ASoC: topology: Fix potential build issues with undeclared structs
 
 has been applied to the asoc tree at
 
@@ -53,61 +53,36 @@ to this mail.
 Thanks,
 Mark
 
->From 411652982a20ab60957283e9084c81d791cb69f9 Mon Sep 17 00:00:00 2001
-From: Ryo Kodama <ryo.kodama.vz@renesas.com>
-Date: Wed, 7 Jun 2017 14:39:00 +0900
-Subject: [PATCH] ASoC: ak4613: Improve counting DAI number
+>From 294de6e372673229432dc8bcd80964223bc1589d Mon Sep 17 00:00:00 2001
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Date: Tue, 6 Jun 2017 15:55:04 +0100
+Subject: [PATCH] ASoC: topology: Fix potential build issues with undeclared
+ structs
 
-Add the startup function to count DAI instead of hw_params.
-This change matches the number of opened DAIs.
-If this change isn't applied, you may get unexpected error due to
-mismatching of count. Since the excution number of hw_params and
-shutdown may be different, the mismatching happens.
+We should be declaring snd_kcontrol_new and soc_dai_link as both are
+used within this header so need to be declared.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Ryo Kodama <ryo.kodama.vz@renesas.com>
+[Reworded commit message to indicate this wasn't an immediate build
+failure -- broonie]
+
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak4613.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ include/sound/soc-topology.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/ak4613.c b/sound/soc/codecs/ak4613.c
-index 557ac16d43e2..e3121ca3d1a2 100644
---- a/sound/soc/codecs/ak4613.c
-+++ b/sound/soc/codecs/ak4613.c
-@@ -252,6 +252,17 @@ static void ak4613_dai_shutdown(struct snd_pcm_substream *substream,
- 	mutex_unlock(&priv->lock);
- }
+diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
+index f9cc7b9271ac..b8da221615e0 100644
+--- a/include/sound/soc-topology.h
++++ b/include/sound/soc-topology.h
+@@ -28,6 +28,8 @@ struct snd_soc_component;
+ struct snd_soc_tplg_pcm_fe;
+ struct snd_soc_dapm_context;
+ struct snd_soc_card;
++struct snd_kcontrol_new;
++struct snd_soc_dai_link;
  
-+static int ak4613_dai_startup(struct snd_pcm_substream *substream,
-+			      struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_codec *codec = dai->codec;
-+	struct ak4613_priv *priv = snd_soc_codec_get_drvdata(codec);
-+
-+	priv->cnt++;
-+
-+	return 0;
-+}
-+
- static int ak4613_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- {
- 	struct snd_soc_codec *codec = dai->codec;
-@@ -349,7 +360,6 @@ static int ak4613_dai_hw_params(struct snd_pcm_substream *substream,
- 	if ((priv->iface == NULL) ||
- 	    (priv->iface == iface)) {
- 		priv->iface = iface;
--		priv->cnt++;
- 		ret = 0;
- 	}
- 	mutex_unlock(&priv->lock);
-@@ -398,6 +408,7 @@ static int ak4613_set_bias_level(struct snd_soc_codec *codec,
- }
- 
- static const struct snd_soc_dai_ops ak4613_dai_ops = {
-+	.startup	= ak4613_dai_startup,
- 	.shutdown	= ak4613_dai_shutdown,
- 	.set_fmt	= ak4613_dai_set_fmt,
- 	.hw_params	= ak4613_dai_hw_params,
+ /* object scan be loaded and unloaded in groups with identfying indexes */
+ #define SND_SOC_TPLG_INDEX_ALL	0	/* ID that matches all FW objects */
 -- 
 2.11.0
