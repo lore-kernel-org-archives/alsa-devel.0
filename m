@@ -1,37 +1,130 @@
-From: Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [PATCH v10] sun4i-codec: Add mixer controls: Line-In, FM-In, Mic
- 2, Capture Source, Differential Line-In.
-Date: Wed, 7 Jun 2017 15:37:48 +0800
-Message-ID: <CAGb2v641CX=rM_2shHoM1XxMp82gwFMz-Y_95RBhP5jbjmU7dw@mail.gmail.com>
-References: <20170607072718.18017-1-dannym@scratchpost.org> <20170607072718.18017-2-dannym@scratchpost.org>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 0/3] ALSA: pcm: add tracepoints for PCM
+	params refinement
+Date: Wed, 7 Jun 2017 16:50:42 +0900
+Message-ID: <c2534f9d-d2a1-2e0c-2beb-58bedbe2239f@sakamocchi.jp>
+References: <20170606234645.13775-1-o-takashi@sakamocchi.jp>
+ <s5hfufc5p65.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170607072718.18017-2-dannym@scratchpost.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Danny Milosavljevic <dannym@scratchpost.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 4F389266FEB
+ for <alsa-devel@alsa-project.org>; Wed,  7 Jun 2017 09:50:44 +0200 (CEST)
+In-Reply-To: <s5hfufc5p65.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 7, 2017 at 3:27 PM, Danny Milosavljevic
-<dannym@scratchpost.org> wrote:
-> Adds support for some mixer controls to sun4i-codec:
->  - Line-In
->  - FM-In
->  - Mic 2
->  - Capture Source
->  - Differential Line-In
->
-> It also adds a mux for the capture source and the PGA for the MIC2 preamp.
->
-> Where possible, it uses SOC_DAPM_DOUBLE in order to cut down on the number
-> of distinct controls in alsamixer.
+Hi,
 
-You are doing too many things in one patch.
+On Jun 7 2017 14:42, Takashi Iwai wrote:
+> On Wed, 07 Jun 2017 01:46:42 +0200,
+> Takashi Sakamoto wrote:
+>>
+>> Hi,
+>>
+>> This patchset is a part of my previous RFC and go for upstream.
+>> [alsa-devel] [PATCH RFC 00/21] ALSA: pcm: add tracepoints for PCM params operation
+>> http://mailman.alsa-project.org/pipermail/alsa-devel/2017-May/120548.html
+>>
+>> In ALSA PCM interface, applications can get hardware capability by ioctl(2)
+>> with SNDRV_PCM_IOCTL_HW_REFINE/SNDRV_PCM_IOCT_HW_PARAMS in a shape of
+>> 'struct snd_pcm_hw_params'. In kernel side, relevant processing is somewhat
+>> complicated and developers sometimes have hard time to debug drivers for PCM
+>> constraints and rules. This patchset adds tracepoints to assist their work.
+>>
+>> Changes:
+>>   - change print format
+>>   - rename events
+>>   - refactoring in the RFC will be done in my later work.
+>>
+>>
+>> This patchset adds two events; 'hw_interval_param' and 'hw_mask_param' in
+>> 'snd_pcm' subsystem. When these events are probed, tracer outputs below
+>> lines:
+>>
+>> hw_interval_param: 0,0,0,0 000/023 BUFFER_SIZE 0 0 [0 4294967295] 0 1 [0 4294967295]
+>> hw_interval_param: 0,0,0,0 000/023 BUFFER_BYTES 0 0 [0 4294967295] 0 1 [128 65536]
+>> hw_interval_param: 0,0,0,0 000/023 TICK_TIME 0 0 [0 4294967295] 0 0 [0 4294967295]
+>> hw_mask_param:     0,0,0,0 001/023 FORMAT 00000000000000000000001000000044 00000000000000000000001000000044
+>> hw_interval_param: 0,0,0,0 002/023 SAMPLE_BITS 0 1 [0 4294967295] 0 1 [16 32]
+>> hw_interval_param: 0,0,0,0 003/023 SAMPLE_BITS 0 1 [16 32] 0 1 [16 32]
+>>
+>> The first field represents PCM character device and subdevice for probed
+>> runtime of PCM substream. In the above case, '/dev/snd/pcmC0D0p' and
+>> first subdevice are used for runtime of PCM substream.
+> 
+> How about using snd_pcm_debug_name()?  It'll be like "pcmC0D1c:2" and
+> slightly more understandable than "0,1,1,2".
 
-Please split this up into 1 patch per control/mux/source/widget added,
-preceded by patches for any required cleanups.
+Yep. This looks a good idea, however for a reason I'm against it.
 
-ChenYu
+When mounting tracefs, you can see formats of the tracepoint. For example:
 
-> Signed-off-by: Danny Milosavljevic <dannym@scratchpost.org>
+$ cat /sys/kernel/debug/tracing/events/snd_pcm/hw_mask_param/format
+...
+format: field:int card: ...
+...
+print fmt: "%d,%d,%d,%d %03d/%03d %s %08x%08x%08x%08x %08x%08x%08x%08x",
+...
+
+This means that structured data is passed to userspace in a shape of 
+the 'format', then userspace application handle the data with the 'print 
+fmt' for friendly printing.
+
+If using strings generated by 'snd_pcm_debug_name()' for the printing, 
+we cannot write it in 'TP_printk()' field, because format in this field 
+just copied to userspace as is, as we just saw. It should be written in 
+'TP_fast_assign()' field in this case. This means that the structured 
+data need to include u8 array for the string.
+
+Of cource, we can program this tracepoint in your way. But to me this is 
+not so convenient, because it loses flexibility for userspace 
+applications to handle the structured data. The application should parse 
+the u8 array as pre-formatted text to reuse its elements; e.g. 
+subdevice. This is not so friendly in a point to write tracer program.
+
+>> The second field represents id of each rule applied to the runtime, and
+>> the total number of rules added to the runtime. Basically, when the rule
+>> is applied to the runtime, these events are probed, but lines with id 0
+>> are exceptions. They're application of constraints to the runtime.
+>>
+>> The third field is name of parameter in the runtime. The rest fields
+>> depends on type of the parameter (mask/interval).
+>>
+>>
+>> In ALSA PCM core, runtimes get 22 (or 21) rules as a default. In a below
+>> sample, the 21st rule is added by driver (snd-soc-imx-ssi.ko). The rest is
+>> added by snd-pcm.ko. In detail, please see 'snd_pcm_hw_constraints_init()'
+>> and 'snd_pcm_hw_constraints_complete()' in 'sound/core/pcm_native.c'.
+>>
+>> hw_interval_param: 0,0,0,0 019/023 PERIOD_TIME 0 0 [0 4294967295] 0 0 (166 4095875]
+>> hw_interval_param: 0,0,0,0 020/023 BUFFER_TIME 0 0 [0 4294967295] 0 0 (333 4096000]
+>> hw_interval_param: 0,0,0,0 021/023 PERIOD_SIZE 0 1 [16 32767] 0 1 [16 32766]
+>> hw_interval_param: 0,0,0,0 022/023 BUFFER_BYTES 0 1 [128 65536] 0 1 [128 65536]
+>> hw_interval_param: 0,0,0,0 023/023 RATE 0 0 [8000 96000] 0 0 [8000 96000]
+>> hw_mask_param:     0,0,0,0 001/023 FORMAT 00000000000000000000001000000044 00000000000000000000001000000044
+> 
+> Could you add these explanations in Documentation?  The cover letter
+> is gone at merging.
+
+Hm. Could I postpone the task for my later work in this development 
+period? Text writing takes me a bit time, but I have patches for the 
+rest of my RFC and firewire stack.
+
+
+Regards
+
+Takashi Sakamoto
