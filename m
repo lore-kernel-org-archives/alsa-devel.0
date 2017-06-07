@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/8] ALSA: pcm: add a helper function to
-	constrain mask-type parameters
-Date: Thu,  8 Jun 2017 08:10:19 +0900
-Message-ID: <20170607231026.23383-2-o-takashi@sakamocchi.jp>
+Subject: [PATCH 7/8] ALSA: pcm: use helper functions to check
+	whether parameters are determined
+Date: Thu,  8 Jun 2017 08:10:25 +0900
+Message-ID: <20170607231026.23383-8-o-takashi@sakamocchi.jp>
 References: <20170607231026.23383-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 0103926721F
- for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 01:10:38 +0200 (CEST)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 5118D267221
+ for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 01:10:42 +0200 (CEST)
 In-Reply-To: <20170607231026.23383-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,100 +25,32 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
-Application of constraints to mask-type parameters for PCM substream is
-done in a call of snd_pcm_hw_refine(), while the function includes much
-codes and is not enough friendly to readers.
+A commit 8bea869c5e56 ("ALSA: PCM midlevel: improve fifo_size handling")
+allows drivers to implement calculation of fifo size in parameter
+structure. This calculation runs only when two of the other parameters
+have single value.
 
-This commit splits the codes to a separated function so that readers can
-get it easily. I leave desicion into compilers to merge the function into
-its callee.
+In ALSA PCM core, there're some helper functions for the case. This commit
+applies the functions instead of value comparison.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/pcm_native.c | 57 ++++++++++++++++++++++++++++++++-----------------
- 1 file changed, 38 insertions(+), 19 deletions(-)
+ sound/core/pcm_native.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 2bde07a4a87f..b3e8aab3915e 100644
+index 7c74c293cab7..a56319df89d9 100644
 --- a/sound/core/pcm_native.c
 +++ b/sound/core/pcm_native.c
-@@ -253,6 +253,40 @@ static bool hw_support_mmap(struct snd_pcm_substream *substream)
- 	return true;
- }
- 
-+static int constrain_mask_params(struct snd_pcm_substream *substream,
-+				 struct snd_pcm_hw_params *params)
-+{
-+	struct snd_pcm_hw_constraints *constrs =
-+					&substream->runtime->hw_constraints;
-+	struct snd_mask *m;
-+	unsigned int k;
-+	int changed;
-+
-+	struct snd_mask __maybe_unused old_mask;
-+
-+	for (k = SNDRV_PCM_HW_PARAM_FIRST_MASK; k <= SNDRV_PCM_HW_PARAM_LAST_MASK; k++) {
-+		m = hw_param_mask(params, k);
-+		if (snd_mask_empty(m))
-+			return -EINVAL;
-+		if (!(params->rmask & (1 << k)))
-+			continue;
-+
-+		if (trace_hw_mask_param_enabled())
-+			old_mask = *m;
-+
-+		changed = snd_mask_refine(m, constrs_mask(constrs, k));
-+
-+		trace_hw_mask_param(substream, k, 0, &old_mask, m);
-+
-+		if (changed)
-+			params->cmask |= 1 << k;
-+		if (changed < 0)
-+			return changed;
-+	}
-+
-+	return 0;
-+}
-+
- int snd_pcm_hw_refine(struct snd_pcm_substream *substream, 
- 		      struct snd_pcm_hw_params *params)
- {
-@@ -265,6 +299,7 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
- 	unsigned int vstamps[SNDRV_PCM_HW_PARAM_LAST_INTERVAL + 1];
- 	unsigned int stamp = 2;
- 	int changed, again;
-+	int err;
- 
- 	struct snd_mask __maybe_unused old_mask;
- 	struct snd_interval __maybe_unused old_interval;
-@@ -278,25 +313,9 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
- 		params->rate_den = 0;
- 	}
- 
--	for (k = SNDRV_PCM_HW_PARAM_FIRST_MASK; k <= SNDRV_PCM_HW_PARAM_LAST_MASK; k++) {
--		m = hw_param_mask(params, k);
--		if (snd_mask_empty(m))
--			return -EINVAL;
--		if (!(params->rmask & (1 << k)))
--			continue;
--
--		if (trace_hw_mask_param_enabled())
--			old_mask = *m;
--
--		changed = snd_mask_refine(m, constrs_mask(constrs, k));
--
--		trace_hw_mask_param(substream, k, 0, &old_mask, m);
--
--		if (changed)
--			params->cmask |= 1 << k;
--		if (changed < 0)
--			return changed;
--	}
-+	err = constrain_mask_params(substream, params);
-+	if (err < 0)
-+		return err;
- 
- 	for (k = SNDRV_PCM_HW_PARAM_FIRST_INTERVAL; k <= SNDRV_PCM_HW_PARAM_LAST_INTERVAL; k++) {
- 		i = hw_param_interval(params, k);
+@@ -453,8 +453,7 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
+ 	if (!params->fifo_size) {
+ 		m = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+ 		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
+-		if (snd_mask_min(m) == snd_mask_max(m) &&
+-                    snd_interval_min(i) == snd_interval_max(i)) {
++		if (snd_mask_single(m) && snd_interval_single(i)) {
+ 			err = substream->ops->ioctl(substream,
+ 					SNDRV_PCM_IOCTL1_FIFO_SIZE, params);
+ 			if (err < 0)
 -- 
 2.11.0
