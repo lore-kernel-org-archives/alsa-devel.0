@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: Fix potential build issues
-	with undeclared structs" to the asoc tree
-Date: Wed, 07 Jun 2017 20:31:43 +0100
-Message-ID: <E1dIggB-0003dn-N6@debutante>
-References: <1496760904-6427-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: Applied "ASoC: topology: Dont free template strings
+	whilst they are in use." to the asoc tree
+Date: Wed, 07 Jun 2017 20:31:48 +0100
+Message-ID: <E1dIggG-0003ea-3t@debutante>
+References: <1496760309-6195-4-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A971E2671CA
- for <alsa-devel@alsa-project.org>; Wed,  7 Jun 2017 21:31:50 +0200 (CEST)
-In-Reply-To: <1496760904-6427-1-git-send-email-liam.r.girdwood@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 31FB22671A8
+ for <alsa-devel@alsa-project.org>; Wed,  7 Jun 2017 21:31:55 +0200 (CEST)
+In-Reply-To: <1496760309-6195-4-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: Fix potential build issues with undeclared structs
+   ASoC: topology: Dont free template strings whilst they are in use.
 
 has been applied to the asoc tree at
 
@@ -53,36 +53,41 @@ to this mail.
 Thanks,
 Mark
 
->From 294de6e372673229432dc8bcd80964223bc1589d Mon Sep 17 00:00:00 2001
+>From c3421a6a65abc636b067eb15a4c5e9cb59e91c95 Mon Sep 17 00:00:00 2001
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Date: Tue, 6 Jun 2017 15:55:04 +0100
-Subject: [PATCH] ASoC: topology: Fix potential build issues with undeclared
- structs
+Date: Tue, 6 Jun 2017 15:45:09 +0100
+Subject: [PATCH] ASoC: topology: Dont free template strings whilst they are in
+ use.
 
-We should be declaring snd_kcontrol_new and soc_dai_link as both are
-used within this header so need to be declared.
-
-[Reworded commit message to indicate this wasn't an immediate build
-failure -- broonie]
+Template name pointers are copied when creating new widgets and are freed
+in widget destroy.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-topology.h | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/soc-topology.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
-index f9cc7b9271ac..b8da221615e0 100644
---- a/include/sound/soc-topology.h
-+++ b/include/sound/soc-topology.h
-@@ -28,6 +28,8 @@ struct snd_soc_component;
- struct snd_soc_tplg_pcm_fe;
- struct snd_soc_dapm_context;
- struct snd_soc_card;
-+struct snd_kcontrol_new;
-+struct snd_soc_dai_link;
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index f24d1f2e82a0..7006cf3007b5 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1477,6 +1477,7 @@ static int soc_tplg_dapm_widget_create(struct soc_tplg *tplg,
+ 	if (template.id < 0)
+ 		return template.id;
  
- /* object scan be loaded and unloaded in groups with identfying indexes */
- #define SND_SOC_TPLG_INDEX_ALL	0	/* ID that matches all FW objects */
++	/* strings are allocated here, but used and freed by the widget */
+ 	template.name = kstrdup(w->name, GFP_KERNEL);
+ 	if (!template.name)
+ 		return -ENOMEM;
+@@ -1589,8 +1590,6 @@ static int soc_tplg_dapm_widget_create(struct soc_tplg *tplg,
+ 	widget->dobj.widget.kcontrol_type = kcontrol_type;
+ 	widget->dobj.ops = tplg->ops;
+ 	widget->dobj.index = tplg->index;
+-	kfree(template.sname);
+-	kfree(template.name);
+ 	list_add(&widget->dobj.list, &tplg->comp->dobj_list);
+ 
+ 	ret = soc_tplg_widget_ready(tplg, widget, w);
 -- 
 2.11.0
