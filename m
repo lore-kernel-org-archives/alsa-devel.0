@@ -1,15 +1,14 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v2 7/8] ALSA: pcm: use helper functions to
-	check whether parameters are determined
-Date: Fri,  9 Jun 2017 06:37:05 +0900
-Message-ID: <20170608213706.5420-8-o-takashi@sakamocchi.jp>
+Subject: [PATCH v2 6/8] ALSA: pcm: adaption of code formatting
+Date: Fri,  9 Jun 2017 06:37:04 +0900
+Message-ID: <20170608213706.5420-7-o-takashi@sakamocchi.jp>
 References: <20170608213706.5420-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 38A3D2673B7
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 4041B2673C0
  for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 23:37:29 +0200 (CEST)
 In-Reply-To: <20170608213706.5420-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,32 +24,61 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-A commit 8bea869c5e56 ("ALSA: PCM midlevel: improve fifo_size handling")
-allows drivers to implement calculation of fifo size in parameter
-structure. This calculation runs only when two of the other parameters
-have single value.
-
-In ALSA PCM core, there're some helper functions for the case. This commit
-applies the functions instead of value comparison.
+This commit modifies current for readability in below aspects:
+ - use bool type variable instead of int type variable assigned to 0/1
+ - move variable definition from loop to top of the function definition
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/pcm_native.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/core/pcm_native.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 40560e579d33..80275aa0bcca 100644
+index db4cdd114ed4..40560e579d33 100644
 --- a/sound/core/pcm_native.c
 +++ b/sound/core/pcm_native.c
-@@ -443,8 +443,7 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
- 	if (!params->fifo_size) {
- 		m = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
- 		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
--		if (snd_mask_min(m) == snd_mask_max(m) &&
--                    snd_interval_min(i) == snd_interval_max(i)) {
-+		if (snd_mask_single(m) && snd_interval_single(i)) {
- 			err = substream->ops->ioctl(substream,
- 					SNDRV_PCM_IOCTL1_FIFO_SIZE, params);
- 			if (err < 0)
+@@ -328,9 +328,11 @@ static int constrain_params_by_rules(struct snd_pcm_substream *substream,
+ 	unsigned int rstamps[constrs->rules_num];
+ 	unsigned int vstamps[SNDRV_PCM_HW_PARAM_LAST_INTERVAL + 1];
+ 	unsigned int stamp = 2;
++	struct snd_pcm_hw_rule *r;
++	unsigned int d;
+ 	struct snd_mask old_mask;
+ 	struct snd_interval old_interval;
+-	int again;
++	bool again;
+ 	int changed;
+ 
+ 	for (k = 0; k < constrs->rules_num; k++)
+@@ -338,10 +340,9 @@ static int constrain_params_by_rules(struct snd_pcm_substream *substream,
+ 	for (k = 0; k <= SNDRV_PCM_HW_PARAM_LAST_INTERVAL; k++)
+ 		vstamps[k] = (params->rmask & (1 << k)) ? 1 : 0;
+ retry:
+-	again = 0;
++	again = false;
+ 	for (k = 0; k < constrs->rules_num; k++) {
+-		struct snd_pcm_hw_rule *r = &constrs->rules[k];
+-		unsigned int d;
++		r = &constrs->rules[k];
+ 		if (r->cond && !(r->cond & params->flags))
+ 			continue;
+ 		for (d = 0; r->deps[d] >= 0; d++) {
+@@ -375,7 +376,7 @@ static int constrain_params_by_rules(struct snd_pcm_substream *substream,
+ 		if (changed && r->var >= 0) {
+ 			params->cmask |= (1 << r->var);
+ 			vstamps[r->var] = stamp;
+-			again = 1;
++			again = true;
+ 		}
+ 		if (changed < 0)
+ 			return changed;
+@@ -453,7 +454,6 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
+ 	params->rmask = 0;
+ 	return 0;
+ }
+-
+ EXPORT_SYMBOL(snd_pcm_hw_refine);
+ 
+ static int snd_pcm_hw_refine_user(struct snd_pcm_substream *substream,
 -- 
 2.11.0
