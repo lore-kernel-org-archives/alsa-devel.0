@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Back out post commit widget creation
-	changes" to the asoc tree
-Date: Thu, 08 Jun 2017 17:45:06 +0100
-Message-ID: <E1dJ0YU-0001xt-57@debutante>
-References: <20170608161054.31842-1-broonie@kernel.org>
+Subject: Re: [asoc:topic/topology 1/4]
+ sound/soc/soc-topology.c:352:42: error: 'struct snd_soc_tplg_ops' has no
+ member named 'widget_ready'
+Date: Thu, 8 Jun 2017 17:45:04 +0100
+Message-ID: <20170608164504.wjcozt5xk6qm4ywy@sirena.org.uk>
+References: <201706082300.rsQ3Mduh%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6644822472428283988=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 54BC326725C
- for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 18:45:15 +0200 (CEST)
-In-Reply-To: <20170608161054.31842-1-broonie@kernel.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8F2A626725C
+ for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 18:45:19 +0200 (CEST)
+In-Reply-To: <201706082300.rsQ3Mduh%fengguang.wu@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,97 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: kbuild test robot <fengguang.wu@intel.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: Back out post commit widget creation changes
+--===============6644822472428283988==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="6lmiuevulakakvlm"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--6lmiuevulakakvlm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Thu, Jun 08, 2017 at 11:35:04PM +0800, kbuild test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/topology
+> head:   294de6e372673229432dc8bcd80964223bc1589d
+> commit: c8597af855f3e34aaebaff0e5c3dbd07611c87f1 [1/4] ASoC: topology: Allow bespoke configuration post widget creation
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+I've reverted this for now.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--6lmiuevulakakvlm
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Mark
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlk5fw8ACgkQJNaLcl1U
+h9B7XQf9FjNwpUt1MCW6JdS66rdV9uGNwQQpcWEkdc6RPwpOP/czMDgSKmW+z2Q+
+LppNf03+cNy8Ib/H3MHBnlMVnzHQAvpxSovrD/Pm6AFPpH105Mum83TtAQ3HsPbN
+v+bqgLBhh/F9h2teHhOipuJJ9mnwxSYIPnwWgGOwwSfr9LNcGwhM6cmePi2LeaVQ
+84MQeyegCG6mHB1WQKyU44KkL76PRYT97SndYMymBT+f+rci4ur/aMxGUeL9JL7t
+dlPlb/zd6Y2IvHl6s73PfumXdja6P3IUuQrhUK1ScLgI6MRxNYgze8X1mhK5XKWS
+nA/kNn10YCnPVpalE5EeavF0p5ejeQ==
+=ZZil
+-----END PGP SIGNATURE-----
 
->From 102ebe266c317da59471e2cde0dce603de031482 Mon Sep 17 00:00:00 2001
-From: Mark Brown <broonie@kernel.org>
-Date: Thu, 8 Jun 2017 17:02:02 +0100
-Subject: [PATCH] ASoC: Back out post commit widget creation changes
+--6lmiuevulakakvlm--
 
-Due to build errors revert commit c8597af855f3 (ASoC: topology: Allow
-bespoke configuration post widget creation) until they can be fixed.
+--===============6644822472428283988==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-topology.c | 24 ++----------------------
- 1 file changed, 2 insertions(+), 22 deletions(-)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 7006cf3007b5..f4ec236a418e 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -344,24 +344,12 @@ static int soc_tplg_widget_load(struct soc_tplg *tplg,
- 	return 0;
- }
- 
--/* optionally pass new dynamic widget to component driver. This is mainly for
-- * external widgets where we can assign private data/ops */
--static int soc_tplg_widget_ready(struct soc_tplg *tplg,
--	struct snd_soc_dapm_widget *w, struct snd_soc_tplg_dapm_widget *tplg_w)
--{
--	if (tplg->comp && tplg->ops && tplg->ops->widget_ready)
--		return tplg->ops->widget_ready(tplg->comp, w, tplg_w);
--
--	return 0;
--}
--
- /* pass DAI configurations to component driver for extra initialization */
- static int soc_tplg_dai_load(struct soc_tplg *tplg,
--	struct snd_soc_dai_driver *dai_drv,
--	struct snd_soc_tplg_pcm *pcm, struct snd_soc_dai *dai)
-+	struct snd_soc_dai_driver *dai_drv)
- {
- 	if (tplg->comp && tplg->ops && tplg->ops->dai_load)
--		return tplg->ops->dai_load(tplg->comp, dai_drv, pcm, dai);
-+		return tplg->ops->dai_load(tplg->comp, dai_drv);
- 
- 	return 0;
- }
-@@ -1591,16 +1579,8 @@ static int soc_tplg_dapm_widget_create(struct soc_tplg *tplg,
- 	widget->dobj.ops = tplg->ops;
- 	widget->dobj.index = tplg->index;
- 	list_add(&widget->dobj.list, &tplg->comp->dobj_list);
--
--	ret = soc_tplg_widget_ready(tplg, widget, w);
--	if (ret < 0)
--		goto ready_err;
--
- 	return 0;
- 
--ready_err:
--	snd_soc_tplg_widget_remove(widget);
--	snd_soc_dapm_free_widget(widget);
- hdr_err:
- 	kfree(template.sname);
- err:
--- 
-2.11.0
+--===============6644822472428283988==--
