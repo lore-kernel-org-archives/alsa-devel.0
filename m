@@ -1,15 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v2 0/8] [PATCH 0/8] ALSA: pcm: code refactoring
-	for snd_pcm_hw_refine()
-Date: Fri,  9 Jun 2017 06:36:58 +0900
-Message-ID: <20170608213706.5420-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH v2 4/8] ALSA: pcm: use goto statement instead
+	of while statement to reduce indentation
+Date: Fri,  9 Jun 2017 06:37:02 +0900
+Message-ID: <20170608213706.5420-5-o-takashi@sakamocchi.jp>
+References: <20170608213706.5420-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id C77E32673B2
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id C6282267342
  for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 23:37:23 +0200 (CEST)
+In-Reply-To: <20170608213706.5420-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,72 +25,121 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+In a process to calculate parameters of PCM substream, application of all
+rules is iterated several times till parameter dependencies are satisfied.
+In current implementation, two loops are used for the design, however this
+brings two-level indentation and decline readability.
 
-This patchset is revised version of my previous one.
+This commit attempts to reduce the indentation by using goto statement,
+instead of outer while loop.
 
-[alsa-devel] [PATCH 0/8] ALSA: pcm: code refactoring for snd_pcm_hw_refine()
-http://mailman.alsa-project.org/pipermail/alsa-devel/2017-June/121443.html
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/core/pcm_native.c | 86 +++++++++++++++++++++++++------------------------
+ 1 file changed, 44 insertions(+), 42 deletions(-)
 
-Changes from v1:
- - get rid of __may_unused keyword
- - remove subtle changes
-
-Here, I repeat a description on my former message.
-
-In ALSA PCM interface, applications can get hardware capability as
-'struct snd_pcm_hw_params' type of data returned by a call of ioctl(2)
-with SNDRV_PCM_IOCTL_HW_REFINE/SNDRV_PCM_IOCTL_HW_PARAMS' commands. In
-kernel land, the data is prepared in 'snd_pcm_hw_refine()' in
-'sound/core/pcm_native.c'. This patchset is a code refactoring to this
-function.
-
-When applications execute open(2) to any PCM character device, runtime
-of corresponding PCM substream is created in kernel land. Then, the
-runtime gets information to configure the parameter data. When
-applications execute ioctl(2) with the above commands, the given
-parameter data is actually changed according to the information.
-
-The parameter data structure includes several types of information. 
-Major part of the parameter data is represented by two kinds of shape;
-mask ('struct snd_mask') and interval ('struct snd_interval'). 15
-types of data is pre-defined as 'SNDRV_PCM_HW_PARAM_XXX' macros with
-the two types.
-
-The runtime has several constraints, which is a kind of information to
-configure the parameters. There're two types of constraints; independent
-and dependent. The independent constrain is for each of single parameters.
-On the other hand, the dependent constrain is for each of combination
-between parameters, thus has specific structure, 'snd_pcm_hw_rule'. This
-structure describes relationships between several parameters.
-
-In 'sound/core/pcm_native.c', the above constraints and rules are
-applied to parameter data for userspace. This processing is done
-in 'snd_pcm_hw_refine()'. In this patchset, I attempt to clean up the
-processing so that developers easily understand it.
-
-This is a kind of refactoring, thus behaviour of the processing is not
-changed. Tracepoints added in my previous patchset is helpful for your
-test to check it. I wrote an application as low level program and
-it shall satisfies your interests about the above mechanism[1].
-
-[1] refine-pcm-params.c
-https://github.com/takaswie/alsa-ioctl-test/
-
-Takashi Sakamoto (8):
-  ALSA: pcm: add a helper function to constrain mask-type parameters
-  ALSA: pcm: add a helper function to constrain interval-type parameters
-  ALSA: pcm: add a helper function to apply parameter rules
-  ALSA: pcm: use goto statement instead of while statement to reduce
-    indentation
-  ALSA: pcm: remove function local variable with alternative evaluation
-  ALSA: pcm: adaption of code formatting
-  ALSA: pcm: use helper functions to check whether parameters are
-    determined
-  ALSA: pcm: add comment about application of rule to PCM parameters
-
- sound/core/pcm_native.c | 241 +++++++++++++++++++++++++++++++++---------------
- 1 file changed, 169 insertions(+), 72 deletions(-)
-
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 000e6e9a0c2b..41aeb6facdec 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -337,54 +337,56 @@ static int constrain_params_by_rules(struct snd_pcm_substream *substream,
+ 		rstamps[k] = 0;
+ 	for (k = 0; k <= SNDRV_PCM_HW_PARAM_LAST_INTERVAL; k++)
+ 		vstamps[k] = (params->rmask & (1 << k)) ? 1 : 0;
+-	do {
+-		again = 0;
+-		for (k = 0; k < constrs->rules_num; k++) {
+-			struct snd_pcm_hw_rule *r = &constrs->rules[k];
+-			unsigned int d;
+-			int doit = 0;
+-			if (r->cond && !(r->cond & params->flags))
+-				continue;
+-			for (d = 0; r->deps[d] >= 0; d++) {
+-				if (vstamps[r->deps[d]] > rstamps[k]) {
+-					doit = 1;
+-					break;
+-				}
++retry:
++	again = 0;
++	for (k = 0; k < constrs->rules_num; k++) {
++		struct snd_pcm_hw_rule *r = &constrs->rules[k];
++		unsigned int d;
++		int doit = 0;
++		if (r->cond && !(r->cond & params->flags))
++			continue;
++		for (d = 0; r->deps[d] >= 0; d++) {
++			if (vstamps[r->deps[d]] > rstamps[k]) {
++				doit = 1;
++				break;
+ 			}
+-			if (!doit)
+-				continue;
++		}
++		if (!doit)
++			continue;
+ 
+-			if (trace_hw_mask_param_enabled()) {
+-				if (hw_is_mask(r->var))
+-					old_mask = *hw_param_mask(params, r->var);
+-			}
+-			if (trace_hw_interval_param_enabled()) {
+-				if (hw_is_interval(r->var))
+-					old_interval = *hw_param_interval(params, r->var);
+-			}
++		if (trace_hw_mask_param_enabled()) {
++			if (hw_is_mask(r->var))
++				old_mask = *hw_param_mask(params, r->var);
++		}
++		if (trace_hw_interval_param_enabled()) {
++			if (hw_is_interval(r->var))
++				old_interval = *hw_param_interval(params, r->var);
++		}
+ 
+-			changed = r->func(params, r);
++		changed = r->func(params, r);
+ 
+-			if (hw_is_mask(r->var)) {
+-				trace_hw_mask_param(substream, r->var, k + 1,
+-					&old_mask, hw_param_mask(params, r->var));
+-			}
+-			if (hw_is_interval(r->var)) {
+-				trace_hw_interval_param(substream, r->var, k + 1,
+-					&old_interval, hw_param_interval(params, r->var));
+-			}
++		if (hw_is_mask(r->var)) {
++			trace_hw_mask_param(substream, r->var, k + 1,
++				&old_mask, hw_param_mask(params, r->var));
++		}
++		if (hw_is_interval(r->var)) {
++			trace_hw_interval_param(substream, r->var, k + 1,
++				&old_interval, hw_param_interval(params, r->var));
++		}
+ 
+-			rstamps[k] = stamp;
+-			if (changed && r->var >= 0) {
+-				params->cmask |= (1 << r->var);
+-				vstamps[r->var] = stamp;
+-				again = 1;
+-			}
+-			if (changed < 0)
+-				return changed;
+-			stamp++;
++		rstamps[k] = stamp;
++		if (changed && r->var >= 0) {
++			params->cmask |= (1 << r->var);
++			vstamps[r->var] = stamp;
++			again = 1;
+ 		}
+-	} while (again);
++		if (changed < 0)
++			return changed;
++		stamp++;
++	}
++
++	if (again)
++		goto retry;
+ 
+ 	return 0;
+ }
 -- 
 2.11.0
