@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 07/31] ALSA: parisc: Constify hw_constraints
-Date: Thu,  8 Jun 2017 23:08:28 +0200
-Message-ID: <20170608210852.13058-8-tiwai@suse.de>
+Subject: [PATCH 03/31] ALSA: es18xx: Constify hw_constraints
+Date: Thu,  8 Jun 2017 23:08:24 +0200
+Message-ID: <20170608210852.13058-4-tiwai@suse.de>
 References: <20170608210852.13058-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 2FB11267339
- for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 23:08:59 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DC362668BF
+ for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 23:08:56 +0200 (CEST)
 Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 7D08AAD24
+ by mx1.suse.de (Postfix) with ESMTP id 56BBDAC03
  for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 21:08:56 +0000 (UTC)
 In-Reply-To: <20170608210852.13058-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -32,38 +32,45 @@ hardening.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/parisc/harmony.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/isa/es18xx.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/parisc/harmony.c b/sound/parisc/harmony.c
-index 99b64cb3cef8..5911eb35c2a3 100644
---- a/sound/parisc/harmony.c
-+++ b/sound/parisc/harmony.c
-@@ -83,14 +83,14 @@ MODULE_DEVICE_TABLE(parisc, snd_harmony_devtable);
- #define NAME "harmony"
- #define PFX  NAME ": "
+diff --git a/sound/isa/es18xx.c b/sound/isa/es18xx.c
+index 0cabe2b8974f..ae17a6584061 100644
+--- a/sound/isa/es18xx.c
++++ b/sound/isa/es18xx.c
+@@ -369,7 +369,7 @@ static int snd_es18xx_reset_fifo(struct snd_es18xx *chip)
+ 	return 0;
+ }
  
--static unsigned int snd_harmony_rates[] = {
-+static const unsigned int snd_harmony_rates[] = {
- 	5512, 6615, 8000, 9600,
- 	11025, 16000, 18900, 22050,
- 	27428, 32000, 33075, 37800,
- 	44100, 48000
+-static struct snd_ratnum new_clocks[2] = {
++static const struct snd_ratnum new_clocks[2] = {
+ 	{
+ 		.num = 793800,
+ 		.den_min = 1,
+@@ -384,12 +384,12 @@ static struct snd_ratnum new_clocks[2] = {
+ 	}
  };
  
--static unsigned int rate_bits[14] = {
-+static const unsigned int rate_bits[14] = {
- 	HARMONY_SR_5KHZ, HARMONY_SR_6KHZ, HARMONY_SR_8KHZ,
- 	HARMONY_SR_9KHZ, HARMONY_SR_11KHZ, HARMONY_SR_16KHZ,
- 	HARMONY_SR_18KHZ, HARMONY_SR_22KHZ, HARMONY_SR_27KHZ,
-@@ -98,7 +98,7 @@ static unsigned int rate_bits[14] = {
- 	HARMONY_SR_44KHZ, HARMONY_SR_48KHZ
+-static struct snd_pcm_hw_constraint_ratnums new_hw_constraints_clocks = {
++static const struct snd_pcm_hw_constraint_ratnums new_hw_constraints_clocks = {
+ 	.nrats = 2,
+ 	.rats = new_clocks,
  };
  
--static struct snd_pcm_hw_constraint_list hw_constraint_rates = {
-+static const struct snd_pcm_hw_constraint_list hw_constraint_rates = {
- 	.count = ARRAY_SIZE(snd_harmony_rates),
- 	.list = snd_harmony_rates,
- 	.mask = 0,
+-static struct snd_ratnum old_clocks[2] = {
++static const struct snd_ratnum old_clocks[2] = {
+ 	{
+ 		.num = 795444,
+ 		.den_min = 1,
+@@ -404,7 +404,7 @@ static struct snd_ratnum old_clocks[2] = {
+ 	}
+ };
+ 
+-static struct snd_pcm_hw_constraint_ratnums old_hw_constraints_clocks  = {
++static const struct snd_pcm_hw_constraint_ratnums old_hw_constraints_clocks  = {
+ 	.nrats = 2,
+ 	.rats = old_clocks,
+ };
 -- 
 2.13.0
