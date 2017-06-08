@@ -1,35 +1,38 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 02/17] mfd: madera: Add DT bindings for Cirrus Logic
- Madera codecs
-Date: Thu, 8 Jun 2017 14:12:52 -0500
-Message-ID: <20170608191252.enk4bmxibnum24ni@rob-hp-laptop>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v3 10/17] pinctrl: madera: Add DT bindings for Cirrus
+ Logic Madera codecs
+Date: Thu, 8 Jun 2017 14:15:42 -0500
+Message-ID: <20170608191542.gsjokatnne5yn2jk@rob-hp-laptop>
 References: <1496415790-19164-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <1496415790-19164-3-git-send-email-rf@opensource.wolfsonmicro.com>
+ <1496415790-19164-11-git-send-email-rf@opensource.wolfsonmicro.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-gpio-owner@vger.kernel.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 Content-Disposition: inline
-In-Reply-To: <1496415790-19164-3-git-send-email-rf@opensource.wolfsonmicro.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: lee.jones@linaro.org, broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, tglx@linutronix.de, jason@lakedaemon.net, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <1496415790-19164-11-git-send-email-rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
+Cc: lee.jones-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linus.walleij-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org, gnurou-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, tglx-hfZtesqFncYOwBW4kG4KsQ@public.gmane.org, jason-NLaQJdtUoK4Be96aLqz0jA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, patches-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org, linux-gpio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 02, 2017 at 04:02:55PM +0100, Richard Fitzgerald wrote:
-> Specification of the bindings for the parent MFD driver component
-> of the Cirrus Logic Madera codec drivers.
+On Fri, Jun 02, 2017 at 04:03:03PM +0100, Richard Fitzgerald wrote:
+> This is the binding description of the pinctrl driver for Cirru Logic
+> Madera codecs. The binding uses the generic pinctrl binding so  the main
+> purpose here is to describe the device-specific names for groups and
+> functions.
 > 
-> Note that although the interrupt controller and GPIO are child
-> drivers their required bindings are trivial, mandatory, and exist
-> within the parent MFD node so are documented here.
-> 
-> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+> Signed-off-by: Richard Fitzgerald <rf-yzvPICuk2AATkU/dhu1WVueM+bqZidxxQQ4Iyu8u01E@public.gmane.org>
 > ---
 > Changes since V2:
-> - Moved the gpio driver bindings into the main MFD binding doc
-> 
->  Documentation/devicetree/bindings/mfd/madera.txt | 102 +++++++++++++++++++++++
->  1 file changed, 102 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/madera.txt
+> - Edits to take account of change requested by DT maintainer to keep the child
+>   bindings are part of the parent MFD node instead of per-driver child nodes
+>   
+>  .../bindings/pinctrl/cirrus,madera-pinctrl.txt     | 99 ++++++++++++++++++++++
+>  1 file changed, 99 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/cirrus,madera-pinctrl.txt
 
-Acked-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
