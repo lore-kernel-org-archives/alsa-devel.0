@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 02/31] ALSA: es1688: Constify hw_constraints
-Date: Thu,  8 Jun 2017 23:08:23 +0200
-Message-ID: <20170608210852.13058-3-tiwai@suse.de>
+Subject: [PATCH 08/31] ALSA: ali5451: Constify hw_constraints
+Date: Thu,  8 Jun 2017 23:08:29 +0200
+Message-ID: <20170608210852.13058-9-tiwai@suse.de>
 References: <20170608210852.13058-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 0EC322668F0
- for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 23:08:56 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 301D1267342
+ for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 23:08:59 +0200 (CEST)
 Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 56667AB5D
+ by mx1.suse.de (Postfix) with ESMTP id 7FBDEAD74
  for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 21:08:56 +0000 (UTC)
 In-Reply-To: <20170608210852.13058-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -32,30 +32,23 @@ hardening.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/isa/es1688/es1688_lib.c | 4 ++--
+ sound/pci/ali5451/ali5451.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/isa/es1688/es1688_lib.c b/sound/isa/es1688/es1688_lib.c
-index 81cf26fa28d6..5d3df96c5e5b 100644
---- a/sound/isa/es1688/es1688_lib.c
-+++ b/sound/isa/es1688/es1688_lib.c
-@@ -290,7 +290,7 @@ static int snd_es1688_init(struct snd_es1688 * chip, int enable)
- 
-  */
- 
--static struct snd_ratnum clocks[2] = {
-+static const struct snd_ratnum clocks[2] = {
- 	{
- 		.num = 795444,
- 		.den_min = 1,
-@@ -305,7 +305,7 @@ static struct snd_ratnum clocks[2] = {
- 	}
- };
- 
--static struct snd_pcm_hw_constraint_ratnums hw_constraints_clocks  = {
-+static const struct snd_pcm_hw_constraint_ratnums hw_constraints_clocks  = {
- 	.nrats = 2,
- 	.rats = clocks,
- };
+diff --git a/sound/pci/ali5451/ali5451.c b/sound/pci/ali5451/ali5451.c
+index 34bbc2e730a6..8567f1e5b9cf 100644
+--- a/sound/pci/ali5451/ali5451.c
++++ b/sound/pci/ali5451/ali5451.c
+@@ -1602,8 +1602,8 @@ static struct snd_pcm_hardware snd_ali_modem =
+ static int snd_ali_modem_open(struct snd_pcm_substream *substream, int rec,
+ 			      int channel)
+ {
+-	static unsigned int rates[] = {8000, 9600, 12000, 16000};
+-	static struct snd_pcm_hw_constraint_list hw_constraint_rates = {
++	static const unsigned int rates[] = {8000, 9600, 12000, 16000};
++	static const struct snd_pcm_hw_constraint_list hw_constraint_rates = {
+ 		.count = ARRAY_SIZE(rates),
+ 		.list = rates,
+ 		.mask = 0,
 -- 
 2.13.0
