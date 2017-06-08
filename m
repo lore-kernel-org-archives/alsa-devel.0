@@ -1,53 +1,61 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v3 13/17] ASoC: madera: Add DT bindings for Cirrus Logic
- Madera codecs
-Date: Thu, 8 Jun 2017 14:17:53 -0500
-Message-ID: <20170608191753.aq2hsgcf5fwnelnd@rob-hp-laptop>
-References: <1496415790-19164-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <1496415790-19164-14-git-send-email-rf@opensource.wolfsonmicro.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 01/31] ALSA: cs423x: Constify hw_constraints
+Date: Thu,  8 Jun 2017 23:08:22 +0200
+Message-ID: <20170608210852.13058-2-tiwai@suse.de>
+References: <20170608210852.13058-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-gpio-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1496415790-19164-14-git-send-email-rf@opensource.wolfsonmicro.com>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: lee.jones@linaro.org, broonie@kernel.org, linus.walleij@linaro.org, gnurou@gmail.com, tglx@linutronix.de, jason@lakedaemon.net, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B353266847
+ for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 23:08:56 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 5CBC1AC9C
+ for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 21:08:56 +0000 (UTC)
+In-Reply-To: <20170608210852.13058-1-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 02, 2017 at 04:03:06PM +0100, Richard Fitzgerald wrote:
-> The Cirrus Logic Madera codecs are a family of related codecs with
-> extensive digital and analogue I/O, digital mixing and routing,
-> signal processing and programmable DSPs.
-> 
-> Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-> ---
-> Changes since V2:
-> - Edits to take account of removing the child driver node and moving these
->   bindings to be part of the parent MFD node
-> - Improve descriptions of dmic-ref and inmode
-> - Changed example to use defined constants instead of magic numbers
-> 
->  Documentation/devicetree/bindings/sound/madera.txt | 67 ++++++++++++++++++++++
->  1 file changed, 67 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/madera.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/madera.txt b/Documentation/devicetree/bindings/sound/madera.txt
-> new file mode 100644
-> index 0000000..1114fcf
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/madera.txt
-> @@ -0,0 +1,67 @@
-> +Cirrus Logic Madera class audio codecs
-> +
-> +This describes audio configuration bindings for these codecs.
-> +
-> +See also the core bindings for the parent MFD driver:
-> +See Documentation/devicetree/bindings/mfd/madera.txt
-> +
-> +and defines for values used in these bindings:
-> +include/dt-bindings/sound/madera.h
+snd_pcm_hw_constraint_list(), *_ratnums() and *_ratdens() receive the
+const pointers.  Constify the corresponding static objects for better
+hardening.
 
-This file should be part of this commit. With that,
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/isa/cs423x/cs4236_lib.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Acked-by: Rob Herring <robh@kernel.org>
+diff --git a/sound/isa/cs423x/cs4236_lib.c b/sound/isa/cs423x/cs4236_lib.c
+index 2b7cc596f4c6..2012936f6756 100644
+--- a/sound/isa/cs423x/cs4236_lib.c
++++ b/sound/isa/cs423x/cs4236_lib.c
+@@ -138,7 +138,7 @@ static unsigned char snd_cs4236_ctrl_in(struct snd_wss *chip, unsigned char reg)
+ 
+ #define CLOCKS 8
+ 
+-static struct snd_ratnum clocks[CLOCKS] = {
++static const struct snd_ratnum clocks[CLOCKS] = {
+ 	{ .num = 16934400, .den_min = 353, .den_max = 353, .den_step = 1 },
+ 	{ .num = 16934400, .den_min = 529, .den_max = 529, .den_step = 1 },
+ 	{ .num = 16934400, .den_min = 617, .den_max = 617, .den_step = 1 },
+@@ -149,7 +149,7 @@ static struct snd_ratnum clocks[CLOCKS] = {
+ 	{ .num = 16934400/16, .den_min = 21, .den_max = 192, .den_step = 1 }
+ };
+ 
+-static struct snd_pcm_hw_constraint_ratnums hw_constraints_clocks = {
++static const struct snd_pcm_hw_constraint_ratnums hw_constraints_clocks = {
+ 	.nrats = CLOCKS,
+ 	.rats = clocks,
+ };
+-- 
+2.13.0
