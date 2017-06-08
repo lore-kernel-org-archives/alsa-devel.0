@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 18/31] ALSA: es1938: Constify hw_constraints
-Date: Thu,  8 Jun 2017 23:08:39 +0200
-Message-ID: <20170608210852.13058-19-tiwai@suse.de>
+Subject: [PATCH 14/31] ALSA: cs46xx: Constify hw_constraints
+Date: Thu,  8 Jun 2017 23:08:35 +0200
+Message-ID: <20170608210852.13058-15-tiwai@suse.de>
 References: <20170608210852.13058-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 453B72673B9
- for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 23:09:00 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A8042673B0
+ for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 23:08:59 +0200 (CEST)
 Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id AA73BADB1
+ by mx1.suse.de (Postfix) with ESMTP id 9EFA9AD8B
  for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 21:08:56 +0000 (UTC)
 In-Reply-To: <20170608210852.13058-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -32,30 +32,24 @@ hardening.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/es1938.c | 4 ++--
+ sound/pci/cs46xx/cs46xx_lib.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/es1938.c b/sound/pci/es1938.c
-index a544cd52f73a..069902a06f00 100644
---- a/sound/pci/es1938.c
-+++ b/sound/pci/es1938.c
-@@ -436,7 +436,7 @@ static void snd_es1938_reset_fifo(struct es1938 *chip)
- 	outb(0, SLSB_REG(chip, RESET));
- }
+diff --git a/sound/pci/cs46xx/cs46xx_lib.c b/sound/pci/cs46xx/cs46xx_lib.c
+index ae2aad52ea6f..709fb1a503b7 100644
+--- a/sound/pci/cs46xx/cs46xx_lib.c
++++ b/sound/pci/cs46xx/cs46xx_lib.c
+@@ -1482,9 +1482,9 @@ static struct snd_pcm_hardware snd_cs46xx_capture =
  
--static struct snd_ratnum clocks[2] = {
-+static const struct snd_ratnum clocks[2] = {
- 	{
- 		.num = 793800,
- 		.den_min = 1,
-@@ -451,7 +451,7 @@ static struct snd_ratnum clocks[2] = {
- 	}
- };
+ #ifdef CONFIG_SND_CS46XX_NEW_DSP
  
--static struct snd_pcm_hw_constraint_ratnums hw_constraints_clocks = {
-+static const struct snd_pcm_hw_constraint_ratnums hw_constraints_clocks = {
- 	.nrats = 2,
- 	.rats = clocks,
- };
+-static unsigned int period_sizes[] = { 32, 64, 128, 256, 512, 1024, 2048 };
++static const unsigned int period_sizes[] = { 32, 64, 128, 256, 512, 1024, 2048 };
+ 
+-static struct snd_pcm_hw_constraint_list hw_constraints_period_sizes = {
++static const struct snd_pcm_hw_constraint_list hw_constraints_period_sizes = {
+ 	.count = ARRAY_SIZE(period_sizes),
+ 	.list = period_sizes,
+ 	.mask = 0
 -- 
 2.13.0
