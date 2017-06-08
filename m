@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 20/31] ALSA: ice1712: Constify hw_constraints
-Date: Thu,  8 Jun 2017 23:08:41 +0200
-Message-ID: <20170608210852.13058-21-tiwai@suse.de>
+Subject: [PATCH 13/31] ALSA: cmipci: Constify hw_constraints
+Date: Thu,  8 Jun 2017 23:08:34 +0200
+Message-ID: <20170608210852.13058-14-tiwai@suse.de>
 References: <20170608210852.13058-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 44C122673B7
+ by alsa0.perex.cz (Postfix) with ESMTP id 443AF2673B5
  for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 23:09:00 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id AFAEFADB5
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id A746CAD93
  for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 21:08:56 +0000 (UTC)
 In-Reply-To: <20170608210852.13058-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -32,39 +32,47 @@ hardening.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/ice1712/ice1712.c | 4 ++--
- sound/pci/ice1712/ice1712.h | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ sound/pci/cmipci.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/sound/pci/ice1712/ice1712.c b/sound/pci/ice1712/ice1712.c
-index 6b650ab2a084..0e66afa403a3 100644
---- a/sound/pci/ice1712/ice1712.c
-+++ b/sound/pci/ice1712/ice1712.c
-@@ -932,10 +932,10 @@ static int snd_ice1712_pcm_ds(struct snd_ice1712 *ice, int device)
-  *  PCM code - professional part (multitrack)
+diff --git a/sound/pci/cmipci.c b/sound/pci/cmipci.c
+index 745a0a3743b4..a460cb63e971 100644
+--- a/sound/pci/cmipci.c
++++ b/sound/pci/cmipci.c
+@@ -719,18 +719,18 @@ static int snd_cmipci_hw_free(struct snd_pcm_substream *substream)
+ /*
   */
  
--static unsigned int rates[] = { 8000, 9600, 11025, 12000, 16000, 22050, 24000,
-+static const unsigned int rates[] = { 8000, 9600, 11025, 12000, 16000, 22050, 24000,
- 				32000, 44100, 48000, 64000, 88200, 96000 };
+-static unsigned int hw_channels[] = {1, 2, 4, 6, 8};
+-static struct snd_pcm_hw_constraint_list hw_constraints_channels_4 = {
++static const unsigned int hw_channels[] = {1, 2, 4, 6, 8};
++static const struct snd_pcm_hw_constraint_list hw_constraints_channels_4 = {
+ 	.count = 3,
+ 	.list = hw_channels,
+ 	.mask = 0,
+ };
+-static struct snd_pcm_hw_constraint_list hw_constraints_channels_6 = {
++static const struct snd_pcm_hw_constraint_list hw_constraints_channels_6 = {
+ 	.count = 4,
+ 	.list = hw_channels,
+ 	.mask = 0,
+ };
+-static struct snd_pcm_hw_constraint_list hw_constraints_channels_8 = {
++static const struct snd_pcm_hw_constraint_list hw_constraints_channels_8 = {
+ 	.count = 5,
+ 	.list = hw_channels,
+ 	.mask = 0,
+@@ -1597,9 +1597,9 @@ static struct snd_pcm_hardware snd_cmipci_capture_spdif =
+ 	.fifo_size =		0,
+ };
  
+-static unsigned int rate_constraints[] = { 5512, 8000, 11025, 16000, 22050,
++static const unsigned int rate_constraints[] = { 5512, 8000, 11025, 16000, 22050,
+ 			32000, 44100, 48000, 88200, 96000, 128000 };
 -static struct snd_pcm_hw_constraint_list hw_constraints_rates = {
 +static const struct snd_pcm_hw_constraint_list hw_constraints_rates = {
- 	.count = ARRAY_SIZE(rates),
- 	.list = rates,
- 	.mask = 0,
-diff --git a/sound/pci/ice1712/ice1712.h b/sound/pci/ice1712/ice1712.h
-index 58f8f2ae758d..5cfba09c9761 100644
---- a/sound/pci/ice1712/ice1712.h
-+++ b/sound/pci/ice1712/ice1712.h
-@@ -348,7 +348,7 @@ struct snd_ice1712 {
- 
- 	struct mutex open_mutex;
- 	struct snd_pcm_substream *pcm_reserved[4];
--	struct snd_pcm_hw_constraint_list *hw_rates; /* card-specific rate constraints */
-+	const struct snd_pcm_hw_constraint_list *hw_rates; /* card-specific rate constraints */
- 
- 	unsigned int akm_codecs;
- 	struct snd_akm4xxx *akm;
+ 		.count = ARRAY_SIZE(rate_constraints),
+ 		.list = rate_constraints,
+ 		.mask = 0,
 -- 
 2.13.0
