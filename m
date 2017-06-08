@@ -1,14 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/7] ASoC: cs35l34: Constify hw_constraints
-Date: Thu,  8 Jun 2017 23:37:19 +0200
-Message-ID: <20170608213725.5378-2-tiwai@suse.de>
+Subject: [PATCH 3/7] ASoC: intel: bxt: Constify hw_constraints
+Date: Thu,  8 Jun 2017 23:37:21 +0200
+Message-ID: <20170608213725.5378-4-tiwai@suse.de>
 References: <20170608213725.5378-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id BC5E32673D6
+ by alsa0.perex.cz (Postfix) with ESMTP id BDB2C2673DC
  for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 23:37:33 +0200 (CEST)
 In-Reply-To: <20170608213725.5378-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -30,27 +30,97 @@ hardening.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/cs35l34.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/bxt_da7219_max98357a.c | 12 ++++++------
+ sound/soc/intel/boards/bxt_rt298.c            | 12 ++++++------
+ 2 files changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/codecs/cs35l34.c b/sound/soc/codecs/cs35l34.c
-index 7c5d1510cf2c..0a747c66cc6c 100644
---- a/sound/soc/codecs/cs35l34.c
-+++ b/sound/soc/codecs/cs35l34.c
-@@ -567,12 +567,12 @@ static int cs35l34_pcm_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
+diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+index 3a8c4d954a91..1429eb391da8 100644
+--- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
++++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+@@ -238,31 +238,31 @@ static int broxton_da7219_fe_init(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
  }
  
--static unsigned int cs35l34_src_rates[] = {
-+static const unsigned int cs35l34_src_rates[] = {
- 	8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000
+-static unsigned int rates[] = {
++static const unsigned int rates[] = {
+ 	48000,
  };
  
- 
--static struct snd_pcm_hw_constraint_list cs35l34_constraints = {
-+static const struct snd_pcm_hw_constraint_list cs35l34_constraints = {
- 	.count  = ARRAY_SIZE(cs35l34_src_rates),
- 	.list   = cs35l34_src_rates,
+-static struct snd_pcm_hw_constraint_list constraints_rates = {
++static const struct snd_pcm_hw_constraint_list constraints_rates = {
+ 	.count = ARRAY_SIZE(rates),
+ 	.list  = rates,
+ 	.mask = 0,
  };
+ 
+-static unsigned int channels[] = {
++static const unsigned int channels[] = {
+ 	DUAL_CHANNEL,
+ };
+ 
+-static struct snd_pcm_hw_constraint_list constraints_channels = {
++static const struct snd_pcm_hw_constraint_list constraints_channels = {
+ 	.count = ARRAY_SIZE(channels),
+ 	.list = channels,
+ 	.mask = 0,
+ };
+ 
+-static unsigned int channels_quad[] = {
++static const unsigned int channels_quad[] = {
+ 	QUAD_CHANNEL,
+ };
+ 
+-static struct snd_pcm_hw_constraint_list constraints_channels_quad = {
++static const struct snd_pcm_hw_constraint_list constraints_channels_quad = {
+ 	.count = ARRAY_SIZE(channels_quad),
+ 	.list = channels_quad,
+ 	.mask = 0,
+diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
+index 1a68d043c803..1008076e084f 100644
+--- a/sound/soc/intel/boards/bxt_rt298.c
++++ b/sound/soc/intel/boards/bxt_rt298.c
+@@ -207,11 +207,11 @@ static const struct snd_soc_ops broxton_rt298_ops = {
+ 	.hw_params = broxton_rt298_hw_params,
+ };
+ 
+-static unsigned int rates[] = {
++static const unsigned int rates[] = {
+ 	48000,
+ };
+ 
+-static struct snd_pcm_hw_constraint_list constraints_rates = {
++static const struct snd_pcm_hw_constraint_list constraints_rates = {
+ 	.count = ARRAY_SIZE(rates),
+ 	.list  = rates,
+ 	.mask = 0,
+@@ -230,11 +230,11 @@ static int broxton_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	return 0;
+ }
+ 
+-static unsigned int channels_dmic[] = {
++static const unsigned int channels_dmic[] = {
+ 	2, 4,
+ };
+ 
+-static struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
++static const struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
+ 	.count = ARRAY_SIZE(channels_dmic),
+ 	.list = channels_dmic,
+ 	.mask = 0,
+@@ -256,11 +256,11 @@ static const struct snd_soc_ops broxton_dmic_ops = {
+ 	.startup = broxton_dmic_startup,
+ };
+ 
+-static unsigned int channels[] = {
++static const unsigned int channels[] = {
+ 	2,
+ };
+ 
+-static struct snd_pcm_hw_constraint_list constraints_channels = {
++static const struct snd_pcm_hw_constraint_list constraints_channels = {
+ 	.count = ARRAY_SIZE(channels),
+ 	.list = channels,
+ 	.mask = 0,
 -- 
 2.13.0
