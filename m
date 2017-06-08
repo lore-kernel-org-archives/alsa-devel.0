@@ -1,22 +1,16 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 1/8] ALSA: pcm: add a helper function to
- constrain mask-type parameters
-Date: Thu, 8 Jun 2017 17:35:35 +0900
-Message-ID: <422745f7-3c5d-cca0-78b7-2e1443f4fe1b@sakamocchi.jp>
-References: <20170607231026.23383-1-o-takashi@sakamocchi.jp>
- <20170607231026.23383-2-o-takashi@sakamocchi.jp>
- <s5hmv9j2bv4.wl-tiwai@suse.de>
- <41daafb7-8185-9e3e-147b-22710c3ef885@sakamocchi.jp>
- <s5hink72apv.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: sgtl5000: add avc enable control
+Date: Thu, 8 Jun 2017 14:27:35 +0100
+Message-ID: <20170608132735.3dgjqo7xgnys5ad5@sirena.org.uk>
+References: <1496145616-9307-1-git-send-email-richard.leitner@skidata.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3408037656855349915=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id C0808266C24
- for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 10:35:37 +0200 (CEST)
-In-Reply-To: <s5hink72apv.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 117C726681D
+ for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 15:27:56 +0200 (CEST)
+In-Reply-To: <1496145616-9307-1-git-send-email-richard.leitner@skidata.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,76 +20,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com
+To: Richard Leitner <richard.leitner@skidata.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, tiwai@suse.com, dev@g0hl1n.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On Jun 8 2017 16:35, Takashi Iwai wrote:
-> On Thu, 08 Jun 2017 09:28:37 +0200,
-> Takashi Sakamoto wrote:
->>
->> Hi,
->>
->> On Jun 8 2017 16:10, Takashi Iwai wrote:
->>> On Thu, 08 Jun 2017 01:10:19 +0200,
->>> Takashi Sakamoto wrote:
->>>>
->>>> Application of constraints to mask-type parameters for PCM substream is
->>>> done in a call of snd_pcm_hw_refine(), while the function includes much
->>>> codes and is not enough friendly to readers.
->>>>
->>>> This commit splits the codes to a separated function so that readers can
->>>> get it easily. I leave desicion into compilers to merge the function into
->>>> its callee.
->>>>
->>>> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
->>>> ---
->>>>    sound/core/pcm_native.c | 57 ++++++++++++++++++++++++++++++++-----------------
->>>>    1 file changed, 38 insertions(+), 19 deletions(-)
->>>>
->>>> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
->>>> index 2bde07a4a87f..b3e8aab3915e 100644
->>>> --- a/sound/core/pcm_native.c
->>>> +++ b/sound/core/pcm_native.c
->>>> ...
->>>> +	struct snd_mask __maybe_unused old_mask;
->>>
->>> Do we really need __maybe_unused?  Drop it as much as possible.
->>> IMO, it can be uglier than ifdef, since you don't know why it's
->>> unused.  With ifdef, at least, you have an idea about the condition.
->>
->> In kernel documentation[1], we can see below suggestion.
->>
->> "20) Conditional Compilation
->> ...
->> If you have a function or variable which may potentially go unused in a
->> particular configuration, and the compiler would warn about its
->> definition going unused, mark the definition as __maybe_unused rather
->> than wrapping it in a preprocessor conditional.  (However, if a
->> function or variable *always* goes unused, delete it.)"
->>
->> I'll follow this.
-> 
-> It doesn't answer my question.  Without __maybe_unused in your code,
-> do you get the compile warning?  If yes, why?
-
-Oh, I cannot see any warnings when disabling tracepoints or SND_DEBUG, 
-as you said... I surely have a bias from my experiences for 
-firewire-motu driver...
-
-> Well, I see the usage already in your patch for the tracepoints.
-> But __maybe_unused is really ugly, and should be avoided as much as
-> possible.
-> 
-> The text above doesn't recommend to use it blindly.   It's the last
-> resort.
-
-OK. We can avoid using __maybe_unused for function local variable in 
-this case. I'll drop the keyword in next v2 patchset.
+--===============3408037656855349915==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="rpwjbr4wpwoghcag"
+Content-Disposition: inline
 
 
-Thank you
+--rpwjbr4wpwoghcag
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Takashi Sakamoto
+On Tue, May 30, 2017 at 02:00:16PM +0200, Richard Leitner wrote:
+
+> +	SOC_SINGLE("AVC Enable Switch", SGTL5000_DAP_AVC_CTRL, 0, 1, 0),
+
+This should just be AVC Switch.
+
+--rpwjbr4wpwoghcag
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlk5UMYACgkQJNaLcl1U
+h9AIHQf/Wy2N0Px4DJp3htnIPxulMaH4iBkbbwFH7gAHeupO1p8uJlA+x41hZPC9
+kWadpynbQGcFaby7HTFmnf5RYgWHMtGoQc4ZFd4uBxgVXqyXdWM/w3lNSnw2Rquc
+iNVgW8r+khnzGS59uNYkIuUkWhniTlhrvQJ1egyCGha4jQG6LYjEHmsU+q0lEz1y
+ExUp9X7RlUzi8lKc/MfinOosesWyxLoDW1ZlNzLWf80u1DqxBo2XeVGiFgdzzR9W
+ME6+zjjM4JcaqVdQUdJlZNAYqWtKo68MlYhHmgo62ZNcerVFG74eA0HhxepvLcdM
+pISuaTRN8EwTNVpuPgO9CFaqT+dOjw==
+=BvQP
+-----END PGP SIGNATURE-----
+
+--rpwjbr4wpwoghcag--
+
+--===============3408037656855349915==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3408037656855349915==--
