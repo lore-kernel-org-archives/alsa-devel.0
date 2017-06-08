@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 13/31] ALSA: cmipci: Constify hw_constraints
-Date: Thu,  8 Jun 2017 23:08:34 +0200
-Message-ID: <20170608210852.13058-14-tiwai@suse.de>
+Subject: [PATCH 15/31] ALSA: emu10k1: Constify hw_constraints
+Date: Thu,  8 Jun 2017 23:08:36 +0200
+Message-ID: <20170608210852.13058-16-tiwai@suse.de>
 References: <20170608210852.13058-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 443AF2673B5
+ by alsa0.perex.cz (Postfix) with ESMTP id 434662673B2
  for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 23:09:00 +0200 (CEST)
 Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id A746CAD93
+ by mx1.suse.de (Postfix) with ESMTP id 9F8C0AD8E
  for <alsa-devel@alsa-project.org>; Thu,  8 Jun 2017 21:08:56 +0000 (UTC)
 In-Reply-To: <20170608210852.13058-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -32,47 +32,42 @@ hardening.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/cmipci.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/pci/emu10k1/emupcm.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/pci/cmipci.c b/sound/pci/cmipci.c
-index 745a0a3743b4..a460cb63e971 100644
---- a/sound/pci/cmipci.c
-+++ b/sound/pci/cmipci.c
-@@ -719,18 +719,18 @@ static int snd_cmipci_hw_free(struct snd_pcm_substream *substream)
- /*
-  */
+diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
+index bdda29f335f6..5c9054a9f69e 100644
+--- a/sound/pci/emu10k1/emupcm.c
++++ b/sound/pci/emu10k1/emupcm.c
+@@ -164,7 +164,7 @@ static int snd_emu10k1_pcm_channel_alloc(struct snd_emu10k1_pcm * epcm, int voic
+ 	return 0;
+ }
  
--static unsigned int hw_channels[] = {1, 2, 4, 6, 8};
--static struct snd_pcm_hw_constraint_list hw_constraints_channels_4 = {
-+static const unsigned int hw_channels[] = {1, 2, 4, 6, 8};
-+static const struct snd_pcm_hw_constraint_list hw_constraints_channels_4 = {
- 	.count = 3,
- 	.list = hw_channels,
- 	.mask = 0,
- };
--static struct snd_pcm_hw_constraint_list hw_constraints_channels_6 = {
-+static const struct snd_pcm_hw_constraint_list hw_constraints_channels_6 = {
- 	.count = 4,
- 	.list = hw_channels,
- 	.mask = 0,
- };
--static struct snd_pcm_hw_constraint_list hw_constraints_channels_8 = {
-+static const struct snd_pcm_hw_constraint_list hw_constraints_channels_8 = {
- 	.count = 5,
- 	.list = hw_channels,
- 	.mask = 0,
-@@ -1597,9 +1597,9 @@ static struct snd_pcm_hardware snd_cmipci_capture_spdif =
- 	.fifo_size =		0,
+-static unsigned int capture_period_sizes[31] = {
++static const unsigned int capture_period_sizes[31] = {
+ 	384,	448,	512,	640,
+ 	384*2,	448*2,	512*2,	640*2,
+ 	384*4,	448*4,	512*4,	640*4,
+@@ -175,17 +175,17 @@ static unsigned int capture_period_sizes[31] = {
+ 	384*128,448*128,512*128
  };
  
--static unsigned int rate_constraints[] = { 5512, 8000, 11025, 16000, 22050,
-+static const unsigned int rate_constraints[] = { 5512, 8000, 11025, 16000, 22050,
- 			32000, 44100, 48000, 88200, 96000, 128000 };
--static struct snd_pcm_hw_constraint_list hw_constraints_rates = {
-+static const struct snd_pcm_hw_constraint_list hw_constraints_rates = {
- 		.count = ARRAY_SIZE(rate_constraints),
- 		.list = rate_constraints,
- 		.mask = 0,
+-static struct snd_pcm_hw_constraint_list hw_constraints_capture_period_sizes = {
++static const struct snd_pcm_hw_constraint_list hw_constraints_capture_period_sizes = {
+ 	.count = 31,
+ 	.list = capture_period_sizes,
+ 	.mask = 0
+ };
+ 
+-static unsigned int capture_rates[8] = {
++static const unsigned int capture_rates[8] = {
+ 	8000, 11025, 16000, 22050, 24000, 32000, 44100, 48000
+ };
+ 
+-static struct snd_pcm_hw_constraint_list hw_constraints_capture_rates = {
++static const struct snd_pcm_hw_constraint_list hw_constraints_capture_rates = {
+ 	.count = 8,
+ 	.list = capture_rates,
+ 	.mask = 0
 -- 
 2.13.0
