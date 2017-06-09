@@ -1,17 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/3] ALSA: pcm: localize
-	snd_pcm_hw_params_choose()
-Date: Fri,  9 Jun 2017 21:46:48 +0900
-Message-ID: <20170609124650.19989-2-o-takashi@sakamocchi.jp>
-References: <20170609124650.19989-1-o-takashi@sakamocchi.jp>
+Subject: Re: ALSA: firewire-lib: Fix stall of process context
+ on local CPU, with disabled IRQ at packet error
+Date: Fri, 9 Jun 2017 21:55:44 +0900
+Message-ID: <4e1b305e-9ad3-c8fa-fa36-2919a45ca108@sakamocchi.jp>
+References: <0eff34d9-1c1a-a93c-ae25-2d469833a3ec@sakamocchi.jp>
+ <896bd512-900f-b596-cba8-a7617312cea0@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 1E41E26763B
- for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2017 14:47:00 +0200 (CEST)
-In-Reply-To: <20170609124650.19989-1-o-takashi@sakamocchi.jp>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id AECAA266991
+ for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2017 14:55:50 +0200 (CEST)
+In-Reply-To: <896bd512-900f-b596-cba8-a7617312cea0@ladisch.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,139 +23,120 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-As of v4.12, snd_pcm_hw_params_choose() is just called in a process
-context of ioctl(2) with SNDRV_PCM_IOCTL_HW_PARAMS. The function locates
-in a different file, which has no tracepoints.
+Hi Clemens,
 
-This commit moves the function to a file with the tracepoints for later
-commit.
+On Jun 9 2017 16:49, Clemens Ladisch wrote:
+> Takashi Sakamoto wrote:
+>> Hi Clemens and Iwai-san,
+>>
+>> I found a critical bug on ALSA IEC 61883-1/6 engine at error handling on process context. At packet queueing error or detection of invalid packet, user process can stall on local CPU with IRQ disabled. This bug was introduced at v3.5.
+>>
+>> I wrote a fix but this can be applied down to v4.9.31, but it's unavailable for the former longterm versions. What can we do for them?
+>>
+>> ========== 8< ----------
+>>  From c8c7541f83913c98bb6f3774127a48c7998caca0 Mon Sep 17 00:00:00 2001
+>> From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+>> Date: Fri, 9 Jun 2017 07:40:05 +0900
+>> Subject: [PATCH] ALSA: firewire-lib: Fix stall of process context on local CPU
+>>   with disabled IRQ at packet error
+>>
+>> At Linux v3.5, packet processing can be done in process context of ALSA
+>> PCM application as well as software IRQ context for OHCI 1394. Below is
+>> an example of the callgraph (some calls are omitted).
+>>
+>> ioctl(2) with e.g. HWSYNC
+>> (sound/core/pcm_native.c)
+>> ->snd_pcm_common_ioctl1()
+>>    ->snd_pcm_hwsync()
+>>      ->snd_pcm_stream_lock_irq
+>>      (sound/core/pcm_lib.c)
+>>      ->snd_pcm_update_hw_ptr()
+>>        ->snd_pcm_udpate_hw_ptr0()
+>>          ->struct snd_pcm_ops.pointer()
+>>          (sound/firewire/*)
+>>          = Each handler on drivers in ALSA firewire stack
+>>            (sound/firewire/amdtp-stream.c)
+>>            ->amdtp_stream_pcm_pointer()
+>>              (drivers/firewire/core-iso.c)
+>>              ->fw_iso_context_flush_completions()
+>>                ->struct fw_card_driver.flush_iso_completion()
+>>                (drivers/firewire/ohci.c)
+>>                = flush_iso_completions()
+>>                  ->struct fw_iso_context.callback.sc
+>>                  (sound/firewire/amdtp-stream.c)
+>>                  = in_stream_callback() or out_stream_callback()
+>>                    ->...
+>>      ->snd_pcm_stream_unlock_irq
+>>
+>> When packet queueing error occurs or detecting invalid packets in
+>> 'in_stream_callback()' or 'out_stream_callback()', 'snd_pcm_stop_xrun()'
+>> is called on local CPU with disabled IRQ.
+> 
+>> (sound/firewire/amdtp-stream.c)
+>> in_stream_callback() or out_stream_callback()
+>> ->amdtp_stream_pcm_abort()
+>>    ->snd_pcm_stop_xrun()
+>>      ->snd_pcm_stream_lock_irqsave()
+> 
+> The fact that interrupts are disabled is not a problem, because
+> snd_pcm_stop_xrun() uses irqsave/irqrestore calls.  The problem is that
+> the PCM stream has already been locked, and that snd_pcm_stop_xrun()
+> tries to take the same lock recursively.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/core/pcm_lib.c    | 40 ----------------------------------------
- sound/core/pcm_local.h  |  3 ---
- sound/core/pcm_native.c | 40 ++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 40 insertions(+), 43 deletions(-)
+Exactly.
 
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 95b8ef15029f..9dc7bbfe8853 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -1700,46 +1700,6 @@ int snd_pcm_hw_param_last(struct snd_pcm_substream *pcm,
- 
- EXPORT_SYMBOL(snd_pcm_hw_param_last);
- 
--/**
-- * snd_pcm_hw_param_choose - choose a configuration defined by @params
-- * @pcm: PCM instance
-- * @params: the hw_params instance
-- *
-- * Choose one configuration from configuration space defined by @params.
-- * The configuration chosen is that obtained fixing in this order:
-- * first access, first format, first subformat, min channels,
-- * min rate, min period time, max buffer size, min tick time
-- *
-- * Return: Zero if successful, or a negative error code on failure.
-- */
--int snd_pcm_hw_params_choose(struct snd_pcm_substream *pcm,
--			     struct snd_pcm_hw_params *params)
--{
--	static const int vars[] = {
--		SNDRV_PCM_HW_PARAM_ACCESS,
--		SNDRV_PCM_HW_PARAM_FORMAT,
--		SNDRV_PCM_HW_PARAM_SUBFORMAT,
--		SNDRV_PCM_HW_PARAM_CHANNELS,
--		SNDRV_PCM_HW_PARAM_RATE,
--		SNDRV_PCM_HW_PARAM_PERIOD_TIME,
--		SNDRV_PCM_HW_PARAM_BUFFER_SIZE,
--		SNDRV_PCM_HW_PARAM_TICK_TIME,
--		-1
--	};
--	const int *v;
--	int err;
--
--	for (v = vars; *v != -1; v++) {
--		if (*v != SNDRV_PCM_HW_PARAM_BUFFER_SIZE)
--			err = snd_pcm_hw_param_first(pcm, params, *v, NULL);
--		else
--			err = snd_pcm_hw_param_last(pcm, params, *v, NULL);
--		if (snd_BUG_ON(err < 0))
--			return err;
--	}
--	return 0;
--}
--
- static int snd_pcm_lib_ioctl_reset(struct snd_pcm_substream *substream,
- 				   void *arg)
- {
-diff --git a/sound/core/pcm_local.h b/sound/core/pcm_local.h
-index 34c66decaaf2..e4bf2af62b02 100644
---- a/sound/core/pcm_local.h
-+++ b/sound/core/pcm_local.h
-@@ -24,9 +24,6 @@ void snd_interval_mulkdiv(const struct snd_interval *a, unsigned int k,
- int snd_pcm_hw_constraints_init(struct snd_pcm_substream *substream);
- int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream);
- 
--int snd_pcm_hw_params_choose(struct snd_pcm_substream *substream,
--			     struct snd_pcm_hw_params *params);
--
- int snd_pcm_hw_constraint_mask(struct snd_pcm_runtime *runtime,
- 			       snd_pcm_hw_param_t var, u_int32_t mask);
- 
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 3293db0172db..8d9d181b1c03 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -571,6 +571,46 @@ static inline void snd_pcm_timer_notify(struct snd_pcm_substream *substream,
- #endif
- }
- 
-+/**
-+ * snd_pcm_hw_param_choose - choose a configuration defined by @params
-+ * @pcm: PCM instance
-+ * @params: the hw_params instance
-+ *
-+ * Choose one configuration from configuration space defined by @params.
-+ * The configuration chosen is that obtained fixing in this order:
-+ * first access, first format, first subformat, min channels,
-+ * min rate, min period time, max buffer size, min tick time
-+ *
-+ * Return: Zero if successful, or a negative error code on failure.
-+ */
-+static int snd_pcm_hw_params_choose(struct snd_pcm_substream *pcm,
-+				    struct snd_pcm_hw_params *params)
-+{
-+	static const int vars[] = {
-+		SNDRV_PCM_HW_PARAM_ACCESS,
-+		SNDRV_PCM_HW_PARAM_FORMAT,
-+		SNDRV_PCM_HW_PARAM_SUBFORMAT,
-+		SNDRV_PCM_HW_PARAM_CHANNELS,
-+		SNDRV_PCM_HW_PARAM_RATE,
-+		SNDRV_PCM_HW_PARAM_PERIOD_TIME,
-+		SNDRV_PCM_HW_PARAM_BUFFER_SIZE,
-+		SNDRV_PCM_HW_PARAM_TICK_TIME,
-+		-1
-+	};
-+	const int *v;
-+	int err;
-+
-+	for (v = vars; *v != -1; v++) {
-+		if (*v != SNDRV_PCM_HW_PARAM_BUFFER_SIZE)
-+			err = snd_pcm_hw_param_first(pcm, params, *v, NULL);
-+		else
-+			err = snd_pcm_hw_param_last(pcm, params, *v, NULL);
-+		if (snd_BUG_ON(err < 0))
-+			return err;
-+	}
-+	return 0;
-+}
-+
- static int snd_pcm_hw_params(struct snd_pcm_substream *substream,
- 			     struct snd_pcm_hw_params *params)
- {
--- 
-2.11.0
+>> This commit attempts to fix the above bug by removing the calls of
+>> 'amdtp_stream_pcm_abort()' from packet handler. When encountering the
+>> error state, the packet handler is already programmed not to process
+>> packets anymore.
+> 
+> Yes, by setting "packet_index = -1".  But that's all it does, it just
+> stops queueing more packets.
+> 
+>> This commit expects any process context or software IRQ contexts to
+>> detect PCM XRUN by calls of snd_pcm_hw_ptr() or checking status data
+>> of PCM substream.
+> 
+> What status data?  I cannot test it right now, but as far as I can see,
+> the PCM substream itself still thinks it's running.  I think we need to
+> make the .pointer callback report the xrun in the error state:
+
+I realized that it's from my misunderstand. Yes, we need to stop PCM 
+substream in packet processing.
+
+> +++ b/sound/firewire/amdtp-stream.h
+>   struct amdtp_stream {
+>   	...
+> -	unsigned int pcm_buffer_pointer;
+> +	snd_pcm_uframes_t pcm_buffer_pointer;
+>   	...
+> --- a/sound/firewire/amdtp-stream.c
+> +++ b/sound/firewire/amdtp-stream.c
+> @@ -682,7 +682,7 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
+>   		cycle = increment_cycle_count(cycle, 1);
+>   		if (s->handle_packet(s, 0, cycle, i) < 0) {
+>   			s->packet_index = -1;
+> -			amdtp_stream_pcm_abort(s);
+> +			WRITE_ONCE(s->pcm_buffer_pointer, SNDRV_PCM_POS_XRUN);
+>   			return;
+>   		}
+>   	}
+> @@ -734,7 +733,7 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
+>   	/* Queueing error or detecting invalid payload. */
+>   	if (i < packets) {
+>   		s->packet_index = -1;
+> -		amdtp_stream_pcm_abort(s);
+> +		WRITE_ONCE(s->pcm_buffer_pointer, SNDRV_PCM_POS_XRUN);
+>   		return;
+>   	}
+
+This is a good idea! I'll post a revised version later.
+
+
+Thanks
+
+Takashi Sakamoto
