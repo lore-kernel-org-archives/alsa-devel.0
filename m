@@ -1,19 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: ALSA: firewire-lib: Fix stall of process context
- on local CPU, with disabled IRQ at packet error
-Date: Fri, 9 Jun 2017 21:55:44 +0900
-Message-ID: <4e1b305e-9ad3-c8fa-fa36-2919a45ca108@sakamocchi.jp>
-References: <0eff34d9-1c1a-a93c-ae25-2d469833a3ec@sakamocchi.jp>
- <896bd512-900f-b596-cba8-a7617312cea0@ladisch.de>
+Subject: [PATCH v2] ALSA: firewire-lib: Fix stall of process
+	context at packet error
+Date: Fri,  9 Jun 2017 22:20:31 +0900
+Message-ID: <20170609132031.21058-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id AECAA266991
- for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2017 14:55:50 +0200 (CEST)
-In-Reply-To: <896bd512-900f-b596-cba8-a7617312cea0@ladisch.de>
-Content-Language: en-US
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 149BB267650
+ for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2017 15:20:37 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,120 +19,126 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ffado-devel@lists.sf.net
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, "# 4 . 9+" <stable@vger.kernel.org>, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
+At Linux v3.5, packet processing can be done in process context of ALSA
+PCM application as well as software IRQ context for OHCI 1394. Below is
+an example of the callgraph (some calls are omitted).
 
-On Jun 9 2017 16:49, Clemens Ladisch wrote:
-> Takashi Sakamoto wrote:
->> Hi Clemens and Iwai-san,
->>
->> I found a critical bug on ALSA IEC 61883-1/6 engine at error handling on process context. At packet queueing error or detection of invalid packet, user process can stall on local CPU with IRQ disabled. This bug was introduced at v3.5.
->>
->> I wrote a fix but this can be applied down to v4.9.31, but it's unavailable for the former longterm versions. What can we do for them?
->>
->> ========== 8< ----------
->>  From c8c7541f83913c98bb6f3774127a48c7998caca0 Mon Sep 17 00:00:00 2001
->> From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
->> Date: Fri, 9 Jun 2017 07:40:05 +0900
->> Subject: [PATCH] ALSA: firewire-lib: Fix stall of process context on local CPU
->>   with disabled IRQ at packet error
->>
->> At Linux v3.5, packet processing can be done in process context of ALSA
->> PCM application as well as software IRQ context for OHCI 1394. Below is
->> an example of the callgraph (some calls are omitted).
->>
->> ioctl(2) with e.g. HWSYNC
->> (sound/core/pcm_native.c)
->> ->snd_pcm_common_ioctl1()
->>    ->snd_pcm_hwsync()
->>      ->snd_pcm_stream_lock_irq
->>      (sound/core/pcm_lib.c)
->>      ->snd_pcm_update_hw_ptr()
->>        ->snd_pcm_udpate_hw_ptr0()
->>          ->struct snd_pcm_ops.pointer()
->>          (sound/firewire/*)
->>          = Each handler on drivers in ALSA firewire stack
->>            (sound/firewire/amdtp-stream.c)
->>            ->amdtp_stream_pcm_pointer()
->>              (drivers/firewire/core-iso.c)
->>              ->fw_iso_context_flush_completions()
->>                ->struct fw_card_driver.flush_iso_completion()
->>                (drivers/firewire/ohci.c)
->>                = flush_iso_completions()
->>                  ->struct fw_iso_context.callback.sc
->>                  (sound/firewire/amdtp-stream.c)
->>                  = in_stream_callback() or out_stream_callback()
->>                    ->...
->>      ->snd_pcm_stream_unlock_irq
->>
->> When packet queueing error occurs or detecting invalid packets in
->> 'in_stream_callback()' or 'out_stream_callback()', 'snd_pcm_stop_xrun()'
->> is called on local CPU with disabled IRQ.
-> 
->> (sound/firewire/amdtp-stream.c)
->> in_stream_callback() or out_stream_callback()
->> ->amdtp_stream_pcm_abort()
->>    ->snd_pcm_stop_xrun()
->>      ->snd_pcm_stream_lock_irqsave()
-> 
-> The fact that interrupts are disabled is not a problem, because
-> snd_pcm_stop_xrun() uses irqsave/irqrestore calls.  The problem is that
-> the PCM stream has already been locked, and that snd_pcm_stop_xrun()
-> tries to take the same lock recursively.
+ioctl(2) with e.g. HWSYNC
+(sound/core/pcm_native.c)
+->snd_pcm_common_ioctl1()
+  ->snd_pcm_hwsync()
+    ->snd_pcm_stream_lock_irq
+    (sound/core/pcm_lib.c)
+    ->snd_pcm_update_hw_ptr()
+      ->snd_pcm_update_hw_ptr0()
+        ->struct snd_pcm_ops.pointer()
+        (sound/firewire/*)
+        = Each handler on drivers in ALSA firewire stack
+          (sound/firewire/amdtp-stream.c)
+          ->amdtp_stream_pcm_pointer()
+            (drivers/firewire/core-iso.c)
+            ->fw_iso_context_flush_completions()
+              ->struct fw_card_driver.flush_iso_completion()
+              (drivers/firewire/ohci.c)
+              = flush_iso_completions()
+                ->struct fw_iso_context.callback.sc
+                (sound/firewire/amdtp-stream.c)
+                = in_stream_callback() or out_stream_callback()
+                  ->...
+    ->snd_pcm_stream_unlock_irq
 
-Exactly.
+When packet queueing error occurs or detecting invalid packets in
+'in_stream_callback()' or 'out_stream_callback()', 'snd_pcm_stop_xrun()'
+is called on local CPU with disabled IRQ.
 
->> This commit attempts to fix the above bug by removing the calls of
->> 'amdtp_stream_pcm_abort()' from packet handler. When encountering the
->> error state, the packet handler is already programmed not to process
->> packets anymore.
-> 
-> Yes, by setting "packet_index = -1".  But that's all it does, it just
-> stops queueing more packets.
-> 
->> This commit expects any process context or software IRQ contexts to
->> detect PCM XRUN by calls of snd_pcm_hw_ptr() or checking status data
->> of PCM substream.
-> 
-> What status data?  I cannot test it right now, but as far as I can see,
-> the PCM substream itself still thinks it's running.  I think we need to
-> make the .pointer callback report the xrun in the error state:
+(sound/firewire/amdtp-stream.c)
+in_stream_callback() or out_stream_callback()
+->amdtp_stream_pcm_abort()
+  ->snd_pcm_stop_xrun()
+    ->snd_pcm_stream_lock_irqsave()
+    ->snd_pcm_stop()
+    ->snd_pcm_stream_unlock_irqrestore()
 
-I realized that it's from my misunderstand. Yes, we need to stop PCM 
-substream in packet processing.
+The process is stalled on the CPU due to attempt to acquire recursive lock.
 
-> +++ b/sound/firewire/amdtp-stream.h
->   struct amdtp_stream {
->   	...
-> -	unsigned int pcm_buffer_pointer;
-> +	snd_pcm_uframes_t pcm_buffer_pointer;
->   	...
-> --- a/sound/firewire/amdtp-stream.c
-> +++ b/sound/firewire/amdtp-stream.c
-> @@ -682,7 +682,7 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
->   		cycle = increment_cycle_count(cycle, 1);
->   		if (s->handle_packet(s, 0, cycle, i) < 0) {
->   			s->packet_index = -1;
-> -			amdtp_stream_pcm_abort(s);
-> +			WRITE_ONCE(s->pcm_buffer_pointer, SNDRV_PCM_POS_XRUN);
->   			return;
->   		}
->   	}
-> @@ -734,7 +733,7 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
->   	/* Queueing error or detecting invalid payload. */
->   	if (i < packets) {
->   		s->packet_index = -1;
-> -		amdtp_stream_pcm_abort(s);
-> +		WRITE_ONCE(s->pcm_buffer_pointer, SNDRV_PCM_POS_XRUN);
->   		return;
->   	}
+[  562.630853] INFO: rcu_sched detected stalls on CPUs/tasks:
+[  562.630861]      2-...: (1 GPs behind) idle=37d/140000000000000/0 softirq=38323/38323 fqs=7140
+[  562.630862]      (detected by 3, t=15002 jiffies, g=21036, c=21035, q=5933)
+[  562.630866] Task dump for CPU 2:
+[  562.630867] alsa-source-OXF R  running task        0  6619      1 0x00000008
+[  562.630870] Call Trace:
+[  562.630876]  ? vt_console_print+0x79/0x3e0
+[  562.630880]  ? msg_print_text+0x9d/0x100
+[  562.630883]  ? up+0x32/0x50
+[  562.630885]  ? irq_work_queue+0x8d/0xa0
+[  562.630886]  ? console_unlock+0x2b6/0x4b0
+[  562.630888]  ? vprintk_emit+0x312/0x4a0
+[  562.630892]  ? dev_vprintk_emit+0xbf/0x230
+[  562.630895]  ? do_sys_poll+0x37a/0x550
+[  562.630897]  ? dev_printk_emit+0x4e/0x70
+[  562.630900]  ? __dev_printk+0x3c/0x80
+[  562.630903]  ? _raw_spin_lock+0x20/0x30
+[  562.630909]  ? snd_pcm_stream_lock+0x31/0x50 [snd_pcm]
+[  562.630914]  ? _snd_pcm_stream_lock_irqsave+0x2e/0x40 [snd_pcm]
+[  562.630918]  ? snd_pcm_stop_xrun+0x16/0x70 [snd_pcm]
+[  562.630922]  ? in_stream_callback+0x3e6/0x450 [snd_firewire_lib]
+[  562.630925]  ? handle_ir_packet_per_buffer+0x8e/0x1a0 [firewire_ohci]
+[  562.630928]  ? ohci_flush_iso_completions+0xa3/0x130 [firewire_ohci]
+[  562.630932]  ? fw_iso_context_flush_completions+0x15/0x20 [firewire_core]
+[  562.630935]  ? amdtp_stream_pcm_pointer+0x2d/0x40 [snd_firewire_lib]
+[  562.630938]  ? pcm_capture_pointer+0x19/0x20 [snd_oxfw]
+[  562.630943]  ? snd_pcm_update_hw_ptr0+0x47/0x3d0 [snd_pcm]
+[  562.630945]  ? poll_select_copy_remaining+0x150/0x150
+[  562.630947]  ? poll_select_copy_remaining+0x150/0x150
+[  562.630952]  ? snd_pcm_update_hw_ptr+0x10/0x20 [snd_pcm]
+[  562.630956]  ? snd_pcm_hwsync+0x45/0xb0 [snd_pcm]
+[  562.630960]  ? snd_pcm_common_ioctl1+0x1ff/0xc90 [snd_pcm]
+[  562.630962]  ? futex_wake+0x90/0x170
+[  562.630966]  ? snd_pcm_capture_ioctl1+0x136/0x260 [snd_pcm]
+[  562.630970]  ? snd_pcm_capture_ioctl+0x27/0x40 [snd_pcm]
+[  562.630972]  ? do_vfs_ioctl+0xa3/0x610
+[  562.630974]  ? vfs_read+0x11b/0x130
+[  562.630976]  ? SyS_ioctl+0x79/0x90
+[  562.630978]  ? entry_SYSCALL_64_fastpath+0x1e/0xad
 
-This is a good idea! I'll post a revised version later.
+This commit fixes the above bug by removing the calls of
+'amdtp_stream_pcm_abort()' from packet handler. Instead, in
+'struct snd_pcm_ops.pointer', SNDRV_PCM_POS_XRUN is returned to take ALSA
+PCM core to stop PCM substream safely.
 
+Suggested-by: Clemens Ladisch <clemens@ladisch.de>
+Fixes: e9148dddc3c7("ALSA: firewire-lib: flush completed packets when reading PCM position")
+Cc: <stable@vger.kernel.org> # 4.9+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/amdtp-stream.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thanks
-
-Takashi Sakamoto
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index 9678bc75dc5b..de4f6b6dbd47 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -701,7 +701,7 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 		cycle = increment_cycle_count(cycle, 1);
+ 		if (s->handle_packet(s, 0, cycle, i) < 0) {
+ 			s->packet_index = -1;
+-			amdtp_stream_pcm_abort(s);
++			WRITE_ONCE(s->pcm_buffer_pointer, SNDRV_PCM_POS_XRUN);
+ 			return;
+ 		}
+ 	}
+@@ -753,7 +753,7 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 	/* Queueing error or detecting invalid payload. */
+ 	if (i < packets) {
+ 		s->packet_index = -1;
+-		amdtp_stream_pcm_abort(s);
++		WRITE_ONCE(s->pcm_buffer_pointer, SNDRV_PCM_POS_XRUN);
+ 		return;
+ 	}
+ 
+-- 
+2.11.0
