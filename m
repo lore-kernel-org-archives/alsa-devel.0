@@ -1,20 +1,26 @@
-From: Matthias Brugger <matthias.bgg@gmail.com>
-Subject: Re: [PATCH 6/7] ASoC: mediatek: Constify hw_constraints
-Date: Fri, 9 Jun 2017 09:39:07 +0200
-Message-ID: <c9433149-34b5-b5e3-68d3-fde35bc8f18b@gmail.com>
-References: <20170608213725.5378-1-tiwai@suse.de>
- <20170608213725.5378-7-tiwai@suse.de>
+From: Chen-Yu Tsai <wens@csie.org>
+Subject: Re: [PATCH v11 04/12] sun4i-codec: Add Mic1 Capture
+ Volume, Mic2 Capture Volume.
+Date: Fri, 9 Jun 2017 15:45:52 +0800
+Message-ID: <CAGb2v66PNg=PfYCGMTczms_vn2VDn0r_umZj=6BCrmu2xdcv=Q@mail.gmail.com>
+References: <20170609062216.26807-1-dannym@scratchpost.org>
+ <20170609062216.26807-5-dannym@scratchpost.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
- by alsa0.perex.cz (Postfix) with ESMTP id A7B54266CB8
- for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2017 09:39:09 +0200 (CEST)
-Received: by mail-wm0-f66.google.com with SMTP id d17so5622197wme.3
- for <alsa-devel@alsa-project.org>; Fri, 09 Jun 2017 00:39:09 -0700 (PDT)
-In-Reply-To: <20170608213725.5378-7-tiwai@suse.de>
-Content-Language: en-US
+Received: from smtp.csie.ntu.edu.tw (smtp.csie.ntu.edu.tw [140.112.30.61])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7423B266CB8
+ for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2017 09:46:17 +0200 (CEST)
+Received: from mail-it0-f53.google.com (mail-it0-f53.google.com
+ [209.85.214.53])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+ (No client certificate requested) (Authenticated sender: b93043)
+ by smtp.csie.ntu.edu.tw (Postfix) with ESMTPSA id A52F12040D
+ for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2017 15:46:14 +0800 (CST)
+Received: by mail-it0-f53.google.com with SMTP id m47so28772088iti.0
+ for <alsa-devel@alsa-project.org>; Fri, 09 Jun 2017 00:46:14 -0700 (PDT)
+In-Reply-To: <20170609062216.26807-5-dannym@scratchpost.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,35 +30,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Brian Austin <brian.austin@cirrus.com>, Krzysztof Kozlowski <krzk@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
+To: Danny Milosavljevic <dannym@scratchpost.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 08/06/17 23:37, Takashi Iwai wrote:
-> snd_pcm_hw_constraint_list(), *_ratnums() and *_ratdens() receive the
-> const pointers.  Constify the corresponding static objects for better
-> hardening.
-> 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+On Fri, Jun 9, 2017 at 2:22 PM, Danny Milosavljevic
+<dannym@scratchpost.org> wrote:
+> Signed-off-by: Danny Milosavljevic <dannym@scratchpost.org>
 > ---
->   sound/soc/mediatek/mt2701/mt2701-cs42448.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/mediatek/mt2701/mt2701-cs42448.c b/sound/soc/mediatek/mt2701/mt2701-cs42448.c
-> index aa5b31b121e3..70f61d53fe05 100644
-> --- a/sound/soc/mediatek/mt2701/mt2701-cs42448.c
-> +++ b/sound/soc/mediatek/mt2701/mt2701-cs42448.c
-> @@ -107,7 +107,7 @@ static const struct snd_kcontrol_new mt2701_cs42448_controls[] = {
->   
->   static const unsigned int mt2701_cs42448_sampling_rates[] = {48000};
->   
-> -static struct snd_pcm_hw_constraint_list mt2701_cs42448_constraints_rates = {
-> +static const struct snd_pcm_hw_constraint_list mt2701_cs42448_constraints_rates = {
->   		.count = ARRAY_SIZE(mt2701_cs42448_sampling_rates),
->   		.list = mt2701_cs42448_sampling_rates,
->   		.mask = 0,
-> 
+>  sound/soc/sunxi/sun4i-codec.c | 41 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 41 insertions(+)
+>
+> diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+> index b5a3b5b3..25870a64 100644
+> --- a/sound/soc/sunxi/sun4i-codec.c
+> +++ b/sound/soc/sunxi/sun4i-codec.c
+> @@ -97,6 +97,8 @@
+>  #define SUN4I_CODEC_ADC_ACTL_PREG1EN                   (29)
+>  #define SUN4I_CODEC_ADC_ACTL_PREG2EN                   (28)
+>  #define SUN4I_CODEC_ADC_ACTL_VMICEN                    (27)
+> +#define SUN4I_CODEC_ADC_ACTL_PREG1                     (25)
+> +#define SUN4I_CODEC_ADC_ACTL_PREG2                     (23)
+>  #define SUN4I_CODEC_ADC_ACTL_ADCG                      (20)
+>  #define SUN4I_CODEC_ADC_ACTL_ADCIS                     (17)
+>  #define SUN4I_CODEC_ADC_ACTL_LNRDF                     (16)
+> @@ -115,6 +117,9 @@
+>  /* Microphone controls (sun7i only) */
+>  #define SUN7I_CODEC_AC_MIC_PHONE_CAL           (0x3c)
+>
+> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG1             (29)
+> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG2             (26)
+> +
 
-Acked-By: Matthias Brugger <matthias.bgg@gmail.com>
+These aren't used.
+
+>  /*
+>   * sun6i specific registers
+>   *
+> @@ -665,6 +670,12 @@ static DECLARE_TLV_DB_SCALE(sun4i_codec_micin_loopback_gain_scale,
+>                             150,
+>                             0);
+>  static DECLARE_TLV_DB_SCALE(sun4i_codec_adc_gain_scale, -450, 150, 0);
+> +static DECLARE_TLV_DB_RANGE(sun4i_codec_micin_preamp_gain_scale,
+> +                           0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
+> +                           1, 7, TLV_DB_SCALE_ITEM(3500, 300, 0));
+> +static DECLARE_TLV_DB_RANGE(sun7i_codec_micin_preamp_gain_scale,
+> +                           0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
+> +                           1, 7, TLV_DB_SCALE_ITEM(2400, 300, 0));
+>
+>  static const char * const sun4i_codec_difflinein_capture_source[] = {
+>         "Stereo",
+> @@ -718,6 +729,36 @@ static const struct snd_kcontrol_new sun4i_codec_controls[] = {
+>                        sun4i_codec_adc_gain_scale),
+>  };
+>
+> +static const struct snd_kcontrol_new sun4i_codec_extra_controls[] = {
+> +       SOC_SINGLE_TLV("Mic1 Capture Volume",
+> +                      SUN4I_CODEC_ADC_ACTL,
+> +                      SUN4I_CODEC_ADC_ACTL_PREG1,
+> +                      3,
+> +                      0,
+> +                      sun4i_codec_micin_preamp_gain_scale),
+
+You correctly name them preamp gain here.
+
+> +       SOC_SINGLE_TLV("Mic2 Capture Volume",
+
+But incorrect name the controls. They do not just affect capture.
+Call them "Mic1/Mic2 Boost Volume".
+
+ChenYu
+
+> +                      SUN4I_CODEC_ADC_ACTL,
+> +                      SUN4I_CODEC_ADC_ACTL_PREG2,
+> +                      3,
+> +                      0,
+> +                      sun4i_codec_micin_preamp_gain_scale),
+> +};
+> +
+> +static const struct snd_kcontrol_new sun7i_codec_extra_controls[] = {
+> +       SOC_SINGLE_TLV("Mic1 Capture Volume",
+> +                      SUN7I_CODEC_AC_MIC_PHONE_CAL,
+> +                      SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG1,
+> +                      7,
+> +                      0,
+> +                      sun7i_codec_micin_preamp_gain_scale),
+> +       SOC_SINGLE_TLV("Mic2 Capture Volume",
+> +                      SUN7I_CODEC_AC_MIC_PHONE_CAL,
+> +                      SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG2,
+> +                      7,
+> +                      0,
+> +                      sun7i_codec_micin_preamp_gain_scale),
+> +};
+> +
+>  static const struct snd_kcontrol_new sun4i_codec_left_mixer_controls[] = {
+>         SOC_DAPM_SINGLE("Left DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
+>                         SUN4I_CODEC_DAC_ACTL_LDACLMIXS, 1, 0),
