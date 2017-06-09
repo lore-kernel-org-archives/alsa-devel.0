@@ -1,15 +1,17 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1] ASoC: omap-mcbsp: Use sysfs_match_string()
-	helper
-Date: Fri,  9 Jun 2017 15:06:54 +0300
-Message-ID: <20170609120654.21809-1-andriy.shevchenko@linux.intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 2/3] ALSA: pcm: add tracepoints for final
+	selection process of hardware parameters
+Date: Fri,  9 Jun 2017 21:46:49 +0900
+Message-ID: <20170609124650.19989-3-o-takashi@sakamocchi.jp>
+References: <20170609124650.19989-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 49B7E266991
- for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2017 14:07:02 +0200 (CEST)
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 1BA74267639
+ for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2017 14:47:00 +0200 (CEST)
+In-Reply-To: <20170609124650.19989-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,43 +21,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: tiwai@suse.de, perex@perex.cz
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Use sysfs_match_string() helper instead of open coded variant.
+Results of ioctl(2) with SNDRV_PCM_IOCTL_HW_REFINE and
+SNDRV_PCM_IOCTL_HW_PARAMS are different, because the latter has single
+value for several parameters; e.g. channels of PCM substream. Selection
+of the single value is done independently of application of constraints.
+It's helpful for developers to trace the selection process.
 
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Cc: Mark Brown <broonie@kernel.org>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+This commit adds tracepoints to snd_pcm_hw_params_choose() for the
+purpose.
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/soc/omap/mcbsp.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ sound/core/pcm_native.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/sound/soc/omap/mcbsp.c b/sound/soc/omap/mcbsp.c
-index 06fec5699cc8..7a54e3083203 100644
---- a/sound/soc/omap/mcbsp.c
-+++ b/sound/soc/omap/mcbsp.c
-@@ -835,15 +835,11 @@ static ssize_t dma_op_mode_store(struct device *dev,
- 				const char *buf, size_t size)
- {
- 	struct omap_mcbsp *mcbsp = dev_get_drvdata(dev);
--	const char * const *s;
--	int i = 0;
--
--	for (s = &dma_op_modes[i]; i < ARRAY_SIZE(dma_op_modes); s++, i++)
--		if (sysfs_streq(buf, *s))
--			break;
-+	int i;
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 8d9d181b1c03..076187ae8859 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -598,16 +598,38 @@ static int snd_pcm_hw_params_choose(struct snd_pcm_substream *pcm,
+ 		-1
+ 	};
+ 	const int *v;
++	struct snd_mask old_mask;
++	struct snd_interval old_interval;
+ 	int err;
  
--	if (i == ARRAY_SIZE(dma_op_modes))
--		return -EINVAL;
-+	i = sysfs_match_string(dma_op_modes, buf);
-+	if (i < 0)
-+		return i;
+ 	for (v = vars; *v != -1; v++) {
++		/* Keep old parameter to trace. */
++		if (trace_hw_mask_param_enabled()) {
++			if (hw_is_mask(*v))
++				old_mask = *hw_param_mask(params, *v);
++		}
++		if (trace_hw_interval_param_enabled()) {
++			if (hw_is_interval(*v))
++				old_interval = *hw_param_interval(params, *v);
++		}
+ 		if (*v != SNDRV_PCM_HW_PARAM_BUFFER_SIZE)
+ 			err = snd_pcm_hw_param_first(pcm, params, *v, NULL);
+ 		else
+ 			err = snd_pcm_hw_param_last(pcm, params, *v, NULL);
+ 		if (snd_BUG_ON(err < 0))
+ 			return err;
++
++		/* Trace the parameter. */
++		if (hw_is_mask(*v)) {
++			trace_hw_mask_param(pcm, *v, 0, &old_mask,
++					    hw_param_mask(params, *v));
++		}
++		if (hw_is_interval(*v)) {
++			trace_hw_interval_param(pcm, *v, 0, &old_interval,
++						hw_param_interval(params, *v));
++		}
+ 	}
++
+ 	return 0;
+ }
  
- 	spin_lock_irq(&mcbsp->lock);
- 	if (!mcbsp->free) {
 -- 
 2.11.0
