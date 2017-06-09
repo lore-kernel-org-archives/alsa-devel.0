@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/3] ALSA: pcm: use helper functions to refer
-	parameters as constants
-Date: Fri,  9 Jun 2017 09:34:38 +0900
-Message-ID: <20170609003440.4178-2-o-takashi@sakamocchi.jp>
+Subject: [PATCH 3/3] ALSA: pcm: move fixup of info flag after
+	selecting single parameters
+Date: Fri,  9 Jun 2017 09:34:40 +0900
+Message-ID: <20170609003440.4178-4-o-takashi@sakamocchi.jp>
 References: <20170609003440.4178-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id E6E3B2674B3
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id E718A2674B6
  for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2017 02:34:48 +0200 (CEST)
 In-Reply-To: <20170609003440.4178-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,57 +25,64 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-To fixup some parameters, ALSA PCM core refers the other parameters as
-constants. There're some macros for this purpose.
+When drivers register no flags about information of PCM hardware, ALSA
+PCM core fixups it roughly. Currently, this operation places in a
+function snd_pcm_hw_refine(). It can be moved to a function
+fixup_unreferenced_params() because it doesn't affects operations
+between these two functions.
 
-This commit replaces codes with them.
+This idea is better to bundle codes with similar purposes and this commit
+achieves it.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/core/pcm_native.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ sound/core/pcm_native.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 422ee4629698..87a507f12f2f 100644
+index dfe6113a6a60..3293db0172db 100644
 --- a/sound/core/pcm_native.c
 +++ b/sound/core/pcm_native.c
-@@ -444,8 +444,8 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
+@@ -472,13 +472,21 @@ static int fixup_unreferenced_params(struct snd_pcm_substream *substream,
+ 		}
+ 	}
+ 
++	if (!params->info) {
++		params->info = substream->runtime->hw.info;
++		params->info &= ~(SNDRV_PCM_INFO_FIFO_IN_FRAMES |
++				  SNDRV_PCM_INFO_DRAIN_TRIGGER);
++		if (!hw_support_mmap(substream))
++			params->info &= ~(SNDRV_PCM_INFO_MMAP |
++					  SNDRV_PCM_INFO_MMAP_VALID);
++	}
++
+ 	return 0;
+ }
+ 
+ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
  		      struct snd_pcm_hw_params *params)
  {
- 	struct snd_pcm_hardware *hw;
--	struct snd_interval *i = NULL;
--	struct snd_mask *m = NULL;
-+	const struct snd_interval *i;
-+	const struct snd_mask *m;
+-	struct snd_pcm_hardware *hw;
  	int err;
  
  	params->info = 0;
-@@ -470,13 +470,13 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
+@@ -502,16 +510,8 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
+ 	if (err < 0)
  		return err;
  
- 	if (!params->msbits) {
--		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_SAMPLE_BITS);
-+		i = hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_SAMPLE_BITS);
- 		if (snd_interval_single(i))
- 			params->msbits = snd_interval_value(i);
- 	}
- 
- 	if (!params->rate_den) {
--		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-+		i = hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
- 		if (snd_interval_single(i)) {
- 			params->rate_num = snd_interval_value(i);
- 			params->rate_den = 1;
-@@ -492,8 +492,8 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
- 					  SNDRV_PCM_INFO_MMAP_VALID);
- 	}
- 	if (!params->fifo_size) {
--		m = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
--		i = hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+		m = hw_param_mask_c(params, SNDRV_PCM_HW_PARAM_FORMAT);
-+		i = hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
- 		if (snd_mask_single(m) && snd_interval_single(i)) {
- 			err = substream->ops->ioctl(substream,
- 					SNDRV_PCM_IOCTL1_FIFO_SIZE, params);
+-	hw = &substream->runtime->hw;
+-	if (!params->info) {
+-		params->info = hw->info & ~(SNDRV_PCM_INFO_FIFO_IN_FRAMES |
+-					    SNDRV_PCM_INFO_DRAIN_TRIGGER);
+-		if (!hw_support_mmap(substream))
+-			params->info &= ~(SNDRV_PCM_INFO_MMAP |
+-					  SNDRV_PCM_INFO_MMAP_VALID);
+-	}
+-
+ 	params->rmask = 0;
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL(snd_pcm_hw_refine);
 -- 
 2.11.0
