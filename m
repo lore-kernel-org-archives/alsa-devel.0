@@ -1,17 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/3] ALSA: pcm: add tracepoints for final
-	selection process of hardware parameters
-Date: Fri,  9 Jun 2017 21:46:49 +0900
-Message-ID: <20170609124650.19989-3-o-takashi@sakamocchi.jp>
-References: <20170609124650.19989-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/2] ALSA: pcm: trace selection process of
+	hardware parameters
+Date: Fri,  9 Jun 2017 21:46:47 +0900
+Message-ID: <20170609124650.19989-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 1BA74267639
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 19A78267638
  for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2017 14:47:00 +0200 (CEST)
-In-Reply-To: <20170609124650.19989-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,62 +23,60 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Results of ioctl(2) with SNDRV_PCM_IOCTL_HW_REFINE and
-SNDRV_PCM_IOCTL_HW_PARAMS are different, because the latter has single
-value for several parameters; e.g. channels of PCM substream. Selection
-of the single value is done independently of application of constraints.
-It's helpful for developers to trace the selection process.
+Hi,
 
-This commit adds tracepoints to snd_pcm_hw_params_choose() for the
-purpose.
+This patchset is a revised version of my former RFC.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/core/pcm_native.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+[alsa-devel] [PATCH RFC 00/21] ALSA: pcm: add tracepoints for PCM params operation
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-May/120548.html
 
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 8d9d181b1c03..076187ae8859 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -598,16 +598,38 @@ static int snd_pcm_hw_params_choose(struct snd_pcm_substream *pcm,
- 		-1
- 	};
- 	const int *v;
-+	struct snd_mask old_mask;
-+	struct snd_interval old_interval;
- 	int err;
- 
- 	for (v = vars; *v != -1; v++) {
-+		/* Keep old parameter to trace. */
-+		if (trace_hw_mask_param_enabled()) {
-+			if (hw_is_mask(*v))
-+				old_mask = *hw_param_mask(params, *v);
-+		}
-+		if (trace_hw_interval_param_enabled()) {
-+			if (hw_is_interval(*v))
-+				old_interval = *hw_param_interval(params, *v);
-+		}
- 		if (*v != SNDRV_PCM_HW_PARAM_BUFFER_SIZE)
- 			err = snd_pcm_hw_param_first(pcm, params, *v, NULL);
- 		else
- 			err = snd_pcm_hw_param_last(pcm, params, *v, NULL);
- 		if (snd_BUG_ON(err < 0))
- 			return err;
-+
-+		/* Trace the parameter. */
-+		if (hw_is_mask(*v)) {
-+			trace_hw_mask_param(pcm, *v, 0, &old_mask,
-+					    hw_param_mask(params, *v));
-+		}
-+		if (hw_is_interval(*v)) {
-+			trace_hw_interval_param(pcm, *v, 0, &old_interval,
-+						hw_param_interval(params, *v));
-+		}
- 	}
-+
- 	return 0;
- }
- 
+Unlike SNDRV_PCM_IOCTL_HW_REFINE, returned data from invocation of
+ioctl(2) with SNDRV_PCM_IOCTL_HW_PARAMS includes single value for below
+parameters:
+
+ * SNDRV_PCM_HW_PARAM_ACCESS
+ * SNDRV_PCM_HW_PARAM_FORMAT
+ * SNDRV_PCM_HW_PARAM_SUBFORMAT
+ * SNDRV_PCM_HW_PARAM_CHANNELS
+ * SNDRV_PCM_HW_PARAM_RATE
+ * SNDRV_PCM_HW_PARAM_PERIOD_TIME
+ * SNDRV_PCM_HW_PARAM_BUFFER_SIZE
+ * SNDRV_PCM_HW_PARAM_TICK_TIME
+
+This is an additional selection process of hardware parameters in service
+routine of the command.
+
+This patchset adds tracepoint events to probe the selection process so
+that developers can realize final set of parameters by tracing data.
+
+Below is a sample. The first three entries are final applications of
+constraint rules. The rest is newly added by this patchset.
+
+$ trace-cmd report
+...
+hw_interval_param: pcmC0D0p 021/023 PERIOD_SIZE 0 1 [1000 1000] 0 1 [1000 1000]
+hw_interval_param: pcmC0D0p 022/023 BUFFER_BYTES 0 1 [8000 8000] 0 1 [8000 8000]
+hw_interval_param: pcmC0D0p 023/023 RATE 0 1 [8000 8000] 0 1 [8000 8000]
+hw_mask_param:     pcmC0D0p 000/023 ACCESS 00000000000000000000000000000001 00000000000000000000000000000001
+hw_mask_param:     pcmC0D0p 000/023 FORMAT 00000000000000000000000000000004 00000000000000000000000000000004
+hw_mask_param:     pcmC0D0p 000/023 SUBFORMAT 00000000000000000000000000000001 00000000000000000000000000000001
+hw_interval_param: pcmC0D0p 000/023 CHANNELS 0 1 [1 1] 0 1 [1 1]
+hw_interval_param: pcmC0D0p 000/023 RATE 0 1 [8000 8000] 0 1 [8000 8000]
+hw_interval_param: pcmC0D0p 000/023 PERIOD_TIME 0 1 [125000 125000] 0 1 [125000 125000]
+hw_interval_param: pcmC0D0p 000/023 BUFFER_SIZE 0 1 [4000 4000] 0 1 [4000 4000]
+hw_interval_param: pcmC0D0p 000/023 TICK_TIME 0 1 [0 0] 0 1 [0 0]
+
+Takashi Sakamoto (3):
+  ALSA: pcm: localize snd_pcm_hw_params_choose()
+  ALSA: pcm: add tracepoints for final selection process of hardware
+    parameters
+  ALSA: pcm: use friendly name for id of PCM substream in trace print
+
+ sound/core/pcm_lib.c         | 40 ----------------------------
+ sound/core/pcm_local.h       |  3 ---
+ sound/core/pcm_native.c      | 62 ++++++++++++++++++++++++++++++++++++++++++++
+ sound/core/pcm_param_trace.h |  8 +++---
+ 4 files changed, 66 insertions(+), 47 deletions(-)
+
 -- 
 2.11.0
