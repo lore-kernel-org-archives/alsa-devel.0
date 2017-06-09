@@ -1,60 +1,82 @@
-From: Sylwester Nawrocki <s.nawrocki@samsung.com>
-Subject: [PATCH] ASoC: samsung: Odroid DT binding documentation corrections
-Date: Fri, 09 Jun 2017 19:09:44 +0200
-Message-ID: <1497028184-5244-1-git-send-email-s.nawrocki@samsung.com>
-References: <CGME20170609171002epcas1p3664647f96ffc9553eabac446075fed4c@epcas1p3.samsung.com>
-Return-path: <linux-samsung-soc-owner@vger.kernel.org>
-Sender: linux-samsung-soc-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: linux-samsung-soc@vger.kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, robh+dt@kernel.org, b.zolnierkie@samsung.com, Sylwester Nawrocki <s.nawrocki@samsung.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: ak4613: Fix out of bounds array access
+	for ak4613_iface" to the asoc tree
+Date: Fri, 09 Jun 2017 18:40:09 +0100
+Message-ID: <E1dJNtJ-0006yj-KX@debutante>
+References: <20170609070121.30359-1-axel.lin@ingics.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 02AF7267695
+ for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2017 19:40:19 +0200 (CEST)
+In-Reply-To: <20170609070121.30359-1-axel.lin@ingics.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Axel Lin <axel.lin@ingics.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Ryo Kodama <ryo.kodama.vz@renesas.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This patch removes unused and undocumented samsung,cpu-dai,
-samsung,codec-dai properties from the dts example and moves
-sub-nodes' description to a separate section.
+The patch
 
-Suggested-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+   ASoC: ak4613: Fix out of bounds array access for ak4613_iface
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From b5f2a487f524e6eeeec38651e7b58760ebfd843e Mon Sep 17 00:00:00 2001
+From: Axel Lin <axel.lin@ingics.com>
+Date: Fri, 9 Jun 2017 15:01:21 +0800
+Subject: [PATCH] ASoC: ak4613: Fix out of bounds array access for ak4613_iface
+
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/samsung,odroid.txt          | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ sound/soc/codecs/ak4613.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/samsung,odroid.txt b/Documentation/devicetree/bindings/sound/samsung,odroid.txt
-index c1ac70c..c30934d 100644
---- a/Documentation/devicetree/bindings/sound/samsung,odroid.txt
-+++ b/Documentation/devicetree/bindings/sound/samsung,odroid.txt
-@@ -5,11 +5,6 @@ Required properties:
-  - compatible - "samsung,odroidxu3-audio" - for Odroid XU3 board,
- 		"samsung,odroidxu4-audio" - for Odroid XU4 board
-  - model - the user-visible name of this sound complex
-- - 'cpu' subnode with a 'sound-dai' property containing the phandle of the I2S
--    controller
-- - 'codec' subnode with a 'sound-dai' property containing list of phandles
--    to the CODEC nodes, first entry must be corresponding to the MAX98090
--    CODEC and the second entry must be the phandle of the HDMI IP block node
-  - clocks - should contain entries matching clock names in the clock-names
-     property
-  - clock-names - should contain following entries:
-@@ -32,12 +27,18 @@ Required properties:
-    For Odroid XU4:
-      no entries
- 
-+Required sub-nodes:
-+
-+ - 'cpu' subnode with a 'sound-dai' property containing the phandle of the I2S
-+    controller
-+ - 'codec' subnode with a 'sound-dai' property containing list of phandles
-+    to the CODEC nodes, first entry must be corresponding to the MAX98090
-+    CODEC and the second entry must be the phandle of the HDMI IP block node
-+
- Example:
- 
- sound {
- 	compatible = "samsung,odroidxu3-audio";
--	samsung,cpu-dai = <&i2s0>;
--	samsung,codec-dai = <&max98090>;
- 	model = "Odroid-XU3";
- 	samsung,audio-routing =
- 		"Headphone Jack", "HPL",
+diff --git a/sound/soc/codecs/ak4613.c b/sound/soc/codecs/ak4613.c
+index b2dfddead227..987918628d5b 100644
+--- a/sound/soc/codecs/ak4613.c
++++ b/sound/soc/codecs/ak4613.c
+@@ -345,7 +345,7 @@ static int ak4613_dai_hw_params(struct snd_pcm_substream *substream,
+ 		if (ak4613_dai_fmt_matching(priv->iface, is_play, fmt, width))
+ 			iface = priv->iface;
+ 	} else {
+-		for (i = ARRAY_SIZE(ak4613_iface); i >= 0; i--) {
++		for (i = ARRAY_SIZE(ak4613_iface) - 1; i >= 0; i--) {
+ 			if (!ak4613_dai_fmt_matching(ak4613_iface + i,
+ 						     is_play,
+ 						     fmt, width))
 -- 
-1.9.1
+2.11.0
