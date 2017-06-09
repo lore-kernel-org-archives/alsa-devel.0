@@ -1,20 +1,18 @@
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Subject: Re: [PATCH v1] ASoC: Intel: byt-max98090: Add GPIO
-	ACPI mapping table
-Date: Fri, 9 Jun 2017 12:12:35 -0700
-Message-ID: <CAKdAkRTHy-raif2PU1VuXwGj7syzo=N-RzHenScYg+0FnS_u+Q@mail.gmail.com>
+ ACPI mapping table
+Date: Fri, 09 Jun 2017 22:19:08 +0300
+Message-ID: <1497035948.22624.87.camel@linux.intel.com>
 References: <20170609183801.43892-1-andriy.shevchenko@linux.intel.com>
+ <CAKdAkRTHy-raif2PU1VuXwGj7syzo=N-RzHenScYg+0FnS_u+Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk0-f67.google.com (mail-vk0-f67.google.com
- [209.85.213.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 8AF0A267695
- for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2017 21:12:37 +0200 (CEST)
-Received: by mail-vk0-f67.google.com with SMTP id 19so4395509vkd.2
- for <alsa-devel@alsa-project.org>; Fri, 09 Jun 2017 12:12:37 -0700 (PDT)
-In-Reply-To: <20170609183801.43892-1-andriy.shevchenko@linux.intel.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id BBF06267695
+ for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2017 21:20:42 +0200 (CEST)
+In-Reply-To: <CAKdAkRTHy-raif2PU1VuXwGj7syzo=N-RzHenScYg+0FnS_u+Q@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,95 +22,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Cc: Nicolas Porcel <nicolasporcel06@gmail.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 9, 2017 at 11:38 AM, Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> In order to make GPIO ACPI library stricter prepare users of
-> gpiod_get_index() to correctly behave when there no mapping is
-> provided by firmware.
->
-> Here we add explicit mapping between _CRS GpioIo() resources and
-> their names used in the driver.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-This is a bit more verbose than simply using the same connection name,
-but I guess will provide better diagnostic to userspace as we will
-have distinct GPIO names.
-
-Reviewed-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-
-> ---
->  sound/soc/intel/boards/byt-max98090.c | 22 ++++++++++++++++++----
->  1 file changed, 18 insertions(+), 4 deletions(-)
->
-> diff --git a/sound/soc/intel/boards/byt-max98090.c b/sound/soc/intel/boards/byt-max98090.c
-> index d9f81b8d915d..62f5a09aa613 100644
-> --- a/sound/soc/intel/boards/byt-max98090.c
-> +++ b/sound/soc/intel/boards/byt-max98090.c
-> @@ -67,20 +67,29 @@ static struct snd_soc_jack_pin hs_jack_pins[] = {
->
->  static struct snd_soc_jack_gpio hs_jack_gpios[] = {
->         {
-> -               .name           = "hp-gpio",
-> +               .name           = "hp",
->                 .idx            = 0,
->                 .report         = SND_JACK_HEADPHONE | SND_JACK_LINEOUT,
->                 .debounce_time  = 200,
->         },
->         {
-> -               .name           = "mic-gpio",
-> -               .idx            = 1,
-> +               .name           = "mic",
-> +               .idx            = 0,
->                 .invert         = 1,
->                 .report         = SND_JACK_MICROPHONE,
->                 .debounce_time  = 200,
->         },
->  };
->
-> +static const struct acpi_gpio_params hp_gpios = { 0, 0, false };
-> +static const struct acpi_gpio_params mic_gpios = { 1, 0, false };
-> +
-> +static const struct acpi_gpio_mapping acpi_byt_max98090_gpios[] = {
-> +       { "hp-gpios", &hp_gpios, 1 },
-> +       { "mic-gpios", &mic_gpios, 1 },
-> +       {},
-> +};
-> +
->  static int byt_max98090_init(struct snd_soc_pcm_runtime *runtime)
->  {
->         int ret;
-> @@ -140,8 +149,9 @@ static struct snd_soc_card byt_max98090_card = {
->
->  static int byt_max98090_probe(struct platform_device *pdev)
->  {
-> -       int ret_val = 0;
-> +       struct device *dev = &pdev->dev;
->         struct byt_max98090_private *priv;
-> +       int ret_val;
->
->         priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_ATOMIC);
->         if (!priv) {
-> @@ -149,6 +159,10 @@ static int byt_max98090_probe(struct platform_device *pdev)
->                 return -ENOMEM;
->         }
->
-> +       ret_val = devm_acpi_dev_add_driver_gpios(dev, acpi_byt_max98090_gpios);
-> +       if (ret_val)
-> +               dev_dbg(dev, "Unable to add GPIO mapping table\n");
-> +
->         byt_max98090_card.dev = &pdev->dev;
->         snd_soc_card_set_drvdata(&byt_max98090_card, priv);
->         ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_max98090_card);
-> --
-> 2.11.0
->
-
-Thanks.
-
--- 
-Dmitry
+T24gRnJpLCAyMDE3LTA2LTA5IGF0IDEyOjEyIC0wNzAwLCBEbWl0cnkgVG9yb2tob3Ygd3JvdGU6
+Cj4gT24gRnJpLCBKdW4gOSwgMjAxNyBhdCAxMTozOCBBTSwgQW5keSBTaGV2Y2hlbmtvCj4gPGFu
+ZHJpeS5zaGV2Y2hlbmtvQGxpbnV4LmludGVsLmNvbT4gd3JvdGU6Cj4gPiBJbiBvcmRlciB0byBt
+YWtlIEdQSU8gQUNQSSBsaWJyYXJ5IHN0cmljdGVyIHByZXBhcmUgdXNlcnMgb2YKPiA+IGdwaW9k
+X2dldF9pbmRleCgpIHRvIGNvcnJlY3RseSBiZWhhdmUgd2hlbiB0aGVyZSBubyBtYXBwaW5nIGlz
+Cj4gPiBwcm92aWRlZCBieSBmaXJtd2FyZS4KPiA+IAo+ID4gSGVyZSB3ZSBhZGQgZXhwbGljaXQg
+bWFwcGluZyBiZXR3ZWVuIF9DUlMgR3Bpb0lvKCkgcmVzb3VyY2VzIGFuZAo+ID4gdGhlaXIgbmFt
+ZXMgdXNlZCBpbiB0aGUgZHJpdmVyLgo+ID4gCj4gPiBTaWduZWQtb2ZmLWJ5OiBBbmR5IFNoZXZj
+aGVua28gPGFuZHJpeS5zaGV2Y2hlbmtvQGxpbnV4LmludGVsLmNvbT4KPiAKPiBUaGlzIGlzIGEg
+Yml0IG1vcmUgdmVyYm9zZSB0aGFuIHNpbXBseSB1c2luZyB0aGUgc2FtZSBjb25uZWN0aW9uIG5h
+bWUsCj4gYnV0IEkgZ3Vlc3Mgd2lsbCBwcm92aWRlIGJldHRlciBkaWFnbm9zdGljIHRvIHVzZXJz
+cGFjZSBhcyB3ZSB3aWxsCj4gaGF2ZSBkaXN0aW5jdCBHUElPIG5hbWVzLgo+IAo+IFJldmlld2Vk
+LWJ5OiBEbWl0cnkgVG9yb2tob3YgPGRtaXRyeS50b3Jva2hvdkBnbWFpbC5jb20+CgpUaGFua3Mh
+CgpCdXQgcGxlYXNlIHRlc3QgaXQuCgpTZWUgYWxzbyBiZWxvdyBjb21tZW50LCBqdXN0IGluIGNh
+c2UgeW91IGhhdmUgdGltZSB0byB0ZXN0IHRoYXQgYXMgd2VsbC4KCj4gCj4gPiAtLS0KPiA+IMKg
+c291bmQvc29jL2ludGVsL2JvYXJkcy9ieXQtbWF4OTgwOTAuYyB8IDIyICsrKysrKysrKysrKysr
+KysrKy0tLS0KPiA+IMKgMSBmaWxlIGNoYW5nZWQsIDE4IGluc2VydGlvbnMoKyksIDQgZGVsZXRp
+b25zKC0pCj4gPiAKPiA+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2J5dC1t
+YXg5ODA5MC5jCj4gPiBiL3NvdW5kL3NvYy9pbnRlbC9ib2FyZHMvYnl0LW1heDk4MDkwLmMKPiA+
+IGluZGV4IGQ5ZjgxYjhkOTE1ZC4uNjJmNWEwOWFhNjEzIDEwMDY0NAo+ID4gLS0tIGEvc291bmQv
+c29jL2ludGVsL2JvYXJkcy9ieXQtbWF4OTgwOTAuYwo+ID4gKysrIGIvc291bmQvc29jL2ludGVs
+L2JvYXJkcy9ieXQtbWF4OTgwOTAuYwo+ID4gQEAgLTY3LDIwICs2NywyOSBAQCBzdGF0aWMgc3Ry
+dWN0IHNuZF9zb2NfamFja19waW4gaHNfamFja19waW5zW10gPQo+ID4gewo+ID4gCj4gPiDCoHN0
+YXRpYyBzdHJ1Y3Qgc25kX3NvY19qYWNrX2dwaW8gaHNfamFja19ncGlvc1tdID0gewo+ID4gwqDC
+oMKgwqDCoMKgwqDCoHsKPiA+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAubmFtZcKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqA9ICJocC1ncGlvIiwKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAubmFtZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqA9ICJocCIsCj4gPiDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5pZHjCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqA9IDAs
+Cj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC5yZXBvcnTCoMKgwqDCoMKgwqDC
+oMKgwqA9IFNORF9KQUNLX0hFQURQSE9ORSB8Cj4gPiBTTkRfSkFDS19MSU5FT1VULAo+ID4gwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAuZGVib3VuY2VfdGltZcKgwqA9IDIwMCwKPiA+
+IMKgwqDCoMKgwqDCoMKgwqB9LAo+ID4gwqDCoMKgwqDCoMKgwqDCoHsKPiA+IC3CoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAubmFtZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqA9ICJtaWMtZ3Bp
+byIsCj4gPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgLmlkeMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoD0gMSwKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAubmFtZcKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqA9ICJtaWMiLAo+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoC5pZHjCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqA9IDAsCgo+ID4gwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAuaW52ZXJ0wqDCoMKgwqDCoMKgwqDCoMKgPSAxLAoKSSBkdW5u
+byBob3cgdGhpcyBvbmUgaXMgdXNlZCBpbnNpZGUgQVNvQyBjb3JlLCBidXQgaWYgd2UgY2hhbmdl
+IGl0IHRvIDAKYW5kLi4uCgo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAucmVw
+b3J0wqDCoMKgwqDCoMKgwqDCoMKgPSBTTkRfSkFDS19NSUNST1BIT05FLAo+ID4gwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAuZGVib3VuY2VfdGltZcKgwqA9IDIwMCwKPiA+IMKgwqDC
+oMKgwqDCoMKgwqB9LAo+ID4gwqB9Owo+ID4gCj4gPiArc3RhdGljIGNvbnN0IHN0cnVjdCBhY3Bp
+X2dwaW9fcGFyYW1zIGhwX2dwaW9zID0geyAwLCAwLCBmYWxzZSB9OwoKPiA+ICtzdGF0aWMgY29u
+c3Qgc3RydWN0IGFjcGlfZ3Bpb19wYXJhbXMgbWljX2dwaW9zID0geyAxLCAwLCBmYWxzZSB9OwoK
+Li4uY2hhbmdlIGhlcmUgdG8gdHJ1ZSwgd291bGQgaXQgd29yaz8KCj4gPiArCj4gPiArc3RhdGlj
+IGNvbnN0IHN0cnVjdCBhY3BpX2dwaW9fbWFwcGluZyBhY3BpX2J5dF9tYXg5ODA5MF9ncGlvc1td
+ID0gewo+ID4gK8KgwqDCoMKgwqDCoMKgeyAiaHAtZ3Bpb3MiLCAmaHBfZ3Bpb3MsIDEgfSwKPiA+
+ICvCoMKgwqDCoMKgwqDCoHsgIm1pYy1ncGlvcyIsICZtaWNfZ3Bpb3MsIDEgfSwKPiA+ICvCoMKg
+wqDCoMKgwqDCoHt9LAo+ID4gK307Cj4gPiArCj4gPiDCoHN0YXRpYyBpbnQgYnl0X21heDk4MDkw
+X2luaXQoc3RydWN0IHNuZF9zb2NfcGNtX3J1bnRpbWUgKnJ1bnRpbWUpCj4gPiDCoHsKPiA+IMKg
+wqDCoMKgwqDCoMKgwqBpbnQgcmV0Owo+ID4gQEAgLTE0MCw4ICsxNDksOSBAQCBzdGF0aWMgc3Ry
+dWN0IHNuZF9zb2NfY2FyZCBieXRfbWF4OTgwOTBfY2FyZCA9IHsKPiA+IAo+ID4gwqBzdGF0aWMg
+aW50IGJ5dF9tYXg5ODA5MF9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+ID4g
+wqB7Cj4gPiAtwqDCoMKgwqDCoMKgwqBpbnQgcmV0X3ZhbCA9IDA7Cj4gPiArwqDCoMKgwqDCoMKg
+wqBzdHJ1Y3QgZGV2aWNlICpkZXYgPSAmcGRldi0+ZGV2Owo+ID4gwqDCoMKgwqDCoMKgwqDCoHN0
+cnVjdCBieXRfbWF4OTgwOTBfcHJpdmF0ZSAqcHJpdjsKPiA+ICvCoMKgwqDCoMKgwqDCoGludCBy
+ZXRfdmFsOwo+ID4gCj4gPiDCoMKgwqDCoMKgwqDCoMKgcHJpdiA9IGRldm1fa3phbGxvYygmcGRl
+di0+ZGV2LCBzaXplb2YoKnByaXYpLCBHRlBfQVRPTUlDKTsKPiA+IMKgwqDCoMKgwqDCoMKgwqBp
+ZiAoIXByaXYpIHsKPiA+IEBAIC0xNDksNiArMTU5LDEwIEBAIHN0YXRpYyBpbnQgYnl0X21heDk4
+MDkwX3Byb2JlKHN0cnVjdAo+ID4gcGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+ID4gwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm4gLUVOT01FTTsKPiA+IMKgwqDCoMKgwqDCoMKg
+wqB9Cj4gPiAKPiA+ICvCoMKgwqDCoMKgwqDCoHJldF92YWwgPSBkZXZtX2FjcGlfZGV2X2FkZF9k
+cml2ZXJfZ3Bpb3MoZGV2LAo+ID4gYWNwaV9ieXRfbWF4OTgwOTBfZ3Bpb3MpOwo+ID4gK8KgwqDC
+oMKgwqDCoMKgaWYgKHJldF92YWwpCj4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+ZGV2X2RiZyhkZXYsICJVbmFibGUgdG8gYWRkIEdQSU8gbWFwcGluZyB0YWJsZVxuIik7Cj4gPiAr
+Cj4gPiDCoMKgwqDCoMKgwqDCoMKgYnl0X21heDk4MDkwX2NhcmQuZGV2ID0gJnBkZXYtPmRldjsK
+PiA+IMKgwqDCoMKgwqDCoMKgwqBzbmRfc29jX2NhcmRfc2V0X2RydmRhdGEoJmJ5dF9tYXg5ODA5
+MF9jYXJkLCBwcml2KTsKPiA+IMKgwqDCoMKgwqDCoMKgwqByZXRfdmFsID0gZGV2bV9zbmRfc29j
+X3JlZ2lzdGVyX2NhcmQoJnBkZXYtPmRldiwKPiA+ICZieXRfbWF4OTgwOTBfY2FyZCk7Cj4gPiAt
+LQo+ID4gMi4xMS4wCj4gPiAKPiAKPiBUaGFua3MuCj4gCgotLSAKQW5keSBTaGV2Y2hlbmtvIDxh
+bmRyaXkuc2hldmNoZW5rb0BsaW51eC5pbnRlbC5jb20+CkludGVsIEZpbmxhbmQgT3kKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
