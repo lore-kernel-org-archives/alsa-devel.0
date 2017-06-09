@@ -1,70 +1,105 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1 1/3] ASoC: rt5677: Introduce proper table
-	for ACPI enumeration
-Date: Fri,  9 Jun 2017 23:49:52 +0300
-Message-ID: <20170609204954.40310-1-andriy.shevchenko@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id B8A322676D8
- for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2017 22:50:00 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, John Keeping <john@metanate.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Danny Milosavljevic <dannym@scratchpost.org>
+Subject: [PATCH v12 00/14] sun4i-codec: Add Line-In, FM-In, Mic 2,  Capture Source, Differential Line-In
+Date: Fri,  9 Jun 2017 22:49:29 +0200
+Message-ID: <20170609204943.29116-1-dannym@scratchpost.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, Chen-Yu Tsai <wens@csie.org>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: Danny Milosavljevic <dannym@scratchpost.org>
 List-Id: alsa-devel@alsa-project.org
 
-I2C devices are enumerated by IDs, and not by instances.
-Make it clear by using proper module device table for ACPI case.
+This patchset adds some mixer controls to sun4i-codec.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- sound/soc/codecs/rt5677.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+It also adds a mux for the capture source and the PGA for the MIC2 preamp.
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 65ac4518ad06..64cf6cc41ad1 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -5030,7 +5030,6 @@ static const struct regmap_config rt5677_regmap = {
- static const struct i2c_device_id rt5677_i2c_id[] = {
- 	{ "rt5677", RT5677 },
- 	{ "rt5676", RT5676 },
--	{ "RT5677CE:00", RT5677 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, rt5677_i2c_id);
-@@ -5041,6 +5040,14 @@ static const struct of_device_id rt5677_of_match[] = {
- };
- MODULE_DEVICE_TABLE(of, rt5677_of_match);
- 
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id rt5677_acpi_match[] = {
-+	{ "RT5677CE", RT5677 },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(acpi, rt5677_acpi_match);
-+#endif
-+
- static const struct acpi_gpio_params plug_det_gpio = { RT5677_GPIO_PLUG_DET, 0, false };
- static const struct acpi_gpio_params mic_present_gpio = { RT5677_GPIO_MIC_PRESENT_L, 0, false };
- static const struct acpi_gpio_params headphone_enable_gpio = { RT5677_GPIO_HP_AMP_SHDN_L, 0, false };
-@@ -5301,6 +5308,7 @@ static struct i2c_driver rt5677_i2c_driver = {
- 	.driver = {
- 		.name = "rt5677",
- 		.of_match_table = rt5677_of_match,
-+		.acpi_match_table = ACPI_PTR(rt5677_acpi_match),
- 	},
- 	.probe = rt5677_i2c_probe,
- 	.remove   = rt5677_i2c_remove,
+Where possible, it uses SOC_DAPM_DOUBLE in order to cut down on the number
+of distinct controls in alsamixer.
+
+v12 changes compared to v11 are:
+ - Split u patchset in another way.
+ - Renamed "Mic1 Capture Volume" to "Mic1 Boost Volume".
+ - Renamed "Mic2 Capture Volume" to "Mic2 Boost Volume".
+ - Renamed "Line Capture Volume" to "Line Boost Volume".
+ - Renamed "Differential Line Capture Switch" to "Differential Line Source".
+
+v11 changes compared to v10 are:
+ - Split up patchset.
+ - Fixed typo in Differential Line Capture Switch.
+ - Renamed "Non-Differential" value to "Stereo".
+ - Removed duplicate PA Volume mixer control.
+
+v10 changes compared to v9 are:
+ - Use SOC_DAPM_DOUBLE where possible and it makes sense in order to cut
+   down on the number of controls.
+
+v9 changes compared to v8 are:
+ - added Line Differential Capture Switch.
+ - split Capture Source into Left Capture Select, Right Capture Select.
+ - added Line Capture Volume.
+ - rename "sun4i_codec_widgets" to "sun4i_codec_controls" for 
+   consistency with the struct field it's used in.
+ - rename "Line-In" to "Line".
+ - rename "Power Amplifier Playback Volume" to "Headphone Playback Volume".
+
+v8 changes compared to v7 are:
+ - fixed the routes for line and mic capturing.
+
+v7 changes compared to v6 are:
+ - preparation for different A20, A10 controls is now in an extra patch.
+ - all register definitions are now at the top.
+ - sun7i-specific things (A20-specific things) are now less
+   grouped-together.
+ - rename "Power Amplifier Volume" to "Power Amplifier Playback Volume".
+
+v6 changes compared to v5 are:
+ - Mic preamplifier special cases for A20 and A10 now are now not
+   icky: There are two different _widget arrays and the probe() function
+   now selects the right one to pass to snd_soc_register_codec() unmodified.
+ - sun7i-specific things (A20-specific things) are now grouped together.
+
+v5 changes compared to v4 are:
+ - Mic preamplifier controls have more common names now.
+ - Mic preamplifier scale has a 0 dB entry as well now, as documented in the 
+   A20 user manual.
+ - Mic preamplifier has special cases for A20 and A10 now.
+ - Gain controls have "Gain" in the name now.
+
+v4 changes compared to v3 are:
+ - names of the input are not uppercase anymore.
+ - bit index constants are now named as in the A20 user manual v1.4.
+ - added Mic1-In, Mac2-In.
+ - added Mic1 and Mic2 Pre-Amplifiers.
+
+v3 changes compared to v2 are:
+ - added DAPM routes.
+
+v2 changes compared to v1 are:
+ - moved Line-In and FM-In playback switches to their respective 
+   sun4i_codec_*_mixer_controls.
+
+v1 changes:
+ - added linein, fmin output volumes and switches.
+
+Danny Milosavljevic (14):
+  sun4i-codec: Add MIC2 Pre-Amplifier, Mic2 input, Mic2 routes.
+  sun4i-codec: Add Mic Playback Volume.
+  sun4i-codec: Add support for extra controls to struct
+    sun4i_codec_quirks and use them.
+  sun4i-codec: Add Mic1 Boost Volume, Mic2 Boost Volume.
+  sun4i-codec: Merge sun4i_codec_left_mixer_controls and    
+    sun4i_codec_right_mixer_controls into sun4i_codec_mixer_controls.
+  sun4i-codec: Add Mic1 Playback Switch, Mic2 Playback Switch.
+  sun4i-codec: Add FM Playback Volume.
+  sun4i-codec: Add FM Left, FM Right, FM Playback Switch.
+  sun4i-codec: Add Line Playback Volume.
+  sun4i-codec: Add Line Boost Volume.
+  sun4i-codec: Add Line Right, Line Left, Line Playback Switch.
+  sun4i-codec: Add Differential Line Source.
+  sun4i-codec: Add Left Capture Select, Right Capture Select.
+  sun4i-codec: Add Capture Volume.
+
+ sound/soc/sunxi/sun4i-codec.c | 233 +++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 210 insertions(+), 23 deletions(-)
+
 -- 
-2.11.0
+2.1.4
