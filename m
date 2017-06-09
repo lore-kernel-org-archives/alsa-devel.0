@@ -1,19 +1,20 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: sst: Remove unused function
- sst_restore_shim64()
-Date: Fri, 9 Jun 2017 09:10:04 +0530
-Message-ID: <20170609034004.GR2885@localhost>
-References: <20170523001258.81618-1-mka@chromium.org>
- <s5hshjb329o.wl-tiwai@suse.de>
+Subject: Re: [PATCH 1/2] ALSA: firewire: process packets in
+ 'struct snd_pcm_ops.ack' callback
+Date: Fri, 9 Jun 2017 09:12:31 +0530
+Message-ID: <20170609034231.GS2885@localhost>
+References: <20170607003806.27196-1-o-takashi@sakamocchi.jp>
+ <20170607003806.27196-2-o-takashi@sakamocchi.jp>
+ <s5hd1ag5oef.wl-tiwai@suse.de> <s5hvao7337g.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 68349267339
- for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2017 05:37:33 +0200 (CEST)
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id E8F9C267339
+ for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2017 05:40:00 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hshjb329o.wl-tiwai@suse.de>
+In-Reply-To: <s5hvao7337g.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,73 +25,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Douglas Anderson <dianders@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Matthias Kaehlcke <mka@chromium.org>
+Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, ffado-devel@lists.sf.net, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 07, 2017 at 11:40:19PM +0200, Takashi Iwai wrote:
-> On Tue, 23 May 2017 02:12:58 +0200,
-> Matthias Kaehlcke wrote:
+On Wed, Jun 07, 2017 at 11:20:03PM +0200, Takashi Iwai wrote:
+> On Wed, 07 Jun 2017 07:59:20 +0200,
+> Takashi Iwai wrote:
 > > 
-> > Looks like the function has never been used since it was added by commit
-> > b0d94acd634a ("ASoC: Intel: mrfld - add shim save restore"). Removing it
-> > fixes the following warning when building with clang:
+> > On Wed, 07 Jun 2017 02:38:05 +0200,
+> > Takashi Sakamoto wrote:
+> > > 
+> > > In recent commit for ALSA PCM core, some arrangement is done for
+> > > 'struct snd_pcm_ops.ack' callback. This is called when appl_ptr is
+> > > explicitly moved in intermediate buffer for PCM frames, except for
+> > > some cases described later.
+> > > 
+> > > For drivers in ALSA firewire stack, usage of this callback has a merit to
+> > > reduce latency between time of PCM frame queueing and handling actual
+> > > packets in recent isochronous cycle, because no need to wait for software
+> > > IRQ context from isochronous context of OHCI 1394.
+> > > 
+> > > If this works well in a case that mapped page frame is used for the
+> > > intermediate buffer, user process should execute some commands for ioctl(2)
+> > > to tell the number of handled PCM frames in the intermediate buffer just
+> > > after handling them.
 > > 
-> > sound/soc/intel/atom/sst/sst.c:360:20: error: unused function
-> >     'sst_restore_shim64' [-Werror,-Wunused-function]
-> > 
-> > Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+> > This is one thing that was raised in the discussion with Intel people,
+> > and my suggestion was to add a new flag to suppress the status/control
+> > mmap like pcm_file->no_compat_mmap.  Then alsa-lib falls back to the
+> > sync_ptr ioctl, and the driver can catch each appl_ptr update.
 > 
-> Hmm, although this patch was already merged, I now think this is
-> rather a bug.  If the restore is never executed, why the counterpart,
-> sst_save_shim64() is required at all at runtime suspend?
+> Now I considered this again, and concluded that a simple patch like
+> below should suffice.
 > 
-> Vinod?
-
-It was supposed to be required in early BYT boards. I do not seem to recall
-why the call to sst_restore_shim64 was removed from resume routine, it was
-there when we added it and due to file move git log is useless.
-
-Any idea how to get changes to file before the file was moved?
-
+> Adding Intel people to Cc, who raised the issue originally.
+> 
+> 
 > thanks,
 > 
 > Takashi
 > 
-> > ---
-> >  sound/soc/intel/atom/sst/sst.c | 16 ----------------
-> >  1 file changed, 16 deletions(-)
-> > 
-> > diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
-> > index f9ba71315e33..fb608d3a90c8 100644
-> > --- a/sound/soc/intel/atom/sst/sst.c
-> > +++ b/sound/soc/intel/atom/sst/sst.c
-> > @@ -397,22 +397,6 @@ static inline void sst_save_shim64(struct intel_sst_drv *ctx,
-> >  	spin_unlock_irqrestore(&ctx->ipc_spin_lock, irq_flags);
-> >  }
-> >  
-> > -static inline void sst_restore_shim64(struct intel_sst_drv *ctx,
-> > -				      void __iomem *shim,
-> > -				      struct sst_shim_regs64 *shim_regs)
-> > -{
-> > -	unsigned long irq_flags;
-> > -
-> > -	/*
-> > -	 * we only need to restore IMRX for this case, rest will be
-> > -	 * initialize by FW or driver when firmware is loaded
-> > -	 */
-> > -	spin_lock_irqsave(&ctx->ipc_spin_lock, irq_flags);
-> > -	sst_shim_write64(shim, SST_IMRX, shim_regs->imrx);
-> > -	sst_shim_write64(shim, SST_CSR, shim_regs->csr);
-> > -	spin_unlock_irqrestore(&ctx->ipc_spin_lock, irq_flags);
-> > -}
-> > -
-> >  void sst_configure_runtime_pm(struct intel_sst_drv *ctx)
-> >  {
-> >  	pm_runtime_set_autosuspend_delay(ctx->dev, SST_SUSPEND_DELAY);
-> > -- 
-> > 2.13.0.303.g4ebf302169-goog
-> > 
-> > 
+> -- 8< --
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: pcm: Suppress status/control mmap when ack ops is
+>  present
+> 
+> The drivers using PCM ack ops require the notification whenever
+> appl_ptr is updated in general.  But when the PCM status/control page
+> is mmapped, this notification doesn't happen, per design, thus it's
+> not guaranteed to receive the fine-grained updates.
+> 
+> For improving the situation, this patch simply suppresses the PCM
+> status/control mmap when ack ops is defined.  At least, for all
+> existing drivers with ack, this should give more benefit.
+> 
+> Once when we really need the full optimization with status/control
+> mmap even using ack ops, we may reconsider the check, e.g. introducing
+> a new flag.  But, so far, this should be good enough.
+
+Yes this makes sense and we tested it for us, looks good
+
+Reveiwed-by: Vinod Koul <vinod.koul@intel.com>
+Tested-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+
+> 
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/core/pcm_native.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+> index 2bde07a4a87f..b993b0420411 100644
+> --- a/sound/core/pcm_native.c
+> +++ b/sound/core/pcm_native.c
+> @@ -3189,6 +3189,10 @@ static int snd_pcm_mmap_status(struct snd_pcm_substream *substream, struct file
+>  			       struct vm_area_struct *area)
+>  {
+>  	long size;
+> +
+> +	/* suppress status/control mmap when driver requires ack */
+> +	if (substream->ops->ack)
+> +		return -ENXIO;
+>  	if (!(area->vm_flags & VM_READ))
+>  		return -EINVAL;
+>  	size = area->vm_end - area->vm_start;
+> @@ -3225,6 +3229,10 @@ static int snd_pcm_mmap_control(struct snd_pcm_substream *substream, struct file
+>  				struct vm_area_struct *area)
+>  {
+>  	long size;
+> +
+> +	/* suppress status/control mmap when driver requires ack */
+> +	if (substream->ops->ack)
+> +		return -ENXIO;
+>  	if (!(area->vm_flags & VM_READ))
+>  		return -EINVAL;
+>  	size = area->vm_end - area->vm_start;
+> -- 
+> 2.13.0
+> 
 
 -- 
 ~Vinod
