@@ -1,20 +1,19 @@
 From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH 1/2] ALSA: firewire: process packets in
- 'struct snd_pcm_ops.ack' callback
-Date: Fri, 9 Jun 2017 09:12:31 +0530
-Message-ID: <20170609034231.GS2885@localhost>
-References: <20170607003806.27196-1-o-takashi@sakamocchi.jp>
- <20170607003806.27196-2-o-takashi@sakamocchi.jp>
- <s5hd1ag5oef.wl-tiwai@suse.de> <s5hvao7337g.wl-tiwai@suse.de>
+Subject: Re: [PATCH v2 3/3] ASoC: Intel: Add Kabylake
+ RT5663+RT5514+MAX98927 machine driver entry
+Date: Fri, 9 Jun 2017 09:15:07 +0530
+Message-ID: <20170609034507.GT2885@localhost>
+References: <1496885261-10771-1-git-send-email-harshapriya.n@intel.com>
+ <1496885261-10771-4-git-send-email-harshapriya.n@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id E8F9C267339
- for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2017 05:40:00 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D10D267339
+ for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2017 05:42:34 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hvao7337g.wl-tiwai@suse.de>
+In-Reply-To: <1496885261-10771-4-git-send-email-harshapriya.n@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,104 +23,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, clemens@ladisch.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, ffado-devel@lists.sf.net, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>
+To: Harsha Priya <harshapriya.n@intel.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 07, 2017 at 11:20:03PM +0200, Takashi Iwai wrote:
-> On Wed, 07 Jun 2017 07:59:20 +0200,
-> Takashi Iwai wrote:
-> > 
-> > On Wed, 07 Jun 2017 02:38:05 +0200,
-> > Takashi Sakamoto wrote:
-> > > 
-> > > In recent commit for ALSA PCM core, some arrangement is done for
-> > > 'struct snd_pcm_ops.ack' callback. This is called when appl_ptr is
-> > > explicitly moved in intermediate buffer for PCM frames, except for
-> > > some cases described later.
-> > > 
-> > > For drivers in ALSA firewire stack, usage of this callback has a merit to
-> > > reduce latency between time of PCM frame queueing and handling actual
-> > > packets in recent isochronous cycle, because no need to wait for software
-> > > IRQ context from isochronous context of OHCI 1394.
-> > > 
-> > > If this works well in a case that mapped page frame is used for the
-> > > intermediate buffer, user process should execute some commands for ioctl(2)
-> > > to tell the number of handled PCM frames in the intermediate buffer just
-> > > after handling them.
-> > 
-> > This is one thing that was raised in the discussion with Intel people,
-> > and my suggestion was to add a new flag to suppress the status/control
-> > mmap like pcm_file->no_compat_mmap.  Then alsa-lib falls back to the
-> > sync_ptr ioctl, and the driver can catch each appl_ptr update.
-> 
-> Now I considered this again, and concluded that a simple patch like
-> below should suffice.
-> 
-> Adding Intel people to Cc, who raised the issue originally.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> -- 8< --
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: pcm: Suppress status/control mmap when ack ops is
->  present
-> 
-> The drivers using PCM ack ops require the notification whenever
-> appl_ptr is updated in general.  But when the PCM status/control page
-> is mmapped, this notification doesn't happen, per design, thus it's
-> not guaranteed to receive the fine-grained updates.
-> 
-> For improving the situation, this patch simply suppresses the PCM
-> status/control mmap when ack ops is defined.  At least, for all
-> existing drivers with ack, this should give more benefit.
-> 
-> Once when we really need the full optimization with status/control
-> mmap even using ack ops, we may reconsider the check, e.g. introducing
-> a new flag.  But, so far, this should be good enough.
+On Wed, Jun 07, 2017 at 06:27:41PM -0700, Harsha Priya wrote:
+> This patch adds Kabylake I2S machine driver which uses codecs
+> MAX98927 as speakers and RT5514 as dmic on ssp0 and
+> RT5663 as headset on ssp1.
 
-Yes this makes sense and we tested it for us, looks good
 
-Reveiwed-by: Vinod Koul <vinod.koul@intel.com>
-Tested-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+You missed signing off this patch.
 
-> 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Please reread Documentation/process/submitting-patches.rst and esp the 
+"Developer's Certificate of Origin 1.1" part
+
+Without SoB this submission cannot be considered.
+
 > ---
->  sound/core/pcm_native.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
+>  sound/soc/intel/skylake/skl.c | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
 > 
-> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-> index 2bde07a4a87f..b993b0420411 100644
-> --- a/sound/core/pcm_native.c
-> +++ b/sound/core/pcm_native.c
-> @@ -3189,6 +3189,10 @@ static int snd_pcm_mmap_status(struct snd_pcm_substream *substream, struct file
->  			       struct vm_area_struct *area)
->  {
->  	long size;
+> diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+> index 6a79fc7..e761550 100644
+> --- a/sound/soc/intel/skylake/skl.c
+> +++ b/sound/soc/intel/skylake/skl.c
+> @@ -896,6 +896,12 @@ static void skl_remove(struct pci_dev *pci)
+>  	.codecs = {"10EC5663"}
+>  };
+>  
+> +static struct sst_codecs kbl_5663_5514_codecs = {
+> +	.num_codecs = 2,
+> +	.codecs = {"10EC5663", "10EC5514"}
+> +};
 > +
-> +	/* suppress status/control mmap when driver requires ack */
-> +	if (substream->ops->ack)
-> +		return -ENXIO;
->  	if (!(area->vm_flags & VM_READ))
->  		return -EINVAL;
->  	size = area->vm_end - area->vm_start;
-> @@ -3225,6 +3229,10 @@ static int snd_pcm_mmap_control(struct snd_pcm_substream *substream, struct file
->  				struct vm_area_struct *area)
->  {
->  	long size;
 > +
-> +	/* suppress status/control mmap when driver requires ack */
-> +	if (substream->ops->ack)
-> +		return -ENXIO;
->  	if (!(area->vm_flags & VM_READ))
->  		return -EINVAL;
->  	size = area->vm_end - area->vm_start;
+>  static struct sst_acpi_mach sst_skl_devdata[] = {
+>  	{
+>  		.id = "INT343A",
+> @@ -960,6 +966,14 @@ static void skl_remove(struct pci_dev *pci)
+>  	},
+>  	{
+>  		.id = "MX98927",
+> +		.drv_name = "kbl_r5514_5663_max",
+> +		.fw_filename = "intel/dsp_fw_kbl.bin",
+> +		.machine_quirk = sst_acpi_codec_list,
+> +		.quirk_data = &kbl_5663_5514_codecs,
+> +		.pdata = &skl_dmic_data
+> +	},
+> +	{
+> +		.id = "MX98927",
+>  		.drv_name = "kbl_rt5663_m98927",
+>  		.fw_filename = "intel/dsp_fw_kbl.bin",
+>  		.machine_quirk = sst_acpi_codec_list,
 > -- 
-> 2.13.0
+> 1.9.1
 > 
 
 -- 
