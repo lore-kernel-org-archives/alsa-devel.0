@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: Allow bespoke configuration
-	post widget creation" to the asoc tree
-Date: Fri, 09 Jun 2017 18:40:12 +0100
-Message-ID: <E1dJNtM-0006zW-M9@debutante>
-References: <1497019403-5484-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: Applied "ASoC: omap-mcbsp: Use sysfs_match_string()
+	helper" to the asoc tree
+Date: Fri, 09 Jun 2017 18:40:15 +0100
+Message-ID: <E1dJNtP-00070b-NN@debutante>
+References: <20170609120654.21809-1-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 30F212676A0
- for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2017 19:40:20 +0200 (CEST)
-In-Reply-To: <1497019403-5484-1-git-send-email-liam.r.girdwood@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A4E72676AB
+ for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2017 19:40:27 +0200 (CEST)
+In-Reply-To: <20170609120654.21809-1-andriy.shevchenko@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: Allow bespoke configuration post widget creation
+   ASoC: omap-mcbsp: Use sysfs_match_string() helper
 
 has been applied to the asoc tree at
 
@@ -53,77 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From 0c2b5c7983ec376e20e5a063556ee39a455c9d66 Mon Sep 17 00:00:00 2001
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Date: Fri, 9 Jun 2017 15:43:23 +0100
-Subject: [PATCH] ASoC: topology: Allow bespoke configuration post widget
- creation
+>From 69beca69d68b69b38c2610b8b5fd2e27a40d441b Mon Sep 17 00:00:00 2001
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Date: Fri, 9 Jun 2017 15:06:54 +0300
+Subject: [PATCH] ASoC: omap-mcbsp: Use sysfs_match_string() helper
 
-Current topology only allows for widget configuration before the widget
-is registered. This patch also allows further configuration and usage
-after registration is complete.
+Use sysfs_match_string() helper instead of open coded variant.
 
-Changes v1. Fix build by removing part of an unrelated patch.
-
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: Mark Brown <broonie@kernel.org>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-topology.h |  3 +++
- sound/soc/soc-topology.c     | 19 +++++++++++++++++++
- 2 files changed, 22 insertions(+)
+ sound/soc/omap/mcbsp.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
-index b8da221615e0..f552c3f56368 100644
---- a/include/sound/soc-topology.h
-+++ b/include/sound/soc-topology.h
-@@ -118,6 +118,9 @@ struct snd_soc_tplg_ops {
- 	int (*widget_load)(struct snd_soc_component *,
- 		struct snd_soc_dapm_widget *,
- 		struct snd_soc_tplg_dapm_widget *);
-+	int (*widget_ready)(struct snd_soc_component *,
-+		struct snd_soc_dapm_widget *,
-+		struct snd_soc_tplg_dapm_widget *);
- 	int (*widget_unload)(struct snd_soc_component *,
- 		struct snd_soc_dobj *);
+diff --git a/sound/soc/omap/mcbsp.c b/sound/soc/omap/mcbsp.c
+index 06fec5699cc8..7a54e3083203 100644
+--- a/sound/soc/omap/mcbsp.c
++++ b/sound/soc/omap/mcbsp.c
+@@ -835,15 +835,11 @@ static ssize_t dma_op_mode_store(struct device *dev,
+ 				const char *buf, size_t size)
+ {
+ 	struct omap_mcbsp *mcbsp = dev_get_drvdata(dev);
+-	const char * const *s;
+-	int i = 0;
+-
+-	for (s = &dma_op_modes[i]; i < ARRAY_SIZE(dma_op_modes); s++, i++)
+-		if (sysfs_streq(buf, *s))
+-			break;
++	int i;
  
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index f4ec236a418e..12e189701924 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -344,6 +344,17 @@ static int soc_tplg_widget_load(struct soc_tplg *tplg,
- 	return 0;
- }
+-	if (i == ARRAY_SIZE(dma_op_modes))
+-		return -EINVAL;
++	i = sysfs_match_string(dma_op_modes, buf);
++	if (i < 0)
++		return i;
  
-+/* optionally pass new dynamic widget to component driver. This is mainly for
-+ * external widgets where we can assign private data/ops */
-+static int soc_tplg_widget_ready(struct soc_tplg *tplg,
-+	struct snd_soc_dapm_widget *w, struct snd_soc_tplg_dapm_widget *tplg_w)
-+{
-+	if (tplg->comp && tplg->ops && tplg->ops->widget_ready)
-+		return tplg->ops->widget_ready(tplg->comp, w, tplg_w);
-+
-+	return 0;
-+}
-+
- /* pass DAI configurations to component driver for extra initialization */
- static int soc_tplg_dai_load(struct soc_tplg *tplg,
- 	struct snd_soc_dai_driver *dai_drv)
-@@ -1579,8 +1590,16 @@ static int soc_tplg_dapm_widget_create(struct soc_tplg *tplg,
- 	widget->dobj.ops = tplg->ops;
- 	widget->dobj.index = tplg->index;
- 	list_add(&widget->dobj.list, &tplg->comp->dobj_list);
-+
-+	ret = soc_tplg_widget_ready(tplg, widget, w);
-+	if (ret < 0)
-+		goto ready_err;
-+
- 	return 0;
- 
-+ready_err:
-+	snd_soc_tplg_widget_remove(widget);
-+	snd_soc_dapm_free_widget(widget);
- hdr_err:
- 	kfree(template.sname);
- err:
+ 	spin_lock_irq(&mcbsp->lock);
+ 	if (!mcbsp->free) {
 -- 
 2.11.0
