@@ -1,7 +1,7 @@
 From: Danny Milosavljevic <dannym@scratchpost.org>
-Subject: [PATCH v11 08/12] sun4i-codec: Merge sun4i_codec_left_mixer_controls and sun4i_codec_right_mixer_controls into sun4i_codec_mixer_controls.
-Date: Fri,  9 Jun 2017 08:22:12 +0200
-Message-ID: <20170609062216.26807-9-dannym@scratchpost.org>
+Subject: [PATCH v11 11/12] sun4i-codec: Add MIC2 Pre-Amplifier.
+Date: Fri,  9 Jun 2017 08:22:15 +0200
+Message-ID: <20170609062216.26807-12-dannym@scratchpost.org>
 References: <20170609062216.26807-1-dannym@scratchpost.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20170609062216.26807-1-dannym@scratchpost.org>
@@ -12,47 +12,19 @@ List-Id: alsa-devel@alsa-project.org
 
 Signed-off-by: Danny Milosavljevic <dannym@scratchpost.org>
 ---
- sound/soc/sunxi/sun4i-codec.c | 21 +++++++++------------
- 1 file changed, 9 insertions(+), 12 deletions(-)
+ sound/soc/sunxi/sun4i-codec.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index d453af65..07ed4fd4 100644
+index 730f6151..a9e10dce 100644
 --- a/sound/soc/sunxi/sun4i-codec.c
 +++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -759,15 +759,12 @@ static const struct snd_kcontrol_new sun7i_codec_extra_controls[] = {
- 		       sun7i_codec_micin_preamp_gain_scale),
- };
+@@ -860,6 +860,8 @@ static const struct snd_soc_dapm_widget sun4i_codec_codec_dapm_widgets[] = {
+ 	/* Mic Pre-Amplifiers */
+ 	SND_SOC_DAPM_PGA("MIC1 Pre-Amplifier", SUN4I_CODEC_ADC_ACTL,
+ 			 SUN4I_CODEC_ADC_ACTL_PREG1EN, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("MIC2 Pre-Amplifier", SUN4I_CODEC_ADC_ACTL,
++			 SUN4I_CODEC_ADC_ACTL_PREG2EN, 0, NULL, 0),
  
--static const struct snd_kcontrol_new sun4i_codec_left_mixer_controls[] = {
--	SOC_DAPM_SINGLE("Left DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
--			SUN4I_CODEC_DAC_ACTL_LDACLMIXS, 1, 0),
--};
--
--static const struct snd_kcontrol_new sun4i_codec_right_mixer_controls[] = {
--	SOC_DAPM_SINGLE("Right DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
-+static const struct snd_kcontrol_new sun4i_codec_mixer_controls[] = {
-+	SOC_DAPM_DOUBLE("DAC Playback Switch",
-+			SUN4I_CODEC_DAC_ACTL,
-+			SUN4I_CODEC_DAC_ACTL_LDACLMIXS,
- 			SUN4I_CODEC_DAC_ACTL_RDACRMIXS, 1, 0),
--	SOC_DAPM_SINGLE("Left DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
-+	SOC_DAPM_SINGLE("Right Mixer Left DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
- 			SUN4I_CODEC_DAC_ACTL_LDACRMIXS, 1, 0),
- };
- 
-@@ -803,11 +800,11 @@ static const struct snd_soc_dapm_widget sun4i_codec_codec_dapm_widgets[] = {
- 
- 	/* Mixers */
- 	SND_SOC_DAPM_MIXER("Left Mixer", SND_SOC_NOPM, 0, 0,
--			   sun4i_codec_left_mixer_controls,
--			   ARRAY_SIZE(sun4i_codec_left_mixer_controls)),
-+			   sun4i_codec_mixer_controls,
-+			   ARRAY_SIZE(sun4i_codec_mixer_controls)),
- 	SND_SOC_DAPM_MIXER("Right Mixer", SND_SOC_NOPM, 0, 0,
--			   sun4i_codec_right_mixer_controls,
--			   ARRAY_SIZE(sun4i_codec_right_mixer_controls)),
-+			   sun4i_codec_mixer_controls,
-+			   ARRAY_SIZE(sun4i_codec_mixer_controls)),
- 
- 	/* Global Mixer Enable */
- 	SND_SOC_DAPM_SUPPLY("Mixer Enable", SUN4I_CODEC_DAC_ACTL,
+ 	/* Power Amplifier */
+ 	SND_SOC_DAPM_MIXER("Power Amplifier", SUN4I_CODEC_ADC_ACTL,
