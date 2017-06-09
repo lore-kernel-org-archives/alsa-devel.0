@@ -1,18 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/5] ALSA: seq: Allow the tristate build of OSS
-	emulation
-Date: Fri,  9 Jun 2017 17:12:49 +0200
-Message-ID: <20170609151252.704-3-tiwai@suse.de>
+Subject: [PATCH 3/5] ALSA: seq: Reorganize kconfig and build
+Date: Fri,  9 Jun 2017 17:12:50 +0200
+Message-ID: <20170609151252.704-4-tiwai@suse.de>
 References: <20170609151252.704-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 61BED267669
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D402266AB2
  for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2017 17:12:53 +0200 (CEST)
 Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 82791AC53
+ by mx1.suse.de (Postfix) with ESMTP id 82CC3AE2B
  for <alsa-devel@alsa-project.org>; Fri,  9 Jun 2017 15:12:53 +0000 (UTC)
 In-Reply-To: <20170609151252.704-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,209 +26,266 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently OSS sequencer emulation is tied with ALSA sequencer core,
-both are built in the same level; i.e. when CONFIG_SND_SEQUENCER=y,
-the OSS sequencer emulation is also always built-in, even though the
-functionality can be built as an individual module.
+This is a slightly intensive rewrite of Kconfig and Makefile about
+ALSA sequencer stuff.
 
-This patch changes the rule and allows users to build snd-seq-oss
-module while others are built-in.  Essentially, it's just a few simple
-changes in Kconfig and Makefile.  Some driver codes like opl3 need to
-convert from the simple ifdef to IS_ENABLED().  But that's all.
+The first major change is that the kconfig items for the sequencer are
+moved to sound/core/seq/Kconfig.  OK, that's easy.
 
-You might wonder how about the dependency: right, it can be messy, but
-it still works.  Since we rewrote the sequencer binding with the
-standard bus, the driver can be bound at any time on demand.  So, the
-synthesizer driver module can be loaded individually from the OSS
-emulation core before/after it.
+The substantial change is that, instead of hackish top-level module
+selection in Makefile, we define a Kconfig item for each sequencer
+module.  The driver that requires such sequencer components select
+exclusively the kconfig items.  This is more straightforward and
+standard way.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/Kconfig              | 2 +-
- sound/core/seq/Makefile         | 7 +++----
- sound/core/seq/oss/Makefile     | 2 +-
- sound/drivers/opl3/opl3_seq.c   | 4 ++--
- sound/drivers/opl3/opl3_voice.h | 5 ++++-
- sound/isa/sb/emu8000_callback.c | 6 +++---
- sound/synth/emux/emux.c         | 6 +++---
- sound/synth/emux/emux_effect.c  | 2 +-
- sound/synth/emux/emux_oss.c     | 4 ----
- 9 files changed, 18 insertions(+), 20 deletions(-)
+ sound/core/Kconfig      | 47 ----------------------------------
+ sound/core/seq/Kconfig  | 68 +++++++++++++++++++++++++++++++++++++++++--------
+ sound/core/seq/Makefile | 13 +++-------
+ sound/drivers/Kconfig   | 13 ++++++++++
+ sound/isa/Kconfig       |  6 +++++
+ sound/pci/Kconfig       |  6 +++++
+ 6 files changed, 86 insertions(+), 67 deletions(-)
 
 diff --git a/sound/core/Kconfig b/sound/core/Kconfig
-index 3a9afc520d4e..d64dbee36986 100644
+index d64dbee36986..90990eb1d250 100644
 --- a/sound/core/Kconfig
 +++ b/sound/core/Kconfig
-@@ -110,7 +110,7 @@ config SND_PCM_TIMER
+@@ -33,31 +33,6 @@ config SND_JACK_INPUT_DEV
+ 	depends on SND_JACK
+ 	default y if INPUT=y || INPUT=SND
+ 
+-config SND_SEQUENCER
+-	tristate "Sequencer support"
+-	select SND_TIMER
+-	help
+-	  Say Y or M to enable MIDI sequencer and router support.  This
+-	  feature allows routing and enqueueing of MIDI events.  Events
+-	  can be processed at a given time.
+-
+-	  Many programs require this feature, so you should enable it
+-	  unless you know what you're doing.
+-
+-config SND_SEQ_DUMMY
+-	tristate "Sequencer dummy client"
+-	depends on SND_SEQUENCER
+-	help
+-	  Say Y here to enable the dummy sequencer client.  This client
+-	  is a simple MIDI-through client: all normal input events are
+-	  redirected to the output port immediately.
+-
+-	  You don't need this unless you want to connect many MIDI
+-	  devices or applications together.
+-
+-	  To compile this driver as a module, choose M here: the module
+-	  will be called snd-seq-dummy.
+-
+ config SND_OSSEMUL
+ 	bool "Enable OSS Emulation"
+ 	select SOUND_OSS_CORE
+@@ -109,20 +84,6 @@ config SND_PCM_TIMER
+ 	  For some embedded devices, we may disable it to reduce memory
  	  footprint, about 20KB on x86_64 platform.
  
- config SND_SEQUENCER_OSS
--	bool "OSS Sequencer API"
-+	tristate "OSS Sequencer API"
- 	depends on SND_SEQUENCER
- 	depends on SND_OSSEMUL
+-config SND_SEQUENCER_OSS
+-	tristate "OSS Sequencer API"
+-	depends on SND_SEQUENCER
+-	depends on SND_OSSEMUL
+-	help
+-	  Say Y here to enable OSS sequencer emulation (both
+-	  /dev/sequencer and /dev/music interfaces).
+-
+-	  Many programs still use the OSS API, so say Y.
+-
+-	  If you choose M in "Sequencer support" (SND_SEQUENCER),
+-	  this will be compiled as a module. The module will be called
+-	  snd-seq-oss.
+-
+ config SND_HRTIMER
+ 	tristate "HR-timer backend support"
+ 	depends on HIGH_RES_TIMERS
+@@ -135,14 +96,6 @@ config SND_HRTIMER
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called snd-hrtimer.
+ 
+-config SND_SEQ_HRTIMER_DEFAULT
+-	bool "Use HR-timer as default sequencer timer"
+-	depends on SND_HRTIMER && SND_SEQUENCER
+-	default y
+-	help
+-	  Say Y here to use the HR-timer backend as the default sequencer
+-	  timer.
+-
+ config SND_DYNAMIC_MINORS
+ 	bool "Dynamic device file minor numbers"
  	help
+diff --git a/sound/core/seq/Kconfig b/sound/core/seq/Kconfig
+index b851fd890a89..140e640e62a6 100644
+--- a/sound/core/seq/Kconfig
++++ b/sound/core/seq/Kconfig
+@@ -1,16 +1,62 @@
+-# define SND_XXX_SEQ to min(SND_SEQUENCER,SND_XXX)
++config SND_SEQUENCER
++	tristate "Sequencer support"
++	select SND_TIMER
++	help
++	  Say Y or M to enable MIDI sequencer and router support.  This
++	  feature allows routing and enqueueing of MIDI events.  Events
++	  can be processed at a given time.
+ 
+-config SND_RAWMIDI_SEQ
+-	def_tristate SND_SEQUENCER && SND_RAWMIDI
++	  Many programs require this feature, so you should enable it
++	  unless you know what you're doing.
+ 
+-config SND_OPL3_LIB_SEQ
+-	def_tristate SND_SEQUENCER && SND_OPL3_LIB
++if SND_SEQUENCER
+ 
+-config SND_OPL4_LIB_SEQ
+-	def_tristate SND_SEQUENCER && SND_OPL4_LIB
++config SND_SEQ_DUMMY
++	tristate "Sequencer dummy client"
++	help
++	  Say Y here to enable the dummy sequencer client.  This client
++	  is a simple MIDI-through client: all normal input events are
++	  redirected to the output port immediately.
+ 
+-config SND_SBAWE_SEQ
+-	def_tristate SND_SEQUENCER && SND_SBAWE
++	  You don't need this unless you want to connect many MIDI
++	  devices or applications together.
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called snd-seq-dummy.
++
++config SND_SEQUENCER_OSS
++	tristate "OSS Sequencer API"
++	depends on SND_OSSEMUL
++	select SND_SEQ_MIDI_EVENT
++	help
++	  Say Y here to enable OSS sequencer emulation (both
++	  /dev/sequencer and /dev/music interfaces).
++
++	  Many programs still use the OSS API, so say Y.
++
++	  To compile this driver as a module, choose M here: the module
++	  will be called snd-seq-oss.
++
++config SND_SEQ_HRTIMER_DEFAULT
++	bool "Use HR-timer as default sequencer timer"
++	depends on SND_HRTIMER
++	default y
++	help
++	  Say Y here to use the HR-timer backend as the default sequencer
++	  timer.
++
++config SND_SEQ_MIDI_EVENT
++	def_tristate SND_RAWMIDI
++
++config SND_SEQ_MIDI
++	tristate
++	select SND_SEQ_MIDI_EVENT
++
++config SND_SEQ_MIDI_EMUL
++	tristate
++
++config SND_SEQ_VIRMIDI
++	tristate
++
++endif # SND_SEQUENCER
+ 
+-config SND_EMU10K1_SEQ
+-	def_tristate SND_SEQUENCER && SND_EMU10K1
 diff --git a/sound/core/seq/Makefile b/sound/core/seq/Makefile
-index b65fa5a1943b..3283b055e5ff 100644
+index 3283b055e5ff..81a8ea537209 100644
 --- a/sound/core/seq/Makefile
 +++ b/sound/core/seq/Makefile
-@@ -15,10 +15,9 @@ snd-seq-dummy-objs := seq_dummy.o
+@@ -15,15 +15,10 @@ snd-seq-dummy-objs := seq_dummy.o
  snd-seq-virmidi-objs := seq_virmidi.o
  
  obj-$(CONFIG_SND_SEQUENCER) += snd-seq.o snd-seq-device.o
--ifeq ($(CONFIG_SND_SEQUENCER_OSS),y)
--  obj-$(CONFIG_SND_SEQUENCER) += snd-seq-midi-event.o
--  obj-$(CONFIG_SND_SEQUENCER) += oss/
--endif
-+obj-$(CONFIG_SND_SEQUENCER_OSS) += snd-seq-midi-event.o
-+obj-$(CONFIG_SND_SEQUENCER_OSS) += oss/
-+
+-obj-$(CONFIG_SND_SEQUENCER_OSS) += snd-seq-midi-event.o
+ obj-$(CONFIG_SND_SEQUENCER_OSS) += oss/
+ 
  obj-$(CONFIG_SND_SEQ_DUMMY) += snd-seq-dummy.o
- 
- # Toplevel Module Dependency
-diff --git a/sound/core/seq/oss/Makefile b/sound/core/seq/oss/Makefile
-index b38406b8463c..4ea4e3eea6b7 100644
---- a/sound/core/seq/oss/Makefile
-+++ b/sound/core/seq/oss/Makefile
-@@ -7,4 +7,4 @@ snd-seq-oss-objs  := seq_oss.o seq_oss_init.o seq_oss_timer.o seq_oss_ioctl.o \
- 		     seq_oss_event.o seq_oss_rw.o seq_oss_synth.o \
- 		     seq_oss_midi.o seq_oss_readq.o seq_oss_writeq.o
- 
--obj-$(CONFIG_SND_SEQUENCER) += snd-seq-oss.o
-+obj-$(CONFIG_SND_SEQUENCER_OSS) += snd-seq-oss.o
-diff --git a/sound/drivers/opl3/opl3_seq.c b/sound/drivers/opl3/opl3_seq.c
-index fdae5d7f421f..d3e91be8b23a 100644
---- a/sound/drivers/opl3/opl3_seq.c
-+++ b/sound/drivers/opl3/opl3_seq.c
-@@ -252,7 +252,7 @@ static int snd_opl3_seq_probe(struct device *_dev)
- 	spin_lock_init(&opl3->sys_timer_lock);
- 	opl3->sys_timer_status = 0;
- 
--#ifdef CONFIG_SND_SEQUENCER_OSS
-+#if IS_ENABLED(CONFIG_SND_SEQUENCER_OSS)
- 	snd_opl3_init_seq_oss(opl3, name);
- #endif
- 	return 0;
-@@ -267,7 +267,7 @@ static int snd_opl3_seq_remove(struct device *_dev)
- 	if (opl3 == NULL)
- 		return -EINVAL;
- 
--#ifdef CONFIG_SND_SEQUENCER_OSS
-+#if IS_ENABLED(CONFIG_SND_SEQUENCER_OSS)
- 	snd_opl3_free_seq_oss(opl3);
- #endif
- 	if (opl3->seq_client >= 0) {
-diff --git a/sound/drivers/opl3/opl3_voice.h b/sound/drivers/opl3/opl3_voice.h
-index a371c075ac87..eaef435e0528 100644
---- a/sound/drivers/opl3/opl3_voice.h
-+++ b/sound/drivers/opl3/opl3_voice.h
-@@ -44,9 +44,12 @@ void snd_opl3_load_drums(struct snd_opl3 *opl3);
- void snd_opl3_drum_switch(struct snd_opl3 *opl3, int note, int on_off, int vel, struct snd_midi_channel *chan);
- 
- /* Prototypes for opl3_oss.c */
--#ifdef CONFIG_SND_SEQUENCER_OSS
-+#if IS_ENABLED(CONFIG_SND_SEQUENCER_OSS)
- void snd_opl3_init_seq_oss(struct snd_opl3 *opl3, char *name);
- void snd_opl3_free_seq_oss(struct snd_opl3 *opl3);
-+#else
-+#define snd_opl3_init_seq_oss(opl3, name) /* NOP */
-+#define snd_opl3_free_seq_oss(opl3) /* NOP */
- #endif
- 
- #endif
-diff --git a/sound/isa/sb/emu8000_callback.c b/sound/isa/sb/emu8000_callback.c
-index 72a9ac5efb40..d28d712f99f4 100644
---- a/sound/isa/sb/emu8000_callback.c
-+++ b/sound/isa/sb/emu8000_callback.c
-@@ -36,7 +36,7 @@ static void reset_voice(struct snd_emux *emu, int ch);
- static void terminate_voice(struct snd_emux_voice *vp);
- static void sysex(struct snd_emux *emu, char *buf, int len, int parsed,
- 		  struct snd_midi_channel_set *chset);
--#ifdef CONFIG_SND_SEQUENCER_OSS
-+#if IS_ENABLED(CONFIG_SND_SEQUENCER_OSS)
- static int oss_ioctl(struct snd_emux *emu, int cmd, int p1, int p2);
- #endif
- static int load_fx(struct snd_emux *emu, int type, int mode,
-@@ -76,7 +76,7 @@ static struct snd_emux_operators emu8000_ops = {
- 	.sample_reset = snd_emu8000_sample_reset,
- 	.load_fx =	load_fx,
- 	.sysex =	sysex,
--#ifdef CONFIG_SND_SEQUENCER_OSS
-+#if IS_ENABLED(CONFIG_SND_SEQUENCER_OSS)
- 	.oss_ioctl =	oss_ioctl,
- #endif
- };
-@@ -477,7 +477,7 @@ sysex(struct snd_emux *emu, char *buf, int len, int parsed, struct snd_midi_chan
- }
- 
- 
--#ifdef CONFIG_SND_SEQUENCER_OSS
-+#if IS_ENABLED(CONFIG_SND_SEQUENCER_OSS)
- /*
-  * OSS ioctl callback
-  */
-diff --git a/sound/synth/emux/emux.c b/sound/synth/emux/emux.c
-index 9312cd8a6fdd..b9981e8c0027 100644
---- a/sound/synth/emux/emux.c
-+++ b/sound/synth/emux/emux.c
-@@ -47,7 +47,7 @@ int snd_emux_new(struct snd_emux **remu)
- 	mutex_init(&emu->register_mutex);
- 
- 	emu->client = -1;
--#ifdef CONFIG_SND_SEQUENCER_OSS
-+#if IS_ENABLED(CONFIG_SND_SEQUENCER_OSS)
- 	emu->oss_synth = NULL;
- #endif
- 	emu->max_voices = 0;
-@@ -123,7 +123,7 @@ int snd_emux_register(struct snd_emux *emu, struct snd_card *card, int index, ch
- 	snd_emux_init_voices(emu);
- 
- 	snd_emux_init_seq(emu, card, index);
--#ifdef CONFIG_SND_SEQUENCER_OSS
-+#if IS_ENABLED(CONFIG_SND_SEQUENCER_OSS)
- 	snd_emux_init_seq_oss(emu);
- #endif
- 	snd_emux_init_virmidi(emu, card);
-@@ -150,7 +150,7 @@ int snd_emux_free(struct snd_emux *emu)
- 
- 	snd_emux_proc_free(emu);
- 	snd_emux_delete_virmidi(emu);
--#ifdef CONFIG_SND_SEQUENCER_OSS
-+#if IS_ENABLED(CONFIG_SND_SEQUENCER_OSS)
- 	snd_emux_detach_seq_oss(emu);
- #endif
- 	snd_emux_detach_seq(emu);
-diff --git a/sound/synth/emux/emux_effect.c b/sound/synth/emux/emux_effect.c
-index a447218b6160..9ac0bf531b4b 100644
---- a/sound/synth/emux/emux_effect.c
-+++ b/sound/synth/emux/emux_effect.c
-@@ -150,7 +150,7 @@ effect_get_offset(struct snd_midi_channel *chan, int lo, int hi, int mode)
- 	return addr;
- }
- 
--#ifdef CONFIG_SND_SEQUENCER_OSS
-+#if IS_ENABLED(CONFIG_SND_SEQUENCER_OSS)
- /* change effects - for OSS sequencer compatibility */
- void
- snd_emux_send_effect_oss(struct snd_emux_port *port,
-diff --git a/sound/synth/emux/emux_oss.c b/sound/synth/emux/emux_oss.c
-index 850fab4a8f3b..de19e108974a 100644
---- a/sound/synth/emux/emux_oss.c
-+++ b/sound/synth/emux/emux_oss.c
-@@ -23,8 +23,6 @@
-  */
- 
- 
--#ifdef CONFIG_SND_SEQUENCER_OSS
 -
- #include <linux/export.h>
- #include <linux/uaccess.h>
- #include <sound/core.h>
-@@ -505,5 +503,3 @@ fake_event(struct snd_emux *emu, struct snd_emux_port *port, int ch, int param,
- 	ev.data.control.value = val;
- 	snd_emux_event_input(&ev, 0, port, atomic, hop);
- }
--
--#endif /* CONFIG_SND_SEQUENCER_OSS */
+-# Toplevel Module Dependency
+-obj-$(CONFIG_SND_VIRMIDI) += snd-seq-virmidi.o snd-seq-midi-event.o
+-obj-$(CONFIG_SND_RAWMIDI_SEQ) += snd-seq-midi.o snd-seq-midi-event.o
+-obj-$(CONFIG_SND_OPL3_LIB_SEQ) += snd-seq-midi-event.o snd-seq-midi-emul.o
+-obj-$(CONFIG_SND_OPL4_LIB_SEQ) += snd-seq-midi-event.o snd-seq-midi-emul.o
+-obj-$(CONFIG_SND_SBAWE_SEQ) += snd-seq-midi-emul.o snd-seq-virmidi.o
+-obj-$(CONFIG_SND_EMU10K1_SEQ) += snd-seq-midi-emul.o snd-seq-virmidi.o
++obj-$(CONFIG_SND_SEQ_MIDI) += snd-seq-midi.o
++obj-$(CONFIG_SND_SEQ_MIDI_EMUL) += snd-seq-midi-emul.o
++obj-$(CONFIG_SND_SEQ_MIDI_EVENT) += snd-seq-midi-event.o
++obj-$(CONFIG_SND_SEQ_VIRMIDI) += snd-seq-virmidi.o
+diff --git a/sound/drivers/Kconfig b/sound/drivers/Kconfig
+index 8545da99b183..0e3dc80a7262 100644
+--- a/sound/drivers/Kconfig
++++ b/sound/drivers/Kconfig
+@@ -12,6 +12,17 @@ config SND_OPL4_LIB
+ 	select SND_TIMER
+ 	select SND_HWDEP
+ 
++# select SEQ stuff to min(SND_SEQUENCER,SND_XXX)
++config SND_OPL3_LIB_SEQ
++	def_tristate SND_SEQUENCER && SND_OPL3_LIB
++	select SND_SEQ_MIDI_EMUL
++	select SND_SEQ_MIDI_EVENT
++
++config SND_OPL4_LIB_SEQ
++	def_tristate SND_SEQUENCER && SND_OPL4_LIB
++	select SND_SEQ_MIDI_EMUL
++	select SND_SEQ_MIDI_EVENT
++
+ config SND_VX_LIB
+ 	tristate
+ 	select FW_LOADER
+@@ -99,6 +110,8 @@ config SND_VIRMIDI
+ 	depends on SND_SEQUENCER
+ 	select SND_TIMER
+ 	select SND_RAWMIDI
++	select SND_SEQ_VIRMIDI
++	select SND_SEQ_MIDI_EVENT
+ 	help
+ 	  Say Y here to include the virtual MIDI driver.  This driver
+ 	  allows to connect applications using raw MIDI devices to
+diff --git a/sound/isa/Kconfig b/sound/isa/Kconfig
+index 37adcc6cbe6b..bf1ab340e2a7 100644
+--- a/sound/isa/Kconfig
++++ b/sound/isa/Kconfig
+@@ -384,6 +384,12 @@ config SND_SBAWE
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called snd-sbawe.
+ 
++# select SEQ stuff to min(SND_SEQUENCER,SND_XXX)
++config SND_SBAWE_SEQ
++	def_tristate SND_SEQUENCER && SND_SBAWE
++	select SND_SEQ_MIDI_EMUL
++	select SND_SEQ_VIRMIDI
++
+ config SND_SB16_CSP
+ 	bool "Sound Blaster 16/AWE CSP support"
+ 	depends on (SND_SB16 || SND_SBAWE) && (BROKEN || !PPC)
+diff --git a/sound/pci/Kconfig b/sound/pci/Kconfig
+index 32151d8c6bb8..bc7acb489a43 100644
+--- a/sound/pci/Kconfig
++++ b/sound/pci/Kconfig
+@@ -477,6 +477,12 @@ config SND_EMU10K1
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called snd-emu10k1.
+ 
++# select SEQ stuff to min(SND_SEQUENCER,SND_XXX)
++config SND_EMU10K1_SEQ
++	def_tristate SND_SEQUENCER && SND_EMU10K1
++	select SND_SEQ_MIDI_EMUL
++	select SND_SEQ_VIRMIDI
++
+ config SND_EMU10K1X
+ 	tristate "Emu10k1X (Dell OEM Version)"
+ 	select SND_AC97_CODEC
 -- 
 2.13.1
