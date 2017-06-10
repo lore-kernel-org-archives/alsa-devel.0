@@ -1,19 +1,15 @@
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v1] ASoC: Intel: byt-max98090: Add GPIO
- ACPI mapping table
-Date: Sat, 10 Jun 2017 14:32:50 +0300
-Message-ID: <1497094370.22624.92.camel@linux.intel.com>
-References: <20170609183801.43892-1-andriy.shevchenko@linux.intel.com>
- <CAKdAkRTHy-raif2PU1VuXwGj7syzo=N-RzHenScYg+0FnS_u+Q@mail.gmail.com>
- <1497035948.22624.87.camel@linux.intel.com>
+Subject: [PATCH v2] ASoC: Intel: byt-max98090: Add GPIO ACPI
+	mapping table
+Date: Sat, 10 Jun 2017 19:37:41 +0300
+Message-ID: <20170610163741.49214-1-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C0E0266819
- for <alsa-devel@alsa-project.org>; Sat, 10 Jun 2017 13:32:54 +0200 (CEST)
-In-Reply-To: <1497035948.22624.87.camel@linux.intel.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 11F6526698E
+ for <alsa-devel@alsa-project.org>; Sat, 10 Jun 2017 18:37:47 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,40 +19,93 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Nicolas Porcel <nicolasporcel06@gmail.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Nicolas Porcel <nicolasporcel06@gmail.com>, alsa-devel@alsa-project.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2017-06-09 at 22:19 +0300, Andy Shevchenko wrote:
-> On Fri, 2017-06-09 at 12:12 -0700, Dmitry Torokhov wrote:
-> > On Fri, Jun 9, 2017 at 11:38 AM, Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > In order to make GPIO ACPI library stricter prepare users of
-> > > gpiod_get_index() to correctly behave when there no mapping is
-> > > provided by firmware.
-> > > 
-> > > Here we add explicit mapping between _CRS GpioIo() resources and
-> > > their names used in the driver.
-> > > 
-> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > 
-> > This is a bit more verbose than simply using the same connection
-> > name,
-> > but I guess will provide better diagnostic to userspace as we will
-> > have distinct GPIO names.
-> > 
-> > Reviewed-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> 
-> Thanks!
-> 
-> But please test it.
+In order to make GPIO ACPI library stricter prepare users of
+gpiod_get_index() to correctly behave when there no mapping is
+provided by firmware.
 
+Here we add explicit mapping between _CRS GpioIo() resources and
+their names used in the driver.
 
-I have to check the device node I'm attaching the mapping table to.
+Reviewed-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Tested-by: Nicolas Porcel <nicolasporcel06@gmail.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ - update device node to which the mapping table is attached
+ - remove idx assignment to 0 (it's by default)
+ - add Nicolas' tag (sent privately)
+ sound/soc/intel/boards/byt-max98090.c | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
 
-On deeper glance it looks now wrong (attaching table to the card
-platform device when it should be codec's one?). 
-
+diff --git a/sound/soc/intel/boards/byt-max98090.c b/sound/soc/intel/boards/byt-max98090.c
+index d9f81b8d915d..047be7fa0ce9 100644
+--- a/sound/soc/intel/boards/byt-max98090.c
++++ b/sound/soc/intel/boards/byt-max98090.c
+@@ -67,20 +67,27 @@ static struct snd_soc_jack_pin hs_jack_pins[] = {
+ 
+ static struct snd_soc_jack_gpio hs_jack_gpios[] = {
+ 	{
+-		.name		= "hp-gpio",
+-		.idx		= 0,
++		.name		= "hp",
+ 		.report		= SND_JACK_HEADPHONE | SND_JACK_LINEOUT,
+ 		.debounce_time	= 200,
+ 	},
+ 	{
+-		.name		= "mic-gpio",
+-		.idx		= 1,
++		.name		= "mic",
+ 		.invert		= 1,
+ 		.report		= SND_JACK_MICROPHONE,
+ 		.debounce_time	= 200,
+ 	},
+ };
+ 
++static const struct acpi_gpio_params hp_gpios = { 0, 0, false };
++static const struct acpi_gpio_params mic_gpios = { 1, 0, false };
++
++static const struct acpi_gpio_mapping acpi_byt_max98090_gpios[] = {
++	{ "hp-gpios", &hp_gpios, 1 },
++	{ "mic-gpios", &mic_gpios, 1 },
++	{},
++};
++
+ static int byt_max98090_init(struct snd_soc_pcm_runtime *runtime)
+ {
+ 	int ret;
+@@ -140,8 +147,9 @@ static struct snd_soc_card byt_max98090_card = {
+ 
+ static int byt_max98090_probe(struct platform_device *pdev)
+ {
+-	int ret_val = 0;
++	struct device *dev = &pdev->dev;
+ 	struct byt_max98090_private *priv;
++	int ret_val;
+ 
+ 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_ATOMIC);
+ 	if (!priv) {
+@@ -149,6 +157,10 @@ static int byt_max98090_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+ 	}
+ 
++	ret_val = devm_acpi_dev_add_driver_gpios(dev->parent, acpi_byt_max98090_gpios);
++	if (ret_val)
++		dev_dbg(dev, "Unable to add GPIO mapping table\n");
++
+ 	byt_max98090_card.dev = &pdev->dev;
+ 	snd_soc_card_set_drvdata(&byt_max98090_card, priv);
+ 	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_max98090_card);
+@@ -158,7 +170,7 @@ static int byt_max98090_probe(struct platform_device *pdev)
+ 		return ret_val;
+ 	}
+ 
+-	return ret_val;
++	return 0;
+ }
+ 
+ static int byt_max98090_remove(struct platform_device *pdev)
 -- 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
+2.11.0
