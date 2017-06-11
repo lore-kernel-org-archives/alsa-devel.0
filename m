@@ -1,15 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 0/3] ALSA: pcm: add 'applptr' event of
-	tracepoint
-Date: Sun, 11 Jun 2017 15:48:05 +0900
-Message-ID: <20170611064808.30572-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/3] ALSA: pcm: unify codes to operate
+	application-side position on PCM buffer
+Date: Sun, 11 Jun 2017 15:48:06 +0900
+Message-ID: <20170611064808.30572-2-o-takashi@sakamocchi.jp>
+References: <20170611064808.30572-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 580222669F3
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 5EDB3266A0C
  for <alsa-devel@alsa-project.org>; Sun, 11 Jun 2017 08:48:13 +0200 (CEST)
+In-Reply-To: <20170611064808.30572-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,157 +25,136 @@ To: tiwai@suse.de
 Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+In a series of recent work, ALSA PCM core got some arrangements to handle
+application-side position on PCM buffer. However, relevant codes still
+disperse to two translation units
 
-This patchset is for a event at updating application-side position in
-kernel space. This also includes my previous patch:
+This commit unifies these codes into a helper function.
 
-[alsa-devel] [PATCH 2/2] ALSA: pcm: add arrangement for applying appl_ptr
-http://mailman.alsa-project.org/pipermail/alsa-devel/2017-May/121091.html
-
-In design of ALSA PCM core, status and control data for runtime of ALSA
-PCM substream are shared between kernel/user spaces by page frame
-mapping with read-only attribute. The application-side position is a part of
-the status data and ALSA PCM applications can't update it. 
-
-When applications are written by read/write programming scenario, they can
-be unaware of update of application-side position. In this case, ALSA PCM
-core certainly performs it.
-
-However, when applications are written by mmap programming scenario, if
-maintaining the application side position accurately in kernel space,
-applications should voluntarily execute ioctl(2) with some commands when
-they handles any PCM frames. If not voluntarily, the events are not probed.
-
-There's a loophole, using architectures to which ALSA PCM core judges
-non-cache coherent. In this case, the status and control data is not mapped
-into processe's VMA for any applications. Userland library, alsa-lib, is
-programmed for this case. It executes ioctl(2) with
-SNDRV_PCM_IOCTL_SYNC_PTR command every time to requiring the status and
-control data.
-
-ARM is such an architecture. Below is an example with serial sound interface
-(ssi) on i.mx6 quad core SoC. I use v4.1 kernel released by fsl-community
-with patches from VIA Tech. Inc. for VAB820, and my backport patches for
-relevant features for this patchset. I use Ubuntu 17.04 from
-ports.ubuntu.com as user land for armhf architecture.
-
-$ aplay -v -M -D hw:imx6vab820sgtl5,0 /dev/urandom -f S16_LE -r 48000 --period-size=128 --buffer-size=256
-Playing raw data '/dev/urandom' : Signed 16 bit Little Endian, Rate 48000 Hz, Mono
-Hardware PCM card 0 'imx6-vab820-sgtl5000' device 0 subdevice 0
-Its setup is:
-  stream       : PLAYBACK
-  access       : MMAP_INTERLEAVED
-  format       : S16_LE
-  subformat    : STD
-  channels     : 1
-  rate         : 48000
-  exact rate   : 48000 (48000/1)
-  msbits       : 16
-  buffer_size  : 256
-  period_size  : 128
-  period_time  : 2666
-  tstamp_mode  : NONE
-  tstamp_type  : MONOTONIC
-  period_step  : 1
-  avail_min    : 128
-  period_event : 0
-  start_threshold  : 256
-  stop_threshold   : 256
-  silence_threshold: 0
-  silence_size : 0
-  boundary     : 1073741824
-  appl_ptr     : 0
-  hw_ptr       : 0
-mmap_area[0] = 0x76f98000,0,16 (16)
-
-$ trace-cmd record -e snd_pcm:hwptr -e snd_pcm:applptr
-$ trace-cmd report
-...
-60.208495: applptr: pcmC0D0p/sub0: prev=1792, curr=1792, avail=0, period=128, buf=256
-60.208633: applptr: pcmC0D0p/sub0: prev=1792, curr=1792, avail=0, period=128, buf=256
-60.210022: hwptr:   pcmC0D0p/sub0: IRQ: pos=128, old=1536, base=1536, period=128, buf=256
-60.210202: applptr: pcmC0D0p/sub0: prev=1792, curr=1792, avail=128, period=128, buf=256
-60.210344: hwptr:   pcmC0D0p/sub0: POS: pos=128, old=1664, base=1536, period=128, buf=256
-60.210348: applptr: pcmC0D0p/sub0: prev=1792, curr=1792, avail=128, period=128, buf=256
-60.210486: applptr: pcmC0D0p/sub0: prev=1792, curr=1792, avail=128, period=128, buf=256
-60.210626: applptr: pcmC0D0p/sub0: prev=1792, curr=1920, avail=0, period=128, buf=256
-60.211002: applptr: pcmC0D0p/sub0: prev=1920, curr=1920, avail=0, period=128, buf=256
-60.211142: hwptr:   pcmC0D0p/sub0: POS: pos=128, old=1664, base=1536, period=128, buf=256
-60.211146: applptr: pcmC0D0p/sub0: prev=1920, curr=1920, avail=0, period=128, buf=256
-60.211287: applptr: pcmC0D0p/sub0: prev=1920, curr=1920, avail=0, period=128, buf=256
-60.212690: hwptr:   pcmC0D0p/sub0: IRQ: pos=0, old=1664, base=1536, period=128, buf=256
-60.212866: applptr: pcmC0D0p/sub0: prev=1920, curr=1920, avail=128, period=128, buf=256
-60.212999: hwptr:   pcmC0D0p/sub0: POS: pos=0, old=1792, base=1792, period=128, buf=256
-60.213003: applptr: pcmC0D0p/sub0: prev=1920, curr=1920, avail=128, period=128, buf=256
-60.213135: applptr: pcmC0D0p/sub0: prev=1920, curr=1920, avail=128, period=128, buf=256
-60.213276: applptr: pcmC0D0p/sub0: prev=1920, curr=2048, avail=0, period=128, buf=256
-60.213654: applptr: pcmC0D0p/sub0: prev=2048, curr=2048, avail=0, period=128, buf=256
-60.213796: hwptr:   pcmC0D0p/sub0: POS: pos=0, old=1792, base=1792, period=128, buf=256
-60.213800: applptr: pcmC0D0p/sub0: prev=2048, curr=2048, avail=0, period=128, buf=256
-60.213937: applptr: pcmC0D0p/sub0: prev=2048, curr=2048, avail=0, period=128, buf=256
-60.215356: hwptr:   pcmC0D0p/sub0: IRQ: pos=128, old=1792, base=1792, period=128, buf=256
-60.215542: applptr: pcmC0D0p/sub0: prev=2048, curr=2048, avail=128, period=128, buf=256
-60.215679: hwptr:   pcmC0D0p/sub0: POS: pos=128, old=1920, base=1792, period=128, buf=256
-60.215683: applptr: pcmC0D0p/sub0: prev=2048, curr=2048, avail=128, period=128, buf=256
-60.215813: applptr: pcmC0D0p/sub0: prev=2048, curr=2048, avail=128, period=128, buf=256
-60.215947: applptr: pcmC0D0p/sub0: prev=2048, curr=2176, avail=0, period=128, buf=256
-...
-
-We can surely see 'applptr' event is probed even if the application run
-for mmap programming scenario ('-M' option for 'hw' plugin). Below is a
-result of strace:
-
-02:44:15.886382 ioctl(4, SNDRV_PCM_IOCTL_SYNC_PTR, 0x56a32b30) = 0
-02:44:15.887203 poll([{fd=4, events=POLLOUT|POLLERR|POLLNVAL}], 1, -1) = 1 ([{fd=4, revents=POLLOUT}])
-02:44:15.887471 ioctl(4, SNDRV_PCM_IOCTL_SYNC_PTR, 0x56a32b30) = 0
-02:44:15.887637 ioctl(4, SNDRV_PCM_IOCTL_SYNC_PTR, 0x56a32b30) = 0
-02:44:15.887805 ioctl(4, SNDRV_PCM_IOCTL_SYNC_PTR, 0x56a32b30) = 0
-02:44:15.887969 ioctl(4, SNDRV_PCM_IOCTL_SYNC_PTR, 0x56a32b30) = 0
-02:44:15.888132 read(3, "..."..., 256) = 256
-02:44:15.889040 ioctl(4, SNDRV_PCM_IOCTL_SYNC_PTR, 0x56a32b30) = 0
-02:44:15.889221 ioctl(4, SNDRV_PCM_IOCTL_SYNC_PTR, 0x56a32b30) = 0
-02:44:15.889431 ioctl(4, SNDRV_PCM_IOCTL_SYNC_PTR, 0x56a32b30) = 0
-02:44:15.889606 poll([{fd=4, events=POLLOUT|POLLERR|POLLNVAL}], 1, -1) = 1 ([{fd=4, revents=POLLOUT}])
-02:44:15.889833 ioctl(4, SNDRV_PCM_IOCTL_SYNC_PTR, 0x56a32b30) = 0
-02:44:15.889998 ioctl(4, SNDRV_PCM_IOCTL_SYNC_PTR, 0x56a32b30) = 0
-02:44:15.890164 ioctl(4, SNDRV_PCM_IOCTL_SYNC_PTR, 0x56a32b30) = 0
-02:44:15.891048 ioctl(4, SNDRV_PCM_IOCTL_SYNC_PTR, 0x56a32b30) = 0
-02:44:15.891228 read(3, "..."..., 256) = 256
-02:44:15.891497 ioctl(4, SNDRV_PCM_IOCTL_SYNC_PTR, 0x56a32b30) = 0
-02:44:15.891661 ioctl(4, SNDRV_PCM_IOCTL_SYNC_PTR, 0x56a32b30) = 0
-02:44:15.891829 ioctl(4, SNDRV_PCM_IOCTL_SYNC_PTR, 0x56a32b30) = 0
-02:44:15.891991 poll([{fd=4, events=POLLOUT|POLLERR|POLLNVAL}], 1, -1) = 1 ([{fd=4, revents=POLLOUT}])
-02:44:15.893007 ioctl(4, SNDRV_PCM_IOCTL_SYNC_PTR, 0x56a32b30) = 0
-
-We can see 7 calls of ioctl(2) with SNDRV_PCM_IOCTL_SYNC_PTR per loop with
-call of poll(2). 128 PCM frames are transferred per loop of one poll(2),
-because the PCM substream is configured with S16_LE format and 1 channel
-(2 byte * 1 * 128 = 256 bytes). This equals to the size of period of PCM
-buffer. Comparing to the probed data, one of the 7 system calls is
-actually used to commit the number of copied PCM frames to kernel space.
-
-The tracepoint event is useful to investigate this case.
-
-I note that below modules are related to the above sample.
-
- * snd-soc-dummy.ko
- * snd-soc-imx-sgtl5000.ko
- * snd-soc-fsl-ssi.ko
- * snd-soc-imx-pcm-dma.ko
- * snd-soc-sgtl5000.ko
-
-Takashi Sakamoto (3):
-  ALSA: pcm: unify codes to operate application-side position on PCM
-    buffer
-  ALSA: pcm: add 'applptr' event of tracepoint
-  ALSA: pcm: use %s instead of %c for format of PCM buffer tracepoints
-
- sound/core/pcm_lib.c    | 31 +++++++++++++++++++++++++++---
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/core/pcm_lib.c    | 27 ++++++++++++++++++++++++---
  sound/core/pcm_local.h  |  2 ++
- sound/core/pcm_native.c | 28 ++++-----------------------
- sound/core/pcm_trace.h  | 50 +++++++++++++++++++++++++++++++++++++++++++------
- 4 files changed, 78 insertions(+), 33 deletions(-)
+ sound/core/pcm_native.c | 28 ++++------------------------
+ 3 files changed, 30 insertions(+), 27 deletions(-)
 
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index 9dc7bbfe8853..d82f1437667f 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -2101,6 +2101,27 @@ static int pcm_accessible_state(struct snd_pcm_runtime *runtime)
+ 	}
+ }
+ 
++/* update to the given appl_ptr and call ack callback if needed;
++ * when an error is returned, take back to the original value
++ */
++int pcm_lib_apply_appl_ptr(struct snd_pcm_substream *substream,
++			   snd_pcm_uframes_t appl_ptr)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	snd_pcm_uframes_t old_appl_ptr = runtime->control->appl_ptr;
++	int ret;
++
++	runtime->control->appl_ptr = appl_ptr;
++	if (substream->ops->ack) {
++		ret = substream->ops->ack(substream);
++		if (ret < 0) {
++			runtime->control->appl_ptr = old_appl_ptr;
++			return ret;
++		}
++	}
++	return 0;
++}
++
+ /* the common loop for read/write data */
+ snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
+ 				     void *data, bool interleaved,
+@@ -2220,9 +2241,9 @@ snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
+ 		appl_ptr += frames;
+ 		if (appl_ptr >= runtime->boundary)
+ 			appl_ptr -= runtime->boundary;
+-		runtime->control->appl_ptr = appl_ptr;
+-		if (substream->ops->ack)
+-			substream->ops->ack(substream);
++		err = pcm_lib_apply_appl_ptr(substream, appl_ptr);
++		if (err < 0)
++			goto _end_unlock;
+ 
+ 		offset += frames;
+ 		size -= frames;
+diff --git a/sound/core/pcm_local.h b/sound/core/pcm_local.h
+index e4bf2af62b02..16f254732b2a 100644
+--- a/sound/core/pcm_local.h
++++ b/sound/core/pcm_local.h
+@@ -27,6 +27,8 @@ int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream);
+ int snd_pcm_hw_constraint_mask(struct snd_pcm_runtime *runtime,
+ 			       snd_pcm_hw_param_t var, u_int32_t mask);
+ 
++int pcm_lib_apply_appl_ptr(struct snd_pcm_substream *substream,
++			   snd_pcm_uframes_t appl_ptr);
+ int snd_pcm_update_state(struct snd_pcm_substream *substream,
+ 			 struct snd_pcm_runtime *runtime);
+ int snd_pcm_update_hw_ptr(struct snd_pcm_substream *substream);
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 076187ae8859..a597aa7c4b98 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -2591,27 +2591,6 @@ static int do_pcm_hwsync(struct snd_pcm_substream *substream)
+ 	}
+ }
+ 
+-/* update to the given appl_ptr and call ack callback if needed;
+- * when an error is returned, take back to the original value
+- */
+-static int apply_appl_ptr(struct snd_pcm_substream *substream,
+-			  snd_pcm_uframes_t appl_ptr)
+-{
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+-	snd_pcm_uframes_t old_appl_ptr = runtime->control->appl_ptr;
+-	int ret;
+-
+-	runtime->control->appl_ptr = appl_ptr;
+-	if (substream->ops->ack) {
+-		ret = substream->ops->ack(substream);
+-		if (ret < 0) {
+-			runtime->control->appl_ptr = old_appl_ptr;
+-			return ret;
+-		}
+-	}
+-	return 0;
+-}
+-
+ /* increase the appl_ptr; returns the processed frames or a negative error */
+ static snd_pcm_sframes_t forward_appl_ptr(struct snd_pcm_substream *substream,
+ 					  snd_pcm_uframes_t frames,
+@@ -2628,7 +2607,7 @@ static snd_pcm_sframes_t forward_appl_ptr(struct snd_pcm_substream *substream,
+ 	appl_ptr = runtime->control->appl_ptr + frames;
+ 	if (appl_ptr >= (snd_pcm_sframes_t)runtime->boundary)
+ 		appl_ptr -= runtime->boundary;
+-	ret = apply_appl_ptr(substream, appl_ptr);
++	ret = pcm_lib_apply_appl_ptr(substream, appl_ptr);
+ 	return ret < 0 ? ret : frames;
+ }
+ 
+@@ -2648,7 +2627,7 @@ static snd_pcm_sframes_t rewind_appl_ptr(struct snd_pcm_substream *substream,
+ 	appl_ptr = runtime->control->appl_ptr - frames;
+ 	if (appl_ptr < 0)
+ 		appl_ptr += runtime->boundary;
+-	ret = apply_appl_ptr(substream, appl_ptr);
++	ret = pcm_lib_apply_appl_ptr(substream, appl_ptr);
+ 	return ret < 0 ? ret : frames;
+ }
+ 
+@@ -2776,7 +2755,8 @@ static int snd_pcm_sync_ptr(struct snd_pcm_substream *substream,
+ 	}
+ 	snd_pcm_stream_lock_irq(substream);
+ 	if (!(sync_ptr.flags & SNDRV_PCM_SYNC_PTR_APPL)) {
+-		err = apply_appl_ptr(substream, sync_ptr.c.control.appl_ptr);
++		err = pcm_lib_apply_appl_ptr(substream,
++					     sync_ptr.c.control.appl_ptr);
+ 		if (err < 0) {
+ 			snd_pcm_stream_unlock_irq(substream);
+ 			return err;
 -- 
 2.11.0
