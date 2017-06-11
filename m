@@ -1,69 +1,153 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v2] ALSA: firewire-lib: Fix stall of
- process context at packet error
-Date: Sun, 11 Jun 2017 15:53:42 +0900
-Message-ID: <ca99aecf-a170-6ab7-50cd-bf3e50361b20@sakamocchi.jp>
-References: <20170609132031.21058-1-o-takashi@sakamocchi.jp>
- <0c1fcd71-7ec8-dd41-a001-190dd698e21d@ladisch.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 62393266A09
- for <alsa-devel@alsa-project.org>; Sun, 11 Jun 2017 08:53:48 +0200 (CEST)
-In-Reply-To: <0c1fcd71-7ec8-dd41-a001-190dd698e21d@ladisch.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
+Subject: [PATCH v3] ALSA: firewire-lib: Fix stall of process context at packet error
+Date: Sun, 11 Jun 2017 16:08:21 +0900
+Message-ID: <20170611070821.31265-1-o-takashi@sakamocchi.jp>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sf.net, "# 4 . 9+" <stable@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Jun 9 2017 22:27, Clemens Ladisch wrote:
-> Takashi Sakamoto wrote:
->> ---
->>   sound/firewire/amdtp-stream.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
->> index 9678bc75dc5b..de4f6b6dbd47 100644
->> --- a/sound/firewire/amdtp-stream.c
->> +++ b/sound/firewire/amdtp-stream.c
->> @@ -701,7 +701,7 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
->>   		cycle = increment_cycle_count(cycle, 1);
->>   		if (s->handle_packet(s, 0, cycle, i) < 0) {
->>   			s->packet_index = -1;
->> -			amdtp_stream_pcm_abort(s);
->> +			WRITE_ONCE(s->pcm_buffer_pointer, SNDRV_PCM_POS_XRUN);
->>   			return;
->>   		}
->>   	}
->> @@ -753,7 +753,7 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
->>   	/* Queueing error or detecting invalid payload. */
->>   	if (i < packets) {
->>   		s->packet_index = -1;
->> -		amdtp_stream_pcm_abort(s);
->> +		WRITE_ONCE(s->pcm_buffer_pointer, SNDRV_PCM_POS_XRUN);
->>   		return;
->>   	}
-> 
-> SNDRV_PCM_POS_XRUN has type unsigned long and might not fit into an unsigned int.
+At Linux v3.5, packet processing can be done in process context of ALSA
+PCM application as well as software IRQ context for OHCI 1394. Below is
+an example of the callgraph (some calls are omitted).
 
-I forgot to add it to staging...
+ioctl(2) with e.g. HWSYNC
+(sound/core/pcm_native.c)
+->snd_pcm_common_ioctl1()
+  ->snd_pcm_hwsync()
+    ->snd_pcm_stream_lock_irq
+    (sound/core/pcm_lib.c)
+    ->snd_pcm_update_hw_ptr()
+      ->snd_pcm_udpate_hw_ptr0()
+        ->struct snd_pcm_ops.pointer()
+        (sound/firewire/*)
+        = Each handler on drivers in ALSA firewire stack
+          (sound/firewire/amdtp-stream.c)
+          ->amdtp_stream_pcm_pointer()
+            (drivers/firewire/core-iso.c)
+            ->fw_iso_context_flush_completions()
+              ->struct fw_card_driver.flush_iso_completion()
+              (drivers/firewire/ohci.c)
+              = flush_iso_completions()
+                ->struct fw_iso_context.callback.sc
+                (sound/firewire/amdtp-stream.c)
+                = in_stream_callback() or out_stream_callback()
+                  ->...
+    ->snd_pcm_stream_unlock_irq
 
-Furthermore, I realized that we should care of software IRQ context for 
-OHCI 1394 context. Packets are handled and we need to abort PCM 
-substream in this context.
+When packet queueing error occurs or detecting invalid packets in
+'in_stream_callback()' or 'out_stream_callback()', 'snd_pcm_stop_xrun()'
+is called on local CPU with disabled IRQ.
 
+(sound/firewire/amdtp-stream.c)
+in_stream_callback() or out_stream_callback()
+->amdtp_stream_pcm_abort()
+  ->snd_pcm_stop_xrun()
+    ->snd_pcm_stream_lock_irqsave()
+    ->snd_pcm_stop()
+    ->snd_pcm_stream_unlock_irqrestore()
 
-Thanks
+The process is stalled on the CPU due to attempt to acquire recursive lock.
 
-Takashi Sakaomto
+[  562.630853] INFO: rcu_sched detected stalls on CPUs/tasks:
+[  562.630861]      2-...: (1 GPs behind) idle=37d/140000000000000/0 softirq=38323/38323 fqs=7140
+[  562.630862]      (detected by 3, t=15002 jiffies, g=21036, c=21035, q=5933)
+[  562.630866] Task dump for CPU 2:
+[  562.630867] alsa-source-OXF R  running task        0  6619      1 0x00000008
+[  562.630870] Call Trace:
+[  562.630876]  ? vt_console_print+0x79/0x3e0
+[  562.630880]  ? msg_print_text+0x9d/0x100
+[  562.630883]  ? up+0x32/0x50
+[  562.630885]  ? irq_work_queue+0x8d/0xa0
+[  562.630886]  ? console_unlock+0x2b6/0x4b0
+[  562.630888]  ? vprintk_emit+0x312/0x4a0
+[  562.630892]  ? dev_vprintk_emit+0xbf/0x230
+[  562.630895]  ? do_sys_poll+0x37a/0x550
+[  562.630897]  ? dev_printk_emit+0x4e/0x70
+[  562.630900]  ? __dev_printk+0x3c/0x80
+[  562.630903]  ? _raw_spin_lock+0x20/0x30
+[  562.630909]  ? snd_pcm_stream_lock+0x31/0x50 [snd_pcm]
+[  562.630914]  ? _snd_pcm_stream_lock_irqsave+0x2e/0x40 [snd_pcm]
+[  562.630918]  ? snd_pcm_stop_xrun+0x16/0x70 [snd_pcm]
+[  562.630922]  ? in_stream_callback+0x3e6/0x450 [snd_firewire_lib]
+[  562.630925]  ? handle_ir_packet_per_buffer+0x8e/0x1a0 [firewire_ohci]
+[  562.630928]  ? ohci_flush_iso_completions+0xa3/0x130 [firewire_ohci]
+[  562.630932]  ? fw_iso_context_flush_completions+0x15/0x20 [firewire_core]
+[  562.630935]  ? amdtp_stream_pcm_pointer+0x2d/0x40 [snd_firewire_lib]
+[  562.630938]  ? pcm_capture_pointer+0x19/0x20 [snd_oxfw]
+[  562.630943]  ? snd_pcm_update_hw_ptr0+0x47/0x3d0 [snd_pcm]
+[  562.630945]  ? poll_select_copy_remaining+0x150/0x150
+[  562.630947]  ? poll_select_copy_remaining+0x150/0x150
+[  562.630952]  ? snd_pcm_update_hw_ptr+0x10/0x20 [snd_pcm]
+[  562.630956]  ? snd_pcm_hwsync+0x45/0xb0 [snd_pcm]
+[  562.630960]  ? snd_pcm_common_ioctl1+0x1ff/0xc90 [snd_pcm]
+[  562.630962]  ? futex_wake+0x90/0x170
+[  562.630966]  ? snd_pcm_capture_ioctl1+0x136/0x260 [snd_pcm]
+[  562.630970]  ? snd_pcm_capture_ioctl+0x27/0x40 [snd_pcm]
+[  562.630972]  ? do_vfs_ioctl+0xa3/0x610
+[  562.630974]  ? vfs_read+0x11b/0x130
+[  562.630976]  ? SyS_ioctl+0x79/0x90
+[  562.630978]  ? entry_SYSCALL_64_fastpath+0x1e/0xad
+
+This commit fixes the above bug. This assumes two cases:
+1. Any error is detected in software IRQ context of OHCI 1394 context.
+In this case, PCM substream should be aborted in packet handler. On the
+other hand, it should not be done in any process context. TO distinguish
+these two context, use 'in_interrupt()' macro.
+2. Any error is detect in process context of ALSA PCM application.
+In this case, PCM substream should not be aborted in packet handler
+because PCM substream lock is acquired. The task to abort PCM substream
+should be done in ALSA PCM core. For this purpose, SNDRV_PCM_POS_XRUN is
+returned at 'struct snd_pcm_ops.pointer()'.
+
+Suggested-by: Clemens Ladisch <clemens@ladisch.de>
+Fixes: e9148dddc3c7("ALSA: firewire-lib: flush completed packets when reading PCM position")
+Cc: <stable@vger.kernel.org> # 4.9+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/amdtp-stream.c | 8 ++++++--
+ sound/firewire/amdtp-stream.h | 2 +-
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index 9678bc75dc5b..3fc581a5ad62 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -701,7 +701,9 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 		cycle = increment_cycle_count(cycle, 1);
+ 		if (s->handle_packet(s, 0, cycle, i) < 0) {
+ 			s->packet_index = -1;
+-			amdtp_stream_pcm_abort(s);
++			if (in_interrupt())
++				amdtp_stream_pcm_abort(s);
++			WRITE_ONCE(s->pcm_buffer_pointer, SNDRV_PCM_POS_XRUN);
+ 			return;
+ 		}
+ 	}
+@@ -753,7 +755,9 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
+ 	/* Queueing error or detecting invalid payload. */
+ 	if (i < packets) {
+ 		s->packet_index = -1;
+-		amdtp_stream_pcm_abort(s);
++		if (in_interrupt())
++			amdtp_stream_pcm_abort(s);
++		WRITE_ONCE(s->pcm_buffer_pointer, SNDRV_PCM_POS_XRUN);
+ 		return;
+ 	}
+ 
+diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
+index 6d613f2eb612..ed6eafd10992 100644
+--- a/sound/firewire/amdtp-stream.h
++++ b/sound/firewire/amdtp-stream.h
+@@ -135,7 +135,7 @@ struct amdtp_stream {
+ 	/* For a PCM substream processing. */
+ 	struct snd_pcm_substream *pcm;
+ 	struct tasklet_struct period_tasklet;
+-	unsigned int pcm_buffer_pointer;
++	snd_pcm_uframes_t pcm_buffer_pointer;
+ 	unsigned int pcm_period_pointer;
+ 
+ 	/* To wait for first packet. */
+-- 
+2.11.0
