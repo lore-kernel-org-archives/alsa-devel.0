@@ -1,17 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/3] ALSA: pcm: unify codes to operate
-	application-side position on PCM buffer
-Date: Sun, 11 Jun 2017 15:48:06 +0900
-Message-ID: <20170611064808.30572-2-o-takashi@sakamocchi.jp>
-References: <20170611064808.30572-1-o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH v2] ALSA: firewire-lib: Fix stall of
+ process context at packet error
+Date: Sun, 11 Jun 2017 15:53:42 +0900
+Message-ID: <ca99aecf-a170-6ab7-50cd-bf3e50361b20@sakamocchi.jp>
+References: <20170609132031.21058-1-o-takashi@sakamocchi.jp>
+ <0c1fcd71-7ec8-dd41-a001-190dd698e21d@ladisch.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 5EDB3266A0C
- for <alsa-devel@alsa-project.org>; Sun, 11 Jun 2017 08:48:13 +0200 (CEST)
-In-Reply-To: <20170611064808.30572-1-o-takashi@sakamocchi.jp>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 62393266A09
+ for <alsa-devel@alsa-project.org>; Sun, 11 Jun 2017 08:53:48 +0200 (CEST)
+In-Reply-To: <0c1fcd71-7ec8-dd41-a001-190dd698e21d@ladisch.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,140 +23,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, pierre-louis.bossart@linux.intel.com
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-In a series of recent work, ALSA PCM core got some arrangements to handle
-application-side position on PCM buffer. However, relevant codes still
-disperse to two translation units
+On Jun 9 2017 22:27, Clemens Ladisch wrote:
+> Takashi Sakamoto wrote:
+>> ---
+>>   sound/firewire/amdtp-stream.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+>> index 9678bc75dc5b..de4f6b6dbd47 100644
+>> --- a/sound/firewire/amdtp-stream.c
+>> +++ b/sound/firewire/amdtp-stream.c
+>> @@ -701,7 +701,7 @@ static void out_stream_callback(struct fw_iso_context *context, u32 tstamp,
+>>   		cycle = increment_cycle_count(cycle, 1);
+>>   		if (s->handle_packet(s, 0, cycle, i) < 0) {
+>>   			s->packet_index = -1;
+>> -			amdtp_stream_pcm_abort(s);
+>> +			WRITE_ONCE(s->pcm_buffer_pointer, SNDRV_PCM_POS_XRUN);
+>>   			return;
+>>   		}
+>>   	}
+>> @@ -753,7 +753,7 @@ static void in_stream_callback(struct fw_iso_context *context, u32 tstamp,
+>>   	/* Queueing error or detecting invalid payload. */
+>>   	if (i < packets) {
+>>   		s->packet_index = -1;
+>> -		amdtp_stream_pcm_abort(s);
+>> +		WRITE_ONCE(s->pcm_buffer_pointer, SNDRV_PCM_POS_XRUN);
+>>   		return;
+>>   	}
+> 
+> SNDRV_PCM_POS_XRUN has type unsigned long and might not fit into an unsigned int.
 
-This commit unifies these codes into a helper function.
+I forgot to add it to staging...
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/core/pcm_lib.c    | 27 ++++++++++++++++++++++++---
- sound/core/pcm_local.h  |  2 ++
- sound/core/pcm_native.c | 28 ++++------------------------
- 3 files changed, 30 insertions(+), 27 deletions(-)
+Furthermore, I realized that we should care of software IRQ context for 
+OHCI 1394 context. Packets are handled and we need to abort PCM 
+substream in this context.
 
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 9dc7bbfe8853..d82f1437667f 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -2101,6 +2101,27 @@ static int pcm_accessible_state(struct snd_pcm_runtime *runtime)
- 	}
- }
- 
-+/* update to the given appl_ptr and call ack callback if needed;
-+ * when an error is returned, take back to the original value
-+ */
-+int pcm_lib_apply_appl_ptr(struct snd_pcm_substream *substream,
-+			   snd_pcm_uframes_t appl_ptr)
-+{
-+	struct snd_pcm_runtime *runtime = substream->runtime;
-+	snd_pcm_uframes_t old_appl_ptr = runtime->control->appl_ptr;
-+	int ret;
-+
-+	runtime->control->appl_ptr = appl_ptr;
-+	if (substream->ops->ack) {
-+		ret = substream->ops->ack(substream);
-+		if (ret < 0) {
-+			runtime->control->appl_ptr = old_appl_ptr;
-+			return ret;
-+		}
-+	}
-+	return 0;
-+}
-+
- /* the common loop for read/write data */
- snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
- 				     void *data, bool interleaved,
-@@ -2220,9 +2241,9 @@ snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
- 		appl_ptr += frames;
- 		if (appl_ptr >= runtime->boundary)
- 			appl_ptr -= runtime->boundary;
--		runtime->control->appl_ptr = appl_ptr;
--		if (substream->ops->ack)
--			substream->ops->ack(substream);
-+		err = pcm_lib_apply_appl_ptr(substream, appl_ptr);
-+		if (err < 0)
-+			goto _end_unlock;
- 
- 		offset += frames;
- 		size -= frames;
-diff --git a/sound/core/pcm_local.h b/sound/core/pcm_local.h
-index e4bf2af62b02..16f254732b2a 100644
---- a/sound/core/pcm_local.h
-+++ b/sound/core/pcm_local.h
-@@ -27,6 +27,8 @@ int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream);
- int snd_pcm_hw_constraint_mask(struct snd_pcm_runtime *runtime,
- 			       snd_pcm_hw_param_t var, u_int32_t mask);
- 
-+int pcm_lib_apply_appl_ptr(struct snd_pcm_substream *substream,
-+			   snd_pcm_uframes_t appl_ptr);
- int snd_pcm_update_state(struct snd_pcm_substream *substream,
- 			 struct snd_pcm_runtime *runtime);
- int snd_pcm_update_hw_ptr(struct snd_pcm_substream *substream);
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 076187ae8859..a597aa7c4b98 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -2591,27 +2591,6 @@ static int do_pcm_hwsync(struct snd_pcm_substream *substream)
- 	}
- }
- 
--/* update to the given appl_ptr and call ack callback if needed;
-- * when an error is returned, take back to the original value
-- */
--static int apply_appl_ptr(struct snd_pcm_substream *substream,
--			  snd_pcm_uframes_t appl_ptr)
--{
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	snd_pcm_uframes_t old_appl_ptr = runtime->control->appl_ptr;
--	int ret;
--
--	runtime->control->appl_ptr = appl_ptr;
--	if (substream->ops->ack) {
--		ret = substream->ops->ack(substream);
--		if (ret < 0) {
--			runtime->control->appl_ptr = old_appl_ptr;
--			return ret;
--		}
--	}
--	return 0;
--}
--
- /* increase the appl_ptr; returns the processed frames or a negative error */
- static snd_pcm_sframes_t forward_appl_ptr(struct snd_pcm_substream *substream,
- 					  snd_pcm_uframes_t frames,
-@@ -2628,7 +2607,7 @@ static snd_pcm_sframes_t forward_appl_ptr(struct snd_pcm_substream *substream,
- 	appl_ptr = runtime->control->appl_ptr + frames;
- 	if (appl_ptr >= (snd_pcm_sframes_t)runtime->boundary)
- 		appl_ptr -= runtime->boundary;
--	ret = apply_appl_ptr(substream, appl_ptr);
-+	ret = pcm_lib_apply_appl_ptr(substream, appl_ptr);
- 	return ret < 0 ? ret : frames;
- }
- 
-@@ -2648,7 +2627,7 @@ static snd_pcm_sframes_t rewind_appl_ptr(struct snd_pcm_substream *substream,
- 	appl_ptr = runtime->control->appl_ptr - frames;
- 	if (appl_ptr < 0)
- 		appl_ptr += runtime->boundary;
--	ret = apply_appl_ptr(substream, appl_ptr);
-+	ret = pcm_lib_apply_appl_ptr(substream, appl_ptr);
- 	return ret < 0 ? ret : frames;
- }
- 
-@@ -2776,7 +2755,8 @@ static int snd_pcm_sync_ptr(struct snd_pcm_substream *substream,
- 	}
- 	snd_pcm_stream_lock_irq(substream);
- 	if (!(sync_ptr.flags & SNDRV_PCM_SYNC_PTR_APPL)) {
--		err = apply_appl_ptr(substream, sync_ptr.c.control.appl_ptr);
-+		err = pcm_lib_apply_appl_ptr(substream,
-+					     sync_ptr.c.control.appl_ptr);
- 		if (err < 0) {
- 			snd_pcm_stream_unlock_irq(substream);
- 			return err;
--- 
-2.11.0
+
+Thanks
+
+Takashi Sakaomto
