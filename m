@@ -1,17 +1,15 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v2] ASoC: Intel: byt-max98090: Add GPIO
- ACPI mapping table
-Date: Mon, 12 Jun 2017 11:54:58 +0300
-Message-ID: <1497257698.22624.121.camel@linux.intel.com>
-References: <20170610163741.49214-1-andriy.shevchenko@linux.intel.com>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: [PATCH 0/3] ASoC: Intel: Skylake: Add deep buffer
+	support
+Date: Mon, 12 Jun 2017 17:10:54 +0530
+Message-ID: <1497267657-20359-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id F2093266838
- for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2017 10:58:02 +0200 (CEST)
-In-Reply-To: <20170610163741.49214-1-andriy.shevchenko@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 004B52669FF
+ for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2017 13:55:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,64 +19,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Nicolas Porcel <nicolasporcel06@gmail.com>, alsa-devel@alsa-project.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCAyMDE3LTA2LTEwIGF0IDE5OjM3ICswMzAwLCBBbmR5IFNoZXZjaGVua28gd3JvdGU6
-Cj4gSW4gb3JkZXIgdG8gbWFrZSBHUElPIEFDUEkgbGlicmFyeSBzdHJpY3RlciBwcmVwYXJlIHVz
-ZXJzIG9mCj4gZ3Bpb2RfZ2V0X2luZGV4KCkgdG8gY29ycmVjdGx5IGJlaGF2ZSB3aGVuIHRoZXJl
-IG5vIG1hcHBpbmcgaXMKPiBwcm92aWRlZCBieSBmaXJtd2FyZS4KPiAKPiBIZXJlIHdlIGFkZCBl
-eHBsaWNpdCBtYXBwaW5nIGJldHdlZW4gX0NSUyBHcGlvSW8oKSByZXNvdXJjZXMgYW5kCj4gdGhl
-aXIgbmFtZXMgdXNlZCBpbiB0aGUgZHJpdmVyLgo+IAoKTWFyaywgd2UgYWdyZWVkIHdpdGggVGFr
-YXNoaSB0aGF0IHRoZSBwYXRjaCBpcyBva2F5IGluIGl0cyBpbml0aWFsIGZvcm0uClNob3VsZCBJ
-IHJlc2VuZCBpdCwgb3IgbWF5YmUgeW91IGNhbiB0YWtlIGl0IGZyb20gdGhpcyB0aHJlYWQ/Cgo+
-IFJldmlld2VkLWJ5OiBEbWl0cnkgVG9yb2tob3YgPGRtaXRyeS50b3Jva2hvdkBnbWFpbC5jb20+
-Cj4gVGVzdGVkLWJ5OiBOaWNvbGFzIFBvcmNlbCA8bmljb2xhc3BvcmNlbDA2QGdtYWlsLmNvbT4K
-PiBTaWduZWQtb2ZmLWJ5OiBBbmR5IFNoZXZjaGVua28gPGFuZHJpeS5zaGV2Y2hlbmtvQGxpbnV4
-LmludGVsLmNvbT4KPiAtLS0KPiDCoC0gdXBkYXRlIGRldmljZSBub2RlIHRvIHdoaWNoIHRoZSBt
-YXBwaW5nIHRhYmxlIGlzIGF0dGFjaGVkCj4gwqAtIHJlbW92ZSBpZHggYXNzaWdubWVudCB0byAw
-IChpdCdzIGJ5IGRlZmF1bHQpCj4gwqAtIGFkZCBOaWNvbGFzJyB0YWcgKHNlbnQgcHJpdmF0ZWx5
-KQo+IMKgc291bmQvc29jL2ludGVsL2JvYXJkcy9ieXQtbWF4OTgwOTAuYyB8IDI0ICsrKysrKysr
-KysrKysrKysrKy0tLS0tLQo+IMKgMSBmaWxlIGNoYW5nZWQsIDE4IGluc2VydGlvbnMoKyksIDYg
-ZGVsZXRpb25zKC0pCj4gCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9pbnRlbC9ib2FyZHMvYnl0
-LW1heDk4MDkwLmMKPiBiL3NvdW5kL3NvYy9pbnRlbC9ib2FyZHMvYnl0LW1heDk4MDkwLmMKPiBp
-bmRleCBkOWY4MWI4ZDkxNWQuLjA0N2JlN2ZhMGNlOSAxMDA2NDQKPiAtLS0gYS9zb3VuZC9zb2Mv
-aW50ZWwvYm9hcmRzL2J5dC1tYXg5ODA5MC5jCj4gKysrIGIvc291bmQvc29jL2ludGVsL2JvYXJk
-cy9ieXQtbWF4OTgwOTAuYwo+IEBAIC02NywyMCArNjcsMjcgQEAgc3RhdGljIHN0cnVjdCBzbmRf
-c29jX2phY2tfcGluIGhzX2phY2tfcGluc1tdID0gewo+IMKgCj4gwqBzdGF0aWMgc3RydWN0IHNu
-ZF9zb2NfamFja19ncGlvIGhzX2phY2tfZ3Bpb3NbXSA9IHsKPiDCoAl7Cj4gLQkJLm5hbWUJCT0g
-ImhwLWdwaW8iLAo+IC0JCS5pZHgJCT0gMCwKPiArCQkubmFtZQkJPSAiaHAiLAo+IMKgCQkucmVw
-b3J0CQk9IFNORF9KQUNLX0hFQURQSE9ORSB8Cj4gU05EX0pBQ0tfTElORU9VVCwKPiDCoAkJLmRl
-Ym91bmNlX3RpbWUJPSAyMDAsCj4gwqAJfSwKPiDCoAl7Cj4gLQkJLm5hbWUJCT0gIm1pYy1ncGlv
-IiwKPiAtCQkuaWR4CQk9IDEsCj4gKwkJLm5hbWUJCT0gIm1pYyIsCj4gwqAJCS5pbnZlcnQJCT0g
-MSwKPiDCoAkJLnJlcG9ydAkJPSBTTkRfSkFDS19NSUNST1BIT05FLAo+IMKgCQkuZGVib3VuY2Vf
-dGltZQk9IDIwMCwKPiDCoAl9LAo+IMKgfTsKPiDCoAo+ICtzdGF0aWMgY29uc3Qgc3RydWN0IGFj
-cGlfZ3Bpb19wYXJhbXMgaHBfZ3Bpb3MgPSB7IDAsIDAsIGZhbHNlIH07Cj4gK3N0YXRpYyBjb25z
-dCBzdHJ1Y3QgYWNwaV9ncGlvX3BhcmFtcyBtaWNfZ3Bpb3MgPSB7IDEsIDAsIGZhbHNlIH07Cj4g
-Kwo+ICtzdGF0aWMgY29uc3Qgc3RydWN0IGFjcGlfZ3Bpb19tYXBwaW5nIGFjcGlfYnl0X21heDk4
-MDkwX2dwaW9zW10gPSB7Cj4gKwl7ICJocC1ncGlvcyIsICZocF9ncGlvcywgMSB9LAo+ICsJeyAi
-bWljLWdwaW9zIiwgJm1pY19ncGlvcywgMSB9LAo+ICsJe30sCj4gK307Cj4gKwo+IMKgc3RhdGlj
-IGludCBieXRfbWF4OTgwOTBfaW5pdChzdHJ1Y3Qgc25kX3NvY19wY21fcnVudGltZSAqcnVudGlt
-ZSkKPiDCoHsKPiDCoAlpbnQgcmV0Owo+IEBAIC0xNDAsOCArMTQ3LDkgQEAgc3RhdGljIHN0cnVj
-dCBzbmRfc29jX2NhcmQgYnl0X21heDk4MDkwX2NhcmQgPSB7Cj4gwqAKPiDCoHN0YXRpYyBpbnQg
-Ynl0X21heDk4MDkwX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4gwqB7Cj4g
-LQlpbnQgcmV0X3ZhbCA9IDA7Cj4gKwlzdHJ1Y3QgZGV2aWNlICpkZXYgPSAmcGRldi0+ZGV2Owo+
-IMKgCXN0cnVjdCBieXRfbWF4OTgwOTBfcHJpdmF0ZSAqcHJpdjsKPiArCWludCByZXRfdmFsOwo+
-IMKgCj4gwqAJcHJpdiA9IGRldm1fa3phbGxvYygmcGRldi0+ZGV2LCBzaXplb2YoKnByaXYpLCBH
-RlBfQVRPTUlDKTsKPiDCoAlpZiAoIXByaXYpIHsKPiBAQCAtMTQ5LDYgKzE1NywxMCBAQCBzdGF0
-aWMgaW50IGJ5dF9tYXg5ODA5MF9wcm9iZShzdHJ1Y3QKPiBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYp
-Cj4gwqAJCXJldHVybiAtRU5PTUVNOwo+IMKgCX0KPiDCoAo+ICsJcmV0X3ZhbCA9IGRldm1fYWNw
-aV9kZXZfYWRkX2RyaXZlcl9ncGlvcyhkZXYtPnBhcmVudCwKPiBhY3BpX2J5dF9tYXg5ODA5MF9n
-cGlvcyk7Cj4gKwlpZiAocmV0X3ZhbCkKPiArCQlkZXZfZGJnKGRldiwgIlVuYWJsZSB0byBhZGQg
-R1BJTyBtYXBwaW5nIHRhYmxlXG4iKTsKPiArCj4gwqAJYnl0X21heDk4MDkwX2NhcmQuZGV2ID0g
-JnBkZXYtPmRldjsKPiDCoAlzbmRfc29jX2NhcmRfc2V0X2RydmRhdGEoJmJ5dF9tYXg5ODA5MF9j
-YXJkLCBwcml2KTsKPiDCoAlyZXRfdmFsID0gZGV2bV9zbmRfc29jX3JlZ2lzdGVyX2NhcmQoJnBk
-ZXYtPmRldiwKPiAmYnl0X21heDk4MDkwX2NhcmQpOwo+IEBAIC0xNTgsNyArMTcwLDcgQEAgc3Rh
-dGljIGludCBieXRfbWF4OTgwOTBfcHJvYmUoc3RydWN0Cj4gcGxhdGZvcm1fZGV2aWNlICpwZGV2
-KQo+IMKgCQlyZXR1cm4gcmV0X3ZhbDsKPiDCoAl9Cj4gwqAKPiAtCXJldHVybiByZXRfdmFsOwo+
-ICsJcmV0dXJuIDA7Cj4gwqB9Cj4gwqAKPiDCoHN0YXRpYyBpbnQgYnl0X21heDk4MDkwX3JlbW92
-ZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQoKLS0gCkFuZHkgU2hldmNoZW5rbyA8YW5k
-cml5LnNoZXZjaGVua29AbGludXguaW50ZWwuY29tPgpJbnRlbCBGaW5sYW5kIE95Cl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Now that we can configure DSP dma buffer size, the device can support deep
+buffer playback. DSP fetches large buffer and can result fewer wakes, which
+helps in power reduction.
+
+So this series first adds a token in topology to get dma_buffer_size and
+sends to firmware after conversion. Also ads a deepbuffer device to use
+this support.
+
+Ramesh Babu (2):
+  ASoC: Intel: Skylake: Add deep buffer support
+  ASoC: Intel: Skylake: Fix dma buffer size calculation
+
+Subhransu S. Prusty (1):
+  ASoC: skl_rt286: Add deepbuffer dai link
+
+ include/uapi/sound/snd_sst_tokens.h    |  7 +++++--
+ sound/soc/intel/boards/skl_rt286.c     | 18 ++++++++++++++++++
+ sound/soc/intel/skylake/skl-messages.c | 29 +++++++++++++++++++++++++----
+ sound/soc/intel/skylake/skl-topology.c |  4 ++++
+ sound/soc/intel/skylake/skl-topology.h |  1 +
+ 5 files changed, 53 insertions(+), 6 deletions(-)
+
+-- 
+1.9.1
