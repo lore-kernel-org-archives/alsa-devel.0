@@ -1,16 +1,15 @@
 From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH 2/3] ASoC: Intel: Skylake: Fix dma buffer size
-	calculation
-Date: Mon, 12 Jun 2017 17:10:56 +0530
-Message-ID: <1497267657-20359-3-git-send-email-subhransu.s.prusty@intel.com>
+Subject: [PATCH 3/3] ASoC: skl_rt286: Add deepbuffer dai link
+Date: Mon, 12 Jun 2017 17:10:57 +0530
+Message-ID: <1497267657-20359-4-git-send-email-subhransu.s.prusty@intel.com>
 References: <1497267657-20359-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 664CA2669FF
- for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2017 13:55:46 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 897D1266E2D
+ for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2017 13:55:49 +0200 (CEST)
 In-Reply-To: <1497267657-20359-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,75 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, lgirdwood@gmail.com, Ramesh Babu <ramesh.babu@intel.com>, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Ramesh Babu <ramesh.babu@intel.com>
+This patch adds the deepbuffer device which can be opened with a bigger
+buffer size. The application can disable interrupts and sleep for longer
+duration.
 
-DMA buffer size for gateway copier will be calculated based on:
-
-For host DMA copier:
-Input buffer size (ibs) for output direction (playback)
-Output buffer size (obs) for input direction (capture)
-
-For link DMA copier:
-IBS for input direction (capture)
-OBS for output direction (playback)
-
-Update the driver to use the above.
-
-Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 ---
- sound/soc/intel/skylake/skl-messages.c | 29 +++++++++++++++++++++++++----
- 1 file changed, 25 insertions(+), 4 deletions(-)
+ sound/soc/intel/boards/skl_rt286.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index ab1adc0c9cc3..7063b451b109 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -507,6 +507,8 @@ static void skl_setup_cpr_gateway_cfg(struct skl_sst *ctx,
- 			struct skl_module_cfg *mconfig,
- 			struct skl_cpr_cfg *cpr_mconfig)
- {
-+	u32 dma_io_buf;
-+
- 	cpr_mconfig->gtw_cfg.node_id = skl_get_node_id(ctx, mconfig);
+diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
+index f5ab7b8d51d1..453826ea1367 100644
+--- a/sound/soc/intel/boards/skl_rt286.c
++++ b/sound/soc/intel/boards/skl_rt286.c
+@@ -43,6 +43,7 @@ struct skl_rt286_private {
  
- 	if (cpr_mconfig->gtw_cfg.node_id == SKL_NON_GATEWAY_CPR_NODE_ID) {
-@@ -514,10 +516,29 @@ static void skl_setup_cpr_gateway_cfg(struct skl_sst *ctx,
- 		return;
- 	}
- 
--	if (SKL_CONN_SOURCE == mconfig->hw_conn_type)
--		cpr_mconfig->gtw_cfg.dma_buffer_size = 2 * mconfig->obs;
--	else
--		cpr_mconfig->gtw_cfg.dma_buffer_size = 2 * mconfig->ibs;
-+	switch (mconfig->hw_conn_type) {
-+	case SKL_CONN_SOURCE:
-+		if (mconfig->dev_type == SKL_DEVICE_HDAHOST)
-+			dma_io_buf =  mconfig->ibs;
-+		else
-+			dma_io_buf =  mconfig->obs;
-+		break;
+ enum {
+ 	SKL_DPCM_AUDIO_PB = 0,
++	SKL_DPCM_AUDIO_DB_PB,
+ 	SKL_DPCM_AUDIO_CP,
+ 	SKL_DPCM_AUDIO_REF_CP,
+ 	SKL_DPCM_AUDIO_DMIC_CP,
+@@ -310,6 +311,23 @@ static int skylake_dmic_startup(struct snd_pcm_substream *substream)
+ 		.dpcm_playback = 1,
+ 		.ops = &skylake_rt286_fe_ops,
+ 	},
++	[SKL_DPCM_AUDIO_DB_PB] = {
++		.name = "Skl Deepbuffer Port",
++		.stream_name = "Deep Buffer Audio",
++		.cpu_dai_name = "Deepbuffer Pin",
++		.platform_name = "0000:00:1f.3",
++		.nonatomic = 1,
++		.dynamic = 1,
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.trigger = {
++			SND_SOC_DPCM_TRIGGER_POST,
++			SND_SOC_DPCM_TRIGGER_POST
++		},
++		.dpcm_playback = 1,
++		.ops = &skylake_rt286_fe_ops,
 +
-+	case SKL_CONN_SINK:
-+		if (mconfig->dev_type == SKL_DEVICE_HDAHOST)
-+			dma_io_buf =  mconfig->obs;
-+		else
-+			dma_io_buf =  mconfig->ibs;
-+		break;
-+
-+	default:
-+		dev_warn(ctx->dev, "wrong connection type: %d\n",
-+				mconfig->hw_conn_type);
-+		return;
-+	}
-+
-+	cpr_mconfig->gtw_cfg.dma_buffer_size =
-+				mconfig->dma_buffer_size * dma_io_buf;
- 
- 	cpr_mconfig->cpr_feature_mask = 0;
- 	cpr_mconfig->gtw_cfg.config_length  = 0;
++	},
+ 	[SKL_DPCM_AUDIO_CP] = {
+ 		.name = "Skl Audio Capture Port",
+ 		.stream_name = "Audio Record",
 -- 
 1.9.1
