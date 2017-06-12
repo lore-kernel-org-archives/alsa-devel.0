@@ -1,19 +1,18 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 2/3] ALSA: pcm: add 'applptr' event of
+Subject: Re: [PATCH 0/3] ALSA: pcm: add 'applptr' event of
 	tracepoint
-Date: Mon, 12 Jun 2017 08:55:16 +0900
-Message-ID: <95647bb3-4de1-96fa-0ea4-45d1d0a14516@sakamocchi.jp>
+Date: Mon, 12 Jun 2017 09:08:17 +0900
+Message-ID: <b3744a10-a6c1-6e24-d146-a7e820e97941@sakamocchi.jp>
 References: <20170611064808.30572-1-o-takashi@sakamocchi.jp>
- <20170611064808.30572-3-o-takashi@sakamocchi.jp>
- <s5hpoea1n5c.wl-tiwai@suse.de>
+ <s5ho9tu1mpc.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 5295B2664EB
- for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2017 01:55:23 +0200 (CEST)
-In-Reply-To: <s5hpoea1n5c.wl-tiwai@suse.de>
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 99F452664EB
+ for <alsa-devel@alsa-project.org>; Mon, 12 Jun 2017 02:08:19 +0200 (CEST)
+In-Reply-To: <s5ho9tu1mpc.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,36 +27,25 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Jun 12 2017 01:53, Takashi Iwai wrote:
-> On Sun, 11 Jun 2017 08:48:07 +0200,
-> Takashi Sakamoto wrote:
->>
->> In design of ALSA PCM core, both of hardware-side and application-side
->> position on PCM buffer are maintained as a part of information for
->> runtime of PCM substream. In a view of ALSA PCM application, these two
->> positions can be updated by executing ioctl(2) with some commands.
->>
->> There's an event of tracepoint for hardware-side position; 'hwptr'.
->> On the other hand, no events for application-side position.
->>
->> This commit adds a new event for this purpose; 'applptr'. When
->> the application-side position is changed in kernel space, this event
->> is probed with useful information for developers.
->>
->> I note that the event is not probed for all of ALSA PCM applications,
->> because the application-side position is passively maintained in mmap
->> programming scenario. In this case, applications should be programmed
->> with ioctl(2) with SNDRV_PCM_IOCTL_SYNC_PTR to commit the application-side
->> position to kernel land when it operates any PCM frames.
-> 
-> Here "should" is no correct choice of word.  As you already noted in
-> the cover letter, the notification of appl_ptr in the mmap mode with
-> the status/control mmap is voluntary.   So, it's not "should be
-> programmed" but "may be programmed".
+On Jun 12 2017 02:03, Takashi Iwai wrote:
+> This cover letter texts have much better explanation than the
+> description in your patch itself. Why not putting such an excellent
+> example in the change log?
 
-Indeed. It's better.
+This report depends on my original research somehow. Source for this 
+embedded board is from VIA Tech. Inc. and not mainlined yet. 
+Furthermore, I prepared for backport patches by my self. Totally, it 
+might not be reproductive as is entirely. This is a reason that I wrote 
+the report in the cover letter.
+
+However, I believe that the others can get the similar result on the 
+other boards based on ARM architecture, because ALSA stuffs are written 
+as they work what I report. In this meaning, it's worth to put the 
+report into the change log.
+
+I'm OK to post revised version.
 
 
-Regards
+Thanks
 
 Takashi Sakamoto
