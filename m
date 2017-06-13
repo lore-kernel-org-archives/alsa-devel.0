@@ -1,87 +1,63 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2] ALSA: core: let low-level driver or
- userspace disable rewinds
-Date: Tue, 13 Jun 2017 09:13:35 -0400
-Message-ID: <20493c38-f716-1d8c-e876-301c78819006@linux.intel.com>
-References: <1497245230-18436-1-git-send-email-subhransu.s.prusty@intel.com>
- <f0167d08-b11d-b687-3016-2128c82748ad@sakamocchi.jp>
- <e3bab853-1d14-32f1-5dae-a9a54b6014af@linux.intel.com>
- <cb000041-b474-2c00-a3dd-33cf86d7b80d@sakamocchi.jp>
+From: Thierry Reding <thierry.reding-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: Re: [PATCH 1/2] ARM: tegra: remove Whistler support
+Date: Tue, 13 Jun 2017 15:36:33 +0200
+Message-ID: <20170613133633.GE16758@ulmo.fritz.box>
+References: <20170413185559.1939-1-swarren@wwwdotorg.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F68E266C25
- for <alsa-devel@alsa-project.org>; Tue, 13 Jun 2017 15:13:36 +0200 (CEST)
-In-Reply-To: <cb000041-b474-2c00-a3dd-33cf86d7b80d@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, lgirdwood@gmail.com, Ramesh Babu <ramesh.babu@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="cPi+lWm09sJ+d57q"
+Return-path: <linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20170413185559.1939-1-swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Sender: linux-tegra-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Stephen Warren <swarren-3lzwWm7+Weoh9ZMKESR00Q@public.gmane.org>
+Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, linux-tegra-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 6/13/17 7:09 AM, Takashi Sakamoto wrote:
-> Pierre-Louis,
->
-> On Jun 12 2017 21:09, Pierre-Louis Bossart wrote:
->>> If describing the detail design of your hardware, you might get more
->>> helps.
->>>
->>>  * I intentionally ignore discussion about burstness of data
->>>    transmission and accuracy of hwptr.
->>
->> You are probably reading too much into this.
->> The intent is to optimize DMA operations where the hardware now knows
->> both hw_ptr and appl_ptr. there is no use of the .ack() for copies into
->> intermediate buffers
->
-> If this patch included enough explanation about the disadvantage of
-> rewind operation on your driver and hardware in a point of optimization
-> for DMA data transmission and power consumption, I would not have driven
-> my imagination so hard for the reviewing.
 
-Maybe you missed what we wrote in the commit message:
-"this can be used by low-level driver to optimize DMA operations
-and reduce power consumption."
-There will be follow-up patches that make use of this capability on 
-Intel platforms but for now this is hardware-agnostic.
+--cPi+lWm09sJ+d57q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->
->> and the code for rewind on capture is largely for
->> consistency - we've never seen anyone using rewind on capture on
->> DSP-based platforms.
->
-> I'm not a prophet, and you too. It's not better to change interfaces
-> with any forecast. Furthermore, once changing interfaces, it affects to
-> all of applications. Please have enough care of it.
+On Thu, Apr 13, 2017 at 12:55:58PM -0600, Stephen Warren wrote:
+> From: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+>=20
+> Whistler is an ancient Tegra 2 reference board. I may have been the only
+> person who ever used it with upstream software, and I've just recycled
+> the board hardware. Hence, it makes sense to remove support from software.
+>=20
+> Signed-off-by: Stephen Warren <swarren-DDmLM1+adcrQT0dZR+AlfA@public.gmane.org>
+> ---
+>  Documentation/devicetree/bindings/arm/tegra.txt |   1 -
+>  arch/arm/boot/dts/Makefile                      |   3 +-
+>  arch/arm/boot/dts/tegra20-whistler.dts          | 636 ------------------=
+------
+>  3 files changed, 1 insertion(+), 639 deletions(-)
+>  delete mode 100644 arch/arm/boot/dts/tegra20-whistler.dts
 
-I don't get what you are saying. There is no interface or behavior 
-change, disabling rewinds is strictly opt-in and controlled from the 
-application. I was just stating that we have not seen anyone use rewinds 
-on capture and at this point we have no need to disable non-existent 
-usages...
+Applied, thanks.
 
->
-> # I can imagine a disadvantage of rewind operation for PCM capture
-> # substream. When rewinding, available space on PCM buffer for data
-> # transmission from hardware is reduced. Then, even if hardware already
-> # done sampling, it can't transfer the PCM frames. There's a delay and
-> # hardware needs extra buffering.
->
->
-> Regards
->
-> Takashi Sakamoto
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+Thierry
+
+--cPi+lWm09sJ+d57q
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAlk/6l8ACgkQ3SOs138+
+s6EH6g/+Pn79LcyuVuIU5v89vSNOpPS4Ieu8Mwfcwyyh3bdq/SmjCycaJNXChO+w
+slu2znfxutIXmXnicKubCXvPrqnOa/TT19/nrq+c2eMYbbP2vBSyCXGi+Rspttcm
+qW98qVtPLYne/JESgCxPjQAuksum3E+iObm43J+GaKzb9RDhaKGndGPxtHt0mbVq
+NIXapFAyS5khGCg3sOIFmhTyzL0oqLETlHYq2lBidDZ9Bvw3vbk7XzP6HNU6fjNs
+zhW9Gyo61nOSaQNAO+zXpuyJktoPZPFEer6LybOO1isqTop5vP3L9U0Y7IZa5oZ6
+E/eBNYBNu0bfzr6NQV9YlfrvRsS171TcpKfNRxRWt0cNbGLJY9pCDgMRFY6I0wo/
+I5uoQ91ghQ7o0ch+sV5ohPfQyMVA0RgUE+J1NOZ+Bl2m8hkuToxP12CVNHKcjaf8
+NorkbisjLWMOx64Bkb5XCdPja4BPeWma28AJox9RnCXIbXdE+6evSVts1C6m/Cqz
+UE2LnaR/ggc3cBsl++DfbPYXkoo/e8AjdYm3MJrFLVtENlzrgimn9sAeqIE3DNjh
+XAyk1/fXvbVAptCjJ00pa2Kr5Ml0STIDDMNRMPqRup54bMzULKBkuPnjc1X3QWWN
+SBm0yCuBCxCOTb2qrTGqLrZ2v0euwCoFB8mREZJdCeUEcsAKV+M=
+=Za/a
+-----END PGP SIGNATURE-----
+
+--cPi+lWm09sJ+d57q--
