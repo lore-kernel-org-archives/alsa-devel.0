@@ -1,71 +1,92 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v1 4/4] ASoC: rockchip: i2s: fixup clk div
-Date: Tue, 13 Jun 2017 21:48:51 +0100
-Message-ID: <20170613204851.devutejizfbroeao@sirena.org.uk>
-References: <1496998369-30556-1-git-send-email-sugar.zhang@rock-chips.com>
- <1496998369-30556-5-git-send-email-sugar.zhang@rock-chips.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6543296030933368512=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 66FA7266FD1
- for <alsa-devel@alsa-project.org>; Tue, 13 Jun 2017 22:49:01 +0200 (CEST)
-In-Reply-To: <1496998369-30556-5-git-send-email-sugar.zhang@rock-chips.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sugar Zhang <sugar.zhang@rock-chips.com>
-Cc: alsa-devel@alsa-project.org, heiko@sntech.de, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Subject: Applied "ASoC: audio-graph-card: use asoc_simple_card_clk_xxx()" to the asoc tree
+Date: Tue, 13 Jun 2017 22:07:34 +0100
+Message-ID: <E1dKt2E-0000Ck-1l@debutante>
+References: <87y3t43aqr.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87y3t43aqr.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============6543296030933368512==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="mj66cy2qqkiq6hav"
-Content-Disposition: inline
+   ASoC: audio-graph-card: use asoc_simple_card_clk_xxx()
 
+has been applied to the asoc tree at
 
---mj66cy2qqkiq6hav
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Fri, Jun 09, 2017 at 04:52:49PM +0800, Sugar Zhang wrote:
-> we found mclk maybe not precise as required because of PLL,
-> but it still can be used and no side effect. for example, if we
-> require mclk 11289600, but get 11289598, it doesn't matter.
-> so using DIV_ROUND_CLOSEST to fix it.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-This is fine but seems to depend on patch 2.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---mj66cy2qqkiq6hav
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllAT7IACgkQJNaLcl1U
-h9BYtAgAg6doVgDKpLy5DlYemAq0FbOuPB0CXBoMzFYrvRGPOlEVfR2ZyZgbtYKp
-IFaTYFg3dC0j3AQahz36ldwkCiTPaJg3GMB7lmhmVdogG/SEvFxvIAUXpCMz/hoA
-1gmvfjkDJH0oiFjpG6bGTsNG+ZVKOVsJwHHV+XUSf7eVT4xOO8CpkU4i28NNYRRX
-qzdD3pwufCHrSFEWDnya666+WE6akL+pQY58+8Tko+3sfAEQw1o6jciLlkHdcMlu
-6wS6QiAtjtXUkVneQGGyrOIBEu8+ZPiX4kNlV5KjbPuwIxpnzBx/+Jh+KmsSsgKE
-vqtOjZEJ16dQ7q49BK9PhuNceAL1Cw==
-=7ANq
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---mj66cy2qqkiq6hav--
+>From d471d55934ca8b4f38535207589df4e3cc8b1484 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 9 Jun 2017 00:45:23 +0000
+Subject: [PATCH] ASoC: audio-graph-card: use asoc_simple_card_clk_xxx()
 
---===============6543296030933368512==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Current simple-card-utils sets asoc_simple_dai::clk via
+asoc_simple_card_parse_clk().
+Current simple card drivers are using it directly for
+clk_enable/disable.
+Encapsulation is one of simple card util's purpose.
+Let's use asoc_simple_card_clk_enable/disable.
 
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/generic/audio-graph-card.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---===============6543296030933368512==--
+diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+index 0180b286bee3..b5bb791a6e61 100644
+--- a/sound/soc/generic/audio-graph-card.c
++++ b/sound/soc/generic/audio-graph-card.c
+@@ -44,13 +44,13 @@ static int asoc_graph_card_startup(struct snd_pcm_substream *substream)
+ 	struct graph_dai_props *dai_props = graph_priv_to_props(priv, rtd->num);
+ 	int ret;
+ 
+-	ret = clk_prepare_enable(dai_props->cpu_dai.clk);
++	ret = asoc_simple_card_clk_enable(&dai_props->cpu_dai);
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = clk_prepare_enable(dai_props->codec_dai.clk);
++	ret = asoc_simple_card_clk_enable(&dai_props->codec_dai);
+ 	if (ret)
+-		clk_disable_unprepare(dai_props->cpu_dai.clk);
++		asoc_simple_card_clk_disable(&dai_props->cpu_dai);
+ 
+ 	return ret;
+ }
+@@ -61,9 +61,9 @@ static void asoc_graph_card_shutdown(struct snd_pcm_substream *substream)
+ 	struct graph_card_data *priv = snd_soc_card_get_drvdata(rtd->card);
+ 	struct graph_dai_props *dai_props = graph_priv_to_props(priv, rtd->num);
+ 
+-	clk_disable_unprepare(dai_props->cpu_dai.clk);
++	asoc_simple_card_clk_disable(&dai_props->cpu_dai);
+ 
+-	clk_disable_unprepare(dai_props->codec_dai.clk);
++	asoc_simple_card_clk_disable(&dai_props->codec_dai);
+ }
+ 
+ static struct snd_soc_ops asoc_graph_card_ops = {
+-- 
+2.11.0
