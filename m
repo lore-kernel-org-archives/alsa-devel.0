@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-scu-card: use asoc_simple_card_clk_xxx()" to the asoc tree
-Date: Tue, 13 Jun 2017 22:07:40 +0100
-Message-ID: <E1dKt2K-0000Em-63@debutante>
-References: <871sqw4pc6.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: simple-card: use asoc_simple_card_clk_xxx()" to the asoc tree
+Date: Tue, 13 Jun 2017 22:07:43 +0100
+Message-ID: <E1dKt2N-0000Ff-6i@debutante>
+References: <8737bc4pco.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <871sqw4pc6.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <8737bc4pco.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-scu-card: use asoc_simple_card_clk_xxx()
+   ASoC: simple-card: use asoc_simple_card_clk_xxx()
 
 has been applied to the asoc tree at
 
@@ -37,10 +37,10 @@ to this mail.
 Thanks,
 Mark
 
->From bb24a3ba3f52942b5f3eb6c10288da830ec9ef70 Mon Sep 17 00:00:00 2001
+>From 3ab50c4f98434080c1f73fc56d8d8b38364c6cd8 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 9 Jun 2017 00:44:40 +0000
-Subject: [PATCH] ASoC: simple-scu-card: use asoc_simple_card_clk_xxx()
+Date: Fri, 9 Jun 2017 00:44:16 +0000
+Subject: [PATCH] ASoC: simple-card: use asoc_simple_card_clk_xxx()
 
 Current simple-card-utils sets asoc_simple_dai::clk via
 asoc_simple_card_parse_clk().
@@ -52,30 +52,41 @@ Let's use asoc_simple_card_clk_enable/disable.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-scu-card.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/generic/simple-card.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
-index 5faf5d6c48a2..f203783b2fad 100644
---- a/sound/soc/generic/simple-scu-card.c
-+++ b/sound/soc/generic/simple-scu-card.c
-@@ -47,7 +47,7 @@ static int asoc_simple_card_startup(struct snd_pcm_substream *substream)
- 	struct asoc_simple_dai *dai_props =
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index e26bd14ba70f..8828b91867b8 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -118,13 +118,13 @@ static int asoc_simple_card_startup(struct snd_pcm_substream *substream)
+ 		simple_priv_to_props(priv, rtd->num);
+ 	int ret;
+ 
+-	ret = clk_prepare_enable(dai_props->cpu_dai.clk);
++	ret = asoc_simple_card_clk_enable(&dai_props->cpu_dai);
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = clk_prepare_enable(dai_props->codec_dai.clk);
++	ret = asoc_simple_card_clk_enable(&dai_props->codec_dai);
+ 	if (ret)
+-		clk_disable_unprepare(dai_props->cpu_dai.clk);
++		asoc_simple_card_clk_disable(&dai_props->cpu_dai);
+ 
+ 	return ret;
+ }
+@@ -136,9 +136,9 @@ static void asoc_simple_card_shutdown(struct snd_pcm_substream *substream)
+ 	struct simple_dai_props *dai_props =
  		simple_priv_to_props(priv, rtd->num);
  
--	return clk_prepare_enable(dai_props->clk);
-+	return asoc_simple_card_clk_enable(dai_props);
+-	clk_disable_unprepare(dai_props->cpu_dai.clk);
++	asoc_simple_card_clk_disable(&dai_props->cpu_dai);
+ 
+-	clk_disable_unprepare(dai_props->codec_dai.clk);
++	asoc_simple_card_clk_disable(&dai_props->codec_dai);
  }
  
- static void asoc_simple_card_shutdown(struct snd_pcm_substream *substream)
-@@ -57,7 +57,7 @@ static void asoc_simple_card_shutdown(struct snd_pcm_substream *substream)
- 	struct asoc_simple_dai *dai_props =
- 		simple_priv_to_props(priv, rtd->num);
- 
--	clk_disable_unprepare(dai_props->clk);
-+	asoc_simple_card_clk_disable(dai_props);
- }
- 
- static const struct snd_soc_ops asoc_simple_card_ops = {
+ static int asoc_simple_card_hw_params(struct snd_pcm_substream *substream,
 -- 
 2.11.0
