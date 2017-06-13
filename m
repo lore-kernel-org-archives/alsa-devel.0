@@ -1,113 +1,44 @@
 From: John Stultz <john.stultz@linaro.org>
-Subject: [PATCH] drm: adv7511_audio: Add .get_dai_id callback to map port number to dai id
-Date: Tue, 13 Jun 2017 14:59:49 -0700
-Message-ID: <1497391189-9301-1-git-send-email-john.stultz@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: Re: [PATCH] drm: adv7511_audio: Add .get_dai_id callback to map port
+ number to dai id
+Date: Tue, 13 Jun 2017 15:01:27 -0700
+Message-ID: <CALAqxLUP+O-OGSULdrueTn5heFiC9ovuL7fKig2hNe++YjcXmw@mail.gmail.com>
+References: <1497391189-9301-1-git-send-email-john.stultz@linaro.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <1497391189-9301-1-git-send-email-john.stultz@linaro.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
 To: lkml <linux-kernel@vger.kernel.org>
-Cc: John Stultz <john.stultz@linaro.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Archit Taneja <architt@codeaurora.org>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, David Airlie <airlied@linux.ie>, Lars-Peter Clausen <lars@metafoo.de>, Linux-ALSA <alsa-devel@alsa-project.org>, dri-devel@lists.freedesktop.org
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Rob Herring <robh+dt@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-ALSA SoC needs to know connected DAI ID for probing. Using
-the new audio-card-graph approach, ports/endpoints are used
-to describe how the links are connected. Unfortunately, since
-ports/endpoints are used as well for video linkages, there
-are some issues mixing the port ids to the two (video and
-audio) namespaces.
-
-To solve this issue, this patch adds new .get_dai_id callback
-on hdmi_codec_ops.
-
-The will assume that HDMI audio out will be connected to
-reg = <2>. This will then be remapped to the ALSA SoC side will
-as DAI 0. Allowing the adv7511's hdmi audio support to be used
-with the audio-card-graph.
-
-Credit to Kuninori Morimoto who's patch to dw-hdmi-i2s-audio.c
-was what this was mostly copy-pasted from.
-
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Archit Taneja <architt@codeaurora.org>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
-Cc: dri-devel@lists.freedesktop.org
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
- .../bindings/display/bridge/adi,adv7511.txt        |  8 ++++++++
- drivers/gpu/drm/bridge/adv7511/adv7511_audio.c     | 22 ++++++++++++++++++++++
- 2 files changed, 30 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/display/bridge/adi,adv7511.txt b/Documentation/devicetree/bindings/display/bridge/adi,adv7511.txt
-index 00ea670..06668bc 100644
---- a/Documentation/devicetree/bindings/display/bridge/adi,adv7511.txt
-+++ b/Documentation/devicetree/bindings/display/bridge/adi,adv7511.txt
-@@ -78,6 +78,7 @@ graph bindings specified in Documentation/devicetree/bindings/graph.txt.
-   remote endpoint phandle should be a reference to a valid mipi_dsi_host device
-   node.
- - Video port 1 for the HDMI output
-+- Audio port 2 for the HDMI audio input
- 
- 
- Example
-@@ -112,5 +113,12 @@ Example
- 					remote-endpoint = <&hdmi_connector_in>;
- 				};
- 			};
-+
-+			port@2 {
-+				reg = <2>;
-+				codec_endpoint: endpoint {
-+					remote-endpoint = <&i2s0_cpu_endpoint>;
-+				};
-+			};
- 		};
- 	};
-diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c b/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
-index cf92ebf..67469c2 100644
---- a/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
-+++ b/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
-@@ -11,6 +11,7 @@
- #include <sound/hdmi-codec.h>
- #include <sound/pcm.h>
- #include <sound/soc.h>
-+#include <linux/of_graph.h>
- 
- #include "adv7511.h"
- 
-@@ -182,10 +183,31 @@ static void audio_shutdown(struct device *dev, void *data)
- {
- }
- 
-+static int adv7511_hdmi_i2s_get_dai_id(struct snd_soc_component *component,
-+					struct device_node *endpoint)
-+{
-+	struct of_endpoint of_ep;
-+	int ret;
-+
-+	ret = of_graph_parse_endpoint(endpoint, &of_ep);
-+	if (ret < 0)
-+		return ret;
-+
-+	/*
-+	 * HDMI sound should be located as reg = <2>
-+	 * Then, it is sound port 0
-+	 */
-+	if (of_ep.port == 2)
-+		return 0;
-+
-+	return -EINVAL;
-+}
-+
- static const struct hdmi_codec_ops adv7511_codec_ops = {
- 	.hw_params	= adv7511_hdmi_hw_params,
- 	.audio_shutdown = audio_shutdown,
- 	.audio_startup	= audio_startup,
-+	.get_dai_id	= adv7511_hdmi_i2s_get_dai_id,
- };
- 
- static struct hdmi_codec_pdata codec_data = {
--- 
-2.7.4
+T24gVHVlLCBKdW4gMTMsIDIwMTcgYXQgMjo1OSBQTSwgSm9obiBTdHVsdHogPGpvaG4uc3R1bHR6
+QGxpbmFyby5vcmc+IHdyb3RlOgo+IEFMU0EgU29DIG5lZWRzIHRvIGtub3cgY29ubmVjdGVkIERB
+SSBJRCBmb3IgcHJvYmluZy4gVXNpbmcKPiB0aGUgbmV3IGF1ZGlvLWNhcmQtZ3JhcGggYXBwcm9h
+Y2gsIHBvcnRzL2VuZHBvaW50cyBhcmUgdXNlZAo+IHRvIGRlc2NyaWJlIGhvdyB0aGUgbGlua3Mg
+YXJlIGNvbm5lY3RlZC4gVW5mb3J0dW5hdGVseSwgc2luY2UKPiBwb3J0cy9lbmRwb2ludHMgYXJl
+IHVzZWQgYXMgd2VsbCBmb3IgdmlkZW8gbGlua2FnZXMsIHRoZXJlCj4gYXJlIHNvbWUgaXNzdWVz
+IG1peGluZyB0aGUgcG9ydCBpZHMgdG8gdGhlIHR3byAodmlkZW8gYW5kCj4gYXVkaW8pIG5hbWVz
+cGFjZXMuCj4KPiBUbyBzb2x2ZSB0aGlzIGlzc3VlLCB0aGlzIHBhdGNoIGFkZHMgbmV3IC5nZXRf
+ZGFpX2lkIGNhbGxiYWNrCj4gb24gaGRtaV9jb2RlY19vcHMuCj4KPiBUaGUgd2lsbCBhc3N1bWUg
+dGhhdCBIRE1JIGF1ZGlvIG91dCB3aWxsIGJlIGNvbm5lY3RlZCB0bwo+IHJlZyA9IDwyPi4gVGhp
+cyB3aWxsIHRoZW4gYmUgcmVtYXBwZWQgdG8gdGhlIEFMU0EgU29DIHNpZGUgd2lsbAo+IGFzIERB
+SSAwLiBBbGxvd2luZyB0aGUgYWR2NzUxMSdzIGhkbWkgYXVkaW8gc3VwcG9ydCB0byBiZSB1c2Vk
+Cj4gd2l0aCB0aGUgYXVkaW8tY2FyZC1ncmFwaC4KPgo+IENyZWRpdCB0byBLdW5pbm9yaSBNb3Jp
+bW90byB3aG8ncyBwYXRjaCB0byBkdy1oZG1pLWkycy1hdWRpby5jCj4gd2FzIHdoYXQgdGhpcyB3
+YXMgbW9zdGx5IGNvcHktcGFzdGVkIGZyb20uCgpGb3Jnb3QgdG8gbm90ZSB0aGlzIGhhcyBkZXBl
+bmRlbmNpZXMgb24gcGF0Y2hlcyBpbiB0aGUgQVNvQyB0cmVlIGluCi1uZXh0LCBzbyBpdCBwcm9i
+YWJseSBzaG91bGQgZ28gaW4gdmlhIHRoYXQgdHJlZS4KCnRoYW5rcwotam9obgpfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBs
+aXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVz
+a3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
