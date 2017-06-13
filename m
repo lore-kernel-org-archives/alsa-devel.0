@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple_card_utils: add asoc_simple_card_clk_xxx()" to the asoc tree
-Date: Tue, 13 Jun 2017 22:07:46 +0100
-Message-ID: <E1dKt2Q-0000Gw-7k@debutante>
-References: <87a85iov10.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87a85iov10.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: rockchip: i2s: add a delay before i2s clear" to the asoc tree
+Date: Tue, 13 Jun 2017 22:07:49 +0100
+Message-ID: <E1dKt2T-0000Hw-9Z@debutante>
+References: <1496998369-30556-2-git-send-email-sugar.zhang@rock-chips.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1496998369-30556-2-git-send-email-sugar.zhang@rock-chips.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Sugar Zhang <sugar.zhang@rock-chips.com>
+Cc: Mark Brown <broonie@kernel.org>, heiko@sntech.debroonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple_card_utils: add asoc_simple_card_clk_xxx()
+   ASoC: rockchip: i2s: add a delay before i2s clear
 
 has been applied to the asoc tree at
 
@@ -37,74 +37,42 @@ to this mail.
 Thanks,
 Mark
 
->From 891caea417469b4efdf506b6be1ef461b759c999 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 9 Jun 2017 00:43:18 +0000
-Subject: [PATCH] ASoC: simple_card_utils: add asoc_simple_card_clk_xxx()
+>From 5894b91d1e700f38b4157df143be1502cf08daa8 Mon Sep 17 00:00:00 2001
+From: Sugar Zhang <sugar.zhang@rock-chips.com>
+Date: Fri, 9 Jun 2017 16:52:46 +0800
+Subject: [PATCH] ASoC: rockchip: i2s: add a delay before i2s clear
 
-Current simple-card-utils sets asoc_simple_dai::clk via
-asoc_simple_card_parse_clk().
-Current simple card drivers are using it directly for
-clk_enable/disable.
-Encapsulation is one of simple card util's purpose.
-Let's encapsulate it.
+in order to guarantee i2s lrck signal integrity, when i2s stop,
+need at least one lrck cycle to ensure signal integrity.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+the max delay time is when lrck is 8khz, the delay time is
+125us(1/8khz), using udelay(150) with a 25us margin.
+
+Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/simple_card_utils.h     |  2 ++
- sound/soc/generic/simple-card-utils.c | 19 ++++++++++++++++++-
- 2 files changed, 20 insertions(+), 1 deletion(-)
+ sound/soc/rockchip/rockchip_i2s.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
-index 108cae459ed0..840d624148df 100644
---- a/include/sound/simple_card_utils.h
-+++ b/include/sound/simple_card_utils.h
-@@ -45,6 +45,8 @@ int asoc_simple_card_parse_clk(struct device *dev,
- 			       struct device_node *dai_of_node,
- 			       struct asoc_simple_dai *simple_dai,
- 			       const char *name);
-+int asoc_simple_card_clk_enable(struct asoc_simple_dai *dai);
-+void asoc_simple_card_clk_disable(struct asoc_simple_dai *dai);
+diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+index 974915cb4c4f..f54843342ee2 100644
+--- a/sound/soc/rockchip/rockchip_i2s.c
++++ b/sound/soc/rockchip/rockchip_i2s.c
+@@ -116,6 +116,7 @@ static void rockchip_snd_txctrl(struct rk_i2s_dev *i2s, int on)
+ 					   I2S_XFER_TXS_STOP |
+ 					   I2S_XFER_RXS_STOP);
  
- #define asoc_simple_card_parse_cpu(node, dai_link,				\
- 				   list_name, cells_name, is_single_link)	\
-diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
-index d9d8b8a58348..beb4e3817d22 100644
---- a/sound/soc/generic/simple-card-utils.c
-+++ b/sound/soc/generic/simple-card-utils.c
-@@ -110,6 +110,22 @@ int asoc_simple_card_parse_card_name(struct snd_soc_card *card,
- }
- EXPORT_SYMBOL_GPL(asoc_simple_card_parse_card_name);
++			udelay(150);
+ 			regmap_update_bits(i2s->regmap, I2S_CLR,
+ 					   I2S_CLR_TXC | I2S_CLR_RXC,
+ 					   I2S_CLR_TXC | I2S_CLR_RXC);
+@@ -162,6 +163,7 @@ static void rockchip_snd_rxctrl(struct rk_i2s_dev *i2s, int on)
+ 					   I2S_XFER_TXS_STOP |
+ 					   I2S_XFER_RXS_STOP);
  
-+static void asoc_simple_card_clk_register(struct asoc_simple_dai *dai,
-+					  struct clk *clk)
-+{
-+	dai->clk = clk;
-+}
-+
-+int asoc_simple_card_clk_enable(struct asoc_simple_dai *dai)
-+{
-+	return clk_prepare_enable(dai->clk);
-+}
-+
-+void asoc_simple_card_clk_disable(struct asoc_simple_dai *dai)
-+{
-+	clk_disable_unprepare(dai->clk);
-+}
-+
- int asoc_simple_card_parse_clk(struct device *dev,
- 			       struct device_node *node,
- 			       struct device_node *dai_of_node,
-@@ -128,7 +144,8 @@ int asoc_simple_card_parse_clk(struct device *dev,
- 	clk = devm_get_clk_from_child(dev, node, NULL);
- 	if (!IS_ERR(clk)) {
- 		simple_dai->sysclk = clk_get_rate(clk);
--		simple_dai->clk = clk;
-+
-+		asoc_simple_card_clk_register(simple_dai, clk);
- 	} else if (!of_property_read_u32(node, "system-clock-frequency", &val)) {
- 		simple_dai->sysclk = val;
- 	} else {
++			udelay(150);
+ 			regmap_update_bits(i2s->regmap, I2S_CLR,
+ 					   I2S_CLR_TXC | I2S_CLR_RXC,
+ 					   I2S_CLR_TXC | I2S_CLR_RXC);
 -- 
 2.11.0
