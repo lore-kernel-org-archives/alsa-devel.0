@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: skl: Constify hw_constraints" to
+Subject: Applied "ASoC: intel: byt: Constify hw_constraints" to
 	the asoc tree
-Date: Tue, 13 Jun 2017 22:08:33 +0100
-Message-ID: <E1dKt3B-0000UN-8r@debutante>
-References: <20170608213725.5378-6-tiwai@suse.de>
+Date: Tue, 13 Jun 2017 22:08:36 +0100
+Message-ID: <E1dKt3E-0000Vh-9v@debutante>
+References: <20170608213725.5378-5-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F41D2670B1
- for <alsa-devel@alsa-project.org>; Tue, 13 Jun 2017 23:08:42 +0200 (CEST)
-In-Reply-To: <20170608213725.5378-6-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 601D92670CE
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jun 2017 23:08:45 +0200 (CEST)
+In-Reply-To: <20170608213725.5378-5-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: skl: Constify hw_constraints
+   ASoC: intel: byt: Constify hw_constraints
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 617647ae2880cf291293048f8cfd54f8111acb1c Mon Sep 17 00:00:00 2001
+>From 1ebb4d9dbf8f7a429abff359fa1d779b639da76f Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Thu, 8 Jun 2017 23:37:23 +0200
-Subject: [PATCH] ASoC: intel: skl: Constify hw_constraints
+Date: Thu, 8 Jun 2017 23:37:22 +0200
+Subject: [PATCH] ASoC: intel: byt: Constify hw_constraints
 
 snd_pcm_hw_constraint_list(), *_ratnums() and *_ratdens() receive the
 const pointers.  Constify the corresponding static objects for better
@@ -66,170 +66,45 @@ Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/skl_nau88l25_max98357a.c | 16 ++++++++--------
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c   | 16 ++++++++--------
- sound/soc/intel/boards/skl_rt286.c              | 12 ++++++------
- 3 files changed, 22 insertions(+), 22 deletions(-)
+ sound/soc/intel/boards/bytcht_nocodec.c | 4 ++--
+ sound/soc/intel/boards/bytcr_rt5651.c   | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/boards/skl_nau88l25_max98357a.c b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-index 3b12bc1fa518..5ed0aa27b467 100644
---- a/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_max98357a.c
-@@ -266,21 +266,21 @@ static int skylake_nau8825_fe_init(struct snd_soc_pcm_runtime *rtd)
+diff --git a/sound/soc/intel/boards/bytcht_nocodec.c b/sound/soc/intel/boards/bytcht_nocodec.c
+index 89853eeaaf9d..1dd9441806fa 100644
+--- a/sound/soc/intel/boards/bytcht_nocodec.c
++++ b/sound/soc/intel/boards/bytcht_nocodec.c
+@@ -85,11 +85,11 @@ static int codec_fixup(struct snd_soc_pcm_runtime *rtd,
  	return 0;
  }
  
--static unsigned int rates[] = {
-+static const unsigned int rates[] = {
+-static unsigned int rates_48000[] = {
++static const unsigned int rates_48000[] = {
  	48000,
  };
  
--static struct snd_pcm_hw_constraint_list constraints_rates = {
-+static const struct snd_pcm_hw_constraint_list constraints_rates = {
- 	.count = ARRAY_SIZE(rates),
- 	.list  = rates,
- 	.mask = 0,
+-static struct snd_pcm_hw_constraint_list constraints_48000 = {
++static const struct snd_pcm_hw_constraint_list constraints_48000 = {
+ 	.count = ARRAY_SIZE(rates_48000),
+ 	.list  = rates_48000,
  };
- 
--static unsigned int channels[] = {
-+static const unsigned int channels[] = {
- 	2,
- };
- 
--static struct snd_pcm_hw_constraint_list constraints_channels = {
-+static const struct snd_pcm_hw_constraint_list constraints_channels = {
- 	.count = ARRAY_SIZE(channels),
- 	.list = channels,
- 	.mask = 0,
-@@ -348,11 +348,11 @@ static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 8164bec63bf1..4a3516b38c2c 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -203,11 +203,11 @@ static int byt_rt5651_codec_fixup(struct snd_soc_pcm_runtime *rtd,
  	return 0;
  }
  
--static unsigned int channels_dmic[] = {
-+static const unsigned int channels_dmic[] = {
- 	2, 4,
- };
- 
--static struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
-+static const struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
- 	.count = ARRAY_SIZE(channels_dmic),
- 	.list = channels_dmic,
- 	.mask = 0,
-@@ -384,11 +384,11 @@ static const struct snd_soc_ops skylake_dmic_ops = {
- 	.startup = skylake_dmic_startup,
- };
- 
--static unsigned int rates_16000[] = {
-+static const unsigned int rates_16000[] = {
- 	16000,
- };
- 
--static struct snd_pcm_hw_constraint_list constraints_16000 = {
-+static const struct snd_pcm_hw_constraint_list constraints_16000 = {
- 	.count = ARRAY_SIZE(rates_16000),
- 	.list  = rates_16000,
- };
-diff --git a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-index eb7751b0599b..01b8b140bb08 100644
---- a/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-+++ b/sound/soc/intel/boards/skl_nau88l25_ssm4567.c
-@@ -297,21 +297,21 @@ static int skylake_nau8825_fe_init(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
- }
- 
--static unsigned int rates[] = {
-+static const unsigned int rates[] = {
+-static unsigned int rates_48000[] = {
++static const unsigned int rates_48000[] = {
  	48000,
  };
  
--static struct snd_pcm_hw_constraint_list constraints_rates = {
-+static const struct snd_pcm_hw_constraint_list constraints_rates = {
- 	.count = ARRAY_SIZE(rates),
- 	.list  = rates,
- 	.mask = 0,
+-static struct snd_pcm_hw_constraint_list constraints_48000 = {
++static const struct snd_pcm_hw_constraint_list constraints_48000 = {
+ 	.count = ARRAY_SIZE(rates_48000),
+ 	.list  = rates_48000,
  };
- 
--static unsigned int channels[] = {
-+static const unsigned int channels[] = {
- 	2,
- };
- 
--static struct snd_pcm_hw_constraint_list constraints_channels = {
-+static const struct snd_pcm_hw_constraint_list constraints_channels = {
- 	.count = ARRAY_SIZE(channels),
- 	.list = channels,
- 	.mask = 0,
-@@ -397,11 +397,11 @@ static const struct snd_soc_ops skylake_nau8825_ops = {
- 	.hw_params = skylake_nau8825_hw_params,
- };
- 
--static unsigned int channels_dmic[] = {
-+static const unsigned int channels_dmic[] = {
- 	2, 4,
- };
- 
--static struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
-+static const struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
- 	.count = ARRAY_SIZE(channels_dmic),
- 	.list = channels_dmic,
- 	.mask = 0,
-@@ -433,11 +433,11 @@ static const struct snd_soc_ops skylake_dmic_ops = {
- 	.startup = skylake_dmic_startup,
- };
- 
--static unsigned int rates_16000[] = {
-+static const unsigned int rates_16000[] = {
- 	16000,
- };
- 
--static struct snd_pcm_hw_constraint_list constraints_16000 = {
-+static const struct snd_pcm_hw_constraint_list constraints_16000 = {
- 	.count = ARRAY_SIZE(rates_16000),
- 	.list  = rates_16000,
- };
-diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
-index f5ab7b8d51d1..e08c71625fd0 100644
---- a/sound/soc/intel/boards/skl_rt286.c
-+++ b/sound/soc/intel/boards/skl_rt286.c
-@@ -165,21 +165,21 @@ static int skylake_hdmi_init(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
- }
- 
--static unsigned int rates[] = {
-+static const unsigned int rates[] = {
- 	48000,
- };
- 
--static struct snd_pcm_hw_constraint_list constraints_rates = {
-+static const struct snd_pcm_hw_constraint_list constraints_rates = {
- 	.count = ARRAY_SIZE(rates),
- 	.list  = rates,
- 	.mask = 0,
- };
- 
--static unsigned int channels[] = {
-+static const unsigned int channels[] = {
- 	2,
- };
- 
--static struct snd_pcm_hw_constraint_list constraints_channels = {
-+static const struct snd_pcm_hw_constraint_list constraints_channels = {
- 	.count = ARRAY_SIZE(channels),
- 	.list = channels,
- 	.mask = 0,
-@@ -264,11 +264,11 @@ static int skylake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
- 	return 0;
- }
- 
--static unsigned int channels_dmic[] = {
-+static const unsigned int channels_dmic[] = {
- 	2, 4,
- };
- 
--static struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
-+static const struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
- 	.count = ARRAY_SIZE(channels_dmic),
- 	.list = channels_dmic,
- 	.mask = 0,
 -- 
 2.11.0
