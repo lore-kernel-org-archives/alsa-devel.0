@@ -1,179 +1,36 @@
-From: Richard Leitner <richard.leitner@skidata.com>
-Subject: [PATCH v3] ASoC: sgtl5000: add avc support
-Date: Tue, 13 Jun 2017 08:57:34 +0200
-Message-ID: <1497337054-4911-1-git-send-email-richard.leitner@skidata.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail2.skidata.com (mail2.skidata.com [91.230.2.91])
- by alsa0.perex.cz (Postfix) with ESMTP id 48E8E266AF1
- for <alsa-devel@alsa-project.org>; Tue, 13 Jun 2017 08:57:45 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
-Cc: clemens.gruber@pqgruber.com, kalle.kankare@vincit.fi, eric@nelint.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, fabio.estevam@nxp.com, dev@g0hl1n.net, richard.leitner@skidata.com
+From: Sugar Zhang <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>
+Subject: [PATCH v1 0/2] Patches to add support pdm controller for rk3328
+Date: Tue, 13 Jun 2017 15:27:45 +0800
+Message-ID: <1497338867-52684-1-git-send-email-sugar.zhang@rock-chips.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: heiko-4mtYJXux2i+zQB+pC5nmwQ@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: linux-rockchip-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Sugar Zhang <sugar.zhang-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Liang Chen <cl-TNX95d0MmH7DzftRWevZcw@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Will Deacon <will.deacon-5wv7dgnIgG8@public.gmane.org>, Mark Rutland <mark.rutland-5wv7dgnIgG8@public.gmane.org>, Catalin Marinas <catalin.marinas-5wv7dgnIgG8@public.gmane.org>, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The sgtl5000 features a automatic volume control block (AVC), which
-reduces loud signals and amplifies low level signals for easier
-listening. This patch adds support for this AVC block to the driver.
+These patches to add support pdm for rk3328 socs.
 
-Apart from the "AVC Switch" control which enables the block following
-controls for the configuration of AVC are added:
-	+ AVC Threshold Volume: threshold where audio is compressed when
-		the measured level is above or expanded when below
-	+ AVC Max Gain Volume: maximum gain which can be applied when
-		the measured audio level is below threshold
-	+ AVC Hard Limiter Switch: when enabled the signal is limited to
-		the programmed threshold.
-	+ AVC Integrator Response: response time of the integrator
 
-The AVC block is enabled and configured using the DAP_AVC_CTRL and
-DAP_AVC_THRESHOLD registers.
+Sugar Zhang (2):
+  ASoC: rockchip: add support for pdm controller
+  arm64: dts: rk3328: add pdm node
 
-Following 2 checkpatch.pl strict checks are ignored because the
-indentation style is different for the struct snd_kcontrol_new
-definition:
-	patch:145: CHECK: Alignment should match open parenthesis
-	patch:148: CHECK: Alignment should match open parenthesis
+ .../devicetree/bindings/sound/rockchip,pdm.txt     |  39 ++
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi           |  55 +++
+ sound/soc/rockchip/Kconfig                         |   9 +
+ sound/soc/rockchip/Makefile                        |   2 +
+ sound/soc/rockchip/rockchip_pdm.c                  | 516 +++++++++++++++++++++
+ sound/soc/rockchip/rockchip_pdm.h                  |  83 ++++
+ 6 files changed, 704 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/rockchip,pdm.txt
+ create mode 100644 sound/soc/rockchip/rockchip_pdm.c
+ create mode 100644 sound/soc/rockchip/rockchip_pdm.h
 
-Signed-off-by: Richard Leitner <richard.leitner@skidata.com>
----
-CHANGES v3:
-	- rename "AVC Enable Switch" to "AVC Switch"
-	- add AVC configuration controls
-CHANGES v2:
-	- added trailing "Switch" as covered in ControlNames.txt
----
- sound/soc/codecs/sgtl5000.c | 87 +++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 87 insertions(+)
-
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 5a2702e..5d4b69f 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -74,6 +74,20 @@ static const struct reg_default sgtl5000_reg_defaults[] = {
- 	{ SGTL5000_DAP_AVC_DECAY,		0x0050 },
- };
- 
-+/* AVC: Threshold dB -> register: pre-calculated values */
-+static const u16 avc_thr_db2reg[97] = {
-+	0x5168, 0x488E, 0x40AA, 0x39A1, 0x335D, 0x2DC7, 0x28CC, 0x245D, 0x2068,
-+	0x1CE2, 0x19BE, 0x16F1, 0x1472, 0x1239, 0x103E, 0x0E7A, 0x0CE6, 0x0B7F,
-+	0x0A3F, 0x0922, 0x0824, 0x0741, 0x0677, 0x05C3, 0x0522, 0x0493, 0x0414,
-+	0x03A2, 0x033D, 0x02E3, 0x0293, 0x024B, 0x020B, 0x01D2, 0x019F, 0x0172,
-+	0x014A, 0x0126, 0x0106, 0x00E9, 0x00D0, 0x00B9, 0x00A5, 0x0093, 0x0083,
-+	0x0075, 0x0068, 0x005D, 0x0052, 0x0049, 0x0041, 0x003A, 0x0034, 0x002E,
-+	0x0029, 0x0025, 0x0021, 0x001D, 0x001A, 0x0017, 0x0014, 0x0012, 0x0010,
-+	0x000E, 0x000D, 0x000B, 0x000A, 0x0009, 0x0008, 0x0007, 0x0006, 0x0005,
-+	0x0005, 0x0004, 0x0004, 0x0003, 0x0003, 0x0002, 0x0002, 0x0002, 0x0002,
-+	0x0001, 0x0001, 0x0001, 0x0001, 0x0001, 0x0001, 0x0000, 0x0000, 0x0000,
-+	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000};
-+
- /* regulator supplies for sgtl5000, VDDD is an optional external supply */
- enum sgtl5000_regulator_supplies {
- 	VDDA,
-@@ -382,6 +396,63 @@ static int dac_put_volsw(struct snd_kcontrol *kcontrol,
- 	return 0;
- }
- 
-+/*
-+ * custom function to get AVC threshold
-+ *
-+ * The threshold dB is calculated by rearranging the calculation from the
-+ * avc_put_threshold function: register_value = 10^(dB/20) * 0.636 * 2^15 ==>
-+ * dB = ( fls(register_value) - 14.347 ) * 6.02
-+ *
-+ * As this calculation is expensive and the threshold dB values may not exeed
-+ * 0 to 96 we use pre-calculated values.
-+ */
-+static int avc_get_threshold(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	int db, i;
-+	u16 reg = snd_soc_read(codec, SGTL5000_DAP_AVC_THRESHOLD);
-+
-+	/* register value 0 => -96dB */
-+	if (!reg) {
-+		ucontrol->value.integer.value[0] = 96;
-+		ucontrol->value.integer.value[1] = 96;
-+		return 0;
-+	}
-+
-+	/* get dB from register value (rounded down) */
-+	for (i = 0; avc_thr_db2reg[i] > reg; i++)
-+		;
-+	db = i;
-+
-+	ucontrol->value.integer.value[0] = db;
-+	ucontrol->value.integer.value[1] = db;
-+
-+	return 0;
-+}
-+
-+/*
-+ * custom function to put AVC threshold
-+ *
-+ * The register value is calculated by following formula:
-+ *                                    register_value = 10^(dB/20) * 0.636 * 2^15
-+ * As this calculation is expensive and the threshold dB values may not exeed
-+ * 0 to 96 we use pre-calculated values.
-+ */
-+static int avc_put_threshold(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
-+	int db;
-+	u16 reg;
-+
-+	db = clamp((int)ucontrol->value.integer.value[0], 0, 96);
-+	reg = avc_thr_db2reg[db];
-+	snd_soc_write(codec, SGTL5000_DAP_AVC_THRESHOLD, reg);
-+
-+	return 0;
-+}
-+
- static const DECLARE_TLV_DB_SCALE(capture_6db_attenuate, -600, 600, 0);
- 
- /* tlv for mic gain, 0db 20db 30db 40db */
-@@ -396,6 +467,12 @@ static const DECLARE_TLV_DB_SCALE(headphone_volume, -5150, 50, 0);
- /* tlv for lineout volume, 31 steps of .5db each */
- static const DECLARE_TLV_DB_SCALE(lineout_volume, -1550, 50, 0);
- 
-+/* tlv for dap avc max gain, 0db, 6db, 12db */
-+static const DECLARE_TLV_DB_SCALE(avc_max_gain, 0, 600, 0);
-+
-+/* tlv for dap avc threshold, */
-+static const DECLARE_TLV_DB_MINMAX(avc_threshold, 0, 9600);
-+
- static const struct snd_kcontrol_new sgtl5000_snd_controls[] = {
- 	/* SOC_DOUBLE_S8_TLV with invert */
- 	{
-@@ -434,6 +511,16 @@ static const struct snd_kcontrol_new sgtl5000_snd_controls[] = {
- 			0x1f, 1,
- 			lineout_volume),
- 	SOC_SINGLE("Lineout Playback Switch", SGTL5000_CHIP_ANA_CTRL, 8, 1, 1),
-+
-+	/* Automatic Volume Control (DAP AVC) */
-+	SOC_SINGLE("AVC Switch", SGTL5000_DAP_AVC_CTRL, 0, 1, 0),
-+	SOC_SINGLE("AVC Hard Limiter Switch", SGTL5000_DAP_AVC_CTRL, 5, 1, 0),
-+	SOC_SINGLE_TLV("AVC Max Gain Volume", SGTL5000_DAP_AVC_CTRL, 12, 2, 0,
-+			avc_max_gain),
-+	SOC_SINGLE("AVC Integrator Response", SGTL5000_DAP_AVC_CTRL, 8, 3, 0),
-+	SOC_SINGLE_EXT_TLV("AVC Threshold Volume", SGTL5000_DAP_AVC_THRESHOLD,
-+			0, 96, 0, avc_get_threshold, avc_put_threshold,
-+			avc_threshold),
- };
- 
- /* mute the codec used by alsa core */
 -- 
-2.1.4
+1.9.1
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
