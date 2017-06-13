@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: don't call free_irq() on Parent SSI" to the asoc tree
-Date: Tue, 13 Jun 2017 22:08:39 +0100
-Message-ID: <E1dKt3H-0000X0-AX@debutante>
-References: <87d1b9y3sk.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87d1b9y3sk.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: mediatek: Constify hw_constraints" to
+	the asoc tree
+Date: Tue, 13 Jun 2017 22:08:24 +0100
+Message-ID: <E1dKt32-0000Qn-7m@debutante>
+References: <20170608213725.5378-7-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id A6094266FFD
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jun 2017 23:08:32 +0200 (CEST)
+In-Reply-To: <20170608213725.5378-7-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, Brian Austin <brian.austin@cirrus.com>, Krzysztof Kozlowski <krzk@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Matthias Brugger <matthias.bgg@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: don't call free_irq() on Parent SSI
+   ASoC: mediatek: Constify hw_constraints
 
 has been applied to the asoc tree at
 
@@ -37,40 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From 8cd8a186eb30c87e0b855cf4823034472413914e Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 16 May 2017 01:48:24 +0000
-Subject: [PATCH] ASoC: rsnd: don't call free_irq() on Parent SSI
+>From b02ee56087adae4819ce4d91c08d57403f71fd34 Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Thu, 8 Jun 2017 23:37:24 +0200
+Subject: [PATCH] ASoC: mediatek: Constify hw_constraints
 
-If SSI uses shared pin, some SSI will be used as parent SSI.
-Then, normal SSI's remove and Parent SSI's remove
-(these are same SSI) will be called when unbind or remove timing.
-In this case, free_irq() will be called twice.
-This patch solve this issue.
+snd_pcm_hw_constraint_list(), *_ratnums() and *_ratdens() receive the
+const pointers.  Constify the corresponding static objects for better
+hardening.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
-Reported-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Acked-By: Matthias Brugger <matthias.bgg@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssi.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/mediatek/mt2701/mt2701-cs42448.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 135c5669f796..03867353d10c 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -709,6 +709,11 @@ static int rsnd_ssi_dma_remove(struct rsnd_mod *mod,
- 			       struct rsnd_priv *priv)
- {
- 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
-+	struct rsnd_mod *ssi_parent_mod = rsnd_io_to_mod_ssip(io);
-+
-+	/* Do nothing for SSI parent mod */
-+	if (ssi_parent_mod == mod)
-+		return 0;
+diff --git a/sound/soc/mediatek/mt2701/mt2701-cs42448.c b/sound/soc/mediatek/mt2701/mt2701-cs42448.c
+index aa5b31b121e3..70f61d53fe05 100644
+--- a/sound/soc/mediatek/mt2701/mt2701-cs42448.c
++++ b/sound/soc/mediatek/mt2701/mt2701-cs42448.c
+@@ -107,7 +107,7 @@ static const struct snd_kcontrol_new mt2701_cs42448_controls[] = {
  
- 	/* PIO will request IRQ again */
- 	free_irq(ssi->irq, mod);
+ static const unsigned int mt2701_cs42448_sampling_rates[] = {48000};
+ 
+-static struct snd_pcm_hw_constraint_list mt2701_cs42448_constraints_rates = {
++static const struct snd_pcm_hw_constraint_list mt2701_cs42448_constraints_rates = {
+ 		.count = ARRAY_SIZE(mt2701_cs42448_sampling_rates),
+ 		.list = mt2701_cs42448_sampling_rates,
+ 		.mask = 0,
 -- 
 2.11.0
