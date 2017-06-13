@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: i2s: add other configurable formats" to the asoc tree
-Date: Tue, 13 Jun 2017 22:07:53 +0100
-Message-ID: <E1dKt2X-0000J2-UU@debutante>
-References: <1496998369-30556-4-git-send-email-sugar.zhang@rock-chips.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1496998369-30556-4-git-send-email-sugar.zhang@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: zhangjun <zhangjun@rock-chips.com>
-Cc: Sugar Zhang <sugar.zhang@rock-chips.com>, Mark Brown <broonie@kernel.org>, heiko@sntech.debroonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>Sugar Zhang <sugar.zhang@rock-chips.com>, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: rsnd: add detail explanation of L/R conversion timing" to the asoc tree
+Date: Tue, 13 Jun 2017 22:08:18 +0100
+Message-ID: <E1dKt2w-0000Om-4z@debutante>
+References: <87d1aeovg9.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87d1aeovg9.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: i2s: add other configurable formats
+   ASoC: rsnd: add detail explanation of L/R conversion timing
 
 has been applied to the asoc tree at
 
@@ -37,111 +37,51 @@ to this mail.
 Thanks,
 Mark
 
->From ec2212c4af20d84841ae288a397d8ee9ecec72a0 Mon Sep 17 00:00:00 2001
-From: zhangjun <zhangjun@rock-chips.com>
-Date: Fri, 9 Jun 2017 16:52:48 +0800
-Subject: [PATCH] ASoC: rockchip: i2s: add other configurable formats
+>From 8cce431aa26ef24a4d4b820301ac73bf55df7a5e Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 9 Jun 2017 00:34:09 +0000
+Subject: [PATCH] ASoC: rsnd: add detail explanation of L/R conversion timing
 
-simple-audio-card,bitclock-inversion = <1> : bclk falling edge taken
-simple-audio-card,format = "dsp_a" : pcm no delay mode
-simple-audio-card,format = "dsp_b" : pcm late 1 mode
+Renesas Sound device *Hardware* L/R and Linux *Software* L/R are
+inverted. Because of this background, it needs to convert L/R.
+Then, DVC needs *Hardware* L/R, and Linux needs *Software* L/R.
+Because Playback/Capture needs different timing, and there is no
+explanation about it on source code / git log, this patch adds it.
 
-Signed-off-by: zhangjun <zhangjun@rock-chips.com>
-Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_i2s.c | 30 ++++++++++++++++++++++++++++--
- sound/soc/rockchip/rockchip_i2s.h |  3 +++
- 2 files changed, 31 insertions(+), 2 deletions(-)
+ sound/soc/sh/rcar/core.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 974915cb4c4f..66a26c56c658 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -204,7 +204,21 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 7c68f9d4a0ed..1bf261d677b7 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -310,6 +310,24 @@ u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
+ 	u32 val = 0x76543210;
+ 	u32 mask = ~0;
  
- 	regmap_update_bits(i2s->regmap, I2S_CKR, mask, val);
++	/*
++	 * *Hardware* L/R and *Software* L/R are inverted.
++	 * We need to care about inversion timing to control
++	 * Playback/Capture correctly.
++	 * The point is [DVC] needs *Hardware* L/R, [MEM] needs *Software* L/R
++	 *
++	 * sL/R : software L/R
++	 * hL/R : hardware L/R
++	 * (*)  : conversion timing
++	 *
++	 * Playback
++	 *	     sL/R (*) hL/R     hL/R     hL/R      hL/R     hL/R
++	 *	[MEM] -> [SRC] -> [DVC] -> [CMD] -> [SSIU] -> [SSI] -> codec
++	 *
++	 * Capture
++	 *	     hL/R     hL/R      hL/R     hL/R     hL/R (*) sL/R
++	 *	codec -> [SSI] -> [SSIU] -> [SRC] -> [DVC] -> [CMD] -> [MEM]
++	 */
+ 	if (rsnd_io_is_play(io)) {
+ 		struct rsnd_mod *src = rsnd_io_to_mod_src(io);
  
--	mask = I2S_TXCR_IBM_MASK;
-+	mask = I2S_CKR_CKP_MASK;
-+	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
-+	case SND_SOC_DAIFMT_NB_NF:
-+		val = I2S_CKR_CKP_NEG;
-+		break;
-+	case SND_SOC_DAIFMT_IB_NF:
-+		val = I2S_CKR_CKP_POS;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	regmap_update_bits(i2s->regmap, I2S_CKR, mask, val);
-+
-+	mask = I2S_TXCR_IBM_MASK | I2S_TXCR_TFS_MASK | I2S_TXCR_PBM_MASK;
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_RIGHT_J:
- 		val = I2S_TXCR_IBM_RSJM;
-@@ -215,13 +229,19 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 	case SND_SOC_DAIFMT_I2S:
- 		val = I2S_TXCR_IBM_NORMAL;
- 		break;
-+	case SND_SOC_DAIFMT_DSP_A: /* PCM no delay mode */
-+		val = I2S_TXCR_TFS_PCM;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_B: /* PCM delay 1 mode */
-+		val = I2S_TXCR_TFS_PCM | I2S_TXCR_PBM_MODE(1);
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
- 
- 	regmap_update_bits(i2s->regmap, I2S_TXCR, mask, val);
- 
--	mask = I2S_RXCR_IBM_MASK;
-+	mask = I2S_RXCR_IBM_MASK | I2S_RXCR_TFS_MASK | I2S_RXCR_PBM_MASK;
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_RIGHT_J:
- 		val = I2S_RXCR_IBM_RSJM;
-@@ -232,6 +252,12 @@ static int rockchip_i2s_set_fmt(struct snd_soc_dai *cpu_dai,
- 	case SND_SOC_DAIFMT_I2S:
- 		val = I2S_RXCR_IBM_NORMAL;
- 		break;
-+	case SND_SOC_DAIFMT_DSP_A: /* PCM no delay mode */
-+		val = I2S_RXCR_TFS_PCM;
-+		break;
-+	case SND_SOC_DAIFMT_DSP_B: /* PCM delay 1 mode */
-+		val = I2S_RXCR_TFS_PCM | I2S_RXCR_PBM_MODE(1);
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-diff --git a/sound/soc/rockchip/rockchip_i2s.h b/sound/soc/rockchip/rockchip_i2s.h
-index 31f11fd25393..a7b8527d8a73 100644
---- a/sound/soc/rockchip/rockchip_i2s.h
-+++ b/sound/soc/rockchip/rockchip_i2s.h
-@@ -41,6 +41,7 @@
- #define I2S_TXCR_TFS_SHIFT	5
- #define I2S_TXCR_TFS_I2S	(0 << I2S_TXCR_TFS_SHIFT)
- #define I2S_TXCR_TFS_PCM	(1 << I2S_TXCR_TFS_SHIFT)
-+#define I2S_TXCR_TFS_MASK	(1 << I2S_TXCR_TFS_SHIFT)
- #define I2S_TXCR_VDW_SHIFT	0
- #define I2S_TXCR_VDW(x)		((x - 1) << I2S_TXCR_VDW_SHIFT)
- #define I2S_TXCR_VDW_MASK	(0x1f << I2S_TXCR_VDW_SHIFT)
-@@ -70,6 +71,7 @@
- #define I2S_RXCR_TFS_SHIFT	5
- #define I2S_RXCR_TFS_I2S	(0 << I2S_RXCR_TFS_SHIFT)
- #define I2S_RXCR_TFS_PCM	(1 << I2S_RXCR_TFS_SHIFT)
-+#define I2S_RXCR_TFS_MASK	(1 << I2S_RXCR_TFS_SHIFT)
- #define I2S_RXCR_VDW_SHIFT	0
- #define I2S_RXCR_VDW(x)		((x - 1) << I2S_RXCR_VDW_SHIFT)
- #define I2S_RXCR_VDW_MASK	(0x1f << I2S_RXCR_VDW_SHIFT)
-@@ -91,6 +93,7 @@
- #define I2S_CKR_CKP_SHIFT	26
- #define I2S_CKR_CKP_NEG		(0 << I2S_CKR_CKP_SHIFT)
- #define I2S_CKR_CKP_POS		(1 << I2S_CKR_CKP_SHIFT)
-+#define I2S_CKR_CKP_MASK	(1 << I2S_CKR_CKP_SHIFT)
- #define I2S_CKR_RLP_SHIFT	25
- #define I2S_CKR_RLP_NORMAL	(0 << I2S_CKR_RLP_SHIFT)
- #define I2S_CKR_RLP_OPPSITE	(1 << I2S_CKR_RLP_SHIFT)
 -- 
 2.11.0
