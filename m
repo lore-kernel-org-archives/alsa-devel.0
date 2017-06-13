@@ -1,20 +1,14 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 1/2] ALSA: firewire: process packets in
- 'struct snd_pcm_ops.ack' callback
-Date: Tue, 13 Jun 2017 07:49:37 +0900
-Message-ID: <670e0d81-5f91-4b2a-1d07-3376f33abfb2@sakamocchi.jp>
-References: <20170607003806.27196-1-o-takashi@sakamocchi.jp>
- <20170607003806.27196-2-o-takashi@sakamocchi.jp>
- <s5hd1ag5oef.wl-tiwai@suse.de> <s5hvao7337g.wl-tiwai@suse.de>
+From: Richard Leitner <richard.leitner@skidata.com>
+Subject: [PATCH v3] ASoC: sgtl5000: add avc support
+Date: Tue, 13 Jun 2017 08:57:34 +0200
+Message-ID: <1497337054-4911-1-git-send-email-richard.leitner@skidata.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 528A4266AF1
- for <alsa-devel@alsa-project.org>; Tue, 13 Jun 2017 00:49:47 +0200 (CEST)
-In-Reply-To: <s5hvao7337g.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mail2.skidata.com (mail2.skidata.com [91.230.2.91])
+ by alsa0.perex.cz (Postfix) with ESMTP id 48E8E266AF1
+ for <alsa-devel@alsa-project.org>; Tue, 13 Jun 2017 08:57:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,162 +18,162 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, clemens@ladisch.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, ffado-devel@lists.sf.net, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: clemens.gruber@pqgruber.com, kalle.kankare@vincit.fi, eric@nelint.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, fabio.estevam@nxp.com, dev@g0hl1n.net, richard.leitner@skidata.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The sgtl5000 features a automatic volume control block (AVC), which
+reduces loud signals and amplifies low level signals for easier
+listening. This patch adds support for this AVC block to the driver.
 
-On Jun 8 2017 06:20, Takashi Iwai wrote:
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: pcm: Suppress status/control mmap when ack ops is
->   present
-> 
-> The drivers using PCM ack ops require the notification whenever
-> appl_ptr is updated in general.  But when the PCM status/control page
-> is mmapped, this notification doesn't happen, per design, thus it's
-> not guaranteed to receive the fine-grained updates.
-> 
-> For improving the situation, this patch simply suppresses the PCM
-> status/control mmap when ack ops is defined.  At least, for all
-> existing drivers with ack, this should give more benefit.
-> 
-> Once when we really need the full optimization with status/control
-> mmap even using ack ops, we may reconsider the check, e.g. introducing
-> a new flag.  But, so far, this should be good enough.
-> 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->   sound/core/pcm_native.c | 8 ++++++++
->   1 file changed, 8 insertions(+)
-> 
-> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-> index 2bde07a4a87f..b993b0420411 100644
-> --- a/sound/core/pcm_native.c
-> +++ b/sound/core/pcm_native.c
-> @@ -3189,6 +3189,10 @@ static int snd_pcm_mmap_status(struct snd_pcm_substream *substream, struct file
->   			       struct vm_area_struct *area)
->   {
->   	long size;
-> +
-> +	/* suppress status/control mmap when driver requires ack */
-> +	if (substream->ops->ack)
-> +		return -ENXIO;
->   	if (!(area->vm_flags & VM_READ))
->   		return -EINVAL;
->   	size = area->vm_end - area->vm_start;
-> @@ -3225,6 +3229,10 @@ static int snd_pcm_mmap_control(struct snd_pcm_substream *substream, struct file
->   				struct vm_area_struct *area)
->   {
->   	long size;
-> +
-> +	/* suppress status/control mmap when driver requires ack */
-> +	if (substream->ops->ack)
-> +		return -ENXIO;
->   	if (!(area->vm_flags & VM_READ))
->   		return -EINVAL;
->   	size = area->vm_end - area->vm_start;
+Apart from the "AVC Switch" control which enables the block following
+controls for the configuration of AVC are added:
+	+ AVC Threshold Volume: threshold where audio is compressed when
+		the measured level is above or expanded when below
+	+ AVC Max Gain Volume: maximum gain which can be applied when
+		the measured audio level is below threshold
+	+ AVC Hard Limiter Switch: when enabled the signal is limited to
+		the programmed threshold.
+	+ AVC Integrator Response: response time of the integrator
 
-Let me evaluate this patch in a point of overhead at kernel/userspace 
-interaction.
+The AVC block is enabled and configured using the DAP_AVC_CTRL and
+DAP_AVC_THRESHOLD registers.
 
-When considering about shape of ALSA PCM applications, I can show it by
-below simple pseudo code:
+Following 2 checkpatch.pl strict checks are ignored because the
+indentation style is different for the struct snd_kcontrol_new
+definition:
+	patch:145: CHECK: Alignment should match open parenthesis
+	patch:148: CHECK: Alignment should match open parenthesis
 
-```
-while:
-   poll(2)
-   calculate how many PCM frames are available.
-   memcpy(2)
-```
+Signed-off-by: Richard Leitner <richard.leitner@skidata.com>
+---
+CHANGES v3:
+	- rename "AVC Enable Switch" to "AVC Switch"
+	- add AVC configuration controls
+CHANGES v2:
+	- added trailing "Switch" as covered in ControlNames.txt
+---
+ sound/soc/codecs/sgtl5000.c | 87 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 87 insertions(+)
 
-To satisfy requirements of some drivers, we need to find a way to take
-userspace applications to commit the number of handled PCM frames to
-kernel space after the memcpy(2). For this purpose, in ALSA PCM
-interface, SNDRV_PCM_IOCTL_SYNC_PTR is available.
-
-```
-while:
-   poll(2)
-   calculate how many PCM frames are available.
-   memcpy(2)
-   ioctl(2) with SNDRV_PCM_IOCTL_SYNC_PTR
-```
-
-Well, as an actual solution, this patch disallows userspace applications
-to map page frame for the status/control data of PCM substream, because
-alsa-lib has fallback mode for this case to utilize
-SNDRV_PCM_IOCTL_SYNC_PTR. This is a similar situation to ARM platform.
-As I described in a commit fccf53881e9b ("ALSA: pcm: add 'applptr' event
-of tracepoint"), ALSA PCM core doesn't perform page frame mapping for
-the status/control data[1].
-
-In the commit message, I compared tracing data of tracepoints and log of
-strace. In the case, the number of calls for ioctl(2) with
-SNDRV_PCM_IOCTL_SYNC_PTR in a loop with a call of poll(2) is seven. One
-of the sevel calls is actually used to commit the number of PCM frames.
-There's 6 extra system calls. These 6 calls are just used to check
-current status of runtime of PCM substream, and on cache coherent
-architecture, they can be suppressed by the page frame mapping. The poll
-loop repeats during runtime, thus it's important to analyze overhead of
-the extra system calls.
-
-I suggest 3 points to evaluate this patch.
-
-1. CPU time for the system call
-2. disabling kernel preemption and local IRQ
-3. backward compatibility
-
-Here, I describe my opinion to this patch for each of these points.
-
-1. CPU time for the system call
-System calls cost expensive than usual API calls. As long as
-investigated on x86_64 architecture on perf-stat, additional 6 call of
-ioctl(2) with SNDRV_PCM_IOCTL_SYNC_PTR increases 5,000-15,000
-instructions in program execution. Recent hardware is enough fast. It
-might not be so large disadvantage.
-
-However, when drivers implement 'struct snd_pcm_ops.ack' callback, I
-have different opinion; it's too frequent. In either drivers with
-indirect layer and packet-oriented drivers, the callback is used to
-process PCM frames in intermediate buffer for userspace. The frequent
-call of the callback is not enough effective because the applications is
-programmed with a manner to be accurate for actual time somehow, thus
-they don't process more PCM frames in one poll loop.
-
-2. disabling kernel preemption and local IRQ
-In kernel land, service routine for SNDRV_PCM_IOCTL_SYNC_PTR partly runs
-with acquired PCM stream lock, which disables kernel preemption and
-local IRQ usually for running CPU. This lock is required because the PCM
-stream is handled in any handler for hardware events, but this situation
-can reduce realtime performance because no process or service routine for
-interrupt can't use the CPU. If we have the other options, it's worth to
-reconsider.
-
-Intel SST-based drivers use nonatomic flag for the lock. In this case,
-kernel preemption is enabled but IRQ is disabled. I think Intel
-developers work is for their embedded solution. The care of realtime
-performance might be good for their work, too.
-
-3. backward compatibility
-For backward compatibility, this patch is a simple solution. Even if
-patched kernel runs with old version of relevant stuffs, tinyalsa or
-alsa-lib, things work well as expected.
-
-However, without this patch, things still work well. In either drivers
-with indirect layer or packet-oriented drivers, queued PCM frames are
-transferred according to any hardware events. For such drivers, commit
-notification from applications just expands their probability to
-improve performance; e.g. latency between queueing and transmission.
-
-I think it better to back to your initial direction; adding info flag,
-let stuffs in userspace parse it, perform the commit for the number of
-handled PCM frames in 'snd_pcm_hw_mmap_commit()'.
-
-[1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/commit/?id=fccf53881e9b564321326f62ed5f85130fa6e569
-
-
-Regards
-
-Takashi Sakamoto
+diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
+index 5a2702e..5d4b69f 100644
+--- a/sound/soc/codecs/sgtl5000.c
++++ b/sound/soc/codecs/sgtl5000.c
+@@ -74,6 +74,20 @@ static const struct reg_default sgtl5000_reg_defaults[] = {
+ 	{ SGTL5000_DAP_AVC_DECAY,		0x0050 },
+ };
+ 
++/* AVC: Threshold dB -> register: pre-calculated values */
++static const u16 avc_thr_db2reg[97] = {
++	0x5168, 0x488E, 0x40AA, 0x39A1, 0x335D, 0x2DC7, 0x28CC, 0x245D, 0x2068,
++	0x1CE2, 0x19BE, 0x16F1, 0x1472, 0x1239, 0x103E, 0x0E7A, 0x0CE6, 0x0B7F,
++	0x0A3F, 0x0922, 0x0824, 0x0741, 0x0677, 0x05C3, 0x0522, 0x0493, 0x0414,
++	0x03A2, 0x033D, 0x02E3, 0x0293, 0x024B, 0x020B, 0x01D2, 0x019F, 0x0172,
++	0x014A, 0x0126, 0x0106, 0x00E9, 0x00D0, 0x00B9, 0x00A5, 0x0093, 0x0083,
++	0x0075, 0x0068, 0x005D, 0x0052, 0x0049, 0x0041, 0x003A, 0x0034, 0x002E,
++	0x0029, 0x0025, 0x0021, 0x001D, 0x001A, 0x0017, 0x0014, 0x0012, 0x0010,
++	0x000E, 0x000D, 0x000B, 0x000A, 0x0009, 0x0008, 0x0007, 0x0006, 0x0005,
++	0x0005, 0x0004, 0x0004, 0x0003, 0x0003, 0x0002, 0x0002, 0x0002, 0x0002,
++	0x0001, 0x0001, 0x0001, 0x0001, 0x0001, 0x0001, 0x0000, 0x0000, 0x0000,
++	0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000};
++
+ /* regulator supplies for sgtl5000, VDDD is an optional external supply */
+ enum sgtl5000_regulator_supplies {
+ 	VDDA,
+@@ -382,6 +396,63 @@ static int dac_put_volsw(struct snd_kcontrol *kcontrol,
+ 	return 0;
+ }
+ 
++/*
++ * custom function to get AVC threshold
++ *
++ * The threshold dB is calculated by rearranging the calculation from the
++ * avc_put_threshold function: register_value = 10^(dB/20) * 0.636 * 2^15 ==>
++ * dB = ( fls(register_value) - 14.347 ) * 6.02
++ *
++ * As this calculation is expensive and the threshold dB values may not exeed
++ * 0 to 96 we use pre-calculated values.
++ */
++static int avc_get_threshold(struct snd_kcontrol *kcontrol,
++			     struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	int db, i;
++	u16 reg = snd_soc_read(codec, SGTL5000_DAP_AVC_THRESHOLD);
++
++	/* register value 0 => -96dB */
++	if (!reg) {
++		ucontrol->value.integer.value[0] = 96;
++		ucontrol->value.integer.value[1] = 96;
++		return 0;
++	}
++
++	/* get dB from register value (rounded down) */
++	for (i = 0; avc_thr_db2reg[i] > reg; i++)
++		;
++	db = i;
++
++	ucontrol->value.integer.value[0] = db;
++	ucontrol->value.integer.value[1] = db;
++
++	return 0;
++}
++
++/*
++ * custom function to put AVC threshold
++ *
++ * The register value is calculated by following formula:
++ *                                    register_value = 10^(dB/20) * 0.636 * 2^15
++ * As this calculation is expensive and the threshold dB values may not exeed
++ * 0 to 96 we use pre-calculated values.
++ */
++static int avc_put_threshold(struct snd_kcontrol *kcontrol,
++			     struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_codec *codec = snd_kcontrol_chip(kcontrol);
++	int db;
++	u16 reg;
++
++	db = clamp((int)ucontrol->value.integer.value[0], 0, 96);
++	reg = avc_thr_db2reg[db];
++	snd_soc_write(codec, SGTL5000_DAP_AVC_THRESHOLD, reg);
++
++	return 0;
++}
++
+ static const DECLARE_TLV_DB_SCALE(capture_6db_attenuate, -600, 600, 0);
+ 
+ /* tlv for mic gain, 0db 20db 30db 40db */
+@@ -396,6 +467,12 @@ static const DECLARE_TLV_DB_SCALE(headphone_volume, -5150, 50, 0);
+ /* tlv for lineout volume, 31 steps of .5db each */
+ static const DECLARE_TLV_DB_SCALE(lineout_volume, -1550, 50, 0);
+ 
++/* tlv for dap avc max gain, 0db, 6db, 12db */
++static const DECLARE_TLV_DB_SCALE(avc_max_gain, 0, 600, 0);
++
++/* tlv for dap avc threshold, */
++static const DECLARE_TLV_DB_MINMAX(avc_threshold, 0, 9600);
++
+ static const struct snd_kcontrol_new sgtl5000_snd_controls[] = {
+ 	/* SOC_DOUBLE_S8_TLV with invert */
+ 	{
+@@ -434,6 +511,16 @@ static const struct snd_kcontrol_new sgtl5000_snd_controls[] = {
+ 			0x1f, 1,
+ 			lineout_volume),
+ 	SOC_SINGLE("Lineout Playback Switch", SGTL5000_CHIP_ANA_CTRL, 8, 1, 1),
++
++	/* Automatic Volume Control (DAP AVC) */
++	SOC_SINGLE("AVC Switch", SGTL5000_DAP_AVC_CTRL, 0, 1, 0),
++	SOC_SINGLE("AVC Hard Limiter Switch", SGTL5000_DAP_AVC_CTRL, 5, 1, 0),
++	SOC_SINGLE_TLV("AVC Max Gain Volume", SGTL5000_DAP_AVC_CTRL, 12, 2, 0,
++			avc_max_gain),
++	SOC_SINGLE("AVC Integrator Response", SGTL5000_DAP_AVC_CTRL, 8, 3, 0),
++	SOC_SINGLE_EXT_TLV("AVC Threshold Volume", SGTL5000_DAP_AVC_THRESHOLD,
++			0, 96, 0, avc_get_threshold, avc_put_threshold,
++			avc_threshold),
+ };
+ 
+ /* mute the codec used by alsa core */
+-- 
+2.1.4
