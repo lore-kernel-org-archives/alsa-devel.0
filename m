@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Convert all sst_codecs data
-	definition to c99 style" to the asoc tree
-Date: Wed, 14 Jun 2017 19:21:58 +0100
-Message-ID: <E1dLCvW-0002DO-Ug@debutante>
-References: <1496885261-10771-3-git-send-email-harshapriya.n@intel.com>
+Subject: Applied "ASoC: Intel: Add Kabylake
+	RT5663+RT5514+MAX98927 machine driver entry" to the asoc tree
+Date: Wed, 14 Jun 2017 19:21:55 +0100
+Message-ID: <E1dLCvT-0002CR-Qk@debutante>
+References: <1496885261-10771-4-git-send-email-harshapriya.n@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 933EE2672C5
+ by alsa0.perex.cz (Postfix) with ESMTP id 731762672C4
  for <alsa-devel@alsa-project.org>; Wed, 14 Jun 2017 20:22:09 +0200 (CEST)
-In-Reply-To: <1496885261-10771-3-git-send-email-harshapriya.n@intel.com>
+In-Reply-To: <1496885261-10771-4-git-send-email-harshapriya.n@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Convert all sst_codecs data definition to c99 style
+   ASoC: Intel: Add Kabylake RT5663+RT5514+MAX98927 machine driver entry
 
 has been applied to the asoc tree at
 
@@ -52,56 +52,54 @@ to this mail.
 Thanks,
 Mark
 
->From 9a90c972b6e5814a5f928f8d5a3d145fa50988b0 Mon Sep 17 00:00:00 2001
+>From ad7fb5a3b89a7a11d3306948c6954de7a999be40 Mon Sep 17 00:00:00 2001
 From: Harsha Priya N <harshapriya.n@intel.com>
-Date: Wed, 14 Jun 2017 10:32:18 -0700
-Subject: [PATCH] ASoC: Intel: Convert all sst_codecs data definition to c99
- style
+Date: Wed, 14 Jun 2017 10:32:19 -0700
+Subject: [PATCH] ASoC: Intel: Add Kabylake RT5663+RT5514+MAX98927 machine
+ driver entry
 
-C99 style struct initialization helps in readability as well as
-initialization of variables not specified as NULL. This patch
-changes the struct data definitions in skl.c that were not in c99 style.
+This patch adds Kabylake I2S machine driver which uses codecs
+MAX98927 as speakers and RT5514 as dmic on ssp0 and
+RT5663 as headset on ssp1.
 
 Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
 Signed-off-by: Naveen M <naveen.m@intel.com>
 Acked-By: Vinod Koul <vinod.koul@intel.com>
 ---
- sound/soc/intel/skylake/skl.c | 23 +++++++++++++++++++----
- 1 file changed, 19 insertions(+), 4 deletions(-)
+ sound/soc/intel/skylake/skl.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
 diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 4ebae850c559..6a79fc759fb4 100644
+index 6a79fc759fb4..e761550c6dad 100644
 --- a/sound/soc/intel/skylake/skl.c
 +++ b/sound/soc/intel/skylake/skl.c
-@@ -876,10 +876,25 @@ static void skl_remove(struct pci_dev *pci)
- 	dev_set_drvdata(&pci->dev, NULL);
- }
+@@ -896,6 +896,12 @@ static struct sst_codecs kbl_poppy_codecs = {
+ 	.codecs = {"10EC5663"}
+ };
  
--static struct sst_codecs skl_codecs = { 1, {"NAU88L25"} };
--static struct sst_codecs kbl_codecs = { 1, {"NAU88L25"} };
--static struct sst_codecs bxt_codecs = { 1, {"MX98357A"} };
--static struct sst_codecs kbl_poppy_codecs = { 1, {"10EC5663"} };
-+static struct sst_codecs skl_codecs = {
-+	.num_codecs = 1,
-+	.codecs = {"NAU88L25"}
++static struct sst_codecs kbl_5663_5514_codecs = {
++	.num_codecs = 2,
++	.codecs = {"10EC5663", "10EC5514"}
 +};
 +
-+static struct sst_codecs kbl_codecs = {
-+	.num_codecs = 1,
-+	.codecs = {"NAU88L25"}
-+};
 +
-+static struct sst_codecs bxt_codecs = {
-+	.num_codecs = 1,
-+	.codecs = {"MX98357A"}
-+};
-+
-+static struct sst_codecs kbl_poppy_codecs = {
-+	.num_codecs = 1,
-+	.codecs = {"10EC5663"}
-+};
- 
  static struct sst_acpi_mach sst_skl_devdata[] = {
  	{
+ 		.id = "INT343A",
+@@ -960,6 +966,14 @@ static struct sst_acpi_mach sst_kbl_devdata[] = {
+ 	},
+ 	{
+ 		.id = "MX98927",
++		.drv_name = "kbl_r5514_5663_max",
++		.fw_filename = "intel/dsp_fw_kbl.bin",
++		.machine_quirk = sst_acpi_codec_list,
++		.quirk_data = &kbl_5663_5514_codecs,
++		.pdata = &skl_dmic_data
++	},
++	{
++		.id = "MX98927",
+ 		.drv_name = "kbl_rt5663_m98927",
+ 		.fw_filename = "intel/dsp_fw_kbl.bin",
+ 		.machine_quirk = sst_acpi_codec_list,
 -- 
 2.11.0
