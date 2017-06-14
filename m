@@ -1,26 +1,14 @@
-From: James Cameron <quozl@laptop.org>
-Subject: Re: MEDION laptop full of Intel components
-Date: Wed, 14 Jun 2017 16:32:14 +1000
-Message-ID: <20170614063214.GH16503@us.netrek.org>
-References: <CALmBKt=WEiJfCEwSKiXzkd9duQ3Bp=o2X3NEcKnQfrPkF77xbQ@mail.gmail.com>
- <CALmBKtkhByU1+5SNXQdS+wRSGQoc8yRgcP=sOH7cF3=f6AGU-g@mail.gmail.com>
- <CALmBKt=6e=ht4ASxbRbzn74xkNSA9+Kap_7E9TJBRFB1LVMNBw@mail.gmail.com>
- <CALmBKt=G63MiXMGshdVCTJ_BU25K2wvCo4XyNY8rgRPKDvrwRg@mail.gmail.com>
- <CALmBKt=bVaST+apjdxiOndBN6SY56+=XR6EjZA44ACu2gTnZrw@mail.gmail.com>
- <CALmBKtn_LrjDUnvXUzoZyZ-sTAuye8UGN0umDRapNVk-NG62=A@mail.gmail.com>
- <CALmBKtnx-rvKbOhy_vER3e8Gpcnk43CaQm-oM5E-mhi-FVDGiw@mail.gmail.com>
- <CALmBKtnhZXeUyVskjhyP3A40iMLf0PE8rZKdhy07GBGD-fo5ig@mail.gmail.com>
- <CALmBKtm=TgdZEWFFLCTYN8DXmWimCC16a4QGHx7mwWVwskc9dg@mail.gmail.com>
- <CALmBKtmY5r9iRGvg94zetp13hmaHoJf3Gkm7SdRuB66=YnR3=A@mail.gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH v2] ASoC: intel: bxt: Constify hw_constraints
+Date: Wed, 14 Jun 2017 09:33:06 +0200
+Message-ID: <20170614073306.22646-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from swan.laptop.org (swan.media.mit.edu [18.85.44.157])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F7CB266587
- for <alsa-devel@alsa-project.org>; Wed, 14 Jun 2017 08:32:26 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <CALmBKtmY5r9iRGvg94zetp13hmaHoJf3Gkm7SdRuB66=YnR3=A@mail.gmail.com>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id A5B1F266A38
+ for <alsa-devel@alsa-project.org>; Wed, 14 Jun 2017 09:33:14 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,24 +18,109 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: fulgor fulgor <l.vanwinnendaele@gmail.com>
+To: Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 14, 2017 at 07:38:15AM +0200, fulgor fulgor wrote:
-> Hello,
-> I bought a MEDION laptop in December 2016
-> I had some problems like crashes
-> but with manjaro I still have no sound
-> I believe the device is not detected
-> I tried to get hardware informations in a file
+snd_pcm_hw_constraint_list(), *_ratnums() and *_ratdens() receive the
+const pointers.  Constify the corresponding static objects for better
+hardening.
 
-Missing is dmesg.  But your lsmod shows rt5640, rt5645, and rt5670
-codec drivers loaded.  Without dmesg I'm not sure which one is in use,
-if any.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+v1->v2: rebased to topic/intel branch
 
-I'm having "no sound" issue with rt5645 on same CPU family.
+ sound/soc/intel/boards/bxt_da7219_max98357a.c | 12 ++++++------
+ sound/soc/intel/boards/bxt_rt298.c            | 12 ++++++------
+ 2 files changed, 12 insertions(+), 12 deletions(-)
 
+diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+index 3a8c4d954a91..1429eb391da8 100644
+--- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
++++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+@@ -238,31 +238,31 @@ static int broxton_da7219_fe_init(struct snd_soc_pcm_runtime *rtd)
+ 	return 0;
+ }
+ 
+-static unsigned int rates[] = {
++static const unsigned int rates[] = {
+ 	48000,
+ };
+ 
+-static struct snd_pcm_hw_constraint_list constraints_rates = {
++static const struct snd_pcm_hw_constraint_list constraints_rates = {
+ 	.count = ARRAY_SIZE(rates),
+ 	.list  = rates,
+ 	.mask = 0,
+ };
+ 
+-static unsigned int channels[] = {
++static const unsigned int channels[] = {
+ 	DUAL_CHANNEL,
+ };
+ 
+-static struct snd_pcm_hw_constraint_list constraints_channels = {
++static const struct snd_pcm_hw_constraint_list constraints_channels = {
+ 	.count = ARRAY_SIZE(channels),
+ 	.list = channels,
+ 	.mask = 0,
+ };
+ 
+-static unsigned int channels_quad[] = {
++static const unsigned int channels_quad[] = {
+ 	QUAD_CHANNEL,
+ };
+ 
+-static struct snd_pcm_hw_constraint_list constraints_channels_quad = {
++static const struct snd_pcm_hw_constraint_list constraints_channels_quad = {
+ 	.count = ARRAY_SIZE(channels_quad),
+ 	.list = channels_quad,
+ 	.mask = 0,
+diff --git a/sound/soc/intel/boards/bxt_rt298.c b/sound/soc/intel/boards/bxt_rt298.c
+index 36ee7480e9f1..0c3a3cbcb884 100644
+--- a/sound/soc/intel/boards/bxt_rt298.c
++++ b/sound/soc/intel/boards/bxt_rt298.c
+@@ -207,11 +207,11 @@ static const struct snd_soc_ops broxton_rt298_ops = {
+ 	.hw_params = broxton_rt298_hw_params,
+ };
+ 
+-static unsigned int rates[] = {
++static const unsigned int rates[] = {
+ 	48000,
+ };
+ 
+-static struct snd_pcm_hw_constraint_list constraints_rates = {
++static const struct snd_pcm_hw_constraint_list constraints_rates = {
+ 	.count = ARRAY_SIZE(rates),
+ 	.list  = rates,
+ 	.mask = 0,
+@@ -227,11 +227,11 @@ static int broxton_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
+ 	return 0;
+ }
+ 
+-static unsigned int channels_dmic[] = {
++static const unsigned int channels_dmic[] = {
+ 	1, 2, 3, 4,
+ };
+ 
+-static struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
++static const struct snd_pcm_hw_constraint_list constraints_dmic_channels = {
+ 	.count = ARRAY_SIZE(channels_dmic),
+ 	.list = channels_dmic,
+ 	.mask = 0,
+@@ -253,11 +253,11 @@ static const struct snd_soc_ops broxton_dmic_ops = {
+ 	.startup = broxton_dmic_startup,
+ };
+ 
+-static unsigned int channels[] = {
++static const unsigned int channels[] = {
+ 	2,
+ };
+ 
+-static struct snd_pcm_hw_constraint_list constraints_channels = {
++static const struct snd_pcm_hw_constraint_list constraints_channels = {
+ 	.count = ARRAY_SIZE(channels),
+ 	.list = channels,
+ 	.mask = 0,
 -- 
-James Cameron
-http://quozl.netrek.org/
+2.13.1
