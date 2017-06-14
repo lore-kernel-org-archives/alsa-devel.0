@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card: use asoc_simple_card_of_parse_tdm()" to the asoc tree
-Date: Wed, 14 Jun 2017 11:12:30 +0100
-Message-ID: <E1dL5Hq-0007bK-UH@debutante>
-References: <87bmpr9ztg.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: simple-card-utils: add asoc_simple_card_of_parse_tdm()" to the asoc tree
+Date: Wed, 14 Jun 2017 11:12:35 +0100
+Message-ID: <E1dL5Hv-0007cD-8b@debutante>
+References: <87d1a79ztz.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87bmpr9ztg.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87d1a79ztz.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card: use asoc_simple_card_of_parse_tdm()
+   ASoC: simple-card-utils: add asoc_simple_card_of_parse_tdm()
 
 has been applied to the asoc tree at
 
@@ -37,45 +37,38 @@ to this mail.
 Thanks,
 Mark
 
->From b93d2cf8c0facb593d6f008af30ae0fcd1d49ede Mon Sep 17 00:00:00 2001
+>From e68ba207444354ddf295de2e7fbcc97c06cccc8b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 14 Jun 2017 00:34:53 +0000
-Subject: [PATCH] ASoC: simple-card: use asoc_simple_card_of_parse_tdm()
+Date: Wed, 14 Jun 2017 00:34:35 +0000
+Subject: [PATCH] ASoC: simple-card-utils: add asoc_simple_card_of_parse_tdm()
 
 Current simple card drivers are using asoc_simple_dai's tx_slot_mask,
 rx_slot_mask, slots, slot_width directly to parse TDM.
 Encapsulation is one of simple card util's purpose.
-Let's use asoc_simple_card_of_parse_tdm for it.
+Let's add asoc_simple_card_of_parse_tdm for it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-card.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ include/sound/simple_card_utils.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 8828b91867b8..8b414af966ee 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -271,17 +271,11 @@ static int asoc_simple_card_dai_link_of(struct device_node *node,
- 	if (ret < 0)
- 		goto dai_link_of_err;
+diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
+index 840d624148df..2679312228b3 100644
+--- a/include/sound/simple_card_utils.h
++++ b/include/sound/simple_card_utils.h
+@@ -75,6 +75,12 @@ int asoc_simple_card_parse_graph_dai(struct device_node *ep,
+ 				     struct device_node **endpoint_np,
+ 				     const char **dai_name);
  
--	ret = snd_soc_of_parse_tdm_slot(cpu,	&cpu_dai->tx_slot_mask,
--						&cpu_dai->rx_slot_mask,
--						&cpu_dai->slots,
--						&cpu_dai->slot_width);
-+	ret = asoc_simple_card_of_parse_tdm(cpu, cpu_dai);
- 	if (ret < 0)
- 		goto dai_link_of_err;
- 
--	ret = snd_soc_of_parse_tdm_slot(codec,	&codec_dai->tx_slot_mask,
--						&codec_dai->rx_slot_mask,
--						&codec_dai->slots,
--						&codec_dai->slot_width);
-+	ret = asoc_simple_card_of_parse_tdm(codec, codec_dai);
- 	if (ret < 0)
- 		goto dai_link_of_err;
++#define asoc_simple_card_of_parse_tdm(np, dai)			\
++	snd_soc_of_parse_tdm_slot(np,	&(dai)->tx_slot_mask,	\
++					&(dai)->rx_slot_mask,	\
++					&(dai)->slots,		\
++					&(dai)->slot_width);
++
+ int asoc_simple_card_init_dai(struct snd_soc_dai *dai,
+ 			      struct asoc_simple_dai *simple_dai);
  
 -- 
 2.11.0
