@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: reduce confusable macro parameter magic" to the asoc tree
-Date: Wed, 14 Jun 2017 11:12:50 +0100
-Message-ID: <E1dL5IA-0007ec-IW@debutante>
-References: <87h8zj81hl.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: simple_card_utils: add EXPORT_SYMBOL_GPL() for asoc_simple_card_clk_xxx()" to the asoc tree
+Date: Wed, 14 Jun 2017 11:12:59 +0100
+Message-ID: <E1dL5IJ-0007hL-Ux@debutante>
+References: <8737b39ygm.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87h8zj81hl.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <8737b39ygm.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: reduce confusable macro parameter magic
+   ASoC: simple_card_utils: add EXPORT_SYMBOL_GPL() for asoc_simple_card_clk_xxx()
 
 has been applied to the asoc tree at
 
@@ -37,56 +37,49 @@ to this mail.
 Thanks,
 Mark
 
->From f30b4ca4447095f6923b59ffaa25ca6a54daffac Mon Sep 17 00:00:00 2001
+>From 63a5f59208bce7110596b09950f48bf07b8baeb9 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 14 Jun 2017 07:41:43 +0000
-Subject: [PATCH] ASoC: rsnd: reduce confusable macro parameter magic
+Date: Wed, 14 Jun 2017 01:04:11 +0000
+Subject: [PATCH] ASoC: simple_card_utils: add EXPORT_SYMBOL_GPL() for
+ asoc_simple_card_clk_xxx()
 
-rsnd_dai_call() macro is using "priv" inside.
-Thus, if caller function doesn't have "priv" related operation, strange
-phenomenon occur which code is using "priv", but compiler indicates
-"unused variable 'priv'".
+commit 891caea41746 ("ASoC: simple_card_utils:
+add asoc_simple_card_clk_xxx()") added new asoc_simple_card_clk_xxx(),
+but, it didn't have EXPORT_SYMBOL_GPL().
+This patch adds it. Otherwise, we will get below error
 
->From code point of view, it is not problem, but it is very confusable.
-This patch removes "priv" from rsnd_dai_call() macro, and adds "priv"
-on caller function.
+ERROR: "asoc_simple_card_clk_enable" [sound/soc/generic/snd-soc-simple-scu-card.ko] undefined!
+ERROR: "asoc_simple_card_clk_disable" [sound/soc/generic/snd-soc-simple-scu-card.ko] undefined!
+ERROR: "asoc_simple_card_clk_enable" [sound/soc/generic/snd-soc-simple-card.ko] undefined!
+ERROR: "asoc_simple_card_clk_disable" [sound/soc/generic/snd-soc-simple-card.ko] undefined!
+ERROR: "asoc_simple_card_clk_enable" [sound/soc/generic/snd-soc-audio-graph-scu-card.ko] undefined!
+ERROR: "asoc_simple_card_clk_disable" [sound/soc/generic/snd-soc-audio-graph-scu-card.ko] undefined!
+ERROR: "asoc_simple_card_clk_enable" [sound/soc/generic/snd-soc-audio-graph-card.ko] undefined!
+ERROR: "asoc_simple_card_clk_disable" [sound/soc/generic/snd-soc-audio-graph-card.ko] undefined!
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/generic/simple-card-utils.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 0bb99aa70e29..1b536d140e49 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -488,8 +488,7 @@ static int rsnd_status_update(u32 *status,
- 
- #define rsnd_dai_call(fn, io, param...)					\
- ({									\
--	struct rsnd_priv *priv = rsnd_io_to_priv(io);			\
--	struct device *dev = rsnd_priv_to_dev(priv);			\
-+	struct device *dev = rsnd_priv_to_dev(rsnd_io_to_priv(io));	\
- 	struct rsnd_mod *mod;						\
- 	int is_play = rsnd_io_is_play(io);				\
- 	int ret = 0, i;							\
-@@ -741,6 +740,7 @@ static int rsnd_soc_dai_startup(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai)
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index beb4e3817d22..2ad7633292bf 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -120,11 +120,13 @@ int asoc_simple_card_clk_enable(struct asoc_simple_dai *dai)
  {
- 	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
-+	struct rsnd_priv *priv = rsnd_rdai_to_priv(rdai);
- 	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
- 	int ret;
+ 	return clk_prepare_enable(dai->clk);
+ }
++EXPORT_SYMBOL_GPL(asoc_simple_card_clk_enable);
  
-@@ -758,6 +758,7 @@ static void rsnd_soc_dai_shutdown(struct snd_pcm_substream *substream,
- 				  struct snd_soc_dai *dai)
+ void asoc_simple_card_clk_disable(struct asoc_simple_dai *dai)
  {
- 	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
-+	struct rsnd_priv *priv = rsnd_rdai_to_priv(rdai);
- 	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
+ 	clk_disable_unprepare(dai->clk);
+ }
++EXPORT_SYMBOL_GPL(asoc_simple_card_clk_disable);
  
- 	/*
+ int asoc_simple_card_parse_clk(struct device *dev,
+ 			       struct device_node *node,
 -- 
 2.11.0
