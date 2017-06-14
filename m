@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: audio-graph-scu-card: use asoc_simple_card_of_parse_tdm()" to the asoc tree
-Date: Wed, 14 Jun 2017 11:12:21 +0100
-Message-ID: <E1dL5Hh-0007Xw-Qx@debutante>
-References: <877f0f9zrx.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: simple-scu-card: use asoc_simple_card_of_parse_tdm()" to the asoc tree
+Date: Wed, 14 Jun 2017 11:12:27 +0100
+Message-ID: <E1dL5Hn-0007aH-UF@debutante>
+References: <87a85b9zsz.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <877f0f9zrx.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87a85b9zsz.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: audio-graph-scu-card: use asoc_simple_card_of_parse_tdm()
+   ASoC: simple-scu-card: use asoc_simple_card_of_parse_tdm()
 
 has been applied to the asoc tree at
 
@@ -37,11 +37,10 @@ to this mail.
 Thanks,
 Mark
 
->From 616c3b15f596e1f1e6c2537a1ad3492052eecba6 Mon Sep 17 00:00:00 2001
+>From 77b713b52878fbe21d9d5339cc42fbec3202392e Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 14 Jun 2017 00:35:47 +0000
-Subject: [PATCH] ASoC: audio-graph-scu-card: use
- asoc_simple_card_of_parse_tdm()
+Date: Wed, 14 Jun 2017 00:35:13 +0000
+Subject: [PATCH] ASoC: simple-scu-card: use asoc_simple_card_of_parse_tdm()
 
 Current simple card drivers are using asoc_simple_dai's tx_slot_mask,
 rx_slot_mask, slots, slot_width directly to parse TDM.
@@ -51,23 +50,23 @@ Let's use asoc_simple_card_of_parse_tdm for it.
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/audio-graph-scu-card.c | 6 +-----
+ sound/soc/generic/simple-scu-card.c | 6 +-----
  1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/sound/soc/generic/audio-graph-scu-card.c b/sound/soc/generic/audio-graph-scu-card.c
-index 27a261ee7302..4d295d07858a 100644
---- a/sound/soc/generic/audio-graph-scu-card.c
-+++ b/sound/soc/generic/audio-graph-scu-card.c
-@@ -167,11 +167,7 @@ static int asoc_graph_card_dai_link_of(struct device_node *ep,
- 					      "prefix");
+diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
+index f203783b2fad..938f3f30eef1 100644
+--- a/sound/soc/generic/simple-scu-card.c
++++ b/sound/soc/generic/simple-scu-card.c
+@@ -171,11 +171,7 @@ static int asoc_simple_card_dai_link_of(struct device_node *np,
+ 					      PREFIX "prefix");
  	}
  
--	ret = snd_soc_of_parse_tdm_slot(ep,
+-	ret = snd_soc_of_parse_tdm_slot(np,
 -					&dai_props->tx_slot_mask,
 -					&dai_props->rx_slot_mask,
 -					&dai_props->slots,
 -					&dai_props->slot_width);
-+	ret = asoc_simple_card_of_parse_tdm(ep, dai_props);
++	ret = asoc_simple_card_of_parse_tdm(np, dai_props);
  	if (ret)
  		return ret;
  
