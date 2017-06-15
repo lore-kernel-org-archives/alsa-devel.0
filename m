@@ -1,15 +1,17 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH v3] ASoC: dapm: Add new widget type
-	snd_soc_dapm_dsp_component
-Date: Thu, 15 Jun 2017 20:46:04 +0100
-Message-ID: <1497555964-4862-1-git-send-email-liam.r.girdwood@linux.intel.com>
+From: Julia Lawall <julia.lawall@lip6.fr>
+Subject: [asoc:topic/rcar 36/37]
+ sound/soc/sh/rcar/ssi.c:285:5-14: WARNING: Unsigned expression compared
+ with zero: main_rate < 0 (fwd)
+Date: Thu, 15 Jun 2017 22:41:34 +0200 (CEST)
+Message-ID: <alpine.DEB.2.20.1706152240270.3015@hadrien>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 434A4266A65
- for <alsa-devel@alsa-project.org>; Thu, 15 Jun 2017 21:46:24 +0200 (CEST)
+Received: from mail3-relais-sop.national.inria.fr
+ (mail3-relais-sop.national.inria.fr [192.134.164.104])
+ by alsa0.perex.cz (Postfix) with ESMTP id 31485266A65
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jun 2017 22:41:36 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,85 +21,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-Add a new widget type to represent internal DSP components and allow DSP
-drivers and firmware to define topologies using this widget type.
+Please check on line 285.
 
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+julia
+
+---------- Forwarded message ----------
+Date: Fri, 16 Jun 2017 04:21:36 +0800
+From: kbuild test robot <fengguang.wu@intel.com>
+To: kbuild@01.org
+Cc: Julia Lawall <julia.lawall@lip6.fr>
+Subject: [asoc:topic/rcar 36/37] sound/soc/sh/rcar/ssi.c:285:5-14: WARNING:
+    Unsigned expression compared with zero: main_rate < 0
+
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git topic/rcar
+head:   8cc03722403a5153054993388857e4e565dcdfb1
+commit: ef4cf5d6a143e04e149ad81fc491fe10855544fe [36/37] ASoC: rsnd: add rsnd_ssi_clk_query()
+:::::: branch date: 3 hours ago
+:::::: commit date: 3 hours ago
+
+>> sound/soc/sh/rcar/ssi.c:285:5-14: WARNING: Unsigned expression compared with zero: main_rate < 0
+
+git remote add asoc https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
+git remote update asoc
+git checkout ef4cf5d6a143e04e149ad81fc491fe10855544fe
+vim +285 sound/soc/sh/rcar/ssi.c
+
+e7d850dd1 Kuninori Morimoto 2015-10-26  269  	if (ssi_parent_mod && !rsnd_ssi_is_parent(mod, io))
+e7d850dd1 Kuninori Morimoto 2015-10-26  270  		return 0;
+e7d850dd1 Kuninori Morimoto 2015-10-26  271
+b4c83b171 Kuninori Morimoto 2015-12-17  272  	if (rsnd_ssi_is_multi_slave(mod, io))
+b4c83b171 Kuninori Morimoto 2015-12-17  273  		return 0;
+b4c83b171 Kuninori Morimoto 2015-12-17  274
+e7d850dd1 Kuninori Morimoto 2015-10-26  275  	if (ssi->usrcnt > 1) {
+e7d850dd1 Kuninori Morimoto 2015-10-26  276  		if (ssi->rate != rate) {
+e7d850dd1 Kuninori Morimoto 2015-10-26  277  			dev_err(dev, "SSI parent/child should use same rate\n");
+e7d850dd1 Kuninori Morimoto 2015-10-26  278  			return -EINVAL;
+e7d850dd1 Kuninori Morimoto 2015-10-26  279  		}
+e7d850dd1 Kuninori Morimoto 2015-10-26  280
+e7d850dd1 Kuninori Morimoto 2015-10-26  281  		return 0;
+e7d850dd1 Kuninori Morimoto 2015-10-26  282  	}
+e7d850dd1 Kuninori Morimoto 2015-10-26  283
+ef4cf5d6a Kuninori Morimoto 2017-06-15  284  	main_rate = rsnd_ssi_clk_query(priv, rate, chan, &idx);
+ef4cf5d6a Kuninori Morimoto 2017-06-15 @285  	if (main_rate < 0) {
+ef4cf5d6a Kuninori Morimoto 2017-06-15  286  		dev_err(dev, "unsupported clock rate\n");
+ef4cf5d6a Kuninori Morimoto 2017-06-15  287  		return -EIO;
+ef4cf5d6a Kuninori Morimoto 2017-06-15  288  	}
+ae5c32230 Kuninori Morimoto 2013-07-21  289
+b76e218ae Kuninori Morimoto 2015-09-10  290  	ret = rsnd_adg_ssi_clk_try_start(mod, main_rate);
+ef4cf5d6a Kuninori Morimoto 2017-06-15  291  	if (ret < 0)
+ef4cf5d6a Kuninori Morimoto 2017-06-15  292  		return ret;
+ae5c32230 Kuninori Morimoto 2013-07-21  293
 
 ---
-
-Takashi, I'll send a subsequent patch for alsa-lib if Mark is happy with this
-version.
-
-Changes V2.
-   o No need for multiple types since core does not care.
-Changes v1.
-   o Added some documentation.
-   o Split codec widget into encoder and decoder to avoid confusion with HW
-     CODECS.
-
- Documentation/sound/soc/dapm.rst | 4 ++++
- include/sound/soc-dapm.h         | 1 +
- include/uapi/sound/asoc.h        | 3 ++-
- sound/soc/soc-topology.c         | 1 +
- 4 files changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/sound/soc/dapm.rst b/Documentation/sound/soc/dapm.rst
-index a27f42befa4d..540a86012e29 100644
---- a/Documentation/sound/soc/dapm.rst
-+++ b/Documentation/sound/soc/dapm.rst
-@@ -105,6 +105,10 @@ Pre
- 	Special PRE widget (exec before all others)
- Post
- 	Special POST widget (exec after all others)
-+DSP Component
-+	Internal DSP component not used by the ASoC core but may be used
-+	by DSP driver and DSP firmware.
-+
- 
- (Widgets are defined in include/sound/soc-dapm.h)
- 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index a466f4bdc835..87133c974991 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -510,6 +510,7 @@ enum snd_soc_dapm_type {
- 	snd_soc_dapm_dai_out,
- 	snd_soc_dapm_dai_link,		/* link between two DAI structures */
- 	snd_soc_dapm_kcontrol,		/* Auto-disabled kcontrol */
-+	snd_soc_dapm_dsp_component,	/* DSP internal component */
- };
- 
- enum snd_soc_dapm_subclass {
-diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index 6702533c8bd8..e805ef651538 100644
---- a/include/uapi/sound/asoc.h
-+++ b/include/uapi/sound/asoc.h
-@@ -73,7 +73,8 @@
- #define SND_SOC_TPLG_DAPM_DAI_IN	13
- #define SND_SOC_TPLG_DAPM_DAI_OUT	14
- #define SND_SOC_TPLG_DAPM_DAI_LINK	15
--#define SND_SOC_TPLG_DAPM_LAST		SND_SOC_TPLG_DAPM_DAI_LINK
-+#define SND_SOC_TPLG_DAPM_DSP_COMPONENT	16
-+#define SND_SOC_TPLG_DAPM_LAST		SND_SOC_TPLG_DAPM_DSP_COMPONENT
- 
- /* Header magic number and string sizes */
- #define SND_SOC_TPLG_MAGIC		0x41536F43 /* ASoC */
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 12e189701924..17751736957f 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -242,6 +242,7 @@ static const struct soc_tplg_map dapm_map[] = {
- 	{SND_SOC_TPLG_DAPM_DAI_IN, snd_soc_dapm_dai_in},
- 	{SND_SOC_TPLG_DAPM_DAI_OUT, snd_soc_dapm_dai_out},
- 	{SND_SOC_TPLG_DAPM_DAI_LINK, snd_soc_dapm_dai_link},
-+	{SND_SOC_TPLG_DAPM_DSP_COMPONENT, snd_soc_dapm_dsp_component},
- };
- 
- static int tplc_chan_get_reg(struct soc_tplg *tplg,
--- 
-2.11.0
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
