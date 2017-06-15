@@ -1,28 +1,19 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: Re: Dell USB audio driver workaround
-Date: Thu, 15 Jun 2017 17:40:22 +0800
-Message-ID: <d7251f99-ead2-382e-b6bf-a9f0506aaea8@canonical.com>
-References: <6FAB7C47BCF00940BB0999A99BE3547A17A32FFC@RTITMBSV09.realtek.com.tw>
- <s5h1t6jxgh5.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A17A33059@RTITMBSV09.realtek.com.tw>
- <s5h37qzm63e.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A17A330E6@RTITMBSV09.realtek.com.tw>
- <s5h4mbd93c1.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A17A3313B@RTITMBSV09.realtek.com.tw>
- <s5hvb3t7me0.wl-tiwai@suse.de>
- <6FAB7C47BCF00940BB0999A99BE3547A17A332FD@RTITMBSV09.realtek.com.tw>
- <s5hlh4j18l6.wl-tiwai@suse.de>
- <70632d2d-05c9-e6d7-2ba2-b67d0d10e44a@canonical.com>
- <s5hinjybmav.wl-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ASoC: dapm: Add new widget type for
+ constructing DAPM graphs on DSPs.
+Date: Thu, 15 Jun 2017 11:01:24 +0100
+Message-ID: <20170615100124.vegs5xwkvbzqtq7z@sirena.org.uk>
+References: <1497021829-5680-1-git-send-email-liam.r.girdwood@linux.intel.com>
+ <20170609175333.6ift3olr3thobopr@sirena.org.uk>
+ <1497439735.30929.330.camel@loki>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8094200033942861543=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id F11F4267389
- for <alsa-devel@alsa-project.org>; Thu, 15 Jun 2017 11:40:38 +0200 (CEST)
-In-Reply-To: <s5hinjybmav.wl-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 298B3267208
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jun 2017 12:01:30 +0200 (CEST)
+In-Reply-To: <1497439735.30929.330.camel@loki>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,125 +23,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Tanu Kaskinen <tanuk@iki.fi>, "(alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>, Kailang <kailang@realtek.com>, svillar@igalia.com
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 06/14/2017 11:50 PM, Takashi Iwai wrote:
-> On Wed, 14 Jun 2017 04:29:13 +0200,
-> Hui Wang wrote:
->> In this thread, I added tanuk@iki.fi and svillar@igalia.com since they
->> reported or discussed similar bugs recently
->> (https://www.spinics.net/lists/alsa-devel/msg62460.html and
->> https://bugs.freedesktop.org/show_bug.cgi?id=100711).
->>
->> Right now, we are trying to enable the USB audio for the Dell dock
->> stations TB16[1] and WD15[2]. For usb audio part, they have the same
->> design, they use realtek alc4020 USB bridge and alc3263 codec, and
->> there are one headset jack on the front panel and one speaker output
->> jack on the rear panel, but due to some reason (probably it is the
->> firmware's problem), the alsa mixers can't reflect there is speaker or
->> headset on them, as a result the pulseaudio can't handle the headset
->> or speaker correctly.
->>
->> Right now, the pulseaudio can find a playback device and a record
->> device, it is the output and input device for that headset jack, but
->> pulseaudio does not think they are headphone and Mic, pulseaudio think
->> they are just USB analog output and input devices; for the speaker
->> jack, the pulseaudio can't find it at all. so through pulseaudio, we
->> can't play any sound to that speaker jack.
->>
->> This is the output and input devices listed by alsa-utils:
->>
->> !!Aplay/Arecord output
->> !!--------------------
->>
->> APLAY
->>
->> **** List of PLAYBACK Hardware Devices ****
->> ...
->> card 1: Audio [USB Audio], device 0: USB Audio [USB Audio]
->>    Subdevices: 1/1
->>    Subdevice #0: subdevice #0
->> card 1: Audio [USB Audio], device 1: USB Audio [USB Audio #1]
->>    Subdevices: 1/1
->>    Subdevice #0: subdevice #0
->>
->> ARECORD
->>
->> **** List of CAPTURE Hardware Devices ****
->> ...
->> card 1: Audio [USB Audio], device 0: USB Audio [USB Audio]
->>    Subdevices: 1/1
->>    Subdevice #0: subdevice #0
->>
->>
->>
->>
->> And we can use alsa-utils command to play sound to speaker jack:
->> $ aplay -D plughw:CARD=1,DEV=1 /usr/share/sounds/speech-dispatcher/test.wav
->>
->> I don't know how to fix this problem in the kernel driver, if we can
->> let driver export standard mixers, this issue will be fixed. But it
->> looks like the mixers depend on the firmware, we can't change the
->> firmware, so probably we can't fix it in the kernel driver.
-> Right, there are multiple problems.  One is the firmware problem as
-> you mentioned.  With the old firmware, the USB descriptor and the
-> behavior of the device are unstable / inconsistent.
->
-> Even with the fixed firmware, USB audio driver in general may assign
-> PCM streams depending on the descriptor, and the name can't be set
-> consistently per purpose.  So, it can't appear like "Headphone Stream"
-> or "Line Out Stream".  The only sensible way I can think of is to
-> apply some static mappings for creation of the streams, like the mixer
-> mapping for some devices.
->
-> This is, however, only a part of the iceberg.  A bigger problem is
-> that USB-audio driver doesn't handle the jack detection usually by
-> itself.  The jack detection part belongs to the HID, and it should be
-> handled by a different driver.  That is, if any, PA would need to
-> resolve the corresponding input device and deal with the input events.
-> That's a mess.
-Yes, the USB-audio jack detection is a bigger problem. Since the current 
-USB-audio driver does not export JACK to the userspace, the PA does not 
-check jack plugging/unplugging at all. If a USB-audio adapter is plugged 
-in, the PA will treat it as a USB headpone+microphone, will think this 
-device is ready to work, then users can select this sound card via UI 
-program to play or record sound.
 
->> Another way to fix it is to add a conf to pulseaudio, in the conf, we
->> add one profile for headset(hw:%f,0,0) and one profile for
->> speaker(hw:%f,1,0), this is the draft patch I sent to
->> pulseaudio-discuss mail list:
->> https://lists.freedesktop.org/archives/pulseaudio-discuss/2017-May/028252.html
->>
->> Do you have any idea to fix this problem? Thanks in advance. And below
->> are some logs I collected on the TB16, if you need more logs, just
->> tell me, I will collect them for you.
-> I'm in favor of the configuration specific to the device.  Still we'd
-> need a few fixups in the kernel side, too.  Other "perfect solutions"
-> would be hard to achieve, I'm afraid.
-
-Thanks for your advice.
-
-Through PA, users can't select speaker (hw:%f,1,0) to work, this is a 
-more urgent problem.
-
-Hi Tanu,
-
-If you have time, could you please take a look at the patch I sent to 
-pulseaudio-discuss?
+--===============8094200033942861543==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="clylutps7wjdzcs7"
+Content-Disposition: inline
 
 
-Thanks,
-Hui.
+--clylutps7wjdzcs7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
->
-> thanks,
->
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
+On Wed, Jun 14, 2017 at 12:28:55PM +0100, Liam Girdwood wrote:
+> On Fri, 2017-06-09 at 18:53 +0100, Mark Brown wrote:
+
+> > I'm still a bit unclear about how a pipeline and effect are different
+> > from an ASoC point of view - it matters on the DSP but from the kernel's
+> > point of view a pipeline just an effect that happens to have a more
+> > complicated implementation on the DSP?
+
+> Yes, that's true, some of the objects will most likely be treated the
+> same by the kernel core but for the DSP and driver they will different.
+> i.e. they create different objects with different topology private data
+> (using the widget ID to differentiate).
+
+Shouldn't that just be handled in the driver though?  Nothing outside
+the driver cares.  We're going to need to differentiate between
+different effects and pipelines in the driver anyway.
+
+--clylutps7wjdzcs7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllCWvQACgkQJNaLcl1U
+h9Ag1gf9F6g+zGwXjRwUu+u3o1Io3ipw5UrYSxHnmBQ05L1TGuKbPFFwa3jLX8be
+Xx8WA3cYbXc1Ogvj4ElCUDQgOQnpQ9YUJ7rR/j3n1NaqTNaLlnkKvbgrkQZGwl4c
+ZHD27n/PEtsRNpwe2WulVASE7FeTYYyWflgHm/6HEfVYkqGa9ssk3yMcfy31vLCs
+Xz4MIvng6PL8NY2FTAm5N8BAeCeXhl4Eoaa2lH4ZRFRI+ZpMUbO9z/3GfMmfLMB1
+4wm9BFGQODqxVX3C1xHV4XyR6qRjublMaJKLyPa219RHQII357B64VuxO0R93zBz
+jO260OoQtCyJV5/jtsHPLXNPdqNF1w==
+=63FL
+-----END PGP SIGNATURE-----
+
+--clylutps7wjdzcs7--
+
+--===============8094200033942861543==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8094200033942861543==--
