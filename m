@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card: use asoc_simple_card_of_parse_routing()" to the asoc tree
-Date: Thu, 15 Jun 2017 18:20:39 +0100
-Message-ID: <E1dLYRj-0001gW-Au@debutante>
-References: <87vanym79w.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: simple-scu-card: use asoc_simple_card_convert_fixup()" to the asoc tree
+Date: Thu, 15 Jun 2017 18:20:48 +0100
+Message-ID: <E1dLYRs-0001j6-Dl@debutante>
+References: <87zidam7bb.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87vanym79w.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87zidam7bb.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card: use asoc_simple_card_of_parse_routing()
+   ASoC: simple-scu-card: use asoc_simple_card_convert_fixup()
 
 has been applied to the asoc tree at
 
@@ -37,42 +37,79 @@ to this mail.
 Thanks,
 Mark
 
->From 1fdb5d258e28de85263a34aab57f0a70b1715342 Mon Sep 17 00:00:00 2001
+>From cd8957f588397498c12b258da9044b52598c9527 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 15 Jun 2017 00:25:17 +0000
-Subject: [PATCH] ASoC: simple-card: use asoc_simple_card_of_parse_routing()
+Date: Thu, 15 Jun 2017 00:24:28 +0000
+Subject: [PATCH] ASoC: simple-scu-card: use asoc_simple_card_convert_fixup()
 
 Current simple/audio scu card drivers are supporting same
-routing on DT, but, doesn't use same function for it.
+convert-rate/convert-channels on DT, but, doesn't use same function
+for it.
 Encapsulation is one of simple card util's purpose.
-Let's use asoc_simple_card_of_parse_routing
+Let's use asoc_simple_card_parse_convert/asoc_simple_card_convert_fixup
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-card.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
+ sound/soc/generic/simple-scu-card.c | 24 +++---------------------
+ 1 file changed, 3 insertions(+), 21 deletions(-)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 8b414af966ee..7b2533c7f82e 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -362,13 +362,9 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
- 			goto card_parse_end;
- 	}
+diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
+index 938f3f30eef1..44da69101097 100644
+--- a/sound/soc/generic/simple-scu-card.c
++++ b/sound/soc/generic/simple-scu-card.c
+@@ -27,8 +27,7 @@ struct simple_card_data {
+ 	struct snd_soc_codec_conf codec_conf;
+ 	struct asoc_simple_dai *dai_props;
+ 	struct snd_soc_dai_link *dai_link;
+-	u32 convert_rate;
+-	u32 convert_channels;
++	struct asoc_simple_card_data adata;
+ };
  
--	/* DAPM routes */
--	if (of_property_read_bool(node, PREFIX "routing")) {
--		ret = snd_soc_of_parse_audio_routing(card,
--					PREFIX "routing");
--		if (ret)
--			goto card_parse_end;
--	}
-+	ret = asoc_simple_card_of_parse_routing(card, PREFIX, 1);
-+	if (ret < 0)
-+		goto card_parse_end;
+ #define simple_priv_to_card(priv) (&(priv)->snd_card)
+@@ -86,18 +85,8 @@ static int asoc_simple_card_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+ 					struct snd_pcm_hw_params *params)
+ {
+ 	struct simple_card_data *priv = snd_soc_card_get_drvdata(rtd->card);
+-	struct snd_interval *rate = hw_param_interval(params,
+-						      SNDRV_PCM_HW_PARAM_RATE);
+-	struct snd_interval *channels = hw_param_interval(params,
+-						SNDRV_PCM_HW_PARAM_CHANNELS);
  
- 	/* Factor to mclk, used in hw_params() */
- 	of_property_read_u32(node, PREFIX "mclk-fs", &priv->mclk_fs);
+-	if (priv->convert_rate)
+-		rate->min =
+-		rate->max = priv->convert_rate;
+-
+-	if (priv->convert_channels)
+-		channels->min =
+-		channels->max = priv->convert_channels;
++	asoc_simple_card_convert_fixup(&priv->adata, params);
+ 
+ 	return 0;
+ }
+@@ -206,11 +195,7 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	/* sampling rate convert */
+-	of_property_read_u32(node, PREFIX "convert-rate", &priv->convert_rate);
+-
+-	/* channels transfer */
+-	of_property_read_u32(node, PREFIX "convert-channels", &priv->convert_channels);
++	asoc_simple_card_parse_convert(dev, PREFIX, &priv->adata);
+ 
+ 	/* find 1st codec */
+ 	np = of_get_child_by_name(node, PREFIX "codec");
+@@ -237,9 +222,6 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	dev_dbg(dev, "convert_rate     %d\n", priv->convert_rate);
+-	dev_dbg(dev, "convert_channels %d\n", priv->convert_channels);
+-
+ 	return 0;
+ }
+ 
 -- 
 2.11.0
