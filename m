@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-scu-card: use asoc_simple_card_convert_fixup()" to the asoc tree
-Date: Thu, 15 Jun 2017 18:20:48 +0100
-Message-ID: <E1dLYRs-0001j6-Dl@debutante>
-References: <87zidam7bb.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: audio-graph-scu-card: use asoc_simple_card_convert_fixup()" to the asoc tree
+Date: Thu, 15 Jun 2017 18:20:45 +0100
+Message-ID: <E1dLYRp-0001iF-CS@debutante>
+References: <87y3sum7au.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87zidam7bb.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87y3sum7au.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-scu-card: use asoc_simple_card_convert_fixup()
+   ASoC: audio-graph-scu-card: use asoc_simple_card_convert_fixup()
 
 has been applied to the asoc tree at
 
@@ -37,10 +37,11 @@ to this mail.
 Thanks,
 Mark
 
->From cd8957f588397498c12b258da9044b52598c9527 Mon Sep 17 00:00:00 2001
+>From c564a5b18710f76da222ad9f14a4c0ebc2c4c74c Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 15 Jun 2017 00:24:28 +0000
-Subject: [PATCH] ASoC: simple-scu-card: use asoc_simple_card_convert_fixup()
+Date: Thu, 15 Jun 2017 00:24:43 +0000
+Subject: [PATCH] ASoC: audio-graph-scu-card: use
+ asoc_simple_card_convert_fixup()
 
 Current simple/audio scu card drivers are supporting same
 convert-rate/convert-channels on DT, but, doesn't use same function
@@ -51,14 +52,14 @@ Let's use asoc_simple_card_parse_convert/asoc_simple_card_convert_fixup
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-scu-card.c | 24 +++---------------------
+ sound/soc/generic/audio-graph-scu-card.c | 24 +++---------------------
  1 file changed, 3 insertions(+), 21 deletions(-)
 
-diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
-index 938f3f30eef1..44da69101097 100644
---- a/sound/soc/generic/simple-scu-card.c
-+++ b/sound/soc/generic/simple-scu-card.c
-@@ -27,8 +27,7 @@ struct simple_card_data {
+diff --git a/sound/soc/generic/audio-graph-scu-card.c b/sound/soc/generic/audio-graph-scu-card.c
+index 4d295d07858a..9502f6ed14b8 100644
+--- a/sound/soc/generic/audio-graph-scu-card.c
++++ b/sound/soc/generic/audio-graph-scu-card.c
+@@ -30,8 +30,7 @@ struct graph_card_data {
  	struct snd_soc_codec_conf codec_conf;
  	struct asoc_simple_dai *dai_props;
  	struct snd_soc_dai_link *dai_link;
@@ -67,15 +68,15 @@ index 938f3f30eef1..44da69101097 100644
 +	struct asoc_simple_card_data adata;
  };
  
- #define simple_priv_to_card(priv) (&(priv)->snd_card)
-@@ -86,18 +85,8 @@ static int asoc_simple_card_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
- 					struct snd_pcm_hw_params *params)
+ #define graph_priv_to_card(priv) (&(priv)->snd_card)
+@@ -83,18 +82,8 @@ static int asoc_graph_card_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+ 					       struct snd_pcm_hw_params *params)
  {
- 	struct simple_card_data *priv = snd_soc_card_get_drvdata(rtd->card);
+ 	struct graph_card_data *priv = snd_soc_card_get_drvdata(rtd->card);
 -	struct snd_interval *rate = hw_param_interval(params,
 -						      SNDRV_PCM_HW_PARAM_RATE);
 -	struct snd_interval *channels = hw_param_interval(params,
--						SNDRV_PCM_HW_PARAM_CHANNELS);
+-							  SNDRV_PCM_HW_PARAM_CHANNELS);
  
 -	if (priv->convert_rate)
 -		rate->min =
@@ -88,28 +89,28 @@ index 938f3f30eef1..44da69101097 100644
  
  	return 0;
  }
-@@ -206,11 +195,7 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
- 	if (ret < 0)
+@@ -210,11 +199,7 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
+ 	if (ret)
  		return ret;
  
 -	/* sampling rate convert */
--	of_property_read_u32(node, PREFIX "convert-rate", &priv->convert_rate);
+-	of_property_read_u32(node, "convert-rate", &priv->convert_rate);
 -
 -	/* channels transfer */
--	of_property_read_u32(node, PREFIX "convert-channels", &priv->convert_channels);
-+	asoc_simple_card_parse_convert(dev, PREFIX, &priv->adata);
+-	of_property_read_u32(node, "convert-channels", &priv->convert_channels);
++	asoc_simple_card_parse_convert(dev, NULL, &priv->adata);
  
- 	/* find 1st codec */
- 	np = of_get_child_by_name(node, PREFIX "codec");
-@@ -237,9 +222,6 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
- 	if (ret < 0)
- 		return ret;
+ 	/*
+ 	 * it supports multi CPU, single CODEC only here
+@@ -286,9 +271,6 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
+ 	if (ret)
+ 		goto parse_of_err;
  
 -	dev_dbg(dev, "convert_rate     %d\n", priv->convert_rate);
 -	dev_dbg(dev, "convert_channels %d\n", priv->convert_channels);
 -
- 	return 0;
- }
+ 	ret = 0;
  
+ parse_of_err:
 -- 
 2.11.0
