@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: add rsnd_ssi_clk_query()" to the asoc tree
-Date: Thu, 15 Jun 2017 18:20:15 +0100
-Message-ID: <E1dLYRL-0001bP-Cq@debutante>
-References: <87injym64o.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: add rsnd_adg_clk_query()" to the asoc tree
+Date: Thu, 15 Jun 2017 18:20:27 +0100
+Message-ID: <E1dLYRX-0001ce-3E@debutante>
+References: <87k24em656.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87injym64o.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87k24em656.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: add rsnd_ssi_clk_query()
+   ASoC: rsnd: add rsnd_adg_clk_query()
 
 has been applied to the asoc tree at
 
@@ -37,10 +37,10 @@ to this mail.
 Thanks,
 Mark
 
->From ef4cf5d6a143e04e149ad81fc491fe10855544fe Mon Sep 17 00:00:00 2001
+>From 1dfdc6501a4a140cfbfc6be8dbb1da3a6f726c15 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 15 Jun 2017 00:50:02 +0000
-Subject: [PATCH] ASoC: rsnd: add rsnd_ssi_clk_query()
+Date: Thu, 15 Jun 2017 00:49:43 +0000
+Subject: [PATCH] ASoC: rsnd: add rsnd_adg_clk_query()
 
 Current Renesas sound driver is assuming that all Sampling rate and
 channles are possible to use, but these are depends on inputed clock
@@ -51,152 +51,119 @@ support until 64000Hz, 8ch can support 48000Hz.
 To control these situation correctly, it needs to support
 hw_constraints / refine feature.
 
-To support such feature, this patch adds new rsnd_ssi_clk_query().
+To support such feature, it needs SSI clock query feature, and it needs
+ADG clock query feature. Current ADG has rsnd_adg_ssi_clk_try_start()
+and it is doing similar things, but it try to setup ADG register in
+same time. This is not needed.
+
+This patch adds new rsnd_adg_clk_query() and separates query feature
+and register setting feature in adg.c
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/rsnd.h |  2 +
- sound/soc/sh/rcar/ssi.c  | 95 ++++++++++++++++++++++++++++--------------------
- 2 files changed, 58 insertions(+), 39 deletions(-)
+ sound/soc/sh/rcar/adg.c  | 53 ++++++++++++++++++++++++------------------------
+ sound/soc/sh/rcar/rsnd.h |  1 +
+ 2 files changed, 28 insertions(+), 26 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 7b76f3998fd7..3aa07a07bbcb 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -679,6 +679,8 @@ int __rsnd_ssi_is_pin_sharing(struct rsnd_mod *mod);
- void rsnd_parse_connect_ssi(struct rsnd_dai *rdai,
- 			    struct device_node *playback,
- 			    struct device_node *capture);
-+int rsnd_ssi_clk_query(struct rsnd_priv *priv,
-+		       int param1, int param2, int *idx);
- 
- /*
-  *	R-Car SSIU
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 6450095eb547..c8956c3484dd 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -208,6 +208,46 @@ u32 rsnd_ssi_multi_slaves_runtime(struct rsnd_dai_stream *io)
- 	return 0;
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index 4a72fd74ddc2..197cb3ec075f 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -308,23 +308,12 @@ static void rsnd_adg_set_ssi_clk(struct rsnd_mod *ssi_mod, u32 val)
+ 	}
  }
  
-+int rsnd_ssi_clk_query(struct rsnd_priv *priv,
-+		       int param1, int param2, int *idx)
-+{
-+	int ssi_clk_mul_table[] = {
-+		1, 2, 4, 8, 16, 6, 12,
-+	};
-+	int j, ret;
-+	int main_rate;
-+
-+	for (j = 0; j < ARRAY_SIZE(ssi_clk_mul_table); j++) {
-+
-+		/*
-+		 * It will set SSIWSR.CONT here, but SSICR.CKDV = 000
-+		 * with it is not allowed. (SSIWSR.WS_MODE with
-+		 * SSICR.CKDV = 000 is not allowed either).
-+		 * Skip it. See SSICR.CKDV
-+		 */
-+		if (j == 0)
-+			continue;
-+
-+		/*
-+		 * this driver is assuming that
-+		 * system word is 32bit x chan
-+		 * see rsnd_ssi_init()
-+		 */
-+		main_rate = 32 * param1 * param2 * ssi_clk_mul_table[j];
-+
-+		ret = rsnd_adg_clk_query(priv, main_rate);
-+		if (ret < 0)
-+			continue;
-+
-+		if (idx)
-+			*idx = j;
-+
-+		return main_rate;
-+	}
-+
-+	return -EINVAL;
-+}
-+
- static int rsnd_ssi_master_clk_start(struct rsnd_mod *mod,
- 				     struct rsnd_dai_stream *io)
+-int rsnd_adg_ssi_clk_stop(struct rsnd_mod *ssi_mod)
+-{
+-	rsnd_adg_set_ssi_clk(ssi_mod, 0);
+-
+-	return 0;
+-}
+-
+-int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *ssi_mod, unsigned int rate)
++int rsnd_adg_clk_query(struct rsnd_priv *priv, unsigned int rate)
  {
-@@ -217,10 +257,7 @@ static int rsnd_ssi_master_clk_start(struct rsnd_mod *mod,
- 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
- 	struct rsnd_mod *ssi_parent_mod = rsnd_io_to_mod_ssip(io);
- 	int chan = rsnd_runtime_channel_for_ssi(io);
--	int j, ret;
--	int ssi_clk_mul_table[] = {
--		1, 2, 4, 8, 16, 6, 12,
--	};
-+	int idx, ret;
- 	unsigned int main_rate;
- 	unsigned int rate = rsnd_io_is_play(io) ?
- 		rsnd_src_get_out_rate(priv, io) :
-@@ -244,45 +281,25 @@ static int rsnd_ssi_master_clk_start(struct rsnd_mod *mod,
- 		return 0;
+-	struct rsnd_priv *priv = rsnd_mod_to_priv(ssi_mod);
+ 	struct rsnd_adg *adg = rsnd_priv_to_adg(priv);
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+-	struct rsnd_mod *adg_mod = rsnd_mod_get(adg);
+ 	struct clk *clk;
+ 	int i;
+-	u32 data;
+-	u32 ckr = 0;
+ 	int sel_table[] = {
+ 		[CLKA] = 0x1,
+ 		[CLKB] = 0x2,
+@@ -338,30 +327,42 @@ int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *ssi_mod, unsigned int rate)
+ 	 * find suitable clock from
+ 	 * AUDIO_CLKA/AUDIO_CLKB/AUDIO_CLKC/AUDIO_CLKI.
+ 	 */
+-	data = 0;
+ 	for_each_rsnd_clk(clk, adg, i) {
+-		if (rate == clk_get_rate(clk)) {
+-			data = sel_table[i];
+-			goto found_clock;
+-		}
++		if (rate == clk_get_rate(clk))
++			return sel_table[i];
  	}
  
--	/*
--	 * Find best clock, and try to start ADG
--	 */
--	for (j = 0; j < ARRAY_SIZE(ssi_clk_mul_table); j++) {
--
--		/*
--		 * It will set SSIWSR.CONT here, but SSICR.CKDV = 000
--		 * with it is not allowed. (SSIWSR.WS_MODE with
--		 * SSICR.CKDV = 000 is not allowed either).
--		 * Skip it. See SSICR.CKDV
--		 */
--		if (j == 0)
--			continue;
--
--		/*
--		 * this driver is assuming that
--		 * system word is 32bit x chan
--		 * see rsnd_ssi_init()
--		 */
--		main_rate = rate * 32 * chan * ssi_clk_mul_table[j];
--
--		ret = rsnd_adg_ssi_clk_try_start(mod, main_rate);
--		if (0 == ret) {
--			ssi->cr_clk	= FORCE | SWL_32 |
--				SCKD | SWSD | CKDV(j);
--			ssi->wsr = CONT;
-+	main_rate = rsnd_ssi_clk_query(priv, rate, chan, &idx);
-+	if (main_rate < 0) {
-+		dev_err(dev, "unsupported clock rate\n");
-+		return -EIO;
-+	}
- 
--			ssi->rate = rate;
-+	ret = rsnd_adg_ssi_clk_try_start(mod, main_rate);
-+	if (ret < 0)
-+		return ret;
- 
--			dev_dbg(dev, "%s[%d] outputs %u Hz\n",
--				rsnd_mod_name(mod),
--				rsnd_mod_id(mod), rate);
-+	ssi->cr_clk = FORCE | SWL_32 | SCKD | SWSD | CKDV(idx);
-+	ssi->wsr = CONT;
-+	ssi->rate = rate;
- 
--			return 0;
--		}
+ 	/*
+ 	 * find divided clock from BRGA/BRGB
+ 	 */
+-	if (rate  == adg->rbga_rate_for_441khz) {
+-		data = 0x10;
+-		goto found_clock;
 -	}
-+	dev_dbg(dev, "%s[%d] outputs %u Hz\n",
-+		rsnd_mod_name(mod),
-+		rsnd_mod_id(mod), rate);
++	if (rate == adg->rbga_rate_for_441khz)
++		return 0x10;
  
--	dev_err(dev, "unsupported clock rate\n");
--	return -EIO;
+-	if (rate == adg->rbgb_rate_for_48khz) {
+-		data = 0x20;
+-		goto found_clock;
+-	}
++	if (rate == adg->rbgb_rate_for_48khz)
++		return 0x20;
+ 
+ 	return -EIO;
++}
++
++int rsnd_adg_ssi_clk_stop(struct rsnd_mod *ssi_mod)
++{
++	rsnd_adg_set_ssi_clk(ssi_mod, 0);
++
 +	return 0;
- }
++}
++
++int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *ssi_mod, unsigned int rate)
++{
++	struct rsnd_priv *priv = rsnd_mod_to_priv(ssi_mod);
++	struct rsnd_adg *adg = rsnd_priv_to_adg(priv);
++	struct device *dev = rsnd_priv_to_dev(priv);
++	struct rsnd_mod *adg_mod = rsnd_mod_get(adg);
++	int data;
++	u32 ckr = 0;
  
- static void rsnd_ssi_master_clk_stop(struct rsnd_mod *mod,
+-found_clock:
++	data = rsnd_adg_clk_query(priv, rate);
++	if (data < 0)
++		return data;
+ 
+ 	rsnd_adg_set_ssi_clk(ssi_mod, data);
+ 
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 47162bdf1abc..7b76f3998fd7 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -502,6 +502,7 @@ phys_addr_t rsnd_gen_get_phy_addr(struct rsnd_priv *priv, int reg_id);
+ /*
+  *	R-Car ADG
+  */
++int rsnd_adg_clk_query(struct rsnd_priv *priv, unsigned int rate);
+ int rsnd_adg_ssi_clk_stop(struct rsnd_mod *mod);
+ int rsnd_adg_ssi_clk_try_start(struct rsnd_mod *mod, unsigned int rate);
+ int rsnd_adg_probe(struct rsnd_priv *priv);
 -- 
 2.11.0
