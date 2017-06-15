@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-scu-card: use asoc_simple_card_of_parse_routing()" to the asoc tree
-Date: Thu, 15 Jun 2017 18:20:36 +0100
-Message-ID: <E1dLYRg-0001fZ-8x@debutante>
-References: <87tw3im79g.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: simple-card-utils: add asoc_simple_card_of_parse_routing()" to the asoc tree
+Date: Thu, 15 Jun 2017 18:20:42 +0100
+Message-ID: <E1dLYRm-0001hN-C0@debutante>
+References: <87wp8em7ae.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87tw3im79g.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87wp8em7ae.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-scu-card: use asoc_simple_card_of_parse_routing()
+   ASoC: simple-card-utils: add asoc_simple_card_of_parse_routing()
 
 has been applied to the asoc tree at
 
@@ -37,35 +37,68 @@ to this mail.
 Thanks,
 Mark
 
->From bfe6b5898269b92571e502b4d706c815dd6bf53b Mon Sep 17 00:00:00 2001
+>From 3296d07826ebc698113832acb426f037e9b3b253 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 15 Jun 2017 00:25:33 +0000
-Subject: [PATCH] ASoC: simple-scu-card: use
+Date: Thu, 15 Jun 2017 00:25:02 +0000
+Subject: [PATCH] ASoC: simple-card-utils: add
  asoc_simple_card_of_parse_routing()
 
-Current simple/audio scu card drivers are supporting same
-routing on DT, but, doesn't use same function for it.
+Current simple card drivers are parsing routing on each own driver.
 Encapsulation is one of simple card util's purpose.
-Let's use asoc_simple_card_of_parse_routing
+Let's add asoc_simple_card_of_parse_routing for it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-scu-card.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/sound/simple_card_utils.h     |  4 ++++
+ sound/soc/generic/simple-card-utils.c | 22 ++++++++++++++++++++++
+ 2 files changed, 26 insertions(+)
 
-diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
-index 44da69101097..a75b385455c4 100644
---- a/sound/soc/generic/simple-scu-card.c
-+++ b/sound/soc/generic/simple-scu-card.c
-@@ -191,7 +191,7 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
- 	if (!node)
- 		return -EINVAL;
+diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
+index cc318ccd6a2d..889c8ff86369 100644
+--- a/include/sound/simple_card_utils.h
++++ b/include/sound/simple_card_utils.h
+@@ -100,4 +100,8 @@ void asoc_simple_card_convert_fixup(struct asoc_simple_card_data *data,
+ void asoc_simple_card_parse_convert(struct device *dev, char *prefix,
+ 				    struct asoc_simple_card_data *data);
  
--	ret = snd_soc_of_parse_audio_routing(card, PREFIX "routing");
-+	ret = asoc_simple_card_of_parse_routing(card, PREFIX, 0);
- 	if (ret < 0)
- 		return ret;
++int asoc_simple_card_of_parse_routing(struct snd_soc_card *card,
++				      char *prefix,
++				      int optional);
++
+ #endif /* __SIMPLE_CARD_UTILS_H */
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 948a18842e64..a2b6d95bc2f9 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -375,6 +375,28 @@ int asoc_simple_card_clean_reference(struct snd_soc_card *card)
+ }
+ EXPORT_SYMBOL_GPL(asoc_simple_card_clean_reference);
  
++int asoc_simple_card_of_parse_routing(struct snd_soc_card *card,
++				      char *prefix,
++				      int optional)
++{
++	struct device_node *node = card->dev->of_node;
++	char prop[128];
++
++	if (!prefix)
++		prefix = "";
++
++	snprintf(prop, sizeof(prop), "%s%s", prefix, "routing");
++
++	if (!of_property_read_bool(node, prop)) {
++		if (optional)
++			return 0;
++		return -EINVAL;
++	}
++
++	return snd_soc_of_parse_audio_routing(card, prop);
++}
++EXPORT_SYMBOL_GPL(asoc_simple_card_of_parse_routing);
++
+ /* Module information */
+ MODULE_AUTHOR("Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>");
+ MODULE_DESCRIPTION("ALSA SoC Simple Card Utils");
 -- 
 2.11.0
