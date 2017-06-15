@@ -1,17 +1,36 @@
-From: Kyle McMartin <kyle@infradead.org>
-Subject: Re: [GIT PULL] KBL firmware update
-Date: Thu, 15 Jun 2017 08:39:18 -0700
-Message-ID: <20170615153918.GC13400@bombadil.infradead.org>
-References: <20170613110731.GF13020@localhost>
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Multiplexable codecs?
+Date: Thu, 15 Jun 2017 17:46:40 +0200
+Message-ID: <alpine.DEB.2.11.1706151738250.2393@lnxricardw1>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bombadil.infradead.org (bombadil.infradead.org [65.50.211.133])
- by alsa0.perex.cz (Postfix) with ESMTP id D9BF3266819
- for <alsa-devel@alsa-project.org>; Thu, 15 Jun 2017 17:39:22 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20170613110731.GF13020@localhost>
+Received: from bes.se.axis.com (bes.se.axis.com [195.60.68.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id B03CD266819
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jun 2017 17:46:48 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by bes.se.axis.com (Postfix) with ESMTP id 6260F2E5E0
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jun 2017 17:46:46 +0200 (CEST)
+Received: from bes.se.axis.com ([IPv6:::ffff:127.0.0.1])
+ by localhost (bes.se.axis.com [::ffff:127.0.0.1]) (amavisd-new, port 10024)
+ with LMTP id gaQzkiDnXznr for <alsa-devel@alsa-project.org>;
+ Thu, 15 Jun 2017 17:46:45 +0200 (CEST)
+Received: from boulder03.se.axis.com (boulder03.se.axis.com [10.0.8.17])
+ by bes.se.axis.com (Postfix) with ESMTPS id C6FAB2E5D3
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jun 2017 17:46:45 +0200 (CEST)
+Received: from boulder03.se.axis.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id B46FC1E076
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jun 2017 17:46:45 +0200 (CEST)
+Received: from boulder03.se.axis.com (unknown [127.0.0.1])
+ by IMSVA (Postfix) with ESMTP id A96961E060
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jun 2017 17:46:45 +0200 (CEST)
+Received: from seth.se.axis.com (unknown [10.0.2.172])
+ by boulder03.se.axis.com (Postfix) with ESMTP
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jun 2017 17:46:45 +0200 (CEST)
+Received: from XBOX03.axis.com (xbox03.axis.com [10.0.5.17])
+ by seth.se.axis.com (Postfix) with ESMTP id 9DAFBBB
+ for <alsa-devel@alsa-project.org>; Thu, 15 Jun 2017 17:46:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,29 +40,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vinod.koul@intel.com>
-Cc: Patches Audio <patches.audio@intel.com>, alsa-devel@alsa-project.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, linux-firmware@kernel.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 13, 2017 at 04:37:31PM +0530, Vinod Koul wrote:
-> Hi,
-> 
-> Please consider this pull request to get updated audio dsp fw for KBl
-> platform. This version updates to 9.21.00.2042.
-> 
-> The following changes since commit 37857004a430e96dc837db7f967b6d0279053de8:
-> 
->   linux-firmware: add firmware image for Redpine 9113 chipset (2017-06-01 10:22:17 -0700)
-> 
-> are available in the git repository at:
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/firmware.git kbl
-> 
-> for you to fetch changes up to cb8cdaaff39c1a453350bcd8c9fa4635661cc135:
-> 
->   linux-firmware: intel: Update Kabylake audio firmware (2017-06-13 14:54:03 +0530)
-> 
 
-Applied, thanks Vinod.
+I have a usecase where there is a requirement to have two codecs which are =
 
---Kyle
+multiplexed on the same I2S channel. (In fact one of the 'codecs' is =
+
+actually a digital microphone, but it generates an I2S stream just the =
+
+same).
+
+In the ALSA SoC framework I know there is support for having separate =
+
+codecs on the right and left channels, and also for having different =
+
+codecs for playback and capture. But is there any way in the framework =
+
+that two codecs can be toggled between at runtime? Normally a machine =
+
+driver would configure a single codec which essentially is statically =
+
+allocated. Of course the whole driver could be removed and another one =
+
+loaded, but the thing here is that it is only for capture that the codecs =
+
+are multiplexed, for playback it's always the same codec, and I don't want =
+
+to disrupt playback just because a change is required on the capture side.
+
+/Ricard
+-- =
+
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
