@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: audio-graph-scu-card: use asoc_simple_card_convert_fixup()" to the asoc tree
-Date: Thu, 15 Jun 2017 18:20:45 +0100
-Message-ID: <E1dLYRp-0001iF-CS@debutante>
-References: <87y3sum7au.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: simple-card-utils: add asoc_simple_card_convert_fixup()" to the asoc tree
+Date: Thu, 15 Jun 2017 18:20:52 +0100
+Message-ID: <E1dLYRw-0001jx-LV@debutante>
+References: <871sqmnlwa.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87y3sum7au.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <871sqmnlwa.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: audio-graph-scu-card: use asoc_simple_card_convert_fixup()
+   ASoC: simple-card-utils: add asoc_simple_card_convert_fixup()
 
 has been applied to the asoc tree at
 
@@ -37,80 +37,100 @@ to this mail.
 Thanks,
 Mark
 
->From c564a5b18710f76da222ad9f14a4c0ebc2c4c74c Mon Sep 17 00:00:00 2001
+>From 13bb1cc0ad205b2aeeb8d2ea5c790a396135283d Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 15 Jun 2017 00:24:43 +0000
-Subject: [PATCH] ASoC: audio-graph-scu-card: use
- asoc_simple_card_convert_fixup()
+Date: Thu, 15 Jun 2017 00:24:09 +0000
+Subject: [PATCH] ASoC: simple-card-utils: add asoc_simple_card_convert_fixup()
 
 Current simple/audio scu card drivers are supporting same
-convert-rate/convert-channels on DT, but, doesn't use same function
+convert-rate/convert-channels on DT, but doesn't use same function
 for it.
 Encapsulation is one of simple card util's purpose.
-Let's use asoc_simple_card_parse_convert/asoc_simple_card_convert_fixup
+Let's add asoc_simple_card_parse_convert/asoc_simple_card_convert_fixup
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/audio-graph-scu-card.c | 24 +++---------------------
- 1 file changed, 3 insertions(+), 21 deletions(-)
+ include/sound/simple_card_utils.h     | 10 +++++++++
+ sound/soc/generic/simple-card-utils.c | 40 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 50 insertions(+)
 
-diff --git a/sound/soc/generic/audio-graph-scu-card.c b/sound/soc/generic/audio-graph-scu-card.c
-index 4d295d07858a..9502f6ed14b8 100644
---- a/sound/soc/generic/audio-graph-scu-card.c
-+++ b/sound/soc/generic/audio-graph-scu-card.c
-@@ -30,8 +30,7 @@ struct graph_card_data {
- 	struct snd_soc_codec_conf codec_conf;
- 	struct asoc_simple_dai *dai_props;
- 	struct snd_soc_dai_link *dai_link;
--	u32 convert_rate;
--	u32 convert_channels;
-+	struct asoc_simple_card_data adata;
+diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
+index 2679312228b3..cc318ccd6a2d 100644
+--- a/include/sound/simple_card_utils.h
++++ b/include/sound/simple_card_utils.h
+@@ -22,6 +22,11 @@ struct asoc_simple_dai {
+ 	struct clk *clk;
  };
  
- #define graph_priv_to_card(priv) (&(priv)->snd_card)
-@@ -83,18 +82,8 @@ static int asoc_graph_card_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
- 					       struct snd_pcm_hw_params *params)
- {
- 	struct graph_card_data *priv = snd_soc_card_get_drvdata(rtd->card);
--	struct snd_interval *rate = hw_param_interval(params,
--						      SNDRV_PCM_HW_PARAM_RATE);
--	struct snd_interval *channels = hw_param_interval(params,
--							  SNDRV_PCM_HW_PARAM_CHANNELS);
++struct asoc_simple_card_data {
++	u32 convert_rate;
++	u32 convert_channels;
++};
++
+ int asoc_simple_card_parse_daifmt(struct device *dev,
+ 				  struct device_node *node,
+ 				  struct device_node *codec,
+@@ -90,4 +95,9 @@ void asoc_simple_card_canonicalize_cpu(struct snd_soc_dai_link *dai_link,
  
--	if (priv->convert_rate)
--		rate->min =
--		rate->max = priv->convert_rate;
--
--	if (priv->convert_channels)
--		channels->min =
--		channels->max = priv->convert_channels;
-+	asoc_simple_card_convert_fixup(&priv->adata, params);
+ int asoc_simple_card_clean_reference(struct snd_soc_card *card);
  
- 	return 0;
- }
-@@ -210,11 +199,7 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
- 	if (ret)
- 		return ret;
++void asoc_simple_card_convert_fixup(struct asoc_simple_card_data *data,
++				      struct snd_pcm_hw_params *params);
++void asoc_simple_card_parse_convert(struct device *dev, char *prefix,
++				    struct asoc_simple_card_data *data);
++
+ #endif /* __SIMPLE_CARD_UTILS_H */
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 2ad7633292bf..948a18842e64 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -13,6 +13,46 @@
+ #include <linux/of_graph.h>
+ #include <sound/simple_card_utils.h>
  
--	/* sampling rate convert */
--	of_property_read_u32(node, "convert-rate", &priv->convert_rate);
--
--	/* channels transfer */
--	of_property_read_u32(node, "convert-channels", &priv->convert_channels);
-+	asoc_simple_card_parse_convert(dev, NULL, &priv->adata);
- 
- 	/*
- 	 * it supports multi CPU, single CODEC only here
-@@ -286,9 +271,6 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
- 	if (ret)
- 		goto parse_of_err;
- 
--	dev_dbg(dev, "convert_rate     %d\n", priv->convert_rate);
--	dev_dbg(dev, "convert_channels %d\n", priv->convert_channels);
--
- 	ret = 0;
- 
- parse_of_err:
++void asoc_simple_card_convert_fixup(struct asoc_simple_card_data *data,
++				    struct snd_pcm_hw_params *params)
++{
++	struct snd_interval *rate = hw_param_interval(params,
++						SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels = hw_param_interval(params,
++						SNDRV_PCM_HW_PARAM_CHANNELS);
++
++	if (data->convert_rate)
++		rate->min =
++		rate->max = data->convert_rate;
++
++	if (data->convert_channels)
++		channels->min =
++		channels->max = data->convert_channels;
++}
++EXPORT_SYMBOL_GPL(asoc_simple_card_convert_fixup);
++
++void asoc_simple_card_parse_convert(struct device *dev, char *prefix,
++				    struct asoc_simple_card_data *data)
++{
++	struct device_node *np = dev->of_node;
++	char prop[128];
++
++	if (!prefix)
++		prefix = "";
++
++	/* sampling rate convert */
++	snprintf(prop, sizeof(prop), "%s%s", prefix, "convert-rate");
++	of_property_read_u32(np, prop, &data->convert_rate);
++
++	/* channels transfer */
++	snprintf(prop, sizeof(prop), "%s%s", prefix, "convert-channels");
++	of_property_read_u32(np, prop, &data->convert_channels);
++
++	dev_dbg(dev, "convert_rate     %d\n", data->convert_rate);
++	dev_dbg(dev, "convert_channels %d\n", data->convert_channels);
++}
++EXPORT_SYMBOL_GPL(asoc_simple_card_parse_convert);
++
+ int asoc_simple_card_parse_daifmt(struct device *dev,
+ 				  struct device_node *node,
+ 				  struct device_node *codec,
 -- 
 2.11.0
