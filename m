@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: rename "slots" related variable" to the asoc tree
-Date: Thu, 15 Jun 2017 18:20:30 +0100
-Message-ID: <E1dLYRa-0001dX-4w@debutante>
-References: <87lgoum65n.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: audio-graph-scu-card: use asoc_simple_card_of_parse_routing()" to the asoc tree
+Date: Thu, 15 Jun 2017 18:20:33 +0100
+Message-ID: <E1dLYRd-0001eP-6e@debutante>
+References: <87shj2m78z.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87lgoum65n.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87shj2m78z.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: rename "slots" related variable
+   ASoC: audio-graph-scu-card: use asoc_simple_card_of_parse_routing()
 
 has been applied to the asoc tree at
 
@@ -37,233 +37,37 @@ to this mail.
 Thanks,
 Mark
 
->From 1ff9593d2f27a48fbeeccd7fc253eed2a7102d16 Mon Sep 17 00:00:00 2001
+>From 9fb9b2f236f05168a6138e62c82124a2f5eaf320 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 15 Jun 2017 00:49:27 +0000
-Subject: [PATCH] ASoC: rsnd: rename "slots" related variable
+Date: Thu, 15 Jun 2017 00:25:51 +0000
+Subject: [PATCH] ASoC: audio-graph-scu-card: use
+ asoc_simple_card_of_parse_routing()
 
-Current Renesas sound driver has slots and slots_num in
-struct rsnd_dai, but these are very un-understandable naming
-(It had named from TDM slots).
-In this driver, the "slots" means total usable channels, and
-"stot_num" means SSI lane number if Multi SSI was used.
-To more understandable code, this patch renames "slots" to
-"max_channels", and "slots_num" to "ssi_lane", and replaces related
-functions name.
+Current simple/audio scu card drivers are supporting same
+routing on DT, but, doesn't use same function for it.
+Encapsulation is one of simple card util's purpose.
+Let's use asoc_simple_card_of_parse_routing
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 53 ++++++++++++++++++++++++------------------------
- sound/soc/sh/rcar/dvc.c  |  7 ++++---
- sound/soc/sh/rcar/rsnd.h | 23 ++++++++++++++-------
- sound/soc/sh/rcar/ssi.c  |  3 ++-
- 4 files changed, 49 insertions(+), 37 deletions(-)
+ sound/soc/generic/audio-graph-scu-card.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 1b536d140e49..9b9e898d0df3 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -203,27 +203,6 @@ int rsnd_io_is_working(struct rsnd_dai_stream *io)
- 	return !!io->substream;
- }
+diff --git a/sound/soc/generic/audio-graph-scu-card.c b/sound/soc/generic/audio-graph-scu-card.c
+index 9502f6ed14b8..05934b24627b 100644
+--- a/sound/soc/generic/audio-graph-scu-card.c
++++ b/sound/soc/generic/audio-graph-scu-card.c
+@@ -195,8 +195,8 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
+ 	 * see simple-card
+ 	 */
  
--void rsnd_set_slot(struct rsnd_dai *rdai,
--		   int slots, int num)
--{
--	rdai->slots	= slots;
--	rdai->slots_num	= num;
--}
--
--int rsnd_get_slot(struct rsnd_dai_stream *io)
--{
--	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
--
--	return rdai->slots;
--}
--
--int rsnd_get_slot_num(struct rsnd_dai_stream *io)
--{
--	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
--
--	return rdai->slots_num;
--}
--
- int rsnd_runtime_channel_original(struct rsnd_dai_stream *io)
- {
- 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
-@@ -248,13 +227,14 @@ int rsnd_runtime_channel_after_ctu(struct rsnd_dai_stream *io)
- 
- int rsnd_runtime_channel_for_ssi(struct rsnd_dai_stream *io)
- {
-+	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
- 	int chan = rsnd_io_is_play(io) ?
- 		rsnd_runtime_channel_after_ctu(io) :
- 		rsnd_runtime_channel_original(io);
- 
- 	/* Use Multi SSI */
- 	if (rsnd_runtime_is_ssi_multi(io))
--		chan /= rsnd_get_slot_num(io);
-+		chan /= rsnd_rdai_ssi_lane_get(rdai);
- 
- 	/* TDM Extend Mode needs 8ch */
- 	if (chan == 6)
-@@ -265,12 +245,13 @@ int rsnd_runtime_channel_for_ssi(struct rsnd_dai_stream *io)
- 
- int rsnd_runtime_is_ssi_multi(struct rsnd_dai_stream *io)
- {
--	int slots = rsnd_get_slot_num(io);
-+	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
-+	int lane = rsnd_rdai_ssi_lane_get(rdai);
- 	int chan = rsnd_io_is_play(io) ?
- 		rsnd_runtime_channel_after_ctu(io) :
- 		rsnd_runtime_channel_original(io);
- 
--	return (chan >= 6) && (slots > 1);
-+	return (chan > 2) && (lane > 1);
- }
- 
- int rsnd_runtime_is_ssi_tdm(struct rsnd_dai_stream *io)
-@@ -549,6 +530,24 @@ static void rsnd_dai_disconnect(struct rsnd_mod *mod,
- 	io->mod[type] = NULL;
- }
- 
-+int rsnd_rdai_channels_ctrl(struct rsnd_dai *rdai,
-+			    int max_channels)
-+{
-+	if (max_channels > 0)
-+		rdai->max_channels = max_channels;
-+
-+	return rdai->max_channels;
-+}
-+
-+int rsnd_rdai_ssi_lane_ctrl(struct rsnd_dai *rdai,
-+			    int ssi_lane)
-+{
-+	if (ssi_lane > 0)
-+		rdai->ssi_lane = ssi_lane;
-+
-+	return rdai->ssi_lane;
-+}
-+
- struct rsnd_dai *rsnd_rdai_get(struct rsnd_priv *priv, int id)
- {
- 	if ((id < 0) || (id >= rsnd_rdai_nr(priv)))
-@@ -726,7 +725,8 @@ static int rsnd_soc_set_dai_tdm_slot(struct snd_soc_dai *dai,
- 	switch (slots) {
- 	case 6:
- 		/* TDM Extend Mode */
--		rsnd_set_slot(rdai, slots, 1);
-+		rsnd_rdai_channels_set(rdai, slots);
-+		rsnd_rdai_ssi_lane_set(rdai, 1);
- 		break;
- 	default:
- 		dev_err(dev, "unsupported TDM slots (%d)\n", slots);
-@@ -879,7 +879,8 @@ static void __rsnd_dai_probe(struct rsnd_priv *priv,
- 
- 	rdai->playback.rdai		= rdai;
- 	rdai->capture.rdai		= rdai;
--	rsnd_set_slot(rdai, 2, 1); /* default */
-+	rsnd_rdai_channels_set(rdai, 2); /* default 2ch */
-+	rsnd_rdai_ssi_lane_set(rdai, 1); /* default 1lane */
- 
- 	for (io_i = 0;; io_i++) {
- 		playback = of_parse_phandle(dai_np, "playback", io_i);
-diff --git a/sound/soc/sh/rcar/dvc.c b/sound/soc/sh/rcar/dvc.c
-index 75af6e742328..99d2d9459e75 100644
---- a/sound/soc/sh/rcar/dvc.c
-+++ b/sound/soc/sh/rcar/dvc.c
-@@ -249,8 +249,9 @@ static int rsnd_dvc_pcm_new(struct rsnd_mod *mod,
- 			    struct snd_soc_pcm_runtime *rtd)
- {
- 	struct rsnd_dvc *dvc = rsnd_mod_to_dvc(mod);
-+	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
- 	int is_play = rsnd_io_is_play(io);
--	int slots = rsnd_get_slot(io);
-+	int channels = rsnd_rdai_channels_get(rdai);
- 	int ret;
- 
- 	/* Volume */
-@@ -259,7 +260,7 @@ static int rsnd_dvc_pcm_new(struct rsnd_mod *mod,
- 			"DVC Out Playback Volume" : "DVC In Capture Volume",
- 			rsnd_kctrl_accept_anytime,
- 			rsnd_dvc_volume_update,
--			&dvc->volume, slots,
-+			&dvc->volume, channels,
- 			0x00800000 - 1);
- 	if (ret < 0)
+-	ret = snd_soc_of_parse_audio_routing(card, "routing");
+-	if (ret)
++	ret = asoc_simple_card_of_parse_routing(card, NULL, 0);
++	if (ret < 0)
  		return ret;
-@@ -270,7 +271,7 @@ static int rsnd_dvc_pcm_new(struct rsnd_mod *mod,
- 			"DVC Out Mute Switch" : "DVC In Mute Switch",
- 			rsnd_kctrl_accept_anytime,
- 			rsnd_dvc_volume_update,
--			&dvc->mute,  slots,
-+			&dvc->mute, channels,
- 			1);
- 	if (ret < 0)
- 		return ret;
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index ac4d50d118d1..47162bdf1abc 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -399,11 +399,6 @@ void rsnd_parse_connect_common(struct rsnd_dai *rdai,
- 		struct device_node *playback,
- 		struct device_node *capture);
  
--void rsnd_set_slot(struct rsnd_dai *rdai,
--		   int slots, int slots_total);
--int rsnd_get_slot(struct rsnd_dai_stream *io);
--int rsnd_get_slot_num(struct rsnd_dai_stream *io);
--
- int rsnd_runtime_channel_original(struct rsnd_dai_stream *io);
- int rsnd_runtime_channel_after_ctu(struct rsnd_dai_stream *io);
- int rsnd_runtime_channel_for_ssi(struct rsnd_dai_stream *io);
-@@ -455,8 +450,8 @@ struct rsnd_dai {
- 	struct rsnd_dai_stream capture;
- 	struct rsnd_priv *priv;
- 
--	int slots;
--	int slots_num;
-+	int max_channels;	/* 2ch - 16ch */
-+	int ssi_lane;		/* 1lane - 4lane */
- 
- 	unsigned int clk_master:1;
- 	unsigned int bit_clk_inv:1;
-@@ -476,6 +471,20 @@ struct rsnd_dai {
- 
- struct rsnd_dai *rsnd_rdai_get(struct rsnd_priv *priv, int id);
- 
-+#define rsnd_rdai_channels_set(rdai, max_channels) \
-+	rsnd_rdai_channels_ctrl(rdai, max_channels)
-+#define rsnd_rdai_channels_get(rdai) \
-+	rsnd_rdai_channels_ctrl(rdai, 0)
-+int rsnd_rdai_channels_ctrl(struct rsnd_dai *rdai,
-+			    int max_channels);
-+
-+#define rsnd_rdai_ssi_lane_set(rdai, ssi_lane) \
-+	rsnd_rdai_ssi_lane_ctrl(rdai, ssi_lane)
-+#define rsnd_rdai_ssi_lane_get(rdai) \
-+	rsnd_rdai_ssi_lane_ctrl(rdai, 0)
-+int rsnd_rdai_ssi_lane_ctrl(struct rsnd_dai *rdai,
-+			    int ssi_lane);
-+
- void rsnd_dai_period_elapsed(struct rsnd_dai_stream *io);
- int rsnd_dai_connect(struct rsnd_mod *mod,
- 		     struct rsnd_dai_stream *io,
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index f7df3b5e2985..6450095eb547 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -897,7 +897,8 @@ static void rsnd_ssi_connect(struct rsnd_mod *mod,
- 		type = types[i];
- 		if (!rsnd_io_to_mod(io, type)) {
- 			rsnd_dai_connect(mod, io, type);
--			rsnd_set_slot(rdai, 2 * (i + 1), (i + 1));
-+			rsnd_rdai_channels_set(rdai, (i + 1) * 2);
-+			rsnd_rdai_ssi_lane_set(rdai, (i + 1));
- 			return;
- 		}
- 	}
+ 	asoc_simple_card_parse_convert(dev, NULL, &priv->adata);
 -- 
 2.11.0
