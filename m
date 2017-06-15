@@ -1,78 +1,93 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: Fix an error handling in 'rockchip_i2s_probe'" to the asoc tree
-Date: Thu, 15 Jun 2017 18:20:55 +0100
-Message-ID: <E1dLYRz-0001l4-SZ@debutante>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: Re: Applied "ASoC: rockchip: Fix an error handling in
+ 'rockchip_i2s_probe'" to the asoc tree
+Date: Thu, 15 Jun 2017 19:32:53 +0200
+Message-ID: <77af69fd-3135-36d6-385b-82d044c32f44@wanadoo.fr>
 References: <20170615055311.8049-1-christophe.jaillet@wanadoo.fr>
+ <E1dLYRz-0001l4-SZ@debutante>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170615055311.8049-1-christophe.jaillet@wanadoo.fr>
+In-Reply-To: <E1dLYRz-0001l4-SZ@debutante>
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, heiko@sntech.de, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.orgChristophe JAILLET <christophe.jaillet@wanadoo.fr>, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, heiko@sntech.de, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Le 15/06/2017 à 19:20, Mark Brown a écrit :
+> The patch
+>
+>     ASoC: rockchip: Fix an error handling in 'rockchip_i2s_probe'
+>
+> has been applied to the asoc tree at
+>
+>     git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
+>
+> All being well this means that it will be integrated into the linux-next
+> tree (usually sometime in the next 24 hours) and sent to Linus during
+> the next merge window (or sooner if it is a bug fix), however if
+> problems are discovered then the patch may be dropped or reverted.
+>
+> You may get further e-mails resulting from automated or manual testing
+> and review of the tree, please engage with people reporting problems and
+> send followup patches addressing any issues that are reported if needed.
+>
+> If any updates are required or you are submitting further changes they
+> should be sent as incremental updates against current git, existing
+> patches will not be replaced.
+>
+> Please add any relevant lists and maintainers to the CCs when replying
+> to this mail.
+>
+> Thanks,
+> Mark
+>
+>  From c3a3d3c41b74b05267bab6173f2a8224a1443ba6 Mon Sep 17 00:00:00 2001
+> From: Christophe Jaillet <christophe.jaillet@wanadoo.fr>
+> Date: Thu, 15 Jun 2017 07:53:11 +0200
+> Subject: [PATCH] ASoC: rockchip: Fix an error handling in 'rockchip_i2s_probe'
+>
+> If this memory allocation fail, we must disable what has been enabled.
+> Do not return immediately but go thrue the error handling path instead.
+>
+> Also use 'devm_kmemdup' instead of 'devm_kzalloc+memcpy' to simplify code.
+>
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> ---
+>   sound/soc/rockchip/rockchip_i2s.c | 9 +++++----
+>   1 file changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
+> index 66a26c56c658..ce09dee2202e 100644
+> --- a/sound/soc/rockchip/rockchip_i2s.c
+> +++ b/sound/soc/rockchip/rockchip_i2s.c
+> @@ -641,12 +641,13 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
+>   			goto err_pm_disable;
+>   	}
+>   
+> -	soc_dai = devm_kzalloc(&pdev->dev,
+> +	soc_dai = devm_kmemdup(&pdev->dev, &rockchip_i2s_dai
+>   			       sizeof(*soc_dai), GFP_KERNEL);
+> -	if (!soc_dai)
+> -		return -ENOMEM;
+> +	if (!soc_dai) {
+> +		err = -ENOMEM;
+> +		goto err_pm_disable;
+> +	}
+>   
+> -	memcpy(soc_dai, &rockchip_i2s_dai, sizeof(*soc_dai));
+>   	if (!of_property_read_u32(node, "rockchip,playback-channels", &val)) {
+>   		if (val >= 2 && val <= 8)
+>   			soc_dai->playback.channels_max = val;
 
-   ASoC: rockchip: Fix an error handling in 'rockchip_i2s_probe'
+Thanks for taking the patch, but there is a typo in it. A comma is 
+missing as spotted by the kbuild test robot.
 
-has been applied to the asoc tree at
+I hope that you have seen it and fixed it before applying.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+All my patches are normally compile tested. I don't know what has gone 
+wrong for this one. I apologize for the issue.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From c3a3d3c41b74b05267bab6173f2a8224a1443ba6 Mon Sep 17 00:00:00 2001
-From: Christophe Jaillet <christophe.jaillet@wanadoo.fr>
-Date: Thu, 15 Jun 2017 07:53:11 +0200
-Subject: [PATCH] ASoC: rockchip: Fix an error handling in 'rockchip_i2s_probe'
-
-If this memory allocation fail, we must disable what has been enabled.
-Do not return immediately but go thrue the error handling path instead.
-
-Also use 'devm_kmemdup' instead of 'devm_kzalloc+memcpy' to simplify code.
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/rockchip/rockchip_i2s.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 66a26c56c658..ce09dee2202e 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -641,12 +641,13 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
- 			goto err_pm_disable;
- 	}
- 
--	soc_dai = devm_kzalloc(&pdev->dev,
-+	soc_dai = devm_kmemdup(&pdev->dev, &rockchip_i2s_dai
- 			       sizeof(*soc_dai), GFP_KERNEL);
--	if (!soc_dai)
--		return -ENOMEM;
-+	if (!soc_dai) {
-+		err = -ENOMEM;
-+		goto err_pm_disable;
-+	}
- 
--	memcpy(soc_dai, &rockchip_i2s_dai, sizeof(*soc_dai));
- 	if (!of_property_read_u32(node, "rockchip,playback-channels", &val)) {
- 		if (val >= 2 && val <= 8)
- 			soc_dai->playback.channels_max = val;
--- 
-2.11.0
+CJ
