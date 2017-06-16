@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: sai: fix clock management" to the asoc tree
-Date: Fri, 16 Jun 2017 18:49:55 +0100
-Message-ID: <E1dLvNb-0005cn-L3@debutante>
-References: <1497615334-7156-7-git-send-email-olivier.moysan@st.com>
+Subject: Applied "dt-bindings: stm32: add h7 support for sai" to the asoc tree
+Date: Fri, 16 Jun 2017 18:49:48 +0100
+Message-ID: <E1dLvNU-0005aJ-6G@debutante>
+References: <1497615384-7407-2-git-send-email-olivier.moysan@st.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1497615334-7156-7-git-send-email-olivier.moysan@st.com>
+In-Reply-To: <1497615384-7407-2-git-send-email-olivier.moysan@st.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, robh@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: sai: fix clock management
+   dt-bindings: stm32: add h7 support for sai
 
 has been applied to the asoc tree at
 
@@ -36,33 +36,64 @@ to this mail.
 Thanks,
 Mark
 
->From 77dc2255f4859b814d4d8713a91ab41114996d4e Mon Sep 17 00:00:00 2001
+>From aef86ae38b0579dc147e3b96b1b9523561f79378 Mon Sep 17 00:00:00 2001
 From: olivier moysan <olivier.moysan@st.com>
-Date: Fri, 16 Jun 2017 14:15:33 +0200
-Subject: [PATCH] ASoC: stm32: sai: fix clock management
+Date: Fri, 16 Jun 2017 14:16:23 +0200
+Subject: [PATCH] dt-bindings: stm32: add h7 support for sai
 
-Allow peripheral clock enable/disable on regmap accesses.
+Document device tree bindings for STM32H7 SAI.
 
 Signed-off-by: olivier moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_sai_sub.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../devicetree/bindings/sound/st,stm32-sai.txt         | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index 97b69a3ab46e..2466af0343db 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -766,8 +766,8 @@ static int stm32_sai_sub_parse_of(struct platform_device *pdev,
- 		return PTR_ERR(base);
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.txt b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
+index a0feeed1710e..f1c5ae59e7c9 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
++++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
+@@ -6,7 +6,7 @@ The SAI contains two independent audio sub-blocks. Each sub-block has
+ its own clock generator and I/O lines controller.
  
- 	sai->phys_addr = res->start;
--	sai->regmap = devm_regmap_init_mmio(&pdev->dev, base,
--					    &stm32_sai_sub_regmap_config);
-+	sai->regmap = devm_regmap_init_mmio_clk(&pdev->dev, "sai_ck", base,
-+						&stm32_sai_sub_regmap_config);
+ Required properties:
+-  - compatible: Should be "st,stm32f4-sai"
++  - compatible: Should be "st,stm32f4-sai" or "st,stm32h7-sai"
+   - reg: Base address and size of SAI common register set.
+   - clocks: Must contain phandle and clock specifier pairs for each entry
+ 	in clock-names.
+@@ -47,24 +47,24 @@ sound_card {
+ };
  
- 	/* Get direction property */
- 	if (of_property_match_string(np, "dma-names", "tx") >= 0) {
+ sai1: sai1@40015800 {
+-	compatible = "st,stm32f4-sai";
++	compatible = "st,stm32h7-sai";
+ 	#address-cells = <1>;
+ 	#size-cells = <1>;
+ 	ranges = <0 0x40015800 0x400>;
+ 	reg = <0x40015800 0x4>;
+-	clocks = <&rcc 1 CLK_SAIQ_PDIV>, <&rcc 1 CLK_I2SQ_PDIV>;
++	clocks = <&rcc PLL1_Q>, <&rcc PLL2_P>;
+ 	clock-names = "x8k", "x11k";
+ 	interrupts = <87>;
+ 
+-	sai1b: audio-controller@40015824 {
+-		compatible = "st,stm32-sai-sub-b";
+-		reg = <0x24 0x1C>;
+-		clocks = <&rcc 1 CLK_SAI2>;
++	sai1a: audio-controller@40015804 {
++		compatible = "st,stm32-sai-sub-a";
++		reg = <0x4 0x1C>;
++		clocks = <&rcc SAI1_CK>;
+ 		clock-names = "sai_ck";
+-		dmas = <&dma2 5 0 0x400 0x0>;
++		dmas = <&dmamux1 1 87 0x400 0x0>;
+ 		dma-names = "tx";
+ 		pinctrl-names = "default";
+-		pinctrl-0 = <&pinctrl_sai1b>;
++		pinctrl-0 = <&pinctrl_sai1a>;
+ 
+ 		sai1b_port: port {
+ 			cpu_endpoint: endpoint {
 -- 
 2.11.0
