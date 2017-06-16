@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bdw-rt5677: Switch to
-	devm_acpi_dev_add_driver_gpios()" to the asoc tree
-Date: Fri, 16 Jun 2017 18:50:31 +0100
-Message-ID: <E1dLvOB-0005lk-J1@debutante>
-References: <20170615124638.65971-4-andriy.shevchenko@linux.intel.com>
+Subject: Applied "ASoC: stm32: sai: manage master clock" to the
+	asoc tree
+Date: Fri, 16 Jun 2017 18:49:51 +0100
+Message-ID: <E1dLvNX-0005bY-5x@debutante>
+References: <1497615334-7156-8-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B464E26752B
- for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2017 19:51:23 +0200 (CEST)
-In-Reply-To: <20170615124638.65971-4-andriy.shevchenko@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B026267545
+ for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2017 19:51:50 +0200 (CEST)
+In-Reply-To: <1497615334-7156-8-git-send-email-olivier.moysan@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, John Keeping <john@metanate.com>, Bard Liao <bardliao@realtek.com>
+Cc: mark.rutland@arm.com, robh@kernel.org, alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, benjamin.gaignard@st.com, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bdw-rt5677: Switch to devm_acpi_dev_add_driver_gpios()
+   ASoC: stm32: sai: manage master clock
 
 has been applied to the asoc tree at
 
@@ -53,34 +52,60 @@ to this mail.
 Thanks,
 Mark
 
->From 0931352dcb4d2019bf1ec2a5457a41d1d6566509 Mon Sep 17 00:00:00 2001
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Date: Thu, 15 Jun 2017 15:46:38 +0300
-Subject: [PATCH] ASoC: Intel: bdw-rt5677: Switch to
- devm_acpi_dev_add_driver_gpios()
+>From 12093366981de5060379ad7fa173a1d459c49572 Mon Sep 17 00:00:00 2001
+From: olivier moysan <olivier.moysan@st.com>
+Date: Fri, 16 Jun 2017 14:15:34 +0200
+Subject: [PATCH] ASoC: stm32: sai: manage master clock
 
-Switch to use managed variant of acpi_dev_add_driver_gpios() to simplify
-error path and fix potentially wrong assignment if ->probe() fails.
+Disable master clock by default, and activate
+it only when requested.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: olivier moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bdw-rt5677.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/stm/stm32_sai_sub.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
-index bb98e94dd6f9..058b8ccedf02 100644
---- a/sound/soc/intel/boards/bdw-rt5677.c
-+++ b/sound/soc/intel/boards/bdw-rt5677.c
-@@ -207,8 +207,7 @@ static int bdw_rt5677_init(struct snd_soc_pcm_runtime *rtd)
- 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
- 	int ret;
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index 2466af0343db..ce48c02db051 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -220,8 +220,15 @@ static int stm32_sai_set_sysclk(struct snd_soc_dai *cpu_dai,
+ 				int clk_id, unsigned int freq, int dir)
+ {
+ 	struct stm32_sai_sub_data *sai = snd_soc_dai_get_drvdata(cpu_dai);
++	int ret;
  
--	ret = acpi_dev_add_driver_gpios(ACPI_COMPANION(codec->dev),
--			bdw_rt5677_gpios);
-+	ret = devm_acpi_dev_add_driver_gpios(codec->dev, bdw_rt5677_gpios);
- 	if (ret)
- 		dev_warn(codec->dev, "Failed to add driver gpios\n");
+ 	if ((dir == SND_SOC_CLOCK_OUT) && sai->master) {
++		ret = regmap_update_bits(sai->regmap, STM_SAI_CR1_REGX,
++					 SAI_XCR1_NODIV,
++					 (unsigned int)~SAI_XCR1_NODIV);
++		if (ret < 0)
++			return ret;
++
+ 		sai->mclk_rate = freq;
+ 		dev_dbg(cpu_dai->dev, "SAI MCLK frequency is %uHz\n", freq);
+ 	}
+@@ -356,6 +363,10 @@ static int stm32_sai_set_dai_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
+ 	}
+ 	cr1_mask |= SAI_XCR1_SLAVE;
  
++	/* do not generate master by default */
++	cr1 |= SAI_XCR1_NODIV;
++	cr1_mask |= SAI_XCR1_NODIV;
++
+ 	ret = regmap_update_bits(sai->regmap, STM_SAI_CR1_REGX, cr1_mask, cr1);
+ 	if (ret < 0) {
+ 		dev_err(cpu_dai->dev, "Failed to update CR1 register\n");
+@@ -652,6 +663,9 @@ static void stm32_sai_shutdown(struct snd_pcm_substream *substream,
+ 
+ 	regmap_update_bits(sai->regmap, STM_SAI_IMR_REGX, SAI_XIMR_MASK, 0);
+ 
++	regmap_update_bits(sai->regmap, STM_SAI_CR1_REGX, SAI_XCR1_NODIV,
++			   SAI_XCR1_NODIV);
++
+ 	clk_disable_unprepare(sai->sai_ck);
+ 	sai->substream = NULL;
+ }
 -- 
 2.11.0
