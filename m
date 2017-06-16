@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5677: Move platform code to board
-	file" to the asoc tree
-Date: Fri, 16 Jun 2017 17:53:00 +0100
-Message-ID: <E1dLuUW-0003wx-Kz@debutante>
-References: <20170615124638.65971-3-andriy.shevchenko@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 74A0A2673C9
- for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2017 18:53:14 +0200 (CEST)
-In-Reply-To: <20170615124638.65971-3-andriy.shevchenko@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, John Keeping <john@metanate.com>, Bard Liao <bardliao@realtek.com>
+Subject: Applied "ASoC: simple-card-utils: add asoc_simple_card_of_parse_widgets()" to the asoc tree
+Date: Fri, 16 Jun 2017 18:50:16 +0100
+Message-ID: <E1dLvNw-0005jt-8A@debutante>
+References: <87injwiumx.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87injwiumx.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5677: Move platform code to board file
+   ASoC: simple-card-utils: add asoc_simple_card_of_parse_widgets()
 
 has been applied to the asoc tree at
 
@@ -53,124 +37,65 @@ to this mail.
 Thanks,
 Mark
 
->From 55e59aa0525a461abcbc226ace7a7eb9d9a07a4a Mon Sep 17 00:00:00 2001
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Date: Thu, 15 Jun 2017 15:46:37 +0300
-Subject: [PATCH] ASoC: rt5677: Move platform code to board file
+>From b31f11d036e689ba9e60d581ffe8e032a6305da9 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 16 Jun 2017 01:38:50 +0000
+Subject: [PATCH] ASoC: simple-card-utils: add
+ asoc_simple_card_of_parse_widgets()
 
-GPIO ACPI mapping table is defined on platform basis. Codec driver
-shouldn't have known what platform is using it.
+Current simple card drivers are parsing widgets on each own driver
+(only simple-card at this point, but will be supported on all drivers)
+Encapsulation is one of simple card util's purpose.
+Let's add asoc_simple_card_of_parse_widgets for it.
 
-Make codec driver more generic by moving platform code to where it
-belongs.
-
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5677.c           | 26 --------------------------
- sound/soc/intel/boards/bdw-rt5677.c | 27 +++++++++++++++++++++++++++
- 2 files changed, 27 insertions(+), 26 deletions(-)
+ include/sound/simple_card_utils.h     |  2 ++
+ sound/soc/generic/simple-card-utils.c | 19 +++++++++++++++++++
+ 2 files changed, 21 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 64cf6cc41ad1..36e530a36c82 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -41,15 +41,6 @@
+diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
+index 889c8ff86369..42c6a6ac3ce6 100644
+--- a/include/sound/simple_card_utils.h
++++ b/include/sound/simple_card_utils.h
+@@ -103,5 +103,7 @@ void asoc_simple_card_parse_convert(struct device *dev, char *prefix,
+ int asoc_simple_card_of_parse_routing(struct snd_soc_card *card,
+ 				      char *prefix,
+ 				      int optional);
++int asoc_simple_card_of_parse_widgets(struct snd_soc_card *card,
++				      char *prefix);
  
- #define RT5677_PR_BASE (RT5677_PR_RANGE_BASE + (0 * RT5677_PR_SPACING))
+ #endif /* __SIMPLE_CARD_UTILS_H */
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index a2b6d95bc2f9..26d64fa40c9c 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -397,6 +397,25 @@ int asoc_simple_card_of_parse_routing(struct snd_soc_card *card,
+ }
+ EXPORT_SYMBOL_GPL(asoc_simple_card_of_parse_routing);
  
--/* GPIO indexes defined by ACPI */
--enum {
--	RT5677_GPIO_PLUG_DET		= 0,
--	RT5677_GPIO_MIC_PRESENT_L	= 1,
--	RT5677_GPIO_HOTWORD_DET_L	= 2,
--	RT5677_GPIO_DSP_INT		= 3,
--	RT5677_GPIO_HP_AMP_SHDN_L	= 4,
--};
--
- static const struct regmap_range_cfg rt5677_ranges[] = {
- 	{
- 		.name = "PR",
-@@ -5048,28 +5039,11 @@ static const struct acpi_device_id rt5677_acpi_match[] = {
- MODULE_DEVICE_TABLE(acpi, rt5677_acpi_match);
- #endif
- 
--static const struct acpi_gpio_params plug_det_gpio = { RT5677_GPIO_PLUG_DET, 0, false };
--static const struct acpi_gpio_params mic_present_gpio = { RT5677_GPIO_MIC_PRESENT_L, 0, false };
--static const struct acpi_gpio_params headphone_enable_gpio = { RT5677_GPIO_HP_AMP_SHDN_L, 0, false };
--
--static const struct acpi_gpio_mapping bdw_rt5677_gpios[] = {
--	{ "plug-det-gpios", &plug_det_gpio, 1 },
--	{ "mic-present-gpios", &mic_present_gpio, 1 },
--	{ "headphone-enable-gpios", &headphone_enable_gpio, 1 },
--	{ NULL },
--};
--
- static void rt5677_read_acpi_properties(struct rt5677_priv *rt5677,
- 		struct device *dev)
- {
--	int ret;
- 	u32 val;
- 
--	ret = acpi_dev_add_driver_gpios(ACPI_COMPANION(dev),
--			bdw_rt5677_gpios);
--	if (ret)
--		dev_warn(dev, "Failed to add driver gpios\n");
--
- 	if (!device_property_read_u32(dev, "DCLK", &val))
- 		rt5677->pdata.dmic2_clk_pin = val;
- 
-diff --git a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
-index 14d9693c1641..bb98e94dd6f9 100644
---- a/sound/soc/intel/boards/bdw-rt5677.c
-+++ b/sound/soc/intel/boards/bdw-rt5677.c
-@@ -16,6 +16,7 @@
-  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  */
- 
-+#include <linux/acpi.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/gpio/consumer.h>
-@@ -120,6 +121,26 @@ static struct snd_soc_jack_gpio mic_jack_gpio = {
- 	.invert			= 1,
- };
- 
-+/* GPIO indexes defined by ACPI */
-+enum {
-+	RT5677_GPIO_PLUG_DET		= 0,
-+	RT5677_GPIO_MIC_PRESENT_L	= 1,
-+	RT5677_GPIO_HOTWORD_DET_L	= 2,
-+	RT5677_GPIO_DSP_INT		= 3,
-+	RT5677_GPIO_HP_AMP_SHDN_L	= 4,
-+};
++int asoc_simple_card_of_parse_widgets(struct snd_soc_card *card,
++				      char *prefix)
++{
++	struct device_node *node = card->dev->of_node;
++	char prop[128];
 +
-+static const struct acpi_gpio_params plug_det_gpio = { RT5677_GPIO_PLUG_DET, 0, false };
-+static const struct acpi_gpio_params mic_present_gpio = { RT5677_GPIO_MIC_PRESENT_L, 0, false };
-+static const struct acpi_gpio_params headphone_enable_gpio = { RT5677_GPIO_HP_AMP_SHDN_L, 0, false };
++	if (!prefix)
++		prefix = "";
 +
-+static const struct acpi_gpio_mapping bdw_rt5677_gpios[] = {
-+	{ "plug-det-gpios", &plug_det_gpio, 1 },
-+	{ "mic-present-gpios", &mic_present_gpio, 1 },
-+	{ "headphone-enable-gpios", &headphone_enable_gpio, 1 },
-+	{ NULL },
-+};
++	snprintf(prop, sizeof(prop), "%s%s", prefix, "widgets");
 +
- static int broadwell_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
- 			struct snd_pcm_hw_params *params)
- {
-@@ -184,6 +205,12 @@ static int bdw_rt5677_init(struct snd_soc_pcm_runtime *rtd)
- 			snd_soc_card_get_drvdata(rtd->card);
- 	struct snd_soc_codec *codec = rtd->codec;
- 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
-+	int ret;
++	if (of_property_read_bool(node, prop))
++		return snd_soc_of_parse_audio_simple_widgets(card, prop);
 +
-+	ret = acpi_dev_add_driver_gpios(ACPI_COMPANION(codec->dev),
-+			bdw_rt5677_gpios);
-+	if (ret)
-+		dev_warn(codec->dev, "Failed to add driver gpios\n");
- 
- 	/* Enable codec ASRC function for Stereo DAC/Stereo1 ADC/DMIC/I2S1.
- 	 * The ASRC clock source is clk_i2s1_asrc.
++	/* no widgets is not error */
++	return 0;
++}
++EXPORT_SYMBOL_GPL(asoc_simple_card_of_parse_widgets);
++
+ /* Module information */
+ MODULE_AUTHOR("Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>");
+ MODULE_DESCRIPTION("ALSA SoC Simple Card Utils");
 -- 
 2.11.0
