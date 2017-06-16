@@ -1,17 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "dt-bindings: stm32: sai: fix DT example" to the asoc tree
-Date: Fri, 16 Jun 2017 18:50:10 +0100
-Message-ID: <E1dLvNq-0005iB-7G@debutante>
-References: <1497615334-7156-2-git-send-email-olivier.moysan@st.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1497615334-7156-2-git-send-email-olivier.moysan@st.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, robh@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.comalsa-devel@alsa-project.org
+Subject: Applied "ASoC: Intel: bdw-rt5677: Switch to
+	devm_acpi_dev_add_driver_gpios()" to the asoc tree
+Date: Fri, 16 Jun 2017 18:50:31 +0100
+Message-ID: <E1dLvOB-0005lk-J1@debutante>
+References: <20170615124638.65971-4-andriy.shevchenko@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id B464E26752B
+ for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2017 19:51:23 +0200 (CEST)
+In-Reply-To: <20170615124638.65971-4-andriy.shevchenko@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, John Keeping <john@metanate.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   dt-bindings: stm32: sai: fix DT example
+   ASoC: Intel: bdw-rt5677: Switch to devm_acpi_dev_add_driver_gpios()
 
 has been applied to the asoc tree at
 
@@ -36,75 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From 4c1458584c9a5ac3f9e174e80a986fe5a2bfd07b Mon Sep 17 00:00:00 2001
-From: olivier moysan <olivier.moysan@st.com>
-Date: Fri, 16 Jun 2017 14:15:28 +0200
-Subject: [PATCH] dt-bindings: stm32: sai: fix DT example
+>From 0931352dcb4d2019bf1ec2a5457a41d1d6566509 Mon Sep 17 00:00:00 2001
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Date: Thu, 15 Jun 2017 15:46:38 +0300
+Subject: [PATCH] ASoC: Intel: bdw-rt5677: Switch to
+ devm_acpi_dev_add_driver_gpios()
 
-Correct the device tree example.
+Switch to use managed variant of acpi_dev_add_driver_gpios() to simplify
+error path and fix potentially wrong assignment if ->probe() fails.
 
-Signed-off-by: olivier moysan <olivier.moysan@st.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/st,stm32-sai.txt     | 25 +++++++++-------------
- 1 file changed, 10 insertions(+), 15 deletions(-)
+ sound/soc/intel/boards/bdw-rt5677.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.txt b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
-index c59a3d779e06..a0feeed1710e 100644
---- a/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
-+++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
-@@ -36,6 +36,10 @@ SAI subnodes required properties:
-   - pinctrl-names: should contain only value "default"
-   - pinctrl-0: see Documentation/devicetree/bindings/pinctrl/pinctrl-stm32.txt
+diff --git a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
+index bb98e94dd6f9..058b8ccedf02 100644
+--- a/sound/soc/intel/boards/bdw-rt5677.c
++++ b/sound/soc/intel/boards/bdw-rt5677.c
+@@ -207,8 +207,7 @@ static int bdw_rt5677_init(struct snd_soc_pcm_runtime *rtd)
+ 	struct snd_soc_dapm_context *dapm = snd_soc_codec_get_dapm(codec);
+ 	int ret;
  
-+The device node should contain one 'port' child node with one child 'endpoint'
-+node, according to the bindings defined in Documentation/devicetree/bindings/
-+graph.txt.
-+
- Example:
- sound_card {
- 	compatible = "audio-graph-card";
-@@ -46,16 +50,15 @@ sai1: sai1@40015800 {
- 	compatible = "st,stm32f4-sai";
- 	#address-cells = <1>;
- 	#size-cells = <1>;
--	ranges;
-+	ranges = <0 0x40015800 0x400>;
- 	reg = <0x40015800 0x4>;
- 	clocks = <&rcc 1 CLK_SAIQ_PDIV>, <&rcc 1 CLK_I2SQ_PDIV>;
- 	clock-names = "x8k", "x11k";
- 	interrupts = <87>;
+-	ret = acpi_dev_add_driver_gpios(ACPI_COMPANION(codec->dev),
+-			bdw_rt5677_gpios);
++	ret = devm_acpi_dev_add_driver_gpios(codec->dev, bdw_rt5677_gpios);
+ 	if (ret)
+ 		dev_warn(codec->dev, "Failed to add driver gpios\n");
  
- 	sai1b: audio-controller@40015824 {
--		#sound-dai-cells = <0>;
- 		compatible = "st,stm32-sai-sub-b";
--		reg = <0x40015824 0x1C>;
-+		reg = <0x24 0x1C>;
- 		clocks = <&rcc 1 CLK_SAI2>;
- 		clock-names = "sai_ck";
- 		dmas = <&dma2 5 0 0x400 0x0>;
-@@ -63,18 +66,10 @@ sai1: sai1@40015800 {
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&pinctrl_sai1b>;
- 
--		ports {
--			#address-cells = <1>;
--			#size-cells = <0>;
--
--			sai1b_port: port@0 {
--				reg = <0>;
--				cpu_endpoint: endpoint {
--					remote-endpoint = <&codec_endpoint>;
--					audio-graph-card,format = "i2s";
--					audio-graph-card,bitclock-master = <&codec_endpoint>;
--					audio-graph-card,frame-master = <&codec_endpoint>;
--				};
-+		sai1b_port: port {
-+			cpu_endpoint: endpoint {
-+				remote-endpoint = <&codec_endpoint>;
-+				format = "i2s";
- 			};
- 		};
- 	};
 -- 
 2.11.0
