@@ -1,7 +1,7 @@
 From: olivier moysan <olivier.moysan@st.com>
-Subject: [PATCH 4/7] ASoC: stm32: sai: remove spurious trace
-Date: Fri, 16 Jun 2017 14:15:31 +0200
-Message-ID: <1497615334-7156-5-git-send-email-olivier.moysan@st.com>
+Subject: [PATCH 2/7] ASoC: stm32: change SAI configuration flag
+Date: Fri, 16 Jun 2017 14:15:29 +0200
+Message-ID: <1497615334-7156-3-git-send-email-olivier.moysan@st.com>
 References: <1497615334-7156-1-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,26 +21,47 @@ To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mco
 Cc: arnaud.pouliquen@st.com, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
-Remove spurious trace in sai driver.
+Use a specific flag for SAI interface instead
+of common stm32 asoc flag.
 
 Signed-off-by: olivier moysan <olivier.moysan@st.com>
 ---
- sound/soc/stm/stm32_sai_sub.c | 3 ---
- 1 file changed, 3 deletions(-)
+ sound/soc/stm/Kconfig  | 10 +++++++---
+ sound/soc/stm/Makefile |  4 ++--
+ 2 files changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index d7aeed3..24b8874 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -761,9 +761,6 @@ static int stm32_sai_sub_parse_of(struct platform_device *pdev,
- 		return -ENODEV;
+diff --git a/sound/soc/stm/Kconfig b/sound/soc/stm/Kconfig
+index 972970f..d747993 100644
+--- a/sound/soc/stm/Kconfig
++++ b/sound/soc/stm/Kconfig
+@@ -1,8 +1,12 @@
+-menuconfig SND_SOC_STM32
+-	tristate "STMicroelectronics STM32 SOC audio support"
++menu "STMicroelectronics STM32 SOC audio support"
++
++config SND_SOC_STM32_SAI
++	tristate "STM32 SAI interface (Serial Audio Interface) support"
+ 	depends on ARCH_STM32 || COMPILE_TEST
+ 	depends on SND_SOC
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 	select REGMAP_MMIO
+ 	help
+-	  Say Y if you want to enable ASoC-support for STM32
++	  Say Y if you want to enable SAI for STM32
++
++endmenu
+diff --git a/sound/soc/stm/Makefile b/sound/soc/stm/Makefile
+index e466a47..386ce4b 100644
+--- a/sound/soc/stm/Makefile
++++ b/sound/soc/stm/Makefile
+@@ -1,6 +1,6 @@
+ # SAI
+ snd-soc-stm32-sai-sub-objs := stm32_sai_sub.o
+-obj-$(CONFIG_SND_SOC_STM32) += snd-soc-stm32-sai-sub.o
++obj-$(CONFIG_SND_SOC_STM32_SAI) += snd-soc-stm32-sai-sub.o
  
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--
--	dev_err(&pdev->dev, "res %pr\n", res);
--
- 	base = devm_ioremap_resource(&pdev->dev, res);
- 	if (IS_ERR(base))
- 		return PTR_ERR(base);
+ snd-soc-stm32-sai-objs := stm32_sai.o
+-obj-$(CONFIG_SND_SOC_STM32) += snd-soc-stm32-sai.o
++obj-$(CONFIG_SND_SOC_STM32_SAI) += snd-soc-stm32-sai.o
 -- 
 1.9.1
