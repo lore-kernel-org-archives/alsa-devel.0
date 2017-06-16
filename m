@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ak4613: add hw_constraint rule for Sampling Rate" to the asoc tree
-Date: Fri, 16 Jun 2017 18:50:28 +0100
-Message-ID: <E1dLvO8-0005kp-GP@debutante>
-References: <87efukiu8d.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: simple-card: use asoc_simple_card_of_parse_widgets()" to the asoc tree
+Date: Fri, 16 Jun 2017 18:50:13 +0100
+Message-ID: <E1dLvNt-0005j2-8V@debutante>
+References: <87h8zgiumc.wl%kuninori.morimoto.gx@renesas.com>
 Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87efukiu8d.wl%kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87h8zgiumc.wl%kuninori.morimoto.gx@renesas.com>
 Sender: linux-renesas-soc-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ak4613: add hw_constraint rule for Sampling Rate
+   ASoC: simple-card: use asoc_simple_card_of_parse_widgets()
 
 has been applied to the asoc tree at
 
@@ -37,120 +37,42 @@ to this mail.
 Thanks,
 Mark
 
->From 907cd8809eebccc57a6a3ee9fa87b7602e72df38 Mon Sep 17 00:00:00 2001
+>From fa2760dd366c735637504d1d7efab7688391c6b4 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 16 Jun 2017 01:47:34 +0000
-Subject: [PATCH] ASoC: ak4613: add hw_constraint rule for Sampling Rate
+Date: Fri, 16 Jun 2017 01:39:11 +0000
+Subject: [PATCH] ASoC: simple-card: use asoc_simple_card_of_parse_widgets()
 
-Current ak4613 accepts all range of Sampling Rate, but it depends on
-inputed master clock. This patch adds hw constraint rule for it.
+Current simple card driver is supporting widgets on DT,
+other simple/audio card drivers will support it.
+Encapsulation is one of simple card util's purpose.
+Let's use asoc_simple_card_of_parse_widgets
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak4613.c | 61 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 61 insertions(+)
+ sound/soc/generic/simple-card.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/ak4613.c b/sound/soc/codecs/ak4613.c
-index d5beca008dea..a4520a1f849d 100644
---- a/sound/soc/codecs/ak4613.c
-+++ b/sound/soc/codecs/ak4613.c
-@@ -94,6 +94,8 @@ struct ak4613_interface {
- struct ak4613_priv {
- 	struct mutex lock;
- 	const struct ak4613_interface *iface;
-+	struct snd_pcm_hw_constraint_list constraint;
-+	unsigned int sysclk;
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 7b2533c7f82e..8b7b47251fe1 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -354,13 +354,9 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
  
- 	unsigned int fmt;
- 	u8 oc;
-@@ -252,6 +254,50 @@ static void ak4613_dai_shutdown(struct snd_pcm_substream *substream,
- 	mutex_unlock(&priv->lock);
- }
+ 	dai_link = of_get_child_by_name(node, PREFIX "dai-link");
  
-+static void ak4613_hw_constraints(struct ak4613_priv *priv,
-+				  struct snd_pcm_runtime *runtime)
-+{
-+	static const unsigned int ak4613_rates[] = {
-+		 32000,
-+		 44100,
-+		 48000,
-+		 64000,
-+		 88200,
-+		 96000,
-+		176400,
-+		192000,
-+	};
-+	struct snd_pcm_hw_constraint_list *constraint = &priv->constraint;
-+	unsigned int fs;
-+	int i;
-+
-+	constraint->list	= ak4613_rates;
-+	constraint->mask	= 0;
-+	constraint->count	= 0;
-+
-+	/*
-+	 * Slave Mode
-+	 *	Normal: [32kHz, 48kHz] : 256fs,384fs or 512fs
-+	 *	Double: [64kHz, 96kHz] : 256fs
-+	 *	Quad  : [128kHz,192kHz]: 128fs
-+	 *
-+	 * Master mode
-+	 *	Normal: [32kHz, 48kHz] : 256fs or 512fs
-+	 *	Double: [64kHz, 96kHz] : 256fs
-+	 *	Quad  : [128kHz,192kHz]: 128fs
-+	*/
-+	for (i = 0; i < ARRAY_SIZE(ak4613_rates); i++) {
-+		/* minimum fs on each range */
-+		fs = (ak4613_rates[i] <= 96000) ? 256 : 128;
-+
-+		if (priv->sysclk >= ak4613_rates[i] * fs)
-+			constraint->count = i + 1;
-+	}
-+
-+	snd_pcm_hw_constraint_list(runtime, 0,
-+				SNDRV_PCM_HW_PARAM_RATE, constraint);
-+}
-+
- static int ak4613_dai_startup(struct snd_pcm_substream *substream,
- 			      struct snd_soc_dai *dai)
- {
-@@ -260,6 +306,19 @@ static int ak4613_dai_startup(struct snd_pcm_substream *substream,
+-	/* The off-codec widgets */
+-	if (of_property_read_bool(node, PREFIX "widgets")) {
+-		ret = snd_soc_of_parse_audio_simple_widgets(card,
+-					PREFIX "widgets");
+-		if (ret)
+-			goto card_parse_end;
+-	}
++	ret = asoc_simple_card_of_parse_widgets(card, PREFIX);
++	if (ret < 0)
++		goto card_parse_end;
  
- 	priv->cnt++;
- 
-+	ak4613_hw_constraints(priv, substream->runtime);
-+
-+	return 0;
-+}
-+
-+static int ak4613_dai_set_sysclk(struct snd_soc_dai *codec_dai,
-+				 int clk_id, unsigned int freq, int dir)
-+{
-+	struct snd_soc_codec *codec = codec_dai->codec;
-+	struct ak4613_priv *priv = snd_soc_codec_get_drvdata(codec);
-+
-+	priv->sysclk = freq;
-+
- 	return 0;
- }
- 
-@@ -411,6 +470,7 @@ static int ak4613_set_bias_level(struct snd_soc_codec *codec,
- static const struct snd_soc_dai_ops ak4613_dai_ops = {
- 	.startup	= ak4613_dai_startup,
- 	.shutdown	= ak4613_dai_shutdown,
-+	.set_sysclk	= ak4613_dai_set_sysclk,
- 	.set_fmt	= ak4613_dai_set_fmt,
- 	.hw_params	= ak4613_dai_hw_params,
- };
-@@ -529,6 +589,7 @@ static int ak4613_i2c_probe(struct i2c_client *i2c,
- 
- 	priv->iface		= NULL;
- 	priv->cnt		= 0;
-+	priv->sysclk		= 0;
- 
- 	mutex_init(&priv->lock);
- 
+ 	ret = asoc_simple_card_of_parse_routing(card, PREFIX, 1);
+ 	if (ret < 0)
 -- 
 2.11.0
