@@ -1,44 +1,68 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/7] ASoC: stm32: change SAI configuration flag
-Date: Fri, 16 Jun 2017 18:49:15 +0100
-Message-ID: <20170616174915.olqfpqrszku3eguu@sirena.org.uk>
-References: <1497615334-7156-1-git-send-email-olivier.moysan@st.com>
- <1497615334-7156-3-git-send-email-olivier.moysan@st.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="v4n3gguis6o3yxx5"
+Subject: Applied "ASoC: stm32: sai: fix clock management" to the asoc tree
+Date: Fri, 16 Jun 2017 18:49:55 +0100
+Message-ID: <E1dLvNb-0005cn-L3@debutante>
+References: <1497615334-7156-7-git-send-email-olivier.moysan@st.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1497615334-7156-3-git-send-email-olivier.moysan@st.com>
+In-Reply-To: <1497615334-7156-7-git-send-email-olivier.moysan@st.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: olivier moysan <olivier.moysan@st.com>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, robh@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, benjamin.gaignard@st.com
+Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, robh@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---v4n3gguis6o3yxx5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: stm32: sai: fix clock management
 
-On Fri, Jun 16, 2017 at 02:15:29PM +0200, olivier moysan wrote:
-> Use a specific flag for SAI interface instead
-> of common stm32 asoc flag.
+has been applied to the asoc tree at
 
-This doesn't apply against current code, please check and resend.
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
---v4n3gguis6o3yxx5
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
------BEGIN PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllEGhoACgkQJNaLcl1U
-h9CV3Qf+MR5+6WOdJwmdSZfVkFhpC2llM3M9ssiMDyA8JFH5R2GyAEMSlzP8QRMA
-x/YUs214TSoohtVEHTLU9KeLpZTyen7lgVyfG2rMqL/sam6ApBl/QyBLTKdtflKX
-1pFyBwOXyQSMoD2nlcVsT2SjWiq4crw5UgyBRMSmt0xqAcaZkg6ve98ipjXFmqPp
-7rJ9N/Gj2m9n5NzfRiZLKoo+U7w0VwO6btXBa1puN3gDVRdJeKkadVtqGahI0LBT
-v3g0M3d0rxcBtmBfEDSqIZd0rJs/M9b530qXYTJQ0NfvkjaEJrxYPpeKRwLYX/Yh
-wXeJ+3IOHlHIB13pBp5pQdu+1hbqRw==
-=mpHF
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---v4n3gguis6o3yxx5--
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 77dc2255f4859b814d4d8713a91ab41114996d4e Mon Sep 17 00:00:00 2001
+From: olivier moysan <olivier.moysan@st.com>
+Date: Fri, 16 Jun 2017 14:15:33 +0200
+Subject: [PATCH] ASoC: stm32: sai: fix clock management
+
+Allow peripheral clock enable/disable on regmap accesses.
+
+Signed-off-by: olivier moysan <olivier.moysan@st.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/stm/stm32_sai_sub.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index 97b69a3ab46e..2466af0343db 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -766,8 +766,8 @@ static int stm32_sai_sub_parse_of(struct platform_device *pdev,
+ 		return PTR_ERR(base);
+ 
+ 	sai->phys_addr = res->start;
+-	sai->regmap = devm_regmap_init_mmio(&pdev->dev, base,
+-					    &stm32_sai_sub_regmap_config);
++	sai->regmap = devm_regmap_init_mmio_clk(&pdev->dev, "sai_ck", base,
++						&stm32_sai_sub_regmap_config);
+ 
+ 	/* Get direction property */
+ 	if (of_property_match_string(np, "dma-names", "tx") >= 0) {
+-- 
+2.11.0
