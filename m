@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/4] ALSA: seq: Follow standard EXPORT_SYMBOL()
-	declarations
-Date: Fri, 16 Jun 2017 17:56:37 +0200
-Message-ID: <20170616155639.5427-3-tiwai@suse.de>
+Subject: [PATCH 3/4] ALSA: timer: Follow standard
+	EXPORT_SYMBOL() declarations
+Date: Fri, 16 Jun 2017 17:56:38 +0200
+Message-ID: <20170616155639.5427-4-tiwai@suse.de>
 References: <20170616155639.5427-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id AF74F26753E
+ by alsa0.perex.cz (Postfix) with ESMTP id AD6C0266CED
  for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2017 17:56:43 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 27127AD54
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 2AC09ADE5
  for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2017 15:56:43 +0000 (UTC)
 In-Reply-To: <20170616155639.5427-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -31,287 +31,135 @@ Just a tidy up to follow the standard EXPORT_SYMBOL*() declarations
 in order to improve grep-ability.
 
 - Move EXPORT_SYMBOL*() to the position right after its definition
-- Remove superfluous blank line before EXPORT_SYMBOL*() lines
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/seq/seq_clientmgr.c  |  8 --------
- sound/core/seq/seq_lock.c       |  1 -
- sound/core/seq/seq_memory.c     |  2 --
- sound/core/seq/seq_midi_emul.c  |  9 ++++-----
- sound/core/seq/seq_midi_event.c | 21 ++++++++-------------
- sound/core/seq/seq_ports.c      |  2 --
- sound/core/seq/seq_virmidi.c    |  3 +--
- 7 files changed, 13 insertions(+), 33 deletions(-)
+ sound/core/timer.c | 27 +++++++++++++--------------
+ 1 file changed, 13 insertions(+), 14 deletions(-)
 
-diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index f3b1d7f50b81..272c55fe17c8 100644
---- a/sound/core/seq/seq_clientmgr.c
-+++ b/sound/core/seq/seq_clientmgr.c
-@@ -1668,7 +1668,6 @@ int snd_seq_set_queue_tempo(int client, struct snd_seq_queue_tempo *tempo)
- 		return -EPERM;
- 	return snd_seq_queue_timer_set_tempo(tempo->queue, client, tempo);
- }
--
- EXPORT_SYMBOL(snd_seq_set_queue_tempo);
- 
- static int snd_seq_ioctl_set_queue_tempo(struct snd_seq_client *client,
-@@ -2200,7 +2199,6 @@ int snd_seq_create_kernel_client(struct snd_card *card, int client_index,
- 	/* return client number to caller */
- 	return client->number;
- }
--
- EXPORT_SYMBOL(snd_seq_create_kernel_client);
- 
- /* exported to kernel modules */
-@@ -2219,7 +2217,6 @@ int snd_seq_delete_kernel_client(int client)
- 	kfree(ptr);
+diff --git a/sound/core/timer.c b/sound/core/timer.c
+index 148290ace756..4888203b2dbc 100644
+--- a/sound/core/timer.c
++++ b/sound/core/timer.c
+@@ -319,6 +319,7 @@ int snd_timer_open(struct snd_timer_instance **ti,
+ 	*ti = timeri;
  	return 0;
  }
--
- EXPORT_SYMBOL(snd_seq_delete_kernel_client);
- 
- /* skeleton to enqueue event, called from snd_seq_kernel_client_enqueue
-@@ -2269,7 +2266,6 @@ int snd_seq_kernel_client_enqueue(int client, struct snd_seq_event * ev,
- {
- 	return kernel_client_enqueue(client, ev, NULL, 0, atomic, hop);
- }
--
- EXPORT_SYMBOL(snd_seq_kernel_client_enqueue);
++EXPORT_SYMBOL(snd_timer_open);
  
  /*
-@@ -2283,7 +2279,6 @@ int snd_seq_kernel_client_enqueue_blocking(int client, struct snd_seq_event * ev
- {
- 	return kernel_client_enqueue(client, ev, file, 1, atomic, hop);
- }
--
- EXPORT_SYMBOL(snd_seq_kernel_client_enqueue_blocking);
- 
- /* 
-@@ -2321,7 +2316,6 @@ int snd_seq_kernel_client_dispatch(int client, struct snd_seq_event * ev,
- 	snd_seq_client_unlock(cptr);
- 	return result;
- }
--
- EXPORT_SYMBOL(snd_seq_kernel_client_dispatch);
- 
- /**
-@@ -2354,7 +2348,6 @@ int snd_seq_kernel_client_ctl(int clientid, unsigned int cmd, void *arg)
- 		 cmd, _IOC_TYPE(cmd), _IOC_NR(cmd));
- 	return -ENOTTY;
- }
--
- EXPORT_SYMBOL(snd_seq_kernel_client_ctl);
- 
- /* exported (for OSS emulator) */
-@@ -2372,7 +2365,6 @@ int snd_seq_kernel_client_write_poll(int clientid, struct file *file, poll_table
- 		return 1;
+  * close a timer instance
+@@ -384,6 +385,7 @@ int snd_timer_close(struct snd_timer_instance *timeri)
+ 	mutex_unlock(&register_mutex);
  	return 0;
  }
--
- EXPORT_SYMBOL(snd_seq_kernel_client_write_poll);
++EXPORT_SYMBOL(snd_timer_close);
  
- /*---------------------------------------------------------------------------*/
-diff --git a/sound/core/seq/seq_lock.c b/sound/core/seq/seq_lock.c
-index 12ba83367b1b..0ff7926a5a69 100644
---- a/sound/core/seq/seq_lock.c
-+++ b/sound/core/seq/seq_lock.c
-@@ -40,7 +40,6 @@ void snd_use_lock_sync_helper(snd_use_lock_t *lockp, const char *file, int line)
- 		schedule_timeout_uninterruptible(1);
- 	}
- }
--
- EXPORT_SYMBOL(snd_use_lock_sync_helper);
- 
- #endif
-diff --git a/sound/core/seq/seq_memory.c b/sound/core/seq/seq_memory.c
-index d4c61ec9be13..512f78ea13da 100644
---- a/sound/core/seq/seq_memory.c
-+++ b/sound/core/seq/seq_memory.c
-@@ -118,7 +118,6 @@ int snd_seq_dump_var_event(const struct snd_seq_event *event,
+ unsigned long snd_timer_resolution(struct snd_timer_instance *timeri)
+ {
+@@ -398,6 +400,7 @@ unsigned long snd_timer_resolution(struct snd_timer_instance *timeri)
  	}
  	return 0;
  }
--
- EXPORT_SYMBOL(snd_seq_dump_var_event);
++EXPORT_SYMBOL(snd_timer_resolution);
  
- 
-@@ -169,7 +168,6 @@ int snd_seq_expand_var_event(const struct snd_seq_event *event, int count, char
- 				     &buf);
- 	return err < 0 ? err : newlen;
- }
--
- EXPORT_SYMBOL(snd_seq_expand_var_event);
- 
- /*
-diff --git a/sound/core/seq/seq_midi_emul.c b/sound/core/seq/seq_midi_emul.c
-index 7ba937399ac7..9e2912e3e80f 100644
---- a/sound/core/seq/seq_midi_emul.c
-+++ b/sound/core/seq/seq_midi_emul.c
-@@ -236,6 +236,7 @@ snd_midi_process_event(struct snd_midi_op *ops,
- 		break;
- 	}
- }
-+EXPORT_SYMBOL(snd_midi_process_event);
- 
- 
- /*
-@@ -409,6 +410,7 @@ snd_midi_channel_set_clear(struct snd_midi_channel_set *chset)
- 			chan->drum_channel = 0;
- 	}
- }
-+EXPORT_SYMBOL(snd_midi_channel_set_clear);
- 
- /*
-  * Process a rpn message.
-@@ -701,6 +703,7 @@ struct snd_midi_channel_set *snd_midi_channel_alloc_set(int n)
- 	}
- 	return chset;
- }
-+EXPORT_SYMBOL(snd_midi_channel_alloc_set);
- 
- /*
-  * Reset the midi controllers on a particular channel to default values.
-@@ -724,6 +727,7 @@ void snd_midi_channel_free_set(struct snd_midi_channel_set *chset)
- 	kfree(chset->channels);
- 	kfree(chset);
- }
-+EXPORT_SYMBOL(snd_midi_channel_free_set);
- 
- static int __init alsa_seq_midi_emul_init(void)
+ static void snd_timer_notify1(struct snd_timer_instance *ti, int event)
  {
-@@ -736,8 +740,3 @@ static void __exit alsa_seq_midi_emul_exit(void)
+@@ -589,6 +592,7 @@ int snd_timer_start(struct snd_timer_instance *timeri, unsigned int ticks)
+ 	else
+ 		return snd_timer_start1(timeri, true, ticks);
+ }
++EXPORT_SYMBOL(snd_timer_start);
  
- module_init(alsa_seq_midi_emul_init)
- module_exit(alsa_seq_midi_emul_exit)
--
--EXPORT_SYMBOL(snd_midi_process_event);
--EXPORT_SYMBOL(snd_midi_channel_set_clear);
--EXPORT_SYMBOL(snd_midi_channel_alloc_set);
--EXPORT_SYMBOL(snd_midi_channel_free_set);
-diff --git a/sound/core/seq/seq_midi_event.c b/sound/core/seq/seq_midi_event.c
-index 37db7ba492a6..90bbbdbeba03 100644
---- a/sound/core/seq/seq_midi_event.c
-+++ b/sound/core/seq/seq_midi_event.c
-@@ -134,6 +134,7 @@ int snd_midi_event_new(int bufsize, struct snd_midi_event **rdev)
- 	*rdev = dev;
+ /*
+  * stop the timer instance.
+@@ -602,6 +606,7 @@ int snd_timer_stop(struct snd_timer_instance *timeri)
+ 	else
+ 		return snd_timer_stop1(timeri, true);
+ }
++EXPORT_SYMBOL(snd_timer_stop);
+ 
+ /*
+  * start again..  the tick is kept.
+@@ -617,6 +622,7 @@ int snd_timer_continue(struct snd_timer_instance *timeri)
+ 	else
+ 		return snd_timer_start1(timeri, false, 0);
+ }
++EXPORT_SYMBOL(snd_timer_continue);
+ 
+ /*
+  * pause.. remember the ticks left
+@@ -628,6 +634,7 @@ int snd_timer_pause(struct snd_timer_instance * timeri)
+ 	else
+ 		return snd_timer_stop1(timeri, false);
+ }
++EXPORT_SYMBOL(snd_timer_pause);
+ 
+ /*
+  * reschedule the timer
+@@ -809,6 +816,7 @@ void snd_timer_interrupt(struct snd_timer * timer, unsigned long ticks_left)
+ 	if (use_tasklet)
+ 		tasklet_schedule(&timer->task_queue);
+ }
++EXPORT_SYMBOL(snd_timer_interrupt);
+ 
+ /*
+ 
+@@ -859,6 +867,7 @@ int snd_timer_new(struct snd_card *card, char *id, struct snd_timer_id *tid,
+ 		*rtimer = timer;
  	return 0;
  }
-+EXPORT_SYMBOL(snd_midi_event_new);
++EXPORT_SYMBOL(snd_timer_new);
  
- void snd_midi_event_free(struct snd_midi_event *dev)
+ static int snd_timer_free(struct snd_timer *timer)
  {
-@@ -142,6 +143,7 @@ void snd_midi_event_free(struct snd_midi_event *dev)
- 		kfree(dev);
+@@ -978,6 +987,7 @@ void snd_timer_notify(struct snd_timer *timer, int event, struct timespec *tstam
  	}
+ 	spin_unlock_irqrestore(&timer->lock, flags);
  }
-+EXPORT_SYMBOL(snd_midi_event_free);
++EXPORT_SYMBOL(snd_timer_notify);
  
  /*
-  * initialize record
-@@ -161,6 +163,7 @@ void snd_midi_event_reset_encode(struct snd_midi_event *dev)
- 	reset_encode(dev);
- 	spin_unlock_irqrestore(&dev->lock, flags);
+  * exported functions for global timers
+@@ -993,11 +1003,13 @@ int snd_timer_global_new(char *id, int device, struct snd_timer **rtimer)
+ 	tid.subdevice = 0;
+ 	return snd_timer_new(NULL, id, &tid, rtimer);
  }
-+EXPORT_SYMBOL(snd_midi_event_reset_encode);
++EXPORT_SYMBOL(snd_timer_global_new);
  
- void snd_midi_event_reset_decode(struct snd_midi_event *dev)
+ int snd_timer_global_free(struct snd_timer *timer)
  {
-@@ -170,6 +173,7 @@ void snd_midi_event_reset_decode(struct snd_midi_event *dev)
- 	dev->lastcmd = 0xff;
- 	spin_unlock_irqrestore(&dev->lock, flags);
+ 	return snd_timer_free(timer);
  }
-+EXPORT_SYMBOL(snd_midi_event_reset_decode);
++EXPORT_SYMBOL(snd_timer_global_free);
  
- #if 0
- void snd_midi_event_init(struct snd_midi_event *dev)
-@@ -183,6 +187,7 @@ void snd_midi_event_no_status(struct snd_midi_event *dev, int on)
+ int snd_timer_global_register(struct snd_timer *timer)
  {
- 	dev->nostat = on ? 1 : 0;
+@@ -1007,6 +1019,7 @@ int snd_timer_global_register(struct snd_timer *timer)
+ 	dev.device_data = timer;
+ 	return snd_timer_dev_register(&dev);
  }
-+EXPORT_SYMBOL(snd_midi_event_no_status);
++EXPORT_SYMBOL(snd_timer_global_register);
  
  /*
-  * resize buffer
-@@ -232,6 +237,7 @@ long snd_midi_event_encode(struct snd_midi_event *dev, unsigned char *buf, long
+  *  System timer
+@@ -2113,17 +2126,3 @@ static void __exit alsa_timer_exit(void)
  
- 	return result;
- }
-+EXPORT_SYMBOL(snd_midi_event_encode);
- 
- /*
-  *  read one byte and encode to sequencer event:
-@@ -307,6 +313,7 @@ int snd_midi_event_encode_byte(struct snd_midi_event *dev, int c,
- 	spin_unlock_irqrestore(&dev->lock, flags);
- 	return rc;
- }
-+EXPORT_SYMBOL(snd_midi_event_encode_byte);
- 
- /* encode note event */
- static void note_event(struct snd_midi_event *dev, struct snd_seq_event *ev)
-@@ -408,6 +415,7 @@ long snd_midi_event_decode(struct snd_midi_event *dev, unsigned char *buf, long
- 		return qlen;
- 	}
- }
-+EXPORT_SYMBOL(snd_midi_event_decode);
- 
- 
- /* decode note event */
-@@ -524,19 +532,6 @@ static int extra_decode_xrpn(struct snd_midi_event *dev, unsigned char *buf,
- 	return idx;
- }
- 
--/*
-- *  exports
-- */
-- 
--EXPORT_SYMBOL(snd_midi_event_new);
--EXPORT_SYMBOL(snd_midi_event_free);
--EXPORT_SYMBOL(snd_midi_event_reset_encode);
--EXPORT_SYMBOL(snd_midi_event_reset_decode);
--EXPORT_SYMBOL(snd_midi_event_no_status);
--EXPORT_SYMBOL(snd_midi_event_encode);
--EXPORT_SYMBOL(snd_midi_event_encode_byte);
--EXPORT_SYMBOL(snd_midi_event_decode);
+ module_init(alsa_timer_init)
+ module_exit(alsa_timer_exit)
 -
- static int __init alsa_seq_midi_event_init(void)
- {
- 	return 0;
-diff --git a/sound/core/seq/seq_ports.c b/sound/core/seq/seq_ports.c
-index fe686ee41c6d..0a7020c82bfc 100644
---- a/sound/core/seq/seq_ports.c
-+++ b/sound/core/seq/seq_ports.c
-@@ -685,7 +685,6 @@ int snd_seq_event_port_attach(int client,
- 
- 	return ret;
- }
--
- EXPORT_SYMBOL(snd_seq_event_port_attach);
- 
- /*
-@@ -706,5 +705,4 @@ int snd_seq_event_port_detach(int client, int port)
- 
- 	return err;
- }
--
- EXPORT_SYMBOL(snd_seq_event_port_detach);
-diff --git a/sound/core/seq/seq_virmidi.c b/sound/core/seq/seq_virmidi.c
-index 52f31f1498f9..8d93a4021c78 100644
---- a/sound/core/seq/seq_virmidi.c
-+++ b/sound/core/seq/seq_virmidi.c
-@@ -534,6 +534,7 @@ int snd_virmidi_new(struct snd_card *card, int device, struct snd_rawmidi **rrmi
- 	*rrmidi = rmidi;
- 	return 0;
- }
-+EXPORT_SYMBOL(snd_virmidi_new);
- 
- /*
-  *  ENTRY functions
-@@ -550,5 +551,3 @@ static void __exit alsa_virmidi_exit(void)
- 
- module_init(alsa_virmidi_init)
- module_exit(alsa_virmidi_exit)
--
--EXPORT_SYMBOL(snd_virmidi_new);
+-EXPORT_SYMBOL(snd_timer_open);
+-EXPORT_SYMBOL(snd_timer_close);
+-EXPORT_SYMBOL(snd_timer_resolution);
+-EXPORT_SYMBOL(snd_timer_start);
+-EXPORT_SYMBOL(snd_timer_stop);
+-EXPORT_SYMBOL(snd_timer_continue);
+-EXPORT_SYMBOL(snd_timer_pause);
+-EXPORT_SYMBOL(snd_timer_new);
+-EXPORT_SYMBOL(snd_timer_notify);
+-EXPORT_SYMBOL(snd_timer_global_new);
+-EXPORT_SYMBOL(snd_timer_global_free);
+-EXPORT_SYMBOL(snd_timer_global_register);
+-EXPORT_SYMBOL(snd_timer_interrupt);
 -- 
 2.13.1
