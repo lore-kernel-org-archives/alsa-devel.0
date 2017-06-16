@@ -1,20 +1,19 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4/4] ALSA: core: Follow standard
-	EXPORT_SYMBOL() declarations
-Date: Fri, 16 Jun 2017 17:56:39 +0200
-Message-ID: <20170616155639.5427-5-tiwai@suse.de>
-References: <20170616155639.5427-1-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3] ASoC: dapm: Add new widget type
+ snd_soc_dapm_dsp_component
+Date: Fri, 16 Jun 2017 17:52:08 +0100
+Message-ID: <20170616165208.gfi4vhevzdswqjgq@sirena.org.uk>
+References: <1497555964-4862-1-git-send-email-liam.r.girdwood@linux.intel.com>
+ <20170616110953.waxwojvnrgrnlc26@sirena.org.uk>
+ <1497615984.2561.25.camel@loki> <1497621998.2561.32.camel@loki>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4290238451324773780=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id AC49F266CE7
- for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2017 17:56:43 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 2795BADCA
- for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2017 15:56:43 +0000 (UTC)
-In-Reply-To: <20170616155639.5427-1-tiwai@suse.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6713C266C99
+ for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2017 18:52:25 +0200 (CEST)
+In-Reply-To: <1497621998.2561.32.camel@loki>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,324 +23,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Just a tidy up to follow the standard EXPORT_SYMBOL*() declarations
-in order to improve grep-ability.
 
-- Move EXPORT_SYMBOL*() to the position right after its definition
-- Remove superfluous blank line before EXPORT_SYMBOL*() lines
+--===============4290238451324773780==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="o4f4rd27qjxucyjy"
+Content-Disposition: inline
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/info.c          |  6 ------
- sound/core/info_oss.c      |  1 -
- sound/core/init.c          |  8 +-------
- sound/core/isadma.c        |  3 ---
- sound/core/memalloc.c      | 13 ++++---------
- sound/core/memory.c        |  2 --
- sound/core/misc.c          |  1 -
- sound/core/oss/mixer_oss.c |  3 +--
- sound/core/sound.c         |  2 --
- sound/core/sound_oss.c     |  3 ---
- 10 files changed, 6 insertions(+), 36 deletions(-)
 
-diff --git a/sound/core/info.c b/sound/core/info.c
-index fc14ebe751d8..bcf6a48cc70d 100644
---- a/sound/core/info.c
-+++ b/sound/core/info.c
-@@ -652,7 +652,6 @@ int snd_info_get_line(struct snd_info_buffer *buffer, char *line, int len)
- 	*line = '\0';
- 	return 0;
- }
--
- EXPORT_SYMBOL(snd_info_get_line);
- 
- /**
-@@ -690,7 +689,6 @@ const char *snd_info_get_str(char *dest, const char *src, int len)
- 		src++;
- 	return src;
- }
--
- EXPORT_SYMBOL(snd_info_get_str);
- 
- /*
-@@ -748,7 +746,6 @@ struct snd_info_entry *snd_info_create_module_entry(struct module * module,
- 		entry->module = module;
- 	return entry;
- }
--
- EXPORT_SYMBOL(snd_info_create_module_entry);
- 
- /**
-@@ -772,7 +769,6 @@ struct snd_info_entry *snd_info_create_card_entry(struct snd_card *card,
- 	}
- 	return entry;
- }
--
- EXPORT_SYMBOL(snd_info_create_card_entry);
- 
- static void snd_info_disconnect(struct snd_info_entry *entry)
-@@ -815,7 +811,6 @@ void snd_info_free_entry(struct snd_info_entry * entry)
- 		entry->private_free(entry);
- 	kfree(entry);
- }
--
- EXPORT_SYMBOL(snd_info_free_entry);
- 
- /**
-@@ -858,7 +853,6 @@ int snd_info_register(struct snd_info_entry * entry)
- 	mutex_unlock(&info_mutex);
- 	return 0;
- }
--
- EXPORT_SYMBOL(snd_info_register);
- 
- /*
-diff --git a/sound/core/info_oss.c b/sound/core/info_oss.c
-index 1478c8dfd473..f479374b6bd8 100644
---- a/sound/core/info_oss.c
-+++ b/sound/core/info_oss.c
-@@ -61,7 +61,6 @@ int snd_oss_info_register(int dev, int num, char *string)
- 	mutex_unlock(&strings);
- 	return 0;
- }
--
- EXPORT_SYMBOL(snd_oss_info_register);
- 
- static int snd_sndstat_show_strings(struct snd_info_buffer *buf, char *id, int dev)
-diff --git a/sound/core/init.c b/sound/core/init.c
-index 6bda8436d765..00f2cbb76e69 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -452,7 +452,6 @@ int snd_card_disconnect(struct snd_card *card)
- #endif
- 	return 0;	
- }
--
- EXPORT_SYMBOL(snd_card_disconnect);
- 
- static int snd_card_do_free(struct snd_card *card)
-@@ -718,7 +717,7 @@ int snd_card_add_dev_attr(struct snd_card *card,
- 
- 	dev_err(card->dev, "Too many groups assigned\n");
- 	return -ENOSPC;
--};
-+}
- EXPORT_SYMBOL_GPL(snd_card_add_dev_attr);
- 
- /**
-@@ -775,7 +774,6 @@ int snd_card_register(struct snd_card *card)
- #endif
- 	return 0;
- }
--
- EXPORT_SYMBOL(snd_card_register);
- 
- #ifdef CONFIG_SND_PROC_FS
-@@ -895,7 +893,6 @@ int snd_component_add(struct snd_card *card, const char *component)
- 	strcat(card->components, component);
- 	return 0;
- }
--
- EXPORT_SYMBOL(snd_component_add);
- 
- /**
-@@ -930,7 +927,6 @@ int snd_card_file_add(struct snd_card *card, struct file *file)
- 	spin_unlock(&card->files_lock);
- 	return 0;
- }
--
- EXPORT_SYMBOL(snd_card_file_add);
- 
- /**
-@@ -972,7 +968,6 @@ int snd_card_file_remove(struct snd_card *card, struct file *file)
- 	put_device(&card->card_dev);
- 	return 0;
- }
--
- EXPORT_SYMBOL(snd_card_file_remove);
- 
- #ifdef CONFIG_PM
-@@ -1012,6 +1007,5 @@ int snd_power_wait(struct snd_card *card, unsigned int power_state)
- 	remove_wait_queue(&card->power_sleep, &wait);
- 	return result;
- }
--
- EXPORT_SYMBOL(snd_power_wait);
- #endif /* CONFIG_PM */
-diff --git a/sound/core/isadma.c b/sound/core/isadma.c
-index 31e8544d7f2d..7a8515abb5f9 100644
---- a/sound/core/isadma.c
-+++ b/sound/core/isadma.c
-@@ -55,7 +55,6 @@ void snd_dma_program(unsigned long dma,
- 		enable_dma(dma);
- 	release_dma_lock(flags);
- }
--
- EXPORT_SYMBOL(snd_dma_program);
- 
- /**
-@@ -73,7 +72,6 @@ void snd_dma_disable(unsigned long dma)
- 	disable_dma(dma);
- 	release_dma_lock(flags);
- }
--
- EXPORT_SYMBOL(snd_dma_disable);
- 
- /**
-@@ -113,5 +111,4 @@ unsigned int snd_dma_pointer(unsigned long dma, unsigned int size)
- 	else
- 		return size - result;
- }
--
- EXPORT_SYMBOL(snd_dma_pointer);
-diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
-index f05cb6a8cbe0..7f89d3c79a4b 100644
---- a/sound/core/memalloc.c
-+++ b/sound/core/memalloc.c
-@@ -54,6 +54,7 @@ void *snd_malloc_pages(size_t size, gfp_t gfp_flags)
- 	pg = get_order(size);
- 	return (void *) __get_free_pages(gfp_flags, pg);
- }
-+EXPORT_SYMBOL(snd_malloc_pages);
- 
- /**
-  * snd_free_pages - release the pages
-@@ -71,6 +72,7 @@ void snd_free_pages(void *ptr, size_t size)
- 	pg = get_order(size);
- 	free_pages((unsigned long) ptr, pg);
- }
-+EXPORT_SYMBOL(snd_free_pages);
- 
- /*
-  *
-@@ -217,6 +219,7 @@ int snd_dma_alloc_pages(int type, struct device *device, size_t size,
- 	dmab->bytes = size;
- 	return 0;
- }
-+EXPORT_SYMBOL(snd_dma_alloc_pages);
- 
- /**
-  * snd_dma_alloc_pages_fallback - allocate the buffer area according to the given type with fallback
-@@ -254,6 +257,7 @@ int snd_dma_alloc_pages_fallback(int type, struct device *device, size_t size,
- 		return -ENOMEM;
- 	return 0;
- }
-+EXPORT_SYMBOL(snd_dma_alloc_pages_fallback);
- 
- 
- /**
-@@ -287,13 +291,4 @@ void snd_dma_free_pages(struct snd_dma_buffer *dmab)
- 		pr_err("snd-malloc: invalid device type %d\n", dmab->dev.type);
- 	}
- }
--
--/*
-- * exports
-- */
--EXPORT_SYMBOL(snd_dma_alloc_pages);
--EXPORT_SYMBOL(snd_dma_alloc_pages_fallback);
- EXPORT_SYMBOL(snd_dma_free_pages);
--
--EXPORT_SYMBOL(snd_malloc_pages);
--EXPORT_SYMBOL(snd_free_pages);
-diff --git a/sound/core/memory.c b/sound/core/memory.c
-index 4cd664efad77..19c9ea90d9bf 100644
---- a/sound/core/memory.c
-+++ b/sound/core/memory.c
-@@ -55,7 +55,6 @@ int copy_to_user_fromio(void __user *dst, const volatile void __iomem *src, size
- 	return 0;
- #endif
- }
--
- EXPORT_SYMBOL(copy_to_user_fromio);
- 
- /**
-@@ -88,5 +87,4 @@ int copy_from_user_toio(volatile void __iomem *dst, const void __user *src, size
- 	return 0;
- #endif
- }
--
- EXPORT_SYMBOL(copy_from_user_toio);
-diff --git a/sound/core/misc.c b/sound/core/misc.c
-index 21b228046e88..0f818d593c9e 100644
---- a/sound/core/misc.c
-+++ b/sound/core/misc.c
-@@ -48,7 +48,6 @@ void release_and_free_resource(struct resource *res)
- 		kfree(res);
- 	}
- }
--
- EXPORT_SYMBOL(release_and_free_resource);
- 
- #ifdef CONFIG_SND_VERBOSE_PRINTK
-diff --git a/sound/core/oss/mixer_oss.c b/sound/core/oss/mixer_oss.c
-index 2ff9c12d664a..379bf486ccc7 100644
---- a/sound/core/oss/mixer_oss.c
-+++ b/sound/core/oss/mixer_oss.c
-@@ -395,6 +395,7 @@ int snd_mixer_oss_ioctl_card(struct snd_card *card, unsigned int cmd, unsigned l
- 	fmixer.mixer = card->mixer_oss;
- 	return snd_mixer_oss_ioctl1(&fmixer, cmd, arg);
- }
-+EXPORT_SYMBOL(snd_mixer_oss_ioctl_card);
- 
- #ifdef CONFIG_COMPAT
- /* all compatible */
-@@ -1425,5 +1426,3 @@ static void __exit alsa_mixer_oss_exit(void)
- 
- module_init(alsa_mixer_oss_init)
- module_exit(alsa_mixer_oss_exit)
--
--EXPORT_SYMBOL(snd_mixer_oss_ioctl_card);
-diff --git a/sound/core/sound.c b/sound/core/sound.c
-index 175f9e4e01c8..b30f027eb0fe 100644
---- a/sound/core/sound.c
-+++ b/sound/core/sound.c
-@@ -74,7 +74,6 @@ void snd_request_card(int card)
- 		return;
- 	request_module("snd-card-%i", card);
- }
--
- EXPORT_SYMBOL(snd_request_card);
- 
- static void snd_request_other(int minor)
-@@ -124,7 +123,6 @@ void *snd_lookup_minor_data(unsigned int minor, int type)
- 	mutex_unlock(&sound_mutex);
- 	return private_data;
- }
--
- EXPORT_SYMBOL(snd_lookup_minor_data);
- 
- #ifdef CONFIG_MODULES
-diff --git a/sound/core/sound_oss.c b/sound/core/sound_oss.c
-index 0ca9d72b2273..0a5c66229a22 100644
---- a/sound/core/sound_oss.c
-+++ b/sound/core/sound_oss.c
-@@ -55,7 +55,6 @@ void *snd_lookup_oss_minor_data(unsigned int minor, int type)
- 	mutex_unlock(&sound_oss_mutex);
- 	return private_data;
- }
--
- EXPORT_SYMBOL(snd_lookup_oss_minor_data);
- 
- static int snd_oss_kernel_minor(int type, struct snd_card *card, int dev)
-@@ -159,7 +158,6 @@ int snd_register_oss_device(int type, struct snd_card *card, int dev,
- 	kfree(preg);
-       	return -EBUSY;
- }
--
- EXPORT_SYMBOL(snd_register_oss_device);
- 
- int snd_unregister_oss_device(int type, struct snd_card *card, int dev)
-@@ -200,7 +198,6 @@ int snd_unregister_oss_device(int type, struct snd_card *card, int dev)
- 	kfree(mptr);
- 	return 0;
- }
--
- EXPORT_SYMBOL(snd_unregister_oss_device);
- 
- /*
--- 
-2.13.1
+--o4f4rd27qjxucyjy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Jun 16, 2017 at 03:06:38PM +0100, Liam Girdwood wrote:
+> On Fri, 2017-06-16 at 13:26 +0100, Liam Girdwood wrote:
+
+> > Ok, I can redo and use specific types, but there still is a problem of
+> > how do we configure a pipeline (a collection of widgets, where several
+> > pipelines can make a path from PCM to DAI). This configuration data is
+> > not hw/sw params type data, but more DSP scheduling type data. My
+> > original thought was the pipeline widget, as there is nothing else that
+> > cleanly fits into the ABI and that the pipeline scheduling data is DAPM
+> > widget/graph related anyway.
+
+> > Another alternative is extending the topology ABI and introduce a
+> > pipeline object that would be ignore by the core and just used by
+> > certain drivers and firmwares ?
+
+> I think I'm tending towards having a scheduler widget now (instead of a
+> pipeline widget) and that would be a valid part of the graph and also
+> discoverable via debugfs etc.
+
+Ah, I see what you're going for with that now I think.  So something
+that looks in DAPM terms a bit like a supply widget (in that it's not
+really part of the path itself but provides things the path needs in
+order to function)?  I think that makes sense to me now too.
+
+--o4f4rd27qjxucyjy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllEDLcACgkQJNaLcl1U
+h9AOXwf7BPl4GnZo70CHUjlAsVlsDEHKJ6MW3gt71yF0JUNFCJSx3ChHwFaW/nRa
+NE3rgMjMOpOIZds78qzk4w3vCF4A1C1FQESRJ9uHq/Mchqov7Z5HPIT/dVeaM9Av
+jRCerI5EeZUdirPJz8Xwdyz3K7LN+LMONQPjpJj1s9z4oOqx9IIGS+NfG4Sg4KYh
+Y1ziphx67SvjS1PC9g7/6yKa55O3844jfrWrpOce4qKHNjz3AW9bP1Rji+JRXrRM
+pTr/4qjfroL1DMS1AMJQSWJFyDnAcqrUHNn3mcJfaZ0CgIwHG00Z7Za2coPkfXcj
+DBv7znZqtM5F6SnqsjwHgC8PRoGxPw==
+=5TeK
+-----END PGP SIGNATURE-----
+
+--o4f4rd27qjxucyjy--
+
+--===============4290238451324773780==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4290238451324773780==--
