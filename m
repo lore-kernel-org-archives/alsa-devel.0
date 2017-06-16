@@ -1,78 +1,51 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card: use asoc_simple_card_of_parse_widgets()" to the asoc tree
-Date: Fri, 16 Jun 2017 18:50:13 +0100
-Message-ID: <E1dLvNt-0005j2-8V@debutante>
-References: <87h8zgiumc.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87h8zgiumc.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 1/7] dt-bindings: stm32: sai: fix DT example
+Date: Fri, 16 Jun 2017 18:49:23 +0100
+Message-ID: <20170616174923.lzuehtb2jliiripp@sirena.org.uk>
+References: <1497615334-7156-1-git-send-email-olivier.moysan@st.com>
+ <1497615334-7156-2-git-send-email-olivier.moysan@st.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="tuukbcxfabqijre3"
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1497615334-7156-2-git-send-email-olivier.moysan-qxv4g6HH51o@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alexandre.torgue-qxv4g6HH51o@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-F5mvAk5X5gdBDgjK7y7TUQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org, benjamin.gaignard-qxv4g6HH51o@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: simple-card: use asoc_simple_card_of_parse_widgets()
+--tuukbcxfabqijre3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-has been applied to the asoc tree at
+On Fri, Jun 16, 2017 at 02:15:28PM +0200, olivier moysan wrote:
+> Correct the device tree example.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Please submit patches using subject lines reflecting the style for the
+subsystem.  This makes it easier for people to identify relevant
+patches.  Look at what existing commits in the area you're changing are
+doing and make sure your subject lines visually resemble what they're
+doing.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+--tuukbcxfabqijre3
+Content-Type: application/pgp-signature; name="signature.asc"
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+-----BEGIN PGP SIGNATURE-----
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllEGiMACgkQJNaLcl1U
+h9COoAf7BnWtyGJOukwZs8/Uun/x6oPmo3OM4NLp+UhZ00VwiFKXYyC+EEiNZAjn
+9hQRz+tRmQdSDq1sZUK4baPTbPQ5jeIbOcuSndVXoMakFw/LCUwTcwVpVcQV0Ja9
+9iEcAmukAMy4MRzEqPm7IDntxcDGHx3zDXEcVcF0GOYg0AxYaoWsCtSSX9W8RKVl
+1S63tdKI05ulX85MpY25rdVUG7GESgJcv4qbW7ocC/eTcCc06Y0Rfe/ylrhHlQBl
+1BdCL17RlJ6Pc62wQ4uuYmv5mYrgz3e5G+2Bd8Jy5XvFDWCI+cnHV02O0V/6ICSS
++hBq2KrQHRaRL0jtEvTq0kmKJgIRnA==
+=jroF
+-----END PGP SIGNATURE-----
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From fa2760dd366c735637504d1d7efab7688391c6b4 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 16 Jun 2017 01:39:11 +0000
-Subject: [PATCH] ASoC: simple-card: use asoc_simple_card_of_parse_widgets()
-
-Current simple card driver is supporting widgets on DT,
-other simple/audio card drivers will support it.
-Encapsulation is one of simple card util's purpose.
-Let's use asoc_simple_card_of_parse_widgets
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/generic/simple-card.c | 10 +++-------
- 1 file changed, 3 insertions(+), 7 deletions(-)
-
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 7b2533c7f82e..8b7b47251fe1 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -354,13 +354,9 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
- 
- 	dai_link = of_get_child_by_name(node, PREFIX "dai-link");
- 
--	/* The off-codec widgets */
--	if (of_property_read_bool(node, PREFIX "widgets")) {
--		ret = snd_soc_of_parse_audio_simple_widgets(card,
--					PREFIX "widgets");
--		if (ret)
--			goto card_parse_end;
--	}
-+	ret = asoc_simple_card_of_parse_widgets(card, PREFIX);
-+	if (ret < 0)
-+		goto card_parse_end;
- 
- 	ret = asoc_simple_card_of_parse_routing(card, PREFIX, 1);
- 	if (ret < 0)
--- 
-2.11.0
+--tuukbcxfabqijre3--
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
