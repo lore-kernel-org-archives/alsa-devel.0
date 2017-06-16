@@ -1,19 +1,28 @@
-From: Liam Girdwood <liam.r.girdwood@intel.com>
-Subject: Re: [PATCH v3] ASoC: dapm: Add new widget type
- snd_soc_dapm_dsp_component
-Date: Fri, 16 Jun 2017 15:06:38 +0100
-Message-ID: <1497621998.2561.32.camel@loki>
-References: <1497555964-4862-1-git-send-email-liam.r.girdwood@linux.intel.com>
- <20170616110953.waxwojvnrgrnlc26@sirena.org.uk>
- <1497615984.2561.25.camel@loki>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 1/2] ALSA: firewire: process packets in
+ 'struct snd_pcm_ops.ack' callback
+Date: Sat, 17 Jun 2017 00:00:13 +0900
+Message-ID: <31a09192-8c87-f002-82b7-5948d8ccda07@sakamocchi.jp>
+References: <20170607003806.27196-1-o-takashi@sakamocchi.jp>
+ <20170607003806.27196-2-o-takashi@sakamocchi.jp>
+ <s5hd1ag5oef.wl-tiwai@suse.de> <s5hvao7337g.wl-tiwai@suse.de>
+ <670e0d81-5f91-4b2a-1d07-3376f33abfb2@sakamocchi.jp>
+ <s5hd1a85c2e.wl-tiwai@suse.de>
+ <d76f910b-45e7-cf6c-96c7-25ade0cd0257@sakamocchi.jp>
+ <s5hr2ymbp0k.wl-tiwai@suse.de>
+ <c3d6fc27-eb6c-6617-4329-870a0e29eb31@sakamocchi.jp>
+ <s5h60fxskkp.wl-tiwai@suse.de>
+ <67374bab-ea5f-f9ad-83a5-137a61e5400d@sakamocchi.jp>
+ <s5htw3hqdeu.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 2681D2669F3
- for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2017 16:06:43 +0200 (CEST)
-In-Reply-To: <1497615984.2561.25.camel@loki>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 06E5B2669CD
+ for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2017 17:00:18 +0200 (CEST)
+In-Reply-To: <s5htw3hqdeu.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,40 +32,254 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@intel.com>, clemens@ladisch.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, ffado-devel@lists.sf.net, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2017-06-16 at 13:26 +0100, Liam Girdwood wrote:
+On Jun 16 2017 04:06, Takashi Iwai wrote:
+ >> Some devices/drivers request applications to perform this, due to their
+ >> design of hardware for data transmission.
+ >
+ > Yes, and it's the default behavior of all non-x86 platforms, too.
 
-> 
-> Ok, I can redo and use specific types, but there still is a problem of
-> how do we configure a pipeline (a collection of widgets, where several
-> pipelines can make a path from PCM to DAI). This configuration data is
-> not hw/sw params type data, but more DSP scheduling type data. My
-> original thought was the pipeline widget, as there is nothing else that
-> cleanly fits into the ABI and that the pipeline scheduling data is DAPM
-> widget/graph related anyway.
-> 
-> Another alternative is extending the topology ABI and introduce a
-> pipeline object that would be ignore by the core and just used by
-> certain drivers and firmwares ?
-> 
+Here, you have mixture of two items; architecture difference for cache
+coherent functionality, and device feature for data transmission. These
+two items are apparently different things.
+
+In other words, devices can be supported independently of platform
+architectures. Why should I apply the solution prepared for cache
+coherency issue to add better support for the device with new feature
+for its data transmission? On x86 platform (although including some
+exceptions such as old ATOM processors), status/control data of PCM
+substream can successfully be mapped to process' VMA of applications.
+Why should it be disable it even if works well?
+
+Here, I'll show a table with chang history of relevant codes in kernel
+land, and information resources.
+
+year | release | pcm   | relevant changes
+      | version | iface |
+==================================================================================
+2000 | v0.5.0  | 1.0.0 | status/control/fragments data can be mapped 
+into VMA[1]
+2003 | v0.9.0  | 2.0.5 | status/control data can be mapped independently[2]
+2004 | v1.0.5  | 2.0.7 | SYNC_PTR command was introduced for PCM ioctl 
+operation[3]
+2004 | v1.0.7  | 2.0.7 | mmap for status/control data is allowed for 
+x86/ppc/alpha[4]
+
+In note for v1.0.5 release, Jaroslav described[5]:
+
+```
+  - PCM midlevel
+   - added SYNC_PTR ioctl (for problematic cache coherency archs)
+```
+
+The SYNC_PTR and architecture-dependent enabling of the mmap was 
+originally introduced to solve cache coherent issue.
+
+ >>> It's becoming again like a typical situation you falling often into
+ >>> while discussing with others; your new term is too ambiguous and
+ >>> unique to parse without a clarification.  PLEASE, clarify your idea
+ >>> in a more understandable way, at best with a (pseudo-) code snippet.
+ >>
+ >> The above.
+ >
+ > So... what's the "new"?  That is what I don't understand...
+ > It's the already existing model deployed without mmap.  Nothing new.
+
+This subsystem has no drivers with the similar feature, thus it's new
+design for data transmission. The design supports below things:
+
+1. Hardware features:
+1.1. Data transmission is done by direct media access (DMA).
+1.2. Hardware cares of two points for its data transmission; one is
+      hwptr and another is appl_ptr on PCM buffer dedicated for the
+      data transmission.
+1.3. (perhaps)The granurarity of data transmission can be differed,
+      not fixed to the size of 'period'.
+
+2. Drivers are designed with below items:
+2.1. Return SNDRV_PCM_ACCESS_MMAP_XXX flag
+2.2. Implement for 'struct snd_pcm_ops.ack' to tell appl_ptr to
+      hardware.
+
+3. Applications should perform according to below items:
+3.1.  Operate with SNDRV_PCM_IOCTL_[READ|WRITE][N|I] to drive kernel
+       land stuffs with changed appl_ptr.
+3.2.  Or operate with SYNC_PTR to driver kernel land stuffs when
+       handling any PCM frames.
+
+As of v4.12-rc5, there's no stuffs to satisfy all of these items. It's 
+clear that we're working to support devices with the new design.
+
+ > In other words, such a driver already works fine on non-x86
+ > platforms.  It's "broken" only on x86 due to the forced mmap usage.
+
+It's better to distinguish two issues; architecture's support for
+cache coherency and support for new type of device.
+
+ >>> And, I think you miss a few points, thus the argument was twisted.
+ >>>
+ >>> - The primary goal is to achieve the notification of appl_ptr change
+ >>>     to kernel.
+ >>
+ >> It's for the purpose to support devices which have the new design for
+ >> data transmission. This is the reason that I agree with upgrading
+ >> version of PCM interface. I suggest adding new info flags for the
+ >> specific purpose.
+ >>
+ >> Disabling mmap for status/control data of PCM substream is just to
+ >> support architectures to which ALSA PCM core judge non cache coherency.
+ >> It's not good to utilize it as a solution of this issue because of
+ >> abuse of interfaces.
+ >
+ > No, it's no abuse.  The sync_ptr is the correct and designed API to
+ > notify appl_ptr update from the user space to kernel.  For most of
+ > device drivers on x86, this isn't requested strictly, thus it's not
+ > done when the PCM control is mmapped.  We've been just lucky, so far.
+
+I described that it was originally designed to solve architecture's
+support for cache coherency. Don't depend on extra bonus from it.
+
+ > That is, letting user-space to use the sync_ptr is the right
+ > strategy from the API POV, and it can be achieved by the disablement
+ > of mmap.  Unfortunately, we can't currently disable only PCM control
+ > mmap, but we have to disable both control and status PCM mmaps.
+
+Usage of SYNC_PTR ioctl command and disabling mmap are not tight-coupled.
+Both of them can be used in the same time if user land stuffs is writte
+so.
+
+ > It's a trade-off, but still good enough for the driver requesting it
+ > (the Intel one, which can achieve the deep sleep by that).
+
+What's the 'deep sleep'? Please explain about it when you introduce
+new words into this discussion.
+
+ >>> - The kernel needs to work with the existing user-space.
+ >>>     It's a MUST.
+ >>
+ >> I described in a previous message.
+ >
+ > Let me repeat: the support of old user-space is a must.  This is the
+ > fact.  Not faked.
+ >
+ >
+ >> On Jun 14 2017 23:34, Takashi Sakamoto wrote:
+ >>> When working with old userspace stuffs, drivers run with old mode
+ >>> (namely, run for current interface). The difference of interface
+ >>> version is absorbed in alsa-lib as much as possible, then application
+ >>> runs without large change
+ >
+ > ... and how the kernel knows that a newer alsa-lib is running, BTW?
+ >
+ > There is no such information right now, and it's why I suggested an
+ > extension of ABI.
+
+Enough information is not provided yet. Furthermore, I have few
+interests in it at present.
+
+ >>> - appl_ptr or whatever a status *is* maintained in kernel -- or better
+ >>>     to say, it's kept in both kernel and user-space.  (Otherwise why it
+ >>>     becomes a problem now?)
+ >>
+ >> This is not achieved in current implementation of ALSA PCM core yet.
+ >
+ > Sigh, again the misunderstanding due to the ambiguous term usage.
+ >
+ > The appl_ptr value is tracked in user-space and kernel sides -- so
+ > they are "maintained" in both sides.  "Maintain a value" doesn't
+ > define who triggers the value change.
+
+The important thing for this issue is 'how to deliver the position of
+appl_ptr from applications to hardware'. In current implementation,
+when applications operate for mapped PCM buffer, kernel land stuffs
+don't have correct appl_ptr. Hardware is given ways to get appl_ptr
+and drivers don't assist it because appl_ptr is in process's VMA of
+applications.
+
+ >> Even if hardware generates any event to get current application-side
+ >> position on PCM buffer, it can't be achieved. There's no way for
+ >> hardwares. Therefore, it's unavoided to request userspace to have care
+ >> of the above pseudo code, when supporting devices with the new design.
+ >
+ > Yes, the missing piece is the synchronization between the appl_ptr
+ > values maintained in both user-space and kernel sides.  And it's only
+ > on x86, and the simplest way to fix it is to disable the PCM control
+ > mmap.
+
+It's not better to depend on bonus from architecture differences.
+Provide enough information to userspace via interface.
+
+ >>> So, if you have a better idea for achieving the goal without changing
+ >>> the current ABI, please tell us.  It'd be really appreciated!
+ >>>
+ >>> For the future development with the ABI extension, we may do implement
+ >>> in a different level, yes.  Basically we can change everything.  But
+ >>> this is not the thing we need to fix right now.
+ >>>
+ >>> I'm open for any changes with the ABI extension.  It's certainly
+ >>> exciting.  But, don't mix up this with the solution for the current
+ >>> implementation.
+ >>
+ >> Your idea to extend current ABI includes some jumps from current
+ >> position of discussion. At least, the reason of it is somehow based on
+ >> your idea to disable mmap for control/status data of PCM substream for
+ >> some devices/drivers. As already stated, I'm against it with several
+ >> reasons. On cache coherent architecture, there's no matter to consider
+ >> about it. Thus they're not matters to me at present.
+ >
+ > It's fine that you say against it.  But then please state your idea
+ > how to implement the appl_ptr notification for the existing
+ > application ABI?  Without it, the argument is simply useless.
+
+I already prepared patches for my ideas several days ago. However, I 
+have hesitation to post it because you have mixtures of two issues, 
+which I described. As long as you adhere to the mixtures, my patches are 
+not evaluated in a appropriate logic, thus I'm unwilling to post it. I'd 
+not like to waste of my private time.
+
+ > Also, think again which disadvantages would disabling the control mmap
+ > (not the status mmap) have, when sync_ptr is mandatory.  Or better in
+ > another form: suppose you need to use sync_ptr for appl_ptr update,
+ > what merit would you have by keeping the PCM control mmap...?
+ >
+ > Take a look at the content of snd_pcm_mmap_control.  It's only
+ > appl_ptr and avail_min where the latter can be ignored mostly.
+ > That is, disabling the PCM control mmap is effectively equivalent with
+ > requesting the appl_ptr update via sync_ptr.
+ >
+ > So, if we can disable only the PCM control mmap, the efficiency won't
+ > be lost for kernel -> user-space PCM status update by keeping the PCM
+ > status mmap.  It's the plan I mentioned as the ABI extension.
+ >
+ >
+ > To recap:
+ > - The disablement of control/status mmap is allowed by request from a
+ >    driver to enforce the sync_ptr usage for appl_ptr update.
+
+Not fair. The feature to disable mmap is just for issues from
+architecture feature. It's not good to utilize it for the other kind of
+issues. It surely puzzle developers in user space. When working for
+x86 architecture, developers just consider about content on mapped
+control/status data. We soulnd not change it.
+
+ > - The extension of ABI for further improvements; then we can keep mmap
+ >    of PCM status while disabling the PCM control mmap.
+
+I'm not interested in issues directly relevant to current issue. I'd 
+like to just focus on the current one.
+
+[1] ftp://ftp.alsa-project.org/pub/driver/alsa-driver-0.5.0.tar.gz
+[2] ftp://ftp.alsa-project.org/pub/driver/alsa-driver-0.9.0rc8.tar.bz2
+[3] 
+http://git.alsa-project.org/?p=alsa-driver.git;a=commitdiff;h=60300f540726;hp=a1bed841e5b5b2e6c3d5b4709efbb3aa72235e72
+[4] 
+http://git.alsa-project.org/?p=alsa-driver.git;a=commitdiff;h=6cd0240aa173;hp=4bc54bf2643d5563d9489ff3ce3e4dbb0d2d4a99
+[5] https://lwn.net/Articles/87517/
 
 
-I think I'm tending towards having a scheduler widget now (instead of a
-pipeline widget) and that would be a valid part of the graph and also
-discoverable via debugfs etc.
+Regards
 
-Liam
-
----------------------------------------------------------------------
-Intel Corporation (UK) Limited
-Registered No. 1134945 (England)
-Registered Office: Pipers Way, Swindon SN3 1RJ
-VAT No: 860 2173 47
-
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+Takashi Sakamoto
