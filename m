@@ -1,182 +1,56 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: hda - Add AZX_DRIVER_SKL for
-	simplification
-Date: Fri, 16 Jun 2017 11:05:20 +0200
-Message-ID: <20170616090520.9879-2-tiwai@suse.de>
-References: <20170616090520.9879-1-tiwai@suse.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Applied "ASoC: rockchip: Fix an error handling in
+ 'rockchip_i2s_probe'" to the asoc tree
+Date: Fri, 16 Jun 2017 10:18:56 +0100
+Message-ID: <20170616091856.jz5d4trm5jz2ugan@sirena.org.uk>
+References: <20170615055311.8049-1-christophe.jaillet@wanadoo.fr>
+ <E1dLYRz-0001l4-SZ@debutante>
+ <e92fef8d-5ce1-0b7d-d130-0246d2cb7f91@wanadoo.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C79C3266C6D
- for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2017 11:05:23 +0200 (CEST)
-In-Reply-To: <20170616090520.9879-1-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="x65wduh7amfg3u5o"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <e92fef8d-5ce1-0b7d-d130-0246d2cb7f91@wanadoo.fr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, heiko@sntech.de, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-We checked the quirks specific to the recent Intel chips by checking
-the PCI IDs manually, but it's becoming messy with lots of IS_SKL()
-and other macros, as the amount accumulated.
 
-For simplification, here the new AZX_DRIVER_SKL type is introduced,
-and check chip->driver_type instead of the manual PCI ID.  The short
-name for this is still "HDA Intel PCH", so that it doesn't break the
-existing user-space unnecessarily.
+--x65wduh7amfg3u5o
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Suggested-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_intel.c | 47 +++++++++++++++++++++--------------------------
- 1 file changed, 21 insertions(+), 26 deletions(-)
+On Fri, Jun 16, 2017 at 06:57:30AM +0200, Christophe JAILLET wrote:
+> Le 15/06/2017 =E0 19:20, Mark Brown a =E9crit :
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 01eb1dc7b5b3..07ea7f48aa01 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -263,6 +263,7 @@ enum {
- 	AZX_DRIVER_ICH,
- 	AZX_DRIVER_PCH,
- 	AZX_DRIVER_SCH,
-+	AZX_DRIVER_SKL,
- 	AZX_DRIVER_HDMI,
- 	AZX_DRIVER_ATI,
- 	AZX_DRIVER_ATIHDMI,
-@@ -364,23 +365,13 @@ enum {
- 					((pci)->device == 0x0d0c) || \
- 					((pci)->device == 0x160c))
- 
--#define IS_SKL(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0xa170)
--#define IS_SKL_LP(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0x9d70)
--#define IS_KBL(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0xa171)
--#define IS_KBL_LP(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0x9d71)
--#define IS_KBL_H(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0xa2f0)
- #define IS_BXT(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0x5a98)
--#define IS_BXT_T(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0x1a98)
--#define IS_GLK(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0x3198)
--#define IS_CFL(pci) ((pci)->vendor == 0x8086 && (pci)->device == 0xa348)
--#define IS_SKL_PLUS(pci) (IS_SKL(pci) || IS_SKL_LP(pci) || IS_BXT(pci) || \
--			  IS_BXT_T(pci) || IS_KBL(pci) || IS_KBL_LP(pci) || \
--			  IS_KBL_H(pci)	|| IS_GLK(pci) || IS_CFL(pci))
- 
- static char *driver_short_names[] = {
- 	[AZX_DRIVER_ICH] = "HDA Intel",
- 	[AZX_DRIVER_PCH] = "HDA Intel PCH",
- 	[AZX_DRIVER_SCH] = "HDA Intel MID",
-+	[AZX_DRIVER_SKL] = "HDA Intel PCH", /* kept old name for compatibility */
- 	[AZX_DRIVER_HDMI] = "HDA Intel HDMI",
- 	[AZX_DRIVER_ATI] = "HDA ATI SB",
- 	[AZX_DRIVER_ATIHDMI] = "HDA ATI HDMI",
-@@ -644,13 +635,13 @@ static void hda_intel_init_chip(struct azx *chip, bool full_reset)
- 
- 	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
- 		snd_hdac_set_codec_wakeup(bus, true);
--	if (IS_SKL_PLUS(pci)) {
-+	if (chip->driver_type == AZX_DRIVER_SKL) {
- 		pci_read_config_dword(pci, INTEL_HDA_CGCTL, &val);
- 		val = val & ~INTEL_HDA_CGCTL_MISCBDCGE;
- 		pci_write_config_dword(pci, INTEL_HDA_CGCTL, val);
- 	}
- 	azx_init_chip(chip, full_reset);
--	if (IS_SKL_PLUS(pci)) {
-+	if (chip->driver_type == AZX_DRIVER_SKL) {
- 		pci_read_config_dword(pci, INTEL_HDA_CGCTL, &val);
- 		val = val | INTEL_HDA_CGCTL_MISCBDCGE;
- 		pci_write_config_dword(pci, INTEL_HDA_CGCTL, val);
-@@ -1075,9 +1066,11 @@ static int azx_resume(struct device *dev)
-  */
- static int azx_freeze_noirq(struct device *dev)
+> >   	if (!of_property_read_u32(node, "rockchip,playback-channels", &val))=
  {
-+	struct snd_card *card = dev_get_drvdata(dev);
-+	struct azx *chip = card->private_data;
- 	struct pci_dev *pci = to_pci_dev(dev);
- 
--	if (IS_SKL_PLUS(pci))
-+	if (chip->driver_type == AZX_DRIVER_SKL)
- 		pci_set_power_state(pci, PCI_D3hot);
- 
- 	return 0;
-@@ -1085,9 +1078,11 @@ static int azx_freeze_noirq(struct device *dev)
- 
- static int azx_thaw_noirq(struct device *dev)
- {
-+	struct snd_card *card = dev_get_drvdata(dev);
-+	struct azx *chip = card->private_data;
- 	struct pci_dev *pci = to_pci_dev(dev);
- 
--	if (IS_SKL_PLUS(pci))
-+	if (chip->driver_type == AZX_DRIVER_SKL)
- 		pci_set_power_state(pci, PCI_D0);
- 
- 	return 0;
-@@ -1497,7 +1492,7 @@ static int check_position_fix(struct azx *chip, int fix)
- 		dev_dbg(chip->card->dev, "Using LPIB position fix\n");
- 		return POS_FIX_LPIB;
- 	}
--	if (IS_SKL_PLUS(chip->pci)) {
-+	if (chip->driver_type == AZX_DRIVER_SKL) {
- 		dev_dbg(chip->card->dev, "Using SKL position fix\n");
- 		return POS_FIX_SKL;
- 	}
-@@ -1798,7 +1793,7 @@ static int azx_first_init(struct azx *chip)
- 		return -ENXIO;
- 	}
- 
--	if (IS_SKL_PLUS(pci))
-+	if (chip->driver_type == AZX_DRIVER_SKL)
- 		snd_hdac_bus_parse_capabilities(bus);
- 
- 	/*
-@@ -2367,31 +2362,31 @@ static const struct pci_device_id azx_ids[] = {
- 	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_PCH },
- 	/* Sunrise Point */
- 	{ PCI_DEVICE(0x8086, 0xa170),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_SKYLAKE },
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
- 	/* Sunrise Point-LP */
- 	{ PCI_DEVICE(0x8086, 0x9d70),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_SKYLAKE },
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
- 	/* Kabylake */
- 	{ PCI_DEVICE(0x8086, 0xa171),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_SKYLAKE },
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
- 	/* Kabylake-LP */
- 	{ PCI_DEVICE(0x8086, 0x9d71),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_SKYLAKE },
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
- 	/* Kabylake-H */
- 	{ PCI_DEVICE(0x8086, 0xa2f0),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_SKYLAKE },
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE },
- 	/* Coffelake */
- 	{ PCI_DEVICE(0x8086, 0xa348),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_SKYLAKE},
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_SKYLAKE},
- 	/* Broxton-P(Apollolake) */
- 	{ PCI_DEVICE(0x8086, 0x5a98),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_BROXTON },
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON },
- 	/* Broxton-T */
- 	{ PCI_DEVICE(0x8086, 0x1a98),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_BROXTON },
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON },
- 	/* Gemini-Lake */
- 	{ PCI_DEVICE(0x8086, 0x3198),
--	  .driver_data = AZX_DRIVER_PCH | AZX_DCAPS_INTEL_BROXTON },
-+	  .driver_data = AZX_DRIVER_SKL | AZX_DCAPS_INTEL_BROXTON },
- 	/* Haswell */
- 	{ PCI_DEVICE(0x8086, 0x0a0c),
- 	  .driver_data = AZX_DRIVER_HDMI | AZX_DCAPS_INTEL_HASWELL },
--- 
-2.13.1
+> >   		if (val >=3D 2 && val <=3D 8)
+> >   			soc_dai->playback.channels_max =3D val;
+
+> ... and 'err' should be 'ret'...
+
+> I'm really confused for such a ugly proposal !
+
+In a situation like this it's generally best to send a patch, I'll fix
+though.
+
+--x65wduh7amfg3u5o
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllDonsACgkQJNaLcl1U
+h9BKXAf9HLRJwNPvMTRln/0h4G5l6rxHDsSvEjI07dJwsmDHOI623PUUg27XdVNa
+EmTT4pVe0aP2hcmIZOr6+RniDUGyR5Yi0J37FvchkLl2LmlpcuHXvDMIToBjvAvE
+M6k9kXGLrhDqg72+esyG+EpEu17ZzekACrI7eBEA98O04YXIooz8HsO+4YfMQdhn
+yrzJ8A7paNyvtQtQrs7BFizRR7SUCOax4UjFjMlJjRKLe50KTEetjIULYRDP9X4X
+IrkUCV4Kcg40YY6CghPpv8Cs/X/Mu/etCqmEqnMp1QwVPfT8BrNpBr1Sakeewbag
+YwA4oKr0TDQy5Yrhv2lblhAacqIo5Q==
+=2+34
+-----END PGP SIGNATURE-----
+
+--x65wduh7amfg3u5o--
