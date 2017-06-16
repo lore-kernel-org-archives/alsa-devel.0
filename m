@@ -1,56 +1,119 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Applied "ASoC: rockchip: Fix an error handling in
- 'rockchip_i2s_probe'" to the asoc tree
-Date: Fri, 16 Jun 2017 10:18:56 +0100
-Message-ID: <20170616091856.jz5d4trm5jz2ugan@sirena.org.uk>
-References: <20170615055311.8049-1-christophe.jaillet@wanadoo.fr>
- <E1dLYRz-0001l4-SZ@debutante>
- <e92fef8d-5ce1-0b7d-d130-0246d2cb7f91@wanadoo.fr>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ASoC: intel: Use kvzalloc() for suspend buffers
+Date: Fri, 16 Jun 2017 11:20:29 +0200
+Message-ID: <20170616092029.13645-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="x65wduh7amfg3u5o"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <e92fef8d-5ce1-0b7d-d130-0246d2cb7f91@wanadoo.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com, heiko@sntech.de, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 25BF92674CE
+ for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2017 11:20:32 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Intel SST driver allocates lots of pages at suspend for saving the
+firmware states, and this may occasionally lead to the allocation
+error due to the high order, ending up with the suspend failure.
 
---x65wduh7amfg3u5o
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Use kvzalloc() so that it can fall back to vmalloc() gracefully.
 
-On Fri, Jun 16, 2017 at 06:57:30AM +0200, Christophe JAILLET wrote:
-> Le 15/06/2017 =E0 19:20, Mark Brown a =E9crit :
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/soc/intel/atom/sst/sst.c | 22 +++++++++++-----------
+ sound/soc/intel/atom/sst/sst.h |  8 ++++----
+ 2 files changed, 15 insertions(+), 15 deletions(-)
 
-> >   	if (!of_property_read_u32(node, "rockchip,playback-channels", &val))=
- {
-> >   		if (val >=3D 2 && val <=3D 8)
-> >   			soc_dai->playback.channels_max =3D val;
-
-> ... and 'err' should be 'ret'...
-
-> I'm really confused for such a ugly proposal !
-
-In a situation like this it's generally best to send a patch, I'll fix
-though.
-
---x65wduh7amfg3u5o
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllDonsACgkQJNaLcl1U
-h9BKXAf9HLRJwNPvMTRln/0h4G5l6rxHDsSvEjI07dJwsmDHOI623PUUg27XdVNa
-EmTT4pVe0aP2hcmIZOr6+RniDUGyR5Yi0J37FvchkLl2LmlpcuHXvDMIToBjvAvE
-M6k9kXGLrhDqg72+esyG+EpEu17ZzekACrI7eBEA98O04YXIooz8HsO+4YfMQdhn
-yrzJ8A7paNyvtQtQrs7BFizRR7SUCOax4UjFjMlJjRKLe50KTEetjIULYRDP9X4X
-IrkUCV4Kcg40YY6CghPpv8Cs/X/Mu/etCqmEqnMp1QwVPfT8BrNpBr1Sakeewbag
-YwA4oKr0TDQy5Yrhv2lblhAacqIo5Q==
-=2+34
------END PGP SIGNATURE-----
-
---x65wduh7amfg3u5o--
+diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
+index f9ba71315e33..b4aa5b6f79d9 100644
+--- a/sound/soc/intel/atom/sst/sst.c
++++ b/sound/soc/intel/atom/sst/sst.c
+@@ -499,23 +499,23 @@ static int intel_sst_suspend(struct device *dev)
+ 	fw_save = kzalloc(sizeof(*fw_save), GFP_KERNEL);
+ 	if (!fw_save)
+ 		return -ENOMEM;
+-	fw_save->iram = kzalloc(ctx->iram_end - ctx->iram_base, GFP_KERNEL);
++	fw_save->iram = kvzalloc(ctx->iram_end - ctx->iram_base, GFP_KERNEL);
+ 	if (!fw_save->iram) {
+ 		ret = -ENOMEM;
+ 		goto iram;
+ 	}
+-	fw_save->dram = kzalloc(ctx->dram_end - ctx->dram_base, GFP_KERNEL);
++	fw_save->dram = kvzalloc(ctx->dram_end - ctx->dram_base, GFP_KERNEL);
+ 	if (!fw_save->dram) {
+ 		ret = -ENOMEM;
+ 		goto dram;
+ 	}
+-	fw_save->sram = kzalloc(SST_MAILBOX_SIZE, GFP_KERNEL);
++	fw_save->sram = kvzalloc(SST_MAILBOX_SIZE, GFP_KERNEL);
+ 	if (!fw_save->sram) {
+ 		ret = -ENOMEM;
+ 		goto sram;
+ 	}
+ 
+-	fw_save->ddr = kzalloc(ctx->ddr_end - ctx->ddr_base, GFP_KERNEL);
++	fw_save->ddr = kvzalloc(ctx->ddr_end - ctx->ddr_base, GFP_KERNEL);
+ 	if (!fw_save->ddr) {
+ 		ret = -ENOMEM;
+ 		goto ddr;
+@@ -530,11 +530,11 @@ static int intel_sst_suspend(struct device *dev)
+ 	ctx->ops->reset(ctx);
+ 	return 0;
+ ddr:
+-	kfree(fw_save->sram);
++	kvfree(fw_save->sram);
+ sram:
+-	kfree(fw_save->dram);
++	kvfree(fw_save->dram);
+ dram:
+-	kfree(fw_save->iram);
++	kvfree(fw_save->iram);
+ iram:
+ 	kfree(fw_save);
+ 	return ret;
+@@ -562,10 +562,10 @@ static int intel_sst_resume(struct device *dev)
+ 	memcpy32_toio(ctx->mailbox, fw_save->sram, SST_MAILBOX_SIZE);
+ 	memcpy32_toio(ctx->ddr, fw_save->ddr, ctx->ddr_end - ctx->ddr_base);
+ 
+-	kfree(fw_save->sram);
+-	kfree(fw_save->dram);
+-	kfree(fw_save->iram);
+-	kfree(fw_save->ddr);
++	kvfree(fw_save->sram);
++	kvfree(fw_save->dram);
++	kvfree(fw_save->iram);
++	kvfree(fw_save->ddr);
+ 	kfree(fw_save);
+ 
+ 	block = sst_create_block(ctx, 0, FW_DWNL_ID);
+diff --git a/sound/soc/intel/atom/sst/sst.h b/sound/soc/intel/atom/sst/sst.h
+index 5c9a51cc77aa..2ac1aa8e13d1 100644
+--- a/sound/soc/intel/atom/sst/sst.h
++++ b/sound/soc/intel/atom/sst/sst.h
+@@ -338,10 +338,10 @@ struct sst_shim_regs64 {
+ };
+ 
+ struct sst_fw_save {
+-	void *iram;
+-	void *dram;
+-	void *sram;
+-	void *ddr;
++	void *iram;	/* allocated via kvmalloc() */
++	void *dram;	/* allocated via kvmalloc() */
++	void *sram;	/* allocated via kvmalloc() */
++	void *ddr;	/* allocated via kvmalloc() */
+ };
+ 
+ /**
+-- 
+2.13.1
