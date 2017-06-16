@@ -1,34 +1,28 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: Use kvzalloc() for suspend
-	buffers" to the asoc tree
-Date: Fri, 16 Jun 2017 18:50:34 +0100
-Message-ID: <E1dLvOE-0005mb-Ju@debutante>
-References: <20170616092029.13645-1-tiwai@suse.de>
+Subject: Applied "ASoC: stm32: sai: typo fixes" to the asoc tree
+Date: Fri, 16 Jun 2017 18:50:06 +0100
+Message-ID: <E1dLvNm-0005gw-2o@debutante>
+References: <1497615334-7156-4-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4A985266D57
- for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2017 19:51:15 +0200 (CEST)
-In-Reply-To: <20170616092029.13645-1-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1497615334-7156-4-git-send-email-olivier.moysan@st.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Cc: mark.rutland@arm.com, robh@kernel.org, alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, benjamin.gaignard@st.com, perex@perex.cz, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: Use kvzalloc() for suspend buffers
+   ASoC: stm32: sai: typo fixes
 
 has been applied to the asoc tree at
 
@@ -53,104 +47,155 @@ to this mail.
 Thanks,
 Mark
 
->From 75bd90860a1f6d4671403f5b7beb9c4430ca9750 Mon Sep 17 00:00:00 2001
-From: Takashi Iwai <tiwai@suse.de>
-Date: Fri, 16 Jun 2017 11:20:29 +0200
-Subject: [PATCH] ASoC: intel: Use kvzalloc() for suspend buffers
+>From 25a1fd2b6e5ca2d5d4f8a877975abc71155efd6a Mon Sep 17 00:00:00 2001
+From: olivier moysan <olivier.moysan@st.com>
+Date: Fri, 16 Jun 2017 14:15:30 +0200
+Subject: [PATCH] ASoC: stm32: sai: typo fixes
 
-Intel SST driver allocates lots of pages at suspend for saving the
-firmware states, and this may occasionally lead to the allocation
-error due to the high order, ending up with the suspend failure.
+Fix typos in sai driver.
 
-Use kvzalloc() so that it can fall back to vmalloc() gracefully.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: olivier moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst/sst.c | 22 +++++++++++-----------
- sound/soc/intel/atom/sst/sst.h |  8 ++++----
- 2 files changed, 15 insertions(+), 15 deletions(-)
+ sound/soc/stm/stm32_sai.c     |  2 +-
+ sound/soc/stm/stm32_sai.h     |  1 -
+ sound/soc/stm/stm32_sai_sub.c | 28 ++++++++++++++--------------
+ 3 files changed, 15 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst/sst.c b/sound/soc/intel/atom/sst/sst.c
-index 5ee92257ca85..8afdff457579 100644
---- a/sound/soc/intel/atom/sst/sst.c
-+++ b/sound/soc/intel/atom/sst/sst.c
-@@ -464,23 +464,23 @@ static int intel_sst_suspend(struct device *dev)
- 	fw_save = kzalloc(sizeof(*fw_save), GFP_KERNEL);
- 	if (!fw_save)
- 		return -ENOMEM;
--	fw_save->iram = kzalloc(ctx->iram_end - ctx->iram_base, GFP_KERNEL);
-+	fw_save->iram = kvzalloc(ctx->iram_end - ctx->iram_base, GFP_KERNEL);
- 	if (!fw_save->iram) {
- 		ret = -ENOMEM;
- 		goto iram;
- 	}
--	fw_save->dram = kzalloc(ctx->dram_end - ctx->dram_base, GFP_KERNEL);
-+	fw_save->dram = kvzalloc(ctx->dram_end - ctx->dram_base, GFP_KERNEL);
- 	if (!fw_save->dram) {
- 		ret = -ENOMEM;
- 		goto dram;
- 	}
--	fw_save->sram = kzalloc(SST_MAILBOX_SIZE, GFP_KERNEL);
-+	fw_save->sram = kvzalloc(SST_MAILBOX_SIZE, GFP_KERNEL);
- 	if (!fw_save->sram) {
- 		ret = -ENOMEM;
- 		goto sram;
+diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
+index 2a27a26bf7a1..6159d66c2c54 100644
+--- a/sound/soc/stm/stm32_sai.c
++++ b/sound/soc/stm/stm32_sai.c
+@@ -110,6 +110,6 @@ static struct platform_driver stm32_sai_driver = {
+ module_platform_driver(stm32_sai_driver);
+ 
+ MODULE_DESCRIPTION("STM32 Soc SAI Interface");
+-MODULE_AUTHOR("Olivier Moysan, <olivier.moysan@st.com>");
++MODULE_AUTHOR("Olivier Moysan <olivier.moysan@st.com>");
+ MODULE_ALIAS("platform:st,stm32-sai");
+ MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/stm/stm32_sai.h b/sound/soc/stm/stm32_sai.h
+index a801fda5066f..270be93b845e 100644
+--- a/sound/soc/stm/stm32_sai.h
++++ b/sound/soc/stm/stm32_sai.h
+@@ -125,7 +125,6 @@
+ #define SAI_XFRCR_FSOFF		BIT(SAI_XFRCR_FSOFF_SHIFT)
+ 
+ /****************** Bit definition for SAI_XSLOTR register ******************/
+-
+ #define SAI_XSLOTR_FBOFF_SHIFT	0
+ #define SAI_XSLOTR_FBOFF_MASK	GENMASK(4, SAI_XSLOTR_FBOFF_SHIFT)
+ #define SAI_XSLOTR_FBOFF_SET(x)	((x) << SAI_XSLOTR_FBOFF_SHIFT)
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index ae4706ca265b..d7aeed3ec3c8 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -181,29 +181,29 @@ static irqreturn_t stm32_sai_isr(int irq, void *devid)
+ 			   SAI_XCLRFR_MASK);
+ 
+ 	if (flags & SAI_XIMR_OVRUDRIE) {
+-		dev_err(&pdev->dev, "IT %s\n",
++		dev_err(&pdev->dev, "IRQ %s\n",
+ 			STM_SAI_IS_PLAYBACK(sai) ? "underrun" : "overrun");
+ 		status = SNDRV_PCM_STATE_XRUN;
  	}
  
--	fw_save->ddr = kzalloc(ctx->ddr_end - ctx->ddr_base, GFP_KERNEL);
-+	fw_save->ddr = kvzalloc(ctx->ddr_end - ctx->ddr_base, GFP_KERNEL);
- 	if (!fw_save->ddr) {
- 		ret = -ENOMEM;
- 		goto ddr;
-@@ -495,11 +495,11 @@ static int intel_sst_suspend(struct device *dev)
- 	ctx->ops->reset(ctx);
+ 	if (flags & SAI_XIMR_MUTEDETIE)
+-		dev_dbg(&pdev->dev, "IT mute detected\n");
++		dev_dbg(&pdev->dev, "IRQ mute detected\n");
+ 
+ 	if (flags & SAI_XIMR_WCKCFGIE) {
+-		dev_err(&pdev->dev, "IT wrong clock configuration\n");
++		dev_err(&pdev->dev, "IRQ wrong clock configuration\n");
+ 		status = SNDRV_PCM_STATE_DISCONNECTED;
+ 	}
+ 
+ 	if (flags & SAI_XIMR_CNRDYIE)
+-		dev_warn(&pdev->dev, "IT Codec not ready\n");
++		dev_err(&pdev->dev, "IRQ Codec not ready\n");
+ 
+ 	if (flags & SAI_XIMR_AFSDETIE) {
+-		dev_warn(&pdev->dev, "IT Anticipated frame synchro\n");
++		dev_err(&pdev->dev, "IRQ Anticipated frame synchro\n");
+ 		status = SNDRV_PCM_STATE_XRUN;
+ 	}
+ 
+ 	if (flags & SAI_XIMR_LFSDETIE) {
+-		dev_warn(&pdev->dev, "IT Late frame synchro\n");
++		dev_err(&pdev->dev, "IRQ Late frame synchro\n");
+ 		status = SNDRV_PCM_STATE_XRUN;
+ 	}
+ 
+@@ -235,7 +235,7 @@ static int stm32_sai_set_dai_tdm_slot(struct snd_soc_dai *cpu_dai, u32 tx_mask,
+ 	struct stm32_sai_sub_data *sai = snd_soc_dai_get_drvdata(cpu_dai);
+ 	int slotr, slotr_mask, slot_size;
+ 
+-	dev_dbg(cpu_dai->dev, "masks tx/rx:%#x/%#x, slots:%d, width:%d\n",
++	dev_dbg(cpu_dai->dev, "Masks tx/rx:%#x/%#x, slots:%d, width:%d\n",
+ 		tx_mask, rx_mask, slots, slot_width);
+ 
+ 	switch (slot_width) {
+@@ -377,7 +377,7 @@ static int stm32_sai_startup(struct snd_pcm_substream *substream,
+ 
+ 	ret = clk_prepare_enable(sai->sai_ck);
+ 	if (ret < 0) {
+-		dev_err(cpu_dai->dev, "failed to enable clock: %d\n", ret);
++		dev_err(cpu_dai->dev, "Failed to enable clock: %d\n", ret);
+ 		return ret;
+ 	}
+ 
+@@ -497,7 +497,7 @@ static int stm32_sai_set_slots(struct snd_soc_dai *cpu_dai)
+ 				   SAI_XSLOTR_SLOTEN_SET(sai->slot_mask));
+ 	}
+ 
+-	dev_dbg(cpu_dai->dev, "slots %d, slot width %d\n",
++	dev_dbg(cpu_dai->dev, "Slots %d, slot width %d\n",
+ 		sai->slots, sai->slot_width);
+ 
  	return 0;
- ddr:
--	kfree(fw_save->sram);
-+	kvfree(fw_save->sram);
- sram:
--	kfree(fw_save->dram);
-+	kvfree(fw_save->dram);
- dram:
--	kfree(fw_save->iram);
-+	kvfree(fw_save->iram);
- iram:
- 	kfree(fw_save);
- 	return ret;
-@@ -527,10 +527,10 @@ static int intel_sst_resume(struct device *dev)
- 	memcpy32_toio(ctx->mailbox, fw_save->sram, SST_MAILBOX_SIZE);
- 	memcpy32_toio(ctx->ddr, fw_save->ddr, ctx->ddr_end - ctx->ddr_base);
+@@ -521,7 +521,7 @@ static void stm32_sai_set_frame(struct snd_soc_dai *cpu_dai)
+ 	frcr |= SAI_XFRCR_FSALL_SET((fs_active - 1));
+ 	frcr_mask = SAI_XFRCR_FRL_MASK | SAI_XFRCR_FSALL_MASK;
  
--	kfree(fw_save->sram);
--	kfree(fw_save->dram);
--	kfree(fw_save->iram);
--	kfree(fw_save->ddr);
-+	kvfree(fw_save->sram);
-+	kvfree(fw_save->dram);
-+	kvfree(fw_save->iram);
-+	kvfree(fw_save->ddr);
- 	kfree(fw_save);
+-	dev_dbg(cpu_dai->dev, "frame length %d, frame active %d\n",
++	dev_dbg(cpu_dai->dev, "Frame length %d, frame active %d\n",
+ 		sai->fs_length, fs_active);
  
- 	block = sst_create_block(ctx, 0, FW_DWNL_ID);
-diff --git a/sound/soc/intel/atom/sst/sst.h b/sound/soc/intel/atom/sst/sst.h
-index 1693befa455a..e02e2b4cc08f 100644
---- a/sound/soc/intel/atom/sst/sst.h
-+++ b/sound/soc/intel/atom/sst/sst.h
-@@ -318,10 +318,10 @@ struct sst_ipc_reg {
- };
+ 	regmap_update_bits(sai->regmap, STM_SAI_FRCR_REGX, frcr_mask, frcr);
+@@ -784,7 +784,7 @@ static int stm32_sai_sub_parse_of(struct platform_device *pdev,
  
- struct sst_fw_save {
--	void *iram;
--	void *dram;
--	void *sram;
--	void *ddr;
-+	void *iram;	/* allocated via kvmalloc() */
-+	void *dram;	/* allocated via kvmalloc() */
-+	void *sram;	/* allocated via kvmalloc() */
-+	void *ddr;	/* allocated via kvmalloc() */
- };
+ 	sai->sai_ck = devm_clk_get(&pdev->dev, "sai_ck");
+ 	if (IS_ERR(sai->sai_ck)) {
+-		dev_err(&pdev->dev, "missing kernel clock sai_ck\n");
++		dev_err(&pdev->dev, "Missing kernel clock sai_ck\n");
+ 		return PTR_ERR(sai->sai_ck);
+ 	}
  
- /**
+@@ -849,7 +849,7 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
+ 	ret = devm_request_irq(&pdev->dev, sai->pdata->irq, stm32_sai_isr,
+ 			       IRQF_SHARED, dev_name(&pdev->dev), sai);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "irq request returned %d\n", ret);
++		dev_err(&pdev->dev, "IRQ request returned %d\n", ret);
+ 		return ret;
+ 	}
+ 
+@@ -861,7 +861,7 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
+ 	ret = devm_snd_dmaengine_pcm_register(&pdev->dev,
+ 					      &stm32_sai_pcm_config, 0);
+ 	if (ret) {
+-		dev_err(&pdev->dev, "could not register pcm dma\n");
++		dev_err(&pdev->dev, "Could not register pcm dma\n");
+ 		return ret;
+ 	}
+ 
+@@ -879,6 +879,6 @@ static struct platform_driver stm32_sai_sub_driver = {
+ module_platform_driver(stm32_sai_sub_driver);
+ 
+ MODULE_DESCRIPTION("STM32 Soc SAI sub-block Interface");
+-MODULE_AUTHOR("Olivier Moysan, <olivier.moysan@st.com>");
++MODULE_AUTHOR("Olivier Moysan <olivier.moysan@st.com>");
+ MODULE_ALIAS("platform:st,stm32-sai-sub");
+ MODULE_LICENSE("GPL v2");
 -- 
 2.11.0
