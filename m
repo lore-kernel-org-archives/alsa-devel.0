@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/4] ALSA: pcm: Follow standard EXPORT_SYMBOL()
+Subject: [PATCH 2/4] ALSA: seq: Follow standard EXPORT_SYMBOL()
 	declarations
-Date: Fri, 16 Jun 2017 17:56:36 +0200
-Message-ID: <20170616155639.5427-2-tiwai@suse.de>
+Date: Fri, 16 Jun 2017 17:56:37 +0200
+Message-ID: <20170616155639.5427-3-tiwai@suse.de>
 References: <20170616155639.5427-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id AB2D0266C99
+ by alsa0.perex.cz (Postfix) with ESMTP id AF74F26753E
  for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2017 17:56:43 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 27893AD8E
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 27127AD54
  for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2017 15:56:43 +0000 (UTC)
 In-Reply-To: <20170616155639.5427-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -30,391 +30,288 @@ List-Id: alsa-devel@alsa-project.org
 Just a tidy up to follow the standard EXPORT_SYMBOL*() declarations
 in order to improve grep-ability.
 
+- Move EXPORT_SYMBOL*() to the position right after its definition
 - Remove superfluous blank line before EXPORT_SYMBOL*() lines
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/pcm_lib.c    | 21 ---------------------
- sound/core/pcm_memory.c |  6 ------
- sound/core/pcm_misc.c   | 11 -----------
- sound/core/pcm_native.c |  7 -------
- 4 files changed, 45 deletions(-)
+ sound/core/seq/seq_clientmgr.c  |  8 --------
+ sound/core/seq/seq_lock.c       |  1 -
+ sound/core/seq/seq_memory.c     |  2 --
+ sound/core/seq/seq_midi_emul.c  |  9 ++++-----
+ sound/core/seq/seq_midi_event.c | 21 ++++++++-------------
+ sound/core/seq/seq_ports.c      |  2 --
+ sound/core/seq/seq_virmidi.c    |  3 +--
+ 7 files changed, 13 insertions(+), 33 deletions(-)
 
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 631cd598ba6c..461c21f21caf 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -490,7 +490,6 @@ void snd_pcm_set_ops(struct snd_pcm *pcm, int direction,
- 	for (substream = stream->substream; substream != NULL; substream = substream->next)
- 		substream->ops = ops;
+diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
+index f3b1d7f50b81..272c55fe17c8 100644
+--- a/sound/core/seq/seq_clientmgr.c
++++ b/sound/core/seq/seq_clientmgr.c
+@@ -1668,7 +1668,6 @@ int snd_seq_set_queue_tempo(int client, struct snd_seq_queue_tempo *tempo)
+ 		return -EPERM;
+ 	return snd_seq_queue_timer_set_tempo(tempo->queue, client, tempo);
  }
 -
- EXPORT_SYMBOL(snd_pcm_set_ops);
+ EXPORT_SYMBOL(snd_seq_set_queue_tempo);
  
- /**
-@@ -508,7 +507,6 @@ void snd_pcm_set_sync(struct snd_pcm_substream *substream)
- 	runtime->sync.id32[2] = -1;
- 	runtime->sync.id32[3] = -1;
+ static int snd_seq_ioctl_set_queue_tempo(struct snd_seq_client *client,
+@@ -2200,7 +2199,6 @@ int snd_seq_create_kernel_client(struct snd_card *card, int client_index,
+ 	/* return client number to caller */
+ 	return client->number;
  }
 -
- EXPORT_SYMBOL(snd_pcm_set_sync);
+ EXPORT_SYMBOL(snd_seq_create_kernel_client);
  
- /*
-@@ -625,7 +623,6 @@ int snd_interval_refine(struct snd_interval *i, const struct snd_interval *v)
- 	}
- 	return changed;
- }
--
- EXPORT_SYMBOL(snd_interval_refine);
- 
- static int snd_interval_refine_first(struct snd_interval *i)
-@@ -888,7 +885,6 @@ int snd_interval_ratnum(struct snd_interval *i,
- 	}
- 	return err;
- }
--
- EXPORT_SYMBOL(snd_interval_ratnum);
- 
- /**
-@@ -1026,7 +1022,6 @@ int snd_interval_list(struct snd_interval *i, unsigned int count,
-         }
- 	return snd_interval_refine(i, &list_range);
- }
--
- EXPORT_SYMBOL(snd_interval_list);
- 
- /**
-@@ -1165,7 +1160,6 @@ int snd_pcm_hw_rule_add(struct snd_pcm_runtime *runtime, unsigned int cond,
- 	va_end(args);
+ /* exported to kernel modules */
+@@ -2219,7 +2217,6 @@ int snd_seq_delete_kernel_client(int client)
+ 	kfree(ptr);
  	return 0;
  }
 -
- EXPORT_SYMBOL(snd_pcm_hw_rule_add);
+ EXPORT_SYMBOL(snd_seq_delete_kernel_client);
  
- /**
-@@ -1229,7 +1223,6 @@ int snd_pcm_hw_constraint_integer(struct snd_pcm_runtime *runtime, snd_pcm_hw_pa
- 	struct snd_pcm_hw_constraints *constrs = &runtime->hw_constraints;
- 	return snd_interval_setinteger(constrs_interval(constrs, var));
- }
--
- EXPORT_SYMBOL(snd_pcm_hw_constraint_integer);
- 
- /**
-@@ -1255,7 +1248,6 @@ int snd_pcm_hw_constraint_minmax(struct snd_pcm_runtime *runtime, snd_pcm_hw_par
- 	t.integer = 0;
- 	return snd_interval_refine(constrs_interval(constrs, var), &t);
- }
--
- EXPORT_SYMBOL(snd_pcm_hw_constraint_minmax);
- 
- static int snd_pcm_hw_rule_list(struct snd_pcm_hw_params *params,
-@@ -1286,7 +1278,6 @@ int snd_pcm_hw_constraint_list(struct snd_pcm_runtime *runtime,
- 				   snd_pcm_hw_rule_list, (void *)l,
- 				   var, -1);
- }
--
- EXPORT_SYMBOL(snd_pcm_hw_constraint_list);
- 
- static int snd_pcm_hw_rule_ranges(struct snd_pcm_hw_params *params,
-@@ -1353,7 +1344,6 @@ int snd_pcm_hw_constraint_ratnums(struct snd_pcm_runtime *runtime,
- 				   snd_pcm_hw_rule_ratnums, (void *)r,
- 				   var, -1);
- }
--
- EXPORT_SYMBOL(snd_pcm_hw_constraint_ratnums);
- 
- static int snd_pcm_hw_rule_ratdens(struct snd_pcm_hw_params *params,
-@@ -1388,7 +1378,6 @@ int snd_pcm_hw_constraint_ratdens(struct snd_pcm_runtime *runtime,
- 				   snd_pcm_hw_rule_ratdens, (void *)r,
- 				   var, -1);
- }
--
- EXPORT_SYMBOL(snd_pcm_hw_constraint_ratdens);
- 
- static int snd_pcm_hw_rule_msbits(struct snd_pcm_hw_params *params,
-@@ -1435,7 +1424,6 @@ int snd_pcm_hw_constraint_msbits(struct snd_pcm_runtime *runtime,
- 				    (void*) l,
- 				    SNDRV_PCM_HW_PARAM_SAMPLE_BITS, -1);
- }
--
- EXPORT_SYMBOL(snd_pcm_hw_constraint_msbits);
- 
- static int snd_pcm_hw_rule_step(struct snd_pcm_hw_params *params,
-@@ -1463,7 +1451,6 @@ int snd_pcm_hw_constraint_step(struct snd_pcm_runtime *runtime,
- 				   snd_pcm_hw_rule_step, (void *) step,
- 				   var, -1);
- }
--
- EXPORT_SYMBOL(snd_pcm_hw_constraint_step);
- 
- static int snd_pcm_hw_rule_pow2(struct snd_pcm_hw_params *params, struct snd_pcm_hw_rule *rule)
-@@ -1494,7 +1481,6 @@ int snd_pcm_hw_constraint_pow2(struct snd_pcm_runtime *runtime,
- 				   snd_pcm_hw_rule_pow2, NULL,
- 				   var, -1);
- }
--
- EXPORT_SYMBOL(snd_pcm_hw_constraint_pow2);
- 
- static int snd_pcm_hw_rule_noresample_func(struct snd_pcm_hw_params *params,
-@@ -1553,7 +1539,6 @@ void _snd_pcm_hw_params_any(struct snd_pcm_hw_params *params)
- 		_snd_pcm_hw_param_any(params, k);
- 	params->info = ~0U;
- }
--
- EXPORT_SYMBOL(_snd_pcm_hw_params_any);
- 
- /**
-@@ -1586,7 +1571,6 @@ int snd_pcm_hw_param_value(const struct snd_pcm_hw_params *params,
- 	}
- 	return -EINVAL;
- }
--
- EXPORT_SYMBOL(snd_pcm_hw_param_value);
- 
- void _snd_pcm_hw_param_setempty(struct snd_pcm_hw_params *params,
-@@ -1604,7 +1588,6 @@ void _snd_pcm_hw_param_setempty(struct snd_pcm_hw_params *params,
- 		snd_BUG();
- 	}
- }
--
- EXPORT_SYMBOL(_snd_pcm_hw_param_setempty);
- 
- static int _snd_pcm_hw_param_first(struct snd_pcm_hw_params *params,
-@@ -1651,7 +1634,6 @@ int snd_pcm_hw_param_first(struct snd_pcm_substream *pcm,
- 	}
- 	return snd_pcm_hw_param_value(params, var, dir);
- }
--
- EXPORT_SYMBOL(snd_pcm_hw_param_first);
- 
- static int _snd_pcm_hw_param_last(struct snd_pcm_hw_params *params,
-@@ -1698,7 +1680,6 @@ int snd_pcm_hw_param_last(struct snd_pcm_substream *pcm,
- 	}
- 	return snd_pcm_hw_param_value(params, var, dir);
- }
--
- EXPORT_SYMBOL(snd_pcm_hw_param_last);
- 
- static int snd_pcm_lib_ioctl_reset(struct snd_pcm_substream *substream,
-@@ -1796,7 +1777,6 @@ int snd_pcm_lib_ioctl(struct snd_pcm_substream *substream,
- 	}
- 	return -ENXIO;
- }
--
- EXPORT_SYMBOL(snd_pcm_lib_ioctl);
- 
- /**
-@@ -1832,7 +1812,6 @@ void snd_pcm_period_elapsed(struct snd_pcm_substream *substream)
- 	kill_fasync(&runtime->fasync, SIGIO, POLL_IN);
- 	snd_pcm_stream_unlock_irqrestore(substream, flags);
- }
--
- EXPORT_SYMBOL(snd_pcm_period_elapsed);
- 
- /*
-diff --git a/sound/core/pcm_memory.c b/sound/core/pcm_memory.c
-index b45f6aa32264..ae33e456708c 100644
---- a/sound/core/pcm_memory.c
-+++ b/sound/core/pcm_memory.c
-@@ -120,7 +120,6 @@ int snd_pcm_lib_preallocate_free_for_all(struct snd_pcm *pcm)
- 			snd_pcm_lib_preallocate_free(substream);
- 	return 0;
- }
--
- EXPORT_SYMBOL(snd_pcm_lib_preallocate_free_for_all);
- 
- #ifdef CONFIG_SND_VERBOSE_PROCFS
-@@ -263,7 +262,6 @@ int snd_pcm_lib_preallocate_pages(struct snd_pcm_substream *substream,
- 	substream->dma_buffer.dev.dev = data;
- 	return snd_pcm_lib_preallocate_pages1(substream, size, max);
- }
--
- EXPORT_SYMBOL(snd_pcm_lib_preallocate_pages);
- 
- /**
-@@ -292,7 +290,6 @@ int snd_pcm_lib_preallocate_pages_for_all(struct snd_pcm *pcm,
- 				return err;
- 	return 0;
- }
--
- EXPORT_SYMBOL(snd_pcm_lib_preallocate_pages_for_all);
- 
- #ifdef CONFIG_SND_DMA_SGBUF
-@@ -314,7 +311,6 @@ struct page *snd_pcm_sgbuf_ops_page(struct snd_pcm_substream *substream, unsigne
- 		return NULL;
- 	return sgbuf->page_table[idx];
- }
--
- EXPORT_SYMBOL(snd_pcm_sgbuf_ops_page);
- #endif /* CONFIG_SND_DMA_SGBUF */
- 
-@@ -370,7 +366,6 @@ int snd_pcm_lib_malloc_pages(struct snd_pcm_substream *substream, size_t size)
- 	runtime->dma_bytes = size;
- 	return 1;			/* area was changed */
- }
--
- EXPORT_SYMBOL(snd_pcm_lib_malloc_pages);
- 
- /**
-@@ -398,7 +393,6 @@ int snd_pcm_lib_free_pages(struct snd_pcm_substream *substream)
- 	snd_pcm_set_runtime_buffer(substream, NULL);
- 	return 0;
- }
--
- EXPORT_SYMBOL(snd_pcm_lib_free_pages);
- 
- int _snd_pcm_lib_alloc_vmalloc_buffer(struct snd_pcm_substream *substream,
-diff --git a/sound/core/pcm_misc.c b/sound/core/pcm_misc.c
-index dd8383e29315..9be81025372f 100644
---- a/sound/core/pcm_misc.c
-+++ b/sound/core/pcm_misc.c
-@@ -248,7 +248,6 @@ int snd_pcm_format_signed(snd_pcm_format_t format)
- 		return -EINVAL;
- 	return val;
- }
--
- EXPORT_SYMBOL(snd_pcm_format_signed);
- 
- /**
-@@ -267,7 +266,6 @@ int snd_pcm_format_unsigned(snd_pcm_format_t format)
- 		return val;
- 	return !val;
- }
--
- EXPORT_SYMBOL(snd_pcm_format_unsigned);
- 
- /**
-@@ -280,7 +278,6 @@ int snd_pcm_format_linear(snd_pcm_format_t format)
+ /* skeleton to enqueue event, called from snd_seq_kernel_client_enqueue
+@@ -2269,7 +2266,6 @@ int snd_seq_kernel_client_enqueue(int client, struct snd_seq_event * ev,
  {
- 	return snd_pcm_format_signed(format) >= 0;
+ 	return kernel_client_enqueue(client, ev, NULL, 0, atomic, hop);
  }
 -
- EXPORT_SYMBOL(snd_pcm_format_linear);
+ EXPORT_SYMBOL(snd_seq_kernel_client_enqueue);
  
- /**
-@@ -299,7 +296,6 @@ int snd_pcm_format_little_endian(snd_pcm_format_t format)
- 		return -EINVAL;
- 	return val;
+ /*
+@@ -2283,7 +2279,6 @@ int snd_seq_kernel_client_enqueue_blocking(int client, struct snd_seq_event * ev
+ {
+ 	return kernel_client_enqueue(client, ev, file, 1, atomic, hop);
  }
 -
- EXPORT_SYMBOL(snd_pcm_format_little_endian);
+ EXPORT_SYMBOL(snd_seq_kernel_client_enqueue_blocking);
  
- /**
-@@ -318,7 +314,6 @@ int snd_pcm_format_big_endian(snd_pcm_format_t format)
- 		return val;
- 	return !val;
+ /* 
+@@ -2321,7 +2316,6 @@ int snd_seq_kernel_client_dispatch(int client, struct snd_seq_event * ev,
+ 	snd_seq_client_unlock(cptr);
+ 	return result;
  }
 -
- EXPORT_SYMBOL(snd_pcm_format_big_endian);
+ EXPORT_SYMBOL(snd_seq_kernel_client_dispatch);
  
  /**
-@@ -337,7 +332,6 @@ int snd_pcm_format_width(snd_pcm_format_t format)
- 		return -EINVAL;
- 	return val;
+@@ -2354,7 +2348,6 @@ int snd_seq_kernel_client_ctl(int clientid, unsigned int cmd, void *arg)
+ 		 cmd, _IOC_TYPE(cmd), _IOC_NR(cmd));
+ 	return -ENOTTY;
  }
 -
- EXPORT_SYMBOL(snd_pcm_format_width);
+ EXPORT_SYMBOL(snd_seq_kernel_client_ctl);
  
- /**
-@@ -356,7 +350,6 @@ int snd_pcm_format_physical_width(snd_pcm_format_t format)
- 		return -EINVAL;
- 	return val;
+ /* exported (for OSS emulator) */
+@@ -2372,7 +2365,6 @@ int snd_seq_kernel_client_write_poll(int clientid, struct file *file, poll_table
+ 		return 1;
+ 	return 0;
  }
 -
- EXPORT_SYMBOL(snd_pcm_format_physical_width);
+ EXPORT_SYMBOL(snd_seq_kernel_client_write_poll);
  
- /**
-@@ -374,7 +367,6 @@ ssize_t snd_pcm_format_size(snd_pcm_format_t format, size_t samples)
- 		return -EINVAL;
- 	return samples * phys_width / 8;
+ /*---------------------------------------------------------------------------*/
+diff --git a/sound/core/seq/seq_lock.c b/sound/core/seq/seq_lock.c
+index 12ba83367b1b..0ff7926a5a69 100644
+--- a/sound/core/seq/seq_lock.c
++++ b/sound/core/seq/seq_lock.c
+@@ -40,7 +40,6 @@ void snd_use_lock_sync_helper(snd_use_lock_t *lockp, const char *file, int line)
+ 		schedule_timeout_uninterruptible(1);
+ 	}
  }
 -
- EXPORT_SYMBOL(snd_pcm_format_size);
+ EXPORT_SYMBOL(snd_use_lock_sync_helper);
  
- /**
-@@ -391,7 +383,6 @@ const unsigned char *snd_pcm_format_silence_64(snd_pcm_format_t format)
- 		return NULL;
- 	return pcm_formats[(INT)format].silence;
- }
--
- EXPORT_SYMBOL(snd_pcm_format_silence_64);
- 
- /**
-@@ -462,7 +453,6 @@ int snd_pcm_format_set_silence(snd_pcm_format_t format, void *data, unsigned int
  #endif
- 	return 0;
- }
--
- EXPORT_SYMBOL(snd_pcm_format_set_silence);
- 
- /**
-@@ -491,7 +481,6 @@ int snd_pcm_limit_hw_rates(struct snd_pcm_runtime *runtime)
+diff --git a/sound/core/seq/seq_memory.c b/sound/core/seq/seq_memory.c
+index d4c61ec9be13..512f78ea13da 100644
+--- a/sound/core/seq/seq_memory.c
++++ b/sound/core/seq/seq_memory.c
+@@ -118,7 +118,6 @@ int snd_seq_dump_var_event(const struct snd_seq_event *event,
  	}
  	return 0;
  }
 -
- EXPORT_SYMBOL(snd_pcm_limit_hw_rates);
+ EXPORT_SYMBOL(snd_seq_dump_var_event);
  
- /**
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 7e8f3656b695..d35c6614fdab 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -1278,7 +1278,6 @@ int snd_pcm_stop(struct snd_pcm_substream *substream, snd_pcm_state_t state)
+ 
+@@ -169,7 +168,6 @@ int snd_seq_expand_var_event(const struct snd_seq_event *event, int count, char
+ 				     &buf);
+ 	return err < 0 ? err : newlen;
+ }
+-
+ EXPORT_SYMBOL(snd_seq_expand_var_event);
+ 
+ /*
+diff --git a/sound/core/seq/seq_midi_emul.c b/sound/core/seq/seq_midi_emul.c
+index 7ba937399ac7..9e2912e3e80f 100644
+--- a/sound/core/seq/seq_midi_emul.c
++++ b/sound/core/seq/seq_midi_emul.c
+@@ -236,6 +236,7 @@ snd_midi_process_event(struct snd_midi_op *ops,
+ 		break;
+ 	}
+ }
++EXPORT_SYMBOL(snd_midi_process_event);
+ 
+ 
+ /*
+@@ -409,6 +410,7 @@ snd_midi_channel_set_clear(struct snd_midi_channel_set *chset)
+ 			chan->drum_channel = 0;
+ 	}
+ }
++EXPORT_SYMBOL(snd_midi_channel_set_clear);
+ 
+ /*
+  * Process a rpn message.
+@@ -701,6 +703,7 @@ struct snd_midi_channel_set *snd_midi_channel_alloc_set(int n)
+ 	}
+ 	return chset;
+ }
++EXPORT_SYMBOL(snd_midi_channel_alloc_set);
+ 
+ /*
+  * Reset the midi controllers on a particular channel to default values.
+@@ -724,6 +727,7 @@ void snd_midi_channel_free_set(struct snd_midi_channel_set *chset)
+ 	kfree(chset->channels);
+ 	kfree(chset);
+ }
++EXPORT_SYMBOL(snd_midi_channel_free_set);
+ 
+ static int __init alsa_seq_midi_emul_init(void)
  {
- 	return snd_pcm_action(&snd_pcm_action_stop, substream, state);
- }
--
- EXPORT_SYMBOL(snd_pcm_stop);
+@@ -736,8 +740,3 @@ static void __exit alsa_seq_midi_emul_exit(void)
  
- /**
-@@ -1453,7 +1452,6 @@ int snd_pcm_suspend(struct snd_pcm_substream *substream)
- 	snd_pcm_stream_unlock_irqrestore(substream, flags);
- 	return err;
- }
+ module_init(alsa_seq_midi_emul_init)
+ module_exit(alsa_seq_midi_emul_exit)
 -
- EXPORT_SYMBOL(snd_pcm_suspend);
- 
- /**
-@@ -1485,7 +1483,6 @@ int snd_pcm_suspend_all(struct snd_pcm *pcm)
- 	}
+-EXPORT_SYMBOL(snd_midi_process_event);
+-EXPORT_SYMBOL(snd_midi_channel_set_clear);
+-EXPORT_SYMBOL(snd_midi_channel_alloc_set);
+-EXPORT_SYMBOL(snd_midi_channel_free_set);
+diff --git a/sound/core/seq/seq_midi_event.c b/sound/core/seq/seq_midi_event.c
+index 37db7ba492a6..90bbbdbeba03 100644
+--- a/sound/core/seq/seq_midi_event.c
++++ b/sound/core/seq/seq_midi_event.c
+@@ -134,6 +134,7 @@ int snd_midi_event_new(int bufsize, struct snd_midi_event **rdev)
+ 	*rdev = dev;
  	return 0;
  }
--
- EXPORT_SYMBOL(snd_pcm_suspend_all);
++EXPORT_SYMBOL(snd_midi_event_new);
  
- /* resume */
-@@ -2369,7 +2366,6 @@ void snd_pcm_release_substream(struct snd_pcm_substream *substream)
+ void snd_midi_event_free(struct snd_midi_event *dev)
+ {
+@@ -142,6 +143,7 @@ void snd_midi_event_free(struct snd_midi_event *dev)
+ 		kfree(dev);
  	}
- 	snd_pcm_detach_substream(substream);
+ }
++EXPORT_SYMBOL(snd_midi_event_free);
+ 
+ /*
+  * initialize record
+@@ -161,6 +163,7 @@ void snd_midi_event_reset_encode(struct snd_midi_event *dev)
+ 	reset_encode(dev);
+ 	spin_unlock_irqrestore(&dev->lock, flags);
+ }
++EXPORT_SYMBOL(snd_midi_event_reset_encode);
+ 
+ void snd_midi_event_reset_decode(struct snd_midi_event *dev)
+ {
+@@ -170,6 +173,7 @@ void snd_midi_event_reset_decode(struct snd_midi_event *dev)
+ 	dev->lastcmd = 0xff;
+ 	spin_unlock_irqrestore(&dev->lock, flags);
+ }
++EXPORT_SYMBOL(snd_midi_event_reset_decode);
+ 
+ #if 0
+ void snd_midi_event_init(struct snd_midi_event *dev)
+@@ -183,6 +187,7 @@ void snd_midi_event_no_status(struct snd_midi_event *dev, int on)
+ {
+ 	dev->nostat = on ? 1 : 0;
+ }
++EXPORT_SYMBOL(snd_midi_event_no_status);
+ 
+ /*
+  * resize buffer
+@@ -232,6 +237,7 @@ long snd_midi_event_encode(struct snd_midi_event *dev, unsigned char *buf, long
+ 
+ 	return result;
+ }
++EXPORT_SYMBOL(snd_midi_event_encode);
+ 
+ /*
+  *  read one byte and encode to sequencer event:
+@@ -307,6 +313,7 @@ int snd_midi_event_encode_byte(struct snd_midi_event *dev, int c,
+ 	spin_unlock_irqrestore(&dev->lock, flags);
+ 	return rc;
+ }
++EXPORT_SYMBOL(snd_midi_event_encode_byte);
+ 
+ /* encode note event */
+ static void note_event(struct snd_midi_event *dev, struct snd_seq_event *ev)
+@@ -408,6 +415,7 @@ long snd_midi_event_decode(struct snd_midi_event *dev, unsigned char *buf, long
+ 		return qlen;
+ 	}
+ }
++EXPORT_SYMBOL(snd_midi_event_decode);
+ 
+ 
+ /* decode note event */
+@@ -524,19 +532,6 @@ static int extra_decode_xrpn(struct snd_midi_event *dev, unsigned char *buf,
+ 	return idx;
+ }
+ 
+-/*
+- *  exports
+- */
+- 
+-EXPORT_SYMBOL(snd_midi_event_new);
+-EXPORT_SYMBOL(snd_midi_event_free);
+-EXPORT_SYMBOL(snd_midi_event_reset_encode);
+-EXPORT_SYMBOL(snd_midi_event_reset_decode);
+-EXPORT_SYMBOL(snd_midi_event_no_status);
+-EXPORT_SYMBOL(snd_midi_event_encode);
+-EXPORT_SYMBOL(snd_midi_event_encode_byte);
+-EXPORT_SYMBOL(snd_midi_event_decode);
+-
+ static int __init alsa_seq_midi_event_init(void)
+ {
+ 	return 0;
+diff --git a/sound/core/seq/seq_ports.c b/sound/core/seq/seq_ports.c
+index fe686ee41c6d..0a7020c82bfc 100644
+--- a/sound/core/seq/seq_ports.c
++++ b/sound/core/seq/seq_ports.c
+@@ -685,7 +685,6 @@ int snd_seq_event_port_attach(int client,
+ 
+ 	return ret;
  }
 -
- EXPORT_SYMBOL(snd_pcm_release_substream);
+ EXPORT_SYMBOL(snd_seq_event_port_attach);
  
- int snd_pcm_open_substream(struct snd_pcm *pcm, int stream,
-@@ -2411,7 +2407,6 @@ int snd_pcm_open_substream(struct snd_pcm *pcm, int stream,
- 	snd_pcm_release_substream(substream);
+ /*
+@@ -706,5 +705,4 @@ int snd_seq_event_port_detach(int client, int port)
+ 
  	return err;
  }
 -
- EXPORT_SYMBOL(snd_pcm_open_substream);
- 
- static int snd_pcm_open_file(struct file *file,
-@@ -3504,7 +3499,6 @@ int snd_pcm_lib_mmap_iomem(struct snd_pcm_substream *substream,
- 	area->vm_page_prot = pgprot_noncached(area->vm_page_prot);
- 	return vm_iomap_memory(area, runtime->dma_addr, runtime->dma_bytes);
+ EXPORT_SYMBOL(snd_seq_event_port_detach);
+diff --git a/sound/core/seq/seq_virmidi.c b/sound/core/seq/seq_virmidi.c
+index 52f31f1498f9..8d93a4021c78 100644
+--- a/sound/core/seq/seq_virmidi.c
++++ b/sound/core/seq/seq_virmidi.c
+@@ -534,6 +534,7 @@ int snd_virmidi_new(struct snd_card *card, int device, struct snd_rawmidi **rrmi
+ 	*rrmidi = rmidi;
+ 	return 0;
  }
--
- EXPORT_SYMBOL(snd_pcm_lib_mmap_iomem);
- #endif /* SNDRV_PCM_INFO_MMAP */
++EXPORT_SYMBOL(snd_virmidi_new);
  
-@@ -3553,7 +3547,6 @@ int snd_pcm_mmap_data(struct snd_pcm_substream *substream, struct file *file,
- 		atomic_inc(&substream->mmap_count);
- 	return err;
- }
--
- EXPORT_SYMBOL(snd_pcm_mmap_data);
+ /*
+  *  ENTRY functions
+@@ -550,5 +551,3 @@ static void __exit alsa_virmidi_exit(void)
  
- static int snd_pcm_mmap(struct file *file, struct vm_area_struct *area)
+ module_init(alsa_virmidi_init)
+ module_exit(alsa_virmidi_exit)
+-
+-EXPORT_SYMBOL(snd_virmidi_new);
 -- 
 2.13.1
