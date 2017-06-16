@@ -1,17 +1,28 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: stm32: sai: change stop sequence" to the asoc tree
-Date: Fri, 16 Jun 2017 18:49:58 +0100
-Message-ID: <E1dLvNe-0005e2-LO@debutante>
-References: <1497615334-7156-6-git-send-email-olivier.moysan@st.com>
-Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-In-Reply-To: <1497615334-7156-6-git-send-email-olivier.moysan-qxv4g6HH51o@public.gmane.org>
-Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.orgbroonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alexandre.torgue-qxv4g6HH51o@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-F5mvAk5X5gdBDgjK7y7TUQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, olivier.moysan-qxv4g6HH51o@public.gmane.org, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org, benjamin.gaignard-qxv4g6HH51o@public.gmane.orgalsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: stm32: sai: remove spurious trace" to the asoc tree
+Date: Fri, 16 Jun 2017 18:50:03 +0100
+Message-ID: <E1dLvNj-0005fS-1u@debutante>
+References: <1497615334-7156-5-git-send-email-olivier.moysan@st.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1497615334-7156-5-git-send-email-olivier.moysan@st.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Cc: mark.rutland@arm.com, robh@kernel.org, alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, benjamin.gaignard@st.com, perex@perex.cz, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: sai: change stop sequence
+   ASoC: stm32: sai: remove spurious trace
 
 has been applied to the asoc tree at
 
@@ -36,44 +47,32 @@ to this mail.
 Thanks,
 Mark
 
->From 1d3d9735cf08c5aa06c142222a05e9c7e473cc5d Mon Sep 17 00:00:00 2001
-From: olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
-Date: Fri, 16 Jun 2017 14:15:32 +0200
-Subject: [PATCH] ASoC: stm32: sai: change stop sequence
+>From e0588cb6e3fee423553c34b10e9c83b6adb7c16e Mon Sep 17 00:00:00 2001
+From: olivier moysan <olivier.moysan@st.com>
+Date: Fri, 16 Jun 2017 14:15:31 +0200
+Subject: [PATCH] ASoC: stm32: sai: remove spurious trace
 
-Disable SAI before stopping DMA data transfers.
+Remove spurious trace in sai driver.
 
-Signed-off-by: olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Signed-off-by: olivier moysan <olivier.moysan@st.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/stm32_sai_sub.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/stm/stm32_sai_sub.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
 diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index 24b8874cfe5f..97b69a3ab46e 100644
+index d7aeed3ec3c8..24b8874cfe5f 100644
 --- a/sound/soc/stm/stm32_sai_sub.c
 +++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -629,12 +629,12 @@ static int stm32_sai_trigger(struct snd_pcm_substream *substream, int cmd,
- 		dev_dbg(cpu_dai->dev, "Disable DMA and SAI\n");
+@@ -761,9 +761,6 @@ static int stm32_sai_sub_parse_of(struct platform_device *pdev,
+ 		return -ENODEV;
  
- 		regmap_update_bits(sai->regmap, STM_SAI_CR1_REGX,
--				   SAI_XCR1_DMAEN,
--				   (unsigned int)~SAI_XCR1_DMAEN);
-+				   SAI_XCR1_SAIEN,
-+				   (unsigned int)~SAI_XCR1_SAIEN);
- 
- 		ret = regmap_update_bits(sai->regmap, STM_SAI_CR1_REGX,
--					 SAI_XCR1_SAIEN,
--					 (unsigned int)~SAI_XCR1_SAIEN);
-+					 SAI_XCR1_DMAEN,
-+					 (unsigned int)~SAI_XCR1_DMAEN);
- 		if (ret < 0)
- 			dev_err(cpu_dai->dev, "Failed to update CR1 register\n");
- 		break;
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+-
+-	dev_err(&pdev->dev, "res %pr\n", res);
+-
+ 	base = devm_ioremap_resource(&pdev->dev, res);
+ 	if (IS_ERR(base))
+ 		return PTR_ERR(base);
 -- 
 2.11.0
-
---
-To unsubscribe from this list: send the line "unsubscribe devicetree" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
