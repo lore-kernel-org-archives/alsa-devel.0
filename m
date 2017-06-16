@@ -1,18 +1,15 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: pcm: Fix possible inconsistent appl_ptr
-	update via mmap
-Date: Fri, 16 Jun 2017 22:40:55 +0200
-Message-ID: <20170616204055.31036-1-tiwai@suse.de>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1] ASoC: rt5677: Hide platform data in the
+	module sources
+Date: Fri, 16 Jun 2017 23:42:08 +0300
+Message-ID: <20170616204208.85040-1-andriy.shevchenko@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C7C06266CFE
- for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2017 22:41:00 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 288F3AC08
- for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2017 20:41:00 +0000 (UTC)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 26023266CFE
+ for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2017 22:42:13 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,76 +19,188 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, John Keeping <john@metanate.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The ALSA PCM core refers to the appl_ptr value stored on the mmapped
-page that is shared between kernel and user-space.  Although the
-reference is performed in the PCM stream lock, it doesn't guarantee
-the atomic access when the value gets updated concurrently from the
-user-space on another CPU.
+There is no user of legacy platform data.
 
-In most of codes, this is no big problem, but still there are a few
-places that may result in slight inconsistencies because they access
-runtime->control->appl_ptr multiple times; that is, the second read
-might be a different value from the first value.  It can be even
-backward or jumping, as we have no control for it.  Hence, the
-calculation may give an unexpected value.  Luckily, there is no
-security vulnerability by that, as far as I've checked.  But still we
-should address it.
+Remove separate header and hide its content inside module sources.
 
-This patch tries to reduce such possible cases.  The fix is simple --
-we just read once, store it to a local variable and use it for the
-rest calculations.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- sound/core/pcm_lib.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ include/sound/rt5677.h    | 45 ---------------------------------------------
+ sound/soc/codecs/rt5677.c | 27 +++++++++++++++++----------
+ sound/soc/codecs/rt5677.h | 30 +++++++++++++++++++++++++++++-
+ 3 files changed, 46 insertions(+), 56 deletions(-)
+ delete mode 100644 include/sound/rt5677.h
 
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 631cd598ba6c..cda258d91490 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -65,15 +65,16 @@ void snd_pcm_playback_silence(struct snd_pcm_substream *substream, snd_pcm_ufram
+diff --git a/include/sound/rt5677.h b/include/sound/rt5677.h
+deleted file mode 100644
+index a6207043ac3c..000000000000
+--- a/include/sound/rt5677.h
++++ /dev/null
+@@ -1,45 +0,0 @@
+-/*
+- * linux/sound/rt5677.h -- Platform data for RT5677
+- *
+- * Copyright 2013 Realtek Semiconductor Corp.
+- * Author: Oder Chiou <oder_chiou@realtek.com>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- */
+-
+-#ifndef __LINUX_SND_RT5677_H
+-#define __LINUX_SND_RT5677_H
+-
+-enum rt5677_dmic2_clk {
+-	RT5677_DMIC_CLK1 = 0,
+-	RT5677_DMIC_CLK2 = 1,
+-};
+-
+-
+-struct rt5677_platform_data {
+-	/* IN1/IN2/LOUT1/LOUT2/LOUT3 can optionally be differential */
+-	bool in1_diff;
+-	bool in2_diff;
+-	bool lout1_diff;
+-	bool lout2_diff;
+-	bool lout3_diff;
+-	/* DMIC2 clock source selection */
+-	enum rt5677_dmic2_clk dmic2_clk_pin;
+-
+-	/* configures GPIO, 0 - floating, 1 - pulldown, 2 - pullup */
+-	u8 gpio_config[6];
+-
+-	/* jd1 can select 0 ~ 3 as OFF, GPIO1, GPIO2 and GPIO3 respectively */
+-	unsigned int jd1_gpio;
+-	/* jd2 and jd3 can select 0 ~ 3 as
+-		OFF, GPIO4, GPIO5 and GPIO6 respectively */
+-	unsigned int jd2_gpio;
+-	unsigned int jd3_gpio;
+-
+-	/* Set MICBIAS1 VDD 1v8 or 3v3 */
+-	bool micbias1_vdd_3v3;
+-};
+-
+-#endif
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index 36e530a36c82..29c94d1ff56c 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -21,6 +21,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/spi/spi.h>
+ #include <linux/firmware.h>
++#include <linux/of_device.h>
+ #include <linux/property.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+@@ -5019,14 +5020,12 @@ static const struct regmap_config rt5677_regmap = {
+ };
  
- 	if (runtime->silence_size < runtime->boundary) {
- 		snd_pcm_sframes_t noise_dist, n;
--		if (runtime->silence_start != runtime->control->appl_ptr) {
--			n = runtime->control->appl_ptr - runtime->silence_start;
-+		snd_pcm_uframes_t appl_ptr = runtime->control->appl_ptr;
-+		if (runtime->silence_start != appl_ptr) {
-+			n = appl_ptr - runtime->silence_start;
- 			if (n < 0)
- 				n += runtime->boundary;
- 			if ((snd_pcm_uframes_t)n < runtime->silence_filled)
- 				runtime->silence_filled -= n;
- 			else
- 				runtime->silence_filled = 0;
--			runtime->silence_start = runtime->control->appl_ptr;
-+			runtime->silence_start = appl_ptr;
- 		}
- 		if (runtime->silence_filled >= runtime->buffer_size)
- 			return;
-@@ -2224,7 +2225,9 @@ snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
- 				continue; /* draining */
- 		}
- 		frames = size > avail ? avail : size;
--		cont = runtime->buffer_size - runtime->control->appl_ptr % runtime->buffer_size;
-+		appl_ptr = runtime->control->appl_ptr;
-+		appl_ofs = appl_ptr % runtime->buffer_size;
-+		cont = runtime->buffer_size - appl_ofs;
- 		if (frames > cont)
- 			frames = cont;
- 		if (snd_BUG_ON(!frames)) {
-@@ -2232,8 +2235,6 @@ snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
- 			snd_pcm_stream_unlock_irq(substream);
- 			return -EINVAL;
- 		}
--		appl_ptr = runtime->control->appl_ptr;
--		appl_ofs = appl_ptr % runtime->buffer_size;
- 		snd_pcm_stream_unlock_irq(substream);
- 		err = writer(substream, appl_ofs, data, offset, frames,
- 			     transfer);
+ static const struct i2c_device_id rt5677_i2c_id[] = {
+-	{ "rt5677", RT5677 },
+-	{ "rt5676", RT5676 },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(i2c, rt5677_i2c_id);
+ 
+ static const struct of_device_id rt5677_of_match[] = {
+-	{ .compatible = "realtek,rt5677", },
++	{ .compatible = "realtek,rt5677", RT5677 },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, rt5677_of_match);
+@@ -5147,7 +5146,6 @@ static void rt5677_free_irq(struct i2c_client *i2c)
+ static int rt5677_i2c_probe(struct i2c_client *i2c,
+ 		    const struct i2c_device_id *id)
+ {
+-	struct rt5677_platform_data *pdata = dev_get_platdata(&i2c->dev);
+ 	struct rt5677_priv *rt5677;
+ 	int ret;
+ 	unsigned int val;
+@@ -5159,16 +5157,25 @@ static int rt5677_i2c_probe(struct i2c_client *i2c,
+ 
+ 	i2c_set_clientdata(i2c, rt5677);
+ 
+-	rt5677->type = id->driver_data;
++	if (i2c->dev.of_node) {
++		const struct of_device_id *match_id;
++
++		match_id = of_match_device(rt5677_of_match, &i2c->dev);
++		if (match_id)
++			rt5677->type = (enum rt5677_type)match_id->data;
+ 
+-	if (pdata)
+-		rt5677->pdata = *pdata;
+-	else if (i2c->dev.of_node)
+ 		rt5677_read_device_properties(rt5677, &i2c->dev);
+-	else if (ACPI_HANDLE(&i2c->dev))
++	} else if (ACPI_HANDLE(&i2c->dev)) {
++		const struct acpi_device_id *acpi_id;
++
++		acpi_id = acpi_match_device(rt5677_acpi_match, &i2c->dev);
++		if (acpi_id)
++			rt5677->type = (enum rt5677_type)acpi_id->driver_data;
++
+ 		rt5677_read_acpi_properties(rt5677, &i2c->dev);
+-	else
++	} else {
+ 		return -EINVAL;
++	}
+ 
+ 	/* pow-ldo2 and reset are optional. The codec pins may be statically
+ 	 * connected on the board without gpios. If the gpio device property
+diff --git a/sound/soc/codecs/rt5677.h b/sound/soc/codecs/rt5677.h
+index d46855a42c40..97239973edc4 100644
+--- a/sound/soc/codecs/rt5677.h
++++ b/sound/soc/codecs/rt5677.h
+@@ -12,7 +12,6 @@
+ #ifndef __RT5677_H__
+ #define __RT5677_H__
+ 
+-#include <sound/rt5677.h>
+ #include <linux/gpio/driver.h>
+ #include <linux/gpio/consumer.h>
+ 
+@@ -1761,6 +1760,35 @@ enum {
+ 	RT5677_I2S4_SOURCE = (0x1 << 18),
+ };
+ 
++enum rt5677_dmic2_clk {
++	RT5677_DMIC_CLK1 = 0,
++	RT5677_DMIC_CLK2 = 1,
++};
++
++struct rt5677_platform_data {
++	/* IN1/IN2/LOUT1/LOUT2/LOUT3 can optionally be differential */
++	bool in1_diff;
++	bool in2_diff;
++	bool lout1_diff;
++	bool lout2_diff;
++	bool lout3_diff;
++	/* DMIC2 clock source selection */
++	enum rt5677_dmic2_clk dmic2_clk_pin;
++
++	/* configures GPIO, 0 - floating, 1 - pulldown, 2 - pullup */
++	u8 gpio_config[6];
++
++	/* jd1 can select 0 ~ 3 as OFF, GPIO1, GPIO2 and GPIO3 respectively */
++	unsigned int jd1_gpio;
++	/* jd2 and jd3 can select 0 ~ 3 as
++		OFF, GPIO4, GPIO5 and GPIO6 respectively */
++	unsigned int jd2_gpio;
++	unsigned int jd3_gpio;
++
++	/* Set MICBIAS1 VDD 1v8 or 3v3 */
++	bool micbias1_vdd_3v3;
++};
++
+ struct rt5677_priv {
+ 	struct snd_soc_codec *codec;
+ 	struct rt5677_platform_data pdata;
 -- 
-2.13.1
+2.11.0
