@@ -1,15 +1,15 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1] ASoC: rt5677: Hide platform data in the
-	module sources
-Date: Fri, 16 Jun 2017 23:42:08 +0300
-Message-ID: <20170616204208.85040-1-andriy.shevchenko@linux.intel.com>
+From: bgoswami@codeaurora.org
+Subject: [PATCH] ASoC: compress: Derive substream from stream
+	based on direction
+Date: Fri, 16 Jun 2017 17:33:40 -0700
+Message-ID: <1497659620-7197-1-git-send-email-bgoswami@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 26023266CFE
- for <alsa-devel@alsa-project.org>; Fri, 16 Jun 2017 22:42:13 +0200 (CEST)
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
+ by alsa0.perex.cz (Postfix) with ESMTP id 590BD266C87
+ for <alsa-devel@alsa-project.org>; Sat, 17 Jun 2017 02:35:47 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,188 +19,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, John Keeping <john@metanate.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: broonie@kernel.org
+Cc: vinod.koul@intel.com, alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, plai@codeaurora.org, Satish Babu Patakokila <sbpata@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-There is no user of legacy platform data.
+From: Satish Babu Patakokila <sbpata@codeaurora.org> 
 
-Remove separate header and hide its content inside module sources.
+Currently compress driver hardcodes direction as playback to get
+substream from the stream. This results in getting the incorrect
+substream for compressed capture usecase.
+To fix this, remove the hardcoding and derive substream based on
+the stream direction.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Satish Babu Patakokila <sbpata@codeaurora.org>
+Signed-off-by: Banajit Goswami <bgoswami@codeaurora.org>
 ---
- include/sound/rt5677.h    | 45 ---------------------------------------------
- sound/soc/codecs/rt5677.c | 27 +++++++++++++++++----------
- sound/soc/codecs/rt5677.h | 30 +++++++++++++++++++++++++++++-
- 3 files changed, 46 insertions(+), 56 deletions(-)
- delete mode 100644 include/sound/rt5677.h
+ sound/soc/soc-compress.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/rt5677.h b/include/sound/rt5677.h
-deleted file mode 100644
-index a6207043ac3c..000000000000
---- a/include/sound/rt5677.h
-+++ /dev/null
-@@ -1,45 +0,0 @@
--/*
-- * linux/sound/rt5677.h -- Platform data for RT5677
-- *
-- * Copyright 2013 Realtek Semiconductor Corp.
-- * Author: Oder Chiou <oder_chiou@realtek.com>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
--
--#ifndef __LINUX_SND_RT5677_H
--#define __LINUX_SND_RT5677_H
--
--enum rt5677_dmic2_clk {
--	RT5677_DMIC_CLK1 = 0,
--	RT5677_DMIC_CLK2 = 1,
--};
--
--
--struct rt5677_platform_data {
--	/* IN1/IN2/LOUT1/LOUT2/LOUT3 can optionally be differential */
--	bool in1_diff;
--	bool in2_diff;
--	bool lout1_diff;
--	bool lout2_diff;
--	bool lout3_diff;
--	/* DMIC2 clock source selection */
--	enum rt5677_dmic2_clk dmic2_clk_pin;
--
--	/* configures GPIO, 0 - floating, 1 - pulldown, 2 - pullup */
--	u8 gpio_config[6];
--
--	/* jd1 can select 0 ~ 3 as OFF, GPIO1, GPIO2 and GPIO3 respectively */
--	unsigned int jd1_gpio;
--	/* jd2 and jd3 can select 0 ~ 3 as
--		OFF, GPIO4, GPIO5 and GPIO6 respectively */
--	unsigned int jd2_gpio;
--	unsigned int jd3_gpio;
--
--	/* Set MICBIAS1 VDD 1v8 or 3v3 */
--	bool micbias1_vdd_3v3;
--};
--
--#endif
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 36e530a36c82..29c94d1ff56c 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -21,6 +21,7 @@
- #include <linux/platform_device.h>
- #include <linux/spi/spi.h>
- #include <linux/firmware.h>
-+#include <linux/of_device.h>
- #include <linux/property.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -5019,14 +5020,12 @@ static const struct regmap_config rt5677_regmap = {
- };
- 
- static const struct i2c_device_id rt5677_i2c_id[] = {
--	{ "rt5677", RT5677 },
--	{ "rt5676", RT5676 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, rt5677_i2c_id);
- 
- static const struct of_device_id rt5677_of_match[] = {
--	{ .compatible = "realtek,rt5677", },
-+	{ .compatible = "realtek,rt5677", RT5677 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, rt5677_of_match);
-@@ -5147,7 +5146,6 @@ static void rt5677_free_irq(struct i2c_client *i2c)
- static int rt5677_i2c_probe(struct i2c_client *i2c,
- 		    const struct i2c_device_id *id)
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index bfd71b8..206f36b 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -81,7 +81,8 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
+ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
  {
--	struct rt5677_platform_data *pdata = dev_get_platdata(&i2c->dev);
- 	struct rt5677_priv *rt5677;
- 	int ret;
- 	unsigned int val;
-@@ -5159,16 +5157,25 @@ static int rt5677_i2c_probe(struct i2c_client *i2c,
- 
- 	i2c_set_clientdata(i2c, rt5677);
- 
--	rt5677->type = id->driver_data;
-+	if (i2c->dev.of_node) {
-+		const struct of_device_id *match_id;
-+
-+		match_id = of_match_device(rt5677_of_match, &i2c->dev);
-+		if (match_id)
-+			rt5677->type = (enum rt5677_type)match_id->data;
- 
--	if (pdata)
--		rt5677->pdata = *pdata;
--	else if (i2c->dev.of_node)
- 		rt5677_read_device_properties(rt5677, &i2c->dev);
--	else if (ACPI_HANDLE(&i2c->dev))
-+	} else if (ACPI_HANDLE(&i2c->dev)) {
-+		const struct acpi_device_id *acpi_id;
-+
-+		acpi_id = acpi_match_device(rt5677_acpi_match, &i2c->dev);
-+		if (acpi_id)
-+			rt5677->type = (enum rt5677_type)acpi_id->driver_data;
-+
- 		rt5677_read_acpi_properties(rt5677, &i2c->dev);
--	else
-+	} else {
- 		return -EINVAL;
-+	}
- 
- 	/* pow-ldo2 and reset are optional. The codec pins may be statically
- 	 * connected on the board without gpios. If the gpio device property
-diff --git a/sound/soc/codecs/rt5677.h b/sound/soc/codecs/rt5677.h
-index d46855a42c40..97239973edc4 100644
---- a/sound/soc/codecs/rt5677.h
-+++ b/sound/soc/codecs/rt5677.h
-@@ -12,7 +12,6 @@
- #ifndef __RT5677_H__
- #define __RT5677_H__
- 
--#include <sound/rt5677.h>
- #include <linux/gpio/driver.h>
- #include <linux/gpio/consumer.h>
- 
-@@ -1761,6 +1760,35 @@ enum {
- 	RT5677_I2S4_SOURCE = (0x1 << 18),
- };
- 
-+enum rt5677_dmic2_clk {
-+	RT5677_DMIC_CLK1 = 0,
-+	RT5677_DMIC_CLK2 = 1,
-+};
-+
-+struct rt5677_platform_data {
-+	/* IN1/IN2/LOUT1/LOUT2/LOUT3 can optionally be differential */
-+	bool in1_diff;
-+	bool in2_diff;
-+	bool lout1_diff;
-+	bool lout2_diff;
-+	bool lout3_diff;
-+	/* DMIC2 clock source selection */
-+	enum rt5677_dmic2_clk dmic2_clk_pin;
-+
-+	/* configures GPIO, 0 - floating, 1 - pulldown, 2 - pullup */
-+	u8 gpio_config[6];
-+
-+	/* jd1 can select 0 ~ 3 as OFF, GPIO1, GPIO2 and GPIO3 respectively */
-+	unsigned int jd1_gpio;
-+	/* jd2 and jd3 can select 0 ~ 3 as
-+		OFF, GPIO4, GPIO5 and GPIO6 respectively */
-+	unsigned int jd2_gpio;
-+	unsigned int jd3_gpio;
-+
-+	/* Set MICBIAS1 VDD 1v8 or 3v3 */
-+	bool micbias1_vdd_3v3;
-+};
-+
- struct rt5677_priv {
- 	struct snd_soc_codec *codec;
- 	struct rt5677_platform_data pdata;
+ 	struct snd_soc_pcm_runtime *fe = cstream->private_data;
+-	struct snd_pcm_substream *fe_substream = fe->pcm->streams[0].substream;
++	struct snd_pcm_substream *fe_substream =
++		 fe->pcm->streams[cstream->direction].substream;
+ 	struct snd_soc_platform *platform = fe->platform;
+ 	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
+ 	struct snd_soc_dpcm *dpcm;
+@@ -467,7 +468,8 @@ static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
+ 					struct snd_compr_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *fe = cstream->private_data;
+-	struct snd_pcm_substream *fe_substream = fe->pcm->streams[0].substream;
++	struct snd_pcm_substream *fe_substream =
++		 fe->pcm->streams[cstream->direction].substream;
+ 	struct snd_soc_platform *platform = fe->platform;
+ 	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
+ 	int ret = 0, stream;
 -- 
-2.11.0
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
