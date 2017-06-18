@@ -1,15 +1,22 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2] ALSA: pcm: Fix possible inconsistent
-	appl_ptr update via mmap
-Date: Sun, 18 Jun 2017 23:26:30 +0200
-Message-ID: <20170618212630.29782-1-tiwai@suse.de>
+From: =?UTF-8?Q?Hans_Peter_M=C3=B6ller?= <hmoller@uc.cl>
+Subject: Re: [PATCH 1/2] ALSA: line6: add support for POD HD500X
+Date: Sun, 18 Jun 2017 19:15:22 -0400
+Message-ID: <CALSLyV5yO-_ZYJs8ZV2jV9aaeZRXTnqLB62wvoo9gVGBM9O7MA@mail.gmail.com>
+References: <1497636857-13944-1-git-send-email-hmoller@uc.cl>
+ <s5hd1a2ob35.wl-tiwai@suse.de>
+ <CALSLyV5gupzszWrBghO9+_FONH_3O0cy8GWi03WOjxBLsCjh5w@mail.gmail.com>
+ <s5h7f0anwfp.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 401C3266C25
- for <alsa-devel@alsa-project.org>; Sun, 18 Jun 2017 23:26:33 +0200 (CEST)
+Received: from mail-qk0-f193.google.com (mail-qk0-f193.google.com
+ [209.85.220.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9AFEE266C25
+ for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2017 01:15:24 +0200 (CEST)
+Received: by mail-qk0-f193.google.com with SMTP id u8so4966637qka.0
+ for <alsa-devel@alsa-project.org>; Sun, 18 Jun 2017 16:15:24 -0700 (PDT)
+In-Reply-To: <s5h7f0anwfp.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,81 +26,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Clemens Ladisch <clemens@ladisch.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Stefan Hajnoczi <stefanha@gmail.com>, alsa-devel@alsa-project.org, =?UTF-8?Q?Andrej_Krut=C3=A1k?= <dev@andree.sk>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The ALSA PCM core refers to the appl_ptr value stored on the mmapped
-page that is shared between kernel and user-space.  Although the
-reference is performed in the PCM stream lock, it doesn't guarantee
-the atomic access when the value gets updated concurrently from the
-user-space on another CPU.
-
-In most of codes, this is no big problem, but still there are a few
-places that may result in slight inconsistencies because they access
-runtime->control->appl_ptr multiple times; that is, the second read
-might be a different value from the first value.  It can be even
-backward or jumping, as we have no control for it.  Hence, the
-calculation may give an unexpected value.  Luckily, there is no
-security vulnerability by that, as far as I've checked.  But still we
-should address it.
-
-This patch tries to reduce such possible cases.  The fix is simple --
-we just read once, store it to a local variable and use it for the
-rest calculations.  The READ_ONCE() macro is used for it in order to
-avoid the ill-effect by possible compiler optimizations.
-
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
-v1->v2: Use proper READ_ONCE() macro.
-
- sound/core/pcm_lib.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
-
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 461c21f21caf..415346b84ff8 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -65,15 +65,16 @@ void snd_pcm_playback_silence(struct snd_pcm_substream *substream, snd_pcm_ufram
- 
- 	if (runtime->silence_size < runtime->boundary) {
- 		snd_pcm_sframes_t noise_dist, n;
--		if (runtime->silence_start != runtime->control->appl_ptr) {
--			n = runtime->control->appl_ptr - runtime->silence_start;
-+		snd_pcm_uframes_t appl_ptr = READ_ONCE(runtime->control->appl_ptr);
-+		if (runtime->silence_start != appl_ptr) {
-+			n = appl_ptr - runtime->silence_start;
- 			if (n < 0)
- 				n += runtime->boundary;
- 			if ((snd_pcm_uframes_t)n < runtime->silence_filled)
- 				runtime->silence_filled -= n;
- 			else
- 				runtime->silence_filled = 0;
--			runtime->silence_start = runtime->control->appl_ptr;
-+			runtime->silence_start = appl_ptr;
- 		}
- 		if (runtime->silence_filled >= runtime->buffer_size)
- 			return;
-@@ -2203,7 +2204,9 @@ snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
- 				continue; /* draining */
- 		}
- 		frames = size > avail ? avail : size;
--		cont = runtime->buffer_size - runtime->control->appl_ptr % runtime->buffer_size;
-+		appl_ptr = READ_ONCE(runtime->control->appl_ptr);
-+		appl_ofs = appl_ptr % runtime->buffer_size;
-+		cont = runtime->buffer_size - appl_ofs;
- 		if (frames > cont)
- 			frames = cont;
- 		if (snd_BUG_ON(!frames)) {
-@@ -2211,8 +2214,6 @@ snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
- 			snd_pcm_stream_unlock_irq(substream);
- 			return -EINVAL;
- 		}
--		appl_ptr = runtime->control->appl_ptr;
--		appl_ofs = appl_ptr % runtime->buffer_size;
- 		snd_pcm_stream_unlock_irq(substream);
- 		err = writer(substream, appl_ofs, data, offset, frames,
- 			     transfer);
--- 
-2.13.1
+SWYgeW91IGNhbiBkbyBpdCwgSSB3b3VsZCBhcHByZWNpYXRlIGl0LgpUaGFua3MuCgpicmdkcwpI
+UE0KCk9uIFNhdCwgSnVuIDE3LCAyMDE3IGF0IDU6MjAgUE0sIFRha2FzaGkgSXdhaSA8dGl3YWlA
+c3VzZS5kZT4gd3JvdGU6Cgo+IE9uIFNhdCwgMTcgSnVuIDIwMTcgMjE6MDM6NDAgKzAyMDAsCj4g
+SGFucyBQZXRlciBNw7ZsbGVyIHdyb3RlOgo+ID4KPiA+IE15IG1pc3Rha2UsIDIwMTcsIHNvcnJ5
+LiBTaG91bGQgSSBnZW5lcmF0ZSBhZ2FpbiB0aGUgMiBjb21taXRzPyBvciBhCj4gdGhpcmQKPiA+
+IGp1c3QgY29ycmVjdGluZyB0aGF0PyBIb3cgc2hvdWxkIEkgaGFuZGxlIGl0Pwo+Cj4gSXQncyBi
+YXNpY2FsbHkgdXAgdG8geW91LiAgSSBjYW4gZml4IGl0IGluIG15IHNpZGUgZm9yIHN1Y2ggYSB0
+cml2aWFsCj4gdGhpbmcsIHRvbywgc28gbm8gbmVlZCBmb3IgcmVzZW5kIHVubGVzcyBhbnlvbmUg
+ZWxzZSBmaW5kcyBtb3JlCj4gaXNzdWUuCj4KPgo+IHRoYW5rcywKPgo+IFRha2FzaGkKPgo+ID4g
+YnJnZHMKPiA+IEhQTQo+ID4KPiA+IE9uIFNhdCwgSnVuIDE3LCAyMDE3IGF0IDEyOjAzIFBNLCBU
+YWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+IHdyb3RlOgo+ID4KPiA+ID4gT24gRnJpLCAxNiBK
+dW4gMjAxNyAyMDoxNDoxNiArMDIwMCwKPiA+ID4gSGFucyBQLiBNw7ZsbGVyIEVibmVyIHdyb3Rl
+Ogo+ID4gPiA+Cj4gPiA+ID4gQWRkIHN1cHBvcnQgZm9yIHRoZSBMaW5lNiBQT0QgSEQ1MDBYIG11
+bHRpIGVmZmVjdCBwcm9jZXNzb3IgZm9yCj4gcGxheWJhY2sKPiA+ID4gYW5kIGNhcHR1cmUgKGlu
+L291dCBhdWRpbykgdGhyb3VnaCBVU0IuCj4gPiA+ID4KPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBI
+YW5zIFAuIE1vbGxlciA8aG1vbGxlckB1Yy5jbD4KPiA+ID4gPiAtLS0KPiA+ID4gPiAgc291bmQv
+dXNiL2xpbmU2L3BvZGhkLmMgfCAxNyArKysrKysrKysrKysrKysrLQo+ID4gPiA+ICAxIGZpbGUg
+Y2hhbmdlZCwgMTYgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQo+ID4gPiA+Cj4gPiA+ID4g
+ZGlmZiAtLWdpdCBhL3NvdW5kL3VzYi9saW5lNi9wb2RoZC5jIGIvc291bmQvdXNiL2xpbmU2L3Bv
+ZGhkLmMKPiA+ID4gPiBpbmRleCA2YWIyM2U1Li5lMzg5ZjkyIDEwMDY0NAo+ID4gPiA+IC0tLSBh
+L3NvdW5kL3VzYi9saW5lNi9wb2RoZC5jCj4gPiA+ID4gKysrIGIvc291bmQvdXNiL2xpbmU2L3Bv
+ZGhkLmMKPiA+ID4gPiBAQCAtMyw2ICszLDcgQEAKPiA+ID4gPiAgICoKPiA+ID4gPiAgICogQ29w
+eXJpZ2h0IChDKSAyMDExIFN0ZWZhbiBIYWpub2N6aSA8c3RlZmFuaGFAZ21haWwuY29tPgo+ID4g
+PiA+ICAgKiBDb3B5cmlnaHQgKEMpIDIwMTUgQW5kcmVqIEtydXRhayA8ZGV2QGFuZHJlZS5zaz4K
+PiA+ID4gPiArICogQ29weXJpZ2h0IChDKSAyMDE1IEhhbnMgUC4gTW9sbGVyIDxobW9sbGVyQHVj
+LmNsPgo+ID4gPgo+ID4gPiBXYXMgdGhlIGNvZGUgd3JpdHRlbiBpbiB0d28geWVhcnMgYWdvPyAg
+T3RoZXJ3aXNlIHB1dCAyMDE3Lgo+ID4gPiAoT3IgeW91IGNhbiBvbWl0IHN1Y2ggYSBjaGFuZ2Us
+IHRvby4gIFRoZSBjaGFuZ2UgaGlzdG9yeSBjYW4gYmUKPiA+ID4gIHRyYWNrZWQgdmlhIGdpdCBu
+b3dhZGF5cy4pCj4gPiA+Cj4gPiA+Cj4gPiA+IHRoYW5rcywKPiA+ID4KPiA+ID4gVGFrYXNoaQo+
+ID4gPgo+ID4gWzIgIDx0ZXh0L2h0bWw7IFVURi04IChxdW90ZWQtcHJpbnRhYmxlKT5dCj4gPgo+
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
