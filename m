@@ -1,17 +1,15 @@
-From: Alexander Tsoy <alexander@tsoy.me>
-Subject: [PATCH alsa-lib 2/2] USB-Audio: allow custom
-	definitions for "default" devices
-Date: Sun, 18 Jun 2017 23:23:03 +0300
-Message-ID: <20170618202303.29269-2-alexander@tsoy.me>
-References: <20170618202303.29269-1-alexander@tsoy.me>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 2] ALSA: pcm: Fix possible inconsistent
+	appl_ptr update via mmap
+Date: Sun, 18 Jun 2017 23:26:30 +0200
+Message-ID: <20170618212630.29782-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from puleglot.ru (puleglot.ru [78.47.112.147])
- by alsa0.perex.cz (Postfix) with ESMTP id E9EEF266E56
- for <alsa-devel@alsa-project.org>; Sun, 18 Jun 2017 22:23:07 +0200 (CEST)
-In-Reply-To: <20170618202303.29269-1-alexander@tsoy.me>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 401C3266C25
+ for <alsa-devel@alsa-project.org>; Sun, 18 Jun 2017 23:26:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,126 +20,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Clemens Ladisch <clemens@ladisch.de>
+Cc: Clemens Ladisch <clemens@ladisch.de>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-Fixes: a9b129955659 ("USB-Audio.conf: fix definition for M-Audio AudioP...")
-Signed-off-by: Alexander Tsoy <alexander@tsoy.me>
----
- src/conf/cards/USB-Audio.conf | 77 ++++++++++++++++++++++++-------------------
- 1 file changed, 44 insertions(+), 33 deletions(-)
+The ALSA PCM core refers to the appl_ptr value stored on the mmapped
+page that is shared between kernel and user-space.  Although the
+reference is performed in the PCM stream lock, it doesn't guarantee
+the atomic access when the value gets updated concurrently from the
+user-space on another CPU.
 
-diff --git a/src/conf/cards/USB-Audio.conf b/src/conf/cards/USB-Audio.conf
-index f72ef121..cc8c718c 100644
---- a/src/conf/cards/USB-Audio.conf
-+++ b/src/conf/cards/USB-Audio.conf
-@@ -67,7 +67,7 @@ USB-Audio.pcm.iec958_2_device {
- }
+In most of codes, this is no big problem, but still there are a few
+places that may result in slight inconsistencies because they access
+runtime->control->appl_ptr multiple times; that is, the second read
+might be a different value from the first value.  It can be even
+backward or jumping, as we have no control for it.  Hence, the
+calculation may give an unexpected value.  Luckily, there is no
+security vulnerability by that, as far as I've checked.  But still we
+should address it.
+
+This patch tries to reduce such possible cases.  The fix is simple --
+we just read once, store it to a local variable and use it for the
+rest calculations.  The READ_ONCE() macro is used for it in order to
+avoid the ill-effect by possible compiler optimizations.
+
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+v1->v2: Use proper READ_ONCE() macro.
+
+ sound/core/pcm_lib.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index 461c21f21caf..415346b84ff8 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -65,15 +65,16 @@ void snd_pcm_playback_silence(struct snd_pcm_substream *substream, snd_pcm_ufram
  
- 
--# If a device requires non-standard definitions for front, surround40,
-+# If a device requires non-standard definitions for front, default, surround40,
- # surround51, surround71 or iec958, they can be defined here.
- 
- # M-Audio AudioPhile USB:
-@@ -125,13 +125,13 @@ USB-Audio."Audio Advantage MicroII".pcm.iec958 {
- 	@args.AES2 { type integer }
- 	@args.AES3 { type integer }
- 
--    type hooks
--    slave.pcm {
-+	type hooks
-+	slave.pcm {
- 		type hw
- 		card $CARD
--    }
-+	}
- 
--    hooks.0 {
-+	hooks.0 {
- 		type ctl_elems
- 		hook_args [
- 			{
-@@ -174,41 +174,52 @@ USB-Audio.pcm.front.0 {
- 		card $CARD
- 		device 0
- 	}
--}	
-+}
- 
- USB-Audio.pcm.default {
- 	@args [ CARD ]
- 	@args.CARD { type string }
--	type asym
--	playback.pcm {
--		type plug
--		slave.pcm {
--			@func refer
--			name {
--				@func concat
--				strings [
--					"cards.USB-Audio.pcm.default_playback_dmix_"
--					{
--						@func refer
--						name {
--							@func concat
--							strings [
--								"cards.USB-Audio.pcm.use_dmix."
--								{ @func card_name card $CARD }
--							]
-+	@func refer
-+	name {
-+		@func concat
-+		strings [
-+			"cards.USB-Audio."
-+			{ @func card_name card $CARD }
-+			".pcm.default:CARD=" $CARD
-+		]
-+	}
-+	default {
-+		type asym
-+		playback.pcm {
-+			type plug
-+			slave.pcm {
-+				@func refer
-+				name {
-+					@func concat
-+					strings [
-+						"cards.USB-Audio.pcm.default_playback_dmix_"
-+						{
-+							@func refer
-+							name {
-+								@func concat
-+								strings [
-+									"cards.USB-Audio.pcm.use_dmix."
-+									{ @func card_name card $CARD }
-+								]
-+							}
-+							default yes
- 						}
--						default yes
--					}
--					":CARD=" $CARD
--				]
-+						":CARD=" $CARD
-+					]
-+				}
- 			}
+ 	if (runtime->silence_size < runtime->boundary) {
+ 		snd_pcm_sframes_t noise_dist, n;
+-		if (runtime->silence_start != runtime->control->appl_ptr) {
+-			n = runtime->control->appl_ptr - runtime->silence_start;
++		snd_pcm_uframes_t appl_ptr = READ_ONCE(runtime->control->appl_ptr);
++		if (runtime->silence_start != appl_ptr) {
++			n = appl_ptr - runtime->silence_start;
+ 			if (n < 0)
+ 				n += runtime->boundary;
+ 			if ((snd_pcm_uframes_t)n < runtime->silence_filled)
+ 				runtime->silence_filled -= n;
+ 			else
+ 				runtime->silence_filled = 0;
+-			runtime->silence_start = runtime->control->appl_ptr;
++			runtime->silence_start = appl_ptr;
  		}
--	}
--	capture.pcm {
--		type plug
--		slave.pcm {
--			@func concat
--			strings [ "dsnoop:" $CARD ]
-+		capture.pcm {
-+			type plug
-+			slave.pcm {
-+				@func concat
-+				strings [ "dsnoop:" $CARD ]
-+			}
+ 		if (runtime->silence_filled >= runtime->buffer_size)
+ 			return;
+@@ -2203,7 +2204,9 @@ snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
+ 				continue; /* draining */
  		}
- 	}
- }
+ 		frames = size > avail ? avail : size;
+-		cont = runtime->buffer_size - runtime->control->appl_ptr % runtime->buffer_size;
++		appl_ptr = READ_ONCE(runtime->control->appl_ptr);
++		appl_ofs = appl_ptr % runtime->buffer_size;
++		cont = runtime->buffer_size - appl_ofs;
+ 		if (frames > cont)
+ 			frames = cont;
+ 		if (snd_BUG_ON(!frames)) {
+@@ -2211,8 +2214,6 @@ snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
+ 			snd_pcm_stream_unlock_irq(substream);
+ 			return -EINVAL;
+ 		}
+-		appl_ptr = runtime->control->appl_ptr;
+-		appl_ofs = appl_ptr % runtime->buffer_size;
+ 		snd_pcm_stream_unlock_irq(substream);
+ 		err = writer(substream, appl_ofs, data, offset, frames,
+ 			     transfer);
 -- 
-2.13.0
+2.13.1
