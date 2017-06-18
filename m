@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [alsa-lib][PATCH 1/2] ALSA: pcm: introduce ACK_APPLPTR
-	flag and bump up interface version to 2.0.14
-Date: Mon, 19 Jun 2017 01:49:20 +0900
-Message-ID: <20170618164921.9881-3-o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/1] ALSA: pcm: introduce ACK_APPLPTR flag and
+	bump up interface version to 2.0.14
+Date: Mon, 19 Jun 2017 01:49:19 +0900
+Message-ID: <20170618164921.9881-2-o-takashi@sakamocchi.jp>
 References: <20170618164921.9881-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id BEF83266AE2
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id C114A266D52
  for <alsa-devel@alsa-project.org>; Sun, 18 Jun 2017 18:49:25 +0200 (CEST)
 In-Reply-To: <20170618164921.9881-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -68,13 +68,14 @@ behaviour. This commit bumps up interface version to v2.0.14.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/sound/asound.h | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ include/uapi/sound/asound.h | 11 ++++++++++-
+ sound/core/pcm_native.c     | 25 +++++++++++++++++++++++++
+ 2 files changed, 35 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/asound.h b/include/sound/asound.h
-index fb8d7d7e..dc367cf0 100644
---- a/include/sound/asound.h
-+++ b/include/sound/asound.h
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index fd41697cb4d3..ff7bb89e65a6 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
 @@ -152,7 +152,7 @@ struct snd_hwdep_dsp_image {
   *                                                                           *
   *****************************************************************************/
@@ -107,5 +108,48 @@ index fb8d7d7e..dc367cf0 100644
  
  struct snd_interval {
  	unsigned int min, max;
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index 7e8f3656b695..48772a2bd027 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -249,6 +249,27 @@ static bool hw_support_mmap(struct snd_pcm_substream *substream)
+ 	return true;
+ }
+ 
++static int constrain_params_with_precondition(struct snd_pcm_substream *substream,
++					      struct snd_pcm_hw_params *params)
++{
++	struct snd_mask *mask;
++
++	/*
++	 * When drivers require applications' cooperation to report current
++	 * appl_ptr and the applications voluntarily perform it, mmap operation
++	 * is allowed. Else, read/write operations are allowed.
++	 */
++	if ((substream->runtime->hw.info & SNDRV_PCM_INFO_ACK_APPLPTR) &&
++	    !(params->flags & SNDRV_PCM_HW_PARAMS_ACK_APPLPTR)) {
++		mask = hw_param_mask(params, SNDRV_PCM_HW_PARAM_ACCESS);
++		snd_mask_reset(mask, SNDRV_PCM_ACCESS_MMAP_INTERLEAVED);
++		snd_mask_reset(mask, SNDRV_PCM_ACCESS_MMAP_NONINTERLEAVED);
++		snd_mask_reset(mask, SNDRV_PCM_ACCESS_MMAP_COMPLEX);
++	}
++
++	return 0;
++}
++
+ static int constrain_mask_params(struct snd_pcm_substream *substream,
+ 				 struct snd_pcm_hw_params *params)
+ {
+@@ -495,6 +516,10 @@ int snd_pcm_hw_refine(struct snd_pcm_substream *substream,
+ 		params->rate_den = 0;
+ 	}
+ 
++	err = constrain_params_with_precondition(substream, params);
++	if (err < 0)
++		return err;
++
+ 	err = constrain_mask_params(substream, params);
+ 	if (err < 0)
+ 		return err;
 -- 
 2.11.0
