@@ -1,19 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [[RFC][PATCH] ALSA: pcm: introduce ACK_APPLPTR
- flag and bump up interface version to v2.0.14
-Date: Mon, 19 Jun 2017 21:33:50 +0900
-Message-ID: <d767c670-de11-7eb1-7769-9acb21d2877c@sakamocchi.jp>
-References: <20170618164921.9881-1-o-takashi@sakamocchi.jp>
- <s5hvantmdfu.wl-tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH] ASoC: compress: Derive substream from
+ stream based on direction
+Date: Mon, 19 Jun 2017 18:12:28 +0530
+Message-ID: <20170619124228.GJ19154@localhost>
+References: <1497659620-7197-1-git-send-email-bgoswami@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id E11FE266C24
- for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2017 14:33:53 +0200 (CEST)
-In-Reply-To: <s5hvantmdfu.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 66A4A266C24
+ for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2017 14:39:46 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1497659620-7197-1-git-send-email-bgoswami@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,78 +22,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: vinod.koul@intel.com, clemens@ladisch.de, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, pierre-louis.bossart@linux.intel.com
+To: bgoswami@codeaurora.org
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, plai@codeaurora.org, Satish Babu Patakokila <sbpata@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gMjAxN+W5tDA25pyIMTnml6UgMDI6MDgsIFRha2FzaGkgSXdhaSB3cm90ZToKPiBPbiBTdW4s
-IDE4IEp1biAyMDE3IDE4OjQ5OjE4ICswMjAwLAo+IFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4+
-Cj4+IEhpLAo+Pgo+PiBUaGlzIHBhdGNoc2V0IGluY2x1ZGVzIGNvbW1pdHMgZm9yIGJvdGgga2Vy
-bmVsL3VzZXIgbGFuZCBmb3IgYW4gaXNzdWUKPj4gYWRkcmVzc2VkIGluIHRoaXMgbWVzc2FnZSB0
-aHJlYWRbMV0uCj4+Cj4+IEluIGEgZGV2ZWxvcG1lbnQgcGVyaW9kIGZvciB2NC4xMywgaXQncyBj
-bGVhciB0aGF0IHRoZXJlJ3MgYSB0eXBlIG9mCj4+IGRldmljZXMgd2hpY2ggZGVtYW5kIHVzZXJz
-cGFjZSBhcHBsaWNhdGlvbnMgdG8gY2hhbmdlIHRoZWlyIGJlaGF2aW91ci4KPj4gVGhlc2UgZGV2
-aWNlcyBjYW4gdGFrZSBjYXJlIG9mIGFwcGxpY2F0aW9uLXNpZGUgcG9pbnRlciBvbiBQQ00gYnVm
-ZmVyCj4+IGZvciB0aGVpciBkYXRhIHRyYW5zbWlzc2lvbi4gQXMgYSByZXN1bHQsIHRoZXNlIGRl
-dmljZXMgYWNoaWV2ZSBzb21lCj4+IGFkdmFudGFnZXMuIEZvciB0aGVzZSBkZXZpY2VzLCBkcml2
-ZXJzIG5lZWQgdG8gZ2V0IGZlZWRiYWNrIGFib3V0Cj4+IGN1cnJlbnQgcG9zaXRpb24gb2YgdGhl
-IHBvaW50ZXIgZnJvbSBhcHBsaWNhdGlvbnMgd2hlbiB0aGV5Cj4+IHF1ZXVlL2RlcXVldWUgUENN
-IGZyYW1lcyBvbiB0aGUgYnVmZmVyLgo+Pgo+PiBBTFNBIFBDTSBjb3JlIHBhcnRseSBhc3Npc3Qg
-dGhlIGFib3ZlIGRlc2lnbi4gVGhlIGNvcmUgY2FuIGNhbGwgYQo+PiBoYW5kbGVyIGluIGRyaXZl
-ciBzaWRlIHdoZW4gYXBwbGljYXRpb25zIG9wZXJhdGUgUENNIGZyYW1lcyBieQo+PiBpb2N0bCgy
-KSB3aXRoIFNORFJWX1BDTV9JT0NUTF9bUkVBRHxXUklURV1bTnxJXSBjb21tYW5kLiBIb3dldmVy
-LAo+PiB3aGVuIG9wZXJhdGluZyBmb3IgbWFwcGVkIFBDTSBidWZmZXIsIGl0IGNhbid0IGFzc2lz
-dCBhcHBsaWNhdGlvbnMKPj4gZm9yIHRoZSBhYm92ZSBkZXNpZ24uIEluIHRoaXMgc2NlbmFyaW8s
-IGFwcGxpY2F0aW9ucyBzaG91bGQgY2FsbAo+PiBpb2N0bCgyKSB3aXRoIFNORFJWX1BDTV9JT0NU
-TF9TWU5DX1BUUiBhZnRlciBoYW5kbGUgYW55IFBDTSBmcmFtZXMgb24KPj4gdGhlIGJ1ZmZlci4K
-Pj4KPj4gVGhpcyBwYXRjaHNldCBidW1wcyB1cCBpbnRlcmZhY2UgdmVyc2lvbiB3aXRoIG5ldyBp
-bmZvIGZsYWcgdG8KPj4gbm90aWZ5IHRoZSBhYm92ZSBjaGFuZ2UgdG8gdXNlciBsYW5kIGRldmVs
-b3BlcnMuIFRoaXMgcGF0Y2hzZXQgaXMKPj4gd3JpdHRlbiB3aXRoIGJlbG93IGlkZWFzOgo+Pgo+
-PiAxLiBTdHVmZnMgaW4gdXNlciBsYW5kIGNhbiB0ZWxsIHRoZWlyIGFzc2lzdHMgZm9yIHRoZSBh
-Ym92ZSBkZXNpZ24KPj4gICAgIHRvIGtlcm5lbCBsYW5kIGJ5IHVzaW5nIGh3X3BhcmFtIGZsYWcu
-IFdoZW4gdGhleSBkb24ndCBhc3Npc3QsCj4+ICAgICB0aGV5IHNlZSBvbiBod19wYXJhbXMgZGF0
-YSB0aGF0IG1tYXAgb3BlcmF0aW9uIGlzIG5vdCBzdXBwb3J0ZWQuCj4+IDIuIERyaXZlcnMgY2Fu
-IGFja25vd2xlZGdlIHRoZSBhYm92ZSBmbGFnLiBXaGVuIHJlZ2lzdGVyaW5nCj4+ICAgICBhcHBy
-b3ByaWF0ZSBQQ00gcnVsZXMgaW4gYWR2YW5jZSwgdGhleSBjYW4gY2FsY3VsYXRlIHZhbHVlcyBm
-b3IKPj4gICAgIGVhY2ggcGFyYW1ldGVycyBpbiBib3RoIGNhc2VzIHRoYXQgc3R1ZmZzIGluIHVz
-ZXIgbGFuZCBjYW4vY2Fubm90Cj4+ICAgICBhc3Npc3QgaXQuIFRoaXMgaXMgdXNlZnVsIGZvciBw
-YWNrZXQtb3JpZW50ZWQgZHJpdmVycyB0byBqdWRnZQo+PiAgICAgdXRpbGl6aW5nIGFueSBpbnRl
-cnJ1cHQgY29udGV4dCBmb3IgcGFja2V0aXphdGlvbi4KPj4gMy4gVGhpcyBpcyBkZXZpY2Utc3Bl
-Y2lmaWMgaXNzdWUsIGluZGVwZW5kZW50bHkgb2YgcGxhdGZvcm0KPj4gICAgIGFyY2hpdGVjdHVy
-ZS4gT24geDg2L3BwYy9hbHBoYSBwbGF0Zm9ybXMsIHN0YXR1cy9jb250cm9sIGRhdGEgb2YKPj4g
-ICAgIFBDTSBzdWJzdHJlYW0gaXMgc3RpbGwgYXZhaWxhYmxlIGluIHByb2Nlc3MnIFZNQSBvZiBh
-cHBsaWNhdGlvbiB2aWEKPj4gICAgIHBhZ2UgZnJhbWUgbWFwcGluZy4KPj4KPj4gWzFdIGh0dHA6
-Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAxNy1KdW5l
-LzEyMTQzOC5odG1sCj4+Cj4+IEZvciBrZXJuZWwgbGFuZDoKPj4gVGFrYXNoaSBTYWthbW90byAo
-MSk6Cj4+ICAgIEFMU0E6IHBjbTogaW50cm9kdWNlIEFDS19BUFBMUFRSIGZsYWcgYW5kIGJ1bXAg
-dXAgaW50ZXJmYWNlIHZlcnNpb24gdG8KPj4gICAgICAyLjAuMTQKPj4KPj4gICBpbmNsdWRlL3Vh
-cGkvc291bmQvYXNvdW5kLmggfCAxMSArKysrKysrKysrLQo+PiAgIHNvdW5kL2NvcmUvcGNtX25h
-dGl2ZS5jICAgICB8IDI1ICsrKysrKysrKysrKysrKysrKysrKysrKysKPj4gICAyIGZpbGVzIGNo
-YW5nZWQsIDM1IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKPj4KPj4gRm9yIHVzZXIgbGFu
-ZDoKPj4gVGFrYXNoaSBTYWthbW90byAoMik6Cj4+ICAgIEFMU0E6IHBjbTogaW50cm9kdWNlIEFD
-S19BUFBMUFRSIGZsYWcgYW5kIGJ1bXAgdXAgaW50ZXJmYWNlIHZlcnNpb24gdG8KPj4gICAgICAy
-LjAuMTQKPj4gICAgcGNtOiBhZGQgc3VwcG9ydCBmb3IgaW50ZXJmYWNlIHZlcnNpb24gMi4wLjE0
-Cj4+Cj4+ICAgaW5jbHVkZS9zb3VuZC9hc291bmQuaCB8IDExICsrKysrKysrKystCj4+ICAgc3Jj
-L3BjbS9wY21faHcuYyAgICAgICB8IDQzICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKystLS0tLS0KPj4gICAyIGZpbGVzIGNoYW5nZWQsIDQ3IGluc2VydGlvbnMoKyksIDcgZGVs
-ZXRpb25zKC0pCj4gCj4gV2VsbCwgdGhlc2UgbWFuZGF0ZSBib3RoIGtlcm5lbCBhbmQgdXNlci1z
-aWRlIGNoYW5nZXMsIHNvIGlmIHlvdSBydW4KPiB0aGUgb2xkIGFwcGxpY2F0aW9ucyB3aXRoIG9s
-ZCBhbHNhLWxpYiwgaXQgY2FuJ3Qgd29yaywgcmlnaHQ/CgpBcHBsaWNhdGlvbnMgc3RpbGwgd29y
-a3Mgd2VsbCBiZWNhdXNlIHRoZXkgcmVjZWl2ZSBwcm9wZXIgc2V0IG9mIApod19wYXJhbXMuIFRo
-ZXkgd29ya3MgYXMgcHJvZ3JhbW1lZCwgdGh1cyBmb3IgdGhlIG5ldyBkZXZpY2VzL2RyaXZlcnMg
-CnRoZXkgd29yayB3aXRob3V0IG1tYXAgb3BlcmF0aW9uLgoKPiBBIHNpbWlsYXIgcGF0Y2hzZXQg
-aXMgYWxyZWFkeSBpbiBteSBsb2NhbCBxdWV1ZSAobXkgdmVyc2lvbiBjYWxsZWQgaXQKPiBkaWZm
-ZXJlbnRseSwgU05EUlZfUENNX0lORk9fU1lOQ19BUFBMUFRSIDopLCBidXQgaXQgd2Fzbid0IHN1
-Ym1pdHRlZAo+IHlldCBiZWNhdXNlIHdlIHdhbnRlZCB0byBmaXggdGhlIGlzc3VlIHdpdGhvdXQg
-YWZmZWN0aW5nIGFsc2EtbGliIGF0Cj4gZmlyc3QuICBEbyB5b3UgaGF2ZSB0aGUgcGF0Y2ggZm9y
-IHRoYXQ/CgpJIHdpbGwgbm90IGhhdmUgdGhpcyBkaXJlY3Rpb24sIHBhc3QgYW5kIGZ1dHVyZSwg
-YmVjYXVzZSB0aGlzIGlzc3VlIApkZW1hbmRzIHVzZXJsYW5kIHN0dWZmcyB0byBwZXJmb3JtIGFz
-IHRoZSBuZXcgZHJpdmVycy9kZXZpY2VzIGV4cGVjdHMsIAp0aHVzIHVzZXJsYW5kIHN0dWZmcyBf
-c2hvdWxkXyBiZSBjaGFuZ2VkLgoKIyBXaGVuIEkgaW52ZXN0aWdhdGVkIG5hbWUgb2YgdGhlIGZs
-YWcsIEkgZHJvcHBlZAojICdTTkRSVl9QQ01fSU5GT19TWU5DX0FQUExQVFInIGF0IGZpcnN0LCBi
-ZWNhdXNlIGhhcmR3YXJlIGRvZXNuJ3QKIyBuZWVkIHRvIHN5bmNocm9uaXplIHRvIGFwcGxwdHIg
-YWx3YXlzLiBJdCdzIGVub3VnaCBmb3IgaGFyZHdhcmVzIHRvCiMgZ2V0IGl0IHdoZW4gcmVxdWly
-ZXMuIERyaXZlcnMgYW5kIGFwcGxpY2F0aW9ucyBhc3Npc3QgaXQuCgoKUmVnYXJkcwoKVGFrYXNo
-aSBTYWthbW90bwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
-cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Fri, Jun 16, 2017 at 05:33:40PM -0700, bgoswami@codeaurora.org wrote:
+> From: Satish Babu Patakokila <sbpata@codeaurora.org> 
+> 
+> Currently compress driver hardcodes direction as playback to get
+> substream from the stream. This results in getting the incorrect
+> substream for compressed capture usecase.
+> To fix this, remove the hardcoding and derive substream based on
+> the stream direction.
+
+Acked-By: Vinod Koul <vinod.koul@intel.com>
+
+I think we should cc this to stable..
+
+> 
+> Signed-off-by: Satish Babu Patakokila <sbpata@codeaurora.org>
+> Signed-off-by: Banajit Goswami <bgoswami@codeaurora.org>
+> ---
+>  sound/soc/soc-compress.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+> index bfd71b8..206f36b 100644
+> --- a/sound/soc/soc-compress.c
+> +++ b/sound/soc/soc-compress.c
+> @@ -81,7 +81,8 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
+>  static int soc_compr_open_fe(struct snd_compr_stream *cstream)
+>  {
+>  	struct snd_soc_pcm_runtime *fe = cstream->private_data;
+> -	struct snd_pcm_substream *fe_substream = fe->pcm->streams[0].substream;
+> +	struct snd_pcm_substream *fe_substream =
+> +		 fe->pcm->streams[cstream->direction].substream;
+>  	struct snd_soc_platform *platform = fe->platform;
+>  	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
+>  	struct snd_soc_dpcm *dpcm;
+> @@ -467,7 +468,8 @@ static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
+>  					struct snd_compr_params *params)
+>  {
+>  	struct snd_soc_pcm_runtime *fe = cstream->private_data;
+> -	struct snd_pcm_substream *fe_substream = fe->pcm->streams[0].substream;
+> +	struct snd_pcm_substream *fe_substream =
+> +		 fe->pcm->streams[cstream->direction].substream;
+>  	struct snd_soc_platform *platform = fe->platform;
+>  	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
+>  	int ret = 0, stream;
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
+
+-- 
+~Vinod
