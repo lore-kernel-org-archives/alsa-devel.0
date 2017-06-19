@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bxt: Move codec sysclk config to codec_init function" to the asoc tree
-Date: Mon, 19 Jun 2017 17:23:49 +0100
-Message-ID: <E1dMzSv-0002Mi-8f@debutante>
-References: <aa8a70dcef146c6863b78e202e2adad652a99d45.1497865554.git.Adam.Thomson.Opensource@diasemi.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <aa8a70dcef146c6863b78e202e2adad652a99d45.1497865554.git.Adam.Thomson.Opensource@diasemi.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Harsha Priya <harshapriya.n@intel.com>, alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: skl_rt286: Add deepbuffer dai link" to
+	the asoc tree
+Date: Mon, 19 Jun 2017 17:23:55 +0100
+Message-ID: <E1dMzT1-0002Og-Ba@debutante>
+References: <1497267657-20359-4-git-send-email-subhransu.s.prusty@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 07540267131
+ for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2017 18:24:08 +0200 (CEST)
+In-Reply-To: <1497267657-20359-4-git-send-email-subhransu.s.prusty@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bxt: Move codec sysclk config to codec_init function
+   ASoC: skl_rt286: Add deepbuffer dai link
 
 has been applied to the asoc tree at
 
@@ -37,63 +52,57 @@ to this mail.
 Thanks,
 Mark
 
->From fd0f237572ada2b18fe1e8684ae9fa131b577a17 Mon Sep 17 00:00:00 2001
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Date: Mon, 19 Jun 2017 10:56:34 +0100
-Subject: [PATCH] ASoC: Intel: bxt: Move codec sysclk config to codec_init
- function
+>From 1f0f8bde45a7ea843bb2e7a8f45f255b23cdc2e7 Mon Sep 17 00:00:00 2001
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Date: Mon, 19 Jun 2017 11:59:21 +0530
+Subject: [PATCH] ASoC: skl_rt286: Add deepbuffer dai link
 
-The MCLK for DA7219 does not change in this platform, but is
-currently being configured everytime as part of the platform_clock
-event handler for DAPM. The upshot of this is that we have
-unnecessary calls to this function, and it also means that if
-a stream hasn't yet been started, DA7219 driver does not have the
-correct MCLK rates programmed and so the HP detection feature does
-not operate as expected.
+This patch adds the deepbuffer device which can be opened with a bigger
+buffer size. The application can disable interrupts and sleep for longer
+duration.
 
-This patch rectifies this issue by moving the sysclk call to
-codec_init function so it's only called once at initialisation.
-
-Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Acked-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bxt_da7219_max98357a.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ sound/soc/intel/boards/skl_rt286.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-index 3a8c4d954a91..1866e31b6c29 100644
---- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-@@ -89,11 +89,6 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
- 		if (ret)
- 			dev_err(card->dev, "failed to stop PLL: %d\n", ret);
- 	} else if(SND_SOC_DAPM_EVENT_ON(event)) {
--		ret = snd_soc_dai_set_sysclk(codec_dai,
--                        DA7219_CLKSRC_MCLK, 19200000, SND_SOC_CLOCK_IN);
--		if (ret)
--			dev_err(card->dev, "can't set codec sysclk configuration\n");
--
- 		ret = snd_soc_dai_set_pll(codec_dai, 0,
- 			DA7219_SYSCLK_PLL_SRM, 0, DA7219_PLL_FREQ_OUT_98304);
- 		if (ret)
-@@ -187,8 +182,17 @@ static int broxton_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
- static int broxton_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	int ret;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct snd_soc_codec *codec = rtd->codec;
+diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
+index e08c71625fd0..2bc4cfca594e 100644
+--- a/sound/soc/intel/boards/skl_rt286.c
++++ b/sound/soc/intel/boards/skl_rt286.c
+@@ -43,6 +43,7 @@ struct skl_rt286_private {
  
-+	/* Configure sysclk for codec */
-+	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 19200000,
-+				     SND_SOC_CLOCK_IN);
-+	if (ret) {
-+		dev_err(rtd->dev, "can't set codec sysclk configuration\n");
-+		return ret;
-+	}
+ enum {
+ 	SKL_DPCM_AUDIO_PB = 0,
++	SKL_DPCM_AUDIO_DB_PB,
+ 	SKL_DPCM_AUDIO_CP,
+ 	SKL_DPCM_AUDIO_REF_CP,
+ 	SKL_DPCM_AUDIO_DMIC_CP,
+@@ -310,6 +311,23 @@ static struct snd_soc_dai_link skylake_rt286_dais[] = {
+ 		.dpcm_playback = 1,
+ 		.ops = &skylake_rt286_fe_ops,
+ 	},
++	[SKL_DPCM_AUDIO_DB_PB] = {
++		.name = "Skl Deepbuffer Port",
++		.stream_name = "Deep Buffer Audio",
++		.cpu_dai_name = "Deepbuffer Pin",
++		.platform_name = "0000:00:1f.3",
++		.nonatomic = 1,
++		.dynamic = 1,
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.trigger = {
++			SND_SOC_DPCM_TRIGGER_POST,
++			SND_SOC_DPCM_TRIGGER_POST
++		},
++		.dpcm_playback = 1,
++		.ops = &skylake_rt286_fe_ops,
 +
- 	/*
- 	 * Headset buttons map to the google Reference headset.
- 	 * These can be configured by userspace.
++	},
+ 	[SKL_DPCM_AUDIO_CP] = {
+ 		.name = "Skl Audio Capture Port",
+ 		.stream_name = "Audio Record",
 -- 
 2.11.0
