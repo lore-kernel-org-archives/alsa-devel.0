@@ -1,14 +1,18 @@
-From: Jia-Ju Bai <baijiaju1990@163.com>
-Subject: [PATCH] oss: Fix a sleep-in-atomic bug in midi_outc
-Date: Mon, 19 Jun 2017 10:56:23 +0800
-Message-ID: <1497840983-5023-1-git-send-email-baijiaju1990@163.com>
+From: Allan Klinbail <aklinbail@gmail.com>
+Subject: MIDI Clock issue when aconnect multiple times to same
+	device.
+Date: Mon, 19 Jun 2017 05:35:16 +0000
+Message-ID: <CA+aoAJed7MuQYgG+obkUfNdYkNCh9hwvC7qG55r8yT7HO5FUVg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from m12-12.163.com (m12-12.163.com [220.181.12.12])
- by alsa0.perex.cz (Postfix) with ESMTP id A7EE72668F0
- for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2017 04:53:25 +0200 (CEST)
+Received: from mail-vk0-f44.google.com (mail-vk0-f44.google.com
+ [209.85.213.44])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2780F2668F0
+ for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2017 07:35:28 +0200 (CEST)
+Received: by mail-vk0-f44.google.com with SMTP id g66so45838140vki.1
+ for <alsa-devel@alsa-project.org>; Sun, 18 Jun 2017 22:35:28 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,36 +22,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, Jia-Ju Bai <baijiaju1990@163.com>, linux-kernel@vger.kernel.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The driver may sleep under a spin lock, and the function call path is:
-midi_outc (acquire the lock by spin_lock_irqsave)
-  oss_broken_sleep_on
-    schedule_timeout --> may sleep
+Hi All,
 
-To fix it, the lock is released before oss_broken_sleep_on, and the lock 
-is acquired again after this function.
+I have noticed an issue with the handling of MIDI clock when making
+multiple connections to and from the same device..
 
-Signed-off-by: Jia-Ju Bai <baijiaju1990@163.com>
----
- sound/oss/sequencer.c |    2 ++
- 1 file changed, 2 insertions(+)
+Specifically with EMAGIC AMT-8 and Unitor 8 Mk2 (I can't confirm it is
+happening for other devices).
 
-diff --git a/sound/oss/sequencer.c b/sound/oss/sequencer.c
-index f19da4b..3d95d752 100644
---- a/sound/oss/sequencer.c
-+++ b/sound/oss/sequencer.c
-@@ -1211,7 +1211,9 @@ static void midi_outc(int dev, unsigned char data)
- 
- 	spin_lock_irqsave(&lock,flags);
-  	while (n && !midi_devs[dev]->outputc(dev, data)) {
-+		spin_unlock_irqrestore(&lock, flags);
- 		oss_broken_sleep_on(&seq_sleeper, HZ/25);
-+		spin_lock_irqsave(&lock, flags);
-   		n--;
-   	}
- 	spin_unlock_irqrestore(&lock,flags);
--- 
-1.7.9.5
+The scenario is
+MIDI Port 1 is receiving MIDI clock along with note information for devices
+on ports 2 & 3 ..  (in this scenario sending at 120 BPM)
+The MIDI clock signal is automatically distributed by the device to all
+other ports.
+
+When connecting Input 1 to output 2 (to send MIDI from the first external
+device to the second).. The MIDI clock appears to be retransmitted a second
+time.. the device on port 2 then believes it is receiving a clock signal at
+approximately 168 BPM. This signal is not stable
+
+When connecting input 1 to output 3  the MIDI clock seems to be distributed
+another time to the EMAGIC .. which is now sending out an even more
+unstable clock signal at approximate 189 BPM..
+
+It is possible to filter physical inputs from receiving MIDI Clock or
+outputs from sending. This does not solve this issue (Filtering the input
+stops the clock altogether, filtering the output stops it from being
+received by the desired device)
+
+However it is not possible to filter the messaging going to to the unit
+from a connection established with aconnect (or using tools like qjackctl).
+
+I am not sure if it is possible to fix the driver for this issue,especially
+if the MIDI clock source is external. However, I thought it best to alert
+you to this situation.
+
+thanks
+
+Allan
