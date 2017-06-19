@@ -1,59 +1,268 @@
-From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 2/2] ALSA: sound/pci: add const to snd_ratnum structures
-Date: Tue, 20 Jun 2017 00:11:54 +0530
-Message-ID: <1497897714-27522-3-git-send-email-bhumirks@gmail.com>
-References: <1497897714-27522-1-git-send-email-bhumirks@gmail.com>
+From: Ryan Lee <ryans.lee@maximintegrated.com>
+Subject: [PATCH 1/7] staging: max98927: Added TDM support
+Date: Mon, 19 Jun 2017 15:07:20 -0700
+Message-ID: <1497910046-3369-1-git-send-email-ryans.lee@maximintegrated.com>
+Mime-Version: 1.0
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1497897714-27522-1-git-send-email-bhumirks@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: julia.lawall@lip6.fr, clemens@ladisch.de, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Cc: Bhumika Goyal <bhumirks@gmail.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, ryans.lee@maximintegrated.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: ryan.lee.maxim@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Declare snd_ratnum structures as const as their reference is only
-stored in the rate field of a snd_pcm_hw_constraint_ratnums structure.
-This field is of type const, so snd_ratnum structures can be made const.
-
-Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
+Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
 ---
- sound/pci/bt87x.c   | 2 +-
- sound/pci/ens1370.c | 4 ++--
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/codecs/max98927.c | 141 ++++++++++++++++++++++++++++++++++++--------
+ sound/soc/codecs/max98927.h |   6 +-
+ 2 files changed, 120 insertions(+), 27 deletions(-)
 
-diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
-index 099efb0..cbff975 100644
---- a/sound/pci/bt87x.c
-+++ b/sound/pci/bt87x.c
-@@ -401,7 +401,7 @@ static int snd_bt87x_set_digital_hw(struct snd_bt87x *chip, struct snd_pcm_runti
+diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
+index b5ee294..99d6e41 100644
+--- a/sound/soc/codecs/max98927.c
++++ b/sound/soc/codecs/max98927.c
+@@ -1,7 +1,7 @@
+ /*
+  * max98927.c  --  MAX98927 ALSA Soc Audio driver
+  *
+- * Copyright (C) 2016 Maxim Integrated Products
++ * Copyright (C) 2016-2017 Maxim Integrated Products
+  * Author: Ryan Lee <ryans.lee@maximintegrated.com>
+  *
+  *  This program is free software; you can redistribute  it and/or modify it
+@@ -146,6 +146,7 @@ static int max98927_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	struct max98927_priv *max98927 = snd_soc_codec_get_drvdata(codec);
+ 	unsigned int mode = 0;
+ 	unsigned int format = 0;
++	bool use_pdm = false;
+ 	unsigned int invert = 0;
  
- static int snd_bt87x_set_analog_hw(struct snd_bt87x *chip, struct snd_pcm_runtime *runtime)
+ 	dev_dbg(codec->dev, "%s: fmt 0x%08X\n", __func__, fmt);
+@@ -187,22 +188,27 @@ static int max98927_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 	/* interface format */
+ 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+-		max98927->iface |= SND_SOC_DAIFMT_I2S;
+ 		format = MAX98927_PCM_FORMAT_I2S;
+ 		break;
+ 	case SND_SOC_DAIFMT_LEFT_J:
+-		max98927->iface |= SND_SOC_DAIFMT_LEFT_J;
+ 		format = MAX98927_PCM_FORMAT_LJ;
+ 		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		format = MAX98927_PCM_FORMAT_TDM_MODE1;
++		break;
++	case SND_SOC_DAIFMT_DSP_B:
++		format = MAX98927_PCM_FORMAT_TDM_MODE0;
++		break;
+ 	case SND_SOC_DAIFMT_PDM:
+-		max98927->iface |= SND_SOC_DAIFMT_PDM;
++		use_pdm = true;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
++	max98927->iface = fmt & SND_SOC_DAIFMT_FORMAT_MASK;
+ 
+-	/* pcm channel configuration */
+-	if (max98927->iface & (SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_LEFT_J)) {
++	if (!use_pdm) {
++		/* pcm channel configuration */
+ 		regmap_update_bits(max98927->regmap,
+ 			MAX98927_R0018_PCM_RX_EN_A,
+ 			MAX98927_PCM_RX_CH0_EN | MAX98927_PCM_RX_CH1_EN,
+@@ -217,13 +223,12 @@ static int max98927_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 			MAX98927_R003B_SPK_SRC_SEL,
+ 			MAX98927_SPK_SRC_MASK, 0);
+ 
+-	} else
+ 		regmap_update_bits(max98927->regmap,
+-			MAX98927_R0018_PCM_RX_EN_A,
+-			MAX98927_PCM_RX_CH0_EN | MAX98927_PCM_RX_CH1_EN, 0);
++			MAX98927_R0035_PDM_RX_CTRL,
++			MAX98927_PDM_RX_EN_MASK, 0);
+ 
+-	/* pdm channel configuration */
+-	if (max98927->iface & SND_SOC_DAIFMT_PDM) {
++	} else {
++		/* pdm channel configuration */
+ 		regmap_update_bits(max98927->regmap,
+ 			MAX98927_R0035_PDM_RX_CTRL,
+ 			MAX98927_PDM_RX_EN_MASK, 1);
+@@ -231,10 +236,12 @@ static int max98927_dai_set_fmt(struct snd_soc_dai *codec_dai, unsigned int fmt)
+ 		regmap_update_bits(max98927->regmap,
+ 			MAX98927_R003B_SPK_SRC_SEL,
+ 			MAX98927_SPK_SRC_MASK, 3);
+-	} else
++
+ 		regmap_update_bits(max98927->regmap,
+-			MAX98927_R0035_PDM_RX_CTRL,
+-			MAX98927_PDM_RX_EN_MASK, 0);
++			MAX98927_R0018_PCM_RX_EN_A,
++			MAX98927_PCM_RX_CH0_EN | MAX98927_PCM_RX_CH1_EN, 0);
++
++	}
+ 	return 0;
+ }
+ 
+@@ -245,6 +252,21 @@ static const int rate_table[] = {
+ 	13000000, 19200000,
+ };
+ 
++/* BCLKs per LRCLK */
++static const int bclk_sel_table[] = {
++	32, 48, 64, 96, 128, 192, 256, 384, 512,
++};
++
++static int max98927_get_bclk_sel(int bclk)
++{
++	int i;
++	/* match BCLKs per LRCLK */
++	for (i = 0; i < ARRAY_SIZE(bclk_sel_table); i++) {
++		if (bclk_sel_table[i] == bclk)
++			return i + 2;
++	}
++	return 0;
++}
+ static int max98927_set_clock(struct max98927_priv *max98927,
+ 	struct snd_pcm_hw_params *params)
  {
--	static struct snd_ratnum analog_clock = {
-+	static const struct snd_ratnum analog_clock = {
- 		.num = ANALOG_CLOCK,
- 		.den_min = CLOCK_DIV_MIN,
- 		.den_max = CLOCK_DIV_MAX,
-diff --git a/sound/pci/ens1370.c b/sound/pci/ens1370.c
-index 09a63ef..f023076 100644
---- a/sound/pci/ens1370.c
-+++ b/sound/pci/ens1370.c
-@@ -474,7 +474,7 @@ static struct snd_pcm_hw_constraint_list snd_es1370_hw_constraints_rates = {
- 	.list = snd_es1370_fixed_rates,
- 	.mask = 0,
+@@ -270,19 +292,17 @@ static int max98927_set_clock(struct max98927_priv *max98927,
+ 			i << MAX98927_PCM_MASTER_MODE_MCLK_RATE_SHIFT);
+ 	}
+ 
+-	switch (blr_clk_ratio) {
+-	case 32:
+-		value = 2;
+-		break;
+-	case 48:
+-		value = 3;
+-		break;
+-	case 64:
+-		value = 4;
+-		break;
+-	default:
++	if ((max98927->iface == SND_SOC_DAIFMT_DSP_A) ||
++	    (max98927->iface == SND_SOC_DAIFMT_DSP_B))
++		return 0;
++
++	/* BCLK configuration */
++	value = max98927_get_bclk_sel(blr_clk_ratio);
++	if (!value) {
++		dev_err(codec->dev, "BCLK %d not supported\n", blr_clk_ratio);
+ 		return -EINVAL;
+ 	}
++
+ 	regmap_update_bits(max98927->regmap,
+ 		MAX98927_R0022_PCM_CLK_SETUP,
+ 		MAX98927_PCM_CLK_SETUP_BSEL_MASK,
+@@ -386,6 +406,76 @@ static int max98927_dai_hw_params(struct snd_pcm_substream *substream,
+ 	return -EINVAL;
+ }
+ 
++static int max98927_dai_tdm_slot(struct snd_soc_dai *dai,
++	unsigned int tx_mask, unsigned int rx_mask,
++	int slots, int slot_width)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct max98927_priv *max98927 = snd_soc_codec_get_drvdata(codec);
++	int bsel = 0;
++	unsigned int chan_sz = 0;
++
++	/* BCLK configuration */
++	bsel = max98927_get_bclk_sel(slots * slot_width);
++	if (bsel == 0) {
++		dev_err(codec->dev, "BCLK %d not supported\n",
++			slots * slot_width);
++		return -EINVAL;
++	}
++
++	regmap_update_bits(max98927->regmap,
++		MAX98927_R0022_PCM_CLK_SETUP,
++		MAX98927_PCM_CLK_SETUP_BSEL_MASK,
++		bsel);
++
++	/* Channel size configuration */
++	switch (slot_width) {
++	case 16:
++		chan_sz = MAX98927_PCM_MODE_CFG_CHANSZ_16;
++		break;
++	case 24:
++		chan_sz = MAX98927_PCM_MODE_CFG_CHANSZ_24;
++		break;
++	case 32:
++		chan_sz = MAX98927_PCM_MODE_CFG_CHANSZ_32;
++		break;
++	default:
++		dev_err(codec->dev, "format unsupported %d\n",
++			slot_width);
++		return -EINVAL;
++	}
++
++	regmap_update_bits(max98927->regmap,
++		MAX98927_R0020_PCM_MODE_CFG,
++		MAX98927_PCM_MODE_CFG_CHANSZ_MASK, chan_sz);
++
++	/* Rx slot configuration */
++	regmap_write(max98927->regmap,
++		MAX98927_R0018_PCM_RX_EN_A,
++		rx_mask & 0xFF);
++	regmap_write(max98927->regmap,
++		MAX98927_R0019_PCM_RX_EN_B,
++		(rx_mask & 0xFF00) >> 8);
++
++	/* Tx slot configuration */
++	regmap_write(max98927->regmap,
++		MAX98927_R001A_PCM_TX_EN_A,
++		tx_mask & 0xFF);
++	regmap_write(max98927->regmap,
++		MAX98927_R001B_PCM_TX_EN_B,
++		(tx_mask & 0xFF00) >> 8);
++
++	/* Tx slot Hi-Z configuration */
++	regmap_write(max98927->regmap,
++		MAX98927_R001C_PCM_TX_HIZ_CTRL_A,
++		~tx_mask & 0xFF);
++	regmap_write(max98927->regmap,
++		MAX98927_R001D_PCM_TX_HIZ_CTRL_B,
++		(~tx_mask & 0xFF00) >> 8);
++
++	return 0;
++}
++
+ #define MAX98927_RATES SNDRV_PCM_RATE_8000_48000
+ 
+ #define MAX98927_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | \
+@@ -405,6 +495,7 @@ static const struct snd_soc_dai_ops max98927_dai_ops = {
+ 	.set_sysclk = max98927_dai_set_sysclk,
+ 	.set_fmt = max98927_dai_set_fmt,
+ 	.hw_params = max98927_dai_hw_params,
++	.set_tdm_slot = max98927_dai_tdm_slot,
  };
--static struct snd_ratnum es1370_clock = {
-+static const struct snd_ratnum es1370_clock = {
- 	.num = ES_1370_SRCLOCK,
- 	.den_min = 29, 
- 	.den_max = 353,
-@@ -495,7 +495,7 @@ static struct snd_pcm_hw_constraint_ratdens snd_es1371_hw_constraints_dac_clock
- 	.nrats = 1,
- 	.rats = &es1371_dac_clock,
- };
--static struct snd_ratnum es1371_adc_clock = {
-+static const struct snd_ratnum es1371_adc_clock = {
- 	.num = 48000 << 15,
- 	.den_min = 32768, 
- 	.den_max = 393216,
+ 
+ static int max98927_dac_event(struct snd_soc_dapm_widget *w,
+diff --git a/sound/soc/codecs/max98927.h b/sound/soc/codecs/max98927.h
+index ece6a60..bf7a6f92 100644
+--- a/sound/soc/codecs/max98927.h
++++ b/sound/soc/codecs/max98927.h
+@@ -1,7 +1,7 @@
+ /*
+  * max98927.h  --  MAX98927 ALSA Soc Audio driver
+  *
+- * Copyright 2013-15 Maxim Integrated Products
++ * Copyright (C) 2016-2017 Maxim Integrated Products
+  * Author: Ryan Lee <ryans.lee@maximintegrated.com>
+  *
+  *  This program is free software; you can redistribute  it and/or modify it
+@@ -161,7 +161,9 @@
+ #define MAX98927_PCM_MODE_CFG_FORMAT_SHIFT (3)
+ #define MAX98927_PCM_FORMAT_I2S (0x0 << 0)
+ #define MAX98927_PCM_FORMAT_LJ (0x1 << 0)
+-
++#define MAX98927_PCM_FORMAT_TDM_MODE0 (0x3 << 0)
++#define MAX98927_PCM_FORMAT_TDM_MODE1 (0x4 << 0)
++#define MAX98927_PCM_FORMAT_TDM_MODE2 (0x5 << 0)
+ #define MAX98927_PCM_MODE_CFG_CHANSZ_MASK (0x3 << 6)
+ #define MAX98927_PCM_MODE_CFG_CHANSZ_16 (0x1 << 6)
+ #define MAX98927_PCM_MODE_CFG_CHANSZ_24 (0x2 << 6)
 -- 
 2.7.4
