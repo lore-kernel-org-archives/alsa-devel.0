@@ -1,42 +1,69 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH][next] ASoC: rsnd: make main_rate signed to check for -ve error return codes
-Date: Mon, 19 Jun 2017 17:35:23 +0100
-Message-ID: <20170619163523.2208-1-colin.king@canonical.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: stm32: Add SPDIFRX support
+Date: Mon, 19 Jun 2017 17:46:48 +0100
+Message-ID: <20170619164648.r7cuzcliszyfzsex@sirena.org.uk>
+References: <1497621452-615-1-git-send-email-olivier.moysan@st.com>
+ <1497621452-615-3-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Julia Lawall <Julia.Lawall@lip6.fr>, alsa-devel@alsa-project.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============3124090038306533341=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2EDCE267104
+ for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2017 18:47:04 +0200 (CEST)
+In-Reply-To: <1497621452-615-3-git-send-email-olivier.moysan@st.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: olivier moysan <olivier.moysan@st.com>
+Cc: mark.rutland@arm.com, robh@kernel.org, alsa-devel@alsa-project.org, alexandre.torgue@st.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, mcoquelin.stm32@gmail.com, benjamin.gaignard@st.com, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
 
-The comparison of main_rate < 0 has no effect because main_rate is
-an unsigned int. Make it signed so that any -ve error returns from the
-call to rsnd_clk_query can be detected.
+--===============3124090038306533341==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="dg3zotjdlhubmbmx"
+Content-Disposition: inline
 
-Detected by CoverityScan, CID#1446152 ("Unsigned compared against 0")
 
-Fixes: ef4cf5d6a143e0 ("ASoC: rsnd: add rsnd_ssi_clk_query()")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/sh/rcar/ssi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--dg3zotjdlhubmbmx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index c8956c3484dd..d220512918f9 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -258,7 +258,7 @@ static int rsnd_ssi_master_clk_start(struct rsnd_mod *mod,
- 	struct rsnd_mod *ssi_parent_mod = rsnd_io_to_mod_ssip(io);
- 	int chan = rsnd_runtime_channel_for_ssi(io);
- 	int idx, ret;
--	unsigned int main_rate;
-+	int main_rate;
- 	unsigned int rate = rsnd_io_is_play(io) ?
- 		rsnd_src_get_out_rate(priv, io) :
- 		rsnd_src_get_in_rate(priv, io);
--- 
-2.11.0
+On Fri, Jun 16, 2017 at 03:57:32PM +0200, olivier moysan wrote:
+> Add SPDIFRX support to STM32.
+
+This doesn't apply against current code, please check and resend.  Looks
+good code wise.
+
+--dg3zotjdlhubmbmx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllH//gACgkQJNaLcl1U
+h9CaOAf+JOzFe+dm3Eiti1jmWVBV5PJH4O0PWp9aB3DZ2PuTIJuGzVgdEG7ZtUgw
+5Rp7ioGVJlOZlYadb2MWThlROylWxhDJqzmh0pnwLBMmR0KHZ8iEMACoxjthzWkD
+3FkaU692+JS05jM99NyS/ON3HTnNQ0X/hul61x4BwpXFUkxYaur4CT9OPVl+1X9r
+wumi+mE/75tsa5josZoD00dNUEQe4Oz03heMtUX+VOwqx4gTG4u0b7adyyYScWs2
+oxXO3heUtRbK5ETlALYEQcCMmtcvo+2g96mOA2HpRXEF3z6jpFK8HhUT2F7xrlfN
+Z06MW9SCLE/L6KvWzN6LG+oNZ5jrOA==
+=T8pU
+-----END PGP SIGNATURE-----
+
+--dg3zotjdlhubmbmx--
+
+--===============3124090038306533341==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3124090038306533341==--
