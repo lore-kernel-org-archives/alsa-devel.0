@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: zx-i2s: flip I2S master/slave mode" to
-	the asoc tree
-Date: Mon, 19 Jun 2017 17:23:43 +0100
-Message-ID: <E1dMzSp-0002Ki-8H@debutante>
-References: <1497709528-23036-1-git-send-email-shawnguo@kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A300D267104
- for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2017 18:23:56 +0200 (CEST)
-In-Reply-To: <1497709528-23036-1-git-send-email-shawnguo@kernel.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: alsa-devel@alsa-project.org, Baoyou Xie <xie.baoyou@sanechips.com.cn>, stable@vger.kernel.org, Mark Brown <broonie@kernel.org>, Xin Zhou <zhou.xin8@sanechips.com.cn>, Jun Nie <jun.nie@linaro.org>, linux-arm-kernel@lists.infradead.org
+Subject: Applied "ASoC: compress: Derive substream from stream based on direction" to the asoc tree
+Date: Mon, 19 Jun 2017 17:23:46 +0100
+Message-ID: <E1dMzSs-0002Lf-9S@debutante>
+References: <1497659620-7197-1-git-send-email-bgoswami@codeaurora.org>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <1497659620-7197-1-git-send-email-bgoswami@codeaurora.org>
+Sender: stable-owner@vger.kernel.org
+To: Satish Babu Patakokila <sbpata@codeaurora.org>
+Cc: Banajit Goswami <bgoswami@codeaurora.org>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgbroonie@kernel.org, vinod.koul@intel.com, alsa-devel@alsa-project.orgBanajit Goswami <bgoswami@codeaurora.org>, plai@codeaurora.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: zx-i2s: flip I2S master/slave mode
+   ASoC: compress: Derive substream from stream based on direction
 
 has been applied to the asoc tree at
 
@@ -53,45 +37,50 @@ to this mail.
 Thanks,
 Mark
 
->From a205c159f9e2db586a5ea475f4d22fa22e78fed8 Mon Sep 17 00:00:00 2001
-From: Shawn Guo <shawn.guo@linaro.org>
-Date: Sat, 17 Jun 2017 22:25:28 +0800
-Subject: [PATCH] ASoC: zx-i2s: flip I2S master/slave mode
+>From 01b8cedfd0422326caae308641dcadaa85e0ca72 Mon Sep 17 00:00:00 2001
+From: Satish Babu Patakokila <sbpata@codeaurora.org>
+Date: Fri, 16 Jun 2017 17:33:40 -0700
+Subject: [PATCH] ASoC: compress: Derive substream from stream based on
+ direction
 
-The SND_SOC_DAIFMT_MASTER bits are defined to specify the master/slave
-mode for Codec, not I2S.  So the I2S master/slave mode should be flipped
-according to SND_SOC_DAIFMT_MASTER bits.
+Currently compress driver hardcodes direction as playback to get
+substream from the stream. This results in getting the incorrect
+substream for compressed capture usecase.
+To fix this, remove the hardcoding and derive substream based on
+the stream direction.
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Signed-off-by: Satish Babu Patakokila <sbpata@codeaurora.org>
+Signed-off-by: Banajit Goswami <bgoswami@codeaurora.org>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Cc: stable@vger.kernel.org
 ---
- sound/soc/zte/zx-i2s.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ sound/soc/soc-compress.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/zte/zx-i2s.c b/sound/soc/zte/zx-i2s.c
-index a7f7a56e0a2d..8bbad1d72bc5 100644
---- a/sound/soc/zte/zx-i2s.c
-+++ b/sound/soc/zte/zx-i2s.c
-@@ -203,13 +203,15 @@ static int zx_i2s_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
- 
- 	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
- 	case SND_SOC_DAIFMT_CBM_CFM:
--		i2s->master = 1;
--		val |= ZX_I2S_TIMING_MAST;
--		break;
--	case SND_SOC_DAIFMT_CBS_CFS:
-+		/* Codec is master, and I2S is slave. */
- 		i2s->master = 0;
- 		val |= ZX_I2S_TIMING_SLAVE;
- 		break;
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		/* Codec is slave, and I2S is master. */
-+		i2s->master = 1;
-+		val |= ZX_I2S_TIMING_MAST;
-+		break;
- 	default:
- 		dev_err(cpu_dai->dev, "Unknown master/slave format\n");
- 		return -EINVAL;
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index bfd71b873ca2..206f36bf43e8 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -81,7 +81,8 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
+ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
+ {
+ 	struct snd_soc_pcm_runtime *fe = cstream->private_data;
+-	struct snd_pcm_substream *fe_substream = fe->pcm->streams[0].substream;
++	struct snd_pcm_substream *fe_substream =
++		 fe->pcm->streams[cstream->direction].substream;
+ 	struct snd_soc_platform *platform = fe->platform;
+ 	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
+ 	struct snd_soc_dpcm *dpcm;
+@@ -467,7 +468,8 @@ static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
+ 					struct snd_compr_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *fe = cstream->private_data;
+-	struct snd_pcm_substream *fe_substream = fe->pcm->streams[0].substream;
++	struct snd_pcm_substream *fe_substream =
++		 fe->pcm->streams[cstream->direction].substream;
+ 	struct snd_soc_platform *platform = fe->platform;
+ 	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
+ 	int ret = 0, stream;
 -- 
 2.11.0
