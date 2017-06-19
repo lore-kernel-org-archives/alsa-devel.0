@@ -1,7 +1,7 @@
 From: Bhumika Goyal <bhumirks@gmail.com>
-Subject: [PATCH 1/2] ALSA: sound/isa: constify snd_ratnum structures
-Date: Tue, 20 Jun 2017 00:11:53 +0530
-Message-ID: <1497897714-27522-2-git-send-email-bhumirks@gmail.com>
+Subject: [PATCH 2/2] ALSA: sound/pci: add const to snd_ratnum structures
+Date: Tue, 20 Jun 2017 00:11:54 +0530
+Message-ID: <1497897714-27522-3-git-send-email-bhumirks@gmail.com>
 References: <1497897714-27522-1-git-send-email-bhumirks@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1497897714-27522-1-git-send-email-bhumirks@gmail.com>
@@ -16,35 +16,44 @@ This field is of type const, so snd_ratnum structures can be made const.
 
 Signed-off-by: Bhumika Goyal <bhumirks@gmail.com>
 ---
- sound/isa/gus/gus_pcm.c | 2 +-
- sound/isa/sb/sb8_main.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/pci/bt87x.c   | 2 +-
+ sound/pci/ens1370.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/isa/gus/gus_pcm.c b/sound/isa/gus/gus_pcm.c
-index 33c1891..95df8ca 100644
---- a/sound/isa/gus/gus_pcm.c
-+++ b/sound/isa/gus/gus_pcm.c
-@@ -547,7 +547,7 @@ static snd_pcm_uframes_t snd_gf1_pcm_playback_pointer(struct snd_pcm_substream *
- 	return pos;
- }
+diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
+index 099efb0..cbff975 100644
+--- a/sound/pci/bt87x.c
++++ b/sound/pci/bt87x.c
+@@ -401,7 +401,7 @@ static int snd_bt87x_set_digital_hw(struct snd_bt87x *chip, struct snd_pcm_runti
  
--static struct snd_ratnum clock = {
-+static const struct snd_ratnum clock = {
- 	.num = 9878400/16,
- 	.den_min = 2,
- 	.den_max = 257,
-diff --git a/sound/isa/sb/sb8_main.c b/sound/isa/sb/sb8_main.c
-index 9043397..2491655 100644
---- a/sound/isa/sb/sb8_main.c
-+++ b/sound/isa/sb/sb8_main.c
-@@ -46,7 +46,7 @@ MODULE_LICENSE("GPL");
- #define SB8_DEN(v)	((SB8_CLOCK + (v) / 2) / (v))
- #define SB8_RATE(v)	(SB8_CLOCK / SB8_DEN(v))
- 
--static struct snd_ratnum clock = {
-+static const struct snd_ratnum clock = {
- 	.num = SB8_CLOCK,
- 	.den_min = 1,
- 	.den_max = 256,
+ static int snd_bt87x_set_analog_hw(struct snd_bt87x *chip, struct snd_pcm_runtime *runtime)
+ {
+-	static struct snd_ratnum analog_clock = {
++	static const struct snd_ratnum analog_clock = {
+ 		.num = ANALOG_CLOCK,
+ 		.den_min = CLOCK_DIV_MIN,
+ 		.den_max = CLOCK_DIV_MAX,
+diff --git a/sound/pci/ens1370.c b/sound/pci/ens1370.c
+index 09a63ef..f023076 100644
+--- a/sound/pci/ens1370.c
++++ b/sound/pci/ens1370.c
+@@ -474,7 +474,7 @@ static struct snd_pcm_hw_constraint_list snd_es1370_hw_constraints_rates = {
+ 	.list = snd_es1370_fixed_rates,
+ 	.mask = 0,
+ };
+-static struct snd_ratnum es1370_clock = {
++static const struct snd_ratnum es1370_clock = {
+ 	.num = ES_1370_SRCLOCK,
+ 	.den_min = 29, 
+ 	.den_max = 353,
+@@ -495,7 +495,7 @@ static struct snd_pcm_hw_constraint_ratdens snd_es1371_hw_constraints_dac_clock
+ 	.nrats = 1,
+ 	.rats = &es1371_dac_clock,
+ };
+-static struct snd_ratnum es1371_adc_clock = {
++static const struct snd_ratnum es1371_adc_clock = {
+ 	.num = 48000 << 15,
+ 	.den_min = 32768, 
+ 	.den_max = 393216,
 -- 
 2.7.4
