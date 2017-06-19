@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: Fix dma buffer size
-	calculation" to the asoc tree
-Date: Mon, 19 Jun 2017 17:23:58 +0100
-Message-ID: <E1dMzT4-0002Pd-Bc@debutante>
-References: <1497267657-20359-3-git-send-email-subhransu.s.prusty@intel.com>
+Subject: Applied "ASoC: Intel: Skylake: Add deep buffer
+	support" to the asoc tree
+Date: Mon, 19 Jun 2017 17:24:01 +0100
+Message-ID: <E1dMzT7-0002Qa-BF@debutante>
+References: <1497853761-4778-2-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F0738267135
- for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2017 18:24:07 +0200 (CEST)
-In-Reply-To: <1497267657-20359-3-git-send-email-subhransu.s.prusty@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 367EE267148
+ for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2017 18:24:11 +0200 (CEST)
+In-Reply-To: <1497853761-4778-2-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: Fix dma buffer size calculation
+   ASoC: Intel: Skylake: Add deep buffer support
 
 has been applied to the asoc tree at
 
@@ -53,77 +53,77 @@ to this mail.
 Thanks,
 Mark
 
->From f6e6ab1d16ec9dafa65557b5637f5217b32702ef Mon Sep 17 00:00:00 2001
+>From 939df3ada789ccd61a01721df8fc7955aab3aad7 Mon Sep 17 00:00:00 2001
 From: Ramesh Babu <ramesh.babu@intel.com>
-Date: Mon, 19 Jun 2017 11:59:20 +0530
-Subject: [PATCH] ASoC: Intel: Skylake: Fix dma buffer size calculation
+Date: Mon, 19 Jun 2017 11:59:19 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Add deep buffer support
 
-DMA buffer size for gateway copier will be calculated based on:
+With this patch, the dma buffer size is fetched from topology binary. This
+buffer size is applicable for gateway copier modules.
 
-For host DMA copier:
-Input buffer size (ibs) for output direction (playback)
-Output buffer size (obs) for input direction (capture)
-
-For link DMA copier:
-IBS for input direction (capture)
-OBS for output direction (playback)
-
-Update the driver to use the above.
+Now that we can configure DSP dma buffer size, the device can support deep
+buffer playback. DSP fetches large buffer and can result fewer wakes,
+which helps in power reduction.
 
 Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
 Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-messages.c | 29 +++++++++++++++++++++++++----
- 1 file changed, 25 insertions(+), 4 deletions(-)
+ include/uapi/sound/snd_sst_tokens.h    | 5 ++++-
+ sound/soc/intel/skylake/skl-topology.c | 4 ++++
+ sound/soc/intel/skylake/skl-topology.h | 1 +
+ 3 files changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
-index 5a465020ebd8..eca85827dbd2 100644
---- a/sound/soc/intel/skylake/skl-messages.c
-+++ b/sound/soc/intel/skylake/skl-messages.c
-@@ -507,6 +507,8 @@ static void skl_setup_cpr_gateway_cfg(struct skl_sst *ctx,
- 			struct skl_module_cfg *mconfig,
- 			struct skl_cpr_cfg *cpr_mconfig)
- {
-+	u32 dma_io_buf;
-+
- 	cpr_mconfig->gtw_cfg.node_id = skl_get_node_id(ctx, mconfig);
+diff --git a/include/uapi/sound/snd_sst_tokens.h b/include/uapi/sound/snd_sst_tokens.h
+index 89b82f6256ad..dedb2056160d 100644
+--- a/include/uapi/sound/snd_sst_tokens.h
++++ b/include/uapi/sound/snd_sst_tokens.h
+@@ -161,6 +161,8 @@
+  *
+  * %SKL_TKL_U32_D0I3_CAPS:	Specifies the D0i3 capability for module
+  *
++ * %SKL_TKN_U32_DMA_BUF_SIZE:	DMA buffer size in millisec
++ *
+  * module_id and loadable flags dont have tokens as these values will be
+  * read from the DSP FW manifest
+  */
+@@ -215,7 +217,8 @@ enum SKL_TKNS {
+ 	SKL_TKN_U32_PMODE,
+ 	SKL_TKL_U32_D0I3_CAPS, /* Typo added at v4.10 */
+ 	SKL_TKN_U32_D0I3_CAPS = SKL_TKL_U32_D0I3_CAPS,
+-	SKL_TKN_MAX = SKL_TKN_U32_D0I3_CAPS,
++	SKL_TKN_U32_DMA_BUF_SIZE,
++	SKL_TKN_MAX = SKL_TKN_U32_DMA_BUF_SIZE,
+ };
  
- 	if (cpr_mconfig->gtw_cfg.node_id == SKL_NON_GATEWAY_CPR_NODE_ID) {
-@@ -514,10 +516,29 @@ static void skl_setup_cpr_gateway_cfg(struct skl_sst *ctx,
- 		return;
- 	}
+ #endif
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 212cee71d586..9569f118e97e 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -2212,6 +2212,10 @@ static int skl_tplg_get_token(struct device *dev,
  
--	if (SKL_CONN_SOURCE == mconfig->hw_conn_type)
--		cpr_mconfig->gtw_cfg.dma_buffer_size = 2 * mconfig->obs;
--	else
--		cpr_mconfig->gtw_cfg.dma_buffer_size = 2 * mconfig->ibs;
-+	switch (mconfig->hw_conn_type) {
-+	case SKL_CONN_SOURCE:
-+		if (mconfig->dev_type == SKL_DEVICE_HDAHOST)
-+			dma_io_buf =  mconfig->ibs;
-+		else
-+			dma_io_buf =  mconfig->obs;
+ 		break;
+ 
++	case SKL_TKN_U32_DMA_BUF_SIZE:
++		mconfig->dma_buffer_size = tkn_elem->value;
 +		break;
 +
-+	case SKL_CONN_SINK:
-+		if (mconfig->dev_type == SKL_DEVICE_HDAHOST)
-+			dma_io_buf =  mconfig->obs;
-+		else
-+			dma_io_buf =  mconfig->ibs;
-+		break;
-+
-+	default:
-+		dev_warn(ctx->dev, "wrong connection type: %d\n",
-+				mconfig->hw_conn_type);
-+		return;
-+	}
-+
-+	cpr_mconfig->gtw_cfg.dma_buffer_size =
-+				mconfig->dma_buffer_size * dma_io_buf;
- 
- 	cpr_mconfig->cpr_feature_mask = 0;
- 	cpr_mconfig->gtw_cfg.config_length  = 0;
+ 	case SKL_TKN_U8_IN_PIN_TYPE:
+ 	case SKL_TKN_U8_OUT_PIN_TYPE:
+ 	case SKL_TKN_U8_CONN_TYPE:
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index 3f51a0a00093..c25e8868b84e 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -321,6 +321,7 @@ struct skl_module_cfg {
+ 	u32 vbus_id;
+ 	u32 mem_pages;
+ 	enum d0i3_capability d0i3_caps;
++	u32 dma_buffer_size; /* in milli seconds */
+ 	struct skl_module_pin *m_in_pin;
+ 	struct skl_module_pin *m_out_pin;
+ 	enum skl_module_type m_type;
 -- 
 2.11.0
