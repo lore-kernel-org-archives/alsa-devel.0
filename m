@@ -1,73 +1,103 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH v2 3/3] ASoC: skl_rt286: Add deepbuffer dai link
-Date: Mon, 19 Jun 2017 11:59:21 +0530
-Message-ID: <1497853761-4778-4-git-send-email-subhransu.s.prusty@intel.com>
-References: <1497853761-4778-1-git-send-email-subhransu.s.prusty@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 11285266A7C
- for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2017 08:44:26 +0200 (CEST)
-In-Reply-To: <1497853761-4778-1-git-send-email-subhransu.s.prusty@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: [PATCH v2 00/12] AC97 device/driver model revamp
+Date: Mon, 19 Jun 2017 09:26:57 +0200
+Message-ID: <1497857229-12049-1-git-send-email-robert.jarzmik@free.fr>
+Return-path: <linux-input-owner@vger.kernel.org>
+Sender: linux-input-owner@vger.kernel.org
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>, Lee Jones <lee.jones@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+Cc: linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, patches@opensource.wolfsonmicro.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds the deepbuffer device which can be opened with a bigger
-buffer size. The application can disable interrupts and sleep for longer
-duration.
+Hi Lars, Mark, Charles, Lee,
 
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
----
- sound/soc/intel/boards/skl_rt286.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+This serie has been stalled for almost one year, as I wasn't feeling that
+well lately. I'm quite better now, so let's get back to it.
 
-diff --git a/sound/soc/intel/boards/skl_rt286.c b/sound/soc/intel/boards/skl_rt286.c
-index f5ab7b8d51d1..453826ea1367 100644
---- a/sound/soc/intel/boards/skl_rt286.c
-+++ b/sound/soc/intel/boards/skl_rt286.c
-@@ -43,6 +43,7 @@ struct skl_rt286_private {
- 
- enum {
- 	SKL_DPCM_AUDIO_PB = 0,
-+	SKL_DPCM_AUDIO_DB_PB,
- 	SKL_DPCM_AUDIO_CP,
- 	SKL_DPCM_AUDIO_REF_CP,
- 	SKL_DPCM_AUDIO_DMIC_CP,
-@@ -310,6 +311,23 @@ static int skylake_dmic_startup(struct snd_pcm_substream *substream)
- 		.dpcm_playback = 1,
- 		.ops = &skylake_rt286_fe_ops,
- 	},
-+	[SKL_DPCM_AUDIO_DB_PB] = {
-+		.name = "Skl Deepbuffer Port",
-+		.stream_name = "Deep Buffer Audio",
-+		.cpu_dai_name = "Deepbuffer Pin",
-+		.platform_name = "0000:00:1f.3",
-+		.nonatomic = 1,
-+		.dynamic = 1,
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.trigger = {
-+			SND_SOC_DPCM_TRIGGER_POST,
-+			SND_SOC_DPCM_TRIGGER_POST
-+		},
-+		.dpcm_playback = 1,
-+		.ops = &skylake_rt286_fe_ops,
-+
-+	},
- 	[SKL_DPCM_AUDIO_CP] = {
- 		.name = "Skl Audio Capture Port",
- 		.stream_name = "Audio Record",
+As it's been so long since the last review, I basically withdrew all my former
+objections and took into account all remarks regardless of my own
+judgement. This is especially the case with Lars's review on the bus code, where
+I tried to address all his comments.
+
+For this next round, let's sum up what happened :
+ - I rebased against latest Linus's tree
+   => as Lars had made ports to regmap of several impacted wm97xx drivers, all
+   the better for me.
+   
+ - ALSA: ac97: add an ac97 bus
+   => this addresses Lars's comments
+   => history : https://patchwork.kernel.org/patch/9398229/
+   => there is one remark which was left out, the drop of the table
+      ac97_controller->codecs. The reason is that there are traversals required
+      in the bus scan and controller removal, and the code is way simpler with a
+      table, and the data structure very compact.
+   
+ - Input: wm97xx: split out touchscreen registering
+   => Charles's comment taken into account
+   => history: http://https://patchwork.kernel.org/patch/9398223/
+
+Have a happy review.
+
+--
+Robert
+
+Robert Jarzmik (11):
+  ALSA: ac97: add an ac97 bus
+  ASoC: add new ac97 bus support
+  ASoC: arm: make pxa2xx-ac97-lib ac97 codec agnostic
+  Input: wm97xx: split out touchscreen registering
+  mfd: wm97xx-core: core support for wm97xx Codec
+  Input: wm97xx: add new AC97 bus support
+  ASoC: wm9713: add ac97 new bus support
+  ASoC: wm9712: add ac97 new bus support
+  ASoC: wm9705: add private structure
+  ASoC: wm9705: add ac97 new bus support
+  ASoC: pxa: switch to new ac97 bus support
+
+Takashi Iwai (1):
+  ASoC: Fix use-after-free at card unregistration
+
+ drivers/input/touchscreen/Kconfig       |   2 +-
+ drivers/input/touchscreen/wm97xx-core.c | 252 ++++++++++-----
+ drivers/mfd/Kconfig                     |  14 +
+ drivers/mfd/Makefile                    |   1 +
+ drivers/mfd/wm97xx-core.c               | 282 +++++++++++++++++
+ include/linux/mfd/wm97xx.h              |  31 ++
+ include/sound/ac97/codec.h              | 118 +++++++
+ include/sound/ac97/compat.h             |  21 ++
+ include/sound/ac97/controller.h         |  85 ++++++
+ include/sound/pxa2xx-lib.h              |  15 +-
+ sound/Kconfig                           |   2 +
+ sound/Makefile                          |   1 +
+ sound/ac97/Kconfig                      |  19 ++
+ sound/ac97/Makefile                     |   8 +
+ sound/ac97/ac97_core.h                  |  10 +
+ sound/ac97/bus.c                        | 526 ++++++++++++++++++++++++++++++++
+ sound/ac97/codec.c                      |  15 +
+ sound/ac97/snd_ac97_compat.c            | 105 +++++++
+ sound/arm/Kconfig                       |   1 -
+ sound/arm/pxa2xx-ac97-lib.c             |  37 ++-
+ sound/arm/pxa2xx-ac97.c                 |  35 ++-
+ sound/soc/Kconfig                       |   4 +
+ sound/soc/codecs/Kconfig                |   9 +-
+ sound/soc/codecs/wm9705.c               |  59 ++--
+ sound/soc/codecs/wm9712.c               |  37 ++-
+ sound/soc/codecs/wm9713.c               |  39 ++-
+ sound/soc/pxa/Kconfig                   |   5 +-
+ sound/soc/pxa/pxa2xx-ac97.c             |  43 ++-
+ sound/soc/soc-core.c                    |   5 +-
+ 29 files changed, 1603 insertions(+), 178 deletions(-)
+ create mode 100644 drivers/mfd/wm97xx-core.c
+ create mode 100644 include/linux/mfd/wm97xx.h
+ create mode 100644 include/sound/ac97/codec.h
+ create mode 100644 include/sound/ac97/compat.h
+ create mode 100644 include/sound/ac97/controller.h
+ create mode 100644 sound/ac97/Kconfig
+ create mode 100644 sound/ac97/Makefile
+ create mode 100644 sound/ac97/ac97_core.h
+ create mode 100644 sound/ac97/bus.c
+ create mode 100644 sound/ac97/codec.c
+ create mode 100644 sound/ac97/snd_ac97_compat.c
+
 -- 
-1.9.1
+2.1.4
+
