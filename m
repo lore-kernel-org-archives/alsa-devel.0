@@ -1,19 +1,18 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 1/1] ALSA: pcm: introduce ACK_APPLPTR flag
- and bump up interface version to 2.0.14
-Date: Mon, 19 Jun 2017 21:26:32 +0900
-Message-ID: <53075397-0370-7d35-f34a-a1645081f65a@sakamocchi.jp>
+Subject: Re: [[RFC][PATCH] ALSA: pcm: introduce ACK_APPLPTR
+ flag and bump up interface version to v2.0.14
+Date: Mon, 19 Jun 2017 21:33:50 +0900
+Message-ID: <d767c670-de11-7eb1-7769-9acb21d2877c@sakamocchi.jp>
 References: <20170618164921.9881-1-o-takashi@sakamocchi.jp>
- <20170618164921.9881-2-o-takashi@sakamocchi.jp>
- <s5htw3dmd33.wl-tiwai@suse.de>
+ <s5hvantmdfu.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 7B52F266C24
- for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2017 14:26:34 +0200 (CEST)
-In-Reply-To: <s5htw3dmd33.wl-tiwai@suse.de>
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id E11FE266C24
+ for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2017 14:33:53 +0200 (CEST)
+In-Reply-To: <s5hvantmdfu.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,137 +27,74 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: vinod.koul@intel.com, clemens@ladisch.de, alsa-devel@alsa-project.org, subhransu.s.prusty@intel.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Jun 19 2017 02:15, Takashi Iwai wrote:
-> On Sun, 18 Jun 2017 18:49:19 +0200,
-> Takashi Sakamoto wrote:
->>
->> In a development period for v4.13, it's clear that there's a type of
->> devices which demand userspace applications to change their behaviour.
->> These devices can take care of application-side pointer on PCM buffer
->> for their data transmission. As a result, these devices achieve some
->> advantages. For these devices, drivers need to get feedback about
->> current position of the pointer from applications when they
->> queue/dequeue PCM frames on the buffer.
->>
->> When applications operates with SNDRV_PCM_IOCTL_[READ|WRITE][N|I] command
->> for ioctl(2) to transmit/receive PCM frames, the above is achieved with
->> an assist of ALSA PCM core. On the other hand, when applications run with
->> mmap operations, the above is not achieved. In this case, they should call
->> ioctl(2) with SNDRV_PCM_IOCTL_SYNC_PTR after operating any PCM frames on
->> the buffer. But existent applications are not programmed to do it.
-> 
-> ... they are programmed to behave so, when the PCM status mmap fails.
-
-As I said, the solution to disable mmap for status/control data has 
-different scope from this issue.
-
->> This commit adds a new flag; SNDRV_PCM_INFO_ACK_APPLPTR. When
->> applications find this flag on 'struct snd_pcm_hw_params.info', they're
->> expected to perform as the above. When programmed so, they should set
->> SNDRV_PCM_HW_PARAMS_ACK_APPLPTR flag to the structure in advance. Else,
->> they're not allowed to do mmap operation. This is for backward
->> compatibility because existent stuffs in user land don't perform like
->> the above.
->>
->> As of this type of device, digital signal processor (DSP) integrated
->> to Intel's processor is reported. The DSP can prefetch the PCM frames on
->> the buffer and go to a deep sleep mode till next awakening. The awakening
->> is done by drivers. When applications deliver information about the number
->> of handled PCM frames to a corresponding driver in kernel land, then the
->> driver calculates according to the number, then awakens the DSP from the
->> sleep.
->>
->> Additionally, there's two types of devices which potentially receive
->> advantages from this change. One is packet-oriented drivers, and another
->> is drivers with ALSA indirect layer. The former may process packets
->> immediately in process context when handling the feedback. This results
->> in reduction of audio latency. The latter may copy PCM frames in process
->> context. This results in reduction CPU time on any interrupt context.
->>
->> Anyway, this flag requires userspace applications to change their
->> behaviour. This commit bumps up interface version to v2.0.14.
->>
->> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
->> ---
->>   include/uapi/sound/asound.h | 11 ++++++++++-
->>   sound/core/pcm_native.c     | 25 +++++++++++++++++++++++++
->>   2 files changed, 35 insertions(+), 1 deletion(-)
->>
->> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
->> index fd41697cb4d3..ff7bb89e65a6 100644
->> --- a/include/uapi/sound/asound.h
->> +++ b/include/uapi/sound/asound.h
->> @@ -152,7 +152,7 @@ struct snd_hwdep_dsp_image {
->>    *                                                                           *
->>    *****************************************************************************/
->>   
->> -#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 13)
->> +#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 14)
->>   
->>   typedef unsigned long snd_pcm_uframes_t;
->>   typedef signed long snd_pcm_sframes_t;
->> @@ -268,6 +268,8 @@ typedef int __bitwise snd_pcm_subformat_t;
->>   #define SNDRV_PCM_INFO_MMAP_VALID	0x00000002	/* period data are valid during transfer */
->>   #define SNDRV_PCM_INFO_DOUBLE		0x00000004	/* Double buffering needed for PCM start/stop */
->>   #define SNDRV_PCM_INFO_BATCH		0x00000010	/* double buffering */
->> +/* Driver/hardware acknowledge current appl_ptr for specific purposes. */
->> +#define SNDRV_PCM_INFO_ACK_APPLPTR	0x00000012
->>   #define SNDRV_PCM_INFO_INTERLEAVED	0x00000100	/* channels are interleaved */
->>   #define SNDRV_PCM_INFO_NONINTERLEAVED	0x00000200	/* channels are not interleaved */
->>   #define SNDRV_PCM_INFO_COMPLEX		0x00000400	/* complex frame organization (mmap only) */
->> @@ -365,6 +367,13 @@ typedef int snd_pcm_hw_param_t;
->>   #define SNDRV_PCM_HW_PARAMS_NORESAMPLE	(1<<0)	/* avoid rate resampling */
->>   #define SNDRV_PCM_HW_PARAMS_EXPORT_BUFFER	(1<<1)	/* export buffer */
->>   #define SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP	(1<<2)	/* disable period wakeups */
->> +/*
->> + * When applications are programmed to execute ioctl(2) with
->> + * SNDRV_PCM_IOCTL_SYNC_PTR for notification of current appl_ptr after handling
->> + * any frames on mapped PCM buffer for driver/hardware with
->> + * SNDRV_PCM_INFO_ACK_APPLPTR, this should be set.
->> + */
->> +#define SNDRV_PCM_HW_PARAMS_ACK_APPLPTR	(1<<3)
->>   
->>   struct snd_interval {
->>   	unsigned int min, max;
->> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
->> index 7e8f3656b695..48772a2bd027 100644
->> --- a/sound/core/pcm_native.c
->> +++ b/sound/core/pcm_native.c
->> @@ -249,6 +249,27 @@ static bool hw_support_mmap(struct snd_pcm_substream *substream)
->>   	return true;
->>   }
->>   
->> +static int constrain_params_with_precondition(struct snd_pcm_substream *substream,
->> +					      struct snd_pcm_hw_params *params)
->> +{
->> +	struct snd_mask *mask;
->> +
->> +	/*
->> +	 * When drivers require applications' cooperation to report current
->> +	 * appl_ptr and the applications voluntarily perform it, mmap operation
->> +	 * is allowed. Else, read/write operations are allowed.
->> +	 */
->> +	if ((substream->runtime->hw.info & SNDRV_PCM_INFO_ACK_APPLPTR) &&
->> +	    !(params->flags & SNDRV_PCM_HW_PARAMS_ACK_APPLPTR)) {
->> +		mask = hw_param_mask(params, SNDRV_PCM_HW_PARAM_ACCESS);
->> +		snd_mask_reset(mask, SNDRV_PCM_ACCESS_MMAP_INTERLEAVED);
->> +		snd_mask_reset(mask, SNDRV_PCM_ACCESS_MMAP_NONINTERLEAVED);
->> +		snd_mask_reset(mask, SNDRV_PCM_ACCESS_MMAP_COMPLEX);
-> 
-> Well, it's only the lack of sync_ptr, and the mmap of the ring buffer
-> itself is fine.  Disabling the ring-buffer mmap is a much bigger
-> hammer and the significant performance penalty than disabling PCM
-> control/status mmap.
-
-No. Old stuffs don't satisfy requirements of the new devices/drivers. 
-Constraint to read/write operation is fair enough and not penalty 
-because programs are written so that they cannot assist the new 
-devices/drivers.
-
-Well-programmed applications can handle a case in which mmap operation 
-is not allowed. This patchset is enough reasonable.
-
-
-Regards
-
-Takashi Sakamoto
+T24gMjAxN+W5tDA25pyIMTnml6UgMDI6MDgsIFRha2FzaGkgSXdhaSB3cm90ZToKPiBPbiBTdW4s
+IDE4IEp1biAyMDE3IDE4OjQ5OjE4ICswMjAwLAo+IFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4+
+Cj4+IEhpLAo+Pgo+PiBUaGlzIHBhdGNoc2V0IGluY2x1ZGVzIGNvbW1pdHMgZm9yIGJvdGgga2Vy
+bmVsL3VzZXIgbGFuZCBmb3IgYW4gaXNzdWUKPj4gYWRkcmVzc2VkIGluIHRoaXMgbWVzc2FnZSB0
+aHJlYWRbMV0uCj4+Cj4+IEluIGEgZGV2ZWxvcG1lbnQgcGVyaW9kIGZvciB2NC4xMywgaXQncyBj
+bGVhciB0aGF0IHRoZXJlJ3MgYSB0eXBlIG9mCj4+IGRldmljZXMgd2hpY2ggZGVtYW5kIHVzZXJz
+cGFjZSBhcHBsaWNhdGlvbnMgdG8gY2hhbmdlIHRoZWlyIGJlaGF2aW91ci4KPj4gVGhlc2UgZGV2
+aWNlcyBjYW4gdGFrZSBjYXJlIG9mIGFwcGxpY2F0aW9uLXNpZGUgcG9pbnRlciBvbiBQQ00gYnVm
+ZmVyCj4+IGZvciB0aGVpciBkYXRhIHRyYW5zbWlzc2lvbi4gQXMgYSByZXN1bHQsIHRoZXNlIGRl
+dmljZXMgYWNoaWV2ZSBzb21lCj4+IGFkdmFudGFnZXMuIEZvciB0aGVzZSBkZXZpY2VzLCBkcml2
+ZXJzIG5lZWQgdG8gZ2V0IGZlZWRiYWNrIGFib3V0Cj4+IGN1cnJlbnQgcG9zaXRpb24gb2YgdGhl
+IHBvaW50ZXIgZnJvbSBhcHBsaWNhdGlvbnMgd2hlbiB0aGV5Cj4+IHF1ZXVlL2RlcXVldWUgUENN
+IGZyYW1lcyBvbiB0aGUgYnVmZmVyLgo+Pgo+PiBBTFNBIFBDTSBjb3JlIHBhcnRseSBhc3Npc3Qg
+dGhlIGFib3ZlIGRlc2lnbi4gVGhlIGNvcmUgY2FuIGNhbGwgYQo+PiBoYW5kbGVyIGluIGRyaXZl
+ciBzaWRlIHdoZW4gYXBwbGljYXRpb25zIG9wZXJhdGUgUENNIGZyYW1lcyBieQo+PiBpb2N0bCgy
+KSB3aXRoIFNORFJWX1BDTV9JT0NUTF9bUkVBRHxXUklURV1bTnxJXSBjb21tYW5kLiBIb3dldmVy
+LAo+PiB3aGVuIG9wZXJhdGluZyBmb3IgbWFwcGVkIFBDTSBidWZmZXIsIGl0IGNhbid0IGFzc2lz
+dCBhcHBsaWNhdGlvbnMKPj4gZm9yIHRoZSBhYm92ZSBkZXNpZ24uIEluIHRoaXMgc2NlbmFyaW8s
+IGFwcGxpY2F0aW9ucyBzaG91bGQgY2FsbAo+PiBpb2N0bCgyKSB3aXRoIFNORFJWX1BDTV9JT0NU
+TF9TWU5DX1BUUiBhZnRlciBoYW5kbGUgYW55IFBDTSBmcmFtZXMgb24KPj4gdGhlIGJ1ZmZlci4K
+Pj4KPj4gVGhpcyBwYXRjaHNldCBidW1wcyB1cCBpbnRlcmZhY2UgdmVyc2lvbiB3aXRoIG5ldyBp
+bmZvIGZsYWcgdG8KPj4gbm90aWZ5IHRoZSBhYm92ZSBjaGFuZ2UgdG8gdXNlciBsYW5kIGRldmVs
+b3BlcnMuIFRoaXMgcGF0Y2hzZXQgaXMKPj4gd3JpdHRlbiB3aXRoIGJlbG93IGlkZWFzOgo+Pgo+
+PiAxLiBTdHVmZnMgaW4gdXNlciBsYW5kIGNhbiB0ZWxsIHRoZWlyIGFzc2lzdHMgZm9yIHRoZSBh
+Ym92ZSBkZXNpZ24KPj4gICAgIHRvIGtlcm5lbCBsYW5kIGJ5IHVzaW5nIGh3X3BhcmFtIGZsYWcu
+IFdoZW4gdGhleSBkb24ndCBhc3Npc3QsCj4+ICAgICB0aGV5IHNlZSBvbiBod19wYXJhbXMgZGF0
+YSB0aGF0IG1tYXAgb3BlcmF0aW9uIGlzIG5vdCBzdXBwb3J0ZWQuCj4+IDIuIERyaXZlcnMgY2Fu
+IGFja25vd2xlZGdlIHRoZSBhYm92ZSBmbGFnLiBXaGVuIHJlZ2lzdGVyaW5nCj4+ICAgICBhcHBy
+b3ByaWF0ZSBQQ00gcnVsZXMgaW4gYWR2YW5jZSwgdGhleSBjYW4gY2FsY3VsYXRlIHZhbHVlcyBm
+b3IKPj4gICAgIGVhY2ggcGFyYW1ldGVycyBpbiBib3RoIGNhc2VzIHRoYXQgc3R1ZmZzIGluIHVz
+ZXIgbGFuZCBjYW4vY2Fubm90Cj4+ICAgICBhc3Npc3QgaXQuIFRoaXMgaXMgdXNlZnVsIGZvciBw
+YWNrZXQtb3JpZW50ZWQgZHJpdmVycyB0byBqdWRnZQo+PiAgICAgdXRpbGl6aW5nIGFueSBpbnRl
+cnJ1cHQgY29udGV4dCBmb3IgcGFja2V0aXphdGlvbi4KPj4gMy4gVGhpcyBpcyBkZXZpY2Utc3Bl
+Y2lmaWMgaXNzdWUsIGluZGVwZW5kZW50bHkgb2YgcGxhdGZvcm0KPj4gICAgIGFyY2hpdGVjdHVy
+ZS4gT24geDg2L3BwYy9hbHBoYSBwbGF0Zm9ybXMsIHN0YXR1cy9jb250cm9sIGRhdGEgb2YKPj4g
+ICAgIFBDTSBzdWJzdHJlYW0gaXMgc3RpbGwgYXZhaWxhYmxlIGluIHByb2Nlc3MnIFZNQSBvZiBh
+cHBsaWNhdGlvbiB2aWEKPj4gICAgIHBhZ2UgZnJhbWUgbWFwcGluZy4KPj4KPj4gWzFdIGh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAxNy1KdW5l
+LzEyMTQzOC5odG1sCj4+Cj4+IEZvciBrZXJuZWwgbGFuZDoKPj4gVGFrYXNoaSBTYWthbW90byAo
+MSk6Cj4+ICAgIEFMU0E6IHBjbTogaW50cm9kdWNlIEFDS19BUFBMUFRSIGZsYWcgYW5kIGJ1bXAg
+dXAgaW50ZXJmYWNlIHZlcnNpb24gdG8KPj4gICAgICAyLjAuMTQKPj4KPj4gICBpbmNsdWRlL3Vh
+cGkvc291bmQvYXNvdW5kLmggfCAxMSArKysrKysrKysrLQo+PiAgIHNvdW5kL2NvcmUvcGNtX25h
+dGl2ZS5jICAgICB8IDI1ICsrKysrKysrKysrKysrKysrKysrKysrKysKPj4gICAyIGZpbGVzIGNo
+YW5nZWQsIDM1IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKPj4KPj4gRm9yIHVzZXIgbGFu
+ZDoKPj4gVGFrYXNoaSBTYWthbW90byAoMik6Cj4+ICAgIEFMU0E6IHBjbTogaW50cm9kdWNlIEFD
+S19BUFBMUFRSIGZsYWcgYW5kIGJ1bXAgdXAgaW50ZXJmYWNlIHZlcnNpb24gdG8KPj4gICAgICAy
+LjAuMTQKPj4gICAgcGNtOiBhZGQgc3VwcG9ydCBmb3IgaW50ZXJmYWNlIHZlcnNpb24gMi4wLjE0
+Cj4+Cj4+ICAgaW5jbHVkZS9zb3VuZC9hc291bmQuaCB8IDExICsrKysrKysrKystCj4+ICAgc3Jj
+L3BjbS9wY21faHcuYyAgICAgICB8IDQzICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKystLS0tLS0KPj4gICAyIGZpbGVzIGNoYW5nZWQsIDQ3IGluc2VydGlvbnMoKyksIDcgZGVs
+ZXRpb25zKC0pCj4gCj4gV2VsbCwgdGhlc2UgbWFuZGF0ZSBib3RoIGtlcm5lbCBhbmQgdXNlci1z
+aWRlIGNoYW5nZXMsIHNvIGlmIHlvdSBydW4KPiB0aGUgb2xkIGFwcGxpY2F0aW9ucyB3aXRoIG9s
+ZCBhbHNhLWxpYiwgaXQgY2FuJ3Qgd29yaywgcmlnaHQ/CgpBcHBsaWNhdGlvbnMgc3RpbGwgd29y
+a3Mgd2VsbCBiZWNhdXNlIHRoZXkgcmVjZWl2ZSBwcm9wZXIgc2V0IG9mIApod19wYXJhbXMuIFRo
+ZXkgd29ya3MgYXMgcHJvZ3JhbW1lZCwgdGh1cyBmb3IgdGhlIG5ldyBkZXZpY2VzL2RyaXZlcnMg
+CnRoZXkgd29yayB3aXRob3V0IG1tYXAgb3BlcmF0aW9uLgoKPiBBIHNpbWlsYXIgcGF0Y2hzZXQg
+aXMgYWxyZWFkeSBpbiBteSBsb2NhbCBxdWV1ZSAobXkgdmVyc2lvbiBjYWxsZWQgaXQKPiBkaWZm
+ZXJlbnRseSwgU05EUlZfUENNX0lORk9fU1lOQ19BUFBMUFRSIDopLCBidXQgaXQgd2Fzbid0IHN1
+Ym1pdHRlZAo+IHlldCBiZWNhdXNlIHdlIHdhbnRlZCB0byBmaXggdGhlIGlzc3VlIHdpdGhvdXQg
+YWZmZWN0aW5nIGFsc2EtbGliIGF0Cj4gZmlyc3QuICBEbyB5b3UgaGF2ZSB0aGUgcGF0Y2ggZm9y
+IHRoYXQ/CgpJIHdpbGwgbm90IGhhdmUgdGhpcyBkaXJlY3Rpb24sIHBhc3QgYW5kIGZ1dHVyZSwg
+YmVjYXVzZSB0aGlzIGlzc3VlIApkZW1hbmRzIHVzZXJsYW5kIHN0dWZmcyB0byBwZXJmb3JtIGFz
+IHRoZSBuZXcgZHJpdmVycy9kZXZpY2VzIGV4cGVjdHMsIAp0aHVzIHVzZXJsYW5kIHN0dWZmcyBf
+c2hvdWxkXyBiZSBjaGFuZ2VkLgoKIyBXaGVuIEkgaW52ZXN0aWdhdGVkIG5hbWUgb2YgdGhlIGZs
+YWcsIEkgZHJvcHBlZAojICdTTkRSVl9QQ01fSU5GT19TWU5DX0FQUExQVFInIGF0IGZpcnN0LCBi
+ZWNhdXNlIGhhcmR3YXJlIGRvZXNuJ3QKIyBuZWVkIHRvIHN5bmNocm9uaXplIHRvIGFwcGxwdHIg
+YWx3YXlzLiBJdCdzIGVub3VnaCBmb3IgaGFyZHdhcmVzIHRvCiMgZ2V0IGl0IHdoZW4gcmVxdWly
+ZXMuIERyaXZlcnMgYW5kIGFwcGxpY2F0aW9ucyBhc3Npc3QgaXQuCgoKUmVnYXJkcwoKVGFrYXNo
+aSBTYWthbW90bwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+XwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0
+cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
