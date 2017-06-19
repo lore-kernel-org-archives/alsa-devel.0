@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: add bindings for ZTE zx-aud96p22
-	audio codec
-Date: Mon, 19 Jun 2017 17:16:06 +0100
-Message-ID: <20170619161606.g6nabi2w5mmmjbcw@sirena.org.uk>
+Subject: Re: [PATCH 2/2] ASoC: zx_aud96p22: add ZTE ZX AUD96P22
+	codec driver
+Date: Mon, 19 Jun 2017 17:19:10 +0100
+Message-ID: <20170619161910.siea75hqxgtxhjmp@sirena.org.uk>
 References: <1497708574-22380-1-git-send-email-shawnguo@kernel.org>
- <1497708574-22380-2-git-send-email-shawnguo@kernel.org>
+ <1497708574-22380-3-git-send-email-shawnguo@kernel.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8443653092073484838=="
+Content-Type: multipart/mixed; boundary="===============1405972113116762246=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id F22BA266C24
- for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2017 18:16:19 +0200 (CEST)
-In-Reply-To: <1497708574-22380-2-git-send-email-shawnguo@kernel.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 20717267104
+ for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2017 18:19:17 +0200 (CEST)
+In-Reply-To: <1497708574-22380-3-git-send-email-shawnguo@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,47 +27,64 @@ Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Baoyou Xie <x
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8443653092073484838==
+--===============1405972113116762246==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="e5p3infmhvo7wt7s"
+	protocol="application/pgp-signature"; boundary="n3da3maqi5td4n2b"
 Content-Disposition: inline
 
 
---e5p3infmhvo7wt7s
+--n3da3maqi5td4n2b
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Sat, Jun 17, 2017 at 10:09:33PM +0800, Shawn Guo wrote:
+On Sat, Jun 17, 2017 at 10:09:34PM +0800, Shawn Guo wrote:
 
-> +Optional properties:
-> + - zte,pa-gpios: The GPIO to enable external power amplifier
+> +	/* Mute control */
+> +	SOC_DOUBLE("Playback Master Mute", AUD96P22_MUTE_2, 0, 1, 1, 0),
+> +	SOC_DOUBLE("Headset Mute", AUD96P22_MUTE_2, 4, 5, 1, 0),
 
-If there's an external power amplifier this is a separate chip to this
-CODEC and should therefore be separately controlled and integrated as
-part of the machine integration.
+As covered in ControlNames.txt mute and other on/off controls should be
+named ending in Switch so UIs know what to do with them.
 
---e5p3infmhvo7wt7s
+> +static int aud96p22_startup(struct snd_pcm_substream *substream,
+> +			    struct snd_soc_dai *dai)
+> +{
+> +	struct aud96p22_priv *priv = snd_soc_codec_get_drvdata(dai->codec);
+> +	struct regmap *regmap = priv->regmap;
+> +
+> +	/* Overall power-up */
+> +	regmap_update_bits(regmap, AUD96P22_PD_0, PD_0_PDZ, PD_0_PDZ);
+
+Why is this not done with DAPM?
+
+> +	/* Reset ADC and DAC path */
+> +	regmap_write(regmap, AUD96P22_RESET, 0x0);
+> +	regmap_write(regmap, AUD96P22_RESET, 0x3);
+
+What does this mean?
+
+--n3da3maqi5td4n2b
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllH+MUACgkQJNaLcl1U
-h9A5hAf+N6RWq0kTs/g0uBwfbTI0ll2kcpR5KHLu8gNR42LGstBjzk3NxVOmL/OM
-2hmim4oCqu2gQy4D8cyP0voXssq+R0Wcnn46lc+MYQwKnefNzc3YXHoPvOT+H3E6
-/b93LVPiODKVRQJzdzUJJEgYVdKOeJkaQ7W+6eVU2I2eDqGd6Xta4jWSbw3Q+Zdw
-dvyhZIfyC58+RaRjNkL31pVz/aycAvd+WoFTpxfUgSvzoYBEjHvQXgGdAVHAiTaN
-AqjLa2wEl7lTF6SjQQfuW+OcxUXJstcE33CwEauvOEXvBKNXKs4WNBNiTH0dcLP0
-YjF8KAqMYZFc3eY33F5zyYcH9dDWTA==
-=LCHo
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllH+X0ACgkQJNaLcl1U
+h9BgYQf+LFHePUCOQ/C3y8JD9TcFi+8mYRx3M1WVJJFOwddzrO3B/X7kNNIA8M59
+bEiuwo4JtreHEh6r4QgDE1L/PYatbLcjWnppvn4ZzNuDSYCoSmC15rjwuVhOlnd0
+f6fNyQfukmAsEF5JuNDiMfMbgSItn63Iwx7D2rUJk1aZsKxmQCh4m8SmcXXbEagn
+b5ztTpVflCQpYg60atp3CcuBoWut5dBI7z22IysQpN0mHXUFKrCxhFzwXMk7DJWB
+fnV+K3siZz4sePvN+TlitwZ6uYFAVhNnH5+0OT6HwwF7I89PAEvND4XgLFY0Ogd7
+vdsLV3ty8nERpp3+YJJwaBeXlg6ncQ==
+=TGdl
 -----END PGP SIGNATURE-----
 
---e5p3infmhvo7wt7s--
+--n3da3maqi5td4n2b--
 
---===============8443653092073484838==
+--===============1405972113116762246==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8443653092073484838==--
+--===============1405972113116762246==--
