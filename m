@@ -1,17 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: change configuration flag" to the asoc tree
-Date: Mon, 19 Jun 2017 17:24:04 +0100
-Message-ID: <E1dMzTA-0002Rs-Ap@debutante>
-References: <1497863395-14405-1-git-send-email-olivier.moysan@st.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1497863395-14405-1-git-send-email-olivier.moysan@st.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.comalsa-devel@alsa-project.org
+Subject: Applied "ASoC: Intel: Skylake: Fix dma buffer size
+	calculation" to the asoc tree
+Date: Mon, 19 Jun 2017 17:23:58 +0100
+Message-ID: <E1dMzT4-0002Pd-Bc@debutante>
+References: <1497267657-20359-3-git-send-email-subhransu.s.prusty@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id F0738267135
+ for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2017 18:24:07 +0200 (CEST)
+In-Reply-To: <1497267657-20359-3-git-send-email-subhransu.s.prusty@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ramesh Babu <ramesh.babu@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: stm32: change configuration flag
+   ASoC: Intel: Skylake: Fix dma buffer size calculation
 
 has been applied to the asoc tree at
 
@@ -36,67 +53,77 @@ to this mail.
 Thanks,
 Mark
 
->From 5561b66bd0297b029d2aba40b044ac191fcca98c Mon Sep 17 00:00:00 2001
-From: olivier moysan <olivier.moysan@st.com>
-Date: Mon, 19 Jun 2017 11:09:55 +0200
-Subject: [PATCH] ASoC: stm32: change configuration flag
+>From f6e6ab1d16ec9dafa65557b5637f5217b32702ef Mon Sep 17 00:00:00 2001
+From: Ramesh Babu <ramesh.babu@intel.com>
+Date: Mon, 19 Jun 2017 11:59:20 +0530
+Subject: [PATCH] ASoC: Intel: Skylake: Fix dma buffer size calculation
 
-Use a specific flag for SAI and I2S interfaces,
-instead of common flag.
+DMA buffer size for gateway copier will be calculated based on:
 
-Signed-off-by: olivier moysan <olivier.moysan@st.com>
+For host DMA copier:
+Input buffer size (ibs) for output direction (playback)
+Output buffer size (obs) for input direction (capture)
+
+For link DMA copier:
+IBS for input direction (capture)
+OBS for output direction (playback)
+
+Update the driver to use the above.
+
+Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/stm/Kconfig  | 19 ++++++++++++++++---
- sound/soc/stm/Makefile |  6 +++---
- 2 files changed, 19 insertions(+), 6 deletions(-)
+ sound/soc/intel/skylake/skl-messages.c | 29 +++++++++++++++++++++++++----
+ 1 file changed, 25 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/stm/Kconfig b/sound/soc/stm/Kconfig
-index a6372de54042..23600a5dd46f 100644
---- a/sound/soc/stm/Kconfig
-+++ b/sound/soc/stm/Kconfig
-@@ -1,8 +1,21 @@
--menuconfig SND_SOC_STM32
--	tristate "STMicroelectronics STM32 SOC audio support"
-+menu "STMicroelectronics STM32 SOC audio support"
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index 5a465020ebd8..eca85827dbd2 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -507,6 +507,8 @@ static void skl_setup_cpr_gateway_cfg(struct skl_sst *ctx,
+ 			struct skl_module_cfg *mconfig,
+ 			struct skl_cpr_cfg *cpr_mconfig)
+ {
++	u32 dma_io_buf;
 +
-+config SND_SOC_STM32_SAI
-+	tristate "STM32 SAI interface (Serial Audio Interface) support"
- 	depends on ARCH_STM32 || COMPILE_TEST
- 	depends on SND_SOC
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	select REGMAP_MMIO
- 	help
--	  Say Y if you want to enable ASoC support for STM32
-+	  Say Y if you want to enable SAI for STM32
-+
-+config SND_SOC_STM32_I2S
-+	tristate "STM32 I2S interface (SPI/I2S block) support"
-+	depends on ARCH_STM32 || COMPILE_TEST
-+	depends on SND_SOC
-+	select SND_SOC_GENERIC_DMAENGINE_PCM
-+	select REGMAP_MMIO
-+	help
-+	  Say Y if you want to enable I2S for STM32
-+
-+endmenu
-diff --git a/sound/soc/stm/Makefile b/sound/soc/stm/Makefile
-index 82519313c0b4..4140c67fa47b 100644
---- a/sound/soc/stm/Makefile
-+++ b/sound/soc/stm/Makefile
-@@ -1,10 +1,10 @@
- # SAI
- snd-soc-stm32-sai-sub-objs := stm32_sai_sub.o
--obj-$(CONFIG_SND_SOC_STM32) += snd-soc-stm32-sai-sub.o
-+obj-$(CONFIG_SND_SOC_STM32_SAI) += snd-soc-stm32-sai-sub.o
+ 	cpr_mconfig->gtw_cfg.node_id = skl_get_node_id(ctx, mconfig);
  
- snd-soc-stm32-sai-objs := stm32_sai.o
--obj-$(CONFIG_SND_SOC_STM32) += snd-soc-stm32-sai.o
-+obj-$(CONFIG_SND_SOC_STM32_SAI) += snd-soc-stm32-sai.o
+ 	if (cpr_mconfig->gtw_cfg.node_id == SKL_NON_GATEWAY_CPR_NODE_ID) {
+@@ -514,10 +516,29 @@ static void skl_setup_cpr_gateway_cfg(struct skl_sst *ctx,
+ 		return;
+ 	}
  
- # I2S
- snd-soc-stm32-i2s-objs := stm32_i2s.o
--obj-$(CONFIG_SND_SOC_STM32) += snd-soc-stm32-i2s.o
-+obj-$(CONFIG_SND_SOC_STM32_I2S) += snd-soc-stm32-i2s.o
+-	if (SKL_CONN_SOURCE == mconfig->hw_conn_type)
+-		cpr_mconfig->gtw_cfg.dma_buffer_size = 2 * mconfig->obs;
+-	else
+-		cpr_mconfig->gtw_cfg.dma_buffer_size = 2 * mconfig->ibs;
++	switch (mconfig->hw_conn_type) {
++	case SKL_CONN_SOURCE:
++		if (mconfig->dev_type == SKL_DEVICE_HDAHOST)
++			dma_io_buf =  mconfig->ibs;
++		else
++			dma_io_buf =  mconfig->obs;
++		break;
++
++	case SKL_CONN_SINK:
++		if (mconfig->dev_type == SKL_DEVICE_HDAHOST)
++			dma_io_buf =  mconfig->obs;
++		else
++			dma_io_buf =  mconfig->ibs;
++		break;
++
++	default:
++		dev_warn(ctx->dev, "wrong connection type: %d\n",
++				mconfig->hw_conn_type);
++		return;
++	}
++
++	cpr_mconfig->gtw_cfg.dma_buffer_size =
++				mconfig->dma_buffer_size * dma_io_buf;
+ 
+ 	cpr_mconfig->cpr_feature_mask = 0;
+ 	cpr_mconfig->gtw_cfg.config_length  = 0;
 -- 
 2.11.0
