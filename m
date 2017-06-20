@@ -1,18 +1,28 @@
-From: David Laight <David.Laight@ACULAB.COM>
-Subject: Re: remove dma_alloc_noncoherent
-Date: Tue, 20 Jun 2017 12:44:03 +0000
-Message-ID: <063D6719AE5E284EB5DD2968C1650D6DD0026C08@AcuExch.aculab.com>
-References: <20170616071716.17321-1-hch@lst.de>
+From: Tanu Kaskinen <tanuk@iki.fi>
+Subject: Re: Dell USB audio driver workaround
+Date: Tue, 20 Jun 2017 17:19:08 +0300
+Message-ID: <1497968348.4228.14.camel@iki.fi>
+References: <6FAB7C47BCF00940BB0999A99BE3547A17A32FFC@RTITMBSV09.realtek.com.tw>
+ <s5h1t6jxgh5.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A17A33059@RTITMBSV09.realtek.com.tw>
+ <s5h37qzm63e.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A17A330E6@RTITMBSV09.realtek.com.tw>
+ <s5h4mbd93c1.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A17A3313B@RTITMBSV09.realtek.com.tw>
+ <s5hvb3t7me0.wl-tiwai@suse.de>
+ <6FAB7C47BCF00940BB0999A99BE3547A17A332FD@RTITMBSV09.realtek.com.tw>
+ <s5hlh4j18l6.wl-tiwai@suse.de>
+ <70632d2d-05c9-e6d7-2ba2-b67d0d10e44a@canonical.com>
+ <s5hinjybmav.wl-tiwai@suse.de>
+ <d7251f99-ead2-382e-b6bf-a9f0506aaea8@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-out4.electric.net (smtp-out4.electric.net
- [192.162.216.187])
- by alsa0.perex.cz (Postfix) with ESMTP id 993F626680F
- for <alsa-devel@alsa-project.org>; Tue, 20 Jun 2017 14:44:12 +0200 (CEST)
-In-Reply-To: <20170616071716.17321-1-hch@lst.de>
-Content-Language: en-US
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 7376D26680F
+ for <alsa-devel@alsa-project.org>; Tue, 20 Jun 2017 16:19:14 +0200 (CEST)
+In-Reply-To: <d7251f99-ead2-382e-b6bf-a9f0506aaea8@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,18 +32,122 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: 'Christoph Hellwig' <hch@lst.de>, "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>, "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-metag@vger.kernel.org" <linux-metag@vger.kernel.org>, "nios2-dev@lists.rocketboards.org" <nios2-dev@lists.rocketboards.org>, "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Hui Wang <hui.wang@canonical.com>, Takashi Iwai <tiwai@suse.de>
+Cc: svillar@igalia.com, alsa-devel@alsa-project.org, Kailang <kailang@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Christoph Hellwig
-> Sent: 16 June 2017 08:17
->
-> For many years we've had the dma_alloc_attrs API that is more flexible
-> than dma_alloc_noncoherent.  This series moves the remaining users over
-> to the attrs API.
+On Thu, 2017-06-15 at 17:40 +0800, Hui Wang wrote:
+> On 06/14/2017 11:50 PM, Takashi Iwai wrote:
+> > On Wed, 14 Jun 2017 04:29:13 +0200,
+> > Hui Wang wrote:
+> > > In this thread, I added tanuk@iki.fi and svillar@igalia.com since they
+> > > reported or discussed similar bugs recently
+> > > (https://www.spinics.net/lists/alsa-devel/msg62460.html and
+> > > https://bugs.freedesktop.org/show_bug.cgi?id=100711).
+> > > 
+> > > Right now, we are trying to enable the USB audio for the Dell dock
+> > > stations TB16[1] and WD15[2]. For usb audio part, they have the same
+> > > design, they use realtek alc4020 USB bridge and alc3263 codec, and
+> > > there are one headset jack on the front panel and one speaker output
+> > > jack on the rear panel, but due to some reason (probably it is the
+> > > firmware's problem), the alsa mixers can't reflect there is speaker or
+> > > headset on them, as a result the pulseaudio can't handle the headset
+> > > or speaker correctly.
+> > > 
+> > > Right now, the pulseaudio can find a playback device and a record
+> > > device, it is the output and input device for that headset jack, but
+> > > pulseaudio does not think they are headphone and Mic, pulseaudio think
+> > > they are just USB analog output and input devices; for the speaker
+> > > jack, the pulseaudio can't find it at all. so through pulseaudio, we
+> > > can't play any sound to that speaker jack.
+> > > 
+> > > This is the output and input devices listed by alsa-utils:
+> > > 
+> > > !!Aplay/Arecord output
+> > > !!--------------------
+> > > 
+> > > APLAY
+> > > 
+> > > **** List of PLAYBACK Hardware Devices ****
+> > > ...
+> > > card 1: Audio [USB Audio], device 0: USB Audio [USB Audio]
+> > >    Subdevices: 1/1
+> > >    Subdevice #0: subdevice #0
+> > > card 1: Audio [USB Audio], device 1: USB Audio [USB Audio #1]
+> > >    Subdevices: 1/1
+> > >    Subdevice #0: subdevice #0
+> > > 
+> > > ARECORD
+> > > 
+> > > **** List of CAPTURE Hardware Devices ****
+> > > ...
+> > > card 1: Audio [USB Audio], device 0: USB Audio [USB Audio]
+> > >    Subdevices: 1/1
+> > >    Subdevice #0: subdevice #0
+> > > 
+> > > 
+> > > 
+> > > 
+> > > And we can use alsa-utils command to play sound to speaker jack:
+> > > $ aplay -D plughw:CARD=1,DEV=1 /usr/share/sounds/speech-dispatcher/test.wav
+> > > 
+> > > I don't know how to fix this problem in the kernel driver, if we can
+> > > let driver export standard mixers, this issue will be fixed. But it
+> > > looks like the mixers depend on the firmware, we can't change the
+> > > firmware, so probably we can't fix it in the kernel driver.
+> > 
+> > Right, there are multiple problems.  One is the firmware problem as
+> > you mentioned.  With the old firmware, the USB descriptor and the
+> > behavior of the device are unstable / inconsistent.
+> > 
+> > Even with the fixed firmware, USB audio driver in general may assign
+> > PCM streams depending on the descriptor, and the name can't be set
+> > consistently per purpose.  So, it can't appear like "Headphone Stream"
+> > or "Line Out Stream".  The only sensible way I can think of is to
+> > apply some static mappings for creation of the streams, like the mixer
+> > mapping for some devices.
+> > 
+> > This is, however, only a part of the iceberg.  A bigger problem is
+> > that USB-audio driver doesn't handle the jack detection usually by
+> > itself.  The jack detection part belongs to the HID, and it should be
+> > handled by a different driver.  That is, if any, PA would need to
+> > resolve the corresponding input device and deal with the input events.
+> > That's a mess.
+> 
+> Yes, the USB-audio jack detection is a bigger problem. Since the current 
+> USB-audio driver does not export JACK to the userspace, the PA does not 
+> check jack plugging/unplugging at all. If a USB-audio adapter is plugged 
+> in, the PA will treat it as a USB headpone+microphone, will think this 
+> device is ready to work, then users can select this sound card via UI 
+> program to play or record sound.
+> 
+> > > Another way to fix it is to add a conf to pulseaudio, in the conf, we
+> > > add one profile for headset(hw:%f,0,0) and one profile for
+> > > speaker(hw:%f,1,0), this is the draft patch I sent to
+> > > pulseaudio-discuss mail list:
+> > > https://lists.freedesktop.org/archives/pulseaudio-discuss/2017-May/028252.html
+> > > 
+> > > Do you have any idea to fix this problem? Thanks in advance. And below
+> > > are some logs I collected on the TB16, if you need more logs, just
+> > > tell me, I will collect them for you.
+> > 
+> > I'm in favor of the configuration specific to the device.  Still we'd
+> > need a few fixups in the kernel side, too.  Other "perfect solutions"
+> > would be hard to achieve, I'm afraid.
+> 
+> Thanks for your advice.
+> 
+> Through PA, users can't select speaker (hw:%f,1,0) to work, this is a 
+> more urgent problem.
+> 
+> Hi Tanu,
+> 
+> If you have time, could you please take a look at the patch I sent to 
+> pulseaudio-discuss?
 
-And most of the callers probably only want to specify 'noncoherent'.
-Grepping the source for other uses is easier if the wrapper is left.
+I applied your pulseaudio patch now, sorry for the delay.
 
-	David
+-- 
+Tanu
+
+https://www.patreon.com/tanuk
