@@ -1,20 +1,14 @@
-From: Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: zx_aud96p22: add ZTE ZX AUD96P22
-	codec driver
-Date: Tue, 20 Jun 2017 11:19:55 +0800
-Message-ID: <20170620031953.GC4818@x250>
-References: <1497708574-22380-1-git-send-email-shawnguo@kernel.org>
- <1497708574-22380-3-git-send-email-shawnguo@kernel.org>
- <20170619161910.siea75hqxgtxhjmp@sirena.org.uk>
+From: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Subject: [RESEND] topology: Add parsing for rates from conf
+Date: Tue, 20 Jun 2017 09:45:45 +0530
+Message-ID: <20170620041545.5359-1-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- by alsa0.perex.cz (Postfix) with ESMTP id 79547267199
- for <alsa-devel@alsa-project.org>; Tue, 20 Jun 2017 05:20:04 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20170619161910.siea75hqxgtxhjmp@sirena.org.uk>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 78645267264
+ for <alsa-devel@alsa-project.org>; Tue, 20 Jun 2017 06:16:00 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,51 +18,158 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Baoyou Xie <xie.baoyou@sanechips.com.cn>, Xin Zhou <zhou.xin8@sanechips.com.cn>, Jun Nie <jun.nie@linaro.org>, Baoyou Xie <baoyou.xie@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>
+Cc: Patches Audio <patches.audio@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+In alsa-lib topology parser, rate_min and rate_max are parsed currently.
+Add support to parse rates also.
 
-Thanks for the reviewing.
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+---
+ include/topology.h        |  1 +
+ src/topology/pcm.c        | 71 +++++++++++++++++++++++++++++++++++++++++++++++
+ src/topology/tplg_local.h | 20 +++++++++++++
+ 3 files changed, 92 insertions(+)
 
-On Mon, Jun 19, 2017 at 05:19:10PM +0100, Mark Brown wrote:
-> On Sat, Jun 17, 2017 at 10:09:34PM +0800, Shawn Guo wrote:
-> 
-> > +	/* Mute control */
-> > +	SOC_DOUBLE("Playback Master Mute", AUD96P22_MUTE_2, 0, 1, 1, 0),
-> > +	SOC_DOUBLE("Headset Mute", AUD96P22_MUTE_2, 4, 5, 1, 0),
-> 
-> As covered in ControlNames.txt mute and other on/off controls should be
-> named ending in Switch so UIs know what to do with them.
-
-Oh, thanks for the info.  I did not know that before.
-
-> 
-> > +static int aud96p22_startup(struct snd_pcm_substream *substream,
-> > +			    struct snd_soc_dai *dai)
-> > +{
-> > +	struct aud96p22_priv *priv = snd_soc_codec_get_drvdata(dai->codec);
-> > +	struct regmap *regmap = priv->regmap;
-> > +
-> > +	/* Overall power-up */
-> > +	regmap_update_bits(regmap, AUD96P22_PD_0, PD_0_PDZ, PD_0_PDZ);
-> 
-> Why is this not done with DAPM?
-
-As this is a overall power bit, which is not for any specific component.
-I'm not sure which DAPM widget should be used for it, and how it should
-be arranged in the widget route.  Any suggestion or example will be
-appreciated.
-
-> 
-> > +	/* Reset ADC and DAC path */
-> > +	regmap_write(regmap, AUD96P22_RESET, 0x0);
-> > +	regmap_write(regmap, AUD96P22_RESET, 0x3);
-> 
-> What does this mean?
-
-It's a de-assert/assert of ADC and DAC reset.  I will add proper
-defines for the bits to make this clear.
-
-Shawn
+diff --git a/include/topology.h b/include/topology.h
+index ccb3a004..42d23762 100644
+--- a/include/topology.h
++++ b/include/topology.h
+@@ -534,6 +534,7 @@ extern "C" {
+  * SectionPCMCapabilities."name" {
+  *
+  *	formats "S24_LE,S16_LE"		# Supported formats
++ *	rates "48000"			# Supported rates
+  *	rate_min "48000"		# Max supported sample rate
+  *	rate_max "48000"		# Min supported sample rate
+  *	channels_min "2"		# Min number of channels
+diff --git a/src/topology/pcm.c b/src/topology/pcm.c
+index 0f4deb4f..bb63142e 100644
+--- a/src/topology/pcm.c
++++ b/src/topology/pcm.c
+@@ -20,6 +20,26 @@
+ #include "list.h"
+ #include "tplg_local.h"
+ 
++#define RATE(v) [SND_PCM_RATE_##v] = #v
++
++static const char *const snd_pcm_rate_names[] = {
++	RATE(5512),
++	RATE(8000),
++	RATE(11025),
++	RATE(16000),
++	RATE(22050),
++	RATE(32000),
++	RATE(44100),
++	RATE(48000),
++	RATE(64000),
++	RATE(88200),
++	RATE(96000),
++	RATE(176400),
++	RATE(192000),
++	RATE(CONTINUOUS),
++	RATE(KNOT),
++};
++
+ struct tplg_elem *lookup_pcm_dai_stream(struct list_head *base, const char* id)
+ {
+ 	struct list_head *pos;
+@@ -309,6 +329,42 @@ static int split_format(struct snd_soc_tplg_stream_caps *caps, char *str)
+ 	return 0;
+ }
+ 
++static int get_rate_value(const char* name)
++{
++	int rate;
++	for (rate = 0; rate <= SND_PCM_RATE_LAST; rate++) {
++		if (snd_pcm_rate_names[rate] &&
++		    strcasecmp(name, snd_pcm_rate_names[rate]) == 0) {
++			return rate;
++		}
++	}
++
++	return SND_PCM_RATE_UNKNOWN;
++}
++
++static int split_rate(struct snd_soc_tplg_stream_caps *caps, char *str)
++{
++	char *s = NULL;
++	snd_pcm_rates_t rate;
++	int i = 0;
++
++	s = strtok(str, ",");
++	while (s) {
++		rate = get_rate_value(s);
++
++		if (rate == SND_PCM_RATE_UNKNOWN) {
++			SNDERR("error: unsupported stream rate %s\n", s);
++			return -EINVAL;
++		}
++
++		caps->rates |= 1 << rate;
++		s = strtok(NULL, ", ");
++		i++;
++	}
++
++	return 0;
++}
++
+ /* Parse pcm stream capabilities */
+ int tplg_parse_stream_caps(snd_tplg_t *tplg,
+ 	snd_config_t *cfg, void *private ATTRIBUTE_UNUSED)
+@@ -360,6 +416,21 @@ int tplg_parse_stream_caps(snd_tplg_t *tplg,
+ 			continue;
+ 		}
+ 
++		if (strcmp(id, "rates") == 0) {
++			s = strdup(val);
++			if (!s)
++				return -ENOMEM;
++
++			err = split_rate(sc, s);
++			free(s);
++
++			if (err < 0)
++				return err;
++
++			tplg_dbg("\t\t%s: %s\n", id, val);
++			continue;
++		}
++
+ 		if (strcmp(id, "rate_min") == 0) {
+ 			sc->rate_min = atoi(val);
+ 			tplg_dbg("\t\t%s: %d\n", id, sc->rate_min);
+diff --git a/src/topology/tplg_local.h b/src/topology/tplg_local.h
+index 60af0177..af599145 100644
+--- a/src/topology/tplg_local.h
++++ b/src/topology/tplg_local.h
+@@ -37,6 +37,26 @@
+ struct tplg_ref;
+ struct tplg_elem;
+ 
++typedef enum _snd_pcm_rates {
++	SND_PCM_RATE_UNKNOWN = -1,
++	SND_PCM_RATE_5512 = 0,
++	SND_PCM_RATE_8000,
++	SND_PCM_RATE_11025,
++	SND_PCM_RATE_16000,
++	SND_PCM_RATE_22050,
++	SND_PCM_RATE_32000,
++	SND_PCM_RATE_44100,
++	SND_PCM_RATE_48000,
++	SND_PCM_RATE_64000,
++	SND_PCM_RATE_88200,
++	SND_PCM_RATE_96000,
++	SND_PCM_RATE_176400,
++	SND_PCM_RATE_192000,
++	SND_PCM_RATE_CONTINUOUS = 30,
++	SND_PCM_RATE_KNOT = 31,
++	SND_PCM_RATE_LAST = SND_PCM_RATE_KNOT,
++} snd_pcm_rates_t;
++
+ struct snd_tplg {
+ 
+ 	/* opaque vendor data */
+-- 
+2.13.0
