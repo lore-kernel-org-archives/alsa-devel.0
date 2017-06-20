@@ -1,19 +1,20 @@
-From: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Subject: Re: [PATCH 03/11] au1100fb: remove a bogus
- dma_free_nonconsistent call
-Date: Tue, 20 Jun 2017 12:58:02 +0200
-Message-ID: <2219033.M9DERpzktn@amdc3058>
-References: <20170616071716.17321-1-hch@lst.de>
- <8727942.IUH8e0tH8t@amdc3058> <20170620091045.GA10272@lst.de>
- <CGME20170620105805epcas1p4ea41a72356c35f2a16197b970939fb65@epcas1p4.samsung.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: zx_aud96p22: add ZTE ZX AUD96P22
+	codec driver
+Date: Tue, 20 Jun 2017 13:40:59 +0100
+Message-ID: <20170620124059.r55r363y3y3if6jg@sirena.org.uk>
+References: <1497708574-22380-1-git-send-email-shawnguo@kernel.org>
+ <1497708574-22380-3-git-send-email-shawnguo@kernel.org>
+ <20170619161910.siea75hqxgtxhjmp@sirena.org.uk>
+ <20170620031953.GC4818@x250>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3617728565619827489=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
- by alsa0.perex.cz (Postfix) with ESMTP id B342A26680F
- for <alsa-devel@alsa-project.org>; Tue, 20 Jun 2017 12:58:08 +0200 (CEST)
-In-reply-to: <20170620091045.GA10272@lst.de>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9FBCC26680F
+ for <alsa-devel@alsa-project.org>; Tue, 20 Jun 2017 14:41:10 +0200 (CEST)
+In-Reply-To: <20170620031953.GC4818@x250>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,29 +24,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Christoph Hellwig <hch@lst.de>
-Cc: linux-fbdev@vger.kernel.org, linux-scsi@vger.kernel.org, netdev@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, nios2-dev@lists.rocketboards.org, linux-metag@vger.kernel.org
+To: Shawn Guo <shawnguo@kernel.org>
+Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Baoyou Xie <xie.baoyou@sanechips.com.cn>, Xin Zhou <zhou.xin8@sanechips.com.cn>, Jun Nie <jun.nie@linaro.org>, Baoyou Xie <baoyou.xie@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday, June 20, 2017 11:10:45 AM Christoph Hellwig wrote:
-> On Mon, Jun 19, 2017 at 01:15:04PM +0200, Bartlomiej Zolnierkiewicz wrote:
-> > On Friday, June 16, 2017 09:17:08 AM Christoph Hellwig wrote:
-> > > au1100fb is using managed dma allocations, so it doesn't need to
-> > > explicitly free the dma memory in the error path (and if it did
-> > > it would have to use the managed version).
-> > > 
-> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > 
-> > Acked-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-> 
-> Are you fine with picking this up through the new dma-mapping tree?
 
-Yes, this is why Ack-ed it.
+--===============3617728565619827489==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="o6evzgh4tsf74a5o"
+Content-Disposition: inline
 
-If you prefer me to merge it through fbdev for 4.13 please let me know.
 
-Best regards,
---
-Bartlomiej Zolnierkiewicz
-Samsung R&D Institute Poland
-Samsung Electronics
+--o6evzgh4tsf74a5o
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jun 20, 2017 at 11:19:55AM +0800, Shawn Guo wrote:
+> On Mon, Jun 19, 2017 at 05:19:10PM +0100, Mark Brown wrote:
+> > On Sat, Jun 17, 2017 at 10:09:34PM +0800, Shawn Guo wrote:
+
+> > > +	/* Overall power-up */
+> > > +	regmap_update_bits(regmap, AUD96P22_PD_0, PD_0_PDZ, PD_0_PDZ);
+
+> > Why is this not done with DAPM?
+
+> As this is a overall power bit, which is not for any specific component.
+> I'm not sure which DAPM widget should be used for it, and how it should
+> be arranged in the widget route.  Any suggestion or example will be
+> appreciated.
+
+Sounds like a fairly standard use for a supply widget.
+
+> > > +	/* Reset ADC and DAC path */
+> > > +	regmap_write(regmap, AUD96P22_RESET, 0x0);
+> > > +	regmap_write(regmap, AUD96P22_RESET, 0x3);
+
+> > What does this mean?
+
+> It's a de-assert/assert of ADC and DAC reset.  I will add proper
+> defines for the bits to make this clear.
+
+Why are we resetting these - won't this loose settings?  And if it's
+just something to be done as part of starting the DAC and ADC why isn't
+it done via DAPM?
+
+--o6evzgh4tsf74a5o
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllJF9oACgkQJNaLcl1U
+h9DWvwf/SBXv7ersxFpBQKrImH48bUc369WD4ad8tqt+I/KOul39BqTlxogeDyN1
+T9pdvn6TXglEHdFXDeGeiDhcKO0HGSvirhdDqAD3qrRo33R40peba1I+I2EhCVdt
+N76tMREeW2spdrXmsAmQKdEyC6O6Nwbp21eU2Q8cbnwHg70uKwZKf519AeXiNbM5
+IHBpDz5b2NAlTQDoB7oAR49FT1hBVd8Ht5axEk8S9UkoReq2DNG8wgyT9lc5gwSP
+2c4pUN7/A9Slr61jtRM8I0miskuK+V4Dhc83fNBnNi/3KrCEHW6D+EWDY/fKuunB
+Fw0kapNxqlzkET3+L/9YESH0NtOdoQ==
+=gu/p
+-----END PGP SIGNATURE-----
+
+--o6evzgh4tsf74a5o--
+
+--===============3617728565619827489==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3617728565619827489==--
