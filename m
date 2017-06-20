@@ -1,21 +1,20 @@
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [PATCH v2 06/12] Input: wm97xx: add new AC97 bus
-	support
-Date: Mon, 19 Jun 2017 19:44:37 -0700
-Message-ID: <20170620024437.GB21379@dtor-ws>
-References: <1497857229-12049-1-git-send-email-robert.jarzmik@free.fr>
- <1497857229-12049-7-git-send-email-robert.jarzmik@free.fr>
+From: Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: add bindings for ZTE zx-aud96p22
+	audio codec
+Date: Tue, 20 Jun 2017 11:11:32 +0800
+Message-ID: <20170620031131.GB4818@x250>
+References: <1497708574-22380-1-git-send-email-shawnguo@kernel.org>
+ <1497708574-22380-2-git-send-email-shawnguo@kernel.org>
+ <20170619161606.g6nabi2w5mmmjbcw@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f65.google.com (mail-pg0-f65.google.com [74.125.83.65])
- by alsa0.perex.cz (Postfix) with ESMTP id B825C267199
- for <alsa-devel@alsa-project.org>; Tue, 20 Jun 2017 04:44:41 +0200 (CEST)
-Received: by mail-pg0-f65.google.com with SMTP id j186so19045259pge.1
- for <alsa-devel@alsa-project.org>; Mon, 19 Jun 2017 19:44:41 -0700 (PDT)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ by alsa0.perex.cz (Postfix) with ESMTP id 35A63267199
+ for <alsa-devel@alsa-project.org>; Tue, 20 Jun 2017 05:11:41 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1497857229-12049-7-git-send-email-robert.jarzmik@free.fr>
+In-Reply-To: <20170619161606.g6nabi2w5mmmjbcw@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,142 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org, patches@opensource.wolfsonmicro.com, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lee Jones <lee.jones@linaro.org>, Daniel Mack <daniel@zonque.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Baoyou Xie <xie.baoyou@sanechips.com.cn>, Xin Zhou <zhou.xin8@sanechips.com.cn>, Jun Nie <jun.nie@linaro.org>, Baoyou Xie <baoyou.xie@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 19, 2017 at 09:27:03AM +0200, Robert Jarzmik wrote:
-> This adds support for the new AC97 bus code, which discovers the devices
-> rather than uses platform data.
+On Mon, Jun 19, 2017 at 05:16:06PM +0100, Mark Brown wrote:
+> On Sat, Jun 17, 2017 at 10:09:33PM +0800, Shawn Guo wrote:
 > 
-> As part of this discovery, it enables a multi-function device wm97xx,
-> which supports touchscreen, battery, ADC and an audio codec. This patch
-> adds the code to bind the touchscreen "cell" as the touchscreen driver.
+> > +Optional properties:
+> > + - zte,pa-gpios: The GPIO to enable external power amplifier
 > 
-> This was tested on the pxa architecture with a pxa270 + wm9713 + the
-> mioa701 touchscreen.
-> 
-> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-> Acked-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+> If there's an external power amplifier this is a separate chip to this
+> CODEC and should therefore be separately controlled and integrated as
+> part of the machine integration.
 
-Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Yes, that should be the best.  But we do not have a particular machine
+driver for our platform, and we are using simple-audio-card driver
+instead.  I'm not sure if it's generic enough to patch simple-audio-card
+driver support this pa-gpios, so chose to fold this quick change in the
+codec driver.
 
-> ---
->  drivers/input/touchscreen/Kconfig       |  2 +-
->  drivers/input/touchscreen/wm97xx-core.c | 56 ++++++++++++++++++++++++++++++++-
->  2 files changed, 56 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/input/touchscreen/Kconfig b/drivers/input/touchscreen/Kconfig
-> index 033599777651..22257f3e1059 100644
-> --- a/drivers/input/touchscreen/Kconfig
-> +++ b/drivers/input/touchscreen/Kconfig
-> @@ -725,7 +725,7 @@ config TOUCHSCREEN_WM831X
->  
->  config TOUCHSCREEN_WM97XX
->  	tristate "Support for WM97xx AC97 touchscreen controllers"
-> -	depends on AC97_BUS
-> +	depends on AC97_BUS || AC97_BUS_NEW
->  	help
->  	  Say Y here if you have a Wolfson Microelectronics WM97xx
->  	  touchscreen connected to your system. Note that this option
-> diff --git a/drivers/input/touchscreen/wm97xx-core.c b/drivers/input/touchscreen/wm97xx-core.c
-> index 39869ffdc4fa..fd714ee881f7 100644
-> --- a/drivers/input/touchscreen/wm97xx-core.c
-> +++ b/drivers/input/touchscreen/wm97xx-core.c
-> @@ -44,6 +44,7 @@
->  #include <linux/pm.h>
->  #include <linux/interrupt.h>
->  #include <linux/bitops.h>
-> +#include <linux/mfd/wm97xx.h>
->  #include <linux/workqueue.h>
->  #include <linux/wm97xx.h>
->  #include <linux/uaccess.h>
-> @@ -766,6 +767,39 @@ static int wm97xx_remove(struct device *dev)
->  	return 0;
->  }
->  
-> +static int wm97xx_mfd_probe(struct platform_device *pdev)
-> +{
-> +	struct wm97xx *wm;
-> +	struct wm97xx_platform_data *mfd_pdata = dev_get_platdata(&pdev->dev);
-> +	int ret;
-> +
-> +	wm = devm_kzalloc(&pdev->dev, sizeof(struct wm97xx), GFP_KERNEL);
-> +	if (!wm)
-> +		return -ENOMEM;
-> +
-> +	wm->dev = &pdev->dev;
-> +	wm->ac97 = mfd_pdata->ac97;
-> +
-> +	ret =  _wm97xx_probe(wm);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = wm97xx_add_battery(wm, mfd_pdata->batt_pdata);
-> +	if (ret < 0)
-> +		goto batt_err;
-> +
-> +	return ret;
-> +
-> +batt_err:
-> +	wm97xx_unregister_touch(wm);
-> +	return ret;
-> +}
-> +
-> +static int wm97xx_mfd_remove(struct platform_device *pdev)
-> +{
-> +	return wm97xx_remove(&pdev->dev);
-> +}
-> +
->  static int __maybe_unused wm97xx_suspend(struct device *dev)
->  {
->  	struct wm97xx *wm = dev_get_drvdata(dev);
-> @@ -862,21 +896,41 @@ EXPORT_SYMBOL_GPL(wm97xx_unregister_mach_ops);
->  
->  static struct device_driver wm97xx_driver = {
->  	.name =		"wm97xx-ts",
-> +#ifdef CONFIG_AC97_BUS
->  	.bus =		&ac97_bus_type,
-> +#endif
->  	.owner =	THIS_MODULE,
->  	.probe =	wm97xx_probe,
->  	.remove =	wm97xx_remove,
->  	.pm =		&wm97xx_pm_ops,
->  };
->  
-> +static struct platform_driver wm97xx_mfd_driver = {
-> +	.driver = {
-> +		.name =		"wm97xx-ts",
-> +		.pm =		&wm97xx_pm_ops,
-> +	},
-> +	.probe =	wm97xx_mfd_probe,
-> +	.remove =	wm97xx_mfd_remove,
-> +};
-> +
->  static int __init wm97xx_init(void)
->  {
-> -	return driver_register(&wm97xx_driver);
-> +	int ret;
-> +
-> +	ret = platform_driver_register(&wm97xx_mfd_driver);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (IS_BUILTIN(CONFIG_AC97_BUS))
-> +		ret =  driver_register(&wm97xx_driver);
-> +	return ret;
->  }
->  
->  static void __exit wm97xx_exit(void)
->  {
->  	driver_unregister(&wm97xx_driver);
-> +	platform_driver_unregister(&wm97xx_mfd_driver);
->  }
->  
->  module_init(wm97xx_init);
-> -- 
-> 2.1.4
-> 
+Should I patch simple-audio-card driver to support pa-gpios property
+and create a DAPM widget with event for it?  I'm currently using
+SND_SOC_DAPM_OUT_DRV_E.  Is it the correct one?
 
--- 
-Dmitry
+Shawn
