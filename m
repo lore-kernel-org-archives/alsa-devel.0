@@ -1,20 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: add bindings for ZTE zx-aud96p22
-	audio codec
-Date: Tue, 20 Jun 2017 15:33:52 +0100
-Message-ID: <20170620143352.rjitvgkzh554pviq@sirena.org.uk>
-References: <1497708574-22380-1-git-send-email-shawnguo@kernel.org>
- <1497708574-22380-2-git-send-email-shawnguo@kernel.org>
- <20170619161606.g6nabi2w5mmmjbcw@sirena.org.uk>
- <20170620031131.GB4818@x250>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 3/3] ALSA: pcm: Limit the appl_ptr sync
+	workaround only for old user-space
+Date: Tue, 20 Jun 2017 17:33:52 +0200
+Message-ID: <20170620153352.27775-4-tiwai@suse.de>
+References: <20170620153352.27775-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7201656197072770159=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1BE1C26680F
- for <alsa-devel@alsa-project.org>; Tue, 20 Jun 2017 16:34:04 +0200 (CEST)
-In-Reply-To: <20170620031131.GB4818@x250>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 16EC526732F
+ for <alsa-devel@alsa-project.org>; Tue, 20 Jun 2017 17:33:56 +0200 (CEST)
+In-Reply-To: <20170620153352.27775-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,69 +21,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawnguo@kernel.org>
-Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Baoyou Xie <xie.baoyou@sanechips.com.cn>, Xin Zhou <zhou.xin8@sanechips.com.cn>, Jun Nie <jun.nie@linaro.org>, Baoyou Xie <baoyou.xie@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
+Now that user-space (typically alsa-lib) can specify which protocol
+version it supports, we can optimize the kernel code depending on the
+reported protocol version.
 
---===============7201656197072770159==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="aqxogg4zeqysad2y"
-Content-Disposition: inline
+In this patch, we change the previous hack for enforcing the appl_ptr
+sync by disabling status/control mmap.  Instead of forcibly disabling,
+we disable the status/control mmap selectively only when the
+user-space does *not* understand the protocol.  That is, when the
+user-space reports it supporting the new protocol version including
+the sync appl_ptr feature, we allow the mmap like the normal case.
+Then user-space is supposed to do the sync in addition to the mmap.
 
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/pcm_native.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
---aqxogg4zeqysad2y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Jun 20, 2017 at 11:11:32AM +0800, Shawn Guo wrote:
-> On Mon, Jun 19, 2017 at 05:16:06PM +0100, Mark Brown wrote:
-
-> > If there's an external power amplifier this is a separate chip to this
-> > CODEC and should therefore be separately controlled and integrated as
-> > part of the machine integration.
-
-> Yes, that should be the best.  But we do not have a particular machine
-> driver for our platform, and we are using simple-audio-card driver
-
-You should be switching to the of-graph card now.
-
-> instead.  I'm not sure if it's generic enough to patch simple-audio-card
-> driver support this pa-gpios, so chose to fold this quick change in the
-> codec driver.
-
-Having a separate amplifier is a completely normal thing, and no matter
-how unusual something is it's obviously not OK to hack one driver to
-support a completely different device.
-
-> Should I patch simple-audio-card driver to support pa-gpios property
-> and create a DAPM widget with event for it?  I'm currently using
-> SND_SOC_DAPM_OUT_DRV_E.  Is it the correct one?
-
-Should be fine.
-
---aqxogg4zeqysad2y
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllJMk8ACgkQJNaLcl1U
-h9CJpQf+KCDltzzG9GlJNBhvNFRPXqRG3VLBnj4kYTB7Lby7ZEojhzU+dHoEXTU/
-KUi7WkXO9o8sfOE2+OCiCIbxCgZegMPeHcNmPK+7k+6o91YIAZFvAoTeglzNL3eq
-WEhYXsvLu0Mhefaz90yOwKzLTzhGb9+p5Z7/a2iszzP4M7DzPcfmWBZ1Mc6DfnaH
-37eIzOTTcce/h6gqE8w8nnPQWRXlbRfHMOwseaAP2yQwDV4AtluDPxiv6UsYHZKt
-DVBbn6ddut7DK32kE/GA+U2WdaBWV476as/TAUZIUBklLOYF8MqCLd1auzyQbjDv
-IS+mC3qu73qkehs0vRAbFMQuP7Tqlw==
-=bHfy
------END PGP SIGNATURE-----
-
---aqxogg4zeqysad2y--
-
---===============7201656197072770159==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7201656197072770159==--
+diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
+index df3e0303409f..3f91d5c4ed76 100644
+--- a/sound/core/pcm_native.c
++++ b/sound/core/pcm_native.c
+@@ -3336,6 +3336,7 @@ static const struct vm_operations_struct snd_pcm_vm_ops_status =
+ static int snd_pcm_mmap_status(struct snd_pcm_substream *substream, struct file *file,
+ 			       struct vm_area_struct *area)
+ {
++	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	long size;
+ 
+ 	/* Disallow the status/control mmap when SYNC_APPLPTR flag is set;
+@@ -3344,8 +3345,12 @@ static int snd_pcm_mmap_status(struct snd_pcm_substream *substream, struct file
+ 	 * In theory, it should be enough to disallow only PCM control mmap,
+ 	 * but since the current alsa-lib implementation requires both status
+ 	 * and control mmaps always paired, we have to disable both of them.
++	 *
++	 * If user_pversion is 2.0.14 or greater, it implies that user-space
++	 * supports the explicit appl_ptr sync, so we still allow the mmap.
+ 	 */
+-	if (substream->runtime->hw.info & SNDRV_PCM_INFO_SYNC_APPLPTR)
++	if (runtime->user_pversion < SNDRV_PROTOCOL_VERSION(2, 0, 14) &&
++	    (runtime->hw.info & SNDRV_PCM_INFO_SYNC_APPLPTR))
+ 		return -ENXIO;
+ 	if (!(area->vm_flags & VM_READ))
+ 		return -EINVAL;
+@@ -3382,10 +3387,12 @@ static const struct vm_operations_struct snd_pcm_vm_ops_control =
+ static int snd_pcm_mmap_control(struct snd_pcm_substream *substream, struct file *file,
+ 				struct vm_area_struct *area)
+ {
++	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	long size;
+ 
+ 	/* see the comment in snd_pcm_mmap_status() */
+-	if (substream->runtime->hw.info & SNDRV_PCM_INFO_SYNC_APPLPTR)
++	if (runtime->user_pversion < SNDRV_PROTOCOL_VERSION(2, 0, 14) &&
++	    (runtime->hw.info & SNDRV_PCM_INFO_SYNC_APPLPTR))
+ 		return -ENXIO;
+ 	if (!(area->vm_flags & VM_READ))
+ 		return -EINVAL;
+-- 
+2.13.1
