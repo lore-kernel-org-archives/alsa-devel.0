@@ -1,46 +1,71 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC][PATCH 0/x] ASoC: replace platform to component
-Date: Wed, 21 Jun 2017 17:15:33 +0100
-Message-ID: <20170621161533.pm5jfszombyexfpo@sirena.org.uk>
-References: <87efuf9z8u.wl%kuninori.morimoto.gx@renesas.com>
- <87r2ye6k4p.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [asoc:topic/pxa 2/2] /tmp/ccrgbnNE.s:1411: Error:
+ unknown mnemonic `ldmia' -- `ldmia x26, {r0, r1, r2, r3}'
+Date: Wed, 21 Jun 2017 18:11:18 +0100
+Message-ID: <20170621171118.443vx2fvg4yrcoyn@sirena.org.uk>
+References: <201706220154.6jfiHx4x%fengguang.wu@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5r4e7rwvux5fjns6"
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87r2ye6k4p.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Lars-Peter <lars@metafoo.de>, Simon <horms@verge.net.au>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>
+Content-Type: multipart/mixed; boundary="===============4076033115417520807=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F1EB2669F3
+ for <alsa-devel@alsa-project.org>; Wed, 21 Jun 2017 19:11:30 +0200 (CEST)
+In-Reply-To: <201706220154.6jfiHx4x%fengguang.wu@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: kbuild test robot <fengguang.wu@intel.com>
+Cc: alsa-devel@alsa-project.org, kbuild-all@01.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---5r4e7rwvux5fjns6
+--===============4076033115417520807==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="uyb63lscyylhphkk"
+Content-Disposition: inline
+
+
+--uyb63lscyylhphkk
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Jun 21, 2017 at 04:32:30AM +0000, Kuninori Morimoto wrote:
+On Thu, Jun 22, 2017 at 01:10:56AM +0800, kbuild test robot wrote:
 
-> 	- struct device *dev = rtd->platform_com->dev;
-> 	+ struct snd_soc_component *component = snd_soc_lookup_runtime(rtd, driver);
+>    /tmp/ccrgbnNE.s: Assembler messages:
+> >> /tmp/ccrgbnNE.s:1411: Error: unknown mnemonic `ldmia' -- `ldmia x26,{r0,r1,r2,r3}'
+> >> /tmp/ccrgbnNE.s:1412: Error: unknown mnemonic `stmia' -- `stmia x19!,{r0,r1,r2,r3}'
 
-This seems like a fairly sensible idiom, and it'll also help deal with
-some of the issues we have right now with CODEC<->CODEC links I think.
+Reverted, it's the select of SND_ARM that does this.
 
---5r4e7rwvux5fjns6
+--uyb63lscyylhphkk
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllKm6QACgkQJNaLcl1U
-h9BAFAf+J6if78fffPJC4qIEBFw6pgX9v86jr6koKlTPP29TaecqsgbPwsqNzkDd
-sjnN8+Rk86t88hMqCDgqADSdLTqciEWW1ROEFwR1kKYgE1d94fIlqPKiCbyvIkpP
-V5RGNya/HNGb9W005YxzSlRfjSSIe0art+1Et2hhb4VtgN7FuHUGiNGCssqGUd0r
-DUjFO/NLmbWVTotrzrFXu0EGqBQAjyz3bdYq8GGrOq0ewfLf5RMt1GbKKCQ54sd/
-nbaguq10oW4ZTweWAt4wXHlggXdmT/QcoTW9T0mVSqPtsD1RHUnqyjI5gIxuo4v6
-FsLSv2mOJd60br08mNm4FIhcIk4wuQ==
-=4rcc
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllKqLYACgkQJNaLcl1U
+h9DMgwf8CgyfROikkViKf8hKUvJTIF1RZPWSR13RJWrRSk1kROoBAP7ahl2IfFpR
+1IyoxWrmryxuCA8iem1ULWDqWrp0oLkRgHFdUOfXf1/N0aP+wr8VfTQBs39x0izN
+Io+sgMcKOh6gH3p3QidkMNjWlyn4cOs7x1zgYES8B9iVBcRWrSkDLINbTCdQE2fY
+hI8n/myyUXZz4S0YB2vg89yS7nZCIK/T0lhDcUeF/azsZ+7iF+HpKDH59v9MFCVW
+LgQ429afysw9z4yMX8AczkoHTDxeKRN90zXyaXikoP1meFvgL0+4BBs/6SfzX5S2
+ZS+Vcz1n9yZOqkLJC28/ULTcN6kcBA==
+=fBkt
 -----END PGP SIGNATURE-----
 
---5r4e7rwvux5fjns6--
+--uyb63lscyylhphkk--
+
+--===============4076033115417520807==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4076033115417520807==--
