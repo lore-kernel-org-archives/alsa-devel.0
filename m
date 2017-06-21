@@ -1,137 +1,74 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2 1/3] ALSA: pcm: Add the explicit appl_ptr
-	sync support
-Date: Wed, 21 Jun 2017 17:31:12 +0200
-Message-ID: <20170621153114.6207-2-tiwai@suse.de>
-References: <20170621153114.6207-1-tiwai@suse.de>
+From: Shawn Guo <shawnguo@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: zx_aud96p22: add ZTE ZX AUD96P22 codec driver
+Date: Thu, 22 Jun 2017 00:03:41 +0800
+Message-ID: <20170621160340.GE3372@dragon>
+References: <1497708574-22380-1-git-send-email-shawnguo@kernel.org>
+ <1497708574-22380-3-git-send-email-shawnguo@kernel.org>
+ <20170619161910.siea75hqxgtxhjmp@sirena.org.uk>
+ <20170620031953.GC4818@x250>
+ <20170620124059.r55r363y3y3if6jg@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 659E92673B9
- for <alsa-devel@alsa-project.org>; Wed, 21 Jun 2017 17:31:17 +0200 (CEST)
-In-Reply-To: <20170621153114.6207-1-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Content-Disposition: inline
+In-Reply-To: <20170620124059.r55r363y3y3if6jg@sirena.org.uk>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Baoyou Xie <xie.baoyou@sanechips.com.cn>, Xin Zhou <zhou.xin8@sanechips.com.cn>, Jun Nie <jun.nie@linaro.org>, Baoyou Xie <baoyou.xie@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently x86 platforms use the PCM status/control mmaps for
-transferring the PCM status and appl_ptr between kernel and
-user-spaces.  The mmap is a most efficient way of communication, but
-it has a drawback per its nature, namely, it can't notify the change
-explicitly to kernel.
+On Tue, Jun 20, 2017 at 01:40:59PM +0100, Mark Brown wrote:
+> On Tue, Jun 20, 2017 at 11:19:55AM +0800, Shawn Guo wrote:
+> > On Mon, Jun 19, 2017 at 05:19:10PM +0100, Mark Brown wrote:
+> > > On Sat, Jun 17, 2017 at 10:09:34PM +0800, Shawn Guo wrote:
+> 
+> > > > +	/* Overall power-up */
+> > > > +	regmap_update_bits(regmap, AUD96P22_PD_0, PD_0_PDZ, PD_0_PDZ);
+> 
+> > > Why is this not done with DAPM?
+> 
+> > As this is a overall power bit, which is not for any specific component.
+> > I'm not sure which DAPM widget should be used for it, and how it should
+> > be arranged in the widget route.  Any suggestion or example will be
+> > appreciated.
+> 
+> Sounds like a fairly standard use for a supply widget.
 
-The lack of appl_ptr update notification is a problem on a few
-existing drivers, but it's mostly a small issue and negligible.
-However, a new type of driver that uses DSP for a deep buffer
-management requires the exact position of appl_ptr for calculating the
-buffer prefetch size, and the asynchronous appl_ptr update between
-kernel and user-spaces becomes a significant problem for it.
+Yes, it can be a supply widget.  But it's a bit that controls device
+overall power rather than any particular component power.  Since every
+single operation of the device will need this power bit to be on, I
+think it makes sense to configure the bit in .startup/.shutdown hooks,
+rather than creating a widget for it and attaches the widget to a bunch
+of components.
 
-How can we enforce user-space to report the appl_ptr update?  The way
-is relatively simple.  Just by disabling the PCM control mmap, the
-user-space is supposed to fall back to the mode using SYNC_PTR ioctl,
-and the kernel gets control over that.  This fallback mode is used in
-all non-x86 platforms as default, and also in the 32bit compatible
-model on all platforms including x86.  It's been implemented already
-over a decade, so we can say it's fairly safe and stably working.
+> 
+> > > > +	/* Reset ADC and DAC path */
+> > > > +	regmap_write(regmap, AUD96P22_RESET, 0x0);
+> > > > +	regmap_write(regmap, AUD96P22_RESET, 0x3);
+> 
+> > > What does this mean?
+> 
+> > It's a de-assert/assert of ADC and DAC reset.  I will add proper
+> > defines for the bits to make this clear.
+> 
+> Why are we resetting these - won't this loose settings?
 
-With the help of the knowledge above, this patch introduces a new PCM
-info flag SNDRV_PCM_INFO_SYNC_APPLPTR for achieving the appl_ptr sync
-from user-space.  When a driver sets this flag at open, the PCM status
-/ control mmap is disabled, which effectively switches to SYNC_PTR
-mode in user-space side.
+It only resets some hardware internal states, and software settings
+won't be affected.
 
-In this version, both PCM status and control mmaps are disabled
-although only the latter, control mmap, is the target.  It's because
-the current alsa-lib implementation supposes that both status and
-control mmaps are always coupled, thus it handles a fatal error when
-only one of them fails.
+> And if it's
+> just something to be done as part of starting the DAC and ADC why isn't
+> it done via DAPM?
 
-Of course, the disablement of the status/control mmaps may bring a
-slight performance overhead.  Thus, as of now, this should be used
-only for the dedicated devices that deserves.
+Yes, it sounds like a better approach.  Will try to do that.
 
-Note that the disablement of mmap is a sort of workaround.  In the
-later patch, we'll introduce the way to identify the protocol version
-alsa-lib supports, and keep mmap working while the sync_ptr is
-performed together.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/uapi/sound/asound.h |  1 +
- sound/core/pcm_native.c     | 23 +++++++++++++++++++++--
- 2 files changed, 22 insertions(+), 2 deletions(-)
-
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index fd41697cb4d3..7eee52eb7462 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -268,6 +268,7 @@ typedef int __bitwise snd_pcm_subformat_t;
- #define SNDRV_PCM_INFO_MMAP_VALID	0x00000002	/* period data are valid during transfer */
- #define SNDRV_PCM_INFO_DOUBLE		0x00000004	/* Double buffering needed for PCM start/stop */
- #define SNDRV_PCM_INFO_BATCH		0x00000010	/* double buffering */
-+#define SNDRV_PCM_INFO_SYNC_APPLPTR	0x00000020	/* need the explicit sync of appl_ptr update */
- #define SNDRV_PCM_INFO_INTERLEAVED	0x00000100	/* channels are interleaved */
- #define SNDRV_PCM_INFO_NONINTERLEAVED	0x00000200	/* channels are not interleaved */
- #define SNDRV_PCM_INFO_COMPLEX		0x00000400	/* complex frame organization (mmap only) */
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index d35c6614fdab..9ade0c8b54a3 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -3376,10 +3376,29 @@ static int snd_pcm_mmap_control(struct snd_pcm_substream *substream, struct file
- 	area->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
- 	return 0;
- }
-+
-+static bool pcm_status_mmap_allowed(struct snd_pcm_file *pcm_file)
-+{
-+	if (pcm_file->no_compat_mmap)
-+		return false;
-+	/* Disallow the status/control mmap when SYNC_APPLPTR flag is set;
-+	 * it enforces the user-space to fall back to snd_pcm_sync_ptr(),
-+	 * thus it effectively assures the manual update of appl_ptr.
-+	 * In theory, it should be enough to disallow only PCM control mmap,
-+	 * but since the current alsa-lib implementation requires both status
-+	 * and control mmaps always paired, we have to disable both of them.
-+	 */
-+	if (pcm_file->substream->runtime->hw.info & SNDRV_PCM_INFO_SYNC_APPLPTR)
-+		return false;
-+	return true;
-+}
-+
- #else /* ! coherent mmap */
- /*
-  * don't support mmap for status and control records.
-  */
-+#define pcm_status_mmap_allowed(pcm_file)	false
-+
- static int snd_pcm_mmap_status(struct snd_pcm_substream *substream, struct file *file,
- 			       struct vm_area_struct *area)
- {
-@@ -3563,11 +3582,11 @@ static int snd_pcm_mmap(struct file *file, struct vm_area_struct *area)
- 	offset = area->vm_pgoff << PAGE_SHIFT;
- 	switch (offset) {
- 	case SNDRV_PCM_MMAP_OFFSET_STATUS:
--		if (pcm_file->no_compat_mmap)
-+		if (!pcm_status_mmap_allowed(pcm_file))
- 			return -ENXIO;
- 		return snd_pcm_mmap_status(substream, file, area);
- 	case SNDRV_PCM_MMAP_OFFSET_CONTROL:
--		if (pcm_file->no_compat_mmap)
-+		if (!pcm_status_mmap_allowed(pcm_file))
- 			return -ENXIO;
- 		return snd_pcm_mmap_control(substream, file, area);
- 	default:
--- 
-2.13.1
+Shawn
