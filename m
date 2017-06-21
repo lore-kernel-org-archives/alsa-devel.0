@@ -1,34 +1,29 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: add COMPILE_TEST on SND_MMP_SOC"
-	to the asoc tree
-Date: Wed, 21 Jun 2017 12:16:41 +0100
-Message-ID: <E1dNdcn-0004Ex-6P@debutante>
-References: <87lgom6jun.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: stm32: Add DT bindings for SPDIFRX interface" to the
+ asoc tree
+Date: Wed, 21 Jun 2017 12:16:38 +0100
+Message-ID: <E1dNdck-0004E4-6T@debutante>
+References: <1497621452-615-2-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1976C266C85
- for <alsa-devel@alsa-project.org>; Wed, 21 Jun 2017 13:16:48 +0200 (CEST)
-In-Reply-To: <87lgom6jun.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: linux-renesas-soc@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1497621452-615-2-git-send-email-olivier.moysan@st.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Cc: mark.rutland@arm.com, robh@kernel.org, alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, benjamin.gaignard@st.com, perex@perex.cz, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: add COMPILE_TEST on SND_MMP_SOC
+   ASoC: stm32: Add DT bindings for SPDIFRX interface
 
 has been applied to the asoc tree at
 
@@ -53,31 +48,82 @@ to this mail.
 Thanks,
 Mark
 
->From d89e69c0f985392e708b54c92b322163da820cb9 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 21 Jun 2017 04:38:34 +0000
-Subject: [PATCH] ASoC: pxa: add COMPILE_TEST on SND_MMP_SOC
+>From 0507cb0226acfd7ba114c59f6a76fdc7a1c6b01e Mon Sep 17 00:00:00 2001
+From: olivier moysan <olivier.moysan@st.com>
+Date: Tue, 20 Jun 2017 11:58:46 +0200
+Subject: [PATCH] ASoC: stm32: Add DT bindings for SPDIFRX interface
 
-It doesn't use asm header. We can add COMPILE_TEST
+Add documentation of device tree bindings for the
+STM32 SPDIFRX interface.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: olivier moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/sound/st,stm32-spdifrx.txt | 56 ++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
 
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index 960744e46edc..6feb34b8aa49 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -9,7 +9,7 @@ config SND_PXA2XX_SOC
- 
- config SND_MMP_SOC
- 	bool "Soc Audio for Marvell MMP chips"
--	depends on ARCH_MMP
-+	depends on ARCH_MMP || COMPILE_TEST
- 	select MMP_SRAM
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	select SND_ARM
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
+new file mode 100644
+index 000000000000..33826f2459fa
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
+@@ -0,0 +1,56 @@
++STMicroelectronics STM32 S/PDIF receiver (SPDIFRX).
++
++The SPDIFRX peripheral, is designed to receive an S/PDIF flow compliant with
++IEC-60958 and IEC-61937.
++
++Required properties:
++  - compatible: should be "st,stm32h7-spdifrx"
++  - reg: cpu DAI IP base address and size
++  - clocks: must contain an entry for kclk (used as S/PDIF signal reference)
++  - clock-names: must contain "kclk"
++  - interrupts: cpu DAI interrupt line
++  - dmas: DMA specifiers for audio data DMA and iec control flow DMA
++    See STM32 DMA bindings, Documentation/devicetree/bindings/dma/stm32-dma.txt
++  - dma-names: two dmas have to be defined, "rx" and "rx-ctrl"
++
++Optional properties:
++  - resets: Reference to a reset controller asserting the SPDIFRX
++
++The device node should contain one 'port' child node with one child 'endpoint'
++node, according to the bindings defined in Documentation/devicetree/bindings/
++graph.txt.
++
++Example:
++spdifrx: spdifrx@40004000 {
++	compatible = "st,stm32h7-spdifrx";
++	reg = <0x40004000 0x400>;
++	clocks = <&rcc SPDIFRX_CK>;
++	clock-names = "kclk";
++	interrupts = <97>;
++	dmas = <&dmamux1 2 93 0x400 0x0>,
++	       <&dmamux1 3 94 0x400 0x0>;
++	dma-names = "rx", "rx-ctrl";
++	pinctrl-0 = <&spdifrx_pins>;
++	pinctrl-names = "default";
++
++	spdifrx_port: port {
++		cpu_endpoint: endpoint {
++			remote-endpoint = <&codec_endpoint>;
++		};
++	};
++};
++
++spdif_in: spdif-in {
++	compatible = "linux,spdif-dir";
++
++	codec_port: port {
++		codec_endpoint: endpoint {
++			remote-endpoint = <&cpu_endpoint>;
++		};
++	};
++};
++
++soundcard {
++	compatible = "audio-graph-card";
++	dais = <&spdifrx_port>;
++};
 -- 
 2.11.0
