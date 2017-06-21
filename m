@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl: mpc5200_dma: remove unused psc_dma" to the asoc tree
-Date: Wed, 21 Jun 2017 12:16:47 +0100
-Message-ID: <E1dNdct-0004Gq-6Z@debutante>
-References: <87o9ti6jws.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <87o9ti6jws.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: Applied "ASoC: pxa: add COMPILE_TEST on SND_MMP_SOC"
+	to the asoc tree
+Date: Wed, 21 Jun 2017 12:16:41 +0100
+Message-ID: <E1dNdcn-0004Ex-6P@debutante>
+References: <87lgom6jun.wl%kuninori.morimoto.gx@renesas.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1976C266C85
+ for <alsa-devel@alsa-project.org>; Wed, 21 Jun 2017 13:16:48 +0200 (CEST)
+In-Reply-To: <87lgom6jun.wl%kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+Cc: linux-renesas-soc@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Simon <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl: mpc5200_dma: remove unused psc_dma
+   ASoC: pxa: add COMPILE_TEST on SND_MMP_SOC
 
 has been applied to the asoc tree at
 
@@ -37,34 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From 372f69a01be178b896ebb8ef7021e0b165084b25 Mon Sep 17 00:00:00 2001
+>From d89e69c0f985392e708b54c92b322163da820cb9 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 21 Jun 2017 04:37:18 +0000
-Subject: [PATCH] ASoC: fsl: mpc5200_dma: remove unused psc_dma
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Date: Wed, 21 Jun 2017 04:38:34 +0000
+Subject: [PATCH] ASoC: pxa: add COMPILE_TEST on SND_MMP_SOC
 
-linux/sound/soc/fsl/mpc5200_dma.c:305:18: warning: unused variable \
-	psc_dma’ [-Wunused-variable]
+It doesn't use asm header. We can add COMPILE_TEST
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/mpc5200_dma.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/pxa/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
-index 0b82e209b6e3..1f7e70bfbd55 100644
---- a/sound/soc/fsl/mpc5200_dma.c
-+++ b/sound/soc/fsl/mpc5200_dma.c
-@@ -302,7 +302,6 @@ static int psc_dma_new(struct snd_soc_pcm_runtime *rtd)
- 	struct snd_card *card = rtd->card->snd_card;
- 	struct snd_soc_dai *dai = rtd->cpu_dai;
- 	struct snd_pcm *pcm = rtd->pcm;
--	struct psc_dma *psc_dma = snd_soc_dai_get_drvdata(rtd->cpu_dai);
- 	size_t size = psc_dma_hardware.buffer_bytes_max;
- 	int rc;
+diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
+index 960744e46edc..6feb34b8aa49 100644
+--- a/sound/soc/pxa/Kconfig
++++ b/sound/soc/pxa/Kconfig
+@@ -9,7 +9,7 @@ config SND_PXA2XX_SOC
  
+ config SND_MMP_SOC
+ 	bool "Soc Audio for Marvell MMP chips"
+-	depends on ARCH_MMP
++	depends on ARCH_MMP || COMPILE_TEST
+ 	select MMP_SRAM
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 	select SND_ARM
 -- 
 2.11.0
