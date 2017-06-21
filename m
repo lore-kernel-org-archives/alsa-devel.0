@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: add COMPILE_TEST on SND_PXA2XX_SOC" to the asoc tree
-Date: Wed, 21 Jun 2017 12:16:44 +0100
-Message-ID: <E1dNdcq-0004Fs-5G@debutante>
-References: <87mv926jv8.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-renesas-soc-owner@vger.kernel.org>
-In-Reply-To: <87mv926jv8.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-renesas-soc-owner@vger.kernel.org
+Subject: Applied "ASoC: fsl: mpc5200_dma: remove unused psc_dma" to the asoc tree
+Date: Wed, 21 Jun 2017 12:16:47 +0100
+Message-ID: <E1dNdct-0004Gq-6Z@debutante>
+References: <87o9ti6jws.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <87o9ti6jws.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: add COMPILE_TEST on SND_PXA2XX_SOC
+   ASoC: fsl: mpc5200_dma: remove unused psc_dma
 
 has been applied to the asoc tree at
 
@@ -37,30 +37,34 @@ to this mail.
 Thanks,
 Mark
 
->From 73d7ee2e831f106ca5c745b2cf4fdbac5a4e9e4e Mon Sep 17 00:00:00 2001
+>From 372f69a01be178b896ebb8ef7021e0b165084b25 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 21 Jun 2017 04:38:13 +0000
-Subject: [PATCH] ASoC: pxa: add COMPILE_TEST on SND_PXA2XX_SOC
+Date: Wed, 21 Jun 2017 04:37:18 +0000
+Subject: [PATCH] ASoC: fsl: mpc5200_dma: remove unused psc_dma
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-It doesn't use asm header. We can add COMPILE_TEST
+linux/sound/soc/fsl/mpc5200_dma.c:305:18: warning: unused variable \
+	psc_dma’ [-Wunused-variable]
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/fsl/mpc5200_dma.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index 823b5a236d8d..960744e46edc 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -1,6 +1,6 @@
- config SND_PXA2XX_SOC
- 	tristate "SoC Audio for the Intel PXA2xx chip"
--	depends on ARCH_PXA
-+	depends on ARCH_PXA || COMPILE_TEST
- 	select SND_PXA2XX_LIB
- 	help
- 	  Say Y or M if you want to add support for codecs attached to
+diff --git a/sound/soc/fsl/mpc5200_dma.c b/sound/soc/fsl/mpc5200_dma.c
+index 0b82e209b6e3..1f7e70bfbd55 100644
+--- a/sound/soc/fsl/mpc5200_dma.c
++++ b/sound/soc/fsl/mpc5200_dma.c
+@@ -302,7 +302,6 @@ static int psc_dma_new(struct snd_soc_pcm_runtime *rtd)
+ 	struct snd_card *card = rtd->card->snd_card;
+ 	struct snd_soc_dai *dai = rtd->cpu_dai;
+ 	struct snd_pcm *pcm = rtd->pcm;
+-	struct psc_dma *psc_dma = snd_soc_dai_get_drvdata(rtd->cpu_dai);
+ 	size_t size = psc_dma_hardware.buffer_bytes_max;
+ 	int rc;
+ 
 -- 
 2.11.0
