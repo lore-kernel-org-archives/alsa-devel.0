@@ -1,129 +1,91 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: stm32: Add DT bindings for SPDIFRX interface" to the
- asoc tree
-Date: Wed, 21 Jun 2017 12:16:38 +0100
-Message-ID: <E1dNdck-0004E4-6T@debutante>
-References: <1497621452-615-2-git-send-email-olivier.moysan@st.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 0/3] ALSA: Add the explicit appl_ptr sync
+	support
+Date: Wed, 21 Jun 2017 20:21:06 +0900
+Message-ID: <32c68d13-d522-209a-9965-37440d096b48@sakamocchi.jp>
+References: <20170620153352.27775-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <1497621452-615-2-git-send-email-olivier.moysan@st.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-Cc: mark.rutland@arm.com, robh@kernel.org, alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, benjamin.gaignard@st.com, perex@perex.cz, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 4FC8F2668F0
+ for <alsa-devel@alsa-project.org>; Wed, 21 Jun 2017 13:21:09 +0200 (CEST)
+In-Reply-To: <20170620153352.27775-1-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi,
 
-   ASoC: stm32: Add DT bindings for SPDIFRX interface
+On Jun 21 2017 00:33, Takashi Iwai wrote:
+> Hi,
+> 
+> this is a patchset for the issues we've discussed recently lengthily,
+> the explicit sync of appl_ptr by disabling the control mmap.
+> The first patch achieves it for a driver setting the new INFO flag.
+> 
+> The second patch is for a generic ABI extension I wanted to implement
+> for long time.  It allows user-space reporting its supporting protocol
+> version, so that the kernel can behave differently.  It's especially
+> useful for extending the ABI struct to use the reserved bits.
+> 
+> The third patch is the optimization by the second patch; it simply
+> skips the previous workaround when the user-space declares itself
+> being new enough to support the feature.
+> 
+> The corresponding alsa-lib patchset will follow in another thread.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> ===
+> 
+> Takashi Iwai (3):
+>    ALSA: pcm: Add the explicit appl_ptr sync support
+>    ALSA: pcm: Add an ioctl to specify the supported protocol version
+>    ALSA: pcm: Limit the appl_ptr sync workaround only for old user-space
+> 
+>   include/sound/pcm.h         |  1 +
+>   include/uapi/sound/asound.h |  4 +++-
+>   sound/core/pcm_compat.c     |  1 +
+>   sound/core/pcm_native.c     | 28 ++++++++++++++++++++++++++++
+>   4 files changed, 33 insertions(+), 1 deletion(-)
 
-has been applied to the asoc tree at
+I prefer this direction and support this patchset.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Tested-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+However, when running with patched alsa-lib[1], due to a commit 
+f8ff2f28ba49 ("ALSA: pcm: Skip ack callback without actual appl_ptr 
+update")[2], callback functions in driver side for .ack are not called 
+from ioctl handler in ALSA PCM core. When page frames for control data 
+of PCM substream is mapped to VMA of the application, the application 
+updates the value of pointer in the frame, then transfer the value via 
+ioctl. Comparing these two values should be the same and ALSA PCM core 
+skip the callback.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+When considering about behaviour of old userland stuffs, it's not 
+necessarily easy to reduce call frequency of the callback, mmm...
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+[1] 
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-June/122066.html
+[2] 
+https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/commit/sound/core/pcm_lib.c?h=topic/pcm-sync-applptr&id=f8ff2f28ba49fa41a06215ac3187dede347bc9a7
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Thanks
 
-Thanks,
-Mark
-
->From 0507cb0226acfd7ba114c59f6a76fdc7a1c6b01e Mon Sep 17 00:00:00 2001
-From: olivier moysan <olivier.moysan@st.com>
-Date: Tue, 20 Jun 2017 11:58:46 +0200
-Subject: [PATCH] ASoC: stm32: Add DT bindings for SPDIFRX interface
-
-Add documentation of device tree bindings for the
-STM32 SPDIFRX interface.
-
-Signed-off-by: olivier moysan <olivier.moysan@st.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- .../devicetree/bindings/sound/st,stm32-spdifrx.txt | 56 ++++++++++++++++++++++
- 1 file changed, 56 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
-
-diff --git a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
-new file mode 100644
-index 000000000000..33826f2459fa
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
-@@ -0,0 +1,56 @@
-+STMicroelectronics STM32 S/PDIF receiver (SPDIFRX).
-+
-+The SPDIFRX peripheral, is designed to receive an S/PDIF flow compliant with
-+IEC-60958 and IEC-61937.
-+
-+Required properties:
-+  - compatible: should be "st,stm32h7-spdifrx"
-+  - reg: cpu DAI IP base address and size
-+  - clocks: must contain an entry for kclk (used as S/PDIF signal reference)
-+  - clock-names: must contain "kclk"
-+  - interrupts: cpu DAI interrupt line
-+  - dmas: DMA specifiers for audio data DMA and iec control flow DMA
-+    See STM32 DMA bindings, Documentation/devicetree/bindings/dma/stm32-dma.txt
-+  - dma-names: two dmas have to be defined, "rx" and "rx-ctrl"
-+
-+Optional properties:
-+  - resets: Reference to a reset controller asserting the SPDIFRX
-+
-+The device node should contain one 'port' child node with one child 'endpoint'
-+node, according to the bindings defined in Documentation/devicetree/bindings/
-+graph.txt.
-+
-+Example:
-+spdifrx: spdifrx@40004000 {
-+	compatible = "st,stm32h7-spdifrx";
-+	reg = <0x40004000 0x400>;
-+	clocks = <&rcc SPDIFRX_CK>;
-+	clock-names = "kclk";
-+	interrupts = <97>;
-+	dmas = <&dmamux1 2 93 0x400 0x0>,
-+	       <&dmamux1 3 94 0x400 0x0>;
-+	dma-names = "rx", "rx-ctrl";
-+	pinctrl-0 = <&spdifrx_pins>;
-+	pinctrl-names = "default";
-+
-+	spdifrx_port: port {
-+		cpu_endpoint: endpoint {
-+			remote-endpoint = <&codec_endpoint>;
-+		};
-+	};
-+};
-+
-+spdif_in: spdif-in {
-+	compatible = "linux,spdif-dir";
-+
-+	codec_port: port {
-+		codec_endpoint: endpoint {
-+			remote-endpoint = <&cpu_endpoint>;
-+		};
-+	};
-+};
-+
-+soundcard {
-+	compatible = "audio-graph-card";
-+	dais = <&spdifrx_port>;
-+};
--- 
-2.11.0
+Takashi Sakamoto
