@@ -1,74 +1,84 @@
-From: Shawn Guo <shawnguo@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: zx_aud96p22: add ZTE ZX AUD96P22 codec driver
-Date: Thu, 22 Jun 2017 00:03:41 +0800
-Message-ID: <20170621160340.GE3372@dragon>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: zx_aud96p22: add ZTE ZX AUD96P22
+	codec driver
+Date: Wed, 21 Jun 2017 17:13:21 +0100
+Message-ID: <20170621161321.mstpidbyq55q4mmj@sirena.org.uk>
 References: <1497708574-22380-1-git-send-email-shawnguo@kernel.org>
  <1497708574-22380-3-git-send-email-shawnguo@kernel.org>
  <20170619161910.siea75hqxgtxhjmp@sirena.org.uk>
  <20170620031953.GC4818@x250>
  <20170620124059.r55r363y3y3if6jg@sirena.org.uk>
+ <20170621160340.GE3372@dragon>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-Content-Disposition: inline
-In-Reply-To: <20170620124059.r55r363y3y3if6jg@sirena.org.uk>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Mark Brown <broonie@kernel.org>
+Content-Type: multipart/mixed; boundary="===============2059033749609203488=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F6592669F3
+ for <alsa-devel@alsa-project.org>; Wed, 21 Jun 2017 18:13:33 +0200 (CEST)
+In-Reply-To: <20170621160340.GE3372@dragon>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Shawn Guo <shawnguo@kernel.org>
 Cc: alsa-devel@alsa-project.org, Shawn Guo <shawn.guo@linaro.org>, Baoyou Xie <xie.baoyou@sanechips.com.cn>, Xin Zhou <zhou.xin8@sanechips.com.cn>, Jun Nie <jun.nie@linaro.org>, Baoyou Xie <baoyou.xie@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 20, 2017 at 01:40:59PM +0100, Mark Brown wrote:
-> On Tue, Jun 20, 2017 at 11:19:55AM +0800, Shawn Guo wrote:
-> > On Mon, Jun 19, 2017 at 05:19:10PM +0100, Mark Brown wrote:
-> > > On Sat, Jun 17, 2017 at 10:09:34PM +0800, Shawn Guo wrote:
-> 
-> > > > +	/* Overall power-up */
-> > > > +	regmap_update_bits(regmap, AUD96P22_PD_0, PD_0_PDZ, PD_0_PDZ);
-> 
-> > > Why is this not done with DAPM?
-> 
-> > As this is a overall power bit, which is not for any specific component.
-> > I'm not sure which DAPM widget should be used for it, and how it should
-> > be arranged in the widget route.  Any suggestion or example will be
-> > appreciated.
-> 
-> Sounds like a fairly standard use for a supply widget.
 
-Yes, it can be a supply widget.  But it's a bit that controls device
-overall power rather than any particular component power.  Since every
-single operation of the device will need this power bit to be on, I
-think it makes sense to configure the bit in .startup/.shutdown hooks,
-rather than creating a widget for it and attaches the widget to a bunch
-of components.
+--===============2059033749609203488==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="pbwij4n34u3taeyi"
+Content-Disposition: inline
 
-> 
-> > > > +	/* Reset ADC and DAC path */
-> > > > +	regmap_write(regmap, AUD96P22_RESET, 0x0);
-> > > > +	regmap_write(regmap, AUD96P22_RESET, 0x3);
-> 
-> > > What does this mean?
-> 
-> > It's a de-assert/assert of ADC and DAC reset.  I will add proper
-> > defines for the bits to make this clear.
-> 
-> Why are we resetting these - won't this loose settings?
 
-It only resets some hardware internal states, and software settings
-won't be affected.
+--pbwij4n34u3taeyi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> And if it's
-> just something to be done as part of starting the DAC and ADC why isn't
-> it done via DAPM?
+On Thu, Jun 22, 2017 at 12:03:41AM +0800, Shawn Guo wrote:
+> On Tue, Jun 20, 2017 at 01:40:59PM +0100, Mark Brown wrote:
 
-Yes, it sounds like a better approach.  Will try to do that.
+> > Sounds like a fairly standard use for a supply widget.
 
-Shawn
+> Yes, it can be a supply widget.  But it's a bit that controls device
+> overall power rather than any particular component power.  Since every
+> single operation of the device will need this power bit to be on, I
+> think it makes sense to configure the bit in .startup/.shutdown hooks,
+> rather than creating a widget for it and attaches the widget to a bunch
+> of components.
+
+Do it with DAPM - this means any analogue paths will work and there's no
+possibility of refcounting issues.  You will need to create a bunch of
+links but that's pretty easy and it's all data rather than code.
+
+--pbwij4n34u3taeyi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllKmyAACgkQJNaLcl1U
+h9DJYQf/fgMVHgjfcyRKuFh1GfkzIDVLusnp2y/nafOCKaBefMa1xmVvYpRzAUnN
+yfLwvFiVBiSOTt5yo3bbZQswuGxLwDAD3ePxHST7AHyYWOf6lUiRYH3qbb7fOjzn
+J1elDZUusVH0fVwRpe8dmKAdHn0l1bqAd3AV0T66jiIUg19c79Jt2jrz8S9kFYwp
+5FY7ASHi7XcrWhYNkGxOaVOrglfKCYd2j/89WNzOamIvPMwLg3VEYzdEGqKHphHg
+DgY/NdiZFK0LH18au+6MwdYN1Esdej7VWPgiNL3RXHdb7CBZErf3P2pWqXq2Z750
+3O25zdKJmF56z2+ngBGfkbdZZiJBzg==
+=P694
+-----END PGP SIGNATURE-----
+
+--pbwij4n34u3taeyi--
+
+--===============2059033749609203488==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2059033749609203488==--
