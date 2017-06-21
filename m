@@ -1,76 +1,125 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH alsa-lib 0/4] Add the support for explicit
- sync of appl_ptr
-Date: Wed, 21 Jun 2017 20:09:15 +0900
-Message-ID: <2aaca467-b1c4-86b2-0a85-db66abd5c9a5@sakamocchi.jp>
-References: <20170620153524.28099-1-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id F28552668F0
- for <alsa-devel@alsa-project.org>; Wed, 21 Jun 2017 13:09:18 +0200 (CEST)
-In-Reply-To: <20170620153524.28099-1-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rsnd: fixup unsigned expression compared with zero: main_rate" to the asoc tree
+Date: Wed, 21 Jun 2017 12:16:26 +0100
+Message-ID: <E1dNdcY-0004BP-GK@debutante>
+References: <87o9toiz2p.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87o9toiz2p.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Julia Lawall <julia.lawall@lip6.fr>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The patch
 
-On Jun 21 2017 00:35, Takashi Iwai wrote:
-> Hi,
-> 
-> this is a patchset for alsa-lib corresponding to the patchset I've
-> sent for kernel.  The first two patches do the actual fixes, while the
-> last two are merely cleanups / optimizations.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> ===
-> 
-> Takashi Iwai (4):
->    pcm: hw: Add the support for explicit sync of appl_ptr
->    pcm: hw: Call USER_PVERSION ioctl at open
->    pcm: hw: Remove superfluous call of snd_pcm_set_appl_ptr()
->    pcm: hw: Reduce redundant sync_ptr() calls
-> 
->   include/sound/asound.h |  4 +++-
->   src/pcm/pcm_hw.c       | 47 ++++++++++++++++++++++++++++++++---------------
->   2 files changed, 35 insertions(+), 16 deletions(-)
+   ASoC: rsnd: fixup unsigned expression compared with zero: main_rate
 
-I support this patchset.
+has been applied to the asoc tree at
 
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Tested-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-I did quick test with my devices and patched driver, running with kernel 
-in 'topic/pcm-sync-applptr' branch[1]. I prepare for below four cases 
-with combinations between ALSA fireworks driver and alsa-lib:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-  - driver with/without the flag
-  - alsa-lib with/without the patch
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-As long as checking logs from trace-cmd and strace, I got expected 
-results in all of these cases.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-[1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/log/?h=topic/pcm-sync-applptr
+Thanks,
+Mark
 
-Thanks
+>From 947f4eb58d2054b10a1d8146d0ab90b0e7fd3494 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 16 Jun 2017 00:02:59 +0000
+Subject: [PATCH] ASoC: rsnd: fixup unsigned expression compared with zero:
+ main_rate
 
-Takashi Sakamoto
+This patch fixes this WARNING
+
+sound/soc/sh/rcar/ssi.c:285:5-14: WARNING: Unsigned expression\
+	compared with zero: main_rate < 0
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sh/rcar/core.c | 2 +-
+ sound/soc/sh/rcar/rsnd.h | 2 +-
+ sound/soc/sh/rcar/ssi.c  | 8 ++++----
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 4892c0a4b613..409bac331d27 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -763,7 +763,7 @@ static int rsnd_soc_hw_rule(struct rsnd_priv *priv,
+ 			    struct snd_interval *baseline, struct snd_interval *iv)
+ {
+ 	struct snd_interval p;
+-	int rate;
++	unsigned int rate;
+ 	int i;
+ 
+ 	snd_interval_any(&p);
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 9428d4e288dd..99c57611df88 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -680,7 +680,7 @@ int __rsnd_ssi_is_pin_sharing(struct rsnd_mod *mod);
+ void rsnd_parse_connect_ssi(struct rsnd_dai *rdai,
+ 			    struct device_node *playback,
+ 			    struct device_node *capture);
+-int rsnd_ssi_clk_query(struct rsnd_priv *priv,
++unsigned int rsnd_ssi_clk_query(struct rsnd_priv *priv,
+ 		       int param1, int param2, int *idx);
+ 
+ /*
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index c8956c3484dd..46feddd78ee2 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -208,14 +208,14 @@ u32 rsnd_ssi_multi_slaves_runtime(struct rsnd_dai_stream *io)
+ 	return 0;
+ }
+ 
+-int rsnd_ssi_clk_query(struct rsnd_priv *priv,
++unsigned int rsnd_ssi_clk_query(struct rsnd_priv *priv,
+ 		       int param1, int param2, int *idx)
+ {
+ 	int ssi_clk_mul_table[] = {
+ 		1, 2, 4, 8, 16, 6, 12,
+ 	};
+ 	int j, ret;
+-	int main_rate;
++	unsigned int main_rate;
+ 
+ 	for (j = 0; j < ARRAY_SIZE(ssi_clk_mul_table); j++) {
+ 
+@@ -245,7 +245,7 @@ int rsnd_ssi_clk_query(struct rsnd_priv *priv,
+ 		return main_rate;
+ 	}
+ 
+-	return -EINVAL;
++	return 0;
+ }
+ 
+ static int rsnd_ssi_master_clk_start(struct rsnd_mod *mod,
+@@ -282,7 +282,7 @@ static int rsnd_ssi_master_clk_start(struct rsnd_mod *mod,
+ 	}
+ 
+ 	main_rate = rsnd_ssi_clk_query(priv, rate, chan, &idx);
+-	if (main_rate < 0) {
++	if (!main_rate) {
+ 		dev_err(dev, "unsupported clock rate\n");
+ 		return -EIO;
+ 	}
+-- 
+2.11.0
