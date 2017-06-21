@@ -1,17 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [asoc:topic/pxa 2/2] /tmp/ccrgbnNE.s:1411: Error:
- unknown mnemonic `ldmia' -- `ldmia x26, {r0, r1, r2, r3}'
-Date: Wed, 21 Jun 2017 18:11:18 +0100
-Message-ID: <20170621171118.443vx2fvg4yrcoyn@sirena.org.uk>
-References: <201706220154.6jfiHx4x%fengguang.wu@intel.com>
+From: bgoswami@codeaurora.org
+Subject: Query regarding possibility of PM QoS unvote/vote when
+ substream Pause/Resume called
+Date: Wed, 21 Jun 2017 10:58:24 -0700
+Message-ID: <d5d9ba80a37f6216ab93391313c9b22d@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4076033115417520807=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F1EB2669F3
- for <alsa-devel@alsa-project.org>; Wed, 21 Jun 2017 19:11:30 +0200 (CEST)
-In-Reply-To: <201706220154.6jfiHx4x%fengguang.wu@intel.com>
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
+ by alsa0.perex.cz (Postfix) with ESMTP id B8C972664EB
+ for <alsa-devel@alsa-project.org>; Wed, 21 Jun 2017 19:58:26 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,51 +19,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: kbuild test robot <fengguang.wu@intel.com>
-Cc: alsa-devel@alsa-project.org, kbuild-all@01.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: alsa-devel@alsa-project.org
+Cc: plai@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============4076033115417520807==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="uyb63lscyylhphkk"
-Content-Disposition: inline
+   Current ALSA core implementation has PM QoS vote/unvote calls in 
+snd_pcm_hw_params() and snd_pcm_hw_free().
 
+  However, this might have an implication in terms of power, as PM QoS 
+vote would still be valid for that substream, even when the substream is 
+paused. Especially for those cases, where, to avoid missing the QoS, one 
+or more CPU cores might be prevented from entering into lower power mode 
+(or power-collapse), as it might take longer to bring those cores out of 
+power collapse. This might be specially more prominent when the period 
+size is smaller.
 
---uyb63lscyylhphkk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   So, in an effort to optimize power (by whatever smaller amount), I was 
+wondering, if it is better to remove the PM QoS vote 
+(pm_qos_remove_request) when Pause (SNDRV_PCM_TRIGGER_PAUSE_PUSH) is 
+called from user space (using IOCTL) for a particular substream.
+  Similarly, PM QoS vote can be added (pm_qos_add_request) back, when 
+user space (using IOCTL) calls Resume (SNDRV_PCM_TRIGGER_PAUSE_RELEASE) 
+for that same substream.
 
-On Thu, Jun 22, 2017 at 01:10:56AM +0800, kbuild test robot wrote:
-
->    /tmp/ccrgbnNE.s: Assembler messages:
-> >> /tmp/ccrgbnNE.s:1411: Error: unknown mnemonic `ldmia' -- `ldmia x26,{r0,r1,r2,r3}'
-> >> /tmp/ccrgbnNE.s:1412: Error: unknown mnemonic `stmia' -- `stmia x19!,{r0,r1,r2,r3}'
-
-Reverted, it's the select of SND_ARM that does this.
-
---uyb63lscyylhphkk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllKqLYACgkQJNaLcl1U
-h9DMgwf8CgyfROikkViKf8hKUvJTIF1RZPWSR13RJWrRSk1kROoBAP7ahl2IfFpR
-1IyoxWrmryxuCA8iem1ULWDqWrp0oLkRgHFdUOfXf1/N0aP+wr8VfTQBs39x0izN
-Io+sgMcKOh6gH3p3QidkMNjWlyn4cOs7x1zgYES8B9iVBcRWrSkDLINbTCdQE2fY
-hI8n/myyUXZz4S0YB2vg89yS7nZCIK/T0lhDcUeF/azsZ+7iF+HpKDH59v9MFCVW
-LgQ429afysw9z4yMX8AczkoHTDxeKRN90zXyaXikoP1meFvgL0+4BBs/6SfzX5S2
-ZS+Vcz1n9yZOqkLJC28/ULTcN6kcBA==
-=fBkt
------END PGP SIGNATURE-----
-
---uyb63lscyylhphkk--
-
---===============4076033115417520807==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+  I am looking for opinions from subject matter experts, to see if the 
+proposed approach might have any unintended side-effects or any known 
+limitation that I might be missing.
 
 
---===============4076033115417520807==--
+Thanks and Regards,
+Banajit Goswami
+
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
