@@ -1,17 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: ASoC: nau8825: fix jack type detection issue after
-	resume
-Date: Wed, 21 Jun 2017 11:59:27 +0100
-Message-ID: <20170621105927.nnxu3moceqkz6zub@sirena.org.uk>
-References: <1498028390-10952-1-git-send-email-KCHSU0@nuvoton.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH alsa-lib 0/4] Add the support for explicit
+ sync of appl_ptr
+Date: Wed, 21 Jun 2017 20:09:15 +0900
+Message-ID: <2aaca467-b1c4-86b2-0a85-db66abd5c9a5@sakamocchi.jp>
+References: <20170620153524.28099-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2416370746495098359=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6DBCB266C31
- for <alsa-devel@alsa-project.org>; Wed, 21 Jun 2017 12:59:33 +0200 (CEST)
-In-Reply-To: <1498028390-10952-1-git-send-email-KCHSU0@nuvoton.com>
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id F28552668F0
+ for <alsa-devel@alsa-project.org>; Wed, 21 Jun 2017 13:09:18 +0200 (CEST)
+In-Reply-To: <20170620153524.28099-1-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,52 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <supercraig0719@gmail.com>
-Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, benzh@chromium.org, mac.chiang@intel.com, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Cc: Vinod Koul <vinod.koul@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
---===============2416370746495098359==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="5uanrbbsw6rg5fxc"
-Content-Disposition: inline
+On Jun 21 2017 00:35, Takashi Iwai wrote:
+> Hi,
+> 
+> this is a patchset for alsa-lib corresponding to the patchset I've
+> sent for kernel.  The first two patches do the actual fixes, while the
+> last two are merely cleanups / optimizations.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> ===
+> 
+> Takashi Iwai (4):
+>    pcm: hw: Add the support for explicit sync of appl_ptr
+>    pcm: hw: Call USER_PVERSION ioctl at open
+>    pcm: hw: Remove superfluous call of snd_pcm_set_appl_ptr()
+>    pcm: hw: Reduce redundant sync_ptr() calls
+> 
+>   include/sound/asound.h |  4 +++-
+>   src/pcm/pcm_hw.c       | 47 ++++++++++++++++++++++++++++++++---------------
+>   2 files changed, 35 insertions(+), 16 deletions(-)
 
+I support this patchset.
 
---5uanrbbsw6rg5fxc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Tested-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-On Wed, Jun 21, 2017 at 02:59:50PM +0800, John Hsu wrote:
-> Fix the issue that mic type detection error after resume.
-> The patch help to fix the issue as follows:
-> Google issue 37973093: CTIA/OMTP jack type detection failure after resume
+I did quick test with my devices and patched driver, running with kernel 
+in 'topic/pcm-sync-applptr' branch[1]. I prepare for below four cases 
+with combinations between ALSA fireworks driver and alsa-lib:
 
-What is the issue and in what way does this patch help fix it?  The
-changelog just says it's fixing a problem, it doesn't say what the
-problem is or what the change is supposed to do.
+  - driver with/without the flag
+  - alsa-lib with/without the patch
 
---5uanrbbsw6rg5fxc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllKUY4ACgkQJNaLcl1U
-h9BJuwf8ClKuJRKQFsGACr3AySXkM70cl+J8iRBH4PLChJ2X599mvRkEMPTAzCcf
-HbOGPTSbPMzhWhAdx3PINWIyn2XApEpVfFFbdJXbKYz9JmKsXnIrcQSBq5Vl+mD1
-EGLtO+6l1wRNjHIehsOMqBR2wP3E1b+FSFa4bzLwybAI7uqSStyuMCjsm9dS7R1j
-EbyMmQuNTFz0AJI6GUwGSwcSj2SPieSHYprGRybpnlULR/1yziHnTXl2yMcKFxM5
-LT3yZpUX5eOwwnhYifAyYquvNK8HWqVrIJgVaIIb2pytEhkH789F7gBJw9NFpRRm
-ICu6M1jaqzh4Ji25jsWWKrBv/E6xLw==
-=Y+He
------END PGP SIGNATURE-----
-
---5uanrbbsw6rg5fxc--
-
---===============2416370746495098359==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+As long as checking logs from trace-cmd and strace, I got expected 
+results in all of these cases.
 
 
---===============2416370746495098359==--
+[1] 
+https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/log/?h=topic/pcm-sync-applptr
+
+Thanks
+
+Takashi Sakamoto
