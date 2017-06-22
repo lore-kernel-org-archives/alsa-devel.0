@@ -1,50 +1,74 @@
-From: Daniel Drake <drake@endlessm.com>
-Subject: Re: [PATCH] ASoC: es8316: add I2C dependency
-Date: Thu, 22 Jun 2017 07:14:46 -0600
-Message-ID: <CAD8Lp47tkPWKApp9ufMmtekgoL+Y_7u6E+o0XV6d5pJ5yx5vCA@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: es8316: add I2C dependency" to the asoc tree
+Date: Thu, 22 Jun 2017 15:18:27 +0100
+Message-ID: <E1dO2wF-0007VS-UN@debutante>
 References: <20170621220943.104170-1-arnd@arndb.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20170621220943.104170-1-arnd@arndb.de>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Brown <broonie@kernel.org>, David Yang <yangxiaohua@everest-semi.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Linux Kernel <linux-kernel@vger.kernel.org>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Daniel Drake <drake@endlessm.com>, David Yang <yangxiaohua@everest-semi.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 21, 2017 at 4:09 PM, Arnd Bergmann <arnd@arndb.de> wrote:
-> Without CONFIG_I2C, we get a build failure:
->
-> sound/soc/codecs/es8316.c:633:1: error: data definition has no type or storage class [-Werror]
-> sound/soc/codecs/es8316.c:633:1: error: type defaults to 'int' in declaration of 'module_i2c_driver' [-Werror=implicit-int]
-> sound/soc/codecs/es8316.c:633:1: error: parameter names (without types) in function declaration [-Werror]
-> sound/soc/codecs/es8316.c:623:26: error: 'es8316_i2c_driver' defined but not used [-Werror=unused-variable]
->
-> This adds the required Kconfig dependency.
->
-> Fixes: b8b88b70875a ("ASoC: add es8316 codec driver")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+The patch
 
-Reviewed-by: Daniel Drake <drake@endlessm.com>
+   ASoC: es8316: add I2C dependency
 
-Thanks for the patch.
+has been applied to the asoc tree at
 
-> ---
->  sound/soc/codecs/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-> index c6286e5ba511..f0f794186186 100644
-> --- a/sound/soc/codecs/Kconfig
-> +++ b/sound/soc/codecs/Kconfig
-> @@ -546,6 +546,7 @@ config SND_SOC_ES7134
->
->  config SND_SOC_ES8316
->         tristate "Everest Semi ES8316 CODEC"
-> +       depends on I2C
->
->  config SND_SOC_ES8328
->         tristate
-> --
-> 2.9.0
->
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 664d00d187608c66904e62ff2f24e7df49611ba5 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Thu, 22 Jun 2017 00:09:23 +0200
+Subject: [PATCH] ASoC: es8316: add I2C dependency
+
+Without CONFIG_I2C, we get a build failure:
+
+sound/soc/codecs/es8316.c:633:1: error: data definition has no type or storage class [-Werror]
+sound/soc/codecs/es8316.c:633:1: error: type defaults to 'int' in declaration of 'module_i2c_driver' [-Werror=implicit-int]
+sound/soc/codecs/es8316.c:633:1: error: parameter names (without types) in function declaration [-Werror]
+sound/soc/codecs/es8316.c:623:26: error: 'es8316_i2c_driver' defined but not used [-Werror=unused-variable]
+
+This adds the required Kconfig dependency.
+
+Fixes: b8b88b70875a ("ASoC: add es8316 codec driver")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index c6286e5ba511..f0f794186186 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -546,6 +546,7 @@ config SND_SOC_ES7134
+ 
+ config SND_SOC_ES8316
+ 	tristate "Everest Semi ES8316 CODEC"
++	depends on I2C
+ 
+ config SND_SOC_ES8328
+ 	tristate
+-- 
+2.11.0
