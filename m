@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: es8316: add I2C dependency" to the asoc tree
-Date: Thu, 22 Jun 2017 15:18:27 +0100
-Message-ID: <E1dO2wF-0007VS-UN@debutante>
-References: <20170621220943.104170-1-arnd@arndb.de>
+Subject: Applied "ASoC: max9867: make array ni_div static const" to the asoc tree
+Date: Thu, 22 Jun 2017 15:18:31 +0100
+Message-ID: <E1dO2wJ-0007YV-09@debutante>
+References: <20170622093231.11389-1-colin.king@canonical.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170621220943.104170-1-arnd@arndb.de>
+In-Reply-To: <20170622093231.11389-1-colin.king@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Daniel Drake <drake@endlessm.com>, David Yang <yangxiaohua@everest-semi.com>alsa-devel@alsa-project.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vinod.koul@intel.com>, Javier Martinez Canillas <javier@osg.samsung.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Enric Balletbo i Serra <enric.balletbo@collabora.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: es8316: add I2C dependency
+   ASoC: max9867: make array ni_div static const
 
 has been applied to the asoc tree at
 
@@ -37,38 +37,36 @@ to this mail.
 Thanks,
 Mark
 
->From 664d00d187608c66904e62ff2f24e7df49611ba5 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Thu, 22 Jun 2017 00:09:23 +0200
-Subject: [PATCH] ASoC: es8316: add I2C dependency
+>From 1943b0661184a5d17f31624dc8ac2c02a086c998 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Thu, 22 Jun 2017 10:32:31 +0100
+Subject: [PATCH] ASoC: max9867: make array ni_div static const
 
-Without CONFIG_I2C, we get a build failure:
+The array ni_div does not need to be in global scope and is not
+modified, so make it static const.
 
-sound/soc/codecs/es8316.c:633:1: error: data definition has no type or storage class [-Werror]
-sound/soc/codecs/es8316.c:633:1: error: type defaults to 'int' in declaration of 'module_i2c_driver' [-Werror=implicit-int]
-sound/soc/codecs/es8316.c:633:1: error: parameter names (without types) in function declaration [-Werror]
-sound/soc/codecs/es8316.c:623:26: error: 'es8316_i2c_driver' defined but not used [-Werror=unused-variable]
+Cleans up sparse warning:
+"symbol 'ni_div' was not declared. Should it be static?"
 
-This adds the required Kconfig dependency.
-
-Fixes: b8b88b70875a ("ASoC: add es8316 codec driver")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/max9867.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index c6286e5ba511..f0f794186186 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -546,6 +546,7 @@ config SND_SOC_ES7134
+diff --git a/sound/soc/codecs/max9867.c b/sound/soc/codecs/max9867.c
+index 0247edc9c84e..2a40a69a7513 100644
+--- a/sound/soc/codecs/max9867.c
++++ b/sound/soc/codecs/max9867.c
+@@ -132,7 +132,7 @@ enum rates {
+ 	pcm_rate_48, max_pcm_rate,
+ };
  
- config SND_SOC_ES8316
- 	tristate "Everest Semi ES8316 CODEC"
-+	depends on I2C
- 
- config SND_SOC_ES8328
- 	tristate
+-struct ni_div_rates {
++static const struct ni_div_rates {
+ 	u32 mclk;
+ 	u16 ni[max_pcm_rate];
+ } ni_div[] = {
 -- 
 2.11.0
