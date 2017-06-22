@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [alsa-lib][RFC][PATCH 8/9] pcm: add a helper function
-	to issue applptr
-Date: Thu, 22 Jun 2017 23:43:33 +0900
-Message-ID: <20170622144334.1306-9-o-takashi@sakamocchi.jp>
+Subject: [alsa-lib][RFC][PATCH 4/9] pcm: add a helper function
+	to query status of PCM substream
+Date: Thu, 22 Jun 2017 23:43:29 +0900
+Message-ID: <20170622144334.1306-5-o-takashi@sakamocchi.jp>
 References: <20170622144334.1306-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 45142266D9B
- for <alsa-devel@alsa-project.org>; Thu, 22 Jun 2017 16:43:46 +0200 (CEST)
+ [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id CAA88266D6B
+ for <alsa-devel@alsa-project.org>; Thu, 22 Jun 2017 16:43:43 +0200 (CEST)
 In-Reply-To: <20170622144334.1306-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,68 +25,98 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When handling PCM frames by mmap operation for PCM buffer, in usual
-cases, applications have no need to issue application-side position
-into stuffs of kernel land. In the cases, specific page frame is
-mapped for the position. However, in a case to fail the mapping,
-applications can use a fallback method. This is done by ioctl(2)
-with SNDRV_PCM_IOCTL_SYNC_PTR.
+When applications requests queueing/dequeueing some PCM frames by PCM
+read/write operations, ALSA PCM core handles the request and moves
+application-side position on PCM buffer. Usually, this can be visible
+from user space because page frame for the position can be mapped into
+process' VMA.
 
-This commit adds a helper function to unify the relevant code.
-Additionally, this commit adds a flag to purge side effect of the
-call.
+However, when mapping operation results in failure, applications need
+to execute ioctl(2) with SNDRV_PCM_IOCTL_SYNC_PTR to get current position.
+This is important task for the applications to maintain runtime of PCM
+substream.
+
+This commit adds a helper function to unify relevant the codes for
+readability. Original implementation has a side effect to issue the
+size of avail_min. This commit add a flag to purge the effect.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- src/pcm/pcm_hw.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ src/pcm/pcm_hw.c | 34 ++++++++++++++++++++++++++--------
+ 1 file changed, 26 insertions(+), 8 deletions(-)
 
 diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
-index 045e7890..2d68fe12 100644
+index 7da2db5b..23211cba 100644
 --- a/src/pcm/pcm_hw.c
 +++ b/src/pcm/pcm_hw.c
-@@ -160,6 +160,15 @@ static int sync_applptr(snd_pcm_hw_t *hw)
+@@ -160,6 +160,16 @@ static int sync_applptr(snd_pcm_hw_t *hw)
  	return sync_ptr1(hw, &ptr, 0);
  }
  
-+static int issue_applptr(snd_pcm_hw_t *hw)
++static int query_status(snd_pcm_hw_t *hw)
 +{
-+	if (!hw->mmap_control_fallbacked)
++	if (!hw->mmap_status_fallbacked)
 +		return 0;
 +
 +	return sync_ptr1(hw, hw->sync_ptr,
++			 SNDRV_PCM_SYNC_PTR_APPL |
 +			 SNDRV_PCM_SYNC_PTR_AVAIL_MIN);
 +}
 +
- static int issue_availmin(snd_pcm_hw_t *hw)
+ static int snd_pcm_hw_clear_timer_queue(snd_pcm_hw_t *hw)
  {
- 	if (!hw->mmap_control_fallbacked)
-@@ -592,7 +601,7 @@ static int snd_pcm_hw_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
- static snd_pcm_state_t snd_pcm_hw_state(snd_pcm_t *pcm)
- {
- 	snd_pcm_hw_t *hw = pcm->private_data;
--	int err = sync_ptr(hw, 0);
-+	int err = issue_applptr(hw);
- 	if (err < 0)
- 		return err;
- 	return (snd_pcm_state_t) hw->mmap_status->state;
-@@ -1016,7 +1025,7 @@ static int map_status_and_control_data(snd_pcm_t *pcm, int force_fallback)
- 
- 	/* Initialize when control mapping is fallbacked. */
- 	if (hw->mmap_control_fallbacked > 0) {
--		int err = ioctl(hw->fd, SNDRV_PCM_IOCTL_SYNC_PTR, &hw->sync_ptr);
-+		int err = issue_applptr(hw);
- 		if (err < 0) {
- 			SYSMSG("SNDRV_PCM_IOCTL_SYNC_PTR failed (%i)", -errno);
- 			return -errno;
-@@ -1119,7 +1128,7 @@ static snd_pcm_sframes_t snd_pcm_hw_avail_update(snd_pcm_t *pcm)
- 	snd_pcm_hw_t *hw = pcm->private_data;
- 	snd_pcm_uframes_t avail;
- 
--	sync_ptr(hw, 0);
-+	issue_applptr(hw);
- 	avail = snd_pcm_mmap_avail(pcm);
- 	switch (FAST_PCM_STATE(hw)) {
- 	case SNDRV_PCM_STATE_RUNNING:
+ 	if (hw->period_timer_need_poll) {
+@@ -814,8 +824,10 @@ static snd_pcm_sframes_t snd_pcm_hw_writei(snd_pcm_t *pcm, const void *buffer, s
+ 	xferi.buf = (char*) buffer;
+ 	xferi.frames = size;
+ 	xferi.result = 0; /* make valgrind happy */
+-	err = ioctl(fd, SNDRV_PCM_IOCTL_WRITEI_FRAMES, &xferi);
+-	err = err >= 0 ? sync_ptr(hw, SNDRV_PCM_SYNC_PTR_APPL) : -errno;
++	if (ioctl(fd, SNDRV_PCM_IOCTL_WRITEI_FRAMES, &xferi) < 0)
++		err = -errno;
++	else
++		err = query_status(hw);
+ #ifdef DEBUG_RW
+ 	fprintf(stderr, "hw_writei: frames = %li, xferi.result = %li, err = %i\n", size, xferi.result, err);
+ #endif
+@@ -833,8 +845,10 @@ static snd_pcm_sframes_t snd_pcm_hw_writen(snd_pcm_t *pcm, void **bufs, snd_pcm_
+ 	memset(&xfern, 0, sizeof(xfern)); /* make valgrind happy */
+ 	xfern.bufs = bufs;
+ 	xfern.frames = size;
+-	err = ioctl(fd, SNDRV_PCM_IOCTL_WRITEN_FRAMES, &xfern);
+-	err = err >= 0 ? sync_ptr(hw, SNDRV_PCM_SYNC_PTR_APPL) : -errno;
++	if (ioctl(fd, SNDRV_PCM_IOCTL_WRITEN_FRAMES, &xfern) < 0)
++		err = -errno;
++	else
++		err = query_status(hw);
+ #ifdef DEBUG_RW
+ 	fprintf(stderr, "hw_writen: frames = %li, result = %li, err = %i\n", size, xfern.result, err);
+ #endif
+@@ -852,8 +866,10 @@ static snd_pcm_sframes_t snd_pcm_hw_readi(snd_pcm_t *pcm, void *buffer, snd_pcm_
+ 	xferi.buf = buffer;
+ 	xferi.frames = size;
+ 	xferi.result = 0; /* make valgrind happy */
+-	err = ioctl(fd, SNDRV_PCM_IOCTL_READI_FRAMES, &xferi);
+-	err = err >= 0 ? sync_ptr(hw, SNDRV_PCM_SYNC_PTR_APPL) : -errno;
++	if (ioctl(fd, SNDRV_PCM_IOCTL_READI_FRAMES, &xferi) < 0)
++		err = -errno;
++	else
++		err = query_status(hw);
+ #ifdef DEBUG_RW
+ 	fprintf(stderr, "hw_readi: frames = %li, result = %li, err = %i\n", size, xferi.result, err);
+ #endif
+@@ -871,8 +887,10 @@ static snd_pcm_sframes_t snd_pcm_hw_readn(snd_pcm_t *pcm, void **bufs, snd_pcm_u
+ 	memset(&xfern, 0, sizeof(xfern)); /* make valgrind happy */
+ 	xfern.bufs = bufs;
+ 	xfern.frames = size;
+-	err = ioctl(fd, SNDRV_PCM_IOCTL_READN_FRAMES, &xfern);
+-	err = err >= 0 ? sync_ptr(hw, SNDRV_PCM_SYNC_PTR_APPL) : -errno;
++	if (ioctl(fd, SNDRV_PCM_IOCTL_READN_FRAMES, &xfern) < 0)
++		err = -errno;
++	else
++		err = query_status(hw);
+ #ifdef DEBUG_RW
+ 	fprintf(stderr, "hw_readn: frames = %li, result = %li, err = %i\n", size, xfern.result, err);
+ #endif
 -- 
 2.11.0
