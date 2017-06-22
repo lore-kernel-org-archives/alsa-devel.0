@@ -1,17 +1,18 @@
 From: John Hsu <KCHSU0@nuvoton.com>
-Subject: Re: ASoC: nau8825: default value for property
-Date: Thu, 22 Jun 2017 09:32:28 +0800
-Message-ID: <594B1E2C.8010409@nuvoton.com>
-References: <1498027446-10807-1-git-send-email-KCHSU0@nuvoton.com>
- <20170621105631.7snp3eeebngkda4n@sirena.org.uk>
+Subject: Re: ASoC: nau8825: fix jack type detection issue after
+	resume
+Date: Thu, 22 Jun 2017 09:40:08 +0800
+Message-ID: <594B1FF8.2000603@nuvoton.com>
+References: <1498028390-10952-1-git-send-email-KCHSU0@nuvoton.com>
+ <20170621105927.nnxu3moceqkz6zub@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 71BD72664EB
- for <alsa-devel@alsa-project.org>; Thu, 22 Jun 2017 03:32:34 +0200 (CEST)
-In-Reply-To: <20170621105631.7snp3eeebngkda4n@sirena.org.uk>
+ by alsa0.perex.cz (Postfix) with ESMTP id D32C12664EB
+ for <alsa-devel@alsa-project.org>; Thu, 22 Jun 2017 03:40:10 +0200 (CEST)
+In-Reply-To: <20170621105927.nnxu3moceqkz6zub@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,27 +23,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: AP MS30 Linux ALSA <alsa-devel@alsa-project.org>, "anatol.pomozov@gmail.com" <anatol.pomozov@gmail.com>, AC30 YHChuang <YHCHuang@nuvoton.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "benzh@chromium.org" <benzh@chromium.org>, "mac.chiang@intel.com" <mac.chiang@intel.com>, AC30 CTLin0 <CTLIN0@nuvoton.com>, "yong.zhi@intel.com" <yong.zhi@intel.com>, John Hsu <supercraig0719@gmail.com>, MS40 MHKuo <MHKuo@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, lgirdwood@gmail.com, benzh@chromium.org, mac.chiang@intel.com, CTLIN0@nuvoton.com, yong.zhi@intel.com, John Hsu <supercraig0719@gmail.com>, mhkuo@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
-On 6/21/2017 6:56 PM, Mark Brown wrote:
-> On Wed, Jun 21, 2017 at 02:44:06PM +0800, John Hsu wrote:
+On 6/21/2017 6:59 PM, Mark Brown wrote:
+> On Wed, Jun 21, 2017 at 02:59:50PM +0800, John Hsu wrote:
+>> Fix the issue that mic type detection error after resume.
+>> The patch help to fix the issue as follows:
+>> Google issue 37973093: CTIA/OMTP jack type detection failure after resume
 >
->> +    if (nau8825->jkdet_enable != true &&
->> +            nau8825->jkdet_enable != false)
->> +            nau8825->jkdet_enable = 1;
->
-> Won't jack detection require specific wiring on the board (if only
-> connection of the interupt line)?
->
->> +    if (nau8825->jkdet_pull_enable != true &&
->> +            nau8825->jkdet_pull_enable != false)
->> +            nau8825->jkdet_pull_enable = 1;
->
-> Usually we'd just use the chip defaults...
+> What is the issue and in what way does this patch help fix it?  The
+> changelog just says it's fixing a problem, it doesn't say what the
+> problem is or what the change is supposed to do.
 
-I misunderstand the device_property_read_bool.
-I agree and keep it as default. Thank you.
+I'll resend the patch and make more description about the issue.
 
 
 ===========================================================================================
