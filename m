@@ -1,50 +1,84 @@
-From: "Gilliland, Scott M" <scott.gilliland@gatech.edu>
-Subject: [PATCH] Fix bug in arecord --max-file-time where the
- file size could overflow 32 bits
-Date: Fri, 23 Jun 2017 18:35:03 +0000
-Message-ID: <CY4PR07MB3544F3467606CB0401C3F0918DD80@CY4PR07MB3544.namprd07.prod.outlook.com>
+From: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH 1/2] dt-bindings: Document the STM32 SPDIFRX interface
+Date: Fri, 23 Jun 2017 13:55:14 -0500
+Message-ID: <20170623185514.nc3jqq6ikvwwv6sn@rob-hp-laptop>
+References: <1497621452-615-1-git-send-email-olivier.moysan@st.com>
+ <1497621452-615-2-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM01-BY2-obe.outbound.protection.outlook.com
- (mail-by2nam01on0125.outbound.protection.outlook.com [104.47.34.125])
- by alsa0.perex.cz (Postfix) with ESMTP id 8CA5C266AE2
- for <alsa-devel@alsa-project.org>; Fri, 23 Jun 2017 20:35:06 +0200 (CEST)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1497621452-615-2-git-send-email-olivier.moysan-qxv4g6HH51o@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
+Cc: lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org, mcoquelin.stm32-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, alexandre.torgue-qxv4g6HH51o@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kernel-F5mvAk5X5gdBDgjK7y7TUQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, arnaud.pouliquen-qxv4g6HH51o@public.gmane.org, benjamin.gaignard-qxv4g6HH51o@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Scott Gilliland <scott.gilliland@gatech.edu>
+On Fri, Jun 16, 2017 at 03:57:31PM +0200, olivier moysan wrote:
+> This adds documentation of device tree bindings for the
+> STM32 SPDIFRX interface.
+> 
+> Signed-off-by: olivier moysan <olivier.moysan-qxv4g6HH51o@public.gmane.org>
+> ---
+>  .../devicetree/bindings/sound/st,stm32-spdifrx.txt | 56 ++++++++++++++++++++++
+>  1 file changed, 56 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
+> new file mode 100644
+> index 0000000..33826f2
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
+> @@ -0,0 +1,56 @@
+> +STMicroelectronics STM32 S/PDIF receiver (SPDIFRX).
+> +
+> +The SPDIFRX peripheral, is designed to receive an S/PDIF flow compliant with
+> +IEC-60958 and IEC-61937.
+> +
+> +Required properties:
+> +  - compatible: should be "st,stm32h7-spdifrx"
+> +  - reg: cpu DAI IP base address and size
+> +  - clocks: must contain an entry for kclk (used as S/PDIF signal reference)
+> +  - clock-names: must contain "kclk"
+> +  - interrupts: cpu DAI interrupt line
+> +  - dmas: DMA specifiers for audio data DMA and iec control flow DMA
+> +    See STM32 DMA bindings, Documentation/devicetree/bindings/dma/stm32-dma.txt
+> +  - dma-names: two dmas have to be defined, "rx" and "rx-ctrl"
+> +
+> +Optional properties:
+> +  - resets: Reference to a reset controller asserting the SPDIFRX
+> +
+> +The device node should contain one 'port' child node with one child 'endpoint'
+> +node, according to the bindings defined in Documentation/devicetree/bindings/
+> +graph.txt.
+> +
+> +Example:
+> +spdifrx: spdifrx@40004000 {
+> +	compatible = "st,stm32h7-spdifrx";
+> +	reg = <0x40004000 0x400>;
+> +	clocks = <&rcc SPDIFRX_CK>;
+> +	clock-names = "kclk";
+> +	interrupts = <97>;
+> +	dmas = <&dmamux1 2 93 0x400 0x0>,
+> +	       <&dmamux1 3 94 0x400 0x0>;
+> +	dma-names = "rx", "rx-ctrl";
+> +	pinctrl-0 = <&spdifrx_pins>;
+> +	pinctrl-names = "default";
+> +
+> +	spdifrx_port: port {
+> +		cpu_endpoint: endpoint {
+> +			remote-endpoint = <&codec_endpoint>;
+> +		};
+> +	};
+> +};
+> +
+> +spdif_in: spdif-in {
+> +	compatible = "linux,spdif-dir";
 
-Fix bug in arecord --max-file-time where the file size could overflow 32 bits
+What is this? It should go.
 
-Signed-off-by: Scott Gilliland <scott.gilliland@gatech.edu>
----
- aplay/aplay.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/aplay/aplay.c b/aplay/aplay.c
-index f793c82..00af662 100644
---- a/aplay/aplay.c
-+++ b/aplay/aplay.c
-@@ -3027,7 +3027,7 @@ static void capture(char *orig_name)
-        if (count == 0)
-                count = LLONG_MAX;
-        /* compute the number of bytes per file */
--       max_file_size = max_file_time *
-+       max_file_size = (long long) max_file_time *
-                snd_pcm_format_size(hwparams.format,
-                                    hwparams.rate * hwparams.channels);
-        /* WAVE-file should be even (I'm not sure), but wasting one byte
--- 
-2.11.0
+Rob
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
