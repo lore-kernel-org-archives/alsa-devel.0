@@ -1,16 +1,22 @@
-From: "Gilliland, Scott M" <scott.gilliland@gatech.edu>
-Subject: Bug in ALSA-utils/arecord with --max-file-time
-Date: Thu, 22 Jun 2017 22:08:58 +0000
-Message-ID: <CY4PR07MB354415A92C4678709F99FD948DDB0@CY4PR07MB3544.namprd07.prod.outlook.com>
+From: Felipe Contreras <felipe.contreras@gmail.com>
+Subject: Re: Constant headphone noise on Dell XPS 13 9365
+Date: Thu, 22 Jun 2017 19:11:03 -0500
+Message-ID: <CAMP44s1Uj8XR60pDH-Qz84XB=pVH1rhA6Ou_XEqJVPJ7-f1waw@mail.gmail.com>
+References: <CAMP44s000FA3BAQEwqxPQxUGeR4U=PhByJfAAA9q74M8=6iTyQ@mail.gmail.com>
+ <s5h1sr4dh3w.wl-tiwai@suse.de>
+ <CAMP44s1tQ0Ss21v1OuyFWS3CtpQzO8Qid+Q8GcE0x9VFc=DPJA@mail.gmail.com>
+ <s5htw40bznn.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="_002_CY4PR07MB354415A92C4678709F99FD948DDB0CY4PR07MB3544namp_"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM03-DM3-obe.outbound.protection.outlook.com
- (mail-dm3nam03on0120.outbound.protection.outlook.com [104.47.41.120])
- by alsa0.perex.cz (Postfix) with ESMTP id CE10B266D83
- for <alsa-devel@alsa-project.org>; Fri, 23 Jun 2017 00:09:00 +0200 (CEST)
-Content-Language: en-US
+Received: from mail-vk0-f66.google.com (mail-vk0-f66.google.com
+ [209.85.213.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 872E8266DB8
+ for <alsa-devel@alsa-project.org>; Fri, 23 Jun 2017 02:11:05 +0200 (CEST)
+Received: by mail-vk0-f66.google.com with SMTP id p62so885425vkp.0
+ for <alsa-devel@alsa-project.org>; Thu, 22 Jun 2017 17:11:05 -0700 (PDT)
+In-Reply-To: <s5htw40bznn.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,86 +26,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---_002_CY4PR07MB354415A92C4678709F99FD948DDB0CY4PR07MB3544namp_
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+On Wed, May 31, 2017 at 2:21 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Wed, 31 May 2017 20:56:53 +0200,
+> Felipe Contreras wrote:
+>>
+>> On Wed, May 31, 2017 at 1:19 PM, Takashi Iwai <tiwai@suse.de> wrote:
+>>
+>> > Is there "Loopback Mixer" switch?  If yes and it's on, try to turn it
+>> > off.  The analog loopback is often the source of the unknown noise.
+>>
+>> Yes, "Loopback Mixing". it was off.
+>>
+>> > Other than that, try to apply the existing quirks.  Some of them are
+>> > applicable via model option of snd-hda-intel module.
+>>
+>> Which quirks should I try?
+>
+> Check your codec chip, and then see which model option is available.
 
-Hi All,
+It's a Realtek ALC3271. I don't see any model options available for
+this, but I checked the code and it has the same codec vendor ID as
+ALC269 so I tried all the model fixups I saw in alc269_fixup_models
+with no luck.
 
-I seem to have found a minor bug in aplay, within alsa-utils 1.1.4. It's po=
-ssible that I'm the first person who's ever hit it. This appears to be the =
-correct place to report it; if not, I humbly apologize, and ask for directi=
-on on where to submit this.
+However, I noticed something interesting; when I enabled the
+"dell-headset-dock" fixup, the noises got louder, and I noticed a
+pattern. It seems everything else I do in the laptop results in a
+noise; moving the mouse, pressing a key on the keyboard, even a cursor
+blinking on the screen results in a distinguishable noise. After a
+while the noises lower in volume, as before, but the patter is still
+there, is just that I hadn't noticed.
 
-In aplay.c, around line 3030, we do this calculation:
+Any ideas?
 
-        max_file_size =3D max_file_time *
-                snd_pcm_format_size(hwparams.format,
-                                    hwparams.rate * hwparams.channels);
-
-We do this to convert max_file_time from the '--max-file-time' parameter (a=
-n int) into max_file_size, a file length in bytes (a long long). Since snd_=
-pcm_format_size() may return something 32-bit, this might overflow 32-bits =
-when we do the multiplication, wasting the extra bytes of max_file_size.=20
-
-On my test case on an armv7l system, a 1800-second file at 192 KHz recorded=
- in S24_3LE doesn't overflow, but recording in S32_LE does. I accidentally =
-found an edge case.  In case anyone wants to know, the failure mode is that=
- arecord will repeatedly create 44 byte .wav files very quickly, since thes=
-e are larger than the negative max file size. This continues until you have=
- a directory full of thousands of 44-byte files. Hilarious.
-
-A simple change to cast max_file_time to a long long fixes this in my test =
-case. There might be some cleaner solution, but this at least worked for me=
-.
-
-        max_file_size =3D (long long) max_file_time *
-                snd_pcm_format_size(hwparams.format,
-                                    hwparams.rate * hwparams.channels);
-
-Hopefully someone can vet this and carry it over to git. I've attached a pa=
-tch file as well.
-
---
-
-Additionally, while working to report this, I noticed that the bug tracker =
-link on the sidebar of https://www.alsa-project.org/main/index.php/Main_Pag=
-e is a dead link.
-
--Scott
-
---=20
-Scott Gilliland
-imtc.gatech.edu/people/scott-gilliland
-
---_002_CY4PR07MB354415A92C4678709F99FD948DDB0CY4PR07MB3544namp_
-Content-Type: text/plain; name="max-size-cast.txt"
-Content-Description: max-size-cast.txt
-Content-Disposition: attachment; filename="max-size-cast.txt"; size=571;
-	creation-date="Thu, 22 Jun 2017 22:02:12 GMT";
-	modification-date="Thu, 22 Jun 2017 22:02:12 GMT"
-Content-Transfer-Encoding: base64
-
-ZGlmZiAtLWdpdCBhL2Fsc2EtdXRpbHMtMS4xLjQvYXBsYXkvYXBsYXkuYyBiL2Fsc2EtdXRpbHMt
-MS4xLjQtbWF4Zml4L2FwbGF5L2FwbGF5LmMKaW5kZXggZjc5M2M4Mi4uMDBhZjY2MiAxMDA2NDQK
-LS0tIGEvYWxzYS11dGlscy0xLjEuNC9hcGxheS9hcGxheS5jCisrKyBiL2Fsc2EtdXRpbHMtMS4x
-LjQtbWF4Zml4L2FwbGF5L2FwbGF5LmMKQEAgLTMwMjcsNyArMzAyNyw3IEBAIHN0YXRpYyB2b2lk
-IGNhcHR1cmUoY2hhciAqb3JpZ19uYW1lKQogCWlmIChjb3VudCA9PSAwKQogCQljb3VudCA9IExM
-T05HX01BWDsKIAkvKiBjb21wdXRlIHRoZSBudW1iZXIgb2YgYnl0ZXMgcGVyIGZpbGUgKi8KLQlt
-YXhfZmlsZV9zaXplID0gbWF4X2ZpbGVfdGltZSAqCisJbWF4X2ZpbGVfc2l6ZSA9IChsb25nIGxv
-bmcpIG1heF9maWxlX3RpbWUgKgogCQlzbmRfcGNtX2Zvcm1hdF9zaXplKGh3cGFyYW1zLmZvcm1h
-dCwKIAkJCQkgICAgaHdwYXJhbXMucmF0ZSAqIGh3cGFyYW1zLmNoYW5uZWxzKTsKIAkvKiBXQVZF
-LWZpbGUgc2hvdWxkIGJlIGV2ZW4gKEknbSBub3Qgc3VyZSksIGJ1dCB3YXN0aW5nIG9uZSBieXRl
-Cg==
-
---_002_CY4PR07MB354415A92C4678709F99FD948DDB0CY4PR07MB3544namp_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---_002_CY4PR07MB354415A92C4678709F99FD948DDB0CY4PR07MB3544namp_--
+-- 
+Felipe Contreras
