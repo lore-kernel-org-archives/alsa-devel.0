@@ -1,84 +1,189 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: rt5645: enable speaker protection
-	features
-Date: Fri, 23 Jun 2017 12:33:24 +0100
-Message-ID: <20170623113324.cdtfp57gaatrpojc@sirena.org.uk>
-References: <1498184697-2156-1-git-send-email-bardliao@realtek.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5014896960894676089=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id ADEFA266AE9
- for <alsa-devel@alsa-project.org>; Fri, 23 Jun 2017 13:33:35 +0200 (CEST)
-In-Reply-To: <1498184697-2156-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, albertchen@realtek.com, alexlee@realtek.com, shumingf@realtek.com, flove@realtek.com
+Subject: Applied "ASoC: audio-graph-scu-card: support 2nd codec endpoint on DT" to the asoc tree
+Date: Fri, 23 Jun 2017 13:03:36 +0100
+Message-ID: <E1dONJI-0006Ko-VZ@debutante>
+References: <87fuesczrm.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-renesas-soc-owner@vger.kernel.org>
+In-Reply-To: <87fuesczrm.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-renesas-soc-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-renesas-soc@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Simon <horms@verge.net.au>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============5014896960894676089==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="vo3i7wnx7jzvjib2"
-Content-Disposition: inline
+   ASoC: audio-graph-scu-card: support 2nd codec endpoint on DT
 
+has been applied to the asoc tree at
 
---vo3i7wnx7jzvjib2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Fri, Jun 23, 2017 at 10:24:57AM +0800, Bard Liao wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> This patch is uploaded for enabling the speaker protection features
-> of the audio codec.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-No control of these?
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> @@ -171,7 +172,7 @@ static const struct reg_default rt5645_reg[] = {
->  	{ 0x9c, 0x0aea },
->  	{ 0x9d, 0x000c },
->  	{ 0x9e, 0x0400 },
-> -	{ 0xa0, 0xa0a8 },
-> +	{ 0xa0, 0xa0e8 },
->  	{ 0xa1, 0x0059 },
->  	{ 0xa2, 0x0001 },
->  	{ 0xae, 0x6000 },
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-You shouldn't be changing the register defaults away from the physical
-defaults, just do it with a normal register write.  Changing the
-defaults will break cache resyncing.
+Thanks,
+Mark
 
---vo3i7wnx7jzvjib2
-Content-Type: application/pgp-signature; name="signature.asc"
+>From f1f940490d3ccff96da9cc81d57c2c083c398a18 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 22 Jun 2017 06:22:49 +0000
+Subject: [PATCH] ASoC: audio-graph-scu-card: support 2nd codec endpoint on DT
 
------BEGIN PGP SIGNATURE-----
+audio-graph-scu-card can handle below connection which is mainly
+for sound mixing purpose.
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllM/IQACgkQJNaLcl1U
-h9CUdQgAhwSTtAiPalSbtiKrmMfDcjoMBSznVjLWWskwhZcVgCcrcsl0sRsNt17V
-/VWcYhwOS6yw4jgbTRYOJScpnLWPIc9dOnL/oG5cxRZ4wxBVMX0NekQmklnJSWtt
-QW7hlo0sjMLMrjaoYf0hJO0KLzew3BmfZuYB9D3FIOoIjc+iGifADDJaFrmciqpR
-oT/eIuH3uTPM7Fv3UudBbUOfZ6OpZTfwy+xYIvJ/yIFfbd52Gv9MmpBtoLFROJhV
-H5vACcUFKjVeHN7E+EYFI5DKH2kzxh0Hpr2K6PL03KogbIAzy9X9rGNUqeXFCFnk
-7nZgz0sPTj1r0ix/SK7Uvxca2SwCNA==
-=2SXJ
------END PGP SIGNATURE-----
+	+----------+   +-------+
+	| CPU0--+--|-->| Codec |
+	|       |  |   +-------+
+	| CPU1--+  |
+	+----------+
 
---vo3i7wnx7jzvjib2--
+>From OF-graph point of view, it should have
+CPU0 <-> Codec, and CPU1 <-> Codec on DT.
+But current driver doesn't care about 2nd connection
+of Codec, because it is dummy from DPCM point of view.
 
---===============5014896960894676089==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+This patch can care 2nd Codec connection, and it should be
+supported from OF-graph point of view.
+It still have backward compatibility.
 
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ .../bindings/sound/audio-graph-scu-card.txt        |  9 +++++--
+ sound/soc/generic/audio-graph-scu-card.c           | 28 +++++++++++++++++++---
+ 2 files changed, 32 insertions(+), 5 deletions(-)
 
---===============5014896960894676089==--
+diff --git a/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt b/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
+index b63c5594bbb3..8b8afe9fcb31 100644
+--- a/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
++++ b/Documentation/devicetree/bindings/sound/audio-graph-scu-card.txt
+@@ -90,9 +90,12 @@ Example 2. 2 CPU 1 Codec (Mixing)
+ 		...
+ 
+ 		port {
+-			codec_endpoint: endpoint {
++			codec_endpoint0: endpoint {
+ 				remote-endpoint = <&cpu_endpoint0>;
+ 			};
++			codec_endpoint1: endpoint {
++				remote-endpoint = <&cpu_endpoint1>;
++			};
+ 		};
+ 	};
+ 
+@@ -101,7 +104,7 @@ Example 2. 2 CPU 1 Codec (Mixing)
+ 		ports {
+ 			cpu_port0: port {
+ 				cpu_endpoint0: endpoint {
+-					remote-endpoint = <&codec_endpoint>;
++					remote-endpoint = <&codec_endpoint0>;
+ 
+ 					dai-format = "left_j";
+ 					...
+@@ -109,6 +112,8 @@ Example 2. 2 CPU 1 Codec (Mixing)
+ 			};
+ 			cpu_port1: port {
+ 				cpu_endpoint1: endpoint {
++					remote-endpoint = <&codec_endpoint1>;
++
+ 					dai-format = "left_j";
+ 					...
+ 				};
+diff --git a/sound/soc/generic/audio-graph-scu-card.c b/sound/soc/generic/audio-graph-scu-card.c
+index 061c7a60d6b4..dcd2df37bc3b 100644
+--- a/sound/soc/generic/audio-graph-scu-card.c
++++ b/sound/soc/generic/audio-graph-scu-card.c
+@@ -183,6 +183,8 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
+ 	struct device_node *cpu_ep;
+ 	struct device_node *codec_ep;
+ 	struct device_node *rcpu_ep;
++	struct device_node *codec_port;
++	struct device_node *codec_port_old;
+ 	unsigned int daifmt = 0;
+ 	int dai_idx, ret;
+ 	int rc, codec;
+@@ -235,6 +237,7 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
+ 	}
+ 
+ 	dai_idx = 0;
++	codec_port_old = NULL;
+ 	for (codec = 0; codec < 2; codec++) {
+ 		/*
+ 		 * To listup valid sounds continuously,
+@@ -245,15 +248,22 @@ static int asoc_graph_card_parse_of(struct graph_card_data *priv)
+ 			cpu_port = it.node;
+ 			cpu_ep   = of_get_next_child(cpu_port, NULL);
+ 			codec_ep = of_graph_get_remote_endpoint(cpu_ep);
++			codec_port = of_graph_get_port_parent(codec_ep);
+ 
+ 			of_node_put(cpu_port);
+ 			of_node_put(cpu_ep);
+ 			of_node_put(codec_ep);
++			of_node_put(codec_port);
+ 
+ 			if (codec) {
+-				if (!codec_ep)
++				if (!codec_port)
+ 					continue;
+ 
++				if (codec_port_old == codec_port)
++					continue;
++
++				codec_port_old = codec_port;
++
+ 				/* Back-End (= Codec) */
+ 				ret = asoc_graph_card_dai_link_of(codec_ep, priv, daifmt, dai_idx++, 0);
+ 				if (ret < 0)
+@@ -284,22 +294,34 @@ static int asoc_graph_get_dais_count(struct device *dev)
+ 	struct device_node *cpu_port;
+ 	struct device_node *cpu_ep;
+ 	struct device_node *codec_ep;
++	struct device_node *codec_port;
++	struct device_node *codec_port_old;
+ 	int count = 0;
+ 	int rc;
+ 
++	codec_port_old = NULL;
+ 	of_for_each_phandle(&it, rc, node, "dais", NULL, 0) {
+ 		cpu_port = it.node;
+ 		cpu_ep   = of_get_next_child(cpu_port, NULL);
+ 		codec_ep = of_graph_get_remote_endpoint(cpu_ep);
++		codec_port = of_graph_get_port_parent(codec_ep);
+ 
+ 		of_node_put(cpu_port);
+ 		of_node_put(cpu_ep);
+ 		of_node_put(codec_ep);
++		of_node_put(codec_port);
+ 
+ 		if (cpu_ep)
+ 			count++;
+-		if (codec_ep)
+-			count++;
++
++		if (!codec_port)
++			continue;
++
++		if (codec_port_old == codec_port)
++			continue;
++
++		count++;
++		codec_port_old = codec_port;
+ 	}
+ 
+ 	return count;
+-- 
+2.13.1
