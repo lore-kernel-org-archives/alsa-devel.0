@@ -1,129 +1,70 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 0/3] ALSA: Add the explicit appl_ptr sync
-	support
-Date: Fri, 23 Jun 2017 17:27:06 +0900
-Message-ID: <e5e8e0b3-8d5e-c29f-cd29-67efd812c6d7@sakamocchi.jp>
-References: <20170620153352.27775-1-tiwai@suse.de>
- <32c68d13-d522-209a-9965-37440d096b48@sakamocchi.jp>
- <s5hzid1scys.wl-tiwai@suse.de>
- <f1878604-3fb8-593f-ee12-2a1a2c226e4d@sakamocchi.jp>
- <s5hwp84qumh.wl-tiwai@suse.de>
- <bca6a38c-7c60-a5b5-e77a-3d93b8ff7438@sakamocchi.jp>
- <s5hh8z8ovlt.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 9B607266D46
- for <alsa-devel@alsa-project.org>; Fri, 23 Jun 2017 10:27:08 +0200 (CEST)
-In-Reply-To: <s5hh8z8ovlt.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Quentin Schulz <quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Subject: [PATCH 1/6] clk: at91: clk-generated: remove useless divisor loop
+Date: Fri, 23 Jun 2017 11:00:54 +0200
+Message-ID: <20170623090059.8371-2-quentin.schulz@free-electrons.com>
+References: <20170623090059.8371-1-quentin.schulz@free-electrons.com>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <20170623090059.8371-1-quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: mturquette-rdvid1DuHRBWk0Htik3J/w@public.gmane.org, sboyd-sgV2jX0FEOL9JmXXK+q4OQ@public.gmane.org, robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, mark.rutland-5wv7dgnIgG8@public.gmane.org, nicolas.ferre-UWL1GkI3JZL3oGB3hsPCZA@public.gmane.org, alexandre.belloni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, linux-I+IVW8TIWO2tmTQ+vhA3Yw@public.gmane.org, boris.brezillon-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org, lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, perex-/Fr2/VpizcU@public.gmane.org, tiwai-IBi9RG/b67k@public.gmane.org
+Cc: Quentin Schulz <quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, linux-clk-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, thomas.petazzoni-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The driver requests the current clk rate of each of its parent clocks to
+decide whether a clock rate is suitable or not. It does not request
+determine_rate from a parent clock which could request a rate change in
+parent clock (i.e. there is no parent rate propagation).
 
-On Jun 23 2017 01:06, Takashi Iwai wrote:
-> On Thu, 22 Jun 2017 17:35:34 +0200,
-> Takashi Sakamoto wrote:
->>
->> Hi,
->>
->> On Jun 22 2017 17:44, Takashi Iwai wrote:
->>>>> Currently alsa-lib issues sync_ptr() also for obtaining the PCM state
->>>>> from the kernel, and this also triggers ack unless SYNC_APPL_PTR flag
->>>>> is set.  The commit f8ff2f28ba49 tried to reduce the ack calls  by
->>>>> filtering in pcm_lib_apply_appl_ptr() side, but it has a side-effect
->>>>> as you noticed.
->>>>>
->>>>> There can be a few options to cover this for the newer alsa-lib, for
->>>>> example:
->>>>>
->>>>> A. Add a new bit flag to sync_ptr() allowing only the state update
->>>>>       and/or the explicit applptr update.
->>>>>
->>>>> B. Introduce a completely new ioctl for the appl_ptr sync.
->>>>>
->>>>> C. Keep disabling control mmap while allowing state mmap.
->>>>>
->>>>> D. Track the last appl_ptr individually from runtime->control->appl_ptr
->>>>>       and compare/update with this value in pcm_lib_apply_appl_ptr().
->>>>>
->>>>> E. Remove the filtering from pcm_lib_apply_appl_ptr(), let each driver
->>>>>       optimize if needed.
->>>>>
->>>>> Currently I'm thinking of (A), but open for all and other possible
->>>>> options.  All these may need the check of user_pversion so that the
->>>>> old code still works as is.
->>>>
->>>> I prefer C) and I'm working for it, because protocol validation of
->>>> userland is not needed in kernel land, as long as I understand. But if
->>>> allowed to add more changes to protocol/interface, A) and B) could be
->>>> within my candidates.
->>>
->>> (C) was my original idea, too, so it doesn't sound bad to me, too :)
->>> But, we're bumping the protocol version, so more intensive changes
->>> should be OK.  Let's see.
->>
->> I posted patchset for alsa-lib for your C) idea. In this patchset,
->> mapping for status/control data is processed independently,
->>
->> [alsa-devel] [alsa-lib][RFC][PATCH 0/9] pcm: handle status/control
->> mapping independently
->> http://mailman.alsa-project.org/pipermail/alsa-devel/2017-June/122130.html
-> 
-> The patchset looks good through a quick glance.
-> I'd need to test it more intensively later, but I'm basically fine to
-> go in that direction.  In general, this change wouldn't conflict with
-> other improvements.
+We know the rate we want (passed along req argument of the function) and
+the parent clock rate, thus we know the closest rounded divisor, we
+don't need to iterate over the available divisors to find the best one
+for a given clock.
 
-Thanks for your positive comment. I'm preparing for new patchset with my 
-further self-check.
+Signed-off-by: Quentin Schulz <quentin.schulz-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+---
+ drivers/clk/at91/clk-generated.c | 25 ++++++++++++-------------
+ 1 file changed, 12 insertions(+), 13 deletions(-)
 
->> Additionally, some helper functions to call ioctl(2) with
->> SNDRV_PCM_IOCTL_SYNC_PTR for several purposes. I think to get help
->> from it for our arrangement to A) and B).
->>
->> I agree with the idea in A) to add a flag to update state only. For
->> the other probabilities, I need time to consider about it.
-> 
-> Yeah, let's take some time.
-> 
-> Meanwhile, I'd like to merge the basic part in order to make
-> maintenance easier.  Let's sort out which ones to be applied right
-> now.
-> 
-> At least, the following one should be OK:
-> 
->    [PATCH v2 1/3] ALSA: pcm: Add the explicit appl_ptr sync support
-> 
-> May I re-apply your reviewed-by tag for this?
+diff --git a/drivers/clk/at91/clk-generated.c b/drivers/clk/at91/clk-generated.c
+index 07c8f701e51c..dab7002937e6 100644
+--- a/drivers/clk/at91/clk-generated.c
++++ b/drivers/clk/at91/clk-generated.c
+@@ -124,19 +124,18 @@ static int clk_generated_determine_rate(struct clk_hw *hw,
+ 		    (gck->range.max && min_rate > gck->range.max))
+ 			continue;
+ 
+-		for (div = 1; div < GENERATED_MAX_DIV + 2; div++) {
+-			tmp_rate = DIV_ROUND_CLOSEST(parent_rate, div);
+-			tmp_diff = abs(req->rate - tmp_rate);
+-
+-			if (best_diff < 0 || best_diff > tmp_diff) {
+-				best_rate = tmp_rate;
+-				best_diff = tmp_diff;
+-				req->best_parent_rate = parent_rate;
+-				req->best_parent_hw = parent;
+-			}
+-
+-			if (!best_diff || tmp_rate < req->rate)
+-				break;
++		div = DIV_ROUND_CLOSEST(parent_rate, req->rate);
++		if (!div)
++			tmp_rate = parent_rate;
++		else
++			tmp_rate = parent_rate / div;
++		tmp_diff = abs(req->rate - tmp_rate);
++
++		if (best_diff < 0 || best_diff > tmp_diff) {
++			best_rate = tmp_rate;
++			best_diff = tmp_diff;
++			req->best_parent_rate = parent_rate;
++			req->best_parent_hw = parent;
+ 		}
+ 
+ 		if (!best_diff)
+-- 
+2.11.0
 
-I did it just now. Let's merge it.
-
-> For alsa-lib side, a few of yours and my patches are merely cleanups,
-> so we should apply them beforehand, too.
-> 
->    [PATCH alsa-lib 3/4] pcm: hw: Remove superfluous call of snd_pcm_set_appl_ptr()
->    [alsa-lib][RFC][PATCH 1/9] pcm: obsolete 'mmap_emulation' parameter of snd_pcm_hw_open_fd()
->    [alsa-lib][RFC][PATCH 2/9] pcm: minor code refactoring for ioctl call
-
-I'm OK to apply the cleanups. I already reviewed the first patch so 
-let's merge it. I'll post the rest of two without RFC rebasing to 
-current master a few hours later.
-
-
-Thanks
-
-Takashi Sakamoto
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
