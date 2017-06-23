@@ -1,111 +1,41 @@
-From: Alex Deucher <alexdeucher@gmail.com>
-Subject: Re: [PATCH 1/8] drm/amd/amdgpu: Added asic_type as ACP DMA driver
- platform data
-Date: Fri, 23 Jun 2017 13:05:37 -0400
-Message-ID: <CADnq5_MT+h6nOmXfVi42tH9G917wTRguBdMC02zmgRuH2dD-iA@mail.gmail.com>
-References: <1498235706-31111-1-git-send-email-alexander.deucher@amd.com>
- <1498235706-31111-2-git-send-email-alexander.deucher@amd.com>
- <fb879fdd-b241-7368-9c33-7a78dafa491d@vodafone.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/2] Lenovo tablet fixes
+Date: Fri, 23 Jun 2017 12:20:59 -0500
+Message-ID: <20170623172101.29079-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <fb879fdd-b241-7368-9c33-7a78dafa491d@vodafone.de>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: =?UTF-8?Q?Christian_K=C3=B6nig?= <deathsimple@vodafone.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, amd-gfx list <amd-gfx@lists.freedesktop.org>, rajeev kumar <rajeevkumar.linux@gmail.com>, Mark Brown <broonie@kernel.org>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, perex@perex.cz
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0009F266AE2
+ for <alsa-devel@alsa-project.org>; Fri, 23 Jun 2017 19:21:17 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBKdW4gMjMsIDIwMTcgYXQgMTI6NDMgUE0sIENocmlzdGlhbiBLw7ZuaWcKPGRlYXRo
-c2ltcGxlQHZvZGFmb25lLmRlPiB3cm90ZToKPiBBbSAyMy4wNi4yMDE3IHVtIDE4OjM0IHNjaHJp
-ZWIgQWxleCBEZXVjaGVyOgo+Pgo+PiBGcm9tOiBWaWplbmRhciBNdWt1bmRhIDxWaWplbmRhci5N
-dWt1bmRhQGFtZC5jb20+Cj4+Cj4+IGFzaWNfdHlwZSBpbmZvcm1hdGlvbiBpcyBwYXNzZWQgdG8g
-QUNQIERNQSBEcml2ZXIgYXMgcGxhdGZvcm0gZGF0YS4KPj4gV2UgbmVlZCB0aGlzIHRvIGRldGVy
-bWluZSB3aGV0aGVyIHRoZSBhc2ljIGlzIENhcnJpem8gKENaKSBvcgo+PiBTdG9uZXkgKFNUKSBp
-biB0aGUgYWNwIHNvdW5kIGRyaXZlci4KPj4KPj4gUmV2aWV3ZWQtYnk6IEFsZXggRGV1Y2hlciA8
-YWxleGFuZGVyLmRldWNoZXJAYW1kLmNvbT4KPj4gU2lnbmVkLW9mZi1ieTogVmlqZW5kYXIgTXVr
-dW5kYSA8VmlqZW5kYXIuTXVrdW5kYUBhbWQuY29tPgo+PiBTaWduZWQtb2ZmLWJ5OiBBbGV4IERl
-dWNoZXIgPGFsZXhhbmRlci5kZXVjaGVyQGFtZC5jb20+Cj4+IC0tLQo+PiAgIGRyaXZlcnMvZ3B1
-L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9hY3AuYyB8IDQgKysrKwo+PiAgIHNvdW5kL3NvYy9hbWQv
-YWNwLXBjbS1kbWEuYyAgICAgICAgICAgICB8IDggKystLS0tLS0KPj4gICBzb3VuZC9zb2MvYW1k
-L2FjcC5oICAgICAgICAgICAgICAgICAgICAgfCA3ICsrKysrKysKPj4gICAzIGZpbGVzIGNoYW5n
-ZWQsIDEzIGluc2VydGlvbnMoKyksIDYgZGVsZXRpb25zKC0pCj4+Cj4+IGRpZmYgLS1naXQgYS9k
-cml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfYWNwLmMKPj4gYi9kcml2ZXJzL2dwdS9k
-cm0vYW1kL2FtZGdwdS9hbWRncHVfYWNwLmMKPj4gaW5kZXggMDY4NzlkMS4uN2EyYTc2NSAxMDA2
-NDQKPj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X2FjcC5jCj4+ICsr
-KyBiL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9hY3AuYwo+PiBAQCAtMjYyLDYg
-KzI2Miw3IEBAIHN0YXRpYyBpbnQgYWNwX2h3X2luaXQodm9pZCAqaGFuZGxlKQo+PiAgICAgICAg
-IHVpbnQ2NF90IGFjcF9iYXNlOwo+PiAgICAgICAgIHN0cnVjdCBkZXZpY2UgKmRldjsKPj4gICAg
-ICAgICBzdHJ1Y3QgaTJzX3BsYXRmb3JtX2RhdGEgKmkyc19wZGF0YTsKPj4gKyAgICAgICB1MzIg
-YXNpY190eXBlOwo+PiAgICAgICAgIHN0cnVjdCBhbWRncHVfZGV2aWNlICphZGV2ID0gKHN0cnVj
-dCBhbWRncHVfZGV2aWNlICopaGFuZGxlOwo+PiAgIEBAIC0yNzEsNiArMjcyLDcgQEAgc3RhdGlj
-IGludCBhY3BfaHdfaW5pdCh2b2lkICpoYW5kbGUpCj4+ICAgICAgICAgaWYgKCFpcF9ibG9jaykK
-Pj4gICAgICAgICAgICAgICAgIHJldHVybiAtRUlOVkFMOwo+PiAgICsgICAgIGFzaWNfdHlwZSA9
-IGFkZXYtPmFzaWNfdHlwZTsKPj4gICAgICAgICByID0gYW1kX2FjcF9od19pbml0KGFkZXYtPmFj
-cC5jZ3NfZGV2aWNlLAo+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaXBfYmxvY2stPnZl
-cnNpb24tPm1ham9yLAo+PiBpcF9ibG9jay0+dmVyc2lvbi0+bWlub3IpOwo+PiAgICAgICAgIC8q
-IC1FTk9ERVYgbWVhbnMgYm9hcmQgdXNlcyBBWiByYXRoZXIgdGhhbiBBQ1AgKi8KPj4gQEAgLTM1
-NSw2ICszNTcsOCBAQCBzdGF0aWMgaW50IGFjcF9od19pbml0KHZvaWQgKmhhbmRsZSkKPj4gICAg
-ICAgICBhZGV2LT5hY3AuYWNwX2NlbGxbMF0ubmFtZSA9ICJhY3BfYXVkaW9fZG1hIjsKPj4gICAg
-ICAgICBhZGV2LT5hY3AuYWNwX2NlbGxbMF0ubnVtX3Jlc291cmNlcyA9IDQ7Cj4+ICAgICAgICAg
-YWRldi0+YWNwLmFjcF9jZWxsWzBdLnJlc291cmNlcyA9ICZhZGV2LT5hY3AuYWNwX3Jlc1swXTsK
-Pj4gKyAgICAgICBhZGV2LT5hY3AuYWNwX2NlbGxbMF0ucGxhdGZvcm1fZGF0YSA9ICZhc2ljX3R5
-cGU7Cj4+ICsgICAgICAgYWRldi0+YWNwLmFjcF9jZWxsWzBdLnBkYXRhX3NpemUgPSBzaXplb2Yo
-YXNpY190eXBlKTsKPgo+Cj4gSGF2ZSB0aGUgcGFpbmtpbGxlcnMgamVsbHlmaWVkIG15IGJyYWlu
-IG9yIGFyZSB5b3Ugc2V0dGluZyBhIHBvaW50ZXIgaW4gdGhlCj4gYW1kZ3B1IGRldmljZSBzdHJ1
-Y3R1cmUgdG8gc29tZSB2YXJpYWJsZSBvbiB0aGUgc3RhY2s/Cj4KPiBJZiBpdCdzIGp1c3QgZm9y
-IGluaXRpYWxpemF0aW9uIHRoZW4gdGhhdCdzIHByb2JhYmx5IG9rLCBidXQgSSB3b3VsZCByZXNl
-dAo+IHRoZSBwb2ludGVyIGF0IHRoZSBlbmQgb2YgdGhlIGZ1bmN0aW9uLgo+Cj4gT3RoZXJ3aXNl
-IHNvbWVib2R5IG1pZ2h0IGhhdmUgdGhlIGlkZWEgdG8gZGVyZWZlcmVuY2UgaXQgbGF0ZXIgb24g
-YW5kIHRoYXQKPiBjYW4gb25seSBsZWFkIHRvIHRyb3VibGUuCgpJIHRoaW5rIGl0J3Mgb2sgYmVj
-YXVzZSB0aGUgaG90cGx1ZyBvZiB0aGUgYXVkaW8gZGV2aWNlIGlzIHRyaWdnZXJlZApmcm9tIHRo
-aXMgZnVuY3Rpb24sIHNvIHRoZSBhdWRpbyBkZXZpY2Ugc2hvdWxkIGJlIHByb2JlZCBieSB0aGUg
-dGltZQp0aGlzIHZhcmlhYmxlIGdvZXMgb3V0IG9mIHNjb3BlLiAgVGhhdCBzYWlkLCBpdCB3b3Vs
-ZCBwcm9iYWJseSBiZQpiZXR0ZXIgdG8gdXNlIHRoZSBhc2ljX3R5cGUgZnJvbSB0aGUgR1BVIGRy
-aXZlciBpbnN0YW5jZSBkaXJlY3RseQpyYXRoZXIgdGhhbiBhIHN0YWNrIHZhcmlhYmxlLgoKQWxl
-eAoKCj4KPiBDaHJpc3RpYW4uCj4KPgo+PiAgICAgICAgIGFkZXYtPmFjcC5hY3BfY2VsbFsxXS5u
-YW1lID0gImRlc2lnbndhcmUtaTJzIjsKPj4gICAgICAgICBhZGV2LT5hY3AuYWNwX2NlbGxbMV0u
-bnVtX3Jlc291cmNlcyA9IDE7Cj4+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvYW1kL2FjcC1wY20t
-ZG1hLmMgYi9zb3VuZC9zb2MvYW1kL2FjcC1wY20tZG1hLmMKPj4gaW5kZXggMDhiMTM5OS4uZGNi
-Zjk5NyAxMDA2NDQKPj4gLS0tIGEvc291bmQvc29jL2FtZC9hY3AtcGNtLWRtYS5jCj4+ICsrKyBi
-L3NvdW5kL3NvYy9hbWQvYWNwLXBjbS1kbWEuYwo+PiBAQCAtNzMsMTIgKzczLDYgQEAgc3RhdGlj
-IGNvbnN0IHN0cnVjdCBzbmRfcGNtX2hhcmR3YXJlCj4+IGFjcF9wY21faGFyZHdhcmVfY2FwdHVy
-ZSA9IHsKPj4gICAgICAgICAucGVyaW9kc19tYXggPSBDQVBUVVJFX01BWF9OVU1fUEVSSU9EUywK
-Pj4gICB9Owo+PiAgIC1zdHJ1Y3QgYXVkaW9fZHJ2X2RhdGEgewo+PiAtICAgICAgIHN0cnVjdCBz
-bmRfcGNtX3N1YnN0cmVhbSAqcGxheV9zdHJlYW07Cj4+IC0gICAgICAgc3RydWN0IHNuZF9wY21f
-c3Vic3RyZWFtICpjYXB0dXJlX3N0cmVhbTsKPj4gLSAgICAgICB2b2lkIF9faW9tZW0gKmFjcF9t
-bWlvOwo+PiAtfTsKPj4gLQo+PiAgIHN0YXRpYyB1MzIgYWNwX3JlZ19yZWFkKHZvaWQgX19pb21l
-bSAqYWNwX21taW8sIHUzMiByZWcpCj4+ICAgewo+PiAgICAgICAgIHJldHVybiByZWFkbChhY3Bf
-bW1pbyArIChyZWcgKiA0KSk7Cj4+IEBAIC05MTYsNiArOTEwLDcgQEAgc3RhdGljIGludCBhY3Bf
-YXVkaW9fcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZQo+PiAqcGRldikKPj4gICAgICAgICBp
-bnQgc3RhdHVzOwo+PiAgICAgICAgIHN0cnVjdCBhdWRpb19kcnZfZGF0YSAqYXVkaW9fZHJ2X2Rh
-dGE7Cj4+ICAgICAgICAgc3RydWN0IHJlc291cmNlICpyZXM7Cj4+ICsgICAgICAgY29uc3QgdTMy
-ICpwZGF0YSA9IHBkZXYtPmRldi5wbGF0Zm9ybV9kYXRhOwo+PiAgICAgICAgIGF1ZGlvX2Rydl9k
-YXRhID0gZGV2bV9remFsbG9jKCZwZGV2LT5kZXYsIHNpemVvZihzdHJ1Y3QKPj4gYXVkaW9fZHJ2
-X2RhdGEpLAo+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgR0ZQX0tF
-Uk5FTCk7Cj4+IEBAIC05MzIsNiArOTI3LDcgQEAgc3RhdGljIGludCBhY3BfYXVkaW9fcHJvYmUo
-c3RydWN0IHBsYXRmb3JtX2RldmljZQo+PiAqcGRldikKPj4gICAgICAgICBhdWRpb19kcnZfZGF0
-YS0+cGxheV9zdHJlYW0gPSBOVUxMOwo+PiAgICAgICAgIGF1ZGlvX2Rydl9kYXRhLT5jYXB0dXJl
-X3N0cmVhbSA9IE5VTEw7Cj4+ICsgICAgICAgYXVkaW9fZHJ2X2RhdGEtPmFzaWNfdHlwZSA9ICAq
-cGRhdGE7Cj4+ICAgICAgICAgcmVzID0gcGxhdGZvcm1fZ2V0X3Jlc291cmNlKHBkZXYsIElPUkVT
-T1VSQ0VfSVJRLCAwKTsKPj4gICAgICAgICBpZiAoIXJlcykgewo+PiBkaWZmIC0tZ2l0IGEvc291
-bmQvc29jL2FtZC9hY3AuaCBiL3NvdW5kL3NvYy9hbWQvYWNwLmgKPj4gaW5kZXggMzMwODMyZS4u
-MjhjZjkxNCAxMDA2NDQKPj4gLS0tIGEvc291bmQvc29jL2FtZC9hY3AuaAo+PiArKysgYi9zb3Vu
-ZC9zb2MvYW1kL2FjcC5oCj4+IEBAIC04NCw2ICs4NCwxMyBAQCBzdHJ1Y3QgYXVkaW9fc3Vic3Ry
-ZWFtX2RhdGEgewo+PiAgICAgICAgIHZvaWQgX19pb21lbSAqYWNwX21taW87Cj4+ICAgfTsKPj4g
-ICArc3RydWN0IGF1ZGlvX2Rydl9kYXRhIHsKPj4gKyAgICAgICBzdHJ1Y3Qgc25kX3BjbV9zdWJz
-dHJlYW0gKnBsYXlfc3RyZWFtOwo+PiArICAgICAgIHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAq
-Y2FwdHVyZV9zdHJlYW07Cj4+ICsgICAgICAgdm9pZCBfX2lvbWVtICphY3BfbW1pbzsKPj4gKyAg
-ICAgICB1MzIgYXNpY190eXBlOwo+PiArfTsKPj4gKwo+PiAgIGVudW0gewo+PiAgICAgICAgIEFD
-UF9USUxFX1AxID0gMCwKPj4gICAgICAgICBBQ1BfVElMRV9QMiwKPgo+Cj4KX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlz
-dApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0
-b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+2 patches to enable rt5670 on Baytrail and fix jack detection.
+There are likely follow-up patches or UCM updates needed since
+some users report additional problems with headphones and
+subwoofers [1] but this is already working for a number of people.
+
+[1] Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=96691
+
+Pierre-Louis Bossart (2):
+  ASoC: Intel: cht_bsw_rt5672: 19.2MHz clock for Baytrail platforms
+  ASoC: codecs: rt5670: fix jd mode for Lenovo Miix 2 10
+
+ sound/soc/codecs/rt5670.c               |  9 ++++
+ sound/soc/intel/boards/cht_bsw_rt5672.c | 89 +++++++++++++++++++++++++++++----
+ 2 files changed, 89 insertions(+), 9 deletions(-)
+
+-- 
+2.9.3
