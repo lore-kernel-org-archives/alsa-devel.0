@@ -1,18 +1,23 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v2 1/3] ALSA: pcm: Add the explicit
-	appl_ptr sync support
-Date: Fri, 23 Jun 2017 17:07:50 +0900
-Message-ID: <815c3b0d-de4a-c8d5-f1fa-f13731b917d9@sakamocchi.jp>
-References: <20170621153114.6207-1-tiwai@suse.de>
- <20170621153114.6207-2-tiwai@suse.de>
+Subject: Re: [PATCH 0/3] ALSA: Add the explicit appl_ptr sync
+	support
+Date: Fri, 23 Jun 2017 17:27:06 +0900
+Message-ID: <e5e8e0b3-8d5e-c29f-cd29-67efd812c6d7@sakamocchi.jp>
+References: <20170620153352.27775-1-tiwai@suse.de>
+ <32c68d13-d522-209a-9965-37440d096b48@sakamocchi.jp>
+ <s5hzid1scys.wl-tiwai@suse.de>
+ <f1878604-3fb8-593f-ee12-2a1a2c226e4d@sakamocchi.jp>
+ <s5hwp84qumh.wl-tiwai@suse.de>
+ <bca6a38c-7c60-a5b5-e77a-3d93b8ff7438@sakamocchi.jp>
+ <s5hh8z8ovlt.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
- [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id EF54F266D46
- for <alsa-devel@alsa-project.org>; Fri, 23 Jun 2017 10:07:53 +0200 (CEST)
-In-Reply-To: <20170621153114.6207-2-tiwai@suse.de>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 9B607266D46
+ for <alsa-devel@alsa-project.org>; Fri, 23 Jun 2017 10:27:08 +0200 (CEST)
+In-Reply-To: <s5hh8z8ovlt.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,128 +28,102 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Vinod Koul <vinod.koul@intel.com>, alsa-devel@alsa-project.org, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-On Jun 22 2017 00:31, Takashi Iwai wrote:
-> Currently x86 platforms use the PCM status/control mmaps for
-> transferring the PCM status and appl_ptr between kernel and
-> user-spaces.  The mmap is a most efficient way of communication, but
-> it has a drawback per its nature, namely, it can't notify the change
-> explicitly to kernel.
+On Jun 23 2017 01:06, Takashi Iwai wrote:
+> On Thu, 22 Jun 2017 17:35:34 +0200,
+> Takashi Sakamoto wrote:
+>>
+>> Hi,
+>>
+>> On Jun 22 2017 17:44, Takashi Iwai wrote:
+>>>>> Currently alsa-lib issues sync_ptr() also for obtaining the PCM state
+>>>>> from the kernel, and this also triggers ack unless SYNC_APPL_PTR flag
+>>>>> is set.  The commit f8ff2f28ba49 tried to reduce the ack calls  by
+>>>>> filtering in pcm_lib_apply_appl_ptr() side, but it has a side-effect
+>>>>> as you noticed.
+>>>>>
+>>>>> There can be a few options to cover this for the newer alsa-lib, for
+>>>>> example:
+>>>>>
+>>>>> A. Add a new bit flag to sync_ptr() allowing only the state update
+>>>>>       and/or the explicit applptr update.
+>>>>>
+>>>>> B. Introduce a completely new ioctl for the appl_ptr sync.
+>>>>>
+>>>>> C. Keep disabling control mmap while allowing state mmap.
+>>>>>
+>>>>> D. Track the last appl_ptr individually from runtime->control->appl_ptr
+>>>>>       and compare/update with this value in pcm_lib_apply_appl_ptr().
+>>>>>
+>>>>> E. Remove the filtering from pcm_lib_apply_appl_ptr(), let each driver
+>>>>>       optimize if needed.
+>>>>>
+>>>>> Currently I'm thinking of (A), but open for all and other possible
+>>>>> options.  All these may need the check of user_pversion so that the
+>>>>> old code still works as is.
+>>>>
+>>>> I prefer C) and I'm working for it, because protocol validation of
+>>>> userland is not needed in kernel land, as long as I understand. But if
+>>>> allowed to add more changes to protocol/interface, A) and B) could be
+>>>> within my candidates.
+>>>
+>>> (C) was my original idea, too, so it doesn't sound bad to me, too :)
+>>> But, we're bumping the protocol version, so more intensive changes
+>>> should be OK.  Let's see.
+>>
+>> I posted patchset for alsa-lib for your C) idea. In this patchset,
+>> mapping for status/control data is processed independently,
+>>
+>> [alsa-devel] [alsa-lib][RFC][PATCH 0/9] pcm: handle status/control
+>> mapping independently
+>> http://mailman.alsa-project.org/pipermail/alsa-devel/2017-June/122130.html
 > 
-> The lack of appl_ptr update notification is a problem on a few
-> existing drivers, but it's mostly a small issue and negligible.
-> However, a new type of driver that uses DSP for a deep buffer
-> management requires the exact position of appl_ptr for calculating the
-> buffer prefetch size, and the asynchronous appl_ptr update between
-> kernel and user-spaces becomes a significant problem for it.
-> 
-> How can we enforce user-space to report the appl_ptr update?  The way
-> is relatively simple.  Just by disabling the PCM control mmap, the
-> user-space is supposed to fall back to the mode using SYNC_PTR ioctl,
-> and the kernel gets control over that.  This fallback mode is used in
-> all non-x86 platforms as default, and also in the 32bit compatible
-> model on all platforms including x86.  It's been implemented already
-> over a decade, so we can say it's fairly safe and stably working.
-> 
-> With the help of the knowledge above, this patch introduces a new PCM
-> info flag SNDRV_PCM_INFO_SYNC_APPLPTR for achieving the appl_ptr sync
-> from user-space.  When a driver sets this flag at open, the PCM status
-> / control mmap is disabled, which effectively switches to SYNC_PTR
-> mode in user-space side.
-> 
-> In this version, both PCM status and control mmaps are disabled
-> although only the latter, control mmap, is the target.  It's because
-> the current alsa-lib implementation supposes that both status and
-> control mmaps are always coupled, thus it handles a fatal error when
-> only one of them fails.
-> 
-> Of course, the disablement of the status/control mmaps may bring a
-> slight performance overhead.  Thus, as of now, this should be used
-> only for the dedicated devices that deserves.
-> 
-> Note that the disablement of mmap is a sort of workaround.  In the
-> later patch, we'll introduce the way to identify the protocol version
-> alsa-lib supports, and keep mmap working while the sync_ptr is
-> performed together.
-> 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->   include/uapi/sound/asound.h |  1 +
->   sound/core/pcm_native.c     | 23 +++++++++++++++++++++--
->   2 files changed, 22 insertions(+), 2 deletions(-)
+> The patchset looks good through a quick glance.
+> I'd need to test it more intensively later, but I'm basically fine to
+> go in that direction.  In general, this change wouldn't conflict with
+> other improvements.
 
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Thanks for your positive comment. I'm preparing for new patchset with my 
+further self-check.
 
-I note that this patch changed 'asound.h'. We have a plan to bump up 
-protocol version in future patches.
+>> Additionally, some helper functions to call ioctl(2) with
+>> SNDRV_PCM_IOCTL_SYNC_PTR for several purposes. I think to get help
+>> from it for our arrangement to A) and B).
+>>
+>> I agree with the idea in A) to add a flag to update state only. For
+>> the other probabilities, I need time to consider about it.
+> 
+> Yeah, let's take some time.
+> 
+> Meanwhile, I'd like to merge the basic part in order to make
+> maintenance easier.  Let's sort out which ones to be applied right
+> now.
+> 
+> At least, the following one should be OK:
+> 
+>    [PATCH v2 1/3] ALSA: pcm: Add the explicit appl_ptr sync support
+> 
+> May I re-apply your reviewed-by tag for this?
 
-> diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-> index fd41697cb4d3..7eee52eb7462 100644
-> --- a/include/uapi/sound/asound.h
-> +++ b/include/uapi/sound/asound.h
-> @@ -268,6 +268,7 @@ typedef int __bitwise snd_pcm_subformat_t;
->   #define SNDRV_PCM_INFO_MMAP_VALID	0x00000002	/* period data are valid during transfer */
->   #define SNDRV_PCM_INFO_DOUBLE		0x00000004	/* Double buffering needed for PCM start/stop */
->   #define SNDRV_PCM_INFO_BATCH		0x00000010	/* double buffering */
-> +#define SNDRV_PCM_INFO_SYNC_APPLPTR	0x00000020	/* need the explicit sync of appl_ptr update */
->   #define SNDRV_PCM_INFO_INTERLEAVED	0x00000100	/* channels are interleaved */
->   #define SNDRV_PCM_INFO_NONINTERLEAVED	0x00000200	/* channels are not interleaved */
->   #define SNDRV_PCM_INFO_COMPLEX		0x00000400	/* complex frame organization (mmap only) */
-> diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-> index d35c6614fdab..9ade0c8b54a3 100644
-> --- a/sound/core/pcm_native.c
-> +++ b/sound/core/pcm_native.c
-> @@ -3376,10 +3376,29 @@ static int snd_pcm_mmap_control(struct snd_pcm_substream *substream, struct file
->   	area->vm_flags |= VM_DONTEXPAND | VM_DONTDUMP;
->   	return 0;
->   }
-> +
-> +static bool pcm_status_mmap_allowed(struct snd_pcm_file *pcm_file)
-> +{
-> +	if (pcm_file->no_compat_mmap)
-> +		return false;
-> +	/* Disallow the status/control mmap when SYNC_APPLPTR flag is set;
-> +	 * it enforces the user-space to fall back to snd_pcm_sync_ptr(),
-> +	 * thus it effectively assures the manual update of appl_ptr.
-> +	 * In theory, it should be enough to disallow only PCM control mmap,
-> +	 * but since the current alsa-lib implementation requires both status
-> +	 * and control mmaps always paired, we have to disable both of them.
-> +	 */
-> +	if (pcm_file->substream->runtime->hw.info & SNDRV_PCM_INFO_SYNC_APPLPTR)
-> +		return false;
-> +	return true;
-> +}
-> +
->   #else /* ! coherent mmap */
->   /*
->    * don't support mmap for status and control records.
->    */
-> +#define pcm_status_mmap_allowed(pcm_file)	false
-> +
->   static int snd_pcm_mmap_status(struct snd_pcm_substream *substream, struct file *file,
->   			       struct vm_area_struct *area)
->   {
-> @@ -3563,11 +3582,11 @@ static int snd_pcm_mmap(struct file *file, struct vm_area_struct *area)
->   	offset = area->vm_pgoff << PAGE_SHIFT;
->   	switch (offset) {
->   	case SNDRV_PCM_MMAP_OFFSET_STATUS:
-> -		if (pcm_file->no_compat_mmap)
-> +		if (!pcm_status_mmap_allowed(pcm_file))
->   			return -ENXIO;
->   		return snd_pcm_mmap_status(substream, file, area);
->   	case SNDRV_PCM_MMAP_OFFSET_CONTROL:
-> -		if (pcm_file->no_compat_mmap)
-> +		if (!pcm_status_mmap_allowed(pcm_file))
->   			return -ENXIO;
->   		return snd_pcm_mmap_control(substream, file, area);
->   	default:
+I did it just now. Let's merge it.
+
+> For alsa-lib side, a few of yours and my patches are merely cleanups,
+> so we should apply them beforehand, too.
+> 
+>    [PATCH alsa-lib 3/4] pcm: hw: Remove superfluous call of snd_pcm_set_appl_ptr()
+>    [alsa-lib][RFC][PATCH 1/9] pcm: obsolete 'mmap_emulation' parameter of snd_pcm_hw_open_fd()
+>    [alsa-lib][RFC][PATCH 2/9] pcm: minor code refactoring for ioctl call
+
+I'm OK to apply the cleanups. I already reviewed the first patch so 
+let's merge it. I'll post the rest of two without RFC rebasing to 
+current master a few hours later.
 
 
-Regards
+Thanks
 
 Takashi Sakamoto
