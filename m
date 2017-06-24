@@ -1,56 +1,65 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 8/8] ASoC: AMD: Add machine driver for cz
- rt5650
-Date: Fri, 23 Jun 2017 15:01:46 -0500
-Message-ID: <cb300a11-304a-2eee-6613-4d25b312b4a9@linux.intel.com>
-References: <1498235706-31111-1-git-send-email-alexander.deucher@amd.com>
- <1498235706-31111-9-git-send-email-alexander.deucher@amd.com>
+From: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Subject: [PATCH v13 01/14] ASoC: sun4i-codec: Add MIC2
+ Pre-Amplifier, Mic2.
+Date: Sat, 24 Jun 2017 08:24:06 +0200
+Message-ID: <20170624062419.23778-2-dannym@scratchpost.org>
+References: <20170624062419.23778-1-dannym@scratchpost.org>
+Reply-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 457BB266AE2
- for <alsa-devel@alsa-project.org>; Fri, 23 Jun 2017 22:01:50 +0200 (CEST)
-In-Reply-To: <1498235706-31111-9-git-send-email-alexander.deucher@amd.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alex Deucher <alexdeucher@gmail.com>, dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org, airlied@gmail.com, broonie@kernel.org, Vijendar.Mukunda@amd.com, rajeevkumar.linux@gmail.com
-Cc: tiwai@suse.de, Alex Deucher <alexander.deucher@amd.com>, lgirdwood@gmail.com, Akshu Agrawal <akshu.agrawal@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBCPKHTHNWIPBB6ELXDFAKGQEUOEZSSI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20170624062419.23778-1-dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Cc: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
+Add MIC2 Pre-Amplifier and Mic2 for Allwinner A10 and Allwinner A20.
 
-> +static const struct acpi_device_id cz_audio_acpi_match[] = {
-> +	{ "I2SC1002", 0 },
-This one goes on my list of _HID that don't follow ACPI/PCI 
-vendorID/PartID conventions.
-AMD shoud use the "AMDI" ACPI ID or the 0x1002 PCI ID for the 4 first 
-characters, if everyone does what they feel like one day we'll have a 
-conflict between devices and probe the wrong driver...
+Signed-off-by: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+---
+ sound/soc/sunxi/sun4i-codec.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-> +	{},
-> +};
-> +
-> +static struct platform_driver cz_pcm_driver = {
-> +	.driver = {
-> +		.name = "cz-rt5645",
-> +		.acpi_match_table = ACPI_PTR(cz_audio_acpi_match),
-> +		.pm = &snd_soc_pm_ops,
-> +	},
-> +	.probe = cz_probe,
-> +	.remove = cz_remove,
-> +};
-> +
-> +module_platform_driver(cz_pcm_driver);
-> +
-> +MODULE_AUTHOR("akshu.agrawal@amd.com");
-> +MODULE_DESCRIPTION("cz-rt5645 audio support");
-> +MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+index 1500699..f703293 100644
+--- a/sound/soc/sunxi/sun4i-codec.c
++++ b/sound/soc/sunxi/sun4i-codec.c
+@@ -711,6 +711,8 @@ static const struct snd_soc_dapm_widget sun4i_codec_codec_dapm_widgets[] = {
+ 	/* Mic Pre-Amplifiers */
+ 	SND_SOC_DAPM_PGA("MIC1 Pre-Amplifier", SUN4I_CODEC_ADC_ACTL,
+ 			 SUN4I_CODEC_ADC_ACTL_PREG1EN, 0, NULL, 0),
++	SND_SOC_DAPM_PGA("MIC2 Pre-Amplifier", SUN4I_CODEC_ADC_ACTL,
++			 SUN4I_CODEC_ADC_ACTL_PREG2EN, 0, NULL, 0),
+ 
+ 	/* Power Amplifier */
+ 	SND_SOC_DAPM_MIXER("Power Amplifier", SUN4I_CODEC_ADC_ACTL,
+@@ -721,6 +723,7 @@ static const struct snd_soc_dapm_widget sun4i_codec_codec_dapm_widgets[] = {
+ 			    &sun4i_codec_pa_mute),
+ 
+ 	SND_SOC_DAPM_INPUT("Mic1"),
++	SND_SOC_DAPM_INPUT("Mic2"),
+ 
+ 	SND_SOC_DAPM_OUTPUT("HP Right"),
+ 	SND_SOC_DAPM_OUTPUT("HP Left"),
+@@ -760,6 +763,12 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
+ 	{ "Right ADC", NULL, "MIC1 Pre-Amplifier" },
+ 	{ "MIC1 Pre-Amplifier", NULL, "Mic1"},
+ 	{ "Mic1", NULL, "VMIC" },
++
++	/* Mic2 Routes */
++	{ "Left ADC", NULL, "MIC2 Pre-Amplifier" },
++	{ "Right ADC", NULL, "MIC2 Pre-Amplifier" },
++	{ "MIC2 Pre-Amplifier", NULL, "Mic2"},
++	{ "Mic2", NULL, "VMIC" },
+ };
+ 
+ static struct snd_soc_codec_driver sun4i_codec_codec = {
+-- 
+2.1.4
