@@ -1,12 +1,13 @@
 From: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-Subject: [PATCH v13 09/14] ASoC: sun4i-codec: Add Line Playback Volume.
-Date: Sat, 24 Jun 2017 08:24:14 +0200
-Message-ID: <20170624062419.23778-10-dannym@scratchpost.org>
+Subject: [PATCH v13 12/14] ASoC: sun4i-codec: Add Differential
+ Line Source.
+Date: Sat, 24 Jun 2017 08:24:17 +0200
+Message-ID: <20170624062419.23778-13-dannym@scratchpost.org>
 References: <20170624062419.23778-1-dannym@scratchpost.org>
 Reply-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCPKHTHNWIPBBBUMXDFAKGQEV7DAPEQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCPKHTHNWIPBBDEMXDFAKGQEOCSKTUA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 In-Reply-To: <20170624062419.23778-1-dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
@@ -19,47 +20,68 @@ To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brow
 Cc: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add Line Playback Volume for Allwinner A10 and Allwinner A20.
+Add Differential Line Source for Allwinner A10 and Allwinner A20.
 
 Signed-off-by: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
 ---
- sound/soc/sunxi/sun4i-codec.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/sunxi/sun4i-codec.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
 diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 234ded2..c47ffd5 100644
+index bcd665d..085a603 100644
 --- a/sound/soc/sunxi/sun4i-codec.c
 +++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -64,8 +64,11 @@
- #define SUN4I_CODEC_DAC_ACTL_DACAENR			(31)
- #define SUN4I_CODEC_DAC_ACTL_DACAENL			(30)
- #define SUN4I_CODEC_DAC_ACTL_MIXEN			(29)
-+#define SUN4I_CODEC_DAC_ACTL_LNG			(26)
- #define SUN4I_CODEC_DAC_ACTL_FMG			(23)
- #define SUN4I_CODEC_DAC_ACTL_MICG			(20)
-+#define SUN4I_CODEC_DAC_ACTL_LFMS			(17)
-+#define SUN4I_CODEC_DAC_ACTL_RFMS			(16)
- #define SUN4I_CODEC_DAC_ACTL_LDACLMIXS			(15)
- #define SUN4I_CODEC_DAC_ACTL_RDACRMIXS			(14)
- #define SUN4I_CODEC_DAC_ACTL_LDACRMIXS			(13)
-@@ -654,6 +657,8 @@ static const struct snd_kcontrol_new sun4i_codec_pa_mute =
- 			SUN4I_CODEC_DAC_ACTL_PA_MUTE, 1, 0);
+@@ -110,6 +110,7 @@
+ #define SUN4I_CODEC_ADC_ACTL_VADCG			(20)
+ #define SUN4I_CODEC_ADC_ACTL_ADCIS			(17)
+ #define SUN4I_CODEC_ADC_ACTL_LNPREG			(13)
++#define SUN4I_CODEC_ADC_ACTL_LNRDF			(16)
+ #define SUN4I_CODEC_ADC_ACTL_PA_EN			(4)
+ #define SUN4I_CODEC_ADC_ACTL_DDE			(3)
+ #define SUN4I_CODEC_ADC_DEBUG			(0x2c)
+@@ -675,6 +676,20 @@ static DECLARE_TLV_DB_RANGE(sun7i_codec_micin_preamp_gain_scale,
+ 			    0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
+ 			    1, 7, TLV_DB_SCALE_ITEM(2400, 300, 0));
  
- static DECLARE_TLV_DB_SCALE(sun4i_codec_pa_volume_scale, -6300, 100, 1);
-+static DECLARE_TLV_DB_SCALE(sun4i_codec_linein_loopback_gain_scale, -150, 150,
-+			    0);
- static DECLARE_TLV_DB_SCALE(sun4i_codec_fmin_loopback_gain_scale, -450, 150,
- 			    0);
- static DECLARE_TLV_DB_SCALE(sun4i_codec_micin_loopback_gain_scale, -450, 150,
-@@ -669,6 +674,9 @@ static const struct snd_kcontrol_new sun4i_codec_controls[] = {
++static const char * const sun4i_codec_difflinein_source[] = {
++	"Stereo",
++	"Differential",
++};
++
++static SOC_ENUM_SINGLE_DECL(sun4i_codec_enum_difflinein_source,
++			    SUN4I_CODEC_ADC_ACTL,
++			    SUN4I_CODEC_ADC_ACTL_LNRDF,
++			    sun4i_codec_difflinein_source);
++
++static const struct snd_kcontrol_new sun4i_codec_difflinein_source_controls =
++	SOC_DAPM_ENUM("Differential Line Source",
++		      sun4i_codec_enum_difflinein_source);
++
+ static const struct snd_kcontrol_new sun4i_codec_controls[] = {
  	SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,
  		       SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,
- 		       sun4i_codec_pa_volume_scale),
-+	SOC_SINGLE_TLV("Line Playback Volume", SUN4I_CODEC_DAC_ACTL,
-+		       SUN4I_CODEC_DAC_ACTL_LNG, 1, 0,
-+		       sun4i_codec_linein_loopback_gain_scale),
- 	SOC_SINGLE_TLV("FM Playback Volume", SUN4I_CODEC_DAC_ACTL,
- 		       SUN4I_CODEC_DAC_ACTL_FMG, 3, 0,
- 		       sun4i_codec_fmin_loopback_gain_scale),
+@@ -792,6 +807,11 @@ static const struct snd_soc_dapm_widget sun4i_codec_codec_dapm_widgets[] = {
+ 	SND_SOC_DAPM_SWITCH("Power Amplifier Mute", SND_SOC_NOPM, 0, 0,
+ 			    &sun4i_codec_pa_mute),
+ 
++	/* MUX */
++	SND_SOC_DAPM_MUX("Differential Line Source", SND_SOC_NOPM,
++			 0, 0,
++			 &sun4i_codec_difflinein_source_controls),
++
+ 	SND_SOC_DAPM_INPUT("Line Right"),
+ 	SND_SOC_DAPM_INPUT("Line Left"),
+ 	SND_SOC_DAPM_INPUT("FM Right"),
+@@ -851,6 +871,10 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
+ 	{ "Right ADC", NULL, "MIC2 Pre-Amplifier" },
+ 	{ "MIC2 Pre-Amplifier", NULL, "Mic2"},
+ 	{ "Mic2", NULL, "VMIC" },
++
++	/* LNRDF Routes */
++	{ "Differential Line Source", "Differential", "Line Left" },
++	{ "Differential Line Source", "Differential", "Line Right" },
+ };
+ 
+ struct sun4i_codec_quirks {
 -- 
 2.1.4
