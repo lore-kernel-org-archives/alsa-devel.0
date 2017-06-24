@@ -1,53 +1,129 @@
-From: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-Subject: [PATCH v13 14/14] ASoC: sun4i-codec: Add Capture Volume.
-Date: Sat, 24 Jun 2017 08:24:19 +0200
-Message-ID: <20170624062419.23778-15-dannym@scratchpost.org>
-References: <20170624062419.23778-1-dannym@scratchpost.org>
-Reply-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
+From: John Sauter <John_Sauter@systemeyescomputerstore.com>
+Subject: Re: Fix bug in arecord --max-file-time where	the file
+ size could overflow 32 bits
+Date: Sat, 24 Jun 2017 04:39:19 -0400
+Message-ID: <1498293559.2383.3.camel@systemeyescomputerstore.com>
+References: <mailman.1530.1498285564.896.alsa-devel@alsa-project.org>
+Reply-To: John_Sauter@systemeyescomputerstore.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCPKHTHNWIPBBEMMXDFAKGQEZUGVLKA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20170624062419.23778-1-dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Cc: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Content-Type: multipart/mixed; boundary="===============0499691425675409006=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from atl4mhob19.registeredsite.com (atl4mhob19.registeredsite.com
+ [209.17.115.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id D6DDD266847
+ for <alsa-devel@alsa-project.org>; Sat, 24 Jun 2017 10:39:26 +0200 (CEST)
+Received: from mailpod1.hostingplatform.com ([10.30.71.113])
+ by atl4mhob19.registeredsite.com (8.14.4/8.14.4) with ESMTP id v5O8dND4043473
+ (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+ for <alsa-devel@alsa-project.org>; Sat, 24 Jun 2017 04:39:23 -0400
+In-Reply-To: <mailman.1530.1498285564.896.alsa-devel@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: scott.gilliland@gatech.edu
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add Capture Volume for Allwinner A10 and Allwinner A20.
 
-Signed-off-by: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
----
- sound/soc/sunxi/sun4i-codec.c | 5 +++++
- 1 file changed, 5 insertions(+)
+--===============0499691425675409006==
+Content-Type: multipart/signed; micalg="pgp-sha256";
+	protocol="application/pgp-signature"; boundary="=-EbjP9nD2zXkIRRAcM3Oi"
 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 65a4685..a596249 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -675,6 +675,7 @@ static DECLARE_TLV_DB_RANGE(sun4i_codec_micin_preamp_gain_scale,
- static DECLARE_TLV_DB_RANGE(sun7i_codec_micin_preamp_gain_scale,
- 			    0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
- 			    1, 7, TLV_DB_SCALE_ITEM(2400, 300, 0));
-+static DECLARE_TLV_DB_SCALE(sun4i_codec_adc_gain_scale, -450, 150, 0);
- 
- static const char * const sun4i_codec_capture_source[] = {
- 	"Line",
-@@ -725,6 +726,10 @@ static const struct snd_kcontrol_new sun4i_codec_controls[] = {
- 	SOC_SINGLE_TLV("Mic Playback Volume", SUN4I_CODEC_DAC_ACTL,
- 		       SUN4I_CODEC_DAC_ACTL_MICG, 7, 0,
- 		       sun4i_codec_micin_loopback_gain_scale),
-+	/* ADC */
-+	SOC_SINGLE_TLV("Capture Volume", SUN4I_CODEC_ADC_ACTL,
-+		       SUN4I_CODEC_ADC_ACTL_VADCG, 4, 0,
-+		       sun4i_codec_adc_gain_scale),
- };
- 
- static const struct snd_kcontrol_new sun4i_codec_extra_controls[] = {
--- 
-2.1.4
+
+--=-EbjP9nD2zXkIRRAcM3Oi
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+
+> Date: Fri, 23 Jun 2017 18:35:03 +0000
+> From: "Gilliland, Scott M" <scott.gilliland@gatech.edu>
+> To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+> Subject: [alsa-devel] [PATCH] Fix bug in arecord --max-file-time
+> where
+> 	the file size could overflow 32 bits
+> Message-ID:
+> 	<CY4PR07MB3544F3467606CB0401C3F0918DD80@CY4PR07MB3544.namprd07.
+> prod.outlook.com>
+> =09
+> Content-Type: text/plain; charset=3D"iso-8859-1"
+>=20
+> From: Scott Gilliland <scott.gilliland@gatech.edu>
+>=20
+> Fix bug in arecord --max-file-time where the file size could overflow
+> 32 bits
+>=20
+> Signed-off-by: Scott Gilliland <scott.gilliland@gatech.edu>
+> ---
+> =C2=A0aplay/aplay.c | 2 +-
+> =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/aplay/aplay.c b/aplay/aplay.c
+> index f793c82..00af662 100644
+> --- a/aplay/aplay.c
+> +++ b/aplay/aplay.c
+> @@ -3027,7 +3027,7 @@ static void capture(char *orig_name)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (count =3D=3D 0)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0count =3D LLONG_MAX;
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* compute the number of =
+bytes per file */
+> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0max_file_size =3D max_file_tim=
+e *
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0max_file_size =3D (long long) =
+max_file_time *
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0snd_pcm_format_size(hwparams.format,
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0hwpara=
+ms.rate *
+> hwparams.channels);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0/* WAVE-file should be ev=
+en (I'm not sure), but wasting one
+> byte
+> --=C2=A0
+> 2.11.0
+
+Thank you for fixing this bug, which I introduced in 2010 through
+failing to understand the type conversion rules of C.
+
+Acked-by: John Sauter <John_Sauter@systemeyescomputerstore.com>
+
+--=20
+PGP fingerprint=C2=A0E24A D25B E5FE 4914 A603 =C2=A049EC 7030 3EA1 9A0B 511=
+E
+
+--=-EbjP9nD2zXkIRRAcM3Oi
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAABCAAGBQJZTiU5AAoJEHAwPqGaC1EeOVkH/iGv0Cz9EL3q2UZVthTyDgzc
+vq+W6fn5ArcFg9NlrQaDzbLaurvoUhUtuzeWjsQls9Oz37LMhlPHn9QpGkh5GBTY
+eHsFPM99X7Auk6R1CsgxfAExSsjEtMg5dzcYZcD7J6ZxBcPfsmccLqJVOujb7sXf
+fWGRARGTSz7ODU4RfFfPfhVGL6f2rYZbPgnoCEpai4BWK2Hhl8lENORFg9euQBe4
+hekqdXaJijiX1oYsPVmTSgBqsLdLf+/Q2iO2RaeLXArzugIGORLHcMUmbKCP7J29
+dvr4K8SolaAW9Kq72je7v1eSEhoFDIJSmhpfTRCm0eEvGQUoK8CSDuzAfVzawto=
+=IPlZ
+-----END PGP SIGNATURE-----
+
+--=-EbjP9nD2zXkIRRAcM3Oi--
+
+
+--===============0499691425675409006==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0499691425675409006==--
