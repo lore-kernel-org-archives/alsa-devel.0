@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v2 alsa-lib 5/6] pcm: hw: maintain fallback
-	mode for status data mapping
-Date: Sun, 25 Jun 2017 13:41:23 +0900
-Message-ID: <20170625044124.22234-6-o-takashi@sakamocchi.jp>
+Subject: [PATCH v2 alsa-lib 6/6] pcm: hw: maintain fallback
+	mode for control data mapping independently
+Date: Sun, 25 Jun 2017 13:41:24 +0900
+Message-ID: <20170625044124.22234-7-o-takashi@sakamocchi.jp>
 References: <20170625044124.22234-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 59766266D81
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 37B37266B50
  for <alsa-devel@alsa-project.org>; Sun, 25 Jun 2017 06:41:37 +0200 (CEST)
 In-Reply-To: <20170625044124.22234-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,173 +25,150 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In current implementation, results to map status/control data are not
-maintained separately. It's handled as a fatal error that mapping of status
-data is successful and mapping of control data is failed. However, it's
-possible to handle this case by utilizing fallback buffer.
+Currently, failures of status/control data mapping are handled dependently.
+However, it's not sure that one of the operations is failed when another
+is failed.
 
-This commit adds a member into a local structure to maintain fallback mode
-just for the mapping of status data as a preparation of later commit, in
-which mapping results are maintained separately for each of status/control
-data.
+This commit adds a member into private data structure to maintain fallback
+mode for control data mapping, independently of status data mapping. As a
+result, we have four cases to handle status/control data:
+
+1. both of status/control data are mapped.
+Nothing changed. A structure with alias of 'snd_pcm_hw_t' already has two
+members to point the mapped area and in application runtime they're used
+to refer/set status/control data. No need to call ioctl(2) with
+SNDRV_PCM_IOCTL_SYNC_PTR to issue/query the data.
+
+2. both of status/control data are unmapped.
+The two members point to allocated memory for fallback buffer. In
+application runtime, the buffer is given as an argument for ioctl(2) with
+SNDRV_PCM_IOCTL_SYNC_PTR to issue/query the data.
+
+3. status data is mapped only.
+One of the two members is used to point the mapped area. Another points to
+allocated memory for fallback buffer. In application runtime, the buffer
+is used as an argument to execute ioctl(2) with SNDRV_PCM_IOCTL_SYNC_PTR
+for the latter data, but the former data is already synchronized.
+
+4. control data is mapped only.
+The same as the above.
+
+In design of ALSA PCM interface, userspace applications are not expected
+to map the status data as writable. On the other hand, expected to map
+the control data as writable. In a focus on the differences, we could
+achieve to reduce calls of the ioctl(2) in a case that one of the
+status/control data is successfully mapped and another is failed (case 3
+and 4). Especially, in current alsa-lib implementation, application
+runtime queries state of runtime of PCM substream so often.
 ---
- src/pcm/pcm_hw.c | 78 ++++++++++++++++++++++++++++++++------------------------
- 1 file changed, 44 insertions(+), 34 deletions(-)
+ src/pcm/pcm_hw.c | 37 ++++++++++++++++++++-----------------
+ 1 file changed, 20 insertions(+), 17 deletions(-)
 
 diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
-index a3d1f137..78857941 100644
+index 78857941..5573fce2 100644
 --- a/src/pcm/pcm_hw.c
 +++ b/src/pcm/pcm_hw.c
-@@ -91,10 +91,12 @@ typedef struct {
- 	int version;
- 	int fd;
- 	int card, device, subdevice;
--	int sync_ptr_ioctl;
-+
+@@ -95,6 +95,7 @@ typedef struct {
  	volatile struct snd_pcm_mmap_status * mmap_status;
  	struct snd_pcm_mmap_control *mmap_control;
-+	bool mmap_status_fallbacked;
+ 	bool mmap_status_fallbacked;
++	bool mmap_control_fallbacked;
  	struct snd_pcm_sync_ptr *sync_ptr;
-+
+ 
  	int period_event;
- 	snd_timer_t *period_timer;
- 	struct pollfd period_timer_pfd;
-@@ -867,42 +869,53 @@ static snd_pcm_sframes_t snd_pcm_hw_readn(snd_pcm_t *pcm, void **bufs, snd_pcm_u
- 	return xfern.result;
- }
- 
--static int map_status_data(snd_pcm_hw_t *hw, struct snd_pcm_sync_ptr *sync_ptr)
-+static bool map_status_data(snd_pcm_hw_t *hw, struct snd_pcm_sync_ptr *sync_ptr,
-+			    bool force_fallback)
- {
--	void *ptr;
-+	struct snd_pcm_mmap_status *mmap_status;
-+	bool fallbacked;
-+
-+	mmap_status = MAP_FAILED;
-+	if (!force_fallback) {
-+		mmap_status = mmap(NULL, page_align(sizeof(*mmap_status)),
-+				   PROT_READ, MAP_FILE|MAP_SHARED,
-+				   hw->fd, SNDRV_PCM_MMAP_OFFSET_STATUS);
-+	}
- 
--	ptr = MAP_FAILED;
--	if (hw->sync_ptr_ioctl == 0)
--		ptr = mmap(NULL, page_align(sizeof(struct snd_pcm_mmap_status)),
--			   PROT_READ, MAP_FILE|MAP_SHARED, 
--			   hw->fd, SNDRV_PCM_MMAP_OFFSET_STATUS);
--	if (ptr == MAP_FAILED || ptr == NULL) {
--		hw->mmap_status = &sync_ptr->s.status;
--		hw->mmap_control = &sync_ptr->c.control;
--		hw->sync_ptr_ioctl = 1;
-+	if (mmap_status == MAP_FAILED || mmap_status == NULL) {
-+		mmap_status = &sync_ptr->s.status;
-+		fallbacked = true;
- 	} else {
--		hw->mmap_status = ptr;
-+		fallbacked = false;
- 	}
- 
--	return 0;
-+	hw->mmap_status = mmap_status;
-+
-+	return fallbacked;
- }
- 
--static int map_control_data(snd_pcm_hw_t *hw)
-+static bool map_control_data(snd_pcm_hw_t *hw,
-+			     struct snd_pcm_sync_ptr *sync_ptr,
-+			     bool force_fallback)
- {
--	void *ptr;
-+	struct snd_pcm_mmap_control *mmap_control;
- 	int err;
--	if (hw->sync_ptr_ioctl == 0) {
--		ptr = mmap(NULL, page_align(sizeof(struct snd_pcm_mmap_control)),
--			   PROT_READ|PROT_WRITE, MAP_FILE|MAP_SHARED, 
--			   hw->fd, SNDRV_PCM_MMAP_OFFSET_CONTROL);
--		if (ptr == MAP_FAILED || ptr == NULL) {
-+
-+	if (!force_fallback) {
-+		mmap_control = mmap(NULL, page_align(sizeof(*mmap_control)),
-+				    PROT_READ|PROT_WRITE, MAP_FILE|MAP_SHARED,
-+				    hw->fd, SNDRV_PCM_MMAP_OFFSET_CONTROL);
-+		if (mmap_control == MAP_FAILED || mmap_control == NULL) {
- 			err = -errno;
- 			SYSMSG("control mmap failed (%i)", err);
- 			return err;
- 		}
--		hw->mmap_control = ptr;
-+	} else {
-+		mmap_control = &sync_ptr->c.control;
- 	}
- 
-+	hw->mmap_control = mmap_control;
-+
+@@ -143,9 +144,11 @@ static int sync_ptr1(snd_pcm_hw_t *hw, unsigned int flags)
  	return 0;
  }
  
-@@ -918,18 +931,14 @@ static int map_status_and_control_data(snd_pcm_t *pcm, bool force_fallback)
- 		return -ENOMEM;
- 	memset(sync_ptr, 0, sizeof(*sync_ptr));
+-static inline int sync_ptr(snd_pcm_hw_t *hw, unsigned int flags)
++static int sync_ptr(snd_pcm_hw_t *hw, unsigned int flags)
+ {
+-	return hw->sync_ptr ? sync_ptr1(hw, flags) : 0;
++	if (hw->mmap_status_fallbacked || hw->mmap_control_fallbacked)
++		return sync_ptr1(hw, flags);
++	return 0;
+ }
  
--	hw->sync_ptr_ioctl = (int)force_fallback;
--
--	err = map_status_data(hw, sync_ptr);
+ static int snd_pcm_hw_clear_timer_queue(snd_pcm_hw_t *hw)
+@@ -899,24 +902,24 @@ static bool map_control_data(snd_pcm_hw_t *hw,
+ 			     bool force_fallback)
+ {
+ 	struct snd_pcm_mmap_control *mmap_control;
+-	int err;
++	bool fallbacked;
+ 
+ 	if (!force_fallback) {
+ 		mmap_control = mmap(NULL, page_align(sizeof(*mmap_control)),
+ 				    PROT_READ|PROT_WRITE, MAP_FILE|MAP_SHARED,
+ 				    hw->fd, SNDRV_PCM_MMAP_OFFSET_CONTROL);
+-		if (mmap_control == MAP_FAILED || mmap_control == NULL) {
+-			err = -errno;
+-			SYSMSG("control mmap failed (%i)", err);
+-			return err;
+-		}
+-	} else {
++	}
++
++	if (mmap_control == MAP_FAILED || mmap_control == NULL) {
+ 		mmap_control = &sync_ptr->c.control;
++		fallbacked = true;
++	} else {
++		fallbacked = false;
+ 	}
+ 
+ 	hw->mmap_control = mmap_control;
+ 
+-	return 0;
++	return fallbacked;
+ }
+ 
+ static int map_status_and_control_data(snd_pcm_t *pcm, bool force_fallback)
+@@ -933,12 +936,11 @@ static int map_status_and_control_data(snd_pcm_t *pcm, bool force_fallback)
+ 
+ 	hw->mmap_status_fallbacked =
+ 			map_status_data(hw, sync_ptr, force_fallback);
+-	err = map_control_data(hw, sync_ptr, hw->mmap_status_fallbacked);
 -	if (err < 0)
 -		return err;
--
--	err = map_control_data(hw);
-+	hw->mmap_status_fallbacked =
-+			map_status_data(hw, sync_ptr, force_fallback);
-+	err = map_control_data(hw, sync_ptr, hw->mmap_status_fallbacked);
- 	if (err < 0)
- 		return err;
++	hw->mmap_control_fallbacked =
++			map_control_data(hw, sync_ptr, force_fallback);
  
  	/* Any fallback mode needs to keep the buffer. */
--	if (hw->sync_ptr_ioctl == 0) {
-+	if (hw->mmap_status_fallbacked == 0) {
+-	if (hw->mmap_status_fallbacked == 0) {
++	if (hw->mmap_status_fallbacked || hw->mmap_control_fallbacked) {
  		hw->sync_ptr = sync_ptr;
  	} else {
  		free(sync_ptr);
-@@ -944,7 +953,7 @@ static int map_status_and_control_data(snd_pcm_t *pcm, bool force_fallback)
+@@ -953,7 +955,7 @@ static int map_status_and_control_data(snd_pcm_t *pcm, bool force_fallback)
  				offsetof(struct snd_pcm_mmap_status, hw_ptr));
  	snd_pcm_set_appl_ptr(pcm, &hw->mmap_control->appl_ptr, hw->fd,
  			     SNDRV_PCM_MMAP_OFFSET_CONTROL);
--	if (hw->sync_ptr_ioctl) {
-+	if (hw->mmap_status_fallbacked) {
+-	if (hw->mmap_status_fallbacked) {
++	if (hw->mmap_control_fallbacked) {
  		if (ioctl(hw->fd, SNDRV_PCM_IOCTL_SYNC_PTR, hw->sync_ptr) < 0) {
  			err = -errno;
  			SYSMSG("SNDRV_PCM_IOCTL_SYNC_PTR failed (%i)", err);
-@@ -957,7 +966,7 @@ static int map_status_and_control_data(snd_pcm_t *pcm, bool force_fallback)
- 
- static void unmap_status_data(snd_pcm_hw_t *hw)
- {
--	if (!hw->sync_ptr) {
-+	if (!hw->mmap_status_fallbacked) {
- 		if (munmap((void *)hw->mmap_status,
- 			   page_align(sizeof(*hw->mmap_status))) < 0)
- 			SYSMSG("status munmap failed (%u)", errno);
-@@ -966,7 +975,7 @@ static void unmap_status_data(snd_pcm_hw_t *hw)
+@@ -975,7 +977,7 @@ static void unmap_status_data(snd_pcm_hw_t *hw)
  
  static void unmap_control_data(snd_pcm_hw_t *hw)
  {
--	if (!hw->sync_ptr) {
-+	if (!hw->mmap_status_fallbacked) {
+-	if (!hw->mmap_status_fallbacked) {
++	if (!hw->mmap_control_fallbacked) {
  		if (munmap((void *)hw->mmap_control,
  			   page_align(sizeof(*hw->mmap_control))) < 0)
  			SYSMSG("control munmap failed (%u)", errno);
-@@ -978,11 +987,12 @@ static void unmap_status_and_control_data(snd_pcm_hw_t *hw)
+@@ -987,12 +989,13 @@ static void unmap_status_and_control_data(snd_pcm_hw_t *hw)
  	unmap_status_data(hw);
  	unmap_control_data(hw);
  
--	if (hw->sync_ptr)
-+	if (hw->mmap_status_fallbacked)
+-	if (hw->mmap_status_fallbacked)
++	if (hw->mmap_status_fallbacked || hw->mmap_control_fallbacked)
  		free(hw->sync_ptr);
  
  	hw->mmap_status = NULL;
  	hw->mmap_control = NULL;
-+	hw->mmap_status_fallbacked = false;
+ 	hw->mmap_status_fallbacked = false;
++	hw->mmap_control_fallbacked = false;
  	hw->sync_ptr = NULL;
  }
  
