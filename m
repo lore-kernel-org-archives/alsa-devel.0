@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v2 alsa-lib 2/6] pcm: hw: add an arrangement
-	for initialization of appl_ptr/avail_min
-Date: Sun, 25 Jun 2017 13:41:20 +0900
-Message-ID: <20170625044124.22234-3-o-takashi@sakamocchi.jp>
+Subject: [PATCH v2 alsa-lib 1/6] pcm: hw: add helper functions
+	to map/unmap status/control data for runtime of PCM substream
+Date: Sun, 25 Jun 2017 13:41:19 +0900
+Message-ID: <20170625044124.22234-2-o-takashi@sakamocchi.jp>
 References: <20170625044124.22234-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id EA552266B4B
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id E922C266B48
  for <alsa-devel@alsa-project.org>; Sun, 25 Jun 2017 06:41:34 +0200 (CEST)
 In-Reply-To: <20170625044124.22234-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,109 +25,134 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Regardless of success/failure mapping of control/status data for runtime of
-PCM substream, appl_ptr/avail_min parameters are initialized. In current
-implementation, they are initialized in case-dependent, different places.
-It's possible to collect them to one place.
+Handling mapping operation for status/control data includes some
+supplemental operations for fallback mode. It's better to have helper
+functions for this purpose.
 
-This commit unifies relevant code in a place after all of trials for the
-mappings are finished.
+This commit adds the helper functions.
 ---
- src/pcm/pcm_hw.c | 42 ++++++++++++++++++++++--------------------
- 1 file changed, 22 insertions(+), 20 deletions(-)
+ src/pcm/pcm_hw.c | 48 ++++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 34 insertions(+), 14 deletions(-)
 
 diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
-index abf4afe0..c60a521b 100644
+index a648d12c..abf4afe0 100644
 --- a/src/pcm/pcm_hw.c
 +++ b/src/pcm/pcm_hw.c
-@@ -867,10 +867,8 @@ static snd_pcm_sframes_t snd_pcm_hw_readn(snd_pcm_t *pcm, void **bufs, snd_pcm_u
+@@ -31,6 +31,7 @@
+ #include <stdlib.h>
+ #include <stddef.h>
+ #include <unistd.h>
++#include <stdbool.h>
+ #include <signal.h>
+ #include <string.h>
+ #include <fcntl.h>
+@@ -866,7 +867,7 @@ static snd_pcm_sframes_t snd_pcm_hw_readn(snd_pcm_t *pcm, void **bufs, snd_pcm_u
  	return xfern.result;
  }
  
--static int map_status_data(snd_pcm_t *pcm)
-+static int map_status_data(snd_pcm_hw_t *hw)
+-static int snd_pcm_hw_mmap_status(snd_pcm_t *pcm)
++static int map_status_data(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_hw_t *hw = pcm->private_data;
+ 	struct snd_pcm_sync_ptr sync_ptr;
+@@ -900,7 +901,7 @@ static int snd_pcm_hw_mmap_status(snd_pcm_t *pcm)
+ 	return 0;
+ }
+ 
+-static int snd_pcm_hw_mmap_control(snd_pcm_t *pcm)
++static int map_control_data(snd_pcm_t *pcm)
+ {
+ 	snd_pcm_hw_t *hw = pcm->private_data;
+ 	void *ptr;
+@@ -922,10 +923,28 @@ static int snd_pcm_hw_mmap_control(snd_pcm_t *pcm)
+ 	return 0;
+ }
+ 
+-static int snd_pcm_hw_munmap_status(snd_pcm_t *pcm)
++static int map_status_and_control_data(snd_pcm_t *pcm, bool force_fallback)
+ {
+ 	snd_pcm_hw_t *hw = pcm->private_data;
+ 	int err;
++
++	hw->sync_ptr_ioctl = (int)force_fallback;
++
++	err = map_status_data(pcm);
++	if (err < 0)
++		return err;
++
++	err = map_control_data(pcm);
++	if (err < 0)
++		return err;
++
++	return 0;
++}
++
++static int unmap_status_data(snd_pcm_hw_t *hw)
++{
++	int err;
++
+ 	if (hw->sync_ptr_ioctl) {
+ 		free(hw->sync_ptr);
+ 		hw->sync_ptr = NULL;
+@@ -939,10 +958,10 @@ static int snd_pcm_hw_munmap_status(snd_pcm_t *pcm)
+ 	return 0;
+ }
+ 
+-static int snd_pcm_hw_munmap_control(snd_pcm_t *pcm)
++static int unmap_control_data(snd_pcm_hw_t *hw)
  {
 -	snd_pcm_hw_t *hw = pcm->private_data;
--	struct snd_pcm_sync_ptr sync_ptr;
- 	void *ptr;
  	int err;
- 	ptr = MAP_FAILED;
-@@ -879,15 +877,6 @@ static int map_status_data(snd_pcm_t *pcm)
- 			   PROT_READ, MAP_FILE|MAP_SHARED, 
- 			   hw->fd, SNDRV_PCM_MMAP_OFFSET_STATUS);
- 	if (ptr == MAP_FAILED || ptr == NULL) {
--		memset(&sync_ptr, 0, sizeof(sync_ptr));
--		sync_ptr.c.control.appl_ptr = 0;
--		sync_ptr.c.control.avail_min = 1;
--		err = ioctl(hw->fd, SNDRV_PCM_IOCTL_SYNC_PTR, &sync_ptr);
--		if (err < 0) {
--			err = -errno;
--			SYSMSG("SNDRV_PCM_IOCTL_SYNC_PTR failed (%i)", err);
--			return err;
--		}
- 		hw->sync_ptr = calloc(1, sizeof(struct snd_pcm_sync_ptr));
- 		if (hw->sync_ptr == NULL)
- 			return -ENOMEM;
-@@ -897,13 +886,12 @@ static int map_status_data(snd_pcm_t *pcm)
- 	} else {
- 		hw->mmap_status = ptr;
- 	}
--	snd_pcm_set_hw_ptr(pcm, &hw->mmap_status->hw_ptr, hw->fd, SNDRV_PCM_MMAP_OFFSET_STATUS + offsetof(struct snd_pcm_mmap_status, hw_ptr));
 +
+ 	if (hw->sync_ptr_ioctl) {
+ 		free(hw->sync_ptr);
+ 		hw->sync_ptr = NULL;
+@@ -956,6 +975,12 @@ static int snd_pcm_hw_munmap_control(snd_pcm_t *pcm)
  	return 0;
  }
  
--static int map_control_data(snd_pcm_t *pcm)
-+static int map_control_data(snd_pcm_hw_t *hw)
++static void unmap_status_and_control_data(snd_pcm_hw_t *hw)
++{
++	unmap_status_data(hw);
++	unmap_control_data(hw);
++}
++
+ static int snd_pcm_hw_mmap(snd_pcm_t *pcm ATTRIBUTE_UNUSED)
  {
--	snd_pcm_hw_t *hw = pcm->private_data;
- 	void *ptr;
- 	int err;
- 	if (hw->sync_ptr == NULL) {
-@@ -916,10 +904,8 @@ static int map_control_data(snd_pcm_t *pcm)
- 			return err;
- 		}
- 		hw->mmap_control = ptr;
--	} else {
--		hw->mmap_control->avail_min = 1;
+ 	return 0;
+@@ -974,8 +999,9 @@ static int snd_pcm_hw_close(snd_pcm_t *pcm)
+ 		err = -errno;
+ 		SYSMSG("close failed (%i)\n", err);
  	}
--	snd_pcm_set_appl_ptr(pcm, &hw->mmap_control->appl_ptr, hw->fd, SNDRV_PCM_MMAP_OFFSET_CONTROL);
+-	snd_pcm_hw_munmap_status(pcm);
+-	snd_pcm_hw_munmap_control(pcm);
 +
- 	return 0;
- }
- 
-@@ -930,14 +916,30 @@ static int map_status_and_control_data(snd_pcm_t *pcm, bool force_fallback)
- 
- 	hw->sync_ptr_ioctl = (int)force_fallback;
- 
--	err = map_status_data(pcm);
-+	err = map_status_data(hw);
- 	if (err < 0)
- 		return err;
- 
--	err = map_control_data(pcm);
-+	err = map_control_data(hw);
- 	if (err < 0)
- 		return err;
- 
-+	/* Initialize the data. */
-+	hw->mmap_control->appl_ptr = 0;
-+	hw->mmap_control->avail_min = 1;
-+	snd_pcm_set_hw_ptr(pcm, &hw->mmap_status->hw_ptr, hw->fd,
-+			   SNDRV_PCM_MMAP_OFFSET_STATUS +
-+				offsetof(struct snd_pcm_mmap_status, hw_ptr));
-+	snd_pcm_set_appl_ptr(pcm, &hw->mmap_control->appl_ptr, hw->fd,
-+			     SNDRV_PCM_MMAP_OFFSET_CONTROL);
-+	if (hw->sync_ptr_ioctl) {
-+		if (ioctl(hw->fd, SNDRV_PCM_IOCTL_SYNC_PTR, hw->sync_ptr) < 0) {
-+			err = -errno;
-+			SYSMSG("SNDRV_PCM_IOCTL_SYNC_PTR failed (%i)", err);
-+			return err;
-+		}
-+	}
++	unmap_status_and_control_data(hw);
 +
- 	return 0;
+ 	free(hw);
+ 	return err;
  }
+@@ -1484,7 +1510,6 @@ int snd_pcm_hw_open_fd(snd_pcm_t **pcmp, const char *name, int fd,
+ 	hw->device = info.device;
+ 	hw->subdevice = info.subdevice;
+ 	hw->fd = fd;
+-	hw->sync_ptr_ioctl = sync_ptr_ioctl;
+ 	/* no restriction */
+ 	hw->format = SND_PCM_FORMAT_UNKNOWN;
+ 	hw->rate = 0;
+@@ -1508,12 +1533,7 @@ int snd_pcm_hw_open_fd(snd_pcm_t **pcmp, const char *name, int fd,
+ #endif
+ 	pcm->own_state_check = 1; /* skip the common state check */
  
+-	ret = snd_pcm_hw_mmap_status(pcm);
+-	if (ret < 0) {
+-		snd_pcm_close(pcm);
+-		return ret;
+-	}
+-	ret = snd_pcm_hw_mmap_control(pcm);
++	ret = map_status_and_control_data(pcm, !!sync_ptr_ioctl);
+ 	if (ret < 0) {
+ 		snd_pcm_close(pcm);
+ 		return ret;
 -- 
 2.11.0
