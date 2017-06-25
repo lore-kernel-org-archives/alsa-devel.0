@@ -1,17 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v2 alsa-lib 1/6] pcm: hw: add helper functions
-	to map/unmap status/control data for runtime of PCM substream
-Date: Sun, 25 Jun 2017 13:41:19 +0900
-Message-ID: <20170625044124.22234-2-o-takashi@sakamocchi.jp>
-References: <20170625044124.22234-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH v2 alsa-lib 0/6] pcm: hw: maintain fallback
+	mode for status/control data separately
+Date: Sun, 25 Jun 2017 13:41:18 +0900
+Message-ID: <20170625044124.22234-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id E922C266B48
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id EDA72266B55
  for <alsa-devel@alsa-project.org>; Sun, 25 Jun 2017 06:41:34 +0200 (CEST)
-In-Reply-To: <20170625044124.22234-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,134 +23,79 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Handling mapping operation for status/control data includes some
-supplemental operations for fallback mode. It's better to have helper
-functions for this purpose.
+Hi,
 
-This commit adds the helper functions.
----
- src/pcm/pcm_hw.c | 48 ++++++++++++++++++++++++++++++++++--------------
- 1 file changed, 34 insertions(+), 14 deletions(-)
+This patchset is a revised version for a part of my previous RFC:
+[alsa-devel] [alsa-lib][RFC][PATCH 0/9] pcm: handle status/control mapping independently
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-June/122130.html
 
-diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
-index a648d12c..abf4afe0 100644
---- a/src/pcm/pcm_hw.c
-+++ b/src/pcm/pcm_hw.c
-@@ -31,6 +31,7 @@
- #include <stdlib.h>
- #include <stddef.h>
- #include <unistd.h>
-+#include <stdbool.h>
- #include <signal.h>
- #include <string.h>
- #include <fcntl.h>
-@@ -866,7 +867,7 @@ static snd_pcm_sframes_t snd_pcm_hw_readn(snd_pcm_t *pcm, void **bufs, snd_pcm_u
- 	return xfern.result;
- }
- 
--static int snd_pcm_hw_mmap_status(snd_pcm_t *pcm)
-+static int map_status_data(snd_pcm_t *pcm)
- {
- 	snd_pcm_hw_t *hw = pcm->private_data;
- 	struct snd_pcm_sync_ptr sync_ptr;
-@@ -900,7 +901,7 @@ static int snd_pcm_hw_mmap_status(snd_pcm_t *pcm)
- 	return 0;
- }
- 
--static int snd_pcm_hw_mmap_control(snd_pcm_t *pcm)
-+static int map_control_data(snd_pcm_t *pcm)
- {
- 	snd_pcm_hw_t *hw = pcm->private_data;
- 	void *ptr;
-@@ -922,10 +923,28 @@ static int snd_pcm_hw_mmap_control(snd_pcm_t *pcm)
- 	return 0;
- }
- 
--static int snd_pcm_hw_munmap_status(snd_pcm_t *pcm)
-+static int map_status_and_control_data(snd_pcm_t *pcm, bool force_fallback)
- {
- 	snd_pcm_hw_t *hw = pcm->private_data;
- 	int err;
-+
-+	hw->sync_ptr_ioctl = (int)force_fallback;
-+
-+	err = map_status_data(pcm);
-+	if (err < 0)
-+		return err;
-+
-+	err = map_control_data(pcm);
-+	if (err < 0)
-+		return err;
-+
-+	return 0;
-+}
-+
-+static int unmap_status_data(snd_pcm_hw_t *hw)
-+{
-+	int err;
-+
- 	if (hw->sync_ptr_ioctl) {
- 		free(hw->sync_ptr);
- 		hw->sync_ptr = NULL;
-@@ -939,10 +958,10 @@ static int snd_pcm_hw_munmap_status(snd_pcm_t *pcm)
- 	return 0;
- }
- 
--static int snd_pcm_hw_munmap_control(snd_pcm_t *pcm)
-+static int unmap_control_data(snd_pcm_hw_t *hw)
- {
--	snd_pcm_hw_t *hw = pcm->private_data;
- 	int err;
-+
- 	if (hw->sync_ptr_ioctl) {
- 		free(hw->sync_ptr);
- 		hw->sync_ptr = NULL;
-@@ -956,6 +975,12 @@ static int snd_pcm_hw_munmap_control(snd_pcm_t *pcm)
- 	return 0;
- }
- 
-+static void unmap_status_and_control_data(snd_pcm_hw_t *hw)
-+{
-+	unmap_status_data(hw);
-+	unmap_control_data(hw);
-+}
-+
- static int snd_pcm_hw_mmap(snd_pcm_t *pcm ATTRIBUTE_UNUSED)
- {
- 	return 0;
-@@ -974,8 +999,9 @@ static int snd_pcm_hw_close(snd_pcm_t *pcm)
- 		err = -errno;
- 		SYSMSG("close failed (%i)\n", err);
- 	}
--	snd_pcm_hw_munmap_status(pcm);
--	snd_pcm_hw_munmap_control(pcm);
-+
-+	unmap_status_and_control_data(hw);
-+
- 	free(hw);
- 	return err;
- }
-@@ -1484,7 +1510,6 @@ int snd_pcm_hw_open_fd(snd_pcm_t **pcmp, const char *name, int fd,
- 	hw->device = info.device;
- 	hw->subdevice = info.subdevice;
- 	hw->fd = fd;
--	hw->sync_ptr_ioctl = sync_ptr_ioctl;
- 	/* no restriction */
- 	hw->format = SND_PCM_FORMAT_UNKNOWN;
- 	hw->rate = 0;
-@@ -1508,12 +1533,7 @@ int snd_pcm_hw_open_fd(snd_pcm_t **pcmp, const char *name, int fd,
- #endif
- 	pcm->own_state_check = 1; /* skip the common state check */
- 
--	ret = snd_pcm_hw_mmap_status(pcm);
--	if (ret < 0) {
--		snd_pcm_close(pcm);
--		return ret;
--	}
--	ret = snd_pcm_hw_mmap_control(pcm);
-+	ret = map_status_and_control_data(pcm, !!sync_ptr_ioctl);
- 	if (ret < 0) {
- 		snd_pcm_close(pcm);
- 		return ret;
+As I described, we found an advantage to handle results of page mapping
+for status/control data separately in a discussion about ALSA PCM protocol
+v2.0.14.
+
+In this version, when kernel-land drivers support
+SNDRV_PCM_INFO_SYNC_APPLPTR for a certain design of hardware, userspace
+applications are expected to issue current position of applptr for several
+merits. This should be performed even if applications are programmed to run
+with mmap operation for PCM buffer. In the above discussion, the way to
+take applications to perform it is one of important issues.
+
+On platforms without enough cache coherency support such as ARM, this
+doesn't matter. On the platforms, ALSA PCM core already disallows any
+of mappings for the status/control data of runtime of PCM substream.
+For this case, userland stuffs were already programmed to go to fallback
+mode, in which ioctl(2) with SNDRV_PCM_IOCTL_SYNC_PTR is used to
+issue/query the status/control data. Even if handling PCM frames on PCM
+buffer by mmap operation, the position of applptr is issues into ALSA
+PCM core by a call of ioctl(2) with the command.
+
+As a solution for old stuffs in userland, the above mechanism is used
+for cache coherent architecture such as x86. A patch was already merged
+into kernel land[1]. This patch changes behaviours of ALSA PCM core to
+disallow userland to map the status/control data according to drivers'
+support for SNDRV_PCM_INFO_SYNC_APPLPTR.
+
+However, disallowing mappings for both of status/control data has a slight
+overhead to increase calls of ioctl(2), than usual operation on x86. As
+I reported[2]. Furthermore, it's clear that current proposals make no
+sense for drivers because 'struct snd_pcm_ops.ack' in driver implementation
+is not called expectedly due to a commit[4]. Even if the applptr is
+issued by ioctl(2), the callback is skipped as long as mapped status
+includes the updated value for the applptr.
+
+In the above discussion, some solutions were suggested[5]. One of them
+is to enable map of the status data and disable map of the control data.
+This idea can archive both of the aim of v2.0.14 protocol and reduction
+of calls for status data, for newer userland stuffs. 
+
+This patchset for alsa-lib is a preparation for the idea. In current
+implementation of this library, results of mapping operation for
+status/control data are not handled separately. This patchset is a
+similar to code refactoring, thus this includes no essential behaviour
+changes against released kernel lands.
+
+[1] ALSA: pcm: Add the explicit appl_ptr sync support
+https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/commit/?id=42f945970af9df6216e3d771b4df371d02d8742c
+[2] ALSA: pcm: add 'applptr' event of tracepoint
+https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/commit/?h=for-next&id=fccf53881e9b564321326f62ed5f85130fa6e569
+[3] [alsa-devel] [PATCH 0/3] ALSA: Add the explicit appl_ptr sync support
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-June/122092.html
+[4] ALSA: pcm: Skip ack callback without actual appl_ptr update
+https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/commit/?h=for-next&id=f8ff2f28ba49fa41a06215ac3187dede347bc9a7
+[5] [alsa-devel] [PATCH 0/3] ALSA: Add the explicit appl_ptr sync support
+http://mailman.alsa-project.org/pipermail/alsa-devel/2017-June/122093.html
+
+Takashi Sakamoto (6):
+  pcm: hw: add helper functions to map/unmap status/control data for
+    runtime of PCM substream
+  pcm: hw: add an arrangement for initialization of appl_ptr/avail_min
+  pcm: hw: deallocate fallback buffer when trials of unmapping finished
+  pcm: hw: allocate fallback buffer in advance of trials of mapping
+  pcm: hw: maintain fallback mode for status data mapping
+  pcm: hw: maintain fallback mode for control data mapping independently
+
+ src/pcm/pcm_hw.c | 192 +++++++++++++++++++++++++++++++++----------------------
+ 1 file changed, 115 insertions(+), 77 deletions(-)
+
 -- 
 2.11.0
