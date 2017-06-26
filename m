@@ -1,19 +1,19 @@
-From: Romain Perier <romain.perier@collabora.com>
+From: Mark Brown <broonie@kernel.org>
 Subject: Re: [PATCH v3 0/3] Add support for es8323 and hdmi
  audio to the firefly-rk3288
-Date: Mon, 26 Jun 2017 16:00:17 +0200
-Message-ID: <98ec8d72-2977-4347-86b0-4b423b55c434@collabora.com>
+Date: Mon, 26 Jun 2017 15:07:40 +0100
+Message-ID: <20170626140740.jlgtwaaivn3bvg2g@sirena.org.uk>
 References: <20170512132227.24916-1-romain.perier@collabora.com>
  <20170512132227.24916-9-romain.perier@collabora.com>
+ <98ec8d72-2977-4347-86b0-4b423b55c434@collabora.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============3087766755546639103=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
- by alsa0.perex.cz (Postfix) with ESMTP id CA1F6266A0C
- for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2017 16:00:21 +0200 (CEST)
-In-Reply-To: <20170512132227.24916-9-romain.perier@collabora.com>
-Content-Language: en-US
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 020F9266A0C
+ for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2017 16:08:41 +0200 (CEST)
+In-Reply-To: <98ec8d72-2977-4347-86b0-4b423b55c434@collabora.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,36 +23,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Romain Perier <romain.perier@collabora.co.uk>, linux-rockchip@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, linux-arm-kernel@lists.infradead.org
+To: Romain Perier <romain.perier@collabora.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Romain Perier <romain.perier@collabora.co.uk>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8sCgpwaW5nLAoKbm8gb3RoZXIgZmVlZGJhY2tzIChmb3IgMi8zIGFuZCAzLzMpPwoKUm9t
-YWluCgoKTGUgMTIvMDUvMjAxNyDDoCAxNToyMiwgUm9tYWluIFBlcmllciBhIMOpY3JpdCA6Cj4g
-VGhpcyBzZXQgb2YgcGF0Y2hlcyBlbmFibGVzIHN1cHBvcnQgZm9yIHRoZSBlczgzMjMgY29kZWNz
-IG9uIHRoZQo+IGZpcmVmbHktcmszMjg4LiBJdCBhZGRzIHRoZSByZXF1aXJlZCBEVCBkZWZpbml0
-aW9ucyB0byBsaW5rIHJvY2tjaGlwLWkycwo+IHRvIHRoZSBlczgzODggYW5hbG9nIG91dHB1dC4g
-QXMgdGhlIHN1cHBvcnQgZm9yIEhETUkgYXVkaW8gaXMgYWxzbwo+IGJ1aWx0LWluIGluIHRoZSBj
-b3JyZXNwb25kaW5nIEFTb0MgbWFjaGluZSBkcml2ZXIsIEhETUkgYXVkaW8gb3V0cHV0IGlzCj4g
-YWxzbyBlbmFibGVkLgo+Cj4gQ2hhbmdlcyBpbiB2MzoKPiAgLSBTeW5jZWQgRFQgd2l0aCB0aGUg
-b25lIG9mIHRoZSBSb2NrMiwgdGhlIHByb3BlcnRpZXMgaGF2ZSBiZWVuCj4gICAgbGV4aWNhbGx5
-IHJlLW9yZGVyZWQgaW4gdGhlIHJpZ2h0IG9yZGVyLCBJIGhhdmUgc3BsaXR0ZWQgdGhlCj4gICAg
-aGVhZHBob25lIHBpbmN0cmwgaW4gdHdvOiBwaG9uZV9jdGwgYW5kIGhwX2RldAo+IENoYW5nZXMg
-aW4gdjI6Cj4gIC0gQWRhcHRlZCBEVCBmb3IgdGhlIGZpcmVmbHktcmszMjg4IHRvIHRoZSBBU29D
-IG1hY2hpbmUgZHJpdmVyCj4gICAgcmszMjg4LWhkbWktYW5hbG9nCj4gIC0gQWRkZWQgcGF0Y2gg
-MDIvMDMgdG8gdGhpcyBzZXJpZXMKPiAgLSBSZS13cm90ZSB0aGlzIGNvdmVyIGxldHRlcgo+Cj4g
-Um9tYWluIFBlcmllciAoMyk6Cj4gICBTb0M6IGVzODMyOC1pMmM6IEFkZCBjb21wYXRpYmxlIGZv
-ciBFUzgzMjMKPiAgIGFybTogZHRzOiByb2NrY2hpcDogRG9uJ3Qgc2V0IG90cC1ncGlvIHBpbmN0
-cmwgYnkgZGVmYXVsdCBpbgo+ICAgICByazMyODguZHRzaQo+ICAgYXJtOiBkdHM6IEFkZCBzdXBw
-b3J0IGZvciBFUzgzMjMgdG8gdGhlIEZpcmVmbHktUkszMjg4Cj4KPiAgRG9jdW1lbnRhdGlvbi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2VzODMyOC50eHQgfCAgNSArKy0KPiAgYXJjaC9hcm0v
-Ym9vdC9kdHMvcmszMjg4LWV2Yi5kdHNpICAgICAgICAgICAgICAgICAgfCAgNCArKysKPiAgYXJj
-aC9hcm0vYm9vdC9kdHMvcmszMjg4LWZpcmVmbHkuZHRzaSAgICAgICAgICAgICAgfCAzOCArKysr
-KysrKysrKysrKysrKysrKysrCj4gIGFyY2gvYXJtL2Jvb3QvZHRzL3JrMzI4OC12ZXlyb24uZHRz
-aSAgICAgICAgICAgICAgIHwgIDQgKysrCj4gIGFyY2gvYXJtL2Jvb3QvZHRzL3JrMzI4OC5kdHNp
-ICAgICAgICAgICAgICAgICAgICAgIHwgIDQgLS0tCj4gIHNvdW5kL3NvYy9jb2RlY3MvZXM4MzI4
-LWkyYy5jICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKysKPiAgNiBmaWxlcyBjaGFuZ2VkLCA1
-MiBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQo+CgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+--===============3087766755546639103==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="6vzmb6gy5m6rsbqh"
+Content-Disposition: inline
+
+
+--6vzmb6gy5m6rsbqh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Jun 26, 2017 at 04:00:17PM +0200, Romain Perier wrote:
+> Hello,
+>=20
+> ping,
+>=20
+> no other feedbacks (for 2/3 and 3/3)?
+
+Please don't send content free pings and please allow a reasonable time
+for review.  People get busy, go on holiday, attend conferences and so=20
+on so unless there is some reason for urgency (like critical bug fixes)
+please allow at least a couple of weeks for review.  If there have been
+review comments then people may be waiting for those to be addressed.
+
+Sending content free pings adds to the mail volume (if they are seen at
+all) which is often the problem and since they can't be reviewed
+directly if something has gone wrong you'll have to resend the patches
+anyway, though there are some other maintainers who like them - if in
+doubt look at how patches for the subsystem are normally handled.
+
+Please don't top post, reply in line with needed context.  This allows
+readers to readily follow the flow of conversation and understand what
+you are talking about and also helps ensure that everything in the
+discussion is being addressed.
+
+--6vzmb6gy5m6rsbqh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllRFSsACgkQJNaLcl1U
+h9A6jAf/TZr7ZjbKGC3tkIr7h7dhCkOvFKzfhKIgA6OKBXX+VolyIz0gnoQPJ6WW
+qIo5iGr3krQpC8Co1h2Tx1qUmQovyE1tOrkpiGNbB4ldL269ZMD6iAq3B5gJZsvZ
+Et+V7rrhEl0fnHdQTaOSJbd8Iu1zT0pwVJ5nafQkImIweSKWSmPIqHPLe4FbRYBv
+kUUR3sEDnYBI//RX6nelIDgINxiVZJVTulrQx+QnpdB8pxc7Wo2QvmMU7goJvXf5
+/mHykptDCXh/WbmUS6MZ4DPvmFqJMVBEaA5hFSViCTidTSe1frFPSGzbHElgYkXs
+ewecntIElXx/XxWTGJZydB34X1T++Q==
+=f3qB
+-----END PGP SIGNATURE-----
+
+--6vzmb6gy5m6rsbqh--
+
+--===============3087766755546639103==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3087766755546639103==--
