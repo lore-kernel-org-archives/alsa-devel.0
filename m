@@ -1,16 +1,17 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH] ALSA: hda/realtek - There is no loopback mixer
-	in the ALC234/274/294
-Date: Mon, 26 Jun 2017 12:30:32 +0800
-Message-ID: <1498451432-14165-1-git-send-email-hui.wang@canonical.com>
+From: John Hsu <supercraig0719@gmail.com>
+Subject: [PATCH] ASoC: nau8825: devicetree for crosstalk bypass
+Date: Mon, 26 Jun 2017 14:53:48 +0800
+Message-ID: <1498460028-12314-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id AF3CF266819
- for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2017 06:30:50 +0200 (CEST)
+Received: from mail-pf0-f193.google.com (mail-pf0-f193.google.com
+ [209.85.192.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 58D0D266819
+ for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2017 08:54:03 +0200 (CEST)
+Received: by mail-pf0-f193.google.com with SMTP id s66so16973304pfs.2
+ for <alsa-devel@alsa-project.org>; Sun, 25 Jun 2017 23:54:02 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,41 +21,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, kailang@realtek.com
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, benzh@chromium.org, mac.chiang@intel.com, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, John Hsu <supercraig0719@gmail.com>, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-We have a Lenovo machine with the codec ALC294 on it, without the
-patch, the Node 0x0b is regarded as the loopback mixer, but the Node
-0x0b in this codec is "Vendor Defined Widget" instead of the audio
-mixer, please see the log below:
+Update devicetree document for crosstalk function bypass.
 
-Node 0x0b [Vendor Defined Widget] wcaps 0xf00000: Mono
-  Control: name="Beep Playback Volume", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=4, ofs=0
-  Control: name="Beep Playback Switch", index=0, device=0
-    ControlAmp: chs=3, dir=In, idx=4, ofs=0
-
-And I have consulted with Realtek, so far the ALC234/274/294 all don't
-have loopback mixer.
-
-Cc: Kailang Yang <kailang@realtek.com>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+Signed-off-by: John Hsu <supercraig0719@gmail.com>
 ---
- sound/pci/hda/patch_realtek.c | 1 +
- 1 file changed, 1 insertion(+)
+ Documentation/devicetree/bindings/sound/nau8825.txt | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index c4a1b49..bc00a37 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6696,6 +6696,7 @@ static int patch_alc269(struct hda_codec *codec)
- 	case 0x10ec0274:
- 	case 0x10ec0294:
- 		spec->codec_variant = ALC269_TYPE_ALC294;
-+		spec->gen.mixer_nid = 0; /* ALC2x4 does not have any loopback mixer path */
- 		alc_update_coef_idx(codec, 0x6b, 0x0018, (1<<4) | (1<<3)); /* UAJ MIC Vref control by verb */
- 		break;
- 	case 0x10ec0700:
+diff --git a/Documentation/devicetree/bindings/sound/nau8825.txt b/Documentation/devicetree/bindings/sound/nau8825.txt
+index d337423..bf4451b 100644
+--- a/Documentation/devicetree/bindings/sound/nau8825.txt
++++ b/Documentation/devicetree/bindings/sound/nau8825.txt
+@@ -69,6 +69,8 @@ Optional properties:
+   - nuvoton,jack-insert-debounce: number from 0 to 7 that sets debounce time to 2^(n+2) ms
+   - nuvoton,jack-eject-debounce: number from 0 to 7 that sets debounce time to 2^(n+2) ms
+ 
++  - nuvoton,crosstalk-bypass: make crosstalk function bypass if set 1.
++
+   - clocks: list of phandle and clock specifier pairs according to common clock bindings for the
+       clocks described in clock-names
+   - clock-names: should include "mclk" for the MCLK master clock
+@@ -96,6 +98,7 @@ Example:
+       nuvoton,short-key-debounce = <2>;
+       nuvoton,jack-insert-debounce = <7>;
+       nuvoton,jack-eject-debounce = <7>;
++      nuvoton,crosstalk-bypass = <1>;
+ 
+       clock-names = "mclk";
+       clocks = <&tegra_car TEGRA210_CLK_CLK_OUT_2>;
 -- 
-2.7.4
+2.6.4
