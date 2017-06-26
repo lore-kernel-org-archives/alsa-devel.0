@@ -1,22 +1,20 @@
-From: Allan Klinbail <aklinbail@gmail.com>
-Subject: Re: additional high input device for snd-dice (A&H Zed
-	R16)
-Date: Mon, 26 Jun 2017 08:15:02 +0000
-Message-ID: <CA+aoAJfyY1AFGb4N4iUytU+J=bNc+EfWgzkTyoz5CBSccJuXNg@mail.gmail.com>
-References: <CA+aoAJfjN83TdDdQnA05KmQs29UiLSQNkdV7OvLsf7S7vQgi+w@mail.gmail.com>
- <527f6748-c34f-a7a1-4f17-376dc1dace4f@sakamocchi.jp>
- <CA+aoAJcxnJEM2J9pH64fd4tJF32rG5MM2EQz6m+Nirp5jkU7kw@mail.gmail.com>
+From: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+Subject: Re: [PATCH v3 01/17] mfd: madera: Add register
+ definitions for Cirrus Logic Madera codecs
+Date: Mon, 26 Jun 2017 09:33:38 +0100
+Message-ID: <1498466018.4826.81.camel@rf-debian.wolfsonmicro.main>
+References: <1496415790-19164-1-git-send-email-rf@opensource.wolfsonmicro.com>
+ <1496415790-19164-2-git-send-email-rf@opensource.wolfsonmicro.com>
+ <20170605100707.zqyfyzhlhrpswa2u@dell>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ua0-f179.google.com (mail-ua0-f179.google.com
- [209.85.217.179])
- by alsa0.perex.cz (Postfix) with ESMTP id E774D266B13
- for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2017 10:15:14 +0200 (CEST)
-Received: by mail-ua0-f179.google.com with SMTP id j53so63314787uaa.2
- for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2017 01:15:14 -0700 (PDT)
-In-Reply-To: <CA+aoAJcxnJEM2J9pH64fd4tJF32rG5MM2EQz6m+Nirp5jkU7kw@mail.gmail.com>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id BC7BF266B13
+ for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2017 10:33:41 +0200 (CEST)
+In-Reply-To: <20170605100707.zqyfyzhlhrpswa2u@dell>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,119 +24,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Lee Jones <lee.jones@linaro.org>
+Cc: gnurou@gmail.com, alsa-devel@alsa-project.org, jason@lakedaemon.net, devicetree@vger.kernel.org, linus.walleij@linaro.org, patches@opensource.wolfsonmicro.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org, linux-gpio@vger.kernel.org, broonie@kernel.org, tglx@linutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Mon, 2017-06-05 at 11:07 +0100, Lee Jones wrote:
+> On Fri, 02 Jun 2017, Richard Fitzgerald wrote:
+> 
+> > This patch adds a header file of register definitions for Cirrus
+> > Logic "Madera" class codecs. These codecs are all based off a common
+> > set of hardware IP so have a common register map (with a few minor
+> > device-to-device variations). These are complex devices with a large
+> > number of features and so have a correspondingly large register set.
+> > The registers.h file has been auto-generated from the hardware register
+> > definitions, stripped down to only registers we need to access from
+> > the driver
+> > 
+> > Signed-off-by: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
+> > ---
+> > Changes since V2:
+> > - Used new field names for IRQ1_STATUS_33 register
+> > 
+> >  MAINTAINERS                          |   10 +
+> >  include/linux/mfd/madera/registers.h | 8832 ++++++++++++++++++++++++++++++++++
+> 
+> Crikey!
+> 
+> For my own reference:
+>   Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+>   
 
-Was the issue of the device appearing as separate devices fixed for this
-device.
-I see this was addressed for devices with similar issue.
-
-Regards
-
-Allan
-
-On Tue, 10 Jan 2017 at 10:55 Allan Klinbail <aklinbail@gmail.com> wrote:
-
-> Thank you for your response.
->
-> My statement was a little tongue in cheek after thought to the actual
-> comment.
-> All, I'm really hoping is that the full channel count will be available
-> for ALSA users.
->
->
->
->
-> On Tue, 10 Jan 2017 at 03:33 Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> wrote:
->
->> On Jan 9 2017 15:59, Allan Klinbail wrote:
->> > Hi,
->> >
->> > I noticed on the changelog that some devices are able to access all
->> > channels without doing any .asoundrc funkiness. Form 4.6 kernel onwards
->> >
->> >
->> >    - Add support for previously unavailable higher PCM channels on
->> certain
->> >    devices with high channel count, notably Focusrite Saffire PRO 40,
->> >    Focusrite Liquid Saffire 56, and TC Electronic Studio Konnekt 48.
->> These
->> >    devices spread the PCM and MIDI channels across 2 tx + 2 rx IEEE 1394
->> >    channels instead of just 1 tx + 1 rx IEEE 1394 channel, as most other
->> >    devices do.
->> >
->> >
->> > Pretty sure I've tested with 4.6 and wasn't able to achieve this with my
->> > device.  But can test again with 4.8 if I am wrong.
->> >
->> > My device is an Allen and Heath Zed R16..
->> > While latency performance in the way ALSA works is not satisfactory
->> for my
->> > usage others may wish to use this device with ALSA for simplicity.
->> (remove
->> > the need for FFADO entirely as there is no software mixer for this
->> device
->> > and remove the need for any MIDI bridge)
->> >
->> > Currently under ALSA in 44.1k or 48k the device has 16 inputs and 16
->> > outputs on the first firewire channel, and then and additional 10 ins
->> and
->> > 10 outs on the second.
->> >
->> > If this is any help, here is the vendor info, as used by FFADO
->> >
->> >
->> > { # Allen and Heath Zed R16.  Information from Brendan Pike.
->> >     vendorid    = 0x000004C4;
->> >     modelid     = 0x00000000;
->> >     vendorname  = "Allen and Heath";
->> >     modelname   = "Zed R16";
->> >     driver      = "DICE";
->> >     mixer       = "Generic_Dice_EAP";
->> > }
->> >
->> >
->> > On that latency topic- just voicing my opinion and I don't expect
->> change.
->> >
->> > When the paradigm of using periods/frames and buffers is common across
->> all
->> > OS and driver platforms, I don't believe that the driver should force
->> > developers to implement a new method, even if there are better ways of
->> > doing things.
->>
->> It's 2017 and the paradigm was already shifted since early 2000.
->> Timer-based scheduling is more popular in recent commercial operating
->> systems, to achieve PCM frame queueing delay within the size of period
->> in PCM buffer, with better power consumption.
->>
->> On the other hand, stuffs in your Linux audio still adhere old paradigm,
->> against their essential requirement.
->>
->> By the way, ALSA firewire stack supports both programming models. It
->> doesn't forces people for one of the directions.
->>
->> That might be okay for small open source projects, but bigger
->> > commercial applications would not be likely to maintain separate
->> > configuration options for Linux, they are more likely to drop Linux
->> > altogether if forced to adopt
->> >  I also know that Takashi S, does not agree but as FFADO devs have
->> agreed
->> > to keep the driver in FFADO I don't mind..
->>
->> My agreement is not so important for this topics, and it's just due to
->> few developers for this kind of devices. Recently I use more time for
->> ALSA itself, and have enough distance from this kind of devices, audio
->> and music units on IEEE 1394 bus,
->>
->> Anyway, thanks for your report.
->>
->>
->> Regards
->>
->> Takashi Sakamoto
->>
->
+Can I suggest that you take this patch into the mfd tree? Other
+subsystem maintainers will have to base on that but it avoids me keeping
+emailing out nearly 9000 lines of register definitions each time I do an
+update to the other patches in the chain.
