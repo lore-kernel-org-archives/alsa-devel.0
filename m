@@ -1,14 +1,21 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: pcm: add a documentation for tracepoints
-Date: Mon, 26 Jun 2017 22:27:21 +0900
-Message-ID: <20170626132721.5509-1-o-takashi@sakamocchi.jp>
+From: =?UTF-8?Q?Christian_K=c3=b6nig?= <deathsimple@vodafone.de>
+Subject: Re: [PATCH 1/8] drm/amd/amdgpu: Added asic_type as ACP
+ DMA driver platform data
+Date: Mon, 26 Jun 2017 15:29:06 +0200
+Message-ID: <94922f8f-505c-d6c0-97b3-95ccf3cfbe2b@vodafone.de>
+References: <1498235706-31111-1-git-send-email-alexander.deucher@amd.com>
+ <1498235706-31111-2-git-send-email-alexander.deucher@amd.com>
+ <fb879fdd-b241-7368-9c33-7a78dafa491d@vodafone.de>
+ <CADnq5_MT+h6nOmXfVi42tH9G917wTRguBdMC02zmgRuH2dD-iA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 421ED266A0C
- for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2017 15:27:27 +0200 (CEST)
+Received: from pegasos-out.vodafone.de (pegasos-out.vodafone.de [80.84.1.38])
+ by alsa0.perex.cz (Postfix) with ESMTP id AECE7266A0C
+ for <alsa-devel@alsa-project.org>; Mon, 26 Jun 2017 15:29:12 +0200 (CEST)
+In-Reply-To: <CADnq5_MT+h6nOmXfVi42tH9G917wTRguBdMC02zmgRuH2dD-iA@mail.gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,219 +25,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: Alex Deucher <alexdeucher@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, amd-gfx list <amd-gfx@lists.freedesktop.org>, rajeev kumar <rajeevkumar.linux@gmail.com>, Mark Brown <broonie@kernel.org>, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, Dave Airlie <airlied@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-In PCM interface/protocol for userspace, parameters of runtime for PCM
-substream is decided by an interaction between applications and ALSA
-PCM core. In former commits, some tracepoints were added to probe a part
-of the interaction.
-
-This commit adds a documentation about the interaction and the
-tracepoints.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- Documentation/sound/designs/index.rst       |   1 +
- Documentation/sound/designs/tracepoints.rst | 177 ++++++++++++++++++++++++++++
- 2 files changed, 178 insertions(+)
- create mode 100644 Documentation/sound/designs/tracepoints.rst
-
-diff --git a/Documentation/sound/designs/index.rst b/Documentation/sound/designs/index.rst
-index 04dcdae3e4f2..f0749943ccb2 100644
---- a/Documentation/sound/designs/index.rst
-+++ b/Documentation/sound/designs/index.rst
-@@ -9,6 +9,7 @@ Designs and Implementations
-    compress-offload
-    timestamping
-    jack-controls
-+   tracepoints
-    procfile
-    powersave
-    oss-emulation
-diff --git a/Documentation/sound/designs/tracepoints.rst b/Documentation/sound/designs/tracepoints.rst
-new file mode 100644
-index 000000000000..b45e9f765451
---- /dev/null
-+++ b/Documentation/sound/designs/tracepoints.rst
-@@ -0,0 +1,177 @@
-+===================
-+Tracepoints in ALSA
-+===================
-+
-+2017/06/26
-+Takasahi Sakamoto
-+
-+Tracepoints in ALSA PCM core
-+============================
-+
-+ALSA PCM core registers ``snd_pcm`` subsystem to kernel tracepoint system.
-+This subsystem includes two categories of tracepoints; for state of PCM buffer
-+and for processing of PCM hardware parameters. These tracepoints are available
-+when corresponding kernel configurations are enabled. When ``CONFIG_SND_DEBUG``
-+is enabled, the latter tracepoints are available. When additional
-+``SND_PCM_XRUN_DEBUG`` is enabled too, the former trace points are enabled.
-+
-+Tracepoints for state of PCM buffer
-+------------------------------------
-+
-+This category includes four tracepoints; ``hwptr``, ``applptr``, ``xrun`` and
-+``hw_ptr_error``.
-+
-+Tracepoints for processing of PCM hardware parameters
-+-----------------------------------------------------
-+
-+This category includes two tracepoints; ``hw_mask_param`` and
-+``hw_interval_param``.
-+
-+In a design of ALSA PCM core, data transmission is abstracted as PCM substream.
-+Applications manage PCM substream to maintain data transmission for PCM frames.
-+Before stating the data transmission, applications need to configure PCM
-+substream. In this procedure, PCM hardware parameters are decided by
-+interaction between applications and ALSA PCM core. Once decided, runtime of
-+the PCM substream keeps the parameters.
-+
-+The hardware parameters are described in :c:type:`struct snd_pcm_hw_params`.
-+This structure includes several types of parameters. Applications set preferable
-+value to these parameters, then execute ioctl(2) with SNDRV_PCM_IOCTL_HW_REFINE
-+or SNDRV_PCM_IOCTL_HW_PARAMS. The former is used just for querying available
-+set of parameters. The latter is used for an actual decision of the parameters.
-+
-+The :c:type:`struct snd_pcm_hw_params` structure has below members:
-+
-+``flags``
-+        Configurable. ALSA PCM core and some drivers handle this flag to select
-+        convenient parameters or change their behaviour. As of PCM protocol
-+        v2.0.13, three flags are defined.
-+
-+        - SNDRV_PCM_HW_PARAMS_NORESAMPLE
-+        - SNDRV_PCM_HW_PARAMS_EXPORT_BUFFER
-+        - SNDRV_PCM_HW_PARAMS_NO_PERIOD_WAKEUP
-+``masks``
-+        Configurable. This type of parameter is described in
-+        :c:type:`struct snd_mask` and represent mask values. As of PCM protocol
-+        v2.0.13, three types are defined.
-+
-+        - SNDRV_PCM_HW_PARAM_ACCESS
-+        - SNDRV_PCM_HW_PARAM_FORMAT
-+        - SNDRV_PCM_HW_PARAM_SUBFORMAT
-+``intervals``
-+        Configurable. This type of parameter is described in
-+        :c:type:`struct snd_interval` and represent values with a range. As of
-+        PCM protocol v2.0.13, twelve types are defined.
-+
-+        - SNDRV_PCM_HW_PARAM_SAMPLE_BITS
-+        - SNDRV_PCM_HW_PARAM_FRAME_BITS
-+        - SNDRV_PCM_HW_PARAM_CHANNELS
-+        - SNDRV_PCM_HW_PARAM_RATE
-+        - SNDRV_PCM_HW_PARAM_PERIOD_TIME
-+        - SNDRV_PCM_HW_PARAM_PERIOD_SIZE
-+        - SNDRV_PCM_HW_PARAM_PERIOD_BYTES
-+        - SNDRV_PCM_HW_PARAM_PERIODS
-+        - SNDRV_PCM_HW_PARAM_BUFFER_TIME
-+        - SNDRV_PCM_HW_PARAM_BUFFER_SIZE
-+        - SNDRV_PCM_HW_PARAM_BUFFER_BYTES
-+        - SNDRV_PCM_HW_PARAM_TICK_TIME
-+``rmask``
-+        Configurable. This is evaluated at ioctl(2) with
-+        SNDRV_PCM_IOCTL_HW_REFINE only. Applications can select which
-+        mask/interval parameter should be queried to ALSA PCM core. For
-+        SNDRV_PCM_IOCTL_HW_PARAMS, this mask makes no sense and all of
-+        parameters are going to be changed.
-+``cmask``
-+        Read-only. After returning from ioctl(2), buffer in user space for
-+        :c:type:`struct snd_pcm_hw_params` includes result. This mask represents
-+        which mask/interval parameter is actually changed.
-+``info``
-+        Read-only. This represents hardware/driver capabilities as bit flags
-+        with SNDRV_PCM_INFO_XXX. Typically, applications execute ioctl(2) with
-+        SNDRV_PCM_IOCTL_HW_REFINE to retrieve this flag, then decide candidates
-+        of parameters and execute ioctl(2) with SNDRV_PCM_IOCTL_HW_PARAMS to
-+        configure PCM substream.
-+``msbits``
-+        Read-only. This value represents available bit width in MSB side of
-+        a PCM sample. When a parameter of SNDRV_PCM_HW_PARAM_SAMPLE_BITS was
-+        decided as a fixed number, this value is also calculated according to
-+        it. Else, zero. But this behaviour depends on implementations in driver
-+        side.
-+``rate_num``
-+        Read-only. This value represents numerator of sampling rate in fraction
-+        notation. Basically, when a parameter of SNDRV_PCM_HW_PARAM_RATE was
-+        decided as a fixed number, this value is also calculated according to
-+        it. Else, zero. But this behaviour depends on implementations in driver
-+        side.
-+``rate_den``
-+        Read-only. This value represents denominator of sampling rate in
-+        fraction notation. Basically, when a parameter of
-+        SNDRV_PCM_HW_PARAM_RATE was decided as a fixed number, this value is
-+        also calculated according to it. Else, zero. But this behaviour depends
-+        on implementations in driver side.
-+``fifo_size``
-+        Read-only. This value represents the size of FIFO in serial sound
-+        interface of hardware. Basically, each driver can assigns a proper
-+        value to this parameter but some drivers intentionally set zero with
-+        a care of hardware design or data transmission protocol.
-+
-+ALSA PCM core handles buffer of :c:type:`struct snd_pcm_hw_params` when
-+applications execute ioctl(2) with SNDRV_PCM_HW_REFINE or SNDRV_PCM_HW_PARAMS.
-+Pamraeters in the buffer are changed according to
-+:c:type:`struct snd_pcm_hardware` and rules of constraints in the runtime. The
-+structure describes capabilities of handled hardware. The rules describes
-+dependencies on which a parameter is decided according to several parameters.
-+A rule has a callback function, and drivers can register arbitrary functions
-+to compute the target parameter. ALSA PCM core registers some rules to the
-+runtime as a default.
-+
-+Each driver can join in the interaction as long as it prepared for two stuffs
-+in a callback of :c:type:`struct snd_pcm_ops.open`.
-+
-+1. In the callback, drivers are expected to change a member of
-+   :c:type:`struct snd_pcm_hardware` type in the runtime, according to
-+   capacities of corresponding hardware.
-+2. In the same callback, drivers are also expected to register additional rules
-+   of constraints into the runtime when several parameters have dependencies
-+   due to hardware design.
-+
-+The driver can refers to result of the interaction in a callback of
-+:c:type:`struct snd_pcm_ops.hw_params`, however it should not change the
-+content.
-+
-+Tracepoints in this category are designed to trace changes of the
-+mask/interval parameters. When ALSA PCM core changes them, ``hw_mask_param`` or
-+``hw_interval_param`` event is probed according to type of the changed parameter.
-+
-+ALSA PCM core also has a pretty print format for each of the tracepoints. Below
-+is an example for ``hw_mask_param``.
-+
-+::
-+
-+    hw_mask_param: pcmC0D0p 001/023 FORMAT 00000000000000000000001000000044 00000000000000000000001000000044
-+
-+
-+Below is an example for ``hw_interval_param``.
-+
-+::
-+
-+    hw_interval_param: pcmC0D0p 000/023 BUFFER_SIZE 0 0 [0 4294967295] 0 1 [0 4294967295]
-+
-+The first three fields are common. They represent ALSA PCM character device,
-+rules of constraint and name of the changed parameter, in order. The field for
-+rules of constraint consists of two sub-fields; index of applied rule and
-+total number of rules added to the runtime. The index 000 means that the
-+parameter is changed by ALSA PCM core regardless of the rules.
-+
-+The rest of field represent state of the parameter before/after changing. These
-+fields are different according to type of the parameter. For parameter of mask
-+type, the fields represent hexadecimal dump of content of the parameter. For
-+parameter of interval type, the fields represent values of each member of
-+``empty``, ``integer``, ``openmin``, ``min``, ``max``, ``openmax`` in
-+:c:type:`struct snd_interval`.
-+
-+Tracepoints in drivers
-+======================
-+
-+Some drivers have tracepoints for developers' convenience. For them, please
-+refer to each documentation or implementation.
--- 
-2.11.0
+QW0gMjMuMDYuMjAxNyB1bSAxOTowNSBzY2hyaWViIEFsZXggRGV1Y2hlcjoKPiBPbiBGcmksIEp1
+biAyMywgMjAxNyBhdCAxMjo0MyBQTSwgQ2hyaXN0aWFuIEvDtm5pZwo+IDxkZWF0aHNpbXBsZUB2
+b2RhZm9uZS5kZT4gd3JvdGU6Cj4+IEFtIDIzLjA2LjIwMTcgdW0gMTg6MzQgc2NocmllYiBBbGV4
+IERldWNoZXI6Cj4+PiBGcm9tOiBWaWplbmRhciBNdWt1bmRhIDxWaWplbmRhci5NdWt1bmRhQGFt
+ZC5jb20+Cj4+Pgo+Pj4gYXNpY190eXBlIGluZm9ybWF0aW9uIGlzIHBhc3NlZCB0byBBQ1AgRE1B
+IERyaXZlciBhcyBwbGF0Zm9ybSBkYXRhLgo+Pj4gV2UgbmVlZCB0aGlzIHRvIGRldGVybWluZSB3
+aGV0aGVyIHRoZSBhc2ljIGlzIENhcnJpem8gKENaKSBvcgo+Pj4gU3RvbmV5IChTVCkgaW4gdGhl
+IGFjcCBzb3VuZCBkcml2ZXIuCj4+Pgo+Pj4gUmV2aWV3ZWQtYnk6IEFsZXggRGV1Y2hlciA8YWxl
+eGFuZGVyLmRldWNoZXJAYW1kLmNvbT4KPj4+IFNpZ25lZC1vZmYtYnk6IFZpamVuZGFyIE11a3Vu
+ZGEgPFZpamVuZGFyLk11a3VuZGFAYW1kLmNvbT4KPj4+IFNpZ25lZC1vZmYtYnk6IEFsZXggRGV1
+Y2hlciA8YWxleGFuZGVyLmRldWNoZXJAYW1kLmNvbT4KPj4+IC0tLQo+Pj4gICAgZHJpdmVycy9n
+cHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X2FjcC5jIHwgNCArKysrCj4+PiAgICBzb3VuZC9zb2Mv
+YW1kL2FjcC1wY20tZG1hLmMgICAgICAgICAgICAgfCA4ICsrLS0tLS0tCj4+PiAgICBzb3VuZC9z
+b2MvYW1kL2FjcC5oICAgICAgICAgICAgICAgICAgICAgfCA3ICsrKysrKysKPj4+ICAgIDMgZmls
+ZXMgY2hhbmdlZCwgMTMgaW5zZXJ0aW9ucygrKSwgNiBkZWxldGlvbnMoLSkKPj4+Cj4+PiBkaWZm
+IC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X2FjcC5jCj4+PiBiL2Ry
+aXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9hY3AuYwo+Pj4gaW5kZXggMDY4NzlkMS4u
+N2EyYTc2NSAxMDA2NDQKPj4+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdw
+dV9hY3AuYwo+Pj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X2FjcC5j
+Cj4+PiBAQCAtMjYyLDYgKzI2Miw3IEBAIHN0YXRpYyBpbnQgYWNwX2h3X2luaXQodm9pZCAqaGFu
+ZGxlKQo+Pj4gICAgICAgICAgdWludDY0X3QgYWNwX2Jhc2U7Cj4+PiAgICAgICAgICBzdHJ1Y3Qg
+ZGV2aWNlICpkZXY7Cj4+PiAgICAgICAgICBzdHJ1Y3QgaTJzX3BsYXRmb3JtX2RhdGEgKmkyc19w
+ZGF0YTsKPj4+ICsgICAgICAgdTMyIGFzaWNfdHlwZTsKPj4+ICAgICAgICAgIHN0cnVjdCBhbWRn
+cHVfZGV2aWNlICphZGV2ID0gKHN0cnVjdCBhbWRncHVfZGV2aWNlICopaGFuZGxlOwo+Pj4gICAg
+QEAgLTI3MSw2ICsyNzIsNyBAQCBzdGF0aWMgaW50IGFjcF9od19pbml0KHZvaWQgKmhhbmRsZSkK
+Pj4+ICAgICAgICAgIGlmICghaXBfYmxvY2spCj4+PiAgICAgICAgICAgICAgICAgIHJldHVybiAt
+RUlOVkFMOwo+Pj4gICAgKyAgICAgYXNpY190eXBlID0gYWRldi0+YXNpY190eXBlOwo+Pj4gICAg
+ICAgICAgciA9IGFtZF9hY3BfaHdfaW5pdChhZGV2LT5hY3AuY2dzX2RldmljZSwKPj4+ICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgaXBfYmxvY2stPnZlcnNpb24tPm1ham9yLAo+Pj4gaXBf
+YmxvY2stPnZlcnNpb24tPm1pbm9yKTsKPj4+ICAgICAgICAgIC8qIC1FTk9ERVYgbWVhbnMgYm9h
+cmQgdXNlcyBBWiByYXRoZXIgdGhhbiBBQ1AgKi8KPj4+IEBAIC0zNTUsNiArMzU3LDggQEAgc3Rh
+dGljIGludCBhY3BfaHdfaW5pdCh2b2lkICpoYW5kbGUpCj4+PiAgICAgICAgICBhZGV2LT5hY3Au
+YWNwX2NlbGxbMF0ubmFtZSA9ICJhY3BfYXVkaW9fZG1hIjsKPj4+ICAgICAgICAgIGFkZXYtPmFj
+cC5hY3BfY2VsbFswXS5udW1fcmVzb3VyY2VzID0gNDsKPj4+ICAgICAgICAgIGFkZXYtPmFjcC5h
+Y3BfY2VsbFswXS5yZXNvdXJjZXMgPSAmYWRldi0+YWNwLmFjcF9yZXNbMF07Cj4+PiArICAgICAg
+IGFkZXYtPmFjcC5hY3BfY2VsbFswXS5wbGF0Zm9ybV9kYXRhID0gJmFzaWNfdHlwZTsKPj4+ICsg
+ICAgICAgYWRldi0+YWNwLmFjcF9jZWxsWzBdLnBkYXRhX3NpemUgPSBzaXplb2YoYXNpY190eXBl
+KTsKPj4KPj4gSGF2ZSB0aGUgcGFpbmtpbGxlcnMgamVsbHlmaWVkIG15IGJyYWluIG9yIGFyZSB5
+b3Ugc2V0dGluZyBhIHBvaW50ZXIgaW4gdGhlCj4+IGFtZGdwdSBkZXZpY2Ugc3RydWN0dXJlIHRv
+IHNvbWUgdmFyaWFibGUgb24gdGhlIHN0YWNrPwo+Pgo+PiBJZiBpdCdzIGp1c3QgZm9yIGluaXRp
+YWxpemF0aW9uIHRoZW4gdGhhdCdzIHByb2JhYmx5IG9rLCBidXQgSSB3b3VsZCByZXNldAo+PiB0
+aGUgcG9pbnRlciBhdCB0aGUgZW5kIG9mIHRoZSBmdW5jdGlvbi4KPj4KPj4gT3RoZXJ3aXNlIHNv
+bWVib2R5IG1pZ2h0IGhhdmUgdGhlIGlkZWEgdG8gZGVyZWZlcmVuY2UgaXQgbGF0ZXIgb24gYW5k
+IHRoYXQKPj4gY2FuIG9ubHkgbGVhZCB0byB0cm91YmxlLgo+IEkgdGhpbmsgaXQncyBvayBiZWNh
+dXNlIHRoZSBob3RwbHVnIG9mIHRoZSBhdWRpbyBkZXZpY2UgaXMgdHJpZ2dlcmVkCj4gZnJvbSB0
+aGlzIGZ1bmN0aW9uLCBzbyB0aGUgYXVkaW8gZGV2aWNlIHNob3VsZCBiZSBwcm9iZWQgYnkgdGhl
+IHRpbWUKPiB0aGlzIHZhcmlhYmxlIGdvZXMgb3V0IG9mIHNjb3BlLiAgVGhhdCBzYWlkLCBpdCB3
+b3VsZCBwcm9iYWJseSBiZQo+IGJldHRlciB0byB1c2UgdGhlIGFzaWNfdHlwZSBmcm9tIHRoZSBH
+UFUgZHJpdmVyIGluc3RhbmNlIGRpcmVjdGx5Cj4gcmF0aGVyIHRoYW4gYSBzdGFjayB2YXJpYWJs
+ZS4KClllYWgsIGFncmVlLiBCdXQga2VlcGluZyBhIHN0YWxlIHJlZmVyZW5jZSBpbiB0byBhIHN0
+YWNrIHZhcmlhYmxlIGluIHRoZSAKZHJpdmVyIHN0cnVjdCBpcyBzdGlsbCB1Z2x5IGxpa2UgaGVs
+bC4KCkF0IGJhcmUgbWluaW11bSBzZXQgdGhpcyB0byBOVUxMIGF0IHRoZSBlbmQgb2YgdGhlIGZ1
+bmN0aW9uLCBvciBldmVuIApiZXR0ZXIgdXNlIGEgaW50cHRyX3QgdG8gZW5jb2RlIHRoZSBhc2lj
+IHR5cGUgaW50byB0aGUgcG9pbnRlci4KCkNocmlzdGlhbi4KCj4KPiBBbGV4Cj4KPgo+PiBDaHJp
+c3RpYW4uCj4+Cj4+Cj4+PiAgICAgICAgICBhZGV2LT5hY3AuYWNwX2NlbGxbMV0ubmFtZSA9ICJk
+ZXNpZ253YXJlLWkycyI7Cj4+PiAgICAgICAgICBhZGV2LT5hY3AuYWNwX2NlbGxbMV0ubnVtX3Jl
+c291cmNlcyA9IDE7Cj4+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29jL2FtZC9hY3AtcGNtLWRtYS5j
+IGIvc291bmQvc29jL2FtZC9hY3AtcGNtLWRtYS5jCj4+PiBpbmRleCAwOGIxMzk5Li5kY2JmOTk3
+IDEwMDY0NAo+Pj4gLS0tIGEvc291bmQvc29jL2FtZC9hY3AtcGNtLWRtYS5jCj4+PiArKysgYi9z
+b3VuZC9zb2MvYW1kL2FjcC1wY20tZG1hLmMKPj4+IEBAIC03MywxMiArNzMsNiBAQCBzdGF0aWMg
+Y29uc3Qgc3RydWN0IHNuZF9wY21faGFyZHdhcmUKPj4+IGFjcF9wY21faGFyZHdhcmVfY2FwdHVy
+ZSA9IHsKPj4+ICAgICAgICAgIC5wZXJpb2RzX21heCA9IENBUFRVUkVfTUFYX05VTV9QRVJJT0RT
+LAo+Pj4gICAgfTsKPj4+ICAgIC1zdHJ1Y3QgYXVkaW9fZHJ2X2RhdGEgewo+Pj4gLSAgICAgICBz
+dHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnBsYXlfc3RyZWFtOwo+Pj4gLSAgICAgICBzdHJ1Y3Qg
+c25kX3BjbV9zdWJzdHJlYW0gKmNhcHR1cmVfc3RyZWFtOwo+Pj4gLSAgICAgICB2b2lkIF9faW9t
+ZW0gKmFjcF9tbWlvOwo+Pj4gLX07Cj4+PiAtCj4+PiAgICBzdGF0aWMgdTMyIGFjcF9yZWdfcmVh
+ZCh2b2lkIF9faW9tZW0gKmFjcF9tbWlvLCB1MzIgcmVnKQo+Pj4gICAgewo+Pj4gICAgICAgICAg
+cmV0dXJuIHJlYWRsKGFjcF9tbWlvICsgKHJlZyAqIDQpKTsKPj4+IEBAIC05MTYsNiArOTEwLDcg
+QEAgc3RhdGljIGludCBhY3BfYXVkaW9fcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZQo+Pj4g
+KnBkZXYpCj4+PiAgICAgICAgICBpbnQgc3RhdHVzOwo+Pj4gICAgICAgICAgc3RydWN0IGF1ZGlv
+X2Rydl9kYXRhICphdWRpb19kcnZfZGF0YTsKPj4+ICAgICAgICAgIHN0cnVjdCByZXNvdXJjZSAq
+cmVzOwo+Pj4gKyAgICAgICBjb25zdCB1MzIgKnBkYXRhID0gcGRldi0+ZGV2LnBsYXRmb3JtX2Rh
+dGE7Cj4+PiAgICAgICAgICBhdWRpb19kcnZfZGF0YSA9IGRldm1fa3phbGxvYygmcGRldi0+ZGV2
+LCBzaXplb2Yoc3RydWN0Cj4+PiBhdWRpb19kcnZfZGF0YSksCj4+PiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIEdGUF9LRVJORUwpOwo+Pj4gQEAgLTkzMiw2ICs5Mjcs
+NyBAQCBzdGF0aWMgaW50IGFjcF9hdWRpb19wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlCj4+
+PiAqcGRldikKPj4+ICAgICAgICAgIGF1ZGlvX2Rydl9kYXRhLT5wbGF5X3N0cmVhbSA9IE5VTEw7
+Cj4+PiAgICAgICAgICBhdWRpb19kcnZfZGF0YS0+Y2FwdHVyZV9zdHJlYW0gPSBOVUxMOwo+Pj4g
+KyAgICAgICBhdWRpb19kcnZfZGF0YS0+YXNpY190eXBlID0gICpwZGF0YTsKPj4+ICAgICAgICAg
+IHJlcyA9IHBsYXRmb3JtX2dldF9yZXNvdXJjZShwZGV2LCBJT1JFU09VUkNFX0lSUSwgMCk7Cj4+
+PiAgICAgICAgICBpZiAoIXJlcykgewo+Pj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9hbWQvYWNw
+LmggYi9zb3VuZC9zb2MvYW1kL2FjcC5oCj4+PiBpbmRleCAzMzA4MzJlLi4yOGNmOTE0IDEwMDY0
+NAo+Pj4gLS0tIGEvc291bmQvc29jL2FtZC9hY3AuaAo+Pj4gKysrIGIvc291bmQvc29jL2FtZC9h
+Y3AuaAo+Pj4gQEAgLTg0LDYgKzg0LDEzIEBAIHN0cnVjdCBhdWRpb19zdWJzdHJlYW1fZGF0YSB7
+Cj4+PiAgICAgICAgICB2b2lkIF9faW9tZW0gKmFjcF9tbWlvOwo+Pj4gICAgfTsKPj4+ICAgICtz
+dHJ1Y3QgYXVkaW9fZHJ2X2RhdGEgewo+Pj4gKyAgICAgICBzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJl
+YW0gKnBsYXlfc3RyZWFtOwo+Pj4gKyAgICAgICBzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKmNh
+cHR1cmVfc3RyZWFtOwo+Pj4gKyAgICAgICB2b2lkIF9faW9tZW0gKmFjcF9tbWlvOwo+Pj4gKyAg
+ICAgICB1MzIgYXNpY190eXBlOwo+Pj4gK307Cj4+PiArCj4+PiAgICBlbnVtIHsKPj4+ICAgICAg
+ICAgIEFDUF9USUxFX1AxID0gMCwKPj4+ICAgICAgICAgIEFDUF9USUxFX1AyLAo+Pgo+PgoKX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBt
+YWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFs
+c2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
