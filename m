@@ -1,176 +1,101 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v2 alsa-lib 6/6] pcm: hw: maintain fallback
-	mode for control data mapping independently
-Date: Sun, 25 Jun 2017 13:41:24 +0900
-Message-ID: <20170625044124.22234-7-o-takashi@sakamocchi.jp>
-References: <20170625044124.22234-1-o-takashi@sakamocchi.jp>
+From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Subject: Re: [PATCH v13 05/14] ASoC: sun4i-codec: Merge
+ sun4i_codec_left_mixer_controls and sun4i_codec_right_mixer_controls into sun4i_codec_mixer_controls.
+Date: Mon, 26 Jun 2017 09:48:59 +0800
+Message-ID: <CAGb2v64i_S5HCsLHJGg0WbkFodOFFc5masUYQ53JaLTO7N2BMw@mail.gmail.com>
+References: <20170624062419.23778-1-dannym@scratchpost.org> <20170624062419.23778-6-dannym@scratchpost.org>
+Reply-To: wens-jdAy2FN1RRM@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 37B37266B50
- for <alsa-devel@alsa-project.org>; Sun, 25 Jun 2017 06:41:37 +0200 (CEST)
-In-Reply-To: <20170625044124.22234-1-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBCMILY6JWQBBBJGQYHFAKGQEOEJ3GDI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20170624062419.23778-6-dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
+Cc: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-arm-kernel <linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, linux-kernel <linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Currently, failures of status/control data mapping are handled dependently.
-However, it's not sure that one of the operations is failed when another
-is failed.
+On Sat, Jun 24, 2017 at 2:24 PM, Danny Milosavljevic
+<dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org> wrote:
+> Since it's now possible to have a DAPM mixer control with multiple channels,
+> use it to cut down the total number of controls.
+>
+> Signed-off-by: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+> ---
+>  sound/soc/sunxi/sun4i-codec.c | 27 ++++++++++++---------------
+>  1 file changed, 12 insertions(+), 15 deletions(-)
+>
+> diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
+> index c69b55c..3718137 100644
+> --- a/sound/soc/sunxi/sun4i-codec.c
+> +++ b/sound/soc/sunxi/sun4i-codec.c
+> @@ -685,15 +685,12 @@ static const struct snd_kcontrol_new sun7i_codec_extra_controls[] = {
+>                        sun7i_codec_micin_preamp_gain_scale),
+>  };
+>
+> -static const struct snd_kcontrol_new sun4i_codec_left_mixer_controls[] = {
+> -       SOC_DAPM_SINGLE("Left DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
+> -                       SUN4I_CODEC_DAC_ACTL_LDACLMIXS, 1, 0),
+> -};
+> -
+> -static const struct snd_kcontrol_new sun4i_codec_right_mixer_controls[] = {
+> -       SOC_DAPM_SINGLE("Right DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
+> +static const struct snd_kcontrol_new sun4i_codec_mixer_controls[] = {
+> +       SOC_DAPM_DOUBLE("DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
+> +                       SUN4I_CODEC_DAC_ACTL_LDACLMIXS,
+>                         SUN4I_CODEC_DAC_ACTL_RDACRMIXS, 1, 0),
 
-This commit adds a member into private data structure to maintain fallback
-mode for control data mapping, independently of status data mapping. As a
-result, we have four cases to handle status/control data:
+This changes the mixer control names exposed to userspace. While I think
+consolidating mixer controls is nice, giving the user a less cluttered
+view, I'm not sure about the changing a possible userspace ABI.
 
-1. both of status/control data are mapped.
-Nothing changed. A structure with alias of 'snd_pcm_hw_t' already has two
-members to point the mapped area and in application runtime they're used
-to refer/set status/control data. No need to call ioctl(2) with
-SNDRV_PCM_IOCTL_SYNC_PTR to issue/query the data.
+Maxime, ALSA and ASoC people, any comments about this?
 
-2. both of status/control data are unmapped.
-The two members point to allocated memory for fallback buffer. In
-application runtime, the buffer is given as an argument for ioctl(2) with
-SNDRV_PCM_IOCTL_SYNC_PTR to issue/query the data.
+ChenYu
 
-3. status data is mapped only.
-One of the two members is used to point the mapped area. Another points to
-allocated memory for fallback buffer. In application runtime, the buffer
-is used as an argument to execute ioctl(2) with SNDRV_PCM_IOCTL_SYNC_PTR
-for the latter data, but the former data is already synchronized.
-
-4. control data is mapped only.
-The same as the above.
-
-In design of ALSA PCM interface, userspace applications are not expected
-to map the status data as writable. On the other hand, expected to map
-the control data as writable. In a focus on the differences, we could
-achieve to reduce calls of the ioctl(2) in a case that one of the
-status/control data is successfully mapped and another is failed (case 3
-and 4). Especially, in current alsa-lib implementation, application
-runtime queries state of runtime of PCM substream so often.
----
- src/pcm/pcm_hw.c | 37 ++++++++++++++++++++-----------------
- 1 file changed, 20 insertions(+), 17 deletions(-)
-
-diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
-index 78857941..5573fce2 100644
---- a/src/pcm/pcm_hw.c
-+++ b/src/pcm/pcm_hw.c
-@@ -95,6 +95,7 @@ typedef struct {
- 	volatile struct snd_pcm_mmap_status * mmap_status;
- 	struct snd_pcm_mmap_control *mmap_control;
- 	bool mmap_status_fallbacked;
-+	bool mmap_control_fallbacked;
- 	struct snd_pcm_sync_ptr *sync_ptr;
- 
- 	int period_event;
-@@ -143,9 +144,11 @@ static int sync_ptr1(snd_pcm_hw_t *hw, unsigned int flags)
- 	return 0;
- }
- 
--static inline int sync_ptr(snd_pcm_hw_t *hw, unsigned int flags)
-+static int sync_ptr(snd_pcm_hw_t *hw, unsigned int flags)
- {
--	return hw->sync_ptr ? sync_ptr1(hw, flags) : 0;
-+	if (hw->mmap_status_fallbacked || hw->mmap_control_fallbacked)
-+		return sync_ptr1(hw, flags);
-+	return 0;
- }
- 
- static int snd_pcm_hw_clear_timer_queue(snd_pcm_hw_t *hw)
-@@ -899,24 +902,24 @@ static bool map_control_data(snd_pcm_hw_t *hw,
- 			     bool force_fallback)
- {
- 	struct snd_pcm_mmap_control *mmap_control;
--	int err;
-+	bool fallbacked;
- 
- 	if (!force_fallback) {
- 		mmap_control = mmap(NULL, page_align(sizeof(*mmap_control)),
- 				    PROT_READ|PROT_WRITE, MAP_FILE|MAP_SHARED,
- 				    hw->fd, SNDRV_PCM_MMAP_OFFSET_CONTROL);
--		if (mmap_control == MAP_FAILED || mmap_control == NULL) {
--			err = -errno;
--			SYSMSG("control mmap failed (%i)", err);
--			return err;
--		}
--	} else {
-+	}
-+
-+	if (mmap_control == MAP_FAILED || mmap_control == NULL) {
- 		mmap_control = &sync_ptr->c.control;
-+		fallbacked = true;
-+	} else {
-+		fallbacked = false;
- 	}
- 
- 	hw->mmap_control = mmap_control;
- 
--	return 0;
-+	return fallbacked;
- }
- 
- static int map_status_and_control_data(snd_pcm_t *pcm, bool force_fallback)
-@@ -933,12 +936,11 @@ static int map_status_and_control_data(snd_pcm_t *pcm, bool force_fallback)
- 
- 	hw->mmap_status_fallbacked =
- 			map_status_data(hw, sync_ptr, force_fallback);
--	err = map_control_data(hw, sync_ptr, hw->mmap_status_fallbacked);
--	if (err < 0)
--		return err;
-+	hw->mmap_control_fallbacked =
-+			map_control_data(hw, sync_ptr, force_fallback);
- 
- 	/* Any fallback mode needs to keep the buffer. */
--	if (hw->mmap_status_fallbacked == 0) {
-+	if (hw->mmap_status_fallbacked || hw->mmap_control_fallbacked) {
- 		hw->sync_ptr = sync_ptr;
- 	} else {
- 		free(sync_ptr);
-@@ -953,7 +955,7 @@ static int map_status_and_control_data(snd_pcm_t *pcm, bool force_fallback)
- 				offsetof(struct snd_pcm_mmap_status, hw_ptr));
- 	snd_pcm_set_appl_ptr(pcm, &hw->mmap_control->appl_ptr, hw->fd,
- 			     SNDRV_PCM_MMAP_OFFSET_CONTROL);
--	if (hw->mmap_status_fallbacked) {
-+	if (hw->mmap_control_fallbacked) {
- 		if (ioctl(hw->fd, SNDRV_PCM_IOCTL_SYNC_PTR, hw->sync_ptr) < 0) {
- 			err = -errno;
- 			SYSMSG("SNDRV_PCM_IOCTL_SYNC_PTR failed (%i)", err);
-@@ -975,7 +977,7 @@ static void unmap_status_data(snd_pcm_hw_t *hw)
- 
- static void unmap_control_data(snd_pcm_hw_t *hw)
- {
--	if (!hw->mmap_status_fallbacked) {
-+	if (!hw->mmap_control_fallbacked) {
- 		if (munmap((void *)hw->mmap_control,
- 			   page_align(sizeof(*hw->mmap_control))) < 0)
- 			SYSMSG("control munmap failed (%u)", errno);
-@@ -987,12 +989,13 @@ static void unmap_status_and_control_data(snd_pcm_hw_t *hw)
- 	unmap_status_data(hw);
- 	unmap_control_data(hw);
- 
--	if (hw->mmap_status_fallbacked)
-+	if (hw->mmap_status_fallbacked || hw->mmap_control_fallbacked)
- 		free(hw->sync_ptr);
- 
- 	hw->mmap_status = NULL;
- 	hw->mmap_control = NULL;
- 	hw->mmap_status_fallbacked = false;
-+	hw->mmap_control_fallbacked = false;
- 	hw->sync_ptr = NULL;
- }
- 
--- 
-2.11.0
+> -       SOC_DAPM_SINGLE("Left DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
+> +       SOC_DAPM_SINGLE("Right Mixer Left DAC Playback Switch",
+> +                       SUN4I_CODEC_DAC_ACTL,
+>                         SUN4I_CODEC_DAC_ACTL_LDACRMIXS, 1, 0),
+>  };
+>
+> @@ -729,11 +726,11 @@ static const struct snd_soc_dapm_widget sun4i_codec_codec_dapm_widgets[] = {
+>
+>         /* Mixers */
+>         SND_SOC_DAPM_MIXER("Left Mixer", SND_SOC_NOPM, 0, 0,
+> -                          sun4i_codec_left_mixer_controls,
+> -                          ARRAY_SIZE(sun4i_codec_left_mixer_controls)),
+> +                          sun4i_codec_mixer_controls,
+> +                          ARRAY_SIZE(sun4i_codec_mixer_controls)),
+>         SND_SOC_DAPM_MIXER("Right Mixer", SND_SOC_NOPM, 0, 0,
+> -                          sun4i_codec_right_mixer_controls,
+> -                          ARRAY_SIZE(sun4i_codec_right_mixer_controls)),
+> +                          sun4i_codec_mixer_controls,
+> +                          ARRAY_SIZE(sun4i_codec_mixer_controls)),
+>
+>         /* Global Mixer Enable */
+>         SND_SOC_DAPM_SUPPLY("Mixer Enable", SUN4I_CODEC_DAC_ACTL,
+> @@ -775,12 +772,12 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
+>
+>         /* Right Mixer Routes */
+>         { "Right Mixer", NULL, "Mixer Enable" },
+> -       { "Right Mixer", "Left DAC Playback Switch", "Left DAC" },
+> -       { "Right Mixer", "Right DAC Playback Switch", "Right DAC" },
+> +       { "Right Mixer", "DAC Playback Switch", "Left DAC" },
+> +       { "Right Mixer", "Right Mixer Left DAC Playback Switch", "Left DAC" },
+>
+>         /* Left Mixer Routes */
+>         { "Left Mixer", NULL, "Mixer Enable" },
+> -       { "Left Mixer", "Left DAC Playback Switch", "Left DAC" },
+> +       { "Left Mixer", "DAC Playback Switch", "Left DAC" },
+>
+>         /* Power Amplifier Routes */
+>         { "Power Amplifier", "Mixer Playback Switch", "Left Mixer" },
+> --
+> 2.1.4
+>
