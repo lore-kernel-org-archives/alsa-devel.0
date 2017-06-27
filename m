@@ -1,15 +1,24 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH alsa-lib v2] pcm: hw: Call USER_PVERSION ioctl
-	at open
-Date: Tue, 27 Jun 2017 12:39:47 +0200
-Message-ID: <20170627103947.7351-1-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH v2 alsa-lib 1/6] pcm: hw: add helper
+ functions to map/unmap status/control data for runtime of PCM substream
+Date: Tue, 27 Jun 2017 20:07:00 +0900
+Message-ID: <ca12d546-9cd1-1cbe-0bc0-77356cffc3dd@sakamocchi.jp>
+References: <20170625044124.22234-1-o-takashi@sakamocchi.jp>
+ <20170625044124.22234-2-o-takashi@sakamocchi.jp>
+ <s5hy3sekcpa.wl-tiwai@suse.de>
+ <d9ebcb11-05bd-925c-9a68-5cda5e17cc93@sakamocchi.jp>
+ <s5ho9t9q22a.wl-tiwai@suse.de>
+ <951018eb-0cc9-853b-44a6-491bdd1eb014@sakamocchi.jp>
+ <s5h8tkdpzid.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 26DB8266B63
- for <alsa-devel@alsa-project.org>; Tue, 27 Jun 2017 12:39:52 +0200 (CEST)
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 218CE266B63
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jun 2017 13:07:05 +0200 (CEST)
+In-Reply-To: <s5h8tkdpzid.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,86 +28,115 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Vinod Koul <vinod.koul@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Up from the new PCM protocol 2.0.14, user-space can inform the
-protocol version it supports to kernel, so that the kernel may switch
-its behavior depending on it.  Add this ioctl call in the PCM hw
-plugin at opening.
+Hi,
 
-The patch contains also the addition of SNDRV_PCM_INFO_SYNC_APPLPTR
-carried from the upstream kernel commit 42f945970af9 ("ALSA: pcm: Add
-the explicit appl_ptr sync support"), as well as the trivial change
-(an addition of comma) to sync with the kernel asound.h.
+On Jun 27 2017 18:10, Takashi Iwai wrote:
+> On Tue, 27 Jun 2017 10:57:55 +0200,
+> Takashi Sakamoto wrote:
+>>
+>> Hi,
+>>
+>> On Jun 27 2017 17:15, Takashi Iwai wrote:
+>>> On Tue, 27 Jun 2017 10:09:37 +0200,
+>>> Takashi Sakamoto wrote:
+>>>>
+>>>> Hi,
+>>>>
+>>>> On Jun 27 2017 00:09, Takashi Iwai wrote:
+>>>>> On Sun, 25 Jun 2017 06:41:19 +0200,
+>>>>> Takashi Sakamoto wrote:
+>>>>>>
+>>>>>> Handling mapping operation for status/control data includes some
+>>>>>> supplemental operations for fallback mode. It's better to have helper
+>>>>>> functions for this purpose.
+>>>>>>
+>>>>>> This commit adds the helper functions.
+>>>>>> ---
+>>>>>>    src/pcm/pcm_hw.c | 48 ++++++++++++++++++++++++++++++++++--------------
+>>>>>>    1 file changed, 34 insertions(+), 14 deletions(-)
+>>>>>>
+>>>>>> diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
+>>>>>> index a648d12c..abf4afe0 100644
+>>>>>> --- a/src/pcm/pcm_hw.c
+>>>>>> +++ b/src/pcm/pcm_hw.c
+>>>>>> @@ -31,6 +31,7 @@
+>>>>>>    #include <stdlib.h>
+>>>>>>    #include <stddef.h>
+>>>>>>    #include <unistd.h>
+>>>>>> +#include <stdbool.h>
+>>>>>>    #include <signal.h>
+>>>>>>    #include <string.h>
+>>>>>>    #include <fcntl.h>
+>>>>>> @@ -866,7 +867,7 @@ static snd_pcm_sframes_t snd_pcm_hw_readn(snd_pcm_t *pcm, void **bufs, snd_pcm_u
+>>>>>>    	return xfern.result;
+>>>>>>    }
+>>>>>>    -static int snd_pcm_hw_mmap_status(snd_pcm_t *pcm)
+>>>>>> +static int map_status_data(snd_pcm_t *pcm)
+>>>>>>    {
+>>>>>>    	snd_pcm_hw_t *hw = pcm->private_data;
+>>>>>>    	struct snd_pcm_sync_ptr sync_ptr;
+>>>>>> @@ -900,7 +901,7 @@ static int snd_pcm_hw_mmap_status(snd_pcm_t *pcm)
+>>>>>>    	return 0;
+>>>>>>    }
+>>>>>>    -static int snd_pcm_hw_mmap_control(snd_pcm_t *pcm)
+>>>>>> +static int map_control_data(snd_pcm_t *pcm)
+>>>>>>    {
+>>>>>>    	snd_pcm_hw_t *hw = pcm->private_data;
+>>>>>>    	void *ptr;
+>>>>>> @@ -922,10 +923,28 @@ static int snd_pcm_hw_mmap_control(snd_pcm_t *pcm)
+>>>>>>    	return 0;
+>>>>>>    }
+>>>>>>    -static int snd_pcm_hw_munmap_status(snd_pcm_t *pcm)
+>>>>>> +static int map_status_and_control_data(snd_pcm_t *pcm, bool force_fallback)
+>>>>>>    {
+>>>>>>    	snd_pcm_hw_t *hw = pcm->private_data;
+>>>>>>    	int err;
+>>>>>> +
+>>>>>> +	hw->sync_ptr_ioctl = (int)force_fallback;
+>>>>>> +
+>>>>>> +	err = map_status_data(pcm);
+>>>>>> +	if (err < 0)
+>>>>>> +		return err;
+>>>>>> +
+>>>>>> +	err = map_control_data(pcm);
+>>>>>> +	if (err < 0)
+>>>>>> +		return err;
+>>>>>
+>>>>> This would leave the status mmap in the error path?
+>>>>
+>>>> In the error path, snd_pcm_hw_open_fd() calls snd_pcm_close(), then
+>>>> The status data is going to be unmapped.
+>>>>
+>>>> snd_pcm_hw_open_fd()
+>>>> ->snd_pcm_close()
+>>>>    ->snd_pcm_hw_close()
+>>>>      ->unmap_status_and_control_data()
+>>>>        ->unmap_status_data()
+>>>>          ->munmap(2) or free(3)
+>>>
+>>> Ah then there was already a bug there.  It free/munmap unconditionally
+>>> for both status and control even for an error path of the mmap of
+>>> control (while status was mmapped).
+>>
+>> Yep. These codes were originally written with a loose manner. But it
+>> would be allowed because both 'mmap(NULL, non-zero)' and 'free(NULL)'
+>> generates no error and 'sync_ptr_ioctl' works fine, and 'sync_ptr' is
+>> assigned to NULL after deallocated.
+> 
+> Yes, that's a bit fragile way, but it works.
+> 
+> BTW, the whole patchset seems missing your sign-off.
+> I can add it manually, though.
 
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Tested-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/sound/asound.h |  6 ++++--
- src/pcm/pcm_hw.c       | 10 ++++++++++
- 2 files changed, 14 insertions(+), 2 deletions(-)
+Aieee... I would ask you to do it.
 
-diff --git a/include/sound/asound.h b/include/sound/asound.h
-index fb8d7d7ef8ad..1949923a40bf 100644
---- a/include/sound/asound.h
-+++ b/include/sound/asound.h
-@@ -111,7 +111,7 @@ enum {
- 	SNDRV_HWDEP_IFACE_FW_FIREFACE,	/* RME Fireface series */
- 
- 	/* Don't forget to change the following: */
--	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_FIREFACE,
-+	SNDRV_HWDEP_IFACE_LAST = SNDRV_HWDEP_IFACE_FW_FIREFACE
- };
- 
- struct snd_hwdep_info {
-@@ -152,7 +152,7 @@ struct snd_hwdep_dsp_image {
-  *                                                                           *
-  *****************************************************************************/
- 
--#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 13)
-+#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 14)
- 
- typedef unsigned long snd_pcm_uframes_t;
- typedef signed long snd_pcm_sframes_t;
-@@ -268,6 +268,7 @@ typedef int __bitwise snd_pcm_subformat_t;
- #define SNDRV_PCM_INFO_MMAP_VALID	0x00000002	/* period data are valid during transfer */
- #define SNDRV_PCM_INFO_DOUBLE		0x00000004	/* Double buffering needed for PCM start/stop */
- #define SNDRV_PCM_INFO_BATCH		0x00000010	/* double buffering */
-+#define SNDRV_PCM_INFO_SYNC_APPLPTR	0x00000020	/* need the explicit sync of appl_ptr update */
- #define SNDRV_PCM_INFO_INTERLEAVED	0x00000100	/* channels are interleaved */
- #define SNDRV_PCM_INFO_NONINTERLEAVED	0x00000200	/* channels are not interleaved */
- #define SNDRV_PCM_INFO_COMPLEX		0x00000400	/* complex frame organization (mmap only) */
-@@ -563,6 +564,7 @@ enum {
- #define SNDRV_PCM_IOCTL_INFO		_IOR('A', 0x01, struct snd_pcm_info)
- #define SNDRV_PCM_IOCTL_TSTAMP		_IOW('A', 0x02, int)
- #define SNDRV_PCM_IOCTL_TTSTAMP		_IOW('A', 0x03, int)
-+#define SNDRV_PCM_IOCTL_USER_PVERSION	_IOW('A', 0x04, int)
- #define SNDRV_PCM_IOCTL_HW_REFINE	_IOWR('A', 0x10, struct snd_pcm_hw_params)
- #define SNDRV_PCM_IOCTL_HW_PARAMS	_IOWR('A', 0x11, struct snd_pcm_hw_params)
- #define SNDRV_PCM_IOCTL_HW_FREE		_IO('A', 0x12)
-diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
-index 5573fce2d43d..64188b2258d6 100644
---- a/src/pcm/pcm_hw.c
-+++ b/src/pcm/pcm_hw.c
-@@ -1494,6 +1494,16 @@ int snd_pcm_hw_open_fd(snd_pcm_t **pcmp, const char *name, int fd,
- 	if (SNDRV_PROTOCOL_INCOMPATIBLE(ver, SNDRV_PCM_VERSION_MAX))
- 		return -SND_ERROR_INCOMPATIBLE_VERSION;
- 
-+	if (SNDRV_PROTOCOL_VERSION(2, 0, 14) <= ver) {
-+		/* inform the protocol version we're supporting */
-+		unsigned int user_ver = SNDRV_PCM_VERSION;
-+		if (ioctl(fd, SNDRV_PCM_IOCTL_USER_PVERSION, &user_ver) < 0) {
-+			ret = -errno;
-+			SNDMSG("USER_PVERSION failed\n");
-+			return ret;
-+		}
-+	}
-+
- #if defined(HAVE_CLOCK_GETTIME) && defined(CLOCK_MONOTONIC)
- 	if (SNDRV_PROTOCOL_VERSION(2, 0, 9) <= ver) {
- 		struct timespec timespec;
--- 
-2.13.2
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+
+
+Thanks
+
+Takashi Sakamoto
