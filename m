@@ -1,22 +1,21 @@
-From: Olivier MOYSAN <olivier.moysan@st.com>
-Subject: Re: [PATCH 1/2] dt-bindings: Document the STM32
-	SPDIFRX interface
-Date: Tue, 27 Jun 2017 15:23:08 +0000
-Message-ID: <b74e1d76-de2c-9eb3-4ea1-f63d3e8c82b7@st.com>
-References: <1497621452-615-1-git-send-email-olivier.moysan@st.com>
- <1497621452-615-2-git-send-email-olivier.moysan@st.com>
- <20170623185514.nc3jqq6ikvwwv6sn@rob-hp-laptop>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 0/3] Add support for es8323 and hdmi
+ audio to the firefly-rk3288
+Date: Tue, 27 Jun 2017 17:07:59 +0100
+Message-ID: <20170627160759.psg4o2gpfnyb5bx6@sirena.org.uk>
+References: <20170512132227.24916-1-romain.perier@collabora.com>
+ <20170512132227.24916-9-romain.perier@collabora.com>
+ <98ec8d72-2977-4347-86b0-4b423b55c434@collabora.com>
+ <20170626140740.jlgtwaaivn3bvg2g@sirena.org.uk>
+ <778a96a1-a6b0-ad78-89c1-7928dd50e3c4@collabora.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3821673440049500111=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 0803F266838
- for <alsa-devel@alsa-project.org>; Tue, 27 Jun 2017 17:23:12 +0200 (CEST)
-In-Reply-To: <20170623185514.nc3jqq6ikvwwv6sn@rob-hp-laptop>
-Content-Language: en-US
-Content-ID: <CEAD4BC86887F942ABB7DA2A4E2AF39F@st.com>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E796266838
+ for <alsa-devel@alsa-project.org>; Tue, 27 Jun 2017 18:08:52 +0200 (CEST)
+In-Reply-To: <778a96a1-a6b0-ad78-89c1-7928dd50e3c4@collabora.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,82 +25,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh@kernel.org>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Alexandre TORGUE <alexandre.torgue@st.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Arnaud POULIQUEN <arnaud.pouliquen@st.com>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>, Benjamin GAIGNARD <benjamin.gaignard@st.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "kernel@stlinux.com" <kernel@stlinux.com>
+To: Romain Perier <romain.perier@collabora.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Pawel Moll <pawel.moll@arm.com>, Ian Campbell <ijc+devicetree@hellion.org.uk>, Romain Perier <romain.perier@collabora.co.uk>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-rockchip@lists.infradead.org, Rob Herring <robh+dt@kernel.org>, Kumar Gala <galak@codeaurora.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Rob,
 
-On 06/23/2017 08:55 PM, Rob Herring wrote:
-> On Fri, Jun 16, 2017 at 03:57:31PM +0200, olivier moysan wrote:
->> This adds documentation of device tree bindings for the
->> STM32 SPDIFRX interface.
->>
->> Signed-off-by: olivier moysan <olivier.moysan@st.com>
->> ---
->>   .../devicetree/bindings/sound/st,stm32-spdifrx.txt | 56 ++++++++++++++++++++++
->>   1 file changed, 56 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
->>
->> diff --git a/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
->> new file mode 100644
->> index 0000000..33826f2
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/sound/st,stm32-spdifrx.txt
->> @@ -0,0 +1,56 @@
->> +STMicroelectronics STM32 S/PDIF receiver (SPDIFRX).
->> +
->> +The SPDIFRX peripheral, is designed to receive an S/PDIF flow compliant with
->> +IEC-60958 and IEC-61937.
->> +
->> +Required properties:
->> +  - compatible: should be "st,stm32h7-spdifrx"
->> +  - reg: cpu DAI IP base address and size
->> +  - clocks: must contain an entry for kclk (used as S/PDIF signal reference)
->> +  - clock-names: must contain "kclk"
->> +  - interrupts: cpu DAI interrupt line
->> +  - dmas: DMA specifiers for audio data DMA and iec control flow DMA
->> +    See STM32 DMA bindings, Documentation/devicetree/bindings/dma/stm32-dma.txt
->> +  - dma-names: two dmas have to be defined, "rx" and "rx-ctrl"
->> +
->> +Optional properties:
->> +  - resets: Reference to a reset controller asserting the SPDIFRX
->> +
->> +The device node should contain one 'port' child node with one child 'endpoint'
->> +node, according to the bindings defined in Documentation/devicetree/bindings/
->> +graph.txt.
->> +
->> +Example:
->> +spdifrx: spdifrx@40004000 {
->> +	compatible = "st,stm32h7-spdifrx";
->> +	reg = <0x40004000 0x400>;
->> +	clocks = <&rcc SPDIFRX_CK>;
->> +	clock-names = "kclk";
->> +	interrupts = <97>;
->> +	dmas = <&dmamux1 2 93 0x400 0x0>,
->> +	       <&dmamux1 3 94 0x400 0x0>;
->> +	dma-names = "rx", "rx-ctrl";
->> +	pinctrl-0 = <&spdifrx_pins>;
->> +	pinctrl-names = "default";
->> +
->> +	spdifrx_port: port {
->> +		cpu_endpoint: endpoint {
->> +			remote-endpoint = <&codec_endpoint>;
->> +		};
->> +	};
->> +};
->> +
->> +spdif_in: spdif-in {
->> +	compatible = "linux,spdif-dir";
-> 
-> What is this? It should go.
-> 
-> Rob
-> 
+--===============3821673440049500111==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="wkt3egjmpcilgsts"
+Content-Disposition: inline
 
-This is the ASoC spdif stub codec. This is relevant in DT when
-spdif interface is wired to a connector.
-I will remove it from bindings.
 
-BRs
-olivier
+--wkt3egjmpcilgsts
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Jun 26, 2017 at 04:19:59PM +0200, Romain Perier wrote:
+> I did not kill a kitten or a puppy, I have just sent a ping 2 weeks
+> later for v3. The v2 was sent on Jan 23 2017... so that's not what I
+> call a top post or a flood ^^
+>=20
+> anyway,
+> Have a nice day,
+> Romain
+>=20
+> Le 26/06/2017 =E0 16:07, Mark Brown a =E9crit :
+
+You're top posting *again* in reply to a mail asking you not to do that
+and explaining why.  The mail I sent also explained why I can't really
+do anything with your content free ping and what you should do instead. =20
+The text I send for these things is fairly long as it's trying to be
+clear about what needs to be done and why.
+
+--wkt3egjmpcilgsts
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllSgt4ACgkQJNaLcl1U
+h9BRygf7BubZifywYaAF72Z/UFILEKGmcwpVMY7Bp3mazKZW1TyFIJU7zpD7MCDo
+S0rp+mmk4cbeX9n4kErsvGoIzoR+1ZeotfQI2pt3AJCb4Y9lA0zYqngKq+oE/Vxo
+g5tztnXAAYBNLD1DXnSiw8ei1rQ9WHxITkTSMK5EQktq9jnQpKdRMv54OB+KuZPS
+o5KlkDHRPPqRn2O6CLJfUbjK1zITuFmOfy3GiMU9gFvnExqzbhe/jEc0ekNfZYBE
+NE6ZPqeYvej+oBspRG0ApjFL09SbGADuwqEm92uN6ThScPZIWHD6UgwVOUkswLwB
+TDXcB7HbAB3t81e6iy4cf+SgndmjQw==
+=bF29
+-----END PGP SIGNATURE-----
+
+--wkt3egjmpcilgsts--
+
+--===============3821673440049500111==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3821673440049500111==--
