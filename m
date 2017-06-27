@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v3 2/2] ALSA: pcm: Disable only control mmap
-	for explicit appl_ptr sync
-Date: Tue, 27 Jun 2017 12:29:44 +0200
-Message-ID: <20170627102944.6836-3-tiwai@suse.de>
+Subject: [PATCH v3 1/2] ALSA: pcm: Add an ioctl to specify the
+	supported protocol version
+Date: Tue, 27 Jun 2017 12:29:43 +0200
+Message-ID: <20170627102944.6836-2-tiwai@suse.de>
 References: <20170627102944.6836-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 62ED1266D57
+ by alsa0.perex.cz (Postfix) with ESMTP id 61A3F266D49
  for <alsa-devel@alsa-project.org>; Tue, 27 Jun 2017 12:29:47 +0200 (CEST)
 In-Reply-To: <20170627102944.6836-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,70 +25,103 @@ To: alsa-devel@alsa-project.org
 Cc: Vinod Koul <vinod.koul@intel.com>, "Subhransu S . Prusty" <subhransu.s.prusty@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>
 List-Id: alsa-devel@alsa-project.org
 
-Now that user-space (typically alsa-lib) can specify which protocol
-version it supports, we can optimize the kernel code depending on the
-reported protocol version.
+We have an ioctl to inform the PCM protocol version the running kernel
+supports, but there is no way to know which protocol version the
+user-space can understand.  This lack of information caused headaches
+in the past when we tried to extend the ABI.  For example, because we
+couldn't guarantee the validity of the reserved bytes, we had to
+introduce a new ioctl SNDRV_PCM_IOCTL_STATUS_EXT for assigning a few
+new fields in the formerly reserved bits.  If we could know that it's
+a new alsa-lib, we could assume the availability of the new fields,
+thus we could have reused the existing SNDRV_PCM_IOCTL_STATUS.
 
-In this patch, we change the previous hack for enforcing the appl_ptr
-sync by disabling status/control mmap.  Instead of forcibly disabling
-both mmaps, we disable only the control mmap when user-space declares
-the supported protocol version new enough.  For older user-space,
-still both PCM status and control mmaps are disabled when requested by
-the driver due to the compatibility reason.
+In order to improve the ABI extensibility, this patch adds a new ioctl
+for user-space to inform its supporting protocol version to the
+kernel.  By reporting the supported protocol from user-space, the
+kernel can judge which feature should be provided and which not.
+
+With the addition of the new ioctl, the PCM protocol version is bumped
+to 2.0.14, too.  User-space checks the kernel protocol version via
+SNDRV_PCM_INFO_PVERSION, then it sets the supported version back via
+SNDRV_PCM_INFO_USER_PVERSION.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/pcm_native.c | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+ include/sound/pcm.h         | 1 +
+ include/uapi/sound/asound.h | 3 ++-
+ sound/core/pcm_compat.c     | 1 +
+ sound/core/pcm_native.c     | 7 +++++++
+ 4 files changed, 11 insertions(+), 1 deletion(-)
 
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index 5a22075c5fcf..24febf9e177c 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -218,6 +218,7 @@ struct snd_pcm_ops {
+ struct snd_pcm_file {
+ 	struct snd_pcm_substream *substream;
+ 	int no_compat_mmap;
++	unsigned int user_pversion;	/* supported protocol version */
+ };
+ 
+ struct snd_pcm_hw_rule;
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index 7eee52eb7462..1949923a40bf 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -152,7 +152,7 @@ struct snd_hwdep_dsp_image {
+  *                                                                           *
+  *****************************************************************************/
+ 
+-#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 13)
++#define SNDRV_PCM_VERSION		SNDRV_PROTOCOL_VERSION(2, 0, 14)
+ 
+ typedef unsigned long snd_pcm_uframes_t;
+ typedef signed long snd_pcm_sframes_t;
+@@ -564,6 +564,7 @@ enum {
+ #define SNDRV_PCM_IOCTL_INFO		_IOR('A', 0x01, struct snd_pcm_info)
+ #define SNDRV_PCM_IOCTL_TSTAMP		_IOW('A', 0x02, int)
+ #define SNDRV_PCM_IOCTL_TTSTAMP		_IOW('A', 0x03, int)
++#define SNDRV_PCM_IOCTL_USER_PVERSION	_IOW('A', 0x04, int)
+ #define SNDRV_PCM_IOCTL_HW_REFINE	_IOWR('A', 0x10, struct snd_pcm_hw_params)
+ #define SNDRV_PCM_IOCTL_HW_PARAMS	_IOWR('A', 0x11, struct snd_pcm_hw_params)
+ #define SNDRV_PCM_IOCTL_HW_FREE		_IO('A', 0x12)
+diff --git a/sound/core/pcm_compat.c b/sound/core/pcm_compat.c
+index 8a0f8d51e95d..10f537f4d735 100644
+--- a/sound/core/pcm_compat.c
++++ b/sound/core/pcm_compat.c
+@@ -676,6 +676,7 @@ static long snd_pcm_ioctl_compat(struct file *file, unsigned int cmd, unsigned l
+ 	case SNDRV_PCM_IOCTL_INFO:
+ 	case SNDRV_PCM_IOCTL_TSTAMP:
+ 	case SNDRV_PCM_IOCTL_TTSTAMP:
++	case SNDRV_PCM_IOCTL_USER_PVERSION:
+ 	case SNDRV_PCM_IOCTL_HWSYNC:
+ 	case SNDRV_PCM_IOCTL_PREPARE:
+ 	case SNDRV_PCM_IOCTL_RESET:
 diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 1c53d93e68f2..0d1834310531 100644
+index 9ade0c8b54a3..1c53d93e68f2 100644
 --- a/sound/core/pcm_native.c
 +++ b/sound/core/pcm_native.c
-@@ -3388,12 +3388,23 @@ static bool pcm_status_mmap_allowed(struct snd_pcm_file *pcm_file)
+@@ -2770,6 +2770,8 @@ static int snd_pcm_common_ioctl(struct file *file,
+ 				 struct snd_pcm_substream *substream,
+ 				 unsigned int cmd, void __user *arg)
  {
- 	if (pcm_file->no_compat_mmap)
- 		return false;
--	/* Disallow the status/control mmap when SYNC_APPLPTR flag is set;
-+	/* See pcm_control_mmap_allowed() below.
-+	 * Since older alsa-lib requires both status and control mmaps to be
-+	 * coupled, we have to disable the status mmap for old alsa-lib, too.
-+	 */
-+	if (pcm_file->user_pversion < SNDRV_PROTOCOL_VERSION(2, 0, 14) &&
-+	    (pcm_file->substream->runtime->hw.info & SNDRV_PCM_INFO_SYNC_APPLPTR))
-+		return false;
-+	return true;
-+}
++	struct snd_pcm_file *pcm_file = file->private_data;
 +
-+static bool pcm_control_mmap_allowed(struct snd_pcm_file *pcm_file)
-+{
-+	if (pcm_file->no_compat_mmap)
-+		return false;
-+	/* Disallow the control mmap when SYNC_APPLPTR flag is set;
- 	 * it enforces the user-space to fall back to snd_pcm_sync_ptr(),
- 	 * thus it effectively assures the manual update of appl_ptr.
--	 * In theory, it should be enough to disallow only PCM control mmap,
--	 * but since the current alsa-lib implementation requires both status
--	 * and control mmaps always paired, we have to disable both of them.
- 	 */
- 	if (pcm_file->substream->runtime->hw.info & SNDRV_PCM_INFO_SYNC_APPLPTR)
- 		return false;
-@@ -3405,6 +3416,7 @@ static bool pcm_status_mmap_allowed(struct snd_pcm_file *pcm_file)
-  * don't support mmap for status and control records.
-  */
- #define pcm_status_mmap_allowed(pcm_file)	false
-+#define pcm_control_mmap_allowed(pcm_file)	false
- 
- static int snd_pcm_mmap_status(struct snd_pcm_substream *substream, struct file *file,
- 			       struct vm_area_struct *area)
-@@ -3593,7 +3605,7 @@ static int snd_pcm_mmap(struct file *file, struct vm_area_struct *area)
- 			return -ENXIO;
- 		return snd_pcm_mmap_status(substream, file, area);
- 	case SNDRV_PCM_MMAP_OFFSET_CONTROL:
--		if (!pcm_status_mmap_allowed(pcm_file))
-+		if (!pcm_control_mmap_allowed(pcm_file))
- 			return -ENXIO;
- 		return snd_pcm_mmap_control(substream, file, area);
- 	default:
+ 	switch (cmd) {
+ 	case SNDRV_PCM_IOCTL_PVERSION:
+ 		return put_user(SNDRV_PCM_VERSION, (int __user *)arg) ? -EFAULT : 0;
+@@ -2779,6 +2781,11 @@ static int snd_pcm_common_ioctl(struct file *file,
+ 		return 0;
+ 	case SNDRV_PCM_IOCTL_TTSTAMP:
+ 		return snd_pcm_tstamp(substream, arg);
++	case SNDRV_PCM_IOCTL_USER_PVERSION:
++		if (get_user(pcm_file->user_pversion,
++			     (unsigned int __user *)arg))
++			return -EFAULT;
++		return 0;
+ 	case SNDRV_PCM_IOCTL_HW_REFINE:
+ 		return snd_pcm_hw_refine_user(substream, arg);
+ 	case SNDRV_PCM_IOCTL_HW_PARAMS:
 -- 
 2.13.2
