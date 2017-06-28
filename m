@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: Add jack detection workaround
-	for GPD Win" to the asoc tree
-Date: Wed, 28 Jun 2017 20:23:59 +0100
-Message-ID: <E1dQIZD-0004Mn-SN@finisterre>
-References: <20170628124939.11696-5-tiwai@suse.de>
+Subject: Applied "ASoC: rt5645: add inv_jd1_1 flag" to the asoc
+	tree
+Date: Wed, 28 Jun 2017 20:24:06 +0100
+Message-ID: <E1dQIZK-0004Nk-9i@finisterre>
+References: <20170628124939.11696-4-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E51E2671EB
- for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 21:24:10 +0200 (CEST)
-In-Reply-To: <20170628124939.11696-5-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4784726720D
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 21:24:16 +0200 (CEST)
+In-Reply-To: <20170628124939.11696-4-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
+To: Bard Liao <bardliao@realtek.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>, Oder Chiou <oder_chiou@realtek.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: Add jack detection workaround for GPD Win
+   ASoC: rt5645: add inv_jd1_1 flag
 
 has been applied to the asoc tree at
 
@@ -53,74 +53,50 @@ to this mail.
 Thanks,
 Mark
 
->From ea2b5a6e3a386b89d7f9148ff8be6c78d13542a0 Mon Sep 17 00:00:00 2001
-From: Takashi Iwai <tiwai@suse.de>
-Date: Wed, 28 Jun 2017 14:49:39 +0200
-Subject: [PATCH] ASoC: rt5645: Add jack detection workaround for GPD Win
+>From aea086dda2d5df659a7c5d9efe85721e9442a133 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Wed, 28 Jun 2017 14:49:38 +0200
+Subject: [PATCH] ASoC: rt5645: add inv_jd1_1 flag
 
-GPD Win requires jd_mode=3 and the inverted flag for making the jack
-detection working.  Unfortunately, the BIOS doesn't give a nice way to
-match with DMI strings, and the only working way so far is to match
-with the board vendor/name/version/date to some known patterns.
+The flag will invert jd1_1 status. Which will be used if the jack
+connector is normal closed.
 
-Hopefully other vendors won't do such a stupid setup, too...
-
-Thanks to Hans de Goede for the DMI matching suggestion.
-
-Suggested-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Tested-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ include/sound/rt5645.h    | 2 ++
+ sound/soc/codecs/rt5645.c | 4 ++++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 162044d82632..308c22f5909a 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3599,6 +3599,33 @@ static struct dmi_system_id dmi_platform_intel_broadwell[] = {
- 	{ }
+diff --git a/include/sound/rt5645.h b/include/sound/rt5645.h
+index c427f10a39ae..d0c33a9972b9 100644
+--- a/include/sound/rt5645.h
++++ b/include/sound/rt5645.h
+@@ -23,6 +23,8 @@ struct rt5645_platform_data {
+ 	unsigned int jd_mode;
+ 	/* Use level triggered irq */
+ 	bool level_trigger_irq;
++	/* Invert JD1_1 status polarity */
++	bool inv_jd1_1;
  };
  
-+static struct rt5645_platform_data gpd_win_platform_data = {
-+	.jd_mode = 3,
-+	.inv_jd1_1 = true,
-+};
-+
-+static const struct dmi_system_id dmi_platform_gpd_win[] = {
-+	{
-+		/*
-+		 * Match for the GPDwin which unfortunately uses somewhat
-+		 * generic dmi strings, which is why we test for 4 strings.
-+		 * Comparing against 23 other byt/cht boards, board_vendor
-+		 * and board_name are unique to the GPDwin, where as only one
-+		 * other board has the same board_serial and 3 others have
-+		 * the same default product_name. Also the GPDwin is the
-+		 * only device to have both board_ and product_name not set.
-+		 */
-+		.ident = "GPD Win",
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
-+			DMI_MATCH(DMI_BOARD_NAME, "Default string"),
-+			DMI_MATCH(DMI_BOARD_SERIAL, "Default string"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Default string"),
-+		},
-+	},
-+	{}
-+};
-+
- static bool rt5645_check_dp(struct device *dev)
- {
- 	if (device_property_present(dev, "realtek,in2-differential") ||
-@@ -3649,6 +3676,8 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 		rt5645_parse_dt(rt5645, &i2c->dev);
- 	else if (dmi_check_system(dmi_platform_intel_braswell))
- 		rt5645->pdata = general_platform_data;
-+	else if (dmi_check_system(dmi_platform_gpd_win))
-+		rt5645->pdata = gpd_win_platform_data;
+ #endif
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index e0c09bbd3f12..162044d82632 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3833,6 +3833,10 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 		default:
+ 			break;
+ 		}
++		if (rt5645->pdata.inv_jd1_1) {
++			regmap_update_bits(rt5645->regmap, RT5645_IRQ_CTRL2,
++				RT5645_JD_1_1_MASK, RT5645_JD_1_1_INV);
++		}
+ 	}
  
- 	rt5645->gpiod_hp_det = devm_gpiod_get_optional(&i2c->dev, "hp-detect",
- 						       GPIOD_IN);
+ 	regmap_update_bits(rt5645->regmap, RT5645_ADDA_CLK1,
 -- 
 2.13.2
