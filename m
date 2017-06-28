@@ -1,19 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 12/12] ASoC: Fix use-after-free at card
- unregistration
-Date: Wed, 28 Jun 2017 20:53:49 +0100
-Message-ID: <20170628195349.pqeb3dceddxar75s@sirena.org.uk>
-References: <1497857229-12049-1-git-send-email-robert.jarzmik@free.fr>
- <1497857229-12049-13-git-send-email-robert.jarzmik@free.fr>
- <s5hefug72iu.wl-tiwai@suse.de> <87injstckf.fsf@belgarion.home>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 4/4] ASoC: rt5645: Add jack detection
+ workaround for GPD Win
+Date: Wed, 28 Jun 2017 16:07:01 -0500
+Message-ID: <6af6a503-e2bf-c6a2-08c9-bdbd785df829@linux.intel.com>
+References: <20170628124939.11696-1-tiwai@suse.de>
+ <20170628124939.11696-5-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5429251308396227574=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 1DEC2266E02
- for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 21:54:16 +0200 (CEST)
-In-Reply-To: <87injstckf.fsf@belgarion.home>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A94E266E02
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 23:07:05 +0200 (CEST)
+In-Reply-To: <20170628124939.11696-5-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,53 +22,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-kernel@vger.kernel.org, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.wolfsonmicro.com, stable@vger.kernel.org, linux-input@vger.kernel.org, Daniel Mack <daniel@zonque.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Hans de Goede <hdegoede@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 6/28/17 7:49 AM, Takashi Iwai wrote:
+> GPD Win requires jd_mode=3 and the inverted flag for making the jack
+> detection working.  Unfortunately, the BIOS doesn't give a nice way to
+> match with DMI strings, and the only working way so far is to match
+> with the board vendor/name/version/date to some known patterns.
+>
+> Hopefully other vendors won't do such a stupid setup, too...
+>
+> Thanks to Hans de Goede for the DMI matching suggestion.
+>
+> Suggested-by: Hans de Goede <hdegoede@redhat.com>
+> Tested-by: Hans de Goede <hdegoede@redhat.com>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  sound/soc/codecs/rt5645.c | 29 +++++++++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+>
+> diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+> index 162044d82632..308c22f5909a 100644
+> --- a/sound/soc/codecs/rt5645.c
+> +++ b/sound/soc/codecs/rt5645.c
+> @@ -3599,6 +3599,33 @@ static struct dmi_system_id dmi_platform_intel_broadwell[] = {
+>  	{ }
+>  };
+>
+> +static struct rt5645_platform_data gpd_win_platform_data = {
+> +	.jd_mode = 3,
+> +	.inv_jd1_1 = true,
+> +};
+> +
+> +static const struct dmi_system_id dmi_platform_gpd_win[] = {
+> +	{
+> +		/*
+> +		 * Match for the GPDwin which unfortunately uses somewhat
+> +		 * generic dmi strings, which is why we test for 4 strings.
+> +		 * Comparing against 23 other byt/cht boards, board_vendor
+> +		 * and board_name are unique to the GPDwin, where as only one
+> +		 * other board has the same board_serial and 3 others have
+> +		 * the same default product_name. Also the GPDwin is the
+> +		 * only device to have both board_ and product_name not set.
+> +		 */
+> +		.ident = "GPD Win",
+> +		.matches = {
+> +			DMI_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
+> +			DMI_MATCH(DMI_BOARD_NAME, "Default string"),
+> +			DMI_MATCH(DMI_BOARD_SERIAL, "Default string"),
+> +			DMI_MATCH(DMI_PRODUCT_NAME, "Default string"),
+> +		},
+> +	},
+> +	{}
 
---===============5429251308396227574==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="auuyw7lgbv2sjo2s"
-Content-Disposition: inline
+it feels like it's time to add a quirk parameter for this codec module 
+to avoid chasing all possible DMI/BIOS issues?
 
-
---auuyw7lgbv2sjo2s
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jun 19, 2017 at 01:57:20PM +0200, Robert Jarzmik wrote:
-
-> My serie shifted by one, so the very first of the serie is therefore missing,
-> formerly "ALSA: ac97: split out the generic ac97 registers" in
-> https://patchwork.kernel.org/patch/9398143/, and the shift triggered the
-> inclusion of the last patch of my tree, ie. yours :)
-
-Based on the missing first patch I was expecting the series to get
-reposted?
-
---auuyw7lgbv2sjo2s
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllUCUwACgkQJNaLcl1U
-h9CpKgf8CA2LGASj5C3/jFqBwWzYJdSX2TyJwEcPDM+fHejEzXlY367DN1NUlgTU
-JEXKCg1u6QtiTO0dpM18Gzrqi9i1Xg5NodrXJxZwUODT6BkNIbWLjBCrh7O/fwj/
-hYAo9hsDjnP5+eRwwQDxltw22oF6ZqeRgYp/pt5BTB2YgXe+cl7D5ck2YzI0oFvB
-Zo9+xc6eTQ917r5HKkYiIA9Jjzj087a7oueuGzM72CIOus/oBUFdrwh3rqHyFu3B
-Jm1GnaqFxbNwxOTeja5Kea+qna6F6LJjvXYtRJngiUzm/+Af5pU8z7Z+gtgN3IAv
-EqzqpKqXlUaX8SQEnyv09Zca4MJQnw==
-=akUy
------END PGP SIGNATURE-----
-
---auuyw7lgbv2sjo2s--
-
---===============5429251308396227574==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5429251308396227574==--
+> +};
+> +
+>  static bool rt5645_check_dp(struct device *dev)
+>  {
+>  	if (device_property_present(dev, "realtek,in2-differential") ||
+> @@ -3649,6 +3676,8 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+>  		rt5645_parse_dt(rt5645, &i2c->dev);
+>  	else if (dmi_check_system(dmi_platform_intel_braswell))
+>  		rt5645->pdata = general_platform_data;
+> +	else if (dmi_check_system(dmi_platform_gpd_win))
+> +		rt5645->pdata = gpd_win_platform_data;
+>
+>  	rt5645->gpiod_hp_det = devm_gpiod_get_optional(&i2c->dev, "hp-detect",
+>  						       GPIOD_IN);
+>
