@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/4] ALSA: hda - Bind with i915 component
-	before codec binding
-Date: Wed, 28 Jun 2017 14:58:53 +0200
-Message-ID: <20170628125854.13022-4-tiwai@suse.de>
+Subject: [PATCH 4/4] ALSA: hda - Minor code refactoring for
+	Intel HDMI codec parsers
+Date: Wed, 28 Jun 2017 14:58:54 +0200
+Message-ID: <20170628125854.13022-5-tiwai@suse.de>
 References: <20170628125854.13022-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id F33A62670EC
+ by alsa0.perex.cz (Postfix) with ESMTP id 006BA2670F9
  for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 14:58:55 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 9E9ADAEED
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id A817AAEEE
  for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 12:58:55 +0000 (UTC)
 In-Reply-To: <20170628125854.13022-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,84 +27,146 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-We used a on-demand i915 component binding for IvyBridge and
-SandyBridge HDMI codecs, but it has a potential problem of the nested
-module loading.  For avoiding that situation, assure the i915 binding
-happening at the controller driver level for PCH controller devices,
-where the initialization is performed in a detached work, instead of
-calling from the codec driver probe.
+No functional change, just a slight reduction of lines.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_intel.c  |  4 ++--
- sound/pci/hda/patch_hdmi.c | 17 +++++------------
- 2 files changed, 7 insertions(+), 14 deletions(-)
+ sound/pci/hda/patch_hdmi.c | 87 ++++++++++++++++++----------------------------
+ 1 file changed, 34 insertions(+), 53 deletions(-)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 01eb1dc7b5b3..2db3203090ed 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -294,11 +294,11 @@ enum {
- 
- /* PCH up to IVB; no runtime PM */
- #define AZX_DCAPS_INTEL_PCH_NOPM \
--	(AZX_DCAPS_INTEL_PCH_BASE)
-+	(AZX_DCAPS_INTEL_PCH_BASE | AZX_DCAPS_I915_POWERWELL)
- 
- /* PCH for HSW/BDW; with runtime PM */
- #define AZX_DCAPS_INTEL_PCH \
--	(AZX_DCAPS_INTEL_PCH_BASE | AZX_DCAPS_PM_RUNTIME)
-+	(AZX_DCAPS_INTEL_PCH_NOPM | AZX_DCAPS_PM_RUNTIME)
- 
- /* HSW HDMI */
- #define AZX_DCAPS_INTEL_HASWELL \
 diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 90e4ff87445e..feed8e8de2af 100644
+index feed8e8de2af..8704ea43381e 100644
 --- a/sound/pci/hda/patch_hdmi.c
 +++ b/sound/pci/hda/patch_hdmi.c
-@@ -174,7 +174,6 @@ struct hdmi_spec {
- 	/* i915/powerwell (Haswell+/Valleyview+) specific */
- 	bool use_acomp_notifier; /* use i915 eld_notify callback for hotplug */
- 	struct i915_audio_component_audio_ops i915_audio_ops;
--	bool i915_bound; /* was i915 bound in this driver? */
+@@ -2503,19 +2503,41 @@ static void i915_pin_cvt_fixup(struct hda_codec *codec,
+ 	}
+ }
  
- 	struct hdac_chmap chmap;
- 	hda_nid_t vendor_nid;
-@@ -2234,8 +2233,6 @@ static void generic_spec_free(struct hda_codec *codec)
- 	struct hdmi_spec *spec = codec->spec;
- 
- 	if (spec) {
--		if (spec->i915_bound)
--			snd_hdac_i915_exit(&codec->bus->core);
- 		hdmi_array_free(spec);
- 		kfree(spec);
- 		codec->spec = NULL;
-@@ -2607,21 +2604,17 @@ static int patch_i915_cpt_hdmi(struct hda_codec *codec)
- 	struct hdmi_spec *spec;
- 	int err;
- 
--	/* no i915 component should have been bound before this */
--	if (WARN_ON(codec->bus->core.audio_component))
--		return -EBUSY;
+-/* Intel Haswell and onwards; audio component with eld notifier */
+-static int intel_hsw_common_init(struct hda_codec *codec, hda_nid_t vendor_nid)
++/* precondition and allocation for Intel codecs */
++static int alloc_intel_hdmi(struct hda_codec *codec)
+ {
+-	struct hdmi_spec *spec;
+-	int err;
+-
+-	/* HSW+ requires i915 binding */
 +	/* requires i915 binding */
-+	if (!codec->bus->core.audio_component) {
-+		codec_info(codec, "No i915 binding for Intel HDMI/DP codec\n");
-+		return -ENODEV;
-+	}
+ 	if (!codec->bus->core.audio_component) {
+ 		codec_info(codec, "No i915 binding for Intel HDMI/DP codec\n");
+ 		return -ENODEV;
+ 	}
  
- 	err = alloc_generic_hdmi(codec);
+-	err = alloc_generic_hdmi(codec);
++	return alloc_generic_hdmi(codec);
++}
++
++/* parse and post-process for Intel codecs */
++static int parse_intel_hdmi(struct hda_codec *codec)
++{
++	int err;
++
++	err = hdmi_parse_codec(codec);
++	if (err < 0) {
++		generic_spec_free(codec);
++		return err;
++	}
++
++	generic_hdmi_init_per_pins(codec);
++	register_i915_notifier(codec);
++	return 0;
++}
++
++/* Intel Haswell and onwards; audio component with eld notifier */
++static int intel_hsw_common_init(struct hda_codec *codec, hda_nid_t vendor_nid)
++{
++	struct hdmi_spec *spec;
++	int err;
++
++	err = alloc_intel_hdmi(codec);
  	if (err < 0)
  		return err;
  	spec = codec->spec;
+@@ -2539,15 +2561,7 @@ static int intel_hsw_common_init(struct hda_codec *codec, hda_nid_t vendor_nid)
+ 	spec->ops.setup_stream = i915_hsw_setup_stream;
+ 	spec->ops.pin_cvt_fixup = i915_pin_cvt_fixup;
  
--	/* Try to bind with i915 now */
--	err = snd_hdac_i915_init(&codec->bus->core);
+-	err = hdmi_parse_codec(codec);
+-	if (err < 0) {
+-		generic_spec_free(codec);
+-		return err;
+-	}
+-
+-	generic_hdmi_init_per_pins(codec);
+-	register_i915_notifier(codec);
+-	return 0;
++	return parse_intel_hdmi(codec);
+ }
+ 
+ static int patch_i915_hsw_hdmi(struct hda_codec *codec)
+@@ -2566,13 +2580,7 @@ static int patch_i915_byt_hdmi(struct hda_codec *codec)
+ 	struct hdmi_spec *spec;
+ 	int err;
+ 
+-	/* requires i915 binding */
+-	if (!codec->bus->core.audio_component) {
+-		codec_info(codec, "No i915 binding for Intel HDMI/DP codec\n");
+-		return -ENODEV;
+-	}
+-
+-	err = alloc_generic_hdmi(codec);
++	err = alloc_intel_hdmi(codec);
+ 	if (err < 0)
+ 		return err;
+ 	spec = codec->spec;
+@@ -2587,45 +2595,18 @@ static int patch_i915_byt_hdmi(struct hda_codec *codec)
+ 
+ 	spec->ops.pin_cvt_fixup = i915_pin_cvt_fixup;
+ 
+-	err = hdmi_parse_codec(codec);
+-	if (err < 0) {
+-		generic_spec_free(codec);
+-		return err;
+-	}
+-
+-	generic_hdmi_init_per_pins(codec);
+-	register_i915_notifier(codec);
+-	return 0;
++	return parse_intel_hdmi(codec);
+ }
+ 
+ /* Intel IronLake, SandyBridge and IvyBridge; with eld notifier */
+ static int patch_i915_cpt_hdmi(struct hda_codec *codec)
+ {
+-	struct hdmi_spec *spec;
+ 	int err;
+ 
+-	/* requires i915 binding */
+-	if (!codec->bus->core.audio_component) {
+-		codec_info(codec, "No i915 binding for Intel HDMI/DP codec\n");
+-		return -ENODEV;
+-	}
+-
+-	err = alloc_generic_hdmi(codec);
++	err = alloc_intel_hdmi(codec);
+ 	if (err < 0)
+ 		return err;
+-	spec = codec->spec;
+-
+-	err = hdmi_parse_codec(codec);
 -	if (err < 0)
 -		goto error;
--	spec->i915_bound = true;
 -
- 	err = hdmi_parse_codec(codec);
- 	if (err < 0)
- 		goto error;
+-	generic_hdmi_init_per_pins(codec);
+-	register_i915_notifier(codec);
+-	return 0;
+-
+- error:
+-	generic_spec_free(codec);
+-	return err;
++	return parse_intel_hdmi(codec);
+ }
+ 
+ /*
 -- 
 2.13.2
