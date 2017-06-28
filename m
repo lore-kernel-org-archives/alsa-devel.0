@@ -1,15 +1,17 @@
-From: mengdong.lin@linux.intel.com
-Subject: [PATCH] ASoC: Drop invalid DMI fields when setting
-	card long name from DMI info
-Date: Wed, 28 Jun 2017 15:01:39 +0800
-Message-ID: <20170628070139.18340-1-mengdong.lin@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: arizona: Add DAC Volume Limit
+	controls
+Date: Wed, 28 Jun 2017 15:09:46 +0100
+Message-ID: <20170628140946.dhbsdyqzo2pgkczk@sirena.org.uk>
+References: <20170628125317.30561-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6257160621562591645=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id CCA5D266BC2
- for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 15:59:02 +0200 (CEST)
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B7B0266BC2
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 16:09:55 +0200 (CEST)
+In-Reply-To: <20170628125317.30561-1-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,107 +21,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, broonie@kernel.org
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, Mengdong Lin <mengdong.lin@linux.intel.com>, mengdong.lin@intel.com, pierre-louis.bossart@intel.com
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-Sometimes DMI fields may be invalid and so can't give useful vendor,
-product or board info, such as "Type2 - Board Manufacturer" or
-"Type1 - TBD by OEM". Including such invalid DMI fileds may create silly
-card long name. So this patch creates a black list of invalid strings.
-And if a DMI field contains any string in this list, it will be excluded
-from the card long name.
+--===============6257160621562591645==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="73gllohy5jwq773d"
+Content-Disposition: inline
 
-Signed-off-by: Mengdong Lin <mengdong.lin@linux.intel.com>
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index cfa9cf1476f2..419b788fd801 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -69,6 +69,20 @@ static int pmdown_time = 5000;
- module_param(pmdown_time, int, 0);
- MODULE_PARM_DESC(pmdown_time, "DAPM stream powerdown time (msecs)");
- 
-+/* If a DMI filed contain strings in this blacklist (e.g.
-+ * "Type2 - Board Manufacturer" or  "Type1 - TBD by OEM"), it will be taken
-+ * as invalid and dropped when setting the card long name from DMI info.
-+ */
-+static const char * const dmi_blacklist[] = {
-+	"To be filled by OEM",
-+	"TBD by OEM",
-+	"Default String",
-+	"Board Manufacturer",
-+	"Board Vendor Name",
-+	"Board Product Name",
-+	NULL,	/* terminator */
-+};
-+
- /* returns the minimum number of bytes needed to represent
-  * a particular given value */
- static int min_bytes_needed(unsigned long val)
-@@ -1934,6 +1948,22 @@ static void cleanup_dmi_name(char *name)
- 	name[j] = '\0';
- }
- 
-+/* Check if a DMI field is valid, i.e. not containing any string
-+ * in the black list.
-+ */
-+static int is_dmi_valid(const char *field)
-+{
-+	int i = 0;
-+
-+	while (dmi_blacklist[i]) {
-+		if (strstr(field, dmi_blacklist[i]))
-+			return 0;
-+		i++;
-+	};
-+
-+	return 1;
-+}
-+
- /**
-  * snd_soc_set_dmi_name() - Register DMI names to card
-  * @card: The card to register DMI names
-@@ -1976,17 +2006,18 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
- 
- 	/* make up dmi long name as: vendor.product.version.board */
- 	vendor = dmi_get_system_info(DMI_BOARD_VENDOR);
--	if (!vendor) {
-+	if (!vendor || !is_dmi_valid(vendor)) {
- 		dev_warn(card->dev, "ASoC: no DMI vendor name!\n");
- 		return 0;
- 	}
- 
-+
- 	snprintf(card->dmi_longname, sizeof(card->snd_card->longname),
- 			 "%s", vendor);
- 	cleanup_dmi_name(card->dmi_longname);
- 
- 	product = dmi_get_system_info(DMI_PRODUCT_NAME);
--	if (product) {
-+	if (product && is_dmi_valid(product)) {
- 		len = strlen(card->dmi_longname);
- 		snprintf(card->dmi_longname + len,
- 			 longname_buf_size - len,
-@@ -2000,7 +2031,7 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
- 		 * name in the product version field
- 		 */
- 		product_version = dmi_get_system_info(DMI_PRODUCT_VERSION);
--		if (product_version) {
-+		if (product_version && is_dmi_valid(product_version)) {
- 			len = strlen(card->dmi_longname);
- 			snprintf(card->dmi_longname + len,
- 				 longname_buf_size - len,
-@@ -2013,7 +2044,7 @@ int snd_soc_set_dmi_name(struct snd_soc_card *card, const char *flavour)
- 	}
- 
- 	board = dmi_get_system_info(DMI_BOARD_NAME);
--	if (board) {
-+	if (board && is_dmi_valid(board)) {
- 		len = strlen(card->dmi_longname);
- 		snprintf(card->dmi_longname + len,
- 			 longname_buf_size - len,
--- 
-2.11.0
+--73gllohy5jwq773d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Jun 28, 2017 at 01:53:17PM +0100, Charles Keepax wrote:
+> Add controls that allow the limiting of the volume coming from the DACs on
+> the Arizona class devices, note that wm8998 does not have this feature.
+
+Is it sensible to control the volume limits through normal controls
+given that the level of protection offered ends up being minimal if the
+two controls are sitting next to each other?  I'd kind of expect this to
+be something that comes from the system integration (eg, limits on the
+physical capabilities of the speaker).
+
+--73gllohy5jwq773d
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllTuKkACgkQJNaLcl1U
+h9CurAf7BCmXabbphqHvsnQR2Zvl/FS1b/veA3ExVvh+SDZVpLRRNjMXe+O3Qs7u
+o+lgLKoAANLs362JFne1ci6TtN9GtMVnd1NE9VE1ltsATLROMWhjn54yOxtEUSR4
+ewKCLEoaCKxI2cWzcLzNJsWUYq7YK1YNvGCl+pW0x1uWpKPVwo6WAq0o/9fJWpzH
+Kf1LxRW9aXXSnKssUgui4e+SDNJYzExARoIe80OIIlVOXGWd+x9wtnN4f6Iqqxd5
+qRlWKOfuei1MdAHL6F6DR63RruywVOFzzNyLlfJWJfxpB9wRo5gY6mu6IUM7rskt
+kqE/Us+waDlvSsMQSIgq6jZOVZIgaA==
+=aYw4
+-----END PGP SIGNATURE-----
+
+--73gllohy5jwq773d--
+
+--===============6257160621562591645==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6257160621562591645==--
