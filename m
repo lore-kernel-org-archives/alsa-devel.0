@@ -1,55 +1,80 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 01/17] mfd: madera: Add register definitions for
- Cirrus Logic Madera codecs
-Date: Wed, 28 Jun 2017 20:26:40 +0100
-Message-ID: <20170628192640.lboeddcabjcrvmtw@sirena.org.uk>
-References: <1496415790-19164-1-git-send-email-rf@opensource.wolfsonmicro.com>
- <1496415790-19164-2-git-send-email-rf@opensource.wolfsonmicro.com>
- <20170605100707.zqyfyzhlhrpswa2u@dell>
- <1498466018.4826.81.camel@rf-debian.wolfsonmicro.main>
+Subject: Re: [PATCH] drm: adv7511_audio: Add .get_dai_id callback to map port
+ number to dai id
+Date: Wed, 28 Jun 2017 19:50:31 +0100
+Message-ID: <20170628185031.7qgc27xofbu7k7ij@sirena.org.uk>
+References: <1497391189-9301-1-git-send-email-john.stultz@linaro.org>
+ <20170614000543.l636aslxdt5xd32f@sirena.org.uk>
+ <CALAqxLUqt-pyRimWjJL6QYnvX17wSjbkdy_Vsynbhrf8bfgfnQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="blk3miywyypstlok"
-Return-path: <linux-gpio-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1498466018.4826.81.camel@rf-debian.wolfsonmicro.main>
-Sender: linux-gpio-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.wolfsonmicro.com>
-Cc: Lee Jones <lee.jones@linaro.org>, linus.walleij@linaro.org, gnurou@gmail.com, robh+dt@kernel.org, tglx@linutronix.de, jason@lakedaemon.net, alsa-devel@alsa-project.org, patches@opensource.wolfsonmicro.com, linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============0332140327=="
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <CALAqxLUqt-pyRimWjJL6QYnvX17wSjbkdy_Vsynbhrf8bfgfnQ@mail.gmail.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: John Stultz <john.stultz@linaro.org>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, lkml <linux-kernel@vger.kernel.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, Rob Herring <robh+dt@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---blk3miywyypstlok
-Content-Type: text/plain; charset=us-ascii
+--===============0332140327==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="rvtcqjw6gjm64yh3"
 Content-Disposition: inline
 
-On Mon, Jun 26, 2017 at 09:33:38AM +0100, Richard Fitzgerald wrote:
-> On Mon, 2017-06-05 at 11:07 +0100, Lee Jones wrote:
 
-> > For my own reference:
-> >   Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+--rvtcqjw6gjm64yh3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Can I suggest that you take this patch into the mfd tree? Other
-> subsystem maintainers will have to base on that but it avoids me keeping
-> emailing out nearly 9000 lines of register definitions each time I do an
-> update to the other patches in the chain.
+On Mon, Jun 26, 2017 at 09:31:34AM -0700, John Stultz wrote:
 
-Yes, please!  It also helps other maintainers see that the early bits of
-the series we depend on are making progress.
+> Hey Mark,
+>   Just wanted to check on this to make sure it didn't slip by. I've
+> not seen it show up in -next yet.
 
---blk3miywyypstlok
+Please don't send content free pings and please allow a reasonable time
+for review.  People get busy, go on holiday, attend conferences and so=20
+on so unless there is some reason for urgency (like critical bug fixes)
+please allow at least a couple of weeks for review.  If there have been
+review comments then people may be waiting for those to be addressed.
+Sending content free pings just adds to the mail volume (if they are
+seen at all) and if something has gone wrong you'll have to resend the
+patches anyway.
+
+--rvtcqjw6gjm64yh3
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllUAvAACgkQJNaLcl1U
-h9BXmAf/fnhzU7vj/WylR2wzdugxyjm9fV1/gjWMvcByJKDFtMByxHBcNjgW05/1
-G5tPf1ztaOoSv+3aQ2CLKeK/HUvvwHrLreWpqXd9XLVMSn/TrjJUEsXX9Y5XVMNV
-cmuM24laOuGphT/QnC21LdK+3qeB6E1ou97brmCv0AkDZh2TOwzCz26BY0v6uuPn
-BArlPD/Cgr3MQCI4iT8d6U5iDhCcGioMqUk6jpMLAWVlLAVe/oA3GTxozlYL7dfs
-Rda3MYCqfQDenCjXIOBxuWPF/i3H1IlIETeGXqQ+oPgTEv8Xm1VO+/sqE8V1wX+z
-BHiMz/gEQmrPhWK1akV5AvBjRYA/dg==
-=GX1w
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllT+nYACgkQJNaLcl1U
+h9Bf1Af/V9VWccsEc81EnuUrphBqTcwOhebFZVMlhZvXUtfNrN2emQ18qmiDdOgM
+MwOiEA0PuapanQThJ612d9WDCs1cmgMMk1rfP4ADw6dnOnZuGq6tXGSlsZGxXFvr
+2eNJ/bI0ULxvMpKX9+bEWJ87UrDgvvPKRDCVEk4hJ5Ij2iHZOOhjmZxoVoR4uELg
+M3ydRxacgbYGow7NcoMvgT5KHTFH+oH2clJPRz61zo0bp5e42+twXay+D3u1rXpf
+3syAXK+DX1duY4M4Dx7nT53lo42/ZUalVaP90dzch62fKZwW9GaX7jJsQ8M2GVQ6
+OGWqmD6AqWBX1BRvRyl0zJU3MRYYUQ==
+=X/a6
 -----END PGP SIGNATURE-----
 
---blk3miywyypstlok--
+--rvtcqjw6gjm64yh3--
+
+--===============0332140327==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
+IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+
+--===============0332140327==--
