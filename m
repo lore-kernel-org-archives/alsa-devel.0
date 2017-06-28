@@ -1,15 +1,16 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/4] ASoC: rt5645: add inv_jd1_1 flag
-Date: Wed, 28 Jun 2017 14:49:38 +0200
-Message-ID: <20170628124939.11696-4-tiwai@suse.de>
+Subject: [PATCH 2/4] ASoC: rt5645: rename jd_invert flag in
+	platform data
+Date: Wed, 28 Jun 2017 14:49:37 +0200
+Message-ID: <20170628124939.11696-3-tiwai@suse.de>
 References: <20170628124939.11696-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E9C5266BBC
- for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 14:49:42 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2C8E0266B9F
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 14:49:41 +0200 (CEST)
 In-Reply-To: <20170628124939.11696-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,44 +27,71 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Bard Liao <bardliao@realtek.com>
 
-The flag will invert jd1_1 status. Which will be used if the jack
-connector is normal closed.
+The jd_invert flag is actually used for level triggered IRQ. Rename
+it to let code more readable.
 
 Signed-off-by: Bard Liao <bardliao@realtek.com>
 Tested-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/rt5645.h    | 2 ++
- sound/soc/codecs/rt5645.c | 4 ++++
- 2 files changed, 6 insertions(+)
+ include/sound/rt5645.h    | 4 ++--
+ sound/soc/codecs/rt5645.c | 8 ++++----
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/include/sound/rt5645.h b/include/sound/rt5645.h
-index c427f10a39ae..d0c33a9972b9 100644
+index a5cf6152e778..c427f10a39ae 100644
 --- a/include/sound/rt5645.h
 +++ b/include/sound/rt5645.h
-@@ -23,6 +23,8 @@ struct rt5645_platform_data {
+@@ -21,8 +21,8 @@ struct rt5645_platform_data {
+ 	/* 0 = IN2P; 1 = GPIO6; 2 = GPIO10; 3 = GPIO12 */
+ 
  	unsigned int jd_mode;
- 	/* Use level triggered irq */
- 	bool level_trigger_irq;
-+	/* Invert JD1_1 status polarity */
-+	bool inv_jd1_1;
+-	/* Invert JD when jack insert */
+-	bool jd_invert;
++	/* Use level triggered irq */
++	bool level_trigger_irq;
  };
  
  #endif
 diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index e0c09bbd3f12..162044d82632 100644
+index 8e419ea418e9..e0c09bbd3f12 100644
 --- a/sound/soc/codecs/rt5645.c
 +++ b/sound/soc/codecs/rt5645.c
-@@ -3833,6 +3833,10 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 		default:
- 			break;
+@@ -3151,7 +3151,7 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ 			snd_soc_dapm_sync(dapm);
+ 			rt5645->jack_type = SND_JACK_HEADPHONE;
  		}
-+		if (rt5645->pdata.inv_jd1_1) {
-+			regmap_update_bits(rt5645->regmap, RT5645_IRQ_CTRL2,
-+				RT5645_JD_1_1_MASK, RT5645_JD_1_1_INV);
-+		}
+-		if (rt5645->pdata.jd_invert)
++		if (rt5645->pdata.level_trigger_irq)
+ 			regmap_update_bits(rt5645->regmap, RT5645_IRQ_CTRL2,
+ 				RT5645_JD_1_1_MASK, RT5645_JD_1_1_NOR);
+ 	} else { /* jack out */
+@@ -3172,7 +3172,7 @@ static int rt5645_jack_detect(struct snd_soc_codec *codec, int jack_insert)
+ 			snd_soc_dapm_disable_pin(dapm, "LDO2");
+ 		snd_soc_dapm_disable_pin(dapm, "Mic Det Power");
+ 		snd_soc_dapm_sync(dapm);
+-		if (rt5645->pdata.jd_invert)
++		if (rt5645->pdata.level_trigger_irq)
+ 			regmap_update_bits(rt5645->regmap, RT5645_IRQ_CTRL2,
+ 				RT5645_JD_1_1_MASK, RT5645_JD_1_1_INV);
  	}
+@@ -3586,7 +3586,7 @@ static struct rt5645_platform_data buddy_platform_data = {
+ 	.dmic1_data_pin = RT5645_DMIC_DATA_GPIO5,
+ 	.dmic2_data_pin = RT5645_DMIC_DATA_IN2P,
+ 	.jd_mode = 3,
+-	.jd_invert = true,
++	.level_trigger_irq = true,
+ };
  
+ static struct dmi_system_id dmi_platform_intel_broadwell[] = {
+@@ -3838,7 +3838,7 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
  	regmap_update_bits(rt5645->regmap, RT5645_ADDA_CLK1,
+ 		RT5645_I2S_PD1_MASK, RT5645_I2S_PD1_2);
+ 
+-	if (rt5645->pdata.jd_invert) {
++	if (rt5645->pdata.level_trigger_irq) {
+ 		regmap_update_bits(rt5645->regmap, RT5645_IRQ_CTRL2,
+ 			RT5645_JD_1_1_MASK, RT5645_JD_1_1_INV);
+ 	}
 -- 
 2.13.2
