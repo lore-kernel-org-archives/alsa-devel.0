@@ -1,93 +1,87 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: enable speaker protection
-	features" to the asoc tree
-Date: Wed, 28 Jun 2017 20:23:23 +0100
-Message-ID: <E1dQIYd-0004Fv-Bp@finisterre>
-References: <1498529129-30647-1-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: dwc: Added a quirk DW_I2S_QUIRK_16BIT_IDX_OVERRIDE to
+ dwc driver" to the asoc tree
+Date: Wed, 28 Jun 2017 20:23:50 +0100
+Message-ID: <E1dQIZ4-0004L3-Cv@finisterre>
+References: <1498235706-31111-3-git-send-email-alexander.deucher@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
- [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B1B68266D55
- for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 21:23:50 +0200 (CEST)
-In-Reply-To: <1498529129-30647-1-git-send-email-bardliao@realtek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, albertchen@realtek.com, broonie@kernel.org, alexlee@realtek.com, shumingf@realtek.com, flove@realtek.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <1498235706-31111-3-git-send-email-alexander.deucher@amd.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, amd-gfx@lists.freedesktop.org, rajeevkumar.linux@gmail.com, broonie@kernel.org, dri-devel@lists.freedesktop.org, Vijendar.Mukunda@amd.com, Alex Deucher <alexander.deucher@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: rt5645: enable speaker protection features
-
-has been applied to the asoc tree at
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 105e56f1ec335ab62b920882e755da49e81e5b60 Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Tue, 27 Jun 2017 10:05:29 +0800
-Subject: [PATCH] ASoC: rt5645: enable speaker protection features
-
-This patch is uploaded for enabling the speaker protection features
-of the audio codec.
-
-Signed-off-by: Bard Liao <bardliao@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt5645.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 308c22f5909a..630374ee692a 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -59,7 +59,7 @@ static const struct regmap_range_cfg rt5645_ranges[] = {
- 
- static const struct reg_sequence init_list[] = {
- 	{RT5645_PR_BASE + 0x3d,	0x3600},
--	{RT5645_PR_BASE + 0x1c,	0xfd20},
-+	{RT5645_PR_BASE + 0x1c,	0xfd70},
- 	{RT5645_PR_BASE + 0x20,	0x611f},
- 	{RT5645_PR_BASE + 0x21,	0x4040},
- 	{RT5645_PR_BASE + 0x23,	0x0004},
-@@ -3759,6 +3759,8 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 					   ret);
- 	}
- 
-+	regmap_update_bits(rt5645->regmap, RT5645_CLSD_OUT_CTRL, 0xc0, 0xc0);
-+
- 	if (rt5645->pdata.in2_diff)
- 		regmap_update_bits(rt5645->regmap, RT5645_IN2_CTRL,
- 					RT5645_IN_DF2, RT5645_IN_DF2);
--- 
-2.13.2
+VGhlIHBhdGNoCgogICBBU29DOiBkd2M6IEFkZGVkIGEgcXVpcmsgRFdfSTJTX1FVSVJLXzE2QklU
+X0lEWF9PVkVSUklERSB0byBkd2MgZHJpdmVyCgpoYXMgYmVlbiBhcHBsaWVkIHRvIHRoZSBhc29j
+IHRyZWUgYXQKCiAgIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dp
+dC9icm9vbmllL3NvdW5kLmdpdCAKCkFsbCBiZWluZyB3ZWxsIHRoaXMgbWVhbnMgdGhhdCBpdCB3
+aWxsIGJlIGludGVncmF0ZWQgaW50byB0aGUgbGludXgtbmV4dAp0cmVlICh1c3VhbGx5IHNvbWV0
+aW1lIGluIHRoZSBuZXh0IDI0IGhvdXJzKSBhbmQgc2VudCB0byBMaW51cyBkdXJpbmcKdGhlIG5l
+eHQgbWVyZ2Ugd2luZG93IChvciBzb29uZXIgaWYgaXQgaXMgYSBidWcgZml4KSwgaG93ZXZlciBp
+Zgpwcm9ibGVtcyBhcmUgZGlzY292ZXJlZCB0aGVuIHRoZSBwYXRjaCBtYXkgYmUgZHJvcHBlZCBv
+ciByZXZlcnRlZC4gIAoKWW91IG1heSBnZXQgZnVydGhlciBlLW1haWxzIHJlc3VsdGluZyBmcm9t
+IGF1dG9tYXRlZCBvciBtYW51YWwgdGVzdGluZwphbmQgcmV2aWV3IG9mIHRoZSB0cmVlLCBwbGVh
+c2UgZW5nYWdlIHdpdGggcGVvcGxlIHJlcG9ydGluZyBwcm9ibGVtcyBhbmQKc2VuZCBmb2xsb3d1
+cCBwYXRjaGVzIGFkZHJlc3NpbmcgYW55IGlzc3VlcyB0aGF0IGFyZSByZXBvcnRlZCBpZiBuZWVk
+ZWQuCgpJZiBhbnkgdXBkYXRlcyBhcmUgcmVxdWlyZWQgb3IgeW91IGFyZSBzdWJtaXR0aW5nIGZ1
+cnRoZXIgY2hhbmdlcyB0aGV5CnNob3VsZCBiZSBzZW50IGFzIGluY3JlbWVudGFsIHVwZGF0ZXMg
+YWdhaW5zdCBjdXJyZW50IGdpdCwgZXhpc3RpbmcKcGF0Y2hlcyB3aWxsIG5vdCBiZSByZXBsYWNl
+ZC4KClBsZWFzZSBhZGQgYW55IHJlbGV2YW50IGxpc3RzIGFuZCBtYWludGFpbmVycyB0byB0aGUg
+Q0NzIHdoZW4gcmVwbHlpbmcKdG8gdGhpcyBtYWlsLgoKVGhhbmtzLApNYXJrCgpGcm9tIDI4NjM0
+NWVlZjk3ZWE4ZjRlYTIyMzQxMGYwMjVlZDM1ZjI2NWU1MDYgTW9uIFNlcCAxNyAwMDowMDowMCAy
+MDAxCkZyb206IFZpamVuZGFyIE11a3VuZGEgPFZpamVuZGFyLk11a3VuZGFAYW1kLmNvbT4KRGF0
+ZTogRnJpLCAyMyBKdW4gMjAxNyAxMjozNTowMCAtMDQwMApTdWJqZWN0OiBbUEFUQ0hdIEFTb0M6
+IGR3YzogQWRkZWQgYSBxdWlyayBEV19JMlNfUVVJUktfMTZCSVRfSURYX09WRVJSSURFIHRvCiBk
+d2MgZHJpdmVyCgpBZGRlZCBxdWlyayBEV19JMlNfUVVJUktfMTZCSVRfSURYX09WRVJSSURFIHRv
+IERlc2lnbndhcmUKZHJpdmVyLiBUaGlzIHF1aXJrIHdpbGwgc2V0IGlkeCB2YWx1ZSB0byAxLgoK
+Qnkgc2V0dGluZyB0aGlzIHF1aXJrLCBpdCB3aWxsIG92ZXJyaWRlIHN1cHBvcnRlZCBmb3JtYXQK
+YXMgMTYgYml0IHJlc29sdXRpb24gYW5kIGJ1cyB3aWR0aCBhcyAyIEJ5dGVzLgoKUmV2aWV3ZWQt
+Ynk6IEFsZXggRGV1Y2hlciA8YWxleGFuZGVyLmRldWNoZXJAYW1kLmNvbT4KU2lnbmVkLW9mZi1i
+eTogVmlqZW5kYXIgTXVrdW5kYSA8VmlqZW5kYXIuTXVrdW5kYUBhbWQuY29tPgpTaWduZWQtb2Zm
+LWJ5OiBBbGV4IERldWNoZXIgPGFsZXhhbmRlci5kZXVjaGVyQGFtZC5jb20+ClNpZ25lZC1vZmYt
+Ynk6IE1hcmsgQnJvd24gPGJyb29uaWVAa2VybmVsLm9yZz4KLS0tCiBpbmNsdWRlL3NvdW5kL2Rl
+c2lnbndhcmVfaTJzLmggfCAxICsKIHNvdW5kL3NvYy9kd2MvZHdjLWkycy5jICAgICAgICB8IDYg
+KysrKysrCiAyIGZpbGVzIGNoYW5nZWQsIDcgaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBhL2lu
+Y2x1ZGUvc291bmQvZGVzaWdud2FyZV9pMnMuaCBiL2luY2x1ZGUvc291bmQvZGVzaWdud2FyZV9p
+MnMuaAppbmRleCA1NjgxODU1Mzk2YzQuLjgzMGY1Y2FhOTE1YyAxMDA2NDQKLS0tIGEvaW5jbHVk
+ZS9zb3VuZC9kZXNpZ253YXJlX2kycy5oCisrKyBiL2luY2x1ZGUvc291bmQvZGVzaWdud2FyZV9p
+MnMuaApAQCAtNDcsNiArNDcsNyBAQCBzdHJ1Y3QgaTJzX3BsYXRmb3JtX2RhdGEgewogCiAJI2Rl
+ZmluZSBEV19JMlNfUVVJUktfQ09NUF9SRUdfT0ZGU0VUCSgxIDw8IDApCiAJI2RlZmluZSBEV19J
+MlNfUVVJUktfQ09NUF9QQVJBTTEJKDEgPDwgMSkKKwkjZGVmaW5lIERXX0kyU19RVUlSS18xNkJJ
+VF9JRFhfT1ZFUlJJREUgKDEgPDwgMikKIAl1bnNpZ25lZCBpbnQgcXVpcmtzOwogCXVuc2lnbmVk
+IGludCBpMnNfcmVnX2NvbXAxOwogCXVuc2lnbmVkIGludCBpMnNfcmVnX2NvbXAyOwpkaWZmIC0t
+Z2l0IGEvc291bmQvc29jL2R3Yy9kd2MtaTJzLmMgYi9zb3VuZC9zb2MvZHdjL2R3Yy1pMnMuYwpp
+bmRleCA5YzQ2ZTQxMTIwMjYuLjkxNjA2NzYzODE4MCAxMDA2NDQKLS0tIGEvc291bmQvc29jL2R3
+Yy9kd2MtaTJzLmMKKysrIGIvc291bmQvc29jL2R3Yy9kd2MtaTJzLmMKQEAgLTQ5Niw2ICs0OTYs
+OCBAQCBzdGF0aWMgaW50IGR3X2NvbmZpZ3VyZV9kYWkoc3RydWN0IGR3X2kyc19kZXYgKmRldiwK
+IAkJaWR4ID0gQ09NUDFfVFhfV09SRFNJWkVfMChjb21wMSk7CiAJCWlmIChXQVJOX09OKGlkeCA+
+PSBBUlJBWV9TSVpFKGZvcm1hdHMpKSkKIAkJCXJldHVybiAtRUlOVkFMOworCQlpZiAoZGV2LT5x
+dWlya3MgJiBEV19JMlNfUVVJUktfMTZCSVRfSURYX09WRVJSSURFKQorCQkJaWR4ID0gMTsKIAkJ
+ZHdfaTJzX2RhaS0+cGxheWJhY2suY2hhbm5lbHNfbWluID0gTUlOX0NIQU5ORUxfTlVNOwogCQlk
+d19pMnNfZGFpLT5wbGF5YmFjay5jaGFubmVsc19tYXggPQogCQkJCTEgPDwgKENPTVAxX1RYX0NI
+QU5ORUxTKGNvbXAxKSArIDEpOwpAQCAtNTA4LDYgKzUxMCw4IEBAIHN0YXRpYyBpbnQgZHdfY29u
+ZmlndXJlX2RhaShzdHJ1Y3QgZHdfaTJzX2RldiAqZGV2LAogCQlpZHggPSBDT01QMl9SWF9XT1JE
+U0laRV8wKGNvbXAyKTsKIAkJaWYgKFdBUk5fT04oaWR4ID49IEFSUkFZX1NJWkUoZm9ybWF0cykp
+KQogCQkJcmV0dXJuIC1FSU5WQUw7CisJCWlmIChkZXYtPnF1aXJrcyAmIERXX0kyU19RVUlSS18x
+NkJJVF9JRFhfT1ZFUlJJREUpCisJCQlpZHggPSAxOwogCQlkd19pMnNfZGFpLT5jYXB0dXJlLmNo
+YW5uZWxzX21pbiA9IE1JTl9DSEFOTkVMX05VTTsKIAkJZHdfaTJzX2RhaS0+Y2FwdHVyZS5jaGFu
+bmVsc19tYXggPQogCQkJCTEgPDwgKENPTVAxX1JYX0NIQU5ORUxTKGNvbXAxKSArIDEpOwpAQCAt
+NTQzLDYgKzU0Nyw4IEBAIHN0YXRpYyBpbnQgZHdfY29uZmlndXJlX2RhaV9ieV9wZChzdHJ1Y3Qg
+ZHdfaTJzX2RldiAqZGV2LAogCWlmIChyZXQgPCAwKQogCQlyZXR1cm4gcmV0OwogCisJaWYgKGRl
+di0+cXVpcmtzICYgRFdfSTJTX1FVSVJLXzE2QklUX0lEWF9PVkVSUklERSkKKwkJaWR4ID0gMTsK
+IAkvKiBTZXQgRE1BIHNsYXZlcyBpbmZvICovCiAJZGV2LT5wbGF5X2RtYV9kYXRhLnBkLmRhdGEg
+PSBwZGF0YS0+cGxheV9kbWFfZGF0YTsKIAlkZXYtPmNhcHR1cmVfZG1hX2RhdGEucGQuZGF0YSA9
+IHBkYXRhLT5jYXB0dXJlX2RtYV9kYXRhOwotLSAKMi4xMy4yCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1k
+ZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
