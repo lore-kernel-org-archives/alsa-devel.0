@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: nau8825: devicetree for crosstalk
-	bypass
-Date: Wed, 28 Jun 2017 19:14:15 +0100
-Message-ID: <20170628181415.gj6cc4jn47636hf6@sirena.org.uk>
-References: <1498460028-12314-1-git-send-email-KCHSU0@nuvoton.com>
+Subject: Applied "ASoC: rt5645: enable speaker protection
+	features" to the asoc tree
+Date: Wed, 28 Jun 2017 20:23:23 +0100
+Message-ID: <E1dQIYd-0004Fv-Bp@finisterre>
+References: <1498529129-30647-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8673693642984887835=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C25AA266838
- for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 20:14:32 +0200 (CEST)
-In-Reply-To: <1498460028-12314-1-git-send-email-KCHSU0@nuvoton.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B1B68266D55
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 21:23:50 +0200 (CEST)
+In-Reply-To: <1498529129-30647-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,49 +22,72 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <supercraig0719@gmail.com>
-Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, benzh@chromium.org, mac.chiang@intel.com, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, albertchen@realtek.com, broonie@kernel.org, alexlee@realtek.com, shumingf@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============8673693642984887835==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="t5mqk2enkiy2tmot"
-Content-Disposition: inline
+   ASoC: rt5645: enable speaker protection features
 
+has been applied to the asoc tree at
 
---t5mqk2enkiy2tmot
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Jun 26, 2017 at 02:53:48PM +0800, John Hsu wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> +  - nuvoton,crosstalk-bypass: make crosstalk function bypass if set 1.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-This should just be a boolean property, no need for a value.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---t5mqk2enkiy2tmot
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllT8fcACgkQJNaLcl1U
-h9Aj+wf9EFbIYtbzdweOEXxajHOJgfDpsgjfZystR5e2hfFvCAb+tTBxxLIzBr3z
-msaj0JnI3jSaqe7cKLdM4i2kCtXlBCTDc2BSxv5ov+MKeA3CFv90kg0nfHh/nzaL
-Siw2086mGBTBD9glyFCRhGX/CSVASAcBOX8c1IVTtO6Z77yPHc0nbYoF+6JeHgil
-ramq7yBavzbI0CjUj6V1oLFzp8mgwwbsRJKJU6aqzhNGRmA9DUhcO4LyElyxdiWK
-tmv/xFaHre4M1xZqv9CHdrDkiyK8Oc2kkKgzF+3dY1fkN8DBfr0D3WFTZb/5w3Ug
-+pZcrVskU6BnM5whNCujSGphgEVfEg==
-=GJgk
------END PGP SIGNATURE-----
+>From 105e56f1ec335ab62b920882e755da49e81e5b60 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Tue, 27 Jun 2017 10:05:29 +0800
+Subject: [PATCH] ASoC: rt5645: enable speaker protection features
 
---t5mqk2enkiy2tmot--
+This patch is uploaded for enabling the speaker protection features
+of the audio codec.
 
---===============8673693642984887835==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt5645.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-
---===============8673693642984887835==--
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 308c22f5909a..630374ee692a 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -59,7 +59,7 @@ static const struct regmap_range_cfg rt5645_ranges[] = {
+ 
+ static const struct reg_sequence init_list[] = {
+ 	{RT5645_PR_BASE + 0x3d,	0x3600},
+-	{RT5645_PR_BASE + 0x1c,	0xfd20},
++	{RT5645_PR_BASE + 0x1c,	0xfd70},
+ 	{RT5645_PR_BASE + 0x20,	0x611f},
+ 	{RT5645_PR_BASE + 0x21,	0x4040},
+ 	{RT5645_PR_BASE + 0x23,	0x0004},
+@@ -3759,6 +3759,8 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 					   ret);
+ 	}
+ 
++	regmap_update_bits(rt5645->regmap, RT5645_CLSD_OUT_CTRL, 0xc0, 0xc0);
++
+ 	if (rt5645->pdata.in2_diff)
+ 		regmap_update_bits(rt5645->regmap, RT5645_IN2_CTRL,
+ 					RT5645_IN_DF2, RT5645_IN_DF2);
+-- 
+2.13.2
