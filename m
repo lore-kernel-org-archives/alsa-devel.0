@@ -1,15 +1,15 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH] ASoC: arizona: Add DAC Volume Limit controls
-Date: Wed, 28 Jun 2017 13:53:17 +0100
-Message-ID: <20170628125317.30561-1-ckeepax@opensource.cirrus.com>
+From: gianluca <gianlucarenzi@eurekelettronica.it>
+Subject: Fwd: Issue on Linux 4.12-rc7 on iMX6 based board
+Date: Wed, 28 Jun 2017 17:34:36 +0200
+Message-ID: <d7d15b1d-ac7f-4b45-b7e6-e4cdc0d5cc65@eurekelettronica.it>
+References: <7ab79167-fa6c-4aea-0545-48d0522d5d77@eurekelettronica.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="------------2BC4E79468DD385FD474F57D"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 91E4A266AF8
- for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 14:53:20 +0200 (CEST)
+Received: from qmail.e-mind.com (qmail34.e-mind.com [188.94.192.34])
+ by alsa0.perex.cz (Postfix) with SMTP id B8D39266B13
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 17:34:36 +0200 (CEST)
+In-Reply-To: <7ab79167-fa6c-4aea-0545-48d0522d5d77@eurekelettronica.it>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,151 +19,361 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add controls that allow the limiting of the volume coming from the DACs on
-the Arizona class devices, note that wm8998 does not have this feature.
+This is a multi-part message in MIME format.
+--------------2BC4E79468DD385FD474F57D
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- sound/soc/codecs/cs47l24.c |  8 ++++++++
- sound/soc/codecs/wm5102.c  | 17 +++++++++++++++++
- sound/soc/codecs/wm5110.c  | 20 ++++++++++++++++++++
- sound/soc/codecs/wm8997.c  | 14 ++++++++++++++
- 4 files changed, 59 insertions(+)
 
-diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
-index 47e6fddef92b..a972e63bdda5 100644
---- a/sound/soc/codecs/cs47l24.c
-+++ b/sound/soc/codecs/cs47l24.c
-@@ -78,6 +78,7 @@ static int cs47l24_adsp_power_ev(struct snd_soc_dapm_widget *w,
- 
- static DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
- static DECLARE_TLV_DB_SCALE(digital_tlv, -6400, 50, 0);
-+static DECLARE_TLV_DB_SCALE(vol_limit_tlv, -600, 50, 0);
- static DECLARE_TLV_DB_SCALE(noise_tlv, -13200, 600, 0);
- static DECLARE_TLV_DB_SCALE(ng_tlv, -10200, 600, 0);
- 
-@@ -203,6 +204,13 @@ SOC_SINGLE_TLV("Speaker Digital Volume", ARIZONA_DAC_DIGITAL_VOLUME_4L,
- 		 ARIZONA_OUT4L_VOL_SHIFT,
- 		 0xbf, 0, digital_tlv),
- 
-+SOC_DOUBLE_R_RANGE_TLV("HPOUT1 Volume Limit", ARIZONA_DAC_VOLUME_LIMIT_1L,
-+		       ARIZONA_DAC_VOLUME_LIMIT_1R, ARIZONA_OUT1L_VOL_LIM_SHIFT,
-+		       0x74, 0x8C, 0, vol_limit_tlv),
-+SOC_DOUBLE_R_RANGE_TLV("Speaker Volume Limit", ARIZONA_OUT_VOLUME_4L,
-+		       ARIZONA_OUT_VOLUME_4R, ARIZONA_OUT4L_VOL_LIM_SHIFT,
-+		       0x74, 0x8C, 0, vol_limit_tlv),
-+
- SOC_ENUM("Output Ramp Up", arizona_out_vi_ramp),
- SOC_ENUM("Output Ramp Down", arizona_out_vd_ramp),
- 
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index 1fe358e6be61..7a295146524b 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -42,6 +42,7 @@ struct wm5102_priv {
- static DECLARE_TLV_DB_SCALE(ana_tlv, 0, 100, 0);
- static DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
- static DECLARE_TLV_DB_SCALE(digital_tlv, -6400, 50, 0);
-+static DECLARE_TLV_DB_SCALE(vol_limit_tlv, -600, 50, 0);
- static DECLARE_TLV_DB_SCALE(noise_tlv, -13200, 600, 0);
- static DECLARE_TLV_DB_SCALE(ng_tlv, -10200, 600, 0);
- 
-@@ -915,6 +916,22 @@ SOC_DOUBLE_R_TLV("SPKDAT1 Digital Volume", ARIZONA_DAC_DIGITAL_VOLUME_5L,
- 		 ARIZONA_DAC_DIGITAL_VOLUME_5R, ARIZONA_OUT5L_VOL_SHIFT,
- 		 0xbf, 0, digital_tlv),
- 
-+SOC_DOUBLE_R_RANGE_TLV("HPOUT1 Volume Limit", ARIZONA_DAC_VOLUME_LIMIT_1L,
-+		       ARIZONA_DAC_VOLUME_LIMIT_1R, ARIZONA_OUT1L_VOL_LIM_SHIFT,
-+		       0x74, 0x8C, 0, vol_limit_tlv),
-+SOC_DOUBLE_R_RANGE_TLV("HPOUT2 Volume Limit", ARIZONA_DAC_VOLUME_LIMIT_2L,
-+		       ARIZONA_DAC_VOLUME_LIMIT_2R, ARIZONA_OUT2L_VOL_LIM_SHIFT,
-+		       0x74, 0x8C, 0, vol_limit_tlv),
-+SOC_DOUBLE_R_RANGE_TLV("EPOUT Volume Limit", ARIZONA_DAC_VOLUME_LIMIT_3L,
-+		       ARIZONA_DAC_VOLUME_LIMIT_3R, ARIZONA_OUT3L_VOL_LIM_SHIFT,
-+		       0x74, 0x8C, 0, vol_limit_tlv),
-+SOC_DOUBLE_R_RANGE_TLV("Speaker Volume Limit", ARIZONA_OUT_VOLUME_4L,
-+		       ARIZONA_OUT_VOLUME_4R, ARIZONA_OUT4L_VOL_LIM_SHIFT,
-+		       0x74, 0x8C, 0, vol_limit_tlv),
-+SOC_DOUBLE_R_RANGE_TLV("SPKDAT1 Volume Limit", ARIZONA_DAC_VOLUME_LIMIT_5L,
-+		       ARIZONA_DAC_VOLUME_LIMIT_5R, ARIZONA_OUT5L_VOL_LIM_SHIFT,
-+		       0x74, 0x8C, 0, vol_limit_tlv),
-+
- SOC_ENUM("HPOUT1 OSR", wm5102_hpout_osr[0]),
- SOC_ENUM("HPOUT2 OSR", wm5102_hpout_osr[1]),
- SOC_ENUM("EPOUT OSR", wm5102_hpout_osr[2]),
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 1bc942152eff..f7cf9f7dffa6 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -575,6 +575,7 @@ static int wm5110_in_ev(struct snd_soc_dapm_widget *w,
- static DECLARE_TLV_DB_SCALE(ana_tlv, 0, 100, 0);
- static DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
- static DECLARE_TLV_DB_SCALE(digital_tlv, -6400, 50, 0);
-+static DECLARE_TLV_DB_SCALE(vol_limit_tlv, -600, 50, 0);
- static DECLARE_TLV_DB_SCALE(noise_tlv, -13200, 600, 0);
- static DECLARE_TLV_DB_SCALE(ng_tlv, -10200, 600, 0);
- 
-@@ -855,6 +856,25 @@ SOC_DOUBLE_R_TLV("SPKDAT2 Digital Volume", ARIZONA_DAC_DIGITAL_VOLUME_6L,
- 		 ARIZONA_DAC_DIGITAL_VOLUME_6R, ARIZONA_OUT6L_VOL_SHIFT,
- 		 0xbf, 0, digital_tlv),
- 
-+SOC_DOUBLE_R_RANGE_TLV("HPOUT1 Volume Limit", ARIZONA_DAC_VOLUME_LIMIT_1L,
-+		       ARIZONA_DAC_VOLUME_LIMIT_1R, ARIZONA_OUT1L_VOL_LIM_SHIFT,
-+		       0x74, 0x8C, 0, vol_limit_tlv),
-+SOC_DOUBLE_R_RANGE_TLV("HPOUT2 Volume Limit", ARIZONA_DAC_VOLUME_LIMIT_2L,
-+		       ARIZONA_DAC_VOLUME_LIMIT_2R, ARIZONA_OUT2L_VOL_LIM_SHIFT,
-+		       0x74, 0x8C, 0, vol_limit_tlv),
-+SOC_DOUBLE_R_RANGE_TLV("HPOUT3 Volume Limit", ARIZONA_DAC_VOLUME_LIMIT_3L,
-+		       ARIZONA_DAC_VOLUME_LIMIT_3R, ARIZONA_OUT3L_VOL_LIM_SHIFT,
-+		       0x74, 0x8C, 0, vol_limit_tlv),
-+SOC_DOUBLE_R_RANGE_TLV("Speaker Volume Limit", ARIZONA_OUT_VOLUME_4L,
-+		       ARIZONA_OUT_VOLUME_4R, ARIZONA_OUT4L_VOL_LIM_SHIFT,
-+		       0x74, 0x8C, 0, vol_limit_tlv),
-+SOC_DOUBLE_R_RANGE_TLV("SPKDAT1 Volume Limit", ARIZONA_DAC_VOLUME_LIMIT_5L,
-+		       ARIZONA_DAC_VOLUME_LIMIT_5R, ARIZONA_OUT5L_VOL_LIM_SHIFT,
-+		       0x74, 0x8C, 0, vol_limit_tlv),
-+SOC_DOUBLE_R_RANGE_TLV("SPKDAT2 Volume Limit", ARIZONA_DAC_VOLUME_LIMIT_6L,
-+		       ARIZONA_DAC_VOLUME_LIMIT_6R, ARIZONA_OUT6L_VOL_LIM_SHIFT,
-+		       0x74, 0x8C, 0, vol_limit_tlv),
-+
- SOC_DOUBLE("SPKDAT1 Switch", ARIZONA_PDM_SPK1_CTRL_1, ARIZONA_SPK1L_MUTE_SHIFT,
- 	   ARIZONA_SPK1R_MUTE_SHIFT, 1, 1),
- SOC_DOUBLE("SPKDAT2 Switch", ARIZONA_PDM_SPK2_CTRL_1, ARIZONA_SPK2L_MUTE_SHIFT,
-diff --git a/sound/soc/codecs/wm8997.c b/sound/soc/codecs/wm8997.c
-index 49401a8aae64..753a1c6a1484 100644
---- a/sound/soc/codecs/wm8997.c
-+++ b/sound/soc/codecs/wm8997.c
-@@ -40,6 +40,7 @@ struct wm8997_priv {
- static DECLARE_TLV_DB_SCALE(ana_tlv, 0, 100, 0);
- static DECLARE_TLV_DB_SCALE(eq_tlv, -1200, 100, 0);
- static DECLARE_TLV_DB_SCALE(digital_tlv, -6400, 50, 0);
-+static DECLARE_TLV_DB_SCALE(vol_limit_tlv, -600, 50, 0);
- static DECLARE_TLV_DB_SCALE(noise_tlv, -13200, 600, 0);
- static DECLARE_TLV_DB_SCALE(ng_tlv, -10200, 600, 0);
- 
-@@ -287,6 +288,19 @@ SOC_DOUBLE_R_TLV("SPKDAT1 Digital Volume", ARIZONA_DAC_DIGITAL_VOLUME_5L,
- 		 ARIZONA_DAC_DIGITAL_VOLUME_5R, ARIZONA_OUT5L_VOL_SHIFT,
- 		 0xbf, 0, digital_tlv),
- 
-+SOC_DOUBLE_R_RANGE_TLV("HPOUT1 Volume Limit", ARIZONA_DAC_VOLUME_LIMIT_1L,
-+		       ARIZONA_DAC_VOLUME_LIMIT_1R, ARIZONA_OUT1L_VOL_LIM_SHIFT,
-+		       0x74, 0x8C, 0, vol_limit_tlv),
-+SOC_DOUBLE_R_RANGE_TLV("EPOUT Volume Limit", ARIZONA_DAC_VOLUME_LIMIT_3L,
-+		       ARIZONA_DAC_VOLUME_LIMIT_3R, ARIZONA_OUT3L_VOL_LIM_SHIFT,
-+		       0x74, 0x8C, 0, vol_limit_tlv),
-+SOC_DOUBLE_R_RANGE_TLV("Speaker Volume Limit", ARIZONA_OUT_VOLUME_4L,
-+		       ARIZONA_OUT_VOLUME_4R, ARIZONA_OUT4L_VOL_LIM_SHIFT,
-+		       0x74, 0x8C, 0, vol_limit_tlv),
-+SOC_DOUBLE_R_RANGE_TLV("SPKDAT1 Volume Limit", ARIZONA_DAC_VOLUME_LIMIT_5L,
-+		       ARIZONA_DAC_VOLUME_LIMIT_5R, ARIZONA_OUT5L_VOL_LIM_SHIFT,
-+		       0x74, 0x8C, 0, vol_limit_tlv),
-+
- SOC_ENUM("HPOUT1 OSR", wm8997_hpout_osr[0]),
- SOC_ENUM("EPOUT OSR", wm8997_hpout_osr[1]),
- 
+
+
+-------- Forwarded Message --------
+Subject: Issue on Linux 4.12-rc7 on iMX6 based board
+Date: Wed, 28 Jun 2017 17:32:34 +0200
+From: gianluca <gianlucarenzi@eurekelettronica.it>
+To: alsa-devel@alsa-project.org <alsa-devel@alsa-project.org>
+
+Hello list,
+
+I have some issue using the sgtl5000 on two custom boards based with 
+iMX6. One board has iMX6DL and the other has iMX6QP.
+
+The issue is I have a (dramatically high) strange value on mixer 
+settings (looks like a int32 limit or similar)
+
+This is the output of amixer:
+> # amixer
+> Simple mixer control 'Headphone',0
+>   Capabilities: pvolume pswitch pswitch-joined
+>   Playback channels: Front Left - Front Right
+>   Limits: Playback 0 - 127
+>   Mono:
+>   Front Left: Playback 0 [2147483647%] [-51.50dB] [on]
+>   Front Right: Playback 0 [2147483647%] [-51.50dB] [on]
+> Simple mixer control 'Headphone Mux',0
+>   Capabilities: enum
+>   Items: 'DAC' 'LINE_IN'
+>   Item0: 'DAC'
+> Simple mixer control 'Headphone Playback ZC',0
+>   Capabilities: pswitch pswitch-joined
+>   Playback channels: Mono
+>   Mono: Playback [on]
+> Simple mixer control 'PCM',0
+>   Capabilities: pvolume
+>   Playback channels: Front Left - Front Right
+>   Limits: Playback 0 - 192
+>   Mono:
+>   Front Left: Playback 1 [2147483647%]
+>   Front Right: Playback 0 [2147483647%]
+> Simple mixer control 'Lineout',0
+>   Capabilities: pvolume pswitch pswitch-joined
+>   Playback channels: Front Left - Front Right
+>   Limits: Playback 0 - 31
+>   Mono:
+>   Front Left: Playback 18 [2147483647%] [-6.50dB] [on]
+>   Front Right: Playback 18 [2147483647%] [-6.50dB] [on]
+> Simple mixer control 'Mic',0
+>   Capabilities: volume volume-joined
+>   Playback channels: Mono
+>   Capture channels: Mono
+>   Limits: 0 - 3
+>   Mono: 0 [2147483647%] [0.00dB]
+> Simple mixer control 'Capture',0
+>   Capabilities: cvolume
+>   Capture channels: Front Left - Front Right
+>   Limits: Capture 0 - 15
+>   Front Left: Capture 0 [2147483647%]
+>   Front Right: Capture 0 [2147483647%]
+> Simple mixer control 'Capture Attenuate Switch (-6dB)',0
+>   Capabilities: pswitch pswitch-joined
+>   Playback channels: Mono
+>   Mono: Playback [off]
+> Simple mixer control 'Capture Mux',0
+>   Capabilities: enum
+>   Items: 'MIC_IN' 'LINE_IN'
+>   Item0: 'MIC_IN'
+> Simple mixer control 'Capture ZC',0
+>   Capabilities: pswitch pswitch-joined
+>   Playback channels: Mono
+>   Mono: Playback [on]
+>
+
+In attachment there is a screenshot of alsamixer
+
+All audio stuff are not hear at all.... :-(
+
+After the output of the sgtl5000 I have a audio-booster and it is set at 
+the maximum level.
+I have another board based on the iMX28, SGTL5000 and the same audio 
+booster and everything is working good. So I can suppose something 
+related the initialization of the codec.
+
+Any help?
+
+Best Regards,
+Gianluca Renzi
 -- 
-2.11.0
+Eurek s.r.l.                          |
+Electronic Engineering                | http://www.eurek.it
+via Celletta 8/B, 40026 Imola, Italy  | Phone: +39-(0)542-609120
+p.iva 00690621206 - c.f. 04020030377  | Fax:   +39-(0)542-609212
+
+
+--------------2BC4E79468DD385FD474F57D
+Content-Type: image/png;
+ name="sgtl5000-ek360.png8"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="sgtl5000-ek360.png8"
+
+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
+--------------2BC4E79468DD385FD474F57D
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--------------2BC4E79468DD385FD474F57D--
