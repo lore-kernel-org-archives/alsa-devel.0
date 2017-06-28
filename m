@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5651: remove unexisting Muxes" to the
+Subject: Applied "ASoC: rt5670: remove duplicate route." to the
 	asoc tree
-Date: Wed, 28 Jun 2017 20:23:29 +0100
-Message-ID: <E1dQIYj-0004Gu-Qw@finisterre>
-References: <1498530524-32616-1-git-send-email-bardliao@realtek.com>
+Date: Wed, 28 Jun 2017 20:23:39 +0100
+Message-ID: <E1dQIYt-0004Io-TL@finisterre>
+References: <1498635482-4970-2-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 87427266DF0
- for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 21:23:53 +0200 (CEST)
-In-Reply-To: <1498530524-32616-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7F0B9266E10
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 21:23:59 +0200 (CEST)
+In-Reply-To: <1498635482-4970-2-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, pierre-louis.bossart@linux.intel.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5651: remove unexisting Muxes
+   ASoC: rt5670: remove duplicate route.
 
 has been applied to the asoc tree at
 
@@ -53,80 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From 5800b6970c6408d77c0286cba715d506313a2043 Mon Sep 17 00:00:00 2001
+>From 90384fcc054f701e17e9cbbff5c14db5f877c614 Mon Sep 17 00:00:00 2001
 From: Bard Liao <bardliao@realtek.com>
-Date: Tue, 27 Jun 2017 10:28:44 +0800
-Subject: [PATCH] ASoC: rt5651: remove unexisting Muxes
+Date: Wed, 28 Jun 2017 15:38:01 +0800
+Subject: [PATCH] ASoC: rt5670: remove duplicate route.
 
-These MUXes are unexisting. So, remove them.
+{ "ADC Stereo1 Filter", NULL, "PLL1", is_sys_clk_from_pll }, and
+{ "ADC Stereo2 Filter", NULL, "PLL1", is_sys_clk_from_pll }, are
+defined twice in the driver.
 
 Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5651.c | 44 +-------------------------------------------
- 1 file changed, 1 insertion(+), 43 deletions(-)
+ sound/soc/codecs/rt5670.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index f5d34153e21f..db05b60d5002 100644
---- a/sound/soc/codecs/rt5651.c
-+++ b/sound/soc/codecs/rt5651.c
-@@ -586,44 +586,6 @@ static const struct snd_kcontrol_new hpo_r_mute_control =
- 	SOC_DAPM_SINGLE_AUTODISABLE("Switch", RT5651_HP_VOL,
- 				    RT5651_R_MUTE_SFT, 1, 1);
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index d95d2e693dc6..1146a968cb4d 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -2022,7 +2022,6 @@ static const struct snd_soc_dapm_route rt5670_dapm_routes[] = {
  
--/* INL/R source */
--static const char * const rt5651_inl_src[] = {"IN2P", "HPOVOLLP"};
--
--static SOC_ENUM_SINGLE_DECL(
--	rt5651_inl_enum, RT5651_INL1_INR1_VOL,
--	RT5651_INL_SEL_SFT, rt5651_inl_src);
--
--static const struct snd_kcontrol_new rt5651_inl1_mux =
--	SOC_DAPM_ENUM("INL1 source", rt5651_inl_enum);
--
--static const char * const rt5651_inr1_src[] = {"IN2N", "HPOVOLRP"};
--
--static SOC_ENUM_SINGLE_DECL(
--	rt5651_inr1_enum, RT5651_INL1_INR1_VOL,
--	RT5651_INR_SEL_SFT, rt5651_inr1_src);
--
--static const struct snd_kcontrol_new rt5651_inr1_mux =
--	SOC_DAPM_ENUM("INR1 source", rt5651_inr1_enum);
--
--static const char * const rt5651_inl2_src[] = {"IN3P", "OUTVOLLP"};
--
--static SOC_ENUM_SINGLE_DECL(
--	rt5651_inl2_enum, RT5651_INL2_INR2_VOL,
--	RT5651_INL_SEL_SFT, rt5651_inl2_src);
--
--static const struct snd_kcontrol_new rt5651_inl2_mux =
--	SOC_DAPM_ENUM("INL2 source", rt5651_inl2_enum);
--
--static const char * const rt5651_inr2_src[] = {"IN3N", "OUTVOLRP"};
--
--static SOC_ENUM_SINGLE_DECL(
--	rt5651_inr2_enum, RT5651_INL2_INR2_VOL,
--	RT5651_INR_SEL_SFT, rt5651_inr2_src);
--
--static const struct snd_kcontrol_new rt5651_inr2_mux =
--	SOC_DAPM_ENUM("INR2 source", rt5651_inr2_enum);
--
--
- /* Stereo ADC source */
- static const char * const rt5651_stereo1_adc1_src[] = {"DD MIX", "ADC"};
+ 	{ "Stereo1 ADC MIXL", NULL, "Sto1 ADC MIXL" },
+ 	{ "Stereo1 ADC MIXL", NULL, "ADC Stereo1 Filter" },
+-	{ "ADC Stereo1 Filter", NULL, "PLL1", is_sys_clk_from_pll },
  
-@@ -955,11 +917,7 @@ static const struct snd_soc_dapm_widget rt5651_dapm_widgets[] = {
- 			 RT5651_PWR_IN2_L_BIT, 0, NULL, 0),
- 	SND_SOC_DAPM_PGA("INR2 VOL", RT5651_PWR_VOL,
- 			 RT5651_PWR_IN2_R_BIT, 0, NULL, 0),
--	/* IN Mux */
--	SND_SOC_DAPM_MUX("INL1 Mux", SND_SOC_NOPM, 0, 0, &rt5651_inl1_mux),
--	SND_SOC_DAPM_MUX("INR1 Mux", SND_SOC_NOPM, 0, 0, &rt5651_inr1_mux),
--	SND_SOC_DAPM_MUX("INL2 Mux", SND_SOC_NOPM, 0, 0, &rt5651_inl2_mux),
--	SND_SOC_DAPM_MUX("INR2 Mux", SND_SOC_NOPM, 0, 0, &rt5651_inr2_mux),
-+
- 	/* REC Mixer */
- 	SND_SOC_DAPM_MIXER("RECMIXL", RT5651_PWR_MIXER, RT5651_PWR_RM_L_BIT, 0,
- 			   rt5651_rec_l_mix, ARRAY_SIZE(rt5651_rec_l_mix)),
+ 	{ "Stereo1 ADC MIXR", NULL, "Sto1 ADC MIXR" },
+ 	{ "Stereo1 ADC MIXR", NULL, "ADC Stereo1 Filter" },
+@@ -2061,7 +2060,6 @@ static const struct snd_soc_dapm_route rt5670_dapm_routes[] = {
+ 
+ 	{ "Stereo2 ADC MIXL", NULL, "Stereo2 ADC LR Mux" },
+ 	{ "Stereo2 ADC MIXL", NULL, "ADC Stereo2 Filter" },
+-	{ "ADC Stereo2 Filter", NULL, "PLL1", is_sys_clk_from_pll },
+ 
+ 	{ "Stereo2 ADC MIXR", NULL, "Sto2 ADC MIXR" },
+ 	{ "Stereo2 ADC MIXR", NULL, "ADC Stereo2 Filter" },
 -- 
 2.13.2
