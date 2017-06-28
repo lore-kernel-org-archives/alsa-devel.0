@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5645: del btn_check_timer on remove"
-	to the asoc tree
-Date: Wed, 28 Jun 2017 20:23:55 +0100
-Message-ID: <E1dQIZ9-0004Lu-3y@finisterre>
-References: <20170628130124.30397-1-hdegoede@redhat.com>
+Subject: Applied "ASoC: rt5670: fix wrong audio route" to the
+	asoc tree
+Date: Wed, 28 Jun 2017 20:23:45 +0100
+Message-ID: <E1dQIYz-0004K0-2V@finisterre>
+References: <1498635482-4970-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 682552671D8
- for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 21:24:06 +0200 (CEST)
-In-Reply-To: <20170628130124.30397-1-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C0AE22671EA
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 21:24:08 +0200 (CEST)
+In-Reply-To: <1498635482-4970-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5645: del btn_check_timer on remove
+   ASoC: rt5670: fix wrong audio route
 
 has been applied to the asoc tree at
 
@@ -53,31 +53,48 @@ to this mail.
 Thanks,
 Mark
 
->From a6ff8ddcf3f38ec84337e5e7eb3e0e9a73754cf5 Mon Sep 17 00:00:00 2001
-From: Hans de Goede <hdegoede@redhat.com>
-Date: Wed, 28 Jun 2017 15:01:24 +0200
-Subject: [PATCH] ASoC: rt5645: del btn_check_timer on remove
+>From 8e2d163b736e719ef850493ac7740a61d30b8f23 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Wed, 28 Jun 2017 15:38:00 +0800
+Subject: [PATCH] ASoC: rt5670: fix wrong audio route
 
-The timer may still be running when rt5645_i2c_remove() gets called,
-call del_timer_sync() to make sure it is stopped.
+When we select "IF1_ADC4" for IF1 ADC Muxes, it is actually connected
+to "TxDP_ADC" widget. This patch fixes the audio route and remove the
+unexisting "IF1_ADC4" widget.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/rt5670.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 87844a45886a..206b41688d96 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3897,6 +3897,7 @@ static int rt5645_i2c_remove(struct i2c_client *i2c)
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index e27c5a4a0a15..d95d2e693dc6 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -1717,7 +1717,6 @@ static const struct snd_soc_dapm_widget rt5670_dapm_widgets[] = {
+ 	SND_SOC_DAPM_PGA("IF1_ADC1", SND_SOC_NOPM, 0, 0, NULL, 0),
+ 	SND_SOC_DAPM_PGA("IF1_ADC2", SND_SOC_NOPM, 0, 0, NULL, 0),
+ 	SND_SOC_DAPM_PGA("IF1_ADC3", SND_SOC_NOPM, 0, 0, NULL, 0),
+-	SND_SOC_DAPM_PGA("IF1_ADC4", SND_SOC_NOPM, 0, 0, NULL, 0),
  
- 	cancel_delayed_work_sync(&rt5645->jack_detect_work);
- 	cancel_delayed_work_sync(&rt5645->rcclock_work);
-+	del_timer_sync(&rt5645->btn_check_timer);
+ 	/* DSP */
+ 	SND_SOC_DAPM_PGA("TxDP_ADC", SND_SOC_NOPM, 0, 0, NULL, 0),
+@@ -2086,13 +2085,13 @@ static const struct snd_soc_dapm_route rt5670_dapm_routes[] = {
+ 	{ "IF1 ADC1 IN1 Mux", "IF1_ADC3", "IF1_ADC3" },
  
- 	snd_soc_unregister_codec(&i2c->dev);
- 	regulator_bulk_disable(ARRAY_SIZE(rt5645->supplies), rt5645->supplies);
+ 	{ "IF1 ADC1 IN2 Mux", "IF1_ADC1_IN1", "IF1 ADC1 IN1 Mux" },
+-	{ "IF1 ADC1 IN2 Mux", "IF1_ADC4", "IF1_ADC4" },
++	{ "IF1 ADC1 IN2 Mux", "IF1_ADC4", "TxDP_ADC" },
+ 
+ 	{ "IF1 ADC2 IN Mux", "IF_ADC2", "IF_ADC2" },
+ 	{ "IF1 ADC2 IN Mux", "VAD_ADC", "VAD_ADC" },
+ 
+ 	{ "IF1 ADC2 IN1 Mux", "IF1_ADC2_IN", "IF1 ADC2 IN Mux" },
+-	{ "IF1 ADC2 IN1 Mux", "IF1_ADC4", "IF1_ADC4" },
++	{ "IF1 ADC2 IN1 Mux", "IF1_ADC4", "TxDP_ADC" },
+ 
+ 	{ "IF1_ADC1" , NULL, "IF1 ADC1 IN2 Mux" },
+ 	{ "IF1_ADC2" , NULL, "IF1 ADC2 IN1 Mux" },
 -- 
 2.13.2
