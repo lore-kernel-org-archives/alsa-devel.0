@@ -1,103 +1,75 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "drm: dw-hdmi-i2s: add .get_dai_id callback for ALSA SoC" to
- the asoc tree
-Date: Wed, 28 Jun 2017 20:48:50 +0100
-Message-ID: <E1dQIxG-0005oq-0a@finisterre>
-References: <877f1fosji.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH v2 12/12] ASoC: Fix use-after-free at card
+ unregistration
+Date: Wed, 28 Jun 2017 20:53:49 +0100
+Message-ID: <20170628195349.pqeb3dceddxar75s@sirena.org.uk>
+References: <1497857229-12049-1-git-send-email-robert.jarzmik@free.fr>
+ <1497857229-12049-13-git-send-email-robert.jarzmik@free.fr>
+ <s5hefug72iu.wl-tiwai@suse.de> <87injstckf.fsf@belgarion.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <877f1fosji.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, Simon <horms@verge.net.au>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>, Jose Abreu <joabreu@synopsys.com>
+Content-Type: multipart/mixed; boundary="===============5429251308396227574=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1DEC2266E02
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 21:54:16 +0200 (CEST)
+In-Reply-To: <87injstckf.fsf@belgarion.home>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-kernel@vger.kernel.org, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.wolfsonmicro.com, stable@vger.kernel.org, linux-input@vger.kernel.org, Daniel Mack <daniel@zonque.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIHBhdGNoCgogICBkcm06IGR3LWhkbWktaTJzOiBhZGQgLmdldF9kYWlfaWQgY2FsbGJhY2sg
-Zm9yIEFMU0EgU29DCgpoYXMgYmVlbiBhcHBsaWVkIHRvIHRoZSBhc29jIHRyZWUgYXQKCiAgIGdp
-dDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC9icm9vbmllL3NvdW5k
-LmdpdCAKCkFsbCBiZWluZyB3ZWxsIHRoaXMgbWVhbnMgdGhhdCBpdCB3aWxsIGJlIGludGVncmF0
-ZWQgaW50byB0aGUgbGludXgtbmV4dAp0cmVlICh1c3VhbGx5IHNvbWV0aW1lIGluIHRoZSBuZXh0
-IDI0IGhvdXJzKSBhbmQgc2VudCB0byBMaW51cyBkdXJpbmcKdGhlIG5leHQgbWVyZ2Ugd2luZG93
-IChvciBzb29uZXIgaWYgaXQgaXMgYSBidWcgZml4KSwgaG93ZXZlciBpZgpwcm9ibGVtcyBhcmUg
-ZGlzY292ZXJlZCB0aGVuIHRoZSBwYXRjaCBtYXkgYmUgZHJvcHBlZCBvciByZXZlcnRlZC4gIAoK
-WW91IG1heSBnZXQgZnVydGhlciBlLW1haWxzIHJlc3VsdGluZyBmcm9tIGF1dG9tYXRlZCBvciBt
-YW51YWwgdGVzdGluZwphbmQgcmV2aWV3IG9mIHRoZSB0cmVlLCBwbGVhc2UgZW5nYWdlIHdpdGgg
-cGVvcGxlIHJlcG9ydGluZyBwcm9ibGVtcyBhbmQKc2VuZCBmb2xsb3d1cCBwYXRjaGVzIGFkZHJl
-c3NpbmcgYW55IGlzc3VlcyB0aGF0IGFyZSByZXBvcnRlZCBpZiBuZWVkZWQuCgpJZiBhbnkgdXBk
-YXRlcyBhcmUgcmVxdWlyZWQgb3IgeW91IGFyZSBzdWJtaXR0aW5nIGZ1cnRoZXIgY2hhbmdlcyB0
-aGV5CnNob3VsZCBiZSBzZW50IGFzIGluY3JlbWVudGFsIHVwZGF0ZXMgYWdhaW5zdCBjdXJyZW50
-IGdpdCwgZXhpc3RpbmcKcGF0Y2hlcyB3aWxsIG5vdCBiZSByZXBsYWNlZC4KClBsZWFzZSBhZGQg
-YW55IHJlbGV2YW50IGxpc3RzIGFuZCBtYWludGFpbmVycyB0byB0aGUgQ0NzIHdoZW4gcmVwbHlp
-bmcKdG8gdGhpcyBtYWlsLgoKVGhhbmtzLApNYXJrCgpGcm9tIGUzODM5YmQ2ZjU2YTI5MWYwMGE0
-YzM3MzdlYjE1Y2EwMzQ0YTgyYTkgTW9uIFNlcCAxNyAwMDowMDowMCAyMDAxCkZyb206IEt1bmlu
-b3JpIE1vcmltb3RvIDxrdW5pbm9yaS5tb3JpbW90by5neEByZW5lc2FzLmNvbT4KRGF0ZTogTW9u
-LCAxOSBKdW4gMjAxNyAwMDozOToyOSArMDAwMApTdWJqZWN0OiBbUEFUQ0hdIGRybTogZHctaGRt
-aS1pMnM6IGFkZCAuZ2V0X2RhaV9pZCBjYWxsYmFjayBmb3IgQUxTQSBTb0MKCkFMU0EgU29DIG5l
-ZWRzIHRvIGtub3cgY29ubmVjdGVkIERBSSBJRCBmb3IgcHJvYmluZy4KSXQgaXMgbm90IGEgYmln
-IHByb2JsZW0gaWYgZGV2aWNlL2RyaXZlciB3YXMgb25seSBmb3Igc291bmQsCmJ1dCBnZXR0aW5n
-IERBSSBJRCB3aWxsIGJlIGRpZmZpY3VsdCBpZiBkZXZpY2UgaW5jbHVkZXMgYm90aApWaWRlby9T
-b3VuZCwgbGlrZSBIRE1JLgpUbyBzb2x2ZSB0aGlzIGlzc3VlLCB0aGlzIHBhdGNoIGFkZHMgbmV3
-IC5nZXRfZGFpX2lkIGNhbGxiYWNrCm9uIGhkbWlfY29kZWNfb3BzLgpkdy1oZG1pLWkycyB3aWxs
-IGFzc3VtZSB0aGF0IEhETUkgc291bmQgd2lsbCBiZSBjb25uZWN0ZWQKdG8gcmVnID0gPDI+LiBU
-aGVuLCBBTFNBIFNvQyBzaWRlIHdpbGwgcmVjb2duaXplZCBpdCBhcyBEQUkgMAoKCXBvcnRzIHsK
-CQkjYWRkcmVzcy1jZWxscyA9IDwxPjsKCQkjc2l6ZS1jZWxscyA9IDwwPjsKCQlwb3J0QDAgewoJ
-CQlyZWcgPSA8MD47CgkJCS8qIEhETUkgVmlkZW8gSU4gKi8KCQl9OwoJCXBvcnRAMSB7CgkJCXJl
-ZyA9IDwxPjsKCQkJLyogSERNSSBPVVQgKi8KCQl9OwoJCXBvcnRAMiB7CgkJCXJlZyA9IDwyPjsK
-CQkJLyogSERNSSBTb3VuZCBJTiAqLwoJCX07Cgl9OwoKU2lnbmVkLW9mZi1ieTogS3VuaW5vcmkg
-TW9yaW1vdG8gPGt1bmlub3JpLm1vcmltb3RvLmd4QHJlbmVzYXMuY29tPgpBY2tlZC1ieTogQXJj
-aGl0IFRhbmVqYSA8YXJjaGl0dEBjb2RlYXVyb3JhLm9yZz4KU2lnbmVkLW9mZi1ieTogTWFyayBC
-cm93biA8YnJvb25pZUBrZXJuZWwub3JnPgotLS0KIC4uLi9iaW5kaW5ncy9kaXNwbGF5L2JyaWRn
-ZS9yZW5lc2FzLGR3LWhkbWkudHh0ICAgICB8ICA5ICsrKysrKysrLQogZHJpdmVycy9ncHUvZHJt
-L2JyaWRnZS9zeW5vcHN5cy9kdy1oZG1pLWkycy1hdWRpby5jIHwgMjEgKysrKysrKysrKysrKysr
-KysrKysrCiAyIGZpbGVzIGNoYW5nZWQsIDI5IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkK
-CmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9i
-cmlkZ2UvcmVuZXNhcyxkdy1oZG1pLnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5k
-aW5ncy9kaXNwbGF5L2JyaWRnZS9yZW5lc2FzLGR3LWhkbWkudHh0CmluZGV4IGY2YjNmMzZkNDIy
-Yi4uODFiNjg1ODBlMTk5IDEwMDY0NAotLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3MvZGlzcGxheS9icmlkZ2UvcmVuZXNhcyxkdy1oZG1pLnR4dAorKysgYi9Eb2N1bWVudGF0
-aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9icmlkZ2UvcmVuZXNhcyxkdy1oZG1pLnR4
-dApAQCAtMjUsNyArMjUsOCBAQCBSZXF1aXJlZCBwcm9wZXJ0aWVzOgogLSBjbG9jay1uYW1lczog
-U2hhbGwgY29udGFpbiAiaWFoYiIgYW5kICJpc2ZyIiBhcyBkZWZpbmVkIGluIGR3X2hkbWkudHh0
-LgogLSBwb3J0czogU2VlIGR3X2hkbWkudHh0LiBUaGUgRFdDIEhETUkgc2hhbGwgaGF2ZSBvbmUg
-cG9ydCBudW1iZXJlZCAwCiAgIGNvcnJlc3BvbmRpbmcgdG8gdGhlIHZpZGVvIGlucHV0IG9mIHRo
-ZSBjb250cm9sbGVyIGFuZCBvbmUgcG9ydCBudW1iZXJlZCAxCi0gIGNvcnJlc3BvbmRpbmcgdG8g
-aXRzIEhETUkgb3V0cHV0LiBFYWNoIHBvcnQgc2hhbGwgaGF2ZSBhIHNpbmdsZSBlbmRwb2ludC4K
-KyAgY29ycmVzcG9uZGluZyB0byBpdHMgSERNSSBvdXRwdXQsIGFuZCBvbmUgcG9ydCBudW1iZXJl
-ZCAyIGNvcnJlc3BvbmRpbmcgdG8KKyAgc291bmQgaW5wdXQgb2YgdGhlIGNvbnRyb2xsZXIuIEVh
-Y2ggcG9ydCBzaGFsbCBoYXZlIGEgc2luZ2xlIGVuZHBvaW50LgogCiBPcHRpb25hbCBwcm9wZXJ0
-aWVzOgogCkBAIC01OSw2ICs2MCwxMiBAQCBFeGFtcGxlOgogCQkJCQlyZW1vdGUtZW5kcG9pbnQg
-PSA8JmhkbWkwX2Nvbj47CiAJCQkJfTsKIAkJCX07CisJCQlwb3J0QDIgeworCQkJCXJlZyA9IDwy
-PjsKKwkJCQlyY2FyX2R3X2hkbWkwX3NvdW5kX2luOiBlbmRwb2ludCB7CisJCQkJCXJlbW90ZS1l
-bmRwb2ludCA9IDwmaGRtaV9zb3VuZF9vdXQ+OworCQkJCX07CisJCQl9OwogCQl9OwogCX07CiAK
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9icmlkZ2Uvc3lub3BzeXMvZHctaGRtaS1pMnMt
-YXVkaW8uYyBiL2RyaXZlcnMvZ3B1L2RybS9icmlkZ2Uvc3lub3BzeXMvZHctaGRtaS1pMnMtYXVk
-aW8uYwppbmRleCBhYWYyODdkMmU5MWQuLmIyY2Y1OWY1NGM4OCAxMDA2NDQKLS0tIGEvZHJpdmVy
-cy9ncHUvZHJtL2JyaWRnZS9zeW5vcHN5cy9kdy1oZG1pLWkycy1hdWRpby5jCisrKyBiL2RyaXZl
-cnMvZ3B1L2RybS9icmlkZ2Uvc3lub3BzeXMvZHctaGRtaS1pMnMtYXVkaW8uYwpAQCAtODIsOSAr
-ODIsMzAgQEAgc3RhdGljIHZvaWQgZHdfaGRtaV9pMnNfYXVkaW9fc2h1dGRvd24oc3RydWN0IGRl
-dmljZSAqZGV2LCB2b2lkICpkYXRhKQogCWhkbWlfd3JpdGUoYXVkaW8sIEhETUlfQVVEX0NPTkYw
-X1NXX1JFU0VULCBIRE1JX0FVRF9DT05GMCk7CiB9CiAKK3N0YXRpYyBpbnQgZHdfaGRtaV9pMnNf
-Z2V0X2RhaV9pZChzdHJ1Y3Qgc25kX3NvY19jb21wb25lbnQgKmNvbXBvbmVudCwKKwkJCQkgIHN0
-cnVjdCBkZXZpY2Vfbm9kZSAqZW5kcG9pbnQpCit7CisJc3RydWN0IG9mX2VuZHBvaW50IG9mX2Vw
-OworCWludCByZXQ7CisKKwlyZXQgPSBvZl9ncmFwaF9wYXJzZV9lbmRwb2ludChlbmRwb2ludCwg
-Jm9mX2VwKTsKKwlpZiAocmV0IDwgMCkKKwkJcmV0dXJuIHJldDsKKworCS8qCisJICogSERNSSBz
-b3VuZCBzaG91bGQgYmUgbG9jYXRlZCBhcyByZWcgPSA8Mj4KKwkgKiBUaGVuLCBpdCBpcyBzb3Vu
-ZCBwb3J0IDAKKwkgKi8KKwlpZiAob2ZfZXAucG9ydCA9PSAyKQorCQlyZXR1cm4gMDsKKworCXJl
-dHVybiAtRUlOVkFMOworfQorCiBzdGF0aWMgc3RydWN0IGhkbWlfY29kZWNfb3BzIGR3X2hkbWlf
-aTJzX29wcyA9IHsKIAkuaHdfcGFyYW1zCT0gZHdfaGRtaV9pMnNfaHdfcGFyYW1zLAogCS5hdWRp
-b19zaHV0ZG93bgk9IGR3X2hkbWlfaTJzX2F1ZGlvX3NodXRkb3duLAorCS5nZXRfZGFpX2lkCT0g
-ZHdfaGRtaV9pMnNfZ2V0X2RhaV9pZCwKIH07CiAKIHN0YXRpYyBpbnQgc25kX2R3X2hkbWlfcHJv
-YmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikKLS0gCjIuMTMuMgoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlz
-dApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0
-b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+
+--===============5429251308396227574==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="auuyw7lgbv2sjo2s"
+Content-Disposition: inline
+
+
+--auuyw7lgbv2sjo2s
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jun 19, 2017 at 01:57:20PM +0200, Robert Jarzmik wrote:
+
+> My serie shifted by one, so the very first of the serie is therefore missing,
+> formerly "ALSA: ac97: split out the generic ac97 registers" in
+> https://patchwork.kernel.org/patch/9398143/, and the shift triggered the
+> inclusion of the last patch of my tree, ie. yours :)
+
+Based on the missing first patch I was expecting the series to get
+reposted?
+
+--auuyw7lgbv2sjo2s
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllUCUwACgkQJNaLcl1U
+h9CpKgf8CA2LGASj5C3/jFqBwWzYJdSX2TyJwEcPDM+fHejEzXlY367DN1NUlgTU
+JEXKCg1u6QtiTO0dpM18Gzrqi9i1Xg5NodrXJxZwUODT6BkNIbWLjBCrh7O/fwj/
+hYAo9hsDjnP5+eRwwQDxltw22oF6ZqeRgYp/pt5BTB2YgXe+cl7D5ck2YzI0oFvB
+Zo9+xc6eTQ917r5HKkYiIA9Jjzj087a7oueuGzM72CIOus/oBUFdrwh3rqHyFu3B
+Jm1GnaqFxbNwxOTeja5Kea+qna6F6LJjvXYtRJngiUzm/+Af5pU8z7Z+gtgN3IAv
+EqzqpKqXlUaX8SQEnyv09Zca4MJQnw==
+=akUy
+-----END PGP SIGNATURE-----
+
+--auuyw7lgbv2sjo2s--
+
+--===============5429251308396227574==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5429251308396227574==--
