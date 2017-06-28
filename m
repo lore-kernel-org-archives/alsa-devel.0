@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4/4] ASoC: rt5645: Add jack detection
-	workaround for GPD Win
-Date: Wed, 28 Jun 2017 14:49:39 +0200
-Message-ID: <20170628124939.11696-5-tiwai@suse.de>
+Subject: [PATCH 1/4] ASoC: rt5645: read jd1_1 status for jd
+	detection
+Date: Wed, 28 Jun 2017 14:49:36 +0200
+Message-ID: <20170628124939.11696-2-tiwai@suse.de>
 References: <20170628124939.11696-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 2AE78266AF8
+ by alsa0.perex.cz (Postfix) with ESMTP id 2AF6B266B85
  for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 14:49:41 +0200 (CEST)
 In-Reply-To: <20170628124939.11696-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,68 +25,74 @@ To: Mark Brown <broonie@kernel.org>
 Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Hans de Goede <hdegoede@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-GPD Win requires jd_mode=3 and the inverted flag for making the jack
-detection working.  Unfortunately, the BIOS doesn't give a nice way to
-match with DMI strings, and the only working way so far is to match
-with the board vendor/name/version/date to some known patterns.
+From: Bard Liao <bardliao@realtek.com>
 
-Hopefully other vendors won't do such a stupid setup, too...
+Read the jd status after invert control. The benefit is we don't need
+to invert the reading jd status when jd invert is needed.
 
-Thanks to Hans de Goede for the DMI matching suggestion.
-
-Suggested-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Tested-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/rt5645.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ sound/soc/codecs/rt5645.c | 31 ++++++++-----------------------
+ 1 file changed, 8 insertions(+), 23 deletions(-)
 
 diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 162044d82632..308c22f5909a 100644
+index 87844a45886a..8e419ea418e9 100644
 --- a/sound/soc/codecs/rt5645.c
 +++ b/sound/soc/codecs/rt5645.c
-@@ -3599,6 +3599,33 @@ static struct dmi_system_id dmi_platform_intel_broadwell[] = {
- 	{ }
- };
+@@ -3238,24 +3238,16 @@ static void rt5645_jack_detect_work(struct work_struct *work)
+ 		snd_soc_jack_report(rt5645->mic_jack,
+ 				    report, SND_JACK_MICROPHONE);
+ 		return;
+-	case 1: /* 2 port */
+-		val = snd_soc_read(rt5645->codec, RT5645_A_JD_CTRL1) & 0x0070;
+-		break;
+-	default: /* 1 port */
+-		val = snd_soc_read(rt5645->codec, RT5645_A_JD_CTRL1) & 0x0020;
++	default: /* read rt5645 jd1_1 status */
++		val = snd_soc_read(rt5645->codec, RT5645_INT_IRQ_ST) & 0x1000;
+ 		break;
  
-+static struct rt5645_platform_data gpd_win_platform_data = {
-+	.jd_mode = 3,
-+	.inv_jd1_1 = true,
-+};
-+
-+static const struct dmi_system_id dmi_platform_gpd_win[] = {
-+	{
-+		/*
-+		 * Match for the GPDwin which unfortunately uses somewhat
-+		 * generic dmi strings, which is why we test for 4 strings.
-+		 * Comparing against 23 other byt/cht boards, board_vendor
-+		 * and board_name are unique to the GPDwin, where as only one
-+		 * other board has the same board_serial and 3 others have
-+		 * the same default product_name. Also the GPDwin is the
-+		 * only device to have both board_ and product_name not set.
-+		 */
-+		.ident = "GPD Win",
-+		.matches = {
-+			DMI_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
-+			DMI_MATCH(DMI_BOARD_NAME, "Default string"),
-+			DMI_MATCH(DMI_BOARD_SERIAL, "Default string"),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Default string"),
-+		},
-+	},
-+	{}
-+};
-+
- static bool rt5645_check_dp(struct device *dev)
- {
- 	if (device_property_present(dev, "realtek,in2-differential") ||
-@@ -3649,6 +3676,8 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 		rt5645_parse_dt(rt5645, &i2c->dev);
- 	else if (dmi_check_system(dmi_platform_intel_braswell))
- 		rt5645->pdata = general_platform_data;
-+	else if (dmi_check_system(dmi_platform_gpd_win))
-+		rt5645->pdata = gpd_win_platform_data;
+ 	}
  
- 	rt5645->gpiod_hp_det = devm_gpiod_get_optional(&i2c->dev, "hp-detect",
- 						       GPIOD_IN);
+-	switch (val) {
+-	/* jack in */
+-	case 0x30: /* 2 port */
+-	case 0x0: /* 1 port or 2 port */
+-		if (rt5645->jack_type == 0) {
+-			report = rt5645_jack_detect(rt5645->codec, 1);
+-			/* for push button and jack out */
+-			break;
+-		}
++	if (!val && (rt5645->jack_type == 0)) { /* jack in */
++		report = rt5645_jack_detect(rt5645->codec, 1);
++	} else if (!val && rt5645->jack_type != 0) {
++		/* for push button and jack out */
+ 		btn_type = 0;
+ 		if (snd_soc_read(rt5645->codec, RT5645_INT_IRQ_ST) & 0x4) {
+ 			/* button pressed */
+@@ -3302,19 +3294,12 @@ static void rt5645_jack_detect_work(struct work_struct *work)
+ 			mod_timer(&rt5645->btn_check_timer,
+ 				msecs_to_jiffies(100));
+ 		}
+-
+-		break;
+-	/* jack out */
+-	case 0x70: /* 2 port */
+-	case 0x10: /* 2 port */
+-	case 0x20: /* 1 port */
++	} else {
++		/* jack out */
+ 		report = 0;
+ 		snd_soc_update_bits(rt5645->codec,
+ 				    RT5645_INT_IRQ_ST, 0x1, 0x0);
+ 		rt5645_jack_detect(rt5645->codec, 0);
+-		break;
+-	default:
+-		break;
+ 	}
+ 
+ 	snd_soc_jack_report(rt5645->hp_jack, report, SND_JACK_HEADPHONE);
 -- 
 2.13.2
