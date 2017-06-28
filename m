@@ -1,20 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v13 05/14] ASoC: sun4i-codec: Merge
- sun4i_codec_left_mixer_controls and sun4i_codec_right_mixer_controls into
- sun4i_codec_mixer_controls.
-Date: Wed, 28 Jun 2017 19:12:05 +0100
-Message-ID: <20170628181205.sfagsnuqmfrqhoen@sirena.org.uk>
-References: <20170624062419.23778-1-dannym@scratchpost.org>
- <20170624062419.23778-6-dannym@scratchpost.org>
- <CAGb2v64i_S5HCsLHJGg0WbkFodOFFc5masUYQ53JaLTO7N2BMw@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: nau8825: devicetree for crosstalk
+	bypass
+Date: Wed, 28 Jun 2017 19:14:15 +0100
+Message-ID: <20170628181415.gj6cc4jn47636hf6@sirena.org.uk>
+References: <1498460028-12314-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4386917092578355207=="
+Content-Type: multipart/mixed; boundary="===============8673693642984887835=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 782D5266838
- for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 20:14:20 +0200 (CEST)
-In-Reply-To: <CAGb2v64i_S5HCsLHJGg0WbkFodOFFc5masUYQ53JaLTO7N2BMw@mail.gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C25AA266838
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 20:14:32 +0200 (CEST)
+In-Reply-To: <1498460028-12314-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,67 +21,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Chen-Yu Tsai <wens@csie.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, linux-kernel <linux-kernel@vger.kernel.org>, Danny Milosavljevic <dannym@scratchpost.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-sunxi <linux-sunxi@googlegroups.com>, Maxime Ripard <maxime.ripard@free-electrons.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+To: John Hsu <supercraig0719@gmail.com>
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, benzh@chromium.org, mac.chiang@intel.com, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============4386917092578355207==
+--===============8673693642984887835==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="aumdev75eqsgqzhc"
+	protocol="application/pgp-signature"; boundary="t5mqk2enkiy2tmot"
 Content-Disposition: inline
 
 
---aumdev75eqsgqzhc
+--t5mqk2enkiy2tmot
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Jun 26, 2017 at 09:48:59AM +0800, Chen-Yu Tsai wrote:
-> On Sat, Jun 24, 2017 at 2:24 PM, Danny Milosavljevic
+On Mon, Jun 26, 2017 at 02:53:48PM +0800, John Hsu wrote:
 
-> > +static const struct snd_kcontrol_new sun4i_codec_mixer_controls[] = {
-> > +       SOC_DAPM_DOUBLE("DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
-> > +                       SUN4I_CODEC_DAC_ACTL_LDACLMIXS,
-> >                         SUN4I_CODEC_DAC_ACTL_RDACRMIXS, 1, 0),
+> +  - nuvoton,crosstalk-bypass: make crosstalk function bypass if set 1.
 
-> This changes the mixer control names exposed to userspace. While I think
-> consolidating mixer controls is nice, giving the user a less cluttered
-> view, I'm not sure about the changing a possible userspace ABI.
+This should just be a boolean property, no need for a value.
 
-> Maxime, ALSA and ASoC people, any comments about this?
-
-It's better not to change things but on the other hand it really depends
-if there's any users who will notice - if nobody notices it doesn't
-matter.
-
-Can we *please* get some review of the rest of this series?  It's
-enormous, we're on version *13* and the first review on this version
-here is on patch 5.  If the first four patches are fine then please says
-so, if they're not then let's have some review comments so things can
-move towards merging them.
-
---aumdev75eqsgqzhc
+--t5mqk2enkiy2tmot
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllT8XQACgkQJNaLcl1U
-h9AqXQf/dA3v+EhX5jDdhpa++SfrJCcDP1YGj5aw+ndzcKrY+BJD/55JwohdMPxB
-5TICseIByPsWeDc8juAsPVjPi5tW8ygOBqXf59qoB2nvzj01XuTUU9s3RhBcn2bw
-yxVNpBIRKsSvW02Dk3fscHxSTT6r44UqA/vSQq/kEhsnmpKm9GpEVqqfyPnSyc3k
-EghhiMK/diU9LRgKOeRwV+HUXpK7kDaSXetrVFo30LDlKH3Nion7PSpZJOHZYUa9
-wrDjvAMMRxEhU3abyNK17p2JOhWZIzMm0cnD5QNVuaqMFtYPLmg1yV+oo9km/s6q
-W7fgcK99Y8m9AvasmKFUrrLa1l5d9w==
-=O/bb
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllT8fcACgkQJNaLcl1U
+h9Aj+wf9EFbIYtbzdweOEXxajHOJgfDpsgjfZystR5e2hfFvCAb+tTBxxLIzBr3z
+msaj0JnI3jSaqe7cKLdM4i2kCtXlBCTDc2BSxv5ov+MKeA3CFv90kg0nfHh/nzaL
+Siw2086mGBTBD9glyFCRhGX/CSVASAcBOX8c1IVTtO6Z77yPHc0nbYoF+6JeHgil
+ramq7yBavzbI0CjUj6V1oLFzp8mgwwbsRJKJU6aqzhNGRmA9DUhcO4LyElyxdiWK
+tmv/xFaHre4M1xZqv9CHdrDkiyK8Oc2kkKgzF+3dY1fkN8DBfr0D3WFTZb/5w3Ug
++pZcrVskU6BnM5whNCujSGphgEVfEg==
+=GJgk
 -----END PGP SIGNATURE-----
 
---aumdev75eqsgqzhc--
+--t5mqk2enkiy2tmot--
 
---===============4386917092578355207==
+--===============8673693642984887835==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============4386917092578355207==--
+--===============8673693642984887835==--
