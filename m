@@ -1,76 +1,94 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/8] drm/amd/amdgpu: Added a dwc quirk for Stoney platform
-Date: Wed, 28 Jun 2017 19:02:35 +0100
-Message-ID: <20170628180235.2dscruiilz37gtr3@sirena.org.uk>
+Subject: Re: [PATCH 4/8] ASoC: AMD: added condition checks for
+ CZ specific code
+Date: Wed, 28 Jun 2017 19:05:39 +0100
+Message-ID: <20170628180539.3uns3nudnjrjsx7o@sirena.org.uk>
 References: <1498235706-31111-1-git-send-email-alexander.deucher@amd.com>
- <1498235706-31111-4-git-send-email-alexander.deucher@amd.com>
+ <1498235706-31111-5-git-send-email-alexander.deucher@amd.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1223677706=="
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <1498235706-31111-4-git-send-email-alexander.deucher@amd.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+Content-Type: multipart/mixed; boundary="===============5619583067408325825=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 83D93266838
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 20:05:57 +0200 (CEST)
+In-Reply-To: <1498235706-31111-5-git-send-email-alexander.deucher@amd.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Alex Deucher <alexdeucher@gmail.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, amd-gfx@lists.freedesktop.org, rajeevkumar.linux@gmail.com, dri-devel@lists.freedesktop.org, Vijendar.Mukunda@amd.com, Alex Deucher <alexander.deucher@amd.com>, perex@perex.cz
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, amd-gfx@lists.freedesktop.org, rajeevkumar.linux@gmail.com, dri-devel@lists.freedesktop.org, Vijendar.Mukunda@amd.com, Alex Deucher <alexander.deucher@amd.com>, airlied@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1223677706==
+--===============5619583067408325825==
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="6sonvavic5w356wu"
+	protocol="application/pgp-signature"; boundary="3basztfibqqsyj62"
 Content-Disposition: inline
 
 
---6sonvavic5w356wu
+--3basztfibqqsyj62
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jun 23, 2017 at 12:35:01PM -0400, Alex Deucher wrote:
+On Fri, Jun 23, 2017 at 12:35:02PM -0400, Alex Deucher wrote:
 
-> +	if (adev->asic_type == CHIP_STONEY) {
-> +		i2s_pdata[1].quirks = DW_I2S_QUIRK_COMP_REG_OFFSET |
-> +			DW_I2S_QUIRK_COMP_PARAM1 |
-> +			DW_I2S_QUIRK_16BIT_IDX_OVERRIDE;
-> +	} else {
-> +		i2s_pdata[1].quirks = DW_I2S_QUIRK_COMP_REG_OFFSET |
-> +			DW_I2S_QUIRK_COMP_PARAM1;
-> +	}
+> Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
 
-Quirks like this are better written as switch statements since that
-makes it easier to handle further variants in future.
 
---6sonvavic5w356wu
+> index dcbf997..e48ae5d 100644
+> --- a/sound/soc/amd/acp-pcm-dma.c
+> +++ b/sound/soc/amd/acp-pcm-dma.c
+> @@ -34,6 +34,8 @@
+> =20
+>  #define MAX_BUFFER (PLAYBACK_MAX_PERIOD_SIZE * PLAYBACK_MAX_NUM_PERIODS)
+>  #define MIN_BUFFER MAX_BUFFER
+> +#define CHIP_STONEY 14
+> +#define CHIP_CARRIZO 13
+
+These defines are being added in the middle of a file but CHIP_STONEY is
+also used in another file in the previous patch (and apparently
+extensively throughout the DRM driver already).  This is obviously not
+good, we shouldn't have multiple copies of the definition.
+
+> -	} else {
+> +		if (adata->asic_type =3D=3D CHIP_CARRIZO) {
+> +			for (bank =3D 1; bank <=3D 4; bank++)
+> +				acp_set_sram_bank_state(adata->acp_mmio, bank,
+> +				false);
+
+I'm not seeing any poweroff cases for other chips being added, and again
+switch statements please.
+
+--3basztfibqqsyj62
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllT7zoACgkQJNaLcl1U
-h9CpWAf/QHJSDu+HhWVwhi9/9WrolKnKBDUVRvZXF7rs/nNd1aUXlxlKf1t9OTPm
-1ksLAMrkU8PQ5ykIDKSb4wUVElP3HbFjujUfcEY3GX7ZgsiKd04hZac4NYlomE8X
-UVWNuAAcTE2DSIJEUHQGrW+D3YPmxnfYg51B2PtfHIXdDmZ8Fngdhew9Q/P6QHa6
-Hp/JKEh8EuwN1GFR8ewjJnfrMlNuij5Eg2EWfQXK3UfdsGm/YmGN3LOOWpscvImV
-sy9gEpdP3SIAWrkKO2AUPNFxxcdvup0NI8siWRUyOqdO92hcAzyEWS83xoP6Xze9
-ubihm420q9Gwfo/EjerEcdlGXeO2uw==
-=OANU
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllT7/IACgkQJNaLcl1U
+h9CiHgf/aDVPidCe1q7eVinU4Cctb/nC+GGZu2nO5+3sMDsufBcRsCs1kUQguwPA
+1OgpVSc6G7yaEennESTrsF16FHKxbFnqNqnnI9zDY5a481SZ3/IvXn4t++WItz99
+MLqpIgR7aHbpxWVDD05CyqIznT+CkMyXRxFXrsuQ1cW+q9PfhMgGCsly0wxon6ZM
+HSsKfPrXz/5OI6aEqrf9gJ92KsGybRWAyw94oeP//l+WoxfF8rYZcnqRI9JsAp1E
+h7a8JdrjgHXE4VwfXg6aZnz1/J/CAMTRIfrDo3zJXVaYbIJYGk10mhxn3wn5ZLWe
+6U9wGBNw1Aa4Y1IJHyjkAw+Plffd+Q==
+=QBut
 -----END PGP SIGNATURE-----
 
---6sonvavic5w356wu--
+--3basztfibqqsyj62--
 
---===============1223677706==
-Content-Type: text/plain; charset="utf-8"
+--===============5619583067408325825==
+Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
 
---===============1223677706==--
+--===============5619583067408325825==--
