@@ -1,14 +1,16 @@
-From: b_lkasam@codeaurora.org
-Subject: ALSA core info race condition
-Date: Wed, 28 Jun 2017 00:42:18 +0530
-Message-ID: <70ff31e5f7fb35774cc0a9f3764ed144@codeaurora.org>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda - set input_path bitmap to zero
+	after moving it to new place
+Date: Wed, 28 Jun 2017 08:59:16 +0800
+Message-ID: <1498611556-11626-1-git-send-email-hui.wang@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
- by alsa0.perex.cz (Postfix) with ESMTP id 1EBD2266838
- for <alsa-devel@alsa-project.org>; Tue, 27 Jun 2017 21:12:20 +0200 (CEST)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3CFE0266838
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 02:59:21 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,38 +20,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: lkasam@qti.qualcomm.com, b_lkasam@codeaurora.org
+To: tiwai@suse.de, alsa-devel@alsa-project.org
+Cc: stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-hi ALSA team,
-there is a race condition in below API when accessing list API.
+Recently we met a problem, the codec has valid adcs and input pins,
+and they can form valid input paths, but the driver does not build
+valid controls for them like "Mic boost", "Capture Volume" and
+"Capture Switch".
 
-In file sound/core/info.c:
+Through debugging, I found the driver needs to shrink the invalid
+adcs and input paths for this machine, so it will move the whole
+column bitmap value to the previous column, after moving it, the
+driver forgets to set the original column bitmap value to zero, as a
+result, the driver will invalidate the path whose index value is the
+original colume bitmap value. After executing this function, all
+valid input paths are invalidated by a mistake, there are no any
+valid input paths, so the driver won't build controls for them.
 
-Added below patch to avoid list access of same parent node
-by two threads at same time causing list_debug crash.
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+the alsa-info.txt of this machine (without this patch) is pasted here:
+http://paste.ubuntu.com/24967758/
 
-diff --git a/sound/core/info.c b/sound/core/info.c
-index b5158b5..c1fd671 100644
---- a/sound/core/info.c
-+++ b/sound/core/info.c
-@@ -747,8 +747,11 @@ snd_info_create_entry(const char *name, struct 
-snd_info_entry *parent)
-  	INIT_LIST_HEAD(&entry->children);
-  	INIT_LIST_HEAD(&entry->list);
-  	entry->parent = parent;
--	if (parent)
-+	if (parent) {
-+		mutex_lock(&parent->access);
-  		list_add_tail(&entry->list, &parent->children);
-+		mutex_unlock(&parent->access);
-+	}
-  	return entry;
-  }
+ sound/pci/hda/hda_generic.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Please check above logic looks fine, and help comment accordingly.
-
-
-Thanks
-Kasam
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index 557ecfc..28e265a 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -3216,6 +3216,7 @@ static int check_dyn_adc_switch(struct hda_codec *codec)
+ 						spec->input_paths[i][nums]);
+ 					spec->input_paths[i][nums] =
+ 						spec->input_paths[i][n];
++					spec->input_paths[i][n] = 0;
+ 				}
+ 			}
+ 			nums++;
+-- 
+1.9.1
