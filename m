@@ -1,20 +1,14 @@
-From: James Cameron <quozl@laptop.org>
-Subject: Re: [PATCH 4/4] ASoC: rt5645: Add jack detection
- workaround for GPD Win
-Date: Thu, 29 Jun 2017 16:45:44 +1000
-Message-ID: <20170629064544.GG23893@us.netrek.org>
-References: <20170628124939.11696-1-tiwai@suse.de>
- <20170628124939.11696-5-tiwai@suse.de>
- <6af6a503-e2bf-c6a2-08c9-bdbd785df829@linux.intel.com>
+From: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Subject: [v2 0/4] Add debugfs support for skylake driver
+Date: Thu, 29 Jun 2017 12:26:00 +0530
+Message-ID: <20170629065604.30105-1-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from swan.laptop.org (swan.media.mit.edu [18.85.44.157])
- by alsa0.perex.cz (Postfix) with ESMTP id E9CCD266C25
- for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2017 08:45:51 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <6af6a503-e2bf-c6a2-08c9-bdbd785df829@linux.intel.com>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 20A8B266C25
+ for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2017 08:56:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,87 +18,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
+To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 28, 2017 at 04:07:01PM -0500, Pierre-Louis Bossart wrote:
-> On 6/28/17 7:49 AM, Takashi Iwai wrote:
-> >GPD Win requires jd_mode=3 and the inverted flag for making the jack
-> >detection working.  Unfortunately, the BIOS doesn't give a nice way to
-> >match with DMI strings, and the only working way so far is to match
-> >with the board vendor/name/version/date to some known patterns.
-> >
-> >Hopefully other vendors won't do such a stupid setup, too...
+This series introduces debugfs support for skylake driver. It helps in
+debugging by providing module configurations which is loaded from topology.
 
-Takashi, no such luck, see below.
+It also allows to read the firmware registers which are a part of SRAM
+memory area accessible by host CPU through a memory window.
 
-> >
-> >Thanks to Hans de Goede for the DMI matching suggestion.
-> >
-> >Suggested-by: Hans de Goede <hdegoede@redhat.com>
-> >Tested-by: Hans de Goede <hdegoede@redhat.com>
-> >Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> >---
-> > sound/soc/codecs/rt5645.c | 29 +++++++++++++++++++++++++++++
-> > 1 file changed, 29 insertions(+)
-> >
-> >diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-> >index 162044d82632..308c22f5909a 100644
-> >--- a/sound/soc/codecs/rt5645.c
-> >+++ b/sound/soc/codecs/rt5645.c
-> >@@ -3599,6 +3599,33 @@ static struct dmi_system_id dmi_platform_intel_broadwell[] = {
-> > 	{ }
-> > };
-> >
-> >+static struct rt5645_platform_data gpd_win_platform_data = {
-> >+	.jd_mode = 3,
-> >+	.inv_jd1_1 = true,
-> >+};
-> >+
-> >+static const struct dmi_system_id dmi_platform_gpd_win[] = {
-> >+	{
-> >+		/*
-> >+		 * Match for the GPDwin which unfortunately uses somewhat
-> >+		 * generic dmi strings, which is why we test for 4 strings.
-> >+		 * Comparing against 23 other byt/cht boards, board_vendor
-> >+		 * and board_name are unique to the GPDwin, where as only one
-> >+		 * other board has the same board_serial and 3 others have
-> >+		 * the same default product_name. Also the GPDwin is the
-> >+		 * only device to have both board_ and product_name not set.
-> >+		 */
-> >+		.ident = "GPD Win",
-> >+		.matches = {
-> >+			DMI_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
-> >+			DMI_MATCH(DMI_BOARD_NAME, "Default string"),
-> >+			DMI_MATCH(DMI_BOARD_SERIAL, "Default string"),
-> >+			DMI_MATCH(DMI_PRODUCT_NAME, "Default string"),
-> >+		},
-> >+	},
-> >+	{}
-> 
-> it feels like it's time to add a quirk parameter for this codec module to
-> avoid chasing all possible DMI/BIOS issues?
+Guneshwor Singh (1):
+  ASoC: Intel: common: Add sram address to sst_addr structure
 
-That would be nice.
+Sodhi, VunnyX (1):
+  ASoC: Intel: Skylake: Add support to read firmware registers
 
-Tested against 4.12.0-rc7, this series fixes silent headphones, and
-headset microphone.  So guys, if appropriate, and not too late, please
-add my
+Vinod Koul (2):
+  ASoC: Intel: Skylake: Add debugfs support
+  ASoC: Intel: Skylake: Debugfs facility to dump module config
 
-Tested-by: James Cameron <quozl@laptop.org>
+Changes in v2:
+- Re-ordered patch and squashed platform changes
 
-Test was with the system previously described here:
-https://www.spinics.net/lists/alsa-devel/msg63279.html
+Guneshwor Singh (1):
+  ASoC: Intel: common: Add sram address to sst_addr structure
 
-The DMI match was hacked as part of the test.
+Sodhi, VunnyX (1):
+  ASoC: Intel: Skylake: Add support to read firmware registers
 
-Still silent built-in microphone; PCB traces to codec pins suggest a
-DMIC1.  System vendor has not given any data; says because Intel
-doesn't support the SOC on Linux, they won't either.  ;-)
+Vinod Koul (2):
+  ASoC: Intel: Skylake: Add debugfs support
+  ASoC: Intel: Skylake: Debugfs facility to dump module config
 
-> ...
+ sound/soc/intel/common/sst-dsp-priv.h  |   4 +
+ sound/soc/intel/skylake/Makefile       |   4 +
+ sound/soc/intel/skylake/bxt-sst.c      |   4 +
+ sound/soc/intel/skylake/skl-debug.c    | 269 +++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-sst.c      |   5 +
+ sound/soc/intel/skylake/skl-topology.c |   3 +
+ sound/soc/intel/skylake/skl.c          |   5 +
+ sound/soc/intel/skylake/skl.h          |  26 ++++
+ 8 files changed, 320 insertions(+)
+ create mode 100644 sound/soc/intel/skylake/skl-debug.c
 
 -- 
-James Cameron
-http://quozl.netrek.org/
+2.13.0
