@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH alsa-lib 01/12] pcm: hw: fix to initialize
-	function local variable
-Date: Fri, 30 Jun 2017 08:58:17 +0900
-Message-ID: <20170629235828.18076-2-o-takashi@sakamocchi.jp>
+Subject: [PATCH alsa-lib 05/12] pcm: hw: use helper function to
+	query status/control data after PREPARE/RESET call
+Date: Fri, 30 Jun 2017 08:58:21 +0900
+Message-ID: <20170629235828.18076-6-o-takashi@sakamocchi.jp>
 References: <20170629235828.18076-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 163142673F4
- for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 01:58:32 +0200 (CEST)
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 784302673F9
+ for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 01:58:35 +0200 (CEST)
 In-Reply-To: <20170629235828.18076-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,24 +25,43 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhpcyBjb21taXQgaXMgdG8gZml4IGJlbG93IHdhcm5pbmcuCgpwY21faHcuYzogSW4gZnVuY3Rp
-b24g4oCYc25kMV9wY21faHdfb3Blbl9mZOKAmToKcGNtX2h3LmM6OTU1OjMzOiB3YXJuaW5nOiDi
-gJhtbWFwX2NvbnRyb2zigJkgbWF5IGJlIHVzZWQgdW5pbml0aWFsaXplZCBpbiB0aGlzIGZ1bmN0
-aW9uIFstV21heWJlLXVuaW5pdGlhbGl6ZWRdCiAgaWYgKG1tYXBfY29udHJvbCA9PSBNQVBfRkFJ
-TEVEIHx8IG1tYXBfY29udHJvbCA9PSBOVUxMKSB7CiAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgIF4KcGNtX2h3LmM6OTQ2OjMxOiBub3RlOiDigJhtbWFwX2NvbnRyb2zigJkgd2FzIGRl
-Y2xhcmVkIGhlcmUKICBzdHJ1Y3Qgc25kX3BjbV9tbWFwX2NvbnRyb2wgKm1tYXBfY29udHJvbDsK
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF5+fn5+fn5+fn5+fgoKU2lnbmVkLW9mZi1i
-eTogVGFrYXNoaSBTYWthbW90byA8by10YWthc2hpQHNha2Ftb2NjaGkuanA+Ci0tLQogc3JjL3Bj
-bS9wY21faHcuYyB8IDEgKwogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspCgpkaWZmIC0t
-Z2l0IGEvc3JjL3BjbS9wY21faHcuYyBiL3NyYy9wY20vcGNtX2h3LmMKaW5kZXggNjQxODhiMjIu
-LmUwOTMxNTc3IDEwMDY0NAotLS0gYS9zcmMvcGNtL3BjbV9ody5jCisrKyBiL3NyYy9wY20vcGNt
-X2h3LmMKQEAgLTkwNCw2ICs5MDQsNyBAQCBzdGF0aWMgYm9vbCBtYXBfY29udHJvbF9kYXRhKHNu
-ZF9wY21faHdfdCAqaHcsCiAJc3RydWN0IHNuZF9wY21fbW1hcF9jb250cm9sICptbWFwX2NvbnRy
-b2w7CiAJYm9vbCBmYWxsYmFja2VkOwogCisJbW1hcF9jb250cm9sID0gTUFQX0ZBSUxFRDsKIAlp
-ZiAoIWZvcmNlX2ZhbGxiYWNrKSB7CiAJCW1tYXBfY29udHJvbCA9IG1tYXAoTlVMTCwgcGFnZV9h
-bGlnbihzaXplb2YoKm1tYXBfY29udHJvbCkpLAogCQkJCSAgICBQUk9UX1JFQUR8UFJPVF9XUklU
-RSwgTUFQX0ZJTEV8TUFQX1NIQVJFRCwKLS0gCjIuMTEuMAoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+In ALSA PCM core, calls of ioctl(2) with SNDRV_PCM_IOCTL_PREPARE and
+SNDRV_PCM_IOCTL_RESET have effects to initialize appl_ptr to current
+hw_ptr and shift state of runtime. On the other hand, avail_min of the
+runtime is kept as is.
+
+In a fallback mode of status data mapping, after executing the call,
+applications should execute ioctl(2) with SNDRV_PCM_IOCTL_SYNC_PTR to
+query appl_ptr and the state, while don't need to issue avail_min.
+
+This commit applies a minor optimization to the call.
+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ src/pcm/pcm_hw.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
+index aa548529..6f20cbff 100644
+--- a/src/pcm/pcm_hw.c
++++ b/src/pcm/pcm_hw.c
+@@ -615,7 +615,7 @@ static int snd_pcm_hw_prepare(snd_pcm_t *pcm)
+ 		SYSMSG("SNDRV_PCM_IOCTL_PREPARE failed (%i)", err);
+ 		return err;
+ 	}
+-	return sync_ptr(hw, SNDRV_PCM_SYNC_PTR_APPL);
++	return query_state(hw);
+ }
+ 
+ static int snd_pcm_hw_reset(snd_pcm_t *pcm)
+@@ -627,7 +627,7 @@ static int snd_pcm_hw_reset(snd_pcm_t *pcm)
+ 		SYSMSG("SNDRV_PCM_IOCTL_RESET failed (%i)", err);
+ 		return err;
+ 	}
+-	return sync_ptr(hw, SNDRV_PCM_SYNC_PTR_APPL);
++	return query_state(hw);
+ }
+ 
+ static int snd_pcm_hw_start(snd_pcm_t *pcm)
+-- 
+2.11.0
