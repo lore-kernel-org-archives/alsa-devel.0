@@ -1,15 +1,14 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH] ASoC: rt5665: calibration should be done
-	before jack detection
-Date: Thu, 29 Jun 2017 20:07:50 +0800
-Message-ID: <1498738070-16624-1-git-send-email-bardliao@realtek.com>
+From: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Subject: [PATCH v3 0/4] Add debugfs support for skylake driver
+Date: Thu, 29 Jun 2017 18:06:03 +0530
+Message-ID: <20170629123608.5498-1-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 7EA82266991
- for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2017 14:08:06 +0200 (CEST)
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id EC803266991
+ for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2017 14:36:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,52 +18,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, xiaoxiang@pinecone.net, zhongan@pinecone.net, flove@realtek.com
+To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-We will set some volatile registers in jack detection function. But
-those volatile registers will be clear in rt5665_calibrate function
-because we set cache bypass and reset codec in rt5665_calibrate function.
-This patch add a flag to make sure that rt5665_calibrate is done
-before starting jack detection.
+This series introduces debugfs support for skylake driver. It helps in
+debugging by providing module configurations which is loaded from topology.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt5665.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+It also allows to read the firmware registers which are a part of SRAM
+memory area accessible by host CPU through a memory window.
 
-diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
-index 7420010..370ed54d 100644
---- a/sound/soc/codecs/rt5665.c
-+++ b/sound/soc/codecs/rt5665.c
-@@ -70,6 +70,7 @@ struct rt5665_priv {
- 	int jack_type;
- 	int irq_work_delay_time;
- 	unsigned int sar_adc_value;
-+	bool calibration_done;
- };
- 
- static const struct reg_default rt5665_reg[] = {
-@@ -1305,6 +1306,11 @@ static void rt5665_jack_detect_handler(struct work_struct *work)
- 		usleep_range(10000, 15000);
- 	}
- 
-+	while (!rt5665->calibration_done) {
-+		pr_debug("%s calibration not ready\n", __func__);
-+		usleep_range(10000, 15000);
-+	}
-+
- 	mutex_lock(&rt5665->calibrate_mutex);
- 
- 	val = snd_soc_read(rt5665->codec, RT5665_AJD1_CTRL) & 0x0010;
-@@ -4695,6 +4701,7 @@ static void rt5665_calibrate(struct rt5665_priv *rt5665)
- 	regmap_write(rt5665->regmap, RT5665_ASRC_8, 0x0120);
- 
- out_unlock:
-+	rt5665->calibration_done = true;
- 	mutex_unlock(&rt5665->calibrate_mutex);
- }
- 
+Changes in v3:
+- Change debugfs parent from debugfs root to ASoC platform component
+
+Changes in v2:
+- Re-ordered patch and squashed platform changes
+
+Guneshwor Singh (1):
+  ASoC: Intel: Skylake: Add sram address to sst_addr structure
+
+Sodhi, VunnyX (1):
+  ASoC: Intel: Skylake: Add support to read firmware registers
+
+Vinod Koul (2):
+  ASoC: Intel: Skylake: Add debugfs support
+  ASoC: Intel: Skylake: Debugfs facility to dump module config
+
+ sound/soc/intel/common/sst-dsp-priv.h  |   4 +
+ sound/soc/intel/skylake/Makefile       |   4 +
+ sound/soc/intel/skylake/bxt-sst.c      |   4 +
+ sound/soc/intel/skylake/skl-debug.c    | 268 +++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-pcm.c      |   6 +-
+ sound/soc/intel/skylake/skl-sst.c      |   5 +
+ sound/soc/intel/skylake/skl-topology.c |   3 +
+ sound/soc/intel/skylake/skl.c          |   2 +
+ sound/soc/intel/skylake/skl.h          |  26 ++++
+ 9 files changed, 321 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/intel/skylake/skl-debug.c
+
 -- 
-2.7.4
+2.13.0
