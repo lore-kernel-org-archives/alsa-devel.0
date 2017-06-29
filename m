@@ -1,17 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH alsa-lib 08/12] pcm: hw: add a helper function
-	to request hwsync without side-effects
-Date: Fri, 30 Jun 2017 08:58:24 +0900
-Message-ID: <20170629235828.18076-9-o-takashi@sakamocchi.jp>
-References: <20170629235828.18076-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH alsa-lib 00/12] pcm: hw: optimization for
+	v2.0.14 of PCM protocol/interface
+Date: Fri, 30 Jun 2017 08:58:16 +0900
+Message-ID: <20170629235828.18076-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 753412673F8
- for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 01:58:35 +0200 (CEST)
-In-Reply-To: <20170629235828.18076-1-o-takashi@sakamocchi.jp>
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 1A6242673F6
+ for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 01:58:32 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,56 +23,45 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SNDRV_PCM_IOCTL_SYNC_PTR command for ioctl(2) with
-SNDRV_PCM_SYNC_PTR_HWSYNC flag has an effect to update hw_ptr.
-This is an alternative of SNDRV_PCM_IOCTL_HWSYNC but caller can get
-current status simultaneously.
+Hi,
 
-This commit adds a helper function just to issue hwsync. To avoid
-side-effect to change appl_ptr and avail_min, this commit uses
-SNDRV_PCM_SYNC_PTR_APPL and SNDRV_PCM_SYNC_PTR_AVAIL_MIN flags.
+This patchset is an optimization for version 2.0.14 of ALSA PCM
+protocol/interface.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- src/pcm/pcm_hw.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+In this version, for some devices/drivers, applications are disallowed
+to map control data of runtime of PCM substream. On the other hand,
+mapping status data is still available.
 
-diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
-index c6abf170..43c37b83 100644
---- a/src/pcm/pcm_hw.c
-+++ b/src/pcm/pcm_hw.c
-@@ -151,6 +151,21 @@ static int sync_ptr(snd_pcm_hw_t *hw, unsigned int flags)
- 	return 0;
- }
- 
-+static int request_hwsync(snd_pcm_hw_t *hw)
-+{
-+	if (!hw->mmap_status_fallbacked)
-+		return 0;
-+
-+	/*
-+	 * Query both of control/status data to avoid unexpected change of
-+	 * control data in kernel space.
-+	 */
-+	return sync_ptr1(hw,
-+			 SNDRV_PCM_SYNC_PTR_HWSYNC |
-+			 SNDRV_PCM_SYNC_PTR_APPL |
-+			 SNDRV_PCM_SYNC_PTR_AVAIL_MIN);
-+}
-+
- static int query_state(snd_pcm_hw_t *hw)
- {
- 	if (!hw->mmap_status_fallbacked)
-@@ -579,8 +594,8 @@ static int snd_pcm_hw_hwsync(snd_pcm_t *pcm)
- 	snd_pcm_hw_t *hw = pcm->private_data;
- 	int fd = hw->fd, err;
- 	if (SNDRV_PROTOCOL_VERSION(2, 0, 3) <= hw->version) {
--		if (hw->sync_ptr) {
--			err = sync_ptr1(hw, SNDRV_PCM_SYNC_PTR_HWSYNC);
-+		if (hw->mmap_status_fallbacked) {
-+			err = request_hwsync(hw);
- 			if (err < 0)
- 				return err;
- 		} else {
+In current implementation of alsa-lib, execution of ioctl(2) with
+SNDRV_PCM_IOCTL_SYNC_PTR is still done without enough care of the
+change. For example, even if status data is successfully mapped,
+the ioctl is executed to query the status data. This is inefficient.
+
+This patchset is to arrange the execution.
+
+Takashi Sakamoto (12):
+  pcm: hw: fix to initialize function local variable
+  pcm: hw: add a helper function just to query status/control data of
+    PCM substream
+  pcm: hw: use heler function to query status/control data after
+    reading/writing PCM frames
+  pcm: hw: use helper function to query status/control data after
+    HW_PARAMS call
+  pcm: hw: use helper function to query status/control data after
+    PREPARE/RESET call
+  pcm: hw: use helper function to query status/control data after
+    REWIND/FORWARD call
+  pcm: hw: use helper function to query status/control data for
+    calculation of available space on PCM buffer
+  pcm: hw: add a helper function to request hwsync without side-effects
+  pcm: hw: add a helper function to issue appl_ptr without sub-effects
+  pcm: hw: add a helper function to issue avail_min without sub-effects
+  pcm: hw: remove superfluous code to call of SNDRV_PCM_IOCTL_SYNC_PTR
+    in snd_pcm_hw_forward()
+  pcm: hw: minor refactoring for initialization of control data
+
+ src/pcm/pcm_hw.c | 109 ++++++++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 75 insertions(+), 34 deletions(-)
+
 -- 
 2.11.0
