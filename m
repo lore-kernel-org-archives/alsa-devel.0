@@ -1,14 +1,21 @@
-From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
-Subject: [PATCH] ASoC: rt5670: Fix arguments to set_sysclk
-Date: Thu, 29 Jun 2017 13:16:51 +0530
-Message-ID: <1498722411-2387-1-git-send-email-subhransu.s.prusty@intel.com>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH 4/4] ASoC: rt5645: Add jack detection
+	workaround for GPD Win
+Date: Thu, 29 Jun 2017 08:10:24 +0000
+Message-ID: <ABFD875FF5FB574BA706497D987D48D70267BC89@RTITMBSV02.realtek.com.tw>
+References: <20170628124939.11696-1-tiwai@suse.de>
+ <20170628124939.11696-5-tiwai@suse.de>
+ <6af6a503-e2bf-c6a2-08c9-bdbd785df829@linux.intel.com>
+ <s5hshijtgqj.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 7335C266E2C
- for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2017 10:02:10 +0200 (CEST)
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0F9D1266EAB
+ for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2017 10:10:32 +0200 (CEST)
+In-Reply-To: <s5hshijtgqj.wl-tiwai@suse.de>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,31 +25,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Bard Liao <bardliao@realtek.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+To: Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Hans de Goede <hdegoede@redhat.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-set_sysclk expects pointer to snd_soc_codec. Fix it.
+> -----Original Message-----
+> >
+> > it feels like it's time to add a quirk parameter for this codec module
+> > to avoid chasing all possible DMI/BIOS issues?
+> 
+> Yes, my very first version was such one, but we ended up with this
+> version as the weird-looking DMI matching was confirmed to work
+> uniquely.
+> 
+> If Realtek guys agree, I can submit the patch to add module options in
+> addition.
 
-Fixes: 6c28ce3c425e ("ASoC: rt5670: move set_sysclk to codec level")
-Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
-CC: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt5670.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yes, I agree to and appreciate it. Please cc me when you submit the patch.
 
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index 10fec7cdf1a1..0ec7985ed306 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -2442,7 +2442,7 @@ static int rt5670_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	return 0;
- }
- 
--static int rt5670_set_codec_sysclk(struct snd_soc_dai *dai, int clk_id,
-+static int rt5670_set_codec_sysclk(struct snd_soc_codec *codec, int clk_id,
- 				   int source, unsigned int freq, int dir)
- {
- 	struct rt5670_priv *rt5670 = snd_soc_codec_get_drvdata(codec);
--- 
-1.9.1
+Thanks.
+
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> ------Please consider the environment before printing this e-mail.
