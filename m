@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH alsa-lib 12/12] pcm: hw: minor refactoring for
-	initialization of control data
-Date: Fri, 30 Jun 2017 08:58:28 +0900
-Message-ID: <20170629235828.18076-13-o-takashi@sakamocchi.jp>
+Subject: [PATCH alsa-lib 09/12] pcm: hw: add a helper function
+	to issue appl_ptr without sub-effects
+Date: Fri, 30 Jun 2017 08:58:25 +0900
+Message-ID: <20170629235828.18076-10-o-takashi@sakamocchi.jp>
 References: <20170629235828.18076-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 7E6112673FC
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id AAFD82673FD
  for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 01:58:35 +0200 (CEST)
 In-Reply-To: <20170629235828.18076-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,37 +25,57 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-At failure of control data mapping, alsa-lib goes to fallback mode. In this
-mode, it keeps a buffer in user space and executes ioctl(2) with
-SNDRV_PCM_IOCTL_SYNC_PTR to issue/query control data as necessary. The
-effect of this operation can be managed by passing corresponding flags.
-When 0 is passing as the flag, all members in the control data are
-updated in kernel space. This is used when control data is initialized.
+After starting, PCM substream shift its state to running and applications
+can move appl_ptr by several ways. When status and control data of runtime
+of the PCM substream is not mapped, the applications should issue appl_ptr
+to kernel land. In this case, when any PCM frames is handled by mmap
+operation, the applications should issue appl_ptr to update.
 
-This commit adds a minor code refactoring for the initialization.
+This commit adds a helper function for this purpose. To avoid unexpected
+change of avail_min, this commit uses a flag just to update appl_ptr.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- src/pcm/pcm_hw.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ src/pcm/pcm_hw.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
 diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
-index a849c644..9608e89d 100644
+index 43c37b83..aacfa669 100644
 --- a/src/pcm/pcm_hw.c
 +++ b/src/pcm/pcm_hw.c
-@@ -999,11 +999,9 @@ static int map_status_and_control_data(snd_pcm_t *pcm, bool force_fallback)
- 	snd_pcm_set_appl_ptr(pcm, &hw->mmap_control->appl_ptr, hw->fd,
- 			     SNDRV_PCM_MMAP_OFFSET_CONTROL);
- 	if (hw->mmap_control_fallbacked) {
--		if (ioctl(hw->fd, SNDRV_PCM_IOCTL_SYNC_PTR, hw->sync_ptr) < 0) {
--			err = -errno;
--			SYSMSG("SNDRV_PCM_IOCTL_SYNC_PTR failed (%i)", err);
-+		err = sync_ptr1(hw, 0);
-+		if (err < 0)
- 			return err;
--		}
- 	}
- 
+@@ -151,6 +151,15 @@ static int sync_ptr(snd_pcm_hw_t *hw, unsigned int flags)
  	return 0;
+ }
+ 
++static int issue_applptr(snd_pcm_hw_t *hw)
++{
++	if (!hw->mmap_control_fallbacked)
++		return 0;
++
++	/* Avoid unexpected change of avail_min in kernel space. */
++	return sync_ptr1(hw, SNDRV_PCM_SYNC_PTR_AVAIL_MIN);
++}
++
+ static int request_hwsync(snd_pcm_hw_t *hw)
+ {
+ 	if (!hw->mmap_status_fallbacked)
+@@ -653,7 +662,7 @@ static int snd_pcm_hw_start(snd_pcm_t *pcm)
+ 	assert(pcm->stream != SND_PCM_STREAM_PLAYBACK ||
+ 	       snd_pcm_mmap_playback_hw_avail(pcm) > 0);
+ #endif
+-	sync_ptr(hw, 0);
++	issue_applptr(hw);
+ 	if (ioctl(hw->fd, SNDRV_PCM_IOCTL_START) < 0) {
+ 		err = -errno;
+ 		SYSMSG("SNDRV_PCM_IOCTL_START failed (%i)", err);
+@@ -1069,7 +1078,7 @@ static snd_pcm_sframes_t snd_pcm_hw_mmap_commit(snd_pcm_t *pcm,
+ 	snd_pcm_hw_t *hw = pcm->private_data;
+ 
+ 	snd_pcm_mmap_appl_forward(pcm, size);
+-	sync_ptr(hw, 0);
++	issue_applptr(hw);
+ #ifdef DEBUG_MMAP
+ 	fprintf(stderr, "appl_forward: hw_ptr = %li, appl_ptr = %li, size = %li\n", *pcm->hw.ptr, *pcm->appl.ptr, size);
+ #endif
 -- 
 2.11.0
