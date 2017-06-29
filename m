@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH alsa-lib 02/12] pcm: hw: add a helper function
-	just to query status/control data of PCM substream
-Date: Fri, 30 Jun 2017 08:58:18 +0900
-Message-ID: <20170629235828.18076-3-o-takashi@sakamocchi.jp>
+Subject: [PATCH alsa-lib 01/12] pcm: hw: fix to initialize
+	function local variable
+Date: Fri, 30 Jun 2017 08:58:17 +0900
+Message-ID: <20170629235828.18076-2-o-takashi@sakamocchi.jp>
 References: <20170629235828.18076-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 0D3062673ED
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 163142673F4
  for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 01:58:32 +0200 (CEST)
 In-Reply-To: <20170629235828.18076-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,54 +25,24 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-When failing to map status data, applications can query status of runtime
-of PCM substream by executing ioctl(2) with SNDRV_PCM_IOCTL_SYNC_PTR. This
-operation is available for several purposes; e.g. to update control data
-in kernel space.
-
-When querying status, the applications don't need to update control data
-in kernel space. This commit adds a helper function to query status/control
-data without issuing the control just in fallback from failure of status
-mmap.
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- src/pcm/pcm_hw.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
-
-diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
-index e0931577..2b5f08be 100644
---- a/src/pcm/pcm_hw.c
-+++ b/src/pcm/pcm_hw.c
-@@ -151,6 +151,20 @@ static int sync_ptr(snd_pcm_hw_t *hw, unsigned int flags)
- 	return 0;
- }
- 
-+static int query_state(snd_pcm_hw_t *hw)
-+{
-+	if (!hw->mmap_status_fallbacked)
-+		return 0;
-+
-+	/*
-+	 * Query both of control/status data to avoid unexpected change of
-+	 * control data in kernel space.
-+	 */
-+	return sync_ptr1(hw,
-+			 SNDRV_PCM_SYNC_PTR_APPL |
-+			 SNDRV_PCM_SYNC_PTR_AVAIL_MIN);
-+}
-+
- static int snd_pcm_hw_clear_timer_queue(snd_pcm_hw_t *hw)
- {
- 	if (hw->period_timer_need_poll) {
-@@ -542,7 +556,7 @@ static int snd_pcm_hw_status(snd_pcm_t *pcm, snd_pcm_status_t * status)
- static snd_pcm_state_t snd_pcm_hw_state(snd_pcm_t *pcm)
- {
- 	snd_pcm_hw_t *hw = pcm->private_data;
--	int err = sync_ptr(hw, 0);
-+	int err = query_state(hw);
- 	if (err < 0)
- 		return err;
- 	return (snd_pcm_state_t) hw->mmap_status->state;
--- 
-2.11.0
+VGhpcyBjb21taXQgaXMgdG8gZml4IGJlbG93IHdhcm5pbmcuCgpwY21faHcuYzogSW4gZnVuY3Rp
+b24g4oCYc25kMV9wY21faHdfb3Blbl9mZOKAmToKcGNtX2h3LmM6OTU1OjMzOiB3YXJuaW5nOiDi
+gJhtbWFwX2NvbnRyb2zigJkgbWF5IGJlIHVzZWQgdW5pbml0aWFsaXplZCBpbiB0aGlzIGZ1bmN0
+aW9uIFstV21heWJlLXVuaW5pdGlhbGl6ZWRdCiAgaWYgKG1tYXBfY29udHJvbCA9PSBNQVBfRkFJ
+TEVEIHx8IG1tYXBfY29udHJvbCA9PSBOVUxMKSB7CiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgIF4KcGNtX2h3LmM6OTQ2OjMxOiBub3RlOiDigJhtbWFwX2NvbnRyb2zigJkgd2FzIGRl
+Y2xhcmVkIGhlcmUKICBzdHJ1Y3Qgc25kX3BjbV9tbWFwX2NvbnRyb2wgKm1tYXBfY29udHJvbDsK
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIF5+fn5+fn5+fn5+fgoKU2lnbmVkLW9mZi1i
+eTogVGFrYXNoaSBTYWthbW90byA8by10YWthc2hpQHNha2Ftb2NjaGkuanA+Ci0tLQogc3JjL3Bj
+bS9wY21faHcuYyB8IDEgKwogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspCgpkaWZmIC0t
+Z2l0IGEvc3JjL3BjbS9wY21faHcuYyBiL3NyYy9wY20vcGNtX2h3LmMKaW5kZXggNjQxODhiMjIu
+LmUwOTMxNTc3IDEwMDY0NAotLS0gYS9zcmMvcGNtL3BjbV9ody5jCisrKyBiL3NyYy9wY20vcGNt
+X2h3LmMKQEAgLTkwNCw2ICs5MDQsNyBAQCBzdGF0aWMgYm9vbCBtYXBfY29udHJvbF9kYXRhKHNu
+ZF9wY21faHdfdCAqaHcsCiAJc3RydWN0IHNuZF9wY21fbW1hcF9jb250cm9sICptbWFwX2NvbnRy
+b2w7CiAJYm9vbCBmYWxsYmFja2VkOwogCisJbW1hcF9jb250cm9sID0gTUFQX0ZBSUxFRDsKIAlp
+ZiAoIWZvcmNlX2ZhbGxiYWNrKSB7CiAJCW1tYXBfY29udHJvbCA9IG1tYXAoTlVMTCwgcGFnZV9h
+bGlnbihzaXplb2YoKm1tYXBfY29udHJvbCkpLAogCQkJCSAgICBQUk9UX1JFQUR8UFJPVF9XUklU
+RSwgTUFQX0ZJTEV8TUFQX1NIQVJFRCwKLS0gCjIuMTEuMAoKX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
+ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
