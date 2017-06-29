@@ -1,50 +1,38 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH] ASoC: topology: show index in debug when
-	adding DAPM routes
-Date: Thu, 29 Jun 2017 14:22:26 +0100
-Message-ID: <1498742546-23463-3-git-send-email-liam.r.girdwood@linux.intel.com>
-References: <1498742546-23463-1-git-send-email-liam.r.girdwood@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 564B426736F
- for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2017 15:22:59 +0200 (CEST)
-In-Reply-To: <1498742546-23463-1-git-send-email-liam.r.girdwood@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
+From: Shawn Guo <shawnguo-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: [PATCH 0/2] ASoC: audio-graph-card: support external amplifier with DAPM widget
+Date: Thu, 29 Jun 2017 21:26:36 +0800
+Message-ID: <1498742798-3128-1-git-send-email-shawnguo@kernel.org>
+Return-path: <devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Sender: devicetree-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Rob Herring <robh+dt-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, Baoyou Xie <xie.baoyou-i+zz7BTLltu8dxfXipz/DA@public.gmane.org>, Xin Zhou <zhou.xin8-i+zz7BTLltu8dxfXipz/DA@public.gmane.org>, Jun Nie <jun.nie-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, devicetree-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Makes the debug output much more useful.
+From: Shawn Guo <shawn.guo-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>
 
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
----
- sound/soc/soc-topology.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+It's basically the result of discussion around how external amplifier
+controlled by GPIO should be supported by audio card, that uses generic
+machine driver like audio-graph-card.
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 06fb7c4c664a..dd471d2c0266 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1171,7 +1171,8 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
- 		return -EINVAL;
- 	}
- 
--	dev_dbg(tplg->dev, "ASoC: adding %d DAPM routes\n", count);
-+	dev_dbg(tplg->dev, "ASoC: adding %d DAPM routes for index %d\n", count,
-+		hdr->index);
- 
- 	for (i = 0; i < count; i++) {
- 		elem = (struct snd_soc_tplg_dapm_graph_elem *)tplg->pos;
+The patch series updates audio-graph-card bindings and driver to support
+DAPM widget and audio routing, and then based on that, creates an output
+driver widget with event to control the amplifier via GPIO.
+
+[1] https://www.spinics.net/lists/arm-kernel/msg589717.html
+
+Shawn Guo (2):
+  ASoC: audio-graph-card: update bindings for amplifier support
+  ASoC: audio-graph-card: add widgets and routing for external amplifier
+    support
+
+ .../devicetree/bindings/sound/audio-graph-card.txt |  5 +++
+ sound/soc/generic/audio-graph-card.c               | 48 +++++++++++++++++++++-
+ 2 files changed, 52 insertions(+), 1 deletion(-)
+
 -- 
-2.11.0
+1.9.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe devicetree" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
