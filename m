@@ -1,15 +1,16 @@
 From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Subject: [PATCH 1/5] ASoC: Intel: Skylake: Add debugfs support
-Date: Thu, 29 Jun 2017 08:34:04 +0530
-Message-ID: <20170629030408.4383-2-guneshwor.o.singh@intel.com>
+Subject: [PATCH 3/5] ASoC: Intel: Skylake: Add support to read
+	firmware registers
+Date: Thu, 29 Jun 2017 08:34:06 +0530
+Message-ID: <20170629030408.4383-4-guneshwor.o.singh@intel.com>
 References: <20170629030408.4383-1-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 32541267224
- for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2017 05:04:45 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 62C60267261
+ for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2017 05:04:53 +0200 (CEST)
 In-Reply-To: <20170629030408.4383-1-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,165 +22,133 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, Vunny Sodhi <vunnyx.sodhi@intel.com>
+Cc: Sodhi@alsa-project.org, Patches Audio <patches.audio@intel.com>, Babu@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Pardha Saradhi <pardha.saradhi.kesapragada@intel.com>, Jayachandran <jayachandran.b@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Ramesh <ramesh.babu@intel.com>, Mousumi Jana <mousumix.jana@intel.com>, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, Kesapragada@alsa-project.org, "Sodhi,
+ VunnyX" <vunnyx.sodhi@intel.com>, B@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Vinod Koul <vinod.koul@intel.com>
+From: "Sodhi, VunnyX" <vunnyx.sodhi@intel.com>
 
-For debug, the kernel debugfs mechanism is available. We can add various
-debug options for driver like module configuration read, firmware register
-read etc.
+This patch adds debugfs support to read fw registers, mailbox
+offsets and sram address.
 
-This patch adds debugfs root and caller is added for skylake driver to
-do init and cleanup of debugfs
-
-Signed-off-by: Vinod Koul <vinod.koul@intel.com>
-Signed-off-by: Vunny Sodhi <vunnyx.sodhi@intel.com>
+Signed-off-by: Mousumi Jana <mousumix.jana@intel.com>
+Signed-off-by: Babu, Ramesh <ramesh.babu@intel.com>
+Signed-off-by: B, Jayachandran <jayachandran.b@intel.com>
+Signed-off-by: Kesapragada, Pardha Saradhi <pardha.saradhi.kesapragada@intel.com>
+Signed-off-by: Sodhi, VunnyX <vunnyx.sodhi@intel.com>
 Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 ---
- sound/soc/intel/skylake/Makefile    |  4 +++
- sound/soc/intel/skylake/skl-debug.c | 54 +++++++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl.c       |  5 ++++
- sound/soc/intel/skylake/skl.h       | 16 +++++++++++
- 4 files changed, 79 insertions(+)
- create mode 100644 sound/soc/intel/skylake/skl-debug.c
+ sound/soc/intel/common/sst-dsp-priv.h |  4 +++
+ sound/soc/intel/skylake/skl-debug.c   | 59 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 63 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/Makefile b/sound/soc/intel/skylake/Makefile
-index 60fbc9bbe473..e7d77722d560 100644
---- a/sound/soc/intel/skylake/Makefile
-+++ b/sound/soc/intel/skylake/Makefile
-@@ -1,6 +1,10 @@
- snd-soc-skl-objs := skl.o skl-pcm.o skl-nhlt.o skl-messages.o \
- skl-topology.o
- 
-+ifdef CONFIG_DEBUG_FS
-+  snd-soc-skl-objs += skl-debug.o
-+endif
-+
- obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += snd-soc-skl.o
- 
- # Skylake IPC Support
+diff --git a/sound/soc/intel/common/sst-dsp-priv.h b/sound/soc/intel/common/sst-dsp-priv.h
+index d13c84364c3c..8734040d64d3 100644
+--- a/sound/soc/intel/common/sst-dsp-priv.h
++++ b/sound/soc/intel/common/sst-dsp-priv.h
+@@ -77,6 +77,10 @@ struct sst_addr {
+ 	u32 dram_offset;
+ 	u32 dsp_iram_offset;
+ 	u32 dsp_dram_offset;
++	u32 sram0_base;
++	u32 sram1_base;
++	u32 w0_stat_sz;
++	u32 w0_up_sz;
+ 	void __iomem *lpe;
+ 	void __iomem *shim;
+ 	void __iomem *pci_cfg;
 diff --git a/sound/soc/intel/skylake/skl-debug.c b/sound/soc/intel/skylake/skl-debug.c
-new file mode 100644
-index 000000000000..c9a387e3d4f6
---- /dev/null
+index 98d93f284af8..2650e04d4921 100644
+--- a/sound/soc/intel/skylake/skl-debug.c
 +++ b/sound/soc/intel/skylake/skl-debug.c
-@@ -0,0 +1,54 @@
-+/*
-+ *  skl-debug.c - Debugfs for skl driver
-+ *
-+ *  Copyright (C) 2016-17 Intel Corp
-+ *
-+ *  This program is free software; you can redistribute it and/or modify
-+ *  it under the terms of the GNU General Public License as published by
-+ *  the Free Software Foundation; version 2 of the License.
-+ *
-+ *  This program is distributed in the hope that it will be useful, but
-+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ *  General Public License for more details.
-+ */
+@@ -16,8 +16,15 @@
+ #include <linux/pci.h>
+ #include <linux/debugfs.h>
+ #include "skl.h"
++#include "skl-sst-dsp.h"
++#include "skl-sst-ipc.h"
+ #include "skl-tplg-interface.h"
+ #include "skl-topology.h"
++#include "../common/sst-dsp-priv.h"
 +
-+#include <linux/pci.h>
-+#include <linux/debugfs.h>
-+#include "skl.h"
-+
-+struct skl_debug {
-+	struct skl *skl;
-+	struct device *dev;
-+
-+	struct dentry *fs;
-+};
-+
-+struct skl_debug *skl_debugfs_init(struct skl *skl)
++#define MOD_BUF		PAGE_SIZE
++#define FW_REG_BUF	PAGE_SIZE
++#define FW_REG_SIZE	0x60
+ 
+ #define MOD_BUF		PAGE_SIZE
+ 
+@@ -27,6 +34,7 @@ struct skl_debug {
+ 
+ 	struct dentry *fs;
+ 	struct dentry *modules;
++	u8 fw_read_buff[FW_REG_BUF];
+ };
+ 
+ static ssize_t skl_print_pins(struct skl_module_pin *m_pin, char *buf,
+@@ -169,6 +177,51 @@ void skl_debug_init_module(struct skl_debug *d,
+ 		dev_err(d->dev, "%s: module debugfs init failed\n", w->name);
+ }
+ 
++static ssize_t fw_softreg_read(struct file *file, char __user *user_buf,
++			       size_t count, loff_t *ppos)
 +{
-+	struct skl_debug *d;
++	struct skl_debug *d = file->private_data;
++	struct sst_dsp *sst = d->skl->skl_sst->dsp;
++	size_t w0_stat_sz = sst->addr.w0_stat_sz;
++	void __iomem *in_base = sst->mailbox.in_base;
++	void __iomem *fw_reg_addr;
++	unsigned int offset;
++	char *tmp;
++	ssize_t ret = 0;
 +
-+	d = devm_kzalloc(&skl->pci->dev, sizeof(*d), GFP_KERNEL);
-+	if (!d)
-+		return NULL;
++	tmp = kzalloc(FW_REG_BUF, GFP_KERNEL);
++	if (!tmp)
++		return -ENOMEM;
 +
-+	/* create the root dir first */
-+	d->fs = debugfs_create_dir(KBUILD_MODNAME, NULL);
-+	if (IS_ERR(d->fs) || !d->fs) {
-+		dev_err(&skl->pci->dev, "debugfs root creation failed\n");
-+		return NULL;
++	fw_reg_addr = in_base - w0_stat_sz;
++	memset(d->fw_read_buff, 0, FW_REG_BUF);
++
++	if (w0_stat_sz > 0)
++		__iowrite32_copy(d->fw_read_buff, fw_reg_addr, w0_stat_sz >> 2);
++
++	for (offset = 0; offset < FW_REG_SIZE; offset += 16) {
++		ret += snprintf(tmp + ret, FW_REG_BUF - ret, "%#.4x: ", offset);
++		hex_dump_to_buffer(d->fw_read_buff + offset, 16, 16, 4,
++				   tmp + ret, FW_REG_BUF - ret, 0);
++		ret += strlen(tmp + ret);
++
++		/* print newline for each offset */
++		if (FW_REG_BUF - ret > 0)
++			tmp[ret++] = '\n';
 +	}
 +
-+	d->skl = skl;
-+	d->dev = &skl->pci->dev;
++	ret = simple_read_from_buffer(user_buf, count, ppos, tmp, ret);
++	kfree(tmp);
 +
-+	return d;
++	return ret;
 +}
 +
-+void skl_debugfs_exit(struct skl_debug *d)
-+{
-+	debugfs_remove_recursive(d->fs);
++static const struct file_operations soft_regs_ctrl_fops = {
++	.open = simple_open,
++	.read = fw_softreg_read,
++	.llseek = default_llseek,
++};
 +
-+	kfree(d);
+ struct skl_debug *skl_debugfs_init(struct skl *skl)
+ {
+ 	struct skl_debug *d;
+@@ -194,6 +247,12 @@ struct skl_debug *skl_debugfs_init(struct skl *skl)
+ 		goto err;
+ 	}
+ 
++	if (!debugfs_create_file("fw_soft_regs_rd", 0444, d->fs, d,
++				 &soft_regs_ctrl_fops)) {
++		dev_err(d->dev, "fw soft regs control debugfs init failed\n");
++		goto err;
++	}
 +
-+}
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index e761550c6dad..f4194d189d07 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -815,6 +815,9 @@ static int skl_probe(struct pci_dev *pci,
+ 	return d;
  
- 	schedule_work(&skl->probe_work);
- 
-+	/* init debugfs */
-+	skl->debugfs = skl_debugfs_init(skl);
-+
- 	return 0;
- 
- out_dsp_free:
-@@ -866,6 +869,8 @@ static void skl_remove(struct pci_dev *pci)
- 	/* codec removal, invoke bus_device_remove */
- 	snd_hdac_ext_bus_device_remove(ebus);
- 
-+	skl_debugfs_exit(skl->debugfs);
-+	skl->debugfs = NULL;
- 	skl_platform_unregister(&pci->dev);
- 	skl_free_dsp(skl);
- 	skl_machine_device_unregister(skl);
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 2a630fcb7f08..a47779c819d5 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -42,6 +42,8 @@ struct skl_dsp_resource {
- 	u32 mem;
- };
- 
-+struct skl_debug;
-+
- struct skl {
- 	struct hdac_ext_bus ebus;
- 	struct pci_dev *pci;
-@@ -66,6 +68,8 @@ struct skl {
- 	int supend_active;
- 
- 	struct work_struct probe_work;
-+
-+	struct skl_debug *debugfs;
- };
- 
- #define skl_to_ebus(s)	(&(s)->ebus)
-@@ -116,4 +120,16 @@ void skl_update_d0i3c(struct device *dev, bool enable);
- int skl_nhlt_create_sysfs(struct skl *skl);
- void skl_nhlt_remove_sysfs(struct skl *skl);
- 
-+#ifdef CONFIG_DEBUG_FS
-+struct skl_debug *skl_debugfs_init(struct skl *skl);
-+void skl_debugfs_exit(struct skl_debug *d);
-+#else
-+static inline struct skl_debug *skl_debugfs_init(struct skl *skl)
-+{
-+	return NULL;
-+}
-+static inline void skl_debugfs_exit(struct skl_debug *d)
-+{}
-+#endif
-+
- #endif /* __SOUND_SOC_SKL_H */
+ err:
 -- 
 2.13.0
