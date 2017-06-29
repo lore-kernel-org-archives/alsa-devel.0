@@ -1,17 +1,18 @@
-From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Subject: [PATCH 5/5] ASoC: Intel: Skylake: Assign sram address
-	to sst structure
-Date: Thu, 29 Jun 2017 08:34:08 +0530
-Message-ID: <20170629030408.4383-6-guneshwor.o.singh@intel.com>
-References: <20170629030408.4383-1-guneshwor.o.singh@intel.com>
+From: John Hsu <supercraig0719@gmail.com>
+Subject: [PATCH] ASoC: nau8825: change crosstalk-bypass
+	property to bool type
+Date: Thu, 29 Jun 2017 11:41:30 +0800
+Message-ID: <1498707690-3978-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 22ABF267261
- for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2017 05:05:00 +0200 (CEST)
-In-Reply-To: <20170629030408.4383-1-guneshwor.o.singh@intel.com>
+Received: from mail-pf0-f194.google.com (mail-pf0-f194.google.com
+ [209.85.192.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9C31626720E
+ for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2017 05:41:44 +0200 (CEST)
+Received: by mail-pf0-f194.google.com with SMTP id z6so11350938pfk.3
+ for <alsa-devel@alsa-project.org>; Wed, 28 Jun 2017 20:41:44 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,33 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, anatol.pomozov@gmail.com, YHCHuang@nuvoton.com, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com, benzh@chromium.org, mac.chiang@intel.com, CTLIN0@nuvoton.com, mhkuo@nuvoton.com, John Hsu <supercraig0719@gmail.com>, yong.zhi@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-To read dsp registers via debugfs, assign sram address
-in dsp_init().
+The property type of "nuvoton,crosstalk-bypass" changes to boolean.
+The document is updated as well.
 
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+Signed-off-by: John Hsu <supercraig0719@gmail.com>
 ---
- sound/soc/intel/skylake/skl-sst.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ Documentation/devicetree/bindings/sound/nau8825.txt | 3 +++
+ sound/soc/codecs/nau8825.c                          | 8 ++++----
+ 2 files changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-sst.c b/sound/soc/intel/skylake/skl-sst.c
-index 155e456b7a3a..aba9ea11ac74 100644
---- a/sound/soc/intel/skylake/skl-sst.c
-+++ b/sound/soc/intel/skylake/skl-sst.c
-@@ -553,6 +553,11 @@ int skl_sst_dsp_init(struct device *dev, void __iomem *mmio_base, int irq,
- 	sst = skl->dsp;
- 	sst->addr.lpe = mmio_base;
- 	sst->addr.shim = mmio_base;
-+	sst->addr.sram0_base = SKL_ADSP_SRAM0_BASE;
-+	sst->addr.sram1_base = SKL_ADSP_SRAM1_BASE;
-+	sst->addr.w0_stat_sz = SKL_ADSP_W0_STAT_SZ;
-+	sst->addr.w0_up_sz = SKL_ADSP_W0_UP_SZ;
-+
- 	sst_dsp_mailbox_init(sst, (SKL_ADSP_SRAM0_BASE + SKL_ADSP_W0_STAT_SZ),
- 			SKL_ADSP_W0_UP_SZ, SKL_ADSP_SRAM1_BASE, SKL_ADSP_W1_SZ);
+diff --git a/Documentation/devicetree/bindings/sound/nau8825.txt b/Documentation/devicetree/bindings/sound/nau8825.txt
+index d337423..2f5e973 100644
+--- a/Documentation/devicetree/bindings/sound/nau8825.txt
++++ b/Documentation/devicetree/bindings/sound/nau8825.txt
+@@ -69,6 +69,8 @@ Optional properties:
+   - nuvoton,jack-insert-debounce: number from 0 to 7 that sets debounce time to 2^(n+2) ms
+   - nuvoton,jack-eject-debounce: number from 0 to 7 that sets debounce time to 2^(n+2) ms
  
++  - nuvoton,crosstalk-bypass: make crosstalk function bypass if set.
++
+   - clocks: list of phandle and clock specifier pairs according to common clock bindings for the
+       clocks described in clock-names
+   - clock-names: should include "mclk" for the MCLK master clock
+@@ -96,6 +98,7 @@ Example:
+       nuvoton,short-key-debounce = <2>;
+       nuvoton,jack-insert-debounce = <7>;
+       nuvoton,jack-eject-debounce = <7>;
++      nuvoton,crosstalk-bypass;
+ 
+       clock-names = "mclk";
+       clocks = <&tegra_car TEGRA210_CLK_CLK_OUT_2>;
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index a8c7a55..46a30ea 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -2440,6 +2440,8 @@ static void nau8825_print_device_properties(struct nau8825 *nau8825)
+ 			nau8825->jack_insert_debounce);
+ 	dev_dbg(dev, "jack-eject-debounce:  %d\n",
+ 			nau8825->jack_eject_debounce);
++	dev_dbg(dev, "crosstalk-bypass:     %d\n",
++			nau8825->xtalk_bypass);
+ }
+ 
+ static int nau8825_read_device_properties(struct device *dev,
+@@ -2504,10 +2506,8 @@ static int nau8825_read_device_properties(struct device *dev,
+ 		&nau8825->jack_eject_debounce);
+ 	if (ret)
+ 		nau8825->jack_eject_debounce = 0;
+-	ret = device_property_read_u32(dev, "nuvoton,crosstalk-bypass",
+-		&nau8825->xtalk_bypass);
+-	if (ret)
+-		nau8825->xtalk_bypass = 1;
++	nau8825->xtalk_bypass = device_property_read_bool(dev,
++		"nuvoton,crosstalk-bypass");
+ 
+ 	nau8825->mclk = devm_clk_get(dev, "mclk");
+ 	if (PTR_ERR(nau8825->mclk) == -EPROBE_DEFER) {
 -- 
-2.13.0
+2.6.4
