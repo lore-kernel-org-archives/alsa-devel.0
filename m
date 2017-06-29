@@ -1,16 +1,16 @@
 From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Subject: [PATCH v3 3/4] ASoC: Intel: common: Add sram address
+Subject: [PATCH v3 3/4] ASoC: Intel: Skylake: Add sram address
 	to sst_addr structure
-Date: Thu, 29 Jun 2017 18:06:06 +0530
-Message-ID: <20170629123608.5498-4-guneshwor.o.singh@intel.com>
+Date: Thu, 29 Jun 2017 18:06:07 +0530
+Message-ID: <20170629123608.5498-5-guneshwor.o.singh@intel.com>
 References: <20170629123608.5498-1-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 00876267354
- for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2017 14:37:07 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 43247267360
+ for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2017 14:37:11 +0200 (CEST)
 In-Reply-To: <20170629123608.5498-1-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
