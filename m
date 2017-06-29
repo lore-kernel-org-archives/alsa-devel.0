@@ -1,24 +1,18 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: Fwd: Issue on Linux 4.12-rc7 on iMX6 based board
-Date: Thu, 29 Jun 2017 11:30:41 -0300
-Message-ID: <CAOMZO5CnuSim+vXB7eTBDV_PFrNf9Hgpj6AJea9hnELjaVdsTg@mail.gmail.com>
-References: <7ab79167-fa6c-4aea-0545-48d0522d5d77@eurekelettronica.it>
- <d7d15b1d-ac7f-4b45-b7e6-e4cdc0d5cc65@eurekelettronica.it>
- <CAOMZO5C1HSN2m4P34GQq2+SKB+kmm9WUjr37T_Q_W6LwCQQQFQ@mail.gmail.com>
- <2cb47b9c-d631-6fe0-8e5c-3f1d2604ab0d@eurekelettronica.it>
- <CAOMZO5CYw-eoOuaP6Tb3c51va9ua7gvg2mTz+kX7fYtQdhsK+w@mail.gmail.com>
- <c19fa7f1-17f3-1bd0-81a2-a916fac8c1ab@eurekelettronica.it>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Fix doubly initialization of i915
+	component
+Date: Thu, 29 Jun 2017 16:31:37 +0200
+Message-ID: <20170629143137.12719-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f193.google.com (mail-qk0-f193.google.com
- [209.85.220.193])
- by alsa0.perex.cz (Postfix) with ESMTP id CB68626739E
- for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2017 16:30:44 +0200 (CEST)
-Received: by mail-qk0-f193.google.com with SMTP id p21so11834792qke.0
- for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2017 07:30:43 -0700 (PDT)
-In-Reply-To: <c19fa7f1-17f3-1bd0-81a2-a916fac8c1ab@eurekelettronica.it>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 22B4426739E
+ for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2017 16:31:38 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id EFCE1AB09
+ for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2017 14:31:38 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,34 +22,172 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: gianluca <gianlucarenzi@eurekelettronica.it>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 29, 2017 at 11:24 AM, gianluca
-<gianlucarenzi@eurekelettronica.it> wrote:
+In the commit fcc88d91cd36 ("ALSA: hda - Bind with i915 component
+before codec binding"), the binding with i915 audio component is moved
+to be performed always at probing the controller.  This fixed the
+potential problems on IVB, but now it brought another issue on HSW and
+BDW.  These two platforms give two individual HD-audio controllers,
+one for the analog codec on PCH and another for HDMI over gfx.  Since
+I decided to take a lazy path to check only AZX_DRIVER_PCH type in the
+commit above, now both controllers try to bind with i915, and you see
+a kernel WARNING.
 
-> So, are they good?
+This patch tries to address it again properly.  Now a new DCAPS bit,
+AZX_DCAPS_I915_COMPONENT, is introduced for indicating the binding
+with i915 component in addition to the existing I915_POWERWELL bit
+flag.  Each PCI entry has to give this new flag if it requires the
+binding with i915 component.  For HSW/BDW PCH (i.e. the ones defined
+by AZX_DCAPS_INTEL_PCH) doesn't contain AZX_DCAPS_I915_COMPONENT bit
+while others have it.
 
-If your hardware really uses these pins, then yes :-)
+While we're at it, add parentheses around the bit flag check for
+avoiding possible compiler warnings, too.
 
+The bug was spotted by Intel CI tests.
 
-> My only concern is the value after the MSYS_CLK (GPIO_0_CCM_CLK01). It is
-> 0x030b0. Is this correct for output clock signal?
+Fixes: fcc88d91cd36 ("ALSA: hda - Bind with i915 component before codec binding")
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=196219
+Reported-by: Martin Peres <martin.peres@free.fr>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/hda_controller.h |  6 +++++-
+ sound/pci/hda/hda_intel.c      | 40 ++++++++++++++++++++++------------------
+ 2 files changed, 27 insertions(+), 19 deletions(-)
 
-Most of the boards use 0x130b0. You should really check with a scope
-and see if the MCLK is getting to the codec.
-I suppose it is as the driver can read its ID register correctly.
-
-> I am missing the regmap. Should I configure kernel with additional CONFIG_ ?
-
-mount -t debugfs none /sys/kernel/debug
-
->
-> I started from the imxv6_imxv7_defconfig, then modified to have the correct
-> drivers module as built-in or dynamic.
-
-imx_v6_v7_defconfig should give you working audio.
-
-You should check in this scope if your getting SSI clock/data when
-playing audio.
+diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
+index 35a9ab2cac46..a68e75b00ea3 100644
+--- a/sound/pci/hda/hda_controller.h
++++ b/sound/pci/hda/hda_controller.h
+@@ -32,7 +32,11 @@
+ #define AZX_DCAPS_NO_MSI	(1 << 9)	/* No MSI support */
+ #define AZX_DCAPS_SNOOP_MASK	(3 << 10)	/* snoop type mask */
+ #define AZX_DCAPS_SNOOP_OFF	(1 << 12)	/* snoop default off */
+-/* 13 unused */
++#ifdef CONFIG_SND_HDA_I915
++#define AZX_DCAPS_I915_COMPONENT (1 << 13)	/* bind with i915 gfx */
++#else
++#define AZX_DCAPS_I915_COMPONENT 0		/* NOP */
++#endif
+ /* 14 unused */
+ #define AZX_DCAPS_CTX_WORKAROUND (1 << 15)	/* X-Fi workaround */
+ #define AZX_DCAPS_POSFIX_LPIB	(1 << 16)	/* Use LPIB as default */
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index a157582b8f2c..03e34edc8f24 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -293,38 +293,43 @@ enum {
+ 	(AZX_DCAPS_NO_ALIGN_BUFSIZE | AZX_DCAPS_COUNT_LPIB_DELAY |\
+ 	 AZX_DCAPS_SNOOP_TYPE(SCH))
+ 
+-/* PCH up to IVB; no runtime PM */
++/* PCH up to IVB; no runtime PM; bind with i915 gfx */
+ #define AZX_DCAPS_INTEL_PCH_NOPM \
+-	(AZX_DCAPS_INTEL_PCH_BASE)
++	(AZX_DCAPS_INTEL_PCH_BASE | AZX_DCAPS_I915_COMPONENT)
+ 
+ /* PCH for HSW/BDW; with runtime PM */
++/* no i915 binding for this as HSW/BDW has another controller for HDMI */
+ #define AZX_DCAPS_INTEL_PCH \
+ 	(AZX_DCAPS_INTEL_PCH_BASE | AZX_DCAPS_PM_RUNTIME)
+ 
+ /* HSW HDMI */
+ #define AZX_DCAPS_INTEL_HASWELL \
+ 	(/*AZX_DCAPS_ALIGN_BUFSIZE |*/ AZX_DCAPS_COUNT_LPIB_DELAY |\
+-	 AZX_DCAPS_PM_RUNTIME | AZX_DCAPS_I915_POWERWELL |\
+-	 AZX_DCAPS_SNOOP_TYPE(SCH))
++	 AZX_DCAPS_PM_RUNTIME | AZX_DCAPS_I915_COMPONENT |\
++	 AZX_DCAPS_I915_POWERWELL | AZX_DCAPS_SNOOP_TYPE(SCH))
+ 
+ /* Broadwell HDMI can't use position buffer reliably, force to use LPIB */
+ #define AZX_DCAPS_INTEL_BROADWELL \
+ 	(/*AZX_DCAPS_ALIGN_BUFSIZE |*/ AZX_DCAPS_POSFIX_LPIB |\
+-	 AZX_DCAPS_PM_RUNTIME | AZX_DCAPS_I915_POWERWELL |\
+-	 AZX_DCAPS_SNOOP_TYPE(SCH))
++	 AZX_DCAPS_PM_RUNTIME | AZX_DCAPS_I915_COMPONENT |\
++	 AZX_DCAPS_I915_POWERWELL | AZX_DCAPS_SNOOP_TYPE(SCH))
+ 
+ #define AZX_DCAPS_INTEL_BAYTRAIL \
+-	(AZX_DCAPS_INTEL_PCH_NOPM | AZX_DCAPS_I915_POWERWELL)
++	(AZX_DCAPS_INTEL_PCH_BASE | AZX_DCAPS_I915_COMPONENT |\
++	 AZX_DCAPS_I915_POWERWELL)
+ 
+ #define AZX_DCAPS_INTEL_BRASWELL \
+-	(AZX_DCAPS_INTEL_PCH | AZX_DCAPS_I915_POWERWELL)
++	(AZX_DCAPS_INTEL_PCH_BASE | AZX_DCAPS_PM_RUNTIME |\
++	 AZX_DCAPS_I915_COMPONENT | AZX_DCAPS_I915_POWERWELL)
+ 
+ #define AZX_DCAPS_INTEL_SKYLAKE \
+-	(AZX_DCAPS_INTEL_PCH | AZX_DCAPS_SEPARATE_STREAM_TAG |\
++	(AZX_DCAPS_INTEL_PCH_BASE | AZX_DCAPS_PM_RUNTIME |\
++	 AZX_DCAPS_SEPARATE_STREAM_TAG | AZX_DCAPS_I915_COMPONENT |\
+ 	 AZX_DCAPS_I915_POWERWELL)
+ 
+ #define AZX_DCAPS_INTEL_BROXTON \
+-	(AZX_DCAPS_INTEL_PCH | AZX_DCAPS_SEPARATE_STREAM_TAG |\
++	(AZX_DCAPS_INTEL_PCH_BASE | AZX_DCAPS_PM_RUNTIME |\
++	 AZX_DCAPS_SEPARATE_STREAM_TAG | AZX_DCAPS_I915_COMPONENT |\
+ 	 AZX_DCAPS_I915_POWERWELL)
+ 
+ /* quirks for ATI SB / AMD Hudson */
+@@ -1008,7 +1013,7 @@ static int azx_suspend(struct device *dev)
+ 
+ 	if (chip->msi)
+ 		pci_disable_msi(chip->pci);
+-	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL
++	if ((chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
+ 		&& hda->need_i915_power)
+ 		snd_hdac_display_power(bus, false);
+ 
+@@ -1114,7 +1119,7 @@ static int azx_runtime_suspend(struct device *dev)
+ 	azx_stop_chip(chip);
+ 	azx_enter_link_reset(chip);
+ 	azx_clear_irq_pending(chip);
+-	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL
++	if ((chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
+ 		&& hda->need_i915_power)
+ 		snd_hdac_display_power(azx_bus(chip), false);
+ 
+@@ -1380,8 +1385,7 @@ static int azx_free(struct azx *chip)
+ 		if (hda->need_i915_power)
+ 			snd_hdac_display_power(bus, false);
+ 	}
+-	if (chip->driver_type == AZX_DRIVER_PCH ||
+-	    (chip->driver_caps & AZX_DCAPS_I915_POWERWELL))
++	if (chip->driver_type & AZX_DCAPS_I915_COMPONENT)
+ 		snd_hdac_i915_exit(bus);
+ 	kfree(hda);
+ 
+@@ -2199,8 +2203,7 @@ static int azx_probe_continue(struct azx *chip)
+ 	hda->probe_continued = 1;
+ 
+ 	/* bind with i915 if needed */
+-	if (chip->driver_type == AZX_DRIVER_PCH ||
+-	    (chip->driver_caps & AZX_DCAPS_I915_POWERWELL)) {
++	if (chip->driver_caps & AZX_DCAPS_I915_COMPONENT) {
+ 		err = snd_hdac_i915_init(bus);
+ 		if (err < 0) {
+ 			/* if the controller is bound only with HDMI/DP
+@@ -2214,7 +2217,8 @@ static int azx_probe_continue(struct azx *chip)
+ 				goto out_free;
+ 			} else {
+ 				/* don't bother any longer */
+-				chip->driver_caps &= ~AZX_DCAPS_I915_POWERWELL;
++				chip->driver_caps &=
++					~(AZX_DCAPS_I915_COMPONENT | AZX_DCAPS_I915_POWERWELL);
+ 			}
+ 		}
+ 	}
+@@ -2279,7 +2283,7 @@ static int azx_probe_continue(struct azx *chip)
+ 		pm_runtime_put_autosuspend(&pci->dev);
+ 
+ out_free:
+-	if (chip->driver_caps & AZX_DCAPS_I915_POWERWELL
++	if ((chip->driver_caps & AZX_DCAPS_I915_POWERWELL)
+ 		&& !hda->need_i915_power)
+ 		snd_hdac_display_power(bus, false);
+ 
+-- 
+2.13.2
