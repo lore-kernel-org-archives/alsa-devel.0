@@ -1,20 +1,14 @@
-From: Vinod Koul <vinod.koul@intel.com>
-Subject: Re: [PATCH v2 1/4] ASoC: Intel: Skylake: Add debugfs
-	support
-Date: Thu, 29 Jun 2017 13:26:49 +0530
-Message-ID: <20170629075649.GG19154@localhost>
-References: <20170629065604.30105-1-guneshwor.o.singh@intel.com>
- <20170629065604.30105-2-guneshwor.o.singh@intel.com>
- <e7607f1b-540b-fcda-a784-918ef9eafbeb@sakamocchi.jp>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: [PATCH] ASoC: rt5670: Fix arguments to set_sysclk
+Date: Thu, 29 Jun 2017 13:16:51 +0530
+Message-ID: <1498722411-2387-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id B32CB266E2C
- for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2017 09:55:00 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <e7607f1b-540b-fcda-a784-918ef9eafbeb@sakamocchi.jp>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7335C266E2C
+ for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2017 10:02:10 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,63 +18,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Guneshwor Singh <guneshwor.o.singh@intel.com>, liam.r.girdwood@linux.intel.com, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Vunny Sodhi <vunnyx.sodhi@intel.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, lgirdwood@gmail.com, patches.audio@intel.com, broonie@kernel.org, Bard Liao <bardliao@realtek.com>, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 29, 2017 at 04:43:38PM +0900, Takashi Sakamoto wrote:
-> Hi,
+set_sysclk expects pointer to snd_soc_codec. Fix it.
 
-Hi Takashi,
+Fixes: 6c28ce3c425e ("ASoC: rt5670: move set_sysclk to codec level")
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
+CC: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt5670.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > +struct skl_debug *skl_debugfs_init(struct skl *skl)
-> > +{
-> > +	struct skl_debug *d;
-> > +
-> > +	d = devm_kzalloc(&skl->pci->dev, sizeof(*d), GFP_KERNEL);
-> > +	if (!d)
-> > +		return NULL;
-> > +
-> > +	/* create the root dir first */
-> > +	d->fs = debugfs_create_dir(KBUILD_MODNAME, NULL);
-> 
-> ALSA SoC part has a debugfs support. It adds "asoc" node into debugfs
-> mount point and export "snd_soc_debugfs_root" symbol as a root node. I
-> think it a better idea to collect relevant nodes into the place, rather
-> than dispersing them.
-
-Yes we can use that, but then this is very driver specific info, does it
-make sense to keep under framework 'asoc' ?
-
-If we decide to use that, a more intuitive place might be "platform" rather
-than "asoc" which creates dependency on sound card creation which might happen
-much later.
-
-for debug, I would like to avoid complexity and go with simple device
-approach...
-
-> 
-> As a quick glance, "snd_soc_skl" depends on "snd_soc_core", which
-> exports the symbol. So no matter to dependencies.
-> 
-> $ lsmod | grep snd_soc_core
-> snd_soc_core          233472  1 snd_soc_skl
-> $ mount | grep debugfs
-> debugfs on /sys/kernel/debug type debugfs (rw,relatime)
-> $ sudo find /sys/kernel/debug/asoc
-> /sys/kernel/debug/asoc
-> /sys/kernel/debug/asoc/platforms
-> /sys/kernel/debug/asoc/dais
-> /sys/kernel/debug/asoc/codecs
-> 
-> $ cd mainline.git/
-> $ git grep snd_soc_debugfs_root sound/soc/soc-core.c | grep EXPORT
-> sound/soc/soc-core.c:EXPORT_SYMBOL_GPL(snd_soc_debugfs_root);
-> 
-> 
-> Regards
-> 
-> Takashi Sakamoto
-
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index 10fec7cdf1a1..0ec7985ed306 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -2442,7 +2442,7 @@ static int rt5670_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	return 0;
+ }
+ 
+-static int rt5670_set_codec_sysclk(struct snd_soc_dai *dai, int clk_id,
++static int rt5670_set_codec_sysclk(struct snd_soc_codec *codec, int clk_id,
+ 				   int source, unsigned int freq, int dir)
+ {
+ 	struct rt5670_priv *rt5670 = snd_soc_codec_get_drvdata(codec);
 -- 
-~Vinod
+1.9.1
