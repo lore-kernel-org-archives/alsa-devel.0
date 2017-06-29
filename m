@@ -1,20 +1,15 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: Fwd: Issue on Linux 4.12-rc7 on iMX6 based board
-Date: Thu, 29 Jun 2017 08:37:41 -0300
-Message-ID: <CAOMZO5C1HSN2m4P34GQq2+SKB+kmm9WUjr37T_Q_W6LwCQQQFQ@mail.gmail.com>
-References: <7ab79167-fa6c-4aea-0545-48d0522d5d77@eurekelettronica.it>
- <d7d15b1d-ac7f-4b45-b7e6-e4cdc0d5cc65@eurekelettronica.it>
+From: Bard Liao <bardliao@realtek.com>
+Subject: [PATCH] ASoC: rt5665: calibration should be done
+	before jack detection
+Date: Thu, 29 Jun 2017 20:07:50 +0800
+Message-ID: <1498738070-16624-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f181.google.com (mail-qt0-f181.google.com
- [209.85.216.181])
- by alsa0.perex.cz (Postfix) with ESMTP id 25C04266991
- for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2017 13:37:42 +0200 (CEST)
-Received: by mail-qt0-f181.google.com with SMTP id i2so71646349qta.3
- for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2017 04:37:42 -0700 (PDT)
-In-Reply-To: <d7d15b1d-ac7f-4b45-b7e6-e4cdc0d5cc65@eurekelettronica.it>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7EA82266991
+ for <alsa-devel@alsa-project.org>; Thu, 29 Jun 2017 14:08:06 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,34 +19,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: gianluca <gianlucarenzi@eurekelettronica.it>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, xiaoxiang@pinecone.net, zhongan@pinecone.net, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Gianluca,
+We will set some volatile registers in jack detection function. But
+those volatile registers will be clear in rt5665_calibrate function
+because we set cache bypass and reset codec in rt5665_calibrate function.
+This patch add a flag to make sure that rt5665_calibrate is done
+before starting jack detection.
 
-On Wed, Jun 28, 2017 at 12:34 PM, gianluca
-<gianlucarenzi@eurekelettronica.it> wrote:
+Signed-off-by: Bard Liao <bardliao@realtek.com>
+---
+ sound/soc/codecs/rt5665.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-> Hello list,
->
-> I have some issue using the sgtl5000 on two custom boards based with iMX6.
-> One board has iMX6DL and the other has iMX6QP.
->
-> The issue is I have a (dramatically high) strange value on mixer settings
-> (looks like a int32 limit or similar)
->
-> This is the output of amixer:
->>
->> # amixer
->> Simple mixer control 'Headphone',0
->>   Capabilities: pvolume pswitch pswitch-joined
->>   Playback channels: Front Left - Front Right
->>   Limits: Playback 0 - 127
->>   Mono:
->>   Front Left: Playback 0 [2147483647%] [-51.50dB] [on]
->>   Front Right: Playback 0 [2147483647%] [-51.50dB] [on]
-
-Double check the codec hardware: is I2C communication working, are you
-able to dump the SGTL5000 registers, check the codec power supplies,
-MCLK, etc.
+diff --git a/sound/soc/codecs/rt5665.c b/sound/soc/codecs/rt5665.c
+index 7420010..370ed54d 100644
+--- a/sound/soc/codecs/rt5665.c
++++ b/sound/soc/codecs/rt5665.c
+@@ -70,6 +70,7 @@ struct rt5665_priv {
+ 	int jack_type;
+ 	int irq_work_delay_time;
+ 	unsigned int sar_adc_value;
++	bool calibration_done;
+ };
+ 
+ static const struct reg_default rt5665_reg[] = {
+@@ -1305,6 +1306,11 @@ static void rt5665_jack_detect_handler(struct work_struct *work)
+ 		usleep_range(10000, 15000);
+ 	}
+ 
++	while (!rt5665->calibration_done) {
++		pr_debug("%s calibration not ready\n", __func__);
++		usleep_range(10000, 15000);
++	}
++
+ 	mutex_lock(&rt5665->calibrate_mutex);
+ 
+ 	val = snd_soc_read(rt5665->codec, RT5665_AJD1_CTRL) & 0x0010;
+@@ -4695,6 +4701,7 @@ static void rt5665_calibrate(struct rt5665_priv *rt5665)
+ 	regmap_write(rt5665->regmap, RT5665_ASRC_8, 0x0120);
+ 
+ out_unlock:
++	rt5665->calibration_done = true;
+ 	mutex_unlock(&rt5665->calibrate_mutex);
+ }
+ 
+-- 
+2.7.4
