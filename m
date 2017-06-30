@@ -1,107 +1,97 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "drm: adv7511_audio: Add .get_dai_id callback to map port
- number to dai id" to the asoc tree
-Date: Fri, 30 Jun 2017 12:59:46 +0100
-Message-ID: <E1dQuaQ-00086U-7S@finisterre>
-References: <1497391189-9301-1-git-send-email-john.stultz@linaro.org>
+Subject: Applied "ASoC: audio-graph-card: update bindings for
+	amplifier support" to the asoc tree
+Date: Fri, 30 Jun 2017 12:58:57 +0100
+Message-ID: <E1dQuZd-0007yL-PG@finisterre>
+References: <1498742798-3128-2-git-send-email-shawnguo@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <1497391189-9301-1-git-send-email-john.stultz@linaro.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: John Stultz <john.stultz@linaro.org>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, lkml <linux-kernel@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E5E772674F1
+ for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 13:59:08 +0200 (CEST)
+In-Reply-To: <1498742798-3128-2-git-send-email-shawnguo@kernel.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Shawn Guo <shawn.guo@linaro.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Baoyou Xie <xie.baoyou@sanechips.com.cn>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, Xin Zhou <zhou.xin8@sanechips.com.cn>, Jun Nie <jun.nie@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIHBhdGNoCgogICBkcm06IGFkdjc1MTFfYXVkaW86IEFkZCAuZ2V0X2RhaV9pZCBjYWxsYmFj
-ayB0byBtYXAgcG9ydCBudW1iZXIgdG8gZGFpIGlkCgpoYXMgYmVlbiBhcHBsaWVkIHRvIHRoZSBh
-c29jIHRyZWUgYXQKCiAgIGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVs
-L2dpdC9icm9vbmllL3NvdW5kLmdpdCAKCkFsbCBiZWluZyB3ZWxsIHRoaXMgbWVhbnMgdGhhdCBp
-dCB3aWxsIGJlIGludGVncmF0ZWQgaW50byB0aGUgbGludXgtbmV4dAp0cmVlICh1c3VhbGx5IHNv
-bWV0aW1lIGluIHRoZSBuZXh0IDI0IGhvdXJzKSBhbmQgc2VudCB0byBMaW51cyBkdXJpbmcKdGhl
-IG5leHQgbWVyZ2Ugd2luZG93IChvciBzb29uZXIgaWYgaXQgaXMgYSBidWcgZml4KSwgaG93ZXZl
-ciBpZgpwcm9ibGVtcyBhcmUgZGlzY292ZXJlZCB0aGVuIHRoZSBwYXRjaCBtYXkgYmUgZHJvcHBl
-ZCBvciByZXZlcnRlZC4gIAoKWW91IG1heSBnZXQgZnVydGhlciBlLW1haWxzIHJlc3VsdGluZyBm
-cm9tIGF1dG9tYXRlZCBvciBtYW51YWwgdGVzdGluZwphbmQgcmV2aWV3IG9mIHRoZSB0cmVlLCBw
-bGVhc2UgZW5nYWdlIHdpdGggcGVvcGxlIHJlcG9ydGluZyBwcm9ibGVtcyBhbmQKc2VuZCBmb2xs
-b3d1cCBwYXRjaGVzIGFkZHJlc3NpbmcgYW55IGlzc3VlcyB0aGF0IGFyZSByZXBvcnRlZCBpZiBu
-ZWVkZWQuCgpJZiBhbnkgdXBkYXRlcyBhcmUgcmVxdWlyZWQgb3IgeW91IGFyZSBzdWJtaXR0aW5n
-IGZ1cnRoZXIgY2hhbmdlcyB0aGV5CnNob3VsZCBiZSBzZW50IGFzIGluY3JlbWVudGFsIHVwZGF0
-ZXMgYWdhaW5zdCBjdXJyZW50IGdpdCwgZXhpc3RpbmcKcGF0Y2hlcyB3aWxsIG5vdCBiZSByZXBs
-YWNlZC4KClBsZWFzZSBhZGQgYW55IHJlbGV2YW50IGxpc3RzIGFuZCBtYWludGFpbmVycyB0byB0
-aGUgQ0NzIHdoZW4gcmVwbHlpbmcKdG8gdGhpcyBtYWlsLgoKVGhhbmtzLApNYXJrCgpGcm9tIDcy
-MDRlOTc2ODU2MzQ4MTNkODQ1NmYxOTAwYjdmMzhmYTc3MDFlNjAgTW9uIFNlcCAxNyAwMDowMDow
-MCAyMDAxCkZyb206IEpvaG4gU3R1bHR6IDxqb2huLnN0dWx0ekBsaW5hcm8ub3JnPgpEYXRlOiBU
-dWUsIDEzIEp1biAyMDE3IDE0OjU5OjQ5IC0wNzAwClN1YmplY3Q6IFtQQVRDSF0gZHJtOiBhZHY3
-NTExX2F1ZGlvOiBBZGQgLmdldF9kYWlfaWQgY2FsbGJhY2sgdG8gbWFwIHBvcnQKIG51bWJlciB0
-byBkYWkgaWQKCkFMU0EgU29DIG5lZWRzIHRvIGtub3cgY29ubmVjdGVkIERBSSBJRCBmb3IgcHJv
-YmluZy4gVXNpbmcKdGhlIG5ldyBhdWRpby1jYXJkLWdyYXBoIGFwcHJvYWNoLCBwb3J0cy9lbmRw
-b2ludHMgYXJlIHVzZWQKdG8gZGVzY3JpYmUgaG93IHRoZSBsaW5rcyBhcmUgY29ubmVjdGVkLiBV
-bmZvcnR1bmF0ZWx5LCBzaW5jZQpwb3J0cy9lbmRwb2ludHMgYXJlIHVzZWQgYXMgd2VsbCBmb3Ig
-dmlkZW8gbGlua2FnZXMsIHRoZXJlCmFyZSBzb21lIGlzc3VlcyBtaXhpbmcgdGhlIHBvcnQgaWRz
-IHRvIHRoZSB0d28gKHZpZGVvIGFuZAphdWRpbykgbmFtZXNwYWNlcy4KClRvIHNvbHZlIHRoaXMg
-aXNzdWUsIHRoaXMgcGF0Y2ggYWRkcyBuZXcgLmdldF9kYWlfaWQgY2FsbGJhY2sKb24gaGRtaV9j
-b2RlY19vcHMuCgpUaGUgd2lsbCBhc3N1bWUgdGhhdCBIRE1JIGF1ZGlvIG91dCB3aWxsIGJlIGNv
-bm5lY3RlZCB0bwpyZWcgPSA8Mj4uIFRoaXMgd2lsbCB0aGVuIGJlIHJlbWFwcGVkIHRvIHRoZSBB
-TFNBIFNvQyBzaWRlIHdpbGwKYXMgREFJIDAuIEFsbG93aW5nIHRoZSBhZHY3NTExJ3MgaGRtaSBh
-dWRpbyBzdXBwb3J0IHRvIGJlIHVzZWQKd2l0aCB0aGUgYXVkaW8tY2FyZC1ncmFwaC4KCkNyZWRp
-dCB0byBLdW5pbm9yaSBNb3JpbW90byB3aG8ncyBwYXRjaCB0byBkdy1oZG1pLWkycy1hdWRpby5j
-CndhcyB3aGF0IHRoaXMgd2FzIG1vc3RseSBjb3B5LXBhc3RlZCBmcm9tLgoKQ2M6IEt1bmlub3Jp
-IE1vcmltb3RvIDxrdW5pbm9yaS5tb3JpbW90by5neEByZW5lc2FzLmNvbT4KQ2M6IEFyY2hpdCBU
-YW5lamEgPGFyY2hpdHRAY29kZWF1cm9yYS5vcmc+CkNjOiBNYXJrIEJyb3duIDxicm9vbmllQGtl
-cm5lbC5vcmc+CkNjOiBSb2IgSGVycmluZyA8cm9iaCtkdEBrZXJuZWwub3JnPgpDYzogRGF2aWQg
-QWlybGllIDxhaXJsaWVkQGxpbnV4LmllPgpDYzogTGFycy1QZXRlciBDbGF1c2VuIDxsYXJzQG1l
-dGFmb28uZGU+CkNjOiBMaW51eC1BTFNBIDxhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc+CkNj
-OiBkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnClNpZ25lZC1vZmYtYnk6IEpvaG4gU3R1
-bHR6IDxqb2huLnN0dWx0ekBsaW5hcm8ub3JnPgpTaWduZWQtb2ZmLWJ5OiBNYXJrIEJyb3duIDxi
-cm9vbmllQGtlcm5lbC5vcmc+Ci0tLQogLi4uL2JpbmRpbmdzL2Rpc3BsYXkvYnJpZGdlL2FkaSxh
-ZHY3NTExLnR4dCAgICAgICAgfCAgOCArKysrKysrKwogZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9h
-ZHY3NTExL2Fkdjc1MTFfYXVkaW8uYyAgICAgfCAyMiArKysrKysrKysrKysrKysrKysrKysrCiAy
-IGZpbGVzIGNoYW5nZWQsIDMwIGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0
-aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9icmlkZ2UvYWRpLGFkdjc1MTEudHh0IGIv
-RG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rpc3BsYXkvYnJpZGdlL2FkaSxhZHY3
-NTExLnR4dAppbmRleCAwMGVhNjcwYjhjNGQuLjA2NjY4YmNhN2ZmYyAxMDA2NDQKLS0tIGEvRG9j
-dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Rpc3BsYXkvYnJpZGdlL2FkaSxhZHY3NTEx
-LnR4dAorKysgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZGlzcGxheS9icmlk
-Z2UvYWRpLGFkdjc1MTEudHh0CkBAIC03OCw2ICs3OCw3IEBAIGdyYXBoIGJpbmRpbmdzIHNwZWNp
-ZmllZCBpbiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvZ3JhcGgudHh0LgogICBy
-ZW1vdGUgZW5kcG9pbnQgcGhhbmRsZSBzaG91bGQgYmUgYSByZWZlcmVuY2UgdG8gYSB2YWxpZCBt
-aXBpX2RzaV9ob3N0IGRldmljZQogICBub2RlLgogLSBWaWRlbyBwb3J0IDEgZm9yIHRoZSBIRE1J
-IG91dHB1dAorLSBBdWRpbyBwb3J0IDIgZm9yIHRoZSBIRE1JIGF1ZGlvIGlucHV0CiAKIAogRXhh
-bXBsZQpAQCAtMTEyLDUgKzExMywxMiBAQCBFeGFtcGxlCiAJCQkJCXJlbW90ZS1lbmRwb2ludCA9
-IDwmaGRtaV9jb25uZWN0b3JfaW4+OwogCQkJCX07CiAJCQl9OworCisJCQlwb3J0QDIgeworCQkJ
-CXJlZyA9IDwyPjsKKwkJCQljb2RlY19lbmRwb2ludDogZW5kcG9pbnQgeworCQkJCQlyZW1vdGUt
-ZW5kcG9pbnQgPSA8JmkyczBfY3B1X2VuZHBvaW50PjsKKwkJCQl9OworCQkJfTsKIAkJfTsKIAl9
-OwpkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2JyaWRnZS9hZHY3NTExL2Fkdjc1MTFfYXVk
-aW8uYyBiL2RyaXZlcnMvZ3B1L2RybS9icmlkZ2UvYWR2NzUxMS9hZHY3NTExX2F1ZGlvLmMKaW5k
-ZXggY2Y5MmViZmU2YWI3Li42NzQ2OWMyNmJhZTggMTAwNjQ0Ci0tLSBhL2RyaXZlcnMvZ3B1L2Ry
-bS9icmlkZ2UvYWR2NzUxMS9hZHY3NTExX2F1ZGlvLmMKKysrIGIvZHJpdmVycy9ncHUvZHJtL2Jy
-aWRnZS9hZHY3NTExL2Fkdjc1MTFfYXVkaW8uYwpAQCAtMTEsNiArMTEsNyBAQAogI2luY2x1ZGUg
-PHNvdW5kL2hkbWktY29kZWMuaD4KICNpbmNsdWRlIDxzb3VuZC9wY20uaD4KICNpbmNsdWRlIDxz
-b3VuZC9zb2MuaD4KKyNpbmNsdWRlIDxsaW51eC9vZl9ncmFwaC5oPgogCiAjaW5jbHVkZSAiYWR2
-NzUxMS5oIgogCkBAIC0xODIsMTAgKzE4MywzMSBAQCBzdGF0aWMgdm9pZCBhdWRpb19zaHV0ZG93
-bihzdHJ1Y3QgZGV2aWNlICpkZXYsIHZvaWQgKmRhdGEpCiB7CiB9CiAKK3N0YXRpYyBpbnQgYWR2
-NzUxMV9oZG1pX2kyc19nZXRfZGFpX2lkKHN0cnVjdCBzbmRfc29jX2NvbXBvbmVudCAqY29tcG9u
-ZW50LAorCQkJCQlzdHJ1Y3QgZGV2aWNlX25vZGUgKmVuZHBvaW50KQoreworCXN0cnVjdCBvZl9l
-bmRwb2ludCBvZl9lcDsKKwlpbnQgcmV0OworCisJcmV0ID0gb2ZfZ3JhcGhfcGFyc2VfZW5kcG9p
-bnQoZW5kcG9pbnQsICZvZl9lcCk7CisJaWYgKHJldCA8IDApCisJCXJldHVybiByZXQ7CisKKwkv
-KgorCSAqIEhETUkgc291bmQgc2hvdWxkIGJlIGxvY2F0ZWQgYXMgcmVnID0gPDI+CisJICogVGhl
-biwgaXQgaXMgc291bmQgcG9ydCAwCisJICovCisJaWYgKG9mX2VwLnBvcnQgPT0gMikKKwkJcmV0
-dXJuIDA7CisKKwlyZXR1cm4gLUVJTlZBTDsKK30KKwogc3RhdGljIGNvbnN0IHN0cnVjdCBoZG1p
-X2NvZGVjX29wcyBhZHY3NTExX2NvZGVjX29wcyA9IHsKIAkuaHdfcGFyYW1zCT0gYWR2NzUxMV9o
-ZG1pX2h3X3BhcmFtcywKIAkuYXVkaW9fc2h1dGRvd24gPSBhdWRpb19zaHV0ZG93biwKIAkuYXVk
-aW9fc3RhcnR1cAk9IGF1ZGlvX3N0YXJ0dXAsCisJLmdldF9kYWlfaWQJPSBhZHY3NTExX2hkbWlf
-aTJzX2dldF9kYWlfaWQsCiB9OwogCiBzdGF0aWMgc3RydWN0IGhkbWlfY29kZWNfcGRhdGEgY29k
-ZWNfZGF0YSA9IHsKLS0gCjIuMTMuMgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJl
-ZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGlu
-Zm8vZHJpLWRldmVsCg==
+The patch
+
+   ASoC: audio-graph-card: update bindings for amplifier support
+
+has been applied to the asoc tree at
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From a0c683d734e0b3589892c17d0e1187f20d2c3a54 Mon Sep 17 00:00:00 2001
+From: Shawn Guo <shawn.guo@linaro.org>
+Date: Thu, 29 Jun 2017 21:26:37 +0800
+Subject: [PATCH] ASoC: audio-graph-card: update bindings for amplifier support
+
+The audio-graph-card should be able to support widgets and routing in
+the same way as what simple-audio-card does.  The patch adds the
+properties into audio-graph-card bindings.  Then an optional property
+'pa-gpios' for controlling external amplifier, which depends on DAPM
+widgets and routing, is added.
+
+Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ Documentation/devicetree/bindings/sound/audio-graph-card.txt | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/sound/audio-graph-card.txt b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
+index bac4b1b1060f..6e6720aa33f1 100644
+--- a/Documentation/devicetree/bindings/sound/audio-graph-card.txt
++++ b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
+@@ -10,6 +10,8 @@ see ${LINUX}/Documentation/devicetree/bindings/sound/simple-card.txt
+ Below are same as Simple-Card.
+ 
+ - label
++- widgets
++- routing
+ - dai-format
+ - frame-master
+ - bitclock-master
+@@ -24,6 +26,9 @@ Required properties:
+ - compatible				: "audio-graph-card";
+ - dais					: list of CPU DAI port{s}
+ 
++Optional properties:
++- pa-gpios: GPIO used to control external amplifier.
++
+ Example: Single DAI case
+ 
+ 	sound_card {
+-- 
+2.13.2
