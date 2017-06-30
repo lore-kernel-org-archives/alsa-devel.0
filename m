@@ -1,16 +1,16 @@
 From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Subject: [PATCH v3 1/4] ASoC: Intel: Skylake: Add debugfs
-	support
-Date: Fri, 30 Jun 2017 09:06:05 +0530
-Message-ID: <20170630033608.31466-2-guneshwor.o.singh@intel.com>
+Subject: [PATCH v3 2/4] ASoC: Intel: Skylake: Debugfs facility
+	to dump module config
+Date: Fri, 30 Jun 2017 09:06:06 +0530
+Message-ID: <20170630033608.31466-3-guneshwor.o.singh@intel.com>
 References: <20170630033608.31466-1-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E81C2673F8
- for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 05:36:34 +0200 (CEST)
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id EE00426744B
+ for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 05:37:01 +0200 (CEST)
 In-Reply-To: <20170630033608.31466-1-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,174 +27,253 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Vinod Koul <vinod.koul@intel.com>
 
-For debug, the kernel debugfs mechanism is available. We can add various
-debug options for driver like module configuration read, firmware register
-read etc.
-
-This patch adds debugfs as a child to asoc plaform component and caller is
-added for skylake driver to do init and cleanup of debugfs.
+Driver modules have lot of information represented in struct
+skl_module_cfg. Knowing this is useful for debug, so enable
+debugfs for this structure.
 
 Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 Signed-off-by: Vunny Sodhi <vunnyx.sodhi@intel.com>
 Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
 ---
- sound/soc/intel/skylake/Makefile    |  4 +++
- sound/soc/intel/skylake/skl-debug.c | 55 +++++++++++++++++++++++++++++++++++++
- sound/soc/intel/skylake/skl-pcm.c   |  6 +++-
- sound/soc/intel/skylake/skl.c       |  2 ++
- sound/soc/intel/skylake/skl.h       | 16 +++++++++++
- 5 files changed, 82 insertions(+), 1 deletion(-)
- create mode 100644 sound/soc/intel/skylake/skl-debug.c
+ sound/soc/intel/skylake/skl-debug.c    | 156 +++++++++++++++++++++++++++++++++
+ sound/soc/intel/skylake/skl-topology.c |   3 +
+ sound/soc/intel/skylake/skl.h          |  10 +++
+ 3 files changed, 169 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/Makefile b/sound/soc/intel/skylake/Makefile
-index 60fbc9bbe473..e7d77722d560 100644
---- a/sound/soc/intel/skylake/Makefile
-+++ b/sound/soc/intel/skylake/Makefile
-@@ -1,6 +1,10 @@
- snd-soc-skl-objs := skl.o skl-pcm.o skl-nhlt.o skl-messages.o \
- skl-topology.o
- 
-+ifdef CONFIG_DEBUG_FS
-+  snd-soc-skl-objs += skl-debug.o
-+endif
-+
- obj-$(CONFIG_SND_SOC_INTEL_SKYLAKE) += snd-soc-skl.o
- 
- # Skylake IPC Support
 diff --git a/sound/soc/intel/skylake/skl-debug.c b/sound/soc/intel/skylake/skl-debug.c
-new file mode 100644
-index 000000000000..6bc4565773c5
---- /dev/null
+index 6bc4565773c5..be3238c63200 100644
+--- a/sound/soc/intel/skylake/skl-debug.c
 +++ b/sound/soc/intel/skylake/skl-debug.c
-@@ -0,0 +1,55 @@
-+/*
-+ *  skl-debug.c - Debugfs for skl driver
-+ *
-+ *  Copyright (C) 2016-17 Intel Corp
-+ *
-+ *  This program is free software; you can redistribute it and/or modify
-+ *  it under the terms of the GNU General Public License as published by
-+ *  the Free Software Foundation; version 2 of the License.
-+ *
-+ *  This program is distributed in the hope that it will be useful, but
-+ *  WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ *  General Public License for more details.
-+ */
+@@ -16,14 +16,159 @@
+ #include <linux/pci.h>
+ #include <linux/debugfs.h>
+ #include "skl.h"
++#include "skl-tplg-interface.h"
++#include "skl-topology.h"
 +
-+#include <linux/pci.h>
-+#include <linux/debugfs.h>
-+#include "skl.h"
++#define MOD_BUF		PAGE_SIZE
+ 
+ struct skl_debug {
+ 	struct skl *skl;
+ 	struct device *dev;
+ 
+ 	struct dentry *fs;
++	struct dentry *modules;
+ };
+ 
++static ssize_t skl_print_pins(struct skl_module_pin *m_pin, char *buf,
++				int max_pin, ssize_t size, bool direction)
++{
++	int i;
++	ssize_t ret = 0;
 +
-+struct skl_debug {
-+	struct skl *skl;
-+	struct device *dev;
++	for (i = 0; i < max_pin; i++)
++		ret += snprintf(buf + size, MOD_BUF - size,
++				"%s %d\n\tModule %d\n\tInstance %d\n\t"
++				"In-used %s\n\tType %s\n"
++				"\tState %d\n\tIndex %d\n",
++				direction ? "Input Pin:" : "Output Pin:",
++				i, m_pin[i].id.module_id,
++				m_pin[i].id.instance_id,
++				m_pin[i].in_use ? "Used" : "Unused",
++				m_pin[i].is_dynamic ? "Dynamic" : "Static",
++				m_pin[i].pin_state, i);
++	return ret;
++}
 +
-+	struct dentry *fs;
++static ssize_t skl_print_fmt(struct skl_module_fmt *fmt, char *buf,
++					ssize_t size, bool direction)
++{
++	return snprintf(buf + size, MOD_BUF - size,
++			"%s\n\tCh %d\n\tFreq %d\n\tBit depth %d\n\t"
++			"Valid bit depth %d\n\tCh config %#x\n\tInterleaving %d\n\t"
++			"Sample Type %d\n\tCh Map %#x\n",
++			direction ? "Input Format:" : "Output Format:",
++			fmt->channels, fmt->s_freq, fmt->bit_depth,
++			fmt->valid_bit_depth, fmt->ch_cfg,
++			fmt->interleaving_style, fmt->sample_type,
++			fmt->ch_map);
++}
++
++static ssize_t module_read(struct file *file, char __user *user_buf,
++			   size_t count, loff_t *ppos)
++{
++	struct skl_module_cfg *mconfig = file->private_data;
++	char *buf;
++	ssize_t ret;
++
++	buf = kzalloc(MOD_BUF, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
++
++	ret = snprintf(buf, MOD_BUF, "Module:\n\tUUID %pUL\n\tModule id %d\n"
++			"\tInstance id %d\n\tPvt_id %d\n", mconfig->guid,
++			mconfig->id.module_id, mconfig->id.instance_id,
++			mconfig->id.pvt_id);
++
++	ret += snprintf(buf + ret, MOD_BUF - ret,
++			"Resources:\n\tMCPS %#x\n\tIBS %#x\n\tOBS %#x\t\n",
++			mconfig->mcps, mconfig->ibs, mconfig->obs);
++
++	ret += snprintf(buf + ret, MOD_BUF - ret,
++			"Module data:\n\tCore %d\n\tIn queue %d\n\t"
++			"Out queue %d\n\tType %s\n",
++			mconfig->core_id, mconfig->max_in_queue,
++			mconfig->max_out_queue,
++			mconfig->is_loadable ? "loadable" : "inbuilt");
++
++	ret += skl_print_fmt(mconfig->in_fmt, buf, ret, true);
++	ret += skl_print_fmt(mconfig->out_fmt, buf, ret, false);
++
++	ret += snprintf(buf + ret, MOD_BUF - ret,
++			"Fixup:\n\tParams %#x\n\tConverter %#x\n",
++			mconfig->params_fixup, mconfig->converter);
++
++	ret += snprintf(buf + ret, MOD_BUF - ret,
++			"Module Gateway:\n\tType %#x\n\tVbus %#x\n\tHW conn %#x\n\tSlot %#x\n",
++			mconfig->dev_type, mconfig->vbus_id,
++			mconfig->hw_conn_type, mconfig->time_slot);
++
++	ret += snprintf(buf + ret, MOD_BUF - ret,
++			"Pipeline:\n\tID %d\n\tPriority %d\n\tConn Type %d\n\t"
++			"Pages %#x\n", mconfig->pipe->ppl_id,
++			mconfig->pipe->pipe_priority, mconfig->pipe->conn_type,
++			mconfig->pipe->memory_pages);
++
++	ret += snprintf(buf + ret, MOD_BUF - ret,
++			"\tParams:\n\t\tHost DMA %d\n\t\tLink DMA %d\n",
++			mconfig->pipe->p_params->host_dma_id,
++			mconfig->pipe->p_params->link_dma_id);
++
++	ret += snprintf(buf + ret, MOD_BUF - ret,
++			"\tPCM params:\n\t\tCh %d\n\t\tFreq %d\n\t\tFormat %d\n",
++			mconfig->pipe->p_params->ch,
++			mconfig->pipe->p_params->s_freq,
++			mconfig->pipe->p_params->s_fmt);
++
++	ret += snprintf(buf + ret, MOD_BUF - ret,
++			"\tLink %#x\n\tStream %#x\n",
++			mconfig->pipe->p_params->linktype,
++			mconfig->pipe->p_params->stream);
++
++	ret += snprintf(buf + ret, MOD_BUF - ret,
++			"\tState %d\n\tPassthru %s\n",
++			mconfig->pipe->state,
++			mconfig->pipe->passthru ? "true" : "false");
++
++	ret += skl_print_pins(mconfig->m_in_pin, buf,
++			mconfig->max_in_queue, ret, true);
++	ret += skl_print_pins(mconfig->m_out_pin, buf,
++			mconfig->max_out_queue, ret, false);
++
++	ret += snprintf(buf + ret, MOD_BUF - ret,
++			"Other:\n\tDomain %d\n\tHomogenous Input %s\n\t"
++			"Homogenous Output %s\n\tIn Queue Mask %d\n\t"
++			"Out Queue Mask %d\n\tDMA ID %d\n\tMem Pages %d\n\t"
++			"Module Type %d\n\tModule State %d\n",
++			mconfig->domain,
++			mconfig->homogenous_inputs ? "true" : "false",
++			mconfig->homogenous_outputs ? "true" : "false",
++			mconfig->in_queue_mask, mconfig->out_queue_mask,
++			mconfig->dma_id, mconfig->mem_pages, mconfig->m_state,
++			mconfig->m_type);
++
++	ret = simple_read_from_buffer(user_buf, count, ppos, buf, ret);
++
++	kfree(buf);
++	return ret;
++}
++
++static const struct file_operations mcfg_fops = {
++	.open = simple_open,
++	.read = module_read,
++	.llseek = default_llseek,
 +};
 +
-+struct skl_debug *skl_debugfs_init(struct skl *skl)
++
++void skl_debug_init_module(struct skl_debug *d,
++			struct snd_soc_dapm_widget *w,
++			struct skl_module_cfg *mconfig)
 +{
-+	struct skl_debug *d;
++	if (!debugfs_create_file(w->name, 0444,
++				d->modules, mconfig,
++				&mcfg_fops))
++		dev_err(d->dev, "%s: module debugfs init failed\n", w->name);
++}
 +
-+	d = devm_kzalloc(&skl->pci->dev, sizeof(*d), GFP_KERNEL);
-+	if (!d)
-+		return NULL;
-+
-+	/* create the debugfs dir with platform component's debugfs as parent */
-+	d->fs = debugfs_create_dir("dsp",
-+				   skl->platform->component.debugfs_root);
-+	if (IS_ERR(d->fs) || !d->fs) {
-+		dev_err(&skl->pci->dev, "debugfs root creation failed\n");
-+		return NULL;
+ struct skl_debug *skl_debugfs_init(struct skl *skl)
+ {
+ 	struct skl_debug *d;
+@@ -43,7 +188,18 @@ struct skl_debug *skl_debugfs_init(struct skl *skl)
+ 	d->skl = skl;
+ 	d->dev = &skl->pci->dev;
+ 
++	/* now create the module dir */
++	d->modules = debugfs_create_dir("modules", d->fs);
++	if (IS_ERR(d->modules) || !d->modules) {
++		dev_err(&skl->pci->dev, "modules debugfs create failed\n");
++		goto err;
 +	}
 +
-+	d->skl = skl;
-+	d->dev = &skl->pci->dev;
+ 	return d;
 +
-+	return d;
-+}
-+
-+void skl_debugfs_exit(struct skl_debug *d)
-+{
++err:
 +	debugfs_remove_recursive(d->fs);
-+
-+	kfree(d);
-+
-+}
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index e91bbcffc856..0ebea34a4988 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -1249,12 +1249,16 @@ static int skl_platform_soc_probe(struct snd_soc_platform *platform)
++	return NULL;
+ }
  
- 	pm_runtime_get_sync(platform->dev);
- 	if ((ebus_to_hbus(ebus))->ppcap) {
-+		skl->platform = platform;
+ void skl_debugfs_exit(struct skl_debug *d)
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 9569f118e97e..c02da16fdfd6 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -2472,6 +2472,9 @@ static int skl_tplg_widget_load(struct snd_soc_component *cmpnt,
+ 	ret = skl_tplg_get_pvt_data(tplg_w, skl, bus->dev, mconfig);
+ 	if (ret < 0)
+ 		return ret;
 +
-+		/* init debugfs */
-+		skl->debugfs = skl_debugfs_init(skl);
++	skl_debug_init_module(skl->debugfs, w, mconfig);
 +
- 		ret = skl_tplg_init(platform, ebus);
- 		if (ret < 0) {
- 			dev_err(platform->dev, "Failed to init topology!\n");
- 			return ret;
- 		}
--		skl->platform = platform;
- 
- 		/* load the firmwares, since all is set */
- 		ops = skl_get_dsp_ops(skl->pci->device);
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index e761550c6dad..410ce83f4a49 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -866,6 +866,8 @@ static void skl_remove(struct pci_dev *pci)
- 	/* codec removal, invoke bus_device_remove */
- 	snd_hdac_ext_bus_device_remove(ebus);
- 
-+	skl_debugfs_exit(skl->debugfs);
-+	skl->debugfs = NULL;
- 	skl_platform_unregister(&pci->dev);
- 	skl_free_dsp(skl);
- 	skl_machine_device_unregister(skl);
+ bind_event:
+ 	if (tplg_w->event_type == 0) {
+ 		dev_dbg(bus->dev, "ASoC: No event handler required\n");
 diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 2a630fcb7f08..a47779c819d5 100644
+index a47779c819d5..14e7778d7f80 100644
 --- a/sound/soc/intel/skylake/skl.h
 +++ b/sound/soc/intel/skylake/skl.h
-@@ -42,6 +42,8 @@ struct skl_dsp_resource {
- 	u32 mem;
- };
+@@ -23,6 +23,7 @@
  
-+struct skl_debug;
-+
- struct skl {
- 	struct hdac_ext_bus ebus;
- 	struct pci_dev *pci;
-@@ -66,6 +68,8 @@ struct skl {
- 	int supend_active;
+ #include <sound/hda_register.h>
+ #include <sound/hdaudio_ext.h>
++#include <sound/soc.h>
+ #include "skl-nhlt.h"
  
- 	struct work_struct probe_work;
-+
-+	struct skl_debug *debugfs;
- };
- 
- #define skl_to_ebus(s)	(&(s)->ebus)
-@@ -116,4 +120,16 @@ void skl_update_d0i3c(struct device *dev, bool enable);
+ #define SKL_SUSPEND_DELAY 2000
+@@ -120,9 +121,14 @@ void skl_update_d0i3c(struct device *dev, bool enable);
  int skl_nhlt_create_sysfs(struct skl *skl);
  void skl_nhlt_remove_sysfs(struct skl *skl);
  
-+#ifdef CONFIG_DEBUG_FS
-+struct skl_debug *skl_debugfs_init(struct skl *skl);
-+void skl_debugfs_exit(struct skl_debug *d);
-+#else
-+static inline struct skl_debug *skl_debugfs_init(struct skl *skl)
-+{
-+	return NULL;
-+}
-+static inline void skl_debugfs_exit(struct skl_debug *d)
-+{}
-+#endif
++struct skl_module_cfg;
 +
+ #ifdef CONFIG_DEBUG_FS
+ struct skl_debug *skl_debugfs_init(struct skl *skl);
+ void skl_debugfs_exit(struct skl_debug *d);
++void skl_debug_init_module(struct skl_debug *d,
++			struct snd_soc_dapm_widget *w,
++			struct skl_module_cfg *mconfig);
+ #else
+ static inline struct skl_debug *skl_debugfs_init(struct skl *skl)
+ {
+@@ -130,6 +136,10 @@ static inline struct skl_debug *skl_debugfs_init(struct skl *skl)
+ }
+ static inline void skl_debugfs_exit(struct skl_debug *d)
+ {}
++static inline void skl_debug_init_module(struct skl_debug *d,
++					 struct snd_soc_dapm_widget *w,
++					 struct skl_module_cfg *mconfig)
++{}
+ #endif
+ 
  #endif /* __SOUND_SOC_SKL_H */
 -- 
 2.13.0
