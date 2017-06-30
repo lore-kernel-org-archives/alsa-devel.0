@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: audio-graph-card: update bindings for
-	amplifier support" to the asoc tree
-Date: Fri, 30 Jun 2017 12:58:57 +0100
-Message-ID: <E1dQuZd-0007yL-PG@finisterre>
-References: <1498742798-3128-2-git-send-email-shawnguo@kernel.org>
+Subject: Applied "ASoC: nau8825: change crosstalk-bypass
+	property to bool type" to the asoc tree
+Date: Fri, 30 Jun 2017 12:59:14 +0100
+Message-ID: <E1dQuZu-000812-SN@finisterre>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id E5E772674F1
- for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 13:59:08 +0200 (CEST)
-In-Reply-To: <1498742798-3128-2-git-send-email-shawnguo@kernel.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id C40BD26752C
+ for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 13:59:24 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shawn Guo <shawn.guo@linaro.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Baoyou Xie <xie.baoyou@sanechips.com.cn>, Rob Herring <robh+dt@kernel.org>, Mark Brown <broonie@kernel.org>, Xin Zhou <zhou.xin8@sanechips.com.cn>, Jun Nie <jun.nie@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: John Hsu <supercraig0719@gmail.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, John Hsu <KCHSU0@nuvoton.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: audio-graph-card: update bindings for amplifier support
+   ASoC: nau8825: change crosstalk-bypass property to bool type
 
 has been applied to the asoc tree at
 
@@ -53,45 +52,59 @@ to this mail.
 Thanks,
 Mark
 
->From a0c683d734e0b3589892c17d0e1187f20d2c3a54 Mon Sep 17 00:00:00 2001
-From: Shawn Guo <shawn.guo@linaro.org>
-Date: Thu, 29 Jun 2017 21:26:37 +0800
-Subject: [PATCH] ASoC: audio-graph-card: update bindings for amplifier support
+>From fc3ba81a5adac413312019413c91b1e6a5d8d1fa Mon Sep 17 00:00:00 2001
+From: John Hsu <supercraig0719@gmail.com>
+Date: Thu, 29 Jun 2017 11:41:30 +0800
+Subject: [PATCH] ASoC: nau8825: change crosstalk-bypass property to bool type
 
-The audio-graph-card should be able to support widgets and routing in
-the same way as what simple-audio-card does.  The patch adds the
-properties into audio-graph-card bindings.  Then an optional property
-'pa-gpios' for controlling external amplifier, which depends on DAPM
-widgets and routing, is added.
+The property type of "nuvoton,crosstalk-bypass" changes to boolean.
+The document is updated as well.
 
-Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
+Signed-off-by: John Hsu <supercraig0719@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/audio-graph-card.txt | 5 +++++
- 1 file changed, 5 insertions(+)
+ Documentation/devicetree/bindings/sound/nau8825.txt | 3 +++
+ sound/soc/codecs/nau8825.c                          | 6 ++----
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/audio-graph-card.txt b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
-index bac4b1b1060f..6e6720aa33f1 100644
---- a/Documentation/devicetree/bindings/sound/audio-graph-card.txt
-+++ b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
-@@ -10,6 +10,8 @@ see ${LINUX}/Documentation/devicetree/bindings/sound/simple-card.txt
- Below are same as Simple-Card.
+diff --git a/Documentation/devicetree/bindings/sound/nau8825.txt b/Documentation/devicetree/bindings/sound/nau8825.txt
+index d3374231c871..2f5e973285a6 100644
+--- a/Documentation/devicetree/bindings/sound/nau8825.txt
++++ b/Documentation/devicetree/bindings/sound/nau8825.txt
+@@ -69,6 +69,8 @@ Optional properties:
+   - nuvoton,jack-insert-debounce: number from 0 to 7 that sets debounce time to 2^(n+2) ms
+   - nuvoton,jack-eject-debounce: number from 0 to 7 that sets debounce time to 2^(n+2) ms
  
- - label
-+- widgets
-+- routing
- - dai-format
- - frame-master
- - bitclock-master
-@@ -24,6 +26,9 @@ Required properties:
- - compatible				: "audio-graph-card";
- - dais					: list of CPU DAI port{s}
- 
-+Optional properties:
-+- pa-gpios: GPIO used to control external amplifier.
++  - nuvoton,crosstalk-bypass: make crosstalk function bypass if set.
 +
- Example: Single DAI case
+   - clocks: list of phandle and clock specifier pairs according to common clock bindings for the
+       clocks described in clock-names
+   - clock-names: should include "mclk" for the MCLK master clock
+@@ -96,6 +98,7 @@ Example:
+       nuvoton,short-key-debounce = <2>;
+       nuvoton,jack-insert-debounce = <7>;
+       nuvoton,jack-eject-debounce = <7>;
++      nuvoton,crosstalk-bypass;
  
- 	sound_card {
+       clock-names = "mclk";
+       clocks = <&tegra_car TEGRA210_CLK_CLK_OUT_2>;
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index 80bae481e75d..46a30eaa7ace 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -2506,10 +2506,8 @@ static int nau8825_read_device_properties(struct device *dev,
+ 		&nau8825->jack_eject_debounce);
+ 	if (ret)
+ 		nau8825->jack_eject_debounce = 0;
+-	ret = device_property_read_u32(dev, "nuvoton,crosstalk-bypass",
+-		&nau8825->xtalk_bypass);
+-	if (ret)
+-		nau8825->xtalk_bypass = 1;
++	nau8825->xtalk_bypass = device_property_read_bool(dev,
++		"nuvoton,crosstalk-bypass");
+ 
+ 	nau8825->mclk = devm_clk_get(dev, "mclk");
+ 	if (PTR_ERR(nau8825->mclk) == -EPROBE_DEFER) {
 -- 
 2.13.2
