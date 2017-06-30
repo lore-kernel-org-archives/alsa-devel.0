@@ -1,16 +1,16 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH alsa-lib v2 4/6] pcm: hw: add a helper function
-	to issue appl_ptr without side-effects
-Date: Fri, 30 Jun 2017 20:37:27 +0900
-Message-ID: <20170630113729.13656-5-o-takashi@sakamocchi.jp>
+Subject: [PATCH alsa-lib v2 6/6] pcm: hw: remove superfluous
+	code to call of SNDRV_PCM_IOCTL_SYNC_PTR in snd_pcm_hw_forward()
+Date: Fri, 30 Jun 2017 20:37:29 +0900
+Message-ID: <20170630113729.13656-7-o-takashi@sakamocchi.jp>
 References: <20170630113729.13656-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id F02E626749D
- for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 13:37:33 +0200 (CEST)
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 7AF192674A3
+ for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 13:37:36 +0200 (CEST)
 In-Reply-To: <20170630113729.13656-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,57 +25,56 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-After starting, PCM substream shift its state to running and applications
-can move appl_ptr by several ways. When status and control data of runtime
-of the PCM substream is not mapped, the applications should issue appl_ptr
-to kernel land. In this case, when any PCM frames is handled by mmap
-operation, the applications should issue appl_ptr to update.
+SNDRV_PCM_IOCTL_SYNC_PTR command was introduced to PCM protocol/interface
+in its version 2.0.7, however this command is used in a branch for the
+newer version protocol/interface in snd_pcm_hw_forward().
 
-This commit adds a helper function for this purpose. To avoid unexpected
-change of avail_min, this commit uses a flag just to update appl_ptr.
+This commit removes the superfluous code as a part of work for code
+refactoring.
 
+Fixes: eafb4925124b ("- added SYNC_PTR ioctl support for pcm_hw plugin")
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- src/pcm/pcm_hw.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ src/pcm/pcm_hw.c | 13 -------------
+ 1 file changed, 13 deletions(-)
 
 diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
-index 8455baaf..51512306 100644
+index 9c8fc3f6..16d45e74 100644
 --- a/src/pcm/pcm_hw.c
 +++ b/src/pcm/pcm_hw.c
-@@ -151,6 +151,15 @@ static int sync_ptr(snd_pcm_hw_t *hw, unsigned int flags)
+@@ -144,13 +144,6 @@ static int sync_ptr1(snd_pcm_hw_t *hw, unsigned int flags)
  	return 0;
  }
  
-+static int issue_applptr(snd_pcm_hw_t *hw)
-+{
-+	if (!hw->mmap_control_fallbacked)
-+		return 0;
-+
-+	/* Avoid unexpected change of avail_min in kernel space. */
-+	return sync_ptr1(hw, SNDRV_PCM_SYNC_PTR_AVAIL_MIN);
-+}
-+
- static int request_hwsync(snd_pcm_hw_t *hw)
+-static int sync_ptr(snd_pcm_hw_t *hw, unsigned int flags)
+-{
+-	if (hw->mmap_status_fallbacked || hw->mmap_control_fallbacked)
+-		return sync_ptr1(hw, flags);
+-	return 0;
+-}
+-
+ static int issue_avail_min(snd_pcm_hw_t *hw)
  {
- 	if (!hw->mmap_status_fallbacked)
-@@ -667,7 +676,7 @@ static int snd_pcm_hw_start(snd_pcm_t *pcm)
- 	assert(pcm->stream != SND_PCM_STREAM_PLAYBACK ||
- 	       snd_pcm_mmap_playback_hw_avail(pcm) > 0);
- #endif
--	sync_ptr(hw, 0);
-+	issue_applptr(hw);
- 	if (ioctl(hw->fd, SNDRV_PCM_IOCTL_START) < 0) {
- 		err = -errno;
- 		SYSMSG("SNDRV_PCM_IOCTL_START failed (%i)", err);
-@@ -1081,7 +1090,7 @@ static snd_pcm_sframes_t snd_pcm_hw_mmap_commit(snd_pcm_t *pcm,
- 	snd_pcm_hw_t *hw = pcm->private_data;
+ 	if (!hw->mmap_control_fallbacked)
+@@ -777,9 +770,6 @@ static snd_pcm_sframes_t snd_pcm_hw_forward(snd_pcm_t *pcm, snd_pcm_uframes_t fr
+ 	} else {
+ 		snd_pcm_sframes_t avail;
  
- 	snd_pcm_mmap_appl_forward(pcm, size);
--	sync_ptr(hw, 0);
-+	issue_applptr(hw);
- #ifdef DEBUG_MMAP
- 	fprintf(stderr, "appl_forward: hw_ptr = %li, appl_ptr = %li, size = %li\n", *pcm->hw.ptr, *pcm->appl.ptr, size);
- #endif
+-		err = sync_ptr(hw, SNDRV_PCM_SYNC_PTR_HWSYNC);
+-		if (err < 0)
+-			return err;
+ 		switch (FAST_PCM_STATE(hw)) {
+ 		case SNDRV_PCM_STATE_RUNNING:
+ 		case SNDRV_PCM_STATE_DRAINING:
+@@ -797,9 +787,6 @@ static snd_pcm_sframes_t snd_pcm_hw_forward(snd_pcm_t *pcm, snd_pcm_uframes_t fr
+ 		if (frames > (snd_pcm_uframes_t)avail)
+ 			frames = avail;
+ 		snd_pcm_mmap_appl_forward(pcm, frames);
+-		err = sync_ptr(hw, 0);
+-		if (err < 0)
+-			return err;
+ 		return frames;
+ 	}
+ }
 -- 
 2.11.0
