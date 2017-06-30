@@ -1,16 +1,17 @@
-From: Guneshwor Singh <guneshwor.o.singh@intel.com>
-Subject: [PATCH v3 4/4] ASoC: Intel: Skylake: Add support to
-	read firmware registers
-Date: Fri, 30 Jun 2017 09:06:08 +0530
-Message-ID: <20170630033608.31466-5-guneshwor.o.singh@intel.com>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v3 0/4] [PATCH v3 0/4] Add debugfs support
+ for skylake driver
+Date: Fri, 30 Jun 2017 10:10:10 +0530
+Message-ID: <20170630044009.GN19154@localhost>
 References: <20170630033608.31466-1-guneshwor.o.singh@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id F2B6F267483
- for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 05:37:35 +0200 (CEST)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 92DC926744B
+ for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 06:37:19 +0200 (CEST)
+Content-Disposition: inline
 In-Reply-To: <20170630033608.31466-1-guneshwor.o.singh@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,117 +22,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
-Cc: Patches Audio <patches.audio@intel.com>, Takashi Iwai <tiwai@suse.de>, Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>, Jayachandran B <jayachandran.b@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Ramesh Babu <ramesh.babu@intel.com>, Mousumi Jana <mousumix.jana@intel.com>, liam.r.girdwood@linux.intel.com, Vinod Koul <vinod.koul@intel.com>, Vunny Sodhi <vunnyx.sodhi@intel.com>
+To: Guneshwor Singh <guneshwor.o.singh@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Patches Audio <patches.audio@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Vunny Sodhi <vunnyx.sodhi@intel.com>
+On Fri, Jun 30, 2017 at 09:06:04AM +0530, Guneshwor Singh wrote:
+> This series introduces debugfs support for skylake driver. It helps in
+> debugging by providing module configurations which is loaded from topology.
+> 
+> It also allows to read the firmware registers which are a part of SRAM
+> memory area accessible by host CPU through a memory window.
+> 
+> Changes in v3:
+> - Change debugfs parent from debugfs root to ASoC platform component
+> 
+> Changes in v2:
+> - Re-ordered patch and squashed platform changes
+> 
+> Guneshwor Singh (1):
+>   ASoC: Intel: Skylake: Add sram address to sst_addr structure
+> 
+> Vinod Koul (2):
+>   ASoC: Intel: Skylake: Add debugfs support
+>   ASoC: Intel: Skylake: Debugfs facility to dump module config
+> 
+> Vunny Sodhi (1):
+>   ASoC: Intel: Skylake: Add support to read firmware registers
+ Guneshwor Singh (1):
+   ASoC: Intel: Skylake: Add sram address to sst_addr structure
 
-This patch adds debugfs support to read fw registers, mailbox
-offsets and sram address.
+These two:
 
-Signed-off-by: Mousumi Jana <mousumix.jana@intel.com>
-Signed-off-by: Ramesh Babu <ramesh.babu@intel.com>
-Signed-off-by: Jayachandran B <jayachandran.b@intel.com>
-Signed-off-by: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
-Signed-off-by: Vunny Sodhi <vunnyx.sodhi@intel.com>
-Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
----
- sound/soc/intel/skylake/skl-debug.c | 57 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 57 insertions(+)
+Acked-By: Vinod Koul <vinod.koul@intel.com>
 
-diff --git a/sound/soc/intel/skylake/skl-debug.c b/sound/soc/intel/skylake/skl-debug.c
-index be3238c63200..75497b1fda45 100644
---- a/sound/soc/intel/skylake/skl-debug.c
-+++ b/sound/soc/intel/skylake/skl-debug.c
-@@ -16,10 +16,15 @@
- #include <linux/pci.h>
- #include <linux/debugfs.h>
- #include "skl.h"
-+#include "skl-sst-dsp.h"
-+#include "skl-sst-ipc.h"
- #include "skl-tplg-interface.h"
- #include "skl-topology.h"
-+#include "../common/sst-dsp-priv.h"
- 
- #define MOD_BUF		PAGE_SIZE
-+#define FW_REG_BUF	PAGE_SIZE
-+#define FW_REG_SIZE	0x60
- 
- struct skl_debug {
- 	struct skl *skl;
-@@ -27,6 +32,7 @@ struct skl_debug {
- 
- 	struct dentry *fs;
- 	struct dentry *modules;
-+	u8 fw_read_buff[FW_REG_BUF];
- };
- 
- static ssize_t skl_print_pins(struct skl_module_pin *m_pin, char *buf,
-@@ -169,6 +175,51 @@ void skl_debug_init_module(struct skl_debug *d,
- 		dev_err(d->dev, "%s: module debugfs init failed\n", w->name);
- }
- 
-+static ssize_t fw_softreg_read(struct file *file, char __user *user_buf,
-+			       size_t count, loff_t *ppos)
-+{
-+	struct skl_debug *d = file->private_data;
-+	struct sst_dsp *sst = d->skl->skl_sst->dsp;
-+	size_t w0_stat_sz = sst->addr.w0_stat_sz;
-+	void __iomem *in_base = sst->mailbox.in_base;
-+	void __iomem *fw_reg_addr;
-+	unsigned int offset;
-+	char *tmp;
-+	ssize_t ret = 0;
-+
-+	tmp = kzalloc(FW_REG_BUF, GFP_KERNEL);
-+	if (!tmp)
-+		return -ENOMEM;
-+
-+	fw_reg_addr = in_base - w0_stat_sz;
-+	memset(d->fw_read_buff, 0, FW_REG_BUF);
-+
-+	if (w0_stat_sz > 0)
-+		__iowrite32_copy(d->fw_read_buff, fw_reg_addr, w0_stat_sz >> 2);
-+
-+	for (offset = 0; offset < FW_REG_SIZE; offset += 16) {
-+		ret += snprintf(tmp + ret, FW_REG_BUF - ret, "%#.4x: ", offset);
-+		hex_dump_to_buffer(d->fw_read_buff + offset, 16, 16, 4,
-+				   tmp + ret, FW_REG_BUF - ret, 0);
-+		ret += strlen(tmp + ret);
-+
-+		/* print newline for each offset */
-+		if (FW_REG_BUF - ret > 0)
-+			tmp[ret++] = '\n';
-+	}
-+
-+	ret = simple_read_from_buffer(user_buf, count, ppos, tmp, ret);
-+	kfree(tmp);
-+
-+	return ret;
-+}
-+
-+static const struct file_operations soft_regs_ctrl_fops = {
-+	.open = simple_open,
-+	.read = fw_softreg_read,
-+	.llseek = default_llseek,
-+};
-+
- struct skl_debug *skl_debugfs_init(struct skl *skl)
- {
- 	struct skl_debug *d;
-@@ -195,6 +246,12 @@ struct skl_debug *skl_debugfs_init(struct skl *skl)
- 		goto err;
- 	}
- 
-+	if (!debugfs_create_file("fw_soft_regs_rd", 0444, d->fs, d,
-+				 &soft_regs_ctrl_fops)) {
-+		dev_err(d->dev, "fw soft regs control debugfs init failed\n");
-+		goto err;
-+	}
-+
- 	return d;
- 
- err:
+> 
+>  sound/soc/intel/common/sst-dsp-priv.h  |   4 +
+>  sound/soc/intel/skylake/Makefile       |   4 +
+>  sound/soc/intel/skylake/bxt-sst.c      |   4 +
+>  sound/soc/intel/skylake/skl-debug.c    | 268 +++++++++++++++++++++++++++++++++
+>  sound/soc/intel/skylake/skl-pcm.c      |   6 +-
+>  sound/soc/intel/skylake/skl-sst.c      |   5 +
+>  sound/soc/intel/skylake/skl-topology.c |   3 +
+>  sound/soc/intel/skylake/skl.c          |   2 +
+>  sound/soc/intel/skylake/skl.h          |  26 ++++
+>  9 files changed, 321 insertions(+), 1 deletion(-)
+>  create mode 100644 sound/soc/intel/skylake/skl-debug.c
+> 
+> -- 
+> 2.13.0
+> 
+
 -- 
-2.13.0
+~Vinod
