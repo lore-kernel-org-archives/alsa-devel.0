@@ -1,17 +1,15 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH] alsa-lib: topology: improve verbose output for
-	block output.
-Date: Fri, 30 Jun 2017 14:14:56 +0100
-Message-ID: <1498828496-28897-2-git-send-email-liam.r.girdwood@linux.intel.com>
-References: <1498828496-28897-1-git-send-email-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH] alsalib: topology: Add support for new widget
+	types
+Date: Fri, 30 Jun 2017 14:14:55 +0100
+Message-ID: <1498828496-28897-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id D84FD2674F1
+ by alsa0.perex.cz (Postfix) with ESMTP id D6B422674F0
  for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 15:15:20 +0200 (CEST)
-In-Reply-To: <1498828496-28897-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,43 +23,57 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Show index and full DAPm route in verbose output.
+Add topology support for new DSP widget types. This allows the new
+widgets to be added to the driver and firmware DAPM graphs.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- src/topology/builder.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/src/topology/builder.c b/src/topology/builder.c
-index ca5cbe1a..997df0c7 100644
---- a/src/topology/builder.c
-+++ b/src/topology/builder.c
-@@ -67,9 +67,10 @@ static int write_block_header(snd_tplg_t *tplg, unsigned int type,
- 		exit(-EINVAL);
- 	}
+Kernel part now upstream in Mark's ASoC for-next branch.
+
+ include/sound/asoc.h | 10 +++++++++-
+ src/topology/dapm.c  |  8 ++++++++
+ 2 files changed, 17 insertions(+), 1 deletion(-)
+
+diff --git a/include/sound/asoc.h b/include/sound/asoc.h
+index 082c5429..0f5d9f9a 100644
+--- a/include/sound/asoc.h
++++ b/include/sound/asoc.h
+@@ -70,7 +70,15 @@
+ #define SND_SOC_TPLG_DAPM_DAI_IN	13
+ #define SND_SOC_TPLG_DAPM_DAI_OUT	14
+ #define SND_SOC_TPLG_DAPM_DAI_LINK	15
+-#define SND_SOC_TPLG_DAPM_LAST		SND_SOC_TPLG_DAPM_DAI_LINK
++#define SND_SOC_TPLG_DAPM_BUFFER	16
++#define SND_SOC_TPLG_DAPM_SCHEDULER	17
++#define SND_SOC_TPLG_DAPM_EFFECT	18
++#define SND_SOC_TPLG_DAPM_SIGGEN	19
++#define SND_SOC_TPLG_DAPM_SRC		20
++#define SND_SOC_TPLG_DAPM_ASRC		21
++#define SND_SOC_TPLG_DAPM_ENCODER	22
++#define SND_SOC_TPLG_DAPM_DECODER	23
++#define SND_SOC_TPLG_DAPM_LAST		SND_SOC_TPLG_DAPM_DECODER
  
--	verbose(tplg, " header type %d size 0x%lx/%ld vendor %d "
--		"version %d\n", type, (long unsigned int)payload_size,
--		(long int)payload_size, vendor_type, version);
-+	verbose(tplg, " header index %d type %d count %d size 0x%lx/%ld vendor %d "
-+		"version %d\n", index, type, count,
-+		(long unsigned int)payload_size, (long int)payload_size,
-+		vendor_type, version);
+ /* Header magic number and string sizes */
+ #define SND_SOC_TPLG_MAGIC		0x41536F43 /* ASoC */
+diff --git a/src/topology/dapm.c b/src/topology/dapm.c
+index 6af750b9..66892a66 100644
+--- a/src/topology/dapm.c
++++ b/src/topology/dapm.c
+@@ -38,6 +38,14 @@ static const struct map_elem widget_map[] = {
+ 	{"dai_in", SND_SOC_TPLG_DAPM_DAI_IN},
+ 	{"dai_out", SND_SOC_TPLG_DAPM_DAI_OUT},
+ 	{"dai_link", SND_SOC_TPLG_DAPM_DAI_LINK},
++	{"buffer", SND_SOC_TPLG_DAPM_BUFFER},
++	{"scheduler", SND_SOC_TPLG_DAPM_SCHEDULER},
++	{"effect", SND_SOC_TPLG_DAPM_EFFECT},
++	{"siggen", SND_SOC_TPLG_DAPM_SIGGEN},
++	{"src", SND_SOC_TPLG_DAPM_SRC},
++	{"asrc", SND_SOC_TPLG_DAPM_ASRC},
++	{"encoder", SND_SOC_TPLG_DAPM_ENCODER},
++	{"decoder", SND_SOC_TPLG_DAPM_DECODER},
+ };
  
- 	tplg->next_hdr_pos += hdr.payload_size + sizeof(hdr);
- 
-@@ -119,8 +120,10 @@ static int write_elem_block(snd_tplg_t *tplg,
- 					verbose(tplg, " %s '%s': write %d bytes\n",
- 						obj_name, elem->id, elem->size);
- 				else
--					verbose(tplg, " %s '%s': write %d bytes\n",
--						obj_name, elem->route->source, elem->size);
-+					verbose(tplg, " %s '%s -> %s -> %s': write %d bytes\n",
-+						obj_name, elem->route->source,
-+						elem->route->control,
-+						elem->route->sink, elem->size);
- 
- 				wsize = write(tplg->out_fd, elem->obj, elem->size);
- 				if (wsize < 0) {
+ static int lookup_widget(const char *w)
 -- 
 2.11.0
