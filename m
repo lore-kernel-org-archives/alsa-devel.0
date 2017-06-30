@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: constify dev_pm_ops structures."
-	to the asoc tree
-Date: Fri, 30 Jun 2017 12:59:10 +0100
-Message-ID: <E1dQuZq-00080J-Im@finisterre>
-References: <6de23d3755cd8c312f213173338e26de6c319f6d.1498712868.git.arvind.yadav.cs@gmail.com>
+Subject: Applied "ASoC: dapm: Add new widget type for
+	constructing DAPM graphs on DSPs." to the asoc tree
+Date: Fri, 30 Jun 2017 12:59:23 +0100
+Message-ID: <E1dQua3-00082k-AO@finisterre>
+References: <1498742546-23463-1-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F0EB26752D
- for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 13:59:25 +0200 (CEST)
-In-Reply-To: <6de23d3755cd8c312f213173338e26de6c319f6d.1498712868.git.arvind.yadav.cs@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C3045267532
+ for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 13:59:31 +0200 (CEST)
+In-Reply-To: <1498742546-23463-1-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, hiroyuki.yokoyama.vx@renesas.com, baoyou.xie@linaro.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: constify dev_pm_ops structures.
+   ASoC: dapm: Add new widget type for constructing DAPM graphs on DSPs.
 
 has been applied to the asoc tree at
 
@@ -53,41 +53,110 @@ to this mail.
 Thanks,
 Mark
 
->From 49ebf13b0453d8535cd53abb514e1683a1875208 Mon Sep 17 00:00:00 2001
-From: Arvind Yadav <arvind.yadav.cs@gmail.com>
-Date: Thu, 29 Jun 2017 10:40:50 +0530
-Subject: [PATCH] ASoC: rsnd: constify dev_pm_ops structures.
+>From 8a70b4544ef4f094cc2c52734e097cc358f56603 Mon Sep 17 00:00:00 2001
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Date: Thu, 29 Jun 2017 14:22:24 +0100
+Subject: [PATCH] ASoC: dapm: Add new widget type for constructing DAPM graphs
+ on DSPs.
 
-dev_pm_ops are not supposed to change at runtime. All functions
-working with dev_pm_ops provided by <linux/device.h> work with const
-dev_pm_ops. So mark the non-const structs as const.
+Add some DAPM widget types to better support the construction of DAPM
+graphs within DSPs.
 
-File size before:
-   text	   data	    bss	    dec	    hex	filename
-   8172	    920	      0	   9092	   2384	sound/soc/sh/rcar/core.o
-
-File size After adding 'const':
-   text	   data	    bss	    dec	    hex	filename
-   8364	    728	      0	   9092	   2384	sound/soc/sh/rcar/core.o
-
-Signed-off-by: Arvind Yadav <arvind.yadav.cs@gmail.com>
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/sound/soc/dapm.rst | 18 ++++++++++++++++++
+ include/sound/soc-dapm.h         |  7 +++++++
+ include/uapi/sound/asoc.h        | 10 +++++++++-
+ sound/soc/soc-topology.c         |  8 ++++++++
+ 4 files changed, 42 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 409bac331d27..3f2ced26ed37 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1534,7 +1534,7 @@ static int rsnd_resume(struct device *dev)
- 	return 0;
- }
+diff --git a/Documentation/sound/soc/dapm.rst b/Documentation/sound/soc/dapm.rst
+index a27f42befa4d..8e44107933ab 100644
+--- a/Documentation/sound/soc/dapm.rst
++++ b/Documentation/sound/soc/dapm.rst
+@@ -105,6 +105,24 @@ Pre
+ 	Special PRE widget (exec before all others)
+ Post
+ 	Special POST widget (exec after all others)
++Buffer
++	Inter widget audio data buffer within a DSP.
++Scheduler
++	DSP internal scheduler that schedules component/pipeline processing
++	work.
++Effect
++	Widget that performs an audio processing effect.
++SRC
++	Sample Rate Converter within DSP or CODEC
++ASRC
++	Asynchronous Sample Rate Converter within DSP or CODEC
++Encoder
++	Widget that encodes audio data from one format (usually PCM) to another
++	usually more compressed format.
++Decoder
++	Widget that decodes audio data from a compressed format to an
++	uncompressed format like PCM.
++
  
--static struct dev_pm_ops rsnd_pm_ops = {
-+static const struct dev_pm_ops rsnd_pm_ops = {
- 	.suspend		= rsnd_suspend,
- 	.resume			= rsnd_resume,
+ (Widgets are defined in include/sound/soc-dapm.h)
+ 
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index a466f4bdc835..344b96c206a3 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -510,6 +510,13 @@ enum snd_soc_dapm_type {
+ 	snd_soc_dapm_dai_out,
+ 	snd_soc_dapm_dai_link,		/* link between two DAI structures */
+ 	snd_soc_dapm_kcontrol,		/* Auto-disabled kcontrol */
++	snd_soc_dapm_buffer,		/* DSP/CODEC internal buffer */
++	snd_soc_dapm_scheduler,		/* DSP/CODEC internal scheduler */
++	snd_soc_dapm_effect,		/* DSP/CODEC effect component */
++	snd_soc_dapm_src,		/* DSP/CODEC SRC component */
++	snd_soc_dapm_asrc,		/* DSP/CODEC ASRC component */
++	snd_soc_dapm_encoder,		/* FW/SW audio encoder component */
++	snd_soc_dapm_decoder,		/* FW/SW audio decoder component */
  };
+ 
+ enum snd_soc_dapm_subclass {
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index 6702533c8bd8..78014ec56357 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -73,7 +73,15 @@
+ #define SND_SOC_TPLG_DAPM_DAI_IN	13
+ #define SND_SOC_TPLG_DAPM_DAI_OUT	14
+ #define SND_SOC_TPLG_DAPM_DAI_LINK	15
+-#define SND_SOC_TPLG_DAPM_LAST		SND_SOC_TPLG_DAPM_DAI_LINK
++#define SND_SOC_TPLG_DAPM_BUFFER	16
++#define SND_SOC_TPLG_DAPM_SCHEDULER	17
++#define SND_SOC_TPLG_DAPM_EFFECT	18
++#define SND_SOC_TPLG_DAPM_SIGGEN	19
++#define SND_SOC_TPLG_DAPM_SRC		20
++#define SND_SOC_TPLG_DAPM_ASRC		21
++#define SND_SOC_TPLG_DAPM_ENCODER	22
++#define SND_SOC_TPLG_DAPM_DECODER	23
++#define SND_SOC_TPLG_DAPM_LAST		SND_SOC_TPLG_DAPM_DECODER
+ 
+ /* Header magic number and string sizes */
+ #define SND_SOC_TPLG_MAGIC		0x41536F43 /* ASoC */
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 002772e3ba2c..dd3a391476ae 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -242,6 +242,14 @@ static const struct soc_tplg_map dapm_map[] = {
+ 	{SND_SOC_TPLG_DAPM_DAI_IN, snd_soc_dapm_dai_in},
+ 	{SND_SOC_TPLG_DAPM_DAI_OUT, snd_soc_dapm_dai_out},
+ 	{SND_SOC_TPLG_DAPM_DAI_LINK, snd_soc_dapm_dai_link},
++	{SND_SOC_TPLG_DAPM_BUFFER, snd_soc_dapm_buffer},
++	{SND_SOC_TPLG_DAPM_SCHEDULER, snd_soc_dapm_scheduler},
++	{SND_SOC_TPLG_DAPM_EFFECT, snd_soc_dapm_effect},
++	{SND_SOC_TPLG_DAPM_SIGGEN, snd_soc_dapm_siggen},
++	{SND_SOC_TPLG_DAPM_SRC, snd_soc_dapm_src},
++	{SND_SOC_TPLG_DAPM_ASRC, snd_soc_dapm_asrc},
++	{SND_SOC_TPLG_DAPM_ENCODER, snd_soc_dapm_encoder},
++	{SND_SOC_TPLG_DAPM_DECODER, snd_soc_dapm_decoder},
+ };
+ 
+ static int tplc_chan_get_reg(struct soc_tplg *tplg,
 -- 
 2.13.2
