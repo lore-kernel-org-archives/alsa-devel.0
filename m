@@ -1,21 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 12/12] ASoC: Fix use-after-free at card
- unregistration
-Date: Fri, 30 Jun 2017 12:56:00 +0100
-Message-ID: <20170630115600.btemrql3aso4s45z@sirena.org.uk>
-References: <1497857229-12049-1-git-send-email-robert.jarzmik@free.fr>
- <1497857229-12049-13-git-send-email-robert.jarzmik@free.fr>
- <s5hefug72iu.wl-tiwai@suse.de> <87injstckf.fsf@belgarion.home>
- <20170628195349.pqeb3dceddxar75s@sirena.org.uk>
- <87o9t7u5v5.fsf@belgarion.home>
+Subject: Applied "ASoC: fix semicolon.cocci warnings" to the
+	asoc tree
+Date: Fri, 30 Jun 2017 12:58:33 +0100
+Message-ID: <E1dQuZF-0007uR-Ob@finisterre>
+References: <20170629162713.GA81395@lkp-hsx02>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5981917661803958415=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7B6602674A1
- for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 13:56:16 +0200 (CEST)
-In-Reply-To: <87o9t7u5v5.fsf@belgarion.home>
+ by alsa0.perex.cz (Postfix) with ESMTP id F00C52674A1
+ for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 13:58:52 +0200 (CEST)
+In-Reply-To: <20170629162713.GA81395@lkp-hsx02>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,56 +22,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Takashi Iwai <tiwai@suse.de>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, linux-kernel@vger.kernel.org, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, patches@opensource.wolfsonmicro.com, stable@vger.kernel.org, linux-input@vger.kernel.org, Daniel Mack <daniel@zonque.org>, Charles Keepax <ckeepax@opensource.wolfsonmicro.com>, Lee Jones <lee.jones@linaro.org>, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, Mengdong Lin <mengdong.lin@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, kbuild-all@01.org, Fengguang Wu <fengguang.wu@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============5981917661803958415==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="myrzyy6jr4lqgr7p"
-Content-Disposition: inline
+   ASoC: fix semicolon.cocci warnings
 
+has been applied to the asoc tree at
 
---myrzyy6jr4lqgr7p
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   git://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, Jun 29, 2017 at 12:03:58AM +0200, Robert Jarzmik wrote:
-> Mark Brown <broonie@kernel.org> writes:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > Based on the missing first patch I was expecting the series to get
-> > reposted?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> The first patch is only moving around a .h file. I was expecting a review before
-> reposting a v3.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-I can't tell what's in the first patch if you didn't send it.... :(
-In general it's best to resend for things like this, I know I focus my
-review on things that can progress as-is.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---myrzyy6jr4lqgr7p
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+>From 46b5a4d249ac6798cee28de9f51ef80777d16a3e Mon Sep 17 00:00:00 2001
+From: Wu Fengguang <fengguang.wu@intel.com>
+Date: Fri, 30 Jun 2017 00:27:13 +0800
+Subject: [PATCH] ASoC: fix semicolon.cocci warnings
 
-iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllWPE8ACgkQJNaLcl1U
-h9BfWgf+MNz3C/+kbcY/hHm3cVx+/LAqMX1DTs1J1LaZIwf2eieegzOy4ZP4OljI
-c2K6G63yM7TzB33tICGQIU5RCgPHvQLhoj+2WcmxRMU37eBELuT7C9+RJgD2i4l3
-xtc44D87e2pZe84mCG+cYXKnv2sS7XEDUn7rc9x+Qa1xBlafmS5q+z4G6GzVfNSE
-16+c3tHDyfBECz/NNGNHBdVTRpwtGKBcsi9kkUC1GmvFwbBqjkjXxuue2H+qAwO4
-mbc21nN6NHrQpFf/utggp0QmV/fbNax6he88sMt64vKONLl81lsb/VakHUHFEayr
-dT++NE/d13hnNEdAWDmlMaEksJQtzA==
-=K7yJ
------END PGP SIGNATURE-----
+sound/soc/soc-core.c:1961:2-3: Unneeded semicolon
 
---myrzyy6jr4lqgr7p--
+ Remove unneeded semicolon.
 
---===============5981917661803958415==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Generated by: scripts/coccinelle/misc/semicolon.cocci
 
+Fixes: 98faf436ee05 ("ASoC: Drop invalid DMI fields when setting card long name from DMI info")
+CC: Mengdong Lin <mengdong.lin@linux.intel.com>
+Signed-off-by: Fengguang Wu <fengguang.wu@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---===============5981917661803958415==--
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index e14e04cc0a93..6bd593dc9b54 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1958,7 +1958,7 @@ static int is_dmi_valid(const char *field)
+ 		if (strstr(field, dmi_blacklist[i]))
+ 			return 0;
+ 		i++;
+-	};
++	}
+ 
+ 	return 1;
+ }
+-- 
+2.13.2
