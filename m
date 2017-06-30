@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5670: fix incompatible pointer type
-	of set_sysclk" to the asoc tree
-Date: Fri, 30 Jun 2017 12:59:18 +0100
-Message-ID: <E1dQuZy-00081z-NJ@finisterre>
-References: <1498700875-13120-1-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: topology: Fix usage of
+	SND_SOC_TPLG_INDEX_ALL during load" to the asoc tree
+Date: Fri, 30 Jun 2017 12:59:35 +0100
+Message-ID: <E1dQuaF-00084G-0j@finisterre>
+References: <1498742546-23463-2-git-send-email-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
  [106.187.55.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 7B3D82674D4
- for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 13:59:41 +0200 (CEST)
-In-Reply-To: <1498700875-13120-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0ADAA2674EF
+ for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 13:59:43 +0200 (CEST)
+In-Reply-To: <1498742546-23463-2-git-send-email-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5670: fix incompatible pointer type of set_sysclk
+   ASoC: topology: Fix usage of SND_SOC_TPLG_INDEX_ALL during load
 
 has been applied to the asoc tree at
 
@@ -53,31 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From c243d96378bd0dc1249a335c282133f05e93c253 Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Thu, 29 Jun 2017 09:47:55 +0800
-Subject: [PATCH] ASoC: rt5670: fix incompatible pointer type of set_sysclk
+>From bb97142bcf8c042103e87d035a120f522d12e788 Mon Sep 17 00:00:00 2001
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Date: Thu, 29 Jun 2017 14:22:25 +0100
+Subject: [PATCH] ASoC: topology: Fix usage of SND_SOC_TPLG_INDEX_ALL during
+ load
 
-The first parameter is codec not dai.
+SND_SOC_TPLG_INDEX_ALL is used by drivers to tell the core to load
+all topology component indexes, not just the index in the header.
+Fix this so that SND_SOC_TPLG_INDEX_ALL will load all components no matter
+their index.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5670.c | 2 +-
+ sound/soc/soc-topology.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index 7fa63ad366dd..64756dc95261 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -2442,7 +2442,7 @@ static int rt5670_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	return 0;
- }
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 12e189701924..6070e35455aa 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -2381,7 +2381,7 @@ static int soc_tplg_load_header(struct soc_tplg *tplg,
  
--static int rt5670_set_codec_sysclk(struct snd_soc_dai *dai, int clk_id,
-+static int rt5670_set_codec_sysclk(struct snd_soc_codec *codec, int clk_id,
- 				   int source, unsigned int freq, int dir)
- {
- 	struct rt5670_priv *rt5670 = snd_soc_codec_get_drvdata(codec);
+ 	/* check for matching ID */
+ 	if (hdr->index != tplg->req_index &&
+-		hdr->index != SND_SOC_TPLG_INDEX_ALL)
++		tplg->req_index != SND_SOC_TPLG_INDEX_ALL)
+ 		return 0;
+ 
+ 	tplg->index = hdr->index;
 -- 
 2.13.2
