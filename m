@@ -1,15 +1,15 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH] alsalib: topology: Add support for new widget
-	types
-Date: Fri, 30 Jun 2017 14:14:55 +0100
-Message-ID: <1498828496-28897-1-git-send-email-liam.r.girdwood@linux.intel.com>
+From: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Subject: [PATCH] ASoC: Intel: Skylake: Fix default
+	dma_buffer_size
+Date: Fri, 30 Jun 2017 18:38:44 +0530
+Message-ID: <1498828124-17671-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id D6B422674F0
- for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 15:15:20 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9C9722674F0
+ for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 15:24:04 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,60 +20,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, broonie@kernel.org, "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Add topology support for new DSP widget types. This allows the new
-widgets to be added to the driver and firmware DAPM graphs.
+If the dma_buffer_size is not defined in topology, fix it to 2ms default
+value to make backward compatible.
 
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Fixes: f6e6ab1d16ec ("ASoC: Intel: Skylake: Fix dma buffer size calculation")
+Signed-off-by: Subhransu S. Prusty <subhransu.s.prusty@intel.com>
 ---
+ sound/soc/intel/skylake/skl-messages.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Kernel part now upstream in Mark's ASoC for-next branch.
-
- include/sound/asoc.h | 10 +++++++++-
- src/topology/dapm.c  |  8 ++++++++
- 2 files changed, 17 insertions(+), 1 deletion(-)
-
-diff --git a/include/sound/asoc.h b/include/sound/asoc.h
-index 082c5429..0f5d9f9a 100644
---- a/include/sound/asoc.h
-+++ b/include/sound/asoc.h
-@@ -70,7 +70,15 @@
- #define SND_SOC_TPLG_DAPM_DAI_IN	13
- #define SND_SOC_TPLG_DAPM_DAI_OUT	14
- #define SND_SOC_TPLG_DAPM_DAI_LINK	15
--#define SND_SOC_TPLG_DAPM_LAST		SND_SOC_TPLG_DAPM_DAI_LINK
-+#define SND_SOC_TPLG_DAPM_BUFFER	16
-+#define SND_SOC_TPLG_DAPM_SCHEDULER	17
-+#define SND_SOC_TPLG_DAPM_EFFECT	18
-+#define SND_SOC_TPLG_DAPM_SIGGEN	19
-+#define SND_SOC_TPLG_DAPM_SRC		20
-+#define SND_SOC_TPLG_DAPM_ASRC		21
-+#define SND_SOC_TPLG_DAPM_ENCODER	22
-+#define SND_SOC_TPLG_DAPM_DECODER	23
-+#define SND_SOC_TPLG_DAPM_LAST		SND_SOC_TPLG_DAPM_DECODER
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index eca85827dbd2..fb2f1f603f3c 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -540,6 +540,14 @@ static void skl_setup_cpr_gateway_cfg(struct skl_sst *ctx,
+ 	cpr_mconfig->gtw_cfg.dma_buffer_size =
+ 				mconfig->dma_buffer_size * dma_io_buf;
  
- /* Header magic number and string sizes */
- #define SND_SOC_TPLG_MAGIC		0x41536F43 /* ASoC */
-diff --git a/src/topology/dapm.c b/src/topology/dapm.c
-index 6af750b9..66892a66 100644
---- a/src/topology/dapm.c
-+++ b/src/topology/dapm.c
-@@ -38,6 +38,14 @@ static const struct map_elem widget_map[] = {
- 	{"dai_in", SND_SOC_TPLG_DAPM_DAI_IN},
- 	{"dai_out", SND_SOC_TPLG_DAPM_DAI_OUT},
- 	{"dai_link", SND_SOC_TPLG_DAPM_DAI_LINK},
-+	{"buffer", SND_SOC_TPLG_DAPM_BUFFER},
-+	{"scheduler", SND_SOC_TPLG_DAPM_SCHEDULER},
-+	{"effect", SND_SOC_TPLG_DAPM_EFFECT},
-+	{"siggen", SND_SOC_TPLG_DAPM_SIGGEN},
-+	{"src", SND_SOC_TPLG_DAPM_SRC},
-+	{"asrc", SND_SOC_TPLG_DAPM_ASRC},
-+	{"encoder", SND_SOC_TPLG_DAPM_ENCODER},
-+	{"decoder", SND_SOC_TPLG_DAPM_DECODER},
- };
++	/* fallback to 2ms default value */
++	if (!cpr_mconfig->gtw_cfg.dma_buffer_size) {
++		if (mconfig->hw_conn_type == SKL_CONN_SOURCE)
++			cpr_mconfig->gtw_cfg.dma_buffer_size = 2 * mconfig->obs;
++		else
++			cpr_mconfig->gtw_cfg.dma_buffer_size = 2 * mconfig->ibs;
++	}
++
+ 	cpr_mconfig->cpr_feature_mask = 0;
+ 	cpr_mconfig->gtw_cfg.config_length  = 0;
  
- static int lookup_widget(const char *w)
 -- 
-2.11.0
+1.9.1
