@@ -1,17 +1,16 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH alsa-lib v2 1/6] pcm: hw: add a helper function
-	to query status/control data
-Date: Fri, 30 Jun 2017 20:37:24 +0900
-Message-ID: <20170630113729.13656-2-o-takashi@sakamocchi.jp>
-References: <20170630113729.13656-1-o-takashi@sakamocchi.jp>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: rt5670: Fix arguments to set_sysclk
+Date: Fri, 30 Jun 2017 12:45:59 +0100
+Message-ID: <20170630114559.ljqeozccdnmaqkho@sirena.org.uk>
+References: <1498722411-2387-1-git-send-email-subhransu.s.prusty@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5366377785328174352=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id EE8ED266EB6
- for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 13:37:33 +0200 (CEST)
-In-Reply-To: <20170630113729.13656-1-o-takashi@sakamocchi.jp>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF7332674A1
+ for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 13:46:14 +0200 (CEST)
+In-Reply-To: <1498722411-2387-1-git-send-email-subhransu.s.prusty@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,146 +20,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: "Subhransu S. Prusty" <subhransu.s.prusty@intel.com>
+Cc: tiwai@suse.de, patches.audio@intel.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-When executing ioctl(2) with some commands, applications can request
-ALSA PCM core to change appl_ptr in kernel space. Below is a list of
-such operations:
- - SNDRV_PCM_IOCTL_PREPARE
- - SNDRV_PCM_IOCTL_RESET
- - SNDRV_PCM_IOCTL_REWIND
- - SNDRV_PCM_IOCTL_FORWARD
- - SNDRV_PCM_IOCTL_WRITEI_FRAMES
- - SNDRV_PCM_IOCTL_WRITEN_FRAMES
- - SNDRV_PCM_IOCTL_READI_FRAMES
- - SNDRV_PCM_IOCTL_READN_FRAMES
 
-After these operations, the value of appl_ptr should be synchronized
-between kernel/user spaces.
+--===============5366377785328174352==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="nvdp7zfwztnh7ico"
+Content-Disposition: inline
 
-This commit adds a helper function to query status and control data
-without issuing the control data just in fallback from failure of control
-mapping.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- src/pcm/pcm_hw.c | 46 ++++++++++++++++++++++++++++++++++------------
- 1 file changed, 34 insertions(+), 12 deletions(-)
+--nvdp7zfwztnh7ico
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
-index f03bc589..9963523c 100644
---- a/src/pcm/pcm_hw.c
-+++ b/src/pcm/pcm_hw.c
-@@ -151,6 +151,20 @@ static int sync_ptr(snd_pcm_hw_t *hw, unsigned int flags)
- 	return 0;
- }
- 
-+static int query_status_and_control_data(snd_pcm_hw_t *hw)
-+{
-+	if (!hw->mmap_control_fallbacked)
-+		return 0;
-+
-+	/*
-+	 * Query both of control/status data to avoid unexpected change of
-+	 * control data in kernel space.
-+	 */
-+	return sync_ptr1(hw,
-+			 SNDRV_PCM_SYNC_PTR_APPL |
-+			 SNDRV_PCM_SYNC_PTR_AVAIL_MIN);
-+}
-+
- static int snd_pcm_hw_clear_timer_queue(snd_pcm_hw_t *hw)
- {
- 	if (hw->period_timer_need_poll) {
-@@ -601,7 +615,7 @@ static int snd_pcm_hw_prepare(snd_pcm_t *pcm)
- 		SYSMSG("SNDRV_PCM_IOCTL_PREPARE failed (%i)", err);
- 		return err;
- 	}
--	return sync_ptr(hw, SNDRV_PCM_SYNC_PTR_APPL);
-+	return query_status_and_control_data(hw);
- }
- 
- static int snd_pcm_hw_reset(snd_pcm_t *pcm)
-@@ -613,7 +627,7 @@ static int snd_pcm_hw_reset(snd_pcm_t *pcm)
- 		SYSMSG("SNDRV_PCM_IOCTL_RESET failed (%i)", err);
- 		return err;
- 	}
--	return sync_ptr(hw, SNDRV_PCM_SYNC_PTR_APPL);
-+	return query_status_and_control_data(hw);
- }
- 
- static int snd_pcm_hw_start(snd_pcm_t *pcm)
-@@ -688,7 +702,7 @@ static snd_pcm_sframes_t snd_pcm_hw_rewind(snd_pcm_t *pcm, snd_pcm_uframes_t fra
- 		SYSMSG("SNDRV_PCM_IOCTL_REWIND failed (%i)", err);
- 		return err;
- 	}
--	err = sync_ptr(hw, SNDRV_PCM_SYNC_PTR_APPL);
-+	err = query_status_and_control_data(hw);
- 	if (err < 0)
- 		return err;
- 	return frames;
-@@ -709,7 +723,7 @@ static snd_pcm_sframes_t snd_pcm_hw_forward(snd_pcm_t *pcm, snd_pcm_uframes_t fr
- 			SYSMSG("SNDRV_PCM_IOCTL_FORWARD failed (%i)", err);
- 			return err;
- 		}
--		err = sync_ptr(hw, SNDRV_PCM_SYNC_PTR_APPL);
-+		err = query_status_and_control_data(hw);
- 		if (err < 0)
- 			return err;
- 		return frames;
-@@ -805,8 +819,10 @@ static snd_pcm_sframes_t snd_pcm_hw_writei(snd_pcm_t *pcm, const void *buffer, s
- 	xferi.buf = (char*) buffer;
- 	xferi.frames = size;
- 	xferi.result = 0; /* make valgrind happy */
--	err = ioctl(fd, SNDRV_PCM_IOCTL_WRITEI_FRAMES, &xferi);
--	err = err >= 0 ? sync_ptr(hw, SNDRV_PCM_SYNC_PTR_APPL) : -errno;
-+	if (ioctl(fd, SNDRV_PCM_IOCTL_WRITEI_FRAMES, &xferi) < 0)
-+		err = -errno;
-+	else
-+		err = query_status_and_control_data(hw);
- #ifdef DEBUG_RW
- 	fprintf(stderr, "hw_writei: frames = %li, xferi.result = %li, err = %i\n", size, xferi.result, err);
- #endif
-@@ -824,8 +840,10 @@ static snd_pcm_sframes_t snd_pcm_hw_writen(snd_pcm_t *pcm, void **bufs, snd_pcm_
- 	memset(&xfern, 0, sizeof(xfern)); /* make valgrind happy */
- 	xfern.bufs = bufs;
- 	xfern.frames = size;
--	err = ioctl(fd, SNDRV_PCM_IOCTL_WRITEN_FRAMES, &xfern);
--	err = err >= 0 ? sync_ptr(hw, SNDRV_PCM_SYNC_PTR_APPL) : -errno;
-+	if (ioctl(fd, SNDRV_PCM_IOCTL_WRITEN_FRAMES, &xfern) < 0)
-+		err = -errno;
-+	else
-+		err = query_status_and_control_data(hw);
- #ifdef DEBUG_RW
- 	fprintf(stderr, "hw_writen: frames = %li, result = %li, err = %i\n", size, xfern.result, err);
- #endif
-@@ -843,8 +861,10 @@ static snd_pcm_sframes_t snd_pcm_hw_readi(snd_pcm_t *pcm, void *buffer, snd_pcm_
- 	xferi.buf = buffer;
- 	xferi.frames = size;
- 	xferi.result = 0; /* make valgrind happy */
--	err = ioctl(fd, SNDRV_PCM_IOCTL_READI_FRAMES, &xferi);
--	err = err >= 0 ? sync_ptr(hw, SNDRV_PCM_SYNC_PTR_APPL) : -errno;
-+	if (ioctl(fd, SNDRV_PCM_IOCTL_READI_FRAMES, &xferi) < 0)
-+		err = -errno;
-+	else
-+		err = query_status_and_control_data(hw);
- #ifdef DEBUG_RW
- 	fprintf(stderr, "hw_readi: frames = %li, result = %li, err = %i\n", size, xferi.result, err);
- #endif
-@@ -862,8 +882,10 @@ static snd_pcm_sframes_t snd_pcm_hw_readn(snd_pcm_t *pcm, void **bufs, snd_pcm_u
- 	memset(&xfern, 0, sizeof(xfern)); /* make valgrind happy */
- 	xfern.bufs = bufs;
- 	xfern.frames = size;
--	err = ioctl(fd, SNDRV_PCM_IOCTL_READN_FRAMES, &xfern);
--	err = err >= 0 ? sync_ptr(hw, SNDRV_PCM_SYNC_PTR_APPL) : -errno;
-+	if (ioctl(fd, SNDRV_PCM_IOCTL_READN_FRAMES, &xfern) < 0)
-+		err = -errno;
-+	else
-+		err = query_status_and_control_data(hw);
- #ifdef DEBUG_RW
- 	fprintf(stderr, "hw_readn: frames = %li, result = %li, err = %i\n", size, xfern.result, err);
- #endif
--- 
-2.11.0
+On Thu, Jun 29, 2017 at 01:16:51PM +0530, Subhransu S. Prusty wrote:
+> set_sysclk expects pointer to snd_soc_codec. Fix it.
+
+Someone already sent a fix for this.
+
+--nvdp7zfwztnh7ico
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAllWOfYACgkQJNaLcl1U
+h9DOTQf9EAZEYdOztlORq0fK08mqa1FPY+AmRHU77ClD2DgyxVbV61zSQPmqvpLD
+BthaU9No6MqYy6cVXKAZa6JIBjbw45gPi04zaRvySeDSRTmV6L0zRnkHiUuH9AaD
+YKwPMaLYDDOyYqRUw3vWa2KZ20Ro5jYorF3kx7Cno8zyL7TA7yXsZLOzCn4hMBIA
+oDg/JGntES9ofFDzcgKt5Swlpz7ostbko0fveiWFg5SAIw/n7OlkGjISa6wBCre8
+eGAkg15qX75elodZckLglAINksWxXqVKH/mDUBxrAXPYOYu9m9i4Hgn8c3wiZPdS
+YV6KzqpmSqQeG82M1xz+1jdXAgsN2A==
+=+XOc
+-----END PGP SIGNATURE-----
+
+--nvdp7zfwztnh7ico--
+
+--===============5366377785328174352==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5366377785328174352==--
