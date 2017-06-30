@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ak4642: make arrays fs_list and ps_list static const" to the asoc tree
-Date: Fri, 30 Jun 2017 12:59:40 +0100
-Message-ID: <E1dQuaK-00085F-Sm@finisterre>
-References: <20170630091636.8287-1-colin.king@canonical.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20170630091636.8287-1-colin.king@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Harunobu Kurokawa <harunobu.kurokawa.dn@renesas.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: rt5670: fix incompatible pointer type
+	of set_sysclk" to the asoc tree
+Date: Fri, 30 Jun 2017 12:59:18 +0100
+Message-ID: <E1dQuZy-00081z-NJ@finisterre>
+References: <1498700875-13120-1-git-send-email-bardliao@realtek.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mezzanine.sirena.org.uk (mezzanine.sirena.org.uk
+ [106.187.55.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7B3D82674D4
+ for <alsa-devel@alsa-project.org>; Fri, 30 Jun 2017 13:59:41 +0200 (CEST)
+In-Reply-To: <1498700875-13120-1-git-send-email-bardliao@realtek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ak4642: make arrays fs_list and ps_list static const
+   ASoC: rt5670: fix incompatible pointer type of set_sysclk
 
 has been applied to the asoc tree at
 
@@ -37,49 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From 836e4fedee8df123a203a0ded090251de66b9bd1 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Fri, 30 Jun 2017 10:16:36 +0100
-Subject: [PATCH] ASoC: ak4642: make arrays fs_list and ps_list static const
+>From c243d96378bd0dc1249a335c282133f05e93c253 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Thu, 29 Jun 2017 09:47:55 +0800
+Subject: [PATCH] ASoC: rt5670: fix incompatible pointer type of set_sysclk
 
-Don't populate the arrays fs_list and ps_list on the stack but make
-them static const.  Makes the object code smaller:
+The first parameter is codec not dai.
 
-Before:
-   text    data     bss     dec     hex filename
-  12084    4888      64   17036    428c sound/soc/codecs/ak4642.o
-
-After:
-   text    data     bss     dec     hex filename
-  11883    5032      64   16979    4253 sound/soc/codecs/ak4642.o
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak4642.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5670.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/ak4642.c b/sound/soc/codecs/ak4642.c
-index 23ab9646c351..66de8a2013a6 100644
---- a/sound/soc/codecs/ak4642.c
-+++ b/sound/soc/codecs/ak4642.c
-@@ -433,7 +433,7 @@ static int ak4642_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- static int ak4642_set_mcko(struct snd_soc_codec *codec,
- 			   u32 frequency)
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index 7fa63ad366dd..64756dc95261 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -2442,7 +2442,7 @@ static int rt5670_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 	return 0;
+ }
+ 
+-static int rt5670_set_codec_sysclk(struct snd_soc_dai *dai, int clk_id,
++static int rt5670_set_codec_sysclk(struct snd_soc_codec *codec, int clk_id,
+ 				   int source, unsigned int freq, int dir)
  {
--	u32 fs_list[] = {
-+	static const u32 fs_list[] = {
- 		[0] = 8000,
- 		[1] = 12000,
- 		[2] = 16000,
-@@ -447,7 +447,7 @@ static int ak4642_set_mcko(struct snd_soc_codec *codec,
- 		[14] = 29400,
- 		[15] = 44100,
- 	};
--	u32 ps_list[] = {
-+	static const u32 ps_list[] = {
- 		[0] = 256,
- 		[1] = 128,
- 		[2] = 64,
+ 	struct rt5670_priv *rt5670 = snd_soc_codec_get_drvdata(codec);
 -- 
 2.13.2
